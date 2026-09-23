@@ -42,8 +42,8 @@ theorem norm_moebiusPhase_prime {p : ℕ} (hp : p.Prime) (w : ℝ) : ‖moebiusP
 
 /-- The squared norm of a finite sum, expanded over pairs. -/
 theorem normSq_sum_eq_double (P : Finset ℕ) (f : ℕ → ℂ) :
-    ‖∑ p ∈ P, f p‖ ^ 2 = ∑ p ∈ P, ∑ q ∈ P, (f p * (starRingEnd ℂ) (f q)).re := by
-  have h1 : ‖∑ p ∈ P, f p‖ ^ 2 = ((∑ p ∈ P, f p) * (starRingEnd ℂ) (∑ p ∈ P, f p)).re := by
+    ‖∑ p ∈ P, f p‖ ^ (2 : ℕ) = ∑ p ∈ P, ∑ q ∈ P, (f p * (starRingEnd ℂ) (f q)).re := by
+  have h1 : ‖∑ p ∈ P, f p‖ ^ (2 : ℕ) = ((∑ p ∈ P, f p) * (starRingEnd ℂ) (∑ p ∈ P, f p)).re := by
     rw [Complex.mul_conj, Complex.sq_norm]
     norm_num
   rw [h1, map_sum, Finset.sum_mul_sum, Complex.re_sum]
@@ -51,8 +51,8 @@ theorem normSq_sum_eq_double (P : Finset ℕ) (f : ℕ → ℂ) :
 
 /-- **The pointwise diagonal/off-diagonal split of the bilinear form.** -/
 theorem normSq_ramareBilinear_eq {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) (w : ℝ) :
-    ‖ramareBilinear P M w‖ ^ 2
-      = (∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ 2)
+    ‖ramareBilinear P M w‖ ^ (2 : ℕ)
+      = (∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
         + ∑ p ∈ P, ∑ q ∈ P.erase p,
             ((moebiusPhase w p * ramareCofactorPoly P M p w)
               * (starRingEnd ℂ) (moebiusPhase w q * ramareCofactorPoly P M q w)).re := by
@@ -74,11 +74,11 @@ def ramarePrimeOffDiagonal (P : Finset ℕ) (M : ℕ) (W : ℝ) : ℝ :=
 /-- **The bilinear mean square is its `p`-diagonal plus its prime off-diagonal.** -/
 theorem integral_normSq_ramareBilinear_eq {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ)
     (W : ℝ) :
-    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
-      = (∑ p ∈ P, ∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
+      = (∑ p ∈ P, ∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
         + ramarePrimeOffDiagonal P M W := by
   classical
-  have hcontG : ∀ p : ℕ, Continuous fun w : ℝ => ‖ramareCofactorPoly P M p w‖ ^ 2 :=
+  have hcontG : ∀ p : ℕ, Continuous fun w : ℝ => ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ) :=
     fun p => ((continuous_ramareCofactorPoly P M p).norm).pow 2
   have hcontPair : ∀ p q : ℕ, Continuous fun w : ℝ =>
       ((moebiusPhase w p * ramareCofactorPoly P M p w)
@@ -88,14 +88,14 @@ theorem integral_normSq_ramareBilinear_eq {P : Finset ℕ} (hPprime : ∀ q ∈ 
     exact (((continuous_moebiusPhase p).mul (continuous_ramareCofactorPoly P M p)).mul
       (Complex.continuous_conj.comp
         ((continuous_moebiusPhase q).mul (continuous_ramareCofactorPoly P M q))))
-  have hcongr : ∀ w ∈ Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2
-      = (∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ 2)
+  have hcongr : ∀ w ∈ Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ)
+      = (∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
         + ∑ p ∈ P, ∑ q ∈ P.erase p,
             ((moebiusPhase w p * ramareCofactorPoly P M p w)
               * (starRingEnd ℂ) (moebiusPhase w q * ramareCofactorPoly P M q w)).re :=
     fun w _ => normSq_ramareBilinear_eq hPprime M w
   rw [setIntegral_congr_fun measurableSet_Icc hcongr]
-  have hintDiag : ∀ p ∈ P, IntegrableOn (fun w : ℝ => ‖ramareCofactorPoly P M p w‖ ^ 2)
+  have hintDiag : ∀ p ∈ P, IntegrableOn (fun w : ℝ => ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := fun p _ => (hcontG p).integrableOn_Icc
   have hintPair : ∀ p q : ℕ, IntegrableOn (fun w : ℝ =>
       ((moebiusPhase w p * ramareCofactorPoly P M p w)
@@ -106,7 +106,7 @@ theorem integral_normSq_ramareBilinear_eq {P : Finset ℕ} (hPprime : ∀ q ∈ 
         * (starRingEnd ℂ) (moebiusPhase w q * ramareCofactorPoly P M q w)).re)
       (Set.Icc (-W) W) volume :=
     fun p _ => integrable_finsetSum _ fun q _ => hintPair p q
-  have hintSum1 : IntegrableOn (fun w : ℝ => ∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ 2)
+  have hintSum1 : IntegrableOn (fun w : ℝ => ∑ p ∈ P, ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := integrable_finsetSum _ hintDiag
   have hintSum2 : IntegrableOn (fun w : ℝ => ∑ p ∈ P, ∑ q ∈ P.erase p,
       ((moebiusPhase w p * ramareCofactorPoly P M p w)
@@ -127,17 +127,17 @@ theorem integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal {P : Finset ℕ}
     (hA : 15 * Real.exp 1 / (2 * ε) ≤ ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
     (hsq : ∑ p ∈ P, (M : ℝ) / ((p : ℝ) * (p : ℝ)) ≤ ε * (M : ℝ))
     (hsq2 : ∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ)) ≤ 2 * ε / (5 * Real.exp 1)) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ (1 + δ) * (10 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 + ramarePrimeOffDiagonal P M W)
+    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ (1 + δ) * (10 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) + ramarePrimeOffDiagonal P M W)
         + 2 * (1 + 1 / δ)
-            * (12 * W * (M : ℝ) + (1 + 5 * Real.exp 1 / 2) * ε * (M : ℝ) ^ 2) := by
+            * (12 * W * (M : ℝ) + (1 + 5 * Real.exp 1 / 2) * ε * (M : ℝ) ^ (2 : ℕ)) := by
   classical
-  have hdiag : (∑ p ∈ P, ∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w‖ ^ 2)
-      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+  have hdiag : (∑ p ∈ P, ∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w‖ ^ (2 : ℕ))
+      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) := by
     simp only [ramareCofactorPoly]
     exact sum_integral_normSq_ramareCofactorPoly_le_budget hPprime M hW hε hsq2
-  have hbil : (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
-      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 + ramarePrimeOffDiagonal P M W := by
+  have hbil : (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
+      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) + ramarePrimeOffDiagonal P M W := by
     rw [integral_normSq_ramareBilinear_eq hPprime M W]
     linarith [hdiag]
   refine le_trans (integral_Icc_normSq_logPoly_moebius_le_bilinear_budget hPprime M hW hδ hε hε1

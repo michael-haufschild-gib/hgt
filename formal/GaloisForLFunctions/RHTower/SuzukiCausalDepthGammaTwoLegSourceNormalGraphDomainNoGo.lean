@@ -46,11 +46,11 @@ private theorem tendsto_suzukiCausalDepthGammaDiskNode_cofinite_zero
 /-- Exact squared depth-zero causal Gamma amplitude after the two-leg gain `p`. -/
 theorem sq_prime_mul_suzukiCausalDepthGammaWeight_zero_eq
     {h a : ℝ} (p : Nat.Primes) :
-    (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ 2) =
-      ((p : ℝ) ^ 2) *
+    (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ (2 : ℕ)) =
+      ((p : ℝ) ^ (2 : ℕ)) *
         (Real.log (p : ℝ) * Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ))) *
-        ((h * Real.sqrt h)⁻¹) ^ 2 * (((p : ℝ) + 1)⁻¹) ^ 2 *
-        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+        ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
   rw [suzukiCausalDepthGammaWeight, pow_zero, mul_one,
     suzukiCriticalEntryWallEndpointAmplitude_zero_eq_coherentWeight]
   have hlog : 0 ≤ Real.log (p : ℝ) :=
@@ -58,11 +58,11 @@ theorem sq_prime_mul_suzukiCausalDepthGammaWeight_zero_eq
   have hexp : 0 ≤ Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ)) :=
     (Real.exp_pos _).le
   calc
-    _ = ((p : ℝ) ^ 2) *
+    _ = ((p : ℝ) ^ (2 : ℕ)) *
         (Real.sqrt (Real.log (p : ℝ) *
-          Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ))) ^ 2) *
-        ((h * Real.sqrt h)⁻¹) ^ 2 * (((p : ℝ) + 1)⁻¹) ^ 2 *
-        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+          Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ))) ^ (2 : ℕ)) *
+        ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
       ring
     _ = _ := by rw [Real.sq_sqrt (mul_nonneg hlog hexp)]
 
@@ -71,10 +71,10 @@ aperture. -/
 theorem not_summable_sq_prime_mul_suzukiCausalDepthGammaWeight_zero
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     ¬ Summable (fun p : Nat.Primes =>
-      (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ 2)) := by
+      (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ (2 : ℕ))) := by
   intro hsum
   let C : ℝ := (h * Real.sqrt h)⁻¹
-  let K : ℝ := Real.log 2 * C ^ 2 / 64
+  let K : ℝ := Real.log 2 * C ^ (2 : ℕ) / 64
   have hC : 0 < C := by
     dsimp [C]
     positivity
@@ -88,7 +88,7 @@ theorem not_summable_sq_prime_mul_suzukiCausalDepthGammaWeight_zero
       (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))
   have hlower : ∀ᶠ p : Nat.Primes in cofinite,
       K * (1 / (p : ℝ)) ≤
-        (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ 2) := by
+        (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ (2 : ℕ)) := by
     filter_upwards [hdisk] with p hpDisk
     have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
     have hpOne : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.property.one_lt.le
@@ -106,44 +106,44 @@ theorem not_summable_sq_prime_mul_suzukiCausalDepthGammaWeight_zero
           have hlog0 : 0 ≤ Real.log (p : ℝ) := Real.log_nonneg hpOne
           linarith
     have hratio : (1 / 4 : ℝ) ≤
-        ((p : ℝ) ^ 2) * (((p : ℝ) + 1)⁻¹) ^ 2 := by
+        ((p : ℝ) ^ (2 : ℕ)) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ) := by
       have hden : (0 : ℝ) < (p : ℝ) + 1 := by positivity
       have hhalf : (1 / 2 : ℝ) ≤ (p : ℝ) / ((p : ℝ) + 1) := by
         apply (le_div_iff₀ hden).2
         nlinarith
       have hsquare : (1 / 4 : ℝ) ≤
-          ((p : ℝ) / ((p : ℝ) + 1)) ^ 2 := by
+          ((p : ℝ) / ((p : ℝ) + 1)) ^ (2 : ℕ) := by
         nlinarith
       calc
-        (1 / 4 : ℝ) ≤ ((p : ℝ) / ((p : ℝ) + 1)) ^ 2 := hsquare
-        _ = ((p : ℝ) ^ 2) * (((p : ℝ) + 1)⁻¹) ^ 2 := by
+        (1 / 4 : ℝ) ≤ ((p : ℝ) / ((p : ℝ) + 1)) ^ (2 : ℕ) := hsquare
+        _ = ((p : ℝ) ^ (2 : ℕ)) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ) := by
           rw [div_eq_mul_inv]
           ring
     have hdisk4 : (1 / 16 : ℝ) ≤
-        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+        (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
       calc
-        (1 / 16 : ℝ) = (1 / 2 : ℝ) ^ 4 := by norm_num
-        _ ≤ (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+        (1 / 16 : ℝ) = (1 / 2 : ℝ) ^ (4 : ℕ) := by norm_num
+        _ ≤ (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
           gcongr
           linarith
     rw [sq_prime_mul_suzukiCausalDepthGammaWeight_zero_eq]
     dsimp [K, C]
     calc
-      Real.log 2 * (h * Real.sqrt h)⁻¹ ^ 2 / 64 * (1 / (p : ℝ)) =
+      Real.log 2 * (h * Real.sqrt h)⁻¹ ^ (2 : ℕ) / 64 * (1 / (p : ℝ)) =
           (1 / 4 : ℝ) * Real.log 2 * (1 / (p : ℝ)) *
-            (h * Real.sqrt h)⁻¹ ^ 2 * (1 / 16 : ℝ) := by
+            (h * Real.sqrt h)⁻¹ ^ (2 : ℕ) * (1 / 16 : ℝ) := by
         ring
-      _ ≤ (((p : ℝ) ^ 2) * (((p : ℝ) + 1)⁻¹) ^ 2) *
+      _ ≤ (((p : ℝ) ^ (2 : ℕ)) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ)) *
           Real.log (p : ℝ) *
           Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ)) *
-          (h * Real.sqrt h)⁻¹ ^ 2 *
-          (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+          (h * Real.sqrt h)⁻¹ ^ (2 : ℕ) *
+          (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
         gcongr
-      _ = ((p : ℝ) ^ 2) *
+      _ = ((p : ℝ) ^ (2 : ℕ)) *
           (Real.log (p : ℝ) *
             Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ))) *
-          (h * Real.sqrt h)⁻¹ ^ 2 * (((p : ℝ) + 1)⁻¹) ^ 2 *
-          (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 4 := by
+          (h * Real.sqrt h)⁻¹ ^ (2 : ℕ) * (((p : ℝ) + 1)⁻¹) ^ (2 : ℕ) *
+          (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (4 : ℕ) := by
         ring
   have hscaled : Summable (fun p : Nat.Primes => K * (1 / (p : ℝ))) :=
     Summable.of_norm_bounded_eventually hsum (by
@@ -157,7 +157,7 @@ theorem not_summable_sq_prime_mul_suzukiCausalDepthGammaWeight_zero
 /-- Actual causal Gamma amplitude after the canonical two-polarized-leg source-normal operation. -/
 def suzukiCausalDepthGammaTwoLegSourceNormalWeight
     (h a : ℝ) (pe : Nat.Primes × ℕ) : ℝ :=
-  criticalDepthDeattenuation pe 1 ^ 2 *
+  criticalDepthDeattenuation pe 1 ^ (2 : ℕ) *
     suzukiCausalDepthGammaWeight h a pe
 
 /-- The physical two-leg source-normal multiplier is exactly the prime. -/
@@ -173,7 +173,7 @@ theorem suzukiCausalDepthGammaTwoLegSourceNormalWeight_eq
 def SuzukiCausalDepthGammaTwoLegSourceNormalGraphAdmissible
     (h a : ℝ) : Prop :=
   Summable (fun pe : Nat.Primes × ℕ =>
-    (suzukiCausalDepthGammaTwoLegSourceNormalWeight h a pe) ^ 2)
+    (suzukiCausalDepthGammaTwoLegSourceNormalWeight h a pe) ^ (2 : ℕ))
 
 /-- **C30, canonical source-normal moving-domain no-go.** The full physical causal Gamma source
 cannot enter the Hilbert graph domain after its canonical two-leg source-normal deattenuation. -/
@@ -182,12 +182,12 @@ theorem not_suzukiCausalDepthGammaTwoLegSourceNormalGraphAdmissible
     ¬ SuzukiCausalDepthGammaTwoLegSourceNormalGraphAdmissible h a := by
   intro hfull
   have hzero : Summable (fun p : Nat.Primes =>
-      (suzukiCausalDepthGammaTwoLegSourceNormalWeight h a (p, 0)) ^ 2) :=
+      (suzukiCausalDepthGammaTwoLegSourceNormalWeight h a (p, 0)) ^ (2 : ℕ)) :=
     hfull.comp_injective (by
       intro p q hpq
       exact congrArg Prod.fst hpq)
   have hzero' : Summable (fun p : Nat.Primes =>
-      (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ 2)) := by
+      (((p : ℝ) * suzukiCausalDepthGammaWeight h a (p, 0)) ^ (2 : ℕ))) := by
     simpa only [suzukiCausalDepthGammaTwoLegSourceNormalWeight_eq] using hzero
   exact not_summable_sq_prime_mul_suzukiCausalDepthGammaWeight_zero hh ha hzero'
 

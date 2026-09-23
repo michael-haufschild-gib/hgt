@@ -32,7 +32,7 @@ def xiReflectedWoldOrbitChargeEnergy (rho : XiDivisorSupport) : ℝ :=
 theorem xiReflectedWoldOrbitChargeEnergy_eq_ite (rho : XiDivisorSupport) :
     xiReflectedWoldOrbitChargeEnergy rho =
       if (rho : ℂ).re = 1 / 2 then 0
-      else 2 * ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ 2 := by
+      else 2 * ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ (2 : ℕ) := by
   unfold xiReflectedWoldOrbitChargeEnergy
   exact xiHeatCassiniReflectedWoldPhysicalOrbitCharge_energy_eq_ite
     (xi_divisor_support_re_mem_open_unit rho)

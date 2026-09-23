@@ -31,7 +31,7 @@ theorem algebraMap_polynomial_ne_zero {P : Polynomial K} (hP : P ≠ 0) :
     algebraMap (Polynomial K) (RatFunc K) P ≠ 0 :=
   (map_ne_zero_iff _ (IsFractionRing.injective (Polynomial K) (RatFunc K))).mpr hP
 
-theorem algebraMap_num_eq (g : RatFunc K) :
+theorem algebraMap_num_eq_ratFuncOrderSquare (g : RatFunc K) :
     algebraMap (Polynomial K) (RatFunc K) g.num
       = g * algebraMap (Polynomial K) (RatFunc K) g.denom :=
   (div_eq_iff (algebraMap_polynomial_ne_zero (RatFunc.denom_ne_zero g))).mp
@@ -56,7 +56,7 @@ theorem ratOrd_of_rep {g : RatFunc K} {A B : Polynomial K} (hA : A ≠ 0) (hB : 
   have hcross : g.num * B = A * g.denom := by
     refine hinj ?_
     rw [map_mul, map_mul]
-    rw [algebraMap_num_eq g, ← hg]
+    rw [algebraMap_num_eq_ratFuncOrderSquare g, ← hg]
     ring
   have hmul := congrArg (fun P => Polynomial.rootMultiplicity c P) hcross
   simp only [Polynomial.rootMultiplicity_mul (mul_ne_zero hnum hB),
@@ -71,7 +71,7 @@ theorem ratOrd_mul {f g : RatFunc K} (hf : f ≠ 0) (hg : g ≠ 0) (c : K) :
   have hrep : f * g * algebraMap (Polynomial K) (RatFunc K) (f.denom * g.denom)
       = algebraMap (Polynomial K) (RatFunc K) (f.num * g.num) := by
     rw [map_mul, map_mul]
-    rw [algebraMap_num_eq f, algebraMap_num_eq g]
+    rw [algebraMap_num_eq_ratFuncOrderSquare f, algebraMap_num_eq_ratFuncOrderSquare g]
     ring
   rw [ratOrd_of_rep (mul_ne_zero (RatFunc.num_ne_zero hf) (RatFunc.num_ne_zero hg))
       (mul_ne_zero (RatFunc.denom_ne_zero f) (RatFunc.denom_ne_zero g)) hrep c,
@@ -86,7 +86,7 @@ theorem ratOrd_mul {f g : RatFunc K} (hf : f ≠ 0) (hg : g ≠ 0) (c : K) :
 /-- **A polynomial with everywhere-even root multiplicity is a constant times a square.** -/
 theorem exists_sq_of_even_rootMultiplicity [IsAlgClosed K] {A : Polynomial K} (hA : A ≠ 0)
     (h : ∀ c, Even (A.rootMultiplicity c)) :
-    ∃ (a : K) (q : Polynomial K), a ≠ 0 ∧ A = Polynomial.C a * q ^ 2 := by
+    ∃ (a : K) (q : Polynomial K), a ≠ 0 ∧ A = Polynomial.C a * q ^ (2 : ℕ) := by
   classical
   have hcount : ∀ c ∈ A.roots, 2 ∣ Multiset.count c A.roots := by
     intro c _
@@ -148,7 +148,7 @@ theorem isSquare_of_even_ratOrd [IsAlgClosed K] {g : RatFunc K} (hg : g ≠ 0)
     by simp
   rw [map_mul, map_mul, map_pow, map_pow, hbb, haa]
   have hteq : algebraMap K (RatFunc K) a
-      = (algebraMap K (RatFunc K) t) ^ 2 * algebraMap K (RatFunc K) b := by
+      = (algebraMap K (RatFunc K) t) ^ (2 : ℕ) * algebraMap K (RatFunc K) b := by
     rw [← map_pow, ← map_mul, ht]
     congr 1
     field_simp

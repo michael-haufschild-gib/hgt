@@ -64,12 +64,12 @@ theorem sieveWeight_pow (P : Finset Nat.Primes) {k : ℕ} (hk : 1 ≤ k) (n : �
       zero_pow (by omega), Complex.ofReal_zero]
 
 theorem summable_norm_sieveWeight_sq (P : Finset Nat.Primes) :
-    Summable fun n : ℕ => ‖sieveWeight P n‖ ^ 2 := by
+    Summable fun n : ℕ => ‖sieveWeight P n‖ ^ (2 : ℕ) := by
   refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
     (summable_natPow_inv (by norm_num : (1 : ℕ) < 2))
-  calc ‖sieveWeight P n‖ ^ 2 ≤ (((n : ℝ))⁻¹) ^ 2 :=
+  calc ‖sieveWeight P n‖ ^ (2 : ℕ) ≤ (((n : ℝ))⁻¹) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) (norm_sieveWeight_le_inv P n) 2
-    _ = (((n : ℕ) : ℝ) ^ 2)⁻¹ := by rw [← inv_pow]
+    _ = (((n : ℕ) : ℝ) ^ (2 : ℕ))⁻¹ := by rw [← inv_pow]
 
 /-- The sum of a power of the sieved weights is the corresponding sieved
 trace. -/
@@ -113,17 +113,17 @@ theorem operatorFredholmExpGerm_sieveOperator (P : Finset Nat.Primes) (z : ℂ) 
 section TraceBoundTwo
 
 /-- The universal bound for the power traces from degree two onward. -/
-def sieveTraceBoundTwo : ℝ := ∑' n : ℕ, (((n : ℕ) : ℝ) ^ 2)⁻¹
+def sieveTraceBoundTwo : ℝ := ∑' n : ℕ, (((n : ℕ) : ℝ) ^ (2 : ℕ))⁻¹
 
 theorem sieveTraceBoundTwo_nonneg : 0 ≤ sieveTraceBoundTwo :=
   tsum_nonneg fun n => by positivity
 
 theorem natPow_inv_le_two {k : ℕ} (hk : 2 ≤ k) (n : ℕ) :
-    (((n : ℕ) : ℝ) ^ k)⁻¹ ≤ (((n : ℕ) : ℝ) ^ 2)⁻¹ := by
+    (((n : ℕ) : ℝ) ^ k)⁻¹ ≤ (((n : ℕ) : ℝ) ^ (2 : ℕ))⁻¹ := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · rw [Nat.cast_zero, zero_pow (by omega), zero_pow (by omega)]
   · have h1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-    have h2 : (0 : ℝ) < ((n : ℝ)) ^ 2 := by positivity
+    have h2 : (0 : ℝ) < ((n : ℝ)) ^ (2 : ℕ) := by positivity
     exact inv_anti₀ h2 (pow_le_pow_right₀ h1 hk)
 
 theorem sieveTrace_le_boundTwo {k : ℕ} (hk : 2 ≤ k) (P : Finset Nat.Primes) :
@@ -146,7 +146,7 @@ theorem summable_expGerm_term (P : Finset Nat.Primes) {z : ℂ} (hz : ‖z‖ < 
     Summable fun n : ℕ =>
       z ^ (n + 2) / ((n + 2 : ℕ) : ℂ) * ((sieveTrace P (n + 2) : ℝ) : ℂ) := by
   refine Summable.of_norm_bounded
-    (g := fun n : ℕ => sieveTraceBoundTwo * ‖z‖ ^ 2 * (‖z‖) ^ n) ?_ fun n => ?_
+    (g := fun n : ℕ => sieveTraceBoundTwo * ‖z‖ ^ (2 : ℕ) * (‖z‖) ^ n) ?_ fun n => ?_
   · exact (summable_geometric_of_lt_one (norm_nonneg _) hz).mul_left _
   · have hT0 : 0 ≤ sieveTrace P (n + 2) := sieveTrace_nonneg P _
     have hTb : sieveTrace P (n + 2) ≤ sieveTraceBoundTwo :=
@@ -155,7 +155,7 @@ theorem summable_expGerm_term (P : Finset Nat.Primes) {z : ℂ} (hz : ‖z‖ < 
       rw [Complex.norm_natCast]
       have : (1 : ℕ) ≤ n + 2 := by omega
       exact_mod_cast this
-    have hz2 : ‖z‖ ^ (n + 2) = ‖z‖ ^ 2 * ‖z‖ ^ n := by
+    have hz2 : ‖z‖ ^ (n + 2) = ‖z‖ ^ (2 : ℕ) * ‖z‖ ^ n := by
       rw [← pow_add]
       ring_nf
     calc ‖z ^ (n + 2) / ((n + 2 : ℕ) : ℂ) * ((sieveTrace P (n + 2) : ℝ) : ℂ)‖
@@ -165,7 +165,7 @@ theorem summable_expGerm_term (P : Finset Nat.Primes) {z : ℂ} (hz : ‖z‖ < 
       _ ≤ ‖z‖ ^ (n + 2) * sieveTraceBoundTwo := by
           refine mul_le_mul ?_ hTb hT0 (by positivity)
           exact div_le_self (by positivity) hden
-      _ = sieveTraceBoundTwo * ‖z‖ ^ 2 * ‖z‖ ^ n := by rw [hz2]; ring
+      _ = sieveTraceBoundTwo * ‖z‖ ^ (2 : ℕ) * ‖z‖ ^ n := by rw [hz2]; ring
 
 /-- The polarized germ increment at one degree. -/
 def expGermDiff (P : Finset Nat.Primes) (t : ℂ) (n : ℕ) : ℂ :=
@@ -244,7 +244,7 @@ section Vacuum
 def vacuumWeight (n : ℕ) : ℂ := if n = 1 then 1 else 0
 
 theorem summable_norm_vacuumWeight_sq :
-    Summable fun n : ℕ => ‖vacuumWeight n‖ ^ 2 := by
+    Summable fun n : ℕ => ‖vacuumWeight n‖ ^ (2 : ℕ) := by
   refine summable_of_ne_finset_zero (s := {1}) fun n hn => ?_
   simp only [Finset.mem_singleton] at hn
   rw [vacuumWeight, if_neg hn, norm_zero]
@@ -260,9 +260,9 @@ theorem sieveWeight_one (P : Finset Nat.Primes) : sieveWeight P 1 = 1 := by
 
 /-- The pointwise vacuum defect of the sieved weights. -/
 theorem norm_sieveWeight_sub_vacuumWeight_sq (P : Finset Nat.Primes) (n : ℕ) :
-    ‖sieveWeight P n - vacuumWeight n‖ ^ 2
+    ‖sieveWeight P n - vacuumWeight n‖ ^ (2 : ℕ)
       = Set.indicator {n : ℕ | Nat.Coprime n (sievePrimorial P)}
-          (fun n : ℕ => (((n : ℕ) : ℝ) ^ 2)⁻¹) n
+          (fun n : ℕ => (((n : ℕ) : ℝ) ^ (2 : ℕ))⁻¹) n
         - (if n = 1 then (1 : ℝ) else 0) := by
   by_cases hn : n = 1
   · subst hn
@@ -271,7 +271,7 @@ theorem norm_sieveWeight_sub_vacuumWeight_sq (P : Finset Nat.Primes) (n : ℕ) :
     norm_num
   · rw [vacuumWeight, if_neg hn, sub_zero, if_neg hn, sub_zero]
     have hsq := sieveWeight_pow P (k := 2) (by omega) n
-    have : ‖sieveWeight P n‖ ^ 2 = ‖(sieveWeight P n) ^ 2‖ := by
+    have : ‖sieveWeight P n‖ ^ (2 : ℕ) = ‖(sieveWeight P n) ^ (2 : ℕ)‖ := by
       rw [norm_pow]
     rw [this, hsq, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg]
     by_cases h : n ∈ {n : ℕ | Nat.Coprime n (sievePrimorial P)}
@@ -285,7 +285,7 @@ one. -/
 theorem hsNormSq_sieveOperator_sub_vacuum (P : Finset Nat.Primes) :
     ContinuousLinearMap.hsNormSq (sieveOperator P - vacuumProjection)
       = sieveTrace P 2 - 1 := by
-  have hsub : Summable fun n : ℕ => ‖sieveWeight P n - vacuumWeight n‖ ^ 2 := by
+  have hsub : Summable fun n : ℕ => ‖sieveWeight P n - vacuumWeight n‖ ^ (2 : ℕ) := by
     refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
       ((summable_natPow_inv (by norm_num : (1 : ℕ) < 2)).indicator
         {n : ℕ | Nat.Coprime n (sievePrimorial P)})

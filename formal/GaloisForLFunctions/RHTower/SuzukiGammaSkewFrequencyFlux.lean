@@ -72,9 +72,9 @@ omit [CompleteSpace H] in
 /-- Hilbert-space derivative of squared norm along a real parameter. -/
 lemma suzukiGammaSkew_sqNorm_hasDerivAt
     {f : ℝ → H} {f' : H} {x : ℝ} (h : HasDerivAt f f' x) :
-    HasDerivAt (fun t => ‖f t‖ ^ 2) (2 * inner ℝ (f x) f') x := by
+    HasDerivAt (fun t => ‖f t‖ ^ (2 : ℕ)) (2 * inner ℝ (f x) f') x := by
   have hi := HasDerivAt.inner ℝ h h
-  have heq : (fun t => inner ℝ (f t) (f t)) = (fun t => ‖f t‖ ^ 2) := by
+  have heq : (fun t => inner ℝ (f t) (f t)) = (fun t => ‖f t‖ ^ (2 : ℕ)) := by
     funext t
     exact real_inner_self_eq_norm_sq (f t)
   rw [heq] at hi
@@ -95,7 +95,7 @@ lemma real_inner_suzukiGammaSkewFrequencyField
     (T : H →L[ℂ] H) (hT : IsSelfAdjoint T) (r : ℝ → ℝ)
     {η : ℝ} (v : H) :
     inner ℝ v (suzukiGammaSkewFrequencyField T r η v) =
-      (-1 / (2 * η) : ℝ) * ‖v‖ ^ 2 := by
+      (-1 / (2 * η) : ℝ) * ‖v‖ ^ (2 : ℕ) := by
   rw [suzukiGammaSkewFrequencyField, inner_add_right, real_inner_smul_right,
     real_inner_self_eq_norm_sq, suzukiGammaSkew_frequency_inner_zero T hT (r η) v, add_zero]
 
@@ -104,17 +104,17 @@ theorem suzukiGammaSkew_weightedCurrent_hasDerivAt_zero
     (T : H →L[ℂ] H) (hT : IsSelfAdjoint T) (r : ℝ → ℝ)
     (f : ℝ → H) {η : ℝ} (hη : η ≠ 0)
     (hf : HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η) :
-    HasDerivAt (fun x => x * ‖f x‖ ^ 2) 0 η := by
+    HasDerivAt (fun x => x * ‖f x‖ ^ (2 : ℕ)) 0 η := by
   have hsq := suzukiGammaSkew_sqNorm_hasDerivAt hf
   have hprod := (hasDerivAt_id η).mul hsq
   have hz :
-      1 * ‖f η‖ ^ 2 +
+      1 * ‖f η‖ ^ (2 : ℕ) +
           η * (2 * inner ℝ (f η) (suzukiGammaSkewFrequencyField T r η (f η))) = 0 := by
     rw [one_mul, real_inner_suzukiGammaSkewFrequencyField T hT r]
     field_simp [hη]
     ring
   have hprod0 : HasDerivAt
-      (id * fun x => ‖f x‖ ^ 2) 0 η :=
+      (id * fun x => ‖f x‖ ^ (2 : ℕ)) 0 η :=
     hprod.congr_deriv (by simpa only [id_eq] using hz)
   apply hprod0.congr_of_eventuallyEq
   filter_upwards with x
@@ -127,8 +127,8 @@ theorem suzukiGammaSkew_weightedCurrent_eq_of_pos
     (hf : ∀ η, η ≠ 0 →
       HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η)
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
-    x * ‖f x‖ ^ 2 = y * ‖f y‖ ^ 2 := by
-  let J : ℝ → ℝ := fun η => η * ‖f η‖ ^ 2
+    x * ‖f x‖ ^ (2 : ℕ) = y * ‖f y‖ ^ (2 : ℕ) := by
+  let J : ℝ → ℝ := fun η => η * ‖f η‖ ^ (2 : ℕ)
   have hJ : ∀ η ∈ Ioi (0 : ℝ), HasDerivAt J 0 η := by
     intro η hη
     exact suzukiGammaSkew_weightedCurrent_hasDerivAt_zero
@@ -144,38 +144,38 @@ theorem suzukiGammaSkew_eq_zero_of_pos_of_integrableOn_normSq
     (f : ℝ → H)
     (hf : ∀ η, η ≠ 0 →
       HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η)
-    (hL2 : IntegrableOn (fun η => ‖f η‖ ^ 2) (Ioi (1 : ℝ))) :
+    (hL2 : IntegrableOn (fun η => ‖f η‖ ^ (2 : ℕ)) (Ioi (1 : ℝ))) :
     ∀ η, 0 < η → f η = 0 := by
   have hcurrent (η : ℝ) (hη : 0 < η) :
-      η * ‖f η‖ ^ 2 = ‖f 1‖ ^ 2 := by
+      η * ‖f η‖ ^ (2 : ℕ) = ‖f 1‖ ^ (2 : ℕ) := by
     simpa using suzukiGammaSkew_weightedCurrent_eq_of_pos
       T hT r f hf hη zero_lt_one
-  have hC : ‖f 1‖ ^ 2 = 0 := by
+  have hC : ‖f 1‖ ^ (2 : ℕ) = 0 := by
     by_contra hCne
-    have hscaled : IntegrableOn (fun η : ℝ => ‖f 1‖ ^ 2 * η⁻¹) (Ioi (1 : ℝ)) := by
+    have hscaled : IntegrableOn (fun η : ℝ => ‖f 1‖ ^ (2 : ℕ) * η⁻¹) (Ioi (1 : ℝ)) := by
       refine hL2.congr_fun ?_ measurableSet_Ioi
       intro η hη
       have hη0 : η ≠ 0 := ne_of_gt (lt_trans zero_lt_one hη)
       have hc := hcurrent η (lt_trans zero_lt_one hη)
       calc
-        ‖f η‖ ^ 2 = η⁻¹ * ‖f 1‖ ^ 2 := by
+        ‖f η‖ ^ (2 : ℕ) = η⁻¹ * ‖f 1‖ ^ (2 : ℕ) := by
           apply (eq_inv_mul_iff_mul_eq₀ hη0).2
           simpa [mul_comm] using hc
-        _ = ‖f 1‖ ^ 2 * η⁻¹ := by ring
+        _ = ‖f 1‖ ^ (2 : ℕ) * η⁻¹ := by ring
     have hinv : IntegrableOn (fun η : ℝ => η⁻¹) (Ioi (1 : ℝ)) := by
       have hi : IntegrableOn
-          (fun η : ℝ => (‖f 1‖ ^ 2)⁻¹ * (‖f 1‖ ^ 2 * η⁻¹))
+          (fun η : ℝ => (‖f 1‖ ^ (2 : ℕ))⁻¹ * (‖f 1‖ ^ (2 : ℕ) * η⁻¹))
           (Ioi (1 : ℝ)) :=
-        Integrable.const_mul hscaled (‖f 1‖ ^ 2)⁻¹
+        Integrable.const_mul hscaled (‖f 1‖ ^ (2 : ℕ))⁻¹
       refine hi.congr_fun ?_ measurableSet_Ioi
       intro η _
       calc
-        (‖f 1‖ ^ 2)⁻¹ * (‖f 1‖ ^ 2 * η⁻¹) =
-            ((‖f 1‖ ^ 2)⁻¹ * ‖f 1‖ ^ 2) * η⁻¹ := by ring
+        (‖f 1‖ ^ (2 : ℕ))⁻¹ * (‖f 1‖ ^ (2 : ℕ) * η⁻¹) =
+            ((‖f 1‖ ^ (2 : ℕ))⁻¹ * ‖f 1‖ ^ (2 : ℕ)) * η⁻¹ := by ring
         _ = η⁻¹ := by rw [inv_mul_cancel₀ hCne, one_mul]
     exact not_integrableOn_Ioi_inv hinv
   intro η hη
-  have hz : ‖f η‖ ^ 2 = 0 := by
+  have hz : ‖f η‖ ^ (2 : ℕ) = 0 := by
     have hc := hcurrent η hη
     rw [hC, mul_eq_zero] at hc
     exact hc.resolve_left hη.ne'
@@ -188,8 +188,8 @@ theorem suzukiGammaSkew_weightedCurrent_eq_of_neg
     (hf : ∀ η, η ≠ 0 →
       HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η)
     {x y : ℝ} (hx : x < 0) (hy : y < 0) :
-    x * ‖f x‖ ^ 2 = y * ‖f y‖ ^ 2 := by
-  let J : ℝ → ℝ := fun η => η * ‖f η‖ ^ 2
+    x * ‖f x‖ ^ (2 : ℕ) = y * ‖f y‖ ^ (2 : ℕ) := by
+  let J : ℝ → ℝ := fun η => η * ‖f η‖ ^ (2 : ℕ)
   have hJ : ∀ η ∈ Iio (0 : ℝ), HasDerivAt J 0 η := by
     intro η hη
     exact suzukiGammaSkew_weightedCurrent_hasDerivAt_zero
@@ -218,41 +218,41 @@ theorem suzukiGammaSkew_eq_zero_of_neg_of_integrableOn_normSq
     (f : ℝ → H)
     (hf : ∀ η, η ≠ 0 →
       HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η)
-    (hL2 : IntegrableOn (fun η => ‖f η‖ ^ 2) (Iio (-1 : ℝ))) :
+    (hL2 : IntegrableOn (fun η => ‖f η‖ ^ (2 : ℕ)) (Iio (-1 : ℝ))) :
     ∀ η, η < 0 → f η = 0 := by
   have hcurrent (η : ℝ) (hη : η < 0) :
-      η * ‖f η‖ ^ 2 = -‖f (-1)‖ ^ 2 := by
+      η * ‖f η‖ ^ (2 : ℕ) = -‖f (-1)‖ ^ (2 : ℕ) := by
     simpa using suzukiGammaSkew_weightedCurrent_eq_of_neg T hT r f hf
       (x := η) (y := (-1 : ℝ)) hη (by norm_num)
-  have hC : ‖f (-1)‖ ^ 2 = 0 := by
+  have hC : ‖f (-1)‖ ^ (2 : ℕ) = 0 := by
     by_contra hCne
-    have hKne : -‖f (-1)‖ ^ 2 ≠ 0 := neg_ne_zero.mpr hCne
+    have hKne : -‖f (-1)‖ ^ (2 : ℕ) ≠ 0 := neg_ne_zero.mpr hCne
     have hscaled :
-        IntegrableOn (fun η : ℝ => (-‖f (-1)‖ ^ 2) * η⁻¹) (Iio (-1 : ℝ)) := by
+        IntegrableOn (fun η : ℝ => (-‖f (-1)‖ ^ (2 : ℕ)) * η⁻¹) (Iio (-1 : ℝ)) := by
       refine hL2.congr_fun ?_ measurableSet_Iio
       intro η hη
       have hη0 : η ≠ 0 := ne_of_lt (lt_trans hη (by norm_num))
       have hc := hcurrent η (lt_trans hη (by norm_num))
       calc
-        ‖f η‖ ^ 2 = η⁻¹ * (-‖f (-1)‖ ^ 2) := by
+        ‖f η‖ ^ (2 : ℕ) = η⁻¹ * (-‖f (-1)‖ ^ (2 : ℕ)) := by
           apply (eq_inv_mul_iff_mul_eq₀ hη0).2
           simpa [mul_comm] using hc
-        _ = (-‖f (-1)‖ ^ 2) * η⁻¹ := by ring
+        _ = (-‖f (-1)‖ ^ (2 : ℕ)) * η⁻¹ := by ring
     have hinv : IntegrableOn (fun η : ℝ => η⁻¹) (Iio (-1 : ℝ)) := by
       have hi : IntegrableOn
-          (fun η : ℝ => (-‖f (-1)‖ ^ 2)⁻¹ *
-            ((-‖f (-1)‖ ^ 2) * η⁻¹))
+          (fun η : ℝ => (-‖f (-1)‖ ^ (2 : ℕ))⁻¹ *
+            ((-‖f (-1)‖ ^ (2 : ℕ)) * η⁻¹))
           (Iio (-1 : ℝ)) :=
-        Integrable.const_mul hscaled (-‖f (-1)‖ ^ 2)⁻¹
+        Integrable.const_mul hscaled (-‖f (-1)‖ ^ (2 : ℕ))⁻¹
       refine hi.congr_fun ?_ measurableSet_Iio
       intro η _
       calc
-        (-‖f (-1)‖ ^ 2)⁻¹ * ((-‖f (-1)‖ ^ 2) * η⁻¹) =
-            ((-‖f (-1)‖ ^ 2)⁻¹ * (-‖f (-1)‖ ^ 2)) * η⁻¹ := by ring
+        (-‖f (-1)‖ ^ (2 : ℕ))⁻¹ * ((-‖f (-1)‖ ^ (2 : ℕ)) * η⁻¹) =
+            ((-‖f (-1)‖ ^ (2 : ℕ))⁻¹ * (-‖f (-1)‖ ^ (2 : ℕ))) * η⁻¹ := by ring
         _ = η⁻¹ := by rw [inv_mul_cancel₀ hKne, one_mul]
     exact suzukiGammaSkew_not_integrableOn_Iio_inv hinv
   intro η hη
-  have hz : ‖f η‖ ^ 2 = 0 := by
+  have hz : ‖f η‖ ^ (2 : ℕ) = 0 := by
     have hc := hcurrent η hη
     rw [hC, neg_zero, mul_eq_zero] at hc
     exact hc.resolve_left hη.ne
@@ -265,8 +265,8 @@ theorem suzukiGammaSkew_eq_zero_of_integrableTails_normSq
     (f : ℝ → H)
     (hf : ∀ η, η ≠ 0 →
       HasDerivAt f (suzukiGammaSkewFrequencyField T r η (f η)) η)
-    (hpos : IntegrableOn (fun η => ‖f η‖ ^ 2) (Ioi (1 : ℝ)))
-    (hneg : IntegrableOn (fun η => ‖f η‖ ^ 2) (Iio (-1 : ℝ))) :
+    (hpos : IntegrableOn (fun η => ‖f η‖ ^ (2 : ℕ)) (Ioi (1 : ℝ)))
+    (hneg : IntegrableOn (fun η => ‖f η‖ ^ (2 : ℕ)) (Iio (-1 : ℝ))) :
     ∀ η, η ≠ 0 → f η = 0 := by
   intro η hη
   rcases lt_or_gt_of_ne hη with hηneg | hηpos

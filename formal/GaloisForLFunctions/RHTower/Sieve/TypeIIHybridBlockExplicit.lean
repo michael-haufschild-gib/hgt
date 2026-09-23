@@ -19,10 +19,10 @@ theorem norm_maskedBlockSum_sq_le_hybrid_bound {T r : ℝ} (hT : 0 < T) (hr : 0 
     {A B L P Q : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hP : 1 ≤ P) (hQ : 2 ≤ Q)
     (hQ2P : Q ≤ 2 * P) (a b : ℕ → ℝ)
     (hfour : ∀ m ∈ effSet A B P Q L, 4 * (r / m) ≤ (P : ℝ)) :
-    ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
-        * (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
-          + (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
+    ‖maskedBlockSum T r A B L P Q a b‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
+        * (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
+          + (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
             * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
                 hybridGapCorrBound T r (effLow A Q) (effHigh B P) P Q h)) := by
   refine le_trans (norm_maskedBlockSum_sq_le T r A B L P Q a b) ?_
@@ -36,7 +36,7 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
       0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
       Q ≤ 2 * P → Q ≤ L + 1 → 8 * r ≤ (A : ℝ) →
       ‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-          (fun m => typeIIShort V m)‖ ^ 2
+          (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
         ≤ (C * (Q : ℝ) * Real.log L)
           * (((Q - P : ℕ) : ℝ) * typeIIShortEnergyEnvelope (effHigh B P)
             + typeIIShortEnergyEnvelope (effHigh B P)
@@ -56,7 +56,7 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
   have hgap := sum_hybridGapCorrBound_le
     (M₀ := effLow A Q) (M₁ := effHigh B P) (P := P) (Q := Q)
     (H := effGap A B P Q) hT hr (one_le_effLow A Q) hP
-  have hshort' : (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+  have hshort' : (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
       ≤ typeIIShortEnergyEnvelope (effHigh B P) := by
     simpa only [typeIIShortEnergyEnvelope] using hshort
   have hgap0 : 0 ≤ (∑ h ∈ Finset.Icc 1 (effGap A B P Q),
@@ -67,8 +67,8 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
       (effGap A B P Q) := le_trans hgap0 hgap
   have hE0 := typeIIShortEnergyEnvelope_nonneg (effHigh B P)
   have hbracket :
-      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
-          + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
+          + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
             * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
               hybridGapCorrBound T r (effLow A Q) (effHigh B P) P Q h))
         ≤ (((Q - P : ℕ) : ℝ) * typeIIShortEnergyEnvelope (effHigh B P)
@@ -80,8 +80,8 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_explicit :
     have : (0 : ℝ) ≤ Real.log L := Real.log_nonneg (by exact_mod_cast hL)
     positivity
   have hraw0 : 0 ≤
-      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
-        + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
+        + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
             hybridGapCorrBound T r (effLow A Q) (effHigh B P) P Q h)) := by
     positivity

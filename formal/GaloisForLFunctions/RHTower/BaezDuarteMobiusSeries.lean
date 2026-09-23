@@ -22,7 +22,7 @@ def bdCoeff (k : ℕ) : ℂ :=
 
 /-- The Möbius summand `μ(n) n^{-2} (1 - n^{-2})^k`. -/
 def bdMobiusTerm (k n : ℕ) : ℂ :=
-  ((moebius n : ℤ) : ℂ) * ((n : ℂ) ^ 2)⁻¹ * (1 - ((n : ℂ) ^ 2)⁻¹) ^ k
+  ((moebius n : ℤ) : ℂ) * ((n : ℂ) ^ (2 : ℕ))⁻¹ * (1 - ((n : ℂ) ^ (2 : ℕ))⁻¹) ^ k
 
 theorem one_lt_re_bdExponent (j : ℕ) : 1 < (2 * (j : ℂ) + 2).re := by
   have h : (2 * (j : ℂ) + 2).re = 2 * (j : ℝ) + 2 := by
@@ -45,12 +45,12 @@ theorem hasSum_bdShift (j : ℕ) :
 
 theorem term_bdShift_eq {n : ℕ} (hn : 1 ≤ n) (j : ℕ) :
     LSeries.term (fun n => ((moebius n : ℤ) : ℂ)) (2 * (j : ℂ) + 2) n
-      = ((moebius n : ℤ) : ℂ) * (((n : ℂ) ^ 2)⁻¹) ^ (j + 1) := by
+      = ((moebius n : ℤ) : ℂ) * (((n : ℂ) ^ (2 : ℕ))⁻¹) ^ (j + 1) := by
   have hn0 : n ≠ 0 := by omega
   rw [LSeries.term_of_ne_zero hn0]
   have hcast : 2 * (j : ℂ) + 2 = ((2 * j + 2 : ℕ) : ℂ) := by push_cast; ring
   rw [hcast, Complex.cpow_natCast]
-  have hpow : (n : ℂ) ^ (2 * j + 2) = ((n : ℂ) ^ 2) ^ (j + 1) := by
+  have hpow : (n : ℂ) ^ (2 * j + 2) = ((n : ℂ) ^ (2 : ℕ)) ^ (j + 1) := by
     rw [← pow_mul, show 2 * j + 2 = 2 * (j + 1) by ring]
   rw [hpow, div_eq_mul_inv, ← inv_pow]
 
@@ -63,7 +63,7 @@ theorem sum_bdMobiusTerm (k n : ℕ) :
     simp [bdMobiusTerm, LSeries.term_zero]
   · have hterm := fun j => term_bdShift_eq hn j
     simp only [hterm]
-    set x : ℂ := ((n : ℂ) ^ 2)⁻¹ with hx
+    set x : ℂ := ((n : ℂ) ^ (2 : ℕ))⁻¹ with hx
     have hbinom : (1 - x) ^ k = ∑ j ∈ Finset.range (k + 1), (-1 : ℂ) ^ j * (k.choose j : ℂ) * x ^ j := by
       have h := add_pow (-x) (1 : ℂ) k
       simp only [one_pow, mul_one] at h

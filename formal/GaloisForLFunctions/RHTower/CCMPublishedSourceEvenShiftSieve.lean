@@ -75,8 +75,8 @@ theorem one_sub_exp_neg_two_mul_ccmPublishedArchimedeanDensity
   have heh : Real.exp h ≠ 0 := ne_of_gt (Real.exp_pos h)
   have hehone : 1 < Real.exp h := by
     simpa using (Real.exp_lt_exp.mpr hh)
-  have hsq : Real.exp h ^ 2 - 1 ≠ 0 := by
-    have : 1 < Real.exp h ^ 2 := by nlinarith [hehone, Real.exp_pos h]
+  have hsq : Real.exp h ^ (2 : ℕ) - 1 ≠ 0 := by
+    have : 1 < Real.exp h ^ (2 : ℕ) := by nlinarith [hehone, Real.exp_pos h]
     linarith
   rw [show Real.exp (-2 * h) = (Real.exp (2 * h))⁻¹ by
     rw [← Real.exp_neg]; ring_nf]
@@ -119,11 +119,11 @@ even-shift sieve. -/
 def ccmPublishedDampedSinePrimitive (kappa xi h : ℝ) : ℝ :=
   Real.exp (-kappa * h) *
     (-kappa * Real.sin (xi * h) - xi * Real.cos (xi * h)) /
-      (kappa ^ 2 + xi ^ 2)
+      (kappa ^ (2 : ℕ) + xi ^ (2 : ℕ))
 
 /-- Derivative law for the damped-sine primitive. -/
 theorem hasDerivAt_ccmPublishedDampedSinePrimitive
-    {kappa xi : ℝ} (hden : kappa ^ 2 + xi ^ 2 ≠ 0) (h : ℝ) :
+    {kappa xi : ℝ} (hden : kappa ^ (2 : ℕ) + xi ^ (2 : ℕ) ≠ 0) (h : ℝ) :
     HasDerivAt (ccmPublishedDampedSinePrimitive kappa xi)
       (Real.exp (-kappa * h) * Real.sin (xi * h)) h := by
   have hE : HasDerivAt (fun x : ℝ => Real.exp (-kappa * x))
@@ -145,7 +145,7 @@ theorem hasDerivAt_ccmPublishedDampedSinePrimitive
       (fun x : ℝ => -kappa * Real.sin (xi * x) - xi * Real.cos (xi * x))
       (-kappa * (xi * Real.cos (xi * h)) - xi * (-xi * Real.sin (xi * h))) h :=
     (hsin.const_mul (-kappa)).sub (hcos.const_mul xi)
-  convert! (hE.mul hnum).div_const (kappa ^ 2 + xi ^ 2) using 1
+  convert! (hE.mul hnum).div_const (kappa ^ (2 : ℕ) + xi ^ (2 : ℕ)) using 1
   all_goals
     try dsimp only [ccmPublishedDampedSinePrimitive]
     field_simp
@@ -153,11 +153,11 @@ theorem hasDerivAt_ccmPublishedDampedSinePrimitive
 
 /-- Closed finite-aperture damped-sine integral when the endpoint completes a full period. -/
 theorem integral_Ioc_exp_neg_mul_sin_of_full_period
-    {kappa xi H : ℝ} (hH : 0 ≤ H) (hden : kappa ^ 2 + xi ^ 2 ≠ 0)
+    {kappa xi H : ℝ} (hH : 0 ≤ H) (hden : kappa ^ (2 : ℕ) + xi ^ (2 : ℕ) ≠ 0)
     (hsin : Real.sin (xi * H) = 0) (hcos : Real.cos (xi * H) = 1) :
     (∫ h in Ioc (0 : ℝ) H,
       Real.exp (-kappa * h) * Real.sin (xi * h)) =
-        xi * (1 - Real.exp (-kappa * H)) / (kappa ^ 2 + xi ^ 2) := by
+        xi * (1 - Real.exp (-kappa * H)) / (kappa ^ (2 : ℕ) + xi ^ (2 : ℕ)) := by
   rw [← intervalIntegral.integral_of_le hH]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun h _hh => hasDerivAt_ccmPublishedDampedSinePrimitive hden h)
@@ -225,9 +225,9 @@ theorem ccmPublishedEvenShiftSievedArchCoefficient_physical_eq
       (1 / Real.pi) *
         (ccmPublishedPhysicalFrequency a n *
           (1 - Real.exp (-kappa * (2 * a))) /
-            (kappa ^ 2 + ccmPublishedPhysicalFrequency a n ^ 2)) := by
+            (kappa ^ (2 : ℕ) + ccmPublishedPhysicalFrequency a n ^ (2 : ℕ))) := by
   rw [ccmPublishedEvenShiftSievedArchCoefficient_eq_elementary]
-  have hden : kappa ^ 2 + ccmPublishedPhysicalFrequency a n ^ 2 ≠ 0 := by
+  have hden : kappa ^ (2 : ℕ) + ccmPublishedPhysicalFrequency a n ^ (2 : ℕ) ≠ 0 := by
     positivity
   rw [show -((kappa - 1 / 2) + 1 / 2) = -kappa by ring]
   rw [integral_Ioc_exp_neg_mul_sin_of_full_period (by positivity) hden
@@ -307,7 +307,7 @@ theorem ccmPublishedEvenShiftSievedSourceCoefficient_physical_closed
         (ccmPublishedPhysicalFrequency a n) =
       (ccmPublishedPhysicalFrequency a n *
           (1 - Real.exp (-kappa * (2 * a))) /
-            (kappa ^ 2 + ccmPublishedPhysicalFrequency a n ^ 2) +
+            (kappa ^ (2 : ℕ) + ccmPublishedPhysicalFrequency a n ^ (2 : ℕ)) +
         ccmPublishedEvenShiftSievedCompletedErrorMoment a (kappa - 1 / 2)
           (ccmPublishedPhysicalFrequency a n)) / Real.pi := by
   rw [ccmPublishedEvenShiftSievedSourceCoefficient,
@@ -327,7 +327,7 @@ theorem ccmPublishedEvenShiftSievedSourceCoefficient_physical_neg_iff
           (ccmPublishedPhysicalFrequency a n) <
         -(ccmPublishedPhysicalFrequency a n *
           (1 - Real.exp (-kappa * (2 * a))) /
-            (kappa ^ 2 + ccmPublishedPhysicalFrequency a n ^ 2)) := by
+            (kappa ^ (2 : ℕ) + ccmPublishedPhysicalFrequency a n ^ (2 : ℕ))) := by
   rw [ccmPublishedEvenShiftSievedSourceCoefficient_physical_closed ha hkappa n]
   constructor
   · intro hneg

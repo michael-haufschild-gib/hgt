@@ -22,7 +22,7 @@ theorem tensorPair_pullback (A : SL(2,ℤ)) (z : UpperHalfPlane) (M : Matrix (Fi
     tensorPair M (modularSpacetimeDifferential A z u) (modularSpacetimeDifferential A z v) =
       tensorPair (modularTensorPullback A z M) u v := by
   simp only [modularSpacetimeDifferential_apply,modularTensorPullback,modularJacobian]
-  generalize 1/(denom A z)^2 = c
+  generalize 1/(denom A z)^(2 : ℕ) = c
   simp [tensorPair,Matrix.mul_apply,Fin.sum_univ_succ,Complex.mul_re,Complex.mul_im]
   ring
 

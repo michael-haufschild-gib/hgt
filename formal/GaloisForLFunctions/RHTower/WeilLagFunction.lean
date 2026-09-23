@@ -125,9 +125,9 @@ theorem norm_weilLagFunction_le_of_riemannHypothesis (hRH : RiemannHypothesis) (
       conv_lhs => rw [← Complex.re_add_im (q.1 : ℂ)]
       rw [xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q]
       push_cast; ring
-    have hprod : (q.1 : ℂ) * (1 - (q.1 : ℂ)) = ((1 / 4 + γ ^ 2 : ℝ) : ℂ) := by
+    have hprod : (q.1 : ℂ) * (1 - (q.1 : ℂ)) = ((1 / 4 + γ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hq]; push_cast
-      linear_combination (-(γ : ℂ) ^ 2) * Complex.I_mul_I
+      linear_combination (-(γ : ℂ) ^ (2 : ℕ)) * Complex.I_mul_I
     rw [hprod, ← Complex.ofReal_one, ← Complex.ofReal_div, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (by positivity)]
   have hsum : Summable (fun q : XiZeroCopy =>

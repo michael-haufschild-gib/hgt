@@ -59,7 +59,7 @@ theorem ccmHardy_pinched_projectorDephasing_eq_zero
   exact HTGeometry.projectorDephasingGenerator_pinching_eq_zero (k := ℂ)
     ccmHardyProjection X ccmHardyProjection_idempotent
 
-theorem l2Reflection_sq_eq_one : l2Reflection ^ 2 = 1 := by
+theorem l2Reflection_sq_eq_one : l2Reflection ^ (2 : ℕ) = 1 := by
   change l2Reflection * l2Reflection = 1
   apply ContinuousLinearMap.ext
   intro f

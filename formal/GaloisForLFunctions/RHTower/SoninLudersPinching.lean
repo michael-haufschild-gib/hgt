@@ -379,7 +379,7 @@ theorem re_inner_centralSoninDilation_ludersPinchingKadisonDefect_eq_transitionN
     let D := dilationSum p hp
     Complex.re (inner ℂ psi
       ((ludersPinching Q (D * D) - ludersPinching Q D * ludersPinching Q D) psi)) =
-        ‖crossBoundary Q D psi‖ ^ 2 + ‖upperBoundary Q D psi‖ ^ 2 := by
+        ‖crossBoundary Q D psi‖ ^ (2 : ℕ) + ‖upperBoundary Q D psi‖ ^ (2 : ℕ) := by
   dsimp
   simpa only [ludersPinching_eq_twoOutcomePinching, crossBoundary, upperBoundary,
     HTGeometry.twoOutcomeLowerTransition, HTGeometry.twoOutcomeUpperTransition,
@@ -431,9 +431,9 @@ theorem norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
     (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
     (heAdj : ContinuousLinearMap.adjoint e = e)
     (hXAdj : ContinuousLinearMap.adjoint X = X) (ψ : H) :
-    ‖(X - ludersPinching e X) ψ‖ ^ 2 = ‖ccmCommutator X e ψ‖ ^ 2 := by
+    ‖(X - ludersPinching e X) ψ‖ ^ (2 : ℕ) = ‖ccmCommutator X e ψ‖ ^ (2 : ℕ) := by
   calc
-    ‖(X - ludersPinching e X) ψ‖ ^ 2 =
+    ‖(X - ludersPinching e X) ψ‖ ^ (2 : ℕ) =
         Complex.re (inner ℂ ψ
           (HTGeometry.quantumMasterConstraint (X - ludersPinching e X) ψ)) :=
       (HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
@@ -442,7 +442,7 @@ theorem norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
           (HTGeometry.quantumMasterConstraint (ccmCommutator X e) ψ)) := by
       rw [quantumMasterConstraint_ludersDisturbance_eq_cutoffCommutator
         e X he heAdj hXAdj]
-    _ = ‖ccmCommutator X e ψ‖ ^ 2 :=
+    _ = ‖ccmCommutator X e ψ‖ ^ (2 : ℕ) :=
       HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
         (ccmCommutator X e) ψ
 
@@ -513,7 +513,7 @@ theorem soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition
       (isSelfAdjoint_starProjection B).star_eq
       (isSelfAdjoint_starProjection A).star_eq).symm
 
-/-- Statewise prolate value law: the expectation of `T-T^2` is the squared norm of the
+/-- Statewise prolate value law: the expectation of `T-T^(2 : ℕ)` is the squared norm of the
 time-frequency transition corner. -/
 theorem re_inner_soninAlternatingBlock_sub_sq_eq_norm_transition
     (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection]
@@ -521,7 +521,7 @@ theorem re_inner_soninAlternatingBlock_sub_sq_eq_norm_transition
     Complex.re (inner ℂ ψ
       ((soninAlternatingBlock A B -
         soninAlternatingBlock A B * soninAlternatingBlock A B) ψ)) =
-      ‖crossBoundary B.starProjection A.starProjection ψ‖ ^ 2 := by
+      ‖crossBoundary B.starProjection A.starProjection ψ‖ ^ (2 : ℕ) := by
   rw [soninAlternatingBlock_sub_sq_eq_quantumMasterConstraint_transition]
   exact HTGeometry.re_inner_quantumMasterConstraint_eq_normSq
     (crossBoundary B.starProjection A.starProjection) ψ
@@ -846,9 +846,9 @@ theorem norm_archimedeanPrimeEuler_ludersDisturbance_apply_sq_eq_commutator
     (a p : ℝ) (ψ : ArchimedeanWeightedL2) :
     ‖(archimedeanPrimeEulerGram p -
         ludersPinching (archimedeanBoundaryCarrierProjection a)
-          (archimedeanPrimeEulerGram p)) ψ‖ ^ 2 =
+          (archimedeanPrimeEulerGram p)) ψ‖ ^ (2 : ℕ) =
       ‖ccmCommutator (archimedeanPrimeEulerGram p)
-          (archimedeanBoundaryCarrierProjection a) ψ‖ ^ 2 := by
+          (archimedeanBoundaryCarrierProjection a) ψ‖ ^ (2 : ℕ) := by
   exact norm_ludersDisturbance_apply_sq_eq_norm_cutoffCommutator_apply_sq
     (archimedeanBoundaryCarrierProjection a) (archimedeanPrimeEulerGram p)
     (isIdempotentElem_archimedeanBoundaryCarrierProjection a)

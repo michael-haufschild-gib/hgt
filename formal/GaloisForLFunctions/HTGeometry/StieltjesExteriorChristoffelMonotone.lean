@@ -27,7 +27,7 @@ variable {s : ℕ → ℝ} {a : ℝ}
 /-- **Stieltjes shift positivity at `a`.**  The moment functional is nonnegative on `(X - a) p²`.
 For a representing measure this is exactly support in `[a, ∞)`. -/
 def ShiftedPositiveAt (s : ℕ → ℝ) (a : ℝ) : Prop :=
-  ∀ p : Polynomial ℝ, 0 ≤ momentFunctional s ((X - C a) * p ^ 2)
+  ∀ p : Polynomial ℝ, 0 ≤ momentFunctional s ((X - C a) * p ^ (2 : ℕ))
 
 /-- A representing measure supported in `[a, ∞)` gives shift positivity at `a`. -/
 theorem shiftedPositiveAt_of_measure {μ : Measure ℝ} (s : ℕ → ℝ) (a : ℝ)
@@ -36,10 +36,10 @@ theorem shiftedPositiveAt_of_measure {μ : Measure ℝ} (s : ℕ → ℝ) (a : �
     (hμ : ∀ᵐ x ∂μ, a ≤ x) : ShiftedPositiveAt s a := by
   intro p
   rw [momentFunctional_eq_integral s hs hint]
-  have hcongr : ∫ x, Polynomial.eval x ((X - C a) * p ^ 2) ∂μ
-      = ∫ x, (x - a) * (Polynomial.eval x p) ^ 2 ∂μ := by
+  have hcongr : ∫ x, Polynomial.eval x ((X - C a) * p ^ (2 : ℕ)) ∂μ
+      = ∫ x, (x - a) * (Polynomial.eval x p) ^ (2 : ℕ) ∂μ := by
     refine integral_congr_ae (ae_of_all μ (fun x => ?_))
-    show Polynomial.eval x ((X - C a) * p ^ 2) = (x - a) * (Polynomial.eval x p) ^ 2
+    show Polynomial.eval x ((X - C a) * p ^ (2 : ℕ)) = (x - a) * (Polynomial.eval x p) ^ (2 : ℕ)
     rw [eval_mul, eval_sub, eval_X, eval_C, eval_pow]
   rw [hcongr]
   exact integral_nonneg_of_ae (hμ.mono (fun x hx => mul_nonneg (by linarith) (sq_nonneg _)))
@@ -65,14 +65,14 @@ theorem monicOrtho_root_ge (h : PositiveMomentForm s) (hst : ShiftedPositiveAt s
     exact_mod_cast (by omega : g.natDegree < n + 1)
   have hzero : momentInner s (monicOrtho s (n + 1)) g = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl g hgdeg
-  have hkey : (X - C r) * g * g = (X - C a) * g ^ 2 + (a - r) • g ^ 2 := by
+  have hkey : (X - C r) * g * g = (X - C a) * g ^ (2 : ℕ) + (a - r) • g ^ (2 : ℕ) := by
     rw [Polynomial.smul_eq_C_mul, map_sub]
     ring
   have hexp : momentInner s (monicOrtho s (n + 1)) g
-      = momentFunctional s ((X - C a) * g ^ 2) + (a - r) * momentFunctional s (g ^ 2) := by
+      = momentFunctional s ((X - C a) * g ^ (2 : ℕ)) + (a - r) * momentFunctional s (g ^ (2 : ℕ)) := by
     rw [hg, momentInner_def, hkey, momentFunctional_add, momentFunctional_smul]
-  have hA : 0 ≤ momentFunctional s ((X - C a) * g ^ 2) := hst g
-  have hB : 0 < momentFunctional s (g ^ 2) := by
+  have hA : 0 ≤ momentFunctional s ((X - C a) * g ^ (2 : ℕ)) := hst g
+  have hB : 0 < momentFunctional s (g ^ (2 : ℕ)) := by
     have := h.pos_of_ne_zero g hgne
     rwa [momentInner_self] at this
   rw [hexp] at hzero
@@ -83,7 +83,7 @@ strictly decreasing: every node lies at distance at least `a - x` from `x`, and 
 shortens every factor. -/
 theorem monicOrtho_eval_sq_lt (h : PositiveMomentForm s) (hst : ShiftedPositiveAt s a) (n : ℕ)
     {x y : ℝ} (hxy : x < y) (hya : y < a) :
-    (monicOrtho s (n + 1)).eval y ^ 2 < (monicOrtho s (n + 1)).eval x ^ 2 := by
+    (monicOrtho s (n + 1)).eval y ^ (2 : ℕ) < (monicOrtho s (n + 1)).eval x ^ (2 : ℕ) := by
   classical
   have hnode : ∀ t ∈ gaussNodes s n, a ≤ t := by
     intro t ht
@@ -103,7 +103,7 @@ theorem monicOrtho_eval_sq_lt (h : PositiveMomentForm s) (hst : ShiftedPositiveA
 /-- Every level of the kernel sum is nonincreasing outside the shift point. -/
 theorem monicOrtho_eval_sq_le (h : PositiveMomentForm s) (hst : ShiftedPositiveAt s a) (k : ℕ)
     {x y : ℝ} (hxy : x < y) (hya : y < a) :
-    (monicOrtho s k).eval y ^ 2 ≤ (monicOrtho s k).eval x ^ 2 := by
+    (monicOrtho s k).eval y ^ (2 : ℕ) ≤ (monicOrtho s k).eval x ^ (2 : ℕ) := by
   cases k with
   | zero => simp
   | succ m => exact (monicOrtho_eval_sq_lt h hst m hxy hya).le

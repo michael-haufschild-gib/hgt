@@ -29,7 +29,7 @@ def thetaCuspReflectedActionVelocitySlopeCurrentFixedActionCenterNumerator
   let s := thetaCuspReflectedLogCenterJetOne u t
   let m := thetaCuspReflectedLogCenterMixedJetOne u t
   let n := thetaCuspReflectedLogCenterMixedJetThree u t
-  a * (t * m + t ^ 2 * n) - (a + 3 * t * b + t ^ 2 * c) * s
+  a * (t * m + t ^ (2 : ℕ) * n) - (a + 3 * t * b + t ^ (2 : ℕ) * c) * s
 
 /-- Exact compensation law for direct fixed-action C5 transport.  The direct Jacobian is the
 velocity--slope current transport minus a strictly weighted velocity transport, after clearing

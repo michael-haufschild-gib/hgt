@@ -23,8 +23,8 @@ noncomputable section
 /-! ## Reciprocal quadratic orbit -/
 
 /-- The quadratic family in the reciprocal coordinate: if `t = 1 / z`, then
-`1 / (z^2 + c) = reciprocalQuadratic c t`. -/
-def reciprocalQuadratic (c t : ℂ) : ℂ := t ^ 2 / (1 + c * t ^ 2)
+`1 / (z^(2 : ℕ) + c) = reciprocalQuadratic c t`. -/
+def reciprocalQuadratic (c t : ℂ) : ℂ := t ^ (2 : ℕ) / (1 + c * t ^ (2 : ℕ))
 
 /-- The reciprocal orbit, kept as an explicit recursion so that parameter
 derivatives at `c = 0` are transparent. -/
@@ -36,8 +36,8 @@ def reciprocalOrbit (c t : ℂ) : ℕ → ℂ
 
 @[simp] theorem reciprocalOrbit_succ (c t : ℂ) (k : ℕ) :
     reciprocalOrbit c t (k + 1) =
-      (reciprocalOrbit c t k) ^ 2 /
-        (1 + c * (reciprocalOrbit c t k) ^ 2) := rfl
+      (reciprocalOrbit c t k) ^ (2 : ℕ) /
+        (1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)) := rfl
 
 /-- At the monomial fibre the reciprocal orbit is literal dyadic powering. -/
 theorem reciprocalOrbit_zero_parameter (t : ℂ) (k : ℕ) :
@@ -72,8 +72,8 @@ theorem analyticAt_reciprocalOrbit_parameter_zero (t : ℂ) (k : ℕ) :
   | zero => simpa [reciprocalOrbit] using (analyticAt_const : AnalyticAt ℂ (fun _ : ℂ => t) 0)
   | succ k ih =>
     rw [show (fun c => reciprocalOrbit c t (k + 1)) =
-      fun c => (reciprocalOrbit c t k) ^ 2 /
-        (1 + c * (reciprocalOrbit c t k) ^ 2) from rfl]
+      fun c => (reciprocalOrbit c t k) ^ (2 : ℕ) /
+        (1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)) from rfl]
     apply (ih.pow 2).div (analyticAt_const.add (analyticAt_id.mul (ih.pow 2)))
     simp [reciprocalOrbit_zero_parameter]
 
@@ -87,21 +87,21 @@ theorem deriv_reciprocalOrbit_parameter_zero (t : ℂ) (k : ℕ) :
     have huan : AnalyticAt ℂ u 0 := analyticAt_reciprocalOrbit_parameter_zero t k
     have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
       simpa [u, ih] using huan.differentiableAt.hasDerivAt
-    have hnum : HasDerivAt (fun c => (u c) ^ 2)
+    have hnum : HasDerivAt (fun c => (u c) ^ (2 : ℕ))
         (2 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k) 0 := by
       convert! hu.pow 2 using 1 ; simp [u, reciprocalOrbit_zero_parameter]
-    have hden : HasDerivAt (fun c => 1 + c * (u c) ^ 2)
+    have hden : HasDerivAt (fun c => 1 + c * (u c) ^ (2 : ℕ))
         (t ^ (2 ^ (k + 1))) 0 := by
       have hprod := (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2)
       convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hprod using 1 ;
         simp [u, reciprocalOrbit_zero_parameter] ;
         try { rw [← pow_mul]; congr 1  }
     have hquot := hnum.div hden (by simp [u, reciprocalOrbit_zero_parameter] :
-      1 + (0 : ℂ) * (u 0) ^ 2 ≠ 0)
+      1 + (0 : ℂ) * (u 0) ^ (2 : ℕ) ≠ 0)
     rw [show (fun c => reciprocalOrbit c t (k + 1)) =
-      fun c => (u c) ^ 2 / (1 + c * (u c) ^ 2) from rfl]
+      fun c => (u c) ^ (2 : ℕ) / (1 + c * (u c) ^ (2 : ℕ)) from rfl]
     have hdq := hquot.deriv
-    change deriv ((fun c => u c ^ 2) / (fun c => 1 + c * u c ^ 2)) 0 = _
+    change deriv ((fun c => u c ^ (2 : ℕ)) / (fun c => 1 + c * u c ^ (2 : ℕ))) 0 = _
     rw [hdq]
     simp only [u, reciprocalOrbit_zero_parameter, reciprocalOrbitFirstJet_succ]
     ring
@@ -111,14 +111,14 @@ theorem deriv_reciprocalOrbit_parameter_zero (t : ℂ) (k : ℕ) :
 /-- The `k`-th reciprocal-coordinate term of the normalized Böttcher logarithm. -/
 def reciprocalBottcherLogTerm (c t : ℂ) (k : ℕ) : ℂ :=
   (2 ^ (k + 1) : ℂ)⁻¹ *
-    Complex.log (1 + c * (reciprocalOrbit c t k) ^ 2)
+    Complex.log (1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ))
 
 /-- Every reciprocal logarithm term is analytic in the parameter at `c = 0`. -/
 theorem analyticAt_reciprocalBottcherLogTerm_parameter_zero (t : ℂ) (k : ℕ) :
     AnalyticAt ℂ (fun c => reciprocalBottcherLogTerm c t k) 0 := by
   have hu := analyticAt_reciprocalOrbit_parameter_zero t k
   have harg : AnalyticAt ℂ
-      (fun c => 1 + c * (reciprocalOrbit c t k) ^ 2) 0 :=
+      (fun c => 1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)) 0 :=
     analyticAt_const.add (analyticAt_id.mul (hu.pow 2))
   unfold reciprocalBottcherLogTerm
   exact analyticAt_const.mul (harg.clog (by simp [Complex.mem_slitPlane_iff]))
@@ -131,11 +131,11 @@ theorem deriv_reciprocalBottcherLogTerm_parameter_zero (t : ℂ) (k : ℕ) :
   have huan : AnalyticAt ℂ u 0 := analyticAt_reciprocalOrbit_parameter_zero t k
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
-  have hw : HasDerivAt (fun c => c * (u c) ^ 2) (t ^ (2 ^ (k + 1))) 0 := by
+  have hw : HasDerivAt (fun c => c * (u c) ^ (2 : ℕ)) (t ^ (2 ^ (k + 1))) 0 := by
     convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 ;
       simp [u, reciprocalOrbit_zero_parameter] ;
       try { rw [← pow_mul]; congr 1  }
-  have hlog : HasDerivAt (fun c => Complex.log (1 + c * (u c) ^ 2))
+  have hlog : HasDerivAt (fun c => Complex.log (1 + c * (u c) ^ (2 : ℕ)))
       (t ^ (2 ^ (k + 1))) 0 := by
     convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hw |>.clog using 1 ; simp
   unfold reciprocalBottcherLogTerm
@@ -150,9 +150,9 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
       (2 ^ (k + 1) : ℂ)⁻¹ *
         (4 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k - t ^ (2 ^ (k + 2))) := by
   let u : ℂ → ℂ := fun c => reciprocalOrbit c t k
-  let w : ℂ → ℂ := fun c => c * (u c) ^ 2
+  let w : ℂ → ℂ := fun c => c * (u c) ^ (2 : ℕ)
   let wd : ℂ → ℂ := fun c =>
-    (u c) ^ 2 + c * (2 * u c * deriv u c)
+    (u c) ^ (2 : ℕ) + c * (2 * u c * deriv u c)
   have huan : AnalyticAt ℂ u 0 := analyticAt_reciprocalOrbit_parameter_zero t k
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
@@ -190,13 +190,13 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
       (fun c => (2 ^ (k + 1) : ℂ)⁻¹ * (wd c / (1 + w c)))
       ((2 ^ (k + 1) : ℂ)⁻¹ *
         ((4 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k * (1 + w 0) -
-          wd 0 * t ^ (2 ^ (k + 1))) / (1 + w 0) ^ 2)) 0 := by
+          wd 0 * t ^ (2 ^ (k + 1))) / (1 + w 0) ^ (2 : ℕ))) 0 := by
     simpa only [Pi.div_apply, Pi.add_apply, Pi.one_apply, zero_add] using hfinal
-  have hu0sq : (u 0) ^ 2 = t ^ (2 ^ (k + 1)) := by
+  have hu0sq : (u 0) ^ (2 : ℕ) = t ^ (2 ^ (k + 1)) := by
     simp only [u, reciprocalOrbit_zero_parameter]
     rw [← pow_mul]
     congr 1
-  have hpow : (t ^ (2 ^ (k + 1))) ^ 2 = t ^ (2 ^ (k + 2)) := by
+  have hpow : (t ^ (2 ^ (k + 1))) ^ (2 : ℕ) = t ^ (2 ^ (k + 2)) := by
     rw [← pow_mul]
     congr 1
   rw [show iteratedDeriv 2 (fun c => reciprocalBottcherLogTerm c t k) 0 =
@@ -221,13 +221,13 @@ theorem mem_bottcherParameterDisk_iff {c : ℂ} :
 theorem norm_parameter_mul_reciprocalOrbit_sq_le_quarter {c t : ℂ}
     (hc : ‖c‖ < 1) (_ht : ‖t‖ ≤ 1 / 2) (k : ℕ)
     (horbit : ‖reciprocalOrbit c t k‖ ≤ 1 / 2) :
-    ‖c * (reciprocalOrbit c t k) ^ 2‖ ≤ 1 / 4 := by
+    ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ ≤ 1 / 4 := by
   rw [norm_mul, norm_pow]
   calc
-    ‖c‖ * ‖reciprocalOrbit c t k‖ ^ 2
-        ≤ 1 * ‖reciprocalOrbit c t k‖ ^ 2 := by
+    ‖c‖ * ‖reciprocalOrbit c t k‖ ^ (2 : ℕ)
+        ≤ 1 * ‖reciprocalOrbit c t k‖ ^ (2 : ℕ) := by
           exact mul_le_mul_of_nonneg_right (le_of_lt hc) (sq_nonneg _)
-    _ ≤ 1 * (1 / 2 : ℝ) ^ 2 := by
+    _ ≤ 1 * (1 / 2 : ℝ) ^ (2 : ℕ) := by
       gcongr
     _ = 1 / 4 := by norm_num
 
@@ -242,18 +242,18 @@ theorem norm_reciprocalOrbit_le_half {c t : ℂ}
     let u := reciprocalOrbit c t k
     have hu0 : 0 ≤ ‖u‖ := norm_nonneg _
     have hu : ‖u‖ ≤ 1 / 2 := ih
-    have hw : ‖c * u ^ 2‖ ≤ 1 / 4 := by
+    have hw : ‖c * u ^ (2 : ℕ)‖ ≤ 1 / 4 := by
       simpa [u] using norm_parameter_mul_reciprocalOrbit_sq_le_quarter hc ht k ih
-    have hlow : 1 - ‖c * u ^ 2‖ ≤ ‖1 + c * u ^ 2‖ := by
-      have htri : ‖(1 : ℂ)‖ ≤ ‖1 + c * u ^ 2‖ + ‖c * u ^ 2‖ := by
+    have hlow : 1 - ‖c * u ^ (2 : ℕ)‖ ≤ ‖1 + c * u ^ (2 : ℕ)‖ := by
+      have htri : ‖(1 : ℂ)‖ ≤ ‖1 + c * u ^ (2 : ℕ)‖ + ‖c * u ^ (2 : ℕ)‖ := by
         calc
-          ‖(1 : ℂ)‖ = ‖(1 + c * u ^ 2) + -(c * u ^ 2)‖ := by ring_nf
-          _ ≤ ‖1 + c * u ^ 2‖ + ‖-(c * u ^ 2)‖ := norm_add_le _ _
-          _ = ‖1 + c * u ^ 2‖ + ‖c * u ^ 2‖ := by rw [norm_neg]
+          ‖(1 : ℂ)‖ = ‖(1 + c * u ^ (2 : ℕ)) + -(c * u ^ (2 : ℕ))‖ := by ring_nf
+          _ ≤ ‖1 + c * u ^ (2 : ℕ)‖ + ‖-(c * u ^ (2 : ℕ))‖ := norm_add_le _ _
+          _ = ‖1 + c * u ^ (2 : ℕ)‖ + ‖c * u ^ (2 : ℕ)‖ := by rw [norm_neg]
       rw [norm_one] at htri
       linarith
-    have hden : 3 / 4 ≤ ‖1 + c * u ^ 2‖ := le_trans (by linarith) hlow
-    have hden0 : 0 < ‖1 + c * u ^ 2‖ := by linarith
+    have hden : 3 / 4 ≤ ‖1 + c * u ^ (2 : ℕ)‖ := le_trans (by linarith) hlow
+    have hden0 : 0 < ‖1 + c * u ^ (2 : ℕ)‖ := by linarith
     rw [reciprocalOrbit_succ, norm_div, norm_pow]
     apply (div_le_iff₀ hden0).2
     nlinarith [sq_nonneg (‖u‖ - 1 / 2)]
@@ -268,39 +268,39 @@ theorem analyticAt_reciprocalOrbit_parameter {c t : ℂ}
       (analyticAt_const : AnalyticAt ℂ (fun _ : ℂ => t) c)
   | succ k ih =>
     have hu := norm_reciprocalOrbit_le_half hc ht k
-    have hwq : ‖c * (reciprocalOrbit c t k) ^ 2‖ ≤ 1 / 4 :=
+    have hwq : ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ ≤ 1 / 4 :=
       norm_parameter_mul_reciprocalOrbit_sq_le_quarter hc ht k hu
-    have hw : ‖c * (reciprocalOrbit c t k) ^ 2‖ < 1 := lt_of_le_of_lt hwq (by norm_num)
-    have hden : 1 + c * (reciprocalOrbit c t k) ^ 2 ≠ 0 := by
+    have hw : ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ < 1 := lt_of_le_of_lt hwq (by norm_num)
+    have hden : 1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ) ≠ 0 := by
       intro h0
       have hnorm := congrArg norm h0
       rw [norm_zero] at hnorm
-      have htri : (1 : ℝ) ≤ ‖1 + c * (reciprocalOrbit c t k) ^ 2‖ +
-          ‖c * (reciprocalOrbit c t k) ^ 2‖ := by
+      have htri : (1 : ℝ) ≤ ‖1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ +
+          ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ := by
         calc
           (1 : ℝ) = ‖(1 : ℂ)‖ := by simp
-          _ = ‖(1 + c * (reciprocalOrbit c t k) ^ 2) -
-              c * (reciprocalOrbit c t k) ^ 2‖ := by congr 1 ; ring
-          _ ≤ ‖1 + c * (reciprocalOrbit c t k) ^ 2‖ +
-              ‖c * (reciprocalOrbit c t k) ^ 2‖ := norm_sub_le _ _
+          _ = ‖(1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)) -
+              c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ := by congr 1 ; ring
+          _ ≤ ‖1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ +
+              ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ := norm_sub_le _ _
       rw [hnorm] at htri
       linarith
     rw [show (fun d => reciprocalOrbit d t (k + 1)) =
-      fun d => (reciprocalOrbit d t k) ^ 2 /
-        (1 + d * (reciprocalOrbit d t k) ^ 2) from rfl]
+      fun d => (reciprocalOrbit d t k) ^ (2 : ℕ) /
+        (1 + d * (reciprocalOrbit d t k) ^ (2 : ℕ)) from rfl]
     exact (ih.pow 2).div (analyticAt_const.add (analyticAt_id.mul (ih.pow 2))) hden
 
 /-- The logarithm argument stays in the principal slit plane on the fixed
 parameter/reciprocal bidisk. -/
 theorem reciprocalBottcherLog_argument_mem_slitPlane {c t : ℂ}
     (hc : ‖c‖ < 1) (ht : ‖t‖ ≤ 1 / 2) (k : ℕ) :
-    1 + c * (reciprocalOrbit c t k) ^ 2 ∈ Complex.slitPlane := by
+    1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ) ∈ Complex.slitPlane := by
   have hu := norm_reciprocalOrbit_le_half hc ht k
-  have hw : ‖c * (reciprocalOrbit c t k) ^ 2‖ ≤ 1 / 4 :=
+  have hw : ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ ≤ 1 / 4 :=
     norm_parameter_mul_reciprocalOrbit_sq_le_quarter hc ht k hu
   rw [Complex.mem_slitPlane_iff]
   left
-  have hre := abs_re_le_norm (c * (reciprocalOrbit c t k) ^ 2)
+  have hre := abs_re_le_norm (c * (reciprocalOrbit c t k) ^ (2 : ℕ))
   rw [abs_le] at hre
   simp only [Complex.add_re, Complex.one_re]
   linarith [hre.1]
@@ -312,7 +312,7 @@ theorem analyticAt_reciprocalBottcherLogTerm_parameter {c t : ℂ}
     AnalyticAt ℂ (fun d => reciprocalBottcherLogTerm d t k) c := by
   have hu := analyticAt_reciprocalOrbit_parameter hc ht k
   have harg : AnalyticAt ℂ
-      (fun d => 1 + d * (reciprocalOrbit d t k) ^ 2) c :=
+      (fun d => 1 + d * (reciprocalOrbit d t k) ^ (2 : ℕ)) c :=
     analyticAt_const.add (analyticAt_id.mul (hu.pow 2))
   unfold reciprocalBottcherLogTerm
   exact analyticAt_const.mul
@@ -323,16 +323,16 @@ theorem norm_reciprocalBottcherLogTerm_le {c t : ℂ}
     (hc : ‖c‖ < 1) (ht : ‖t‖ ≤ 1 / 2) (k : ℕ) :
     ‖reciprocalBottcherLogTerm c t k‖ ≤ (1 / 2 : ℝ) ^ (k + 1) := by
   have hu := norm_reciprocalOrbit_le_half hc ht k
-  have hw : ‖c * (reciprocalOrbit c t k) ^ 2‖ ≤ 1 / 2 := by
+  have hw : ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖ ≤ 1 / 2 := by
     exact (norm_parameter_mul_reciprocalOrbit_sq_le_quarter hc ht k hu).trans (by norm_num)
   have hlog := Bottcher.norm_clog_one_add_le hw
   unfold reciprocalBottcherLogTerm
   rw [norm_mul, norm_inv, norm_pow, Complex.norm_ofNat]
   calc
     ((2 : ℝ) ^ (k + 1))⁻¹ *
-        ‖Complex.log (1 + c * (reciprocalOrbit c t k) ^ 2)‖
+        ‖Complex.log (1 + c * (reciprocalOrbit c t k) ^ (2 : ℕ))‖
         ≤ ((2 : ℝ) ^ (k + 1))⁻¹ *
-          (2 * ‖c * (reciprocalOrbit c t k) ^ 2‖) := by gcongr
+          (2 * ‖c * (reciprocalOrbit c t k) ^ (2 : ℕ)‖) := by gcongr
     _ ≤ ((2 : ℝ) ^ (k + 1))⁻¹ := by
       have hpow : 0 ≤ ((2 : ℝ) ^ (k + 1))⁻¹ := by positivity
       nlinarith
@@ -464,11 +464,11 @@ theorem reciprocalOrbit_eq_inv_quadratic_iterate {c t : ℂ}
   | succ k ih =>
     let z := (Bottcher.quadratic c)^[k] t⁻¹
     have hz0 : z ≠ 0 := (Bottcher.escape_regime_stable hcz hz k).2
-    have hnext0 : z ^ 2 + c ≠ 0 := by
+    have hnext0 : z ^ (2 : ℕ) + c ≠ 0 := by
       simpa [z, Function.iterate_succ_apply', Bottcher.quadratic_apply] using
         (Bottcher.escape_regime_stable hcz hz (k + 1)).2
     rw [reciprocalOrbit_succ, ih, Function.iterate_succ_apply', Bottcher.quadratic_apply]
-    change z⁻¹ ^ 2 / (1 + c * z⁻¹ ^ 2) = (z ^ 2 + c)⁻¹
+    change z⁻¹ ^ (2 : ℕ) / (1 + c * z⁻¹ ^ (2 : ℕ)) = (z ^ (2 : ℕ) + c)⁻¹
     field_simp
 
 theorem reciprocalBottcherLogTerm_eq_bottcherLogTerm {c t : ℂ}
@@ -1151,7 +1151,7 @@ theorem dyadicSubst_bottcherSecondLogVelocitySeriesTerm (k : ℕ) :
       2⁻¹ ^ k * (1 / 4 : ℂ) * 2 ^ k * 8 =
           (2⁻¹ ^ k * 2 ^ k) * ((1 / 4 : ℂ) * 8) := by ring
       _ = 2 := by rw [← mul_pow]; norm_num
-  linear_combination X ^ 2 * X ^ (2 ^ k * 4) * hscalar
+  linear_combination X ^ (2 : ℕ) * X ^ (2 ^ k * 4) * hscalar
 
 /-- Coefficientwise sum of the formal Taylor series of all analytic
 second-velocity summands. -/
@@ -1194,7 +1194,7 @@ open scoped Classical in
 /-- Exact coefficient formula for the Euler forcing in the triangular
 second-velocity equation. -/
 theorem coeff_X_sq_thetaSeries_velocityJet (n : ℕ) :
-    (coeff n) (X ^ 2 * thetaSeries velocityJet) =
+    (coeff n) (X ^ (2 : ℕ) * thetaSeries velocityJet) =
       if 2 ≤ n ∧ IsDyadicPow (n - 2) then 1 else 0 := by
   rw [mul_comm, coeff_mul_X_pow', coeff_thetaSeries_velocityJet]
   by_cases h2 : 2 ≤ n
@@ -1208,7 +1208,7 @@ theorem coeff_X_sq_thetaSeries_velocityJet (n : ℕ) :
 `2 X² θA - 2 X⁴`. -/
 theorem tsum_coeff_secondVelocity_sparse_forcing (n : ℕ) :
     ∑' k : ℕ, (coeff n) (2 * X ^ (2 ^ (k + 2) + 2) : PowerSeries ℂ) =
-      (coeff n) (2 * (X ^ 2 * thetaSeries velocityJet) - 2 * X ^ 4) := by
+      (coeff n) (2 * (X ^ (2 : ℕ) * thetaSeries velocityJet) - 2 * X ^ (4 : ℕ)) := by
   classical
   by_cases hex : ∃ k : ℕ, n = 2 ^ (k + 2) + 2
   · obtain ⟨k, rfl⟩ := hex
@@ -1223,8 +1223,8 @@ theorem tsum_coeff_secondVelocity_sparse_forcing (n : ℕ) :
       have hexp := (Nat.pow_right_injective (by omega : 2 ≤ 2)) hp
       omega
     rw [tsum_eq_single k hunique, coeff_two_mul_X_pow, if_pos rfl]
-    rw [map_sub, two_mul (X ^ 2 * thetaSeries velocityJet),
-      two_mul (X ^ 4 : PowerSeries ℂ), map_add, map_add,
+    rw [map_sub, two_mul (X ^ (2 : ℕ) * thetaSeries velocityJet),
+      two_mul (X ^ (4 : ℕ) : PowerSeries ℂ), map_add, map_add,
       coeff_X_sq_thetaSeries_velocityJet, coeff_X_pow]
     have hdy : IsDyadicPow ((2 ^ (k + 2) + 2) - 2) := by
       refine ⟨k + 1, ?_⟩
@@ -1246,8 +1246,8 @@ theorem tsum_coeff_secondVelocity_sparse_forcing (n : ℕ) :
       rw [coeff_two_mul_X_pow, if_neg]
       exact fun h => hex ⟨k, h⟩
     rw [hzero, tsum_zero]
-    rw [map_sub, two_mul (X ^ 2 * thetaSeries velocityJet),
-      two_mul (X ^ 4 : PowerSeries ℂ), map_add, map_add,
+    rw [map_sub, two_mul (X ^ (2 : ℕ) * thetaSeries velocityJet),
+      two_mul (X ^ (4 : ℕ) : PowerSeries ℂ), map_add, map_add,
       coeff_X_sq_thetaSeries_velocityJet, coeff_X_pow]
     by_cases hn4 : n = 4
     · subst n
@@ -1310,7 +1310,7 @@ theorem coeff_dyadicSubst_bottcherSecondLogVelocityTaylor (n : ℕ) :
 
 theorem bottcherSecondLogVelocitySeriesTerm_zero :
     bottcherSecondLogVelocitySeriesTerm 0 =
-      PowerSeries.C (-(1 / 2 : ℂ)) * X ^ 4 := by
+      PowerSeries.C (-(1 / 2 : ℂ)) * X ^ (4 : ℕ) := by
   simp [bottcherSecondLogVelocitySeriesTerm, reciprocalOrbitFirstJetSeries]
 
 /-- The analytic second-velocity Taylor series satisfies the same triangular
@@ -1318,7 +1318,7 @@ Mahler equation as the canonical formal `secondJet`. -/
 theorem dyadicSubst_bottcherSecondLogVelocityTaylor :
     dyadicSubst bottcherSecondLogVelocityTaylor =
       2 * bottcherSecondLogVelocityTaylor +
-        2 * (X ^ 2 * thetaSeries velocityJet) - X ^ 4 := by
+        2 * (X ^ (2 : ℕ) * thetaSeries velocityJet) - X ^ (4 : ℕ) := by
   ext n
   rw [coeff_dyadicSubst_bottcherSecondLogVelocityTaylor]
   have ha := summable_coeff_bottcherSecondLogVelocitySeriesTerm n
@@ -1351,11 +1351,11 @@ theorem dyadicSubst_bottcherSecondLogVelocityTaylor :
   rw [(hatail.mul_left 2).tsum_add he, tsum_mul_left] at hsum
   rw [tsum_coeff_secondVelocity_sparse_forcing n] at hsum
   rw [map_sub,
-    show (coeff n) (2 * (X ^ 2 * thetaSeries velocityJet)) =
-      2 * (coeff n) (X ^ 2 * thetaSeries velocityJet) by
+    show (coeff n) (2 * (X ^ (2 : ℕ) * thetaSeries velocityJet)) =
+      2 * (coeff n) (X ^ (2 : ℕ) * thetaSeries velocityJet) by
         rw [two_mul, map_add, two_mul],
-    show (coeff n) (2 * X ^ 4 : PowerSeries ℂ) =
-      2 * (coeff n) (X ^ 4 : PowerSeries ℂ) by
+    show (coeff n) (2 * X ^ (4 : ℕ) : PowerSeries ℂ) =
+      2 * (coeff n) (X ^ (4 : ℕ) : PowerSeries ℂ) by
         rw [two_mul, map_add, two_mul]] at hsum
   rw [coeff_X_pow] at hsum
   have hshift := ha.sum_add_tsum_nat_add 1
@@ -1365,8 +1365,8 @@ theorem dyadicSubst_bottcherSecondLogVelocityTaylor :
       2 * (coeff n) bottcherSecondLogVelocityTaylor by
         rw [two_mul, map_add, two_mul]]
   rw [coeff_bottcherSecondLogVelocityTaylor]
-  rw [show (coeff n) (2 * (X ^ 2 * thetaSeries velocityJet)) =
-      2 * (coeff n) (X ^ 2 * thetaSeries velocityJet) by
+  rw [show (coeff n) (2 * (X ^ (2 : ℕ) * thetaSeries velocityJet)) =
+      2 * (coeff n) (X ^ (2 : ℕ) * thetaSeries velocityJet) by
         rw [two_mul, map_add, two_mul], coeff_X_pow]
   rw [bottcherSecondLogVelocitySeriesTerm_zero, coeff_C_mul, coeff_X_pow] at hshift
   linear_combination hsum + 2 * hshift
@@ -1377,7 +1377,7 @@ theorem taylorPS_bottcherSecondLogVelocity_eq_secondJet :
     taylorPS bottcherSecondLogVelocity = secondJet := by
   rw [taylorPS_bottcherSecondLogVelocity]
   let rhs : BottcherSpatialSeries :=
-    2 * (X ^ 2 * thetaSeries velocityJet) - X ^ 4
+    2 * (X ^ (2 : ℕ) * thetaSeries velocityJet) - X ^ (4 : ℕ)
   calc
     bottcherSecondLogVelocityTaylor = dyadicEquationSolution rhs :=
       dyadicEquationSolution_unique (by
@@ -1434,7 +1434,7 @@ theorem bottcherFirstNormalizedVelocity_eq {t : ℂ} (ht : ‖t‖ ≤ 1 / 2) :
 
 theorem bottcherSecondNormalizedVelocity_eq {t : ℂ} (ht : ‖t‖ ≤ 1 / 2) :
     bottcherSecondNormalizedVelocity t =
-      bottcherSecondLogVelocity t + bottcherFirstLogVelocity t ^ 2 := by
+      bottcherSecondLogVelocity t + bottcherFirstLogVelocity t ^ (2 : ℕ) := by
   let L : ℂ → ℂ := fun c => reciprocalBottcherLog c t
   let E : ℂ → ℂ := fun c => Complex.exp (L c)
   have hL := analyticAt_reciprocalBottcherLog_parameter_zero ht
@@ -1508,7 +1508,7 @@ theorem bottcherFirstNormalizedVelocity_eventuallyEq :
 
 theorem bottcherSecondNormalizedVelocity_eventuallyEq :
     bottcherSecondNormalizedVelocity =ᶠ[nhds (0 : ℂ)]
-      fun t => bottcherSecondLogVelocity t + bottcherFirstLogVelocity t ^ 2 := by
+      fun t => bottcherSecondLogVelocity t + bottcherFirstLogVelocity t ^ (2 : ℕ) := by
   filter_upwards [Metric.isOpen_ball.mem_nhds (show (0 : ℂ) ∈ Metric.ball 0 (1 / 2) by
     simp)] with t ht
   exact bottcherSecondNormalizedVelocity_eq (le_of_lt (by simpa using ht))
@@ -1520,10 +1520,10 @@ theorem taylorPS_bottcherFirstNormalizedVelocity :
 
 theorem taylorPS_bottcherSecondNormalizedVelocity :
     taylorPS bottcherSecondNormalizedVelocity =
-      secondJet + velocityJet ^ 2 := by
+      secondJet + velocityJet ^ (2 : ℕ) := by
   rw [taylorPS_congr_of_eventuallyEq bottcherSecondNormalizedVelocity_eventuallyEq]
   have hfun : (fun t => bottcherSecondLogVelocity t +
-      bottcherFirstLogVelocity t ^ 2) =
+      bottcherFirstLogVelocity t ^ (2 : ℕ)) =
       bottcherSecondLogVelocity +
         bottcherFirstLogVelocity * bottcherFirstLogVelocity := by
     funext t
@@ -1576,13 +1576,13 @@ def bottcherVelocityTriangularForward :
     BottcherVelocityPolynomial →+* BottcherVelocityPolynomial :=
   MvPolynomial.eval₂Hom
     (MvPolynomial.C : MahlerBase →+* BottcherVelocityPolynomial)
-    ![MvPolynomial.X 0, MvPolynomial.X 1 + MvPolynomial.X 0 ^ 2]
+    ![MvPolynomial.X 0, MvPolynomial.X 1 + MvPolynomial.X 0 ^ (2 : ℕ)]
 
 def bottcherVelocityTriangularInverse :
     BottcherVelocityPolynomial →+* BottcherVelocityPolynomial :=
   MvPolynomial.eval₂Hom
     (MvPolynomial.C : MahlerBase →+* BottcherVelocityPolynomial)
-    ![MvPolynomial.X 0, MvPolynomial.X 1 - MvPolynomial.X 0 ^ 2]
+    ![MvPolynomial.X 0, MvPolynomial.X 1 - MvPolynomial.X 0 ^ (2 : ℕ)]
 
 theorem bottcherVelocityTriangularInverse_comp_forward :
     bottcherVelocityTriangularInverse.comp bottcherVelocityTriangularForward =
@@ -1633,7 +1633,7 @@ theorem bottcherReciprocalBaseCarrier_eq_mahlerT_inv :
 def bottcherActualVelocityCarrierPair : Fin 2 → BottcherVelocityCarrier :=
   ![bottcherReciprocalBaseCarrier * bottcherFirstLogVelocityCarrier,
     bottcherReciprocalBaseCarrier *
-      (bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ 2)]
+      (bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ (2 : ℕ))]
 
 /-- Evaluation of a polynomial over `ℂ(t)` at the actual pair of parameter
 velocities. -/
@@ -1647,7 +1647,7 @@ theorem bottcherVelocityTriangular_eval :
         bottcherSecondLogVelocityCarrier]).comp bottcherVelocityTriangularForward =
       MvPolynomial.eval₂Hom (monoRatEval 1 one_pos)
         ![bottcherFirstLogVelocityCarrier,
-          bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ 2] := by
+          bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ (2 : ℕ)] := by
   apply MvPolynomial.ringHom_ext
   · intro r
     simp [bottcherVelocityTriangularForward]
@@ -1694,7 +1694,7 @@ theorem bottcherVelocityScaleForward_ne_zero
 theorem bottcherVelocityScale_eval :
     (MvPolynomial.eval₂Hom (monoRatEval 1 one_pos)
       ![bottcherFirstLogVelocityCarrier,
-        bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ 2]).comp
+        bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ (2 : ℕ)]).comp
         bottcherVelocityScaleForward = bottcherActualVelocityPolynomialEval := by
   apply MvPolynomial.ringHom_ext
   · intro r
@@ -1733,7 +1733,7 @@ theorem bottcher_actual_velocity_pair_algebraicIndependent
   have hscale :
       (MvPolynomial.eval₂Hom (monoRatEval 1 one_pos)
         ![bottcherFirstLogVelocityCarrier,
-          bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ 2])
+          bottcherSecondLogVelocityCarrier + bottcherFirstLogVelocityCarrier ^ (2 : ℕ)])
           (bottcherVelocityScaleForward P) =
         bottcherActualVelocityPolynomialEval P := by
     simpa only [RingHom.comp_apply] using congrArg

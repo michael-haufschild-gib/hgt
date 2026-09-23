@@ -31,7 +31,7 @@ def routeEMoebiusShellSum
 def routeESquarefreeShellMass
     (S : Finset ℕ) (shell : ℕ → ℕ → Prop) (n : ℕ) : ℝ := by
   classical
-  exact ∑ q ∈ S, if shell n q then ((μ q : ℤ) : ℝ) ^ 2 else 0
+  exact ∑ q ∈ S, if shell n q then ((μ q : ℤ) : ℝ) ^ (2 : ℕ) else 0
 
 /-- Number of shell endpoints whose nonzero Möbius sign is opposite to the source sign. -/
 def routeEOppositeSignShellMass
@@ -42,7 +42,7 @@ def routeEOppositeSignShellMass
 private theorem two_mul_oppositeSignIndicator_eq
     {n q : ℕ} (hn : μ n = 1 ∨ μ n = -1) :
     2 * (if μ q = -(μ n) then (1 : ℝ) else 0) =
-      ((μ q : ℤ) : ℝ) ^ 2 - ((μ n : ℤ) : ℝ) * ((μ q : ℤ) : ℝ) := by
+      ((μ q : ℤ) : ℝ) ^ (2 : ℕ) - ((μ n : ℤ) : ℝ) * ((μ q : ℤ) : ℝ) := by
   rcases RHTower.Sieve.moebius_trichotomy q with hq | hq | hq <;>
     rcases hn with hn | hn <;> simp [hq, hn] <;> norm_num
 
@@ -145,11 +145,11 @@ theorem routeE_two_mul_signCompleteRowMass_eq
 theorem routeE_signCompleteRowMass_deviation_sq_le
     (S : Finset ℕ) (shell : ℕ → ℕ → Prop) {n : ℕ}
     (hn : μ n = 1 ∨ μ n = -1) (Q : ℝ) :
-    (routeESignCompleteRowMass S shell n - Q / 2) ^ 2 ≤
-      (1 / 2 : ℝ) * (routeESquarefreeShellMass S shell n - Q) ^ 2 +
-        (1 / 2 : ℝ) * routeEMoebiusShellSum S shell n ^ 2 := by
+    (routeESignCompleteRowMass S shell n - Q / 2) ^ (2 : ℕ) ≤
+      (1 / 2 : ℝ) * (routeESquarefreeShellMass S shell n - Q) ^ (2 : ℕ) +
+        (1 / 2 : ℝ) * routeEMoebiusShellSum S shell n ^ (2 : ℕ) := by
   have hid := routeE_two_mul_signCompleteRowMass_eq S shell hn
-  have hsignSq : ((μ n : ℤ) : ℝ) ^ 2 = 1 := by
+  have hsignSq : ((μ n : ℤ) : ℝ) ^ (2 : ℕ) = 1 := by
     rcases hn with hn | hn <;> simp [hn]
   have hrewrite :
       2 * (routeESignCompleteRowMass S shell n - Q / 2) =
@@ -157,14 +157,14 @@ theorem routeE_signCompleteRowMass_deviation_sq_le
           ((μ n : ℤ) : ℝ) * routeEMoebiusShellSum S shell n := by
     linarith
   calc
-    (routeESignCompleteRowMass S shell n - Q / 2) ^ 2 =
+    (routeESignCompleteRowMass S shell n - Q / 2) ^ (2 : ℕ) =
         (1 / 4 : ℝ) *
           ((routeESquarefreeShellMass S shell n - Q) -
-            ((μ n : ℤ) : ℝ) * routeEMoebiusShellSum S shell n) ^ 2 := by
+            ((μ n : ℤ) : ℝ) * routeEMoebiusShellSum S shell n) ^ (2 : ℕ) := by
       rw [← hrewrite]
       ring
-    _ ≤ (1 / 2 : ℝ) * (routeESquarefreeShellMass S shell n - Q) ^ 2 +
-          (1 / 2 : ℝ) * routeEMoebiusShellSum S shell n ^ 2 := by
+    _ ≤ (1 / 2 : ℝ) * (routeESquarefreeShellMass S shell n - Q) ^ (2 : ℕ) +
+          (1 / 2 : ℝ) * routeEMoebiusShellSum S shell n ^ (2 : ℕ) := by
       nlinarith [sq_nonneg
         ((routeESquarefreeShellMass S shell n - Q) +
           ((μ n : ℤ) : ℝ) * routeEMoebiusShellSum S shell n)]

@@ -12,7 +12,7 @@ estimate in the form `(S(r) |Lambda - nu| + E mu(r)) / ‖f(z)‖`.
 
 The second is the weighted misalignment.  Bounding `sum |n - nu| d_n` by a window width times
 `sum d_n` ignores that each `d_n` enters twice — once in the weight and once in the mass.
-Cauchy--Schwarz splits it as `sqrt(sum (n-nu)^2 d_n) * sqrt(sum d_n)`, and since `d_n <= 2 ‖b_n‖`
+Cauchy--Schwarz splits it as `sqrt(sum (n-nu)^(2 : ℕ) d_n) * sqrt(sum d_n)`, and since `d_n <= 2 ‖b_n‖`
 the first factor is the second moment of the coefficient profile.  The result is
 `sqrt(2 * Sigma_2 * D)` — the geometric mean of the second moment and the total misalignment, in
 place of their product's crude substitute.
@@ -28,7 +28,7 @@ variable {a : ℕ → ℂ} {r : ℝ}
 
 /-- The squared index deviation is summable against the terms of an entire series. -/
 theorem summable_index_deviation_sq (ha : EntireCoeffs a) (hr : 0 < r) (k : ℕ) :
-    Summable fun n : ℕ => ((n : ℝ) - (k : ℝ)) ^ 2 * (‖a n‖ * r ^ n) := by
+    Summable fun n : ℕ => ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := by
   have h1 : Summable fun n : ℕ => ‖a n‖ * r ^ n := summable_term ha hr
   have h2 : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * r ^ n) := by
     refine (summable_term (entireCoeffs_mul_index ha) hr).congr fun n => ?_
@@ -39,17 +39,17 @@ theorem summable_index_deviation_sq (ha : EntireCoeffs a) (hr : 0 < r) (k : ℕ)
     rw [norm_mul, Complex.norm_natCast, norm_mul, Complex.norm_natCast]
     ring
   refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
-    (h3.add ((h2.mul_left (2 * (k : ℝ))).add (h1.mul_left ((k : ℝ) ^ 2))))
+    (h3.add ((h2.mul_left (2 * (k : ℝ))).add (h1.mul_left ((k : ℝ) ^ (2 : ℕ)))))
   have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
   have hT : (0 : ℝ) ≤ ‖a n‖ * r ^ n := term_nonneg a hr n
-  have hsq : ((n : ℝ) - (k : ℝ)) ^ 2
-      ≤ (n : ℝ) * (n : ℝ) + 2 * (k : ℝ) * (n : ℝ) + (k : ℝ) ^ 2 := by nlinarith
-  calc ((n : ℝ) - (k : ℝ)) ^ 2 * (‖a n‖ * r ^ n)
-      ≤ ((n : ℝ) * (n : ℝ) + 2 * (k : ℝ) * (n : ℝ) + (k : ℝ) ^ 2) * (‖a n‖ * r ^ n) :=
+  have hsq : ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ)
+      ≤ (n : ℝ) * (n : ℝ) + 2 * (k : ℝ) * (n : ℝ) + (k : ℝ) ^ (2 : ℕ) := by nlinarith
+  calc ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n)
+      ≤ ((n : ℝ) * (n : ℝ) + 2 * (k : ℝ) * (n : ℝ) + (k : ℝ) ^ (2 : ℕ)) * (‖a n‖ * r ^ n) :=
         mul_le_mul_of_nonneg_right hsq hT
     _ = (n : ℝ) * ((n : ℝ) * (‖a n‖ * r ^ n))
-        + (2 * (k : ℝ) * ((n : ℝ) * (‖a n‖ * r ^ n)) + (k : ℝ) ^ 2 * (‖a n‖ * r ^ n)) := by
+        + (2 * (k : ℝ) * ((n : ℝ) * (‖a n‖ * r ^ n)) + (k : ℝ) ^ (2 : ℕ) * (‖a n‖ * r ^ n)) := by
         ring
 
 /-- The normalised coefficients are summable in modulus. -/
@@ -69,7 +69,7 @@ theorem summable_norm_normalisedCoeff
 /-- The squared index deviation is summable against the normalised coefficients. -/
 theorem summable_index_deviation_sq_normalised
     (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) (k : ℕ) :
-    Summable fun n : ℕ => ((n : ℝ) - (k : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖ := by
+    Summable fun n : ℕ => ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * ‖normalisedCoeff a r z n‖ := by
   have hzpos : 0 < ‖z‖ := by rw [hz]; exact hr
   have hbase := summable_index_deviation_sq ha hzpos k
   have hCn : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
@@ -98,7 +98,7 @@ total misalignment. -/
 theorem tsum_index_weighted_defect_le_sqrt
     (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
     {u : ℂ} (hu : ‖u‖ = 1) {S₂ D : ℝ}
-    (hS₂ : ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖ ≤ S₂)
+    (hS₂ : ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ (2 : ℕ) * ‖normalisedCoeff a r z n‖ ≤ S₂)
     (hD : ∑' n : ℕ, (‖normalisedCoeff a r z n‖
         - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) ≤ D) :
     ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)|
@@ -117,7 +117,7 @@ theorem tsum_index_weighted_defect_le_sqrt
   have hnorm := summable_norm_normalisedCoeff ha hr hn₀ hz
   have hdsum : Summable d :=
     Summable.of_nonneg_of_le hdnn hd2 (hnorm.mul_left 2)
-  have hsqd : Summable fun n => w n ^ 2 * d n := by
+  have hsqd : Summable fun n => w n ^ (2 : ℕ) * d n := by
     refine Summable.of_nonneg_of_le (fun n => mul_nonneg (sq_nonneg _) (hdnn n)) (fun n => ?_)
       (hsq.mul_left 2)
     have h := hd2 n
@@ -139,13 +139,13 @@ theorem tsum_index_weighted_defect_le_sqrt
   have hprodeq : ∀ n : ℕ, (|w n| * Real.sqrt (d n)) * Real.sqrt (d n) = |w n| * d n := by
     intro n
     rw [mul_assoc, Real.mul_self_sqrt (hdnn n)]
-  have hf2 : ∀ n : ℕ, (|w n| * Real.sqrt (d n)) ^ 2 = w n ^ 2 * d n := by
+  have hf2 : ∀ n : ℕ, (|w n| * Real.sqrt (d n)) ^ (2 : ℕ) = w n ^ (2 : ℕ) * d n := by
     intro n
     rw [mul_pow, sq_abs, Real.sq_sqrt (hdnn n)]
-  have hg2 : ∀ n : ℕ, (Real.sqrt (d n)) ^ 2 = d n := fun n => Real.sq_sqrt (hdnn n)
+  have hg2 : ∀ n : ℕ, (Real.sqrt (d n)) ^ (2 : ℕ) = d n := fun n => Real.sq_sqrt (hdnn n)
   rw [Finset.sum_congr rfl (fun n _ => hprodeq n), Finset.sum_congr rfl (fun n _ => hf2 n),
     Finset.sum_congr rfl (fun n _ => hg2 n)] at hCS
-  have hbound1 : ∑ n ∈ s, w n ^ 2 * d n ≤ 2 * S₂ := by
+  have hbound1 : ∑ n ∈ s, w n ^ (2 : ℕ) * d n ≤ 2 * S₂ := by
     refine le_trans (Summable.sum_le_tsum s (fun n _ => mul_nonneg (sq_nonneg _) (hdnn n)) hsqd) ?_
     refine le_trans (Summable.tsum_le_tsum (fun n => ?_) hsqd (hsq.mul_left 2)) ?_
     · have h := hd2 n
@@ -156,12 +156,12 @@ theorem tsum_index_weighted_defect_le_sqrt
     le_trans (Summable.sum_le_tsum s (fun n _ => hdnn n) hdsum) hD
   have hsum_nn : (0 : ℝ) ≤ ∑ n ∈ s, |w n| * d n :=
     Finset.sum_nonneg fun n _ => mul_nonneg (abs_nonneg _) (hdnn n)
-  have hsqnn : (0 : ℝ) ≤ ∑ n ∈ s, w n ^ 2 * d n :=
+  have hsqnn : (0 : ℝ) ≤ ∑ n ∈ s, w n ^ (2 : ℕ) * d n :=
     Finset.sum_nonneg fun n _ => mul_nonneg (sq_nonneg _) (hdnn n)
   have hdnn' : (0 : ℝ) ≤ ∑ n ∈ s, d n := Finset.sum_nonneg fun n _ => hdnn n
-  have hsquared : (∑ n ∈ s, |w n| * d n) ^ 2 ≤ 2 * S₂ * D := by
+  have hsquared : (∑ n ∈ s, |w n| * d n) ^ (2 : ℕ) ≤ 2 * S₂ * D := by
     refine le_trans hCS ?_
-    calc (∑ n ∈ s, w n ^ 2 * d n) * ∑ n ∈ s, d n
+    calc (∑ n ∈ s, w n ^ (2 : ℕ) * d n) * ∑ n ∈ s, d n
         ≤ (2 * S₂) * ∑ n ∈ s, d n := mul_le_mul_of_nonneg_right hbound1 hdnn'
       _ ≤ (2 * S₂) * D := mul_le_mul_of_nonneg_left hbound2 (by linarith)
   nlinarith [Real.sq_sqrt hprod, Real.sqrt_nonneg (2 * S₂ * D), hsquared, hsum_nn]
@@ -223,7 +223,7 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_profile
     (hWdir : ∑' n : ℕ, normalisedCoeff a r z n
       = ((‖∑' n : ℕ, normalisedCoeff a r z n‖ : ℝ) : ℂ) * u)
     {S₂ D : ℝ}
-    (hS₂ : ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖ ≤ S₂)
+    (hS₂ : ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ (2 : ℕ) * ‖normalisedCoeff a r z n‖ ≤ S₂)
     (hD : ∑' n : ℕ, (‖normalisedCoeff a r z n‖
         - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) ≤ D) :
     ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖

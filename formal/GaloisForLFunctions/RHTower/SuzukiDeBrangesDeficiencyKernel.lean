@@ -227,14 +227,14 @@ theorem suzukiDeBrangesKernel_I_self :
 def suzukiHalfPhase (θ : ℝ) : ℂ := Complex.exp (-(((θ / 2 : ℝ) : ℂ) * I))
 
 theorem suzukiHalfPhase_sq (θ : ℝ) :
-    suzukiHalfPhase θ ^ 2 = Complex.exp (-((θ : ℂ) * I)) := by
+    suzukiHalfPhase θ ^ (2 : ℕ) = Complex.exp (-((θ : ℂ) * I)) := by
   rw [suzukiHalfPhase, sq, ← Complex.exp_add]
   congr 1
   push_cast
   ring
 
 theorem suzukiHalfPhase_cos (θ : ℝ) :
-    suzukiHalfPhase θ * (2 * ((Real.cos (θ / 2) : ℝ) : ℂ)) = 1 + suzukiHalfPhase θ ^ 2 := by
+    suzukiHalfPhase θ * (2 * ((Real.cos (θ / 2) : ℝ) : ℂ)) = 1 + suzukiHalfPhase θ ^ (2 : ℕ) := by
   have hc : ((Real.cos (θ / 2) : ℝ) : ℂ) = Complex.cos (((θ / 2 : ℝ) : ℂ)) :=
     Complex.ofReal_cos _
   set c : ℂ := ((θ / 2 : ℝ) : ℂ) with hcdef
@@ -249,7 +249,7 @@ theorem suzukiHalfPhase_cos (θ : ℝ) :
 
 theorem suzukiHalfPhase_sin (θ : ℝ) :
     suzukiHalfPhase θ * (-2 * I * ((Real.sin (θ / 2) : ℝ) : ℂ))
-      = suzukiHalfPhase θ ^ 2 - 1 := by
+      = suzukiHalfPhase θ ^ (2 : ℕ) - 1 := by
   have hs : ((Real.sin (θ / 2) : ℝ) : ℂ) = Complex.sin (((θ / 2 : ℝ) : ℂ)) :=
     Complex.ofReal_sin _
   set c : ℂ := ((θ / 2 : ℝ) : ℂ) with hcdef
@@ -277,7 +277,7 @@ theorem suzukiDeBrangesCTheta_conj (θ : ℝ) :
 
 theorem suzukiDeBranges_plus_combination (θ : ℝ) :
     (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
-        + suzukiHalfPhase θ ^ 2 * (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
+        + suzukiHalfPhase θ ^ (2 : ℕ) * (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
       = 2 * suzukiHalfPhase θ * (starRingEnd ℂ) (suzukiDeBrangesCTheta θ) := by
   rw [suzukiDeBrangesCTheta_conj]
   linear_combination (-suzukiXiThreeHalves) * suzukiHalfPhase_cos θ
@@ -285,7 +285,7 @@ theorem suzukiDeBranges_plus_combination (θ : ℝ) :
 
 theorem suzukiDeBranges_minus_combination (θ : ℝ) :
     (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
-        + suzukiHalfPhase θ ^ 2 * (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
+        + suzukiHalfPhase θ ^ (2 : ℕ) * (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
       = 2 * suzukiHalfPhase θ * suzukiDeBrangesCTheta θ := by
   rw [suzukiDeBrangesCTheta]
   linear_combination (-suzukiXiThreeHalves) * suzukiHalfPhase_cos θ
@@ -318,8 +318,8 @@ theorem suzukiDeBrangesBoundaryForm (θ : ℝ) (z : ℂ) :
   rw [← hw, ← hp, ← hq] at hplus hminus
   have hcombine :
       ((p - q) * Es - (p + q) * Ee) / (2 * (Real.pi : ℂ) * I)
-          + w ^ 2 * (((p + q) * Es - (p - q) * Ee) / (2 * (Real.pi : ℂ) * I))
-        = (((p - q) + w ^ 2 * (p + q)) * Es - ((p + q) + w ^ 2 * (p - q)) * Ee)
+          + w ^ (2 : ℕ) * (((p + q) * Es - (p - q) * Ee) / (2 * (Real.pi : ℂ) * I))
+        = (((p - q) + w ^ (2 : ℕ) * (p + q)) * Es - ((p + q) + w ^ (2 : ℕ) * (p - q)) * Ee)
             / (2 * (Real.pi : ℂ) * I) := by
     field_simp
     ring
@@ -370,7 +370,7 @@ theorem suzukiDeBrangesBoundaryForm_pi (z : ℂ) :
 def suzukiHalfPhasePos (θ : ℝ) : ℂ := Complex.exp (((θ / 2 : ℝ) : ℂ) * I)
 
 theorem suzukiHalfPhasePos_sq (θ : ℝ) :
-    suzukiHalfPhasePos θ ^ 2 = Complex.exp ((θ : ℂ) * I) := by
+    suzukiHalfPhasePos θ ^ (2 : ℕ) = Complex.exp ((θ : ℂ) * I) := by
   rw [suzukiHalfPhasePos, sq, ← Complex.exp_add]
   congr 1
   push_cast
@@ -378,7 +378,7 @@ theorem suzukiHalfPhasePos_sq (θ : ℝ) :
 
 theorem suzukiHalfPhasePos_cos (θ : ℝ) :
     suzukiHalfPhasePos θ * (2 * ((Real.cos (θ / 2) : ℝ) : ℂ))
-      = 1 + suzukiHalfPhasePos θ ^ 2 := by
+      = 1 + suzukiHalfPhasePos θ ^ (2 : ℕ) := by
   have hc : ((Real.cos (θ / 2) : ℝ) : ℂ) = Complex.cos (((θ / 2 : ℝ) : ℂ)) :=
     Complex.ofReal_cos _
   set c : ℂ := ((θ / 2 : ℝ) : ℂ) with hcdef
@@ -393,7 +393,7 @@ theorem suzukiHalfPhasePos_cos (θ : ℝ) :
 
 theorem suzukiHalfPhasePos_sin (θ : ℝ) :
     suzukiHalfPhasePos θ * (2 * I * ((Real.sin (θ / 2) : ℝ) : ℂ))
-      = suzukiHalfPhasePos θ ^ 2 - 1 := by
+      = suzukiHalfPhasePos θ ^ (2 : ℕ) - 1 := by
   have hs : ((Real.sin (θ / 2) : ℝ) : ℂ) = Complex.sin (((θ / 2 : ℝ) : ℂ)) :=
     Complex.ofReal_sin _
   set c : ℂ := ((θ / 2 : ℝ) : ℂ) with hcdef
@@ -407,7 +407,7 @@ theorem suzukiHalfPhasePos_sin (θ : ℝ) :
 
 theorem suzukiDeBrangesPos_plus_combination (θ : ℝ) :
     (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
-        + suzukiHalfPhasePos θ ^ 2 * (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
+        + suzukiHalfPhasePos θ ^ (2 : ℕ) * (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
       = 2 * suzukiHalfPhasePos θ * suzukiDeBrangesCTheta θ := by
   rw [suzukiDeBrangesCTheta]
   linear_combination (-suzukiXiThreeHalves) * suzukiHalfPhasePos_cos θ
@@ -415,7 +415,7 @@ theorem suzukiDeBrangesPos_plus_combination (θ : ℝ) :
 
 theorem suzukiDeBrangesPos_minus_combination (θ : ℝ) :
     (suzukiXiThreeHalves + suzukiXiDerivThreeHalves)
-        + suzukiHalfPhasePos θ ^ 2 * (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
+        + suzukiHalfPhasePos θ ^ (2 : ℕ) * (suzukiXiThreeHalves - suzukiXiDerivThreeHalves)
       = 2 * suzukiHalfPhasePos θ * (starRingEnd ℂ) (suzukiDeBrangesCTheta θ) := by
   rw [suzukiDeBrangesCTheta_conj]
   linear_combination (-suzukiXiThreeHalves) * suzukiHalfPhasePos_cos θ
@@ -472,9 +472,9 @@ theorem suzukiDeBrangesSpectralRelation (θ : ℝ) {z : ℂ}
   rw [← hv, ← hp, ← hq] at hplus hminus
   have hcomb :
       (z - I) * ((Ee * (p - q) - Es * (p + q)) / (2 * (Real.pi : ℂ) * I * (I - z)) / Ee)
-          + v ^ 2 * ((z + I) *
+          + v ^ (2 : ℕ) * ((z + I) *
               ((Ee * (p + q) - Es * (p - q)) / (2 * (Real.pi : ℂ) * I * (-I - z)) / Ee))
-        = (Es * ((p + q) + v ^ 2 * (p - q)) - Ee * ((p - q) + v ^ 2 * (p + q)))
+        = (Es * ((p + q) + v ^ (2 : ℕ) * (p - q)) - Ee * ((p - q) + v ^ (2 : ℕ) * (p + q)))
             / (2 * (Real.pi : ℂ) * I * Ee) := by
     field_simp
     ring

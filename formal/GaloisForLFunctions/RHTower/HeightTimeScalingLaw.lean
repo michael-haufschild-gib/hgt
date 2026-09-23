@@ -51,7 +51,7 @@ namespace RHTower
 
 /-- The natural flow time at a height whose log-spacing parameter is `L = log(T/2π)`: the square of
 the mean spacing over eight. -/
-def natTime (L : ℝ) : ℝ := π ^ 2 / (2 * L ^ 2)
+def natTime (L : ℝ) : ℝ := π ^ (2 : ℕ) / (2 * L ^ (2 : ℕ))
 
 /-- The height at which a given flow time is the natural time scale. -/
 def flowHeight (t : ℝ) : ℝ := 2 * π * Real.exp (π / Real.sqrt (2 * t))
@@ -61,7 +61,7 @@ def flowHeight (t : ℝ) : ℝ := 2 * π * Real.exp (π / Real.sqrt (2 * t))
 theorem natTime_logParam {t : ℝ} (ht : 0 < t) :
     natTime (π / Real.sqrt (2 * t)) = t := by
   have h2t : (0 : ℝ) < 2 * t := by linarith
-  have hs : Real.sqrt (2 * t) ^ 2 = 2 * t := Real.sq_sqrt (le_of_lt h2t)
+  have hs : Real.sqrt (2 * t) ^ (2 : ℕ) = 2 * t := Real.sq_sqrt (le_of_lt h2t)
   have hspos : 0 < Real.sqrt (2 * t) := Real.sqrt_pos.mpr h2t
   have hpi : (0 : ℝ) < π := Real.pi_pos
   unfold natTime
@@ -82,9 +82,9 @@ theorem logParam_unbounded (M : ℝ) : ∃ t : ℝ, 0 < t ∧ M < π / Real.sqrt
   have hNpos : 0 < N := by
     have : (0 : ℝ) ≤ max M 0 := le_max_right _ _
     simp only [hN]; linarith
-  refine ⟨π ^ 2 / (2 * N ^ 2), by positivity, ?_⟩
+  refine ⟨π ^ (2 : ℕ) / (2 * N ^ (2 : ℕ)), by positivity, ?_⟩
   have hpi : (0 : ℝ) < π := Real.pi_pos
-  have h2 : 2 * (π ^ 2 / (2 * N ^ 2)) = (π / N) ^ 2 := by
+  have h2 : 2 * (π ^ (2 : ℕ) / (2 * N ^ (2 : ℕ))) = (π / N) ^ (2 : ℕ) := by
     field_simp
   rw [h2, Real.sqrt_sq (by positivity)]
   have hval : π / (π / N) = N := by field_simp
@@ -95,21 +95,21 @@ theorem logParam_unbounded (M : ℝ) : ∃ t : ℝ, 0 < t ∧ M < π / Real.sqrt
 /-- **The reachable bound.**  Verification to log-parameter `L` reaches only `t ≥ π²/(2L²)`: the cost
 of lowering the bound on `Λ` grows like `exp(c/√t)` in height. -/
 theorem reachable_bound {L t : ℝ} (ht : natTime L ≤ t) :
-    π ^ 2 / (2 * L ^ 2) ≤ t := ht
+    π ^ (2 : ℕ) / (2 * L ^ (2 : ℕ)) ≤ t := ht
 
 /-- The threshold is decreasing in the flow time: a longer flow reaches lower. -/
 theorem natTime_antitone {L₁ L₂ : ℝ} (h1 : 0 < L₁) (h12 : L₁ ≤ L₂) :
     natTime L₂ ≤ natTime L₁ := by
   unfold natTime
   have h2 : 0 < L₂ := lt_of_lt_of_le h1 h12
-  have hsq : L₁ ^ 2 ≤ L₂ ^ 2 := by nlinarith
-  have hpos : (0 : ℝ) < 2 * L₁ ^ 2 := by positivity
+  have hsq : L₁ ^ (2 : ℕ) ≤ L₂ ^ (2 : ℕ) := by nlinarith
+  have hpos : (0 : ℝ) < 2 * L₁ ^ (2 : ℕ) := by positivity
   exact div_le_div_of_nonneg_left (by positivity) hpos (by linarith)
 
 /-- The dimensional identity behind the law: the natural time is the square of the spacing over
 eight, and the spacing at log-parameter `L` is `2π/L`. -/
 theorem natTime_eq_spacing_sq {L : ℝ} (hL : L ≠ 0) :
-    natTime L = (2 * π / L) ^ 2 / 8 := by
+    natTime L = (2 * π / L) ^ (2 : ℕ) / 8 := by
   unfold natTime
   field_simp
   ring

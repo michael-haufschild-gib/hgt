@@ -69,7 +69,7 @@ theorem inner_count_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {p : ℕ} (hp :
   have hs2 : (2 : ℝ) ≤ Real.sqrt x := by
     have h4 : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     have : Real.sqrt 4 = 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h4, this.le, this.ge]
   have ha0 : (0 : ℝ) < (a : ℝ) := lt_of_lt_of_le hs0 ha1
   set c : ℕ := ⌊x / (a : ℝ)⌋₊ with hc

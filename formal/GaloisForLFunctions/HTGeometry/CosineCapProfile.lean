@@ -23,7 +23,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The Legendre profile of the cosine cap. -/
 noncomputable def capProfile (x : ℝ) : ℝ :=
-  Real.log 2 - (1 / 2) * Real.log (1 + x ^ 2) + x * Real.arctan x
+  Real.log 2 - (1 / 2) * Real.log (1 + x ^ (2 : ℕ)) + x * Real.arctan x
 
 theorem capProfile_eq_log_cos (x : ℝ) :
     capProfile x = Real.log 2 + Real.log (Real.cos (Real.arctan x)) + x * Real.arctan x := by

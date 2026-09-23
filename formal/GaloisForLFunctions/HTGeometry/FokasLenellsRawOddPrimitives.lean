@@ -31,8 +31,8 @@ theorem deriv_oddInitialPart_reflection (q : SchwartzMap ℝ ℂ) (x : ℝ) :
 
 /-- The nested mixed primitive becomes a local square for odd data. -/
 theorem rawMixedPrimitive_oddInitialPart (q : SchwartzMap ℝ ℂ) (x : ℝ) :
-    rawMixedPrimitive (oddInitialPart q) x = -(oddInitialPart q x)^2/2 := by
-  have hd (y : ℝ) : HasDerivAt (fun s : ℝ => -(oddInitialPart q s)^2/2)
+    rawMixedPrimitive (oddInitialPart q) x = -(oddInitialPart q x)^(2 : ℕ)/2 := by
+  have hd (y : ℝ) : HasDerivAt (fun s : ℝ => -(oddInitialPart q s)^(2 : ℕ)/2)
       (rawMixedProfile (oddInitialPart q) y) y := by
     convert! (((oddInitialPart q).hasDerivAt y).pow 2).neg.div_const 2 using 1
     rw [rawMixedProfile_apply,reflectedDerivative_oddInitialPart]
@@ -44,9 +44,9 @@ theorem rawMixedPrimitive_oddInitialPart (q : SchwartzMap ℝ ℂ) (x : ℝ) :
 
 /-- The true second coefficient is a scalar square times the initial vector. -/
 theorem rawSecondSlope_oddInitialPart_zero (q : SchwartzMap ℝ ℂ) (v : SpectralVector) (x : ℝ) :
-    rawSecondSlope (oddInitialPart q) 0 v x = ((oddInitialPart q x)^2/2) • v := by
+    rawSecondSlope (oddInitialPart q) 0 v x = ((oddInitialPart q x)^(2 : ℕ)/2) • v := by
   change rawSecondSlope (oddInitialPart q) 0 v x =
-    (((oddInitialPart q x)^2/2)*v.1,((oddInitialPart q x)^2/2)*v.2)
+    (((oddInitialPart q x)^(2 : ℕ)/2)*v.1,((oddInitialPart q x)^(2 : ℕ)/2)*v.2)
   rw [rawSecondSlope_zero_eq]
   simp only [rawSecondPrimitive,rawMixedPrimitive_oddInitialPart,oddInitialPart_reflection]
   have hz : oddInitialPart q 0 = 0 := by simp
@@ -97,7 +97,7 @@ theorem rawFourthSlope_hasDerivAt (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : Spect
 
 /-- The second phase average has the exact zero-frequency value required by the fifth coefficient. -/
 theorem rawSecondPhaseAverage_zero_frequency (x : ℝ) : rawSecondPhaseAverage 0 x = 1/2 := by
-  have hd (t : ℝ) : HasDerivAt (fun s : ℝ => (s : ℂ)^2/2) (t : ℂ) t := by
+  have hd (t : ℝ) : HasDerivAt (fun s : ℝ => (s : ℂ)^(2 : ℕ)/2) (t : ℂ) t := by
     have hc : HasDerivAt (fun s : ℝ => (s : ℂ)) (1 : ℂ) t := Complex.ofRealCLM.hasDerivAt
     convert! (hc.pow 2).div_const 2 using 1
     ring
@@ -109,8 +109,8 @@ theorem rawSecondPhaseAverage_zero_frequency (x : ℝ) : rawSecondPhaseAverage 0
 /-- Exact original quintic kernel at zero frequency. -/
 theorem rawQuinticOperator_zero_apply (q : SchwartzMap ℝ ℂ) (x : ℝ) (v : SpectralVector) :
     rawQuinticOperator q 0 x v =
-      (-2*I*(x : ℂ)^2*reflectedDerivative q x*v.2,
-       -2*I*(x : ℂ)^2*deriv q x*v.1) := by
+      (-2*I*(x : ℂ)^(2 : ℕ)*reflectedDerivative q x*v.2,
+       -2*I*(x : ℂ)^(2 : ℕ)*deriv q x*v.1) := by
   rw [rawQuinticOperator_apply]
   simp only [zero_pow (by omega : 2 ≠ 0),mul_zero,neg_zero,
     rawSecondPhaseAverage_zero_frequency,SchwartzMap.derivCLM_apply]

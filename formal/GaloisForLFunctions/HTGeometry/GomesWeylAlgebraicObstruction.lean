@@ -20,7 +20,7 @@ theorem fieldOneArchimedeanCharacter_no_polynomial_coordinates :
       fieldOneArchimedeanCharacter t =
         ((p.eval t : ℝ) : ℂ) + Complex.I * ((q.eval t : ℝ) : ℂ) := by
   rintro ⟨p, q, he⟩
-  have hs : ∀ t : ℝ, (p.eval t)^2 + (q.eval t)^2 = 1 := by
+  have hs : ∀ t : ℝ, (p.eval t)^(2 : ℕ) + (q.eval t)^(2 : ℕ) = 1 := by
     intro t
     have hn : Complex.normSq (fieldOneArchimedeanCharacter t) = 1 := by
       change Complex.normSq (fieldOneArchimedeanPhase 1 t) = 1

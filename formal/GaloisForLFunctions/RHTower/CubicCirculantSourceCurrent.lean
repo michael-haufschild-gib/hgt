@@ -46,7 +46,7 @@ theorem cubicCirculant_commute (a b c d e f : A) :
   congr 1 <;> ring
 
 def cyclicSourceGram (x y : A) := cubicCirculant 1 x y
-def cyclicSourceCurrent (x y : A) := cubicCirculant 0 (x-y^2) (x^2-y)
+def cyclicSourceCurrent (x y : A) := cubicCirculant 0 (x-y^(2 : ℕ)) (x^(2 : ℕ)-y)
 def cyclicSourceCurrentJet (x y dx dy : A) :=
   cubicCirculant 0 (dx-2*y*dy) (2*x*dx-dy)
 
@@ -58,7 +58,7 @@ theorem cyclicSource_flat (x y : A) :
 def cyclicFrameProjection (t u v : A) (j : Fin 3) : Matrix (Fin 3) (Fin 3) A :=
   fun i k => cubicCirculant t u 0 i j * cubicCirculant t 0 v j k
 
-theorem cyclicFrameProjection_idempotent (t u v : A) (h : t^2+u*v=1)
+theorem cyclicFrameProjection_idempotent (t u v : A) (h : t^(2 : ℕ)+u*v=1)
     (j : Fin 3) :
     cyclicFrameProjection t u v j * cyclicFrameProjection t u v j =
       cyclicFrameProjection t u v j := by
@@ -82,7 +82,7 @@ theorem cyclicFrameProjection_idempotent (t u v : A) (h : t^2+u*v=1)
       ring
     _ = _ := by rw [← Matrix.mul_apply, hdiag]; ring
 
-theorem cyclicFrameProjection_sum (t u v : A) (h : t^2+u*v=1) :
+theorem cyclicFrameProjection_sum (t u v : A) (h : t^(2 : ℕ)+u*v=1) :
     cyclicFrameProjection t u v 0 + cyclicFrameProjection t u v 1 +
       cyclicFrameProjection t u v 2 = cyclicSourceGram (t*u) (t*v) := by
   have hm : cubicCirculant t u 0 * cubicCirculant t 0 v =
@@ -102,14 +102,14 @@ def cyclicTripleCurrent (p q r : Matrix (Fin 3) (Fin 3) A) :=
 theorem cyclicFrameProjection_current_raw (t u v : A) :
     cyclicTripleCurrent (cyclicFrameProjection t u v 0)
       (cyclicFrameProjection t u v 1) (cyclicFrameProjection t u v 2) =
-      cubicCirculant 0 ((t^2+u*v)*(t*u)-(t*v)^2)
-        ((t*u)^2-(t^2+u*v)*(t*v)) := by
+      cubicCirculant 0 ((t^(2 : ℕ)+u*v)*(t*u)-(t*v)^(2 : ℕ))
+        ((t*u)^(2 : ℕ)-(t^(2 : ℕ)+u*v)*(t*v)) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [cyclicTripleCurrent, cyclicFrameProjection, cubicCirculant,
       Matrix.mul_apply, Fin.sum_univ_three] <;> ring
 
-theorem cyclicFrameProjection_current (t u v : A) (h : t^2+u*v=1) :
+theorem cyclicFrameProjection_current (t u v : A) (h : t^(2 : ℕ)+u*v=1) :
     cyclicTripleCurrent (cyclicFrameProjection t u v 0)
       (cyclicFrameProjection t u v 1) (cyclicFrameProjection t u v 2) =
       cyclicSourceCurrent (t*u) (t*v) := by
@@ -120,7 +120,7 @@ theorem cyclicFrameProjection_current (t u v : A) (h : t^2+u*v=1) :
 /-- Exact first-jet transgression: a polynomial derivative plus oriented area. -/
 theorem cyclicSource_trace_transgression (x y dx dy : A) :
     Matrix.trace (cyclicSourceGram x y * cyclicSourceCurrentJet x y dx dy) =
-      6*x^2*dx-6*y^2*dy+3*(y*dx-x*dy) := by
+      6*x^(2 : ℕ)*dx-6*y^(2 : ℕ)*dy+3*(y*dx-x*dy) := by
   simp [cyclicSourceGram, cyclicSourceCurrentJet,
     Matrix.trace, Matrix.diag, Fin.sum_univ_three, cubicCirculant, Matrix.mul_apply]
   ring
@@ -149,12 +149,12 @@ theorem hasDerivAt_cyclicSourceCurrent {x y : ℝ → ℂ} {dx dy : ℂ} {s : �
     (hx : HasDerivAt x dx s) (hy : HasDerivAt y dy s) :
     HasDerivAt (fun w => cyclicSourceCurrent (x w) (y w))
       (cyclicSourceCurrentJet (x s) (y s) dx dy) s := by
-  have hleft : HasDerivAt (fun w => x w-y w^2) (dx-2*y s*dy) s := by
+  have hleft : HasDerivAt (fun w => x w-y w^(2 : ℕ)) (dx-2*y s*dy) s := by
     convert hx.sub (hy.pow 2) using 1
     · congr
     · rfl
     · norm_num
-  have hright : HasDerivAt (fun w => x w^2-y w) (2*x s*dx-dy) s := by
+  have hright : HasDerivAt (fun w => x w^(2 : ℕ)-y w) (2*x s*dx-dy) s := by
     convert (hx.pow 2).sub hy using 1
     · congr
     · rfl
@@ -175,11 +175,11 @@ theorem hasDerivAt_cyclicSourceCurrent {x y : ℝ → ℂ} {dx dy : ℂ} {s : �
 /-- Two identical circulant frames give coefficient one for the logarithmic phase
 current when `6*r²=1`. No winding number is inserted into the construction. -/
 theorem cyclicSource_twoCopy_unit_normalization
-    (r u v du dv : ℂ) (hr : 6*r^2=1) (huv : u*v=1)
+    (r u v du dv : ℂ) (hr : 6*r^(2 : ℕ)=1) (huv : u*v=1)
     (htangent : u*dv+v*du=0) :
     2 * Matrix.trace (cyclicSourceGram (r*u) (r*v) *
       cyclicSourceCurrentJet (r*u) (r*v) (r*du) (r*dv)) =
-      12*(r*u)^2*(r*du)-12*(r*v)^2*(r*dv)+2*(du/u) := by
+      12*(r*u)^(2 : ℕ)*(r*du)-12*(r*v)^(2 : ℕ)*(r*dv)+2*(du/u) := by
   have hu : u ≠ 0 := by intro hz; simp [hz] at huv
   have hdiv : du/u=v*du := by
     apply (div_eq_iff hu).2
@@ -187,15 +187,15 @@ theorem cyclicSource_twoCopy_unit_normalization
       du = du*(u*v) := by rw [huv]; ring
       _ = v*du*u := by ring
   rw [cyclicSource_trace_transgression, hdiv]
-  linear_combination (2*v*du)*hr - (6*r^2)*htangent
+  linear_combination (2*v*du)*hr - (6*r^(2 : ℕ))*htangent
 
 /-- Real amplitude is retained in a rank-one graph, not discarded by phase normalization. -/
 def cyclicAmplitudeGraph (a : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![1/(1+(a:ℂ)^2), (a:ℂ)/(1+(a:ℂ)^2);
-     (a:ℂ)/(1+(a:ℂ)^2), (a:ℂ)^2/(1+(a:ℂ)^2)]
+  !![1/(1+(a:ℂ)^(2 : ℕ)), (a:ℂ)/(1+(a:ℂ)^(2 : ℕ));
+     (a:ℂ)/(1+(a:ℂ)^(2 : ℕ)), (a:ℂ)^(2 : ℕ)/(1+(a:ℂ)^(2 : ℕ))]
 
-private theorem cyclicAmplitudeDenom_ne (a : ℝ) : 1+(a:ℂ)^2 ≠ 0 := by
-  exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+a^2))
+private theorem cyclicAmplitudeDenom_ne (a : ℝ) : 1+(a:ℂ)^(2 : ℕ) ≠ 0 := by
+  exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+a^(2 : ℕ)))
 
 theorem cyclicAmplitudeGraph_idempotent (a : ℝ) :
     cyclicAmplitudeGraph a * cyclicAmplitudeGraph a = cyclicAmplitudeGraph a := by
@@ -218,8 +218,8 @@ theorem cyclicAmplitudeGraph_trace (a : ℝ) :
   field_simp
 
 def cyclicAmplitudeGraphJet (a da : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![-2*(a:ℂ)*da/(1+(a:ℂ)^2)^2, (1-(a:ℂ)^2)*da/(1+(a:ℂ)^2)^2;
-     (1-(a:ℂ)^2)*da/(1+(a:ℂ)^2)^2, 2*(a:ℂ)*da/(1+(a:ℂ)^2)^2]
+  !![-2*(a:ℂ)*da/(1+(a:ℂ)^(2 : ℕ))^(2 : ℕ), (1-(a:ℂ)^(2 : ℕ))*da/(1+(a:ℂ)^(2 : ℕ))^(2 : ℕ);
+     (1-(a:ℂ)^(2 : ℕ))*da/(1+(a:ℂ)^(2 : ℕ))^(2 : ℕ), 2*(a:ℂ)*da/(1+(a:ℂ)^(2 : ℕ))^(2 : ℕ)]
 
 theorem cyclicAmplitudeGraph_trace_tangent (a da : ℝ) :
     Matrix.trace (cyclicAmplitudeGraph a * cyclicAmplitudeGraphJet a da) = 0 := by
@@ -249,7 +249,7 @@ def cyclicFaithfulSourceAggregate (r : ℝ) (z : ℂ) :
 
 def cyclicFaithfulSourceRecover (r : ℝ)
     (M : Matrix (Fin 2 × Fin 3) (Fin 2 × Fin 3) ℂ) : ℂ :=
-  M (0,0) (1,0) * M (0,0) (0,1) / ((r:ℂ)*M (0,0) (0,0)^2)
+  M (0,0) (1,0) * M (0,0) (0,1) / ((r:ℂ)*M (0,0) (0,0)^(2 : ℕ))
 
 /-- All literal source values survive the nonlinear projection encoding. In
 particular two source functions with equal encoded matrices are equal pointwise. -/
@@ -276,7 +276,7 @@ theorem cyclicFaithfulSourceAggregate_injective (r : ℝ) (hr : r ≠ 0) :
 
 /-- Tensoring retains honest orthogonal projections and not only their aggregate. -/
 theorem cyclicAmplitudeGraph_projection_lift (a t : ℝ) (u : ℂ)
-    (h : (t:ℂ)^2+u*conj u=1) (j : Fin 3) :
+    (h : (t:ℂ)^(2 : ℕ)+u*conj u=1) (j : Fin 3) :
     let P := cyclicAmplitudeGraph a ⊗ₖ cyclicFrameProjection (t:ℂ) u (conj u) j
     P*P=P ∧ P.conjTranspose=P := by
   dsimp
@@ -288,15 +288,15 @@ theorem cyclicAmplitudeGraph_projection_lift (a t : ℝ) (u : ℂ)
 
 /-- Source-independent real constants implement the two-copy unit normalization. -/
 theorem exists_cyclicSource_unit_constants :
-    ∃ t b : ℝ, t^2+b^2=1 ∧ 6*(t*b)^2=1 ∧ t*b ≠ 0 := by
-  have hs : (Real.sqrt 3)^2=3 := Real.sq_sqrt (by norm_num)
+    ∃ t b : ℝ, t^(2 : ℕ)+b^(2 : ℕ)=1 ∧ 6*(t*b)^(2 : ℕ)=1 ∧ t*b ≠ 0 := by
+  have hs : (Real.sqrt 3)^(2 : ℕ)=3 := Real.sq_sqrt (by norm_num)
   have hs0 : 0 ≤ Real.sqrt 3 := Real.sqrt_nonneg _
   have hs3 : Real.sqrt 3 < 3 := by nlinarith
   let t := Real.sqrt ((3+Real.sqrt 3)/6)
   let b := Real.sqrt ((3-Real.sqrt 3)/6)
-  have ht : t^2=(3+Real.sqrt 3)/6 := Real.sq_sqrt (by positivity)
-  have hb : b^2=(3-Real.sqrt 3)/6 := Real.sq_sqrt (by positivity)
-  have htb : 6*(t*b)^2=1 := by rw [mul_pow, ht, hb]; nlinarith
+  have ht : t^(2 : ℕ)=(3+Real.sqrt 3)/6 := Real.sq_sqrt (by positivity)
+  have hb : b^(2 : ℕ)=(3-Real.sqrt 3)/6 := Real.sq_sqrt (by positivity)
+  have htb : 6*(t*b)^(2 : ℕ)=1 := by rw [mul_pow, ht, hb]; nlinarith
   refine ⟨t,b,?_,htb,?_⟩
   · rw [ht,hb]; ring
   · intro hz
@@ -306,7 +306,7 @@ theorem exists_cyclicSource_unit_constants :
 theorem cyclicSource_phase_unit {z : ℂ} (hz : z ≠ 0) :
     (z/(‖z‖:ℂ))*conj (z/(‖z‖:ℂ)) = 1 := by
   have hn : (‖z‖:ℂ) ≠ 0 := by exact_mod_cast (norm_ne_zero_iff.mpr hz)
-  have hzz : z*conj z=(‖z‖:ℂ)^2 := by
+  have hzz : z*conj z=(‖z‖:ℂ)^(2 : ℕ) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_pow]
   simp [div_mul_div_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq,
     Complex.ofReal_pow, hn, ← pow_two]
@@ -315,7 +315,7 @@ theorem cyclicSource_phase_unit {z : ℂ} (hz : z ≠ 0) :
 constant required by two-copy unit boundary normalization. This does not assert
 trace-class operator admission or a bound on the nonlinear recovery map. -/
 theorem exists_unit_normalized_faithful_cyclicSource_family :
-    ∃ r : ℝ, r ≠ 0 ∧ 6*r^2=1 ∧
+    ∃ r : ℝ, r ≠ 0 ∧ 6*r^(2 : ℕ)=1 ∧
       Function.Injective (cyclicFaithfulSourceAggregate r) ∧
       ∀ z : ℂ, z ≠ 0 →
         ∃ P : Fin 3 → Matrix (Fin 2 × Fin 3) (Fin 2 × Fin 3) ℂ,
@@ -326,11 +326,11 @@ theorem exists_unit_normalized_faithful_cyclicSource_family :
   intro z hz
   let u : ℂ := (b:ℂ)*(z/(‖z‖:ℂ))
   have hphase := cyclicSource_phase_unit hz
-  have hncomplex : (t:ℂ)^2+(b:ℂ)^2=1 := by exact_mod_cast hnorm
-  have hu : (t:ℂ)^2+u*conj u=1 := by
+  have hncomplex : (t:ℂ)^(2 : ℕ)+(b:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hnorm
+  have hu : (t:ℂ)^(2 : ℕ)+u*conj u=1 := by
     dsimp [u]
     simp only [map_mul, Complex.conj_ofReal]
-    linear_combination hncomplex + (b:ℂ)^2*hphase
+    linear_combination hncomplex + (b:ℂ)^(2 : ℕ)*hphase
   refine ⟨fun j => cyclicAmplitudeGraph ‖z‖ ⊗ₖ
     cyclicFrameProjection (t:ℂ) u (conj u) j, ?_, ?_⟩
   · exact fun j => cyclicAmplitudeGraph_projection_lift ‖z‖ t u hu j
@@ -370,7 +370,7 @@ theorem cyclicFlatCounterProjection_current :
 theorem cyclicFlatCounterProjection_casimir :
     let S := cyclicSourceGram (1/2:ℂ) (1/2:ℂ)
     let K := cyclicSourceCurrent (1/2:ℂ) (1/2:ℂ)
-    K * (3*K^2+S^2*(3-S)^2) = K := by
+    K * (3*K^(2 : ℕ)+S^(2 : ℕ)*(3-S)^(2 : ℕ)) = K := by
   dsimp
   ext i j
   fin_cases i <;> fin_cases j <;>

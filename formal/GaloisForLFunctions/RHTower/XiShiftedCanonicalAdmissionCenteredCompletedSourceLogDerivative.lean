@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionDeResistedComplete
 # Shifted-Xi apex-centered completed-source landing
 
 The literal current/adjacent Padé-residue/completed-`P^sharp` product is first de-resisted, leaving
-one faithful unit at each admitted node.  The moving-apex factor `(w^2*x)^2 - 1` is then applied
+one faithful unit at each admitted node.  The moving-apex factor `(w^(2 : ℕ)*x)^(2 : ℕ) - 1` is then applied
 before aggregation.  The resulting signed source lands exactly in the current admission
 logarithmic derivative plus intrinsic degree and first-trace counterterms.
 
@@ -24,7 +24,7 @@ noncomputable section
 def xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
   xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient w n x *
-    ((w ^ 2 * x) ^ 2 - 1)
+    ((w ^ (2 : ℕ) * x) ^ (2 : ℕ) - 1)
 
 /-- **Pointwise source-first centered law.**  Actual completed source cancels resistance before
 moving-apex centering, leaving exactly the signed hard residue. -/
@@ -36,7 +36,7 @@ theorem xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue_eq
     (hroot : (HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n).eval x = 0) :
     xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue w n x =
-      (w ^ 2 * x) ^ 2 - 1 := by
+      (w ^ (2 : ℕ) * x) ^ (2 : ℕ) - 1 := by
   rw [xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue,
     xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient_eq_one
       hn hw hH hx hroot, one_mul]
@@ -51,7 +51,7 @@ theorem xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue_pos_
     (hroot : (HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n).eval x = 0) :
     0 < xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue w n x ↔
-      1 < w ^ 2 * x := by
+      1 < w ^ (2 : ℕ) * x := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans (by norm_num) hw)
   rw [xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue_eq
     hn hw0 hH hx.ne' hroot]
@@ -75,7 +75,7 @@ theorem xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceTransform_eq
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) (z : ℂ) :
     xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceTransform w n z =
       HTGeometry.gaussApexCenteredUnitPoleTransformComplex
-        (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) z := by
+        (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) z := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
   simp only [Nat.succ_sub_one] at hnodes ⊢
   let s := xiShiftedRealMomentSequence w
@@ -104,11 +104,11 @@ theorem xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceTransform_eq
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) {z : ℂ}
     (hz : z.im ≠ 0) :
     xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceTransform w n z =
-      (((w ^ 2 : ℝ) : ℂ) ^ 2 * z ^ 2 - 1) *
+      (((w ^ (2 : ℕ) : ℝ) : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) *
           (Polynomial.aeval z
               (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n).derivative /
             HTGeometry.monicOrthoC (xiShiftedRealMomentSequence w) n z) -
-        (((w ^ 2 : ℝ) : ℂ) ^ 2) *
+        (((w ^ (2 : ℕ) : ℝ) : ℂ) ^ (2 : ℕ)) *
           (((n : ℕ) : ℂ) * z +
             (HTGeometry.gaussNodeTrace
               (xiShiftedRealMomentSequence w) (n - 1) : ℂ)) := by
@@ -118,7 +118,7 @@ theorem xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceTransform_eq
   simp only [Nat.succ_sub_one]
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   exact HTGeometry.gaussApexCenteredUnitPoleTransformComplex_eq_degree_logDerivative
-    hbelow (m := m) (by omega) (w ^ 2) hz
+    hbelow (m := m) (by omega) (w ^ (2 : ℕ)) hz
 
 /-- **Even adaptive null-flag shear.**  Positive part is taken on each literal source-first
 centered residue before Poisson aggregation.  Consequently negative sub-apex source cannot cancel
@@ -128,7 +128,7 @@ def xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag
   ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
     max 0
         (xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue w n x) *
-      eta / ((a - x) ^ 2 + eta ^ 2)
+      eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))
 
 /-- Literal completed-source null flag equals generic admission-sensitive positive shear. -/
 theorem xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag_eq_gauss
@@ -139,7 +139,7 @@ theorem xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag_eq_gauss
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) (a eta : ℝ) :
     xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag w n a eta =
       HTGeometry.gaussSuperApexNullFlagPoissonSource
-        (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) a eta := by
+        (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) a eta := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
   simp only [Nat.succ_sub_one] at hnodes ⊢
   let s := xiShiftedRealMomentSequence w
@@ -169,12 +169,12 @@ theorem xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag_pos_iff
     (a : ℝ) {eta : ℝ} (heta : 0 < eta) :
     0 < xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag w n a eta ↔
       ∃ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
-        1 < w ^ 2 * x := by
+        1 < w ^ (2 : ℕ) * x := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans (by norm_num) hw)
   rw [xiShiftedCanonicalAdmissionSuperApexCompletedSourceNullFlag_eq_gauss
       hn hw0 hH (fun x hxmem => (hnodes x hxmem).ne') a eta,
     HTGeometry.gaussSuperApexNullFlagPoissonSource_pos_iff
-      (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) a heta]
+      (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) a heta]
   constructor
   · rintro ⟨x, hxmem, hxsource⟩
     exact ⟨x, hxmem,

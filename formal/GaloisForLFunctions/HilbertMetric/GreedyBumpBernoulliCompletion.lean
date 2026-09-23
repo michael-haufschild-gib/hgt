@@ -48,7 +48,7 @@ theorem GreedyBumpBernoulliCompletionData.channel_cumulantOne
 /-- Second channel factorial cumulant. -/
 theorem GreedyBumpBernoulliCompletionData.channel_cumulantTwo
     {ι : Type*} [Fintype ι] (data : GreedyBumpBernoulliCompletionData ι) (i : ι) :
-    (data.channelCount i).factorialCumulantTwo = -(data.probability i) ^ 2 := by
+    (data.channelCount i).factorialCumulantTwo = -(data.probability i) ^ (2 : ℕ) := by
   simpa [GreedyBumpBernoulliCompletionData.channelCount,
     GreedyBumpBernoulliCompletionData.channelProbability,
     StrictProbabilityParameter.toProbabilityParameter] using
@@ -84,17 +84,17 @@ theorem GreedyBumpBernoulliCompletionData.variance_eq_sum_cumulantOne_add_cumula
   rw [greedyBumpBernoulli_factorialCumulantOne,
     greedyBumpBernoulli_factorialCumulantTwo]
   change data.probability i * (1 - data.probability i) =
-    data.probability i + -(data.probability i) ^ 2
+    data.probability i + -(data.probability i) ^ (2 : ℕ)
   ring
 
 /-- Pair factorial cumulants are exactly the negative squared channel probabilities. -/
 theorem GreedyBumpBernoulliCompletionData.sum_cumulantTwo_eq_neg_sum_sq
     {ι : Type*} [Fintype ι] (data : GreedyBumpBernoulliCompletionData ι) :
     (∑ i, (data.channelCount i).factorialCumulantTwo) =
-      -(∑ i, (data.probability i) ^ 2) := by
+      -(∑ i, (data.probability i) ^ (2 : ℕ)) := by
   calc
     (∑ i, (data.channelCount i).factorialCumulantTwo) =
-        ∑ i, -(data.probability i) ^ 2 := by
+        ∑ i, -(data.probability i) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro i hi
           simpa [GreedyBumpBernoulliCompletionData.channelCount,
@@ -102,7 +102,7 @@ theorem GreedyBumpBernoulliCompletionData.sum_cumulantTwo_eq_neg_sum_sq
             StrictProbabilityParameter.toProbabilityParameter] using
             greedyBumpBernoulli_factorialCumulantTwo
               (data.channelProbability i).toProbabilityParameter
-    _ = -(∑ i, (data.probability i) ^ 2) := by
+    _ = -(∑ i, (data.probability i) ^ (2 : ℕ)) := by
       rw [Finset.sum_neg_distrib]
 
 /-- Paper's negative pair correction is precisely the non-baseline Bernoulli Fano margin. -/
@@ -154,7 +154,7 @@ theorem GreedyBumpBernoulliCompletionData.transverseVariance_eq_cumulants
     {ι : Type*} [Fintype ι] (data : GreedyBumpBernoulliCompletionData ι)
     (topDegree : ℝ) :
     transverseChannelVariance topDegree data.probability =
-      ∑ i, (topDegree - 1) ^ 2 *
+      ∑ i, (topDegree - 1) ^ (2 : ℕ) *
         ((data.channelCount i).factorialCumulantOne +
           (data.channelCount i).factorialCumulantTwo) := by
   unfold transverseChannelVariance
@@ -181,7 +181,7 @@ theorem GreedyBumpBernoulliCompletionData.unequalGapVariance_eq_cumulants
     {ι : Type*} [Fintype ι] (data : GreedyBumpBernoulliCompletionData ι)
     (gap : ι → ℝ) :
     unequalGapChannelVariance gap data.probability =
-      ∑ i, (gap i) ^ 2 *
+      ∑ i, (gap i) ^ (2 : ℕ) *
         ((data.channelCount i).factorialCumulantOne +
           (data.channelCount i).factorialCumulantTwo) := by
   unfold unequalGapChannelVariance
@@ -198,14 +198,14 @@ theorem GreedyBumpBernoulliCompletionData.unequalGapFanoMargin_eq_cumulants
     unequalGapChannelFanoMargin loweringCharge lowerDegree gap data.probability =
       loweringCharge + ∑ i,
         (lowerDegree i + gap i * (data.channelCount i).factorialCumulantOne -
-          (gap i) ^ 2 * ((data.channelCount i).factorialCumulantOne +
+          (gap i) ^ (2 : ℕ) * ((data.channelCount i).factorialCumulantOne +
             (data.channelCount i).factorialCumulantTwo)) := by
   simp_rw [data.channel_cumulantOne, data.channel_cumulantTwo]
   unfold unequalGapChannelFanoMargin unequalGapChannelMean unequalGapChannelVariance
   rw [show loweringCharge + (∑ i, (lowerDegree i + gap i * data.probability i)) -
-      (∑ i, (gap i ^ 2 * data.probability i * (1 - data.probability i))) =
+      (∑ i, (gap i ^ (2 : ℕ) * data.probability i * (1 - data.probability i))) =
       loweringCharge + ((∑ i, (lowerDegree i + gap i * data.probability i)) -
-        (∑ i, (gap i ^ 2 * data.probability i * (1 - data.probability i)))) by ring]
+        (∑ i, (gap i ^ (2 : ℕ) * data.probability i * (1 - data.probability i)))) by ring]
   rw [← Finset.sum_sub_distrib]
   apply congrArg (loweringCharge + ·)
   apply Finset.sum_congr rfl

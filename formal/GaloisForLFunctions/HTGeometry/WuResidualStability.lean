@@ -118,14 +118,14 @@ def dampedSchrodingerError (H : 𝓗 →L[ℂ] 𝓗) (u : SchwartzMap ℝ 𝓗) 
 theorem schrodinger_residual_energy_le (H : 𝓗 →L[ℂ] 𝓗) (u : SchwartzMap ℝ 𝓗) (d t : ℝ) :
     energy d t (fun s => Real.exp (-(Real.exp d * |s|)) •
       (u s - propagator (hermitianGenerator H) s (u 0))) ≤
-      ‖(schrodingerResidual H u).toBoundedContinuousFunction‖ ^ 2 / (2 * Real.exp d ^ 3) := by
+      ‖(schrodingerResidual H u).toBoundedContinuousFunction‖ ^ (2 : ℕ) / (2 * Real.exp d ^ (3 : ℕ)) := by
   have hb : ‖dampedSchrodingerError H u d‖ ≤
       ‖(schrodingerResidual H u).toBoundedContinuousFunction‖ / Real.exp d :=
     BoundedContinuousFunction.norm_ofNormedAddCommGroup_le _ (by positivity) _
   calc energy d t (fun s => Real.exp (-(Real.exp d * |s|)) •
       (u s - propagator (hermitianGenerator H) s (u 0))) ≤
-      ‖dampedSchrodingerError H u d‖ ^ 2 / (2 * Real.exp d) := energy_le d t (dampedSchrodingerError H u d)
-    _ ≤ (‖(schrodingerResidual H u).toBoundedContinuousFunction‖ / Real.exp d) ^ 2 /
+      ‖dampedSchrodingerError H u d‖ ^ (2 : ℕ) / (2 * Real.exp d) := energy_le d t (dampedSchrodingerError H u d)
+    _ ≤ (‖(schrodingerResidual H u).toBoundedContinuousFunction‖ / Real.exp d) ^ (2 : ℕ) /
         (2 * Real.exp d) :=
       div_le_div_of_nonneg_right ((sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr hb) (by positivity)
     _ = _ := by ring

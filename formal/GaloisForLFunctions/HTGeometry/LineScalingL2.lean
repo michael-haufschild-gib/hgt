@@ -32,13 +32,13 @@ theorem memLp_two_comp_const_mul {g : ℝ → ℂ} (hg : MemLp g 2 (volume : Mea
   have hmeas : AEStronglyMeasurable (fun y : ℝ => g (a * y)) volume :=
     hg.aestronglyMeasurable.comp_quasiMeasurePreserving (quasiMeasurePreserving_const_mul ha)
   refine (memLp_two_iff_integrable_sq_norm hmeas).2 ?_
-  have hint : Integrable (fun x : ℝ => ‖g x‖ ^ 2) volume :=
+  have hint : Integrable (fun x : ℝ => ‖g x‖ ^ (2 : ℕ)) volume :=
     (memLp_two_iff_integrable_sq_norm hg.aestronglyMeasurable).1 hg
-  exact (integrable_comp_mul_left_iff (fun x : ℝ => ‖g x‖ ^ 2) ha).2 hint
+  exact (integrable_comp_mul_left_iff (fun x : ℝ => ‖g x‖ ^ (2 : ℕ)) ha).2 hint
 
 theorem integral_norm_sq_comp_const_mul (g : ℝ → ℂ) (a : ℝ) :
-    (∫ y : ℝ, ‖g (a * y)‖ ^ 2) = |a|⁻¹ * ∫ x : ℝ, ‖g x‖ ^ 2 := by
-  have h := MeasureTheory.Measure.integral_comp_mul_left (fun x : ℝ => ‖g x‖ ^ 2) a
+    (∫ y : ℝ, ‖g (a * y)‖ ^ (2 : ℕ)) = |a|⁻¹ * ∫ x : ℝ, ‖g x‖ ^ (2 : ℕ) := by
+  have h := MeasureTheory.Measure.integral_comp_mul_left (fun x : ℝ => ‖g x‖ ^ (2 : ℕ)) a
   simpa [smul_eq_mul] using h
 
 end

@@ -105,9 +105,9 @@ private theorem imaginaryAxisCovariance_posSemidef
 private theorem imaginaryAxisRegularizedCovarianceTrace_mono
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A)
-    {y δ ε : ℝ} (hy : 0 < y) (hδ : 0 < δ) (hyε : y ^ 2 ≤ ε) :
+    {y δ ε : ℝ} (hy : 0 < y) (hδ : 0 < δ) (hyε : y ^ (2 : ℕ) ≤ ε) :
     imaginaryAxisRegularizedCovarianceTrace A hA hker y δ ε ≤
-      imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ 2) := by
+      imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ (2 : ℕ)) := by
   exact shiftedInverseTrace_mono
     (imaginaryAxisCutoffCovarianceSource_posSemidef A hA hker hy hδ)
     (imaginaryAxisCovariance_posSemidef A hA hker hy)
@@ -117,11 +117,11 @@ private theorem imaginaryAxisRegularizedCovarianceTrace_mono
 private theorem imaginaryAxisRegularizedCovarianceTrace_sq_eq_scaled
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A) {y δ : ℝ} (hy : 0 < y) :
-    imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ 2) =
+    imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ (2 : ℕ)) =
       imaginaryAxisScaledCovarianceTrace A hA hker y δ := by
   unfold imaginaryAxisRegularizedCovarianceTrace shiftedInverseTrace
   unfold imaginaryAxisScaledCovarianceTrace
-  have hy2 : ((y ^ 2 : ℝ) : ℂ) = (y : ℂ) ^ 2 := by norm_cast
+  have hy2 : ((y ^ (2 : ℕ) : ℝ) : ℂ) = (y : ℂ) ^ (2 : ℕ) := by norm_cast
   rw [hy2]
   rw [← freeFockMatrixImaginaryAxisScaledProfile_eq_inv A hA hker y hy]
 
@@ -139,7 +139,7 @@ private theorem imaginaryAxisScaledCovarianceTrace_eq_ward
 private theorem imaginaryAxisRegularizedCovarianceTrace_sq_eq_ward
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A) {y δ : ℝ} (hy : 0 < y) :
-    imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ 2) =
+    imaginaryAxisRegularizedCovarianceTrace A hA hker y δ (y ^ (2 : ℕ)) =
       imaginaryAxisCutoffWardTrace A hA hker y δ :=
   (imaginaryAxisRegularizedCovarianceTrace_sq_eq_scaled A hA hker hy).trans
     (imaginaryAxisScaledCovarianceTrace_eq_ward A hA hker hy)
@@ -149,7 +149,7 @@ trace by the cutoff complement trace. -/
 theorem freeFockMatrixImaginaryAxis_regularized_trace_le
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A)
-    {y δ ε : ℝ} (hy : 0 < y) (hδ : 0 < δ) (hyε : y ^ 2 ≤ ε) :
+    {y δ ε : ℝ} (hy : 0 < y) (hδ : 0 < δ) (hyε : y ^ (2 : ℕ) ≤ ε) :
     imaginaryAxisRegularizedCovarianceTrace A hA hker y δ ε ≤
       imaginaryAxisCutoffWardTrace A hA hker y δ :=
   (imaginaryAxisRegularizedCovarianceTrace_mono A hA hker hy hδ hyε).trans_eq
@@ -267,13 +267,13 @@ private theorem zeroAtomRegularizedCovarianceTrace_le_cutoffWardTrace
     (hker : HasTrivialCommonKernel A) {δ ε : ℝ} (hδ : 0 < δ) (hε : 0 < ε) :
     zeroAtomRegularizedCovarianceTrace A hA hker δ ε ≤
       zeroAtomCutoffWardTrace A hA hker δ := by
-  have hsq : Tendsto (fun y : ℝ => y ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    have hfull : Tendsto (fun y : ℝ => y ^ 2) (𝓝 0) (𝓝 (0 ^ 2)) :=
-      (show ContinuousAt (fun y : ℝ => y ^ 2) 0 by fun_prop).tendsto
+  have hsq : Tendsto (fun y : ℝ => y ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hfull : Tendsto (fun y : ℝ => y ^ (2 : ℕ)) (𝓝 0) (𝓝 (0 ^ (2 : ℕ))) :=
+      (show ContinuousAt (fun y : ℝ => y ^ (2 : ℕ)) 0 by fun_prop).tendsto
     have hrestrict := hfull.mono_left
       (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from inf_le_left)
     simpa using hrestrict
-  have hsquare : ∀ᶠ y : ℝ in 𝓝[>] (0 : ℝ), y ^ 2 ≤ ε :=
+  have hsquare : ∀ᶠ y : ℝ in 𝓝[>] (0 : ℝ), y ^ (2 : ℕ) ≤ ε :=
     ((tendsto_order.1 hsq).2 ε hε).mono fun _ hy => hy.le
   have hle : ∀ᶠ y : ℝ in 𝓝[>] (0 : ℝ),
       imaginaryAxisRegularizedCovarianceTrace A hA hker y δ ε ≤

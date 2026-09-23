@@ -24,17 +24,17 @@ open MeasureTheory
 
 /-! ## Two scalar Taylor bounds -/
 
-theorem abs_cos_sub_one_le (x : ℝ) : |Real.cos x - 1| ≤ x ^ 2 / 2 := by
+theorem abs_cos_sub_one_le (x : ℝ) : |Real.cos x - 1| ≤ x ^ (2 : ℕ) / 2 := by
   rw [abs_le]
   refine ⟨?_, ?_⟩
   · have := Real.one_sub_sq_div_two_le_cos (x := x)
     linarith
   · have := Real.cos_le_one x
-    have hsq : (0 : ℝ) ≤ x ^ 2 / 2 := by positivity
+    have hsq : (0 : ℝ) ≤ x ^ (2 : ℕ) / 2 := by positivity
     linarith
 
 private theorem abs_sin_sub_self_le_of_nonneg {y : ℝ} (hy : 0 ≤ y) :
-    |Real.sin y - y| ≤ y ^ 3 / 6 := by
+    |Real.sin y - y| ≤ y ^ (3 : ℕ) / 6 := by
   have hderiv : ∀ t ∈ Set.uIcc (0 : ℝ) y,
       HasDerivAt (fun u : ℝ => Real.sin u - u) (Real.cos t - 1) t := fun t _ =>
     (Real.hasDerivAt_sin t).sub (hasDerivAt_id t)
@@ -44,25 +44,25 @@ private theorem abs_sin_sub_self_le_of_nonneg {y : ℝ} (hy : 0 ≤ y) :
   rw [Real.sin_zero, sub_zero, sub_zero] at hFTC
   have habs : IntervalIntegrable (fun t : ℝ => |Real.cos t - 1|) volume 0 y :=
     ((Real.continuous_cos.sub continuous_const).abs).intervalIntegrable 0 y
-  have hquad : IntervalIntegrable (fun t : ℝ => t ^ 2 / 2) volume 0 y :=
+  have hquad : IntervalIntegrable (fun t : ℝ => t ^ (2 : ℕ) / 2) volume 0 y :=
     ((continuous_pow 2).div_const 2).intervalIntegrable 0 y
   have h1 : ‖∫ t in (0 : ℝ)..y, (Real.cos t - 1)‖ ≤ ∫ t in (0 : ℝ)..y, ‖Real.cos t - 1‖ :=
     intervalIntegral.norm_integral_le_integral_norm hy
-  have h2 : (∫ t in (0 : ℝ)..y, ‖Real.cos t - 1‖) ≤ ∫ t in (0 : ℝ)..y, t ^ 2 / 2 := by
+  have h2 : (∫ t in (0 : ℝ)..y, ‖Real.cos t - 1‖) ≤ ∫ t in (0 : ℝ)..y, t ^ (2 : ℕ) / 2 := by
     refine intervalIntegral.integral_mono_on hy habs hquad fun t _ => ?_
     rw [Real.norm_eq_abs]
     exact abs_cos_sub_one_le t
-  have hval : (∫ t in (0 : ℝ)..y, t ^ 2 / 2) = y ^ 3 / 6 := by
+  have hval : (∫ t in (0 : ℝ)..y, t ^ (2 : ℕ) / 2) = y ^ (3 : ℕ) / 6 := by
     rw [intervalIntegral.integral_div, integral_pow]
     norm_num
     ring
   rw [hFTC, Real.norm_eq_abs] at h1
   calc |Real.sin y - y| ≤ ∫ t in (0 : ℝ)..y, ‖Real.cos t - 1‖ := h1
-    _ ≤ ∫ t in (0 : ℝ)..y, t ^ 2 / 2 := h2
-    _ = y ^ 3 / 6 := hval
+    _ ≤ ∫ t in (0 : ℝ)..y, t ^ (2 : ℕ) / 2 := h2
+    _ = y ^ (3 : ℕ) / 6 := hval
 
 /-- **`|sin a − a| ≤ |a|³/6`**, by integrating `|cos t − 1| ≤ t²/2`. -/
-theorem abs_sin_sub_self_le (x : ℝ) : |Real.sin x - x| ≤ |x| ^ 3 / 6 := by
+theorem abs_sin_sub_self_le (x : ℝ) : |Real.sin x - x| ≤ |x| ^ (3 : ℕ) / 6 := by
   rcases le_total (0 : ℝ) x with hx | hx
   · rw [abs_of_nonneg hx]
     exact abs_sin_sub_self_le_of_nonneg hx
@@ -107,9 +107,9 @@ theorem norm_kgLowPassOp_apply_le (R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) 
 /-! ## The propagators are Taylor-accurate below a fixed frequency -/
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-private theorem kgFreq_sq_le {R : ℝ} {ξ : E} (hξ : ‖ξ‖ ≤ R) : kgFreq ξ ^ 2 ≤ 1 + R ^ 2 := by
+private theorem kgFreq_sq_le {R : ℝ} {ξ : E} (hξ : ‖ξ‖ ≤ R) : kgFreq ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) := by
   rw [kgFreq, Real.sq_sqrt (by positivity)]
-  have h : ‖ξ‖ ^ 2 ≤ R ^ 2 := by
+  have h : ‖ξ‖ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by
     have := norm_nonneg ξ
     nlinarith
   linarith
@@ -123,19 +123,19 @@ theorem measurable_kgCosDefectLow (τ R : ℝ) : Measurable (kgCosDefectLow (E :
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem norm_kgCosDefectLow_le (τ R : ℝ) (ξ : E) :
-    ‖kgCosDefectLow τ R ξ‖ ≤ τ ^ 2 * (1 + R ^ 2) / 2 := by
-  have hB0 : (0 : ℝ) ≤ τ ^ 2 * (1 + R ^ 2) / 2 := by positivity
+    ‖kgCosDefectLow τ R ξ‖ ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 := by
+  have hB0 : (0 : ℝ) ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 := by positivity
   rw [kgCosDefectLow, kgLowPass]
   split
   · rename_i hξ
     rw [mul_one, kgCosSymbol, show ((1 : ℂ)) = ((1 : ℝ) : ℂ) by norm_num,
       ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs]
-    have h1 : |Real.cos (τ * kgFreq ξ) - 1| ≤ (τ * kgFreq ξ) ^ 2 / 2 :=
+    have h1 : |Real.cos (τ * kgFreq ξ) - 1| ≤ (τ * kgFreq ξ) ^ (2 : ℕ) / 2 :=
       abs_cos_sub_one_le _
-    have h2 : (τ * kgFreq ξ) ^ 2 / 2 = τ ^ 2 * kgFreq ξ ^ 2 / 2 := by ring
-    have h3 : kgFreq ξ ^ 2 ≤ 1 + R ^ 2 := kgFreq_sq_le hξ
-    have h4 : τ ^ 2 * kgFreq ξ ^ 2 / 2 ≤ τ ^ 2 * (1 + R ^ 2) / 2 := by
-      have : (0 : ℝ) ≤ τ ^ 2 := sq_nonneg τ
+    have h2 : (τ * kgFreq ξ) ^ (2 : ℕ) / 2 = τ ^ (2 : ℕ) * kgFreq ξ ^ (2 : ℕ) / 2 := by ring
+    have h3 : kgFreq ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) := kgFreq_sq_le hξ
+    have h4 : τ ^ (2 : ℕ) * kgFreq ξ ^ (2 : ℕ) / 2 ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 := by
+      have : (0 : ℝ) ≤ τ ^ (2 : ℕ) := sq_nonneg τ
       nlinarith
     rw [h2] at h1
     linarith
@@ -143,8 +143,8 @@ theorem norm_kgCosDefectLow_le (τ R : ℝ) (ξ : E) :
 
 /-- **The cosine propagator is the identity to second order, below a fixed frequency.** -/
 theorem norm_kgCosOp_lowPass_sub_le (τ R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
-    ‖kgCosOp τ (kgLowPassOp R x) - kgLowPassOp R x‖ ≤ τ ^ 2 * (1 + R ^ 2) / 2 * ‖x‖ := by
-  have hB0 : (0 : ℝ) ≤ τ ^ 2 * (1 + R ^ 2) / 2 := by positivity
+    ‖kgCosOp τ (kgLowPassOp R x) - kgLowPassOp R x‖ ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 * ‖x‖ := by
+  have hB0 : (0 : ℝ) ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 := by positivity
   have hprod : Measurable fun ξ : E => kgCosSymbol τ ξ * kgLowPass R ξ :=
     (measurable_kgCosSymbol τ).mul (measurable_kgLowPass R)
   have hprodb : ∀ ξ : E, ‖kgCosSymbol τ ξ * kgLowPass R ξ‖ ≤ 1 := by
@@ -182,8 +182,8 @@ theorem measurable_kgSinDefectLow (τ R : ℝ) : Measurable (kgSinDefectLow (E :
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem norm_kgSinDefectLow_le (τ R : ℝ) (ξ : E) :
-    ‖kgSinDefectLow τ R ξ‖ ≤ |τ| ^ 3 * (1 + R ^ 2) / 6 := by
-  have hB0 : (0 : ℝ) ≤ |τ| ^ 3 * (1 + R ^ 2) / 6 := by positivity
+    ‖kgSinDefectLow τ R ξ‖ ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 := by
+  have hB0 : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 := by positivity
   rw [kgSinDefectLow, kgLowPass]
   split
   · rename_i hξ
@@ -193,17 +193,17 @@ theorem norm_kgSinDefectLow_le (τ R : ℝ) (ξ : E) :
         = (Real.sin (τ * kgFreq ξ) - τ * kgFreq ξ) / kgFreq ξ := by
       field_simp
     rw [hrw, abs_div, abs_of_pos hpos, div_le_iff₀ hpos]
-    have h1 : |Real.sin (τ * kgFreq ξ) - τ * kgFreq ξ| ≤ |τ * kgFreq ξ| ^ 3 / 6 :=
+    have h1 : |Real.sin (τ * kgFreq ξ) - τ * kgFreq ξ| ≤ |τ * kgFreq ξ| ^ (3 : ℕ) / 6 :=
       abs_sin_sub_self_le _
-    have habs : |τ * kgFreq ξ| ^ 3 = |τ| ^ 3 * kgFreq ξ ^ 3 := by
+    have habs : |τ * kgFreq ξ| ^ (3 : ℕ) = |τ| ^ (3 : ℕ) * kgFreq ξ ^ (3 : ℕ) := by
       rw [abs_mul, abs_of_pos hpos, mul_pow]
-    have h3 : kgFreq ξ ^ 2 ≤ 1 + R ^ 2 := kgFreq_sq_le hξ
-    have hcube : |τ| ^ 3 * kgFreq ξ ^ 3 / 6 ≤ |τ| ^ 3 * (1 + R ^ 2) / 6 * kgFreq ξ := by
-      have hfac : (0 : ℝ) ≤ |τ| ^ 3 * kgFreq ξ / 6 := by positivity
+    have h3 : kgFreq ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) := kgFreq_sq_le hξ
+    have hcube : |τ| ^ (3 : ℕ) * kgFreq ξ ^ (3 : ℕ) / 6 ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 * kgFreq ξ := by
+      have hfac : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) * kgFreq ξ / 6 := by positivity
       have hmul := mul_le_mul_of_nonneg_left h3 hfac
-      calc |τ| ^ 3 * kgFreq ξ ^ 3 / 6 = |τ| ^ 3 * kgFreq ξ / 6 * kgFreq ξ ^ 2 := by ring
-        _ ≤ |τ| ^ 3 * kgFreq ξ / 6 * (1 + R ^ 2) := hmul
-        _ = |τ| ^ 3 * (1 + R ^ 2) / 6 * kgFreq ξ := by ring
+      calc |τ| ^ (3 : ℕ) * kgFreq ξ ^ (3 : ℕ) / 6 = |τ| ^ (3 : ℕ) * kgFreq ξ / 6 * kgFreq ξ ^ (2 : ℕ) := by ring
+        _ ≤ |τ| ^ (3 : ℕ) * kgFreq ξ / 6 * (1 + R ^ (2 : ℕ)) := hmul
+        _ = |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 * kgFreq ξ := by ring
     rw [habs] at h1
     linarith
   · simpa using hB0
@@ -212,8 +212,8 @@ theorem norm_kgSinDefectLow_le (τ R : ℝ) (ξ : E) :
 frequency.** -/
 theorem norm_kgSinFreqOp_lowPass_sub_smul_le (τ R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     ‖kgSinFreqOp τ (kgLowPassOp R x) - (τ : ℂ) • kgLowPassOp R x‖
-      ≤ |τ| ^ 3 * (1 + R ^ 2) / 6 * ‖x‖ := by
-  have hB0 : (0 : ℝ) ≤ |τ| ^ 3 * (1 + R ^ 2) / 6 := by positivity
+      ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 * ‖x‖ := by
+  have hB0 : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6 := by positivity
   have hprod : Measurable fun ξ : E => kgSinOverFreq τ ξ * kgLowPass R ξ :=
     (measurable_kgSinOverFreq τ).mul (measurable_kgLowPass R)
   have hprodb : ∀ ξ : E, ‖kgSinOverFreq τ ξ * kgLowPass R ξ‖ ≤ 1 := by

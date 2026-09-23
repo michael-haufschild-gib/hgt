@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthBellGrades
 
 The order-eight Bell grades `4`, `6`, and `8` are bounded directly by the corresponding
 positive-particle compositions.  Iterated likelihood moment multiplication supplies one tail
-probability for every merge.  Their exact coefficients then fit below `q^7 r^(q-1)` for
+probability for every merge.  Their exact coefficients then fit below `q^(7 : ℕ) r^(q-1)` for
 `q = 4, 6, 8`, hence below the already summable higher-even Fock loss.
 
 Only Bell grade two remains outside this connector; it requires the exact ordered pair trace.
@@ -31,7 +31,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_four_mul_le
           thetaCuspLikelihoodNormalizedMoment B j *
         (thetaCuspLikelihoodNormalizedMoment B k *
           thetaCuspLikelihoodNormalizedMoment B l) ≤
-      thetaCuspLikelihoodTailProbability B ^ 3 *
+      thetaCuspLikelihoodTailProbability B ^ (3 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment B (i + j + (k + l)) := by
   let p := thetaCuspLikelihoodTailProbability B
   let e := thetaCuspLikelihoodNormalizedMoment B
@@ -53,9 +53,9 @@ theorem thetaCuspLikelihoodNormalizedMoment_four_mul_le
   calc
     e i * e j * (e k * e l) ≤ (p * e (i + j)) * (p * e (k + l)) :=
       mul_le_mul hij hkl (mul_nonneg (he k) (he l)) (mul_nonneg hp (he (i + j)))
-    _ = p ^ 2 * (e (i + j) * e (k + l)) := by ring
-    _ ≤ p ^ 2 * (p * e ((i + j) + (k + l))) := by gcongr
-    _ = p ^ 3 * e (i + j + (k + l)) := by ring
+    _ = p ^ (2 : ℕ) * (e (i + j) * e (k + l)) := by ring
+    _ ≤ p ^ (2 : ℕ) * (p * e ((i + j) + (k + l))) := by gcongr
+    _ = p ^ (3 : ℕ) * e (i + j + (k + l)) := by ring
 
 /-- Six normalized moments cost at most five powers of tail probability. -/
 theorem thetaCuspLikelihoodNormalizedMoment_six_mul_le
@@ -66,7 +66,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_six_mul_le
           thetaCuspLikelihoodNormalizedMoment B l)) *
         (thetaCuspLikelihoodNormalizedMoment B m *
           thetaCuspLikelihoodNormalizedMoment B n) ≤
-      thetaCuspLikelihoodTailProbability B ^ 5 *
+      thetaCuspLikelihoodTailProbability B ^ (5 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment B (i + j + (k + l) + (m + n)) := by
   let p := thetaCuspLikelihoodTailProbability B
   let e := thetaCuspLikelihoodNormalizedMoment B
@@ -76,7 +76,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_six_mul_le
   have he (a : ℕ) : 0 ≤ e a := by
     simpa only [e] using thetaCuspLikelihoodNormalizedMoment_nonneg hB a
   have hfour : e i * e j * (e k * e l) ≤
-      p ^ 3 * e (i + j + (k + l)) := by
+      p ^ (3 : ℕ) * e (i + j + (k + l)) := by
     simpa only [p, e] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB i j k l
   have hpair : e m * e n ≤ p * e (m + n) := by
@@ -88,12 +88,12 @@ theorem thetaCuspLikelihoodNormalizedMoment_six_mul_le
       hB (i + j + (k + l)) (m + n)
   calc
     (e i * e j * (e k * e l)) * (e m * e n) ≤
-        (p ^ 3 * e (i + j + (k + l))) * (p * e (m + n)) :=
+        (p ^ (3 : ℕ) * e (i + j + (k + l))) * (p * e (m + n)) :=
       mul_le_mul hfour hpair (mul_nonneg (he m) (he n))
         (mul_nonneg (pow_nonneg hp 3) (he (i + j + (k + l))))
-    _ = p ^ 4 * (e (i + j + (k + l)) * e (m + n)) := by ring
-    _ ≤ p ^ 4 * (p * e (i + j + (k + l) + (m + n))) := by gcongr
-    _ = p ^ 5 * e (i + j + (k + l) + (m + n)) := by ring
+    _ = p ^ (4 : ℕ) * (e (i + j + (k + l)) * e (m + n)) := by ring
+    _ ≤ p ^ (4 : ℕ) * (p * e (i + j + (k + l) + (m + n))) := by gcongr
+    _ = p ^ (5 : ℕ) * e (i + j + (k + l) + (m + n)) := by ring
 
 /-- Eight normalized moments cost at most seven powers of tail probability. -/
 theorem thetaCuspLikelihoodNormalizedMoment_eight_mul_le
@@ -106,7 +106,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_eight_mul_le
           thetaCuspLikelihoodNormalizedMoment B n *
         (thetaCuspLikelihoodNormalizedMoment B o *
           thetaCuspLikelihoodNormalizedMoment B q)) ≤
-      thetaCuspLikelihoodTailProbability B ^ 7 *
+      thetaCuspLikelihoodTailProbability B ^ (7 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment B
           (i + j + (k + l) + (m + n + (o + q))) := by
   let p := thetaCuspLikelihoodTailProbability B
@@ -117,11 +117,11 @@ theorem thetaCuspLikelihoodNormalizedMoment_eight_mul_le
   have he (a : ℕ) : 0 ≤ e a := by
     simpa only [e] using thetaCuspLikelihoodNormalizedMoment_nonneg hB a
   have hleft : e i * e j * (e k * e l) ≤
-      p ^ 3 * e (i + j + (k + l)) := by
+      p ^ (3 : ℕ) * e (i + j + (k + l)) := by
     simpa only [p, e] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB i j k l
   have hright : e m * e n * (e o * e q) ≤
-      p ^ 3 * e (m + n + (o + q)) := by
+      p ^ (3 : ℕ) * e (m + n + (o + q)) := by
     simpa only [p, e] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB m n o q
   have hmerge : e (i + j + (k + l)) * e (m + n + (o + q)) ≤
@@ -130,16 +130,16 @@ theorem thetaCuspLikelihoodNormalizedMoment_eight_mul_le
       hB (i + j + (k + l)) (m + n + (o + q))
   calc
     (e i * e j * (e k * e l)) * (e m * e n * (e o * e q)) ≤
-        (p ^ 3 * e (i + j + (k + l))) *
-          (p ^ 3 * e (m + n + (o + q))) :=
+        (p ^ (3 : ℕ) * e (i + j + (k + l))) *
+          (p ^ (3 : ℕ) * e (m + n + (o + q))) :=
       mul_le_mul hleft hright
         (mul_nonneg (mul_nonneg (he m) (he n)) (mul_nonneg (he o) (he q)))
         (mul_nonneg (pow_nonneg hp 3) (he (i + j + (k + l))))
-    _ = p ^ 6 *
+    _ = p ^ (6 : ℕ) *
         (e (i + j + (k + l)) * e (m + n + (o + q))) := by ring
-    _ ≤ p ^ 6 *
+    _ ≤ p ^ (6 : ℕ) *
         (p * e (i + j + (k + l) + (m + n + (o + q)))) := by gcongr
-    _ = p ^ 7 * e (i + j + (k + l) + (m + n + (o + q))) := by ring
+    _ = p ^ (7 : ℕ) * e (i + j + (k + l) + (m + n + (o + q))) := by ring
 
 /-- The first five positive ordinary jets lie below their leading tilted moments. -/
 theorem thetaCuspLikelihoodEighthBellJets_one_to_five_le_leading
@@ -148,16 +148,16 @@ theorem thetaCuspLikelihoodEighthBellJets_one_to_five_le_leading
         2 * thetaCuspSingleAtomReflectionScale 1 x *
           thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x) ∧
     thetaCuspLikelihoodEighthBellJetTwo x ≤
-        4 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+        4 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
           thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 2 ∧
     thetaCuspLikelihoodEighthBellJetThree x ≤
-        8 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 *
+        8 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) *
           thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 3 ∧
     thetaCuspLikelihoodEighthBellJetFour x ≤
-        16 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+        16 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
           thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 ∧
     thetaCuspLikelihoodEighthBellJetFive x ≤
-        32 * thetaCuspSingleAtomReflectionScale 1 x ^ 5 *
+        32 * thetaCuspSingleAtomReflectionScale 1 x ^ (5 : ℕ) *
           thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 5 := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
@@ -213,7 +213,7 @@ theorem thetaCuspLikelihoodEighthBellJets_one_to_five_le_leading
     have htwentyfive : 25 * e3 ≤ 10 * A * e4 := by nlinarith
     have hscaled := mul_le_mul_of_nonneg_left htwentyfive (pow_nonneg hA0.le 3)
     have hAe12 := mul_le_mul_of_nonneg_left he12 hA0.le
-    have hAA : A ≤ A ^ 2 := by nlinarith [sq_nonneg (A - 1)]
+    have hAA : A ≤ A ^ (2 : ℕ) := by nlinarith [sq_nonneg (A - 1)]
     have hAe2 := mul_le_mul_of_nonneg_right hAA he2.le
     nlinarith
 
@@ -221,12 +221,12 @@ theorem thetaCuspLikelihoodEighthBellJets_one_to_five_le_leading
 theorem tsum_thetaCuspLikelihoodAtomEighthMonomialMass_eq_spectralMoment
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∑' k : ℕ, thetaCuspLikelihoodAtomEighthMonomialMass (k + 2) A B) =
-      A ^ 8 * thetaCuspHigherLikelihoodSpectralMoment B 8 := by
-  let f : ℝ → ℝ := fun t => (A * t) ^ 8 * Real.exp (-(B * t))
+      A ^ (8 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 8 := by
+  let f : ℝ → ℝ := fun t => (A * t) ^ (8 : ℕ) * Real.exp (-(B * t))
   have hInt : Integrable f thetaCuspHigherLikelihoodSpectralMeasure := by
     have hi :=
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 8 hB).const_mul
-        (A ^ 8)
+        (A ^ (8 : ℕ))
     convert hi using 1
     funext t
     dsimp [f]
@@ -238,14 +238,14 @@ theorem tsum_thetaCuspLikelihoodAtomEighthMonomialMass_eq_spectralMoment
   calc
     (∑' k : ℕ, thetaCuspLikelihoodAtomEighthMonomialMass (k + 2) A B) =
         ∫ t : ℝ, f t ∂thetaCuspHigherLikelihoodSpectralMeasure := hglobal.symm
-    _ = A ^ 8 * (∫ t : ℝ, t ^ 8 * Real.exp (-(B * t))
+    _ = A ^ (8 : ℕ) * (∫ t : ℝ, t ^ (8 : ℕ) * Real.exp (-(B * t))
         ∂thetaCuspHigherLikelihoodSpectralMeasure) := by
       rw [← integral_const_mul]
       apply integral_congr_ae
       filter_upwards with t
       dsimp [f]
       ring
-    _ = A ^ 8 * thetaCuspHigherLikelihoodSpectralMoment B 8 := by
+    _ = A ^ (8 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 8 := by
       rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral]
       congr 1
       apply integral_congr_ae
@@ -312,10 +312,10 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
   rcases thetaCuspLikelihoodEighthBellJets_one_to_five_le_leading hx with
     ⟨hb1le, hb2le, hb3le, hb4le, hb5le⟩
   have hb1le' : b1 ≤ 2 * A * e1 := by simpa only [b1, A, B, e1] using hb1le
-  have hb2le' : b2 ≤ 4 * A ^ 2 * e2 := by simpa only [b2, A, B, e2] using hb2le
-  have hb3le' : b3 ≤ 8 * A ^ 3 * e3 := by simpa only [b3, A, B, e3] using hb3le
-  have hb4le' : b4 ≤ 16 * A ^ 4 * e4 := by simpa only [b4, A, B, e4] using hb4le
-  have hb5le' : b5 ≤ 32 * A ^ 5 * e5 := by simpa only [b5, A, B, e5] using hb5le
+  have hb2le' : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by simpa only [b2, A, B, e2] using hb2le
+  have hb3le' : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by simpa only [b3, A, B, e3] using hb3le
+  have hb4le' : b4 ≤ 16 * A ^ (4 : ℕ) * e4 := by simpa only [b4, A, B, e4] using hb4le
+  have hb5le' : b5 ≤ 32 * A ^ (5 : ℕ) * e5 := by simpa only [b5, A, B, e5] using hb5le
   have hpEq : p = r / (1 + r) := by
     dsimp only [p, r, thetaCuspLikelihoodTailProbability,
       thetaCuspLikelihoodNormalizedMoment, thetaCuspLikelihoodPartition]
@@ -325,141 +325,141 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
     rw [hpEq]
     apply (div_le_iff₀ hden).2
     nlinarith [sq_nonneg r]
-  have hp3r3 : p ^ 3 ≤ r ^ 3 := pow_le_pow_left₀ hp hpr 3
-  have hp5r5 : p ^ 5 ≤ r ^ 5 := pow_le_pow_left₀ hp hpr 5
-  have hp7r7 : p ^ 7 ≤ r ^ 7 := pow_le_pow_left₀ hp hpr 7
+  have hp3r3 : p ^ (3 : ℕ) ≤ r ^ (3 : ℕ) := pow_le_pow_left₀ hp hpr 3
+  have hp5r5 : p ^ (5 : ℕ) ≤ r ^ (5 : ℕ) := pow_le_pow_left₀ hp hpr 5
+  have hp7r7 : p ^ (7 : ℕ) ≤ r ^ (7 : ℕ) := pow_le_pow_left₀ hp hpr 7
 
-  have h1115 : e1 * e1 * (e1 * e5) ≤ p ^ 3 * e8 := by
+  have h1115 : e1 * e1 * (e1 * e5) ≤ p ^ (3 : ℕ) * e8 := by
     simpa only [e1, e5, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (1 + 5) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB 1 1 1 5
-  have h1124 : e1 * e1 * (e2 * e4) ≤ p ^ 3 * e8 := by
+  have h1124 : e1 * e1 * (e2 * e4) ≤ p ^ (3 : ℕ) * e8 := by
     simpa only [e1, e2, e4, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (2 + 4) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB 1 1 2 4
-  have h1133 : e1 * e1 * (e3 * e3) ≤ p ^ 3 * e8 := by
+  have h1133 : e1 * e1 * (e3 * e3) ≤ p ^ (3 : ℕ) * e8 := by
     simpa only [e1, e3, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (3 + 3) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB 1 1 3 3
-  have h1223 : e1 * e2 * (e2 * e3) ≤ p ^ 3 * e8 := by
+  have h1223 : e1 * e2 * (e2 * e3) ≤ p ^ (3 : ℕ) * e8 := by
     simpa only [e1, e2, e3, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 2 + (2 + 3) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB 1 2 2 3
-  have h2222 : e2 * e2 * (e2 * e2) ≤ p ^ 3 * e8 := by
+  have h2222 : e2 * e2 * (e2 * e2) ≤ p ^ (3 : ℕ) * e8 := by
     simpa only [e2, e8, show 2 + 2 + (2 + 2) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_four_mul_le hB 2 2 2 2
 
-  have hb1115 : b1 ^ 3 * b5 ≤ 256 * A ^ 8 * p ^ 3 * e8 := by
+  have hb1115 : b1 ^ (3 : ℕ) * b5 ≤ 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by
     calc
-      b1 ^ 3 * b5 ≤ (2 * A * e1) ^ 3 * (32 * A ^ 5 * e5) := by gcongr
-      _ = 256 * A ^ 8 * (e1 * e1 * (e1 * e5)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 3 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 3 * e8 := by ring
-  have hb1124 : b1 ^ 2 * b2 * b4 ≤ 256 * A ^ 8 * p ^ 3 * e8 := by
+      b1 ^ (3 : ℕ) * b5 ≤ (2 * A * e1) ^ (3 : ℕ) * (32 * A ^ (5 : ℕ) * e5) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * (e1 * e1 * (e1 * e5)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (3 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by ring
+  have hb1124 : b1 ^ (2 : ℕ) * b2 * b4 ≤ 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by
     calc
-      b1 ^ 2 * b2 * b4 ≤ (2 * A * e1) ^ 2 * (4 * A ^ 2 * e2) *
-          (16 * A ^ 4 * e4) := by gcongr
-      _ = 256 * A ^ 8 * (e1 * e1 * (e2 * e4)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 3 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 3 * e8 := by ring
-  have hb1133 : b1 ^ 2 * b3 ^ 2 ≤ 256 * A ^ 8 * p ^ 3 * e8 := by
+      b1 ^ (2 : ℕ) * b2 * b4 ≤ (2 * A * e1) ^ (2 : ℕ) * (4 * A ^ (2 : ℕ) * e2) *
+          (16 * A ^ (4 : ℕ) * e4) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * (e1 * e1 * (e2 * e4)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (3 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by ring
+  have hb1133 : b1 ^ (2 : ℕ) * b3 ^ (2 : ℕ) ≤ 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by
     calc
-      b1 ^ 2 * b3 ^ 2 ≤ (2 * A * e1) ^ 2 * (8 * A ^ 3 * e3) ^ 2 := by gcongr
-      _ = 256 * A ^ 8 * (e1 * e1 * (e3 * e3)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 3 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 3 * e8 := by ring
-  have hb1223 : b1 * b2 ^ 2 * b3 ≤ 256 * A ^ 8 * p ^ 3 * e8 := by
+      b1 ^ (2 : ℕ) * b3 ^ (2 : ℕ) ≤ (2 * A * e1) ^ (2 : ℕ) * (8 * A ^ (3 : ℕ) * e3) ^ (2 : ℕ) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * (e1 * e1 * (e3 * e3)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (3 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by ring
+  have hb1223 : b1 * b2 ^ (2 : ℕ) * b3 ≤ 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by
     calc
-      b1 * b2 ^ 2 * b3 ≤ (2 * A * e1) * (4 * A ^ 2 * e2) ^ 2 *
-          (8 * A ^ 3 * e3) := by gcongr
-      _ = 256 * A ^ 8 * (e1 * e2 * (e2 * e3)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 3 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 3 * e8 := by ring
-  have hb2222 : b2 ^ 4 ≤ 256 * A ^ 8 * p ^ 3 * e8 := by
+      b1 * b2 ^ (2 : ℕ) * b3 ≤ (2 * A * e1) * (4 * A ^ (2 : ℕ) * e2) ^ (2 : ℕ) *
+          (8 * A ^ (3 : ℕ) * e3) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * (e1 * e2 * (e2 * e3)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (3 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by ring
+  have hb2222 : b2 ^ (4 : ℕ) ≤ 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by
     calc
-      b2 ^ 4 ≤ (4 * A ^ 2 * e2) ^ 4 := by gcongr
-      _ = 256 * A ^ 8 * (e2 * e2 * (e2 * e2)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 3 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 3 * e8 := by ring
+      b2 ^ (4 : ℕ) ≤ (4 * A ^ (2 : ℕ) * e2) ^ (4 : ℕ) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * (e2 * e2 * (e2 * e2)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (3 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8 := by ring
   have hgrade4 : thetaCuspLikelihoodEighthBellGradeFour x ≤
-      1701 * (256 * A ^ 8 * p ^ 3 * e8) := by
+      1701 * (256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8) := by
     dsimp only [thetaCuspLikelihoodEighthBellGradeFour, b1, b2, b3, b4, b5]
     nlinarith
   have hgrade4r : 6 * thetaCuspLikelihoodEighthBellGradeFour x ≤
-      256 * (4 : ℝ) ^ 7 * r ^ 3 * A ^ 8 * e8 := by
+      256 * (4 : ℝ) ^ (7 : ℕ) * r ^ (3 : ℕ) * A ^ (8 : ℕ) * e8 := by
     have hscale := mul_le_mul_of_nonneg_right hp3r3
       (mul_nonneg (pow_nonneg hA.le 8) he8)
     nlinarith
 
-  have h111113 : (e1 * e1 * (e1 * e1)) * (e1 * e3) ≤ p ^ 5 * e8 := by
+  have h111113 : (e1 * e1 * (e1 * e1)) * (e1 * e3) ≤ p ^ (5 : ℕ) * e8 := by
     simpa only [e1, e3, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (1 + 1) + (1 + 3) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_six_mul_le hB 1 1 1 1 1 3
-  have h111122 : (e1 * e1 * (e1 * e1)) * (e2 * e2) ≤ p ^ 5 * e8 := by
+  have h111122 : (e1 * e1 * (e1 * e1)) * (e2 * e2) ≤ p ^ (5 : ℕ) * e8 := by
     simpa only [e1, e2, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (1 + 1) + (2 + 2) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_six_mul_le hB 1 1 1 1 2 2
-  have hb111113 : b1 ^ 5 * b3 ≤ 256 * A ^ 8 * p ^ 5 * e8 := by
+  have hb111113 : b1 ^ (5 : ℕ) * b3 ≤ 256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8 := by
     calc
-      b1 ^ 5 * b3 ≤ (2 * A * e1) ^ 5 * (8 * A ^ 3 * e3) := by gcongr
-      _ = 256 * A ^ 8 * ((e1 * e1 * (e1 * e1)) * (e1 * e3)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 5 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 5 * e8 := by ring
-  have hb111122 : b1 ^ 4 * b2 ^ 2 ≤ 256 * A ^ 8 * p ^ 5 * e8 := by
+      b1 ^ (5 : ℕ) * b3 ≤ (2 * A * e1) ^ (5 : ℕ) * (8 * A ^ (3 : ℕ) * e3) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * ((e1 * e1 * (e1 * e1)) * (e1 * e3)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (5 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8 := by ring
+  have hb111122 : b1 ^ (4 : ℕ) * b2 ^ (2 : ℕ) ≤ 256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8 := by
     calc
-      b1 ^ 4 * b2 ^ 2 ≤ (2 * A * e1) ^ 4 * (4 * A ^ 2 * e2) ^ 2 := by gcongr
-      _ = 256 * A ^ 8 * ((e1 * e1 * (e1 * e1)) * (e2 * e2)) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 5 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 5 * e8 := by ring
+      b1 ^ (4 : ℕ) * b2 ^ (2 : ℕ) ≤ (2 * A * e1) ^ (4 : ℕ) * (4 * A ^ (2 : ℕ) * e2) ^ (2 : ℕ) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * ((e1 * e1 * (e1 * e1)) * (e2 * e2)) := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (5 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8 := by ring
   have hgrade6 : thetaCuspLikelihoodEighthBellGradeSix x ≤
-      266 * (256 * A ^ 8 * p ^ 5 * e8) := by
+      266 * (256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8) := by
     dsimp only [thetaCuspLikelihoodEighthBellGradeSix, b1, b2, b3]
     nlinarith
   have hgrade6r : 120 * thetaCuspLikelihoodEighthBellGradeSix x ≤
-      256 * (6 : ℝ) ^ 7 * r ^ 5 * A ^ 8 * e8 := by
+      256 * (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) * A ^ (8 : ℕ) * e8 := by
     have hscale := mul_le_mul_of_nonneg_right hp5r5
       (mul_nonneg (pow_nonneg hA.le 8) he8)
     calc
       120 * thetaCuspLikelihoodEighthBellGradeSix x ≤
-          120 * (266 * (256 * A ^ 8 * p ^ 5 * e8)) := by gcongr
-      _ = (120 * 266 * 256 : ℝ) * (p ^ 5 * (A ^ 8 * e8)) := by ring
-      _ ≤ (120 * 266 * 256 : ℝ) * (r ^ 5 * (A ^ 8 * e8)) := by gcongr
-      _ ≤ (256 * (6 : ℝ) ^ 7) * (r ^ 5 * (A ^ 8 * e8)) := by
+          120 * (266 * (256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8)) := by gcongr
+      _ = (120 * 266 * 256 : ℝ) * (p ^ (5 : ℕ) * (A ^ (8 : ℕ) * e8)) := by ring
+      _ ≤ (120 * 266 * 256 : ℝ) * (r ^ (5 : ℕ) * (A ^ (8 : ℕ) * e8)) := by gcongr
+      _ ≤ (256 * (6 : ℝ) ^ (7 : ℕ)) * (r ^ (5 : ℕ) * (A ^ (8 : ℕ) * e8)) := by
         exact mul_le_mul_of_nonneg_right (by norm_num)
           (mul_nonneg (pow_nonneg hr 5)
             (mul_nonneg (pow_nonneg hA.le 8) he8))
-      _ = 256 * (6 : ℝ) ^ 7 * r ^ 5 * A ^ 8 * e8 := by ring
+      _ = 256 * (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) * A ^ (8 : ℕ) * e8 := by ring
 
   have hones : (e1 * e1 * (e1 * e1)) * (e1 * e1 * (e1 * e1)) ≤
-      p ^ 7 * e8 := by
+      p ^ (7 : ℕ) * e8 := by
     simpa only [e1, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 + (1 + 1) + (1 + 1 + (1 + 1)) = 8 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_eight_mul_le hB 1 1 1 1 1 1 1 1
-  have hbEight : b1 ^ 8 ≤ 256 * A ^ 8 * p ^ 7 * e8 := by
+  have hbEight : b1 ^ (8 : ℕ) ≤ 256 * A ^ (8 : ℕ) * p ^ (7 : ℕ) * e8 := by
     calc
-      b1 ^ 8 ≤ (2 * A * e1) ^ 8 := by gcongr
-      _ = 256 * A ^ 8 * ((e1 * e1 * (e1 * e1)) *
+      b1 ^ (8 : ℕ) ≤ (2 * A * e1) ^ (8 : ℕ) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * ((e1 * e1 * (e1 * e1)) *
           (e1 * e1 * (e1 * e1))) := by ring
-      _ ≤ 256 * A ^ 8 * (p ^ 7 * e8) := by gcongr
-      _ = 256 * A ^ 8 * p ^ 7 * e8 := by ring
+      _ ≤ 256 * A ^ (8 : ℕ) * (p ^ (7 : ℕ) * e8) := by gcongr
+      _ = 256 * A ^ (8 : ℕ) * p ^ (7 : ℕ) * e8 := by ring
   have hgrade8r : 5040 * thetaCuspLikelihoodEighthBellGradeEight x ≤
-      256 * (8 : ℝ) ^ 7 * r ^ 7 * A ^ 8 * e8 := by
+      256 * (8 : ℝ) ^ (7 : ℕ) * r ^ (7 : ℕ) * A ^ (8 : ℕ) * e8 := by
     have hscale := mul_le_mul_of_nonneg_right hp7r7
       (mul_nonneg (pow_nonneg hA.le 8) he8)
     dsimp only [thetaCuspLikelihoodEighthBellGradeEight, b1] at hbEight ⊢
     calc
-      5040 * thetaCuspLikelihoodEighthBellJetOne x ^ 8 ≤
-          5040 * (256 * A ^ 8 * p ^ 7 * e8) := by gcongr
-      _ = (5040 * 256 : ℝ) * (p ^ 7 * (A ^ 8 * e8)) := by ring
-      _ ≤ (5040 * 256 : ℝ) * (r ^ 7 * (A ^ 8 * e8)) := by gcongr
-      _ ≤ (256 * (8 : ℝ) ^ 7) * (r ^ 7 * (A ^ 8 * e8)) := by
+      5040 * thetaCuspLikelihoodEighthBellJetOne x ^ (8 : ℕ) ≤
+          5040 * (256 * A ^ (8 : ℕ) * p ^ (7 : ℕ) * e8) := by gcongr
+      _ = (5040 * 256 : ℝ) * (p ^ (7 : ℕ) * (A ^ (8 : ℕ) * e8)) := by ring
+      _ ≤ (5040 * 256 : ℝ) * (r ^ (7 : ℕ) * (A ^ (8 : ℕ) * e8)) := by gcongr
+      _ ≤ (256 * (8 : ℝ) ^ (7 : ℕ)) * (r ^ (7 : ℕ) * (A ^ (8 : ℕ) * e8)) := by
         exact mul_le_mul_of_nonneg_right (by norm_num)
           (mul_nonneg (pow_nonneg hr 7)
             (mul_nonneg (pow_nonneg hA.le 8) he8))
-      _ = 256 * (8 : ℝ) ^ 7 * r ^ 7 * A ^ 8 * e8 := by ring
+      _ = 256 * (8 : ℝ) ^ (7 : ℕ) * r ^ (7 : ℕ) * A ^ (8 : ℕ) * e8 := by ring
 
   let f : ℕ → ℝ := fun m =>
-    (((2 * (m + 2) : ℕ) : ℝ) ^ 7) * r ^ (2 * (m + 2) - 1)
+    (((2 * (m + 2) : ℕ) : ℝ) ^ (7 : ℕ)) * r ^ (2 * (m + 2) - 1)
   have hrSmall : 399 * r < 1 := by
     simpa only [B, r] using
       three_hundred_ninety_nine_mul_thetaCuspHigherLikelihoodSpectralResponse_lt_one hx
@@ -470,7 +470,7 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
     dsimp only [f]
     positivity
   have hfinite :
-      (4 : ℝ) ^ 7 * r ^ 3 + (6 : ℝ) ^ 7 * r ^ 5 + (8 : ℝ) ^ 7 * r ^ 7 ≤
+      (4 : ℝ) ^ (7 : ℕ) * r ^ (3 : ℕ) + (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) + (8 : ℝ) ^ (7 : ℕ) * r ^ (7 : ℕ) ≤
         thetaCuspLikelihoodEighthHigherEvenSectorTail r := by
     have hsplit := hs.sum_add_tsum_nat_add 3
     have hsum : (∑ m ∈ Finset.range 3, f m) ≤ ∑' m : ℕ, f m := by
@@ -483,23 +483,23 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
       6 * thetaCuspLikelihoodEighthBellGradeFour x +
             120 * thetaCuspLikelihoodEighthBellGradeSix x +
           5040 * thetaCuspLikelihoodEighthBellGradeEight x ≤
-        256 * A ^ 8 * e8 * thetaCuspLikelihoodEighthHigherEvenSectorTail r := by
-    have hcoef0 : 0 ≤ 256 * A ^ 8 * e8 := by positivity
+        256 * A ^ (8 : ℕ) * e8 * thetaCuspLikelihoodEighthHigherEvenSectorTail r := by
+    have hcoef0 : 0 ≤ 256 * A ^ (8 : ℕ) * e8 := by positivity
     have htailScaled := mul_le_mul_of_nonneg_left hfinite hcoef0
     calc
       6 * thetaCuspLikelihoodEighthBellGradeFour x +
             120 * thetaCuspLikelihoodEighthBellGradeSix x +
           5040 * thetaCuspLikelihoodEighthBellGradeEight x ≤
-        256 * (4 : ℝ) ^ 7 * r ^ 3 * A ^ 8 * e8 +
-            256 * (6 : ℝ) ^ 7 * r ^ 5 * A ^ 8 * e8 +
-          256 * (8 : ℝ) ^ 7 * r ^ 7 * A ^ 8 * e8 :=
+        256 * (4 : ℝ) ^ (7 : ℕ) * r ^ (3 : ℕ) * A ^ (8 : ℕ) * e8 +
+            256 * (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) * A ^ (8 : ℕ) * e8 +
+          256 * (8 : ℝ) ^ (7 : ℕ) * r ^ (7 : ℕ) * A ^ (8 : ℕ) * e8 :=
         add_le_add (add_le_add hgrade4r hgrade6r) hgrade8r
-      _ = (256 * A ^ 8 * e8) *
-          ((4 : ℝ) ^ 7 * r ^ 3 + (6 : ℝ) ^ 7 * r ^ 5 +
-            (8 : ℝ) ^ 7 * r ^ 7) := by ring
-      _ ≤ (256 * A ^ 8 * e8) *
+      _ = (256 * A ^ (8 : ℕ) * e8) *
+          ((4 : ℝ) ^ (7 : ℕ) * r ^ (3 : ℕ) + (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) +
+            (8 : ℝ) ^ (7 : ℕ) * r ^ (7 : ℕ)) := by ring
+      _ ≤ (256 * A ^ (8 : ℕ) * e8) *
           thetaCuspLikelihoodEighthHigherEvenSectorTail r := htailScaled
-      _ = 256 * A ^ 8 * e8 *
+      _ = 256 * A ^ (8 : ℕ) * e8 *
           thetaCuspLikelihoodEighthHigherEvenSectorTail r := by ring
   have hmass := tsum_thetaCuspLikelihoodAtomEighthMonomialMass_eq_spectralMoment A hB
   have hM8 : thetaCuspHigherLikelihoodSpectralMoment B 8 = P * e8 := by
@@ -507,17 +507,17 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
       P * (thetaCuspHigherLikelihoodSpectralMoment B 8 / P)
     exact (mul_div_cancel₀ (thetaCuspHigherLikelihoodSpectralMoment B 8) hP.ne').symm
   have hfock : thetaCuspLikelihoodEighthHigherEvenFockLoss x =
-      thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ 8 * (P * e8) := by
+      thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ (8 : ℕ) * (P * e8) := by
     unfold thetaCuspLikelihoodEighthHigherEvenFockLoss
     dsimp only [A, B, r]
     rw [hmass, hM8]
     ring
   rw [hfock]
   change _ ≤ (256 / P) *
-    (thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ 8 * (P * e8))
+    (thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ (8 : ℕ) * (P * e8))
   rw [show (256 / P) *
-      (thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ 8 * (P * e8)) =
-        256 * A ^ 8 * e8 * thetaCuspLikelihoodEighthHigherEvenSectorTail r by
+      (thetaCuspLikelihoodEighthHigherEvenSectorTail r * A ^ (8 : ℕ) * (P * e8)) =
+        256 * A ^ (8 : ℕ) * e8 * thetaCuspLikelihoodEighthHigherEvenSectorTail r by
     field_simp [hP.ne']]
   exact hbell
 

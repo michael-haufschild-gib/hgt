@@ -17,7 +17,7 @@ private lemma gamma_lower : (5772/10000:ℝ) ≤ Real.eulerMascheroniConstant :=
   have h := (harmonic_mascheroni_geometric_bounds (n:=16) (by norm_num)).2
   have hl := log_le_geometric_cubic (x:=(17/16:ℝ)) (by norm_num)
   have h16 : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   rw [Real.log_div (by norm_num) (by norm_num),h16] at hl
   norm_num [harmonic,Finset.sum_range_succ,h16] at h hl
@@ -32,10 +32,10 @@ private lemma prime_log_lower :
   have h13 := (Real.lt_log_one_add_of_pos (x := (1:ℝ)/12) (by norm_num)).le
   have h17 := (Real.lt_log_one_add_of_pos (x := (1:ℝ)/16) (by norm_num)).le
   have h19 := log_le_half_sub_inv (x := (20:ℝ)/19) (by norm_num)
-  have l8 : Real.log 8=3*Real.log 2 := by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+  have l8 : Real.log 8=3*Real.log 2 := by rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l12 : Real.log 12=2*Real.log 2+Real.log 3 := by
     rw [show (12:ℝ)=4*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),Real.log_four_eq]
-  have l16 : Real.log 16=4*Real.log 2 := by rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]; norm_num
+  have l16 : Real.log 16=4*Real.log 2 := by rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l20 : Real.log 20=2*Real.log 2+Real.log 5 := by
     rw [show (20:ℝ)=4*5 by norm_num,Real.log_mul (by norm_num) (by norm_num),Real.log_four_eq]
   rw [show (1:ℝ)+1/12=13/12 by norm_num] at h13
@@ -73,20 +73,20 @@ private lemma small_centers_nonneg {s : ℕ} (hs : 1 ≤ s) (hs4 : s ≤ 4) :
   have h5 := Real.log_five_gt_d9
   have f2 : Real.log ((2:ℕ).factorial:ℝ)=Real.log 2 := by norm_num
   have f6 : Real.log ((6:ℕ).factorial:ℝ)=4*Real.log 2+2*Real.log 3+Real.log 5 := by
-    rw [show (((6:ℕ).factorial:ℕ):ℝ)=2^4*3^2*5 by norm_num]
+    rw [show (((6:ℕ).factorial:ℕ):ℝ)=2^(4 : ℕ)*3^(2 : ℕ)*5 by norm_num]
     repeat rw [Real.log_mul (by positivity) (by positivity)]
     simp only [Real.log_pow]
     norm_num
   have f12 : Real.log ((12:ℕ).factorial:ℝ)=
       10*Real.log 2+5*Real.log 3+2*Real.log 5+Real.log 7+Real.log 11 := by
-    rw [show (((12:ℕ).factorial:ℕ):ℝ)=2^10*3^5*5^2*7*11 by norm_num]
+    rw [show (((12:ℕ).factorial:ℕ):ℝ)=2^(10 : ℕ)*3^(5 : ℕ)*5^(2 : ℕ)*7*11 by norm_num]
     repeat rw [Real.log_mul (by positivity) (by positivity)]
     simp only [Real.log_pow]
     norm_num
   have f20 : Real.log ((20:ℕ).factorial:ℝ)=
       18*Real.log 2+8*Real.log 3+4*Real.log 5+2*Real.log 7+
         Real.log 11+Real.log 13+Real.log 17+Real.log 19 := by
-    rw [show (((20:ℕ).factorial:ℕ):ℝ)=2^18*3^8*5^4*7^2*11*13*17*19 by norm_num]
+    rw [show (((20:ℕ).factorial:ℕ):ℝ)=2^(18 : ℕ)*3^(8 : ℕ)*5^(4 : ℕ)*7^(2 : ℕ)*11*13*17*19 by norm_num]
     repeat rw [Real.log_mul (by positivity) (by positivity)]
     simp only [Real.log_pow]
     norm_num

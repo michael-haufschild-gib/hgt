@@ -25,7 +25,7 @@ noncomputable def jumpForm (h : ℝ) (u φ : ℝ → ℝ) : ℝ :=
   ∫ x, (u (x + h) - u x) * (φ (x + h) - φ x)
 
 /-- The `L²` pairing. -/
-noncomputable def pairing (u φ : ℝ → ℝ) : ℝ := ∫ x, u x * φ x
+noncomputable def l2Pairing (u φ : ℝ → ℝ) : ℝ := ∫ x, u x * φ x
 
 private theorem integrable_shift_mul {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Continuous φ)
     (hcu : HasCompactSupport u) (s t : ℝ) :
@@ -47,7 +47,7 @@ identity. -/
 theorem jumpForm_eq_two_pairing_sub {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Continuous φ)
     (hcu : HasCompactSupport u) (h : ℝ) :
     jumpForm h u φ =
-      2 * pairing u φ - pairing (fun x => u (x + h)) φ - pairing (fun x => u (x - h)) φ := by
+      2 * l2Pairing u φ - l2Pairing (fun x => u (x + h)) φ - l2Pairing (fun x => u (x - h)) φ := by
   have e1 : Integrable (fun x => u (x + h) * φ (x + h)) :=
     integrable_shift_mul hu hφ hcu h h
   have e2 : Integrable (fun x => u (x + h) * φ (x + 0)) :=
@@ -74,7 +74,7 @@ theorem jumpForm_eq_two_pairing_sub {u φ : ℝ → ℝ} (hu : Continuous u) (h�
   have hminus : ∫ x, u x * φ (x + h) = ∫ x, u (x - h) * φ x := by
     have := integral_shift (fun y => u (y - h) * φ y) h
     simpa using this
-  rw [hsplit, hshift, hminus, pairing, pairing, pairing]
+  rw [hsplit, hshift, hminus, l2Pairing, l2Pairing, l2Pairing]
   ring
 
 /-! ## Truncation coercivity -/
@@ -92,7 +92,7 @@ theorem truncPos_mono (t : ℝ) : Monotone (truncPos t) := fun _ _ h =>
 /-- **Pointwise truncation inequality.**  An increasing one-Lipschitz truncation satisfies
 `(r − s)(T r − T s) ≥ (T r − T s)²`. -/
 theorem sub_mul_truncPos_sub_ge (t r s : ℝ) :
-    (truncPos t r - truncPos t s) ^ 2 ≤ (r - s) * (truncPos t r - truncPos t s) := by
+    (truncPos t r - truncPos t s) ^ (2 : ℕ) ≤ (r - s) * (truncPos t r - truncPos t s) := by
   rcases le_total s r with hrs | hrs
   · have hmono : truncPos t s ≤ truncPos t r := truncPos_mono t hrs
     have hlip : truncPos t r - truncPos t s ≤ r - s := by

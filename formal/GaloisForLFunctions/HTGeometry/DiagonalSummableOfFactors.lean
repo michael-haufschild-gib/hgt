@@ -24,7 +24,7 @@ namespace GaloisForLFunctions
 /-- **A product of two square-summable nonnegative families is summable.**  By `ab ≤ (a²+b²)/2`. -/
 theorem summable_mul_of_summable_sq {ι : Type*} {a c : ι → ℝ}
     (hnna : ∀ i, 0 ≤ a i) (hnnc : ∀ i, 0 ≤ c i)
-    (ha : Summable fun i => a i ^ 2) (hc : Summable fun i => c i ^ 2) :
+    (ha : Summable fun i => a i ^ (2 : ℕ)) (hc : Summable fun i => c i ^ (2 : ℕ)) :
     Summable fun i => a i * c i := by
   refine Summable.of_nonneg_of_le (fun i => mul_nonneg (hnna i) (hnnc i)) ?_
     (((ha.add hc).mul_left (1 / 2 : ℝ)))
@@ -36,7 +36,7 @@ theorem summable_mul_of_summable_sq {ι : Type*} {a c : ι → ℝ}
 theorem summable_of_le_mul_of_summable_sq {ι : Type*} {f a c : ι → ℝ}
     (hnnf : ∀ i, 0 ≤ f i) (hnna : ∀ i, 0 ≤ a i) (hnnc : ∀ i, 0 ≤ c i)
     (hbound : ∀ i, f i ≤ a i * c i)
-    (ha : Summable fun i => a i ^ 2) (hc : Summable fun i => c i ^ 2) :
+    (ha : Summable fun i => a i ^ (2 : ℕ)) (hc : Summable fun i => c i ^ (2 : ℕ)) :
     Summable f :=
   Summable.of_nonneg_of_le hnnf hbound (summable_mul_of_summable_sq hnna hnnc ha hc)
 
@@ -46,7 +46,7 @@ bound as the interface, so it applies to any `T = S ∘ U` with `U` and `S†` H
 theorem summable_diagonal_of_factors {ι : Type*} {diag a c : ι → ℝ}
     (hbound : ∀ i, |diag i| ≤ a i * c i)
     (hnna : ∀ i, 0 ≤ a i) (hnnc : ∀ i, 0 ≤ c i)
-    (ha : Summable fun i => a i ^ 2) (hc : Summable fun i => c i ^ 2) :
+    (ha : Summable fun i => a i ^ (2 : ℕ)) (hc : Summable fun i => c i ^ (2 : ℕ)) :
     Summable fun i => |diag i| :=
   summable_of_le_mul_of_summable_sq (fun _ => abs_nonneg _) hnna hnnc hbound ha hc
 
@@ -54,7 +54,7 @@ theorem summable_diagonal_of_factors {ι : Type*} {diag a c : ι → ℝ}
 theorem summable_diagonal_signed {ι : Type*} {diag a c : ι → ℝ}
     (hbound : ∀ i, |diag i| ≤ a i * c i)
     (hnna : ∀ i, 0 ≤ a i) (hnnc : ∀ i, 0 ≤ c i)
-    (ha : Summable fun i => a i ^ 2) (hc : Summable fun i => c i ^ 2) :
+    (ha : Summable fun i => a i ^ (2 : ℕ)) (hc : Summable fun i => c i ^ (2 : ℕ)) :
     Summable diag :=
   (summable_diagonal_of_factors hbound hnna hnnc ha hc).of_abs
 

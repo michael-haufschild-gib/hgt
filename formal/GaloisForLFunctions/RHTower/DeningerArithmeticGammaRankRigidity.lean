@@ -27,7 +27,7 @@ rank value `1`, not the signature value `-1`.
 -/
 theorem deningerGammaRank_of_sq_eq_one_of_one_add_pos
     {epsilon : ℝ}
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hhyperbolic : 0 < 1 + epsilon) :
     epsilon = 1 := by
   have hfactor : (epsilon - 1) * (epsilon + 1) = 0 := by
@@ -44,7 +44,7 @@ class.
 theorem deningerGammaCharacter_maps_epsilon_to_rank
     {A : Type*} [Ring A]
     (character : A →+* ℝ) (epsilon : A)
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hhyperbolic : 0 < character (1 + epsilon)) :
     character epsilon = 1 := by
   apply deningerGammaRank_of_sq_eq_one_of_one_add_pos
@@ -58,7 +58,7 @@ quadratic integer maps to its ordinary finite-syntomic degree.
 theorem deningerGammaCharacter_maps_quadraticInteger_to_degree
     {A : Type*} [Ring A]
     (character : A →+* ℝ) (epsilon : A)
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hhyperbolic : 0 < character (1 + epsilon))
     (n : ℕ) :
     character (∑ j ∈ Finset.range n, epsilon ^ j) = (n : ℝ) := by

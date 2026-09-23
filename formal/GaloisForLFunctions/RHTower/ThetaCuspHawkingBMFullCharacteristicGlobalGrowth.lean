@@ -19,6 +19,7 @@ normal derivative interchange -> corrected-future cap coefficient -> HB B2`.
 namespace RHTower.D4BMFullAngularCurrent
 
 open Set Filter Topology MeasureTheory
+open scoped ContDiff
 open GaloisForLFunctions.HTGeometry
 open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMFullAngularCircle
 open D4BMNativeCircle
@@ -48,9 +49,9 @@ theorem nativeMean_strict_growth (q : XiZeroCopy) (X k : ℝ) :
     ‖mean q d X k‖ ≤ A * Real.exp (sourceGrowthExponent q * (d + |k|)) := htail
     _ = C * Real.exp (sourceGrowthExponent q * d) := by
       dsimp only [C]
-      rw [← Real.exp_add]
-      congr 1
-      ring
+      rw [mul_assoc, ← Real.exp_add,
+        show sourceGrowthExponent q * |k| + sourceGrowthExponent q * d =
+          sourceGrowthExponent q * (d + |k|) from by ring]
     _ ≤ C * Real.exp (strictGrowthExponent q * d) :=
       mul_le_mul_of_nonneg_left
         (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right hsource hd)) hC
@@ -96,8 +97,7 @@ theorem angularMean_sinh_ratio_strict_growth (q : XiZeroCopy) (branch : Bool)
   by_cases hd1 : d ≤ 1
   · have hderiv := hsmall_deriv d hd.le hd1
     have hsinh : 0 < Real.sinh d := Real.sinh_pos_iff.mpr hd
-    have hlinear : d ≤ Real.sinh d :=
-      GaloisForLFunctions.HTGeometry.self_le_sinh_of_nonneg hd.le
+    have hlinear : d ≤ Real.sinh d := Real.self_le_sinh_iff.mpr hd.le
     have hquot : ‖deriv M d / (Real.sinh d : ℂ)‖ ≤ A0 := by
       rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hsinh]
       calc
@@ -109,9 +109,7 @@ theorem angularMean_sinh_ratio_strict_growth (q : XiZeroCopy) (branch : Bool)
       Real.one_le_exp_iff.mpr (mul_nonneg hstrict0 hd.le)
     calc
       ‖deriv M d / (Real.sinh d : ℂ)‖ ≤ A0 := hquot
-      _ ≤ A0 * Real.exp (strictGrowthExponent q * d) := by
-        rw [← one_mul A0]
-        exact mul_le_mul_of_nonneg_left hexp hA0
+      _ ≤ A0 * Real.exp (strictGrowthExponent q * d) := le_mul_of_one_le_right hA0 hexp
       _ ≤ C * Real.exp (strictGrowthExponent q * d) := by
         exact mul_le_mul_of_nonneg_right
           (le_add_of_nonneg_right (div_nonneg hB hsinhone.le)) (Real.exp_pos _).le
@@ -125,7 +123,7 @@ theorem angularMean_sinh_ratio_strict_growth (q : XiZeroCopy) (branch : Bool)
         (Real.sinh_pos_iff.mpr (lt_of_lt_of_le (by norm_num) hdlarge))]
       calc
         ‖deriv M d‖ / Real.sinh d ≤ ‖deriv M d‖ / Real.sinh 1 :=
-          div_le_div_of_nonneg_left (norm_nonneg _) hsinhone.le hsinh
+          div_le_div_of_nonneg_left (norm_nonneg _) hsinhone hsinh
         _ ≤ (B * Real.exp (strictGrowthExponent q * d)) / Real.sinh 1 :=
           div_le_div_of_nonneg_right hderiv hsinhone.le
         _ = (B / Real.sinh 1) * Real.exp (strictGrowthExponent q * d) := by ring

@@ -24,7 +24,7 @@ private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
     mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k))=
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^2*
+      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ)*
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
          coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
     funext p
@@ -91,7 +91,7 @@ private theorem regular_radial_equation (q : XiZeroCopy) (X k d : ℝ) (hd : d �
       (Real.sinh d:ℂ)*laplaceMean q d X k=0 := by
   have hn : (Real.sinh d:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by simpa using hd)
   have h := mean_radial_action q d X k
-  change _=(Real.sinh d:ℂ)^2*laplaceMean q d X k at h
+  change _=(Real.sinh d:ℂ)^(2 : ℕ)*laplaceMean q d X k at h
   apply (mul_left_cancel₀ hn)
   linear_combination h
 
@@ -216,21 +216,21 @@ private theorem argumentFirst_derivative (q : XiZeroCopy) (X k : ℝ) {z : ℝ} 
   field_simp [hn]
 
 private theorem angularAction_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=
       angularAction q z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := mean_darboux q (Real.arcosh z) X k
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q z X k at h
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [argumentSecond,argumentFirst]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 private theorem angularAction_eq_mean (q : XiZeroCopy) (z X k : ℝ) :
     angularAction q z X k=laplaceMean q (Real.arcosh z) X k := by
@@ -242,7 +242,7 @@ private theorem angularAction_continuousOn (q : XiZeroCopy) (X k : ℝ) :
     (laplaceMean_continuous q X k).comp_continuousOn Real.continuousOn_arcosh
 
 private def radialCurrent (q : XiZeroCopy) (X k z : ℝ) : ℂ :=
-  ((z:ℂ)^2-1)*argumentFirst q z X k
+  ((z:ℂ)^(2 : ℕ)-1)*argumentFirst q z X k
 
 private theorem radialCurrent_derivative (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     HasDerivAt (radialCurrent q X k) (angularAction q z X k) z := by
@@ -256,7 +256,7 @@ private theorem radialCurrent_derivative (q : XiZeroCopy) (X k : ℝ) {z : ℝ} 
 /-- The original weighted native derivative is the integral of the full angular action.
 The characteristic face contributes zero by the actual source contact. -/
 theorem angularCurrent_integral (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
-    ((z.val:ℂ)^2-1)*argumentFirst q z X k=
+    ((z.val:ℂ)^(2 : ℕ)-1)*argumentFirst q z X k=
       ∫ r in (1:ℝ)..z.val, angularAction q r X k := by
   rcases eq_or_lt_of_le (show (1:ℝ) ≤ z.val from z.property) with h0 | hz
   · simp [← h0]
@@ -264,8 +264,8 @@ theorem angularCurrent_integral (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
   have hi : IntervalIntegrable (fun r => angularAction q r X k) volume 1 z.val :=
     (hc.mono (Icc_subset_Ici_self)).intervalIntegrable_of_Icc hz.le
   have hl : Tendsto (radialCurrent q X k) (𝓝[>] 1) (𝓝 0) := by
-    have hp : Tendsto (fun r : ℝ => (r:ℂ)^2-1) (𝓝[>] 1) (𝓝 (0:ℂ)) := by
-      have h := ((show Continuous (fun r : ℝ => (r:ℂ)^2-1) by fun_prop).continuousAt
+    have hp : Tendsto (fun r : ℝ => (r:ℂ)^(2 : ℕ)-1) (𝓝[>] 1) (𝓝 (0:ℂ)) := by
+      have h := ((show Continuous (fun r : ℝ => (r:ℂ)^(2 : ℕ)-1) by fun_prop).continuousAt
         (x := (1:ℝ))).tendsto.mono_left
           (show 𝓝[>] (1:ℝ) ≤ 𝓝 1 from nhdsWithin_le_nhds)
       simpa using h

@@ -119,7 +119,7 @@ theorem exists_inverseGammaResidueGerm
     (hGamma : Complex.Gamma z₀ = -(m : ℂ))
     (hGamma' : HasDerivAt Complex.Gamma d z₀) (hd : d ≠ 0) :
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧ R 0 = -1 / d ∧
-      deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ 2) ∧
+      deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ (2 : ℕ)) ∧
       (fun t : ℂ => R t) =ᶠ[nhdsWithin 0 {0}ᶜ]
         (fun t => -t / (Complex.Gamma (z₀ + t) + (m : ℂ))) := by
   have hoff : ∀ p : ℕ, z₀ ≠ -(p : ℂ) := by
@@ -182,9 +182,9 @@ theorem exists_inverseGammaResidueGerm
   let R : ℂ → ℂ := fun t => -1 / V t
   have hRAn : AnalyticAt ℂ R 0 := by
     exact analyticAt_const.neg.div hVAn (hV0.trans_ne hd)
-  have hRder : deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ 2) := by
+  have hRder : deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ (2 : ℕ)) := by
     have hVhas := hVAn.differentiableAt.hasDerivAt
-    have hRhas : HasDerivAt R (deriv V 0 / (V 0) ^ 2) 0 := by
+    have hRhas : HasDerivAt R (deriv V 0 / (V 0) ^ (2 : ℕ)) 0 := by
       have h := (hVhas.inv (hV0.trans_ne hd)).neg
       have hfun : R = -V⁻¹ := by
         funext t
@@ -211,7 +211,7 @@ theorem inverseGamma_polygamma_completePrincipalPartJet
     (hGamma' : HasDerivAt Complex.Gamma d z₀) (hd : d ≠ 0) :
     ∃ R A : ℂ → ℂ,
       AnalyticAt ℂ R 0 ∧ R 0 = -1 / d ∧
-      deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ 2) ∧
+      deriv R 0 = iteratedDeriv 2 Complex.Gamma z₀ / (2 * d ^ (2 : ℕ)) ∧
       AnalyticAt ℂ A 0 ∧
       (fun t : ℂ => t ^ (q + 1) *
           iteratedDeriv q Complex.digamma (Complex.Gamma (z₀ + t))) =ᶠ[nhdsWithin 0 {0}ᶜ]
@@ -265,7 +265,7 @@ theorem inverseGamma_polygamma_completePrincipalPartJet
 theorem principalPartJetExtension_deriv_zero
     {q : ℕ} (hq : 1 ≤ q) {R A : ℂ → ℂ} {d e : ℂ} (hd : d ≠ 0)
     (hRAn : AnalyticAt ℂ R 0) (hR0 : R 0 = -1 / d)
-    (hRder : deriv R 0 = e / (2 * d ^ 2)) (hAAn : AnalyticAt ℂ A 0) :
+    (hRder : deriv R 0 = e / (2 * d ^ (2 : ℕ))) (hAAn : AnalyticAt ℂ A 0) :
     deriv (fun t : ℂ => (q.factorial : ℂ) * R t ^ (q + 1) +
       t ^ (q + 1) * A t) 0 =
         ((q + 1).factorial : ℂ) / 2 * e * (-1 / d) ^ (q + 2) := by
@@ -287,7 +287,7 @@ theorem principalPartJetExtension_deriv_zero
         (fun t : ℂ => t ^ (q + 1) * A t) := rfl
   rw [hfun, hsum.deriv, hR0, hRder, Nat.factorial_succ]
   push_cast
-  have hrhoSq : (-1 / d : ℂ) ^ 2 = 1 / d ^ 2 := by
+  have hrhoSq : (-1 / d : ℂ) ^ (2 : ℕ) = 1 / d ^ (2 : ℕ) := by
     field_simp [hd]
   rw [show q + 2 = q + 2 by rfl, pow_add, hrhoSq]
   field_simp [hd]
@@ -302,7 +302,7 @@ complete principal-part jet law. -/
 theorem principalPartJetExtension_deriv_zero_eq_firstSubleadingCoeff
     {q : ℕ} (hq : 1 ≤ q) {R A : ℂ → ℂ} {d e : ℂ} (hd : d ≠ 0)
     (hRAn : AnalyticAt ℂ R 0) (hR0 : R 0 = -1 / d)
-    (hRder : deriv R 0 = e / (2 * d ^ 2)) (hAAn : AnalyticAt ℂ A 0) :
+    (hRder : deriv R 0 = e / (2 * d ^ (2 : ℕ))) (hAAn : AnalyticAt ℂ A 0) :
     deriv (fun t : ℂ => (q.factorial : ℂ) * R t ^ (q + 1) +
       t ^ (q + 1) * A t) 0 = polygammaTowerFirstSubleadingCoeff d e q := by
   exact principalPartJetExtension_deriv_zero hq hd hRAn hR0 hRder hAAn
@@ -328,7 +328,7 @@ theorem polygammaTowerFirstSubleadingCoeff_ratio
 /-- The analytic residue interpolation attached to a reciprocal-Gamma pole branch. -/
 noncomputable def inverseGammaBranchResidueInterpolation {n : ℕ}
     (zn : ReciprocalGammaPoleBranch n) (x : ℂ) : ℂ :=
-  -(x ^ 2) * deriv zn x
+  -(x ^ (2 : ℕ)) * deriv zn x
 
 theorem analyticAt_inverseGammaBranchResidueInterpolation {n : ℕ}
     (zn : ReciprocalGammaPoleBranch n) :
@@ -378,7 +378,7 @@ theorem ReciprocalGammaPoleBranch.residueInterpolation_eq_actual
     exact deriv_comp x Complex.differentiable_one_div_Gamma.differentiableAt
       hznAn.differentiableAt
   rw [hcomp, oneDivGamma_deriv_eq (zn x) hoff] at hcompD
-  have hmaster : deriv Complex.Gamma (zn x) * x ^ 2 * deriv zn x = 1 := by
+  have hmaster : deriv Complex.Gamma (zn x) * x ^ (2 : ℕ) * deriv zn x = 1 := by
     rw [hGammaVal] at hcompD
     field_simp [hx] at hcompD
     linear_combination -hcompD
@@ -443,8 +443,8 @@ theorem ReciprocalGammaPoleBranch.residueInterpolation_cubic
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
     ∃ S : ℂ → ℂ, AnalyticAt ℂ S 0 ∧
       (fun x : ℂ => inverseGammaBranchResidueInterpolation zn x) =ᶠ[nhds 0]
-        (fun x => reciprocalGammaBranchLinearCoeff n * x ^ 2 -
-          2 * reciprocalGammaBranchQuadraticCoeff n * x ^ 3 + x ^ 4 * S x) := by
+        (fun x => reciprocalGammaBranchLinearCoeff n * x ^ (2 : ℕ) -
+          2 * reciprocalGammaBranchQuadraticCoeff n * x ^ (3 : ℕ) + x ^ (4 : ℕ) * S x) := by
   obtain ⟨R, hRAn, hbranch⟩ := zn.taylor_two_with_cubic_remainder
   let S : ℂ → ℂ := fun x => -3 * R x - x * deriv R x
   have hSAn : AnalyticAt ℂ S 0 := by
@@ -454,15 +454,15 @@ theorem ReciprocalGammaPoleBranch.residueInterpolation_cubic
   have hformula : deriv zn x =
       -reciprocalGammaBranchLinearCoeff n +
         2 * reciprocalGammaBranchQuadraticCoeff n * x +
-          3 * x ^ 2 * R x + x ^ 3 * deriv R x := by
+          3 * x ^ (2 : ℕ) * R x + x ^ (3 : ℕ) * deriv R x := by
     rw [hder]
     have hRder : HasDerivAt R (deriv R x) x := hRx.differentiableAt.hasDerivAt
     have hright : HasDerivAt
         (fun x : ℂ => -(n : ℂ) - reciprocalGammaBranchLinearCoeff n * x +
-          reciprocalGammaBranchQuadraticCoeff n * x ^ 2 + x ^ 3 * R x)
+          reciprocalGammaBranchQuadraticCoeff n * x ^ (2 : ℕ) + x ^ (3 : ℕ) * R x)
         (-reciprocalGammaBranchLinearCoeff n +
           2 * reciprocalGammaBranchQuadraticCoeff n * x +
-            3 * x ^ 2 * R x + x ^ 3 * deriv R x) x := by
+            3 * x ^ (2 : ℕ) * R x + x ^ (3 : ℕ) * deriv R x) x := by
       simpa only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply, id_eq] using!
         ((((hasDerivAt_const x (-(n : ℂ))).sub
           ((hasDerivAt_id x).const_mul (reciprocalGammaBranchLinearCoeff n))).add
@@ -489,11 +489,11 @@ theorem ReciprocalGammaPoleBranch.polygammaCoeffInterpolation_asymptotic
           x ^ (2 * (q + 1)) *
             (1 - (2 * ((q + 1 : ℕ) : ℂ) *
                 reciprocalGammaBranchQuadraticCoeff n /
-                  reciprocalGammaBranchLinearCoeff n) * x + x ^ 2 * U x)) := by
+                  reciprocalGammaBranchLinearCoeff n) * x + x ^ (2 : ℕ) * U x)) := by
   obtain ⟨S, hSAn, hRho⟩ := zn.residueInterpolation_cubic
   let r : ℂ := reciprocalGammaBranchLinearCoeff n
   let A : ℂ := reciprocalGammaBranchQuadraticCoeff n
-  let B : ℂ → ℂ := fun x => r - 2 * A * x + x ^ 2 * S x
+  let B : ℂ → ℂ := fun x => r - 2 * A * x + x ^ (2 : ℕ) * S x
   let F : ℂ → ℂ := fun x => B x ^ (q + 1)
   have hBAn : AnalyticAt ℂ B 0 := by
     exact (analyticAt_const.sub (analyticAt_const.mul analyticAt_id)).add
@@ -516,7 +516,7 @@ theorem ReciprocalGammaPoleBranch.polygammaCoeffInterpolation_asymptotic
   obtain ⟨T, hTAn, hTaylor⟩ := hFAn.exists_eventuallyEq_sum_add_pow_mul 2
   have hTaylor' : F =ᶠ[nhds 0]
       (fun x => r ^ (q + 1) -
-        2 * ((q + 1 : ℕ) : ℂ) * r ^ q * A * x + x ^ 2 * T x) := by
+        2 * ((q + 1 : ℕ) : ℂ) * r ^ q * A * x + x ^ (2 : ℕ) * T x) := by
     filter_upwards [hTaylor] with x hx
     rw [hx]
     norm_num [Finset.sum_range_succ, iteratedDeriv_zero, iteratedDeriv_one, hF0, hFder]
@@ -530,18 +530,18 @@ theorem ReciprocalGammaPoleBranch.polygammaCoeffInterpolation_asymptotic
   filter_upwards [hRho, hTaylor'] with x hRhoX hFX
   simp only [inverseGammaPolygammaCoeffInterpolation]
   rw [hRhoX]
-  have hbase : r * x ^ 2 - 2 * A * x ^ 3 + x ^ 4 * S x = x ^ 2 * B x := by
+  have hbase : r * x ^ (2 : ℕ) - 2 * A * x ^ (3 : ℕ) + x ^ (4 : ℕ) * S x = x ^ (2 : ℕ) * B x := by
     simp only [B]
     ring
   change (q.factorial : ℂ) *
-      (r * x ^ 2 - 2 * A * x ^ 3 + x ^ 4 * S x) ^ (q + 1) = _
+      (r * x ^ (2 : ℕ) - 2 * A * x ^ (3 : ℕ) + x ^ (4 : ℕ) * S x) ^ (q + 1) = _
   rw [hbase, mul_pow]
   rw [show B x ^ (q + 1) = F x by rfl]
   rw [hFX, ← pow_mul]
   change (q.factorial : ℂ) * (x ^ (2 * (q + 1)) *
-      (r ^ (q + 1) - 2 * ((q + 1 : ℕ) : ℂ) * r ^ q * A * x + x ^ 2 * T x)) =
+      (r ^ (q + 1) - 2 * ((q + 1 : ℕ) : ℂ) * r ^ q * A * x + x ^ (2 : ℕ) * T x)) =
     (q.factorial : ℂ) * r ^ (q + 1) * x ^ (2 * (q + 1)) *
-      (1 - (2 * ((q + 1 : ℕ) : ℂ) * A / r) * x + x ^ 2 * U x)
+      (1 - (2 * ((q + 1 : ℕ) : ℂ) * A / r) * x + x ^ (2 : ℕ) * U x)
   simp only [U]
   field_simp [hr, pow_ne_zero (q + 1) hr]
   ring

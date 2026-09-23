@@ -35,14 +35,14 @@ variable {f : ℂ → ℂ}
 
 theorem proximity_le_of_growth {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Set.univ) {ε : ℝ}
     (hbound : ∀ᶠ r : ℝ in atTop,
-      ∀ z : ℂ, ‖z‖ ≤ r → Real.log ‖g z‖ ≤ ε * (Real.log r) ^ 2) (hε : 0 < ε) :
-    ∀ᶠ r : ℝ in atTop, proximity g ⊤ r ≤ ε * (Real.log r) ^ 2 := by
+      ∀ z : ℂ, ‖z‖ ≤ r → Real.log ‖g z‖ ≤ ε * (Real.log r) ^ (2 : ℕ)) (hε : 0 < ε) :
+    ∀ᶠ r : ℝ in atTop, proximity g ⊤ r ≤ ε * (Real.log r) ^ (2 : ℕ) := by
   filter_upwards [hbound, eventually_ge_atTop (1 : ℝ)] with r hr hr1
   have hr0 : (0 : ℝ) ≤ r := by linarith
-  have hnn : 0 ≤ ε * (Real.log r) ^ 2 := by positivity
+  have hnn : 0 ≤ ε * (Real.log r) ^ (2 : ℕ) := by positivity
   have hmer : MeromorphicOn g (sphere (0 : ℂ) r) :=
     fun z _ => (hg z (Set.mem_univ z)).meromorphicAt
-  have hM : ∀ z : ℂ, ‖z‖ = r → ‖g z‖ ≤ Real.exp (ε * (Real.log r) ^ 2) := by
+  have hM : ∀ z : ℂ, ‖z‖ = r → ‖g z‖ ≤ Real.exp (ε * (Real.log r) ^ (2 : ℕ)) := by
     intro z hz
     rcases eq_or_lt_of_le (norm_nonneg (g z)) with h0 | h0
     · rw [← h0]
@@ -208,12 +208,12 @@ theorem exists_const_mul_genusZeroProduct (hf : AnalyticOnNhd ℂ f Set.univ) (h
   have hprP := proximity_le_of_growth hPan
     (quadraticSubtypeZero_genusZeroProductIdx hane hloc hden (by norm_num : (0:ℝ) < 1 / 3))
     (by norm_num)
-  have hKo : ∀ᶠ r : ℝ in atTop, K ≤ (1 / 3) * (Real.log r) ^ 2 := by
-    have htend : Tendsto (fun r : ℝ => (1 / 3 : ℝ) * (Real.log r) ^ 2) atTop atTop := by
+  have hKo : ∀ᶠ r : ℝ in atTop, K ≤ (1 / 3) * (Real.log r) ^ (2 : ℕ) := by
+    have htend : Tendsto (fun r : ℝ => (1 / 3 : ℝ) * (Real.log r) ^ (2 : ℕ)) atTop atTop := by
       refine Filter.Tendsto.const_mul_atTop (by norm_num) ?_
       exact (tendsto_pow_atTop (n := 2) (by norm_num)).comp Real.tendsto_log_atTop
     exact htend.eventually_ge_atTop K
-  have hproxh : ∀ᶠ R : ℝ in atTop, proximity h ⊤ R ≤ (Real.log R) ^ 2 := by
+  have hproxh : ∀ᶠ R : ℝ in atTop, proximity h ⊤ R ≤ (Real.log R) ^ (2 : ℕ) := by
     filter_upwards [hprf, hprP, hKo, eventually_ge_atTop (1 : ℝ)] with r h1 h2 h3 h4
     have := hK r h4
     linarith
@@ -258,8 +258,8 @@ theorem quadraticSubtypeZero_of_monomial_quotient {g : ℂ → ℂ} {m : ℕ}
       rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)] at hb
       exact le_trans hb (le_max_right _ _)
   -- the eventual bound
-  have hMev : ∀ᶠ r : ℝ in atTop, Real.log M ≤ ε * (Real.log r) ^ 2 := by
-    have htend : Tendsto (fun r : ℝ => ε * (Real.log r) ^ 2) atTop atTop := by
+  have hMev : ∀ᶠ r : ℝ in atTop, Real.log M ≤ ε * (Real.log r) ^ (2 : ℕ) := by
+    have htend : Tendsto (fun r : ℝ => ε * (Real.log r) ^ (2 : ℕ)) atTop atTop := by
       refine Filter.Tendsto.const_mul_atTop hε ?_
       exact (tendsto_pow_atTop (n := 2) (by norm_num)).comp Real.tendsto_log_atTop
     exact htend.eventually_ge_atTop (Real.log M)

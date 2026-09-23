@@ -68,19 +68,19 @@ theorem finite_latticePoints_le (A : posDefCone n) (hn : 0 < n) (C : ℝ) :
     {v : Fin n → ℤ | quadForm A (intVec v) ≤ C}.Finite := by
   classical
   obtain ⟨m, hm, hlow⟩ := exists_lower_bound_of_isCompact (K := {A}) isCompact_singleton hn
-  have hlow' : ∀ y : Fin n → ℝ, m * ‖y‖ ^ 2 ≤ quadForm A y :=
+  have hlow' : ∀ y : Fin n → ℝ, m * ‖y‖ ^ (2 : ℕ) ≤ quadForm A y :=
     quadForm_ge_of_sphere_bound (hlow A rfl)
   refine Set.Finite.subset (finite_intVec_bounded (n := n) (Real.sqrt (C / m))) ?_
   intro v hv i
-  have hq : m * ‖intVec v‖ ^ 2 ≤ C := le_trans (hlow' (intVec v)) hv
-  have hnormsq : ‖intVec v‖ ^ 2 ≤ C / m := by
+  have hq : m * ‖intVec v‖ ^ (2 : ℕ) ≤ C := le_trans (hlow' (intVec v)) hv
+  have hnormsq : ‖intVec v‖ ^ (2 : ℕ) ≤ C / m := by
     rw [le_div_iff₀ hm, mul_comm]
     exact hq
   have hentry : |(v i : ℝ)| ≤ ‖intVec v‖ := by
     have := norm_le_pi_norm (intVec v) i
     simpa [intVec, Real.norm_eq_abs] using this
   refine le_trans hentry ?_
-  rw [show ‖intVec v‖ = Real.sqrt (‖intVec v‖ ^ 2) from (Real.sqrt_sq (norm_nonneg _)).symm]
+  rw [show ‖intVec v‖ = Real.sqrt (‖intVec v‖ ^ (2 : ℕ)) from (Real.sqrt_sq (norm_nonneg _)).symm]
   exact Real.sqrt_le_sqrt hnormsq
 
 /-- **The minimum of a positive definite form over the nonzero integer vectors is attained.** -/

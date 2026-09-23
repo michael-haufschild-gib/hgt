@@ -25,7 +25,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- The `σ`-relabeled quadratic-rate relation of an analytic branch family at a moving rate. -/
 def permutedAnalyticVariableRate {I E : Type*} [Fintype I] (c : I → ℂ) (rate : E → ℂ)
     (branch : I → E → ℂ) (σ : Equiv.Perm I) (p : E) : ℂ :=
-  (∑ i, c i * branch (σ i) p) ^ 2 - rate p * ∑ i, branch i p ^ 2
+  (∑ i, c i * branch (σ i) p) ^ (2 : ℕ) - rate p * ∑ i, branch i p ^ (2 : ℕ)
 
 theorem fieldQuadraticRateOrbitValue_variableRate {I E : Type*} [Fintype I] [DecidableEq I]
     (c : I → ℂ) (rate : E → ℂ) (branch : I → E → ℂ) (p : E) :
@@ -46,7 +46,7 @@ theorem analyticOnNhd_permutedAnalyticVariableRate {I : Type*} [Fintype I]
   have h1 : AnalyticOnNhd ℂ (fun p => ∑ i, c i * branch (σ i) p) U :=
     Finset.analyticOnNhd_fun_sum _ fun i _ =>
       (analyticOnNhd_const (v := c i) (s := U)).mul (hbranch (σ i))
-  have h2 : AnalyticOnNhd ℂ (fun p => ∑ i, branch i p ^ 2) U :=
+  have h2 : AnalyticOnNhd ℂ (fun p => ∑ i, branch i p ^ (2 : ℕ)) U :=
     Finset.analyticOnNhd_fun_sum _ fun i _ => (hbranch i).pow 2
   exact (h1.pow 2).sub (hrate.mul h2)
 

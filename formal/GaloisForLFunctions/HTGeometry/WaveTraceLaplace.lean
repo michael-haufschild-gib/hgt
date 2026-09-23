@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.WaveTraceSpectrum
 # Laplace transform of a wave trace
 
 A single complex frequency contributes the elementary Laplace kernel
-`∫₀^∞ sin (gamma * t) e^{-s t} dt = gamma / (s ^ 2 + gamma ^ 2)`,
+`∫₀^∞ sin (gamma * t) e^{-s t} dt = gamma / (s ^ (2 : ℕ) + gamma ^ (2 : ℕ))`,
 valid on the half-plane to the right of the frequency's horizontal width.
 
 Summed against a polynomial weight this produces the meromorphic active-pole transform of
@@ -65,7 +65,7 @@ theorem integrableOn_sin_mul_exp (h : |gamma.im| < s.re) :
   intro t _
   exact (sin_mul_exp_eq gamma s t).symm
 
-theorem sq_add_sq_ne_zero (h : |gamma.im| < s.re) : s ^ 2 + gamma ^ 2 ≠ 0 := by
+theorem sq_add_sq_ne_zero (h : |gamma.im| < s.re) : s ^ (2 : ℕ) + gamma ^ (2 : ℕ) ≠ 0 := by
   have hleft : s + gamma * Complex.I ≠ 0 := by
     intro hz
     have : (s + gamma * Complex.I).re = 0 := by rw [hz]; simp
@@ -80,8 +80,8 @@ theorem sq_add_sq_ne_zero (h : |gamma.im| < s.re) : s ^ 2 + gamma ^ 2 ≠ 0 := b
     simp at this
     have h2 := neg_le_abs gamma.im
     linarith
-  have hfac : s ^ 2 + gamma ^ 2 = (s + gamma * Complex.I) * (s - gamma * Complex.I) := by
-    linear_combination (gamma ^ 2) * Complex.I_sq
+  have hfac : s ^ (2 : ℕ) + gamma ^ (2 : ℕ) = (s + gamma * Complex.I) * (s - gamma * Complex.I) := by
+    linear_combination (gamma ^ (2 : ℕ)) * Complex.I_sq
   rw [hfac]
   exact mul_ne_zero hleft hright
 
@@ -89,7 +89,7 @@ theorem sq_add_sq_ne_zero (h : |gamma.im| < s.re) : s ^ 2 + gamma ^ 2 ≠ 0 := b
 its damped sine integrates to the resolvent kernel. -/
 theorem integral_sin_mul_exp (h : |gamma.im| < s.re) :
     (∫ t in Ioi (0 : ℝ), Complex.sin (gamma * t) * Complex.exp (-s * t)) =
-      gamma / (s ^ 2 + gamma ^ 2) := by
+      gamma / (s ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by
   have hleft := laplace_exp_re_neg_left h
   have hright := laplace_exp_re_neg_right h
   have h1 := integrableOn_exp_mul_complex_Ioi hleft 0
@@ -112,7 +112,7 @@ theorem integral_sin_mul_exp (h : |gamma.im| < s.re) :
   simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
   field_simp
   ring_nf
-  linear_combination (-(2 * gamma * s ^ 2)) * Complex.I_sq
+  linear_combination (-(2 * gamma * s ^ (2 : ℕ))) * Complex.I_sq
 
 
 
@@ -139,7 +139,7 @@ theorem integral_sin_mul_exp_Ioi (h : |gamma.im| < s.re) (T : ℝ) :
     (∫ t in Ioi T, Complex.sin (gamma * t) * Complex.exp (-s * t)) =
       Complex.exp (-s * T) *
         (s * Complex.sin (gamma * T) + gamma * Complex.cos (gamma * T)) /
-          (s ^ 2 + gamma ^ 2) := by
+          (s ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by
   have hleft := laplace_exp_re_neg_left h
   have hright := laplace_exp_re_neg_right h
   have h1 := integrableOn_exp_mul_complex_Ioi hleft T
@@ -173,7 +173,7 @@ theorem integral_sin_mul_exp_Ioi (h : |gamma.im| < s.re) (T : ℝ) :
   field_simp
   ring_nf
   linear_combination
-    (Complex.I * E * gamma ^ 2 * s * (A - B) - E * gamma * s ^ 2 * (A + B)) * Complex.I_sq
+    (Complex.I * E * gamma ^ (2 : ℕ) * s * (A - B) - E * gamma * s ^ (2 : ℕ) * (A + B)) * Complex.I_sq
 
 /-! ## Termwise Laplace transform of the wave trace -/
 
@@ -183,7 +183,7 @@ variable {G : Type*} [Countable G] (S : WaveSpectrum G)
 
 /-- Coefficient of a frequency in the wave trace. -/
 def traceCoeff (P : Polynomial ℝ) (g : G) : ℂ :=
-  Polynomial.aeval ((S.gamma g ^ 2) ⁻¹) P / S.gamma g ^ 3
+  Polynomial.aeval ((S.gamma g ^ (2 : ℕ)) ⁻¹) P / S.gamma g ^ (3 : ℕ)
 
 /-- Phase numerator produced by starting the Laplace integral at time `T`. -/
 def poleNumer (T : ℝ) (s : ℂ) (g : G) : ℂ :=
@@ -192,7 +192,7 @@ def poleNumer (T : ℝ) (s : ℂ) (g : G) : ℂ :=
 
 /-- One resolvent term of the active-pole transform. -/
 def poleTerm (P : Polynomial ℝ) (T : ℝ) (s : ℂ) (g : G) : ℂ :=
-  S.traceCoeff P g * S.poleNumer T s g / (s ^ 2 + S.gamma g ^ 2)
+  S.traceCoeff P g * S.poleNumer T s g / (s ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ))
 
 /-- One damped wave-trace term. -/
 def dampedTerm (P : Polynomial ℝ) (s : ℂ) (t : ℝ) (g : G) : ℂ :=
@@ -235,7 +235,7 @@ theorem integral_dampedTerm (P : Polynomial ℝ) {s : ℂ} (hs : S.width < s.re)
 omit [Countable G] in
 theorem norm_dampedTerm_le (P : Polynomial ℝ) (s : ℂ) {t : ℝ} (ht : 0 < t) (g : G) :
     ‖S.dampedTerm P s t g‖ ≤
-      polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3 *
+      polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) *
         Real.exp ((S.width - s.re) * t) := by
   rw [dampedTerm, norm_mul, Complex.norm_exp]
   have hre : (-s * (t : ℂ)).re = -(s.re * t) := by simp [Complex.mul_re]
@@ -244,9 +244,9 @@ theorem norm_dampedTerm_le (P : Polynomial ℝ) (s : ℂ) {t : ℝ} (ht : 0 < t)
   rw [abs_of_pos ht] at hterm
   have hpos : (0 : ℝ) < Real.exp (-(s.re * t)) := Real.exp_pos _
   calc ‖S.traceTerm P t g‖ * Real.exp (-(s.re * t))
-      ≤ (Real.exp (S.width * t) * polyBallBound P (S.lower⁻¹ ^ 2)) * ‖S.gamma g‖⁻¹ ^ 3 *
+      ≤ (Real.exp (S.width * t) * polyBallBound P (S.lower⁻¹ ^ (2 : ℕ))) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) *
           Real.exp (-(s.re * t)) := mul_le_mul_of_nonneg_right hterm hpos.le
-    _ = polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3 *
+    _ = polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) *
           Real.exp ((S.width - s.re) * t) := by
         rw [show (S.width - s.re) * t = S.width * t + -(s.re * t) by ring, Real.exp_add]
         ring
@@ -255,11 +255,11 @@ omit [Countable G] in
 theorem integral_norm_dampedTerm_le (P : Polynomial ℝ) {s : ℂ} (hs : S.width < s.re)
     {T : ℝ} (hT : 0 ≤ T) (g : G) :
     (∫ t in Ioi T, ‖S.dampedTerm P s t g‖) ≤
-      polyBallBound P (S.lower⁻¹ ^ 2) * Real.exp ((S.width - s.re) * T) / (s.re - S.width) *
-        ‖S.gamma g‖⁻¹ ^ 3 := by
+      polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * Real.exp ((S.width - s.re) * T) / (s.re - S.width) *
+        ‖S.gamma g‖⁻¹ ^ (3 : ℕ) := by
   have hneg : S.width - s.re < 0 := by linarith
   have hmaj : IntegrableOn
-      (fun t : ℝ => polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3 *
+      (fun t : ℝ => polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) *
         Real.exp ((S.width - s.re) * t)) (Ioi T) :=
     (integrableOn_exp_mul_Ioi hneg T).const_mul _
   have hint := (S.integrableOn_dampedTerm P hs T g).norm

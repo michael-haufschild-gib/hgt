@@ -9,8 +9,8 @@ turns the difference between the infinite Class-I profile and its first `K` term
 geometric remainder, uniformly in mollifier length, conductor, character, and detector shift.
 
 At the source scale `x = 1 / (Y + 1)` and the paper's cutoff
-`K = ceil ((Y + 1) log^2 (Y + 1))`, the remainder is at most
-`2 C (Y + 1) exp (-log^2 (Y + 1))`, hence tends to zero.  This supplies the quantitative
+`K = ceil ((Y + 1) log^(2 : ℕ) (Y + 1))`, the remainder is at most
+`2 C (Y + 1) exp (-log^(2 : ℕ) (Y + 1))`, hence tends to zero.  This supplies the quantitative
 coefficient-tail truncation used before the Class-I/Class-II split in CGL Section 12.1.
 -/
 
@@ -68,14 +68,14 @@ theorem exists_cglShiftedDetectorTail_geometric_bound :
 def cglClassITailSmoothingScale (Y : ℕ) : CGLPositiveSmoothingScale :=
   ⟨1 / (((Y + 1 : ℕ) : ℝ)), by positivity⟩
 
-/-- CGL's coefficient cutoff `ceil ((Y + 1) log^2 (Y + 1))`. -/
+/-- CGL's coefficient cutoff `ceil ((Y + 1) log^(2 : ℕ) (Y + 1))`. -/
 noncomputable def cglClassITailTruncationCutoff (Y : ℕ) : ℕ :=
-  Nat.ceil ((((Y + 1 : ℕ) : ℝ)) * Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2)
+  Nat.ceil ((((Y + 1 : ℕ) : ℝ)) * Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
 
 theorem tendsto_cglClassITail_logSquareMajorant_zero (C : ℝ) :
     Tendsto (fun Y : ℕ =>
       2 * C * (((Y + 1 : ℕ) : ℝ)) *
-        Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2)))
+        Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ))))
       atTop (𝓝 0) := by
   have hy : Tendsto (fun Y : ℕ => (((Y + 1 : ℕ) : ℝ))) atTop atTop := by
     exact tendsto_natCast_atTop_atTop.comp (Filter.tendsto_add_atTop_nat 1)
@@ -101,14 +101,14 @@ theorem tendsto_cglClassITail_logSquareMajorant_zero (C : ℝ) :
     symm
     calc
       2 * C * (((Y + 1 : ℕ) : ℝ)) *
-            Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2)) =
+            Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) =
           2 * C * (Real.exp (Real.log (((Y + 1 : ℕ) : ℝ))) *
-            Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2))) := by
+            Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ)))) := by
         rw [Real.exp_log hypos]
         ring
       _ = 2 * C * Real.exp
           (Real.log (((Y + 1 : ℕ) : ℝ)) -
-            Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2) := by
+            Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) := by
         rw [← Real.exp_add]
         congr 2
       _ = 2 * C * Real.exp
@@ -125,7 +125,7 @@ theorem exists_cglShiftedDetectorTail_source_truncation_bound :
           cglShiftedDetectorTailPartialProfile X q χ s
             (cglClassITailSmoothingScale Y) (cglClassITailTruncationCutoff Y)‖ ≤
         2 * C * (((Y + 1 : ℕ) : ℝ)) *
-          Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ 2)) := by
+          Real.exp (-(Real.log (((Y + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) := by
   obtain ⟨C, hC, htail⟩ := exists_cglShiftedDetectorTail_geometric_bound
   refine ⟨C, hC, ?_⟩
   intro X q χ s Y
@@ -140,15 +140,15 @@ theorem exists_cglShiftedDetectorTail_source_truncation_bound :
     half_mul_le_one_sub_exp_neg (by positivity) hxOne
   have hdenPos : 0 < 1 - Real.exp (-(1 / y)) :=
     lt_of_lt_of_le (by positivity) hden
-  have hceil : y * Real.log y ^ 2 ≤ (cglClassITailTruncationCutoff Y : ℝ) := by
+  have hceil : y * Real.log y ^ (2 : ℕ) ≤ (cglClassITailTruncationCutoff Y : ℝ) := by
     exact Nat.le_ceil _
-  have hscale : Real.log y ^ 2 ≤ (cglClassITailTruncationCutoff Y : ℝ) * (1 / y) := by
+  have hscale : Real.log y ^ (2 : ℕ) ≤ (cglClassITailTruncationCutoff Y : ℝ) * (1 / y) := by
     calc
-      Real.log y ^ 2 = (y * Real.log y ^ 2) * (1 / y) := by field_simp
+      Real.log y ^ (2 : ℕ) = (y * Real.log y ^ (2 : ℕ)) * (1 / y) := by field_simp
       _ ≤ (cglClassITailTruncationCutoff Y : ℝ) * (1 / y) :=
         mul_le_mul_of_nonneg_right hceil (by positivity)
   have hnum : Real.exp (-((cglClassITailTruncationCutoff Y : ℝ) * (1 / y))) ≤
-      Real.exp (-(Real.log y ^ 2)) := by
+      Real.exp (-(Real.log y ^ (2 : ℕ))) := by
     exact Real.exp_le_exp.mpr (neg_le_neg hscale)
   have hbase := htail X q χ s (cglClassITailSmoothingScale Y)
     (cglClassITailTruncationCutoff Y)
@@ -157,11 +157,11 @@ theorem exists_cglShiftedDetectorTail_source_truncation_bound :
   rw [div_le_iff₀ hdenPos]
   calc
     C * Real.exp (-((cglClassITailTruncationCutoff Y : ℝ) * (1 / y))) ≤
-        C * Real.exp (-(Real.log y ^ 2)) :=
+        C * Real.exp (-(Real.log y ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hnum hC.le
-    _ = (2 * C * y * Real.exp (-(Real.log y ^ 2))) * ((1 / y) / 2) := by
+    _ = (2 * C * y * Real.exp (-(Real.log y ^ (2 : ℕ)))) * ((1 / y) / 2) := by
       field_simp
-    _ ≤ (2 * C * y * Real.exp (-(Real.log y ^ 2))) *
+    _ ≤ (2 * C * y * Real.exp (-(Real.log y ^ (2 : ℕ)))) *
         (1 - Real.exp (-(1 / y))) := by
       exact mul_le_mul_of_nonneg_left hden (by positivity)
 

@@ -44,7 +44,7 @@ noncomputable def mtTypeIPrimeHeathBrownBlockMomentBound
       (mtTypeIPrimeRaisedHeathBrownEnergyMomentCoefficient
           P ell B N N' T eta *
         (∑ m ∈ Finset.Ioc B (2 * B),
-          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2)) *
+          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ))) *
     Real.sqrt
       (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
           (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -60,13 +60,13 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown
     (hblockHeight : ∀ r : Fin ell,
       (((2 * mtTypeIPrimeHeathBrownBlockLength P ell r : ℕ) : ℝ)) ≤ T) :
     (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-        ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-          ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+        ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+          ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
       ∑ r : Fin ell,
         mtTypeIPrimeHeathBrownBlockMomentBound
           eta a A P ell N N' T V r := by
   let f : ℝ → ℝ := fun t =>
-    ‖mtWattCoefficientBlock a A t‖ ^ 2 * ‖mtWattUnitBlock N N' t‖ ^ 2
+    ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) * ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)
   have hunion : (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V, f t) ≤
       ∑ r : Fin ell,
         ∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r, f t :=
@@ -110,9 +110,9 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown
       hK (measurableSet_mtTypeIPrimeAmplifierBlockLargeSet P ell T V r)
       (mtTypeIPrimeAmplifierBlockLargeSet_subset_Icc P ell T V r) hlarge
     have hmixedSet : (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-        ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+        ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
         ∫ t in (T / 2)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2 :=
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         (((continuous_perronPoly _ _ _).norm.pow 4).mul
           ((continuous_perronPoly _ _ _).norm.pow 2))
@@ -121,8 +121,8 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown
         (fun t => mul_nonneg (pow_nonneg (norm_nonneg _) 4) (sq_nonneg _))
     have hfourthSet :
         (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-          ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
-        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4 :=
+          ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
+        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         ((continuous_perronPoly _ _ _).norm.pow 4)
         (by linarith)
@@ -155,8 +155,8 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_of_fullSupport_le
     (hT : 2 ≤ T) (hV : 0 < V) (heta : 0 < eta)
     (hfull : ((((2 * P) ^ ell : ℕ) : ℝ)) ≤ T) :
     (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-        ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-          ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+        ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+          ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
       ∑ r : Fin ell,
         mtTypeIPrimeHeathBrownBlockMomentBound
           eta a A P ell N N' T V r := by

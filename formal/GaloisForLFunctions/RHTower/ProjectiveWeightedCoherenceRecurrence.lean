@@ -23,11 +23,11 @@ theorem nonnegative_weighted_phaseSum_norm_floor_of_anisotropic_approximation
     (hw : ∀ i, 0 ≤ w i)
     (hphase : ∀ i,
       |(n : ℝ) * ω i - 2 * Real.pi * r i| ≤ e i) :
-    (∑ i, (1 - e i ^ 2 / 2) * w i) ≤
+    (∑ i, (1 - e i ^ (2 : ℕ) / 2) * w i) ≤
       ‖∑ i, (w i : ℂ) * Complex.exp
         (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))‖ := by
   calc
-    (∑ i, (1 - e i ^ 2 / 2) * w i) ≤
+    (∑ i, (1 - e i ^ (2 : ℕ) / 2) * w i) ≤
         ∑ i, ((w i : ℂ) * Complex.exp
           (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))).re := by
       apply Finset.sum_le_sum
@@ -95,7 +95,7 @@ theorem exists_projective_nonnegative_weighted_phaseSum_recurrence_anisotropic
     (hmass : ∑ i, w i = 1) :
     ∃ n : ℕ, 0 < n ∧ n ≤ ∏ i, Q i ∧
       1 - (∑ i, if i = k then 0 else
-          w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)) ≤
+          w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)) ≤
         ‖∑ i, (w i : ℂ) * Complex.exp
           (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))‖ := by
   obtain ⟨n, hn, hnQ, r, hr⟩ :=
@@ -123,13 +123,13 @@ theorem exists_projective_nonnegative_weighted_phaseSum_recurrence_anisotropic
   refine ⟨n, hn, hnQ, ?_⟩
   calc
     1 - (∑ i, if i = k then 0 else
-          w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)) =
+          w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)) =
         (∑ i, w i) - (∑ i, if i = k then 0 else
-          w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)) := by rw [hmass]
+          w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)) := by rw [hmass]
     _ = ∑ i, (w i - if i = k then 0 else
-          w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)) := by
+          w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)) := by
       rw [Finset.sum_sub_distrib]
-    _ = ∑ i, (1 - e i ^ 2 / 2) * w i := by
+    _ = ∑ i, (1 - e i ^ (2 : ℕ) / 2) * w i := by
       apply Finset.sum_congr rfl
       intro i _hi
       by_cases hik : i = k

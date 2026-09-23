@@ -24,13 +24,13 @@ def rapidExponentialFockEffectiveSamplingWeight
     rapidExponentialFockLocalEvaluationFactor a (Real.log (p : ℝ))
 
 def rapidExponentialFockLocalEvaluationPolynomialBound (a : ℝ) : ℝ :=
-  512 * Real.exp 2 * (a + 1) ^ 4 / a ^ 2
+  512 * Real.exp 2 * (a + 1) ^ (4 : ℕ) / a ^ (2 : ℕ)
 
-theorem rapidExponentialFockLocalEvaluationFactor_eq
+theorem rapidExponentialFockLocalEvaluationFactor_eq_rapidExponentialFockEffectiveWeight
     {a x : ℝ} (ha : 0 < a) :
     rapidExponentialFockLocalEvaluationFactor a x =
-      128 * Real.exp 2 * (a + 1) ^ 2 / a ^ 2 *
-        (1 + max 1 (2 * a * x)) ^ 2 := by
+      128 * Real.exp 2 * (a + 1) ^ (2 : ℕ) / a ^ (2 : ℕ) *
+        (1 + max 1 (2 * a * x)) ^ (2 : ℕ) := by
   unfold rapidExponentialFockLocalEvaluationFactor
     rapidExponentialFockTangentCurvature rapidExponentialFockLocalRadius
   have ha0 : a ≠ 0 := ha.ne'
@@ -38,11 +38,11 @@ theorem rapidExponentialFockLocalEvaluationFactor_eq
   have hmax : 1 + max 1 (2 * a * x) ≠ 0 := by
     have : 0 < 1 + max 1 (2 * a * x) := by linarith [le_max_left 1 (2 * a * x)]
     exact this.ne'
-  have hexp : Real.exp (2 * a * x) * Real.exp (-a * x) ^ 2 = 1 := by
+  have hexp : Real.exp (2 * a * x) * Real.exp (-a * x) ^ (2 : ℕ) = 1 := by
     rw [← Real.exp_nat_mul, ← Real.exp_add]
     ring_nf
     simp
-  have hexp' : Real.exp (2 * a * x) * Real.exp (-(a * x)) ^ 2 = 1 := by
+  have hexp' : Real.exp (2 * a * x) * Real.exp (-(a * x)) ^ (2 : ℕ) = 1 := by
     convert hexp using 1 <;> ring
   field_simp [ha0, ha1, hmax]
   nlinarith [hexp']
@@ -50,29 +50,29 @@ theorem rapidExponentialFockLocalEvaluationFactor_eq
 theorem rapidExponentialFockLocalEvaluationFactor_le_polynomial
     {a x : ℝ} (ha : 0 < a) (hx : 0 ≤ x) :
     rapidExponentialFockLocalEvaluationFactor a x ≤
-      rapidExponentialFockLocalEvaluationPolynomialBound a * (x + 1) ^ 2 := by
+      rapidExponentialFockLocalEvaluationPolynomialBound a * (x + 1) ^ (2 : ℕ) := by
   have hax : 0 ≤ 2 * a * x := by positivity
   have hmax : max 1 (2 * a * x) ≤ 1 + 2 * a * x := by
     exact max_le (by linarith) (by linarith)
   have hone : 1 + max 1 (2 * a * x) ≤ 2 * (1 + a * x) := by linarith
   have hscale : 1 + a * x ≤ (a + 1) * (x + 1) := by nlinarith
-  have hsquare : (1 + max 1 (2 * a * x)) ^ 2 ≤
-      4 * (a + 1) ^ 2 * (x + 1) ^ 2 := by
+  have hsquare : (1 + max 1 (2 * a * x)) ^ (2 : ℕ) ≤
+      4 * (a + 1) ^ (2 : ℕ) * (x + 1) ^ (2 : ℕ) := by
     have hnonneg : 0 ≤ 1 + max 1 (2 * a * x) := by
       linarith [le_max_left 1 (2 * a * x)]
     have hright : 0 ≤ 2 * ((a + 1) * (x + 1)) := by positivity
     have := (sq_le_sq₀ hnonneg hright).2 (hone.trans (by nlinarith))
     nlinarith
-  rw [rapidExponentialFockLocalEvaluationFactor_eq ha]
+  rw [rapidExponentialFockLocalEvaluationFactor_eq_rapidExponentialFockEffectiveWeight ha]
   unfold rapidExponentialFockLocalEvaluationPolynomialBound
-  have hcoeff : 0 ≤ 128 * Real.exp 2 * (a + 1) ^ 2 / a ^ 2 := by positivity
+  have hcoeff : 0 ≤ 128 * Real.exp 2 * (a + 1) ^ (2 : ℕ) / a ^ (2 : ℕ) := by positivity
   calc
-    128 * Real.exp 2 * (a + 1) ^ 2 / a ^ 2 *
-        (1 + max 1 (2 * a * x)) ^ 2 ≤
-      (128 * Real.exp 2 * (a + 1) ^ 2 / a ^ 2) *
-        (4 * (a + 1) ^ 2 * (x + 1) ^ 2) :=
+    128 * Real.exp 2 * (a + 1) ^ (2 : ℕ) / a ^ (2 : ℕ) *
+        (1 + max 1 (2 * a * x)) ^ (2 : ℕ) ≤
+      (128 * Real.exp 2 * (a + 1) ^ (2 : ℕ) / a ^ (2 : ℕ)) *
+        (4 * (a + 1) ^ (2 : ℕ) * (x + 1) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hsquare hcoeff
-    _ = 512 * Real.exp 2 * (a + 1) ^ 4 / a ^ 2 * (x + 1) ^ 2 := by ring
+    _ = 512 * Real.exp 2 * (a + 1) ^ (4 : ℕ) / a ^ (2 : ℕ) * (x + 1) ^ (2 : ℕ) := by ring
 
 theorem rapidExponentialFockEffectiveSamplingWeight_nonneg
     {a : ℝ} (ha : 0 < a) (p : Nat.Primes) :
@@ -93,10 +93,10 @@ theorem rapidExponentialFockEffectiveSamplingWeight_le_logPowFour
   let x : ℝ := Real.log (p : ℝ)
   have hx : 0 ≤ x := zero_le_one.trans hpLog
   have hfactor := rapidExponentialFockLocalEvaluationFactor_le_polynomial ha hx
-  have hxplus : (x + 1) ^ 2 ≤ 4 * x ^ 2 := by nlinarith [sq_nonneg (x - 1)]
-  have hw : criticalPrimeSamplingWeight p = x ^ 2 / p := by
+  have hxplus : (x + 1) ^ (2 : ℕ) ≤ 4 * x ^ (2 : ℕ) := by nlinarith [sq_nonneg (x - 1)]
+  have hw : criticalPrimeSamplingWeight p = x ^ (2 : ℕ) / p := by
     rw [criticalPrimeSamplingWeight]
-  have hpow : primeLogPowWeight 4 p = x ^ 4 / p := by
+  have hpow : primeLogPowWeight 4 p = x ^ (4 : ℕ) / p := by
     rw [primeLogPowWeight, if_pos p.prop]
   have hpPos : (0 : ℝ) < p := by exact_mod_cast p.prop.pos
   have hB : 0 ≤ rapidExponentialFockLocalEvaluationPolynomialBound a := by
@@ -105,15 +105,15 @@ theorem rapidExponentialFockEffectiveSamplingWeight_le_logPowFour
   unfold rapidExponentialFockEffectiveSamplingWeight
   rw [hw, hpow]
   calc
-    x ^ 2 / (p : ℝ) * rapidExponentialFockLocalEvaluationFactor a x ≤
-      x ^ 2 / (p : ℝ) *
-        (rapidExponentialFockLocalEvaluationPolynomialBound a * (x + 1) ^ 2) := by
+    x ^ (2 : ℕ) / (p : ℝ) * rapidExponentialFockLocalEvaluationFactor a x ≤
+      x ^ (2 : ℕ) / (p : ℝ) *
+        (rapidExponentialFockLocalEvaluationPolynomialBound a * (x + 1) ^ (2 : ℕ)) := by
       gcongr
-    _ ≤ x ^ 2 / (p : ℝ) *
-        (rapidExponentialFockLocalEvaluationPolynomialBound a * (4 * x ^ 2)) := by
+    _ ≤ x ^ (2 : ℕ) / (p : ℝ) *
+        (rapidExponentialFockLocalEvaluationPolynomialBound a * (4 * x ^ (2 : ℕ))) := by
       gcongr
     _ = 4 * rapidExponentialFockLocalEvaluationPolynomialBound a *
-        (x ^ 4 / (p : ℝ)) := by ring
+        (x ^ (4 : ℕ) / (p : ℝ)) := by ring
 
 /-- Effective normalized-evaluation mass on rapid local balls is dominated by fourth prime-log
 mass in one adapted window. -/

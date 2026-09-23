@@ -31,7 +31,7 @@ def xiWardCriticalMassCurvatureToll (a : ℝ) : ℝ :=
 
 theorem xiWardCriticalMassCurvatureToll_eq (a : ℝ) :
     xiWardCriticalMassCurvatureToll a =
-      a ^ 2 * Complex.normSq
+      a ^ (2 : ℕ) * Complex.normSq
         (continuedXiAntiCausalWardResponse (1 / 2 : ℂ)) := by
   rw [xiWardCriticalMassCurvatureToll, Complex.normSq_mul,
     Complex.normSq_ofReal]
@@ -85,9 +85,9 @@ theorem eventually_xiWardCriticalMassCurvatureToll_lt_boundaryPhaseDefect_of_not
     have hmul := (lt_div_iff₀ hden).mp haSmall
     nlinarith [Complex.normSq_nonneg r]
   rw [xiWardCriticalMassCurvatureToll_eq]
-  change a ^ 2 * Complex.normSq r < _
+  change a ^ (2 : ℕ) * Complex.normSq r < _
   calc
-    a ^ 2 * Complex.normSq r =
+    a ^ (2 : ℕ) * Complex.normSq r =
         a * (a * Complex.normSq r) := by ring
     _ < a * r.re := mul_lt_mul_of_pos_left hcostRate ha0
     _ < xiWardBoundaryPhaseDefect (1 / 2 : ℂ) a := hlinear

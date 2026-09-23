@@ -44,29 +44,29 @@ lemma prod_one_sub_le_exp_neg {κ : ℝ} {lam : ℕ → ℝ} (N n : ℕ)
 /-- The explicit solution bound for the recursion. -/
 lemma robbins_le {d lam : ℕ → ℝ} {κ C : ℝ} (hC : 0 ≤ C)
     (_hd : ∀ n, 0 ≤ d n) (hlam : ∀ n, 0 ≤ κ * lam n) (hle : ∀ n, κ * lam n ≤ 1)
-    (hrec : ∀ n, d (n + 1) ≤ (1 - κ * lam n) * d n + C * (lam n) ^ 2)
+    (hrec : ∀ n, d (n + 1) ≤ (1 - κ * lam n) * d n + C * (lam n) ^ (2 : ℕ))
     (N : ℕ) : ∀ n, N ≤ n →
       d n ≤ (∏ k ∈ Finset.Ico N n, (1 - κ * lam k)) * d N
-        + C * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 := by
+        + C * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) := by
   intro n hn
   induction n, hn using Nat.le_induction with
   | base => simp
   | succ n hn ih =>
       have hfac : (0 : ℝ) ≤ 1 - κ * lam n := by linarith [hle n]
       have hfac1 : (1 : ℝ) - κ * lam n ≤ 1 := by linarith [hlam n]
-      have hSnn : (0 : ℝ) ≤ C * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 := by
+      have hSnn : (0 : ℝ) ≤ C * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) := by
         refine mul_nonneg hC (Finset.sum_nonneg fun k _ => ?_)
         positivity
       have h1 : d (n + 1) ≤ (1 - κ * lam n)
           * ((∏ k ∈ Finset.Ico N n, (1 - κ * lam k)) * d N
-            + C * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2) + C * (lam n) ^ 2 := by
+            + C * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ)) + C * (lam n) ^ (2 : ℕ) := by
         have hmul := mul_le_mul_of_nonneg_left ih hfac
         linarith [hrec n, hmul]
       have hprod : ∏ k ∈ Finset.Ico N (n + 1), (1 - κ * lam k)
           = (∏ k ∈ Finset.Ico N n, (1 - κ * lam k)) * (1 - κ * lam n) :=
         Finset.prod_Ico_succ_top hn _
-      have hsum : ∑ k ∈ Finset.Ico N (n + 1), (lam k) ^ 2
-          = (∑ k ∈ Finset.Ico N n, (lam k) ^ 2) + (lam n) ^ 2 :=
+      have hsum : ∑ k ∈ Finset.Ico N (n + 1), (lam k) ^ (2 : ℕ)
+          = (∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ)) + (lam n) ^ (2 : ℕ) :=
         Finset.sum_Ico_succ_top hn _
       rw [hprod, hsum]
       nlinarith [h1, hSnn, hfac, hfac1]
@@ -74,38 +74,38 @@ lemma robbins_le {d lam : ℕ → ℝ} {κ C : ℝ} (hC : 0 ≤ C)
 /-- **The Robbins–Monro convergence theorem (deterministic form).** -/
 theorem tendsto_zero_of_robbins {d lam : ℕ → ℝ} {κ C : ℝ} (hκ : 0 < κ) (hC : 0 ≤ C)
     (hd : ∀ n, 0 ≤ d n) (hlam : ∀ n, 0 ≤ lam n) (hle : ∀ n, κ * lam n ≤ 1)
-    (hrec : ∀ n, d (n + 1) ≤ (1 - κ * lam n) * d n + C * (lam n) ^ 2)
+    (hrec : ∀ n, d (n + 1) ≤ (1 - κ * lam n) * d n + C * (lam n) ^ (2 : ℕ))
     (hdiv : Tendsto (fun n => ∑ k ∈ Finset.range n, lam k) atTop atTop)
-    (hsq : Summable (fun n => (lam n) ^ 2)) :
+    (hsq : Summable (fun n => (lam n) ^ (2 : ℕ))) :
     Tendsto d atTop (nhds 0) := by
   have hlamκ : ∀ n, 0 ≤ κ * lam n := fun n => mul_nonneg hκ.le (hlam n)
   refine tendsto_order.2 ⟨fun c hc => ?_, fun c hc => ?_⟩
   · exact Eventually.of_forall fun n => lt_of_lt_of_le hc (hd n)
   -- choose `N` so that the tail of `∑ λ²` is small
-  have htail : Tendsto (fun N => ∑' k, (lam k) ^ 2 - ∑ k ∈ Finset.range N, (lam k) ^ 2)
+  have htail : Tendsto (fun N => ∑' k, (lam k) ^ (2 : ℕ) - ∑ k ∈ Finset.range N, (lam k) ^ (2 : ℕ))
       atTop (nhds 0) := by
     have h := hsq.hasSum.tendsto_sum_nat
-    have := Tendsto.const_sub (∑' k, (lam k) ^ 2) h
+    have := Tendsto.const_sub (∑' k, (lam k) ^ (2 : ℕ)) h
     simpa using this
   have hδ : (0 : ℝ) < c / (2 * (C + 1)) := by positivity
   obtain ⟨N, hN⟩ := (htail.eventually (gt_mem_nhds hδ)).exists
-  have hNtail : ∀ n, N ≤ n → C * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 < c / 2 := by
+  have hNtail : ∀ n, N ≤ n → C * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) < c / 2 := by
     intro n hn
-    have hIco : ∑ k ∈ Finset.Ico N n, (lam k) ^ 2
-        = ∑ k ∈ Finset.range n, (lam k) ^ 2 - ∑ k ∈ Finset.range N, (lam k) ^ 2 := by
+    have hIco : ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ)
+        = ∑ k ∈ Finset.range n, (lam k) ^ (2 : ℕ) - ∑ k ∈ Finset.range N, (lam k) ^ (2 : ℕ) := by
       rw [Finset.range_eq_Ico, Finset.range_eq_Ico,
-        ← Finset.sum_Ico_consecutive (fun k => (lam k) ^ 2) (Nat.zero_le N) hn]
+        ← Finset.sum_Ico_consecutive (fun k => (lam k) ^ (2 : ℕ)) (Nat.zero_le N) hn]
       ring
-    have hle' : ∑ k ∈ Finset.range n, (lam k) ^ 2 ≤ ∑' k, (lam k) ^ 2 :=
+    have hle' : ∑ k ∈ Finset.range n, (lam k) ^ (2 : ℕ) ≤ ∑' k, (lam k) ^ (2 : ℕ) :=
       hsq.sum_le_tsum _ (fun k _ => by positivity)
-    have hb : ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 < c / (2 * (C + 1)) := by
+    have hb : ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) < c / (2 * (C + 1)) := by
       rw [hIco]; linarith [hN]
-    have hnn : (0 : ℝ) ≤ ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 :=
+    have hnn : (0 : ℝ) ≤ ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun k _ => by positivity
-    have h1 : C * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2
-        ≤ (C + 1) * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2 :=
+    have h1 : C * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ)
+        ≤ (C + 1) * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right (by linarith) hnn
-    have h2 : (C + 1) * ∑ k ∈ Finset.Ico N n, (lam k) ^ 2
+    have h2 : (C + 1) * ∑ k ∈ Finset.Ico N n, (lam k) ^ (2 : ℕ)
         < (C + 1) * (c / (2 * (C + 1))) := mul_lt_mul_of_pos_left hb (by positivity)
     have heq : (C + 1) * (c / (2 * (C + 1))) = c / 2 := by
       field_simp

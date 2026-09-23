@@ -105,7 +105,7 @@ theorem integrable_complex_cosh_cpow_neg_mul_exp {s a : ℂ}
   have hd : 0 < d := by simp only [d]; linarith
   have hmajor : Integrable (fun t : ℝ =>
       2 ^ s.re * Real.exp (-(d * |t|))) :=
-    (RHTower.integrable_exp_neg_mul_abs hd).const_mul (2 ^ s.re)
+    (RHTower.integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hd).const_mul (2 ^ s.re)
   refine Integrable.mono' hmajor ?_ ?_
   · fun_prop
   · refine ae_of_all _ fun t => ?_

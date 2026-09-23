@@ -31,13 +31,13 @@ theorem sqrt_le_budgetBS {c β : ℝ} (hc0 : 0 < c) (hβ0 : 0 < β) :
 theorem spectral_terms_le' {sx h W G T0 δ αL βL Ec B0 : ℝ}
     (hsx : 0 < sx) (hW : 1 ≤ W) (hh : 1 ≤ h) (hB0 : 0 < B0)
     (hδ : 0 ≤ δ) (hδle : δ ≤ h / sx) (hGh : G * h = B0) (hG0 : 0 < G) (hT0 : B0 ≤ T0)
-    (hxB : B0 ^ 2 ≤ 4 * sx ^ 2) (hαL : 0 ≤ αL) (hβL : 0 ≤ βL) (hEc : 0 ≤ Ec) :
-    32 * δ ^ 2 * (αL * G + βL) / (W ^ 2 * h ^ 2)
+    (hxB : B0 ^ (2 : ℕ) ≤ 4 * sx ^ (2 : ℕ)) (hαL : 0 ≤ αL) (hβL : 0 ≤ βL) (hEc : 0 ≤ Ec) :
+    32 * δ ^ (2 : ℕ) * (αL * G + βL) / (W ^ (2 : ℕ) * h ^ (2 : ℕ))
         + 64 * (αL + 5 * Real.pi / 2 * Ec + 5 * Real.exp 1 / 2 * B0 * Ec / T0)
-            / (Real.pi ^ 2 * G * (W ^ 2 * h ^ 2))
-        + 64 * βL / (3 * Real.pi ^ 2 * G ^ 2 * (W ^ 2 * h ^ 2))
-      ≤ 136 * αL / (B0 * h * W ^ 2) + 140 * Ec / (B0 * h * W ^ 2)
-        + 131 * βL / (B0 ^ 2 * W ^ 2) := by
+            / (Real.pi ^ (2 : ℕ) * G * (W ^ (2 : ℕ) * h ^ (2 : ℕ)))
+        + 64 * βL / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ) * (W ^ (2 : ℕ) * h ^ (2 : ℕ)))
+      ≤ 136 * αL / (B0 * h * W ^ (2 : ℕ)) + 140 * Ec / (B0 * h * W ^ (2 : ℕ))
+        + 131 * βL / (B0 ^ (2 : ℕ) * W ^ (2 : ℕ)) := by
   have hbase := spectral_terms_le (T0 := B0) hsx hW hh hB0 hδ hδle hGh hG0 rfl hxB hαL hβL hEc
   have hW0 : (0 : ℝ) < W := by linarith
   have hh0 : (0 : ℝ) < h := by linarith
@@ -47,10 +47,10 @@ theorem spectral_terms_le' {sx h W G T0 δ αL βL Ec B0 : ℝ}
     have hnum : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * B0 * Ec := by positivity
     exact div_le_div_of_nonneg_left hnum hB0 hT0
   have hstep : 64 * (αL + 5 * Real.pi / 2 * Ec + 5 * Real.exp 1 / 2 * B0 * Ec / T0)
-      / (Real.pi ^ 2 * G * (W ^ 2 * h ^ 2))
+      / (Real.pi ^ (2 : ℕ) * G * (W ^ (2 : ℕ) * h ^ (2 : ℕ)))
       ≤ 64 * (αL + 5 * Real.pi / 2 * Ec + 5 * Real.exp 1 / 2 * B0 * Ec / B0)
-      / (Real.pi ^ 2 * G * (W ^ 2 * h ^ 2)) := by
-    have hden : (0 : ℝ) < Real.pi ^ 2 * G * (W ^ 2 * h ^ 2) := by positivity
+      / (Real.pi ^ (2 : ℕ) * G * (W ^ (2 : ℕ) * h ^ (2 : ℕ))) := by
+    have hden : (0 : ℝ) < Real.pi ^ (2 : ℕ) * G * (W ^ (2 : ℕ) * h ^ (2 : ℕ)) := by positivity
     gcongr
   linarith [hbase, hstep]
 
@@ -65,7 +65,7 @@ theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
         ladderAffineSlope (ladderSteps β γ x) (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ)
             (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2))
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)))
       atTop (𝓝 0) := by
   have hβ0' : (0 : ℝ) < β := by linarith
   have hab : (0 : ℝ) < γ * β := by linarith
@@ -84,9 +84,9 @@ theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
       ladderAffineSlope_nonneg (by linarith) hη.le
     have hsl : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
     have hden : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       have hB : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
-      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
         nlinarith [hW]
       positivity
     exact div_nonneg hnum hden.le
@@ -112,7 +112,7 @@ theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
     have hnumS : (0 : ℝ) ≤ ladderAffineSlope (ladderSteps β γ x) (budgetBS c β x)
         ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x) :=
       ladderAffineSlope_nonneg (by linarith) hη.le
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     have hBSR : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
     have hBR : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by
@@ -121,9 +121,9 @@ theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
     have hslS : scaledLength c β x = c * cardLength β x := rfl
     -- the scaled denominator dominates `c/2` times the unscaled one
     have hdenS : ((budgetB β x : ℕ) : ℝ) * cardLength β x
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2
         ≤ ((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       rw [hslS]
       have hstep : ((budgetB β x : ℕ) : ℝ) * c / 2 ≤ ((budgetBS c β x : ℕ) : ℝ) * c := by
         nlinarith [mul_le_mul_of_nonneg_right hBS hc0.le,
@@ -131,27 +131,27 @@ theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
       have hcl : (0 : ℝ) < cardLength β x := by linarith
       linarith [mul_le_mul_of_nonneg_right hstep (mul_nonneg hcl.le hW2.le)]
     have hdenS0 : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       have : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
       positivity
     have hd2 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) * cardLength β x
-        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2 := by
+        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2 := by
       have hcl : (0 : ℝ) < cardLength β x := by linarith
       positivity
     calc ladderAffineSlope (ladderSteps β γ x) (budgetBS c β x)
             ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         ≤ ladderAffineSlope (ladderSteps β γ x) (budgetB β x)
             ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2) := by
           gcongr
           exact hnumS.trans hmono
       _ = 2 / c * (ladderAffineSlope (ladderSteps β γ x) (budgetB β x)
             ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
           field_simp
 
 /-- The shrunk window is below the full one. -/
@@ -167,9 +167,9 @@ theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (
     (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
     Tendsto (fun x : ℝ =>
         (∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2))
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)))
       atTop (𝓝 0) := by
   have hmaj := (tendsto_energy_quotient (β := β) (γ := γ) hβ0 hβ1 hγ0 hγ1 hγβ).const_mul (2 / c)
   rw [mul_zero] at hmaj
@@ -179,7 +179,7 @@ theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hsl : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
     have hB : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     exact div_nonneg (Finset.sum_nonneg fun n _ => sq_nonneg _) (by positivity)
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ), sqrt_le_budgetBS hc0 hβ0,
@@ -192,16 +192,16 @@ theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (
     have hBR : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by
       have := sqrt_le_budgetB (β := β) x hh1
       linarith
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     have hcl : (0 : ℝ) < cardLength β x := by linarith
     have hnumS : (0 : ℝ) ≤ ∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2 :=
+        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun n _ => sq_nonneg _
     have hmono : (∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-          ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+          ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
         ≤ ∑ n ∈ Finset.Icc 1 (budgetB β x),
-          ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2 :=
+          ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ) :=
       Finset.sum_le_sum_of_subset_of_nonneg
         (Finset.Icc_subset_Icc_right (budgetBS_le_budgetB hc1 x)) fun n _ _ => sq_nonneg _
     have hslS : scaledLength c β x = c * cardLength β x := rfl
@@ -209,27 +209,27 @@ theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (
       nlinarith [mul_le_mul_of_nonneg_right hBS hc0.le,
         mul_le_mul_of_nonneg_right hB2 hc0.le]
     have hdenS : ((budgetB β x : ℕ) : ℝ) * cardLength β x
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2
         ≤ ((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       rw [hslS]
       linarith [mul_le_mul_of_nonneg_right hstep (mul_nonneg hcl.le hW2.le)]
     have hd2 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) * cardLength β x
-        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2 := by
+        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2 := by
       positivity
     calc (∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         ≤ (∑ n ∈ Finset.Icc 1 (budgetB β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 * c / 2) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) * c / 2) := by
           gcongr
       _ = 2 / c * ((∑ n ∈ Finset.Icc 1 (budgetB β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
           field_simp
 
 set_option maxHeartbeats 400000 in
@@ -241,8 +241,8 @@ theorem tendsto_const_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
         ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x) (ladderSteps β γ x)
             (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
             (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetBS c β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2))
+          / (((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)))
       atTop (𝓝 0) := by
   have hβ0' : (0 : ℝ) < β := by linarith
   have hab : (0 : ℝ) < γ * β := by linarith
@@ -257,7 +257,7 @@ theorem tendsto_const_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
     have hQ2R : (2 : ℝ) ≤ ((siftStart (γ * β) x : ℕ) : ℝ) := by exact_mod_cast hQ2
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hB : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     exact div_nonneg (ladderAffineConst_nonneg (by linarith) hη.le) (by positivity)
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ), eventually_le_siftStart hab 2,
@@ -289,39 +289,39 @@ theorem tendsto_const_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
         (ladderSteps β γ x) (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
         (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x) :=
       ladderAffineConst_nonneg (by linarith) hη.le
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     have hBSR : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
     have hBR : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by
       have := sqrt_le_budgetB (β := β) x hh1
       linarith
-    have hsq : ((budgetB β x : ℕ) : ℝ) ^ 2 / 4 ≤ ((budgetBS c β x : ℕ) : ℝ) ^ 2 := by
+    have hsq : ((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ) / 4 ≤ ((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ) := by
       nlinarith [hBS, hB2, hsx, hBSR]
-    have hdenS : ((budgetB β x : ℕ) : ℝ) ^ 2
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 / 4
-        ≤ ((budgetBS c β x : ℕ) : ℝ) ^ 2
-          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hdenS : ((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) / 4
+        ≤ ((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ)
+          * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hsq, hW2]
-    have hd2 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) ^ 2
-        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 / 4 := by
+    have hd2 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+        * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) / 4 := by
       positivity
     calc ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x) (ladderSteps β γ x)
             (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
             (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetBS c β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+          / (((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         ≤ ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x) (ladderSteps β γ x)
             (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
             (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetB β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 / 4) := by
+          / (((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) / 4) := by
           gcongr
           exact hnumS.trans hmono
       _ = 4 * (ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x) (ladderSteps β γ x)
             (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
             (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetB β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+          / (((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
           field_simp
 
 set_option maxHeartbeats 400000 in
@@ -329,33 +329,33 @@ set_option maxHeartbeats 400000 in
 theorem tendsto_nonSpectralBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 0 < β)
     (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
     Tendsto (fun x : ℝ =>
-        (204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+        (204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
               * (Real.sqrt x + 1)
             + 2 * (scaledLength c β x + 1) * (2 * scaledLength c β x + 1)
               * (4 * (Real.sqrt x / 2 + scaledLength c β x + 1) * mertensS (ladderTop β γ x)
                 + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-                + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2))
-          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-            * (scaledLength c β x) ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
+                + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)))
+          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+            * (scaledLength c β x) ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0) := by
   have hmaj := (tendsto_nonSpectralBudget (β := β) (γ := γ) hβ0 hβ1 hγ0 hγ1
-    hγβ).const_mul (1 / c ^ 2)
+    hγβ).const_mul (1 / c ^ (2 : ℕ))
   rw [mul_zero] at hmaj
   refine squeeze_zero' ?_ ?_ hmaj
   · filter_upwards [Filter.eventually_gt_atTop (1 : ℝ),
       (tendsto_ladderMass hβ0 hγ0 hγ1 hγβ).eventually_ge_atTop (1 : ℝ)] with x hx1 hW
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hsl : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     have hm : (0 : ℝ) ≤ mertensS (ladderTop β γ x) := mertensS_nonneg' _
     refine div_nonneg ?_ (by positivity)
     have t1 : (0 : ℝ) ≤ 204
-        * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+        * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
         * (Real.sqrt x + 1) := by positivity
     have t2 : (0 : ℝ) ≤ 2 * (scaledLength c β x + 1) * (2 * scaledLength c β x + 1)
         * (4 * (Real.sqrt x / 2 + scaledLength c β x + 1) * mertensS (ladderTop β γ x)
           + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-          + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2) := by
+          + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)) := by
       have a1 : (0 : ℝ) ≤ 4 * (Real.sqrt x / 2 + scaledLength c β x + 1)
           * mertensS (ladderTop β γ x) := mul_nonneg (by linarith) hm
       have a2 : (0 : ℝ) ≤ ((Nat.primesLE (ladderTop β γ x)).card : ℝ) := Nat.cast_nonneg _
@@ -368,46 +368,46 @@ theorem tendsto_nonSpectralBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hsl : (0 : ℝ) < scaledLength c β x := scaledLength_pos hc0 β x
     have hcl : (0 : ℝ) < cardLength β x := cardLength_pos β x
-    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hW2 : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
       nlinarith [hW]
     have hm : (0 : ℝ) ≤ mertensS (ladderTop β γ x) := mertensS_nonneg' _
     have hsle : scaledLength c β x ≤ cardLength β x := scaledLength_le_cardLength hc1 β x
-    have hnum : 204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+    have hnum : 204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
             * (Real.sqrt x + 1)
           + 2 * (scaledLength c β x + 1) * (2 * scaledLength c β x + 1)
             * (4 * (Real.sqrt x / 2 + scaledLength c β x + 1) * mertensS (ladderTop β γ x)
               + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2)
-        ≤ 204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ))
+        ≤ 204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
             * (Real.sqrt x + 1)
           + 2 * (cardLength β x + 1) * (2 * cardLength β x + 1)
             * (4 * (Real.sqrt x / 2 + cardLength β x + 1) * mertensS (ladderTop β γ x)
               + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)) := by
       gcongr
-    have hden : (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (scaledLength c β x) ^ 2 * Real.sqrt x
-        = c ^ 2 * ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (cardLength β x) ^ 2 * Real.sqrt x) := by
+    have hden : (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (scaledLength c β x) ^ (2 : ℕ) * Real.sqrt x
+        = c ^ (2 : ℕ) * ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x) := by
       rw [show scaledLength c β x = c * cardLength β x from rfl]
       ring
     rw [hden]
-    rw [show (1 : ℝ) / c ^ 2 * ((204 * (((primesRange (siftStart (γ * β) x)
-            (ladderTop β γ x)).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+    rw [show (1 : ℝ) / c ^ (2 : ℕ) * ((204 * (((primesRange (siftStart (γ * β) x)
+            (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
           + 2 * (cardLength β x + 1) * (2 * cardLength β x + 1)
             * (4 * (Real.sqrt x / 2 + cardLength β x + 1) * mertensS (ladderTop β γ x)
               + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2))
-        / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (cardLength β x) ^ 2 * Real.sqrt x))
-      = (204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)))
+        / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x))
+      = (204 * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
             * (Real.sqrt x + 1)
           + 2 * (cardLength β x + 1) * (2 * cardLength β x + 1)
             * (4 * (Real.sqrt x / 2 + cardLength β x + 1) * mertensS (ladderTop β γ x)
               + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2))
-        / (c ^ 2 * ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (cardLength β x) ^ 2 * Real.sqrt x)) by field_simp]
+              + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)))
+        / (c ^ (2 : ℕ) * ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x)) by field_simp]
     gcongr
 
 set_option maxHeartbeats 400000 in
@@ -417,8 +417,8 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
     (hγβ1 : γ * β < 1) :
     Tendsto (fun x : ℝ =>
         omegaBudget x (scaledLength c β x) (siftStart (γ * β) x) (ladderTop β γ x)
-          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-            * (scaledLength c β x) ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
+          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+            * (scaledLength c β x) ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0) := by
   have hβ0' : (0 : ℝ) < β := by linarith
   obtain ⟨A, delta, Ctot, hdelta, hCtot, hbound⟩ :=
     exists_eventually_omegaBudgetS_le (c := c) (β := β) (γ := γ) hc0 hc1 hβ0' hβ1 hγ0 hγ1 hγβ1
@@ -440,33 +440,33 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
         (ladderTop β γ x) := by
       rw [omegaBudget]
       have hint : (0 : ℝ) ≤ ∫ w : ℝ,
-          ‖logWindowKernel (fibreWidth x (scaledLength c β x)) w‖ ^ 2
+          ‖logWindowKernel (fibreWidth x (scaledLength c β x)) w‖ ^ (2 : ℕ)
             * ‖omegaWeightedMoebiusPoly (primesRange (siftStart (γ * β) x) (ladderTop β γ x))
-                (fibreIndex x (scaledLength c β x)) w‖ ^ 2 :=
+                (fibreIndex x (scaledLength c β x)) w‖ ^ (2 : ℕ) :=
         MeasureTheory.integral_nonneg fun w => by positivity
       have hm : (0 : ℝ) ≤ mertensS (ladderTop β γ x) := mertensS_nonneg' _
       have hpc : (0 : ℝ) ≤ ((Nat.primesLE (ladderTop β γ x)).card : ℝ) := Nat.cast_nonneg _
       have t1 : (0 : ℝ) ≤ 16 * Real.sqrt x * (∫ w : ℝ,
-          ‖logWindowKernel (fibreWidth x (scaledLength c β x)) w‖ ^ 2
+          ‖logWindowKernel (fibreWidth x (scaledLength c β x)) w‖ ^ (2 : ℕ)
             * ‖omegaWeightedMoebiusPoly (primesRange (siftStart (γ * β) x) (ladderTop β γ x))
-                (fibreIndex x (scaledLength c β x)) w‖ ^ 2) :=
+                (fibreIndex x (scaledLength c β x)) w‖ ^ (2 : ℕ)) :=
         mul_nonneg (by linarith) hint
       have t2 : (0 : ℝ) ≤ 204
-          * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+          * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
           * (Real.sqrt x + 1) :=
         mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg _)) (by linarith)
       have t3 : (0 : ℝ) ≤ 2 * (scaledLength c β x + 1) * (2 * scaledLength c β x + 1)
           * (4 * (Real.sqrt x / 2 + scaledLength c β x + 1) * mertensS (ladderTop β γ x)
             + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-            + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2) := by
+            + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)) := by
         refine mul_nonneg (mul_nonneg (by linarith) (by linarith)) ?_
         have a1 : (0 : ℝ) ≤ 4 * (Real.sqrt x / 2 + scaledLength c β x + 1)
             * mertensS (ladderTop β γ x) := mul_nonneg (by linarith) hm
         nlinarith [a1, hpc, sq_nonneg ((Nat.primesLE (ladderTop β γ x)).card : ℝ)]
       linarith [t1, t2, t3]
-    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-        * (scaledLength c β x) ^ 2 * Real.sqrt x := by
-      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+        * (scaledLength c β x) ^ (2 : ℕ) * Real.sqrt x := by
+      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
         nlinarith [hW]
       exact mul_pos (mul_pos this (pow_pos hh0 2)) hsx
     exact div_nonneg hnum hden.le
@@ -486,9 +486,9 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
     have hB0 : (0 : ℝ) < ((budgetBS c β x : ℕ) : ℝ) := by linarith
     have hBB : ((budgetBS c β x : ℕ) : ℝ) ≤ ((budgetB β x : ℕ) : ℝ) :=
       Nat.cast_le.2 (budgetBS_le_budgetB hc1 x)
-    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-        * (scaledLength c β x) ^ 2 * Real.sqrt x := by
-      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+        * (scaledLength c β x) ^ (2 : ℕ) * Real.sqrt x := by
+      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
         nlinarith [hW]
       exact mul_pos (mul_pos this (pow_pos hh0 2)) hsx
     refine (div_le_div_of_nonneg_right hb hden.le).trans ?_
@@ -505,7 +505,7 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
         (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
         (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x))
       (Ec := ∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
       (B0 := ((budgetBS c β x : ℕ) : ℝ)) hsx (by nlinarith [hW]) hh0 hG0]
     have hGh : gallagherCutS c β x * scaledLength c β x = ((budgetBS c β x : ℕ) : ℝ) := by
       rw [hGdef]
@@ -530,7 +530,7 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
         (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
         (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x))
       (Ec := ∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
       (B0 := ((budgetBS c β x : ℕ) : ℝ)) hsx hW hsl1 hB0
       hδ0 hδle hGh hG0 (by rw [budgetT]; exact hBB)
       (by nlinarith [hB2, hB0, hBB, Real.sq_sqrt (by linarith : (0:ℝ) ≤ x)])
@@ -540,31 +540,31 @@ theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c �
     have e1 : (136 : ℝ) * ladderAffineSlope (ladderSteps β γ x) (budgetBS c β x)
           ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 136 * (ladderAffineSlope (ladderSteps β γ x) (budgetBS c β x)
             ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     have e2 : (140 : ℝ) * (∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 140 * ((∑ n ∈ Finset.Icc 1 (budgetBS c β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetBS c β x : ℕ) : ℝ) * scaledLength c β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     have e3 : (131 : ℝ) * ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x)
           (ladderSteps β γ x) (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ)
           (ladderEta β γ x) (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetBS c β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+          / (((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 131 * (ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x)
             (ladderSteps β γ x) (budgetBS c β x) ((siftStart (γ * β) x : ℕ) : ℝ)
             (ladderEta β γ x) (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetBS c β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+          / (((budgetBS c β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     linarith [hspec, e1, e2, e3]
 

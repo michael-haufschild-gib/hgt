@@ -61,67 +61,67 @@ private theorem continuousAt_mvPolynomial_eval_curve
 
 /-- Division-free numerator `f₀² (log f)''`. -/
 def clearedLogJetTwo {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 * f 2 - f 1 ^ 2
+  f 0 * f 2 - f 1 ^ (2 : ℕ)
 
 /-- Division-free numerator `f₀³ (log f)'''`. -/
 def clearedLogJetThree {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 2 * f 3 - 3 • (f 0 * f 1 * f 2) + 2 • f 1 ^ 3
+  f 0 ^ (2 : ℕ) * f 3 - 3 • (f 0 * f 1 * f 2) + 2 • f 1 ^ (3 : ℕ)
 
 /-- Division-free numerator `f₀⁴ (log f)⁽⁴⁾`. -/
 def clearedLogJetFour {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 3 * f 4 - 4 • (f 0 ^ 2 * f 1 * f 3) -
-    3 • (f 0 ^ 2 * f 2 ^ 2) + 12 • (f 0 * f 1 ^ 2 * f 2) - 6 • f 1 ^ 4
+  f 0 ^ (3 : ℕ) * f 4 - 4 • (f 0 ^ (2 : ℕ) * f 1 * f 3) -
+    3 • (f 0 ^ (2 : ℕ) * f 2 ^ (2 : ℕ)) + 12 • (f 0 * f 1 ^ (2 : ℕ) * f 2) - 6 • f 1 ^ (4 : ℕ)
 
 /-- Division-free numerator `f₀⁵ (log f)⁽⁵⁾`. -/
 def clearedLogJetFive {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 4 * f 5 - 5 • (f 0 ^ 3 * f 1 * f 4) -
-    10 • (f 0 ^ 3 * f 2 * f 3) + 20 • (f 0 ^ 2 * f 1 ^ 2 * f 3) +
-    30 • (f 0 ^ 2 * f 1 * f 2 ^ 2) - 60 • (f 0 * f 1 ^ 3 * f 2) +
-    24 • f 1 ^ 5
+  f 0 ^ (4 : ℕ) * f 5 - 5 • (f 0 ^ (3 : ℕ) * f 1 * f 4) -
+    10 • (f 0 ^ (3 : ℕ) * f 2 * f 3) + 20 • (f 0 ^ (2 : ℕ) * f 1 ^ (2 : ℕ) * f 3) +
+    30 • (f 0 ^ (2 : ℕ) * f 1 * f 2 ^ (2 : ℕ)) - 60 • (f 0 * f 1 ^ (3 : ℕ) * f 2) +
+    24 • f 1 ^ (5 : ℕ)
 
 /-- Division-free numerator `f₀⁶ (log f)⁽⁶⁾`. -/
 def clearedLogJetSix {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 5 * f 6 - 6 • (f 0 ^ 4 * f 1 * f 5) -
-    15 • (f 0 ^ 4 * f 2 * f 4) - 10 • (f 0 ^ 4 * f 3 ^ 2) +
-    30 • (f 0 ^ 3 * f 1 ^ 2 * f 4) + 120 • (f 0 ^ 3 * f 1 * f 2 * f 3) +
-    30 • (f 0 ^ 3 * f 2 ^ 3) - 120 • (f 0 ^ 2 * f 1 ^ 3 * f 3) -
-    270 • (f 0 ^ 2 * f 1 ^ 2 * f 2 ^ 2) + 360 • (f 0 * f 1 ^ 4 * f 2) -
-    120 • f 1 ^ 6
+  f 0 ^ (5 : ℕ) * f 6 - 6 • (f 0 ^ (4 : ℕ) * f 1 * f 5) -
+    15 • (f 0 ^ (4 : ℕ) * f 2 * f 4) - 10 • (f 0 ^ (4 : ℕ) * f 3 ^ (2 : ℕ)) +
+    30 • (f 0 ^ (3 : ℕ) * f 1 ^ (2 : ℕ) * f 4) + 120 • (f 0 ^ (3 : ℕ) * f 1 * f 2 * f 3) +
+    30 • (f 0 ^ (3 : ℕ) * f 2 ^ (3 : ℕ)) - 120 • (f 0 ^ (2 : ℕ) * f 1 ^ (3 : ℕ) * f 3) -
+    270 • (f 0 ^ (2 : ℕ) * f 1 ^ (2 : ℕ) * f 2 ^ (2 : ℕ)) + 360 • (f 0 * f 1 ^ (4 : ℕ) * f 2) -
+    120 • f 1 ^ (6 : ℕ)
 
 /-- Division-free numerator `f₀⁷ (log f)⁽⁷⁾`. -/
 def clearedLogJetSeven {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 6 * f 7 - 7 • (f 0 ^ 5 * f 1 * f 6) -
-    21 • (f 0 ^ 5 * f 2 * f 5) + 42 • (f 0 ^ 4 * f 1 ^ 2 * f 5) -
-    35 • (f 0 ^ 5 * f 3 * f 4) + 210 • (f 0 ^ 4 * f 1 * f 2 * f 4) -
-    210 • (f 0 ^ 3 * f 1 ^ 3 * f 4) + 140 • (f 0 ^ 4 * f 1 * f 3 ^ 2) +
-    210 • (f 0 ^ 4 * f 2 ^ 2 * f 3) - 1260 • (f 0 ^ 3 * f 1 ^ 2 * f 2 * f 3) +
-    840 • (f 0 ^ 2 * f 1 ^ 4 * f 3) - 630 • (f 0 ^ 3 * f 1 * f 2 ^ 3) +
-    2520 • (f 0 ^ 2 * f 1 ^ 3 * f 2 ^ 2) - 2520 • (f 0 * f 1 ^ 5 * f 2) +
-    720 • f 1 ^ 7
+  f 0 ^ (6 : ℕ) * f 7 - 7 • (f 0 ^ (5 : ℕ) * f 1 * f 6) -
+    21 • (f 0 ^ (5 : ℕ) * f 2 * f 5) + 42 • (f 0 ^ (4 : ℕ) * f 1 ^ (2 : ℕ) * f 5) -
+    35 • (f 0 ^ (5 : ℕ) * f 3 * f 4) + 210 • (f 0 ^ (4 : ℕ) * f 1 * f 2 * f 4) -
+    210 • (f 0 ^ (3 : ℕ) * f 1 ^ (3 : ℕ) * f 4) + 140 • (f 0 ^ (4 : ℕ) * f 1 * f 3 ^ (2 : ℕ)) +
+    210 • (f 0 ^ (4 : ℕ) * f 2 ^ (2 : ℕ) * f 3) - 1260 • (f 0 ^ (3 : ℕ) * f 1 ^ (2 : ℕ) * f 2 * f 3) +
+    840 • (f 0 ^ (2 : ℕ) * f 1 ^ (4 : ℕ) * f 3) - 630 • (f 0 ^ (3 : ℕ) * f 1 * f 2 ^ (3 : ℕ)) +
+    2520 • (f 0 ^ (2 : ℕ) * f 1 ^ (3 : ℕ) * f 2 ^ (2 : ℕ)) - 2520 • (f 0 * f 1 ^ (5 : ℕ) * f 2) +
+    720 • f 1 ^ (7 : ℕ)
 
 /-- Division-free numerator `f₀⁸ (log f)⁽⁸⁾`. -/
 def clearedLogJetEight {R : Type*} [CommRing R] (f : ℕ → R) : R :=
-  f 0 ^ 7 * f 8 - 8 • (f 0 ^ 6 * f 1 * f 7) -
-    28 • (f 0 ^ 6 * f 2 * f 6) + 56 • (f 0 ^ 5 * f 1 ^ 2 * f 6) -
-    56 • (f 0 ^ 6 * f 3 * f 5) + 336 • (f 0 ^ 5 * f 1 * f 2 * f 5) -
-    336 • (f 0 ^ 4 * f 1 ^ 3 * f 5) - 35 • (f 0 ^ 6 * f 4 ^ 2) +
-    560 • (f 0 ^ 5 * f 1 * f 3 * f 4) + 420 • (f 0 ^ 5 * f 2 ^ 2 * f 4) -
-    2520 • (f 0 ^ 4 * f 1 ^ 2 * f 2 * f 4) + 1680 • (f 0 ^ 3 * f 1 ^ 4 * f 4) +
-    560 • (f 0 ^ 5 * f 2 * f 3 ^ 2) - 1680 • (f 0 ^ 4 * f 1 ^ 2 * f 3 ^ 2) -
-    5040 • (f 0 ^ 4 * f 1 * f 2 ^ 2 * f 3) +
-    13440 • (f 0 ^ 3 * f 1 ^ 3 * f 2 * f 3) -
-    6720 • (f 0 ^ 2 * f 1 ^ 5 * f 3) - 630 • (f 0 ^ 4 * f 2 ^ 4) +
-    10080 • (f 0 ^ 3 * f 1 ^ 2 * f 2 ^ 3) -
-    25200 • (f 0 ^ 2 * f 1 ^ 4 * f 2 ^ 2) +
-    20160 • (f 0 * f 1 ^ 6 * f 2) - 5040 • f 1 ^ 8
+  f 0 ^ (7 : ℕ) * f 8 - 8 • (f 0 ^ (6 : ℕ) * f 1 * f 7) -
+    28 • (f 0 ^ (6 : ℕ) * f 2 * f 6) + 56 • (f 0 ^ (5 : ℕ) * f 1 ^ (2 : ℕ) * f 6) -
+    56 • (f 0 ^ (6 : ℕ) * f 3 * f 5) + 336 • (f 0 ^ (5 : ℕ) * f 1 * f 2 * f 5) -
+    336 • (f 0 ^ (4 : ℕ) * f 1 ^ (3 : ℕ) * f 5) - 35 • (f 0 ^ (6 : ℕ) * f 4 ^ (2 : ℕ)) +
+    560 • (f 0 ^ (5 : ℕ) * f 1 * f 3 * f 4) + 420 • (f 0 ^ (5 : ℕ) * f 2 ^ (2 : ℕ) * f 4) -
+    2520 • (f 0 ^ (4 : ℕ) * f 1 ^ (2 : ℕ) * f 2 * f 4) + 1680 • (f 0 ^ (3 : ℕ) * f 1 ^ (4 : ℕ) * f 4) +
+    560 • (f 0 ^ (5 : ℕ) * f 2 * f 3 ^ (2 : ℕ)) - 1680 • (f 0 ^ (4 : ℕ) * f 1 ^ (2 : ℕ) * f 3 ^ (2 : ℕ)) -
+    5040 • (f 0 ^ (4 : ℕ) * f 1 * f 2 ^ (2 : ℕ) * f 3) +
+    13440 • (f 0 ^ (3 : ℕ) * f 1 ^ (3 : ℕ) * f 2 * f 3) -
+    6720 • (f 0 ^ (2 : ℕ) * f 1 ^ (5 : ℕ) * f 3) - 630 • (f 0 ^ (4 : ℕ) * f 2 ^ (4 : ℕ)) +
+    10080 • (f 0 ^ (3 : ℕ) * f 1 ^ (2 : ℕ) * f 2 ^ (3 : ℕ)) -
+    25200 • (f 0 ^ (2 : ℕ) * f 1 ^ (4 : ℕ) * f 2 ^ (2 : ℕ)) +
+    20160 • (f 0 * f 1 ^ (6 : ℕ) * f 2) - 5040 • f 1 ^ (8 : ℕ)
 
 /-- Cleared exact derivative of the ninth-order completed C5 seam orientation. -/
 def c5ExactCompletedSeamSlopeCleared {R : Type*} [CommRing R]
     (p2 p3 p4 p5 p6 p7 p8 : R) : R :=
-  -p2 ^ 2 * p8 + 5 * p2 * p4 * p6 - 4 * p4 ^ 3 - 18 * p2 ^ 3 * p6 +
-    36 * p2 ^ 2 * p4 ^ 2 + p2 * p3 * p7 - 6 * p4 * p3 * p5 +
-    2 * p2 * p5 ^ 2 + 3 * p6 * p3 ^ 2 - 18 * p2 ^ 2 * p3 * p5 +
-    72 * p2 * p4 * p3 ^ 2
+  -p2 ^ (2 : ℕ) * p8 + 5 * p2 * p4 * p6 - 4 * p4 ^ (3 : ℕ) - 18 * p2 ^ (3 : ℕ) * p6 +
+    36 * p2 ^ (2 : ℕ) * p4 ^ (2 : ℕ) + p2 * p3 * p7 - 6 * p4 * p3 * p5 +
+    2 * p2 * p5 ^ (2 : ℕ) + 3 * p6 * p3 ^ (2 : ℕ) - 18 * p2 ^ (2 : ℕ) * p3 * p5 +
+    72 * p2 * p4 * p3 ^ (2 : ℕ)
 
 /-- Four-state modular polynomial for exact odd-corrected C5 orientation slope. -/
 def modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial :
@@ -139,7 +139,7 @@ theorem eval_modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial_seam
     MvPolynomial.eval (modularThetaODESeamState R)
         modularThetaODENormalizedC5ExactCompletedSeamSlopePolynomial =
       MvPolynomial.eval (modularThetaODESeamState R)
-          (modularThetaODENormalizedSourceJet 0) ^ 6 *
+          (modularThetaODENormalizedSourceJet 0) ^ (6 : ℕ) *
         MvPolynomial.eval (modularThetaODESeamState R)
           modularThetaODENormalizedC5FixedActionSeamPolynomial := by
   have h1 := eval_modularThetaODESourceJet_seam_odd_zero R 0
@@ -245,7 +245,7 @@ theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_hundr
       modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
   rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial]
   have hstate : modularThetaSourcePositiveSeamState 100 =
-      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ 2) := by norm_num
+      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ (2 : ℕ)) := by norm_num
   rw [hstate]
   rw [eval_modularThetaSourcePositiveChartPullback_seam]
   rw [← eval_modularThetaGeneralLyapunovPullback_seam,
@@ -331,7 +331,7 @@ theorem exists_strictSourcePositiveChamber_eval_c5ExactCompletedSeamSlope_neg :
   · simp only [modularThetaSourcePositiveGap, map_sub, map_add, map_mul, map_pow,
       MvPolynomial.eval_C, MvPolynomial.eval_X]
     simp [g, modularThetaSourcePositiveC5SlopeChamberPerturbation]
-    have hεsq : ((ε : ℂ) ^ 2).re = ε ^ 2 := by
+    have hεsq : ((ε : ℂ) ^ (2 : ℕ)).re = ε ^ (2 : ℕ) := by
       norm_num [pow_two, Complex.mul_re]
     rw [hεsq]
     nlinarith [mul_nonneg hε.le (sub_nonneg.mpr hεhalf)]
@@ -408,7 +408,7 @@ theorem exists_strictSourcePositiveThinClockCone_eval_c5ExactCompletedSeamSlope_
   · simp only [modularThetaSourcePositiveGap, map_sub, map_add, map_mul, map_pow,
       MvPolynomial.eval_C, MvPolynomial.eval_X]
     simp [g, modularThetaSourcePositiveC5SlopeThinClockPerturbation]
-    have hεsq : ((ε : ℂ) ^ 2).re = ε ^ 2 := by
+    have hεsq : ((ε : ℂ) ^ (2 : ℕ)).re = ε ^ (2 : ℕ) := by
       norm_num [pow_two, Complex.mul_re]
     rw [hεsq]
     nlinarith [mul_nonneg hε.le (sub_nonneg.mpr hεhalf)]
@@ -603,8 +603,8 @@ private theorem modularThetaSourcePositiveLie_clearedLogJetSeven :
 /-- Division-free exact completed C5 orientation in cleared log-cumulant coordinates. -/
 def c5ExactCompletedSeamOrientationCleared {R : Type*} [CommRing R]
     (p2 p3 p4 p5 p6 p7 : R) : R :=
-  -p2 ^ 2 * p7 + 3 • (p2 * p6 * p3) + 2 • (p2 * p4 * p5) -
-    4 • (p4 ^ 2 * p3) - 18 • (p2 ^ 3 * p5) + 36 • (p2 ^ 2 * p4 * p3)
+  -p2 ^ (2 : ℕ) * p7 + 3 • (p2 * p6 * p3) + 2 • (p2 * p4 * p5) -
+    4 • (p4 ^ (2 : ℕ) * p3) - 18 • (p2 ^ (3 : ℕ) * p5) + 36 • (p2 ^ (2 : ℕ) * p4 * p3)
 
 /-- Four-state normalized-source polynomial for exact completed C5 orientation. -/
 def modularThetaODENormalizedC5ExactCompletedSeamOrientationPolynomial :
@@ -705,7 +705,7 @@ theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial
       modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial = 0 := by
   rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamOrientationPolynomial]
   have hstate : modularThetaSourcePositiveSeamState 100 =
-      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ 2) := by norm_num
+      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ (2 : ℕ)) := by norm_num
   rw [hstate, eval_modularThetaSourcePositiveChartPullback_seam]
   rw [← eval_modularThetaGeneralLyapunovPullback_seam,
     modularThetaGeneralLyapunov_c5ExactCompletedSeamOrientationPolynomial,

@@ -13,7 +13,7 @@ set_option autoImplicit false
 /-- The original temporal current, with the exterior radial Jacobian expressed in the horizon coordinate. -/
 def continuedTemporalRadialDensity (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) (w : ℂ) (z : ℝ) : ℂ :=
-  (((tortoiseRadius (tortoiseOf z) : ℂ) ^ 2 - 1) *
+  (((tortoiseRadius (tortoiseOf z) : ℂ) ^ (2 : ℕ) - 1) *
     continuedPhysicalTimeAction q branch w a false (tortoiseOf z) zang) /
     (2 * (z : ℂ) * (Real.sqrt (1 - z) : ℂ))
 

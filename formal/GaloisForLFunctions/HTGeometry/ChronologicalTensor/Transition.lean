@@ -20,28 +20,28 @@ theorem criticalWeight_pos : 0 < criticalWeight := by
   positivity
 
 theorem critical_gap_identity (x y : ℝ) :
-    (x+y)^3 - (criticalWeight/4*x*y^2 + (x+y)*x^2) =
-      y*(Real.sqrt 2*x-y)^2 := by
+    (x+y)^(3 : ℕ) - (criticalWeight/4*x*y^(2 : ℕ) + (x+y)*x^(2 : ℕ)) =
+      y*(Real.sqrt 2*x-y)^(2 : ℕ) := by
   have h := Real.sq_sqrt (show (0 : ℝ) ≤ 2 by positivity)
   unfold criticalWeight
   calc
-    _ = y*(Real.sqrt 2*x-y)^2 + (2-(Real.sqrt 2)^2)*x^2*y := by ring
+    _ = y*(Real.sqrt 2*x-y)^(2 : ℕ) + (2-(Real.sqrt 2)^(2 : ℕ))*x^(2 : ℕ)*y := by ring
     _ = _ := by rw [h]; ring
 
 theorem critical_equality_classification (x y : ℝ) :
-    (x+y)^3 = criticalWeight/4*x*y^2 + (x+y)*x^2 ↔
+    (x+y)^(3 : ℕ) = criticalWeight/4*x*y^(2 : ℕ) + (x+y)*x^(2 : ℕ) ↔
       y = 0 ∨ y = Real.sqrt 2*x := by
   rw [← sub_eq_zero, critical_gap_identity, mul_eq_zero, sq_eq_zero_iff, sub_eq_zero]
   exact or_congr Iff.rfl eq_comm
 
 theorem critical_cubic_bound (x y : ℝ) :
-    criticalWeight/4* |x| * |y|^2 + (|x|+|y|)* |x|^2 ≤ (|x|+|y|)^3 := by
+    criticalWeight/4* |x| * |y|^(2 : ℕ) + (|x|+|y|)* |x|^(2 : ℕ) ≤ (|x|+|y|)^(3 : ℕ) := by
   have h := mul_nonneg (abs_nonneg y) (sq_nonneg (Real.sqrt 2* |x|-|y|))
   rw [← critical_gap_identity] at h
   linarith
 
 theorem critical_sharp_bound (a b c d e : ℝ) :
-    |weightedSixResponse criticalWeight 1 a b c d e| ≤ sixCost a b c d e ^ 3 := by
+    |weightedSixResponse criticalWeight 1 a b c d e| ≤ sixCost a b c d e ^ (3 : ℕ) := by
   have h := weightedSix_majorant criticalWeight 1 a b c d e
   rw [abs_of_pos criticalWeight_pos, abs_one, one_mul] at h
   have hc := critical_cubic_bound (|b|+|c|+|d|) (|a|+|e|)
@@ -83,14 +83,14 @@ theorem critical_two_maximizers :
 
 theorem critical_weight_classification (A : ℝ) :
     (∀ a b c d e : ℝ,
-      |weightedSixResponse |A| 1 a b c d e| ≤ sixCost a b c d e ^ 3) ↔
+      |weightedSixResponse |A| 1 a b c d e| ≤ sixCost a b c d e ^ (3 : ℕ)) ↔
       |A| ≤ criticalWeight := by
   constructor
   · intro h
     have hp := h ((1-arcEnd)/2) 0 arcEnd 0 ((1-arcEnd)/2)
     rw [critical_probe_cost, one_pow] at hp
     have he := arcEnd_bounds
-    have hx : 0 < arcEnd*(1-arcEnd)^2/4 := by
+    have hx : 0 < arcEnd*(1-arcEnd)^(2 : ℕ)/4 := by
       have hq : 0 < arcEnd := by linarith
       have hh : 0 < 1-arcEnd := by linarith
       positivity
@@ -98,7 +98,7 @@ theorem critical_weight_classification (A : ℝ) :
     have hab := le_abs_self (weightedSixResponse |A| 1 ((1-arcEnd)/2) 0 arcEnd 0 ((1-arcEnd)/2))
     have hdiff : weightedSixResponse |A| 1 ((1-arcEnd)/2) 0 arcEnd 0 ((1-arcEnd)/2) -
         weightedSixResponse criticalWeight 1 ((1-arcEnd)/2) 0 arcEnd 0 ((1-arcEnd)/2) =
-          (|A|-criticalWeight)*(arcEnd*(1-arcEnd)^2/4) := by
+          (|A|-criticalWeight)*(arcEnd*(1-arcEnd)^(2 : ℕ)/4) := by
       unfold weightedSixResponse separatedThree rainbowThree
       ring
     nlinarith
@@ -112,7 +112,7 @@ theorem critical_weight_classification (A : ℝ) :
       unfold sixCost; ring
     rw [ht] at hc
     have hm := mul_le_mul_of_nonneg_right hA
-      (show 0 ≤ (|b|+|c|+|d|)*(|a|+|e|)^2/4 by positivity)
+      (show 0 ≤ (|b|+|c|+|d|)*(|a|+|e|)^(2 : ℕ)/4 by positivity)
     nlinarith
 
 end

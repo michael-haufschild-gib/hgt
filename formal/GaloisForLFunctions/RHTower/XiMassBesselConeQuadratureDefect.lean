@@ -46,19 +46,19 @@ theorem norm_xiMassCriticalGrowingFourierProfile_exterior_le {a sigma kappa u h 
       * ‖stripFourier (xiMassAnalyticTest a ((sigma : ℂ) + u * I)) (h : ℂ)‖
       ≤ Real.exp (h / 2)
         * (xiMassBesselExteriorConstant a sigma kappa
-          * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2)))) :=
+          * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))))) :=
     mul_le_mul_of_nonneg_left hF (Real.exp_pos _).le
   refine hstep.trans ?_
-  have hcomb : Real.exp (h / 2) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2)))
+  have hcomb : Real.exp (h / 2) * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))))
       ≤ Real.exp (-(xiMassBesselConeExponent a kappa * u))
         * Real.exp (-((a - 1 / 2) * (h - kappa * u))) := by
     rw [← Real.exp_add, ← Real.exp_add]
     exact Real.exp_le_exp.2 (by linarith)
   calc Real.exp (h / 2)
         * (xiMassBesselExteriorConstant a sigma kappa
-          * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))))
+          * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))))
       = xiMassBesselExteriorConstant a sigma kappa
-        * (Real.exp (h / 2) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2)))) := by ring
+        * (Real.exp (h / 2) * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))))) := by ring
     _ ≤ xiMassBesselExteriorConstant a sigma kappa
         * (Real.exp (-(xiMassBesselConeExponent a kappa * u))
           * Real.exp (-((a - 1 / 2) * (h - kappa * u)))) :=

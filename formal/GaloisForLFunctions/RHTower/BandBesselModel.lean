@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.BandComparisonDefect
 The band side of the prolate endpoint is the forbidden region, so its uniform comparison model is
 
 ```text
-V_s,c(y) = I₀(c Ξ_s(y)) ,      Ξ_s(y) = ∫_y^1 sqrt((t²-s)/(1-t²)) dt .
+V_s,c(y) = I₀(c Ξ_s(y)) ,      Ξ_s(y) = ∫_y^(1 : ℕ) sqrt((t²-s)/(1-t²)) dt .
 ```
 
 It solves the drift-form equation
@@ -51,14 +51,14 @@ section
 
 variable {s c y : ℝ}
 
-theorem hasDerivAt_bandPhase (hy1 : -1 < y) (hy2 : y < 1) (hsy : s ≤ y ^ 2) :
+theorem hasDerivAt_bandPhase (hy1 : -1 < y) (hy2 : y < 1) (hsy : s ≤ y ^ (2 : ℕ)) :
     HasDerivAt (bandEndpointPhase s) (bandPhaseDeriv s y) y :=
   hasDerivAt_bandEndpointPhase hy1 hy2 hsy
 
-theorem hasDerivAt_bandPhaseDeriv (hy : (0 : ℝ) < 1 - y ^ 2) (hys : s < y ^ 2) :
+theorem hasDerivAt_bandPhaseDeriv (hy : (0 : ℝ) < 1 - y ^ (2 : ℕ)) (hys : s < y ^ (2 : ℕ)) :
     HasDerivAt (bandPhaseDeriv s) (bandPhaseSecondDeriv s y) y := by
-  have hR : (y ^ 2 - s) / (1 - y ^ 2) ≠ 0 := by
-    have h1 : (0 : ℝ) < y ^ 2 - s := by linarith
+  have hR : (y ^ (2 : ℕ) - s) / (1 - y ^ (2 : ℕ)) ≠ 0 := by
+    have h1 : (0 : ℝ) < y ^ (2 : ℕ) - s := by linarith
     positivity
   have hPpos : 0 < prolateWKBProfile s y := by
     rw [prolateWKBProfile]
@@ -73,13 +73,13 @@ theorem hasDerivAt_bandPhaseDeriv (hy : (0 : ℝ) < 1 - y ^ 2) (hys : s < y ^ 2)
   rw [bandPhaseSecondDeriv, ← hkey]
   field_simp
 
-theorem hasDerivAt_bandModel (hy1 : -1 < y) (hy2 : y < 1) (hsy : s ≤ y ^ 2) :
+theorem hasDerivAt_bandModel (hy1 : -1 < y) (hy2 : y < 1) (hsy : s ≤ y ^ (2 : ℕ)) :
     HasDerivAt (bandModel s c) (bandModelDerivFn s c y) y :=
   hasDerivAt_besselIModel (hasDerivAt_bandPhase hy1 hy2 hsy)
 
-theorem hasDerivAt_bandModelDerivFn (hy1 : -1 < y) (hy2 : y < 1) (hys : s < y ^ 2) :
+theorem hasDerivAt_bandModelDerivFn (hy1 : -1 < y) (hy2 : y < 1) (hys : s < y ^ (2 : ℕ)) :
     HasDerivAt (bandModelDerivFn s c) (bandModelSecondDerivFn s c y) y := by
-  have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+  have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
   exact hasDerivAt_besselIModelDeriv (hasDerivAt_bandPhase hy1 hy2 hys.le)
     (hasDerivAt_bandPhaseDeriv hy hys)
 
@@ -90,13 +90,13 @@ theorem bandModel_one : bandModel s c 1 = 1 := by
 
 /-- **The model equation.**  The model solves the drift form exactly, with the band's own first-order
 coefficient and the band's own aperture term. -/
-theorem bandModel_ode (hc : 0 < c) (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ 2) :
+theorem bandModel_ode (hc : 0 < c) (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ (2 : ℕ)) :
     bandModelSecondDerivFn s c y
         + bandFirstOrderCoeff s y * bandModelDerivFn s c y
-        - c ^ 2 * prolateWKBProfile s y ^ 2 * bandModel s c y = 0 := by
-  have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
-  have hRpos : (0 : ℝ) < (y ^ 2 - s) / (1 - y ^ 2) := by
-    have h1 : (0 : ℝ) < y ^ 2 - s := by linarith
+        - c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ) * bandModel s c y = 0 := by
+  have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
+  have hRpos : (0 : ℝ) < (y ^ (2 : ℕ) - s) / (1 - y ^ (2 : ℕ)) := by
+    have h1 : (0 : ℝ) < y ^ (2 : ℕ) - s := by linarith
     positivity
   have hPpos : 0 < prolateWKBProfile s y := by
     rw [prolateWKBProfile]
@@ -112,7 +112,7 @@ theorem bandModel_ode (hc : 0 < c) (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ 2)
       - bandPhaseSecondDeriv s y / bandPhaseDeriv s y = bandFirstOrderCoeff s y := by
     rw [bandPhaseDeriv, bandPhaseSecondDeriv, bandFirstOrderCoeff]
     field_simp
-  have hsq : bandPhaseDeriv s y ^ 2 = prolateWKBProfile s y ^ 2 := by
+  have hsq : bandPhaseDeriv s y ^ (2 : ℕ) = prolateWKBProfile s y ^ (2 : ℕ) := by
     rw [bandPhaseDeriv]
     ring
   rw [bandModelSecondDerivFn, bandModelDerivFn, bandModel, ← hcoeff, ← hsq]
@@ -133,18 +133,18 @@ theorem bandModelDerivFn_nonpos (hc : 0 ≤ c) : bandModelDerivFn s c y ≤ 0 :=
 /-- The band phase is continuous everywhere, including at the endpoint where its derivative blows
 up: the angular representation has no singularity. -/
 theorem continuous_bandEndpointPhase (s : ℝ) : Continuous (bandEndpointPhase s) := by
-  have hf : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ 2 - s) :=
+  have hf : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) :=
     Real.continuous_sqrt.comp ((Real.continuous_sin.pow 2).sub continuous_const)
   have hprim : Continuous fun a : ℝ =>
-      ∫ θ in a..(Real.pi / 2), Real.sqrt (Real.sin θ ^ 2 - s) := by
+      ∫ θ in a..(Real.pi / 2), Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) := by
     have hd : ∀ a : ℝ, HasDerivAt
-        (fun z : ℝ => ∫ θ in z..(Real.pi / 2), Real.sqrt (Real.sin θ ^ 2 - s))
-        (-(Real.sqrt (Real.sin a ^ 2 - s))) a := fun a =>
+        (fun z : ℝ => ∫ θ in z..(Real.pi / 2), Real.sqrt (Real.sin θ ^ (2 : ℕ) - s))
+        (-(Real.sqrt (Real.sin a ^ (2 : ℕ) - s))) a := fun a =>
       intervalIntegral.integral_hasDerivAt_left (hf.intervalIntegrable a _)
         (hf.stronglyMeasurableAtFilter _ _) hf.continuousAt
     exact continuous_iff_continuousAt.2 fun a => (hd a).continuousAt
   have hfun : bandEndpointPhase s
-      = (fun a : ℝ => ∫ θ in a..(Real.pi / 2), Real.sqrt (Real.sin θ ^ 2 - s)) ∘ Real.arcsin := by
+      = (fun a : ℝ => ∫ θ in a..(Real.pi / 2), Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)) ∘ Real.arcsin := by
     funext y
     rw [bandEndpointPhase]
     rfl
@@ -154,14 +154,14 @@ theorem continuous_bandEndpointPhase (s : ℝ) : Continuous (bandEndpointPhase s
 /-- The phase falls monotonically to zero at the endpoint. -/
 theorem antitone_bandEndpointPhase (s : ℝ) : Antitone (bandEndpointPhase s) := by
   intro y₁ y₂ h
-  have hf : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ 2 - s) :=
+  have hf : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) :=
     Real.continuous_sqrt.comp ((Real.continuous_sin.pow 2).sub continuous_const)
   have harc : Real.arcsin y₁ ≤ Real.arcsin y₂ := Real.monotone_arcsin h
   have hadd := intervalIntegral.integral_add_adjacent_intervals
-    (f := fun θ : ℝ => Real.sqrt (Real.sin θ ^ 2 - s)) (μ := MeasureTheory.volume)
+    (f := fun θ : ℝ => Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)) (μ := MeasureTheory.volume)
     (a := Real.arcsin y₁) (b := Real.arcsin y₂) (c := Real.pi / 2)
     (hf.intervalIntegrable _ _) (hf.intervalIntegrable _ _)
-  have hnn : (0 : ℝ) ≤ ∫ θ in Real.arcsin y₁..Real.arcsin y₂, Real.sqrt (Real.sin θ ^ 2 - s) :=
+  have hnn : (0 : ℝ) ≤ ∫ θ in Real.arcsin y₁..Real.arcsin y₂, Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) :=
     intervalIntegral.integral_nonneg harc fun _ _ => Real.sqrt_nonneg _
   rw [bandEndpointPhase, bandEndpointPhase]
   linarith [hadd, hnn]

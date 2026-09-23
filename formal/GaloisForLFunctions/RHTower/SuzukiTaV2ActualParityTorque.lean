@@ -299,7 +299,7 @@ theorem suzukiTaV2EndpointSecondTorque_eq_actualParityCurvature
         (suzukiTaV2ActualEvenTilt a * (suzukiTaV2ActualOddEnergy a : ℂ) -
           suzukiTaV2ActualOddTilt a * (suzukiTaV2ActualEvenEnergy a : ℂ)) /
         ((suzukiTaV2ActualEvenEnergy a : ℂ) +
-          (suzukiTaV2ActualOddEnergy a : ℂ)) ^ 2 := by
+          (suzukiTaV2ActualOddEnergy a : ℂ)) ^ (2 : ℕ) := by
   rw [suzukiTaV2EndpointSecondTorque,
     deriv_suzukiTaPhysicalFourier_plus_I_eq_actualTilts,
     deriv_suzukiTaPhysicalFourier_plus_negI_eq_actualTilts,

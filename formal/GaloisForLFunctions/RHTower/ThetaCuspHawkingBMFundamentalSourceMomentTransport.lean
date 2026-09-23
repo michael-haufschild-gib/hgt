@@ -8,10 +8,10 @@ set_option autoImplicit false
 
 theorem fundamentalSourceCore_scaled_endpoint (w s a : ℂ) :
     fundamentalSourceCore w s a 0*(2:ℂ)^(w+1) =
-      2*a^2*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*(2:ℂ)^(2*s) := by
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*(2:ℂ)^(2*s) := by
   rw [fundamentalSourceCore_zero_polynomial]
   calc
-    _ = a^2*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
+    _ = a^(2 : ℕ)*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
         ((2:ℂ)^(2*s-w)*(2:ℂ)^(w+1)) := by ring
     _ = _ := by
       rw [← Complex.cpow_add _ _ (by norm_num : (2:ℂ)≠0),
@@ -22,7 +22,7 @@ theorem fundamentalSourceCore_scaled_endpoint (w s a : ℂ) :
 /-- The original and transformed counterterms have a vanishing difference on the physical strip. -/
 theorem fundamentalSourceMoment_counterterm_transport (w s a : ℂ) (hw : -2 < w.re) :
     Tendsto (fun e : ℝ => fundamentalSourceCore w s a 0*((e*(2-e):ℝ):ℂ)^(w+1)/(w+1)-
-      2*a^2*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
         (2:ℂ)^(2*s)*(e:ℂ)^(w+1)/(w+1))
       (𝓝[>] (0:ℝ)) (𝓝 0) := by
   have hG : HasDerivAt (fun x : ℝ => power (w+1) (2-x)) (-powerFirst (w+1) 2) 0 := by
@@ -73,7 +73,7 @@ theorem physicalFundamentalSourceMoment_cutoff (q : XiZeroCopy) (branch side : B
 theorem physicalFundamentalSourceMoment_polynomial (q : XiZeroCopy) (branch side : Bool) (a : ℂ) :
     let w := physicalFundamentalFrequency q side
     let s := D4BMModularCore.physicalRate q branch
-    fundamentalSourceMoment w s a = 2*a^2*(fundamentalMomentConstant s*fundamentalJacobiMoment 2 w s+
+    fundamentalSourceMoment w s a = 2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiMoment 2 w s+
       fundamentalMomentQuadratic w s*fundamentalJacobiMoment 4 w s) := by
   let w := physicalFundamentalFrequency q side
   let s := D4BMModularCore.physicalRate q branch
@@ -99,14 +99,14 @@ theorem physicalFundamentalSourceMoment_polynomial (q : XiZeroCopy) (branch side
   have ht := ho.sub hc
   simp only [sub_zero] at ht
   have hj := (((fundamentalJacobiMoment_cutoff 2 w s hwr hw1).const_mul (fundamentalMomentConstant s)).add
-    ((fundamentalJacobiMoment_cutoff 4 w s hwr hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^2)
+    ((fundamentalJacobiMoment_cutoff 4 w s hwr hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^(2 : ℕ))
   apply tendsto_nhds_unique _ hj
   apply ht.congr'
   filter_upwards [hevent] with e he
   change ((∫ z in e*(2-e)..1, (z:ℂ)^w*fundamentalSourceCore w s a z)+
     fundamentalSourceCore w s a 0*((e*(2-e):ℝ):ℂ)^(w+1)/(w+1))-
     (fundamentalSourceCore w s a 0*((e*(2-e):ℝ):ℂ)^(w+1)/(w+1)-
-      2*a^2*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s)*
         (2:ℂ)^(2*s)*(e:ℂ)^(w+1)/(w+1)) = _
   rw [fundamentalSourceMoment_polynomial_cutoff w s a he.1 he.2]
   ring
@@ -119,10 +119,10 @@ theorem physicalFundamentalSourceMoment_base_period (q : XiZeroCopy) (branch sid
     let d := 2*s-w
     let e := w+2*s+2
     e*(e+1)*(e+2)*(e+3)*fundamentalSourceMoment w s a =
-      2*a^2*((fundamentalMomentConstant s*(e+d^2)*(e+2)*(e+3)+
-        fundamentalMomentQuadratic w s*(d^4+(6*e+8)*d^2+3*e*(e+2)))*
+      2*a^(2 : ℕ)*((fundamentalMomentConstant s*(e+d^(2 : ℕ))*(e+2)*(e+3)+
+        fundamentalMomentQuadratic w s*(d^(4 : ℕ)+(6*e+8)*d^(2 : ℕ)+3*e*(e+2)))*
           fundamentalJacobiMoment 0 w s+
-        d*(fundamentalMomentConstant s*(e+2)*(e+3)+fundamentalMomentQuadratic w s*(d^2+5*e+8))) := by
+        d*(fundamentalMomentConstant s*(e+2)*(e+3)+fundamentalMomentQuadratic w s*(d^(2 : ℕ)+5*e+8))) := by
   let w := physicalFundamentalFrequency q side
   let s := D4BMModularCore.physicalRate q branch
   have hw := physicalFundamentalFrequency_strip q side
@@ -137,8 +137,8 @@ theorem physicalFundamentalSourceMoment_base_period (q : XiZeroCopy) (branch sid
   change (w+2*s+2)*((w+2*s+2)+1)*((w+2*s+2)+2)*((w+2*s+2)+3)*fundamentalSourceMoment w s a = _
   rw [physicalFundamentalSourceMoment_polynomial q branch side a]
   dsimp only at h2 h4 ⊢
-  linear_combination 2*a^2*fundamentalMomentConstant s*((w+2*s+2)+2)*((w+2*s+2)+3)*h2+
-    2*a^2*fundamentalMomentQuadratic w s*h4
+  linear_combination 2*a^(2 : ℕ)*fundamentalMomentConstant s*((w+2*s+2)+2)*((w+2*s+2)+3)*h2+
+    2*a^(2 : ℕ)*fundamentalMomentQuadratic w s*h4
 
 end
 end RHTower.D4BMJointSource

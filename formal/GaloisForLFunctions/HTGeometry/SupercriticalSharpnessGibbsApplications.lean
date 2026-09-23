@@ -42,7 +42,7 @@ theorem finiteGibbsStateWeight_le_wightman_or_le_wightman
     finiteKMSWightmanWeight_pos β energy a b
   have hproduct :
       finiteGibbsStateWeight β energy a * finiteGibbsStateWeight β energy b ≤
-        finiteKMSWightmanWeight β energy a b ^ 2 :=
+        finiteKMSWightmanWeight β energy a b ^ (2 : ℕ) :=
     (finiteKMSWightmanWeight_sq β energy a b).symm.le
   have h := GaloisForLFunctions.HTGeometry.le_sqrt_or_le_sqrt_of_mul_le
     (sq_nonneg (finiteKMSWightmanWeight β energy a b)) hproduct

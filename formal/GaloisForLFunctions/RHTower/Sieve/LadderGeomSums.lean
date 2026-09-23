@@ -73,9 +73,9 @@ theorem sum_inv_ladderEndpoint_le {Q η : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) (hη
 
 /-- The squared reciprocals of the endpoints. -/
 theorem sum_inv_sq_ladderEndpoint_le {Q η : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) (hη1 : η ≤ 1) (L : ℕ) :
-    (∑ j ∈ Finset.range L, 1 / (Q * (1 + η) ^ j) ^ 2) ≤ 2 / (Q ^ 2 * η) := by
+    (∑ j ∈ Finset.range L, 1 / (Q * (1 + η) ^ j) ^ (2 : ℕ)) ≤ 2 / (Q ^ (2 : ℕ) * η) := by
   have hterm : ∀ j ∈ Finset.range L,
-      1 / (Q * (1 + η) ^ j) ^ 2 ≤ (1 / Q) * (1 / (Q * (1 + η) ^ j)) := by
+      1 / (Q * (1 + η) ^ j) ^ (2 : ℕ) ≤ (1 / Q) * (1 / (Q * (1 + η) ^ j)) := by
     intro j _
     have hpow : (1 : ℝ) ≤ (1 + η) ^ j := one_le_pow₀ (by linarith)
     have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity

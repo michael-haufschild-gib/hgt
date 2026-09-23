@@ -102,7 +102,7 @@ theorem norm_integral_conj_smoothAFEZetaCriticalDirect_mul_frozenReflected_le_fa
     exact hC
   · exact hM0
 
-/-- Explicit linear-mollifier `ell^1` specialization of the frozen critical cross estimate. -/
+/-- Explicit linear-mollifier `ell^(1 : ℕ)` specialization of the frozen critical cross estimate. -/
 theorem norm_integral_conj_smoothAFEZetaCriticalDirect_mul_frozenReflected_le_explicit
     {T : ℝ} (hT : 4 ≤ T) (lam x : ℝ) (q : ℂ) (L : ℕ) {M : ℕ} (hM : 1 < M) :
     ‖∫ t in T..(2 * T),

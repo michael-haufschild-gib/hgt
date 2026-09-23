@@ -81,7 +81,7 @@ theorem thetaHeatRateReaderSymbol_differentiableOn_rightHalfPlane {n : ℕ} (hn 
   have hre : 0 < (s / (Real.pi : ℂ)).re := by
     rw [div_re]
     simp only [ofReal_re, ofReal_im, mul_zero, normSq_ofReal]
-    have hp2 : 0 < Real.pi ^ 2 := sq_pos_of_pos Real.pi_pos
+    have hp2 : 0 < Real.pi ^ (2 : ℕ) := sq_pos_of_pos Real.pi_pos
     simpa [pow_two] using div_pos (mul_pos hs Real.pi_pos) hp2
   have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const continuous_re
   have hreader :=
@@ -96,18 +96,18 @@ theorem thetaHeatRateReaderSymbol_differentiableOn_rightHalfPlane {n : ℕ} (hn 
 /-- The finite Euler--Blaschke product over the first `N` square nodes. -/
 def thetaSquareBlaschkeFinite (N : ℕ) (z : ℂ) : ℂ :=
   ∏ j ∈ Finset.range N,
-    ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2) /
-      ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)
+    ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ)) /
+      ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ))
 
 private lemma norm_thetaSquareBlaschkeFactor_le_one {z : ℂ} (hz : 0 ≤ z.re) (j : ℕ) :
-    ‖((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2) /
-        ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)‖ ≤ 1 := by
-  let a : ℝ := ((j : ℝ) + 1) ^ 2
+    ‖((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ)) /
+        ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ))‖ ≤ 1 := by
+  let a : ℝ := ((j : ℝ) + 1) ^ (2 : ℕ)
   have ha : 0 < a := by dsimp [a]; positivity
   have ha0 : (a : ℂ) ≠ 0 := ofReal_ne_zero.mpr ha.ne'
   have hrewrite :
-      ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2) /
-          ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2) =
+      ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ)) /
+          ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ)) =
         ((a : ℂ) - z) / ((a : ℂ) + z) := by
     dsimp [a]
     push_cast
@@ -129,30 +129,30 @@ private lemma norm_thetaSquareBlaschkeFactor_le_one {z : ℂ} (hz : 0 ≤ z.re) 
 theorem tendsto_euler_sinh_prod (z : ℂ) :
     Tendsto
       (fun N : ℕ => (Real.pi : ℂ) * z *
-        ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2))
+        ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ)))
       atTop (𝓝 (Complex.sinh ((Real.pi : ℂ) * z))) := by
   have h := (Complex.tendsto_euler_sin_prod (z * I)).const_mul (-I)
   have hseq :
       (fun N : ℕ => -I * ((Real.pi : ℂ) * (z * I) *
         ∏ j ∈ Finset.range N,
-          ((1 : ℂ) - (z * I) ^ 2 / ((j : ℂ) + 1) ^ 2))) =
+          ((1 : ℂ) - (z * I) ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ)))) =
       (fun N : ℕ => (Real.pi : ℂ) * z *
         ∏ j ∈ Finset.range N,
-          ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2)) := by
+          ((1 : ℂ) + z ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ))) := by
     funext N
-    have hzI : (z * I) ^ 2 = -z ^ 2 := by
+    have hzI : (z * I) ^ (2 : ℕ) = -z ^ (2 : ℕ) := by
       rw [mul_pow, I_sq]
       ring
     rw [hzI]
     simp only [neg_div, sub_neg_eq_add]
     calc
       -I * ((Real.pi : ℂ) * (z * I) *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2)) =
+          ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ))) =
           ((Real.pi : ℂ) * z *
-            ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2)) *
+            ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ))) *
               (-(I * I)) := by ring
       _ = (Real.pi : ℂ) * z *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2) := by
+          ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ (2 : ℕ) / ((j : ℂ) + 1) ^ (2 : ℕ)) := by
             rw [I_mul_I]
             ring
   have hlim : -I * Complex.sin ((Real.pi : ℂ) * (z * I)) =
@@ -189,26 +189,26 @@ theorem tendsto_thetaSquareBlaschkeFinite {z : ℂ} (hz : 0 < z.re) :
   convert hdiv using 1
   ext N
   rw [thetaSquareBlaschkeFinite]
-  have hroot : (Complex.sqrt z) ^ 2 = z := complex_sqrt_sq z
+  have hroot : (Complex.sqrt z) ^ (2 : ℕ) = z := complex_sqrt_sq z
   rw [hroot, Finset.prod_div_distrib]
   have hc : (Real.pi : ℂ) * Complex.sqrt z ≠ 0 :=
     mul_ne_zero (ofReal_ne_zero.mpr Real.pi_ne_zero) hsqrt0
   change
-    (∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2)) /
-        (∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)) =
+    (∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ))) /
+        (∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ))) =
       (((Real.pi : ℂ) * Complex.sqrt z) *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2)) /
+          ∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ))) /
         (((Real.pi : ℂ) * Complex.sqrt z) *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2))
+          ∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ)))
   exact (mul_div_mul_left _ _ hc).symm
 
 private lemma norm_thetaSquareBlaschkeFinite_le_selectedFactor {z : ℂ} (hz : 0 ≤ z.re)
     {n N : ℕ} (hn : 1 ≤ n) (hnN : n ≤ N) :
     ‖thetaSquareBlaschkeFinite N z‖ ≤
-      ‖((1 : ℂ) - z / (n : ℂ) ^ 2) / ((1 : ℂ) + z / (n : ℂ) ^ 2)‖ := by
+      ‖((1 : ℂ) - z / (n : ℂ) ^ (2 : ℕ)) / ((1 : ℂ) + z / (n : ℂ) ^ (2 : ℕ))‖ := by
   let f : ℕ → ℂ := fun j =>
-    ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2) /
-      ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)
+    ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ)) /
+      ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ))
   have hi : n - 1 ∈ Finset.range N := by
     rw [Finset.mem_range]
     omega
@@ -226,7 +226,7 @@ private lemma norm_thetaSquareBlaschkeFinite_le_selectedFactor {z : ℂ} (hz : 0
   calc
     ‖f (n - 1)‖ * ∏ j ∈ (Finset.range N).erase (n - 1), ‖f j‖ ≤
         ‖f (n - 1)‖ * 1 := mul_le_mul_of_nonneg_left hrest (norm_nonneg _)
-    _ = ‖((1 : ℂ) - z / (n : ℂ) ^ 2) / ((1 : ℂ) + z / (n : ℂ) ^ 2)‖ := by
+    _ = ‖((1 : ℂ) - z / (n : ℂ) ^ (2 : ℕ)) / ((1 : ℂ) + z / (n : ℂ) ^ (2 : ℕ))‖ := by
       simp only [mul_one]
       congr 1
       dsimp [f]
@@ -238,7 +238,7 @@ selected zero leaves a contractive product, so the full symbol is bounded by tha
 theorem norm_thetaSquareBlaschkeSymbol_le_selectedFactor {z : ℂ} (hz : 0 < z.re)
     {n : ℕ} (hn : 1 ≤ n) :
     ‖thetaSquareBlaschkeSymbol z‖ ≤
-      ‖((1 : ℂ) - z / (n : ℂ) ^ 2) / ((1 : ℂ) + z / (n : ℂ) ^ 2)‖ := by
+      ‖((1 : ℂ) - z / (n : ℂ) ^ (2 : ℕ)) / ((1 : ℂ) + z / (n : ℂ) ^ (2 : ℕ))‖ := by
   have hlim := (tendsto_thetaSquareBlaschkeFinite hz).norm
   exact le_of_tendsto hlim (eventually_atTop.2 ⟨n, fun N hN =>
     norm_thetaSquareBlaschkeFinite_le_selectedFactor hz.le hn hN⟩)
@@ -250,7 +250,7 @@ theorem norm_thetaSquareBlaschkeReaderSymbol_le_cauchy {z : ℂ} (hz : 0 < z.re)
     ‖thetaSquareBlaschkeReaderSymbol n z‖ ≤
       ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ / ‖thetaSquare n + z‖ := by
   have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  have hnode : thetaSquare n = (n : ℂ) ^ 2 := by
+  have hnode : thetaSquare n = (n : ℂ) ^ (2 : ℕ) := by
     simp [thetaSquare]
   have hplus : thetaSquare n + z ≠ 0 := by
     intro h
@@ -259,10 +259,10 @@ theorem norm_thetaSquareBlaschkeReaderSymbol_le_cauchy {z : ℂ} (hz : 0 < z.re)
     norm_num [pow_two, Complex.mul_re] at hre
     nlinarith
   have hfac :
-      ‖((1 : ℂ) - z / (n : ℂ) ^ 2) / ((1 : ℂ) + z / (n : ℂ) ^ 2)‖ =
+      ‖((1 : ℂ) - z / (n : ℂ) ^ (2 : ℕ)) / ((1 : ℂ) + z / (n : ℂ) ^ (2 : ℕ))‖ =
         ‖thetaSquare n - z‖ / ‖thetaSquare n + z‖ := by
     have heq :
-        ((1 : ℂ) - z / (n : ℂ) ^ 2) / ((1 : ℂ) + z / (n : ℂ) ^ 2) =
+        ((1 : ℂ) - z / (n : ℂ) ^ (2 : ℕ)) / ((1 : ℂ) + z / (n : ℂ) ^ (2 : ℕ)) =
           (thetaSquare n - z) / (thetaSquare n + z) := by
       rw [hnode]
       field_simp
@@ -289,9 +289,9 @@ theorem norm_thetaSquareBlaschkeReaderSymbol_le_cauchy {z : ℂ} (hz : 0 < z.re)
 
 lemma sq_norm_thetaSquareBlaschkeReaderSymbol_add_mul_I_le_cauchy
     {n : ℕ} (hn : 1 ≤ n) {x t : ℝ} (hx : 0 < x) (ht : t ≠ 0) :
-    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2 ≤
-      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        ((((n : ℝ) ^ 2 + x) ^ 2 + t ^ 2)⁻¹) := by
+    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) ≤
+      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        ((((n : ℝ) ^ (2 : ℕ) + x) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹) := by
   have hzre : 0 < ((x : ℂ) + (t : ℂ) * I).re := by simpa using hx
   have hznode : (x : ℂ) + (t : ℂ) * I ≠ thetaSquare n := by
     intro h
@@ -301,8 +301,8 @@ lemma sq_norm_thetaSquareBlaschkeReaderSymbol_add_mul_I_le_cauchy
   have hbound := norm_thetaSquareBlaschkeReaderSymbol_le_cauchy hzre hn hznode
   have hsq := pow_le_pow_left₀ (norm_nonneg _) hbound 2
   have hden :
-      ‖thetaSquare n + ((x : ℂ) + (t : ℂ) * I)‖ ^ 2 =
-        ((n : ℝ) ^ 2 + x) ^ 2 + t ^ 2 := by
+      ‖thetaSquare n + ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) =
+        ((n : ℝ) ^ (2 : ℕ) + x) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     norm_num [thetaSquare, pow_two, Complex.mul_re, Complex.mul_im]
   rw [div_pow, hden] at hsq
@@ -313,15 +313,15 @@ lemma sq_norm_thetaSquareBlaschkeReaderSymbol_add_mul_I_le_cauchy
 Cauchy majorant integrated explicitly. -/
 theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
     {n : ℕ} (hn : 1 ≤ n) {x : ℝ} (hx : 0 < x) :
-    (∫ t : ℝ, ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
-      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        (Real.pi / ((n : ℝ) ^ 2 + x)) := by
+    (∫ t : ℝ, ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤
+      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        (Real.pi / ((n : ℝ) ^ (2 : ℕ) + x)) := by
   let f : ℝ → ℝ := fun t =>
-    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2
+    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)
   let g : ℝ → ℝ := fun t =>
-    ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-      ((((n : ℝ) ^ 2 + x) ^ 2 + t ^ 2)⁻¹)
-  have ha : 0 < (n : ℝ) ^ 2 + x := by positivity
+    ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+      ((((n : ℝ) ^ (2 : ℕ) + x) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹)
+  have ha : 0 < (n : ℝ) ^ (2 : ℕ) + x := by positivity
   have hgInt : Integrable g := by
     exact (HTGeometry.integrable_inv_sq_add_sq ha).const_mul _
   have hfCont : Continuous f := by
@@ -353,8 +353,8 @@ theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
   calc
     (∫ t : ℝ, f t) ≤ ∫ t : ℝ, g t :=
       integral_mono_ae hfInt hgInt hfg
-    _ = ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        (Real.pi / ((n : ℝ) ^ 2 + x)) := by
+    _ = ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        (Real.pi / ((n : ℝ) ^ (2 : ℕ) + x)) := by
       dsimp [g]
       rw [integral_const_mul, integral_inv_sq_add_sq_univ ha]
 
@@ -362,14 +362,14 @@ theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
 most the exact boundary energy; no Hardy-membership proposition remains. -/
 theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_boundary
     {n : ℕ} (hn : 1 ≤ n) {x : ℝ} (hx : 0 < x) :
-    (∫ t : ℝ, ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
-      (4 / Real.pi) * Real.sinh (Real.pi * n) ^ 2 := by
+    (∫ t : ℝ, ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤
+      (4 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by
   refine (integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy hn hx).trans ?_
   rw [norm_inv, norm_thetaSquareBlaschkeNodeSlope hn]
   have hnR : (0 : ℝ) < n := by positivity
   have hsinh : 0 < Real.sinh (Real.pi * n) :=
     Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hnR)
-  have hden : 0 < (n : ℝ) ^ 2 + x := by positivity
+  have hden : 0 < (n : ℝ) ^ (2 : ℕ) + x := by positivity
   rw [inv_div]
   field_simp
   nlinarith [sq_nonneg (n : ℝ)]
@@ -379,12 +379,12 @@ dimensionless line energy by `pi`, giving the exact physical boundary-energy cei
 positive vertical line. -/
 theorem integral_sq_norm_thetaHeatRateReaderSymbol_line_le_boundary
     {n : ℕ} (hn : 1 ≤ n) {x : ℝ} (hx : 0 < x) :
-    (∫ t : ℝ, ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
-      4 * Real.sinh (Real.pi * n) ^ 2 := by
+    (∫ t : ℝ, ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤
+      4 * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by
   let g : ℝ → ℝ := fun u =>
-    ‖thetaSquareBlaschkeReaderSymbol n (((x / Real.pi : ℝ) : ℂ) + (u : ℂ) * I)‖ ^ 2
+    ‖thetaSquareBlaschkeReaderSymbol n (((x / Real.pi : ℝ) : ℂ) + (u : ℂ) * I)‖ ^ (2 : ℕ)
   have heq :
-      (fun t : ℝ => ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2) =
+      (fun t : ℝ => ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) =
         fun t => g (t / Real.pi) := by
     funext t
     dsimp [g, thetaHeatRateReaderSymbol]
@@ -398,9 +398,9 @@ theorem integral_sq_norm_thetaHeatRateReaderSymbol_line_le_boundary
   have hdim := integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_boundary hn hxpi
   calc
     Real.pi * ∫ u : ℝ, g u ≤
-        Real.pi * ((4 / Real.pi) * Real.sinh (Real.pi * n) ^ 2) :=
+        Real.pi * ((4 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hdim Real.pi_pos.le
-    _ = 4 * Real.sinh (Real.pi * n) ^ 2 := by field_simp
+    _ = 4 * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by field_simp
 
 /-! ## Boundary approach and exact Hardy supremum -/
 
@@ -427,8 +427,8 @@ lemma thetaSquareBlaschkeReaderSymbol_continuousAt_mul_I {n : ℕ} (hn : 1 ≤ n
 
 private lemma integrable_reader_boundary_majorant {n : ℕ} (hn : 1 ≤ n) :
     Integrable (fun t : ℝ =>
-      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        ((((n : ℝ) ^ 2) ^ 2 + t ^ 2)⁻¹)) := by
+      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        ((((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹)) := by
   have hnR : (0 : ℝ) < n := by positivity
   exact (HTGeometry.integrable_inv_sq_add_sq (sq_pos_of_pos hnR)).const_mul _
 
@@ -439,17 +439,17 @@ theorem tendsto_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_zero
     Tendsto
       (fun k : ℕ => ∫ t : ℝ,
         ‖thetaSquareBlaschkeReaderSymbol n
-          (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2)
+          (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ))
       atTop
-      (𝓝 ((4 / Real.pi) * Real.sinh (Real.pi * n) ^ 2)) := by
+      (𝓝 ((4 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ))) := by
   let F : ℕ → ℝ → ℝ := fun k t =>
     ‖thetaSquareBlaschkeReaderSymbol n
-      (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2
+      (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)
   let f : ℝ → ℝ := fun t =>
-    ‖thetaSquareBlaschkeReaderSymbol n ((t : ℂ) * I)‖ ^ 2
+    ‖thetaSquareBlaschkeReaderSymbol n ((t : ℂ) * I)‖ ^ (2 : ℕ)
   let bound : ℝ → ℝ := fun t =>
-    ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-      ((((n : ℝ) ^ 2) ^ 2 + t ^ 2)⁻¹)
+    ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+      ((((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹)
   have hFmeas : ∀ k, AEStronglyMeasurable (F k) := by
     intro k
     have hx : 0 < 1 / ((k : ℝ) + 1) := by positivity
@@ -488,7 +488,7 @@ theorem tendsto_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_zero
       apply mul_le_mul_of_nonneg_left
       · apply inv_anti₀
         · positivity
-        · nlinarith [sq_nonneg ((n : ℝ) ^ 2), sq_nonneg (1 / ((k : ℝ) + 1))]
+        · nlinarith [sq_nonneg ((n : ℝ) ^ (2 : ℕ)), sq_nonneg (1 / ((k : ℝ) + 1))]
       · positivity
     · dsimp [F]
       positivity
@@ -516,15 +516,15 @@ theorem csSup_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line
     {n : ℕ} (hn : 1 ≤ n) :
     sSup {E : ℝ | ∃ x : ℝ, 0 < x ∧
       E = ∫ t : ℝ,
-        ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2} =
-      (4 / Real.pi) * Real.sinh (Real.pi * n) ^ 2 := by
+        ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)} =
+      (4 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by
   let S : Set ℝ := {E : ℝ | ∃ x : ℝ, 0 < x ∧
     E = ∫ t : ℝ,
-      ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2}
-  let B : ℝ := (4 / Real.pi) * Real.sinh (Real.pi * n) ^ 2
+      ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)}
+  let B : ℝ := (4 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ)
   have hSne : S.Nonempty := by
     refine ⟨∫ t : ℝ,
-      ‖thetaSquareBlaschkeReaderSymbol n ((1 : ℂ) + (t : ℂ) * I)‖ ^ 2, ?_⟩
+      ‖thetaSquareBlaschkeReaderSymbol n ((1 : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ), ?_⟩
     exact ⟨1, by norm_num, rfl⟩
   have hBdd : BddAbove S := by
     refine ⟨B, ?_⟩
@@ -539,7 +539,7 @@ theorem csSup_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line
   · have hlim := tendsto_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_zero hn
     change Tendsto (fun k : ℕ => ∫ t : ℝ,
       ‖thetaSquareBlaschkeReaderSymbol n
-        (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) atTop (𝓝 B) at hlim
+        (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) atTop (𝓝 B) at hlim
     apply le_of_tendsto hlim
     exact Filter.Eventually.of_forall fun k => le_csSup hBdd
       ⟨1 / ((k : ℝ) + 1), by positivity, rfl⟩
@@ -548,14 +548,14 @@ theorem csSup_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line
 lemma integral_sq_norm_thetaHeatRateReaderSymbol_pi_mul_line
     (n : ℕ) (x : ℝ) :
     (∫ t : ℝ,
-      ‖thetaHeatRateReaderSymbol n (((Real.pi * x : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) =
+      ‖thetaHeatRateReaderSymbol n (((Real.pi * x : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) =
       Real.pi * ∫ u : ℝ,
-        ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (u : ℂ) * I)‖ ^ 2 := by
+        ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (u : ℂ) * I)‖ ^ (2 : ℕ) := by
   let g : ℝ → ℝ := fun u =>
-    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (u : ℂ) * I)‖ ^ 2
+    ‖thetaSquareBlaschkeReaderSymbol n ((x : ℂ) + (u : ℂ) * I)‖ ^ (2 : ℕ)
   have heq :
       (fun t : ℝ =>
-        ‖thetaHeatRateReaderSymbol n (((Real.pi * x : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) =
+        ‖thetaHeatRateReaderSymbol n (((Real.pi * x : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) =
         fun t => g (t / Real.pi) := by
     funext t
     dsimp [g, thetaHeatRateReaderSymbol]
@@ -573,9 +573,9 @@ theorem tendsto_integral_sq_norm_thetaHeatRateReaderSymbol_line_zero
     Tendsto
       (fun k : ℕ => ∫ t : ℝ,
         ‖thetaHeatRateReaderSymbol n
-          ((((Real.pi / ((k : ℝ) + 1)) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2)
+          ((((Real.pi / ((k : ℝ) + 1)) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ))
       atTop
-      (𝓝 (4 * Real.sinh (Real.pi * n) ^ 2)) := by
+      (𝓝 (4 * Real.sinh (Real.pi * n) ^ (2 : ℕ))) := by
   have hdim := tendsto_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_zero hn
   have hmul := hdim.const_mul Real.pi
   convert hmul using 1
@@ -585,20 +585,20 @@ theorem tendsto_integral_sq_norm_thetaHeatRateReaderSymbol_line_zero
   · field_simp
 
 /-- **Exact physical Hardy norm.** The supremum of all positive physical-rate vertical-line
-energies equals `4 sinh(pi n)^2`. -/
+energies equals `4 sinh(pi n)^(2 : ℕ)`. -/
 theorem csSup_integral_sq_norm_thetaHeatRateReaderSymbol_line
     {n : ℕ} (hn : 1 ≤ n) :
     sSup {E : ℝ | ∃ x : ℝ, 0 < x ∧
       E = ∫ t : ℝ,
-        ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2} =
-      4 * Real.sinh (Real.pi * n) ^ 2 := by
+        ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)} =
+      4 * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by
   let S : Set ℝ := {E : ℝ | ∃ x : ℝ, 0 < x ∧
     E = ∫ t : ℝ,
-      ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2}
-  let B : ℝ := 4 * Real.sinh (Real.pi * n) ^ 2
+      ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)}
+  let B : ℝ := 4 * Real.sinh (Real.pi * n) ^ (2 : ℕ)
   have hSne : S.Nonempty := by
     refine ⟨∫ t : ℝ,
-      ‖thetaHeatRateReaderSymbol n ((1 : ℂ) + (t : ℂ) * I)‖ ^ 2, ?_⟩
+      ‖thetaHeatRateReaderSymbol n ((1 : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ), ?_⟩
     exact ⟨1, by norm_num, rfl⟩
   have hBdd : BddAbove S := by
     refine ⟨B, ?_⟩
@@ -613,7 +613,7 @@ theorem csSup_integral_sq_norm_thetaHeatRateReaderSymbol_line
   · have hlim := tendsto_integral_sq_norm_thetaHeatRateReaderSymbol_line_zero hn
     change Tendsto (fun k : ℕ => ∫ t : ℝ,
       ‖thetaHeatRateReaderSymbol n
-        ((((Real.pi / ((k : ℝ) + 1)) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) atTop (𝓝 B) at hlim
+        ((((Real.pi / ((k : ℝ) + 1)) : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) atTop (𝓝 B) at hlim
     apply le_of_tendsto hlim
     exact Filter.Eventually.of_forall fun k => le_csSup hBdd
       ⟨Real.pi / ((k : ℝ) + 1), by positivity, rfl⟩
@@ -624,8 +624,8 @@ theorem normalized_csSup_integral_sq_norm_thetaHeatRateReaderSymbol_line
     (1 / (2 * Real.pi)) *
       sSup {E : ℝ | ∃ x : ℝ, 0 < x ∧
         E = ∫ t : ℝ,
-          ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ 2} =
-      (2 / Real.pi) * Real.sinh (Real.pi * n) ^ 2 := by
+          ‖thetaHeatRateReaderSymbol n ((x : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)} =
+      (2 / Real.pi) * Real.sinh (Real.pi * n) ^ (2 : ℕ) := by
   rw [csSup_integral_sq_norm_thetaHeatRateReaderSymbol_line hn]
   field_simp
   norm_num

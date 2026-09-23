@@ -133,7 +133,7 @@ theorem xiWeilEvaluationLp_oddPart
 theorem xiWeilEvenEnergy_eq_norm_projection_sq
     {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
     xiWeilEvenEnergy F =
-      ‖xiWeilEvenProjectionLp (xiWeilEvaluationLp F hF)‖ ^ 2 := by
+      ‖xiWeilEvenProjectionLp (xiWeilEvaluationLp F hF)‖ ^ (2 : ℕ) := by
   rw [← xiWeilEvaluationLp_evenPart hF,
     HilbertSchmidt.lp_norm_sq_eq]
   rfl
@@ -141,7 +141,7 @@ theorem xiWeilEvenEnergy_eq_norm_projection_sq
 theorem xiWeilOddEnergy_eq_norm_projection_sq
     {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
     xiWeilOddEnergy F =
-      ‖xiWeilOddProjectionLp (xiWeilEvaluationLp F hF)‖ ^ 2 := by
+      ‖xiWeilOddProjectionLp (xiWeilEvaluationLp F hF)‖ ^ (2 : ℕ) := by
   rw [← xiWeilEvaluationLp_oddPart hF,
     HilbertSchmidt.lp_norm_sq_eq]
   rfl
@@ -175,14 +175,14 @@ theorem tendsto_xiWeilParityEnergies
   constructor
   · have hseq : (fun n => xiWeilEvenEnergy (F n)) = fun n =>
         ‖xiWeilEvenProjectionLp
-          (xiWeilEvaluationLp (F n) (hF n))‖ ^ 2 := by
+          (xiWeilEvaluationLp (F n) (hF n))‖ ^ (2 : ℕ) := by
         funext n
         exact xiWeilEvenEnergy_eq_norm_projection_sq (hF n)
     rw [hseq, xiWeilEvenEnergy_eq_norm_projection_sq hG]
     exact (tendsto_xiWeilEvenProjectionLp h).norm.pow 2
   · have hseq : (fun n => xiWeilOddEnergy (F n)) = fun n =>
         ‖xiWeilOddProjectionLp
-          (xiWeilEvaluationLp (F n) (hF n))‖ ^ 2 := by
+          (xiWeilEvaluationLp (F n) (hF n))‖ ^ (2 : ℕ) := by
         funext n
         exact xiWeilOddEnergy_eq_norm_projection_sq (hF n)
     rw [hseq, xiWeilOddEnergy_eq_norm_projection_sq hG]

@@ -73,12 +73,12 @@ theorem complex_polynomial_sum_normSq_constant_iff {ι : Type*} [Fintype ι]
   classical
   let q : ι × Bool → Polynomial ℝ := fun ib =>
     polynomialRealCoordinate (if ib.2 then Complex.reCLM.toLinearMap else Complex.imCLM.toLinearMap) (p ib.1)
-  have he (x : ℝ) : ∑ ib, ((q ib).eval x)^2 = ∑ i, Complex.normSq ((p i).eval (x : ℂ)) := by
+  have he (x : ℝ) : ∑ ib, ((q ib).eval x)^(2 : ℕ) = ∑ i, Complex.normSq ((p i).eval (x : ℂ)) := by
     simp [q, Fintype.sum_prod_type, polynomialRealCoordinate_eval, Complex.normSq_apply,
       pow_two]
   constructor
   · intro h
-    have hh : ∀ x : ℝ, ∑ ib, ((q ib).eval x)^2 = ∑ ib, ((q ib).eval 0)^2 := by
+    have hh : ∀ x : ℝ, ∑ ib, ((q ib).eval x)^(2 : ℕ) = ∑ ib, ((q ib).eval 0)^(2 : ℕ) := by
       intro x
       rw [he, he]
       exact h x

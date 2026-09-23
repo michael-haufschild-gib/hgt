@@ -13,9 +13,9 @@ functional.  It is the exact non-numerical core shared by Hardy, Nyman--Beurling
 Colombeau--Beurling closure criteria.
 
 The source realization is supplied by `RHTower.BaezDuarteL2Carrier`, and it needs no Hardy space at
-all: on the Nyman--Beurling carrier `L^2((1,infinity), du)` the Mellin point evaluation at `s` is the
+all: on the Nyman--Beurling carrier `L^(2 : ℕ)((1,infinity), du)` the Mellin point evaluation at `s` is the
 inner product against the explicit vector `u^(s-1)` (conjugated), which is square integrable exactly
-when `Re s < 1/2`.  So bounded point evaluation is Cauchy--Schwarz, the half-plane `H^2` carrier and
+when `Re s < 1/2`.  So bounded point evaluation is Cauchy--Schwarz, the half-plane `H^(2 : ℕ)` carrier and
 Paley--Wiener are not needed, and the concrete zeta generators are evaluated by the corpus's
 fractional-part Mellin identities (`RHTower.FractionalPartZeta`).  See
 `RHTower.bdTarget_notMem_closedSpan_of_zero` for the instantiation of the theorem below and

@@ -106,7 +106,7 @@ theorem binaryGaugeScalarPhase_not_injective
   rw [Nat.card_fun, hBool, hIndex] at hcard
   have hpow : 4 ≤ 2 ^ Fintype.card I := by
     calc
-      4 = 2 ^ 2 := by norm_num
+      4 = 2 ^ (2 : ℕ) := by norm_num
       _ ≤ 2 ^ Fintype.card I := Nat.pow_le_pow_right (by omega) hI
   omega
 

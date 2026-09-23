@@ -47,7 +47,7 @@ theorem integrable_xiHeatCassiniOrderedPrimeLowerHalfIntegrand
   let K : ℝ := Real.exp (|τ.im| * (1 / 2))
   have hmajor : Integrable (fun x : ℝ =>
       K * Real.exp (-(τ.re * |x|))) :=
-    (integrable_exp_neg_mul_abs hτ).const_mul K
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul K
   have hcontinuous :
       Continuous (xiHeatCassiniOrderedPrimeLowerHalfIntegrand a τ N) := by
     apply continuous_iff_continuousAt.mpr

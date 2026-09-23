@@ -119,10 +119,10 @@ set_option maxHeartbeats 1000000 in
 /-- **The gap hypothesis at the centre Hamiltonian**, with gap `2 m^{-1/2}`. -/
 theorem reApplyInnerSelf_zProfile_le (hq : 1 ≤ q) (x : EuclideanSpace ℂ (Fin n → Bool)) :
     (diagCLM (zProfile n q)).reApplyInnerSelf x
-      ≤ zProfile n q (fun _ => false) * ‖x‖ ^ 2
+      ≤ zProfile n q (fun _ => false) * ‖x‖ ^ (2 : ℕ)
         - (2 * pauliNormalization n q) *
-          (‖x‖ ^ 2 -
-            ‖(inner ℂ (EuclideanSpace.single (fun _ => false) (1 : ℂ)) x : ℂ)‖ ^ 2) := by
+          (‖x‖ ^ (2 : ℕ) -
+            ‖(inner ℂ (EuclideanSpace.single (fun _ => false) (1 : ℂ)) x : ℂ)‖ ^ (2 : ℕ)) := by
   refine reApplyInnerSelf_diagCLM_le (ι := Fin n → Bool) (zProfile n q) (fun _ => false)
     (2 * pauliNormalization n q) (fun i hi => ?_) x
   exact zProfile_le_of_ne hq hi

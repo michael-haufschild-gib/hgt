@@ -29,15 +29,15 @@ private theorem base_jump_ge_neg_one {h : ℝ} (hh : 0 < h) :
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have hden : 0 < (1+t)*(1+t^2) := by positivity
-  have hneq : 1-t^4 ≠ 0 := by
-    have hlt : t^4 < 1 := by nlinarith [sq_nonneg (t^2), mul_pos ht (sub_pos.mpr ht1)]
+  have hden : 0 < (1+t)*(1+t^(2 : ℕ)) := by positivity
+  have hneq : 1-t^(4 : ℕ) ≠ 0 := by
+    have hlt : t^(4 : ℕ) < 1 := by nlinarith [sq_nonneg (t^(2 : ℕ)), mul_pos ht (sub_pos.mpr ht1)]
     linarith
   have hid : ccmGammaTranslationDensity h * (2 - Real.exp (h/2) - Real.exp (-(h/2))) =
-      -(1-t)/((1+t)*(1+t^2)) := by
+      -(1-t)/((1+t)*(1+t^(2 : ℕ))) := by
     unfold ccmGammaTranslationDensity
     rw [hepos, he4]
-    change t/(1-t^4)*(2-t⁻¹-t) = _
+    change t/(1-t^(4 : ℕ))*(2-t⁻¹-t) = _
     field_simp
     ring
   rw [hid]

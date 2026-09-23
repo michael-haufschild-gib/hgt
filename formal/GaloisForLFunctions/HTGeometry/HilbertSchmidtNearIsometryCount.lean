@@ -27,22 +27,22 @@ variable {E F : Type*}
 /-- **Family domination over a finite subset.**  The index type need not be finite. -/
 theorem sum_finset_norm_sq_apply_le_hsNormSq {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
     {ι : Type*} {e : ι → E} (he : Orthonormal 𝕜 e) (S : Finset ι) :
-    ∑ i ∈ S, ‖T (e i)‖ ^ 2 ≤ hsNormSq T := by
+    ∑ i ∈ S, ‖T (e i)‖ ^ (2 : ℕ) ≤ hsNormSq T := by
   classical
   have hortho : Orthonormal 𝕜 fun i : S => e (i : ι) :=
     he.comp _ Subtype.val_injective
   have hsum := sum_norm_sq_apply_le_hsNormSq hT hortho
-  rwa [Finset.sum_coe_sort S fun i => ‖T (e i)‖ ^ 2] at hsum
+  rwa [Finset.sum_coe_sort S fun i => ‖T (e i)‖ ^ (2 : ℕ)] at hsum
 
 /-- **Energy from uncontracted modes.**  A finite subset of an orthonormal family on which the
 operator's image never falls below `c` costs `card * c²` of Hilbert--Schmidt energy. -/
 theorem card_mul_sq_le_hsNormSq_of_le_norm_apply {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
     {ι : Type*} {e : ι → E} (he : Orthonormal 𝕜 e) (S : Finset ι) (c : ℝ) (hc : 0 ≤ c)
     (h : ∀ i ∈ S, c ≤ ‖T (e i)‖) :
-    (S.card : ℝ) * c ^ 2 ≤ hsNormSq T := by
+    (S.card : ℝ) * c ^ (2 : ℕ) ≤ hsNormSq T := by
   classical
   refine le_trans ?_ (sum_finset_norm_sq_apply_le_hsNormSq hT he S)
-  have hconst : (S.card : ℝ) * c ^ 2 = ∑ _i ∈ S, c ^ 2 := by
+  have hconst : (S.card : ℝ) * c ^ (2 : ℕ) = ∑ _i ∈ S, c ^ (2 : ℕ) := by
     rw [Finset.sum_const, nsmul_eq_mul]
   rw [hconst]
   refine Finset.sum_le_sum fun i hi => ?_
@@ -55,7 +55,7 @@ theorem card_mul_sq_le_hsNormSq_of_near_unit {T : E →L[𝕜] F} (hT : IsHilber
     {ι : Type*} {e : ι → E} (he : Orthonormal 𝕜 e) (S : Finset ι) (u : ι → F)
     (hu : ∀ i ∈ S, ‖u i‖ = 1) (η : ℝ) (hη : η ≤ 1)
     (h : ∀ i ∈ S, ‖T (e i) - u i‖ ≤ η) :
-    (S.card : ℝ) * (1 - η) ^ 2 ≤ hsNormSq T := by
+    (S.card : ℝ) * (1 - η) ^ (2 : ℕ) ≤ hsNormSq T := by
   refine card_mul_sq_le_hsNormSq_of_le_norm_apply hT he S (1 - η) (by linarith) fun i hi => ?_
   have hrev : ‖u i‖ - ‖T (e i)‖ ≤ ‖u i - T (e i)‖ := norm_sub_norm_le _ _
   have hsym : ‖u i - T (e i)‖ = ‖T (e i) - u i‖ := norm_sub_rev _ _

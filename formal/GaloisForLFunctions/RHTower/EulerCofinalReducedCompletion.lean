@@ -90,7 +90,7 @@ theorem eulerCofinalReducedCompletion_isReduced :
 
 /-- No nonzero first-order nilpotent exists in the ordinary Euler completion. -/
 theorem eq_zero_of_sq_zero_eulerCofinalReducedCompletion
-    {x : EulerCofinalReducedCompletion} (hx : x ^ 2 = 0) : x = 0 := by
+    {x : EulerCofinalReducedCompletion} (hx : x ^ (2 : ℕ) = 0) : x = 0 := by
   letI : IsReduced EulerCofinalReducedCompletion :=
     eulerCofinalReducedCompletion_isReduced
   exact (show IsNilpotent x from ⟨2, hx⟩).eq_zero

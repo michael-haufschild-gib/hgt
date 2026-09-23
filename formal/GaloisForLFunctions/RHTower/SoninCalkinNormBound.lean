@@ -175,7 +175,7 @@ section FiniteRankCut
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 private theorem le_one_add_mul_of_sq_le_mul_add_sq {a b ε : ℝ} (hb : 0 ≤ b) (hε : 0 < ε)
-    (h : a ^ 2 ≤ a * b + ε * b ^ 2) : a ≤ (1 + ε) * b := by
+    (h : a ^ (2 : ℕ) ≤ a * b + ε * b ^ (2 : ℕ)) : a ≤ (1 + ε) * b := by
   by_contra hcon
   rw [not_le] at hcon
   have hba : b < a := by nlinarith
@@ -187,7 +187,7 @@ private theorem le_one_add_mul_of_sq_le_mul_add_sq {a b ε : ℝ} (hb : 0 ≤ b)
   exact absurd h3 (not_lt.mpr h4)
 
 private theorem le_of_sq_le_sq {a b : ℝ} (hb : 0 ≤ b)
-    (h : a ^ 2 ≤ b ^ 2) : a ≤ b := by nlinarith
+    (h : a ^ (2 : ℕ) ≤ b ^ (2 : ℕ)) : a ≤ b := by nlinarith
 
 /-- The orthogonal projection onto a finite-dimensional subspace is a compact operator. -/
 theorem isCompactOperator_starProjection_of_finiteDimensional
@@ -296,7 +296,7 @@ private theorem re_inner_apply_cut_le
     (P C : H →L[ℂ] H) (hPadj : ContinuousLinearMap.adjoint P = P)
     {ε : ℝ} (hε : 0 ≤ ε) (hC : ∀ z : H, ‖((1 - P) * C) z‖ ≤ ε * ‖z‖)
     (x : H) (hyx : ‖x - P x‖ ≤ ‖x‖) :
-    (inner ℂ (C (x - P x)) (x - P x) : ℂ).re ≤ ε * ‖x‖ ^ 2 := by
+    (inner ℂ (C (x - P x)) (x - P x) : ℂ).re ≤ ε * ‖x‖ ^ (2 : ℕ) := by
   set y := x - P x with hy
   have h1subP : ((1 : H →L[ℂ] H) - P) x = x - P x := by
     simp [_root_.sub_apply]
@@ -304,7 +304,7 @@ private theorem re_inner_apply_cut_le
     have h1 : (inner ℂ (C y) y : ℂ) = inner ℂ (C y) (((1 : H →L[ℂ] H) - P) x) := by
       rw [h1subP]
     rw [h1, ← ContinuousLinearMap.adjoint_inner_left, adjoint_one_sub hPadj]
-  have habs : ‖(inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x : ℂ)‖ ≤ ε * ‖x‖ ^ 2 := by
+  have habs : ‖(inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x : ℂ)‖ ≤ ε * ‖x‖ ^ (2 : ℕ) := by
     calc ‖(inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x : ℂ)‖ ≤
         ‖((1 : H →L[ℂ] H) - P) (C y)‖ * ‖x‖ := norm_inner_le_norm _ _
       _ = ‖((1 - P) * C) y‖ * ‖x‖ := by rw [mul_apply_eq_comp]
@@ -312,7 +312,7 @@ private theorem re_inner_apply_cut_le
       _ ≤ (ε * ‖x‖) * ‖x‖ := by
           have h2 : ε * ‖y‖ ≤ ε * ‖x‖ := mul_le_mul_of_nonneg_left hyx hε
           exact mul_le_mul_of_nonneg_right h2 (norm_nonneg x)
-      _ = ε * ‖x‖ ^ 2 := by ring
+      _ = ε * ‖x‖ ^ (2 : ℕ) := by ring
   rw [hswap]
   exact (Complex.re_le_norm _).trans habs
 
@@ -360,7 +360,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     have hmove : (inner ℂ (S (S y)) y : ℂ) = inner ℂ (S y) ((S†) y) :=
       (ContinuousLinearMap.adjoint_inner_right S (S y) y).symm
     rw [hSadj] at hmove
-    have hsq : ‖S y‖ ^ 2 = (inner ℂ ((S * S) y) y : ℂ).re := by
+    have hsq : ‖S y‖ ^ (2 : ℕ) = (inner ℂ ((S * S) y) y : ℂ).re := by
       rw [mul_apply_eq_comp, hmove]
       exact (inner_self_eq_norm_sq (𝕜 := ℂ) (S y)).symm
     have hsplit : (inner ℂ ((S * S) y) y : ℂ).re =
@@ -372,12 +372,12 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
       calc (inner ℂ (S y) y : ℂ).re ≤ ‖(inner ℂ (S y) y : ℂ)‖ := Complex.re_le_norm _
         _ ≤ ‖S y‖ * ‖y‖ := norm_inner_le_norm _ _
         _ ≤ ‖S y‖ * ‖x‖ := mul_le_mul_of_nonneg_left hyx (norm_nonneg _)
-    have hquad : ‖S y‖ ^ 2 ≤ ‖S y‖ * ‖x‖ + ε * ‖x‖ ^ 2 := by
+    have hquad : ‖S y‖ ^ (2 : ℕ) ≤ ‖S y‖ * ‖x‖ + ε * ‖x‖ ^ (2 : ℕ) := by
       rw [hsq, hsplit]
       exact add_le_add hlin (re_inner_apply_cut_le P _ hPadj hε.le h₁' x (hcut x))
     exact le_one_add_mul_of_sq_le_mul_add_sq (norm_nonneg _) hε hquad
   -- the corner itself obeys the same near-contraction
-  have hTsq : ‖T y‖ ^ 2 = (inner ℂ (((T†) * T) y) y : ℂ).re := by
+  have hTsq : ‖T y‖ ^ (2 : ℕ) = (inner ℂ (((T†) * T) y) y : ℂ).re := by
     rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) (T y)).symm
   have hTsplit : (inner ℂ (((T†) * T) y) y : ℂ).re =
@@ -391,10 +391,10 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
       _ ≤ ((1 + ε) * ‖x‖) * ‖x‖ := by
           apply mul_le_mul hSy hyx (norm_nonneg _)
           positivity
-  have hTquad : ‖T y‖ ^ 2 ≤ (1 + ε) * ‖x‖ * ‖x‖ + ε * ‖x‖ ^ 2 := by
+  have hTquad : ‖T y‖ ^ (2 : ℕ) ≤ (1 + ε) * ‖x‖ * ‖x‖ + ε * ‖x‖ ^ (2 : ℕ) := by
     rw [hTsq, hTsplit]
     exact add_le_add hlin' (re_inner_apply_cut_le P _ hPadj hε.le h₀' x (hcut x))
-  have hfinal : ‖T y‖ ^ 2 ≤ ((1 + ε) * ‖x‖) ^ 2 := by
+  have hfinal : ‖T y‖ ^ (2 : ℕ) ≤ ((1 + ε) * ‖x‖) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (ε * ‖x‖)]
   exact le_of_sq_le_sq (by positivity) hfinal
 
@@ -425,13 +425,13 @@ theorem exists_isCompactOperator_norm_sub_le_of_adjoint_mul_isCompact
     simp [_root_.sub_apply, mul_apply_eq_comp, map_sub]
   rw [hTP]
   set y := x - P x with hy
-  have hTsq : ‖T y‖ ^ 2 = (inner ℂ (((T†) * T) y) y : ℂ).re := by
+  have hTsq : ‖T y‖ ^ (2 : ℕ) = (inner ℂ (((T†) * T) y) y : ℂ).re := by
     rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) (T y)).symm
-  have hTquad : ‖T y‖ ^ 2 ≤ (δ * δ) * ‖x‖ ^ 2 := by
+  have hTquad : ‖T y‖ ^ (2 : ℕ) ≤ (δ * δ) * ‖x‖ ^ (2 : ℕ) := by
     rw [hTsq]
     exact re_inner_apply_cut_le P _ hPadj (by positivity) h₀' x (hcut x)
-  have hfinal : ‖T y‖ ^ 2 ≤ (δ * ‖x‖) ^ 2 := by nlinarith
+  have hfinal : ‖T y‖ ^ (2 : ℕ) ≤ (δ * ‖x‖) ^ (2 : ℕ) := by nlinarith
   exact le_of_sq_le_sq (by positivity) hfinal
 
 /-- An operator whose adjoint square is compact modulo nothing is itself compact: the set of

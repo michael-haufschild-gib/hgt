@@ -96,12 +96,12 @@ theorem confocalProjectiveParameter_lipschitz
   rw [hid]
   norm_num [abs_div, abs_mul, abs_of_pos hR, abs_of_pos hdenD,
     abs_of_pos hdenE]
-  have hbase : (2 * R) ^ 2 ≤ (2 * R + d) * (2 * R + e) := by
+  have hbase : (2 * R) ^ (2 : ℕ) ≤ (2 * R + d) * (2 * R + e) := by
     nlinarith [mul_nonneg hd he]
   have hnum : 0 ≤ 2 * R * |d - e| := mul_nonneg (by positivity) (abs_nonneg _)
   calc
     2 * R * |d - e| / ((2 * R + d) * (2 * R + e)) ≤
-        2 * R * |d - e| / ((2 * R) ^ 2) := by
+        2 * R * |d - e| / ((2 * R) ^ (2 : ℕ)) := by
       exact div_le_div_of_nonneg_left hnum (by positivity) hbase
     _ = |d - e| / (2 * R) := by field_simp [hR.ne']
 
@@ -112,12 +112,12 @@ theorem le_liftedConfocalBranch_of_snd_lt_radius
   have ha0 : 0 ≤ q.2 := (abs_nonneg q.1).trans hq
   have hxle : q.1 ≤ q.2 := (le_abs_self q.1).trans hq
   have hRx : 0 ≤ R - q.1 := by linarith
-  have hsq : q.1 ^ 2 ≤ q.2 ^ 2 := by
+  have hsq : q.1 ^ (2 : ℕ) ≤ q.2 ^ (2 : ℕ) := by
     rw [sq_le_sq]
     simpa only [abs_of_nonneg ha0] using! hq
   have hrad := liftedConfocalRadicand_nonneg hq R
   have hsqrt2 := Real.sq_sqrt hrad
-  have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+  have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
   rw [liftedConfocalBranch]
   nlinarith
 
@@ -125,7 +125,7 @@ theorem le_liftedConfocalBranch_of_snd_lt_radius
 theorem liftedConfocalBranch_halfspace_self
     {q : ℝ × ℝ} (hq : q ∈ confocalLorentzCone) (R : ℝ) :
     R * q.1 - liftedConfocalBranch q R * q.2 =
-      (R ^ 2 - liftedConfocalBranch q R ^ 2) / 2 := by
+      (R ^ (2 : ℕ) - liftedConfocalBranch q R ^ (2 : ℕ)) / 2 := by
   have hrad := liftedConfocalRadicand_nonneg hq R
   have hsqrt2 := Real.sq_sqrt hrad
   rw [liftedConfocalBranch]
@@ -907,15 +907,15 @@ theorem liftedConfocalBranch_axialLorentzLift
     {axis z : E} (haxis : ‖axis‖ = 1) {R : ℝ} (hR : 0 < R) :
     liftedConfocalBranch (axialLorentzLift axis z) R =
       axialDistanceSumBranch axis z R := by
-  have hnormsq : ‖R • axis - z‖ ^ 2 =
-      R ^ 2 - 2 * R * inner ℝ z axis + ‖z‖ ^ 2 := by
+  have hnormsq : ‖R • axis - z‖ ^ (2 : ℕ) =
+      R ^ (2 : ℕ) - 2 * R * inner ℝ z axis + ‖z‖ ^ (2 : ℕ) := by
     rw [norm_sub_sq_real, norm_smul, Real.norm_eq_abs, abs_of_pos hR, haxis,
       mul_one, real_inner_smul_left, real_inner_comm axis z]
     ring
   rw [liftedConfocalBranch, axialLorentzLift, axialDistanceSumBranch]
   have hrad :
-      (R - inner ℝ z axis) ^ 2 + (‖z‖ ^ 2 - (inner ℝ z axis) ^ 2) =
-        ‖R • axis - z‖ ^ 2 := by
+      (R - inner ℝ z axis) ^ (2 : ℕ) + (‖z‖ ^ (2 : ℕ) - (inner ℝ z axis) ^ (2 : ℕ)) =
+        ‖R • axis - z‖ ^ (2 : ℕ) := by
     rw [hnormsq]
     ring
   rw [hrad, Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _)]

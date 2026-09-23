@@ -25,7 +25,7 @@ def mobiusCausalMultiplierDeriv (ω : ℝ) (z : ℂ) : ℂ :=
         2 * deriv riemannZeta (1 + 2 * (ω : ℂ) + z) / riemannZeta (1 + 2 * (ω : ℂ) + z))
     + 1 / z * ((riemannZeta (1 + 2 * (ω : ℂ)) +
         2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)
+      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))
 
 theorem one_add_two_mul_add_ne_one {ω : ℝ} (hω : 0 < ω) {z : ℂ} (hz : 0 ≤ z.re) :
     (1 : ℂ) + 2 * (ω : ℂ) + z ≠ 1 := by

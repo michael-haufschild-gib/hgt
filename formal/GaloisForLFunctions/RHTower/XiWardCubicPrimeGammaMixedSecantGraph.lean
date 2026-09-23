@@ -173,7 +173,7 @@ theorem xiWardCubicPrimeGammaReflectedSourceMixedSecant_eq_tsum_sq
     (z0 z1 : DeningerPrimeGammaLowerPoint) :
     xiWardCubicPrimeGammaReflectedSourceMixedSecant z0 z1 =
       ∑' q : XiZeroCopy,
-        xiWardCubicPrimeGammaLowerSecantTest z0 z1 (xiSpectralPoint q) ^ 2 := by
+        xiWardCubicPrimeGammaLowerSecantTest z0 z1 (xiSpectralPoint q) ^ (2 : ℕ) := by
   rw [xiWardCubicPrimeGammaReflectedSourceMixedSecant,
     xiWardCubicPrimeGammaSourceMixedSecant_eq_xiZeroCopy_tsum,
     xiWardCubicPrimeGammaUpperSharpSecant_reflected_eq_lower]

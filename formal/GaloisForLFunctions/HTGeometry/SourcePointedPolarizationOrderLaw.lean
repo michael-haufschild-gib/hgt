@@ -43,10 +43,10 @@ energy budget, no vector in the same Hilbert carrier can preserve every coeffici
 test family and meet that budget. -/
 theorem IsTotalTestFamily.no_strict_budget_reporter
     {test : I → H} (htotal : IsTotalTestFamily test)
-    {x : H} {B : ℝ} (hbudget : B < ‖x‖ ^ 2) :
+    {x : H} {B : ℝ} (hbudget : B < ‖x‖ ^ (2 : ℕ)) :
     ¬ ∃ y : H,
       (∀ i : I, inner ℂ y (test i) = inner ℂ x (test i)) ∧
-      ‖y‖ ^ 2 ≤ B := by
+      ‖y‖ ^ (2 : ℕ) ≤ B := by
   rintro ⟨y, hcoeff, hy⟩
   rw [htotal.eq_of_coefficients hcoeff] at hy
   exact (not_le_of_gt hbudget) hy

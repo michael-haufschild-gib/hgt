@@ -44,7 +44,7 @@ theorem blaschkeLocalizedWeight_nonneg (a : ℝ) (k : ℕ) :
 theorem blaschkeLocalizedWeight_summable
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
     Summable (blaschkeLocalizedWeight a) := by
-  change Summable (fun k : ℕ => blaschkeLocalizedKernel a k ^ 2)
+  change Summable (fun k : ℕ => blaschkeLocalizedKernel a k ^ (2 : ℕ))
   exact blaschkeLocalizedKernel_sq_summable a ha0 ha1
 
 /-- Normalized state whose Born weights are the exact Blaschke local
@@ -115,9 +115,9 @@ theorem blaschkePhaseKetAt_zero
 theorem blaschkePhaseKet_norm
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
     ‖blaschkePhaseKet a ha0 ha1‖ = 1 := by
-  have hnormsq : ‖blaschkePhaseKet a ha0 ha1‖ ^ 2 = 1 := by
+  have hnormsq : ‖blaschkePhaseKet a ha0 ha1‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
-    rw [show (∑' k : ℕ, ‖blaschkePhaseKet a ha0 ha1 k‖ ^ 2) =
+    rw [show (∑' k : ℕ, ‖blaschkePhaseKet a ha0 ha1 k‖ ^ (2 : ℕ)) =
         ∑' k : ℕ, blaschkeLocalizedWeight a k by
       apply tsum_congr
       intro k
@@ -131,10 +131,10 @@ theorem blaschkePhaseKetAt_norm
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
     (x : ℕ → UnitAddCircle) (t : ℝ) :
     ‖blaschkePhaseKetAt a ha0 ha1 x t‖ = 1 := by
-  have hnormsq : ‖blaschkePhaseKetAt a ha0 ha1 x t‖ ^ 2 = 1 := by
+  have hnormsq : ‖blaschkePhaseKetAt a ha0 ha1 x t‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     rw [show (∑' k : ℕ,
-        ‖blaschkePhaseKetAt a ha0 ha1 x t k‖ ^ 2) =
+        ‖blaschkePhaseKetAt a ha0 ha1 x t k‖ ^ (2 : ℕ)) =
         ∑' k : ℕ, blaschkeLocalizedWeight a k by
       apply tsum_congr
       intro k
@@ -165,7 +165,7 @@ theorem blaschkePhaseKet_inner_ketAt
     (Real.sqrt (blaschkeLocalizedWeight a k) : ℂ) *
           blaschkeHamiltonianEvolutionPhase x t k *
         (Real.sqrt (blaschkeLocalizedWeight a k) : ℂ) =
-      ((Real.sqrt (blaschkeLocalizedWeight a k) ^ 2 : ℝ) : ℂ) *
+      ((Real.sqrt (blaschkeLocalizedWeight a k) ^ (2 : ℕ) : ℝ) : ℂ) *
         blaschkeHamiltonianEvolutionPhase x t k := by
           push_cast
           ring
@@ -308,7 +308,7 @@ theorem ae_tendsto_blaschkeHamiltonianFirstReturnClock_normalized
         Real.log
             (blaschkeHamiltonianFirstReturnClock
               a ha0 ha1 x K k : ℝ) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   filter_upwards [
     ae_tendsto_blaschkeFirstReturnClock_normalized

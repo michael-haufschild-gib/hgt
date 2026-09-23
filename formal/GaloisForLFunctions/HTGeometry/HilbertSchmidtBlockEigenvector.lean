@@ -32,7 +32,7 @@ theorem liftBlock_apply_of_notMem {s : Finset ι} (v : ↥s → ℂ) {i : ι} (h
     liftBlock v i = 0 := by simp [liftBlock, hi]
 
 theorem summable_sq_liftBlock {s : Finset ι} (v : ↥s → ℂ) :
-    Summable fun i => ‖liftBlock v i‖ ^ 2 := by
+    Summable fun i => ‖liftBlock v i‖ ^ (2 : ℕ) := by
   refine summable_of_ne_finset_zero (s := s) fun i hi => ?_
   rw [liftBlock_apply_of_notMem v hi]
   simp

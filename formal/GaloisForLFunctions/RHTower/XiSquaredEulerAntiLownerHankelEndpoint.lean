@@ -60,7 +60,7 @@ positive real node.  The previous exterior weld required `1/2 < x`; global Schwa
 theorem logDeriv_xiCent_ofReal_eq_fullQ_pos
     {x : ℝ} (hx : 0 < x) :
     logDeriv xiCent (x : ℂ) = (xiSquaredEulerFullQ x : ℂ) := by
-  have hconj := logDeriv_xi_conj ((1 / 2 : ℂ) + (x : ℂ))
+  have hconj := logDeriv_xi_conj_xiLogDerivSymmetry ((1 / 2 : ℂ) + (x : ℂ))
   have harg :
       (starRingEnd ℂ) ((1 / 2 : ℂ) + (x : ℂ)) =
         (1 / 2 : ℂ) + (x : ℂ) := by
@@ -140,7 +140,7 @@ theorem xiEulerAudenaertDecreasing_eq_fullQ_div_sqrt
     xiEulerAudenaertDecreasing X =
       xiSquaredEulerFullQ (Real.sqrt X) / Real.sqrt X := by
   have hs : 0 < Real.sqrt X := Real.sqrt_pos.2 hX
-  have hs2 : (Real.sqrt X) ^ 2 = X := Real.sq_sqrt hX.le
+  have hs2 : (Real.sqrt X) ^ (2 : ℕ) = X := Real.sq_sqrt hX.le
   have hF := squaredXiRadialField_sq_eq hs
   rw [hs2] at hF
   have hQ : xiSquaredEulerFullQ (Real.sqrt X) =
@@ -156,7 +156,7 @@ theorem xiEulerAudenaertIncreasing_eq_sqrt_mul_fullQ
     xiEulerAudenaertIncreasing X =
       Real.sqrt X * xiSquaredEulerFullQ (Real.sqrt X) := by
   have hs : 0 < Real.sqrt X := Real.sqrt_pos.2 hX
-  have hs2 : (Real.sqrt X) ^ 2 = X := Real.sq_sqrt hX.le
+  have hs2 : (Real.sqrt X) ^ (2 : ℕ) = X := Real.sq_sqrt hX.le
   rw [xiEulerAudenaertIncreasing,
     xiEulerAudenaertDecreasing_eq_fullQ_div_sqrt hX]
   rw [← hs2, Real.sqrt_sq hs.le]
@@ -165,8 +165,8 @@ theorem xiEulerAudenaertIncreasing_eq_sqrt_mul_fullQ
 /-- Positive-ray response factorization `Q(x) = x R(x²)`. -/
 theorem xiSquaredEulerFullQ_eq_mul_audenaertDecreasing
     {x : ℝ} (hx : 0 < x) :
-    xiSquaredEulerFullQ x = x * xiEulerAudenaertDecreasing (x ^ 2) := by
-  have hX : 0 < x ^ 2 := sq_pos_of_pos hx
+    xiSquaredEulerFullQ x = x * xiEulerAudenaertDecreasing (x ^ (2 : ℕ)) := by
+  have hX : 0 < x ^ (2 : ℕ) := sq_pos_of_pos hx
   have h := xiEulerAudenaertDecreasing_eq_fullQ_div_sqrt hX
   rw [Real.sqrt_sq hx.le] at h
   field_simp [hx.ne'] at h
@@ -175,30 +175,30 @@ theorem xiSquaredEulerFullQ_eq_mul_audenaertDecreasing
 theorem hasDerivAt_xiSquaredEulerFullQ
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt xiSquaredEulerFullQ
-      (xiEulerAudenaertDecreasing (x ^ 2) -
-        2 * x ^ 2 * (xiShiftedReciprocalMoment (x ^ 2) 1).re) x := by
-  have hX : 0 < x ^ 2 := sq_pos_of_pos hx
-  have hsq : HasDerivAt (fun v : ℝ => v ^ 2) (2 * x) x := by
+      (xiEulerAudenaertDecreasing (x ^ (2 : ℕ)) -
+        2 * x ^ (2 : ℕ) * (xiShiftedReciprocalMoment (x ^ (2 : ℕ)) 1).re) x := by
+  have hX : 0 < x ^ (2 : ℕ) := sq_pos_of_pos hx
+  have hsq : HasDerivAt (fun v : ℝ => v ^ (2 : ℕ)) (2 * x) x := by
     simpa using hasDerivAt_pow 2 x
-  have hR := HasDerivAt.comp (h := fun v : ℝ => v ^ 2) x
+  have hR := HasDerivAt.comp (h := fun v : ℝ => v ^ (2 : ℕ)) x
     (hasDerivAt_xiEulerAudenaertDecreasing hX) hsq
   have hmul := (hasDerivAt_id x).mul hR
   have hmulCoeff : HasDerivAt
-      (id * xiEulerAudenaertDecreasing ∘ fun v : ℝ => v ^ 2)
-      (xiEulerAudenaertDecreasing (x ^ 2) +
-        x * (-(xiShiftedReciprocalMoment (x ^ 2) 1).re * (2 * x))) x := by
+      (id * xiEulerAudenaertDecreasing ∘ fun v : ℝ => v ^ (2 : ℕ))
+      (xiEulerAudenaertDecreasing (x ^ (2 : ℕ)) +
+        x * (-(xiShiftedReciprocalMoment (x ^ (2 : ℕ)) 1).re * (2 * x))) x := by
     simpa only [Function.comp_apply, id_eq, one_mul] using hmul
   have hmulNorm : HasDerivAt (fun v : ℝ =>
-      v * xiEulerAudenaertDecreasing (v ^ 2))
-      (xiEulerAudenaertDecreasing (x ^ 2) +
-        x * (-(xiShiftedReciprocalMoment (x ^ 2) 1).re * (2 * x))) x := by
+      v * xiEulerAudenaertDecreasing (v ^ (2 : ℕ)))
+      (xiEulerAudenaertDecreasing (x ^ (2 : ℕ)) +
+        x * (-(xiShiftedReciprocalMoment (x ^ (2 : ℕ)) 1).re * (2 * x))) x := by
     refine hmulCoeff.congr_of_eventuallyEq (Filter.Eventually.of_forall ?_)
     intro v
     rfl
   have hmul' : HasDerivAt (fun v : ℝ =>
-      v * xiEulerAudenaertDecreasing (v ^ 2))
-      (xiEulerAudenaertDecreasing (x ^ 2) -
-        2 * x ^ 2 * (xiShiftedReciprocalMoment (x ^ 2) 1).re) x := by
+      v * xiEulerAudenaertDecreasing (v ^ (2 : ℕ)))
+      (xiEulerAudenaertDecreasing (x ^ (2 : ℕ)) -
+        2 * x ^ (2 : ℕ) * (xiShiftedReciprocalMoment (x ^ (2 : ℕ)) 1).re) x := by
     convert hmulNorm using 1
     ring
   refine hmul'.congr_of_eventuallyEq ?_
@@ -213,9 +213,9 @@ theorem xiSquaredEulerFullKernel_add_fullQLoewner_eq_increasingLoewner
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : x ≠ y) :
     xiSquaredEulerFullKernel x y +
         eulerOffDiagonalLoewnerKernel xiSquaredEulerFullQ x y =
-      2 * eulerOffDiagonalLoewnerKernel xiEulerAudenaertIncreasing (x ^ 2) (y ^ 2) := by
+      2 * eulerOffDiagonalLoewnerKernel xiEulerAudenaertIncreasing (x ^ (2 : ℕ)) (y ^ (2 : ℕ)) := by
   have hsum : x + y ≠ 0 := by positivity
-  have hsq : x ^ 2 - y ^ 2 ≠ 0 := by
+  have hsq : x ^ (2 : ℕ) - y ^ (2 : ℕ) ≠ 0 := by
     intro h
     have hfactor : (x - y) * (x + y) = 0 := by nlinarith
     have hsub : x - y = 0 := (mul_eq_zero.mp hfactor).resolve_right hsum
@@ -236,9 +236,9 @@ theorem xiSquaredEulerFullKernel_sub_fullQLoewner_eq_decreasingLoewner
     xiSquaredEulerFullKernel x y -
         eulerOffDiagonalLoewnerKernel xiSquaredEulerFullQ x y =
       2 * x * y * eulerOffDiagonalLoewnerKernel
-        (fun X => -xiEulerAudenaertDecreasing X) (x ^ 2) (y ^ 2) := by
+        (fun X => -xiEulerAudenaertDecreasing X) (x ^ (2 : ℕ)) (y ^ (2 : ℕ)) := by
   have hsum : x + y ≠ 0 := by positivity
-  have hsq : x ^ 2 - y ^ 2 ≠ 0 := by
+  have hsq : x ^ (2 : ℕ) - y ^ (2 : ℕ) ≠ 0 := by
     intro h
     have hfactor : (x - y) * (x + y) = 0 := by nlinarith
     have hsub : x - y = 0 := (mul_eq_zero.mp hfactor).resolve_right hsum
@@ -312,12 +312,12 @@ theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
         loewnerDerivativeMatrixAt xiSquaredEulerFullQ
           (fun i => deriv xiSquaredEulerFullQ (x i)) x =
       (fun i j => 2 * dslope xiEulerAudenaertIncreasing
-        ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+        ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) := by
   ext i j
   simp only [Matrix.add_apply]
   by_cases hij : i = j
   · subst j
-    have hX : 0 < (x i) ^ 2 := sq_pos_of_pos (hx i)
+    have hX : 0 < (x i) ^ (2 : ℕ) := sq_pos_of_pos (hx i)
     rw [loewnerDerivativeMatrixAt, if_pos rfl, dslope_same,
       (hasDerivAt_xiSquaredEulerFullQ (hx i)).deriv,
       (hasDerivAt_xiEulerAudenaertIncreasing hX).deriv]
@@ -330,18 +330,18 @@ theorem xiSquaredEuler_add_loewner_eq_increasing_dslope
     rw [antiLownerMatrixAt, signedAntiLownerMatrix]
     simp only [Function.comp_apply, one_mul]
     have hxy : x i ≠ x j := hinj.ne hij
-    have hsq : (x j) ^ 2 ≠ (x i) ^ 2 := by
+    have hsq : (x j) ^ (2 : ℕ) ≠ (x i) ^ (2 : ℕ) := by
       intro h
       have hsqrt := congrArg Real.sqrt h
       rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
       exact hxy hsqrt.symm
     have hds : dslope xiEulerAudenaertIncreasing
-        ((x i) ^ 2) ((x j) ^ 2) =
+        ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) =
         eulerOffDiagonalLoewnerKernel xiEulerAudenaertIncreasing
-          ((x i) ^ 2) ((x j) ^ 2) := by
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) := by
       rw [dslope_of_ne _ hsq, slope_def_field,
         eulerOffDiagonalLoewnerKernel]
-      have hne : (x i) ^ 2 - (x j) ^ 2 ≠ 0 := sub_ne_zero.mpr hsq.symm
+      have hne : (x i) ^ (2 : ℕ) - (x j) ^ (2 : ℕ) ≠ 0 := sub_ne_zero.mpr hsq.symm
       field_simp [hne]
       ring
     rw [hds]
@@ -357,12 +357,12 @@ theorem xiSquaredEuler_sub_loewner_eq_decreasing_dslope
           (fun i => deriv xiSquaredEulerFullQ (x i)) x =
       (fun i j => 2 * x i * x j *
         dslope (fun X => -xiEulerAudenaertDecreasing X)
-          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) := by
   ext i j
   simp only [Matrix.sub_apply]
   by_cases hij : i = j
   · subst j
-    have hX : 0 < (x i) ^ 2 := sq_pos_of_pos (hx i)
+    have hX : 0 < (x i) ^ (2 : ℕ) := sq_pos_of_pos (hx i)
     rw [loewnerDerivativeMatrixAt, if_pos rfl, dslope_same,
       (hasDerivAt_xiSquaredEulerFullQ (hx i)).deriv,
       (hasDerivAt_neg_xiEulerAudenaertDecreasing hX).deriv]
@@ -375,19 +375,19 @@ theorem xiSquaredEuler_sub_loewner_eq_decreasing_dslope
     rw [antiLownerMatrixAt, signedAntiLownerMatrix]
     simp only [Function.comp_apply, one_mul]
     have hxy : x i ≠ x j := hinj.ne hij
-    have hsq : (x j) ^ 2 ≠ (x i) ^ 2 := by
+    have hsq : (x j) ^ (2 : ℕ) ≠ (x i) ^ (2 : ℕ) := by
       intro h
       have hsqrt := congrArg Real.sqrt h
       rw [Real.sqrt_sq (hx j).le, Real.sqrt_sq (hx i).le] at hsqrt
       exact hxy hsqrt.symm
     have hds : dslope (fun X => -xiEulerAudenaertDecreasing X)
-        ((x i) ^ 2) ((x j) ^ 2) =
+        ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) =
         eulerOffDiagonalLoewnerKernel
           (fun X => -xiEulerAudenaertDecreasing X)
-          ((x i) ^ 2) ((x j) ^ 2) := by
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) := by
       rw [dslope_of_ne _ hsq, slope_def_field,
         eulerOffDiagonalLoewnerKernel]
-      have hne : (x i) ^ 2 - (x j) ^ 2 ≠ 0 := sub_ne_zero.mpr hsq.symm
+      have hne : (x i) ^ (2 : ℕ) - (x j) ^ (2 : ℕ) ≠ 0 := sub_ne_zero.mpr hsq.symm
       field_simp [hne]
       ring
     rw [hds]
@@ -427,9 +427,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     (hanti : ∀ z : ι ⊕ ι → ℝ, (∀ k, 0 < z k) → Function.Injective z →
       (antiLownerMatrixAt xiSquaredEulerFullQ z).PosSemidef) :
     Matrix.PosSemidef (fun i j => dslope xiEulerAudenaertIncreasing
-        ((x i) ^ 2) ((x j) ^ 2)) ∧
+        ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ))) ∧
       Matrix.PosSemidef (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
-        ((x i) ^ 2) ((x j) ^ 2)) := by
+        ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ))) := by
   obtain ⟨hadd, hsub⟩ :=
     xiSquaredEulerAntiLownerProducer_imp_add_sub_loewnerDerivative x hx hinj hanti
   constructor
@@ -437,9 +437,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     have hscaled := hadd.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
     have heq : (1 / 2 : ℝ) •
         (fun i j => 2 * dslope xiEulerAudenaertIncreasing
-          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) =
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) =
         (fun i j => dslope xiEulerAudenaertIncreasing
-          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) := by
       ext i j
       simp
     exact Eq.mp (congrArg Matrix.PosSemidef heq) hscaled
@@ -456,7 +456,7 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
           loewnerDerivativeMatrixAt xiSquaredEulerFullQ
             (fun i => deriv xiSquaredEulerFullQ (x i)) x) * Dᴴ =
           (fun i j => 2 * dslope (fun X => -xiEulerAudenaertDecreasing X)
-            ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+            ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) := by
       rw [hD]
       rw [xiSquaredEuler_sub_loewner_eq_decreasing_dslope x hx hinj]
       ext i j
@@ -466,9 +466,9 @@ theorem xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
     have hscaled := hcong.smul (show 0 ≤ (1 / 2 : ℝ) by norm_num)
     have heq : (1 / 2 : ℝ) •
         (fun i j => 2 * dslope (fun X => -xiEulerAudenaertDecreasing X)
-          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) =
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) =
         (fun i j => dslope (fun X => -xiEulerAudenaertDecreasing X)
-          ((x i) ^ 2) ((x j) ^ 2) : Matrix ι ι ℝ) := by
+          ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix ι ι ℝ) := by
       ext i j
       simp
     exact Eq.mp (congrArg Matrix.PosSemidef heq) hscaled
@@ -620,18 +620,18 @@ theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
     have hxinj : Function.Injective x := by
       intro i j hij
       apply hYinj
-      have hsquare := congrArg (fun t : ℝ => t ^ 2) hij
+      have hsquare := congrArg (fun t : ℝ => t ^ (2 : ℕ)) hij
       simpa only [x, Real.sq_sqrt (hYpos i).le,
         Real.sq_sqrt (hYpos j).le] using hsquare
     have hp := xiSquaredEulerAntiLownerProducer_imp_parityDslope_posSemidef
       x hxpos hxinj
       (fun z hz hzinj => hproducer (Fin N ⊕ Fin N) z hz hzinj)
-    have hsquare : ∀ i, (x i) ^ 2 = Y i :=
+    have hsquare : ∀ i, (x i) ^ (2 : ℕ) = Y i :=
       fun i => Real.sq_sqrt (hYpos i).le
     constructor
     · have heq :
           (fun i j => dslope xiEulerAudenaertIncreasing
-            ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
+            ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix (Fin N) (Fin N) ℝ) =
           GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
             xiEulerAudenaertIncreasing X N h := by
           ext i j
@@ -641,7 +641,7 @@ theorem xiSquaredEulerAntiLownerProducer_imp_eventually_uniform_parity
       exact hp.1
     · have heq :
           (fun i j => dslope (fun T => -xiEulerAudenaertDecreasing T)
-            ((x i) ^ 2) ((x j) ^ 2) : Matrix (Fin N) (Fin N) ℝ) =
+            ((x i) ^ (2 : ℕ)) ((x j) ^ (2 : ℕ)) : Matrix (Fin N) (Fin N) ℝ) =
           GaloisForLFunctions.HTGeometry.uniformMovingDslopeMatrix
             (fun T => -xiEulerAudenaertDecreasing T) X N h := by
           ext i j
@@ -727,7 +727,7 @@ theorem analyticAt_xiEulerAudenaertDecreasing
   have hg : AnalyticAt ℂ g (Real.sqrt X : ℂ) := by
     apply AnalyticAt.comp (x := (Real.sqrt X : ℂ))
       (g := logDeriv xi) (f := fun z : ℂ => 1 / 2 + z)
-    · exact analyticAt_logDeriv_xi (xi_ofReal_shift_ne_zero (Real.sqrt X))
+    · exact analyticAt_logDeriv_xi_suzukiTorqueContinuationAnalytic (xi_ofReal_shift_ne_zero (Real.sqrt X))
     · exact analyticAt_const.add analyticAt_id
   have hreal : AnalyticAt ℝ (fun w : ℝ => (g w).re) (Real.sqrt X) :=
     hg.re_ofReal

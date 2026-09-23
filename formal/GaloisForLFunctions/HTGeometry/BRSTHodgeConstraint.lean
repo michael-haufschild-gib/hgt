@@ -46,7 +46,7 @@ theorem brstHodgeHamiltonian_isSelfAdjoint (Q : E →L[𝕜] E) :
 theorem re_inner_brstHodgeHamiltonian_eq_sum_normSq
     (Q : E →L[𝕜] E) (ψ : E) :
     RCLike.re (inner 𝕜 ψ (brstHodgeHamiltonian Q ψ)) =
-      ‖Q ψ‖ ^ 2 + ‖Q.adjoint ψ‖ ^ 2 := by
+      ‖Q ψ‖ ^ (2 : ℕ) + ‖Q.adjoint ψ‖ ^ (2 : ℕ) := by
   simp only [brstHodgeHamiltonian, _root_.add_apply,
     inner_add_right, map_add]
   rw [re_inner_quantumMasterConstraint_eq_normSq,
@@ -65,12 +65,12 @@ theorem brstHodgeHamiltonian_apply_eq_zero_iff
     brstHodgeHamiltonian Q ψ = 0 ↔ Q ψ = 0 ∧ Q.adjoint ψ = 0 := by
   constructor
   · intro hH
-    have hsum : ‖Q ψ‖ ^ 2 + ‖Q.adjoint ψ‖ ^ 2 = 0 := by
+    have hsum : ‖Q ψ‖ ^ (2 : ℕ) + ‖Q.adjoint ψ‖ ^ (2 : ℕ) = 0 := by
       rw [← re_inner_brstHodgeHamiltonian_eq_sum_normSq Q ψ, hH]
       simp
-    have hQsq : ‖Q ψ‖ ^ 2 = 0 := by
+    have hQsq : ‖Q ψ‖ ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg ‖Q ψ‖, sq_nonneg ‖Q.adjoint ψ‖]
-    have hQasq : ‖Q.adjoint ψ‖ ^ 2 = 0 := by
+    have hQasq : ‖Q.adjoint ψ‖ ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg ‖Q ψ‖, sq_nonneg ‖Q.adjoint ψ‖]
     exact ⟨norm_eq_zero.mp (sq_eq_zero_iff.mp hQsq),
       norm_eq_zero.mp (sq_eq_zero_iff.mp hQasq)⟩
@@ -356,8 +356,8 @@ theorem brstHodgeCoDiracOperator_sq_eq_hamiltonian
 /-- The two Hermitian supercharges have identical statewise norm energy. -/
 theorem norm_brstHodgeCoDiracOperator_apply_sq_eq_norm_diracOperator_apply_sq
     (Q : E →L[ℂ] E) (hQ : Q * Q = 0) (psi : E) :
-    ‖brstHodgeCoDiracOperator Q psi‖ ^ 2 =
-      ‖brstHodgeDiracOperator Q psi‖ ^ 2 := by
+    ‖brstHodgeCoDiracOperator Q psi‖ ^ (2 : ℕ) =
+      ‖brstHodgeDiracOperator Q psi‖ ^ (2 : ℕ) := by
   have hCoAdj :
       ContinuousLinearMap.adjoint (brstHodgeCoDiracOperator Q) =
         brstHodgeCoDiracOperator Q := by
@@ -389,7 +389,7 @@ theorem norm_brstHodgeCoDiracOperator_apply_sq_eq_norm_diracOperator_apply_sq
       brstHodgeCoDiracOperator_sq_eq_hamiltonian Q hQ,
       brstHodgeDiracOperator_sq_eq_hamiltonian Q hQ]
   calc
-    ‖brstHodgeCoDiracOperator Q psi‖ ^ 2 =
+    ‖brstHodgeCoDiracOperator Q psi‖ ^ (2 : ℕ) =
         RCLike.re (inner ℂ psi
           (quantumMasterConstraint (brstHodgeCoDiracOperator Q) psi)) :=
       (re_inner_quantumMasterConstraint_eq_normSq
@@ -397,7 +397,7 @@ theorem norm_brstHodgeCoDiracOperator_apply_sq_eq_norm_diracOperator_apply_sq
     _ = RCLike.re (inner ℂ psi
         (quantumMasterConstraint (brstHodgeDiracOperator Q) psi)) := by
       rw [hmasterEq]
-    _ = ‖brstHodgeDiracOperator Q psi‖ ^ 2 :=
+    _ = ‖brstHodgeDiracOperator Q psi‖ ^ (2 : ℕ) :=
       re_inner_quantumMasterConstraint_eq_normSq (brstHodgeDiracOperator Q) psi
 
 /-- The two Hermitian `N = 2` supercharges anticommute. -/

@@ -57,11 +57,11 @@ theorem exists_pos_pow_sub_one_lt {ι : Type*} [Fintype ι] (u : ι → ℂ) (hu
 /-- A unimodular number within distance `1` of `1` has real part above `1/2`. -/
 theorem re_ge_half_of_norm_sub_one_lt_one {v : ℂ} (hv : ‖v‖ = 1) (h : ‖v - 1‖ < 1) :
     1 / 2 < v.re := by
-  have hsq : ‖v - 1‖ ^ 2 = 2 - 2 * v.re := by
+  have hsq : ‖v - 1‖ ^ (2 : ℕ) = 2 - 2 * v.re := by
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
       Complex.one_re, Complex.one_im]
-    have hv2 : v.re ^ 2 + v.im ^ 2 = 1 := by
-      have hh : ‖v‖ ^ 2 = 1 := by rw [hv]; norm_num
+    have hv2 : v.re ^ (2 : ℕ) + v.im ^ (2 : ℕ) = 1 := by
+      have hh : ‖v‖ ^ (2 : ℕ) = 1 := by rw [hv]; norm_num
       rw [Complex.sq_norm, Complex.normSq_apply] at hh
       nlinarith [hh]
     nlinarith
@@ -91,9 +91,9 @@ variable {ι : Type*} {v : ι → ℂ} {m : ι → ℝ} {M : ℝ}
 summable. -/
 theorem summable_re_liTerm_of_one_le
     (hm : ∀ i, 0 ≤ m i) (hv : ∀ i, 1 ≤ ‖v i‖) (hM : ∀ i, ‖v i‖ ≤ M)
-    (hs : Summable fun i => m i * ‖v i - 1‖ ^ 2) (n : ℕ) :
+    (hs : Summable fun i => m i * ‖v i - 1‖ ^ (2 : ℕ)) (n : ℕ) :
     Summable fun i => m i * (liTerm (v i) n).re := by
-  refine Summable.of_norm_bounded (hs.mul_left ((n : ℝ) ^ 2 * M ^ n)) fun i => ?_
+  refine Summable.of_norm_bounded (hs.mul_left ((n : ℝ) ^ (2 : ℕ) * M ^ n)) fun i => ?_
   have hvne : v i ≠ 0 := by
     intro h
     have := hv i
@@ -112,26 +112,26 @@ theorem summable_re_liTerm_of_one_le
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hm i)]
     exact mul_le_mul_of_nonneg_left (le_trans (abs_re_le_norm _) (le_refl _)) (hm i)
   refine le_trans hre ?_
-  have hstep : ‖liTerm (v i) n‖ ≤ (n : ℝ) ^ 2 * M ^ n * ‖v i - 1‖ ^ 2 := by
+  have hstep : ‖liTerm (v i) n‖ ≤ (n : ℝ) ^ (2 : ℕ) * M ^ n * ‖v i - 1‖ ^ (2 : ℕ) := by
     refine le_trans hbase ?_
-    have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ 2 := sq_nonneg _
-    have h3 : (0:ℝ) ≤ (n : ℝ) ^ 2 := sq_nonneg _
+    have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ (2 : ℕ) := sq_nonneg _
+    have h3 : (0:ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := sq_nonneg _
     rw [mul_assoc, mul_assoc]
     gcongr
-  calc m i * ‖liTerm (v i) n‖ ≤ m i * ((n : ℝ) ^ 2 * M ^ n * ‖v i - 1‖ ^ 2) :=
+  calc m i * ‖liTerm (v i) n‖ ≤ m i * ((n : ℝ) ^ (2 : ℕ) * M ^ n * ‖v i - 1‖ ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hstep (hm i)
-    _ = (n : ℝ) ^ 2 * M ^ n * (m i * ‖v i - 1‖ ^ 2) := by ring
+    _ = (n : ℝ) ^ (2 : ℕ) * M ^ n * (m i * ‖v i - 1‖ ^ (2 : ℕ)) := by ring
 
 
 theorem finite_far_set (hm : ∀ i, 1 ≤ m i)
-    (hs : Summable fun i => m i * ‖v i - 1‖ ^ 2) {q : ℝ} (hq : 1 < q) :
+    (hs : Summable fun i => m i * ‖v i - 1‖ ^ (2 : ℕ)) {q : ℝ} (hq : 1 < q) :
     {i | q ≤ ‖v i‖}.Finite := by
-  have hpos : (0:ℝ) < (q - 1) ^ 2 := by positivity
+  have hpos : (0:ℝ) < (q - 1) ^ (2 : ℕ) := by positivity
   have htend := hs.tendsto_cofinite_zero
   have hev : ∀ᶠ i in Filter.cofinite,
-      m i * ‖v i - 1‖ ^ 2 ∈ Metric.ball (0 : ℝ) ((q - 1) ^ 2) :=
+      m i * ‖v i - 1‖ ^ (2 : ℕ) ∈ Metric.ball (0 : ℝ) ((q - 1) ^ (2 : ℕ)) :=
     htend (Metric.ball_mem_nhds 0 hpos)
-  have hfin : {i | ¬ (m i * ‖v i - 1‖ ^ 2 ∈ Metric.ball (0 : ℝ) ((q - 1) ^ 2))}.Finite :=
+  have hfin : {i | ¬ (m i * ‖v i - 1‖ ^ (2 : ℕ) ∈ Metric.ball (0 : ℝ) ((q - 1) ^ (2 : ℕ)))}.Finite :=
     Filter.eventually_cofinite.mp hev
   refine Set.Finite.subset hfin fun i hi => ?_
   have hge : q ≤ ‖v i‖ := hi
@@ -140,10 +140,10 @@ theorem finite_far_set (hm : ∀ i, 1 ≤ m i)
     rw [norm_one] at h
     linarith
   simp only [Set.mem_setOf_eq, Metric.mem_ball, Real.dist_eq, sub_zero, not_lt]
-  have h1 : (q - 1) ^ 2 ≤ ‖v i - 1‖ ^ 2 := by nlinarith [hq]
-  have h2 : ‖v i - 1‖ ^ 2 ≤ m i * ‖v i - 1‖ ^ 2 := by
+  have h1 : (q - 1) ^ (2 : ℕ) ≤ ‖v i - 1‖ ^ (2 : ℕ) := by nlinarith [hq]
+  have h2 : ‖v i - 1‖ ^ (2 : ℕ) ≤ m i * ‖v i - 1‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖v i - 1‖, hm i]
-  rw [abs_of_nonneg (by nlinarith [sq_nonneg ‖v i - 1‖, hm i] : (0:ℝ) ≤ m i * ‖v i - 1‖ ^ 2)]
+  rw [abs_of_nonneg (by nlinarith [sq_nonneg ‖v i - 1‖, hm i] : (0:ℝ) ≤ m i * ‖v i - 1‖ ^ (2 : ℕ))]
   linarith
 
 
@@ -151,7 +151,7 @@ theorem finite_far_set (hm : ∀ i, 1 ≤ m i)
 outside the unit circle, then some paired Li sum is negative. -/
 theorem exists_re_tsum_liTerm_neg
     (hm : ∀ i, 1 ≤ m i) (hv : ∀ i, 1 ≤ ‖v i‖) (hM : ∀ i, ‖v i‖ ≤ M)
-    (hs : Summable fun i => m i * ‖v i - 1‖ ^ 2)
+    (hs : Summable fun i => m i * ‖v i - 1‖ ^ (2 : ℕ))
     {i₀ : ι} (hlt : 1 < ‖v i₀‖) :
     ∃ n : ℕ, (∑' i, m i * (liTerm (v i) n).re) < 0 := by
   classical
@@ -169,10 +169,10 @@ theorem exists_re_tsum_liTerm_neg
     rw [hSdef, Set.Finite.mem_toFinset]
     rfl
   have hi₀S : i₀ ∈ S := (hmemS i₀).mpr (le_of_lt hqW)
-  set C : ℝ := ∑' i, m i * ‖v i - 1‖ ^ 2 with hCdef
+  set C : ℝ := ∑' i, m i * ‖v i - 1‖ ^ (2 : ℕ) with hCdef
   have hC0 : 0 ≤ C := tsum_nonneg fun i => by
     have := hm i
-    have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ 2 := sq_nonneg _
+    have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ (2 : ℕ) := sq_nonneg _
     nlinarith
   set T : ℝ := ∑ i ∈ S, m i with hTdef
   have hT0 : 0 ≤ T := Finset.sum_nonneg fun i _ => by linarith [hm i]
@@ -187,13 +187,13 @@ theorem exists_re_tsum_liTerm_neg
   have hlim1 : Filter.Tendsto (fun n : ℕ => 3 * T * r ^ n) Filter.atTop (nhds 0) := by
     have := tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1
     simpa using this.const_mul (3 * T)
-  have hlim2 : Filter.Tendsto (fun n : ℕ => C * ((n : ℝ) ^ 2 * r ^ n)) Filter.atTop (nhds 0) := by
-    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ 2 * r ^ n) := by
+  have hlim2 : Filter.Tendsto (fun n : ℕ => C * ((n : ℝ) ^ (2 : ℕ) * r ^ n)) Filter.atTop (nhds 0) := by
+    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ (2 : ℕ) * r ^ n) := by
       refine summable_pow_mul_geometric_of_norm_lt_one 2 ?_
       rw [Real.norm_eq_abs, abs_of_nonneg hr0]
       exact hr1
     simpa using hsum.tendsto_atTop_zero.const_mul C
-  have hlim : Filter.Tendsto (fun n : ℕ => 3 * T * r ^ n + C * ((n : ℝ) ^ 2 * r ^ n))
+  have hlim : Filter.Tendsto (fun n : ℕ => 3 * T * r ^ n + C * ((n : ℝ) ^ (2 : ℕ) * r ^ n))
       Filter.atTop (nhds 0) := by simpa using hlim1.add hlim2
   have hm0pos : (0:ℝ) < m i₀ / 2 := by linarith [hm i₀]
   obtain ⟨N, hN⟩ := (hlim.eventually (gt_mem_nhds hm0pos)).exists_forall_of_atTop
@@ -209,11 +209,11 @@ theorem exists_re_tsum_liTerm_neg
   have hsplit := hsummable.sum_add_tsum_compl (s := S)
   -- the tail is small
   have hBsum : Summable fun i : {x // x ∈ (↑S : Set ι)ᶜ} =>
-      (n : ℝ) ^ 2 * q ^ n * (m (i : ι) * ‖v (i : ι) - 1‖ ^ 2) :=
+      (n : ℝ) ^ (2 : ℕ) * q ^ n * (m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)) :=
     (hs.subtype _).mul_left _
   have hBle : ∀ i : {x // x ∈ (↑S : Set ι)ᶜ},
       m (i : ι) * (liTerm (v (i : ι)) n).re
-        ≤ (n : ℝ) ^ 2 * q ^ n * (m (i : ι) * ‖v (i : ι) - 1‖ ^ 2) := by
+        ≤ (n : ℝ) ^ (2 : ℕ) * q ^ n * (m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)) := by
     rintro ⟨i, hi⟩
     have hiS : ¬ (q ≤ ‖v i‖) := by
       intro h
@@ -235,32 +235,32 @@ theorem exists_re_tsum_liTerm_neg
     rw [hmax] at hbase
     have hpow : ‖v i‖ ^ n ≤ q ^ n := pow_le_pow_left₀ (norm_nonneg _) hlt'.le n
     have hre : (liTerm (v i) n).re ≤ ‖liTerm (v i) n‖ := Complex.re_le_norm _
-    have hchain : ‖liTerm (v i) n‖ ≤ (n : ℝ) ^ 2 * q ^ n * ‖v i - 1‖ ^ 2 := by
+    have hchain : ‖liTerm (v i) n‖ ≤ (n : ℝ) ^ (2 : ℕ) * q ^ n * ‖v i - 1‖ ^ (2 : ℕ) := by
       refine le_trans hbase ?_
-      have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ 2 := sq_nonneg _
-      have h3 : (0:ℝ) ≤ (n : ℝ) ^ 2 := sq_nonneg _
+      have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ (2 : ℕ) := sq_nonneg _
+      have h3 : (0:ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := sq_nonneg _
       rw [mul_assoc, mul_assoc]
       gcongr
     calc m i * (liTerm (v i) n).re
-        ≤ m i * ((n : ℝ) ^ 2 * q ^ n * ‖v i - 1‖ ^ 2) :=
+        ≤ m i * ((n : ℝ) ^ (2 : ℕ) * q ^ n * ‖v i - 1‖ ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left (le_trans hre hchain) (hm0 i)
-      _ = (n : ℝ) ^ 2 * q ^ n * (m i * ‖v i - 1‖ ^ 2) := by ring
-  have htailC : (∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * ‖v (i : ι) - 1‖ ^ 2) ≤ C := by
+      _ = (n : ℝ) ^ (2 : ℕ) * q ^ n * (m i * ‖v i - 1‖ ^ (2 : ℕ)) := by ring
+  have htailC : (∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)) ≤ C := by
     have hsp := hs.sum_add_tsum_compl (s := S)
-    have hSnn : (0:ℝ) ≤ ∑ i ∈ S, m i * ‖v i - 1‖ ^ 2 :=
+    have hSnn : (0:ℝ) ≤ ∑ i ∈ S, m i * ‖v i - 1‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => by nlinarith [hm0 i, sq_nonneg ‖v i - 1‖]
     rw [hCdef, ← hsp]
     linarith
   have htail : (∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * (liTerm (v (i : ι)) n).re)
-      ≤ (n : ℝ) ^ 2 * q ^ n * C := by
+      ≤ (n : ℝ) ^ (2 : ℕ) * q ^ n * C := by
     refine le_trans (Summable.tsum_le_tsum hBle
       (hsummable.subtype ((↑S : Set ι)ᶜ)) hBsum) ?_
     rw [Summable.tsum_mul_left]
-    · have hcoef : (0:ℝ) ≤ (n : ℝ) ^ 2 * q ^ n := by positivity
+    · have hcoef : (0:ℝ) ≤ (n : ℝ) ^ (2 : ℕ) * q ^ n := by positivity
       exact mul_le_mul_of_nonneg_left htailC hcoef
     · exact hs.subtype _
   -- so the finite part is bounded below
-  have hSlow : -((n : ℝ) ^ 2 * q ^ n * C) ≤ ∑ i ∈ S, m i * (liTerm (v i) n).re := by
+  have hSlow : -((n : ℝ) ^ (2 : ℕ) * q ^ n * C) ≤ ∑ i ∈ S, m i * (liTerm (v i) n).re := by
     have h0 := hcon n
     rw [← hsplit] at h0
     linarith
@@ -312,7 +312,7 @@ theorem exists_re_tsum_liTerm_neg
     nlinarith [hm0 i]
   have hone : m i₀ * (v i₀ ^ n).re ≤ ∑ i ∈ S, m i * (v i ^ n).re :=
     Finset.single_le_sum hall hi₀S
-  have hkey : m i₀ * (W ^ n / 2) ≤ 3 * T + (n : ℝ) ^ 2 * q ^ n * C := by
+  have hkey : m i₀ * (W ^ n / 2) ≤ 3 * T + (n : ℝ) ^ (2 : ℕ) * q ^ n * C := by
     have h1 := hbig i₀ hi₀S
     have h2 : m i₀ * (W ^ n / 2) ≤ m i₀ * (v i₀ ^ n).re := by
       have := hm0 i₀
@@ -322,17 +322,17 @@ theorem exists_re_tsum_liTerm_neg
   have hW0n : (0:ℝ) < W ^ n := by positivity
   have hqn : (1:ℝ) ≤ q ^ n := one_le_pow₀ hq1.le
   have hrn : r ^ n = q ^ n / W ^ n := by rw [hrdef, div_pow]
-  have hfinal : m i₀ / 2 ≤ 3 * T * r ^ n + C * ((n : ℝ) ^ 2 * r ^ n) := by
+  have hfinal : m i₀ / 2 ≤ 3 * T * r ^ n + C * ((n : ℝ) ^ (2 : ℕ) * r ^ n) := by
     have hrn' : r ^ n * W ^ n = q ^ n := by
       rw [hrn]
       field_simp
-    have hstep : m i₀ / 2 * W ^ n ≤ 3 * T + (n : ℝ) ^ 2 * q ^ n * C := by
+    have hstep : m i₀ / 2 * W ^ n ≤ 3 * T + (n : ℝ) ^ (2 : ℕ) * q ^ n * C := by
       calc m i₀ / 2 * W ^ n = m i₀ * (W ^ n / 2) := by ring
-        _ ≤ 3 * T + (n : ℝ) ^ 2 * q ^ n * C := hkey
-    have hexp : (3 * T * r ^ n + C * ((n : ℝ) ^ 2 * r ^ n)) * W ^ n
-        = 3 * T * q ^ n + C * (n : ℝ) ^ 2 * q ^ n := by
-      rw [show (3 * T * r ^ n + C * ((n : ℝ) ^ 2 * r ^ n)) * W ^ n
-        = 3 * T * (r ^ n * W ^ n) + C * (n : ℝ) ^ 2 * (r ^ n * W ^ n) from by ring, hrn']
+        _ ≤ 3 * T + (n : ℝ) ^ (2 : ℕ) * q ^ n * C := hkey
+    have hexp : (3 * T * r ^ n + C * ((n : ℝ) ^ (2 : ℕ) * r ^ n)) * W ^ n
+        = 3 * T * q ^ n + C * (n : ℝ) ^ (2 : ℕ) * q ^ n := by
+      rw [show (3 * T * r ^ n + C * ((n : ℝ) ^ (2 : ℕ) * r ^ n)) * W ^ n
+        = 3 * T * (r ^ n * W ^ n) + C * (n : ℝ) ^ (2 : ℕ) * (r ^ n * W ^ n) from by ring, hrn']
     refine le_of_mul_le_mul_right ?_ hW0n
     rw [hexp]
     nlinarith [hT0, hqn, hC0]

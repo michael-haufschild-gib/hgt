@@ -22,7 +22,7 @@ theorem harmonicAverageGap_le_norm_sq
     (huu : inner ℝ u u = L) (hvv : inner ℝ v v = R)
     (huv : inner ℝ u v = 0) :
     L * R / (L + R) *
-        (inner ℝ v f / R - inner ℝ u f / L) ^ 2 ≤ ‖f‖ ^ 2 := by
+        (inner ℝ v f / R - inner ℝ u f / L) ^ (2 : ℕ) ≤ ‖f‖ ^ (2 : ℕ) := by
   let z : E := R⁻¹ • v - L⁻¹ • u
   have hvu : inner ℝ v u = 0 := by
     rw [real_inner_comm, huv]
@@ -30,14 +30,14 @@ theorem harmonicAverageGap_le_norm_sq
       inner ℝ v f / R - inner ℝ u f / L := by
     simp only [z, inner_sub_left, real_inner_smul_left]
     field_simp [hL.ne', hR.ne']
-  have hznorm : ‖z‖ ^ 2 = 1 / R + 1 / L := by
+  have hznorm : ‖z‖ ^ (2 : ℕ) = 1 / R + 1 / L := by
     rw [← real_inner_self_eq_norm_sq]
     simp only [z, inner_sub_left, inner_sub_right,
       real_inner_smul_left, real_inner_smul_right, huu, hvv, huv, hvu]
     field_simp [hL.ne', hR.ne']
     ring
   have hcs := norm_inner_le_norm (𝕜 := ℝ) z f
-  have hsq : (inner ℝ z f) ^ 2 ≤ ‖z‖ ^ 2 * ‖f‖ ^ 2 := by
+  have hsq : (inner ℝ z f) ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) * ‖f‖ ^ (2 : ℕ) := by
     have hp := pow_le_pow_left₀ (norm_nonneg (inner ℝ z f)) hcs 2
     rw [mul_pow] at hp
     simpa [Real.norm_eq_abs, sq_abs] using hp
@@ -51,9 +51,9 @@ theorem harmonicAverageGap_le_norm_sq
   apply (div_le_iff₀ hsum).2
   have hmul := mul_le_mul_of_nonneg_left hsq hprod.le
   calc
-    L * R * (inner ℝ v f / R - inner ℝ u f / L) ^ 2 ≤
-        L * R * ((L + R) / (L * R) * ‖f‖ ^ 2) := hmul
-    _ = ‖f‖ ^ 2 * (L + R) := by field_simp [hprod.ne']
+    L * R * (inner ℝ v f / R - inner ℝ u f / L) ^ (2 : ℕ) ≤
+        L * R * ((L + R) / (L * R) * ‖f‖ ^ (2 : ℕ)) := hmul
+    _ = ‖f‖ ^ (2 : ℕ) * (L + R) := by field_simp [hprod.ne']
 
 /-! ## Adjacent cells of a real interval -/
 

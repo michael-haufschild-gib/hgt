@@ -25,13 +25,13 @@ def xiOrderTwentyThreeOptimizedHeightSq : ℝ := 431349 / 2000
 /-- Direct endpoint optimization of the order-23 fourth reciprocal-trace atom floor. -/
 theorem seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyThree_optimized
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < xiOrderTwentyThreeOptimizedHeightSq) :
-    (17 / 800000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < xiOrderTwentyThreeOptimizedHeightSq) :
+    (17 / 800000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 431849 / 2000
   have hu0 : 0 < u := by simpa only [u] using huLower
@@ -46,21 +46,21 @@ theorem seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_order
     dsimp only [w, W, xiOrderTwentyThreeOptimizedHeightSq] at *
     linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 :=
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsqLower : (2365 / 16 : ℝ) ^ 2 < w ^ 2 :=
+  have hsqLower : (2365 / 16 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
-  have hsecond : 0 < 17 * (W ^ 2 + w ^ 2) - 800000 := by
+  have hsecond : 0 < 17 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 800000 := by
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      800000 * W ^ 2 - 17 * W ^ 4 <
-        800000 * w ^ 2 - 17 * w ^ 4 := by
+      800000 * W ^ (2 : ℕ) - 17 * W ^ (4 : ℕ) <
+        800000 * w ^ (2 : ℕ) - 17 * w ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (800000 * w ^ 2 - 17 * w ^ 4) -
-            (800000 * W ^ 2 - 17 * W ^ 4) =
-          (W ^ 2 - w ^ 2) * (17 * (W ^ 2 + w ^ 2) - 800000) := by
+        (800000 * w ^ (2 : ℕ) - 17 * w ^ (4 : ℕ)) -
+            (800000 * W ^ (2 : ℕ) - 17 * W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (17 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 800000) := by
       ring
     nlinarith
   have huv : u * v < xiOrderTwentyThreeOptimizedHeightSq / 4 := by
@@ -71,25 +71,25 @@ theorem seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_order
       _ = xiOrderTwentyThreeOptimizedHeightSq / 4 := by ring
   have hendpoint :
       6400000 * (xiOrderTwentyThreeOptimizedHeightSq / 4) <
-        800000 * W ^ 2 - 17 * W ^ 4 := by
+        800000 * W ^ (2 : ℕ) - 17 * W ^ (4 : ℕ) := by
     norm_num [xiOrderTwentyThreeOptimizedHeightSq, W]
   have huvScaled :
       6400000 * (u * v) <
         6400000 * (xiOrderTwentyThreeOptimizedHeightSq / 4) :=
     mul_lt_mul_of_pos_left huv (by norm_num)
   have hchain :
-      6400000 * (u * v) < 800000 * w ^ 2 - 17 * w ^ 4 :=
+      6400000 * (u * v) < 800000 * w ^ (2 : ℕ) - 17 * w ^ (4 : ℕ) :=
     huvScaled.trans (hendpoint.trans hshape)
   have hG :
-      0 < 800000 * (v ^ 2 - 6 * u * v + u ^ 2) - 17 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 800000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 17 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith [hchain]
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -99,15 +99,15 @@ theorem seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_order
 /-- Optimized order-23 source budget excludes every off-line Xi zero below the new endpoint. -/
 theorem xiZeroCopy_re_eq_half_of_im_sq_lt_orderTwentyThreeOptimized
     (q : XiZeroCopy)
-    (hheight : (q.1 : ℂ).im ^ 2 < xiOrderTwentyThreeOptimizedHeightSq) :
+    (hheight : (q.1 : ℂ).im ^ (2 : ℕ) < xiOrderTwentyThreeOptimizedHeightSq) :
     (q.1 : ℂ).re = 1 / 2 := by
   by_contra hoff
-  by_cases hlow : (q.1 : ℂ).im ^ 2 < 2365 / 16
+  by_cases hlow : (q.1 : ℂ).im ^ (2 : ℕ) < 2365 / 16
   · exact hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hlow)
-  · have hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2 := le_of_not_gt hlow
-    have huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 :=
+  · have hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ) := le_of_not_gt hlow
+    have huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
-    have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+    have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 :=
       xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hatom :=
       seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyThree_optimized
@@ -119,13 +119,13 @@ theorem xiZeroCopy_re_eq_half_of_im_sq_lt_orderTwentyThreeOptimized
 /-- Equivalent optimized positive height gap for every off-line Xi copy. -/
 theorem orderTwentyThreeOptimizedHeightSq_le_im_sq_of_xiZeroCopy_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    xiOrderTwentyThreeOptimizedHeightSq ≤ (q.1 : ℂ).im ^ 2 := by
+    xiOrderTwentyThreeOptimizedHeightSq ≤ (q.1 : ℂ).im ^ (2 : ℕ) := by
   exact le_of_not_gt fun hheight =>
     hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_orderTwentyThreeOptimized q hheight)
 
 /-- Optimized order-23 height exclusion exposed as a verified-height certificate. -/
 theorem rhVerifiedThrough_of_sq_lt_orderTwentyThreeOptimized
-    (H : ℝ) (hHsq : H ^ 2 < xiOrderTwentyThreeOptimizedHeightSq) :
+    (H : ℝ) (hHsq : H ^ (2 : ℕ) < xiOrderTwentyThreeOptimizedHeightSq) :
     RHVerifiedThrough H := by
   intro rho hzero _hre0 _hre1 him0 himUpper
   let rhoSupport : XiDivisorSupport :=
@@ -136,8 +136,8 @@ theorem rhVerifiedThrough_of_sq_lt_orderTwentyThreeOptimized
         ((MeromorphicOn.divisor xi Set.univ) (rhoSupport : ℂ)) := by
       omega
     exact ⟨rhoSupport, ⟨0, hn⟩⟩
-  have hsq : (q.1 : ℂ).im ^ 2 < xiOrderTwentyThreeOptimizedHeightSq := by
-    change rho.im ^ 2 < xiOrderTwentyThreeOptimizedHeightSq
+  have hsq : (q.1 : ℂ).im ^ (2 : ℕ) < xiOrderTwentyThreeOptimizedHeightSq := by
+    change rho.im ^ (2 : ℕ) < xiOrderTwentyThreeOptimizedHeightSq
     nlinarith
   have hline :=
     xiZeroCopy_re_eq_half_of_im_sq_lt_orderTwentyThreeOptimized q hsq

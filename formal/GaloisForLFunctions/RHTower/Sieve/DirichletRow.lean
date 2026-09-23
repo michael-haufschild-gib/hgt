@@ -33,9 +33,9 @@ theorem norm_dirRow_coord (N : ℕ) (t : ℝ) (n : Fin N) : ‖(dirRow N t) n‖
   Complex.norm_exp_ofReal_mul_I _
 
 /-- The squared length of a Dirichlet row is the number of terms. -/
-theorem norm_dirRow_sq (N : ℕ) (t : ℝ) : ‖dirRow N t‖ ^ 2 = (N : ℝ) := by
+theorem norm_dirRow_sq (N : ℕ) (t : ℝ) : ‖dirRow N t‖ ^ (2 : ℕ) = (N : ℝ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
-  have hone : ∀ n : Fin N, ‖(dirRow N t) n‖ ^ 2 = 1 := by
+  have hone : ∀ n : Fin N, ‖(dirRow N t) n‖ ^ (2 : ℕ) = 1 := by
     intro n
     rw [norm_dirRow_coord]
     norm_num
@@ -72,14 +72,14 @@ family of frequencies is controlled by the largest Gram row. -/
 theorem dirichlet_bessel {ι : Type*} (N : ℕ) (s : Finset ι) (τ : ι → ℝ) {Δ : ℝ} (hΔ0 : 0 ≤ Δ)
     (hrow : ∀ r ∈ s, ∑ t ∈ s, ‖⟪dirRow N (τ r), dirRow N (τ t)⟫_ℂ‖ ≤ Δ)
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ 2 ≤ Δ * ‖a‖ ^ 2 :=
+    ∑ r ∈ s, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ (2 : ℕ) ≤ Δ * ‖a‖ ^ (2 : ℕ) :=
   sum_norm_inner_sq_le_of_schur s (fun r => dirRow N (τ r)) hΔ0 hrow a
 
 /-- **The bilinear form of Dirichlet rows.** -/
 theorem dirichlet_bilinear {ι : Type*} (N : ℕ) (s : Finset ι) (τ : ι → ℝ) {Δ : ℝ}
     (hrow : ∀ r ∈ s, ∑ t ∈ s, ‖⟪dirRow N (τ r), dirRow N (τ t)⟫_ℂ‖ ≤ Δ)
     (c : ι → ℂ) :
-    ‖∑ r ∈ s, c r • dirRow N (τ r)‖ ^ 2 ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ 2 :=
+    ‖∑ r ∈ s, c r • dirRow N (τ r)‖ ^ (2 : ℕ) ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) :=
   norm_sum_smul_sq_le_of_schur s (fun r => dirRow N (τ r)) hrow c
 
 end RHTower.Sieve

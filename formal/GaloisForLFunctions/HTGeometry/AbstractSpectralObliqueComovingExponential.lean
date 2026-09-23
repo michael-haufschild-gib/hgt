@@ -15,7 +15,7 @@ then the exact positive rate
 controls both aperture and spectral height.  The proof has two universal geometric inputs.  For an
 original point `R+iJ` and its mass image `M+iK`,
 
-`(a-1/2)^2 + R^2 ≤ M^2`
+`(a-1/2)^(2 : ℕ) + R^(2 : ℕ) ≤ M^(2 : ℕ)`
 
 and charge conservation gives
 
@@ -54,21 +54,21 @@ theorem obliqueComovingExponentialRate_pos
 aperture. -/
 theorem sq_sub_half_add_sq_re_le_sq_mass_re
     {a : ℝ} (ha : 2 ≤ a) (i : ι) :
-    (a - 1 / 2) ^ 2 + (F.pt i).re ^ 2 ≤
-      ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re ^ 2 := by
+    (a - 1 / 2) ^ (2 : ℕ) + (F.pt i).re ^ (2 : ℕ) ≤
+      ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re ^ (2 : ℕ) := by
   let haHalf : 1 / 2 ≤ a := by linarith
   have hJ := F.abs_im_lt i
-  have hJ2 : (F.pt i).im ^ 2 < 1 / 4 := by
+  have hJ2 : (F.pt i).im ^ (2 : ℕ) < 1 / 4 := by
     nlinarith [sq_abs (F.pt i).im, abs_nonneg ((F.pt i).im)]
   have hM2raw := re_le_sq_csqrtRe (F.massArg_re_pos haHalf i)
   rw [F.massArg_re] at hM2raw
   have hM2 :
-      (F.pt i).re ^ 2 - (F.pt i).im ^ 2 + a ^ 2 ≤
-        ((F.mass haHalf).pt i).re ^ 2 := by
+      (F.pt i).re ^ (2 : ℕ) - (F.pt i).im ^ (2 : ℕ) + a ^ (2 : ℕ) ≤
+        ((F.mass haHalf).pt i).re ^ (2 : ℕ) := by
     simpa only [F.mass_pt, csqrt_re] using hM2raw
   have hfinal :
-      (a - 1 / 2) ^ 2 + (F.pt i).re ^ 2 ≤
-        ((F.mass haHalf).pt i).re ^ 2 := by
+      (a - 1 / 2) ^ (2 : ℕ) + (F.pt i).re ^ (2 : ℕ) ≤
+        ((F.mass haHalf).pt i).re ^ (2 : ℕ) := by
     nlinarith
   simpa only using hfinal
 
@@ -87,7 +87,7 @@ theorem sub_half_add_re_le_two_mul_mass_re
     dsimp only [M]
     rw [F.mass_pt, csqrt_re]
     exact csqrtRe_nonneg (F.massArg a i)
-  have hsq : A ^ 2 + R ^ 2 ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only using F.sq_sub_half_add_sq_re_le_sq_mass_re ha i
   have hfinal : A + R ≤ 2 * M := by
@@ -115,7 +115,7 @@ theorem four_mul_velocity_mul_abs_height_mul_abs_mass_im_le_mass_re
       dsimp only [R, M]
       simpa only [F.mass_pt, csqrt_re] using F.re_lt_csqrtRe_massArg haHalf i
     linarith
-  have hsq : A ^ 2 + R ^ 2 ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only using F.sq_sub_half_add_sq_re_le_sq_mass_re ha i
   have hprod := F.re_mul_im_mass haHalf i
@@ -133,7 +133,7 @@ theorem four_mul_velocity_mul_abs_height_mul_abs_mass_im_le_mass_re
   have hconeR : 2 * (v * |u|) * R ≤ 2 * A * R := by
     have h := mul_le_mul_of_nonneg_right hcone' (show 0 ≤ 2 * R by positivity)
     nlinarith
-  have hamgm : 2 * A * R ≤ A ^ 2 + R ^ 2 := by
+  have hamgm : 2 * A * R ≤ A ^ (2 : ℕ) + R ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (A - R)]
   have hmul : M * (4 * v * |u| * |K|) ≤ M * M := by
     nlinarith

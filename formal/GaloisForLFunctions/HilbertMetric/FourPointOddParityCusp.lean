@@ -8,7 +8,7 @@ noncomputable section
 
 /-- Determinant of the reflection-odd block on equispaced four-point data. -/
 def fourPointOddWall (f : ℝ → ℝ) (t : ℝ) : ℝ :=
-  (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ 2
+  (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ (2 : ℕ)
 
 private def oddScalarJetProductAtZero
     (n : ℕ) (P Q : ℝ → ℝ) : ℝ :=
@@ -62,7 +62,7 @@ theorem iteratedDeriv_eight_fourPointOddWall_zero
     (h₇ : iteratedDeriv 7 f 0 = 0) :
     iteratedDeriv 8 (fourPointOddWall f) 0 =
       10080 * (iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-        iteratedDeriv 4 f 0 ^ 2) := by
+        iteratedDeriv 4 f 0 ^ (2 : ℕ)) := by
   let L : ℝ → ℝ := fun t => f 0 - f (3 * t)
   let R : ℝ → ℝ := fun t => f 0 - f t
   let M : ℝ → ℝ := fun t => f t - f (2 * t)
@@ -179,7 +179,7 @@ theorem exists_fourPointOddWall_pos_right
     (h₅ : iteratedDeriv 5 f 0 = 0)
     (h₇ : iteratedDeriv 7 f 0 = 0)
     (h₆ : 0 < iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-      iteratedDeriv 4 f 0 ^ 2) :
+      iteratedDeriv 4 f 0 ^ (2 : ℕ)) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ t : ℝ, 0 < t → t < delta →
       0 < fourPointOddWall f t := by
   let W := fourPointOddWall f

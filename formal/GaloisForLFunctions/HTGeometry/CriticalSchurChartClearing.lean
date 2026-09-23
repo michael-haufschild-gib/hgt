@@ -184,7 +184,7 @@ theorem criticalSourceMarked_inv_mem_clearable :
     exact mul_ne_zero (criticalSourceRaw_atMarkedIndex_ne_zero K hm hn)
       (criticalSourceRecip_atMarkedIndex_ne_zero K hm hn)
   refine ⟨1, ?_⟩
-  have : criticalSchurClearingElement K (m := m) (n := n) ^ 1
+  have : criticalSchurClearingElement K (m := m) (n := n) ^ (1 : ℕ)
       * (criticalSourceMarked K (m := m) (n := n))⁻¹
       = criticalSourceScale K hm hn ^ (n + 2) := by
     rw [pow_one, criticalSchurClearingElement, mul_assoc, mul_inv_cancel₀ hne, mul_one]

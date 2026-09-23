@@ -79,7 +79,7 @@ def thetaCuspHawkingTopologicalBlackHoleAngularMomentum (z : ℂ) : ℂ :=
 
 /-- Separated horizon-Laplacian eigenvalue `Q=1/4+xi²`. -/
 def thetaCuspHawkingTopologicalBlackHoleAngularEigenvalue (z : ℂ) : ℂ :=
-  1 / 4 + thetaCuspHawkingTopologicalBlackHoleAngularMomentum z ^ 2
+  1 / 4 + thetaCuspHawkingTopologicalBlackHoleAngularMomentum z ^ (2 : ℕ)
 
 /-- Dimensionless decay of the standard conformally coupled `beta_+` scalar QNM. -/
 def thetaCuspHawkingTopologicalBlackHoleConformalDecay (n : ℕ) : ℝ :=

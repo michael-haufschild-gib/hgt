@@ -133,9 +133,9 @@ theorem exists_two_three_positive_depth_collision {epsilon : ℝ} (hepsilon : 0 
 
 /-- Amplitude-free cubic-Cauchy capacity of one positive 2/3 prime-depth pair. -/
 def twoThreePrimeDepthCubicCauchyCapacity (m n : ℕ) : ℝ :=
-  64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3 /
-    ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ 6 -
-      64 * ((m : ℝ) * Real.log 2) ^ 3 * ((n : ℝ) * Real.log 3) ^ 3)
+  64 * ((m : ℝ) * Real.log 2) ^ (3 : ℕ) * ((n : ℝ) * Real.log 3) ^ (3 : ℕ) /
+    ((((m : ℝ) * Real.log 2) + ((n : ℝ) * Real.log 3)) ^ (6 : ℕ) -
+      64 * ((m : ℝ) * Real.log 2) ^ (3 : ℕ) * ((n : ℝ) * Real.log 3) ^ (3 : ℕ))
 
 /-- Literal 2/3 prime-depth cubic-Cauchy Gram capacities exceed every prescribed bound. -/
 theorem exists_two_three_primeDepth_cubicCauchyCapacity_gt
@@ -182,7 +182,7 @@ theorem exists_two_three_primeDepth_cubicCauchyCapacity_gt
     exact hdiffsmall.trans_le htarget
   have hcap := cubicCauchyRelativeCapacity_gt hM hu husmall
   refine ⟨m, n, hm, hn, ?_⟩
-  change M < 64 * x ^ 3 * y ^ 3 / ((x + y) ^ 6 - 64 * x ^ 3 * y ^ 3)
+  change M < 64 * x ^ (3 : ℕ) * y ^ (3 : ℕ) / ((x + y) ^ (6 : ℕ) - 64 * x ^ (3 : ℕ) * y ^ (3 : ℕ))
   rwa [← cubicCauchyRelativeCapacity_abs_sub_div_add_eq hx hy hxy]
 
 /-- Fixed primes 2 and 3 retain a nonzero relative theta frame at every nonneutral grade. -/

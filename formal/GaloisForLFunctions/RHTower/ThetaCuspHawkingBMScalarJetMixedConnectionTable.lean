@@ -21,9 +21,9 @@ open GaloisForLFunctions.HTGeometry CoordinateMetricTwoJet
 noncomputable section
 variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 0 0 =
-      B * D * ((-9 / 4 : ℂ) * s + (3 / 2 : ℂ) * s * r ^ 2 + (-33 / 4 : ℂ) * s * r ^ 4 + (9 : ℂ) * s * r ^ 6 + (-33 / 8 : ℂ) * s ^ 2 + (5 : ℂ) * s ^ 2 * r ^ 2 + (-31 / 8 : ℂ) * s ^ 2 * r ^ 4 + (3 : ℂ) * s ^ 2 * r ^ 6 + (-9 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 3 * r ^ 4 + (-3 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S ^ 2 := by
+      B * D * ((-9 / 4 : ℂ) * s + (3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-33 / 4 : ℂ) * s * r ^ (4 : ℕ) + (9 : ℂ) * s * r ^ (6 : ℕ) + (-33 / 8 : ℂ) * s ^ (2 : ℕ) + (5 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-31 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (3 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-9 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-3 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -31,9 +31,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -42,9 +42,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 0 1 =
-      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ 2 + (-63 / 4 : ℂ) * s * r ^ 4 + (9 / 2 : ℂ) * s * r ^ 6 + (6 : ℂ) * s * r ^ 8 + (-11 / 8 : ℂ) * s ^ 2 + (11 : ℂ) * s ^ 2 * r ^ 2 + (-177 / 8 : ℂ) * s ^ 2 * r ^ 4 + (21 / 2 : ℂ) * s ^ 2 * r ^ 6 + (2 : ℂ) * s ^ 2 * r ^ 8 + (-3 / 4 : ℂ) * s ^ 3 + (6 : ℂ) * s ^ 3 * r ^ 2 + (-45 / 4 : ℂ) * s ^ 3 * r ^ 4 + (6 : ℂ) * s ^ 3 * r ^ 6 + (-1 / 8 : ℂ) * s ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 2 + (-15 / 8 : ℂ) * s ^ 4 * r ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 6) / (r ^ 5 * (r ^ 2 - 1) ^ 3) * S ^ 2 := by
+      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ (2 : ℕ) + (-63 / 4 : ℂ) * s * r ^ (4 : ℕ) + (9 / 2 : ℂ) * s * r ^ (6 : ℕ) + (6 : ℂ) * s * r ^ (8 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (11 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-177 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (21 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (8 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-45 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (6 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-15 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (6 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (3 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -52,9 +52,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -63,9 +63,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 0 2 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sx := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -73,9 +73,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -84,9 +84,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 0 3 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sy := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -94,9 +94,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -105,9 +105,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 1 0 =
-      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ 2 + (-63 / 4 : ℂ) * s * r ^ 4 + (9 / 2 : ℂ) * s * r ^ 6 + (6 : ℂ) * s * r ^ 8 + (-11 / 8 : ℂ) * s ^ 2 + (11 : ℂ) * s ^ 2 * r ^ 2 + (-177 / 8 : ℂ) * s ^ 2 * r ^ 4 + (21 / 2 : ℂ) * s ^ 2 * r ^ 6 + (2 : ℂ) * s ^ 2 * r ^ 8 + (-3 / 4 : ℂ) * s ^ 3 + (6 : ℂ) * s ^ 3 * r ^ 2 + (-45 / 4 : ℂ) * s ^ 3 * r ^ 4 + (6 : ℂ) * s ^ 3 * r ^ 6 + (-1 / 8 : ℂ) * s ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 2 + (-15 / 8 : ℂ) * s ^ 4 * r ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 6) / (r ^ 5 * (r ^ 2 - 1) ^ 3) * S ^ 2 := by
+      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ (2 : ℕ) + (-63 / 4 : ℂ) * s * r ^ (4 : ℕ) + (9 / 2 : ℂ) * s * r ^ (6 : ℕ) + (6 : ℂ) * s * r ^ (8 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (11 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-177 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (21 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (8 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-45 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (6 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-15 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (6 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (3 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -115,9 +115,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -126,9 +126,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 1 1 =
-      B * D * ((45 / 4 : ℂ) * s + (-21 : ℂ) * s * r ^ 2 + (-15 / 4 : ℂ) * s * r ^ 4 + (27 / 2 : ℂ) * s * r ^ 6 + (165 / 8 : ℂ) * s ^ 2 + (-43 : ℂ) * s ^ 2 * r ^ 2 + (143 / 8 : ℂ) * s ^ 2 * r ^ 4 + (9 / 2 : ℂ) * s ^ 2 * r ^ 6 + (45 / 4 : ℂ) * s ^ 3 + (-24 : ℂ) * s ^ 3 * r ^ 2 + (51 / 4 : ℂ) * s ^ 3 * r ^ 4 + (15 / 8 : ℂ) * s ^ 4 + (-4 : ℂ) * s ^ 4 * r ^ 2 + (17 / 8 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 4) * S ^ 2 := by
+      B * D * ((45 / 4 : ℂ) * s + (-21 : ℂ) * s * r ^ (2 : ℕ) + (-15 / 4 : ℂ) * s * r ^ (4 : ℕ) + (27 / 2 : ℂ) * s * r ^ (6 : ℕ) + (165 / 8 : ℂ) * s ^ (2 : ℕ) + (-43 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (143 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (45 / 4 : ℂ) * s ^ (3 : ℕ) + (-24 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (51 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (15 / 8 : ℂ) * s ^ (4 : ℕ) + (-4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (17 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (4 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -136,9 +136,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -147,7 +147,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 1 2 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -157,9 +157,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -168,7 +168,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 1 3 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -178,9 +178,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -189,9 +189,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 2 0 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sx := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -199,9 +199,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -210,7 +210,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 2 1 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -220,9 +220,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -231,9 +231,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 2 2 =
-      B * D * ((-9 : ℂ) * r ^ 2 + (6 : ℂ) * r ^ 4 + (3 : ℂ) * r ^ 6 + (9 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ 2 + (9 / 4 : ℂ) * s * r ^ 4 + (15 / 8 : ℂ) * s ^ 2 + (-21 / 8 : ℂ) * s ^ 2 * r ^ 2 + (3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (3 / 4 : ℂ) * s ^ 3 + (-3 / 4 : ℂ) * s ^ 3 * r ^ 2 + (1 / 8 : ℂ) * s ^ 4 + (-1 / 8 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 2 * (r ^ 2 - 1) ^ 2) * S ^ 2 * y⁻¹ ^ 2 := by
+      B * D * ((-9 : ℂ) * r ^ (2 : ℕ) + (6 : ℂ) * r ^ (4 : ℕ) + (3 : ℂ) * r ^ (6 : ℕ) + (9 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s * r ^ (4 : ℕ) + (15 / 8 : ℂ) * s ^ (2 : ℕ) + (-21 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (3 / 4 : ℂ) * s ^ (3 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 / 8 : ℂ) * s ^ (4 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -241,9 +241,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -252,7 +252,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 2 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -261,12 +261,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 3 0 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sy := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -274,9 +274,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -285,7 +285,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 3 1 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -295,9 +295,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -306,7 +306,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 3 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -315,12 +315,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_0_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 0 3 3 =
-      B * D * ((-9 : ℂ) * r ^ 2 + (6 : ℂ) * r ^ 4 + (3 : ℂ) * r ^ 6 + (9 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ 2 + (9 / 4 : ℂ) * s * r ^ 4 + (15 / 8 : ℂ) * s ^ 2 + (-21 / 8 : ℂ) * s ^ 2 * r ^ 2 + (3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (3 / 4 : ℂ) * s ^ 3 + (-3 / 4 : ℂ) * s ^ 3 * r ^ 2 + (1 / 8 : ℂ) * s ^ 4 + (-1 / 8 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 2 * (r ^ 2 - 1) ^ 2) * S ^ 2 * y⁻¹ ^ 2 := by
+      B * D * ((-9 : ℂ) * r ^ (2 : ℕ) + (6 : ℂ) * r ^ (4 : ℕ) + (3 : ℂ) * r ^ (6 : ℕ) + (9 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s * r ^ (4 : ℕ) + (15 / 8 : ℂ) * s ^ (2 : ℕ) + (-21 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (3 / 4 : ℂ) * s ^ (3 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 / 8 : ℂ) * s ^ (4 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -328,9 +328,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -339,9 +339,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 0 0 =
-      B * D * ((3 / 4 : ℂ) * s + (27 / 2 : ℂ) * s * r ^ 2 + (-45 / 4 : ℂ) * s * r ^ 4 + (-9 : ℂ) * s * r ^ 6 + (6 : ℂ) * s * r ^ 8 + (11 / 8 : ℂ) * s ^ 2 + (45 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-327 / 8 : ℂ) * s ^ 2 * r ^ 4 + (15 : ℂ) * s ^ 2 * r ^ 6 + (2 : ℂ) * s ^ 2 * r ^ 8 + (3 / 4 : ℂ) * s ^ 3 + (12 : ℂ) * s ^ 3 * r ^ 2 + (-99 / 4 : ℂ) * s ^ 3 * r ^ 4 + (12 : ℂ) * s ^ 3 * r ^ 6 + (1 / 8 : ℂ) * s ^ 4 + (2 : ℂ) * s ^ 4 * r ^ 2 + (-33 / 8 : ℂ) * s ^ 4 * r ^ 4 + (2 : ℂ) * s ^ 4 * r ^ 6) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2 := by
+      B * D * ((3 / 4 : ℂ) * s + (27 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-45 / 4 : ℂ) * s * r ^ (4 : ℕ) + (-9 : ℂ) * s * r ^ (6 : ℕ) + (6 : ℂ) * s * r ^ (8 : ℕ) + (11 / 8 : ℂ) * s ^ (2 : ℕ) + (45 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-327 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (15 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (8 : ℕ) + (3 / 4 : ℂ) * s ^ (3 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-99 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) * r ^ (6 : ℕ) + (1 / 8 : ℂ) * s ^ (4 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-33 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ) * r ^ (6 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -349,9 +349,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -360,9 +360,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 0 1 =
-      B * D * ((27 / 4 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s * r ^ 4 + (99 / 8 : ℂ) * s ^ 2 + (-37 / 2 : ℂ) * s ^ 2 * r ^ 2 + (49 / 8 : ℂ) * s ^ 2 * r ^ 4 + (27 / 4 : ℂ) * s ^ 3 + (-12 : ℂ) * s ^ 3 * r ^ 2 + (21 / 4 : ℂ) * s ^ 3 * r ^ 4 + (9 / 8 : ℂ) * s ^ 4 + (-2 : ℂ) * s ^ 4 * r ^ 2 + (7 / 8 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S ^ 2 := by
+      B * D * ((27 / 4 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s * r ^ (4 : ℕ) + (99 / 8 : ℂ) * s ^ (2 : ℕ) + (-37 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (49 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (27 / 4 : ℂ) * s ^ (3 : ℕ) + (-12 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (21 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (9 / 8 : ℂ) * s ^ (4 : ℕ) + (-2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (7 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -370,9 +370,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -381,7 +381,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 0 2 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -391,9 +391,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -402,7 +402,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 0 3 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -412,9 +412,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -423,9 +423,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 1 0 =
-      B * D * ((27 / 4 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s * r ^ 4 + (99 / 8 : ℂ) * s ^ 2 + (-37 / 2 : ℂ) * s ^ 2 * r ^ 2 + (49 / 8 : ℂ) * s ^ 2 * r ^ 4 + (27 / 4 : ℂ) * s ^ 3 + (-12 : ℂ) * s ^ 3 * r ^ 2 + (21 / 4 : ℂ) * s ^ 3 * r ^ 4 + (9 / 8 : ℂ) * s ^ 4 + (-2 : ℂ) * s ^ 4 * r ^ 2 + (7 / 8 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S ^ 2 := by
+      B * D * ((27 / 4 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s * r ^ (4 : ℕ) + (99 / 8 : ℂ) * s ^ (2 : ℕ) + (-37 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (49 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (27 / 4 : ℂ) * s ^ (3 : ℕ) + (-12 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (21 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (9 / 8 : ℂ) * s ^ (4 : ℕ) + (-2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (7 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -433,9 +433,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -444,9 +444,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 1 1 =
-      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ 2 + (9 / 4 : ℂ) * s * r ^ 4 + (-15 / 2 : ℂ) * s * r ^ 6 + (-11 / 8 : ℂ) * s ^ 2 + (13 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-21 / 8 : ℂ) * s ^ 2 * r ^ 4 + (-5 / 2 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-9 / 4 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-3 / 8 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 5 * (r ^ 2 - 1) ^ 3) * S ^ 2 := by
+      B * D * ((-3 / 4 : ℂ) * s + (6 : ℂ) * s * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s * r ^ (4 : ℕ) + (-15 / 2 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (13 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-21 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-9 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-3 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (3 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -454,9 +454,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -465,9 +465,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 1 2 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sx := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -475,9 +475,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -486,9 +486,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 1 3 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sy := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -496,9 +496,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -507,7 +507,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 2 0 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -517,9 +517,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -528,9 +528,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 2 1 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sx := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -538,9 +538,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -549,9 +549,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 2 2 =
-      B * D * ((3 : ℂ) * r ^ 2 + (6 : ℂ) * r ^ 4 + (-9 : ℂ) * r ^ 6 + (-3 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ 2 + (45 / 4 : ℂ) * s * r ^ 4 + (-6 : ℂ) * s * r ^ 6 + (-11 / 8 : ℂ) * s ^ 2 + (-3 / 8 : ℂ) * s ^ 2 * r ^ 2 + (15 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-2 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 4 : ℂ) * s ^ 3 + (3 / 4 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 8 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 3 * (r ^ 2 - 1)) * S ^ 2 * y⁻¹ ^ 2 := by
+      B * D * ((3 : ℂ) * r ^ (2 : ℕ) + (6 : ℂ) * r ^ (4 : ℕ) + (-9 : ℂ) * r ^ (6 : ℕ) + (-3 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (45 / 4 : ℂ) * s * r ^ (4 : ℕ) + (-6 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (-3 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (15 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (3 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -559,9 +559,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -570,7 +570,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 2 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -579,10 +579,10 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 3 0 =
       (0 : ℂ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -592,9 +592,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -603,9 +603,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 3 1 =
-      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 6 + (-11 / 4 : ℂ) * s ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2) * S * Sy := by
+      B * D * ((-3 / 2 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-3 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -613,9 +613,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -624,7 +624,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 3 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -633,12 +633,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_1_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 1 3 3 =
-      B * D * ((3 : ℂ) * r ^ 2 + (6 : ℂ) * r ^ 4 + (-9 : ℂ) * r ^ 6 + (-3 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ 2 + (45 / 4 : ℂ) * s * r ^ 4 + (-6 : ℂ) * s * r ^ 6 + (-11 / 8 : ℂ) * s ^ 2 + (-3 / 8 : ℂ) * s ^ 2 * r ^ 2 + (15 / 4 : ℂ) * s ^ 2 * r ^ 4 + (-2 : ℂ) * s ^ 2 * r ^ 6 + (-3 / 4 : ℂ) * s ^ 3 + (3 / 4 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 8 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 3 * (r ^ 2 - 1)) * S ^ 2 * y⁻¹ ^ 2 := by
+      B * D * ((3 : ℂ) * r ^ (2 : ℕ) + (6 : ℂ) * r ^ (4 : ℕ) + (-9 : ℂ) * r ^ (6 : ℕ) + (-3 / 4 : ℂ) * s + (-9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (45 / 4 : ℂ) * s * r ^ (4 : ℕ) + (-6 : ℂ) * s * r ^ (6 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (-3 / 8 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (15 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 8 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (3 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -646,9 +646,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -657,9 +657,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 0 0 =
-      B * D * ((-3 / 2 : ℂ) * r ^ 2 + (-9 / 2 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-3 / 2 : ℂ) * s * r ^ 4 + (-11 / 4 : ℂ) * s ^ 2 + (-11 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 2 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6) * S * Sx * y ^ 2 := by
+      B * D * ((-3 / 2 : ℂ) * r ^ (2 : ℕ) + (-9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ)) * S * Sx * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -667,9 +667,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -678,9 +678,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 0 1 =
-      B * D * ((-9 / 2 : ℂ) * r ^ 2 + (-3 / 2 : ℂ) * r ^ 4 + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-3 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sx * y ^ 2 := by
+      B * D * ((-9 / 2 : ℂ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * r ^ (4 : ℕ) + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sx * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -688,9 +688,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -699,9 +699,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 0 2 =
-      B * D * ((9 / 2 : ℂ) * r ^ 2 + (3 / 2 : ℂ) * r ^ 4 + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (33 / 8 : ℂ) * s ^ 2 + (3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (9 / 4 : ℂ) * s ^ 3 + (3 / 8 : ℂ) * s ^ 4) / (r ^ 4) * S ^ 2 := by
+      B * D * ((9 / 2 : ℂ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * r ^ (4 : ℕ) + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (33 / 8 : ℂ) * s ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 8 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -709,9 +709,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -720,7 +720,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 0 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -729,12 +729,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 1 0 =
-      B * D * ((-9 / 2 : ℂ) * r ^ 2 + (-3 / 2 : ℂ) * r ^ 4 + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-3 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sx * y ^ 2 := by
+      B * D * ((-9 / 2 : ℂ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * r ^ (4 : ℕ) + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sx * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -742,9 +742,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -753,9 +753,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 1 1 =
-      B * D * ((-3 / 2 : ℂ) * r ^ 2 + (-9 / 2 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-3 / 2 : ℂ) * s * r ^ 4 + (-11 / 4 : ℂ) * s ^ 2 + (-11 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 2 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2) * S * Sx * y ^ 2 := by
+      B * D * ((-3 / 2 : ℂ) * r ^ (2 : ℕ) + (-9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -763,9 +763,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -774,9 +774,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 1 2 =
-      B * D * ((3 / 2 : ℂ) * r ^ 2 + (9 / 2 : ℂ) * r ^ 4 + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (-11 / 8 : ℂ) * s ^ 2 + (6 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2 := by
+      B * D * ((3 / 2 : ℂ) * r ^ (2 : ℕ) + (9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (6 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -784,9 +784,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -795,7 +795,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 1 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -804,12 +804,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 2 0 =
-      B * D * ((9 / 2 : ℂ) * r ^ 2 + (3 / 2 : ℂ) * r ^ 4 + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (33 / 8 : ℂ) * s ^ 2 + (3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (9 / 4 : ℂ) * s ^ 3 + (3 / 8 : ℂ) * s ^ 4) / (r ^ 4) * S ^ 2 := by
+      B * D * ((9 / 2 : ℂ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * r ^ (4 : ℕ) + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (33 / 8 : ℂ) * s ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 8 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -817,9 +817,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -828,9 +828,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 2 1 =
-      B * D * ((3 / 2 : ℂ) * r ^ 2 + (9 / 2 : ℂ) * r ^ 4 + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (-11 / 8 : ℂ) * s ^ 2 + (6 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2 := by
+      B * D * ((3 / 2 : ℂ) * r ^ (2 : ℕ) + (9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (6 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -838,9 +838,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -849,9 +849,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 2 2 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -859,9 +859,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -870,9 +870,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 2 3 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -880,9 +880,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -891,7 +891,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 3 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -900,10 +900,10 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 3 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -912,12 +912,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 3 2 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -925,9 +925,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -936,9 +936,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_2_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 2 3 3 =
-      B * D * ((3 : ℂ) * r ^ 2 + (1 : ℂ) * r ^ 4 + (3 / 2 : ℂ) * s + (3 : ℂ) * s * r ^ 2 + (11 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (3 / 2 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx := by
+      B * D * ((3 : ℂ) * r ^ (2 : ℕ) + (1 : ℂ) * r ^ (4 : ℕ) + (3 / 2 : ℂ) * s + (3 : ℂ) * s * r ^ (2 : ℕ) + (11 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -946,9 +946,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -957,9 +957,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 0 0 =
-      B * D * ((-3 / 2 : ℂ) * r ^ 2 + (-9 / 2 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-3 / 2 : ℂ) * s * r ^ 4 + (-11 / 4 : ℂ) * s ^ 2 + (-11 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 2 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6) * S * Sy * y ^ 2 := by
+      B * D * ((-3 / 2 : ℂ) * r ^ (2 : ℕ) + (-9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ)) * S * Sy * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -967,9 +967,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -978,9 +978,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 0 1 =
-      B * D * ((-9 / 2 : ℂ) * r ^ 2 + (-3 / 2 : ℂ) * r ^ 4 + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-3 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sy * y ^ 2 := by
+      B * D * ((-9 / 2 : ℂ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * r ^ (4 : ℕ) + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sy * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -988,9 +988,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -999,7 +999,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 0 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -1008,12 +1008,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 0 3 =
-      B * D * ((9 / 2 : ℂ) * r ^ 2 + (3 / 2 : ℂ) * r ^ 4 + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (33 / 8 : ℂ) * s ^ 2 + (3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (9 / 4 : ℂ) * s ^ 3 + (3 / 8 : ℂ) * s ^ 4) / (r ^ 4) * S ^ 2 := by
+      B * D * ((9 / 2 : ℂ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * r ^ (4 : ℕ) + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (33 / 8 : ℂ) * s ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 8 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1021,9 +1021,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1032,9 +1032,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 1 0 =
-      B * D * ((-9 / 2 : ℂ) * r ^ 2 + (-3 / 2 : ℂ) * r ^ 4 + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ 2 + (-21 / 4 : ℂ) * s ^ 2 + (-3 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-3 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sy * y ^ 2 := by
+      B * D * ((-9 / 2 : ℂ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * r ^ (4 : ℕ) + (-9 / 4 : ℂ) * s + (-9 / 4 : ℂ) * s * r ^ (2 : ℕ) + (-21 / 4 : ℂ) * s ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sy * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1042,9 +1042,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1053,9 +1053,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 1 1 =
-      B * D * ((-3 / 2 : ℂ) * r ^ 2 + (-9 / 2 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ 2 + (-3 / 2 : ℂ) * s * r ^ 4 + (-11 / 4 : ℂ) * s ^ 2 + (-11 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 2 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2) * S * Sy * y ^ 2 := by
+      B * D * ((-3 / 2 : ℂ) * r ^ (2 : ℕ) + (-9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 / 2 : ℂ) * s * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy * y ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1063,9 +1063,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1074,7 +1074,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 1 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -1083,12 +1083,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 1 3 =
-      B * D * ((3 / 2 : ℂ) * r ^ 2 + (9 / 2 : ℂ) * r ^ 4 + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (-11 / 8 : ℂ) * s ^ 2 + (6 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2 := by
+      B * D * ((3 / 2 : ℂ) * r ^ (2 : ℕ) + (9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (6 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1096,9 +1096,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1107,7 +1107,7 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 2 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -1116,10 +1116,10 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 2 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
@@ -1128,12 +1128,12 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  all_goals (try generalize hF : r ^ 2 - 1 = F)
+  all_goals (try generalize hF : r ^ (2 : ℕ) - 1 = F)
   all_goals (try ring_nf)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 2 2 =
-      B * D * ((3 : ℂ) * r ^ 2 + (1 : ℂ) * r ^ 4 + (3 / 2 : ℂ) * s + (3 : ℂ) * s * r ^ 2 + (11 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (3 / 2 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy := by
+      B * D * ((3 : ℂ) * r ^ (2 : ℕ) + (1 : ℂ) * r ^ (4 : ℕ) + (3 / 2 : ℂ) * s + (3 : ℂ) * s * r ^ (2 : ℕ) + (11 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1141,9 +1141,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1152,9 +1152,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 2 3 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1162,9 +1162,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1173,9 +1173,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 3 0 =
-      B * D * ((9 / 2 : ℂ) * r ^ 2 + (3 / 2 : ℂ) * r ^ 4 + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (33 / 8 : ℂ) * s ^ 2 + (3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (9 / 4 : ℂ) * s ^ 3 + (3 / 8 : ℂ) * s ^ 4) / (r ^ 4) * S ^ 2 := by
+      B * D * ((9 / 2 : ℂ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * r ^ (4 : ℕ) + (9 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (33 / 8 : ℂ) * s ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (9 / 4 : ℂ) * s ^ (3 : ℕ) + (3 / 8 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1183,9 +1183,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1194,9 +1194,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 3 1 =
-      B * D * ((3 / 2 : ℂ) * r ^ 2 + (9 / 2 : ℂ) * r ^ 4 + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (-11 / 8 : ℂ) * s ^ 2 + (6 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-3 / 4 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 8 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2 := by
+      B * D * ((3 / 2 : ℂ) * r ^ (2 : ℕ) + (9 / 2 : ℂ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s + (9 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (-11 / 8 : ℂ) * s ^ (2 : ℕ) + (6 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 8 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1204,9 +1204,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1215,9 +1215,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 3 2 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1225,9 +1225,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1236,9 +1236,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try subst hF)
   all_goals (try ring)
 
-@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmMixedTable] theorem scalarJet_mixedConnection_3_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     MixedQuadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) (scalarJet (-3 - s) r y D S Sx Sy Sxx Sxy) 3 3 3 =
-      B * D * ((-3 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4 + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ 2 + (-11 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy := by
+      B * D * ((-3 : ℂ) * r ^ (2 : ℕ) + (-1 : ℂ) * r ^ (4 : ℕ) + (-3 / 2 : ℂ) * s + (-3 : ℂ) * s * r ^ (2 : ℕ) + (-11 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.mixedQuadratic_connection_eq]
   simp only [hd.mixedQuadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1246,9 +1246,9 @@ variable {s r y B D S Sx Sy Sxx Sxy : ℂ}
   all_goals (try simp (disch := assumption) only [bmJetEntry, mul_zero, zero_mul, add_zero, zero_add,
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg])
   all_goals (try simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div])
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 9 * y⁻¹ * F ^ 8 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (9 : ℕ) * y⁻¹ * F ^ (8 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))

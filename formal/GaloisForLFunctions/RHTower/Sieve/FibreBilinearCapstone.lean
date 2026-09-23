@@ -22,22 +22,22 @@ noncomputable section
 /-- **The Route E fibre mean square against the Ramaré bilinear form.** -/
 theorem sum_sq_fibreSum_moebius_le_bilinear_kernel_exact {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h)
     (hhx : h ≤ Real.sqrt x) {z r : ℕ} (hz : 2 ≤ z) (hr : Even r) {lam : ℝ} (hlam : 1 ≤ lam) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
+            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
                 * ‖∑ p ∈ Nat.primesLE z, moebiusPhase w p
                     * logPoly (ramareCofactorCoeff (Nat.primesLE z))
-                        {m ∈ ramareCofactorSet (fibreIndex x h) p | ¬ p ∣ m} w‖ ^ 2)
+                        {m ∈ ramareCofactorSet (fibreIndex x h) p | ¬ p ∣ m} w‖ ^ (2 : ℕ))
         + 204 * (Real.sqrt x + 1)
-        + 2 * ((outerBlock x h).card : ℝ) * (fibreRamareSieveError h z r lam) ^ 2 := by
+        + 2 * ((outerBlock x h).card : ℝ) * (fibreRamareSieveError h z r lam) ^ (2 : ℕ) := by
   have hPprime : ∀ q ∈ Nat.primesLE z, q.Prime := fun q hq => Nat.prime_of_mem_primesLE hq
   have hbase := sum_sq_fibreSum_moebius_le_nonRough_kernel hx hh0 hhx hz hr hlam
   have hpoly : ∀ w : ℝ,
       ‖logPoly (fun n => ((nonRoughMoebius (Nat.primesLE z) n : ℝ) : ℂ))
-          (fibreIndex x h) w‖ ^ 2
+          (fibreIndex x h) w‖ ^ (2 : ℕ)
         = ‖∑ p ∈ Nat.primesLE z, moebiusPhase w p
             * logPoly (ramareCofactorCoeff (Nat.primesLE z))
-                {m ∈ ramareCofactorSet (fibreIndex x h) p | ¬ p ∣ m} w‖ ^ 2 := by
+                {m ∈ ramareCofactorSet (fibreIndex x h) p | ¬ p ∣ m} w‖ ^ (2 : ℕ) := by
     intro w
     rw [logPoly_nonRoughMoebius_eq_ramare_bilinear hPprime]
   simp only [hpoly] at hbase

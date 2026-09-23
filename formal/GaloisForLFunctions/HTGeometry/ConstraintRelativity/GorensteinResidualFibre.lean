@@ -151,7 +151,7 @@ noncomputable def residueDerivation : Derivation k C (maximalIdeal C).Cotangent 
         + b • (maximalIdeal C).toCotangent (resShift hres a)
     rw [← LinearMap.map_smul, ← LinearMap.map_smul, ← map_add, Ideal.toCotangent_eq]
     have hmem : (a - algebraMap k C (resSection hres a)) * (b - algebraMap k C (resSection hres b))
-        ∈ maximalIdeal C ^ 2 := by
+        ∈ maximalIdeal C ^ (2 : ℕ) := by
       rw [pow_two]
       exact Ideal.mul_mem_mul (sub_resSection_mem hres a) (sub_resSection_mem hres b)
     have hexp : (resShift hres (a * b) : C)

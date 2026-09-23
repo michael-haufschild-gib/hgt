@@ -157,7 +157,7 @@ theorem norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm
       (1 / 2 : ℝ) *
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.1 *
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.2 *
-        ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2‖ ^ 2 := by
+        ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2‖ ^ (2 : ℕ) := by
   rw [gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm, norm_smul,
     InnerProductSpace.norm_rankOne, Complex.norm_real, Real.norm_eq_abs,
     abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2),
@@ -178,7 +178,7 @@ theorem norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm_le
   have hsqrt0 : 0 ≤ Real.sqrt gammaSewnCriticalPlucker_nodeBound :=
     Real.sqrt_nonneg _
   have hsq :
-      ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2‖ ^ 2 ≤
+      ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2‖ ^ (2 : ℕ) ≤
         64 * gammaSewnCriticalPlucker_nodeBound := by
     have hmul := mul_le_mul hnorm hnorm hnorm0
       (mul_nonneg (by norm_num) hsqrt0)

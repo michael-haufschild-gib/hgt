@@ -28,7 +28,7 @@ namespace RHTower
 /-- `‖Γ(½ + iy)‖²·cosh(πy) = π`, the reflection formula on the critical line: `1 − s = s̄` there, so
 `Γ(s)Γ(1−s) = |Γ(s)|²` and `sin(πs) = cosh(πy)`. -/
 theorem norm_Gamma_half_add_sq (y : ℝ) :
-    ‖Complex.Gamma ((1:ℂ)/2 + y*I)‖^2 * Real.cosh (π*y) = π := by
+    ‖Complex.Gamma ((1:ℂ)/2 + y*I)‖^(2 : ℕ) * Real.cosh (π*y) = π := by
   set s : ℂ := (1:ℂ)/2 + y*I with hs
   have hconj : 1 - s = (starRingEnd ℂ) s := by
     rw [hs]
@@ -50,7 +50,7 @@ theorem norm_Gamma_half_add_sq (y : ℝ) :
 
 /-- `‖Γℝ(1 + it)‖² = 1/cosh(πt/2)`. -/
 theorem gammaR_one_add_it_norm_sq (t : ℝ) :
-    ‖Gammaℝ ((1:ℂ) + t*I)‖^2 = 1 / Real.cosh (π*t/2) := by
+    ‖Gammaℝ ((1:ℂ) + t*I)‖^(2 : ℕ) = 1 / Real.cosh (π*t/2) := by
   have hπ : 0 < π := Real.pi_pos
   have hcosh_pos : 0 < Real.cosh (π*t/2) := Real.cosh_pos _
   rw [Gammaℝ_def, norm_mul, mul_pow]
@@ -68,10 +68,10 @@ theorem gammaR_one_add_it_norm_sq (t : ℝ) :
   have hg := norm_Gamma_half_add_sq (t/2)
   have hcosh_eq : Real.cosh (π * (t/2)) = Real.cosh (π*t/2) := by congr 1; ring
   rw [hcosh_eq] at hg
-  have hΓsq : ‖Complex.Gamma ((1:ℂ)/2 + ((t/2:ℝ):ℂ)*I)‖^2 = π / Real.cosh (π*t/2) := by
+  have hΓsq : ‖Complex.Gamma ((1:ℂ)/2 + ((t/2:ℝ):ℂ)*I)‖^(2 : ℕ) = π / Real.cosh (π*t/2) := by
     rw [eq_div_iff hcosh_pos.ne']; linarith [hg]
   rw [hΓsq]
-  have hpisq : (π ^ (-(1:ℝ)/2))^2 = π⁻¹ := by
+  have hpisq : (π ^ (-(1:ℝ)/2))^(2 : ℕ) = π⁻¹ := by
     rw [← Real.rpow_natCast (π ^ (-(1:ℝ)/2)) 2, ← Real.rpow_mul hπ.le,
       show (-(1:ℝ)/2) * ((2:ℕ):ℝ) = -1 by push_cast; ring, Real.rpow_neg_one]
   rw [hpisq]
@@ -85,20 +85,20 @@ theorem norm_gammaR_one_add_it_le (t : ℝ) :
   have hcosh_pos : 0 < Real.cosh (π*t/2) := Real.cosh_pos _
   have hnn : 0 ≤ ‖Gammaℝ ((1:ℂ) + t*I)‖ := norm_nonneg _
   have hrhs_nn : 0 ≤ Real.sqrt 2 * Real.exp (-(π*t/4)) := by positivity
-  have hsq2 : ‖Gammaℝ ((1:ℂ) + t*I)‖^2 ≤ 2 * Real.exp (-(π*t/2)) := by
+  have hsq2 : ‖Gammaℝ ((1:ℂ) + t*I)‖^(2 : ℕ) ≤ 2 * Real.exp (-(π*t/2)) := by
     rw [gammaR_one_add_it_norm_sq, div_le_iff₀ hcosh_pos, Real.cosh_eq]
     have he : Real.exp (-(π*t/2)) * Real.exp (π*t/2) = 1 := by rw [← Real.exp_add]; simp
     nlinarith [he, sq_nonneg (Real.exp (-(π*t/2))), Real.exp_pos (π*t/2)]
-  have hrhs_sq : (Real.sqrt 2 * Real.exp (-(π*t/4)))^2 = 2 * Real.exp (-(π*t/2)) := by
+  have hrhs_sq : (Real.sqrt 2 * Real.exp (-(π*t/4)))^(2 : ℕ) = 2 * Real.exp (-(π*t/2)) := by
     rw [mul_pow, Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2), ← Real.exp_nat_mul,
       show ((2:ℕ):ℝ)*-(π*t/4) = -(π*t/2) by push_cast; ring]
-  calc ‖Gammaℝ ((1:ℂ) + t*I)‖ = Real.sqrt (‖Gammaℝ ((1:ℂ) + t*I)‖^2) := (Real.sqrt_sq hnn).symm
+  calc ‖Gammaℝ ((1:ℂ) + t*I)‖ = Real.sqrt (‖Gammaℝ ((1:ℂ) + t*I)‖^(2 : ℕ)) := (Real.sqrt_sq hnn).symm
     _ ≤ Real.sqrt (2 * Real.exp (-(π*t/2))) := Real.sqrt_le_sqrt hsq2
     _ = Real.sqrt 2 * Real.exp (-(π*t/4)) := by rw [← hrhs_sq, Real.sqrt_sq hrhs_nn]
 
 /-- The Dirichlet series is bounded on `Re = 3`: `‖ζ(3 + it)‖ ≤ ∑ 1/n³`. -/
 theorem norm_zeta_three_add_it_le (t : ℝ) :
-    ‖riemannZeta ((3:ℂ) + t*I)‖ ≤ ∑' n : ℕ, (1:ℝ)/(n:ℝ)^3 := by
+    ‖riemannZeta ((3:ℂ) + t*I)‖ ≤ ∑' n : ℕ, (1:ℝ)/(n:ℝ)^(3 : ℕ) := by
   have hre : (1:ℝ) < ((3:ℂ) + t*I).re := by
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re, Complex.I_im,
       Complex.ofReal_im, Complex.re_ofNat]; norm_num
@@ -106,7 +106,7 @@ theorem norm_zeta_three_add_it_le (t : ℝ) :
     intro h; rw [h] at hre; simp only [Complex.zero_re] at hre; linarith
   have hz : riemannZeta ((3:ℂ) + t*I) = ∑' n : ℕ, 1 / (n:ℂ)^((3:ℂ) + t*I) :=
     zeta_eq_tsum_one_div_nat_cpow hre
-  have hterm : ∀ n : ℕ, ‖(1:ℂ) / (n:ℂ)^((3:ℂ) + t*I)‖ = (1:ℝ)/(n:ℝ)^3 := by
+  have hterm : ∀ n : ℕ, ‖(1:ℂ) / (n:ℂ)^((3:ℂ) + t*I)‖ = (1:ℝ)/(n:ℝ)^(3 : ℕ) := by
     intro n
     rcases Nat.eq_zero_or_pos n with hn | hn
     · subst hn; simp [Complex.zero_cpow hs0]
@@ -114,31 +114,31 @@ theorem norm_zeta_three_add_it_le (t : ℝ) :
       congr 1
       simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re, Complex.I_im,
         Complex.ofReal_im, Complex.re_ofNat]; norm_num
-  have hsummable : Summable (fun n : ℕ => (1:ℝ)/(n:ℝ)^3) :=
+  have hsummable : Summable (fun n : ℕ => (1:ℝ)/(n:ℝ)^(3 : ℕ)) :=
     summable_one_div_nat_pow.mpr (by norm_num)
   have hsummable_norm : Summable (fun n : ℕ => ‖(1:ℂ) / (n:ℂ)^((3:ℂ) + t*I)‖) := by
     simpa only [hterm] using hsummable
   rw [hz]
   calc ‖∑' n : ℕ, (1:ℂ) / (n:ℂ)^((3:ℂ) + t*I)‖
       ≤ ∑' n : ℕ, ‖(1:ℂ) / (n:ℂ)^((3:ℂ) + t*I)‖ := norm_tsum_le_tsum_norm hsummable_norm
-    _ = ∑' n : ℕ, (1:ℝ)/(n:ℝ)^3 := by simp_rw [hterm]
+    _ = ∑' n : ℕ, (1:ℝ)/(n:ℝ)^(3 : ℕ) := by simp_rw [hterm]
 
 /-- A cubic times `e^{−πt/4}` tends to `0`. -/
 theorem cubic_mul_exp_neg_tendsto :
-    Tendsto (fun t : ℝ => (3 + t)^3 * Real.exp (-(π*t/4))) atTop (𝓝 0) := by
+    Tendsto (fun t : ℝ => (3 + t)^(3 : ℕ) * Real.exp (-(π*t/4))) atTop (𝓝 0) := by
   have hπ : 0 < π := Real.pi_pos
-  have hbase : Tendsto (fun v : ℝ => v^3 * Real.exp (-v)) atTop (𝓝 0) :=
+  have hbase : Tendsto (fun v : ℝ => v^(3 : ℕ) * Real.exp (-v)) atTop (𝓝 0) :=
     tendsto_pow_mul_exp_neg_atTop_nhds_zero 3
   have hv : Tendsto (fun t : ℝ => π*(3 + t)/4) atTop atTop := by
     apply Filter.Tendsto.atTop_div_const (by norm_num : (0:ℝ) < 4)
     apply Filter.Tendsto.const_mul_atTop hπ
     exact tendsto_atTop_add_const_left _ 3 tendsto_id
   have hcomp := hbase.comp hv
-  have hconst : Tendsto (fun t : ℝ => (4/π)^3 * ((π*(3+t)/4)^3 * Real.exp (-(π*(3+t)/4))))
-      atTop (𝓝 ((4/π)^3 * 0)) := hcomp.const_mul _
+  have hconst : Tendsto (fun t : ℝ => (4/π)^(3 : ℕ) * ((π*(3+t)/4)^(3 : ℕ) * Real.exp (-(π*(3+t)/4))))
+      atTop (𝓝 ((4/π)^(3 : ℕ) * 0)) := hcomp.const_mul _
   rw [mul_zero] at hconst
-  have hEq : (fun t : ℝ => (4/π)^3 * ((π*(3+t)/4)^3 * Real.exp (-(π*(3+t)/4))))
-      = (fun t : ℝ => ((3 + t)^3 * Real.exp (-(π*t/4))) * Real.exp (-(π*3/4))) := by
+  have hEq : (fun t : ℝ => (4/π)^(3 : ℕ) * ((π*(3+t)/4)^(3 : ℕ) * Real.exp (-(π*(3+t)/4))))
+      = (fun t : ℝ => ((3 + t)^(3 : ℕ) * Real.exp (-(π*t/4))) * Real.exp (-(π*3/4))) := by
     funext t
     rw [show -(π*(3+t)/4) = -(π*t/4) + -(π*3/4) by ring, Real.exp_add]
     have hπ' : π ≠ 0 := hπ.ne'
@@ -154,11 +154,11 @@ theorem cubic_mul_exp_neg_tendsto :
 theorem xi_vertical_decay :
     Tendsto (fun t : ℝ => ‖xi ((3:ℂ) + t*I)‖) atTop (𝓝 0) := by
   have hπ : 0 < π := Real.pi_pos
-  set C : ℝ := ∑' n : ℕ, (1:ℝ)/(n:ℝ)^3 with hC
+  set C : ℝ := ∑' n : ℕ, (1:ℝ)/(n:ℝ)^(3 : ℕ) with hC
   have hCnn : 0 ≤ C := tsum_nonneg (fun n => by positivity)
   set D : ℝ := C * Real.sqrt 2 / (4*π) with hD
   have hbound : ∀ t : ℝ, 0 ≤ t →
-      ‖xi ((3:ℂ) + t*I)‖ ≤ D * ((3 + t)^3 * Real.exp (-(π*t/4))) := by
+      ‖xi ((3:ℂ) + t*I)‖ ≤ D * ((3 + t)^(3 : ℕ) * Real.exp (-(π*t/4))) := by
     intro t ht
     have hrezero : ∀ a : ℝ, ((a:ℂ) + t*I).re = a := by
       intro a
@@ -212,11 +212,11 @@ theorem xi_vertical_decay :
     have hπc : ‖(↑π:ℂ)‖ = π := by rw [Complex.norm_real]; exact Real.norm_of_nonneg hπ.le
     have h2c : ‖(2:ℂ)‖ = 2 := by norm_num
     have hstep2 : (3 + t) * (2 + t) / 2 * (C * (Real.sqrt 2 * Real.exp (-(π*t/4)) * (1 + t) / 2 / π))
-        ≤ D * ((3 + t)^3 * Real.exp (-(π*t/4))) := by
+        ≤ D * ((3 + t)^(3 : ℕ) * Real.exp (-(π*t/4))) := by
       rw [hD, show (3 + t) * (2 + t) / 2 * (C * (Real.sqrt 2 * Real.exp (-(π*t/4)) * (1 + t) / 2 / π))
         = C * Real.sqrt 2 / (4*π) * (((3+t)*(2+t)*(1+t)) * Real.exp (-(π*t/4))) by
         field_simp; ring]
-      have hle : (3+t)*(2+t)*(1+t) ≤ (3+t)^3 := by nlinarith
+      have hle : (3+t)*(2+t)*(1+t) ≤ (3+t)^(3 : ℕ) := by nlinarith
       have hKnn : 0 ≤ C * Real.sqrt 2 / (4*π) := by positivity
       gcongr
     calc ‖xi ((3:ℂ) + t*I)‖
@@ -226,8 +226,8 @@ theorem xi_vertical_decay :
           rw [hxi]; simp only [norm_mul, norm_div, hπc, h2c]
       _ ≤ (3 + t) * (2 + t) / 2 * (C * (Real.sqrt 2 * Real.exp (-(π*t/4)) * (1 + t) / 2 / π)) := by
           gcongr
-      _ ≤ D * ((3 + t)^3 * Real.exp (-(π*t/4))) := hstep2
-  have hsq : Tendsto (fun t : ℝ => D * ((3 + t)^3 * Real.exp (-(π*t/4)))) atTop (𝓝 (D * 0)) :=
+      _ ≤ D * ((3 + t)^(3 : ℕ) * Real.exp (-(π*t/4))) := hstep2
+  have hsq : Tendsto (fun t : ℝ => D * ((3 + t)^(3 : ℕ) * Real.exp (-(π*t/4)))) atTop (𝓝 (D * 0)) :=
     cubic_mul_exp_neg_tendsto.const_mul D
   rw [mul_zero] at hsq
   refine squeeze_zero' (Eventually.of_forall (fun t => norm_nonneg _)) ?_ hsq

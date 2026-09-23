@@ -60,7 +60,7 @@ theorem dK_level_multiplier {q : K} (hqconst : Fr.dK q = 0) (k : ℕ) :
 theorem jetDefect_one {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     (hshift : Fr.σ τ = algebraMap K L q * τ) : Fr.jetDefect τ q 1 = 0 := by
   have h := Fr.sigma_d_eq_of_shift hqconst hshift
-  show Fr.σ (Fr.d τ) - algebraMap K L (q / Fr.ρ ^ 1) * Fr.d τ = 0
+  show Fr.σ (Fr.d τ) - algebraMap K L (q / Fr.ρ ^ (1 : ℕ)) * Fr.d τ = 0
   rw [pow_one, h, sub_self]
 
 /-- **The defect recursion.** -/
@@ -115,7 +115,7 @@ theorem jetDefect_leading (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK
   induction m with
   | zero =>
       have h : Fr.jetDefect τ q (0 + 2)
-          = algebraMap K L (Fr.dK (q / Fr.ρ ^ 1) / Fr.ρ) * Fr.d^[1] τ
+          = algebraMap K L (Fr.dK (q / Fr.ρ ^ (1 : ℕ)) / Fr.ρ) * Fr.d^[1] τ
             + algebraMap K L (Fr.ρ)⁻¹ * Fr.d (Fr.jetDefect τ q 1) :=
         RittFrame.jetDefect_succ 1
       rw [RittFrame.jetDefect_one hqconst hshift, Fr.d_zero, mul_zero, add_zero,

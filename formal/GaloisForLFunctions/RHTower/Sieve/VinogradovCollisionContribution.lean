@@ -18,7 +18,7 @@ abbrev VinogradovCollidingBlockCompletion (q N k b : ℕ) :=
 theorem card_vinogradovCollidingBlockCompletion_le_energy
     {q N k b : ℕ} [NeZero q] :
     Fintype.card (VinogradovCollidingBlockCompletion q N k b) ≤
-      ((k * k - k) * N ^ (k - 1)) ^ 2 *
+      ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         finiteFiberEnergy
           (vinogradovPowerSignatureMod q k :
             (Fin b → Fin N) → Fin k → ZMod q) := by
@@ -40,7 +40,7 @@ theorem card_vinogradovCollidingBlockCompletion_le_energy
         finiteFiberEnergy
           (vinogradovPowerSignatureMod q k :
             (Fin b → Fin N) → Fin k → ZMod q) := by simp
-    _ ≤ ((k * k - k) * N ^ (k - 1)) ^ 2 *
+    _ ≤ ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         finiteFiberEnergy
           (vinogradovPowerSignatureMod q k :
             (Fin b → Fin N) → Fin k → ZMod q) := by
@@ -54,16 +54,16 @@ theorem card_vinogradovCollidingBlockCompletion_le_moment
     {q N k b : ℕ} [NeZero q] (hN : N ≠ 0)
     (hq : 2 * b * N ^ k < q) :
     Fintype.card (VinogradovCollidingBlockCompletion q N k b) ≤
-      ((k * k - k) * N ^ (k - 1)) ^ 2 *
+      ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         Fintype.card (VinogradovDiagonalSolution N b k) := by
   calc
     Fintype.card (VinogradovCollidingBlockCompletion q N k b) ≤
-        ((k * k - k) * N ^ (k - 1)) ^ 2 *
+        ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
           finiteFiberEnergy
             (vinogradovPowerSignatureMod q k :
               (Fin b → Fin N) → Fin k → ZMod q) :=
       card_vinogradovCollidingBlockCompletion_le_energy
-    _ = ((k * k - k) * N ^ (k - 1)) ^ 2 *
+    _ = ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         Fintype.card (VinogradovDiagonalSolution N b k) := by
       rw [← vinogradovModularMomentAt_eq_card_of_large hN hq]
       rfl
@@ -80,7 +80,7 @@ theorem card_vinogradovCollidingBlockCompletion_le_tailMoment
     {N k b : ℕ} (hN : N ≠ 0) :
     Fintype.card (VinogradovCollidingBlockCompletion
       (vinogradovMomentModulus N (k + b) k) N k b) ≤
-      ((k * k - k) * N ^ (k - 1)) ^ 2 *
+      ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         Fintype.card (VinogradovDiagonalSolution N b k) :=
   card_vinogradovCollidingBlockCompletion_le_moment hN
     full_vinogradovMomentModulus_large_for_tail

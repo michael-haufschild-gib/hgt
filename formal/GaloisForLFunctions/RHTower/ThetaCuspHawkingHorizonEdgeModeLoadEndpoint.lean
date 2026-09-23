@@ -37,7 +37,7 @@ noncomputable section
 /-- Necessary `x,z` principal-minor condition for an additive horizon edge-mode covariance. -/
 def HorizonEdgeModeTwoPointPositive
     (E : ℝ → ℝ → ℝ) (x z : ℝ) : Prop :=
-  0 ≤ E x x ∧ 0 ≤ E z z ∧ 0 ≤ E x x * E z z - E x z ^ 2
+  0 ≤ E x x ∧ 0 ≤ E z z ∧ 0 ≤ E x x * E z z - E x z ^ (2 : ℕ)
 
 /-- A nonzero remote covariance in a positive additive edge sector forces strictly positive
 self-energy load at both endpoints. -/
@@ -47,7 +47,7 @@ theorem horizonEdgeMode_remote_ne_zero_forces_endpointLoads_pos
     (hremote : E x z ≠ 0) :
     0 < E x x ∧ 0 < E z z := by
   rcases hE with ⟨hxx, hzz, hminor⟩
-  have hsquare : 0 < E x z ^ 2 := sq_pos_of_ne_zero hremote
+  have hsquare : 0 < E x z ^ (2 : ℕ) := sq_pos_of_ne_zero hremote
   have hproduct : 0 < E x x * E z z := by
     nlinarith
   rcases (mul_pos_iff.mp hproduct) with hpositive | hnegative

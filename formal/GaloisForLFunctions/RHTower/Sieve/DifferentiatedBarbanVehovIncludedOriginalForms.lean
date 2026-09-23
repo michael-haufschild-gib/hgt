@@ -60,7 +60,7 @@ def selbergOriginalIncludedCrossBoundary (ell : ℝ) (M : ℕ) : ℝ :=
     let u := min A B
     let v := Real.log M - A - B + u
     (-1 : ℝ) * selbergOriginalCoeff p.1 p.2 * (A * B) *
-      (v * (ell - Real.log M + B) + v ^ 2 / 2)
+      (v * (ell - Real.log M + B) + v ^ (2 : ℕ) / 2)
 
 /-- Original Selberg-coefficient form of the included derivative-square boundary. -/
 def selbergOriginalIncludedDerivativeBoundary (ell : ℝ) (M : ℕ) : ℝ :=
@@ -71,7 +71,7 @@ def selbergOriginalIncludedDerivativeBoundary (ell : ℝ) (M : ℕ) : ℝ :=
     let v := Real.log M - A - B + u
     selbergOriginalCoeff p.1 p.2 * (A * B) *
       (v * (ell - Real.log M + A) * (ell - Real.log M + B) +
-        v ^ 2 / 2 * (2 * (ell - Real.log M) + A + B) + v ^ 3 / 3)
+        v ^ (2 : ℕ) / 2 * (2 * (ell - Real.log M) + A + B) + v ^ (3 : ℕ) / 3)
 
 theorem barbanVehovIncludedLongBasePolynomialMain_eq_originalBoundary
     {M : ℕ} (hM : 0 < M) :

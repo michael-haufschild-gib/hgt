@@ -20,10 +20,10 @@ theorem norm_inner_one_gaussPrincipalStep_cube_sub_movingAmplitude_cube_le_sharp
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) :
     ‖(inner ℂ (fourierLp 2 0)
-          ((gaussPrincipalStepBlock hm k p hp i ^ 3) (fourierLp 2 0)) : ℂ) -
+          ((gaussPrincipalStepBlock hm k p hp i ^ (3 : ℕ)) (fourierLp 2 0)) : ℂ) -
         inner ℂ (fourierLp 2 0)
           ((gaussMovingAmplitudeBlock hp
-            ((gaussSamplePhase m p i : ℝ) : AddCircle (1 : ℝ)) ^ 3)
+            ((gaussSamplePhase m p i : ℝ) : AddCircle (1 : ℝ)) ^ (3 : ℕ))
               (fourierLp 2 0))‖ ≤
       (‖gaussCubicSmoothShiftErrorVector hm k p hp i‖ +
           ‖gaussCubicPropagatedRelativeErrorVector hm k p hp i‖) *

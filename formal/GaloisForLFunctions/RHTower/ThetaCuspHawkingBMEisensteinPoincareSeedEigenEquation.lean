@@ -49,43 +49,43 @@ def d4BMPoincareSeedHorizontalFirstJet
 def d4BMPoincareSeedHorizontalSecondJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  (-2 * s * (p.pair.1 : ℂ) ^ 2 /
+  (-2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) /
         (d4BMPoincareQuadratic z p.pair : ℂ) +
-      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 2 *
-        (d4BMPoincareHorizontalLinear z p : ℂ) ^ 2 /
-          (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2) *
+      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (2 : ℕ) *
+        (d4BMPoincareHorizontalLinear z p : ℂ) ^ (2 : ℕ) /
+          (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)) *
     d4BMPoincareSeed z s p
 
 def d4BMPoincareSeedVerticalFirstJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
   (s / (z.y : ℂ) -
-      2 * s * (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) /
+      2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
         (d4BMPoincareQuadratic z p.pair : ℂ)) * d4BMPoincareSeed z s p
 
 def d4BMPoincareSeedVerticalSecondJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  (s * (s - 1) / (z.y : ℂ) ^ 2 -
-      2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ 2 /
+  (s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ) -
+      2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ (2 : ℕ) /
         (d4BMPoincareQuadratic z p.pair : ℂ) +
-      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 * (z.y : ℂ) ^ 2 /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2) *
+      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) /
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)) *
     d4BMPoincareSeed z s p
 
 def d4BMPoincareSeedVerticalSlice
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) (y : ℝ) : ℂ :=
-  ((y / (((p.pair.1 : ℝ) * y) ^ 2 +
-      ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2) : ℝ) : ℂ) ^ s
+  ((y / (((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+      ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ)) : ℝ) : ℂ) ^ s
 
 def d4BMPoincareSeedVerticalFirstJetSlice
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) (y : ℝ) : ℂ :=
   (s / (y : ℂ) -
-      2 * s * (p.pair.1 : ℂ) ^ 2 * (y : ℂ) /
-        ((((p.pair.1 : ℝ) * y) ^ 2 +
-          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ)) *
+      2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (y : ℂ) /
+        ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ)) *
     d4BMPoincareSeedVerticalSlice z s p y
 
 theorem d4BM_poincareSeedVerticalSlice_at_height
@@ -108,20 +108,20 @@ theorem hasDerivAt_d4BMPoincareSeed_vertical
       (d4BMPoincareSeedVerticalFirstJet z s p) z.y := by
   let c : ℝ := p.pair.1
   let u : ℝ := c * z.x + p.pair.2
-  let Q : ℝ → ℝ := fun y => (c * y) ^ 2 + u ^ 2
+  let Q : ℝ → ℝ := fun y => (c * y) ^ (2 : ℕ) + u ^ (2 : ℕ)
   let r : ℝ → ℝ := fun y => y / Q y
   have hQpos : 0 < Q z.y := by
     change 0 < d4BMPoincareQuadratic z p.pair
     exact d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   have hQneR : Q z.y ≠ 0 := hQpos.ne'
   have hrpos : 0 < r z.y := div_pos z.y_pos hQpos
-  have hQderiv : HasDerivAt Q (2 * c ^ 2 * z.y) z.y := by
+  have hQderiv : HasDerivAt Q (2 * c ^ (2 : ℕ) * z.y) z.y := by
     dsimp only [Q]
     have hcy : HasDerivAt (fun y : ℝ => c * y) c z.y := by
       simpa using (hasDerivAt_id z.y).const_mul c
-    exact ((hcy.pow 2).add (hasDerivAt_const z.y (u ^ 2))).congr_deriv (by ring)
+    exact ((hcy.pow 2).add (hasDerivAt_const z.y (u ^ (2 : ℕ)))).congr_deriv (by ring)
   have hrderiv : HasDerivAt r
-      ((Q z.y - z.y * (2 * c ^ 2 * z.y)) / (Q z.y) ^ 2) z.y := by
+      ((Q z.y - z.y * (2 * c ^ (2 : ℕ) * z.y)) / (Q z.y) ^ (2 : ℕ)) z.y := by
     dsimp only [r]
     exact ((hasDerivAt_id z.y).div hQderiv hQneR).congr_deriv (by
       simp only [id_eq]
@@ -152,23 +152,23 @@ theorem hasDerivAt_d4BMPoincareSeed_vertical
       _ = RC ^ ((s - 1) + 1) := (Complex.cpow_add _ _ hRCne).symm
       _ = RC ^ s := by ring_nf
   have hscalar :
-      (((Q z.y - z.y * (2 * c ^ 2 * z.y)) / (Q z.y) ^ 2 : ℝ) : ℂ) =
-        (QC - (z.y : ℂ) * (2 * (c : ℂ) ^ 2 * (z.y : ℂ))) / QC ^ 2 := by
+      (((Q z.y - z.y * (2 * c ^ (2 : ℕ) * z.y)) / (Q z.y) ^ (2 : ℕ) : ℝ) : ℂ) =
+        (QC - (z.y : ℂ) * (2 * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ))) / QC ^ (2 : ℕ) := by
     dsimp only [QC]
     push_cast
     ring
   rw [Complex.real_smul, hscalar]
   calc
-    ((QC - (z.y : ℂ) * (2 * (c : ℂ) ^ 2 * (z.y : ℂ))) / QC ^ 2) *
+    ((QC - (z.y : ℂ) * (2 * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ))) / QC ^ (2 : ℕ)) *
           (s * RC ^ (s - 1)) =
         (s / (z.y : ℂ) -
-          2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / QC) *
+          2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / QC) *
           (RC ^ (s - 1) * RC) := by
             rw [hRC]
             have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
             field_simp [hQCne, hy]
     _ = (s / (z.y : ℂ) -
-          2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / QC) * RC ^ s := by
+          2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / QC) * RC ^ s := by
       rw [hcpow]
     _ = d4BMPoincareSeedVerticalFirstJet z s p := by
       unfold d4BMPoincareSeedVerticalFirstJet d4BMPoincareSeed d4BMPoincareQuadratic
@@ -183,9 +183,9 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJetSlice
       (d4BMPoincareSeedVerticalSecondJet z s p) z.y := by
   let c : ℝ := p.pair.1
   let u : ℝ := c * z.x + p.pair.2
-  let Q : ℝ → ℝ := fun y => (c * y) ^ 2 + u ^ 2
+  let Q : ℝ → ℝ := fun y => (c * y) ^ (2 : ℕ) + u ^ (2 : ℕ)
   let B : ℝ → ℂ := fun y =>
-    s / (y : ℂ) - 2 * s * (c : ℂ) ^ 2 * (y : ℂ) / (Q y : ℂ)
+    s / (y : ℂ) - 2 * s * (c : ℂ) ^ (2 : ℕ) * (y : ℂ) / (Q y : ℂ)
   let f : ℝ → ℂ := d4BMPoincareSeedVerticalSlice z s p
   have hQpos : 0 < Q z.y := by
     change 0 < d4BMPoincareQuadratic z p.pair
@@ -195,20 +195,20 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJetSlice
   have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
   have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
   have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 z.y := hidR.ofReal_comp
-  have hQderivR : HasDerivAt Q (2 * c ^ 2 * z.y) z.y := by
+  have hQderivR : HasDerivAt Q (2 * c ^ (2 : ℕ) * z.y) z.y := by
     dsimp only [Q]
     have hcy : HasDerivAt (fun y : ℝ => c * y) c z.y := by
       simpa using (hasDerivAt_id z.y).const_mul c
-    exact ((hcy.pow 2).add (hasDerivAt_const z.y (u ^ 2))).congr_deriv (by ring)
+    exact ((hcy.pow 2).add (hasDerivAt_const z.y (u ^ (2 : ℕ)))).congr_deriv (by ring)
   have hQderiv : HasDerivAt (fun y : ℝ => (Q y : ℂ))
-      ((2 * c ^ 2 * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
+      ((2 * c ^ (2 : ℕ) * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
   have hBraw :=
     ((hasDerivAt_const z.y s).div hid hy).sub
-      ((hid.const_mul (2 * s * (c : ℂ) ^ 2)).div hQderiv hQne)
+      ((hid.const_mul (2 * s * (c : ℂ) ^ (2 : ℕ))).div hQderiv hQne)
   have hBderiv : HasDerivAt B
-      (-s / (z.y : ℂ) ^ 2 -
-        2 * s * (c : ℂ) ^ 2 / (Q z.y : ℂ) +
-        4 * s * (c : ℂ) ^ 4 * (z.y : ℂ) ^ 2 / (Q z.y : ℂ) ^ 2) z.y := by
+      (-s / (z.y : ℂ) ^ (2 : ℕ) -
+        2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.y : ℂ) +
+        4 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) / (Q z.y : ℂ) ^ (2 : ℕ)) z.y := by
     dsimp only [B]
     apply hBraw.congr_deriv
     push_cast
@@ -225,10 +225,10 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJetSlice
   let QC : ℂ := (Q z.y : ℂ)
   let Y : ℂ := (z.y : ℂ)
   let F : ℂ := f z.y
-  have hB : B z.y = s / Y - 2 * s * (c : ℂ) ^ 2 * Y / QC := by rfl
+  have hB : B z.y = s / Y - 2 * s * (c : ℂ) ^ (2 : ℕ) * Y / QC := by rfl
   have hFvalue : F = d4BMPoincareSeed z s p := by rfl
   have hfirst : d4BMPoincareSeedVerticalFirstJet z s p =
-      (s / Y - 2 * s * (c : ℂ) ^ 2 * Y / QC) * F := by
+      (s / Y - 2 * s * (c : ℂ) ^ (2 : ℕ) * Y / QC) * F := by
     rw [hFvalue]
     unfold d4BMPoincareSeedVerticalFirstJet d4BMPoincareSeed
       d4BMPoincareQuadratic
@@ -236,9 +236,9 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJetSlice
     push_cast
     rfl
   have hsecond : d4BMPoincareSeedVerticalSecondJet z s p =
-      (s * (s - 1) / Y ^ 2 -
-        2 * s * (1 + 2 * s) * (c : ℂ) ^ 2 / QC +
-        4 * s * (s + 1) * (c : ℂ) ^ 4 * Y ^ 2 / QC ^ 2) * F := by
+      (s * (s - 1) / Y ^ (2 : ℕ) -
+        2 * s * (1 + 2 * s) * (c : ℂ) ^ (2 : ℕ) / QC +
+        4 * s * (s + 1) * (c : ℂ) ^ (4 : ℕ) * Y ^ (2 : ℕ) / QC ^ (2 : ℕ)) * F := by
     rw [hFvalue]
     unfold d4BMPoincareSeedVerticalSecondJet d4BMPoincareSeed
       d4BMPoincareQuadratic
@@ -258,7 +258,7 @@ theorem hasDerivAt_d4BMPoincareSeed_horizontal
       (d4BMPoincareSeedHorizontalFirstJet z s p) z.x := by
   let c : ℝ := p.pair.1
   let d : ℝ := p.pair.2
-  let Q : ℝ → ℝ := fun x => (c * z.y) ^ 2 + (c * x + d) ^ 2
+  let Q : ℝ → ℝ := fun x => (c * z.y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ)
   let r : ℝ → ℝ := fun x => z.y / Q x
   have hQpos : 0 < Q z.x := by
     change 0 < d4BMPoincareQuadratic z p.pair
@@ -272,7 +272,7 @@ theorem hasDerivAt_d4BMPoincareSeed_horizontal
     exact (((hasDerivAt_const z.x (c * z.y)).pow 2).add
       (hlin.pow 2)).congr_deriv (by ring)
   have hrderiv : HasDerivAt r
-      (-z.y * (2 * c * (c * z.x + d)) / (Q z.x) ^ 2) z.x := by
+      (-z.y * (2 * c * (c * z.x + d)) / (Q z.x) ^ (2 : ℕ)) z.x := by
     dsimp only [r]
     exact ((hasDerivAt_const z.x z.y).div hQderiv hQne).congr_deriv (by ring)
   have hpow := (d4BM_hasDerivAt_ofReal_cpow s hrpos).scomp z.x hrderiv
@@ -302,16 +302,16 @@ theorem hasDerivAt_d4BMPoincareSeed_horizontal
       _ = RC ^ ((s - 1) + 1) := (Complex.cpow_add _ _ hRCne).symm
       _ = RC ^ s := by ring_nf
   have hscalar :
-      ((-z.y * (2 * c * (c * z.x + d)) / (Q z.x) ^ 2 : ℝ) : ℂ) =
+      ((-z.y * (2 * c * (c * z.x + d)) / (Q z.x) ^ (2 : ℕ) : ℝ) : ℂ) =
         -2 * (z.y : ℂ) * (c : ℂ) * ((c : ℂ) * (z.x : ℂ) + (d : ℂ)) /
-          QC ^ 2 := by
+          QC ^ (2 : ℕ) := by
     dsimp only [QC]
     push_cast
     ring
   rw [Complex.real_smul, hscalar]
   calc
     (-2 * (z.y : ℂ) * (c : ℂ) * ((c : ℂ) * (z.x : ℂ) + (d : ℂ)) /
-          QC ^ 2) * (s * RC ^ (s - 1)) =
+          QC ^ (2 : ℕ)) * (s * RC ^ (s - 1)) =
         (-2 * s * (c : ℂ) * ((c : ℂ) * (z.x : ℂ) + (d : ℂ)) / QC) *
           (RC ^ (s - 1) * RC) := by
             rw [hRC]
@@ -334,7 +334,7 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJet_horizontal
       (d4BMPoincareSeedHorizontalSecondJet z s p) z.x := by
   let c : ℝ := p.pair.1
   let d : ℝ := p.pair.2
-  let Q : ℝ → ℝ := fun x => (c * z.y) ^ 2 + (c * x + d) ^ 2
+  let Q : ℝ → ℝ := fun x => (c * z.y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ)
   let A : ℝ → ℂ := fun x =>
     -2 * s * (c : ℂ) * ((c * x + d : ℝ) : ℂ) / (Q x : ℂ)
   let f : ℝ → ℂ := fun x =>
@@ -357,9 +357,9 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJet_horizontal
   have hAraw :=
     (hlin.const_mul (-2 * s * (c : ℂ))).div hQderiv hQne
   have hAderiv : HasDerivAt A
-      (-2 * s * (c : ℂ) ^ 2 / (Q z.x : ℂ) +
-        4 * s * (c : ℂ) ^ 2 * ((c * z.x + d : ℝ) : ℂ) ^ 2 /
-          (Q z.x : ℂ) ^ 2) z.x := by
+      (-2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.x : ℂ) +
+        4 * s * (c : ℂ) ^ (2 : ℕ) * ((c * z.x + d : ℝ) : ℂ) ^ (2 : ℕ) /
+          (Q z.x : ℂ) ^ (2 : ℕ)) z.x := by
     dsimp only [A]
     apply hAraw.congr_deriv
     push_cast
@@ -395,8 +395,8 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJet_horizontal
     push_cast
     rfl
   have hsecond : d4BMPoincareSeedHorizontalSecondJet z s p =
-      (-2 * s * (c : ℂ) ^ 2 / QC +
-        4 * s * (s + 1) * (c : ℂ) ^ 2 * U ^ 2 / QC ^ 2) * F := by
+      (-2 * s * (c : ℂ) ^ (2 : ℕ) / QC +
+        4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * U ^ (2 : ℕ) / QC ^ (2 : ℕ)) * F := by
     rw [hFvalue]
     unfold d4BMPoincareSeedHorizontalSecondJet d4BMPoincareHorizontalLinear
       d4BMPoincareSeed d4BMPoincareQuadratic
@@ -411,7 +411,7 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJet_horizontal
 theorem d4BM_poincareSeed_formalHyperbolicLaplacian_eq_eigenvalue
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMPoincareSeedHorizontalSecondJet z s p +
           d4BMPoincareSeedVerticalSecondJet z s p) =
       s * (s - 1) * d4BMPoincareSeed z s p := by
@@ -420,8 +420,8 @@ theorem d4BM_poincareSeed_formalHyperbolicLaplacian_eq_eigenvalue
   have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
   have hdecomp :
       (d4BMPoincareQuadratic z p.pair : ℂ) =
-        (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) ^ 2 +
-          (d4BMPoincareHorizontalLinear z p : ℂ) ^ 2 := by
+        (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) +
+          (d4BMPoincareHorizontalLinear z p : ℂ) ^ (2 : ℕ) := by
     unfold d4BMPoincareQuadratic d4BMPoincareHorizontalLinear
     push_cast
     ring
@@ -445,7 +445,7 @@ theorem d4BM_poincareSeed_actualSecondDerivative_eigenEquation
         (d4BMPoincareSeedVerticalFirstJet z s p) z.y ∧
       HasDerivAt (d4BMPoincareSeedVerticalFirstJetSlice z s p)
         (d4BMPoincareSeedVerticalSecondJet z s p) z.y ∧
-      (z.y : ℂ) ^ 2 *
+      (z.y : ℂ) ^ (2 : ℕ) *
           (d4BMPoincareSeedHorizontalSecondJet z s p +
             d4BMPoincareSeedVerticalSecondJet z s p) =
         s * (s - 1) * d4BMPoincareSeed z s p := by
@@ -458,7 +458,7 @@ theorem d4BM_poincareSeed_actualSecondDerivative_eigenEquation
 theorem d4BM_poincareSeed_geometricEigenvalue_centered
     (z : D4BMUpperHalfPlaneCoordinate) (u : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMPoincareSeedHorizontalSecondJet z (1 / 2 + u) p +
           d4BMPoincareSeedVerticalSecondJet z (1 / 2 + u) p) =
       thetaCuspHawkingEisensteinGeometricEigenvalue u *

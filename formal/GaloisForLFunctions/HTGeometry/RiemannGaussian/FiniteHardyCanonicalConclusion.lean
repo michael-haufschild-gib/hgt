@@ -191,15 +191,15 @@ theorem
 are positive. -/
 theorem eta_div_sqrt_eta_sq_add_height_sq_lt_one
     {eta a0 : ℝ} (heta : 0 < eta) (ha0 : 0 < a0) :
-    eta / Real.sqrt (eta ^ 2 + a0 ^ 2) < 1 := by
-  have hsum : 0 < eta ^ 2 + a0 ^ 2 := by positivity
-  have hsqrtPos : 0 < Real.sqrt (eta ^ 2 + a0 ^ 2) :=
+    eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) < 1 := by
+  have hsum : 0 < eta ^ (2 : ℕ) + a0 ^ (2 : ℕ) := by positivity
+  have hsqrtPos : 0 < Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) :=
     Real.sqrt_pos.2 hsum
   apply (div_lt_one hsqrtPos).2
-  have hsqrtNonneg : 0 ≤ Real.sqrt (eta ^ 2 + a0 ^ 2) :=
+  have hsqrtNonneg : 0 ≤ Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) :=
     Real.sqrt_nonneg _
-  have hsqrtSq : (Real.sqrt (eta ^ 2 + a0 ^ 2)) ^ 2 =
-      eta ^ 2 + a0 ^ 2 := by
+  have hsqrtSq : (Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ))) ^ (2 : ℕ) =
+      eta ^ (2 : ℕ) + a0 ^ (2 : ℕ) := by
     exact Real.sq_sqrt hsum.le
   nlinarith [sq_pos_of_pos ha0]
 
@@ -216,7 +216,7 @@ theorem norm_lowerRootInnerValue_le_two_mul_canonicalInsideProduct_div_one_add_s
       2 * ((canonicalInsideInfluenceDiskRoots A z).map fun alpha =>
           upperHalfPlanePseudoHyperbolicDistance z alpha).prod /
         (1 + ((canonicalInsideInfluenceDiskRoots A z).map fun alpha =>
-          upperHalfPlanePseudoHyperbolicDistance z alpha).prod ^ 2) := by
+          upperHalfPlanePseudoHyperbolicDistance z alpha).prod ^ (2 : ℕ)) := by
   exact norm_lowerRootInnerValue_le_two_mul_insideProduct_div_one_add_sq
     hA htau hz hroot
     (realPolynomial_roots_eq_real_add_conjugatePairs A)
@@ -233,7 +233,7 @@ theorem norm_lowerRootInnerValue_le_closed_bound_of_canonicalProduct
         upperHalfPlanePseudoHyperbolicDistance z alpha).prod ≤
           pairHyperbolicThreshold eta a0) :
     ‖lowerRootInnerValue (finiteEPolynomial A eta) z‖ ≤
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   let R := ((canonicalInsideInfluenceDiskRoots A z).map fun alpha =>
     upperHalfPlanePseudoHyperbolicDistance z alpha).prod
   have hR : 0 ≤ R := by
@@ -264,7 +264,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re ≤
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   have hzUpper := finiteE_root_mem_upperRootFactor_roots hA.ne_zero hz hroot
   exact (finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_le_innerValue_of_mem
       A eta hzUpper).trans
@@ -283,7 +283,7 @@ theorem norm_lowerRootInnerValue_lt_closed_bound_of_canonicalProduct
         upperHalfPlanePseudoHyperbolicDistance z alpha).prod <
           pairHyperbolicThreshold eta a0) :
     ‖lowerRootInnerValue (finiteEPolynomial A eta) z‖ <
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   let R := ((canonicalInsideInfluenceDiskRoots A z).map fun alpha =>
     upperHalfPlanePseudoHyperbolicDistance z alpha).prod
   have hR : 0 ≤ R := by
@@ -314,7 +314,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   have hzUpper := finiteE_root_mem_upperRootFactor_roots hA.ne_zero hz hroot
   exact (finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_le_innerValue_of_mem
       A eta hzUpper).trans_lt
@@ -328,7 +328,7 @@ theorem norm_lowerRootInnerValue_le_closed_bound_of_finiteE_root
     (hz : 0 < z.im)
     (hroot : (finiteEPolynomial A eta).eval z = 0) :
     ‖lowerRootInnerValue (finiteEPolynomial A eta) z‖ ≤
-      eta / Real.sqrt (eta ^ 2 + z.im ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
   apply norm_lowerRootInnerValue_le_closed_bound_of_canonicalProduct
     hA heta hz hz hroot
   exact
@@ -345,7 +345,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re ≤
-      eta / Real.sqrt (eta ^ 2 + z.im ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
   apply
     finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_le_closed_bound_of_canonicalProduct
       hA heta hz hz hroot
@@ -377,7 +377,7 @@ theorem norm_lowerRootInnerValue_lt_closed_bound_of_canonicalInsideCore
     (hminHeight : ∀ alpha ∈ canonicalInsideInfluenceDiskRoots A z,
       a0 ≤ alpha.im) :
     ‖lowerRootInnerValue (finiteEPolynomial A eta) z‖ <
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   apply norm_lowerRootInnerValue_lt_closed_bound_of_canonicalProduct
     hA heta ha0 hz hroot
   exact
@@ -397,7 +397,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-      eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   apply
     finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_lt_closed_bound_of_canonicalProduct
       hA heta ha0 hz hroot
@@ -418,7 +418,7 @@ theorem
         Real.sqrt
             (LinearMap.det
               (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-          eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+          eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   rcases
       canonicalInsideInfluenceDiskRoots_card_eq_one_or_two_le_of_finiteE_root
         hA heta hz hroot with hsingle | hmulti

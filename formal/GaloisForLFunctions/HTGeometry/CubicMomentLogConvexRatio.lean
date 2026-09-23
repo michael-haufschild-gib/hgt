@@ -68,31 +68,31 @@ theorem ratioSeq_exponential : ratioSeq 2 12 30 = (4, 8, 12) := by
 
 /-- A log-convex positive triple is convex: `r₂² ≤ r₁r₃` gives `2r₂ ≤ r₁ + r₃` by AM–GM. -/
 theorem second_difference_nonneg_of_logConvex {r₁ r₂ r₃ : ℝ}
-    (h₁ : 0 < r₁) (h₂ : 0 < r₂) (h₃ : 0 < r₃) (hlc : r₂ ^ 2 ≤ r₁ * r₃) :
+    (h₁ : 0 < r₁) (h₂ : 0 < r₂) (h₃ : 0 < r₃) (hlc : r₂ ^ (2 : ℕ) ≤ r₁ * r₃) :
     0 ≤ r₁ - 2 * r₂ + r₃ := by
   nlinarith [sq_nonneg (r₁ - r₃), sq_nonneg (r₁ + r₃ - 2 * r₂), sq_nonneg (r₁ + r₃)]
 
 /-- Log-convexity of the normalized ratio sequence is the monomial inequality `5μ₂² ≤ 9μ₁μ₃`. -/
 theorem logConvex_ratioSeq_iff (μ₁ μ₂ μ₃ : ℝ) :
-    ((ratioSeq μ₁ μ₂ μ₃).2.1) ^ 2 ≤ (ratioSeq μ₁ μ₂ μ₃).1 * (ratioSeq μ₁ μ₂ μ₃).2.2 ↔
-      5 * μ₂ ^ 2 ≤ 9 * μ₁ * μ₃ := by
+    ((ratioSeq μ₁ μ₂ μ₃).2.1) ^ (2 : ℕ) ≤ (ratioSeq μ₁ μ₂ μ₃).1 * (ratioSeq μ₁ μ₂ μ₃).2.2 ↔
+      5 * μ₂ ^ (2 : ℕ) ≤ 9 * μ₁ * μ₃ := by
   unfold ratioSeq
   constructor <;> intro h <;> nlinarith [h]
 
 /-- In raw moments the same condition is `5 m₀ m₂³ ≤ 9 m₁³ m₃`. -/
 theorem quartic_iff_logConvex {m₀ m₁ m₂ m₃ : ℝ} (h₀ : 0 < m₀) (h₁ : 0 < m₁) (h₂ : 0 < m₂) :
-    5 * m₀ * m₂ ^ 3 ≤ 9 * m₁ ^ 3 * m₃ ↔
-      5 * (m₂ / m₁) ^ 2 ≤ 9 * (m₁ / m₀) * (m₃ / m₂) := by
-  have hden : (0 : ℝ) < m₀ * m₁ ^ 2 * m₂ := by positivity
-  have key : 9 * (m₁ / m₀) * (m₃ / m₂) - 5 * (m₂ / m₁) ^ 2 =
-      (9 * m₁ ^ 3 * m₃ - 5 * m₀ * m₂ ^ 3) / (m₀ * m₁ ^ 2 * m₂) := by
+    5 * m₀ * m₂ ^ (3 : ℕ) ≤ 9 * m₁ ^ (3 : ℕ) * m₃ ↔
+      5 * (m₂ / m₁) ^ (2 : ℕ) ≤ 9 * (m₁ / m₀) * (m₃ / m₂) := by
+  have hden : (0 : ℝ) < m₀ * m₁ ^ (2 : ℕ) * m₂ := by positivity
+  have key : 9 * (m₁ / m₀) * (m₃ / m₂) - 5 * (m₂ / m₁) ^ (2 : ℕ) =
+      (9 * m₁ ^ (3 : ℕ) * m₃ - 5 * m₀ * m₂ ^ (3 : ℕ)) / (m₀ * m₁ ^ (2 : ℕ) * m₂) := by
     field_simp
   constructor
   · intro h
     rw [← sub_nonneg, key]
     exact div_nonneg (by linarith) hden.le
   · intro h
-    have h2 : 0 ≤ (9 * m₁ ^ 3 * m₃ - 5 * m₀ * m₂ ^ 3) / (m₀ * m₁ ^ 2 * m₂) := by
+    have h2 : 0 ≤ (9 * m₁ ^ (3 : ℕ) * m₃ - 5 * m₀ * m₂ ^ (3 : ℕ)) / (m₀ * m₁ ^ (2 : ℕ) * m₂) := by
       rw [← key]; linarith
     have h3 := mul_nonneg h2 hden.le
     rw [div_mul_cancel₀ _ hden.ne'] at h3
@@ -109,18 +109,18 @@ the cubic moment inequality.  The proof squares the arithmetic–geometric mean 
 the middle inequality being the hypothesis multiplied by `20 m₀ m₂`. -/
 theorem cubic_nonneg_of_quartic {m₀ m₁ m₂ m₃ : ℝ}
     (h₀ : 0 < m₀) (h₁ : 0 < m₁) (h₂ : 0 < m₂) (h₃ : 0 < m₃)
-    (hq : 5 * m₀ * m₂ ^ 3 ≤ 9 * m₁ ^ 3 * m₃) :
-    0 ≤ 3 * m₀ * m₁ * m₃ + 15 * m₁ ^ 2 * m₂ - 10 * m₀ * m₂ ^ 2 := by
+    (hq : 5 * m₀ * m₂ ^ (3 : ℕ) ≤ 9 * m₁ ^ (3 : ℕ) * m₃) :
+    0 ≤ 3 * m₀ * m₁ * m₃ + 15 * m₁ ^ (2 : ℕ) * m₂ - 10 * m₀ * m₂ ^ (2 : ℕ) := by
   set A : ℝ := 3 * m₀ * m₁ * m₃ with hA
-  set B : ℝ := 15 * m₁ ^ 2 * m₂ with hB
+  set B : ℝ := 15 * m₁ ^ (2 : ℕ) * m₂ with hB
   have hApos : 0 < A := by rw [hA]; positivity
   have hBpos : 0 < B := by rw [hB]; positivity
-  have hTpos : 0 < 10 * m₀ * m₂ ^ 2 := by positivity
-  have hscaled : 20 * m₀ * m₂ * (5 * m₀ * m₂ ^ 3) ≤ 20 * m₀ * m₂ * (9 * m₁ ^ 3 * m₃) :=
+  have hTpos : 0 < 10 * m₀ * m₂ ^ (2 : ℕ) := by positivity
+  have hscaled : 20 * m₀ * m₂ * (5 * m₀ * m₂ ^ (3 : ℕ)) ≤ 20 * m₀ * m₂ * (9 * m₁ ^ (3 : ℕ) * m₃) :=
     mul_le_mul_of_nonneg_left hq (by positivity)
-  have hprod : (10 * m₀ * m₂ ^ 2) ^ 2 ≤ 4 * (A * B) := by
+  have hprod : (10 * m₀ * m₂ ^ (2 : ℕ)) ^ (2 : ℕ) ≤ 4 * (A * B) := by
     rw [hA, hB]; nlinarith [hscaled]
-  have hsq : (10 * m₀ * m₂ ^ 2) ^ 2 ≤ (A + B) ^ 2 := by nlinarith [sq_nonneg (A - B)]
+  have hsq : (10 * m₀ * m₂ ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (A + B) ^ (2 : ℕ) := by nlinarith [sq_nonneg (A - B)]
   nlinarith [hsq, hApos, hBpos, hTpos]
 
 /-! ### The two models locate the strength of the hypothesis -/
@@ -128,18 +128,18 @@ theorem cubic_nonneg_of_quartic {m₀ m₁ m₂ m₃ : ℝ}
 /-- **The quartic hypothesis is an exact equality for the Gaussian.**  With `mⱼ = Γ(j+1/2)` the four
 moments are `c, c/2, 3c/4, 15c/8` for `c = √π`, and both sides equal `135c⁴/64`. -/
 theorem quartic_halfGaussian_eq (c : ℝ) :
-    5 * c * (3 * c / 4) ^ 3 = 9 * (c / 2) ^ 3 * (15 * c / 8) := by
+    5 * c * (3 * c / 4) ^ (3 : ℕ) = 9 * (c / 2) ^ (3 : ℕ) * (15 * c / 8) := by
   ring
 
 /-- **The quartic hypothesis fails for the two-sided exponential**, whose moments are `mⱼ = 2(2j)!`.
 Since that model has `C = 0`, the quartic is strictly stronger than the cubic. -/
 theorem quartic_exponential_fails :
-    ¬ (5 * (2 : ℝ) * (48 : ℝ) ^ 3 ≤ 9 * (4 : ℝ) ^ 3 * (1440 : ℝ)) := by
+    ¬ (5 * (2 : ℝ) * (48 : ℝ) ^ (3 : ℕ) ≤ 9 * (4 : ℝ) ^ (3 : ℕ) * (1440 : ℝ)) := by
   norm_num
 
 /-- The exponential nevertheless satisfies the cubic with equality. -/
 theorem cubic_exponential_eq :
-    3 * (2 : ℝ) * 4 * 1440 + 15 * (4 : ℝ) ^ 2 * 48 - 10 * (2 : ℝ) * 48 ^ 2 = 0 := by
+    3 * (2 : ℝ) * 4 * 1440 + 15 * (4 : ℝ) ^ (2 : ℕ) * 48 - 10 * (2 : ℝ) * 48 ^ (2 : ℕ) = 0 := by
   norm_num
 
 end CubicMomentLogConvexRatio

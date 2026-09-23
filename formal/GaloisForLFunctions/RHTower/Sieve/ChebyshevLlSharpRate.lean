@@ -40,7 +40,7 @@ theorem exists_norm_sum_vonMangoldt_sub_mass_ll_rate :
   have hY1 : (1 : ℝ) ≤ N + H := by linarith
   set s : ℝ := Real.sqrt (chebQuadLl c (N + H + 1)) with hsdef
   have hs0 : (0 : ℝ) ≤ s := Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = chebQuadLl c (N + H + 1) := Real.sq_sqrt (by linarith)
+  have hs2 : s ^ (2 : ℕ) = chebQuadLl c (N + H + 1) := Real.sq_sqrt (by linarith)
   have hE1248 : Real.exp (-(s / 12)) ≤ Real.exp (-(s / 48)) :=
     Real.exp_le_exp.mpr (by linarith)
   have hE2448 : Real.exp (-(s / 24)) ≤ Real.exp (-(s / 48)) :=
@@ -109,20 +109,20 @@ theorem exists_norm_sum_vonMangoldt_sub_mass_ll_rate :
     have hkey := sq_mul_exp_neg_le_gen (r := (1 : ℝ) / 48) (s := s) (by norm_num) hs0
     have hkeq : -((1 : ℝ) / 48 * s) = -(s / 48) := by ring
     rw [hkeq] at hkey
-    have hval : (4 : ℝ) / ((1 : ℝ) / 48) ^ 2 = 9216 := by norm_num
+    have hval : (4 : ℝ) / ((1 : ℝ) / 48) ^ (2 : ℕ) = 9216 := by norm_num
     rw [hval] at hkey
     have hsplit : Real.exp (-(s / 24)) = Real.exp (-(s / 48)) * Real.exp (-(s / 48)) := by
       rw [← Real.exp_add]; ring_nf
-    have hlogle : Real.log (N + H + 1) ≤ s ^ 2 / 2 := by rw [hs2]; linarith
+    have hlogle : Real.log (N + H + 1) ≤ s ^ (2 : ℕ) / 2 := by rw [hs2]; linarith
     rw [hsplit]
     have hstep : Real.log (N + H + 1) * (Real.exp (-(s / 48)) * Real.exp (-(s / 48)))
-        ≤ s ^ 2 / 2 * (Real.exp (-(s / 48)) * Real.exp (-(s / 48))) := by
+        ≤ s ^ (2 : ℕ) / 2 * (Real.exp (-(s / 48)) * Real.exp (-(s / 48))) := by
       refine mul_le_mul_of_nonneg_right hlogle ?_
       positivity
-    have hmul : s ^ 2 * Real.exp (-(s / 48)) * Real.exp (-(s / 48))
+    have hmul : s ^ (2 : ℕ) * Real.exp (-(s / 48)) * Real.exp (-(s / 48))
         ≤ 9216 * Real.exp (-(s / 48)) := mul_le_mul_of_nonneg_right hkey hE480.le
-    have hhalf : s ^ 2 / 2 * (Real.exp (-(s / 48)) * Real.exp (-(s / 48)))
-        = (s ^ 2 * Real.exp (-(s / 48)) * Real.exp (-(s / 48))) / 2 := by ring
+    have hhalf : s ^ (2 : ℕ) / 2 * (Real.exp (-(s / 48)) * Real.exp (-(s / 48)))
+        = (s ^ (2 : ℕ) * Real.exp (-(s / 48)) * Real.exp (-(s / 48))) / 2 := by ring
     linarith [hstep, hmul, hhalf.le, hhalf.ge]
   -- collect
   have hZ0' : (0 : ℝ) ≤ N + H + 1 := by linarith

@@ -12,7 +12,7 @@ The constructor `concatenate` (M3) takes generator independence
 (`GeneratorsIndependent (n₁ * n₂) concatGeneratorsList`) as a hypothesis, because
 the only available decision procedure — `Decidable (rowsLinearIndependent L)` —
 enumerates all `2 ^ L.length` coefficient vectors, which is infeasible for the
-`n₁ * n₂ - k₂` concatenated generators (e.g. `2 ^ 48` for Steane ⊗ Steane).
+`n₁ * n₂ - k₂` concatenated generators (e.g. `2 ^ (48 : ℕ)` for Steane ⊗ Steane).
 
 This file discharges that hypothesis **structurally**: it derives the symplectic
 linear independence of the concatenated generators from
@@ -23,8 +23,8 @@ linear independence of the concatenated generators from
 * `hout` — the outer generators are symplectically independent
   (`rowsLinearIndependent (outerZ ++ outerX)`).
 
-Both inputs are *small* (Steane: `2 ^ 8` and `2 ^ 6`), so they are
-`decide`/`native_decide`-able per instance, unlike the `2 ^ 48` direct check.
+Both inputs are *small* (Steane: `2 ^ (8 : ℕ)` and `2 ^ (6 : ℕ)`), so they are
+`decide`/`native_decide`-able per instance, unlike the `2 ^ (48 : ℕ)` direct check.
 
 ## Architecture
 
@@ -455,7 +455,7 @@ symplectically independent, given:
   are symplectically independent, and
 * `hout` — the outer generators are symplectically independent.
 
-Both inputs are small (Steane: `2 ^ 8` and `2 ^ 6`), hence `decide`/`native_decide`-able per
+Both inputs are small (Steane: `2 ^ (8 : ℕ)` and `2 ^ (6 : ℕ)`), hence `decide`/`native_decide`-able per
 instance — unlike the `2 ^ (n₁ n₂ - k₂)` direct check on the concatenated list. -/
 theorem rowsLinearIndependent_concat
     (hin : rowsLinearIndependent (D.Cin.generatorsList ++

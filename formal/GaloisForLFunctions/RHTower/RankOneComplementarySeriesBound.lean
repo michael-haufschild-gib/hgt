@@ -20,7 +20,7 @@ noncomputable section
 /-- Quadratic form packaging the two linear factors in the first spherical `K`-type norm
 obstruction. -/
 def rankOneKTypeForm (ν : ℝ) (v : ℝ × ℝ) : ℝ :=
-  (1 + 2 * ν) * v.1 ^ 2 + (1 - 2 * ν) * v.2 ^ 2
+  (1 + 2 * ν) * v.1 ^ (2 : ℕ) + (1 - 2 * ν) * v.2 ^ (2 : ℕ)
 
 /-- Positive-definiteness of the factorized rank-one form. -/
 def RankOneKTypePositive (ν : ℝ) : Prop :=
@@ -28,7 +28,7 @@ def RankOneKTypePositive (ν : ℝ) : Prop :=
 
 /-- Scalar factor in the first spherical raising-operator norm identity. -/
 def sphericalRaisingNormFactor (ν : ℝ) : ℝ :=
-  1 / 4 - ν ^ 2
+  1 / 4 - ν ^ (2 : ℕ)
 
 /-- Factorization of the spherical raising-operator norm coefficient. -/
 theorem four_mul_sphericalRaisingNormFactor (ν : ℝ) :
@@ -70,8 +70,8 @@ theorem rankOneKTypePositive_iff (ν : ℝ) :
       simp only [rankOneKTypeForm, hx, zero_pow (by norm_num : (2 : ℕ) ≠ 0), mul_zero,
         zero_add]
       exact mul_pos hminus (sq_pos_of_ne_zero hy)
-    · have hx2 : 0 < v.1 ^ 2 := sq_pos_of_ne_zero hx
-      have hy2 : 0 ≤ v.2 ^ 2 := sq_nonneg v.2
+    · have hx2 : 0 < v.1 ^ (2 : ℕ) := sq_pos_of_ne_zero hx
+      have hy2 : 0 ≤ v.2 ^ (2 : ℕ) := sq_nonneg v.2
       simp only [rankOneKTypeForm]
       positivity
 

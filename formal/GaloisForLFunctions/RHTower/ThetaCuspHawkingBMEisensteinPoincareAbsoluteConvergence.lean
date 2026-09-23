@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.SuzukiPolynomialEventSummability
 
 For an upper-half-plane coordinate `z = x + i y`, set
 
-`Q_z(c,d) = (c y)^2 + (c x + d)^2`.
+`Q_z(c,d) = (c y)^(2 : ℕ) + (c x + d)^(2 : ℕ)`.
 
 The primitive-pair Eisenstein seed is `(y / Q_z(c,d))^s`.  This module proves, from the corpus
 one-dimensional integer-power summability theorem, that the full primitive-pair family is

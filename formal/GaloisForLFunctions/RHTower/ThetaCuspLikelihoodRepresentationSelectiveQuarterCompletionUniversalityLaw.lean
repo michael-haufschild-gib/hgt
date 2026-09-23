@@ -30,11 +30,11 @@ structure ThetaCuspLikelihoodRepresentationSelectiveQuarterCompletionCertificate
           (thetaCuspLikelihoodCoordinate x)) q).PosDef
   nonlinearCassini :
     ∀ t : ℝ, 0 < t → t < 1 →
-      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
           ((thetaCuspCassiniLikelihoodFlux t /
             (t * thetaCuspCassiniLikelihoodPartition t) : ℝ) : ℂ) ∧
-        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).re ∧
-        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).im = 0
+        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).re ∧
+        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).im = 0
   reciprocalMarkovNoGo :
     ¬ ThetaCuspCassiniReciprocalLikelihoodBoundaryIdentity
   quarterCompletion :

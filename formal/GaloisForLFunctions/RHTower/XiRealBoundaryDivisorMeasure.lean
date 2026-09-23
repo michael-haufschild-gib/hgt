@@ -137,7 +137,7 @@ def xiOfFinsupp (c : XiRealZero →₀ ℂ) : XiBoundaryHilbert :=
 finitely supported real-zero data is `∑_γ m_γ |c_γ|²`, with `m_γ` the positive analytic
 multiplicity of the real zero `γ`. -/
 theorem norm_xiOfFinsupp_sq (c : XiRealZero →₀ ℂ) :
-    ‖xiOfFinsupp c‖ ^ 2 = ∑ γ ∈ c.support, (xiRealMult γ : ℝ) * ‖c γ‖ ^ 2 := by
+    ‖xiOfFinsupp c‖ ^ (2 : ℕ) = ∑ γ ∈ c.support, (xiRealMult γ : ℝ) * ‖c γ‖ ^ (2 : ℕ) := by
   rw [lp_two_norm_sq_eq_tsum]
   exact tsum_sigma_fiberConst xiRealMult (fun γ => c γ) c.support
     (fun a ha => Finsupp.notMem_support_iff.mp ha)

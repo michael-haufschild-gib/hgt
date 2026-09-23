@@ -304,29 +304,29 @@ theorem not_bddAbove_of_not_mem_orthogonal {x : V}
   have hM0 : 0 ≤ M := le_trans (C.gram_nonneg 0 x) (hM (Set.mem_range_self 0))
   set t : ℝ := (M + 1) / c with ht
   have htpos : 0 < |t| + 1 := by positivity
-  obtain ⟨n, hn⟩ : ∃ n, C.cometricForm n β < 1 / ((|t| + 1) ^ 2) := by
-    have hlt : C.cometricFormInf β < 1 / ((|t| + 1) ^ 2) := by
+  obtain ⟨n, hn⟩ : ∃ n, C.cometricForm n β < 1 / ((|t| + 1) ^ (2 : ℕ)) := by
+    have hlt : C.cometricFormInf β < 1 / ((|t| + 1) ^ (2 : ℕ)) := by
       rw [hform]; positivity
     by_contra hcon
     push Not at hcon
     exact absurd (le_ciInf fun n => hcon n) (not_le.mpr hlt)
   have hfen := C.fenchel_le n (t • β) x
   have hinner : ⟪t • β, x⟫ = t * c := by rw [real_inner_smul_left, hsx]
-  have hcomet : ⟪C.cometric n (t • β), t • β⟫ = t ^ 2 * C.cometricForm n β := by
+  have hcomet : ⟪C.cometric n (t • β), t • β⟫ = t ^ (2 : ℕ) * C.cometricForm n β := by
     simp only [cometricForm, map_smul, real_inner_smul_left, real_inner_smul_right]
     ring
   rw [hinner, hcomet] at hfen
   have hbound := hM (Set.mem_range_self n)
   have htc : t * c = M + 1 := by
     rw [ht]; field_simp
-  have hsq : t ^ 2 * C.cometricForm n β < 1 := by
-    have habs : t ^ 2 ≤ (|t| + 1) ^ 2 := by
+  have hsq : t ^ (2 : ℕ) * C.cometricForm n β < 1 := by
+    have habs : t ^ (2 : ℕ) ≤ (|t| + 1) ^ (2 : ℕ) := by
       have : |t| ≤ |t| + 1 := by linarith
       nlinarith [abs_nonneg t, sq_abs t]
     have hnn := C.cometricForm_nonneg n β
-    have hpos2 : (0:ℝ) < (|t| + 1) ^ 2 := by positivity
-    calc t ^ 2 * C.cometricForm n β ≤ (|t| + 1) ^ 2 * C.cometricForm n β := by nlinarith
-      _ < (|t| + 1) ^ 2 * (1 / ((|t| + 1) ^ 2)) := by nlinarith
+    have hpos2 : (0:ℝ) < (|t| + 1) ^ (2 : ℕ) := by positivity
+    calc t ^ (2 : ℕ) * C.cometricForm n β ≤ (|t| + 1) ^ (2 : ℕ) * C.cometricForm n β := by nlinarith
+      _ < (|t| + 1) ^ (2 : ℕ) * (1 / ((|t| + 1) ^ (2 : ℕ))) := by nlinarith
       _ = 1 := by field_simp
   linarith
 

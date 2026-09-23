@@ -7,7 +7,7 @@ Cofinal replication can recover an omitted diagonal Fisher collision algebraical
 atom into `k` equal-mass orthogonal copies and the off-diagonal replica sum tends to twice the
 original collision.  A hard-cut/soft-damping reporter sees a different geometry.  Copies at the
 same height span intervals of length zero, while copies separated inside a fibre of diameter
-`Delta` have total Laplace capacity at most `2 p^2 |a d| Delta`, independently of replica count.
+`Delta` have total Laplace capacity at most `2 p^(2 : ℕ) |a d| Delta`, independently of replica count.
 
 Consequently a vanishing-width replica fibre cannot turn algebraic collision evacuation into one
 bounded common-Hardy source.  Retaining a nonzero collision requires a genuinely nonlocal height
@@ -26,7 +26,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- Algebraic ordered off-diagonal contribution of one atom replicated `k` times. -/
 def fisherReplicaOffDiagonalCollision (k : ℕ) (p a d : ℝ) : ℝ :=
   ∑ r : Fin k, ∑ s : Fin k,
-    if s = r then 0 else (p / k) ^ 2 * (a + a) * d
+    if s = r then 0 else (p / k) ^ (2 : ℕ) * (a + a) * d
 
 private theorem fisherReplica_inner_sum (k : ℕ) (r : Fin k) (C : ℝ) :
     (∑ s : Fin k, if s = r then 0 else C) = (k - 1 : ℕ) * C := by
@@ -46,7 +46,7 @@ private theorem fisherReplica_inner_sum (k : ℕ) (r : Fin k) (C : ℝ) :
 theorem fisherReplicaOffDiagonalCollision_eq
     {k : ℕ} (hk : 0 < k) (p a d : ℝ) :
     fisherReplicaOffDiagonalCollision k p a d =
-      2 * p ^ 2 * a * d * (1 - 1 / k) := by
+      2 * p ^ (2 : ℕ) * a * d * (1 - 1 / k) := by
   rw [fisherReplicaOffDiagonalCollision]
   simp_rw [fisherReplica_inner_sum k]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
@@ -60,7 +60,7 @@ def fisherReplicaIntervalCollisionCapacity
     (k : ℕ) (p a d : ℝ) (height : Fin k → ℝ) : ℝ :=
   ∑ r : Fin k, ∑ s : Fin k,
     if s = r then 0
-    else (p / k) ^ 2 * (2 * |a * d|) * |height r - height s|
+    else (p / k) ^ (2 : ℕ) * (2 * |a * d|) * |height r - height s|
 
 /-- Uniform width--capacity law: increasing replica count does not compensate for shrinking
 within-fibre height diameter. -/
@@ -69,8 +69,8 @@ theorem fisherReplicaIntervalCollisionCapacity_le
     (hDelta : 0 ≤ Delta)
     (hdiam : ∀ r s, |height r - height s| ≤ Delta) :
     fisherReplicaIntervalCollisionCapacity k p a d height ≤
-      2 * p ^ 2 * |a * d| * Delta := by
-  have hcoeff : 0 ≤ (p / (k : ℝ)) ^ 2 * (2 * |a * d|) := by
+      2 * p ^ (2 : ℕ) * |a * d| * Delta := by
+  have hcoeff : 0 ≤ (p / (k : ℝ)) ^ (2 : ℕ) * (2 * |a * d|) := by
     positivity
   calc
     fisherReplicaIntervalCollisionCapacity k p a d height ≤
@@ -88,14 +88,14 @@ theorem fisherReplicaIntervalCollisionCapacity_le
       · simp only [hsr, if_false, mul_one]
         have h := mul_le_mul_of_nonneg_left (hdiam r s) hcoeff
         nlinarith
-    _ = Delta * (2 * p ^ 2 * |a * d| * (1 - 1 / k)) := by
+    _ = Delta * (2 * p ^ (2 : ℕ) * |a * d| * (1 - 1 / k)) := by
       rw [fisherReplicaOffDiagonalCollision_eq hk]
       ring
-    _ ≤ 2 * p ^ 2 * |a * d| * Delta := by
+    _ ≤ 2 * p ^ (2 : ℕ) * |a * d| * Delta := by
       have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
       have hinv : 0 ≤ (1 : ℝ) / k := by positivity
       have hfactor : 1 - (1 : ℝ) / k ≤ 1 := by linarith
-      have hbase : 0 ≤ Delta * (2 * p ^ 2 * |a * d|) := by positivity
+      have hbase : 0 ≤ Delta * (2 * p ^ (2 : ℕ) * |a * d|) := by positivity
       nlinarith
 
 theorem fisherReplicaIntervalCollisionCapacity_nonneg
@@ -122,13 +122,13 @@ theorem tendsto_fisherReplicaIntervalCollisionCapacity_zero
   · intro n
     exact fisherReplicaIntervalCollisionCapacity_le (Nat.succ_pos n)
       (hDeltaNonneg n) (hdiam n)
-  · have h := hDelta.const_mul (2 * p ^ 2 * |a * d|)
+  · have h := hDelta.const_mul (2 * p ^ (2 : ℕ) * |a * d|)
     simpa only [mul_zero] using h
 
 /-- Abstract no-recovery form: any scalar reporter bounded by vanishing interval capacity cannot
 converge to the nonzero algebraic collision retained by cofinal replication. -/
 theorem no_vanishingWidthReporter_recovers_fisherReplicaCollision
-    (p a d : ℝ) (hcollision : 2 * p ^ 2 * a * d ≠ 0)
+    (p a d : ℝ) (hcollision : 2 * p ^ (2 : ℕ) * a * d ≠ 0)
     (Delta : ℕ → ℝ) (height : ∀ n : ℕ, Fin (n + 1) → ℝ)
     (output : ℕ → ℝ)
     (hDelta : Tendsto Delta atTop (𝓝 0))
@@ -136,7 +136,7 @@ theorem no_vanishingWidthReporter_recovers_fisherReplicaCollision
     (hdiam : ∀ n r s, |height n r - height n s| ≤ Delta n)
     (houtput : ∀ n, |output n| ≤
       fisherReplicaIntervalCollisionCapacity (n + 1) p a d (height n)) :
-    ¬ Tendsto output atTop (𝓝 (2 * p ^ 2 * a * d)) := by
+    ¬ Tendsto output atTop (𝓝 (2 * p ^ (2 : ℕ) * a * d)) := by
   have hcapacity := tendsto_fisherReplicaIntervalCollisionCapacity_zero
     p a d Delta height hDelta hDeltaNonneg hdiam
   have habs : Tendsto (fun n => |output n|) atTop (𝓝 0) := by
@@ -148,7 +148,7 @@ theorem no_vanishingWidthReporter_recovers_fisherReplicaCollision
     rw [tendsto_zero_iff_norm_tendsto_zero]
     simpa only [Real.norm_eq_abs] using habs
   intro htarget
-  have heq : (0 : ℝ) = 2 * p ^ 2 * a * d :=
+  have heq : (0 : ℝ) = 2 * p ^ (2 : ℕ) * a * d :=
     tendsto_nhds_unique hzero htarget
   exact hcollision heq.symm
 
@@ -255,7 +255,7 @@ def fisherReplicaOrientedCollisionLaplace
     if s = r then 0 else
       orientedCutoffLaplaceCoefficient
         (min (height r) (height s)) (max (height r) (height s))
-        ((((p / k) ^ 2 * (2 * a * d) : ℝ) : ℂ)) node
+        ((((p / k) ^ (2 : ℕ) * (2 * a * d) : ℝ) : ℂ)) node
 
 /-- Exact source preservation and nonzero oriented collision capacity are incompatible for
 positive equal-mass scalar replicas.  Exact preservation collapses every height to zero, so every
@@ -276,13 +276,13 @@ theorem fisherReplicaOrientedCollisionLaplace_eq_zero_of_dampingPreserving
 Laplace damping moment cannot report a nonzero evacuated Fisher collision. -/
 theorem no_positiveDampingPreservingReplica_recovers_fisherReplicaCollision
     {k : ℕ} (hk : 0 < k) {p a d x : ℝ} {height : Fin k → ℝ} {node : ℂ}
-    (hcollision : 2 * p ^ 2 * a * d ≠ 0)
+    (hcollision : 2 * p ^ (2 : ℕ) * a * d ≠ 0)
     (hheight : ∀ r, 0 ≤ height r)
     (hx : 0 < x)
     (hdamp : fisherReplicaDampingFactor
       k (fun _ => 1 / (k : ℝ)) height x = 1) :
     fisherReplicaOrientedCollisionLaplace k p a d height node ≠
-      ((2 * p ^ 2 * a * d : ℝ) : ℂ) := by
+      ((2 * p ^ (2 : ℕ) * a * d : ℝ) : ℂ) := by
   rw [fisherReplicaOrientedCollisionLaplace_eq_zero_of_dampingPreserving
     hk hheight hx hdamp]
   exact fun heq => hcollision (Complex.ofReal_injective heq.symm)
@@ -309,7 +309,7 @@ theorem norm_fisherReplicaOrientedCollisionLaplace_le_capacity
       (upper := max (height r) (height s))
       (show 0 ≤ min (height r) (height s) from
         le_min (hheight r) (hheight s))
-      (coefficient := ((((p / k) ^ 2 * (2 * a * d) : ℝ) : ℂ)))
+      (coefficient := ((((p / k) ^ (2 : ℕ) * (2 * a * d) : ℝ) : ℂ)))
       (node := node) hnode
     have hwidth :
         max (max (height r) (height s) - min (height r) (height s)) 0 =
@@ -318,8 +318,8 @@ theorem norm_fisherReplicaOrientedCollisionLaplace_le_capacity
       exact max_sub_min_eq_abs (height r) (height s)
     rw [hwidth] at hbound
     have hcoefficient :
-        ‖((((p / k) ^ 2 * (2 * a * d) : ℝ) : ℂ))‖ =
-          (p / k) ^ 2 * (2 * |a * d|) := by
+        ‖((((p / k) ^ (2 : ℕ) * (2 * a * d) : ℝ) : ℂ))‖ =
+          (p / k) ^ (2 : ℕ) * (2 * |a * d|) := by
       rw [Complex.norm_real, Real.norm_eq_abs, abs_mul,
         abs_of_nonneg (sq_nonneg (p / (k : ℝ))), abs_mul, abs_mul,
         abs_of_nonneg (show (0 : ℝ) ≤ 2 by norm_num), abs_mul]
@@ -351,7 +351,7 @@ theorem tendsto_fisherReplicaOrientedCollisionLaplace_zero
 /-- Headline incompatibility: a nonzero cofinal algebraic collision cannot be the limit of the
 same replicas' uniformly bounded, vanishing-width oriented common-Hardy reporters. -/
 theorem no_vanishingWidthOrientedLaplace_recovers_fisherReplicaCollision
-    (p a d : ℝ) (hcollision : 2 * p ^ 2 * a * d ≠ 0)
+    (p a d : ℝ) (hcollision : 2 * p ^ (2 : ℕ) * a * d ≠ 0)
     (node : ℂ) (hnode : 0 ≤ node.re)
     (Delta : ℕ → ℝ) (height : ∀ n : ℕ, Fin (n + 1) → ℝ)
     (hheight : ∀ n r, 0 ≤ height n r)
@@ -361,11 +361,11 @@ theorem no_vanishingWidthOrientedLaplace_recovers_fisherReplicaCollision
     ¬ Tendsto
       (fun n => fisherReplicaOrientedCollisionLaplace
         (n + 1) p a d (height n) node)
-      atTop (𝓝 ((2 * p ^ 2 * a * d : ℝ) : ℂ)) := by
+      atTop (𝓝 ((2 * p ^ (2 : ℕ) * a * d : ℝ) : ℂ)) := by
   intro htarget
   have hzero := tendsto_fisherReplicaOrientedCollisionLaplace_zero
     p a d node hnode Delta height hheight hDelta hDeltaNonneg hdiam
-  have heq : (0 : ℂ) = ((2 * p ^ 2 * a * d : ℝ) : ℂ) :=
+  have heq : (0 : ℂ) = ((2 * p ^ (2 : ℕ) * a * d : ℝ) : ℂ) :=
     tendsto_nhds_unique hzero htarget
   exact hcollision (Complex.ofReal_injective heq.symm)
 

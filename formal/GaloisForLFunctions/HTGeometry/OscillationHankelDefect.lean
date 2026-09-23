@@ -16,18 +16,18 @@ source bound. No identification of this example with the actual Li coefficients 
 namespace HTGeometry
 
 theorem real_mul_hankel_defect (x z : ℂ) :
-    (x * z).re ^ 2 - x.re * (x * z ^ 2).re =
-      z.im ^ 2 * Complex.normSq x := by
+    (x * z).re ^ (2 : ℕ) - x.re * (x * z ^ (2 : ℕ)).re =
+      z.im ^ (2 : ℕ) * Complex.normSq x := by
   simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   ring
 
 theorem real_power_hankel_defect (z : ℂ) (n : ℕ) :
-    (z ^ (n + 1)).re ^ 2 - (z ^ n).re * (z ^ (n + 2)).re =
-      z.im ^ 2 * Complex.normSq z ^ n := by
+    (z ^ (n + 1)).re ^ (2 : ℕ) - (z ^ n).re * (z ^ (n + 2)).re =
+      z.im ^ (2 : ℕ) * Complex.normSq z ^ n := by
   simpa only [pow_add, pow_one, map_pow] using real_mul_hankel_defect (z ^ n) z
 
 theorem real_power_hankel_defect_nonneg (z : ℂ) (n : ℕ) :
-    0 ≤ (z ^ (n + 1)).re ^ 2 - (z ^ n).re * (z ^ (n + 2)).re := by
+    0 ≤ (z ^ (n + 1)).re ^ (2 : ℕ) - (z ^ n).re * (z ^ (n + 2)).re := by
   rw [real_power_hankel_defect]
   exact mul_nonneg (sq_nonneg _) (pow_nonneg (Complex.normSq_nonneg _) _)
 
@@ -54,15 +54,15 @@ theorem oscillatingInteger_eq_re_pow (n : ℕ) :
       ring
 
 theorem oscillatingInteger_hankel_defect (n : ℕ) :
-    oscillatingInteger (n + 1) ^ 2 -
+    oscillatingInteger (n + 1) ^ (2 : ℕ) -
       oscillatingInteger n * oscillatingInteger (n + 2) = (2 : ℤ) ^ n := by
   induction n with
   | zero => norm_num [oscillatingInteger]
   | succ n ih =>
-      change oscillatingInteger (n + 2) ^ 2 -
+      change oscillatingInteger (n + 2) ^ (2 : ℕ) -
         oscillatingInteger (n + 1) * oscillatingInteger (n + 3) = 2 ^ (n + 1)
       calc
-        _ = 2 * (oscillatingInteger (n + 1) ^ 2 -
+        _ = 2 * (oscillatingInteger (n + 1) ^ (2 : ℕ) -
             oscillatingInteger n * oscillatingInteger (n + 2)) := by
           rw [show n + 3 = (n + 1) + 2 by omega,
             oscillatingInteger_recurrence (n + 1), oscillatingInteger_recurrence n]
@@ -105,8 +105,8 @@ theorem oscillatingInteger_positive_negative_cofinally (N : ℕ) :
 theorem oscillation_all_positive_integer_defects :
     ∃ u : ℕ → ℤ,
       (∀ N, (∃ n, N ≤ n ∧ 0 < u n) ∧ (∃ n, N ≤ n ∧ u n < 0)) ∧
-      (∀ n, u (n + 1) ^ 2 - u n * u (n + 2) = 2 ^ n) ∧
-      (∀ n, 0 < u (n + 1) ^ 2 - u n * u (n + 2)) := by
+      (∀ n, u (n + 1) ^ (2 : ℕ) - u n * u (n + 2) = 2 ^ n) ∧
+      (∀ n, 0 < u (n + 1) ^ (2 : ℕ) - u n * u (n + 2)) := by
   refine ⟨oscillatingInteger, oscillatingInteger_positive_negative_cofinally,
     oscillatingInteger_hankel_defect, ?_⟩
   intro n

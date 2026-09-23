@@ -2,7 +2,7 @@
 # Explicit grid summation of the local `A₆` power bound
 
 The uniform translated radius-`M² / 12` estimate sums over the explicit
-four-dimensional product grid with exactly `(m+1)^4` cells.
+four-dimensional product grid with exactly `(m+1)^(4 : ℕ)` cells.
 -/
 import GaloisForLFunctions.RHTower.BourgainA6LocalBallPowerBound
 import GaloisForLFunctions.RHTower.BourgainExplicitCubeGrid

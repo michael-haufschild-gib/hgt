@@ -129,7 +129,7 @@ theorem menonFinalReceiverProductCostVolume_le_explicit
     (hN : 1 ≤ ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
         Q eta W V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt W * Real.log x * (2 * Real.pi * volE) *
             (Q * (1 + eta) ^ j) / x +
@@ -146,19 +146,19 @@ theorem menonFinalReceiverProductCostVolume_le_explicit
   calc
     menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
         Q eta W V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊(menonFinalRangeTopNat x : ℝ) / q⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volE) * (24 * q / x))) := by
             simpa only [q] using hbase
-    _ = V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ = V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (hmMassRecip ⌊(menonFinalRangeTopNat x : ℝ) / q⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volE) * q / x))) := by ring
-    _ ≤ V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ ≤ V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt W * Real.log x * (2 * Real.pi * volE) * q / x +
           144 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * W))))) := by
       gcongr
-    _ = V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ = V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt W * Real.log x * (2 * Real.pi * volE) *
             (Q * (1 + eta) ^ j) / x +
@@ -172,7 +172,7 @@ theorem eventually_menonFinalReceiverProductCostVolume_le_explicit :
       j ∈ Finset.range (menonFinalRangeLadderSteps x) → 0 ≤ volE →
       menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
           (menonFinalRangeLadderBase x) (menonFinalRangeLadderEta x) W V volE j ≤
-        V ^ 2 * ((2 * Real.pi)⁻¹ *
+        V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
           (24 * (6 +
             80000 * Real.sqrt W * Real.log x * (2 * Real.pi * volE) *
               (menonFinalRangeLadderBase x *

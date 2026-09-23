@@ -130,7 +130,7 @@ theorem hasDerivAt_treeBP {p : ℕ} (hp : 0 < p) {u v y : ℝ}
     (hA : 0 < 1 + u * y) (hB : 0 < 1 + v * y) :
     HasDerivAt (treeBP p u v)
       (2 * (p : ℝ) * (u - v) * (1 + u * y) ^ (p - 1) * (1 + v * y) ^ (p - 1) /
-        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ 2) y := by
+        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ (2 : ℕ)) y := by
   obtain ⟨q, rfl⟩ : ∃ q, p = q + 1 := ⟨p - 1, by omega⟩
   have hAaff : HasDerivAt (fun t : ℝ => 1 + u * t) u y := by
     simpa using ((hasDerivAt_id y).const_mul u).const_add (1 : ℝ)
@@ -158,12 +158,12 @@ theorem hasDerivAt_treeBP {p : ℕ} (hp : 0 < p) {u v y : ℝ}
 theorem treeBP_deriv_pos {p : ℕ} (hp : 0 < p) {u v y : ℝ} (huv : v < u)
     (hA : 0 < 1 + u * y) (hB : 0 < 1 + v * y) :
     0 < 2 * (p : ℝ) * (u - v) * (1 + u * y) ^ (p - 1) * (1 + v * y) ^ (p - 1) /
-      ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ 2 := by
+      ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ (2 : ℕ) := by
   have hp' : (0 : ℝ) < p := by exact_mod_cast hp
   have h1 : (0 : ℝ) < u - v := by linarith
   have h2 : (0 : ℝ) < (1 + u * y) ^ (p - 1) := pow_pos hA _
   have h3 : (0 : ℝ) < (1 + v * y) ^ (p - 1) := pow_pos hB _
-  have hden : (0 : ℝ) < ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ 2 := by
+  have hden : (0 : ℝ) < ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ (2 : ℕ) := by
     have := pow_pos hA p
     have := pow_pos hB p
     positivity
@@ -189,11 +189,11 @@ theorem exists_treeBP_interior_fixedPoint {p : ℕ} (hp : 2 ≤ p) {u v : ℝ}
   set H : ℝ → ℝ := fun y => R y - y with hH
   have hDR : ∀ y : ℝ, |y| ≤ 1 → HasDerivAt R
       (2 * (p : ℝ) * (u - v) * (1 + u * y) ^ (p - 1) * (1 + v * y) ^ (p - 1) /
-        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ 2) y := fun y hy =>
+        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ (2 : ℕ)) y := fun y hy =>
     hasDerivAt_treeBP hp0 (branch_pos hu' hy) (branch_pos hv' hy)
   have hDH : ∀ y : ℝ, |y| ≤ 1 → HasDerivAt H
       (2 * (p : ℝ) * (u - v) * (1 + u * y) ^ (p - 1) * (1 + v * y) ^ (p - 1) /
-        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ 2 - 1) y := fun y hy =>
+        ((1 + u * y) ^ p + (1 + v * y) ^ p) ^ (2 : ℕ) - 1) y := fun y hy =>
     (hDR y hy).sub (hasDerivAt_id y)
   have hH0 : H 0 = 0 := by simp [hH, hR]
   have hDH0 : HasDerivAt H ((p : ℝ) * (u - v) / 2 - 1) 0 :=

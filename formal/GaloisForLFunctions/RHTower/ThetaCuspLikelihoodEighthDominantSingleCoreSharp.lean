@@ -4,11 +4,11 @@ import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodHighCumulantCalibration
 /-!
 # Sharp dominant one-particle eighth core
 
-The exact Dirac--ray one-particle core admits a uniform algebraic floor of `9549 A^8`
+The exact Dirac--ray one-particle core admits a uniform algebraic floor of `9549 A^(8 : ℕ)`
 on the entire physical source chamber `A ≥ 157/50`.  This replaces the earlier indirect
-floor `17496/5 A^8`, and leaves `2561` exponential units after complete pair and higher-even
+floor `17496/5 A^(8 : ℕ)`, and leaves `2561` exponential units after complete pair and higher-even
 Fock losses.  Global partition normalization then gives the literal logarithmic floor
-`653976 A^8 exp(-3A) < J₈`.
+`653976 A^(8 : ℕ) exp(-3A) < J₈`.
 -/
 
 namespace RHTower
@@ -19,22 +19,22 @@ set_option maxRecDepth 20000 in
 /-- Exact algebraic floor for the dominant one-particle core on the physical chamber. -/
 theorem nineThousandFiveHundredFortyNine_mul_pow_eight_lt_thetaCuspLikelihoodEighthDominantSingleCore
     {A : ℝ} (hA : (157 / 50 : ℝ) ≤ A) :
-    9549 * A ^ 8 < thetaCuspLikelihoodEighthDominantSingleCore A := by
+    9549 * A ^ (8 : ℕ) < thetaCuspLikelihoodEighthDominantSingleCore A := by
   let B := A - 3 / 2
   have hB : 0 < B := by
     dsimp only [B]
     linarith
-  change 9549 * A ^ 8 <
+  change 9549 * A ^ (8 : ℕ) <
     16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
       18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A)
   let s := A - 157 / 50
   have hs : 0 ≤ s := by
     dsimp only [s]
     linarith
-  have hmul : 0 < B ^ 9 *
+  have hmul : 0 < B ^ (9 : ℕ) *
       (16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
         18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A) -
-        9549 * A ^ 8) := by
+        9549 * A ^ (8 : ℕ)) := by
     unfold thetaCuspLikelihoodEighthSourceScoreRayTransform
       thetaCuspLikelihoodEighthSourceScore
       thetaCuspLikelihoodEighthSourceScoreDerivOne
@@ -53,14 +53,14 @@ theorem nineThousandFiveHundredFortyNine_mul_pow_eight_lt_thetaCuspLikelihoodEig
   have hdiff : 0 <
       16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
         18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A) -
-        9549 * A ^ 8 :=
+        9549 * A ^ (8 : ℕ) :=
     pos_of_mul_pos_right hmul (pow_nonneg hB.le 9)
   linarith
 
 /-- Restoring the exact dominant exponential preserves the sharp core floor. -/
 theorem nineThousandFiveHundredFortyNine_mul_pow_eight_exp_lt_thetaCuspLikelihoodEighthDominantSingleMass
     {A : ℝ} (hA : (157 / 50 : ℝ) ≤ A) :
-    9549 * A ^ 8 * Real.exp (-(3 * A)) <
+    9549 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) <
       thetaCuspLikelihoodEighthDominantSingleMass A := by
   have hcore :=
     nineThousandFiveHundredFortyNine_mul_pow_eight_lt_thetaCuspLikelihoodEighthDominantSingleCore hA
@@ -71,7 +71,7 @@ theorem nineThousandFiveHundredFortyNine_mul_pow_eight_exp_lt_thetaCuspLikelihoo
 /-- Complete global Fock reserve after dominant-pair, non-dominant-pair, and higher-even loss. -/
 theorem twoThousandFiveHundredSixtyOne_mul_pow_eight_exp_lt_thetaCuspLikelihoodEighthFockOddWeight
     {x : ℝ} (hx : 0 ≤ x) :
-    2561 * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    2561 * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) <
       thetaCuspLikelihoodEighthFockOddWeight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -85,7 +85,7 @@ theorem twoThousandFiveHundredSixtyOne_mul_pow_eight_exp_lt_thetaCuspLikelihoodE
   have hBA : B = A - 3 / 2 := by
     dsimp only [A, B, thetaCuspSingleAtomReflectionScale, thetaCuspLikelihoodCoordinate]
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hdominant :=
@@ -96,9 +96,9 @@ theorem twoThousandFiveHundredSixtyOne_mul_pow_eight_exp_lt_thetaCuspLikelihoodE
   have hsingle :=
     nineThousandFiveHundredFortyNine_mul_pow_eight_exp_lt_thetaCuspLikelihoodEighthDominantSingleMass
       hAseam
-  have hscale : 0 < A ^ 8 * Real.exp (-(3 * A)) := by positivity
+  have hscale : 0 < A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by positivity
   have hhigher' : thetaCuspLikelihoodEighthHigherEvenFockLoss x ≤
-      (1300 / 3 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by
+      (1300 / 3 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
     simpa only [A] using hhigher
   unfold thetaCuspLikelihoodEighthFockOddWeight
   dsimp only [A, B]
@@ -110,13 +110,13 @@ theorem twoThousandFiveHundredSixtyOne_mul_pow_eight_exp_lt_thetaCuspLikelihoodE
 /-- Global partition normalization converts the sharp Fock reserve into a literal log floor. -/
 theorem sixHundredFiftyThreeThousandNineHundredSeventySix_mul_pow_eight_exp_lt_thetaCuspLikelihoodSourceLogPartitionJetEight
     {x : ℝ} (hx : 0 ≤ x) :
-    653976 * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    653976 * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) <
       thetaCuspLikelihoodSourceLogPartitionJetEight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
   let P := thetaCuspLikelihoodPartition B
-  let S := A ^ 8 * Real.exp (-(3 * A))
+  let S := A ^ (8 : ℕ) * Real.exp (-(3 * A))
   let p := thetaCuspLikelihoodTailProbability B
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hP : 0 < P := by simpa only [P] using thetaCuspLikelihoodPartition_pos hB
@@ -164,7 +164,7 @@ theorem sixHundredFiftyThreeThousandNineHundredSeventySix_mul_pow_eight_exp_lt_t
     · simpa only [A, S, mul_assoc] using hweight
     · positivity
   calc
-    653976 * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    653976 * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
           Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) =
         653976 * S := by dsimp only [A, S]; ring
     _ < (256 / P) * thetaCuspLikelihoodEighthFockOddWeight x :=

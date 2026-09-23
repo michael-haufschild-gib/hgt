@@ -25,22 +25,22 @@ line reduces to a pole-free product identity. -/
 theorem quadraticRate_secondVariation {F F' : ℂ → ℂ} {F'' κ Q₀ Qv : ℂ}
     (hF : ∀ᶠ x in 𝓝 (0 : ℂ), HasDerivAt F (F' x) x)
     (hF' : HasDerivAt F' F'' 0) (hF'0 : F' 0 = 0)
-    (hid : ∀ᶠ x in 𝓝 (0 : ℂ), F x ^ 2 = κ * (Q₀ + x ^ 2 * Qv)) :
+    (hid : ∀ᶠ x in 𝓝 (0 : ℂ), F x ^ (2 : ℕ) = κ * (Q₀ + x ^ (2 : ℕ) * Qv)) :
     F 0 * F'' = κ * Qv := by
   -- first differentiation, valid on a neighbourhood
-  have hid' : ∀ᶠ x in 𝓝 (0 : ℂ), ∀ᶠ y in 𝓝 x, F y ^ 2 = κ * (Q₀ + y ^ 2 * Qv) :=
+  have hid' : ∀ᶠ x in 𝓝 (0 : ℂ), ∀ᶠ y in 𝓝 x, F y ^ (2 : ℕ) = κ * (Q₀ + y ^ (2 : ℕ) * Qv) :=
     hid.eventually_nhds
   have hstep : ∀ᶠ x in 𝓝 (0 : ℂ), 2 * F x * F' x = κ * (2 * x * Qv) := by
     filter_upwards [hF, hid'] with x hx hlocal
-    have hEq : (fun y : ℂ => F y ^ 2) =ᶠ[𝓝 x] fun y : ℂ => κ * (Q₀ + y ^ 2 * Qv) := hlocal
-    have hleft : HasDerivAt (fun y => F y ^ 2) (2 * F x ^ 1 * F' x) x := hx.pow 2
-    have hright : HasDerivAt (fun y : ℂ => κ * (Q₀ + y ^ 2 * Qv)) (κ * (2 * x * Qv)) x := by
-      have hinner : HasDerivAt (fun y : ℂ => Q₀ + y ^ 2 * Qv) (2 * x * Qv) x := by
-        have hpow : HasDerivAt (fun y : ℂ => y ^ 2) ((2 : ℂ) * x ^ (2 - 1)) x :=
+    have hEq : (fun y : ℂ => F y ^ (2 : ℕ)) =ᶠ[𝓝 x] fun y : ℂ => κ * (Q₀ + y ^ (2 : ℕ) * Qv) := hlocal
+    have hleft : HasDerivAt (fun y => F y ^ (2 : ℕ)) (2 * F x ^ (1 : ℕ) * F' x) x := hx.pow 2
+    have hright : HasDerivAt (fun y : ℂ => κ * (Q₀ + y ^ (2 : ℕ) * Qv)) (κ * (2 * x * Qv)) x := by
+      have hinner : HasDerivAt (fun y : ℂ => Q₀ + y ^ (2 : ℕ) * Qv) (2 * x * Qv) x := by
+        have hpow : HasDerivAt (fun y : ℂ => y ^ (2 : ℕ)) ((2 : ℂ) * x ^ (2 - 1)) x :=
           hasDerivAt_pow 2 x
         simpa using (hpow.mul_const Qv).const_add Q₀
       exact hinner.const_mul κ
-    have hleft' : HasDerivAt (fun y : ℂ => κ * (Q₀ + y ^ 2 * Qv)) (2 * F x ^ 1 * F' x) x :=
+    have hleft' : HasDerivAt (fun y : ℂ => κ * (Q₀ + y ^ (2 : ℕ) * Qv)) (2 * F x ^ (1 : ℕ) * F' x) x :=
       hleft.congr_of_eventuallyEq hEq.symm
     have huniq := hleft'.unique hright
     simpa using huniq

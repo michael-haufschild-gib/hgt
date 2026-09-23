@@ -35,7 +35,7 @@ theorem abs_natDiv_sub_div_le {N d : ℕ} (hd : 0 < d) :
 /-- **Step two of Graham's theorem.**  The divisor-sum mean square agrees with the smooth lcm
 quadratic form up to the `ℓ¹`-square of the coefficients. -/
 theorem abs_sum_sq_divisorSum_sub_lcm_main_le (N : ℕ) (a : ℕ → ℝ) :
-    |(∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ 2)
+    |(∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ (2 : ℕ))
         - ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
             a p.1 * a p.2 * ((N : ℝ) / (Nat.lcm p.1 p.2 : ℝ))|
       ≤ ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N), |a p.1| * |a p.2| := by

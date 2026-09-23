@@ -38,7 +38,7 @@ theorem cglCharacterPacketWave_mul (t u τ : ℝ) :
 /-- The pair-indexed packet is exactly the square of the original CGL packet. -/
 theorem cglCharacterPacketSquare_eq_sq (q R : ℕ)
     (w : Fin R → CGLCharacterDyadicRowData (q + 1)) (τ : ℝ) (a : ZMod (q + 1)) :
-    cglCharacterPacketSquare q R w τ a = cglCharacterPacket q R w τ a ^ 2 := by
+    cglCharacterPacketSquare q R w τ a = cglCharacterPacket q R w τ a ^ (2 : ℕ) := by
   unfold cglCharacterPacketSquare cglCharacterPacket
   rw [pow_two, Finset.sum_mul_sum, Fintype.sum_prod_type]
   apply Finset.sum_congr rfl
@@ -63,22 +63,22 @@ the original finite CGL packet. -/
 theorem cglCharacterPacketQuarticHermitianMass_eq_normPowFour (q R : ℕ)
     (w : Fin R → CGLCharacterDyadicRowData (q + 1)) (τ : ℝ) :
     cglCharacterPacketQuarticHermitianMass q R w τ =
-      ∑ a : ZMod (q + 1), ((‖cglCharacterPacket q R w τ a‖ ^ 4 : ℝ) : ℂ) := by
+      ∑ a : ZMod (q + 1), ((‖cglCharacterPacket q R w τ a‖ ^ (4 : ℕ) : ℝ) : ℂ) := by
   unfold cglCharacterPacketQuarticHermitianMass
   apply Finset.sum_congr rfl
   intro a ha
   rw [cglCharacterPacketSquare_eq_sq]
-  change cglCharacterPacket q R w τ a ^ 2 *
-    (starRingEnd ℂ) (cglCharacterPacket q R w τ a ^ 2) = _
+  change cglCharacterPacket q R w τ a ^ (2 : ℕ) *
+    (starRingEnd ℂ) (cglCharacterPacket q R w τ a ^ (2 : ℕ)) = _
   rw [map_pow]
   calc
-    cglCharacterPacket q R w τ a ^ 2 * star (cglCharacterPacket q R w τ a) ^ 2 =
-        (cglCharacterPacket q R w τ a * star (cglCharacterPacket q R w τ a)) ^ 2 := by ring
-    _ = (((‖cglCharacterPacket q R w τ a‖ ^ 2 : ℝ) : ℂ)) ^ 2 := by
+    cglCharacterPacket q R w τ a ^ (2 : ℕ) * star (cglCharacterPacket q R w τ a) ^ (2 : ℕ) =
+        (cglCharacterPacket q R w τ a * star (cglCharacterPacket q R w τ a)) ^ (2 : ℕ) := by ring
+    _ = (((‖cglCharacterPacket q R w τ a‖ ^ (2 : ℕ) : ℝ) : ℂ)) ^ (2 : ℕ) := by
       congr 1
       rw [Complex.sq_norm]
       exact Complex.mul_conj _
-    _ = ((‖cglCharacterPacket q R w τ a‖ ^ 4 : ℝ) : ℂ) := by
+    _ = ((‖cglCharacterPacket q R w τ a‖ ^ (4 : ℕ) : ℝ) : ℂ) := by
       norm_cast
       ring
 

@@ -56,7 +56,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_moment_closed
     (J : ℕ → ℕ)
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ menonHarmonicActiveBlocks P Q eta L,
             min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
                   (menonHarmonicAllBlocksSmall P Q eta L V W) j)

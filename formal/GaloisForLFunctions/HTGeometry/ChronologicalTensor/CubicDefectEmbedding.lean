@@ -94,8 +94,8 @@ theorem cubicDefectHilbertEmbedding_coefficient
 
 theorem cubicDefectHilbertEmbedding_norm_sq
     (x : Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule) :
-    ‖cubicDefectHilbertEmbedding x‖^2=∑' k, (cubicGradedRecoveryGap k)^2 *
-      ((cubicCuspDefectEquiv x).coeff k)^2 := by
+    ‖cubicDefectHilbertEmbedding x‖^(2 : ℕ)=∑' k, (cubicGradedRecoveryGap k)^(2 : ℕ) *
+      ((cubicCuspDefectEquiv x).coeff k)^(2 : ℕ) := by
   rw [cubicDefectHilbert_norm_sq]
   congr 1
   funext k

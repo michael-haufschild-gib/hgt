@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryReverseBesselCarrier
 The squared-factorial carrier does not merely relate adjacent normalizations.  Actual mass
 differentiation selects the unsquared midpoint between them.  For
 
-`P_r(T) = sum_j c_j T^j / ((r+j)!)^2`
+`P_r(T) = sum_j c_j T^j / ((r+j)!)^(2 : ℕ)`
 
 and `M_r(c)_j = (r+j+1)c_j`, define
 
@@ -42,7 +42,7 @@ def xiShiftedBoundaryAdaptiveMidpointCoefficients
 def xiShiftedBoundaryFactorialCarrier
     (r : ℕ) {N : ℕ} (c : Fin N → ℝ) : Polynomial ℝ :=
   ∑ j : Fin N,
-    monomial (j : ℕ) (c j / (((r + (j : ℕ)).factorial : ℝ) ^ 2))
+    monomial (j : ℕ) (c j / (((r + (j : ℕ)).factorial : ℝ) ^ (2 : ℕ)))
 
 /-- Shifted Euler connection on polynomial amplitudes. -/
 def xiShiftedBoundaryShiftedEuler
@@ -204,10 +204,10 @@ theorem hasDerivAt_xiShiftedCompletedMomentAggregate
   rw [hfun]
   exact hsum
 
-/-- The divisor-moment aggregate and completed-source aggregate are identical at `y=w^2`. -/
+/-- The divisor-moment aggregate and completed-source aggregate are identical at `y=w^(2 : ℕ)`. -/
 theorem xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate
     {w : ℝ} (hw : 0 < w) (r : ℕ) {N : ℕ} (c : Fin N → ℝ) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) r c =
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) r c =
       xiShiftedBoundaryCompletedAggregate w r c := by
   simp only [xiShiftedCompletedMomentAggregate, xiShiftedBoundaryCompletedAggregate]
   apply Finset.sum_congr rfl
@@ -275,7 +275,7 @@ theorem hasDerivAt_xiShiftedCompletedMomentAggregate_eq_midpointSource
       (-(xiShiftedBoundaryArchimedeanAggregate w (r + 1)
           (xiShiftedBoundaryAdaptiveMidpointCoefficients r c) +
         xiShiftedHankelBoundaryRadialDiscrepancy w (r + 1)
-          (xiShiftedBoundaryAdaptiveMidpointCoefficients r c))) (w ^ 2) := by
+          (xiShiftedBoundaryAdaptiveMidpointCoefficients r c))) (w ^ (2 : ℕ)) := by
   have hmass := hasDerivAt_xiShiftedCompletedMomentAggregate
     (sq_pos_of_pos (by linarith : 0 < w)) r c
   rw [xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate

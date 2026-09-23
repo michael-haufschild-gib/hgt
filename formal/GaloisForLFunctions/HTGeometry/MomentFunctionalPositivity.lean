@@ -87,11 +87,11 @@ on squares: `momentFunctional s (p²) ≥ 0`.  This is positive-semidefiniteness
 theorem momentFunctional_pow_two_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional s (p ^ 2) := by
-  rw [momentFunctional_eq_integral s hs hint (p ^ 2)]
-  have hcongr : ∫ x, Polynomial.eval x (p ^ 2) ∂μ = ∫ x, (Polynomial.eval x p) ^ 2 ∂μ := by
+    0 ≤ momentFunctional s (p ^ (2 : ℕ)) := by
+  rw [momentFunctional_eq_integral s hs hint (p ^ (2 : ℕ))]
+  have hcongr : ∫ x, Polynomial.eval x (p ^ (2 : ℕ)) ∂μ = ∫ x, (Polynomial.eval x p) ^ (2 : ℕ) ∂μ := by
     refine integral_congr_ae (ae_of_all μ (fun x => ?_))
-    show Polynomial.eval x (p ^ 2) = (Polynomial.eval x p) ^ 2
+    show Polynomial.eval x (p ^ (2 : ℕ)) = (Polynomial.eval x p) ^ (2 : ℕ)
     rw [eval_pow]
   rw [hcongr]
   exact integral_nonneg (fun x => sq_nonneg _)
@@ -109,10 +109,10 @@ theorem integrable_eval {μ : Measure ℝ} (hint : ∀ k, Integrable (fun x : �
 theorem momentFunctional_pow_two_eq_integral_sq {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (p : Polynomial ℝ) :
-    momentFunctional s (p ^ 2) = ∫ x, (Polynomial.eval x p) ^ 2 ∂μ := by
-  rw [momentFunctional_eq_integral s hs hint (p ^ 2)]
+    momentFunctional s (p ^ (2 : ℕ)) = ∫ x, (Polynomial.eval x p) ^ (2 : ℕ) ∂μ := by
+  rw [momentFunctional_eq_integral s hs hint (p ^ (2 : ℕ))]
   refine integral_congr_ae (ae_of_all μ (fun x => ?_))
-  show Polynomial.eval x (p ^ 2) = (Polynomial.eval x p) ^ 2
+  show Polynomial.eval x (p ^ (2 : ℕ)) = (Polynomial.eval x p) ^ (2 : ℕ)
   rw [eval_pow]
 
 /-- **Strict Hankel definiteness (nondegeneracy).**  When the representing measure charges every
@@ -124,23 +124,23 @@ theorem momentFunctional_pow_two_eq_zero {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
     (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F})
-    (p : Polynomial ℝ) (hp : momentFunctional s (p ^ 2) = 0) : p = 0 := by
+    (p : Polynomial ℝ) (hp : momentFunctional s (p ^ (2 : ℕ)) = 0) : p = 0 := by
   by_contra hpne
   rw [momentFunctional_pow_two_eq_integral_sq s hs hint] at hp
-  have hnonneg : 0 ≤ᵐ[μ] fun x : ℝ => (Polynomial.eval x p) ^ 2 :=
+  have hnonneg : 0 ≤ᵐ[μ] fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ) :=
     ae_of_all μ (fun x => sq_nonneg _)
-  have hintp2 : Integrable (fun x : ℝ => (Polynomial.eval x p) ^ 2) μ := by
-    refine (integrable_eval hint (p ^ 2)).congr (ae_of_all μ (fun x => ?_))
-    show Polynomial.eval x (p ^ 2) = (Polynomial.eval x p) ^ 2
+  have hintp2 : Integrable (fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ)) μ := by
+    refine (integrable_eval hint (p ^ (2 : ℕ))).congr (ae_of_all μ (fun x => ?_))
+    show Polynomial.eval x (p ^ (2 : ℕ)) = (Polynomial.eval x p) ^ (2 : ℕ)
     rw [eval_pow]
-  have hae : (fun x : ℝ => (Polynomial.eval x p) ^ 2) =ᵐ[μ] 0 :=
+  have hae : (fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ)) =ᵐ[μ] 0 :=
     (integral_eq_zero_iff_of_nonneg_ae hnonneg hintp2).mp hp
-  have hae' : μ {x : ℝ | ¬ (Polynomial.eval x p) ^ 2 = 0} = 0 := by
-    have h2 : ∀ᵐ x ∂μ, (Polynomial.eval x p) ^ 2 = 0 := by
+  have hae' : μ {x : ℝ | ¬ (Polynomial.eval x p) ^ (2 : ℕ) = 0} = 0 := by
+    have h2 : ∀ᵐ x ∂μ, (Polynomial.eval x p) ^ (2 : ℕ) = 0 := by
       filter_upwards [hae] with x hx; simpa using hx
     rwa [ae_iff] at h2
   set R : Finset ℝ := p.roots.toFinset with hR
-  have hsub : {x : ℝ | x ∉ R} ⊆ {x : ℝ | ¬ (Polynomial.eval x p) ^ 2 = 0} := by
+  have hsub : {x : ℝ | x ∉ R} ⊆ {x : ℝ | ¬ (Polynomial.eval x p) ^ (2 : ℕ) = 0} := by
     intro x hx
     simp only [Set.mem_setOf_eq] at hx ⊢
     have hev : Polynomial.eval x p ≠ 0 := fun he =>
@@ -156,16 +156,16 @@ purely from square-positivity (`momentFunctional_pow_two_nonneg`) via the nonneg
 theorem momentFunctional_cauchy_schwarz {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (p q : Polynomial ℝ) :
-    (momentFunctional s (p * q)) ^ 2
-      ≤ momentFunctional s (p ^ 2) * momentFunctional s (q ^ 2) := by
-  have hquad : ∀ x : ℝ, 0 ≤ (momentFunctional s (q ^ 2)) * (x * x)
-      + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ 2) := by
+    (momentFunctional s (p * q)) ^ (2 : ℕ)
+      ≤ momentFunctional s (p ^ (2 : ℕ)) * momentFunctional s (q ^ (2 : ℕ)) := by
+  have hquad : ∀ x : ℝ, 0 ≤ (momentFunctional s (q ^ (2 : ℕ))) * (x * x)
+      + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ (2 : ℕ)) := by
     intro x
-    have hpoly : (p + x • q) ^ 2 = p ^ 2 + (2 * x) • (p * q) + (x ^ 2) • q ^ 2 := by
+    have hpoly : (p + x • q) ^ (2 : ℕ) = p ^ (2 : ℕ) + (2 * x) • (p * q) + (x ^ (2 : ℕ)) • q ^ (2 : ℕ) := by
       simp only [Polynomial.smul_eq_C_mul, map_mul, map_pow, map_ofNat]; ring
-    have hexp : momentFunctional s ((p + x • q) ^ 2)
-        = (momentFunctional s (q ^ 2)) * (x * x)
-          + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ 2) := by
+    have hexp : momentFunctional s ((p + x • q) ^ (2 : ℕ))
+        = (momentFunctional s (q ^ (2 : ℕ))) * (x * x)
+          + (2 * momentFunctional s (p * q)) * x + momentFunctional s (p ^ (2 : ℕ)) := by
       rw [hpoly, momentFunctional_add, momentFunctional_add, momentFunctional_smul,
         momentFunctional_smul]
       ring
@@ -192,7 +192,7 @@ theorem momentFunctional_X_pow (s : ℕ → ℝ) (k : ℕ) :
 
 /-- The moment functional of `(∑ᵢ vᵢ Xⁱ)²` is the Hankel quadratic form `∑ᵢⱼ vᵢ vⱼ s_{i+j}`. -/
 theorem momentFunctional_sq_eq_hankelForm (s : ℕ → ℝ) {n : ℕ} (v : Fin n → ℝ) :
-    momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2)
+    momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ))
       = ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) := by
   rw [sq, Finset.sum_mul_sum, momentFunctional_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -223,7 +223,7 @@ theorem hankelForm_eq_zero {μ : Measure ℝ} (s : ℕ → ℝ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
     (hμinf : ∀ F : Finset ℝ, 0 < μ {x : ℝ | x ∉ F}) {n : ℕ} (v : Fin n → ℝ)
     (hzero : ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ)) = 0) : v = 0 := by
-  have hp0 : momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2) = 0 := by
+  have hp0 : momentFunctional s ((∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ)) = 0 := by
     rw [momentFunctional_sq_eq_hankelForm s v]; exact hzero
   have hpe : (∑ i : Fin n, v i • X ^ (i : ℕ)) = 0 :=
     momentFunctional_pow_two_eq_zero s hs hint hμinf _ hp0

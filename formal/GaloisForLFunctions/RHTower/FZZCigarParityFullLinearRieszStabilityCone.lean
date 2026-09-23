@@ -92,12 +92,12 @@ def fzzCigarParityDilatedMixedRieszTrace
 def fzzCigarParityDilatedMixedRieszDeterminant
     (beta gamma eta : ℝ) : ℝ :=
   fzzCigarParityDilatedSecondDiagonalPerturbedDeterminant beta gamma +
-    eta ^ 2 / fzzCigarParityDilatedTwoScaleKreinGap beta
+    eta ^ (2 : ℕ) / fzzCigarParityDilatedTwoScaleKreinGap beta
 
 /-- Real characteristic discriminant of the full mixed source matrix. -/
 def fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant
     (beta gamma eta : ℝ) : ℝ :=
-  fzzCigarParityDilatedMixedRieszTrace beta gamma ^ 2 -
+  fzzCigarParityDilatedMixedRieszTrace beta gamma ^ (2 : ℕ) -
     4 * fzzCigarParityDilatedMixedRieszDeterminant beta gamma eta
 
 theorem fzzCigarParityDilatedMixedRiesz_trace_eq
@@ -142,7 +142,7 @@ theorem fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_eq
     (beta gamma eta : ℝ) :
     fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant beta gamma eta =
       fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta gamma -
-        4 * eta ^ 2 / fzzCigarParityDilatedTwoScaleKreinGap beta := by
+        4 * eta ^ (2 : ℕ) / fzzCigarParityDilatedTwoScaleKreinGap beta := by
   simp [fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant,
     fzzCigarParityDilatedMixedRieszTrace,
     fzzCigarParityDilatedMixedRieszDeterminant,
@@ -178,7 +178,7 @@ private theorem twoByTwoComplexEigenvalue_quadratic
     (hv : v ≠ 0)
     (heigen :
       (a * v.1 + b * v.2, c * v.1 + d * v.2) = lambda • v) :
-    lambda ^ 2 - (a + d) * lambda + (a * d - b * c) = 0 := by
+    lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c) = 0 := by
   rcases v with ⟨x, y⟩
   have hfirst := congrArg Prod.fst heigen
   have hsecond := congrArg Prod.snd heigen
@@ -188,16 +188,16 @@ private theorem twoByTwoComplexEigenvalue_quadratic
   have hsecondZero : c * x + d * y - lambda * y = 0 :=
     sub_eq_zero.mpr hsecond
   have hxprod :
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * x = 0 := by
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * x = 0 := by
     calc
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * x =
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * x =
           -((lambda - d) * (a * x + b * y - lambda * x) +
             b * (c * x + d * y - lambda * y)) := by ring
       _ = 0 := by rw [hfirstZero, hsecondZero]; ring
   have hyprod :
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * y = 0 := by
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * y = 0 := by
     calc
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * y =
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * y =
           -(c * (a * x + b * y - lambda * x) +
             (lambda - a) * (c * x + d * y - lambda * y)) := by ring
       _ = 0 := by rw [hfirstZero, hsecondZero]; ring
@@ -211,7 +211,7 @@ private theorem twoByTwoComplexEigenvalue_quadratic
 
 private theorem twoByTwoComplex_eigenpair_of_quadratic_root
     {a b c d lambda : ℂ}
-    (hroot : lambda ^ 2 - (a + d) * lambda + (a * d - b * c) = 0) :
+    (hroot : lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c) = 0) :
     (a * b + b * (lambda - a),
         c * b + d * (lambda - a)) =
       lambda • (b, lambda - a) := by
@@ -223,8 +223,8 @@ private theorem twoByTwoComplex_eigenpair_of_quadratic_root
 
 private theorem complexQuadraticRoot_eq_star_of_real_discriminant_nonneg
     {T D : ℝ} {lambda : ℂ}
-    (hdisc : 0 ≤ T ^ 2 - 4 * D)
-    (hroot : lambda ^ 2 - (T : ℂ) * lambda + (D : ℂ) = 0) :
+    (hdisc : 0 ≤ T ^ (2 : ℕ) - 4 * D)
+    (hroot : lambda ^ (2 : ℕ) - (T : ℂ) * lambda + (D : ℂ) = 0) :
     lambda = star lambda := by
   have hre := congrArg Complex.re hroot
   have him := congrArg Complex.im hroot
@@ -235,7 +235,7 @@ private theorem complexQuadraticRoot_eq_star_of_real_discriminant_nonneg
       have hfactor : (2 * lambda.re - T) * lambda.im = 0 := by nlinarith
       have := (mul_eq_zero.mp hfactor).resolve_right hli
       linarith
-    have hdiscEq : T ^ 2 - 4 * D = -4 * lambda.im ^ 2 := by nlinarith
+    have hdiscEq : T ^ (2 : ℕ) - 4 * D = -4 * lambda.im ^ (2 : ℕ) := by nlinarith
     nlinarith [sq_pos_of_ne_zero hli]
 
 /-- Every mixed eigenvalue satisfies the real characteristic quadratic. -/
@@ -245,7 +245,7 @@ theorem fzzCigarParityDilatedMixedRiesz_eigenvalue_characteristic
     (heigen :
       fzzCigarParityDilatedMixedRieszPerturbedKreinOperator beta gamma eta v =
         lambda • v) :
-    lambda ^ 2 -
+    lambda ^ (2 : ℕ) -
         (fzzCigarParityDilatedMixedRieszTrace beta gamma : ℂ) * lambda +
         (fzzCigarParityDilatedMixedRieszDeterminant beta gamma eta : ℂ) = 0 := by
   rw [fzzCigarParityDilatedMixedRieszPerturbedKreinOperator_matrix] at heigen
@@ -294,7 +294,7 @@ theorem fzzCigarParityDilatedMixedRieszInstabilityEigenvalue_root
     {beta gamma eta : ℝ}
     (hdisc :
       fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant beta gamma eta < 0) :
-    fzzCigarParityDilatedMixedRieszInstabilityEigenvalue beta gamma eta ^ 2 -
+    fzzCigarParityDilatedMixedRieszInstabilityEigenvalue beta gamma eta ^ (2 : ℕ) -
         (fzzCigarParityDilatedMixedRieszTrace beta gamma : ℂ) *
           fzzCigarParityDilatedMixedRieszInstabilityEigenvalue beta gamma eta +
         (fzzCigarParityDilatedMixedRieszDeterminant beta gamma eta : ℂ) = 0 := by
@@ -303,11 +303,11 @@ theorem fzzCigarParityDilatedMixedRieszInstabilityEigenvalue_root
   let disc :=
     fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant beta gamma eta
   let y := Real.sqrt (-disc) / 2
-  have hdiscEq : disc = T ^ 2 - 4 * D := by rfl
+  have hdiscEq : disc = T ^ (2 : ℕ) - 4 * D := by rfl
   have hnonneg : 0 ≤ -disc := by
     dsimp [disc]
     linarith
-  have hy2 : y ^ 2 = -disc / 4 := by
+  have hy2 : y ^ (2 : ℕ) = -disc / 4 := by
     dsimp [y]
     rw [div_pow, Real.sq_sqrt hnonneg]
     norm_num
@@ -484,9 +484,9 @@ theorem fzzCigarParityDilatedMixedRieszSpectrallyReal_iff_discriminant_nonneg
 def fzzCigarParityDilatedMixedRieszStabilityRadius
     (beta eta : ℝ) : ℝ :=
   Real.sqrt
-    (fzzCigarParityDilatedDiagonalStabilityRadius beta ^ 2 +
-      4 * eta ^ 2 /
-        (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ 2))
+    (fzzCigarParityDilatedDiagonalStabilityRadius beta ^ (2 : ℕ) +
+      4 * eta ^ (2 : ℕ) /
+        (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ (2 : ℕ)))
 
 theorem fzzCigarParityDilatedMixedRieszStabilityRadius_pos
     {beta : ℝ} (hbeta : 0 < beta) (eta : ℝ) :
@@ -496,8 +496,8 @@ theorem fzzCigarParityDilatedMixedRieszStabilityRadius_pos
   have hE := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
   have hP := fzzKreinPAt_pos hbeta
   apply Real.sqrt_pos.2
-  have htax : 0 ≤ 4 * eta ^ 2 /
-      (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ 2) := by
+  have htax : 0 ≤ 4 * eta ^ (2 : ℕ) /
+      (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ (2 : ℕ)) := by
     positivity
   nlinarith [sq_pos_of_pos hr]
 
@@ -505,16 +505,16 @@ theorem fzzCigarParityDilatedMixedRieszStabilityRadius_pos
 theorem fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_eq_squareCone
     {beta : ℝ} (hbeta : 0 < beta) (gamma eta : ℝ) :
     fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant beta gamma eta =
-      fzzKreinPAt beta ^ 2 *
+      fzzKreinPAt beta ^ (2 : ℕ) *
         ((gamma / fzzCigarParityDilatedTwoScaleKreinGap beta -
-            fzzCigarParityDilatedDiagonalStabilityCenter beta) ^ 2 -
-          fzzCigarParityDilatedMixedRieszStabilityRadius beta eta ^ 2) := by
+            fzzCigarParityDilatedDiagonalStabilityCenter beta) ^ (2 : ℕ) -
+          fzzCigarParityDilatedMixedRieszStabilityRadius beta eta ^ (2 : ℕ)) := by
   have hE := (fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta).ne'
   have hP := (fzzKreinPAt_pos hbeta).ne'
   have hnonneg : 0 ≤
-      fzzCigarParityDilatedDiagonalStabilityRadius beta ^ 2 +
-        4 * eta ^ 2 /
-          (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ 2) := by
+      fzzCigarParityDilatedDiagonalStabilityRadius beta ^ (2 : ℕ) +
+        4 * eta ^ (2 : ℕ) /
+          (fzzCigarParityDilatedTwoScaleKreinGap beta * fzzKreinPAt beta ^ (2 : ℕ)) := by
     have hEpos := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
     have hPpos := fzzKreinPAt_pos hbeta
     positivity
@@ -534,7 +534,7 @@ theorem fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_neg_iff
         fzzCigarParityDilatedMixedRieszStabilityRadius beta eta := by
   rw [fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_eq_squareCone
     hbeta]
-  have hP2 : 0 < fzzKreinPAt beta ^ 2 := sq_pos_of_pos (fzzKreinPAt_pos hbeta)
+  have hP2 : 0 < fzzKreinPAt beta ^ (2 : ℕ) := sq_pos_of_pos (fzzKreinPAt_pos hbeta)
   have hr := fzzCigarParityDilatedMixedRieszStabilityRadius_pos hbeta eta
   let x := gamma / fzzCigarParityDilatedTwoScaleKreinGap beta -
     fzzCigarParityDilatedDiagonalStabilityCenter beta
@@ -542,16 +542,16 @@ theorem fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_neg_iff
   have hr' : 0 < r := by simpa [r] using hr
   constructor
   · intro h
-    have hs : x ^ 2 < r ^ 2 := by
-      change fzzKreinPAt beta ^ 2 * (x ^ 2 - r ^ 2) < 0 at h
+    have hs : x ^ (2 : ℕ) < r ^ (2 : ℕ) := by
+      change fzzKreinPAt beta ^ (2 : ℕ) * (x ^ (2 : ℕ) - r ^ (2 : ℕ)) < 0 at h
       nlinarith
     change |x| < r
     simpa [abs_of_pos hr'] using (sq_lt_sq.mp hs)
   · intro h
-    have hs : x ^ 2 < r ^ 2 := by
+    have hs : x ^ (2 : ℕ) < r ^ (2 : ℕ) := by
       change |x| < r at h
       exact sq_lt_sq.mpr (by simpa [abs_of_pos hr'] using h)
-    change fzzKreinPAt beta ^ 2 * (x ^ 2 - r ^ 2) < 0
+    change fzzKreinPAt beta ^ (2 : ℕ) * (x ^ (2 : ℕ) - r ^ (2 : ℕ)) < 0
     nlinarith
 
 theorem fzzCigarParityDilatedMixedRieszCharacteristicDiscriminant_nonneg_iff

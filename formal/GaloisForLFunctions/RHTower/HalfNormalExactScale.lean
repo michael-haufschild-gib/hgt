@@ -112,7 +112,7 @@ theorem coherentExponent_neg_eq {V : ℝ} (hV : 0 < V) :
 
 /-! ## `(13o)`: the exact scale -/
 
-theorem sqrt_eq_exp_half_log {x : ℝ} (hx : 0 < x) :
+theorem sqrt_eq_exp_half_log_halfNormalExactScale {x : ℝ} (hx : 0 < x) :
     Real.sqrt x = Real.exp (Real.log x / 2) := by
   have h : Real.sqrt (Real.exp (Real.log x)) = Real.exp (Real.log x / 2) := sqrt_exp _
   rwa [Real.exp_log hx] at h
@@ -160,7 +160,7 @@ theorem tendsto_halfNormalExactScale :
       = Real.eulerMascheroniConstant + Real.log V - Real.log 2 := by
     rw [Real.log_div (by positivity) (by norm_num), Real.log_mul (by positivity) (ne_of_gt hV),
       Real.log_exp]
-  rw [Function.comp_apply, sqrt_eq_exp_half_log hpos, hlogval, ← Real.exp_sub]
+  rw [Function.comp_apply, sqrt_eq_exp_half_log_halfNormalExactScale hpos, hlogval, ← Real.exp_sub]
   congr 1
   rw [hD]
   simp only []

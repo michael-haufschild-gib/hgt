@@ -185,10 +185,10 @@ theorem sgOrthSup_tendsto_zero {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
     have hstep : ∀ n, IsSignedStep S (sgVec S) n (sgVec S n) := fun n =>
       isSignedStep_sgVec hcpt hsym n (hcne n)
     have habs : ∀ n, |sgVal S n| = orthSup S (sgVec S) n := abs_sgVal hcpt hsym
-    have hnorm_smul : ∀ n, ‖((sgVal S n : ℝ) : ℂ) • sgVec S n‖ ^ 2 = sgVal S n ^ 2 := by
+    have hnorm_smul : ∀ n, ‖((sgVal S n : ℝ) : ℂ) • sgVec S n‖ ^ (2 : ℕ) = sgVal S n ^ (2 : ℕ) := by
       intro n
       rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, (hstep n).1, mul_one, sq_abs]
-    have hsep : ∀ m n, m ≠ n → 2 * c ^ 2 ≤ ‖S (sgVec S m) - S (sgVec S n)‖ ^ 2 := by
+    have hsep : ∀ m n, m ≠ n → 2 * c ^ (2 : ℕ) ≤ ‖S (sgVec S m) - S (sgVec S n)‖ ^ (2 : ℕ) := by
       intro m n hmn
       rw [apply_sgVec, apply_sgVec]
       have hinner : RCLike.re
@@ -197,11 +197,11 @@ theorem sgOrthSup_tendsto_zero {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
         rw [inner_smul_left, inner_smul_right, inner_sgVec_sgVec_of_ne S hmn]
         simp
       rw [norm_sub_sq (𝕜 := ℂ), hinner, hnorm_smul m, hnorm_smul n]
-      have h1 : c ^ 2 ≤ sgVal S m ^ 2 := by
+      have h1 : c ^ (2 : ℕ) ≤ sgVal S m ^ (2 : ℕ) := by
         have h2 := hc_le m
         rw [← habs m] at h2
         nlinarith [abs_nonneg (sgVal S m), le_of_lt hc, sq_abs (sgVal S m)]
-      have h2 : c ^ 2 ≤ sgVal S n ^ 2 := by
+      have h2 : c ^ (2 : ℕ) ≤ sgVal S n ^ (2 : ℕ) := by
         have h3 := hc_le n
         rw [← habs n] at h3
         nlinarith [abs_nonneg (sgVal S n), le_of_lt hc, sq_abs (sgVal S n)]

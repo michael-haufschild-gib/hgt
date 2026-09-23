@@ -75,8 +75,8 @@ noncomputable def firstStepNormalBase (R : Relation) (c : ℤ) (t : ℕ) : ℝ :
   let L := exponentWidth R.n t
   let S := sampleCount R.n t
   let T := derivativeCutoff R.n t
-  GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 *
-    (((L ^ R.n : ℕ) : ℝ) ^ 2) *
+  GelfondSchneiderSiegel.c₁ R.CoefficientField ^ (2 : ℕ) *
+    (((L ^ R.n : ℕ) : ℝ) ^ (2 : ℕ)) *
     (((S * T ^ (R.n - 1)) * L ^ R.n : ℕ) : ℝ) *
     (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
     (R.primeProduct : ℝ) ^ (L * S)
@@ -215,7 +215,7 @@ theorem rowColumnCount_cast_eq (n t : ℕ) :
   ring
 
 theorem columnCountSq_cast_eq (n t : ℕ) :
-    ((((exponentWidth n t ^ n : ℕ) : ℝ)) ^ 2) =
+    ((((exponentWidth n t ^ n : ℕ) : ℝ)) ^ (2 : ℕ)) =
       (2 ^ (2 * n) : ℝ) * (t : ℝ) ^ ((8 * n - 4) * n * 2) := by
   simp only [exponentWidth, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_pow, mul_pow, ← pow_mul]
   congr 2
@@ -238,7 +238,7 @@ theorem eventually_firstStepNormalBase_le_exp_raw
           (t : ℝ) * ((R.n - 1) * derivativeCutoff R.n t) +
           (t : ℝ) * (exponentWidth R.n t * sampleCount R.n t)) := by
   have hc1 := eventually_const_mul_natCast_pow_le_exp
-    (GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2) 0
+    (GelfondSchneiderSiegel.c₁ R.CoefficientField ^ (2 : ℕ)) 0
   have hL := eventually_const_mul_natCast_pow_le_exp
     (2 ^ (2 * R.n) : ℝ) ((8 * R.n - 4) * R.n * 2)
   have hRC := eventually_const_mul_natCast_pow_le_exp
@@ -248,7 +248,7 @@ theorem eventually_firstStepNormalBase_le_exp_raw
     (4 * R.scaledCoefficientHouseSum c) (8 * R.n - 4)
   have hP := eventually_const_mul_natCast_pow_le_exp (R.primeProduct : ℝ) 0
   filter_upwards [hc1, hL, hRC, hD, hP] with t hc1t hLt hRCt hDt hPt
-  have hL' : ((((exponentWidth R.n t ^ R.n : ℕ) : ℝ)) ^ 2) ≤ Real.exp t := by
+  have hL' : ((((exponentWidth R.n t ^ R.n : ℕ) : ℝ)) ^ (2 : ℕ)) ≤ Real.exp t := by
     rw [columnCountSq_cast_eq]
     simpa using hLt
   have hRC' : ((((sampleCount R.n t * derivativeCutoff R.n t ^ (R.n - 1)) *
@@ -261,7 +261,7 @@ theorem eventually_firstStepNormalBase_le_exp_raw
     exact hDt
   have hP' : (R.primeProduct : ℝ) ≤ Real.exp t := by
     simpa using hPt
-  have hc1' : GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 ≤ Real.exp t := by
+  have hc1' : GelfondSchneiderSiegel.c₁ R.CoefficientField ^ (2 : ℕ) ≤ Real.exp t := by
     simpa using hc1t
   have hC : 0 ≤ R.scaledCoefficientHouseSum c := by
     unfold Relation.scaledCoefficientHouseSum
@@ -271,8 +271,8 @@ theorem eventually_firstStepNormalBase_le_exp_raw
   unfold firstStepNormalBase
   dsimp only
   calc
-    GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 *
-        (((exponentWidth R.n t ^ R.n : ℕ) : ℝ) ^ 2) *
+    GelfondSchneiderSiegel.c₁ R.CoefficientField ^ (2 : ℕ) *
+        (((exponentWidth R.n t ^ R.n : ℕ) : ℝ) ^ (2 : ℕ)) *
         (((sampleCount R.n t * derivativeCutoff R.n t ^ (R.n - 1)) *
           exponentWidth R.n t ^ R.n : ℕ) : ℝ) *
         (2 * exponentWidth R.n t * R.scaledCoefficientHouseSum c) ^
@@ -322,10 +322,10 @@ theorem rawExponent_le_dominant {n t : ℕ} (hn : 3 ≤ n) (ht : 2 ≤ t) :
       _ = 2 * t ^ (12 * n - 3) := by congr 2; omega
   have hsample : t * (exponentWidth n t * sampleCount n t) ≤ N := by
     rw [hsampleEq]
-    have htwo : 2 ≤ t ^ 2 := by
+    have htwo : 2 ≤ t ^ (2 : ℕ) := by
       exact ht.trans (Nat.le_pow (by omega))
     calc
-      2 * t ^ (12 * n - 3) ≤ t ^ 2 * t ^ (12 * n - 3) :=
+      2 * t ^ (12 * n - 3) ≤ t ^ (2 : ℕ) * t ^ (12 * n - 3) :=
         Nat.mul_le_mul_right _ htwo
       _ = N := by
         rw [← pow_add]
@@ -522,10 +522,10 @@ theorem exponentWidth_mul_sampleCount {n t : ℕ} (hn : 3 ≤ n) :
 
 theorem two_mul_lowerScale_le_dominant {n t : ℕ} (hn : 3 ≤ n) (ht : 2 ≤ t) :
     2 * t ^ (12 * n - 3) ≤ t ^ (12 * n - 1) := by
-  have htwo : 2 ≤ t ^ 2 := by
+  have htwo : 2 ≤ t ^ (2 : ℕ) := by
     exact ht.trans (Nat.le_pow (by omega))
   calc
-    2 * t ^ (12 * n - 3) ≤ t ^ 2 * t ^ (12 * n - 3) :=
+    2 * t ^ (12 * n - 3) ≤ t ^ (2 : ℕ) * t ^ (12 * n - 3) :=
       Nat.mul_le_mul_right _ htwo
     _ = t ^ (12 * n - 1) := by
       rw [← pow_add]

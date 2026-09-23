@@ -49,17 +49,17 @@ theorem exists_setIntegral_normSq_harmonicRamareBlock_geom_le_scaled_HM :
         (∀ w ∈ E, |(-(2 * Real.pi * w))| ≤ |sigma|) →
         (∫ w in E,
           ‖harmonicRamareBlock (primesRange z0 z) (Finset.Icc A0 B0)
-            (geomBlock (primesRange z0 z) Q (1 + eta) j) w‖ ^ 2)
+            (geomBlock (primesRange z0 z) Q (1 + eta) j) w‖ ^ (2 : ℕ))
           ≤ 2 * (harmonicCaseIBlockMajorant Ctot D Lx Hmaj mu q t0 xmin
-                ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊) ^ 2 *
+                ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊) ^ (2 : ℕ) *
               ((2 * Real.pi)⁻¹ *
                 (hmMassRecip ⌊(B0 : ℝ) / (Q * (1 + eta) ^ j)⌋₊
                     (2 * Real.pi * W) (2 * Real.pi * volume.real E) *
                   ((1 / (⌈(A0 : ℝ) /
-                    ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+                    ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
                     ((harmonicGeomCofactorBlock A0 B0 Q eta j).card : ℝ))))
             + 2 * harmonicPrimeMass
-                (geomBlock (primesRange z0 z) Q (1 + eta) j) ^ 2 *
+                (geomBlock (primesRange z0 z) Q (1 + eta) j) ^ (2 : ℕ) *
                 harmonicCofactorSupportError A0 B0 Q eta W j := by
   obtain ⟨A, delta, Ctot, tau0, hdelta, hCtot, htau0, hroute⟩ :=
     exists_norm_harmonicPrimeBlockPoly_scaled_le

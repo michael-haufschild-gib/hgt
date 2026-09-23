@@ -60,14 +60,14 @@ theorem jointWaveSolution_transposed (w : ℂ) (F : SpatialSpace) (u : jointDoma
     (hu : JointWaveSolution w F u) (f : RadialCore) (g : CoreField) :
     inner ℂ (l2SeparatedProduct (radialDerivative f.differentiate) (fieldVector g)) (jointEmbedding u)+
       inner ℂ (l2SeparatedProduct (radialWeightedValue f.angularWeighted) (fieldVector g.laplacian)) (jointEmbedding u)-
-      w^2*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding u) =
+      w^(2 : ℕ)*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding u) =
       -inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) F := by
   have he := (jointWaveSolution_gradient w F u).mp hu ⟨jointGraph f g,jointGraph_mem f g⟩
   simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero] at he
   change inner ℂ (l2SeparatedProduct (radialDerivative f) (fieldVector g)) ((u : JointEnergySpace) 1)+
     (inner ℂ (l2SeparatedProduct (radialWeightedValue f) (derivativeVector g 1)) ((u : JointEnergySpace) 2)+
     inner ℂ (l2SeparatedProduct (radialWeightedValue f) (derivativeVector g Complex.I)) ((u : JointEnergySpace) 3))+
-    w^2*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding u) =
+    w^(2 : ℕ)*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding u) =
     inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) F at he
   have ha := joint_angular_green f.angularWeighted g u
   rw [RadialCore.angularWeighted_value] at ha
@@ -81,7 +81,7 @@ theorem jointWaveResponse_transposed (w : ℂ) (hw : 0 < w.re) (F : SpatialSpace
         (jointEmbedding (jointWaveResponse w hw F))+
       inner ℂ (l2SeparatedProduct (radialWeightedValue f.angularWeighted) (fieldVector g.laplacian))
         (jointEmbedding (jointWaveResponse w hw F))-
-      w^2*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding (jointWaveResponse w hw F)) =
+      w^(2 : ℕ)*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) (jointEmbedding (jointWaveResponse w hw F)) =
       -inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector g)) F :=
   jointWaveSolution_transposed w F _ (jointWaveResponse_spec w hw F) f g
 

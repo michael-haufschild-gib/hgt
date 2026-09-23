@@ -141,10 +141,10 @@ plus the repeated-index defect. -/
 theorem poolMass_mul_esym (x : ι → ℝ) (P : Finset ι) (m : ℕ) :
     (∑ p ∈ P, x p) * esym x P (m + 1)
       = ((m : ℝ) + 2) * esym x P (m + 2)
-        + ∑ p ∈ P, x p ^ 2 * esym x (P.erase p) m := by
+        + ∑ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) m := by
   classical
   have hsplit : ∀ p ∈ P, x p * esym x P (m + 1)
-      = x p * esym x (P.erase p) (m + 1) + x p ^ 2 * esym x (P.erase p) m := by
+      = x p * esym x (P.erase p) (m + 1) + x p ^ (2 : ℕ) * esym x (P.erase p) m := by
     intro p hp
     rw [esym_erase_split x hp m]
     ring
@@ -295,7 +295,7 @@ theorem factorial_mul_esym_le {x : ι → ℝ} {P : Finset ι} (hx : ∀ p ∈ P
         simp
       · obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
         have hrec := poolMass_mul_esym x P j
-        have hdefect : 0 ≤ ∑ p ∈ P, x p ^ 2 * esym x (P.erase p) j := by
+        have hdefect : 0 ≤ ∑ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) j := by
           refine Finset.sum_nonneg fun p hp => ?_
           refine mul_nonneg (sq_nonneg _) (esym_nonneg ?_ j)
           exact fun q hq => hx q (Finset.mem_of_mem_erase hq)
@@ -336,19 +336,19 @@ theorem pow_le_factorial_mul_esym {x : ι → ℝ} {P : Finset ι} {cW : ℝ}
       simp [h1]
   | succ k ih =>
       have hrec := poolMass_mul_esym x P k
-      have hdefect : ∑ p ∈ P, x p ^ 2 * esym x (P.erase p) k
+      have hdefect : ∑ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) k
           ≤ cW * (((k : ℝ) + 1) * esym x P (k + 1)) := by
-        have hterm : ∀ p ∈ P, x p ^ 2 * esym x (P.erase p) k
+        have hterm : ∀ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) k
             ≤ cW * (x p * esym x (P.erase p) k) := by
           intro p hp
           have hnn : 0 ≤ esym x (P.erase p) k :=
             esym_nonneg (fun q hq => hx q (Finset.mem_of_mem_erase hq)) k
-          have hsq : x p ^ 2 = x p * x p := sq (x p)
+          have hsq : x p ^ (2 : ℕ) = x p * x p := sq (x p)
           rw [hsq]
           have : x p * x p * esym x (P.erase p) k = (x p * esym x (P.erase p) k) * x p := by ring
           rw [this, mul_comm cW]
           exact mul_le_mul_of_nonneg_left (hcW p hp) (mul_nonneg (hx p hp) hnn)
-        calc ∑ p ∈ P, x p ^ 2 * esym x (P.erase p) k
+        calc ∑ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) k
             ≤ ∑ p ∈ P, cW * (x p * esym x (P.erase p) k) := Finset.sum_le_sum hterm
           _ = cW * ∑ p ∈ P, x p * esym x (P.erase p) k := by rw [Finset.mul_sum]
           _ = cW * (((k : ℝ) + 1) * esym x P (k + 1)) := by rw [sum_mul_esym_erase]
@@ -378,7 +378,7 @@ theorem pow_le_factorial_mul_esym {x : ι → ℝ} {P : Finset ι} {cW : ℝ}
             = ((k + 1).factorial : ℝ) * ((∑ p ∈ P, x p) * esym x P (k + 1)) := by ring
         rw [hexpand, hrec]
         have hb : ((k + 1).factorial : ℝ) * (((k : ℝ) + 2) * esym x P (k + 2)
-              + ∑ p ∈ P, x p ^ 2 * esym x (P.erase p) k)
+              + ∑ p ∈ P, x p ^ (2 : ℕ) * esym x (P.erase p) k)
             ≤ ((k + 1).factorial : ℝ) * (((k : ℝ) + 2) * esym x P (k + 2)
               + cW * (((k : ℝ) + 1) * esym x P (k + 1))) := by
           refine mul_le_mul_of_nonneg_left ?_ hfacnn

@@ -172,11 +172,11 @@ theorem tendsto_pow_add_one_mul_simplePoleBinomialJetDefect
         x ^ (j + k + 1) * ((C 0 * x⁻¹ ^ (0 + 1)) * R (j + k) x) =
           C 0 * x ^ (j + k) * R (j + k) x := by
       rw [show 0 + 1 = 1 by omega]
-      have hpow1 : x ^ (j + k + 1) * x⁻¹ ^ 1 = x ^ (j + k) := by
+      have hpow1 : x ^ (j + k + 1) * x⁻¹ ^ (1 : ℕ) = x ^ (j + k) := by
         simpa only [Nat.add_sub_cancel_right] using
           hpow (j + k + 1) 1 (by omega)
       calc
-        _ = C 0 * (x ^ (j + k + 1) * x⁻¹ ^ 1) * R (j + k) x := by ring
+        _ = C 0 * (x ^ (j + k + 1) * x⁻¹ ^ (1 : ℕ)) * R (j + k) x := by ring
         _ = _ := by rw [hpow1]
     have hs0 :
         x ^ (j + k + 1) * (R 0 x * (C (j + k) * x⁻¹ ^ (j + k + 1))) =
@@ -457,7 +457,7 @@ theorem gammaAffineBinomialJetDefect_one_one (branch : ℕ) (x : ℂ) :
           iteratedDeriv 2 Complex.Gamma
             (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x) -
         2 * (iteratedDeriv 1 Complex.Gamma
-          (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ 2 := by
+          (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ (2 : ℕ) := by
   simp [gammaAffineBinomialJetDefect]
   ring
 
@@ -472,7 +472,7 @@ theorem exists_cofinal_meromorphicOrderAt_gammaAffineSecondJetTie (B : ℕ) :
               iteratedDeriv 2 Complex.Gamma
                 (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x) -
             2 * (iteratedDeriv 1 Complex.Gamma
-              (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ 2) 0 =
+              (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ (2 : ℕ)) 0 =
         ((-3 : ℤ) : WithTop ℤ) := by
   obtain ⟨branch, hbranch, horder⟩ :=
     exists_cofinal_meromorphicOrderAt_gammaAffineBinomialJetDefect
@@ -484,7 +484,7 @@ theorem exists_cofinal_meromorphicOrderAt_gammaAffineSecondJetTie (B : ℕ) :
             iteratedDeriv 2 Complex.Gamma
               (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x) -
           2 * (iteratedDeriv 1 Complex.Gamma
-            (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ 2) =ᶠ[𝓝[≠] 0]
+            (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) ^ (2 : ℕ)) =ᶠ[𝓝[≠] 0]
         gammaAffineBinomialJetDefect branch 1 1 :=
     Filter.Eventually.of_forall fun x =>
       (gammaAffineBinomialJetDefect_one_one branch x).symm

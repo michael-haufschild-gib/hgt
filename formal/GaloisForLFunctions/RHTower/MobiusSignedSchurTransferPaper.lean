@@ -10,14 +10,14 @@ Formal certificate for
 
 ```text
 (9)--(13)  tau_omega(z) = zeta(2sigma)/(zeta(sigma) zeta(sigma+z)), |tau_omega| <= 1 on Re z >= 0,
-           tau_omega(0) = zeta(2sigma)/zeta(sigma)^2 ;
+           tau_omega(0) = zeta(2sigma)/zeta(sigma)^(2 : ℕ) ;
 (17)       L a_omega(z) = zeta(1+z)/(1+omega+z) ;
 (23a)      K_omega(z)   = zeta(1+z)/(1+omega+z) - c_omega/z ;
 (18)       L B_{omega,d}(z) = d^{-z} zeta(1+z)/(1+omega+z) - c_omega/z ;
 (21)       sum_d mu(d) d^{-sigma} L B_{omega,d}(z) = M_omega(z) ;
 (23b)      M_omega/Z_omega = tau_omega K_omega + c_omega (tau_omega(z)-tau_omega(0))/z ;
 (23e)      L g_omega(z) = (tau_omega(z) - tau_omega(0))/z ;
-(23f)/(23g) |g_omega|^2 <= P{log d > t} and ||g_omega||^2 <= E[log d] ;
+(23f)/(23g) |g_omega|^(2 : ℕ) <= P{log d > t} and ||g_omega||^(2 : ℕ) <= E[log d] ;
 (23i)      Z_omega ~ 1/(2 omega zeta(2)) and E[log d] ~ 1/(2 omega).
 ```
 -/

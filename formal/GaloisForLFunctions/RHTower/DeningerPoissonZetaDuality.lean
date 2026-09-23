@@ -173,7 +173,7 @@ theorem deningerDet2_ne_zero {s : ℂ} (hs : s ≠ 1) : deningerDet2 s ≠ 0 := 
 /-- **The determinant normalization is the entire `xi` rescaled.**  The poles of the completed zeta
 function at `0` and `1` are exactly cancelled by the two endpoint determinants. -/
 theorem deningerXiD_eq_xi {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
-    deningerXiD s = xi s / (2 * (Real.pi : ℂ) ^ 2) := by
+    deningerXiD s = xi s / (2 * (Real.pi : ℂ) ^ (2 : ℕ)) := by
   have hpi := deningerPi_ne_zero
   have h1s : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr (Ne.symm hs1)
   rw [deningerXiD, deningerDet0, deningerDet2, completedRiemannZeta_eq, xi]
@@ -199,14 +199,14 @@ source jet Frobenius, in Deninger's uncentered coordinate, is `xi`, hence it is 
 determinant normalization up to the fixed scalar `2π²`. -/
 theorem deningerXiD_eq_jetDeterminant {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     deningerXiD s
-      = deningerArithmeticJetUncenteredRegularizedDeterminant s / (2 * (Real.pi : ℂ) ^ 2) := by
+      = deningerArithmeticJetUncenteredRegularizedDeterminant s / (2 * (Real.pi : ℂ) ^ (2 : ℕ)) := by
   rw [deningerArithmeticJetUncenteredRegularizedDeterminant_eq_xi, deningerXiD_eq_xi hs0 hs1]
 
 /-- The completed zeta function is the source jet determinant divided by the two endpoint
 determinants. -/
 theorem deningerCompletedZeta_eq_jetDeterminant_quotient {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     completedRiemannZeta s
-      = (deningerArithmeticJetUncenteredRegularizedDeterminant s / (2 * (Real.pi : ℂ) ^ 2))
+      = (deningerArithmeticJetUncenteredRegularizedDeterminant s / (2 * (Real.pi : ℂ) ^ (2 : ℕ)))
         / (deningerDet0 s * deningerDet2 s) := by
   rw [← deningerXiD_eq_jetDeterminant hs0 hs1]
   exact deningerCompletedZeta_eq_det_quotient hs0 hs1

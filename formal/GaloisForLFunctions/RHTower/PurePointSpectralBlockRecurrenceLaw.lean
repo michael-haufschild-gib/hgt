@@ -19,13 +19,13 @@ noncomputable section
 def purePointSpectralBlockDistanceSq
     {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (phase : ι → ι → ℂ) (block : ι → ι → E) : ℝ :=
-  ∑' p : ι × ι, ‖phase p.1 p.2 • block p.1 p.2 - block p.1 p.2‖ ^ 2
+  ∑' p : ι × ι, ‖phase p.1 p.2 • block p.1 p.2 - block p.1 p.2‖ ^ (2 : ℕ)
 
 /-- Total weighted chord energy over an arbitrary pure-point spectrum. -/
 def purePointSpectralBlockPhaseEnergy
     {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (phase : ι → ι → ℂ) (block : ι → ι → E) : ℝ :=
-  ∑' p : ι × ι, ‖block p.1 p.2‖ ^ 2 * ‖phase p.1 p.2 - 1‖ ^ 2
+  ∑' p : ι × ι, ‖block p.1 p.2‖ ^ (2 : ℕ) * ‖phase p.1 p.2 - 1‖ ^ (2 : ℕ)
 
 /--
 Dimension-free pure-point law: total squared displacement equals total
@@ -61,9 +61,9 @@ theorem purePointHamiltonianDistanceSq_eq_gapEnergy
     (t : ℝ) (energy : ι → ℝ) (block : ι → ι → E) :
     purePointSpectralBlockDistanceSq
         (purePointHamiltonianPhase t energy) block =
-      ∑' p : ι × ι, ‖block p.1 p.2‖ ^ 2 *
+      ∑' p : ι × ι, ‖block p.1 p.2‖ ^ (2 : ℕ) *
         ‖Complex.exp
-          (Complex.I * (((t * (energy p.1 - energy p.2) : ℝ) : ℂ))) - 1‖ ^ 2 := by
+          (Complex.I * (((t * (energy p.1 - energy p.2) : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ) := by
   rw [purePointSpectralBlockDistanceSq_eq_phaseEnergy]
   rfl
 
@@ -75,9 +75,9 @@ theorem summable_purePoint_blockDistance_iff_phaseEnergy
     {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (phase : ι → ι → ℂ) (block : ι → ι → E) :
     Summable (fun p : ι × ι =>
-        ‖phase p.1 p.2 • block p.1 p.2 - block p.1 p.2‖ ^ 2) ↔
+        ‖phase p.1 p.2 • block p.1 p.2 - block p.1 p.2‖ ^ (2 : ℕ)) ↔
       Summable (fun p : ι × ι =>
-        ‖block p.1 p.2‖ ^ 2 * ‖phase p.1 p.2 - 1‖ ^ 2) := by
+        ‖block p.1 p.2‖ ^ (2 : ℕ) * ‖phase p.1 p.2 - 1‖ ^ (2 : ℕ)) := by
   apply summable_congr
   intro p
   have h :

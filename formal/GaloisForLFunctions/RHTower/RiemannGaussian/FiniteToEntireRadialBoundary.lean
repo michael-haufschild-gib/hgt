@@ -60,16 +60,16 @@ explicit quadratic expression. -/
 theorem one_div_spectralRadialBoundarySeparation_le_of_growth
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2))
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
     1 / spectralRadialBoundarySeparation n ≤
       3 *
-        (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4) := by
+        (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4) := by
   have hwindow := spectralZetaZeroWindow_card_le_of_growth hA
     (show 0 ≤ (n : ℝ) + 1 by positivity) hbound
   have hwindow' :
       ((spectralZetaZeroWindow ((n : ℝ) + 1)).card : ℝ) ≤
-        A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 := by
+        A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 := by
     convert hwindow using 1
     ring
   have hobstructions :
@@ -78,7 +78,7 @@ theorem one_div_spectralRadialBoundarySeparation_le_of_growth
     exact_mod_cast spectralRadialBoundaryObstructions_card_le n
   have hcard :
       ((spectralRadialBoundaryObstructions n).card : ℝ) + 2 ≤
-        A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4 := by
+        A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4 := by
     linarith
   rw [show 1 / spectralRadialBoundarySeparation n =
       3 * (((spectralRadialBoundaryObstructions n).card : ℝ) + 2) by
@@ -240,8 +240,8 @@ theorem spectralRadialBoundarySeparation_le_norm_completedCoordinate_sub_zero
 circles. -/
 noncomputable def xiQuantitativeRadialBoundaryLowerExponent
     (A : ℝ) (n : ℕ) : ℝ :=
-  2 * A * (xiCanonicalRadius n + 1) ^ 2 +
-    (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) *
+  2 * A * (xiCanonicalRadius n + 1) ^ (2 : ℕ) +
+    (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) *
       Real.log
         (1 + 2 * xiCanonicalRadius n /
           spectralRadialBoundarySeparation n)
@@ -251,7 +251,7 @@ on the entire selected circle. -/
 theorem exp_neg_xiQuantitativeRadialBoundaryLowerExponent_le_norm_riemannXiSpectral
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ u : ℂ,
-      ‖riemannXi u‖ ≤ Real.exp (A * (‖u‖ + 1) ^ 2))
+      ‖riemannXi u‖ ≤ Real.exp (A * (‖u‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) {w : ℂ}
     (hw : ‖w‖ = quantitativeSpectralRadialBoundary n) :
     Real.exp (-xiQuantitativeRadialBoundaryLowerExponent A n) ≤
@@ -283,10 +283,10 @@ theorem canonicalInnerQuarterBound_le_exponential
     (hTlo : (n : ℝ) < T) (hdelta : 0 < delta)
     (hsepRaw : 1 / delta ≤
       3 *
-        (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4)) :
-    (2 * (A * (xiCanonicalRadius n + 1) ^ 2)) /
+        (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4)) :
+    (2 * (A * (xiCanonicalRadius n + 1) ^ (2 : ℕ))) /
           (xiCanonicalRadius n / 4) +
-        (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) *
+        (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) *
           (2 / xiCanonicalRadius n + 1 / delta) ≤
       (392 * A + 729 * (A / Real.log 2) *
           (13 + 75 * (A / Real.log 2))) *
@@ -303,14 +303,14 @@ theorem canonicalInnerQuarterBound_le_exponential
   have hEone : 1 ≤ E := by
     dsimp [E]
     exact Real.one_le_exp hT0
-  have hE2one : 1 ≤ E ^ 2 := by nlinarith [sq_nonneg (E - 1)]
-  have hE2nonneg : 0 ≤ E ^ 2 := sq_nonneg E
-  have hE2E4 : E ^ 2 ≤ E ^ 4 := by
+  have hE2one : 1 ≤ E ^ (2 : ℕ) := by nlinarith [sq_nonneg (E - 1)]
+  have hE2nonneg : 0 ≤ E ^ (2 : ℕ) := sq_nonneg E
+  have hE2E4 : E ^ (2 : ℕ) ≤ E ^ (4 : ℕ) := by
     calc
-      E ^ 2 = E ^ 2 * 1 := by ring
-      _ ≤ E ^ 2 * E ^ 2 :=
+      E ^ (2 : ℕ) = E ^ (2 : ℕ) * 1 := by ring
+      _ ≤ E ^ (2 : ℕ) * E ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hE2one hE2nonneg
-      _ = E ^ 4 := by ring
+      _ = E ^ (4 : ℕ) := by ring
   have hTexp : T + 1 ≤ E := by
     simpa [E] using Real.add_one_le_exp T
   have hR : 0 < R := xiCanonicalRadius_pos n
@@ -341,92 +341,92 @@ theorem canonicalInnerQuarterBound_le_exponential
         linarith
       _ ≤ 5 * (T + 1) := by linarith
       _ ≤ 5 * E := mul_le_mul_of_nonneg_left hTexp (by norm_num)
-  have hR1sq : (R + 1) ^ 2 ≤ (14 * E) ^ 2 :=
+  have hR1sq : (R + 1) ^ (2 : ℕ) ≤ (14 * E) ^ (2 : ℕ) :=
     (sq_le_sq₀ (by positivity) (by positivity)).mpr hR1
-  have htwoR1sq : (2 * R + 1) ^ 2 ≤ (27 * E) ^ 2 :=
+  have htwoR1sq : (2 * R + 1) ^ (2 : ℕ) ≤ (27 * E) ^ (2 : ℕ) :=
     (sq_le_sq₀ (by positivity) (by positivity)).mpr htwoR1
-  have hXsq : X ^ 2 ≤ (5 * E) ^ 2 :=
+  have hXsq : X ^ (2 : ℕ) ≤ (5 * E) ^ (2 : ℕ) :=
     (sq_le_sq₀ hX0 (by positivity)).mpr hX
   have hresidual :
-      (2 * (A * (R + 1) ^ 2)) / (R / 4) ≤
-        392 * A * E ^ 2 := by
-    let N := 2 * (A * (R + 1) ^ 2)
+      (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4) ≤
+        392 * A * E ^ (2 : ℕ) := by
+    let N := 2 * (A * (R + 1) ^ (2 : ℕ))
     have hN : 0 ≤ N := by dsimp [N]; positivity
     calc
-      (2 * (A * (R + 1) ^ 2)) / (R / 4) = N / (R / 4) := rfl
+      (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4) = N / (R / 4) := rfl
       _ ≤ N := (div_le_iff₀ (by positivity : 0 < R / 4)).mpr (by
         calc
           N = N * 1 := by ring
           _ ≤ N * (R / 4) := mul_le_mul_of_nonneg_left hRfour hN)
-      _ ≤ 2 * A * (14 * E) ^ 2 := by
+      _ ≤ 2 * A * (14 * E) ^ (2 : ℕ) := by
         dsimp [N]
         calc
-          2 * (A * (R + 1) ^ 2) = (2 * A) * (R + 1) ^ 2 := by ring
-          _ ≤ (2 * A) * (14 * E) ^ 2 :=
+          2 * (A * (R + 1) ^ (2 : ℕ)) = (2 * A) * (R + 1) ^ (2 : ℕ) := by ring
+          _ ≤ (2 * A) * (14 * E) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left hR1sq (by positivity)
-          _ = 2 * A * (14 * E) ^ 2 := by ring
-      _ = 392 * A * E ^ 2 := by ring
+          _ = 2 * A * (14 * E) ^ (2 : ℕ) := by ring
+      _ = 392 * A * E ^ (2 : ℕ) := by ring
   have hcountFactor :
-      A * (2 * R + 1) ^ 2 / Real.log 2 ≤
-        729 * B * E ^ 2 := by
+      A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2 ≤
+        729 * B * E ^ (2 : ℕ) := by
     calc
-      A * (2 * R + 1) ^ 2 / Real.log 2 =
-          B * (2 * R + 1) ^ 2 := by dsimp [B]; ring
-      _ ≤ B * (27 * E) ^ 2 :=
+      A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2 =
+          B * (2 * R + 1) ^ (2 : ℕ) := by dsimp [B]; ring
+      _ ≤ B * (27 * E) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left htwoR1sq hB
-      _ = 729 * B * E ^ 2 := by ring
+      _ = 729 * B * E ^ (2 : ℕ) := by ring
   have hsep :
-      1 / delta ≤ 3 * (25 * B * E ^ 2 + 4) := by
+      1 / delta ≤ 3 * (25 * B * E ^ (2 : ℕ) + 4) := by
     calc
-      1 / delta ≤ 3 * (A * X ^ 2 / Real.log 2 + 4) := by
+      1 / delta ≤ 3 * (A * X ^ (2 : ℕ) / Real.log 2 + 4) := by
         simpa [X] using hsepRaw
-      _ = 3 * (B * X ^ 2 + 4) := by dsimp [B]; ring
-      _ ≤ 3 * (B * (5 * E) ^ 2 + 4) := by
+      _ = 3 * (B * X ^ (2 : ℕ) + 4) := by dsimp [B]; ring
+      _ ≤ 3 * (B * (5 * E) ^ (2 : ℕ) + 4) := by
         apply mul_le_mul_of_nonneg_left _ (by norm_num)
         exact add_le_add (mul_le_mul_of_nonneg_left hXsq hB) le_rfl
-      _ = 3 * (25 * B * E ^ 2 + 4) := by ring
+      _ = 3 * (25 * B * E ^ (2 : ℕ) + 4) := by ring
   have htwoDiv : 2 / R ≤ 1 :=
     (div_le_one hR).mpr (by linarith)
   have hsecond :
-      2 / R + 1 / delta ≤ (13 + 75 * B) * E ^ 2 := by
+      2 / R + 1 / delta ≤ (13 + 75 * B) * E ^ (2 : ℕ) := by
     calc
       2 / R + 1 / delta ≤
-          1 + 3 * (25 * B * E ^ 2 + 4) :=
+          1 + 3 * (25 * B * E ^ (2 : ℕ) + 4) :=
         add_le_add htwoDiv hsep
-      _ = 13 + 75 * B * E ^ 2 := by ring
-      _ ≤ 13 * E ^ 2 + 75 * B * E ^ 2 := by
-        have h13 : 13 ≤ 13 * E ^ 2 := by nlinarith
+      _ = 13 + 75 * B * E ^ (2 : ℕ) := by ring
+      _ ≤ 13 * E ^ (2 : ℕ) + 75 * B * E ^ (2 : ℕ) := by
+        have h13 : 13 ≤ 13 * E ^ (2 : ℕ) := by nlinarith
         exact add_le_add h13 le_rfl
-      _ = (13 + 75 * B) * E ^ 2 := by ring
+      _ = (13 + 75 * B) * E ^ (2 : ℕ) := by ring
   have hcanonical :
-      (A * (2 * R + 1) ^ 2 / Real.log 2) *
+      (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) *
           (2 / R + 1 / delta) ≤
-        729 * B * (13 + 75 * B) * E ^ 4 := by
+        729 * B * (13 + 75 * B) * E ^ (4 : ℕ) := by
     have hsecond0 : 0 ≤ 2 / R + 1 / delta := by positivity
     calc
-      (A * (2 * R + 1) ^ 2 / Real.log 2) *
+      (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) *
           (2 / R + 1 / delta) ≤
-          (729 * B * E ^ 2) * ((13 + 75 * B) * E ^ 2) :=
+          (729 * B * E ^ (2 : ℕ)) * ((13 + 75 * B) * E ^ (2 : ℕ)) :=
         mul_le_mul hcountFactor hsecond hsecond0 (by positivity)
-      _ = 729 * B * (13 + 75 * B) * E ^ 4 := by ring
+      _ = 729 * B * (13 + 75 * B) * E ^ (4 : ℕ) := by ring
   have hpoly :
-      (2 * (A * (R + 1) ^ 2)) / (R / 4) +
-          (A * (2 * R + 1) ^ 2 / Real.log 2) *
+      (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4) +
+          (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) *
             (2 / R + 1 / delta) ≤
-        (392 * A + 729 * B * (13 + 75 * B)) * E ^ 4 := by
+        (392 * A + 729 * B * (13 + 75 * B)) * E ^ (4 : ℕ) := by
     calc
-      (2 * (A * (R + 1) ^ 2)) / (R / 4) +
-          (A * (2 * R + 1) ^ 2 / Real.log 2) *
+      (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4) +
+          (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) *
             (2 / R + 1 / delta) ≤
-          392 * A * E ^ 2 +
-            729 * B * (13 + 75 * B) * E ^ 4 :=
+          392 * A * E ^ (2 : ℕ) +
+            729 * B * (13 + 75 * B) * E ^ (4 : ℕ) :=
         add_le_add hresidual hcanonical
-      _ ≤ 392 * A * E ^ 4 +
-          729 * B * (13 + 75 * B) * E ^ 4 := by
+      _ ≤ 392 * A * E ^ (4 : ℕ) +
+          729 * B * (13 + 75 * B) * E ^ (4 : ℕ) := by
         exact add_le_add
           (mul_le_mul_of_nonneg_left hE2E4 (by positivity)) le_rfl
-      _ = (392 * A + 729 * B * (13 + 75 * B)) * E ^ 4 := by ring
-  have hEpow : E ^ 4 = Real.exp (4 * T) := by
+      _ = (392 * A + 729 * B * (13 + 75 * B)) * E ^ (4 : ℕ) := by ring
+  have hEpow : E ^ (4 : ℕ) = Real.exp (4 * T) := by
     simpa [E] using (Real.exp_nat_mul T 4).symm
   simpa [R, B, hEpow] using hpoly
 
@@ -435,11 +435,11 @@ single-exponential majorant along the selected radial circles. -/
 theorem radialCanonicalInnerQuarterBound_le_exponential
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2))
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
-    (2 * (A * (xiCanonicalRadius n + 1) ^ 2)) /
+    (2 * (A * (xiCanonicalRadius n + 1) ^ (2 : ℕ))) /
           (xiCanonicalRadius n / 4) +
-        (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) *
+        (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) *
           (2 / xiCanonicalRadius n +
             1 / spectralRadialBoundarySeparation n) ≤
       (392 * A + 729 * (A / Real.log 2) *
@@ -455,7 +455,7 @@ single-exponential majorant. -/
 theorem xiQuantitativeRadialBoundaryLowerExponent_le_exponential
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
     xiQuantitativeRadialBoundaryLowerExponent A n ≤
       26 * (392 * A + 729 * (A / Real.log 2) *
@@ -464,8 +464,8 @@ theorem xiQuantitativeRadialBoundaryLowerExponent_le_exponential
   let R : ℝ := xiCanonicalRadius n
   let delta : ℝ := spectralRadialBoundarySeparation n
   let r : ℝ := quantitativeSpectralRadialBoundary n
-  let count : ℝ := A * (2 * R + 1) ^ 2 / Real.log 2
-  let residual : ℝ := (2 * (A * (R + 1) ^ 2)) / (R / 4)
+  let count : ℝ := A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2
+  let residual : ℝ := (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4)
   let canonical : ℝ := count * (2 / R + 1 / delta)
   let Q : ℝ := 392 * A + 729 * (A / Real.log 2) *
     (13 + 75 * (A / Real.log 2))
@@ -483,11 +483,11 @@ theorem xiQuantitativeRadialBoundaryLowerExponent_le_exponential
     have harg : 0 < 1 + 2 * R / delta := by positivity
     simpa using Real.log_le_sub_one_of_pos harg
   have hresidualScale :
-      2 * A * (R + 1) ^ 2 ≤ 2 * R * residual := by
-    have hterm : 0 ≤ 2 * A * (R + 1) ^ 2 := by positivity
+      2 * A * (R + 1) ^ (2 : ℕ) ≤ 2 * R * residual := by
+    have hterm : 0 ≤ 2 * A * (R + 1) ^ (2 : ℕ) := by positivity
     calc
-      2 * A * (R + 1) ^ 2 ≤
-          8 * (2 * A * (R + 1) ^ 2) := by
+      2 * A * (R + 1) ^ (2 : ℕ) ≤
+          8 * (2 * A * (R + 1) ^ (2 : ℕ)) := by
         nlinarith
       _ = 2 * R * residual := by
         dsimp only [residual]
@@ -515,7 +515,7 @@ theorem xiQuantitativeRadialBoundaryLowerExponent_le_exponential
         2 * R * (residual + canonical) := by
     calc
       xiQuantitativeRadialBoundaryLowerExponent A n =
-          2 * A * (R + 1) ^ 2 +
+          2 * A * (R + 1) ^ (2 : ℕ) +
             count * Real.log (1 + 2 * R / delta) := by
         rfl
       _ ≤ 2 * R * residual + 2 * R * canonical :=

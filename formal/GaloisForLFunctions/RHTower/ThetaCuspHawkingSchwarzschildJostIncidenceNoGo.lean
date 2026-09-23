@@ -179,11 +179,11 @@ theorem thetaCuspHawkingXiDivisor_is_scatteringZero_not_realAxisEvansPole
 
 /-- Reflected fraction `|A_out/A_in|²` in flux rapidity coordinates. -/
 def schwarzschildRealAxisReflectionEnergyShare (rapidity : ℝ) : ℝ :=
-  Real.sinh rapidity ^ 2 / Real.cosh rapidity ^ 2
+  Real.sinh rapidity ^ (2 : ℕ) / Real.cosh rapidity ^ (2 : ℕ)
 
 /-- Horizon-transmitted fraction `|1/A_in|²` in the same coordinates. -/
 def schwarzschildRealAxisHorizonEnergyShare (rapidity : ℝ) : ℝ :=
-  1 / Real.cosh rapidity ^ 2
+  1 / Real.cosh rapidity ^ (2 : ℕ)
 
 /-- Schwarzschild real-axis optical theorem `|R|² + |T|² = 1`. -/
 theorem schwarzschildRealAxis_opticalEnergyShares_add (rapidity : ℝ) :
@@ -252,14 +252,14 @@ branch-cut pieces.  The identity below already obstructs a positive two-channel 
 QNMs have the additional problem that their radial profiles are not ordinary finite-energy
 vectors. -/
 def thetaCuspHawkingQNMDirectCutFieldEnergy (direct pole cut : ℂ) : ℝ :=
-  ‖direct + pole + cut‖ ^ 2
+  ‖direct + pole + cut‖ ^ (2 : ℕ)
 
 /-- Exact three-way polarization.  A pole-plus-cut self-energy sum is valid only after proving
 all missing direct and interference terms vanish. -/
 theorem thetaCuspHawkingQNMDirectCutFieldEnergy_eq_self_add_interference
     (direct pole cut : ℂ) :
     thetaCuspHawkingQNMDirectCutFieldEnergy direct pole cut =
-      ‖direct‖ ^ 2 + ‖pole‖ ^ 2 + ‖cut‖ ^ 2 +
+      ‖direct‖ ^ (2 : ℕ) + ‖pole‖ ^ (2 : ℕ) + ‖cut‖ ^ (2 : ℕ) +
         2 * ((starRingEnd ℂ) direct * pole).re +
         2 * ((starRingEnd ℂ) direct * cut).re +
         2 * ((starRingEnd ℂ) pole * cut).re := by
@@ -273,7 +273,7 @@ theorem thetaCuspHawkingQNMDirectCutFieldEnergy_eq_self_add_interference
 cancel completely although their separate squared norms sum to two. -/
 theorem thetaCuspHawkingQNM_poleCutPositiveSum_fails_without_orthogonality :
     thetaCuspHawkingQNMDirectCutFieldEnergy 0 1 (-1) = 0 ∧
-      ‖(1 : ℂ)‖ ^ 2 + ‖(-1 : ℂ)‖ ^ 2 = 2 := by
+      ‖(1 : ℂ)‖ ^ (2 : ℕ) + ‖(-1 : ℂ)‖ ^ (2 : ℕ) = 2 := by
   norm_num [thetaCuspHawkingQNMDirectCutFieldEnergy]
 
 end RHTower

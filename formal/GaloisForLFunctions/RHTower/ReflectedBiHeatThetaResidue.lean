@@ -13,7 +13,7 @@ row has the same zeta pole.  This file subtracts that pole row by row and proves
 that the remaining double series is normally convergent near `epsilon = 0`.
 Consequently the pole-filled reflected pairing has the exact value
 
-`sum k : ℤ, exp (-pi * x * k^2)`
+`sum k : ℤ, exp (-pi * x * k^(2 : ℕ))`
 
 at the regulator origin.  No meromorphic-continuation interface is assumed.
 -/

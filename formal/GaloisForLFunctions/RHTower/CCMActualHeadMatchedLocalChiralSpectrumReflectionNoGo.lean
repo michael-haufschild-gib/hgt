@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.ParametricSpectralBranch
 The exact atomwise Hermitian chiral compression retains the signed matched reporter in its
 normalized nodal vector.  Its local characteristic determinant does not: in the source frame it is
 
-`z * (z^2 - (1 + g^2 + g^2 r^2))`,
+`z * (z^(2 : ℕ) - (1 + g^(2 : ℕ) + g^(2 : ℕ) r^(2 : ℕ)))`,
 
 where `g` is the projective gauge and `r` is the reporter.  Source reflection sends `r` to `-r`
 and leaves the entire characteristic relation unchanged.
@@ -58,7 +58,7 @@ theorem matrixCharpolyRelation_ccmActualHeadMatchedLocalChiralHermitianModel
     (g r : ℝ) (z : ℂ) :
     GaloisForLFunctions.HTGeometry.matrixCharpolyRelation
         (ccmActualHeadMatchedLocalChiralHermitianModel g r, z) =
-      z * (z ^ 2 - (1 + g ^ 2 + g ^ 2 * r ^ 2)) := by
+      z * (z ^ (2 : ℕ) - (1 + g ^ (2 : ℕ) + g ^ (2 : ℕ) * r ^ (2 : ℕ))) := by
   rw [GaloisForLFunctions.HTGeometry.matrixCharpolyRelation]
   simp [ccmActualHeadMatchedLocalChiralHermitianModel, Matrix.det_fin_three]
   ring_nf

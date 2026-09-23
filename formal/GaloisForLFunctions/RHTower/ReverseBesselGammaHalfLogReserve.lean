@@ -14,7 +14,7 @@ Fixed-order coefficient convergence only gives the nonuniform majorant `A(n,j) �
 The exact adjacent reverse-Bessel recurrence contains substantially more moving-degree information:
 each term controls its own decrement.  Telescoping from an arbitrary cutoff `r` gives
 
-`sum_{r ≤ j < n} A(n,j) ≤ 2n/(r+1)^2`.
+`sum_{r ≤ j < n} A(n,j) ≤ 2n/(r+1)^(2 : ℕ)`.
 
 Taking `r = floor(sqrt n)` leaves a tail strictly below `2`, while the head costs only the
 harmonic sum through `floor(sqrt n)`.  Consequently every positive degree `N` satisfies the
@@ -171,10 +171,10 @@ theorem reverseBesselGammaCostTerm_decrement_all {n j : ℕ} (hj : j < n) :
     nlinarith
 
 /-- Telescoping tail law: after any positive index cutoff `r+1`, the remaining factorial-weighted
-reverse-Bessel Gamma cost is at most `2n/(r+1)^2`. -/
+reverse-Bessel Gamma cost is at most `2n/(r+1)^(2 : ℕ)`. -/
 theorem sum_Ico_reverseBesselGammaCostTerm_le {n r : ℕ} (hr : r < n) :
     ∑ j ∈ Finset.Ico r n, reverseBesselGammaCostTerm n j ≤
-      2 * (n : ℝ) / (((r : ℝ) + 1) ^ 2) := by
+      2 * (n : ℝ) / (((r : ℝ) + 1) ^ (2 : ℕ)) := by
   have hn : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
   have hc : 0 < ((r : ℝ) + 1) / (2 * (n : ℝ)) := by positivity
   have hpoint : ∀ j ∈ Finset.Ico r n,
@@ -221,7 +221,7 @@ theorem sum_Ico_reverseBesselGammaCostTerm_le {n r : ℕ} (hr : r < n) :
     _ ≤ (2 * (n : ℝ) / ((r : ℝ) + 1)) * (1 / ((r : ℝ) + 1)) := by
       gcongr
       exact reverseBesselGammaCostTerm_le_harmonic n r
-    _ = 2 * (n : ℝ) / (((r : ℝ) + 1) ^ 2) := by
+    _ = 2 * (n : ℝ) / (((r : ℝ) + 1) ^ (2 : ℕ)) := by
       field_simp
 
 /-- Square-root cutoff: the full factorial-weighted reverse-Bessel Gamma cost consists of a
@@ -239,14 +239,14 @@ theorem reverseBesselGammaCost_le_sqrt_harmonic_add_two (n : ℕ) :
     exact reverseBesselGammaCostTerm_le_harmonic n j
   by_cases hr : r < n
   · have htail := sum_Ico_reverseBesselGammaCostTerm_le (n := n) (r := r) hr
-    have hsqrtNat : n < (r + 1) ^ 2 := by
+    have hsqrtNat : n < (r + 1) ^ (2 : ℕ) := by
       rw [pow_two]
       simpa [r, Nat.succ_eq_add_one] using Nat.lt_succ_sqrt n
-    have hsqrtReal : (n : ℝ) < ((r : ℝ) + 1) ^ 2 := by exact_mod_cast hsqrtNat
+    have hsqrtReal : (n : ℝ) < ((r : ℝ) + 1) ^ (2 : ℕ) := by exact_mod_cast hsqrtNat
     have htailTwo :
         ∑ j ∈ Finset.Ico r n, reverseBesselGammaCostTerm n j < 2 := by
       refine lt_of_le_of_lt htail ?_
-      rw [div_lt_iff₀ (by positivity : (0 : ℝ) < ((r : ℝ) + 1) ^ 2)]
+      rw [div_lt_iff₀ (by positivity : (0 : ℝ) < ((r : ℝ) + 1) ^ (2 : ℕ))]
       nlinarith
     rw [reverseBesselGammaCost]
     have hsplit := Finset.sum_range_add_sum_Ico
@@ -274,12 +274,12 @@ theorem reverseBesselGammaCost_le_halfLogReserve (n : ℕ) :
   have hcost := reverseBesselGammaCost_le_sqrt_harmonic_add_two N
   change reverseBesselGammaCost N ≤ radialHarmonicSum r + 2 at hcost
   have hharm := radialHarmonicSum_le_one_add_log hr
-  have hsquareNat : r ^ 2 ≤ N := by
+  have hsquareNat : r ^ (2 : ℕ) ≤ N := by
     simpa [pow_two, r, N] using Nat.sqrt_le N
-  have hsquareReal : ((r : ℝ) ^ 2) ≤ (N : ℝ) := by exact_mod_cast hsquareNat
-  have hlog : Real.log ((r : ℝ) ^ 2) ≤ Real.log (N : ℝ) :=
+  have hsquareReal : ((r : ℝ) ^ (2 : ℕ)) ≤ (N : ℝ) := by exact_mod_cast hsquareNat
+  have hlog : Real.log ((r : ℝ) ^ (2 : ℕ)) ≤ Real.log (N : ℝ) :=
     Real.strictMonoOn_log.monotoneOn
-      (show (r : ℝ) ^ 2 ∈ Set.Ioi 0 by simp only [Set.mem_Ioi]; positivity)
+      (show (r : ℝ) ^ (2 : ℕ) ∈ Set.Ioi 0 by simp only [Set.mem_Ioi]; positivity)
       (show (N : ℝ) ∈ Set.Ioi 0 by simp only [Set.mem_Ioi]; positivity)
       hsquareReal
   rw [Real.log_pow] at hlog

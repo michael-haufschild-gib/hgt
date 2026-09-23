@@ -30,9 +30,9 @@ noncomputable section
 
 def c5VelocityFirstAtomCurvatureExpression
     (r a b c : ℝ → ℝ) (t : ℝ) : ℝ :=
-  r t * (39 * a t + t * (b t - a t ^ 2) +
-      5 * t ^ 2 * (c t - 3 * a t * b t + a t ^ 3)) -
-    17 * t * a t ^ 2 - 3 * t ^ 2 * a t * (b t - a t ^ 2)
+  r t * (39 * a t + t * (b t - a t ^ (2 : ℕ)) +
+      5 * t ^ (2 : ℕ) * (c t - 3 * a t * b t + a t ^ (3 : ℕ))) -
+    17 * t * a t ^ (2 : ℕ) - 3 * t ^ (2 : ℕ) * a t * (b t - a t ^ (2 : ℕ))
 
 theorem c5VelocityFirstAtomCurvatureExpression_seamJetClassification
     (r a b c : ℝ → ℝ)
@@ -206,7 +206,7 @@ theorem c5VelocityFirstAtomCurvatureExpression_seamJetClassification
     rw [hxa2j, hx2agapj]
     norm_num [realScalarJetConvolution, realScalarJetId, hxj, hx2j,
       ha2j, hgapj, hx2aj, Finset.sum_range_succ, Nat.choose, ha0, ha1, hb0]
-  have htax3 : iteratedDeriv 3 tax 0 = 102 * k ^ 2 + 18 * k * B := by
+  have htax3 : iteratedDeriv 3 tax 0 = 102 * k ^ (2 : ℕ) + 18 * k * B := by
     rw [htaxj 3]
     rw [hxa2j, hx2agapj]
     norm_num [realScalarJetConvolution, realScalarJetId, hxj, hx2j,
@@ -289,7 +289,7 @@ private theorem contDiffAt_top_two_thetaCuspBornWittenLogCurvature_one
     fun_prop
   have hfrac : ContDiffAt ℝ ∞
       (fun x => 3 * thetaCuspMorseScale 1 x /
-        thetaCuspBornWittenWeight 1 x ^ 2) t := by
+        thetaCuspBornWittenWeight 1 x ^ (2 : ℕ)) t := by
     exact (contDiffAt_const.mul hs).div (hqd.pow 2) (pow_ne_zero 2 hq)
   unfold thetaCuspBornWittenLogCurvature thetaCuspBornWittenCurvature
   fun_prop
@@ -305,23 +305,23 @@ private theorem contDiffAt_top_neg_two_thetaCuspFirstAtomLogJetThree
       thetaCuspMorseScale
     fun_prop
   have hq2 : ContDiffAt ℝ ∞
-      (fun x => (6 : ℝ) / thetaCuspBornWittenWeight 1 x ^ 2) t := by
+      (fun x => (6 : ℝ) / thetaCuspBornWittenWeight 1 x ^ (2 : ℕ)) t := by
     exact contDiffAt_const.div (hqd.pow 2) (pow_ne_zero 2 hq)
   have hq3 : ContDiffAt ℝ ∞
-      (fun x => (18 : ℝ) / thetaCuspBornWittenWeight 1 x ^ 3) t := by
+      (fun x => (18 : ℝ) / thetaCuspBornWittenWeight 1 x ^ (3 : ℕ)) t := by
     exact contDiffAt_const.div (hqd.pow 3) (pow_ne_zero 3 hq)
   have hleft : ContDiffAt ℝ ∞
       (fun x => 2 * thetaCuspBornWittenWeight 1 x + 3) t := by
     fun_prop
   have hright : ContDiffAt ℝ ∞
-      (fun x => 4 - 6 / thetaCuspBornWittenWeight 1 x ^ 2 -
-        18 / thetaCuspBornWittenWeight 1 x ^ 3) t :=
+      (fun x => 4 - 6 / thetaCuspBornWittenWeight 1 x ^ (2 : ℕ) -
+        18 / thetaCuspBornWittenWeight 1 x ^ (3 : ℕ)) t :=
     (contDiffAt_const.sub hq2).sub hq3
   have hprod := hleft.mul hright
   have hscaled : ContDiffAt ℝ ∞
       (fun x => 2 * ((2 * thetaCuspBornWittenWeight 1 x + 3) *
-        (4 - 6 / thetaCuspBornWittenWeight 1 x ^ 2 -
-          18 / thetaCuspBornWittenWeight 1 x ^ 3))) t :=
+        (4 - 6 / thetaCuspBornWittenWeight 1 x ^ (2 : ℕ) -
+          18 / thetaCuspBornWittenWeight 1 x ^ (3 : ℕ)))) t :=
     contDiffAt_const.mul hprod
   unfold thetaCuspFirstAtomLogJetThree thetaCuspBornWittenLogThirdDerivative
   convert hscaled using 1

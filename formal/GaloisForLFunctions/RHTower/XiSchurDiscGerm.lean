@@ -42,7 +42,7 @@ theorem one_sub_ne_zero_of_norm_lt_one {w : ℂ} (hw : ‖w‖ < 1) : (1 : ℂ) 
 
 /-- The Cayley image of the unit disc has imaginary part `(1 - |w|²)/|1 - w|²`. -/
 theorem cayleyDisc_im (w : ℂ) :
-    (cayleyDisc w).im = (1 - ‖w‖ ^ 2) / ‖1 - w‖ ^ 2 := by
+    (cayleyDisc w).im = (1 - ‖w‖ ^ (2 : ℕ)) / ‖1 - w‖ ^ (2 : ℕ) := by
   have hmulI : (cayleyDisc w).im = ((1 + w) / (1 - w)).re := by
     rw [cayleyDisc, mul_div_assoc, Complex.mul_im]
     simp
@@ -55,8 +55,8 @@ theorem cayleyDisc_im (w : ℂ) :
 theorem cayleyDisc_im_pos {w : ℂ} (hw : ‖w‖ < 1) : 0 < (cayleyDisc w).im := by
   rw [cayleyDisc_im w]
   have hne : (1 : ℂ) - w ≠ 0 := one_sub_ne_zero_of_norm_lt_one hw
-  have hnum : 0 < 1 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
-  have hden : 0 < ‖1 - w‖ ^ 2 := by
+  have hnum : 0 < 1 - ‖w‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg w]
+  have hden : 0 < ‖1 - w‖ ^ (2 : ℕ) := by
     have := norm_pos_iff.mpr hne
     positivity
   exact div_pos hnum hden
@@ -213,16 +213,16 @@ theorem xiBasepointSlope_re_pos_of_rh (hRH : RiemannHypothesis) :
   obtain ⟨q0⟩ := nonempty_xiZeroCopy
   obtain ⟨t0, ht0⟩ := xiSpectralPoint_real_of_rh hRH q0
   have hpos : 0 < -(xiRelativeResolventTerm Complex.I q0).im := by
-    have hden : Complex.normSq ((t0 : ℂ) - Complex.I) = t0 ^ 2 + 1 := by
+    have hden : Complex.normSq ((t0 : ℂ) - Complex.I) = t0 ^ (2 : ℕ) + 1 := by
       rw [Complex.normSq_apply]
       simp [Complex.sub_re, Complex.sub_im]
       ring
-    have hdenpos : (0 : ℝ) < t0 ^ 2 + 1 := by positivity
+    have hdenpos : (0 : ℝ) < t0 ^ (2 : ℕ) + 1 := by positivity
     rw [xiRelativeResolventTerm, ht0, Complex.sub_im, Complex.inv_im, Complex.inv_im]
     simp only [Complex.sub_im, Complex.ofReal_im, Complex.I_im, zero_sub, neg_neg,
       neg_zero, zero_div]
     rw [hden]
-    have : (0 : ℝ) < 1 / (t0 ^ 2 + 1) := by positivity
+    have : (0 : ℝ) < 1 / (t0 ^ (2 : ℕ) + 1) := by positivity
     linarith
   have hle : -(xiRelativeResolventTerm Complex.I q0).im
       ≤ ∑' q : XiZeroCopy, -(xiRelativeResolventTerm Complex.I q).im :=
@@ -257,13 +257,13 @@ theorem xiCaratheodory_re_nonneg_of_rh (hRH : RiemannHypothesis) {w : ℂ} (hw :
     have := xiSourceHerglotz_im_nonneg_of_rh hRH (cayleyDisc_im_pos hw)
     simpa [Complex.mul_re] using this
   rw [xiCaratheodory, Complex.div_re, hbim]
-  have hns : Complex.normSq xiBasepointSlope = xiBasepointSlope.re ^ 2 := by
+  have hns : Complex.normSq xiBasepointSlope = xiBasepointSlope.re ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hbim]
     ring
   rw [hns]
-  have hpos : 0 < xiBasepointSlope.re ^ 2 := by positivity
+  have hpos : 0 < xiBasepointSlope.re ^ (2 : ℕ) := by positivity
   have h1 : 0 ≤ (-Complex.I * xiSourceHerglotz (cayleyDisc w)).re * xiBasepointSlope.re
-      / xiBasepointSlope.re ^ 2 :=
+      / xiBasepointSlope.re ^ (2 : ℕ) :=
     div_nonneg (mul_nonneg hnum hbre.le) hpos.le
   simpa using h1
 
@@ -321,10 +321,10 @@ theorem exists_xiCircleMeasure_of_rh (hRH : RiemannHypothesis) :
 /-- Under the Riemann hypothesis each basepoint resolvent term contributes the Cauchy weight
 `1/(t² + 1)`. -/
 theorem neg_xiRelativeResolventTerm_I_im_of_rh (hRH : RiemannHypothesis) (q : XiZeroCopy) :
-    -(xiRelativeResolventTerm Complex.I q).im = 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+    -(xiRelativeResolventTerm Complex.I q).im = 1 / (xiRealSpectralPoint q ^ (2 : ℕ) + 1) := by
   have ht := xiSpectralPoint_eq_ofReal_of_rh hRH q
   set t := xiRealSpectralPoint q with htdef
-  have hden : Complex.normSq ((t : ℂ) - Complex.I) = t ^ 2 + 1 := by
+  have hden : Complex.normSq ((t : ℂ) - Complex.I) = t ^ (2 : ℕ) + 1 := by
     rw [Complex.normSq_apply]
     simp [Complex.sub_re, Complex.sub_im]
     ring
@@ -335,7 +335,7 @@ theorem neg_xiRelativeResolventTerm_I_im_of_rh (hRH : RiemannHypothesis) (q : Xi
 
 /-- **The basepoint normalization is the total Cauchy weight of the centered Xi spectrum.** -/
 theorem xiBasepointSlope_re_eq_tsum_of_rh (hRH : RiemannHypothesis) :
-    xiBasepointSlope.re = ∑' q : XiZeroCopy, 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+    xiBasepointSlope.re = ∑' q : XiZeroCopy, 1 / (xiRealSpectralPoint q ^ (2 : ℕ) + 1) := by
   have hz : (0 : ℝ) < (Complex.I).im := by simp
   have hXi : XiC Complex.I ≠ 0 := XiC_ne_zero_of_rh_of_im_pos hRH hz
   have hsum : Summable (xiRelativeResolventTerm Complex.I) :=
@@ -354,7 +354,7 @@ theorem xiBasepointSlope_re_eq_tsum_of_rh (hRH : RiemannHypothesis) :
 
 /-- The Cauchy weights of the centered Xi spectrum are summable. -/
 theorem summable_xiCauchyWeight_of_rh (hRH : RiemannHypothesis) :
-    Summable fun q : XiZeroCopy => 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+    Summable fun q : XiZeroCopy => 1 / (xiRealSpectralPoint q ^ (2 : ℕ) + 1) := by
   have hz : (0 : ℝ) < (Complex.I).im := by simp
   have hXi : XiC Complex.I ≠ 0 := XiC_ne_zero_of_rh_of_im_pos hRH hz
   have hsum : Summable (xiRelativeResolventTerm Complex.I) :=

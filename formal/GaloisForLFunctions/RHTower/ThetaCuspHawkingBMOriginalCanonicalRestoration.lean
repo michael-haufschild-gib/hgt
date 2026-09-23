@@ -135,7 +135,7 @@ theorem canonical_horizon_restoration (q : XiZeroCopy) (br : Bool) (amp K w₀ :
     calc
       _ = ‖(oppositeProfile q br amp K u z-d₀ u-d₁ u*(z:ℂ))+d₁ u*(z:ℂ)‖ := by ring_nf
       _ ≤ ‖oppositeProfile q br amp K u z-d₀ u-d₁ u*(z:ℂ)‖+‖d₁ u*(z:ℂ)‖ := norm_add_le _ _
-      _ ≤ E*z^2+M*z := add_le_add hjet hcoef
+      _ ≤ E*z^(2 : ℕ)+M*z := add_le_add hjet hcoef
       _ ≤ (M+E*D)*z := by
         have hzz : z≤D := hz.2.trans hbD
         have := mul_le_mul_of_nonneg_left hzz (mul_nonneg hE hz.1.le)

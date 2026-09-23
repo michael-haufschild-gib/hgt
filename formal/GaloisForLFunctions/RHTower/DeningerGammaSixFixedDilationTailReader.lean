@@ -422,7 +422,7 @@ theorem tendsto_deningerGammaSixIntegralTailOperator_second
     (k l M : ℕ) {w : ℂ} (hw : |w.im| < 1)
     (hrw : (1 / 3 : ℝ) < (mobiusThetaCenteredParameter w).re) (hM : 3 ≤ M) :
     Tendsto (fun ε : ℝ => deningerOrdinaryIntegerAbelDefect ε (6 : PNat)
-      (deningerGammaSixIntegralTailOperator k l M w) / (ε : ℂ)^2)
+      (deningerGammaSixIntegralTailOperator k l M w) / (ε : ℂ)^(2 : ℕ))
       (𝓝[>] 0) (𝓝 (deningerGammaSixShellTailBoundary k l M w)) := by
   have h := tendsto_deningerOrdinaryIntegerAbelDefect_second
     (deningerGammaSixIntegralTailOperator k l M w) 0
@@ -552,7 +552,7 @@ theorem eventually_deningerGammaSixIntegral_top_finite_repair_fixed_six
             (xiSpectralPointSupport rho) (xiSpectralPointSupport rho) + F) -
               (iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho) *
                 iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho)) •
-                  deningerOrdinaryIntegerReciprocalGreen)) / (ε : ℂ)^2)
+                  deningerOrdinaryIntegerReciprocalGreen)) / (ε : ℂ)^(2 : ℕ))
       (𝓝[>] 0) (𝓝 0) := by
   have hw := abs_im_xiSpectralPointSupport_lt_one rho
   have hrw : (1 / 3 : ℝ) < (mobiusThetaCenteredParameter (xiSpectralPointSupport rho)).re := by

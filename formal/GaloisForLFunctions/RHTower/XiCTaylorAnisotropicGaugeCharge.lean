@@ -100,7 +100,7 @@ theorem anisotropicHorizontalResidue_tendsto
           abs_mul _ _
         _ ≤ |(delta n).im| * ‖L n‖ :=
           mul_le_mul_of_nonneg_left (Complex.abs_im_le_norm _) (abs_nonneg _)
-        _ ≤ (1 / (N : ℝ) ^ 2) * ((N : ℝ) * C) :=
+        _ ≤ (1 / (N : ℝ) ^ (2 : ℕ)) * ((N : ℝ) * C) :=
           mul_le_mul hdeltaIm.le hLnorm (norm_nonneg _) (by positivity)
         _ = C * (1 / (N : ℝ)) := by field_simp
     simpa only [N, Nat.cast_add, Nat.cast_one] using hprod

@@ -43,19 +43,19 @@ theorem not_bddBelow_soninCompletedPacketValueVar_of_transported_channel (N₀ :
           (fun i => soninShellCutScale b c (Nstart + i) κ) hp
           (fun i => (⟪v i, U i (C (V i (v i)))⟫_ℂ).re) := by
   refine not_bddBelow_soninCompletedPacketValueVar_of_bddAbove_seq N₀ hN₀ a b c q hbc ha hab hb
-    haq hqb _ (‖C‖ * W ^ 2) fun i => ?_
+    haq hqb _ (‖C‖ * W ^ (2 : ℕ)) fun i => ?_
   have h1 : (⟪v i, U i (C (V i (v i)))⟫_ℂ).re ≤ ‖(⟪v i, U i (C (V i (v i)))⟫_ℂ)‖ :=
     Complex.re_le_norm _
   have h2 : ‖(⟪v i, U i (C (V i (v i)))⟫_ℂ)‖ ≤ ‖v i‖ * ‖U i (C (V i (v i)))‖ :=
     norm_inner_le_norm _ _
   have h3 : ‖v i‖ * ‖U i (C (V i (v i)))‖ ≤ ‖v i‖ * (‖C‖ * ‖v i‖) :=
     mul_le_mul_of_nonneg_left (norm_transported_apply_le (hU i) (hV i) (v i)) (norm_nonneg _)
-  have h4 : ‖v i‖ * (‖C‖ * ‖v i‖) ≤ ‖C‖ * W ^ 2 := by
-    have hsq : ‖v i‖ ^ 2 ≤ W ^ 2 := by
+  have h4 : ‖v i‖ * (‖C‖ * ‖v i‖) ≤ ‖C‖ * W ^ (2 : ℕ) := by
+    have hsq : ‖v i‖ ^ (2 : ℕ) ≤ W ^ (2 : ℕ) := by
       rw [pow_two, pow_two]
       exact mul_self_le_mul_self (norm_nonneg _) (hv i)
-    calc ‖v i‖ * (‖C‖ * ‖v i‖) = ‖C‖ * ‖v i‖ ^ 2 := by ring
-      _ ≤ ‖C‖ * W ^ 2 := mul_le_mul_of_nonneg_left hsq (norm_nonneg C)
+    calc ‖v i‖ * (‖C‖ * ‖v i‖) = ‖C‖ * ‖v i‖ ^ (2 : ℕ) := by ring
+      _ ≤ ‖C‖ * W ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hsq (norm_nonneg C)
   exact le_trans (le_trans (le_trans h1 h2) h3) h4
 
 /-- **A fixed channel transported by the tower's dilations fails.**  This is the shape a

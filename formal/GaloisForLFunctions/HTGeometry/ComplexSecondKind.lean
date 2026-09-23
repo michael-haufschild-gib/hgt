@@ -184,10 +184,10 @@ the first analytic step of the convergence transfer. -/
 
 theorem weightedSum_sq_le (h : PositiveMomentForm s) (n : ℕ) (f g : ℕ → ℂ) :
     (∑ j ∈ Finset.range (n + 1),
-        ‖f j‖ * ‖g j‖ / momentInner s (monicOrtho s j) (monicOrtho s j)) ^ 2
-      ≤ (∑ j ∈ Finset.range (n + 1), ‖f j‖ ^ 2 /
+        ‖f j‖ * ‖g j‖ / momentInner s (monicOrtho s j) (monicOrtho s j)) ^ (2 : ℕ)
+      ≤ (∑ j ∈ Finset.range (n + 1), ‖f j‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s j) (monicOrtho s j)) *
-        (∑ j ∈ Finset.range (n + 1), ‖g j‖ ^ 2 /
+        (∑ j ∈ Finset.range (n + 1), ‖g j‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s j) (monicOrtho s j)) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
@@ -197,11 +197,11 @@ theorem weightedSum_sq_le (h : PositiveMomentForm s) (n : ℕ) (f g : ℕ → �
     fun j => Real.mul_self_sqrt (hpos j).le
   have hcs : (∑ j ∈ Finset.range (n + 1),
         (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) *
-          (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j)))) ^ 2
+          (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j)))) ^ (2 : ℕ)
       ≤ (∑ j ∈ Finset.range (n + 1),
-            (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2) *
+            (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)) *
         (∑ j ∈ Finset.range (n + 1),
-            (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2) := by
+            (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)) := by
     exact Finset.sum_mul_sq_le_sq_mul_sq _ _ _
   have e1 : ∑ j ∈ Finset.range (n + 1),
       (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) *
@@ -211,15 +211,15 @@ theorem weightedSum_sq_le (h : PositiveMomentForm s) (n : ℕ) (f g : ℕ → �
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_mul_div_comm, hmul j]
   have e2 : ∑ j ∈ Finset.range (n + 1),
-      (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2
+      (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)
       = ∑ j ∈ Finset.range (n + 1),
-        ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) := by
+        ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_pow, Real.sq_sqrt (hpos j).le]
   have e3 : ∑ j ∈ Finset.range (n + 1),
-      (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2
+      (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)
       = ∑ j ∈ Finset.range (n + 1),
-        ‖g j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) := by
+        ‖g j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_pow, Real.sq_sqrt (hpos j).le]
   rw [e1, e2, e3] at hcs
@@ -228,7 +228,7 @@ theorem weightedSum_sq_le (h : PositiveMomentForm s) (n : ℕ) (f g : ℕ → �
 /-- The root of a weighted kernel sum, the natural norm for the Duhamel estimates. -/
 noncomputable def kernelRoot (s : ℕ → ℝ) (p : ℕ → ℂ) (n : ℕ) : ℝ :=
   Real.sqrt (∑ j ∈ Finset.range (n + 1),
-    ‖p j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j))
+    ‖p j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j))
 
 theorem kernelRoot_nonneg (s : ℕ → ℝ) (p : ℕ → ℂ) (n : ℕ) : 0 ≤ kernelRoot s p n :=
   Real.sqrt_nonneg _
@@ -259,7 +259,7 @@ theorem norm_weightedSum_le (h : PositiveMomentForm s) (n : ℕ) (f g : ℕ → 
     Finset.sum_nonneg fun j _ =>
       div_nonneg (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (hpos j).le
   have hA : 0 ≤ ∑ j ∈ Finset.range (n + 1),
-      ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) :=
+      ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) :=
     Finset.sum_nonneg fun j _ => div_nonneg (sq_nonneg _) (hpos j).le
   refine le_trans hstep1 ?_
   rw [kernelRoot, kernelRoot, ← Real.sqrt_mul hA]
@@ -350,8 +350,8 @@ The absorption step uses monotonicity of the kernel roots in `n` and the identif
 squares with the kernel sums of the summability criterion. -/
 
 theorem kernelRoot_sq (h : PositiveMomentForm s) (p : ℕ → ℂ) (n : ℕ) :
-    kernelRoot s p n ^ 2 = ∑ j ∈ Finset.range (n + 1),
-      ‖p j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) := by
+    kernelRoot s p n ^ (2 : ℕ) = ∑ j ∈ Finset.range (n + 1),
+      ‖p j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
   rw [kernelRoot, Real.sq_sqrt]
   exact Finset.sum_nonneg fun j _ =>
     div_nonneg (sq_nonneg _) (monicOrtho_inner_self_pos h j).le
@@ -369,7 +369,7 @@ theorem kernelRoot_mono (h : PositiveMomentForm s) (p : ℕ → ℂ) {m n : ℕ}
 
 /-- The square of the kernel root is the kernel sum of the summability criterion. -/
 theorem kernelRoot_sq_eq_normSq_sum (h : PositiveMomentForm s) (p : ℕ → ℂ) (n : ℕ) :
-    kernelRoot s p n ^ 2 = ∑ j ∈ Finset.range (n + 1),
+    kernelRoot s p n ^ (2 : ℕ) = ∑ j ∈ Finset.range (n + 1),
       Complex.normSq (p j) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
   rw [kernelRoot_sq h]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -382,7 +382,7 @@ theorem summable_of_kernelRoot_le (h : PositiveMomentForm s) (z : ℂ) {C : ℝ}
     (hC : ∀ n, kernelRoot s (fun j => monicOrthoC s j z) n ≤ C) :
     Summable (fun k => Complex.normSq (monicOrthoC s k z) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) := by
-  refine summable_kernel_of_sum_range_le (C := C ^ 2) h z ?_
+  refine summable_kernel_of_sum_range_le (C := C ^ (2 : ℕ)) h z ?_
   intro n
   match n with
   | 0 =>
@@ -422,12 +422,12 @@ theorem norm_monicOrthoC_duhamel_le_of_le (h : PositiveMomentForm s) {N n : ℕ}
 /-- The squared pointwise estimate: the form that survives division by `hₙ` and summation. -/
 theorem normSq_monicOrthoC_duhamel_le (h : PositiveMomentForm s) {N n : ℕ} (hn : n ≤ N)
     (z w : ℂ) :
-    ‖monicOrthoC s n w‖ ^ 2
-      ≤ 2 * ‖monicOrthoC s n z‖ ^ 2
-        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-          (‖monicOrthoC s n z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) N ^ 2
-            + ‖secondKindC s n z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ 2) := by
+    ‖monicOrthoC s n w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖monicOrthoC s n z‖ ^ (2 : ℕ)
+        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+          (‖monicOrthoC s n z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+            + ‖secondKindC s n z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ)) := by
   have h0 : 0 ≤ momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
     (monicOrtho_inner_self_pos h 0).le
   have hA := norm_monicOrthoC_duhamel_le_of_le h hn z w
@@ -447,83 +447,83 @@ theorem normSq_monicOrthoC_duhamel_le (h : PositiveMomentForm s) {N n : ℕ} (hn
   set P := kernelRoot s (fun j => secondKindC s j z) N
   set S := kernelRoot s (fun j => monicOrthoC s j z) N
   have hX : 0 ≤ D * (K * (a * P + b * S)) := by positivity
-  have h2 : e ^ 2 ≤ (a + D * (K * (a * P + b * S))) ^ 2 := by
+  have h2 : e ^ (2 : ℕ) ≤ (a + D * (K * (a * P + b * S))) ^ (2 : ℕ) := by
     have hsum : 0 ≤ a + D * (K * (a * P + b * S)) := by positivity
     nlinarith [hA, he, hsum]
-  have h3 : (a + D * (K * (a * P + b * S))) ^ 2
-      ≤ 2 * a ^ 2 + 2 * (D * (K * (a * P + b * S))) ^ 2 := by
+  have h3 : (a + D * (K * (a * P + b * S))) ^ (2 : ℕ)
+      ≤ 2 * a ^ (2 : ℕ) + 2 * (D * (K * (a * P + b * S))) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (a - D * (K * (a * P + b * S)))]
-  have h5 : (a * P + b * S) ^ 2 ≤ 2 * (a ^ 2 * P ^ 2 + b ^ 2 * S ^ 2) := by
+  have h5 : (a * P + b * S) ^ (2 : ℕ) ≤ 2 * (a ^ (2 : ℕ) * P ^ (2 : ℕ) + b ^ (2 : ℕ) * S ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (a * P - b * S)]
-  have h6 : (D * (K * (a * P + b * S))) ^ 2 = D ^ 2 * K ^ 2 * (a * P + b * S) ^ 2 := by ring
+  have h6 : (D * (K * (a * P + b * S))) ^ (2 : ℕ) = D ^ (2 : ℕ) * K ^ (2 : ℕ) * (a * P + b * S) ^ (2 : ℕ) := by ring
   nlinarith [h2, h3, h5, h6, sq_nonneg D, sq_nonneg K, mul_nonneg (sq_nonneg D) (sq_nonneg K)]
 
 /-- **The absorption inequality.**  Dividing the squared pointwise estimate by `hₙ` and summing over
 `n ≤ N` gives a self-referential bound on the kernel root at `w`. -/
 theorem kernelRoot_sq_le_absorption (h : PositiveMomentForm s) (N : ℕ) (z w : ℂ) :
-    kernelRoot s (fun j => monicOrthoC s j w) N ^ 2
-      ≤ 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ 2
-        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-          kernelRoot s (fun j => secondKindC s j z) N ^ 2 := by
+    kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)
+      ≤ 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ)
+        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hterm : ∀ n ∈ Finset.range (N + 1),
-      ‖monicOrthoC s n w‖ ^ 2 / momentInner s (monicOrtho s n) (monicOrtho s n)
-        ≤ 2 * (‖monicOrthoC s n z‖ ^ 2 /
+      ‖monicOrthoC s n w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s n) (monicOrtho s n)
+        ≤ 2 * (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
               momentInner s (monicOrtho s n) (monicOrtho s n))
-          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-              kernelRoot s (fun j => secondKindC s j z) N ^ 2 *
-              (‖monicOrthoC s n z‖ ^ 2 /
+          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+              kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) *
+              (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n))
-          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-              (‖secondKindC s n z‖ ^ 2 /
+          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+              (‖secondKindC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n)) := by
     intro n hn'
     have hn : n ≤ N := Nat.lt_succ_iff.mp (Finset.mem_range.mp hn')
     have hsq := normSq_monicOrthoC_duhamel_le h hn z w
-    have hdiv : ‖monicOrthoC s n w‖ ^ 2 /
+    have hdiv : ‖monicOrthoC s n w‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s n) (monicOrtho s n)
-        ≤ (2 * ‖monicOrthoC s n z‖ ^ 2
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-              (‖monicOrthoC s n z‖ ^ 2 *
-                  kernelRoot s (fun j => secondKindC s j z) N ^ 2
-                + ‖secondKindC s n z‖ ^ 2 *
-                  kernelRoot s (fun j => monicOrthoC s j z) N ^ 2)) /
+        ≤ (2 * ‖monicOrthoC s n z‖ ^ (2 : ℕ)
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+              (‖monicOrthoC s n z‖ ^ (2 : ℕ) *
+                  kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+                + ‖secondKindC s n z‖ ^ (2 : ℕ) *
+                  kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ))) /
           momentInner s (monicOrtho s n) (monicOrtho s n) := by
       gcongr
       exact (hpos n).le
     refine le_trans hdiv (le_of_eq ?_)
     field_simp
     ring
-  calc kernelRoot s (fun j => monicOrthoC s j w) N ^ 2
+  calc kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)
       = ∑ n ∈ Finset.range (N + 1),
-          ‖monicOrthoC s n w‖ ^ 2 / momentInner s (monicOrtho s n) (monicOrtho s n) :=
+          ‖monicOrthoC s n w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s n) (monicOrtho s n) :=
         kernelRoot_sq h _ _
     _ ≤ ∑ n ∈ Finset.range (N + 1),
-          (2 * (‖monicOrthoC s n z‖ ^ 2 /
+          (2 * (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n))
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-                kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-                kernelRoot s (fun j => secondKindC s j z) N ^ 2 *
-                (‖monicOrthoC s n z‖ ^ 2 /
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+                kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+                kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) *
+                (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
                   momentInner s (monicOrtho s n) (monicOrtho s n))
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-                kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-                kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-                (‖secondKindC s n z‖ ^ 2 /
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+                kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+                kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+                (‖secondKindC s n z‖ ^ (2 : ℕ) /
                   momentInner s (monicOrtho s n) (monicOrtho s n))) :=
         Finset.sum_le_sum hterm
-    _ = 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ 2
-        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-          kernelRoot s (fun j => secondKindC s j z) N ^ 2 := by
+    _ = 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ)
+        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
           ← Finset.mul_sum, ← kernelRoot_sq h, ← kernelRoot_sq h]
         ring
@@ -537,7 +537,7 @@ hence summability at `w`. -/
 theorem summable_kernel_transfer (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S)
     (hP : ∀ N, kernelRoot s (fun j => secondKindC s j z) N ≤ P)
-    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
+    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
       ≤ 1 / 2) :
     Summable (fun k => Complex.normSq (monicOrthoC s k w) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) := by
@@ -553,24 +553,24 @@ theorem summable_kernel_transfer (h : PositiveMomentForm s) (z w : ℂ) {S P : �
   have hPNnn := kernelRoot_nonneg s (fun j => secondKindC s j z) N
   have h1 : kernelRoot s (fun j => monicOrthoC s j z) N ≤ S := hS N
   have h2 : kernelRoot s (fun j => secondKindC s j z) N ≤ P := hP N
-  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 ≤ S ^ 2 := by
+  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     gcongr
-  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ 2 ≤ P ^ 2 := by
+  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) ≤ P ^ (2 : ℕ) := by
     gcongr
-  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-      kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-      kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-      kernelRoot s (fun j => secondKindC s j z) N ^ 2
-      ≤ 1 / 2 * kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 := by
-    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-        kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-        kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-        kernelRoot s (fun j => secondKindC s j z) N ^ 2
-        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 * S ^ 2 * P ^ 2 := by
+  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+      kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+      ≤ 1 / 2 * kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) := by
+    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+        kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) := by
       gcongr
     nlinarith [hmid, hsmall, sq_nonneg (kernelRoot s (fun j => monicOrthoC s j w) N)]
-  have hK2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 ≤ (2 * S) ^ 2 := by
+  have hK2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) ≤ (2 * S) ^ (2 : ℕ) := by
     nlinarith [habs, hbig, hSq1]
   have hfin := Real.sqrt_le_sqrt hK2
   rwa [Real.sqrt_sq hKnn, Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 2 * S)] at hfin
@@ -607,10 +607,10 @@ theorem summable_kernel_transfer_of_dist (h : PositiveMomentForm s) (z w : ℂ) 
     rw [transferRadius]
     field_simp
     try ring
-  have hkey : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
-      ≤ 8 * (1 / (4 * S * P)) ^ 2 * S ^ 2 * P ^ 2 := by
+  have hkey : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
+      ≤ 8 * (1 / (4 * S * P)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) := by
     gcongr
-  have hval : 8 * (1 / (4 * S * P)) ^ 2 * S ^ 2 * P ^ 2 = 1 / 2 := by
+  have hval : 8 * (1 / (4 * S * P)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) = 1 / 2 := by
     field_simp
     try ring
   linarith [hkey, hval]
@@ -843,12 +843,12 @@ theorem norm_secondKindC_duhamel_le_of_le (h : PositiveMomentForm s) {N n : ℕ}
 
 theorem normSq_secondKindC_duhamel_le (h : PositiveMomentForm s) {N n : ℕ} (hn : n ≤ N)
     (z w : ℂ) :
-    ‖secondKindC s n w‖ ^ 2
-      ≤ 2 * ‖secondKindC s n z‖ ^ 2
-        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-          (‖monicOrthoC s n z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) N ^ 2
-            + ‖secondKindC s n z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) N ^ 2) := by
+    ‖secondKindC s n w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖secondKindC s n z‖ ^ (2 : ℕ)
+        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+          (‖monicOrthoC s n z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+            + ‖secondKindC s n z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ)) := by
   have h0 : 0 ≤ momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
     (monicOrtho_inner_self_pos h 0).le
   have hA := norm_secondKindC_duhamel_le_of_le h hn z w
@@ -866,83 +866,83 @@ theorem normSq_secondKindC_duhamel_le (h : PositiveMomentForm s) {N n : ℕ} (hn
   set P := kernelRoot s (fun j => secondKindC s j z) N
   set S := kernelRoot s (fun j => monicOrthoC s j z) N
   have hDnn : 0 ≤ D := mul_nonneg (norm_nonneg _) h0
-  have h2 : e ^ 2 ≤ (b + D * (K * (a * P + b * S))) ^ 2 := by
+  have h2 : e ^ (2 : ℕ) ≤ (b + D * (K * (a * P + b * S))) ^ (2 : ℕ) := by
     have hsum : 0 ≤ b + D * (K * (a * P + b * S)) := by positivity
     nlinarith [hA, he, hsum]
-  have h3 : (b + D * (K * (a * P + b * S))) ^ 2
-      ≤ 2 * b ^ 2 + 2 * (D * (K * (a * P + b * S))) ^ 2 := by
+  have h3 : (b + D * (K * (a * P + b * S))) ^ (2 : ℕ)
+      ≤ 2 * b ^ (2 : ℕ) + 2 * (D * (K * (a * P + b * S))) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (b - D * (K * (a * P + b * S)))]
-  have h5 : (a * P + b * S) ^ 2 ≤ 2 * (a ^ 2 * P ^ 2 + b ^ 2 * S ^ 2) := by
+  have h5 : (a * P + b * S) ^ (2 : ℕ) ≤ 2 * (a ^ (2 : ℕ) * P ^ (2 : ℕ) + b ^ (2 : ℕ) * S ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (a * P - b * S)]
-  have h6 : (D * (K * (a * P + b * S))) ^ 2 = D ^ 2 * K ^ 2 * (a * P + b * S) ^ 2 := by ring
+  have h6 : (D * (K * (a * P + b * S))) ^ (2 : ℕ) = D ^ (2 : ℕ) * K ^ (2 : ℕ) * (a * P + b * S) ^ (2 : ℕ) := by ring
   nlinarith [h2, h3, h5, h6, sq_nonneg D, sq_nonneg K, mul_nonneg (sq_nonneg D) (sq_nonneg K)]
 
 /-- **The second-kind absorption inequality.**  Same shape as the first-kind one, with the same
 coefficient `8 D² κ_Q(z)² κ_R(z)²`, hence the same smallness threshold. -/
 theorem kernelRootR_sq_le_absorption (h : PositiveMomentForm s) (N : ℕ) (z w : ℂ) :
-    kernelRoot s (fun j => secondKindC s j w) N ^ 2
-      ≤ 2 * kernelRoot s (fun j => secondKindC s j z) N ^ 2
-        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-          kernelRoot s (fun j => secondKindC s j z) N ^ 2 := by
+    kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ)
+      ≤ 2 * kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hterm : ∀ n ∈ Finset.range (N + 1),
-      ‖secondKindC s n w‖ ^ 2 / momentInner s (monicOrtho s n) (monicOrtho s n)
-        ≤ 2 * (‖secondKindC s n z‖ ^ 2 /
+      ‖secondKindC s n w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s n) (monicOrtho s n)
+        ≤ 2 * (‖secondKindC s n z‖ ^ (2 : ℕ) /
               momentInner s (monicOrtho s n) (monicOrtho s n))
-          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-              kernelRoot s (fun j => secondKindC s j z) N ^ 2 *
-              (‖monicOrthoC s n z‖ ^ 2 /
+          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+              kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) *
+              (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n))
-          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-              (‖secondKindC s n z‖ ^ 2 /
+          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+              (‖secondKindC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n)) := by
     intro n hn'
     have hn : n ≤ N := Nat.lt_succ_iff.mp (Finset.mem_range.mp hn')
     have hsq := normSq_secondKindC_duhamel_le h hn z w
-    have hdiv : ‖secondKindC s n w‖ ^ 2 /
+    have hdiv : ‖secondKindC s n w‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s n) (monicOrtho s n)
-        ≤ (2 * ‖secondKindC s n z‖ ^ 2
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-              (‖monicOrthoC s n z‖ ^ 2 *
-                  kernelRoot s (fun j => secondKindC s j z) N ^ 2
-                + ‖secondKindC s n z‖ ^ 2 *
-                  kernelRoot s (fun j => monicOrthoC s j z) N ^ 2)) /
+        ≤ (2 * ‖secondKindC s n z‖ ^ (2 : ℕ)
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+              (‖monicOrthoC s n z‖ ^ (2 : ℕ) *
+                  kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+                + ‖secondKindC s n z‖ ^ (2 : ℕ) *
+                  kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ))) /
           momentInner s (monicOrtho s n) (monicOrtho s n) := by
       gcongr
       exact (hpos n).le
     refine le_trans hdiv (le_of_eq ?_)
     field_simp
     ring
-  calc kernelRoot s (fun j => secondKindC s j w) N ^ 2
+  calc kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ)
       = ∑ n ∈ Finset.range (N + 1),
-          ‖secondKindC s n w‖ ^ 2 / momentInner s (monicOrtho s n) (monicOrtho s n) :=
+          ‖secondKindC s n w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s n) (monicOrtho s n) :=
         kernelRoot_sq h _ _
     _ ≤ ∑ n ∈ Finset.range (N + 1),
-          (2 * (‖secondKindC s n z‖ ^ 2 /
+          (2 * (‖secondKindC s n z‖ ^ (2 : ℕ) /
                 momentInner s (monicOrtho s n) (monicOrtho s n))
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-                kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-                kernelRoot s (fun j => secondKindC s j z) N ^ 2 *
-                (‖monicOrthoC s n z‖ ^ 2 /
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+                kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+                kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) *
+                (‖monicOrthoC s n z‖ ^ (2 : ℕ) /
                   momentInner s (monicOrtho s n) (monicOrtho s n))
-            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-                kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-                kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-                (‖secondKindC s n z‖ ^ 2 /
+            + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+                kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+                kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+                (‖secondKindC s n z‖ ^ (2 : ℕ) /
                   momentInner s (monicOrtho s n) (monicOrtho s n))) :=
         Finset.sum_le_sum hterm
-    _ = 2 * kernelRoot s (fun j => secondKindC s j z) N ^ 2
-        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-          kernelRoot s (fun j => secondKindC s j z) N ^ 2 := by
+    _ = 2 * kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+        + 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
           ← Finset.mul_sum, ← kernelRoot_sq h, ← kernelRoot_sq h]
         ring
@@ -955,7 +955,7 @@ condition.  This is the data an iteration over discs consumes: each step doubles
 theorem kernelRootQ_le_of_small (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S)
     (hP : ∀ N, kernelRoot s (fun j => secondKindC s j z) N ≤ P)
-    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
+    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
       ≤ 1 / 2) (N : ℕ) :
     kernelRoot s (fun j => monicOrthoC s j w) N ≤ 2 * S := by
   have hSnn : 0 ≤ S := le_trans (kernelRoot_nonneg s _ 0) (hS 0)
@@ -963,26 +963,26 @@ theorem kernelRootQ_le_of_small (h : PositiveMomentForm s) (z w : ℂ) {S P : �
   have hKnn := kernelRoot_nonneg s (fun j => monicOrthoC s j w) N
   have hSNnn := kernelRoot_nonneg s (fun j => monicOrthoC s j z) N
   have hPNnn := kernelRoot_nonneg s (fun j => secondKindC s j z) N
-  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 ≤ S ^ 2 := by
+  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     gcongr
     exact hS N
-  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ 2 ≤ P ^ 2 := by
+  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) ≤ P ^ (2 : ℕ) := by
     gcongr
     exact hP N
-  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-      kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-      kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-      kernelRoot s (fun j => secondKindC s j z) N ^ 2
-      ≤ 1 / 2 * kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 := by
-    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-        kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 *
-        kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-        kernelRoot s (fun j => secondKindC s j z) N ^ 2
-        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 * S ^ 2 * P ^ 2 := by
+  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+      kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+      ≤ 1 / 2 * kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) := by
+    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+        kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) := by
       gcongr
     nlinarith [hmid, hsmall, sq_nonneg (kernelRoot s (fun j => monicOrthoC s j w) N)]
-  have hK2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ 2 ≤ (2 * S) ^ 2 := by
+  have hK2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ) ≤ (2 * S) ^ (2 : ℕ) := by
     nlinarith [habs, hbig, hSq1]
   have hfin := Real.sqrt_le_sqrt hK2
   rwa [Real.sqrt_sq hKnn, Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 2 * S)] at hfin
@@ -990,7 +990,7 @@ theorem kernelRootQ_le_of_small (h : PositiveMomentForm s) (z w : ℂ) {S P : �
 theorem kernelRootR_le_of_small (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S)
     (hP : ∀ N, kernelRoot s (fun j => secondKindC s j z) N ≤ P)
-    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
+    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
       ≤ 1 / 2) (N : ℕ) :
     kernelRoot s (fun j => secondKindC s j w) N ≤ 2 * P := by
   have hPnn : 0 ≤ P := le_trans (kernelRoot_nonneg s _ 0) (hP 0)
@@ -998,26 +998,26 @@ theorem kernelRootR_le_of_small (h : PositiveMomentForm s) (z w : ℂ) {S P : �
   have hKnn := kernelRoot_nonneg s (fun j => secondKindC s j w) N
   have hSNnn := kernelRoot_nonneg s (fun j => monicOrthoC s j z) N
   have hPNnn := kernelRoot_nonneg s (fun j => secondKindC s j z) N
-  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 ≤ S ^ 2 := by
+  have hSq1 : kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     gcongr
     exact hS N
-  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ 2 ≤ P ^ 2 := by
+  have hSq2 : kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ) ≤ P ^ (2 : ℕ) := by
     gcongr
     exact hP N
-  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-      kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-      kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-      kernelRoot s (fun j => secondKindC s j z) N ^ 2
-      ≤ 1 / 2 * kernelRoot s (fun j => secondKindC s j w) N ^ 2 := by
-    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-        kernelRoot s (fun j => secondKindC s j w) N ^ 2 *
-        kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 *
-        kernelRoot s (fun j => secondKindC s j z) N ^ 2
-        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => secondKindC s j w) N ^ 2 * S ^ 2 * P ^ 2 := by
+  have hbig : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+      kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+      kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+      ≤ 1 / 2 * kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) := by
+    have hmid : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+        kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) *
+        kernelRoot s (fun j => secondKindC s j z) N ^ (2 : ℕ)
+        ≤ 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) := by
       gcongr
     nlinarith [hmid, hsmall, sq_nonneg (kernelRoot s (fun j => secondKindC s j w) N)]
-  have hK2 : kernelRoot s (fun j => secondKindC s j w) N ^ 2 ≤ (2 * P) ^ 2 := by
+  have hK2 : kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ) ≤ (2 * P) ^ (2 : ℕ) := by
     nlinarith [habs, hbig, hSq2]
   have hfin := Real.sqrt_le_sqrt hK2
   rwa [Real.sqrt_sq hKnn, Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 2 * P)] at hfin
@@ -1027,7 +1027,7 @@ bounded by twice the old bounds -- so the hypotheses of the transfer regenerate 
 theorem kernelRoot_bounds_propagate (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S)
     (hP : ∀ N, kernelRoot s (fun j => secondKindC s j z) N ≤ P)
-    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
+    (hsmall : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
       ≤ 1 / 2) :
     (∀ N, kernelRoot s (fun j => monicOrthoC s j w) N ≤ 2 * S)
       ∧ (∀ N, kernelRoot s (fun j => secondKindC s j w) N ≤ 2 * P) :=
@@ -1041,7 +1041,7 @@ local-to-global argument. -/
 
 theorem transferSmall_of_dist (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     (hSpos : 0 < S) (hPpos : 0 < P) (hdist : ‖w - z‖ ≤ transferRadius s S P) :
-    8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
+    8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
       ≤ 1 / 2 := by
   have h0 : 0 < momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
     monicOrtho_inner_self_pos h 0
@@ -1054,10 +1054,10 @@ theorem transferSmall_of_dist (h : PositiveMomentForm s) (z w : ℂ) {S P : ℝ}
     rw [transferRadius]
     field_simp
     try ring
-  have hkey : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2
-      ≤ 8 * (1 / (4 * S * P)) ^ 2 * S ^ 2 * P ^ 2 := by
+  have hkey : 8 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ)
+      ≤ 8 * (1 / (4 * S * P)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) := by
     gcongr
-  have hval : 8 * (1 / (4 * S * P)) ^ 2 * S ^ 2 * P ^ 2 = 1 / 2 := by
+  have hval : 8 * (1 / (4 * S * P)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) = 1 / 2 := by
     field_simp
     try ring
   linarith [hkey, hval]

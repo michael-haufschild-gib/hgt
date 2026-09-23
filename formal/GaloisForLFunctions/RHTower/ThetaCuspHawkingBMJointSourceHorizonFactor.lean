@@ -7,10 +7,10 @@ noncomputable section
 
 /-- The exact polynomial left after extracting the horizon zero from the reduced source. -/
 def reducedHorizonPolynomial (s u : ℂ) : ℂ :=
-  -2*(1+u)*u*((5*s^2+15*s+4)/4+s*(s-1)*(s+2)^2*u^2/4)+
-    s*(s-1)/4*(4*s^2*(u-1)*u^3+12*s*u^2*(u^2-1)+2*s*(u+1)*u^3+
-      6*u*(u-1)*(u+1)^2+6*u^3*(u+1))-
-    2*(1+u)*(s+1)*(s+2)*(s*(s-1)/4)*u^3
+  -2*(1+u)*u*((5*s^(2 : ℕ)+15*s+4)/4+s*(s-1)*(s+2)^(2 : ℕ)*u^(2 : ℕ)/4)+
+    s*(s-1)/4*(4*s^(2 : ℕ)*(u-1)*u^(3 : ℕ)+12*s*u^(2 : ℕ)*(u^(2 : ℕ)-1)+2*s*(u+1)*u^(3 : ℕ)+
+      6*u*(u-1)*(u+1)^(2 : ℕ)+6*u^(3 : ℕ)*(u+1))-
+    2*(1+u)*(s+1)*(s+2)*(s*(s-1)/4)*u^(3 : ℕ)
 
 /-- The independent-frequency constant coefficient has a genuine horizon zero. -/
 theorem reducedPolynomial_horizon (s u : ℂ) :
@@ -20,7 +20,7 @@ theorem reducedPolynomial_horizon (s u : ℂ) :
 
 /-- The frequency slope has the same horizon zero. -/
 theorem reducedSlope_horizon (s u : ℂ) :
-    reducedSlope s u = (1-u)*(s*(s-1)/2*u^2*((2*s+3)*u+3)) := by
+    reducedSlope s u = (1-u)*(s*(s-1)/2*u^(2 : ℕ)*((2*s+3)*u+3)) := by
   unfold reducedSlope
   ring
 
@@ -28,7 +28,7 @@ theorem reducedSlope_horizon (s u : ℂ) :
 theorem radialUnit_one_sub (t : ℝ) :
     1-radialUnit t = Real.exp (2*t)*(1+radialUnit t) := by
   have h := horizonCoordinate_factor t
-  have he : (Real.exp t)^2 = Real.exp (2*t) := by
+  have he : (Real.exp t)^(2 : ℕ) = Real.exp (2*t) := by
     rw [pow_two,← Real.exp_add]
     congr 1
     ring
@@ -39,9 +39,9 @@ theorem radialUnit_one_sub (t : ℝ) :
 
 /-- The two compact-radius factors multiplying the exact common horizon exponential. -/
 def sourceHorizonProfile (s a : ℂ) (i : Fin 2) (u : ℝ) : ℂ :=
-  power (2*s) (1+u)*a^2*(1+(u:ℂ))*
+  power (2*s) (1+u)*a^(2 : ℕ)*(1+(u:ℂ))*
     (if i=0 then reducedHorizonPolynomial s u
-      else s*(s-1)/2*(u:ℂ)^2*((2*s+3)*(u:ℂ)+3))
+      else s*(s-1)/2*(u:ℂ)^(2 : ℕ)*((2*s+3)*(u:ℂ)+3))
 
 theorem sourceHorizonProfile_continuousOn (s a : ℂ) (i : Fin 2) :
     ContinuousOn (sourceHorizonProfile s a i) (Set.Icc 0 1) := by

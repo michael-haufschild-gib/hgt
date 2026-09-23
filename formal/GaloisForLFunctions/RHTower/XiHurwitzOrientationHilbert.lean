@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 # Hilbert realization of the Xi--Hurwitz orientation energy
 
 The scalar orientation energy is the squared norm of a canonical signed vector on the
-multiplicity-exact Xi divisor.  This places the RH orientation law directly on the same `ell^2`
+multiplicity-exact Xi divisor.  This places the RH orientation law directly on the same `ell^(2 : ℕ)`
 carrier used by the Xi Weil and Hilbert--Schmidt constructions.
 -/
 
@@ -21,8 +21,8 @@ def xiHurwitzOrientationCoordinate (q : XiZeroCopy) : ℂ :=
       (‖xiHurwitzMonodromyCharacter q.1‖ * ‖(q.1 : ℂ) - 1 / 2‖) : ℝ) : ℂ)
 
 theorem norm_sq_xiHurwitzOrientationCoordinate (q : XiZeroCopy) :
-    ‖xiHurwitzOrientationCoordinate q‖ ^ 2 =
-      xiHurwitzOrientationDefect q.1 / ‖(q.1 : ℂ) - 1 / 2‖ ^ 2 := by
+    ‖xiHurwitzOrientationCoordinate q‖ ^ (2 : ℕ) =
+      xiHurwitzOrientationDefect q.1 / ‖(q.1 : ℂ) - 1 / 2‖ ^ (2 : ℕ) := by
   have hchar : ‖xiHurwitzMonodromyCharacter q.1‖ ≠ 0 :=
     (norm_pos_iff.mpr (xiHurwitzMonodromyCharacter_ne_zero q.1)).ne'
   have hcenter : ‖(q.1 : ℂ) - 1 / 2‖ ≠ 0 :=
@@ -33,7 +33,7 @@ theorem norm_sq_xiHurwitzOrientationCoordinate (q : XiZeroCopy) :
 
 theorem tsum_norm_sq_xiHurwitzOrientationCoordinate_fiber (ρ : XiDivisorSupport) :
     (∑' j : Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ))),
-      ‖xiHurwitzOrientationCoordinate ⟨ρ, j⟩‖ ^ 2) =
+      ‖xiHurwitzOrientationCoordinate ⟨ρ, j⟩‖ ^ (2 : ℕ)) =
         xiHurwitzOrientationEnergyTerm ρ := by
   rw [tsum_fintype]
   simp only [norm_sq_xiHurwitzOrientationCoordinate, Finset.sum_const,
@@ -48,7 +48,7 @@ theorem tsum_norm_sq_xiHurwitzOrientationCoordinate_fiber (ρ : XiDivisorSupport
   ring
 
 theorem summable_norm_sq_xiHurwitzOrientationCoordinate :
-    Summable (fun q : XiZeroCopy => ‖xiHurwitzOrientationCoordinate q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiHurwitzOrientationCoordinate q‖ ^ (2 : ℕ)) := by
   rw [summable_sigma_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · intro ρ
@@ -56,7 +56,7 @@ theorem summable_norm_sq_xiHurwitzOrientationCoordinate :
   · simpa only [tsum_norm_sq_xiHurwitzOrientationCoordinate_fiber] using
       xiHurwitzOrientationEnergyTerm_summable
 
-/-- The canonical Xi--Hurwitz orientation vector in the multiplicity-exact Xi `ell^2` space. -/
+/-- The canonical Xi--Hurwitz orientation vector in the multiplicity-exact Xi `ell^(2 : ℕ)` space. -/
 def xiHurwitzOrientationVector : lp (fun _ : XiZeroCopy => ℂ) 2 :=
   ⟨xiHurwitzOrientationCoordinate,
     HilbertSchmidt.memℓp_of_sq summable_norm_sq_xiHurwitzOrientationCoordinate⟩
@@ -65,11 +65,11 @@ def xiHurwitzOrientationVector : lp (fun _ : XiZeroCopy => ℂ) 2 :=
     xiHurwitzOrientationVector q = xiHurwitzOrientationCoordinate q := rfl
 
 /-- **Hilbert norm identity.**  The scalar Xi--Hurwitz orientation energy is exactly the squared
-`ell^2` norm of the canonical signed orientation vector. -/
+`ell^(2 : ℕ)` norm of the canonical signed orientation vector. -/
 theorem norm_sq_xiHurwitzOrientationVector :
-    ‖xiHurwitzOrientationVector‖ ^ 2 = xiHurwitzOrientationEnergy := by
+    ‖xiHurwitzOrientationVector‖ ^ (2 : ℕ) = xiHurwitzOrientationEnergy := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
-  change (∑' q : XiZeroCopy, ‖xiHurwitzOrientationCoordinate q‖ ^ 2) =
+  change (∑' q : XiZeroCopy, ‖xiHurwitzOrientationCoordinate q‖ ^ (2 : ℕ)) =
     xiHurwitzOrientationEnergy
   have hsum := summable_norm_sq_xiHurwitzOrientationCoordinate
   rw [hsum.tsum_sigma, xiHurwitzOrientationEnergy]
@@ -84,7 +84,7 @@ theorem xiHurwitzOrientationVector_eq_zero_iff_energy_eq_zero :
     norm_num
   · intro henergy
     apply norm_eq_zero.mp
-    have hsq : ‖xiHurwitzOrientationVector‖ ^ 2 = 0 := by
+    have hsq : ‖xiHurwitzOrientationVector‖ ^ (2 : ℕ) = 0 := by
       rw [norm_sq_xiHurwitzOrientationVector, henergy]
     nlinarith [norm_nonneg xiHurwitzOrientationVector]
 

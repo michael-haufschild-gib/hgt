@@ -82,21 +82,21 @@ lemma encodeVec_norm (v : QubitVec) :
   classical
   -- Reduce to an equality of the underlying sums inside `Real.sqrt`.
   have hsum :
-      (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ 2)
-        = (∑ q : QubitBasis, ‖v q‖ ^ 2) := by
+      (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ (2 : ℕ))
+        = (∑ q : QubitBasis, ‖v q‖ ^ (2 : ℕ)) := by
     -- First compute the LHS sum using the fact that `encodeVec` is supported
     -- only on `(0,0,0)` and `(1,1,1)`.
     have hL :
-        (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ 2)
-          = (‖v 0‖ ^ 2 + ‖v 1‖ ^ 2) := by
+        (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ (2 : ℕ))
+          = (‖v 0‖ ^ (2 : ℕ) + ‖v 1‖ ^ (2 : ℕ)) := by
       calc
-        (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ 2)
+        (∑ ijk : ThreeQubitBasis, ‖encodeVec v ijk‖ ^ (2 : ℕ))
             =
               ∑ ijk : ThreeQubitBasis,
                 (if ijk = (0, 0, 0) then
-                    ‖v 0‖ ^ 2
+                    ‖v 0‖ ^ (2 : ℕ)
                   else if ijk = (1, 1, 1) then
-                    ‖v 1‖ ^ 2
+                    ‖v 1‖ ^ (2 : ℕ)
                   else
                     0) := by
               refine Finset.sum_congr rfl ?_
@@ -110,8 +110,8 @@ lemma encodeVec_norm (v : QubitVec) :
                 · simp [encodeVec, h0, h1]
         _ =
               ∑ ijk : ThreeQubitBasis,
-                ((if ijk = (0, 0, 0) then ‖v 0‖ ^ 2 else 0)
-                  + (if ijk = (1, 1, 1) then ‖v 1‖ ^ 2 else 0)) := by
+                ((if ijk = (0, 0, 0) then ‖v 0‖ ^ (2 : ℕ) else 0)
+                  + (if ijk = (1, 1, 1) then ‖v 1‖ ^ (2 : ℕ) else 0)) := by
               refine Finset.sum_congr rfl ?_
               intro ijk _
               exact
@@ -119,18 +119,18 @@ lemma encodeVec_norm (v : QubitVec) :
                   (x := ijk)
                   (a := ((0, 0, 0) : ThreeQubitBasis))
                   (b := ((1, 1, 1) : ThreeQubitBasis))
-                  (A := ‖v 0‖ ^ 2)
-                  (B := ‖v 1‖ ^ 2)
+                  (A := ‖v 0‖ ^ (2 : ℕ))
+                  (B := ‖v 1‖ ^ (2 : ℕ))
                   key_neq)
         _ =
-              (∑ ijk : ThreeQubitBasis, (if ijk = (0, 0, 0) then ‖v 0‖ ^ 2 else 0))
-                + (∑ ijk : ThreeQubitBasis, (if ijk = (1, 1, 1) then ‖v 1‖ ^ 2 else 0)) := by
+              (∑ ijk : ThreeQubitBasis, (if ijk = (0, 0, 0) then ‖v 0‖ ^ (2 : ℕ) else 0))
+                + (∑ ijk : ThreeQubitBasis, (if ijk = (1, 1, 1) then ‖v 1‖ ^ (2 : ℕ) else 0)) := by
               simp [Finset.sum_add_distrib]
-        _ = ‖v 0‖ ^ 2 + ‖v 1‖ ^ 2 := by
+        _ = ‖v 0‖ ^ (2 : ℕ) + ‖v 1‖ ^ (2 : ℕ) := by
               simp
     -- Now compute the RHS sum (over `Fin 2`).
     have hR :
-        (∑ q : QubitBasis, ‖v q‖ ^ 2) = (‖v 0‖ ^ 2 + ‖v 1‖ ^ 2) := by
+        (∑ q : QubitBasis, ‖v q‖ ^ (2 : ℕ)) = (‖v 0‖ ^ (2 : ℕ) + ‖v 1‖ ^ (2 : ℕ)) := by
       -- `QubitBasis` is `Fin 2`.
       simp [QubitBasis, Fin.sum_univ_two]
     -- Combine.

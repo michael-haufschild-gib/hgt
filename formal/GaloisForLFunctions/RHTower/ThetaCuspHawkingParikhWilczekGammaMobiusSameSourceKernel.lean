@@ -268,7 +268,7 @@ private theorem pwGammaSameSource_coefficient_bound {N n : ℕ} {z : ℂ}
 theorem pwGammaMobiusSameSourceAtom_norm_le {N : ℕ} {z : ℂ}
     (hz : ‖z‖ ≤ (N : ℝ)) (n : ℕ) {h x : ℝ} (hh : 0 < h) (hx : 0 < x) :
     ‖pwGammaMobiusSameSourceAtom z (n+2) (h,x)‖ ≤
-      (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^2)*
+      (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^(2 : ℕ))*
         pwGammaSameSourceMajorant (N+3) (h,x) := by
   have hn : 0 < n+2 := by omega
   have hn1 : (1 : ℝ) ≤ ((n+2 : ℕ) : ℝ) := by exact_mod_cast (show 1 ≤ n+2 by omega)

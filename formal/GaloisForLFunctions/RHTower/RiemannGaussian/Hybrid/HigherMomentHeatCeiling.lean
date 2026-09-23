@@ -6,9 +6,9 @@ import GaloisForLFunctions.RHTower.RiemannGaussian.Hybrid.HigherMomentCeiling
 The degree-four witness can be retained through positive heat time instead of
 being collapsed immediately at scale zero.  For a moment model `M`, define
 
-`W_M(u) = sum_i w_i p(x_i)^2 exp(-u x_i^2)`,
+`W_M(u) = sum_i w_i p(x_i)^(2 : ℕ) exp(-u x_i^(2 : ℕ))`,
 
-where `p(x)=1-(7/4)x+(2/3)x^2` is the sharp quadratic witness.  Lean proves
+where `p(x)=1-(7/4)x+(2/3)x^(2 : ℕ)` is the sharp quadratic witness.  Lean proves
 that `W_M(u)` is exactly a fixed signed linear combination of the five
 simultaneous heat moments of orders zero through four.
 
@@ -37,8 +37,8 @@ noncomputable section
 /-- The quadratic-witness mass retained at heat scale `u`. -/
 def DegreeFourMomentModel.witnessHeat
     {ι : Type*} [Fintype ι] (M : DegreeFourMomentModel ι) (u : ℝ) : ℝ :=
-  ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
-    Real.exp (-u * M.node i ^ 2)
+  ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
+    Real.exp (-u * M.node i ^ (2 : ℕ))
 
 /-- The corresponding scale-dependent lower certificate. -/
 def DegreeFourMomentModel.heatCertificate
@@ -57,51 +57,51 @@ theorem DegreeFourMomentModel.witnessHeat_eq_heatMomentCombination
   unfold DegreeFourMomentModel.witnessHeat
     DegreeFourMomentModel.heatMoment
   calc
-    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
-        Real.exp (-u * M.node i ^ 2) =
-      ∑ i, (M.weight i * Real.exp (-u * M.node i ^ 2) -
+    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
+        Real.exp (-u * M.node i ^ (2 : ℕ)) =
+      ∑ i, (M.weight i * Real.exp (-u * M.node i ^ (2 : ℕ)) -
         (7 / 2 : ℝ) *
-          (M.weight i * M.node i * Real.exp (-u * M.node i ^ 2)) +
+          (M.weight i * M.node i * Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (211 / 48 : ℝ) *
-          (M.weight i * M.node i ^ 2 * Real.exp (-u * M.node i ^ 2)) -
+          (M.weight i * M.node i ^ (2 : ℕ) * Real.exp (-u * M.node i ^ (2 : ℕ))) -
         (7 / 3 : ℝ) *
-          (M.weight i * M.node i ^ 3 * Real.exp (-u * M.node i ^ 2)) +
+          (M.weight i * M.node i ^ (3 : ℕ) * Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (4 / 9 : ℝ) *
-          (M.weight i * M.node i ^ 4 * Real.exp (-u * M.node i ^ 2))) := by
+          (M.weight i * M.node i ^ (4 : ℕ) * Real.exp (-u * M.node i ^ (2 : ℕ)))) := by
       apply Finset.sum_congr rfl
       intro i _hi
       unfold degreeFourMomentWitness
       ring
     _ =
-      (∑ i, M.weight i * Real.exp (-u * M.node i ^ 2)) -
+      (∑ i, M.weight i * Real.exp (-u * M.node i ^ (2 : ℕ))) -
         (7 / 2 : ℝ) *
-          (∑ i, M.weight i * M.node i * Real.exp (-u * M.node i ^ 2)) +
+          (∑ i, M.weight i * M.node i * Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (211 / 48 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 2 *
-            Real.exp (-u * M.node i ^ 2)) -
+          (∑ i, M.weight i * M.node i ^ (2 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) -
         (7 / 3 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 3 *
-            Real.exp (-u * M.node i ^ 2)) +
+          (∑ i, M.weight i * M.node i ^ (3 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (4 / 9 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 4 *
-            Real.exp (-u * M.node i ^ 2)) := by
+          (∑ i, M.weight i * M.node i ^ (4 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) := by
       simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
         Finset.mul_sum]
     _ =
-      (∑ i, M.weight i * M.node i ^ 0 *
-          Real.exp (-u * M.node i ^ 2)) -
+      (∑ i, M.weight i * M.node i ^ (0 : ℕ) *
+          Real.exp (-u * M.node i ^ (2 : ℕ))) -
         (7 / 2 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 1 *
-            Real.exp (-u * M.node i ^ 2)) +
+          (∑ i, M.weight i * M.node i ^ (1 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (211 / 48 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 2 *
-            Real.exp (-u * M.node i ^ 2)) -
+          (∑ i, M.weight i * M.node i ^ (2 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) -
         (7 / 3 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 3 *
-            Real.exp (-u * M.node i ^ 2)) +
+          (∑ i, M.weight i * M.node i ^ (3 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) +
         (4 / 9 : ℝ) *
-          (∑ i, M.weight i * M.node i ^ 4 *
-            Real.exp (-u * M.node i ^ 2)) := by simp
+          (∑ i, M.weight i * M.node i ^ (4 : ℕ) *
+            Real.exp (-u * M.node i ^ (2 : ℕ))) := by simp
 
 /-- At zero heat scale, the witness carrier is exactly `5/36`. -/
 @[simp] theorem DegreeFourMomentModel.witnessHeat_zero
@@ -147,7 +147,7 @@ theorem DegreeFourMomentModel.witnessHeat_le_of_le
   apply Finset.sum_le_sum
   intro i _hi
   have hbase : 0 ≤
-      M.weight i * degreeFourMomentWitness (M.node i) ^ 2 := by
+      M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) := by
     exact mul_nonneg (M.weight_nonneg i)
       (sq_nonneg (degreeFourMomentWitness (M.node i)))
   apply mul_le_mul_of_nonneg_left _ hbase
@@ -198,16 +198,16 @@ theorem DegreeFourMomentModel.tendsto_witnessHeat_atTop_zeroMass
     Tendsto M.witnessHeat atTop (nhds M.zeroMass) := by
   have hsum : Tendsto
       (fun u : ℝ ↦ ∑ i,
-        M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
-          Real.exp (-u * M.node i ^ 2)) atTop
+        M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
+          Real.exp (-u * M.node i ^ (2 : ℕ))) atTop
       (nhds (∑ i,
-        M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
+        M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
           (if M.node i = 0 then 1 else 0))) := by
     exact tendsto_finsetSum Finset.univ fun i _hi ↦
       (HermitianRankTrace.tendsto_scalarHeat_atTop (M.node i)).const_mul
-        (M.weight i * degreeFourMomentWitness (M.node i) ^ 2)
+        (M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ))
   have hlimit :
-      (∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
+      (∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
         (if M.node i = 0 then 1 else 0)) = M.zeroMass := by
     unfold DegreeFourMomentModel.zeroMass
     apply Finset.sum_congr rfl
@@ -216,8 +216,8 @@ theorem DegreeFourMomentModel.tendsto_witnessHeat_atTop_zeroMass
   rw [hlimit] at hsum
   change Tendsto
     (fun u : ℝ ↦ ∑ i,
-      M.weight i * degreeFourMomentWitness (M.node i) ^ 2 *
-        Real.exp (-u * M.node i ^ 2)) atTop (nhds M.zeroMass)
+      M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) *
+        Real.exp (-u * M.node i ^ (2 : ℕ))) atTop (nhds M.zeroMass)
   exact hsum
 
 /-- The monotone heat certificates converge to the exact certificate. -/

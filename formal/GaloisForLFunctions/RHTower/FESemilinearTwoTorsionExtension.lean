@@ -52,10 +52,10 @@ def twoTorsionSourceFEParity (a b : ℕ) :
 theorem twoTorsionSourceFEParity_isFESemilinearInvolution (a b : ℕ) :
     IsFESemilinearInvolution (twoTorsionSourceFEParity a b) := by
   rw [IsFESemilinearInvolution]
-  have ha : (((-1 : Polynomial ℚ) ^ a) ^ 2) = 1 := by
+  have ha : (((-1 : Polynomial ℚ) ^ a) ^ (2 : ℕ)) = 1 := by
     rw [← pow_mul]
     simp
-  have hb : (((-1 : Polynomial ℚ) ^ b) ^ 2) = 1 := by
+  have hb : (((-1 : Polynomial ℚ) ^ b) ^ (2 : ℕ)) = 1 := by
     rw [← pow_mul]
     simp
   apply Matrix.ext

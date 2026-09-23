@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.ConservativeDissipativeThermalPopulationTr
 
 The conservative–dissipative split of arXiv:2609.04530 supplies the exponential
 survival realized by the thermal Kraus semigroup. Its measured tree response has
-an exact critical time `log(n+1)/(2*exp(s)^2)`. Positive rates and branch counts
+an exact critical time `log(n+1)/(2*exp(s)^(2 : ℕ))`. Positive rates and branch counts
 are constructed from unrestricted coordinates. The below/at/above-one regimes
 are proved for the actual analytic derivative, with no numerical computation.
 -/

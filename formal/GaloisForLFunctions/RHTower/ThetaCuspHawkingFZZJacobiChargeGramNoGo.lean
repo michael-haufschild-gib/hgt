@@ -17,7 +17,7 @@ their all-pass real-axis optical law, and the positive delay
 This file tests the next source-faithful completion: apply a positive Jacobi heat weight to every
 protected charge channel.  It uses the one-dimensional positive-charge heat slice
 
-`w_tau(n) = exp (-pi tau (n + 1)^2)`
+`w_tau(n) = exp (-pi tau (n + 1)^(2 : ℕ))`
 
 and does not claim that this slice alone is the full noncompact elliptic genus.  Every finite
 charge truncation obeys two exact laws.
@@ -45,7 +45,7 @@ namespace RHTower
 
 /-- Positive Jacobi heat weight on the `n+1` protected FZZ charge. -/
 def fzzCigarThetaHeatChargeWeight (tau : ℝ) (n : ℕ) : ℝ :=
-  Real.exp (-(Real.pi * tau * ((n : ℝ) + 1) ^ 2))
+  Real.exp (-(Real.pi * tau * ((n : ℝ) + 1) ^ (2 : ℕ)))
 
 /-- Finite positive-charge Jacobi partition weight. -/
 def fzzCigarThetaHeatChargePartition (N : ℕ) (tau : ℝ) : ℝ :=
@@ -74,7 +74,7 @@ theorem fzzCigarThetaHeatCollectiveOpticalEnergy_eq_partition
 /-- Square-root heat-weighted delay feature of charge `n+1` on one exterior shell. -/
 def fzzCigarThetaHeatChargeFeature (tau x : ℝ) (n : Fin N) : ℝ :=
   Real.exp
-    (-(Real.pi * tau * (((n : ℕ) : ℝ) + 1) ^ 2) / 2 -
+    (-(Real.pi * tau * (((n : ℕ) : ℝ) + 1) ^ (2 : ℕ)) / 2 -
       (((n : ℕ) : ℝ) + 1) * x)
 
 /-- Diagonal charge sum of the physical FZZ continuum-delay reporters. -/

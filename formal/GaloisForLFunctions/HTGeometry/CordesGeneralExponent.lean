@@ -48,7 +48,7 @@ theorem exp_smul_sub (r t : ℝ) (y : A) :
 
 /-- **The functional calculus power of an exponential is the exponential of the scaled
 exponent.** -/
-theorem exp_rpow {x : A} (hx : IsSelfAdjoint x) {s : ℝ} (hs : 0 ≤ s) :
+theorem exp_rpow_cordesGeneralExponent {x : A} (hx : IsSelfAdjoint x) {s : ℝ} (hs : 0 ≤ s) :
     (NormedSpace.exp x) ^ s = NormedSpace.exp (s • x) := by
   have hsa : IsSelfAdjoint (s • x) := isSelfAdjoint_smul_real hx
   have hg : ContinuousOn (fun z : ℝ => z ^ s) (Real.exp '' spectrum ℝ x) :=
@@ -147,7 +147,7 @@ theorem norm_exp_smul_mul_exp_smul_le {x y : A} (hx : IsSelfAdjoint x) (hy : IsS
   -- operator monotonicity of the `s`-th power
   have hstep3 : NormedSpace.exp ((s * 2) • x) ≤ NormedSpace.exp ((s * 2) • z) := by
     have h := CFC.rpow_le_rpow (p := s) ⟨hs0, hs1⟩ hstep2
-    rwa [exp_rpow (isSelfAdjoint_smul_real hx) hs0, exp_rpow (isSelfAdjoint_smul_real hzsa) hs0,
+    rwa [exp_rpow_cordesGeneralExponent (isSelfAdjoint_smul_real hx) hs0, exp_rpow_cordesGeneralExponent (isSelfAdjoint_smul_real hzsa) hs0,
       smul_smul, smul_smul] at h
   -- conjugate back by `exp (s y)`
   have hstep4 : NormedSpace.exp (s • y) * NormedSpace.exp ((s * 2) • x)
@@ -223,7 +223,7 @@ theorem exp_smul_le_of_exp_le {x y : A} (hx : IsSelfAdjoint x) (hy : IsSelfAdjoi
     rw [this]
     exact h
   have h2 := CFC.rpow_le_rpow (p := s) ⟨hs0, hs1⟩ h1
-  rw [exp_rpow hy hs0, exp_rpow hzsa hs0, hgen s,
+  rw [exp_rpow_cordesGeneralExponent hy hs0, exp_rpow_cordesGeneralExponent hzsa hs0, hgen s,
     show Real.exp (s * Real.log c) = c ^ s from by
       rw [Real.rpow_def_of_pos hc, mul_comm]] at h2
   exact h2

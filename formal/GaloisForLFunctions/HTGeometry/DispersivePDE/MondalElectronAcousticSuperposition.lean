@@ -23,7 +23,7 @@ theorem generalKPResidual_scale
     (α δ ρ c : ℝ) (J : RealEvolutionJetKP) (t x y : ℝ) :
     generalKPResidual α δ ρ (realEvolutionJetKPScale c J) t x y =
       c * generalKPResidual α δ ρ J t x y
-        + α * c * (c - 1) * (J.ux t x y ^ 2 + J.u t x y * J.uxx t x y) := by
+        + α * c * (c - 1) * (J.ux t x y ^ (2 : ℕ) + J.u t x y * J.uxx t x y) := by
   unfold generalKPResidual realEvolutionJetKPScale
   ring
 

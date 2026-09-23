@@ -30,7 +30,7 @@ def lowTemperatureMomentTerm {ι : Type*} (c E : ι → ℝ) (E₁ : ℝ) (m : �
 /-- The first-two-level-rescaled ordered-pair dispersion summand. -/
 def lowTemperaturePairTerm {ι : Type*} (c E : ι → ℝ) (E₁ E₂ : ℝ)
     (β : ℝ) (z : ι × ι) : ℝ :=
-  c z.1 * c z.2 * E z.1 ^ 2 * E z.2 ^ 2 * (E z.1 - E z.2) ^ 2 *
+  c z.1 * c z.2 * E z.1 ^ (2 : ℕ) * E z.2 ^ (2 : ℕ) * (E z.1 - E z.2) ^ (2 : ℕ) *
     Real.exp (-β * ((E z.1 + E z.2) - (E₁ + E₂)))
 
 private theorem tendsto_exp_neg_mul_atTop {δ : ℝ} (hδ : 0 < δ) :
@@ -74,7 +74,7 @@ theorem lowTemperatureMoment_tendsto
 
 /-- The universal leading coefficient of the first-two-level Fisher determinant. -/
 def lowTemperatureDetLeading (c₁ c₂ E₁ E₂ : ℝ) : ℝ :=
-  c₁ * c₂ * E₁ ^ 2 * E₂ ^ 2 * (E₂ - E₁) ^ 2
+  c₁ * c₂ * E₁ ^ (2 : ℕ) * E₂ ^ (2 : ℕ) * (E₂ - E₁) ^ (2 : ℕ)
 
 /-- Tannery selection of the two ordered ground/first-excited pairs.  The factor `1 / 2` is the
 factor in the exact pairwise-dispersion identity for `M₂ M₄ - M₃²`. -/
@@ -169,7 +169,7 @@ theorem lowTemperaturePairDispersion_tendsto
                 linarith
           have hexp := tendsto_exp_neg_mul_atTop hgap
           have hmul := hexp.const_mul
-            (c i * c j * E i ^ 2 * E j ^ 2 * (E i - E j) ^ 2)
+            (c i * c j * E i ^ (2 : ℕ) * E j ^ (2 : ℕ) * (E i - E j) ^ (2 : ℕ))
           simpa [lowTemperaturePairTerm, g, hij, hji] using hmul
   have htsum := tendsto_tsum_of_dominated_convergence hsum hpoint hbound
   have hsumg : (∑' z, g z) = 2 * K := by
@@ -205,7 +205,7 @@ ground-state second-moment coefficient. -/
 theorem lowTemperatureCurvatureCoefficient_tendsto
     (M D : ℝ → ℝ) (A B : ℝ)
     (hM : Tendsto M atTop (𝓝 A)) (hD : Tendsto D atTop (𝓝 B)) (hA : A ≠ 0) :
-    Tendsto (fun β => -(D β) / (M β) ^ 3) atTop (𝓝 (-B / A ^ 3)) := by
+    Tendsto (fun β => -(D β) / (M β) ^ (3 : ℕ)) atTop (𝓝 (-B / A ^ (3 : ℕ))) := by
   exact hD.neg.div (hM.pow 3) (pow_ne_zero 3 hA)
 
 /-- Normal form of the low-temperature scalar-curvature profile. -/

@@ -37,7 +37,7 @@ theorem re_trace_routePStrictRightZeroCollisionCubicKernelMatrix
     {N : ℕ} (q : Fin N → XiRightZeroCopy) :
     (routePStrictRightZeroCollisionCubicKernelMatrix q).trace.re =
       ∑ i : Fin N,
-        115 / (864 * (xiRightCenteredZero (q i)).re ^ 3) := by
+        115 / (864 * (xiRightCenteredZero (q i)).re ^ (3 : ℕ)) := by
   have h := trace_routePCollisionCubicKernelMatrix
     (N := N) (R := 1)
     (a := fun i => (xiRightCenteredZero (q i)).re)
@@ -46,7 +46,7 @@ theorem re_trace_routePStrictRightZeroCollisionCubicKernelMatrix
   change (routePStrictRightZeroCollisionCubicKernelMatrix q).trace = _ at h
   rw [h]
   change Complex.reCLM (∑ i : Fin N,
-      ((115 / (864 * (xiRightCenteredZero (q i)).re ^ 3) : ℝ) : ℂ)) = _
+      ((115 / (864 * (xiRightCenteredZero (q i)).re ^ (3 : ℕ)) : ℝ) : ℂ)) = _
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro i _hi

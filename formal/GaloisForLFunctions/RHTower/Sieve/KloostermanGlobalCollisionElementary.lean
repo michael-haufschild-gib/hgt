@@ -28,7 +28,7 @@ private theorem normSq_finset_sum_le_card_mul_sum_normSq
   have htri : ‖∑ i ∈ S, a i‖ ≤ ∑ i ∈ S, ‖a i‖ := norm_sum_le _ _
   have hsum0 : 0 ≤ ∑ i ∈ S, ‖a i‖ := by positivity
   calc
-    ‖∑ i ∈ S, a i‖ ^ 2 ≤ (∑ i ∈ S, ‖a i‖) ^ 2 := by
+    ‖∑ i ∈ S, a i‖ ^ (2 : ℕ) ≤ (∑ i ∈ S, ‖a i‖) ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (∑ i ∈ S, a i)]
     _ ≤ (S.card : ℝ) * ∑ i ∈ S, Complex.normSq (a i) := by
       have h := Finset.sum_mul_sq_le_sq_mul_sq S
@@ -56,7 +56,7 @@ theorem card_sigma_erase_eq_card_mul_pred
 theorem normSq_kloostermanGlobalModulusTimeResponse_le
     (q : ℕ) (B : Finset ℕ) (b : ℕ → ℂ) (n : ℕ) :
     Complex.normSq (kloostermanGlobalModulusTimeResponse q B b n) ≤
-      ((q + 1 : ℕ) : ℝ) ^ 2 *
+      ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ∑ z : ZMod (q + 1),
           Complex.normSq (kloostermanSourceResidue (q + 1) B b z) := by
   rw [kloostermanGlobalModulusTimeResponse_eq_kloostermanTransform]
@@ -87,7 +87,7 @@ theorem average_normSq_kloostermanGlobalModulusTimeResponse_mul_le
         ∑ k : ZMod (kloostermanGlobalPeriod Q),
           Complex.normSq (kloostermanGlobalModulusTimeResponse q B b k.val) *
             Complex.normSq (kloostermanGlobalModulusTimeResponse r B b k.val) ≤
-      ((q + 1 : ℕ) : ℝ) ^ 2 *
+      ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ((r + 1 : ℕ) : ℝ) *
         (∑ z : ZMod (q + 1),
           Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
@@ -97,7 +97,7 @@ theorem average_normSq_kloostermanGlobalModulusTimeResponse_mul_le
     Complex.normSq (kloostermanSourceResidue (q + 1) B b z)
   let Er : ℝ := ∑ z : ZMod (r + 1),
     Complex.normSq (kloostermanSourceResidue (r + 1) B b z)
-  let Cq : ℝ := ((q + 1 : ℕ) : ℝ) ^ 2 * Eq
+  let Cq : ℝ := ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * Eq
   have hEq : 0 ≤ Eq := by
     dsimp only [Eq]
     exact Finset.sum_nonneg fun z hz => Complex.normSq_nonneg _
@@ -135,7 +135,7 @@ theorem average_normSq_kloostermanGlobalModulusTimeResponse_mul_le
       ring
     _ ≤ Cq * (((r + 1 : ℕ) : ℝ) * Er) := by
       exact mul_le_mul_of_nonneg_left havg hCq
-    _ = ((q + 1 : ℕ) : ℝ) ^ 2 *
+    _ = ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ((r + 1 : ℕ) : ℝ) *
         (∑ z : ZMod (q + 1),
           Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
@@ -154,7 +154,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_elementary
       ((Q.card * (Q.card - 1) : ℕ) : ℝ) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (q + 1),
                 Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
               ∑ z : ZMod (r + 1),
@@ -210,7 +210,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_elementary
     _ ≤ (S.card : ℝ) *
         ∑ p ∈ S,
           Complex.normSq (w p.1) * Complex.normSq (w p.2) *
-            (((p.1 + 1 : ℕ) : ℝ) ^ 2 * ((p.2 + 1 : ℕ) : ℝ) *
+            (((p.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((p.2 + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (p.1 + 1),
                 Complex.normSq (kloostermanSourceResidue (p.1 + 1) B b z)) *
               ∑ z : ZMod (p.2 + 1),
@@ -251,7 +251,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_elementary
             rw [← Finset.mul_sum]
             ring
           _ ≤ Complex.normSq (w q) * Complex.normSq (w r) *
-              (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+              (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
                 (∑ z : ZMod (q + 1),
                   Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
                 ∑ z : ZMod (r + 1),
@@ -262,7 +262,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_elementary
     _ = ((Q.card * (Q.card - 1) : ℕ) : ℝ) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (q + 1),
                 Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
               ∑ z : ZMod (r + 1),
@@ -273,7 +273,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_elementary
       exact (Finset.sum_sigma' Q (fun q => Q.erase q)
         (fun q r =>
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (q + 1),
                 Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
               ∑ z : ZMod (r + 1),

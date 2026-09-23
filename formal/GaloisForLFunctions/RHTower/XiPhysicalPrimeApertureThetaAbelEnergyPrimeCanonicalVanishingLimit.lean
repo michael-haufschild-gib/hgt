@@ -131,10 +131,10 @@ theorem tendsto_canonicalVanishingPrimeSample_weil_sub_archSq
       (nhds (xiWeilPolarization
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a)
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a) -
-        (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2))) := by
+        (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ)))) := by
   have h := tendsto_canonicalVanishingCorrectedPrimeSample_weil hA hc L a
   let K : ℂ :=
-    (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2)
+    (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ))
   have hconst : Tendsto (fun _ : ℕ => K) atTop (nhds K) := tendsto_const_nhds
   have hsub := h.sub hconst
   dsimp only [K] at hsub

@@ -3,7 +3,7 @@
 
 For the normalized quadratic Böttcher constraint, the reciprocal-coordinate displacement is
 
-`delta(c,t) = -c t^4 / (1 + c t^2)`.
+`delta(c,t) = -c t^(4 : ℕ) / (1 + c t^(2 : ℕ))`.
 
 This module formalizes its arbitrary-power negative-binomial coefficient and uses it to extract
 the complete mixed Taylor coefficient at every parameter depth.  The resulting capstone is the
@@ -25,11 +25,11 @@ abbrev BottcherParameterSeries := PowerSeries BottcherSpatialSeries
 the parameter whose coefficients are spatial power series. -/
 def bottcherDisplacementPower (b : ℕ) : BottcherParameterSeries :=
   C ((-1 : ℂ) ^ b • (X ^ (4 * b) : BottcherSpatialSeries)) *
-    (X ^ b * rescale (X ^ 2 : BottcherSpatialSeries)
+    (X ^ b * rescale (X ^ (2 : ℕ) : BottcherSpatialSeries)
       (binomialSeries BottcherSpatialSeries (-b : ℤ)))
 
 /-- The exact coefficient of `c^k` in
-`(-c t^4 / (1 + c t^2))^b`.  This is the negative-binomial kernel used by every mixed
+`(-c t^(4 : ℕ) / (1 + c t^(2 : ℕ)))^b`.  This is the negative-binomial kernel used by every mixed
 parameter--spatial jet. -/
 theorem coeff_bottcherDisplacementPower (b k : ℕ) (hb : 1 ≤ b) :
     (coeff k) (bottcherDisplacementPower b) =
@@ -47,7 +47,7 @@ theorem coeff_bottcherDisplacementPower (b k : ℕ) (hb : 1 ≤ b) :
       omega
     rw [hchoose]
     norm_num [zsmul_eq_mul, Int.cast_negOnePow_natCast]
-    rw [show (X ^ 2 : BottcherSpatialSeries) ^ (k - b) = X ^ (2 * (k - b)) by ring]
+    rw [show (X ^ (2 : ℕ) : BottcherSpatialSeries) ^ (k - b) = X ^ (2 * (k - b)) by ring]
     change ((-1 : ℂ) ^ b) •
         ((X ^ (4 * b) : BottcherSpatialSeries) *
           ((X ^ (2 * (k - b)) : BottcherSpatialSeries) *
@@ -345,16 +345,16 @@ theorem allOrderBottcherJet_one_eq_velocityJet :
     allOrderBottcherJet 1 = velocityJet := by
   have hcanonical :
       dyadicSubst (allOrderBottcherJet 1) =
-        2 * allOrderBottcherJet 1 + (-(X ^ 2 : BottcherSpatialSeries)) := by
+        2 * allOrderBottcherJet 1 + (-(X ^ (2 : ℕ) : BottcherSpatialSeries)) := by
     have h := allOrderBottcherJet_law (r := 1) (by omega)
     simpa [bottcherLogJetTerm] using h
   have hvelocity :
       dyadicSubst velocityJet =
-        2 * velocityJet + (-(X ^ 2 : BottcherSpatialSeries)) := by
+        2 * velocityJet + (-(X ^ (2 : ℕ) : BottcherSpatialSeries)) := by
     simpa [sub_eq_add_neg] using dyadicSubst_velocityJet
   calc
     allOrderBottcherJet 1 =
-        dyadicEquationSolution (-(X ^ 2 : BottcherSpatialSeries)) :=
+        dyadicEquationSolution (-(X ^ (2 : ℕ) : BottcherSpatialSeries)) :=
       dyadicEquationSolution_unique hcanonical
     _ = velocityJet := (dyadicEquationSolution_unique hvelocity).symm
 

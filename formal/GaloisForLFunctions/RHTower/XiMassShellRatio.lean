@@ -139,7 +139,7 @@ theorem shellAmplitude_ratio_eq {sigma kappa u s : ℝ} (hkappa : 1 < kappa) (hu
 /-- The exponential factor of the shell ratio is a near-unit. -/
 theorem norm_shellExpFactor_sub_one_le {a sigma kappa u s L D q : ℝ} (ha : 0 < a)
     (hsigma : 0 < sigma) (hkappa : 1 < kappa) (hqdef : shellQ kappa = q)
-    (hDdef : sigma ^ 2 + L ^ 2 + (kappa * L + sigma) ^ 2 / shellQ kappa ^ 2 = D)
+    (hDdef : sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + (kappa * L + sigma) ^ (2 : ℕ) / shellQ kappa ^ (2 : ℕ) = D)
     (hu0 : 0 < u) (hs : 0 ≤ s) (hsL : s ≤ L) (hsmall : a * D / (q * u) ≤ 1) :
     ‖Complex.exp (-((a : ℂ) * (shellRoot sigma kappa u s
       - xiMassShellRadius sigma kappa u s))) - 1‖ ≤ a * D / (q * u) := by
@@ -148,7 +148,7 @@ theorem norm_shellExpFactor_sub_one_le {a sigma kappa u s L D q : ℝ} (ha : 0 <
   have hstep := norm_csqrt_shellArgument_sub_shellRadius_le hkappa hu0 hs hsigma
   have hdef := norm_xiMassShellDefect_le hkappa hs hsL hsigma.le
   rw [hDdef] at hdef
-  have hqroot : Real.sqrt (kappa ^ 2 - 1) = q := by rw [← hqdef, shellQ]
+  have hqroot : Real.sqrt (kappa ^ (2 : ℕ) - 1) = q := by rw [← hqdef, shellQ]
   rw [hqroot] at hstep
   have hZζ : ‖shellRoot sigma kappa u s - xiMassShellRadius sigma kappa u s‖
       ≤ D / (2 * q * u) := by
@@ -228,7 +228,7 @@ theorem exists_shellRatio_bound {a sigma kappa L : ℝ} (ha : 0 < a) (hsigma : 0
   classical
   obtain ⟨q, hqdef⟩ : ∃ q : ℝ, shellQ kappa = q := ⟨_, rfl⟩
   obtain ⟨D, hDdef⟩ : ∃ D : ℝ,
-      sigma ^ 2 + L ^ 2 + (kappa * L + sigma) ^ 2 / shellQ kappa ^ 2 = D := ⟨_, rfl⟩
+      sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + (kappa * L + sigma) ^ (2 : ℕ) / shellQ kappa ^ (2 : ℕ) = D := ⟨_, rfl⟩
   obtain ⟨B, hBdef⟩ : ∃ B : ℝ, shellRadiusBound sigma kappa L = B := ⟨_, rfl⟩
   have hq : 0 < q := hqdef ▸ shellQ_pos hkappa
   have hD0 : 0 ≤ D := by

@@ -12,16 +12,16 @@ theorem exists_canonical_sixty_robust_group_of_ready_scale
     (ht : t = mu / 120) (hX : 1 ≤ X) (hXscale : (X : ℝ) ≤ T0 ^ mu)
     (hsigma : 0 ≤ sigma) (hylo : T0 ≤ y) (hyupper : y ≤ 2 * T0)
     (hV : 0 < V)
-    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       V ≤ ‖heathBrownEligibleDyadicAggregate L X 60 T0 t
         ((sigma : ℂ) + (y : ℝ) * Complex.I)‖)
-    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       ∀ c : HeathBrownBoxChoice L X 60,
         IsHeathBrownBoxEligible L X 60 T0 t c →
           heathBrownEligibleBoxCost L X 60 *
             (groupedDyadicLower
               (heathBrownBoxFactorExponent c.a c.b c.q) : ℝ) ^ (1 - sigma) ≤ V) :
-    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ 60 ∧
+    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ (60 : ℕ) ∧
       ∃ c : HeathBrownBoxChoice L X 60,
         IsHeathBrownBoxEligible L X 60 T0 t c ∧
         ∃ u : Finset (HeathBrownBoxFactorIndex 60 c.m), u.Nonempty ∧

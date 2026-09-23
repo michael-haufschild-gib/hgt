@@ -44,7 +44,7 @@ def thermalDeSitterPositiveReconstructionMero
 
 /-- Centered-zeta positive quarter-amplitude reconstruction. -/
 def centeredZetaPositiveReconstructionMero : meroField Set.univ :=
-  centeredZetaGammaIntensityCoreMero ^ 2 /
+  centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
     centeredZetaGammaPhaseObservationMero
 
 /-- Quotient of thermal/de Sitter reconstruction by the QED spin-statistics carrier. -/
@@ -57,7 +57,7 @@ def thermalDeSitterQEDSpinCrossRatioMero
 def thermalDeSitterQEDSpinCrossGaugeMero
     (ell : ℕ) (lambda : ℂ) : meroField Set.univ :=
   algebraMap (RatFunc ℂ) (meroField Set.univ)
-      (gammaOrbitNatFactor 1 ell) ^ 2 *
+      (gammaOrbitNatFactor 1 ell) ^ (2 : ℕ) *
     physicalExponentialMero lambda
 
 theorem thermalDeSitterQEDSpinCrossGaugeMero_ne_zero

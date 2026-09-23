@@ -22,7 +22,7 @@ noncomputable section
 /-- The natural Euler-depletion correction is pointwise dominated by `3 log n / n²`. -/
 theorem xiHeatCassiniWoldNatTraceCorrection_le_log_div_sq (n : ℕ) :
     xiHeatCassiniWoldNatTraceCorrection n ≤
-      3 * (Real.log n / (n : ℝ) ^ 2) := by
+      3 * (Real.log n / (n : ℝ) ^ (2 : ℕ)) := by
   by_cases hn : n.Prime
   · rw [xiHeatCassiniWoldNatTraceCorrection, dif_pos hn]
     exact xiHeatCassiniWoldEulerTraceCorrection_le ⟨n, hn⟩
@@ -58,7 +58,7 @@ theorem xiHeatCassiniWoldNatTraceCorrectionMass_sub_sum_le
   have hlogShift :
       Summable (fun i : ℕ =>
         Real.log ((N : ℝ) + (i + 1)) /
-          ((N : ℝ) + (i + 1)) ^ 2) := by
+          ((N : ℝ) + (i + 1)) ^ (2 : ℕ)) := by
     have h := (summable_nat_add_iff (N + 1)).mpr
       GaloisForLFunctions.HTGeometry.summable_logLin_div_sq
     refine h.congr ?_
@@ -67,25 +67,25 @@ theorem xiHeatCassiniWoldNatTraceCorrectionMass_sub_sum_le
   have hmajorShift :
       Summable (fun i : ℕ =>
         3 * (Real.log ((N : ℝ) + (i + 1)) /
-          ((N : ℝ) + (i + 1)) ^ 2)) :=
+          ((N : ℝ) + (i + 1)) ^ (2 : ℕ))) :=
     hlogShift.mul_left 3
   have hpoint : ∀ i : ℕ,
       xiHeatCassiniWoldNatTraceCorrection (i + (N + 1)) ≤
         3 * (Real.log ((N : ℝ) + (i + 1)) /
-          ((N : ℝ) + (i + 1)) ^ 2) := by
+          ((N : ℝ) + (i + 1)) ^ (2 : ℕ)) := by
     intro i
     calc
       xiHeatCassiniWoldNatTraceCorrection (i + (N + 1)) ≤
           3 * (Real.log (((i + (N + 1) : ℕ) : ℝ)) /
-            ((i + (N + 1) : ℕ) : ℝ) ^ 2) :=
+            ((i + (N + 1) : ℕ) : ℝ) ^ (2 : ℕ)) :=
         xiHeatCassiniWoldNatTraceCorrection_le_log_div_sq _
       _ = 3 * (Real.log ((N : ℝ) + (i + 1)) /
-          ((N : ℝ) + (i + 1)) ^ 2) := by
+          ((N : ℝ) + (i + 1)) ^ (2 : ℕ)) := by
         congr 2 <;> push_cast <;> ring
   have hsumMajor :
       (∑' i : ℕ, xiHeatCassiniWoldNatTraceCorrection (i + (N + 1))) ≤
         ∑' i : ℕ, 3 * (Real.log ((N : ℝ) + (i + 1)) /
-          ((N : ℝ) + (i + 1)) ^ 2) :=
+          ((N : ℝ) + (i + 1)) ^ (2 : ℕ)) :=
     Summable.tsum_le_tsum hpoint hcorrectionShift hmajorShift
   have hExp : Real.exp 1 ≤ (N : ℝ) := by
     have he : Real.exp 1 < (2.7182818286 : ℝ) := Real.exp_one_lt_d9

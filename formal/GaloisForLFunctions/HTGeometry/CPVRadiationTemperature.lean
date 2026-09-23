@@ -21,7 +21,7 @@ theorem coherentRadius_lt_one (tau : ℝ) : coherentRadius tau < 1 := by
   unfold coherentRadius
   rw [Real.sqrt_lt' zero_lt_one]
   simpa using thermalRatio_lt_one tau
-@[simp] theorem coherentRadius_sq (tau : ℝ) : coherentRadius tau ^ 2 = thermalRatio tau :=
+@[simp] theorem coherentRadius_sq (tau : ℝ) : coherentRadius tau ^ (2 : ℕ) = thermalRatio tau :=
   Real.sq_sqrt (thermalRatio_pos tau).le
 
 /-- Polar coherent-state coordinate with no vacuum or boundary points. -/
@@ -41,7 +41,7 @@ def radiationNumerator (tau phi : ℝ) : ℝ :=
 
 /-- Exact positive decomposition, uniformly over coherent-state phase. -/
 theorem radiationNumerator_decomposition (tau phi : ℝ) :
-    radiationNumerator tau phi = (1 - coherentRadius tau) ^ 2 +
+    radiationNumerator tau phi = (1 - coherentRadius tau) ^ (2 : ℕ) +
       2 * coherentRadius tau * (1 - Real.sin phi) := by
   unfold radiationNumerator
   nlinarith [coherentRadius_sq tau]
@@ -49,7 +49,7 @@ theorem radiationNumerator_decomposition (tau phi : ℝ) :
 /-- No nonvacuum interior microstate has zero or negative frequency. -/
 theorem radiationNumerator_pos (tau phi : ℝ) : 0 < radiationNumerator tau phi := by
   rw [radiationNumerator_decomposition]
-  have h1 : 0 < (1 - coherentRadius tau) ^ 2 :=
+  have h1 : 0 < (1 - coherentRadius tau) ^ (2 : ℕ) :=
     sq_pos_of_pos (sub_pos.mpr (coherentRadius_lt_one tau))
   have h2 : 0 ≤ 2 * coherentRadius tau * (1 - Real.sin phi) :=
     mul_nonneg (by linarith [coherentRadius_pos tau]) (sub_nonneg.mpr (Real.sin_le_one phi))

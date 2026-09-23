@@ -394,7 +394,7 @@ theorem thetaWardMovingHorizonResidual_sq
   split <;> ring
 
 /-- **Weak-Hilbert wall law.**  The Ward half-density and oriented physical theta carrier differ
-by an `ell^2` prime family exactly off the neutral wall. -/
+by an `ell^(2 : ℕ)` prime family exactly off the neutral wall. -/
 theorem summable_sq_thetaWardMovingHorizonResidual_iff
     (q : XiZeroCopy) :
     Summable (fun p : Nat.Primes => thetaWardMovingHorizonResidual p q ^ 2) ↔

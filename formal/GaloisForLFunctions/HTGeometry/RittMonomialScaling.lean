@@ -10,7 +10,7 @@ the coordinate by a pure scaling, `σ t = a·t`, such a `W` turns the relation
 
 `σ W = c·W + γ`,  `γ` in the coefficient field,
 
-into a comparison of the two powers `t^d` and `t^0`.  Transcendence of `t` separates them, so for
+into a comparison of the two powers `t^d` and `t^(0 : ℕ)`.  Transcendence of `t` separates them, so for
 `d ≠ 0` the inhomogeneity has to vanish and what is left is the *homogeneous* eigen-relation
 `φ(u)·a^d = c·u`; for `d = 0` the element was already in the coefficient field.
 

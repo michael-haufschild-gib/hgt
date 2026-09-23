@@ -182,16 +182,16 @@ theorem not_integrableOn_Iic_of_le {f : ℝ → ℝ} {a delta : ℝ} (hd : 0 < d
 theorem pwLogSingular_horizontal_plus_not_integrable
     {f : ℝ → ℝ}
     (hf : ∀ t, HasDerivAt f (pwLogSingularConnectionPotential t * f t) t)
-    (hL2 : Integrable (fun t => f t ^ 2)) :
+    (hL2 : Integrable (fun t => f t ^ (2 : ℕ))) :
     f = 0 := by
   rcases pwLogSingular_horizontal_plus_classification hf with ⟨c, hc⟩
   by_cases hc0 : c = 0
   · funext t
     simp [hc t, hc0]
-  have hdelta : 0 < c ^ 2 := sq_pos_of_ne_zero hc0
+  have hdelta : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc0
   exfalso
   apply GaloisForLFunctions.HTGeometry.not_integrableOn_Ici_of_le hdelta
-    (a := 0) (f := fun t => f t ^ 2)
+    (a := 0) (f := fun t => f t ^ (2 : ℕ))
   · intro u hu
     rw [hc]
     have hu0 : 0 ≤ u := hu
@@ -201,26 +201,26 @@ theorem pwLogSingular_horizontal_plus_not_integrable
     have hg : 1 ≤ pwLogSingularGauge u := by
       rw [pwLogSingularGauge]
       exact Real.one_le_exp hphi
-    have hgsq : 1 ≤ pwLogSingularGauge u ^ 2 := by nlinarith
+    have hgsq : 1 ≤ pwLogSingularGauge u ^ (2 : ℕ) := by nlinarith
     calc
-      c ^ 2 ≤ c ^ 2 * pwLogSingularGauge u ^ 2 :=
+      c ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * pwLogSingularGauge u ^ (2 : ℕ) :=
         by simpa using mul_le_mul_of_nonneg_left hgsq (sq_nonneg c)
-      _ = (c * pwLogSingularGauge u) ^ 2 := by ring
+      _ = (c * pwLogSingularGauge u) ^ (2 : ℕ) := by ring
   · exact hL2.integrableOn
 
 theorem pwLogSingular_horizontal_minus_not_integrable
     {f : ℝ → ℝ}
     (hf : ∀ t, HasDerivAt f (-pwLogSingularConnectionPotential t * f t) t)
-    (hL2 : Integrable (fun t => f t ^ 2)) :
+    (hL2 : Integrable (fun t => f t ^ (2 : ℕ))) :
     f = 0 := by
   rcases pwLogSingular_horizontal_minus_classification hf with ⟨c, hc⟩
   by_cases hc0 : c = 0
   · funext t
     simp [hc t, hc0]
-  have hdelta : 0 < c ^ 2 := sq_pos_of_ne_zero hc0
+  have hdelta : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc0
   exfalso
   apply not_integrableOn_Iic_of_le hdelta
-    (a := 0) (f := fun t => f t ^ 2)
+    (a := 0) (f := fun t => f t ^ (2 : ℕ))
   · intro u hu
     rw [hc]
     have hu0 : u ≤ 0 := hu
@@ -230,15 +230,15 @@ theorem pwLogSingular_horizontal_minus_not_integrable
     have hg : 1 ≤ pwLogSingularGaugeInv u := by
       rw [pwLogSingularGaugeInv]
       exact Real.one_le_exp hphi
-    have hgsq : 1 ≤ pwLogSingularGaugeInv u ^ 2 := by nlinarith
+    have hgsq : 1 ≤ pwLogSingularGaugeInv u ^ (2 : ℕ) := by nlinarith
     calc
-      c ^ 2 ≤ c ^ 2 * pwLogSingularGaugeInv u ^ 2 :=
+      c ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * pwLogSingularGaugeInv u ^ (2 : ℕ) :=
         by simpa using mul_le_mul_of_nonneg_left hgsq (sq_nonneg c)
-      _ = (c * pwLogSingularGaugeInv u) ^ 2 := by ring
+      _ = (c * pwLogSingularGaugeInv u) ^ (2 : ℕ) := by ring
   · exact hL2.integrableOn
 
 def PWLogReflectionUnitaryDensityLaw (w : ℝ → ℝ) : Prop :=
-  ∀ t, w (-t) = pwLogSingularGain t ^ 2 * w t
+  ∀ t, w (-t) = pwLogSingularGain t ^ (2 : ℕ) * w t
 
 def pwLogSingularDensityCore (w : ℝ → ℝ) (t : ℝ) : ℝ :=
   pwLogSingularGain t * w t
@@ -288,7 +288,7 @@ def pwLogSingularWeightedReflection (f : ℝ → ℝ) (t : ℝ) : ℝ :=
   pwLogSingularGain t * f (-t)
 
 def pwLogWeightedEnergyDensity (w f : ℝ → ℝ) (t : ℝ) : ℝ :=
-  w t * f t ^ 2
+  w t * f t ^ (2 : ℕ)
 
 theorem pwLogWeightedEnergyDensity_reflection_neg
     {w : ℝ → ℝ} (hw : PWLogReflectionUnitaryDensityLaw w)
@@ -337,10 +337,10 @@ theorem integral_pwLogWeightedEnergyDensity_reflection
 def PWSingularGaugeConnectionIndexNoGo : Prop :=
   (∀ f : ℝ → ℝ,
     (∀ t, HasDerivAt f (pwLogSingularConnectionPotential t * f t) t) →
-    Integrable (fun t => f t ^ 2) → f = 0) ∧
+    Integrable (fun t => f t ^ (2 : ℕ)) → f = 0) ∧
   (∀ f : ℝ → ℝ,
     (∀ t, HasDerivAt f (-pwLogSingularConnectionPotential t * f t) t) →
-    Integrable (fun t => f t ^ 2) → f = 0) ∧
+    Integrable (fun t => f t ^ (2 : ℕ)) → f = 0) ∧
   (∀ w : ℝ → ℝ,
     ((∀ t, 0 < w t) ∧ PWLogReflectionUnitaryDensityLaw w) ↔
       ∃ h : ℝ → ℝ, (∀ t, 0 < h t) ∧ Function.Even h ∧

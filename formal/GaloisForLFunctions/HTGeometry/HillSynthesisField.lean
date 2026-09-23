@@ -34,12 +34,12 @@ noncomputable def hillSynthesisDeriv (m : ℝ) (c : ℝ → ℝ) (G₀ χ : E �
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- The fibre of the synthesis is differentiable in time, with the velocity density as derivative. -/
-theorem hasDerivAt_hillDensity (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem hasDerivAt_hillDensity (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (ξ : E) (t : ℝ) :
     HasDerivAt (fun r => χ ξ * hillDensity m c G₀ r ξ)
       (χ ξ * hillDensityDeriv m c G₀ t ξ) t := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hreal := hasDerivAt_hillSolution (continuous_massiveFreq hc m ‖ξ‖) hM1 hMb (1, 0) t
   have hcx := hreal.ofReal_comp
@@ -50,7 +50,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 density. -/
 theorem hasDerivAt_hillSynthesis (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀) (hχ : AEStronglyMeasurable χ μ)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀) (hχ : AEStronglyMeasurable χ μ)
     (hχ1 : ∀ ξ, ‖χ ξ‖ ≤ 1)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) μ)
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) μ)
@@ -138,7 +138,7 @@ theorem hasDerivAt_hillSynthesis (hm : 0 < m) (hc : Continuous c)
 
 /-- The density of the second time derivative: the equation itself, at each frequency. -/
 noncomputable def hillDensitySecond (m : ℝ) (c : ℝ → ℝ) (G₀ : E → ℂ) (t : ℝ) (ξ : E) : ℂ :=
-  ((-(massiveFreq m c ‖ξ‖ t ^ 2) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) : ℂ) * G₀ ξ
+  ((-(massiveFreq m c ‖ξ‖ t ^ (2 : ℕ)) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) : ℂ) * G₀ ξ
 
 /-- The synthesis of the second-derivative density. -/
 noncomputable def hillSynthesisSecond (m : ℝ) (c : ℝ → ℝ) (G₀ χ : E → ℂ) (μ : Measure E)
@@ -146,12 +146,12 @@ noncomputable def hillSynthesisSecond (m : ℝ) (c : ℝ → ℝ) (G₀ χ : E �
   ∫ ξ : E, χ ξ * hillDensitySecond m c G₀ t ξ ∂μ
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
-theorem hasDerivAt_hillDensityDeriv (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem hasDerivAt_hillDensityDeriv (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (ξ : E) (t : ℝ) :
     HasDerivAt (fun r => χ ξ * hillDensityDeriv m c G₀ r ξ)
       (χ ξ * hillDensitySecond m c G₀ t ξ) t := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hreal := hasDerivAt_hillSolutionDeriv (continuous_massiveFreq hc m ‖ξ‖) hM1 hMb (1, 0) t
   have hcx := hreal.ofReal_comp
@@ -162,14 +162,14 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [Bo
 where the speed is bounded below. -/
 theorem norm_hillDensitySecond_le {cmin : ℝ} (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hK0 : 0 ≤ K)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hK0 : 0 ≤ K)
     {t : ℝ} (ht : 0 ≤ t) (htb : t ≤ b) (ξ : E) :
     ‖hillDensitySecond m c G₀ t ξ‖ ≤
-      ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖ := by
+      ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖ := by
   have hfib := abs_hillSolutionSecond_massive_cos_le (S := ‖ξ‖) (t := t) (b := t) hm hc hcd hcpos
     hK hC le_rfl ⟨ht, le_rfl⟩
   have hval : ‖hillDensitySecond m c G₀ t ξ‖
-      = |(-(massiveFreq m c ‖ξ‖ t ^ 2)) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t| *
+      = |(-(massiveFreq m c ‖ξ‖ t ^ (2 : ℕ))) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t| *
           ‖G₀ ξ‖ := by
     rw [hillDensitySecond, norm_mul, Complex.norm_real, Real.norm_eq_abs]
   rw [hval]
@@ -180,9 +180,9 @@ theorem norm_hillDensitySecond_le {cmin : ℝ} (hm : 0 < m) (hc : Continuous c)
     exact div_le_div_of_nonneg_left (le_of_lt (hcpos 0)) hcmin (hclow t)
   have hexp : Real.exp (K * t) ≤ Real.exp (K * b) :=
     Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left htb hK0)
-  have hfreq : massiveFreq m c ‖ξ‖ t ^ 2 ≤ m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2 :=
+  have hfreq : massiveFreq m c ‖ξ‖ t ^ (2 : ℕ) ≤ m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ) :=
     massiveFreq_sq_le hm hC le_rfl t
-  have hsq : (0 : ℝ) ≤ massiveFreq m c ‖ξ‖ t ^ 2 := sq_nonneg _
+  have hsq : (0 : ℝ) ≤ massiveFreq m c ‖ξ‖ t ^ (2 : ℕ) := sq_nonneg _
   have hR : (0 : ℝ) ≤ max 1 (c 0 / c t) := le_trans zero_le_one (le_max_left _ _)
   have hE : (0 : ℝ) ≤ Real.exp (K * t) := le_of_lt (Real.exp_pos _)
   have hstep : max 1 (c 0 / c t) * Real.exp (K * t)
@@ -195,10 +195,10 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 second-derivative density. -/
 theorem hasDerivAt_hillSynthesisDeriv {cmin : ℝ} (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀) (hχ : AEStronglyMeasurable χ μ) (hχ1 : ∀ ξ, ‖χ ξ‖ ≤ 1)
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) μ)
-    (hweight2 : Integrable (fun ξ : E => (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * ‖G₀ ξ‖) μ)
+    (hweight2 : Integrable (fun ξ : E => (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * ‖G₀ ξ‖) μ)
     {t : ℝ} (ht0 : 0 < t) (htb : t < b) :
     HasDerivAt (hillSynthesisDeriv m c G₀ χ μ) (hillSynthesisSecond m c G₀ χ μ t) t := by
   have hK0 : 0 ≤ K := by
@@ -256,20 +256,20 @@ theorem hasDerivAt_hillSynthesisDeriv {cmin : ℝ} (hm : 0 < m) (hc : Continuous
     have hscalar : Continuous fun s : ℝ => hillSolution (massiveFreq m c s) (1, 0) t :=
       continuous_fst.comp hfibre
     have hfreqs : Continuous fun s : ℝ => massiveFreq m c s t := by
-      show Continuous fun s : ℝ => Real.sqrt (m ^ 2 + (c t * s) ^ 2)
+      show Continuous fun s : ℝ => Real.sqrt (m ^ (2 : ℕ) + (c t * s) ^ (2 : ℕ))
       exact Real.continuous_sqrt.comp
         (continuous_const.add ((continuous_const.mul continuous_id).pow 2))
     have hfreqcont : Continuous fun ξ : E => massiveFreq m c ‖ξ‖ t :=
       hfreqs.comp continuous_norm
     have hcont : Continuous fun ξ : E => hillDensitySecond m c G₀ t ξ := by
       have hprod : Continuous fun ξ : E =>
-          (-(massiveFreq m c ‖ξ‖ t ^ 2) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) :=
+          (-(massiveFreq m c ‖ξ‖ t ^ (2 : ℕ)) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) :=
         ((hfreqcont.pow 2).neg).mul (hscalar.comp continuous_norm)
       exact (Complex.continuous_ofReal.comp hprod).mul hG
     exact hχ.mul hcont.aestronglyMeasurable
   have hbound : ∀ᵐ ξ : E ∂μ, ∀ r ∈ ball t ε,
       ‖χ ξ * hillDensitySecond m c G₀ r ξ‖ ≤
-        ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖ := by
+        ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖ := by
     filter_upwards with ξ r hr
     calc ‖χ ξ * hillDensitySecond m c G₀ r ξ‖ ≤ 1 * ‖hillDensitySecond m c G₀ r ξ‖ := by
           rw [norm_mul]
@@ -278,7 +278,7 @@ theorem hasDerivAt_hillSynthesisDeriv {cmin : ℝ} (hm : 0 < m) (hc : Continuous
       _ ≤ _ := norm_hillDensitySecond_le hm hc hcd hcpos hK hC hcmin hclow hK0
           (hsub r hr).1 (hsub r hr).2 ξ
   have hboundInt : Integrable (fun ξ : E =>
-      ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖) μ := by
+      ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖) μ := by
     have := hweight2.const_mul (max 1 (c 0 / cmin) * Real.exp (K * b))
     refine this.congr ?_
     filter_upwards with ξ
@@ -289,7 +289,7 @@ theorem hasDerivAt_hillSynthesisDeriv {cmin : ℝ} (hm : 0 < m) (hc : Continuous
     filter_upwards with ξ r _
     exact hasDerivAt_hillDensityDeriv hm hc hC ξ r
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le (bound := fun ξ : E =>
-      ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖)
+      ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / cmin) * Real.exp (K * b))) * ‖G₀ ξ‖)
     (ball_mem_nhds t hεpos) hmeas hFint hF'meas hbound hboundInt hdiff
   exact hmain.2
 

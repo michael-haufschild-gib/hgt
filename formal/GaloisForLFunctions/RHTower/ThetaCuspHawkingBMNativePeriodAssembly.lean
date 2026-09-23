@@ -32,9 +32,9 @@ theorem residualStripMean_mellin_integrable (q : XiZeroCopy)
     rw [ofComplex_apply_of_im_pos (by simpa using hy)]
     rfl
   simp only [stripChartIntegrand,he,integral_smul,integral_const_mul]
-  change (y^2)⁻¹ • ((y:ℂ)^P.s*residualStripMean q y) = _
+  change (y^(2 : ℕ))⁻¹ • ((y:ℂ)^P.s*residualStripMean q y) = _
   have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (show 0<y from hy).ne'
-  have ht : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+  have ht : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [Complex.cpow_sub _ _ hn,ht]
   simp only [Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_pow]
   ring
@@ -56,7 +56,7 @@ theorem nativeLowCutoffMellin_integral (q : XiZeroCopy) (s : ℂ) :
 theorem nativePrincipalRemainder_weighted (q : XiZeroCopy) (s : ℂ) {y : ℝ} (hy : 0 < y) :
     (y:ℂ)^(s-2)*nativePrincipalRemainder q y =
       (y:ℂ)^(s-2)*residualStripMean q y-
-        4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2))+nativeLowCutoffMellin q s y := by
+        4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ)))+nativeLowCutoffMellin q s y := by
   rw [residualStripMean_eq_fourier q hy]
   by_cases hh : y ≤ 1/2
   · rw [nativeLowCutoffMellin,Set.indicator_of_mem (show y ∈ Ioc (0:ℝ) (1/2:ℝ) from ⟨hy,hh⟩)]
@@ -84,7 +84,7 @@ theorem nativePrincipalRemainder_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 <
 theorem scalarResidualPeriod_eq_three_moments (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.re) :
     scalarResidualPeriod q (s-1/2) =
       4*reflectedCompletedLambda (2*s)*
-        (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2))+
+        (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ)))+
       reflectedCompletedLambda (2*s)*(∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*nativePrincipalRemainder q y)-
       reflectedCompletedLambda (2*s-1)*(∫ y in Ioi (2:ℝ), (y:ℂ)^(-s-1)*nativeSquareCutoffHeight q y) := by
   let P : D4BMEisensteinAbsoluteConvergenceParameter := ⟨s,by linarith⟩
@@ -92,14 +92,14 @@ theorem scalarResidualPeriod_eq_three_moments (q : XiZeroCopy) (s : ℂ) (hs : 2
   change reflectedCompletedLambda (2*s)*(∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*residualStripMean q y) = _
   have he : (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*residualStripMean q y) =
       ∫ y in Ioi (0:ℝ), ((y:ℂ)^(s-2)*nativePrincipalRemainder q y+
-        4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2)))-nativeLowCutoffMellin q s y := by
+        4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ))))-nativeLowCutoffMellin q s y := by
     apply setIntegral_congr_fun measurableSet_Ioi
     intro y hy
     dsimp only
     rw [nativePrincipalRemainder_weighted q s hy]
     ring
   have hadd : IntegrableOn (fun y : ℝ => (y:ℂ)^(s-2)*nativePrincipalRemainder q y+
-      4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2))) (Ioi (0:ℝ)) :=
+      4*((y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ)))) (Ioi (0:ℝ)) :=
     (nativePrincipalRemainder_integrable q s hs).add ((nativeFourierMellin_integrable q s hs).const_mul 4)
   rw [he,integral_sub hadd (nativeLowCutoffMellin_integrable q s hs),
     integral_add (nativePrincipalRemainder_integrable q s hs) ((nativeFourierMellin_integrable q s hs).const_mul 4),
@@ -110,7 +110,7 @@ theorem scalarResidualPeriod_eq_three_moments (q : XiZeroCopy) (s : ℂ) (hs : 2
 theorem scalarResidualPeriod_fourLambda_with_cutoff (q : XiZeroCopy) (hq : 1/2 < (q.1:ℂ).re)
     (s : ℂ) (hs : 2 < s.re) :
     scalarResidualPeriod q (s-1/2) =
-      (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^2*
+      (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^(2 : ℕ)*
         reflectedCompletedLambda (s-2*center q))/2+
       reflectedCompletedLambda (2*s)*(∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*nativePrincipalRemainder q y)-
       reflectedCompletedLambda (2*s-1)*(∫ y in Ioi (2:ℝ), (y:ℂ)^(-s-1)*nativeSquareCutoffHeight q y) := by

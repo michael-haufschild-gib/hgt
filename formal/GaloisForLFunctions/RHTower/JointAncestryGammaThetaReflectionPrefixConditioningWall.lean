@@ -45,10 +45,10 @@ theorem jasGammaThetaLocalRenormalizedFourthFactor_pos
   let q := xiMobiusContinuousApertureDiskNode x p
   have hq0 : 0 < q := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
-  have hq2 : q ^ 2 < 1 := by
+  have hq2 : q ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos (sub_pos.mpr hq1) (add_pos hq0 zero_lt_one)]
   rw [jasGammaThetaLocalRenormalizedFourthFactor_eq]
-  change 0 < (1 - q ^ 2) ^ 4 / (1 + q ^ 4)
+  change 0 < (1 - q ^ (2 : ℕ)) ^ (4 : ℕ) / (1 + q ^ (4 : ℕ))
   positivity
 
 theorem jasGammaThetaLocalRenormalizedDefect_nonneg

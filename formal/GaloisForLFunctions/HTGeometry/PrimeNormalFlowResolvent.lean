@@ -24,8 +24,8 @@ The proof is algebraic: in the variables `p = √a`, `q = √b` the defect facto
 `(q−p)(q+2p) / (2p³q(p+q))`, and `q − p = (b−a)/(p+q)`. -/
 theorem abs_flowSlope_le {a b s : ℝ} (hs : 0 < s) (ha : s ≤ Real.sqrt a) (hb : s ≤ Real.sqrt b)
     (hab : a ≠ b) :
-    |((Real.sqrt b)⁻¹ - (Real.sqrt a)⁻¹) / (b - a) + (1 / 2) * (Real.sqrt a)⁻¹ ^ 3|
-      ≤ |b - a| / (2 * s ^ 5) := by
+    |((Real.sqrt b)⁻¹ - (Real.sqrt a)⁻¹) / (b - a) + (1 / 2) * (Real.sqrt a)⁻¹ ^ (3 : ℕ)|
+      ≤ |b - a| / (2 * s ^ (5 : ℕ)) := by
   set p := Real.sqrt a with hpdef
   set q := Real.sqrt b with hqdef
   have hp0 : 0 < p := lt_of_lt_of_le hs ha
@@ -40,37 +40,37 @@ theorem abs_flowSlope_le {a b s : ℝ} (hs : 0 < s) (ha : s ≤ Real.sqrt a) (hb
     rw [not_lt] at hc
     rw [hqdef, Real.sqrt_eq_zero_of_nonpos hc] at hq0
     exact lt_irrefl 0 hq0
-  have hpa : p ^ 2 = a := Real.sq_sqrt hapos.le
-  have hqb : q ^ 2 = b := Real.sq_sqrt hbpos.le
-  have hd : q ^ 2 - p ^ 2 ≠ 0 := by rw [hpa, hqb]; exact sub_ne_zero.mpr (Ne.symm hab)
+  have hpa : p ^ (2 : ℕ) = a := Real.sq_sqrt hapos.le
+  have hqb : q ^ (2 : ℕ) = b := Real.sq_sqrt hbpos.le
+  have hd : q ^ (2 : ℕ) - p ^ (2 : ℕ) ≠ 0 := by rw [hpa, hqb]; exact sub_ne_zero.mpr (Ne.symm hab)
   have hpq : 0 < p + q := by linarith
-  have hexpr : (q⁻¹ - p⁻¹) / (b - a) + (1 / 2) * p⁻¹ ^ 3
-      = (q ^ 2 - p ^ 2) * (q + 2 * p) / (2 * p ^ 3 * q * (p + q) ^ 2) := by
+  have hexpr : (q⁻¹ - p⁻¹) / (b - a) + (1 / 2) * p⁻¹ ^ (3 : ℕ)
+      = (q ^ (2 : ℕ) - p ^ (2 : ℕ)) * (q + 2 * p) / (2 * p ^ (3 : ℕ) * q * (p + q) ^ (2 : ℕ)) := by
     rw [← hpa, ← hqb]
     field_simp
     ring
-  rw [hexpr, abs_div, abs_of_pos (by positivity : (0:ℝ) < 2 * p ^ 3 * q * (p + q) ^ 2),
+  rw [hexpr, abs_div, abs_of_pos (by positivity : (0:ℝ) < 2 * p ^ (3 : ℕ) * q * (p + q) ^ (2 : ℕ)),
     abs_mul, abs_of_pos (by positivity : (0:ℝ) < q + 2 * p), hpa, hqb]
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   have h1 : q + 2 * p ≤ 2 * (p + q) := by linarith
-  have hs3 : s ^ 3 ≤ p ^ 3 := by gcongr
-  have e1 : s ^ 3 * s ≤ p ^ 3 * q := mul_le_mul hs3 hb hs.le (by positivity)
-  have h2 : 2 * s ^ 5 ≤ p ^ 3 * q * (p + q) := by
-    have e2 : s ^ 3 * s * (2 * s) ≤ p ^ 3 * q * (p + q) :=
+  have hs3 : s ^ (3 : ℕ) ≤ p ^ (3 : ℕ) := by gcongr
+  have e1 : s ^ (3 : ℕ) * s ≤ p ^ (3 : ℕ) * q := mul_le_mul hs3 hb hs.le (by positivity)
+  have h2 : 2 * s ^ (5 : ℕ) ≤ p ^ (3 : ℕ) * q * (p + q) := by
+    have e2 : s ^ (3 : ℕ) * s * (2 * s) ≤ p ^ (3 : ℕ) * q * (p + q) :=
       mul_le_mul e1 (by linarith) (by positivity) (by positivity)
-    calc 2 * s ^ 5 = s ^ 3 * s * (2 * s) := by ring
-      _ ≤ p ^ 3 * q * (p + q) := e2
-  have h3 : (q + 2 * p) * (2 * s ^ 5) ≤ 2 * p ^ 3 * q * (p + q) ^ 2 := by
-    have e3 : (q + 2 * p) * (2 * s ^ 5) ≤ (2 * (p + q)) * (2 * s ^ 5) :=
+    calc 2 * s ^ (5 : ℕ) = s ^ (3 : ℕ) * s * (2 * s) := by ring
+      _ ≤ p ^ (3 : ℕ) * q * (p + q) := e2
+  have h3 : (q + 2 * p) * (2 * s ^ (5 : ℕ)) ≤ 2 * p ^ (3 : ℕ) * q * (p + q) ^ (2 : ℕ) := by
+    have e3 : (q + 2 * p) * (2 * s ^ (5 : ℕ)) ≤ (2 * (p + q)) * (2 * s ^ (5 : ℕ)) :=
       mul_le_mul_of_nonneg_right h1 (by positivity)
-    have e4 : (2 * (p + q)) * (2 * s ^ 5) ≤ (2 * (p + q)) * (p ^ 3 * q * (p + q)) :=
+    have e4 : (2 * (p + q)) * (2 * s ^ (5 : ℕ)) ≤ (2 * (p + q)) * (p ^ (3 : ℕ) * q * (p + q)) :=
       mul_le_mul_of_nonneg_left h2 (by positivity)
-    calc (q + 2 * p) * (2 * s ^ 5) ≤ (2 * (p + q)) * (2 * s ^ 5) := e3
-      _ ≤ (2 * (p + q)) * (p ^ 3 * q * (p + q)) := e4
-      _ = 2 * p ^ 3 * q * (p + q) ^ 2 := by ring
-  calc |b - a| * (q + 2 * p) * (2 * s ^ 5)
-      = |b - a| * ((q + 2 * p) * (2 * s ^ 5)) := by ring
-    _ ≤ |b - a| * (2 * p ^ 3 * q * (p + q) ^ 2) :=
+    calc (q + 2 * p) * (2 * s ^ (5 : ℕ)) ≤ (2 * (p + q)) * (2 * s ^ (5 : ℕ)) := e3
+      _ ≤ (2 * (p + q)) * (p ^ (3 : ℕ) * q * (p + q)) := e4
+      _ = 2 * p ^ (3 : ℕ) * q * (p + q) ^ (2 : ℕ) := by ring
+  calc |b - a| * (q + 2 * p) * (2 * s ^ (5 : ℕ))
+      = |b - a| * ((q + 2 * p) * (2 * s ^ (5 : ℕ))) := by ring
+    _ ≤ |b - a| * (2 * p ^ (3 : ℕ) * q * (p + q) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left h3 (abs_nonneg _)
 
 end Scalar
@@ -105,12 +105,12 @@ theorem continuousOn_flowSymbol {T : A} {L : ℝ} (hL : ‖T‖ / 2 < L) :
 
 /-- The defect of the difference quotient of the flow symbol. -/
 noncomputable def flowSlopeSymbol (L L' t : ℝ) : ℝ :=
-  (L' - L)⁻¹ * (flowSymbol L' t - flowSymbol L t) + (1 / 2) * flowSymbol L t ^ 3
+  (L' - L)⁻¹ * (flowSymbol L' t - flowSymbol L t) + (1 / 2) * flowSymbol L t ^ (3 : ℕ)
 
 /-- **The uniform slope estimate on the spectrum.** -/
 theorem abs_flowSlopeSymbol_le {T : A} {L L' t : ℝ} (hL : ‖T‖ / 2 < L)
     (hne : L' ≠ L) (hclose : |L' - L| < (L - ‖T‖ / 2) / 2) (ht : t ∈ spectrum ℝ T) :
-    |flowSlopeSymbol L L' t| ≤ |L' - L| / (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 5) := by
+    |flowSlopeSymbol L L' t| ≤ |L' - L| / (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (5 : ℕ)) := by
   have hδ : 0 < L - ‖T‖ / 2 := by linarith
   have hs : 0 < Real.sqrt ((L - ‖T‖ / 2) / 2) := Real.sqrt_pos.mpr (by linarith)
   have htn : t ≤ ‖T‖ := le_trans (le_abs_self t) (abs_le_norm_of_mem_spectrum ht)
@@ -124,7 +124,7 @@ theorem abs_flowSlopeSymbol_le {T : A} {L L' t : ℝ} (hL : ‖T‖ / 2 < L)
   rw [show (L' - t / 2) - (L - t / 2) = L' - L by ring] at hkey
   rw [show flowSlopeSymbol L L' t
       = ((Real.sqrt (L' - t / 2))⁻¹ - (Real.sqrt (L - t / 2))⁻¹) / (L' - L)
-        + (1 / 2) * (Real.sqrt (L - t / 2))⁻¹ ^ 3 by
+        + (1 / 2) * (Real.sqrt (L - t / 2))⁻¹ ^ (3 : ℕ) by
     simp only [flowSlopeSymbol, flowSymbol]; ring]
   exact hkey
 
@@ -138,10 +138,10 @@ theorem continuousOn_flowSlopeSymbol {T : A} {L L' : ℝ} (hL : ‖T‖ / 2 < L)
 This is the operator form of the card's `(10)`: the difference quotient of the symbol is uniformly
 small on the spectrum, so the isometric functional calculus transports the scalar derivative. -/
 theorem hasDerivAt_primeNormalFlow {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL : ‖T‖ / 2 < L) :
-    HasDerivAt (primeNormalFlow T) (cfc (fun t => -(1 / 2) * flowSymbol L t ^ 3) T) L := by
+    HasDerivAt (primeNormalFlow T) (cfc (fun t => -(1 / 2) * flowSymbol L t ^ (3 : ℕ)) T) L := by
   have hδ : 0 < L - ‖T‖ / 2 := by linarith
   have hs : 0 < Real.sqrt ((L - ‖T‖ / 2) / 2) := Real.sqrt_pos.mpr (by linarith)
-  set D : A := cfc (fun t => -(1 / 2) * flowSymbol L t ^ 3) T with hDdef
+  set D : A := cfc (fun t => -(1 / 2) * flowSymbol L t ^ (3 : ℕ)) T with hDdef
   have hwin : ∀ᶠ L' in 𝓝[≠] L, |L' - L| < (L - ‖T‖ / 2) / 2 := by
     have hball := Metric.ball_mem_nhds L (by linarith : (0:ℝ) < (L - ‖T‖ / 2) / 2)
     have hb2 : ∀ᶠ L' in 𝓝 L, |L' - L| < (L - ‖T‖ / 2) / 2 := by
@@ -165,13 +165,13 @@ theorem hasDerivAt_primeNormalFlow {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL 
         = cfc (fun t => (L' - L)⁻¹ * (flowSymbol L' t - flowSymbol L t)) T := by
       rw [slope_def_module, ← hsub]
       exact (cfc_const_mul _ _ T hcd).symm
-    have hD : D = cfc (fun t => -((1 / 2) * flowSymbol L t ^ 3)) T := by
+    have hD : D = cfc (fun t => -((1 / 2) * flowSymbol L t ^ (3 : ℕ))) T := by
       rw [hDdef]; congr 1; funext t; ring
     have hsplit := cfc_sub (fun t => (L' - L)⁻¹ * (flowSymbol L' t - flowSymbol L t))
-      (fun t => -((1 / 2) * flowSymbol L t ^ 3)) T
+      (fun t => -((1 / 2) * flowSymbol L t ^ (3 : ℕ))) T
       (continuousOn_const.mul (hcL'.sub hcL)) ((continuousOn_const.mul (hcL.pow 3)).neg)
     have heqfun : (fun t => (L' - L)⁻¹ * (flowSymbol L' t - flowSymbol L t)
-        - -((1 / 2) * flowSymbol L t ^ 3)) = flowSlopeSymbol L L' := by
+        - -((1 / 2) * flowSymbol L t ^ (3 : ℕ))) = flowSlopeSymbol L L' := by
       funext t; rw [flowSlopeSymbol]; ring
     rw [heqfun] at hsplit
     rw [hsplit, ← hslope, ← hD]
@@ -179,12 +179,12 @@ theorem hasDerivAt_primeNormalFlow {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL 
       ∀ t ∈ spectrum ℝ T, ‖flowSlopeSymbol L L' t‖ ≤ ε := by
     intro ε hε
     have hbound : Tendsto
-        (fun L' : ℝ => |L' - L| / (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 5)) (𝓝[≠] L) (𝓝 0) := by
+        (fun L' : ℝ => |L' - L| / (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (5 : ℕ))) (𝓝[≠] L) (𝓝 0) := by
       have h1 : Tendsto (fun L' : ℝ => |L' - L|) (𝓝[≠] L) (𝓝 0) := by
         have hc : ContinuousAt (fun L' : ℝ => |L' - L|) L := by fun_prop
         have h0 : Tendsto (fun L' : ℝ => |L' - L|) (𝓝 L) (𝓝 0) := by simpa using hc.tendsto
         exact h0.mono_left nhdsWithin_le_nhds
-      simpa using h1.div_const (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 5)
+      simpa using h1.div_const (2 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (5 : ℕ))
     filter_upwards [hwin, self_mem_nhdsWithin,
       hbound.eventually (eventually_lt_nhds hε)] with L' hw hne hsm t ht
     rw [Real.norm_eq_abs]

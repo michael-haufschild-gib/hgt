@@ -9,11 +9,11 @@ This module closes the complex-phase survivor left by the real-scalar SC obstruc
 complex scalar sequence `c`, it computes the exact central jets of the complete
 coefficient-faithful holomorphic prime Gamma-Bockstein reservoir determinant:
 
-* the second jet is `-2 c_m^2 e₂(q)`;
-* the third jet is `12 c_m^3 e₃(q)`.
+* the second jet is `-2 c_m^(2 : ℕ) e₂(q)`;
+* the third jet is `12 c_m^(3 : ℕ) e₃(q)`.
 
 The positive neutral-jet packet mass diverges, each neutral jet is at most two, and a cubic
-Newton--Girard law gives `S^3 ≤ 12 e₃` once `S ≥ 12`. Compact-open convergence to normalized
+Newton--Girard law gives `S^(3 : ℕ) ≤ 12 e₃` once `S ≥ 12`. Compact-open convergence to normalized
 centered Xi would therefore force `‖c_m‖ S_m → 0` through Xi's zero third central jet. The exact
 second jet would then vanish, contradicting Xi's strictly negative normalized curvature.
 
@@ -32,8 +32,8 @@ theorem six_mul_sum_powersetCard_three_eq_powerSums
     {n : ℕ} (q : Fin n → ℝ) :
     6 * (∑ s ∈ (Finset.univ : Finset (Fin n)).powersetCard 3,
       ∏ i ∈ s, q i) =
-      2 * ∑ i, q i ^ 3 -
-        3 * (∑ i, q i) * (∑ i, q i ^ 2) + (∑ i, q i) ^ 3 := by
+      2 * ∑ i, q i ^ (3 : ℕ) -
+        3 * (∑ i, q i) * (∑ i, q i ^ (2 : ℕ)) + (∑ i, q i) ^ (3 : ℕ) := by
   have h := GaloisForLFunctions.secularMoment_girard_three
     (fun i : Fin n => (q i : ℂ))
   rw [Finset.esymm_map_val] at h
@@ -110,15 +110,15 @@ theorem sum_pow_three_le_twelve_mul_sum_powersetCard_three
     {n : ℕ} (q : Fin n → ℝ)
     (hq0 : ∀ i, 0 ≤ q i) (hq2 : ∀ i, q i ≤ 2)
     (hS : 12 ≤ ∑ i, q i) :
-    (∑ i, q i) ^ 3 ≤
+    (∑ i, q i) ^ (3 : ℕ) ≤
       12 * ∑ s ∈ (Finset.univ : Finset (Fin n)).powersetCard 3,
         ∏ i ∈ s, q i := by
   let S : ℝ := ∑ i, q i
-  let P2 : ℝ := ∑ i, q i ^ 2
-  let P3 : ℝ := ∑ i, q i ^ 3
+  let P2 : ℝ := ∑ i, q i ^ (2 : ℕ)
+  let P3 : ℝ := ∑ i, q i ^ (3 : ℕ)
   let E3 : ℝ := ∑ s ∈ (Finset.univ : Finset (Fin n)).powersetCard 3,
     ∏ i ∈ s, q i
-  have hnewton : 6 * E3 = 2 * P3 - 3 * S * P2 + S ^ 3 := by
+  have hnewton : 6 * E3 = 2 * P3 - 3 * S * P2 + S ^ (3 : ℕ) := by
     exact six_mul_sum_powersetCard_three_eq_powerSums q
   have hS0 : 0 ≤ S := Finset.sum_nonneg fun i _ => hq0 i
   have hP20 : 0 ≤ P2 := Finset.sum_nonneg fun i _ => sq_nonneg _
@@ -129,12 +129,12 @@ theorem sum_pow_three_le_twelve_mul_sum_powersetCard_three
     apply Finset.sum_le_sum
     intro i hi
     nlinarith [hq0 i, hq2 i]
-  have hSP2 : S * P2 ≤ 2 * S ^ 2 := by
+  have hSP2 : S * P2 ≤ 2 * S ^ (2 : ℕ) := by
     nlinarith [mul_nonneg hS0 (sub_nonneg.mpr hP2)]
-  have hlarge : 6 * S ^ 2 ≤ S ^ 3 / 2 := by
+  have hlarge : 6 * S ^ (2 : ℕ) ≤ S ^ (3 : ℕ) / 2 := by
     nlinarith [sq_nonneg S, mul_nonneg (sq_nonneg S) (sub_nonneg.mpr hS)]
   change 12 ≤ S at hS
-  change S ^ 3 ≤ 12 * E3
+  change S ^ (3 : ℕ) ≤ 12 * E3
   nlinarith
 
 theorem iteratedDeriv_two_scaledComplex_preDivisorHolomorphicPrimeBockstein_zero
@@ -159,12 +159,12 @@ theorem iteratedDeriv_two_scaledComplex_preDivisorHolomorphicPrimeBockstein_zero
         (fun z => Complex.exp ((Real.log (p : ℝ) : ℂ) * z))) 0 = 0
   have hneg : iteratedDeriv 2
       (fun z => Complex.exp ((-(Real.log (p : ℝ) : ℂ)) * z)) 0 =
-        (Real.log (p : ℝ) : ℂ) ^ 2 := by
+        (Real.log (p : ℝ) : ℂ) ^ (2 : ℕ) := by
     simpa using congrFun
       (HurwitzExp.iteratedDeriv_expLin (-(Real.log (p : ℝ) : ℂ)) 2) 0
   have hpos : iteratedDeriv 2
       (fun z => Complex.exp ((Real.log (p : ℝ) : ℂ) * z)) 0 =
-        (Real.log (p : ℝ) : ℂ) ^ 2 := by
+        (Real.log (p : ℝ) : ℂ) ^ (2 : ℕ) := by
     simpa only [mul_zero, Complex.exp_zero, mul_one] using congrFun
       (HurwitzExp.iteratedDeriv_expLin (Real.log (p : ℝ) : ℂ) 2) 0
   rw [iteratedDeriv_sub
@@ -302,7 +302,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedD
     (c : ℕ → ℂ) (m : ℕ) :
     iteratedDeriv 2
         (preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant c m) 0 =
-      -(2 : ℂ) * (c m) ^ 2 *
+      -(2 : ℂ) * (c m) ^ (2 : ℕ) *
         ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
           ∏ i ∈ s, (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
   let f : Fin (m + 3) → ℂ → ℂ := fun i z =>
@@ -332,7 +332,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedD
         iteratedDeriv 2
             (fun z => (1 - (s.card : ℂ)) * ∏ i ∈ s, f i z) 0 =
           if s.card = 2 then
-            -(2 : ℂ) * (c m) ^ 2 *
+            -(2 : ℂ) * (c m) ^ (2 : ℕ) *
               ∏ i ∈ s,
                 (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ)
           else 0 := by
@@ -342,7 +342,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedD
           iteratedDeriv_two_finset_prod_eq_of_card_eq_two f s hf hz htwo]
         have hprod :
             ∏ i ∈ s, iteratedDeriv 1 (f i) 0 =
-              (c m) ^ 2 *
+              (c m) ^ (2 : ℕ) *
                 ∏ i ∈ s,
                   (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
           obtain ⟨i, j, hij, rfl⟩ := Finset.card_eq_two.mp htwo
@@ -375,7 +375,7 @@ theorem iteratedDeriv_three_preDivisorRiggedPrimeHolomorphicComplexScalarUnitize
     (c : ℕ → ℂ) (m : ℕ) :
     iteratedDeriv 3
         (preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant c m) 0 =
-      (12 : ℂ) * (c m) ^ 3 *
+      (12 : ℂ) * (c m) ^ (3 : ℕ) *
         ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 3,
           ∏ i ∈ s, (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
   let f : Fin (m + 3) → ℂ → ℂ := fun i z =>
@@ -409,7 +409,7 @@ theorem iteratedDeriv_three_preDivisorRiggedPrimeHolomorphicComplexScalarUnitize
         iteratedDeriv 3
             (fun z => (1 - (s.card : ℂ)) * ∏ i ∈ s, f i z) 0 =
           if s.card = 3 then
-            (12 : ℂ) * (c m) ^ 3 *
+            (12 : ℂ) * (c m) ^ (3 : ℕ) *
               ∏ i ∈ s,
                 (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ)
           else 0 := by
@@ -419,7 +419,7 @@ theorem iteratedDeriv_three_preDivisorRiggedPrimeHolomorphicComplexScalarUnitize
           iteratedDeriv_three_finset_prod_eq_of_card_eq_three f s hf hz hthree]
         have hprod :
             ∏ i ∈ s, iteratedDeriv 1 (f i) 0 =
-              -(c m) ^ 3 *
+              -(c m) ^ (3 : ℕ) *
                 ∏ i ∈ s,
                   (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
           obtain ⟨i, j, k, hij, hik, hjk, rfl⟩ := Finset.card_eq_three.mp hthree
@@ -473,11 +473,11 @@ theorem tendsto_neutralJet_packetSum_atTop :
 
 theorem tendsto_zero_of_nonnegative_cube_tendsto_zero
     (u : ℕ → ℝ) (hu : ∀ n, 0 ≤ u n)
-    (hcube : Tendsto (fun n => (u n) ^ 3) atTop (𝓝 0)) :
+    (hcube : Tendsto (fun n => (u n) ^ (3 : ℕ)) atTop (𝓝 0)) :
     Tendsto u atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop] at hcube ⊢
   intro ε hε
-  obtain ⟨N, hN⟩ := hcube (ε ^ 3) (pow_pos hε 3)
+  obtain ⟨N, hN⟩ := hcube (ε ^ (3 : ℕ)) (pow_pos hε 3)
   refine ⟨N, fun n hn => ?_⟩
   have hpow := hN n hn
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (pow_nonneg (hu n) 3)] at hpow
@@ -485,12 +485,12 @@ theorem tendsto_zero_of_nonnegative_cube_tendsto_zero
   by_contra hnot
   have heu : ε ≤ u n := le_of_not_gt hnot
   have hfactorNonneg :
-      0 ≤ (u n - ε) * ((u n) ^ 2 + u n * ε + ε ^ 2) := by
+      0 ≤ (u n - ε) * ((u n) ^ (2 : ℕ) + u n * ε + ε ^ (2 : ℕ)) := by
     exact mul_nonneg (sub_nonneg.mpr heu)
       (add_nonneg (add_nonneg (sq_nonneg _) (mul_nonneg (hu n) hε.le)) (sq_nonneg _))
   have hfactor :
-      (u n) ^ 3 - ε ^ 3 =
-        (u n - ε) * ((u n) ^ 2 + u n * ε + ε ^ 2) := by ring
+      (u n) ^ (3 : ℕ) - ε ^ (3 : ℕ) =
+        (u n - ε) * ((u n) ^ (2 : ℕ) + u n * ε + ε ^ (2 : ℕ)) := by ring
   nlinarith
 
 theorem absScale_packetSum_cube_le_norm_iteratedDeriv_three
@@ -498,7 +498,7 @@ theorem absScale_packetSum_cube_le_norm_iteratedDeriv_three
     (hS : 12 ≤ ∑ i : Fin (m + 3),
       preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) :
     (‖c m‖ * ∑ i : Fin (m + 3),
-      preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 3 ≤
+      preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (3 : ℕ) ≤
       ‖iteratedDeriv 3
         (preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant c m) 0‖ := by
   let q : Fin (m + 3) → ℝ := fun i =>
@@ -510,7 +510,7 @@ theorem absScale_packetSum_cube_le_norm_iteratedDeriv_three
     preDivisorHolomorphicPrimeNeutralJet_nonneg (nthPrimePoint i)
   have hq2 : ∀ i, q i ≤ 2 := fun i =>
     preDivisorHolomorphicPrimeNeutralJet_le_two (nthPrimePoint i)
-  have hcubic : (∑ i, q i) ^ 3 ≤ 12 * E3 :=
+  have hcubic : (∑ i, q i) ^ (3 : ℕ) ≤ 12 * E3 :=
     sum_pow_three_le_twelve_mul_sum_powersetCard_three q hq0 hq2 hS
   have hE30 : 0 ≤ E3 := by
     exact Finset.sum_nonneg fun s hs =>
@@ -522,17 +522,17 @@ theorem absScale_packetSum_cube_le_norm_iteratedDeriv_three
     push_cast
     rfl
   rw [iteratedDeriv_three_preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant]
-  change (‖c m‖ * ∑ i, q i) ^ 3 ≤
-    ‖(12 : ℂ) * (c m) ^ 3 *
+  change (‖c m‖ * ∑ i, q i) ^ (3 : ℕ) ≤
+    ‖(12 : ℂ) * (c m) ^ (3 : ℕ) *
       ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 3,
         ∏ i ∈ s, (q i : ℂ)‖
   rw [hcast]
   calc
-    (‖c m‖ * ∑ i, q i) ^ 3 =
-        ‖c m‖ ^ 3 * (∑ i, q i) ^ 3 := by ring
-    _ ≤ ‖c m‖ ^ 3 * (12 * E3) :=
+    (‖c m‖ * ∑ i, q i) ^ (3 : ℕ) =
+        ‖c m‖ ^ (3 : ℕ) * (∑ i, q i) ^ (3 : ℕ) := by ring
+    _ ≤ ‖c m‖ ^ (3 : ℕ) * (12 * E3) :=
       mul_le_mul_of_nonneg_left hcubic (pow_nonneg (norm_nonneg _) 3)
-    _ = ‖(12 : ℂ) * (c m) ^ 3 * (E3 : ℂ)‖ := by
+    _ = ‖(12 : ℂ) * (c m) ^ (3 : ℕ) * (E3 : ℂ)‖ := by
       rw [norm_mul, norm_mul, norm_ofNat, norm_pow, Complex.norm_real,
         Real.norm_eq_abs, abs_of_nonneg hE30]
       ring
@@ -558,7 +558,7 @@ theorem tendsto_norm_scale_mul_neutralJet_packetSum_zero_of_thirdJet_zero
     simpa [Function.comp_def] using (continuous_norm.tendsto 0).comp hjet
   have hcube : Tendsto (fun m =>
       (‖c m‖ * ∑ i : Fin (m + 3),
-        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 3)
+        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (3 : ℕ))
       atTop (𝓝 0) := by
     refine squeeze_zero'
       (Eventually.of_forall fun m => pow_nonneg
@@ -575,7 +575,7 @@ theorem norm_iteratedDeriv_two_complexScalarUnitizedDeterminant_le
     ‖iteratedDeriv 2
         (preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant c m) 0‖ ≤
       (‖c m‖ * ∑ i : Fin (m + 3),
-        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 2 := by
+        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (2 : ℕ) := by
   let q : Fin (m + 3) → ℝ := fun i =>
     preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)
   have hq : ∀ i, 0 ≤ q i := fun i =>
@@ -597,15 +597,15 @@ theorem norm_iteratedDeriv_two_complexScalarUnitizedDeterminant_le
     push_cast
     rfl
   rw [iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicComplexScalarUnitizedDeterminant]
-  change ‖-(2 : ℂ) * (c m) ^ 2 *
+  change ‖-(2 : ℂ) * (c m) ^ (2 : ℕ) *
       ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
         ∏ i ∈ s, (q i : ℂ)‖ ≤ _
   rw [hcast]
   calc
-    ‖-(2 : ℂ) * (c m) ^ 2 *
+    ‖-(2 : ℂ) * (c m) ^ (2 : ℕ) *
         ((∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
           ∏ i ∈ s, q i : ℝ) : ℂ)‖ =
-        ‖c m‖ ^ 2 *
+        ‖c m‖ ^ (2 : ℕ) *
           (2 * ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
             ∏ i ∈ s, q i) := by
       have hnormPairs :
@@ -616,10 +616,10 @@ theorem norm_iteratedDeriv_two_complexScalarUnitizedDeterminant_le
         rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hpairsNonneg]
       rw [norm_mul, norm_mul, norm_neg, norm_ofNat, norm_pow, hnormPairs]
       ring
-    _ ≤ ‖c m‖ ^ 2 * (∑ i : Fin (m + 3), q i) ^ 2 := by
+    _ ≤ ‖c m‖ ^ (2 : ℕ) * (∑ i : Fin (m + 3), q i) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_left hpair (sq_nonneg _)
     _ = (‖c m‖ * ∑ i : Fin (m + 3),
-        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 2 := by
+        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (2 : ℕ) := by
       ring
 
 theorem tendsto_iteratedDeriv_two_complexScalarUnitizedDeterminant_zero
@@ -646,7 +646,7 @@ theorem iteratedDeriv_three_normalizedXiC_zero :
 
 /-- **Cofinal complex-scalar unitization third-jet no-go.** No complex scale sequence can make
 the complete coefficient-faithful holomorphic SC reservoir converge compact-open to normalized
-centered Xi. The exact third central jet is `12 c_m^3 e₃(q)`; divergence and boundedness of the
+centered Xi. The exact third central jet is `12 c_m^(3 : ℕ) e₃(q)`; divergence and boundedness of the
 positive prime neutral jets force `‖c_m‖ ∑q_i → 0`, which collapses the exact quadratic jet and
 contradicts normalized Xi curvature. -/
 theorem not_tendstoLocallyUniformly_normalizedXiC_of_cofinalComplexScalarUnitization

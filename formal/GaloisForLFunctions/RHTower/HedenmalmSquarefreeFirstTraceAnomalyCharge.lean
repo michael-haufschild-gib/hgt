@@ -252,7 +252,7 @@ theorem hedenmalmSquarefreeFirstTraceAnomalyMultiplicity_eq_xi
 /-- Twice squared anomaly multiplicity over the anomaly-defined source support. -/
 def hedenmalmSquarefreeFirstTraceAnomalyReflectionCharge (T : ℝ) : ℕ :=
   2 * ∑ rho ∈ (hedenmalmSquarefreeFirstTraceRightSourceZeros_finite T).toFinset,
-    (hedenmalmSquarefreeFirstTraceAnomalyMultiplicity rho) ^ 2
+    (hedenmalmSquarefreeFirstTraceAnomalyMultiplicity rho) ^ (2 : ℕ)
 
 /-- The first-trace anomaly charge is coefficient-exact canonical reflection self-intersection. -/
 theorem hedenmalmSquarefreeFirstTraceAnomalyReflectionCharge_eq (T : ℝ) :

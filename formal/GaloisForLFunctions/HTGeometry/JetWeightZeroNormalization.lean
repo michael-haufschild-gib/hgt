@@ -23,7 +23,7 @@ theorem two_pow_sub_one_ne_zero {M : ℕ} (hM : 1 ≤ M) : ((2 : C) ^ M - 1) ≠
   have h1 : (2 : C) ^ M = 1 := by linear_combination hh
   have hnat : ((2 ^ M : ℕ) : C) = ((1 : ℕ) : C) := by push_cast; exact h1
   have := Nat.cast_injective (R := C) hnat
-  have h2 : (2 : ℕ) ^ M = 2 ^ 0 := by simpa using this
+  have h2 : (2 : ℕ) ^ M = 2 ^ (0 : ℕ) := by simpa using this
   exact absurd (Nat.pow_right_injective (le_refl 2) h2) (by omega)
 
 /-- **The weight-zero shift can be normalized to be torus-invariant.** -/

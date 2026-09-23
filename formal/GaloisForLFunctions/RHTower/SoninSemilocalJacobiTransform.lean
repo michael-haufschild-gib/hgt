@@ -273,7 +273,7 @@ theorem semilocalArchimedeanJacobiPolynomial_two_recurrence (s : ℝ) :
     semilocalArchimedeanJacobiCoefficient 0 *
         semilocalArchimedeanJacobiCoefficient 1 *
           (semilocalArchimedeanJacobiPolynomial 2).eval s =
-      s ^ 2 - semilocalArchimedeanJacobiCoefficient 0 ^ 2 := by
+      s ^ (2 : ℕ) - semilocalArchimedeanJacobiCoefficient 0 ^ (2 : ℕ) := by
   have hrec := semilocalArchimedeanJacobiPolynomial_eval_recurrence 0 s
   rw [semilocalArchimedeanJacobiPolynomial_eval_zero,
     semilocalArchimedeanJacobiPolynomial_eval_one] at hrec

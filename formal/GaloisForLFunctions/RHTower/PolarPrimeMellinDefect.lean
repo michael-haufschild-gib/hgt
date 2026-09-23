@@ -516,7 +516,7 @@ private theorem resolvedVonMangoldtPrimeLaplaceGram_eq
 /-- **Resolved Euler Gram positivity.** Every finite positive-node packet of the actual von
 Mangoldt channel is positive semidefinite.  The proof retains the unsquared arithmetic weight:
 the quadratic form is the convergent prime-power sum
-`sum_n LSeries.term Lambda 1 n * |sum_i c_i n^(-x_i)|^2`. -/
+`sum_n LSeries.term Lambda 1 n * |sum_i c_i n^(-x_i)|^(2 : ℕ)`. -/
 theorem vonMangoldtPrimeLaplaceGram_posSemidef
     {N : ℕ} (x : Fin N → ℝ) (hx : ∀ i, 0 < x i) :
     (vonMangoldtPrimeLaplaceGram x).PosSemidef := by

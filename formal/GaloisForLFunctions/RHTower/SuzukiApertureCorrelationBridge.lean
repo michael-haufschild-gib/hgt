@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.SuzukiEquationTwoFour
 /-!
 # Compact-aperture double-integral/correlation bridge
 
-Suzuki repeatedly passes from a double integral on `(-a,a)^2` to a one-variable correlation on
+Suzuki repeatedly passes from a double integral on `(-a,a)^(2 : ℕ)` to a one-variable correlation on
 the difference interval `(-2a,2a)`. This module proves that passage once for every continuous
 kernel and every continuous function supported in a strictly smaller compact aperture. Strict
 interior support is the source-locked smooth core used for the distributional calculations; no

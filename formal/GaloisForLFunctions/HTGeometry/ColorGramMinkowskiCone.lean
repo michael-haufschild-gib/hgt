@@ -78,8 +78,8 @@ def colorMinorEnergy (X : ColorEventMatrix) : ℝ :=
 
 /-- Lorentz quadratic form of the four Gram coordinates. -/
 def colorGramLorentzMassSq (X : ColorEventMatrix) : ℝ :=
-  colorGramTime X ^ 2 - colorGramX X ^ 2 -
-    colorGramY X ^ 2 - colorGramZ X ^ 2
+  colorGramTime X ^ (2 : ℕ) - colorGramX X ^ (2 : ℕ) -
+    colorGramY X ^ (2 : ℕ) - colorGramZ X ^ (2 : ℕ)
 
 /-- The first diagonal Gram entry is the squared norm of the first column. -/
 theorem colorGramMatrix_apply_zero_zero (X : ColorEventMatrix) :

@@ -54,13 +54,13 @@ theorem branch_coefficient_relations (R : RatFunc C) (hR : substitutionDeriv R �
         (substitutionAffine R (show (1 : ℕ) ≤ N + 2 by omega)) u
       = Polynomial.C (substitutionDerivPrefix R (show (1 : ℕ) ≤ N + 2 by omega)) * u
         - (Polynomial.C A * Polynomial.X + Polynomial.C B)) :
-    jetSubstitution R hR (u.coeff 2 : JetField C Unit) * substitutionDeriv R ^ 2
+    jetSubstitution R hR (u.coeff 2 : JetField C Unit) * substitutionDeriv R ^ (2 : ℕ)
         = substitutionDeriv R * (u.coeff 2 : JetField C Unit)
       ∧ jetSubstitution R hR (u.coeff 2 : JetField C Unit)
             * (2 * substitutionDeriv R * substitutionShift R (N + 2))
           + jetSubstitution R hR (u.coeff 1 : JetField C Unit) * substitutionDeriv R
         = substitutionDeriv R * (u.coeff 1 : JetField C Unit) - (A : JetField C Unit)
-      ∧ jetSubstitution R hR (u.coeff 2 : JetField C Unit) * substitutionShift R (N + 2) ^ 2
+      ∧ jetSubstitution R hR (u.coeff 2 : JetField C Unit) * substitutionShift R (N + 2) ^ (2 : ℕ)
             + jetSubstitution R hR (u.coeff 1 : JetField C Unit) * substitutionShift R (N + 2)
           + jetSubstitution R hR (u.coeff 0 : JetField C Unit)
         = substitutionDeriv R * (u.coeff 0 : JetField C Unit) - (B : JetField C Unit) := by
@@ -123,7 +123,7 @@ theorem branch_linear_above_three (R : RatFunc C) (hR : substitutionDeriv R ≠ 
   obtain ⟨e, he⟩ := exists_const_of_scaling_eigen_of_order R hR (by omega) hfix
     (n := N + 1) (by omega) (hord (u.coeff 2)) hE2
   have hσ2 : substitutionShift R 2
-      = ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := substitutionShift_two R
+      = ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := substitutionShift_two R
   have hdouble : jetSubstitution R hR (u.coeff 1 : JetField C Unit) * ρ
         * (JetField.jet ((), 1) : JetField C Unit)
       = ρ * (u.coeff 1 : JetField C Unit) * (JetField.jet ((), 1) : JetField C Unit)

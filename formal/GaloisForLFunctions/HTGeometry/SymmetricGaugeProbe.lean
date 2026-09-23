@@ -104,14 +104,14 @@ theorem symProbe_jet_apply (Hp : Polynomial ℂ) (m N D : ℕ) (ν : X → ℂ) 
     (symProbe X Hp m N D).jet ν c x k
       = (Polynomial.derivative^[(k : ℕ)] (Hp * avgPoly (windowLin N D c))).eval (ν x) := by
   rw [congrFun ((symProbe X Hp m N D).jet_eq ν c x) k, gaugeJetVec,
-    iteratedDeriv_polynomial_eval, symProbe_poly]
+    iteratedDeriv_polynomial_eval_gaugeCarrierJets, symProbe_poly]
 
 theorem windowProbe_jet_apply' (m N D : ℕ) {Y : Type*} [Fintype Y] (μ : Y → ℂ)
     (c : Fin D → ℂ) (y : Y) (k : Fin m) :
     (windowProbe Y m N D).jet μ c y k
       = (Polynomial.derivative^[(k : ℕ)] (windowLin N D c)).eval (μ y) := by
   rw [congrFun ((windowProbe Y m N D).jet_eq μ c y) k, gaugeJetVec,
-    iteratedDeriv_polynomial_eval, windowProbe_poly]
+    iteratedDeriv_polynomial_eval_gaugeCarrierJets, windowProbe_poly]
 
 /-- **The constrained symmetric probe is onto the jets at a free orbit.** -/
 theorem surjective_symProbe_jet [DecidableEq X] (Hp : Polynomial ℂ) (m N : ℕ) {ν : X → ℂ}
@@ -194,12 +194,12 @@ theorem surjective_symProbe_jet [DecidableEq X] (Hp : Polynomial ℂ) (m N : ℕ
     have hd : (Polynomial.derivative^[(k : ℕ)] (Hp * avgPoly Q)).eval (ν x)
         = iteratedDeriv (k : ℕ) (fun w => Polynomial.eval w Hp * Polynomial.eval w (avgPoly Q))
           (ν x) := by
-      rw [← hfun, iteratedDeriv_polynomial_eval]
+      rw [← hfun, iteratedDeriv_polynomial_eval_gaugeCarrierJets]
     rw [hd, iteratedDeriv_mul_eq_leibnizJetMatrix m
       (contDiffAt_of_entire (Polynomial.differentiable Hp) m (ν x))
       (contDiffAt_of_entire (Polynomial.differentiable (avgPoly Q)) m (ν x)) k]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [iteratedDeriv_polynomial_eval, havg x j]
+    rw [iteratedDeriv_polynomial_eval_gaugeCarrierJets, havg x j]
   funext k
   rw [hleib k]
   have hval := congrFun (congrFun hβ x) k

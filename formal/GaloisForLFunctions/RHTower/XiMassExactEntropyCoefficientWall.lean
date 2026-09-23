@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.XiMassEntropyScaleZeroFreeMarginBudget
 /-!
 # Exact entropy-coefficient wall for the Xi mass budget
 
-At residual fraction `q * log(3A+9)^10 / A`, zero-count entropy and zero-free phase decay
+At residual fraction `q * log(3A+9)^(10 : ℕ) / A`, zero-count entropy and zero-free phase decay
 occupy the same logarithmic scale.  This module proves the exact phase transition of the absolute
 widened-corona envelope: it vanishes above coefficient one and diverges at or below coefficient
 one.  Above the wall, the complete literal Euler/Gamma source vanishes along an explicit genuinely

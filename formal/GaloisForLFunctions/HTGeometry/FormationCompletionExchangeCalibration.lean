@@ -20,11 +20,11 @@ open Filter Topology
 /-! ## Compactness is load-bearing -/
 
 /-- The noncompact witness formation. -/
-noncomputable def noncompactCalibrationFormation : Unit → ℝ → ℝ := fun _ x => 1 / (1 + x ^ 2)
+noncomputable def noncompactCalibrationFormation : Unit → ℝ → ℝ := fun _ x => 1 / (1 + x ^ (2 : ℕ))
 
 theorem tendsto_noncompactCalibrationFormation :
     Tendsto (fun n : ℕ => noncompactCalibrationFormation () ((n : ℝ) + 1)) atTop (𝓝 0) := by
-  have hden : Tendsto (fun n : ℕ => 1 + ((n : ℝ) + 1) ^ 2) atTop atTop := by
+  have hden : Tendsto (fun n : ℕ => 1 + ((n : ℝ) + 1) ^ (2 : ℕ)) atTop atTop := by
     refine tendsto_atTop_mono (fun n => ?_) tendsto_natCast_atTop_atTop
     have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     nlinarith
@@ -52,8 +52,8 @@ theorem noncompactCalibration_notMem :
   · rcases rest with _ | ⟨v, rest2⟩
     · obtain ⟨x, hx, hval⟩ := hw
       simp only [Set.mem_Ici] at hx
-      have hpos : (0 : ℝ) < 1 / (1 + x ^ 2) := by positivity
-      have hval' : (1 : ℝ) / (1 + x ^ 2) = 0 := hval
+      have hpos : (0 : ℝ) < 1 / (1 + x ^ (2 : ℕ)) := by positivity
+      have hval' : (1 : ℝ) / (1 + x ^ (2 : ℕ)) = 0 := hval
       linarith [hval' ▸ hpos]
     · simp at hlen
 

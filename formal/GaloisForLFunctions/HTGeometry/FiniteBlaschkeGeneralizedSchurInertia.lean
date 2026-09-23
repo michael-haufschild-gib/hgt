@@ -23,7 +23,7 @@ def HasExactNegativeIndex (q : H → ℝ) (n : ℕ) : Prop :=
 /-- Adjoint defect of a contraction after subtracting an orthogonal model-space projection. -/
 def projectedAdjointDefectForm (K : Submodule ℂ H) [K.HasOrthogonalProjection]
     (C : H →L[ℂ] H) (x : H) : ℝ :=
-  ‖x‖ ^ 2 - ‖ContinuousLinearMap.adjoint C x‖ ^ 2 - ‖K.starProjection x‖ ^ 2
+  ‖x‖ ^ (2 : ℕ) - ‖ContinuousLinearMap.adjoint C x‖ ^ (2 : ℕ) - ‖K.starProjection x‖ ^ (2 : ℕ)
 
 lemma adjoint_norm_le_self_of_opNorm_le_one (C : H →L[ℂ] H) (hC : ‖C‖ ≤ 1) (x : H) :
     ‖ContinuousLinearMap.adjoint C x‖ ≤ ‖x‖ := by
@@ -55,7 +55,7 @@ theorem finrank_negativeSubspace_projectedAdjointDefect_le
         intro hzero
         exact hsub0 (Subtype.ext hzero)
       have hneg := hW (((x - y : W) : H)) (x - y).property hambient
-      have hprojzero : ‖K.starProjection (((x - y : W) : H))‖ ^ 2 = 0 := by
+      have hprojzero : ‖K.starProjection (((x - y : W) : H))‖ ^ (2 : ℕ) = 0 := by
         rw [hstar, norm_zero]
         norm_num
       rw [projectedAdjointDefectForm, hprojzero, sub_zero] at hneg
@@ -131,7 +131,7 @@ def finiteBlaschkeGeneralizedSchurForm (F : DiskMultiplier) (B : FiniteBlaschke)
 lemma norm_hardyMul_le (F : DiskMultiplier) : ‖hardyMul F‖ ≤ F.bd := by
   apply ContinuousLinearMap.opNorm_le_bound _ F.bd_nonneg
   intro x
-  have hnorm : ‖hardyMul F x‖ ^ 2 ≤ (F.bd * ‖x‖) ^ 2 := by
+  have hnorm : ‖hardyMul F x‖ ^ (2 : ℕ) ≤ (F.bd * ‖x‖) ^ (2 : ℕ) := by
     rw [hardyDisk_norm_sq, mul_pow]
     exact (hardyMulCoeff_bound F x).2
   have h1 : 0 ≤ ‖hardyMul F x‖ := norm_nonneg _

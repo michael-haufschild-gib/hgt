@@ -32,8 +32,8 @@ theorem unitRieszSqrtPrefixMass_upper (m : ℕ) :
   | succ m ih =>
       have ha : (0 : ℝ) ≤ Real.sqrt ((m : ℝ) + 1) := Real.sqrt_nonneg _
       have hb : (0 : ℝ) ≤ Real.sqrt ((m : ℝ) + 2) := Real.sqrt_nonneg _
-      have hasq : Real.sqrt ((m : ℝ) + 1) ^ 2 = (m : ℝ) + 1 := Real.sq_sqrt (by positivity)
-      have hbsq : Real.sqrt ((m : ℝ) + 2) ^ 2 = (m : ℝ) + 2 := Real.sq_sqrt (by positivity)
+      have hasq : Real.sqrt ((m : ℝ) + 1) ^ (2 : ℕ) = (m : ℝ) + 1 := Real.sq_sqrt (by positivity)
+      have hbsq : Real.sqrt ((m : ℝ) + 2) ^ (2 : ℕ) = (m : ℝ) + 2 := Real.sq_sqrt (by positivity)
       have hmnn : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
       have ha1 : (1 : ℝ) ≤ Real.sqrt ((m : ℝ) + 1) := by nlinarith [hasq, ha, hmnn]
       have hab : Real.sqrt ((m : ℝ) + 1) ≤ Real.sqrt ((m : ℝ) + 2) := by
@@ -105,13 +105,13 @@ theorem unitRieszLogProfile_ge {v : ℝ} (hv : 0 ≤ v) :
   have hx1 : (1 : ℝ) ≤ Real.exp v := Real.one_le_exp hv
   have hx : (0 : ℝ) < Real.exp v := Real.exp_pos v
   have hsx : (0 : ℝ) < Real.sqrt (Real.exp v) := Real.sqrt_pos.mpr hx
-  have hsxsq : Real.sqrt (Real.exp v) ^ 2 = Real.exp v := Real.sq_sqrt hx.le
+  have hsxsq : Real.sqrt (Real.exp v) ^ (2 : ℕ) = Real.exp v := Real.sq_sqrt hx.le
   have hsx1 : (1 : ℝ) ≤ Real.sqrt (Real.exp v) := by nlinarith [hsxsq, hsx, hx1]
   have hmle : ((⌊Real.exp v⌋₊ : ℕ) : ℝ) ≤ Real.exp v := Nat.floor_le hx.le
   have hltm : Real.exp v < ((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1 := Nat.lt_floor_add_one _
   have hupper := unitRieszSqrtPrefixMass_upper ⌊Real.exp v⌋₊
   have hsnn : (0 : ℝ) ≤ Real.sqrt (((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1) := Real.sqrt_nonneg _
-  have hssq : Real.sqrt (((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1) ^ 2 = ((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1 :=
+  have hssq : Real.sqrt (((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1) ^ (2 : ℕ) = ((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1 :=
     Real.sq_sqrt (by positivity)
   -- `sqrt (m+1) ≤ sqrt x + 1`
   have hs1 : Real.sqrt (((⌊Real.exp v⌋₊ : ℕ) : ℝ) + 1) ≤ Real.sqrt (Real.exp v) + 1 := by

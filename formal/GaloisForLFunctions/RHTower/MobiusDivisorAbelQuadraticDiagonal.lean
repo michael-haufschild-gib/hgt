@@ -7,8 +7,8 @@ import GaloisForLFunctions.RHTower.PrimeMassLowerBound
 
 The symmetric divisor hyperbola is summed in signed time before taking channel
 squares. Exact complete/terminal dilation transport gives
-`C_d(M)^2 <= 361 M sqrt(floor((M-1)/d))`, hence
-`sum_(d<=M) C_d(M)^2 <= 722 M^2`.
+`C_d(M)^(2 : ℕ) <= 361 M sqrt(floor((M-1)/d))`, hence
+`sum_(d<=M) C_d(M)^(2 : ℕ) <= 722 M^(2 : ℕ)`.
 
 This removes the harmonic loss of the pointwise divisor envelope. The signed
 cross-channel contribution is not bounded by this theorem, and no RH conclusion
@@ -136,7 +136,7 @@ private theorem abs_divisorDilation_terminal_le {M d Q : ℕ}
 
 /-- Every literal dilation square is controlled by the square root of its quotient depth. -/
 theorem mobiusDivisorDilationChannel_sq_le_quotient {M d : ℕ} (hd : 1 ≤ d) :
-    mobiusDivisorDilationChannel M d ^ 2 ≤
+    mobiusDivisorDilationChannel M d ^ (2 : ℕ) ≤
       361 * (M : ℝ) * Real.sqrt ((M-1)/d : ℕ) := by
   by_cases hdM : d ≤ M-1
   · let Q := (M-1)/d
@@ -179,11 +179,11 @@ theorem mobiusDivisorDilationChannel_sq_le_quotient {M d : ℕ} (hd : 1 ≤ d) :
     have hbound : |mobiusDivisorDilationChannel M d| ≤
         19 * Real.sqrt d * Real.sqrt Q * Real.sqrt (Real.sqrt Q) := by
       nlinarith only [hraw,hsmall]
-    have hsq : mobiusDivisorDilationChannel M d ^ 2 ≤
+    have hsq : mobiusDivisorDilationChannel M d ^ (2 : ℕ) ≤
         361 * (d:ℝ) * Q * Real.sqrt Q := by
       calc
-        _ = |mobiusDivisorDilationChannel M d| ^ 2 := (sq_abs _).symm
-        _ ≤ (19 * Real.sqrt d * Real.sqrt Q * Real.sqrt (Real.sqrt Q))^2 := by gcongr
+        _ = |mobiusDivisorDilationChannel M d| ^ (2 : ℕ) := (sq_abs _).symm
+        _ ≤ (19 * Real.sqrt d * Real.sqrt Q * Real.sqrt (Real.sqrt Q))^(2 : ℕ) := by gcongr
         _ = _ := by
           simp only [mul_pow,Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) d),
             Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) Q),Real.sq_sqrt (Real.sqrt_nonneg (Q:ℝ))]
@@ -198,9 +198,9 @@ theorem mobiusDivisorDilationChannel_sq_le_quotient {M d : ℕ} (hd : 1 ≤ d) :
 /-- The complete literal arithmetic diagonal has a quadratic ceiling with no harmonic loss.
 Signed time cancellation is taken inside each channel before the channel squares are summed. -/
 theorem sum_mobiusDivisorDilationChannel_sq_le_quadratic (M : ℕ) :
-    (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ 2) ≤ 722 * (M:ℝ)^2 := by
+    (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ (2 : ℕ)) ≤ 722 * (M:ℝ)^(2 : ℕ) := by
   have hpoint (d : ℕ) (hd : d ∈ Icc 1 M) :
-      mobiusDivisorDilationChannel M d ^ 2 ≤
+      mobiusDivisorDilationChannel M d ^ (2 : ℕ) ≤
         (361 * (M:ℝ) * Real.sqrt M) * (1 / Real.sqrt d) := by
     have hd1 := (mem_Icc.mp hd).1
     have hdroot : 0 < Real.sqrt d := by positivity

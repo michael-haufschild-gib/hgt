@@ -117,7 +117,7 @@ theorem exists_bound_zetaLogDerivReg_littlewood_depth :
     ∃ c C L₀ : ℝ, 0 < c ∧ 0 < C ∧ Real.exp 1 ≤ L₀ ∧
       ∀ (s : ℂ) (K : ℝ), L₀ ≤ Real.log K → |s.im| ≤ K →
         1 - c * Real.log (Real.log K) / Real.log K ≤ s.re → s.re ≤ 9 / 8 →
-        ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ 2 / Real.log (Real.log K) := by
+        ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ (2 : ℕ) / Real.log (Real.log K) := by
   obtain ⟨c₁, C₁, T₁, hc₁0, hC₁0, hT₁0, hbound⟩ := exists_logDeriv_zeta_bound_littlewood
   obtain ⟨δ, hδ0, M₀, hM₀0, hbox⟩ :=
     exists_bound_zetaLogDerivReg_box 2 (max T₁ 16) (by norm_num)
@@ -136,7 +136,7 @@ theorem exists_bound_zetaLogDerivReg_littlewood_depth :
     rwa [Real.log_exp] at h
   have hLL0 : (0 : ℝ) < Real.log (Real.log K) := by linarith
   have hR0 : (0 : ℝ) ≤ Real.log (Real.log K) / Real.log K := by positivity
-  have hLsq : (1 : ℝ) ≤ Real.log K ^ 2 / Real.log (Real.log K) := by
+  have hLsq : (1 : ℝ) ≤ Real.log K ^ (2 : ℕ) / Real.log (Real.log K) := by
     rw [le_div_iff₀ hLL0]
     nlinarith [hL1, hLL1, Real.log_le_sub_one_of_pos hL0]
   rcases le_or_gt (max T₁ 16) |s.im| with hbig | hsmall
@@ -172,7 +172,7 @@ theorem exists_bound_zetaLogDerivReg_littlewood_depth :
     have hsplit : s = ((s.re : ℝ) : ℂ) + ((s.im : ℝ) : ℂ) * Complex.I :=
       (Complex.re_add_im s).symm
     have hres : ‖logDeriv riemannZeta s‖
-        ≤ C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|) := by
+        ≤ C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|) := by
       have h := hbound s.re s.im hT₁im hwide hhi
       rwa [← hsplit] at h
     have hs1 : s ≠ 1 := by
@@ -202,21 +202,21 @@ theorem exists_bound_zetaLogDerivReg_littlewood_depth :
       calc ‖-(logDeriv riemannZeta s) - (s - 1)⁻¹‖
           ≤ ‖-(logDeriv riemannZeta s)‖ + ‖(s - 1)⁻¹‖ := norm_sub_le _ _
         _ = ‖logDeriv riemannZeta s‖ + ‖(s - 1)⁻¹‖ := by rw [norm_neg]
-    have hmono : Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-        ≤ Real.log K ^ 2 / Real.log (Real.log K) :=
+    have hmono : Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+        ≤ Real.log K ^ (2 : ℕ) / Real.log (Real.log K) :=
       sq_div_log_mono hloglog1 (by linarith) hlt
-    have hCmono : C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-        ≤ C₁ * (Real.log K ^ 2 / Real.log (Real.log K)) := by
+    have hCmono : C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+        ≤ C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by
       have hstep := mul_le_mul_of_nonneg_left hmono hC₁0.le
-      have heq : C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-          = C₁ * (Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)) := by ring
+      have heq : C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+          = C₁ * (Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)) := by ring
       linarith [hstep, heq.le, heq.ge]
     have hfinal : ‖zetaLogDerivReg s‖
-        ≤ C₁ * (Real.log K ^ 2 / Real.log (Real.log K)) + 1 / 4 := by
+        ≤ C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) + 1 / 4 := by
       linarith [hreg, hres, hpole, hCmono]
-    have hexp : (C₁ + M₀ + 1) * Real.log K ^ 2 / Real.log (Real.log K)
-        = C₁ * (Real.log K ^ 2 / Real.log (Real.log K))
-          + (M₀ + 1) * (Real.log K ^ 2 / Real.log (Real.log K)) := by
+    have hexp : (C₁ + M₀ + 1) * Real.log K ^ (2 : ℕ) / Real.log (Real.log K)
+        = C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K))
+          + (M₀ + 1) * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by
       field_simp
       ring
     nlinarith [hfinal, hexp.le, hexp.ge, hLsq, hM₀0]
@@ -229,8 +229,8 @@ theorem exists_bound_zetaLogDerivReg_littlewood_depth :
       rw [mul_div_assoc]
       linarith
     have hres := hbox s (by linarith) (by linarith) (le_of_lt hsmall)
-    have hexp : (C₁ + M₀ + 1) * Real.log K ^ 2 / Real.log (Real.log K)
-        = (C₁ + M₀ + 1) * (Real.log K ^ 2 / Real.log (Real.log K)) := by ring
+    have hexp : (C₁ + M₀ + 1) * Real.log K ^ (2 : ℕ) / Real.log (Real.log K)
+        = (C₁ + M₀ + 1) * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by ring
     nlinarith [hres, hLsq, hC₁0, hM₀0, hexp.le, hexp.ge]
 
 end RHTower.Sieve

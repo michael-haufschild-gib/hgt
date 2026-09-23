@@ -68,9 +68,9 @@ definite along the square-mass ray. -/
 theorem xiShiftedMomentHankelMatrix_squareParam_posDef_eventually_forall_size_le
     (d : ℕ) :
     ∀ᶠ w : ℝ in atTop, ∀ n ≤ d,
-      (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef := by
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef := by
   have hstep : ∀ n ∈ Finset.Iic d, ∀ᶠ w : ℝ in atTop,
-      (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef :=
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef :=
     fun n _ => xiShiftedMomentHankelMatrix_squareParam_posDef_eventually n
   filter_upwards [(eventually_all_finset (Finset.Iic d)).mpr hstep] with w hw
   intro n hn
@@ -81,13 +81,13 @@ nonnegative mass, yet for every fixed size bound all failing blocks eventually l
 theorem xiShiftedHankelDefectDegree_escapes_atTop_of_not_riemannHypothesis
     (hnot : ¬ RiemannHypothesis) (d : ℕ) :
     ∀ᶠ w : ℝ in atTop, ∃ n : ℕ, d < n ∧
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2) n).PosSemidef := by
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosSemidef := by
   filter_upwards
       [xiShiftedMomentHankelMatrix_squareParam_posDef_eventually_forall_size_le d]
       with w hfixed
-  have hy : 0 ≤ w ^ 2 := sq_nonneg w
+  have hy : 0 ≤ w ^ (2 : ℕ) := sq_nonneg w
   have hfail : ∃ n : ℕ,
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2) n).PosSemidef := by
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosSemidef := by
     by_contra hnone
     push Not at hnone
     exact hnot

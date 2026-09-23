@@ -53,7 +53,7 @@ private theorem nthPrimeIndexWeight_le_height (e n : ℕ) :
       (nthPrimeSubtype_index_add_two_le n))
   have hp1 : (1 : ℝ) ≤ (nthPrimeSubtype n : ℝ) := by
     exact_mod_cast (nthPrimeSubtype n).2.one_le
-  have hpow : (nthPrimeSubtype n : ℝ) ^ 1 ≤
+  have hpow : (nthPrimeSubtype n : ℝ) ^ (1 : ℕ) ≤
       (nthPrimeSubtype n : ℝ) ^ (e + 1) :=
     pow_le_pow_right₀ hp1 (by omega)
   exact hindex.trans (by simpa using hpow)
@@ -64,7 +64,7 @@ theorem summable_gammaValuationNthPrimeCoord_indexWeight
     Summable (fun n : ℕ =>
       (n + 1 : ℝ) * ‖gammaValuationNthPrimeCoord e a n‖) := by
   have hbase : Summable (fun n : ℕ =>
-      deningerHeight (gammaValuationNthPrimeAxis e n) ^ 1 *
+      deningerHeight (gammaValuationNthPrimeAxis e n) ^ (1 : ℕ) *
         ‖gammaValuationNthPrimeCoord e a n‖) :=
     (deningerHeightSeminorm_summable a 1).comp_injective
       (gammaValuationNthPrimeAxis_injective e)

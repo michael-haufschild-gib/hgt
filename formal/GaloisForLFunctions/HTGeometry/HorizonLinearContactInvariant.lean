@@ -119,20 +119,20 @@ theorem linearContactPlane_of_commute
 
 /-- A subspace of the second exterior power is contact-only for a horizon when every independent
 pair whose wedge lies in it spans a linear-contact plane. -/
-def ContactOnlySubspace (H : Set V) (U : Submodule K (⋀[K]^2 V)) : Prop :=
+def ContactOnlySubspace (H : Set V) (U : Submodule K (⋀[K]^(2 : ℕ) V)) : Prop :=
   ∀ v w : V, LinearIndependent K ![v, w] →
     exteriorPower.ιMulti K 2 ![v, w] ∈ U → LinearContactPlane (K := K) H v w
 
 /-- The horizon contact-kernel dimension `κ(X)`: the largest dimension of a contact-only
 exterior subspace. -/
 def horizonContactKernelDim [FiniteDimensional K V] (H : Set V) : ℕ :=
-  sSup {n : ℕ | ∃ U : Submodule K (⋀[K]^2 V),
+  sSup {n : ℕ | ∃ U : Submodule K (⋀[K]^(2 : ℕ) V),
     ContactOnlySubspace (K := K) H U ∧ Module.finrank K U = n}
 
 /-- The horizon commutator index `χ_HT(X)`: the codimension of the largest contact-only exterior
 subspace. -/
 def horizonCommutatorIndex [FiniteDimensional K V] (H : Set V) : ℕ :=
-  Module.finrank K (⋀[K]^2 V) - horizonContactKernelDim (K := K) H
+  Module.finrank K (⋀[K]^(2 : ℕ) V) - horizonContactKernelDim (K := K) H
 
 /-- The kernel of the commutator symbol is contact-only for the exact dependence horizon. -/
 theorem contactOnlySubspace_ker_derivationCommutatorMap
@@ -152,10 +152,10 @@ theorem horizonCommutatorIndex_le_finrank_derivationCommutatorMap_range
     [FiniteDimensional K V] (ρ : V →ₗ[K] Derivation K L L) (x : L) :
     horizonCommutatorIndex (K := K) (linearDerivationDependenceHorizon ρ x) ≤
       Module.finrank K (derivationCommutatorMap ρ).range := by
-  have hbdd : BddAbove {n : ℕ | ∃ U : Submodule K (⋀[K]^2 V),
+  have hbdd : BddAbove {n : ℕ | ∃ U : Submodule K (⋀[K]^(2 : ℕ) V),
       ContactOnlySubspace (K := K) (linearDerivationDependenceHorizon ρ x) U ∧
       Module.finrank K U = n} := by
-    refine ⟨Module.finrank K (⋀[K]^2 V), ?_⟩
+    refine ⟨Module.finrank K (⋀[K]^(2 : ℕ) V), ?_⟩
     rintro n ⟨U, _, rfl⟩
     exact Submodule.finrank_le U
   have hκ : Module.finrank K (derivationCommutatorMap ρ).ker ≤
@@ -194,21 +194,21 @@ theorem linearContactPlane_of_submodule (W : Submodule K V) (v w : V) :
 omit [Field L] [Algebra K L] [CharZero K] in
 /-- The full exterior power is contact-only for a linear-subspace horizon. -/
 theorem contactOnlySubspace_top_of_submodule (W : Submodule K V) :
-    ContactOnlySubspace (K := K) (W : Set V) (⊤ : Submodule K (⋀[K]^2 V)) :=
+    ContactOnlySubspace (K := K) (W : Set V) (⊤ : Submodule K (⋀[K]^(2 : ℕ) V)) :=
   fun v w _ _ ↦ linearContactPlane_of_submodule W v w
 
 omit [Field L] [Algebra K L] [CharZero K] in
 /-- Linear-subspace horizons have maximal contact-kernel dimension. -/
 theorem horizonContactKernelDim_of_submodule [FiniteDimensional K V] (W : Submodule K V) :
-    horizonContactKernelDim (K := K) (W : Set V) = Module.finrank K (⋀[K]^2 V) := by
-  have hmem : Module.finrank K (⋀[K]^2 V) ∈ {n : ℕ | ∃ U : Submodule K (⋀[K]^2 V),
+    horizonContactKernelDim (K := K) (W : Set V) = Module.finrank K (⋀[K]^(2 : ℕ) V) := by
+  have hmem : Module.finrank K (⋀[K]^(2 : ℕ) V) ∈ {n : ℕ | ∃ U : Submodule K (⋀[K]^(2 : ℕ) V),
       ContactOnlySubspace (K := K) (W : Set V) U ∧ Module.finrank K U = n} :=
     ⟨⊤, contactOnlySubspace_top_of_submodule W, finrank_top K _⟩
   apply le_antisymm
   · apply csSup_le ⟨_, hmem⟩
     rintro n ⟨U, _, rfl⟩
     exact Submodule.finrank_le U
-  · refine le_csSup ⟨Module.finrank K (⋀[K]^2 V), ?_⟩ hmem
+  · refine le_csSup ⟨Module.finrank K (⋀[K]^(2 : ℕ) V), ?_⟩ hmem
     rintro n ⟨U, _, rfl⟩
     exact Submodule.finrank_le U
 
@@ -226,7 +226,7 @@ theorem derivationCommutatorMap_eq_zero_of_forall_commute
     (ρ : V →ₗ[K] Derivation K L L)
     (hcomm : ∀ v w : V, Function.Commute (ρ v) (ρ w)) :
     derivationCommutatorMap ρ = 0 := by
-  suffices h : ∀ z : ⋀[K]^2 V, derivationCommutatorMap ρ z = 0 by
+  suffices h : ∀ z : ⋀[K]^(2 : ℕ) V, derivationCommutatorMap ρ z = 0 by
     apply LinearMap.ext
     intro z
     rw [h z]

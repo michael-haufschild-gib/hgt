@@ -229,7 +229,7 @@ theorem exists_eventually_entryScalarBound_le_exp
   have hSle : 1 + ((stageSampleCount q 0 : ℕ) : ℝ) ≤ Real.exp q := by
     rw [stageSampleCount_cast]
     refine le_trans ?_ hSq
-    have hz : (q : ℝ) ^ (0 + 2) = (q : ℝ) ^ 2 := by norm_num
+    have hz : (q : ℝ) ^ (0 + 2) = (q : ℝ) ^ (2 : ℕ) := by norm_num
     rw [hz]
     nlinarith [hqpow 2]
   have hexp1 : (1 + |(d : ℝ)|) ^ (stageSampleCount q 0 * (R.n * exponentWidth R.n q)) ≤

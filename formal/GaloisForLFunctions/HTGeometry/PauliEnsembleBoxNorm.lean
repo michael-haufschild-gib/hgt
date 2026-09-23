@@ -166,13 +166,13 @@ the centre by at most `ε²/(16√m)` in operator norm. -/
 theorem norm_pauliEnsembleOp_sub_center_le (hn : 1 ≤ n) (hq : 1 ≤ q)
     (J : (Fin n → Option (Fin 3)) → ℝ) (ε : ℝ)
     (h : ∀ P, |J P - pauliEnsembleCenter n P|
-      ≤ ε ^ 2 / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ))) :
+      ≤ ε ^ (2 : ℕ) / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ))) :
     ‖pauliEnsembleOp n q J - diagCLM (zProfile n q)‖
-      ≤ pauliNormalization n q * ε ^ 2 / 16 := by
+      ≤ pauliNormalization n q * ε ^ (2 : ℕ) / 16 := by
   have hm : (0 : ℝ) < (Quantum.nonidentityPauliWeightCount n q : ℝ) := by
     exact_mod_cast Quantum.one_le_nonidentityPauliWeightCount hn hq
   have hbound := norm_pauliEnsembleOp_sub_le n q J (pauliEnsembleCenter n)
-    (ε ^ 2 / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ))) h
+    (ε ^ (2 : ℕ) / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ))) h
   rw [pauliEnsembleOp_center] at hbound
   refine hbound.trans (le_of_eq ?_)
   field_simp

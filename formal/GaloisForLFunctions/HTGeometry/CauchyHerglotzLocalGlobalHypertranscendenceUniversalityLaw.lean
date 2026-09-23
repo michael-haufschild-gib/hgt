@@ -32,7 +32,7 @@ theorem cauchyHerglotz_upperHalfPlane_globalHypertranscendence
     (hC : ¬ DifferentiallyAlgebraicOn (cauchyTransform ν) upperHalfPlane) :
     Hypertranscendental (cauchyTransform ν) ∧
       ∀ M : ℂ, Hypertranscendental
-        (fun z => z * M + (1 + z ^ 2) * cauchyTransform ν z) := by
+        (fun z => z * M + (1 + z ^ (2 : ℕ)) * cauchyTransform ν z) := by
   refine ⟨hypertranscendental_of_not_differentiallyAlgebraicOn hC, ?_⟩
   intro M
   exact hypertranscendental_of_not_differentiallyAlgebraicOn
@@ -46,7 +46,7 @@ theorem cauchyHerglotz_lowerHalfPlane_globalHypertranscendence
     (hC : ¬ DifferentiallyAlgebraicOn (cauchyTransform ν) lowerHalfPlane) :
     Hypertranscendental (cauchyTransform ν) ∧
       ∀ M : ℂ, Hypertranscendental
-        (fun z => z * M + (1 + z ^ 2) * cauchyTransform ν z) := by
+        (fun z => z * M + (1 + z ^ (2 : ℕ)) * cauchyTransform ν z) := by
   refine ⟨hypertranscendental_of_not_differentiallyAlgebraicOn hC, ?_⟩
   intro M
   exact hypertranscendental_of_not_differentiallyAlgebraicOn

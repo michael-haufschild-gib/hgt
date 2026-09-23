@@ -119,15 +119,15 @@ solution itself: the band-restricted gradient, the velocity, and the potential e
 theorem kgBandReal_energy_conserved (hV : Measurable V) (hbV0 : 0 ≤ bV)
     (hbV : ∀ a : E, |V a| ≤ bV) (R : ℝ) (x y : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFreqLowOp R (kgFieldMild (kgBandOp (kgMulOp hV hbV0 hbV) R)
-          (kgFreqInvOp (kgFreqLowOp R x)) (kgLowPassOp R y) t)‖ ^ 2
+          (kgFreqInvOp (kgFreqLowOp R x)) (kgLowPassOp R y) t)‖ ^ (2 : ℕ)
         + ‖kgFieldVel (kgBandOp (kgMulOp hV hbV0 hbV) R) (kgFreqLowOp R x)
-            (kgLowPassOp R y) t‖ ^ 2
+            (kgLowPassOp R y) t‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (kgBandOp (kgMulOp hV hbV0 hbV) R
             (kgFieldMild (kgBandOp (kgMulOp hV hbV0 hbV) R) (kgFreqInvOp (kgFreqLowOp R x))
               (kgLowPassOp R y) t))
           (kgFieldMild (kgBandOp (kgMulOp hV hbV0 hbV) R) (kgFreqInvOp (kgFreqLowOp R x))
             (kgLowPassOp R y) t))
-      = ‖kgFreqLowOp R x‖ ^ 2 + ‖kgLowPassOp R y‖ ^ 2
+      = ‖kgFreqLowOp R x‖ ^ (2 : ℕ) + ‖kgLowPassOp R y‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (kgBandOp (kgMulOp hV hbV0 hbV) R
             (kgFreqInvOp (kgFreqLowOp R x))) (kgFreqInvOp (kgFreqLowOp R x))) := by
   have hgrad := kgFieldGrad_band hbV0 (norm_kgMulOp_le hV hbV0 hbV) R x y t

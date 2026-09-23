@@ -5,10 +5,10 @@ import GaloisForLFunctions.RHTower.ThetaCuspEvenFourExtendedTail
 
 The reflected error keeps its linear and quadratic likelihood contributions.
 After balancing, their bases are eight and eighteen. At scale eighteen the
-complete error is at most `2/10^8` per entry, while the exact first-atom
+complete error is at most `2/10^(8 : ℕ)` per entry, while the exact first-atom
 reserve is at least `1/4000`. The full reserved determinant stays positive,
 and compensation preserves the same ninety-million Schur margin for every
-coefficient in `[0, 3*10^12]`. This proves the actual even-source sign on
+coefficient in `[0, 3*10^(12 : ℕ)]`. This proves the actual even-source sign on
 `x ≥ 7/8`; the inner source comparison and the global rank-seven sign remain open.
 -/
 namespace RHTower
@@ -30,7 +30,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_six_eq_profile_of_eighteen_le {x : ℝ}
       HTGeometry.firstAtomEvenTailProfile 6 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_eighteen_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/18 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -65,13 +65,13 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_twoScale
     (hq : ((2*k : ℕ) : ℝ)+6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspNativeScaledEvenJet k x-thetaCuspFirstAtomScaledEvenJet k x| /(32 : ℝ)^k ≤
       18*(8 : ℝ)^k*thetaCuspSingleAtomReflectionScale 1 x^k*regimeOneLikelihoodScale x+
-        9*(18 : ℝ)^k*thetaCuspSingleAtomReflectionScale 1 x^k*regimeOneLikelihoodScale x^2 := by
+        9*(18 : ℝ)^k*thetaCuspSingleAtomReflectionScale 1 x^k*regimeOneLikelihoodScale x^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hqpos : 0 < q := by dsimp [q, thetaCuspSingleAtomReflectionScale]; positivity
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have heq : thetaCuspNativeScaledEvenJet k x-thetaCuspFirstAtomScaledEvenJet k x =
       (-1 : ℝ)^k * ((thetaCuspNativeReflectionJet (2*k) x-thetaCuspFirstAtomReflectionJet (2*k) x) /
-        thetaCuspSourceTerm x 1^2) / q^k := by
+        thetaCuspSourceTerm x 1^(2 : ℕ)) / q^k := by
     unfold thetaCuspNativeScaledEvenJet thetaCuspFirstAtomScaledEvenJet
     dsimp [q]
     field_simp [hf.ne', hqpos.ne']
@@ -81,18 +81,18 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_twoScale
   have hb := abs_thetaCuspNativeReflectionJet_relative_error_le_effective (2*k) hx hq
   calc
     _ ≤ 18*(16*q)^(2*k)*regimeOneLikelihoodScale x+
-        9*(24*q)^(2*k)*regimeOneLikelihoodScale x^2 := hb
+        9*(24*q)^(2*k)*regimeOneLikelihoodScale x^(2 : ℕ) := hb
     _ = _ := by
       dsimp only [q]
       rw [mul_pow, mul_pow, pow_mul (16 : ℝ), pow_mul (24 : ℝ),
-        show (16 : ℝ)^2 = 8*32 by norm_num, show (24 : ℝ)^2 = 18*32 by norm_num]
+        show (16 : ℝ)^(2 : ℕ) = 8*32 by norm_num, show (24 : ℝ)^(2 : ℕ) = 18*32 by norm_num]
       simp only [mul_pow, Nat.two_mul, pow_add]
       ring
 
 /-- A rational exponential ceiling for the complete likelihood tail at scale eighteen. -/
 theorem base_scale_eighteen_le :
-    Real.exp (3*Real.pi)/399*Real.exp (-(3*(18 : ℝ))) ≤ 32/(65000000 : ℝ)^3 := by
-  have h54 : (65000000 : ℝ)^3 < Real.exp 54 := by
+    Real.exp (3*Real.pi)/399*Real.exp (-(3*(18 : ℝ))) ≤ 32/(65000000 : ℝ)^(3 : ℕ) := by
+  have h54 : (65000000 : ℝ)^(3 : ℕ) < Real.exp 54 := by
     have hp := pow_lt_pow_left₀ exp_eighteen_gt (by positivity) (by norm_num : (3 : ℕ) ≠ 0)
     rw [← Real.exp_nat_mul] at hp
     norm_num at hp ⊢
@@ -108,10 +108,10 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_of_eighteen_
     {k : ℕ} (hk : k ≤ 6) {x : ℝ}
     (hq : 18 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspNativeScaledEvenJet k x-thetaCuspFirstAtomScaledEvenJet k x| /(32 : ℝ)^k ≤
-      2/(10 : ℝ)^8 := by
+      2/(10 : ℝ)^(8 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let ε := regimeOneLikelihoodScale x
-  let B : ℝ := 18^6*32/(65000000 : ℝ)^3
+  let B : ℝ := 18^(6 : ℕ)*32/(65000000 : ℝ)^(3 : ℕ)
   have hx : 0 < x := regimeOne_pos_of_six_le (by linarith)
   have hkr : ((2*k : ℕ) : ℝ) ≤ 12 := by exact_mod_cast (by omega : 2*k ≤ 12)
   have hqe : ((2*k : ℕ) : ℝ)+6 ≤ thetaCuspSingleAtomReflectionScale 1 x := by linarith
@@ -119,22 +119,22 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_of_eighteen_
   have hq1 : 1 ≤ q := by dsimp [q]; linarith
   have he0 : 0 ≤ ε := (regimeOneLikelihoodScale_pos x).le
   have hB0 : 0 ≤ B := by dsimp [B]; positivity
-  have hq6 : q^6*ε ≤ B := by
+  have hq6 : q^(6 : ℕ)*ε ≤ B := by
     have h := pow_mul_regimeOneLikelihoodScale_le (k := 6) (A₁ := 18)
       (by norm_num) (by norm_num) hq
     calc
-      _ ≤ (18 : ℝ)^6*(Real.exp (3*Real.pi)/399*Real.exp (-(3*(18 : ℝ)))) := h
-      _ ≤ (18 : ℝ)^6*(32/(65000000 : ℝ)^3) :=
+      _ ≤ (18 : ℝ)^(6 : ℕ)*(Real.exp (3*Real.pi)/399*Real.exp (-(3*(18 : ℝ)))) := h
+      _ ≤ (18 : ℝ)^(6 : ℕ)*(32/(65000000 : ℝ)^(3 : ℕ)) :=
         mul_le_mul_of_nonneg_left base_scale_eighteen_le (by positivity)
       _ = B := by dsimp [B]; ring
   have heB : ε ≤ B := by
-    have hp : (1 : ℝ) ≤ q^6 := one_le_pow₀ hq1
+    have hp : (1 : ℝ) ≤ q^(6 : ℕ) := one_le_pow₀ hq1
     have h := mul_le_mul_of_nonneg_right hp he0
     nlinarith only [h, hq6]
-  have hq6sq : q^6*ε^2 ≤ B^2 := by
+  have hq6sq : q^(6 : ℕ)*ε^(2 : ℕ) ≤ B^(2 : ℕ) := by
     have h := mul_le_mul hq6 heB he0 hB0
     nlinarith only [h]
-  have hpq : q^k ≤ q^6 := pow_le_pow_right₀ hq1 hk
+  have hpq : q^k ≤ q^(6 : ℕ) := pow_le_pow_right₀ hq1 hk
   have hp8 := mul_le_mul (pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 8) hk)
     hpq (pow_nonneg (by linarith : 0 ≤ q) k) (by positivity)
   have hp18 := mul_le_mul (pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 18) hk)
@@ -142,25 +142,25 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_of_eighteen_
   have hs8 := mul_le_mul_of_nonneg_right hp8 he0
   have hs18 := mul_le_mul_of_nonneg_right hp18 (sq_nonneg ε)
   calc
-    _ ≤ 18*(8 : ℝ)^k*q^k*ε+9*(18 : ℝ)^k*q^k*ε^2 := hb
-    _ ≤ 18*(8 : ℝ)^6*(q^6*ε)+9*(18 : ℝ)^6*(q^6*ε^2) := by
+    _ ≤ 18*(8 : ℝ)^k*q^k*ε+9*(18 : ℝ)^k*q^k*ε^(2 : ℕ) := hb
+    _ ≤ 18*(8 : ℝ)^(6 : ℕ)*(q^(6 : ℕ)*ε)+9*(18 : ℝ)^(6 : ℕ)*(q^(6 : ℕ)*ε^(2 : ℕ)) := by
       nlinarith only [hs8, hs18]
-    _ ≤ 18*(8 : ℝ)^6*B+9*(18 : ℝ)^6*B^2 := by gcongr
-    _ ≤ 2/(10 : ℝ)^8 := by norm_num [B]
+    _ ≤ 18*(8 : ℝ)^(6 : ℕ)*B+9*(18 : ℝ)^(6 : ℕ)*B^(2 : ℕ) := by gcongr
+    _ ≤ 2/(10 : ℝ)^(8 : ℕ) := by norm_num [B]
 /-- Balancing preserves the complete-source accuracy of every entry. -/
 theorem abs_thetaCuspNativeEvenTailBalanced_sub_first_le_of_eighteen_le {x : ℝ}
     (hq : 18 ≤ thetaCuspSingleAtomReflectionScale 1 x) (k : Fin 7) :
     |thetaCuspNativeEvenTailBalanced k x-
       HTGeometry.firstAtomEvenTailBalanced k ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹)| ≤
-        2/(10 : ℝ)^8 := by
+        2/(10 : ℝ)^(8 : ℕ) := by
   have he := abs_thetaCuspNativeScaledEvenJet_sub_first_div_balancing_le_of_eighteen_le
     (by omega : k.val ≤ 6) hq
   unfold thetaCuspNativeEvenTailBalanced HTGeometry.firstAtomEvenTailBalanced
   rw [← thetaCuspFirstAtomScaledEvenJet_fin_eq_profile_of_eighteen_le hq k]
   rw [show thetaCuspNativeScaledEvenJet k.val x/(32 : ℝ)^k.val-
-      (if k.val = 6 then 100000000/(32 : ℝ)^6 else 0)-
+      (if k.val = 6 then 100000000/(32 : ℝ)^(6 : ℕ) else 0)-
       (thetaCuspFirstAtomScaledEvenJet k.val x/(32 : ℝ)^k.val-
-        (if k.val = 6 then 100000000/(32 : ℝ)^6 else 0)) =
+        (if k.val = 6 then 100000000/(32 : ℝ)^(6 : ℕ) else 0)) =
       (thetaCuspNativeScaledEvenJet k.val x-thetaCuspFirstAtomScaledEvenJet k.val x)/(32 : ℝ)^k.val by ring]
   rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < 32^k.val)]
   exact he
@@ -179,7 +179,7 @@ theorem thetaCuspNativeEvenTailBalancedDet_lower_of_eighteen_le {x : ℝ}
       (HTGeometry.firstAtomEvenTailBalanced k ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹))
     rw [sub_add_cancel] at ht
     linarith [hb k, he k]
-  have herr := hankelFourDet_error_le (M := 5) (δ := 2/(10 : ℝ)^8)
+  have herr := hankelFourDet_error_le (M := 5) (δ := 2/(10 : ℝ)^(8 : ℕ))
     (by norm_num) (by positivity) ha (fun k => (hb k).trans (by norm_num : (4 : ℝ) ≤ 5)) he
   have hd := HTGeometry.firstAtomEvenTailBalancedDet_lower_of_eighteen hu.1 hu.2
   change |thetaCuspNativeEvenTailBalancedDet x-
@@ -191,11 +191,11 @@ theorem thetaCuspNativeEvenTailBalancedDet_lower_of_eighteen_le {x : ℝ}
 theorem thetaCuspNativeEvenFourSchur_normalized_lower_of_eighteen_le {x : ℝ}
     (hq : 18 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     100000000 < thetaCuspNativeEvenFourSchur x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   have hx : 0 < x := regimeOne_pos_of_six_le (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < (32 : ℝ)^12*thetaCuspSourceTerm x 1^8*thetaCuspSingleAtomReflectionScale 1 x^12 := by positivity
+  have hd : 0 < (32 : ℝ)^(12 : ℕ)*thetaCuspSourceTerm x 1^(8 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(12 : ℕ) := by positivity
   have hhead := (thetaCuspNativeEvenHead_posDef hx.le).det_pos
   have hr := thetaCuspNativeEvenTailBalancedDet_lower_of_eighteen_le hq
   have hp : 0 < thetaCuspNativeEvenTailBalancedDet x := by linarith
@@ -204,17 +204,17 @@ theorem thetaCuspNativeEvenFourSchur_normalized_lower_of_eighteen_le {x : ℝ}
   simp only [zero_mul] at hn
   rw [thetaCuspNativeEvenFourDet_eq_head_mul_schur hx.le] at hn
   have hs : 0 < thetaCuspNativeEvenFourSchur x-
-      100000000*thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6 := by
+      100000000*thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ) := by
     apply (mul_pos_iff_of_pos_left hhead).mp
     nlinarith only [hn]
-  apply (lt_div_iff₀ (by positivity : 0 < thetaCuspSourceTerm x 1^2*
-    thetaCuspSingleAtomReflectionScale 1 x^6)).mpr
+  apply (lt_div_iff₀ (by positivity : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*
+    thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ))).mpr
   nlinarith only [hs]
 /-- Retaining four inverse-scale powers controls the complete compensation on the extended ray. -/
 theorem thetaCuspCenterCompensationSource_six_normalized_lower_of_eighteen_le {x : ℝ}
     (hq : 18 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    -(13/50 : ℝ)/18^4 ≤ thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+    -(13/50 : ℝ)/18^(4 : ℕ) ≤ thetaCuspCenterCompensationSource x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
   let F := thetaCuspFullSource x
@@ -226,26 +226,26 @@ theorem thetaCuspCenterCompensationSource_six_normalized_lower_of_eighteen_le {x
   have hb := thetaCuspFullSource_mass_slope_le_scaleSeven (by linarith : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x)
   change F ≤ (101/100)*f ∧ |d| ≤ (201/100)*q*f at hb
   have hprod := mul_le_mul hb.1 hb.2 (abs_nonneg d) (by positivity : (0 : ℝ) ≤ (101/100)*f)
-  have hprod1 : F*|d| ≤ (52/25)*q*f^2 := by
-    have hpos : 0 ≤ q*f^2 := by positivity
+  have hprod1 : F*|d| ≤ (52/25)*q*f^(2 : ℕ) := by
+    have hpos : 0 ≤ q*f^(2 : ℕ) := by positivity
     nlinarith only [hprod, hpos]
   have hprod2 := mul_le_mul_of_nonneg_left hprod1 (by positivity : (0 : ℝ) ≤ 2*x)
   have hxd := sixteen_mul_center_le_firstAtomScale hx.le
   change 16*x ≤ q at hxd
-  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ (13/50)*q*f^2)
+  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ (13/50)*q*f^(2 : ℕ))
   have hd := neg_abs_le d
   have hneg := mul_le_mul_of_nonneg_left hd (by positivity : (0 : ℝ) ≤ 2*x*F)
-  have hraw : -(13/50)*q^2*f^2 ≤ thetaCuspCenterCompensationSource x := by
-    change -(13/50)*q^2*f^2 ≤ 3*F^2+2*x*F*d
+  have hraw : -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := by
+    change -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) ≤ 3*F^(2 : ℕ)+2*x*F*d
     nlinarith only [hprod2, hscale, hneg, sq_nonneg F]
-  have hnorm : -(13/50 : ℝ)/q^4 ≤ thetaCuspCenterCompensationSource x/(f^2*q^6) := by
-    apply (le_div_iff₀ (by positivity : 0 < f^2*q^6)).mpr
+  have hnorm : -(13/50 : ℝ)/q^(4 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(6 : ℕ)) := by
+    apply (le_div_iff₀ (by positivity : 0 < f^(2 : ℕ)*q^(6 : ℕ))).mpr
     calc
-      (-(13/50 : ℝ)/q^4)*(f^2*q^6) = -(13/50)*q^2*f^2 := by field_simp
+      (-(13/50 : ℝ)/q^(4 : ℕ))*(f^(2 : ℕ)*q^(6 : ℕ)) = -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) := by field_simp
       _ ≤ thetaCuspCenterCompensationSource x := hraw
-  have hp4 : (18 : ℝ)^4 ≤ q^4 := pow_le_pow_left₀ (by norm_num) hq 4
-  have hi : (1 : ℝ)/q^4 ≤ 1/(18 : ℝ)^4 := one_div_le_one_div_of_le (by norm_num) hp4
-  change -(13/50 : ℝ)/18^4 ≤ thetaCuspCenterCompensationSource x/(f^2*q^6)
+  have hp4 : (18 : ℝ)^(4 : ℕ) ≤ q^(4 : ℕ) := pow_le_pow_left₀ (by norm_num) hq 4
+  have hi : (1 : ℝ)/q^(4 : ℕ) ≤ 1/(18 : ℝ)^(4 : ℕ) := one_div_le_one_div_of_le (by norm_num) hp4
+  change -(13/50 : ℝ)/18^(4 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(6 : ℕ))
   simp only [div_eq_mul_inv] at hi hnorm ⊢
   linarith only [hi, hnorm]
 
@@ -264,7 +264,7 @@ theorem thetaCuspNativeEvenFourCompensated_normalized_lower_of_eighteen_le {C x 
     (hC0 : 0 ≤ C) (hC1 : C ≤ 3000000000000)
     (hq : 18 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     90000000 < (thetaCuspNativeEvenFourSchur x+C*thetaCuspCenterCompensationSource x) /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   have hs := thetaCuspNativeEvenFourSchur_normalized_lower_of_eighteen_le hq
   have hg := thetaCuspCenterCompensationSource_six_normalized_lower_of_eighteen_le hq
   have hm := mul_le_mul_of_nonneg_left hg hC0
@@ -279,10 +279,10 @@ theorem thetaCuspNativeEvenFourCompensated_posDef_of_eighteen_le {C x : ℝ}
   have hx : 0 < x := regimeOne_pos_of_six_le (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6 := by positivity
+  have hd : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ) := by positivity
   have hm := thetaCuspNativeEvenFourCompensated_normalized_lower_of_eighteen_le hC0 hC1 hq
   have hp : 0 < (thetaCuspNativeEvenFourSchur x+C*thetaCuspCenterCompensationSource x) /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by linarith
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by linarith
   rw [thetaCuspNativeEvenFourCompensated_posDef_iff hx.le]
   exact (div_pos_iff_of_pos_right hd).mp hp
 

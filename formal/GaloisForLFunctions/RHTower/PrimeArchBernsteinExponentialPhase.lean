@@ -42,7 +42,7 @@ lemma bernsteinEllipsePhase_norm_eq_one {u : ℂ} (him : u.im ≠ 0) :
 from `0` and `1` is greater than one. -/
 lemma one_lt_norm_add_norm_one_sub {u : ℂ} (him : u.im ≠ 0) :
     1 < ‖u‖ + ‖1 - u‖ := by
-  have hnormSq : u.re ^ 2 < ‖u‖ ^ 2 := by
+  have hnormSq : u.re ^ (2 : ℕ) < ‖u‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     nlinarith [sq_pos_of_ne_zero him]
   have hstrict : |u.re| < ‖u‖ := by

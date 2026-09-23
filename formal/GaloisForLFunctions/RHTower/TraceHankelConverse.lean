@@ -9,7 +9,7 @@ noncomputable section
 
 /-- The real quadratic whose complex roots are `beta` and `conj beta`. -/
 def realConjQuadratic (β : ℂ) : Polynomial ℝ :=
-  X ^ 2 - C (2 * β.re) * X + C (Complex.normSq β)
+  X ^ (2 : ℕ) - C (2 * β.re) * X + C (Complex.normSq β)
 
 /-- Evaluation of a real polynomial at a complex point. -/
 def evalRealPolynomial (p : Polynomial ℝ) (z : ℂ) : ℂ :=
@@ -352,7 +352,7 @@ theorem tendsto_eval_phaseCorrectedSeparatorPolynomial_zero
 /-- Every nonreal complex number admits a complex phase whose squared weighted real part is
 strictly negative. -/
 theorem exists_phase_sq_re_neg {α : ℂ} (him : α.im ≠ 0) :
-    ∃ c : ℂ, (α * c ^ 2).re < 0 := by
+    ∃ c : ℂ, (α * c ^ (2 : ℕ)).re < 0 := by
   by_cases hre : α.re < 0
   · exact ⟨1, by simpa using hre⟩
   by_cases hre0 : α.re = 0
@@ -373,21 +373,21 @@ theorem exists_phase_sq_re_neg {α : ℂ} (him : α.im ≠ 0) :
     linarith
 
 theorem real_weight_conj_phase_re (w : ℝ) (α c : ℂ) :
-    (((w : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2).re) =
-      w * (α * c ^ 2).re := by
+    (((w : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ)).re) =
+      w * (α * c ^ (2 : ℕ)).re := by
   calc
-    _ = (((w : ℂ) * (starRingEnd ℂ) (α * c ^ 2))).re := by
+    _ = (((w : ℂ) * (starRingEnd ℂ) (α * c ^ (2 : ℕ)))).re := by
       congr 1
       simp only [map_mul, map_pow]
       ring
-    _ = w * (α * c ^ 2).re := by
+    _ = w * (α * c ^ (2 : ℕ)).re := by
       rw [mul_re]
       simp only [Complex.ofReal_re, Complex.ofReal_im, Complex.conj_re,
         zero_mul, sub_zero]
 
 theorem real_weight_phase_re (w : ℝ) (α c : ℂ) :
-    (((w : ℂ) * α * c ^ 2).re) = w * (α * c ^ 2).re := by
-  rw [show ((w : ℂ) * α * c ^ 2) = (w : ℂ) * (α * c ^ 2) by ring]
+    (((w : ℂ) * α * c ^ (2 : ℕ)).re) = w * (α * c ^ (2 : ℕ)).re := by
+  rw [show ((w : ℂ) * α * c ^ (2 : ℕ)) = (w : ℂ) * (α * c ^ (2 : ℕ)) by ring]
   simp
 
 /-- A finite conjugation-closed trace spectrum whose real-polynomial Hankel trace is nonnegative
@@ -398,7 +398,7 @@ theorem finite_traceHankel_nonneg_implies_real
     (hw : ∀ z ∈ F, 0 < w z)
     (hconj : ∀ z ∈ F, (starRingEnd ℂ) z ∈ F)
     (hpos : ∀ p : Polynomial ℝ,
-      0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * z * evalRealPolynomial p z ^ 2).re) :
+      0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * z * evalRealPolynomial p z ^ (2 : ℕ)).re) :
     ∀ z ∈ F, z.im = 0 := by
   intro α hα
   by_contra him
@@ -415,7 +415,7 @@ theorem finite_traceHankel_nonneg_implies_real
     field_simp
   have hpca : evalRealPolynomial p ((starRingEnd ℂ) α) = (starRingEnd ℂ) c := by
     rw [evalRealPolynomial_conj, hpα]
-  let term : ℂ → ℂ := fun z => ((w z : ℝ) : ℂ) * z * evalRealPolynomial p z ^ 2
+  let term : ℂ → ℂ := fun z => ((w z : ℝ) : ℂ) * z * evalRealPolynomial p z ^ (2 : ℕ)
   have hsum : ∑ z ∈ F, term z = term α + term ((starRingEnd ℂ) α) := by
     rw [← Finset.sum_erase_add F term hα]
     have hcaErase : (starRingEnd ℂ) α ∈ F.erase α :=
@@ -438,12 +438,12 @@ theorem finite_traceHankel_nonneg_implies_real
   change 0 ≤ (∑ z ∈ F, term z).re at hnonneg
   rw [hsum, add_re] at hnonneg
   simp only [term, hpα, hpca] at hnonneg
-  have hfirst : (((w α : ℝ) : ℂ) * α * c ^ 2).re = w α * (α * c ^ 2).re := by
+  have hfirst : (((w α : ℝ) : ℂ) * α * c ^ (2 : ℕ)).re = w α * (α * c ^ (2 : ℕ)).re := by
     exact real_weight_phase_re (w α) α c
   have hsecond :
       (((w ((starRingEnd ℂ) α) : ℝ) : ℂ) * (starRingEnd ℂ) α *
-          ((starRingEnd ℂ) c) ^ 2).re =
-        w ((starRingEnd ℂ) α) * (α * c ^ 2).re :=
+          ((starRingEnd ℂ) c) ^ (2 : ℕ)).re =
+        w ((starRingEnd ℂ) α) * (α * c ^ (2 : ℕ)).re :=
     real_weight_conj_phase_re (w ((starRingEnd ℂ) α)) α c
   rw [hfirst, hsecond] at hnonneg
   have hwα := hw α hα
@@ -474,7 +474,7 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
     (ha : ∀ i, (lam i).im ≠ 0 → evalRealPolynomial a (lam i) ≠ 0)
     (hpos : ∀ p : Polynomial ℝ,
       0 ≤ (∑' i : ι,
-        lam i * evalRealPolynomial (a * p) (lam i) ^ 2).re) :
+        lam i * evalRealPolynomial (a * p) (lam i) ^ (2 : ℕ)).re) :
     ∀ i, (lam i).im = 0 := by
   classical
   intro i₀
@@ -510,30 +510,30 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
       eval_phaseCorrectedSeparatorPolynomial_conj_target hα0 him n]
     rw [← map_mul, had]
   let f : ℕ → ι → ℂ := fun n i =>
-    lam i * evalRealPolynomial (q n) (lam i) ^ 2
+    lam i * evalRealPolynomial (q n) (lam i) ^ (2 : ℕ)
   let g : ι → ℂ := fun i =>
-    if lam i = α then α * c ^ 2
+    if lam i = α then α * c ^ (2 : ℕ)
     else if lam i = (starRingEnd ℂ) α then
-      (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2
+      (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ)
     else 0
   have hpointwise (i : ι) : Tendsto (fun n => f n i) atTop (nhds (g i)) := by
     by_cases hiα : lam i = α
-    · have hfconst : (fun n => f n i) = fun _ => α * c ^ 2 := by
+    · have hfconst : (fun n => f n i) = fun _ => α * c ^ (2 : ℕ) := by
         funext n
-        change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = _
+        change lam i * evalRealPolynomial (q n) (lam i) ^ (2 : ℕ) = _
         rw [hiα, hevalTarget]
-      have hgconst : g i = α * c ^ 2 := by
+      have hgconst : g i = α * c ^ (2 : ℕ) := by
         simp only [g, hiα, if_pos]
       rw [hfconst, hgconst]
       exact tendsto_const_nhds
     · by_cases hic : lam i = (starRingEnd ℂ) α
       · have hfconst : (fun n => f n i) = fun _ =>
-            (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2 := by
+            (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           funext n
-          change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = _
+          change lam i * evalRealPolynomial (q n) (lam i) ^ (2 : ℕ) = _
           rw [hic, hevalConjTarget]
         have hgconst : g i = (starRingEnd ℂ) α *
-            ((starRingEnd ℂ) c) ^ 2 := by
+            ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           have hconjne : (starRingEnd ℂ) α ≠ α :=
             Complex.conj_eq_iff_im.not.mpr him
           simp only [g, hic, hconjne, if_false, if_pos]
@@ -548,7 +548,7 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
             eval_phaseCorrectedSeparatorPolynomial_outer_zero hiF hiα hic n
           have hfzero : (fun n => f n i) = fun _ => (0 : ℂ) := by
             funext n
-            change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = 0
+            change lam i * evalRealPolynomial (q n) (lam i) ^ (2 : ℕ) = 0
             simp only [q, evalRealPolynomial_mul, hevalP, mul_zero]
             ring
           have hgzero : g i = 0 := by
@@ -569,9 +569,9 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
   have hC : 0 ≤ C := phaseCorrectedSeparatorNormBound_nonneg F him
   let E := A * C
   have hE : 0 ≤ E := mul_nonneg hA hC
-  let bound : ι → ℝ := fun i => E ^ 2 * ‖lam i‖
+  let bound : ι → ℝ := fun i => E ^ (2 : ℕ) * ‖lam i‖
   have hboundSum : Summable bound := by
-    exact hsum.norm.mul_left (E ^ 2)
+    exact hsum.norm.mul_left (E ^ (2 : ℕ))
   have hevalPBound (n : ℕ) (i : ι) :
       ‖evalRealPolynomial (p n) (lam i)‖ ≤ C := by
     by_cases hle : ‖lam i‖ ≤ ‖α‖
@@ -621,10 +621,10 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
   have hdom : ∀ n i, ‖f n i‖ ≤ bound i := by
     intro n i
     have hev := hevalBound n i
-    have hevSq : ‖evalRealPolynomial (q n) (lam i)‖ ^ 2 ≤ E ^ 2 := by
+    have hevSq : ‖evalRealPolynomial (q n) (lam i)‖ ^ (2 : ℕ) ≤ E ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (evalRealPolynomial (q n) (lam i))]
-    change ‖lam i * evalRealPolynomial (q n) (lam i) ^ 2‖ ≤
-      E ^ 2 * ‖lam i‖
+    change ‖lam i * evalRealPolynomial (q n) (lam i) ^ (2 : ℕ)‖ ≤
+      E ^ (2 : ℕ) * ‖lam i‖
     rw [norm_mul, norm_pow]
     nlinarith [norm_nonneg (lam i)]
   have htsum : Tendsto (fun n => ∑' i, f n i) atTop (nhds (∑' i, g i)) :=
@@ -678,14 +678,14 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
         intro h
         have hcfix : (starRingEnd ℂ) α = α := by rw [← hic, h]
         exact him (Complex.conj_eq_iff_im.mp hcfix)
-      have hgval : g i = (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2 := by
+      have hgval : g i = (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
         have hconjne : (starRingEnd ℂ) α ≠ α :=
           Complex.conj_eq_iff_im.not.mpr him
         simp only [g, hic, hconjne, if_false, if_pos]
       rw [hgval]
       have hconjRe :
-          ((starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2).re =
-            (α * c ^ 2).re := by
+          ((starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ)).re =
+            (α * c ^ (2 : ℕ)).re := by
         rw [← map_pow, ← map_mul, Complex.conj_re]
       rw [hconjRe]
       exact hc

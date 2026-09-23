@@ -83,7 +83,7 @@ def thetaCuspFullReflectionSixthCurvature (x : ℝ) : ℝ :=
   let A := thetaCuspFullReflectedLogCurvature x
   let B := thetaCuspFullReflectedLogFourthJet x
   let C := thetaCuspFullReflectedLogSixthJet x
-  A * C - B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4
+  A * C - B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
 
 /-- The abstract logarithmic order-six Hankel polynomial is exactly the native source
 curvature. -/
@@ -91,10 +91,10 @@ theorem thetaCuspLogSource_secondSixthHankel_eq_fullReflectionSixthCurvature
     {x : ℝ} (hx : 0 < x) :
     iteratedDeriv 2 thetaCuspLogSource x *
           iteratedDeriv 6 thetaCuspLogSource x -
-        iteratedDeriv 4 thetaCuspLogSource x ^ 2 +
-        18 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+        iteratedDeriv 4 thetaCuspLogSource x ^ (2 : ℕ) +
+        18 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
           iteratedDeriv 4 thetaCuspLogSource x +
-        24 * iteratedDeriv 2 thetaCuspLogSource x ^ 4 =
+        24 * iteratedDeriv 2 thetaCuspLogSource x ^ (4 : ℕ) =
       thetaCuspFullReflectionSixthCurvature x := by
   rw [iteratedDeriv_two_thetaCuspLogSource_eq_factor hx,
     iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,

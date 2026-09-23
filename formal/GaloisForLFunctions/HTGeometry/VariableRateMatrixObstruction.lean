@@ -75,7 +75,7 @@ theorem eval_variableRateObstructionPullback {θ I : Type*} [Fintype I] [Decidab
     show MvPolynomial.eval₂ (RingHom.id ℂ) z (matrixCharacteristicElementaryPolynomial M i) = _
     rw [eval_matrixCharacteristicElementaryPolynomial,
       matrixCharacteristicElementaryCoefficient_eq_rootPacket _ energy hinj hroot i,
-      eval₂_esymm_rat_eq_complex]
+      eval₂_esymm_rat_eq]
   rw [hstep, hmap, funext hcoeff, eval_fieldQuadraticRateCoefficientPolynomial_esymm]
   rw [show MvPolynomial.eval₂ (RingHom.id ℂ) energy (fieldQuadraticRateOrbitPolynomial c (φ κ))
       = MvPolynomial.eval energy (fieldQuadraticRateOrbitPolynomial c (φ κ)) from rfl,
@@ -134,15 +134,15 @@ theorem exists_mem_forall_relabelled_quadraticRate_ne_zero
     (hroot₀ : ∀ i, matrixCharpolyRelation
       (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z₀), energy₀ i) = 0)
     (hfail : ∀ σ : Equiv.Perm I,
-      (∑ j, c (σ.symm j) * energy₀ j) ^ 2
-        - MvPolynomial.eval₂ (RingHom.id ℂ) z₀ κ * ∑ j, energy₀ j ^ 2 ≠ 0)
+      (∑ j, c (σ.symm j) * energy₀ j) ^ (2 : ℕ)
+        - MvPolynomial.eval₂ (RingHom.id ℂ) z₀ κ * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0)
     {U : Set (Fin m → ℝ)} (hUopen : IsOpen U) (hUne : U.Nonempty) :
     ∃ p ∈ U, ∀ (energy : I → ℂ), Function.Injective energy →
       (∀ i, matrixCharpolyRelation
         (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (fun t => (p t : ℂ))), energy i) = 0) →
       ∀ σ : Equiv.Perm I,
-        (∑ j, c (σ.symm j) * energy j) ^ 2
-          - MvPolynomial.eval₂ (RingHom.id ℂ) (fun t => (p t : ℂ)) κ * ∑ j, energy j ^ 2 ≠ 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ)
+          - MvPolynomial.eval₂ (RingHom.id ℂ) (fun t => (p t : ℂ)) κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   have hwitness : ∃ z : Fin m → ℂ,
       MvPolynomial.eval₂ (RingHom.id ℂ) z (variableRateObstructionPullback M c κ) ≠ 0 := by
     refine ⟨z₀, ?_⟩

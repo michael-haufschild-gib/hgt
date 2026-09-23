@@ -25,7 +25,7 @@ theorem speQuantileRieszParabolicReadout_moment_at_physicalWall_eq_square_factor
     (M : ℕ) (a : ℝ) :
     speQuantileRieszParabolicReadout M
         (ccmParabolicMoment a (2 * Real.sqrt (M : ℝ))) =
-      (2 * Real.sqrt (M : ℝ) - a) ^ 2 *
+      (2 * Real.sqrt (M : ℝ) - a) ^ (2 : ℕ) *
         (Real.sqrt (M : ℝ) + a) / 6 := by
   rw [speQuantileRieszParabolicReadout_moment]
   unfold speQuantileRieszMassAntiderivative
@@ -36,7 +36,7 @@ theorem speQuantileRieszTerminalReadout_eq_physicalMismatch_square_factor (K : �
     speQuantileRieszParabolicReadout (K + 3)
         (ccmActualHeadQuantileParabolicTerminal K (Real.log (K + 3))) =
       (2 * Real.sqrt ((K + 3 : ℕ) : ℝ) -
-        ccmActualHeadQuantilePolarCoordinate (K + 3)) ^ 2 *
+        ccmActualHeadQuantilePolarCoordinate (K + 3)) ^ (2 : ℕ) *
           (Real.sqrt ((K + 3 : ℕ) : ℝ) +
             ccmActualHeadQuantilePolarCoordinate (K + 3)) / 6 := by
   unfold ccmActualHeadQuantileParabolicTerminal
@@ -64,7 +64,7 @@ theorem speQuantileRieszTerminalErrorDisplacement_eq_physicalMismatch (K : ℕ) 
 theorem speQuantileRieszTerminalReadout_eq_errorDisplacement_square_factor (K : ℕ) :
     speQuantileRieszParabolicReadout (K + 3)
         (ccmActualHeadQuantileParabolicTerminal K (Real.log (K + 3))) =
-      speQuantileRieszTerminalErrorDisplacement K ^ 2 *
+      speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) *
         (3 * Real.sqrt ((K + 3 : ℕ) : ℝ) -
           speQuantileRieszTerminalErrorDisplacement K) / 6 := by
   rw [speQuantileRieszTerminalReadout_eq_physicalMismatch_square_factor]
@@ -84,7 +84,7 @@ theorem speQuantileRieszTerminalReadout_nonneg (K : ℕ) :
 /-- Terminal scalar readout coercively controls the square of the signed error/atom discrepancy. -/
 theorem speQuantileRieszTerminalErrorDisplacement_sq_le_terminalReadout (K : ℕ) :
     Real.sqrt ((K + 3 : ℕ) : ℝ) / 6 *
-        speQuantileRieszTerminalErrorDisplacement K ^ 2 ≤
+        speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) ≤
       speQuantileRieszParabolicReadout (K + 3)
         (ccmActualHeadQuantileParabolicTerminal K (Real.log (K + 3))) := by
   rw [speQuantileRieszTerminalReadout_eq_errorDisplacement_square_factor]
@@ -96,7 +96,7 @@ theorem speQuantileRieszTerminalErrorDisplacement_sq_le_terminalReadout (K : ℕ
         speQuantileRieszTerminalErrorDisplacement K := by
     rw [speQuantileRieszTerminalErrorDisplacement_eq_physicalMismatch]
     linarith
-  have hsq : 0 ≤ speQuantileRieszTerminalErrorDisplacement K ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) := sq_nonneg _
   nlinarith
 
 /-- The terminal scalar readout vanishes exactly when the signed error/atom discrepancy vanishes. -/
@@ -108,12 +108,12 @@ theorem speQuantileRieszTerminalReadout_eq_zero_iff_errorDisplacement_eq_zero (K
   · intro hzero
     have hlower := speQuantileRieszTerminalErrorDisplacement_sq_le_terminalReadout K
     have hroot : 0 < Real.sqrt ((K + 3 : ℕ) : ℝ) / 6 := by positivity
-    have hsq : 0 ≤ speQuantileRieszTerminalErrorDisplacement K ^ 2 := sq_nonneg _
+    have hsq : 0 ≤ speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) := sq_nonneg _
     have hmul_nonneg : 0 ≤ Real.sqrt ((K + 3 : ℕ) : ℝ) / 6 *
-        speQuantileRieszTerminalErrorDisplacement K ^ 2 :=
+        speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) :=
       mul_nonneg (le_of_lt hroot) hsq
     have hmul : Real.sqrt ((K + 3 : ℕ) : ℝ) / 6 *
-        speQuantileRieszTerminalErrorDisplacement K ^ 2 = 0 := by
+        speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) = 0 := by
       linarith
     rcases mul_eq_zero.mp hmul with hfactor | hsq_zero
     · exact (ne_of_gt hroot hfactor).elim

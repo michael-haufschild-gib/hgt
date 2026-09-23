@@ -42,7 +42,7 @@ theorem hasDerivAt_resolventTerm (ρ c : ℝ) (m : ℕ) {x : ℝ} (hx : x + c �
   ring
 
 theorem hasDerivAt_logTerm (ρ c : ℝ) {x : ℝ} (hx : 0 < x + c) :
-    HasDerivAt (fun y : ℝ => ρ * Real.log (y + c)) (ρ / (x + c) ^ 1) x := by
+    HasDerivAt (fun y : ℝ => ρ * Real.log (y + c)) (ρ / (x + c) ^ (1 : ℕ)) x := by
   have h1 : HasDerivAt (fun y : ℝ => y + c) 1 x := (hasDerivAt_id x).add_const c
   have hlog : HasDerivAt (fun y : ℝ => Real.log (y + c)) ((x + c)⁻¹ * 1) x := by
     have h := (Real.hasDerivAt_log (ne_of_gt hx)).comp x h1
@@ -81,7 +81,7 @@ theorem hasDerivAt_cutoffAction (ρ E : ℕ → ℝ) (s : Finset ℕ) {x : ℝ}
     (hx : ∀ n ∈ s, 0 < x + E n) :
     HasDerivAt (cutoffAction ρ E s) (cutoffVertex ρ E s 0 x) x := by
   have hsum : HasDerivAt (fun y : ℝ => ∑ n ∈ s, ρ n * Real.log (y + E n))
-      (∑ n ∈ s, ρ n / (x + E n) ^ 1) x :=
+      (∑ n ∈ s, ρ n / (x + E n) ^ (1 : ℕ)) x :=
     HasDerivAt.fun_sum fun n hn => hasDerivAt_logTerm (ρ n) (E n) (hx n hn)
   refine ((hsum.const_mul (1 / 2 : ℝ)).congr_deriv ?_)
   rw [cutoffVertex, cutoffResolventTrace]

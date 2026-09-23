@@ -112,7 +112,7 @@ theorem xiShiftRightReflectionPairFactor_numerator_shift
     xiShiftRightReflectionPairFactor (z - (omega : ℂ) * I) q.1 =
       -((z - (xiSpectralPoint q.1 + (omega : ℂ) * I)) *
         (z - xiShiftNumeratorCoordinate omega q)) /
-          xiSpectralPoint q.1 ^ 2 := by
+          xiSpectralPoint q.1 ^ (2 : ℕ) := by
   rw [xiShiftRightReflectionPairFactor_eq, xiShiftNumeratorCoordinate]
   field_simp [xiSpectralPoint_ne_zero q.1]
   ring
@@ -122,7 +122,7 @@ theorem xiShiftRightReflectionPairFactor_denominator_shift
     xiShiftRightReflectionPairFactor (-z - (omega : ℂ) * I) q.1 =
       -((z - xiShiftPoleCoordinate omega q) *
         (z - (xiSpectralPoint q.1 - (omega : ℂ) * I))) /
-          xiSpectralPoint q.1 ^ 2 := by
+          xiSpectralPoint q.1 ^ (2 : ℕ) := by
   rw [xiShiftRightReflectionPairFactor_eq, xiShiftPoleCoordinate]
   field_simp [xiSpectralPoint_ne_zero q.1]
   ring
@@ -131,7 +131,7 @@ theorem xiShiftRightReflectionPairFactor_denominator_shift
 def xiShiftFiniteTailScale (omega : ℝ)
     [Fintype (XiShiftRightZeroCopy omega)] : ℂ :=
   ∏ q : XiShiftRightZeroCopy omega,
-    -(xiSpectralPoint q.1 ^ 2)⁻¹
+    -(xiSpectralPoint q.1 ^ (2 : ℕ))⁻¹
 
 theorem xiShiftFiniteTailScale_ne_zero (omega : ℝ)
     [Fintype (XiShiftRightZeroCopy omega)] :
@@ -213,7 +213,7 @@ theorem xiShiftExtremeCanonicalProduct_numerator_shift_factorization
         xiShiftRightReflectionPairFactor
           (z - (omega : ℂ) * I) q.1) =
       ∏ q : XiShiftRightZeroCopy omega,
-        (-(xiSpectralPoint q.1 ^ 2)⁻¹ *
+        (-(xiSpectralPoint q.1 ^ (2 : ℕ))⁻¹ *
           (z - (xiSpectralPoint q.1 + (omega : ℂ) * I)) *
           (z - xiShiftNumeratorCoordinate omega q)) := by
       apply Finset.prod_congr rfl
@@ -241,7 +241,7 @@ theorem xiShiftExtremeCanonicalProduct_denominator_shift_factorization
         xiShiftRightReflectionPairFactor
           (-z - (omega : ℂ) * I) q.1) =
       ∏ q : XiShiftRightZeroCopy omega,
-        (-(xiSpectralPoint q.1 ^ 2)⁻¹ *
+        (-(xiSpectralPoint q.1 ^ (2 : ℕ))⁻¹ *
           (z - xiShiftPoleCoordinate omega q) *
           (z - (xiSpectralPoint q.1 - (omega : ℂ) * I))) := by
       apply Finset.prod_congr rfl

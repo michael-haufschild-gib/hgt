@@ -99,7 +99,7 @@ theorem sourceCore_laplacian_on_fd (q : XiZeroCopy) (n : ℕ) (z : UpperHalfPlan
     cutoffDerivative,iteratedDeriv_one,Complex.ofReal_mul,Complex.ofReal_pow,pow_one,heightProfile,
     show coordinates z 1 = z.im from rfl]
   change _ = (heightWeight n z.im : ℂ)*hyperbolicLaplacian (residual q) (coordinates z) +
-    (z.im:ℂ)^2 * ((iteratedDeriv 2 (heightWeight n) z.im : ℝ) : ℂ)*residual q (coordinates z) +
+    (z.im:ℂ)^(2 : ℕ) * ((iteratedDeriv 2 (heightWeight n) z.im : ℝ) : ℂ)*residual q (coordinates z) +
     2*((z.im:ℂ)*((deriv (heightWeight n) z.im : ℝ) : ℂ))*
       ((z.im:ℂ)*coordDeriv 1 (residual q) (coordinates z))
   ring

@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalResolvedSector
 # Green resolved-line comparison for the adaptive prime-normal source
 
 The adaptive source now has two independent completed realizations: a
-closed conservative two-channel `ell^1` sector and an exact Gaussian-graded
+closed conservative two-channel `ell^(1 : ℕ)` sector and an exact Gaussian-graded
 divisor field whose Green class detects RH.  This file constructs the
 pointwise comparison demanded by the latest Hellinger--Hodge--Green descent
 frontier.

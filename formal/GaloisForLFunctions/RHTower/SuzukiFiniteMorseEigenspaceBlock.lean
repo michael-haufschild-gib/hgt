@@ -12,7 +12,7 @@ scalar form of this is the vanishing of the completed weight.
 This module raises that scalar identity to an operator identity on the eigenspace itself: on every
 eigenvector of the below-spectrum resolvent sitting at a negative spectral level,
 
-`q(R)^2 v = - d(A) v`,
+`q(R)^(2 : ℕ) v = - d(A) v`,
 
 so the completed operator annihilates the whole negative eigenspace.  The lift is the eigenvector
 law for the continuous functional calculus: `cfc f R` scales an eigenvector of `R` by the value of
@@ -64,7 +64,7 @@ theorem suzukiFiniteMorse_completion_apply_negativeEigenvector_eq_zero
   have hcast : ((suzukiKreinResolventWeight alpha beta rho
         (suzukiFiniteMorseResolventNode rho (negativeLevel i)) : ℝ) : ℂ)
       + (((suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-          (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ 2 : ℝ) : ℂ) = 0 := by
+          (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
     rw [← Complex.ofReal_add, hzero, Complex.ofReal_zero]
   rw [hcast, zero_smul]
 
@@ -116,7 +116,7 @@ omit [CompleteSpace H] in
 theorem suzukiResolventJetSquare_apply_eigenvector_nonneg
     {q : Polynomial ℝ} {R : H →L[ℂ] H} {x : ℝ} {v : H}
     (hv : R v = ((x : ℝ) : ℂ) • v) :
-    suzukiResolventJetSquare q R v = (((q.eval x ^ 2 : ℝ)) : ℂ) • v ∧ 0 ≤ q.eval x ^ 2 :=
+    suzukiResolventJetSquare q R v = (((q.eval x ^ (2 : ℕ) : ℝ)) : ℂ) • v ∧ 0 ≤ q.eval x ^ (2 : ℕ) :=
   ⟨suzukiResolventJetSquare_apply_of_eigenvector hv, sq_nonneg _⟩
 
 /-! ## The minimal-completion decomposition -/
@@ -152,7 +152,7 @@ theorem suzukiFiniteMorse_jetSquare_eq_negPart_on_negativeEigenvector
   have hnp : (suzukiKreinResolventWeight alpha beta rho
         (suzukiFiniteMorseResolventNode rho (negativeLevel i)))⁻
       = ((suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-          (suzukiFiniteMorseResolventNode rho (negativeLevel i))) ^ 2 := by
+          (suzukiFiniteMorseResolventNode rho (negativeLevel i))) ^ (2 : ℕ) := by
     have hle : suzukiKreinResolventWeight alpha beta rho
         (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ≤ 0 := by
       nlinarith [sq_nonneg ((suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval

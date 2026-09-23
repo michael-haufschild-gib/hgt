@@ -28,10 +28,10 @@ theorem hasDerivAt_suzukiPrimeAbelWeight {t x : ℝ} (hx : 0 < x) :
   have h := hnum.div hsqrt (ne_of_gt (Real.sqrt_pos.2 hx))
   have hcoef :
       (-x⁻¹ * Real.sqrt x - (t - Real.log x) * (2 * Real.sqrt x)⁻¹) /
-          Real.sqrt x ^ 2 = -suzukiPrimeAbelKernel t x := by
+          Real.sqrt x ^ (2 : ℕ) = -suzukiPrimeAbelKernel t x := by
     unfold suzukiPrimeAbelKernel
     have hs : Real.sqrt x ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hx)
-    have hs2 : (Real.sqrt x) ^ 2 = x := Real.sq_sqrt hx.le
+    have hs2 : (Real.sqrt x) ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
     field_simp
     rw [hs2]
     ring
@@ -128,7 +128,7 @@ theorem hasDerivAt_suzukiPrimeMainPrimitive {t x : ℝ} (hx : 0 < x) :
           Real.sqrt x * -x⁻¹ = suzukiPrimeAbelKernel t x * x := by
     unfold suzukiPrimeAbelKernel
     have hs : Real.sqrt x ≠ 0 := (Real.sqrt_pos.2 hx).ne'
-    have hs2 : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
+    have hs2 : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
     field_simp
     rw [hs2]
     ring
@@ -167,9 +167,9 @@ theorem integral_suzukiPrimeAbelKernel_mul_id {t : ℝ} (ht : Real.log 2 ≤ t) 
   unfold suzukiPrimeMainPrimitive
   rw [Real.log_exp]
   have hsqrt_exp : Real.sqrt (Real.exp t) = Real.exp (t / 2) := by
-    have hsq1 : Real.sqrt (Real.exp t) ^ 2 = Real.exp t :=
+    have hsq1 : Real.sqrt (Real.exp t) ^ (2 : ℕ) = Real.exp t :=
       Real.sq_sqrt (Real.exp_nonneg t)
-    have hsq2 : Real.exp (t / 2) ^ 2 = Real.exp t := by
+    have hsq2 : Real.exp (t / 2) ^ (2 : ℕ) = Real.exp t := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring
@@ -282,9 +282,9 @@ theorem screwPrimeSum_eq_main_add_error {t : ℝ} (ht : Real.log 2 ≤ t) :
 
 theorem sqrt_exp_eq_exp_half (u : ℝ) :
     Real.sqrt (Real.exp u) = Real.exp (u / 2) := by
-  have hsq1 : Real.sqrt (Real.exp u) ^ 2 = Real.exp u :=
+  have hsq1 : Real.sqrt (Real.exp u) ^ (2 : ℕ) = Real.exp u :=
     Real.sq_sqrt (Real.exp_nonneg u)
-  have hsq2 : Real.exp (u / 2) ^ 2 = Real.exp u := by
+  have hsq2 : Real.exp (u / 2) ^ (2 : ℕ) = Real.exp u := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -316,7 +316,7 @@ theorem abs_suzukiPrimeErrorIntegral_le
     (hrate : ∀ x : ℝ, x₀ ≤ x → |suzukiChebyshevError x| ≤
       B * x * Real.exp (-c * Real.sqrt (Real.log x)))
     (ht0 : 0 ≤ t) (ht2 : Real.log 2 ≤ t / 2)
-    (hthreshold : x₀ ≤ Real.exp (t / 2)) (habsorb : 16 * c ^ 2 ≤ t) :
+    (hthreshold : x₀ ≤ Real.exp (t / 2)) (habsorb : 16 * c ^ (2 : ℕ) ≤ t) :
     |∫ x : ℝ in Ioc 2 (Real.exp t),
         suzukiPrimeAbelKernel t x * suzukiChebyshevError x| ≤
       (8 * D + 4 * B) * Real.exp (t / 2 - (c / 2) * Real.sqrt t) := by
@@ -418,10 +418,10 @@ theorem abs_suzukiPrimeErrorIntegral_le
         exact mul_le_mul_of_nonneg_left
           (Real.exp_le_exp.mpr (by linarith)) (by positivity)
   have hsqrtHalf : Real.sqrt t / 2 ≤ Real.sqrt (t / 2) := by
-    have hsq1 : (Real.sqrt t / 2) ^ 2 = t / 4 := by
+    have hsq1 : (Real.sqrt t / 2) ^ (2 : ℕ) = t / 4 := by
       rw [div_pow, Real.sq_sqrt ht0]
       norm_num
-    have hsq2 : Real.sqrt (t / 2) ^ 2 = t / 2 :=
+    have hsq2 : Real.sqrt (t / 2) ^ (2 : ℕ) = t / 2 :=
       Real.sq_sqrt (by linarith)
     nlinarith [Real.sqrt_nonneg t, Real.sqrt_nonneg (t / 2)]
   have htailPoint : ∀ x ∈ Icc Y X,
@@ -523,7 +523,7 @@ theorem exists_screwPrimeSum_sub_four_exp_half_le :
   filter_upwards [eventually_ge_atTop (0 : ℝ),
     eventually_ge_atTop (2 * Real.log 2),
     eventually_ge_atTop (2 * Real.log x₀),
-    eventually_ge_atTop (16 * c ^ 2)] with t ht0 ht2raw htx₀ habsorb
+    eventually_ge_atTop (16 * c ^ (2 : ℕ))] with t ht0 ht2raw htx₀ habsorb
   have ht2 : Real.log 2 ≤ t / 2 := by linarith
   have hthreshold : x₀ ≤ Real.exp (t / 2) := by
     rw [← Real.exp_log hx₀pos]
@@ -612,7 +612,7 @@ theorem abs_screwLerchTail_le_const {t : ℝ} (ht : 0 < t) :
     exact tsum_nonneg fun n => div_nonneg (Real.exp_nonneg _) (sq_nonneg _)
   rw [abs_of_nonneg hnonneg, screwLerchTail, screwLerchConst, screwLerchTail]
   have hbase' : Summable (fun n : ℕ =>
-      Real.exp (-(lerchExp n * 0)) / lerchExp n ^ 2) := by
+      Real.exp (-(lerchExp n * 0)) / lerchExp n ^ (2 : ℕ)) := by
     simpa using hbase
   apply Summable.tsum_le_tsum (fun n => ?_) hsumt hbase'
   have hexp : Real.exp (-(lerchExp n * t)) ≤ Real.exp (-(lerchExp n * 0)) := by
@@ -636,7 +636,7 @@ theorem exists_abs_suzukiPsi_le_exp_half_sub_sqrt :
   have hM : 0 < M := by dsimp only [M]; nlinarith
   refine ⟨c, M, hc, hM, ?_⟩
   filter_upwards [hprime, eventually_ge_atTop (1 : ℝ),
-    eventually_ge_atTop (64 * c ^ 2)] with t hprime ht1 habsorb
+    eventually_ge_atTop (64 * c ^ (2 : ℕ))] with t hprime ht1 habsorb
   have ht0 : 0 ≤ t := by linarith
   have htail := abs_screwLerchTail_le_const (by linarith : 0 < t)
   let R : ℝ := 4 * Real.exp (-(t / 2)) - 8 +

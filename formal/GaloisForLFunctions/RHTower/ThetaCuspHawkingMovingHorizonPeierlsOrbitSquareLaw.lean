@@ -52,7 +52,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_gain_sq
     (n : ℕ) (q : XiZeroCopy) :
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut n q =
       -((d4BMXiAIMEHorizonGainSquareToPeierlsOrbitSusceptibility n q *
-        d4BMXiAIMEHorizonGainDefect n q ^ 2 : ℝ) : ℂ) := by
+        d4BMXiAIMEHorizonGainDefect n q ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_density,
     d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_susceptibility_mul_gain_sq]
   unfold d4BMXiAIMEHorizonGainSquareToPeierlsOrbitSusceptibility
@@ -64,7 +64,7 @@ Peierls orbit cut. -/
 def d4BMXiEventHorizonThirdMassSquareToPeierlsOrbitSusceptibility
     (n : ℕ) (q : XiZeroCopy) : ℝ :=
   d4BMXiAIMEHorizonGainSquareToPeierlsOrbitSusceptibility n q /
-    d4BMXiEventHorizonThirdMassToAIMEHorizonGainSusceptibility n q ^ 2
+    d4BMXiEventHorizonThirdMassToAIMEHorizonGainSusceptibility n q ^ (2 : ℕ)
 
 theorem d4BMXiEventHorizonThirdMassSquareToPeierlsOrbitSusceptibility_pos
     (n : ℕ) (q : XiZeroCopy) :
@@ -81,7 +81,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_thirdMass
     (n : ℕ) (q : XiZeroCopy) :
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut n q =
       -((d4BMXiEventHorizonThirdMassSquareToPeierlsOrbitSusceptibility n q *
-        d4BMXiEventHorizonThirdMassParityJetDefect q ^ 2 : ℝ) : ℂ) := by
+        d4BMXiEventHorizonThirdMassParityJetDefect q ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_gain_sq,
     d4BMXiEventHorizonThirdMassParityJetDefect_eq_susceptibility_mul_horizonGain]
   unfold d4BMXiEventHorizonThirdMassSquareToPeierlsOrbitSusceptibility

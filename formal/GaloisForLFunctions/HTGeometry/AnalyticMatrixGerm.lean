@@ -31,7 +31,7 @@ private theorem analyticFunctionElement_coe (f : ℂ → ℂ) (hf : AnalyticOnNh
       Germ.coeRingHom (𝓟 U) f := rfl
 
 /-- Two analytic functions agreeing on `U` have the same germ element. -/
-theorem analyticFunctionElement_congr {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U)
+theorem analyticFunctionElement_congr_analyticMatrixGerm {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U)
     (hg : AnalyticOnNhd ℂ g U) (h : ∀ z ∈ U, f z = g z) :
     analyticFunctionElement f hf = analyticFunctionElement g hg := by
   apply Subtype.ext
@@ -54,7 +54,7 @@ theorem analyticMatrixElement_congr {A B : ℂ → Matrix m n ℂ}
     (h : ∀ z ∈ U, A z = B z) :
     analyticMatrixElement A hA = analyticMatrixElement B hB := by
   ext i j
-  exact congrArg _ (analyticFunctionElement_congr (hA i j) (hB i j)
+  exact congrArg _ (analyticFunctionElement_congr_analyticMatrixGerm (hA i j) (hB i j)
     fun z hz => by rw [h z hz])
 
 theorem analyticMatrixElement_add {A B : ℂ → Matrix m n ℂ}
@@ -192,7 +192,7 @@ theorem analyticMatrixElement_legLeft {κ : Type*} [DecidableEq κ]
   · have h1 : ((1 : Matrix κ κ (analyticSubring U)) i.2.2 j.2.2) = 1 := by
       simp [Matrix.one_apply, h]
     rw [h1, mul_one]
-    exact analyticFunctionElement_congr _ _ fun t _ => by
+    exact analyticFunctionElement_congr_analyticMatrixGerm _ _ fun t _ => by
       simp [legLeft, Matrix.one_apply, h]
   · have h1 : ((1 : Matrix κ κ (analyticSubring U)) i.2.2 j.2.2) = 0 := by
       simp [h]
@@ -218,7 +218,7 @@ theorem analyticMatrixElement_legRight {κ : Type*} [DecidableEq κ]
   · have h1 : ((1 : Matrix κ κ (analyticSubring U)) i.1 j.1) = 1 := by
       simp [Matrix.one_apply, h]
     rw [h1, one_mul]
-    exact analyticFunctionElement_congr _ _ fun t _ => by
+    exact analyticFunctionElement_congr_analyticMatrixGerm _ _ fun t _ => by
       simp [legRight, Matrix.one_apply, h]
   · have h1 : ((1 : Matrix κ κ (analyticSubring U)) i.1 j.1) = 0 := by
       simp [h]
@@ -231,7 +231,7 @@ theorem analyticMatrixElement_legRight {κ : Type*} [DecidableEq κ]
     rw [hfun]
     rfl
 
-theorem analyticSubringDeriv_analyticFunctionElement (hUo : IsOpen U) (f : ℂ → ℂ)
+theorem analyticSubringDeriv_analyticFunctionElement_analyticMatrixGerm (hUo : IsOpen U) (f : ℂ → ℂ)
     (hf : AnalyticOnNhd ℂ f U) :
     analyticSubringDeriv hUo (analyticFunctionElement f hf) =
       analyticFunctionElement (deriv f)
@@ -254,8 +254,8 @@ theorem analyticMatrixElement_deriv (hUo : IsOpen U) {A B : ℂ → Matrix m n �
   refine Matrix.ext fun i j => ?_
   show analyticFunctionElement (fun t => B t i j) (hB i j) =
     analyticSubringDeriv hUo (analyticFunctionElement (fun t => A t i j) (hA i j))
-  rw [analyticSubringDeriv_analyticFunctionElement hUo]
-  exact analyticFunctionElement_congr _ _ fun t _ => hderiv t i j
+  rw [analyticSubringDeriv_analyticFunctionElement_analyticMatrixGerm hUo]
+  exact analyticFunctionElement_congr_analyticMatrixGerm _ _ fun t _ => hderiv t i j
 
 end
 

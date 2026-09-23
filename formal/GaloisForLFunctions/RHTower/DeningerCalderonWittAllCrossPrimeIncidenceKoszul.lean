@@ -37,8 +37,7 @@ noncomputable local instance :
     Encodable DeningerCalderonWittCrossPrimePacketIndex :=
   Encodable.ofCountable _
 
-noncomputable local instance :
-    DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
+noncomputable local instance deningerCalderonWittAllCrossPrimeIncidenceKoszulInst1 : DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 
 /-- Canonical base pair used to contract the packet Koszul complex. -/

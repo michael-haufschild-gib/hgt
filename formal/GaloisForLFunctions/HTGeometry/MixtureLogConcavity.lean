@@ -47,16 +47,16 @@ theorem prod_sum_eq (f g : ι → ℝ) :
 
 /-- **The mixture curvature identity**, both sides as double sums.  Purely algebraic. -/
 theorem mixture_curvature_identity :
-    2 * ((∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ 2 - c k))
+    2 * ((∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ (2 : ℕ) - c k))
         - ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j * a k))
-      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ 2 - c j - c k) := by
-  have hswap : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j ^ 2 - c j)
-      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ 2 - c k) := by
+      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ (2 : ℕ) - c j - c k) := by
+  have hswap : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j ^ (2 : ℕ) - c j)
+      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ (2 : ℕ) - c k) := by
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
-  have hjoin : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ 2 - c j - c k)
-      = (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j ^ 2 - c j))
-        + (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ 2 - c k))
+  have hjoin : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ (2 : ℕ) - c j - c k)
+      = (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j ^ (2 : ℕ) - c j))
+        + (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ (2 : ℕ) - c k))
         - 2 * ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j * a k) := by
     rw [← Finset.sum_add_distrib, Finset.mul_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -71,27 +71,27 @@ log-curvature at least `C − E`.  Applied to a theta-type series, `C` is the cu
 term and `E` is exponentially small in the frequency gap. -/
 theorem mixture_curvature_ge (hφ : ∀ j ∈ F, 0 ≤ φ j) {C E : ℝ}
     (hC : ∀ j ∈ F, C ≤ c j)
-    (hE : (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j - a k) ^ 2) ≤ 2 * E * (∑ j ∈ F, φ j) ^ 2) :
-    (C - E) * (∑ j ∈ F, φ j) ^ 2
-      ≤ (∑ j ∈ F, a j * φ j) ^ 2 - (∑ j ∈ F, φ j) * (∑ k ∈ F, (a k ^ 2 - c k) * φ k) := by
-  have e1 : (∑ j ∈ F, φ j) * (∑ k ∈ F, (a k ^ 2 - c k) * φ k)
-      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ 2 - c k) := by
+    (hE : (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j - a k) ^ (2 : ℕ)) ≤ 2 * E * (∑ j ∈ F, φ j) ^ (2 : ℕ)) :
+    (C - E) * (∑ j ∈ F, φ j) ^ (2 : ℕ)
+      ≤ (∑ j ∈ F, a j * φ j) ^ (2 : ℕ) - (∑ j ∈ F, φ j) * (∑ k ∈ F, (a k ^ (2 : ℕ) - c k) * φ k) := by
+  have e1 : (∑ j ∈ F, φ j) * (∑ k ∈ F, (a k ^ (2 : ℕ) - c k) * φ k)
+      = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a k ^ (2 : ℕ) - c k) := by
     rw [prod_sum_eq]
     exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
-  have e2 : (∑ j ∈ F, a j * φ j) ^ 2 = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j * a k) := by
+  have e2 : (∑ j ∈ F, a j * φ j) ^ (2 : ℕ) = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j * a k) := by
     rw [sq, prod_sum_eq]
     exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
   have hid := mixture_curvature_identity F φ a c
-  have hcsplit : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ 2 - c j - c k)
-      = (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j - a k) ^ 2)
+  have hcsplit : ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * ((a j - a k) ^ (2 : ℕ) - c j - c k)
+      = (∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (a j - a k) ^ (2 : ℕ))
         - ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (c j + c k) := by
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun k _ => by ring
-  have hcbig : 2 * C * (∑ j ∈ F, φ j) ^ 2
+  have hcbig : 2 * C * (∑ j ∈ F, φ j) ^ (2 : ℕ)
       ≤ ∑ j ∈ F, ∑ k ∈ F, φ j * φ k * (c j + c k) := by
-    have hpp : (∑ j ∈ F, φ j) ^ 2 = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k := by
+    have hpp : (∑ j ∈ F, φ j) ^ (2 : ℕ) = ∑ j ∈ F, ∑ k ∈ F, φ j * φ k := by
       rw [sq, prod_sum_eq]
     rw [hpp, Finset.mul_sum]
     refine Finset.sum_le_sum fun j hj => ?_

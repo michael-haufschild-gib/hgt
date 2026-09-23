@@ -9,7 +9,7 @@ Complete multiplicativity gives the Liouville coefficients the dyadic recursion
 `λ (2 n) = - λ n`, so the general dyadic channel decomposition specialises to the pair of adjacent
 real squares
 
-`∑_q (∑_{a+b=2q} λ a λ b) r^{2q} = (F r + F (r ^ 2)) ^ 2 + F (r ^ 2) ^ 2`
+`∑_q (∑_{a+b=2q} λ a λ b) r^{2q} = (F r + F (r ^ (2 : ℕ))) ^ (2 : ℕ) + F (r ^ (2 : ℕ)) ^ (2 : ℕ)`
 
 (`tsum_evenIndex_binary_liouville_eq_dyadicGram`), and the orbit classification exhibits the whole
 Liouville Abel series as the alternating geometric orbit of its odd seed
@@ -39,8 +39,8 @@ theorem tsum_evenIndex_binary_liouville_eq_dyadicGram {r : ℝ} (hr0 : 0 ≤ r) 
     (∑' q : ℕ,
         mixedAdditiveConvolutionPower (fun n : ℕ => liouvilleC n) 1 (2 * q) * (r : ℂ) ^ (2 * q))
       = (abelSeries (fun n : ℕ => liouvilleC n) (r : ℂ)
-            + abelSeries (fun n : ℕ => liouvilleC n) ((r : ℂ) ^ 2)) ^ 2
-        + abelSeries (fun n : ℕ => liouvilleC n) ((r : ℂ) ^ 2) ^ 2 :=
+            + abelSeries (fun n : ℕ => liouvilleC n) ((r : ℂ) ^ (2 : ℕ))) ^ (2 : ℕ)
+        + abelSeries (fun n : ℕ => liouvilleC n) ((r : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) :=
   tsum_evenIndex_binary_eq_dyadicGram_neg_one conj_liouvilleC liouvilleC_two_mul r
     (summable_norm_liouvilleC_mul_pow hr0 hr1)
 

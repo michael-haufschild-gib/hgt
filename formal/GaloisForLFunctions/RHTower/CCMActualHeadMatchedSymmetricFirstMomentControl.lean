@@ -10,7 +10,7 @@ to require the unavailable full physical derivative.
 This module proves that one fractional step is enough.  The exact matched radius and the global
 Lipschitz bound for cosine give
 
-`profile_n(xi) ≤ pi * w_n^2 / exp(log(n)/2) * |xi|`.
+`profile_n(xi) ≤ pi * w_n^(2 : ℕ) / exp(log(n)/2) * |xi|`.
 
 The arithmetic coefficient is dominated by `Lambda(n) log(n) n^(-3/2)` and is summable.  Hence a
 single finite Fourier first moment of an actual head makes both the symmetric residual and the full
@@ -89,7 +89,7 @@ theorem ccmActualHeadMatchedPrimePolarRadius_le_weight_div (n : ℕ) :
     (4 * Real.exp (Real.log n / 2))
   have hz : 0 ≤ z := by
     dsimp only [z]
-    exact div_nonneg (criticalMellinAtomWeight_nonneg n)
+    exact div_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
       (mul_nonneg (by norm_num) (Real.exp_pos _).le)
   unfold ccmActualHeadMatchedPrimePolarRadius
   change 2 * Real.arsinh z ≤ _
@@ -172,7 +172,7 @@ theorem ccmActualHeadMatchedCosinePhaseProfile_le_firstMomentKernel
           ccmActualHeadMatchedPrimePolarRadius_le_weight_div n
       have hw : 0 ≤ w := by
         dsimp only [w]
-        exact criticalMellinAtomWeight_nonneg n
+        exact criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
       have hnonneg : 0 ≤ 4 * Real.pi * |xi| * (w / 2) :=
         mul_nonneg (mul_nonneg (by positivity) (abs_nonneg xi))
           (div_nonneg hw (by norm_num))

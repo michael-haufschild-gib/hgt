@@ -77,9 +77,9 @@ theorem gomesPolynomialReflectionMatrix_eq (c : K) :
 
 /-- Every formal reflection matrix is an involution. -/
 theorem gomesPolynomialReflectionMatrix_sq (c : K) :
-    gomesPolynomialReflectionMatrix K c ^ 2 = 1 := by
+    gomesPolynomialReflectionMatrix K c ^ (2 : ℕ) = 1 := by
   change gomesPolynomialDerivativePowerCommutantEquiv K 2
-    (gomesPolynomialReflectionSymmetry K c) ^ 2 = 1
+    (gomesPolynomialReflectionSymmetry K c) ^ (2 : ℕ) = 1
   rw [← map_pow, ← map_one (gomesPolynomialDerivativePowerCommutantEquiv K 2)]
   apply (gomesPolynomialDerivativePowerCommutantEquiv K 2).congr_arg
   apply Subtype.ext
@@ -87,8 +87,8 @@ theorem gomesPolynomialReflectionMatrix_sq (c : K) :
 
 /-- Reflection involutivity forces the exact formal hyperbolic identity for all centers. -/
 theorem gomesFormalEvenOddExponential_identity (c : K) :
-    gomesFormalEvenExponential K c ^ 2 -
-      PowerSeries.X * gomesFormalOddExponential K c ^ 2 = 1 := by
+    gomesFormalEvenExponential K c ^ (2 : ℕ) -
+      PowerSeries.X * gomesFormalOddExponential K c ^ (2 : ℕ) = 1 := by
   have h := congrArg (fun M : Matrix (Fin 2) (Fin 2) (PowerSeries K) => M 0 0)
     (gomesPolynomialReflectionMatrix_sq K c)
   rw [gomesPolynomialReflectionMatrix_eq] at h

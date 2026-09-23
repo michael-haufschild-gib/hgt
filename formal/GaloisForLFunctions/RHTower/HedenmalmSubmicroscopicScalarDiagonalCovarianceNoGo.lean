@@ -49,7 +49,7 @@ theorem exists_twoPointSymmetricScalarDiagonalBudget_gt_diagonal
 /-- Pair covariance produced by a transverse displacement, equivalently a positive-real
 displacement in the ordinary `s` coordinate. -/
 def submicroscopicTransversePairKernel (eps d : ℝ) : ℝ :=
-  eps ^ 2 / (d ^ 2 + eps ^ 2)
+  eps ^ (2 : ℕ) / (d ^ (2 : ℕ) + eps ^ (2 : ℕ))
 
 theorem submicroscopicTransversePairKernel_zero
     {eps : ℝ} (heps : eps ≠ 0) :
@@ -75,7 +75,7 @@ theorem two_lt_twoPoint_transverseScalarDiagonalBudget
 /-- Pair covariance produced by the centered real-height shift used by the existing source-only
 diagonal extractor. -/
 def submicroscopicRealPairKernel (eps d : ℝ) : ℝ :=
-  eps ^ 2 / (eps ^ 2 - d ^ 2)
+  eps ^ (2 : ℕ) / (eps ^ (2 : ℕ) - d ^ (2 : ℕ))
 
 theorem submicroscopicRealPairKernel_zero
     {eps : ℝ} (heps : eps ≠ 0) :
@@ -86,7 +86,7 @@ theorem submicroscopicRealPairKernel_zero
 theorem submicroscopicRealPairKernel_pos_of_abs_lt
     {eps d : ℝ} (heps : 0 < eps) (hd : |d| < eps) :
     0 < submicroscopicRealPairKernel eps d := by
-  have hdsq : d ^ 2 < eps ^ 2 := by
+  have hdsq : d ^ (2 : ℕ) < eps ^ (2 : ℕ) := by
     have hsq := (sq_lt_sq₀ (abs_nonneg d) heps.le).2 hd
     rwa [sq_abs] at hsq
   rw [submicroscopicRealPairKernel]

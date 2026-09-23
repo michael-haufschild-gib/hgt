@@ -24,9 +24,9 @@ def infiniteMobiusCriticalFisherTangentWeight
 
 theorem norm_infiniteMobiusCriticalFisherTangentWeight_sq
     {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
-    ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ 2 =
-      4 * (sigma - 1) ^ 2 * squarefreeMobiusProbability sigma n *
-        (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2 := by
+    ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ (2 : ℕ) =
+      4 * (sigma - 1) ^ (2 : ℕ) * squarefreeMobiusProbability sigma n *
+        (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ (2 : ℕ) := by
   rw [infiniteMobiusCriticalFisherTangentWeight, norm_mul, mul_pow,
     norm_infiniteMobiusSignedWeight_sq hsigma, Complex.norm_real, Real.norm_eq_abs,
     sq_abs]
@@ -35,11 +35,11 @@ theorem norm_infiniteMobiusCriticalFisherTangentWeight_sq
 private theorem summable_squarefreeMobiusCenteredLogSq
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Summable (fun n : ℕ => squarefreeMobiusProbability sigma n *
-      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2) := by
+      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ (2 : ℕ)) := by
   let m := squarefreeMobiusLogMoment 1 sigma
   have h2 := summable_squarefreeMobiusLogMoment 2 hsigma
   have h1 := (summable_squarefreeMobiusLogMoment 1 hsigma).mul_left (-2 * m)
-  have h0 := (summable_squarefreeMobiusProbability hsigma).mul_left (m ^ 2)
+  have h0 := (summable_squarefreeMobiusProbability hsigma).mul_left (m ^ (2 : ℕ))
   apply (h2.add h1 |>.add h0).congr
   intro n
   dsimp [m]
@@ -48,8 +48,8 @@ private theorem summable_squarefreeMobiusCenteredLogSq
 private theorem tsum_squarefreeMobiusCenteredLogSq
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (∑' n : ℕ, squarefreeMobiusProbability sigma n *
-      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2) =
-      squarefreeMobiusLogMoment 2 sigma - squarefreeMobiusLogMoment 1 sigma ^ 2 := by
+      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ (2 : ℕ)) =
+      squarefreeMobiusLogMoment 2 sigma - squarefreeMobiusLogMoment 1 sigma ^ (2 : ℕ) := by
   let m := squarefreeMobiusLogMoment 1 sigma
   have h2 := summable_squarefreeMobiusLogMoment 2 hsigma
   have h1base : Summable (fun n : ℕ =>
@@ -57,18 +57,18 @@ private theorem tsum_squarefreeMobiusCenteredLogSq
     simpa only [pow_one] using summable_squarefreeMobiusLogMoment 1 hsigma
   have h1 := h1base.mul_left (-2 * m)
   have h0base := summable_squarefreeMobiusProbability hsigma
-  have h0 := h0base.mul_left (m ^ 2)
+  have h0 := h0base.mul_left (m ^ (2 : ℕ))
   rw [show (fun n : ℕ => squarefreeMobiusProbability sigma n *
-      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2) =
-      fun n => squarefreeMobiusProbability sigma n * Real.log n ^ 2 +
+      (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ (2 : ℕ)) =
+      fun n => squarefreeMobiusProbability sigma n * Real.log n ^ (2 : ℕ) +
         (-2 * m) * (squarefreeMobiusProbability sigma n * Real.log n) +
-          m ^ 2 * squarefreeMobiusProbability sigma n by
+          m ^ (2 : ℕ) * squarefreeMobiusProbability sigma n by
     funext n
     dsimp [m]
     ring]
   rw [Summable.tsum_add (h2.add h1) h0, Summable.tsum_add h2 h1,
     tsum_mul_left, tsum_mul_left]
-  rw [show (∑' n : ℕ, squarefreeMobiusProbability sigma n * Real.log n ^ 2) =
+  rw [show (∑' n : ℕ, squarefreeMobiusProbability sigma n * Real.log n ^ (2 : ℕ)) =
       squarefreeMobiusLogMoment 2 sigma by rfl]
   rw [show (∑' n : ℕ, squarefreeMobiusProbability sigma n * Real.log n) =
       squarefreeMobiusLogMoment 1 sigma by
@@ -81,9 +81,9 @@ private theorem tsum_squarefreeMobiusCenteredLogSq
 private theorem summable_norm_sq_infiniteMobiusCriticalFisherTangentWeight
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Summable (fun n : ℕ =>
-      ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ 2) := by
+      ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ (2 : ℕ)) := by
   have h := (summable_squarefreeMobiusCenteredLogSq hsigma).mul_left
-    (4 * (sigma - 1) ^ 2)
+    (4 * (sigma - 1) ^ (2 : ℕ))
   apply h.congr
   intro n
   rw [norm_infiniteMobiusCriticalFisherTangentWeight_sq hsigma]
@@ -99,14 +99,14 @@ def infiniteMobiusCriticalFisherTangentLp
 /-- Exact Fisher-energy identity for the Hilbert tangent. -/
 theorem norm_infiniteMobiusCriticalFisherTangentLp_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2 =
+    ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ) =
       squarefreeMobiusCriticalProjectiveFisherEnergy sigma := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   simp only [infiniteMobiusCriticalFisherTangentLp]
-  rw [show (∑' n : ℕ, ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ 2) =
-      4 * (sigma - 1) ^ 2 *
+  rw [show (∑' n : ℕ, ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ (2 : ℕ)) =
+      4 * (sigma - 1) ^ (2 : ℕ) *
         ∑' n : ℕ, squarefreeMobiusProbability sigma n *
-          (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2 by
+          (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ (2 : ℕ) by
     rw [← tsum_mul_left]
     apply tsum_congr
     intro n
@@ -121,7 +121,7 @@ theorem norm_infiniteMobiusCriticalFisherTangentLp_sq
 theorem tendsto_norm_infiniteMobiusCriticalFisherTangentLp_sq :
     Tendsto (fun sigma : ℝ =>
       if hsigma : 1 < sigma then
-        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2
+        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ)
       else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
   apply tendsto_squarefreeMobiusCriticalProjectiveFisherEnergy.congr'
@@ -152,7 +152,7 @@ theorem inner_infiniteMobiusSignedWeightLp_fisherTangent_eq_zero
         (starRingEnd ℂ) (infiniteMobiusSignedWeight sigma n) =
         (squarefreeMobiusProbability sigma n : ℂ) := by
       calc
-        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ 2) :=
+        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
           RCLike.mul_conj (infiniteMobiusSignedWeight sigma n)
         _ = _ := by
           rw [← Complex.ofReal_pow,

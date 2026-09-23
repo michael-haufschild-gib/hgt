@@ -85,7 +85,7 @@ theorem kloostermanUnitFourierCoeff_additiveHybrid_eq
     _ = _ := mul_comm _ _
 
 /-- Exact hybrid Kloosterman energy law.  Its output energy is supported only
-on unit physical residue classes, with the exact factor `(q + 1)^3`. -/
+on unit physical residue classes, with the exact factor `(q + 1)^(3 : ℕ)`. -/
 theorem sum_normSq_kloostermanHybridTransform_eq_unitResidueEnergy
     (q N : ℕ) (a : ℕ → ℂ) (t : ℝ) :
     ∑ n : ZMod (q + 1), Complex.normSq (kloostermanHybridTransform q N a n t) =

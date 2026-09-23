@@ -651,12 +651,13 @@ theorem total_initialEnergy_le_primitiveEnergy (N : ℕ) :
         ((k : ℝ) * (k + 1))) =
       ∑ n ∈ Finset.range N, bdMobiusModularApproximant N (n + 1) ^ 2 /
         (((n : ℝ) + 1) * ((n : ℝ) + 2)) := by
-    induction N with
-    | zero => simp
-    | succ N ih =>
-      rw [Finset.sum_Icc_succ_top (by omega), Finset.sum_range_succ, ih]
-      push_cast
-      ring
+    have hIco : Finset.Icc 1 N = Finset.Ico 1 (N + 1) := rfl
+    rw [hIco, Finset.sum_Ico_eq_sum_range]
+    simp only [Nat.add_sub_cancel]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [Nat.add_comm 1 n]
+    push_cast
+    ring
   have hterm (n : ℕ) :
       bdMobiusModularApproximant N (n + 1) ^ 2 /
           (((n : ℝ) + 1) * ((n : ℝ) + 2)) ≤
@@ -711,6 +712,6 @@ theorem exists_harmonic_head_le_primitiveEnergy_subpower {ε : ℝ} (hε : 0 < �
         DeletionCoprimeHead.headMass N * deningerHarmonicPartial N ^ 2 :=
       mul_le_mul_of_nonneg_right (half_nat_le_headMass N) (sq_nonneg _)
     _ ≤ (∑ r ∈ Icc 1 N, initialEnergy r N) + C * (N : ℝ) ^ ε := hmean
-    _ ≤ _ := add_le_add_right hhead _
+    _ ≤ _ := add_le_add_left hhead _
 
 end RHTower.DeletionGcdHead

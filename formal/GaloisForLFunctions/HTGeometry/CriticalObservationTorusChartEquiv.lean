@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.LocalizationAwayRingEquiv
 
 The observation coordinates consist of two nonempty finite blocks.  Reindex them so that the
 distinguished coordinate in each block is first, and then transport localization away from their
-product.  This gives the exact coordinate-ring identification with `(G_m)^2 x A^(m+n-2)`.
+product.  This gives the exact coordinate-ring identification with `(G_m)^(2 : ℕ) x A^(m+n-2)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

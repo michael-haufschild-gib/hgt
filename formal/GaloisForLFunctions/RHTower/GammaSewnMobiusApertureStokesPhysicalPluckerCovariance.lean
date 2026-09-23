@@ -114,8 +114,8 @@ theorem gammaSewnOrderedPrimeDepthPlucker_rate_injective
 
 theorem gammaSewnCriticalPrimeDepthPacket_rate_boundary_ne
     {e : ℕ} {p q : Nat.Primes} (i : Fin 4) :
-    gammaSewnOrderedPrimeDepthPlucker_rate e p q i ^ 2 -
-      gammaSewnCriticalFinitePacket_aperture ^ 2 ≠ 0 := by
+    gammaSewnOrderedPrimeDepthPlucker_rate e p q i ^ (2 : ℕ) -
+      gammaSewnCriticalFinitePacket_aperture ^ (2 : ℕ) ≠ 0 := by
   have ha0 := gammaSewnCriticalPlucker_hostileHarmonicAperture_pos
   have hpe := gammaSewnCriticalFinitePacket_aperture_admissible e p
   have hpe1 := gammaSewnCriticalFinitePacket_aperture_admissible (e + 1) p
@@ -170,7 +170,7 @@ theorem fourRatePluckerCovariance_nonneg
   have hnonneg : 0 ≤ ∑ s, ∑ t,
       weight s * weight t *
         (RHTower.fourRateSelectedSum x s -
-          RHTower.fourRateSelectedSum x t) ^ 2 := by
+          RHTower.fourRateSelectedSum x t) ^ (2 : ℕ) := by
     exact Finset.sum_nonneg fun s _ => Finset.sum_nonneg fun t _ =>
       mul_nonneg (mul_nonneg (hweight s) (hweight t)) (sq_nonneg _)
   rw [hpair] at hnonneg
@@ -209,7 +209,7 @@ theorem fourRatePluckerCovariance_self_eq_zero_iff_constant
     have hpairZero : (∑ s, ∑ t,
         weight s * weight t *
           (RHTower.fourRateSelectedSum x s -
-            RHTower.fourRateSelectedSum x t) ^ 2) = 0 := by
+            RHTower.fourRateSelectedSum x t) ^ (2 : ℕ)) = 0 := by
       rw [hpair]
       unfold RHTower.normalizedFiniteVariance at hvariance
       rw [hvariance]
@@ -220,7 +220,7 @@ theorem fourRatePluckerCovariance_self_eq_zero_iff_constant
       have houterNonneg : ∀ u ∈ (Finset.univ : Finset (Fin 6)),
           0 ≤ ∑ v, weight u * weight v *
             (RHTower.fourRateSelectedSum x u -
-              RHTower.fourRateSelectedSum x v) ^ 2 := by
+              RHTower.fourRateSelectedSum x v) ^ (2 : ℕ) := by
         intro u _
         exact Finset.sum_nonneg fun v _ =>
           mul_nonneg (mul_nonneg (hweight u).le (hweight v).le) (sq_nonneg _)
@@ -229,14 +229,14 @@ theorem fourRatePluckerCovariance_self_eq_zero_iff_constant
       have hinnerNonneg : ∀ v ∈ (Finset.univ : Finset (Fin 6)),
           0 ≤ weight s * weight v *
             (RHTower.fourRateSelectedSum x s -
-              RHTower.fourRateSelectedSum x v) ^ 2 := by
+              RHTower.fourRateSelectedSum x v) ^ (2 : ℕ) := by
         intro v _
         exact mul_nonneg (mul_nonneg (hweight s).le (hweight v).le) (sq_nonneg _)
       have hterm := (Finset.sum_eq_zero_iff_of_nonneg hinnerNonneg).mp hrow
         t (Finset.mem_univ t)
       have hwt : 0 < weight s * weight t := mul_pos (hweight s) (hweight t)
       have hsq : (RHTower.fourRateSelectedSum x s -
-          RHTower.fourRateSelectedSum x t) ^ 2 = 0 := by
+          RHTower.fourRateSelectedSum x t) ^ (2 : ℕ) = 0 := by
         exact (mul_eq_zero.mp hterm).resolve_left hwt.ne'
       exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsq)
     have h01 := hsel 0 1
@@ -255,7 +255,7 @@ def fourRateCoordinateDelta (i j : Fin 4) : ℝ := if j = i then 1 else 0
 exactly zero or one times. -/
 theorem fourRateSelectedSum_coordinateDelta_sq
     (i : Fin 4) (s : Fin 6) :
-    RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ 2 =
+    RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ (2 : ℕ) =
       RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s := by
   fin_cases i <;> fin_cases s <;>
     simp [RHTower.fourRateSelectedSum, RHTower.fourRatePairLeft,
@@ -284,7 +284,7 @@ theorem fourRatePluckerCovariance_coordinateDelta_self_eq_bernoulliVariance
       weight s * RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s *
           RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s =
           weight s *
-            RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ 2 := by
+            RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ (2 : ℕ) := by
               ring
       _ = _ := by rw [fourRateSelectedSum_coordinateDelta_sq]
   rw [hsecond]

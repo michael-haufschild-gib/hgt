@@ -11,7 +11,7 @@ set_option autoImplicit false
 /-- The complete original source is the finite part of one fixed rational weight. -/
 theorem physicalFundamentalSourceMoment_fixed_weight (q : XiZeroCopy) (a : ℂ) :
     fundamentalSourceMoment (physicalFundamentalFrequency q true) (D4BMModularCore.physicalRate q true) a=
-      2*a^2*nonstationaryMoment nonstationarySourceNumerator 8 (physicalFundamentalFrequency q true) := by
+      2*a^(2 : ℕ)*nonstationaryMoment nonstationarySourceNumerator 8 (physicalFundamentalFrequency q true) := by
   have hs := physicalNonstationaryFrequency_strip q
   have hw := physicalFundamentalFrequency_strip q true
   have hw1 : physicalFundamentalFrequency q true+1 ≠ 0 := by
@@ -26,7 +26,7 @@ theorem physicalFundamentalSourceMoment_fixed_weight (q : XiZeroCopy) (a : ℂ) 
 theorem physicalFundamentalSourceMoment_fixed_defect (q : XiZeroCopy) (a : ℂ) :
     (physicalFundamentalFrequency q true+1)*
       fundamentalSourceMoment (physicalFundamentalFrequency q true) (D4BMModularCore.physicalRate q true) a=
-      2*a^2*((86/625:ℂ)-nonstationarySourceDefect (physicalFundamentalFrequency q true)) := by
+      2*a^(2 : ℕ)*((86/625:ℂ)-nonstationarySourceDefect (physicalFundamentalFrequency q true)) := by
   have hs := physicalNonstationaryFrequency_strip q
   have hw := physicalFundamentalFrequency_strip q true
   have hw1 : physicalFundamentalFrequency q true+1 ≠ 0 := by
@@ -36,7 +36,7 @@ theorem physicalFundamentalSourceMoment_fixed_defect (q : XiZeroCopy) (a : ℂ) 
     exact hw.1 hi
   rw [physicalFundamentalSourceMoment_fixed_weight]
   calc
-    _ = 2*a^2*((physicalFundamentalFrequency q true+1)*
+    _ = 2*a^(2 : ℕ)*((physicalFundamentalFrequency q true+1)*
         nonstationaryMoment nonstationarySourceNumerator 8 (physicalFundamentalFrequency q true)) := by ring
     _ = _ := by rw [nonstationarySourceNumerator_normalized _ (by linarith [hs.1]) hw1]
 
@@ -55,7 +55,7 @@ theorem physicalFundamentalSourceMoment_low_height_ne_zero :
   have hd := h _ ⟨hs.1.le,hs.2.le⟩ hi
   have he := physicalFundamentalSourceMoment_fixed_defect q a
   rw [hm,mul_zero] at he
-  have hprod : 2*a^2*((86/625:ℂ)-nonstationarySourceDefect (physicalFundamentalFrequency q true)) ≠ 0 :=
+  have hprod : 2*a^(2 : ℕ)*((86/625:ℂ)-nonstationarySourceDefect (physicalFundamentalFrequency q true)) ≠ 0 :=
     mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero _ ha)) (sub_ne_zero.mpr hd.symm)
   exact hprod he.symm
 

@@ -121,9 +121,9 @@ theorem norm_lbitBoundaryPhaseResponse_le_packetMass
 /-- Finite-time operational dimension is bounded by the same packet mass. -/
 theorem lbitBoundaryResponse_capacity_le_packetMass
     (r : ℕ) (t : ℝ) {η : ℝ} (hη : 0 ≤ η) :
-    η ^ 2 *
+    η ^ (2 : ℕ) *
         (walshThresholdCount (lbitBoundaryPhaseResponse r t) η : ℝ) ≤
-      (4 * |t| * lbitBoundaryPacketAbsMass r) ^ 2 := by
+      (4 * |t| * lbitBoundaryPacketAbsMass r) ^ (2 : ℕ) := by
   exact sq_mul_walshThresholdCount_le_bound_sq
     (lbitBoundaryPhaseResponse r t) hη
     (norm_lbitBoundaryPhaseResponse_le_packetMass r t)
@@ -133,10 +133,10 @@ Walsh directions visible at resolution `η` and time `t` pays the square of
 the exact boundary dimension against the global quasi-locality budget. -/
 theorem lbitBoundaryResponse_dimension_time_capacity
     (r : ℕ) (t : ℝ) {η : ℝ} (hη : 0 ≤ η) :
-    η ^ 2 *
+    η ^ (2 : ℕ) *
         (walshThresholdCount (lbitBoundaryPhaseResponse r t) η : ℝ) *
-        ((2 : ℝ) ^ r) ^ 2 ≤
-      4 * t ^ 2 * quasiLocalInfiniteLBitWeightedMass ^ 2 := by
+        ((2 : ℝ) ^ r) ^ (2 : ℕ) ≤
+      4 * t ^ (2 : ℕ) * quasiLocalInfiniteLBitWeightedMass ^ (2 : ℕ) := by
   let D : ℝ := (2 : ℝ) ^ r
   let M : ℝ := lbitBoundaryPacketAbsMass r
   let K : ℝ := quasiLocalInfiniteLBitWeightedMass
@@ -152,24 +152,24 @@ theorem lbitBoundaryResponse_dimension_time_capacity
     change (2 : ℝ) ^ (r + 1) * M ≤ K at h
     rw [pow_succ] at h
     nlinarith
-  have hbudgetSq : (2 * D * M) ^ 2 ≤ K ^ 2 := by
+  have hbudgetSq : (2 * D * M) ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := by
     simpa only [pow_two] using
       (mul_self_le_mul_self (by positivity : 0 ≤ 2 * D * M) hbudget)
   have hcap := lbitBoundaryResponse_capacity_le_packetMass r t hη
   have hscaled := mul_le_mul_of_nonneg_right hcap (sq_nonneg D)
   change
-    η ^ 2 *
+    η ^ (2 : ℕ) *
         (walshThresholdCount (lbitBoundaryPhaseResponse r t) η : ℝ) *
-        D ^ 2 ≤ 4 * t ^ 2 * K ^ 2
+        D ^ (2 : ℕ) ≤ 4 * t ^ (2 : ℕ) * K ^ (2 : ℕ)
   calc
-    η ^ 2 *
+    η ^ (2 : ℕ) *
           (walshThresholdCount (lbitBoundaryPhaseResponse r t) η : ℝ) *
-          D ^ 2 ≤
-        (4 * |t| * M) ^ 2 * D ^ 2 := hscaled
-    _ = 4 * t ^ 2 * (2 * D * M) ^ 2 := by
+          D ^ (2 : ℕ) ≤
+        (4 * |t| * M) ^ (2 : ℕ) * D ^ (2 : ℕ) := hscaled
+    _ = 4 * t ^ (2 : ℕ) * (2 * D * M) ^ (2 : ℕ) := by
       simp only [mul_pow, sq_abs]
       ring
-    _ ≤ 4 * t ^ 2 * K ^ 2 := by
+    _ ≤ 4 * t ^ (2 : ℕ) * K ^ (2 : ℕ) := by
       gcongr
 
 /-- Resolving every one of the `2 ^ r` boundary directions forces the cubic
@@ -180,8 +180,8 @@ theorem lbitBoundaryResponse_fullVisibility_time_lower_sq
       ∀ A : Finset ↥(lbitBoundaryInterior r),
         η ≤ ‖inverseWalshCoefficient
           (lbitBoundaryPhaseResponse r t) A‖) :
-    η ^ 2 * ((2 : ℝ) ^ r) ^ 3 ≤
-      4 * t ^ 2 * quasiLocalInfiniteLBitWeightedMass ^ 2 := by
+    η ^ (2 : ℕ) * ((2 : ℝ) ^ r) ^ (3 : ℕ) ≤
+      4 * t ^ (2 : ℕ) * quasiLocalInfiniteLBitWeightedMass ^ (2 : ℕ) := by
   classical
   have hcount :
       walshThresholdCount (lbitBoundaryPhaseResponse r t) η =
@@ -193,15 +193,15 @@ theorem lbitBoundaryResponse_fullVisibility_time_lower_sq
       exact hvisible A
   have hcap := lbitBoundaryResponse_dimension_time_capacity r t hη
   calc
-    η ^ 2 * ((2 : ℝ) ^ r) ^ 3 =
-        η ^ 2 *
+    η ^ (2 : ℕ) * ((2 : ℝ) ^ r) ^ (3 : ℕ) =
+        η ^ (2 : ℕ) *
           (walshThresholdCount
             (lbitBoundaryPhaseResponse r t) η : ℝ) *
-          ((2 : ℝ) ^ r) ^ 2 := by
+          ((2 : ℝ) ^ r) ^ (2 : ℕ) := by
       rw [hcount]
       norm_num [Nat.cast_pow]
       ring
-    _ ≤ 4 * t ^ 2 * quasiLocalInfiniteLBitWeightedMass ^ 2 := hcap
+    _ ≤ 4 * t ^ (2 : ℕ) * quasiLocalInfiniteLBitWeightedMass ^ (2 : ℕ) := hcap
 
 end
 

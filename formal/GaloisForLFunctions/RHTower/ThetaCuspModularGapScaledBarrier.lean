@@ -23,7 +23,7 @@ private theorem forcingBracket_pos {x : ℝ} (hx : 0 ≤ x) :
   have hu3 := thetaCuspModularMassDrift_lt_three hx
   have hk := k_gt hx
   have hg := kineticGap_lt hx
-  have ht : (3-u x)^2 ≤ t x := by
+  have ht : (3-u x)^(2 : ℕ) ≤ t x := by
     have h := mul_nonneg hu (show 0 ≤ 3-u x by linarith only [hu3])
     dsimp [t]
     nlinarith only [h]

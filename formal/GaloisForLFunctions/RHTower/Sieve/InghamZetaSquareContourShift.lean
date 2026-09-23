@@ -24,7 +24,7 @@ theorem rectIntegral_inghamZetaSquareMellinIntegrand
     rectIntegral (inghamZetaSquareMellinIntegrand (linePt tau) x)
         (Complex.mk c (-T)) (Complex.mk 2 T) =
       2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)) := by
   have hT0 : 0 < T := lt_of_le_of_lt (abs_nonneg tau) hT
@@ -32,7 +32,7 @@ theorem rectIntegral_inghamZetaSquareMellinIntegrand
   apply rectIntegral_eq_confluent_two_pole_residues_of_analyticOnNhd
     (U := inghamZetaSquareShiftDomain)
     (p := 0) (q := 1 - linePt tau)
-    (rp := riemannZeta (linePt tau) ^ 2)
+    (rp := riemannZeta (linePt tau) ^ (2 : ℕ))
     (dq := confluentDoubleCoeff
       (inghamZetaSquarePoleNumerator (linePt tau) x) (1 - linePt tau))
     (rq := confluentResidueCoeff

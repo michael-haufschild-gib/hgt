@@ -77,7 +77,7 @@ theorem norm_thresholdOperator_le' {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 :
       ≤ K₂ * (1 + |y|) ^ (1 / 2 + σ))
     {Y : ℝ} (hY : 1 ≤ |Y|) {L : ℝ} (hfloor : μ₀ ≤ wallFloor T σ Y + L) :
     ‖thresholdOperator E T σ L Y‖
-      ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * (μ₀⁻¹ + (μ₀⁻¹) ^ 3 * (3 + Real.pi) * (1 + |Y|)⁻¹) := by
+      ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * (μ₀⁻¹ + (μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi) * (1 + |Y|)⁻¹) := by
   have hW : ‖wallPhaseMap E T σ L Y‖ ≤ K₂ * (1 + |Y|) ^ (1 / 2 + σ) := by
     rw [wallPhaseMap, norm_smul, norm_expPhase, one_mul]
     exact hb₂ Y
@@ -85,7 +85,7 @@ theorem norm_thresholdOperator_le' {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 :
   have hA : ‖invFamily (wallGeneratorShift T σ L) Y‖ ≤ μ₀⁻¹ :=
     norm_invFamily_wallGeneratorShift_le' hσ0 hσ1 hμ hfloor
   have hP : ‖invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) Y‖
-      ≤ (μ₀⁻¹) ^ 3 * (3 + Real.pi) * (1 + |Y|)⁻¹ :=
+      ≤ (μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi) * (1 + |Y|)⁻¹ :=
     norm_invFamilyProduct_wallGeneratorShift_le' hσ0 hσ1 hμ hY hfloor
   calc ‖thresholdOperator E T σ L Y‖
       ≤ ‖(Complex.I : ℂ) • (wallPhaseMap E T σ L Y * invFamily (wallGeneratorShift T σ L) Y)‖
@@ -93,13 +93,13 @@ theorem norm_thresholdOperator_le' {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 :
             * invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) Y‖ :=
         norm_add_le _ _
     _ ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * μ₀⁻¹
-        + (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * ((μ₀⁻¹) ^ 3 * (3 + Real.pi) * (1 + |Y|)⁻¹) := by
+        + (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * ((μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi) * (1 + |Y|)⁻¹) := by
         refine add_le_add ?_ ?_
         · rw [norm_smul, Complex.norm_I, one_mul]
           exact le_trans (norm_mul_le _ _) (mul_le_mul hW hA (norm_nonneg _) hWnn)
         · exact le_trans (norm_mul_le _ _) (mul_le_mul hW hP (norm_nonneg _) hWnn)
     _ = (K₂ * (1 + |Y|) ^ (1 / 2 + σ))
-          * (μ₀⁻¹ + (μ₀⁻¹) ^ 3 * (3 + Real.pi) * (1 + |Y|)⁻¹) := by ring
+          * (μ₀⁻¹ + (μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi) * (1 + |Y|)⁻¹) := by ring
 
 omit [Nontrivial X] in
 /-- The threshold operator bound on the outward ray. -/
@@ -108,7 +108,7 @@ theorem norm_thresholdOperator_le {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
       ≤ K₂ * (1 + |y|) ^ (1 / 2 + σ))
     {Y : ℝ} (hY : 1 ≤ Y) {L : ℝ} (hfloor : μ₀ ≤ wallFloor T σ Y + L) :
     ‖thresholdOperator E T σ L Y‖
-      ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * (μ₀⁻¹ + (μ₀⁻¹) ^ 3 * (3 + Real.pi) * (1 + Y)⁻¹) := by
+      ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * (μ₀⁻¹ + (μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi) * (1 + Y)⁻¹) := by
   have hYabs : |Y| = Y := abs_of_nonneg (by linarith)
   refine (norm_thresholdOperator_le' hσ0 hσ1 hμ hb₂ (by rw [hYabs]; exact hY) hfloor).trans
     (le_of_eq ?_)
@@ -122,7 +122,7 @@ threshold are a fixed vector propagated by the transport; the remaining integral
 tail. -/
 theorem stripPropagator_movingTail_decomposition_abs
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m Y x μ₀ : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
@@ -223,7 +223,7 @@ theorem stripPropagator_movingTail_decomposition_abs
 /-- **The moving part of the propagated tail, on the outward ray.** -/
 theorem stripPropagator_movingTail_decomposition
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m Y x μ₀ : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))

@@ -45,7 +45,7 @@ theorem tendsto_centralIndex_atTop (ha : EntireCoeffs a)
     exact Finset.mem_range.mpr (by omega)
   have hpow : r ≤ r ^ (m - v) := by
     have hone : 1 ≤ m - v := by omega
-    calc r = r ^ 1 := (pow_one r).symm
+    calc r = r ^ (1 : ℕ) := (pow_one r).symm
       _ ≤ r ^ (m - v) := pow_le_pow_right₀ hr1 hone
   have hkey : ‖a v‖ < ‖a m‖ * r ^ (m - v) := by
     have h1 : ‖a v‖ / ‖a m‖ < r := by linarith
@@ -99,7 +99,7 @@ theorem tendsto_maxTerm_div_pow_atTop (ha : EntireCoeffs a)
     congr 1
     omega
   have hpow : r ≤ r ^ (m - k) :=
-    calc r = r ^ 1 := (pow_one r).symm
+    calc r = r ^ (1 : ℕ) := (pow_one r).symm
       _ ≤ r ^ (m - k) := pow_le_pow_right₀ hr1 (by omega)
   rw [le_div_iff₀ (pow_pos hrpos k)]
   calc ‖a m‖ * r * r ^ k ≤ ‖a m‖ * r ^ (m - k) * r ^ k := by gcongr

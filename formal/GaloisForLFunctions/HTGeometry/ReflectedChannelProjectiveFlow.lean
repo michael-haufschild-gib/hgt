@@ -33,7 +33,7 @@ def reflectedChannelProjectiveWronskian
 /-- Canonically oriented division-free projective flow. -/
 def reflectedChannelProjectiveFlow
     (A B : ℂ → ℂ) (z : ℂ) : ℂ :=
-  A z ^ 2 * starRingEnd ℂ (reflectedChannelProjectiveWronskian A B z)
+  A z ^ (2 : ℕ) * starRingEnd ℂ (reflectedChannelProjectiveWronskian A B z)
 
 /-- Odd Cayley coordinate of an ordered reflected pair. Its zero is the anti-phase collision. -/
 def reflectedChannelOddCoordinate (A B : ℂ → ℂ) (z : ℂ) : ℂ :=
@@ -95,16 +95,16 @@ theorem hasDerivAt_reflectedChannelProjectiveRatio
     (hA : HasDerivAt A a' z) (hB : HasDerivAt B b' z)
     (hA0 : A z ≠ 0) :
     HasDerivAt (reflectedChannelProjectiveRatio A B)
-      ((b' * A z - B z * a') / A z ^ 2) z := by
+      ((b' * A z - B z * a') / A z ^ (2 : ℕ)) z := by
   change HasDerivAt (fun w => B w / A w)
-    ((b' * A z - B z * a') / A z ^ 2) z
+    ((b' * A z - B z * a') / A z ^ (2 : ℕ)) z
   exact hB.div hA hA0
 
 /-- Universal projective flow law: the quotient derivative along its canonical flow is the
 nonnegative Wronskian norm-square. -/
 theorem reflectedChannelProjectiveDerivative_mul_flow
     {A B : ℂ → ℂ} {z : ℂ} (hA0 : A z ≠ 0) :
-    (reflectedChannelProjectiveWronskian A B z / A z ^ 2) *
+    (reflectedChannelProjectiveWronskian A B z / A z ^ (2 : ℕ)) *
         reflectedChannelProjectiveFlow A B z =
       (Complex.normSq
         (reflectedChannelProjectiveWronskian A B z) : ℂ) := by

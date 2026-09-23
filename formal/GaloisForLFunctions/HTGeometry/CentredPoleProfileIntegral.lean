@@ -19,12 +19,12 @@ and its energy is exactly `π`:
 The proof is the explicit primitive
 
 ```text
-P(y) = (-(1/2) y^5 + (5/12) y^3 - (1/32) y)/(y² + 1/4)^3 + arctan (2y) ,
+P(y) = (-(1/2) y^(5 : ℕ) + (5/12) y^(3 : ℕ) - (1/32) y)/(y² + 1/4)^(3 : ℕ) + arctan (2y) ,
 ```
 
 whose rational part vanishes at both ends, so the whole integral is the total variation `π` of
 `arctan`.  Integrability comes from the pointwise majorant `p(y)² ≤ (y² + 1/4)^(-1)`, which is the
-identity `(y² + 1/4)^3 - y²(3/4 - y²)² = (9/4)(y² - 1/12)²`.
+identity `(y² + 1/4)^(3 : ℕ) - y²(3/4 - y²)² = (9/4)(y² - 1/12)²`.
 -/
 
 open MeasureTheory Filter Topology

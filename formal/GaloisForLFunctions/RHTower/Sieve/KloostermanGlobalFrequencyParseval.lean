@@ -325,7 +325,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_globalFrequen
 
 /-- Zero-mode-exact version of the global-frequency terminal receiver.  Since the signed global
 coefficient vanishes at frequency zero, Cauchy--Schwarz is charged only to the nonzero terminal
-orbits, whose exact energy is `P * (M % P) - (M % P)^2`. -/
+orbits, whose exact energy is `P * (M % P) - (M % P)^(2 : ℕ)`. -/
 theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_globalFrequencyCollisionEnergy_erase_zero
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :

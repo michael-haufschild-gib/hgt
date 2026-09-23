@@ -18,7 +18,7 @@ attribute [-instance] NormedSpace.complexToReal
 def incomingSourceTransport (s chi a J K w : ℂ) (b : ℝ) : ℂ :=
   firstEndpointMellin (horizonMellinCore s chi a J K) b w*
     (1/(w-2*s)+onsetCorrection (2*s) w)/
-      (2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon w chi b)^2)
+      (2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon w chi b)^(2 : ℕ))
 
 /-- The exact original Wronskian cancels the apparent connection pole in the quotient derivative. -/
 theorem continuedResponse_div_horizon_hasDerivAt (s chi a J K w : ℂ)
@@ -41,7 +41,7 @@ theorem continuedResponse_div_horizon_hasDerivAt (s chi a J K w : ℂ)
   apply (hd.div hH hh).congr_deriv
   calc
     _ = (horizon w chi b*normalizableFirst w chi b-horizonFirst w chi b*normalizable w chi b)*
-        continuedHorizonMoment s chi a J K b w/(horizon w chi b)^2 := by
+        continuedHorizonMoment s chi a J K b w/(horizon w chi b)^(2 : ℕ) := by
       dsimp only [continuedResponse,continuedResponseFirst]
       ring
     _ = _ := by
@@ -57,7 +57,7 @@ theorem incomingSourceTransport_analyticAt (s chi a J K w : ℂ)
   have ht : AnalyticAt ℂ (fun v : ℂ => 1/(v-2*s)+onsetCorrection (2*s) v) w :=
     (analyticAt_const.div (analyticAt_id.sub analyticAt_const) hs).add
       ((onsetCorrection_entire (2*s)).analyticAt w)
-  have hd : AnalyticAt ℂ (fun v : ℂ => 2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon v chi b)^2) w :=
+  have hd : AnalyticAt ℂ (fun v : ℂ => 2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon v chi b)^(2 : ℕ)) w :=
     analyticAt_const.mul ((horizon_frequency_analyticAt w chi hw hb).pow 2)
   have hb0 : (b:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hb.1)
   have hsq : (Real.sqrt (1-b):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
@@ -84,21 +84,21 @@ theorem continuedResponse_div_horizon_derivative_germ (s chi a J K w : ℂ)
 def regularIncomingSourceTransport (s chi a J K w : ℂ) (b : ℝ) : ℂ :=
   normalizedFirstEndpointMellin (horizonMellinCore s chi a J K) w b*
     (1/(w-2*s)+onsetCorrection (2*s) w)/
-      (2*(Real.sqrt (1-b):ℂ)*(gaussFactor w chi false (b:ℂ))^2)
+      (2*(Real.sqrt (1-b):ℂ)*(gaussFactor w chi false (b:ℂ))^(2 : ℕ))
 
 /-- Exact cancellation of the incoming powers, before taking a horizon limit. -/
 theorem incomingSourceTransport_eq_regular (s chi a J K w : ℂ)
     {b : ℝ} (hb : 0 < b) :
     incomingSourceTransport s chi a J K w b=regularIncomingSourceTransport s chi a J K w b := by
   have hb0 : (b:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hb)
-  have hp : (power (w/2) b)^2=(b:ℂ)^w := by
+  have hp : (power (w/2) b)^(2 : ℕ)=(b:ℂ)^w := by
     rw [power,pow_two,← Complex.cpow_add _ _ hb0,show w/2+w/2=w by ring]
   have hbp : (b:ℂ)*(b:ℂ)^w=(b:ℂ)^(w+1) := by
     calc
       _ = (b:ℂ)^(1:ℂ)*(b:ℂ)^w := by rw [Complex.cpow_one]
       _ = _ := by rw [← Complex.cpow_add _ _ hb0,add_comm]
-  have hd : 2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon w chi b)^2=
-      (b:ℂ)^(w+1)*(2*(Real.sqrt (1-b):ℂ)*(gaussFactor w chi false (b:ℂ))^2) := by
+  have hd : 2*(b:ℂ)*(Real.sqrt (1-b):ℂ)*(horizon w chi b)^(2 : ℕ)=
+      (b:ℂ)^(w+1)*(2*(Real.sqrt (1-b):ℂ)*(gaussFactor w chi false (b:ℂ))^(2 : ℕ)) := by
     rw [horizon,dress,mul_pow,hp,← hbp]
     ring
   rw [incomingSourceTransport,hd,regularIncomingSourceTransport,normalizedFirstEndpointMellin,
@@ -127,11 +127,11 @@ theorem incomingSourceTransport_tendsto_horizon (s chi a J K w : ℂ)
     simpa only [sub_zero,Real.sqrt_one,Complex.ofReal_one] using hh.mono_left
       (show 𝓝[>] (0:ℝ) ≤ 𝓝 (0:ℝ) from nhdsWithin_le_nhds)
   have hlim := (hM.mul_const (1/(w-2*s)+onsetCorrection (2*s) w)).div
-    ((hS.const_mul 2).mul (hG.pow 2)) (by norm_num : (2:ℂ)*1*1^2 ≠ 0)
+    ((hS.const_mul 2).mul (hG.pow 2)) (by norm_num : (2:ℂ)*1*1^(2 : ℕ) ≠ 0)
   have he : Tendsto (regularIncomingSourceTransport s chi a J K w) (𝓝[>] (0:ℝ))
       (𝓝 (sourceRemainder s w a J K 1 0*(1/(w-2*s)+onsetCorrection (2*s) w)/(2*(w+1)))) := by
     have hv : horizonMellinCore s chi a J K w 0/(w+1)*
-        (1/(w-2*s)+onsetCorrection (2*s) w)/(2*1*1^2)=
+        (1/(w-2*s)+onsetCorrection (2*s) w)/(2*1*1^(2 : ℕ))=
         sourceRemainder s w a J K 1 0*(1/(w-2*s)+onsetCorrection (2*s) w)/(2*(w+1)) := by
       simp only [horizonMellinCore,Complex.ofReal_zero,gaussFactor_zero,one_mul,div_mul_eq_div_div]
       ring

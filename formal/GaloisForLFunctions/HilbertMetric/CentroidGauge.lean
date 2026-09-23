@@ -77,9 +77,9 @@ theorem sum_sub_hilbertCentroid (x : ι → E) :
 /-- **Hilbert centroid translation law.**  Moving the origin from the centroid to `a` adds
 exactly the cardinality times the squared displacement of the origin. -/
 theorem sum_norm_sub_sq_eq_centered_add_card_mul (x : ι → E) (a : E) :
-    ∑ i, ‖x i - a‖ ^ 2 =
-      (∑ i, ‖x i - hilbertCentroid x‖ ^ 2) +
-        (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2 := by
+    ∑ i, ‖x i - a‖ ^ (2 : ℕ) =
+      (∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) +
+        (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ) := by
   have hdecomp : ∀ i, x i - a =
       (x i - hilbertCentroid x) + (hilbertCentroid x - a) := by
     intro i
@@ -92,42 +92,42 @@ theorem sum_norm_sub_sq_eq_centered_add_card_mul (x : ι → E) (a : E) :
 /-- **Metric energy law.**  The total ordered pairwise squared distance is twice the cardinality
 times the centered energy.  Thus the centered energy depends only on the finite metric. -/
 theorem sum_pairwise_norm_sub_sq_eq_two_card_mul_centered (x : ι → E) :
-    ∑ i, ∑ j, ‖x i - x j‖ ^ 2 =
+    ∑ i, ∑ j, ‖x i - x j‖ ^ (2 : ℕ) =
       2 * (Fintype.card ι : ℝ) *
-        ∑ i, ‖x i - hilbertCentroid x‖ ^ 2 := by
+        ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) := by
   have hsub : ∀ i j, x i - x j =
       (x i - hilbertCentroid x) - (x j - hilbertCentroid x) := by
     intro i j
     abel
   have hexpand (i j : ι) :
-      ‖x i - x j‖ ^ 2 =
-        ‖x i - hilbertCentroid x‖ ^ 2 -
+      ‖x i - x j‖ ^ (2 : ℕ) =
+        ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) -
           2 * inner ℝ (x i - hilbertCentroid x) (x j - hilbertCentroid x) +
-            ‖x j - hilbertCentroid x‖ ^ 2 := by
+            ‖x j - hilbertCentroid x‖ ^ (2 : ℕ) := by
     rw [hsub, norm_sub_sq_real]
   have hcross (i : ι) :
       ∑ j, 2 * inner ℝ (x i - hilbertCentroid x) (x j - hilbertCentroid x) = 0 := by
     rw [← Finset.mul_sum, ← inner_sum, sum_sub_hilbertCentroid]
     simp
   have hinner (i : ι) :
-      ∑ j, (‖x i - hilbertCentroid x‖ ^ 2 -
+      ∑ j, (‖x i - hilbertCentroid x‖ ^ (2 : ℕ) -
           2 * inner ℝ (x i - hilbertCentroid x) (x j - hilbertCentroid x) +
-            ‖x j - hilbertCentroid x‖ ^ 2) =
-        (Fintype.card ι : ℝ) * ‖x i - hilbertCentroid x‖ ^ 2 +
-          ∑ j, ‖x j - hilbertCentroid x‖ ^ 2 := by
+            ‖x j - hilbertCentroid x‖ ^ (2 : ℕ)) =
+        (Fintype.card ι : ℝ) * ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) +
+          ∑ j, ‖x j - hilbertCentroid x‖ ^ (2 : ℕ) := by
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, hcross]
     simp [Finset.sum_const, nsmul_eq_mul]
   calc
-    _ = ∑ i, ∑ j, (‖x i - hilbertCentroid x‖ ^ 2 -
+    _ = ∑ i, ∑ j, (‖x i - hilbertCentroid x‖ ^ (2 : ℕ) -
           2 * inner ℝ (x i - hilbertCentroid x) (x j - hilbertCentroid x) +
-            ‖x j - hilbertCentroid x‖ ^ 2) := by
+            ‖x j - hilbertCentroid x‖ ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       apply Finset.sum_congr rfl
       intro j _
       exact hexpand i j
-    _ = ∑ i, ((Fintype.card ι : ℝ) * ‖x i - hilbertCentroid x‖ ^ 2 +
-          ∑ j, ‖x j - hilbertCentroid x‖ ^ 2) := by
+    _ = ∑ i, ((Fintype.card ι : ℝ) * ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) +
+          ∑ j, ‖x j - hilbertCentroid x‖ ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       exact hinner i
@@ -141,23 +141,23 @@ feature gauge splits into the intrinsic centered factor and one universal displa
 This is the scalar gauge identity used by Gaussian distance determinants. -/
 theorem exp_two_mul_sum_norm_sub_sq_eq_centroid_factor
     (x : ι → E) (a : E) (t : ℝ) :
-    Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ 2) =
+    Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) =
       Real.exp
-          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2) *
-        Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) := by
+          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ)) *
+        Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) := by
   rw [sum_norm_sub_sq_eq_centered_add_card_mul]
   rw [show 2 * t *
-        ((∑ i, ‖x i - hilbertCentroid x‖ ^ 2) +
-          (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2) =
-      2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2 +
-        2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2 by ring]
+        ((∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) +
+          (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ)) =
+      2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ) +
+        2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) by ring]
   exact Real.exp_add _ _
 
 section GaussianGauge
 
 /-- The Gaussian distance matrix of a finite Hilbert family at inverse squared bandwidth `t`. -/
 def gaussianDistanceMatrix (x : ι → E) (t : ℝ) : Matrix ι ι ℝ :=
-  fun i j => Real.exp (-t * ‖x i - x j‖ ^ 2)
+  fun i j => Real.exp (-t * ‖x i - x j‖ ^ (2 : ℕ))
 
 /-- The exponential inner-product feature matrix formed about an arbitrary origin `a`. -/
 def exponentialInnerMatrix (x : ι → E) (a : E) (t : ℝ) : Matrix ι ι ℝ :=
@@ -167,7 +167,7 @@ def exponentialInnerMatrix (x : ι → E) (a : E) (t : ℝ) : Matrix ι ι ℝ :
 inner-product feature matrix. -/
 def gaussianGaugeDiagonal (x : ι → E) (a : E) (t : ℝ) : Matrix ι ι ℝ := by
   classical
-  exact Matrix.diagonal fun i => Real.exp (-t * ‖x i - a‖ ^ 2)
+  exact Matrix.diagonal fun i => Real.exp (-t * ‖x i - a‖ ^ (2 : ℕ))
 
 /-- Exact diagonal factorization of a Gaussian distance matrix about any Hilbert-space origin. -/
 theorem gaussianDistanceMatrix_eq_diagonal_mul_inner_mul_diagonal
@@ -191,8 +191,8 @@ omit [InnerProductSpace ℝ E] in
 /-- The product of the Gaussian diagonal gauge is the exponential of its total exponent. -/
 theorem prod_exp_neg_mul_norm_sub_sq
     (x : ι → E) (a : E) (t : ℝ) :
-    ∏ i, Real.exp (-t * ‖x i - a‖ ^ 2) =
-      Real.exp (-t * ∑ i, ‖x i - a‖ ^ 2) := by
+    ∏ i, Real.exp (-t * ‖x i - a‖ ^ (2 : ℕ)) =
+      Real.exp (-t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) := by
   rw [← Real.exp_sum]
   congr 1
   rw [Finset.mul_sum]
@@ -201,7 +201,7 @@ theorem prod_exp_neg_mul_norm_sub_sq
 theorem gaussianDistanceMatrix_det_eq_exp_mul_exponentialInnerMatrix_det
     (x : ι → E) (a : E) (t : ℝ) :
     (gaussianDistanceMatrix x t).det =
-      Real.exp (-2 * t * ∑ i, ‖x i - a‖ ^ 2) *
+      Real.exp (-2 * t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) *
         (exponentialInnerMatrix x a t).det := by
   classical
   rw [gaussianDistanceMatrix_eq_diagonal_mul_inner_mul_diagonal x a t,
@@ -209,8 +209,8 @@ theorem gaussianDistanceMatrix_det_eq_exp_mul_exponentialInnerMatrix_det
   simp only [gaussianGaugeDiagonal, Matrix.det_diagonal]
   simp only [prod_exp_neg_mul_norm_sub_sq]
   calc
-    _ = (Real.exp (-t * ∑ i, ‖x i - a‖ ^ 2) *
-          Real.exp (-t * ∑ i, ‖x i - a‖ ^ 2)) *
+    _ = (Real.exp (-t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) *
+          Real.exp (-t * ∑ i, ‖x i - a‖ ^ (2 : ℕ))) *
         (exponentialInnerMatrix x a t).det := by ring
     _ = _ := by
       rw [← Real.exp_add]
@@ -221,7 +221,7 @@ theorem gaussianDistanceMatrix_det_eq_exp_mul_exponentialInnerMatrix_det
 turns the metric Gaussian determinant into the exponential inner-product determinant. -/
 theorem exp_energy_mul_gaussianDistanceMatrix_det
     (x : ι → E) (a : E) (t : ℝ) :
-    Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ 2) *
+    Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) *
         (gaussianDistanceMatrix x t).det =
       (exponentialInnerMatrix x a t).det := by
   classical
@@ -236,21 +236,21 @@ theorem exponentialInnerMatrix_det_eq_centroid_factor
     (x : ι → E) (a : E) (t : ℝ) :
     (exponentialInnerMatrix x a t).det =
       Real.exp
-          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2) *
+          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ)) *
         (exponentialInnerMatrix x (hilbertCentroid x) t).det := by
   classical
   calc
     (exponentialInnerMatrix x a t).det =
-        Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ 2) *
+        Real.exp (2 * t * ∑ i, ‖x i - a‖ ^ (2 : ℕ)) *
           (gaussianDistanceMatrix x t).det :=
       (exp_energy_mul_gaussianDistanceMatrix_det x a t).symm
     _ = (Real.exp
-          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2) *
-        Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2)) *
+          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ)) *
+        Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ))) *
           (gaussianDistanceMatrix x t).det := by
       rw [exp_two_mul_sum_norm_sub_sq_eq_centroid_factor]
     _ = Real.exp
-          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ 2) *
+          (2 * t * (Fintype.card ι : ℝ) * ‖hilbertCentroid x - a‖ ^ (2 : ℕ)) *
         (exponentialInnerMatrix x (hilbertCentroid x) t).det := by
       rw [mul_assoc,
         exp_energy_mul_gaussianDistanceMatrix_det x (hilbertCentroid x) t]
@@ -261,7 +261,7 @@ theorem exponentialInnerMatrix_det_eq_centroid_factor
 this scalar depends only on the finite Hilbert metric, despite its centered presentation. -/
 def gaussianCorrectedDeterminant (x : ι → E) (t : ℝ) : ℝ := by
   classical
-  exact Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
+  exact Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) *
     (gaussianDistanceMatrix x t).det
 
 /-- The corrected metric determinant is exactly the exponential inner-product determinant of
@@ -279,9 +279,9 @@ theorem gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det
 multiplicatively midpoint log-convex at all nonnegative scales. -/
 theorem gaussianCorrectedDeterminant_mul_sq_le
     (x : ι → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    gaussianCorrectedDeterminant x (a * b) ^ 2 ≤
-      gaussianCorrectedDeterminant x (a ^ 2) *
-        gaussianCorrectedDeterminant x (b ^ 2) := by
+    gaussianCorrectedDeterminant x (a * b) ^ (2 : ℕ) ≤
+      gaussianCorrectedDeterminant x (a ^ (2 : ℕ)) *
+        gaussianCorrectedDeterminant x (b ^ (2 : ℕ)) := by
   classical
   rw [gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det]
   rw [gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det]
@@ -292,52 +292,52 @@ theorem gaussianCorrectedDeterminant_mul_sq_le
 /-- Expanded form of the canonical law, exposing the exact metric-energy correction. -/
 theorem exp_centroidEnergy_mul_gaussianDistanceMatrix_det_mul_sq_le
     (x : ι → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (Real.exp (2 * (a * b) * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
-        (gaussianDistanceMatrix x (a * b)).det) ^ 2 ≤
-      (Real.exp (2 * a ^ 2 * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
-          (gaussianDistanceMatrix x (a ^ 2)).det) *
-        (Real.exp (2 * b ^ 2 * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
-          (gaussianDistanceMatrix x (b ^ 2)).det) := by
+    (Real.exp (2 * (a * b) * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) *
+        (gaussianDistanceMatrix x (a * b)).det) ^ (2 : ℕ) ≤
+      (Real.exp (2 * a ^ (2 : ℕ) * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) *
+          (gaussianDistanceMatrix x (a ^ (2 : ℕ))).det) *
+        (Real.exp (2 * b ^ (2 : ℕ) * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) *
+          (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det) := by
   exact gaussianCorrectedDeterminant_mul_sq_le x a b ha hb
 
 /-- **Raw Gaussian three-scale law.**  Removing the centroid correction exposes the sharp
-universal energy defect `exp (2 * (a - b)^2 * E)`. -/
+universal energy defect `exp (2 * (a - b)^(2 : ℕ) * E)`. -/
 theorem gaussianDistanceMatrix_det_mul_sq_le
     (x : ι → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (gaussianDistanceMatrix x (a * b)).det ^ 2 ≤
+    (gaussianDistanceMatrix x (a * b)).det ^ (2 : ℕ) ≤
       Real.exp
-          (2 * (a - b) ^ 2 * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
-        (gaussianDistanceMatrix x (a ^ 2)).det *
-          (gaussianDistanceMatrix x (b ^ 2)).det := by
+          (2 * (a - b) ^ (2 : ℕ) * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)) *
+        (gaussianDistanceMatrix x (a ^ (2 : ℕ))).det *
+          (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det := by
   classical
-  let energy : ℝ := ∑ i, ‖x i - hilbertCentroid x‖ ^ 2
+  let energy : ℝ := ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ)
   have h := exp_centroidEnergy_mul_gaussianDistanceMatrix_det_mul_sq_le
     x a b ha hb
   change
     (Real.exp (2 * (a * b) * energy) *
-        (gaussianDistanceMatrix x (a * b)).det) ^ 2 ≤
-      (Real.exp (2 * a ^ 2 * energy) *
-          (gaussianDistanceMatrix x (a ^ 2)).det) *
-        (Real.exp (2 * b ^ 2 * energy) *
-          (gaussianDistanceMatrix x (b ^ 2)).det) at h
+        (gaussianDistanceMatrix x (a * b)).det) ^ (2 : ℕ) ≤
+      (Real.exp (2 * a ^ (2 : ℕ) * energy) *
+          (gaussianDistanceMatrix x (a ^ (2 : ℕ))).det) *
+        (Real.exp (2 * b ^ (2 : ℕ) * energy) *
+          (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det) at h
   have hexp :
       Real.exp (4 * (a * b) * energy) *
-          Real.exp (2 * (a - b) ^ 2 * energy) =
-        Real.exp (2 * a ^ 2 * energy) *
-          Real.exp (2 * b ^ 2 * energy) := by
+          Real.exp (2 * (a - b) ^ (2 : ℕ) * energy) =
+        Real.exp (2 * a ^ (2 : ℕ) * energy) *
+          Real.exp (2 * b ^ (2 : ℕ) * energy) := by
     rw [← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   have hmul :
       Real.exp (4 * (a * b) * energy) *
-          (gaussianDistanceMatrix x (a * b)).det ^ 2 ≤
+          (gaussianDistanceMatrix x (a * b)).det ^ (2 : ℕ) ≤
         Real.exp (4 * (a * b) * energy) *
-          (Real.exp (2 * (a - b) ^ 2 * energy) *
-            (gaussianDistanceMatrix x (a ^ 2)).det *
-              (gaussianDistanceMatrix x (b ^ 2)).det) := by
+          (Real.exp (2 * (a - b) ^ (2 : ℕ) * energy) *
+            (gaussianDistanceMatrix x (a ^ (2 : ℕ))).det *
+              (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det) := by
     calc
       _ = (Real.exp (2 * (a * b) * energy) *
-          (gaussianDistanceMatrix x (a * b)).det) ^ 2 := by
+          (gaussianDistanceMatrix x (a * b)).det) ^ (2 : ℕ) := by
         rw [mul_pow]
         congr 1
         rw [← Real.exp_nat_mul]
@@ -346,14 +346,14 @@ theorem gaussianDistanceMatrix_det_mul_sq_le
       _ ≤ _ := h
       _ = _ := by
         calc
-          _ = (Real.exp (2 * a ^ 2 * energy) *
-                Real.exp (2 * b ^ 2 * energy)) *
-              ((gaussianDistanceMatrix x (a ^ 2)).det *
-                (gaussianDistanceMatrix x (b ^ 2)).det) := by ring
+          _ = (Real.exp (2 * a ^ (2 : ℕ) * energy) *
+                Real.exp (2 * b ^ (2 : ℕ) * energy)) *
+              ((gaussianDistanceMatrix x (a ^ (2 : ℕ))).det *
+                (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det) := by ring
           _ = (Real.exp (4 * (a * b) * energy) *
-                Real.exp (2 * (a - b) ^ 2 * energy)) *
-              ((gaussianDistanceMatrix x (a ^ 2)).det *
-                (gaussianDistanceMatrix x (b ^ 2)).det) := by rw [hexp]
+                Real.exp (2 * (a - b) ^ (2 : ℕ) * energy)) *
+              ((gaussianDistanceMatrix x (a ^ (2 : ℕ))).det *
+                (gaussianDistanceMatrix x (b ^ (2 : ℕ))).det) := by rw [hexp]
           _ = _ := by ring
   exact le_of_mul_le_mul_left hmul (Real.exp_pos (4 * (a * b) * energy))
 

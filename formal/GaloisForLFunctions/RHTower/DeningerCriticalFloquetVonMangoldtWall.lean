@@ -547,7 +547,7 @@ theorem summable_norm_deningerMeyerStrongLogAutocorrelation_int_mul
               ring
     have hdomInt : Integrable (fun x : ℝ =>
         C ^ 2 * Real.exp (-|((m : ℝ) * L)|) * Real.exp (-|x|)) := by
-      have h := (integrable_exp_neg_mul_abs one_pos).const_mul
+      have h := (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic one_pos).const_mul
         (C ^ 2 * Real.exp (-|((m : ℝ) * L)|))
       convert h using 1
       funext x

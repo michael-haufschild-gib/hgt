@@ -24,7 +24,7 @@ def angularCoefficient (omega q z : ℂ) : ℂ :=
     ⟨master omega z, deriv (master omega) z, 0⟩).angularTrace
 
 /-- The boundary factor is the square root fixed by the principal complex power. -/
-theorem boundaryFactor_sq (z : ℂ) : boundaryFactor z ^ 2 = 1 - z := by
+theorem boundaryFactor_sq (z : ℂ) : boundaryFactor z ^ (2 : ℕ) = 1 - z := by
   simp [boundaryFactor, one_div]
 
 /-- Exact finite boundary expression, derived from the existing metric orbit. -/
@@ -42,7 +42,7 @@ theorem angularCoefficient_eq (omega q z : ℂ) (hz : z ∈ Complex.slitPlane)
     first, master, rate, d4BMIngoingHorizonExponent]
   rw [hsq]
   calc
-    _ = D4BMPhysicalMaster.factor omega z * boundaryFactor z ^ 2 *
+    _ = D4BMPhysicalMaster.factor omega z * boundaryFactor z ^ (2 : ℕ) *
         (q / 2 + 2 * z * (-Complex.I * omega / 2 * z⁻¹ - 1/2*(1-z)⁻¹)) := by ring
     _ = _ := by
       rw [hsq]
@@ -51,7 +51,7 @@ theorem angularCoefficient_eq (omega q z : ℂ) (hz : z ∈ Complex.slitPlane)
 
 /-- On the positive physical radius, the fixed boundary branch is exactly inverse radius. -/
 theorem boundaryFactor_radius (r : ℝ) (hr : 0 < r) :
-    boundaryFactor (1 - (r : ℂ)⁻¹ ^ 2) = (r : ℂ)⁻¹ := by
+    boundaryFactor (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)) = (r : ℂ)⁻¹ := by
   have ha : ((r : ℂ)⁻¹).arg = 0 := by
     rw [← Complex.ofReal_inv]
     exact Complex.arg_ofReal_of_nonneg (inv_nonneg.mpr hr.le)
@@ -61,11 +61,11 @@ theorem boundaryFactor_radius (r : ℝ) (hr : 0 < r) :
 
 /-- The boundary observable is the literal scalar orbit trace at physical radius. -/
 theorem angularCoefficient_radius (omega q : ℂ) (r : ℝ) (hr : 0 < r) :
-    angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ 2) =
+    angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)) =
       2 * (d4KIScalarGaugeInvariantOrbitOfBMMaster (r : ℂ)⁻¹
-        (1 - (r : ℂ)⁻¹ ^ 2)⁻¹ omega q
-        ⟨master omega (1 - (r : ℂ)⁻¹ ^ 2),
-          deriv (master omega) (1 - (r : ℂ)⁻¹ ^ 2), 0⟩).angularTrace := by
+        (1 - (r : ℂ)⁻¹ ^ (2 : ℕ))⁻¹ omega q
+        ⟨master omega (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)),
+          deriv (master omega) (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)), 0⟩).angularTrace := by
   simp only [angularCoefficient, boundaryFactor_radius r hr]
 
 /-- Exact normalization of an actual diagonal angular metric component. Both vector
@@ -73,7 +73,7 @@ amplitudes and all other tensor components remain in the original reconstruction
 theorem metric_angular_normalized (omega q aS aV : ℂ)
     (S : (Fin 2 → ℝ) → ℂ) (V : Fin 2 → (Fin 2 → ℝ) → ℂ)
     (x : Fin 4 → ℝ) (hr : 0 < x 1) :
-    (x 1 : ℂ)⁻¹ ^ 2 * D4BMMetricReconstruction.covariantMetric omega q
+    (x 1 : ℂ)⁻¹ ^ (2 : ℕ) * D4BMMetricReconstruction.covariantMetric omega q
       (fun b => D4BMFundamentalMetric.primitives omega aS aV S V b x) 2 2 =
     aS * angularCoefficient omega q (D4BMMetricReconstruction.bmCoordinate x) *
       D4BMFundamentalMetric.horizonScale (D4BMMetricReconstruction.angularPoint x) *
@@ -128,7 +128,7 @@ theorem angularCoefficient_not_zero_limit (omega q : ℂ) :
   norm_num at he
 
 private theorem radius_coordinate_limit :
-    Tendsto (fun r : ℝ => 1 - r⁻¹ ^ 2) atTop (𝓝[Ioo (0 : ℝ) 1] 1) := by
+    Tendsto (fun r : ℝ => 1 - r⁻¹ ^ (2 : ℕ)) atTop (𝓝[Ioo (0 : ℝ) 1] 1) := by
   apply tendsto_nhdsWithin_iff.mpr
   constructor
   · simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub
@@ -141,10 +141,10 @@ private theorem radius_coordinate_limit :
 
 /-- The orbit coefficient has the same nonzero limit at physical spatial infinity. -/
 theorem angularCoefficient_radius_limit (omega q : ℂ) :
-    Tendsto (fun r : ℝ => angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ 2))
+    Tendsto (fun r : ℝ => angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)))
       atTop (𝓝 (-1)) := by
   have h := (angularCoefficient_limit omega q).comp radius_coordinate_limit
-  change Tendsto (fun r : ℝ => angularCoefficient omega q ((1 - r⁻¹ ^ 2 : ℝ) : ℂ))
+  change Tendsto (fun r : ℝ => angularCoefficient omega q ((1 - r⁻¹ ^ (2 : ℕ) : ℝ) : ℂ))
     atTop (𝓝 (-1)) at h
   simpa only [Complex.ofReal_sub, Complex.ofReal_one, Complex.ofReal_pow,
     Complex.ofReal_inv] using h
@@ -161,13 +161,13 @@ private theorem staticRay_angular (tau : ℝ) (u : Fin 2 → ℝ) (r : ℝ) :
 coefficient, including scalar amplitude, horizon metric, harmonic and time phase. -/
 theorem metric_angular_limit (omega q aS aV : ℂ) (tau : ℝ) (u : Fin 2 → ℝ)
     (S : (Fin 2 → ℝ) → ℂ) (V : Fin 2 → (Fin 2 → ℝ) → ℂ) :
-    Tendsto (fun r : ℝ => (r : ℂ)⁻¹ ^ 2 *
+    Tendsto (fun r : ℝ => (r : ℂ)⁻¹ ^ (2 : ℕ) *
       D4BMFundamentalMetric.perturbation omega q aS aV S V (staticRay tau u r) 2 2)
       atTop (𝓝 (-aS * D4BMFundamentalMetric.horizonScale u * S u *
         Complex.exp (-Complex.I * omega * (tau : ℂ)))) := by
-  have he : (fun r : ℝ => (r : ℂ)⁻¹ ^ 2 *
+  have he : (fun r : ℝ => (r : ℂ)⁻¹ ^ (2 : ℕ) *
       D4BMFundamentalMetric.perturbation omega q aS aV S V (staticRay tau u r) 2 2) =ᶠ[atTop]
-      (fun r : ℝ => aS * angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ 2) *
+      (fun r : ℝ => aS * angularCoefficient omega q (1 - (r : ℂ)⁻¹ ^ (2 : ℕ)) *
         D4BMFundamentalMetric.horizonScale u * S u *
         Complex.exp (-Complex.I * omega * (tau : ℂ))) := by
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with r hr
@@ -185,7 +185,7 @@ theorem metric_angular_limit (omega q aS aV : ℂ) (tau : ℝ) (u : Fin 2 → �
 upper half-plane. No choice of frequency or vector amplitude removes a live scalar leg. -/
 theorem metric_angular_zero_limit_iff (omega q aS aV : ℂ) (tau : ℝ) (u : Fin 2 → ℝ)
     (hy : 0 < u 1) (S : (Fin 2 → ℝ) → ℂ) (V : Fin 2 → (Fin 2 → ℝ) → ℂ) :
-    Tendsto (fun r : ℝ => (r : ℂ)⁻¹ ^ 2 *
+    Tendsto (fun r : ℝ => (r : ℂ)⁻¹ ^ (2 : ℕ) *
       D4BMFundamentalMetric.perturbation omega q aS aV S V (staticRay tau u r) 2 2)
       atTop (𝓝 0) ↔ aS = 0 ∨ S u = 0 := by
   have hs : D4BMFundamentalMetric.horizonScale u ≠ 0 := by

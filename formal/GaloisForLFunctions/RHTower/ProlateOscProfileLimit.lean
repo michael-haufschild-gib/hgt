@@ -31,9 +31,9 @@ noncomputable section
 namespace RHTower
 
 /-- The oscillator potential at separation constant `μ`. -/
-def oscPotential (mu : ℝ) : ℝ → ℝ := fun xi => xi ^ 2 - mu
+def oscPotential (mu : ℝ) : ℝ → ℝ := fun xi => xi ^ (2 : ℕ) - mu
 
-theorem oscPotential_eq (mu : ℝ) : oscPotential mu = fun xi : ℝ => xi ^ 2 - mu := rfl
+theorem oscPotential_eq (mu : ℝ) : oscPotential mu = fun xi : ℝ => xi ^ (2 : ℕ) - mu := rfl
 
 theorem continuous_oscPotential (mu : ℝ) : Continuous (oscPotential mu) := by
   rw [oscPotential_eq]
@@ -62,46 +62,46 @@ theorem hasDerivAt_oscProfileDeriv (mu : ℝ) (xi : ℝ) :
   hasDerivAt_secondOrderDeriv (continuous_oscPotential mu) 1 0 xi
 
 theorem abs_oscPotential_le {K mu xi : ℝ} (hxi : |xi| ≤ K) :
-    |oscPotential mu xi| ≤ K ^ 2 + |mu| := by
+    |oscPotential mu xi| ≤ K ^ (2 : ℕ) + |mu| := by
   rw [oscPotential]
   refine le_trans (abs_sub _ _) ?_
-  have h1 : |xi ^ 2| ≤ K ^ 2 := by
+  have h1 : |xi ^ (2 : ℕ)| ≤ K ^ (2 : ℕ) := by
     rw [abs_of_nonneg (sq_nonneg _)]
     exact sq_le_sq_of_abs_le hxi
   linarith
 
 /-- **Coefficient defect of the rescaled prolate equation against the limit oscillator.** -/
 theorem abs_rescaledProlateP_sub_oscPotential_le {c K mu m xi : ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c) (hxi : |xi| ≤ K) :
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c) (hxi : |xi| ≤ K) :
     |rescaledProlateP c mu xi - oscPotential m xi|
-      ≤ 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c + |mu - m| := by
+      ≤ 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c + |mu - m| := by
   have hc : 0 < c := pos_of_window hK hcK
-  have hhalf : c / 2 ≤ c - xi ^ 2 := half_le_sub_sq hK hcK hxi
-  have hpos : 0 < c - xi ^ 2 := lt_of_lt_of_le (by linarith) hhalf
-  have hsq : xi ^ 2 ≤ K ^ 2 := sq_le_sq_of_abs_le hxi
+  have hhalf : c / 2 ≤ c - xi ^ (2 : ℕ) := half_le_sub_sq hK hcK hxi
+  have hpos : 0 < c - xi ^ (2 : ℕ) := lt_of_lt_of_le (by linarith) hhalf
+  have hsq : xi ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := sq_le_sq_of_abs_le hxi
   -- exact algebraic form of the defect against the same parameter
   have hkey : rescaledProlateP c mu xi - oscPotential mu xi
-      = (xi ^ 2 - mu) * xi ^ 2 / (c - xi ^ 2) := by
+      = (xi ^ (2 : ℕ) - mu) * xi ^ (2 : ℕ) / (c - xi ^ (2 : ℕ)) := by
     rw [rescaledProlateP, oscPotential]
     field_simp
     ring
   have hstep : |rescaledProlateP c mu xi - oscPotential mu xi|
-      ≤ 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c := by
+      ≤ 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c := by
     rw [hkey, abs_div, abs_mul, abs_of_pos hpos]
-    have hnum : |xi ^ 2 - mu| * |xi ^ 2| ≤ (K ^ 2 + |mu|) * K ^ 2 := by
-      have h1 : |xi ^ 2 - mu| ≤ K ^ 2 + |mu| := by
+    have hnum : |xi ^ (2 : ℕ) - mu| * |xi ^ (2 : ℕ)| ≤ (K ^ (2 : ℕ) + |mu|) * K ^ (2 : ℕ) := by
+      have h1 : |xi ^ (2 : ℕ) - mu| ≤ K ^ (2 : ℕ) + |mu| := by
         refine le_trans (abs_sub _ _) ?_
         rw [abs_of_nonneg (sq_nonneg xi)]
         linarith
-      have h2 : |xi ^ 2| ≤ K ^ 2 := by
+      have h2 : |xi ^ (2 : ℕ)| ≤ K ^ (2 : ℕ) := by
         rw [abs_of_nonneg (sq_nonneg _)]
         exact hsq
       exact mul_le_mul h1 h2 (abs_nonneg _) (by positivity)
     have hden : (0 : ℝ) < c / 2 := by linarith
-    calc |xi ^ 2 - mu| * |xi ^ 2| / (c - xi ^ 2)
-        ≤ ((K ^ 2 + |mu|) * K ^ 2) / (c / 2) := by
+    calc |xi ^ (2 : ℕ) - mu| * |xi ^ (2 : ℕ)| / (c - xi ^ (2 : ℕ))
+        ≤ ((K ^ (2 : ℕ) + |mu|) * K ^ (2 : ℕ)) / (c / 2) := by
           gcongr
-      _ = 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c := by
+      _ = 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c := by
           field_simp
   have hshift : oscPotential mu xi - oscPotential m xi = m - mu := by
     rw [oscPotential, oscPotential]
@@ -111,31 +111,31 @@ theorem abs_rescaledProlateP_sub_oscPotential_le {c K mu m xi : ℝ}
           + (oscPotential mu xi - oscPotential m xi)| := by ring_nf
     _ ≤ |rescaledProlateP c mu xi - oscPotential mu xi|
           + |oscPotential mu xi - oscPotential m xi| := abs_add_le _ _
-    _ ≤ 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c + |mu - m| := by
+    _ ≤ 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c + |mu - m| := by
         rw [hshift, abs_sub_comm m mu] at *
         linarith [hstep]
 
 /-- The window defect of the rescaled prolate equation against the limit oscillator. -/
-def oscWindowEps (c mu m K : ℝ) : ℝ := 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c + |mu - m|
+def oscWindowEps (c mu m K : ℝ) : ℝ := 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c + |mu - m|
 
 /-- **Window comparison against the limit profile.**  No rung assumption. -/
 theorem prolateProfile_window_osc_dist_le
     {c mu m K B : ℝ} {u u' u'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
       u'' x = rescaledProlateP c mu x * u x + rescaledProlateQ c x * u' x)
     (hB : ∀ x ∈ Icc (0 : ℝ) K, max |u x| |u' x| ≤ B)
     (h0 : u 0 = 1) (h0' : u' 0 = 0) :
     ∀ x ∈ Icc (0 : ℝ) K, max |u x - oscProfile m x| |u' x - oscProfileDeriv m x|
-      ≤ ((oscWindowEps c mu m K + prolateWindowEpsQ c K) * B / max 1 (K ^ 2 + |m|))
-        * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1) := by
+      ≤ ((oscWindowEps c mu m K + prolateWindowEpsQ c K) * B / max 1 (K ^ (2 : ℕ) + |m|))
+        * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1) := by
   have habs : ∀ x ∈ Icc (0 : ℝ) K, |x| ≤ K := by
     intro x hx
     rw [abs_of_nonneg hx.1]
     exact hx.2
   refine phasePair_dist_le_uniform (P := oscPotential m)
-    (Lp := K ^ 2 + |m|) (εp := oscWindowEps c mu m K) (εq := prolateWindowEpsQ c K)
+    (Lp := K ^ (2 : ℕ) + |m|) (εp := oscWindowEps c mu m K) (εq := prolateWindowEpsQ c K)
     (le_of_lt hK) hu hu' (hasDerivAt_oscProfile m) (hasDerivAt_oscProfileDeriv m)
     hequ (fun x _ => rfl) (fun x hx => abs_oscPotential_le (habs x hx))
     (fun x hx => abs_rescaledProlateP_sub_oscPotential_le hK hcK (habs x hx))
@@ -146,10 +146,10 @@ theorem prolateProfile_window_osc_dist_le
 theorem tendsto_oscWindowEps {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K m : ℝ}
     (hmu : Tendsto mu L (𝓝 m)) (hc : Tendsto c L atTop) :
     Tendsto (fun i => oscWindowEps (c i) (mu i) m K) L (𝓝 0) := by
-  have h1 : Tendsto (fun i => 2 * (K ^ 2 * (K ^ 2 + |mu i|)) / c i) L (𝓝 0) := by
-    have hnum : Tendsto (fun i => 2 * (K ^ 2 * (K ^ 2 + |mu i|))) L
-        (𝓝 (2 * (K ^ 2 * (K ^ 2 + |m|)))) := by
-      exact ((hmu.abs.const_add (K ^ 2)).const_mul (K ^ 2)).const_mul 2
+  have h1 : Tendsto (fun i => 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu i|)) / c i) L (𝓝 0) := by
+    have hnum : Tendsto (fun i => 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu i|))) L
+        (𝓝 (2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |m|)))) := by
+      exact ((hmu.abs.const_add (K ^ (2 : ℕ))).const_mul (K ^ (2 : ℕ))).const_mul 2
     exact hnum.div_atTop hc
   have h2 : Tendsto (fun i => |mu i - m|) L (𝓝 0) := by
     have := (hmu.sub_const m).abs
@@ -164,7 +164,7 @@ solution of `v″ = (ξ² − m)v` with the same initial phase vector. -/
 theorem tendsto_prolateProfile_oscProfile
     {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K B m : ℝ}
     {u u' u'' : ι → ℝ → ℝ}
-    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ 2 ≤ c i)
+    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ (2 : ℕ) ≤ c i)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hequ : ∀ i, ∀ x ∈ Icc (0 : ℝ) K,
       u'' i x = rescaledProlateP (c i) (mu i) x * u i x + rescaledProlateQ (c i) x * u' i x)
@@ -175,18 +175,18 @@ theorem tendsto_prolateProfile_oscProfile
   intro x hx
   have henv : Tendsto (fun i =>
       ((oscWindowEps (c i) (mu i) m K + prolateWindowEpsQ (c i) K) * B
-          / max 1 (K ^ 2 + |m|))
-        * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)) L (𝓝 0) := by
+          / max 1 (K ^ (2 : ℕ) + |m|))
+        * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)) L (𝓝 0) := by
     have hsum := (tendsto_oscWindowEps (K := K) hmu hc).add
       (tendsto_prolateWindowEpsQ (K := K) hc)
     rw [add_zero] at hsum
-    have h1 := (hsum.mul_const B).div_const (max 1 (K ^ 2 + |m|))
-    have h2 := h1.mul_const (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)
+    have h1 := (hsum.mul_const B).div_const (max 1 (K ^ (2 : ℕ) + |m|))
+    have h2 := h1.mul_const (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)
     simpa using h2
   have hbnd : ∀ i, |u i x - oscProfile m x|
       ≤ ((oscWindowEps (c i) (mu i) m K + prolateWindowEpsQ (c i) K) * B
-          / max 1 (K ^ 2 + |m|))
-        * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1) := by
+          / max 1 (K ^ (2 : ℕ) + |m|))
+        * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1) := by
     intro i
     exact le_trans (le_max_left _ _)
       (prolateProfile_window_osc_dist_le hK (hcK i) (hu i) (hu' i) (hequ i) (hB i)
@@ -205,7 +205,7 @@ theorem continuous_oscProfileDeriv (mu : ℝ) : Continuous (oscProfileDeriv mu) 
 
 /-- **The limit profile has positive square mass on every window.**  It equals one at the centre. -/
 theorem integral_oscProfile_sq_pos (mu : ℝ) {K : ℝ} (hK : 0 < K) :
-    0 < ∫ x in (-K)..K, oscProfile mu x ^ 2 :=
+    0 < ∫ x in (-K)..K, oscProfile mu x ^ (2 : ℕ) :=
   integral_sq_pos_of_ne_zero (continuous_oscProfile mu) ⟨by linarith, hK⟩
     (by rw [oscProfile_zero]; norm_num)
 
@@ -231,10 +231,10 @@ theorem integral_oscProfile_mul_self_mono (mu : ℝ) {K : ℝ} (hK : 1 ≤ K) :
     (∫ x in (-1 : ℝ)..1, oscProfile mu x * oscProfile mu x)
       ≤ ∫ x in (-K)..K, oscProfile mu x * oscProfile mu x := by
   have h := window_le_total (f := oscProfile mu) hK (continuous_oscProfile mu)
-  have e1 : (∫ x in (-1 : ℝ)..1, oscProfile mu x ^ 2)
+  have e1 : (∫ x in (-1 : ℝ)..1, oscProfile mu x ^ (2 : ℕ))
       = ∫ x in (-1 : ℝ)..1, oscProfile mu x * oscProfile mu x :=
     intervalIntegral.integral_congr fun x _ => by ring
-  have e2 : (∫ x in (-K)..K, oscProfile mu x ^ 2)
+  have e2 : (∫ x in (-K)..K, oscProfile mu x ^ (2 : ℕ))
       = ∫ x in (-K)..K, oscProfile mu x * oscProfile mu x :=
     intervalIntegral.integral_congr fun x _ => by ring
   rwa [e1, e2] at h
@@ -246,7 +246,7 @@ theorem tendsto_prolateProfile_oscProfile_eventually
     {u u' u'' : ι → ℝ → ℝ}
     (hK : 0 < K)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
-    (hev : ∀ᶠ i in L, 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ᶠ i in L, 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)
@@ -255,18 +255,18 @@ theorem tendsto_prolateProfile_oscProfile_eventually
   intro x hx
   have henv : Tendsto (fun i =>
       ((oscWindowEps (c i) (mu i) m K + prolateWindowEpsQ (c i) K) * B
-          / max 1 (K ^ 2 + |m|))
-        * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)) L (𝓝 0) := by
+          / max 1 (K ^ (2 : ℕ) + |m|))
+        * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)) L (𝓝 0) := by
     have hsum := (tendsto_oscWindowEps (K := K) hmu hc).add
       (tendsto_prolateWindowEpsQ (K := K) hc)
     rw [add_zero] at hsum
-    have h1 := (hsum.mul_const B).div_const (max 1 (K ^ 2 + |m|))
-    have h2 := h1.mul_const (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)
+    have h1 := (hsum.mul_const B).div_const (max 1 (K ^ (2 : ℕ) + |m|))
+    have h2 := h1.mul_const (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)
     simpa using h2
   have hbnd : ∀ᶠ i in L, ‖u i x - oscProfile m x‖
       ≤ ((oscWindowEps (c i) (mu i) m K + prolateWindowEpsQ (c i) K) * B
-          / max 1 (K ^ 2 + |m|))
-        * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1) := by
+          / max 1 (K ^ (2 : ℕ) + |m|))
+        * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1) := by
     filter_upwards [hev] with i hi
     obtain ⟨hcKi, hequi, hBi, h0i, h0i'⟩ := hi
     have := prolateProfile_window_osc_dist_le (m := m) hK hcKi (hu i) (hu' i) hequi hBi
@@ -317,7 +317,7 @@ theorem oscProfile_nontrivial (mu : ℝ) (y : ℝ) :
 oscillator applies to the limit profile with no further hypothesis: it is never degenerate, so
 square integrability alone forces its separation constant onto the ladder. -/
 theorem exists_rung_of_integrable_oscProfile {mu : ℝ}
-    (hint : MeasureTheory.Integrable (fun x => oscProfile mu x ^ 2)) :
+    (hint : MeasureTheory.Integrable (fun x => oscProfile mu x ^ (2 : ℕ))) :
     ∃ n : ℕ, mu = 2 * (n : ℝ) + 1 := by
   refine exists_rung_of_integrable (hasDerivAt_oscProfile mu) ?_ (oscProfile_nontrivial mu) hint
   intro x
@@ -340,7 +340,7 @@ theorem odd_oscProfileDeriv (mu : ℝ) (x : ℝ) :
 eigenvalue half: the limit profile is even by construction, so its rung is even and the separation
 constant lies on `{1, 5, 9, …}`. -/
 theorem even_rung_of_integrable_oscProfile {m : ℝ}
-    (hint : MeasureTheory.Integrable fun x => oscProfile m x ^ 2) :
+    (hint : MeasureTheory.Integrable fun x => oscProfile m x ^ (2 : ℕ)) :
     ∃ n : ℕ, Even n ∧ m = 2 * (n : ℝ) + 1 := by
   obtain ⟨n, hne, hm, -⟩ := even_integrable_solution_rung
     (v := oscProfile m) (v' := oscProfileDeriv m)
@@ -354,26 +354,26 @@ theorem even_rung_of_integrable_oscProfile {m : ℝ}
 
 /-- The Grönwall envelope of the window comparison against the limit profile. -/
 def oscWindowEnvelope (c mu m K B : ℝ) : ℝ :=
-  ((oscWindowEps c mu m K + prolateWindowEpsQ c K) * B / max 1 (K ^ 2 + |m|))
-    * (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)
+  ((oscWindowEps c mu m K + prolateWindowEpsQ c K) * B / max 1 (K ^ (2 : ℕ) + |m|))
+    * (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)
 
 theorem oscWindowEnvelope_nonneg {c mu m K B : ℝ} (hc : 0 < c) (hK : 0 < K) (hB : 0 ≤ B) :
     0 ≤ oscWindowEnvelope c mu m K B := by
   have hP : 0 ≤ oscWindowEps c mu m K := by
     rw [oscWindowEps]
-    have h1 : (0 : ℝ) ≤ 2 * (K ^ 2 * (K ^ 2 + |mu|)) / c := by positivity
+    have h1 : (0 : ℝ) ≤ 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + |mu|)) / c := by positivity
     have h2 : (0 : ℝ) ≤ |mu - m| := abs_nonneg _
     linarith
   have hQ : 0 ≤ prolateWindowEpsQ c K := by
     rw [prolateWindowEpsQ]
     positivity
-  have hL : (1 : ℝ) ≤ max 1 (K ^ 2 + |m|) := le_max_left _ _
-  have hexp : (0 : ℝ) ≤ Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1 := by
-    have harg : (0 : ℝ) ≤ max 1 (K ^ 2 + |m|) * (K - 0) := by nlinarith [hK, hL]
-    have := Real.add_one_le_exp (max 1 (K ^ 2 + |m|) * (K - 0))
+  have hL : (1 : ℝ) ≤ max 1 (K ^ (2 : ℕ) + |m|) := le_max_left _ _
+  have hexp : (0 : ℝ) ≤ Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1 := by
+    have harg : (0 : ℝ) ≤ max 1 (K ^ (2 : ℕ) + |m|) * (K - 0) := by nlinarith [hK, hL]
+    have := Real.add_one_le_exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0))
     linarith
   have hfrac : 0 ≤ (oscWindowEps c mu m K + prolateWindowEpsQ c K) * B
-      / max 1 (K ^ 2 + |m|) := by positivity
+      / max 1 (K ^ (2 : ℕ) + |m|) := by positivity
   rw [oscWindowEnvelope]
   exact mul_nonneg hfrac hexp
 
@@ -382,8 +382,8 @@ theorem tendsto_oscWindowEnvelope {ι : Type*} {L : Filter ι} {mu c : ι → �
     Tendsto (fun i => oscWindowEnvelope (c i) (mu i) m K B) L (𝓝 0) := by
   have hsum := (tendsto_oscWindowEps (K := K) hmu hc).add (tendsto_prolateWindowEpsQ (K := K) hc)
   rw [add_zero] at hsum
-  have h1 := (hsum.mul_const B).div_const (max 1 (K ^ 2 + |m|))
-  have h2 := h1.mul_const (Real.exp (max 1 (K ^ 2 + |m|) * (K - 0)) - 1)
+  have h1 := (hsum.mul_const B).div_const (max 1 (K ^ (2 : ℕ) + |m|))
+  have h2 := h1.mul_const (Real.exp (max 1 (K ^ (2 : ℕ) + |m|) * (K - 0)) - 1)
   simpa [oscWindowEnvelope] using h2
 
 end RHTower

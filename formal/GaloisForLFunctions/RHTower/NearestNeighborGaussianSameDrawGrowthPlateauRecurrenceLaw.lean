@@ -88,7 +88,7 @@ def NearestNeighborPathCompletedPlateau
       (Fintype.card gate : ℝ) ^ (s + 1) *
         (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
           Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^
             ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))
 
 theorem nearestNeighborPath_sameDraw_growth_plateau_recurrence
@@ -111,7 +111,7 @@ theorem nearestNeighborPath_sameDraw_growth_plateau_recurrence
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * εChoi) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * εChoi) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)) < 1) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
@@ -192,7 +192,7 @@ theorem nearestNeighborPath_sameDraw_growth_continuous_hard_intervals
           ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
         mesh / (W + mesh) →
       ∀ A0 : ℝ, 0 ≤ A0 → ∃ u : ℝ, A0 ≤ u ∧
@@ -229,7 +229,7 @@ theorem nearestNeighborPath_sameDraw_growth_quantitative_continuous_hard_interva
           ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
         ((epsw - epsn) /
             projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)) /
@@ -342,7 +342,7 @@ theorem nearestNeighborPath_sameDraw_growth_hardBlocks_recurrence
           ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
         ((epsw - epsn) /
             projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)) /
@@ -352,7 +352,7 @@ theorem nearestNeighborPath_sameDraw_growth_hardBlocks_recurrence
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsn) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsn) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)) < 1) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
@@ -396,7 +396,7 @@ theorem nearestNeighborPath_sameDraw_growth_finiteOnset_hardBlock
               ((r.factorial : ℝ) *
                 ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r) +
             min 1 (Twindow * δ)⁻¹) <
-        (1 - epsw ^ 2) ^ r) :
+        (1 - epsw ^ (2 : ℕ)) ^ r) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
       t ≤ εGrow * L →
@@ -450,8 +450,8 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_gaussianSpectr
               (nearestNeighborPathChoiEnergy L p) r δ : ℕ) : ℝ) *
               ((r.factorial : ℝ) *
                 ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r) +
-            Real.exp (-((Treturn * δ) ^ 2) / 2)) <
-        (1 - epsw ^ 2) ^ r * gaussianFloorTwo *
+            Real.exp (-((Treturn * δ) ^ (2 : ℕ)) / 2)) <
+        (1 - epsw ^ (2 : ℕ)) ^ r * gaussianFloorTwo *
           (epsw / staticChoiSpeed (nearestNeighborPathChoiEnergy L p) / Treturn +
             (epsw - epsn) /
               staticChoiSpeed (nearestNeighborPathChoiEnergy L p) / (2 * Treturn))) :
@@ -516,7 +516,7 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_returnExcisedI
       (gaussianFloorTwo *
           ((epsw - epsn) / staticChoiSpeed (nearestNeighborPathChoiEnergy L p) /
             (2 * Treturn)) *
-        (1 - epsw ^ 2) ^ r) ^ 2) :
+        (1 - epsw ^ (2 : ℕ)) ^ r) ^ (2 : ℕ)) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
       t ≤ εGrow * L →
@@ -570,11 +570,11 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_optimalDesignC
               (nearestNeighborPathChoiEnergy L p) r δ : ℝ) *
             ((r.factorial : ℝ) *
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r) +
-          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+          Real.exp (-((Treturn * δ) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           ((epsw - epsn) / staticChoiSpeed
             (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
-          (1 - epsw ^ 2) ^ r) :
+          (1 - epsw ^ (2 : ℕ)) ^ r) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
       t ≤ εGrow * L →
@@ -636,11 +636,11 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_optimalDesignW
             ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ)⁻¹ ^ r +
           ∑ word, w word * directStaticChoiTargetNearActionMass
             (target word) (nearestNeighborPathChoiEnergy L p) r δ +
-          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+          Real.exp (-((Treturn * δ) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           ((epsw - epsn) / staticChoiSpeed
             (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
-          (1 - epsw ^ 2) ^ r) :
+          (1 - epsw ^ (2 : ℕ)) ^ r) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
       t ≤ εGrow * L →
@@ -691,11 +691,11 @@ theorem nearestNeighborPath_sameDraw_growth_firstCircuitReturn_of_canonicalWeigh
           ∑ word, staticChoiTargetOptimalDesignWeight r target htarget word *
             directStaticChoiTargetNearActionMass
               (target word) (nearestNeighborPathChoiEnergy L p) r δ +
-          Real.exp (-((Treturn * δ) ^ 2) / 2)) <
+          Real.exp (-((Treturn * δ) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           ((epsw - epsn) / staticChoiSpeed
             (nearestNeighborPathChoiEnergy L p) / (2 * Treturn)) *
-          (1 - epsw ^ 2) ^ r) :
+          (1 - epsw ^ (2 : ℕ)) ^ r) :
     (∀ t : ℝ,
       2048 * Real.pi * εGrow ≤ t →
       t ≤ εGrow * L →

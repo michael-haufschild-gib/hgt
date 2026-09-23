@@ -18,7 +18,7 @@ self-similar Schwarzschild quasinormal carrier is
 
 Its exact intensity derivative at zero is
 
-`C(0) * i * omega * t * absorption / M^2`.
+`C(0) * i * omega * t * absorption / M^(2 : ℕ)`.
 
 Multiplication by the original field amplitude makes this the cubic secular
 coefficient.  The coefficient respects the physical mirror operation
@@ -64,7 +64,7 @@ field response. -/
 def schwarzschildAbsorptionInducedCubicCoefficient
     (M absorption t : ℝ) (omega : ℂ) : ℂ :=
   schwarzschildAbsorptionShiftedQNMCarrier M absorption 0 t omega *
-    (Complex.I * omega * (t : ℂ) * (absorption : ℂ) / (M : ℂ) ^ 2)
+    (Complex.I * omega * (t : ℂ) * (absorption : ℂ) / (M : ℂ) ^ (2 : ℕ))
 
 /-- Exact sudden-mass-shift derivation of the AIME cubic coefficient. -/
 theorem hasDerivAt_schwarzschildAbsorptionShiftedQNMCarrier_zero

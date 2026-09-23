@@ -108,7 +108,7 @@ theorem regularSecondInverseReflection_upper_globalSmall_memLp_iff (q : Schwartz
 /-- The global condition is an explicit cubic balance in the original unscaled Schwartz profile. -/
 theorem regularSecondInverseReflection_upper_globalSmall_iff_balance (q : SchwartzMap ℝ ℂ) :
     MemLp (regularSecondInverseReflection (globalSmallScatteringPotential q) true) 2 volume ↔
-      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^2*parityCoupling q := by
+      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^(2 : ℕ)*parityCoupling q := by
   rw [regularSecondInverseReflection_upper_globalSmall_memLp_iff,
     ← regularSecondInverseReflection_upper_globalSmall_positive_memLp_iff]
   exact regularSecondInverseReflection_upper_globalSmall_positive_iff_balance q

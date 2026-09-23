@@ -82,13 +82,13 @@ theorem stdGaussian_nearestNeighborPath_measure_optimalDesignNearAction_gap_le
                     (Fin (Fintype.card (Config (PairQubit L)))) ℂ))
               ((nearestNeighborPathGaussianHermitianPencil L).spectralEnergy x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           ((∑ i : Fin (Module.finrank ℝ
                 (EuclideanSpace ℝ (Fin (nearestNeighborPathLocalParameterCount L)))),
-              (nearestNeighborPathCommutatorMap L (U c)).singularValues i ^ 2) ^ 2 /
+              (nearestNeighborPathCommutatorMap L (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
             ∑ i : Fin (Module.finrank ℝ
                 (EuclideanSpace ℝ (Fin (nearestNeighborPathLocalParameterCount L)))),
-              (nearestNeighborPathCommutatorMap L (U c)).singularValues i ^ 4))) / κ := by
+              (nearestNeighborPathCommutatorMap L (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   letI : Nonempty (Config (PairQubit L)) :=
     ⟨fun _ => false⟩
   exact FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignNearAction_gap_le

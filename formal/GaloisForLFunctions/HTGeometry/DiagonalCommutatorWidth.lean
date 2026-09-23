@@ -38,7 +38,7 @@ theorem hsSqRe_commutator_diagonal_le (E : n → ℝ) (X : Matrix n n ℂ) {W : 
     (hW : ∀ i j, |E i - E j| ≤ W) :
     hsSqRe (Matrix.diagonal (fun l => ((E l : ℝ) : ℂ)) * X
       - X * Matrix.diagonal (fun l => ((E l : ℝ) : ℂ)))
-      ≤ W ^ 2 * hsSqRe X := by
+      ≤ W ^ (2 : ℕ) * hsSqRe X := by
   rw [hsSqRe_eq_sum, hsSqRe_eq_sum, Finset.mul_sum]
   refine Finset.sum_le_sum fun a _ => ?_
   rw [Finset.mul_sum]
@@ -46,7 +46,7 @@ theorem hsSqRe_commutator_diagonal_le (E : n → ℝ) (X : Matrix n n ℂ) {W : 
   rw [commutator_diagonal_apply, norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow]
   have hab := hW b a
   have hnn : (0 : ℝ) ≤ |E b - E a| := abs_nonneg _
-  have hsq : |E b - E a| ^ 2 ≤ W ^ 2 := by nlinarith [hab, hnn]
+  have hsq : |E b - E a| ^ (2 : ℕ) ≤ W ^ (2 : ℕ) := by nlinarith [hab, hnn]
   exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
 
 end Commutator

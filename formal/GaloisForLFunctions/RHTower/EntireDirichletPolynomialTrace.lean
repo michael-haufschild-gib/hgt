@@ -110,7 +110,7 @@ theorem re_edPoly_ge (a : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ n ∈ s, 1 ≤
   linarith [this.1]
 
 /-- **Jensen's disc count for the trace.**  On the sphere of radius `8` about `4` the real part is
-at least `−4`, so the `ℓ¹` mass weighted by `n^4` is a uniform bound there. -/
+at least `−4`, so the `ℓ¹` mass weighted by `n^(4 : ℕ)` is a uniform bound there. -/
 theorem edPolyTrace_count_le (a : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ n ∈ s, 1 ≤ n) (T : ℝ)
     {r m Mb : ℝ} (hr : 0 < r) (hrlt : r < 8) (hm : 0 < m) (hM1 : 1 ≤ Mb)
     (hcentre : m ≤ ‖edPolyTrace a s T 4‖)

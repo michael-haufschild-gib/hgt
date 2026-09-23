@@ -51,26 +51,26 @@ theorem summableLocallyUniformlyOn_poincareTerm_dampedFlatSeed {d c : ℕ}
     rw [Pi.add_apply, Pi.add_apply, G.vec_eq z i]
   have hseed : ‖(dampedFlatSeed w hdistinct target hm σ P B).1 (x + comp z)‖
       ≤ Cs * ((∏ i, (1 + |G.vec z i|) ^ (P.degreeOf i))
-        * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ 2)) := by
+        * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ (2 : ℕ))) := by
     rw [htrans]
     exact hCs (G.vec z) x hx
   have hfac := hGcst z x hx
   have hprodnn : (0 : ℝ) ≤ ∏ i, (1 + |G.vec z i|) ^ (P.degreeOf i) :=
     Finset.prod_nonneg fun i _ => by positivity
-  have hgauss : Real.exp (∑ i, G.tau i * (G.vec z i) ^ 2)
-      * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ 2)
-      ≤ Real.exp (-(eps * ∑ i, (G.vec z i) ^ 2)) := by
+  have hgauss : Real.exp (∑ i, G.tau i * (G.vec z i) ^ (2 : ℕ))
+      * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ (2 : ℕ))
+      ≤ Real.exp (-(eps * ∑ i, (G.vec z i) ^ (2 : ℕ))) := by
     rw [← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
     have hterm : ∀ i : Fin d,
-        G.tau i * (G.vec z i) ^ 2 - σ i / 4 * (G.vec z i) ^ 2 ≤ -(eps * (G.vec z i) ^ 2) := by
+        G.tau i * (G.vec z i) ^ (2 : ℕ) - σ i / 4 * (G.vec z i) ^ (2 : ℕ) ≤ -(eps * (G.vec z i) ^ (2 : ℕ)) := by
       intro i
       nlinarith [hgap i, sq_nonneg (G.vec z i)]
-    calc (∑ i, G.tau i * (G.vec z i) ^ 2) + (-∑ i, σ i / 4 * (G.vec z i) ^ 2)
-        = ∑ i, (G.tau i * (G.vec z i) ^ 2 - σ i / 4 * (G.vec z i) ^ 2) := by
+    calc (∑ i, G.tau i * (G.vec z i) ^ (2 : ℕ)) + (-∑ i, σ i / 4 * (G.vec z i) ^ (2 : ℕ))
+        = ∑ i, (G.tau i * (G.vec z i) ^ (2 : ℕ) - σ i / 4 * (G.vec z i) ^ (2 : ℕ)) := by
           rw [← sub_eq_add_neg, ← Finset.sum_sub_distrib]
-      _ ≤ ∑ i, -(eps * (G.vec z i) ^ 2) := Finset.sum_le_sum fun i _ => hterm i
-      _ = -(eps * ∑ i, (G.vec z i) ^ 2) := by
+      _ ≤ ∑ i, -(eps * (G.vec z i) ^ (2 : ℕ)) := Finset.sum_le_sum fun i _ => hterm i
+      _ = -(eps * ∑ i, (G.vec z i) ^ (2 : ℕ)) := by
           rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
   have htransfer := prod_mul_exp_le_polynomialGaussianLatticeWeight G.vec (fun i => P.degreeOf i)
     G.lin_nonneg heps.le G.discrete G.bounded z
@@ -78,16 +78,16 @@ theorem summableLocallyUniformlyOn_poincareTerm_dampedFlatSeed {d c : ℕ}
   calc ‖((ψ.factor (complementEmbedding comp hcomp z)).1 x)⁻¹‖
         * ‖(dampedFlatSeed w hdistinct target hm σ P B).1
             (x + (complementEmbedding comp hcomp z).1)‖
-      ≤ (Gcst * Real.exp (∑ i, G.tau i * (G.vec z i) ^ 2))
+      ≤ (Gcst * Real.exp (∑ i, G.tau i * (G.vec z i) ^ (2 : ℕ)))
         * (Cs * ((∏ i, (1 + |G.vec z i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ 2))) :=
+          * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ (2 : ℕ)))) :=
         mul_le_mul hfac hseed (norm_nonneg _)
           (mul_nonneg hGcst0 (Real.exp_pos _).le)
     _ = (Gcst * Cs) * ((∏ i, (1 + |G.vec z i|) ^ (P.degreeOf i))
-        * (Real.exp (∑ i, G.tau i * (G.vec z i) ^ 2)
-          * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ 2))) := by ring
+        * (Real.exp (∑ i, G.tau i * (G.vec z i) ^ (2 : ℕ))
+          * Real.exp (-∑ i, σ i / 4 * (G.vec z i) ^ (2 : ℕ)))) := by ring
     _ ≤ (Gcst * Cs) * ((∏ i, (1 + |G.vec z i|) ^ (P.degreeOf i))
-        * Real.exp (-(eps * ∑ i, (G.vec z i) ^ 2))) := by
+        * Real.exp (-(eps * ∑ i, (G.vec z i) ^ (2 : ℕ)))) := by
         exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hgauss hprodnn)
           (mul_nonneg hGcst0 hCs0)
     _ ≤ (Gcst * Cs) * ((1 + G.lin) ^ (∑ i, P.degreeOf i)

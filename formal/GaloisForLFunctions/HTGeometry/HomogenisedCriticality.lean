@@ -22,10 +22,10 @@ noncomputable section
 variable {N D : ℕ}
 
 /-- The norm-square polynomial of the coordinates. -/
-def normSqPoly (N : ℕ) : MvPolynomial (Fin N) ℝ := ∑ a, MvPolynomial.X a ^ 2
+def normSqPoly (N : ℕ) : MvPolynomial (Fin N) ℝ := ∑ a, MvPolynomial.X a ^ (2 : ℕ)
 
 theorem eval_normSqPoly (θ : Fin N → ℝ) :
-    MvPolynomial.eval θ (normSqPoly N) = ∑ a, (θ a) ^ 2 := by
+    MvPolynomial.eval θ (normSqPoly N) = ∑ a, (θ a) ^ (2 : ℕ) := by
   rw [normSqPoly, map_sum]
   exact Finset.sum_congr rfl fun a _ => by simp
 
@@ -41,13 +41,13 @@ def criticalityPolyHom (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (i : Fin
 /-- The sum over all coordinate directions of the squared homogeneous criticality expressions. -/
 def criticalitySquareSumHom (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) :
     Polynomial (MvPolynomial (Fin N) ℝ) :=
-  ∑ i : Fin N, (criticalityPolyHom m c i) ^ 2
+  ∑ i : Fin N, (criticalityPolyHom m c i) ^ (2 : ℕ)
 
 theorem eval_map_criticalityPolyHom (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (i : Fin N)
     (θ : Fin N → ℝ) (y : ℝ) :
     Polynomial.eval y (Polynomial.map (MvPolynomial.eval θ) (criticalityPolyHom m c i))
       = (∑ n ∈ Finset.range m,
-          MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * (∑ a, (θ a) ^ 2) * y ^ n)
+          MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * (∑ a, (θ a) ^ (2 : ℕ)) * y ^ n)
         + (∑ n ∈ Finset.range m, (n : ℝ) * MvPolynomial.eval θ (c n) * y ^ (n - 1))
           * (y * θ i) := by
   rw [criticalityPolyHom, ← Polynomial.coe_mapRingHom]
@@ -61,14 +61,14 @@ theorem eval_map_criticalitySquareSumHom (m : ℕ) (c : ℕ → MvPolynomial (Fi
     Polynomial.eval y (Polynomial.map (MvPolynomial.eval θ) (criticalitySquareSumHom m c))
       = ∑ i : Fin N,
         (Polynomial.eval y
-          (Polynomial.map (MvPolynomial.eval θ) (criticalityPolyHom m c i))) ^ 2 := by
+          (Polynomial.map (MvPolynomial.eval θ) (criticalityPolyHom m c i))) ^ (2 : ℕ) := by
   rw [criticalitySquareSumHom, ← Polynomial.coe_mapRingHom]
   simp only [map_sum, map_pow, Polynomial.coe_mapRingHom, Polynomial.eval_finsetSum,
     Polynomial.eval_pow]
 
 /-- **The homogeneous square sum still vanishes at a critical point of the shell.** -/
 theorem eval_map_criticalitySquareSumHom_eq_zero_of_forall (m : ℕ)
-    (c : ℕ → MvPolynomial (Fin N) ℝ) {θ : Fin N → ℝ} (hθ : ∑ a, (θ a) ^ 2 = 1) (y : ℝ)
+    (c : ℕ → MvPolynomial (Fin N) ℝ) {θ : Fin N → ℝ} (hθ : ∑ a, (θ a) ^ (2 : ℕ) = 1) (y : ℝ)
     (h : ∀ i : Fin N,
       (∑ n ∈ Finset.range m, MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * y ^ n)
         + (∑ n ∈ Finset.range m, (n : ℝ) * MvPolynomial.eval θ (c n) * y ^ (n - 1))
@@ -79,7 +79,7 @@ theorem eval_map_criticalitySquareSumHom_eq_zero_of_forall (m : ℕ)
   refine Finset.sum_eq_zero fun i _ => ?_
   rw [eval_map_criticalityPolyHom]
   have hone : ∀ n : ℕ,
-      MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * (∑ a, (θ a) ^ 2) * y ^ n
+      MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * (∑ a, (θ a) ^ (2 : ℕ)) * y ^ n
         = MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * y ^ n := by
     intro n
     rw [hθ, mul_one]
@@ -99,7 +99,7 @@ theorem exists_criticalLocusShellPolyHom {P : Fin N → Matrix (Fin D) (Fin D) �
         = ∏ π : Equiv.Perm (Fin D),
             Polynomial.eval (shellSpectralAction hP k π θ)
               (Polynomial.map (MvPolynomial.eval θ) (criticalitySquareSumHom m c))) ∧
-      (∀ (π₀ : Equiv.Perm (Fin D)) (θ₀ : Fin N → ℝ), (∑ a, (θ₀ a) ^ 2 = 1) →
+      (∀ (π₀ : Equiv.Perm (Fin D)) (θ₀ : Fin N → ℝ), (∑ a, (θ₀ a) ^ (2 : ℕ) = 1) →
         (∀ i : Fin N, HasDerivAt (fun t : ℝ =>
             shellSpectralAction hP k π₀ (fun j => θ₀ j + (if j = i then t else 0)))
           (shellSpectralAction hP k π₀ θ₀ * θ₀ i) 0) →

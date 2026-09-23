@@ -243,7 +243,7 @@ theorem exists_conj_pair_of_xi_zero {ρ : ℂ} (hzero : xi ρ = 0) (hre : ρ.re 
     linarith
 
 /-- The conjugate pair has the same squared ordinate. -/
-theorem conj_pair_im_sq {ρ ρ' : ℂ} (h : ρ'.im = -ρ.im) : ρ'.im ^ 2 = ρ.im ^ 2 := by
+theorem conj_pair_im_sq {ρ ρ' : ℂ} (h : ρ'.im = -ρ.im) : ρ'.im ^ (2 : ℕ) = ρ.im ^ (2 : ℕ) := by
   rw [h]
   ring
 

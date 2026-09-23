@@ -24,20 +24,20 @@ namespace RHTower
 /-- Four-point residual left after cancelling the double-root diagonal against its two
 off-diagonal neighbours. -/
 def routeJProlateSourceCriticalResidual (x₀ x₁ x₂ x₃ : ℝ) : ℝ :=
-  x₀ * x₁ - x₁ ^ 2 - x₂ ^ 2 + x₂ * x₃
+  x₀ * x₁ - x₁ ^ (2 : ℕ) - x₂ ^ (2 : ℕ) + x₂ * x₃
 
 /-- Exact curvature-minus-increment-energy decomposition of the source critical residual. -/
 theorem two_mul_routeJProlateSourceCriticalResidual
     (x₀ x₁ x₂ x₃ : ℝ) :
     2 * routeJProlateSourceCriticalResidual x₀ x₁ x₂ x₃ =
-      (x₃ ^ 2 - x₂ ^ 2) - (x₁ ^ 2 - x₀ ^ 2) -
-        ((x₃ - x₂) ^ 2 + (x₁ - x₀) ^ 2) := by
+      (x₃ ^ (2 : ℕ) - x₂ ^ (2 : ℕ)) - (x₁ ^ (2 : ℕ) - x₀ ^ (2 : ℕ)) -
+        ((x₃ - x₂) ^ (2 : ℕ) + (x₁ - x₀) ^ (2 : ℕ)) := by
   unfold routeJProlateSourceCriticalResidual
   ring_nf
 
 /-- Defect of one squared Jacobi-radius increment from the archimedean affine law. -/
 def routeJJacobiSquaredIncrementDefect (a : ℕ → ℝ) (n : ℕ) : ℝ :=
-  a (n + 1) ^ 2 - a n ^ 2 - (2 * (n + 1 : ℝ) + 1 / 2)
+  a (n + 1) ^ (2 : ℕ) - a n ^ (2 : ℕ) - (2 * (n + 1 : ℝ) + 1 / 2)
 
 /-- The critical residual is exactly a second difference of the metaplectic anomaly, minus
 the two adjacent increment energies, plus the universal archimedean curvature `4`. -/
@@ -48,8 +48,8 @@ theorem two_mul_routeJProlateSourceCriticalResidual_eq_incrementDefect
       4 +
         routeJJacobiSquaredIncrementDefect a (2 * n + 2) -
         routeJJacobiSquaredIncrementDefect a (2 * n) -
-        ((a (2 * n + 3) - a (2 * n + 2)) ^ 2 +
-          (a (2 * n + 1) - a (2 * n)) ^ 2) := by
+        ((a (2 * n + 3) - a (2 * n + 2)) ^ (2 : ℕ) +
+          (a (2 * n + 1) - a (2 * n)) ^ (2 : ℕ)) := by
   rw [two_mul_routeJProlateSourceCriticalResidual]
   unfold routeJJacobiSquaredIncrementDefect
   push_cast
@@ -61,7 +61,7 @@ def routeJProlateEvenOffDiagonal (a : ℕ → ℝ) (n : ℕ) : ℝ :=
 
 /-- Diagonal coefficient of the even prolate parity block. -/
 def routeJProlateEvenDiagonal (a : ℕ → ℝ) (grading : ℝ) (n : ℕ) : ℝ :=
-  -(a (2 * n) ^ 2 + a (2 * n - 1) ^ 2) + (2 * n : ℝ) * grading
+  -(a (2 * n) ^ (2 : ℕ) + a (2 * n - 1) ^ (2 : ℕ)) + (2 * n : ℝ) * grading
 
 /-- At every positive even-parity block, diagonal plus adjacent off-diagonals equals the
 grading contribution plus the four-point source critical residual. -/

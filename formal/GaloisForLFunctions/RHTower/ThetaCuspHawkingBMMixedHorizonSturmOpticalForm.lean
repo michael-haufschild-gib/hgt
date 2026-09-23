@@ -13,7 +13,7 @@ The hypergeometric radial operator consequently admits the real Sturm--Liouville
 
 `p(z) = sqrt(1-z) / z^N`, `w(z) = p(z)/(z(1-z))`
 
-on `0 < z < 1`. Its potential is `a b = |a|^2 > 0`, and
+on `0 < z < 1`. Its potential is `a b = |a|^(2 : ℕ) > 0`, and
 
 `p'(z) = w(z) (-N + (N-1/2)z)`.
 
@@ -136,7 +136,7 @@ theorem hasDerivAt_d4BMMixedHorizonSturmP
     d4BMMixedHorizonSturmDrift]
   change _ = (_ / (z * (1 - z))) *
     (-(N : ℝ) + ((N : ℝ) - 1 / 2) * z)
-  have hsquare : Real.sqrt (1 - z) ^ 2 = 1 - z :=
+  have hsquare : Real.sqrt (1 - z) ^ (2 : ℕ) = 1 - z :=
     Real.sq_sqrt (sub_nonneg.mpr (le_of_lt hz1))
   have hpowstep : z ^ N = z ^ (N - 1) * z := by
     conv_lhs => rw [← Nat.sub_add_cancel hN]

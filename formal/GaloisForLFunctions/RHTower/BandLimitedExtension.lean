@@ -10,7 +10,7 @@ The sinc kernel is the inverse transform of the frequency window, so the band tr
 continuous test function is an integral over the *window* of its own spectrum:
 
 ```text
-(B_c Phi)(x) = (c/2 pi) ∫_(-1)^1 F(-c t) exp (i c x t) dt,      F(omega) = ∫_(-1)^1 Phi(y) e^(i omega y) dy.
+(B_c Phi)(x) = (c/2 pi) ∫_(-1)^(1 : ℕ) F(-c t) exp (i c x t) dt,      F(omega) = ∫_(-1)^(1 : ℕ) Phi(y) e^(i omega y) dy.
 ```
 
 Only the exponential depends on `x`, and its frequency variable runs over a compact interval, so the

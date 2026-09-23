@@ -46,14 +46,14 @@ theorem expElem_ne_zero : expElem ≠ 0 := by
   have := (analyticMeroElement_eq_zero_iff analyticOnNhd_cexp).mp h 0 (Set.mem_univ 0)
   exact Complex.exp_ne_zero 0 this
 
-theorem iteratedDeriv_cexp (n : ℕ) : iteratedDeriv n Complex.exp = Complex.exp := by
+theorem iteratedDeriv_cexp_exponentialCapNonAdditivity (n : ℕ) : iteratedDeriv n Complex.exp = Complex.exp := by
   induction n with
   | zero => simp [iteratedDeriv_zero]
   | succ n ih => rw [iteratedDeriv_succ, ih, Complex.deriv_exp]
 
 theorem jetElem_exp (k : ℕ) : jetElem Complex.differentiable_exp k = expElem := by
   rw [jetElem, expElem]
-  exact analyticMeroElement_congr _ _ (iteratedDeriv_cexp k)
+  exact analyticMeroElement_congr _ _ (iteratedDeriv_cexp_exponentialCapNonAdditivity k)
 
 /-! ### The exponential is transcendental over the rational functions -/
 
@@ -188,16 +188,16 @@ theorem not_const_cexp : ¬ ∃ c : ℂ, ∀ z : ℂ, Complex.exp z = c := by
 theorem not_poly_cexp : ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, Complex.exp z = p.eval z :=
   not_exists_poly_of_zeroFree (fun z => Complex.exp_ne_zero z) not_const_cexp
 
-theorem not_const_gaussianExp : ¬ ∃ c : ℂ, ∀ z : ℂ, Complex.exp (-z ^ 2) = c := by
+theorem not_const_gaussianExp : ¬ ∃ c : ℂ, ∀ z : ℂ, Complex.exp (-z ^ (2 : ℕ)) = c := by
   refine not_const_of_deriv_ne_zero (z₀ := 1) ?_
-  have h2 : HasDerivAt (fun w : ℂ => -(w ^ 2)) (-((2 : ℕ) * (1 : ℂ) ^ (2 - 1))) 1 :=
+  have h2 : HasDerivAt (fun w : ℂ => -(w ^ (2 : ℕ))) (-((2 : ℕ) * (1 : ℂ) ^ (2 - 1))) 1 :=
     (hasDerivAt_pow 2 1).neg
   have hd := h2.cexp
   rw [hd.deriv]
   simp
 
 theorem not_poly_gaussianExp :
-    ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, Complex.exp (-z ^ 2) = p.eval z :=
+    ¬ ∃ p : Polynomial ℂ, ∀ z : ℂ, Complex.exp (-z ^ (2 : ℕ)) = p.eval z :=
   not_exists_poly_of_zeroFree (fun _ => Complex.exp_ne_zero _) not_const_gaussianExp
 
 /-- The Gaussian primitive is not a polynomial: its derivative is not one. -/

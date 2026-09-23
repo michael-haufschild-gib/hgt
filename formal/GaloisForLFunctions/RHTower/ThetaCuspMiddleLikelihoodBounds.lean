@@ -37,7 +37,7 @@ theorem thetaCuspSecondAtomMoment_one_le_middle {x : ℝ}
   have hB : 2 ≤ B := by dsimp [q] at hBq; linarith
   have hBp : 0 < B := by linarith
   have hs : secondAtomProfile 1 B ≤ 80 := by
-    change (18+54*B+48*B^2)/B^2 ≤ 80
+    change (18+54*B+48*B^(2 : ℕ))/B^(2 : ℕ) ≤ 80
     apply (div_le_iff₀ (sq_pos_of_pos hBp)).mpr
     nlinarith [mul_nonneg (show 0 ≤ B-2 by linarith) (show 0 ≤ 32*B+10 by linarith)]
   have he := secondGaussian_le hq

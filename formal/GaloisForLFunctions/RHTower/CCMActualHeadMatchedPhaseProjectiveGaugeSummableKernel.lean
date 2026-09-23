@@ -10,7 +10,7 @@ The exponential Fock kernel internalizes the intact oriented matched-CCM source 
 entry ratio, but its natural arithmetic diagonal is not summable.  The independently proved
 first-moment estimate supplies a source-selected half-density
 
-`sqrt (criticalMellinAtomWeight n ^ 2 / exp (log n / 2))`
+`sqrt (criticalMellinAtomWeight n ^ (2 : ℕ) / exp (log n / 2))`
 
 whose square is summable.  Projective readout permits this density to rescale both entries of an
 arithmetic row without changing their ratio.
@@ -37,14 +37,14 @@ namespace RHTower
 frequency.  The proof combines the matched phase-disk law with trigonometric Cauchy--Schwarz. -/
 theorem ccmActualHeadMatchedOrientedPhaseSymbol_re_sq_le_sixteen
     (n : ℕ) (xi : ℝ) :
-    (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re ^ 2 ≤ 16 := by
+    (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re ^ (2 : ℕ) ≤ 16 := by
   let w := criticalMellinAtomWeight n
   let C := ccmActualHeadMatchedCosinePhaseProfile n xi
   let S := ccmActualHeadMatchedSinePhaseProfile n xi
-  have hw0 : 0 ≤ w := criticalMellinAtomWeight_nonneg n
+  have hw0 : 0 ≤ w := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have hw2 : w ≤ 2 := criticalMellinAtomWeight_le_two n
   have hC0 : 0 ≤ C := ccmActualHeadMatchedCosinePhaseProfile_nonneg n xi
-  have hdisk : (C - w) ^ 2 + S ^ 2 ≤ w ^ 2 := by
+  have hdisk : (C - w) ^ (2 : ℕ) + S ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := by
     simpa [C, S, w] using ccmActualHeadMatchedPhaseProfile_mem_weightDisk n xi
   have hC_le : C ≤ 2 * w := by
     by_contra hnot
@@ -52,30 +52,30 @@ theorem ccmActualHeadMatchedOrientedPhaseSymbol_re_sq_le_sixteen
     have hCpos : 0 < C := lt_of_le_of_lt (mul_nonneg (by norm_num) hw0) hlt
     have hmul : 2 * w * C < C * C := mul_lt_mul_of_pos_right hlt hCpos
     nlinarith [sq_nonneg S]
-  have hprofile : C ^ 2 + S ^ 2 ≤ 4 * w ^ 2 := by
-    have hmul : 2 * w * C ≤ 4 * w ^ 2 := by
+  have hprofile : C ^ (2 : ℕ) + S ^ (2 : ℕ) ≤ 4 * w ^ (2 : ℕ) := by
+    have hmul : 2 * w * C ≤ 4 * w ^ (2 : ℕ) := by
       nlinarith [mul_nonneg hw0 (sub_nonneg.mpr hC_le)]
     nlinarith
-  have hw_sq : w ^ 2 ≤ 4 := by
+  have hw_sq : w ^ (2 : ℕ) ≤ 4 := by
     nlinarith [mul_nonneg hw0 (sub_nonneg.mpr hw2)]
   rw [ccmActualHeadMatchedOrientedPhaseSymbol_re]
   let theta := 2 * Real.pi * Real.log n * xi
-  have htrig : Real.sin theta ^ 2 + Real.cos theta ^ 2 = 1 :=
+  have htrig : Real.sin theta ^ (2 : ℕ) + Real.cos theta ^ (2 : ℕ) = 1 :=
     Real.sin_sq_add_cos_sq theta
   have hcs :
-      (Real.cos theta * C + Real.sin theta * S) ^ 2 ≤ C ^ 2 + S ^ 2 := by
+      (Real.cos theta * C + Real.sin theta * S) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) + S ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (Real.cos theta * S - Real.sin theta * C)]
-  change (Real.cos theta * C + Real.sin theta * S) ^ 2 ≤ 16
+  change (Real.cos theta * C + Real.sin theta * S) ^ (2 : ℕ) ≤ 16
   nlinarith
 
 /-- Source-selected projective gauge.  Its square is the summable arithmetic half-density. -/
 def ccmActualHeadMatchedPhaseProjectiveGauge (n : ℕ) : ℝ :=
-  Real.sqrt (criticalMellinAtomWeight n ^ 2 /
+  Real.sqrt (criticalMellinAtomWeight n ^ (2 : ℕ) /
     Real.exp (Real.log n / 2))
 
 theorem ccmActualHeadMatchedPhaseProjectiveGauge_sq (n : ℕ) :
-    ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 =
-      criticalMellinAtomWeight n ^ 2 / Real.exp (Real.log n / 2) := by
+    ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) =
+      criticalMellinAtomWeight n ^ (2 : ℕ) / Real.exp (Real.log n / 2) := by
   rw [ccmActualHeadMatchedPhaseProjectiveGauge, Real.sq_sqrt]
   exact div_nonneg (sq_nonneg _) (Real.exp_pos _).le
 
@@ -140,9 +140,9 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeKernel_isPSDKernel (xi : ℝ) :
 @[simp] theorem ccmActualHeadMatchedPhaseProjectiveGaugeKernel_atom_diagonal
     (xi : ℝ) (n : ℕ) :
     (ccmActualHeadMatchedPhaseProjectiveGaugeKernel xi (.atom n) (.atom n)).re =
-      ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 +
+      ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) +
         (ccmActualHeadMatchedPhaseProjectiveGauge n *
-          (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) ^ 2 := by
+          (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) ^ (2 : ℕ) := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeKernel,
     ccmActualHeadMatchedPhaseProjectiveGaugeWeightFeature,
     ccmActualHeadMatchedPhaseProjectiveGaugeSourceFeature]
@@ -176,7 +176,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeReporter_eq
       ccmActualHeadMatchedPhaseProjectiveGaugeKernel_atom_sourceAnchor,
       ccmActualHeadMatchedPhaseProjectiveGaugeKernel_atom_weightAnchor]
     norm_cast
-    have hbase : 0 < criticalMellinAtomWeight n ^ 2 /
+    have hbase : 0 < criticalMellinAtomWeight n ^ (2 : ℕ) /
         Real.exp (Real.log n / 2) :=
       div_pos (sq_pos_of_ne_zero hw) (Real.exp_pos _)
     have hg : ccmActualHeadMatchedPhaseProjectiveGauge n ≠ 0 :=
@@ -199,20 +199,20 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal_nonneg
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal_le
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal xi n ≤
-      17 * (criticalMellinAtomWeight n ^ 2 /
+      17 * (criticalMellinAtomWeight n ^ (2 : ℕ) /
         Real.exp (Real.log n / 2)) := by
   rw [ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal,
     ccmActualHeadMatchedPhaseProjectiveGaugeKernel_atom_diagonal]
   have hs := ccmActualHeadMatchedOrientedPhaseSymbol_re_sq_le_sixteen n xi
-  have ha : 0 ≤ ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 := sq_nonneg _
+  have ha : 0 ≤ ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) := sq_nonneg _
   calc
-    ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 +
+    ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) +
           (ccmActualHeadMatchedPhaseProjectiveGauge n *
-            (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) ^ 2 =
-        ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
-          (1 + (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re ^ 2) := by ring
-    _ ≤ 17 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 := by nlinarith
-    _ = 17 * (criticalMellinAtomWeight n ^ 2 /
+            (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) ^ (2 : ℕ) =
+        ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
+          (1 + (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re ^ (2 : ℕ)) := by ring
+    _ ≤ 17 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) := by nlinarith
+    _ = 17 * (criticalMellinAtomWeight n ^ (2 : ℕ) /
         Real.exp (Real.log n / 2)) := by
       rw [ccmActualHeadMatchedPhaseProjectiveGauge_sq]
 
@@ -221,7 +221,7 @@ theorem summable_ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal
     (xi : ℝ) :
     Summable (ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal xi) := by
   have hmajor : Summable (fun n : ℕ =>
-      17 * (criticalMellinAtomWeight n ^ 2 /
+      17 * (criticalMellinAtomWeight n ^ (2 : ℕ) /
         Real.exp (Real.log n / 2))) :=
     summable_criticalMellinAtomWeight_sq_div_exp_half_log.mul_left 17
   apply Summable.of_norm_bounded hmajor
@@ -254,7 +254,7 @@ theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_projectiveGaugeSummableKern
     ccmActualHeadMatchedPrimePolarFiniteBlock F f =
       -2 * ∫ xi : ℝ,
         ccmActualHeadMatchedPhaseProjectiveGaugeFiniteReporter F xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
   congr 2
   funext xi

@@ -60,7 +60,7 @@ theorem power_expansion_eq_zero_ray : ∀ (M : ℕ) (a : ℕ → ℂ) (K : ℝ) 
         rw [norm_div, norm_pow]
         rw [div_le_div_iff₀ (by positivity) hn0]
         have hpow : ‖S n‖ ≤ ‖S n‖ ^ (j + 1) := by
-          calc ‖S n‖ = ‖S n‖ ^ 1 := (pow_one _).symm
+          calc ‖S n‖ = ‖S n‖ ^ (1 : ℕ) := (pow_one _).symm
             _ ≤ ‖S n‖ ^ (j + 1) := pow_le_pow_right₀ hn (by omega)
         nlinarith [norm_nonneg (a (j + 1))]
       have hK0 : 0 ≤ K := by
@@ -83,7 +83,7 @@ theorem power_expansion_eq_zero_ray : ∀ (M : ℕ) (a : ℕ → ℂ) (K : ℝ) 
           simpa using this
         have hbig : K / ‖S n‖ ^ (M + 2) ≤ K / ‖S n‖ := by
           have hpow : ‖S n‖ ≤ ‖S n‖ ^ (M + 2) := by
-            calc ‖S n‖ = ‖S n‖ ^ 1 := (pow_one _).symm
+            calc ‖S n‖ = ‖S n‖ ^ (1 : ℕ) := (pow_one _).symm
               _ ≤ ‖S n‖ ^ (M + 2) := pow_le_pow_right₀ hn1 (by omega)
           have hp : (0 : ℝ) < ‖S n‖ ^ (M + 2) := by positivity
           rw [div_le_div_iff₀ hp hn0]

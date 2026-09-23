@@ -371,7 +371,7 @@ private theorem gaussianContinuumCutoff_conj
   · simp only [gaussianContinuumCutoff, indicator_of_mem hu,
       gaussianContinuumIntegrand]
     rw [map_mul, Complex.conj_ofReal,
-      conj_ofReal_cpow (zero_lt_one.trans_le hu)]
+      conj_ofReal_cpow_baezDuarteDetectorGram (zero_lt_one.trans_le hu)]
     simp only [map_neg]
   · simp [gaussianContinuumCutoff, hu]
 

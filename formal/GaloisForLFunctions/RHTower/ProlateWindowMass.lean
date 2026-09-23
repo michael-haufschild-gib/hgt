@@ -17,7 +17,7 @@ open Set Filter Topology GaloisForLFunctions.HTGeometry
 
 namespace RHTower
 
-theorem gaussianProfile_sq (x : ℝ) : gaussianProfile x ^ 2 = Real.exp (-(x ^ 2)) := by
+theorem gaussianProfile_sq (x : ℝ) : gaussianProfile x ^ (2 : ℕ) = Real.exp (-(x ^ (2 : ℕ))) := by
   rw [gaussianProfile, sq, ← Real.exp_add]
   ring_nf
 
@@ -25,10 +25,10 @@ theorem gaussianProfile_pos (x : ℝ) : 0 < gaussianProfile x := Real.exp_pos _
 
 theorem abs_gaussianProfile_le_one (x : ℝ) : |gaussianProfile x| ≤ 1 := by
   rw [abs_of_pos (gaussianProfile_pos x), gaussianProfile]
-  have : -(x ^ 2) / 2 ≤ 0 := by
-    have : (0 : ℝ) ≤ x ^ 2 := sq_nonneg x
+  have : -(x ^ (2 : ℕ)) / 2 ≤ 0 := by
+    have : (0 : ℝ) ≤ x ^ (2 : ℕ) := sq_nonneg x
     linarith
-  calc Real.exp (-(x ^ 2) / 2) ≤ Real.exp 0 := Real.exp_le_exp.2 this
+  calc Real.exp (-(x ^ (2 : ℕ)) / 2) ≤ Real.exp 0 := Real.exp_le_exp.2 this
     _ = 1 := Real.exp_zero
 
 theorem even_gaussianProfile : Function.Even gaussianProfile := by
@@ -95,9 +95,9 @@ theorem abs_le_of_even_window {u : ℝ → ℝ} {K B : ℝ}
 theorem abs_sq_sub_le_of_window {u : ℝ → ℝ} {K E B : ℝ}
     (hbound : ∀ x ∈ Icc (-K) K, |u x - gaussianProfile x| ≤ E)
     (hB : ∀ x ∈ Icc (-K) K, |u x| ≤ B) :
-    ∀ x ∈ Icc (-K) K, |u x ^ 2 - gaussianProfile x ^ 2| ≤ E * (B + 1) := by
+    ∀ x ∈ Icc (-K) K, |u x ^ (2 : ℕ) - gaussianProfile x ^ (2 : ℕ)| ≤ E * (B + 1) := by
   intro x hx
-  have hfac : u x ^ 2 - gaussianProfile x ^ 2
+  have hfac : u x ^ (2 : ℕ) - gaussianProfile x ^ (2 : ℕ)
       = (u x - gaussianProfile x) * (u x + gaussianProfile x) := by ring
   rw [hfac, abs_mul]
   have h1 : |u x - gaussianProfile x| ≤ E := hbound x hx
@@ -110,17 +110,17 @@ theorem abs_sq_sub_le_of_window {u : ℝ → ℝ} {K E B : ℝ}
 by at most `2K(B+1)` times the Grönwall envelope. -/
 theorem abs_windowMass_sub_le {u : ℝ → ℝ} {K E B : ℝ}
     (hK : 0 ≤ K) (hu : Continuous u)
-    (hbound : ∀ x ∈ Icc (-K) K, |u x ^ 2 - gaussianProfile x ^ 2| ≤ E * (B + 1)) :
-    |(∫ x in (-K)..K, u x ^ 2) - ∫ x in (-K)..K, Real.exp (-(x ^ 2))|
+    (hbound : ∀ x ∈ Icc (-K) K, |u x ^ (2 : ℕ) - gaussianProfile x ^ (2 : ℕ)| ≤ E * (B + 1)) :
+    |(∫ x in (-K)..K, u x ^ (2 : ℕ)) - ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))|
       ≤ E * (B + 1) * (2 * K) := by
   have hKK : (-K : ℝ) ≤ K := by linarith
-  have hrw : (fun x : ℝ => Real.exp (-(x ^ 2))) = fun x : ℝ => gaussianProfile x ^ 2 :=
+  have hrw : (fun x : ℝ => Real.exp (-(x ^ (2 : ℕ)))) = fun x : ℝ => gaussianProfile x ^ (2 : ℕ) :=
     funext fun x => (gaussianProfile_sq x).symm
   rw [hrw]
-  have := abs_intervalIntegral_sub_le_of_uniform (f := fun x : ℝ => u x ^ 2)
-    (g := fun x : ℝ => gaussianProfile x ^ 2) (a := -K) (b := K) hKK
+  have := abs_intervalIntegral_sub_le_of_uniform (f := fun x : ℝ => u x ^ (2 : ℕ))
+    (g := fun x : ℝ => gaussianProfile x ^ (2 : ℕ)) (a := -K) (b := K) hKK
     ((hu.pow 2).continuousOn) ((continuous_gaussianProfile.pow 2).continuousOn) hbound
-  calc |(∫ x in (-K)..K, u x ^ 2) - ∫ x in (-K)..K, gaussianProfile x ^ 2|
+  calc |(∫ x in (-K)..K, u x ^ (2 : ℕ)) - ∫ x in (-K)..K, gaussianProfile x ^ (2 : ℕ)|
       ≤ E * (B + 1) * (K - -K) := this
     _ = E * (B + 1) * (2 * K) := by ring
 

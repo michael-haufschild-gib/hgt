@@ -221,7 +221,7 @@ theorem integral_normSq_ladderProductDefect_le {P : Finset ℕ} {A₀ B₀ : ℕ
       (ladderGapSetAt A₀ B₀ Q η x).image (fun m => x.2 * m) ⊆ Finset.Icc 1 N)
     (hK : ∀ n ∈ Finset.Icc 1 N, (((ladderIndex P Q η L).filter
       (fun x => n ∈ (ladderGapSetAt A₀ B₀ Q η x).image (fun m => x.2 * m))).card : ℝ) ≤ K) :
-    (∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ))
           * (K * ∑ x ∈ ladderIndex P Q η L, ((ladderGapSetAt A₀ B₀ Q η x).card : ℝ)) := by
   classical
@@ -241,12 +241,12 @@ count, and the gap budget is the ladder budget of `Sieve/TwoSidedCofactorBlock`.
 theorem integral_normSq_ladderProductDefect_le_closed {P : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0 < A₀)
     {Q η W : ℝ} (hQ : 1 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (hPge : ∀ p ∈ P, Q ≤ (p : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
           * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
             * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                 * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                  + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)) := by
+                  + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
   have hlogQ : 0 < Real.log Q := Real.log_pos hQ

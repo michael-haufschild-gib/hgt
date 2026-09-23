@@ -25,7 +25,7 @@ variable {E F : Type*}
 /-- **Pointwise domination.**  On a unit vector the image norm squared is at most the squared
 Hilbert--Schmidt norm. -/
 theorem norm_sq_apply_le_hsNormSq {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
-    {x : E} (hx : ‖x‖ = 1) : ‖T x‖ ^ 2 ≤ hsNormSq T := by
+    {x : E} (hx : ‖x‖ = 1) : ‖T x‖ ^ (2 : ℕ) ≤ hsNormSq T := by
   have hortho : Orthonormal 𝕜 ((↑) : ({x} : Set E) → E) := by
     constructor
     · rintro ⟨v, hv⟩
@@ -37,9 +37,9 @@ theorem norm_sq_apply_le_hsNormSq {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
   obtain ⟨w, b, hsub, hb⟩ := hortho.exists_hilbertBasis_extension
   have hxw : x ∈ w := hsub (Set.mem_singleton x)
   have hbx : b ⟨x, hxw⟩ = x := by rw [hb]
-  have hsummable : Summable fun i : w => ‖T (b i)‖ ^ 2 :=
+  have hsummable : Summable fun i : w => ‖T (b i)‖ ^ (2 : ℕ) :=
     summable_normSq_basis_of_basis (hsBasis 𝕜 E) b T hT
-  have hsum : hsNormSq T = ∑' i : w, ‖T (b i)‖ ^ 2 := hsNormSq_eq hT b
+  have hsum : hsNormSq T = ∑' i : w, ‖T (b i)‖ ^ (2 : ℕ) := hsNormSq_eq hT b
   rw [hsum, ← hbx]
   exact Summable.le_tsum hsummable ⟨x, hxw⟩ fun j _ => by positivity
 
@@ -48,7 +48,7 @@ squared Hilbert--Schmidt norm: the family extends to a Hilbert basis, and a fini
 nonnegative convergent sum is at most the sum. -/
 theorem sum_norm_sq_apply_le_hsNormSq {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
     {ι : Type*} [Fintype ι] {e : ι → E} (he : Orthonormal 𝕜 e) :
-    ∑ i, ‖T (e i)‖ ^ 2 ≤ hsNormSq T := by
+    ∑ i, ‖T (e i)‖ ^ (2 : ℕ) ≤ hsNormSq T := by
   classical
   have hinj : Function.Injective e := he.linearIndependent.injective
   have hortho : Orthonormal 𝕜 ((↑) : Set.range e → E) :=
@@ -60,10 +60,10 @@ theorem sum_norm_sq_apply_le_hsNormSq {T : E →L[𝕜] F} (hT : IsHilbertSchmid
     intro i j hij
     exact hinj (congrArg Subtype.val hij)
   have hbf : ∀ i : ι, b (f i) = e i := fun i => by rw [hb]
-  have hsummable : Summable fun i : w => ‖T (b i)‖ ^ 2 :=
+  have hsummable : Summable fun i : w => ‖T (b i)‖ ^ (2 : ℕ) :=
     summable_normSq_basis_of_basis (hsBasis 𝕜 E) b T hT
-  have hsum : hsNormSq T = ∑' i : w, ‖T (b i)‖ ^ 2 := hsNormSq_eq hT b
-  have hrewrite : ∑ i, ‖T (e i)‖ ^ 2 = ∑ x ∈ Finset.univ.image f, ‖T (b x)‖ ^ 2 := by
+  have hsum : hsNormSq T = ∑' i : w, ‖T (b i)‖ ^ (2 : ℕ) := hsNormSq_eq hT b
+  have hrewrite : ∑ i, ‖T (e i)‖ ^ (2 : ℕ) = ∑ x ∈ Finset.univ.image f, ‖T (b x)‖ ^ (2 : ℕ) := by
     rw [Finset.sum_image fun i _ j _ hij => hfinj hij]
     exact Finset.sum_congr rfl fun i _ => by rw [hbf i]
   rw [hsum, hrewrite]
@@ -76,12 +76,12 @@ theorem card_le_hsNormSq_of_norm_apply_eq_one {T : E →L[𝕜] F} (hT : IsHilbe
     (hnorm : ∀ i, 1 ≤ ‖T (e i)‖) :
     (Fintype.card ι : ℝ) ≤ hsNormSq T := by
   refine le_trans ?_ (sum_norm_sq_apply_le_hsNormSq hT he)
-  have hterm : ∀ i : ι, (1 : ℝ) ≤ ‖T (e i)‖ ^ 2 := by
+  have hterm : ∀ i : ι, (1 : ℝ) ≤ ‖T (e i)‖ ^ (2 : ℕ) := by
     intro i
     have h := hnorm i
     nlinarith [norm_nonneg (T (e i))]
   calc (Fintype.card ι : ℝ) = ∑ _i : ι, (1 : ℝ) := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
-    _ ≤ ∑ i, ‖T (e i)‖ ^ 2 := Finset.sum_le_sum fun i _ => hterm i
+    _ ≤ ∑ i, ‖T (e i)‖ ^ (2 : ℕ) := Finset.sum_le_sum fun i _ => hterm i
 
 end RHTower

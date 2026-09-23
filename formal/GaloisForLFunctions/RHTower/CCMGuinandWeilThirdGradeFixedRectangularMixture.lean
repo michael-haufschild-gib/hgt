@@ -24,7 +24,7 @@ theorem ccmPositiveLagRectangularTriangle_eq_intervalAutocorrelation
 def ccmThirdGradeCesaroFixedRectangularMixture (b H h : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
       ccmPositiveLagRectangularTriangle t h) +
-    (32 / H ^ 4) * ccmPositiveLagRectangularTriangle H h
+    (32 / H ^ (4 : ℕ)) * ccmPositiveLagRectangularTriangle H h
 
 private theorem continuousOn_rectangularMixDensity_mul_triangle
     {b H h : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
@@ -48,7 +48,7 @@ theorem ccmThirdGradeCesaroFixedRectangularMixture_eq_tail
     {b H h : ℝ} (hb : 0 < b) (hbh : b ≤ h) (hhH : h ≤ H) :
     ccmThirdGradeCesaroFixedRectangularMixture b H h =
       (∫ t in h..H, ccmThirdGradeCesaroRectangularMixDensity H t * (t - h)) +
-        (32 / H ^ 4) * (H - h) := by
+        (32 / H ^ (4 : ℕ)) * (H - h) := by
   have hbH : b ≤ H := hbh.trans hhH
   let F : ℝ → ℝ := fun t => ccmThirdGradeCesaroRectangularMixDensity H t *
     ccmPositiveLagRectangularTriangle t h

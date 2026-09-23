@@ -63,9 +63,9 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
         deriv (fun v => xiShiftedCanonicalAdmissionAdjacentEdge v (n + 1)) y *
           xiShiftedCanonicalAdmissionApexValue y n *
           xiShiftedCanonicalAdmissionApexValue y (n + 1) +
-        (y⁻¹ ^ 2 + deriv
+        (y⁻¹ ^ (2 : ℕ) + deriv
           (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) y) *
-          xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 := by
+          xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) := by
   let A0 : ℝ → ℝ := fun v => xiShiftedCanonicalAdmissionApexValue v n
   let A1 : ℝ → ℝ := fun v => xiShiftedCanonicalAdmissionApexValue v (n + 1)
   let A2 : ℝ → ℝ := fun v => xiShiftedCanonicalAdmissionApexValue v (n + 2)
@@ -95,7 +95,7 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
       xiShiftedCanonicalAdmissionNorm v (n + 1) /
         xiShiftedCanonicalAdmissionNorm v n) y
     exact (hN1.div hN0 hN0pos.ne').differentiableAt
-  have hInv : HasDerivAt (fun v : ℝ => v⁻¹) (-(y ^ 2)⁻¹) y :=
+  have hInv : HasDerivAt (fun v : ℝ => v⁻¹) (-(y ^ (2 : ℕ))⁻¹) y :=
     hasDerivAt_inv hy.ne'
   have hAlpha' : HasDerivAt alpha (deriv alpha y) y :=
     hAlpha.differentiableAt.hasDerivAt
@@ -104,12 +104,12 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
   have hA1' : HasDerivAt A1 (deriv A1 y) y :=
     hA1.differentiableAt.hasDerivAt
   have hRhs : HasDerivAt (fun v => (v⁻¹ - alpha v) * A1 v - beta v * A0 v)
-      ((-(y ^ 2)⁻¹ - deriv alpha y) * A1 y +
+      ((-(y ^ (2 : ℕ))⁻¹ - deriv alpha y) * A1 y +
           (y⁻¹ - alpha y) * deriv A1 y -
         (deriv beta y * A0 y + beta y * deriv A0 y)) y := by
     change HasDerivAt
       (((fun v : ℝ => v⁻¹) - alpha) * A1 - beta * A0)
-      ((-(y ^ 2)⁻¹ - deriv alpha y) * A1 y +
+      ((-(y ^ (2 : ℕ))⁻¹ - deriv alpha y) * A1 y +
           (y⁻¹ - alpha y) * deriv A1 y -
         (deriv beta y * A0 y + beta y * deriv A0 y)) y
     exact ((hInv.sub hAlpha').mul hA1').sub (hBeta.hasDerivAt.mul hA0')
@@ -125,7 +125,7 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
     filter_upwards [hchamber] with v hv
     exact xiShiftedCanonicalAdmissionApexValue_succ_succ_eq_jacobiRenewal hv
   have hA2' : HasDerivAt A2
-      ((-(y ^ 2)⁻¹ - deriv alpha y) * A1 y +
+      ((-(y ^ (2 : ℕ))⁻¹ - deriv alpha y) * A1 y +
           (y⁻¹ - alpha y) * deriv A1 y -
         (deriv beta y * A0 y + beta y * deriv A0 y)) y :=
     hRhs.congr_of_eventuallyEq hrecEvent
@@ -135,7 +135,7 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
   change A2 y * deriv A1 y - A1 y * deriv A2 y =
     beta y * (A1 y * deriv A0 y - A0 y * deriv A1 y) +
       deriv beta y * A0 y * A1 y +
-      (y⁻¹ ^ 2 + deriv alpha y) * A1 y ^ 2
+      (y⁻¹ ^ (2 : ℕ) + deriv alpha y) * A1 y ^ (2 : ℕ)
   rw [hrec', hA2'.deriv]
   field_simp [hy.ne']
   ring

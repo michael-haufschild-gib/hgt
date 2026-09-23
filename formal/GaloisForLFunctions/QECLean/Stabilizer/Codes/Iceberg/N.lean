@@ -726,7 +726,7 @@ private lemma weight_one_anticomm_witness (m : ℕ) [Fact (2 ≤ m)] :
 
 /-- Weight of `logicalX m i` equals 2 (parametric — the support is exactly
 `{logIdx i, xAnchor m}` and these are distinct). -/
-private lemma weight_logicalX (m : ℕ) [Fact (2 ≤ m)] (i : Fin (2 * m - 2)) :
+private lemma weight (m : ℕ) [Fact (2 ≤ m)] (i : Fin (2 * m - 2)) :
     NQubitPauliGroupElement.weight (logicalX m i) = 2 := by
   classical
   have hxa : logIdx i ≠ xAnchor m := logIdx_ne_xAnchor m i
@@ -756,7 +756,7 @@ theorem code_has_distance_two (m : ℕ) [Fact (2 ≤ m)] :
     (stabilizerCode_toSubgroup_eq m) (weight_one_anticomm_witness m) ?_
   refine ⟨logicalX m ⟨0, h0lt⟩, ?_, ?_⟩
   · exact (logicalOpsIceberg m ⟨0, h0lt⟩).xOp_nontrivial
-  · exact weight_logicalX m ⟨0, h0lt⟩
+  · exact weight m ⟨0, h0lt⟩
 
 /-- T19: the iceberg code packaged with its distance. -/
 noncomputable def stabilizerCodeWithDistance (m : ℕ) [Fact (2 ≤ m)] :

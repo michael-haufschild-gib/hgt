@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!
-# Coordinate projections on complex `ell^2`
+# Coordinate projections on complex `ell^(2 : ℕ)`
 
 Restriction to an arbitrary coordinate set is packaged as an unconditional orthogonal projection.
 The module supplies its exact norm and inner-product value relations, including a real-coordinate
@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- Coordinate restriction to a set, as a norm-one orthogonal projection on complex `ell^2`. -/
+/-- Coordinate restriction to a set, as a norm-one orthogonal projection on complex `ell^(2 : ℕ)`. -/
 noncomputable def lpCoordinateProjection
     {ι : Type*} (S : Set ι) :
     lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2 := by

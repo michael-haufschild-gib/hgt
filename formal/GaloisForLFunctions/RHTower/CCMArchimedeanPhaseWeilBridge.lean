@@ -1198,7 +1198,7 @@ def ccmArchimedeanWeilDistribution
 
 theorem real_log_four_mul_pi :
     Real.log (4 * Real.pi) = Real.log Real.pi + 2 * Real.log 2 := by
-  rw [show (4 : ℝ) * Real.pi = (2 : ℝ) ^ 2 * Real.pi by ring,
+  rw [show (4 : ℝ) * Real.pi = (2 : ℝ) ^ (2 : ℕ) * Real.pi by ring,
     Real.log_mul (pow_ne_zero 2 (by norm_num)) Real.pi_ne_zero,
     Real.log_pow]
   norm_num

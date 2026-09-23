@@ -25,13 +25,13 @@ open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.RHTower
 
 /-- The envelope of the exterior representation. -/
-def prolateEnvelope (s c x : ℝ) : ℝ := 1 / (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1))
+def prolateEnvelope (s c x : ℝ) : ℝ := 1 / (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1))
 
 /-- Its derivative. -/
 def prolateEnvelopeDeriv (s c x : ℝ) : ℝ :=
-  -(lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)
-      + lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1)))
-    / (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2
+  -(lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+      + lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1)))
+    / (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ)
 
 theorem sqrt_c_le_lgSpeedAmp {s c x : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hx : 1 < x) :
     Real.sqrt c ≤ lgSpeedAmp s c x := by
@@ -49,31 +49,31 @@ theorem lgSpeedAmp_le_sqrt_two_c {s c x : ℝ} (hs0 : 0 ≤ s) (hc : 0 < c) (hx 
 
 theorem hasDerivAt_prolateEnvelope {s c x : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hx : 1 < x) :
     HasDerivAt (prolateEnvelope s c) (prolateEnvelopeDeriv s c x) x := by
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hsd : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hsd : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
   have hh : 0 < lgSpeedAmp s c x := lgSpeedAmp_pos hs1 hc hx
-  have hnf : HasDerivAt (fun t : ℝ => Real.sqrt (t ^ 2 - 1))
-      (x / Real.sqrt (x ^ 2 - 1)) x := by
+  have hnf : HasDerivAt (fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1))
+      (x / Real.sqrt (x ^ (2 : ℕ) - 1)) x := by
     have h := hasDerivAt_nfWeight hx
-    have hfun : nfWeight = fun t : ℝ => Real.sqrt (t ^ 2 - 1) := by
+    have hfun : nfWeight = fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1) := by
       funext t
       rw [nfWeight]
     rw [hfun, nfWeightDeriv] at h
     exact h
-  have hden : HasDerivAt (fun t : ℝ => lgSpeedAmp s c t * Real.sqrt (t ^ 2 - 1))
-      (lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)
-        + lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))) x :=
+  have hden : HasDerivAt (fun t : ℝ => lgSpeedAmp s c t * Real.sqrt (t ^ (2 : ℕ) - 1))
+      (lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+        + lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))) x :=
     (hasDerivAt_lgSpeedAmp hs1 hc hx).fun_mul hnf
-  have hne : lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1) ≠ 0 := by positivity
+  have hne : lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1) ≠ 0 := by positivity
   have h := (hasDerivAt_const x (1 : ℝ)).fun_div hden hne
   have hfun : prolateEnvelope s c
-      = fun t : ℝ => 1 / (lgSpeedAmp s c t * Real.sqrt (t ^ 2 - 1)) := by
+      = fun t : ℝ => 1 / (lgSpeedAmp s c t * Real.sqrt (t ^ (2 : ℕ) - 1)) := by
     funext t
     rw [prolateEnvelope]
-  have hval : (0 * (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1))
-        - 1 * (lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)
-          + lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))))
-      / (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2
+  have hval : (0 * (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1))
+        - 1 * (lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+          + lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))))
+      / (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ)
       = prolateEnvelopeDeriv s c x := by
     rw [prolateEnvelopeDeriv]
     ring
@@ -89,17 +89,17 @@ theorem radialProlate_eq_branches {s c x : ℝ} {R DR : ℝ → ℝ} (hs1 : s �
           * Real.cos (prolatePhase s c x)
         + phaseSinCoeff (prolateOsc s c R) (prolateOscD s c R DR) (prolatePhase s c) x
           * Real.sin (prolatePhase s c x)) := by
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hsd : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hsd : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
   have hh : 0 < lgSpeedAmp s c x := lgSpeedAmp_pos hs1 hc hx
   have hrep := phase_eq_coeff (prolateOsc s c R) (prolateOscD s c R DR) (prolatePhase s c) x
-  have hw : prolateOsc s c R x = lgSpeedAmp s c x * (Real.sqrt (x ^ 2 - 1) * R x) := by
+  have hw : prolateOsc s c R x = lgSpeedAmp s c x * (Real.sqrt (x ^ (2 : ℕ) - 1) * R x) := by
     rw [prolateOsc, prolateNormalFormSol, nfWeight]
   rw [prolateEnvelope, ← hrep, hw]
   field_simp
 
 theorem abs_lgSpeedAmpDeriv_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
-    (hx : 2 ≤ x) : |lgSpeedAmpDeriv s c x| ≤ Real.sqrt c / x ^ 3 := by
+    (hx : 2 ≤ x) : |lgSpeedAmpDeriv s c x| ≤ Real.sqrt c / x ^ (3 : ℕ) := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hx1 : (1 : ℝ) < x := by linarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
@@ -107,18 +107,18 @@ theorem abs_lgSpeedAmpDeriv_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
   have hh : Real.sqrt c ≤ lgSpeedAmp s c x := sqrt_c_le_lgSpeedAmp hs1 hc hx1
   have hh0 : 0 < lgSpeedAmp s c x := lgSpeedAmp_pos hs1 hc hx1
   have hdd := abs_xiSpeedDeriv_le_two_div hs0 hs1 hx
-  have hnum : |prolatePhaseAccel s c x| ≤ 2 * c / x ^ 3 := by
+  have hnum : |prolatePhaseAccel s c x| ≤ 2 * c / x ^ (3 : ℕ) := by
     rw [prolatePhaseAccel, abs_mul, abs_of_pos hc]
     have := mul_le_mul_of_nonneg_left hdd hc.le
-    calc c * |xiSpeedDeriv s x| ≤ c * (2 / x ^ 3) := this
-      _ = 2 * c / x ^ 3 := by ring
+    calc c * |xiSpeedDeriv s x| ≤ c * (2 / x ^ (3 : ℕ)) := this
+      _ = 2 * c / x ^ (3 : ℕ) := by ring
   rw [lgSpeedAmpDeriv, abs_div,
     abs_of_pos (by rw [← lgSpeedAmp]; positivity : (0 : ℝ) < 2 * Real.sqrt (prolatePhaseSpeed s c x)),
     div_le_div_iff₀ (by rw [← lgSpeedAmp]; positivity) (by positivity)]
   have hamp : (2 : ℝ) * Real.sqrt c ≤ 2 * Real.sqrt (prolatePhaseSpeed s c x) := by
     have : lgSpeedAmp s c x = Real.sqrt (prolatePhaseSpeed s c x) := rfl
     linarith [hh, this ▸ hh]
-  calc |prolatePhaseAccel s c x| * x ^ 3 ≤ 2 * c / x ^ 3 * x ^ 3 :=
+  calc |prolatePhaseAccel s c x| * x ^ (3 : ℕ) ≤ 2 * c / x ^ (3 : ℕ) * x ^ (3 : ℕ) :=
         mul_le_mul_of_nonneg_right hnum (by positivity)
     _ = 2 * c := by field_simp
     _ = Real.sqrt c * (2 * Real.sqrt c) := by
@@ -130,90 +130,90 @@ theorem prolateEnvelope_le {s c x : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hx : 
     prolateEnvelope s c x ≤ 2 / (Real.sqrt c * x) := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hx1 : (1 : ℝ) < x := by linarith
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   have hh : Real.sqrt c ≤ lgSpeedAmp s c x := sqrt_c_le_lgSpeedAmp hs1 hc hx1
   have hh0 : 0 < lgSpeedAmp s c x := lgSpeedAmp_pos hs1 hc hx1
-  have hsd : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hlow : x / 2 ≤ Real.sqrt (x ^ 2 - 1) := by
-    have h1 : (x / 2) ^ 2 ≤ x ^ 2 - 1 := by nlinarith
-    have h2 : Real.sqrt ((x / 2) ^ 2) ≤ Real.sqrt (x ^ 2 - 1) := Real.sqrt_le_sqrt h1
+  have hsd : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hlow : x / 2 ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := by
+    have h1 : (x / 2) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) - 1 := by nlinarith
+    have h2 : Real.sqrt ((x / 2) ^ (2 : ℕ)) ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_le_sqrt h1
     rwa [Real.sqrt_sq (by positivity)] at h2
   rw [prolateEnvelope, div_le_div_iff₀ (by positivity) (by positivity)]
-  have hprod : Real.sqrt c * (x / 2) ≤ lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1) :=
+  have hprod : Real.sqrt c * (x / 2) ≤ lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1) :=
     mul_le_mul hh hlow (by positivity) hh0.le
   linarith [hprod]
 
 theorem abs_prolateEnvelopeDeriv_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
-    (hx : 2 ≤ x) : |prolateEnvelopeDeriv s c x| ≤ 16 / (Real.sqrt c * x ^ 2) := by
+    (hx : 2 ≤ x) : |prolateEnvelopeDeriv s c x| ≤ 16 / (Real.sqrt c * x ^ (2 : ℕ)) := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hx1 : (1 : ℝ) < x := by linarith
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   have hss : Real.sqrt c * Real.sqrt c = c := Real.mul_self_sqrt hc.le
   have hh : Real.sqrt c ≤ lgSpeedAmp s c x := sqrt_c_le_lgSpeedAmp hs1 hc hx1
   have hh2 : lgSpeedAmp s c x ≤ Real.sqrt (2 * c) := lgSpeedAmp_le_sqrt_two_c hs0 hc hx
   have hh0 : 0 < lgSpeedAmp s c x := lgSpeedAmp_pos hs1 hc hx1
-  have hsd : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hsdle : Real.sqrt (x ^ 2 - 1) ≤ x := by
-    have h1 : Real.sqrt (x ^ 2 - 1) ≤ Real.sqrt (x ^ 2) := Real.sqrt_le_sqrt (by linarith)
+  have hsd : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hsdle : Real.sqrt (x ^ (2 : ℕ) - 1) ≤ x := by
+    have h1 : Real.sqrt (x ^ (2 : ℕ) - 1) ≤ Real.sqrt (x ^ (2 : ℕ)) := Real.sqrt_le_sqrt (by linarith)
     rwa [Real.sqrt_sq hx0.le] at h1
-  have hlow : x / 2 ≤ Real.sqrt (x ^ 2 - 1) := by
-    have h1 : (x / 2) ^ 2 ≤ x ^ 2 - 1 := by nlinarith
-    have h2 : Real.sqrt ((x / 2) ^ 2) ≤ Real.sqrt (x ^ 2 - 1) := Real.sqrt_le_sqrt h1
+  have hlow : x / 2 ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := by
+    have h1 : (x / 2) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) - 1 := by nlinarith
+    have h2 : Real.sqrt ((x / 2) ^ (2 : ℕ)) ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_le_sqrt h1
     rwa [Real.sqrt_sq (by positivity)] at h2
   have hdd := abs_lgSpeedAmpDeriv_le hs0 hs1 hc hx
   have h2c : Real.sqrt (2 * c) ≤ 3 / 2 * Real.sqrt c := by
-    have h1 : Real.sqrt (2 * c) ≤ Real.sqrt ((3 / 2) ^ 2 * c) :=
+    have h1 : Real.sqrt (2 * c) ≤ Real.sqrt ((3 / 2) ^ (2 : ℕ) * c) :=
       Real.sqrt_le_sqrt (by nlinarith [hc.le])
-    have h2 : Real.sqrt ((3 / 2 : ℝ) ^ 2 * c) = 3 / 2 * Real.sqrt c := by
+    have h2 : Real.sqrt ((3 / 2 : ℝ) ^ (2 : ℕ) * c) = 3 / 2 * Real.sqrt c := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num)]
     linarith [h1, h2]
   rw [prolateEnvelopeDeriv, abs_div, abs_neg,
-    abs_of_pos (by positivity : (0 : ℝ) < (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2),
+    abs_of_pos (by positivity : (0 : ℝ) < (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ)),
     div_le_div_iff₀ (by positivity) (by positivity)]
   -- numerator
-  have hnum : |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)
-      + lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))| ≤ 4 * Real.sqrt c := by
+  have hnum : |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+      + lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))| ≤ 4 * Real.sqrt c := by
     refine le_trans (abs_add_le _ _) ?_
-    have h1 : |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)| ≤ Real.sqrt c := by
+    have h1 : |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)| ≤ Real.sqrt c := by
       rw [abs_mul, abs_of_pos hsd]
-      calc |lgSpeedAmpDeriv s c x| * Real.sqrt (x ^ 2 - 1)
-          ≤ Real.sqrt c / x ^ 3 * x := mul_le_mul hdd hsdle hsd.le (by positivity)
+      calc |lgSpeedAmpDeriv s c x| * Real.sqrt (x ^ (2 : ℕ) - 1)
+          ≤ Real.sqrt c / x ^ (3 : ℕ) * x := mul_le_mul hdd hsdle hsd.le (by positivity)
         _ ≤ Real.sqrt c := by
             rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
             nlinarith [mul_nonneg hsc.le (mul_nonneg hx0.le hd.le)]
-    have h2 : |lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))| ≤ 3 * Real.sqrt c := by
+    have h2 : |lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))| ≤ 3 * Real.sqrt c := by
       rw [abs_mul, abs_of_pos hh0, abs_of_pos (by positivity)]
-      have hratio : x / Real.sqrt (x ^ 2 - 1) ≤ 2 := by
+      have hratio : x / Real.sqrt (x ^ (2 : ℕ) - 1) ≤ 2 := by
         rw [div_le_iff₀ hsd]
         linarith [hlow]
-      calc lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))
+      calc lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))
           ≤ 3 / 2 * Real.sqrt c * 2 := mul_le_mul (le_trans hh2 h2c) hratio (by positivity)
             (by positivity)
         _ ≤ 3 * Real.sqrt c := by nlinarith [hsc.le]
     linarith
-  have hden : Real.sqrt c * Real.sqrt c * (x / 2) ^ 2
-      ≤ (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2 := by
-    have hprod : Real.sqrt c * (x / 2) ≤ lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1) :=
+  have hden : Real.sqrt c * Real.sqrt c * (x / 2) ^ (2 : ℕ)
+      ≤ (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ) := by
+    have hprod : Real.sqrt c * (x / 2) ≤ lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1) :=
       mul_le_mul hh hlow (by positivity) hh0.le
     have hsq := mul_self_le_mul_self (by positivity : (0 : ℝ) ≤ Real.sqrt c * (x / 2)) hprod
-    calc Real.sqrt c * Real.sqrt c * (x / 2) ^ 2
+    calc Real.sqrt c * Real.sqrt c * (x / 2) ^ (2 : ℕ)
         = Real.sqrt c * (x / 2) * (Real.sqrt c * (x / 2)) := by ring
-      _ ≤ lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)
-          * (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) := hsq
-      _ = (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2 := by ring
-  calc |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ 2 - 1)
-        + lgSpeedAmp s c x * (x / Real.sqrt (x ^ 2 - 1))| * (Real.sqrt c * x ^ 2)
-      ≤ 4 * Real.sqrt c * (Real.sqrt c * x ^ 2) :=
+      _ ≤ lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+          * (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) := hsq
+      _ = (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ) := by ring
+  calc |lgSpeedAmpDeriv s c x * Real.sqrt (x ^ (2 : ℕ) - 1)
+        + lgSpeedAmp s c x * (x / Real.sqrt (x ^ (2 : ℕ) - 1))| * (Real.sqrt c * x ^ (2 : ℕ))
+      ≤ 4 * Real.sqrt c * (Real.sqrt c * x ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_right hnum (by positivity)
-    _ = 4 * c * x ^ 2 := by
-        rw [show 4 * Real.sqrt c * (Real.sqrt c * x ^ 2)
-          = 4 * (Real.sqrt c * Real.sqrt c) * x ^ 2 by ring, hss]
-    _ ≤ 16 * (lgSpeedAmp s c x * Real.sqrt (x ^ 2 - 1)) ^ 2 := by
-        have hq : Real.sqrt c * Real.sqrt c * (x / 2) ^ 2 = c * x ^ 2 / 4 := by
-          rw [show Real.sqrt c * Real.sqrt c * (x / 2) ^ 2
-            = (Real.sqrt c * Real.sqrt c) * (x / 2) ^ 2 by ring, hss]
+    _ = 4 * c * x ^ (2 : ℕ) := by
+        rw [show 4 * Real.sqrt c * (Real.sqrt c * x ^ (2 : ℕ))
+          = 4 * (Real.sqrt c * Real.sqrt c) * x ^ (2 : ℕ) by ring, hss]
+    _ ≤ 16 * (lgSpeedAmp s c x * Real.sqrt (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ) := by
+        have hq : Real.sqrt c * Real.sqrt c * (x / 2) ^ (2 : ℕ) = c * x ^ (2 : ℕ) / 4 := by
+          rw [show Real.sqrt c * Real.sqrt c * (x / 2) ^ (2 : ℕ)
+            = (Real.sqrt c * Real.sqrt c) * (x / 2) ^ (2 : ℕ) by ring, hss]
           ring
         rw [hq] at hden
         linarith [hden]
@@ -274,8 +274,8 @@ theorem abs_exactAmp_le {s c k x M : ℝ} {A : ℝ → ℝ} (hs1 : s ≤ 1 / 2) 
   have henv0 : (0 : ℝ) < prolateEnvelope s c (k * x) := by
     rw [prolateEnvelope]
     have h1 : 0 < lgSpeedAmp s c (k * x) := lgSpeedAmp_pos hs1 hc hkx
-    have h2 : (0 : ℝ) < (k * x) ^ 2 - 1 := by nlinarith
-    have h3 : (0 : ℝ) < Real.sqrt ((k * x) ^ 2 - 1) := Real.sqrt_pos.mpr h2
+    have h2 : (0 : ℝ) < (k * x) ^ (2 : ℕ) - 1 := by nlinarith
+    have h3 : (0 : ℝ) < Real.sqrt ((k * x) ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr h2
     positivity
   rw [exactAmp, exactAmplitude, abs_mul, abs_of_pos hsx, abs_mul, abs_of_pos henv0]
   have hstep : Real.sqrt x * (prolateEnvelope s c (k * x) * |A (k * x)|)
@@ -295,7 +295,7 @@ theorem abs_exactAmp_le {s c k x M : ℝ} {A : ℝ → ℝ} (hs1 : s ≤ 1 / 2) 
 /-- **The exact channel amplitude's derivative carries the same constant.** -/
 theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x) (hM : 0 ≤ M)
-    (hAb : |A (k * x)| ≤ M) (hA'b : |A' (k * x)| ≤ 280 * M / (c * (k * x) ^ 2)) :
+    (hAb : |A (k * x)| ≤ M) (hA'b : |A' (k * x)| ≤ 280 * M / (c * (k * x) ^ (2 : ℕ))) :
     |exactAmpDeriv s c k A A' x| ≤ 300 * M / (Real.sqrt c * k) / (x * Real.sqrt x) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
@@ -309,8 +309,8 @@ theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤
   have henv0 : (0 : ℝ) < prolateEnvelope s c (k * x) := by
     rw [prolateEnvelope]
     have h1 : 0 < lgSpeedAmp s c (k * x) := lgSpeedAmp_pos hs1 hc0 hkx
-    have h2 : (0 : ℝ) < (k * x) ^ 2 - 1 := by nlinarith
-    have h3 : (0 : ℝ) < Real.sqrt ((k * x) ^ 2 - 1) := Real.sqrt_pos.mpr h2
+    have h2 : (0 : ℝ) < (k * x) ^ (2 : ℕ) - 1 := by nlinarith
+    have h3 : (0 : ℝ) < Real.sqrt ((k * x) ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr h2
     positivity
   set T : ℝ := M / (Real.sqrt c * k) / (x * Real.sqrt x) with hTdef
   have hT0 : (0 : ℝ) ≤ T := by rw [hTdef]; positivity
@@ -331,7 +331,7 @@ theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤
   have hT2 : |k * prolateEnvelopeDeriv s c (k * x) * A (k * x)| * Real.sqrt x ≤ 16 * T := by
     rw [abs_mul, abs_mul, abs_of_pos hk0]
     have hstep : k * |prolateEnvelopeDeriv s c (k * x)| * |A (k * x)| * Real.sqrt x
-        ≤ k * (16 / (Real.sqrt c * (k * x) ^ 2)) * M * Real.sqrt x := by
+        ≤ k * (16 / (Real.sqrt c * (k * x) ^ (2 : ℕ))) * M * Real.sqrt x := by
       refine mul_le_mul_of_nonneg_right (mul_le_mul
         (mul_le_mul_of_nonneg_left henvd hk0.le) hAb (abs_nonneg _) (by positivity)) hsx.le
     refine le_trans hstep (le_of_eq ?_)
@@ -342,11 +342,11 @@ theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤
   have hT3 : prolateEnvelope s c (k * x) * |k * A' (k * x)| * Real.sqrt x ≤ 280 * T := by
     rw [abs_mul, abs_of_pos hk0]
     have hstep : prolateEnvelope s c (k * x) * (k * |A' (k * x)|) * Real.sqrt x
-        ≤ 2 / (Real.sqrt c * (k * x)) * (k * (280 * M / (c * (k * x) ^ 2))) * Real.sqrt x := by
+        ≤ 2 / (Real.sqrt c * (k * x)) * (k * (280 * M / (c * (k * x) ^ (2 : ℕ)))) * Real.sqrt x := by
       refine mul_le_mul_of_nonneg_right (mul_le_mul henv
         (mul_le_mul_of_nonneg_left hA'b hk0.le) (by positivity) (by positivity)) hsx.le
     refine le_trans hstep ?_
-    have hval : 2 / (Real.sqrt c * (k * x)) * (k * (280 * M / (c * (k * x) ^ 2)))
+    have hval : 2 / (Real.sqrt c * (k * x)) * (k * (280 * M / (c * (k * x) ^ (2 : ℕ))))
         * Real.sqrt x = 560 * T / (c * k * x) := by
       rw [hTdef]
       field_simp
@@ -391,7 +391,7 @@ theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤
 at most `2c` and the phase at least `c y/2`, so `φ' κ/φ² ≤ 4κ/(c y²)`. -/
 theorem prolate_drift_le {s c y M : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
     (hy : 2 ≤ y) (hM : 0 ≤ M) :
-    prolatePhaseSpeed s c y * (35 / prolatePhase s c y ^ 2) * M ≤ 280 * M / (c * y ^ 2) := by
+    prolatePhaseSpeed s c y * (35 / prolatePhase s c y ^ (2 : ℕ)) * M ≤ 280 * M / (c * y ^ (2 : ℕ)) := by
   have hy0 : (0 : ℝ) < y := by linarith
   have hy1 : (1 : ℝ) < y := by linarith
   have hsp2 : xiSpeed s y ≤ 2 := xiSpeed_le_two hs0 hy
@@ -405,15 +405,15 @@ theorem prolate_drift_le {s c y M : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
     rw [prolatePhaseSpeed]
     nlinarith [hsp2, hc.le]
   have hspd0 : (0 : ℝ) ≤ prolatePhaseSpeed s c y := (prolatePhaseSpeed_pos hs1 hc hy1).le
-  have hsq : (c * y / 2) ^ 2 ≤ prolatePhase s c y ^ 2 := by
+  have hsq : (c * y / 2) ^ (2 : ℕ) ≤ prolatePhase s c y ^ (2 : ℕ) := by
     nlinarith [hphase, hp0.le]
-  have hfrac : 35 / prolatePhase s c y ^ 2 ≤ 35 / (c * y / 2) ^ 2 := by
+  have hfrac : 35 / prolatePhase s c y ^ (2 : ℕ) ≤ 35 / (c * y / 2) ^ (2 : ℕ) := by
     refine div_le_div_of_nonneg_left (by norm_num) (by positivity) hsq
-  calc prolatePhaseSpeed s c y * (35 / prolatePhase s c y ^ 2) * M
-      ≤ 2 * c * (35 / (c * y / 2) ^ 2) * M := by
+  calc prolatePhaseSpeed s c y * (35 / prolatePhase s c y ^ (2 : ℕ)) * M
+      ≤ 2 * c * (35 / (c * y / 2) ^ (2 : ℕ)) * M := by
         refine mul_le_mul_of_nonneg_right (mul_le_mul hspd hfrac (by positivity)
           (by positivity)) hM
-    _ = 280 * M / (c * y ^ 2) := by
+    _ = 280 * M / (c * y ^ (2 : ℕ)) := by
         field_simp
         ring
 
@@ -444,8 +444,8 @@ def exactEnergyBudget (s c : ℝ) (R DR : ℝ → ℝ) (a : ℝ) : ℝ :=
 theorem hasDerivAt_exactCosCoeff {s c y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hy : 1 < y)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     HasDerivAt (exactCosCoeff s c R DR) (exactCosCoeffDeriv s c R y) y :=
   hasDerivAt_phaseCosCoeff (DDw := prolateOscDD s c R DR DDR) (q := prolateOscPotential s c)
     (hasDerivAt_prolatePhase hs0 hy)
@@ -456,8 +456,8 @@ theorem hasDerivAt_exactCosCoeff {s c y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0
 theorem hasDerivAt_exactSinCoeff {s c y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hy : 1 < y)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     HasDerivAt (exactSinCoeff s c R DR) (exactSinCoeffDeriv s c R y) y :=
   hasDerivAt_phaseSinCoeff (DDw := prolateOscDD s c R DR DDR) (q := prolateOscPotential s c)
     (hasDerivAt_prolatePhase hs0 hy)
@@ -469,8 +469,8 @@ theorem hasDerivAt_exactSinCoeff {s c y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0
 theorem abs_exactCoeff_le {s c a y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (ha : 2 ≤ a) (hay : a ≤ y)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     |exactCosCoeff s c R DR y| ≤ exactEnergyBudget s c R DR a
       ∧ |exactSinCoeff s c R DR y| ≤ exactEnergyBudget s c R DR a :=
   abs_prolateOscCoeff_le (DDR := DDR) hs0 hs1 hc ha hay hR hDR hode
@@ -479,10 +479,10 @@ theorem abs_exactCoeff_le {s c a y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ 
 theorem abs_exactCoeffDeriv_le {s c a y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (ha : 2 ≤ a) (hay : a ≤ y)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
-    |exactCosCoeffDeriv s c R y| ≤ 280 * exactEnergyBudget s c R DR a / (c * y ^ 2)
-      ∧ |exactSinCoeffDeriv s c R y| ≤ 280 * exactEnergyBudget s c R DR a / (c * y ^ 2) := by
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
+    |exactCosCoeffDeriv s c R y| ≤ 280 * exactEnergyBudget s c R DR a / (c * y ^ (2 : ℕ))
+      ∧ |exactSinCoeffDeriv s c R y| ≤ 280 * exactEnergyBudget s c R DR a / (c * y ^ (2 : ℕ)) := by
   have hy2 : (2 : ℝ) ≤ y := le_trans ha hay
   have hM : (0 : ℝ) ≤ exactEnergyBudget s c R DR a := Real.sqrt_nonneg _
   obtain ⟨hφd, hφpos, hDφ, hw, hDw, hodew, hq⟩ :=
@@ -511,14 +511,14 @@ theorem continuousOn_xiSpeedSecondDeriv {s : ℝ} (hs1 : s ≤ 1 / 2) :
   have hsp : ContinuousOn (xiSpeed s) (Set.Ioi (1 : ℝ)) := continuousOn_xiSpeed s
   have hspd : ContinuousOn (xiSpeedDeriv s) (Set.Ioi (1 : ℝ)) :=
     continuousOn_xiSpeedDeriv (by linarith)
-  have hden : ContinuousOn (fun t : ℝ => ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ^ 2)
+  have hden : ContinuousOn (fun t : ℝ => ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t) ^ (2 : ℕ))
       (Set.Ioi (1 : ℝ)) := (((continuousOn_id.pow 2).sub continuousOn_const).pow 2).mul hsp
       |>.pow 2
   rw [show xiSpeedSecondDeriv s = fun t : ℝ =>
-      ((s - 1) * ((t ^ 2 - 1) ^ 2 * xiSpeed s t)
-        - t * (s - 1) * (4 * t * (t ^ 2 - 1) * xiSpeed s t
-          + (t ^ 2 - 1) ^ 2 * xiSpeedDeriv s t))
-      / ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ^ 2 from rfl]
+      ((s - 1) * ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t)
+        - t * (s - 1) * (4 * t * (t ^ (2 : ℕ) - 1) * xiSpeed s t
+          + (t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeedDeriv s t))
+      / ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t) ^ (2 : ℕ) from rfl]
   refine ContinuousOn.div ?_ hden ?_
   · refine (continuousOn_const.mul (((continuousOn_id.pow 2).sub continuousOn_const).pow 2
       |>.mul hsp)).sub ?_
@@ -528,7 +528,7 @@ theorem continuousOn_xiSpeedSecondDeriv {s : ℝ} (hs1 : s ≤ 1 / 2) :
       ((((continuousOn_id.pow 2).sub continuousOn_const).pow 2).mul hspd)
   · intro t ht
     have ht1 : (1 : ℝ) < t := ht
-    have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+    have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
     have hs : 0 < xiSpeed s t := xiSpeed_pos hs1 ht1
     positivity
 
@@ -540,9 +540,9 @@ theorem continuousOn_prolateOscPotential {s c : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0
   have hspdd : ContinuousOn (xiSpeedSecondDeriv s) (Set.Ioi (1 : ℝ)) :=
     continuousOn_xiSpeedSecondDeriv hs1
   have hcongr : Set.EqOn (prolateOscPotential s c)
-      (fun x : ℝ => 1 / (c ^ 2 * xiSpeed s x ^ 2 * (x ^ 2 - 1) ^ 2)
-        + (3 * xiSpeedDeriv s x ^ 2 - 2 * xiSpeedSecondDeriv s x * xiSpeed s x)
-          / (4 * c ^ 2 * xiSpeed s x ^ 4)) (Set.Ioi (1 : ℝ)) := by
+      (fun x : ℝ => 1 / (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1) ^ (2 : ℕ))
+        + (3 * xiSpeedDeriv s x ^ (2 : ℕ) - 2 * xiSpeedSecondDeriv s x * xiSpeed s x)
+          / (4 * c ^ (2 : ℕ) * xiSpeed s x ^ (4 : ℕ))) (Set.Ioi (1 : ℝ)) := by
     intro x hx
     exact prolateOscPotential_eq hs1 hc hx
   refine ContinuousOn.congr ?_ hcongr
@@ -551,7 +551,7 @@ theorem continuousOn_prolateOscPotential {s c : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0
       (((continuousOn_id.pow 2).sub continuousOn_const).pow 2)) ?_
     intro x hx
     have hx1 : (1 : ℝ) < x := hx
-    have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+    have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
     have hs : 0 < xiSpeed s x := xiSpeed_pos hs1 hx1
     positivity
   · refine ContinuousOn.div ((continuousOn_const.mul (hspd.pow 2)).sub
@@ -576,37 +576,37 @@ theorem continuousOn_prolateEnvelope {s c : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c
 
 theorem continuousOn_prolateEnvelopeDeriv {s c : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c) :
     ContinuousOn (prolateEnvelopeDeriv s c) (Set.Ioi (1 : ℝ)) := by
-  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ 2 - 1)) (Set.Ioi (1 : ℝ)) :=
+  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1)) (Set.Ioi (1 : ℝ)) :=
     Real.continuous_sqrt.comp_continuousOn ((continuousOn_id.pow 2).sub continuousOn_const)
-  have hsdne : ∀ t ∈ Set.Ioi (1 : ℝ), Real.sqrt (t ^ 2 - 1) ≠ 0 := by
+  have hsdne : ∀ t ∈ Set.Ioi (1 : ℝ), Real.sqrt (t ^ (2 : ℕ) - 1) ≠ 0 := by
     intro t ht
     have ht1 : (1 : ℝ) < t := ht
-    have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+    have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
     exact ne_of_gt (Real.sqrt_pos.mpr hd)
-  have hden : ContinuousOn (fun t : ℝ => (lgSpeedAmp s c t * Real.sqrt (t ^ 2 - 1)) ^ 2)
+  have hden : ContinuousOn (fun t : ℝ => (lgSpeedAmp s c t * Real.sqrt (t ^ (2 : ℕ) - 1)) ^ (2 : ℕ))
       (Set.Ioi (1 : ℝ)) := (((continuousOn_lgSpeedAmp hs1 hc).mul hsd).pow 2)
   rw [show prolateEnvelopeDeriv s c = fun t : ℝ =>
-      -(lgSpeedAmpDeriv s c t * Real.sqrt (t ^ 2 - 1)
-        + lgSpeedAmp s c t * (t / Real.sqrt (t ^ 2 - 1)))
-      / (lgSpeedAmp s c t * Real.sqrt (t ^ 2 - 1)) ^ 2 from rfl]
+      -(lgSpeedAmpDeriv s c t * Real.sqrt (t ^ (2 : ℕ) - 1)
+        + lgSpeedAmp s c t * (t / Real.sqrt (t ^ (2 : ℕ) - 1)))
+      / (lgSpeedAmp s c t * Real.sqrt (t ^ (2 : ℕ) - 1)) ^ (2 : ℕ) from rfl]
   refine ContinuousOn.div (((continuousOn_lgSpeedAmpDeriv hs1 hc).mul hsd).add
     ((continuousOn_lgSpeedAmp hs1 hc).mul (continuousOn_id.div hsd hsdne))).neg hden ?_
   intro t ht
   have ht1 : (1 : ℝ) < t := ht
   have h1 : 0 < lgSpeedAmp s c t := lgSpeedAmp_pos hs1 hc ht1
-  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < Real.sqrt (t ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < Real.sqrt (t ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
   positivity
 
 theorem continuousOn_exactCosCoeffDeriv {s c : ℝ} {R DR : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) :
     ContinuousOn (exactCosCoeffDeriv s c R) (Set.Ioi (1 : ℝ)) := by
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt
-  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ 2 - 1)) (Set.Ioi (1 : ℝ)) :=
+  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1)) (Set.Ioi (1 : ℝ)) :=
     Real.continuous_sqrt.comp_continuousOn ((continuousOn_id.pow 2).sub continuousOn_const)
   have hosc : ContinuousOn (prolateOsc s c R) (Set.Ioi (1 : ℝ)) := by
     rw [show prolateOsc s c R = fun t : ℝ =>
-        lgSpeedAmp s c t * (Real.sqrt (t ^ 2 - 1) * R t) from rfl]
+        lgSpeedAmp s c t * (Real.sqrt (t ^ (2 : ℕ) - 1) * R t) from rfl]
     exact (continuousOn_lgSpeedAmp hs1 hc).mul (hsd.mul hRc.continuousOn)
   have hspd : ContinuousOn (prolatePhaseSpeed s c) (Set.Ioi (1 : ℝ)) :=
     continuousOn_const.mul (continuousOn_xiSpeed s)
@@ -622,11 +622,11 @@ theorem continuousOn_exactSinCoeffDeriv {s c : ℝ} {R DR : ℝ → ℝ} (hs0 : 
     (hc : 0 < c) (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) :
     ContinuousOn (exactSinCoeffDeriv s c R) (Set.Ioi (1 : ℝ)) := by
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt
-  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ 2 - 1)) (Set.Ioi (1 : ℝ)) :=
+  have hsd : ContinuousOn (fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1)) (Set.Ioi (1 : ℝ)) :=
     Real.continuous_sqrt.comp_continuousOn ((continuousOn_id.pow 2).sub continuousOn_const)
   have hosc : ContinuousOn (prolateOsc s c R) (Set.Ioi (1 : ℝ)) := by
     rw [show prolateOsc s c R = fun t : ℝ =>
-        lgSpeedAmp s c t * (Real.sqrt (t ^ 2 - 1) * R t) from rfl]
+        lgSpeedAmp s c t * (Real.sqrt (t ^ (2 : ℕ) - 1) * R t) from rfl]
     exact (continuousOn_lgSpeedAmp hs1 hc).mul (hsd.mul hRc.continuousOn)
   have hspd : ContinuousOn (prolatePhaseSpeed s c) (Set.Ioi (1 : ℝ)) :=
     continuousOn_const.mul (continuousOn_xiSpeed s)
@@ -689,8 +689,8 @@ def exactBranchAmpDeriv (s c k eps : ℝ) (R DR : ℝ → ℝ) (x : ℝ) : ℂ :
 theorem hasDerivAt_exactBranchAmp {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hx0 : 0 < x) (hkx : 1 < k * x)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     HasDerivAt (exactBranchAmp s c k eps R DR) (exactBranchAmpDeriv s c k eps R DR x) x := by
   have hcos := (hasDerivAt_exactAmp (A := exactCosCoeff s c R DR)
     (A' := exactCosCoeffDeriv s c R) hs1 hc hx0 hkx
@@ -725,8 +725,8 @@ theorem abs_exactBranchAmp_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} (hs0 
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x)
     (heps : |eps| = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖exactBranchAmp s c k eps R DR x‖
       ≤ 300 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * k) / Real.sqrt x := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
@@ -762,8 +762,8 @@ theorem abs_exactBranchAmpDeriv_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} 
     (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x)
     (heps : |eps| = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖exactBranchAmpDeriv s c k eps R DR x‖
       ≤ 300 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * k) / (x * Real.sqrt x) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
@@ -809,8 +809,8 @@ theorem abs_exactBranchAmpDeriv_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} 
 theorem continuousOn_exactBranchAmp {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (exactBranchAmp s c k eps R DR) (Set.uIcc (2 : ℝ) X) := by
   intro x hx
   rw [Set.uIcc_of_le hX] at hx
@@ -821,8 +821,8 @@ theorem continuousOn_exactBranchAmp {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ}
 theorem continuousOn_exactBranchAmpDeriv {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (exactBranchAmpDeriv s c k eps R DR) (Set.uIcc (2 : ℝ) X) := by
   have hAc : ContinuousOn (exactCosCoeff s c R DR) (Set.Ioi (1 : ℝ)) :=
     fun _ hy => ((hasDerivAt_exactCosCoeff hs0 hs1 hc hy hR hDR hode).continuousAt
@@ -871,8 +871,8 @@ theorem radialProlate_dilate_eq_branch_integrand {s c k t : ℝ} {R DR : ℝ →
 theorem continuousOn_exactBranchIntegrand {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (fun t : ℝ => (exactBranchAmp s c k eps R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
       * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ)))
       (Set.uIcc (2 : ℝ) X) := by
@@ -899,10 +899,10 @@ After the `√c` normalization this is the card's `(16)`: no model, no transfer,
 theorem norm_integral_radialProlate_dilate_le {s c k X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hX : 2 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖∫ t in (2 : ℝ)..X, ((R (k * t) : ℝ) : ℂ)‖
-      ≤ 1800 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)) := by
+      ≤ 1800 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ))) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc0
@@ -949,7 +949,7 @@ theorem norm_integral_radialProlate_dilate_le {s c k X : ℝ} {R DR DDR : ℝ �
   have h2 := hbranch (-1) (by norm_num)
   have hsum : 3 * (300 * M / (Real.sqrt c * k)) / (c * k)
       + 3 * (300 * M / (Real.sqrt c * k)) / (c * k)
-      = 1800 * M / (Real.sqrt c * (c * k ^ 2)) := by
+      = 1800 * M / (Real.sqrt c * (c * k ^ (2 : ℕ))) := by
     field_simp
     ring
   linarith [h1, h2, hsum]
@@ -961,8 +961,8 @@ constant, uniformly in the endpoint of integration. -/
 theorem tsum_norm_integral_radialProlate_channels_le {s c X : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hX : 2 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∑' k : ℕ, ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖
       ≤ 2 * (1800 * exactEnergyBudget s c R DR 2 / Real.sqrt c) / c := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
@@ -1040,8 +1040,8 @@ theorem continuousOn_exactAmpDeriv_left {s c k L X : ℝ} {A A' : ℝ → ℝ} (
 theorem continuousOn_exactBranchAmp_left {s c k eps L X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hL : 1 ≤ L) (hkL : 2 ≤ k * L) (hLX : L ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (exactBranchAmp s c k eps R DR) (Set.uIcc L X) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   intro x hx
@@ -1054,8 +1054,8 @@ theorem continuousOn_exactBranchAmpDeriv_left {s c k eps L X : ℝ} {R DR DDR : 
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hL : 1 ≤ L) (hkL : 2 ≤ k * L)
     (hLX : L ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (exactBranchAmpDeriv s c k eps R DR) (Set.uIcc L X) := by
   have hAc : ContinuousOn (exactCosCoeff s c R DR) (Set.Ioi (1 : ℝ)) :=
     fun _ hy => ((hasDerivAt_exactCosCoeff hs0 hs1 hc hy hR hDR hode).continuousAt
@@ -1077,8 +1077,8 @@ theorem continuousOn_exactBranchIntegrand_left {s c k eps L X : ℝ} {R DR DDR :
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hL : 1 ≤ L) (hkL : 2 ≤ k * L)
     (hLX : L ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ContinuousOn (fun t : ℝ => (exactBranchAmp s c k eps R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
       * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ)))
       (Set.uIcc L X) := by
@@ -1108,10 +1108,10 @@ theorem norm_integral_radialProlate_dilate_left_le {s c k L X : ℝ} {R DR DDR :
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hL : 1 ≤ L) (hkL : 2 ≤ k * L)
     (hLX : L ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖∫ t in L..X, ((R (k * t) : ℝ) : ℂ)‖
-      ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2) * L) := by
+      ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ)) * L) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hL0 : (0 : ℝ) < L := lt_of_lt_of_le zero_lt_one hL
@@ -1162,19 +1162,19 @@ theorem norm_integral_radialProlate_dilate_left_le {s c k L X : ℝ} {R DR DDR :
   have h2 := hbranch (-1) (by norm_num)
   have hsum : 15 * (300 * M / (Real.sqrt c * k)) / (2 * (L * (c * k)))
       + 15 * (300 * M / (Real.sqrt c * k)) / (2 * (L * (c * k)))
-      = 4500 * M / (Real.sqrt c * (c * k ^ 2) * L) := by
+      = 4500 * M / (Real.sqrt c * (c * k ^ (2 : ℕ)) * L) := by
     field_simp
     ring
   linarith [h1, h2, hsum]
 
 
-/-- **The full-range channels `k >= 2` sum.**  Each contributes `O(1/(c^{3/2} k^2))` over the whole
+/-- **The full-range channels `k >= 2` sum.**  Each contributes `O(1/(c^{3/2} k^(2 : ℕ)))` over the whole
 range `[1, X]`, and the constant is free of `k`, so the sum is a single constant. -/
 theorem tsum_norm_integral_radialProlate_full_channels_le {s c X : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hX : 1 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∑' j : ℕ, ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖
       ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
@@ -1184,7 +1184,7 @@ theorem tsum_norm_integral_radialProlate_full_channels_le {s c X : ℝ} {R DR DD
   set B : ℝ := 4500 * M / (Real.sqrt c * c) with hBdef
   have hB : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
   have hterm : ∀ j : ℕ, ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖
-      ≤ B * (1 / (2 + (j : ℝ)) ^ 2) := by
+      ≤ B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) := by
     intro j
     have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     have hk : (1 : ℝ) ≤ 2 + (j : ℝ) := by linarith
@@ -1197,14 +1197,14 @@ theorem tsum_norm_integral_radialProlate_full_channels_le {s c X : ℝ} {R DR DD
     field_simp
   have hnn : ∀ j : ℕ, (0 : ℝ) ≤ ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖ :=
     fun j => norm_nonneg _
-  have hmaj : Summable fun j : ℕ => B * (1 / (2 + (j : ℝ)) ^ 2) :=
+  have hmaj : Summable fun j : ℕ => B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) :=
     (GaloisForLFunctions.HTGeometry.summable_inv_sq_shift (σ := 2) (by norm_num)).mul_left B
   have hsummable : Summable fun j : ℕ =>
       ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖ :=
     hmaj.of_nonneg_of_le hnn hterm
   calc ∑' j : ℕ, ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖
-      ≤ ∑' j : ℕ, B * (1 / (2 + (j : ℝ)) ^ 2) := hsummable.tsum_le_tsum hterm hmaj
-    _ = B * ∑' j : ℕ, 1 / (2 + (j : ℝ)) ^ 2 := tsum_mul_left
+      ≤ ∑' j : ℕ, B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) := hsummable.tsum_le_tsum hterm hmaj
+    _ = B * ∑' j : ℕ, 1 / (2 + (j : ℝ)) ^ (2 : ℕ) := tsum_mul_left
     _ ≤ B * 1 := mul_le_mul_of_nonneg_left
         GaloisForLFunctions.HTGeometry.tsum_inv_sq_shift_two_le_one hB
     _ = 4500 * M / (Real.sqrt c * c) := by rw [hBdef]; ring
@@ -1226,8 +1226,8 @@ splits at the Dunster crossing, with `(17)` on `[1,2]` and the exterior estimate
 theorem norm_integral_radialProlate_first_channel_le {s c X : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1) (hX1 : 1 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖∫ t in (1 : ℝ)..X, ((R t : ℝ) : ℂ)‖
       ≤ prolateEndpointConstant / (c * Real.sqrt c)
         + 2250 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c) := by
@@ -1280,8 +1280,8 @@ term `O(c^{-3/2})` and the exterior term; the channels `k >= 2` contribute a con
 theorem tsum_norm_integral_radialProlate_all_channels_le {s c X : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1) (hX1 : 1 ≤ X)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ‖∫ t in (1 : ℝ)..X, ((R t : ℝ) : ℂ)‖
         + ∑' j : ℕ, ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖
       ≤ prolateEndpointConstant / (c * Real.sqrt c)

@@ -10,10 +10,10 @@ that projective rescue.
 For fixed labels `p<q`, appending a prime `r>q` multiplies the magnitude ratio of the
 coefficients at `q` and `p` by
 
-`((log r)^2-(log p)^2) / ((log r)^2-(log q)^2)`.
+`((log r)^(2 : ℕ)-(log p)^(2 : ℕ)) / ((log r)^(2 : ℕ)-(log q)^(2 : ℕ))`.
 
 This factor is larger than
-`1 + ((log q)^2-(log p)^2)/(log r)^2`.  The reciprocal squared-log prime sum already diverges,
+`1 + ((log q)^(2 : ℕ)-(log p)^(2 : ℕ))/(log r)^(2 : ℕ)`.  The reciprocal squared-log prime sum already diverges,
 so the product of relative factors diverges.  Consequently
 
 `|a_q(x)| / |a_p(x)| → +∞`.
@@ -33,12 +33,12 @@ noncomputable section
 /-- Relative extension product for the coefficients at fixed labels `p<q`. -/
 def primeBarycentricRelativeTailGrowth (p q : ℕ) (x : ℝ) : ℝ :=
   ∏ r ∈ windowPrimes q x,
-    (Real.log r ^ 2 - Real.log p ^ 2) /
-      (Real.log r ^ 2 - Real.log q ^ 2)
+    (Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) /
+      (Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ))
 
 theorem one_add_logSqDiff_mul_tailSum_le_primeBarycentricRelativeTailGrowth
     (p q : ℕ) (hp : 1 < p) (hpq : p < q) {x : ℝ} (hx : (q : ℝ) ≤ x) :
-    1 + (Real.log q ^ 2 - Real.log p ^ 2) *
+    1 + (Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) *
         primeReciprocalLogSqTailSum q x ≤
       primeBarycentricRelativeTailGrowth p q x := by
   have hplog : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp)
@@ -50,23 +50,23 @@ theorem one_add_logSqDiff_mul_tailSum_le_primeBarycentricRelativeTailGrowth
       (by change (0 : ℝ) < q
           exact_mod_cast Nat.zero_lt_one.trans (lt_trans hp hpq))
       (by exact_mod_cast hpq)
-  have hdiff : 0 < Real.log q ^ 2 - Real.log p ^ 2 := by nlinarith
+  have hdiff : 0 < Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ) := by nlinarith
   let u : ℕ → ℝ := fun r =>
-    (Real.log q ^ 2 - Real.log p ^ 2) / Real.log r ^ 2
+    (Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) / Real.log r ^ (2 : ℕ)
   have hu : ∀ r ∈ windowPrimes q x, 0 ≤ u r := by
     intro r hr
     exact div_nonneg hdiff.le (sq_nonneg _)
   have hfirst := one_add_sum_le_prod_one_add (windowPrimes q x) u hu
   calc
-    1 + (Real.log q ^ 2 - Real.log p ^ 2) *
+    1 + (Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) *
         primeReciprocalLogSqTailSum q x =
         1 + ∑ r ∈ windowPrimes q x, u r := by
       rw [primeReciprocalLogSqTailSum, Finset.mul_sum]
       simp [u, div_eq_mul_inv]
     _ ≤ ∏ r ∈ windowPrimes q x, (1 + u r) := hfirst
     _ ≤ ∏ r ∈ windowPrimes q x,
-        (Real.log r ^ 2 - Real.log p ^ 2) /
-          (Real.log r ^ 2 - Real.log q ^ 2) := by
+        (Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) /
+          (Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ)) := by
       apply Finset.prod_le_prod
       · intro r hr
         linarith [hu r hr]
@@ -84,19 +84,19 @@ theorem one_add_logSqDiff_mul_tailSum_le_primeBarycentricRelativeTailGrowth
             (by change (0 : ℝ) < r
                 exact_mod_cast hrprime.pos)
             hqr
-        have hsq : Real.log q ^ 2 < Real.log r ^ 2 := by nlinarith
-        have hden : 0 < Real.log r ^ 2 - Real.log q ^ 2 := sub_pos.mpr hsq
+        have hsq : Real.log q ^ (2 : ℕ) < Real.log r ^ (2 : ℕ) := by nlinarith
+        have hden : 0 < Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ) := sub_pos.mpr hsq
         have hcomp : u r ≤
-            (Real.log q ^ 2 - Real.log p ^ 2) /
-              (Real.log r ^ 2 - Real.log q ^ 2) := by
+            (Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) /
+              (Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ)) := by
           dsimp [u]
           rw [div_le_div_iff₀ (sq_pos_of_pos hrlog) hden]
           nlinarith
         have hfactor :
-            (Real.log r ^ 2 - Real.log p ^ 2) /
-                (Real.log r ^ 2 - Real.log q ^ 2) =
-              1 + (Real.log q ^ 2 - Real.log p ^ 2) /
-                (Real.log r ^ 2 - Real.log q ^ 2) := by
+            (Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) /
+                (Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ)) =
+              1 + (Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) /
+                (Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ)) := by
           field_simp [hden.ne']
           ring
         rw [hfactor]
@@ -116,7 +116,7 @@ theorem tendsto_primeBarycentricRelativeTailGrowth_atTop
       (by change (0 : ℝ) < q
           exact_mod_cast Nat.zero_lt_one.trans (lt_trans hp hpq))
       (by exact_mod_cast hpq)
-  have hc : 0 < Real.log q ^ 2 - Real.log p ^ 2 := by nlinarith
+  have hc : 0 < Real.log q ^ (2 : ℕ) - Real.log p ^ (2 : ℕ) := by nlinarith
   have hmul := tendsto_const_nhds.pos_mul_atTop hc
     (tendsto_primeReciprocalLogSqTailSum_atTop q (by omega))
   have hadd := tendsto_atTop_add_const_left atTop (1 : ℝ) hmul
@@ -128,7 +128,7 @@ theorem tendsto_primeBarycentricRelativeTailGrowth_atTop
 /-- Growth of the coefficient at `p` contributed only by primes above a later split point `q`. -/
 def primeBarycentricUpperGrowth (p q : ℕ) (x : ℝ) : ℝ :=
   ∏ r ∈ windowPrimes q x,
-    Real.log r ^ 2 / (Real.log r ^ 2 - Real.log p ^ 2)
+    Real.log r ^ (2 : ℕ) / (Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ))
 
 theorem primeBarycentricUpperGrowth_pos (p q : ℕ) (hp : 1 < p) (hpq : p ≤ q)
     {x : ℝ} (hx : (q : ℝ) ≤ x) :
@@ -176,9 +176,9 @@ theorem primeBarycentricCoefficientMagnitude_eq_at_mul_upperGrowth
     primeBarycentricUpperGrowth, herase, Finset.prod_union hdisj]
   have htail :
       (∏ r ∈ windowPrimes q x,
-          Real.log r ^ 2 / |Real.log p ^ 2 - Real.log r ^ 2|) =
+          Real.log r ^ (2 : ℕ) / |Real.log p ^ (2 : ℕ) - Real.log r ^ (2 : ℕ)|) =
         ∏ r ∈ windowPrimes q x,
-          Real.log r ^ 2 / (Real.log r ^ 2 - Real.log p ^ 2) := by
+          Real.log r ^ (2 : ℕ) / (Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ)) := by
     apply Finset.prod_congr rfl
     intro r hr
     obtain ⟨hrprime, hqr, hrx⟩ :=
@@ -195,7 +195,7 @@ theorem primeBarycentricCoefficientMagnitude_eq_at_mul_upperGrowth
         (by change (0 : ℝ) < r
             exact_mod_cast hrprime.pos)
         hpr
-    have hneg : Real.log p ^ 2 - Real.log r ^ 2 < 0 := by nlinarith
+    have hneg : Real.log p ^ (2 : ℕ) - Real.log r ^ (2 : ℕ) < 0 := by nlinarith
     rw [abs_of_neg hneg]
     ring_nf
   rw [htail]
@@ -233,9 +233,9 @@ theorem primeBarycentricUpperGrowth_div_eq_relativeTailGrowth
       (by change (0 : ℝ) < r
           exact_mod_cast hrprime.pos)
       hpr
-  have hdenq : Real.log r ^ 2 - Real.log q ^ 2 ≠ 0 := by nlinarith
-  have hdenp : Real.log r ^ 2 - Real.log p ^ 2 ≠ 0 := by nlinarith
-  have hr0 : Real.log r ^ 2 ≠ 0 := pow_ne_zero 2 hrlog.ne'
+  have hdenq : Real.log r ^ (2 : ℕ) - Real.log q ^ (2 : ℕ) ≠ 0 := by nlinarith
+  have hdenp : Real.log r ^ (2 : ℕ) - Real.log p ^ (2 : ℕ) ≠ 0 := by nlinarith
+  have hr0 : Real.log r ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hrlog.ne'
   field_simp
 
 /-- Ratio of canonical exact coefficient magnitudes at two fixed labels. -/

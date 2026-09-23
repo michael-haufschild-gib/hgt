@@ -106,15 +106,15 @@ only through the work the background does on it. -/
 theorem hasDerivAt_normSq_kgFieldStateT (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ ≤ b)
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    HasDerivAt (fun s => ‖kgFieldStateT W g h s‖ ^ 2)
+    HasDerivAt (fun s => ‖kgFieldStateT W g h s‖ ^ (2 : ℕ))
       (RCLike.re (inner ℂ (kgFieldVelT W g h t) (W t (kgFieldMildT W (kgFreqInvOp g) h t))
         + inner ℂ (W t (kgFieldMildT W (kgFreqInvOp g) h t)) (kgFieldVelT W g h t))) t := by
   have hZ := hasDerivAt_kgReducedStateT hb0 hWb hWs g h t
   have hZsq := hasDerivAt_norm_sq_energy hZ
-  have hnormeq : ∀ s : ℝ, ‖kgReducedStateT W g h s‖ ^ 2 = ‖kgFieldStateT W g h s‖ ^ 2 := by
+  have hnormeq : ∀ s : ℝ, ‖kgReducedStateT W g h s‖ ^ (2 : ℕ) = ‖kgFieldStateT W g h s‖ ^ (2 : ℕ) := by
     intro s
     rw [norm_kgReducedStateT]
-  have hstateSq : HasDerivAt (fun s => ‖kgFieldStateT W g h s‖ ^ 2)
+  have hstateSq : HasDerivAt (fun s => ‖kgFieldStateT W g h s‖ ^ (2 : ℕ))
       (RCLike.re (inner ℂ (kgReducedStateT W g h t)
           (kgPropagator (-t) (kgSourceOp (W t) (kgFieldStateT W g h t)))
         + inner ℂ (kgPropagator (-t) (kgSourceOp (W t) (kgFieldStateT W g h t)))

@@ -99,7 +99,7 @@ variable {d : ℕ} (M : SmoothMetricChart d)
 noncomputable def conformalPullbackPotential (sigma P : (Fin d → ℝ) → ℝ) : (Fin d → ℝ) → ℝ :=
   fun x => Real.exp (2 * sigma x) * P x -
     (conformalDimensionWeight d * M.dalembert sigma x +
-      conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x)
+      conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x)
 
 theorem conformalTransferPotential_pullback (sigma P : (Fin d → ℝ) → ℝ) :
     M.conformalTransferPotential sigma (M.conformalPullbackPotential sigma P) = P := by
@@ -112,9 +112,9 @@ theorem conformalTransferPotential_pullback (sigma P : (Fin d → ℝ) → ℝ) 
     Real.exp (-2 * sigma x) *
           (Real.exp (2 * sigma x) * P x -
               (conformalDimensionWeight d * M.dalembert sigma x +
-                conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x) +
+                conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x) +
             conformalDimensionWeight d * M.dalembert sigma x +
-            conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x)
+            conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x)
         = (Real.exp (-2 * sigma x) * Real.exp (2 * sigma x)) * P x := by ring
     _ = P x := by rw [hexp, one_mul]
 

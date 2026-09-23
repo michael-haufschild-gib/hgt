@@ -10,18 +10,18 @@ noncomputable section
 
 def selbergOneFourHarmonicMain (b c N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 (N / c),
-    4 * Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ 3 / (d : ℝ)
+    4 * Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ (3 : ℕ) / (d : ℝ)
 
 def selbergTwoThreeHarmonicMain (a b c N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 (N / c),
     6 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
-      Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ 2) / (d : ℝ)
+      Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ (2 : ℕ)) / (d : ℝ)
 
 theorem selbergOneFourHarmonicMain_eq_moments
     {b c N : ℕ} (hb : 0 < b) (hN : 0 < N) :
     selbergOneFourHarmonicMain b c N =
-      4 * ((Real.log N - Real.log b) ^ 3 * (harmonic (N / c) : ℝ) -
-        3 * (Real.log N - Real.log b) ^ 2 *
+      4 * ((Real.log N - Real.log b) ^ (3 : ℕ) * (harmonic (N / c) : ℝ) -
+        3 * (Real.log N - Real.log b) ^ (2 : ℕ) *
           harmonicLogWindowMoment 1 0 (N / c) +
         3 * (Real.log N - Real.log b) *
           harmonicLogWindowMoment 2 0 (N / c) -
@@ -48,9 +48,9 @@ theorem selbergOneFourHarmonicMain_eq_moments
 theorem selbergTwoThreeHarmonicMain_eq_moments
     {a b c N : ℕ} (ha : 0 < a) (hb : 0 < b) (hN : 0 < N) :
     selbergTwoThreeHarmonicMain a b c N =
-      6 * ((Real.log N - Real.log a) * (Real.log N - Real.log b) ^ 2 *
+      6 * ((Real.log N - Real.log a) * (Real.log N - Real.log b) ^ (2 : ℕ) *
           (harmonic (N / c) : ℝ) -
-        ((Real.log N - Real.log b) ^ 2 +
+        ((Real.log N - Real.log b) ^ (2 : ℕ) +
           2 * (Real.log N - Real.log a) * (Real.log N - Real.log b)) *
           harmonicLogWindowMoment 1 0 (N / c) +
         ((Real.log N - Real.log a) +
@@ -81,7 +81,7 @@ theorem selbergTwoThreeHarmonicMain_eq_moments
 theorem tendsto_selbergOneFourHarmonicMain_div_log_fourth_one
     {b c : ℕ} (hb : 0 < b) (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      selbergOneFourHarmonicMain b c N / Real.log N ^ 4)
+      selbergOneFourHarmonicMain b c N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 1) := by
   have hB := tendsto_log_sub_const_div_log_one (Real.log b)
   have hH := RHTower.tendsto_harmonic_natDiv_div_log (d := c) hc
@@ -105,7 +105,7 @@ theorem tendsto_selbergOneFourHarmonicMain_div_log_fourth_one
 theorem tendsto_selbergTwoThreeHarmonicMain_div_log_fourth_three_halves
     {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      selbergTwoThreeHarmonicMain a b c N / Real.log N ^ 4)
+      selbergTwoThreeHarmonicMain a b c N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (3 / 2 : ℝ)) := by
   have hA := tendsto_log_sub_const_div_log_one (Real.log a)
   have hB := tendsto_log_sub_const_div_log_one (Real.log b)

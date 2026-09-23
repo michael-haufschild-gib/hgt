@@ -63,21 +63,21 @@ theorem two_scales_compatible {W theta g1 : ℝ} (hW : Real.log 2 ≤ W) (hth : 
 
 /-- **The tuned denominator is smallest at `θ = γ`.** -/
 theorem tuned_denominator_min (a gam theta : ℝ) :
-    a ^ 2 ≤ a ^ 2 + (gam - theta) ^ 2 := by nlinarith [sq_nonneg (gam - theta)]
+    a ^ (2 : ℕ) ≤ a ^ (2 : ℕ) + (gam - theta) ^ (2 : ℕ) := by nlinarith [sq_nonneg (gam - theta)]
 
 /-- **The tuned gain.**  Tuning to the ordinate multiplies the sensitivity by `1 + (γ/a)²`. -/
 theorem tuned_gain {a gam : ℝ} (ha : a ≠ 0) :
-    (a ^ 2 + gam ^ 2) / a ^ 2 = 1 + (gam / a) ^ 2 := by
-  have ha2 : (a : ℝ) ^ 2 ≠ 0 := pow_ne_zero 2 ha
+    (a ^ (2 : ℕ) + gam ^ (2 : ℕ)) / a ^ (2 : ℕ) = 1 + (gam / a) ^ (2 : ℕ) := by
+  have ha2 : (a : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 ha
   field_simp
 
 /-- The gain is at least one, and grows without bound as the ordinate grows. -/
-theorem tuned_gain_ge_one (a gam : ℝ) : 1 ≤ 1 + (gam / a) ^ 2 := by
+theorem tuned_gain_ge_one (a gam : ℝ) : 1 ≤ 1 + (gam / a) ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (gam / a)]
 
 theorem tuned_gain_strictMono {a g1 g2 : ℝ} (ha : 0 < a) (hg : 0 < g1) (h : g1 < g2) :
-    1 + (g1 / a) ^ 2 < 1 + (g2 / a) ^ 2 := by
-  have hsq : (g1 / a) ^ 2 < (g2 / a) ^ 2 := by
+    1 + (g1 / a) ^ (2 : ℕ) < 1 + (g2 / a) ^ (2 : ℕ) := by
+  have hsq : (g1 / a) ^ (2 : ℕ) < (g2 / a) ^ (2 : ℕ) := by
     have h1 : 0 < g1 / a := div_pos hg ha
     have h2 : g1 / a < g2 / a := by
       rw [div_lt_div_iff₀ ha ha]
@@ -88,6 +88,6 @@ theorem tuned_gain_strictMono {a g1 g2 : ℝ} (ha : 0 < a) (hg : 0 < g1) (h : g1
 /-- **Height-neutrality of the tuned criterion.**  At `θ = γ` the sensitivity is `1/a²`, independent
 of the ordinate. -/
 theorem tuned_is_height_neutral (a gam : ℝ) :
-    a ^ 2 + (gam - gam) ^ 2 = a ^ 2 := by ring
+    a ^ (2 : ℕ) + (gam - gam) ^ (2 : ℕ) = a ^ (2 : ℕ) := by ring
 
 end RHTower

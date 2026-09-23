@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonSchurCaustic
 # Arbitrary reciprocal-jet observations and their path balance
 
 For an inverse jet `Y`, the infinitesimal reciprocal response to a raw monomial of degree `c`
-has degree-`b` coefficient `-[t^(b-c)]Y^2`, with zero when `c > b`.  Thus every arbitrary finite
+has degree-`b` coefficient `-[t^(b-c)]Y^(2 : ℕ)`, with zero when `c > b`.  Thus every arbitrary finite
 mixed raw/reciprocal observation cut is controlled by a lower-Toeplitz minor, not only the
 consecutive horizon cuts treated by `ProjectiveHorizonSchurCaustic`.
 
@@ -32,7 +32,7 @@ def arbitrarySquaredReciprocalToeplitz {K : Type*} [Zero K] {k : ℕ}
   fun i j => if cols j ≤ rows i then q (rows i - cols j) else 0
 
 /-- Every arbitrary reciprocal Jacobian entry is the negative corresponding lower-Toeplitz
-coefficient of `Y^2`. -/
+coefficient of `Y^(2 : ℕ)`. -/
 theorem arbitraryReciprocalJacobian_apply {K : Type*} [CommRing K] {k : ℕ}
     (Y : K[X]) (rows cols : Fin k → ℕ) (i j : Fin k) :
     arbitraryReciprocalJacobian Y rows cols i j =

@@ -23,7 +23,7 @@ variable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 
 /-- Actual square-root trace mass with the literal hyperbolic area weight. -/
 def amplitudeMassDensity (p : ℝ × ℝ) : ℝ :=
-  Real.sqrt (density N f (ofComplex (point p.1 p.2))) / p.2 ^ 2
+  Real.sqrt (density N f (ofComplex (point p.1 p.2))) / p.2 ^ (2 : ℕ)
 
 /-- The actual amplitude mass density is everywhere nonnegative. -/
 theorem amplitudeMassDensity_nonneg (p : ℝ × ℝ) : 0 ≤ amplitudeMassDensity N lam f p :=
@@ -40,7 +40,7 @@ theorem amplitudeMassDensity_continuousAt {p : ℝ × ℝ} (hp : 0 < p.2) :
 
 /-- Original trace mass plus hyperbolic area dominates the actual amplitude mass. -/
 theorem amplitudeMassDensity_le_mass_majorant (p : ℝ × ℝ) :
-    amplitudeMassDensity N lam f p ≤ (massDensity N f p + 1 / p.2 ^ 2) / 2 := by
+    amplitudeMassDensity N lam f p ≤ (massDensity N f p + 1 / p.2 ^ (2 : ℕ)) / 2 := by
   have hd := density_nonneg N f (ofComplex (point p.1 p.2))
   have hs := Real.sq_sqrt hd
   have h : Real.sqrt (density N f (ofComplex (point p.1 p.2))) ≤
@@ -49,7 +49,7 @@ theorem amplitudeMassDensity_le_mass_majorant (p : ℝ × ℝ) :
   have hh := div_le_div_of_nonneg_right h (sq_nonneg p.2)
   unfold amplitudeMassDensity massDensity
   calc
-    _ ≤ (density N f (ofComplex (point p.1 p.2)) + 1) / 2 / p.2 ^ 2 := hh
+    _ ≤ (density N f (ofComplex (point p.1 p.2)) + 1) / 2 / p.2 ^ (2 : ℕ) := hh
     _ = _ := by ring
 
 /-- Actual full-domain amplitude mass is integrable without a regulator. -/
@@ -68,19 +68,19 @@ variable (e : Ioi (0 : ℝ))
 theorem weightedMassDensity_le_amplitude (p : ℝ × ℝ) :
     weightedMassDensity N f e p ≤ amplitudeMassDensity N lam f p := by
   unfold weightedMassDensity amplitudeMassDensity radius
-  rw [mul_comm (p.2 ^ 2), ← div_div]
+  rw [mul_comm (p.2 ^ (2 : ℕ)), ← div_div]
   exact div_le_div_of_nonneg_right (weighted_sqrt_le (density_nonneg N f _) e.2) (sq_nonneg p.2)
 
 /-- The actual pointwise weighted spectral error is bounded by half the regulator times hyperbolic density. -/
 theorem amplitude_error_le (p : ℝ × ℝ) :
-    amplitudeMassDensity N lam f p - weightedMassDensity N f e p ≤ (e : ℝ) / 2 * (1 / p.2 ^ 2) := by
+    amplitudeMassDensity N lam f p - weightedMassDensity N f e p ≤ (e : ℝ) / 2 * (1 / p.2 ^ (2 : ℕ)) := by
   have h := div_le_div_of_nonneg_right
     (weighted_sqrt_error_le_half (density_nonneg N f (ofComplex (point p.1 p.2))) e.2) (sq_nonneg p.2)
   unfold amplitudeMassDensity weightedMassDensity radius
   calc
     _ = (Real.sqrt (density N f (ofComplex (point p.1 p.2))) -
-        density N f (ofComplex (point p.1 p.2)) / Real.sqrt (density N f (ofComplex (point p.1 p.2)) + (e : ℝ) ^ 2)) / p.2 ^ 2 := by ring
-    _ ≤ (e : ℝ) / 2 / p.2 ^ 2 := h
+        density N f (ofComplex (point p.1 p.2)) / Real.sqrt (density N f (ofComplex (point p.1 p.2)) + (e : ℝ) ^ (2 : ℕ))) / p.2 ^ (2 : ℕ) := by ring
+    _ ≤ (e : ℝ) / 2 / p.2 ^ (2 : ℕ) := h
     _ = _ := by ring
 
 /-- Actual full weighted spectral mass lies below full amplitude mass. -/
@@ -98,10 +98,10 @@ theorem full_mass_error_le_regulator :
   rw [← integral_sub (full_amplitudeMass_integrable N lam f) (full_weightedMass_integrable N lam f e)]
   calc
     (∫ p in fullDomain, amplitudeMassDensity N lam f p - weightedMassDensity N f e p) ≤
-        ∫ p in fullDomain, (e : ℝ) / 2 * (1 / p.2 ^ 2) :=
+        ∫ p in fullDomain, (e : ℝ) / 2 * (1 / p.2 ^ (2 : ℕ)) :=
       integral_mono ((full_amplitudeMass_integrable N lam f).sub (full_weightedMass_integrable N lam f e))
         (full_weight_integrable.const_mul _) (amplitude_error_le N lam f e)
-    _ = (e : ℝ) / 2 * ∫ p in fullDomain, 1 / p.2 ^ 2 := integral_const_mul _ _
+    _ = (e : ℝ) / 2 * ∫ p in fullDomain, 1 / p.2 ^ (2 : ℕ) := integral_const_mul _ _
     _ ≤ (e : ℝ) / 2 * 2 := mul_le_mul_of_nonneg_left full_weight_integral_le_two (half_pos e.2).le
     _ = (e : ℝ) := by ring
 

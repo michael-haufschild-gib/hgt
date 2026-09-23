@@ -63,12 +63,12 @@ theorem deningerBigWittCrossPairTranspose_norm
     (f : DeningerCalderonWittCrossPrimePacketIndex →₀ ℂ) :
     ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)‖ =
       ‖deningerBigWittCrossPairFinitePacketAdmission f‖ := by
-  have heq : ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)‖ ^ 2 =
-      ‖deningerBigWittCrossPairFinitePacketAdmission f‖ ^ 2 := by
+  have heq : ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)‖ ^ (2 : ℕ) =
+      ‖deningerBigWittCrossPairFinitePacketAdmission f‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
     have hfun : (fun i : DeningerCalderonWittCrossPrimePacketIndex =>
-        ‖(deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)) i‖ ^ 2) =
-        fun i => ‖(deningerBigWittCrossPairFinitePacketAdmission f) (deningerBigWittCrossPairSwap i)‖ ^ 2 := by
+        ‖(deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)) i‖ ^ (2 : ℕ)) =
+        fun i => ‖(deningerBigWittCrossPairFinitePacketAdmission f) (deningerBigWittCrossPairSwap i)‖ ^ (2 : ℕ) := by
       funext i
       rw [show (deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)) i =
           deningerBigWittCrossPairTranspose f i from deningerBigWittCrossPairFinitePacketAdmissionToFun_apply _ _,
@@ -76,7 +76,7 @@ theorem deningerBigWittCrossPairTranspose_norm
         show (deningerBigWittCrossPairFinitePacketAdmission f) (deningerBigWittCrossPairSwap i) =
           f (deningerBigWittCrossPairSwap i) from deningerBigWittCrossPairFinitePacketAdmissionToFun_apply _ _]
     rw [hfun]
-    exact deningerBigWittCrossPairSwap.tsum_eq (fun i => ‖(deningerBigWittCrossPairFinitePacketAdmission f) i‖ ^ 2)
+    exact deningerBigWittCrossPairSwap.tsum_eq (fun i => ‖(deningerBigWittCrossPairFinitePacketAdmission f) i‖ ^ (2 : ℕ))
   nlinarith [norm_nonneg (deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCrossPairTranspose f)),
     norm_nonneg (deningerBigWittCrossPairFinitePacketAdmission f)]
 
@@ -189,10 +189,10 @@ theorem deningerBigWittWoldTransposedRow_anchor_marginal (a n : ℕ) :
 
 theorem norm_sq_deningerBigWittFinitePacketAdmission_sum
     (f : DeningerCalderonWittCrossPrimePacketIndex →₀ ℂ) :
-    ‖deningerBigWittCrossPairFinitePacketAdmission f‖ ^ 2 = ∑ i ∈ f.support, ‖f i‖ ^ 2 := by
+    ‖deningerBigWittCrossPairFinitePacketAdmission f‖ ^ (2 : ℕ) = ∑ i ∈ f.support, ‖f i‖ ^ (2 : ℕ) := by
   classical
   have hfun : (fun i : DeningerCalderonWittCrossPrimePacketIndex =>
-      ‖(deningerBigWittCrossPairFinitePacketAdmission f) i‖ ^ 2) = fun i => ‖f i‖ ^ 2 := by
+      ‖(deningerBigWittCrossPairFinitePacketAdmission f) i‖ ^ (2 : ℕ)) = fun i => ‖f i‖ ^ (2 : ℕ) := by
     funext i
     rw [show (deningerBigWittCrossPairFinitePacketAdmission f) i = f i from
       deningerBigWittCrossPairFinitePacketAdmissionToFun_apply _ _]
@@ -200,8 +200,8 @@ theorem norm_sq_deningerBigWittFinitePacketAdmission_sum
   exact tsum_eq_sum (fun i hi => by simp [Finsupp.notMem_support_iff.mp hi])
 
 theorem norm_sq_deningerBigWittWoldRawPacket_sum (a n : ℕ) :
-    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n)‖ ^ 2 =
-      ∑ k ∈ Finset.range n, deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ 2 := by
+    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n)‖ ^ (2 : ℕ) =
+      ∑ k ∈ Finset.range n, deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ (2 : ℕ) := by
   classical
   rw [norm_sq_deningerBigWittFinitePacketAdmission_sum]
   have hsupport : (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n).support ⊆
@@ -211,14 +211,14 @@ theorem norm_sq_deningerBigWittWoldRawPacket_sum (a n : ℕ) :
     apply Finsupp.mem_support_iff.mp hi
     simp [deningerBigWittWoldFixedLeftRightEdgeRawPacket_apply, hn]
   rw [show (∑ i ∈ (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n).support,
-        ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ 2) =
+        ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ (2 : ℕ)) =
       ∑ i ∈ deningerBigWittWoldFixedLeftRightEdgePrefix a n,
-        ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ 2 from
-    Finsupp.sum_of_support_subset _ hsupport (fun _ z => ‖z‖ ^ 2) (by intros; simp)]
+        ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ (2 : ℕ) from
+    Finsupp.sum_of_support_subset _ hsupport (fun _ z => ‖z‖ ^ (2 : ℕ)) (by intros; simp)]
   have heq : (∑ i ∈ deningerBigWittWoldFixedLeftRightEdgePrefix a n,
-      ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ 2) =
+      ‖deningerBigWittWoldFixedLeftRightEdgeRawPacket a n i‖ ^ (2 : ℕ)) =
       ∑ i ∈ deningerBigWittWoldFixedLeftRightEdgePrefix a n,
-        ‖deningerBigWittCrossPrimePacketRawCoefficient i‖ ^ 2 := by
+        ‖deningerBigWittCrossPrimePacketRawCoefficient i‖ ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i hi
     rw [deningerBigWittWoldFixedLeftRightEdgeRawPacket_apply, if_pos hi]
@@ -229,7 +229,7 @@ theorem deningerBigWittWoldTransposedRaw_energy (A : ℝ) (a n : ℕ) :
     primeLabelledEnergyReporter (fun q => A / (q : ℕ))
       (deningerBigWittCrossPairTranspose (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n)) =
         ((A * (nthPrimeSubtype a : ℝ) *
-          ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n)‖ ^ 2 : ℝ) : ℂ) := by
+          ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a n)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   rw [norm_sq_deningerBigWittWoldRawPacket_sum,
     deningerBigWittWoldFixedLeftRightEdgeRawPacket, map_sum, map_sum]
@@ -238,12 +238,12 @@ theorem deningerBigWittWoldTransposedRaw_energy (A : ℝ) (a n : ℕ) :
   have hterm (k : ℕ) :
       (((A / (nthPrimeSubtype (a + k + 1) : ℝ)) : ℝ) : ℂ) *
           (deningerBigWittWoldFixedLeftRightEdgeWeight a k : ℂ) =
-        ((A * (nthPrimeSubtype a : ℝ) * deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ 2 : ℝ) : ℂ) := by
+        ((A * (nthPrimeSubtype a : ℝ) * deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ (2 : ℕ) : ℝ) : ℂ) := by
     have hp : (nthPrimeSubtype a : ℝ) ≠ 0 := (nthPrimeSubtype_pos a).ne'
     have hq : (nthPrimeSubtype (a + k + 1) : ℝ) ≠ 0 := (nthPrimeSubtype_pos _).ne'
     have hreal : A / (nthPrimeSubtype (a + k + 1) : ℝ) *
         deningerBigWittWoldFixedLeftRightEdgeWeight a k =
-        A * (nthPrimeSubtype a : ℝ) * deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ 2 := by
+        A * (nthPrimeSubtype a : ℝ) * deningerBigWittWoldFixedLeftRightEdgeWeight a k ^ (2 : ℕ) := by
       rw [deningerBigWittWoldFixedLeftRightEdgeWeight]
       field_simp
     exact_mod_cast hreal
@@ -258,7 +258,7 @@ theorem deningerBigWittWoldTransposedRaw_energy (A : ℝ) (a n : ℕ) :
 theorem deningerBigWittWoldTransposedRow_energy (A : ℝ) (a n : ℕ) :
     primeLabelledEnergyReporter (fun q => A / (q : ℕ)) (deningerBigWittWoldTransposedRow a n) =
       ((A * (nthPrimeSubtype a : ℝ) *
-          ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a (n + 1))‖ ^ 2 /
+          ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittWoldFixedLeftRightEdgeRawPacket a (n + 1))‖ ^ (2 : ℕ) /
         deningerBigWittWoldFixedLeftRightEdgeMass a (n + 1) : ℝ) : ℂ) := by
   rw [deningerBigWittWoldTransposedRow, deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket,
     map_smul, map_smul, smul_eq_mul, deningerBigWittWoldTransposedRaw_energy]
@@ -267,7 +267,7 @@ theorem deningerBigWittWoldTransposedRow_energy (A : ℝ) (a n : ℕ) :
 
 theorem deningerBigWittWoldTransposedRow_energy_norm_le (A : ℝ) (a n : ℕ) :
     ‖primeLabelledEnergyReporter (fun q => A / (q : ℕ)) (deningerBigWittWoldTransposedRow a n)‖ ≤
-      (|A| * (nthPrimeSubtype a : ℝ) * ‖deningerBigWittCrossPrimePacketRawHorizon‖ ^ 2) /
+      (|A| * (nthPrimeSubtype a : ℝ) * ‖deningerBigWittCrossPrimePacketRawHorizon‖ ^ (2 : ℕ)) /
         deningerBigWittWoldFixedLeftRightEdgeMass a (n + 1) := by
   rw [deningerBigWittWoldTransposedRow_energy, Complex.norm_real, Real.norm_eq_abs, abs_div]
   simp only [abs_mul, abs_pow, abs_norm, abs_of_pos (nthPrimeSubtype_pos a),
@@ -288,7 +288,7 @@ theorem tendsto_deningerBigWittWoldTransposedRow_energy (A : ℝ) (a : ℕ) :
     (tendsto_deningerBigWittWoldFixedLeftRightEdgeMass_atTop a).comp
       (Filter.tendsto_add_atTop_nat 1)
   simpa [div_eq_mul_inv] using hmass.inv_tendsto_atTop.const_mul
-    (|A| * (nthPrimeSubtype a : ℝ) * ‖deningerBigWittCrossPrimePacketRawHorizon‖ ^ 2)
+    (|A| * (nthPrimeSubtype a : ℝ) * ‖deningerBigWittCrossPrimePacketRawHorizon‖ ^ (2 : ℕ))
 
 
 

@@ -51,10 +51,10 @@ theorem exists_spaced_families_levelSet_le (a : ℕ → ℂ) (D B : Finset ℕ) 
       ∧ (∀ w ∈ P₂, w ∈ primeBlockLevelSet B G V)
       ∧ (∀ w ∈ P₁, ∀ u ∈ P₁, w ≠ u → (1 : ℝ) ≤ |w - u|)
       ∧ (∀ w ∈ P₂, ∀ u ∈ P₂, w ≠ u → (1 : ℝ) ≤ |w - u|)
-      ∧ (∫ w in primeBlockLevelSet B G V, ‖logPoly a D w‖ ^ 2)
-          ≤ (∑ w ∈ P₁, ‖logPoly a D w‖ ^ 2) + ∑ w ∈ P₂, ‖logPoly a D w‖ ^ 2 := by
+      ∧ (∫ w in primeBlockLevelSet B G V, ‖logPoly a D w‖ ^ (2 : ℕ))
+          ≤ (∑ w ∈ P₁, ‖logPoly a D w‖ ^ (2 : ℕ)) + ∑ w ∈ P₂, ‖logPoly a D w‖ ^ (2 : ℕ) := by
   classical
-  set F : ℝ → ℝ := fun w => ‖logPoly a D w‖ ^ 2 with hF
+  set F : ℝ → ℝ := fun w => ‖logPoly a D w‖ ^ (2 : ℕ) with hF
   have hFcont : Continuous F := ((continuous_logPoly a D).norm).pow 2
   have hF0 : ∀ w, 0 ≤ F w := fun w => sq_nonneg _
   set U : Set ℝ := primeBlockLevelSet B G V with hU
@@ -89,18 +89,18 @@ theorem exists_spaced_families_blockProduct_levelSplit (a : ℕ → ℂ) (B D : 
       ∧ (∀ j, ∀ w ∈ P₂ j, w ∈ primeBlockLevelSet B G (2 ^ j * V₀))
       ∧ (∀ j, ∀ w ∈ P₁ j, ∀ u ∈ P₁ j, w ≠ u → (1 : ℝ) ≤ |w - u|)
       ∧ (∀ j, ∀ w ∈ P₂ j, ∀ u ∈ P₂ j, w ≠ u → (1 : ℝ) ≤ |w - u|)
-      ∧ (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2)
-          ≤ V₀ ^ 2 * (∫ w in Set.Icc (-G) G, ‖logPoly a D w‖ ^ 2)
-            + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
-                ((∑ w ∈ P₁ j, ‖logPoly a D w‖ ^ 2) + ∑ w ∈ P₂ j, ‖logPoly a D w‖ ^ 2) := by
+      ∧ (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+          ≤ V₀ ^ (2 : ℕ) * (∫ w in Set.Icc (-G) G, ‖logPoly a D w‖ ^ (2 : ℕ))
+            + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
+                ((∑ w ∈ P₁ j, ‖logPoly a D w‖ ^ (2 : ℕ)) + ∑ w ∈ P₂ j, ‖logPoly a D w‖ ^ (2 : ℕ)) := by
   classical
   have hlevel : ∀ j : ℕ, ∃ Q : Finset ℝ × Finset ℝ,
       (∀ w ∈ Q.1, w ∈ primeBlockLevelSet B G (2 ^ j * V₀))
         ∧ (∀ w ∈ Q.2, w ∈ primeBlockLevelSet B G (2 ^ j * V₀))
         ∧ (∀ w ∈ Q.1, ∀ u ∈ Q.1, w ≠ u → (1 : ℝ) ≤ |w - u|)
         ∧ (∀ w ∈ Q.2, ∀ u ∈ Q.2, w ≠ u → (1 : ℝ) ≤ |w - u|)
-        ∧ (∫ w in primeBlockLevelSet B G (2 ^ j * V₀), ‖logPoly a D w‖ ^ 2)
-            ≤ (∑ w ∈ Q.1, ‖logPoly a D w‖ ^ 2) + ∑ w ∈ Q.2, ‖logPoly a D w‖ ^ 2 := by
+        ∧ (∫ w in primeBlockLevelSet B G (2 ^ j * V₀), ‖logPoly a D w‖ ^ (2 : ℕ))
+            ≤ (∑ w ∈ Q.1, ‖logPoly a D w‖ ^ (2 : ℕ)) + ∑ w ∈ Q.2, ‖logPoly a D w‖ ^ (2 : ℕ) := by
     intro j
     obtain ⟨R₁, R₂, h₁, h₂, h₃, h₄, h₅⟩ :=
       exists_spaced_families_levelSet_le a D B hG (2 ^ j * V₀)
@@ -108,11 +108,11 @@ theorem exists_spaced_families_blockProduct_levelSplit (a : ℕ → ℂ) (B D : 
   choose Q hQ₁ hQ₂ hQ₃ hQ₄ hQ₅ using hlevel
   refine ⟨fun j => (Q j).1, fun j => (Q j).2, hQ₁, hQ₂, hQ₃, hQ₄, ?_⟩
   refine (integral_normSq_blockProduct_levelSplit a B D hV₀ hJ).trans ?_
-  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
+  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
         (∫ w in Set.Icc (-G) G ∩ {w | 2 ^ j * V₀ ≤ ‖primeBlockPoly B w‖},
-          ‖logPoly a D w‖ ^ 2)
-      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
-        ((∑ w ∈ (Q j).1, ‖logPoly a D w‖ ^ 2) + ∑ w ∈ (Q j).2, ‖logPoly a D w‖ ^ 2) :=
+          ‖logPoly a D w‖ ^ (2 : ℕ))
+      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
+        ((∑ w ∈ (Q j).1, ‖logPoly a D w‖ ^ (2 : ℕ)) + ∑ w ∈ (Q j).2, ‖logPoly a D w‖ ^ (2 : ℕ)) :=
     Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hQ₅ j) (sq_nonneg _)
   linarith [hsum]
 

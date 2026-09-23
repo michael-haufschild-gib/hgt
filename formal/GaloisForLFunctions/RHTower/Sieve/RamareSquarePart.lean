@@ -41,11 +41,11 @@ theorem sum_card_filter_sq_dvd_le {P₁ P₂ a b : ℕ} (hP : 1 ≤ P₁) (hab :
     linarith
   have hterm : ∀ p ∈ bigPrimeSet P₁ P₂,
       (((({n ∈ Finset.Ioc a b | p * p ∣ n}).card : ℕ) : ℝ))
-        ≤ ((b : ℝ) - a) * (1 / (p : ℝ) ^ 2) + 1 := by
+        ≤ ((b : ℝ) - a) * (1 / (p : ℝ) ^ (2 : ℕ)) + 1 := by
     intro p hp
     have hppos : 0 < p := (prime_of_mem_bigPrimeSet hp).pos
     have hlt := card_filter_sq_dvd_Ioc_lt hppos hab
-    have heq : ((b : ℝ) - a) / ((p : ℝ) * (p : ℝ)) = ((b : ℝ) - a) * (1 / (p : ℝ) ^ 2) := by
+    have heq : ((b : ℝ) - a) / ((p : ℝ) * (p : ℝ)) = ((b : ℝ) - a) * (1 / (p : ℝ) ^ (2 : ℕ)) := by
       rw [pow_two]
       ring
     rw [heq] at hlt
@@ -53,7 +53,7 @@ theorem sum_card_filter_sq_dvd_le {P₁ P₂ a b : ℕ} (hP : 1 ≤ P₁) (hab :
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul, mul_one]
   have hsq := sum_inv_sq_bigPrimeSet_le (P := P₁) hP P₂
-  have hmul : ((b : ℝ) - a) * (∑ p ∈ bigPrimeSet P₁ P₂, (1 : ℝ) / (p : ℝ) ^ 2)
+  have hmul : ((b : ℝ) - a) * (∑ p ∈ bigPrimeSet P₁ P₂, (1 : ℝ) / (p : ℝ) ^ (2 : ℕ))
       ≤ ((b : ℝ) - a) * (1 / (P₁ : ℝ)) := mul_le_mul_of_nonneg_left hsq hlen
   have hdiv : ((b : ℝ) - a) * (1 / (P₁ : ℝ)) = ((b : ℝ) - a) / (P₁ : ℝ) := by ring
   linarith

@@ -87,7 +87,7 @@ theorem projectivePhaseResolution_defect_le_reciprocal
     (hx : ∀ i, 1 ≤ x i) (hw : ∀ i, 0 ≤ w i) (i : Fin d) :
     (if i = k then 0 else
       w i * ((2 * Real.pi /
-        (projectivePhaseResolution k x i : ℝ)) ^ 2 / 2)) ≤
+        (projectivePhaseResolution k x i : ℝ)) ^ (2 : ℕ) / 2)) ≤
       if i = k then 0 else w i / x i := by
   by_cases hik : i = k
   · simp [hik]
@@ -100,22 +100,22 @@ theorem projectivePhaseResolution_defect_le_reciprocal
     have hsquare :=
       (sq_le_sq₀
         (mul_nonneg Real.pi_pos.le (Real.sqrt_nonneg _)) hQpos.le).2 hlower
-    have hsqrt : Real.sqrt (2 * x i) ^ 2 = 2 * x i :=
+    have hsqrt : Real.sqrt (2 * x i) ^ (2 : ℕ) = 2 * x i :=
       Real.sq_sqrt (by positivity)
     have hden :
-        2 * Real.pi ^ 2 * x i ≤
-          (projectivePhaseResolution k x i : ℝ) ^ 2 := by
+        2 * Real.pi ^ (2 : ℕ) * x i ≤
+          (projectivePhaseResolution k x i : ℝ) ^ (2 : ℕ) := by
       rw [mul_pow, hsqrt] at hsquare
       nlinarith
     have hscalar :
         (2 * Real.pi /
-          (projectivePhaseResolution k x i : ℝ)) ^ 2 / 2 ≤
+          (projectivePhaseResolution k x i : ℝ)) ^ (2 : ℕ) / 2 ≤
         1 / x i := by
       calc
         (2 * Real.pi /
-            (projectivePhaseResolution k x i : ℝ)) ^ 2 / 2 =
-            (2 * Real.pi ^ 2) /
-              (projectivePhaseResolution k x i : ℝ) ^ 2 := by
+            (projectivePhaseResolution k x i : ℝ)) ^ (2 : ℕ) / 2 =
+            (2 * Real.pi ^ (2 : ℕ)) /
+              (projectivePhaseResolution k x i : ℝ) ^ (2 : ℕ) := by
           field_simp [hQpos.ne']
         _ ≤ 1 / x i := by
           apply (div_le_div_iff₀ (sq_pos_of_pos hQpos) hxi).2
@@ -128,7 +128,7 @@ theorem sum_projectivePhaseResolution_defect_le_reciprocal
     (hx : ∀ i, 1 ≤ x i) (hw : ∀ i, 0 ≤ w i) :
     (∑ i, if i = k then 0 else
       w i * ((2 * Real.pi /
-        (projectivePhaseResolution k x i : ℝ)) ^ 2 / 2)) ≤
+        (projectivePhaseResolution k x i : ℝ)) ^ (2 : ℕ) / 2)) ≤
       ∑ i, if i = k then 0 else w i / x i := by
   exact Finset.sum_le_sum fun i _hi ↦
     projectivePhaseResolution_defect_le_reciprocal k x w hx hw i

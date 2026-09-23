@@ -29,7 +29,7 @@ namespace RHTower
 noncomputable section
 
 /-- **(9)** The endpoint moment germ in the square-root coordinate. -/
-theorem bernsteinMomentGerm_primeArch {R : ℝ} (hR : R ≠ 0) {v z : ℂ} (hz : z ^ 2 = v / (R : ℂ)) :
+theorem bernsteinMomentGerm_primeArch {R : ℝ} (hR : R ≠ 0) {v z : ℂ} (hz : z ^ (2 : ℕ) = v / (R : ℂ)) :
     bernsteinMomentGerm (radiusNormalizedMoment R normalizedPrimeArchMoment) v
       = xiCentralMomentGerm z := by
   rw [bernsteinMomentGerm, xiCentralMomentGerm_eq_tsum_even]
@@ -45,7 +45,7 @@ theorem bernsteinMomentGerm_primeArch {R : ℝ} (hR : R ≠ 0) {v z : ℂ} (hz :
 
 /-- Evenness: the square-root coordinate may be replaced by its negative. -/
 theorem bernsteinMomentGerm_primeArch_neg {R : ℝ} (hR : R ≠ 0) {v z : ℂ}
-    (hz : z ^ 2 = v / (R : ℂ)) :
+    (hz : z ^ (2 : ℕ) = v / (R : ℂ)) :
     xiCentralMomentGerm z = xiCentralMomentGerm (-z) := by
   rw [bernsteinMomentGerm_primeArch (v := v) hR hz |>.symm,
     bernsteinMomentGerm_primeArch (v := v) hR (by rw [neg_pow]; simpa using hz)]
@@ -54,7 +54,7 @@ theorem bernsteinMomentGerm_primeArch_neg {R : ℝ} (hR : R ≠ 0) {v z : ℂ}
 theorem tsum_bernsteinPencil_primeArch {R : ℝ} (hR : R ≠ 0) {s w z : ℂ} (hs : ‖s‖ < 1)
     (hM : Summable fun k : ℕ => |radiusNormalizedMoment R normalizedPrimeArchMoment k|
       * (‖s‖ * ‖w - 1‖ / (1 - ‖s‖)) ^ k)
-    (hz : z ^ 2 = s * (w - 1) / ((R : ℂ) * (1 - s))) :
+    (hz : z ^ (2 : ℕ) = s * (w - 1) / ((R : ℂ) * (1 - s))) :
     ∑' n : ℕ, bernsteinCoefficientTransform
         (radiusNormalizedMoment R normalizedPrimeArchMoment) n w * s ^ n
       = (1 - s)⁻¹ * xiCentralMomentGerm z := by

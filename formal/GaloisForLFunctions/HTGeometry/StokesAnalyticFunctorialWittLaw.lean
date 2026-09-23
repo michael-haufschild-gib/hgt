@@ -48,7 +48,7 @@ theorem cartanQuadratic_eq_analyticFunctorialMicrolocalIndex
     (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
     d.toOrbitCoareaDatum.cartanQuadratic x =
       d.toOrbitCoareaDatum.terminalEnergy x +
-        d.toOrbitCoareaDatum.physicalRank x ^ 2 -
+        d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) -
       d.analyticFunctorialMicrolocalPairing x := by
   rw [d.analyticFunctorialMicrolocalPairing_eq_contactPairing]
   rfl
@@ -57,12 +57,12 @@ theorem cartanQuadratic_eq_analyticFunctorialMicrolocalIndex
 theorem analyticFunctorialMicrolocalIndex_eq_coarea_onePort
     (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
     d.toOrbitCoareaDatum.terminalEnergy x +
-        d.toOrbitCoareaDatum.physicalRank x ^ 2 -
+        d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) -
       d.analyticFunctorialMicrolocalPairing x =
     d.toOrbitCoareaDatum.terminalEnergy x +
         d.toOrbitCoareaDatum.blockEnergy x -
       (d.toOrbitCoareaDatum.cuts.root - 1) *
-        d.toOrbitCoareaDatum.physicalRank x ^ 2 := by
+        d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) := by
   rw [← d.cartanQuadratic_eq_analyticFunctorialMicrolocalIndex,
     d.toOrbitCoareaDatum.cartanQuadratic_eq_positive_sub_onePort]
 
@@ -79,10 +79,10 @@ theorem polarizedAnalyticFunctorialStokesWittLaw
       d.toOrbitCoareaDatum.terminalEnergy x +
         d.toOrbitCoareaDatum.blockEnergy x -
       (((K + 1 : ℕ) : ℝ) / N - 1) *
-        d.toOrbitCoareaDatum.physicalRank x ^ 2 ∧
+        d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) ∧
     (d.toOrbitCoareaDatum.physicalRank x = 0 → x ≠ 0 →
       0 < d.toOrbitCoareaDatum.cartanQuadratic x) ∧
-    (∑ edge, d.toOrbitCoareaDatum.gradedChannel x edge ^ 2) =
+    (∑ edge, d.toOrbitCoareaDatum.gradedChannel x edge ^ (2 : ℕ)) =
       d.toOrbitCoareaDatum.blockEnergy x := by
   refine ⟨?_, d.cartanQuadratic_eq_coefficient_onePort x, ?_,
     d.toOrbitCoareaDatum.sum_gradedChannel_sq_eq_blockEnergy x⟩

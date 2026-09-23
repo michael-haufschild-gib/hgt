@@ -44,7 +44,7 @@ theorem farHalf_subset_rightHalf : farHalf ⊆ rightHalf := by
 /-- **The germ exists at every level**: ξ has an analytic `2^k`-th root on
 `Re s > 1` (no hypothesis — this is the Euler side's free gift). -/
 theorem exists_farHalf_root (k : ℕ) :
-    ∃ g₁, AnalyticOnNhd ℂ g₁ farHalf ∧ ∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s := by
+    ∃ g₁, AnalyticOnNhd ℂ g₁ farHalf ∧ ∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s := by
   refine (exists_root_iff_orders_dvd (pow_pos two_pos k) isOpen_farHalf convex_farHalf
     two_mem_farHalf (xi_analyticOnNhd _) xi_two_ne_zero ?_).mpr ?_
   · intro R
@@ -60,8 +60,8 @@ agreeing with the germ. -/
 theorem rhLadder_iff_germ_extends (k : ℕ) :
     RHLadder k ↔
       ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn g g₁ farHalf := by
   constructor
   · intro hlad g₁ hg₁ hg₁n
@@ -77,10 +77,10 @@ theorem rhLadder_iff_germ_extends (k : ℕ) :
       rw [h0, zero_pow (pow_ne_zero k two_ne_zero)] at h2
       exact xi_two_ne_zero h2.symm
     set ω : ℂ := h 2 / g₁ 2 with hω
-    have hωpow : ω ^ 2 ^ k = 1 := by
+    have hωpow : ω ^ (2 : ℕ) ^ k = 1 := by
       rw [hω, div_pow, hhn 2 (farHalf_subset_rightHalf two_mem_farHalf),
         hg₁n 2 two_mem_farHalf, div_self xi_two_ne_zero]
-    have hroot : ∀ s ∈ rightHalf, (ω⁻¹ * h s) ^ 2 ^ k = xi s := by
+    have hroot : ∀ s ∈ rightHalf, (ω⁻¹ * h s) ^ (2 : ℕ) ^ k = xi s := by
       intro s hs
       rw [mul_pow, inv_pow, hωpow, inv_one, one_mul, hhn s hs]
     refine ⟨fun s => ω⁻¹ * h s, ?_, hroot, ?_⟩
@@ -112,8 +112,8 @@ assumed. -/
 theorem rh_iff_all_farHalf_germs_extend_all_levels :
     RiemannHypothesis ↔
       ∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn g g₁ farHalf := by
   constructor
   · intro hRH k
@@ -132,8 +132,8 @@ one analytic continuation of it to the right half-plane. -/
 theorem rh_iff_exists_farHalf_germ_extension_all_levels :
     RiemannHypothesis ↔
       ∀ k : ℕ, ∃ g₁ g,
-        AnalyticOnNhd ℂ g₁ farHalf ∧ (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) ∧
-        AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        AnalyticOnNhd ℂ g₁ farHalf ∧ (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) ∧
+        AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn g g₁ farHalf := by
   constructor
   · intro hRH k

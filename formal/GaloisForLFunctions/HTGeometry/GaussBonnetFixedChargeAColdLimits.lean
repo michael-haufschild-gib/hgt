@@ -59,7 +59,7 @@ theorem egbFixedChargeATemperature_scale (w φ τ : ℝ) :
 
 theorem egbFixedChargeAPressure_scale (w φ τ : ℝ) :
     egbFixedChargeAPressure w φ τ =
-      egbFixedChargeAPressureWeight τ φ * egbFixedChargeAWeight τ φ / (8 * Real.pi * exp w ^ 2) := by
+      egbFixedChargeAPressureWeight τ φ * egbFixedChargeAWeight τ φ / (8 * Real.pi * exp w ^ (2 : ℕ)) := by
   have hs := egbFixedChargeAWeight_pos τ φ
   unfold egbFixedChargeAPressure egbFixedChargeALargeRadius
   rw [div_pow, sq_sqrt hs.le]
@@ -80,7 +80,7 @@ theorem egbFixedChargeAPressure_cold_limit (w φ : ℝ) :
   change Tendsto (fun τ => egbFixedChargeAPressure w φ τ) atTop (𝓝 0)
   simp only [egbFixedChargeAPressure_scale]
   have h : Tendsto (fun τ => egbFixedChargeAPressureWeight τ φ * egbFixedChargeAWeight τ φ /
-      (8 * Real.pi * exp w ^ 2)) atTop (𝓝 ((3 * 0) / (8 * Real.pi * exp w ^ 2))) :=
+      (8 * Real.pi * exp w ^ (2 : ℕ))) atTop (𝓝 ((3 * 0) / (8 * Real.pi * exp w ^ (2 : ℕ)))) :=
     ((egbFixedChargeAPressureWeight_cold_limit φ).mul (egbFixedChargeAWeight_cold_limit φ)).div
       tendsto_const_nhds (by positivity)
   simpa only [mul_zero, zero_div] using h
@@ -92,7 +92,7 @@ theorem egbFixedChargeATemperature_radius_product (w φ τ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAPressure_radius_product (w φ τ : ℝ) :
-    egbFixedChargeAPressure w φ τ * egbFixedChargeALargeRadius w φ τ ^ 2 = egbFixedChargeAPressureWeight τ φ / (8 * Real.pi) := by
+    egbFixedChargeAPressure w φ τ * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) = egbFixedChargeAPressureWeight τ φ / (8 * Real.pi) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   unfold egbFixedChargeAPressure
   field_simp <;> ring
@@ -106,13 +106,13 @@ theorem egbFixedChargeATemperature_radius_cold_limit (w φ : ℝ) :
   rwa [he] at h
 
 theorem egbFixedChargeAPressure_radius_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAPressure w φ τ * egbFixedChargeALargeRadius w φ τ ^ 2) atTop (𝓝 (3 / (8 * Real.pi))) := by
+    Tendsto (fun τ => egbFixedChargeAPressure w φ τ * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) atTop (𝓝 (3 / (8 * Real.pi))) := by
   simp only [egbFixedChargeAPressure_radius_product]
   exact (egbFixedChargeAPressureWeight_cold_limit φ).div tendsto_const_nhds (by positivity)
 
 theorem egbFixedChargeA_pressure_temperature_ratio (w φ τ : ℝ) :
-    egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ ^ 2 =
-      2 * Real.pi * egbFixedChargeAPressureWeight τ φ / egbFixedChargeATemperatureWeight τ φ ^ 2 := by
+    egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ ^ (2 : ℕ) =
+      2 * Real.pi * egbFixedChargeAPressureWeight τ φ / egbFixedChargeATemperatureWeight τ φ ^ (2 : ℕ) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   have ht := egbFixedChargeATemperatureWeight_pos τ φ
   unfold egbFixedChargeAPressure egbFixedChargeATemperature
@@ -120,13 +120,13 @@ theorem egbFixedChargeA_pressure_temperature_ratio (w φ τ : ℝ) :
 
 /-- A universal cold equation-of-state coefficient for every fixed charge/coupling fraction. -/
 theorem egbFixedChargeA_pressure_temperature_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ ^ 2) atTop (𝓝 (3 * Real.pi / 8)) := by
+    Tendsto (fun τ => egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ ^ (2 : ℕ)) atTop (𝓝 (3 * Real.pi / 8)) := by
   simp only [egbFixedChargeA_pressure_temperature_ratio]
-  have h : Tendsto (fun τ => 2 * Real.pi * egbFixedChargeAPressureWeight τ φ / egbFixedChargeATemperatureWeight τ φ ^ 2)
-      atTop (𝓝 ((2 * Real.pi * 3) / (4 : ℝ) ^ 2)) :=
+  have h : Tendsto (fun τ => 2 * Real.pi * egbFixedChargeAPressureWeight τ φ / egbFixedChargeATemperatureWeight τ φ ^ (2 : ℕ))
+      atTop (𝓝 ((2 * Real.pi * 3) / (4 : ℝ) ^ (2 : ℕ))) :=
     (tendsto_const_nhds.mul (egbFixedChargeAPressureWeight_cold_limit φ)).div
       ((egbFixedChargeATemperatureWeight_cold_limit φ).pow 2) (by norm_num)
-  have he : (2 * Real.pi * 3) / (4 : ℝ) ^ 2 = 3 * Real.pi / 8 := by ring
+  have he : (2 * Real.pi * 3) / (4 : ℝ) ^ (2 : ℕ) = 3 * Real.pi / 8 := by ring
   rwa [he] at h
 
 end GaloisForLFunctions.HTGeometry

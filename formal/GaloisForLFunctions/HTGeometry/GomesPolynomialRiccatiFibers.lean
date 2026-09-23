@@ -29,12 +29,12 @@ theorem gomesPolynomialDerivative_multiple_iff (A B : ℝ[X]) :
     · rw [ha, hb, zero_mul]
 
 /-- The polynomial Riccati image of a polynomial connection coefficient. -/
-def gomesPolynomialRiccati (U : ℝ[X]) : ℝ[X] := U.derivative + U ^ 2
+def gomesPolynomialRiccati (U : ℝ[X]) : ℝ[X] := U.derivative + U ^ (2 : ℕ)
 
 /-- Derivative and square contributions cannot compensate in equal polynomial Riccati images. -/
 theorem gomesPolynomialRiccati_eq_iff_parts (U V : ℝ[X]) :
     gomesPolynomialRiccati U = gomesPolynomialRiccati V ↔
-      U.derivative = V.derivative ∧ U ^ 2 = V ^ 2 := by
+      U.derivative = V.derivative ∧ U ^ (2 : ℕ) = V ^ (2 : ℕ) := by
   constructor
   · intro h
     have hdvd : (U - V) ∣ (U - V).derivative := by
@@ -102,7 +102,7 @@ theorem gomesPolynomialRiccati_eq_iff_constants (U V : ℝ[X]) :
 
 /-- A constant Riccati image forces a constant input, with its exact squared value. -/
 theorem gomesPolynomialRiccati_constant_iff (U : ℝ[X]) (k : ℝ) :
-    gomesPolynomialRiccati U = C k ↔ ∃ c : ℝ, U = C c ∧ c ^ 2 = k := by
+    gomesPolynomialRiccati U = C k ↔ ∃ c : ℝ, U = C c ∧ c ^ (2 : ℕ) = k := by
   constructor
   · intro h
     have hd := congrArg Polynomial.derivative h
@@ -126,7 +126,7 @@ theorem gomesPolynomialRiccati_constant_iff (U : ℝ[X]) (k : ℝ) :
 
 /-- A prescribed square has exactly the two expected constant preimages. -/
 theorem gomesPolynomialRiccati_square_fiber (U : ℝ[X]) (r : ℝ) :
-    gomesPolynomialRiccati U = C (r ^ 2) ↔ U = C r ∨ U = C (-r) := by
+    gomesPolynomialRiccati U = C (r ^ (2 : ℕ)) ↔ U = C r ∨ U = C (-r) := by
   rw [gomesPolynomialRiccati_constant_iff]
   constructor
   · rintro ⟨c, hc, hs⟩

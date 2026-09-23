@@ -16,20 +16,20 @@ with the exponential observation family `exp (z x)` produces a shifted Laplace r
 endpoint anomaly. At the half-density observations `z = ± 1/2`, the shift coefficient vanishes
 and the observations close exactly:
 
-`A_n(1/2) + A_n(-1/2) = (4 pi n^2 - 1) exp (-pi n^2)`.
+`A_n(1/2) + A_n(-1/2) = (4 pi n^(2 : ℕ) - 1) exp (-pi n^(2 : ℕ))`.
 
 Equivalently, this is the exact nonlocal clock-observation budget
 
-`2 integral cosh (x/2) f_n(x) dx = (4 pi n^2 - 1) exp (-pi n^2)`.
+`2 integral cosh (x/2) f_n(x) dx = (4 pi n^(2 : ℕ) - 1) exp (-pi n^(2 : ℕ))`.
 
 The opposite half-density channels also have the exact orientation difference
 
-`A_n(1/2) - A_n(-1/2) = exp (-pi n^2)`.
+`A_n(1/2) - A_n(-1/2) = exp (-pi n^(2 : ℕ))`.
 
 Their geometric mean is the unweighted observation.  The general HTGeometry fidelity bound
 therefore turns the symmetric and antisymmetric observations into the strict square budget
 
-`a_{0,n}^2 + exp (-pi n^2)^2 ≤ ((4 pi n^2 - 1) exp (-pi n^2))^2`.
+`a_{0,n}^(2 : ℕ) + exp (-pi n^(2 : ℕ))^(2 : ℕ) ≤ ((4 pi n^(2 : ℕ) - 1) exp (-pi n^(2 : ℕ)))^(2 : ℕ)`.
 
 The final theorem applies the budget to the existing atom-moment corpus: positivity and
 `1 <= cosh` give a closed upper bound for the zeroth raw atom moment; the fidelity deficit makes
@@ -49,33 +49,33 @@ noncomputable section
 
 /-- Positive Liouville half-density behind one theta-cusp source atom. -/
 def thetaCuspWardGibbsAtom (n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspPolynomialAtom (X ^ 2) n x
+  thetaCuspPolynomialAtom (X ^ (2 : ℕ)) n x
 
 theorem thetaCuspWardGibbsAtom_apply (n : ℕ) (x : ℝ) :
     thetaCuspWardGibbsAtom n x =
-      Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ 2 *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2) := by
+      Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)) := by
   simp [thetaCuspWardGibbsAtom, thetaCuspPolynomialAtom]
 
 theorem thetaCuspWardGibbsAtom_zero (n : ℕ) :
     thetaCuspWardGibbsAtom n 0 =
-      (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspWardGibbsAtom_apply]
   simp
 
 theorem hasDerivAt_thetaCuspWardGibbsAtom (n : ℕ) (x : ℝ) :
     HasDerivAt (thetaCuspWardGibbsAtom n)
-      (thetaCuspPolynomialAtom (thetaCuspLogDerivativeStep (X ^ 2)) n x) x := by
-  exact hasDerivAt_thetaCuspPolynomialAtom (X ^ 2) n x
+      (thetaCuspPolynomialAtom (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) n x) x := by
+  exact hasDerivAt_thetaCuspPolynomialAtom (X ^ (2 : ℕ)) n x
 
 theorem deriv_thetaCuspWardGibbsAtom_eq_score (n : ℕ) (x : ℝ) :
     deriv (thetaCuspWardGibbsAtom n) x =
-      ((5 / 2 : ℝ) - 2 * Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * x)) *
+      ((5 / 2 : ℝ) - 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x)) *
         thetaCuspWardGibbsAtom n x := by
   rw [(hasDerivAt_thetaCuspWardGibbsAtom n x).deriv]
   simp [thetaCuspWardGibbsAtom, thetaCuspLogDerivativeStep,
     thetaCuspPolynomialAtom]
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+  rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring]
@@ -108,7 +108,7 @@ theorem integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
     IntegrableOn (fun x : ℝ =>
       Real.exp (z * x) * thetaCuspPolynomialAtom P n x) (Ioi 0) := by
   let C : ℝ := thetaCuspGaussianConstant P *
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   have hC : 0 ≤ C := by
     dsimp [C]
     positivity [thetaCuspGaussianConstant_nonneg P]
@@ -148,7 +148,7 @@ theorem exp_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_lt_one
       Real.exp (z * x) * thetaCuspPolynomialAtom P n x) atTop (𝓝 0) := by
   rw [tendsto_zero_iff_norm_tendsto_zero]
   let C : ℝ := thetaCuspGaussianConstant P *
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   have hC : 0 ≤ C := by
     dsimp [C]
     positivity [thetaCuspGaussianConstant_nonneg P]
@@ -191,7 +191,7 @@ theorem integral_exp_mul_deriv_thetaCuspWardGibbsAtom_eq
   let u' : ℝ → ℝ := fun x => z * Real.exp (z * x)
   let b : ℝ → ℝ := thetaCuspWardGibbsAtom n
   let b' : ℝ → ℝ := fun x =>
-    thetaCuspPolynomialAtom (thetaCuspLogDerivativeStep (X ^ 2)) n x
+    thetaCuspPolynomialAtom (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) n x
   have huderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt u (u' x) x := by
     intro x _hx
     dsimp [u, u']
@@ -204,11 +204,11 @@ theorem integral_exp_mul_deriv_thetaCuspWardGibbsAtom_eq
   have hub'int : IntegrableOn (u * b') (Ioi 0) := by
     simpa only [u, b', Pi.mul_apply] using!
       integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
-        (thetaCuspLogDerivativeStep (X ^ 2)) hn hz
+        (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) hn hz
   have hbase : IntegrableOn (fun x : ℝ =>
       Real.exp (z * x) * thetaCuspWardGibbsAtom n x) (Ioi 0) := by
     simpa only [thetaCuspWardGibbsAtom] using
-      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hz
+      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ (2 : ℕ)) hn hz
   have hu'bint : IntegrableOn (u' * b) (Ioi 0) := by
     have h := hbase.const_mul z
     apply h.congr
@@ -231,11 +231,11 @@ theorem integral_exp_mul_deriv_thetaCuspWardGibbsAtom_eq
     (by
       exact Filter.Tendsto.congr'
         (f₁ := fun x : ℝ =>
-          Real.exp (z * x) * thetaCuspPolynomialAtom (X ^ 2) n x)
+          Real.exp (z * x) * thetaCuspPolynomialAtom (X ^ (2 : ℕ)) n x)
         (f₂ := u * b)
         (Eventually.of_forall fun x => by rfl)
         (exp_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_lt_one
-          (X ^ 2) hn hz))
+          (X ^ (2 : ℕ)) hn hz))
   have hibp' :
       (∫ x : ℝ in Ioi 0, u x * b' x) =
         -b 0 - z * (∫ x : ℝ in Ioi 0, u x * b x) := by
@@ -265,11 +265,11 @@ theorem thetaCuspSourceExponentialTilt_eq_wardBoundary
       Real.exp (z * x) * deriv (thetaCuspWardGibbsAtom n) x) (Ioi 0) := by
     simpa only [(hasDerivAt_thetaCuspWardGibbsAtom n _).deriv] using
       integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
-        (thetaCuspLogDerivativeStep (X ^ 2)) hn hz
+        (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) hn hz
   have hgibbs : IntegrableOn (fun x : ℝ =>
       Real.exp (z * x) * thetaCuspWardGibbsAtom n x) (Ioi 0) := by
     simpa only [thetaCuspWardGibbsAtom] using
-      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hz
+      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ (2 : ℕ)) hn hz
   rw [thetaCuspSourceExponentialTilt]
   simp_rw [thetaCuspSourceTerm_eq_wardGibbs]
   rw [show (fun x : ℝ =>
@@ -290,7 +290,7 @@ theorem thetaCuspSourceExponentialTilt_eq_wardBoundary
 
 theorem thetaCuspWardGibbsExponentialTilt_shift
     {n : ℕ} (hn : 0 < n) {z : ℝ} (hz : z < -1) :
-    2 * Real.pi * (n : ℝ) ^ 2 *
+    2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
         thetaCuspWardGibbsExponentialTilt (z + 2) n =
       thetaCuspWardGibbsAtom n 0 +
         (z + 5 / 2 : ℝ) * thetaCuspWardGibbsExponentialTilt z n := by
@@ -299,18 +299,18 @@ theorem thetaCuspWardGibbsExponentialTilt_shift
   have hshift : IntegrableOn (fun x : ℝ =>
       Real.exp ((z + 2) * x) * thetaCuspWardGibbsAtom n x) (Ioi 0) := by
     simpa only [thetaCuspWardGibbsAtom] using
-      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hz2
+      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ (2 : ℕ)) hn hz2
   have hgibbs : IntegrableOn (fun x : ℝ =>
       Real.exp (z * x) * thetaCuspWardGibbsAtom n x) (Ioi 0) := by
     simpa only [thetaCuspWardGibbsAtom] using
-      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hz'
+      integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ (2 : ℕ)) hn hz'
   have hderiv : IntegrableOn (fun x : ℝ =>
       Real.exp (z * x) * deriv (thetaCuspWardGibbsAtom n) x) (Ioi 0) := by
     simpa only [(hasDerivAt_thetaCuspWardGibbsAtom n _).deriv] using
       integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
-        (thetaCuspLogDerivativeStep (X ^ 2)) hn hz'
+        (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) hn hz'
   have hpoint (x : ℝ) :
-      2 * Real.pi * (n : ℝ) ^ 2 *
+      2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
           (Real.exp ((z + 2) * x) * thetaCuspWardGibbsAtom n x) =
         (5 / 2 : ℝ) *
             (Real.exp (z * x) * thetaCuspWardGibbsAtom n x) -
@@ -324,10 +324,10 @@ theorem thetaCuspWardGibbsExponentialTilt_shift
     rw [he]
     ring
   calc
-    2 * Real.pi * (n : ℝ) ^ 2 *
+    2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
         thetaCuspWardGibbsExponentialTilt (z + 2) n =
         ∫ x : ℝ in Ioi 0,
-          2 * Real.pi * (n : ℝ) ^ 2 *
+          2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
             (Real.exp ((z + 2) * x) * thetaCuspWardGibbsAtom n x) := by
           rw [thetaCuspWardGibbsExponentialTilt, integral_const_mul]
     _ = ∫ x : ℝ in Ioi 0,
@@ -350,33 +350,33 @@ theorem thetaCuspWardGibbsExponentialTilt_shift
 theorem thetaCuspWardGibbsExponentialTilt_neg_half
     {n : ℕ} (hn : 0 < n) :
     thetaCuspWardGibbsExponentialTilt (-1 / 2) n =
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) / (2 * Real.pi) := by
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) / (2 * Real.pi) := by
   have h := thetaCuspWardGibbsExponentialTilt_shift
     (n := n) hn (z := (-5 / 2 : ℝ)) (by norm_num)
   norm_num at h
   rw [thetaCuspWardGibbsAtom_zero] at h
-  have h' : 2 * Real.pi * (n : ℝ) ^ 2 *
+  have h' : 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
       thetaCuspWardGibbsExponentialTilt (-1 / 2) n =
-        (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+        (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
     convert h using 1
     norm_num
-  have hn0 : (n : ℝ) ^ 2 ≠ 0 := by positivity
+  have hn0 : (n : ℝ) ^ (2 : ℕ) ≠ 0 := by positivity
   have hpi : 2 * Real.pi ≠ 0 := by positivity
   apply (eq_div_iff hpi).2
   apply (mul_left_cancel₀ hn0)
   calc
-    (n : ℝ) ^ 2 *
+    (n : ℝ) ^ (2 : ℕ) *
         (thetaCuspWardGibbsExponentialTilt (-1 / 2) n * (2 * Real.pi)) =
-        2 * Real.pi * (n : ℝ) ^ 2 *
+        2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
           thetaCuspWardGibbsExponentialTilt (-1 / 2) n := by ring
-    _ = (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := h'
-    _ = (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := rfl
+    _ = (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := h'
+    _ = (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := rfl
 
 theorem thetaCuspSourceExponentialTilt_half
     {n : ℕ} (hn : 0 < n) :
     thetaCuspSourceExponentialTilt (1 / 2) n =
-      2 * Real.pi * (n : ℝ) ^ 2 *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      2 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspSourceExponentialTilt_eq_wardBoundary hn (by norm_num),
     thetaCuspWardGibbsAtom_zero]
   norm_num
@@ -385,8 +385,8 @@ theorem thetaCuspSourceExponentialTilt_half
 theorem thetaCuspSourceExponentialTilt_neg_half
     {n : ℕ} (hn : 0 < n) :
     thetaCuspSourceExponentialTilt (-1 / 2) n =
-      (2 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspSourceExponentialTilt_eq_wardBoundary hn (by norm_num),
     thetaCuspWardGibbsAtom_zero,
     thetaCuspWardGibbsExponentialTilt_neg_half hn]
@@ -397,8 +397,8 @@ theorem thetaCuspSourceExponentialTilt_half_budget
     {n : ℕ} (hn : 0 < n) :
     thetaCuspSourceExponentialTilt (1 / 2) n +
         thetaCuspSourceExponentialTilt (-1 / 2) n =
-      (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspSourceExponentialTilt_half hn,
     thetaCuspSourceExponentialTilt_neg_half hn]
   ring
@@ -420,7 +420,7 @@ theorem thetaCuspSourceExponentialTilt_half_sub_neg_half
     {n : ℕ} (hn : 0 < n) :
     thetaCuspSourceExponentialTilt (1 / 2) n -
         thetaCuspSourceExponentialTilt (-1 / 2) n =
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspSourceExponentialTilt_half hn,
     thetaCuspSourceExponentialTilt_neg_half hn]
   ring
@@ -430,7 +430,7 @@ theorem two_mul_integral_sinh_half_mul_thetaCuspSourceTerm_eq_orientation
     {n : ℕ} (hn : 0 < n) :
     2 * (∫ x : ℝ in Ioi 0,
         Real.sinh (x / 2) * thetaCuspSourceTerm x n) =
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hplus := integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
     hn (z := (1 / 2 : ℝ)) (by norm_num)
   have hminus := integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
@@ -455,7 +455,7 @@ theorem two_mul_integral_sinh_half_mul_thetaCuspSourceTerm_eq_orientation
         thetaCuspSourceExponentialTilt (-1 / 2) n := by
           rw [integral_sub hplus hminus]
           rfl
-    _ = Real.exp (-Real.pi * (n : ℝ) ^ 2) :=
+    _ = Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) :=
       thetaCuspSourceExponentialTilt_half_sub_neg_half hn
 
 theorem integrableOn_first_mul_thetaCuspSourceTerm (n : ℕ) :
@@ -464,7 +464,7 @@ theorem integrableOn_first_mul_thetaCuspSourceTerm (n : ℕ) :
     simpa using integrableOn_pow_mul_thetaCuspSourceTerm 0 n
   have htwo := integrableOn_pow_mul_thetaCuspSourceTerm 1 n
   have hmajor : IntegrableOn (fun x : ℝ =>
-      (1 + x ^ 2) * thetaCuspSourceTerm x n) (Ioi 0) := by
+      (1 + x ^ (2 : ℕ)) * thetaCuspSourceTerm x n) (Ioi 0) := by
     have h := hzero.add htwo
     apply h.congr
     filter_upwards [] with x
@@ -479,7 +479,7 @@ theorem integrableOn_first_mul_thetaCuspSourceTerm (n : ℕ) :
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     have hs : 0 ≤ thetaCuspSourceTerm x n :=
       thetaCuspSourceTerm_nonneg_of_pos hx n
-    have hxbound : x ≤ 1 + x ^ 2 := by
+    have hxbound : x ≤ 1 + x ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (x - 1 / 2)]
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hx.le hs),
       Real.norm_eq_abs,
@@ -487,11 +487,11 @@ theorem integrableOn_first_mul_thetaCuspSourceTerm (n : ℕ) :
     exact mul_le_mul_of_nonneg_right hxbound hs
 
 theorem integrableOn_third_mul_thetaCuspSourceTerm (n : ℕ) :
-    IntegrableOn (fun x : ℝ => x ^ 3 * thetaCuspSourceTerm x n) (Ioi 0) := by
+    IntegrableOn (fun x : ℝ => x ^ (3 : ℕ) * thetaCuspSourceTerm x n) (Ioi 0) := by
   have htwo := integrableOn_pow_mul_thetaCuspSourceTerm 1 n
   have hfour := integrableOn_pow_mul_thetaCuspSourceTerm 2 n
   have hmajor : IntegrableOn (fun x : ℝ =>
-      (x ^ 2 + x ^ 4) * thetaCuspSourceTerm x n) (Ioi 0) := by
+      (x ^ (2 : ℕ) + x ^ (4 : ℕ)) * thetaCuspSourceTerm x n) (Ioi 0) := by
     have h := htwo.add hfour
     apply h.congr
     filter_upwards [] with x
@@ -506,8 +506,8 @@ theorem integrableOn_third_mul_thetaCuspSourceTerm (n : ℕ) :
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     have hs : 0 ≤ thetaCuspSourceTerm x n :=
       thetaCuspSourceTerm_nonneg_of_pos hx n
-    have hpoly : 0 ≤ x ^ 2 * (x - 1) ^ 2 := mul_nonneg (sq_nonneg x) (sq_nonneg _)
-    have hxbound : x ^ 3 ≤ x ^ 2 + x ^ 4 := by nlinarith
+    have hpoly : 0 ≤ x ^ (2 : ℕ) * (x - 1) ^ (2 : ℕ) := mul_nonneg (sq_nonneg x) (sq_nonneg _)
+    have hxbound : x ^ (3 : ℕ) ≤ x ^ (2 : ℕ) + x ^ (4 : ℕ) := by nlinarith
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (pow_nonneg hx.le 3) hs),
       Real.norm_eq_abs,
       abs_of_nonneg (mul_nonneg (add_nonneg (sq_nonneg x) (pow_nonneg hx.le 4)) hs)]
@@ -535,13 +535,13 @@ theorem integrableOn_sinh_half_mul_thetaCuspSourceTerm
 theorem thetaCuspSourceOddMomentPair_le_orientation
     {n : ℕ} (hn : 0 < n) :
     (∫ x : ℝ in Ioi 0, x * thetaCuspSourceTerm x n) +
-        (∫ x : ℝ in Ioi 0, x ^ 3 * thetaCuspSourceTerm x n) / 24 ≤
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+        (∫ x : ℝ in Ioi 0, x ^ (3 : ℕ) * thetaCuspSourceTerm x n) / 24 ≤
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hfirst := integrableOn_first_mul_thetaCuspSourceTerm n
   have hthird := integrableOn_third_mul_thetaCuspSourceTerm n
   have hsinh := integrableOn_sinh_half_mul_thetaCuspSourceTerm hn
   have hleft : IntegrableOn (fun x : ℝ =>
-      (x + x ^ 3 / 24) * thetaCuspSourceTerm x n) (Ioi 0) := by
+      (x + x ^ (3 : ℕ) / 24) * thetaCuspSourceTerm x n) (Ioi 0) := by
     have h := hfirst.add (hthird.const_mul (1 / 24 : ℝ))
     apply h.congr
     filter_upwards [] with x
@@ -552,7 +552,7 @@ theorem thetaCuspSourceOddMomentPair_le_orientation
     hsinh.const_mul 2
   have hmono :
       (∫ x : ℝ in Ioi 0,
-          (x + x ^ 3 / 24) * thetaCuspSourceTerm x n) ≤
+          (x + x ^ (3 : ℕ) / 24) * thetaCuspSourceTerm x n) ≤
         ∫ x : ℝ in Ioi 0,
           2 * (Real.sinh (x / 2) * thetaCuspSourceTerm x n) := by
     apply integral_mono_ae hleft hright
@@ -563,13 +563,13 @@ theorem thetaCuspSourceOddMomentPair_le_orientation
       (HTGeometry.self_add_cube_div_twenty_four_le_two_sinh_half hx.le) hs
   calc
     (∫ x : ℝ in Ioi 0, x * thetaCuspSourceTerm x n) +
-        (∫ x : ℝ in Ioi 0, x ^ 3 * thetaCuspSourceTerm x n) / 24 =
+        (∫ x : ℝ in Ioi 0, x ^ (3 : ℕ) * thetaCuspSourceTerm x n) / 24 =
         ∫ x : ℝ in Ioi 0,
-          (x + x ^ 3 / 24) * thetaCuspSourceTerm x n := by
+          (x + x ^ (3 : ℕ) / 24) * thetaCuspSourceTerm x n := by
             rw [show (fun x : ℝ =>
-                (x + x ^ 3 / 24) * thetaCuspSourceTerm x n) =
+                (x + x ^ (3 : ℕ) / 24) * thetaCuspSourceTerm x n) =
               fun x => x * thetaCuspSourceTerm x n +
-                (1 / 24 : ℝ) * (x ^ 3 * thetaCuspSourceTerm x n) by
+                (1 / 24 : ℝ) * (x ^ (3 : ℕ) * thetaCuspSourceTerm x n) by
                   funext x
                   ring,
               integral_add hfirst (hthird.const_mul (1 / 24 : ℝ)),
@@ -580,15 +580,15 @@ theorem thetaCuspSourceOddMomentPair_le_orientation
     _ = 2 * (∫ x : ℝ in Ioi 0,
         Real.sinh (x / 2) * thetaCuspSourceTerm x n) := by
           rw [integral_const_mul]
-    _ = Real.exp (-Real.pi * (n : ℝ) ^ 2) :=
+    _ = Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) :=
       two_mul_integral_sinh_half_mul_thetaCuspSourceTerm_eq_orientation hn
 
 /-- Cauchy--Schwarz makes the second source moment log-convex between the two odd moments. -/
 theorem thetaCuspSourceSecondMoment_sq_le_first_mul_third
     (n : ℕ) :
-    (∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspSourceTerm x n) ^ 2 ≤
+    (∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspSourceTerm x n) ^ (2 : ℕ) ≤
       (∫ x : ℝ in Ioi 0, x * thetaCuspSourceTerm x n) *
-        ∫ x : ℝ in Ioi 0, x ^ 3 * thetaCuspSourceTerm x n := by
+        ∫ x : ℝ in Ioi 0, x ^ (3 : ℕ) * thetaCuspSourceTerm x n := by
   have hsource : Continuous (fun x : ℝ => thetaCuspSourceTerm x n) := by
     rw [thetaCuspSourceTerm_eq_polynomialAtom]
     exact continuous_iff_continuousAt.mpr fun x =>
@@ -612,15 +612,15 @@ theorem thetaCuspSourceSecondMoment_sq_le_first_mul_third
 /-- The odd half-density orientation closes a square budget for the second source moment. -/
 theorem thetaCuspSourceSecondMoment_sq_le_six_orientation_sq
     {n : ℕ} (hn : 0 < n) :
-    (∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspSourceTerm x n) ^ 2 ≤
-      6 * Real.exp (-Real.pi * (n : ℝ) ^ 2) ^ 2 := by
+    (∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspSourceTerm x n) ^ (2 : ℕ) ≤
+      6 * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hmfirst : 0 ≤ ∫ x : ℝ in Ioi 0,
       x * thetaCuspSourceTerm x n := by
     apply integral_nonneg_of_ae
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     exact mul_nonneg hx.le (thetaCuspSourceTerm_nonneg_of_pos hx n)
   have hmthird : 0 ≤ ∫ x : ℝ in Ioi 0,
-      x ^ 3 * thetaCuspSourceTerm x n := by
+      x ^ (3 : ℕ) * thetaCuspSourceTerm x n := by
     apply integral_nonneg_of_ae
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     exact mul_nonneg (pow_nonneg hx.le 3) (thetaCuspSourceTerm_nonneg_of_pos hx n)
@@ -631,8 +631,8 @@ theorem thetaCuspSourceSecondMoment_sq_le_six_orientation_sq
 /-- The first nonconstant raw atom moment is bounded solely by the antisymmetric observation. -/
 theorem thetaCuspAtomRawEvenMoment_one_sq_le_twenty_four_orientation_sq
     {n : ℕ} (hn : 0 < n) :
-    thetaCuspAtomRawEvenMoment 1 n ^ 2 ≤
-      24 * Real.exp (-Real.pi * (n : ℝ) ^ 2) ^ 2 := by
+    thetaCuspAtomRawEvenMoment 1 n ^ (2 : ℕ) ≤
+      24 * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have h := thetaCuspSourceSecondMoment_sq_le_six_orientation_sq hn
   rw [thetaCuspAtomRawEvenMoment]
   simp only [Nat.mul_one]
@@ -641,10 +641,10 @@ theorem thetaCuspAtomRawEvenMoment_one_sq_le_twenty_four_orientation_sq
 theorem thetaCuspAtomRawEvenMoment_one_le_five_mul_orientation
     {n : ℕ} (hn : 0 < n) :
     thetaCuspAtomRawEvenMoment 1 n ≤
-      5 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      5 * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   let a := thetaCuspAtomRawEvenMoment 1 n
-  let d := Real.exp (-Real.pi * (n : ℝ) ^ 2)
-  have hsq : a ^ 2 ≤ 24 * d ^ 2 := by
+  let d := Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ))
+  have hsq : a ^ (2 : ℕ) ≤ 24 * d ^ (2 : ℕ) := by
     simpa only [a, d] using
       thetaCuspAtomRawEvenMoment_one_sq_le_twenty_four_orientation_sq hn
   have ha : 0 ≤ a := by
@@ -655,12 +655,12 @@ theorem thetaCuspAtomRawEvenMoment_one_le_five_mul_orientation
   have hleft : 0 < a - 5 * d := sub_pos.mpr (lt_of_not_ge hnot)
   have hright : 0 < a + 5 * d := by positivity
   have hprod : 0 < (a - 5 * d) * (a + 5 * d) := mul_pos hleft hright
-  have hd2 : 0 < d ^ 2 := sq_pos_of_pos hd
+  have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_pos hd
   nlinarith
 
 theorem two_pi_mul_thetaCuspFirstAtomWardMoment_one_sq_le_orientation_sq :
-    (2 * Real.pi * thetaCuspFirstAtomWardMoment 1) ^ 2 ≤
-      24 * Real.exp (-Real.pi) ^ 2 := by
+    (2 * Real.pi * thetaCuspFirstAtomWardMoment 1) ^ (2 : ℕ) ≤
+      24 * Real.exp (-Real.pi) ^ (2 : ℕ) := by
   rw [← thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 1]
   simpa using thetaCuspAtomRawEvenMoment_one_sq_le_twenty_four_orientation_sq
     (n := 1) (by norm_num)
@@ -678,17 +678,17 @@ theorem relaxedFourthMoment_firstAtom_hypothesis_implies_halfDensity_cap
     (hfirst :
       16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ≤
-      1080 * Real.exp (-Real.pi) ^ 2 := by
+      1080 * Real.exp (-Real.pi) ^ (2 : ℕ) := by
   calc
-    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 := hfirst
-    _ ≤ 45 * (24 * Real.exp (-Real.pi) ^ 2) := by
+    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) := hfirst
+    _ ≤ 45 * (24 * Real.exp (-Real.pi) ^ (2 : ℕ)) := by
       gcongr
       simpa using thetaCuspAtomRawEvenMoment_one_sq_le_twenty_four_orientation_sq
         (n := 1) (by norm_num)
-    _ = 1080 * Real.exp (-Real.pi) ^ 2 := by ring
+    _ = 1080 * Real.exp (-Real.pi) ^ (2 : ℕ) := by ring
 
 /-- The zeroth raw atom moment is twice the unweighted source observation. -/
 theorem thetaCuspAtomRawEvenMoment_zero_eq_two_mul_tilt_zero (n : ℕ) :
@@ -700,7 +700,7 @@ theorem thetaCuspAtomRawEvenMoment_zero_eq_two_mul_tilt_zero (n : ℕ) :
 /-- Hellinger/Cauchy fidelity for the two opposite half-density observation channels. -/
 theorem thetaCuspSourceExponentialTilt_zero_sq_le_half_mul_neg_half
     {n : ℕ} (hn : 0 < n) :
-    thetaCuspSourceExponentialTilt 0 n ^ 2 ≤
+    thetaCuspSourceExponentialTilt 0 n ^ (2 : ℕ) ≤
       thetaCuspSourceExponentialTilt (1 / 2) n *
         thetaCuspSourceExponentialTilt (-1 / 2) n := by
   have hsource : Continuous (fun x : ℝ => thetaCuspSourceTerm x n) := by
@@ -745,10 +745,10 @@ theorem thetaCuspSourceExponentialTilt_zero_sq_le_half_mul_neg_half
 /-- The antisymmetric observation is the exact fidelity deficit in the symmetric square budget. -/
 theorem thetaCuspAtomRawEvenMoment_zero_sq_add_orientation_sq_le_budget_sq
     {n : ℕ} (hn : 0 < n) :
-    thetaCuspAtomRawEvenMoment 0 n ^ 2 +
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) ^ 2 ≤
-      ((4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2)) ^ 2 := by
+    thetaCuspAtomRawEvenMoment 0 n ^ (2 : ℕ) +
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+      ((4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ))) ^ (2 : ℕ) := by
   have hcs :=
     thetaCuspSourceExponentialTilt_zero_sq_le_half_mul_neg_half hn
   rw [thetaCuspAtomRawEvenMoment_zero_eq_two_mul_tilt_zero,
@@ -760,20 +760,20 @@ theorem thetaCuspAtomRawEvenMoment_zero_sq_add_orientation_sq_le_budget_sq
 theorem thetaCuspAtomRawEvenMoment_zero_lt_halfDensityBudget
     {n : ℕ} (hn : 0 < n) :
     thetaCuspAtomRawEvenMoment 0 n <
-      (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hsq :=
     thetaCuspAtomRawEvenMoment_zero_sq_add_orientation_sq_le_budget_sq hn
   have hm : 0 ≤ thetaCuspAtomRawEvenMoment 0 n :=
     thetaCuspAtomRawEvenMoment_nonneg 0 n
   have hnreal : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-  have hnsq : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
-  have hcoef : 0 < 4 * Real.pi * (n : ℝ) ^ 2 - 1 := by
+  have hnsq : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hcoef : 0 < 4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1 := by
     nlinarith [Real.pi_gt_three]
-  have hbudget : 0 < (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) :=
+  have hbudget : 0 < (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) :=
     mul_pos hcoef (Real.exp_pos _)
-  have horient : 0 < Real.exp (-Real.pi * (n : ℝ) ^ 2) := Real.exp_pos _
+  have horient : 0 < Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := Real.exp_pos _
   nlinarith
 
 theorem thetaCuspFirstAtomRawEvenMoment_zero_lt_halfDensityBudget :
@@ -786,7 +786,7 @@ theorem thetaCuspFirstAtomRawEvenMoment_zero_lt_halfDensityBudget :
 Liouville--Gibbs moment. -/
 theorem exp_orientation_lt_two_pi_mul_thetaCuspLiouvilleGibbsMoment_zero
     {n : ℕ} (hn : 0 < n) :
-    Real.exp (-Real.pi * (n : ℝ) ^ 2) <
+    Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) <
       2 * Real.pi * thetaCuspLiouvilleGibbsMoment 0 n := by
   have h := thetaCuspAtomRawEvenMoment_zero_lt_halfDensityBudget hn
   rw [thetaCuspAtomRawEvenMoment_zero_eq_liouvilleGibbs hn,
@@ -823,8 +823,8 @@ theorem two_mul_integral_cosh_half_mul_thetaCuspSourceTerm_eq_budget
     {n : ℕ} (hn : 0 < n) :
     2 * (∫ x : ℝ in Ioi 0,
         Real.cosh (x / 2) * thetaCuspSourceTerm x n) =
-      (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hplus := integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
     hn (z := (1 / 2 : ℝ)) (by norm_num)
   have hminus := integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
@@ -849,15 +849,15 @@ theorem two_mul_integral_cosh_half_mul_thetaCuspSourceTerm_eq_budget
         thetaCuspSourceExponentialTilt (-1 / 2) n := by
           rw [integral_add hplus hminus]
           rfl
-    _ = (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) :=
+    _ = (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) :=
       thetaCuspSourceExponentialTilt_half_budget hn
 
 theorem thetaCuspAtomRawEvenMoment_zero_le_halfDensityBudget
     {n : ℕ} (hn : 0 < n) :
     thetaCuspAtomRawEvenMoment 0 n ≤
-      (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hsource : IntegrableOn (fun x : ℝ => thetaCuspSourceTerm x n) (Ioi 0) := by
     simpa using integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
       hn (z := (0 : ℝ)) (by norm_num)
@@ -882,7 +882,7 @@ theorem thetaCuspFirstAtomRawEvenMoment_zero_le_halfDensityBudget :
     (n := 1) (by norm_num)
 
 theorem one_add_sq_div_two_le_cosh (u : ℝ) :
-    1 + u ^ 2 / 2 ≤ Real.cosh u := by
+    1 + u ^ (2 : ℕ) / 2 ≤ Real.cosh u := by
   rw [Real.cosh_eq_tsum]
   have hsum := (Real.hasSum_cosh u).summable.sum_le_tsum
     (Finset.range 2) (fun n _hn => by
@@ -892,7 +892,7 @@ theorem one_add_sq_div_two_le_cosh (u : ℝ) :
   simpa [pow_two] using hsum
 
 theorem one_add_sq_div_eight_le_cosh_half (x : ℝ) :
-    1 + x ^ 2 / 8 ≤ Real.cosh (x / 2) := by
+    1 + x ^ (2 : ℕ) / 8 ≤ Real.cosh (x / 2) := by
   have h := one_add_sq_div_two_le_cosh (x / 2)
   convert h using 1
   ring
@@ -905,7 +905,7 @@ theorem thetaCuspFirstAtomMomentPair_le_halfDensityBudget :
     simpa using integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
       (n := 1) (by norm_num) (z := (0 : ℝ)) (by norm_num)
   have hcosh := integrableOn_cosh_half_mul_thetaCuspSourceTerm (n := 1) (by norm_num)
-  have h1 : IntegrableOn (fun x : ℝ => x ^ 2 * thetaCuspSourceTerm x 1) (Ioi 0) := by
+  have h1 : IntegrableOn (fun x : ℝ => x ^ (2 : ℕ) * thetaCuspSourceTerm x 1) (Ioi 0) := by
     have hmajor := hcosh.const_mul 8
     apply Integrable.mono hmajor
     · exact (continuous_id.pow 2).aestronglyMeasurable.mul h0.aestronglyMeasurable
@@ -918,14 +918,14 @@ theorem thetaCuspFirstAtomMomentPair_le_halfDensityBudget :
       have hbound := one_add_sq_div_eight_le_cosh_half x
       nlinarith
   have hpair : IntegrableOn (fun x : ℝ =>
-      (1 + x ^ 2 / 8) * thetaCuspSourceTerm x 1) (Ioi 0) := by
+      (1 + x ^ (2 : ℕ) / 8) * thetaCuspSourceTerm x 1) (Ioi 0) := by
     have h := h0.add (h1.const_mul (1 / 8 : ℝ))
     apply h.congr
     filter_upwards [] with x
     simp only [Pi.add_apply]
     ring
   have hmono : (∫ x : ℝ in Ioi 0,
-      (1 + x ^ 2 / 8) * thetaCuspSourceTerm x 1) ≤
+      (1 + x ^ (2 : ℕ) / 8) * thetaCuspSourceTerm x 1) ≤
       ∫ x : ℝ in Ioi 0,
         Real.cosh (x / 2) * thetaCuspSourceTerm x 1 := by
     apply integral_mono_ae hpair hcosh
@@ -944,14 +944,14 @@ theorem thetaCuspFirstAtomMomentPair_le_halfDensityBudget :
   rw [← hbudget]
   have hpair' :
       (∫ x : ℝ in Ioi 0,
-        (1 + x ^ 2 / 8) * thetaCuspSourceTerm x 1) =
+        (1 + x ^ (2 : ℕ) / 8) * thetaCuspSourceTerm x 1) =
       (∫ x : ℝ in Ioi 0, thetaCuspSourceTerm x 1) +
         (1 / 8 : ℝ) *
-          (∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspSourceTerm x 1) := by
+          (∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspSourceTerm x 1) := by
     calc
       _ = ∫ x : ℝ in Ioi 0,
           (thetaCuspSourceTerm x 1 +
-            (1 / 8 : ℝ) * (x ^ 2 * thetaCuspSourceTerm x 1)) := by
+            (1 / 8 : ℝ) * (x ^ (2 : ℕ) * thetaCuspSourceTerm x 1)) := by
             apply integral_congr_ae
             filter_upwards [] with x
             ring
@@ -1138,7 +1138,7 @@ theorem thetaCuspHigherAtomMomentPair_le_halfDensityBudget :
     apply hsub.congr
     filter_upwards [] with x
     simp only [Pi.sub_apply, Nat.mul_zero, pow_zero, one_mul, h]
-  have h1 : IntegrableOn (fun x : ℝ => x ^ 2 * h x) (Ioi 0) := by
+  have h1 : IntegrableOn (fun x : ℝ => x ^ (2 : ℕ) * h x) (Ioi 0) := by
     have hfull := integrableOn_thetaCuspRawMoment 2
     have hfirst := integrableOn_pow_mul_thetaCuspSourceTerm 1 1
     have hsub := hfull.sub hfirst
@@ -1146,7 +1146,7 @@ theorem thetaCuspHigherAtomMomentPair_le_halfDensityBudget :
     filter_upwards [] with x
     simp only [Pi.sub_apply, Nat.mul_one, h]
     ring
-  have hpair : IntegrableOn (fun x : ℝ => (1 + x ^ 2 / 8) * h x) (Ioi 0) := by
+  have hpair : IntegrableOn (fun x : ℝ => (1 + x ^ (2 : ℕ) / 8) * h x) (Ioi 0) := by
     have hi := h0.add (h1.const_mul (1 / 8 : ℝ))
     apply hi.congr
     filter_upwards [] with x
@@ -1154,7 +1154,7 @@ theorem thetaCuspHigherAtomMomentPair_le_halfDensityBudget :
     ring
   have hcosh : IntegrableOn (fun x : ℝ => Real.cosh (x / 2) * h x) (Ioi 0) := by
     simpa only [h] using integrableOn_cosh_half_mul_thetaCuspHigherSource
-  have hmono : (∫ x : ℝ in Ioi 0, (1 + x ^ 2 / 8) * h x) ≤
+  have hmono : (∫ x : ℝ in Ioi 0, (1 + x ^ (2 : ℕ) / 8) * h x) ≤
       ∫ x : ℝ in Ioi 0, Real.cosh (x / 2) * h x := by
     apply integral_mono_ae hpair hcosh
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -1164,12 +1164,12 @@ theorem thetaCuspHigherAtomMomentPair_le_halfDensityBudget :
         (fun n _ => thetaCuspSourceTerm_nonneg_of_pos hx n)
     exact mul_le_mul_of_nonneg_right
       (one_add_sq_div_eight_le_cosh_half x) (sub_nonneg.mpr hterm)
-  have hpairEq : (∫ x : ℝ in Ioi 0, (1 + x ^ 2 / 8) * h x) =
+  have hpairEq : (∫ x : ℝ in Ioi 0, (1 + x ^ (2 : ℕ) / 8) * h x) =
       (∫ x : ℝ in Ioi 0, h x) +
-        (1 / 8 : ℝ) * (∫ x : ℝ in Ioi 0, x ^ 2 * h x) := by
+        (1 / 8 : ℝ) * (∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * h x) := by
     calc
       _ = ∫ x : ℝ in Ioi 0,
-          (h x + (1 / 8 : ℝ) * (x ^ 2 * h x)) := by
+          (h x + (1 / 8 : ℝ) * (x ^ (2 : ℕ) * h x)) := by
         apply integral_congr_ae
         filter_upwards [] with x
         ring

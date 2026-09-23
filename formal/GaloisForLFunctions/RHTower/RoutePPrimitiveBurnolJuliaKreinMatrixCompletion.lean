@@ -24,7 +24,7 @@ B = [[1 / 64, d], [d, -1]],   d = sqrt 63 / 8,
 ```
 
 times the original feature Gram.  Consequently the complete `2N`-dimensional matrix is exactly
-`B ⊗ G`, its determinant is `(-1)^N det(G)^2`, and completion is nondegenerate exactly when
+`B ⊗ G`, its determinant is `(-1)^N det(G)^(2 : ℕ)`, and completion is nondegenerate exactly when
 the original P-G186 Gram is nondegenerate.  No diagonal or orthogonality assumption is used.
 
 This is a matrix-complete algebraic completion theorem.  It does not yet prove that the negative
@@ -117,14 +117,14 @@ theorem routePPrimitiveBurnolJuliaKreinPair_pivot_pivot
     routePPrimitiveBurnolJuliaKreinPivot]
   rw [inner_smul_left, inner_smul_right, Complex.conj_ofReal]
   rw [inner_smul_left, inner_smul_right]
-  have hsqrt : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
-  have hsqrtC : (Real.sqrt 63 : ℂ) ^ 2 = 63 := by
+  have hsqrt : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
+  have hsqrtC : (Real.sqrt 63 : ℂ) ^ (2 : ℕ) = 63 := by
     exact_mod_cast hsqrt
   rw [starRingEnd_apply, star_ofNat]
   calc
     (Real.sqrt 63 : ℂ) * ((Real.sqrt 63 : ℂ) * ⟪f, g⟫_ℂ) -
         8 * (8 * ⟪f, g⟫_ℂ) =
-        (((Real.sqrt 63 : ℂ) ^ 2) - 64) * ⟪f, g⟫_ℂ := by ring
+        (((Real.sqrt 63 : ℂ) ^ (2 : ℕ)) - 64) * ⟪f, g⟫_ℂ := by ring
     _ = -⟪f, g⟫_ℂ := by rw [hsqrtC]; ring
 
 /-- Universal two-channel Julia--Krein coefficient block. -/
@@ -139,12 +139,12 @@ theorem routePPrimitiveBurnolJuliaKreinBlock_det :
   simp
   have h := routeEPCubicFourthDepthJulia_pythagoras
   norm_num [routeEPCubicFourthDepthNormalizedContraction] at h
-  have hd : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) := by
+  have hd : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) := by
     nlinarith
-  have hdC : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 = 63 / 64 := by
+  have hdC : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) = 63 / 64 := by
     calc
-      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
-          ((routeEPCubicFourthDepthJuliaDefect ^ 2 : ℝ) : ℂ) :=
+      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
+          ((routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) : ℝ) : ℂ) :=
         (Complex.ofReal_pow _ _).symm
       _ = ((63 / 64 : ℝ) : ℂ) := congrArg (fun x : ℝ => (x : ℂ)) hd
       _ = 63 / 64 := Complex.ofReal_div _ _
@@ -203,7 +203,7 @@ theorem routePPrimitiveBurnolJuliaKreinCompletedGramMatrix_det {N : ℕ}
     (pe : Fin N → Nat.Primes × ℕ) (kappa : Fin N → ℝ) :
     (routePPrimitiveBurnolJuliaKreinCompletedGramMatrix pe kappa).det =
       (-1 : ℂ) ^ N *
-        (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ 2 := by
+        (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ (2 : ℕ) := by
   rw [routePPrimitiveBurnolJuliaKreinCompletedGramMatrix_eq_kronecker,
     Matrix.det_kronecker, routePPrimitiveBurnolJuliaKreinBlock_det]
   simp
@@ -224,7 +224,7 @@ theorem routePPrimitiveBurnol_JuliaKrein_matrixCompletion {N : ℕ}
           routePPrimitiveBurnolWindowGramMatrix pe kappa ∧
       (routePPrimitiveBurnolJuliaKreinCompletedGramMatrix pe kappa).det =
         (-1 : ℂ) ^ N *
-          (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ 2 :=
+          (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ (2 : ℕ) :=
   ⟨routePPrimitiveBurnolJuliaKreinCompletedGramMatrix_eq_kronecker pe kappa,
     routePPrimitiveBurnolJuliaKreinCompletedGramMatrix_det pe kappa⟩
 

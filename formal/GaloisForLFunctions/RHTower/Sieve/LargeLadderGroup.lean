@@ -38,11 +38,11 @@ theorem largeLadderGroup_le {P : Finset ℕ} (M : ℕ) {R η W ρ volE : ℝ} (h
     (hW : 1 ≤ W) (hvol : 0 ≤ volE) {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, R < (p : ℝ) ∧ (p : ℝ) ≤ R * (1 + η) ^ L) :
     2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-        (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2
+        (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ)
           * ladderHMBoundRecip M R η W volE j
       ≤ 2 * (L : ℝ) * (2 * Real.pi)⁻¹
-          * (ρ ^ 2 * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * W)))
-                * (((1 + η) * (M : ℝ) * rangeHarmonic P) ^ 2
+          * (ρ ^ (2 : ℕ) * ((2 + 48 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * W)))
+                * (((1 + η) * (M : ℝ) * rangeHarmonic P) ^ (2 : ℕ)
                   + (R * (1 + η) ^ L * η + 1) * ((1 + η) * (M : ℝ) * rangeHarmonic P))
               + plainKernelFarConst ⌊(M : ℝ) / R⌋₊ (2 * Real.pi * W)
                   * (2 * Real.pi * volE)
@@ -63,9 +63,9 @@ theorem largeLadderGroup_le {P : Finset ℕ} (M : ℕ) {R η W ρ volE : ℝ} (h
     have h3 : (3 : ℝ) < Real.pi := Real.pi_gt_three
     nlinarith [hW, h3]
   have hrw : ∀ j : ℕ,
-      (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2 * ladderHMBoundRecip M R η W volE j
+      (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ) * ladderHMBoundRecip M R η W volE j
         = (2 * Real.pi)⁻¹
-            * ((ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2
+            * ((ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ)
               * ((2 * ((⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
                     + plainKernelFarConst ⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ (2 * Real.pi * W)
                         * (2 * Real.pi * volE)
@@ -95,7 +95,7 @@ theorem largeLadderGroup_le {P : Finset ℕ} (M : ℕ) {R η W ρ volE : ℝ} (h
   have hL0 : (0 : ℝ) ≤ 2 * (L : ℝ) * (2 * Real.pi)⁻¹ := by positivity
   have := mul_le_mul_of_nonneg_left hinner hL0
   calc 2 * (L : ℝ) * ((2 * Real.pi)⁻¹ * ∑ j ∈ Finset.range L,
-          (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2
+          (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ)
             * ((2 * ((⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
                   + plainKernelFarConst ⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ (2 * Real.pi * W)
                       * (2 * Real.pi * volE)
@@ -103,7 +103,7 @@ theorem largeLadderGroup_le {P : Finset ℕ} (M : ℕ) {R η W ρ volE : ℝ} (h
                       * Real.log (2 + 2 * (2 * Real.pi * W)))
               * ((geomCofactorBlock M R η j).card : ℝ)))
       = 2 * (L : ℝ) * (2 * Real.pi)⁻¹ * ∑ j ∈ Finset.range L,
-          (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2
+          (ρ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ)
             * ((2 * ((⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
                   + plainKernelFarConst ⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ (2 * Real.pi * W)
                       * (2 * Real.pi * volE)

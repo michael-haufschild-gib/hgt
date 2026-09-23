@@ -373,7 +373,7 @@ theorem semilocalFinitePrimeEvenJacobiNumerator_signed_pos
     (summable_semilocalFinitePrimeEvenJacobiTerm p hprime)
 
 /-- The Poisson-series normalizing mass.  The common local prefactor
-`prod_p (1-r_p^2)^{-1}` cancels from normalized moments and is therefore omitted. -/
+`prod_p (1-r_p^(2 : ℕ))^{-1}` cancels from normalized moments and is therefore omitted. -/
 def semilocalFinitePrimePoissonMass
     {n : ℕ} (p : Fin (n + 1) → ℕ) : ℝ :=
   ∑' m : Fin (n + 1) → ℤ,
@@ -453,7 +453,7 @@ theorem semilocalFinitePrimeGradingGroundDefect_signed_pos
     _ > 0 := mul_pos (by positivity) hmom
 
 /-- Ground-state row of the formal prolate naturality defect.  The common differential term has
-cancelled, leaving `lambda^2` times the grading defect. -/
+cancelled, leaving `lambda^(2 : ℕ)` times the grading defect. -/
 def semilocalFinitePrimeProlateGroundDefect
     {n : ℕ} (lambda : ℝ) (k : ℕ) (p : Fin (n + 1) → ℕ) : ℝ :=
   lambda ^ 2 * semilocalFinitePrimeGradingGroundDefect k p

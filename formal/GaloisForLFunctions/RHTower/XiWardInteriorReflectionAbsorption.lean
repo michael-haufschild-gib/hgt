@@ -39,7 +39,7 @@ theorem xiWard_reflectedRelativeResolventTerm_eq
         (w - I * xiSpectralPoint q.1)⁻¹)
   rw [xiSpectralPoint_reflect]
   have hI : I ≠ (0 : ℂ) := I_ne_zero
-  have hI2 : I ^ 2 = -(1 : ℂ) := by norm_num
+  have hI2 : I ^ (2 : ℕ) = -(1 : ℂ) := by norm_num
   have hq : xiSpectralPoint q.1 ≠ 0 := xiSpectralPoint_ne_zero q.1
   have hIq : I * xiSpectralPoint q.1 ≠ 0 := mul_ne_zero hI hq
   have hlam_re :
@@ -58,7 +58,7 @@ theorem xiWard_reflectedRelativeResolventTerm_eq
         -I * (w - I * xiSpectralPoint q.1)
             = -xiSpectralPoint q.1 - I * w := by
                 calc
-                  _ = -I * w + I ^ 2 * xiSpectralPoint q.1 := by ring
+                  _ = -I * w + I ^ (2 : ℕ) * xiSpectralPoint q.1 := by ring
                   _ = -xiSpectralPoint q.1 - I * w := by rw [hI2]; ring
         _ = 0 := h
     exact (mul_eq_zero.mp hmul).resolve_left (neg_ne_zero.mpr hI)
@@ -480,9 +480,9 @@ interior probe excludes every strict-right Xi pair in the window. -/
 theorem xiWard_source_window_clearing {h c δ : ℝ} (hh : 1 / 2 < h)
     (hA : xiWardInteriorSourceArithmeticBound
         (((h : ℝ) : ℂ) + I * ((c : ℝ) : ℂ)) <
-      2 * h / ((h + 1 / 2) ^ 2 + δ ^ 2))
+      2 * h / ((h + 1 / 2) ^ (2 : ℕ) + δ ^ (2 : ℕ)))
     (q : XiRightUpperZeroCopy) :
-    δ ^ 2 < ((xiRightCenteredZero q.1).im - c) ^ 2 := by
+    δ ^ (2 : ℕ) < ((xiRightCenteredZero q.1).im - c) ^ (2 : ℕ) := by
   by_contra hcon
   push Not at hcon
   have hq := interior_pair_quantum (by linarith : (0 : ℝ) < h) q hcon

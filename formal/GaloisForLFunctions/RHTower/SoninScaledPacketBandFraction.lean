@@ -31,7 +31,7 @@ theorem norm_sq_soninScaledPacketEven_ge_half (m δ w : ℝ) (hδ : 0 < δ) (hm 
     (hmean : |soninScaledPacketMean m δ (2 * Real.pi * w)| ≤ 1)
     (hSq : soninRefSqTailSup (δ * |w|) ≤ (∫ y : ℝ, soninUnitBumpSq y) / 20) :
     δ * (∫ y : ℝ, soninUnitBumpSq y) / 2 ≤
-      ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by
+      ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by
   refine le_trans ?_ (norm_sq_soninScaledPacketEven_ge m δ w hδ hm)
   have hSqnn : 0 ≤ soninRefSqTailSup (δ * |w|) := soninRefSqTailSup_nonneg _
   have h4 : 0 ≤ 4 * δ * soninRefSqTailSup (δ * |w|) :=
@@ -50,15 +50,15 @@ theorem norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq
     (m δ w t : ℝ) (hδ : 0 < δ) (hm : δ < m) (ht : 0 ≤ t) (htw : t < w)
     (hmean : |soninScaledPacketMean m δ (2 * Real.pi * w)| ≤ 1)
     (hSq : soninRefSqTailSup (δ * |w|) ≤ (∫ y : ℝ, soninUnitBumpSq y) / 20) :
-    ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ 2 ≤
+    ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ (2 : ℕ) ≤
       (16 * t * δ * (soninRefTailSup (δ * (w - t)) +
-            |soninScaledPacketMean m δ (2 * Real.pi * w)| * soninRefTailSup 0) ^ 2 /
+            |soninScaledPacketMean m δ (2 * Real.pi * w)| * soninRefTailSup 0) ^ (2 : ℕ) /
           (∫ y : ℝ, soninUnitBumpSq y)) *
-        ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by
+        ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by
   set I : ℝ := ∫ y : ℝ, soninUnitBumpSq y with hIdef
   set A : ℝ := soninRefTailSup (δ * (w - t)) +
     |soninScaledPacketMean m δ (2 * Real.pi * w)| * soninRefTailSup 0 with hAdef
-  set N : ℝ := ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 with hNdef
+  set N : ℝ := ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) with hNdef
   have hI : 0 < I := integral_soninUnitBumpSq_pos
   have hAnn : 0 ≤ A := by
     have h1 : 0 ≤ soninRefTailSup (δ * (w - t)) := soninRefTailSup_nonneg _
@@ -75,16 +75,16 @@ theorem norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq
     rw [hAdef]
     ring
   rw [hMA] at hband
-  have hband' : ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ 2 ≤
-      8 * t * δ ^ 2 * A ^ 2 := by
+  have hband' : ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ (2 : ℕ) ≤
+      8 * t * δ ^ (2 : ℕ) * A ^ (2 : ℕ) := by
     refine le_trans hband ?_
     nlinarith [ht, sq_nonneg (δ * A)]
   -- trade one half-width for the energy
   have hδle : δ ≤ 2 * N / I := by
     rw [le_div_iff₀ hI]
     linarith [hfloor]
-  have hcoef : (0 : ℝ) ≤ 8 * t * δ * A ^ 2 := by positivity
-  have hstep : 8 * t * δ ^ 2 * A ^ 2 ≤ (8 * t * δ * A ^ 2) * (2 * N / I) := by
+  have hcoef : (0 : ℝ) ≤ 8 * t * δ * A ^ (2 : ℕ) := by positivity
+  have hstep : 8 * t * δ ^ (2 : ℕ) * A ^ (2 : ℕ) ≤ (8 * t * δ * A ^ (2 : ℕ)) * (2 * N / I) := by
     have := mul_le_mul_of_nonneg_left hδle hcoef
     nlinarith [this]
   refine le_trans hband' (le_trans hstep (le_of_eq ?_))

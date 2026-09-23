@@ -239,7 +239,7 @@ def projectiveSelectedRoundedDefect {d : ℕ}
     (x : Fin d → ℝ) : ℝ :=
   ∑ i, if i = k then 0 else if i ∈ A then
     w i * ((2 * Real.pi /
-      (projectiveSelectedPhaseResolution A k x i : ℝ)) ^ 2 / 2)
+      (projectiveSelectedPhaseResolution A k x i : ℝ)) ^ (2 : ℕ) / 2)
     else 2 * w i
 
 theorem projectiveSelectedRoundedDefect_le_waterDefect
@@ -271,13 +271,13 @@ theorem nonnegative_weighted_phaseSum_norm_floor_of_selected_approximation
       |(n : ℝ) * (ω i - ω k) - 2 * Real.pi * r i| ≤
         2 * Real.pi / (Q i : ℝ)) :
     1 - (∑ i, if i = k then 0 else if i ∈ A then
-        w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)
+        w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)
       else 2 * w i) ≤
       ‖∑ i, (w i : ℂ) * Complex.exp
         (Complex.I * (((n : ℝ) * (ω i - ω k) : ℝ) : ℂ))‖ := by
   let e : Fin d → ℝ := fun i ↦ 2 * Real.pi / (Q i : ℝ)
   let c : Fin d → ℝ := fun i ↦
-    if i = k then 1 else if i ∈ A then 1 - e i ^ 2 / 2 else -1
+    if i = k then 1 else if i ∈ A then 1 - e i ^ (2 : ℕ) / 2 else -1
   have he : ∀ i, 0 ≤ e i := by
     intro i
     dsimp only [e]
@@ -313,7 +313,7 @@ theorem nonnegative_weighted_phaseSum_norm_floor_of_selected_approximation
             mul_le_mul_of_nonneg_right hcos (hw i)
   calc
     1 - (∑ i, if i = k then 0 else if i ∈ A then
-        w i * ((2 * Real.pi / (Q i : ℝ)) ^ 2 / 2)
+        w i * ((2 * Real.pi / (Q i : ℝ)) ^ (2 : ℕ) / 2)
       else 2 * w i) =
         ∑ i, c i * w i := by
       rw [← hmass, ← Finset.sum_sub_distrib]

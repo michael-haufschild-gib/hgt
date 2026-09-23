@@ -116,7 +116,7 @@ def xiWardRefinedMarginProxy (t : ℝ) : ℝ :=
 
 /-- Exact excess of the worst first Lorentzian detector kernel at margin `m`. -/
 def xiWardDetectorRealExcess (m : ℝ) : ℝ :=
-  m * (1 - 2 * m) / (1 - 3 * m / 2 + m ^ 2)
+  m * (1 - 2 * m) / (1 - 3 * m / 2 + m ^ (2 : ℕ))
 
 /-- Adaptive real-channel allowance retaining the exact transported detector excess. -/
 def xiWardAdaptiveRealSampleSlack (t : ℝ) : ℝ :=
@@ -144,7 +144,7 @@ theorem xiWardRefinedMarginProxy_pos (t : ℝ) :
 
 theorem xiWardDetectorRealExcess_den_pos {m : ℝ}
     (hm : m ≤ 1 / 1024) :
-    0 < 1 - 3 * m / 2 + m ^ 2 := by
+    0 < 1 - 3 * m / 2 + m ^ (2 : ℕ) := by
   nlinarith [sq_nonneg m]
 
 /-- Exact detector excess is monotone throughout the admissible margin interval. -/
@@ -158,8 +158,8 @@ theorem xiWardDetectorRealExcess_mono {r b : ℝ} (hr0 : 0 ≤ r) (hrb : r ≤ b
   have hP : 0 ≤ 1 - 2 * b - 2 * r + 2 * b * r := by
     nlinarith [mul_nonneg hb0 hr0]
   have hfactor :
-      b * (1 - 2 * b) * (1 - 3 * r / 2 + r ^ 2) -
-          r * (1 - 2 * r) * (1 - 3 * b / 2 + b ^ 2) =
+      b * (1 - 2 * b) * (1 - 3 * r / 2 + r ^ (2 : ℕ)) -
+          r * (1 - 2 * r) * (1 - 3 * b / 2 + b ^ (2 : ℕ)) =
         (b - r) * (1 - 2 * b - 2 * r + 2 * b * r) := by ring
   unfold xiWardDetectorRealExcess
   rw [div_le_div_iff₀ hDr hDb]
@@ -168,16 +168,16 @@ theorem xiWardDetectorRealExcess_mono {r b : ℝ} (hr0 : 0 ≤ r) (hrb : r ≤ b
 /-- The true Ward detection window is narrower than `1/45`; the earlier unit displacement was a
 deliberately coarse compatibility bound. -/
 theorem abs_add_le_one_over_fortyFive_of_xiWard_marginWindow {t b : ℝ}
-    (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     |t + b| ≤ 1 / 45 := by
   have hm := xiWardZeroFreeMargin_le_inv1024 b
-  have hd : (t + b) ^ 2 ≤ 1 / 2048 := by nlinarith
+  have hd : (t + b) ^ (2 : ℕ) ≤ 1 / 2048 := by nlinarith
   nlinarith [sq_abs (t + b), abs_nonneg (t + b),
     sq_nonneg (|t + b| - 1 / 45)]
 
 /-- Refined log variation across a genuine Ward detection window. -/
 theorem log_abs_add_nine_le_refined_of_xiWard_marginWindow {t b : ℝ}
-    (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     Real.log (|b| + 9) ≤ Real.log (|t| + 9) + 1 / 405 := by
   have hdist := abs_add_le_one_over_fortyFive_of_xiWard_marginWindow ht
   have hb : |b| ≤ |t| + 1 / 45 := by
@@ -205,7 +205,7 @@ theorem log_abs_add_nine_le_refined_of_xiWard_marginWindow {t b : ℝ}
 /-- At any detector-selected node, refined sampled slack stays below the strict three-margin
 off-line excess at the zero height. -/
 theorem xiWardRefinedSampleSlack_le_three_mul_margin_of_marginWindow
-    {t b : ℝ} (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    {t b : ℝ} (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     xiWardRefinedSampleSlack t ≤ 3 * xiWardZeroFreeMargin b := by
   have hlog := log_abs_add_nine_le_refined_of_xiWard_marginWindow ht
   have hLt : 0 < Real.log (|t| + 9) + 1 / 405 := by
@@ -225,7 +225,7 @@ theorem xiWardRefinedSampleSlack_le_three_mul_margin_of_marginWindow
 
 /-- Detector-window transfer for the sharp real-channel allowance. -/
 theorem xiWardRefinedRealSampleSlack_le_coefficient_mul_margin_of_marginWindow
-    {t b : ℝ} (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    {t b : ℝ} (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     xiWardRefinedRealSampleSlack t ≤
       xiWardSharpRealSlackCoefficient * xiWardZeroFreeMargin b := by
   have h := xiWardRefinedSampleSlack_le_three_mul_margin_of_marginWindow ht
@@ -244,7 +244,7 @@ theorem xiWardRefinedRealSampleSlack_le_coefficient_mul_margin_of_marginWindow
 /-- The refined proxy itself stays below the true zero-height margin in every
 detector window. -/
 theorem xiWardRefinedMarginProxy_le_margin_of_marginWindow
-    {t b : ℝ} (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    {t b : ℝ} (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     xiWardRefinedMarginProxy t ≤ xiWardZeroFreeMargin b := by
   have h := xiWardRefinedSampleSlack_le_three_mul_margin_of_marginWindow ht
   have heq : xiWardRefinedSampleSlack t = 3 * xiWardRefinedMarginProxy t := by
@@ -255,7 +255,7 @@ theorem xiWardRefinedMarginProxy_le_margin_of_marginWindow
 
 theorem xiWardRefinedMarginProxy_le_inv1024 (t : ℝ) :
     xiWardRefinedMarginProxy t ≤ 1 / 1024 := by
-  have ht : ((-t) + t) ^ 2 ≤ xiWardZeroFreeMargin t / 2 := by
+  have ht : ((-t) + t) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin t / 2 := by
     nlinarith [xiWardZeroFreeMargin_pos t]
   have h := xiWardRefinedMarginProxy_le_margin_of_marginWindow ht
   rw [show xiWardRefinedMarginProxy (-t) = xiWardRefinedMarginProxy t by
@@ -265,7 +265,7 @@ theorem xiWardRefinedMarginProxy_le_inv1024 (t : ℝ) :
 /-- Adaptive allowance transfers without replacing the actual margin by its
 global maximum. -/
 theorem xiWardAdaptiveRealSampleSlack_le_detectorExcess_of_marginWindow
-    {t b : ℝ} (ht : (t + b) ^ 2 ≤ xiWardZeroFreeMargin b / 2) :
+    {t b : ℝ} (ht : (t + b) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin b / 2) :
     xiWardAdaptiveRealSampleSlack t ≤
       xiWardDetectorRealExcess (xiWardZeroFreeMargin b) := by
   exact xiWardDetectorRealExcess_mono (xiWardRefinedMarginProxy_pos t).le
@@ -361,7 +361,7 @@ rational function `xiWardDetectorRealExcess`; the positive conjugate kernel
 makes the complete pair inequality strict. -/
 theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_detectorExcess
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     2 + xiWardDetectorRealExcess
         (xiWardZeroFreeMargin (xiRightCenteredZero q.1).im) <
@@ -373,7 +373,7 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_detectorE
   have ha : 0 < lam.re := xiRightCenteredZero_re_pos q.1
   have hm0 : 0 < m := xiWardZeroFreeMargin_pos lam.im
   have hm1024 : m ≤ 1 / 1024 := xiWardZeroFreeMargin_le_inv1024 lam.im
-  have hD : 0 < 1 - 3 * m / 2 + m ^ 2 :=
+  have hD : 0 < 1 - 3 * m / 2 + m ^ (2 : ℕ) :=
     xiWardDetectorRealExcess_den_pos hm1024
   have hM : lam.re ≤ 1 / 2 - m := xiRightCenteredZero_re_le_half_sub_margin q.1
   have hconj :
@@ -392,31 +392,31 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_detectorE
   have hzim : (w + lam).im = t + lam.im := by
     rw [Complex.add_im, hwim]
   have hznormSq : Complex.normSq (w + lam) =
-      (lam.re + 1 / 2) ^ 2 + (t + lam.im) ^ 2 := by
+      (lam.re + 1 / 2) ^ (2 : ℕ) + (t + lam.im) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hzre, hzim]
     ring
-  have hdenpos : 0 < (lam.re + 1 / 2) ^ 2 + (t + lam.im) ^ 2 := by
+  have hdenpos : 0 < (lam.re + 1 / 2) ^ (2 : ℕ) + (t + lam.im) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (t + lam.im)]
-  have hfirst : (1 - m) / (1 - 3 * m / 2 + m ^ 2) ≤ ((w + lam)⁻¹).re := by
+  have hfirst : (1 - m) / (1 - 3 * m / 2 + m ^ (2 : ℕ)) ≤ ((w + lam)⁻¹).re := by
     rw [Complex.inv_re, hzre, hznormSq, div_le_div_iff₀ hD hdenpos]
     nlinarith [ht, hM, ha.le, hm0.le, hm1024, sq_nonneg (t + lam.im),
       mul_nonneg ha.le (by linarith : (0 : ℝ) ≤ 1 / 2 - m - lam.re),
       mul_nonneg hm0.le (by linarith : (0 : ℝ) ≤ 1 / 2 - m - lam.re),
       mul_nonneg ha.le hm0.le,
-      mul_nonneg hm0.le (by linarith : (0 : ℝ) ≤ m / 2 - (t + lam.im) ^ 2),
+      mul_nonneg hm0.le (by linarith : (0 : ℝ) ≤ m / 2 - (t + lam.im) ^ (2 : ℕ)),
       mul_le_mul_of_nonneg_left hm1024 hm0.le]
-  have hid : 2 * ((1 - m) / (1 - 3 * m / 2 + m ^ 2)) =
+  have hid : 2 * ((1 - m) / (1 - 3 * m / 2 + m ^ (2 : ℕ))) =
       2 + xiWardDetectorRealExcess m := by
     have hcancel :
-        (2 * (1 - 3 * m / 2 + m ^ 2)) / (1 - 3 * m / 2 + m ^ 2) = 2 := by
+        (2 * (1 - 3 * m / 2 + m ^ (2 : ℕ))) / (1 - 3 * m / 2 + m ^ (2 : ℕ)) = 2 := by
       simpa [mul_comm] using mul_div_cancel_left₀ 2 (ne_of_gt hD)
     unfold xiWardDetectorRealExcess
     calc
-      2 * ((1 - m) / (1 - 3 * m / 2 + m ^ 2)) =
-          (2 * (1 - m)) / (1 - 3 * m / 2 + m ^ 2) := by ring
-      _ = (2 * (1 - 3 * m / 2 + m ^ 2) + m * (1 - 2 * m)) /
-          (1 - 3 * m / 2 + m ^ 2) := by ring
-      _ = 2 + m * (1 - 2 * m) / (1 - 3 * m / 2 + m ^ 2) := by
+      2 * ((1 - m) / (1 - 3 * m / 2 + m ^ (2 : ℕ))) =
+          (2 * (1 - m)) / (1 - 3 * m / 2 + m ^ (2 : ℕ)) := by ring
+      _ = (2 * (1 - 3 * m / 2 + m ^ (2 : ℕ)) + m * (1 - 2 * m)) /
+          (1 - 3 * m / 2 + m ^ (2 : ℕ)) := by ring
+      _ = 2 + m * (1 - 2 * m) / (1 - 3 * m / 2 + m ^ (2 : ℕ)) := by
         rw [add_div, hcancel]
   have hother : 0 < (w + (starRingEnd ℂ) lam).re := by
     rw [Complex.add_re, hwre, Complex.conj_re]
@@ -441,7 +441,7 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_detectorE
 adaptive excess rather than reproving detector geometry. -/
 theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_sharp
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     2 + xiWardSharpRealSlackCoefficient *
         xiWardZeroFreeMargin (xiRightCenteredZero q.1).im <
@@ -458,7 +458,7 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_sharp
 /-- Compatibility form retaining the earlier three-quarters detector API. -/
 theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_three_quarters
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     2 + 3 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 4 <
       (xiAntiCausalWardSchwarzPairResponse q
@@ -473,7 +473,7 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_three_qua
 /-- Compatibility form of the detection-window pair lower bound. -/
 theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     2 + xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2 <
       (xiAntiCausalWardSchwarzPairResponse q
@@ -487,7 +487,7 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_marginWindow_gt_two_add_half
 budget by twice the margin. -/
 theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     4 + 2 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im <
       Complex.normSq
@@ -509,7 +509,7 @@ theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add
 above the four-unit budget. -/
 theorem normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four_add_three
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     4 + 3 * xiWardZeroFreeMargin (xiRightCenteredZero q.1).im <
       Complex.normSq
@@ -559,7 +559,7 @@ theorem riemannHypothesis_of_continuedXiWardMergedSlackSampledScalarLaw
   have hm1024 :=
     xiWardZeroFreeMargin_le_inv1024 (xiRightCenteredZero q.1).im
   have hclose : |t + (xiRightCenteredZero q.1).im| ≤ 1 := by
-    have h1 : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤ 1 := by
+    have h1 : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤ 1 := by
       nlinarith [htwin]
     nlinarith [sq_abs (t + (xiRightCenteredZero q.1).im),
       abs_nonneg (t + (xiRightCenteredZero q.1).im),
@@ -611,7 +611,7 @@ theorem riemannHypothesis_of_continuedXiWardThreeHalvesSlackSampledScalarLaw
   have hclose : |t + (xiRightCenteredZero q.1).im| ≤ 1 := by
     have hbound :=
       xiWardZeroFreeMargin_le_inv1024 (xiRightCenteredZero q.1).im
-    have h1 : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤ 1 := by
+    have h1 : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤ 1 := by
       nlinarith [htwin]
     nlinarith [sq_abs (t + (xiRightCenteredZero q.1).im),
       abs_nonneg (t + (xiRightCenteredZero q.1).im),

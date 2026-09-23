@@ -53,7 +53,7 @@ theorem ccmArchimedeanGammaSlepianGram_injective
 theorem ccmArchimedeanGammaSlepianGram_reApplyInnerSelf
     (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :
     (ccmArchimedeanGammaSlepianGram a).reApplyInnerSelf u =
-      ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+      ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
   rw [ContinuousLinearMap.reApplyInnerSelf_apply]
   change (inner ℂ
     ((ccmArchimedeanFormToAperture a).adjoint

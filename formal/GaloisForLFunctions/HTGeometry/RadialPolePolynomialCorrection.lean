@@ -41,7 +41,7 @@ theorem radialPolePolynomialCorrection_equation (P : ℝ[X]) :
   calc
     _ = (C (4 * Real.pi * P.coeff 0) + C (4 * Real.pi * P.coeff 0)) * X +
         (radialPolynomialCorrection P.divX + X * (radialPolynomialCorrection P.divX).derivative) := by ring
-    _ = C (8 * Real.pi * P.coeff 0) * X + C (8 * Real.pi) * (X ^ 2 * P.divX) := by rw [← hc, h]
+    _ = C (8 * Real.pi * P.coeff 0) * X + C (8 * Real.pi) * (X ^ (2 : ℕ) * P.divX) := by rw [← hc, h]
     _ = C (8 * Real.pi) * X * (X * P.divX + C (P.coeff 0)) := by
       simp only [map_mul]
       ring
@@ -113,13 +113,13 @@ theorem radialPolePolynomialMetric_decomposition (P : ℝ[X]) (β : ℝ) :
 /-- Complete finite-curvature criterion and the exact surviving value, including zero coupling. -/
 theorem radialPolePolynomialMetric_finite_limit_iff (P : ℝ[X]) (β k : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (radialPolePolynomialMetric P β) (exp t)) atBot (𝓝 k) ↔
-      β * P.coeff 0 = 0 ∧ k = 512 * Real.pi ^ 2 * β ^ 2 * P.coeff 1 ^ 2 / 3 := by
+      β * P.coeff 0 = 0 ∧ k = 512 * Real.pi ^ (2 : ℕ) * β ^ (2 : ℕ) * P.coeff 1 ^ (2 : ℕ) / 3 := by
   rw [radialPolePolynomialMetric_decomposition, polynomialRadialCoreMetric_finite_limit_iff,
     eval_mul, eval_C, radialPolePolynomialCore_center]
   have ha : 4 * Real.pi * β * P.coeff 0 = 0 ↔ β * P.coeff 0 = 0 := by
     simp only [mul_eq_zero, show (4 : ℝ) ≠ 0 by norm_num, Real.pi_ne_zero, false_or]
-  have hk : 24 * (β * (8 * Real.pi * P.coeff 1 / 3)) ^ 2 =
-      512 * Real.pi ^ 2 * β ^ 2 * P.coeff 1 ^ 2 / 3 := by ring
+  have hk : 24 * (β * (8 * Real.pi * P.coeff 1 / 3)) ^ (2 : ℕ) =
+      512 * Real.pi ^ (2 : ℕ) * β ^ (2 : ℕ) * P.coeff 1 ^ (2 : ℕ) / 3 := by ring
   rw [ha, hk]
 
 /-- At positive coupling, exactly the removable source poles give finite central curvature. -/
@@ -132,7 +132,7 @@ theorem radialPolePolynomialMetric_regular_iff (P : ℝ[X]) (b : ℝ) :
   · rintro ⟨k, hk, _⟩
     exact hk
   · intro h
-    exact ⟨512 * Real.pi ^ 2 * exp b ^ 2 * P.coeff 1 ^ 2 / 3, h, rfl⟩
+    exact ⟨512 * Real.pi ^ (2 : ℕ) * exp b ^ (2 : ℕ) * P.coeff 1 ^ (2 : ℕ) / 3, h, rfl⟩
 
 /-- Every nonremovable source pole instead gives divergent curvature at positive coupling. -/
 theorem radialPolePolynomialMetric_diverges_iff (P : ℝ[X]) (b : ℝ) :

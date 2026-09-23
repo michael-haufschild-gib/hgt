@@ -26,6 +26,7 @@ open D4BMNativeCircle D4BMCausalKernel D4BMJointSource D4BMModularCore
 open D4BMFullAngularCircle D4BMFullAngularReconstruction D4BMFullAngularGoursat
 open D4BMFullAngularCausalPeierls D4BMFullSourceReciprocity
 open D4BMOriginalCausalDifference
+open D4BMOriginalCausalPotential D4BMCompleteOriginalWeakSource D4BMFutureHorizon
 
 noncomputable section
 set_option autoImplicit false
@@ -61,7 +62,8 @@ theorem angularNativePeierlsDefect_volterra (q : XiZeroCopy) (branch : Bool)
   unfold angularNativePeierlsDefect
   rw [fullAngularDirichletKernel_volterra, nativeDirichletCausalKernel_volterra]
   unfold causalVertexDefect causalCorrectionDefect
-  ring
+  by_cases hxy : |x-y| ≤ h <;> by_cases hsum : |x+y| ≤ h <;>
+    simp [hxy, hsum] <;> ring
 
 /-- Two original source events paired through precisely the full-minus-native
 direct-minus-image causal defect. -/
@@ -93,6 +95,8 @@ theorem sourcePairLiftDefect_integrable (q : XiZeroCopy) (branch b c : Bool)
   have hnative := sourcePairDensity_integrable q b c a d X k
   convert hfull.sub hnative using 1
   funext z
+  change sourcePairLiftDefect q branch b c a d X k z =
+    fullSourcePairDensity q branch b c a d X k z - sourcePairDensity q b c a d X k z
   rw [fullSourcePairDensity_eq_native_add_defect]
   ring
 

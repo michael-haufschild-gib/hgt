@@ -123,7 +123,7 @@ end Product
 section Exponential
 variable {A : Type*} [NormedRing A] [NormedAlgebra ℝ A] [CompleteSpace A]
 
-local instance : NormedAlgebra ℚ A := .restrictScalars ℚ ℝ A
+local instance noncommutativeAbelDevelopmentInst1 : NormedAlgebra ℚ A := .restrictScalars ℚ ℝ A
 
 theorem exp_mul_neg (x : A) :
     NormedSpace.exp x * NormedSpace.exp (-x) = 1 := by

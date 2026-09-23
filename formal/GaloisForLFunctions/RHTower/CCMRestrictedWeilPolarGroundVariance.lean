@@ -34,9 +34,9 @@ theorem ccmArchimedeanFormToAperture_polarParity (a : SuzukiPositiveAperture) (r
 /-- Exact norm of either parity pole; the odd Gram denominator is retained. -/
 theorem norm_sq_ccmPolarParityFormVector_physical (a : SuzukiPositiveAperture) {r : ℝ}
     (hr : r=1 ∨ r=-1) :
-    ‖ccmArchimedeanFormToAperture a (ccmPolarParityFormVector a r)‖ ^ 2 =
+    ‖ccmArchimedeanFormToAperture a (ccmPolarParityFormVector a r)‖ ^ (2 : ℕ) =
       2*(2*Real.sinh a.1+2*a.1*r) := by
-  have hn : ‖ccmPolarApertureVector a (-1/2)‖ ^ 2 = 2*Real.sinh a.1 := by
+  have hn : ‖ccmPolarApertureVector a (-1/2)‖ ^ (2 : ℕ) = 2*Real.sinh a.1 := by
     have h := l2ReflectionIsometry.norm_map (ccmPolarL2Vector a (1/2))
     change ‖l2Reflection (ccmPolarL2Vector a (1/2))‖ = _ at h
     rw [l2Reflection_ccmPolarL2Vector] at h
@@ -70,8 +70,8 @@ theorem polarSingleForcing_residual_norm_sq (a : SuzukiPositiveAperture)
       (E:ℂ) • ccmArchimedeanFormToAperture a u + c •
         (ccmPolarApertureVector a (1/2)+(r:ℂ) • ccmPolarApertureVector a (-1/2))) :
     ‖ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ -
-      (E:ℂ) • ccmArchimedeanFormToAperture a u‖ ^ 2 =
-      2*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 / (2*Real.sinh a.1+2*a.1*r) := by
+      (E:ℂ) • ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) =
+      2*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) / (2*Real.sinh a.1+2*a.1*r) := by
   have hc := polarSingleForcing_coefficient_eq_source_div a u hu r E hr c hm hH
   rw [hH, add_sub_cancel_left, ← ccmArchimedeanFormToAperture_polarParity,
     norm_smul, mul_pow, norm_sq_ccmPolarParityFormVector_physical a hr, hc,
@@ -87,9 +87,9 @@ theorem polarSingleForcing_operator_norm_sq (a : SuzukiPositiveAperture)
     (hH : ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ =
       (E:ℂ) • ccmArchimedeanFormToAperture a u + c •
         (ccmPolarApertureVector a (1/2)+(r:ℂ) • ccmPolarApertureVector a (-1/2))) :
-    ‖ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩‖ ^ 2 =
-      E^2*‖ccmArchimedeanFormToAperture a u‖ ^ 2 +
-      2*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 / (2*Real.sinh a.1+2*a.1*r) := by
+    ‖ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩‖ ^ (2 : ℕ) =
+      E^(2 : ℕ)*‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) +
+      2*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) / (2*Real.sinh a.1+2*a.1*r) := by
   have hres := polarSingleForcing_residual_norm_sq a u hu r E hr c hm hH
   rw [hH, add_sub_cancel_left, ← ccmArchimedeanFormToAperture_polarParity] at hres
   have ho : inner ℂ (ccmArchimedeanFormToAperture a u)
@@ -108,11 +108,11 @@ theorem ccmRestrictedWeil_groundShift_cauchySchwarz (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) :
     ‖ccmRestrictedWeilForm a u v - inner ℂ
       ((ccmRestrictedWeilGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u)
-      (ccmArchimedeanFormToAperture a v)‖ ^ 2 ≤
+      (ccmArchimedeanFormToAperture a v)‖ ^ (2 : ℕ) ≤
       (ccmRestrictedWeilSourceQuadratic a u - ccmRestrictedWeilGroundEnergy a *
-        ‖ccmArchimedeanFormToAperture a u‖ ^ 2) *
+        ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ)) *
       (ccmRestrictedWeilSourceQuadratic a v - ccmRestrictedWeilGroundEnergy a *
-        ‖ccmArchimedeanFormToAperture a v‖ ^ 2) := by
+        ‖ccmArchimedeanFormToAperture a v‖ ^ (2 : ℕ)) := by
   let K := ccmRestrictedWeilFormBirmanSchwinger a (ccmRestrictedWeilGroundEnergy a)
   have hK := (ccmRestrictedWeilFormBirmanSchwinger_isSelfAdjoint a
     (ccmRestrictedWeilGroundEnergy a)).isSymmetric
@@ -126,10 +126,10 @@ theorem ccmRestrictedWeil_groundShift_cauchySchwarz (a : SuzukiPositiveAperture)
     (fun x => by
       rw [ccmRestrictedWeil_shifted_diagonal]
       exact sub_nonneg.mpr (ccmRestrictedWeilGroundEnergy_mul_formNorm_sq_le_source a x)) u v
-  change ‖inner ℂ v (u-K u)‖ ^ 2 ≤ _ at hc
+  change ‖inner ℂ v (u-K u)‖ ^ (2 : ℕ) ≤ _ at hc
   rw [ccmRestrictedWeil_shifted_diagonal, ccmRestrictedWeil_shifted_diagonal] at hc
   rw [ccmRestrictedWeilForm_sub_groundMass_eq_inner_one_sub_birmanSchwinger]
-  change ‖inner ℂ (u-K u) v‖ ^ 2 ≤ _
+  change ‖inner ℂ (u-K u) v‖ ^ (2 : ℕ) ≤ _
   rw [← inner_conj_symm (𝕜:=ℂ) (u-K u) v, norm_conj]
   exact hc
 
@@ -172,7 +172,7 @@ private theorem forcing_shifted_pole_pair (a : SuzukiPositiveAperture)
     inner_smul_left (ccmArchimedeanFormToAperture a u), ho, mul_zero, mul_zero,
     zero_add, sub_zero, inner_self_eq_norm_sq_to_K]
   change (starRingEnd ℂ) c *
-    (‖ccmArchimedeanFormToAperture a (ccmPolarParityFormVector a r)‖:ℂ)^2 = _
+    (‖ccmArchimedeanFormToAperture a (ccmPolarParityFormVector a r)‖:ℂ)^(2 : ℕ) = _
   rw [← Complex.ofReal_pow, norm_sq_ccmPolarParityFormVector_physical a hr]
   push_cast at hmul ⊢
   linear_combination 2*hmul
@@ -183,14 +183,14 @@ theorem polarGround_source_gap_bound (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (r : ℝ) (hr : r=1 ∨ r=-1) (c : ℂ)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2)
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ))
     (hm : ccmArchimedeanFormToAperture a u ∈ (ccmRestrictedWeilOperator a).domain)
     (hH : ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ =
       (ccmRestrictedWeilPolarGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u + c •
         (ccmPolarApertureVector a (1/2)+(r:ℂ) • ccmPolarApertureVector a (-1/2))) :
-    4*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 ≤
+    4*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) ≤
       (ccmRestrictedWeilPolarGroundEnergy a-ccmRestrictedWeilGroundEnergy a) *
-      ‖ccmArchimedeanFormToAperture a u‖ ^ 2 *
+      ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) *
       (ccmRestrictedWeilSourceQuadratic a (ccmPolarParityFormVector a r) -
         2*ccmRestrictedWeilGroundEnergy a*(2*Real.sinh a.1+2*a.1*r)) := by
   have h := ccmRestrictedWeil_groundShift_cauchySchwarz a u (ccmPolarParityFormVector a r)
@@ -216,15 +216,15 @@ theorem polarGround_parityIntegral_gap_bound (a : SuzukiPositiveAperture)
     (r : ℝ) (hr : r=1 ∨ r=-1) (c : ℂ)
     (hpar : ccmArchimedeanFormReflection a u = (r:ℂ) • u)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2)
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ))
     (hm : ccmArchimedeanFormToAperture a u ∈ (ccmRestrictedWeilOperator a).domain)
     (hH : ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ =
       (ccmRestrictedWeilPolarGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u + c •
         (ccmPolarApertureVector a (1/2)+(r:ℂ) • ccmPolarApertureVector a (-1/2))) :
     ‖∫ x : ℝ, (centralInterval a.1).indicator (ccmPolarParityBoundaryProfile a r) x *
-        (ccmArchimedeanFormToAperture a u : SoninL2) x‖ ^ 2 ≤
+        (ccmArchimedeanFormToAperture a u : SoninL2) x‖ ^ (2 : ℕ) ≤
       (ccmRestrictedWeilPolarGroundEnergy a-ccmRestrictedWeilGroundEnergy a) *
-      ‖ccmArchimedeanFormToAperture a u‖ ^ 2 *
+      ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) *
       (ccmRestrictedWeilSourceQuadratic a (ccmPolarParityFormVector a r) -
         2*ccmRestrictedWeilGroundEnergy a*(2*Real.sinh a.1+2*a.1*r)) := by
   have h := polarGround_source_gap_bound a u hu r hr c hground hm hH
@@ -239,7 +239,7 @@ theorem polarGround_unrestricted_lt_of_source_ne_zero (a : SuzukiPositiveApertur
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (r : ℝ) (hr : r=1 ∨ r=-1) (c : ℂ)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2)
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ))
     (hm : ccmArchimedeanFormToAperture a u ∈ (ccmRestrictedWeilOperator a).domain)
     (hH : ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ =
       (ccmRestrictedWeilPolarGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u + c •
@@ -259,7 +259,7 @@ theorem polarGround_source_eq_zero_of_floors_eq (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (r : ℝ) (hr : r=1 ∨ r=-1) (c : ℂ)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2)
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ))
     (hm : ccmArchimedeanFormToAperture a u ∈ (ccmRestrictedWeilOperator a).domain)
     (hH : ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩ =
       (ccmRestrictedWeilPolarGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u + c •
@@ -285,7 +285,7 @@ theorem polarSingleForcing_eigen_iff_source_zero (a : SuzukiPositiveAperture)
   · intro he
     have h := polarSingleForcing_residual_norm_sq a u hu r E hr c hm hH
     rw [he, sub_self, norm_zero, zero_pow (by decide)] at h
-    have hn : 2*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 = 0 :=
+    have hn : 2*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) = 0 :=
       (div_eq_zero_iff).mp h.symm |>.resolve_right (polarParityGram_pos a hr).ne'
     exact norm_eq_zero.mp (by nlinarith [norm_nonneg (ccmPolarBoundarySourceFunctional a u)])
   · intro hF
@@ -338,7 +338,7 @@ theorem exists_normalized_polarGround_source_variance_gap (a : SuzukiPositiveApe
       ‖ccmArchimedeanFormToAperture a u‖ = 1 ∧
       ccmArchimedeanFormReflection a u = (r:ℂ) • u ∧
       ccmRestrictedWeilSourceQuadratic a u = ccmRestrictedWeilPolarGroundEnergy a ∧
-      4*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 ≤
+      4*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) ≤
         (ccmRestrictedWeilPolarGroundEnergy a-ccmRestrictedWeilGroundEnergy a) *
         (ccmRestrictedWeilSourceQuadratic a (ccmPolarParityFormVector a r) -
           2*ccmRestrictedWeilGroundEnergy a*(2*Real.sinh a.1+2*a.1*r)) ∧
@@ -347,12 +347,12 @@ theorem exists_normalized_polarGround_source_variance_gap (a : SuzukiPositiveApe
           (ccmRestrictedWeilPolarGroundEnergy a:ℂ) • ccmArchimedeanFormToAperture a u +
             (ccmPolarBoundarySourceFunctional a u / ((2*Real.sinh a.1+2*a.1*r:ℝ):ℂ)) •
               (ccmPolarApertureVector a (1/2)+(r:ℂ) • ccmPolarApertureVector a (-1/2)) ∧
-        ‖ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩‖ ^ 2 =
-          (ccmRestrictedWeilPolarGroundEnergy a)^2 +
-          2*‖ccmPolarBoundarySourceFunctional a u‖ ^ 2 / (2*Real.sinh a.1+2*a.1*r) := by
+        ‖ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u,hm⟩‖ ^ (2 : ℕ) =
+          (ccmRestrictedWeilPolarGroundEnergy a)^(2 : ℕ) +
+          2*‖ccmPolarBoundarySourceFunctional a u‖ ^ (2 : ℕ) / (2*Real.sinh a.1+2*a.1*r) := by
   obtain ⟨u,r,c,hr,hu,hn,hpar,hQ,hm,hH⟩ := exists_normalized_polarGround_singleProfile_forcing a
   have hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
     simpa only [hn, one_pow, mul_one] using hQ
   refine ⟨u,r,hr,hu,hn,hpar,hQ,?_,hm,?_,?_⟩
   · simpa only [hn, one_pow, mul_one] using
@@ -371,10 +371,10 @@ theorem zeroGround_nonzeroSource_shiftedPositive_model :
       (∀ x y z, B (x+y) z = B x z + B y z) ∧
       (∀ (c:ℂ) x y, B (c • x) y = c * B x y) ∧
       (∀ x y, B y x = (starRingEnd ℂ) (B x y)) ∧
-      (∀ x, -(‖x.1‖^2+‖x.2‖^2) ≤ (B x x).re) ∧
+      (∀ x, -(‖x.1‖^(2 : ℕ)+‖x.2‖^(2 : ℕ)) ≤ (B x x).re) ∧
       (∀ z:ℂ, B (z,0) (z,0) = 0) ∧
       B (1,0) (0,1) = 1 ∧
-      B (1,-1) (1,-1) = -2 ∧ ‖(1:ℂ)‖^2+‖(-1:ℂ)‖^2 = 2 := by
+      B (1,-1) (1,-1) = -2 ∧ ‖(1:ℂ)‖^(2 : ℕ)+‖(-1:ℂ)‖^(2 : ℕ) = 2 := by
   let B : (ℂ × ℂ) → (ℂ × ℂ) → ℂ :=
     fun x y => x.1*(starRingEnd ℂ) y.2 + x.2*(starRingEnd ℂ) y.1
   refine ⟨B,?_,?_,?_,?_,?_,?_,?_,?_⟩

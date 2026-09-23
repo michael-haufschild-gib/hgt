@@ -20,7 +20,7 @@ open Filter Topology Finset
 namespace RHTower
 
 private lemma term_nonneg (P : Finset ℕ) (M r : ℕ) :
-    0 ≤ (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 := by positivity
+    0 ≤ (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by positivity
 
 private lemma sample_self (P : Finset ℕ) {M : ℕ} (hM : 0 < M) :
     mobiusDivisorInterpolatedFibre M M P ∅ = 0 := by
@@ -31,7 +31,7 @@ private lemma sample_self (P : Finset ℕ) {M : ℕ} (hM : 0 < M) :
 
 theorem mobiusDivisorSelectionEnergy_eq_inclusive_squarefree (P : Finset ℕ) (M : ℕ) :
     mobiusDivisorSelectionEnergy M P = ∑ r ∈ fixedCoreSquarefreeIndices P M,
-      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy_eq_squarefree_processedHead]
   apply sum_subset
   · intro r hr
@@ -51,19 +51,19 @@ theorem mobiusDivisorSelectionEnergy_eq_inclusive_squarefree (P : Finset ℕ) (M
 private lemma prefix_eq (P : Finset ℕ) (M T : ℕ) :
     ∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n =
       ∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r<T),
-        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
   simpa only [mobiusDivisorFixedCoreBlockEnergy, mem_range] using
     sum_fiberwise_eq_sum_filter (fixedCoreSquarefreeIndices P M) (range T)
-      (fun r => M/r) (fun r => (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2)
+      (fun r => M/r) (fun r => (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ))
 
 private lemma term_as_fibre (P : Finset ℕ) (M : ℕ) {r : ℕ}
     (hr : Squarefree r) (hd : Disjoint r.primeFactors P) :
-    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 =
-      (mobiusDivisorSelectionFibre M P r.primeFactors)^2 := by
+    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) =
+      (mobiusDivisorSelectionFibre M P r.primeFactors)^(2 : ℕ) := by
   have h := mobiusDivisorSelectionFibre_product_interpolation M P r.primeFactors
     (fun p hp => (Nat.mem_primeFactors.mp hp).1) hd
   rw [Nat.prod_primeFactors_of_squarefree hr] at h
-  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^2 = 1 := by
+  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ) = 1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hr
   rw [h, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg r), hm, mul_one]
 
@@ -72,8 +72,8 @@ fixed prime core, including the empty core. Its constant is explicit. -/
 theorem mobiusDivisorFixedCoreEnergy_quotient_tail_le
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) (M : ℕ) {T : ℕ} (hT : 0 < T) :
     (∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => T ≤ M/r),
-      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2) ≤
-        (((3/5:ℝ)*2^(P.card-1))^2/(T : ℝ))*(M : ℝ)^2 := by
+      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)) ≤
+        (((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(T : ℝ))*(M : ℝ)^(2 : ℕ) := by
   let C : ℝ := (3/5:ℝ)*2^(P.card-1)
   let A := (fixedCoreSquarefreeIndices P M).filter (fun r => T ≤ M/r)
   have hcard : A.card ≤ M/T := by
@@ -86,7 +86,7 @@ theorem mobiusDivisorFixedCoreEnergy_quotient_tail_le
       simpa only [mul_comm] using (Nat.le_div_iff_mul_le hr'.1).mp hquot
     simpa using card_le_card hs
   calc
-    _ ≤ ∑ r ∈ A, C^2*(M : ℝ) := by
+    _ ≤ ∑ r ∈ A, C^(2 : ℕ)*(M : ℝ) := by
       apply sum_le_sum
       intro r hr
       obtain ⟨hr,_⟩ := mem_filter.mp hr
@@ -99,11 +99,11 @@ theorem mobiusDivisorFixedCoreEnergy_quotient_tail_le
       have hab := abs_nonneg (mobiusDivisorSelectionFibre M P r.primeFactors)
       have hsq := sq_abs (mobiusDivisorSelectionFibre M P r.primeFactors)
       nlinarith [sq_nonneg (C*Real.sqrt M-|mobiusDivisorSelectionFibre M P r.primeFactors|)]
-    _ = (A.card : ℝ)*(C^2*(M : ℝ)) := by simp
-    _ ≤ ((M/T : ℕ) : ℝ)*(C^2*(M : ℝ)) := by
+    _ = (A.card : ℝ)*(C^(2 : ℕ)*(M : ℝ)) := by simp
+    _ ≤ ((M/T : ℕ) : ℝ)*(C^(2 : ℕ)*(M : ℝ)) := by
       apply mul_le_mul_of_nonneg_right (by exact_mod_cast hcard)
       positivity
-    _ ≤ ((M : ℝ)/T)*(C^2*(M : ℝ)) := by
+    _ ≤ ((M : ℝ)/T)*(C^(2 : ℕ)*(M : ℝ)) := by
       apply mul_le_mul_of_nonneg_right Nat.cast_div_le
       positivity
     _ = _ := by dsimp [C]; ring
@@ -112,12 +112,12 @@ private lemma tail_bound (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
     (ε : ℝ) (hε : 0 < ε) :
     ∃ T : ℕ, 1 ≤ T ∧ ∀ M : ℕ,
       (∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => T ≤ M/r),
-        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2) ≤ ε*(M : ℝ)^2 := by
+        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)) ≤ ε*(M : ℝ)^(2 : ℕ) := by
   let C : ℝ := (3/5:ℝ)*2^(P.card-1)
-  obtain ⟨T,hT⟩ := exists_nat_gt (max (C^2/ε) 0)
+  obtain ⟨T,hT⟩ := exists_nat_gt (max (C^(2 : ℕ)/ε) 0)
   have hTR : 0 < (T : ℝ) := (le_max_right _ _).trans_lt hT
   have hTN : 0 < T := by exact_mod_cast hTR
-  have hsmall : C^2/(T : ℝ) ≤ ε := by
+  have hsmall : C^(2 : ℕ)/(T : ℝ) ≤ ε := by
     apply (div_le_iff₀ hTR).mpr
     have h := (div_lt_iff₀ hε).mp ((le_max_left _ _).trans_lt hT)
     linarith
@@ -128,10 +128,10 @@ private lemma tail_bound (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
 private lemma prefix_remainder (P : Finset ℕ) (M T : ℕ) :
     mobiusDivisorSelectionEnergy M P-∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n =
       ∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => T ≤ M/r),
-        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+        (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy_eq_inclusive_squarefree, prefix_eq]
   have h := sum_filter_add_sum_filter_not (s:=fixedCoreSquarefreeIndices P M)
-    (fun r => M/r<T) (fun r => (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2)
+    (fun r => M/r<T) (fun r => (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ))
   simpa only [not_lt] using (eq_sub_of_add_eq' h).symm
 
 /-- Explicit limiting mass of one quotient block, including its empty zero cell. -/
@@ -152,7 +152,7 @@ private lemma block_zero (P : Finset ℕ) (M : ℕ) :
   omega
 
 private lemma block_limit (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) (n : ℕ) :
-    Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2) atTop
+    Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 (mobiusDivisorFixedCoreBlockMass P n)) := by
   by_cases hn : n=0
   · simp [hn, block_zero, mobiusDivisorFixedCoreBlockMass]
@@ -165,10 +165,10 @@ theorem exists_mobiusDivisorSelectionEnergy_uniform_block_approx
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
     (ε : ℝ) (hε : 0 < ε) :
     ∃ T : ℕ, 1 ≤ T ∧ ∀ M : ℕ,
-      0 ≤ mobiusDivisorSelectionEnergy M P/(M : ℝ)^2-
-        ∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2 ∧
-      mobiusDivisorSelectionEnergy M P/(M : ℝ)^2-
-        ∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2 ≤ ε := by
+      0 ≤ mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ)-
+        ∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ) ∧
+      mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ)-
+        ∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ) ≤ ε := by
   obtain ⟨T,hT,hbound⟩ := tail_bound P hP ε hε
   refine ⟨T,hT,fun M => ?_⟩
   rw [← sum_div, ← sub_div, prefix_remainder]
@@ -176,25 +176,25 @@ theorem exists_mobiusDivisorSelectionEnergy_uniform_block_approx
   · exact div_nonneg (sum_nonneg (fun r _ => term_nonneg P M r)) (sq_nonneg _)
   · by_cases hM : M=0
     · simp [hM, hε.le]
-    · have hMR : 0 < (M : ℝ)^2 := sq_pos_of_ne_zero (by exact_mod_cast hM)
+    · have hMR : 0 < (M : ℝ)^(2 : ℕ) := sq_pos_of_ne_zero (by exact_mod_cast hM)
       apply (div_le_iff₀ hMR).mpr
       exact hbound M
 
 private lemma prefix_limit (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) (T : ℕ) :
     Tendsto (fun M : ℕ => ∑ n ∈ range T,
-      mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2) atTop
+      mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 (∑ n ∈ range T, mobiusDivisorFixedCoreBlockMass P n)) :=
   tendsto_finsetSum _ (fun n _ => block_limit P hP n)
 
 private lemma prefix_le (P : Finset ℕ) (M T : ℕ) :
-    (∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2) ≤
-      mobiusDivisorSelectionEnergy M P/(M : ℝ)^2 := by
+    (∑ n ∈ range T, mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ)) ≤
+      mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ) := by
   apply sub_nonneg.mp
   rw [← sum_div, ← sub_div, prefix_remainder]
   exact div_nonneg (sum_nonneg (fun r _ => term_nonneg P M r)) (sq_nonneg _)
 
 private lemma energy_limit_exists (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) :
-    ∃ κ : ℝ, Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^2) atTop (𝓝 κ) := by
+    ∃ κ : ℝ, Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ)) atTop (𝓝 κ) := by
   apply cauchySeq_tendsto_of_complete
   apply Metric.cauchySeq_iff.mpr
   intro ε hε
@@ -220,7 +220,7 @@ theorem mobiusDivisorFixedCoreBlockMass_nonneg
 
 private lemma energy_series_limit (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) :
     Summable (mobiusDivisorFixedCoreBlockMass P) ∧
-      Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^2) atTop
+      Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ)) atTop
         (𝓝 (∑' n, mobiusDivisorFixedCoreBlockMass P n)) := by
   obtain ⟨κ,hκ⟩ := energy_limit_exists P hP
   have hprefix (T : ℕ) : (∑ n ∈ range T, mobiusDivisorFixedCoreBlockMass P n) ≤ κ :=
@@ -252,7 +252,7 @@ theorem summable_mobiusDivisorFixedCoreBlockMass
 limit, the sum of all actual quotient masses. -/
 theorem tendsto_mobiusDivisorSelectionEnergy_div_sq
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) :
-    Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^2) atTop
+    Tendsto (fun M : ℕ => mobiusDivisorSelectionEnergy M P/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 (∑' n, mobiusDivisorFixedCoreBlockMass P n)) :=
   (energy_series_limit P hP).2
 

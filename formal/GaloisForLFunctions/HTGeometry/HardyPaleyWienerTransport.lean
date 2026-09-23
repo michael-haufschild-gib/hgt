@@ -184,7 +184,7 @@ theorem paleyWienerSqrtScale_pos : 0 < paleyWienerSqrtScale := by
   unfold paleyWienerSqrtScale
   exact Real.sqrt_pos.mpr paleyWienerScale_pos
 
-theorem paleyWienerSqrtScale_sq : paleyWienerSqrtScale ^ 2 = paleyWienerScale := by
+theorem paleyWienerSqrtScale_sq : paleyWienerSqrtScale ^ (2 : ℕ) = paleyWienerScale := by
   unfold paleyWienerSqrtScale
   exact Real.sq_sqrt paleyWienerScale_pos.le
 
@@ -248,7 +248,7 @@ theorem paleyPositiveDatum_expFeature {a : ℝ} (ha : 0 < a) :
       rw [RHTower.cauchyDatumUpper,
         indicator_of_mem (show x ∈ Ioi (0 : ℝ) by exact hx)]
     rw [hdatum]
-    have hsqC : (paleyWienerSqrtScale : ℂ) ^ 2 = paleyWienerScale := by
+    have hsqC : (paleyWienerSqrtScale : ℂ) ^ (2 : ℕ) = paleyWienerScale := by
       exact_mod_cast paleyWienerSqrtScale_sq
     have hsne : (paleyWienerSqrtScale : ℂ) ≠ 0 := by
       exact_mod_cast paleyWienerSqrtScale_pos.ne'
@@ -439,7 +439,7 @@ theorem paleyWiener_rankOne_intertwining {a : ℝ} (ha : 0 < a)
     neg_neg, smul_smul]
   rw [smul_apply, InnerProductSpace.rankOne_apply, map_smul]
   simp only [map_smul, smul_smul]
-  have hsqC : (paleyWienerSqrtScale : ℂ) ^ 2 = paleyWienerScale := by
+  have hsqC : (paleyWienerSqrtScale : ℂ) ^ (2 : ℕ) = paleyWienerScale := by
     exact_mod_cast paleyWienerSqrtScale_sq
   congr 1
   ring_nf

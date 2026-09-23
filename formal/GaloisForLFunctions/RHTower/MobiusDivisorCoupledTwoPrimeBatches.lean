@@ -192,7 +192,7 @@ theorem divisorPrimeClipWeight_small_quotient_window {K b N p : ℕ}
   have he' : divisorPrimeClipWeight (K*(b+1)*N) p*(p:ℝ)*
       (Real.sqrt (K+1:ℕ)-Real.sqrt K)≤(K:ℝ)*N := by
     calc
-      _ = divisorPrimeClipWeight (K*(b+1)*N) p*(Real.sqrt p)^2*
+      _ = divisorPrimeClipWeight (K*(b+1)*N) p*(Real.sqrt p)^(2 : ℕ)*
           (Real.sqrt (K+1:ℕ)-Real.sqrt K) := by rw [hsp]
       _ = divisorPrimeClipWeight (K*(b+1)*N) p*Real.sqrt p*
           (Real.sqrt (K+1:ℕ)-Real.sqrt K)*Real.sqrt p := by ring
@@ -215,14 +215,14 @@ theorem eventually_fixed_prime_window_card_ge (b n : ℕ) (hb : 1≤b) :
   have hcast : Tendsto (fun N : ℕ => (b:ℝ)*N) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop hbR
   have hc := hcast.eventually (GaloisForLFunctions.HTGeometry.eventually_primeCount_window_ge hratio)
-  filter_upwards [hc,eventually_ge_atTop (max 2 ((4*b*n)^2))] with N hc hN
+  filter_upwards [hc,eventually_ge_atTop (max 2 ((4*b*n)^(2 : ℕ)))] with N hc hN
   have harg : (((b:ℝ)+1)/b)*((b:ℝ)*N)=((b+1)*N:ℕ) := by push_cast; field_simp
   have hbN : (b:ℝ)*N=(b*N:ℕ) := by push_cast; rfl
   rw [harg,hbN,Nat.floor_natCast,Nat.floor_natCast,
     ← GaloisForLFunctions.HTGeometry.card_primesInIoc (show b*N≤(b+1)*N by nlinarith)] at hc
   have hr : (((b:ℝ)+1)/b-1)/2=1/(2*b) := by field_simp; ring
   rw [hr] at hc
-  have hx1 : (1:ℝ)<(b*N:ℕ) := by exact_mod_cast (show 1<b*N by have := le_max_left 2 ((4*b*n)^2); nlinarith)
+  have hx1 : (1:ℝ)<(b*N:ℕ) := by exact_mod_cast (show 1<b*N by have := le_max_left 2 ((4*b*n)^(2 : ℕ)); nlinarith)
   have hx0 : (0:ℝ)<(b*N:ℕ) := by linarith only [hx1]
   have hl := Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr hx0)
   rw [Real.log_sqrt hx0.le] at hl
@@ -233,9 +233,9 @@ theorem eventually_fixed_prime_window_card_ge (b n : ℕ) (hb : 1≤b) :
     have hm := mul_le_mul_of_nonneg_left hl hs0
     nlinarith only [hm,hs,hs0]
   have hroot : 4*(b:ℝ)*n≤Real.sqrt (b*N:ℕ) := by
-    have hn : (4*(b:ℝ)*n)^2≤(b*N:ℕ) := by
-      exact_mod_cast (show (4*b*n)^2≤b*N by
-        have := le_max_right 2 ((4*b*n)^2); nlinarith)
+    have hn : (4*(b:ℝ)*n)^(2 : ℕ)≤(b*N:ℕ) := by
+      exact_mod_cast (show (4*b*n)^(2 : ℕ)≤b*N by
+        have := le_max_right 2 ((4*b*n)^(2 : ℕ)); nlinarith)
     nlinarith [Nat.cast_nonneg (α := ℝ) n]
   have hnn : (n:ℝ)≤(GaloisForLFunctions.HTGeometry.primesInIoc (b*N) ((b+1)*N)).card := calc
     _ = (1/(2*(b:ℝ)))*(4*b*n/2) := by field_simp; ring
@@ -284,7 +284,7 @@ private theorem window_data {b N K p : ℕ} (hb : 15≤b) (hN : 1≤N)
   · nlinarith [hk.2.2.1]
 
 private theorem prepared_core_energy (M : ℕ) (hM : 15≤M) :
-    mobiusDivisorSelectionEnergy M mobiusDivisorCoupledTwoCore≤(2:ℝ)^15*722*(M:ℝ)^2 := by
+    mobiusDivisorSelectionEnergy M mobiusDivisorCoupledTwoCore≤(2:ℝ)^(15 : ℕ)*722*(M:ℝ)^(2 : ℕ) := by
   have hprimes : ∀ p∈mobiusDivisorCoupledTwoCore,p.Prime ∧ p<M := by
     intro p hp
     obtain ⟨hp,hprime⟩ := mem_filter.mp (mem_erase.mp hp).2
@@ -294,11 +294,11 @@ private theorem prepared_core_energy (M : ℕ) (hM : 15≤M) :
     apply (card_le_card (erase_subset 2 (mobiusDivisorSelectionPrimes 15))).trans
     simpa only [mobiusDivisorSelectionPrimes,card_range] using
       (card_filter_le (s := range 15) (p := Nat.Prime))
-  have hpow : (2:ℝ)^mobiusDivisorCoupledTwoCore.card≤2^15 := by gcongr; norm_num
+  have hpow : (2:ℝ)^mobiusDivisorCoupledTwoCore.card≤2^(15 : ℕ) := by gcongr; norm_num
   have hdiag := sum_mobiusDivisorDilationChannel_sq_le_quadratic M
   rw [mobiusDivisorSelectionEnergy_empty] at he
   have hmult := mul_le_mul_of_nonneg_left hdiag (by positivity : (0:ℝ)≤2^mobiusDivisorCoupledTwoCore.card)
-  have hlast := mul_le_mul_of_nonneg_right hpow (by positivity : (0:ℝ)≤722*(M:ℝ)^2)
+  have hlast := mul_le_mul_of_nonneg_right hpow (by positivity : (0:ℝ)≤722*(M:ℝ)^(2 : ℕ))
   exact he.trans (hmult.trans (by nlinarith only [hlast]))
 
 /-- One fixed set of source windows supplies arbitrarily long coupled batches under a uniform quadratic prefix ceiling. -/
@@ -308,7 +308,7 @@ theorem exists_mobiusDivisorCoupledTwo_bounded_batches :
         l.toFinset⊆mobiusDivisorCoupledTwoPool b N ∧ ∀ k : ℕ,
         mobiusDivisorSelectionEnergy (14*(b+1)*N)
           (mobiusDivisorCoupledTwoCore∪(l.take k).toFinset)≤
-          (2:ℝ)^15*722*(14*(b+1)*N:ℕ)^2 := by
+          (2:ℝ)^(15 : ℕ)*722*(14*(b+1)*N:ℕ)^(2 : ℕ) := by
   obtain ⟨ε,hε,hdescent⟩ := exists_mobiusDivisorCoupledTwo_prime_energy_descent
   obtain ⟨b,hbε⟩ := exists_nat_gt (140/ε)
   let B := max 15 b

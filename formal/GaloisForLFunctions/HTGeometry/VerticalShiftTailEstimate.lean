@@ -24,10 +24,10 @@ variable {σ : ℝ}
 
 /-- The shifted inverse squares are summable. -/
 theorem summable_inv_sq_shift (hσ : 0 < σ) :
-    Summable (fun n : ℕ => 1 / (σ + n) ^ 2) := by
+    Summable (fun n : ℕ => 1 / (σ + n) ^ (2 : ℕ)) := by
   have hmaj : Summable (fun n : ℕ => 1 / ((σ + n) * (σ + n + 1))) :=
     (hasSum_one_div_shift_mul_succ hσ).summable
-  have hshift : Summable (fun n : ℕ => 1 / (σ + ((n + 1 : ℕ) : ℝ)) ^ 2) := by
+  have hshift : Summable (fun n : ℕ => 1 / (σ + ((n + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) := by
     refine hmaj.of_nonneg_of_le (fun n => ?_) (fun n => ?_)
     · have hpos : (0 : ℝ) < σ + ((n + 1 : ℕ) : ℝ) := by positivity
       positivity
@@ -40,18 +40,18 @@ theorem summable_inv_sq_shift (hσ : 0 < σ) :
 
 /-- The shifted inverse squares on a vertical line are summable. -/
 theorem summable_inv_sq_vertical (hσ : 0 < σ) (t : ℝ) :
-    Summable (fun n : ℕ => 1 / ((σ + n) ^ 2 + t ^ 2)) := by
+    Summable (fun n : ℕ => 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) := by
   refine (summable_inv_sq_shift hσ).of_nonneg_of_le (fun n => ?_) (fun n => ?_)
   · have hpos : (0 : ℝ) < σ + n := by positivity
     positivity
   · have hpos : (0 : ℝ) < σ + n := by positivity
-    have hden : (0 : ℝ) < (σ + n) ^ 2 + t ^ 2 := by nlinarith
+    have hden : (0 : ℝ) < (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by nlinarith
     rw [div_le_div_iff₀ hden (by positivity)]
     nlinarith [sq_nonneg t]
 
 /-- **The shifted inverse-square sum on a vertical line decays like `1/t`.** -/
 theorem tsum_inv_sq_vertical_le (hσ : 0 < σ) {t : ℝ} (ht : 2 ≤ t) :
-    ∑' n : ℕ, 1 / ((σ + n) ^ 2 + t ^ 2) ≤ 4 / t := by
+    ∑' n : ℕ, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ 4 / t := by
   have htpos : (0 : ℝ) < t := by linarith
   set N : ℕ := ⌈t⌉₊ with hN
   have hNt : (t : ℝ) ≤ N := Nat.le_ceil t
@@ -60,24 +60,24 @@ theorem tsum_inv_sq_vertical_le (hσ : 0 < σ) {t : ℝ} (ht : 2 ≤ t) :
     linarith
   have hsum := summable_inv_sq_vertical hσ t
   rw [← hsum.sum_add_tsum_nat_add N]
-  have hhead : ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2) ≤ 2 / t := by
-    have hterm : ∀ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ 2 + t ^ 2) ≤ 1 / t ^ 2 := by
+  have hhead : ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ 2 / t := by
+    have hterm : ∀ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ 1 / t ^ (2 : ℕ) := by
       intro n _
       have hpos : (0 : ℝ) < σ + n := by positivity
-      have hden : (0 : ℝ) < (σ + n) ^ 2 + t ^ 2 := by nlinarith
+      have hden : (0 : ℝ) < (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by nlinarith
       rw [div_le_div_iff₀ hden (by positivity)]
       nlinarith
-    calc ∑ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ 2 + t ^ 2)
-        ≤ ∑ _n ∈ Finset.range N, 1 / t ^ 2 := Finset.sum_le_sum hterm
-      _ = (N : ℝ) * (1 / t ^ 2) := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-      _ ≤ (t + 1) * (1 / t ^ 2) := by
-          have : (0 : ℝ) < 1 / t ^ 2 := by positivity
+    calc ∑ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ))
+        ≤ ∑ _n ∈ Finset.range N, 1 / t ^ (2 : ℕ) := Finset.sum_le_sum hterm
+      _ = (N : ℝ) * (1 / t ^ (2 : ℕ)) := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      _ ≤ (t + 1) * (1 / t ^ (2 : ℕ)) := by
+          have : (0 : ℝ) < 1 / t ^ (2 : ℕ) := by positivity
           nlinarith
       _ ≤ 2 / t := by
-          rw [show (t + 1) * (1 / t ^ 2) = (t + 1) / t ^ 2 by ring,
-            div_le_div_iff₀ (by positivity : (0 : ℝ) < t ^ 2) htpos]
+          rw [show (t + 1) * (1 / t ^ (2 : ℕ)) = (t + 1) / t ^ (2 : ℕ) by ring,
+            div_le_div_iff₀ (by positivity : (0 : ℝ) < t ^ (2 : ℕ)) htpos]
           nlinarith
-  have htail : ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2) ≤ 2 / t := by
+  have htail : ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ 2 / t := by
     set τ : ℝ := σ + (N : ℝ) - 1 with hτ
     have hτpos : (0 : ℝ) < τ := by
       have : (1 : ℝ) ≤ N := by
@@ -86,11 +86,11 @@ theorem tsum_inv_sq_vertical_le (hσ : 0 < σ) {t : ℝ} (ht : 2 ≤ t) :
       rw [hτ]
       linarith
     have hmaj := hasSum_one_div_shift_mul_succ hτpos
-    have hle : ∀ n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2)
+    have hle : ∀ n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ))
         ≤ 1 / ((τ + n) * (τ + n + 1)) := by
       intro n
       have hpos : (0 : ℝ) < τ + n := by positivity
-      have hden : (0 : ℝ) < (σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2 := by
+      have hden : (0 : ℝ) < (σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
         have : (0 : ℝ) < σ + ((n + N : ℕ) : ℝ) := by positivity
         nlinarith
       rw [div_le_div_iff₀ hden (by positivity)]
@@ -100,13 +100,13 @@ theorem tsum_inv_sq_vertical_le (hσ : 0 < σ) {t : ℝ} (ht : 2 ≤ t) :
         ring
       rw [hcast]
       nlinarith [sq_nonneg t, hpos]
-    have hsummable : Summable (fun n : ℕ => 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2)) := by
+    have hsummable : Summable (fun n : ℕ => 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ))) := by
       have := (summable_inv_sq_vertical hσ t).comp_injective
         (add_left_injective N)
       exact hmaj.summable.of_nonneg_of_le (fun n => by
         have : (0 : ℝ) < σ + ((n + N : ℕ) : ℝ) := by positivity
         positivity) hle
-    calc ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2)
+    calc ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ))
         ≤ ∑' n : ℕ, 1 / ((τ + n) * (τ + n + 1)) :=
           hsummable.tsum_le_tsum hle hmaj.summable
       _ = 1 / τ := hmaj.tsum_eq
@@ -118,20 +118,20 @@ theorem tsum_inv_sq_vertical_le (hσ : 0 < σ) {t : ℝ} (ht : 2 ≤ t) :
           have hτhalf : t / 2 ≤ τ := le_trans ht2 hτt
           rw [div_le_div_iff₀ hτpos htpos]
           nlinarith
-  have hcast : ∀ n : ℕ, (σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2
-      = (σ + ((n : ℝ) + (N : ℝ))) ^ 2 + t ^ 2 := by
+  have hcast : ∀ n : ℕ, (σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ)
+      = (σ + ((n : ℝ) + (N : ℝ))) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     intro n
     push_cast
     ring
-  calc (∑ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ 2 + t ^ 2))
-        + ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ 2 + t ^ 2)
+  calc (∑ n ∈ Finset.range N, 1 / ((σ + (n : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ)))
+        + ∑' n : ℕ, 1 / ((σ + ((n + N : ℕ) : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ))
       ≤ 2 / t + 2 / t := add_le_add hhead htail
     _ = 4 / t := by ring
 
 
 /-- The square of the modulus on a shifted vertical point. -/
 theorem norm_sq_vertical_add_nat (t : ℝ) (n : ℕ) :
-    ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 = (σ + n) ^ 2 + t ^ 2 := by
+    ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) = (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
   have hre : ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)).re = σ + n := by simp
   have him : ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)).im = t := by simp
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hre, him]
@@ -140,19 +140,19 @@ theorem norm_sq_vertical_add_nat (t : ℝ) (n : ℕ) :
 /-- A power of the modulus at least two splits off the height. -/
 theorem pow_norm_vertical_add_nat_ge (hσ : 0 < σ) {t : ℝ} (ht : 0 < t) {p : ℕ} (hp : 2 ≤ p)
     (n : ℕ) :
-    t ^ (p - 2) * ((σ + n) ^ 2 + t ^ 2)
+    t ^ (p - 2) * ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))
       ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ p := by
   have hge : t ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ := norm_vertical_add_nat_ge_im t n
   have hsplit : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ p
       = ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (p - 2)
-        * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 := by
+        * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) := by
     rw [← pow_add]
     congr 1
     omega
   rw [hsplit, norm_sq_vertical_add_nat]
   have hfac : t ^ (p - 2) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (p - 2) :=
     pow_le_pow_left₀ (le_of_lt ht) hge _
-  have hpos : (0 : ℝ) ≤ (σ + n) ^ 2 + t ^ 2 := by positivity
+  have hpos : (0 : ℝ) ≤ (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
   exact mul_le_mul_of_nonneg_right hfac hpos
 
 /-- **Telescoping gain on a vertical line.**  A unit-shift defect of order `p` whose forward
@@ -177,23 +177,23 @@ theorem norm_le_of_shift_defect {R E : ℂ → ℂ} {C : ℝ} (hσ : 0 < σ) (hC
     push_cast
     exact this
   -- the majorant
-  have hmaj : ∀ n : ℕ, ‖g n‖ ≤ (C / t ^ (p - 2)) * (1 / ((σ + n) ^ 2 + t ^ 2)) := by
+  have hmaj : ∀ n : ℕ, ‖g n‖ ≤ (C / t ^ (p - 2)) * (1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) := by
     intro n
     refine le_trans (hE n) ?_
-    have hden : (0 : ℝ) < t ^ (p - 2) * ((σ + n) ^ 2 + t ^ 2) := by positivity
+    have hden : (0 : ℝ) < t ^ (p - 2) * ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by positivity
     have hge := pow_norm_vertical_add_nat_ge hσ htpos hp (σ := σ) n
     have hpow : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ p :=
       lt_of_lt_of_le hden hge
     rw [div_le_iff₀ hpow]
-    have : (C / t ^ (p - 2)) * (1 / ((σ + n) ^ 2 + t ^ 2))
-        * (t ^ (p - 2) * ((σ + n) ^ 2 + t ^ 2)) = C := by
+    have : (C / t ^ (p - 2)) * (1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
+        * (t ^ (p - 2) * ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) = C := by
       field_simp
-    calc C = (C / t ^ (p - 2)) * (1 / ((σ + n) ^ 2 + t ^ 2))
-          * (t ^ (p - 2) * ((σ + n) ^ 2 + t ^ 2)) := this.symm
-      _ ≤ (C / t ^ (p - 2)) * (1 / ((σ + n) ^ 2 + t ^ 2))
+    calc C = (C / t ^ (p - 2)) * (1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
+          * (t ^ (p - 2) * ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) := this.symm
+      _ ≤ (C / t ^ (p - 2)) * (1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
           * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ p := by
           refine mul_le_mul_of_nonneg_left hge ?_
-          have : (0 : ℝ) < (σ + n) ^ 2 + t ^ 2 := by positivity
+          have : (0 : ℝ) < (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
           positivity
   have hsummableNorm : Summable (fun n : ℕ => ‖g n‖) := by
     refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) hmaj ?_
@@ -222,14 +222,14 @@ theorem norm_le_of_shift_defect {R E : ℂ → ℂ} {C : ℝ} (hσ : 0 < σ) (hC
     exact this
   refine le_trans hnorm ?_
   have hbound : ∑' n : ℕ, ‖g n‖
-      ≤ (C / t ^ (p - 2)) * ∑' n : ℕ, 1 / ((σ + n) ^ 2 + t ^ 2) := by
+      ≤ (C / t ^ (p - 2)) * ∑' n : ℕ, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     rw [← tsum_mul_left]
     exact hsummableNorm.tsum_le_tsum hmaj
       ((summable_inv_sq_vertical hσ t).mul_left (C / t ^ (p - 2)))
   refine le_trans hbound ?_
   have hfactor : (0 : ℝ) ≤ C / t ^ (p - 2) := by positivity
   have htail := tsum_inv_sq_vertical_le hσ ht (σ := σ)
-  have hmul : (C / t ^ (p - 2)) * ∑' n : ℕ, 1 / ((σ + n) ^ 2 + t ^ 2)
+  have hmul : (C / t ^ (p - 2)) * ∑' n : ℕ, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))
       ≤ (C / t ^ (p - 2)) * (4 / t) := mul_le_mul_of_nonneg_left htail hfactor
   refine le_trans hmul ?_
   have hpow : t ^ (p - 2) * t = t ^ (p - 1) := by

@@ -275,14 +275,14 @@ theorem quantumBinomial_expansion_of_lt
         rw [← Finset.sum_add_distrib]
         exact hinner
       let x0 : Module.End K M :=
-        (q ^ 0 * quantumChoose q n 0) • (Y ^ 0 * X ^ (n + 1 - 0))
+        (q ^ (0 : ℕ) * quantumChoose q n 0) • (Y ^ (0 : ℕ) * X ^ (n + 1 - 0))
       let yn : Module.End K M :=
         quantumChoose q n n • (Y ^ (n + 1) * X ^ (n + 1 - (n + 1)))
       let rn : Module.End K M :=
         quantumChoose q (n + 1) (n + 1) •
           (Y ^ (n + 1) * X ^ (n + 1 - (n + 1)))
       let r0 : Module.End K M :=
-        quantumChoose q (n + 1) 0 • (Y ^ 0 * X ^ (n + 1 - 0))
+        quantumChoose q (n + 1) 0 • (Y ^ (0 : ℕ) * X ^ (n + 1 - 0))
       have hx0 : x0 = X ^ (n + 1) := by simp [x0]
       have hyn : yn = Y ^ (n + 1) := by
         simp [yn, quantumChoose_self hq hnlt]
@@ -367,7 +367,7 @@ theorem quantumBinomial_pow_primitive
     rw [← Finset.sum_add_distrib]
     exact hmid
   let x0 : Module.End K M :=
-    (q ^ 0 * quantumChoose q d 0) • (Y ^ 0 * X ^ (d + 1 - 0))
+    (q ^ (0 : ℕ) * quantumChoose q d 0) • (Y ^ (0 : ℕ) * X ^ (d + 1 - 0))
   let yd : Module.End K M :=
     quantumChoose q d d • (Y ^ (d + 1) * X ^ (d + 1 - (d + 1)))
   have hx0 : x0 = X ^ (d + 1) := by simp [x0]

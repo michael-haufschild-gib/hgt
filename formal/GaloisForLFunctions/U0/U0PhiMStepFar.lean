@@ -35,9 +35,9 @@ theorem persist_past_M {b w : ℂ} {M : ℝ} (hM : max 2 ‖b‖ ≤ M) (hw : M 
     M < ‖quadratic b w‖ := by
   have hM2 : (2 : ℝ) ≤ M := le_trans (le_max_left _ _) hM
   have hMb : ‖b‖ ≤ M := le_trans (le_max_right _ _) hM
-  have hstep : ‖w‖ ^ 2 - ‖b‖ ≤ ‖quadratic b w‖ := by
-    have : ‖w ^ 2‖ - ‖b‖ ≤ ‖w ^ 2 + b‖ := by
-      have := norm_sub_norm_le (w ^ 2) (-b)
+  have hstep : ‖w‖ ^ (2 : ℕ) - ‖b‖ ≤ ‖quadratic b w‖ := by
+    have : ‖w ^ (2 : ℕ)‖ - ‖b‖ ≤ ‖w ^ (2 : ℕ) + b‖ := by
+      have := norm_sub_norm_le (w ^ (2 : ℕ)) (-b)
       simpa [sub_neg_eq_add] using this
     rwa [norm_pow] at this
   nlinarith [hstep, hw, hM2, hMb, norm_nonneg w]

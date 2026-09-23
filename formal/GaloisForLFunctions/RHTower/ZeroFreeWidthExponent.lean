@@ -19,7 +19,7 @@ the hypothesis       :   w = 1/2                              →  (log t)/(4π)
 ```
 
 So in the natural unit the classical region is `O(1)`, the Vinogradov–Korobov region is
-`(log t)^{1/3}` up to a `log log` factor, and the hypothesis asserts `(log t)^1`.
+`(log t)^{1/3}` up to a `log log` factor, and the hypothesis asserts `(log t)^(1 : ℕ)`.
 
 > **The exponent of `log t` in the zero-free width, measured in mean spacings, has moved from `0` to
 > `1/3` in a century.  The hypothesis is exponent `1`.  The remaining gap is the exponent interval

@@ -40,8 +40,8 @@ theorem directionalPairReturn_eq_all_imp_inner_sq_eq
         directionalPairReturnRecord left i j time =
           directionalPairReturnRecord right i j time) :
     ∀ i j direction,
-      inner ℝ direction (left i - left j) ^ 2 =
-        inner ℝ direction (right i - right j) ^ 2 := by
+      inner ℝ direction (left i - left j) ^ (2 : ℕ) =
+        inner ℝ direction (right i - right j) ^ (2 : ℕ) := by
   intro i j direction
   apply cos_mul_eq_cos_mul_all_imp_sq_eq
   intro t
@@ -54,15 +54,15 @@ directional projections. -/
 theorem inner_sq_all_eq_imp_eq_or_neg
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     {x y : V}
-    (h : ∀ u : V, inner ℝ u x ^ 2 = inner ℝ u y ^ 2) :
+    (h : ∀ u : V, inner ℝ u x ^ (2 : ℕ) = inner ℝ u y ^ (2 : ℕ)) :
     y = x ∨ y = -x := by
   let A := inner ℝ x x
   let B := inner ℝ y y
   let C := inner ℝ x y
-  have hA : A ^ 2 = C ^ 2 := by
+  have hA : A ^ (2 : ℕ) = C ^ (2 : ℕ) := by
     dsimp [A, C]
     exact h x
-  have hB : C ^ 2 = B ^ 2 := by
+  have hB : C ^ (2 : ℕ) = B ^ (2 : ℕ) := by
     dsimp [B, C]
     simpa [real_inner_comm] using h y
   have hAnonneg : 0 ≤ A := by
@@ -407,7 +407,7 @@ theorem directionalPairReturnRecord_secondDeriv_zero
     deriv
       (deriv (fun s : ℝ =>
         directionalPairReturnRecord energy i j (s • direction))) 0 =
-      -(inner ℝ direction (energy i - energy j) ^ 2) / 2 := by
+      -(inner ℝ direction (energy i - energy j) ^ (2 : ℕ)) / 2 := by
   let a := inner ℝ direction (energy i - energy j)
   have hpath :
       (fun s : ℝ =>
@@ -441,7 +441,7 @@ theorem directionalPairReturnCurvature_eq_inner_sq
     {I V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (energy : I → V) (i j : I) (direction : V) :
     directionalPairReturnCurvature energy i j direction =
-      inner ℝ direction (energy i - energy j) ^ 2 := by
+      inner ℝ direction (energy i - energy j) ^ (2 : ℕ) := by
   rw [directionalPairReturnCurvature,
     directionalPairReturnRecord_secondDeriv_zero]
   ring

@@ -74,9 +74,9 @@ def finiteCharacterSum {α : Type*} [Fintype α]
 theorem normSq_finiteCharacterSum_eq
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) (ξ : Fin k → ZMod q) :
-    ‖finiteCharacterSum q k f ξ‖ ^ 2 =
+    ‖finiteCharacterSum q k f ξ‖ ^ (2 : ℕ) =
       ∑ p : α × α, finiteProductCharacter q k ξ (f p.2 - f p.1) := by
-  have hnorm : (‖finiteCharacterSum q k f ξ‖ : ℂ) ^ 2 =
+  have hnorm : (‖finiteCharacterSum q k f ξ‖ : ℂ) ^ (2 : ℕ) =
       conj (finiteCharacterSum q k f ξ) * finiteCharacterSum q k f ξ := by
     rw [← Complex.ofReal_pow]
     rw [← Complex.normSq_eq_norm_sq,
@@ -94,7 +94,7 @@ theorem normSq_finiteCharacterSum_eq
 theorem sum_normSq_finiteCharacterSum_eq_energy
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) :
-    ((∑ ξ : Fin k → ZMod q, ‖finiteCharacterSum q k f ξ‖ ^ 2 : ℝ) : ℂ) =
+    ((∑ ξ : Fin k → ZMod q, ‖finiteCharacterSum q k f ξ‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       (q ^ k : ℂ) *
         Fintype.card {p : α × α // f p.1 = f p.2} := by
   push_cast

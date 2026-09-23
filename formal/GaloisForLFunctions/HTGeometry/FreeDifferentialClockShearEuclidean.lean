@@ -38,7 +38,7 @@ theorem freeClockShear_euclideanVertexDistance (n : ℕ) :
   rw [completedPseudoDiffOpDominantRelativePosition_freeClockShear]
   rw [EuclideanSpace.norm_eq]
   simp [DiffOp.centeredCoweight, Fin.sum_univ_two]
-  rw [show (n : ℝ) ^ 2 + (n : ℝ) ^ 2 = 2 * (n : ℝ) ^ 2 by ring,
+  rw [show (n : ℝ) ^ (2 : ℕ) + (n : ℝ) ^ (2 : ℕ) = 2 * (n : ℝ) ^ (2 : ℕ) by ring,
     Real.sqrt_mul (by positivity : (0 : ℝ) ≤ 2), Real.sqrt_sq_eq_abs]
   simp
 

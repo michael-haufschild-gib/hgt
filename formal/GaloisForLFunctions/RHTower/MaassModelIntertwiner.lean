@@ -52,8 +52,8 @@ private theorem modelStep_pair (lam : SelbergExceptionalEigenvalue) (n : ℕ) :
       modelStep lam (n : ℤ) * modelStep lam (-((n : ℤ)+1)) := by
   have he := lam.eigenvalueOfComplementaryExponent_eq
   unfold eigenvalueOfComplementaryExponent at he
-  have hs : ((2 * lam.complementaryExponent : ℝ) : ℂ)^2 = 1-4*(lam.1 : ℂ) := by
-    exact_mod_cast (show (2 * lam.complementaryExponent)^2 = 1-4*lam.1 by nlinarith [he])
+  have hs : ((2 * lam.complementaryExponent : ℝ) : ℂ)^(2 : ℕ) = 1-4*(lam.1 : ℂ) := by
+    exact_mod_cast (show (2 * lam.complementaryExponent)^(2 : ℕ) = 1-4*lam.1 by nlinarith [he])
   unfold modelStep
   push_cast at hs ⊢
   linear_combination -hs/4

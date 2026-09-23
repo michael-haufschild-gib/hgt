@@ -29,17 +29,17 @@ namespace RHTower
 
 /-- `x³e^{−cx²}` is an exact primitive of the quartic Gaussian combination. -/
 theorem hasDerivAt_cubeGaussian (c x : ℝ) :
-    HasDerivAt (fun y : ℝ => y ^ 3 * Real.exp (-(c * y ^ 2)))
-      ((3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2))) x := by
-  have h1 : HasDerivAt (fun y : ℝ => -(c * y ^ 2)) (-(c * (2 * x))) x := by
+    HasDerivAt (fun y : ℝ => y ^ (3 : ℕ) * Real.exp (-(c * y ^ (2 : ℕ))))
+      ((3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ)))) x := by
+  have h1 : HasDerivAt (fun y : ℝ => -(c * y ^ (2 : ℕ))) (-(c * (2 * x))) x := by
     have h := (hasDerivAt_pow 2 x).const_mul c
     have h2 := h.neg
     refine h2.congr_deriv ?_
     push_cast
     ring
-  have he : HasDerivAt (fun y : ℝ => Real.exp (-(c * y ^ 2)))
-      (Real.exp (-(c * x ^ 2)) * (-(c * (2 * x)))) x := h1.exp
-  have hp : HasDerivAt (fun y : ℝ => y ^ 3) (3 * x ^ 2) x := by
+  have he : HasDerivAt (fun y : ℝ => Real.exp (-(c * y ^ (2 : ℕ))))
+      (Real.exp (-(c * x ^ (2 : ℕ))) * (-(c * (2 * x)))) x := h1.exp
+  have hp : HasDerivAt (fun y : ℝ => y ^ (3 : ℕ)) (3 * x ^ (2 : ℕ)) x := by
     have := hasDerivAt_pow 3 x
     refine this.congr_deriv ?_
     push_cast
@@ -49,13 +49,13 @@ theorem hasDerivAt_cubeGaussian (c x : ℝ) :
 
 /-- **Exact quartic moment identity.**  The primitive evaluates at the aperture endpoints. -/
 theorem integral_quartic_gaussian (c : ℝ) :
-    (∫ x in (-1 : ℝ)..1, (3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2)))
+    (∫ x in (-1 : ℝ)..1, (3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))))
       = 2 * Real.exp (-c) := by
-  have hcont : Continuous fun x : ℝ => (3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+  have hcont : Continuous fun x : ℝ => (3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     fun_prop
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
-    (f := fun y : ℝ => y ^ 3 * Real.exp (-(c * y ^ 2)))
-    (f' := fun x : ℝ => (3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2)))
+    (f := fun y : ℝ => y ^ (3 : ℕ) * Real.exp (-(c * y ^ (2 : ℕ))))
+    (f' := fun x : ℝ => (3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))))
     (a := (-1 : ℝ)) (b := (1 : ℝ)) (fun x _ => hasDerivAt_cubeGaussian c x)
     (hcont.intervalIntegrable _ _)
   rw [hFTC]
@@ -64,24 +64,24 @@ theorem integral_quartic_gaussian (c : ℝ) :
 
 /-- **The Rayleigh correction is positive.** -/
 theorem integral_gaussian_correction_pos {c : ℝ} (hc : 0 < c) :
-    0 < ∫ x in (-1 : ℝ)..1, (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
-  have hsplit : ∀ x : ℝ, (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2))
-      = (3 * c / 2) * (x ^ 2 * Real.exp (-(c * x ^ 2)))
-        + (c / 2) * ((3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2))) := by
+    0 < ∫ x in (-1 : ℝ)..1, (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
+  have hsplit : ∀ x : ℝ, (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ)))
+      = (3 * c / 2) * (x ^ (2 : ℕ) * Real.exp (-(c * x ^ (2 : ℕ))))
+        + (c / 2) * ((3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ)))) := by
     intro x
     ring
-  have hc1 : Continuous fun x : ℝ => x ^ 2 * Real.exp (-(c * x ^ 2)) := by fun_prop
-  have hc2 : Continuous fun x : ℝ => (3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+  have hc1 : Continuous fun x : ℝ => x ^ (2 : ℕ) * Real.exp (-(c * x ^ (2 : ℕ))) := by fun_prop
+  have hc2 : Continuous fun x : ℝ => (3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     fun_prop
-  have heq : (∫ x in (-1 : ℝ)..1, (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2)))
-      = (3 * c / 2) * (∫ x in (-1 : ℝ)..1, x ^ 2 * Real.exp (-(c * x ^ 2)))
-        + (c / 2) * ∫ x in (-1 : ℝ)..1, (3 * x ^ 2 - 2 * c * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+  have heq : (∫ x in (-1 : ℝ)..1, (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))))
+      = (3 * c / 2) * (∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * Real.exp (-(c * x ^ (2 : ℕ))))
+        + (c / 2) * ∫ x in (-1 : ℝ)..1, (3 * x ^ (2 : ℕ) - 2 * c * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
       ← intervalIntegral.integral_add ((hc1.const_mul _).intervalIntegrable _ _)
         ((hc2.const_mul _).intervalIntegrable _ _)]
     exact intervalIntegral.integral_congr fun x _ => hsplit x
   rw [heq, integral_quartic_gaussian]
-  have hnn : (0 : ℝ) ≤ ∫ x in (-1 : ℝ)..1, x ^ 2 * Real.exp (-(c * x ^ 2)) := by
+  have hnn : (0 : ℝ) ≤ ∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     refine intervalIntegral.integral_nonneg (by norm_num) fun x _ => ?_
     positivity
   have hexp : (0 : ℝ) < Real.exp (-c) := Real.exp_pos _
@@ -94,20 +94,20 @@ theorem prolate_gaussian_rayleigh_gt_neg_bandwidth {c : ℝ} (hc : 0 < c) :
       < ∫ x in (-1 : ℝ)..1, prolateSLAction c (gaussianTrial c) x * gaussianTrial c x := by
   have hpt : ∀ x : ℝ, prolateSLAction c (gaussianTrial c) x * gaussianTrial c x
       = -c * (gaussianTrial c x * gaussianTrial c x)
-        + (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+        + (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     intro x
     rw [prolateSLAction_gaussianTrial]
-    have hsq : gaussianTrial c x * gaussianTrial c x = Real.exp (-(c * x ^ 2)) :=
+    have hsq : gaussianTrial c x * gaussianTrial c x = Real.exp (-(c * x ^ (2 : ℕ))) :=
       gaussianTrial_sq c x
     rw [mul_assoc, hsq]
     ring
   have hv : Continuous (gaussianTrial c) := continuous_gaussianTrial c
   have hsqc : Continuous fun x : ℝ => gaussianTrial c x * gaussianTrial c x := hv.mul hv
-  have hcorr : Continuous fun x : ℝ => (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+  have hcorr : Continuous fun x : ℝ => (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     fun_prop
   have heq : (∫ x in (-1 : ℝ)..1, prolateSLAction c (gaussianTrial c) x * gaussianTrial c x)
       = -c * (∫ x in (-1 : ℝ)..1, gaussianTrial c x * gaussianTrial c x)
-        + ∫ x in (-1 : ℝ)..1, (3 * c * x ^ 2 - c ^ 2 * x ^ 4) * Real.exp (-(c * x ^ 2)) := by
+        + ∫ x in (-1 : ℝ)..1, (3 * c * x ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (4 : ℕ)) * Real.exp (-(c * x ^ (2 : ℕ))) := by
     rw [← intervalIntegral.integral_const_mul,
       ← intervalIntegral.integral_add ((hsqc.const_mul _).intervalIntegrable _ _)
         (hcorr.intervalIntegrable _ _)]

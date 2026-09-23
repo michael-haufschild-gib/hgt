@@ -24,7 +24,7 @@ open Filter Topology
 including the degenerate zero-channel case. -/
 theorem soninAllPrimeCoupledRenyiReplicaMoment_zero_sq_le_one
     (a : SoninPositiveAperture) :
-    soninAllPrimeCoupledRenyiReplicaMoment a 0 ^ 2 ≤ 1 := by
+    soninAllPrimeCoupledRenyiReplicaMoment a 0 ^ (2 : ℕ) ≤ 1 := by
   have h := soninAllPrimeCoupledRenyiReplicaMoment_mem_Icc a 0
   simpa only [pow_two, one_mul] using mul_self_le_mul_self h.1 h.2
 
@@ -84,7 +84,7 @@ theorem riemannHypothesis_of_cofinal_soninCoupledRenyi_bernsteinSquareDiscrepanc
       bernsteinCoefficientSquareDiscrepancyAtDefectDegree
         (radiusNormalizedMoment primeArchEndpointHausdorffRadius
           normalizedPrimeArchMoment)
-        (soninAllPrimeCoupledRenyiReplicaMoment (a j)) (d j) ≤ C ^ 2) :
+        (soninAllPrimeCoupledRenyiReplicaMoment (a j)) (d j) ≤ C ^ (2 : ℕ)) :
     RiemannHypothesis :=
   riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy
     d (fun j => soninAllPrimeCoupledRenyiReplicaMoment (a j)) C hC hd

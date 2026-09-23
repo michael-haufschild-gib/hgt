@@ -39,7 +39,7 @@ def thetaCuspHawkingWallKMSUpCoefficient (kappa omega : ℝ) : ℝ :=
 
 theorem thetaCuspHawkingWallKMSDownCoefficient_sq
     {kappa omega : ℝ} (hkappa : 0 < kappa) (homega : 0 < omega) :
-    thetaCuspHawkingWallKMSDownCoefficient kappa omega ^ 2 =
+    thetaCuspHawkingWallKMSDownCoefficient kappa omega ^ (2 : ℕ) =
       1 / (1 - thetaCuspHawkingKMSBoltzmannRatio kappa omega) := by
   rw [thetaCuspHawkingWallKMSDownCoefficient, Real.sq_sqrt]
   exact one_div_nonneg.mpr
@@ -47,7 +47,7 @@ theorem thetaCuspHawkingWallKMSDownCoefficient_sq
 
 theorem thetaCuspHawkingWallKMSUpCoefficient_sq
     {kappa omega : ℝ} (hkappa : 0 < kappa) (homega : 0 < omega) :
-    thetaCuspHawkingWallKMSUpCoefficient kappa omega ^ 2 =
+    thetaCuspHawkingWallKMSUpCoefficient kappa omega ^ (2 : ℕ) =
       thetaCuspHawkingKMSBoltzmannRatio kappa omega /
         (1 - thetaCuspHawkingKMSBoltzmannRatio kappa omega) := by
   rw [thetaCuspHawkingWallKMSUpCoefficient, Real.sq_sqrt]
@@ -58,8 +58,8 @@ theorem thetaCuspHawkingWallKMSUpCoefficient_sq
 /-- Exact Araki--Woods coefficient CCR: absorption minus emission weight is one. -/
 theorem thetaCuspHawkingWallKMSCoefficient_sub_sq
     {kappa omega : ℝ} (hkappa : 0 < kappa) (homega : 0 < omega) :
-    thetaCuspHawkingWallKMSDownCoefficient kappa omega ^ 2 -
-        thetaCuspHawkingWallKMSUpCoefficient kappa omega ^ 2 = 1 := by
+    thetaCuspHawkingWallKMSDownCoefficient kappa omega ^ (2 : ℕ) -
+        thetaCuspHawkingWallKMSUpCoefficient kappa omega ^ (2 : ℕ) = 1 := by
   rw [thetaCuspHawkingWallKMSDownCoefficient_sq hkappa homega,
     thetaCuspHawkingWallKMSUpCoefficient_sq hkappa homega]
   have hden : 1 - thetaCuspHawkingKMSBoltzmannRatio kappa omega ≠ 0 :=
@@ -106,7 +106,7 @@ theorem thetaCuspHawkingWallKMS_preserves_signedHermitian
   have hccr := thetaCuspHawkingWallKMSCoefficient_sub_sq hkappa homega
   have hccrC := congrArg (fun r : ℝ => (r : ℂ)) hccr
   push_cast at hccrC
-  change (a : ℂ) ^ 2 - (b : ℂ) ^ 2 = 1 at hccrC
+  change (a : ℂ) ^ (2 : ℕ) - (b : ℂ) ^ (2 : ℕ) = 1 at hccrC
   change (starRingEnd ℂ) ((a : ℂ) * x + (b : ℂ) * y) *
       ((a : ℂ) * x + (b : ℂ) * y) -
     (starRingEnd ℂ) ((b : ℂ) * x + (a : ℂ) * y) *
@@ -142,7 +142,7 @@ theorem thetaCuspHawkingWallKMS_inverse_after_scattering
   have hccr := thetaCuspHawkingWallKMSCoefficient_sub_sq hkappa homega
   have hccrC := congrArg (fun r : ℝ => (r : ℂ)) hccr
   push_cast at hccrC
-  change (a : ℂ) ^ 2 - (b : ℂ) ^ 2 = 1 at hccrC
+  change (a : ℂ) ^ (2 : ℕ) - (b : ℂ) ^ (2 : ℕ) = 1 at hccrC
   constructor
   · change (a : ℂ) * ((a : ℂ) * x + (b : ℂ) * y) -
       (b : ℂ) * ((b : ℂ) * x + (a : ℂ) * y) = x
@@ -173,7 +173,7 @@ theorem thetaCuspHawkingReflectedReadoutCurrent_real_scale
     (c : ℝ) (field : ℝ → ℂ) (t : ℝ) :
     thetaCuspHawkingReflectedReadoutCurrent
         (fun s => (c : ℂ) * field s) t =
-      c ^ 2 * thetaCuspHawkingReflectedReadoutCurrent field t := by
+      c ^ (2 : ℕ) * thetaCuspHawkingReflectedReadoutCurrent field t := by
   unfold thetaCuspHawkingReflectedReadoutCurrent
     thetaCuspHawkingReflectedPositiveReadout
     thetaCuspHawkingReflectedNegativeReadout
@@ -246,7 +246,7 @@ theorem thetaCuspHawkingReflectedReadoutCurrent_suzukiWall
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     thetaCuspHawkingReflectedReadoutCurrent
         (fun s => suzukiCriticalWallField s p e) t =
-      ((suzukiCriticalWallField t p e) ^ 2).im := by
+      ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
   change Complex.normSq (suzukiCriticalWallPositiveLightAmplitude t p e) -
       Complex.normSq (suzukiCriticalWallNegativeLightAmplitude t p e) = _
   exact normSq_suzukiCriticalWallPositiveLightAmplitude_sub_negative t p e
@@ -256,7 +256,7 @@ theorem thetaCuspHawkingWallKMSDownReadoutCurrent_eq
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     thetaCuspHawkingWallKMSDownReadoutCurrent kappa omega t p e =
       (1 / (1 - thetaCuspHawkingKMSBoltzmannRatio kappa omega)) *
-        ((suzukiCriticalWallField t p e) ^ 2).im := by
+        ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
   unfold thetaCuspHawkingWallKMSDownReadoutCurrent
     thetaCuspHawkingWallArakiWoodsDownField
   rw [thetaCuspHawkingReflectedReadoutCurrent_real_scale,
@@ -269,7 +269,7 @@ theorem thetaCuspHawkingWallKMSUpReadoutCurrent_eq
     thetaCuspHawkingWallKMSUpReadoutCurrent kappa omega t p e =
       -(thetaCuspHawkingKMSBoltzmannRatio kappa omega /
           (1 - thetaCuspHawkingKMSBoltzmannRatio kappa omega)) *
-        ((suzukiCriticalWallField t p e) ^ 2).im := by
+        ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
   unfold thetaCuspHawkingWallKMSUpReadoutCurrent
     thetaCuspHawkingWallArakiWoodsUpField
   rw [thetaCuspHawkingReflectedReadoutCurrent_real_scale,
@@ -301,7 +301,7 @@ theorem thetaCuspHawkingWallKMSCommutatorCurrent_eq_suzukiWall
     {kappa omega : ℝ} (hkappa : 0 < kappa) (homega : 0 < omega)
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     thetaCuspHawkingWallKMSCommutatorCurrent kappa omega t p e =
-      ((suzukiCriticalWallField t p e) ^ 2).im := by
+      ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
   rw [thetaCuspHawkingWallKMSCommutatorCurrent,
     thetaCuspHawkingWallKMSDownReadoutCurrent_eq hkappa homega,
     thetaCuspHawkingWallKMSUpReadoutCurrent_eq hkappa homega]

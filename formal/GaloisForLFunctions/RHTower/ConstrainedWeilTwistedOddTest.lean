@@ -294,7 +294,7 @@ theorem suzukiTestRayCoefBar_twistedOddTest {a : ℝ} (ψ : OddSmoothProfile a) 
 theorem suzukiScrewSmoothForm_twistedOddTest {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) :
     suzukiScrewSmoothForm (twistedOddTest ψ γ) (twistedOddTest ψ γ)
       = ∑' q : XiZeroCopy,
-          -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2 := by
+          -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ) := by
   rw [suzukiScrewSmoothForm_eq_tsum]
   refine tsum_congr fun q => ?_
   rw [suzukiTestRayCoef_twistedOddTest, suzukiTestRayCoefBar_twistedOddTest]
@@ -305,12 +305,12 @@ theorem suzukiScrewSmoothForm_twistedOddTest {a : ℝ} (ψ : OddSmoothProfile a)
 /-- The ray energy of any smooth zero-mean test is absolutely summable over the zero copies. -/
 theorem summable_suzukiTestRayEnergy {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
     Summable (fun q : XiZeroCopy =>
-      suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2) := by
+      suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ)) := by
   set M : ℝ := (Real.exp (|a| / 2) + 1) * ∫ t : ℝ, ‖(φ : ℝ → ℂ) t‖ with hM
   have hM0 : 0 ≤ M := by
     rw [hM]
     exact mul_nonneg (by positivity) (integral_nonneg fun t => norm_nonneg _)
-  refine Summable.of_norm_bounded (g := fun q : XiZeroCopy => M * M * (1 / ‖xiSpectralPoint q‖ ^ 2))
+  refine Summable.of_norm_bounded (g := fun q : XiZeroCopy => M * M * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
     (xiSpectralPoint_inv_sq_summable.mul_left (M * M)) fun q => ?_
   rw [norm_div, norm_mul, norm_pow]
   have h1 := norm_suzukiTestRayCoefBar_le φ q
@@ -320,12 +320,12 @@ theorem summable_suzukiTestRayEnergy {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
   rw [div_le_iff₀ (by positivity)]
   calc ‖suzukiTestRayCoefBar φ q‖ * ‖suzukiTestRayCoef φ q‖
       ≤ M * M := mul_le_mul h1 h2 (norm_nonneg _) hM0
-    _ = M * M * (1 / ‖xiSpectralPoint q‖ ^ 2) * ‖xiSpectralPoint q‖ ^ 2 := by
+    _ = M * M * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         field_simp
 
 theorem summable_twistedOddTest_rayEnergy {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) :
     Summable (fun q : XiZeroCopy =>
-      -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2) := by
+      -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ)) := by
   refine (summable_suzukiTestRayEnergy (twistedOddTest ψ γ)).congr fun q => ?_
   rw [suzukiTestRayCoef_twistedOddTest, suzukiTestRayCoefBar_twistedOddTest]
   ring
@@ -334,7 +334,7 @@ theorem summable_twistedOddTest_rayEnergy {a : ℝ} (ψ : OddSmoothProfile a) (�
 theorem re_suzukiScrewSmoothForm_twistedOddTest {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) :
     (suzukiScrewSmoothForm (twistedOddTest ψ γ) (twistedOddTest ψ γ)).re
       = ∑' q : XiZeroCopy,
-          (-(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2).re := by
+          (-(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ)).re := by
   rw [suzukiScrewSmoothForm_twistedOddTest]
   exact Complex.re_tsum (summable_twistedOddTest_rayEnergy ψ γ)
 
@@ -350,8 +350,8 @@ theorem twistedPairMoment_re_of_im_eq_zero {a : ℝ} (ψ : OddSmoothProfile a) (
 /-- **Critical-line copies contribute the nonnegative real term `(Im(A_q + A'_q))²/(4 z_q²)`.** -/
 theorem twistedOddTest_rayTerm_of_im_eq_zero {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ)
     {q : XiZeroCopy} (hq : (xiSpectralPoint q).im = 0) :
-    -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2
-      = (((twistedPairMoment ψ γ q).im ^ 2 / (4 * (xiSpectralPoint q).re ^ 2) : ℝ) : ℂ) := by
+    -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ)
+      = (((twistedPairMoment ψ γ q).im ^ (2 : ℕ) / (4 * (xiSpectralPoint q).re ^ (2 : ℕ)) : ℝ) : ℂ) := by
   have hP : twistedPairMoment ψ γ q = ((twistedPairMoment ψ γ q).im : ℂ) * I := by
     apply Complex.ext
     · simp [twistedPairMoment_re_of_im_eq_zero ψ γ hq]
@@ -372,7 +372,7 @@ theorem twistedOddTest_rayTerm_of_im_eq_zero {a : ℝ} (ψ : OddSmoothProfile a)
 
 theorem twistedOddTest_rayTerm_re_nonneg_of_im_eq_zero {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ)
     {q : XiZeroCopy} (hq : (xiSpectralPoint q).im = 0) :
-    0 ≤ (-(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2).re := by
+    0 ≤ (-(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ)).re := by
   rw [twistedOddTest_rayTerm_of_im_eq_zero ψ γ hq, Complex.ofReal_re]
   positivity
 

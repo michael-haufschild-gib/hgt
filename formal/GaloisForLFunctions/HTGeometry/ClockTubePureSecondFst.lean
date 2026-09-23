@@ -35,7 +35,7 @@ theorem continuousAt_d2ClampedTubeStep_joint {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : 
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) (i : Fin k)
     {q : (ℝ × ℝ) × (Fin k → ℂ)} (hq : q.2 ∈ tube k ρ₃) :
@@ -52,7 +52,7 @@ theorem continuous_d2ClampedTubeStep_slice {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : �
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) (i : Fin k) {z : Fin k → ℂ} (hz : z ∈ tube k ρ₃) :
     Continuous fun p : ℝ × ℝ => d2ClampedTubeStep V T i z p.1 p.2 := by
@@ -67,7 +67,7 @@ theorem hasDerivAt_cpartial_cpartial_tubeSolution_fst {ρ₀ Mv ρ ρ₁ ρ₂ �
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 < ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) (i : Fin k)
     {ξ η : ℝ} (hξ : |ξ| < T) (hηT : |η| ≤ T) {z : Fin k → ℂ} (hz : z ∈ tube k ρ₃) :
@@ -111,7 +111,7 @@ theorem continuous_clampedTubeStepFst {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ} (h
     {V Vs Vt : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hVC1 : TubePotentialC1 V Vs Vt ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) {z : Fin k → ℂ} (hz : z ∈ tube k ρ₃) :
     Continuous fun p : ℝ × ℝ => clampedTubeStepFst V Vs T z p.1 p.2 := by
@@ -176,7 +176,7 @@ theorem hasDerivAt_clampedTubeStep_fst {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ} (
     {V Vs Vt : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hVC1 : TubePotentialC1 V Vs Vt ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 < ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) {s t : ℝ} (hs : |s| < T) (ht : |t| < T)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ₃) :
@@ -220,7 +220,7 @@ theorem hasDerivAt_deriv_tubeSolution_fst_fst {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T :
     {V Vs Vt : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hVC1 : TubePotentialC1 V Vs Vt ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 < ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 ≤ ρ₃) (hρ₃ : ρ₃ < ρ₂) {ξ η : ℝ} (hξ : |ξ| < T) (hη : |η| < T)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ₃) :

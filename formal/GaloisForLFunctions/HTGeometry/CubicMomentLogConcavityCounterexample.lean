@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.CubicMomentGammaFamily
 The Beta `(1, 3)` density
 
 ```text
-f(x) = 3 (1 - x)^2,  0 ≤ x ≤ 1
+f(x) = 3 (1 - x)^(2 : ℕ),  0 ≤ x ≤ 1
 ```
 
 is log-concave on its convex support: on `0 ≤ x < 1`,
@@ -26,16 +26,16 @@ namespace GaloisForLFunctions
 
 namespace CubicMoment
 
-/-- The `2j`-th raw moment of the Beta `(1, 3)` density `3(1-x)^2` on `[0,1]`. -/
+/-- The `2j`-th raw moment of the Beta `(1, 3)` density `3(1-x)^(2 : ℕ)` on `[0,1]`. -/
 noncomputable def betaOneThreeRawEvenMoment (j : ℕ) : ℝ :=
-  ∫ x in (0 : ℝ)..1, x ^ (2 * j) * (3 * (1 - x) ^ 2)
+  ∫ x in (0 : ℝ)..1, x ^ (2 * j) * (3 * (1 - x) ^ (2 : ℕ))
 
 /-- Closed form for every even raw moment of the Beta `(1, 3)` witness. -/
 theorem betaOneThreeRawEvenMoment_formula (j : ℕ) :
     betaOneThreeRawEvenMoment j =
       3 / (2 * j + 1 : ℕ) - 6 / (2 * j + 2 : ℕ) + 3 / (2 * j + 3 : ℕ) := by
   unfold betaOneThreeRawEvenMoment
-  rw [show (fun x : ℝ => x ^ (2 * j) * (3 * (1 - x) ^ 2)) =
+  rw [show (fun x : ℝ => x ^ (2 * j) * (3 * (1 - x) ^ (2 : ℕ))) =
       fun x : ℝ => 3 * x ^ (2 * j) - 6 * x ^ (2 * j + 1) + 3 * x ^ (2 * j + 2) by
     funext x
     simp only [pow_succ]

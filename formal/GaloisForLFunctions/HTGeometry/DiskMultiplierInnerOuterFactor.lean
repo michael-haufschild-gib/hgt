@@ -29,15 +29,15 @@ theorem norm_hardyMul_eq_of_ae_norm_boundary_eq
   let b : Lp ℂ 2 circleLebesgue := hardyDiskBoundary f
   have hpoint : ∀ᵐ z ∂circleLebesgue,
       ‖((diskMultiplierBoundaryMul phi b : Lp ℂ 2 circleLebesgue) :
-          Circle → ℂ) z‖ ^ 2 =
+          Circle → ℂ) z‖ ^ (2 : ℕ) =
         ‖((diskMultiplierBoundaryMul psi b : Lp ℂ 2 circleLebesgue) :
-          Circle → ℂ) z‖ ^ 2 := by
+          Circle → ℂ) z‖ ^ (2 : ℕ) := by
     filter_upwards [diskMultiplierBoundaryMul_coeFn phi b,
       diskMultiplierBoundaryMul_coeFn psi b, hmod] with z hphi hpsi hz
     rw [hphi, hpsi, norm_mul, norm_mul, hz]
   have hsq :
-      ‖diskMultiplierBoundaryMul phi b‖ ^ 2 =
-        ‖diskMultiplierBoundaryMul psi b‖ ^ 2 := by
+      ‖diskMultiplierBoundaryMul phi b‖ ^ (2 : ℕ) =
+        ‖diskMultiplierBoundaryMul psi b‖ ^ (2 : ℕ) := by
     rw [lpTwo_norm_sq_eq_integral, lpTwo_norm_sq_eq_integral]
     exact integral_congr_ae hpoint
   have hphiNorm : ‖hardyMul phi f‖ = ‖diskMultiplierBoundaryMul phi b‖ := by

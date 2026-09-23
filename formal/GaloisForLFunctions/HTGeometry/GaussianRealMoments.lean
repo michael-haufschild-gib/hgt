@@ -66,7 +66,7 @@ theorem differentiable_iteratedDeriv_gaussKernel (v : ℝ) (m : ℕ) :
 
 /-- **Leibniz rule for `t ↦ t * h t`.**  Each differentiation either hits `h` or removes the factor
 `t`, so the `n`-th derivative is `t * h⁽ⁿ⁾ t + n * h⁽ⁿ⁻¹⁾ t`. -/
-theorem iteratedDeriv_id_mul (h : ℝ → ℝ) (hdiff : ∀ m : ℕ, Differentiable ℝ (iteratedDeriv m h)) :
+theorem iteratedDeriv_id_mul_gaussianRealMoments (h : ℝ → ℝ) (hdiff : ∀ m : ℕ, Differentiable ℝ (iteratedDeriv m h)) :
     ∀ n : ℕ, iteratedDeriv (n + 1) (fun t => t * h t)
       = fun t => t * iteratedDeriv (n + 1) h t + (n + 1 : ℝ) * iteratedDeriv n h t := by
   intro n
@@ -105,7 +105,7 @@ theorem iteratedDeriv_gaussKernel_zero_succ_succ (v : ℝ) (n : ℕ) :
     rw [show n + 2 = (n + 1) + 1 from rfl, iteratedDeriv_succ', deriv_gaussKernel]
   rw [hstep]
   rw [iteratedDeriv_const_mul_field v (fun t => t * gaussKernel v t)]
-  rw [iteratedDeriv_id_mul (gaussKernel v) (differentiable_iteratedDeriv_gaussKernel v) n]
+  rw [iteratedDeriv_id_mul_gaussianRealMoments (gaussKernel v) (differentiable_iteratedDeriv_gaussKernel v) n]
   simp
   ring
 

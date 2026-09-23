@@ -31,7 +31,7 @@ noncomputable def deningerWeightedL1 (x : ℕ →₀ ℝ) : ℝ :=
 
 /-- The weighted `L²` quantity, squared. -/
 noncomputable def deningerWeightedL2Sq (x : ℕ →₀ ℝ) : ℝ :=
-  ∑ p ∈ x.support, w p * (x p) ^ 2
+  ∑ p ∈ x.support, w p * (x p) ^ (2 : ℕ)
 
 /-- The mixed weighted quantity `‖x‖₁ + ‖x‖₂`. -/
 noncomputable def deningerWeightedMix (x : ℕ →₀ ℝ) : ℝ :=
@@ -92,16 +92,16 @@ theorem deningerWeightedL2Sq_filter_le (hw : ∀ p, 0 ≤ w p) (P : ℕ → Prop
   have hsub : (deningerRestrictCoords P x).support ⊆ x.support :=
     deningerRestrictCoords_support_subset P x
   have hterm : ∀ p ∈ (deningerRestrictCoords P x).support,
-      w p * (deningerRestrictCoords P x p) ^ 2 = w p * (x p) ^ 2 := by
+      w p * (deningerRestrictCoords P x p) ^ (2 : ℕ) = w p * (x p) ^ (2 : ℕ) := by
     intro p hp
     have hP : P p := by
       by_contra hnot
       exact (Finsupp.mem_support_iff.mp hp) (by simp [deningerRestrictCoords_apply, hnot])
     simp [deningerRestrictCoords_apply, hP]
   calc deningerWeightedL2Sq w (deningerRestrictCoords P x)
-      = ∑ p ∈ (deningerRestrictCoords P x).support, w p * (x p) ^ 2 :=
+      = ∑ p ∈ (deningerRestrictCoords P x).support, w p * (x p) ^ (2 : ℕ) :=
         Finset.sum_congr rfl hterm
-    _ ≤ ∑ p ∈ x.support, w p * (x p) ^ 2 :=
+    _ ≤ ∑ p ∈ x.support, w p * (x p) ^ (2 : ℕ) :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub
           (fun p _ _ => mul_nonneg (hw p) (sq_nonneg _))
     _ = deningerWeightedL2Sq w x := rfl

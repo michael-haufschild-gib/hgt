@@ -106,7 +106,7 @@ theorem hasDerivAt_finiteHeatSpectralDimension (E : α → ℝ) (t : ℝ) :
 
 /-- Squared Dirac spectra have a nonnegative heat-trace dimension at every forward square time. -/
 theorem finiteHeatSpectralDimension_dirac_nonnegative (spectrum : α → ℝ) (s : ℝ) :
-    0 ≤ finiteHeatSpectralDimension (fun a => (spectrum a)^2) (s^2) := by
+    0 ≤ finiteHeatSpectralDimension (fun a => (spectrum a)^(2 : ℕ)) (s^(2 : ℕ)) := by
   unfold finiteHeatSpectralDimension gibbsMean
   apply mul_nonneg (by positivity)
   exact Finset.sum_nonneg fun a _ =>

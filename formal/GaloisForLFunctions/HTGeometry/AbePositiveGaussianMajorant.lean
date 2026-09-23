@@ -95,13 +95,13 @@ theorem exists_gaussian_of_posDef {D : (Fin d → ℂ) → (Fin d → ℂ) → �
     (v : Fin c → (Fin d → ℂ)) (hpos : (abeGram D v).PosDef) {t : ℝ} (ht : 0 < t) :
     ∃ sigma : ℝ, 0 < sigma ∧ ∀ z : Fin c → ℤ,
       Real.exp (-t * (D (∑ i, ((z i : ℂ)) • v i) (∑ i, ((z i : ℂ)) • v i)).re)
-        ≤ Real.exp (-sigma * ∑ i, ((z i : ℝ)) ^ 2) := by
+        ≤ Real.exp (-sigma * ∑ i, ((z i : ℝ)) ^ (2 : ℕ)) := by
   obtain ⟨μ, hμ, hcoer⟩ := posDef_coercive hpos
   refine ⟨t * μ, by positivity, fun z => ?_⟩
   refine Real.exp_le_exp.mpr ?_
   have hq := hcoer (fun i => (z i : ℝ))
   rw [← re_hermitian_latticeSum hD v z] at hq
-  have hdot : (fun i => (z i : ℝ)) ⬝ᵥ (fun i => (z i : ℝ)) = ∑ i, ((z i : ℝ)) ^ 2 := by
+  have hdot : (fun i => (z i : ℝ)) ⬝ᵥ (fun i => (z i : ℝ)) = ∑ i, ((z i : ℝ)) ^ (2 : ℕ) := by
     rw [dotProduct]
     exact Finset.sum_congr rfl fun i _ => (sq _).symm
   rw [hdot] at hq
@@ -133,12 +133,12 @@ theorem norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight
       (γ : Fin d → ℂ) = ∑ i, ((z i : ℂ)) • v i →
       (∀ y : Fin d → ℂ,
         ‖y - pt‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ →
-          (Hu y y - Hl y y).re ≤ C₀ ^ 2) →
+          (Hu y y - Hl y y).re ≤ C₀ ^ (2 : ℕ)) →
       (∀ y : Fin d → ℂ,
         ‖y - pt‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hl y y).re ≤ L) →
       ‖multiIndexJetEvalCLM pt a
           (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ)‖
-        ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
+        ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
               / ρ ^ (Fintype.card (MultiIndexSlot a)))
             * polynomialGaussianLatticeWeight (Fin c) (fun _ => 0) (fun _ => sigma) z := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
@@ -151,7 +151,7 @@ theorem norm_multiIndexJetEvalCLM_le_gaussianLatticeWeight
     nlinarith [Real.exp_pos (Real.pi / 2 * (Hl pt pt).re), h, h0]
   have hbase := norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le hHu hHl hχu hpos hC₀
     hsemiu seed hseednorm pt a hρ hzsup hLsup γ
-  have hK : 0 ≤ M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
+  have hK : 0 ≤ M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
       / ρ ^ (Fintype.card (MultiIndexSlot a)) := by positivity
   have hexp : Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re)
       ≤ polynomialGaussianLatticeWeight (Fin c) (fun _ => 0) (fun _ => sigma) z := by

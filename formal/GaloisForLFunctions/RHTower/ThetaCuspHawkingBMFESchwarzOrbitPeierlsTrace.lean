@@ -42,8 +42,8 @@ theorem normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient_conj
     d4ThetaTeukolskyQuadraticChiralAngularEigenvalue_eq,
     d4ThetaTeukolskyQuadraticChiralAngularEigenvalue_eq,
     xiSpectralPoint_copyConj]
-  rw [show (-(starRingEnd ℂ) (xiSpectralPoint q)) ^ 2 =
-      (starRingEnd ℂ) (xiSpectralPoint q) ^ 2 by ring]
+  rw [show (-(starRingEnd ℂ) (xiSpectralPoint q)) ^ (2 : ℕ) =
+      (starRingEnd ℂ) (xiSpectralPoint q) ^ (2 : ℕ) by ring]
   simp [pow_two, Complex.mul_im]
   ring
 

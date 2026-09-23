@@ -52,7 +52,7 @@ theorem ofComplex_coreChartPoint_re_im (z : ℍ) :
 /-- Coordinate rectangle transported into the literal two-cell strip. -/
 theorem setOf_coreChartRect_subset_strip {a b c d : ℝ}
     (hx : ∀ x ∈ Set.Ioc a b, |x| ≤ (1 : ℝ) / 2)
-    (hy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ 2) :
+    (hy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ (2 : ℕ)) :
     {z : ℍ | (z.re, z.im) ∈ coreChartRect a b c d} ⊆
       SelbergModularStripComparison.strip := by
   intro z hz
@@ -70,13 +70,13 @@ theorem setIntegral_coreChartRect_chartGradientNormSq_eq {N : ℕ}
     (∫ p in coreChartRect a b c d,
         chartGradientNormSq F (ofComplex (coreChartPoint p))) =
         ∫ p in coreChartRect a b c d,
-          hyperbolicChartGradientDensity F (ofComplex (coreChartPoint p)) / p.2 ^ 2 := by
+          hyperbolicChartGradientDensity F (ofComplex (coreChartPoint p)) / p.2 ^ (2 : ℕ) := by
       symm
       apply setIntegral_congr_fun (measurableSet_coreChartRect a b c d)
       intro p hp
       have hp0 : p.2 ≠ 0 := (coreChartRect_pos hc hp).ne'
-      change ((ofComplex (coreChartPoint p)).im ^ 2 *
-        chartGradientNormSq F (ofComplex (coreChartPoint p))) / p.2 ^ 2 = _
+      change ((ofComplex (coreChartPoint p)).im ^ (2 : ℕ) *
+        chartGradientNormSq F (ofComplex (coreChartPoint p))) / p.2 ^ (2 : ℕ) = _
       rw [ofComplex_coreChartPoint_im (coreChartRect_pos hc hp)]
       field_simp
     _ = ∫ z in {z : ℍ | (z.re, z.im) ∈ coreChartRect a b c d},
@@ -161,7 +161,7 @@ invariant Dirichlet energy on two modular cells. -/
 theorem coreChartRect_energy_sum_le_twice_fd {N : ℕ} {ε a b c d : ℝ}
     (hε : 0 < ε) (hc : 0 < c) (hεc : ε ≤ c)
     (hx : ∀ x ∈ Set.Ioc a b, |x| ≤ (1 : ℝ) / 2)
-    (hy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ 2)
+    (hy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ (2 : ℕ))
     (F : formPreDomain N) :
     (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, retractedDeckEnergyX ε F (x, y)) +
       (∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d, retractedDeckEnergyY ε F (x, y)) ≤
@@ -196,15 +196,15 @@ theorem coreChartRect_grid_energy_budget_le {N : ℕ} {ε a b c d hx hy : ℝ}
     (hε : 0 < ε) (hc : 0 < c) (hεc : ε ≤ c) (hhx : 0 < hx) (hhy : 0 < hy)
     (hhyx : hy ≤ 2 * hx)
     (hstripx : ∀ x ∈ Set.Ioc a b, |x| ≤ (1 : ℝ) / 2)
-    (hstripy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ 2)
+    (hstripy : ∀ y ∈ Set.Ioc c d, 3 ≤ 4 * y ^ (2 : ℕ))
     (F : formPreDomain N) :
-    8 * hx ^ 2 *
+    8 * hx ^ (2 : ℕ) *
         (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, retractedDeckEnergyX ε F (x, y)) +
-      2 * hy ^ 2 *
+      2 * hy ^ (2 : ℕ) *
         (∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d, retractedDeckEnergyY ε F (x, y)) ≤
-      16 * hx ^ 2 * ∫ z in ModularGroup.fd,
+      16 * hx ^ (2 : ℕ) * ∫ z in ModularGroup.fd,
         hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z := by
-  have hcoeff : 2 * hy ^ 2 ≤ 8 * hx ^ 2 := by
+  have hcoeff : 2 * hy ^ (2 : ℕ) ≤ 8 * hx ^ (2 : ℕ) := by
     have h1 : 0 ≤ 2 * hx - hy := by linarith
     have h2 : 0 ≤ 2 * hx + hy := by linarith
     nlinarith [mul_nonneg h1 h2]
@@ -219,26 +219,26 @@ theorem coreChartRect_grid_energy_budget_le {N : ℕ} {ε a b c d hx hy : ℝ}
     intro y
     exact hEy0 (x, y)
   calc
-    8 * hx ^ 2 *
+    8 * hx ^ (2 : ℕ) *
           (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, retractedDeckEnergyX ε F (x, y)) +
-        2 * hy ^ 2 *
+        2 * hy ^ (2 : ℕ) *
           (∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d, retractedDeckEnergyY ε F (x, y)) ≤
-        8 * hx ^ 2 *
+        8 * hx ^ (2 : ℕ) *
           (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, retractedDeckEnergyX ε F (x, y)) +
-        8 * hx ^ 2 *
+        8 * hx ^ (2 : ℕ) *
           (∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d, retractedDeckEnergyY ε F (x, y)) := by
       exact add_le_add_right (mul_le_mul_of_nonneg_right hcoeff hIy0) _
-    _ = 8 * hx ^ 2 *
+    _ = 8 * hx ^ (2 : ℕ) *
           ((∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, retractedDeckEnergyX ε F (x, y)) +
           (∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d, retractedDeckEnergyY ε F (x, y))) := by
       ring
-    _ ≤ 8 * hx ^ 2 *
+    _ ≤ 8 * hx ^ (2 : ℕ) *
           (2 * ∫ z in ModularGroup.fd,
             hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z) := by
       exact mul_le_mul_of_nonneg_left
         (coreChartRect_energy_sum_le_twice_fd hε hc hεc hstripx hstripy F)
         (mul_nonneg (by norm_num) (sq_nonneg hx))
-    _ = 16 * hx ^ 2 * ∫ z in ModularGroup.fd,
+    _ = 16 * hx ^ (2 : ℕ) * ∫ z in ModularGroup.fd,
         hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z := by ring
 
 /-- The finite grid step has a modular-energy error budget on every strip-contained core. -/
@@ -246,15 +246,15 @@ theorem exists_grid_fdUpperChartGridCore_hyperbolic_error_le_fd_energy {N : ℕ}
     (M K : ℕ) {ε a c hx hy : ℝ} (hε : 0 < ε) (hc : 0 < c) (hεc : ε ≤ c)
     (hhx : 0 < hx) (hhy : 0 < hy) (hhyx : hy ≤ 2 * hx)
     (hstripx : ∀ x ∈ Set.Ioc a (a + (M : ℝ) * hx), |x| ≤ (1 : ℝ) / 2)
-    (hstripy : ∀ y ∈ Set.Ioc c (c + (K : ℝ) * hy), 3 ≤ 4 * y ^ 2)
+    (hstripy : ∀ y ∈ Set.Ioc c (c + (K : ℝ) * hy), 3 ≤ 4 * y ^ (2 : ℕ))
     (F : formPreDomain N) :
     ∃ C : ℕ → ℕ → DeckSpace N,
       ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy,
         ‖(F : ℍ → DeckSpace N) z -
             ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-              ℍ → DeckSpace N) z‖ ^ 2 ≤
-        (c ^ 2)⁻¹ *
-          (16 * hx ^ 2 * ∫ z in ModularGroup.fd,
+              ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ≤
+        (c ^ (2 : ℕ))⁻¹ *
+          (16 * hx ^ (2 : ℕ) * ∫ z in ModularGroup.fd,
             hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z) := by
   obtain ⟨C, hC⟩ := exists_grid_fdUpperChartGridCore_hyperbolic_error_le
     hε hc hεc hhx hhy F M K

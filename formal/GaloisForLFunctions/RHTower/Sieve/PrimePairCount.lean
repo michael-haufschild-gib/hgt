@@ -52,7 +52,7 @@ theorem card_primePair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} 
         + Real.log 2 ≤ (k : ℝ)) :
     ((((Finset.Icc 1 ⌊Y⌋₊).filter
           (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
         + ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by

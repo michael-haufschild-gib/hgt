@@ -388,7 +388,7 @@ theorem exists_pow_integerLag_gt_of_finite_offLine (hfin : offLineCopies.Finite)
   exact exists_pow_integerLag_gt_of_attainedTop hβ h hb M
 
 /-- RH follows if every zero copy lies on the critical line. -/
-theorem riemannHypothesis_of_forall_xiZeroCopy_re_eq_half
+theorem riemannHypothesis_of_forall_xiZeroCopy_re_eq_half_weilLagFunctionSingleBase
     (h : ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2) : RiemannHypothesis := by
   intro s hζ htriv h1
   have hxi : xi s = 0 := xi_eq_zero_of_zeta_eq_zero hζ (fun ⟨n, hn⟩ => htriv ⟨n, hn⟩) h1
@@ -402,7 +402,7 @@ theorem riemannHypothesis_or_infinite_offLine_of_forall_le {b : ℕ} (hb : 2 ≤
     RiemannHypothesis ∨ offLineCopies.Infinite := by
   by_cases hfin : offLineCopies.Finite
   · left
-    apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half
+    apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half_weilLagFunctionSingleBase
     intro q
     by_contra hq
     have hne : offLineCopies.Nonempty := ⟨q, hq⟩
@@ -427,7 +427,7 @@ theorem riemannHypothesis_or_not_attained_of_forall_le {b : ℕ} (hb : 2 ≤ b) 
     by_contra hle
     push Not at hle
     apply hRH
-    apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half
+    apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half_weilLagFunctionSingleBase
     intro q
     -- every copy has real part `≤ ½`, and by reflection `≥ ½`
     have h1 : (q.1 : ℂ).re ≤ 1 / 2 := (hno q).trans hle

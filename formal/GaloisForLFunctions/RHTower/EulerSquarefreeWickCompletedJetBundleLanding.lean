@@ -69,7 +69,7 @@ theorem eulerWickCompletedJetExtension_entry_differentiable
 
 /-- Every completed jet coordinate has determinant exactly `Xi²`. -/
 theorem det_eulerWickCompletedJetExtension (s : ℂ) (n : ℕ) :
-    (eulerWickCompletedJetExtension s n).det = _root_.RHTower.xi s ^ 2 := by
+    (eulerWickCompletedJetExtension s n).det = _root_.RHTower.xi s ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two]
   simp [eulerWickCompletedJetExtension, pow_two]
 

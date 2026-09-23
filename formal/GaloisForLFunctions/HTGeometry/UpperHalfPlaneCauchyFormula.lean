@@ -34,10 +34,10 @@ theorem differentiableAt_dslope_of_ne {f : ℂ → ℂ} {a z : ℂ} (hz : z ≠ 
 
 /-- **The Poisson normalisation** `∫ dx/((x-a)² + b²) = π/b`. -/
 theorem integral_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
-    (∫ x : ℝ, ((x - a) ^ 2 + b ^ 2)⁻¹) = Real.pi / b := by
+    (∫ x : ℝ, ((x - a) ^ (2 : ℕ) + b ^ (2 : ℕ))⁻¹) = Real.pi / b := by
   have hb0 : b ≠ 0 := ne_of_gt hb
-  have hfun : ∀ x : ℝ, ((x - a) ^ 2 + b ^ 2)⁻¹
-      = (b ^ 2)⁻¹ * (1 + ((x - a) / b) ^ 2)⁻¹ := by
+  have hfun : ∀ x : ℝ, ((x - a) ^ (2 : ℕ) + b ^ (2 : ℕ))⁻¹
+      = (b ^ (2 : ℕ))⁻¹ * (1 + ((x - a) / b) ^ (2 : ℕ))⁻¹ := by
     intro x
     rw [← mul_inv]
     congr 1
@@ -45,14 +45,14 @@ theorem integral_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
     ring
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hfun),
     MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_sub_right_eq_self (fun x : ℝ => (1 + (x / b) ^ 2)⁻¹) a,
-    MeasureTheory.Measure.integral_comp_div (fun u : ℝ => (1 + u ^ 2)⁻¹) b,
+    MeasureTheory.integral_sub_right_eq_self (fun x : ℝ => (1 + (x / b) ^ (2 : ℕ))⁻¹) a,
+    MeasureTheory.Measure.integral_comp_div (fun u : ℝ => (1 + u ^ (2 : ℕ))⁻¹) b,
     integral_univ_inv_one_add_sq, smul_eq_mul, abs_of_pos hb]
   field_simp
 
 theorem integrable_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
-    Integrable (fun x : ℝ => ((x - a) ^ 2 + b ^ 2)⁻¹) volume := by
-  have hbase : Integrable (fun x : ℝ => ((b ^ 2)⁻¹ * (1 + ((x - a) / b) ^ 2)⁻¹)) volume :=
+    Integrable (fun x : ℝ => ((x - a) ^ (2 : ℕ) + b ^ (2 : ℕ))⁻¹) volume := by
+  have hbase : Integrable (fun x : ℝ => ((b ^ (2 : ℕ))⁻¹ * (1 + ((x - a) / b) ^ (2 : ℕ))⁻¹)) volume :=
     ((integrable_inv_one_add_sq.comp_div (ne_of_gt hb)).comp_sub_right a).const_mul _
   refine hbase.congr ?_
   filter_upwards with x
@@ -64,7 +64,7 @@ theorem integrable_inv_sub_sq_add_sq {a b : ℝ} (hb : 0 < b) :
 /-- The product of the two conjugate Cauchy factors is the real Poisson denominator. -/
 theorem cauchyPair_eq_ofReal (w : ℂ) (x : ℝ) :
     (((x : ℂ) - w) * ((x : ℂ) - (starRingEnd ℂ) w))
-      = ((((x - w.re) ^ 2 + w.im ^ 2 : ℝ)) : ℂ) := by
+      = ((((x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) : ℝ)) : ℂ) := by
   apply Complex.ext
   · simp only [Complex.ofReal_re]
     simp [Complex.mul_re, Complex.sub_re, Complex.sub_im]
@@ -77,8 +77,8 @@ theorem integrable_cauchyPair {w : ℂ} (hw : 0 < w.im) :
     Integrable (fun x : ℝ => (((x : ℂ) - w) * ((x : ℂ) - (starRingEnd ℂ) w))⁻¹) volume := by
   have hb := integrable_inv_sub_sq_add_sq (a := w.re) hw
   have hcoe : Integrable
-      (fun x : ℝ => (((((x - w.re) ^ 2 + w.im ^ 2 : ℝ)) : ℂ))⁻¹) volume := by
-    have hc : Integrable (fun x : ℝ => (((((x - w.re) ^ 2 + w.im ^ 2)⁻¹ : ℝ)) : ℂ)) volume :=
+      (fun x : ℝ => (((((x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) : ℝ)) : ℂ))⁻¹) volume := by
+    have hc : Integrable (fun x : ℝ => (((((x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ))⁻¹ : ℝ)) : ℂ)) volume :=
       MeasureTheory.Integrable.ofReal hb
     refine hc.congr ?_
     filter_upwards with x
@@ -91,12 +91,12 @@ theorem integral_cauchyPair {w : ℂ} (hw : 0 < w.im) :
     (∫ x : ℝ, (((x : ℂ) - w) * ((x : ℂ) - (starRingEnd ℂ) w))⁻¹)
       = ((Real.pi / w.im : ℝ) : ℂ) := by
   have hfun : ∀ x : ℝ, (((x : ℂ) - w) * ((x : ℂ) - (starRingEnd ℂ) w))⁻¹
-      = ((((x - w.re) ^ 2 + w.im ^ 2 : ℝ)⁻¹ : ℝ) : ℂ) := by
+      = ((((x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) : ℝ)⁻¹ : ℝ) : ℂ) := by
     intro x
     rw [cauchyPair_eq_ofReal, ← Complex.ofReal_inv]
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hfun)]
   have h := integral_ofReal (𝕜 := ℂ) (μ := (volume : Measure ℝ))
-    (f := fun x : ℝ => ((x - w.re) ^ 2 + w.im ^ 2)⁻¹)
+    (f := fun x : ℝ => ((x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ))⁻¹)
   exact h.trans (by rw [integral_inv_sub_sq_add_sq hw]; rfl)
 
 /-- **The Cauchy integral formula for the closed upper half-plane.**  A function holomorphic on the
@@ -148,7 +148,7 @@ theorem integral_div_sub_eq_of_upperHalfPlane_farDecay {u : ℂ → ℂ} {M R : 
   have hwnn : (0 : ℝ) ≤ ‖w‖ := norm_nonneg w
   have hR'0 : 0 < R' := by rw [hR'def]; linarith
   have hfar' : ∀ z : ℂ, 0 ≤ z.im → R' ≤ ‖z‖ →
-      ‖dslope g w z‖ ≤ (2 * M + 4 * ‖c‖) / ‖z‖ ^ 2 := by
+      ‖dslope g w z‖ ≤ (2 * M + 4 * ‖c‖) / ‖z‖ ^ (2 : ℕ) := by
     intro z hz hzR
     have hzn : 0 < ‖z‖ := lt_of_lt_of_le hR'0 hzR
     have hhalf : ‖w‖ ≤ ‖z‖ / 2 := by rw [hR'def] at hzR; linarith

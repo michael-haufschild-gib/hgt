@@ -62,10 +62,10 @@ theorem cddCoupling_completelyMonotone {ι : Type*} (s : Finset ι) (w r : ι �
     (hw : ∀ j ∈ s, 0 ≤ w j) (hr0 : ∀ j ∈ s, 0 ≤ r j) (hr1 : ∀ j ∈ s, r j ≤ 1) (m k : ℕ) :
     0 ≤ (-1) ^ k * ((fwdDiff 1)^[k] (fun n : ℕ => ∑ j ∈ s, w j * (r j) ^ (2 * n)) m) := by
   have hrw : (fun n : ℕ => ∑ j ∈ s, w j * (r j) ^ (2 * n))
-      = fun n : ℕ => ∑ j ∈ s, w j * ((r j) ^ 2) ^ n := by
+      = fun n : ℕ => ∑ j ∈ s, w j * ((r j) ^ (2 : ℕ)) ^ n := by
     funext n; apply Finset.sum_congr rfl; intro j _; rw [pow_mul]
   rw [hrw]
-  exact geometricCombination_completelyMonotone s w (fun j => (r j) ^ 2) hw
+  exact geometricCombination_completelyMonotone s w (fun j => (r j) ^ (2 : ℕ)) hw
     (fun j _ => sq_nonneg _) (fun j hj => by nlinarith [hr0 j hj, hr1 j hj]) m k
 
 end GaloisForLFunctions.HTGeometry

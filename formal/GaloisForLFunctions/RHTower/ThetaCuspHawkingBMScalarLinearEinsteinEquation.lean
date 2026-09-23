@@ -88,9 +88,9 @@ private theorem angular_jet_of_laplacian (s : ℂ) (S : (Fin 2 → ℝ) → ℂ)
   have hy : (p.val 3 : ℂ) ≠ 0 := by exact_mod_cast p.property.2.ne'
   rw [D4BMHorizon.scalarLaplacian_eq S _ p.property.2] at hL
   have hyy : coordDeriv 1 (coordDeriv 1 S) (angularPoint p.val) =
-      (s+1)*(s+2)*S (angularPoint p.val)/(p.val 3 : ℂ)^2 -
+      (s+1)*(s+2)*S (angularPoint p.val)/(p.val 3 : ℂ)^(2 : ℕ) -
         coordDeriv 0 (coordDeriv 0 S) (angularPoint p.val) := by
-    change (p.val 3 : ℂ)^2 *
+    change (p.val 3 : ℂ)^(2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) (angularPoint p.val) +
         coordDeriv 1 (coordDeriv 1 S) (angularPoint p.val)) =
       (s+1)*(s+2)*S (angularPoint p.val) at hL
@@ -131,7 +131,7 @@ private theorem radialExpression_evalJet (s r y : ℂ) (i j : Fin 4) :
       D4BMFundamentalScalarMetric.coordinateJet]
 
 private theorem radialExpression_regular (s r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0)
-    (hf : r^2-1 ≠ 0) (i j : Fin 4) : (radialExpression s i j).Regular ![r,y] := by
+    (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) : (radialExpression s i j).Regular ![r,y] := by
   have hf' : r*r + -1 ≠ 0 := by simpa [pow_two, sub_eq_add_neg] using hf
   fin_cases i <;> fin_cases j <;>
     simp [radialExpression, ScalarTwoJet.Expression.Regular, ScalarTwoJet.Expression.eval, hr, hy, hf']
@@ -143,8 +143,8 @@ private theorem radial_entry_correct (s : ℂ) (p : D4BMBackground.ExteriorPoint
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3 : ℂ) ≠ 0 := by exact_mod_cast p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   let a : Fin 2 → (Fin 4 → ℝ) → ℂ := fun k x => ![(x 1 : ℂ),(x 3 : ℂ)] k
   have ha (k : Fin 2) : ContDiffAt ℝ 2 (a k) p.val := by
@@ -208,8 +208,8 @@ theorem field_residual_zero (s a : ℂ) (S : (Fin 2 → ℝ) → ℂ) (p : D4BMB
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3 : ℂ) ≠ 0 := by exact_mod_cast p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   rw [D4BMLinearizedEinsteinSource.residual, D4BMBackground.actualJet_eq, field_jet s a S p hS hL]
   exact cosmological_component _ _ _ _ _ _ _ _ _ hr hy hf i j

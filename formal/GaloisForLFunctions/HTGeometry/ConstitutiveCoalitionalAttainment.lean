@@ -740,13 +740,13 @@ theorem coalitional_reciprocal_pricing
     (hreciprocal : ∀ i ∈ F, κ ≤ response i * price i) :
     κ ≤ (∑ i ∈ F, mu i * response i) * ∑ i ∈ F, mu i * price i := by
   have hpoint : ∀ i ∈ F,
-      (mu i * Real.sqrt κ) ^ 2 ≤
+      (mu i * Real.sqrt κ) ^ (2 : ℕ) ≤
         (mu i * response i) * (mu i * price i) := by
     intro i hi
     calc
-      (mu i * Real.sqrt κ) ^ 2 = (mu i) ^ 2 * κ := by
+      (mu i * Real.sqrt κ) ^ (2 : ℕ) = (mu i) ^ (2 : ℕ) * κ := by
         rw [mul_pow, Real.sq_sqrt hκ]
-      _ ≤ (mu i) ^ 2 * (response i * price i) :=
+      _ ≤ (mu i) ^ (2 : ℕ) * (response i * price i) :=
         mul_le_mul_of_nonneg_left (hreciprocal i hi) (sq_nonneg _)
       _ = (mu i * response i) * (mu i * price i) := by ring
   have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul F

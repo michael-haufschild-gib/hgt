@@ -30,7 +30,7 @@ def deningerBigWittPrimeSeamCalkinCorner
 /-- Squared essential norm of the actual ordered Calkin corner. -/
 def deningerBigWittPrimeSeamCalkinPairEnergy
     (rho : ℂ) (p q : Nat.Primes) : ℝ :=
-  essentialNorm (deningerBigWittPrimeSeamCalkinCorner rho p q) ^ 2
+  essentialNorm (deningerBigWittPrimeSeamCalkinCorner rho p q) ^ (2 : ℕ)
 
 /-- The Calkin pair energy is exactly the reciprocal-prime physical
 Dirichlet atom. -/
@@ -39,7 +39,7 @@ theorem deningerBigWittPrimeSeamCalkinPairEnergy_eq
     deningerBigWittPrimeSeamCalkinPairEnergy rho p q =
       deningerBigWittPrimePairExtendedPhysicalAtom p q *
         ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho -
-          orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ 2 := by
+          orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ (2 : ℕ) := by
   rw [deningerBigWittPrimeSeamCalkinPairEnergy,
     deningerBigWittPrimeSeamCalkinCorner,
     essentialNorm_orbitwisePrimeSeamCalkinGramCorner
@@ -56,12 +56,12 @@ theorem deningerBigWittPrimeSeamCalkinPairEnergy_eq
     exact_mod_cast q.prop.pos
   change
     ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho -
-        orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ 2 *
-        ((Real.sqrt P * Real.sqrt Q) ^ 2)⁻¹ =
+        orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ (2 : ℕ) *
+        ((Real.sqrt P * Real.sqrt Q) ^ (2 : ℕ))⁻¹ =
       1 / P * (1 / Q) *
         ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho -
-          orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ 2
-  rw [show (Real.sqrt P * Real.sqrt Q) ^ 2 = P * Q by
+          orbitwiseNatPrimeSeamCharge (q : ℕ) rho‖ ^ (2 : ℕ)
+  rw [show (Real.sqrt P * Real.sqrt Q) ^ (2 : ℕ) = P * Q by
     rw [mul_pow, Real.sq_sqrt hP0.le, Real.sq_sqrt hQ0.le]]
   field_simp [hP0.ne', hQ0.ne']
 

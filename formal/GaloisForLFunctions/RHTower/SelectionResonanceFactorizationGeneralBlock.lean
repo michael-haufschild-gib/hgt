@@ -119,84 +119,84 @@ theorem continuous_resPolyL {L m : ℕ} (hL : 1 ≤ L) (hm : 1 ≤ m) : Continuo
 
 /-- The window: no large values for `3m ≤ u ≤ m²`. -/
 theorem norm_resPolyL_lt_of_window {L m : ℕ} (hL : 1 ≤ L) (hm : 5 ≤ m) {u : ℝ}
-    (hu3 : 3 * (m : ℝ) ≤ u) (hu : u ≤ (m : ℝ) ^ 2) : ‖resPolyL L m u‖ < 4 * (m : ℝ) ^ 3 := by
+    (hu3 : 3 * (m : ℝ) ≤ u) (hu : u ≤ (m : ℝ) ^ (2 : ℕ)) : ‖resPolyL L m u‖ < 4 * (m : ℝ) ^ (3 : ℕ) := by
   have hmR : (5 : ℝ) ≤ m := by exact_mod_cast hm
   have hu0 : 0 ≤ u := by linarith
   obtain ⟨-, hhi⟩ := resBlock_envelope hm hu0 hu
   rw [norm_resPolyL hL]
   have hcos : |Real.cos (resLamL L * u / 2)| ≤ 1 := Real.abs_cos_le_one _
-  have hsqrt : 3 * (m : ℝ) ≤ Real.sqrt (441 + u ^ 2) := by
+  have hsqrt : 3 * (m : ℝ) ≤ Real.sqrt (441 + u ^ (2 : ℕ)) := by
     rw [Real.le_sqrt (by positivity) (by positivity)]; nlinarith
-  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ 2) := by linarith
-  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + u ^ 2) ≤
-      (401 / 100 : ℝ) * (m : ℝ) ^ 4 / (3 * (m : ℝ)) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ (2 : ℕ)) := by linarith
+  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + u ^ (2 : ℕ)) ≤
+      (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / (3 * (m : ℝ)) :=
     div_le_div_of_nonneg_left (by positivity) (by positivity) hsqrt
-  have hdiv' : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / (3 * (m : ℝ)) = (401 / 300) * (m : ℝ) ^ 3 := by
+  have hdiv' : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / (3 * (m : ℝ)) = (401 / 300) * (m : ℝ) ^ (3 : ℕ) := by
     rw [div_eq_iff (by positivity)]; ring
-  have hB : ‖resBlock m u‖ ≤ (401 / 300) * (m : ℝ) ^ 3 + 2 := by linarith
+  have hB : ‖resBlock m u‖ ≤ (401 / 300) * (m : ℝ) ^ (3 : ℕ) + 2 := by linarith
   have hBn : 0 ≤ ‖resBlock m u‖ := norm_nonneg _
   calc 2 * |Real.cos (resLamL L * u / 2)| * ‖resBlock m u‖
-      ≤ 2 * 1 * ((401 / 300) * (m : ℝ) ^ 3 + 2) := by gcongr
-    _ < 4 * (m : ℝ) ^ 3 := by nlinarith
+      ≤ 2 * 1 * ((401 / 300) * (m : ℝ) ^ (3 : ℕ) + 2) := by gcongr
+    _ < 4 * (m : ℝ) ^ (3 : ℕ) := by nlinarith
 
 /-- The outer threshold on the `k`-th period. -/
 def resKappaL (L m k : ℕ) : ℝ :=
-  2 * (m : ℝ) ^ 3 /
-    ((401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) + 2)
+  2 * (m : ℝ) ^ (3 : ℕ) /
+    ((401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) + 2)
 
 /-- **Core condition** for the general factor. -/
 theorem resPolyL_core {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
     (hk : ((k : ℝ) + 1) * resPeriodL L ≤ (69 / 50) * (m : ℝ)) {u : ℝ}
     (hu : u ∈ Icc ((k : ℝ) * resPeriodL L) (((k : ℝ) + 1) * resPeriodL L))
     (hcos : Real.sqrt 2 / 2 ≤ |Real.cos (resLamL L * u / 2)|) :
-    4 * (m : ℝ) ^ 3 ≤ ‖resPolyL L m u‖ := by
+    4 * (m : ℝ) ^ (3 : ℕ) ≤ ‖resPolyL L m u‖ := by
   have hmR : (1000 : ℝ) ≤ m := by exact_mod_cast hm
   have hP := resPeriodL_pos hL
   have hu0 : 0 ≤ u := le_trans (by positivity) hu.1
   have hu1 : u ≤ (69 / 50) * (m : ℝ) := le_trans hu.2 hk
-  have hum : u ≤ (m : ℝ) ^ 2 := by nlinarith
+  have hum : u ≤ (m : ℝ) ^ (2 : ℕ) := by nlinarith
   obtain ⟨hlo, -⟩ := resBlock_envelope (by omega) hu0 hum
   have hsqrt := sqrt_bound_of_le hm hu0 hu1
-  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ 2) := Real.sqrt_pos.mpr (by positivity)
-  have hdiv : (399 / 100 : ℝ) * (m : ℝ) ^ 4 / ((13802 / 10000) * (m : ℝ)) ≤
-      (399 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + u ^ 2) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
+  have hdiv : (399 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((13802 / 10000) * (m : ℝ)) ≤
+      (399 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + u ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left (by positivity) hsqrt_pos hsqrt
-  have hdiv' : (399 / 100 : ℝ) * (m : ℝ) ^ 4 / ((13802 / 10000) * (m : ℝ)) =
-      (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 := by
+  have hdiv' : (399 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((13802 / 10000) * (m : ℝ)) =
+      (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) := by
     rw [div_eq_iff (by positivity)]; ring
-  have hB : (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 - 2 ≤ ‖resBlock m u‖ := by linarith
+  have hB : (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) - 2 ≤ ‖resBlock m u‖ := by linarith
   rw [norm_resPolyL hL]
   have hs2' : (14142 / 10000 : ℝ) < Real.sqrt 2 := by
     rw [Real.lt_sqrt (by norm_num)]; norm_num
-  have hBn : 0 ≤ (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 - 2 := by nlinarith
-  calc 4 * (m : ℝ) ^ 3
-      ≤ 2 * (Real.sqrt 2 / 2) * ((399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 - 2) := by
+  have hBn : 0 ≤ (399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) - 2 := by nlinarith
+  calc 4 * (m : ℝ) ^ (3 : ℕ)
+      ≤ 2 * (Real.sqrt 2 / 2) * ((399 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) - 2) := by
         nlinarith
     _ ≤ 2 * |Real.cos (resLamL L * u / 2)| * ‖resBlock m u‖ := by gcongr
 
 /-- **Outer condition** for the general factor. -/
 theorem resPolyL_outer {L m : ℕ} (hL : 1 ≤ L) (hm : 5 ≤ m) {k : ℕ}
-    (hk : ((k : ℝ) + 1) * resPeriodL L ≤ (m : ℝ) ^ 2) {u : ℝ}
+    (hk : ((k : ℝ) + 1) * resPeriodL L ≤ (m : ℝ) ^ (2 : ℕ)) {u : ℝ}
     (hu : u ∈ Icc ((k : ℝ) * resPeriodL L) (((k : ℝ) + 1) * resPeriodL L))
-    (hlarge : 4 * (m : ℝ) ^ 3 ≤ ‖resPolyL L m u‖) :
+    (hlarge : 4 * (m : ℝ) ^ (3 : ℕ) ≤ ‖resPolyL L m u‖) :
     resKappaL L m k ≤ |Real.cos (resLamL L * u / 2)| := by
   have hmR : (5 : ℝ) ≤ m := by exact_mod_cast hm
   have hP := resPeriodL_pos hL
   have hu0 : 0 ≤ u := le_trans (by positivity) hu.1
-  have hum : u ≤ (m : ℝ) ^ 2 := le_trans hu.2 hk
+  have hum : u ≤ (m : ℝ) ^ (2 : ℕ) := le_trans hu.2 hk
   obtain ⟨-, hhi⟩ := resBlock_envelope hm hu0 hum
   rw [norm_resPolyL hL] at hlarge
-  have hsqrt_mono : Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) ≤ Real.sqrt (441 + u ^ 2) := by
+  have hsqrt_mono : Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) ≤ Real.sqrt (441 + u ^ (2 : ℕ)) := by
     apply Real.sqrt_le_sqrt
     have h1 := hu.1
     have hk0 : 0 ≤ (k : ℝ) * resPeriodL L := by positivity
     nlinarith
-  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr (by positivity)
-  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + u ^ 2) ≤
-      (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) :=
+  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + u ^ (2 : ℕ)) ≤
+      (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left (by positivity) hsqrt_pos hsqrt_mono
-  set Smax := (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) + 2
+  set Smax := (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) + 2
     with hSmax
   have hSpos : 0 < Smax := by rw [hSmax]; positivity
   have hB : ‖resBlock m u‖ ≤ Smax := by rw [hSmax]; linarith
@@ -208,7 +208,7 @@ theorem resPolyL_outer {L m : ℕ} (hL : 1 ≤ L) (hm : 5 ≤ m) {k : ℕ}
 theorem resKappaL_pos {L m : ℕ} (hm : 1 ≤ m) (k : ℕ) : 0 < resKappaL L m k := by
   have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm
   unfold resKappaL
-  have : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) := Real.sqrt_pos.mpr (by positivity)
+  have : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
   positivity
 
 theorem resKappaL_le_sqrt_two_div_two {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
@@ -218,25 +218,25 @@ theorem resKappaL_le_sqrt_two_div_two {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ 
   have hP := resPeriodL_pos hL
   have hk0 : 0 ≤ (k : ℝ) * resPeriodL L := by positivity
   have hsqrt := sqrt_bound_of_le hm hk0 hk
-  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr (by positivity)
   have hs2' : (14142 / 10000 : ℝ) < Real.sqrt 2 := by
     rw [Real.lt_sqrt (by norm_num)]; norm_num
   unfold resKappaL
-  have hden : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / ((13802 / 10000) * (m : ℝ)) ≤
-      (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) :=
+  have hden : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((13802 / 10000) * (m : ℝ)) ≤
+      (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left (by positivity) hsqrt_pos hsqrt
-  have hden' : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / ((13802 / 10000) * (m : ℝ)) =
-      (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 := by
+  have hden' : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((13802 / 10000) * (m : ℝ)) =
+      (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) := by
     rw [div_eq_iff (by positivity)]; ring
   rw [div_le_iff₀ (by positivity)]
-  have hA : (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 + 2 ≤
-      (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) + 2 := by
+  have hA : (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) + 2 ≤
+      (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) + 2 := by
     linarith
   have hB := mul_le_mul_of_nonneg_left hA (by positivity : (0 : ℝ) ≤ Real.sqrt 2 / 2)
   have hC := mul_le_mul_of_nonneg_right hs2'.le
-    (by positivity : (0 : ℝ) ≤ (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ 3 + 2)
-  have hm3 : (1000 : ℝ) ^ 3 ≤ (m : ℝ) ^ 3 := pow_le_pow_left₀ (by norm_num) hmR 3
+    (by positivity : (0 : ℝ) ≤ (401 / 100 : ℝ) * (10000 / 13802) * (m : ℝ) ^ (3 : ℕ) + 2)
+  have hm3 : (1000 : ℝ) ^ (3 : ℕ) ≤ (m : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) hmR 3
   nlinarith
 
 theorem resKappaL_ge {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
@@ -246,22 +246,22 @@ theorem resKappaL_ge {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
   have hP := resPeriodL_pos hL
   have hk0 : 0 ≤ (k : ℝ) * resPeriodL L := by positivity
   have hsqrt := sqrt_bound_of_le hm hk0 hk
-  have hsqrt_ge : (k : ℝ) * resPeriodL L ≤ Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) := by
+  have hsqrt_ge : (k : ℝ) * resPeriodL L ≤ Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) := by
     rw [Real.le_sqrt hk0 (by positivity)]; linarith
-  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr (by positivity)
   unfold resKappaL
-  set s := Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ 2) with hs
+  set s := Real.sqrt (441 + ((k : ℝ) * resPeriodL L) ^ (2 : ℕ)) with hs
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  have hfrac : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / s + 2 = ((401 / 100 : ℝ) * (m : ℝ) ^ 4 + 2 * s) / s := by
+  have hfrac : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / s + 2 = ((401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) + 2 * s) / s := by
     field_simp
   rw [hfrac, ← mul_div_assoc, div_le_iff₀ hsqrt_pos]
-  have h1 : (k : ℝ) * resPeriodL L * ((401 / 100 : ℝ) * (m : ℝ) ^ 4 + 2 * s) ≤
-      s * ((401 / 100 : ℝ) * (m : ℝ) ^ 4 + 2 * s) := by
+  have h1 : (k : ℝ) * resPeriodL L * ((401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) + 2 * s) ≤
+      s * ((401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) + 2 * s) := by
     apply mul_le_mul_of_nonneg_right hsqrt_ge; positivity
-  have h2 : 2 * s ≤ (1 / 100 : ℝ) * (m : ℝ) ^ 4 := by
-    have hm3 : (1000 : ℝ) ^ 3 ≤ (m : ℝ) ^ 3 := pow_le_pow_left₀ (by norm_num) hmR 3
-    have hm4 : (1 / 100 : ℝ) * (m : ℝ) ^ 4 = (m : ℝ) * ((1 / 100) * (m : ℝ) ^ 3) := by ring
+  have h2 : 2 * s ≤ (1 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) := by
+    have hm3 : (1000 : ℝ) ^ (3 : ℕ) ≤ (m : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) hmR 3
+    have hm4 : (1 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) = (m : ℝ) * ((1 / 100) * (m : ℝ) ^ (3 : ℕ)) := by ring
     rw [hm4]
     nlinarith [mul_le_mul_of_nonneg_left hm3 (by positivity : (0 : ℝ) ≤ m)]
   nlinarith
@@ -269,43 +269,43 @@ theorem resKappaL_ge {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
 /-- **Nonnegativity condition** for the general factor. -/
 theorem resPolyL_nonneg_period {L m : ℕ} (hL : 1 ≤ L) (hm : 1000 ≤ m) {k : ℕ}
     (hk : (36 / 25) * (m : ℝ) ≤ (k : ℝ) * resPeriodL L)
-    (hk' : ((k : ℝ) + 1) * resPeriodL L ≤ (m : ℝ) ^ 2) {u : ℝ}
+    (hk' : ((k : ℝ) + 1) * resPeriodL L ≤ (m : ℝ) ^ (2 : ℕ)) {u : ℝ}
     (hu : u ∈ Icc ((k : ℝ) * resPeriodL L) (((k : ℝ) + 1) * resPeriodL L))
-    (hlarge : 4 * (m : ℝ) ^ 3 ≤ ‖resPolyL L m u‖) :
+    (hlarge : 4 * (m : ℝ) ^ (3 : ℕ) ≤ ‖resPolyL L m u‖) :
     Real.sqrt 2 / 2 ≤ |Real.cos (resLamL L * u / 2)| := by
   have hmR : (1000 : ℝ) ≤ m := by exact_mod_cast hm
   have hP := resPeriodL_pos hL
   have hu0 : 0 ≤ u := le_trans (by positivity) hu.1
-  have hum : u ≤ (m : ℝ) ^ 2 := le_trans hu.2 hk'
+  have hum : u ≤ (m : ℝ) ^ (2 : ℕ) := le_trans hu.2 hk'
   have hu1 : (36 / 25) * (m : ℝ) ≤ u := le_trans hk hu.1
   obtain ⟨-, hhi⟩ := resBlock_envelope (by omega) hu0 hum
   rw [norm_resPolyL hL] at hlarge
-  have hsqrt_ge : (36 / 25) * (m : ℝ) ≤ Real.sqrt (441 + u ^ 2) := by
+  have hsqrt_ge : (36 / 25) * (m : ℝ) ≤ Real.sqrt (441 + u ^ (2 : ℕ)) := by
     rw [Real.le_sqrt (by positivity) (by positivity)]; nlinarith
-  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ 2) := Real.sqrt_pos.mpr (by positivity)
-  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / Real.sqrt (441 + u ^ 2) ≤
-      (401 / 100 : ℝ) * (m : ℝ) ^ 4 / ((36 / 25) * (m : ℝ)) :=
+  have hsqrt_pos : 0 < Real.sqrt (441 + u ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
+  have hdiv : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / Real.sqrt (441 + u ^ (2 : ℕ)) ≤
+      (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((36 / 25) * (m : ℝ)) :=
     div_le_div_of_nonneg_left (by positivity) (by positivity) hsqrt_ge
-  have hdiv' : (401 / 100 : ℝ) * (m : ℝ) ^ 4 / ((36 / 25) * (m : ℝ)) =
-      (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 := by
+  have hdiv' : (401 / 100 : ℝ) * (m : ℝ) ^ (4 : ℕ) / ((36 / 25) * (m : ℝ)) =
+      (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) := by
     rw [div_eq_iff (by positivity)]; ring
-  have hB : ‖resBlock m u‖ ≤ (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2 := by linarith
+  have hB : ‖resBlock m u‖ ≤ (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2 := by linarith
   have hcos0 : 0 ≤ |Real.cos (resLamL L * u / 2)| := abs_nonneg _
   have hs2 := sqrt_two_lt
   by_contra hcon
   push Not at hcon
   have : 2 * |Real.cos (resLamL L * u / 2)| * ‖resBlock m u‖ <
-      2 * (Real.sqrt 2 / 2) * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2) := by
+      2 * (Real.sqrt 2 / 2) * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2) := by
     have hBn : 0 ≤ ‖resBlock m u‖ := norm_nonneg _
-    have hpos : 0 < (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2 := by positivity
+    have hpos : 0 < (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2 := by positivity
     calc 2 * |Real.cos (resLamL L * u / 2)| * ‖resBlock m u‖
-        ≤ 2 * |Real.cos (resLamL L * u / 2)| * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2) := by
+        ≤ 2 * |Real.cos (resLamL L * u / 2)| * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2) := by
           gcongr
-      _ < 2 * (Real.sqrt 2 / 2) * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2) := by
+      _ < 2 * (Real.sqrt 2 / 2) * ((401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2) := by
           gcongr
   have hC := mul_lt_mul_of_pos_right hs2
-    (by positivity : (0 : ℝ) < (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ 3 + 2)
-  have hm3 : (1000 : ℝ) ^ 3 ≤ (m : ℝ) ^ 3 := pow_le_pow_left₀ (by norm_num) hmR 3
+    (by positivity : (0 : ℝ) < (401 / 100 : ℝ) * (25 / 36) * (m : ℝ) ^ (3 : ℕ) + 2)
+  have hm3 : (1000 : ℝ) ^ (3 : ℕ) ≤ (m : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) hmR 3
   nlinarith
 
 end

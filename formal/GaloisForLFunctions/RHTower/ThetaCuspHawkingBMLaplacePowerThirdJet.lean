@@ -18,7 +18,7 @@ attribute [-instance] NormedSpace.complexToReal
 
 /-- The literal third positive-radius derivative of the original complex power. -/
 def powerThird (a : ℂ) (z : ℝ) : ℂ :=
-  a * (a - 1) * (a - 2) * power a z / (z : ℂ) ^ 3
+  a * (a - 1) * (a - 2) * power a z / (z : ℂ) ^ (3 : ℕ)
 
 /-- The third radial jet follows by differentiating the already literal second jet. -/
 theorem powerSecond_hasDerivAt (a : ℂ) {z : ℝ} (hz : 0 < z) :

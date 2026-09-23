@@ -91,7 +91,7 @@ theorem polarCoefficient_integerDilation_eq_sub_two_sq_mul
   rw [integerDilation_eq_sub_two_argumentDilation_sq W r hr j]
   exact polarCoefficient_argumentDilation_eq_mul _ (r ^ 2) (pow_pos hr 2) n
 
-/-- Coefficient-operator form `D_(r^2) p_(j-2)=p_j`. -/
+/-- Coefficient-operator form `D_(r^(2 : ℕ)) p_(j-2)=p_j`. -/
 theorem decimate_polarCoefficient_integerDilation_sub_two
     (W : CompactBVPrimeWindow) (r : ℕ) (hr : 0 < r) (j : ℤ) :
     decimate (r ^ 2)
@@ -130,7 +130,7 @@ theorem continuedSourceResidueValue_integerDilation_eq_sub_two_character
   rw [integerDilation_eq_sub_two_argumentDilation_sq W r hr j,
     continuedSourceResidueValue_argumentDilation, cpow_sq_character r hr rho]
 
-/-- Laurent residue of the off-`r^2` coefficient layer at rung `j-2`. -/
+/-- Laurent residue of the off-`r^(2 : ℕ)` coefficient layer at rung `j-2`. -/
 def integerDilationOffMultipleResidueValue
     (W : CompactBVPrimeWindow) (r : ℕ) (hr : 0 < r) (j : ℤ) (rho : ℂ) : ℂ :=
   adjacentOffMultipleResidueValue

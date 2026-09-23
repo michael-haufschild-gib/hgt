@@ -14,8 +14,8 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeSourceF
         r ∈ Set.Icc (N : ℝ) (2 * N : ℝ) →
         (∫ y in Set.Icc (-1 : ℝ) 1,
           ‖smoothAFEZetaSquareDualDerivativeSourceField
-            (N : ℝ) r (center - y)‖ ^ 2) ≤
-          K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by
+            (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) ≤
+          K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ) := by
   obtain ⟨K, hK, hmv⟩ :=
     exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeLSeries_le_logCube
   refine ⟨K, hK, ?_⟩
@@ -29,10 +29,10 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeSourceF
       (fun y : ℝ =>
         ‖LSeries
           (smoothAFEZetaSquareDualDerivativeNatCoefficient (N : ℝ) r center)
-          ((y : ℝ) * I)‖ ^ 2) =
+          ((y : ℝ) * I)‖ ^ (2 : ℕ)) =
       (fun y : ℝ =>
         ‖smoothAFEZetaSquareDualDerivativeSourceField
-          (N : ℝ) r (center - y)‖ ^ 2) := by
+          (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) := by
     funext y
     rw [smoothAFEZetaSquareDualDerivativeLSeries_eq_sourceField hr4 hN0]
   rwa [heq] at hbound
@@ -43,8 +43,8 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeSourceF
       ∀ {N : ℕ} {r center : ℝ}, 4 ≤ N →
         r ∈ Set.Icc (N : ℝ) (2 * N : ℝ) →
         (∫ t in Set.Icc (center - 1) (center + 1),
-          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2) ≤
-          K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by
+          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ)) ≤
+          K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ) := by
   obtain ⟨K, hK, hmv⟩ :=
     exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeSourceField_reflected_le_logCube
   refine ⟨K, hK, ?_⟩
@@ -52,14 +52,14 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeSourceF
   have hreflect :
       (∫ y in Set.Icc (-1 : ℝ) 1,
           ‖smoothAFEZetaSquareDualDerivativeSourceField
-            (N : ℝ) r (center - y)‖ ^ 2) =
+            (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) =
         ∫ t in Set.Icc (center - 1) (center + 1),
-          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2 := by
+          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ) := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1)]
     rw [intervalIntegral.integral_comp_sub_left
       (fun t : ℝ =>
-        ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2)
+        ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ))
       center]
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by linarith : center - 1 ≤ center + 1)]

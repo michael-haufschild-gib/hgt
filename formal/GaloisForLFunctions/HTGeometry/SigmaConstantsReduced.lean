@@ -25,7 +25,7 @@ theorem isReduced_tensorSquare_of_isSigmaSimple
     {K R : Type*} [Field K] [CharZero K] [CommRing R] [Algebra K R] [Nontrivial R]
     {σ : R ≃+* R} (hσ : IsSigmaSimple σ) : IsReduced (R ⊗[K] R) := by
   haveI : IsReduced R := isReduced_of_isSigmaSimple hσ
-  exact isReduced_tensorProduct_of_charZero
+  exact isReduced_tensorProduct_of_charZero_tensorProductCharZeroReduced
 
 /-- Any subalgebra of the tensor square of a `σ`-simple difference ring is reduced. -/
 theorem isReduced_subalgebra_tensorSquare

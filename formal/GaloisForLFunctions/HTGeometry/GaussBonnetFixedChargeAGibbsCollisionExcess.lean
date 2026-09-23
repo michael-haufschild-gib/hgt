@@ -7,16 +7,16 @@ noncomputable section
 /-- Squared deviation of a Gibbs population from the uniform stationary law. -/
 def egbFixedChargeAGibbsCollisionExcess (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) : ℝ :=
-  ∑ i, (egbFixedChargeAGibbsMarkovPopulation n m β E i - ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2
+  ∑ i, (egbFixedChargeAGibbsMarkovPopulation n m β E i - ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ)
 
 /-- Squared deviation is precisely collision probability above its uniform floor. -/
 theorem egbFixedChargeAGibbsCollisionExcess_identity (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionExcess n m β E =
-      (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ 2) -
+      (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ (2 : ℕ)) -
         ((2 : ℝ) ^ (n + 3))⁻¹ := by
-  have hpoint (x : ℝ) : (x - ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 =
-      x ^ 2 - (2 * ((2 : ℝ) ^ (n + 3))⁻¹) * x + (((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 := by ring
+  have hpoint (x : ℝ) : (x - ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) =
+      x ^ (2 : ℕ) - (2 * ((2 : ℝ) ^ (n + 3))⁻¹) * x + (((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) := by ring
   simp only [egbFixedChargeAGibbsCollisionExcess, hpoint, Finset.sum_add_distrib,
     Finset.sum_sub_distrib, ← Finset.mul_sum, egbFixedChargeAGibbsMarkovPopulation_mass,
     Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
@@ -41,7 +41,7 @@ theorem egbFixedChargeAGibbsCollisionExcess_zero_iff_uniform (n m : ℕ) (β : �
       (fun j (_ : j ∈ (Finset.univ : Finset (Fin (2 ^ (n + 3))))) =>
         sq_nonneg (egbFixedChargeAGibbsMarkovPopulation n m β E j - ((2 : ℝ) ^ (n + 3))⁻¹))
       (Finset.mem_univ i)
-    change (_ - _) ^ 2 ≤ egbFixedChargeAGibbsCollisionExcess n m β E at hi
+    change (_ - _) ^ (2 : ℕ) ≤ egbFixedChargeAGibbsCollisionExcess n m β E at hi
     rw [h] at hi
     nlinarith [sq_nonneg (egbFixedChargeAGibbsMarkovPopulation n m β E i -
       ((2 : ℝ) ^ (n + 3))⁻¹)]

@@ -24,7 +24,7 @@ noncomputable section
 variable (N : ℕ) (r s : ZMod (N + 1))
 
 def phaseAverageC (H : PhaseIndex N → ℂ) : ℂ :=
-  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ) * ∑ i, H i
+  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) * ∑ i, H i
 
 private theorem lossPair_smul_I (v w : EuclideanSpace ℂ (Deck N)) :
     lossPair N r s v (Complex.I • w) = (complexLoss N r s w v).im := by
@@ -45,16 +45,16 @@ private theorem phaseAverageC_re (H : PhaseIndex N → ℂ) :
     (phaseAverageC N H).re = phaseAverage N (fun i => (H i).re) := by
   unfold phaseAverageC phaseAverage
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
-  change ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2) * Complex.reCLM (∑ i, H i)) =
-    (((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2) * ∑ i, Complex.reCLM (H i)
+  change ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2) * Complex.reCLM (∑ i, H i)) =
+    (((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2) * ∑ i, Complex.reCLM (H i)
   rw [map_sum]
 
 private theorem phaseAverageC_im (H : PhaseIndex N → ℂ) :
     (phaseAverageC N H).im = phaseAverage N (fun i => (H i).im) := by
   unfold phaseAverageC phaseAverage
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
-  change ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2) * Complex.imCLM (∑ i, H i)) =
-    (((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2) * ∑ i, Complex.imCLM (H i)
+  change ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2) * Complex.imCLM (∑ i, H i)) =
+    (((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2) * ∑ i, Complex.imCLM (H i)
   rw [map_sum]
 
 theorem phaseAverageC_pair (v w : EuclideanSpace ℂ (Deck N)) :

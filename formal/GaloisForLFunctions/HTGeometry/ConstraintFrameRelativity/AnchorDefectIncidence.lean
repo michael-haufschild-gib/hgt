@@ -65,7 +65,7 @@ theorem sum_bipartiteCurrent {H D : Finset F} (hH : H.Nonempty) (hD : D.Nonempty
 
 /-- **Squared `ℓ²` norm.** -/
 theorem sum_sq_bipartiteCurrent {H D : Finset F} (hH : H.Nonempty) (hD : D.Nonempty) :
-    ∑ e : F × F, (bipartiteCurrent H D e) ^ 2 = 1 / ((H.card : ℝ) * (D.card : ℝ)) := by
+    ∑ e : F × F, (bipartiteCurrent H D e) ^ (2 : ℕ) = 1 / ((H.card : ℝ) * (D.card : ℝ)) := by
   have hHc : (0 : ℝ) < H.card := by
     exact_mod_cast Finset.card_pos.mpr hH
   have hDc : (0 : ℝ) < D.card := by
@@ -73,8 +73,8 @@ theorem sum_sq_bipartiteCurrent {H D : Finset F} (hH : H.Nonempty) (hD : D.Nonem
   have hfilter : (Finset.univ.filter fun e : F × F => e.1 ∈ H ∧ e.2 ∈ D) = H ×ˢ D := by
     ext e
     simp [Finset.mem_product]
-  have hpt : ∀ e : F × F, (bipartiteCurrent H D e) ^ 2
-      = if e.1 ∈ H ∧ e.2 ∈ D then (1 : ℝ) / ((H.card : ℝ) * (D.card : ℝ)) ^ 2 else 0 := by
+  have hpt : ∀ e : F × F, (bipartiteCurrent H D e) ^ (2 : ℕ)
+      = if e.1 ∈ H ∧ e.2 ∈ D then (1 : ℝ) / ((H.card : ℝ) * (D.card : ℝ)) ^ (2 : ℕ) else 0 := by
     intro e
     rw [bipartiteCurrent]
     split_ifs
@@ -343,11 +343,11 @@ theorem factorization_three_primes {p₀ p₁ p₂ : ℕ} (h0 : p₀.Prime) (h1 
 anchor set is `{p₀}`, the outer layer is `{p₂}` and the latent-inner layer is `{p₁}`. -/
 theorem witness_layers {p₀ p₁ p₂ m r s : ℕ} (h0 : p₀.Prime) (h1 : p₁.Prime) (h2 : p₂.Prime)
     (h01 : p₀ ≠ p₁) (h02 : p₀ ≠ p₂) (h12 : p₁ ≠ p₂) (hm : 2 ≤ m) (hr : 2 ≤ r) (hs : 2 ≤ s) :
-    anchorSet {p₀, p₁, p₂} (s * r * m) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₀}
-      ∧ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₂}
-      ∧ defectSet {p₀, p₁, p₂} (s * r) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1)
-          \ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₁} := by
-  set N : ℕ := p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1 with hN
+    anchorSet {p₀, p₁, p₂} (s * r * m) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ (1 : ℕ)) = {p₀}
+      ∧ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ (1 : ℕ)) = {p₂}
+      ∧ defectSet {p₀, p₁, p₂} (s * r) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ (1 : ℕ))
+          \ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ (1 : ℕ)) = {p₁} := by
+  set N : ℕ := p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ (1 : ℕ) with hN
   have hfac := factorization_three_primes h0 h1 h2 (s * r * m) s 1
   have e0 : N.factorization p₀ = s * r * m := by
     rw [hN, hfac]

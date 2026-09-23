@@ -46,14 +46,14 @@ theorem xiRotatedUpperEndCarrier_ne_zero :
 coordinate field. -/
 theorem xiRotatedUpperEndCarrier_sq_hypertranscendentalOver :
     HypertranscendentalOver upperEndRationalCoordinateField
-      (xiRotatedUpperEndCarrier ^ 2) :=
+      (xiRotatedUpperEndCarrier ^ (2 : ℕ)) :=
   HTGeometry.hypertranscendentalOver_pow_of_pos
     xiRotatedUpperEndCarrier_hypertranscendentalOver (by norm_num)
 
 /-- The logarithmic-current differential field of completed Xi is unchanged by squaring. -/
 theorem differentialAdjoin_logDeriv_xiRotatedUpperEndCarrier_sq_eq :
     differentialAdjoin upperEndRationalCoordinateField
-        ({Differential.logDeriv (xiRotatedUpperEndCarrier ^ 2)} :
+        ({Differential.logDeriv (xiRotatedUpperEndCarrier ^ (2 : ℕ))} :
           Set upperEndMeroField) =
       differentialAdjoin upperEndRationalCoordinateField
         ({Differential.logDeriv xiRotatedUpperEndCarrier} :
@@ -66,14 +66,14 @@ completed Xi is the ordinary field obtained from the Xi logarithmic-current fiel
 the one squared amplitude coordinate. -/
 theorem differentialAdjoin_xiRotatedUpperEndCarrier_sq_eq_current_adjoin_sq :
     differentialAdjoin upperEndRationalCoordinateField
-        ({xiRotatedUpperEndCarrier ^ 2} : Set upperEndMeroField) =
+        ({xiRotatedUpperEndCarrier ^ (2 : ℕ)} : Set upperEndMeroField) =
       IntermediateField.adjoin upperEndRationalCoordinateField
         (((differentialAdjoin upperEndRationalCoordinateField
           ({Differential.logDeriv xiRotatedUpperEndCarrier} :
             Set upperEndMeroField) :
               IntermediateField upperEndRationalCoordinateField upperEndMeroField) :
             Set upperEndMeroField) ∪
-          {xiRotatedUpperEndCarrier ^ 2}) :=
+          {xiRotatedUpperEndCarrier ^ (2 : ℕ)}) :=
   HTGeometry.differentialAdjoin_pow_eq_logCurrentOrdinaryExtension
     xiRotatedUpperEndCarrier_ne_zero (by norm_num)
 

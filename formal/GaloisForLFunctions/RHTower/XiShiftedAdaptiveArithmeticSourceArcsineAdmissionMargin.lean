@@ -28,7 +28,7 @@ noncomputable section
 def affine : Polynomial ℝ := 2 * X - 1
 
 theorem affine_eval_cos_sq (x : ℝ) :
-    affine.eval (Real.cos x ^ 2) = Real.cos (2 * x) := by
+    affine.eval (Real.cos x ^ (2 : ℕ)) = Real.cos (2 * x) := by
   simp [affine, Real.cos_two_mul]
 
 theorem bridge (P : Polynomial ℝ) :
@@ -38,7 +38,7 @@ theorem bridge (P : Polynomial ℝ) :
   rw [GaloisForLFunctions.HTGeometry.momentFunctional_normalizedCentralBinom_eq_quarterIntegral]
   rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos]
   have hi :
-      (∫ x in (0 : ℝ)..Real.pi / 2, (P.comp affine).eval (Real.cos x ^ 2)) =
+      (∫ x in (0 : ℝ)..Real.pi / 2, (P.comp affine).eval (Real.cos x ^ (2 : ℕ))) =
         (2 : ℝ)⁻¹ * ∫ x in (0 : ℝ)..Real.pi, P.eval (Real.cos x) := by
     rw [intervalIntegral.integral_congr (fun x _ => by
       rw [Polynomial.eval_comp, affine_eval_cos_sq])]
@@ -107,7 +107,7 @@ theorem L_T_mul_self_of_ne_zero {n : ℕ} (hn : n ≠ 0) :
   field_simp [ne_of_gt Real.pi_pos]
 
 theorem one_add_X_sq_cheb :
-    2 * (1 + X : Polynomial ℝ) ^ 2 =
+    2 * (1 + X : Polynomial ℝ) ^ (2 : ℕ) =
       3 * Polynomial.Chebyshev.T ℝ 0 +
       4 * Polynomial.Chebyshev.T ℝ 1 +
       Polynomial.Chebyshev.T ℝ 2 := by
@@ -115,12 +115,12 @@ theorem one_add_X_sq_cheb :
   ring
 
 theorem one_add_X_cube_cheb :
-    4 * (1 + X : Polynomial ℝ) ^ 3 =
+    4 * (1 + X : Polynomial ℝ) ^ (3 : ℕ) =
       10 * Polynomial.Chebyshev.T ℝ 0 +
       15 * Polynomial.Chebyshev.T ℝ 1 +
       6 * Polynomial.Chebyshev.T ℝ 2 +
       Polynomial.Chebyshev.T ℝ 3 := by
-  have hT3 : Polynomial.Chebyshev.T ℝ 3 = 4 * X ^ 3 - 3 * X := by
+  have hT3 : Polynomial.Chebyshev.T ℝ 3 = 4 * X ^ (3 : ℕ) - 3 * X := by
     rw [show (3 : ℤ) = 1 + 2 by norm_num,
       Polynomial.Chebyshev.T_add_two]
     norm_num [Polynomial.Chebyshev.T_two]
@@ -129,14 +129,14 @@ theorem one_add_X_cube_cheb :
   ring
 
 theorem two_mul_L_T_mul_T_sq (k n : ℕ) :
-    2 * L (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ 2) =
+    2 * L (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) =
       L (Polynomial.Chebyshev.T ℝ k *
           Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ)) +
         L (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ 0) := by
   have hprod := Polynomial.Chebyshev.T_mul_T ℝ (n : ℤ) (n : ℤ)
   have hpoly :
       (2 : Polynomial ℝ) *
-          (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ 2) =
+          (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) =
         Polynomial.Chebyshev.T ℝ k *
             Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ) +
           Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ 0 := by
@@ -145,7 +145,7 @@ theorem two_mul_L_T_mul_T_sq (k n : ℕ) :
     linear_combination Polynomial.Chebyshev.T ℝ k * hprod
   calc
     _ = L ((2 : Polynomial ℝ) *
-        (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ 2)) := by
+        (Polynomial.Chebyshev.T ℝ k * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ))) := by
           exact (L_natCast_mul 2 _).symm
     _ = L (Polynomial.Chebyshev.T ℝ k *
           Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ) +
@@ -153,10 +153,10 @@ theorem two_mul_L_T_mul_T_sq (k n : ℕ) :
     _ = _ := L_add _ _
 
 theorem L_one_add_X_sq_mul_T_sq_of_two_le {n : ℕ} (hn : 2 ≤ n) :
-    L ((1 + X : Polynomial ℝ) ^ 2 * Polynomial.Chebyshev.T ℝ n ^ 2) = 3 / 4 := by
-  have h0 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ n ^ 2) = 1 / 2 := by
+    L ((1 + X : Polynomial ℝ) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) = 3 / 4 := by
+  have h0 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) = 1 / 2 := by
     simpa [pow_two] using L_T_mul_self_of_ne_zero (show n ≠ 0 by omega)
-  have h1 : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ n ^ 2) = 0 := by
+  have h1 : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) = 0 := by
     have h := two_mul_L_T_mul_T_sq 1 n
     have ha : L (Polynomial.Chebyshev.T ℝ 1 *
         Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ)) = 0 := by
@@ -164,13 +164,13 @@ theorem L_one_add_X_sq_mul_T_sq_of_two_le {n : ℕ} (hn : 2 ≤ n) :
     have hb : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ 0) = 0 := by
       exact L_T_mul_T_of_ne (show (1 : ℕ) ≠ 0 by omega)
     change 2 * L (Polynomial.Chebyshev.T ℝ (1 : ℤ) *
-        Polynomial.Chebyshev.T ℝ n ^ 2) =
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) =
       L (Polynomial.Chebyshev.T ℝ (1 : ℤ) *
         Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ)) +
       L (Polynomial.Chebyshev.T ℝ (1 : ℤ) * Polynomial.Chebyshev.T ℝ (0 : ℤ)) at h
     rw [ha, hb] at h
     linarith
-  have h2 : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ n ^ 2) = 0 := by
+  have h2 : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) = 0 := by
     have h := two_mul_L_T_mul_T_sq 2 n
     have ha : L (Polynomial.Chebyshev.T ℝ 2 *
         Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ)) = 0 := by
@@ -178,33 +178,33 @@ theorem L_one_add_X_sq_mul_T_sq_of_two_le {n : ℕ} (hn : 2 ≤ n) :
     have hb : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 0) = 0 := by
       exact L_T_mul_T_of_ne (show (2 : ℕ) ≠ 0 by omega)
     change 2 * L (Polynomial.Chebyshev.T ℝ (2 : ℤ) *
-        Polynomial.Chebyshev.T ℝ n ^ 2) =
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) =
       L (Polynomial.Chebyshev.T ℝ (2 : ℤ) *
         Polynomial.Chebyshev.T ℝ ((2 * n : ℕ) : ℤ)) +
       L (Polynomial.Chebyshev.T ℝ (2 : ℤ) * Polynomial.Chebyshev.T ℝ (0 : ℤ)) at h
     rw [ha, hb] at h
     linarith
   have hpoly := congrArg
-    (fun P : Polynomial ℝ => P * Polynomial.Chebyshev.T ℝ n ^ 2)
+    (fun P : Polynomial ℝ => P * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ))
     one_add_X_sq_cheb
   have hfun := congrArg L hpoly
-  have hleft : L (2 * (1 + X : Polynomial ℝ) ^ 2 *
-      Polynomial.Chebyshev.T ℝ n ^ 2) =
-      2 * L ((1 + X : Polynomial ℝ) ^ 2 * Polynomial.Chebyshev.T ℝ n ^ 2) := by
-    rw [show 2 * (1 + X : Polynomial ℝ) ^ 2 * Polynomial.Chebyshev.T ℝ n ^ 2 =
-      (2 : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ 2 *
-        Polynomial.Chebyshev.T ℝ n ^ 2) by ring, L_two_mul]
+  have hleft : L (2 * (1 + X : Polynomial ℝ) ^ (2 : ℕ) *
+      Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) =
+      2 * L ((1 + X : Polynomial ℝ) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) := by
+    rw [show 2 * (1 + X : Polynomial ℝ) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ) =
+      (2 : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ (2 : ℕ) *
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) by ring, L_two_mul]
   have hright : L ((3 * Polynomial.Chebyshev.T ℝ 0 +
       4 * Polynomial.Chebyshev.T ℝ 1 + Polynomial.Chebyshev.T ℝ 2) *
-        Polynomial.Chebyshev.T ℝ n ^ 2) = 3 / 2 := by
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) = 3 / 2 := by
     rw [show (3 * Polynomial.Chebyshev.T ℝ 0 +
         4 * Polynomial.Chebyshev.T ℝ 1 + Polynomial.Chebyshev.T ℝ 2) *
-          Polynomial.Chebyshev.T ℝ n ^ 2 =
+          Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ) =
       (3 : Polynomial ℝ) * (Polynomial.Chebyshev.T ℝ 0 *
-        Polynomial.Chebyshev.T ℝ n ^ 2) +
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) +
       (4 : Polynomial ℝ) * (Polynomial.Chebyshev.T ℝ 1 *
-        Polynomial.Chebyshev.T ℝ n ^ 2) +
-      Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ n ^ 2 by ring,
+        Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ)) +
+      Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ) by ring,
       L_add, L_add, L_three_mul, L_four_mul, h0, h1, h2]
     norm_num
   rw [hleft, hright] at hfun
@@ -212,55 +212,55 @@ theorem L_one_add_X_sq_mul_T_sq_of_two_le {n : ℕ} (hn : 2 ≤ n) :
   linarith
 
 theorem L_one_add_X_sq_mul_T_one_sq :
-    L ((1 + X : Polynomial ℝ) ^ 2 *
-      Polynomial.Chebyshev.T ℝ ((1 : ℕ) : ℤ) ^ 2) = 7 / 8 := by
-  have h0 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ 1 ^ 2) = 1 / 2 := by
+    L ((1 + X : Polynomial ℝ) ^ (2 : ℕ) *
+      Polynomial.Chebyshev.T ℝ ((1 : ℕ) : ℤ) ^ (2 : ℕ)) = 7 / 8 := by
+  have h0 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) = 1 / 2 := by
     simpa [pow_two] using L_T_mul_self_of_ne_zero (show (1 : ℕ) ≠ 0 by omega)
-  have h1 : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ 1 ^ 2) = 0 := by
+  have h1 : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) = 0 := by
     have h := two_mul_L_T_mul_T_sq 1 1
     have ha : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ 2) = 0 := by
       exact L_T_mul_T_of_ne (show (1 : ℕ) ≠ 2 by omega)
     have hb : L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ 0) = 0 := by
       exact L_T_mul_T_of_ne (show (1 : ℕ) ≠ 0 by omega)
     change 2 * L (Polynomial.Chebyshev.T ℝ (1 : ℤ) *
-        Polynomial.Chebyshev.T ℝ (1 : ℤ) ^ 2) =
+        Polynomial.Chebyshev.T ℝ (1 : ℤ) ^ (2 : ℕ)) =
       L (Polynomial.Chebyshev.T ℝ (1 : ℤ) * Polynomial.Chebyshev.T ℝ (2 : ℤ)) +
       L (Polynomial.Chebyshev.T ℝ (1 : ℤ) * Polynomial.Chebyshev.T ℝ (0 : ℤ)) at h
     rw [ha, hb] at h
     linarith
-  have h2 : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 1 ^ 2) = 1 / 4 := by
+  have h2 : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) = 1 / 4 := by
     have h := two_mul_L_T_mul_T_sq 2 1
     have ha : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 2) = 1 / 2 := by
       exact L_T_mul_self_of_ne_zero (show (2 : ℕ) ≠ 0 by omega)
     have hb : L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 0) = 0 := by
       exact L_T_mul_T_of_ne (show (2 : ℕ) ≠ 0 by omega)
     change 2 * L (Polynomial.Chebyshev.T ℝ (2 : ℤ) *
-        Polynomial.Chebyshev.T ℝ (1 : ℤ) ^ 2) =
+        Polynomial.Chebyshev.T ℝ (1 : ℤ) ^ (2 : ℕ)) =
       L (Polynomial.Chebyshev.T ℝ (2 : ℤ) * Polynomial.Chebyshev.T ℝ (2 : ℤ)) +
       L (Polynomial.Chebyshev.T ℝ (2 : ℤ) * Polynomial.Chebyshev.T ℝ (0 : ℤ)) at h
     rw [ha, hb] at h
     linarith
   have hpoly := congrArg
-    (fun P : Polynomial ℝ => P * Polynomial.Chebyshev.T ℝ 1 ^ 2)
+    (fun P : Polynomial ℝ => P * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ))
     one_add_X_sq_cheb
   have hfun := congrArg L hpoly
-  have hleft : L (2 * (1 + X : Polynomial ℝ) ^ 2 *
-      Polynomial.Chebyshev.T ℝ 1 ^ 2) =
-      2 * L ((1 + X : Polynomial ℝ) ^ 2 * Polynomial.Chebyshev.T ℝ 1 ^ 2) := by
-    rw [show 2 * (1 + X : Polynomial ℝ) ^ 2 * Polynomial.Chebyshev.T ℝ 1 ^ 2 =
-      (2 : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ 2 *
-        Polynomial.Chebyshev.T ℝ 1 ^ 2) by ring, L_two_mul]
+  have hleft : L (2 * (1 + X : Polynomial ℝ) ^ (2 : ℕ) *
+      Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) =
+      2 * L ((1 + X : Polynomial ℝ) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) := by
+    rw [show 2 * (1 + X : Polynomial ℝ) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ) =
+      (2 : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ (2 : ℕ) *
+        Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) by ring, L_two_mul]
   have hright : L ((3 * Polynomial.Chebyshev.T ℝ 0 +
       4 * Polynomial.Chebyshev.T ℝ 1 + Polynomial.Chebyshev.T ℝ 2) *
-        Polynomial.Chebyshev.T ℝ 1 ^ 2) = 7 / 4 := by
+        Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) = 7 / 4 := by
     rw [show (3 * Polynomial.Chebyshev.T ℝ 0 +
         4 * Polynomial.Chebyshev.T ℝ 1 + Polynomial.Chebyshev.T ℝ 2) *
-          Polynomial.Chebyshev.T ℝ 1 ^ 2 =
+          Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ) =
       (3 : Polynomial ℝ) * (Polynomial.Chebyshev.T ℝ 0 *
-        Polynomial.Chebyshev.T ℝ 1 ^ 2) +
+        Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) +
       (4 : Polynomial ℝ) * (Polynomial.Chebyshev.T ℝ 1 *
-        Polynomial.Chebyshev.T ℝ 1 ^ 2) +
-      Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 1 ^ 2 by ring,
+        Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ)) +
+      Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ 1 ^ (2 : ℕ) by ring,
       L_add, L_add, L_three_mul, L_four_mul, h0, h1, h2]
     norm_num
   rw [hleft, hright] at hfun
@@ -296,7 +296,7 @@ theorem two_mul_T_mul_U_pred {n : ℕ} (hn : n ≠ 0) :
   linear_combination hderiv
 
 theorem four_mul_L_one_add_X_cube_mul_T (k : ℕ) :
-    4 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ k) =
+    4 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ k) =
       10 * L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ k) +
       15 * L (Polynomial.Chebyshev.T ℝ 1 * Polynomial.Chebyshev.T ℝ k) +
       6 * L (Polynomial.Chebyshev.T ℝ 2 * Polynomial.Chebyshev.T ℝ k) +
@@ -305,11 +305,11 @@ theorem four_mul_L_one_add_X_cube_mul_T (k : ℕ) :
     (fun P : Polynomial ℝ => P * Polynomial.Chebyshev.T ℝ k)
     one_add_X_cube_cheb
   have hfun := congrArg L hpoly
-  have hleft : L (4 * (1 + X : Polynomial ℝ) ^ 3 *
+  have hleft : L (4 * (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.T ℝ k) =
-      4 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ k) := by
-    rw [show 4 * (1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ k =
-      4 * ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ k) by ring,
+      4 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ k) := by
+    rw [show 4 * (1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ k =
+      4 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ k) by ring,
       L_four_mul]
   have hright :
       L ((10 * Polynomial.Chebyshev.T ℝ 0 +
@@ -337,7 +337,7 @@ theorem four_mul_L_one_add_X_cube_mul_T (k : ℕ) :
   exact hfun
 
 theorem L_one_add_X_cube_mul_T_one :
-    L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ 1) = 15 / 8 := by
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ 1) = 15 / 8 := by
   have h := four_mul_L_one_add_X_cube_mul_T 1
   have h01 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ 1) = 0 :=
     by simpa using (L_T_mul_T_of_ne (n := 0) (m := 1) (by omega))
@@ -347,7 +347,7 @@ theorem L_one_add_X_cube_mul_T_one :
     by simpa using (L_T_mul_T_of_ne (n := 2) (m := 1) (by omega))
   have h31 : L (Polynomial.Chebyshev.T ℝ 3 * Polynomial.Chebyshev.T ℝ 1) = 0 :=
     by simpa using (L_T_mul_T_of_ne (n := 3) (m := 1) (by omega))
-  change 4 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ (1 : ℤ)) =
+  change 4 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ (1 : ℤ)) =
     10 * L (Polynomial.Chebyshev.T ℝ (0 : ℤ) * Polynomial.Chebyshev.T ℝ (1 : ℤ)) +
     15 * L (Polynomial.Chebyshev.T ℝ (1 : ℤ) * Polynomial.Chebyshev.T ℝ (1 : ℤ)) +
     6 * L (Polynomial.Chebyshev.T ℝ (2 : ℤ) * Polynomial.Chebyshev.T ℝ (1 : ℤ)) +
@@ -357,7 +357,7 @@ theorem L_one_add_X_cube_mul_T_one :
   linarith
 
 theorem L_one_add_X_cube_mul_T_three :
-    L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ 3) = 1 / 8 := by
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ 3) = 1 / 8 := by
   have h := four_mul_L_one_add_X_cube_mul_T 3
   have h03 : L (Polynomial.Chebyshev.T ℝ 0 * Polynomial.Chebyshev.T ℝ 3) = 0 :=
     by simpa using (L_T_mul_T_of_ne (n := 0) (m := 3) (by omega))
@@ -367,7 +367,7 @@ theorem L_one_add_X_cube_mul_T_three :
     by simpa using (L_T_mul_T_of_ne (n := 2) (m := 3) (by omega))
   have h33 : L (Polynomial.Chebyshev.T ℝ 3 * Polynomial.Chebyshev.T ℝ 3) = 1 / 2 :=
     by simpa using (L_T_mul_self_of_ne_zero (n := 3) (by omega))
-  change 4 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ (3 : ℤ)) =
+  change 4 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ (3 : ℤ)) =
     10 * L (Polynomial.Chebyshev.T ℝ (0 : ℤ) * Polynomial.Chebyshev.T ℝ (3 : ℤ)) +
     15 * L (Polynomial.Chebyshev.T ℝ (1 : ℤ) * Polynomial.Chebyshev.T ℝ (3 : ℤ)) +
     6 * L (Polynomial.Chebyshev.T ℝ (2 : ℤ) * Polynomial.Chebyshev.T ℝ (3 : ℤ)) +
@@ -377,7 +377,7 @@ theorem L_one_add_X_cube_mul_T_three :
   linarith
 
 theorem L_one_add_X_cube_mul_T_odd_of_two_le {j : ℕ} (hj : 2 ≤ j) :
-    L ((1 + X : Polynomial ℝ) ^ 3 *
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.T ℝ ((2 * j + 1 : ℕ) : ℤ)) = 0 := by
   have h := four_mul_L_one_add_X_cube_mul_T (2 * j + 1)
   have h0 : L (Polynomial.Chebyshev.T ℝ 0 *
@@ -392,7 +392,7 @@ theorem L_one_add_X_cube_mul_T_odd_of_two_le {j : ℕ} (hj : 2 ≤ j) :
   have h3 : L (Polynomial.Chebyshev.T ℝ 3 *
       Polynomial.Chebyshev.T ℝ ((2 * j + 1 : ℕ) : ℤ)) = 0 :=
     by simpa using (L_T_mul_T_of_ne (n := 3) (m := 2 * j + 1) (by omega))
-  change 4 * L ((1 + X : Polynomial ℝ) ^ 3 *
+  change 4 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.T ℝ ((2 * j + 1 : ℕ) : ℤ)) =
     10 * L (Polynomial.Chebyshev.T ℝ (0 : ℤ) *
       Polynomial.Chebyshev.T ℝ ((2 * j + 1 : ℕ) : ℤ)) +
@@ -407,34 +407,34 @@ theorem L_one_add_X_cube_mul_T_odd_of_two_le {j : ℕ} (hj : 2 ≤ j) :
   exact h
 
 theorem L_one_add_X_cube_mul_U_one :
-    L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.U ℝ 1) = 15 / 4 := by
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.U ℝ 1) = 15 / 4 := by
   have hU : Polynomial.Chebyshev.U ℝ 1 =
       2 * Polynomial.Chebyshev.T ℝ 1 := by simp
-  rw [hU, show (1 + X : Polynomial ℝ) ^ 3 *
+  rw [hU, show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       (2 * Polynomial.Chebyshev.T ℝ 1) =
-    2 * ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ 1) by ring,
+    2 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ 1) by ring,
     L_two_mul, L_one_add_X_cube_mul_T_one]
   norm_num
 
 theorem L_one_add_X_cube_mul_U_three :
-    L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.U ℝ 3) = 4 := by
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.U ℝ 3) = 4 := by
   have hrec := Polynomial.Chebyshev.U_eq_two_mul_T_add_U ℝ (1 : ℤ)
   have hU1 : Polynomial.Chebyshev.U ℝ 1 =
       2 * Polynomial.Chebyshev.T ℝ 1 := by simp
   rw [show (1 : ℤ) + 2 = 3 by norm_num, hU1] at hrec
   rw [hrec, mul_add, L_add]
-  rw [show (1 + X : Polynomial ℝ) ^ 3 *
+  rw [show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       (2 * Polynomial.Chebyshev.T ℝ 3) =
-    2 * ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ 3) by ring,
-    show (1 + X : Polynomial ℝ) ^ 3 *
+    2 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ 3) by ring,
+    show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       (2 * Polynomial.Chebyshev.T ℝ 1) =
-    2 * ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ 1) by ring,
+    2 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ 1) by ring,
     L_two_mul, L_two_mul, L_one_add_X_cube_mul_T_three,
     L_one_add_X_cube_mul_T_one]
   norm_num
 
 theorem L_one_add_X_cube_mul_U_odd_of_one_le {j : ℕ} (hj : 1 ≤ j) :
-    L ((1 + X : Polynomial ℝ) ^ 3 *
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.U ℝ ((2 * j + 1 : ℕ) : ℤ)) = 4 := by
   induction j, hj using Nat.le_induction with
   | base => simpa using L_one_add_X_cube_mul_U_three
@@ -445,9 +445,9 @@ theorem L_one_add_X_cube_mul_U_odd_of_one_le {j : ℕ} (hj : 1 ≤ j) :
           ((2 * (j + 1) + 1 : ℕ) : ℤ) := by omega
       rw [hleft] at hrec
       rw [hrec, mul_add, L_add]
-      rw [show (1 + X : Polynomial ℝ) ^ 3 *
+      rw [show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
           (2 * Polynomial.Chebyshev.T ℝ ((2 * (j + 1) + 1 : ℕ) : ℤ)) =
-        2 * ((1 + X : Polynomial ℝ) ^ 3 *
+        2 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
           Polynomial.Chebyshev.T ℝ ((2 * (j + 1) + 1 : ℕ) : ℤ)) by ring,
         L_two_mul]
       have hzero := L_one_add_X_cube_mul_T_odd_of_two_le
@@ -457,7 +457,7 @@ theorem L_one_add_X_cube_mul_U_odd_of_one_le {j : ℕ} (hj : 1 ≤ j) :
 
 theorem L_one_add_X_cube_mul_U_two_mul_sub_one_of_two_le
     {n : ℕ} (hn : 2 ≤ n) :
-    L ((1 + X : Polynomial ℝ) ^ 3 *
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ)) = 4 := by
   have h := L_one_add_X_cube_mul_U_odd_of_one_le (j := n - 1) (by omega)
   convert h using 1
@@ -485,48 +485,48 @@ theorem two_mul_T_mul_derivative_T {n : ℕ} (hn : n ≠ 0) :
 
 theorem two_mul_L_one_add_X_cube_mul_T_derivative_T
     {n : ℕ} (hn : n ≠ 0) :
-    2 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ n *
+    2 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ n *
         Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)) =
-      (n : ℝ) * L ((1 + X : Polynomial ℝ) ^ 3 *
+      (n : ℝ) * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
         Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ)) := by
   have hpoly := congrArg
-    (fun P : Polynomial ℝ => (1 + X : Polynomial ℝ) ^ 3 * P)
+    (fun P : Polynomial ℝ => (1 + X : Polynomial ℝ) ^ (3 : ℕ) * P)
     (two_mul_T_mul_derivative_T hn)
   have hfun := congrArg L hpoly
   have hleft :
-      L ((1 + X : Polynomial ℝ) ^ 3 *
+      L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
         (2 * Polynomial.Chebyshev.T ℝ n *
           Polynomial.derivative (Polynomial.Chebyshev.T ℝ n))) =
-      2 * L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ n *
+      2 * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ n *
         Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)) := by
-    rw [show (1 + X : Polynomial ℝ) ^ 3 *
+    rw [show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
           (2 * Polynomial.Chebyshev.T ℝ n *
             Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)) =
-        2 * ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ n *
+        2 * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ n *
           Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)) by ring,
       L_two_mul]
   have hright :
-      L ((1 + X : Polynomial ℝ) ^ 3 *
+      L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
         ((n : Polynomial ℝ) *
           Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ))) =
-      (n : ℝ) * L ((1 + X : Polynomial ℝ) ^ 3 *
+      (n : ℝ) * L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
         Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ)) := by
-    rw [show (1 + X : Polynomial ℝ) ^ 3 *
+    rw [show (1 + X : Polynomial ℝ) ^ (3 : ℕ) *
           ((n : Polynomial ℝ) *
             Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ)) =
-        (n : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ 3 *
+        (n : Polynomial ℝ) * ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
           Polynomial.Chebyshev.U ℝ ((2 * n - 1 : ℕ) : ℤ)) by ring,
       L_natCast_mul]
   rw [hleft, hright] at hfun
   exact hfun
 
 theorem L_one_add_X_cube_mul_T_derivative_T_one :
-    L ((1 + X : Polynomial ℝ) ^ 3 *
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.T ℝ ((1 : ℕ) : ℤ) *
       Polynomial.derivative (Polynomial.Chebyshev.T ℝ ((1 : ℕ) : ℤ))) = 15 / 8 := by
   have h := two_mul_L_one_add_X_cube_mul_T_derivative_T
     (n := 1) (by omega)
-  have hU : L ((1 + X : Polynomial ℝ) ^ 3 *
+  have hU : L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) *
       Polynomial.Chebyshev.U ℝ ((2 * 1 - 1 : ℕ) : ℤ)) = 15 / 4 := by
     convert L_one_add_X_cube_mul_U_one using 1
     norm_num
@@ -536,7 +536,7 @@ theorem L_one_add_X_cube_mul_T_derivative_T_one :
 
 theorem L_one_add_X_cube_mul_T_derivative_T_of_two_le
     {n : ℕ} (hn : 2 ≤ n) :
-    L ((1 + X : Polynomial ℝ) ^ 3 * Polynomial.Chebyshev.T ℝ n *
+    L ((1 + X : Polynomial ℝ) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ n *
       Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)) = 2 * n := by
   have h := two_mul_L_one_add_X_cube_mul_T_derivative_T
     (n := n) (by omega)
@@ -544,14 +544,14 @@ theorem L_one_add_X_cube_mul_T_derivative_T_of_two_le
   linarith
 
 def core (n : ℕ) : Polynomial ℝ :=
-  (1 + X) ^ 2 * Polynomial.Chebyshev.T ℝ n ^ 2 +
-    (1 + X) ^ 3 * Polynomial.Chebyshev.T ℝ n *
+  (1 + X) ^ (2 : ℕ) * Polynomial.Chebyshev.T ℝ n ^ (2 : ℕ) +
+    (1 + X) ^ (3 : ℕ) * Polynomial.Chebyshev.T ℝ n *
       Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)
 
 theorem adaptiveShear_smul_chebyshev_comp_affine (a : ℝ) (n : ℕ) :
     RHTower.xiShiftedBoundaryAdaptiveShearPolynomial
         (a • (Polynomial.Chebyshev.T ℝ n).comp affine) =
-      (a ^ 2 / 4) • (core n).comp affine := by
+      (a ^ (2 : ℕ) / 4) • (core n).comp affine := by
   simp only [RHTower.xiShiftedBoundaryAdaptiveShearPolynomial,
     RHTower.xiShiftedBoundaryShiftedEuler, Polynomial.derivative_comp,
     Polynomial.derivative_sub,
@@ -560,25 +560,25 @@ theorem adaptiveShear_smul_chebyshev_comp_affine (a : ℝ) (n : ℕ) :
     Polynomial.mul_comp, Polynomial.pow_comp,
     Polynomial.smul_eq_C_mul, affine, core]
   norm_num
-  have h4 : Polynomial.C (a ^ 2 * (1 / 4 : ℝ)) * 4 =
-      Polynomial.C (a ^ 2) := by
-    change Polynomial.C (a ^ 2 * (1 / 4 : ℝ)) * Polynomial.C (4 : ℝ) =
-      Polynomial.C (a ^ 2)
+  have h4 : Polynomial.C (a ^ (2 : ℕ) * (1 / 4 : ℝ)) * 4 =
+      Polynomial.C (a ^ (2 : ℕ)) := by
+    change Polynomial.C (a ^ (2 : ℕ) * (1 / 4 : ℝ)) * Polynomial.C (4 : ℝ) =
+      Polynomial.C (a ^ (2 : ℕ))
     rw [← Polynomial.C_mul]
     congr 1
     ring
-  have h8 : Polynomial.C (a ^ 2 * (1 / 4 : ℝ)) * 8 =
-      Polynomial.C (a ^ 2) * 2 := by
-    change Polynomial.C (a ^ 2 * (1 / 4 : ℝ)) * Polynomial.C (8 : ℝ) =
-      Polynomial.C (a ^ 2) * Polynomial.C (2 : ℝ)
+  have h8 : Polynomial.C (a ^ (2 : ℕ) * (1 / 4 : ℝ)) * 8 =
+      Polynomial.C (a ^ (2 : ℕ)) * 2 := by
+    change Polynomial.C (a ^ (2 : ℕ) * (1 / 4 : ℝ)) * Polynomial.C (8 : ℝ) =
+      Polynomial.C (a ^ (2 : ℕ)) * Polynomial.C (2 : ℝ)
     rw [← Polynomial.C_mul, ← Polynomial.C_mul]
     congr 1
     ring
   ring_nf
   rw [← Polynomial.C_pow]
   linear_combination
-    -(X ^ 2 * (Polynomial.Chebyshev.T ℝ n).comp (-1 + X * 2) ^ 2) * h4 -
-    (X ^ 3 * (Polynomial.Chebyshev.T ℝ n).comp (-1 + X * 2) *
+    -(X ^ (2 : ℕ) * (Polynomial.Chebyshev.T ℝ n).comp (-1 + X * 2) ^ (2 : ℕ)) * h4 -
+    (X ^ (3 : ℕ) * (Polynomial.Chebyshev.T ℝ n).comp (-1 + X * 2) *
       (Polynomial.derivative (Polynomial.Chebyshev.T ℝ n)).comp (-1 + X * 2)) * h8
 
 theorem momentFunctional_adaptiveShear_smul_chebyshev_comp_affine_one (a : ℝ) :
@@ -586,10 +586,10 @@ theorem momentFunctional_adaptiveShear_smul_chebyshev_comp_affine_one (a : ℝ) 
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
         (RHTower.xiShiftedBoundaryAdaptiveShearPolynomial
           (a • (Polynomial.Chebyshev.T ℝ ((1 : ℕ) : ℤ)).comp affine)) =
-      a ^ 2 * 11 / 16 := by
+      a ^ (2 : ℕ) * 11 / 16 := by
   rw [adaptiveShear_smul_chebyshev_comp_affine]
   rw [HTGeometry.momentFunctional_smul]
-  change a ^ 2 / 4 * L (core 1) = _
+  change a ^ (2 : ℕ) / 4 * L (core 1) = _
   have hcore : L (core 1) = 11 / 4 := by
     rw [core, L_add, L_one_add_X_sq_mul_T_one_sq,
       L_one_add_X_cube_mul_T_derivative_T_one]
@@ -603,10 +603,10 @@ theorem momentFunctional_adaptiveShear_smul_chebyshev_comp_affine_of_two_le
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
         (RHTower.xiShiftedBoundaryAdaptiveShearPolynomial
           (a • (Polynomial.Chebyshev.T ℝ n).comp affine)) =
-      a ^ 2 * (8 * n + 3) / 16 := by
+      a ^ (2 : ℕ) * (8 * n + 3) / 16 := by
   rw [adaptiveShear_smul_chebyshev_comp_affine]
   rw [HTGeometry.momentFunctional_smul]
-  change a ^ 2 / 4 * L (core n) = _
+  change a ^ (2 : ℕ) / 4 * L (core n) = _
   have hcore : L (core n) = (8 * n + 3) / 4 := by
     rw [core, L_add, L_one_add_X_sq_mul_T_sq_of_two_le hn,
       L_one_add_X_cube_mul_T_derivative_T_of_two_le hn]
@@ -660,7 +660,7 @@ theorem momentFunctional_adaptiveShear_amplitude_of_two_le
     HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
         (RHTower.xiShiftedBoundaryAdaptiveShearPolynomial (amplitude n)) =
-      monicScale n ^ 2 * (8 * n + 3) / 16 := by
+      monicScale n ^ (2 : ℕ) * (8 * n + 3) / 16 := by
   exact momentFunctional_adaptiveShear_smul_chebyshev_comp_affine_of_two_le
     (monicScale n) hn
 
@@ -682,19 +682,19 @@ theorem momentFunctional_adaptiveShear_amplitude_pos {n : ℕ} (hn : n ≠ 0) :
             exact inv_pos.mpr (pow_pos (by norm_num) _)
           positivity
 
-def margin (n : ℕ) : ℝ := monicScale n ^ 2 * (8 * n + 3) / 16
+def margin (n : ℕ) : ℝ := monicScale n ^ (2 : ℕ) * (8 * n + 3) / 16
 
 theorem monicScale_sq {n : ℕ} (hn : n ≠ 0) :
-    monicScale n ^ 2 = 4 * (1 / 16 : ℝ) ^ n := by
+    monicScale n ^ (2 : ℕ) = 4 * (1 / 16 : ℝ) ^ n := by
   have hden : (2 : ℝ) ^ (2 * n - 1) * 2 = 4 ^ n := by
     calc
-      _ = (2 : ℝ) ^ (2 * n - 1) * 2 ^ 1 := by ring
+      _ = (2 : ℝ) ^ (2 * n - 1) * 2 ^ (1 : ℕ) := by ring
       _ = (2 : ℝ) ^ (2 * n - 1 + 1) := (pow_add _ _ _).symm
       _ = (2 : ℝ) ^ (2 * n) := by congr 1; omega
-      _ = ((2 : ℝ) ^ 2) ^ n := by rw [← pow_mul]
+      _ = ((2 : ℝ) ^ (2 : ℕ)) ^ n := by rw [← pow_mul]
       _ = 4 ^ n := by norm_num
-  have h16 : (16 : ℝ) ^ n = (4 ^ n) ^ 2 := by
-    rw [show (16 : ℝ) = 4 ^ 2 by norm_num]
+  have h16 : (16 : ℝ) ^ n = (4 ^ n) ^ (2 : ℕ) := by
+    rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num]
     simp only [← pow_mul]
     congr 1
     omega

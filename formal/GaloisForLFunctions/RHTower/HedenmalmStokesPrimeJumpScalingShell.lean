@@ -454,11 +454,11 @@ theorem eventually_twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyad
     (hcLower : 1 / 2 ≤ c) (hcUpper : c ≤ 1) :
     ∀ᶠ n in atTop,
       (21 / 100 : ℝ) <
-        gammaSewnMobiusApertureStokesPrimeDyadicShell (a n) (c * a n) ^ 2 := by
+        gammaSewnMobiusApertureStokesPrimeDyadicShell (a n) (c * a n) ^ (2 : ℕ) := by
   have charge_of_half {f : ℕ → ℝ}
       (hf : Tendsto f atTop (nhds (1 / 2 : ℝ))) :
-      ∀ᶠ n in atTop, (21 / 100 : ℝ) < f n ^ 2 := by
-    have hsq : Tendsto (fun n => f n ^ 2) atTop (nhds ((1 / 2 : ℝ) ^ 2)) := by
+      ∀ᶠ n in atTop, (21 / 100 : ℝ) < f n ^ (2 : ℕ) := by
+    have hsq : Tendsto (fun n => f n ^ (2 : ℕ)) atTop (nhds ((1 / 2 : ℝ) ^ (2 : ℕ))) := by
       simpa only [pow_two] using hf.mul hf
     exact hsq.eventually (Ioi_mem_nhds (by norm_num))
   by_cases hcLowerEq : c = 1 / 2
@@ -484,7 +484,7 @@ theorem eventually_twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyad
         (lt_of_le_of_ne hcUpper hcUpperEq)
     have hsq : Tendsto
         (fun n =>
-          gammaSewnMobiusApertureStokesPrimeDyadicShell (a n) (c * a n) ^ 2)
+          gammaSewnMobiusApertureStokesPrimeDyadicShell (a n) (c * a n) ^ (2 : ℕ))
         atTop (nhds (1 : ℝ)) := by
       simpa only [pow_two, one_mul] using h.mul h
     exact hsq.eventually (Ioi_mem_nhds (by norm_num))

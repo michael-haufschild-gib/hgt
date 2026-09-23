@@ -141,10 +141,10 @@ noncomputable def naturalMultiplicityK0EquivInt : NaturalMultiplicityK0 ≃+ ℤ
 noncomputable def p1xp1DivisorClass (a b : ℤ) : ChowProd 1 1 :=
   (a : ChowProd 1 1) * chowH₁ 1 1 + (b : ChowProd 1 1) * chowH₂ 1 1
 
-theorem p1xp1_chowH₁_sq : chowH₁ 1 1 ^ 2 = 0 :=
+theorem p1xp1_chowH₁_sq : chowH₁ 1 1 ^ (2 : ℕ) = 0 :=
   chowH₁_pow_eq_zero (by omega)
 
-theorem p1xp1_chowH₂_sq : chowH₂ 1 1 ^ 2 = 0 :=
+theorem p1xp1_chowH₂_sq : chowH₂ 1 1 ^ (2 : ℕ) = 0 :=
   chowH₂_pow_eq_zero (by omega)
 
 /-- Top intersection of `m+n` equal divisors of bidegree `(a,b)` on `P^m × P^n`. -/
@@ -179,7 +179,7 @@ theorem p1xp1_divisor_intersection (a b c d : ℤ) :
 
 /-- Self-intersection of bidegree `(a,b)` is `2ab`. -/
 theorem p1xp1_divisor_self_intersection (a b : ℤ) :
-    p1xp1DivisorClass a b ^ 2 =
+    p1xp1DivisorClass a b ^ (2 : ℕ) =
       ((2 * a * b : ℤ) : ChowProd 1 1) * chowTop 1 1 := by
   rw [pow_two, p1xp1_divisor_intersection]
   push_cast
@@ -222,7 +222,7 @@ abbrev P1Chow := ChowProd 1 0
 /-- Hyperplane class on `P¹`. -/
 noncomputable def p1Hyperplane : P1Chow := chowH₁ 1 0
 
-theorem p1Hyperplane_sq : p1Hyperplane ^ 2 = 0 :=
+theorem p1Hyperplane_sq : p1Hyperplane ^ (2 : ℕ) = 0 :=
   chowH₁_pow_eq_zero (by omega)
 
 /-- Chern character of `O(d)` in the integral Chow ring of `P¹`. -/
@@ -248,27 +248,27 @@ abbrev P2Chow := ChowProd 2 0
 /-- Hyperplane class on `P²`. -/
 noncomputable def p2Hyperplane : P2Chow := chowH₁ 2 0
 
-theorem p2Hyperplane_cube : p2Hyperplane ^ 3 = 0 :=
+theorem p2Hyperplane_cube : p2Hyperplane ^ (3 : ℕ) = 0 :=
   chowH₁_pow_eq_zero (by omega)
 
-theorem p2Hyperplane_fourth : p2Hyperplane ^ 4 = 0 :=
+theorem p2Hyperplane_fourth : p2Hyperplane ^ (4 : ℕ) = 0 :=
   chowH₁_pow_eq_zero (by omega)
 
 /-- Twice the Chern character of `O(d)` on `P²`, clearing its denominator. -/
 noncomputable def p2TwiceLineChernCharacter (d : ℤ) : P2Chow :=
   2 + ((2 * d : ℤ) : P2Chow) * p2Hyperplane +
-    ((d ^ 2 : ℤ) : P2Chow) * p2Hyperplane ^ 2
+    ((d ^ (2 : ℕ) : ℤ) : P2Chow) * p2Hyperplane ^ (2 : ℕ)
 
 /-- Twice the Todd class of `P²`, clearing its denominator. -/
 noncomputable def p2TwiceToddClass : P2Chow :=
-  2 + (3 : P2Chow) * p2Hyperplane + 2 * p2Hyperplane ^ 2
+  2 + (3 : P2Chow) * p2Hyperplane + 2 * p2Hyperplane ^ (2 : ℕ)
 
 /-- Denominator-cleared GRR for `O(d)` on `P²`.
 The top component is `4χ(O(d)) = 2(d+1)(d+2)`. -/
 theorem p2_grr_fourfold_lineBundle (d : ℤ) :
     p2TwiceLineChernCharacter d * p2TwiceToddClass =
       4 + ((4 * d + 6 : ℤ) : P2Chow) * p2Hyperplane +
-        ((2 * (d + 1) * (d + 2) : ℤ) : P2Chow) * p2Hyperplane ^ 2 := by
+        ((2 * (d + 1) * (d + 2) : ℤ) : P2Chow) * p2Hyperplane ^ (2 : ℕ) := by
   simp only [p2TwiceLineChernCharacter, p2TwiceToddClass]
   ring_nf
   rw [p2Hyperplane_cube, p2Hyperplane_fourth]

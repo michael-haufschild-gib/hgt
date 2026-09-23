@@ -44,7 +44,7 @@ def einastoGaussianMetricCoefficient (d l σ β : ℝ) : ℝ :=
 
 /-- Explicit core multiplier induced by the actual source integral. -/
 def einastoGaussianCoreMultiplier (d l σ β : ℝ) : ℝ :=
-  1 + 72 * β / exp l ^ 2 + 64 * Real.pi * β * (1 - σ) * exp d
+  1 + 72 * β / exp l ^ (2 : ℕ) + 64 * Real.pi * β * (1 - σ) * exp d
 
 theorem einastoGaussianMetricCoefficient_eq (d l σ β : ℝ) :
     einastoGaussianMetricCoefficient d l σ β =
@@ -99,11 +99,11 @@ theorem einastoGaussianPerturbedMetric_second_hasDerivAt (d l σ β t : ℝ) :
   simpa only [exp_log hr] using he
 
 theorem einastoGaussianPerturbedMetric_quadratic_limit (d l σ β : ℝ) :
-    Tendsto (fun t => (1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ 2) atBot
+    Tendsto (fun t => (1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ (2 : ℕ)) atBot
       (𝓝 (-einastoGaussianMetricCoefficient d l σ β)) := by
-  have he : (fun t => (1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ 2) =
-      (fun t => (1 - einastoMetric d l einastoGaussianShape (exp t)) / exp t ^ 2 -
-        β * (einastoGaussianCorrection d l σ (exp t) / exp t ^ 2)) := by
+  have he : (fun t => (1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ (2 : ℕ)) =
+      (fun t => (1 - einastoMetric d l einastoGaussianShape (exp t)) / exp t ^ (2 : ℕ) -
+        β * (einastoGaussianCorrection d l σ (exp t) / exp t ^ (2 : ℕ))) := by
     funext t
     unfold einastoGaussianPerturbedMetric
     ring
@@ -158,7 +158,7 @@ theorem einastoGaussianPerturbedMetric_Ricci_limit (d l σ β : ℝ) :
   have he : (fun t => radialRicciScalar (einastoGaussianPerturbedMetric d l σ β) (exp t)) =
       (fun t => deriv (deriv (einastoGaussianPerturbedMetric d l σ β)) (exp t) +
         4 * (deriv (einastoGaussianPerturbedMetric d l σ β) (exp t) / exp t) -
-        2 * ((1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ 2)) := by
+        2 * ((1 - einastoGaussianPerturbedMetric d l σ β (exp t)) / exp t ^ (2 : ℕ))) := by
     funext t
     unfold radialRicciScalar
     field_simp
@@ -174,13 +174,13 @@ theorem einastoGaussianPerturbedMetric_Ricci_limit (d l σ β : ℝ) :
 /-- Complete control of the actual Kretschmann expression, not merely of the metric value. -/
 theorem einastoGaussianPerturbedMetric_Kretschmann_limit (d l σ β : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoGaussianPerturbedMetric d l σ β) (exp t)) atBot
-      (𝓝 (24 * einastoGaussianMetricCoefficient d l σ β ^ 2)) := by
+      (𝓝 (24 * einastoGaussianMetricCoefficient d l σ β ^ (2 : ℕ))) := by
   unfold radialKretschmannScalar
   have h := (((einastoGaussianPerturbedMetric_second_derivative_limit d l σ β).pow 2).add
     (((einastoGaussianPerturbedMetric_scaled_derivative_limit d l σ β).pow 2).const_mul 4)).add
     (((einastoGaussianPerturbedMetric_quadratic_limit d l σ β).pow 2).const_mul 4)
-  have hc : (2 * einastoGaussianMetricCoefficient d l σ β) ^ 2 + 4 * (2 * einastoGaussianMetricCoefficient d l σ β) ^ 2 +
-      4 * (-einastoGaussianMetricCoefficient d l σ β) ^ 2 = 24 * einastoGaussianMetricCoefficient d l σ β ^ 2 := by ring
+  have hc : (2 * einastoGaussianMetricCoefficient d l σ β) ^ (2 : ℕ) + 4 * (2 * einastoGaussianMetricCoefficient d l σ β) ^ (2 : ℕ) +
+      4 * (-einastoGaussianMetricCoefficient d l σ β) ^ (2 : ℕ) = 24 * einastoGaussianMetricCoefficient d l σ β ^ (2 : ℕ) := by ring
   rwa [hc] at h
 
 theorem einastoGaussianPerturbedMetric_Ricci_explicit (d l σ β : ℝ) :
@@ -194,45 +194,45 @@ theorem einastoGaussianPerturbedMetric_Ricci_explicit (d l σ β : ℝ) :
 
 theorem einastoGaussianPerturbedMetric_Kretschmann_explicit (d l σ β : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoGaussianPerturbedMetric d l σ β) (exp t)) atBot
-      (𝓝 ((512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoGaussianCoreMultiplier d l σ β ^ 2)) := by
+      (𝓝 ((512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoGaussianCoreMultiplier d l σ β ^ (2 : ℕ))) := by
   have h := einastoGaussianPerturbedMetric_Kretschmann_limit d l σ β
   rw [einastoGaussianMetricCoefficient_eq] at h
-  have hc : 24 * (-8 * Real.pi * exp d / 3 * einastoGaussianCoreMultiplier d l σ β) ^ 2 =
-      (512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoGaussianCoreMultiplier d l σ β ^ 2 := by ring
+  have hc : 24 * (-8 * Real.pi * exp d / 3 * einastoGaussianCoreMultiplier d l σ β) ^ (2 : ℕ) =
+      (512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoGaussianCoreMultiplier d l σ β ^ (2 : ℕ) := by ring
   rwa [hc] at h
 
 theorem einastoGaussianCoreMultiplier_corrected_sign (d l β : ℝ) :
-    einastoGaussianCoreMultiplier d l 1 β = 1 + 72 * β / exp l ^ 2 := by
+    einastoGaussianCoreMultiplier d l 1 β = 1 + 72 * β / exp l ^ (2 : ℕ) := by
   unfold einastoGaussianCoreMultiplier
   ring
 
 theorem einastoGaussianCoreMultiplier_appendix_sign (d l β : ℝ) :
-    einastoGaussianCoreMultiplier d l (-1) β = 1 + 72 * β / exp l ^ 2 + 128 * Real.pi * β * exp d := by
+    einastoGaussianCoreMultiplier d l (-1) β = 1 + 72 * β / exp l ^ (2 : ℕ) + 128 * Real.pi * β * exp d := by
   unfold einastoGaussianCoreMultiplier
   ring
 
 theorem einastoGaussianCoreMultiplier_corrected_gt_one (d l b : ℝ) :
     1 < einastoGaussianCoreMultiplier d l 1 (exp b) := by
   rw [einastoGaussianCoreMultiplier_corrected_sign]
-  have h : 0 < 72 * exp b / exp l ^ 2 := by positivity
+  have h : 0 < 72 * exp b / exp l ^ (2 : ℕ) := by positivity
   linarith
 
 theorem einastoGaussianCoreMultiplier_appendix_gt_one (d l b : ℝ) :
     1 < einastoGaussianCoreMultiplier d l (-1) (exp b) := by
   rw [einastoGaussianCoreMultiplier_appendix_sign]
-  have h1 : 0 < 72 * exp b / exp l ^ 2 := by positivity
+  have h1 : 0 < 72 * exp b / exp l ^ (2 : ℕ) := by positivity
   have h2 : 0 < 128 * Real.pi * exp b * exp d := by positivity
   linarith
 
 /-- Positive coupling changes the Gaussian core nontrivially while retaining finite curvature. -/
 theorem einastoGaussian_corrected_core_growth (d l b : ℝ) :
     ∃ k : ℝ, Tendsto (fun t => radialKretschmannScalar (einastoGaussianPerturbedMetric d l 1 (exp b)) (exp t)) atBot (𝓝 k) ∧
-      512 * Real.pi ^ 2 * exp d ^ 2 / 3 < k := by
-  refine ⟨(512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoGaussianCoreMultiplier d l 1 (exp b) ^ 2,
+      512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 < k := by
+  refine ⟨(512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoGaussianCoreMultiplier d l 1 (exp b) ^ (2 : ℕ),
     einastoGaussianPerturbedMetric_Kretschmann_explicit d l 1 (exp b), ?_⟩
   have h := einastoGaussianCoreMultiplier_corrected_gt_one d l b
-  have hp : 0 < 512 * Real.pi ^ 2 * exp d ^ 2 / 3 := by positivity
-  have hs : 1 < einastoGaussianCoreMultiplier d l 1 (exp b) ^ 2 := by
+  have hp : 0 < 512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 := by positivity
+  have hs : 1 < einastoGaussianCoreMultiplier d l 1 (exp b) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (einastoGaussianCoreMultiplier d l 1 (exp b) - 1)]
   have hm := mul_pos hp (sub_pos.mpr hs)
   nlinarith
@@ -240,12 +240,12 @@ theorem einastoGaussian_corrected_core_growth (d l b : ℝ) :
 /-- The paper's literal appendix integral has the same nontrivial regular survivor. -/
 theorem einastoGaussian_appendix_core_growth (d l b : ℝ) :
     ∃ k : ℝ, Tendsto (fun t => radialKretschmannScalar (einastoGaussianPerturbedMetric d l (-1) (exp b)) (exp t)) atBot (𝓝 k) ∧
-      512 * Real.pi ^ 2 * exp d ^ 2 / 3 < k := by
-  refine ⟨(512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoGaussianCoreMultiplier d l (-1) (exp b) ^ 2,
+      512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 < k := by
+  refine ⟨(512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoGaussianCoreMultiplier d l (-1) (exp b) ^ (2 : ℕ),
     einastoGaussianPerturbedMetric_Kretschmann_explicit d l (-1) (exp b), ?_⟩
   have h := einastoGaussianCoreMultiplier_appendix_gt_one d l b
-  have hp : 0 < 512 * Real.pi ^ 2 * exp d ^ 2 / 3 := by positivity
-  have hs : 1 < einastoGaussianCoreMultiplier d l (-1) (exp b) ^ 2 := by
+  have hp : 0 < 512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 := by positivity
+  have hs : 1 < einastoGaussianCoreMultiplier d l (-1) (exp b) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (einastoGaussianCoreMultiplier d l (-1) (exp b) - 1)]
   have hm := mul_pos hp (sub_pos.mpr hs)
   nlinarith

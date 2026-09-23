@@ -20,13 +20,13 @@ namespace GaloisForLFunctions.RHTower
 /-! ## `(420)`: the envelope -/
 
 /-- **The scalar maximum behind the envelope.** -/
-theorem quadratic_envelope {K m b : ℝ} (hm : 0 < m) : 2 * K * b - m * b ^ 2 ≤ K ^ 2 / m := by
+theorem quadratic_envelope {K m b : ℝ} (hm : 0 < m) : 2 * K * b - m * b ^ (2 : ℕ) ≤ K ^ (2 : ℕ) / m := by
   rw [le_div_iff₀ hm]
   nlinarith [sq_nonneg (m * b - K)]
 
 /-- **`(424)`: the complementary Schur block inherits the coherence defect.** -/
 theorem schur_coercive_of_coherence {Dy self ρ : ℝ}
-    (hself : self ≤ ρ ^ 2 * Dy) : (1 - ρ ^ 2) * Dy ≤ Dy - self := by
+    (hself : self ≤ ρ ^ (2 : ℕ) * Dy) : (1 - ρ ^ (2 : ℕ)) * Dy ≤ Dy - self := by
   linarith [hself]
 
 /-! ## `(421)`–`(422)`: the sharp threshold -/
@@ -39,24 +39,24 @@ theorem sharp_crossCoherence_constant :
 /-- **`(421)`: an order-one gain against a bounded low-only leverage forces the squared coherence
 above `1/15`.** -/
 theorem crossCoherence_sq_ge {ℓ ρ χ : ℝ} (hℓ0 : 0 ≤ ℓ) (hℓ : ℓ ≤ 7 / 8)
-    (hρ1 : ρ ^ 2 < 1) (hχ : 1 / 16 < χ)
-    (henv : χ ≤ ρ ^ 2 * ℓ / (1 - ρ ^ 2)) : 1 / 15 ≤ ρ ^ 2 := by
+    (hρ1 : ρ ^ (2 : ℕ) < 1) (hχ : 1 / 16 < χ)
+    (henv : χ ≤ ρ ^ (2 : ℕ) * ℓ / (1 - ρ ^ (2 : ℕ))) : 1 / 15 ≤ ρ ^ (2 : ℕ) := by
   by_contra hcon
   rw [not_le] at hcon
-  have hden : (0 : ℝ) < 1 - ρ ^ 2 := by linarith
-  have hden' : (14 : ℝ) / 15 < 1 - ρ ^ 2 := by linarith
-  have hnum : ρ ^ 2 * ℓ < 7 / 120 := by nlinarith [sq_nonneg ρ, hℓ0, hℓ, hcon]
-  have hnum0 : (0 : ℝ) ≤ ρ ^ 2 * ℓ := by positivity
-  have hquot : ρ ^ 2 * ℓ / (1 - ρ ^ 2) < 1 / 16 := by
+  have hden : (0 : ℝ) < 1 - ρ ^ (2 : ℕ) := by linarith
+  have hden' : (14 : ℝ) / 15 < 1 - ρ ^ (2 : ℕ) := by linarith
+  have hnum : ρ ^ (2 : ℕ) * ℓ < 7 / 120 := by nlinarith [sq_nonneg ρ, hℓ0, hℓ, hcon]
+  have hnum0 : (0 : ℝ) ≤ ρ ^ (2 : ℕ) * ℓ := by positivity
+  have hquot : ρ ^ (2 : ℕ) * ℓ / (1 - ρ ^ (2 : ℕ)) < 1 / 16 := by
     rw [div_lt_iff₀ hden]
     nlinarith [hnum, hden', hden]
   linarith
 
 /-- **`(420)`, in the vanishing high-resolvent limit.** -/
 theorem envelope_limit {ℓ ρ χ : ℝ} (hℓ0 : 0 ≤ ℓ)
-    (henv : χ ≤ (0 + ρ * Real.sqrt ℓ) ^ 2 / (1 - ρ ^ 2)) :
-    χ ≤ ρ ^ 2 * ℓ / (1 - ρ ^ 2) := by
-  have hsq : (0 + ρ * Real.sqrt ℓ) ^ 2 = ρ ^ 2 * ℓ := by
+    (henv : χ ≤ (0 + ρ * Real.sqrt ℓ) ^ (2 : ℕ) / (1 - ρ ^ (2 : ℕ))) :
+    χ ≤ ρ ^ (2 : ℕ) * ℓ / (1 - ρ ^ (2 : ℕ)) := by
+  have hsq : (0 + ρ * Real.sqrt ℓ) ^ (2 : ℕ) = ρ ^ (2 : ℕ) * ℓ := by
     rw [zero_add, mul_pow, Real.sq_sqrt hℓ0]
   rwa [hsq] at henv
 

@@ -123,7 +123,7 @@ lemma nat_le_four_pow (L : ℕ) : L ≤ 4 ^ L := by
 
 lemma explicitSpeed_le_seven_dimension_sq (L : ℕ) :
     2 * ((4 ^ L : ℕ) : ℝ) * ((L : ℝ) + 2) + 1 ≤
-      7 * (((4 ^ L : ℕ) : ℝ) ^ 2) := by
+      7 * (((4 ^ L : ℕ) : ℝ) ^ (2 : ℕ)) := by
   let D : ℕ := 4 ^ L
   have hD : 1 ≤ D := one_le_pow₀ (by norm_num)
   have hLD : L ≤ D := by simpa [D] using nat_le_four_pow L
@@ -133,18 +133,18 @@ lemma explicitSpeed_le_seven_dimension_sq (L : ℕ) :
   nlinarith [sq_nonneg (((4 ^ L : ℕ) : ℝ) - 1)]
 
 noncomputable def polynomialCircuitExponentialGapMajor (L : ℕ) : ℝ :=
-  70 * (((4 ^ L : ℕ) : ℝ) ^ 3) * (3 / 5 : ℝ) ^ (4 ^ L) +
+  70 * (((4 ^ L : ℕ) : ℝ) ^ (3 : ℕ)) * (3 / 5 : ℝ) ^ (4 ^ L) +
     10 * ((4 ^ L : ℕ) : ℝ) * (2 / 5 : ℝ) ^ (4 ^ L)
 
 theorem tendsto_polynomialCircuitExponentialGapMajor_atTop :
     Tendsto polynomialCircuitExponentialGapMajor atTop (nhds 0) := by
   have h3base : Tendsto
-      (fun D : ℕ => 70 * ((D : ℝ) ^ 3 * (3 / 5 : ℝ) ^ D)) atTop (nhds 0) :=
+      (fun D : ℕ => 70 * ((D : ℝ) ^ (3 : ℕ) * (3 / 5 : ℝ) ^ D)) atTop (nhds 0) :=
     by
       simpa using (tendsto_pow_const_mul_const_pow_of_lt_one 3
         (by norm_num : (0 : ℝ) ≤ 3 / 5) (by norm_num : (3 / 5 : ℝ) < 1)).const_mul 70
   have h1base : Tendsto
-      (fun D : ℕ => 10 * ((D : ℝ) ^ 1 * (2 / 5 : ℝ) ^ D)) atTop (nhds 0) :=
+      (fun D : ℕ => 10 * ((D : ℝ) ^ (1 : ℕ) * (2 / 5 : ℝ) ^ D)) atTop (nhds 0) :=
     by
       simpa using (tendsto_pow_const_mul_const_pow_of_lt_one 1
         (by norm_num : (0 : ℝ) ≤ 2 / 5) (by norm_num : (2 / 5 : ℝ) < 1)).const_mul 10
@@ -153,7 +153,7 @@ theorem tendsto_polynomialCircuitExponentialGapMajor_atTop :
   have hsum := (h3base.comp hD).add (h1base.comp hD)
   change Tendsto
     (fun L : ℕ =>
-      70 * (((4 ^ L : ℕ) : ℝ) ^ 3) * (3 / 5 : ℝ) ^ (4 ^ L) +
+      70 * (((4 ^ L : ℕ) : ℝ) ^ (3 : ℕ)) * (3 / 5 : ℝ) ^ (4 ^ L) +
         10 * ((4 ^ L : ℕ) : ℝ) * (2 / 5 : ℝ) ^ (4 ^ L))
     atTop (nhds 0)
   simpa [pow_one, mul_assoc] using hsum
@@ -173,14 +173,14 @@ lemma polynomialCircuitEntropy_mul_speedGap_le_major (g k : ℕ) :
   have hspeed := explicitSpeed_le_seven_dimension_sq L
   have hfactor :
       (2 * (D : ℝ) * ((L : ℝ) + 2) + 1) * (3 / 2 : ℝ) ^ D + 1 / 200 ≤
-        7 * (D : ℝ) ^ 2 * (3 / 2 : ℝ) ^ D + 1 := by
+        7 * (D : ℝ) ^ (2 : ℕ) * (3 / 2 : ℝ) ^ D + 1 := by
     gcongr
     norm_num
   calc
     polynomialCircuitChoiEntropyCost g k L *
         ((2 * (D : ℝ) * ((L : ℝ) + 2) + 1) * (3 / 2 : ℝ) ^ D + 1 / 200) ≤
       (10 * (D : ℝ) * (2 / 5 : ℝ) ^ D) *
-        (7 * (D : ℝ) ^ 2 * (3 / 2 : ℝ) ^ D + 1) := by
+        (7 * (D : ℝ) ^ (2 : ℕ) * (3 / 2 : ℝ) ^ D + 1) := by
           calc
             polynomialCircuitChoiEntropyCost g k L *
                 ((2 * (D : ℝ) * ((L : ℝ) + 2) + 1) * (3 / 2 : ℝ) ^ D + 1 / 200) ≤
@@ -188,12 +188,12 @@ lemma polynomialCircuitEntropy_mul_speedGap_le_major (g k : ℕ) :
                 ((2 * (D : ℝ) * ((L : ℝ) + 2) + 1) * (3 / 2 : ℝ) ^ D + 1 / 200) :=
               mul_le_mul_of_nonneg_right hcost (by positivity)
             _ ≤ (10 * (D : ℝ) * (2 / 5 : ℝ) ^ D) *
-                (7 * (D : ℝ) ^ 2 * (3 / 2 : ℝ) ^ D + 1) :=
+                (7 * (D : ℝ) ^ (2 : ℕ) * (3 / 2 : ℝ) ^ D + 1) :=
               mul_le_mul_of_nonneg_left hfactor (by positivity)
-    _ = 70 * (D : ℝ) ^ 3 *
+    _ = 70 * (D : ℝ) ^ (3 : ℕ) *
           ((2 / 5 : ℝ) ^ D * (3 / 2 : ℝ) ^ D) +
         10 * (D : ℝ) * (2 / 5 : ℝ) ^ D := by ring
-    _ = 70 * (D : ℝ) ^ 3 * (3 / 5 : ℝ) ^ D +
+    _ = 70 * (D : ℝ) ^ (3 : ℕ) * (3 / 5 : ℝ) ^ D +
         10 * (D : ℝ) * (2 / 5 : ℝ) ^ D := by
       rw [← mul_pow]
       norm_num
@@ -379,7 +379,7 @@ theorem eventually_exists_nearestNeighborPath_polynomial_sameDraw_exponentialCir
           ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
         (((1 / 100 : ℝ) - 1 / 200) /
             projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)) /

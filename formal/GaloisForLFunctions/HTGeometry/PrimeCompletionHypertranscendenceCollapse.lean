@@ -142,7 +142,7 @@ theorem hypertranscendental_multipleEllipticGammaBackwardProduct_of_rankThreeMin
 
 /-- Prime nome at inverse-square temperature. -/
 def primeSquareNome (p : Nat.Primes) : ℂ :=
-  (((p : ℕ) : ℂ)⁻¹) ^ 2
+  (((p : ℕ) : ℂ)⁻¹) ^ (2 : ℕ)
 
 /-- Additive period whose elliptic nome is `p⁻²`. -/
 def primeSquarePeriod (p : Nat.Primes) : ℂ :=
@@ -176,7 +176,7 @@ theorem ellipticNome_primeSquarePeriod (p : Nat.Primes) :
   have hexp :
       Complex.exp (-(2 : ℂ) *
           ((Real.log ((p : ℕ) : ℝ) : ℝ) : ℂ)) =
-        (((p : ℕ) : ℂ)⁻¹) ^ 2 := by
+        (((p : ℕ) : ℂ)⁻¹) ^ (2 : ℕ) := by
     rw [show (-(2 : ℂ) *
         ((Real.log ((p : ℕ) : ℝ) : ℝ) : ℂ)) =
       ((-(2 * Real.log ((p : ℕ) : ℝ)) : ℝ) : ℂ) by norm_num]
@@ -268,7 +268,7 @@ def primeOccupationEquivPNat : (Nat.Primes →₀ ℕ) ≃ ℕ+ where
 /-- A prime-square occupation monomial is the inverse square of its represented integer. -/
 theorem nomeMonomial_primeSquareNome (ν : Nat.Primes →₀ ℕ) :
     HTGeometry.nomeMonomial primeSquareNome ν =
-      ((((primeProduct ν : ℕ) : ℂ)⁻¹) ^ 2) := by
+      ((((primeProduct ν : ℕ) : ℂ)⁻¹) ^ (2 : ℕ)) := by
   classical
   induction ν using Finsupp.induction with
   | zero =>
@@ -309,27 +309,27 @@ theorem primaryFactor_zero_genus (z : ℂ) :
 removes the removable singularity at the origin, so the identity is global. -/
 theorem primeSquareCompletion_mul_eq_sin (t : ℂ) :
     (Real.pi : ℂ) * t *
-        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ 2) =
+        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ (2 : ℕ)) =
       Complex.sin ((Real.pi : ℂ) * t) := by
   have hrewrite :
-      HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ 2) =
-        ∏' n : ℕ, ((1 : ℂ) - t ^ 2 / ((n : ℂ) + 1) ^ 2) := by
+      HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ (2 : ℕ)) =
+        ∏' n : ℕ, ((1 : ℂ) - t ^ (2 : ℕ) / ((n : ℂ) + 1) ^ (2 : ℕ)) := by
     rw [HTGeometry.infiniteMultipleEllipticGamma,
       HTGeometry.canonicalWeightProduct]
     calc
       (∏' ν : Nat.Primes →₀ ℕ,
           HTGeometry.primaryFactor 0
-            (t ^ 2 * HTGeometry.nomeMonomial primeSquareNome ν)) =
+            (t ^ (2 : ℕ) * HTGeometry.nomeMonomial primeSquareNome ν)) =
           ∏' n : ℕ+,
             HTGeometry.primaryFactor 0
-              (t ^ 2 * HTGeometry.nomeMonomial primeSquareNome
+              (t ^ (2 : ℕ) * HTGeometry.nomeMonomial primeSquareNome
                 (primeOccupationEquivPNat.symm n)) := by
               exact (primeOccupationEquivPNat.symm.tprod_eq
                 (fun ν : Nat.Primes →₀ ℕ =>
                   HTGeometry.primaryFactor 0
-                    (t ^ 2 * HTGeometry.nomeMonomial primeSquareNome ν))).symm
+                    (t ^ (2 : ℕ) * HTGeometry.nomeMonomial primeSquareNome ν))).symm
       _ = ∏' n : ℕ+,
-          ((1 : ℂ) - t ^ 2 / ((n : ℕ) : ℂ) ^ 2) := by
+          ((1 : ℂ) - t ^ (2 : ℕ) / ((n : ℕ) : ℂ) ^ (2 : ℕ)) := by
             apply tprod_congr
             intro n
             rw [primaryFactor_zero_genus, nomeMonomial_primeSquareNome]
@@ -340,10 +340,10 @@ theorem primeSquareCompletion_mul_eq_sin (t : ℂ) :
             rw [hn]
             field_simp
       _ = ∏' n : ℕ,
-          ((1 : ℂ) - t ^ 2 / ((n : ℂ) + 1) ^ 2) := by
+          ((1 : ℂ) - t ^ (2 : ℕ) / ((n : ℂ) + 1) ^ (2 : ℕ)) := by
             rw [tprod_pnat_eq_tprod_succ
               (f := fun n : ℕ =>
-                (1 : ℂ) - t ^ 2 / (n : ℂ) ^ 2)]
+                (1 : ℂ) - t ^ (2 : ℕ) / (n : ℂ) ^ (2 : ℕ))]
             apply tprod_congr
             intro n
             norm_num
@@ -356,12 +356,12 @@ theorem primeSquareCompletion_mul_eq_sin (t : ℂ) :
       multipliable_sineTerm t
     have hprod :
         (∏' n : ℕ,
-            ((1 : ℂ) - t ^ 2 / ((n : ℂ) + 1) ^ 2)) =
+            ((1 : ℂ) - t ^ (2 : ℕ) / ((n : ℂ) + 1) ^ (2 : ℕ))) =
           Complex.sin ((Real.pi : ℂ) * t) /
             ((Real.pi : ℂ) * t) := by
       rw [show
         (fun n : ℕ =>
-          (1 : ℂ) - t ^ 2 / ((n : ℂ) + 1) ^ 2) =
+          (1 : ℂ) - t ^ (2 : ℕ) / ((n : ℂ) + 1) ^ (2 : ℕ)) =
         fun n : ℕ => (1 : ℂ) + sineTerm t n by
           funext n
           simp only [sineTerm]
@@ -376,10 +376,10 @@ theorem primeSquareCompletion_mul_eq_sin (t : ℂ) :
 theorem differentiallyAlgebraic_primeSquareCompletion_gauged :
     DifferentiallyAlgebraic
       (fun t : ℂ => (Real.pi : ℂ) * t *
-        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ 2)) := by
+        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ (2 : ℕ))) := by
   rw [show
       (fun t : ℂ => (Real.pi : ℂ) * t *
-        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ 2)) =
+        HTGeometry.infiniteMultipleEllipticGamma 0 primeSquareNome (t ^ (2 : ℕ))) =
       fun t : ℂ => Complex.sin ((Real.pi : ℂ) * t) by
         funext t
         exact primeSquareCompletion_mul_eq_sin t]

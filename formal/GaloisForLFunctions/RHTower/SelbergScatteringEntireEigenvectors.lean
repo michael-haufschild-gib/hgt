@@ -96,7 +96,7 @@ theorem critical_of_entire_eigenvector (q : XiZeroCopy) (v : entireOperator.doma
   have hl := entireOperator_re_inner_lower v
   rw [he,inner_smul_left,inner_self_eq_norm_sq_to_K] at hl
   norm_num [Complex.mul_re,← Complex.ofReal_pow] at hl
-  have hp : 0 < ‖(v:Space)‖^2 := sq_pos_of_pos (norm_pos_iff.mpr hn)
+  have hp : 0 < ‖(v:Space)‖^(2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hn)
   nlinarith
 
 private theorem target_covariance_inverse (q : XiZeroCopy) (hq : (q.1:ℂ).re=1/2) :

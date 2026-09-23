@@ -97,18 +97,18 @@ expected linear oracle samples, quadratic Hadamard gates, and cubic classical
 linear algebra over `ZMod 2`. -/
 def expectedResourceProfile (n : ℕ) : ResourceProfile where
   oracleQueries := n
-  hadamardGates := n ^ 2
+  hadamardGates := n ^ (2 : ℕ)
   elementaryGates := 0
-  classicalOps := n ^ 3
+  classicalOps := n ^ (3 : ℕ)
 
 theorem expectedResourceProfile_exact (n : ℕ) :
-    ResourceProfile.HasExactCounts (expectedResourceProfile n) n (n ^ 2) 0 (n ^ 3) := by
+    ResourceProfile.HasExactCounts (expectedResourceProfile n) n (n ^ (2 : ℕ)) 0 (n ^ (3 : ℕ)) := by
   simp [ResourceProfile.HasExactCounts, expectedResourceProfile]
 
 /-- Typed circuit witness for the Simon post-sampling endpoint. -/
 def circuit (n : ℕ) : Circuit (Qubits (2 * n)) :=
   Circuit.abstract (Qubits (2 * n)) "simon-post-sampling" (expectedResourceProfile n)
-    (n ^ 2) n
+    (n ^ (2 : ℕ)) n
 
 @[simp]
 theorem dot_zero_left (x : BitVec n) : dot (0 : BitVec n) x = 0 := by
@@ -204,7 +204,7 @@ theorem SimonsProblem.main_with_resources {n : ℕ} {α : Type u}
     (hcomplete : Simon.CompleteEquations samples s)
     (hcandidate : Simon.Candidate samples t) :
     (t = s ∧ s ≠ 0) ∧
-      ResourceProfile.HasExactCounts (Simon.expectedResourceProfile n) n (n ^ 2) 0 (n ^ 3) := by
+      ResourceProfile.HasExactCounts (Simon.expectedResourceProfile n) n (n ^ (2 : ℕ)) 0 (n ^ (3 : ℕ)) := by
   constructor
   · exact SimonsProblem.main hpromise hcomplete hcandidate
   · exact Simon.expectedResourceProfile_exact n
@@ -219,7 +219,7 @@ def SimonsProblem.mainResourceCorrectWitness {n : ℕ} {α : Type u}
     (hcandidate : Simon.Candidate samples t) :
     ResourceCorrectWitness (R := Qubits (2 * n))
       (t = s ∧ s ≠ 0)
-      (ResourceProfile.HasExactCounts (Simon.circuit n).resources n (n ^ 2) 0 (n ^ 3)) := by
+      (ResourceProfile.HasExactCounts (Simon.circuit n).resources n (n ^ (2 : ℕ)) 0 (n ^ (3 : ℕ))) := by
   exact
     { circuit := Simon.circuit n
       correctness := SimonsProblem.main hpromise hcomplete hcandidate

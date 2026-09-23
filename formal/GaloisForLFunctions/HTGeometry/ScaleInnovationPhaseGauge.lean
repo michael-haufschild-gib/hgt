@@ -27,7 +27,7 @@ def scaleInnovationHistory (anchor : ℝ) (r : ℕ → ℝ) : ℕ → ℝ :=
 /-- Positive formation action of a scale current. -/
 def scaleInnovationAction (r : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ico 2 N,
-    ((k + 1 : ℕ) : ℝ) / (k + 2 : ℕ) * (r k) ^ 2
+    ((k + 1 : ℕ) : ℝ) / (k + 2 : ℕ) * (r k) ^ (2 : ℕ)
 
 /-- Pointwise phase-gauge action on the scale current. -/
 def scaleInnovationGaugeCurrent (epsilon r : ℕ → ℝ) (N : ℕ) : ℝ :=
@@ -87,7 +87,7 @@ theorem scaleInnovationHistory_reconstructs
 theorem scaleInnovationAction_succ_sub
     (r : ℕ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
     scaleInnovationAction r (N + 1) - scaleInnovationAction r N =
-      ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) * (r N) ^ 2 := by
+      ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) * (r N) ^ (2 : ℕ) := by
   unfold scaleInnovationAction
   rw [Finset.sum_Ico_succ_top hN]
   ring
@@ -119,7 +119,7 @@ theorem scaleInnovationGaugeCurrent_recovery
 
 /-- Positive action is invariant under every independent scale reflection. -/
 theorem scaleInnovationAction_gauge_invariant
-    (epsilon r : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ 2 = 1) (N : ℕ) :
+    (epsilon r : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ (2 : ℕ) = 1) (N : ℕ) :
     scaleInnovationAction (scaleInnovationGaugeCurrent epsilon r) N =
       scaleInnovationAction r N := by
   unfold scaleInnovationAction
@@ -132,7 +132,7 @@ theorem scaleInnovationAction_gauge_invariant
 /-- Recovered-history variance descends through the full local phase quotient. -/
 theorem scaleInnovationHistory_variance_gauge_invariant
     (anchor : ℝ) (epsilon r : ℕ → ℝ)
-    (hphase : ∀ k, (epsilon k) ^ 2 = 1) {N : ℕ} (hN : 2 ≤ N) :
+    (hphase : ∀ k, (epsilon k) ^ (2 : ℕ) = 1) {N : ℕ} (hN : 2 ≤ N) :
     anchoredCesaroVariance
         (scaleInnovationHistory anchor (scaleInnovationGaugeCurrent epsilon r)) N =
       anchoredCesaroVariance (scaleInnovationHistory anchor r) N := by
@@ -142,7 +142,7 @@ theorem scaleInnovationHistory_variance_gauge_invariant
 
 /-- A one-site reflection is an admissible pointwise phase gauge. -/
 theorem scaleInnovationSingleFlip_sq (m N : ℕ) :
-    (scaleInnovationSingleFlip m N) ^ 2 = 1 := by
+    (scaleInnovationSingleFlip m N) ^ (2 : ℕ) = 1 := by
   simp [scaleInnovationSingleFlip]
 
 /-- A one-site reflection changes recovered history whenever that innovation is nonzero. -/
@@ -163,7 +163,7 @@ theorem scaleInnovationSingleFlip_history_ne
 theorem scaleInnovationGauge_eq_of_holonomy
     (epsilon delta : ℕ → ℝ) {K n : ℕ} (hKn : K ≤ n)
     (hbase : epsilon K = delta K)
-    (hphase : ∀ j, K ≤ j → (epsilon j) ^ 2 = 1)
+    (hphase : ∀ j, K ≤ j → (epsilon j) ^ (2 : ℕ) = 1)
     (hholonomy : ∀ j, K ≤ j → j < n →
       scaleInnovationGaugeHolonomy epsilon j =
         scaleInnovationGaugeHolonomy delta j) :
@@ -192,7 +192,7 @@ def scaleInnovationGaugeGlobalReflect (epsilon : ℕ → ℝ) (N : ℕ) : ℝ :=
 
 @[simp]
 theorem scaleInnovationConstantReflection_sq (N : ℕ) :
-    (scaleInnovationConstantReflection N) ^ 2 = 1 := by
+    (scaleInnovationConstantReflection N) ^ (2 : ℕ) = 1 := by
   simp [scaleInnovationConstantReflection]
 
 /-- Functional-equation reflection is exactly the constant `-1` subgroup action on currents. -/
@@ -203,8 +203,8 @@ theorem scaleInnovationConstantReflection_current (r : ℕ → ℝ) :
 
 /-- Global reflection preserves admissibility of every pointwise sign gauge. -/
 theorem scaleInnovationGaugeGlobalReflect_sq
-    (epsilon : ℕ → ℝ) (hphase : ∀ N, (epsilon N) ^ 2 = 1) (N : ℕ) :
-    (scaleInnovationGaugeGlobalReflect epsilon N) ^ 2 = 1 := by
+    (epsilon : ℕ → ℝ) (hphase : ∀ N, (epsilon N) ^ (2 : ℕ) = 1) (N : ℕ) :
+    (scaleInnovationGaugeGlobalReflect epsilon N) ^ (2 : ℕ) = 1 := by
   simp [scaleInnovationGaugeGlobalReflect, hphase]
 
 /-- Global functional-equation reflection changes every local phase sign but fixes all adjacent
@@ -219,7 +219,7 @@ theorem scaleInnovationGaugeHolonomy_globalReflect
 theorem scaleInnovationGauge_ext_of_base_holonomy
     (epsilon delta : ℕ → ℝ)
     (hbase : epsilon 0 = delta 0)
-    (hphase : ∀ j, (epsilon j) ^ 2 = 1)
+    (hphase : ∀ j, (epsilon j) ^ (2 : ℕ) = 1)
     (hholonomy : ∀ j,
       scaleInnovationGaugeHolonomy epsilon j =
         scaleInnovationGaugeHolonomy delta j) :
@@ -241,9 +241,9 @@ theorem scaleInnovationPhaseGauge_certificate :
       anchoredCesaroVariance (scaleInnovationHistory anchor r) N =
         scaleInnovationAction r N ∧
       scaleInnovationAction r (N + 1) - scaleInnovationAction r N =
-        ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) * (r N) ^ 2) ∧
+        ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) * (r N) ^ (2 : ℕ)) ∧
     (∀ (anchor : ℝ) (epsilon r : ℕ → ℝ) (N : ℕ),
-      (∀ k, (epsilon k) ^ 2 = 1) → 2 ≤ N →
+      (∀ k, (epsilon k) ^ (2 : ℕ) = 1) → 2 ≤ N →
       anchoredCesaroHighPass
           (scaleInnovationHistory anchor (scaleInnovationGaugeCurrent epsilon r)) N =
         epsilon N * r N ∧
@@ -256,7 +256,7 @@ theorem scaleInnovationPhaseGauge_certificate :
         scaleInnovationHistory anchor r) ∧
     (∀ (epsilon delta : ℕ → ℝ),
       epsilon 0 = delta 0 →
-      (∀ j, (epsilon j) ^ 2 = 1) →
+      (∀ j, (epsilon j) ^ (2 : ℕ) = 1) →
       (∀ j, scaleInnovationGaugeHolonomy epsilon j =
         scaleInnovationGaugeHolonomy delta j) →
       epsilon = delta) ∧

@@ -67,18 +67,18 @@ theorem sieveTrace_nonneg (P : Finset Nat.Primes) (k : ℕ) : 0 ≤ sieveTrace P
   · rw [Set.indicator_of_notMem h]
 
 /-- The universal bound for the odd power traces. -/
-noncomputable def sieveTraceBound : ℝ := ∑' n : ℕ, (((n : ℕ) : ℝ) ^ 3)⁻¹
+noncomputable def sieveTraceBound : ℝ := ∑' n : ℕ, (((n : ℕ) : ℝ) ^ (3 : ℕ))⁻¹
 
 theorem sieveTraceBound_nonneg : 0 ≤ sieveTraceBound :=
   tsum_nonneg fun n => by positivity
 
 theorem natPow_inv_le {k : ℕ} (hk : 3 ≤ k) (n : ℕ) :
-    (((n : ℕ) : ℝ) ^ k)⁻¹ ≤ (((n : ℕ) : ℝ) ^ 3)⁻¹ := by
+    (((n : ℕ) : ℝ) ^ k)⁻¹ ≤ (((n : ℕ) : ℝ) ^ (3 : ℕ))⁻¹ := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · rw [Nat.cast_zero, zero_pow (by omega), zero_pow (by omega)]
   · have h1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-    have h3 : (0 : ℝ) < ((n : ℝ)) ^ 3 := by positivity
-    have hle : ((n : ℝ)) ^ 3 ≤ ((n : ℝ)) ^ k := pow_le_pow_right₀ h1 hk
+    have h3 : (0 : ℝ) < ((n : ℝ)) ^ (3 : ℕ) := by positivity
+    have hle : ((n : ℝ)) ^ (3 : ℕ) ≤ ((n : ℝ)) ^ k := pow_le_pow_right₀ h1 hk
     exact inv_anti₀ h3 hle
 
 /-- Every odd power trace of a sieve is bounded by the third zeta value. -/
@@ -105,14 +105,14 @@ noncomputable def sieveLogPhi (P : Finset Nat.Primes) (t : ℝ) : ℝ :=
 /-- The termwise bound of the logarithmic expansion by a geometric series. -/
 theorem norm_sieveLogPhi_term_le (P : Finset Nat.Primes) (t : ℝ) (j : ℕ) :
     ‖t ^ (2 * j + 3) / ((2 * j + 3 : ℕ) : ℝ) * sieveTrace P (2 * j + 3)‖
-      ≤ sieveTraceBound * |t| ^ 3 * (|t| ^ 2) ^ j := by
+      ≤ sieveTraceBound * |t| ^ (3 : ℕ) * (|t| ^ (2 : ℕ)) ^ j := by
   have hTb : sieveTrace P (2 * j + 3) ≤ sieveTraceBound :=
     sieveTrace_le_bound (by omega) P
   have hT0 : 0 ≤ sieveTrace P (2 * j + 3) := sieveTrace_nonneg P _
   have hden : (1 : ℝ) ≤ ((2 * j + 3 : ℕ) : ℝ) := by
     have : (1 : ℕ) ≤ 2 * j + 3 := by omega
     exact_mod_cast this
-  have hpow : |t| ^ (2 * j + 3) = |t| ^ 3 * (|t| ^ 2) ^ j := by
+  have hpow : |t| ^ (2 * j + 3) = |t| ^ (3 : ℕ) * (|t| ^ (2 : ℕ)) ^ j := by
     rw [← pow_mul, ← pow_add]
     ring_nf
   calc ‖t ^ (2 * j + 3) / ((2 * j + 3 : ℕ) : ℝ) * sieveTrace P (2 * j + 3)‖
@@ -122,12 +122,12 @@ theorem norm_sieveLogPhi_term_le (P : Finset Nat.Primes) (t : ℝ) (j : ℕ) :
     _ ≤ |t| ^ (2 * j + 3) * sieveTraceBound := by
         refine mul_le_mul ?_ hTb hT0 (by positivity)
         exact div_le_self (by positivity) hden
-    _ = sieveTraceBound * |t| ^ 3 * (|t| ^ 2) ^ j := by rw [hpow]; ring
+    _ = sieveTraceBound * |t| ^ (3 : ℕ) * (|t| ^ (2 : ℕ)) ^ j := by rw [hpow]; ring
 
 theorem summable_sieveLogPhi_bound {t : ℝ} (ht : |t| < 1) :
-    Summable fun j : ℕ => sieveTraceBound * |t| ^ 3 * (|t| ^ 2) ^ j := by
+    Summable fun j : ℕ => sieveTraceBound * |t| ^ (3 : ℕ) * (|t| ^ (2 : ℕ)) ^ j := by
   refine (summable_geometric_of_lt_one (by positivity) ?_).mul_left _
-  calc |t| ^ 2 ≤ |t| ^ 1 := by
+  calc |t| ^ (2 : ℕ) ≤ |t| ^ (1 : ℕ) := by
         refine pow_le_pow_of_le_one (abs_nonneg t) ht.le (by omega)
     _ = |t| := pow_one _
     _ < 1 := ht
@@ -168,40 +168,40 @@ theorem sieveLogPhi_insert {p : Nat.Primes} {P : Finset Nat.Primes} (hp : p ∉ 
 times the cube of the radius. -/
 theorem abs_sieveLogPhi_le (P : Finset Nat.Primes) {r t : ℝ} (hr0 : 0 ≤ r)
     (hr : r < 1) (ht : |t| ≤ r) :
-    |sieveLogPhi P t| ≤ 2 * sieveTraceBound / (1 - r ^ 2) * |t| ^ 3 := by
+    |sieveLogPhi P t| ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * |t| ^ (3 : ℕ) := by
   have habs : |t| < 1 := lt_of_le_of_lt ht hr
-  have hr2 : r ^ 2 < 1 := by nlinarith
+  have hr2 : r ^ (2 : ℕ) < 1 := by nlinarith
   have hbound : ∀ j : ℕ,
       ‖t ^ (2 * j + 3) / ((2 * j + 3 : ℕ) : ℝ) * sieveTrace P (2 * j + 3)‖
-        ≤ sieveTraceBound * |t| ^ 3 * (r ^ 2) ^ j := by
+        ≤ sieveTraceBound * |t| ^ (3 : ℕ) * (r ^ (2 : ℕ)) ^ j := by
     intro j
     refine (norm_sieveLogPhi_term_le P t j).trans ?_
-    have : (|t| ^ 2) ^ j ≤ (r ^ 2) ^ j := by
+    have : (|t| ^ (2 : ℕ)) ^ j ≤ (r ^ (2 : ℕ)) ^ j := by
       refine pow_le_pow_left₀ (by positivity) ?_ j
       nlinarith [abs_nonneg t]
     exact mul_le_mul_of_nonneg_left this
       (mul_nonneg sieveTraceBound_nonneg (by positivity))
-  have hsum : Summable fun j : ℕ => sieveTraceBound * |t| ^ 3 * (r ^ 2) ^ j :=
+  have hsum : Summable fun j : ℕ => sieveTraceBound * |t| ^ (3 : ℕ) * (r ^ (2 : ℕ)) ^ j :=
     (summable_geometric_of_lt_one (by positivity) hr2).mul_left _
-  have hcoef0 : (0 : ℝ) ≤ sieveTraceBound * |t| ^ 3 :=
+  have hcoef0 : (0 : ℝ) ≤ sieveTraceBound * |t| ^ (3 : ℕ) :=
     mul_nonneg sieveTraceBound_nonneg (by positivity)
   have hle : ‖∑' j : ℕ,
       t ^ (2 * j + 3) / ((2 * j + 3 : ℕ) : ℝ) * sieveTrace P (2 * j + 3)‖
-      ≤ ∑' j : ℕ, sieveTraceBound * |t| ^ 3 * (r ^ 2) ^ j :=
+      ≤ ∑' j : ℕ, sieveTraceBound * |t| ^ (3 : ℕ) * (r ^ (2 : ℕ)) ^ j :=
     tsum_of_norm_bounded hsum.hasSum hbound
-  have hgeo : (∑' j : ℕ, sieveTraceBound * |t| ^ 3 * (r ^ 2) ^ j)
-      = sieveTraceBound * |t| ^ 3 * (1 - r ^ 2)⁻¹ := by
+  have hgeo : (∑' j : ℕ, sieveTraceBound * |t| ^ (3 : ℕ) * (r ^ (2 : ℕ)) ^ j)
+      = sieveTraceBound * |t| ^ (3 : ℕ) * (1 - r ^ (2 : ℕ))⁻¹ := by
     rw [tsum_mul_left, tsum_geometric_of_lt_one (by positivity) hr2]
   rw [sieveLogPhi, abs_mul]
   rw [hgeo] at hle
   have h2 : |(-2 : ℝ)| = 2 := by norm_num
   rw [h2]
-  have hpos : (0 : ℝ) < 1 - r ^ 2 := by linarith
+  have hpos : (0 : ℝ) < 1 - r ^ (2 : ℕ) := by linarith
   rw [Real.norm_eq_abs] at hle
   calc 2 * |∑' j : ℕ,
         t ^ (2 * j + 3) / ((2 * j + 3 : ℕ) : ℝ) * sieveTrace P (2 * j + 3)|
-      ≤ 2 * (sieveTraceBound * |t| ^ 3 * (1 - r ^ 2)⁻¹) := by linarith
-    _ = 2 * sieveTraceBound / (1 - r ^ 2) * |t| ^ 3 := by field_simp
+      ≤ 2 * (sieveTraceBound * |t| ^ (3 : ℕ) * (1 - r ^ (2 : ℕ))⁻¹) := by linarith
+    _ = 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * |t| ^ (3 : ℕ) := by field_simp
 
 /-- **Absolute summability of the enlargement increments.**  On every closed
 subdisk the increment of adjoining a prime is bounded by a constant, independent
@@ -209,7 +209,7 @@ of the sieve and of the prime, times the inverse cube of that prime. -/
 theorem abs_sieveLogPhi_insert_sub_le {p : Nat.Primes} {P : Finset Nat.Primes}
     (hp : p ∉ P) {r t : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) (ht : |t| ≤ r) :
     |sieveLogPhi (insert p P) t - sieveLogPhi P t|
-      ≤ (2 * sieveTraceBound / (1 - r ^ 2) * r ^ 3) / ((p : ℕ) : ℝ) ^ 3 := by
+      ≤ (2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * r ^ (3 : ℕ)) / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
   have habs : |t| < 1 := lt_of_le_of_lt ht hr
   have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
   have hppos : (0 : ℝ) < ((p : ℕ) : ℝ) := by linarith
@@ -221,16 +221,16 @@ theorem abs_sieveLogPhi_insert_sub_le {p : Nat.Primes} {P : Finset Nat.Primes}
       = -sieveLogPhi P (t / ((p : ℕ) : ℝ)) := by ring
   rw [hsub, abs_neg]
   refine (abs_sieveLogPhi_le P hr0 hr htp).trans ?_
-  have hcube : |t / ((p : ℕ) : ℝ)| ^ 3 ≤ r ^ 3 / ((p : ℕ) : ℝ) ^ 3 := by
+  have hcube : |t / ((p : ℕ) : ℝ)| ^ (3 : ℕ) ≤ r ^ (3 : ℕ) / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
     rw [abs_div, abs_of_nonneg hppos.le, div_pow]
     gcongr
-  have hcoef : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ 2) := by
-    have hden : (0 : ℝ) < 1 - r ^ 2 := by nlinarith
+  have hcoef : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) := by
+    have hden : (0 : ℝ) < 1 - r ^ (2 : ℕ) := by nlinarith
     exact div_nonneg (by linarith [sieveTraceBound_nonneg]) hden.le
-  calc 2 * sieveTraceBound / (1 - r ^ 2) * |t / ((p : ℕ) : ℝ)| ^ 3
-      ≤ 2 * sieveTraceBound / (1 - r ^ 2) * (r ^ 3 / ((p : ℕ) : ℝ) ^ 3) :=
+  calc 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * |t / ((p : ℕ) : ℝ)| ^ (3 : ℕ)
+      ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * (r ^ (3 : ℕ) / ((p : ℕ) : ℝ) ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left hcube hcoef
-    _ = (2 * sieveTraceBound / (1 - r ^ 2) * r ^ 3) / ((p : ℕ) : ℝ) ^ 3 := by ring
+    _ = (2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * r ^ (3 : ℕ)) / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by ring
 
 end LogDeterminant
 

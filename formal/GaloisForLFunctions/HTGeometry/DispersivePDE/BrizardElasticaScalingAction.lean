@@ -59,7 +59,7 @@ theorem nlsScaleJet_one_full (J : ComplexEvolutionJet2) : nlsScaleJet 1 J = J :=
 theorem nlsScaleJet_mul_full (a b : ℝ) (J : ComplexEvolutionJet2) :
     nlsScaleJet a (nlsScaleJet b J) = nlsScaleJet (a * b) J := by
   simp only [nlsScaleJet, ComplexEvolutionJet2.mk.injEq]
-  have ht (t : ℝ) : b ^ 2 * (a ^ 2 * t) = (a * b) ^ 2 * t := by ring
+  have ht (t : ℝ) : b ^ (2 : ℕ) * (a ^ (2 : ℕ) * t) = (a * b) ^ (2 : ℕ) * t := by ring
   have hx (x : ℝ) : b * (a * x) = (a * b) * x := by ring
   constructor
   · funext t x

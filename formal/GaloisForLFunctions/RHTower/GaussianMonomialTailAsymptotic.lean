@@ -5,10 +5,10 @@ import Mathlib.Analysis.Calculus.LHopital
 /-!
 # Sharp Gaussian monomial tail asymptotics
 
-For every positive Gaussian rate `b`, the tail of `x^m exp (-b x^2)` has the exact leading
+For every positive Gaussian rate `b`, the tail of `x^m exp (-b x^(2 : ℕ))` has the exact leading
 term
 
-`a^(m-1) exp (-b a^2) / (2b)`.
+`a^(m-1) exp (-b a^(2 : ℕ)) / (2b)`.
 
 The positive-degree theorem is proved by differentiating the moving tail and applying the
 `0/0` form of L'Hôpital's rule.  Degree zero is handled separately because its natural leading

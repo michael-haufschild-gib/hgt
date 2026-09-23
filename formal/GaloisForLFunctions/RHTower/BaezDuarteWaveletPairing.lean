@@ -149,7 +149,7 @@ theorem intervalIntegrable_jumpKernelComplex (k n : ℕ) (b c : ℝ) :
   have h := intervalIntegrable_jumpKernel k (Real.log n) b c
   exact IntervalIntegrable.const_mul ⟨h.1.ofReal, h.2.ofReal⟩ _
 
-theorem log_natCast_nonneg (n : ℕ) : 0 ≤ Real.log n := by
+theorem log_natCast_nonneg_baezDuarteWaveletPairing (n : ℕ) : 0 ≤ Real.log n := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn; simp
   · exact Real.log_nonneg (by exact_mod_cast hn)
@@ -187,7 +187,7 @@ theorem integral_partial_bdKernel (k : ℕ) {T : ℝ} (hT : 0 ≤ T) :
     rw [Finset.mem_range] at hn
     have hnT : n ≤ ⌊Real.exp T⌋₊ := by omega
     rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_ofReal,
-      integral_jump_bdKernel k (log_natCast_nonneg n) (log_natCast_le hT hnT)]
+      integral_jump_bdKernel k (log_natCast_nonneg_baezDuarteWaveletPairing n) (log_natCast_le hT hnT)]
     rw [Complex.ofReal_sub, mul_sub, mobiusRealWeight_mul_bdWavelet]
     ring
   rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, ← Finset.mul_sum]

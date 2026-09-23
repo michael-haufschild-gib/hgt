@@ -41,11 +41,11 @@ theorem sqrt_sqrt_eq_exp {x : ℝ} (hx : 0 < x) :
 /-- **The Brun–Titchmarsh error is below its main term at the fourth-root level.**  The inequality
 `6(1 + u/4)³u ≤ 610·e^{3u/4}` for `u ≥ 4`, which is what makes `z = q^{1/4}` admissible. -/
 theorem poly_le_exp_three_quarters {u : ℝ} (hu : 4 ≤ u) :
-    6 * (1 + u / 4) ^ 3 * u ≤ 610 * Real.exp (3 * u / 4) := by
+    6 * (1 + u / 4) ^ (3 : ℕ) * u ≤ 610 * Real.exp (3 * u / 4) := by
   have hu0 : (0 : ℝ) ≤ u := by linarith
   have h0 : (0 : ℝ) ≤ 1 + u / 4 := by linarith
   have h1 : (1 : ℝ) + u / 4 ≤ u / 2 := by linarith
-  have hcube : (1 + u / 4) ^ 3 ≤ (u / 2) ^ 3 := pow_le_pow_left₀ h0 h1 3
+  have hcube : (1 + u / 4) ^ (3 : ℕ) ≤ (u / 2) ^ (3 : ℕ) := pow_le_pow_left₀ h0 h1 3
   have hx : (0 : ℝ) ≤ 3 * u / 16 := by linarith
   have hexp : 3 * u / 16 ≤ Real.exp (3 * u / 16) := by
     linarith [Real.add_one_le_exp (3 * u / 16)]
@@ -56,9 +56,9 @@ theorem poly_le_exp_three_quarters {u : ℝ} (hu : 4 ≤ u) :
     norm_num
     ring_nf
   rw [hsplit] at hpow
-  have hval : (3 * u / 16) ^ (4 : ℕ) = 81 * u ^ 4 / 65536 := by ring
+  have hval : (3 * u / 16) ^ (4 : ℕ) = 81 * u ^ (4 : ℕ) / 65536 := by ring
   rw [hval] at hpow
-  have hleft : 6 * (1 + u / 4) ^ 3 * u ≤ 6 * (u / 2) ^ 3 * u := by
+  have hleft : 6 * (1 + u / 4) ^ (3 : ℕ) * u ≤ 6 * (u / 2) ^ (3 : ℕ) * u := by
     nlinarith [hcube, hu0]
   nlinarith [hleft, hpow]
 
@@ -95,7 +95,7 @@ theorem logNeighbourCount_le_sharp (s : Finset ℕ) (hs : ∀ m ∈ s, m.Prime) 
     have hmerge : Real.exp (3 * Real.log q / 4) * Real.exp (Real.log q / 4) = (q : ℝ) := by
       rw [← Real.exp_add, show 3 * Real.log q / 4 + Real.log q / 4 = Real.log q by ring, hexpq]
     have hq4 : (0 : ℝ) < Real.exp (Real.log q / 4) := Real.exp_pos _
-    have herr : 6 * Real.exp (Real.log q / 4) * (1 + Real.log q / 4) ^ 3
+    have herr : 6 * Real.exp (Real.log q / 4) * (1 + Real.log q / 4) ^ (3 : ℕ)
         ≤ 610 * ((q : ℝ) / Real.log q) := by
       have hrw : (610 : ℝ) * ((q : ℝ) / Real.log q) = (610 * (q : ℝ)) / Real.log q := by ring
       rw [hrw, le_div_iff₀ hlogq]
@@ -132,8 +132,8 @@ theorem logNeighbourCount_le_sharp (s : Finset ℕ) (hs : ∀ m ∈ s, m.Prime) 
 /-- **The prime-supported mean value theorem, sharp.**  The near-diagonal weight is `q/log q`. -/
 theorem integral_Icc_normSq_logPoly_le_prime_sharp (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ m ∈ s, m.Prime) {W : ℝ} (hW : 2 * Real.pi * 1 * W ≤ 1) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ 2 := by
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ (2 : ℕ) := by
   refine le_trans (integral_Icc_normSq_logPoly_le_count a s (δ := 1) one_pos hW) ?_
   rw [show (5 : ℝ) / (4 * 1) = 5 / 4 by norm_num]
   refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun q hq => ?_) (by norm_num)

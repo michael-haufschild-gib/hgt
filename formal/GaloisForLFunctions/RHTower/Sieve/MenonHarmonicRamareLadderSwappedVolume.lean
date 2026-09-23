@@ -23,13 +23,13 @@ noncomputable section
 /-- The swapped block cost with the Gallagher-set measure exposed as a scalar. -/
 def menonHarmonicSwappedBlockCostVolume
     (P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W volE : ℝ) (j : ℕ) : ℝ :=
-  2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 *
+  2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) *
       ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊Q * (1 + eta) ^ (j + 1)⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volE) *
-            ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ 2 *
+            ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ) *
               ((geomBlock P Q (1 + eta) j).card : ℝ))))
-    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
         harmonicCofactorSupportError A₀ B₀ Q eta W j
 
 theorem menonHarmonicSwappedBlockCost_eq_volume

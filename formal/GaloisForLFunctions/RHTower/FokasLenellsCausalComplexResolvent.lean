@@ -10,7 +10,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalComplexResolventInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- The actual bounded inverse of the explicit perturbation of the identity. -/
 def causalNeumannInverse (z : {z : ℂ // 0 < z.re}) : hardyL2ᗮ →L[ℂ] hardyL2ᗮ :=

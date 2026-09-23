@@ -24,23 +24,23 @@ theorem integral_Icc_normSq_heathBrown_factors_le_selectedSecondScale
     {eta : ℝ} (heta : 0 < eta) :
     let N0 : ℕ := heathBrownSecondScale (T : ℝ) (A.card : ℝ)
     let a0 : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
-      (19 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-        (3 * (N : ℝ) / (N0 : ℝ)) * (A.card : ℝ) ^ 2)
+      (19 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+        (3 * (N : ℝ) / (N0 : ℝ)) * (A.card : ℝ) ^ (2 : ℕ))
     let b0 : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
       ((2 * (N : ℝ) / (N0 : ℝ)) * (5 / (2 * (T : ℝ))))
     let k : ℝ :=
       ((5 * Real.pi * Real.exp 1 * (T : ℝ) +
           (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ)) *
-        (heathBrownSquareDivisorScale N0 eta ^ 2 * (25 * Real.pi / 8) *
+        (heathBrownSquareDivisorScale N0 eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
           (25 * Real.pi / 8))
     let a1 : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
-      (15 * (T : ℝ)⁻¹ * ((N0 * N0 : ℕ) : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-        ((2 * ((N0 * N0) / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2)
+      (15 * (T : ℝ)⁻¹ * ((N0 * N0 : ℕ) : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+        ((2 * ((N0 * N0) / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ))
     let b1 : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
       (((((N0 * N0) / N0 + 1 : ℕ) : ℝ)) * (5 / (2 * (T : ℝ))))
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
-      a0 + b0 * Real.sqrt (k * (2 * a1 + b1 ^ 2 * k)) := by
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
+      a0 + b0 * Real.sqrt (k * (2 * a1 + b1 ^ (2 : ℕ) * k)) := by
   dsimp only
   apply integral_Icc_normSq_heathBrown_factors_le_twoStepRealRatio
     A B eps q T hT hA hB

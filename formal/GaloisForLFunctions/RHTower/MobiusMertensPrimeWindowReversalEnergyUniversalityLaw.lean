@@ -16,7 +16,7 @@ def mobiusPrimeWindowPalindromicEnergy (p : Nat.Primes) (N : ℕ) : ℝ :=
   (1 / 4 : ℝ) *
     ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     ((mobiusPrimeWindowPartialSum p ab.1).re +
-      (mobiusPrimeWindowPartialSum p ab.2).re) ^ 2
+      (mobiusPrimeWindowPartialSum p ab.2).re) ^ (2 : ℕ)
 
 /-- Removing any one prime preserves the palindromic Mertens energy exactly. -/
 theorem mobiusPrimeWindowPalindromicEnergy_eq_mertens

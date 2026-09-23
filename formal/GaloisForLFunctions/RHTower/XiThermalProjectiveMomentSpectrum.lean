@@ -265,7 +265,7 @@ theorem xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le
   have halpha : 0 ≤ alpha := by
     by_contra hnot
     have hupper := hmom 1
-    have hnegative : normalizedPrimeArchMoment 0 * alpha ^ 1 < 0 := by
+    have hnegative : normalizedPrimeArchMoment 0 * alpha ^ (1 : ℕ) < 0 := by
       rw [pow_one]
       exact mul_neg_of_pos_of_neg normalizedPrimeArchMoment_zero_pos (lt_of_not_ge hnot)
     linarith [xiThermalProjectiveMoment_nonneg 1]
@@ -291,7 +291,7 @@ theorem xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le
       simp only [pow_one, mul_zero] at hupper
       have hdpos : 0 < xiEndpointProjectiveReflectionDisplacement q := by linarith
       have hprod : 0 < xiThermalNode q *
-          xiEndpointProjectiveReflectionDisplacement q ^ 1 := by positivity
+          xiEndpointProjectiveReflectionDisplacement q ^ (1 : ℕ) := by positivity
       rw [← xiThermalProjectiveMoment] at hterm
       linarith
     · have halphaPos : 0 < alpha := lt_of_le_of_ne halpha (Ne.symm halpha0)
@@ -736,7 +736,7 @@ theorem xiThermalProjectiveMoment_one_eq_zero_iff_rh :
   · intro hRH
     rw [xiThermalProjectiveMoment]
     have hfun : (fun q : XiZeroCopy => xiThermalNode q *
-        xiEndpointProjectiveReflectionDisplacement q ^ 1) = 0 := by
+        xiEndpointProjectiveReflectionDisplacement q ^ (1 : ℕ)) = 0 := by
       funext q
       have hre := xi_zero_re_eq_half_of_RH hRH
         (xi_eq_zero_of_mem_divisor_support q.1)

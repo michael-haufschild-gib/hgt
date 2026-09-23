@@ -29,10 +29,13 @@ open D4BMFullAngularGoursat D4BMFullAngularReconstruction D4BMNativeCircle
 open D4BMFuturePulseAdmission D4BMCapNormalTrace
 open D4BMLiteralCyclicPeierlsCorrectedFutureCap
 open D4BMRetardedHorizonGeometry
-open MeasureTheory Set
+open MeasureTheory Set Filter Topology
+open D4BMCausalKernel D4BMGlobalAngularResponse D4BMFutureSeedHorizon D4BMFutureHorizon
+open D4BMLaplaceRadial
 open Filter
 
 noncomputable section
+attribute [local fun_prop] Complex.continuous_ofReal
 set_option autoImplicit false
 
 /-- The unmodified onset kernel in co-moving ingoing-cap coordinates. -/
@@ -107,7 +110,7 @@ theorem pulseLayerClock_zero_outside (q : XiZeroCopy) (branch : Bool) (u : ℝ)
 /-- Compact original-clock bound used by the literal normal-layer envelope. -/
 private theorem pulseLayerClock_continuous (q : XiZeroCopy) (branch : Bool) :
     Continuous (pulseLayerClock q branch) := by
-  have hderiv : Continuous (fun u : ℝ => (deriv Real.smoothTransition u : ℂ)) :=
+  have hderiv : Continuous (fun u : ℝ => ((deriv Real.smoothTransition u : ℝ) : ℂ)) :=
     Complex.continuous_ofReal.comp
       GaloisForLFunctions.HTGeometry.continuous_deriv_smoothTransition
   have harg : Continuous (fun u : ℝ =>
@@ -126,7 +129,7 @@ private theorem pulseLayerClock_bounded (q : XiZeroCopy) (branch : Bool) :
   have hclock : Continuous (pulseLayerClock q branch) :=
     pulseLayerClock_continuous q branch
   obtain ⟨A, hA⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1)).exists_bound_of_continuousOn
-    hclock.norm.continuousOn
+    hclock.continuousOn
   let C := max A 0
   refine ⟨C, le_max_right _ _, ?_⟩
   intro u hu
@@ -138,7 +141,7 @@ private theorem pulseLayer_sourceSeedSecond_continuous (s w a T lam : ℂ) :
   intro t
   have hA := (sourceAmplitude_hasDerivAt s w a T t).continuousAt
   have hU := ((radialUnit_hasDerivAt t).ofReal_comp).continuousAt
-  unfold sourceSeedFieldSecond
+  unfold sourceSeedFieldSecond amplitudeRate sourceSeedPolynomial sourceSeedFirst sourceSeedSecond
   fun_prop
 
 private theorem pulseLayer_radialLiftSecond_continuous (s w a T : ℂ) :
@@ -147,7 +150,7 @@ private theorem pulseLayer_radialLiftSecond_continuous (s w a T : ℂ) :
   intro t
   have hA := (sourceAmplitude_hasDerivAt s w a T t).continuousAt
   have hU := ((radialUnit_hasDerivAt t).ofReal_comp).continuousAt
-  unfold radialLiftSecond
+  unfold radialLiftSecond liftSecondPolynomial amplitudeRate
   fun_prop
 
 /-- Both literal onset coefficients factor through the same fixed layer clock. -/
@@ -159,8 +162,9 @@ theorem onsetCoefficients_layerClock (q : XiZeroCopy) (branch : Bool) (amp : ℂ
     onsetSourceCoefficient q branch amp tau t =
       parameter q branch * (2 * radialLiftFirst (physicalRate q branch) 0 amp 1 t) *
         pulseLayerClock q branch (tau + t) := by
-  constructor <;> unfold onsetResponseCoefficient onsetSourceCoefficient pulseLayerClock
-    timeOnsetFirst timeOnset <;> ring
+  constructor <;>
+    simp only [onsetResponseCoefficient, onsetSourceCoefficient, pulseLayerClock,
+      timeOnsetFirst, timeOnset] <;> ring
 
 /-- Entire literal co-moving kernel is supported on the fixed original onset
 strip. This retains both direct and image channels. -/
@@ -172,7 +176,7 @@ theorem pulseLayerKernel_zero_outside (q : XiZeroCopy) (branch : Bool) (amp : �
     onsetCoefficients_layerClock q branch amp (v - x + h) (x - z)
   have hclock : (v - x + h) + (x - z) = v + h - z := by ring
   rw [hresponse, hsource, hclock, pulseLayerClock_zero_outside q branch _ hu]
-  ring
+  simp
 
 /-- Fixed-clock localization holds facewise for the literal direct circle
 face, not merely after direct-minus-image cancellation. -/
@@ -185,7 +189,7 @@ theorem pulseLayerDirectCircleKernel_zero_outside (q : XiZeroCopy) (branch : Boo
   unfold pulseLayerDirectCircleKernel
   rw [onsetAngularMean_eq, hresponse, hsource, hclock,
     pulseLayerClock_zero_outside q branch _ hu]
-  ring
+  simp
 
 /-- Fixed-clock localization holds facewise for the literal reflected circle
 face as well.  Its escaping geometry is therefore independent of the onset
@@ -199,7 +203,7 @@ theorem pulseLayerImageCircleKernel_zero_outside (q : XiZeroCopy) (branch : Bool
   unfold pulseLayerImageCircleKernel
   rw [onsetAngularMean_eq, hresponse, hsource, hclock,
     pulseLayerClock_zero_outside q branch _ hu]
-  ring
+  simp
 
 /-- Exact direct/image Volterra decomposition of the co-moving pulse layer.
 The direct cone is independent of cap radius; the image cone is not replaced
@@ -372,7 +376,7 @@ theorem directCircleKernel_inner_integral_fixedClock (q : XiZeroCopy) (branch : 
       refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero
         measurableSet_Iio.nullMeasurableSet ?_ ?_
       · intro u hu
-        exact directClockStrip_inside_sourceRay v x h u hx hh hu
+        exact Set.mem_Iio.mpr (by linarith [directClockStrip_inside_sourceRay v x h u hx hh hu])
       · filter_upwards with u hu
         apply pulseLayerDirectCircleKernel_zero_outside q branch amp v x h (v + h - u) X k
         have hclock : v + h - (v + h - u) = u := by ring
@@ -386,7 +390,7 @@ theorem pulseLayerDirectKernel_zero_of_not_directCone (q : XiZeroCopy) (branch :
     (amp : ℂ) (v x h z X k : ℝ) (hz : ¬ |z| ≤ h) :
     pulseLayerDirectKernel q branch amp v x h z X k = 0 := by
   have hdirect : ¬ |x - (x - z)| ≤ h := by
-    simpa only [sub_sub_cancel_left] using hz
+    simpa only [sub_sub_cancel] using hz
   unfold pulseLayerDirectKernel
   rw [if_neg hz, fullAngularCorrection, if_neg hdirect,
     nativeAngularCorrection, if_neg hdirect]
@@ -631,16 +635,16 @@ theorem pulseLayerDirectCircleKernel_fixedClock_measurable (q : XiZeroCopy)
           pulseLayerClock q branch (v + p.1 - z p)) *
           D4BMNativeCircle.mean q (Real.arcosh (max 1 (invariant p.1 x (y p)))) X k) / 2) :=
     ((hresponse.mul hangular).add (hsource.mul hnative)).div_const (2 : ℂ) |>.measurable
-  have hite := Measurable.ite hcone hvalue measurable_const
+  have hite := @Measurable.ite _ _ _ _ _ _ _ (Classical.decPred _) hcone hvalue
+    (measurable_const (a := (0 : ℂ)))
   convert hite using 1
   funext p
   by_cases hp : |z p| ≤ p.1
   · have hcausal : 1 ≤ invariant p.1 x (y p) := by
-      apply invariant_causal
-      refine ⟨p.1, x, y p, ?_⟩
-      dsimp only [y]
-      have hxy : x - (x - z p) = z p := by ring
-      rwa [hxy]
+      exact invariant_causal ⟨p.1, x, y p, by
+        dsimp only [y]
+        have hxy : x - (x - z p) = z p := by ring
+        rwa [hxy]⟩
     have htime : (v - x + p.1) + (x - z p) = v + p.1 - z p := by ring
     unfold pulseLayerDirectCircleKernel
     rw [show v + p.1 - p.2 = z p by rfl, if_pos hp, onsetAngularMean_eq,
@@ -648,10 +652,10 @@ theorem pulseLayerDirectCircleKernel_fixedClock_measurable (q : XiZeroCopy)
       (onsetCoefficients_layerClock q branch amp (v - x + p.1) (x - z p)).2,
       htime, max_eq_right hcausal]
     dsimp only [z, y]
-    ring
+    rw [if_pos hp]
   · unfold pulseLayerDirectCircleKernel
     rw [show v + p.1 - p.2 = z p by rfl, if_neg hp]
-    simp
+    simp [hp]
 
 /-- At every fixed layer point, the literal image cone eventually leaves the
 ingoing cap.  This is pointwise geometry only; the noncompact image estimate
@@ -684,8 +688,13 @@ private theorem capScale_tendsto_atBot_zero :
   have he : Tendsto (fun x : ℝ => Real.exp (2 * x)) atBot (𝓝 0) :=
     Real.tendsto_exp_atBot.comp
       ((tendsto_const_mul_atBot_of_pos (by norm_num : (0 : ℝ) < 2)).mpr tendsto_id)
-  simpa only [mul_comm] using (he.const_mul (2 : ℝ)).div
-    (tendsto_const_nhds.add he) (by norm_num : (1 : ℝ) ≠ 0)
+  have ht := (he.const_mul (2 : ℝ)).div (tendsto_const_nhds.add he)
+    (by norm_num : (1 + 0 : ℝ) ≠ 0)
+  have hv : (2 : ℝ) * 0 / (1 + 0) = 0 := by norm_num
+  rw [hv] at ht
+  have ht' : Tendsto (fun x : ℝ => 2 * Real.exp (2 * x) / (1 + Real.exp (2 * x))) atBot
+      (𝓝 0) := ht
+  exact ht'
 
 /-- Exact direct-layer scale identity. -/
 theorem pulseLayer_direct_scale_eq (x z : ℝ) :
@@ -696,14 +705,12 @@ theorem pulseLayer_direct_scale_eq (x z : ℝ) :
     Complex.ofReal_ne_zero.mpr (Real.exp_pos _).ne'
   have he : (Real.exp (2 * (x - z)) : ℂ) =
       (Real.exp (-2 * z) : ℂ) * (Real.exp (2 * x) : ℂ) := by
-    push_cast
-    rw [← Real.exp_add]
-    congr 1
+    rw [← Complex.ofReal_mul, ← Real.exp_add]
+    congr 2
     ring
   rw [he]
   push_cast
   field_simp
-  ring
 
 /-- The direct-layer radial factor has a nonzero finite cap-scale limit. -/
 theorem pulseLayer_direct_scale_tendsto (z : ℝ) :
@@ -719,7 +726,7 @@ theorem pulseLayer_direct_scale_tendsto (z : ℝ) :
       ((tendsto_const_mul_atBot_of_pos (by norm_num : (0 : ℝ) < 2)).mpr tendsto_id)
   have hec : Tendsto (fun x : ℝ => (Real.exp (2 * x) : ℂ)) atBot (𝓝 0) :=
     (Complex.continuous_ofReal.tendsto 0).comp he
-  have ht := (tendsto_const_nhds.add hec).const_mul
+  have ht := ((tendsto_const_nhds (x := (1 : ℂ))).add hec).const_mul
     ((Real.exp (-2 * z) : ℂ) / 2)
   convert ht using 1 <;> ring
 
@@ -739,7 +746,6 @@ theorem exp_two_div_capScale_eq (x : ℝ) :
     Real.exp (2 * x) / capScale x = (1 + Real.exp (2 * x)) / 2 := by
   rw [capScale_exp_form]
   field_simp
-  ring
 
 /-- Uniform cap-scale majorant for remaining direct face. It comes from the
 already admitted full density only after finite-depth image elimination proves
@@ -749,7 +755,7 @@ theorem pulseLayerDirectCircleKernel_scaled_majorant (q : XiZeroCopy) (branch : 
     ∃ B : ℝ, 0 ≤ B ∧ ∀ x h u : ℝ, x ≤ 0 → x < v - 1 →
       x < (v - 1) / 2 → 0 < h → u ∈ Set.Icc (0 : ℝ) 1 →
       ‖pulseLayerDirectCircleKernel q branch amp v x h (v + h - u) X k /
-          (capScale x : ℂ)‖ ≤ B * Real.exp ((decayExponent q - 2) * h) := by
+          (capScale x : ℂ)‖ ≤ B * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) := by
   obtain ⟨C, hC, hbound⟩ := density_bound q branch amp X k
   let B := C * Real.exp (-2 * v + (2 - pulseDecayExponent q))
   refine ⟨B, mul_nonneg hC (Real.exp_pos _).le, fun x h u hx0 hsource himage hh hu => ?_⟩
@@ -770,84 +776,81 @@ theorem pulseLayerDirectCircleKernel_scaled_majorant (q : XiZeroCopy) (branch : 
     nlinarith [hu.2]
   have hexp :
       Real.exp (-pulseDecayExponent q * (v - x)) *
-        (Real.exp ((decayExponent q - pulseDecayExponent q) * h) *
+        (Real.exp ((D4BMFullSourceAdvanced.decayExponent q - pulseDecayExponent q) * h) *
           Real.exp ((2 - pulseDecayExponent q) * (x - v - h + u))) =
         Real.exp (-2 * v + (2 - pulseDecayExponent q) * u) *
-          Real.exp ((decayExponent q - 2) * h) * Real.exp (2 * x) := by
+          Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) * Real.exp (2 * x) := by
     calc
       _ = Real.exp
           (-pulseDecayExponent q * (v - x) +
-            (decayExponent q - pulseDecayExponent q) * h +
+            (D4BMFullSourceAdvanced.decayExponent q - pulseDecayExponent q) * h +
             (2 - pulseDecayExponent q) * (x - v - h + u)) := by
           rw [Real.exp_add, Real.exp_add]
           ring
       _ = Real.exp
           ((-2 * v + (2 - pulseDecayExponent q) * u) +
-            (decayExponent q - 2) * h + 2 * x) := by
+            (D4BMFullSourceAdvanced.decayExponent q - 2) * h + 2 * x) := by
           congr 1
           ring
       _ = Real.exp (-2 * v + (2 - pulseDecayExponent q) * u) *
-          Real.exp ((decayExponent q - 2) * h) * Real.exp (2 * x) := by
+          Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) * Real.exp (2 * x) := by
           rw [Real.exp_add, Real.exp_add]
-          ring
   rw [pulseLayerDirectCircleKernel_eq_density_below_cap q branch amp v x h u X k himage,
     norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hcap]
   have hdiv := div_le_div_of_nonneg_right hdensity hcap.le
   calc
     ‖density q branch amp (v - x) x X k (h, x - v - h + u)‖ / capScale x ≤
         (C * Real.exp (-pulseDecayExponent q * (v - x)) *
-          (Real.exp ((decayExponent q - pulseDecayExponent q) * h) *
+          (Real.exp ((D4BMFullSourceAdvanced.decayExponent q - pulseDecayExponent q) * h) *
             Real.exp ((2 - pulseDecayExponent q) * (x - v - h + u)))) / capScale x := hdiv
     _ = C * Real.exp (-2 * v + (2 - pulseDecayExponent q) * u) *
-          Real.exp ((decayExponent q - 2) * h) *
+          Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
           (Real.exp (2 * x) / capScale x) := by
-          rw [hexp]
+          rw [mul_assoc, hexp]
           field_simp [hcap.ne']
-          ring
     _ ≤ C * Real.exp (-2 * v + (2 - pulseDecayExponent q)) *
-          Real.exp ((decayExponent q - 2) * h) := by
+          Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) := by
           have h1 :
-              (C * Real.exp ((decayExponent q - 2) * h) *
+              (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 (Real.exp (2 * x) / capScale x)) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q) * u) ≤
-              (C * Real.exp ((decayExponent q - 2) * h) *
+              (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 (Real.exp (2 * x) / capScale x)) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q)) :=
             mul_le_mul_of_nonneg_left huExp (by positivity)
           have h2 :
-              (C * Real.exp ((decayExponent q - 2) * h) *
+              (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q))) *
                 (Real.exp (2 * x) / capScale x) ≤
-              (C * Real.exp ((decayExponent q - 2) * h) *
+              (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q))) * 1 :=
             mul_le_mul_of_nonneg_left hscale (by positivity)
           calc
-            _ = (C * Real.exp ((decayExponent q - 2) * h) *
+            _ = (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
               (Real.exp (2 * x) / capScale x)) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q) * u) := by ring
-            _ ≤ (C * Real.exp ((decayExponent q - 2) * h) *
+            _ ≤ (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
               (Real.exp (2 * x) / capScale x)) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q)) := h1
-            _ = (C * Real.exp ((decayExponent q - 2) * h) *
+            _ = (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q))) *
                 (Real.exp (2 * x) / capScale x) := by ring
-            _ ≤ (C * Real.exp ((decayExponent q - 2) * h) *
+            _ ≤ (C * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) *
                 Real.exp (-2 * v + (2 - pulseDecayExponent q))) * 1 := h2
             _ = _ := by ring
-    _ = B * Real.exp ((decayExponent q - 2) * h) := by
+    _ = B * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * h) := by
       dsimp only [B]
-      ring
 
 /-- The fixed-clock direct-layer envelope is genuinely integrable on its
 two-dimensional action domain.  This is the global tail condition needed to
 pass the literal cap coefficient through the pulse action; it uses only the
-strict corpus gap `decayExponent q < 2`, not a truncation of the delay ray. -/
+strict corpus gap `D4BMFullSourceAdvanced.decayExponent q < 2`, not a truncation of the delay ray. -/
 theorem pulseLayerDirectCapMajorant_integrable (q : XiZeroCopy) (B : ℝ) :
     IntegrableOn (fun p : ℝ × ℝ =>
-      B * Real.exp ((decayExponent q - 2) * p.1))
+      B * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * p.1))
       (Set.Ioi (0 : ℝ) ×ˢ Set.Icc (0 : ℝ) 1) := by
   have hh := integrableOn_exp_mul_Ioi
-    (show decayExponent q - 2 < 0 by linarith [(decayExponent_bounds q).2]) 0
+    (show D4BMFullSourceAdvanced.decayExponent q - 2 < 0 by linarith [(D4BMFullSourceAdvanced.decayExponent_bounds q).2]) 0
   have hu : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Set.Icc (0 : ℝ) 1) := by
     rw [integrableOn_const_iff]
     right
@@ -869,8 +872,8 @@ theorem radialUnit_tendsto_atBot_one :
       ((tendsto_const_mul_atBot_of_pos (by norm_num : (0 : ℝ) < 2)).mpr tendsto_id)
   have hc : ContinuousAt compactUnit (0 : ℝ) := by
     unfold compactUnit
-    fun_prop
-  simpa [compactUnit] using hc.tendsto.comp he
+    fun_prop (disch := norm_num)
+  simpa [compactUnit, Function.comp_def] using hc.tendsto.comp he
 
 /-- The same endpoint law holds on every fixed co-moving source ray. -/
 theorem radialUnit_shift_tendsto_atBot_one (z : ℝ) :
@@ -892,8 +895,8 @@ theorem radialUnit_shift_tendsto_atBot_one (z : ℝ) :
     simpa using hx.const_mul (Real.exp (-2 * z))
   have hc : ContinuousAt compactUnit (0 : ℝ) := by
     unfold compactUnit
-    fun_prop
-  simpa [compactUnit] using hc.tendsto.comp he
+    fun_prop (disch := norm_num)
+  simpa [compactUnit, Function.comp_def] using hc.tendsto.comp he
 
 /-- Along every fixed co-moving direct point, the literal hyperbolic causal
 invariant reaches its true radius-zero value.  The proof uses the exact
@@ -905,7 +908,7 @@ theorem pulseLayer_directInvariant_tendsto (h z : ℝ) :
       fun x : ℝ => compactInvariant false (Real.exp (h + z))
         (Real.exp (2 * x)) (Real.exp (2 * (x - z))) := by
     funext x
-    convert invariant_compact false (h + z) x (x - z) using 1 <;> ring
+    convert invariant_compact false (h + z) x (x - z) using 1 <;> simp <;> ring
   rw [hform]
   unfold compactInvariant
   have hrho : Tendsto (fun x : ℝ => Real.exp (2 * x)) atBot (𝓝 0) :=
@@ -921,25 +924,27 @@ theorem pulseLayer_directInvariant_tendsto (h z : ℝ) :
     simpa using hrho.const_mul (Real.exp (-2 * z))
   have hratio : Tendsto (fun x : ℝ => Real.exp (2 * x) / Real.exp (h + z))
       atBot (𝓝 0) := by
-    have h := hrho.div (tendsto_const_nhds (x := Real.exp (h + z)))
+    have hd := hrho.div (tendsto_const_nhds (x := Real.exp (h + z)))
       (Real.exp_pos _).ne'
-    simpa using h
-  have hleft : Tendsto (fun x : ℝ => Real.exp (h + z) - Real.exp (2 * x))
-      atBot (𝓝 (Real.exp (h + z))) := by
-    simpa using (tendsto_const_nhds.sub hrho)
+    have hd2 : Tendsto (fun x : ℝ => Real.exp (2 * x) / Real.exp (h + z)) atBot
+        (𝓝 (0 / Real.exp (h + z))) := hd
+    simpa using hd2
+  have hleft : Tendsto (fun _ : ℝ => Real.exp (h + z) - 1) atBot
+      (𝓝 (Real.exp (h + z) - 1)) := tendsto_const_nhds
   have hright : Tendsto (fun x : ℝ => Real.exp (2 * (x - z)) -
       Real.exp (2 * x) / Real.exp (h + z)) atBot (𝓝 0) := by
     simpa using hzeta.sub hratio
   have hnum : Tendsto (fun x : ℝ => 2 *
-      ((Real.exp (h + z) - Real.exp (2 * x)) *
+      ((Real.exp (h + z) - 1) *
         (Real.exp (2 * (x - z)) - Real.exp (2 * x) / Real.exp (h + z))))
       atBot (𝓝 0) := by
     simpa using (hleft.mul hright).const_mul (2 : ℝ)
   have hden : Tendsto (fun x : ℝ => (1 + Real.exp (2 * x)) *
       (1 + Real.exp (2 * (x - z)))) atBot (𝓝 (1 : ℝ)) := by
-    simpa using (tendsto_const_nhds.add hrho).mul (tendsto_const_nhds.add hzeta)
+    simpa using ((tendsto_const_nhds (x := (1 : ℝ))).add hrho).mul
+      ((tendsto_const_nhds (x := (1 : ℝ))).add hzeta)
   have hquot := hnum.div hden (by norm_num : (1 : ℝ) ≠ 0)
-  simpa using tendsto_const_nhds.add hquot
+  simpa using (tendsto_const_nhds (x := (1 : ℝ))).add hquot
 
 /-- Exact first cap factor of the literal direct causal invariant.  It is the
 normal-geometry input absent from a value-only layer limit: after the original
@@ -953,7 +958,7 @@ theorem pulseLayer_directInvariant_sub_one_div_capScale_eq (h x z : ℝ) :
   have hform : invariant h x (x - z) =
       compactInvariant false (Real.exp (h + z)) (Real.exp (2 * x))
         (Real.exp (2 * (x - z))) := by
-    convert invariant_compact false (h + z) x (x - z) using 1 <;> ring
+    convert invariant_compact false (h + z) x (x - z) using 1 <;> simp <;> ring
   have hshift : Real.exp (2 * (x - z)) =
       Real.exp (2 * x) * Real.exp (-2 * z) := by
     rw [← Real.exp_add]
@@ -998,7 +1003,12 @@ theorem pulseLayer_directInvariant_sub_one_div_capScale_tendsto (h z : ℝ) :
     simpa using hx.const_mul (Real.exp (-2 * z))
   have hden : Tendsto (fun x : ℝ => 1 + Real.exp (2 * (x - z))) atBot (𝓝 (1 : ℝ)) := by
     simpa using tendsto_const_nhds.add he
-  simpa using (tendsto_const_nhds.div hden (by norm_num : (1 : ℝ) ≠ 0))
+  have hq : Tendsto (fun x : ℝ =>
+      (Real.exp (h + z) - 1) * (Real.exp (-2 * z) - Real.exp (-(h + z))) /
+        (1 + Real.exp (2 * (x - z)))) atBot
+      (𝓝 ((Real.exp (h + z) - 1) * (Real.exp (-2 * z) - Real.exp (-(h + z))) / 1)) :=
+    tendsto_const_nhds.div hden (by norm_num : (1 : ℝ) ≠ 0)
+  simpa using hq
 
 /-- Exact hyperbolic distance from the characteristic surface on the moving
 direct source ray.  This exposes the strict interior of the literal cone,
@@ -1144,6 +1154,7 @@ theorem pulseLayer_directInvariant_ingoing_hasDerivAt (h x z : ℝ) :
   convert! hnum.div hden hden0 using 1
   unfold invariant
   rw [Real.tanh_eq_sinh_div_cosh, Real.tanh_eq_sinh_div_cosh]
+  simp only [Function.comp_apply, Pi.mul_apply, Pi.add_apply, smul_eq_mul]
   field_simp [(Real.cosh_pos x).ne', (Real.cosh_pos (x - z)).ne']
   ring
 
@@ -1156,18 +1167,20 @@ theorem pulseLayer_fullAngular_directInvariant_hasDerivAt (q : XiZeroCopy)
       angularMean q branch (Real.arcosh (invariant h r (r - z))) X k)
       ((deriv (fun d : ℝ => angularMean q branch d X k)
         (Real.arcosh (invariant h x (x - z))) /
-        (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
+        ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
         (-(Real.tanh x + Real.tanh (x - z)) * (invariant h x (x - z) - 1))) x := by
   have hgt := pulseLayer_directInvariant_one_lt h x z hz
   have har : HasDerivAt Real.arcosh
       (1 / Real.sinh (Real.arcosh (invariant h x (x - z))))
       (invariant h x (x - z)) := by
     simpa only [one_div, Real.sinh_arcosh hgt.le] using Real.hasDerivAt_arcosh hgt
-  have hm := ((angularMean_smooth q branch X k).contDiffAt
+  have hm := (((angularMean_smooth q branch X k).contDiffAt
     (x := Real.arcosh (invariant h x (x - z)))).differentiableAt (by simp)).hasDerivAt
   have hd := hm.scomp x (har.scomp x (pulseLayer_directInvariant_ingoing_hasDerivAt h x z))
   convert! hd using 1
-  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_one]
+  simp only [Function.comp_apply, Complex.real_smul, Complex.ofReal_div,
+    Complex.ofReal_one, smul_eq_mul]
+  push_cast
   ring
 
 /-- Exact finite-depth normal derivative of the actual native circle mean on
@@ -1179,18 +1192,20 @@ theorem pulseLayer_nativeAngular_directInvariant_hasDerivAt (q : XiZeroCopy)
       D4BMNativeCircle.mean q (Real.arcosh (invariant h r (r - z))) X k)
       ((deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
         (Real.arcosh (invariant h x (x - z))) /
-        (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
+        ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
         (-(Real.tanh x + Real.tanh (x - z)) * (invariant h x (x - z) - 1))) x := by
   have hgt := pulseLayer_directInvariant_one_lt h x z hz
   have har : HasDerivAt Real.arcosh
       (1 / Real.sinh (Real.arcosh (invariant h x (x - z))))
       (invariant h x (x - z)) := by
     simpa only [one_div, Real.sinh_arcosh hgt.le] using Real.hasDerivAt_arcosh hgt
-  have hm := ((D4BMNativeCircle.mean_radial_smooth q X k).contDiffAt
+  have hm := (((D4BMNativeCircle.mean_radial_smooth q X k).contDiffAt
     (x := Real.arcosh (invariant h x (x - z)))).differentiableAt (by simp)).hasDerivAt
   have hd := hm.scomp x (har.scomp x (pulseLayer_directInvariant_ingoing_hasDerivAt h x z))
   convert! hd using 1
-  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_one]
+  simp only [Function.comp_apply, Complex.real_smul, Complex.ofReal_div,
+    Complex.ofReal_one, smul_eq_mul]
+  push_cast
   ring
 
 /-- The direct invariant's normal derivative has precisely twice its first
@@ -1256,7 +1271,7 @@ theorem pulseLayer_directInvariant_normal_div_capScale_bound (v x h u : ℝ)
       _ ≤ Real.exp (h + z) *
           (Real.exp (-2 * z) - Real.exp (-(h + z))) :=
         mul_le_mul_of_nonneg_right
-          (sub_le_self _ (Real.exp_pos _).le) hdelta
+          (sub_le_self _ zero_le_one) hdelta
       _ ≤ Real.exp (h + z) * Real.exp (-2 * z) :=
         mul_le_mul_of_nonneg_left
           (sub_le_self _ (Real.exp_pos _).le) (Real.exp_nonneg _)
@@ -1264,7 +1279,8 @@ theorem pulseLayer_directInvariant_normal_div_capScale_bound (v x h u : ℝ)
         rw [← Real.exp_add]
         congr 1
         ring
-  have hden : 1 ≤ 1 + Real.exp (2 * (x - z)) := by positivity
+  have hden : 1 ≤ 1 + Real.exp (2 * (x - z)) :=
+    le_add_of_nonneg_right (Real.exp_pos _).le
   have hdefect_bound :
       (invariant h x (x - z) - 1) / capScale x ≤ Real.exp (1 - v) := by
     rw [pulseLayer_directInvariant_sub_one_div_capScale_eq]
@@ -1282,9 +1298,7 @@ theorem pulseLayer_directInvariant_normal_div_capScale_bound (v x h u : ℝ)
         ring
       _ ≤ Real.exp (1 - v) := Real.exp_le_exp.mpr (by linarith [hu.2])
   have hcausal : 1 ≤ invariant h x (x - z) := by
-    apply invariant_causal
-    refine ⟨h, x, x - z, ?_⟩
-    simpa only [sub_sub_cancel_left] using hcone'
+    exact invariant_causal ⟨h, x, x - z, by simpa only [sub_sub_cancel] using hcone'⟩
   have hcap : 0 < capScale x := by
     unfold capScale
     positivity
@@ -1294,7 +1308,7 @@ theorem pulseLayer_directInvariant_normal_div_capScale_bound (v x h u : ℝ)
     abs_le.mpr ⟨(Real.neg_one_lt_tanh a).le, (Real.tanh_lt_one a).le⟩
   have hsum : |Real.tanh x + Real.tanh (x - z)| ≤ 2 := by
     calc
-      _ ≤ |Real.tanh x| + |Real.tanh (x - z)| := abs_add _ _
+      _ ≤ |Real.tanh x| + |Real.tanh (x - z)| := abs_add_le _ _
       _ ≤ 1 + 1 := add_le_add (htanh x) (htanh (x - z))
       _ = 2 := by norm_num
   rw [show (fun r : ℝ => invariant h r (r - (v + h - u))) =
@@ -1306,7 +1320,7 @@ theorem pulseLayer_directInvariant_normal_div_capScale_bound (v x h u : ℝ)
         ((invariant h x (x - z) - 1) / capScale x) by
         rw [(pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
         ring]
-  rw [abs_neg, abs_mul, abs_of_nonneg hdefect]
+  rw [abs_mul, abs_neg, abs_of_nonneg hdefect]
   calc
     |Real.tanh x + Real.tanh (x - z)| *
         ((invariant h x (x - z) - 1) / capScale x) ≤
@@ -1320,9 +1334,9 @@ private theorem pulseLayer_weighted_pair_pair_bound (a b m n c p : ℝ)
     (hc : 0 ≤ c) (hp : 0 ≤ p) :
     2 * a * c * m + p * b * c * n ≤ (2 + p) * c * (a + b) * (m + n) := by
   have hfirst : 2 * a * c * m ≤ 2 * (a + b) * c * (m + n) := by
-    gcongr
+    gcongr <;> linarith
   have hsecond : p * b * c * n ≤ p * (a + b) * c * (m + n) := by
-    gcongr
+    gcongr <;> linarith
   calc
     _ ≤ 2 * (a + b) * c * (m + n) + p * (a + b) * c * (m + n) :=
       add_le_add hfirst hsecond
@@ -1337,14 +1351,16 @@ private theorem pulseLayer_directInvariant_normal_tendsto_zero (h z : ℝ) :
         have hcap : capScale x ≠ 0 := ne_of_gt (by
           unfold capScale
           positivity)
-        field_simp [hcap]]
+        field_simp [hcap]
+        try push_cast
+        try ring]
   simpa using (pulseLayer_directInvariant_normal_div_capScale_tendsto h z).mul
     capScale_tendsto_atBot_zero
 
 private theorem pulseLayer_directInvariant_normal_complex_tendsto_zero (h z : ℝ) :
     Tendsto (fun x : ℝ =>
-      (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ)) atBot (𝓝 0) :=
-  simpa using (Complex.continuous_ofReal.tendsto 0).comp
+      ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ)) atBot (𝓝 0) := by
+  simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp
     (pulseLayer_directInvariant_normal_tendsto_zero h z)
 
 /-- The causal radius in a fixed direct layer tends to zero.  The direct-cone
@@ -1353,9 +1369,7 @@ finite target radius. -/
 theorem pulseLayer_directRadius_tendsto (h z : ℝ) (hz : |z| ≤ h) :
     Tendsto (fun x : ℝ => Real.arcosh (invariant h x (x - z))) atBot (𝓝 (0 : ℝ)) := by
   have hcausal (x : ℝ) : 1 ≤ invariant h x (x - z) := by
-    apply invariant_causal
-    refine ⟨h, x, x - z, ?_⟩
-    simpa only [sub_sub_cancel_left] using hz
+    exact invariant_causal ⟨h, x, x - z, by simpa only [sub_sub_cancel] using hz⟩
   have hcont : Continuous (fun r : ℝ => Real.arcosh (max 1 r)) :=
     Real.continuousOn_arcosh.comp_continuous (continuous_const.max continuous_id)
       (fun r => le_max_left 1 r)
@@ -1363,7 +1377,8 @@ theorem pulseLayer_directRadius_tendsto (h z : ℝ) (hz : |z| ≤ h) :
       fun x : ℝ => Real.arcosh (max 1 (invariant h x (x - z))) by
         funext x
         rw [max_eq_right (hcausal x)]]
-  simpa using hcont.continuousAt.tendsto.comp (pulseLayer_directInvariant_tendsto h z)
+  simpa [Function.comp_def] using
+    hcont.continuousAt.tendsto.comp (pulseLayer_directInvariant_tendsto h z)
 
 /-- Along a strict direct layer, the full circle's actual radial derivative
 quotient reaches its finite characteristic jet.  This is a consequence of
@@ -1373,7 +1388,7 @@ theorem pulseLayer_fullAngular_direct_sinh_ratio_tendsto (q : XiZeroCopy)
     Tendsto (fun x : ℝ =>
       deriv (fun d : ℝ => angularMean q branch d X k)
         (Real.arcosh (invariant h x (x - z))) /
-        (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) atBot
+        ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) atBot
       (𝓝 (deriv (deriv (fun d : ℝ => angularMean q branch d X k)) 0)) := by
   have hradius := pulseLayer_directRadius_tendsto h z hz.le
   have hnonzero : ∀ᶠ x : ℝ in atBot,
@@ -1393,7 +1408,7 @@ theorem pulseLayer_fullAngular_direct_sinh_ratio_tendsto_literalVertex
     Tendsto (fun x : ℝ =>
       deriv (fun d : ℝ => angularMean q branch d X k)
         (Real.arcosh (invariant h x (x - z))) /
-        (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) atBot
+        ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) atBot
       (𝓝 (parameter q branch *
         (fullAngularField q branch ![X, Real.exp k] +
           fullSquarePotential q ![X, Real.exp k]) / 2)) := by
@@ -1407,7 +1422,7 @@ theorem pulseLayer_nativeAngular_direct_sinh_ratio_tendsto (q : XiZeroCopy)
     Tendsto (fun x : ℝ =>
       deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
         (Real.arcosh (invariant h x (x - z))) /
-        (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) atBot
+        ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) atBot
       (𝓝 (deriv (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)) 0)) := by
   have hradius := pulseLayer_directRadius_tendsto h z hz.le
   have hnonzero : ∀ᶠ x : ℝ in atBot,
@@ -1429,7 +1444,7 @@ private theorem seedHorizonProfile_continuousOn (q : XiZeroCopy) (branch : Bool)
     (power_derivatives (2 * physicalRate q branch) (by linarith [hu.1])).1.continuousAt.comp
       (continuous_const.add continuous_id).continuousAt
   have hc : ContinuousAt (fun u : ℝ => parameter q branch *
-      power (2 * physicalRate q branch) (1 + u) * amp ^ 2 * (1 + (u : ℂ)) *
+      power (2 * physicalRate q branch) (1 + u) * amp ^ (2 : ℕ) * (1 + (u : ℂ)) *
         ((2 * physicalRate q branch + 1) * (u : ℂ) + 1)) u := by
     fun_prop
   exact hc.continuousWithinAt
@@ -1438,17 +1453,22 @@ private theorem seedHorizonProfile_continuousAt_one (q : XiZeroCopy) (branch : B
     (amp : ℂ) : ContinuousAt (seedHorizonProfile q branch amp) 1 := by
   unfold seedHorizonProfile
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) 1 :=
-    (power_derivatives (2 * physicalRate q branch) (by norm_num : (0 : ℝ) < 1 + 1)).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
+    ((power_derivatives (2 * physicalRate q branch)
+      (by norm_num : (0 : ℝ) < 1 + 1)).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
-private theorem sourceHorizonProfile_continuousAt_one (q : XiZeroCopy) (amp : ℂ) :
+private theorem sourceHorizonProfile_continuousAt_one (q : XiZeroCopy) (branch : Bool)
+    (amp : ℂ) :
     ContinuousAt (sourceHorizonProfile (physicalRate q branch) amp 1) 1 := by
   unfold sourceHorizonProfile
   simp only [show (1 : Fin 2) ≠ 0 by norm_num, ↓reduceIte]
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) 1 :=
-    (power_derivatives (2 * physicalRate q branch) (by norm_num : (0 : ℝ) < 1 + 1)).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
+    ((power_derivatives (2 * physicalRate q branch)
+      (by norm_num : (0 : ℝ) < 1 + 1)).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
 /-- Compact profile left after extracting the same horizon exponential from
@@ -1456,12 +1476,12 @@ the second radial derivative of the literal seed coefficient. -/
 def pulseLayerSeedSecondProfile (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (u : ℝ) : ℂ :=
   let s := physicalRate q branch
-  power (2 * s) (1 + u) * amp ^ 2 * (1 + (u : ℂ)) *
-    (4 * s ^ 2 * (1 - (u : ℂ)) * sourceSeedPolynomial s (parameter q branch) (u : ℂ) -
+  power (2 * s) (1 + u) * amp ^ (2 : ℕ) * (1 + (u : ℂ)) *
+    (4 * s ^ (2 : ℕ) * (1 - (u : ℂ)) * sourceSeedPolynomial s (parameter q branch) (u : ℂ) -
       2 * s * (1 + (u : ℂ)) * sourceSeedPolynomial s (parameter q branch) (u : ℂ) -
       (4 * s * ((u : ℂ) - 1) + 2 * (u : ℂ)) * (1 + (u : ℂ)) *
         sourceSeedFirst s (parameter q branch) (u : ℂ) +
-      (1 - (u : ℂ)) * (1 + (u : ℂ)) ^ 2 *
+      (1 - (u : ℂ)) * (1 + (u : ℂ)) ^ (2 : ℕ) *
         sourceSeedSecond s (parameter q branch) (u : ℂ))
 
 /-- Compact profile left after extracting the same horizon exponential from
@@ -1469,12 +1489,12 @@ twice the second derivative of the literal lift coefficient. -/
 def pulseLayerLiftSecondProfile (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (u : ℝ) : ℂ :=
   let s := physicalRate q branch
-  2 * (-s * (s - 1) / 4) * power (2 * s) (1 + u) * amp ^ 2 * (1 + (u : ℂ)) *
-    (4 * s ^ 2 * (1 - (u : ℂ)) * (u : ℂ) ^ 3 +
-      12 * s * (1 - (u : ℂ)) * (u : ℂ) ^ 2 * (1 + (u : ℂ)) -
-      2 * s * (1 + (u : ℂ)) * (u : ℂ) ^ 3 +
-      6 * (u : ℂ) * (1 - (u : ℂ)) * (1 + (u : ℂ)) ^ 2 -
-      6 * (u : ℂ) ^ 3 * (1 + (u : ℂ)))
+  2 * (-s * (s - 1) / 4) * power (2 * s) (1 + u) * amp ^ (2 : ℕ) * (1 + (u : ℂ)) *
+    (4 * s ^ (2 : ℕ) * (1 - (u : ℂ)) * (u : ℂ) ^ (3 : ℕ) +
+      12 * s * (1 - (u : ℂ)) * (u : ℂ) ^ (2 : ℕ) * (1 + (u : ℂ)) -
+      2 * s * (1 + (u : ℂ)) * (u : ℂ) ^ (3 : ℕ) +
+      6 * (u : ℂ) * (1 - (u : ℂ)) * (1 + (u : ℂ)) ^ (2 : ℕ) -
+      6 * (u : ℂ) ^ (3 : ℕ) * (1 + (u : ℂ)))
 
 /-- Exact horizon exponential factor of the seed's second radial derivative. -/
 theorem pulseLayer_seedSecond_horizon (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
@@ -1485,12 +1505,13 @@ theorem pulseLayer_seedSecond_horizon (q : XiZeroCopy) (branch : Bool) (amp : �
   let s := physicalRate q branch
   let u : ℂ := radialUnit t
   have he : 1 - u = (Real.exp (2 * t) : ℂ) * (1 + u) := by
+    dsimp only [u]
     exact_mod_cast radialUnit_one_sub t
   have hminus : u - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) := by
     linear_combination -he
-  have hsq : u ^ 2 - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) ^ 2 := by
+  have hsq : u ^ (2 : ℕ) - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) ^ (2 : ℕ) := by
     calc
-      u ^ 2 - 1 = (u - 1) * (u + 1) := by ring
+      u ^ (2 : ℕ) - 1 = (u - 1) * (u + 1) := by ring
       _ = _ := by rw [hminus]; ring
   unfold sourceSeedFieldSecond sourceAmplitude amplitudeRate pulseLayerSeedSecondProfile
   dsimp only [s, u]
@@ -1508,16 +1529,16 @@ theorem pulseLayer_liftSecond_horizon (q : XiZeroCopy) (branch : Bool) (amp : �
   let s := physicalRate q branch
   let u : ℂ := radialUnit t
   have he : 1 - u = (Real.exp (2 * t) : ℂ) * (1 + u) := by
+    dsimp only [u]
     exact_mod_cast radialUnit_one_sub t
   have hminus : u - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) := by
     linear_combination -he
-  have hsq : u ^ 2 - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) ^ 2 := by
+  have hsq : u ^ (2 : ℕ) - 1 = -(Real.exp (2 * t) : ℂ) * (1 + u) ^ (2 : ℕ) := by
     calc
-      u ^ 2 - 1 = (u - 1) * (u + 1) := by ring
+      u ^ (2 : ℕ) - 1 = (u - 1) * (u + 1) := by ring
       _ = _ := by rw [hminus]; ring
-  unfold radialLiftSecond sourceAmplitude amplitudeRate liftSecondPolynomial
-    pulseLayerLiftSecondProfile
-  dsimp only [s, u]
+  simp only [radialLiftSecond, sourceAmplitude, amplitudeRate, liftSecondPolynomial,
+    pulseLayerLiftSecondProfile]
   simp only [zero_mul, Complex.exp_zero, one_mul, mul_one]
   rw [he, hminus, hsq]
   ring
@@ -1531,21 +1552,29 @@ theorem pulseLayer_secondProfiles_at_horizon (q : XiZeroCopy) (branch : Bool)
       2 * seedHorizonProfile q branch amp 1 ∧
     pulseLayerLiftSecondProfile q branch amp 1 =
       2 * sourceHorizonProfile (physicalRate q branch) amp 1 1 := by
-  constructor <;> unfold pulseLayerSeedSecondProfile pulseLayerLiftSecondProfile
-    seedHorizonProfile sourceHorizonProfile sourceSeedPolynomial sourceSeedFirst sourceSeedSecond
-    reducedHorizonPolynomial <;>
-      simp only [Complex.ofReal_one, one_pow, one_mul, sub_self, mul_zero, zero_mul,
-        add_zero, ↓reduceIte] <;>
-      rw [parameter_physicalRate q branch] <;>
-      ring
+  refine ⟨?_, ?_⟩
+  · simp only [pulseLayerSeedSecondProfile, seedHorizonProfile, sourceSeedPolynomial,
+      sourceSeedFirst, sourceSeedSecond, reducedHorizonPolynomial,
+      Complex.ofReal_one, one_pow, one_mul, sub_self, mul_zero, zero_mul, add_zero,
+      ↓reduceIte]
+    rw [parameter_physicalRate q branch]
+    simp only [D4BMQuadraticMixedSource.resolventParameter]
+    ring
+  · simp only [pulseLayerLiftSecondProfile, sourceHorizonProfile, sourceSeedPolynomial,
+      sourceSeedFirst, sourceSeedSecond, reducedHorizonPolynomial,
+      show (1 : Fin 2) ≠ 0 by norm_num, ↓reduceIte,
+      Complex.ofReal_one, one_pow, one_mul, sub_self, mul_zero, zero_mul, add_zero]
+    ring
 
 private theorem pulseLayerSeedSecondProfile_continuousAt_one (q : XiZeroCopy)
     (branch : Bool) (amp : ℂ) :
     ContinuousAt (pulseLayerSeedSecondProfile q branch amp) 1 := by
-  unfold pulseLayerSeedSecondProfile
+  unfold pulseLayerSeedSecondProfile sourceSeedPolynomial sourceSeedFirst sourceSeedSecond
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) 1 :=
-    (power_derivatives (2 * physicalRate q branch) (by norm_num : (0 : ℝ) < 1 + 1)).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
+    ((power_derivatives (2 * physicalRate q branch)
+      (by norm_num : (0 : ℝ) < 1 + 1)).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
 private theorem pulseLayerLiftSecondProfile_continuousAt_one (q : XiZeroCopy)
@@ -1553,8 +1582,10 @@ private theorem pulseLayerLiftSecondProfile_continuousAt_one (q : XiZeroCopy)
     ContinuousAt (pulseLayerLiftSecondProfile q branch amp) 1 := by
   unfold pulseLayerLiftSecondProfile
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) 1 :=
-    (power_derivatives (2 * physicalRate q branch) (by norm_num : (0 : ℝ) < 1 + 1)).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
+    ((power_derivatives (2 * physicalRate q branch)
+      (by norm_num : (0 : ℝ) < 1 + 1)).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
 private theorem pulseLayerSeedSecondProfile_continuousOn (q : XiZeroCopy)
@@ -1562,9 +1593,12 @@ private theorem pulseLayerSeedSecondProfile_continuousOn (q : XiZeroCopy)
     ContinuousOn (pulseLayerSeedSecondProfile q branch amp) (Set.Icc 0 1) := by
   intro u hu
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) u :=
-    (power_derivatives (2 * physicalRate q branch) (by linarith [hu.1])).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
-  unfold pulseLayerSeedSecondProfile
+    ((power_derivatives (2 * physicalRate q branch)
+      (by linarith [hu.1])).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  apply ContinuousAt.continuousWithinAt
+  unfold pulseLayerSeedSecondProfile sourceSeedPolynomial sourceSeedFirst sourceSeedSecond
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
 private theorem pulseLayerLiftSecondProfile_continuousOn (q : XiZeroCopy)
@@ -1572,9 +1606,12 @@ private theorem pulseLayerLiftSecondProfile_continuousOn (q : XiZeroCopy)
     ContinuousOn (pulseLayerLiftSecondProfile q branch amp) (Set.Icc 0 1) := by
   intro u hu
   have hp : ContinuousAt (fun u : ℝ => power (2 * physicalRate q branch) (1 + u)) u :=
-    (power_derivatives (2 * physicalRate q branch) (by linarith [hu.1])).1
-      .continuousAt.comp (continuous_const.add continuous_id).continuousAt
+    ((power_derivatives (2 * physicalRate q branch)
+      (by linarith [hu.1])).1.continuousAt).comp
+      (continuous_const.add continuous_id).continuousAt
+  apply ContinuousAt.continuousWithinAt
   unfold pulseLayerLiftSecondProfile
+  have hcast : Continuous (fun r : ℝ => (r : ℂ)) := Complex.continuous_ofReal
   fun_prop
 
 /-- Cap-scale limit of the actual seed coefficient's second radial derivative.
@@ -1598,7 +1635,8 @@ theorem pulseLayer_seedSecond_scaled_tendsto (q : XiZeroCopy) (branch : Bool)
     (radialUnit_shift_tendsto_atBot_one z)
   have hproduct := hscale.mul hprofile
   rw [(pulseLayer_secondProfiles_at_horizon q branch amp).1] at hproduct
-  convert hproduct using 1 <;> ring
+  convert hproduct using 1 <;> try simp only [Function.comp_def]
+  all_goals ring_nf
 
 /-- Cap-scale limit of twice the actual lift coefficient's second radial
 derivative, again retaining exactly twice the first horizon profile. -/
@@ -1622,7 +1660,8 @@ theorem pulseLayer_liftSecond_scaled_tendsto (q : XiZeroCopy) (branch : Bool)
     (radialUnit_shift_tendsto_atBot_one z)
   have hproduct := hscale.mul hprofile
   rw [(pulseLayer_secondProfiles_at_horizon q branch amp).2] at hproduct
-  convert hproduct using 1 <;> ring
+  convert hproduct using 1 <;> try simp only [Function.comp_def]
+  all_goals ring_nf
 
 /-- Both literal second radial jets retain the same exact horizon order on
 the complete incoming source ray.  This is the tail input for differentiating
@@ -1671,8 +1710,7 @@ private theorem pulseLayer_secondRadialPair_div_capScale_bound (q : XiZeroCopy)
     rw [← Real.exp_add]
     congr 1
     ring
-  rw [norm_div, norm_div, Complex.norm_real, Complex.norm_real,
-    Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hcap, abs_of_pos hcap]
+  rw [norm_div, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hcap]
   calc
     ‖sourceSeedFieldSecond (physicalRate q branch) 0 amp 1 (parameter q branch)
         (x - z)‖ / capScale x +
@@ -1686,10 +1724,8 @@ private theorem pulseLayer_secondRadialPair_div_capScale_bound (q : XiZeroCopy)
     _ = C * Real.exp (-2 * z) * (Real.exp (2 * x) / capScale x) := by
       rw [hexp]
       field_simp [hcap.ne']
-      ring
-    _ ≤ C * Real.exp (-2 * z) := by
-      rw [← mul_one (C * Real.exp (-2 * z))]
-      exact mul_le_mul_of_nonneg_left hscale (by positivity)
+    _ ≤ C * Real.exp (-2 * z) :=
+      mul_le_of_le_one_right (by positivity) hscale
 
 private theorem pulseLayer_secondRadialPair_direct_decay_bound (q : XiZeroCopy)
     (branch : Bool) (amp : ℂ) (v : ℝ) :
@@ -1738,7 +1774,8 @@ theorem pulseLayer_onsetResponse_ingoing_hasDerivAt (q : XiZeroCopy) (branch : B
     (parameter q branch) (x - z)).scomp x ((hasDerivAt_id x).sub_const z)
   convert! (hsource.const_mul (-2 : ℂ)).mul_const
     (pulseLayerClock q branch (v + h - z)) using 1
-  ring
+  simp only [one_smul]
+  try ring
 
 /-- Actual ingoing derivative of the native-source onset coefficient, with
 the same frozen original clock and its literal lift second jet. -/
@@ -1761,7 +1798,8 @@ theorem pulseLayer_onsetSource_ingoing_hasDerivAt (q : XiZeroCopy) (branch : Boo
     ((hasDerivAt_id x).sub_const z)
   convert! ((hlift.const_mul (2 : ℂ)).const_mul (parameter q branch)).mul_const
     (pulseLayerClock q branch (v + h - z)) using 1
-  ring
+  simp only [one_smul]
+  try ring
 
 /-- The literal response coefficient has its complete ingoing cap-normal
 limit.  This is an actual derivative of the moving source coordinate, with
@@ -1787,7 +1825,10 @@ theorem pulseLayer_onsetResponse_ingoing_normal_div_capScale_tendsto
   have hnormal :=
     ((pulseLayer_seedSecond_scaled_tendsto q branch amp z).const_mul (-2 : ℂ)).mul_const
       (pulseLayerClock q branch (v + h - z))
-  convert hnormal using 1 <;> ring
+  convert hnormal using 1
+  all_goals try funext x
+  all_goals try simp only [Function.comp_apply, Function.comp_def, sub_eq_neg_add]
+  all_goals ring
 
 /-- The literal native-source coefficient has its complete ingoing cap-normal
 limit.  Together with the response theorem, this fixes both non-angular
@@ -1815,7 +1856,10 @@ theorem pulseLayer_onsetSource_ingoing_normal_div_capScale_tendsto
   have hnormal :=
     ((pulseLayer_liftSecond_scaled_tendsto q branch amp z).const_mul
       (parameter q branch)).mul_const (pulseLayerClock q branch (v + h - z))
-  convert hnormal using 1 <;> ring
+  convert hnormal using 1
+  all_goals try funext x
+  all_goals try simp only [Function.comp_apply, Function.comp_def, sub_eq_neg_add]
+  all_goals ring
 
 /-- Both literal radial coefficients have their exact common horizon order on
 the complete incoming source ray.  This is the radial ingredient missing from
@@ -1920,7 +1964,10 @@ theorem pulseLayer_onsetResponse_scaled_tendsto (q : XiZeroCopy) (branch : Bool)
     (radialUnit_shift_tendsto_atBot_one z)
   have hwhole := hscale.mul
     ((hprofile.const_mul (-2 : ℂ)).mul_const (pulseLayerClock q branch (v + h - z)))
-  convert hwhole using 1 <;> ring
+  convert hwhole using 1
+  all_goals try funext x
+  all_goals try simp only [Function.comp_apply, Function.comp_def, sub_eq_neg_add]
+  all_goals ring
 
 /-- Cap-scale limit of the literal native-source onset coefficient on a
 moving direct ray.  This supplies the second value-layer factor needed for
@@ -1947,7 +1994,10 @@ theorem pulseLayer_onsetSource_scaled_tendsto (q : XiZeroCopy) (branch : Bool)
   have hwhole := hscale.mul
     ((hprofile.const_mul (parameter q branch)).mul_const
       (pulseLayerClock q branch (v + h - z)))
-  convert hwhole using 1 <;> ring
+  convert hwhole using 1
+  all_goals try funext x
+  all_goals try simp only [Function.comp_apply, Function.comp_def, sub_eq_neg_add]
+  all_goals ring
 
 /-- The moving full-circle radius contributes only at second cap order to the
 response channel.  This is proved from the actual circle derivative quotient,
@@ -1958,28 +2008,29 @@ theorem pulseLayer_responseAngular_normal_div_capScale_tendsto_zero
       onsetResponseCoefficient q branch amp (v - x + h) (x - z) *
         (deriv (fun d : ℝ => angularMean q branch d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
           (capScale x : ℂ)) atBot (𝓝 0) := by
   rw [show (fun x : ℝ =>
       onsetResponseCoefficient q branch amp (v - x + h) (x - z) *
         (deriv (fun d : ℝ => angularMean q branch d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
           (capScale x : ℂ)) =
       fun x : ℝ =>
         (onsetResponseCoefficient q branch amp (v - x + h) (x - z) /
           (capScale x : ℂ)) *
         (deriv (fun d : ℝ => angularMean q branch d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) by
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) by
         funext x
         have hcap : (capScale x : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
         field_simp [hcap]
-        ring]
+        try push_cast
+        try ring]
   simpa using
     ((pulseLayer_onsetResponse_scaled_tendsto q branch amp v h z).mul
       (pulseLayer_fullAngular_direct_sinh_ratio_tendsto q branch h z X k hz)).mul
@@ -1993,28 +2044,29 @@ theorem pulseLayer_sourceAngular_normal_div_capScale_tendsto_zero
       onsetSourceCoefficient q branch amp (v - x + h) (x - z) *
         (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
           (capScale x : ℂ)) atBot (𝓝 0) := by
   rw [show (fun x : ℝ =>
       onsetSourceCoefficient q branch amp (v - x + h) (x - z) *
         (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
           (capScale x : ℂ)) =
       fun x : ℝ =>
         (onsetSourceCoefficient q branch amp (v - x + h) (x - z) /
           (capScale x : ℂ)) *
         (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-        (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) by
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) by
         funext x
         have hcap : (capScale x : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
         field_simp [hcap]
-        ring]
+        try push_cast
+        try ring]
   simpa using
     ((pulseLayer_onsetSource_scaled_tendsto q branch amp v h z).mul
       (pulseLayer_nativeAngular_direct_sinh_ratio_tendsto q h z X k hz)).mul
@@ -2033,7 +2085,7 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_strict
         onsetResponseCoefficient q branch amp (v - x + h) (x - z) *
           ((deriv (fun d : ℝ => angularMean q branch d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
             (-(Real.tanh x + Real.tanh (x - z)) * (invariant h x (x - z) - 1))) +
         (parameter q branch * (2 * radialLiftSecond (physicalRate q branch) 0 amp 1
           (x - z)) * pulseLayerClock q branch (v + h - z)) *
@@ -2041,16 +2093,18 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_strict
         onsetSourceCoefficient q branch amp (v - x + h) (x - z) *
           ((deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
             (-(Real.tanh x + Real.tanh (x - z)) * (invariant h x (x - z) - 1)))) / 2) x := by
   have hresponse := pulseLayer_onsetResponse_ingoing_hasDerivAt q branch amp v x h z
   have hsource := pulseLayer_onsetSource_ingoing_hasDerivAt q branch amp v x h z
   have hangular := pulseLayer_fullAngular_directInvariant_hasDerivAt q branch h x z X k hz
   have hnative := pulseLayer_nativeAngular_directInvariant_hasDerivAt q h x z X k hz
   unfold pulseLayerDirectCircleKernel
-  rw [if_pos hz.le]
+  simp only [if_pos hz.le]
   convert! ((hresponse.mul hangular).add (hsource.mul hnative)).div_const (2 : ℂ) using 1
-  ring
+  all_goals try funext r
+  all_goals try simp only [Pi.add_apply, Pi.mul_apply, onsetAngularMean_eq, sub_eq_neg_add]
+  all_goals ring
 
 /-- Closed-direct-cone derivative formula for the literal circle face.  The
 characteristic quotients are totalized only at the physical edge, where the
@@ -2066,21 +2120,22 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_closed
         onsetResponseCoefficient q branch amp (v - x + h) (x - z) *
           (deriv (fun d : ℝ => angularMean q branch d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-          (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) +
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+          ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) +
         (parameter q branch * (2 * radialLiftSecond (physicalRate q branch) 0 amp 1
           (x - z)) * pulseLayerClock q branch (v + h - z)) *
           D4BMNativeCircle.mean q (Real.arcosh (invariant h x (x - z))) X k +
         onsetSourceCoefficient q branch amp (v - x + h) (x - z) *
           (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-          (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ)) / 2) x := by
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+          ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ)) / 2) x := by
   rcases lt_or_eq_of_le hz with hstrict | hboundary
-  · have h := pulseLayerDirectCircleKernel_ingoing_hasDerivAt_strict
+  · have hstrictDeriv := pulseLayerDirectCircleKernel_ingoing_hasDerivAt_strict
       q branch amp v x h z X k hstrict
-    convert h using 1
+    convert hstrictDeriv using 1
     rw [(pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
+    push_cast
     ring
   · have hinvariant (r : ℝ) : invariant h r (r - z) = 1 :=
       pulseLayer_directInvariant_eq_one_of_abs_eq h r z hboundary
@@ -2092,8 +2147,8 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_closed
               fullSquarePotential q ![X, Real.exp k]) / 2 := by
       funext r
       unfold pulseLayerDirectCircleKernel
-      rw [if_pos hboundary.le, hinvariant r, Real.arcosh_one, angularMean_zero,
-        D4BMNativeCircle.mean_zero]
+      rw [if_pos hboundary.le, hinvariant r, Real.arcosh_zero, onsetAngularMean_eq,
+        angularMean_zero, D4BMNativeCircle.mean_zero]
     rw [hfun]
     have hresponse := pulseLayer_onsetResponse_ingoing_hasDerivAt q branch amp v x h z
     have hsource := pulseLayer_onsetSource_ingoing_hasDerivAt q branch amp v x h z
@@ -2104,7 +2159,7 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_closed
           deriv (fun r : ℝ => onsetSourceCoefficient q branch amp (v - r + h)
             (r - z)) x * fullSquarePotential q ![X, Real.exp k]) / 2) x := by
       rw [hfun]
-      simpa only [hresponse.deriv, hsource.deriv] using
+      simpa only [hresponse.deriv, hsource.deriv, Pi.add_apply] using
         ((hresponse.mul_const (fullAngularField q branch ![X, Real.exp k])).add
           (hsource.mul_const (fullSquarePotential q ![X, Real.exp k]))).div_const (2 : ℂ)
     have hbase' : HasDerivAt (fun r : ℝ =>
@@ -2119,11 +2174,11 @@ theorem pulseLayerDirectCircleKernel_ingoing_hasDerivAt_closed
       rw [← hfun]
       exact hbase
     convert hbase' using 1
-    rw [hresponse.deriv, hsource.deriv, hinvariant x, Real.arcosh_one,
+    rw [hresponse.deriv, hsource.deriv, hinvariant x, Real.arcosh_zero,
       angularMean_zero, D4BMNativeCircle.mean_zero,
       (pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
     norm_num
-    ring
+    try ring
 
 /-- Literal pointwise cap coefficient of the direct circle face.  This is a
 definition of the full/source endpoint expression, not an assumed boundary
@@ -2173,8 +2228,8 @@ theorem pulseLayerDirectCircleKernel_ingoing_normal_div_capScale_tendsto_strict
         onsetResponseCoefficient q branch amp (v - x + h) (x - z) *
           (deriv (fun d : ℝ => angularMean q branch d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-          (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+          ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
             (capScale x : ℂ) +
         (deriv (fun r : ℝ =>
           onsetSourceCoefficient q branch amp (v - r + h) (r - z)) x /
@@ -2183,20 +2238,27 @@ theorem pulseLayerDirectCircleKernel_ingoing_normal_div_capScale_tendsto_strict
         onsetSourceCoefficient q branch amp (v - x + h) (x - z) *
           (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
             (Real.arcosh (invariant h x (x - z))) /
-            (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)) *
-          (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+            ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)) *
+          ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
             (capScale x : ℂ)) / 2 by
         funext x
         rw [(pulseLayerDirectCircleKernel_ingoing_hasDerivAt_strict
-          q branch amp v x h z X k hz).deriv]
+          q branch amp v x h z X k hz).deriv,
+          (pulseLayer_onsetResponse_ingoing_hasDerivAt q branch amp v x h z).deriv,
+          (pulseLayer_onsetSource_ingoing_hasDerivAt q branch amp v x h z).deriv,
+          (pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
         have hcap : (capScale x : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
         field_simp [hcap]
-        ring]
+        try push_cast
+        try ring]
   have hwhole := (((hresponse.add hresponseAngular).add hsource).add
     hsourceAngular).div_const (2 : ℂ)
-  convert hwhole using 1 <;> simp only [pulseLayerDirectCapLimitDensity, if_pos hz.le] <;>
-    ring
+  convert hwhole using 1
+  all_goals try funext x
+  all_goals try simp only [pulseLayerDirectCapLimitDensity, if_pos hz.le, Pi.add_apply,
+    Function.comp_apply, sub_eq_neg_add]
+  all_goals ring
 
 /-- **Boundary-cone literal direct normal trace.**  On either characteristic
 edge the actual invariant is identically one, so the circle means are
@@ -2218,7 +2280,7 @@ theorem pulseLayerDirectCircleKernel_ingoing_normal_div_capScale_tendsto_boundar
             fullSquarePotential q ![X, Real.exp k]) / 2 := by
     funext r
     unfold pulseLayerDirectCircleKernel
-    rw [if_pos hcone, hinvariant r, Real.arcosh_one, angularMean_zero,
+    rw [if_pos hcone, hinvariant r, Real.arcosh_zero, onsetAngularMean_eq, angularMean_zero,
       D4BMNativeCircle.mean_zero]
   have hderiv (x : ℝ) : HasDerivAt
       (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h z X k)
@@ -2231,7 +2293,7 @@ theorem pulseLayerDirectCircleKernel_ingoing_normal_div_capScale_tendsto_boundar
     rw [hfun]
     have hresponse := pulseLayer_onsetResponse_ingoing_hasDerivAt q branch amp v x h z
     have hsource := pulseLayer_onsetSource_ingoing_hasDerivAt q branch amp v x h z
-    simpa only [hresponse.deriv, hsource.deriv] using
+    simpa only [hresponse.deriv, hsource.deriv, Pi.add_apply] using
       ((hresponse.mul_const (fullAngularField q branch ![X, Real.exp k])).add
         (hsource.mul_const (fullSquarePotential q ![X, Real.exp k]))).div_const (2 : ℂ)
   rw [show (fun x : ℝ =>
@@ -2249,14 +2311,18 @@ theorem pulseLayerDirectCircleKernel_ingoing_normal_div_capScale_tendsto_boundar
         have hcap : (capScale x : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
         field_simp [hcap]
-        ring]
+        try push_cast
+        try ring]
   have hresponse := (pulseLayer_onsetResponse_ingoing_normal_div_capScale_tendsto
     q branch amp v h z).mul_const (fullAngularField q branch ![X, Real.exp k])
   have hsource := (pulseLayer_onsetSource_ingoing_normal_div_capScale_tendsto
     q branch amp v h z).mul_const (fullSquarePotential q ![X, Real.exp k])
   have hwhole := (hresponse.add hsource).div_const (2 : ℂ)
-  convert hwhole using 1 <;> simp only [pulseLayerDirectCapLimitDensity, if_pos hcone] <;>
-    ring
+  convert hwhole using 1
+  all_goals try funext x
+  all_goals try simp only [pulseLayerDirectCapLimitDensity, if_pos hcone, Pi.add_apply,
+    Function.comp_apply, sub_eq_neg_add]
+  all_goals ring
 
 /-- The literal direct circle face has its doubled cap normal density on the
 entire closed direct cone, including both physical characteristic edges. -/
@@ -2345,7 +2411,7 @@ theorem pulseLayerDirectCircleKernel_scaled (q : XiZeroCopy) (branch : Bool)
               (capScale x : ℂ)) *
               D4BMNativeCircle.mean q (Real.arcosh (invariant h x (x - z))) X k) / 2 := by
             field_simp [hcap]
-            ring
+            try ring
       _ = ((Real.exp (2 * (x - z)) : ℂ) / (capScale x : ℂ)) *
           pulseLayerClock q branch (v + h - z) *
           (-2 * seedHorizonProfile q branch amp (radialUnit (x - z)) *
@@ -2538,12 +2604,18 @@ theorem pulseLayerDirectFixedClockNormalDensity_measurable (q : XiZeroCopy)
         (Real.arcosh (max 1 (invariant p.1 x (y p)))) /
         (Real.sinh (Real.arcosh (max 1 (invariant p.1 x (y p)))) : ℂ)) :=
     ((hnativeJet.comp hradius).measurable).div hsinh.measurable
+  have htanh : Continuous Real.tanh := by
+    have heq : Real.tanh = fun t : ℝ => Real.sinh t / Real.cosh t := by
+      funext t
+      rw [Real.tanh_eq_sinh_div_cosh]
+    rw [heq]
+    exact Real.continuous_sinh.div Real.continuous_cosh fun t => (Real.cosh_pos t).ne'
   have hnormalReal : Continuous (fun p : ℝ × ℝ =>
       -(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1)) := by
-    exact ((continuous_const.add (Real.continuous_tanh.comp hy)).neg.mul
+    exact ((continuous_const.add (htanh.comp hy)).neg.mul
       (hinvariant.sub continuous_const))
   have hnormal : Continuous (fun p : ℝ × ℝ =>
-      (-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℂ)) :=
+      ((-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℝ) : ℂ)) :=
     Complex.continuous_ofReal.comp hnormalReal
   have hresponseSecond : Continuous (fun p : ℝ × ℝ =>
       -2 * sourceSeedFieldSecond (physicalRate q branch) 0 amp 1
@@ -2562,34 +2634,38 @@ theorem pulseLayerDirectFixedClockNormalDensity_measurable (q : XiZeroCopy)
         (y p)) * pulseLayerClock q branch p.2) :=
     (continuous_const.mul ((hlift1.comp hy).const_mul 2)).mul hclock
   have hvalue : Measurable (fun p : ℝ × ℝ =>
-      ((hresponseSecond p *
+      ((-2 * sourceSeedFieldSecond (physicalRate q branch) 0 amp 1
+            (parameter q branch) (y p) * pulseLayerClock q branch p.2) *
           angularMean q branch (Real.arcosh (max 1 (invariant p.1 x (y p)))) X k +
-        hresponseFirst p *
+        (-2 * sourceSeedFieldFirst (physicalRate q branch) 0 amp 1
+            (parameter q branch) (y p) * pulseLayerClock q branch p.2) *
           (deriv (fun d : ℝ => angularMean q branch d X k)
             (Real.arcosh (max 1 (invariant p.1 x (y p)))) /
             (Real.sinh (Real.arcosh (max 1 (invariant p.1 x (y p)))) : ℂ)) *
-          (-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℂ) +
-        hsourceSecond p *
+          ((-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℝ) : ℂ) +
+        (parameter q branch * (2 * radialLiftSecond (physicalRate q branch) 0 amp 1
+            (y p)) * pulseLayerClock q branch p.2) *
           D4BMNativeCircle.mean q (Real.arcosh (max 1 (invariant p.1 x (y p)))) X k +
-        hsourceFirst p *
+        (parameter q branch * (2 * radialLiftFirst (physicalRate q branch) 0 amp 1
+            (y p)) * pulseLayerClock q branch p.2) *
           (deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
             (Real.arcosh (max 1 (invariant p.1 x (y p)))) /
             (Real.sinh (Real.arcosh (max 1 (invariant p.1 x (y p)))) : ℂ)) *
-          (-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℂ)) / 2) :=
-    (((hresponseSecond.mul hfull).measurable.add
+          ((-(Real.tanh x + Real.tanh (y p)) * (invariant p.1 x (y p) - 1) : ℝ) : ℂ)) / 2) :=
+    ((((hresponseSecond.measurable.mul hfull.measurable).add
       ((hresponseFirst.measurable.mul hfullQuot).mul hnormal.measurable)).add
-        (hsourceSecond.mul hnative).measurable).add
-          ((hsourceFirst.measurable.mul hnativeQuot).mul hnormal.measurable) |>.div_const 2
-  have hite := Measurable.ite hcone hvalue measurable_const
+        (hsourceSecond.measurable.mul hnative.measurable)).add
+          ((hsourceFirst.measurable.mul hnativeQuot).mul hnormal.measurable)).div_const 2
+  have hite := @Measurable.ite _ _ _ _ _ _ _ (Classical.decPred _) hcone hvalue
+    (measurable_const (a := (0 : ℂ)))
   convert hite using 1
   funext p
   by_cases hp : |z p| ≤ p.1
   · have hcausal : 1 ≤ invariant p.1 x (y p) := by
-      apply invariant_causal
-      refine ⟨p.1, x, y p, ?_⟩
-      dsimp only [y]
-      have hxy : x - (x - z p) = z p := by ring
-      rwa [hxy]
+      exact invariant_causal ⟨p.1, x, y p, by
+        dsimp only [y]
+        have hxy : x - (x - z p) = z p := by ring
+        rwa [hxy]⟩
     have hderiv := pulseLayerDirectCircleKernel_ingoing_hasDerivAt_closed
       q branch amp v x p.1 (z p) X k hp
     unfold pulseLayerDirectFixedClockNormalDensity pulseLayerDirectFixedClockDensity
@@ -2692,7 +2768,7 @@ theorem pulseLayerDirectFixedClockAction_scaled_tendsto (q : XiZeroCopy)
   let F : ℝ → ℝ × ℝ → ℂ := fun x p =>
     pulseLayerDirectFixedClockDensity q branch amp v x X k p / (capScale x : ℂ)
   let L : ℝ × ℝ → ℂ := pulseLayerDirectCapLimitFixedClockDensity q branch amp v X k
-  let G : ℝ × ℝ → ℝ := fun p => B * Real.exp ((decayExponent q - 2) * p.1)
+  let G : ℝ × ℝ → ℝ := fun p => B * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * p.1)
   have hmeas : ∀ᶠ x : ℝ in atBot,
       AEStronglyMeasurable (F x) (volume.restrict S) :=
     Eventually.of_forall (fun x =>
@@ -2730,7 +2806,6 @@ theorem pulseLayerKernel_direct_clock (q : XiZeroCopy) (branch : Bool) (amp : �
   have hclock : (v - x + h) + (x - z) = v + h - z := by ring
   unfold fullSourceOnsetPulse originalSourceOnsetPulse pulseLayerClock
   rw [hclock]
-  ring
 
 /-- Exact cap-scale factorization of the direct pulse source.  The displayed
 `exp (2 * (x-z)) / capScale x` is why this layer survives the cap scale. -/
@@ -2786,9 +2861,7 @@ private theorem pulseLayer_directRadius_le_time (h x z : ℝ) (hz : |z| ≤ h) :
     Real.arcosh (invariant h x (x - z)) ≤ h := by
   have hh : 0 ≤ h := (abs_nonneg z).trans hz
   have hcausal : 1 ≤ invariant h x (x - z) := by
-    apply invariant_causal
-    refine ⟨h, x, x - z, ?_⟩
-    simpa only [sub_sub_cancel_left] using hz
+    exact invariant_causal ⟨h, x, x - z, by simpa only [sub_sub_cancel] using hz⟩
   let d := Real.arcosh (invariant h x (x - z))
   have hd : 0 ≤ d := by
     dsimp only [d]
@@ -2821,9 +2894,7 @@ private theorem pulseLayer_directCircleMeans_strict_growth (q : XiZeroCopy)
   have hd : 0 ≤ d := by
     dsimp only [d]
     have hcausal : 1 ≤ invariant h x (x - z) := by
-      apply invariant_causal
-      refine ⟨h, x, x - z, ?_⟩
-      simpa only [sub_sub_cancel_left] using hz
+      exact invariant_causal ⟨h, x, x - z, by simpa only [sub_sub_cancel] using hz⟩
     exact Real.arcosh_nonneg hcausal
   have hdh : d ≤ h := by
     dsimp only [d]
@@ -2858,10 +2929,10 @@ private theorem pulseLayer_directCircleCurrents_strict_growth (q : XiZeroCopy)
     ∃ C : ℝ, 0 ≤ C ∧ ∀ h x z : ℝ, |z| < h →
       ‖deriv (fun d : ℝ => angularMean q branch d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)‖ +
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)‖ +
         ‖deriv (fun d : ℝ => D4BMNativeCircle.mean q d X k)
           (Real.arcosh (invariant h x (x - z))) /
-          (Real.sinh (Real.arcosh (invariant h x (x - z))) : ℂ)‖ ≤
+          ((Real.sinh (Real.arcosh (invariant h x (x - z))) : ℝ) : ℂ)‖ ≤
           C * Real.exp (D4BMFullAngularGrowth.strictGrowthExponent q * h) := by
   obtain ⟨A, hA, hfull⟩ := pulseLayer_fullArgumentFirst_strict_growth q branch X k
   obtain ⟨B, hB, hnative⟩ := pulseLayer_argumentFirst_strict_growth q X k
@@ -2947,7 +3018,7 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
   let N := D4BMNativeCircle.mean q d X k
   let J := deriv (fun r : ℝ => angularMean q branch r X k) d / (Real.sinh d : ℂ)
   let K := deriv (fun r : ℝ => D4BMNativeCircle.mean q r X k) d / (Real.sinh d : ℂ)
-  let R : ℂ := (deriv (fun r : ℝ => invariant h r (r - z)) x : ℂ) /
+  let R : ℂ := ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) /
     (capScale x : ℂ)
   let c := ‖pulseLayerClock q branch u‖
   let a2 := ‖S2 / (capScale x : ℂ)‖
@@ -2977,10 +3048,13 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
     simpa only [c] using hclock u hu
   have hRreal := pulseLayer_directInvariant_normal_div_capScale_bound v x h u hu hz'.le
   have hR : r ≤ G := by
+    have hcappos : 0 < capScale x := by
+      unfold capScale
+      positivity
     dsimp only [r, R, G]
     rw [norm_div, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_pos (by unfold capScale; positivity)]
-    simpa only [abs_div, abs_of_pos (by unfold capScale; positivity)] using hRreal
+      Real.norm_eq_abs, abs_of_pos hcappos]
+    simpa only [abs_div, abs_of_pos hcappos] using hRreal
   have hcr : c * r ≤ CK * G := by gcongr
   have hcap : (capScale x : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
@@ -3000,10 +3074,17 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
       dsimp only [z]
       ring
     rw [hclock']
-    rw [← (pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
-    dsimp only [T2, T1, T4, T3, R]
+    have hderivCast : (-((Real.tanh x : ℂ) + (Real.tanh (x - z) : ℂ)) *
+        ((invariant h x (x - z) : ℂ) - 1)) =
+        ((deriv (fun r : ℝ => invariant h r (r - z)) x : ℝ) : ℂ) := by
+      rw [(pulseLayer_directInvariant_ingoing_hasDerivAt h x z).deriv]
+      push_cast
+      ring
+    rw [hderivCast]
+    dsimp only [T2, T1, T4, T3, R, S1, S2, L1, L2, J, K, M, N, d]
+    rw [show u = v + h - z from by dsimp only [z]; ring]
     field_simp [hcap]
-    ring
+    try ring
   rw [show (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h
       (v + h - u) X k) = fun r : ℝ =>
       pulseLayerDirectCircleKernel q branch amp v r h z X k by
@@ -3013,11 +3094,11 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
     dsimp only [T2, a2, c, m]
     rw [norm_mul, norm_mul, norm_mul, norm_neg]
     norm_num
-    ring
+    try ring
   have hT4 : ‖T4‖ = P * b2 * c * n := by
     dsimp only [T4, P, b2, c, n]
     rw [norm_mul, norm_mul, norm_mul]
-    ring
+    try ring
   have hT1 : ‖T1‖ = 2 * a1 * (c * r) * j := by
     dsimp only [T1, a1, c, r, j]
     rw [norm_mul, norm_mul, norm_mul, norm_mul, norm_neg]
@@ -3049,9 +3130,14 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
           _ ≤ _ := by gcongr
       _ = B2 * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
         dsimp only [B2]
-        rw [← Real.exp_add]
-        congr 1
-        ring
+        have hexp : Real.exp (-2 * h) * Real.exp
+            (D4BMFullAngularGrowth.strictGrowthExponent q * h) =
+            Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+        rw [← hexp]
+        try ring
   have hcurrent_final : ‖T1‖ + ‖T3‖ ≤ B1 *
       Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
     calc
@@ -3062,13 +3148,17 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_stri
           _ ≤ _ := by gcongr
       _ = B1 * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
         dsimp only [B1]
-        rw [← Real.exp_add]
-        congr 1
-        ring
+        have hexp : Real.exp (-2 * h) * Real.exp
+            (D4BMFullAngularGrowth.strictGrowthExponent q * h) =
+            Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+        rw [← hexp]
+        try ring
   calc
     ‖(T2 + T1 + T4 + T3) / 2‖ ≤ ‖T2 + T1 + T4 + T3‖ := by
       rw [norm_div, Complex.norm_ofNat]
-      norm_num
       exact div_le_self (norm_nonneg _) (by norm_num)
     _ ≤ ‖T2‖ + ‖T1‖ + ‖T4‖ + ‖T3‖ := by
       calc
@@ -3142,7 +3232,7 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_boun
       Real.exp (D4BMFullAngularGrowth.strictGrowthExponent q * h) := by
     have hinvariant (r : ℝ) : invariant h r (r - z) = 1 :=
       pulseLayer_directInvariant_eq_one_of_abs_eq h r z hz'
-    simpa only [m, n, H, Q, hinvariant x, Real.arcosh_one,
+    simpa only [m, n, H, Q, hinvariant x, Real.arcosh_zero,
       angularMean_zero, D4BMNativeCircle.mean_zero] using hmeans h x z hz'.le
   have hc : c ≤ CK := by simpa only [c] using hclock u hu
   have hcap : (capScale x : ℂ) ≠ 0 :=
@@ -3158,7 +3248,7 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_boun
           onsetSourceCoefficient q branch amp (v - r + h) (r - z) * Q) / 2 := by
     funext r
     unfold pulseLayerDirectCircleKernel
-    rw [if_pos hz'.le, hinvariant r, Real.arcosh_one, angularMean_zero,
+    rw [if_pos hz'.le, hinvariant r, Real.arcosh_zero, onsetAngularMean_eq, angularMean_zero,
       D4BMNativeCircle.mean_zero]
   have hderiv :
       HasDerivAt (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h z X k)
@@ -3173,14 +3263,14 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_boun
     rw [hclock'] at hresponse hsource
     dsimp only [S2, L2]
     convert! ((hresponse.mul_const H).add (hsource.mul_const Q)).div_const (2 : ℂ) using 1
-    ring
+    try ring
   have hrewrite :
       deriv (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h z X k) x /
           (capScale x : ℂ) = (T2 + T4) / 2 := by
     rw [hderiv.deriv]
     dsimp only [T2, T4]
     field_simp [hcap]
-    ring
+    try ring
   rw [show (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h
       (v + h - u) X k) = fun r : ℝ =>
       pulseLayerDirectCircleKernel q branch amp v r h z X k by
@@ -3190,11 +3280,11 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_boun
     dsimp only [T2, a, c, m]
     rw [norm_mul, norm_mul, norm_mul, norm_neg]
     norm_num
-    ring
+    try ring
   have hT4 : ‖T4‖ = P * b * c * n := by
     dsimp only [T4, P, b, c, n]
     rw [norm_mul, norm_mul, norm_mul]
-    ring
+    try ring
   have hweighted : ‖T2‖ + ‖T4‖ ≤ (2 + P) * c * (a + b) * (m + n) := by
     rw [hT2, hT4]
     exact pulseLayer_weighted_pair_pair_bound a b m n c P
@@ -3210,13 +3300,17 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant_boun
           _ ≤ _ := by gcongr
       _ = B * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
         dsimp only [B]
-        rw [← Real.exp_add]
-        congr 1
-        ring
+        have hexp : Real.exp (-2 * h) * Real.exp
+            (D4BMFullAngularGrowth.strictGrowthExponent q * h) =
+            Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+        rw [← hexp]
+        try ring
   calc
     ‖(T2 + T4) / 2‖ ≤ ‖T2 + T4‖ := by
       rw [norm_div, Complex.norm_ofNat]
-      norm_num
       exact div_le_self (norm_nonneg _) (by norm_num)
     _ ≤ ‖T2‖ + ‖T4‖ := norm_add_le _ _
     _ ≤ _ := hfinal
@@ -3243,19 +3337,19 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant
   let z := v + h - u
   by_cases hcone : |z| ≤ h
   · rcases lt_or_eq_of_le hcone with hstrictcone | hboundarycone
-    · have h := hstrict x h u hx hxsource hh hu (by simpa only [z] using hstrictcone)
+    · have hbound := hstrict x h u hx hxsource hh hu (by simpa only [z] using hstrictcone)
       calc
         ‖deriv (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h z X k) x /
             (capScale x : ℂ)‖ ≤
-            BS * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := h
+            BS * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := hbound
         _ ≤ B * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
           exact mul_le_mul_of_nonneg_right
             (le_add_of_nonneg_right hBE) (Real.exp_pos _).le
-    · have h := hboundary x h u hx hxsource hh hu (by simpa only [z] using hboundarycone)
+    · have hbound := hboundary x h u hx hxsource hh hu (by simpa only [z] using hboundarycone)
       calc
         ‖deriv (fun r : ℝ => pulseLayerDirectCircleKernel q branch amp v r h z X k) x /
             (capScale x : ℂ)‖ ≤
-            BE * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := h
+            BE * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := hbound
         _ ≤ B * Real.exp ((D4BMFullAngularGrowth.strictGrowthExponent q - 2) * h) := by
           exact mul_le_mul_of_nonneg_right
             (le_add_of_nonneg_left hBS) (Real.exp_pos _).le
@@ -3264,7 +3358,7 @@ private theorem pulseLayerDirectCircleKernel_ingoing_normal_scaled_majorant
       funext r
       simp only [pulseLayerDirectCircleKernel, if_neg hcone, zero_div]
     rw [hzero]
-    simp only [deriv_const, norm_zero]
+    simp only [deriv_const, zero_div, norm_zero]
     exact mul_nonneg hB (Real.exp_nonneg _)
 
 /-- **Literal fixed-clock normal DCT.**  The complete direct circle normal
@@ -3356,7 +3450,7 @@ private theorem pulseLayerDirectFixedClockDensity_integrable (q : XiZeroCopy)
   let F : ℝ × ℝ → ℂ := fun p =>
     pulseLayerDirectFixedClockDensity q branch amp v x X k p
   let G : ℝ × ℝ → ℝ := fun p =>
-    B * Real.exp ((decayExponent q - 2) * p.1)
+    B * Real.exp ((D4BMFullSourceAdvanced.decayExponent q - 2) * p.1)
   have hG : Integrable G (volume.restrict S) := by
     dsimp only [G, S]
     exact pulseLayerDirectCapMajorant_integrable q B
@@ -3364,8 +3458,7 @@ private theorem pulseLayerDirectFixedClockDensity_integrable (q : XiZeroCopy)
     dsimp only [G]
     exact mul_nonneg hB (Real.exp_pos _).le
   apply hG.mono'
-    ((pulseLayerDirectCircleKernel_fixedClock_measurable q branch amp v x X k)
-      .aestronglyMeasurable)
+    (pulseLayerDirectCircleKernel_fixedClock_measurable q branch amp v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod measurableSet_Icc)] with p hp
   have hscaled := hmajorant x p.1 p.2 hx hsource himage hp.1 hp.2
   exact norm_le_of_norm_div_capScale_le x hx (hG_nonneg p) (by
@@ -3393,7 +3486,8 @@ private theorem pulseLayerDirectFixedClockAction_eq_iterated (q : XiZeroCopy)
     exact hF
   have hprod := MeasureTheory.setIntegral_prod F hF'
   convert hprod using 1
-  rw [Measure.volume_eq_prod ℝ ℝ]
+  all_goals try rw [Measure.volume_eq_prod ℝ ℝ]
+  all_goals try dsimp only [F, pulseLayerDirectFixedClockDensity]
 
 /-- The coordinate-packaged normal density is the genuine normal derivative
 of the literal fixed-clock face, including the two characteristic edges and
@@ -3450,19 +3544,17 @@ theorem pulseLayerDirectFixedClockAction_hasDerivAt (q : XiZeroCopy)
     exact pulseLayerDirectNormalMajorant_integrable q BN
   have hF_meas (r : ℝ) : AEStronglyMeasurable (F r) (volume.restrict S) := by
     dsimp only [F]
-    exact (pulseLayerDirectCircleKernel_fixedClock_measurable q branch amp v r X k)
-      .aestronglyMeasurable
+    exact (pulseLayerDirectCircleKernel_fixedClock_measurable q branch amp v r X k).aestronglyMeasurable
   have hF'_meas (r : ℝ) : AEStronglyMeasurable (F' r) (volume.restrict S) := by
     dsimp only [F']
-    exact (pulseLayerDirectFixedClockNormalDensity_measurable q branch amp v r X k)
-      .aestronglyMeasurable
+    exact (pulseLayerDirectFixedClockNormalDensity_measurable q branch amp v r X k).aestronglyMeasurable
   have hF_int : Integrable (F x) (volume.restrict S) := by
     dsimp only [F, S]
     exact pulseLayerDirectFixedClockDensity_integrable q branch amp v x X k hx.le hsource himage
   let δ : ℝ := min (-x) (min (v - 1 - x) ((v - 1) / 2 - x))
   have hδ : 0 < δ := by
     dsimp only [δ]
-    exact lt_min hx (lt_min (by linarith) (by linarith))
+    exact lt_min (by linarith) (lt_min (by linarith) (by linarith))
   have hlocal : ∀ᵐ p ∂volume.restrict S, ∀ r : ℝ,
       r ∈ Metric.ball x δ → ‖F' r p‖ ≤ GN p := by
     filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod measurableSet_Icc)] with p hp
@@ -3483,7 +3575,8 @@ theorem pulseLayerDirectFixedClockAction_hasDerivAt (q : XiZeroCopy)
       linarith
     have hscaled := hnormal r p.1 p.2 hr0.le hrsource hp.1 hp.2
     exact norm_le_of_norm_div_capScale_le r hr0.le (hGN_nonneg p) (by
-      simpa only [F', GN, pulseLayerDirectFixedClockNormalDensity] using hscaled)
+      simpa only [F', GN, pulseLayerDirectFixedClockNormalDensity,
+        pulseLayerDirectFixedClockDensity] using hscaled)
   have hderiv : ∀ᵐ p ∂volume.restrict S, ∀ r : ℝ,
       r ∈ Metric.ball x δ → HasDerivAt (fun t : ℝ => F t p) (F' r p) r := by
     filter_upwards with p
@@ -3517,7 +3610,7 @@ theorem correctedFutureCapResidual_ingoing_hasDerivAt_literalDirect
     q branch amp v x X k
   have hboundary := D4BMCapNormalTrace.capBoundaryField_ingoing_normal_hasDerivAt
     q branch amp v x X k
-  have hcapRaw := hseed.sub (hboundary.const_mul (parameter q branch))
+  have hcapRaw := hseed.fun_sub (hboundary.const_mul (parameter q branch))
   have hcap : HasDerivAt (fun y : ℝ =>
       D4BMFutureSeedHorizon.seedCapField q branch amp (v - y) y X k -
         parameter q branch * D4BMFutureHorizon.capBoundaryField q branch amp
@@ -3528,11 +3621,11 @@ theorem correctedFutureCapResidual_ingoing_hasDerivAt_literalDirect
             (v - y) y X k) x) x := by
     rw [hcapRaw.deriv]
     exact hcapRaw
-  apply (haction.add hcap).congr_of_eventuallyEq
+  apply (haction.fun_add hcap).congr_of_eventuallyEq
   let δ : ℝ := min (-x) (min (v - 1 - x) ((v - 1) / 2 - x))
   have hδ : 0 < δ := by
     dsimp only [δ]
-    exact lt_min hx (lt_min (by linarith) (by linarith))
+    exact lt_min (by linarith) (lt_min (by linarith) (by linarith))
   filter_upwards [Metric.ball_mem_nhds x hδ] with y hy
   have hdist : |y - x| < δ := by
     simpa only [Metric.mem_ball, Real.dist_eq] using hy
@@ -3627,6 +3720,7 @@ theorem correctedFutureCapResidual_ingoing_normal_div_capScale_tendsto_literalDi
   have hcap := D4BMFullSeedCapRadialMemory.combinedCap_ingoing_normal_div_scale
     q branch amp v X k
   have hsum := hdirect.add hcap
+  simp only [MeasureTheory.integral_div] at hsum
   have heq : (fun x : ℝ =>
       deriv (fun y : ℝ => correctedFutureCapResidual q branch amp (v - y) y X k) x /
         (capScale x : ℂ)) =ᶠ[atBot]
@@ -3646,8 +3740,7 @@ theorem correctedFutureCapResidual_ingoing_normal_div_capScale_tendsto_literalDi
     have hscale : (capScale x : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (ne_of_gt (by unfold capScale; positivity))
     field_simp [hscale]
-    ring
-  exact hsum.congr' heq.symm
+  exact Filter.Tendsto.congr' heq.symm hsum
 
 /-- **Late literal cyclic Peierls reduction.**  Once the retained original
 clock has passed its unit transition strip, the direct normal action is

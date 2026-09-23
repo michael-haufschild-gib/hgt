@@ -16,11 +16,11 @@ noncomputable section
 /-- The strictly positive leading odd minor. -/
 def thetaCuspNativeOddHeadDet (x : ℝ) : ℝ :=
   (-thetaCuspNativeReflectionJet 2 x)*(-thetaCuspNativeReflectionJet 6 x) -
-    (thetaCuspNativeReflectionJet 4 x)^2
+    (thetaCuspNativeReflectionJet 4 x)^(2 : ℕ)
 
 /-- Aperture-independent contribution of the exact center-flux derivative. -/
 def thetaCuspCenterCompensationSource (x : ℝ) : ℝ :=
-  3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x
+  3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x
 
 /-- The source determinant after the lower center-flux correction. -/
 def thetaCuspNativeOddCompensatedDet (C x : ℝ) : ℝ :=
@@ -30,7 +30,7 @@ def thetaCuspNativeOddCompensatedDet (C x : ℝ) : ℝ :=
 /-- Canonical source-selected coefficient, fixed independently of the aperture. -/
 def thetaCuspNativeOddCompensationCoefficient : ℝ :=
   -thetaCuspNativeOddHankelThreeDet 0 /
-    (thetaCuspNativeOddHeadDet 0 * thetaCuspFullSource 0^2)
+    (thetaCuspNativeOddHeadDet 0 * thetaCuspFullSource 0^(2 : ℕ))
 
 theorem thetaCuspNativeOddHeadDet_pos (x : ℝ) :
     0 < thetaCuspNativeOddHeadDet x := (thetaCuspNativeOddHankelThree_head_pos x).2
@@ -91,11 +91,11 @@ def thetaCuspCenterCorrectedOddDet (a C r : ℝ) : ℝ :=
 /-- One scalar source inequality controls every positive aperture at the same center. -/
 theorem thetaCuspCenterCorrectedOddDet_lower
     {a C r : ℝ} (ha : 0 ≤ a) (hC : 0 ≤ C) (hr : 0 ≤ r) :
-    (r*Real.sinh (a*r))^3*thetaCuspNativeOddCompensatedDet C (r/2) ≤
+    (r*Real.sinh (a*r))^(3 : ℕ)*thetaCuspNativeOddCompensatedDet C (r/2) ≤
       thetaCuspCenterCorrectedOddDet a C r := by
   have hb := deriv_thetaCuspCenterCompensationFlux_lower ha hr
   have hd := thetaCuspNativeOddHeadDet_pos (r/2)
-  have hscale : 0 ≤ (r*Real.sinh (a*r))^2*C*thetaCuspNativeOddHeadDet (r/2) := by positivity
+  have hscale : 0 ≤ (r*Real.sinh (a*r))^(2 : ℕ)*C*thetaCuspNativeOddHeadDet (r/2) := by positivity
   have hm := mul_le_mul_of_nonneg_left hb hscale
   unfold thetaCuspCenterCorrectedOddDet thetaCuspCenterCorrectedOddLastEntry
     thetaCuspNativeOddCompensatedDet thetaCuspNativeOddHankelThreeDet
@@ -144,7 +144,7 @@ theorem integral_thetaCuspCenterCorrectedOddLastEntry
 private theorem nativeSignedJet_even (x : ℝ) (n : ℕ) :
     thetaCuspNativeSignedJet x (2*n) =
       (-1 : ℝ)^n*thetaCuspNativeReflectionJet (2*n) x := by
-  have hI : (-Complex.I : ℂ)^2 = ((-1 : ℝ) : ℂ) := by norm_num
+  have hI : (-Complex.I : ℂ)^(2 : ℕ) = ((-1 : ℝ) : ℂ) := by norm_num
   simp only [thetaCuspNativeSignedJet, pow_mul, hI, ← Complex.ofReal_pow, Complex.ofReal_re]
 
 /-- A global corrected source sign suffices for the actual missing odd rank-three moment block.
@@ -178,7 +178,7 @@ theorem thetaCuspCenterMixed_oddHankelThree_pos_of_compensatedSource
     rw [iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha]
     exact neg_pos.mpr (thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha)
   have hpoint : ∀ᵐ r ∂(volume.restrict (Ioi 0)),
-      0 < p 2 r ∧ 0 < p 2 r*p 6 r-(p 4 r)^2 ∧
+      0 < p 2 r ∧ 0 < p 2 r*p 6 r-(p 4 r)^(2 : ℕ) ∧
         0 < HilbertMetric.signedEvenHankelThreeDet (p 2 r) (p 4 r) (p 6 r) (p 8 r)
           (thetaCuspCenterCorrectedOddLastEntry a C r) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr

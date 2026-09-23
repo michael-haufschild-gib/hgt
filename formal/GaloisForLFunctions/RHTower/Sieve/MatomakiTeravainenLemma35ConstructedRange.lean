@@ -32,23 +32,23 @@ theorem exists_integral_mtDI_lemma35_constructedRange
       (T ≤ (N : ℝ) ∨
         Real.sqrt T ≤ (A : ℝ) ∨
           (((2 * A) * (N' * N') : ℕ) : ℝ) ≤
-            T + (A : ℝ) ^ 2 * Real.sqrt T +
+            T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
               (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ) ∨
-          (T ≤ (N : ℝ) ^ 3 ∧
-            T ^ (5 / 6 : ℝ) ≤ (A : ℝ) ^ 2 ∧
-            (N : ℝ) ^ (3 / 2 : ℝ) ≤ (A : ℝ) ^ 2 ∧
+          (T ≤ (N : ℝ) ^ (3 : ℕ) ∧
+            T ^ (5 / 6 : ℝ) ≤ (A : ℝ) ^ (2 : ℕ) ∧
+            (N : ℝ) ^ (3 / 2 : ℝ) ≤ (A : ℝ) ^ (2 : ℕ) ∧
             (N : ℝ) ≤ (A : ℝ) * T ^ (1 / 6 : ℝ) ∧
             (N : ℝ) ^ (5 / 2 : ℝ) ≤ (A : ℝ) * T)) →
       (∫ t in (T / 2)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 *
-            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+            ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ)) ≤
         C * T ^ epsilon *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                   (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (1 / (A : ℝ)) *
-            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := by
+            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := by
   obtain ⟨C₀, hC₀, hover⟩ := exists_integral_mtDI_lemma35_coveredRange hepsilon
   obtain ⟨C₁, hC₁, hlarge⟩ := exists_integral_mtDI_lemma35_largeA hepsilon
   obtain ⟨C₂, hC₂, hmiddle⟩ := exists_integral_mtDI_lemma35_middleA hepsilon
@@ -60,12 +60,12 @@ theorem exists_integral_mtDI_lemma35_constructedRange
   intro a A N N' hA hN hNN' hN' T hT hroute
   let R : ℝ :=
     T ^ epsilon *
-      (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+      (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
               (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-            ((N : ℝ) ^ 2 * (A : ℝ)) +
-          (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+            ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+          (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
         (1 / (A : ℝ)) *
-        (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2))
+        (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ)))
   have hR : 0 ≤ R := by
     dsimp only [R]
     positivity

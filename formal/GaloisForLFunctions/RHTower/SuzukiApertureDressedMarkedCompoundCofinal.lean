@@ -38,7 +38,7 @@ complete prime--valuation carrier. -/
 theorem summable_sq_suzukiCriticalApertureBoundaryAtom_allPrime
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t : ℝ) :
     Summable (fun pe : Nat.Primes × ℕ =>
-      suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ 2) := by
+      suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ (2 : ℕ)) := by
   have hs := summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
   apply Summable.of_norm
   refine hs.congr ?_
@@ -51,14 +51,14 @@ def suzukiCriticalApertureDressedMarkedRootedCompletion
   let omega := ‖suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2‖
   suzukiMarkedSecantSymmetricForm m d
       (omega * r) (omega * s) (omega * r) (omega * s) +
-    d ^ 2 * (omega * s) ^ 2
+    d ^ (2 : ℕ) * (omega * s) ^ (2 : ℕ)
 
 /-- The dressed marked block is exactly the atom energy times the centered rank-one square. -/
 theorem suzukiCriticalApertureDressedMarkedRootedCompletion_eq
     (h a t m d r s : ℝ) (pe : Nat.Primes × ℕ) :
     suzukiCriticalApertureDressedMarkedRootedCompletion h a t m d r s pe =
       Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) *
-        (r - m * s) ^ 2 := by
+        (r - m * s) ^ (2 : ℕ) := by
   rw [suzukiCriticalApertureDressedMarkedRootedCompletion]
   rw [suzukiMarkedSecant_minimalRootedCompletion_eq_square]
   rw [Complex.normSq_eq_norm_sq]
@@ -76,7 +76,7 @@ theorem summable_suzukiCriticalApertureDressedMarkedRootedCompletion_allPrime
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t m d r s : ℝ) :
     Summable (suzukiCriticalApertureDressedMarkedRootedCompletion h a t m d r s) := by
   have hs := summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
-  refine (hs.mul_right ((r - m * s) ^ 2)).congr ?_
+  refine (hs.mul_right ((r - m * s) ^ (2 : ℕ))).congr ?_
   intro pe
   exact
     (suzukiCriticalApertureDressedMarkedRootedCompletion_eq
@@ -102,7 +102,7 @@ theorem suzukiCriticalApertureDressedMarkedCompoundTerm_eq
     (pe : Nat.Primes × ℕ) :
     suzukiCriticalApertureDressedMarkedCompoundTerm
         h a t alpha beta x X y Y c S T pe =
-      suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ 2 *
+      suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ (2 : ℕ) *
         suzukiGlobalLocalCompoundNumerator
           (suzukiProjectiveAffineSecantTensor alpha beta x X y Y c)
           (suzukiProjectiveAffineSecantDenominator alpha beta y Y) S T := by
@@ -138,7 +138,7 @@ theorem tsum_suzukiCriticalApertureDressedMarkedCompoundTerm_eq
       suzukiCriticalApertureDressedMarkedCompoundTerm
         h a t alpha beta x X y Y c S T pe) =
       (∑' pe : Nat.Primes × ℕ,
-        suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ 2) *
+        suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ (2 : ℕ)) *
         suzukiGlobalLocalCompoundNumerator
           (suzukiProjectiveAffineSecantTensor alpha beta x X y Y c)
           (suzukiProjectiveAffineSecantDenominator alpha beta y Y) S T := by
@@ -147,7 +147,7 @@ theorem tsum_suzukiCriticalApertureDressedMarkedCompoundTerm_eq
       suzukiCriticalApertureDressedMarkedCompoundTerm
         h a t alpha beta x X y Y c S T pe) =
       ∑' pe : Nat.Primes × ℕ,
-        suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ 2 *
+        suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2 ^ (2 : ℕ) *
           suzukiGlobalLocalCompoundNumerator
             (suzukiProjectiveAffineSecantTensor alpha beta x X y Y c)
             (suzukiProjectiveAffineSecantDenominator alpha beta y Y) S T by

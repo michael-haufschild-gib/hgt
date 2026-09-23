@@ -50,7 +50,7 @@ def eulerDeletionQuasiShuffleLevelOne (q : ℕ) : ℤ :=
 
 /-- Level-two scalar bracket retained before signed endpoint cancellation. -/
 def eulerDeletionQuasiShuffleBracket (q : ℕ) : ℤ :=
-  ∑ i : Fin (q + 1), eulerDeletionQuasiShuffleIncrement q i ^ 2
+  ∑ i : Fin (q + 1), eulerDeletionQuasiShuffleIncrement q i ^ (2 : ℕ)
 
 /-- Every canonical deletion block closes at level one. -/
 theorem eulerDeletionQuasiShuffleLevelOne_eq_zero (q : ℕ) :

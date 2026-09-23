@@ -105,14 +105,14 @@ theorem testedCurrent_divergence (q : XiZeroCopy) (z : UpperHalfPlane) :
 /-- Exact physical radial balance after testing; the complete local and response source work remains. -/
 theorem tested_radial_balance (q : XiZeroCopy) (a b : ℂ) (z : UpperHalfPlane) :
     scalar (physicalAngularParameter q) (coordinates z)*clockCoefficients q a b (coordinates z) 1 0 =
-      4*(a^2*b^2/64)*((∑ j : Fin 2, coordDeriv j (testedCurrent q j) (coordinates z))-
+      4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*((∑ j : Fin 2, coordDeriv j (testedCurrent q j) (coordinates z))-
         testDerivativeWork q (coordinates z)-
-        scalar (physicalAngularParameter q) (coordinates z)*reducedSourceWork q (coordinates z)/(z.im:ℂ)^2) := by
+        scalar (physicalAngularParameter q) (coordinates z)*reducedSourceWork q (coordinates z)/(z.im:ℂ)^(2 : ℕ)) := by
   have he := incoming_radial_mass_reduced_source_work q a b z
   dsimp only at he
   rw [show coordinates z 1=z.im from rfl] at he
-  have he' : (z.im:ℂ)^2*clockCoefficients q a b (coordinates z) 1 0=
-      4*(a^2*b^2/64)*((z.im:ℂ)^2*(∑ j : Fin 2,
+  have he' : (z.im:ℂ)^(2 : ℕ)*clockCoefficients q a b (coordinates z) 1 0=
+      4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*((z.im:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
         coordDeriv j (completeCurrent q j) (coordinates z))-reducedSourceWork q (coordinates z)) := by
     rw [complete_divergence q (coordinates z) z.im_pos]
     linear_combination he
@@ -268,7 +268,7 @@ theorem testedCurrent_finite_cusp_stokes (q : XiZeroCopy) (a c : Ioi (0:ℝ)) :
     (divergence_intervalIntegrable q a c)
 
 private def workField (q : XiZeroCopy) (w : Fin 2 → ℝ) : ℂ :=
-  testDerivativeWork q w+scalar (physicalAngularParameter q) w*reducedSourceWork q w/(w 1:ℂ)^2
+  testDerivativeWork q w+scalar (physicalAngularParameter q) w*reducedSourceWork q w/(w 1:ℂ)^(2 : ℕ)
 
 private theorem workField_smooth (q : XiZeroCopy) (w : Fin 2 → ℝ) (hw : 0 < w 1) :
     ContDiffAt ℝ ∞ (workField q) w := by
@@ -292,7 +292,7 @@ private theorem workField_smooth (q : XiZeroCopy) (w : Fin 2 → ℝ) (hw : 0 < 
     Complex.ofRealCLM.contDiff.contDiffAt.comp w (contDiff_apply ℝ ℝ (1:Fin 2)).contDiffAt
   have hd := hh.pow 2
   change ContDiffAt ℝ ∞ (fun z => testDerivativeWork q z+
-    scalar (physicalAngularParameter q) z*reducedSourceWork q z/(z 1:ℂ)^2) w
+    scalar (physicalAngularParameter q) z*reducedSourceWork q z/(z 1:ℂ)^(2 : ℕ)) w
   simpa only [div_eq_mul_inv] using
     hD.add ((hT.mul hW).mul (hd.fun_inv (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hw.ne'))))
 
@@ -313,13 +313,13 @@ def radialTestDensity (q : XiZeroCopy) (a b : ℂ) : ℝ → ℂ :=
 
 /-- Mean physical radial law with the entire differentiated test and source work. -/
 theorem radialTestDensity_eq (q : XiZeroCopy) (a b : ℂ) (y : Ioi (0:ℝ)) :
-    radialTestDensity q a b y=4*(a^2*b^2/64)*
+    radialTestDensity q a b y=4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
       (cuspDivergenceDensity q y-completeTestedWorkDensity q y) := by
   have hD := (slice_continuous (divergenceField q) (divergenceField_smooth q) y.2).integrableOn_Ioc (μ := (volume : Measure ℝ)) (a := (-1/2:ℝ)) (b := (1/2:ℝ))
   have hW := (slice_continuous (workField q ∘ angularCoordinates) (planarWork_smooth q) y.2).integrableOn_Ioc (μ := (volume : Measure ℝ)) (a := (-1/2:ℝ)) (b := (1/2:ℝ))
   dsimp only [Function.comp_apply] at hW
   calc
-    _ = D4BMCuspResponse.average (fun z => 4*(a^2*b^2/64)*
+    _ = D4BMCuspResponse.average (fun z => 4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
         (divergenceField q z-workField q (angularCoordinates z))) y := by
       apply setIntegral_congr_fun measurableSet_Ioc
       intro x _
@@ -331,20 +331,20 @@ theorem radialTestDensity_eq (q : XiZeroCopy) (a b : ℂ) (y : Ioi (0:ℝ)) :
       rw [divergenceField_eq]
       change scalar (physicalAngularParameter q) (angularCoordinates (point x y))*
         clockCoefficients q a b (angularCoordinates (point x y)) 1 0=
-          4*(a^2*b^2/64)*((∑ j : Fin 2, coordDeriv j (testedCurrent q j) (angularCoordinates (point x y)))-
+          4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*((∑ j : Fin 2, coordDeriv j (testedCurrent q j) (angularCoordinates (point x y)))-
             testDerivativeWork q (angularCoordinates (point x y))-
             scalar (physicalAngularParameter q) (angularCoordinates (point x y))*
-              reducedSourceWork q (angularCoordinates (point x y))/(angularCoordinates (point x y) 1:ℂ)^2) at h
+              reducedSourceWork q (angularCoordinates (point x y))/(angularCoordinates (point x y) 1:ℂ)^(2 : ℕ)) at h
       linear_combination h
     _ = _ := by
-      change (∫ x in Ioc (-1/2:ℝ) (1/2), 4*(a^2*b^2/64)*
+      change (∫ x in Ioc (-1/2:ℝ) (1/2), 4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
         (divergenceField q (point x y)-workField q (angularCoordinates (point x y))))=_
       rw [integral_const_mul,integral_sub hD hW]
       rfl
 
 /-- Full finite-cusp physical radial balance, including both endpoints and every source-work term. -/
 theorem physical_radial_finite_cusp_balance (q : XiZeroCopy) (a b : ℂ) (l r : Ioi (0:ℝ)) :
-    (∫ y in (l:ℝ)..r, radialTestDensity q a b y)=4*(a^2*b^2/64)*
+    (∫ y in (l:ℝ)..r, radialTestDensity q a b y)=4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
       (cuspBoundary q r-cuspBoundary q l-
         ∫ y in (l:ℝ)..r, completeTestedWorkDensity q y) := by
   have hw : IntervalIntegrable (completeTestedWorkDensity q) volume (l:ℝ) r := by
@@ -353,7 +353,7 @@ theorem physical_radial_finite_cusp_balance (q : XiZeroCopy) (a b : ℂ) (l r : 
     exact (average_hasDerivAt (workField q ∘ angularCoordinates) (planarWork_smooth q)
       ((lt_min l.2 r.2).trans_le hy.1)).continuousAt.continuousWithinAt
   calc
-    _ = ∫ y in (l:ℝ)..r, 4*(a^2*b^2/64)*
+    _ = ∫ y in (l:ℝ)..r, 4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
         (cuspDivergenceDensity q y-completeTestedWorkDensity q y) := by
       apply intervalIntegral.integral_congr
       intro y hy
@@ -389,7 +389,7 @@ theorem physicalClockDensity_eq (q : XiZeroCopy) (a b : ℂ) (h : NNReal) (y : �
 theorem physical_clock_finite_cusp_balance (q : XiZeroCopy) (a b : ℂ) (h : NNReal)
     (l r : Ioi (0:ℝ)) :
     (∫ y in (l:ℝ)..r, physicalClockDensity q a b h y)=
-      (h:ℂ)*Complex.exp (-6*(h:ℂ))*4*(a^2*b^2/64)*
+      (h:ℂ)*Complex.exp (-6*(h:ℂ))*4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
         (cuspBoundary q r-cuspBoundary q l-
           ∫ y in (l:ℝ)..r, completeTestedWorkDensity q y) := by
   simp_rw [physicalClockDensity_eq]

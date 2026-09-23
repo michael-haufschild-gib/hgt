@@ -135,8 +135,8 @@ theorem integral_Icc_normSq_primeShift_family_le_bound {ι : Type*} [DecidableEq
     (hK : ∀ n ∈ Finset.Icc 1 N,
       ((I.filter (fun i => n ∈ (D i).image (fun m => p i * m))).card : ℝ) ≤ K)
     (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ 2)
-      ≤ Ω ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ))
+    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ (2 : ℕ))
+      ≤ Ω ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ))
           * (K * ∑ i ∈ I, ((D i).card : ℝ))) := by
   classical
   have hΩC : (Ω : ℂ) ≠ 0 := by
@@ -147,8 +147,8 @@ theorem integral_Icc_normSq_primeShift_family_le_bound {ι : Type*} [DecidableEq
     exact hc n
   have hbase := integral_Icc_normSq_primeShift_family_le I p D (fun n => c n / (Ω : ℂ))
     hp hD hc1 hK0 hDN hK hW
-  have hrep : ∀ w : ℝ, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly (fun n => c n / (Ω : ℂ)) (D i) w‖ ^ 2
-      = ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ 2 / Ω ^ 2 := by
+  have hrep : ∀ w : ℝ, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly (fun n => c n / (Ω : ℂ)) (D i) w‖ ^ (2 : ℕ)
+      = ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ (2 : ℕ) / Ω ^ (2 : ℕ) := by
     intro w
     have hsum : (∑ i ∈ I, moebiusPhase w (p i) * logPoly (fun n => c n / (Ω : ℂ)) (D i) w)
         = (∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w) / (Ω : ℂ) := by
@@ -158,9 +158,9 @@ theorem integral_Icc_normSq_primeShift_family_le_bound {ι : Type*} [DecidableEq
       ring
     rw [hsum, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hΩ, div_pow]
   have hint : (∫ w in Set.Icc (-W) W,
-        ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly (fun n => c n / (Ω : ℂ)) (D i) w‖ ^ 2)
-      = (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ 2)
-          / Ω ^ 2 := by
+        ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly (fun n => c n / (Ω : ℂ)) (D i) w‖ ^ (2 : ℕ))
+      = (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ (2 : ℕ))
+          / Ω ^ (2 : ℕ) := by
     rw [← MeasureTheory.integral_div]
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hrep w
   rw [hint, div_le_iff₀ (by positivity)] at hbase
@@ -170,13 +170,13 @@ theorem integral_Icc_normSq_primeShift_family_le_bound {ι : Type*} [DecidableEq
 theorem integral_normSq_jointLadderProductDefect_le_closed {P Q : Finset ℕ} {A₀ B₀ : ℕ}
     (hA : 0 < A₀) {R η W : ℝ} (hR : 1 < R) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ p ∈ P, p.Prime) (hPge : ∀ p ∈ P, R ≤ (p : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ 2)
-      ≤ ((Q.card : ℝ) + 1) ^ 2
+    (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ (2 : ℕ))
+      ≤ ((Q.card : ℝ) + 1) ^ (2 : ℕ)
         * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
           * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log R
             * ∑ j ∈ Finset.range L, (R * (1 + η) ^ j * η + 1)
                 * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (R * (1 + η) ^ j) + 5
-                  + (B₀ : ℝ) / (R * (1 + η) ^ j) ^ 2))) := by
+                  + (B₀ : ℝ) / (R * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hR0 : (0 : ℝ) < R := lt_trans zero_lt_one hR
   have hlogR : 0 < Real.log R := Real.log_pos hR

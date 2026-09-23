@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.QuadTwoAffineTransport
 /-!
 # No rational projective structure for the two quadratic maps
 
-The Schwarzian of either postcritically finite quadratic is `−3/(2·(z − crit)^2)`, a double pole
+The Schwarzian of either postcritically finite quadratic is `−3/(2·(z − crit)^(2 : ℕ))`, a double pole
 exactly at the critical point.  A rational projective structure would satisfy
 
 `a(R)·(R')² = a − S_R` ,

@@ -422,7 +422,7 @@ private theorem iteratedDeriv_three_shiftedEulerCoeff_of_ne
 /-- Exact third transverse derivative of Suzuki's shifted Euler coefficient.
 
 The third jet is not the pure cubic von Mangoldt convolution: it contains the
-forced prime-power curvature term `2 * Λ(n) * log(n)^2`. -/
+forced prime-power curvature term `2 * Λ(n) * log(n)^(2 : ℕ)`. -/
 theorem iteratedDeriv_three_shiftedEulerCoeff (n : ℕ) :
     iteratedDeriv 3 (shiftedEulerCoeff n) 0 =
       8 * (((((ArithmeticFunction.vonMangoldt *

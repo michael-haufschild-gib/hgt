@@ -69,7 +69,7 @@ theorem morseCharge_mono {Q : V → ℝ} {D D' : Submodule ℝ V} (hDD : D ≤ D
 
 /-- A single negative vector produces a one-dimensional negative-definite subspace. -/
 theorem hasNegDefSubspaceOfDim_one {Q : V → ℝ} {D : Submodule ℝ V}
-    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ 2 * Q v)
+    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ (2 : ℕ) * Q v)
     {v : V} (hv : v ∈ D) (hvne : v ≠ 0) (hQ : Q v < 0) :
     HasNegDefSubspaceOfDim Q D 1 := by
   refine ⟨Submodule.span ℝ {v}, ?_, finrank_span_singleton hvne, ?_⟩
@@ -82,13 +82,13 @@ theorem hasNegDefSubspaceOfDim_one {Q : V → ℝ} {D : Submodule ℝ V}
       rw [hc0, zero_smul] at hwne
       exact hwne rfl
     rw [hhom]
-    have : 0 < c ^ 2 := by positivity
+    have : 0 < c ^ (2 : ℕ) := by positivity
     exact mul_neg_of_pos_of_neg this hQ
 
 /-- **Equations (ii) ↔ (iii).**  The Morse charge vanishes exactly when the form is nonnegative on
 the trial domain. -/
 theorem negDefDims_eq_zero_iff_nonneg {Q : V → ℝ} {D : Submodule ℝ V}
-    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ 2 * Q v) :
+    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ (2 : ℕ) * Q v) :
     (∀ n, HasNegDefSubspaceOfDim Q D n → n = 0) ↔ ∀ v ∈ D, 0 ≤ Q v := by
   constructor
   · intro h v hv
@@ -118,7 +118,7 @@ theorem negDefDims_eq_zero_iff_nonneg {Q : V → ℝ} {D : Submodule ℝ V}
 
 /-- **The small-aperture anchor.**  A nonnegative form has vanishing charge. -/
 theorem morseCharge_eq_zero_of_nonneg {Q : V → ℝ} {D : Submodule ℝ V}
-    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ 2 * Q v) (hpos : ∀ v ∈ D, 0 ≤ Q v) :
+    (hhom : ∀ (c : ℝ) (v : V), Q (c • v) = c ^ (2 : ℕ) * Q v) (hpos : ∀ v ∈ D, 0 ≤ Q v) :
     morseCharge Q D = 0 := by
   have hzero := (negDefDims_eq_zero_iff_nonneg hhom).mpr hpos
   have hset : {n : ℕ | HasNegDefSubspaceOfDim Q D n} = {0} := by

@@ -24,14 +24,14 @@ set_option autoImplicit false
 quadratic amplitudes of the two literal causal source legs. -/
 def sourceLegContactFieldBilinear (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
     (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  contactFieldBilinear q branch (a ^ 2) (d ^ 2) x
+  contactFieldBilinear q branch (a ^ (2 : ℕ)) (d ^ (2 : ℕ)) x
 
 /-- The regraded actual contact has exactly the biquadratic source-leg
 homogeneity carried by the literal two-event Peierls density. -/
 theorem sourceLegContactFieldBilinear_eq_product (q : XiZeroCopy) (branch : Bool)
     (a d : ℂ) (x : Fin 4 → ℝ) :
     sourceLegContactFieldBilinear q branch a d x =
-      (a ^ 2 * d ^ 2) • contactField q branch 1 x := by
+      (a ^ (2 : ℕ) * d ^ (2 : ℕ)) • contactField q branch 1 x := by
   unfold sourceLegContactFieldBilinear
   rw [contactFieldBilinear_eq_product]
 
@@ -48,9 +48,9 @@ actual contact at the squared source amplitude. -/
 theorem sourceLegContactFieldBilinear_diag (q : XiZeroCopy) (branch : Bool)
     (a : ℂ) (x : Fin 4 → ℝ) :
     sourceLegContactFieldBilinear q branch a a x =
-      contactField q branch (a ^ 2) x := by
+      contactField q branch (a ^ (2 : ℕ)) x := by
   unfold sourceLegContactFieldBilinear
-  exact contactFieldBilinear_diag q branch (a ^ 2) x
+  exact contactFieldBilinear_diag q branch (a ^ (2 : ℕ)) x
 
 end
 

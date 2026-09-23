@@ -100,7 +100,7 @@ theorem suzukiFourier_endpointSecondDefect_tendsto_primeArch
       4 * I *
         (deriv (F j) I * F j (-I) +
           F j I * deriv (F j) (-I)) /
-        F j (-I) ^ 2) l
+        F j (-I) ^ (2 : ℕ)) l
       (nhds (primeArchSuzukiSecondDefectCalibration : ℂ)) := by
   have hjet := secondJet_tendsto_of_locallyUniform
     (theta := fun j w =>

@@ -38,13 +38,13 @@ theorem prolatePairAnchor_ge_two (m n : ℕ) : 2 ≤ prolatePairAnchor m n := by
 /-- The doubled turning condition holds eventually at either rung. -/
 theorem eventually_two_mul_s_le_pairAnchorPoint_sq (m n : ℕ) (k : ℕ) (hk : k = m ∨ k = n) :
     ∀ᶠ a : ℝ in atTop,
-      2 * (signedModeRadialData a k).s ≤ pairAnchorPoint m n a ^ 2 := by
-  have hxk : 4 * (4 * (k : ℝ) + 1) < prolatePairAnchor m n ^ 2 :=
+      2 * (signedModeRadialData a k).s ≤ pairAnchorPoint m n a ^ (2 : ℕ) := by
+  have hxk : 4 * (4 * (k : ℝ) + 1) < prolatePairAnchor m n ^ (2 : ℕ) :=
     prolatePairAnchor_sq_gt m n k hk
   have hsk := tendsto_signedModeRadialBandwidth_mul_s_atTop k
   have hhalf : ∀ᶠ a : ℝ in atTop,
       signedModeRadialBandwidth a * (signedModeRadialData a k).s
-        < prolatePairAnchor m n ^ 2 / 2 := by
+        < prolatePairAnchor m n ^ (2 : ℕ) / 2 := by
     refine hsk.eventually (eventually_lt_nhds ?_)
     linarith
   filter_upwards [hhalf, tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop (1 : ℝ)]
@@ -65,53 +65,53 @@ theorem eventually_pairAnchor_defect_condition (m n : ℕ) (k : ℕ) (hk : k = m
   have hα0 : (0 : ℝ) < 1 - prolateLeakageCollar := by
     rw [prolateLeakageCollar]; norm_num
   have hsk := tendsto_signedModeRadialBandwidth_mul_s_atTop k
-  have hxk : 4 * (4 * (k : ℝ) + 1) < x₀ ^ 2 := prolatePairAnchor_sq_gt m n k hk
+  have hxk : 4 * (4 * (k : ℝ) + 1) < x₀ ^ (2 : ℕ) := prolatePairAnchor_sq_gt m n k hk
   have hhalf : ∀ᶠ a : ℝ in atTop,
-      signedModeRadialBandwidth a * (signedModeRadialData a k).s < x₀ ^ 2 / 2 := by
+      signedModeRadialBandwidth a * (signedModeRadialData a k).s < x₀ ^ (2 : ℕ) / 2 := by
     refine hsk.eventually (eventually_lt_nhds ?_)
     linarith
   have hcbig : ∀ᶠ a : ℝ in atTop,
-      (11 / (1 - prolateLeakageCollar)) ^ 2 ≤ signedModeRadialBandwidth a :=
+      (11 / (1 - prolateLeakageCollar)) ^ (2 : ℕ) ≤ signedModeRadialBandwidth a :=
     tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop _
   filter_upwards [hhalf, hcbig,
     tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop (1 : ℝ),
-    tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop (x₀ ^ 2 + 1),
+    tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop (x₀ ^ (2 : ℕ) + 1),
     eventually_signedModeRadialData_s_nonneg k] with a hha hcb hc1 hcbig2 hs0
   set c : ℝ := signedModeRadialBandwidth a with hcdef
   have hc0 : (0 : ℝ) < c := by linarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.2 hc0
-  have hsc2 : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc0.le
+  have hsc2 : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc0.le
   set y₀ : ℝ := pairAnchorPoint m n a with hy₀def
   have hy₀0 : 0 < y₀ := pairAnchorPoint_pos hc0
-  have hy₀sq : y₀ ^ 2 = x₀ ^ 2 / c := pairAnchorPoint_sq hc0
+  have hy₀sq : y₀ ^ (2 : ℕ) = x₀ ^ (2 : ℕ) / c := pairAnchorPoint_sq hc0
   have hy₀val : y₀ = x₀ / Real.sqrt c := rfl
-  have hs : (signedModeRadialData a k).s < y₀ ^ 2 := by
+  have hs : (signedModeRadialData a k).s < y₀ ^ (2 : ℕ) := by
     rw [hy₀sq, lt_div_iff₀ hc0]
     nlinarith [hha, hx0]
-  have hy₀1 : y₀ ^ 2 < 1 := by
+  have hy₀1 : y₀ ^ (2 : ℕ) < 1 := by
     rw [hy₀sq, div_lt_one hc0]
     linarith [hcbig2]
   -- the profile is at least the square root of the gap
-  have hPge : Real.sqrt (y₀ ^ 2 - (signedModeRadialData a k).s)
+  have hPge : Real.sqrt (y₀ ^ (2 : ℕ) - (signedModeRadialData a k).s)
       ≤ prolateWKBProfile (signedModeRadialData a k).s y₀ := by
     rw [prolateWKBProfile]
     refine Real.sqrt_le_sqrt ?_
     rw [le_div_iff₀ (by linarith)]
     nlinarith [hy₀1, hs]
-  have hsle : (signedModeRadialData a k).s ≤ x₀ ^ 2 / (2 * c) := by
+  have hsle : (signedModeRadialData a k).s ≤ x₀ ^ (2 : ℕ) / (2 * c) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith [hha]
-  have hhalfid : x₀ ^ 2 / c - x₀ ^ 2 / (2 * c) = x₀ ^ 2 / (2 * c) := by
+  have hhalfid : x₀ ^ (2 : ℕ) / c - x₀ ^ (2 : ℕ) / (2 * c) = x₀ ^ (2 : ℕ) / (2 * c) := by
     field_simp
     ring
-  have hgap : x₀ ^ 2 / (2 * c) ≤ y₀ ^ 2 - (signedModeRadialData a k).s := by
+  have hgap : x₀ ^ (2 : ℕ) / (2 * c) ≤ y₀ ^ (2 : ℕ) - (signedModeRadialData a k).s := by
     rw [hy₀sq]
     linarith [hsle, hhalfid.le, hhalfid.ge]
   have hsqrtgap : x₀ / (Real.sqrt 2 * Real.sqrt c)
-      ≤ Real.sqrt (y₀ ^ 2 - (signedModeRadialData a k).s) := by
-    have hle : Real.sqrt (x₀ ^ 2 / (2 * c))
-        ≤ Real.sqrt (y₀ ^ 2 - (signedModeRadialData a k).s) := Real.sqrt_le_sqrt hgap
-    have hval : Real.sqrt (x₀ ^ 2 / (2 * c)) = x₀ / (Real.sqrt 2 * Real.sqrt c) := by
+      ≤ Real.sqrt (y₀ ^ (2 : ℕ) - (signedModeRadialData a k).s) := by
+    have hle : Real.sqrt (x₀ ^ (2 : ℕ) / (2 * c))
+        ≤ Real.sqrt (y₀ ^ (2 : ℕ) - (signedModeRadialData a k).s) := Real.sqrt_le_sqrt hgap
+    have hval : Real.sqrt (x₀ ^ (2 : ℕ) / (2 * c)) = x₀ / (Real.sqrt 2 * Real.sqrt c) := by
       rw [Real.sqrt_div (by positivity), Real.sqrt_sq hx0.le, Real.sqrt_mul (by norm_num)]
     rwa [hval] at hle
   -- assemble

@@ -49,39 +49,39 @@ theorem radialSeparationRatio_le_of_prolateSLAction
     (hclass : GaloisForLFunctions.RHTower.bandClass Phi hsm.continuous ≠ 0)
     (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
     radialSeparationRatio c chi ≤
-      (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) /
-        (c ^ 2 * ∫ x in (-1 : ℝ)..1, Phi x ^ 2) + 1 := by
+      (∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) /
+        (c ^ (2 : ℕ) * ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) + 1 := by
   have hc0 : c ≠ 0 := hc.ne'
   have hRay := GaloisForLFunctions.RHTower.neg_separation_div_sq_mul_integral_sq_eq hc0 hsm heig
   have hinner := GaloisForLFunctions.RHTower.inner_bandClass_eq Phi Phi hsm.continuous hsm.continuous
   have hinnerPos : 0 < (inner ℝ (GaloisForLFunctions.RHTower.bandClass Phi hsm.continuous)
       (GaloisForLFunctions.RHTower.bandClass Phi hsm.continuous) : ℝ) := real_inner_self_pos.mpr hclass
   rw [hinner] at hinnerPos
-  have hsqPos : 0 < ∫ x in (-1 : ℝ)..1, Phi x ^ 2 := by
+  have hsqPos : 0 < ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ) := by
     simpa [sq] using hinnerPos
-  have hpot : (∫ x in (-1 : ℝ)..1, x ^ 2 * Phi x ^ 2) ≤ ∫ x in (-1 : ℝ)..1, Phi x ^ 2 := by
+  have hpot : (∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * Phi x ^ (2 : ℕ)) ≤ ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ) := by
     refine intervalIntegral.integral_mono_on (by norm_num : (-1 : ℝ) ≤ 1) ?_ ?_ fun x hx => ?_
     · exact (continuous_id.pow 2).mul (hsm.continuous.pow 2) |>.intervalIntegrable _ _
     · exact (hsm.continuous.pow 2).intervalIntegrable _ _
-    · have hx1 : x ^ 2 ≤ 1 := by
+    · have hx1 : x ^ (2 : ℕ) ≤ 1 := by
         nlinarith [hx.1, hx.2]
       nlinarith [sq_nonneg (Phi x)]
   dsimp [radialSeparationRatio]
-  have hdiv : (-chi / c ^ 2) ≤
-      ((∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) / c ^ 2 +
-        ∫ x in (-1 : ℝ)..1, Phi x ^ 2) / (∫ x in (-1 : ℝ)..1, Phi x ^ 2) := by
+  have hdiv : (-chi / c ^ (2 : ℕ)) ≤
+      ((∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) / c ^ (2 : ℕ) +
+        ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) / (∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) := by
     rw [le_div_iff₀ hsqPos]
     calc
-      (-chi / c ^ 2) * ∫ x in (-1 : ℝ)..1, Phi x ^ 2 =
-          (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) / c ^ 2 +
-            ∫ x in (-1 : ℝ)..1, x ^ 2 * Phi x ^ 2 := hRay
-      _ ≤ (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) / c ^ 2 +
-            ∫ x in (-1 : ℝ)..1, Phi x ^ 2 := by linarith [hpot]
+      (-chi / c ^ (2 : ℕ)) * ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ) =
+          (∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) / c ^ (2 : ℕ) +
+            ∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * Phi x ^ (2 : ℕ) := hRay
+      _ ≤ (∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) / c ^ (2 : ℕ) +
+            ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ) := by linarith [hpot]
   have hsplit :
-      ((∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) / c ^ 2 +
-        ∫ x in (-1 : ℝ)..1, Phi x ^ 2) / (∫ x in (-1 : ℝ)..1, Phi x ^ 2) =
-      (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) /
-        (c ^ 2 * ∫ x in (-1 : ℝ)..1, Phi x ^ 2) + 1 := by
+      ((∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) / c ^ (2 : ℕ) +
+        ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) / (∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) =
+      (∫ x in (-1 : ℝ)..1, (1 - x ^ (2 : ℕ)) * (deriv Phi x) ^ (2 : ℕ)) /
+        (c ^ (2 : ℕ) * ∫ x in (-1 : ℝ)..1, Phi x ^ (2 : ℕ)) + 1 := by
     rw [add_div, div_self hsqPos.ne']
     ring
   rwa [hsplit] at hdiv
@@ -105,7 +105,7 @@ theorem prolateSeparation_eq_deriv2_div_value
 theorem radialSeparationRatio_eq_neg_deriv2_div
     {c chi : ℝ} (hc : c ≠ 0) (Phi : ℝ → ℝ) (hPhi0 : Phi 0 ≠ 0)
     (heig : prolateSLAction c Phi 0 = chi * Phi 0) :
-    radialSeparationRatio c chi = -(deriv (deriv Phi) 0 / (c ^ 2 * Phi 0)) := by
+    radialSeparationRatio c chi = -(deriv (deriv Phi) 0 / (c ^ (2 : ℕ) * Phi 0)) := by
   dsimp [radialSeparationRatio]
   rw [prolateSeparation_eq_deriv2_div_value c chi Phi hPhi0 heig]
   field_simp

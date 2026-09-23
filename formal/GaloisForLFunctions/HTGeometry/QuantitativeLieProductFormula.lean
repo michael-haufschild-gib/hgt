@@ -21,20 +21,20 @@ theorem norm_exp_mul_exp_sub_exp_add_le
     (x y : A) (hx : x ∈ skewAdjoint A) (hy : y ∈ skewAdjoint A)
     (t : ℝ) (hsmall : |t| * (‖x‖ + ‖y‖) ≤ 1) :
     ‖exp (t • x) * exp (t • y) - exp (t • (x + y))‖ ≤
-      3 * (‖x‖ + ‖y‖) ^ 2 * |t| ^ 2 := by
+      3 * (‖x‖ + ‖y‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
   let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   let Tx : A := 1 + t • x
   let Ty : A := 1 + t • y
   let Txy : A := 1 + t • (x + y)
   have hxy : x + y ∈ skewAdjoint A := (skewAdjoint A).add_mem hx hy
-  have hRx : ‖exp (t • x) - Tx‖ ≤ ‖x‖ ^ 2 * |t| ^ 2 / 2 := by
+  have hRx : ‖exp (t • x) - Tx‖ ≤ ‖x‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2 := by
     simpa [Tx, cstarExponentialTaylor_one] using
       norm_exp_sub_cstarExponentialTaylor_le x hx 1 t
-  have hRy : ‖exp (t • y) - Ty‖ ≤ ‖y‖ ^ 2 * |t| ^ 2 / 2 := by
+  have hRy : ‖exp (t • y) - Ty‖ ≤ ‖y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2 := by
     simpa [Ty, cstarExponentialTaylor_one] using
       norm_exp_sub_cstarExponentialTaylor_le y hy 1 t
   have hRxy : ‖exp (t • (x + y)) - Txy‖ ≤
-      ‖x + y‖ ^ 2 * |t| ^ 2 / 2 := by
+      ‖x + y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2 := by
     simpa [Txy, cstarExponentialTaylor_one] using
       norm_exp_sub_cstarExponentialTaylor_le (x + y) hxy 1 t
   have hexpy : ‖exp (t • y)‖ = 1 := by
@@ -49,19 +49,19 @@ theorem norm_exp_mul_exp_sub_exp_add_le
         have hxnonneg : 0 ≤ |t| * ‖y‖ := mul_nonneg (abs_nonneg _) (norm_nonneg _)
         nlinarith
   have hcross : ‖Tx * Ty - Txy‖ ≤
-      (‖x‖ + ‖y‖) ^ 2 * |t| ^ 2 := by
-    have hid : Tx * Ty - Txy = t ^ 2 • (x * y) := by
+      (‖x‖ + ‖y‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
+    have hid : Tx * Ty - Txy = t ^ (2 : ℕ) • (x * y) := by
       dsimp [Tx, Ty, Txy]
       simp only [add_mul, mul_add, one_mul, mul_one]
       rw [smul_mul_smul]
       module
     rw [hid, norm_smul, Real.norm_eq_abs]
-    have ht_sq : |t ^ 2| = |t| ^ 2 := by rw [abs_pow]
+    have ht_sq : |t ^ (2 : ℕ)| = |t| ^ (2 : ℕ) := by rw [abs_pow]
     rw [ht_sq]
     calc
-      |t| ^ 2 * ‖x * y‖ ≤ |t| ^ 2 * (‖x‖ * ‖y‖) :=
+      |t| ^ (2 : ℕ) * ‖x * y‖ ≤ |t| ^ (2 : ℕ) * (‖x‖ * ‖y‖) :=
         mul_le_mul_of_nonneg_left (norm_mul_le _ _) (sq_nonneg _)
-      _ ≤ (‖x‖ + ‖y‖) ^ 2 * |t| ^ 2 := by
+      _ ≤ (‖x‖ + ‖y‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
         have hx0 := norm_nonneg x
         have hy0 := norm_nonneg y
         nlinarith [mul_nonneg hx0 hy0]
@@ -93,34 +93,34 @@ theorem norm_exp_mul_exp_sub_exp_add_le
                     ‖Tx * (exp (t • y) - Ty)‖) + ‖Tx * Ty - Txy‖) +
                     ‖Txy - exp (t • (x + y))‖ := by gcongr; exact norm_add_le _ _
               _ = _ := by ring
-    _ ≤ (‖x‖ ^ 2 * |t| ^ 2 / 2) +
-          2 * (‖y‖ ^ 2 * |t| ^ 2 / 2) +
-          (‖x‖ + ‖y‖) ^ 2 * |t| ^ 2 +
-          (‖x + y‖ ^ 2 * |t| ^ 2 / 2) := by
+    _ ≤ (‖x‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2) +
+          2 * (‖y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2) +
+          (‖x‖ + ‖y‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) +
+          (‖x + y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2) := by
       have hterm1 : ‖(exp (t • x) - Tx) * exp (t • y)‖ ≤
-          ‖x‖ ^ 2 * |t| ^ 2 / 2 := by
+          ‖x‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2 := by
         rw [CStarRing.norm_mul_mem_unitary _
           (exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem t hy))]
         exact hRx
       have hterm2 : ‖Tx * (exp (t • y) - Ty)‖ ≤
-          2 * (‖y‖ ^ 2 * |t| ^ 2 / 2) := by
+          2 * (‖y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2) := by
         exact (norm_mul_le _ _).trans
           (mul_le_mul hTx hRy (norm_nonneg _) (by positivity))
       have hterm4 : ‖Txy - exp (t • (x + y))‖ ≤
-          ‖x + y‖ ^ 2 * |t| ^ 2 / 2 := by
+          ‖x + y‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / 2 := by
         rw [norm_sub_rev]
         exact hRxy
       linarith
-    _ ≤ 3 * (‖x‖ + ‖y‖) ^ 2 * |t| ^ 2 := by
+    _ ≤ 3 * (‖x‖ + ‖y‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
       have hx0 := norm_nonneg x
       have hy0 := norm_nonneg y
       have ht0 := sq_nonneg |t|
       have hxy_norm := norm_add_le x y
       have hxB : ‖x‖ ≤ ‖x‖ + ‖y‖ := by linarith
       have hyB : ‖y‖ ≤ ‖x‖ + ‖y‖ := by linarith
-      have hx_sq : ‖x‖ ^ 2 ≤ (‖x‖ + ‖y‖) ^ 2 := by nlinarith
-      have hy_sq : ‖y‖ ^ 2 ≤ (‖x‖ + ‖y‖) ^ 2 := by nlinarith
-      have hxy_sq : ‖x + y‖ ^ 2 ≤ (‖x‖ + ‖y‖) ^ 2 := by
+      have hx_sq : ‖x‖ ^ (2 : ℕ) ≤ (‖x‖ + ‖y‖) ^ (2 : ℕ) := by nlinarith
+      have hy_sq : ‖y‖ ^ (2 : ℕ) ≤ (‖x‖ + ‖y‖) ^ (2 : ℕ) := by nlinarith
+      have hxy_sq : ‖x + y‖ ^ (2 : ℕ) ≤ (‖x‖ + ‖y‖) ^ (2 : ℕ) := by
         nlinarith [norm_nonneg (x + y)]
       nlinarith
 
@@ -150,7 +150,7 @@ theorem norm_list_exp_product_sub_exp_sum_le
     (z : List A) (hz : ∀ x ∈ z, x ∈ skewAdjoint A)
     (t : ℝ) (hsmall : |t| * (z.map norm).sum ≤ 1) :
     ‖(z.map fun x => exp (t • x)).prod - exp (t • z.sum)‖ ≤
-      3 * z.length * (z.map norm).sum ^ 2 * |t| ^ 2 := by
+      3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
   induction z with
   | nil => simp
   | cons x z ih =>
@@ -205,39 +205,39 @@ theorem norm_list_exp_product_sub_exp_sum_le
               rw [CStarRing.norm_mem_unitary_mul _
                 (exp_mem_unitary_of_mem_skewAdjoint
                   (skewAdjoint.smul_mem t hx))]
-        _ ≤ 3 * z.length * (z.map norm).sum ^ 2 * |t| ^ 2 +
-              3 * (‖x‖ + ‖z.sum‖) ^ 2 * |t| ^ 2 := add_le_add hih hpair
+        _ ≤ 3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) +
+              3 * (‖x‖ + ‖z.sum‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := add_le_add hih hpair
         _ ≤ 3 * (List.cons x z).length *
-              ((List.cons x z).map norm).sum ^ 2 * |t| ^ 2 := by
+              ((List.cons x z).map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
           simp only [List.length_cons, List.map_cons, List.sum_cons]
           have hB_nonneg : 0 ≤ ‖x‖ + (z.map norm).sum := by positivity
           have htail_le : (z.map norm).sum ≤
               ‖x‖ + (z.map norm).sum := by linarith
-          have htail_sq : (z.map norm).sum ^ 2 ≤
-              (‖x‖ + (z.map norm).sum) ^ 2 :=
+          have htail_sq : (z.map norm).sum ^ (2 : ℕ) ≤
+              (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) :=
             (sq_le_sq₀ htail_nonneg hB_nonneg).2 htail_le
           have hpair_le : ‖x‖ + ‖z.sum‖ ≤
               ‖x‖ + (z.map norm).sum := add_le_add le_rfl hnorm_sum
-          have hpair_sq : (‖x‖ + ‖z.sum‖) ^ 2 ≤
-              (‖x‖ + (z.map norm).sum) ^ 2 :=
+          have hpair_sq : (‖x‖ + ‖z.sum‖) ^ (2 : ℕ) ≤
+              (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) :=
             (sq_le_sq₀ (by positivity) hB_nonneg).2 hpair_le
-          have ht_sq_nonneg : 0 ≤ |t| ^ 2 := sq_nonneg _
+          have ht_sq_nonneg : 0 ≤ |t| ^ (2 : ℕ) := sq_nonneg _
           have htail_term :
-              3 * (z.length : ℝ) * (z.map norm).sum ^ 2 * |t| ^ 2 ≤
+              3 * (z.length : ℝ) * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) ≤
                 3 * (z.length : ℝ) *
-                  (‖x‖ + (z.map norm).sum) ^ 2 * |t| ^ 2 := by gcongr
+                  (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by gcongr
           have hpair_term :
-              3 * (‖x‖ + ‖z.sum‖) ^ 2 * |t| ^ 2 ≤
-                3 * (‖x‖ + (z.map norm).sum) ^ 2 * |t| ^ 2 := by gcongr
+              3 * (‖x‖ + ‖z.sum‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) ≤
+                3 * (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by gcongr
           calc
-            3 * (z.length : ℝ) * (z.map norm).sum ^ 2 * |t| ^ 2 +
-                3 * (‖x‖ + ‖z.sum‖) ^ 2 * |t| ^ 2 ≤
+            3 * (z.length : ℝ) * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) +
+                3 * (‖x‖ + ‖z.sum‖) ^ (2 : ℕ) * |t| ^ (2 : ℕ) ≤
               3 * (z.length : ℝ) *
-                  (‖x‖ + (z.map norm).sum) ^ 2 * |t| ^ 2 +
-                3 * (‖x‖ + (z.map norm).sum) ^ 2 * |t| ^ 2 :=
+                  (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) * |t| ^ (2 : ℕ) +
+                3 * (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) * |t| ^ (2 : ℕ) :=
                   add_le_add htail_term hpair_term
             _ = 3 * ((z.length + 1 : ℕ) : ℝ) *
-                (‖x‖ + (z.map norm).sum) ^ 2 * |t| ^ 2 := by
+                (‖x‖ + (z.map norm).sum) ^ (2 : ℕ) * |t| ^ (2 : ℕ) := by
                   push_cast
                   ring
 
@@ -263,7 +263,7 @@ theorem norm_list_exp_product_pow_sub_exp_sum_le
     (hsmall : |t / (r : ℝ)| * (z.map norm).sum ≤ 1) :
     ‖(z.map fun x => exp ((t / (r : ℝ)) • x)).prod ^ r -
         exp (t • z.sum)‖ ≤
-      3 * z.length * (z.map norm).sum ^ 2 * |t| ^ 2 / r := by
+      3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r := by
   let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   let step : A :=
     (z.map fun x => exp ((t / (r : ℝ)) • x)).prod
@@ -276,7 +276,7 @@ theorem norm_list_exp_product_pow_sub_exp_sum_le
     exact exp_mem_unitary_of_mem_skewAdjoint
       (skewAdjoint.smul_mem (t / (r : ℝ)) hsum_skew)
   have hone : ‖step - exactStep‖ ≤
-      3 * z.length * (z.map norm).sum ^ 2 * |t / (r : ℝ)| ^ 2 := by
+      3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t / (r : ℝ)| ^ (2 : ℕ) := by
     exact norm_list_exp_product_sub_exp_sum_le z hz
       (t / (r : ℝ)) hsmall
   have hpower := unitary_pow_norm_sub_pow_le
@@ -291,9 +291,9 @@ theorem norm_list_exp_product_pow_sub_exp_sum_le
   calc
     ‖step ^ r - exactStep ^ r‖ ≤ (r : ℝ) * ‖step - exactStep‖ := hpower
     _ ≤ (r : ℝ) *
-        (3 * z.length * (z.map norm).sum ^ 2 * |t / (r : ℝ)| ^ 2) := by
+        (3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t / (r : ℝ)| ^ (2 : ℕ)) := by
           gcongr
-    _ = 3 * z.length * (z.map norm).sum ^ 2 * |t| ^ 2 / r := by
+    _ = 3 * z.length * (z.map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r := by
       rw [abs_div, abs_of_pos hr_real]
       field_simp
 

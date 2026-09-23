@@ -41,7 +41,7 @@ theorem chronologicalFermiSeries_equation :
     _ = PowerSeries.X := by rw [chronologicalAlternatingSeries_inverse, mul_one]
 
 theorem chronologicalAlternatingSeries_square_coeff (n : ℕ) :
-    PowerSeries.coeff n (chronologicalAlternatingSeries ^ 2) =
+    PowerSeries.coeff n (chronologicalAlternatingSeries ^ (2 : ℕ)) =
       (-1:ℤ)^n * ((n:ℤ)+1) := by
   rw [pow_two, PowerSeries.coeff_mul]
   have he : ∀ x ∈ Finset.antidiagonal n,
@@ -54,17 +54,17 @@ theorem chronologicalAlternatingSeries_square_coeff (n : ℕ) :
   simp [Finset.Nat.card_antidiagonal, mul_comm]
 
 theorem chronologicalFermiSeries_square_coeff_zero :
-    PowerSeries.coeff 0 (chronologicalFermiSeries ^ 2) = 0 := by
+    PowerSeries.coeff 0 (chronologicalFermiSeries ^ (2 : ℕ)) = 0 := by
   simp [chronologicalFermiSeries, pow_two]
 
 theorem chronologicalFermiSeries_square_coeff_succ (n : ℕ) :
-    PowerSeries.coeff (n+1) (chronologicalFermiSeries ^ 2) =
+    PowerSeries.coeff (n+1) (chronologicalFermiSeries ^ (2 : ℕ)) =
       (-1:ℤ)^(n+1) * (n:ℤ) := by
   cases n with
   | zero => simp [chronologicalFermiSeries, pow_two, PowerSeries.coeff_succ_X_mul, mul_assoc]
   | succ n =>
-    have he : chronologicalFermiSeries ^ 2 =
-        PowerSeries.X ^ 2 * chronologicalAlternatingSeries ^ 2 := by
+    have he : chronologicalFermiSeries ^ (2 : ℕ) =
+        PowerSeries.X ^ (2 : ℕ) * chronologicalAlternatingSeries ^ (2 : ℕ) := by
       unfold chronologicalFermiSeries
       ring
     rw [he, show n+1+1=n+2 by omega, PowerSeries.coeff_X_pow_mul,
@@ -76,14 +76,14 @@ def chronologicalLambertSeries {R : Type*} [Semiring R]
   PowerSeries.mk (fun n => ∑ d ∈ n.divisors, a d)
 
 def chronologicalFermiSquareSource : ArithmeticFunction ℤ :=
-  ⟨fun n => PowerSeries.coeff n (chronologicalFermiSeries ^ 2),
+  ⟨fun n => PowerSeries.coeff n (chronologicalFermiSeries ^ (2 : ℕ)),
     chronologicalFermiSeries_square_coeff_zero⟩
 
 def chronologicalFermiSquareArithmetic : ArithmeticFunction ℤ :=
   ArithmeticFunction.moebius * chronologicalFermiSquareSource
 
 theorem chronologicalFermiSquareArithmetic_reconstruct :
-    chronologicalLambertSeries chronologicalFermiSquareArithmetic = chronologicalFermiSeries ^ 2 := by
+    chronologicalLambertSeries chronologicalFermiSquareArithmetic = chronologicalFermiSeries ^ (2 : ℕ) := by
   apply PowerSeries.ext
   intro n
   simp only [chronologicalLambertSeries, PowerSeries.coeff_mk]
@@ -107,7 +107,7 @@ theorem chronologicalLambertSeries_injective : Function.Injective (chronological
 
 theorem chronologicalFermiSquareArithmetic_unique :
     ∃! a : ArithmeticFunction ℤ,
-      chronologicalLambertSeries a = chronologicalFermiSeries ^ 2 := by
+      chronologicalLambertSeries a = chronologicalFermiSeries ^ (2 : ℕ) := by
   refine ⟨chronologicalFermiSquareArithmetic, chronologicalFermiSquareArithmetic_reconstruct, ?_⟩
   intro a ha
   exact chronologicalLambertSeries_injective (ha.trans chronologicalFermiSquareArithmetic_reconstruct.symm)
@@ -119,7 +119,7 @@ theorem chronologicalFermiSquareArithmetic_one : chronologicalFermiSquareArithme
 theorem chronologicalFermiSquareArithmetic_odd_prime (p : ℕ) (hp : p.Prime) (hp2 : p ≠ 2) :
     chronologicalFermiSquareArithmetic p = -((p:ℤ)-1) := by
   have he := congrArg (PowerSeries.coeff p) chronologicalFermiSquareArithmetic_reconstruct
-  have hc : PowerSeries.coeff p (chronologicalFermiSeries ^ 2) = -((p:ℤ)-1) := by
+  have hc : PowerSeries.coeff p (chronologicalFermiSeries ^ (2 : ℕ)) = -((p:ℤ)-1) := by
     obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hp.ne_zero
     rw [chronologicalFermiSeries_square_coeff_succ, (hp.odd_of_ne_two hp2).neg_one_pow]
     simp
@@ -140,7 +140,7 @@ theorem chronologicalFermiSquareArithmetic_unbounded :
 
 theorem chronologicalFermiSquare_no_bounded_Lambert_representation :
     ¬ ∃ a : ArithmeticFunction ℤ, (∃ B : ℕ, ∀ n, |a n| ≤ (B:ℤ)) ∧
-      chronologicalLambertSeries a = chronologicalFermiSeries ^ 2 := by
+      chronologicalLambertSeries a = chronologicalFermiSeries ^ (2 : ℕ) := by
   rintro ⟨a, ⟨B, hB⟩, ha⟩
   have he := chronologicalLambertSeries_injective (ha.trans chronologicalFermiSquareArithmetic_reconstruct.symm)
   obtain ⟨p, _, hp⟩ := chronologicalFermiSquareArithmetic_unbounded B
@@ -150,7 +150,7 @@ theorem chronologicalFermiSquare_no_bounded_Lambert_representation :
 theorem chronologicalFermiSquare_no_bounded_real_Lambert_representation :
     ¬ ∃ a : ArithmeticFunction ℝ, (∃ B : ℝ, ∀ n, |a n| ≤ B) ∧
       chronologicalLambertSeries a =
-        PowerSeries.map (Int.castRingHom ℝ) (chronologicalFermiSeries ^ 2) := by
+        PowerSeries.map (Int.castRingHom ℝ) (chronologicalFermiSeries ^ (2 : ℕ)) := by
   rintro ⟨a, ⟨B, hB⟩, ha⟩
   have h1 := congrArg (PowerSeries.coeff 1) ha
   rw [PowerSeries.coeff_map] at h1
@@ -170,7 +170,7 @@ theorem chronologicalFermiSquare_no_bounded_real_Lambert_representation :
   have he := congrArg (PowerSeries.coeff p) ha
   rw [PowerSeries.coeff_map] at he
   have hsrc := congrArg (PowerSeries.coeff p) chronologicalFermiSquareArithmetic_reconstruct
-  have hcoef : PowerSeries.coeff p (chronologicalFermiSeries ^ 2) = -((p:ℤ)-1) := by
+  have hcoef : PowerSeries.coeff p (chronologicalFermiSeries ^ (2 : ℕ)) = -((p:ℤ)-1) := by
     rw [← hsrc]
     simp [chronologicalLambertSeries, hp.divisors, hp.ne_one.symm,
       chronologicalFermiSquareArithmetic_one, chronologicalFermiSquareArithmetic_odd_prime p hp hp2]

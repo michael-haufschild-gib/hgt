@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.TitchmarshZetaInputs
 # Horizontal decay for Ingham's zeta-square Mellin contour
 
 Uniform arbitrary-power Gamma decay on `-3/4 <= Re z <= 2` beats coarse quartic growth of
-`zeta(s+z)^2`.  This closes both horizontal-edge limits without Stirling asymptotics.
+`zeta(s+z)^(2 : ℕ)`.  This closes both horizontal-edge limits without Stirling asymptotics.
 -/
 
 noncomputable section

@@ -7,7 +7,7 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 This file extracts the finite-product counting mechanism of Lemma 6.3 in the supplied
 Navier--Stokes paper. If every coordinate has at most `C` locally relevant grid positions, an
 arbitrary relevance predicate selects at most `C ^ d` labels. The paper's two pulse signs give the
-explicit three-dimensional bound `2 * C ^ 3`.
+explicit three-dimensional bound `2 * C ^ (3 : ℕ)`.
 -/
 
 open Finset
@@ -70,7 +70,7 @@ theorem card_relevant_signed_coordinateGridLabels_le {d C : ℕ}
 theorem card_relevant_signed_threeGridLabels_le (A : Fin 3 → Finset α)
     (relevant : (Fin 2 × (Fin 3 → α)) → Prop) [DecidablePred relevant]
     {C : ℕ} (hA : ∀ i, (A i).card ≤ C) :
-    ((signedCoordinateGridLabels A).filter relevant).card ≤ 2 * C ^ 3 := by
+    ((signedCoordinateGridLabels A).filter relevant).card ≤ 2 * C ^ (3 : ℕ) := by
   exact card_relevant_signed_coordinateGridLabels_le A relevant hA
 
 /-- Along one radial line only one coordinate grid varies, so two signs give `2 C`. -/

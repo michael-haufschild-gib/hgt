@@ -255,7 +255,7 @@ theorem exponentialBoundary_map_terminal (k d : ℕ) (hk : 0 < k) (w : StokesWal
 /-- Euler form of a cyclic incidence-quiver dimension vector. -/
 def boundaryEuler (k : ℕ) (hk : 0 < k)
     (wallDim arcDim : StokesWall k → ℕ) : ℤ :=
-  (∑ w, (wallDim w : ℤ) ^ 2) + (∑ w, (arcDim w : ℤ) ^ 2) -
+  (∑ w, (wallDim w : ℤ) ^ (2 : ℕ)) + (∑ w, (arcDim w : ℤ) ^ (2 : ℕ)) -
     (∑ w, (arcDim w : ℤ) * wallDim w) -
     (∑ w, (arcDim w : ℤ) * wallDim (nextWall hk w))
 
@@ -270,28 +270,28 @@ theorem exponentialArcDim_sum (k d : ℕ) :
   simp [exponentialArcDim]
 
 /-- Cellular Euler form of the alternating exponential object is the positive local channel
-`k d^2`. -/
+`k d^(2 : ℕ)`. -/
 theorem exponential_boundaryEuler (k d : ℕ) (hk : 0 < k) :
     boundaryEuler k hk (exponentialWallDim d) (exponentialArcDim d) =
-      (k : ℤ) * d ^ 2 := by
-  have hw : (∑ w : StokesWall k, ((exponentialWallDim d w : ℕ) : ℤ) ^ 2) =
-      2 * (k : ℤ) * d ^ 2 := by
+      (k : ℤ) * d ^ (2 : ℕ) := by
+  have hw : (∑ w : StokesWall k, ((exponentialWallDim d w : ℕ) : ℤ) ^ (2 : ℕ)) =
+      2 * (k : ℤ) * d ^ (2 : ℕ) := by
     rw [Fintype.sum_prod_type]
     simp [exponentialWallDim]
     ring
-  have ha2 : (∑ w : StokesWall k, ((exponentialArcDim d w : ℕ) : ℤ) ^ 2) =
-      (k : ℤ) * d ^ 2 := by
+  have ha2 : (∑ w : StokesWall k, ((exponentialArcDim d w : ℕ) : ℤ) ^ (2 : ℕ)) =
+      (k : ℤ) * d ^ (2 : ℕ) := by
     rw [Fintype.sum_prod_type]
     simp [exponentialArcDim]
   have hal : (∑ w : StokesWall k,
       ((exponentialArcDim d w : ℕ) : ℤ) * exponentialWallDim d w) =
-      (k : ℤ) * d ^ 2 := by
+      (k : ℤ) * d ^ (2 : ℕ) := by
     rw [Fintype.sum_prod_type]
     simp [exponentialArcDim, exponentialWallDim]
     exact Or.inl (pow_two (d : ℤ)).symm
   have har : (∑ w : StokesWall k,
       ((exponentialArcDim d w : ℕ) : ℤ) * exponentialWallDim d (nextWall hk w)) =
-      (k : ℤ) * d ^ 2 := by
+      (k : ℤ) * d ^ (2 : ℕ) := by
     rw [Fintype.sum_prod_type]
     simp [exponentialArcDim, exponentialWallDim]
     exact Or.inl (pow_two (d : ℤ)).symm

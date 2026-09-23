@@ -22,7 +22,7 @@ noncomputable section
 /-- Coordinatewise centered complex Gaussian with real decay parameters. -/
 def centeredComplexGaussian {d : ℕ} (σ : Fin d → ℝ)
     (center : Fin d → ℂ) : MultivariateEntire d :=
-  ⟨⟨fun x ↦ Complex.exp (-∑ i, (σ i : ℂ) * (x i - center i) ^ 2), by
+  ⟨⟨fun x ↦ Complex.exp (-∑ i, (σ i : ℂ) * (x i - center i) ^ (2 : ℕ)), by
       fun_prop⟩,
     fun x v ↦ by
       apply Complex.differentiable_exp.comp
@@ -32,7 +32,7 @@ def centeredComplexGaussian {d : ℕ} (σ : Fin d → ℝ)
 theorem centeredComplexGaussian_apply {d : ℕ} (σ : Fin d → ℝ)
     (center x : Fin d → ℂ) :
     (centeredComplexGaussian σ center).1 x =
-      Complex.exp (-∑ i, (σ i : ℂ) * (x i - center i) ^ 2) :=
+      Complex.exp (-∑ i, (σ i : ℂ) * (x i - center i) ^ (2 : ℕ)) :=
   rfl
 
 @[simp]

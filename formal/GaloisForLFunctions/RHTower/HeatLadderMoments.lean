@@ -14,7 +14,7 @@ namespace RHTower
 
 /-- The `K`-th order principal energy, as a finite sum of window moments. -/
 noncomputable def heatLadderMoments (s : ℂ) (K : ℕ) (x : ℝ) : ℂ :=
-  ((((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ) + ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ)) / 2)
+  ((((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ) + ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ)) / 2)
       * heatMoment x (((2 * s.re - 2 : ℝ)) : ℂ)
     + ∑ k ∈ Finset.range (K + 1),
         ((jonquiereLead s * (starRingEnd ℂ) (jonquiereRegCoeff s k)
@@ -64,8 +64,8 @@ theorem integrableOn_principalOrderSq_mul_heatMultiplier {s : ℂ} (h0 : 1 / 2 <
     intro m
     simp
     linarith [Nat.cast_nonneg (α := ℝ) m]
-  have hi1 : IntegrableOn (fun θ : ℝ => ((if 0 < θ then ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-      else ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ))
+  have hi1 : IntegrableOn (fun θ : ℝ => ((if 0 < θ then ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+      else ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ))
       * ((|θ| : ℝ) : ℂ) ^ (((2 * s.re - 2 : ℝ)) : ℂ)) * heatMultiplier x θ)
       (Ioc (-Real.pi) Real.pi) := integrableOn_halfSplit hx hl1 _ _
   have hi2 : ∀ k ∈ Finset.range (K + 1), IntegrableOn (fun θ : ℝ =>
@@ -122,8 +122,8 @@ theorem heatLadderMoments_eq {s : ℂ} (h0 : 1 / 2 < s.re) (h1 : s.re < 1) {x : 
     intro m
     simp
     linarith [Nat.cast_nonneg (α := ℝ) m]
-  set g1 : ℝ → ℂ := fun θ => ((if 0 < θ then ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-      else ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ))
+  set g1 : ℝ → ℂ := fun θ => ((if 0 < θ then ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+      else ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ))
     * ((|θ| : ℝ) : ℂ) ^ (((2 * s.re - 2 : ℝ)) : ℂ)) * heatMultiplier x θ with hg1
   set g2 : ℕ → ℝ → ℂ := fun k θ =>
     ((if 0 < θ then jonquiereLead s * (starRingEnd ℂ) (jonquiereRegCoeff s k)
@@ -178,8 +178,8 @@ theorem heatLadderMoments_eq {s : ℂ} (h0 : 1 / 2 < s.re) (h1 : s.re < 1) {x : 
     MeasureTheory.integral_add hi1 hS2,
     MeasureTheory.integral_finsetSum _ hi2, MeasureTheory.integral_finsetSum _ hi3,
     MeasureTheory.integral_finsetSum _ hi4']
-  have e1 := integral_halfSplit_eq hx hl1 ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-    ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ)
+  have e1 := integral_halfSplit_eq hx hl1 ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+    ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ)
   have e2 : ∀ k : ℕ, (∫ θ in Ioc (-Real.pi) Real.pi, g2 k θ)
       = (2 * (Real.pi : ℂ)) * (((jonquiereLead s * (starRingEnd ℂ) (jonquiereRegCoeff s k)
           + (-1 : ℂ) ^ k * (jonquiereLeadNeg s * (starRingEnd ℂ) (jonquiereRegCoeff s k))) / 2)

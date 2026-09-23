@@ -62,12 +62,12 @@ theorem convex_tangent_line {f : ℝ → ℝ} (hf : ConvexOn ℝ univ f) (hd : D
 /-- **The strong-convexity inequality.**  If `V - c x²/2` is convex and `V` has derivative `h` at the
 mode `m`, then `V` lies above the shifted parabola. -/
 theorem strongConvex_lower {V : ℝ → ℝ} {c m h : ℝ}
-    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ 2))
-    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ 2))
+    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
+    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
     (hV : HasDerivAt V h m) (x : ℝ) :
-    V m + h * (x - m) + c / 2 * (x - m) ^ 2 ≤ V x := by
-  have hWderiv : HasDerivAt (fun y => V y - c / 2 * y ^ 2) (h - c * m) m := by
-    have hsq : HasDerivAt (fun y : ℝ => c / 2 * y ^ 2) (c / 2 * (2 * m)) m := by
+    V m + h * (x - m) + c / 2 * (x - m) ^ (2 : ℕ) ≤ V x := by
+  have hWderiv : HasDerivAt (fun y => V y - c / 2 * y ^ (2 : ℕ)) (h - c * m) m := by
+    have hsq : HasDerivAt (fun y : ℝ => c / 2 * y ^ (2 : ℕ)) (c / 2 * (2 * m)) m := by
       simpa using ((hasDerivAt_pow 2 m).const_mul (c / 2))
     simpa only [Pi.sub_apply] using!
       (hV.sub hsq).congr_deriv (by ring)
@@ -77,20 +77,20 @@ theorem strongConvex_lower {V : ℝ → ℝ} {c m h : ℝ}
 /-- **Uniform Gaussian domination of the tilted exponent.**  Every tilt is bounded by a Gaussian of
 the same width, centred at that tilt's mode. -/
 theorem tilt_gaussian_domination {V : ℝ → ℝ} {c m h : ℝ}
-    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ 2))
-    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ 2))
+    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
+    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
     (hV : HasDerivAt V h m) (x : ℝ) :
-    -V x + h * x ≤ (-V m + h * m) - c / 2 * (x - m) ^ 2 := by
+    -V x + h * x ≤ (-V m + h * m) - c / 2 * (x - m) ^ (2 : ℕ) := by
   have := strongConvex_lower hW hWd hV x
   linarith
 
 /-- In exponential form: the tilted density is at most a constant times a fixed Gaussian. -/
 theorem tilt_density_bound {V : ℝ → ℝ} {c m h : ℝ}
-    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ 2))
-    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ 2))
+    (hW : ConvexOn ℝ univ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
+    (hWd : Differentiable ℝ (fun y => V y - c / 2 * y ^ (2 : ℕ)))
     (hV : HasDerivAt V h m) (x : ℝ) :
     Real.exp (-V x + h * x)
-      ≤ Real.exp (-V m + h * m) * Real.exp (-(c / 2 * (x - m) ^ 2)) := by
+      ≤ Real.exp (-V m + h * m) * Real.exp (-(c / 2 * (x - m) ^ (2 : ℕ))) := by
   rw [← Real.exp_add]
   exact Real.exp_le_exp.mpr (by linarith [tilt_gaussian_domination hW hWd hV x])
 

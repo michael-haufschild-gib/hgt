@@ -50,23 +50,23 @@ theorem prod_one_sub_le_exp_neg_sum (s : Finset ℕ) (f : ℕ → ℝ)
 
 /-- `exp(−x) ≤ 1 − x + x²/2` for `x ≥ 0`. -/
 theorem exp_neg_le_quadratic {x : ℝ} (hx : 0 ≤ x) :
-    Real.exp (-x) ≤ 1 - x + x ^ 2 / 2 := by
-  have key : MonotoneOn (fun y : ℝ => 1 - y + y ^ 2 / 2 - Real.exp (-y)) (Set.Ici 0) := by
+    Real.exp (-x) ≤ 1 - x + x ^ (2 : ℕ) / 2 := by
+  have key : MonotoneOn (fun y : ℝ => 1 - y + y ^ (2 : ℕ) / 2 - Real.exp (-y)) (Set.Ici 0) := by
     refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop) (by fun_prop) ?_
     intro y _
-    have h1 : HasDerivAt (fun y : ℝ => 1 - y + y ^ 2 / 2 - Real.exp (-y))
+    have h1 : HasDerivAt (fun y : ℝ => 1 - y + y ^ (2 : ℕ) / 2 - Real.exp (-y))
         (-1 + y + Real.exp (-y)) y := by
       have ha : HasDerivAt (fun y : ℝ => 1 - y) (-1) y := by
         simpa using (hasDerivAt_id y).const_sub 1
-      have hb : HasDerivAt (fun y : ℝ => y ^ 2 / 2) y y := by
+      have hb : HasDerivAt (fun y : ℝ => y ^ (2 : ℕ) / 2) y y := by
         have := (hasDerivAt_pow 2 y).div_const 2
         norm_num at this
         simpa using this
       have hc : HasDerivAt (fun y : ℝ => Real.exp (-y)) (-Real.exp (-y)) y := by
         rw [show (fun y : ℝ => Real.exp (-y)) = Real.exp ∘ Neg.neg by rfl]
         exact ((Real.hasDerivAt_exp (-y)).comp y ((hasDerivAt_id y).neg)).congr_deriv (by ring)
-      rw [show (fun y : ℝ => 1 - y + y ^ 2 / 2 - Real.exp (-y)) =
-          (fun y : ℝ => 1 - y) + (fun y : ℝ => y ^ 2 / 2) -
+      rw [show (fun y : ℝ => 1 - y + y ^ (2 : ℕ) / 2 - Real.exp (-y)) =
+          (fun y : ℝ => 1 - y) + (fun y : ℝ => y ^ (2 : ℕ) / 2) -
             (fun y : ℝ => Real.exp (-y)) by rfl]
       exact ((ha.add hb).sub hc).congr_deriv (by ring)
     rw [h1.deriv]
@@ -127,9 +127,9 @@ theorem log_phi_product_eq_sum_log {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d) :
 
 /-- One-step logarithmic cumulant remainder. -/
 theorem abs_log_one_sub_add_le {u : ℝ} (hu : u < 1) :
-    |Real.log (1 - u) + u| ≤ u ^ 2 / (1 - u) := by
+    |Real.log (1 - u) + u| ≤ u ^ (2 : ℕ) / (1 - u) := by
   have hpos : 0 < 1 - u := by linarith
-  have hnonneg : 0 ≤ u ^ 2 / (1 - u) := by positivity
+  have hnonneg : 0 ≤ u ^ (2 : ℕ) / (1 - u) := by positivity
   rw [abs_le]
   constructor
   · have hinvpos : 0 < (1 - u)⁻¹ := inv_pos.mpr hpos
@@ -140,7 +140,7 @@ theorem abs_log_one_sub_add_le {u : ℝ} (hu : u < 1) :
       ring
     have hbound : -Real.log (1 - u) ≤ u / (1 - u) := by
       simpa [hinv_sub] using hlog
-    have hdiff : u / (1 - u) - u = u ^ 2 / (1 - u) := by
+    have hdiff : u / (1 - u) - u = u ^ (2 : ℕ) / (1 - u) := by
       field_simp [hpos.ne']
       ring
     linarith
@@ -152,7 +152,7 @@ theorem abs_log_one_sub_add_le {u : ℝ} (hu : u < 1) :
 bounded by the sum of one-step logarithmic tails. -/
 theorem log_phi_first_cumulant_abs_bound {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d) :
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d| ≤
-      ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 2 / (1 - (i : ℝ) / d)) := by
+      ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (2 : ℕ) / (1 - (i : ℝ) / d)) := by
   have hlog := log_phi_product_eq_sum_log hd hjd
   have hsum : (∑ i ∈ Finset.range j, (i : ℝ) / d) = (j.choose 2 : ℝ) / d := by
     rw [← Finset.sum_div, sum_range_id_cast]
@@ -162,7 +162,7 @@ theorem log_phi_first_cumulant_abs_bound {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d
           rw [hlog, ← hsum, Finset.sum_add_distrib]
     _ ≤ ∑ i ∈ Finset.range j, |Real.log (1 - (i : ℝ) / d) + (i : ℝ) / d| := by
       exact Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 2 / (1 - (i : ℝ) / d)) := by
+    _ ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (2 : ℕ) / (1 - (i : ℝ) / d)) := by
       apply Finset.sum_le_sum
       intro i hi
       have hi_lt : i < j := Finset.mem_range.mp hi
@@ -175,11 +175,11 @@ theorem log_phi_first_cumulant_abs_bound {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d
 /-- Mathlib-backed second-order logarithmic cumulant tail.  The constant is the coarse
 bound supplied by `Real.abs_log_sub_add_sum_range_le`. -/
 theorem abs_log_one_sub_add_add_sq_div_two_le_crude {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u < 1) :
-    |Real.log (1 - u) + u + u ^ 2 / 2| ≤ u ^ 3 / (1 - u) := by
+    |Real.log (1 - u) + u + u ^ (2 : ℕ) / 2| ≤ u ^ (3 : ℕ) / (1 - u) := by
   have habs : |u| < 1 := by rwa [abs_of_nonneg hu0]
   have h := Real.abs_log_sub_add_sum_range_le habs 2
   rw [abs_of_nonneg hu0] at h
-  have hsum : (∑ i ∈ Finset.range 2, u ^ (i + 1) / (i + 1 : ℝ)) = u + u ^ 2 / 2 := by
+  have hsum : (∑ i ∈ Finset.range 2, u ^ (i + 1) / (i + 1 : ℝ)) = u + u ^ (2 : ℕ) / 2 := by
     norm_num [Finset.sum_range_succ]
   rw [hsum] at h
   convert h using 1
@@ -188,22 +188,22 @@ theorem abs_log_one_sub_add_add_sq_div_two_le_crude {u : ℝ} (hu0 : 0 ≤ u) (h
 /-- Second cumulant form of R1 with a crude mathlib Taylor tail. -/
 theorem log_phi_second_cumulant_abs_bound {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d) :
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d +
-        ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 2 / 2)| ≤
-      ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 3 / (1 - (i : ℝ) / d)) := by
+        ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (2 : ℕ) / 2)| ≤
+      ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (3 : ℕ) / (1 - (i : ℝ) / d)) := by
   have hlog := log_phi_product_eq_sum_log hd hjd
   have hsum : (∑ i ∈ Finset.range j, (i : ℝ) / d) = (j.choose 2 : ℝ) / d := by
     rw [← Finset.sum_div, sum_range_id_cast]
   calc
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d +
-        ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 2 / 2)|
+        ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (2 : ℕ) / 2)|
         = |∑ i ∈ Finset.range j,
-              (Real.log (1 - (i : ℝ) / d) + (i : ℝ) / d + ((i : ℝ) / d) ^ 2 / 2)| := by
+              (Real.log (1 - (i : ℝ) / d) + (i : ℝ) / d + ((i : ℝ) / d) ^ (2 : ℕ) / 2)| := by
           rw [hlog, ← hsum]
           rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
     _ ≤ ∑ i ∈ Finset.range j,
-        |Real.log (1 - (i : ℝ) / d) + (i : ℝ) / d + ((i : ℝ) / d) ^ 2 / 2| := by
+        |Real.log (1 - (i : ℝ) / d) + (i : ℝ) / d + ((i : ℝ) / d) ^ (2 : ℕ) / 2| := by
       exact Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 3 / (1 - (i : ℝ) / d)) := by
+    _ ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (3 : ℕ) / (1 - (i : ℝ) / d)) := by
       apply Finset.sum_le_sum
       intro i hi
       have hi_lt : i < j := Finset.mem_range.mp hi
@@ -288,10 +288,10 @@ theorem log_phi_cumulant_powerSum_abs_bound (n : ℕ) {j d : ℕ} (hd : 0 < d)
 /-- If the normalized index is at most `1/2`, the logarithmic one-step tail loses its
 denominator at cost `2`. -/
 theorem log_tail_div_one_sub_le_two_sq {u : ℝ} (hu : u ≤ (1 : ℝ) / 2) :
-    u ^ 2 / (1 - u) ≤ 2 * u ^ 2 := by
+    u ^ (2 : ℕ) / (1 - u) ≤ 2 * u ^ (2 : ℕ) := by
   have hpos : 0 < 1 - u := by linarith
   rw [div_le_iff₀ hpos]
-  have hnonneg : 0 ≤ u ^ 2 * (1 - 2 * u) := by
+  have hnonneg : 0 ≤ u ^ (2 : ℕ) * (1 - 2 * u) := by
     exact mul_nonneg (sq_nonneg u) (by linarith)
   nlinarith
 
@@ -309,9 +309,9 @@ theorem log_tail_pow_div_one_sub_le_two_pow {u : ℝ} (hu0 : 0 ≤ u)
 /-- Coarse square-sum envelope used to turn the first cumulant bound into a polynomial
 remainder. -/
 theorem sum_range_sq_cast_le_cube (j : ℕ) :
-    (∑ i ∈ Finset.range j, (i : ℝ) ^ 2) ≤ (j : ℝ) ^ 3 := by
+    (∑ i ∈ Finset.range j, (i : ℝ) ^ (2 : ℕ)) ≤ (j : ℝ) ^ (3 : ℕ) := by
   calc
-    (∑ i ∈ Finset.range j, (i : ℝ) ^ 2) ≤ ∑ _i ∈ Finset.range j, (j : ℝ) ^ 2 := by
+    (∑ i ∈ Finset.range j, (i : ℝ) ^ (2 : ℕ)) ≤ ∑ _i ∈ Finset.range j, (j : ℝ) ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro i hi
       have hij : (i : ℝ) ≤ j := by
@@ -320,9 +320,9 @@ theorem sum_range_sq_cast_le_cube (j : ℕ) :
         have hi_nonneg : 0 ≤ (i : ℝ) := by positivity
         have hj_nonneg : 0 ≤ (j : ℝ) := by positivity
         linarith) hij
-    _ = (j : ℝ) * (j : ℝ) ^ 2 := by
+    _ = (j : ℝ) * (j : ℝ) ^ (2 : ℕ) := by
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-    _ = (j : ℝ) ^ 3 := by ring
+    _ = (j : ℝ) ^ (3 : ℕ) := by ring
 
 /-- Coarse power-sum envelope: `Σ_{i<j} i^p ≤ j^(p+1)`. -/
 theorem sum_range_pow_cast_le_pow_succ (p j : ℕ) :
@@ -345,13 +345,13 @@ removed. -/
 theorem log_phi_first_cumulant_abs_bound_half {j d : ℕ} (hd : 0 < d)
     (hhalf : 2 * j ≤ d) :
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d| ≤
-      2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ 2 := by
+      2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ (2 : ℕ) := by
   have hjd : j ≤ d := by omega
   have hbase := log_phi_first_cumulant_abs_bound hd hjd
   calc
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d|
-        ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ 2 / (1 - (i : ℝ) / d)) := hbase
-    _ ≤ ∑ i ∈ Finset.range j, (2 * ((i : ℝ) / d) ^ 2) := by
+        ≤ ∑ i ∈ Finset.range j, (((i : ℝ) / d) ^ (2 : ℕ) / (1 - (i : ℝ) / d)) := hbase
+    _ ≤ ∑ i ∈ Finset.range j, (2 * ((i : ℝ) / d) ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro i hi
       have hi_lt : i < j := Finset.mem_range.mp hi
@@ -362,17 +362,17 @@ theorem log_phi_first_cumulant_abs_bound_half {j d : ℕ} (hd : 0 < d)
         have hi2r : (2 : ℝ) * i ≤ d := by exact_mod_cast hi2
         nlinarith
       exact log_tail_div_one_sub_le_two_sq hnorm
-    _ = 2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ 2 := by
+    _ = 2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
 
 /-- Coarse polynomial version of the half-range first-cumulant log-product bound. -/
 theorem log_phi_first_cumulant_abs_bound_half_cube {j d : ℕ} (hd : 0 < d)
     (hhalf : 2 * j ≤ d) :
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d| ≤
-      2 * (j : ℝ) ^ 3 / (d : ℝ) ^ 2 := by
+      2 * (j : ℝ) ^ (3 : ℕ) / (d : ℝ) ^ (2 : ℕ) := by
   have hhalf_bound := log_phi_first_cumulant_abs_bound_half hd hhalf
-  have hsum_div : (∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ 2) =
-      (∑ i ∈ Finset.range j, (i : ℝ) ^ 2) / (d : ℝ) ^ 2 := by
+  have hsum_div : (∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ (2 : ℕ)) =
+      (∑ i ∈ Finset.range j, (i : ℝ) ^ (2 : ℕ)) / (d : ℝ) ^ (2 : ℕ) := by
     rw [Finset.sum_div]
     apply Finset.sum_congr rfl
     intro i _
@@ -380,12 +380,12 @@ theorem log_phi_first_cumulant_abs_bound_half_cube {j d : ℕ} (hd : 0 < d)
   have hsum_sq := sum_range_sq_cast_le_cube j
   calc
     |Real.log (∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) + (j.choose 2 : ℝ) / d|
-        ≤ 2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ 2 := hhalf_bound
-    _ = 2 * ((∑ i ∈ Finset.range j, (i : ℝ) ^ 2) / (d : ℝ) ^ 2) := by rw [hsum_div]
-    _ ≤ 2 * ((j : ℝ) ^ 3 / (d : ℝ) ^ 2) := by
+        ≤ 2 * ∑ i ∈ Finset.range j, ((i : ℝ) / d) ^ (2 : ℕ) := hhalf_bound
+    _ = 2 * ((∑ i ∈ Finset.range j, (i : ℝ) ^ (2 : ℕ)) / (d : ℝ) ^ (2 : ℕ)) := by rw [hsum_div]
+    _ ≤ 2 * ((j : ℝ) ^ (3 : ℕ) / (d : ℝ) ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left
         (div_le_div_of_nonneg_right hsum_sq (by positivity)) (by norm_num)
-    _ = 2 * (j : ℝ) ^ 3 / (d : ℝ) ^ 2 := by ring
+    _ = 2 * (j : ℝ) ^ (3 : ℕ) / (d : ℝ) ^ (2 : ℕ) := by ring
 
 /-- All-orders half-range polynomial consequence of the R1 log-product truncation. -/
 theorem log_phi_cumulant_abs_bound_half_power (n : ℕ) {j d : ℕ} (hd : 0 < d)
@@ -445,7 +445,7 @@ theorem phi_product_eq_zero_of_d_lt_j {j d : ℕ} (hd : 0 < d) (hjd : d < j) :
 first-order heat expansion `1 − C(j,2)/d` to quadratic accuracy, for ALL `j, d ≥ 1`. -/
 theorem phi_first_order (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
     |∏ i ∈ Finset.range j, (1 - (i : ℝ) / d) - (1 - (j.choose 2 : ℝ) / d)|
-      ≤ ((j.choose 2 : ℝ) / d) ^ 2 / 2 := by
+      ≤ ((j.choose 2 : ℝ) / d) ^ (2 : ℕ) / 2 := by
   have hd0 : (0 : ℝ) < d := by positivity
   set S : ℝ := (j.choose 2 : ℝ) / d with hS
   have hSsum : (∑ i ∈ Finset.range j, (i : ℝ) / d) = S := by
@@ -490,7 +490,7 @@ theorem phi_first_order (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
 
 /-- Lower one-sided form of `(E5)`. -/
 theorem phi_first_order_lower_bound (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
-    1 - (j.choose 2 : ℝ) / d - ((j.choose 2 : ℝ) / d) ^ 2 / 2
+    1 - (j.choose 2 : ℝ) / d - ((j.choose 2 : ℝ) / d) ^ (2 : ℕ) / 2
       ≤ ∏ i ∈ Finset.range j, (1 - (i : ℝ) / d) := by
   have h := phi_first_order j hd
   rw [abs_le] at h
@@ -499,7 +499,7 @@ theorem phi_first_order_lower_bound (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
 /-- Upper one-sided form of `(E5)`. -/
 theorem phi_first_order_upper_bound (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
     ∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)
-      ≤ 1 - (j.choose 2 : ℝ) / d + ((j.choose 2 : ℝ) / d) ^ 2 / 2 := by
+      ≤ 1 - (j.choose 2 : ℝ) / d + ((j.choose 2 : ℝ) / d) ^ (2 : ℕ) / 2 := by
   have h := phi_first_order j hd
   rw [abs_le] at h
   linarith [h.2]

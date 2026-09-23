@@ -58,8 +58,8 @@ theorem bdGram_symm (θ₁ θ₂ : ℝ) : bdGram θ₁ θ₂ = bdGram θ₂ θ�
   ring
 
 /-- The diagonal of the Gram matrix is the squared norm of the generator. -/
-theorem bdGram_self (θ : ℝ) : bdGram θ θ = ‖bdGen θ‖ ^ 2 := by
-  have h : (RCLike.re (inner ℂ (bdGen θ) (bdGen θ)) : ℝ) = ‖bdGen θ‖ ^ 2 :=
+theorem bdGram_self (θ : ℝ) : bdGram θ θ = ‖bdGen θ‖ ^ (2 : ℕ) := by
+  have h : (RCLike.re (inner ℂ (bdGen θ) (bdGen θ)) : ℝ) = ‖bdGen θ‖ ^ (2 : ℕ) :=
     inner_self_eq_norm_sq _
   rw [inner_bdGen_eq_bdGram] at h
   rw [← h]
@@ -74,7 +74,7 @@ theorem bdGram_self_nonneg (θ : ℝ) : 0 ≤ bdGram θ θ := by
 matrix is the squared norm of the corresponding combination of generators, hence nonnegative. -/
 theorem bdGram_quadraticForm_eq_norm_sq {I : Type*} (s : Finset I) (θ : I → ℝ) (c : I → ℝ) :
     ∑ i ∈ s, ∑ j ∈ s, c i * c j * bdGram (θ i) (θ j)
-      = ‖∑ i ∈ s, (c i : ℂ) • bdGen (θ i)‖ ^ 2 := by
+      = ‖∑ i ∈ s, (c i : ℂ) • bdGen (θ i)‖ ^ (2 : ℕ) := by
   classical
   have hexp : inner ℂ (∑ i ∈ s, (c i : ℂ) • bdGen (θ i)) (∑ j ∈ s, (c j : ℂ) • bdGen (θ j))
       = ((∑ i ∈ s, ∑ j ∈ s, c i * c j * bdGram (θ i) (θ j) : ℝ) : ℂ) := by
@@ -87,7 +87,7 @@ theorem bdGram_quadraticForm_eq_norm_sq {I : Type*} (s : Finset I) (θ : I → �
     ring
   have hnorm : (RCLike.re (inner ℂ (∑ i ∈ s, (c i : ℂ) • bdGen (θ i))
       (∑ i ∈ s, (c i : ℂ) • bdGen (θ i))) : ℝ)
-      = ‖∑ i ∈ s, (c i : ℂ) • bdGen (θ i)‖ ^ 2 := inner_self_eq_norm_sq _
+      = ‖∑ i ∈ s, (c i : ℂ) • bdGen (θ i)‖ ^ (2 : ℕ) := inner_self_eq_norm_sq _
   rw [hexp] at hnorm
   rw [← hnorm]
   show ∑ i ∈ s, ∑ j ∈ s, c i * c j * bdGram (θ i) (θ j)

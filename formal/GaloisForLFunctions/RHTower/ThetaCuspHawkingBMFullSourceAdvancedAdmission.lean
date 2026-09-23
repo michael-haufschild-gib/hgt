@@ -358,19 +358,19 @@ theorem lift_plus_response_ingoing_horizon (q : XiZeroCopy) (branch : Bool) (amp
       timeLiftField q branch amplitude (v-x) x ![X,Real.exp k]+
         response q branch amplitude (v-x) x X k) atBot
       (𝓝 ((-physicalRate q branch*(physicalRate q branch-1)/4)*
-        D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amplitude^2*
+        D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amplitude^(2 : ℕ)*
         timeOnset (2*physicalRate q branch) v*fullSquarePotential q ![X,Real.exp k])) := by
   let s := physicalRate q branch
   have hp : ContinuousAt (fun u : ℝ => D4BMLaplaceRadial.power (2*s) (1+u)) 1 :=
     (D4BMLaplaceRadial.power_derivatives (2*s) (by norm_num : 0 < (1+(1:ℝ)))).1.continuousAt.comp
       (f := fun u : ℝ => 1+u) (by fun_prop)
   have hc : ContinuousAt (fun u : ℝ =>
-      (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) (1+u)*amplitude^2)*(u:ℂ)^3) 1 := by
+      (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) (1+u)*amplitude^(2 : ℕ))*(u:ℂ)^(3 : ℕ)) 1 := by
     fun_prop
   have hl := (hc.tendsto.comp unit_horizon).mul_const
     (timeOnset (2*s) v*fullSquarePotential q ![X,Real.exp k])
   have he : Tendsto (fun x : ℝ => timeLiftField q branch amplitude (v-x) x ![X,Real.exp k]) atBot
-      (𝓝 ((-s*(s-1)/4)*D4BMLaplaceRadial.power (2*s) 2*amplitude^2*
+      (𝓝 ((-s*(s-1)/4)*D4BMLaplaceRadial.power (2*s) 2*amplitude^(2 : ℕ)*
         timeOnset (2*s) v*fullSquarePotential q ![X,Real.exp k])) := by
     simpa only [s,timeLiftField,timeRadialLift,radialLift,sourceAmplitude,zero_mul,
       Complex.exp_zero,one_mul,mul_one,sub_add_cancel,Function.comp_apply,

@@ -31,7 +31,7 @@ open MeasureTheory Filter Topology
 part is the height times `t² + 1` over the squared distance to the spectral parameter. -/
 theorem im_suzukiDonoghueKernel {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
     (suzukiDonoghueKernel t z).im
-      = z.im * (t ^ 2 + 1) / Complex.normSq ((t : ℂ) - z) := by
+      = z.im * (t ^ (2 : ℕ) + 1) / Complex.normSq ((t : ℂ) - z) := by
   have hd : ((t : ℂ) - z) ≠ 0 := suzukiDonoghueDenom_ne_zero hz t
   have hns : Complex.normSq ((t : ℂ) - z) ≠ 0 := ne_of_gt (Complex.normSq_pos.mpr hd)
   rw [suzukiDonoghueKernel_eq_mobius hd, Complex.div_im]
@@ -135,11 +135,11 @@ never `1`, so the inversion has no side condition beyond the one already needed 
 /-- The inverse Cayley transform, carrying the disc back to the upper half plane. -/
 noncomputable def herglotzOfCayley (Θ : ℂ) : ℂ := Complex.I * (1 + Θ) / (1 - Θ)
 
-/-- **Derivative of the Cayley--Herglotz transform.**  `d/dΘ [I(1+Θ)/(1-Θ)] = 2I/(1-Θ)^2`, away
+/-- **Derivative of the Cayley--Herglotz transform.**  `d/dΘ [I(1+Θ)/(1-Θ)] = 2I/(1-Θ)^(2 : ℕ)`, away
 from the excluded value `Θ = 1`.  This is the factor that converts a logarithmic derivative of the
 characteristic into a derivative of the Herglotz function. -/
 theorem hasDerivAt_herglotzOfCayley {Θ : ℂ} (h : Θ ≠ 1) :
-    HasDerivAt herglotzOfCayley (2 * Complex.I / (1 - Θ) ^ 2) Θ := by
+    HasDerivAt herglotzOfCayley (2 * Complex.I / (1 - Θ) ^ (2 : ℕ)) Θ := by
   have hv : (1 : ℂ) - Θ ≠ 0 := sub_ne_zero.mpr (Ne.symm h)
   have hu : HasDerivAt (fun w : ℂ => Complex.I * (1 + w)) Complex.I Θ := by
     simpa using ((hasDerivAt_id Θ).const_add (1 : ℂ)).const_mul Complex.I
@@ -148,8 +148,8 @@ theorem hasDerivAt_herglotzOfCayley {Θ : ℂ} (h : Θ ≠ 1) :
   have hdiv := hu.div hvd hv
   have hfun : herglotzOfCayley
       = (fun w : ℂ => Complex.I * (1 + w)) / (fun w : ℂ => (1 : ℂ) - w) := rfl
-  rw [hfun, show (2 : ℂ) * Complex.I / (1 - Θ) ^ 2
-      = (Complex.I * (1 - Θ) - Complex.I * (1 + Θ) * (-1)) / (1 - Θ) ^ 2 by ring]
+  rw [hfun, show (2 : ℂ) * Complex.I / (1 - Θ) ^ (2 : ℕ)
+      = (Complex.I * (1 - Θ) - Complex.I * (1 + Θ) * (-1)) / (1 - Θ) ^ (2 : ℕ) by ring]
   exact hdiv
 
 /-- **Chain rule for the Cayley--Herglotz transform.**  Composing with a characteristic multiplies
@@ -157,13 +157,13 @@ the transform's derivative by the characteristic's, which is the form `(16)`--`(
 theorem hasDerivAt_herglotzOfCayley_comp {Θ : ℂ → ℂ} {Θ' z : ℂ}
     (hΘ : HasDerivAt Θ Θ' z) (h : Θ z ≠ 1) :
     HasDerivAt (fun w => herglotzOfCayley (Θ w))
-      (2 * Complex.I / (1 - Θ z) ^ 2 * Θ') z :=
+      (2 * Complex.I / (1 - Θ z) ^ (2 : ℕ) * Θ') z :=
   (hasDerivAt_herglotzOfCayley h).comp z hΘ
 
-/-- **Derivative of the inverse Cayley transform.**  `d/dm [(m - I)/(m + I)] = 2I/(m + I)^2`, away
+/-- **Derivative of the inverse Cayley transform.**  `d/dm [(m - I)/(m + I)] = 2I/(m + I)^(2 : ℕ)`, away
 from the excluded value `m = -I`. -/
 theorem hasDerivAt_cayleyOfHerglotz {m : ℂ} (h : m + Complex.I ≠ 0) :
-    HasDerivAt cayleyOfHerglotz (2 * Complex.I / (m + Complex.I) ^ 2) m := by
+    HasDerivAt cayleyOfHerglotz (2 * Complex.I / (m + Complex.I) ^ (2 : ℕ)) m := by
   have hu : HasDerivAt (fun w : ℂ => w - Complex.I) 1 m := by
     simpa using (hasDerivAt_id m).sub_const Complex.I
   have hv : HasDerivAt (fun w : ℂ => w + Complex.I) 1 m := by
@@ -171,15 +171,15 @@ theorem hasDerivAt_cayleyOfHerglotz {m : ℂ} (h : m + Complex.I ≠ 0) :
   have hdiv := hu.div hv h
   have hfun : cayleyOfHerglotz
       = (fun w : ℂ => w - Complex.I) / (fun w : ℂ => w + Complex.I) := rfl
-  rw [hfun, show (2 : ℂ) * Complex.I / (m + Complex.I) ^ 2
-      = (1 * (m + Complex.I) - (m - Complex.I) * 1) / (m + Complex.I) ^ 2 by ring]
+  rw [hfun, show (2 : ℂ) * Complex.I / (m + Complex.I) ^ (2 : ℕ)
+      = (1 * (m + Complex.I) - (m - Complex.I) * 1) / (m + Complex.I) ^ (2 : ℕ) by ring]
   exact hdiv
 
 /-- Chain rule for the inverse Cayley transform, completing the pair. -/
 theorem hasDerivAt_cayleyOfHerglotz_comp {m : ℂ → ℂ} {m' z : ℂ}
     (hm : HasDerivAt m m' z) (h : m z + Complex.I ≠ 0) :
     HasDerivAt (fun w => cayleyOfHerglotz (m w))
-      (2 * Complex.I / (m z + Complex.I) ^ 2 * m') z :=
+      (2 * Complex.I / (m z + Complex.I) ^ (2 : ℕ) * m') z :=
   (hasDerivAt_cayleyOfHerglotz h).comp z hm
 
 /-- The inverse Cayley transform is differentiable away from its excluded value. -/

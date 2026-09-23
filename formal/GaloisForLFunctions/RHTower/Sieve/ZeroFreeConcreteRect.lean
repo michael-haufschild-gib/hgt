@@ -22,22 +22,22 @@ open Complex
 except the single compatibility condition `c₀/(16 log⁹N) ≤ δ₀`, which holds for all large `N`. -/
 theorem zero_free_concrete_rect {N : ℕ} {δ₀ T : ℝ} (hlogN : 3 ≤ Real.log N) (hN : 2 ≤ N)
     (hbox : ∀ s : ℂ, 1 - δ₀ ≤ s.re → s.re ≤ 1 → |s.im| ≤ 1 → s ≠ 1 → riemannZeta s ≠ 0)
-    (hfit : zeroFreeConst / (16 * (Real.log N) ^ 9) ≤ δ₀)
+    (hfit : zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) ≤ δ₀)
     (hT0 : 0 ≤ T) (hTN : 3 + 2 * T ≤ (N : ℝ)) :
-    ∀ s ∈ Set.uIcc (1 - zeroFreeConst / (16 * (Real.log N) ^ 9))
-        (1 + zeroFreeConst / (2 * (Real.log N) ^ 9)) ×ℂ Set.uIcc (-T) T,
+    ∀ s ∈ Set.uIcc (1 - zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)))
+        (1 + zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))) ×ℂ Set.uIcc (-T) T,
       s ≠ 1 → riemannZeta s ≠ 0 := by
   have hA0 := zeroFreeConst_pos
   have hL0 : (0 : ℝ) < Real.log N := by linarith
-  have hL9 : (0 : ℝ) < (Real.log N) ^ 9 := by positivity
-  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log N) ^ 9) := by positivity
-  have h2 : (0 : ℝ) < zeroFreeConst / (2 * (Real.log N) ^ 9) := by positivity
-  have hcd : 1 - zeroFreeConst / (16 * (Real.log N) ^ 9)
-      ≤ 1 + zeroFreeConst / (2 * (Real.log N) ^ 9) := by linarith
-  have hcmp : zeroFreeConst / (2 * (Real.log N) ^ 9)
-      < zeroFreeConst / (16 * (Real.log N) ^ 9) * 8 + zeroFreeConst / (16 * (Real.log N) ^ 9) := by
-    have heq : zeroFreeConst / (2 * (Real.log N) ^ 9)
-        = zeroFreeConst / (16 * (Real.log N) ^ 9) * 8 := by
+  have hL9 : (0 : ℝ) < (Real.log N) ^ (9 : ℕ) := by positivity
+  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) := by positivity
+  have h2 : (0 : ℝ) < zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ)) := by positivity
+  have hcd : 1 - zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ))
+      ≤ 1 + zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ)) := by linarith
+  have hcmp : zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))
+      < zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) * 8 + zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) := by
+    have heq : zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))
+        = zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) * 8 := by
       field_simp
       ring
     rw [heq]
@@ -52,9 +52,9 @@ theorem zero_free_concrete_rect {N : ℕ} {δ₀ T : ℝ} (hlogN : 3 ≤ Real.lo
   · have hNbig : 3 + 2 * |s.im| ≤ (N : ℝ) := by
       have : |s.im| ≤ T := abs_le.2 ⟨himlo, himhi⟩
       linarith
-    have hgt : 1 - zeroFreeConst / (2 * (Real.log N) ^ 9) < s.re := by
-      have heq : zeroFreeConst / (2 * (Real.log N) ^ 9)
-          = zeroFreeConst / (16 * (Real.log N) ^ 9) * 8 := by
+    have hgt : 1 - zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ)) < s.re := by
+      have heq : zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))
+          = zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) * 8 := by
         field_simp
         ring
       rw [heq]

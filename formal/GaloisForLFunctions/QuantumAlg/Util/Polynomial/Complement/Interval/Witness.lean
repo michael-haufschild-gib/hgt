@@ -215,19 +215,19 @@ private theorem list_prod_flatMap_two {α M : Type*} [CommMonoid M]
 private theorem list_prod_flatMap_four_pair {α M : Type*} [CommMonoid M]
     (roots : List α) (f g : α → M) :
     (roots.flatMap fun z => [f z, g z, f z, g z]).prod =
-      (roots.map fun z => (f z * g z) ^ 2).prod := by
+      (roots.map fun z => (f z * g z) ^ (2 : ℕ)).prod := by
   induction roots with
   | nil => simp
   | cons z zs ih =>
       calc
         ((z :: zs).flatMap fun z => [f z, g z, f z, g z]).prod =
-            ((f z * g z) ^ 2) *
+            ((f z * g z) ^ (2 : ℕ)) *
               (zs.flatMap fun z => [f z, g z, f z, g z]).prod := by
           simp [pow_two, mul_assoc]
-        _ = ((f z * g z) ^ 2) *
-              (zs.map fun z => (f z * g z) ^ 2).prod := by
+        _ = ((f z * g z) ^ (2 : ℕ)) *
+              (zs.map fun z => (f z * g z) ^ (2 : ℕ)).prod := by
           rw [ih]
-        _ = ((z :: zs).map fun z => (f z * g z) ^ 2).prod := by
+        _ = ((z :: zs).map fun z => (f z * g z) ^ (2 : ℕ)).prod := by
           simp
 
 private theorem exists_Ioo_not_root_of_ne_zero {P : ℝ[X]} (hP : P ≠ 0)
@@ -1709,12 +1709,12 @@ def IsPositiveInteriorRealRootRepresentative (z : ℂ) : Prop :=
   z.im = 0 ∧ 0 < z.re ∧ z.re < 1
 
 /-- Positive real roots at or outside the unit interval, including endpoint
-roots at `1`.  The source factor is `s^2 - x^2`. -/
+roots at `1`.  The source factor is `s^(2 : ℕ) - x^(2 : ℕ)`. -/
 def IsPositiveOutsideRealRootRepresentative (z : ℂ) : Prop :=
   z.im = 0 ∧ 1 ≤ z.re
 
 /-- Pure imaginary roots with positive imaginary part.  The source factor is
-`x^2 + r^2`. -/
+`x^(2 : ℕ) + r^(2 : ℕ)`. -/
 def IsPositiveImaginaryRootRepresentative (z : ℂ) : Prop :=
   z.re = 0 ∧ 0 < z.im
 
@@ -3511,7 +3511,7 @@ theorem SourceRootProductData.interiorRealRootPair_linearFactorProduct
     {A : ℝ[X]} (data : SourceRootProductData A) :
     (data.interiorRealRootPairParameters.map fun s : ℝ =>
         (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-          ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod =
+          ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod =
       (data.positiveInteriorRealRootValues.map fun s : ℝ =>
         (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
           ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^
@@ -3538,7 +3538,7 @@ theorem SourceRootProductData.interiorRealRootPair_linearFactorProduct
         (realPolynomialToComplex A).rootMultiplicity (s : ℂ) :=
     two_mul_half_of_even heven
   change
-      (pair ^ 2) ^ ((realPolynomialToComplex A).rootMultiplicity (s : ℂ) / 2) =
+      (pair ^ (2 : ℕ)) ^ ((realPolynomialToComplex A).rootMultiplicity (s : ℂ) / 2) =
         pair ^ (realPolynomialToComplex A).rootMultiplicity (s : ℂ)
   rw [← pow_mul, htwo]
 
@@ -3831,7 +3831,7 @@ theorem HasRealParity.C_mul {P : ℝ[X]} {p : ℕ} (c : ℝ)
   exact (hC.mul hP).congr (by omega)
 
 theorem HasRealParity.square_even {P : ℝ[X]} {p : ℕ} (hP : HasRealParity P p) :
-    HasRealParity (P ^ 2) 0 := by
+    HasRealParity (P ^ (2 : ℕ)) 0 := by
   have hmul : HasRealParity (P * P) (p + p) := hP.mul hP
   rw [pow_two]
   exact hmul.congr (by omega)
@@ -3845,26 +3845,26 @@ theorem hasRealParity_X_pow (n : ℕ) :
   · omega
   · simp [hkn] at hk
 
-/-- The source factor `1 - X^2` is even. -/
+/-- The source factor `1 - X^(2 : ℕ)` is even. -/
 theorem hasRealParity_one_sub_X_sq :
-    HasRealParity ((1 : ℝ[X]) - X ^ 2) 0 := by
+    HasRealParity ((1 : ℝ[X]) - X ^ (2 : ℕ)) 0 := by
   exact (hasRealParity_one (by rfl)).sub
     ((hasRealParity_X_pow 2).congr (by omega))
 
-/-- The factor `1 - X^2` has degree at most two. -/
+/-- The factor `1 - X^(2 : ℕ)` has degree at most two. -/
 theorem one_sub_X_sq_natDegree_le_two :
-    (((1 : ℝ[X]) - X ^ 2).natDegree ≤ 2) := by
+    (((1 : ℝ[X]) - X ^ (2 : ℕ)).natDegree ≤ 2) := by
   have hone : (1 : ℝ[X]).natDegree ≤ 2 := by
     rw [Polynomial.natDegree_one]
     norm_num
-  have hXsq : ((X : ℝ[X]) ^ 2).natDegree ≤ 2 := by
+  have hXsq : ((X : ℝ[X]) ^ (2 : ℕ)).natDegree ≤ 2 := by
     rw [Polynomial.natDegree_X_pow]
   exact Polynomial.natDegree_sub_le_of_le hone hXsq
 
 /-- The interval square decomposition promised by [GSLW19,
 BlockHam.tex:436-480]:
 
-`A = B^2 + (1 - X^2) * C^2`.
+`A = B^(2 : ℕ) + (1 - X^(2 : ℕ)) * C^(2 : ℕ)`.
 
 The source proof also tracks degree and parity bounds; they are fields here so
 later QSP/QSVT modules can consume the certificate without re-reading the root
@@ -3905,7 +3905,7 @@ noncomputable def zero (k : ℕ) : DegreeParityCertificate (0 : ℝ[X]) k where
 /-- A pure square has an interval-square degree/parity certificate with the
 second square set to zero. -/
 noncomputable def ofSquare {k : ℕ} (B : ℝ[X]) (hdeg : B.natDegree ≤ k)
-    (hpar : HasRealParity B k) : DegreeParityCertificate (B ^ 2) k where
+    (hpar : HasRealParity B k) : DegreeParityCertificate (B ^ (2 : ℕ)) k where
   B := B
   C := 0
   eq_decomposition := by simp
@@ -3926,7 +3926,7 @@ end DegreeParityCertificate
 is an elementary sanity check for the certificate API, not the Gilyén root-class
 decomposition itself. -/
 noncomputable def ofSquare (B : ℝ[X]) :
-    Certificate (B ^ 2) where
+    Certificate (B ^ (2 : ℕ)) where
   B := B
   C := 0
   eq_decomposition := by simp
@@ -3939,7 +3939,7 @@ noncomputable def one : Certificate (1 : ℝ[X]) where
 
 /-- If a certificate is present, its stored equality can be used directly. -/
 theorem eq_of_certificate {A : ℝ[X]} (h : Certificate A) :
-    A = h.B ^ 2 + (1 - X ^ 2) * h.C ^ 2 :=
+    A = h.B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * h.C ^ (2 : ℕ) :=
   h.eq_decomposition
 
 /-- Any interval-square certificate proves nonnegativity on `[-1,1]`. -/
@@ -3947,10 +3947,10 @@ theorem nonnegativeOnUnitInterval_of_certificate {A : ℝ[X]} (h : Certificate A
     NonnegativeOnUnitInterval A := by
   intro x hx
   rw [h.eq_decomposition]
-  have hx_nonneg : 0 ≤ 1 - x ^ 2 := by
+  have hx_nonneg : 0 ≤ 1 - x ^ (2 : ℕ) := by
     nlinarith [hx.1, hx.2]
-  have hB : 0 ≤ (h.B.eval x) ^ 2 := sq_nonneg _
-  have hC : 0 ≤ (h.C.eval x) ^ 2 := sq_nonneg _
+  have hB : 0 ≤ (h.B.eval x) ^ (2 : ℕ) := sq_nonneg _
+  have hC : 0 ≤ (h.C.eval x) ^ (2 : ℕ) := sq_nonneg _
   simp
   nlinarith [mul_nonneg hx_nonneg hC, hB]
 
@@ -3980,15 +3980,15 @@ theorem degree_C_source_bound {A : ℝ[X]} {k : ℕ}
 
 end DegreeParityCertificate
 
-/-- A real polynomial bounded by one on `[-1,1]` makes `1 - P^2`
+/-- A real polynomial bounded by one on `[-1,1]` makes `1 - P^(2 : ℕ)`
 nonnegative on that interval. -/
 theorem one_sub_sq_nonnegative_of_bounded {P : ℝ[X]}
     (hP : BoundedByOneOnUnitInterval P) :
-    NonnegativeOnUnitInterval (1 - P ^ 2) := by
+    NonnegativeOnUnitInterval (1 - P ^ (2 : ℕ)) := by
   intro x hx
   have hbound := hP x hx
   rw [abs_le] at hbound
-  have hnonneg : 0 ≤ 1 - (P.eval x) ^ 2 := by
+  have hnonneg : 0 ≤ 1 - (P.eval x) ^ (2 : ℕ) := by
     nlinarith [hbound.1, hbound.2]
   simpa using hnonneg
 
@@ -3996,31 +3996,31 @@ theorem one_sub_sq_nonnegative_of_bounded {P : ℝ[X]}
 
 /-- The real-root factor rearrangement from [GSLW19, BlockHam.tex:459-460].
 
-For a real root class with representative `s`, the factor `s^2 - x^2`
-is written as a sum of a square term and `(1 - x^2)` times another square
+For a real root class with representative `s`, the factor `s^(2 : ℕ) - x^(2 : ℕ)`
+is written as a sum of a square term and `(1 - x^(2 : ℕ))` times another square
 coefficient.  This is the polynomial identity behind the first displayed
 factor `R_(s)(x) R_(s)^*(x)`. -/
 theorem realRootFactor_rearrangement (s x : ℝ) :
-    s ^ 2 - x ^ 2 = (s ^ 2 - 1) * x ^ 2 + s ^ 2 * (1 - x ^ 2) := by
+    s ^ (2 : ℕ) - x ^ (2 : ℕ) = (s ^ (2 : ℕ) - 1) * x ^ (2 : ℕ) + s ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) := by
   ring
 
 /-- The imaginary-root factor rearrangement from [GSLW19,
 BlockHam.tex:461].
 
-The source writes this as `x^2 + |s|^2`; here `r` denotes the nonnegative
+The source writes this as `x^(2 : ℕ) + |s|^(2 : ℕ)`; here `r` denotes the nonnegative
 real number `|s|`, but the algebraic identity itself does not need the
 nonnegativity hypothesis. -/
 theorem imaginaryRootFactor_rearrangement (r x : ℝ) :
-    x ^ 2 + r ^ 2 = (r ^ 2 + 1) * x ^ 2 + r ^ 2 * (1 - x ^ 2) := by
+    x ^ (2 : ℕ) + r ^ (2 : ℕ) = (r ^ (2 : ℕ) + 1) * x ^ (2 : ℕ) + r ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) := by
   ring
 
 /-- The complex linear factors for the real root pair `±s` multiply to the
-complexification of `x^2-s^2`, matching the real-root grouping step of
+complexification of `x^(2 : ℕ)-s^(2 : ℕ)`, matching the real-root grouping step of
 [GSLW19, BlockHam.tex:450-456]. -/
 theorem complexLinearFactors_realPair (s : ℝ) :
     (X - Polynomial.C (s : ℂ)) *
         (X - Polynomial.C ((-s : ℝ) : ℂ)) =
-      realPolynomialToComplex ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) := by
+      realPolynomialToComplex ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) := by
   apply Polynomial.funext
   intro z
   simp [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow]
@@ -4030,37 +4030,37 @@ theorem complexLinearFactors_realPair (s : ℝ) :
 the real pair of complex linear factors [GSLW19, BlockHam.tex:445,469-474]. -/
 theorem complexLinearFactors_interiorRealPair (s : ℝ) :
     ((X - Polynomial.C (s : ℂ)) *
-        (X - Polynomial.C ((-s : ℝ) : ℂ))) ^ 2 =
+        (X - Polynomial.C ((-s : ℝ) : ℂ))) ^ (2 : ℕ) =
       realPolynomialToComplex
-        (((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2) := by
+        (((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)) := by
   rw [complexLinearFactors_realPair, realPolynomialToComplex_pow]
 
-/-- The outside-real-root source factor `s^2-x^2` differs from the complex
+/-- The outside-real-root source factor `s^(2 : ℕ)-x^(2 : ℕ)` differs from the complex
 linear pair product by the expected sign [GSLW19, BlockHam.tex:459-460]. -/
 theorem realPolynomialToComplex_outsideRealFactor (s : ℝ) :
-    realPolynomialToComplex (Polynomial.C (s ^ 2) - (X : ℝ[X]) ^ 2) =
+    realPolynomialToComplex (Polynomial.C (s ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)) =
       -((X - Polynomial.C (s : ℂ)) *
         (X - Polynomial.C ((-s : ℝ) : ℂ))) := by
   rw [complexLinearFactors_realPair]
   simp [realPolynomialToComplex_sub]
 
 /-- The complex linear factors for the imaginary root pair `±ir` multiply to
-the complexification of `x^2+r^2`, matching the source imaginary-root factor
+the complexification of `x^(2 : ℕ)+r^(2 : ℕ)`, matching the source imaginary-root factor
 [GSLW19, BlockHam.tex:461]. -/
 theorem complexLinearFactors_imaginaryPair (r : ℝ) :
     (X - Polynomial.C (Complex.I * (r : ℂ))) *
         (X - Polynomial.C (-(Complex.I * (r : ℂ)))) =
-      realPolynomialToComplex ((X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)) := by
+      realPolynomialToComplex ((X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))) := by
   ring_nf
   have hC :
       -(Polynomial.C Complex.I * Polynomial.C (r : ℂ) *
           (Polynomial.C Complex.I * Polynomial.C (r : ℂ))) =
-        Polynomial.C (r : ℂ) ^ 2 := by
+        Polynomial.C (r : ℂ) ^ (2 : ℕ) := by
     rw [(Polynomial.C_mul (R := ℂ) (a := Complex.I) (b := (r : ℂ))).symm]
     rw [(Polynomial.C_mul (R := ℂ) (a := Complex.I * (r : ℂ))
       (b := Complex.I * (r : ℂ))).symm]
     rw [show (Complex.I * (r : ℂ)) * (Complex.I * (r : ℂ)) =
-        -((r : ℂ) ^ 2) by
+        -((r : ℂ) ^ (2 : ℕ)) by
       ring_nf
       rw [Complex.I_sq]
       ring]
@@ -4076,8 +4076,8 @@ theorem complexLinearFactors_complexQuartet (a b : ℝ) :
       ((X - Polynomial.C ((a : ℂ) - Complex.I * (b : ℂ))) *
         (X - Polynomial.C (-((a : ℂ) - Complex.I * (b : ℂ))))) =
       realPolynomialToComplex
-        ((X : ℝ[X]) ^ 4 + Polynomial.C (2 * (b ^ 2 - a ^ 2)) * X ^ 2 +
-          Polynomial.C ((a ^ 2 + b ^ 2) ^ 2)) := by
+        ((X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+          Polynomial.C ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ))) := by
   apply Polynomial.funext
   intro z
   simp [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_add,
@@ -4091,8 +4091,8 @@ theorem complexRootOrbit_linearFactorProduct (a b : ℝ) :
     ((complexRootOrbit ((a : ℂ) + Complex.I * (b : ℂ))).map
         (fun z => (X : ℂ[X]) - Polynomial.C z)).prod =
       realPolynomialToComplex
-        ((X : ℝ[X]) ^ 4 + Polynomial.C (2 * (b ^ 2 - a ^ 2)) * X ^ 2 +
-          Polynomial.C ((a ^ 2 + b ^ 2) ^ 2)) := by
+        ((X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+          Polynomial.C ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ))) := by
   apply Polynomial.funext
   intro z
   simp [complexRootOrbit, Polynomial.eval_mul, Polynomial.eval_sub,
@@ -4105,27 +4105,27 @@ This is the list-level form of [GSLW19, BlockHam.tex:452-454]. -/
 theorem realPolynomialToComplex_product_interiorRealRootPair :
     ∀ roots : List ℝ,
       realPolynomialToComplex
-          ((roots.map fun s => (((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2)).prod) =
+          ((roots.map fun s => (((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ))).prod) =
         (roots.map fun s : ℝ =>
           (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod
+            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod
   | [] => by simp
   | s :: roots => by
       simp only [List.map_cons, List.prod_cons]
       have hfactor :
-          realPolynomialToComplex (((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2) =
+          realPolynomialToComplex (((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)) =
             (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2 := by
+              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ) := by
         simpa using (complexLinearFactors_interiorRealPair s).symm
       rw [realPolynomialToComplex_mul,
         realPolynomialToComplex_product_interiorRealRootPair roots, hfactor]
 
 /-- Complexification of the outside-real source factors, including the sign
-change between `(x-s)(x+s)` and `s^2-x^2` [GSLW19, BlockHam.tex:453-460]. -/
+change between `(x-s)(x+s)` and `s^(2 : ℕ)-x^(2 : ℕ)` [GSLW19, BlockHam.tex:453-460]. -/
 theorem realPolynomialToComplex_product_outsideRealRoot :
     ∀ roots : List ℝ,
       realPolynomialToComplex
-          ((roots.map fun s => Polynomial.C (s ^ 2) - (X : ℝ[X]) ^ 2).prod) =
+          ((roots.map fun s => Polynomial.C (s ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod) =
         (roots.map fun s : ℝ =>
           -(((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
             ((X : ℂ[X]) - Polynomial.C (-(s : ℂ))))).prod
@@ -4133,7 +4133,7 @@ theorem realPolynomialToComplex_product_outsideRealRoot :
   | s :: roots => by
       simp only [List.map_cons, List.prod_cons]
       have hfactor :
-          realPolynomialToComplex (Polynomial.C (s ^ 2) - (X : ℝ[X]) ^ 2) =
+          realPolynomialToComplex (Polynomial.C (s ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)) =
             -(((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
               ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) := by
         simpa using realPolynomialToComplex_outsideRealFactor s
@@ -4145,7 +4145,7 @@ theorem realPolynomialToComplex_product_outsideRealRoot :
 theorem realPolynomialToComplex_product_imaginaryRoot :
     ∀ roots : List ℝ,
       realPolynomialToComplex
-          ((roots.map fun r => (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod) =
+          ((roots.map fun r => (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod) =
         (roots.map fun r : ℝ =>
           ((X : ℂ[X]) - Polynomial.C (Complex.I * (r : ℂ))) *
             ((X : ℂ[X]) - Polynomial.C (-(Complex.I * (r : ℂ))))).prod
@@ -4153,7 +4153,7 @@ theorem realPolynomialToComplex_product_imaginaryRoot :
   | r :: roots => by
       simp only [List.map_cons, List.prod_cons]
       have hfactor :
-          realPolynomialToComplex ((X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)) =
+          realPolynomialToComplex ((X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))) =
             ((X : ℂ[X]) - Polynomial.C (Complex.I * (r : ℂ))) *
               ((X : ℂ[X]) - Polynomial.C (-(Complex.I * (r : ℂ)))) := by
         simpa using (complexLinearFactors_imaginaryPair r).symm
@@ -4166,8 +4166,8 @@ theorem realPolynomialToComplex_product_complexRoot :
     ∀ roots : List (ℝ × ℝ),
       realPolynomialToComplex
           ((roots.map fun z =>
-            (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-              Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod) =
+            (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+              Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod) =
         (roots.map fun z : ℝ × ℝ =>
           ((complexRootOrbit ((z.1 : ℂ) + Complex.I * (z.2 : ℂ))).map
             (fun w => (X : ℂ[X]) - Polynomial.C w)).prod).prod
@@ -4179,16 +4179,16 @@ theorem realPolynomialToComplex_product_complexRoot :
         ← complexRootOrbit_linearFactorProduct z.1 z.2]
 
 /-- Certificate constructor for a real-root factor outside the unit interval
-[GSLW19, BlockHam.tex:459-460].  The hypothesis `1 <= s^2` is the algebraic
+[GSLW19, BlockHam.tex:459-460].  The hypothesis `1 <= s^(2 : ℕ)` is the algebraic
 form of `|s| >= 1`. -/
-noncomputable def realRootFactorCertificate (s : ℝ) (hs : 1 ≤ s ^ 2) :
-    Certificate (Polynomial.C (s ^ 2) - X ^ 2) where
-  B := Polynomial.C (Real.sqrt (s ^ 2 - 1)) * X
+noncomputable def realRootFactorCertificate (s : ℝ) (hs : 1 ≤ s ^ (2 : ℕ)) :
+    Certificate (Polynomial.C (s ^ (2 : ℕ)) - X ^ (2 : ℕ)) where
+  B := Polynomial.C (Real.sqrt (s ^ (2 : ℕ) - 1)) * X
   C := Polynomial.C s
   eq_decomposition := by
     apply Polynomial.funext
     intro x
-    have hsqrt : (Real.sqrt (s ^ 2 - 1)) ^ 2 = s ^ 2 - 1 := by
+    have hsqrt : (Real.sqrt (s ^ (2 : ℕ) - 1)) ^ (2 : ℕ) = s ^ (2 : ℕ) - 1 := by
       exact Real.sq_sqrt (sub_nonneg.mpr hs)
     simp only [map_pow, eval_sub, eval_pow, eval_C, eval_X, eval_add, eval_mul,
       eval_one]
@@ -4199,13 +4199,13 @@ noncomputable def realRootFactorCertificate (s : ℝ) (hs : 1 ≤ s ^ 2) :
 BlockHam.tex:461].  The source writes the parameter as `|s|`; here it is the
 real number `r`. -/
 noncomputable def imaginaryRootFactorCertificate (r : ℝ) :
-    Certificate (X ^ 2 + Polynomial.C (r ^ 2)) where
-  B := Polynomial.C (Real.sqrt (r ^ 2 + 1)) * X
+    Certificate (X ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))) where
+  B := Polynomial.C (Real.sqrt (r ^ (2 : ℕ) + 1)) * X
   C := Polynomial.C r
   eq_decomposition := by
     apply Polynomial.funext
     intro x
-    have hsqrt : (Real.sqrt (r ^ 2 + 1)) ^ 2 = r ^ 2 + 1 := by
+    have hsqrt : (Real.sqrt (r ^ (2 : ℕ) + 1)) ^ (2 : ℕ) = r ^ (2 : ℕ) + 1 := by
       exact Real.sq_sqrt (by nlinarith [sq_nonneg r])
     simp only [map_pow, eval_add, eval_pow, eval_X, eval_C, eval_mul, eval_sub,
       eval_one]
@@ -4215,17 +4215,17 @@ noncomputable def imaginaryRootFactorCertificate (r : ℝ) :
 /-- Radicand used in the complex-root factor `Q_(a,b)` of [GSLW19,
 BlockHam.tex:462-466]. -/
 def complexRootRadicand (a b : ℝ) : ℝ :=
-  2 * (a ^ 2 + 1) * b ^ 2 + (a ^ 2 - 1) ^ 2 + b ^ 4
+  2 * (a ^ (2 : ℕ) + 1) * b ^ (2 : ℕ) + (a ^ (2 : ℕ) - 1) ^ (2 : ℕ) + b ^ (4 : ℕ)
 
 /-- The real parameter `c` used in the complex-root factor `Q_(a,b)` of
 [GSLW19, BlockHam.tex:462-466]. -/
 noncomputable def complexRootParameter (a b : ℝ) : ℝ :=
-  a ^ 2 + b ^ 2 + Real.sqrt (complexRootRadicand a b)
+  a ^ (2 : ℕ) + b ^ (2 : ℕ) + Real.sqrt (complexRootRadicand a b)
 
 /-- Algebraic condition on `c` that makes the complex-root quartic factor
 split as `Q_(a,b)(x) Q_(a,b)^*(x)`. -/
 def IsComplexRootParameter (a b c : ℝ) : Prop :=
-  c ^ 2 - 1 - 2 * c * (a ^ 2 + b ^ 2) = 2 * (b ^ 2 - a ^ 2)
+  c ^ (2 : ℕ) - 1 - 2 * c * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) = 2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))
 
 /-- The parameter specified in [GSLW19, BlockHam.tex:464-466] satisfies the
 coefficient equation needed by the quartic factorization. -/
@@ -4233,13 +4233,13 @@ theorem complexRootParameter_isComplexRootParameter (a b : ℝ) :
     IsComplexRootParameter a b (complexRootParameter a b) := by
   have hrad_nonneg : 0 ≤ complexRootRadicand a b := by
     unfold complexRootRadicand
-    nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg (a ^ 2 - 1), sq_nonneg (b ^ 2)]
+    nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg (a ^ (2 : ℕ) - 1), sq_nonneg (b ^ (2 : ℕ))]
   have hsqrt :
-      (Real.sqrt (complexRootRadicand a b)) ^ 2 = complexRootRadicand a b := by
+      (Real.sqrt (complexRootRadicand a b)) ^ (2 : ℕ) = complexRootRadicand a b := by
     simpa [sq] using Real.sq_sqrt hrad_nonneg
   unfold IsComplexRootParameter complexRootParameter
   set r : ℝ := Real.sqrt (complexRootRadicand a b) with hrdef
-  have hr : r ^ 2 = complexRootRadicand a b := by
+  have hr : r ^ (2 : ℕ) = complexRootRadicand a b := by
     simpa [hrdef] using hsqrt
   unfold complexRootRadicand at hr
   nlinarith [hr]
@@ -4250,8 +4250,8 @@ BlockHam.tex:462-466], stated with the coefficient relation on `c` exposed.
 The next theorem instantiates `c` with the source's square-root expression. -/
 theorem complexRootFactor_rearrangement_of_parameter {a b c x : ℝ}
     (hc : IsComplexRootParameter a b c) :
-    x ^ 4 + 2 * x ^ 2 * (b ^ 2 - a ^ 2) + (a ^ 2 + b ^ 2) ^ 2 =
-      (c * x ^ 2 - (a ^ 2 + b ^ 2)) ^ 2 + (c ^ 2 - 1) * x ^ 2 * (1 - x ^ 2) := by
+    x ^ (4 : ℕ) + 2 * x ^ (2 : ℕ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) + (a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ) =
+      (c * x ^ (2 : ℕ) - (a ^ (2 : ℕ) + b ^ (2 : ℕ))) ^ (2 : ℕ) + (c ^ (2 : ℕ) - 1) * x ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) := by
   unfold IsComplexRootParameter at hc
   nlinarith [hc]
 
@@ -4259,27 +4259,27 @@ theorem complexRootFactor_rearrangement_of_parameter {a b c x : ℝ}
 parameter from [GSLW19, BlockHam.tex:462-466]. -/
 theorem complexRootFactor_rearrangement (a b : ℝ) :
     ∀ x : ℝ,
-      x ^ 4 + 2 * x ^ 2 * (b ^ 2 - a ^ 2) + (a ^ 2 + b ^ 2) ^ 2 =
-        ((complexRootParameter a b) * x ^ 2 - (a ^ 2 + b ^ 2)) ^ 2 +
-          ((complexRootParameter a b) ^ 2 - 1) * x ^ 2 * (1 - x ^ 2) := by
+      x ^ (4 : ℕ) + 2 * x ^ (2 : ℕ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) + (a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ) =
+        ((complexRootParameter a b) * x ^ (2 : ℕ) - (a ^ (2 : ℕ) + b ^ (2 : ℕ))) ^ (2 : ℕ) +
+          ((complexRootParameter a b) ^ (2 : ℕ) - 1) * x ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) := by
   intro x
   exact complexRootFactor_rearrangement_of_parameter
     (x := x) (complexRootParameter_isComplexRootParameter a b)
 
 /-- The explicit complex-root parameter from [GSLW19, BlockHam.tex:464-466]
-has `1 <= c^2`, so the coefficient `sqrt(c^2-1)` is real. -/
+has `1 <= c^(2 : ℕ)`, so the coefficient `sqrt(c^(2 : ℕ)-1)` is real. -/
 theorem complexRootParameter_sq_ge_one (a b : ℝ) :
-    1 ≤ (complexRootParameter a b) ^ 2 := by
-  have hrad_ge : (a ^ 2 - 1) ^ 2 ≤ complexRootRadicand a b := by
+    1 ≤ (complexRootParameter a b) ^ (2 : ℕ) := by
+  have hrad_ge : (a ^ (2 : ℕ) - 1) ^ (2 : ℕ) ≤ complexRootRadicand a b := by
     unfold complexRootRadicand
-    nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg (b ^ 2)]
-  have habs_le : |a ^ 2 - 1| ≤ Real.sqrt (complexRootRadicand a b) :=
+    nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg (b ^ (2 : ℕ))]
+  have habs_le : |a ^ (2 : ℕ) - 1| ≤ Real.sqrt (complexRootRadicand a b) :=
     Real.abs_le_sqrt hrad_ge
-  have hbase : 1 ≤ a ^ 2 + b ^ 2 + |a ^ 2 - 1| := by
-    by_cases ha : 1 ≤ a ^ 2
-    · nlinarith [ha, sq_nonneg b, abs_nonneg (a ^ 2 - 1)]
-    · have hle : a ^ 2 ≤ 1 := le_of_not_ge ha
-      have habs : |a ^ 2 - 1| = 1 - a ^ 2 := by
+  have hbase : 1 ≤ a ^ (2 : ℕ) + b ^ (2 : ℕ) + |a ^ (2 : ℕ) - 1| := by
+    by_cases ha : 1 ≤ a ^ (2 : ℕ)
+    · nlinarith [ha, sq_nonneg b, abs_nonneg (a ^ (2 : ℕ) - 1)]
+    · have hle : a ^ (2 : ℕ) ≤ 1 := le_of_not_ge ha
+      have habs : |a ^ (2 : ℕ) - 1| = 1 - a ^ (2 : ℕ) := by
         simpa [sub_eq_add_neg] using abs_of_nonpos (sub_nonpos.mpr hle)
       rw [habs]
       nlinarith [sq_nonneg b]
@@ -4290,19 +4290,19 @@ theorem complexRootParameter_sq_ge_one (a b : ℝ) :
 
 /-- Certificate constructor for the complex-root quartic factor [GSLW19,
 BlockHam.tex:462-466], stated with the source's algebraic condition on `c`.
-The nonnegativity hypothesis `1 <= c^2` is exactly what lets the second square
-use the real coefficient `sqrt(c^2-1)`. -/
+The nonnegativity hypothesis `1 <= c^(2 : ℕ)` is exactly what lets the second square
+use the real coefficient `sqrt(c^(2 : ℕ)-1)`. -/
 noncomputable def complexRootFactorCertificate (a b c : ℝ)
-    (hc : IsComplexRootParameter a b c) (hc_nonneg : 1 ≤ c ^ 2) :
+    (hc : IsComplexRootParameter a b c) (hc_nonneg : 1 ≤ c ^ (2 : ℕ)) :
     Certificate
-      (X ^ 4 + Polynomial.C (2 * (b ^ 2 - a ^ 2)) * X ^ 2 +
-        Polynomial.C ((a ^ 2 + b ^ 2) ^ 2)) where
-  B := Polynomial.C c * X ^ 2 - Polynomial.C (a ^ 2 + b ^ 2)
-  C := Polynomial.C (Real.sqrt (c ^ 2 - 1)) * X
+      (X ^ (4 : ℕ) + Polynomial.C (2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+        Polynomial.C ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ))) where
+  B := Polynomial.C c * X ^ (2 : ℕ) - Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ))
+  C := Polynomial.C (Real.sqrt (c ^ (2 : ℕ) - 1)) * X
   eq_decomposition := by
     apply Polynomial.funext
     intro x
-    have hsqrt : (Real.sqrt (c ^ 2 - 1)) ^ 2 = c ^ 2 - 1 := by
+    have hsqrt : (Real.sqrt (c ^ (2 : ℕ) - 1)) ^ (2 : ℕ) = c ^ (2 : ℕ) - 1 := by
       exact Real.sq_sqrt (sub_nonneg.mpr hc_nonneg)
     simp only [map_mul, map_sub, map_pow, map_add, eval_add, eval_pow, eval_X,
       eval_mul, eval_C, eval_sub, eval_one]
@@ -4313,37 +4313,37 @@ noncomputable def complexRootFactorCertificate (a b c : ℝ)
 explicit square-root parameter from [GSLW19, BlockHam.tex:464-466]. -/
 noncomputable def complexRootFactorCertificateExplicit (a b : ℝ) :
     Certificate
-      (X ^ 4 + Polynomial.C (2 * (b ^ 2 - a ^ 2)) * X ^ 2 +
-        Polynomial.C ((a ^ 2 + b ^ 2) ^ 2)) :=
+      (X ^ (4 : ℕ) + Polynomial.C (2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+        Polynomial.C ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ))) :=
   complexRootFactorCertificate a b (complexRootParameter a b)
     (complexRootParameter_isComplexRootParameter a b)
     (complexRootParameter_sq_ge_one a b)
 
-/-! #### `B + i sqrt(1 - x^2) C` forms -/
+/-! #### `B + i sqrt(1 - x^(2 : ℕ)) C` forms -/
 
-/-- The source form `B(x) + i sqrt(1-x^2) C(x)` from [GSLW19,
+/-- The source form `B(x) + i sqrt(1-x^(2 : ℕ)) C(x)` from [GSLW19,
 BlockHam.tex:475-476]. -/
 noncomputable def intervalComplexForm (B C : ℝ[X]) (x : ℝ) : ℂ :=
   ((Polynomial.eval x B : ℝ) : ℂ) +
-    Complex.I * (Real.sqrt (1 - x ^ 2) : ℂ) * ((Polynomial.eval x C : ℝ) : ℂ)
+    Complex.I * (Real.sqrt (1 - x ^ (2 : ℕ)) : ℂ) * ((Polynomial.eval x C : ℝ) : ℂ)
 
-/-- Product closure for the source forms `B + i sqrt(1-x^2) C`
+/-- Product closure for the source forms `B + i sqrt(1-x^(2 : ℕ)) C`
 [GSLW19, BlockHam.tex:475-476]. -/
 theorem intervalComplexForm_mul (B₁ C₁ B₂ C₂ : ℝ[X]) {x : ℝ}
     (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
     intervalComplexForm B₁ C₁ x * intervalComplexForm B₂ C₂ x =
       intervalComplexForm
-        (B₁ * B₂ - (1 - X ^ 2) * C₁ * C₂)
+        (B₁ * B₂ - (1 - X ^ (2 : ℕ)) * C₁ * C₂)
         (B₁ * C₂ + C₁ * B₂) x := by
-  have hs : ((Real.sqrt (1 - x ^ 2) : ℝ) : ℂ) ^ 2 =
-      ((1 - x ^ 2 : ℝ) : ℂ) := by
+  have hs : ((Real.sqrt (1 - x ^ (2 : ℕ)) : ℝ) : ℂ) ^ (2 : ℕ) =
+      ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) := by
     calc
-      ((Real.sqrt (1 - x ^ 2) : ℝ) : ℂ) ^ 2 = 1 - (x : ℂ) ^ 2 :=
+      ((Real.sqrt (1 - x ^ (2 : ℕ)) : ℝ) : ℂ) ^ (2 : ℕ) = 1 - (x : ℂ) ^ (2 : ℕ) :=
         sq_sqrt_one_sub_sq (x := x) hx
-      _ = ((1 - x ^ 2 : ℝ) : ℂ) := by
+      _ = ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) := by
         push_cast
         ring
-  have hcast : ((1 - x ^ 2 : ℝ) : ℂ) = 1 - (x : ℂ) ^ 2 := by
+  have hcast : ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) = 1 - (x : ℂ) ^ (2 : ℕ) := by
     push_cast
     ring
   simp [intervalComplexForm]
@@ -4354,7 +4354,7 @@ theorem intervalComplexForm_mul (B₁ C₁ B₂ C₂ : ℝ[X]) {x : ℝ}
 /-- The product closure preserves the real-polynomial coefficient pair used by
 the source proof. -/
 noncomputable def mulFormLeft (B₁ C₁ B₂ C₂ : ℝ[X]) : ℝ[X] :=
-  B₁ * B₂ - (1 - X ^ 2) * C₁ * C₂
+  B₁ * B₂ - (1 - X ^ (2 : ℕ)) * C₁ * C₂
 
 /-- The imaginary coefficient of the product closure from [GSLW19,
 BlockHam.tex:475-476]. -/
@@ -4380,13 +4380,13 @@ noncomputable def Certificate.mul {A D : ℝ[X]} (hA : Certificate A)
     let C₁ : ℝ[X] := hA.C
     let B₂ : ℝ[X] := hD.B
     let C₂ : ℝ[X] := hD.C
-    have hA_eq : A = B₁ ^ 2 + (1 - X ^ 2) * C₁ ^ 2 := by
+    have hA_eq : A = B₁ ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * C₁ ^ (2 : ℕ) := by
       simpa [B₁, C₁] using hA.eq_decomposition
-    have hD_eq : D = B₂ ^ 2 + (1 - X ^ 2) * C₂ ^ 2 := by
+    have hD_eq : D = B₂ ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * C₂ ^ (2 : ℕ) := by
       simpa [B₂, C₂] using hD.eq_decomposition
     change A * D =
-      (mulFormLeft B₁ C₁ B₂ C₂) ^ 2 +
-        (1 - X ^ 2) * (mulFormRight B₁ C₁ B₂ C₂) ^ 2
+      (mulFormLeft B₁ C₁ B₂ C₂) ^ (2 : ℕ) +
+        (1 - X ^ (2 : ℕ)) * (mulFormRight B₁ C₁ B₂ C₂) ^ (2 : ℕ)
     rw [hA_eq, hD_eq]
     simp [mulFormLeft, mulFormRight]
     ring
@@ -4407,24 +4407,24 @@ noncomputable def mul {A D : ℝ[X]} {k l : ℕ}
     have hleft : (hA.B * hD.B).natDegree ≤ k + l :=
       Polynomial.natDegree_mul_le_of_le hA.degree_B hD.degree_B
     have hright :
-        (((1 : ℝ[X]) - X ^ 2) * hA.C * hD.C).natDegree ≤ k + l := by
+        (((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C * hD.C).natDegree ≤ k + l := by
       rcases (degree_C_source_bound (A := A) (k := k) hA) with hAzero | hAdeg
       · simp [hAzero]
       rcases (degree_C_source_bound (A := D) (k := l) hD) with hDzero | hDdeg
       · simp [hDzero]
       have hfirst :
-          (((1 : ℝ[X]) - X ^ 2) * hA.C).natDegree ≤ 2 + hA.C.natDegree :=
+          (((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C).natDegree ≤ 2 + hA.C.natDegree :=
         Polynomial.natDegree_mul_le_of_le one_sub_X_sq_natDegree_le_two
           (le_rfl : hA.C.natDegree ≤ hA.C.natDegree)
       have hall :
-          ((((1 : ℝ[X]) - X ^ 2) * hA.C) * hD.C).natDegree ≤
+          ((((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C) * hD.C).natDegree ≤
             (2 + hA.C.natDegree) + hD.C.natDegree :=
         Polynomial.natDegree_mul_le_of_le hfirst
           (le_rfl : hD.C.natDegree ≤ hD.C.natDegree)
       exact le_trans hall (by omega)
     exact (Polynomial.natDegree_sub_le_of_le
       (p := hA.B * hD.B)
-      (q := ((1 : ℝ[X]) - X ^ 2) * hA.C * hD.C)
+      (q := ((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C * hD.C)
       (m := k + l) (n := k + l) hleft hright).trans (by simp)
   degree_C := by
     unfold mulFormRight
@@ -4439,9 +4439,9 @@ noncomputable def mul {A D : ℝ[X]} {k l : ℕ}
     have hleft : HasRealParity (hA.B * hD.B) (k + l) :=
       hA.parity_B.mul hD.parity_B
     have hright :
-        HasRealParity (((1 : ℝ[X]) - X ^ 2) * hA.C * hD.C) (k + l) := by
+        HasRealParity (((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C * hD.C) (k + l) := by
       have hraw :
-          HasRealParity (((1 : ℝ[X]) - X ^ 2) * hA.C * hD.C)
+          HasRealParity (((1 : ℝ[X]) - X ^ (2 : ℕ)) * hA.C * hD.C)
             ((0 + (k + 1)) + (l + 1)) :=
         (hasRealParity_one_sub_X_sq.mul hA.parity_C).mul hD.parity_C
       exact hraw.congr (by omega)
@@ -4504,7 +4504,7 @@ noncomputable def toCertificate {A : ℝ[X]} (h : ProductDecomposition A) :
       have hprod : A = FactorCertificate.productPoly factors := by
         simpa [factors] using h.product_eq
       have hcert : FactorCertificate.productPoly factors =
-          cert.B ^ 2 + (1 - X ^ 2) * cert.C ^ 2 := cert.eq_decomposition
+          cert.B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * cert.C ^ (2 : ℕ) := cert.eq_decomposition
       rw [hprod]
       exact hcert }
 
@@ -4522,15 +4522,15 @@ structure DegreeParityFactorCertificate where
   certificate : DegreeParityCertificate poly degree
 
 /-- A source real root outside the open unit interval, represented by the
-positive representative `s` used in the source factor `s^2 - x^2`
+positive representative `s` used in the source factor `s^(2 : ℕ) - x^(2 : ℕ)`
 [GSLW19, BlockHam.tex:446,453-460]. -/
 structure OutsideRealRoot where
-  /-- Nonnegative outside-interval representative used in `s^2 - X^2`. -/
+  /-- Nonnegative outside-interval representative used in `s^(2 : ℕ) - X^(2 : ℕ)`. -/
   value : ℝ
-  outside : 1 ≤ value ^ 2
+  outside : 1 ≤ value ^ (2 : ℕ)
 
 theorem sq_ge_one_of_not_mem_Ioo (s : ℝ) (hs : s ∉ Set.Ioo (-1 : ℝ) 1) :
-    1 ≤ s ^ 2 := by
+    1 ≤ s ^ (2 : ℕ) := by
   by_cases hleft : s ≤ -1
   · nlinarith
   · have hgt_left : -1 < s := lt_of_not_ge hleft
@@ -4541,7 +4541,7 @@ theorem sq_ge_one_of_not_mem_Ioo (s : ℝ) (hs : s ∉ Set.Ioo (-1 : ℝ) 1) :
 namespace OutsideRealRoot
 
 /-- Normalize an outside real root to the nonnegative representative used by
-the source factor `s^2 - x^2` [GSLW19, BlockHam.tex:453-460]. -/
+the source factor `s^(2 : ℕ) - x^(2 : ℕ)` [GSLW19, BlockHam.tex:453-460]. -/
 noncomputable def ofReal (s : ℝ) (hs : s ∉ Set.Ioo (-1 : ℝ) 1) :
     OutsideRealRoot where
   value := |s|
@@ -4555,7 +4555,7 @@ source factorization [GSLW19, BlockHam.tex:453-460]. -/
 theorem realPolynomialToComplex_product_outsideRealRoots :
     ∀ roots : List OutsideRealRoot,
       realPolynomialToComplex
-          ((roots.map fun s => Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod) =
+          ((roots.map fun s => Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod) =
         (roots.map fun s : OutsideRealRoot =>
           -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
             ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod
@@ -4563,7 +4563,7 @@ theorem realPolynomialToComplex_product_outsideRealRoots :
   | s :: roots => by
       simp only [List.map_cons, List.prod_cons]
       have hfactor :
-          realPolynomialToComplex (Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2) =
+          realPolynomialToComplex (Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)) =
             -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
               ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ)))) := by
         simpa using realPolynomialToComplex_outsideRealFactor s.value
@@ -4597,19 +4597,19 @@ theorem realPolynomialToComplex_sourceProductNotation
         (Polynomial.C constant *
           (X : ℝ[X]) ^ (2 * zeroRootPairs) *
           (interiorRoots.map fun s =>
-            ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+            ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
           (outsideRoots.map fun s =>
-            Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+            Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
           (imaginaryRoots.map fun r =>
-            (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+            (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
           (complexRoots.map fun z =>
-            (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-              Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod) =
+            (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+              Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod) =
       Polynomial.C (constant : ℂ) *
         (X : ℂ[X]) ^ (2 * zeroRootPairs) *
         (interiorRoots.map fun s : ℝ =>
           (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod *
+            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod *
         (outsideRoots.map fun s : OutsideRealRoot =>
           -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
             ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod *
@@ -4632,7 +4632,7 @@ theorem realPolynomialToComplex_sourceProductNotation
 namespace SourceRootProductData
 
 /-- Outside real-root representatives repeated by multiplicity, carrying the
-`1 <= s^2` proof required by the source factor `s^2 - x^2`
+`1 <= s^(2 : ℕ)` proof required by the source factor `s^(2 : ℕ) - x^(2 : ℕ)`
 [GSLW19, BlockHam.tex:453-460]. -/
 noncomputable def outsideRealRoots {A : ℝ[X]}
     (data : SourceRootProductData A) : List OutsideRealRoot :=
@@ -4716,7 +4716,7 @@ theorem outsideRealRoot_linearFactorProduct
   simp
 
 /-- The real scalar in the source product after absorbing the sign introduced
-by outside-real factors `s^2-x^2` [GSLW19, BlockHam.tex:453-460]. -/
+by outside-real factors `s^(2 : ℕ)-x^(2 : ℕ)` [GSLW19, BlockHam.tex:453-460]. -/
 noncomputable def sourceConstant {A : ℝ[X]} (data : SourceRootProductData A) : ℝ :=
   (-1 : ℝ) ^ data.outsideRealRoots.length * A.leadingCoeff
 
@@ -4782,14 +4782,14 @@ theorem realPolynomialToComplex_sourceProductNotation_grouped
         (Polynomial.C constant *
           (X : ℝ[X]) ^ (2 * data.zeroRootPairs) *
           (data.interiorRealRootPairParameters.map fun s =>
-            ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+            ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
           (data.outsideRealRoots.map fun s =>
-            Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+            Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
           (data.imaginaryRootParameters.map fun r =>
-            (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+            (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
           (data.complexRootParameters.map fun z =>
-            (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-              Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod) =
+            (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+              Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod) =
       Polynomial.C (constant : ℂ) *
         (X : ℂ[X]) ^ (2 * data.zeroRootPairs) *
         (data.positiveInteriorRealRootValues.map fun s : ℝ =>
@@ -4826,14 +4826,14 @@ theorem realPolynomialToComplex_sourceProductNotation_grouped_sourceConstant
         (Polynomial.C data.sourceConstant *
           (X : ℝ[X]) ^ (2 * data.zeroRootPairs) *
           (data.interiorRealRootPairParameters.map fun s =>
-            ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+            ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
           (data.outsideRealRoots.map fun s =>
-            Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+            Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
           (data.imaginaryRootParameters.map fun r =>
-            (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+            (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
           (data.complexRootParameters.map fun z =>
-            (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-              Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod) =
+            (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+              Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod) =
       Polynomial.C (realPolynomialToComplex A).leadingCoeff *
         (X : ℂ[X]) ^ (2 * data.zeroRootPairs) *
         (data.positiveInteriorRealRootValues.map fun s : ℝ =>
@@ -5343,7 +5343,7 @@ theorem SourceHypotheses.groupedRootList_count_zero
     rw [List.count_eq_zero]
     intro hz
     rcases List.mem_flatMap.mp hz with ⟨s, _hs, hzmem⟩
-    have hsout : 1 ≤ s.value ^ 2 := s.outside
+    have hsout : 1 ≤ s.value ^ (2 : ℕ) := s.outside
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hzmem
     rcases hzmem with hzero | hzero
     · have hs0 : s.value = 0 := by
@@ -6920,7 +6920,7 @@ theorem SourceHypotheses.realPolynomialToComplex_eq_sourceProduct
         (X : ℂ[X]) ^ (2 * hA.rootProductData.zeroRootPairs) *
         (hA.rootProductData.interiorRealRootPairParameters.map fun s : ℝ =>
           (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod *
+            ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod *
         (hA.rootProductData.outsideRealRoots.map fun s : OutsideRealRoot =>
           -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
             ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod *
@@ -6988,7 +6988,7 @@ theorem SourceHypotheses.realPolynomialToComplex_eq_sourceProduct
           (X : ℂ[X]) ^ (2 * data.zeroRootPairs) *
           (data.interiorRealRootPairParameters.map fun s : ℝ =>
             (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod *
+              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod *
           (data.outsideRealRoots.map fun s : OutsideRealRoot =>
             -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
               ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod *
@@ -7027,7 +7027,7 @@ noncomputable def nonnegativeConstant (c : ℝ) (hc : 0 ≤ c) :
 `x^{|S_0|/2}` pure-square contribution in the source proof
 [GSLW19, BlockHam.tex:442-452,469-474]. -/
 noncomputable def zeroRootPair : DegreeParityFactorCertificate where
-  poly := X ^ 2
+  poly := X ^ (2 : ℕ)
   degree := 1
   certificate :=
     DegreeParityCertificate.ofSquare X (by rw [Polynomial.natDegree_X])
@@ -7035,27 +7035,27 @@ noncomputable def zeroRootPair : DegreeParityFactorCertificate where
 
 /-- Degree/parity certificate for a pair of identical positive roots inside
 the interval.  The source proof groups such roots in even multiplicity, so each
-paired contribution is the pure square `(x^2-s^2)^2`
+paired contribution is the pure square `(x^(2 : ℕ)-s^(2 : ℕ))^(2 : ℕ)`
 [GSLW19, BlockHam.tex:445,469-474]. -/
 noncomputable def interiorRealRootPair (s : ℝ) : DegreeParityFactorCertificate where
-  poly := (X ^ 2 - Polynomial.C (s ^ 2)) ^ 2
+  poly := (X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)
   degree := 2
   certificate :=
-    DegreeParityCertificate.ofSquare (X ^ 2 - Polynomial.C (s ^ 2)) (by
-      have hX : ((X : ℝ[X]) ^ 2).natDegree ≤ 2 := by
+    DegreeParityCertificate.ofSquare (X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) (by
+      have hX : ((X : ℝ[X]) ^ (2 : ℕ)).natDegree ≤ 2 := by
         rw [Polynomial.natDegree_X_pow]
-      have hC : (Polynomial.C (s ^ 2) : ℝ[X]).natDegree ≤ 2 := by
+      have hC : (Polynomial.C (s ^ (2 : ℕ)) : ℝ[X]).natDegree ≤ 2 := by
         rw [Polynomial.natDegree_C]
         norm_num
       exact Polynomial.natDegree_sub_le_of_le hX hC)
       (by
-        have hX : HasRealParity ((X : ℝ[X]) ^ 2) 2 := hasRealParity_X_pow 2
-        have hC : HasRealParity (Polynomial.C (s ^ 2) : ℝ[X]) 2 :=
-          hasRealParity_C (s ^ 2) (by norm_num)
+        have hX : HasRealParity ((X : ℝ[X]) ^ (2 : ℕ)) 2 := hasRealParity_X_pow 2
+        have hC : HasRealParity (Polynomial.C (s ^ (2 : ℕ)) : ℝ[X]) 2 :=
+          hasRealParity_C (s ^ (2 : ℕ)) (by norm_num)
         exact hX.sub hC)
 
 /-- The source padding factor
-`(x+i sqrt(1-x^2))(x+i sqrt(1-x^2))^* = 1`, used to raise degree/parity
+`(x+i sqrt(1-x^(2 : ℕ)))(x+i sqrt(1-x^(2 : ℕ)))^* = 1`, used to raise degree/parity
 without changing the represented nonnegative polynomial
 [GSLW19, BlockHam.tex:479]. -/
 noncomputable def unitParityPadding : DegreeParityFactorCertificate where
@@ -7074,9 +7074,9 @@ noncomputable def unitParityPadding : DegreeParityFactorCertificate where
 
 /-- Degree/parity certificate for the real-root factor outside the unit
 interval [GSLW19, BlockHam.tex:459-460]. -/
-noncomputable def realRoot (s : ℝ) (hs : 1 ≤ s ^ 2) :
+noncomputable def realRoot (s : ℝ) (hs : 1 ≤ s ^ (2 : ℕ)) :
     DegreeParityFactorCertificate where
-  poly := Polynomial.C (s ^ 2) - X ^ 2
+  poly := Polynomial.C (s ^ (2 : ℕ)) - X ^ (2 : ℕ)
   degree := 1
   certificate :=
     let cert := realRootFactorCertificate s hs
@@ -7084,7 +7084,7 @@ noncomputable def realRoot (s : ℝ) (hs : 1 ≤ s ^ 2) :
       C := cert.C
       eq_decomposition := cert.eq_decomposition
       degree_B := by
-        change (Polynomial.C (Real.sqrt (s ^ 2 - 1)) * X).natDegree ≤ 1
+        change (Polynomial.C (Real.sqrt (s ^ (2 : ℕ) - 1)) * X).natDegree ≤ 1
         exact (Polynomial.natDegree_C_mul_le _ _).trans
           (by rw [Polynomial.natDegree_X])
       degree_C := by
@@ -7092,9 +7092,9 @@ noncomputable def realRoot (s : ℝ) (hs : 1 ≤ s ^ 2) :
         rw [Polynomial.natDegree_C]
         norm_num
       parity_B := by
-        change HasRealParity (Polynomial.C (Real.sqrt (s ^ 2 - 1)) * X) 1
+        change HasRealParity (Polynomial.C (Real.sqrt (s ^ (2 : ℕ) - 1)) * X) 1
         simpa [pow_one] using
-          ((hasRealParity_X_pow 1).C_mul (Real.sqrt (s ^ 2 - 1)))
+          ((hasRealParity_X_pow 1).C_mul (Real.sqrt (s ^ (2 : ℕ) - 1)))
       parity_C := by
         change HasRealParity (Polynomial.C s) 2
         exact hasRealParity_C s (by norm_num) }
@@ -7103,7 +7103,7 @@ noncomputable def realRoot (s : ℝ) (hs : 1 ≤ s ^ 2) :
 [GSLW19, BlockHam.tex:461]. -/
 noncomputable def imaginaryRoot (r : ℝ) :
     DegreeParityFactorCertificate where
-  poly := X ^ 2 + Polynomial.C (r ^ 2)
+  poly := X ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))
   degree := 1
   certificate :=
     let cert := imaginaryRootFactorCertificate r
@@ -7111,7 +7111,7 @@ noncomputable def imaginaryRoot (r : ℝ) :
       C := cert.C
       eq_decomposition := cert.eq_decomposition
       degree_B := by
-        change (Polynomial.C (Real.sqrt (r ^ 2 + 1)) * X).natDegree ≤ 1
+        change (Polynomial.C (Real.sqrt (r ^ (2 : ℕ) + 1)) * X).natDegree ≤ 1
         exact (Polynomial.natDegree_C_mul_le _ _).trans
           (by rw [Polynomial.natDegree_X])
       degree_C := by
@@ -7119,9 +7119,9 @@ noncomputable def imaginaryRoot (r : ℝ) :
         rw [Polynomial.natDegree_C]
         norm_num
       parity_B := by
-        change HasRealParity (Polynomial.C (Real.sqrt (r ^ 2 + 1)) * X) 1
+        change HasRealParity (Polynomial.C (Real.sqrt (r ^ (2 : ℕ) + 1)) * X) 1
         simpa [pow_one] using
-          ((hasRealParity_X_pow 1).C_mul (Real.sqrt (r ^ 2 + 1)))
+          ((hasRealParity_X_pow 1).C_mul (Real.sqrt (r ^ (2 : ℕ) + 1)))
       parity_C := by
         change HasRealParity (Polynomial.C r) 2
         exact hasRealParity_C r (by norm_num) }
@@ -7131,8 +7131,8 @@ noncomputable def imaginaryRoot (r : ℝ) :
 noncomputable def complexRoot (a b : ℝ) :
     DegreeParityFactorCertificate where
   poly :=
-    X ^ 4 + Polynomial.C (2 * (b ^ 2 - a ^ 2)) * X ^ 2 +
-      Polynomial.C ((a ^ 2 + b ^ 2) ^ 2)
+    X ^ (4 : ℕ) + Polynomial.C (2 * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+      Polynomial.C ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ))
   degree := 2
   certificate :=
     let cert := complexRootFactorCertificateExplicit a b
@@ -7141,46 +7141,46 @@ noncomputable def complexRoot (a b : ℝ) :
       eq_decomposition := cert.eq_decomposition
       degree_B := by
         change
-          (Polynomial.C (complexRootParameter a b) * X ^ 2 -
-            Polynomial.C (a ^ 2 + b ^ 2)).natDegree ≤ 2
+          (Polynomial.C (complexRootParameter a b) * X ^ (2 : ℕ) -
+            Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ))).natDegree ≤ 2
         have hleft :
-            (Polynomial.C (complexRootParameter a b) * (X : ℝ[X]) ^ 2).natDegree ≤ 2 :=
+            (Polynomial.C (complexRootParameter a b) * (X : ℝ[X]) ^ (2 : ℕ)).natDegree ≤ 2 :=
           (Polynomial.natDegree_C_mul_le _ _).trans (by rw [Polynomial.natDegree_X_pow])
-        have hright : (Polynomial.C (a ^ 2 + b ^ 2) : ℝ[X]).natDegree ≤ 2 := by
+        have hright : (Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ)) : ℝ[X]).natDegree ≤ 2 := by
           rw [Polynomial.natDegree_C]
           norm_num
         exact (Polynomial.natDegree_sub_le_of_le
-          (p := Polynomial.C (complexRootParameter a b) * (X : ℝ[X]) ^ 2)
-          (q := Polynomial.C (a ^ 2 + b ^ 2))
+          (p := Polynomial.C (complexRootParameter a b) * (X : ℝ[X]) ^ (2 : ℕ))
+          (q := Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ)))
           (m := 2) (n := 2) hleft hright).trans (by simp)
       degree_C := by
         change
-          (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ 2 - 1)) * X).natDegree ≤ 2
+          (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ (2 : ℕ) - 1)) * X).natDegree ≤ 2
         exact ((Polynomial.natDegree_C_mul_le _ _).trans
           (by rw [Polynomial.natDegree_X])).trans (by norm_num)
       parity_B := by
         change
           HasRealParity
-            (Polynomial.C (complexRootParameter a b) * X ^ 2 -
-              Polynomial.C (a ^ 2 + b ^ 2)) 2
+            (Polynomial.C (complexRootParameter a b) * X ^ (2 : ℕ) -
+              Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ))) 2
         have hleft :
-            HasRealParity (Polynomial.C (complexRootParameter a b) * X ^ 2) 2 :=
+            HasRealParity (Polynomial.C (complexRootParameter a b) * X ^ (2 : ℕ)) 2 :=
           (hasRealParity_X_pow 2).C_mul (complexRootParameter a b)
         have hright :
-            HasRealParity (Polynomial.C (a ^ 2 + b ^ 2)) 2 :=
-          hasRealParity_C (a ^ 2 + b ^ 2) (by norm_num)
+            HasRealParity (Polynomial.C (a ^ (2 : ℕ) + b ^ (2 : ℕ))) 2 :=
+          hasRealParity_C (a ^ (2 : ℕ) + b ^ (2 : ℕ)) (by norm_num)
         exact hleft.sub hright
       parity_C := by
         change
           HasRealParity
-            (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ 2 - 1)) * X) 3
+            (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ (2 : ℕ) - 1)) * X) 3
         have h :
             HasRealParity
-              (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ 2 - 1)) * X) 1 :=
+              (Polynomial.C (Real.sqrt ((complexRootParameter a b) ^ (2 : ℕ) - 1)) * X) 1 :=
           by
             simpa [pow_one] using
               ((hasRealParity_X_pow 1).C_mul
-                (Real.sqrt ((complexRootParameter a b) ^ 2 - 1)))
+                (Real.sqrt ((complexRootParameter a b) ^ (2 : ℕ) - 1)))
         exact h.congr (by omega) }
 
 /-- Product polynomial represented by a list of degree/parity source factors. -/
@@ -7222,7 +7222,7 @@ theorem productPoly_replicate_zeroRootPair :
       change zeroRootPair.poly *
           productPoly (List.replicate k zeroRootPair) = (X : ℝ[X]) ^ (2 * (k + 1))
       rw [productPoly_replicate_zeroRootPair k]
-      change (X : ℝ[X]) ^ 2 * (X : ℝ[X]) ^ (2 * k) = (X : ℝ[X]) ^ (2 * (k + 1))
+      change (X : ℝ[X]) ^ (2 : ℕ) * (X : ℝ[X]) ^ (2 * k) = (X : ℝ[X]) ^ (2 * (k + 1))
       rw [← pow_add]
       have hexp : 2 + 2 * k = 2 * (k + 1) := by omega
       rw [hexp]
@@ -7233,7 +7233,7 @@ theorem productPoly_replicate_zeroRootPair :
 theorem productPoly_map_interiorRealRootPair :
     ∀ roots : List ℝ,
       productPoly (roots.map interiorRealRootPair) =
-        (roots.map fun s => ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod
+        (roots.map fun s => ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod
   | [] => by simp [productPoly]
   | s :: roots => by
       simp [productPoly, interiorRealRootPair, productPoly_map_interiorRealRootPair roots]
@@ -7244,14 +7244,14 @@ theorem productPoly_map_interiorRealRootPair :
 theorem productPoly_map_realRoot :
     ∀ roots : List OutsideRealRoot,
       productPoly (roots.map (fun s => realRoot s.value s.outside)) =
-        (roots.map fun s => Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod
+        (roots.map fun s => Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod
   | [] => by simp [productPoly]
   | s :: roots => by
       change
-        (Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2) *
+        (Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)) *
             productPoly (roots.map (fun s => realRoot s.value s.outside)) =
-          (Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2) *
-            (roots.map fun s => Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod
+          (Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)) *
+            (roots.map fun s => Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod
       rw [productPoly_map_realRoot roots]
 
 /-- Product notation for imaginary-root representatives, matching the `S_I`
@@ -7260,7 +7260,7 @@ factor in [GSLW19, BlockHam.tex:455,461]. -/
 theorem productPoly_map_imaginaryRoot :
     ∀ roots : List ℝ,
       productPoly (roots.map imaginaryRoot) =
-        (roots.map fun r => (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod
+        (roots.map fun r => (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod
   | [] => by simp [productPoly]
   | r :: roots => by
       simp [productPoly, imaginaryRoot, productPoly_map_imaginaryRoot roots]
@@ -7272,19 +7272,19 @@ theorem productPoly_map_complexRoot :
     ∀ roots : List (ℝ × ℝ),
       productPoly (roots.map (fun z => complexRoot z.1 z.2)) =
         (roots.map fun z =>
-          (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-            Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod
+          (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+            Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod
   | [] => by simp [productPoly]
   | z :: roots => by
       change
-        ((X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-            Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)) *
+        ((X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+            Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))) *
             productPoly (roots.map (fun z => complexRoot z.1 z.2)) =
-          ((X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-            Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)) *
+          ((X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+            Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))) *
             (roots.map fun z =>
-              (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-                Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod
+              (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+                Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod
       rw [productPoly_map_complexRoot roots]
 
 /-- Padding factors contribute exactly one degree/parity step each. -/
@@ -7509,14 +7509,14 @@ theorem sourceProductTail_eq_sourceNotation {A : ℝ[X]}
     data.sourceProductTail =
       (X : ℝ[X]) ^ (2 * data.zeroRootPairs) *
         (data.interiorRealRootPairParameters.map fun s =>
-          ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+          ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
         (data.outsideRealRoots.map fun s =>
-          Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+          Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
         (data.imaginaryRootParameters.map fun r =>
-          (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+          (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
         (data.complexRootParameters.map fun z =>
-          (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-            Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod := by
+          (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+            Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod := by
   simp [sourceProductTail, productPoly_sourceRootClassFactorList,
     DegreeParityFactorCertificate.productPoly_map_interiorRealRootPair,
     DegreeParityFactorCertificate.productPoly_map_realRoot,
@@ -7547,7 +7547,7 @@ theorem SourceHypotheses.sourceProduct_eq_sourceConstant_mul_tail
           (X : ℂ[X]) ^ (2 * data.zeroRootPairs) *
           (data.interiorRealRootPairParameters.map fun s : ℝ =>
             (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod *
+              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod *
           (data.outsideRealRoots.map fun s : OutsideRealRoot =>
             -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
               ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod *
@@ -7726,14 +7726,14 @@ theorem product_eq_sourceNotation {A : ℝ[X]} {k : ℕ}
       Polynomial.C h.constant *
         (X : ℝ[X]) ^ (2 * h.zeroRootPairs) *
         (h.interiorRootPairs.map fun s =>
-          ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+          ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
         (h.outsideRealRoots.map fun s =>
-          Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+          Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
         (h.imaginaryRoots.map fun r =>
-          (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+          (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
         (h.complexRoots.map fun z =>
-          (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-            Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod := by
+          (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+            Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod := by
   simpa using h.product_eq_expanded
 
 /-- Degree accounting extracted from the source root-class factorization
@@ -8073,7 +8073,7 @@ noncomputable def SourceHypotheses.factorizationOfComplexProductEq
           (X : ℂ[X]) ^ (2 * hA.rootProductData.zeroRootPairs) *
           (hA.rootProductData.interiorRealRootPairParameters.map fun s : ℝ =>
             (((X : ℂ[X]) - Polynomial.C (s : ℂ)) *
-              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ 2).prod *
+              ((X : ℂ[X]) - Polynomial.C (-(s : ℂ)))) ^ (2 : ℕ)).prod *
           (hA.rootProductData.outsideRealRoots.map fun s : OutsideRealRoot =>
             -(((X : ℂ[X]) - Polynomial.C (s.value : ℂ)) *
               ((X : ℂ[X]) - Polynomial.C (-(s.value : ℂ))))).prod *
@@ -8114,14 +8114,14 @@ noncomputable def SourceHypotheses.factorizationOfComplexProductEq
             (Polynomial.C constant *
               (Polynomial.X : ℝ[X]) ^ (2 * hA.rootProductData.zeroRootPairs) *
               (hA.rootProductData.interiorRealRootPairParameters.map fun s =>
-                ((X : ℝ[X]) ^ 2 - Polynomial.C (s ^ 2)) ^ 2).prod *
+                ((X : ℝ[X]) ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) ^ (2 : ℕ)).prod *
               (hA.rootProductData.outsideRealRoots.map fun s =>
-                Polynomial.C (s.value ^ 2) - (X : ℝ[X]) ^ 2).prod *
+                Polynomial.C (s.value ^ (2 : ℕ)) - (X : ℝ[X]) ^ (2 : ℕ)).prod *
               (hA.rootProductData.imaginaryRootParameters.map fun r =>
-                (X : ℝ[X]) ^ 2 + Polynomial.C (r ^ 2)).prod *
+                (X : ℝ[X]) ^ (2 : ℕ) + Polynomial.C (r ^ (2 : ℕ))).prod *
               (hA.rootProductData.complexRootParameters.map fun z =>
-                (X : ℝ[X]) ^ 4 + Polynomial.C (2 * (z.2 ^ 2 - z.1 ^ 2)) * X ^ 2 +
-                  Polynomial.C ((z.1 ^ 2 + z.2 ^ 2) ^ 2)).prod) := by
+                (X : ℝ[X]) ^ (4 : ℕ) + Polynomial.C (2 * (z.2 ^ (2 : ℕ) - z.1 ^ (2 : ℕ))) * X ^ (2 : ℕ) +
+                  Polynomial.C ((z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)) ^ (2 : ℕ))).prod) := by
         exact hcomplex.trans hsource.symm
       _ =
           realPolynomialToComplex
@@ -8156,16 +8156,16 @@ decomposition [GSLW19, BlockHam.tex:475-480]. -/
 theorem intervalComplexForm_mul_conj (B C : ℝ[X]) {x : ℝ}
     (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
     intervalComplexForm B C x * starRingEnd ℂ (intervalComplexForm B C x) =
-      (((B.eval x) ^ 2 + (1 - x ^ 2) * (C.eval x) ^ 2 : ℝ) : ℂ) := by
-  have hs : ((Real.sqrt (1 - x ^ 2) : ℝ) : ℂ) ^ 2 =
-      ((1 - x ^ 2 : ℝ) : ℂ) := by
+      (((B.eval x) ^ (2 : ℕ) + (1 - x ^ (2 : ℕ)) * (C.eval x) ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have hs : ((Real.sqrt (1 - x ^ (2 : ℕ)) : ℝ) : ℂ) ^ (2 : ℕ) =
+      ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) := by
     calc
-      ((Real.sqrt (1 - x ^ 2) : ℝ) : ℂ) ^ 2 = 1 - (x : ℂ) ^ 2 :=
+      ((Real.sqrt (1 - x ^ (2 : ℕ)) : ℝ) : ℂ) ^ (2 : ℕ) = 1 - (x : ℂ) ^ (2 : ℕ) :=
         sq_sqrt_one_sub_sq (x := x) hx
-      _ = ((1 - x ^ 2 : ℝ) : ℂ) := by
+      _ = ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) := by
         push_cast
         ring
-  have hcast : ((1 - x ^ 2 : ℝ) : ℂ) = 1 - (x : ℂ) ^ 2 := by
+  have hcast : ((1 - x ^ (2 : ℕ) : ℝ) : ℂ) = 1 - (x : ℂ) ^ (2 : ℕ) := by
     push_cast
     ring
   simp [intervalComplexForm]
@@ -8182,13 +8182,13 @@ theorem intervalComplexForm_mul_conj_eq_of_certificate {A : ℝ[X]}
       ((A.eval x : ℝ) : ℂ) := by
   let B : ℝ[X] := h.B
   let C : ℝ[X] := h.C
-  have h_eq : A = B ^ 2 + (1 - X ^ 2) * C ^ 2 := by
+  have h_eq : A = B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * C ^ (2 : ℕ) := by
     simpa [B, C] using h.eq_decomposition
   change intervalComplexForm B C x * starRingEnd ℂ (intervalComplexForm B C x) =
     ((A.eval x : ℝ) : ℂ)
   rw [intervalComplexForm_mul_conj B C hx]
   have heval :
-      A.eval x = (B.eval x) ^ 2 + (1 - x ^ 2) * (C.eval x) ^ 2 := by
+      A.eval x = (B.eval x) ^ (2 : ℕ) + (1 - x ^ (2 : ℕ)) * (C.eval x) ^ (2 : ℕ) := by
     rw [h_eq]
     simp [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_sub,
       Polynomial.eval_pow]
@@ -8198,18 +8198,18 @@ end Complement.Interval
 
 namespace Complement.Interval.Witness
 
-/-- If `1 - P^2` has an interval-square certificate, then the real component
-`P(x)` and the source form `B(x)+i sqrt(1-x^2) C(x)` satisfy the pointwise
+/-- If `1 - P^(2 : ℕ)` has an interval-square certificate, then the real component
+`P(x)` and the source form `B(x)+i sqrt(1-x^(2 : ℕ)) C(x)` satisfy the pointwise
 unitarity normalization from [GSLW19, BlockHam.tex:475-480]. -/
 theorem real_norm_plus_intervalComplexForm_norm_eq_one {P : ℝ[X]}
-    (h : Complement.Interval.Certificate (1 - P ^ 2))
+    (h : Complement.Interval.Certificate (1 - P ^ (2 : ℕ)))
     {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    (((P.eval x) ^ 2 : ℝ) : ℂ) +
+    (((P.eval x) ^ (2 : ℕ) : ℝ) : ℂ) +
         Complement.Interval.intervalComplexForm h.B h.C x *
           starRingEnd ℂ (Complement.Interval.intervalComplexForm h.B h.C x) =
       1 := by
   rw [Complement.Interval.intervalComplexForm_mul_conj_eq_of_certificate h hx]
-  have heval : (1 - P ^ 2 : ℝ[X]).eval x = 1 - (P.eval x) ^ 2 := by
+  have heval : (1 - P ^ (2 : ℕ) : ℝ[X]).eval x = 1 - (P.eval x) ^ (2 : ℕ) := by
     simp [Polynomial.eval_sub, Polynomial.eval_pow]
   rw [heval]
   norm_num
@@ -8220,8 +8220,8 @@ namespace Complement.Interval
 
 /-- Compatibility name for the staged interval witness theorem. -/
 theorem real_norm_plus_intervalComplexForm_norm_eq_one {P : ℝ[X]}
-    (h : Certificate (1 - P ^ 2)) {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    (((P.eval x) ^ 2 : ℝ) : ℂ) +
+    (h : Certificate (1 - P ^ (2 : ℕ))) {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
+    (((P.eval x) ^ (2 : ℕ) : ℝ) : ℂ) +
         intervalComplexForm h.B h.C x *
           starRingEnd ℂ (intervalComplexForm h.B h.C x) =
       1 :=

@@ -2,7 +2,7 @@
 # Exact local moment transfer over an explicit phase-space grid
 
 The uniform translated local sixth-moment estimate sums over the explicit
-four-dimensional grid with the exact covering loss `(m + 1)^4`.
+four-dimensional grid with the exact covering loss `(m + 1)^(4 : ℕ)`.
 -/
 import GaloisForLFunctions.RHTower.BourgainExplicitCubeGrid
 
@@ -15,7 +15,7 @@ noncomputable section
 
 /-- Summing the uniform translated local estimate over the explicit product
 grid gives a bound on every enlarged physical phase cube, with the exact
-four-dimensional covering loss `(m + 1)^4`. -/
+four-dimensional covering loss `(m + 1)^(4 : ℕ)`. -/
 theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_grid
     {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧

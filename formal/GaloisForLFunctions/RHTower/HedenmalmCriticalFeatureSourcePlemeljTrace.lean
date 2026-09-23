@@ -28,7 +28,7 @@ noncomputable section
 
 /-- The real-axis HCF energy weight, written without any divisor data. -/
 def criticalFeatureRealBoundaryWeight (t x : ℝ) : ℝ :=
-  4 / (1 + (x - t) ^ 2) ^ 2
+  4 / (1 + (x - t) ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem continuous_criticalFeatureRealBoundaryWeight (t : ℝ) :
     Continuous (criticalFeatureRealBoundaryWeight t) := by
@@ -36,7 +36,7 @@ theorem continuous_criticalFeatureRealBoundaryWeight (t : ℝ) :
   apply Continuous.div continuous_const
     ((continuous_const.add ((continuous_id.sub continuous_const).pow 2)).pow 2)
   intro x
-  change (1 + (x - t) ^ 2) ^ 2 ≠ 0
+  change (1 + (x - t) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0
   apply pow_ne_zero
   nlinarith [sq_nonneg (x - t)]
 
@@ -45,8 +45,8 @@ theorem criticalFeatureRealBoundaryWeight_eq_normSq (t x : ℝ) :
       Complex.normSq (criticalFeatureCauchyKernelTest t (x : ℂ)) := by
   rw [criticalFeatureCauchyKernelTest_eq t (by simp)]
   rw [Complex.normSq_div]
-  have hden : (1 : ℂ) + ((x : ℂ) - (t : ℂ)) ^ 2 =
-      ((1 + (x - t) ^ 2 : ℝ) : ℂ) := by
+  have hden : (1 : ℂ) + ((x : ℂ) - (t : ℂ)) ^ (2 : ℕ) =
+      ((1 + (x - t) ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hden, Complex.normSq_ofReal]

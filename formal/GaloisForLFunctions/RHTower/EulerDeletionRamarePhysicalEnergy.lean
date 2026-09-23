@@ -28,7 +28,7 @@ def sourceGramEnergy (M : ℕ) : ℝ :=
 /-- The squared physical source norm is precisely its complete finite signed
 Gram form. -/
 theorem integral_source_sq_eq_sourceGramEnergy (M : ℕ) :
-    (∫ u in Ioi (1 : ℝ), source M u ^ 2) = sourceGramEnergy M := by
+    (∫ u in Ioi (1 : ℝ), source M u ^ (2 : ℕ)) = sourceGramEnergy M := by
   classical
   have habs : ∀ n ∈ Finset.Icc 1 M, |1 / (n : ℝ)| ≤ 1 := by
     intro n hn
@@ -71,13 +71,13 @@ Möbius Gram energy.  In particular, this equality retains all prime--prime,
 prime--rough, and harmonic-correction cross terms. -/
 theorem integral_packetField_sq_eq_sourceGramEnergy {P : Finset ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) :
-    (∫ u in Ioi (1 : ℝ), (rough P M u - ∑ p ∈ P, packet P M p u) ^ 2) =
+    (∫ u in Ioi (1 : ℝ), (rough P M u - ∑ p ∈ P, packet P M p u) ^ (2 : ℕ)) =
       sourceGramEnergy M := by
   calc
-    _ = ∫ u in Ioi (1 : ℝ), source M u ^ 2 := by
+    _ = ∫ u in Ioi (1 : ℝ), source M u ^ (2 : ℕ) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro u hu
-      change (rough P M u - ∑ p ∈ P, packet P M p u) ^ 2 = source M u ^ 2
+      change (rough P M u - ∑ p ∈ P, packet P M p u) ^ (2 : ℕ) = source M u ^ (2 : ℕ)
       rw [source_eq_rough_sub_sum_packet hPprime M u]
     _ = _ := integral_source_sq_eq_sourceGramEnergy M
 
@@ -85,7 +85,7 @@ theorem integral_packetField_sq_eq_sourceGramEnergy {P : Finset ℕ}
 modular Möbius approximant.  Hence the complete Ramaré packet field retains
 the same signed off-diagonal arithmetic covariance as the original carrier. -/
 theorem sourceGramEnergy_eq_modular_norm_sq (M : ℕ) :
-    sourceGramEnergy M = ‖bdMobiusModularApproximantVec M‖ ^ 2 := by
+    sourceGramEnergy M = ‖bdMobiusModularApproximantVec M‖ ^ (2 : ℕ) := by
   rw [bdMobiusModularApproximantVec_eq_generatorCombination,
     bdMobiusGeneratorCombination, ← bdGram_quadraticForm_eq_norm_sq]
   simp only [neg_mul_neg]
@@ -95,8 +95,8 @@ theorem sourceGramEnergy_eq_modular_norm_sq (M : ℕ) :
 carrier energy, with every signed cross term retained. -/
 theorem integral_packetField_sq_eq_modular_norm_sq {P : Finset ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) :
-    (∫ u in Ioi (1 : ℝ), (rough P M u - ∑ p ∈ P, packet P M p u) ^ 2) =
-      ‖bdMobiusModularApproximantVec M‖ ^ 2 := by
+    (∫ u in Ioi (1 : ℝ), (rough P M u - ∑ p ∈ P, packet P M p u) ^ (2 : ℕ)) =
+      ‖bdMobiusModularApproximantVec M‖ ^ (2 : ℕ) := by
   rw [integral_packetField_sq_eq_sourceGramEnergy hPprime M,
     sourceGramEnergy_eq_modular_norm_sq]
 

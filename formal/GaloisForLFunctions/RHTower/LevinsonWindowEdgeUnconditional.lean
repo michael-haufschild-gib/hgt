@@ -31,7 +31,7 @@ theorem exists_levinson_window_edge_bound_unconditional_of_Y_pos :
         (∀ Z : Finset ℂ,
           (∀ z : ℂ, z ∈ Z ↔ z ∈ (Set.uIcc (1 / 2 : ℝ) 4 ×ℂ Set.uIcc T₁ T₂) ∧
             levinsonGEntire (lam : ℂ) z = 0) →
-          ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+          ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ))
               + c * Real.log T₁ + c * Real.log T₂
               + 2 * Real.pi *
                 (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))
@@ -83,7 +83,7 @@ theorem exists_levinson_window_edge_bound_unconditional :
         (∀ Z : Finset ℂ,
           (∀ z : ℂ, z ∈ Z ↔ z ∈ (Set.uIcc (1 / 2 : ℝ) 4 ×ℂ Set.uIcc T₁ T₂) ∧
             levinsonGEntire (lam : ℂ) z = 0) →
-          ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+          ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ))
               + c * Real.log T₁ + c * Real.log T₂
               + 2 * Real.pi *
                 (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))

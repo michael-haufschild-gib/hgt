@@ -37,7 +37,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_eq_zero_iff_singularEnvelop
       let B := thetaCuspFullReflectedLogFourthJet x
       let C := thetaCuspFullReflectedLogSixthJet x
       let D := thetaCuspFullReflectedLogEighthJet x
-      A ^ 2 * thetaCuspRankThreeLowerGap A B * D =
+      A ^ (2 : ℕ) * thetaCuspRankThreeLowerGap A B * D =
         thetaCuspRankThreeSingularEighthEnvelope A
           (thetaCuspRankThreeLowerGap A B)
           (thetaCuspRankThreeSixthMargin A B C) := by

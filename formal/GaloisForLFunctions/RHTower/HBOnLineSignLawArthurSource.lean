@@ -25,19 +25,19 @@ noncomputable section
 def arthurReal (t : ℝ) (z : ℍ) : ℝ := arthurCoord t z.re z.im
 
 theorem arthurReal_eq (t : ℝ) (z : ℍ) :
-    arthurReal t z = ‖truncatedLineModel ((t : ℂ) * Complex.I) sourceHeight z‖ ^ 2 := rfl
+    arthurReal t z = ‖truncatedLineModel ((t : ℂ) * Complex.I) sourceHeight z‖ ^ (2 : ℕ) := rfl
 
 theorem setIntegral_fd_arthurReal (t : ℝ) :
-    ∫ z in fd, arthurReal t z = ∫ p in fullDomain, arthurCoord t p.1 p.2 / p.2 ^ 2 := by
-  rw [← integral_height_sq_cell (fun p => arthurCoord t p.1 p.2 / p.2 ^ 2)]
+    ∫ z in fd, arthurReal t z = ∫ p in fullDomain, arthurCoord t p.1 p.2 / p.2 ^ (2 : ℕ) := by
+  rw [← integral_height_sq_cell (fun p => arthurCoord t p.1 p.2 / p.2 ^ (2 : ℕ))]
   refine setIntegral_congr_fun isClosed_fd.measurableSet fun z _ => ?_
   simp only [arthurReal]
   have hz : z.im ≠ 0 := z.im_pos.ne'
   field_simp
 
 theorem setIntegral_fd_arthurReal_sq (t : ℝ) :
-    ∫ z in fd, arthurReal t z ^ 2 = ∫ p in fullDomain, arthurCoord t p.1 p.2 ^ 2 / p.2 ^ 2 := by
-  rw [← integral_height_sq_cell (fun p => arthurCoord t p.1 p.2 ^ 2 / p.2 ^ 2)]
+    ∫ z in fd, arthurReal t z ^ (2 : ℕ) = ∫ p in fullDomain, arthurCoord t p.1 p.2 ^ (2 : ℕ) / p.2 ^ (2 : ℕ) := by
+  rw [← integral_height_sq_cell (fun p => arthurCoord t p.1 p.2 ^ (2 : ℕ) / p.2 ^ (2 : ℕ))]
   refine setIntegral_congr_fun isClosed_fd.measurableSet fun z _ => ?_
   simp only [arthurReal]
   have hz : z.im ≠ 0 := z.im_pos.ne'
@@ -47,7 +47,7 @@ theorem setIntegral_fd_arthurReal_sq (t : ℝ) :
 def arthurC (t : ℝ) (z : ℍ) : ℂ := ((arthurReal t z : ℝ) : ℂ)
 
 theorem measurable_arthurReal (t : ℝ) : Measurable (arthurReal t) := by
-  have h : arthurReal t = fun z => ‖truncatedLineModel ((t : ℂ) * Complex.I) sourceHeight z‖ ^ 2 :=
+  have h : arthurReal t = fun z => ‖truncatedLineModel ((t : ℂ) * Complex.I) sourceHeight z‖ ^ (2 : ℕ) :=
     funext (arthurReal_eq t)
   rw [h]
   exact (measurable_truncatedLineModel _ _).norm.pow_const 2
@@ -78,16 +78,16 @@ theorem setIntegral_arthurL2 {t : ℝ} (ht : 2 ≤ t) :
   exact integral_ofReal
 
 theorem norm_sq_arthurL2 {t : ℝ} (ht : 2 ≤ t) :
-    ‖arthurL2 t ht‖ ^ 2 = ∫ z in fd, arthurReal t z ^ 2 := by
+    ‖arthurL2 t ht‖ ^ (2 : ℕ) = ∫ z in fd, arthurReal t z ^ (2 : ℕ) := by
   have h : RCLike.re ⟪modularToLp (arthurL2 t ht), modularToLp (arthurL2 t ht)⟫_ℂ =
-      ∫ z in fd, arthurReal t z ^ 2 := by
+      ∫ z in fd, arthurReal t z ^ (2 : ℕ) := by
     rw [L2.inner_def, ← integral_re (L2.integrable_inner _ _)]
     refine integral_congr_ae ?_
     filter_upwards [coeFn_arthurL2 ht] with z hz
     rw [hz, RCLike.inner_apply, arthurC, Complex.conj_ofReal, RCLike.re_to_complex,
       ← Complex.ofReal_mul, Complex.ofReal_re]
     ring
-  have h2 : ‖modularToLp (arthurL2 t ht)‖ ^ 2 =
+  have h2 : ‖modularToLp (arthurL2 t ht)‖ ^ (2 : ℕ) =
       RCLike.re ⟪modularToLp (arthurL2 t ht), modularToLp (arthurL2 t ht)⟫_ℂ :=
     (inner_self_eq_norm_sq _).symm
   rw [h] at h2
@@ -119,58 +119,58 @@ theorem hb_online_sign_law_arthur_source :
   have hgrow := hT₂ t htT₂
   have hVb := hV t htT
   -- the mean and the Lambda value, as opaque names
-  obtain ⟨M, hM⟩ : ∃ M : ℝ, M = ∫ p in fullDomain, arthurCoord t p.1 p.2 / p.2 ^ 2 := ⟨_, rfl⟩
-  obtain ⟨L, hL⟩ : ∃ L : ℝ, L = ‖eisLineLambda t‖ ^ 2 := ⟨_, rfl⟩
+  obtain ⟨M, hM⟩ : ∃ M : ℝ, M = ∫ p in fullDomain, arthurCoord t p.1 p.2 / p.2 ^ (2 : ℕ) := ⟨_, rfl⟩
+  obtain ⟨L, hL⟩ : ∃ L : ℝ, L = ‖eisLineLambda t‖ ^ (2 : ℕ) := ⟨_, rfl⟩
   have hMge : (5 / 2) * L ≤ M := by
     rw [hM, hL]; exact setIntegral_fullDomain_arthur_div_ge ht2
   have hLpos : 0 < L := by rw [hL]; exact norm_sq_eisLineLambda_pos ht0.le
   have hMnn : 0 ≤ M := by linarith
   -- the constant mode is `M²`
-  have hI : ‖∫ z in fd, modularToLp (arthurL2 t ht2) z ∂volume‖ ^ 2 = M ^ 2 := by
+  have hI : ‖∫ z in fd, modularToLp (arthurL2 t ht2) z ∂volume‖ ^ (2 : ℕ) = M ^ (2 : ℕ) := by
     rw [setIntegral_arthurL2 ht2, setIntegral_fd_arthurReal, ← hM, Complex.norm_real,
       Real.norm_eq_abs, sq_abs]
   -- the fluctuation is at most the mean square
-  have hN : ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ 2 ≤
-      L ^ 2 * (128 * sourceHeight + B * growth t) := by
-    calc ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ 2
-        ≤ ‖arthurL2 t ht2‖ ^ 2 := norm_sub_starProjection_sq_le _
-      _ = ∫ p in fullDomain, arthurCoord t p.1 p.2 ^ 2 / p.2 ^ 2 := by
+  have hN : ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ (2 : ℕ) ≤
+      L ^ (2 : ℕ) * (128 * sourceHeight + B * growth t) := by
+    calc ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ (2 : ℕ)
+        ≤ ‖arthurL2 t ht2‖ ^ (2 : ℕ) := norm_sub_starProjection_sq_le _
+      _ = ∫ p in fullDomain, arthurCoord t p.1 p.2 ^ (2 : ℕ) / p.2 ^ (2 : ℕ) := by
           rw [norm_sq_arthurL2, setIntegral_fd_arthurReal_sq]
       _ ≤ vBound t := setIntegral_fullDomain_arthur_sq_div_le ht2
-      _ ≤ ‖eisLineLambda t‖ ^ 4 * (128 * sourceHeight + B * growth t) := hVb
-      _ = L ^ 2 * (128 * sourceHeight + B * growth t) := by rw [hL]; ring
+      _ ≤ ‖eisLineLambda t‖ ^ (4 : ℕ) * (128 * sourceHeight + B * growth t) := hVb
+      _ = L ^ (2 : ℕ) * (128 * sourceHeight + B * growth t) := by rw [hL]; ring
   -- volume bounds
   have hvol := volume_fd_toReal_pos
   have hvol2 := volume_fd_toReal_le_two
   -- `M²/vol ≥ (25/4) L² / 2`
-  have hM2 : (25 / 4) * L ^ 2 ≤ M ^ 2 := by
+  have hM2 : (25 / 4) * L ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ (by positivity) hMge 2
     nlinarith [this]
-  have hq : (25 / 4) * L ^ 2 / 2 ≤ M ^ 2 / ((volume : Measure ℍ) fd).toReal := by
+  have hq : (25 / 4) * L ^ (2 : ℕ) / 2 ≤ M ^ (2 : ℕ) / ((volume : Measure ℍ) fd).toReal := by
     rw [div_le_div_iff₀ (by norm_num) hvol]
     nlinarith [hM2, hvol2, sq_nonneg L, hvol]
   -- the growth term is small
   have hgr1 := one_le_growth ht3
-  have hsmall : 128 * sourceHeight + B * growth t < 25 * t ^ 2 / 17408 := by
+  have hsmall : 128 * sourceHeight + B * growth t < 25 * t ^ (2 : ℕ) / 17408 := by
     have : 128 * sourceHeight + B * growth t ≤ (128 * sourceHeight + B) * growth t := by
       nlinarith [hgr1, hH]
     linarith
   -- the strict lower bound
-  have key : 0 < t ^ 11 / 2176 * (M ^ 2 / ((volume : Measure ℍ) fd).toReal) -
-      t ^ 9 * (L ^ 2 * (128 * sourceHeight + B * growth t)) := by
-    have h1 : t ^ 11 / 2176 * ((25 / 4) * L ^ 2 / 2) ≤
-        t ^ 11 / 2176 * (M ^ 2 / ((volume : Measure ℍ) fd).toReal) := by gcongr
-    have h2 : t ^ 9 * (L ^ 2 * (128 * sourceHeight + B * growth t)) <
-        t ^ 9 * (L ^ 2 * (25 * t ^ 2 / 17408)) := by gcongr
-    have h3 : t ^ 11 / 2176 * ((25 / 4) * L ^ 2 / 2) = t ^ 9 * (L ^ 2 * (25 * t ^ 2 / 17408)) := by
+  have key : 0 < t ^ (11 : ℕ) / 2176 * (M ^ (2 : ℕ) / ((volume : Measure ℍ) fd).toReal) -
+      t ^ (9 : ℕ) * (L ^ (2 : ℕ) * (128 * sourceHeight + B * growth t)) := by
+    have h1 : t ^ (11 : ℕ) / 2176 * ((25 / 4) * L ^ (2 : ℕ) / 2) ≤
+        t ^ (11 : ℕ) / 2176 * (M ^ (2 : ℕ) / ((volume : Measure ℍ) fd).toReal) := by gcongr
+    have h2 : t ^ (9 : ℕ) * (L ^ (2 : ℕ) * (128 * sourceHeight + B * growth t)) <
+        t ^ (9 : ℕ) * (L ^ (2 : ℕ) * (25 * t ^ (2 : ℕ) / 17408)) := by gcongr
+    have h3 : t ^ (11 : ℕ) / 2176 * ((25 / 4) * L ^ (2 : ℕ) / 2) = t ^ (9 : ℕ) * (L ^ (2 : ℕ) * (25 * t ^ (2 : ℕ) / 17408)) := by
       ring
     linarith
-  have hfinal : 0 < t ^ 11 / 2176 *
-      (‖∫ z in fd, modularToLp (arthurL2 t ht2) z ∂volume‖ ^ 2 /
+  have hfinal : 0 < t ^ (11 : ℕ) / 2176 *
+      (‖∫ z in fd, modularToLp (arthurL2 t ht2) z ∂volume‖ ^ (2 : ℕ) /
         ((volume : Measure ℍ) fd).toReal) -
-      t ^ 9 * ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ 2 := by
+      t ^ (9 : ℕ) * ‖arthurL2 t ht2 - (ℂ ∙ modularOne).starProjection (arthurL2 t ht2)‖ ^ (2 : ℕ) := by
     rw [hI]
-    have := mul_le_mul_of_nonneg_left hN (by positivity : (0 : ℝ) ≤ t ^ 9)
+    have := mul_le_mul_of_nonneg_left hN (by positivity : (0 : ℝ) ≤ t ^ (9 : ℕ))
     linarith
   exact lt_of_lt_of_le hfinal hasm
 

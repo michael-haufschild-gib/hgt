@@ -5,7 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 Dunster's Liouville transform puts the exterior radial prolate equation in the form
 
-`W'' + c^2 W = psi W`.
+`W'' + c^(2 : ℕ) W = psi W`.
 
 The useful oscillatory decomposition is not obtained by factoring a big-`O` remainder out of an
 exponential.  It is an exact consequence of the differential equation.  This file defines the two
@@ -18,12 +18,12 @@ namespace RHTower
 
 noncomputable section
 
-/-- The positive-frequency interaction amplitude for `W'' + c^2 W = psi W`. -/
+/-- The positive-frequency interaction amplitude for `W'' + c^(2 : ℕ) W = psi W`. -/
 def radialInteractionPlus (c : ℝ) (W V : ℝ → ℂ) (x : ℝ) : ℂ :=
   (1 / 2 : ℂ) * Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) *
     (W x + V x / (Complex.I * (c : ℂ)))
 
-/-- The negative-frequency interaction amplitude for `W'' + c^2 W = psi W`. -/
+/-- The negative-frequency interaction amplitude for `W'' + c^(2 : ℕ) W = psi W`. -/
 def radialInteractionMinus (c : ℝ) (W V : ℝ → ℂ) (x : ℝ) : ℂ :=
   (1 / 2 : ℂ) * Complex.exp (Complex.I * (c : ℂ) * (x : ℂ)) *
     (W x - V x / (Complex.I * (c : ℂ)))
@@ -64,11 +64,11 @@ theorem radialInteraction_reconstruct {c x : ℝ} (hc : c ≠ 0) (W V : ℝ → 
     _ = W x := by rw [hpos, hneg]; ring
 
 /-- Exact transport of the positive-frequency amplitude.  Here `V = W'` and
-`V' = (psi - c^2) W`. -/
+`V' = (psi - c^(2 : ℕ)) W`. -/
 theorem hasDerivAt_radialInteractionPlus {c x : ℝ} (hc : c ≠ 0)
     {W V psi : ℝ → ℂ}
     (hW : HasDerivAt W (V x) x)
-    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x) :
+    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x) :
     HasDerivAt (radialInteractionPlus c W V)
       (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x /
         (2 * Complex.I * (c : ℂ))) x := by
@@ -101,7 +101,7 @@ theorem hasDerivAt_radialInteractionPlus {c x : ℝ} (hc : c ≠ 0)
 theorem hasDerivAt_radialInteractionMinus {c x : ℝ} (hc : c ≠ 0)
     {W V psi : ℝ → ℂ}
     (hW : HasDerivAt W (V x) x)
-    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x) :
+    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x) :
     HasDerivAt (radialInteractionMinus c W V)
       (-Complex.exp (Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x /
         (2 * Complex.I * (c : ℂ))) x := by

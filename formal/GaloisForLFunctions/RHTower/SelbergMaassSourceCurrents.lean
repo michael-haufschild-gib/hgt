@@ -37,10 +37,10 @@ theorem field_laplacian (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     (q : Deck N) (z : ℍ) :
     dir 1 (dir 1 (field N f q)) (z : ℂ) + dir Complex.I (dir Complex.I (field N f q)) (z : ℂ) =
-      ((-(lam / z.im ^ 2) : ℝ) : ℂ) * field N f q (z : ℂ) := by
+      ((-(lam / z.im ^ (2 : ℕ)) : ℝ) : ℂ) * field N f q (z : ℂ) := by
   have hz : (z.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
   have he := (quotientForm N f q).2.2.1.2 z
-  change -(z.im : ℂ) ^ 2 * (dir 1 (dir 1 (field N f q)) (z : ℂ) +
+  change -(z.im : ℂ) ^ (2 : ℕ) * (dir 1 (dir 1 (field N f q)) (z : ℂ) +
     dir Complex.I (dir Complex.I (field N f q)) (z : ℂ)) = (lam : ℂ) * (quotientForm N f q).1.1 z at he
   have hv : field N f q (z : ℂ) = (quotientForm N f q).1.1 z := by
     simp only [field, Function.comp_apply, ofComplex_apply]
@@ -89,17 +89,17 @@ theorem source_current_conservation (N : ℕ) {lam : ℝ}
 
 /-- The full finite real Gram defect is exactly half the sum of squared antisymmetric pair currents. -/
 theorem finite_wedge_identity {ι : Type*} [Fintype ι] (a b : ι → ℝ) :
-    (∑ i, a i ^ 2) * (∑ i, b i ^ 2) - (∑ i, a i * b i) ^ 2 =
-      (1 / 2 : ℝ) * ∑ i, ∑ j, (a i * b j - a j * b i) ^ 2 := by
-  have hp (i j : ι) : (a i * b j - a j * b i) ^ 2 =
-      a i ^ 2 * b j ^ 2 + a j ^ 2 * b i ^ 2 - 2 * (a i * b i) * (a j * b j) := by ring
-  have h1 : (∑ i, ∑ j, a i ^ 2 * b j ^ 2) = (∑ i, a i ^ 2) * (∑ j, b j ^ 2) := by
+    (∑ i, a i ^ (2 : ℕ)) * (∑ i, b i ^ (2 : ℕ)) - (∑ i, a i * b i) ^ (2 : ℕ) =
+      (1 / 2 : ℝ) * ∑ i, ∑ j, (a i * b j - a j * b i) ^ (2 : ℕ) := by
+  have hp (i j : ι) : (a i * b j - a j * b i) ^ (2 : ℕ) =
+      a i ^ (2 : ℕ) * b j ^ (2 : ℕ) + a j ^ (2 : ℕ) * b i ^ (2 : ℕ) - 2 * (a i * b i) * (a j * b j) := by ring
+  have h1 : (∑ i, ∑ j, a i ^ (2 : ℕ) * b j ^ (2 : ℕ)) = (∑ i, a i ^ (2 : ℕ)) * (∑ j, b j ^ (2 : ℕ)) := by
     simp_rw [← Finset.mul_sum]
     rw [← Finset.sum_mul]
-  have h2 : (∑ i, ∑ j, a j ^ 2 * b i ^ 2) = (∑ i, a i ^ 2) * (∑ j, b j ^ 2) := by
+  have h2 : (∑ i, ∑ j, a j ^ (2 : ℕ) * b i ^ (2 : ℕ)) = (∑ i, a i ^ (2 : ℕ)) * (∑ j, b j ^ (2 : ℕ)) := by
     simp_rw [← Finset.sum_mul]
     rw [← Finset.mul_sum]
-  have h3 : (∑ i, ∑ j, 2 * (a i * b i) * (a j * b j)) = 2 * (∑ i, a i * b i) ^ 2 := by
+  have h3 : (∑ i, ∑ j, 2 * (a i * b i) * (a j * b j)) = 2 * (∑ i, a i * b i) ^ (2 : ℕ) := by
     simp_rw [← Finset.mul_sum]
     rw [← Finset.sum_mul, ← Finset.mul_sum]
     ring
@@ -115,7 +115,7 @@ theorem regulator_current_forcing (N : ℕ) {lam : ℝ}
         (SelbergMaassAugmentedDirection.source N f e (some q)) 1) (z : ℂ) +
       dir Complex.I (bracket (SelbergMaassAugmentedDirection.source N f e none)
         (SelbergMaassAugmentedDirection.source N f e (some q)) Complex.I) (z : ℂ) =
-      ((-(lam / z.im ^ 2) : ℝ) : ℂ) * (e : ℝ) * field N f q (z : ℂ) := by
+      ((-(lam / z.im ^ (2 : ℕ)) : ℝ) : ℂ) * (e : ℝ) * field N f q (z : ℂ) := by
   change dir 1 (bracket (fun _ : ℂ => ((e : ℝ) : ℂ)) (field N f q) 1) (z : ℂ) +
     dir Complex.I (bracket (fun _ : ℂ => ((e : ℝ) : ℂ)) (field N f q) Complex.I) (z : ℂ) = _
   rw [bracket_divergence contDiffAt_const (field_smooth N f q z), field_laplacian]

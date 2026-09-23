@@ -79,7 +79,7 @@ theorem finite_setOf_norm_xiSpectralPoint_le (R : ℝ) :
 /-- The defect term: the Ward twist factor against the third resolvent power. -/
 def deningerDivisorDefectTerm (z : ℂ) (q : XiZeroCopy) : ℂ :=
   (xiSpectralPoint q - (starRingEnd ℂ) (xiSpectralPoint q)) *
-    ((xiSpectralPoint q - z)⁻¹) ^ 3
+    ((xiSpectralPoint q - z)⁻¹) ^ (3 : ℕ)
 
 /-- The defect trace. -/
 def deningerDivisorDefectTrace (z : ℂ) : ℂ :=
@@ -105,7 +105,7 @@ theorem norm_sub_ge_half_of_far {z μ : ℂ} (hfar : 2 * ‖z‖ + 2 ≤ ‖μ�
 `16/‖μ‖²`. -/
 theorem norm_deningerDivisorDefectTerm_le_of_far (z : ℂ) (q : XiZeroCopy)
     (hfar : 2 * ‖z‖ + 2 ≤ ‖xiSpectralPoint q‖) :
-    ‖deningerDivisorDefectTerm z q‖ ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    ‖deningerDivisorDefectTerm z q‖ ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   set μ := xiSpectralPoint q with hμ
   have hμpos : 0 < ‖μ‖ := by
     have : (0 : ℝ) < 2 * ‖z‖ + 2 := by positivity
@@ -119,13 +119,13 @@ theorem norm_deningerDivisorDefectTerm_le_of_far (z : ℂ) (q : XiZeroCopy)
           exact div_le_div_of_nonneg_left (by norm_num) hpos2 hhalf
       _ = 2 / ‖μ‖ := by rw [inv_div]
   have hterm : ‖deningerDivisorDefectTerm z q‖ ≤
-      (2 * ‖μ‖) * (2 / ‖μ‖) ^ 3 := by
+      (2 * ‖μ‖) * (2 / ‖μ‖) ^ (3 : ℕ) := by
     rw [deningerDivisorDefectTerm, norm_mul, norm_pow]
     apply mul_le_mul (norm_defectTwist_le q)
       (pow_le_pow_left₀ (norm_nonneg _) hinv 3)
       (by positivity) (by positivity)
-  calc ‖deningerDivisorDefectTerm z q‖ ≤ (2 * ‖μ‖) * (2 / ‖μ‖) ^ 3 := hterm
-    _ = 16 * (1 / ‖μ‖ ^ 2) := by
+  calc ‖deningerDivisorDefectTerm z q‖ ≤ (2 * ‖μ‖) * (2 / ‖μ‖) ^ (3 : ℕ) := hterm
+    _ = 16 * (1 / ‖μ‖ ^ (2 : ℕ)) := by
         field_simp
         ring
 
@@ -215,12 +215,12 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
   obtain ⟨δ, hδ0, hδ1, hδ⟩ := exists_xiSpectralPoint_separation μ₀
   set R₀ : ℝ := 2 * ‖μ₀‖ + 4 with hR₀
   have hR₀pos : 0 < R₀ := by positivity
-  set C : ℝ := 16 + 2 * R₀ ^ 3 * (2 / δ) ^ 3 with hC
+  set C : ℝ := 16 + 2 * R₀ ^ (3 : ℕ) * (2 / δ) ^ (3 : ℕ) with hC
   have hCpos : 0 < C := by positivity
   have hCsum : Summable (fun q : XiZeroCopy =>
-      C * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+      C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left C
-  set M : ℝ := ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ 2) with hM
+  set M : ℝ := ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) with hM
   have hM0 : 0 ≤ M := tsum_nonneg (fun q => by positivity)
   -- the test point
   set t : ℝ := min (δ / 4) (min (1 / 2) (‖c‖ / (4 * (M + 1)))) with ht
@@ -237,14 +237,14 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
     rw [hz]
     simp [Complex.norm_real, abs_of_pos ht0]
   have hμ₀z : μ₀ - z = -(t : ℂ) := by rw [hz]; ring
-  set v : ℂ := c * ((μ₀ - z)⁻¹) ^ 3 with hv
+  set v : ℂ := c * ((μ₀ - z)⁻¹) ^ (3 : ℕ) with hv
   have hv0 : v ≠ 0 := by
     apply mul_ne_zero hc0
     apply pow_ne_zero
     apply inv_ne_zero
     rw [hμ₀z]
     exact neg_ne_zero.mpr (Complex.ofReal_ne_zero.mpr (ne_of_gt ht0))
-  have hvnorm : ‖v‖ = ‖c‖ / t ^ 3 := by
+  have hvnorm : ‖v‖ = ‖c‖ / t ^ (3 : ℕ) := by
     rw [hv, norm_mul, norm_pow, norm_inv, hμ₀z, norm_neg, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos ht0]
     field_simp
@@ -275,29 +275,29 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
     calc (∑' q : A, deningerDivisorDefectTerm z (q : XiZeroCopy))
         = ∑' _ : A, v := tsum_congr htermA
       _ = (Nat.card A) • v := tsum_const v
-  have hnormA : ‖c‖ / t ^ 3 ≤
+  have hnormA : ‖c‖ / t ^ (3 : ℕ) ≤
       ‖∑' q : A, deningerDivisorDefectTerm z (q : XiZeroCopy)‖ := by
     rw [hsumA_eq, nsmul_eq_mul, norm_mul, Complex.norm_natCast, hvnorm]
-    have hnn : 0 ≤ ‖c‖ / t ^ 3 :=
+    have hnn : 0 ≤ ‖c‖ / t ^ (3 : ℕ) :=
       div_nonneg (norm_nonneg c) (le_of_lt (pow_pos ht0 3))
-    calc ‖c‖ / t ^ 3 = 1 * (‖c‖ / t ^ 3) := (one_mul _).symm
-      _ ≤ (Nat.card A : ℝ) * (‖c‖ / t ^ 3) :=
+    calc ‖c‖ / t ^ (3 : ℕ) = 1 * (‖c‖ / t ^ (3 : ℕ)) := (one_mul _).symm
+      _ ≤ (Nat.card A : ℝ) * (‖c‖ / t ^ (3 : ℕ)) :=
           mul_le_mul_of_nonneg_right (by exact_mod_cast hcardA) hnn
   -- uniform bound on the complement
   have hbound : ∀ q : XiZeroCopy, xiSpectralPoint q ≠ μ₀ →
       ‖deningerDivisorDefectTerm z q‖ ≤
-        C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     intro q hqne
     have hμq0 : 0 < ‖xiSpectralPoint q‖ :=
       norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
     by_cases hreg : 2 * ‖z‖ + 2 ≤ ‖xiSpectralPoint q‖
     · calc ‖deningerDivisorDefectTerm z q‖
-          ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+          ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
             norm_deningerDivisorDefectTerm_le_of_far z q hreg
-        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
             apply mul_le_mul_of_nonneg_right _ (by positivity)
             rw [hC]
-            have h0 : 0 ≤ 2 * R₀ ^ 3 * (2 / δ) ^ 3 := by positivity
+            have h0 : 0 ≤ 2 * R₀ ^ (3 : ℕ) * (2 / δ) ^ (3 : ℕ) := by positivity
             linarith
     · -- near regime: separation gives the resolvent bound, the ball gives the norm bound
       rw [not_le] at hreg
@@ -330,30 +330,30 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
           _ = 2 / δ := by rw [inv_div]
       calc ‖deningerDivisorDefectTerm z q‖
           = ‖xiSpectralPoint q - (starRingEnd ℂ) (xiSpectralPoint q)‖ *
-              ‖(xiSpectralPoint q - z)⁻¹‖ ^ 3 := by
+              ‖(xiSpectralPoint q - z)⁻¹‖ ^ (3 : ℕ) := by
             rw [deningerDivisorDefectTerm, norm_mul, norm_pow]
-        _ ≤ (2 * R₀) * (2 / δ) ^ 3 := by
+        _ ≤ (2 * R₀) * (2 / δ) ^ (3 : ℕ) := by
             apply mul_le_mul _ (pow_le_pow_left₀ (norm_nonneg _) hinv 3)
               (by positivity) (by positivity)
             calc ‖xiSpectralPoint q - (starRingEnd ℂ) (xiSpectralPoint q)‖
                 ≤ 2 * ‖xiSpectralPoint q‖ := norm_defectTwist_le q
               _ ≤ 2 * R₀ := by linarith
-        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
             rw [hC]
             rw [div_eq_mul_inv, one_div]
-            have hsq : ‖xiSpectralPoint q‖ ^ 2 ≤ R₀ ^ 2 :=
+            have hsq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ R₀ ^ (2 : ℕ) :=
               pow_le_pow_left₀ (le_of_lt hμq0) hμsmall 2
-            have hinvsq : (R₀ ^ 2)⁻¹ ≤ (‖xiSpectralPoint q‖ ^ 2)⁻¹ := by
+            have hinvsq : (R₀ ^ (2 : ℕ))⁻¹ ≤ (‖xiSpectralPoint q‖ ^ (2 : ℕ))⁻¹ := by
               rw [inv_eq_one_div, inv_eq_one_div]
               exact div_le_div_of_nonneg_left (by norm_num)
                 (by positivity) hsq
-            calc (2 * R₀) * (2 / δ) ^ 3
-                = (2 * R₀ ^ 3 * (2 / δ) ^ 3) * (R₀ ^ 2)⁻¹ := by
+            calc (2 * R₀) * (2 / δ) ^ (3 : ℕ)
+                = (2 * R₀ ^ (3 : ℕ) * (2 / δ) ^ (3 : ℕ)) * (R₀ ^ (2 : ℕ))⁻¹ := by
                   field_simp
-              _ ≤ (2 * R₀ ^ 3 * (2 / δ) ^ 3) * (‖xiSpectralPoint q‖ ^ 2)⁻¹ := by
+              _ ≤ (2 * R₀ ^ (3 : ℕ) * (2 / δ) ^ (3 : ℕ)) * (‖xiSpectralPoint q‖ ^ (2 : ℕ))⁻¹ := by
                   apply mul_le_mul_of_nonneg_left hinvsq (by positivity)
-              _ ≤ (16 + 2 * R₀ ^ 3 * (2 / δ) ^ 3) *
-                    (‖xiSpectralPoint q‖ ^ 2)⁻¹ := by
+              _ ≤ (16 + 2 * R₀ ^ (3 : ℕ) * (2 / δ) ^ (3 : ℕ)) *
+                    (‖xiSpectralPoint q‖ ^ (2 : ℕ))⁻¹ := by
                   apply mul_le_mul_of_nonneg_right _ (by positivity)
                   linarith
   have hcomplnorm : ‖∑' q : ↥Aᶜ,
@@ -364,13 +364,13 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
     calc ‖∑' q : ↥Aᶜ, deningerDivisorDefectTerm z (q : XiZeroCopy)‖
         ≤ ∑' q : ↥Aᶜ, ‖deningerDivisorDefectTerm z (q : XiZeroCopy)‖ :=
           norm_tsum_le_tsum_norm hsumnormAc
-      _ ≤ ∑' q : ↥Aᶜ, C * (1 / ‖xiSpectralPoint (q : XiZeroCopy)‖ ^ 2) := by
+      _ ≤ ∑' q : ↥Aᶜ, C * (1 / ‖xiSpectralPoint (q : XiZeroCopy)‖ ^ (2 : ℕ)) := by
           apply Summable.tsum_le_tsum _ hsumnormAc (hCsum.subtype Aᶜ)
           rintro ⟨q, hqc⟩
           exact hbound q hqc
       _ = ∑' q : XiZeroCopy, (Aᶜ).indicator
-            (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ 2)) q :=
-          tsum_subtype Aᶜ (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ 2))
+            (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) q :=
+          tsum_subtype Aᶜ (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
       _ ≤ M := by
           rw [hM]
           apply Summable.tsum_le_tsum _ (hCsum.indicator Aᶜ) hCsum
@@ -379,7 +379,7 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
   -- assemble
   refine ⟨z, ?_⟩
   have hsplit := Summable.tsum_add_tsum_compl (s := A) hsumA hsumAc
-  have hlow : ‖c‖ / t ^ 3 - M ≤ ‖deningerDivisorDefectTrace z‖ := by
+  have hlow : ‖c‖ / t ^ (3 : ℕ) - M ≤ ‖deningerDivisorDefectTrace z‖ := by
     rw [deningerDivisorDefectTrace, ← hsplit]
     have htri : ‖∑' q : A, deningerDivisorDefectTerm z (q : XiZeroCopy)‖ -
         ‖∑' q : ↥Aᶜ, deningerDivisorDefectTerm z (q : XiZeroCopy)‖ ≤
@@ -396,14 +396,14 @@ theorem exists_deningerDivisorDefectTrace_ne_zero_of_offline
       rw [h2] at h1
       linarith
     linarith [hnormA, hcomplnorm, htri]
-  have hbig : 4 * (M + 1) ≤ ‖c‖ / t ^ 3 := by
-    have ht3 : t ^ 3 ≤ t := by
+  have hbig : 4 * (M + 1) ≤ ‖c‖ / t ^ (3 : ℕ) := by
+    have ht3 : t ^ (3 : ℕ) ≤ t := by
       have ht1' : t ≤ 1 := by linarith
-      have hsq : t ^ 2 ≤ 1 := by nlinarith
-      calc t ^ 3 = t * t ^ 2 := by ring
+      have hsq : t ^ (2 : ℕ) ≤ 1 := by nlinarith
+      calc t ^ (3 : ℕ) = t * t ^ (2 : ℕ) := by ring
         _ ≤ t * 1 := mul_le_mul_of_nonneg_left hsq (le_of_lt ht0)
         _ = t := mul_one t
-    have hdivmono : ‖c‖ / t ≤ ‖c‖ / t ^ 3 := by
+    have hdivmono : ‖c‖ / t ≤ ‖c‖ / t ^ (3 : ℕ) := by
       apply div_le_div_of_nonneg_left (le_of_lt hcnorm) (pow_pos ht0 3) ht3
     have hct : 4 * (M + 1) ≤ ‖c‖ / t := by
       rw [le_div_iff₀ ht0]

@@ -179,12 +179,12 @@ theorem tendsto_ccmEulerPrimeCurrentClockResponse_eq_exponentialCharFun
 part of the unit exponential characteristic function. -/
 theorem tendsto_im_ccmEulerPrimeCurrentClockResponse (t : ℝ) :
     Tendsto (fun sigma : ℝ => (ccmEulerPrimeCurrentClockResponse sigma t).im)
-      (nhdsWithin 1 (Ioi 1)) (nhds (t / (1 + t ^ 2))) := by
+      (nhdsWithin 1 (Ioi 1)) (nhds (t / (1 + t ^ (2 : ℕ)))) := by
   have h :=
     Complex.continuous_im.continuousAt.tendsto.comp
       (tendsto_ccmEulerPrimeCurrentClockResponse t)
   have hvalue :
-      ((1 - (t : ℂ) * Complex.I)⁻¹).im = t / (1 + t ^ 2) := by
+      ((1 - (t : ℂ) * Complex.I)⁻¹).im = t / (1 + t ^ (2 : ℕ)) := by
     rw [Complex.inv_im]
     simp [Complex.normSq_apply]
     ring_nf
@@ -197,7 +197,7 @@ theorem eventually_ccmEulerPrimeCurrentClockSineResponse_pos
     {t : ℝ} (ht : 0 < t) :
     ∀ᶠ sigma in nhdsWithin 1 (Ioi 1),
       0 < (ccmEulerPrimeCurrentClockResponse sigma t).im := by
-  have hlimit : 0 < t / (1 + t ^ 2) :=
+  have hlimit : 0 < t / (1 + t ^ (2 : ℕ)) :=
     div_pos ht (by positivity)
   exact
     (tendsto_order.1

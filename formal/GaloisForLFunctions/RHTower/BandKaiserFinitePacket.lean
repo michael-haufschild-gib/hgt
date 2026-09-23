@@ -43,9 +43,9 @@ set_option maxHeartbeats 400000 in
 /-- Cauchy--Schwarz for the cosine-transform readings of a finite packet combination. -/
 theorem norm_sq_fourier_bandTrunc_kaiserCosCombination_le {m : ℕ}
     (c : ℝ) (w b : Fin m → ℝ) (ξ : ℝ) :
-    ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ 2 ≤
-      (∑ j, b j ^ 2) *
-        ∑ j, ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2 := by
+    ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ (2 : ℕ) ≤
+      (∑ j, b j ^ (2 : ℕ)) *
+        ∑ j, ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ) := by
   rw [norm_sq_fourier_bandTrunc_of_even
     (continuous_kaiserCosCombination c w b) (kaiserCosCombination_even c w b) ξ]
   have hinterval : ∀ j : Fin m, IntervalIntegrable
@@ -56,7 +56,7 @@ theorem norm_sq_fourier_bandTrunc_kaiserCosCombination_le {m : ℕ}
       ((continuous_const.mul (continuous_kaiserCosTrial c (w j))).mul
         (Real.continuous_cos.comp (continuous_const.mul continuous_id))) (-1) 1
   change (∫ x in (-1 : ℝ)..1,
-    (∑ j, b j * kaiserCosTrial c (w j) x) * Real.cos (2 * Real.pi * ξ * x)) ^ 2 ≤ _
+    (∑ j, b j * kaiserCosTrial c (w j) x) * Real.cos (2 * Real.pi * ξ * x)) ^ (2 : ℕ) ≤ _
   have hintegrand :
       (fun x : ℝ => (∑ j, b j * kaiserCosTrial c (w j) x) *
         Real.cos (2 * Real.pi * ξ * x)) =
@@ -74,8 +74,8 @@ theorem norm_sq_fourier_bandTrunc_kaiserCosCombination_le {m : ℕ}
       kaiserCosTrial c (w j) x * Real.cos (2 * Real.pi * ξ * x))
   have hpacketSq :
       (∑ j, (∫ x in (-1 : ℝ)..1,
-        kaiserCosTrial c (w j) x * Real.cos (2 * Real.pi * ξ * x)) ^ 2) =
-        ∑ j, ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2 := by
+        kaiserCosTrial c (w j) x * Real.cos (2 * Real.pi * ξ * x)) ^ (2 : ℕ)) =
+        ∑ j, ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro j _
     exact (norm_sq_fourier_bandTrunc_of_even
@@ -86,7 +86,7 @@ theorem norm_sq_fourier_bandTrunc_kaiserCosCombination_le {m : ℕ}
 /-- Common polynomial envelope for every allowed shifted packet. -/
 def kaiserPacketTailBound (c : ℝ) : ℝ :=
   8 + 2 * (kaiserBandRadius c + kaiserAllowedShift c) *
-    kaiserEdgeTransformBound ^ 2
+    kaiserEdgeTransformBound ^ (2 : ℕ)
 
 theorem kaiserPacketTailBound_nonneg {c : ℝ} (hc : 1 ≤ c) :
     0 ≤ kaiserPacketTailBound c := by
@@ -101,15 +101,15 @@ theorem kaiserPacketTailBound_nonneg {c : ℝ} (hc : 1 ≤ c) :
 theorem integral_compl_band_norm_sq_fourier_kaiserCosCombination_le_sum {m : ℕ}
     (c : ℝ) (w b : Fin m → ℝ) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ 2) ≤
-      (∑ j, b j ^ 2) *
+        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ (2 : ℕ)) ≤
+      (∑ j, b j ^ (2 : ℕ)) *
         ∑ j, ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-          ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2 := by
-  let coeff : ℝ := ∑ j, b j ^ 2
+          ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ) := by
+  let coeff : ℝ := ∑ j, b j ^ (2 : ℕ)
   let packetDensity : Fin m → ℝ → ℝ := fun j ξ =>
-    ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2
+    ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ)
   let combinationDensity : ℝ → ℝ := fun ξ =>
-    ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ 2
+    ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ (2 : ℕ)
   have hcombination : Integrable combinationDensity :=
     integrable_norm_sq_fourier_bandTrunc (continuous_kaiserCosCombination c w b)
   have hpacket : ∀ j, Integrable (packetDensity j) := fun j =>
@@ -147,18 +147,18 @@ theorem integral_compl_band_norm_sq_fourier_kaiserCosCombination_le {m : ℕ}
     {c : ℝ} (hc : 1 ≤ c) (w b : Fin m → ℝ)
     (hw : ∀ j, |w j| ≤ kaiserAllowedShift c) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ 2) ≤
-      (∑ j, b j ^ 2) * (m : ℝ) * kaiserPacketTailBound c := by
+        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ (2 : ℕ)) ≤
+      (∑ j, b j ^ (2 : ℕ)) * (m : ℝ) * kaiserPacketTailBound c := by
   have hmono := integral_compl_band_norm_sq_fourier_kaiserCosCombination_le_sum c w b
   refine hmono.trans ?_
-  have hcoeff : 0 ≤ ∑ j, b j ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg (b j)
+  have hcoeff : 0 ≤ ∑ j, b j ^ (2 : ℕ) := Finset.sum_nonneg fun j _ => sq_nonneg (b j)
   have hsumBound :
       (∑ j, ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2) ≤
+        ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ)) ≤
           (m : ℝ) * kaiserPacketTailBound c := by
     calc
       (∑ j, ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-          ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ 2)
+          ‖𝓕 (bandTrunc (kaiserCosTrial c (w j))) ξ‖ ^ (2 : ℕ))
           ≤ ∑ _j : Fin m, kaiserPacketTailBound c := by
             apply Finset.sum_le_sum
             intro j _
@@ -172,13 +172,13 @@ theorem integral_compl_band_norm_sq_fourier_kaiserCosCombination_general_shift_l
     {c : ℝ} (hc : 0 < c) (w b : Fin m → ℝ)
     (hw : ∀ j, |2 * Real.pi * w j| ≤ c) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ 2) ≤
-      (∑ j, b j ^ 2) *
+        ‖𝓕 (bandTrunc (kaiserCosCombination c w b)) ξ‖ ^ (2 : ℕ)) ≤
+      (∑ j, b j ^ (2 : ℕ)) *
         ∑ j, (8 + 2 * (kaiserBandRadius c + |w j|) *
-          kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w j|) ^ 2) := by
+          kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w j|) ^ (2 : ℕ)) := by
   have hmono := integral_compl_band_norm_sq_fourier_kaiserCosCombination_le_sum c w b
   refine hmono.trans ?_
-  have hcoeff : 0 ≤ ∑ j, b j ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg (b j)
+  have hcoeff : 0 ≤ ∑ j, b j ^ (2 : ℕ) := Finset.sum_nonneg fun j _ => sq_nonneg (b j)
   apply mul_le_mul_of_nonneg_left _ hcoeff
   apply Finset.sum_le_sum
   intro j _

@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAGibbsOddIntegrand_integral_critical_limit (w φ ψ : ℝ) :
     Tendsto (fun τ => ∫ u in (0 : ℝ)..1, egbFixedChargeAGibbsOddIntegrand w φ τ ψ u)
-      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4)) := by
+      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have hmeas : ∀ᶠ τ in (atBot : Filter ℝ), AEStronglyMeasurable
       (egbFixedChargeAGibbsOddIntegrand w φ τ ψ) (volume.restrict (uIoc (0 : ℝ) 1)) :=
     .of_forall (fun τ => (egbFixedChargeAGibbsOddIntegrand_measurable w φ τ ψ).aestronglyMeasurable)
@@ -39,17 +39,17 @@ theorem egbFixedChargeAGibbsOddIntegrand_integral_critical_limit (w φ ψ : ℝ)
   rwa [egbFixedChargeAGibbsOddLimitIntegrand_integral] at h
 
 theorem egbFixedChargeAInteriorGibbsGap_first_correction_limit (w φ l ψ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ 4 -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4)) := by
+    Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) -
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   simp only [egbFixedChargeAGibbsOddGap_integral]
   exact egbFixedChargeAGibbsOddIntegrand_integral_critical_limit w φ ψ
 
 theorem egbFixedChargeAInteriorGibbsGap_fifth_order_limit (w φ l ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4 * egbCoexistenceASymmetricRatio τ ^ 4) /
-      egbCoexistenceASymmetricRatio τ ^ 5)
-      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4)) := by
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) /
+      egbCoexistenceASymmetricRatio τ ^ (5 : ℕ))
+      atBot (𝓝 (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   convert egbFixedChargeAInteriorGibbsGap_first_correction_limit w φ l ψ using 1
   funext τ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
@@ -57,7 +57,7 @@ theorem egbFixedChargeAInteriorGibbsGap_fifth_order_limit (w φ l ψ : ℝ) :
   <;> ring
 
 theorem egbFixedChargeAMeanGibbsGap_first_correction_limit (w φ l : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbCoexistenceASymmetricRatio τ ^ 4 -
+    Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) -
       egbFixedChargeAGibbsBarrierCoefficient w φ) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
   simpa only [sin_zero, cos_zero, one_pow, mul_one, mul_zero, zero_mul] using
     egbFixedChargeAInteriorGibbsGap_first_correction_limit w φ l 0

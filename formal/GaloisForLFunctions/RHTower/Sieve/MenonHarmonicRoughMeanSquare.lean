@@ -10,7 +10,7 @@ is therefore squarefree and smooth below the lower cutoff.  The coefficient-ener
 theorem and the literal final-range Rankin--Euler density estimate then give
 
 ```text
-∫_{-X}^{X} |E_X(w)|² dw · (log X)^8  →  0.
+∫_{-X}^{X} |E_X(w)|² dw · (log X)^(8 : ℕ)  →  0.
 ```
 
 This is the exact harmonic normalization used in Menon's final-frequency argument.
@@ -53,15 +53,15 @@ theorem filter_menonFinalRangeHarmonicRoughSet_squarefree_subset (x : ℝ) :
 `X²`. -/
 theorem sum_normSq_harmonicMoebiusC_menonFinalRangeHarmonicRoughSet_le
     (x : ℝ) (hx : 1 ≤ x) :
-    ∑ n ∈ menonFinalRangeHarmonicRoughSet x, ‖harmonicMoebiusC n‖ ^ 2 ≤
+    ∑ n ∈ menonFinalRangeHarmonicRoughSet x, ‖harmonicMoebiusC n‖ ^ (2 : ℕ) ≤
       ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-        (menonFinalRangeTopNat x)).card : ℝ) / x ^ 2 := by
+        (menonFinalRangeTopNat x)).card : ℝ) / x ^ (2 : ℕ) := by
   classical
   have hx0 : 0 < x := lt_of_lt_of_le zero_lt_one hx
   calc
-    ∑ n ∈ menonFinalRangeHarmonicRoughSet x, ‖harmonicMoebiusC n‖ ^ 2 =
+    ∑ n ∈ menonFinalRangeHarmonicRoughSet x, ‖harmonicMoebiusC n‖ ^ (2 : ℕ) =
         ∑ n ∈ menonFinalRangeHarmonicRoughSet x,
-          if Squarefree n then ‖harmonicMoebiusC n‖ ^ 2 else 0 := by
+          if Squarefree n then ‖harmonicMoebiusC n‖ ^ (2 : ℕ) else 0 := by
       refine Finset.sum_congr rfl fun n _ => ?_
       by_cases hnsq : Squarefree n
       · simp [hnsq]
@@ -69,10 +69,10 @@ theorem sum_normSq_harmonicMoebiusC_menonFinalRangeHarmonicRoughSet_le
           ArithmeticFunction.moebius_eq_zero_of_not_squarefree hnsq]
         simp
     _ = ∑ n ∈ (menonFinalRangeHarmonicRoughSet x).filter Squarefree,
-          ‖harmonicMoebiusC n‖ ^ 2 := by
+          ‖harmonicMoebiusC n‖ ^ (2 : ℕ) := by
       rw [Finset.sum_filter]
     _ ≤ ∑ _n ∈ (menonFinalRangeHarmonicRoughSet x).filter Squarefree,
-          1 / x ^ 2 := by
+          1 / x ^ (2 : ℕ) := by
       refine Finset.sum_le_sum fun n hn => ?_
       have hnmem := (Finset.mem_filter.1 hn).1
       have hnsq := (Finset.mem_filter.1 hn).2
@@ -80,7 +80,7 @@ theorem sum_normSq_harmonicMoebiusC_menonFinalRangeHarmonicRoughSet_le
         (show n ∈ menonFinalRangeHarmonicRoughSet x from hnmem)).1
       rw [menonFinalRangeShell, Finset.mem_Icc] at hnshell
       have hnx : x ≤ (n : ℝ) := (Nat.le_ceil x).trans (by exact_mod_cast hnshell.1)
-      have hcoef : ‖harmonicMoebiusC n‖ ^ 2 = 1 / (n : ℝ) ^ 2 := by
+      have hcoef : ‖harmonicMoebiusC n‖ ^ (2 : ℕ) = 1 / (n : ℝ) ^ (2 : ℕ) := by
         rw [harmonicMoebiusC, norm_div, Complex.norm_natCast, div_pow]
         have hne : μ n ≠ 0 :=
           ArithmeticFunction.moebius_ne_zero_iff_squarefree.mpr hnsq
@@ -89,11 +89,11 @@ theorem sum_normSq_harmonicMoebiusC_menonFinalRangeHarmonicRoughSet_le
       rw [hcoef]
       exact one_div_le_one_div_of_le (sq_pos_of_pos hx0) (by nlinarith)
     _ = (((menonFinalRangeHarmonicRoughSet x).filter Squarefree).card : ℝ) /
-          x ^ 2 := by
+          x ^ (2 : ℕ) := by
       rw [Finset.sum_const, nsmul_eq_mul]
       ring
     _ ≤ ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-          (menonFinalRangeTopNat x)).card : ℝ) / x ^ 2 := by
+          (menonFinalRangeTopNat x)).card : ℝ) / x ^ (2 : ℕ) := by
       exact div_le_div_of_nonneg_right (by
         exact_mod_cast Finset.card_le_card
           (filter_menonFinalRangeHarmonicRoughSet_squarefree_subset x)) (sq_nonneg x)
@@ -102,11 +102,11 @@ theorem sum_normSq_harmonicMoebiusC_menonFinalRangeHarmonicRoughSet_le
 theorem integral_Icc_normSq_menonFinalRangeHarmonicRough_le
     (x : ℝ) (hx : 1 ≤ x) :
     (∫ w in Set.Icc (-x) x,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2) ≤
+      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2 * x +
         5 * Real.exp 1 / 2 * (menonFinalRangeTopNat x : ℝ)) *
           (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-            (menonFinalRangeTopNat x)).card : ℝ) / x ^ 2) := by
+            (menonFinalRangeTopNat x)).card : ℝ) / x ^ (2 : ℕ)) := by
   refine (integral_Icc_normSq_logPoly_le_energy harmonicMoebiusC
     (M := menonFinalRangeTopNat x) ?_ ?_ hx).trans ?_
   · intro hzero
@@ -127,12 +127,12 @@ theorem integral_Icc_normSq_menonFinalRangeHarmonicRough_le
 /-- Harmonic rough energy on Menon's final frequency interval. -/
 def menonFinalRangeHarmonicRoughEnergy (x : ℝ) : ℝ :=
   ∫ w in Set.Icc (-x) x,
-    ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2
+    ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ)
 
 /-- The rough term in Menon's harmonic Ramaré factorization is negligible with eight logarithms
 to spare. -/
 theorem tendsto_menonFinalRangeHarmonicRoughEnergy_mul_logPow_zero :
-    Tendsto (fun x : ℝ => menonFinalRangeHarmonicRoughEnergy x * (Real.log x) ^ 8)
+    Tendsto (fun x : ℝ => menonFinalRangeHarmonicRoughEnergy x * (Real.log x) ^ (8 : ℕ))
       atTop (nhds 0) := by
   let C : ℝ := 5 * Real.pi / 2 + 15 * Real.exp 1 / 2
   have hmajor :=
@@ -170,29 +170,29 @@ theorem tendsto_menonFinalRangeHarmonicRoughEnergy_mul_logPow_zero :
     have hcard0 : 0 ≤ ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
         (menonFinalRangeTopNat x)).card : ℝ) := by positivity
     have hquot0 : 0 ≤ ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-        (menonFinalRangeTopNat x)).card : ℝ) / x ^ 2 := by positivity
+        (menonFinalRangeTopNat x)).card : ℝ) / x ^ (2 : ℕ) := by positivity
     have hbound := henergy.trans (mul_le_mul_of_nonneg_right hcoef hquot0)
     have hscaled := mul_le_mul_of_nonneg_right hbound (pow_nonneg hlog0 8)
-    have hlogpow : (Real.log x) ^ 8 ≤ (Real.log x) ^ 10 := by
-      nlinarith [sq_nonneg ((Real.log x) ^ 4 * (Real.log x - 1))]
+    have hlogpow : (Real.log x) ^ (8 : ℕ) ≤ (Real.log x) ^ (10 : ℕ) := by
+      nlinarith [sq_nonneg ((Real.log x) ^ (4 : ℕ) * (Real.log x - 1))]
     have hcardLog :
         ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 8 / x ≤
+          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (8 : ℕ) / x ≤
         ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 10 / x := by
+          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (10 : ℕ) / x := by
       exact div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_left hlogpow hcard0) hx0.le
     calc
-      menonFinalRangeHarmonicRoughEnergy x * (Real.log x) ^ 8 ≤
+      menonFinalRangeHarmonicRoughEnergy x * (Real.log x) ^ (8 : ℕ) ≤
           (C * x *
             (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-              (menonFinalRangeTopNat x)).card : ℝ) / x ^ 2)) *
-                (Real.log x) ^ 8 := hscaled
+              (menonFinalRangeTopNat x)).card : ℝ) / x ^ (2 : ℕ))) *
+                (Real.log x) ^ (8 : ℕ) := hscaled
       _ = C * (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-            (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 8 / x) := by
+            (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (8 : ℕ) / x) := by
         field_simp [ne_of_gt hx0]
       _ ≤ C * (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-            (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 10 / x) := by
+            (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (10 : ℕ) / x) := by
         exact mul_le_mul_of_nonneg_left hcardLog (by dsimp [C]; positivity)
 
 end

@@ -37,14 +37,14 @@ noncomputable def linearBusemannFlow (u : E) (hu : ‖u‖ = 1) : BusemannFlow E
       rw [hc, hv, inner_sub_right]; ring
     rw [hclim]
     -- rewrite the distance as an explicit quotient for `H > 0`
-    have hnormsq : ∀ H : ℝ, ‖v - H • u‖ ^ 2 = ‖v‖ ^ 2 - 2 * H * c + H ^ 2 := by
+    have hnormsq : ∀ H : ℝ, ‖v - H • u‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) - 2 * H * c + H ^ (2 : ℕ) := by
       intro H
       rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, hu, mul_one,
         sq_abs]
       have hvu : ⟪v, u⟫ = c := by rw [hc]; exact real_inner_comm _ _
       rw [hvu]; ring
     have key : ∀ H : ℝ, 0 < H →
-        dist (x - H • u) y - H = (‖v‖ ^ 2 / H - 2 * c) / (‖H⁻¹ • v - u‖ + 1) := by
+        dist (x - H • u) y - H = (‖v‖ ^ (2 : ℕ) / H - 2 * c) / (‖H⁻¹ • v - u‖ + 1) := by
       intro H hH
       have hsm : H⁻¹ • (v - H • u) = H⁻¹ • v - u := by
         rw [smul_sub, smul_smul, inv_mul_cancel₀ (ne_of_gt hH), one_smul]
@@ -60,10 +60,10 @@ noncomputable def linearBusemannFlow (u : E) (hu : ‖u‖ = 1) : BusemannFlow E
       field_simp
       nlinarith [hsq]
     have heq : (fun H : ℝ => dist (x - H • u) y - H)
-        =ᶠ[atTop] fun H : ℝ => (‖v‖ ^ 2 / H - 2 * c) / (‖H⁻¹ • v - u‖ + 1) := by
+        =ᶠ[atTop] fun H : ℝ => (‖v‖ ^ (2 : ℕ) / H - 2 * c) / (‖H⁻¹ • v - u‖ + 1) := by
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with H hH using key H hH
     refine Tendsto.congr' heq.symm ?_
-    have hnum : Tendsto (fun H : ℝ => ‖v‖ ^ 2 / H - 2 * c) atTop (𝓝 (0 - 2 * c)) :=
+    have hnum : Tendsto (fun H : ℝ => ‖v‖ ^ (2 : ℕ) / H - 2 * c) atTop (𝓝 (0 - 2 * c)) :=
       (Tendsto.div_atTop tendsto_const_nhds tendsto_id).sub tendsto_const_nhds
     have hsmul : Tendsto (fun H : ℝ => H⁻¹ • v) atTop (𝓝 (0 : E)) := by
       have := (tendsto_inv_atTop_zero (𝕜 := ℝ)).smul_const v

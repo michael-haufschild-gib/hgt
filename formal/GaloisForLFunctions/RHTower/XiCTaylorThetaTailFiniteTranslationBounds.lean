@@ -1039,10 +1039,10 @@ theorem norm_truncatedCosineSectionDerivative_le
 def thetaCuspTailDerivativeNatExpConstant (m p : ℕ) : ℝ :=
   let P := thetaCuspTailDerivativePolynomial m
   thetaCuspCoeffMass P *
-    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) *
       ∑' n : ℕ,
         ((n + 1 : ℕ) : ℝ) ^ P.natDegree *
-          Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+          Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))
 
 /-- A polynomial Gaussian atom retains arbitrary natural exponential decay; its polynomial factor
 is absorbed by the summable discrete Gaussian in the square index. -/
@@ -1050,9 +1050,9 @@ theorem exp_nat_mul_abs_thetaCuspPolynomialAtom_le_of_pos
     (P : ℝ[X]) (p : ℕ) {x : ℝ} (hx : 0 ≤ x) {q : ℕ} (hq : 0 < q) :
     Real.exp ((p : ℝ) * x) * |thetaCuspPolynomialAtom P q x| ≤
       thetaCuspCoeffMass P *
-        Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
+        Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) *
           (q : ℝ) ^ P.natDegree *
-            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) := by
   let y : ℝ := (q : ℝ) * Real.exp x
   have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
   have hexp1 : 1 ≤ Real.exp x := by simpa using Real.exp_le_exp.mpr hx
@@ -1064,11 +1064,11 @@ theorem exp_nat_mul_abs_thetaCuspPolynomialAtom_le_of_pos
   simp only [thetaCuspPolynomialAtom, eval_one, mul_one, abs_mul,
     abs_of_pos (Real.exp_pos _)] at hbase ⊢
   change Real.exp ((p : ℝ) * x) *
-      (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) ≤ _
-  change Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
-      Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) ≥
+      (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ (2 : ℕ))) ≤ _
+  change Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) *
+      Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) ≥
         Real.exp (((p + P.natDegree : ℕ) : ℝ) * x) *
-          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ 2)) at hbase
+          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ (2 : ℕ))) at hbase
   have hyPow : y ^ P.natDegree =
       (q : ℝ) ^ P.natDegree * Real.exp ((P.natDegree : ℝ) * x) := by
     dsimp [y]
@@ -1076,21 +1076,21 @@ theorem exp_nat_mul_abs_thetaCuspPolynomialAtom_le_of_pos
   rw [hyPow] at heval
   calc
     Real.exp ((p : ℝ) * x) *
-        (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) ≤
+        (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ (2 : ℕ))) ≤
       thetaCuspCoeffMass P * (q : ℝ) ^ P.natDegree *
         (Real.exp (((p + P.natDegree : ℕ) : ℝ) * x) *
-          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ 2))) := by
+          (Real.exp (x / 2) * Real.exp (-Real.pi * y ^ (2 : ℕ)))) := by
       rw [show (((p + P.natDegree : ℕ) : ℝ)) =
           (p : ℝ) + (P.natDegree : ℝ) by norm_num,
         show ((p : ℝ) + (P.natDegree : ℝ)) * x =
           (p : ℝ) * x + (P.natDegree : ℝ) * x by ring,
         Real.exp_add]
       have hnon : 0 ≤ Real.exp ((p : ℝ) * x) * Real.exp (x / 2) *
-          Real.exp (-Real.pi * y ^ 2) := by positivity
+          Real.exp (-Real.pi * y ^ (2 : ℕ)) := by positivity
       nlinarith
     _ ≤ thetaCuspCoeffMass P * (q : ℝ) ^ P.natDegree *
-        (Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi)) *
-          Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2)) := by
+        (Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) *
+          Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ))) := by
       apply mul_le_mul_of_nonneg_left hbase
       exact mul_nonneg (thetaCuspCoeffMass_nonneg P)
         (pow_nonneg (Nat.cast_nonneg q) _)
@@ -1107,9 +1107,9 @@ theorem abs_thetaCuspTailDerivative_le_nat_exp_neg
   let a : ℕ → ℝ := fun n => thetaCuspPolynomialAtom P (n + 1) x
   let g : ℕ → ℝ := fun n =>
     ((n + 1 : ℕ) : ℝ) ^ P.natDegree *
-      Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+      Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))
   let B : ℝ := thetaCuspCoeffMass P *
-    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ 2 / (2 * Real.pi))
+    Real.exp (((p + P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi))
   have ha : Summable a := by
     simpa [a, P, thetaCuspTailDerivative] using summable_thetaCuspTailDerivative m x
   have hg : Summable g := by

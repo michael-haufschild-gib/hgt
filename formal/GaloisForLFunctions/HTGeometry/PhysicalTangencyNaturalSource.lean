@@ -294,7 +294,7 @@ theorem augDegree_resonanceOperator {a b c : ι} (hab : a ≠ b) (hac : a ≠ c)
 omit [Fintype ι] [DecidableEq ι] in
 theorem physicalArcPullback_resonanceOperator (τ : ι → ℂ) {a b c : ι} (hres : τ c = τ a + τ b) :
     physicalArcPullback τ (resonanceOperator a b c) =
-      Polynomial.C (τ a * τ b) * Polynomial.X ^ 2 := by
+      Polynomial.C (τ a * τ b) * Polynomial.X ^ (2 : ℕ) := by
   simp only [resonanceOperator, map_sub, map_mul, map_add, map_one, physicalArcPullback_X, hres]
   ring
 
@@ -302,14 +302,14 @@ omit [Fintype ι] [DecidableEq ι] in
 /-- **Contact order exactly two.** -/
 theorem physicalArcContact_resonanceOperator (τ : ι → ℂ) {a b c : ι} (hres : τ c = τ a + τ b)
     (ha : τ a ≠ 0) (hb : τ b ≠ 0) :
-    (Polynomial.X : Polynomial ℂ) ^ 2 ∣ physicalArcPullback τ (resonanceOperator a b c) ∧
-      ¬ (Polynomial.X : Polynomial ℂ) ^ 3 ∣
+    (Polynomial.X : Polynomial ℂ) ^ (2 : ℕ) ∣ physicalArcPullback τ (resonanceOperator a b c) ∧
+      ¬ (Polynomial.X : Polynomial ℂ) ^ (3 : ℕ) ∣
         physicalArcPullback τ (resonanceOperator a b c) := by
   rw [physicalArcPullback_resonanceOperator τ hres]
   refine ⟨Dvd.intro_left _ rfl, fun hdvd => ?_⟩
-  have hcoeff : (Polynomial.C (τ a * τ b) * Polynomial.X ^ 2).coeff 2 = τ a * τ b := by
+  have hcoeff : (Polynomial.C (τ a * τ b) * Polynomial.X ^ (2 : ℕ)).coeff 2 = τ a * τ b := by
     rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
-  have hzero : (Polynomial.C (τ a * τ b) * Polynomial.X ^ 2).coeff 2 = 0 :=
+  have hzero : (Polynomial.C (τ a * τ b) * Polynomial.X ^ (2 : ℕ)).coeff 2 = 0 :=
     Polynomial.X_pow_dvd_iff.mp hdvd 2 (by omega)
   rw [hcoeff] at hzero
   exact (mul_ne_zero ha hb) hzero
@@ -327,8 +327,8 @@ theorem resonantSource_positiveTangency
     resonanceOperator a b c ∈ daTranslationAnnihilator τ hτ ∧
       resonanceOperator a b c ≠ 0 ∧
       augDegree (resonanceOperator a b c) = 1 ∧
-      (Polynomial.X : Polynomial ℂ) ^ 2 ∣ physicalArcPullback τ (resonanceOperator a b c) ∧
-      ¬ (Polynomial.X : Polynomial ℂ) ^ 3 ∣
+      (Polynomial.X : Polynomial ℂ) ^ (2 : ℕ) ∣ physicalArcPullback τ (resonanceOperator a b c) ∧
+      ¬ (Polynomial.X : Polynomial ℂ) ^ (3 : ℕ) ∣
         physicalArcPullback τ (resonanceOperator a b c) := by
   have hane : τ a ≠ 0 := by
     intro h
@@ -367,9 +367,9 @@ theorem resonantFrame_positiveTangency :
     resonanceOperator (0 : Fin 3) 1 2 ∈
         daTranslationAnnihilator resonantFrame resonantFrame_im_pos ∧
       augDegree (resonanceOperator (0 : Fin 3) 1 2) = 1 ∧
-      (Polynomial.X : Polynomial ℂ) ^ 2 ∣
+      (Polynomial.X : Polynomial ℂ) ^ (2 : ℕ) ∣
         physicalArcPullback resonantFrame (resonanceOperator (0 : Fin 3) 1 2) ∧
-      ¬ (Polynomial.X : Polynomial ℂ) ^ 3 ∣
+      ¬ (Polynomial.X : Polynomial ℂ) ^ (3 : ℕ) ∣
         physicalArcPullback resonantFrame (resonanceOperator (0 : Fin 3) 1 2) := by
   obtain ⟨h1, _, h3, h4, h5⟩ :=
     resonantSource_positiveTangency resonantFrame resonantFrame_im_pos
@@ -400,7 +400,7 @@ theorem resonantSource_annihilator_strictly_larger
       resonanceOperator a b c ∈ daTranslationAnnihilator τ hτ ∧
       resonanceOperator a b c ∉ veroneseIdeal ℂ ι r ∧
       augDegree (resonanceOperator a b c) = 1 ∧
-      ¬ (Polynomial.X : Polynomial ℂ) ^ 3 ∣
+      ¬ (Polynomial.X : Polynomial ℂ) ^ (3 : ℕ) ∣
         physicalArcPullback τ (resonanceOperator a b c) := by
   obtain ⟨hmem, _, hdeg, _, hcontact⟩ :=
     resonantSource_positiveTangency τ hτ hab hac hres

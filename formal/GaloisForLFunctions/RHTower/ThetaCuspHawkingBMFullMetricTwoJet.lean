@@ -46,13 +46,13 @@ private def f : Expr := difference (r.mul r) (c 1)
 private def zInv : Expr := (r.mul r).mul f.inv
 
 private def scalarX (omega kSq : ℂ) : Expr :=
-  ((scale (omega ^ 2) (rho.mul (zInv.mul (atom .scalarValue)))).add
+  ((scale (omega ^ (2 : ℕ)) (rho.mul (zInv.mul (atom .scalarValue)))).add
     (scale (-kSq) (rho.mul (atom .scalarValue)))).add
     (scale 2 (rho.mul ((difference (scale 2 (rho.mul rho)) (c 1)).mul
       (atom .scalarZDerivative))))
 
 private def scalarY (omega : ℂ) : Expr :=
-  (scale (-(omega ^ 2)) (rho.mul (zInv.mul (atom .scalarValue)))).add
+  (scale (-(omega ^ (2 : ℕ))) (rho.mul (zInv.mul (atom .scalarValue)))).add
     (scale (-2) (rho.mul (atom .scalarZDerivative)))
 
 private def scalarZ (omega : ℂ) : Expr :=
@@ -87,7 +87,7 @@ def covariantMetricExpression (omega kSq : ℂ) : Matrix (Fin 4) (Fin 4) Expr :=
 def covariantMetricFromOrbits (a : Primitive → ℂ)
     (s : D4KIScalarGaugeInvariantOrbit) (v : D4KIVectorGaugeInvariantOrbit) :
     Matrix (Fin 4) (Fin 4) ℂ :=
-  let blackening := a .radius ^ 2 - 1
+  let blackening := a .radius ^ (2 : ℕ) - 1
   let angular (p : ℂ) := p * a .scalarHarmonic * a .timeMode
   let tt := angular (-blackening * s.FttMixed)
   let tr := angular (blackening⁻¹ * s.FrtMixed)
@@ -96,7 +96,7 @@ def covariantMetricFromOrbits (a : Primitive → ℂ)
     a (.vectorHarmonic i) * a .timeMode
   let rv (i : Fin 2) := a .radius * blackening⁻¹ * v.FrContravariant *
     a (.vectorHarmonic i) * a .timeMode
-  let hab (i : Primitive) := angular (2 * a .radius ^ 2 * s.angularTrace * a i)
+  let hab (i : Primitive) := angular (2 * a .radius ^ (2 : ℕ) * s.angularTrace * a i)
   !![tt, tr, tv 0, tv 1;
      tr, rr, rv 0, rv 1;
      tv 0, rv 0, hab .horizon00, hab .horizon01;
@@ -107,7 +107,7 @@ inspect their `second` input; metric derivatives are computed subsequently from 
 def covariantMetric (omega kSq : ℂ) (a : Primitive → ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   covariantMetricFromOrbits a
     (d4KIScalarGaugeInvariantOrbitOfBMMaster (a .radius)⁻¹
-      (a .radius ^ 2 * (a .radius ^ 2 - 1)⁻¹) omega kSq
+      (a .radius ^ (2 : ℕ) * (a .radius ^ (2 : ℕ) - 1)⁻¹) omega kSq
       ⟨a .scalarValue, a .scalarZDerivative, 0⟩)
     (d4KIVectorGaugeInvariantOrbitOfBMMaster (a .radius)⁻¹ omega
       ⟨a .vectorValue, a .vectorZDerivative, 0⟩)
@@ -131,7 +131,7 @@ theorem covariantMetricExpression_symm (omega kSq : ℂ) (i j : Fin 4) :
 
 /-- Only radius and blackening nondegeneracy are required by the rational reconstruction. -/
 theorem covariantMetricExpression_regular (omega kSq : ℂ) (a : Primitive → ℂ)
-    (hr : a .radius ≠ 0) (hf : a .radius ^ 2 - 1 ≠ 0) (i j : Fin 4) :
+    (hr : a .radius ≠ 0) (hf : a .radius ^ (2 : ℕ) - 1 ≠ 0) (i j : Fin 4) :
     (covariantMetricExpression omega kSq i j).Regular a := by
   have hf' : a .radius * a .radius + -1 ≠ 0 := by simpa [pow_two, sub_eq_add_neg] using hf
   fin_cases i <;> fin_cases j <;>
@@ -164,7 +164,7 @@ theorem metricJet_value (omega kSq : ℂ) (a : Primitive → ScalarTwoJet (Fin 4
 /-- Every reconstructed coordinate derivative agrees with the actual complete metric field jet. -/
 theorem metricJet_correct (omega kSq : ℂ) {a : Primitive → (Fin 4 → ℝ) → ℂ} {x : Fin 4 → ℝ}
     (ha : ∀ p, ContDiffAt ℝ 2 (a p) x)
-    (hr : a .radius x ≠ 0) (hf : a .radius x ^ 2 - 1 ≠ 0) :
+    (hr : a .radius x ≠ 0) (hf : a .radius x ^ (2 : ℕ) - 1 ≠ 0) :
     metricJet omega kSq (fun p => ScalarTwoJet.ofField (a p) x) =
       ofMetricField (fun y => covariantMetric omega kSq (fun p => a p y)) x := by
   change assemble _ = assemble _
@@ -191,7 +191,7 @@ structure HorizonFields where
 def angularPoint (x : Fin 4 → ℝ) : Fin 2 → ℝ := ![x 2, x 3]
 
 /-- Literal Birmingham--Mokhtari radial coordinate. -/
-def bmCoordinate (x : Fin 4 → ℝ) : ℂ := 1 - (x 1 : ℂ)⁻¹ ^ 2
+def bmCoordinate (x : Fin 4 → ℝ) : ℂ := 1 - (x 1 : ℂ)⁻¹ ^ (2 : ℕ)
 
 /-- Actual separated master, time, harmonic and horizon-metric fields underlying the recipe. -/
 def primitiveFields (omega : ℂ) (Φ Ψ : ℂ → ℂ) (H : HorizonFields) :
@@ -268,7 +268,7 @@ theorem scalarZDerivative_jet (omega : ℂ) {Φ Ψ : ℂ → ℂ} (H : HorizonFi
 
 /-- Full metric two-jet correctness for actual separated master and horizon fields. -/
 theorem metricJet_of_masters (omega kSq : ℂ) {Φ Ψ : ℂ → ℂ} {H : HorizonFields}
-    {x : Fin 4 → ℝ} (hr : x 1 ≠ 0) (hf : (x 1 : ℂ) ^ 2 - 1 ≠ 0)
+    {x : Fin 4 → ℝ} (hr : x 1 ≠ 0) (hf : (x 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0)
     (hΦ : ContDiffAt ℂ 3 Φ (bmCoordinate x)) (hΨ : ContDiffAt ℂ 3 Ψ (bmCoordinate x))
     (hS : ContDiffAt ℝ 2 H.scalar (angularPoint x))
     (hV : ∀ i, ContDiffAt ℝ 2 (H.vector i) (angularPoint x))

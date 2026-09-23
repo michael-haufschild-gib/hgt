@@ -14,7 +14,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeACriticalHeatAmplitude (w φ : ℝ) : ℝ :=
-  2 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+  2 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
     (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)
 
 theorem egbFixedChargeACriticalHeatAmplitude_pos (w φ : ℝ) : 0 < egbFixedChargeACriticalHeatAmplitude w φ := by
@@ -40,7 +40,7 @@ theorem egbFixedChargeACriticalHeatAmplitude_formula (w φ : ℝ) :
 
 theorem egbFixedChargeA_small_heat_capacity_amplitude (w φ l : ℝ) :
     Tendsto (fun τ => egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l
-      (egbFixedChargeASmallRadius w φ τ) * egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeASmallRadius w φ τ) * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalHeatAmplitude w φ)) := by
   have h := (egbFixedChargeA_small_heat_numerator_critical_limit w φ).div
     (egbFixedChargeA_small_radial_slope_quadratic_limit w φ) (egbFixedChargeACriticalSlopeCoefficient_pos w φ).ne'
@@ -54,7 +54,7 @@ theorem egbFixedChargeA_small_heat_capacity_amplitude (w φ l : ℝ) :
 
 theorem egbFixedChargeA_large_heat_capacity_amplitude (w φ l : ℝ) :
     Tendsto (fun τ => egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l
-      (egbFixedChargeALargeRadius w φ τ) * egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeALargeRadius w φ τ) * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalHeatAmplitude w φ)) := by
   have h := (egbFixedChargeA_large_heat_numerator_critical_limit w φ).div
     (egbFixedChargeA_large_radial_slope_quadratic_limit w φ) (egbFixedChargeACriticalSlopeCoefficient_pos w φ).ne'
@@ -80,7 +80,7 @@ theorem egbFixedChargeACriticalHeatAmplitude_temperature_product (w φ : ℝ) :
 
 theorem egbFixedChargeACriticalHeatAmplitude_pressure_product (w φ : ℝ) :
     egbFixedChargeACriticalHeatAmplitude w φ * egbFixedChargeAPressureGapCoefficient w φ =
-      (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+      (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         (6 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1

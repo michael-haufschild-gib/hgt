@@ -90,7 +90,7 @@ theorem sum_Ico_laurentCoeff_shiftDiff_eq_zero {y : ℂ → ℂ} (hy : Meromorph
 
 /-- The cube clearing shift of an inverse square at its own pole is the identity. -/
 theorem laurentShift_invSq_self (p : ℂ) :
-    laurentShift (fun z => ((z - p) ^ 2)⁻¹) p 3 = fun t : ℂ => t := by
+    laurentShift (fun z => ((z - p) ^ (2 : ℕ))⁻¹) p 3 = fun t : ℂ => t := by
   funext t
   simp only [laurentShift, add_sub_cancel_left]
   rcases eq_or_ne t 0 with rfl | ht
@@ -99,41 +99,41 @@ theorem laurentShift_invSq_self (p : ℂ) :
 
 /-- The order-two coefficient of an inverse square at its pole is one. -/
 theorem laurentCoeff_invSq_self (p : ℂ) :
-    laurentCoeff (fun z => ((z - p) ^ 2)⁻¹) p (-2) = 1 := by
-  have hana : AnalyticAt ℂ (laurentShift (fun z => ((z - p) ^ 2)⁻¹) p 3) 0 := by
+    laurentCoeff (fun z => ((z - p) ^ (2 : ℕ))⁻¹) p (-2) = 1 := by
+  have hana : AnalyticAt ℂ (laurentShift (fun z => ((z - p) ^ (2 : ℕ))⁻¹) p 3) 0 := by
     rw [laurentShift_invSq_self]
     exact analyticAt_id
   rw [laurentCoeff_eq_taylorCoeffZero hana (by norm_num), laurentShift_invSq_self]
   norm_num [taylorCoeffZero, iteratedDeriv_one]
 
-theorem analyticAt_invSq {p q : ℂ} (h : q ≠ p) : AnalyticAt ℂ (fun z => ((z - p) ^ 2)⁻¹) q := by
-  have h1 : AnalyticAt ℂ (fun z : ℂ => (z - p) ^ 2) q := (analyticAt_id.sub analyticAt_const).pow 2
+theorem analyticAt_invSq {p q : ℂ} (h : q ≠ p) : AnalyticAt ℂ (fun z => ((z - p) ^ (2 : ℕ))⁻¹) q := by
+  have h1 : AnalyticAt ℂ (fun z : ℂ => (z - p) ^ (2 : ℕ)) q := (analyticAt_id.sub analyticAt_const).pow 2
   exact h1.inv (pow_ne_zero 2 (sub_ne_zero.mpr h))
 
-theorem meromorphicAt_invSq (p q : ℂ) : MeromorphicAt (fun z => ((z - p) ^ 2)⁻¹) q := by
-  have h1 : MeromorphicAt (fun z : ℂ => (z - p) ^ 2) q :=
+theorem meromorphicAt_invSq (p q : ℂ) : MeromorphicAt (fun z => ((z - p) ^ (2 : ℕ))⁻¹) q := by
+  have h1 : MeromorphicAt (fun z : ℂ => (z - p) ^ (2 : ℕ)) q :=
     ((analyticAt_id.sub analyticAt_const).pow 2).meromorphicAt
   exact h1.inv
 
 /-- The order-two coefficient of an inverse square away from its pole vanishes. -/
 theorem laurentCoeff_invSq_of_ne {p q : ℂ} (h : q ≠ p) :
-    laurentCoeff (fun z => ((z - p) ^ 2)⁻¹) q (-2) = 0 :=
+    laurentCoeff (fun z => ((z - p) ^ (2 : ℕ))⁻¹) q (-2) = 0 :=
   laurentCoeff_eq_zero_of_analyticAt (analyticAt_invSq h) (by norm_num)
 
 /-- **The order-two mass of a negative sum of inverse squares.**  It counts, with a minus sign, the
 inverse squares whose pole sits at the evaluation point. -/
 theorem laurentCoeff_negSumInvSq {ι : Type*} (s : Finset ι) (p : ι → ℂ) (q : ℂ) :
-    laurentCoeff (fun z => -∑ i ∈ s, ((z - p i) ^ 2)⁻¹) q (-2)
+    laurentCoeff (fun z => -∑ i ∈ s, ((z - p i) ^ (2 : ℕ))⁻¹) q (-2)
       = -((s.filter fun i => p i = q).card : ℂ) := by
   classical
-  have hrw : (fun z : ℂ => -∑ i ∈ s, ((z - p i) ^ 2)⁻¹)
-      = fun z : ℂ => ∑ i ∈ s, (-1 : ℂ) * ((z - p i) ^ 2)⁻¹ := by
+  have hrw : (fun z : ℂ => -∑ i ∈ s, ((z - p i) ^ (2 : ℕ))⁻¹)
+      = fun z : ℂ => ∑ i ∈ s, (-1 : ℂ) * ((z - p i) ^ (2 : ℕ))⁻¹ := by
     funext z
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_congr rfl fun i _ => by ring
-  rw [hrw, laurentCoeff_sum s (fun i z => ((z - p i) ^ 2)⁻¹) (fun _ => (-1 : ℂ)) q (-2)
+  rw [hrw, laurentCoeff_sum s (fun i z => ((z - p i) ^ (2 : ℕ))⁻¹) (fun _ => (-1 : ℂ)) q (-2)
     (fun i _ => meromorphicAt_invSq (p i) q)]
-  have hterm : ∀ i ∈ s, (-1 : ℂ) * laurentCoeff (fun z => ((z - p i) ^ 2)⁻¹) q (-2)
+  have hterm : ∀ i ∈ s, (-1 : ℂ) * laurentCoeff (fun z => ((z - p i) ^ (2 : ℕ))⁻¹) q (-2)
       = if p i = q then (-1 : ℂ) else 0 := by
     intro i _
     rcases eq_or_ne (p i) q with hpi | hpi
@@ -158,7 +158,7 @@ theorem not_shiftDifference_negSumInvSq_orbit {H a : ℂ} (hH : H ≠ 0) {ι : T
     {y : ℂ → ℂ} (hy : MeromorphicOn y Set.univ)
     (hpoles : {z : ℂ | ¬ AnalyticAt ℂ y z}.Finite) :
     ¬ ((fun z => y (z + H) - y z)
-        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ 2)⁻¹) := by
+        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ (2 : ℕ))⁻¹) := by
   classical
   intro heq
   -- the orbit points are pairwise distinct
@@ -248,7 +248,7 @@ theorem not_shiftDifference_negSumInvSq {H : ℂ} (hH : H ≠ 0) {ι : Type*} (s
     (p : ι → ℂ) (hs : s.Nonempty) {y : ℂ → ℂ} (hy : MeromorphicOn y Set.univ)
     (hpoles : {z : ℂ | ¬ AnalyticAt ℂ y z}.Finite) :
     ¬ ((fun z => y (z + H) - y z)
-        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ 2)⁻¹) := by
+        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ (2 : ℕ))⁻¹) := by
   classical
   obtain ⟨i₀, hi₀⟩ := hs
   set a : ℂ := p i₀ with ha
@@ -277,7 +277,7 @@ theorem not_rational_shiftDifference_negSumInvSq {H : ℂ} (hH : H ≠ 0) {ι : 
     (p : ι → ℂ) (hs : s.Nonempty) (P Q : Polynomial ℂ) (hQ : Q ≠ 0) :
     ¬ ((fun z => Polynomial.eval (z + H) P / Polynomial.eval (z + H) Q
           - Polynomial.eval z P / Polynomial.eval z Q)
-        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ 2)⁻¹) := by
+        =ᶠ[Filter.cofinite] fun z => -∑ i ∈ s, ((z - p i) ^ (2 : ℕ))⁻¹) := by
   classical
   have hPana : ∀ z : ℂ, AnalyticAt ℂ (fun w => Polynomial.eval w P) z := by
     intro z
@@ -313,24 +313,24 @@ theorem logDeriv_prod_sub {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {w : �
 /-- The derivative of a finite sum of reciprocals of linear factors. -/
 theorem deriv_sum_inv_sub {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {z : ℂ}
     (h : ∀ i ∈ s, z ≠ ρ i) :
-    deriv (fun w => ∑ i ∈ s, (w - ρ i)⁻¹) z = -∑ i ∈ s, ((z - ρ i) ^ 2)⁻¹ := by
-  have hterm : ∀ i ∈ s, HasDerivAt (fun w : ℂ => (w - ρ i)⁻¹) (-((z - ρ i) ^ 2)⁻¹) z := by
+    deriv (fun w => ∑ i ∈ s, (w - ρ i)⁻¹) z = -∑ i ∈ s, ((z - ρ i) ^ (2 : ℕ))⁻¹ := by
+  have hterm : ∀ i ∈ s, HasDerivAt (fun w : ℂ => (w - ρ i)⁻¹) (-((z - ρ i) ^ (2 : ℕ))⁻¹) z := by
     intro i hi
     have hd : HasDerivAt (fun u : ℂ => u - ρ i) 1 z := (hasDerivAt_id z).sub_const (ρ i)
     have hinv := hd.inv (sub_ne_zero.mpr (h i hi))
-    have hrw : -(1 : ℂ) / (z - ρ i) ^ 2 = -((z - ρ i) ^ 2)⁻¹ := by
+    have hrw : -(1 : ℂ) / (z - ρ i) ^ (2 : ℕ) = -((z - ρ i) ^ (2 : ℕ))⁻¹ := by
       rw [neg_div, one_div]
     rw [hrw] at hinv
     exact hinv
   have hsum : HasDerivAt (fun w : ℂ => ∑ i ∈ s, (w - ρ i)⁻¹)
-      (∑ i ∈ s, -((z - ρ i) ^ 2)⁻¹) z := HasDerivAt.fun_sum hterm
+      (∑ i ∈ s, -((z - ρ i) ^ (2 : ℕ))⁻¹) z := HasDerivAt.fun_sum hterm
   rw [hsum.deriv, Finset.sum_neg_distrib]
 
 /-- **The second logarithmic derivative of a product of linear factors.**  Off the roots it is the
 negative sum of the inverse squares of the factors. -/
 theorem deriv_logDeriv_prod_sub {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {z : ℂ}
     (h : ∀ i ∈ s, z ≠ ρ i) :
-    deriv (logDeriv fun u => ∏ i ∈ s, (u - ρ i)) z = -∑ i ∈ s, ((z - ρ i) ^ 2)⁻¹ := by
+    deriv (logDeriv fun u => ∏ i ∈ s, (u - ρ i)) z = -∑ i ∈ s, ((z - ρ i) ^ (2 : ℕ))⁻¹ := by
   classical
   have hopen : IsOpen {w : ℂ | ∀ i ∈ s, w ≠ ρ i} := by
     have hcompl : {w : ℂ | ∀ i ∈ s, w ≠ ρ i} = (↑(s.image ρ) : Set ℂ)ᶜ := by

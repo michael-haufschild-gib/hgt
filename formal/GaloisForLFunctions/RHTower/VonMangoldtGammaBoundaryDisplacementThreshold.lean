@@ -8,7 +8,7 @@ noncomputable section
 private theorem summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_of_pos
     {x : ℝ} (hx : 0 < x) :
     Summable (fun p : Nat.Primes =>
-      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) := by
+      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) := by
   have hinjective : Function.Injective (fun p : Nat.Primes => (p : ℕ) - 2) := by
     intro p q hpq
     apply Subtype.ext
@@ -28,7 +28,7 @@ private theorem summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime
       (div_nonneg ArithmeticFunction.vonMangoldt_nonneg (by positivity))
       (Real.exp_pos _).le
   change infiniteVonMangoldtGammaRawAtom x 0 ((p : ℕ) - 2) =
-    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2
+    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)
   rw [infiniteVonMangoldtGammaRawAtom]
   simp only [pow_zero, mul_one, Nat.cast_add, Nat.cast_ofNat]
   have hnat : (p : ℕ) - 2 + 2 = (p : ℕ) := by omega
@@ -62,7 +62,7 @@ private theorem log_two_mul_primeHarmonic_le_rootedBianchiPrimeMassAt_of_nonpos
 private theorem not_summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_of_nonpos
     {x : ℝ} (hx : x ≤ 0) :
     ¬Summable (fun p : Nat.Primes =>
-      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) := by
+      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) := by
   intro hsum
   have hmass : Summable (fun p : Nat.Primes =>
       suzukiRootedBianchiPrimeMassAt x p) := by
@@ -94,7 +94,7 @@ coordinate is square-summable exactly at positive displacement. -/
 theorem summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_iff
     (x : ℝ) :
     Summable (fun p : Nat.Primes =>
-      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) ↔ 0 < x := by
+      vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) ↔ 0 < x := by
   constructor
   · intro hsum
     exact lt_of_not_ge fun hx =>
@@ -107,7 +107,7 @@ vanishes or displacement lies in the positive chamber. -/
 theorem summable_const_mul_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_iff
     (x c : ℝ) :
     Summable (fun p : Nat.Primes =>
-      (c * vonMangoldtGammaRenormalizedBoundaryCoordinate x p) ^ 2) ↔
+      (c * vonMangoldtGammaRenormalizedBoundaryCoordinate x p) ^ (2 : ℕ)) ↔
       c = 0 ∨ 0 < x := by
   constructor
   · intro hsum
@@ -115,12 +115,12 @@ theorem summable_const_mul_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_pri
     · exact Or.inl hc
     · right
       have hscaled : Summable (fun p : Nat.Primes =>
-          c ^ 2 * vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) := by
+          c ^ (2 : ℕ) * vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) := by
         apply hsum.congr
         intro p
         ring
       have hcoordinate : Summable (fun p : Nat.Primes =>
-          vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) :=
+          vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) :=
         (summable_mul_left_iff (pow_ne_zero 2 hc)).mp hscaled
       exact
         (summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_iff x).1
@@ -129,7 +129,7 @@ theorem summable_const_mul_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_pri
     · simp
     · have hcoordinate :=
         (summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_iff x).2 hx
-      have hscaled := hcoordinate.mul_left (c ^ 2)
+      have hscaled := hcoordinate.mul_left (c ^ (2 : ℕ))
       apply hscaled.congr
       intro p
       ring

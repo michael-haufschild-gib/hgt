@@ -14,7 +14,7 @@ Thus local divisor multiplicity, both critical-line reflection orientations, pri
 integer prime-power depths remain visible before scalarization. The reflected character products
 are unit phases at times `2 rho.im`. A single prime clock aliases ordinates, but the fixed pair
 `(log 2, log 3)` is globally injective. Two-dimensional Cesàro mean square therefore groups
-exactly by horizontal ordinate and returns `sum_gamma H_gamma^2`.
+exactly by horizontal ordinate and returns `sum_gamma H_gamma^(2 : ℕ)`.
 
 After subtracting the local square census, the source excess converges exactly to
 `xiHorizontalCollisionCharge T`. Consequently RH is equivalent to vanishing of every source
@@ -41,7 +41,7 @@ theorem tendsto_finiteTwoPhasePencil_cesaro_star_mul
     (hz : ∀ i ∈ s, ‖z i‖ = 1) (hw : ∀ i ∈ s, ‖w i‖ = 1)
     (hinj : Set.InjOn (fun i => (z i, w i)) (s : Set ι)) :
     Tendsto
-      (fun N : ℕ => ((↑((N : ℝ)⁻¹) : ℂ) ^ 2) *
+      (fun N : ℕ => ((↑((N : ℝ)⁻¹) : ℂ) ^ (2 : ℕ)) *
         ∑ n ∈ Finset.range N, ∑ m ∈ Finset.range N,
           star (finiteTwoPhasePencil s c z w n m) *
             finiteTwoPhasePencil s c z w n m)
@@ -144,7 +144,7 @@ theorem tendsto_finiteTwoPhasePencil_cesaro_star_mul
             congr 1
             rw [Finset.mul_sum]
   have hfun (N : ℕ) :
-      ((↑((N : ℝ)⁻¹) : ℂ) ^ 2) *
+      ((↑((N : ℝ)⁻¹) : ℂ) ^ (2 : ℕ)) *
           ∑ n ∈ Finset.range N, ∑ m ∈ Finset.range N,
             star (finiteTwoPhasePencil s c z w n m) *
               finiteTwoPhasePencil s c z w n m =
@@ -152,7 +152,7 @@ theorem tendsto_finiteTwoPhasePencil_cesaro_star_mul
           ((↑((N : ℝ)⁻¹) : ℂ) * ∑ n ∈ Finset.range N, Z p ^ n) *
           ((↑((N : ℝ)⁻¹) : ℂ) * ∑ m ∈ Finset.range N, W p ^ m) := by
     calc
-      _ = ((↑((N : ℝ)⁻¹) : ℂ) ^ 2) *
+      _ = ((↑((N : ℝ)⁻¹) : ℂ) ^ (2 : ℕ)) *
           ∑ i ∈ s, ∑ j ∈ s, ∑ n ∈ Finset.range N, ∑ m ∈ Finset.range N,
             C (i,j) * Z (i,j) ^ n * W (i,j) ^ m := by
               congr 1
@@ -204,18 +204,18 @@ theorem tendsto_finiteTwoPhasePencil_cesaro_norm_sq
     (hz : ∀ i ∈ s, ‖z i‖ = 1) (hw : ∀ i ∈ s, ‖w i‖ = 1)
     (hinj : Set.InjOn (fun i => (z i, w i)) (s : Set ι)) :
     Tendsto
-      (fun N : ℕ => ((N : ℝ)⁻¹ ^ 2) *
+      (fun N : ℕ => ((N : ℝ)⁻¹ ^ (2 : ℕ)) *
         ∑ n ∈ Finset.range N, ∑ m ∈ Finset.range N,
-          ‖finiteTwoPhasePencil s c z w n m‖ ^ 2)
-      atTop (nhds (∑ i ∈ s, ‖c i‖ ^ 2)) := by
+          ‖finiteTwoPhasePencil s c z w n m‖ ^ (2 : ℕ))
+      atTop (nhds (∑ i ∈ s, ‖c i‖ ^ (2 : ℕ))) := by
   have h := tendsto_finiteTwoPhasePencil_cesaro_star_mul s c z w hz hw hinj
   have hre := (Complex.continuous_re.tendsto _).comp h
   convert hre using 1
   · funext N
     rw [Function.comp_apply, Complex.mul_re]
-    have hsre : (((↑((N : ℝ)⁻¹) : ℂ) ^ 2).re) = (N : ℝ)⁻¹ ^ 2 := by
+    have hsre : (((↑((N : ℝ)⁻¹) : ℂ) ^ (2 : ℕ)).re) = (N : ℝ)⁻¹ ^ (2 : ℕ) := by
       rw [← Complex.ofReal_pow, Complex.ofReal_re]
-    have hsim : (((↑((N : ℝ)⁻¹) : ℂ) ^ 2).im) = 0 := by
+    have hsim : (((↑((N : ℝ)⁻¹) : ℂ) ^ (2 : ℕ)).im) = 0 := by
       rw [← Complex.ofReal_pow, Complex.ofReal_im]
     rw [hsre, hsim, zero_mul, sub_zero]
     congr 1
@@ -227,14 +227,14 @@ theorem tendsto_finiteTwoPhasePencil_cesaro_norm_sq
     intro m hm
     rw [show star (finiteTwoPhasePencil s c z w n m) *
         finiteTwoPhasePencil s c z w n m =
-        ((‖finiteTwoPhasePencil s c z w n m‖ ^ 2 : ℝ) : ℂ) by
+        ((‖finiteTwoPhasePencil s c z w n m‖ ^ (2 : ℕ) : ℝ) : ℂ) by
       simpa using Complex.conj_mul' (finiteTwoPhasePencil s c z w n m)]
     exact Complex.ofReal_re _
   · apply congrArg nhds
     rw [← Complex.reCLM_apply, map_sum]
     apply Finset.sum_congr rfl
     intro i hi
-    rw [show star (c i) * c i = ((‖c i‖ ^ 2 : ℝ) : ℂ) by
+    rw [show star (c i) * c i = ((‖c i‖ ^ (2 : ℕ) : ℝ) : ℂ) by
       simpa using Complex.conj_mul' (c i)]
     exact Complex.ofReal_re _
 
@@ -348,9 +348,9 @@ theorem xiHorizontalCollisionTwoPrimeSourcePencil_eq_groupedPencil
 theorem tendsto_xiHorizontalCollisionTwoPrimeSourcePencil_cesaro_norm_sq
     (T : ℝ) :
     Tendsto
-      (fun N : ℕ => ((N : ℝ)⁻¹ ^ 2) *
+      (fun N : ℕ => ((N : ℝ)⁻¹ ^ (2 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
-          ‖xiHorizontalCollisionTwoPrimeSourcePencil T a b‖ ^ 2)
+          ‖xiHorizontalCollisionTwoPrimeSourcePencil T a b‖ ^ (2 : ℕ))
       atTop (nhds (xiStripWindowHorizontalSquareSum T : ℝ)) := by
   let G := (stripZeros_finite T).toFinset.image Complex.im
   have hlim := tendsto_finiteTwoPhasePencil_cesaro_norm_sq G
@@ -378,9 +378,9 @@ theorem tendsto_xiHorizontalCollisionTwoPrimeSourcePencil_cesaro_norm_sq
 /-- Centered two-prime source energy.  Local divisor squares are removed before taking the
 two-clock Cesàro limit, so only horizontal collisions survive. -/
 def xiHorizontalCollisionTwoPrimeSourceExcess (T : ℝ) (N : ℕ) : ℝ :=
-  ((N : ℝ)⁻¹ ^ 2) *
+  ((N : ℝ)⁻¹ ^ (2 : ℕ)) *
       ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
-        ‖xiHorizontalCollisionTwoPrimeSourcePencil T a b‖ ^ 2 -
+        ‖xiHorizontalCollisionTwoPrimeSourcePencil T a b‖ ^ (2 : ℕ) -
     xiStripWindowLocalSquareSum T
 
 theorem tendsto_xiHorizontalCollisionTwoPrimeSourceExcess

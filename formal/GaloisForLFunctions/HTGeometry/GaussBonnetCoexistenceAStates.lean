@@ -18,7 +18,7 @@ def egbCoexistenceATemperature (k τ θ : ℝ) : ℝ :=
   egbCoexistenceATemperatureWeight τ θ / (4 * Real.pi * exp k)
 
 def egbCoexistenceAPressure (k τ θ : ℝ) : ℝ :=
-  egbCoexistenceAPressureWeight τ θ / (8 * Real.pi * exp k ^ 2)
+  egbCoexistenceAPressureWeight τ θ / (8 * Real.pi * exp k ^ (2 : ℕ))
 
 def egbCoexistenceACouplingRoot (k τ θ : ℝ) : ℝ :=
   exp k * sqrt (egbCoexistenceAMaxCoupling τ) * sin θ
@@ -37,22 +37,22 @@ theorem egbCoexistenceAPressure_pos (k τ θ : ℝ) : 0 < egbCoexistenceAPressur
   positivity
 
 theorem egbCoexistenceACouplingRoot_sq (k τ θ : ℝ) :
-    egbCoexistenceACouplingRoot k τ θ ^ 2 = exp k ^ 2 * egbCoexistenceACouplingWeight τ θ := by
+    egbCoexistenceACouplingRoot k τ θ ^ (2 : ℕ) = exp k ^ (2 : ℕ) * egbCoexistenceACouplingWeight τ θ := by
   unfold egbCoexistenceACouplingRoot egbCoexistenceACouplingWeight
   rw [mul_pow, mul_pow, sq_sqrt (le_of_lt (egbCoexistenceAMaxCoupling_pos τ))]
   ring
 
 theorem egbCoexistenceACharge_sq (k τ θ : ℝ) :
-    egbCoexistenceACharge k τ θ ^ 2 =
-      exp k ^ 2 * (egbCoexistenceAChargeWeight τ θ - egbCoexistenceACouplingWeight τ θ) := by
+    egbCoexistenceACharge k τ θ ^ (2 : ℕ) =
+      exp k ^ (2 : ℕ) * (egbCoexistenceAChargeWeight τ θ - egbCoexistenceACouplingWeight τ θ) := by
   rw [egbCoexistenceAChargeWeight_factorization]
   unfold egbCoexistenceACharge
   rw [mul_pow, mul_pow, sq_sqrt (le_of_lt (egbCoexistenceAChargeFactor_pos τ θ))]
   ring
 
 theorem egbCoexistenceA_effective_charge (k τ θ : ℝ) :
-    egbCoexistenceACharge k τ θ ^ 2 + egbCoexistenceACouplingRoot k τ θ ^ 2 =
-      exp k ^ 2 * egbCoexistenceAChargeWeight τ θ := by
+    egbCoexistenceACharge k τ θ ^ (2 : ℕ) + egbCoexistenceACouplingRoot k τ θ ^ (2 : ℕ) =
+      exp k ^ (2 : ℕ) * egbCoexistenceAChargeWeight τ θ := by
   rw [egbCoexistenceACharge_sq, egbCoexistenceACouplingRoot_sq]
   ring
 
@@ -68,7 +68,7 @@ theorem egbCoexistenceACharge_zero_iff (k τ θ : ℝ) :
 theorem egbCoexistenceA_pressure_residual (k τ θ u : ℝ) :
     egbPressureA (egbCoexistenceATemperature k τ θ) (egbCoexistenceACharge k τ θ)
         (egbCoexistenceACouplingRoot k τ θ) (exp k * exp u) - egbCoexistenceAPressure k τ θ =
-      -egbCoexistenceARadialPolynomial τ θ (exp u) / (8 * Real.pi * exp k ^ 2 * exp u ^ 4) := by
+      -egbCoexistenceARadialPolynomial τ θ (exp u) / (8 * Real.pi * exp k ^ (2 : ℕ) * exp u ^ (4 : ℕ)) := by
   unfold egbPressureA
   rw [egbCoexistenceA_effective_charge, egbCoexistenceACouplingRoot_sq]
   unfold egbCoexistenceATemperature egbCoexistenceAPressure egbCoexistenceARadialPolynomial

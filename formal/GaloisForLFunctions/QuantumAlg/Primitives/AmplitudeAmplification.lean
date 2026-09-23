@@ -76,7 +76,7 @@ def amplitudeAmplificationStep (θ : ℝ) : Gate (Qubits 1) := rotY (4 * θ)
 /-- The plane rotation used by amplitude amplification is unitary. -/
 theorem amplitudeAmplificationStep_mem_unitaryGroup (θ : ℝ) :
     (amplitudeAmplificationStep θ : HilbertOperator (Qubits 1)) ∈
-      Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+      Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   rotY_mem_unitaryGroup _
 
 /-- One amplitude-amplification step increases the good/bad-plane angle by
@@ -133,7 +133,7 @@ reflection, and the proof that their product restricts to the standard rotation
 on this plane. -/
 structure AmplitudeAmplificationModel where
   /-- Initial angle from the bad axis; the initial good probability is
-  `sin θ ^ 2`. -/
+  `sin θ ^ (2 : ℕ)`. -/
   θ : ℝ
   /-- Reflection that flips the good component and fixes the bad component. -/
   goodReflection : Gate (Qubits 1)
@@ -282,8 +282,8 @@ theorem source_reflection_closed_form (M : SourceAmplitudeAmplificationModel) (k
 /-- The success probability of the closed-form amplitude-amplified state is the
 squared good amplitude. -/
 theorem amplitudeAmplificationState_good_probability (θ : ℝ) (k : ℕ) :
-    PureState.probOutcome (amplitudeAmplificationState θ k) (1 : Fin (2 ^ 1)) =
-      Real.sin (amplitudeAmplificationAngle θ k) ^ 2 := by
+    PureState.probOutcome (amplitudeAmplificationState θ k) (1 : Fin (2 ^ (1 : ℕ))) =
+      Real.sin (amplitudeAmplificationAngle θ k) ^ (2 : ℕ) := by
   rw [PureState.probOutcome]
   simp only [StateVector.probOutcome, amplitudeAmplificationState,
     PureState.ofVec_apply, amplitudeAmplificationStateVec, ket0, ket1,
@@ -300,8 +300,8 @@ theorem AmplitudeAmplification.main_success_probability
     PureState.probOutcome
         (Gate.apply ((M.startReflection * M.goodReflection) ^ k)
           (amplitudeAmplificationState M.θ 0))
-        (1 : Fin (2 ^ 1)) =
-      Real.sin (amplitudeAmplificationAngle M.θ k) ^ 2 := by
+        (1 : Fin (2 ^ (1 : ℕ))) =
+      Real.sin (amplitudeAmplificationAngle M.θ k) ^ (2 : ℕ) := by
   rw [iterate_apply, amplitudeAmplificationState_good_probability]
 
 namespace AmplitudeAmplification
@@ -330,8 +330,8 @@ theorem timedIterate_correct (M : AmplitudeAmplificationModel) (k : ℕ) :
 /-- The good-state success probability after the timed iterate. -/
 theorem timedIterate_success_probability
     (M : AmplitudeAmplificationModel) (k : ℕ) :
-    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ 1)) =
-      Real.sin (amplitudeAmplificationAngle M.θ k) ^ 2 := by
+    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ (1 : ℕ))) =
+      Real.sin (amplitudeAmplificationAngle M.θ k) ^ (2 : ℕ) := by
   rw [timedIterate_correct, amplitudeAmplificationState_good_probability]
 
 end AmplitudeAmplification

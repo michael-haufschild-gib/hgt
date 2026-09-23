@@ -65,7 +65,7 @@ separation** (unconditional).  The explicit conditions `1/2 < r < ‖c‖`, `2 �
 Riesz representation `μ_c = (2π)⁻¹ ΔG_c` past `‖c‖ ≥ 4` to the whole first-pullback regime. -/
 theorem isRieszMeasureOfSmooth_gapAMu_of_first_pullback_radius {c : ℂ} {r : ℝ}
     (hrhalf : ((1 : ℝ) / 2) < r) (h2c : (2 : ℝ) ≤ ‖c‖) (hrc : r < ‖c‖)
-    (hbig : 2 * ‖c‖ < (‖c‖ - r) ^ 2) :
+    (hbig : 2 * ‖c‖ < (‖c‖ - r) ^ (2 : ℕ)) :
     IsRieszMeasureOfSmooth (gapAMu c) (greenFunctionDyn c) :=
   isRieszMeasureOfSmooth_gapAMu_of_filledJulia_null c
     (volume_filledJulia_eq_zero_of_first_pullback_radius hrhalf h2c hrc hbig)

@@ -15,13 +15,13 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 theorem classical_complete_integrand_bound (m : ClassicalModulus) (θ : ℝ) :
     (1 - (m : ℝ)) * completeKIntegrand m θ ≤ completeEIntegrand m θ := by
   have hm0 : 0 < (m : ℝ) := m.property.1
-  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ 2 :=
+  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
     subcriticalRadicand_pos (classicalAsSubcritical m) θ
-  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ 2) :=
+  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr hrad
-  have hsin : Real.sin θ ^ 2 ≤ 1 := by
+  have hsin : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.sin_sq_add_cos_sq θ, sq_nonneg (Real.cos θ)]
-  have hmul : (m : ℝ) * Real.sin θ ^ 2 ≤ (m : ℝ) := by
+  have hmul : (m : ℝ) * Real.sin θ ^ (2 : ℕ) ≤ (m : ℝ) := by
     simpa using mul_le_mul_of_nonneg_left hsin hm0.le
   rw [completeKIntegrand, completeEIntegrand, ← div_eq_mul_inv]
   apply (div_le_iff₀ hs).2

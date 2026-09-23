@@ -28,28 +28,28 @@ variable {𝕜 E F G : Type*} [RCLike 𝕜]
 
 omit [CompleteSpace F] in
 /-- `hsNorm` squares back to `hsNormSq`. -/
-theorem sq_hsNorm (T : E →L[𝕜] F) : (hsNorm T) ^ 2 = hsNormSq T :=
+theorem sq_hsNorm (T : E →L[𝕜] F) : (hsNorm T) ^ (2 : ℕ) = hsNormSq T :=
   Real.sq_sqrt (hsNormSq_nonneg T)
 
 omit [CompleteSpace F] [CompleteSpace G] in
 /-- Operator-norm bound for a left composition, in `hsNorm` form. -/
 theorem hsNorm_comp_left_le {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y) :
     hsNorm (S ∘L Y) ≤ ‖S‖ * hsNorm Y := by
-  have h : hsNormSq (S ∘L Y) ≤ ‖S‖ ^ 2 * hsNormSq Y :=
+  have h : hsNormSq (S ∘L Y) ≤ ‖S‖ ^ (2 : ℕ) * hsNormSq Y :=
     hsNormSq_comp_left_le_of_bound hY fun v => by
-      calc ‖S v‖ ^ 2 ≤ (‖S‖ * ‖v‖) ^ 2 := by gcongr; exact S.le_opNorm v
-        _ = ‖S‖ ^ 2 * ‖v‖ ^ 2 := by ring
+      calc ‖S v‖ ^ (2 : ℕ) ≤ (‖S‖ * ‖v‖) ^ (2 : ℕ) := by gcongr; exact S.le_opNorm v
+        _ = ‖S‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by ring
   have h2 := Real.sqrt_le_sqrt h
   rwa [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg S)] at h2
 
 /-- Operator-norm bound for a right composition, in `hsNorm` form. -/
 theorem hsNorm_comp_right_le {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y) :
     hsNorm (Y ∘L T) ≤ hsNorm Y * ‖T‖ := by
-  have h : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ 2 * hsNormSq Y :=
+  have h : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ (2 : ℕ) * hsNormSq Y :=
     hsNormSq_comp_right_le_of_bound hY fun v => by
-      calc ‖adjoint T v‖ ^ 2 ≤ (‖adjoint T‖ * ‖v‖) ^ 2 := by
+      calc ‖adjoint T v‖ ^ (2 : ℕ) ≤ (‖adjoint T‖ * ‖v‖) ^ (2 : ℕ) := by
             gcongr; exact (adjoint T).le_opNorm v
-        _ = ‖T‖ ^ 2 * ‖v‖ ^ 2 := by rw [adjoint.norm_map]; ring
+        _ = ‖T‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by rw [adjoint.norm_map]; ring
   have h2 := Real.sqrt_le_sqrt h
   rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg T)] at h2
   calc hsNorm (Y ∘L T) ≤ ‖T‖ * hsNorm Y := h2
@@ -58,7 +58,7 @@ theorem hsNorm_comp_right_le {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsH
 omit [CompleteSpace F] in
 /-- The zero operator has vanishing Hilbert–Schmidt norm. -/
 theorem hsNormSq_zero : hsNormSq (0 : E →L[𝕜] F) = 0 := by
-  show ∑' i, ‖(0 : E →L[𝕜] F) (hsBasis 𝕜 E i)‖ ^ 2 = 0
+  show ∑' i, ‖(0 : E →L[𝕜] F) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) = 0
   simp
 
 omit [CompleteSpace F] in
@@ -111,8 +111,8 @@ theorem isHilbertSchmidt_of_tendsto {yn : ℕ → E →L[𝕜] F} {y : E →L[�
     (hlim : ∀ e : E, Tendsto (fun n => yn n e) atTop (nhds (y e))) :
     IsHilbertSchmidt y := by
   refine summable_of_sum_le (c := C) (fun i => by positivity) fun s => ?_
-  have hts : Tendsto (fun n => ∑ i ∈ s, ‖yn n (hsBasis 𝕜 E i)‖ ^ 2) atTop
-      (nhds (∑ i ∈ s, ‖y (hsBasis 𝕜 E i)‖ ^ 2)) :=
+  have hts : Tendsto (fun n => ∑ i ∈ s, ‖yn n (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) atTop
+      (nhds (∑ i ∈ s, ‖y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ))) :=
     tendsto_finsetSum _ fun i _ => ((hlim _).norm).pow 2
   refine le_of_tendsto hts (Eventually.of_forall fun n => ?_)
   exact ((hHS n).sum_le_tsum s (fun i _ => by positivity)).trans (hbd n)
@@ -125,8 +125,8 @@ theorem hsNormSq_le_of_tendsto {yn : ℕ → E →L[𝕜] F} {y : E →L[𝕜] F
     hsNormSq y ≤ C := by
   have hy : IsHilbertSchmidt y := isHilbertSchmidt_of_tendsto hHS hbd hlim
   refine Summable.tsum_le_of_sum_le hy fun s => ?_
-  have hts : Tendsto (fun n => ∑ i ∈ s, ‖yn n (hsBasis 𝕜 E i)‖ ^ 2) atTop
-      (nhds (∑ i ∈ s, ‖y (hsBasis 𝕜 E i)‖ ^ 2)) :=
+  have hts : Tendsto (fun n => ∑ i ∈ s, ‖yn n (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) atTop
+      (nhds (∑ i ∈ s, ‖y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ))) :=
     tendsto_finsetSum _ fun i _ => ((hlim _).norm).pow 2
   refine le_of_tendsto hts (Eventually.of_forall fun n => ?_)
   exact ((hHS n).sum_le_tsum s (fun i _ => by positivity)).trans (hbd n)
@@ -141,8 +141,8 @@ variable {E F : Type*}
 
 omit [CompleteSpace F] in
 private lemma norm_real_smul_apply (r : ℝ) (T : E →L[ℂ] F) :
-    (fun i => ‖(r • T) (hsBasis ℂ E i)‖ ^ 2)
-      = fun i => r ^ 2 * ‖T (hsBasis ℂ E i)‖ ^ 2 := by
+    (fun i => ‖(r • T) (hsBasis ℂ E i)‖ ^ (2 : ℕ))
+      = fun i => r ^ (2 : ℕ) * ‖T (hsBasis ℂ E i)‖ ^ (2 : ℕ) := by
   funext i
   rw [smul_apply, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
 
@@ -150,16 +150,16 @@ omit [CompleteSpace F] in
 /-- The Hilbert–Schmidt class is stable under real scalar multiplication. -/
 theorem IsHilbertSchmidt.real_smul {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T) (r : ℝ) :
     IsHilbertSchmidt (r • T) := by
-  have h : Summable (fun i => r ^ 2 * ‖T (hsBasis ℂ E i)‖ ^ 2) := hT.mul_left (r ^ 2)
-  show Summable (fun i => ‖(r • T) (hsBasis ℂ E i)‖ ^ 2)
+  have h : Summable (fun i => r ^ (2 : ℕ) * ‖T (hsBasis ℂ E i)‖ ^ (2 : ℕ)) := hT.mul_left (r ^ (2 : ℕ))
+  show Summable (fun i => ‖(r • T) (hsBasis ℂ E i)‖ ^ (2 : ℕ))
   rw [norm_real_smul_apply r T]
   exact h
 
 omit [CompleteSpace F] in
 /-- `hsNorm` is absolutely homogeneous for real scalars. -/
 theorem hsNorm_real_smul (r : ℝ) (T : E →L[ℂ] F) : hsNorm (r • T) = |r| * hsNorm T := by
-  have hsq : hsNormSq (r • T) = r ^ 2 * hsNormSq T := by
-    show ∑' i, ‖(r • T) (hsBasis ℂ E i)‖ ^ 2 = r ^ 2 * ∑' i, ‖T (hsBasis ℂ E i)‖ ^ 2
+  have hsq : hsNormSq (r • T) = r ^ (2 : ℕ) * hsNormSq T := by
+    show ∑' i, ‖(r • T) (hsBasis ℂ E i)‖ ^ (2 : ℕ) = r ^ (2 : ℕ) * ∑' i, ‖T (hsBasis ℂ E i)‖ ^ (2 : ℕ)
     rw [norm_real_smul_apply r T, tsum_mul_left]
   show Real.sqrt (hsNormSq (r • T)) = |r| * Real.sqrt (hsNormSq T)
   rw [hsq, Real.sqrt_mul (sq_nonneg r), Real.sqrt_sq_eq_abs]
@@ -317,7 +317,7 @@ theorem isHilbertSchmidt_of_lyapunov [StarOrderedRing (E →L[ℂ] E)]
     · show ‖yn n e - y e‖ ≤ ‖yn n - y‖ * ‖e‖
       exact (yn n - y).le_opNorm e
     · simpa using htend0.mul_const ‖e‖
-  refine isHilbertSchmidt_of_tendsto hHS (C := K ^ 2) (fun n => ?_) hptw
+  refine isHilbertSchmidt_of_tendsto hHS (C := K ^ (2 : ℕ)) (fun n => ?_) hptw
   rw [← sq_hsNorm]
   exact pow_le_pow_left₀ (hsNorm_nonneg _) (hbound n) 2
 

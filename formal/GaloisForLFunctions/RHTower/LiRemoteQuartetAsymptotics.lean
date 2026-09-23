@@ -46,7 +46,7 @@ theorem tendsto_log_one_add_slope_zero :
 
 /-- Small logarithmic-radius parameter in the remote Li coordinate. -/
 def liRemoteRadialSmallParameter (a T : ℝ) : ℝ :=
-  2 * a / (T ^ 2 + (1 / 2 - a) ^ 2)
+  2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ))
 
 /-- The radial coordinate is half of `log (1 + x)` in the small parameter. -/
 theorem liRemoteRadialCoordinate_eq_smallParameter (a T : ℝ) :
@@ -61,15 +61,15 @@ private theorem halfLogScale_factorization {a d t L : ℝ}
 
 /-- Exact factorization separating logarithmic slope from denominator geometry. -/
 theorem liRemoteRadialScale_factorization {a T : ℝ} (ha : a ≠ 0)
-    (hden : T ^ 2 + (1 / 2 - a) ^ 2 ≠ 0) :
-    liRemoteRadialCoordinate a T * T ^ 2 / a =
+    (hden : T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ) ≠ 0) :
+    liRemoteRadialCoordinate a T * T ^ (2 : ℕ) / a =
       (Real.log (1 + liRemoteRadialSmallParameter a T) /
           liRemoteRadialSmallParameter a T) *
-        (T ^ 2 / (T ^ 2 + (1 / 2 - a) ^ 2)) := by
+        (T ^ (2 : ℕ) / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ))) := by
   rw [liRemoteRadialCoordinate_eq_smallParameter]
   simpa only [liRemoteRadialSmallParameter] using
     (halfLogScale_factorization (a := a)
-      (d := T ^ 2 + (1 / 2 - a) ^ 2) (t := T ^ 2)
+      (d := T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) (t := T ^ (2 : ℕ))
       (L := Real.log (1 + liRemoteRadialSmallParameter a T)) ha hden)
 
 /-- Uniform radial asymptotic `ell T² / a → 1`. -/
@@ -77,30 +77,30 @@ theorem tendsto_liRemoteRadialScale
     {ι : Type*} {l : Filter ι} {a T : ι → ℝ}
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2) :
-    Tendsto (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ 2 / a i)
+    Tendsto (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ (2 : ℕ) / a i)
       l (nhds 1) := by
   have hTpos : ∀ᶠ i in l, 0 < T i := hT.eventually_gt_atTop 0
-  have hT2 : Tendsto (fun i => T i ^ 2) l atTop := by
+  have hT2 : Tendsto (fun i => T i ^ (2 : ℕ)) l atTop := by
     refine tendsto_atTop_mono' l ?_ hT
     filter_upwards [hT.eventually_gt_atTop 1] with i hTi
     nlinarith [sq_nonneg (T i - 1)]
-  have hb : ∀ᶠ i in l, |(1 / 2 - a i) ^ 2| ≤ (1 / 4 : ℝ) := by
+  have hb : ∀ᶠ i in l, |(1 / 2 - a i) ^ (2 : ℕ)| ≤ (1 / 4 : ℝ) := by
     filter_upwards [ha] with i hi
     rw [abs_of_nonneg (sq_nonneg _)]
     nlinarith [sq_nonneg (1 / 2 - a i)]
-  have hbdiv : Tendsto (fun i => (1 / 2 - a i) ^ 2 / T i ^ 2) l (nhds 0) :=
+  have hbdiv : Tendsto (fun i => (1 / 2 - a i) ^ (2 : ℕ) / T i ^ (2 : ℕ)) l (nhds 0) :=
     tendsto_bounded_div_atTop_filter hT2 hb
   have hdenRatio : Tendsto
-      (fun i => (T i ^ 2 + (1 / 2 - a i) ^ 2) / T i ^ 2) l (nhds 1) := by
+      (fun i => (T i ^ (2 : ℕ) + (1 / 2 - a i) ^ (2 : ℕ)) / T i ^ (2 : ℕ)) l (nhds 1) := by
     have hone : Tendsto (fun _ : ι => (1 : ℝ)) l (nhds 1) := tendsto_const_nhds
     have h := hone.add hbdiv
     have h' : Tendsto
-        (fun i => (T i ^ 2 + (1 / 2 - a i) ^ 2) / T i ^ 2)
+        (fun i => (T i ^ (2 : ℕ) + (1 / 2 - a i) ^ (2 : ℕ)) / T i ^ (2 : ℕ))
         l (nhds (1 + 0)) := h.congr' (by
           filter_upwards [hTpos] with i hTi
           field_simp [ne_of_gt hTi])
     simpa only [add_zero] using h'
-  have hden : Tendsto (fun i => T i ^ 2 + (1 / 2 - a i) ^ 2) l atTop := by
+  have hden : Tendsto (fun i => T i ^ (2 : ℕ) + (1 / 2 - a i) ^ (2 : ℕ)) l atTop := by
     refine tendsto_atTop_mono' l ?_ hT2
     filter_upwards with i
     exact le_add_of_nonneg_right (sq_nonneg _)
@@ -122,12 +122,12 @@ theorem tendsto_liRemoteRadialScale
     tendsto_nhdsWithin_iff.2 ⟨hx, hxne⟩
   have hlogSlope := tendsto_log_one_add_slope_zero.comp hxWithin
   have hT2divDen : Tendsto
-      (fun i => T i ^ 2 / (T i ^ 2 + (1 / 2 - a i) ^ 2)) l (nhds 1) := by
+      (fun i => T i ^ (2 : ℕ) / (T i ^ (2 : ℕ) + (1 / 2 - a i) ^ (2 : ℕ))) l (nhds 1) := by
     have hinv := hdenRatio.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
     simpa only [inv_div, inv_one] using hinv
   have hprod := hlogSlope.mul hT2divDen
   have hprod' : Tendsto
-      (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ 2 / a i)
+      (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ (2 : ℕ) / a i)
       l (nhds (1 * 1)) := hprod.congr' (by
         filter_upwards [ha, hTpos] with i hai hTi
         rw [Function.comp_apply]
@@ -137,7 +137,7 @@ theorem tendsto_liRemoteRadialScale
 
 /-- Small angular parameter in the remote Li coordinate. -/
 def liRemoteAngularSmallParameter (a T : ℝ) : ℝ :=
-  T / (T ^ 2 - 1 / 4 + a ^ 2)
+  T / (T ^ (2 : ℕ) - 1 / 4 + a ^ (2 : ℕ))
 
 /-- Principal angular coordinate from card equation (4). -/
 def liRemoteAngularCoordinate (a T : ℝ) : ℝ :=
@@ -146,7 +146,7 @@ def liRemoteAngularCoordinate (a T : ℝ) : ℝ :=
 /-- The principal angular coordinate is positive above height `1/2`. -/
 theorem liRemoteAngularCoordinate_pos {a T : ℝ} (hT : 1 / 2 < T) :
     0 < liRemoteAngularCoordinate a T := by
-  have hden : 0 < T ^ 2 - 1 / 4 + a ^ 2 := by
+  have hden : 0 < T ^ (2 : ℕ) - 1 / 4 + a ^ (2 : ℕ) := by
     nlinarith [sq_nonneg a, sq_pos_of_pos (by linarith : 0 < T)]
   unfold liRemoteAngularCoordinate liRemoteAngularSmallParameter
   exact Real.arctan_pos.2 (div_pos (by linarith) hden)
@@ -168,24 +168,24 @@ theorem tendsto_liRemoteAngularScale
     Tendsto (fun i => liRemoteAngularCoordinate (a i) (T i) * T i)
       l (nhds 1) := by
   have hTpos : ∀ᶠ i in l, 1 / 2 < T i := hT.eventually_gt_atTop (1 / 2)
-  have hT2 : Tendsto (fun i => T i ^ 2) l atTop := by
+  have hT2 : Tendsto (fun i => T i ^ (2 : ℕ)) l atTop := by
     refine tendsto_atTop_mono' l ?_ hT
     filter_upwards [hT.eventually_gt_atTop 1] with i hTi
     nlinarith [sq_nonneg (T i - 1)]
-  have hb : ∀ᶠ i in l, |a i ^ 2 - 1 / 4| ≤ (1 / 4 : ℝ) := by
+  have hb : ∀ᶠ i in l, |a i ^ (2 : ℕ) - 1 / 4| ≤ (1 / 4 : ℝ) := by
     filter_upwards [ha] with i hi
     rw [abs_of_nonpos]
     · nlinarith [sq_nonneg (a i)]
     · nlinarith [sq_nonneg (a i), sq_nonneg (1 / 2 - a i)]
-  have hbdiv : Tendsto (fun i => (a i ^ 2 - 1 / 4) / T i ^ 2)
+  have hbdiv : Tendsto (fun i => (a i ^ (2 : ℕ) - 1 / 4) / T i ^ (2 : ℕ))
       l (nhds 0) := tendsto_bounded_div_atTop_filter hT2 hb
   have hdenRatio : Tendsto
-      (fun i => (T i ^ 2 - 1 / 4 + a i ^ 2) / T i ^ 2)
+      (fun i => (T i ^ (2 : ℕ) - 1 / 4 + a i ^ (2 : ℕ)) / T i ^ (2 : ℕ))
       l (nhds 1) := by
     have hone : Tendsto (fun _ : ι => (1 : ℝ)) l (nhds 1) := tendsto_const_nhds
     have h := hone.add hbdiv
     have h' : Tendsto
-        (fun i => (T i ^ 2 - 1 / 4 + a i ^ 2) / T i ^ 2)
+        (fun i => (T i ^ (2 : ℕ) - 1 / 4 + a i ^ (2 : ℕ)) / T i ^ (2 : ℕ))
         l (nhds (1 + 0)) := h.congr' (by
           filter_upwards [hTpos] with i hTi
           field_simp [ne_of_gt (by linarith : 0 < T i)]
@@ -196,13 +196,13 @@ theorem tendsto_liRemoteAngularScale
       l (nhds 1) := by
     have hinv := hdenRatio.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
     have hinv' : Tendsto
-        (fun i => T i ^ 2 / (T i ^ 2 - 1 / 4 + a i ^ 2))
+        (fun i => T i ^ (2 : ℕ) / (T i ^ (2 : ℕ) - 1 / 4 + a i ^ (2 : ℕ)))
         l (nhds 1) := by
       simpa only [inv_div, inv_one] using hinv
     refine hinv'.congr' ?_
     filter_upwards [hTpos] with i hTi
     unfold liRemoteAngularSmallParameter
-    have hden : T i ^ 2 - 1 / 4 + a i ^ 2 ≠ 0 := by
+    have hden : T i ^ (2 : ℕ) - 1 / 4 + a i ^ (2 : ℕ) ≠ 0 := by
       nlinarith [sq_nonneg (a i), sq_pos_of_pos (by linarith : 0 < T i)]
     field_simp [hden]
   have hinvT : Tendsto (fun i => (1 : ℝ) / T i) l (nhds 0) :=
@@ -274,7 +274,7 @@ theorem liRemoteQuartet_coordinate_asymptotics
     {ι : Type*} {l : Filter ι} {a T : ι → ℝ}
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2) :
-    Tendsto (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ 2 / a i)
+    Tendsto (fun i => liRemoteRadialCoordinate (a i) (T i) * T i ^ (2 : ℕ) / a i)
         l (nhds 1) ∧
       Tendsto (fun i => liRemoteAngularCoordinate (a i) (T i) * T i)
         l (nhds 1) ∧
@@ -312,7 +312,7 @@ theorem tendsto_liRemoteRadialDegreeScale
     {ι : Type*} {l : Filter ι} {a T : ι → ℝ} {n : ι → ℕ} {c : ℝ}
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2)
-    (hn : Tendsto (fun i => (n i : ℝ) * a i / T i ^ 2) l (nhds c)) :
+    (hn : Tendsto (fun i => (n i : ℝ) * a i / T i ^ (2 : ℕ)) l (nhds c)) :
     Tendsto (fun i => (n i : ℝ) * liRemoteRadialCoordinate (a i) (T i))
       l (nhds c) := by
   have hrad := tendsto_liRemoteRadialScale hT ha
@@ -332,7 +332,7 @@ theorem tendsto_liRemoteQuartetProfile
     {ι : Type*} {l : Filter ι} {a T : ι → ℝ} {n : ι → ℕ} {c phi : ℝ}
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2)
-    (hn : Tendsto (fun i => (n i : ℝ) * a i / T i ^ 2) l (nhds c))
+    (hn : Tendsto (fun i => (n i : ℝ) * a i / T i ^ (2 : ℕ)) l (nhds c))
     (hphase : TendstoModuloTwoPi
       (fun i => (n i : ℝ) * liRemoteAngularCoordinate (a i) (T i)) l phi) :
     Tendsto (fun i => liRemoteQuartetProfile (n i)

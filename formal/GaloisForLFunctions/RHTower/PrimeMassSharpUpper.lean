@@ -26,8 +26,8 @@ theorem mul_inv_sqrt_sub_inv_sqrt_succ_le
   have hb : 0 < Real.sqrt ((n : ℝ) + 1) := Real.sqrt_pos.mpr hnp0
   have hab : Real.sqrt (n : ℝ) ≤ Real.sqrt ((n : ℝ) + 1) :=
     Real.sqrt_le_sqrt (by linarith)
-  have ha2 : Real.sqrt (n : ℝ) ^ 2 = (n : ℝ) := Real.sq_sqrt hn0.le
-  have hb2 : Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+  have ha2 : Real.sqrt (n : ℝ) ^ (2 : ℕ) = (n : ℝ) := Real.sq_sqrt hn0.le
+  have hb2 : Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
     Real.sq_sqrt hnp0.le
   rw [show ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 by norm_cast]
   rw [inv_eq_one_div, inv_eq_one_div]
@@ -108,7 +108,7 @@ theorem primeMassHalf_nat_le (N : ℕ) (hN : 1 ≤ N) :
   rw [primeMassHalf_nat_abel N (by omega)]
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   have hsN : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr hN0
-  have hsN2 : Real.sqrt (N : ℝ) ^ 2 = (N : ℝ) := Real.sq_sqrt hN0.le
+  have hsN2 : Real.sqrt (N : ℝ) ^ (2 : ℕ) = (N : ℝ) := Real.sq_sqrt hN0.le
   have hboundary :
       (Real.sqrt (N : ℝ))⁻¹ * chebyshevPsi N ≤
         7 * Real.sqrt N := by

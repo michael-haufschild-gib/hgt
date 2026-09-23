@@ -78,13 +78,13 @@ private theorem chart_second_zero {F : Field} (hF : ContDiff ℝ ∞ F)
 
 private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
     {z : Point} (hz : 0 < z 1) :
-    (z 1:ℂ)^2*D 1 (D 1 (pull F)) z=D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
+    (z 1:ℂ)^(2 : ℕ)*D 1 (D 1 (pull F)) z=D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
   have he : D 1 (pull F)=ᶠ[𝓝 z] fun v => (v 1:ℂ)⁻¹*pull (D 1 F) v := by
     filter_upwards [positive_nhds hz] with v hv
     simpa only [show ¬(1:Fin 2)=0 by decide,if_false,pull] using chart_first hF hv 1
   have hn : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.ne'
   have hi : HasFDerivAt (fun v : Point => (v 1:ℂ)⁻¹)
-      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1:ℂ)⁻¹^2)) z := by
+      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1:ℂ)⁻¹^(2 : ℕ))) z := by
     have hy := Complex.ofRealCLM.hasFDerivAt.comp z
       ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
     have h := (hasDerivAt_inv hn).comp_hasFDerivAt z hy
@@ -92,14 +92,14 @@ private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
     ext v
     simp [Complex.real_smul,smul_eq_mul]
     ring
-  have hd : D 1 (fun v : Point => (v 1:ℂ)⁻¹) z= -(z 1:ℂ)⁻¹^2 := by
+  have hd : D 1 (fun v : Point => (v 1:ℂ)⁻¹) z= -(z 1:ℂ)⁻¹^(2 : ℕ) := by
     change fderiv ℝ _ z (Pi.single 1 1)=_
     rw [hi.fderiv]
     simp
   have hD := (pull_smooth (D_smooth hF 1) hz).differentiableAt (by simp)
-  change (z 1:ℂ)^2*fderiv ℝ (D 1 (pull F)) z (Pi.single 1 1)=_
+  change (z 1:ℂ)^(2 : ℕ)*fderiv ℝ (D 1 (pull F)) z (Pi.single 1 1)=_
   rw [he.fderiv_eq]
-  change (z 1:ℂ)^2*D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=_
+  change (z 1:ℂ)^(2 : ℕ)*D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=_
   have hp : D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=
       D 1 (fun v : Point => (v 1:ℂ)⁻¹) z*pull (D 1 F) z+(z 1:ℂ)⁻¹*D 1 (pull (D 1 F)) z :=
     coordDeriv_mul hi.differentiableAt hD 1
@@ -110,8 +110,8 @@ private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
 
 /-- Genuine height-coordinate Laplacian of every smooth logarithmic source field. -/
 private theorem pull_laplacian {F : Field} (hF : ContDiff ℝ ∞ F) {z : Point} (hz : 0 < z 1) :
-    L (pull F) z=(z 1:ℂ)^2*D 0 (D 0 F) (chart z)+D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
-  change (z 1:ℂ)^2*(D 0 (D 0 (pull F)) z+D 1 (D 1 (pull F)) z)=_
+    L (pull F) z=(z 1:ℂ)^(2 : ℕ)*D 0 (D 0 F) (chart z)+D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
+  change (z 1:ℂ)^(2 : ℕ)*(D 0 (D 0 (pull F)) z+D 1 (D 1 (pull F)) z)=_
   rw [mul_add,chart_second_zero hF hz,chart_second_one hF hz]
   ring
 
@@ -144,7 +144,7 @@ private theorem mean_base_smooth (q : XiZeroCopy) (d : ℝ) :
 
 private theorem circle_laplacian (q : XiZeroCopy) (d x k : ℝ) :
     D4BMHorizon.scalarLaplacian (circleField q d) ![x,Real.exp k] =
-      (Real.exp k:ℂ)^2*deriv (deriv (fun r => mean q d r k)) x+
+      (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q d r k)) x+
         deriv (deriv (fun r => mean q d x r)) k-deriv (fun r => mean q d x r) k := by
   let F : Field := fun z => mean q d (z 0) (z 1)
   have hf : ContDiff ℝ ∞ F := mean_base_smooth q d
@@ -162,9 +162,9 @@ private theorem circle_laplacian (q : XiZeroCopy) (d x k : ℝ) :
   simpa only [chart,Matrix.cons_val,Real.log_exp,F,← hx,← hk,← hk2] using h
 
 theorem original_circle_darboux (q : XiZeroCopy) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => mean q r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => mean q r x k) d =
-      (Real.sinh d:ℂ)^2*D4BMHorizon.scalarLaplacian (circleField q d) ![x,Real.exp k] := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*D4BMHorizon.scalarLaplacian (circleField q d) ![x,Real.exp k] := by
   rw [circle_laplacian]
   exact mean_darboux q d x k
 
@@ -172,7 +172,7 @@ private def kernelFirst (a : ℂ) (d : ℝ) : ℂ :=
   (Real.sinh d:ℂ)*legendreKernelFirst (-a) (Real.cosh d)
 private def kernelSecond (a : ℂ) (d : ℝ) : ℂ :=
   (Real.cosh d:ℂ)*legendreKernelFirst (-a) (Real.cosh d)+
-    (Real.sinh d:ℂ)^2*legendreKernelSecond (-a) (Real.cosh d)
+    (Real.sinh d:ℂ)^(2 : ℕ)*legendreKernelSecond (-a) (Real.cosh d)
 private theorem kernel_derivatives (a : ℂ) (d : ℝ) :
     HasDerivAt (powerCircle a) (kernelFirst a d) d ∧
     HasDerivAt (kernelFirst a) (kernelSecond a d) d := by
@@ -191,15 +191,15 @@ private theorem kernel_derivatives (a : ℂ) (d : ℝ) :
   dsimp [kernelSecond]
   ring
 private theorem kernel_equation (a : ℂ) (d : ℝ) :
-    (Real.sinh d:ℂ)^2*kernelSecond a d+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*kernelFirst a d =
-      a*(a-1)*(Real.sinh d:ℂ)^2*powerCircle a d := by
+    (Real.sinh d:ℂ)^(2 : ℕ)*kernelSecond a d+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*kernelFirst a d =
+      a*(a-1)*(Real.sinh d:ℂ)^(2 : ℕ)*powerCircle a d := by
   have he := legendreKernel_equation (-a) (Real.cosh_pos d)
-  have hc : (Real.cosh d:ℂ)^2-(Real.sinh d:ℂ)^2=1 := by
+  have hc : (Real.cosh d:ℂ)^(2 : ℕ)-(Real.sinh d:ℂ)^(2 : ℕ)=1 := by
     exact_mod_cast Real.cosh_sq_sub_sinh_sq d
   rw [powerCircle_eq_legendre]
   dsimp [kernelFirst,kernelSecond]
-  linear_combination (Real.sinh d:ℂ)^2*he-
-    (Real.sinh d:ℂ)^2*legendreKernelSecond (-a) (Real.cosh d)*hc
+  linear_combination (Real.sinh d:ℂ)^(2 : ℕ)*he-
+    (Real.sinh d:ℂ)^(2 : ℕ)*legendreKernelSecond (-a) (Real.cosh d)*hc
 
 private def coeffFirst (q : XiZeroCopy) (d : ℝ) (i : Fin 3) : ℂ :=
   principalAmplitude q i*kernelFirst (principalExponent q i) d
@@ -211,8 +211,8 @@ private theorem coeff_derivatives (q : XiZeroCopy) (d : ℝ) (i : Fin 3) :
   ⟨((kernel_derivatives (principalExponent q i) d).1).const_mul _,
     ((kernel_derivatives (principalExponent q i) d).2).const_mul _⟩
 private theorem coeff_equation (q : XiZeroCopy) (d : ℝ) (i : Fin 3) :
-    (Real.sinh d:ℂ)^2*coeffSecond q d i+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*coeffFirst q d i =
-      (Real.sinh d:ℂ)^2*principalExponent q i*(principalExponent q i-1)*coefficient q d i := by
+    (Real.sinh d:ℂ)^(2 : ℕ)*coeffSecond q d i+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*coeffFirst q d i =
+      (Real.sinh d:ℂ)^(2 : ℕ)*principalExponent q i*(principalExponent q i-1)*coefficient q d i := by
   have h := kernel_equation (principalExponent q i) d
   dsimp [coeffFirst,coeffSecond,coefficient]
   linear_combination principalAmplitude q i*h
@@ -289,25 +289,25 @@ private theorem mean_radius_second_decomposition (q : XiZeroCopy) (d x k : ℝ) 
   exact (hr.add hp).deriv
 
 private def defectCoeff (q : XiZeroCopy) (d : ℝ) (i : Fin 3) : ℂ :=
-  (Real.sinh d:ℂ)^2*coeffSecond q d i+
+  (Real.sinh d:ℂ)^(2 : ℕ)*coeffSecond q d i+
     (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*coeffFirst q d i-
-    (Real.sinh d:ℂ)^2*readerEigenvalue q*coefficient q d i
+    (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*coefficient q d i
 private theorem gap_eigenvalue (q : XiZeroCopy) (i : Fin 3) :
     physicalAngularGap q q i=principalExponent q i*(principalExponent q i-1)-readerEigenvalue q := by
   rw [physicalAngularGap_self_indicial,readerEigenvalue_eq,physicalAngularParameter_eq]
   ring
 private theorem defectCoeff_eq_gap (q : XiZeroCopy) (d : ℝ) (i : Fin 3) :
-    defectCoeff q d i=(Real.sinh d:ℂ)^2*physicalAngularGap q q i*coefficient q d i := by
+    defectCoeff q d i=(Real.sinh d:ℂ)^(2 : ℕ)*physicalAngularGap q q i*coefficient q d i := by
   rw [defectCoeff,coeff_equation,gap_eigenvalue]
   ring
 
 private def residualDefect (q : XiZeroCopy) (d : ℝ) (z : UpperHalfPlane) : ℂ :=
-  (Real.sinh d:ℂ)^2*nativeJet [0,0] (residualField q) ![d,z.re,Real.log z.im]+
+  (Real.sinh d:ℂ)^(2 : ℕ)*nativeJet [0,0] (residualField q) ![d,z.re,Real.log z.im]+
     (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*nativeJet [0] (residualField q) ![d,z.re,Real.log z.im]-
-    (Real.sinh d:ℂ)^2*readerEigenvalue q*nativeJet [] (residualField q) ![d,z.re,Real.log z.im]
+    (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*nativeJet [] (residualField q) ![d,z.re,Real.log z.im]
 
 private theorem original_defect_decomposition (q : XiZeroCopy) (d : ℝ) (z : UpperHalfPlane) :
-    (Real.sinh d:ℂ)^2*scalarEquationDefect q d (coordinates z) =
+    (Real.sinh d:ℂ)^(2 : ℕ)*scalarEquationDefect q d (coordinates z) =
       residualDefect q d z+∑ i : Fin 3, defectCoeff q d i*cutoffPower (principalExponent q i) (coordinates z) := by
   have hm := original_circle_darboux q d z.re (Real.log z.im)
   rw [mean_radius_first_decomposition,mean_radius_second_decomposition,Real.exp_log z.im_pos] at hm
@@ -321,9 +321,9 @@ private theorem original_defect_decomposition (q : XiZeroCopy) (d : ℝ) (z : Up
   rw [mul_sub,← readerEigenvalue_eq,← hm,hz,mean_radius_zero_decomposition]
   simp only [Real.exp_log z.im_pos,hcp]
   have hs :
-      (Real.sinh d:ℂ)^2*(∑ i : Fin 3, coeffSecond q d i*cutoffPower (principalExponent q i) (coordinates z))+
+      (Real.sinh d:ℂ)^(2 : ℕ)*(∑ i : Fin 3, coeffSecond q d i*cutoffPower (principalExponent q i) (coordinates z))+
         (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(∑ i : Fin 3, coeffFirst q d i*cutoffPower (principalExponent q i) (coordinates z))-
-        (Real.sinh d:ℂ)^2*readerEigenvalue q*(∑ i : Fin 3, coefficient q d i*cutoffPower (principalExponent q i) (coordinates z))=
+        (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*(∑ i : Fin 3, coefficient q d i*cutoffPower (principalExponent q i) (coordinates z))=
       ∑ i : Fin 3, defectCoeff q d i*cutoffPower (principalExponent q i) (coordinates z) := by
     simp only [Finset.mul_sum,← Finset.sum_add_distrib,← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
@@ -335,9 +335,9 @@ private theorem original_defect_decomposition (q : XiZeroCopy) (d : ℝ) (z : Up
 
 private theorem residualDefect_integrable (q : XiZeroCopy) (d : Ici (0:ℝ)) :
     Integrable (fun z => scalar (physicalAngularParameter q) (coordinates z)*residualDefect q d z) measure := by
-  have h2 := (residualJet_scalar_integrable q [0,0] d).const_mul ((Real.sinh d:ℂ)^2)
+  have h2 := (residualJet_scalar_integrable q [0,0] d).const_mul ((Real.sinh d:ℂ)^(2 : ℕ))
   have h1 := (residualJet_scalar_integrable q [0] d).const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ))
-  have h0 := (residualJet_scalar_integrable q [] d).const_mul ((Real.sinh d:ℂ)^2*readerEigenvalue q)
+  have h0 := (residualJet_scalar_integrable q [] d).const_mul ((Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q)
   apply ((h2.add h1).sub h0).congr
   filter_upwards with z
   dsimp [residualDefect]
@@ -345,18 +345,18 @@ private theorem residualDefect_integrable (q : XiZeroCopy) (d : Ici (0:ℝ)) :
 
 private theorem residualDefect_integral (q : XiZeroCopy) (d : Ici (0:ℝ)) :
     (∫ z, scalar (physicalAngularParameter q) (coordinates z)*residualDefect q d z ∂measure) =
-      (Real.sinh d:ℂ)^2*residualPeriodJet q [0,0] d+
+      (Real.sinh d:ℂ)^(2 : ℕ)*residualPeriodJet q [0,0] d+
         (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*residualPeriodJet q [0] d-
-        (Real.sinh d:ℂ)^2*readerEigenvalue q*residualPeriodJet q [] d := by
-  have h2 := (residualJet_scalar_integrable q [0,0] d).const_mul ((Real.sinh d:ℂ)^2)
+        (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*residualPeriodJet q [] d := by
+  have h2 := (residualJet_scalar_integrable q [0,0] d).const_mul ((Real.sinh d:ℂ)^(2 : ℕ))
   have h1 := (residualJet_scalar_integrable q [0] d).const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ))
-  have h0 := (residualJet_scalar_integrable q [] d).const_mul ((Real.sinh d:ℂ)^2*readerEigenvalue q)
+  have h0 := (residualJet_scalar_integrable q [] d).const_mul ((Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q)
   have he : (fun z => scalar (physicalAngularParameter q) (coordinates z)*residualDefect q d z) =
-      fun z => (Real.sinh d:ℂ)^2*(scalar (physicalAngularParameter q) (coordinates z)*
+      fun z => (Real.sinh d:ℂ)^(2 : ℕ)*(scalar (physicalAngularParameter q) (coordinates z)*
         nativeJet [0,0] (residualField q) ![d,z.re,Real.log z.im])+
         (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(scalar (physicalAngularParameter q) (coordinates z)*
           nativeJet [0] (residualField q) ![d,z.re,Real.log z.im])-
-        (Real.sinh d:ℂ)^2*readerEigenvalue q*(scalar (physicalAngularParameter q) (coordinates z)*
+        (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*(scalar (physicalAngularParameter q) (coordinates z)*
           nativeJet [] (residualField q) ![d,z.re,Real.log z.im]) := by
     funext z
     unfold residualDefect
@@ -401,17 +401,17 @@ private theorem restored_defect_integral (q : XiZeroCopy) (d : Ici (0:ℝ)) :
     (∫ z, scalar (physicalAngularParameter q) (coordinates z)*residualDefect q d z ∂measure)-
       (∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
         physicalAngularGap q q i*defectCoeff q d i) =
-      (Real.sinh d:ℂ)^2*periodSecond q d+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*periodFirst q d-
-        (Real.sinh d:ℂ)^2*readerEigenvalue q*period q d := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*periodSecond q d+(Real.sinh d:ℂ)*(Real.cosh d:ℂ)*periodFirst q d-
+        (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*period q d := by
   rw [residualDefect_integral,period_eq_residualJet_sub]
   unfold periodFirst periodSecond correctionFirst correctionSecond correction
   have hs : (∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
         physicalAngularGap q q i*defectCoeff q d i) =
-      (Real.sinh d:ℂ)^2*(∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
+      (Real.sinh d:ℂ)^(2 : ℕ)*(∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
         physicalAngularGap q q i*coeffSecond q d i)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
         physicalAngularGap q q i*coeffFirst q d i)-
-      (Real.sinh d:ℂ)^2*readerEigenvalue q*(∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
+      (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*(∑ i : Fin 3, scalarCutoffPeriod (physicalAngularParameter q) (principalExponent q i)/
         physicalAngularGap q q i*coefficient q d i) := by
     simp only [Finset.mul_sum,← Finset.sum_add_distrib,← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
@@ -423,7 +423,7 @@ private theorem restored_defect_integral (q : XiZeroCopy) (d : Ici (0:ℝ)) :
 
 private theorem defect_counterterm (q : XiZeroCopy) (d Y : ℝ) :
     principalCounterterm q (defectCoeff q d) Y =
-      (Real.sinh d:ℂ)^2*principalCounterterm q
+      (Real.sinh d:ℂ)^(2 : ℕ)*principalCounterterm q
         (fun i => physicalAngularGap q q i*coefficient q d i) Y := by
   unfold principalCounterterm
   rw [Finset.mul_sum]
@@ -435,11 +435,11 @@ private theorem defect_counterterm (q : XiZeroCopy) (d Y : ℝ) :
 
 /-- The original regularized period solves the reader's radial Darboux equation. -/
 theorem original_period_equation (q : XiZeroCopy) (d : Ici (0:ℝ)) :
-    (Real.sinh d:ℂ)^2*periodSecond q d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*periodSecond q d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*periodFirst q d =
-      (Real.sinh d:ℂ)^2*readerEigenvalue q*period q d := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*period q d := by
   let T (Y : ℝ) := truncatedIntegral (fun z => scalar (physicalAngularParameter q) (coordinates z)*
-    ((Real.sinh d:ℂ)^2*scalarEquationDefect q d (coordinates z))) Y-principalCounterterm q (defectCoeff q d) Y
+    ((Real.sinh d:ℂ)^(2 : ℕ)*scalarEquationDefect q d (coordinates z))) Y-principalCounterterm q (defectCoeff q d) Y
   have hr := (integrable_residual_restoration q (residualDefect q d) (defectCoeff q d)
     (residualDefect_integrable q d)).comp Real.tendsto_exp_atTop
   rw [restored_defect_integral] at hr
@@ -454,9 +454,9 @@ theorem original_period_equation (q : XiZeroCopy) (d : Ici (0:ℝ)) :
     filter_upwards with z
     rw [original_defect_decomposition]
   have hrest : Tendsto (fun k => T (Real.exp k)) atTop
-      (𝓝 ((Real.sinh d:ℂ)^2*periodSecond q d+
+      (𝓝 ((Real.sinh d:ℂ)^(2 : ℕ)*periodSecond q d+
         (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*periodFirst q d-
-        (Real.sinh d:ℂ)^2*readerEigenvalue q*period q d)) :=
+        (Real.sinh d:ℂ)^(2 : ℕ)*readerEigenvalue q*period q d)) :=
     hr.congr' (Eventually.of_forall (fun k => (hT (Real.exp k)).symm))
   have h0 : Tendsto (fun k : ℝ =>
       truncatedIntegral (fun z : UpperHalfPlane => scalar (physicalAngularParameter q) (coordinates z)*
@@ -466,22 +466,22 @@ theorem original_period_equation (q : XiZeroCopy) (d : Ici (0:ℝ)) :
     simpa only [zero_mul,Complex.exp_zero,one_mul,D4BMGlobalAngularResponse.scalar,
       D4BMLiteralCusp.scalar,coordinates,Matrix.cons_val] using
       original_angular_measure_green_finitePart q d 0
-  have hscaled (Y : ℝ) : T Y=(Real.sinh d:ℂ)^2*
+  have hscaled (Y : ℝ) : T Y=(Real.sinh d:ℂ)^(2 : ℕ)*
       (truncatedIntegral (fun z : UpperHalfPlane => scalar (physicalAngularParameter q) (coordinates z)*
         scalarEquationDefect q d (coordinates z)) Y-
         principalCounterterm q (fun i => physicalAngularGap q q i*coefficient q d i) Y) := by
     dsimp only [T]
     rw [defect_counterterm]
     have he : (fun z : UpperHalfPlane => scalar (physicalAngularParameter q) (coordinates z)*
-        ((Real.sinh d:ℂ)^2*scalarEquationDefect q d (coordinates z))) =
-        fun z => (Real.sinh d:ℂ)^2*(scalar (physicalAngularParameter q) (coordinates z)*
+        ((Real.sinh d:ℂ)^(2 : ℕ)*scalarEquationDefect q d (coordinates z))) =
+        fun z => (Real.sinh d:ℂ)^(2 : ℕ)*(scalar (physicalAngularParameter q) (coordinates z)*
           scalarEquationDefect q d (coordinates z)) := by funext z; ring
     rw [he]
     unfold truncatedIntegral
     rw [integral_const_mul]
     ring
   have hz : Tendsto (fun k => T (Real.exp k)) atTop (𝓝 0) := by
-    have h := h0.const_mul ((Real.sinh d:ℂ)^2)
+    have h := h0.const_mul ((Real.sinh d:ℂ)^(2 : ℕ))
     simp only [mul_zero] at h
     exact h.congr' (Eventually.of_forall (fun k => (hscaled (Real.exp k)).symm))
   have he := tendsto_nhds_unique hrest hz
@@ -551,7 +551,7 @@ private theorem quotient_derivative (q : XiZeroCopy) (d : ℝ) (hd : 0 < d) :
   have hz := (mul_eq_zero.mp hw).resolve_left hs
   apply (hp.fun_div hk (reader_powerCircle_ne_zero q d)).congr_deriv
   change (periodFirst q d*powerCircle (readerExponent q) d-
-    period q d*kernelFirst (readerExponent q) d)/powerCircle (readerExponent q) d^2=0
+    period q d*kernelFirst (readerExponent q) d)/powerCircle (readerExponent q) d^(2 : ℕ)=0
   have he : periodFirst q d*powerCircle (readerExponent q) d-
     period q d*kernelFirst (readerExponent q) d=0 := by linear_combination hz
   rw [he,zero_div]

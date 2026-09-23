@@ -74,9 +74,9 @@ theorem mobiusDivisorSelectionEnergy_insert_le_of_parity_nonneg
       intro hm
       have := mem_powerset.mp hR hm
       simp at this
-    have hsquare : ((-1:ℝ)^R.card)^2=1 := by
+    have hsquare : ((-1:ℝ)^R.card)^(2 : ℕ)=1 := by
       calc
-        _ = ((-1:ℝ)^2)^R.card := by
+        _ = ((-1:ℝ)^(2 : ℕ))^R.card := by
           rw [← pow_mul,← pow_mul,Nat.mul_comm R.card 2]
         _ = 1 := by norm_num
     have hnext := hparity (insert q R)
@@ -86,7 +86,7 @@ theorem mobiusDivisorSelectionEnergy_insert_le_of_parity_nonneg
         ((-1:ℝ)^R.card*(-1)*mobiusDivisorSelectionFibre M P (insert q R)) =
         -(mobiusDivisorSelectionFibre M P R*mobiusDivisorSelectionFibre M P (insert q R)) := by
       calc
-        _ = -((-1:ℝ)^R.card)^2*(mobiusDivisorSelectionFibre M P R*
+        _ = -((-1:ℝ)^R.card)^(2 : ℕ)*(mobiusDivisorSelectionFibre M P R*
           mobiusDivisorSelectionFibre M P (insert q R)) := by ring
         _ = _ := by rw [hsquare]; ring
     rw [heq] at hprod
@@ -112,7 +112,7 @@ theorem exists_mobiusDivisorInitialOrientedPrimeExtension (M : ℕ) (U : Finset 
     (hcover : mobiusDivisorSelectionFibre M ∅ ∅ ≤ ∑ p ∈ U,divisorUnsignedDilationChannel M p) :
     ∃ L ⊆ U,
       (0 ≤ mobiusDivisorSelectionFibre M L ∅ ∧ mobiusDivisorSelectionFibre M L ∅ ≤ Real.sqrt M) ∧
-      (mobiusDivisorSelectionFibre M L ∅)^2 ≤ M ∧
+      (mobiusDivisorSelectionFibre M L ∅)^(2 : ℕ) ≤ M ∧
       mobiusDivisorSelectionEnergy M L ≤ mobiusDivisorNonemptyEnergy M ∅+M ∧
       ∀ R ⊆ L,mobiusDivisorSelectionEnergy M R ≤ mobiusDivisorSelectionEnergy M ∅ ∧
         ∀ q : ℕ,q.Prime → q<M → q ∉ R →
@@ -135,7 +135,7 @@ theorem exists_mobiusDivisorInitialOrientedPrimeExtension (M : ℕ) (U : Finset 
     push_cast
     ring
   rw [← hhead] at h0 h1
-  have hHsq : (mobiusDivisorSelectionFibre M L ∅)^2 ≤ M := by
+  have hHsq : (mobiusDivisorSelectionFibre M L ∅)^(2 : ℕ) ≤ M := by
     have hprod := mul_nonneg (show 0 ≤ Real.sqrt M-mobiusDivisorSelectionFibre M L ∅ by linarith only [h1])
       (show 0 ≤ Real.sqrt M+mobiusDivisorSelectionFibre M L ∅ by linarith [Real.sqrt_nonneg (M:ℝ)])
     nlinarith only [hprod,Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) M)]
@@ -166,7 +166,7 @@ theorem eventually_exists_mobiusDivisorInitialOrientedPrimeExtension :
     ∀ᶠ N : ℕ in atTop,∃ L ⊆ mobiusDivisorActiveLatePrimes (4*N),
       (0 ≤ mobiusDivisorSelectionFibre (4*N) L ∅ ∧
         mobiusDivisorSelectionFibre (4*N) L ∅ ≤ Real.sqrt (4*N:ℕ)) ∧
-      (mobiusDivisorSelectionFibre (4*N) L ∅)^2 ≤ (4*N:ℕ) ∧
+      (mobiusDivisorSelectionFibre (4*N) L ∅)^(2 : ℕ) ≤ (4*N:ℕ) ∧
       mobiusDivisorSelectionEnergy (4*N) L ≤ mobiusDivisorNonemptyEnergy (4*N) ∅+(4*N:ℕ) ∧
       ∀ R ⊆ L,mobiusDivisorSelectionEnergy (4*N) R ≤ mobiusDivisorSelectionEnergy (4*N) ∅ ∧
         ∀ q : ℕ,q.Prime → q<4*N → q ∉ R →

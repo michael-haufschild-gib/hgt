@@ -16,7 +16,7 @@ of the Laplacian* (arXiv:2509.06151v2), rests on a single orthogonality: over th
 
 Only the `j = 0` term diverges as `a → 0`, and it diverges logarithmically: that is the source of
 the `log|t|^{-2}` in Proposition 5.1, whose coefficient is therefore the product of the two residues
-— the `x^0` Laurent coefficients.
+— the `x^(0 : ℕ)` Laurent coefficients.
 
 The computation is the polar reduction of `LogarithmicCutoffEnergy` applied to a monomial, together
 with the orthogonality `∫_{-π}^{π} e^{ikθ} dθ = 2π δ_{k0}`.

@@ -88,7 +88,7 @@ theorem positiveCuspRows_completed (r : ℝ) (hr : 1 < r) (z : UpperHalfPlane) :
 
 /-- A genuine bound on the original high profile controls its entire orbit, with no image removed. -/
 theorem highCuspHeight_periodize_norm_le (h : ℝ → ℂ) (hh : ∀ y ≤ 2, h y = 0)
-    (C : ℝ) (hb : ∀ y : ℝ, ‖h y‖ ≤ C*y^2) (z : UpperHalfPlane) :
+    (C : ℝ) (hb : ∀ y : ℝ, ‖h y‖ ≤ C*y^(2 : ℕ)) (z : UpperHalfPlane) :
     ‖periodize (cuspHeightSeed h) z‖ ≤ C*positiveCuspRows 2 z := by
   rw [periodize_cuspHeightSeed_eq_rows h hh z]
   calc

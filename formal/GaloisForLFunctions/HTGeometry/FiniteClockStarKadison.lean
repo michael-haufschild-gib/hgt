@@ -62,7 +62,7 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
     RCLike.re
         (inner 𝕜 ψ
           (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)) =
-      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 := by
+      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ) := by
   let Phi : E →L[𝕜] E := finiteCyclicObservableTwirl U X N
   have hUadj := adjoint_eq_pow_pred_of_periodic_isometry
     U N hN hadjoint_mul hperiod
@@ -77,11 +77,11 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
   have hfirst := inner_finiteCyclicObservableTwirl_of_fixed
     U (X.adjoint * X) N hN hψleft hψ
   have hXnorm :
-      RCLike.re (inner 𝕜 ψ ((X.adjoint * X) ψ)) = ‖X ψ‖ ^ 2 := by
+      RCLike.re (inner 𝕜 ψ ((X.adjoint * X) ψ)) = ‖X ψ‖ ^ (2 : ℕ) := by
     simpa only [mul_apply_eq_comp] using!
       (X.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhinorm :
-      RCLike.re (inner 𝕜 ψ ((Phi.adjoint * Phi) ψ)) = ‖Phi ψ‖ ^ 2 := by
+      RCLike.re (inner 𝕜 ψ ((Phi.adjoint * Phi) ψ)) = ‖Phi ψ‖ ^ (2 : ℕ) := by
     simpa only [mul_apply_eq_comp] using!
       (Phi.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhiApply :
@@ -91,9 +91,9 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
     norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
       U N hN hadjoint_mul hperiod (X ψ)
   have hsplit' :
-      ‖finiteCyclicGaugeAverage U N (X ψ)‖ ^ 2 +
-          ‖X ψ - finiteCyclicGaugeAverage U N (X ψ)‖ ^ 2 =
-        ‖X ψ‖ ^ 2 := by
+      ‖finiteCyclicGaugeAverage U N (X ψ)‖ ^ (2 : ℕ) +
+          ‖X ψ - finiteCyclicGaugeAverage U N (X ψ)‖ ^ (2 : ℕ) =
+        ‖X ψ‖ ^ (2 : ℕ) := by
     simpa only [_root_.sub_apply, one_apply_eq_self] using hsplit
   rw [finiteCyclicObservableTwirlStarKadisonDefect]
   change RCLike.re
@@ -111,11 +111,11 @@ theorem finiteClock_starObservableValue_energy_partition
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψ : U ψ = ψ) :
-    ‖finiteCyclicObservableTwirl U X N ψ‖ ^ 2 +
+    ‖finiteCyclicObservableTwirl U X N ψ‖ ^ (2 : ℕ) +
         RCLike.re
           (inner 𝕜 ψ
             (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)) =
-      ‖X ψ‖ ^ 2 := by
+      ‖X ψ‖ ^ (2 : ℕ) := by
   have hsplit :=
     norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
       U N hN hadjoint_mul hperiod (X ψ)
@@ -207,7 +207,7 @@ theorem finiteClockResolution_starObservabilityVariance
           (inner 𝕜 ψ
             (finiteCyclicObservableTwirlStarKadisonDefect (U ^ d) X M ψ)) +
         ‖(finiteCyclicGaugeAverage (U ^ d) M -
-          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2 := by
+          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ (2 : ℕ) := by
   have hfullN : d * M ≠ 0 := Nat.mul_ne_zero hd hM
   have hsubadjoint : (U ^ d).adjoint * U ^ d = 1 :=
     adjoint_pow_mul_pow_eq_one_of_adjoint_mul_self U d hadjoint_mul
@@ -243,7 +243,7 @@ theorem finiteClockFamilyStarObservabilityEnergy_eq_sum_erasedNormSq
     (hperiod : ∀ i, U i ^ N i = 1)
     {ψ : E} (hψ : ∀ i, U i ψ = ψ) :
     finiteClockFamilyStarObservabilityEnergy U X N ψ =
-      ∑ i, ‖(1 - finiteCyclicGaugeAverage (U i) (N i)) (X ψ)‖ ^ 2 := by
+      ∑ i, ‖(1 - finiteCyclicGaugeAverage (U i) (N i)) (X ψ)‖ ^ (2 : ℕ) := by
   unfold finiteClockFamilyStarObservabilityEnergy
   apply Finset.sum_congr rfl
   intro i hi

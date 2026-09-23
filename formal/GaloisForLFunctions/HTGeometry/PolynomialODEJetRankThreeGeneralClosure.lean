@@ -79,13 +79,13 @@ def modularThetaODEVectorField :
   | .H => MvPolynomial.C (-(1 / 6 : ℂ)) * MvPolynomial.X .H *
       (MvPolynomial.X .P + MvPolynomial.X .R * MvPolynomial.X .Z)
   | .Z => -MvPolynomial.X .R *
-      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ 2)
+      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ (2 : ℕ))
   | .R => MvPolynomial.C (-(2 / 3 : ℂ)) * MvPolynomial.X .R *
       (MvPolynomial.X .P + MvPolynomial.X .R * MvPolynomial.X .Z)
   | .P => MvPolynomial.C 3 - MvPolynomial.C (1 / 3 : ℂ) *
-      MvPolynomial.X .P ^ 2 +
-      MvPolynomial.C (1 / 12 : ℂ) * MvPolynomial.X .R ^ 2 *
-        (MvPolynomial.C 3 + MvPolynomial.X .Z ^ 2)
+      MvPolynomial.X .P ^ (2 : ℕ) +
+      MvPolynomial.C (1 / 12 : ℂ) * MvPolynomial.X .R ^ (2 : ℕ) *
+        (MvPolynomial.C 3 + MvPolynomial.X .Z ^ (2 : ℕ))
 
 /-- Lie derivative of a polynomial observable along the modular theta vector field. -/
 def modularThetaODELie (Q : ModularThetaODEPolynomial) :
@@ -125,32 +125,32 @@ def modularThetaODENormalizedSourceJet (n : ℕ) : ModularThetaODEPolynomial :=
 /-- Universal arbitrary-basepoint polynomial for raw rank-three reflected eighth curvature. -/
 def modularThetaReflectedEighthGeneralPolynomial : ModularThetaODEPolynomial :=
   let f := modularThetaODESourceJet
-  let p0 := f 0 ^ 2
-  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ 2)
+  let p0 := f 0 ^ (2 : ℕ)
+  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ (2 : ℕ))
   let p4 := MvPolynomial.C 2 * f 0 * f 4 - MvPolynomial.C 8 * f 1 * f 3 +
-    MvPolynomial.C 6 * f 2 ^ 2
+    MvPolynomial.C 6 * f 2 ^ (2 : ℕ)
   let p6 := MvPolynomial.C 2 * f 0 * f 6 - MvPolynomial.C 12 * f 1 * f 5 +
-    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ 2
+    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ (2 : ℕ)
   let p8 := MvPolynomial.C 2 * f 0 * f 8 - MvPolynomial.C 16 * f 1 * f 7 +
     MvPolynomial.C 56 * f 2 * f 6 - MvPolynomial.C 112 * f 3 * f 5 +
-    MvPolynomial.C 70 * f 4 ^ 2
-  p0 * p4 * p8 - p0 * p6 ^ 2 - p2 ^ 2 * p8 +
-    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ 3
+    MvPolynomial.C 70 * f 4 ^ (2 : ℕ)
+  p0 * p4 * p8 - p0 * p6 ^ (2 : ℕ) - p2 ^ (2 : ℕ) * p8 +
+    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ (3 : ℕ)
 
-/-- Universal arbitrary-basepoint rank-three polynomial after removing `H ^ 6`. -/
+/-- Universal arbitrary-basepoint rank-three polynomial after removing `H ^ (6 : ℕ)`. -/
 def modularThetaReflectedEighthNormalizedPolynomial : ModularThetaODEPolynomial :=
   let f := modularThetaODENormalizedSourceJet
-  let p0 := f 0 ^ 2
-  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ 2)
+  let p0 := f 0 ^ (2 : ℕ)
+  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ (2 : ℕ))
   let p4 := MvPolynomial.C 2 * f 0 * f 4 - MvPolynomial.C 8 * f 1 * f 3 +
-    MvPolynomial.C 6 * f 2 ^ 2
+    MvPolynomial.C 6 * f 2 ^ (2 : ℕ)
   let p6 := MvPolynomial.C 2 * f 0 * f 6 - MvPolynomial.C 12 * f 1 * f 5 +
-    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ 2
+    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ (2 : ℕ)
   let p8 := MvPolynomial.C 2 * f 0 * f 8 - MvPolynomial.C 16 * f 1 * f 7 +
     MvPolynomial.C 56 * f 2 * f 6 - MvPolynomial.C 112 * f 3 * f 5 +
-    MvPolynomial.C 70 * f 4 ^ 2
-  p0 * p4 * p8 - p0 * p6 ^ 2 - p2 ^ 2 * p8 +
-    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ 3
+    MvPolynomial.C 70 * f 4 ^ (2 : ℕ)
+  p0 * p4 * p8 - p0 * p6 ^ (2 : ℕ) - p2 ^ (2 : ℕ) * p8 +
+    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ (3 : ℕ)
 
 /-- The modular Lie operator satisfies the Leibniz rule. -/
 theorem modularThetaODELie_mul (Q S : ModularThetaODEPolynomial) :
@@ -194,11 +194,11 @@ set_option maxHeartbeats 1000000 in
 theorem eval_modularThetaODENormalizedSourceJet_zero
     (v : ModularThetaODEState → ℂ) :
     MvPolynomial.eval v (modularThetaODENormalizedSourceJet 0) =
-      (1 / 24 : ℂ) * v ModularThetaODEState.P ^ 2 +
+      (1 / 24 : ℂ) * v ModularThetaODEState.P ^ (2 : ℕ) +
       (1 / 12 : ℂ) * v ModularThetaODEState.R * v ModularThetaODEState.P *
         v ModularThetaODEState.Z +
-      (1 / 48 : ℂ) * v ModularThetaODEState.R ^ 2 *
-        (3 - v ModularThetaODEState.Z ^ 2) - 3 / 8 := by
+      (1 / 48 : ℂ) * v ModularThetaODEState.R ^ (2 : ℕ) *
+        (3 - v ModularThetaODEState.Z ^ (2 : ℕ)) - 3 / 8 := by
   have h1 : modularThetaODENormalizedHJet 1 =
       MvPolynomial.C (-(1 / 6 : ℂ)) *
         (MvPolynomial.X ModularThetaODEState.P +
@@ -266,7 +266,7 @@ set_option maxHeartbeats 2000000 in
 /-- The universal rank-three determinant is homogeneous of degree six in theta mass. -/
 theorem modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized :
     modularThetaReflectedEighthGeneralPolynomial =
-      MvPolynomial.X ModularThetaODEState.H ^ 6 *
+      MvPolynomial.X ModularThetaODEState.H ^ (6 : ℕ) *
         modularThetaReflectedEighthNormalizedPolynomial := by
   unfold modularThetaReflectedEighthGeneralPolynomial
     modularThetaReflectedEighthNormalizedPolynomial
@@ -286,7 +286,7 @@ theorem modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized
 theorem eval_modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized
     (v : ModularThetaODEState → ℂ) :
     MvPolynomial.eval v modularThetaReflectedEighthGeneralPolynomial =
-      v ModularThetaODEState.H ^ 6 *
+      v ModularThetaODEState.H ^ (6 : ℕ) *
         MvPolynomial.eval v modularThetaReflectedEighthNormalizedPolynomial := by
   rw [modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized]
   simp
@@ -346,12 +346,12 @@ theorem modularThetaReflectedEighthGeneralClosure_of_ode
       (iteratedDeriv (n + 2) (v .H) x -
         (1 / 4 : ℂ) * iteratedDeriv n (v .H) x) / 2
     signedEvenHankelThreeDetC
-      (f 0 ^ 2)
-      (2 * (f 0 * f 2 - f 1 ^ 2))
-      (2 * f 0 * f 4 - 8 * f 1 * f 3 + 6 * f 2 ^ 2)
-      (2 * f 0 * f 6 - 12 * f 1 * f 5 + 30 * f 2 * f 4 - 20 * f 3 ^ 2)
+      (f 0 ^ (2 : ℕ))
+      (2 * (f 0 * f 2 - f 1 ^ (2 : ℕ)))
+      (2 * f 0 * f 4 - 8 * f 1 * f 3 + 6 * f 2 ^ (2 : ℕ))
+      (2 * f 0 * f 6 - 12 * f 1 * f 5 + 30 * f 2 * f 4 - 20 * f 3 ^ (2 : ℕ))
       (2 * f 0 * f 8 - 16 * f 1 * f 7 + 56 * f 2 * f 6 -
-        112 * f 3 * f 5 + 70 * f 4 ^ 2) =
+        112 * f 3 * f 5 + 70 * f 4 ^ (2 : ℕ)) =
       MvPolynomial.eval (fun j => v j x)
         modularThetaReflectedEighthGeneralPolynomial := by
   dsimp only

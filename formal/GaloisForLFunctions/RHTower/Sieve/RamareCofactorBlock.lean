@@ -125,7 +125,7 @@ theorem card_cofactor_gap_le {A₀ B₀ : ℕ} {Q η : ℝ} (hQ : 0 < Q) (hη : 
       ≤ (A₀ : ℝ) * η / Q + 2 := by
     have hgap : (A₀ : ℝ) / Q - (A₀ : ℝ) / (Q * (1 + η)) ≤ (A₀ : ℝ) * η / Q := by
       rw [div_sub_div _ _ (ne_of_gt hQ) (ne_of_gt hQη), div_le_div_iff₀ (by positivity) hQ]
-      nlinarith [(by positivity : (0 : ℝ) ≤ (A₀ : ℝ) * η ^ 2 * Q ^ 2)]
+      nlinarith [(by positivity : (0 : ℝ) ≤ (A₀ : ℝ) * η ^ (2 : ℕ) * Q ^ (2 : ℕ))]
     have hmono : (A₀ : ℝ) / (Q * (1 + η)) ≤ (A₀ : ℝ) / Q := by
       refine div_le_div_of_nonneg_left (Nat.cast_nonneg A₀) hQ ?_
       nlinarith [hη, hQ]
@@ -136,7 +136,7 @@ theorem card_cofactor_gap_le {A₀ B₀ : ℕ} {Q η : ℝ} (hQ : 0 < Q) (hη : 
       ≤ (B₀ : ℝ) * η / Q + 2 := by
     have hgap : (B₀ : ℝ) / Q - (B₀ : ℝ) / (Q * (1 + η)) ≤ (B₀ : ℝ) * η / Q := by
       rw [div_sub_div _ _ (ne_of_gt hQ) (ne_of_gt hQη), div_le_div_iff₀ (by positivity) hQ]
-      nlinarith [(by positivity : (0 : ℝ) ≤ (B₀ : ℝ) * η ^ 2 * Q ^ 2)]
+      nlinarith [(by positivity : (0 : ℝ) ≤ (B₀ : ℝ) * η ^ (2 : ℕ) * Q ^ (2 : ℕ))]
     have hmono : (B₀ : ℝ) / (Q * (1 + η)) ≤ (B₀ : ℝ) / Q := by
       refine div_le_div_of_nonneg_left (Nat.cast_nonneg B₀) hQ ?_
       nlinarith [hη, hQ]
@@ -190,7 +190,7 @@ Dirichlet polynomial costs, in mean square, only the size of the symmetric diffe
 theorem integral_Icc_normSq_logPoly_sub_le {a : ℕ → ℂ} (hA : ∀ n, ‖a n‖ ≤ 1)
     {U V : Finset ℕ} (hU0 : (0 : ℕ) ∉ U) (hV0 : (0 : ℕ) ∉ V) {M : ℕ}
     (hUM : ∀ n ∈ U, n ≤ M) (hVM : ∀ n ∈ V, n ≤ M) {W : ℝ} (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a U w - logPoly a V w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a U w - logPoly a V w‖ ^ (2 : ℕ))
       ≤ 2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
           * (((U \ V).card : ℝ) + ((V \ U).card : ℝ)) := by
   classical
@@ -207,16 +207,16 @@ theorem integral_Icc_normSq_logPoly_sub_le {a : ℕ → ℂ} (hA : ∀ n, ‖a n
   have hVdM : ∀ n ∈ V \ U, n ≤ M := fun n hn => hVM n (Finset.mem_sdiff.1 hn).1
   have hEU := integral_Icc_normSq_logPoly_le_energy a hUd0 hUdM hW
   have hEV := integral_Icc_normSq_logPoly_le_energy a hVd0 hVdM hW
-  have hmassU : (∑ n ∈ U \ V, ‖a n‖ ^ 2) ≤ ((U \ V).card : ℝ) := by
-    have h1 : ∀ n ∈ U \ V, ‖a n‖ ^ 2 ≤ (1 : ℝ) := by
+  have hmassU : (∑ n ∈ U \ V, ‖a n‖ ^ (2 : ℕ)) ≤ ((U \ V).card : ℝ) := by
+    have h1 : ∀ n ∈ U \ V, ‖a n‖ ^ (2 : ℕ) ≤ (1 : ℝ) := by
       intro n _
       have := pow_le_pow_left₀ (norm_nonneg (a n)) (hA n) 2
       simpa using this
     have h2 := Finset.sum_le_sum h1
     rw [Finset.sum_const, nsmul_eq_mul, mul_one] at h2
     exact h2
-  have hmassV : (∑ n ∈ V \ U, ‖a n‖ ^ 2) ≤ ((V \ U).card : ℝ) := by
-    have h1 : ∀ n ∈ V \ U, ‖a n‖ ^ 2 ≤ (1 : ℝ) := by
+  have hmassV : (∑ n ∈ V \ U, ‖a n‖ ^ (2 : ℕ)) ≤ ((V \ U).card : ℝ) := by
+    have h1 : ∀ n ∈ V \ U, ‖a n‖ ^ (2 : ℕ) ≤ (1 : ℝ) := by
       intro n _
       have := pow_le_pow_left₀ (norm_nonneg (a n)) (hA n) 2
       simpa using this
@@ -224,8 +224,8 @@ theorem integral_Icc_normSq_logPoly_sub_le {a : ℕ → ℂ} (hA : ∀ n, ‖a n
     rw [Finset.sum_const, nsmul_eq_mul, mul_one] at h2
     exact h2
   -- the pointwise inequality
-  have hpt : ∀ w : ℝ, ‖logPoly a U w - logPoly a V w‖ ^ 2
-      ≤ 2 * ‖logPoly a (U \ V) w‖ ^ 2 + 2 * ‖logPoly a (V \ U) w‖ ^ 2 := by
+  have hpt : ∀ w : ℝ, ‖logPoly a U w - logPoly a V w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖logPoly a (U \ V) w‖ ^ (2 : ℕ) + 2 * ‖logPoly a (V \ U) w‖ ^ (2 : ℕ) := by
     intro w
     rw [logPoly_sub_eq_sdiff]
     have htri := norm_sub_le (logPoly a (U \ V) w) (logPoly a (V \ U) w)
@@ -233,32 +233,32 @@ theorem integral_Icc_normSq_logPoly_sub_le {a : ℕ → ℂ} (hA : ∀ n, ‖a n
     have h1 : (0 : ℝ) ≤ ‖logPoly a (V \ U) w‖ := norm_nonneg _
     have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
     nlinarith [hsq, sq_nonneg (‖logPoly a (U \ V) w‖ - ‖logPoly a (V \ U) w‖)]
-  have hcont : Continuous fun w : ℝ => ‖logPoly a U w - logPoly a V w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a U w - logPoly a V w‖ ^ (2 : ℕ) :=
     ((((continuous_logPoly a U).sub (continuous_logPoly a V)).norm).pow 2)
-  have hcontU : Continuous fun w : ℝ => ‖logPoly a (U \ V) w‖ ^ 2 :=
+  have hcontU : Continuous fun w : ℝ => ‖logPoly a (U \ V) w‖ ^ (2 : ℕ) :=
     (((continuous_logPoly a (U \ V)).norm).pow 2)
-  have hcontV : Continuous fun w : ℝ => ‖logPoly a (V \ U) w‖ ^ 2 :=
+  have hcontV : Continuous fun w : ℝ => ‖logPoly a (V \ U) w‖ ^ (2 : ℕ) :=
     (((continuous_logPoly a (V \ U)).norm).pow 2)
-  have hint1 : IntegrableOn (fun w : ℝ => ‖logPoly a U w - logPoly a V w‖ ^ 2)
+  have hint1 : IntegrableOn (fun w : ℝ => ‖logPoly a U w - logPoly a V w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcont.integrableOn_Icc
   have hint2 : IntegrableOn (fun w : ℝ =>
-      2 * ‖logPoly a (U \ V) w‖ ^ 2 + 2 * ‖logPoly a (V \ U) w‖ ^ 2)
+      2 * ‖logPoly a (U \ V) w‖ ^ (2 : ℕ) + 2 * ‖logPoly a (V \ U) w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := ((hcontU.const_mul 2).add (hcontV.const_mul 2)).integrableOn_Icc
   have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc (fun w _ => hpt w)
   have hsplit : (∫ w in Set.Icc (-W) W,
-      (2 * ‖logPoly a (U \ V) w‖ ^ 2 + 2 * ‖logPoly a (V \ U) w‖ ^ 2))
-      = 2 * (∫ w in Set.Icc (-W) W, ‖logPoly a (U \ V) w‖ ^ 2)
-        + 2 * (∫ w in Set.Icc (-W) W, ‖logPoly a (V \ U) w‖ ^ 2) := by
-    have hiU : IntegrableOn (fun w : ℝ => 2 * ‖logPoly a (U \ V) w‖ ^ 2)
+      (2 * ‖logPoly a (U \ V) w‖ ^ (2 : ℕ) + 2 * ‖logPoly a (V \ U) w‖ ^ (2 : ℕ)))
+      = 2 * (∫ w in Set.Icc (-W) W, ‖logPoly a (U \ V) w‖ ^ (2 : ℕ))
+        + 2 * (∫ w in Set.Icc (-W) W, ‖logPoly a (V \ U) w‖ ^ (2 : ℕ)) := by
+    have hiU : IntegrableOn (fun w : ℝ => 2 * ‖logPoly a (U \ V) w‖ ^ (2 : ℕ))
         (Set.Icc (-W) W) volume := (hcontU.const_mul 2).integrableOn_Icc
-    have hiV : IntegrableOn (fun w : ℝ => 2 * ‖logPoly a (V \ U) w‖ ^ 2)
+    have hiV : IntegrableOn (fun w : ℝ => 2 * ‖logPoly a (V \ U) w‖ ^ (2 : ℕ))
         (Set.Icc (-W) W) volume := (hcontV.const_mul 2).integrableOn_Icc
     rw [integral_add hiU hiV, integral_const_mul, integral_const_mul]
   rw [hsplit] at hmono
-  have hUfin : (∫ w in Set.Icc (-W) W, ‖logPoly a (U \ V) w‖ ^ 2)
+  have hUfin : (∫ w in Set.Icc (-W) W, ‖logPoly a (U \ V) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * ((U \ V).card : ℝ) :=
     le_trans hEU (mul_le_mul_of_nonneg_left hmassU hcoef)
-  have hVfin : (∫ w in Set.Icc (-W) W, ‖logPoly a (V \ U) w‖ ^ 2)
+  have hVfin : (∫ w in Set.Icc (-W) W, ‖logPoly a (V \ U) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * ((V \ U).card : ℝ) :=
     le_trans hEV (mul_le_mul_of_nonneg_left hmassV hcoef)
   nlinarith [hmono, hUfin, hVfin, hcoef]
@@ -301,7 +301,7 @@ theorem card_cofactor_symmDiff_le {A₀ B₀ : ℕ} {Q η : ℝ} (hQ : 0 < Q) (h
     (hp0 : 0 < p) (hplo : Q < (p : ℝ)) (hphi : (p : ℝ) ≤ Q * (1 + η)) :
     (((Finset.Icc ⌈(A₀ : ℝ) / (Q * (1 + η))⌉₊ ⌊(B₀ : ℝ) / Q⌋₊
         \ {m ∈ ramareCofactorSet (Finset.Icc A₀ B₀) p | ¬ p ∣ m}).card : ℝ))
-      ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / Q + 4 + ((B₀ : ℝ) / Q ^ 2 + 1) := by
+      ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / Q + 4 + ((B₀ : ℝ) / Q ^ (2 : ℕ) + 1) := by
   classical
   set C : Finset ℕ := Finset.Icc ⌈(A₀ : ℝ) / (Q * (1 + η))⌉₊ ⌊(B₀ : ℝ) / Q⌋₊ with hC
   set R : Finset ℕ := ramareCofactorSet (Finset.Icc A₀ B₀) p with hR
@@ -314,13 +314,13 @@ theorem card_cofactor_symmDiff_le {A₀ B₀ : ℕ} {Q η : ℝ} (hQ : 0 < Q) (h
     · refine Finset.mem_union_left _ (Finset.mem_sdiff.2 ⟨hmC, fun hmR => hmnot ?_⟩)
       exact Finset.mem_filter.2 ⟨hmR, hdvd⟩
   have hgap := card_cofactor_gap_le (A₀ := A₀) (B₀ := B₀) hQ hη hp0 hplo hphi
-  have hmult : ((C.filter (fun m => p ∣ m)).card : ℝ) ≤ (B₀ : ℝ) / Q ^ 2 + 1 := by
+  have hmult : ((C.filter (fun m => p ∣ m)).card : ℝ) ≤ (B₀ : ℝ) / Q ^ (2 : ℕ) + 1 := by
     have hstep := card_multiples_le ⌈(A₀ : ℝ) / (Q * (1 + η))⌉₊ ⌊(B₀ : ℝ) / Q⌋₊ p
     have hfl : ((⌊(B₀ : ℝ) / Q⌋₊ : ℕ) : ℝ) ≤ (B₀ : ℝ) / Q :=
       Nat.floor_le (by positivity)
     have hp0R : (0 : ℝ) < (p : ℝ) := lt_trans hQ hplo
     have hB0 : (0 : ℝ) ≤ (B₀ : ℝ) := Nat.cast_nonneg B₀
-    have hdiv : ((⌊(B₀ : ℝ) / Q⌋₊ : ℕ) : ℝ) / (p : ℝ) ≤ (B₀ : ℝ) / Q ^ 2 := by
+    have hdiv : ((⌊(B₀ : ℝ) / Q⌋₊ : ℕ) : ℝ) / (p : ℝ) ≤ (B₀ : ℝ) / Q ^ (2 : ℕ) := by
       rw [div_le_div_iff₀ hp0R (by positivity)]
       have h1 : ((⌊(B₀ : ℝ) / Q⌋₊ : ℕ) : ℝ) * Q ≤ (B₀ : ℝ) := by
         have := mul_le_mul_of_nonneg_right hfl hQ.le
@@ -393,9 +393,9 @@ theorem integral_normSq_cofactor_sub_common_le {P : Finset ℕ} (M : ℕ) {Q η 
     (hp0 : 0 < p) (hplo : Q < (p : ℝ)) (hphi : (p : ℝ) ≤ Q * (1 + η)) :
     (∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w
         - logPoly (ramareCofactorCoeff P)
-            (Finset.Icc ⌈((1 : ℕ) : ℝ) / (Q * (1 + η))⌉₊ ⌊((M : ℕ) : ℝ) / Q⌋₊) w‖ ^ 2)
+            (Finset.Icc ⌈((1 : ℕ) : ℝ) / (Q * (1 + η))⌉₊ ⌊((M : ℕ) : ℝ) / Q⌋₊) w‖ ^ (2 : ℕ))
       ≤ 2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
-          * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Q + 4 + (((M : ℕ) : ℝ) / Q ^ 2 + 1)) := by
+          * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Q + 4 + (((M : ℕ) : ℝ) / Q ^ (2 : ℕ) + 1)) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_of_lt_of_le zero_lt_one hQ
   have hQη : (0 : ℝ) < Q * (1 + η) := by positivity

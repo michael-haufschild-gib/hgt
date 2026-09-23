@@ -22,7 +22,7 @@ For aperture `A` and integer label `n`, the Cartan increment is
 On prime powers it is exactly reporter-weighted Suzuki negative-light energy.  The Levi logarithm
 has the forced expansion
 
-`log(1+x) = x - x^2/2 + R_3(x)`,
+`log(1+x) = x - x^(2 : ℕ)/2 + R_3(x)`,
 
 where the total positive cubic remainder is uniformly bounded in `A`.  After adding the quadratic
 counterterm and the literal regular-screw Gamma mass, the completed Cartan observable is exactly

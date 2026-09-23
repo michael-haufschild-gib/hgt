@@ -19,7 +19,7 @@ theorem deriv_displacement_fixed_tail_of_iterate_eq_fixed
         deriv ((quadratic c)^[n + m]) z - 1 := by
     have hF : HasDerivAt (fun w => (quadratic c)^[n + m] w - w)
         (deriv ((quadratic c)^[n + m]) z - 1) z :=
-      ((differentiable_quadratic_iterate c (n + m)).differentiableAt.hasDerivAt).sub
+      ((differentiable_quadratic_iterate_repellingFixedPoint c (n + m)).differentiableAt.hasDerivAt).sub
         (hasDerivAt_id z)
     exact hF.deriv
   rw [hderiv, deriv_fixed_tail_of_iterate_eq_fixed hhit hfix m]
@@ -45,7 +45,7 @@ theorem eventually_tail_displacement_deriv_inv_norm_lt_of_repelling_hit
         deriv ((quadratic c)^[n + m]) z - 1 := by
     have hF : HasDerivAt (fun w => (quadratic c)^[n + m] w - w)
         (deriv ((quadratic c)^[n + m]) z - 1) z :=
-      ((differentiable_quadratic_iterate c (n + m)).differentiableAt.hasDerivAt).sub
+      ((differentiable_quadratic_iterate_repellingFixedPoint c (n + m)).differentiableAt.hasDerivAt).sub
         (hasDerivAt_id z)
     exact hF.deriv
   have hlarge : ε⁻¹ < ‖deriv ((quadratic c)^[n + m]) z - 1‖ := by
@@ -112,7 +112,7 @@ theorem deriv_scaled_displacement
     simpa only [Pi.add_apply, zero_add] using! hL0
   have hF : HasDerivAt ((quadratic c)^[q])
       (deriv ((quadratic c)^[q]) (z + scale * τ)) (z + scale * τ) :=
-    ((differentiable_quadratic_iterate c q).differentiableAt).hasDerivAt
+    ((differentiable_quadratic_iterate_repellingFixedPoint c q).differentiableAt).hasDerivAt
   have hG : HasDerivAt (fun w => (quadratic c)^[q] w - w)
       (deriv ((quadratic c)^[q]) (z + scale * τ) - 1) (z + scale * τ) :=
     hF.sub (hasDerivAt_id (z + scale * τ))

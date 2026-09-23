@@ -10,7 +10,7 @@ The corpus already proves the Jacobi quartic identity and theta Wronskian uncond
 Those two identities determine differences of theta logarithmic derivatives, but not their common
 mode. This module supplies that missing mode from source data by proving
 
-`(thetaTwo * thetaThree * thetaFour)^8 = 256 * discriminant`.
+`(thetaTwo * thetaThree * thetaFour)^(8 : ℕ) = 256 * discriminant`.
 
 The eighth power removes both theta-product multipliers. It is a weight-twelve level-one cusp
 form, hence a scalar multiple of the modular discriminant. Their normalized cusp limits determine
@@ -126,7 +126,7 @@ def thetaProductPow8Cusp : CuspForm 𝒮ℒ 12 where
     exact thetaProductPow8H_zeroAtImInfty
 
 /-- **Theta-product/discriminant identity.**
-`Delta = (thetaTwo * thetaThree * thetaFour)^8 / 256` on the upper half-plane. -/
+`Delta = (thetaTwo * thetaThree * thetaFour)^(8 : ℕ) / 256` on the upper half-plane. -/
 theorem thetaProductPow8_discriminant_identity (τ : ℍ) :
     ModularForm.discriminant τ =
       (thetaTwo τ * thetaThree τ * thetaFour τ) ^ 8 / 256 := by
@@ -280,7 +280,7 @@ theorem thetaProduct_logDeriv_eq_E2 {τ : ℂ} (hτ : 0 < τ.im) :
     _ = (Real.pi : ℂ) * I / 4 * EisensteinSeries.E2 ⟨τ, hτ⟩ := by ring
 
 /-- The individual `thetaThree` logarithmic derivative, with no carried theta-derivative premise:
-`thetaThree'/thetaThree = pi*i/12 * (E2 + thetaTwo^4 - thetaFour^4)`.
+`thetaThree'/thetaThree = pi*i/12 * (E2 + thetaTwo^(4 : ℕ) - thetaFour^(4 : ℕ))`.
 
 The product/discriminant identity fixes the common logarithmic-derivative mode. The unconditional
 theta Wronskian fixes the `thetaTwo`--`thetaThree` difference, and differentiated Jacobi quartic
@@ -516,7 +516,7 @@ def thetaEisensteinFourDefectCusp : CuspForm 𝒮ℒ 4 where
     exact thetaEisensteinFourDefectH_zeroAtImInfty
 
 /-- Jacobi's exact weight-four identity, derived entirely from source theta transformations:
-`E4 = (thetaTwo^8 + thetaThree^8 + thetaFour^8) / 2`. -/
+`E4 = (thetaTwo^(8 : ℕ) + thetaThree^(8 : ℕ) + thetaFour^(8 : ℕ)) / 2`. -/
 theorem eisensteinSeries_E4_eq_theta_nullwerte (τ : ℍ) :
     ModularForm.E₄ τ =
       (thetaTwo τ ^ 8 + thetaThree τ ^ 8 + thetaFour τ ^ 8) / 2 := by
@@ -583,7 +583,7 @@ theorem ofReal_evenKernel_zero_eq_thetaThree (t : ℝ) :
   simpa [thetaThree] using HurwitzZeta.evenKernel_def 0 t
 
 /-- Completed real theta profile whose Hedenmalm source is obtained by applying
-`(d^2/dx^2 - 1/4)/2`. -/
+`(d^(2 : ℕ)/dx^(2 : ℕ) - 1/4)/2`. -/
 def completedThetaProfile (x : ℝ) : ℝ :=
   Real.exp (x / 2) * HurwitzZeta.evenKernel 0 (Real.exp (2 * x))
 

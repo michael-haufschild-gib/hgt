@@ -28,7 +28,7 @@ theorem constrainedProlateHermiteContrast_eq_zero_of_notMem {k j : ℕ}
   exact constrainedProlateHermiteContrast_eq_zero_of_succ_lt (by omega)
 
 theorem summable_constrainedProlateHermiteContrast_sq (k : ℕ) :
-    Summable fun j => constrainedProlateHermiteContrast k j ^ 2 := by
+    Summable fun j => constrainedProlateHermiteContrast k j ^ (2 : ℕ) := by
   refine summable_of_ne_finset_zero (s := Finset.range (k + 2)) ?_
   intro j hj
   rw [constrainedProlateHermiteContrast_eq_zero_of_notMem hj]
@@ -111,7 +111,7 @@ theorem orthonormal_hermiteContrastUnit : Orthonormal ℝ hermiteContrastUnit :=
 
 /-- The squared norm of a contrast vector is its self-pairing. -/
 theorem norm_sq_hermiteContrastLp (k : ℕ) :
-    ‖hermiteContrastLp k‖ ^ 2 = constrainedProlateHermiteContrastPairing k k := by
+    ‖hermiteContrastLp k‖ ^ (2 : ℕ) = constrainedProlateHermiteContrastPairing k k := by
   rw [← real_inner_self_eq_norm_sq, inner_hermiteContrastLp]
 
 
@@ -119,8 +119,8 @@ theorem norm_sq_hermiteContrastLp (k : ℕ) :
 theorem constrainedProlateHermiteContrastPairing_self (k : ℕ) :
     constrainedProlateHermiteContrastPairing k k
       = constrainedProlateHermiteSquareSum k
-        + constrainedProlateHermiteSquareSum k ^ 2
-          / constrainedProlateHermiteCoordinate (k + 1) ^ 2 := by
+        + constrainedProlateHermiteSquareSum k ^ (2 : ℕ)
+          / constrainedProlateHermiteCoordinate (k + 1) ^ (2 : ℕ) := by
   rw [constrainedProlateHermiteContrastPairing, max_self,
     show k + 2 = (k + 1) + 1 from rfl, Finset.sum_range_succ]
   congr 1
@@ -134,7 +134,7 @@ theorem constrainedProlateHermiteContrastPairing_self (k : ℕ) :
 /-- **The exact squared norm of the depth-`k` contrast vector.**  In terms of the Hermite weights
 it is `√2·Q_k·Q_{k+1}/q_{k+1}`, so the normalization required by the ladder limit is explicit. -/
 theorem norm_sq_hermiteContrastLp_eq (k : ℕ) :
-    ‖hermiteContrastLp k‖ ^ 2
+    ‖hermiteContrastLp k‖ ^ (2 : ℕ)
       = Real.sqrt 2 * constrainedProlateHermiteWeightSum k
           * constrainedProlateHermiteWeightSum (k + 1)
           / constrainedProlateHermiteWeight (k + 1) := by
@@ -160,7 +160,7 @@ theorem constrainedProlateRawHermiteContrast_eq_zero_of_notMem {m j : ℕ}
   rw [constrainedProlateRawHermiteContrast, if_neg hj.2, if_neg hj.1]
 
 theorem summable_constrainedProlateRawHermiteContrast_sq (m : ℕ) :
-    Summable fun j => constrainedProlateRawHermiteContrast m j ^ 2 := by
+    Summable fun j => constrainedProlateRawHermiteContrast m j ^ (2 : ℕ) := by
   refine summable_of_ne_finset_zero (s := ({0, m} : Finset ℕ)) ?_
   intro j hj
   rw [constrainedProlateRawHermiteContrast_eq_zero_of_notMem hj]

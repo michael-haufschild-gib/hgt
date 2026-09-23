@@ -113,7 +113,7 @@ theorem xiPairedResolventTerm_pos {s : ℂ} (h1 : 1 ≤ s.re) (q : XiZeroCopy) :
   linarith
 
 /-- Hardy's theorem produces a divisor copy: the divisor of `ξ` is nonempty. -/
-theorem nonempty_xiZeroCopy : Nonempty XiZeroCopy := by
+theorem nonempty_xiZeroCopy_xiLogDerivLineOnePositive : Nonempty XiZeroCopy := by
   obtain ⟨t, -, ht⟩ := exists_Xi_zero_gt 0
   have hXiC : XiC (t : ℂ) = 0 := by
     rw [XiC_ofReal, ht, Complex.ofReal_zero]
@@ -156,7 +156,7 @@ theorem re_logDeriv_xi_pos_of_one_le_re {s : ℂ} (h1 : 1 ≤ s.re) :
     0 < (logDeriv xi s).re := by
   have hs := xi_ne_zero_of_one_le_re h1
   have hpos : 0 < ∑' q : XiZeroCopy, xiPairedResolventTerm s q := by
-    obtain ⟨q₀⟩ := nonempty_xiZeroCopy
+    obtain ⟨q₀⟩ := nonempty_xiZeroCopy_xiLogDerivLineOnePositive
     exact (summable_xiPairedResolventTerm hs).tsum_pos
       (fun q => (xiPairedResolventTerm_pos h1 q).le) q₀ (xiPairedResolventTerm_pos h1 q₀)
   have htwice := two_mul_re_logDeriv_xi_eq_tsum_paired hs
@@ -174,7 +174,7 @@ private theorem deriv_xi_eq_neg (s : ℂ) : deriv xi s = -deriv xi (1 - s) := by
   exact deriv_comp_const_sub xi 1 s
 
 /-- The logarithmic derivative of `ξ` is odd about `1/2`. -/
-theorem logDeriv_xi_one_sub (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s := by
+theorem logDeriv_xi_one_sub_xiLogDerivLineOnePositive (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s := by
   simp only [logDeriv, Pi.div_apply]
   rw [deriv_xi_eq_neg s, xi_one_sub s]
   ring
@@ -195,7 +195,7 @@ theorem hbConstantModeWeight_eq (t : ℝ) :
   have h1 : xi (2 * t * I) = (starRingEnd ℂ) (xi (1 + 2 * t * I)) := by
     rw [← xi_one_sub (2 * t * I), ← xi_conj, hconj]
   have h2 : logDeriv xi (2 * t * I) = -(starRingEnd ℂ) (logDeriv xi (1 + 2 * t * I)) := by
-    rw [← logDeriv_xi_conj_global, hconj, logDeriv_xi_one_sub (2 * t * I), neg_neg]
+    rw [← logDeriv_xi_conj_global, hconj, logDeriv_xi_one_sub_xiLogDerivLineOnePositive (2 * t * I), neg_neg]
   unfold hbConstantModeWeight
   rw [h1, h2, Complex.mul_conj]
   have hL := Complex.add_conj (logDeriv xi (1 + 2 * t * I))

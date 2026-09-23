@@ -8,7 +8,7 @@ Conjugating the normalized self-dual Hawking dilation coefficient gives the anti
 charge-minus-two carrier. Two neutral horizon-mass insertions dress this carrier to the first
 sextic charge-decay rung. Its three-Green principal coefficient is
 
-`C_-(z) * 2 conj(A)^2 M(A,z)^2 / J'(omega_3)^3`.
+`C_-(z) * 2 conj(A)^(2 : ℕ) M(A,z)^(2 : ℕ) / J'(omega_3)^(3 : ℕ)`.
 
 Every factor is nonzero at an Xi divisor when `A != 0`. Multiplication by `C_-(z)` preserves the
 triple-pole limit, so continuous one- and two-Green completions cannot cancel it. Exact
@@ -77,7 +77,7 @@ theorem d4ThetaHawkingSelfDualSeededSexticCompletion_tendsto_triplePoleCoefficie
     Tendsto
       (fun omega =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
-          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ 3 *
+          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ (3 : ℕ) *
           d4ThetaHawkingSelfDualSeededSexticCompletion amplitude
             (xiSpectralPoint q) twoGreenNumerator oneGreenNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
@@ -115,7 +115,7 @@ theorem d4ThetaHawkingSelfDualSeededSexticCompletion_cannot_cancel
     ¬ Tendsto
       (fun omega =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
-          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ 3 *
+          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ (3 : ℕ) *
           d4ThetaHawkingSelfDualSeededSexticCompletion amplitude
             (xiSpectralPoint q) twoGreenNumerator oneGreenNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMMinus 3

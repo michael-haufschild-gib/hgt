@@ -18,11 +18,11 @@ namespace RHTower
 
 noncomputable section
 
-private theorem complex_sqrt_sq_local (z : ℂ) : Complex.sqrt z ^ 2 = z := by
+private theorem complex_sqrt_sq_local (z : ℂ) : Complex.sqrt z ^ (2 : ℕ) = z := by
   by_cases hz : z = 0
   · simp [hz]
   · calc
-      Complex.sqrt z ^ 2 = Complex.exp (Complex.log z / 2) ^ 2 := by
+      Complex.sqrt z ^ (2 : ℕ) = Complex.exp (Complex.log z / 2) ^ (2 : ℕ) := by
         rw [sqrt_eq_exp hz]
       _ = Complex.exp (Complex.log z) := by
         rw [pow_two, ← Complex.exp_add]
@@ -42,7 +42,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierAmplitude_carrier_eq_one
   let c := d4ThetaHawkingSelfDualQuadraticCarrierCoefficient 1 (xiSpectralPoint q)
   have hc : c ≠ 0 :=
     d4ThetaHawkingSelfDualQuadraticCarrierCoefficient_xi_ne_zero one_ne_zero q
-  change Complex.sqrt (c⁻¹) ^ 2 *
+  change Complex.sqrt (c⁻¹) ^ (2 : ℕ) *
       ads4SelfDualNormalizedMellinSourceCoefficient
         (d4ThetaHawkingSelfDualDilationExponent (xiSpectralPoint q))
         (d4ThetaTeukolskyLinearCuspWeight (xiSpectralPoint q)) = 1

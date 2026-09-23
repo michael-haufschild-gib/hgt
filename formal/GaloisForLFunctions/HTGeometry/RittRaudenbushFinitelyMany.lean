@@ -22,7 +22,7 @@ noncomputable section
 attribute [local instance] differentialPolynomialOverDifferential
 
 /-- A differential ring isomorphism has a differential inverse. -/
-theorem ringEquiv_symm_deriv {A B : Type*} [CommRing A] [Differential A] [CommRing B]
+theorem ringEquiv_symm_deriv_rittRaudenbushFinitelyMany {A B : Type*} [CommRing A] [Differential A] [CommRing B]
     [Differential B] (e : A ≃+* B) (he : ∀ x, e (Differential.deriv x) = Differential.deriv (e x))
     (y : B) : e.symm (Differential.deriv y) = Differential.deriv (e.symm y) := by
   have h := he (e.symm y)
@@ -48,7 +48,7 @@ theorem radDiffFG_of_ringEquiv {A B : Type*} [CommRing A] [Differential A] [Comm
   have hJδ : ∀ y ∈ J, Differential.deriv y ∈ J := by
     intro y hy
     show e.symm (Differential.deriv y) ∈ I
-    rw [ringEquiv_symm_deriv e he y]
+    rw [ringEquiv_symm_deriv_rittRaudenbushFinitelyMany e he y]
     exact hδ _ hy
   have hcomap : Ideal.comap (e : A →+* B) J = I := by
     rw [hJ, Ideal.comap_comap]

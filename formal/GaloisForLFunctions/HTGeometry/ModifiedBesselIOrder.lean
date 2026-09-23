@@ -23,7 +23,7 @@ def modifiedBesselIOrderCoreTerm (a : ℝ) (n : ℕ) (z : ℂ) : ℂ :=
 theorem modifiedBesselIOrderCoreTerm_succ_mul (a : ℝ) (n : ℕ) (z : ℂ) :
     modifiedBesselIOrderCoreTerm a (n + 1) z *
         ((n + 1 : ℕ) * (z + (n + 1 : ℕ))) =
-      (a : ℂ) ^ 2 * modifiedBesselIOrderCoreTerm a n z := by
+      (a : ℂ) ^ (2 : ℕ) * modifiedBesselIOrderCoreTerm a n z := by
   have hgamma := Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one
     (z + (n + 1 : ℕ))
   change reciprocalGammaEntire (z + (n + 1 : ℕ)) =
@@ -69,7 +69,7 @@ theorem modifiedBesselIOrderCoreTerm_eventually_half (a : ℝ) (x : ℂ) :
   have hapos : 0 < |a| := abs_pos.mpr ha
   have hD : 0 < ((n + 1 : ℕ) : ℝ) * ‖z + (n + 1 : ℕ)‖ :=
     mul_pos (by positivity) (lt_trans hapos hshift)
-  have hDlarge : 2 * |a| ^ 2 < ((n + 1 : ℕ) : ℝ) * ‖z + (n + 1 : ℕ)‖ := by
+  have hDlarge : 2 * |a| ^ (2 : ℕ) < ((n + 1 : ℕ) : ℝ) * ‖z + (n + 1 : ℕ)‖ := by
     nlinarith [abs_nonneg a]
   have hid := congrArg norm (modifiedBesselIOrderCoreTerm_succ_mul a n z)
   have hncast : ‖(((n + 1 : ℕ) : ℂ))‖ = ((n + 1 : ℕ) : ℝ) := by
@@ -77,7 +77,7 @@ theorem modifiedBesselIOrderCoreTerm_eventually_half (a : ℝ) (x : ℂ) :
   simp only [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs] at hid
   rw [hncast] at hid
   have hnext : ‖modifiedBesselIOrderCoreTerm a (n + 1) z‖ =
-      |a| ^ 2 * ‖modifiedBesselIOrderCoreTerm a n z‖ /
+      |a| ^ (2 : ℕ) * ‖modifiedBesselIOrderCoreTerm a n z‖ /
         (((n + 1 : ℕ) : ℝ) * ‖z + (n + 1 : ℕ)‖) := by
     exact (eq_div_iff hD.ne').2 hid
   rw [hnext]
@@ -209,7 +209,7 @@ theorem modifiedBesselIOrderCoreTerm_zero_sub_one (a : ℝ) (z : ℂ) :
 theorem modifiedBesselIOrderCoreTerm_succ_sub_one (a : ℝ) (n : ℕ) (z : ℂ) :
     modifiedBesselIOrderCoreTerm a (n + 1) (z - 1) =
       z * modifiedBesselIOrderCoreTerm a (n + 1) z +
-        (a : ℂ) ^ 2 * modifiedBesselIOrderCoreTerm a n (z + 1) := by
+        (a : ℂ) ^ (2 : ℕ) * modifiedBesselIOrderCoreTerm a n (z + 1) := by
   have hgamma := Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one
     (z + (n + 1 : ℕ))
   change reciprocalGammaEntire (z + (n + 1 : ℕ)) =
@@ -228,7 +228,7 @@ theorem modifiedBesselIOrderCoreTerm_succ_sub_one (a : ℝ) (n : ℕ) (z : ℂ) 
 theorem sum_modifiedBesselIOrderCoreTerm_sub_one (a : ℝ) (z : ℂ) (N : ℕ) :
     (∑ n ∈ Finset.range (N + 1), modifiedBesselIOrderCoreTerm a n (z - 1)) =
       z * (∑ n ∈ Finset.range (N + 1), modifiedBesselIOrderCoreTerm a n z) +
-        (a : ℂ) ^ 2 *
+        (a : ℂ) ^ (2 : ℕ) *
           (∑ n ∈ Finset.range N, modifiedBesselIOrderCoreTerm a n (z + 1)) := by
   induction N with
   | zero => simpa using modifiedBesselIOrderCoreTerm_zero_sub_one a z
@@ -242,7 +242,7 @@ theorem sum_modifiedBesselIOrderCoreTerm_sub_one (a : ℝ) (z : ℂ) (N : ℕ) :
 theorem modifiedBesselIOrderCore_sub_one (a : ℝ) (z : ℂ) :
     modifiedBesselIOrderCore a (z - 1) =
       z * modifiedBesselIOrderCore a z +
-        (a : ℂ) ^ 2 * modifiedBesselIOrderCore a (z + 1) := by
+        (a : ℂ) ^ (2 : ℕ) * modifiedBesselIOrderCore a (z + 1) := by
   have hsummable (w : ℂ) : Summable (fun n => modifiedBesselIOrderCoreTerm a n w) :=
     (summableLocallyUniformlyOn_modifiedBesselIOrderCoreTerm a).summable (Set.mem_univ w)
   have hsucc : Tendsto (fun N : ℕ => N + 1) atTop atTop := by
@@ -263,19 +263,19 @@ theorem modifiedBesselIOrderCore_sub_one (a : ℝ) (z : ℂ) :
       atTop (𝓝 (modifiedBesselIOrderCore a (z + 1))) :=
     (hsummable (z + 1)).hasSum.tendsto_sum_nat
   have hzlim : Tendsto (fun _ : ℕ => z) atTop (𝓝 z) := tendsto_const_nhds
-  have halim : Tendsto (fun _ : ℕ => (a : ℂ) ^ 2) atTop (𝓝 ((a : ℂ) ^ 2)) :=
+  have halim : Tendsto (fun _ : ℕ => (a : ℂ) ^ (2 : ℕ)) atTop (𝓝 ((a : ℂ) ^ (2 : ℕ))) :=
     tendsto_const_nhds
   have hcombined : Tendsto
       (fun N => z * (∑ n ∈ Finset.range (N + 1), modifiedBesselIOrderCoreTerm a n z) +
-        (a : ℂ) ^ 2 *
+        (a : ℂ) ^ (2 : ℕ) *
           (∑ n ∈ Finset.range N, modifiedBesselIOrderCoreTerm a n (z + 1)))
       atTop (𝓝 (z * modifiedBesselIOrderCore a z +
-        (a : ℂ) ^ 2 * modifiedBesselIOrderCore a (z + 1))) :=
+        (a : ℂ) ^ (2 : ℕ) * modifiedBesselIOrderCore a (z + 1))) :=
     (hzlim.mul hmid).add (halim.mul hright)
   have heq :
       (fun N => ∑ n ∈ Finset.range (N + 1), modifiedBesselIOrderCoreTerm a n (z - 1)) =
         fun N => z * (∑ n ∈ Finset.range (N + 1), modifiedBesselIOrderCoreTerm a n z) +
-          (a : ℂ) ^ 2 *
+          (a : ℂ) ^ (2 : ℕ) *
             (∑ n ∈ Finset.range N, modifiedBesselIOrderCoreTerm a n (z + 1)) := by
     funext N
     exact sum_modifiedBesselIOrderCoreTerm_sub_one a z N

@@ -48,7 +48,7 @@ theorem egbFixedChargeAGibbsSlow_collision_initial_pos (n : ℕ) :
     (egbFixedChargeAGibbsPerturbationScale_pos n (egbFixedChargeACriticalSlowProfile n))
     (pow_pos (by norm_num : (0 : ℝ) < 2) (n + 3))
   have hs : 0 < (egbFixedChargeAGibbsPerturbationScale n (egbFixedChargeACriticalSlowProfile n) /
-      (2 : ℝ) ^ (n + 3)) ^ 2 := by nlinarith
+      (2 : ℝ) ^ (n + 3)) ^ (2 : ℕ) := by nlinarith
   exact mul_pos hs (egbFixedChargeACriticalSlowProfile_energy_pos n)
 
 /-- A genuine positive Gibbs law realizes the spectral collision rate exactly. -/

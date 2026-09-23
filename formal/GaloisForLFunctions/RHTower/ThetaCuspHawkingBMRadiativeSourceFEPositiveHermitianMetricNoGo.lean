@@ -125,7 +125,7 @@ theorem hbXiPhaseSensitiveUnitRadiativeSourceFEPositiveOrbitWeight_balance
   calc
     ‖hbXiPhaseSensitiveUnitRadiativeSourceFECocycle
         (xiZeroCopyReflectEquiv q)‖ *
-          ‖hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q‖ ^ 2 =
+          ‖hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q‖ ^ (2 : ℕ) =
       (‖hbXiPhaseSensitiveUnitRadiativeSourceFECocycle
           (xiZeroCopyReflectEquiv q)‖ *
         ‖hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q‖) *

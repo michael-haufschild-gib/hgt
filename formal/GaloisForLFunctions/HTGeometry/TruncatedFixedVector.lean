@@ -33,7 +33,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- The Pythagorean identity forces the complementary part to be a contraction. -/
 theorem norm_sub_proj_le {P : H →L[ℂ] H}
-    (hpyth : ∀ x : H, ‖x‖ ^ 2 = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2) (x : H) :
+    (hpyth : ∀ x : H, ‖x‖ ^ (2 : ℕ) = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ)) (x : H) :
     ‖x - P x‖ ≤ ‖x‖ := by
   have hp := hpyth x
   nlinarith [norm_nonneg (x - P x), norm_nonneg x, sq_nonneg ‖P x‖]
@@ -43,9 +43,9 @@ projection, then the truncated vector `Ph` retains its norm under `P U ·` up to
 squared truncation error. -/
 theorem norm_sq_proj_unitary_proj_ge {U P : H →L[ℂ] H}
     (hU : ∀ x : H, ‖U x‖ = ‖x‖)
-    (hpyth : ∀ x : H, ‖x‖ ^ 2 = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2)
+    (hpyth : ∀ x : H, ‖x‖ ^ (2 : ℕ) = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ))
     {h : H} (hUh : U h = h) :
-    ‖P h‖ ^ 2 - 4 * ‖h - P h‖ ^ 2 ≤ ‖P (U (P h))‖ ^ 2 := by
+    ‖P h‖ ^ (2 : ℕ) - 4 * ‖h - P h‖ ^ (2 : ℕ) ≤ ‖P (U (P h))‖ ^ (2 : ℕ) := by
   have hUf : U (P h) = h - U (h - P h) := by
     have hms : U (h - (h - P h)) = U h - U (h - P h) := map_sub U h (h - P h)
     rw [hUh, show h - (h - P h) = P h from by abel] at hms
@@ -77,7 +77,7 @@ identity the truncation estimate consumes is automatic for a star projection. -/
 theorem norm_sq_eq_of_isIdempotent_symmetric {P : H →L[ℂ] H}
     (hPP : ∀ x : H, P (P x) = P x)
     (hsym : ∀ x y : H, inner ℂ (P x) y = inner ℂ x (P y)) (x : H) :
-    ‖x‖ ^ 2 = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2 := by
+    ‖x‖ ^ (2 : ℕ) = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ) := by
   have horth : inner ℂ (P x) (x - P x) = 0 := by
     have e1 : inner ℂ (P x) x = inner ℂ x (P x) := hsym x x
     have e2 : inner ℂ (P x) (P x) = inner ℂ x (P x) := by
@@ -86,9 +86,9 @@ theorem norm_sq_eq_of_isIdempotent_symmetric {P : H →L[ℂ] H}
   have hsplit : P x + (x - P x) = x := by abel
   have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (P x) (x - P x) horth
   rw [hsplit] at hpy
-  calc ‖x‖ ^ 2 = ‖x‖ * ‖x‖ := by ring
+  calc ‖x‖ ^ (2 : ℕ) = ‖x‖ * ‖x‖ := by ring
     _ = ‖P x‖ * ‖P x‖ + ‖x - P x‖ * ‖x - P x‖ := hpy
-    _ = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2 := by ring
+    _ = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ) := by ring
 
 /-- The truncation estimate for a star projection, with Pythagoras discharged. -/
 theorem norm_sq_proj_unitary_proj_ge' {U P : H →L[ℂ] H}
@@ -96,7 +96,7 @@ theorem norm_sq_proj_unitary_proj_ge' {U P : H →L[ℂ] H}
     (hPP : ∀ x : H, P (P x) = P x)
     (hsym : ∀ x y : H, inner ℂ (P x) y = inner ℂ x (P y))
     {h : H} (hUh : U h = h) :
-    ‖P h‖ ^ 2 - 4 * ‖h - P h‖ ^ 2 ≤ ‖P (U (P h))‖ ^ 2 :=
+    ‖P h‖ ^ (2 : ℕ) - 4 * ‖h - P h‖ ^ (2 : ℕ) ≤ ‖P (U (P h))‖ ^ (2 : ℕ) :=
   norm_sq_proj_unitary_proj_ge hU (norm_sq_eq_of_isIdempotent_symmetric hPP hsym) hUh
 
 /-! ## The concentration form consumed by a trial space -/
@@ -110,13 +110,13 @@ theorem norm_sq_proj_unitary_proj_ge_of_rel {U P : H →L[ℂ] H}
     (hPP : ∀ x : H, P (P x) = P x)
     (hsym : ∀ x y : H, inner ℂ (P x) y = inner ℂ x (P y))
     {h : H} (hUh : U h = h) {θ : ℝ} (hθ : ‖h - P h‖ ≤ θ * ‖P h‖) :
-    (1 - 4 * θ ^ 2) * ‖P h‖ ^ 2 ≤ ‖P (U (P h))‖ ^ 2 := by
+    (1 - 4 * θ ^ (2 : ℕ)) * ‖P h‖ ^ (2 : ℕ) ≤ ‖P (U (P h))‖ ^ (2 : ℕ) := by
   have hmain := norm_sq_proj_unitary_proj_ge' hU hPP hsym hUh
-  have hsq : ‖h - P h‖ ^ 2 ≤ θ ^ 2 * ‖P h‖ ^ 2 := by
-    have h1 : ‖h - P h‖ ^ 2 ≤ (θ * ‖P h‖) ^ 2 :=
+  have hsq : ‖h - P h‖ ^ (2 : ℕ) ≤ θ ^ (2 : ℕ) * ‖P h‖ ^ (2 : ℕ) := by
+    have h1 : ‖h - P h‖ ^ (2 : ℕ) ≤ (θ * ‖P h‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hθ 2
-    calc ‖h - P h‖ ^ 2 ≤ (θ * ‖P h‖) ^ 2 := h1
-      _ = θ ^ 2 * ‖P h‖ ^ 2 := by ring
+    calc ‖h - P h‖ ^ (2 : ℕ) ≤ (θ * ‖P h‖) ^ (2 : ℕ) := h1
+      _ = θ ^ (2 : ℕ) * ‖P h‖ ^ (2 : ℕ) := by ring
   nlinarith [hmain, hsq]
 
 end ContinuousLinearMap

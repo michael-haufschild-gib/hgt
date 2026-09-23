@@ -50,12 +50,12 @@ theorem conservative_power (A : E →L[𝕜] E) (x : E) :
 
 /-- Damping power is exactly observation energy. -/
 theorem damping_power (B : E →L[𝕜] F) (x : E) :
-    RCLike.re ⟪x, damping B x⟫_𝕜 = ‖B x‖ ^ 2 := by
+    RCLike.re ⟪x, damping B x⟫_𝕜 = ‖B x‖ ^ (2 : ℕ) := by
   simp [damping, ContinuousLinearMap.adjoint_inner_right]
 
 /-- Proposition 2's algebraic identity, valid on arbitrary Hilbert spaces. -/
 theorem generator_power (A : E →L[𝕜] E) (B : E →L[𝕜] F) (x : E) :
-    RCLike.re ⟪x, generator A B x⟫_𝕜 = -‖B x‖ ^ 2 := by
+    RCLike.re ⟪x, generator A B x⟫_𝕜 = -‖B x‖ ^ (2 : ℕ) := by
   simp [generator, inner_sub_right, conservative_power, damping_power]
 
 theorem generator_power_nonpos (A : E →L[𝕜] E) (B : E →L[𝕜] F) (x : E) :
@@ -84,7 +84,7 @@ def regularized (A : E →L[𝕜] E) (B : E →L[𝕜] F) : E →L[𝕜] E :=
   generator A B - ContinuousLinearMap.id 𝕜 E
 
 theorem regularized_power (A : E →L[𝕜] E) (B : E →L[𝕜] F) (x : E) :
-    RCLike.re ⟪x, regularized A B x⟫_𝕜 = -‖B x‖ ^ 2 - ‖x‖ ^ 2 := by
+    RCLike.re ⟪x, regularized A B x⟫_𝕜 = -‖B x‖ ^ (2 : ℕ) - ‖x‖ ^ (2 : ℕ) := by
   simp [regularized, inner_sub_right, generator_power]
 
 theorem regularized_eq_zero_iff (A : E →L[𝕜] E) (B : E →L[𝕜] F) (x : E) :
@@ -93,7 +93,7 @@ theorem regularized_eq_zero_iff (A : E →L[𝕜] E) (B : E →L[𝕜] F) (x : E
   · intro h
     have he := regularized_power A B x
     rw [h, inner_zero_right, map_zero] at he
-    have hx : ‖x‖ ^ 2 = 0 := by nlinarith [sq_nonneg ‖B x‖, sq_nonneg ‖x‖]
+    have hx : ‖x‖ ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg ‖B x‖, sq_nonneg ‖x‖]
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hx)
   · rintro rfl
     exact map_zero _

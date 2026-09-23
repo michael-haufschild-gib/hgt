@@ -40,7 +40,7 @@ theorem summable_signedInnovation : Summable signedInnovation := by
       simp
     · rw [hsi hij']
       simp
-  have htail : Summable (fun j : ℕ => ‖signedInnovation (j + 2)‖ ^ 2) := by
+  have htail : Summable (fun j : ℕ => ‖signedInnovation (j + 2)‖ ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le (fun j => sq_nonneg _) ?_ hasSum_cellWeight.summable
     intro j
     apply (signedInnovation_sq_le (j + 2)).trans
@@ -49,7 +49,7 @@ theorem summable_signedInnovation : Summable signedInnovation := by
     have hc : ((j : ℝ) + 1) * ((j : ℝ) + 2) ≤ (clock (j + 2) : ℝ) := by
       exact_mod_cast consecutive_le_clock j
     linarith
-  have hsq : Summable (fun i : ℕ => ‖signedInnovation i‖ ^ 2) :=
+  have hsq : Summable (fun i : ℕ => ‖signedInnovation i‖ ^ (2 : ℕ)) :=
     (summable_nat_add_iff 2).mp htail
   have hf : Summable (fun i => V i (f i)) :=
     (horth.summable_iff_norm_sq_summable f).mpr (by simpa [f] using hsq)

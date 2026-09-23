@@ -15,29 +15,29 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Radial phase used by the standard normalized disk Blaschke factor. -/
-def normalizedBlaschkePhase (a : ℂ) : ℂ :=
+def normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley (a : ℂ) : ℂ :=
   if a = 0 then 1 else -((‖a‖ : ℂ) / a)
 
 theorem norm_normalizedBlaschkePhase_eq_one (a : ℂ) :
-    ‖normalizedBlaschkePhase a‖ = 1 := by
+    ‖normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley a‖ = 1 := by
   by_cases ha : a = 0
-  · simp [normalizedBlaschkePhase, ha]
-  rw [normalizedBlaschkePhase, if_neg ha, norm_neg, norm_div,
+  · simp [normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley, ha]
+  rw [normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley, if_neg ha, norm_neg, norm_div,
     Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg a),
     div_self (norm_ne_zero_iff.mpr ha)]
 
-theorem normalizedBlaschkeFactor_eq_phase_mul (a z : ℂ) :
+theorem normalizedBlaschkeFactor_eq_phase_mul_upperHalfPlaneNormalizedBlaschkeCayley (a z : ℂ) :
     normalizedBlaschkeFactor a z =
-      normalizedBlaschkePhase a * blaschkeFactor a z := by
+      normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley a * blaschkeFactor a z := by
   by_cases ha : a = 0
   · subst a
-    simp [normalizedBlaschkeFactor, normalizedBlaschkePhase,
+    simp [normalizedBlaschkeFactor, normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley,
       blaschkeFactor]
-  simp [normalizedBlaschkeFactor, normalizedBlaschkePhase, ha]
+  simp [normalizedBlaschkeFactor, normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley, ha]
 
 /-- Combined radial and Cayley phase for a normalized upper-half-plane Blaschke factor. -/
 def normalizedCayleyBlaschkeUnit (p : ℂ) : ℂ :=
-  normalizedBlaschkePhase (upperToDiskCayley p) *
+  normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley (upperToDiskCayley p) *
     cayleyBlaschkeUnit p
 
 theorem norm_normalizedCayleyBlaschkeUnit_eq_one
@@ -53,7 +53,7 @@ theorem normalizedBlaschkeFactor_upperToDiskCayley
     normalizedBlaschkeFactor (upperToDiskCayley p) (upperToDiskCayley z) =
       normalizedCayleyBlaschkeUnit p *
         upperHalfPlaneBlaschkeFactor p z := by
-  rw [normalizedBlaschkeFactor_eq_phase_mul,
+  rw [normalizedBlaschkeFactor_eq_phase_mul_upperHalfPlaneNormalizedBlaschkeCayley,
     blaschkeFactor_upperToDiskCayley hp hz,
     normalizedCayleyBlaschkeUnit]
   ring

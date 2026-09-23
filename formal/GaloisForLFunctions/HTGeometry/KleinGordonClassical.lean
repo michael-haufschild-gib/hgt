@@ -77,8 +77,8 @@ theorem kgFree_apply_eq_synthesis (f : 𝓢(E, ℂ)) (t : ℝ) (x : E) :
 
 /-- The same for the operator side. -/
 theorem kgOperator_kgFree_apply_eq_synthesis (f : 𝓢(E, ℂ)) (t : ℝ) (x : E) :
-    (kgFree f t - (((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ (kgFree f t)) x
-      = ∫ ξ : E, (((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgCosSymbol t ξ) * kgDensity f x ξ := by
+    (kgFree f t - (((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ (kgFree f t)) x
+      = ∫ ξ : E, (((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgCosSymbol t ξ) * kgDensity f x ξ := by
   have hcoe := congrFun (coe_kgOperator_kgFree (F := ℂ) f t) x
   rw [hcoe, Real.fourierInv_eq]
   refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
@@ -110,7 +110,7 @@ theorem hasDerivAt_kgFree_apply (f : 𝓢(E, ℂ)) (t : ℝ) (x : E) :
 /-- **The free evolution solves the Klein–Gordon equation classically.** -/
 theorem hasDerivAt_deriv_kgFree_apply (f : 𝓢(E, ℂ)) (t : ℝ) (x : E) :
     HasDerivAt (fun r : ℝ => deriv (fun q : ℝ => kgFree f q x) r)
-      (-((kgFree f t - (((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ (kgFree f t)) x)) t := by
+      (-((kgFree f t - (((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ (kgFree f t)) x)) t := by
   have hderiv : (fun r : ℝ => deriv (fun q : ℝ => kgFree f q x) r)
       = fun r : ℝ =>
         ∫ ξ : E, ((-(kgFreq ξ * Real.sin (r * kgFreq ξ)) : ℝ) : ℂ) * kgDensity f x ξ := by
@@ -131,7 +131,7 @@ theorem hasDerivAt_deriv_kgFree_apply (f : 𝓢(E, ℂ)) (t : ℝ) (x : E) :
     have h1 : kgFreq ξ * |Real.sin (t * kgFreq ξ)| ≤ kgFreq ξ := by
       nlinarith [mul_le_mul_of_nonneg_left hsin (kgFreq_pos ξ).le]
     exact mul_le_mul_of_nonneg_right h1 hnn
-  have hg : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖kgDensity f x ξ‖) (volume : Measure E) :=
+  have hg : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖kgDensity f x ξ‖) (volume : Measure E) :=
     integrable_weight_kgDensity f x 2
   have hmain := hasDerivAt_deriv_kgSynthesis t (aestronglyMeasurable_kgDensity f x) hint hg
   refine hmain.congr_deriv ?_

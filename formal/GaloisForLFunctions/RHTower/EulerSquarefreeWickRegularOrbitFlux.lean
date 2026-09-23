@@ -80,11 +80,11 @@ theorem quadraticResidueFock_supercharacter_eq_virtualEulerDepthCoefficient
     quadraticResidueVirtualEulerDepthCoefficient]
   ring
 
-private theorem pow_sq_eq_one_of_sq_eq_one {a : ℂ} (ha : a ^ 2 = 1) (k : ℕ) :
-    (a ^ k) ^ 2 = 1 := by
+private theorem pow_sq_eq_one_of_sq_eq_one {a : ℂ} (ha : a ^ (2 : ℕ) = 1) (k : ℕ) :
+    (a ^ k) ^ (2 : ℕ) = 1 := by
   rw [← pow_mul, Nat.mul_comm k 2, pow_mul, ha, one_pow]
 
-private theorem exists_finTwoAnchoredSign_eq_of_sq_eq_one {a : ℂ} (ha : a ^ 2 = 1) :
+private theorem exists_finTwoAnchoredSign_eq_of_sq_eq_one {a : ℂ} (ha : a ^ (2 : ℕ) = 1) :
     ∃ x : Fin 2, finTwoAnchoredSign x = a := by
   rcases sq_eq_one_iff.mp ha with ha | ha
   · exact ⟨1, by simpa using ha.symm⟩
@@ -258,7 +258,7 @@ def quadraticResidueJointAxis (z : ℝ) : QuadraticResidueFourierCoordinates ℝ
 
 theorem quadraticResidueKreinForm_jointAxis_self (z : ℝ) :
     quadraticResidueKreinForm (quadraticResidueJointAxis z)
-      (quadraticResidueJointAxis z) = z ^ 2 := by
+      (quadraticResidueJointAxis z) = z ^ (2 : ℕ) := by
   simp [quadraticResidueKreinForm, quadraticResidueJointAxis]
   ring
 
@@ -285,13 +285,13 @@ def quadraticResidueSndAxis (z : ℝ) : QuadraticResidueFourierCoordinates ℝ w
 
 theorem quadraticResidueKreinForm_fstAxis_self (z : ℝ) :
     quadraticResidueKreinForm (quadraticResidueFstAxis z)
-      (quadraticResidueFstAxis z) = -(z ^ 2) := by
+      (quadraticResidueFstAxis z) = -(z ^ (2 : ℕ)) := by
   simp [quadraticResidueKreinForm, quadraticResidueFstAxis]
   ring
 
 theorem quadraticResidueKreinForm_sndAxis_self (z : ℝ) :
     quadraticResidueKreinForm (quadraticResidueSndAxis z)
-      (quadraticResidueSndAxis z) = -(z ^ 2) := by
+      (quadraticResidueSndAxis z) = -(z ^ (2 : ℕ)) := by
   simp [quadraticResidueKreinForm, quadraticResidueSndAxis]
   ring
 

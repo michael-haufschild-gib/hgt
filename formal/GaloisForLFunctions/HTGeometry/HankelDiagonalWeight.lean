@@ -29,7 +29,7 @@ open MvPolynomial RHTower
 universe u
 
 /-- The concave weight `k ↦ -k²` on the Hankel variables. -/
-def hankelWeight (N : ℕ) : Fin N → ℤ := fun k => -((k : ℕ) : ℤ) ^ 2
+def hankelWeight (N : ℕ) : Fin N → ℤ := fun k => -((k : ℕ) : ℤ) ^ (2 : ℕ)
 
 theorem hankelWeight_nonpos (N : ℕ) (k : Fin N) : hankelWeight N k ≤ 0 := by
   simp only [hankelWeight, neg_nonpos]
@@ -38,7 +38,7 @@ theorem hankelWeight_nonpos (N : ℕ) (k : Fin N) : hankelWeight N k ≤ 0 := by
 theorem weight_hankelPermutationExponent {N n : ℕ} (c : Fin n → ℕ)
     (hbound : ∀ j, n + c j ≤ N) (σ : Equiv.Perm (Fin n)) :
     Finsupp.weight (hankelWeight N) (hankelPermutationExponent c hbound σ)
-      = ∑ j : Fin n, -(((σ j : ℕ) : ℤ) + (c j : ℤ)) ^ 2 := by
+      = ∑ j : Fin n, -(((σ j : ℕ) : ℤ) + (c j : ℤ)) ^ (2 : ℕ) := by
   rw [hankelPermutationExponent, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Finsupp.weight_single]
@@ -91,15 +91,15 @@ theorem weight_diagonal_lt {N n : ℕ} {c : Fin n → ℕ} (hbound : ∀ j, n + 
     Finsupp.weight (hankelWeight N) (hankelDiagonalExponent c hbound)
       < Finsupp.weight (hankelWeight N) (hankelPermutationExponent c hbound σ) := by
   rw [hankelDiagonalExponent, weight_hankelPermutationExponent, weight_hankelPermutationExponent]
-  have hsq : ∑ j : Fin n, (((σ j : ℕ) : ℤ)) ^ 2 = ∑ j : Fin n, (((j : ℕ) : ℤ)) ^ 2 :=
-    Equiv.sum_comp σ (fun i : Fin n => (((i : ℕ) : ℤ)) ^ 2)
+  have hsq : ∑ j : Fin n, (((σ j : ℕ) : ℤ)) ^ (2 : ℕ) = ∑ j : Fin n, (((j : ℕ) : ℤ)) ^ (2 : ℕ) :=
+    Equiv.sum_comp σ (fun i : Fin n => (((i : ℕ) : ℤ)) ^ (2 : ℕ))
   have hexp : ∀ τ : Equiv.Perm (Fin n),
-      ∑ j : Fin n, -(((τ j : ℕ) : ℤ) + (c j : ℤ)) ^ 2
-        = -(∑ j : Fin n, (((τ j : ℕ) : ℤ)) ^ 2) - 2 * (∑ j, (c j : ℤ) * ((τ j : ℕ) : ℤ))
-          - ∑ j : Fin n, ((c j : ℤ)) ^ 2 := by
+      ∑ j : Fin n, -(((τ j : ℕ) : ℤ) + (c j : ℤ)) ^ (2 : ℕ)
+        = -(∑ j : Fin n, (((τ j : ℕ) : ℤ)) ^ (2 : ℕ)) - 2 * (∑ j, (c j : ℤ) * ((τ j : ℕ) : ℤ))
+          - ∑ j : Fin n, ((c j : ℤ)) ^ (2 : ℕ) := by
     intro τ
-    have hpt : ∀ j : Fin n, -(((τ j : ℕ) : ℤ) + (c j : ℤ)) ^ 2
-        = (-(((τ j : ℕ) : ℤ)) ^ 2) - 2 * ((c j : ℤ) * ((τ j : ℕ) : ℤ)) - ((c j : ℤ)) ^ 2 := by
+    have hpt : ∀ j : Fin n, -(((τ j : ℕ) : ℤ) + (c j : ℤ)) ^ (2 : ℕ)
+        = (-(((τ j : ℕ) : ℤ)) ^ (2 : ℕ)) - 2 * ((c j : ℤ) * ((τ j : ℕ) : ℤ)) - ((c j : ℤ)) ^ (2 : ℕ) := by
       intro j; ring
     rw [Finset.sum_congr rfl (fun j (_ : j ∈ Finset.univ) => hpt j), Finset.sum_sub_distrib,
       Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_neg_distrib]

@@ -26,12 +26,12 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- **Coercivity moves norms up.** -/
 private theorem norm_le_of_coercive {B : H →L[ℂ] H} {δ : ℝ} (hδ : 0 < δ)
-    (hcoer : ∀ x : H, δ * ‖x‖ ^ 2 ≤ (inner ℂ (B x) x).re) (x : H) :
+    (hcoer : ∀ x : H, δ * ‖x‖ ^ (2 : ℕ) ≤ (inner ℂ (B x) x).re) (x : H) :
     ‖x‖ ≤ δ⁻¹ * ‖B x‖ := by
   rcases eq_or_ne x 0 with h | h
   · simp [h]
   · have hx : 0 < ‖x‖ := norm_pos_iff.mpr h
-    have h1 : δ * ‖x‖ ^ 2 ≤ ‖B x‖ * ‖x‖ := by
+    have h1 : δ * ‖x‖ ^ (2 : ℕ) ≤ ‖B x‖ * ‖x‖ := by
       refine le_trans (hcoer x) (le_trans (Complex.re_le_norm _) ?_)
       exact norm_inner_le_norm _ _
     rw [inv_mul_eq_div, le_div_iff₀ hδ]
@@ -40,7 +40,7 @@ private theorem norm_le_of_coercive {B : H →L[ℂ] H} {δ : ℝ} (hδ : 0 < δ
 /-- **The solutions converge strongly.** -/
 theorem tendsto_solution_of_coercive_family
     {B : ℕ → H →L[ℂ] H} {δ M c : ℝ} (hδ : 0 < δ) (hc : 0 < c) (hM0 : 0 ≤ M)
-    (hcoer : ∀ j, ∀ y : H, δ * ‖y‖ ^ 2 ≤ (inner ℂ (B j y) y).re)
+    (hcoer : ∀ j, ∀ y : H, δ * ‖y‖ ^ (2 : ℕ) ≤ (inner ℂ (B j y) y).re)
     (hbound : ∀ j, ‖B j‖ ≤ M) (hcM : ‖(c : ℂ)‖ ≤ M)
     {D : Set H} (hD : Dense D)
     (hconv : ∀ g ∈ D, Tendsto (fun j => B j g) atTop (𝓝 ((c : ℂ) • g)))
@@ -86,21 +86,21 @@ theorem tendsto_solution_of_coercive_family
 same coercivity, bound and strong limit have the same limiting response. -/
 theorem tendsto_inner_solution_of_coercive_family
     {B : ℕ → H →L[ℂ] H} {δ M c : ℝ} (hδ : 0 < δ) (hc : 0 < c) (hM0 : 0 ≤ M)
-    (hcoer : ∀ j, ∀ y : H, δ * ‖y‖ ^ 2 ≤ (inner ℂ (B j y) y).re)
+    (hcoer : ∀ j, ∀ y : H, δ * ‖y‖ ^ (2 : ℕ) ≤ (inner ℂ (B j y) y).re)
     (hbound : ∀ j, ‖B j‖ ≤ M) (hcM : ‖(c : ℂ)‖ ≤ M)
     {D : Set H} (hD : Dense D)
     (hconv : ∀ g ∈ D, Tendsto (fun j => B j g) atTop (𝓝 ((c : ℂ) • g)))
     {s : H} {sseq : ℕ → H} (hs : Tendsto sseq atTop (𝓝 s))
     {x : ℕ → H} (hx : ∀ j, B j (x j) = sseq j) :
     Tendsto (fun j => (inner ℂ (sseq j) (x j) : ℂ)) atTop
-      (𝓝 (((‖s‖ ^ 2 : ℝ) : ℂ) / (c : ℂ))) := by
+      (𝓝 (((‖s‖ ^ (2 : ℕ) : ℝ) : ℂ) / (c : ℂ))) := by
   have hxlim := tendsto_solution_of_coercive_family hδ hc hM0 hcoer hbound hcM hD hconv hs hx
   have hinner : Tendsto (fun j => (inner ℂ (sseq j) (x j) : ℂ)) atTop
       (𝓝 (inner ℂ s ((c : ℂ)⁻¹ • s))) := by
     exact Tendsto.inner hs hxlim
-  have hval : (inner ℂ s ((c : ℂ)⁻¹ • s) : ℂ) = ((‖s‖ ^ 2 : ℝ) : ℂ) / (c : ℂ) := by
+  have hval : (inner ℂ s ((c : ℂ)⁻¹ • s) : ℂ) = ((‖s‖ ^ (2 : ℕ) : ℝ) : ℂ) / (c : ℂ) := by
     rw [inner_smul_right]
-    have hself : (inner ℂ s s : ℂ) = ((‖s‖ : ℂ) ^ 2) := inner_self_eq_norm_sq_to_K s
+    have hself : (inner ℂ s s : ℂ) = ((‖s‖ : ℂ) ^ (2 : ℕ)) := inner_self_eq_norm_sq_to_K s
     rw [hself]
     push_cast
     ring

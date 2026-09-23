@@ -122,13 +122,13 @@ theorem d4BMTwoSectorFoldedCubicEuler_eq
     (betaR betaC mean defect : ℂ) :
     d4BMTwoSectorFoldedCubicEuler betaR betaC mean defect =
       (betaR + betaC) / 4 *
-        (mean ^ 2 * (starRingEnd ℂ) defect +
+        (mean ^ (2 : ℕ) * (starRingEnd ℂ) defect +
           2 * (Complex.normSq mean : ℂ) * defect +
           (1 / 4 : ℂ) * (Complex.normSq defect : ℂ) * defect) +
       (betaR - betaC) / 4 *
         (2 * (Complex.normSq mean : ℂ) * mean +
           (Complex.normSq defect : ℂ) * mean +
-          (1 / 2 : ℂ) * defect ^ 2 * (starRingEnd ℂ) mean) := by
+          (1 / 2 : ℂ) * defect ^ (2 : ℕ) * (starRingEnd ℂ) mean) := by
   simp only [d4BMTwoSectorFoldedCubicEuler, d4BMSectorRadialCubicEuler]
   repeat rw [Complex.normSq_eq_conj_mul_self]
   simp

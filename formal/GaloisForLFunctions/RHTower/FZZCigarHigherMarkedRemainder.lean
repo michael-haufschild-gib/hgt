@@ -229,8 +229,8 @@ private theorem affine_rpow_within (n : ℕ) (s q t : ℝ)
   exact affine_rpow_iteratedDeriv n s q t hp
 
 private theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
-    (‖z‖^2-2*z.re) ∈ Icc (-3/4 : ℝ) (5/4) ∧
-      |‖z‖^2-2*z.re| ≤ (5/2)*‖z‖ := by
+    (‖z‖^(2 : ℕ)-2*z.re) ∈ Icc (-3/4 : ℝ) (5/4) ∧
+      |‖z‖^(2 : ℕ)-2*z.re| ≤ (5/2)*‖z‖ := by
   have hr : ‖z‖ ≤ 1/2 := by simpa only [mem_closedBall, dist_zero_right] using hz
   have hr0 := norm_nonneg z
   have hre := abs_le.mp (Complex.abs_re_le_norm z)
@@ -243,7 +243,7 @@ private theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2))
     constructor <;> nlinarith [hre.1,hre.2]
 
 private theorem plane_q_identity (z : ℂ) :
-    1+(‖z‖^2-2*z.re) = ‖z-1‖^2 := by
+    1+(‖z‖^(2 : ℕ)-2*z.re) = ‖z-1‖^(2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
     Complex.one_re, Complex.one_im, sub_zero]
@@ -264,8 +264,8 @@ private theorem scalar_fifth_integral_remainder (s q : ℝ)
     (1+q)^s - ∑ j ∈ Finset.range 6,
       (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j =
       ∫ t : ℝ in Ioc 0 1,
-        ((1-t)^5 / ((5:ℕ).factorial : ℝ)) *
-          (q^6 * (descPochhammer ℝ 6).eval s * (1+q*t)^(s-6)) := by
+        ((1-t)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) *
+          (q^(6 : ℕ) * (descPochhammer ℝ 6).eval s * (1+q*t)^(s-6)) := by
   have hf : ContDiffOn ℝ (5+1 : ℕ) (fun t : ℝ => (1+q*t)^s) (Icc 0 1) := by
     intro t ht
     exact (affine_rpow_contDiffAt s q t
@@ -288,18 +288,18 @@ private theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
         ∫ t : ℝ in Ioc 0 1, fzzScreeningFifthLiftWeight α (z,t) *
           Real.exp (β*fzzScreeningFifthLiftLog (z,t)) := by
   have hq := (plane_q_bounds z hz).1
-  have h := scalar_fifth_integral_remainder (β/2) (‖z‖^2-2*z.re) hq
+  have h := scalar_fifth_integral_remainder (β/2) (‖z‖^(2 : ℕ)-2*z.re) hq
   rw [plane_q_identity, ← Real.rpow_natCast_mul (norm_nonneg (z-1))] at h
   simp only [Nat.cast_ofNat, show (2:ℝ)*(β/2)=β by ring] at h
   change ‖z-1‖^β - fzzScreeningFifthTaylor β z = _ at h
   rw [fzzScreeningFifthSubtracted, h, ← integral_const_mul, ← integral_const_mul]
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-  have hp : 0 < 1+(‖z‖^2-2*z.re)*t :=
+  have hp : 0 < 1+(‖z‖^(2 : ℕ)-2*z.re)*t :=
     lt_of_lt_of_le (by norm_num) (affine_base_bounds _ t hq ⟨ht.1.le,ht.2⟩).1
-  have he : (1+(‖z‖^2-2*z.re)*t)^(β/2-6) =
-      (1+(‖z‖^2-2*z.re)*t)^(-6 : ℝ) *
-        Real.exp (β*(Real.log (1+(‖z‖^2-2*z.re)*t)/2)) := by
+  have he : (1+(‖z‖^(2 : ℕ)-2*z.re)*t)^(β/2-6) =
+      (1+(‖z‖^(2 : ℕ)-2*z.re)*t)^(-6 : ℝ) *
+        Real.exp (β*(Real.log (1+(‖z‖^(2 : ℕ)-2*z.re)*t)/2)) := by
     rw [show β/2-6 = β/2+(-6) by ring, Real.rpow_add hp]
     rw [Real.rpow_def_of_pos hp]
     rw [mul_comm]
@@ -315,7 +315,7 @@ private theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
 def fzzScreeningFifthTaylorMark (β : ℝ) (z : ℂ) : ℝ :=
   ∑ j ∈ Finset.range 6,
     (descPochhammer ℝ j).derivative.eval (β/2) / (2*(j.factorial : ℝ)) *
-      (‖z‖^2-2*z.re)^j
+      (‖z‖^(2 : ℕ)-2*z.re)^j
 
 /-- The regular-factor logarithmic insertion retains the differentiated subtraction. -/
 def fzzScreeningFifthRegularMark (α β : ℝ) (z : ℂ) : ℝ :=
@@ -330,7 +330,7 @@ private theorem pochhammer_half_deriv (j : ℕ) (β : ℝ) :
 private theorem fifth_taylor_deriv (β : ℝ) (z : ℂ) :
     HasDerivAt (fun s => fzzScreeningFifthTaylor s z) (fzzScreeningFifthTaylorMark β z) β := by
   have h := HasDerivAt.fun_sum (u := Finset.range 6) (fun j _ =>
-    ((pochhammer_half_deriv j β).div_const (j.factorial : ℝ)).mul_const ((‖z‖^2-2*z.re)^j))
+    ((pochhammer_half_deriv j β).div_const (j.factorial : ℝ)).mul_const ((‖z‖^(2 : ℕ)-2*z.re)^j))
   apply h.congr_deriv
   apply Finset.sum_congr rfl
   intro j hj
@@ -375,21 +375,21 @@ private theorem fifth_slice_admission (α β : ℝ) (z : ℂ)
     (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
     IntegrableOn (fun t => fzzScreeningFifthLiftWeight α (z,t)*
       Real.exp (β*fzzScreeningFifthLiftLog (z,t))) (Ioc 0 1) := by
-  have hp : ∀ t ∈ Icc (0:ℝ) 1, 0 < 1+(‖z‖^2-2*z.re)*t := by
+  have hp : ∀ t ∈ Icc (0:ℝ) 1, 0 < 1+(‖z‖^(2 : ℕ)-2*z.re)*t := by
     intro t ht
     exact lt_of_lt_of_le (by norm_num) (affine_base_bounds _ t (plane_q_bounds z hz).1 ht).1
-  have hc : ContinuousOn (fun t : ℝ => 1+(‖z‖^2-2*z.re)*t) (Icc 0 1) := by fun_prop
+  have hc : ContinuousOn (fun t : ℝ => 1+(‖z‖^(2 : ℕ)-2*z.re)*t) (Icc 0 1) := by fun_prop
   have hr := hc.rpow_const (fun t ht => Or.inl (hp t ht).ne') (p := (-6:ℝ))
   have hl := hc.log (fun t ht => (hp t ht).ne')
   have hh : ContinuousOn (fun t => fzzScreeningFifthLiftWeight α (z,t)*
       Real.exp (β*fzzScreeningFifthLiftLog (z,t))) (Icc 0 1) := by
     unfold fzzScreeningFifthLiftWeight fzzScreeningFifthLiftLog
     change ContinuousOn (fun t : ℝ =>
-      (‖z‖^α*(‖z‖^2-2*z.re)^6)*((1-t)^5 / ((5:ℕ).factorial:ℝ))*
-        (1+(‖z‖^2-2*z.re)*t)^(-6:ℝ)*
-          Real.exp (β*(Real.log (1+(‖z‖^2-2*z.re)*t)/2))) (Icc 0 1)
+      (‖z‖^α*(‖z‖^(2 : ℕ)-2*z.re)^(6 : ℕ))*((1-t)^(5 : ℕ) / ((5:ℕ).factorial:ℝ))*
+        (1+(‖z‖^(2 : ℕ)-2*z.re)*t)^(-6:ℝ)*
+          Real.exp (β*(Real.log (1+(‖z‖^(2 : ℕ)-2*z.re)*t)/2))) (Icc 0 1)
     have hc0 : ContinuousOn (fun t : ℝ =>
-        (‖z‖^α*(‖z‖^2-2*z.re)^6)*((1-t)^5 / ((5:ℕ).factorial:ℝ))) (Icc 0 1) := by
+        (‖z‖^α*(‖z‖^(2 : ℕ)-2*z.re)^(6 : ℕ))*((1-t)^(5 : ℕ) / ((5:ℕ).factorial:ℝ))) (Icc 0 1) := by
       fun_prop
     exact (hc0.mul hr).mul
       (Real.continuous_exp.comp_continuousOn ((hl.div_const 2).const_mul β))
@@ -455,8 +455,8 @@ theorem fzzScreeningFifthSubtracted_regularMark_hasDerivAt (u β : ℝ) :
 
 theorem fzzScreeningFifthTaylorMark_cubic (z : ℂ) :
     fzzScreeningFifthTaylorMark (-6) z =
-      (‖z‖^2-2*z.re)/2-7*(‖z‖^2-2*z.re)^2/4+47*(‖z‖^2-2*z.re)^3/12-
-        57*(‖z‖^2-2*z.re)^4/8+459*(‖z‖^2-2*z.re)^5/40 := by
+      (‖z‖^(2 : ℕ)-2*z.re)/2-7*(‖z‖^(2 : ℕ)-2*z.re)^(2 : ℕ)/4+47*(‖z‖^(2 : ℕ)-2*z.re)^(3 : ℕ)/12-
+        57*(‖z‖^(2 : ℕ)-2*z.re)^(4 : ℕ)/8+459*(‖z‖^(2 : ℕ)-2*z.re)^(5 : ℕ)/40 := by
   simp only [fzzScreeningFifthTaylorMark,Finset.sum_range_succ,Finset.sum_range_zero,
     descPochhammer_succ_right,descPochhammer_zero,Polynomial.derivative_mul,
     Polynomial.derivative_sub,Polynomial.derivative_X,Polynomial.derivative_natCast,
@@ -469,26 +469,26 @@ private theorem cosine_first : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ) = 0 :
   rw [integral_cos]
   simp
 
-private theorem cosine_second : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^2) = Real.pi := by
+private theorem cosine_second : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(2 : ℕ)) = Real.pi := by
   rw [integral_cos_sq]
   simp
 
-private theorem cosine_third : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^3) = 0 := by
+private theorem cosine_third : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(3 : ℕ)) = 0 := by
   rw [integral_cos_pow_three]
   simp
 
-private theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^4) = 3*Real.pi/4 := by
+private theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(4 : ℕ)) = 3*Real.pi/4 := by
   rw [show (4:ℕ)=2+2 by rfl, integral_cos_pow, cosine_second]
   simp
   ring
 
-private theorem cosine_fifth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^5) = 0 := by
+private theorem cosine_fifth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(5 : ℕ)) = 0 := by
   rw [show (5:ℕ)=3+2 by rfl, integral_cos_pow, cosine_third]
   simp
 
 private theorem quintic_cosine_integral (a b c d e f : ℝ) :
     (∫ θ : ℝ in 0..2*Real.pi,
-      a+b*Real.cos θ+c*Real.cos θ^2+d*Real.cos θ^3+e*Real.cos θ^4+f*Real.cos θ^5) =
+      a+b*Real.cos θ+c*Real.cos θ^(2 : ℕ)+d*Real.cos θ^(3 : ℕ)+e*Real.cos θ^(4 : ℕ)+f*Real.cos θ^(5 : ℕ)) =
         2*Real.pi*a+Real.pi*c+(3*Real.pi/4)*e := by
   have hi (n : ℕ) : IntervalIntegrable (fun θ : ℝ => Real.cos θ^n) volume 0 (2*Real.pi) :=
     (show Continuous _ by fun_prop).intervalIntegrable _ _
@@ -511,20 +511,20 @@ private theorem quintic_cosine_integral (a b c d e f : ℝ) :
 
 theorem fzzScreeningFifthTaylorMark_cubic_circleAverage (r : ℝ) :
     Real.circleAverage (fzzScreeningFifthTaylorMark (-6)) 0 r =
-      -3*r^2-21*r^4+(788/3)*r^6+(1779/8)*r^8+(459/40)*r^10 := by
+      -3*r^(2 : ℕ)-21*r^(4 : ℕ)+(788/3)*r^(6 : ℕ)+(1779/8)*r^(8 : ℕ)+(459/40)*r^(10 : ℕ) := by
   have h := quintic_cosine_integral
-    (r^2/2-7*r^4/4+47*r^6/12-57*r^8/8+459*r^10/40)
-    (-r+7*r^3-47*r^5/2+57*r^7-459*r^9/4)
-    (-7*r^2+47*r^4-171*r^6+459*r^8)
-    (-94*r^3/3+228*r^5-918*r^7)
-    (-114*r^4+918*r^6) (-1836*r^5/5)
+    (r^(2 : ℕ)/2-7*r^(4 : ℕ)/4+47*r^(6 : ℕ)/12-57*r^(8 : ℕ)/8+459*r^(10 : ℕ)/40)
+    (-r+7*r^(3 : ℕ)-47*r^(5 : ℕ)/2+57*r^(7 : ℕ)-459*r^(9 : ℕ)/4)
+    (-7*r^(2 : ℕ)+47*r^(4 : ℕ)-171*r^(6 : ℕ)+459*r^(8 : ℕ))
+    (-94*r^(3 : ℕ)/3+228*r^(5 : ℕ)-918*r^(7 : ℕ))
+    (-114*r^(4 : ℕ)+918*r^(6 : ℕ)) (-1836*r^(5 : ℕ)/5)
   have he : (fun θ : ℝ => fzzScreeningFifthTaylorMark (-6) (circleMap 0 r θ)) =
       (fun θ : ℝ =>
-        (r^2/2-7*r^4/4+47*r^6/12-57*r^8/8+459*r^10/40)+
-        (-r+7*r^3-47*r^5/2+57*r^7-459*r^9/4)*Real.cos θ+
-        (-7*r^2+47*r^4-171*r^6+459*r^8)*Real.cos θ^2+
-        (-94*r^3/3+228*r^5-918*r^7)*Real.cos θ^3+
-        (-114*r^4+918*r^6)*Real.cos θ^4+(-1836*r^5/5)*Real.cos θ^5) := by
+        (r^(2 : ℕ)/2-7*r^(4 : ℕ)/4+47*r^(6 : ℕ)/12-57*r^(8 : ℕ)/8+459*r^(10 : ℕ)/40)+
+        (-r+7*r^(3 : ℕ)-47*r^(5 : ℕ)/2+57*r^(7 : ℕ)-459*r^(9 : ℕ)/4)*Real.cos θ+
+        (-7*r^(2 : ℕ)+47*r^(4 : ℕ)-171*r^(6 : ℕ)+459*r^(8 : ℕ))*Real.cos θ^(2 : ℕ)+
+        (-94*r^(3 : ℕ)/3+228*r^(5 : ℕ)-918*r^(7 : ℕ))*Real.cos θ^(3 : ℕ)+
+        (-114*r^(4 : ℕ)+918*r^(6 : ℕ))*Real.cos θ^(4 : ℕ)+(-1836*r^(5 : ℕ)/5)*Real.cos θ^(5 : ℕ)) := by
     funext θ
     rw [fzzScreeningFifthTaylorMark_cubic]
     simp only [norm_circleMap_zero,sq_abs,circleMap_zero_re]

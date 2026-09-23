@@ -29,16 +29,16 @@ theorem nativeCircleUnitWinding_projectedNormSq :
 def nativeCircleScaledActionValues (lam T : PositiveReal) : Set ℝ :=
   Set.range fun history : FramedCoverHistory 2 (T : ℝ)
       (framedWindingDisplacement nativeCircleUnitWinding) =>
-    (lam : ℝ) ^ 2 * framedCoverAction 2 T history.path
+    (lam : ℝ) ^ (2 : ℕ) * framedCoverAction 2 T history.path
 
 /-- Exact same-observer unit-winding minimum `2π²λ²/T`. -/
 theorem nativeCircleScaledAction_has_exactMinimum (lam T : PositiveReal) :
     IsLeast (nativeCircleScaledActionValues lam T)
-      (2 * Real.pi ^ 2 * (lam : ℝ) ^ 2 / (T : ℝ)) := by
+      (2 * Real.pi ^ (2 : ℕ) * (lam : ℝ) ^ (2 : ℕ) / (T : ℝ)) := by
   have hbase := framedWindingAction_has_exactMinimum (by norm_num : 0 < 2) T.2
     nativeCircleUnitWinding
   have hformula : framedWindingMinimumAction (T : ℝ) nativeCircleUnitWinding =
-      2 * Real.pi ^ 2 / (T : ℝ) := by
+      2 * Real.pi ^ (2 : ℕ) / (T : ℝ) := by
     rw [framedWindingMinimumAction, nativeCircleUnitWinding_projectedNormSq]
     norm_num
     ring
@@ -46,28 +46,28 @@ theorem nativeCircleScaledAction_has_exactMinimum (lam T : PositiveReal) :
   constructor
   · rcases hbase.1 with ⟨history, hhistory⟩
     refine ⟨history, ?_⟩
-    change framedCoverAction 2 T history.path = 2 * Real.pi ^ 2 / (T : ℝ) at hhistory
-    change (lam : ℝ) ^ 2 * framedCoverAction 2 T history.path =
-      2 * Real.pi ^ 2 * (lam : ℝ) ^ 2 / (T : ℝ)
+    change framedCoverAction 2 T history.path = 2 * Real.pi ^ (2 : ℕ) / (T : ℝ) at hhistory
+    change (lam : ℝ) ^ (2 : ℕ) * framedCoverAction 2 T history.path =
+      2 * Real.pi ^ (2 : ℕ) * (lam : ℝ) ^ (2 : ℕ) / (T : ℝ)
     rw [hhistory]
     ring
   · rintro y ⟨history, rfl⟩
     have hle := hbase.2 ⟨history, rfl⟩
-    have hscale : 0 ≤ (lam : ℝ) ^ 2 := sq_nonneg _
+    have hscale : 0 ≤ (lam : ℝ) ^ (2 : ℕ) := sq_nonneg _
     have := mul_le_mul_of_nonneg_left hle hscale
     calc
-      2 * Real.pi ^ 2 * (lam : ℝ) ^ 2 / (T : ℝ) =
-          (lam : ℝ) ^ 2 * (2 * Real.pi ^ 2 / (T : ℝ)) := by ring
-      _ ≤ (lam : ℝ) ^ 2 * framedCoverAction 2 T history.path := this
+      2 * Real.pi ^ (2 : ℕ) * (lam : ℝ) ^ (2 : ℕ) / (T : ℝ) =
+          (lam : ℝ) ^ (2 : ℕ) * (2 * Real.pi ^ (2 : ℕ) / (T : ℝ)) := by ring
+      _ ≤ (lam : ℝ) ^ (2 : ℕ) * framedCoverAction 2 T history.path := this
 
 /-- Concrete scale-one and scale-two metrics have identical observer data but different minima. -/
 theorem nativeCircle_sameObserver_differentCost :
     let one : PositiveReal := ⟨1, by norm_num⟩
     let two : PositiveReal := ⟨2, by norm_num⟩
     let T : PositiveReal := ⟨1, by norm_num⟩
-    IsLeast (nativeCircleScaledActionValues one T) (2 * Real.pi ^ 2) ∧
-      IsLeast (nativeCircleScaledActionValues two T) (8 * Real.pi ^ 2) ∧
-      (2 * Real.pi ^ 2 : ℝ) ≠ 8 * Real.pi ^ 2 := by
+    IsLeast (nativeCircleScaledActionValues one T) (2 * Real.pi ^ (2 : ℕ)) ∧
+      IsLeast (nativeCircleScaledActionValues two T) (8 * Real.pi ^ (2 : ℕ)) ∧
+      (2 * Real.pi ^ (2 : ℕ) : ℝ) ≠ 8 * Real.pi ^ (2 : ℕ) := by
   dsimp
   refine ⟨?_, ?_, ?_⟩
   · convert nativeCircleScaledAction_has_exactMinimum ⟨1, by norm_num⟩ ⟨1, by norm_num⟩ using 1
@@ -83,7 +83,7 @@ theorem nativeCircle_sameObserver_differentCost :
 def nativeInertiaObserver : ℝ × ℝ → ℝ := Prod.fst
 
 /-- Family `Q_σ(x,y)=y²+σx²`. -/
-def nativeInertiaForm (σ : ℝ) (v : ℝ × ℝ) : ℝ := v.2 ^ 2 + σ * v.1 ^ 2
+def nativeInertiaForm (σ : ℝ) (v : ℝ × ℝ) : ℝ := v.2 ^ (2 : ℕ) + σ * v.1 ^ (2 : ℕ)
 
 theorem nativeInertiaForm_positiveOnKernel (σ : ℝ) (v : ℝ × ℝ)
     (hv : nativeInertiaObserver v = 0) (hne : v ≠ 0) :
@@ -102,8 +102,8 @@ theorem nativeInertiaForm_one_posDef (v : ℝ × ℝ) (hne : v ≠ 0) :
       intro hy
       exact hne (Prod.ext hx hy)
     simp [nativeInertiaForm, hx, sq_pos_of_ne_zero hy]
-  · have hxpos : 0 < v.1 ^ 2 := sq_pos_of_ne_zero hx
-    have hy_nonneg : 0 ≤ v.2 ^ 2 := sq_nonneg _
+  · have hxpos : 0 < v.1 ^ (2 : ℕ) := sq_pos_of_ne_zero hx
+    have hy_nonneg : 0 ≤ v.2 ^ (2 : ℕ) := sq_nonneg _
     norm_num [nativeInertiaForm]
     linarith
 

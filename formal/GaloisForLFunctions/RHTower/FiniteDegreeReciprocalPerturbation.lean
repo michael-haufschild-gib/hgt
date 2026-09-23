@@ -34,13 +34,13 @@ omit [DecidableEq n] in
 cardinality times the squared euclidean length. -/
 theorem abs_dotProduct_mulVec_le (P : Matrix n n ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (hbound : ∀ i j, |P i j| ≤ ε) (x : n → ℝ) :
-    |x ⬝ᵥ (P *ᵥ x)| ≤ ε * (Fintype.card n : ℝ) * ∑ i, x i ^ 2 := by
+    |x ⬝ᵥ (P *ᵥ x)| ≤ ε * (Fintype.card n : ℝ) * ∑ i, x i ^ (2 : ℕ) := by
   have hexpand : x ⬝ᵥ (P *ᵥ x) = ∑ i, ∑ j, x i * P i j * x j := by
     simp only [dotProduct, Matrix.mulVec, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     refine Finset.sum_congr rfl fun j _ => ?_
     ring
-  have hstep : |∑ i, ∑ j, x i * P i j * x j| ≤ ε * (∑ i, |x i|) ^ 2 := by
+  have hstep : |∑ i, ∑ j, x i * P i j * x j| ≤ ε * (∑ i, |x i|) ^ (2 : ℕ) := by
     calc |∑ i, ∑ j, x i * P i j * x j| ≤ ∑ i, |∑ j, x i * P i j * x j| :=
           Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ i, ∑ j, |x i * P i j * x j| :=
@@ -53,24 +53,24 @@ theorem abs_dotProduct_mulVec_le (P : Matrix n n ℝ) {ε : ℝ} (hε : 0 ≤ ε
               (mul_le_mul_of_nonneg_left (hbound i j) (abs_nonneg (x i))) (abs_nonneg (x j))
           calc |x i| * |P i j| * |x j| ≤ |x i| * ε * |x j| := h1
             _ = ε * (|x i| * |x j|) := by ring
-      _ = ε * (∑ i, |x i|) ^ 2 := by
-          have hsq : (∑ i, |x i|) ^ 2 = ∑ i, ∑ j, |x i| * |x j| := by
+      _ = ε * (∑ i, |x i|) ^ (2 : ℕ) := by
+          have hsq : (∑ i, |x i|) ^ (2 : ℕ) = ∑ i, ∑ j, |x i| * |x j| := by
             rw [sq, Finset.sum_mul_sum]
           rw [hsq, Finset.mul_sum]
           refine Finset.sum_congr rfl fun i _ => ?_
           rw [Finset.mul_sum]
-  have hcs : (∑ i, |x i|) ^ 2 ≤ (Fintype.card n : ℝ) * ∑ i, x i ^ 2 := by
+  have hcs : (∑ i, |x i|) ^ (2 : ℕ) ≤ (Fintype.card n : ℝ) * ∑ i, x i ^ (2 : ℕ) := by
     have hcheb := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset n)) (f := fun i => |x i|)
     simpa [sq_abs, Finset.card_univ] using hcheb
   rw [hexpand]
-  calc |∑ i, ∑ j, x i * P i j * x j| ≤ ε * (∑ i, |x i|) ^ 2 := hstep
-    _ ≤ ε * ((Fintype.card n : ℝ) * ∑ i, x i ^ 2) := by
+  calc |∑ i, ∑ j, x i * P i j * x j| ≤ ε * (∑ i, |x i|) ^ (2 : ℕ) := hstep
+    _ ≤ ε * ((Fintype.card n : ℝ) * ∑ i, x i ^ (2 : ℕ)) := by
         exact mul_le_mul_of_nonneg_left hcs hε
-    _ = ε * (Fintype.card n : ℝ) * ∑ i, x i ^ 2 := by ring
+    _ = ε * (Fintype.card n : ℝ) * ∑ i, x i ^ (2 : ℕ) := by ring
 
 omit [DecidableEq n] in
 /-- A vector with a nonzero coordinate has positive squared euclidean length. -/
-private theorem sum_sq_pos_of_ne_zero {x : n → ℝ} (hx : x ≠ 0) : 0 < ∑ i, x i ^ 2 := by
+private theorem sum_sq_pos_of_ne_zero {x : n → ℝ} (hx : x ≠ 0) : 0 < ∑ i, x i ^ (2 : ℕ) := by
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra h
     push Not at h
@@ -85,16 +85,16 @@ positive definite under any symmetric perturbation with entries bounded by `ε`,
 `card * ε < m`. -/
 theorem posDef_add_of_coercive (B P : Matrix n n ℝ)
     (hB : B.IsHermitian) (hP : P.IsHermitian) {m ε : ℝ} (hε : 0 ≤ ε)
-    (hm : ∀ x : n → ℝ, m * ∑ i, x i ^ 2 ≤ x ⬝ᵥ (B *ᵥ x))
+    (hm : ∀ x : n → ℝ, m * ∑ i, x i ^ (2 : ℕ) ≤ x ⬝ᵥ (B *ᵥ x))
     (hbound : ∀ i j, |P i j| ≤ ε)
     (hlt : ε * (Fintype.card n : ℝ) < m) :
     (B + P).PosDef := by
   refine Matrix.PosDef.of_dotProduct_mulVec_pos (hB.add hP) fun x hx => ?_
-  have hsum : 0 < ∑ i, x i ^ 2 := sum_sq_pos_of_ne_zero hx
+  have hsum : 0 < ∑ i, x i ^ (2 : ℕ) := sum_sq_pos_of_ne_zero hx
   have hsplit : star x ⬝ᵥ ((B + P) *ᵥ x) = x ⬝ᵥ (B *ᵥ x) + x ⬝ᵥ (P *ᵥ x) := by
     simp [Matrix.add_mulVec, dotProduct_add, star_trivial]
   have hbnd := abs_dotProduct_mulVec_le P hε hbound x
-  have habs : -(ε * (Fintype.card n : ℝ) * ∑ i, x i ^ 2) ≤ x ⬝ᵥ (P *ᵥ x) :=
+  have habs : -(ε * (Fintype.card n : ℝ) * ∑ i, x i ^ (2 : ℕ)) ≤ x ⬝ᵥ (P *ᵥ x) :=
     neg_le_of_abs_le hbnd
   have hBcoer := hm x
   rw [hsplit]
@@ -127,7 +127,7 @@ theorem abs_conjugatePairPerturbation_le {μ : ℝ} (hμ : 0 ≤ μ) {y : ℂ} (
           Complex.abs_re_le_norm _
       _ = ‖y‖ ^ ((i : ℕ) + (j : ℕ) + r + 1) := by rw [norm_pow]
   have hpow : ‖y‖ ^ ((i : ℕ) + (j : ℕ) + r + 1) ≤ ‖y‖ := by
-    calc ‖y‖ ^ ((i : ℕ) + (j : ℕ) + r + 1) ≤ ‖y‖ ^ 1 :=
+    calc ‖y‖ ^ ((i : ℕ) + (j : ℕ) + r + 1) ≤ ‖y‖ ^ (1 : ℕ) :=
           pow_le_pow_of_le_one (norm_nonneg y) hy hk
       _ = ‖y‖ := pow_one _
   have hfinal : |(y ^ ((i : ℕ) + (j : ℕ) + r + 1)).re| ≤ ‖y‖ := le_trans hre hpow
@@ -139,7 +139,7 @@ theorem abs_conjugatePairPerturbation_le {μ : ℝ} (hμ : 0 ≤ μ) {y : ℂ} (
 stays positive definite after adding a sufficiently small nonreal conjugate pair. -/
 theorem posDef_add_conjugatePairPerturbation
     (B : Matrix (Fin (d + 1)) (Fin (d + 1)) ℝ) (hB : B.IsHermitian) {m μ : ℝ} (hμ : 0 ≤ μ)
-    (hm : ∀ x : Fin (d + 1) → ℝ, m * ∑ i, x i ^ 2 ≤ x ⬝ᵥ (B *ᵥ x))
+    (hm : ∀ x : Fin (d + 1) → ℝ, m * ∑ i, x i ^ (2 : ℕ) ≤ x ⬝ᵥ (B *ᵥ x))
     {y : ℂ} (hy : ‖y‖ ≤ 1) (r : ℕ)
     (hsmall : 2 * μ * ((d : ℝ) + 1) * ‖y‖ < m) :
     (B + conjugatePairPerturbation μ y r d).PosDef := by

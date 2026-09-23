@@ -41,12 +41,12 @@ def second (n k : ℕ) (q : XiZeroCopy) (z : ℂ) : ℂ :=
   factor (frequency n k q) z *
     (d4BMXiMixedHorizonExactMonodromyModeSecondDerivative n k q z +
       2 * a * z⁻¹ * d4BMXiMixedHorizonExactMonodromyModeDerivative n k q z +
-      a * (a - 1) * z⁻¹ ^ 2 * d4BMXiMixedHorizonExactMonodromyMode n k q z)
+      a * (a - 1) * z⁻¹ ^ (2 : ℕ) * d4BMXiMixedHorizonExactMonodromyMode n k q z)
 
 /-- The physical four-dimensional BM radial differential expression, in `z`. -/
 def radialJet (omega chi z v d dd : ℂ) : ℂ :=
   z * (1 - z) * dd + (1 - 3 * z / 2) * d +
-    (omega ^ 2 / (4 * z) - (1 / 4 + chi ^ 2) / 4) * v
+    (omega ^ (2 : ℕ) / (4 * z) - (1 / 4 + chi ^ (2 : ℕ)) / 4) * v
 
 private theorem reduced_hasDerivAt (n k : ℕ) (q : XiZeroCopy)
     (z : ℂ) (hz : ‖z‖ₑ < 1) :
@@ -122,7 +122,7 @@ theorem master_contDiffAt (n k : ℕ) (q : XiZeroCopy) (z : ℂ)
 theorem radialJet_dressing (omega chi z p v d dd : ℂ) (hz : z ≠ 0) :
     let a := d4BMIngoingHorizonExponent omega
     radialJet omega chi z (p * v) (p * (d + a * z⁻¹ * v))
-      (p * (dd + 2 * a * z⁻¹ * d + a * (a - 1) * z⁻¹ ^ 2 * v)) =
+      (p * (dd + 2 * a * z⁻¹ * d + a * (a - 1) * z⁻¹ ^ (2 : ℕ) * v)) =
     p * (z * (1 - z) * dd +
       (d4BMCausalRadialC omega -
         (d4BMCausalHypergeometricA omega chi +
@@ -182,10 +182,10 @@ theorem exterior_coordinate_domain (p : D4BMBackground.ExteriorPoint) :
   have hr : 1 < p.val 1 := p.property.1
   have hi : 0 < (p.val 1)⁻¹ := inv_pos.mpr (by linarith)
   have hi1 : (p.val 1)⁻¹ < 1 := inv_lt_one_of_one_lt₀ hr
-  have hz0 : 0 < 1 - (p.val 1)⁻¹ ^ 2 := by nlinarith
-  have hz1 : 1 - (p.val 1)⁻¹ ^ 2 < 1 := by nlinarith
+  have hz0 : 0 < 1 - (p.val 1)⁻¹ ^ (2 : ℕ) := by nlinarith
+  have hz1 : 1 - (p.val 1)⁻¹ ^ (2 : ℕ) < 1 := by nlinarith
   have he : D4BMMetricReconstruction.bmCoordinate p.val =
-      ((1 - (p.val 1)⁻¹ ^ 2 : ℝ) : ℂ) := by
+      ((1 - (p.val 1)⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp [D4BMMetricReconstruction.bmCoordinate]
   rw [he]
   exact ⟨enorm_ofReal_lt_one hz0 hz1,
@@ -264,14 +264,14 @@ theorem master_outgoing_time_phase (n k : ℕ) (q : XiZeroCopy) (tau z : ℝ)
 
 /-- The physical ODE's exact second-derivative reduction. -/
 def onShellSecond (omega chi z v d : ℂ) : ℂ :=
-  -((1 - 3 * z / 2) * d + (omega ^ 2 / (4 * z) - (1 / 4 + chi ^ 2) / 4) * v) /
+  -((1 - 3 * z / 2) * d + (omega ^ (2 : ℕ) / (4 * z) - (1 / 4 + chi ^ (2 : ℕ)) / 4) * v) /
     (z * (1 - z))
 
 /-- The differentiated physical ODE's exact third-derivative reduction. -/
 def onShellThird (omega chi z v d : ℂ) : ℂ :=
   -((2 - 7 * z / 2) * onShellSecond omega chi z v d +
-      (-3 / 2 + omega ^ 2 / (4 * z) - (1 / 4 + chi ^ 2) / 4) * d -
-      omega ^ 2 / (4 * z ^ 2) * v) / (z * (1 - z))
+      (-3 / 2 + omega ^ (2 : ℕ) / (4 * z) - (1 / 4 + chi ^ (2 : ℕ)) / 4) * d -
+      omega ^ (2 : ℕ) / (4 * z ^ (2 : ℕ)) * v) / (z * (1 - z))
 
 private theorem domain_ne_one {z : ℂ} (hz : ‖z‖ₑ < 1) : z ≠ 1 := by
   intro he
@@ -298,8 +298,8 @@ theorem master_differentiated_equation (n k : ℕ) (q : XiZeroCopy) (z : ℂ)
     let chi := d4BMXiMixedHorizonAngularMomentum q
     z * (1 - z) * deriv (deriv (deriv (master n k q))) z +
       (2 - 7 * z / 2) * deriv (deriv (master n k q)) z +
-      (-3 / 2 + omega ^ 2 / (4 * z) - (1 / 4 + chi ^ 2) / 4) *
-        deriv (master n k q) z - omega ^ 2 / (4 * z ^ 2) * master n k q z = 0 := by
+      (-3 / 2 + omega ^ (2 : ℕ) / (4 * z) - (1 / 4 + chi ^ (2 : ℕ)) / 4) *
+        deriv (master n k q) z - omega ^ (2 : ℕ) / (4 * z ^ (2 : ℕ)) * master n k q z = 0 := by
   let omega := frequency n k q
   let chi := d4BMXiMixedHorizonAngularMomentum q
   let F := master n k q
@@ -314,13 +314,13 @@ theorem master_differentiated_equation (n k : ℕ) (q : XiZeroCopy) (z : ℂ)
   have hi := (hasDerivAt_id z).inv (Complex.slitPlane_ne_zero hcut)
   have hA := (hasDerivAt_id z).mul ((hasDerivAt_const z (1 : ℂ)).sub (hasDerivAt_id z))
   have hB := (hasDerivAt_const z (1 : ℂ)).sub ((hasDerivAt_id z).const_mul (3 / 2))
-  have hC := (hi.const_mul (omega ^ 2 / 4)).sub_const ((1 / 4 + chi ^ 2) / 4)
+  have hC := (hi.const_mul (omega ^ (2 : ℕ) / 4)).sub_const ((1 / 4 + chi ^ (2 : ℕ)) / 4)
   have hd : HasDerivAt
       (fun w => radialJet omega chi w (F w) (deriv F w) (deriv (deriv F) w))
       (z * (1 - z) * deriv (deriv (deriv F)) z +
         (2 - 7 * z / 2) * deriv (deriv F) z +
-        (-3 / 2 + omega ^ 2 / (4 * z) - (1 / 4 + chi ^ 2) / 4) * deriv F z -
-        omega ^ 2 / (4 * z ^ 2) * F z) z := by
+        (-3 / 2 + omega ^ (2 : ℕ) / (4 * z) - (1 / 4 + chi ^ (2 : ℕ)) / 4) * deriv F z -
+        omega ^ (2 : ℕ) / (4 * z ^ (2 : ℕ)) * F z) z := by
     convert! ((hA.mul h2).add (hB.mul h1)).add (hC.mul h0) using 1
     · funext w
       dsimp [radialJet]

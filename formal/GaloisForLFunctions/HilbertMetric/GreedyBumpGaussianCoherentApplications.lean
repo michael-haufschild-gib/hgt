@@ -63,7 +63,7 @@ theorem GreedyBumpGaussianCoherentData.localizationRadius {d n : ℕ}
     Matrix.trace
         (GaloisForLFunctions.HTGeometry.greedyBumpLocalizationCovariance Q data.metric *
           data.metric.matrix) =
-      (n : ℝ) / (Q : ℝ) ^ 2 :=
+      (n : ℝ) / (Q : ℝ) ^ (2 : ℕ) :=
   GaloisForLFunctions.HTGeometry.greedyBumpLocalizationCovariance_trace_mul Q data.metric
 
 end

@@ -48,7 +48,7 @@ noncomputable def resnetLayer (dφ : ℝ → ℝ) (A : E →L[ℝ] EuclideanSpac
 /-- Coordinatewise cocoercivity of a monotone `Δ`-Lipschitz scalar map. -/
 theorem sq_le_mul_of_monotone_lipschitz {dφ : ℝ → ℝ} (hmono : Monotone dφ) {Δ : ℝ}
     (hlip : ∀ a b : ℝ, |dφ a - dφ b| ≤ Δ * |a - b|) (a b : ℝ) :
-    (dφ a - dφ b) ^ 2 ≤ Δ * ((dφ a - dφ b) * (a - b)) := by
+    (dφ a - dφ b) ^ (2 : ℕ) ≤ Δ * ((dφ a - dφ b) * (a - b)) := by
   rcases le_total b a with h | h
   · have h1 : dφ b ≤ dφ a := hmono h
     have h2 := hlip a b
@@ -66,7 +66,7 @@ for `0 ≤ τ ≤ 2/(Δ‖Ξ‖²)`. -/
 theorem resnetLayer_nonexpansive {dφ : ℝ → ℝ} (hmono : Monotone dφ) {Δ : ℝ} (hΔ : 0 < Δ)
     (hlip : ∀ a b : ℝ, |dφ a - dφ b| ≤ Δ * |a - b|)
     (A : E →L[ℝ] EuclideanSpace ℝ (Fin k)) (v : EuclideanSpace ℝ (Fin k))
-    {τ : ℝ} (hτ₀ : 0 ≤ τ) (hτ : τ * ‖A‖ ^ 2 * Δ ≤ 2) (x y : E) :
+    {τ : ℝ} (hτ₀ : 0 ≤ τ) (hτ : τ * ‖A‖ ^ (2 : ℕ) * Δ ≤ 2) (x y : E) :
     ‖resnetLayer dφ A v τ x - resnetLayer dφ A v τ y‖ ≤ ‖x - y‖ := by
   set P : EuclideanSpace ℝ (Fin k) := actMap dφ (A x + v) - actMap dφ (A y + v) with hP
   set D : E := (ContinuousLinearMap.adjoint A) P with hD
@@ -76,11 +76,11 @@ theorem resnetLayer_nonexpansive {dφ : ℝ → ℝ} (hmono : Monotone dφ) {Δ 
   have hAdiff : A x + v - (A y + v) = A (x - y) := by rw [map_sub]; abel
   -- cocoercivity of the coordinatewise activation
   have hcoord : ∀ i : Fin k,
-      P i ^ 2 ≤ Δ * (P i * ((A x + v) i - (A y + v) i)) := by
+      P i ^ (2 : ℕ) ≤ Δ * (P i * ((A x + v) i - (A y + v) i)) := by
     intro i
     have := sq_le_mul_of_monotone_lipschitz hmono hlip ((A x + v) i) ((A y + v) i)
     simpa [hP] using this
-  have hsum : ‖P‖ ^ 2 ≤ Δ * ⟪P, A x + v - (A y + v)⟫ := by
+  have hsum : ‖P‖ ^ (2 : ℕ) ≤ Δ * ⟪P, A x + v - (A y + v)⟫ := by
     rw [euclidean_norm_sq, euclidean_inner_eq, Finset.mul_sum]
     refine Finset.sum_le_sum fun i _ => ?_
     have hc := hcoord i
@@ -88,29 +88,29 @@ theorem resnetLayer_nonexpansive {dφ : ℝ → ℝ} (hmono : Monotone dφ) {Δ 
     rw [this]
     linarith [hc]
   have hinner : ⟪D, x - y⟫ = ⟪P, A (x - y)⟫ := ContinuousLinearMap.adjoint_inner_left A (x - y) P
-  have hcoerc : ‖P‖ ^ 2 ≤ Δ * ⟪D, x - y⟫ := by
+  have hcoerc : ‖P‖ ^ (2 : ℕ) ≤ Δ * ⟪D, x - y⟫ := by
     rw [hinner, ← hAdiff]; exact hsum
   have hnormD : ‖D‖ ≤ ‖A‖ * ‖P‖ := by
     rw [hD]
     refine le_trans (ContinuousLinearMap.le_opNorm _ _) ?_
     have : ‖ContinuousLinearMap.adjoint A‖ = ‖A‖ := ContinuousLinearMap.adjoint.norm_map A
     rw [this]
-  have hexp : ‖(x - y) - τ • D‖ ^ 2
-      = ‖x - y‖ ^ 2 - 2 * τ * ⟪x - y, D⟫ + τ ^ 2 * ‖D‖ ^ 2 := by
+  have hexp : ‖(x - y) - τ • D‖ ^ (2 : ℕ)
+      = ‖x - y‖ ^ (2 : ℕ) - 2 * τ * ⟪x - y, D⟫ + τ ^ (2 : ℕ) * ‖D‖ ^ (2 : ℕ) := by
     rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs]
     ring
   have hsymm : ⟪x - y, D⟫ = ⟪D, x - y⟫ := real_inner_comm _ _
-  have hPnn : (0:ℝ) ≤ ‖P‖ ^ 2 := sq_nonneg _
+  have hPnn : (0:ℝ) ≤ ‖P‖ ^ (2 : ℕ) := sq_nonneg _
   have hAnn : (0:ℝ) ≤ ‖A‖ := norm_nonneg _
-  have hDsq : ‖D‖ ^ 2 ≤ ‖A‖ ^ 2 * ‖P‖ ^ 2 := by
+  have hDsq : ‖D‖ ^ (2 : ℕ) ≤ ‖A‖ ^ (2 : ℕ) * ‖P‖ ^ (2 : ℕ) := by
     nlinarith [hnormD, norm_nonneg D, mul_nonneg hAnn (norm_nonneg P)]
-  have hsq : ‖resnetLayer dφ A v τ x - resnetLayer dφ A v τ y‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+  have hsq : ‖resnetLayer dφ A v τ x - resnetLayer dφ A v τ y‖ ^ (2 : ℕ) ≤ ‖x - y‖ ^ (2 : ℕ) := by
     rw [hdecomp, hexp, hsymm]
-    have hkey : τ ^ 2 * ‖D‖ ^ 2 ≤ 2 * τ * ⟪D, x - y⟫ := by
-      have e1 : τ ^ 2 * ‖D‖ ^ 2 ≤ τ ^ 2 * (‖A‖ ^ 2 * ‖P‖ ^ 2) := by nlinarith [hDsq, sq_nonneg τ]
-      have e2 : Δ * (τ ^ 2 * (‖A‖ ^ 2 * ‖P‖ ^ 2)) ≤ Δ * (2 * τ * ⟪D, x - y⟫) := by
-        have h1 : τ * (τ * ‖A‖ ^ 2 * Δ) * ‖P‖ ^ 2 ≤ τ * 2 * ‖P‖ ^ 2 := by
-          have hnn : 0 ≤ τ * ‖P‖ ^ 2 := mul_nonneg hτ₀ hPnn
+    have hkey : τ ^ (2 : ℕ) * ‖D‖ ^ (2 : ℕ) ≤ 2 * τ * ⟪D, x - y⟫ := by
+      have e1 : τ ^ (2 : ℕ) * ‖D‖ ^ (2 : ℕ) ≤ τ ^ (2 : ℕ) * (‖A‖ ^ (2 : ℕ) * ‖P‖ ^ (2 : ℕ)) := by nlinarith [hDsq, sq_nonneg τ]
+      have e2 : Δ * (τ ^ (2 : ℕ) * (‖A‖ ^ (2 : ℕ) * ‖P‖ ^ (2 : ℕ))) ≤ Δ * (2 * τ * ⟪D, x - y⟫) := by
+        have h1 : τ * (τ * ‖A‖ ^ (2 : ℕ) * Δ) * ‖P‖ ^ (2 : ℕ) ≤ τ * 2 * ‖P‖ ^ (2 : ℕ) := by
+          have hnn : 0 ≤ τ * ‖P‖ ^ (2 : ℕ) := mul_nonneg hτ₀ hPnn
           nlinarith [hτ, hnn]
         nlinarith [hcoerc, hτ₀, hPnn, h1]
       nlinarith [e1, e2, hΔ]

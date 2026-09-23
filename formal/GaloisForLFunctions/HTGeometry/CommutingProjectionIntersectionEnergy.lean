@@ -70,8 +70,8 @@ theorem norm_sub_starProjection_inf_sq_le {M N : Submodule 𝕜 E}
     [M.HasOrthogonalProjection] [N.HasOrthogonalProjection] [(M ⊓ N).HasOrthogonalProjection]
     (hcomm : ∀ y : E, M.starProjection (N.starProjection y) =
       N.starProjection (M.starProjection y)) (x : E) :
-    ‖x - (M ⊓ N).starProjection x‖ ^ 2
-      ≤ ‖x - M.starProjection x‖ ^ 2 + ‖x - N.starProjection x‖ ^ 2 := by
+    ‖x - (M ⊓ N).starProjection x‖ ^ (2 : ℕ)
+      ≤ ‖x - M.starProjection x‖ ^ (2 : ℕ) + ‖x - N.starProjection x‖ ^ (2 : ℕ) := by
   have hproj := starProjection_inf_of_commute (M := M) (N := N) hcomm x
   have hsplit : x - M.starProjection (N.starProjection x)
       = (x - M.starProjection x) + M.starProjection (x - N.starProjection x) := by
@@ -82,13 +82,13 @@ theorem norm_sub_starProjection_inf_sq_le {M N : Submodule 𝕜 E}
     (𝕜 := 𝕜) (x - M.starProjection x) (M.starProjection (x - N.starProjection x)) hperp
   have hle : ‖M.starProjection (x - N.starProjection x)‖ ≤ ‖x - N.starProjection x‖ :=
     norm_starProjection_apply_le M _
-  have hsq : ‖M.starProjection (x - N.starProjection x)‖ ^ 2 ≤ ‖x - N.starProjection x‖ ^ 2 :=
+  have hsq : ‖M.starProjection (x - N.starProjection x)‖ ^ (2 : ℕ) ≤ ‖x - N.starProjection x‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hle 2
   rw [hproj, hsplit]
-  calc ‖(x - M.starProjection x) + M.starProjection (x - N.starProjection x)‖ ^ 2
-      = ‖x - M.starProjection x‖ ^ 2 + ‖M.starProjection (x - N.starProjection x)‖ ^ 2 := by
+  calc ‖(x - M.starProjection x) + M.starProjection (x - N.starProjection x)‖ ^ (2 : ℕ)
+      = ‖x - M.starProjection x‖ ^ (2 : ℕ) + ‖M.starProjection (x - N.starProjection x)‖ ^ (2 : ℕ) := by
         simp only [pow_two]; exact hpyth
-    _ ≤ ‖x - M.starProjection x‖ ^ 2 + ‖x - N.starProjection x‖ ^ 2 := by linarith
+    _ ≤ ‖x - M.starProjection x‖ ^ (2 : ℕ) + ‖x - N.starProjection x‖ ^ (2 : ℕ) := by linarith
 
 section Family
 
@@ -132,7 +132,7 @@ theorem norm_sub_starProjection_finsetInf_sq_le (M : ι → Submodule 𝕜 E)
     (hcomm : ∀ i j, ∀ y : E, (M i).starProjection ((M j).starProjection y)
       = (M j).starProjection ((M i).starProjection y))
     (F : Finset ι) (x : E) :
-    ‖x - (F.inf M).starProjection x‖ ^ 2 ≤ ∑ i ∈ F, ‖x - (M i).starProjection x‖ ^ 2 := by
+    ‖x - (F.inf M).starProjection x‖ ^ (2 : ℕ) ≤ ∑ i ∈ F, ‖x - (M i).starProjection x‖ ^ (2 : ℕ) := by
   induction F using Finset.induction with
   | empty =>
       have h : (∅ : Finset ι).inf M = ⊤ := Finset.inf_empty
@@ -204,8 +204,8 @@ theorem norm_sub_starProjection_iInf_sq_le {ι : Type*} [DecidableEq ι] (M : ι
     (hcomm : ∀ i j, ∀ y : E, (M i).starProjection ((M j).starProjection y)
       = (M j).starProjection ((M i).starProjection y))
     {C : ℝ} (x : E)
-    (hC : ∀ F : Finset ι, ∑ i ∈ F, ‖x - (M i).starProjection x‖ ^ 2 ≤ C) :
-    ‖x - (⨅ i, M i).starProjection x‖ ^ 2 ≤ C := by
+    (hC : ∀ F : Finset ι, ∑ i ∈ F, ‖x - (M i).starProjection x‖ ^ (2 : ℕ) ≤ C) :
+    ‖x - (⨅ i, M i).starProjection x‖ ^ (2 : ℕ) ≤ C := by
   have hinf : (⨅ F : Finset ι, F.inf M) = ⨅ i, M i := by
     refine le_antisymm (le_iInf fun i => ?_) (le_iInf fun F => Finset.le_inf fun i _ => iInf_le _ i)
     refine le_trans (iInf_le _ ({i} : Finset ι)) ?_
@@ -215,8 +215,8 @@ theorem norm_sub_starProjection_iInf_sq_le {ι : Type*} [DecidableEq ι] (M : ι
   have hanti : Antitone (fun F : Finset ι => F.inf M) := fun F G h => Finset.inf_mono h
   have htend := starProjection_tendsto_iInf_of_antitone (fun F : Finset ι => F.inf M) hanti x
   rw [starProjection_congr hinf x] at htend
-  have hnorm : Tendsto (fun F : Finset ι => ‖x - (F.inf M).starProjection x‖ ^ 2) atTop
-      (𝓝 (‖x - (⨅ i, M i).starProjection x‖ ^ 2)) :=
+  have hnorm : Tendsto (fun F : Finset ι => ‖x - (F.inf M).starProjection x‖ ^ (2 : ℕ)) atTop
+      (𝓝 (‖x - (⨅ i, M i).starProjection x‖ ^ (2 : ℕ))) :=
     ((tendsto_const_nhds.sub htend).norm).pow 2
   refine le_of_tendsto hnorm (Filter.Eventually.of_forall fun F => ?_)
   exact le_trans (norm_sub_starProjection_finsetInf_sq_le M hcomm F x) (hC F)

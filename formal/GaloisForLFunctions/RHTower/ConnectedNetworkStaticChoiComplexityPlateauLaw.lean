@@ -105,7 +105,7 @@ theorem connectedNetwork_completedTime_paddedCircuitTargets_generic
             (Fintype.card gate : ℝ) ^ (s + 1) *
               (((d + 1 : ℕ) : ℝ) *
                 Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-                Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^
+                Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^
                   ((d + 1 : ℕ) - 1)) := by
   constructor
   · exact allSubsystemGenericSet_dense_residual_fullMeasure A G h2

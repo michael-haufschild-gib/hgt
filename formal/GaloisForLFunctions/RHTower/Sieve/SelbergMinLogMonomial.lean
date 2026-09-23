@@ -119,7 +119,7 @@ theorem selbergOriginalOmittedCrossBoundary_eq_minMonomials
 theorem selbergOriginalOmittedDerivativeBoundary_eq_minMonomials
     (ell : ℝ) (M : ℕ) (hM : 0 < M) :
     selbergOriginalOmittedDerivativeBoundary ell M =
-      ell ^ 2 * selbergOriginalMinLogMonomial 1 1 1 M +
+      ell ^ (2 : ℕ) * selbergOriginalMinLogMonomial 1 1 1 M +
         ell * selbergOriginalMinLogMonomial 2 1 1 M +
         ell * selbergOriginalMinLogMonomial 1 2 1 M +
         selbergOriginalMinLogMonomial 2 2 1 M -

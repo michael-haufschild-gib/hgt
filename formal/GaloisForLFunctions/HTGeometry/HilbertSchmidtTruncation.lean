@@ -25,7 +25,7 @@ def truncKernel (K : ι × ι → ℂ) (s : Finset ι) : ι × ι → ℂ :=
   fun p => if p.1 ∈ s ∧ p.2 ∈ s then K p else 0
 
 theorem norm_truncKernel_le (K : ι × ι → ℂ) (s : Finset ι) (p : ι × ι) :
-    ‖truncKernel K s p‖ ^ 2 ≤ ‖K p‖ ^ 2 := by
+    ‖truncKernel K s p‖ ^ (2 : ℕ) ≤ ‖K p‖ ^ (2 : ℕ) := by
   unfold truncKernel
   split
   · exact le_rfl
@@ -45,7 +45,7 @@ theorem hsNorm_truncKernel_le {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset �
 
 /-- The truncation error is summable: its entries are dominated by those of `K`. -/
 theorem isHS_sub_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι) :
-    Summable fun p : ι × ι => if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ 2 := by
+    Summable fun p : ι × ι => if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ (2 : ℕ) := by
   refine Summable.of_nonneg_of_le (fun p => by positivity) (fun p => ?_) hK
   split
   · positivity
@@ -55,7 +55,7 @@ theorem isHS_sub_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι
 block. -/
 theorem hsNormSq_sub_truncKernel (K : ι × ι → ℂ) (s : Finset ι) :
     hsNormSq (K - truncKernel K s)
-      = ∑' p : ι × ι, if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ 2 := by
+      = ∑' p : ι × ι, if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ (2 : ℕ) := by
   rw [hsNormSq]
   refine tsum_congr fun p => ?_
   simp only [truncKernel, Pi.sub_apply, Finset.mem_product]
@@ -63,9 +63,9 @@ theorem hsNormSq_sub_truncKernel (K : ι × ι → ℂ) (s : Finset ι) :
 
 /-- The energy of the truncation is the partial sum over the block. -/
 theorem hsNormSq_truncKernel_eq_sum (K : ι × ι → ℂ) (s : Finset ι) :
-    hsNormSq (truncKernel K s) = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ 2 := by
+    hsNormSq (truncKernel K s) = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ (2 : ℕ) := by
   rw [hsNormSq]
-  refine (tsum_eq_sum (f := fun p : ι × ι => ‖truncKernel K s p‖ ^ 2) (s := s ×ˢ s) ?_).trans ?_
+  refine (tsum_eq_sum (f := fun p : ι × ι => ‖truncKernel K s p‖ ^ (2 : ℕ)) (s := s ×ˢ s) ?_).trans ?_
   · intro p hp
     rw [Finset.mem_product] at hp
     simp [truncKernel, hp]
@@ -75,20 +75,20 @@ theorem hsNormSq_truncKernel_eq_sum (K : ι × ι → ℂ) (s : Finset ι) :
 
 /-- The two energies add up to the total. -/
 theorem hsNormSq_split {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι) :
-    hsNormSq (K - truncKernel K s) = hsNormSq K - ∑ p ∈ s ×ˢ s, ‖K p‖ ^ 2 := by
-  have hin : Summable fun p : ι × ι => if p ∈ s ×ˢ s then ‖K p‖ ^ 2 else (0 : ℝ) := by
+    hsNormSq (K - truncKernel K s) = hsNormSq K - ∑ p ∈ s ×ˢ s, ‖K p‖ ^ (2 : ℕ) := by
+  have hin : Summable fun p : ι × ι => if p ∈ s ×ˢ s then ‖K p‖ ^ (2 : ℕ) else (0 : ℝ) := by
     refine Summable.of_nonneg_of_le (fun p => by positivity) (fun p => ?_) hK
     split
     · exact le_rfl
     · positivity
   have hsum : hsNormSq K
-      = (∑' p : ι × ι, if p ∈ s ×ˢ s then ‖K p‖ ^ 2 else (0 : ℝ))
-        + ∑' p : ι × ι, if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ 2 := by
+      = (∑' p : ι × ι, if p ∈ s ×ˢ s then ‖K p‖ ^ (2 : ℕ) else (0 : ℝ))
+        + ∑' p : ι × ι, if p ∈ s ×ˢ s then (0 : ℝ) else ‖K p‖ ^ (2 : ℕ) := by
     rw [← hin.tsum_add (isHS_sub_truncKernel hK s), hsNormSq]
     refine tsum_congr fun p => ?_
     by_cases h : p ∈ s ×ˢ s <;> simp [h]
-  have hpart : (∑' p : ι × ι, if p ∈ s ×ˢ s then ‖K p‖ ^ 2 else (0 : ℝ))
-      = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ 2 := by
+  have hpart : (∑' p : ι × ι, if p ∈ s ×ˢ s then ‖K p‖ ^ (2 : ℕ) else (0 : ℝ))
+      = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ (2 : ℕ) := by
     refine (tsum_eq_sum (s := s ×ˢ s) ?_).trans (Finset.sum_congr rfl fun p hp => by simp [hp])
     intro p hp; simp [hp]
   rw [hsNormSq_sub_truncKernel K s, hsum, hpart]
@@ -106,9 +106,9 @@ theorem tendsto_finset_product_atTop :
 /-- **Truncations converge in Hilbert–Schmidt norm.** -/
 theorem tendsto_hsNorm_sub_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) :
     Tendsto (fun s : Finset ι => hsNorm (K - truncKernel K s)) atTop (nhds 0) := by
-  have hpart : Tendsto (fun s : Finset ι => ∑ p ∈ s ×ˢ s, ‖K p‖ ^ 2) atTop (nhds (hsNormSq K)) :=
-    (hK.hasSum : Tendsto (fun t : Finset (ι × ι) => ∑ p ∈ t, ‖K p‖ ^ 2) atTop
-      (nhds (∑' p : ι × ι, ‖K p‖ ^ 2))).comp (tendsto_finset_product_atTop (ι := ι))
+  have hpart : Tendsto (fun s : Finset ι => ∑ p ∈ s ×ˢ s, ‖K p‖ ^ (2 : ℕ)) atTop (nhds (hsNormSq K)) :=
+    (hK.hasSum : Tendsto (fun t : Finset (ι × ι) => ∑ p ∈ t, ‖K p‖ ^ (2 : ℕ)) atTop
+      (nhds (∑' p : ι × ι, ‖K p‖ ^ (2 : ℕ)))).comp (tendsto_finset_product_atTop (ι := ι))
   have hsq : Tendsto (fun s : Finset ι => hsNormSq (K - truncKernel K s)) atTop (nhds 0) := by
     have := tendsto_const_nhds (x := hsNormSq K) (f := (atTop : Filter (Finset ι))) |>.sub hpart
     rw [sub_self] at this

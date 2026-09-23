@@ -30,9 +30,9 @@ def gaussianAffineHalfActivationTube
     {n : ℕ} {F : Type*}
     [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
     (A : E →ₗ[ℝ] F) (y : F) : Set E :=
-  {x | ‖A x - y‖ ^ 2 ≤
+  {x | ‖A x - y‖ ^ (2 : ℕ) ≤
     (gaussianIntervalActivationMass / 2) *
-      ∑ i : Fin n, A.singularValues i ^ 2}
+      ∑ i : Fin n, A.singularValues i ^ (2 : ℕ)}
 
 theorem measurableSet_gaussianAffineHalfActivationTube
     {n : ℕ} {F : Type*}
@@ -105,9 +105,9 @@ theorem stdGaussian_measure_weightedAffineHalfActivationTubeMass_ge_le
     (stdGaussian E).real {x |
         κ ≤ gaussianWeightedAffineHalfActivationTubeMass (n := n) A y w x} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
-          (((∑ i : Fin n, (A c).singularValues i ^ 2) ^ 2) /
-            ∑ i : Fin n, (A c).singularValues i ^ 4))) / κ := by
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
+          (((∑ i : Fin n, (A c).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
+            ∑ i : Fin n, (A c).singularValues i ^ (4 : ℕ)))) / κ := by
   have hmeas := measurable_gaussianWeightedAffineHalfActivationTubeMass
     (n := n) A y w
   have hnonneg : 0 ≤ᵐ[stdGaussian E]
@@ -161,7 +161,7 @@ theorem finiteMatrixHilbertSchmidtEnergy_reindexedCommutator
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ) *
             Matrix.reindexAlgEquiv ℂ ℂ (Fintype.equivFin ι) H) =
       ‖matVec (H * (U : Matrix ι ι ℂ) -
-        (U : Matrix ι ι ℂ) * H)‖ ^ 2 := by
+        (U : Matrix ι ι ℂ) * H)‖ ^ (2 : ℕ) := by
   have hmatrix :
       Matrix.reindexAlgEquiv ℂ ℂ (Fintype.equivFin ι) H *
             (finiteGaussianHermitianPencilReindexedEndpoint U :
@@ -235,7 +235,7 @@ theorem FiniteGaussianHermitianPencil.affineReindexedCommutatorEnergy
           (finiteGaussianHermitianPencilReindexedEndpoint U :
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ) *
             P.affineReindexedHamiltonian H₀ x) =
-      ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ 2 := by
+      ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ) := by
   rw [FiniteGaussianHermitianPencil.affineReindexedHamiltonian,
     finiteMatrixHilbertSchmidtEnergy_reindexedCommutator]
   have hmatrix :
@@ -252,13 +252,13 @@ theorem FiniteGaussianHermitianPencil.affineReindexedCommutatorEnergy
       ((P.hamiltonian x * (U : Matrix ι ι ℂ) -
           (U : Matrix ι ι ℂ) * P.hamiltonian x) +
         (H₀ * (U : Matrix ι ι ℂ) -
-          (U : Matrix ι ι ℂ) * H₀))‖ ^ 2 =
+          (U : Matrix ι ι ℂ) * H₀))‖ ^ (2 : ℕ) =
       ‖matVec
           (P.hamiltonian x * (U : Matrix ι ι ℂ) -
             (U : Matrix ι ι ℂ) * P.hamiltonian x) -
         -matVec
           (H₀ * (U : Matrix ι ι ℂ) -
-            (U : Matrix ι ι ℂ) * H₀)‖ ^ 2
+            (U : Matrix ι ι ℂ) * H₀)‖ ^ (2 : ℕ)
   rw [sub_neg_eq_add]
   rfl
 
@@ -268,7 +268,7 @@ theorem FiniteGaussianHermitianPencil.mem_affineHalfActivationTube_iff
     x ∈ gaussianAffineHalfActivationTube
         (n := Module.finrank ℝ E) (P.commutatorMap U)
           (hermitianPencilCommutatorDrift H₀ U) ↔
-      ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ 2 ≤
+      ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ) ≤
         P.commutatorActivation U := by
   rfl
 
@@ -298,7 +298,7 @@ theorem FiniteGaussianHermitianPencil.affineNearAction_le_adaptive_add_carrier
       (finiteGaussianHermitianPencilReindexedEndpoint U) r δ
       (P.commutatorActivation U)
   rw [P.affineReindexedCommutatorEnergy H₀ x U] at h
-  by_cases hc : ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ 2 ≤
+  by_cases hc : ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ) ≤
       P.commutatorActivation U
   · rw [if_pos hc] at h
     rw [if_pos]
@@ -371,11 +371,11 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedAffineNearActi
                 Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
             (P.affineSpectralEnergy hH₀ x) r δ} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2) /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_measure_weightedAffineHalfActivationTubeMass_ge_le
       (n := Module.finrank ℝ E) (fun c => P.commutatorMap (U c))
@@ -413,11 +413,11 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignAffineNea
                   Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
               (P.affineSpectralEnergy hH₀ x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2) /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   exact P.stdGaussian_measure_weightedAffineNearAction_gap_le hH₀ U
     (finiteUnitaryChoiOptimalDesignWeight r U)
     (finiteUnitaryChoiOptimalDesignWeight_mem_stdSimplex r U) r δ hκ

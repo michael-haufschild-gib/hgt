@@ -21,7 +21,7 @@ noncomputable section
 def bernsteinCoefficientSquareDiscrepancy
     (m a : ℕ → ℝ) (n : ℕ) : ℝ :=
   ∑ i ∈ Finset.range (n + 1),
-    (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2
+    (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ)
 
 theorem bernsteinCoefficientSquareDiscrepancy_nonneg
     (m a : ℕ → ℝ) (n : ℕ) :
@@ -36,22 +36,22 @@ theorem bernsteinCoefficientPurity_le_two_discrepancy_add_two_purity
       2 * bernsteinCoefficientSquareDiscrepancy m a n +
         2 * bernsteinCoefficientPurity a n := by
   have hpoint (i : ℕ) :
-      bernsteinCoefficient m n i ^ 2 ≤
-        2 * (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2 +
-          2 * bernsteinCoefficient a n i ^ 2 := by
+      bernsteinCoefficient m n i ^ (2 : ℕ) ≤
+        2 * (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ) +
+          2 * bernsteinCoefficient a n i ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (bernsteinCoefficient m n i -
       2 * bernsteinCoefficient a n i)]
   rw [bernsteinCoefficientPurity, bernsteinCoefficientSquareDiscrepancy,
     bernsteinCoefficientPurity]
   calc
-    (∑ i ∈ Finset.range (n + 1), bernsteinCoefficient m n i ^ 2) ≤
+    (∑ i ∈ Finset.range (n + 1), bernsteinCoefficient m n i ^ (2 : ℕ)) ≤
         ∑ i ∈ Finset.range (n + 1),
-          (2 * (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2 +
-            2 * bernsteinCoefficient a n i ^ 2) :=
+          (2 * (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ) +
+            2 * bernsteinCoefficient a n i ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun i _ => hpoint i
     _ = 2 * ∑ i ∈ Finset.range (n + 1),
-          (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2 +
-        2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient a n i ^ 2 := by
+          (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ) +
+        2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient a n i ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
 /-- The reverse Hilbert-space comparison: squared packet mismatch is controlled by the two
@@ -62,21 +62,21 @@ theorem bernsteinCoefficientSquareDiscrepancy_le_two_purities
       2 * bernsteinCoefficientPurity m n +
         2 * bernsteinCoefficientPurity a n := by
   have hpoint (i : ℕ) :
-      (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2 ≤
-        2 * bernsteinCoefficient m n i ^ 2 +
-          2 * bernsteinCoefficient a n i ^ 2 := by
+      (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ) ≤
+        2 * bernsteinCoefficient m n i ^ (2 : ℕ) +
+          2 * bernsteinCoefficient a n i ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (bernsteinCoefficient m n i + bernsteinCoefficient a n i)]
   rw [bernsteinCoefficientSquareDiscrepancy, bernsteinCoefficientPurity,
     bernsteinCoefficientPurity]
   calc
     (∑ i ∈ Finset.range (n + 1),
-        (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ 2) ≤
+        (bernsteinCoefficient m n i - bernsteinCoefficient a n i) ^ (2 : ℕ)) ≤
       ∑ i ∈ Finset.range (n + 1),
-        (2 * bernsteinCoefficient m n i ^ 2 +
-          2 * bernsteinCoefficient a n i ^ 2) :=
+        (2 * bernsteinCoefficient m n i ^ (2 : ℕ) +
+          2 * bernsteinCoefficient a n i ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun i _ => hpoint i
-    _ = 2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient m n i ^ 2 +
-        2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient a n i ^ 2 := by
+    _ = 2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient m n i ^ (2 : ℕ) +
+        2 * ∑ i ∈ Finset.range (n + 1), bernsteinCoefficient a n i ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
 /-- A Hausdorff-positive comparison source replaces its whole Bernstein energy by its exact
@@ -84,13 +84,13 @@ mass-squared ceiling in the forward comparison. -/
 theorem bernsteinCoefficientPurity_le_two_discrepancy_add_two_mass_sq
     (m a : ℕ → ℝ) (n : ℕ) (ha : HausdorffBernsteinNonnegative a) :
     bernsteinCoefficientPurity m n ≤
-      2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ 2 := by
+      2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ (2 : ℕ) := by
   calc
     bernsteinCoefficientPurity m n ≤
         2 * bernsteinCoefficientSquareDiscrepancy m a n +
           2 * bernsteinCoefficientPurity a n :=
       bernsteinCoefficientPurity_le_two_discrepancy_add_two_purity m a n
-    _ ≤ 2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ 2 := by
+    _ ≤ 2 * bernsteinCoefficientSquareDiscrepancy m a n + 2 * a 0 ^ (2 : ℕ) := by
       gcongr
       exact bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n
 
@@ -98,13 +98,13 @@ theorem bernsteinCoefficientPurity_le_two_discrepancy_add_two_mass_sq
 theorem bernsteinCoefficientSquareDiscrepancy_le_two_purity_add_two_mass_sq
     (m a : ℕ → ℝ) (n : ℕ) (ha : HausdorffBernsteinNonnegative a) :
     bernsteinCoefficientSquareDiscrepancy m a n ≤
-      2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ 2 := by
+      2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ (2 : ℕ) := by
   calc
     bernsteinCoefficientSquareDiscrepancy m a n ≤
         2 * bernsteinCoefficientPurity m n +
           2 * bernsteinCoefficientPurity a n :=
       bernsteinCoefficientSquareDiscrepancy_le_two_purities m a n
-    _ ≤ 2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ 2 := by
+    _ ≤ 2 * bernsteinCoefficientPurity m n + 2 * a 0 ^ (2 : ℕ) := by
       gcongr
       exact bernsteinCoefficientPurity_le_mass_sq_of_hausdorffBernsteinNonnegative ha n
 

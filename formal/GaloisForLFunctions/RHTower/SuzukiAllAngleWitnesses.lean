@@ -52,7 +52,7 @@ theorem suzukiAllAngleRealZeros_of_norm_ne {A E : ℂ → ℂ}
 /-! ## The Cayley separation -/
 
 theorem norm_sub_I_lt_norm_add_I {z : ℂ} (hz : 0 < z.im) : ‖z - I‖ < ‖z + I‖ := by
-  have hsq : ‖z - I‖ ^ 2 < ‖z + I‖ ^ 2 := by
+  have hsq : ‖z - I‖ ^ (2 : ℕ) < ‖z + I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
       Complex.I_re, Complex.I_im]
@@ -60,7 +60,7 @@ theorem norm_sub_I_lt_norm_add_I {z : ℂ} (hz : 0 < z.im) : ‖z - I‖ < ‖z 
   exact lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq
 
 theorem norm_add_I_lt_norm_sub_I {z : ℂ} (hz : z.im < 0) : ‖z + I‖ < ‖z - I‖ := by
-  have hsq : ‖z + I‖ ^ 2 < ‖z - I‖ ^ 2 := by
+  have hsq : ‖z + I‖ ^ (2 : ℕ) < ‖z - I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
       Complex.I_re, Complex.I_im]
@@ -157,12 +157,12 @@ theorem suzukiHermiteBiehler_addI_linear :
 
 /-- The quadratic Cayley pair has real zeros for every unitary characteristic angle. -/
 theorem suzukiAllAngleRealZeros_cayleyQuadratic :
-    SuzukiAllAngleRealZeros (fun z : ℂ => (z - I) ^ 2) (fun z => (z + I) ^ 2) := by
+    SuzukiAllAngleRealZeros (fun z : ℂ => (z - I) ^ (2 : ℕ)) (fun z => (z + I) ^ (2 : ℕ)) := by
   simpa using (suzukiAllAngleRealZeros_cayleyPow (n := 2) (by norm_num))
 
 /-- The quadratic Cayley factor is Hermite--Biehler. -/
 theorem suzukiHermiteBiehler_addI_quadratic :
-    SuzukiHermiteBiehler (fun z : ℂ => (z + I) ^ 2) := by
+    SuzukiHermiteBiehler (fun z : ℂ => (z + I) ^ (2 : ℕ)) := by
   simpa using (suzukiHermiteBiehler_addI_pow (n := 2) (by norm_num))
 
 end GaloisForLFunctions.RHTower

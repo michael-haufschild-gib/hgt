@@ -13,15 +13,15 @@ theorem integrable_thetaLikelihoodSixthScore_mul_exp_neg_higherSpectral
       thetaLikelihoodSixthScore (A * t) * Real.exp (-(B * t)))
       thetaCuspHigherLikelihoodSpectralMeasure := by
   have h6 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 6 hB).const_mul
-    (A ^ 6)
+    (A ^ (6 : ℕ))
   have h5 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 5 hB).const_mul
-    (15 * A ^ 5)
+    (15 * A ^ (5 : ℕ))
   have h4 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul
-    (65 * A ^ 4)
+    (65 * A ^ (4 : ℕ))
   have h3 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).const_mul
-    (90 * A ^ 3)
+    (90 * A ^ (3 : ℕ))
   have h2 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).const_mul
-    (31 * A ^ 2)
+    (31 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).const_mul A
   convert ((((h6.sub h5).add h4).sub h3).add h2).sub h1 using 1
   funext t
@@ -52,48 +52,48 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetSix_eq_spectralIntegral
   have hscore :
       (∫ t : ℝ, thetaLikelihoodSixthScore (A * t) * Real.exp (-(B * t))
         ∂thetaCuspHigherLikelihoodSpectralMeasure) =
-        A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 -
-          15 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-          65 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-          90 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-          31 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+        A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 -
+          15 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+          65 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+          90 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+          31 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
           A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
     unfold thetaLikelihoodSixthScore
     rw [show (fun t : ℝ =>
-        ((A * t) ^ 6 - 15 * (A * t) ^ 5 + 65 * (A * t) ^ 4 -
-          90 * (A * t) ^ 3 + 31 * (A * t) ^ 2 - A * t) *
+        ((A * t) ^ (6 : ℕ) - 15 * (A * t) ^ (5 : ℕ) + 65 * (A * t) ^ (4 : ℕ) -
+          90 * (A * t) ^ (3 : ℕ) + 31 * (A * t) ^ (2 : ℕ) - A * t) *
             Real.exp (-(B * t))) =
-      fun t => A ^ 6 * (t ^ 6 * Real.exp (-(B * t))) -
-        (15 * A ^ 5) * (t ^ 5 * Real.exp (-(B * t))) +
-        (65 * A ^ 4) * (t ^ 4 * Real.exp (-(B * t))) -
-        (90 * A ^ 3) * (t ^ 3 * Real.exp (-(B * t))) +
-        (31 * A ^ 2) * (t ^ 2 * Real.exp (-(B * t))) -
-        A * (t ^ 1 * Real.exp (-(B * t))) by funext t; ring]
-    let f6 : ℝ → ℝ := fun t => A ^ 6 * (t ^ 6 * Real.exp (-(B * t)))
-    let f5 : ℝ → ℝ := fun t => (15 * A ^ 5) * (t ^ 5 * Real.exp (-(B * t)))
-    let f4 : ℝ → ℝ := fun t => (65 * A ^ 4) * (t ^ 4 * Real.exp (-(B * t)))
-    let f3 : ℝ → ℝ := fun t => (90 * A ^ 3) * (t ^ 3 * Real.exp (-(B * t)))
-    let f2 : ℝ → ℝ := fun t => (31 * A ^ 2) * (t ^ 2 * Real.exp (-(B * t)))
-    let f1 : ℝ → ℝ := fun t => A * (t ^ 1 * Real.exp (-(B * t)))
+      fun t => A ^ (6 : ℕ) * (t ^ (6 : ℕ) * Real.exp (-(B * t))) -
+        (15 * A ^ (5 : ℕ)) * (t ^ (5 : ℕ) * Real.exp (-(B * t))) +
+        (65 * A ^ (4 : ℕ)) * (t ^ (4 : ℕ) * Real.exp (-(B * t))) -
+        (90 * A ^ (3 : ℕ)) * (t ^ (3 : ℕ) * Real.exp (-(B * t))) +
+        (31 * A ^ (2 : ℕ)) * (t ^ (2 : ℕ) * Real.exp (-(B * t))) -
+        A * (t ^ (1 : ℕ) * Real.exp (-(B * t))) by funext t; ring]
+    let f6 : ℝ → ℝ := fun t => A ^ (6 : ℕ) * (t ^ (6 : ℕ) * Real.exp (-(B * t)))
+    let f5 : ℝ → ℝ := fun t => (15 * A ^ (5 : ℕ)) * (t ^ (5 : ℕ) * Real.exp (-(B * t)))
+    let f4 : ℝ → ℝ := fun t => (65 * A ^ (4 : ℕ)) * (t ^ (4 : ℕ) * Real.exp (-(B * t)))
+    let f3 : ℝ → ℝ := fun t => (90 * A ^ (3 : ℕ)) * (t ^ (3 : ℕ) * Real.exp (-(B * t)))
+    let f2 : ℝ → ℝ := fun t => (31 * A ^ (2 : ℕ)) * (t ^ (2 : ℕ) * Real.exp (-(B * t)))
+    let f1 : ℝ → ℝ := fun t => A * (t ^ (1 : ℕ) * Real.exp (-(B * t)))
     have hf6 : Integrable f6 thetaCuspHigherLikelihoodSpectralMeasure := by
-      simpa only [f6, neg_mul] using h6.const_mul (A ^ 6)
+      simpa only [f6, neg_mul] using h6.const_mul (A ^ (6 : ℕ))
     have hf5 : Integrable f5 thetaCuspHigherLikelihoodSpectralMeasure := by
-      simpa only [f5, neg_mul] using h5.const_mul (15 * A ^ 5)
+      simpa only [f5, neg_mul] using h5.const_mul (15 * A ^ (5 : ℕ))
     have hf4 : Integrable f4 thetaCuspHigherLikelihoodSpectralMeasure := by
-      simpa only [f4, neg_mul] using h4.const_mul (65 * A ^ 4)
+      simpa only [f4, neg_mul] using h4.const_mul (65 * A ^ (4 : ℕ))
     have hf3 : Integrable f3 thetaCuspHigherLikelihoodSpectralMeasure := by
-      simpa only [f3, neg_mul] using h3.const_mul (90 * A ^ 3)
+      simpa only [f3, neg_mul] using h3.const_mul (90 * A ^ (3 : ℕ))
     have hf2 : Integrable f2 thetaCuspHigherLikelihoodSpectralMeasure := by
-      simpa only [f2, neg_mul] using h2.const_mul (31 * A ^ 2)
+      simpa only [f2, neg_mul] using h2.const_mul (31 * A ^ (2 : ℕ))
     have hf1 : Integrable f1 thetaCuspHigherLikelihoodSpectralMeasure := by
       simpa only [f1, neg_mul] using h1.const_mul A
     rw [show (fun t : ℝ =>
-        A ^ 6 * (t ^ 6 * Real.exp (-(B * t))) -
-          15 * A ^ 5 * (t ^ 5 * Real.exp (-(B * t))) +
-          65 * A ^ 4 * (t ^ 4 * Real.exp (-(B * t))) -
-          90 * A ^ 3 * (t ^ 3 * Real.exp (-(B * t))) +
-          31 * A ^ 2 * (t ^ 2 * Real.exp (-(B * t))) -
-          A * (t ^ 1 * Real.exp (-(B * t)))) =
+        A ^ (6 : ℕ) * (t ^ (6 : ℕ) * Real.exp (-(B * t))) -
+          15 * A ^ (5 : ℕ) * (t ^ (5 : ℕ) * Real.exp (-(B * t))) +
+          65 * A ^ (4 : ℕ) * (t ^ (4 : ℕ) * Real.exp (-(B * t))) -
+          90 * A ^ (3 : ℕ) * (t ^ (3 : ℕ) * Real.exp (-(B * t))) +
+          31 * A ^ (2 : ℕ) * (t ^ (2 : ℕ) * Real.exp (-(B * t))) -
+          A * (t ^ (1 : ℕ) * Real.exp (-(B * t)))) =
         ((((f6 - f5) + f4) - f3) + f2) - f1 by
       funext t
       simp only [Pi.add_apply, Pi.sub_apply, f6, f5, f4, f3, f2, f1]]

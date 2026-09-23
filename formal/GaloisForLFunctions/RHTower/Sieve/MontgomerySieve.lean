@@ -55,17 +55,17 @@ theorem sum_residueCount_occupied {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
 
 /-- **Cauchy–Schwarz over the occupied classes.** -/
 theorem sq_card_le_occupied_mul {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
-    (A.card : ℝ) ^ 2
+    (A.card : ℝ) ^ (2 : ℕ)
       ≤ ((occupiedClasses q A).card : ℝ)
-          * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 := by
+          * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) := by
   classical
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq (occupiedClasses q A)
     (fun _ => (1 : ℝ)) (fun h => ((residueCount q A h : ℕ) : ℝ))
   simp only [one_mul, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one] at hcs
   rw [sum_residueCount_occupied hq A] at hcs
   refine le_trans hcs ?_
-  have hmono : ∑ h ∈ occupiedClasses q A, ((residueCount q A h : ℕ) : ℝ) ^ 2
-      ≤ ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 :=
+  have hmono : ∑ h ∈ occupiedClasses q A, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ)
+      ≤ ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg (occupiedClasses_subset q A)
       (fun i _ _ => by positivity)
   exact mul_le_mul_of_nonneg_left hmono (by positivity)
@@ -80,32 +80,32 @@ theorem expSum_zero (q : ℕ) (A : Finset ℕ) :
 
 /-- **Omitted classes force large exponential sums.** -/
 theorem occupied_mul_sum_nonzero_ge {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
-    (A.card : ℝ) ^ 2 * ((q : ℝ) - ((occupiedClasses q A).card : ℝ))
+    (A.card : ℝ) ^ (2 : ℕ) * ((q : ℝ) - ((occupiedClasses q A).card : ℝ))
       ≤ ((occupiedClasses q A).card : ℝ)
           * ∑ j ∈ (Finset.univ : Finset (Fin q)).erase ⟨0, hq⟩,
-              ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2 := by
+              ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ) := by
   classical
   set c : ℝ := ((occupiedClasses q A).card : ℝ) with hc
-  set E : ℝ := ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 with hE
+  set E : ℝ := ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) with hE
   set T : ℝ := ∑ j ∈ (Finset.univ : Finset (Fin q)).erase ⟨0, hq⟩,
-      ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2 with hT
-  have hzero : ‖∑ n ∈ A, circleFreq (((n * ((⟨0, hq⟩ : Fin q) : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2
-      = (A.card : ℝ) ^ 2 := by
+      ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ) with hT
+  have hzero : ‖∑ n ∈ A, circleFreq (((n * ((⟨0, hq⟩ : Fin q) : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ)
+      = (A.card : ℝ) ^ (2 : ℕ) := by
     have hval : ((⟨0, hq⟩ : Fin q) : ℕ) = 0 := rfl
     rw [hval, expSum_zero]
     simp
   have hsplit := Finset.add_sum_erase (Finset.univ : Finset (Fin q))
-    (fun j => ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2)
+    (fun j => ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ))
     (Finset.mem_univ (⟨0, hq⟩ : Fin q))
   rw [hzero] at hsplit
   have hfull := sum_full_expSum_sq hq A
   rw [← hE] at hfull
-  have heq : (A.card : ℝ) ^ 2 + T = (q : ℝ) * E := by
+  have heq : (A.card : ℝ) ^ (2 : ℕ) + T = (q : ℝ) * E := by
     rw [hT, hsplit]
     exact hfull
-  have hCS : (A.card : ℝ) ^ 2 ≤ c * E := sq_card_le_occupied_mul hq A
+  have hCS : (A.card : ℝ) ^ (2 : ℕ) ≤ c * E := sq_card_le_occupied_mul hq A
   have hqR : (0 : ℝ) ≤ (q : ℝ) := by positivity
-  have hmul : c * ((A.card : ℝ) ^ 2 + T) = c * ((q : ℝ) * E) := by rw [heq]
+  have hmul : c * ((A.card : ℝ) ^ (2 : ℕ) + T) = c * ((q : ℝ) * E) := by rw [heq]
   nlinarith [hCS, hqR, hmul]
 
 end RHTower.Sieve

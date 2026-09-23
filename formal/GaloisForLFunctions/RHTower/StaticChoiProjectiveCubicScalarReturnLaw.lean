@@ -96,7 +96,7 @@ theorem pairQubitProjective_spectralChoiScalar_cubic_le
     {x : TwoLocalPauliCoefficientSpace (L * 2)}
     (hx : x ∈ weakTwoLocalPauliCertifiedGrowthSet L)
     (hguard : 0 ≤ guard) {t : ℝ}
-    (ht : t ∈ Icc guard (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+    (ht : t ∈ Icc guard (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     ‖inner ℂ
         (staticSpectralChoiVector
           (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) t
@@ -104,10 +104,10 @@ theorem pairQubitProjective_spectralChoiScalar_cubic_le
         (staticSpectralChoiVector
           (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) 0
           (pairQubitProjectiveSeedWeakTwoLocalSpectralEnergy L p scale x))‖ ≤
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
       |t| * (rho * nearestNeighborPathLocalGeneratorMass L +
-        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) := by
+        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) := by
   let P := twoLocalPauliGaussianHermitianPencil (L * 2)
   let Hfin := P.affineReindexedHamiltonian
     (pairQubitProjectivePauliSeed L p) (scale • x)
@@ -159,15 +159,15 @@ theorem pairQubitProjective_spectralChoiScalar_cubic_lt
       rho * nearestNeighborPathLocalGeneratorMass L)
     (hguard : 0 ≤ guard)
     (hbudget :
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
-        (2 * Real.pi * (L : ℝ) ^ 3) *
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
+        (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
           (rho * nearestNeighborPathLocalGeneratorMass L +
-            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) < eta)
+            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) < eta)
     {x : TwoLocalPauliCoefficientSpace (L * 2)}
     (hx : x ∈ weakTwoLocalPauliCertifiedGrowthSet L)
     {t : ℝ}
-    (ht : t ∈ Icc guard (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+    (ht : t ∈ Icc guard (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     ‖inner ℂ
         (staticSpectralChoiVector
           (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) t
@@ -176,23 +176,23 @@ theorem pairQubitProjective_spectralChoiScalar_cubic_lt
           (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) 0
           (pairQubitProjectiveSeedWeakTwoLocalSpectralEnergy L p scale x))‖ < eta := by
   let B := rho * nearestNeighborPathLocalGeneratorMass L +
-    |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)
+    |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))
   have hdiff :=
     norm_projectiveSeedWeakTwoLocalHamiltonian_sub_inverseSquareChain_le
       hL (rho := rho) (scale := scale) hseed hx
   have hB : 0 ≤ B := (norm_nonneg _).trans hdiff
   have ht0 : 0 ≤ t := hguard.trans ht.1
-  have htmax : |t| ≤ 2 * Real.pi * (L : ℝ) ^ 3 := by
+  have htmax : |t| ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) := by
     rw [abs_of_nonneg ht0]
     exact ht.2.trans (sub_le_self _ hguard)
-  have htime : |t| * B ≤ (2 * Real.pi * (L : ℝ) ^ 3) * B :=
+  have htime : |t| * B ≤ (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) * B :=
     mul_le_mul_of_nonneg_right htmax hB
   have hpoint := pairQubitProjective_spectralChoiScalar_cubic_le
     hL (rho := rho) (scale := scale) (guard := guard) hseed hx hguard ht
   have hbudget' :
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
-        (2 * Real.pi * (L : ℝ) ^ 3) * B < eta := by
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
+        (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) * B < eta := by
     simpa [B] using hbudget
   exact hpoint.trans_lt ((add_le_add le_rfl htime).trans_lt hbudget')
 

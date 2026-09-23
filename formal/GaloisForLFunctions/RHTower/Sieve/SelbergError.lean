@@ -20,7 +20,7 @@ open Finset Nat BoundingSieve
 
 /-- **Triangle bound for the `Λ²` coefficients.** -/
 theorem abs_lambdaSquared_le (w : ℕ → ℝ) (d : ℕ) :
-    |lambdaSquared w d| ≤ (∑ e ∈ d.divisors, |w e|) ^ 2 := by
+    |lambdaSquared w d| ≤ (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) := by
   classical
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   have hinner : ∀ d1 ∈ d.divisors,
@@ -70,24 +70,24 @@ sum by the number of divisors involved. -/
 theorem errSum_lambdaSquared_le (s : BoundingSieve) (w : ℕ → ℝ) {B : ℝ}
     (hB : ∀ d ∈ s.prodPrimes.divisors, |s.rem d| ≤ B) :
     s.errSum (lambdaSquared w)
-      ≤ B * ∑ d ∈ s.prodPrimes.divisors, (∑ e ∈ d.divisors, |w e|) ^ 2 := by
+      ≤ B * ∑ d ∈ s.prodPrimes.divisors, (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) := by
   classical
   rw [errSum, Finset.mul_sum]
   refine Finset.sum_le_sum ?_
   intro d hd
-  have h1 : |lambdaSquared w d| ≤ (∑ e ∈ d.divisors, |w e|) ^ 2 := abs_lambdaSquared_le w d
+  have h1 : |lambdaSquared w d| ≤ (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) := abs_lambdaSquared_le w d
   have h2 : |s.rem d| ≤ B := hB d hd
-  have hnn : (0 : ℝ) ≤ (∑ e ∈ d.divisors, |w e|) ^ 2 := sq_nonneg _
+  have hnn : (0 : ℝ) ≤ (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) := sq_nonneg _
   have habs : (0 : ℝ) ≤ |s.rem d| := abs_nonneg _
   calc |lambdaSquared w d| * |s.rem d|
-      ≤ (∑ e ∈ d.divisors, |w e|) ^ 2 * |s.rem d| :=
+      ≤ (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) * |s.rem d| :=
         mul_le_mul_of_nonneg_right h1 habs
-    _ ≤ (∑ e ∈ d.divisors, |w e|) ^ 2 * B := mul_le_mul_of_nonneg_left h2 hnn
-    _ = B * (∑ e ∈ d.divisors, |w e|) ^ 2 := by ring
+    _ ≤ (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) * B := mul_le_mul_of_nonneg_left h2 hnn
+    _ = B * (∑ e ∈ d.divisors, |w e|) ^ (2 : ℕ) := by ring
 
 /-- With unit weights the divisor bound is the square of the divisor count. -/
 theorem abs_lambdaSquared_le_card_sq {w : ℕ → ℝ} (hw : ∀ n, |w n| ≤ 1) (d : ℕ) :
-    |lambdaSquared w d| ≤ ((d.divisors.card : ℝ)) ^ 2 := by
+    |lambdaSquared w d| ≤ ((d.divisors.card : ℝ)) ^ (2 : ℕ) := by
   refine le_trans (abs_lambdaSquared_le w d) ?_
   have hle : ∑ e ∈ d.divisors, |w e| ≤ (d.divisors.card : ℝ) := by
     calc ∑ e ∈ d.divisors, |w e| ≤ ∑ _e ∈ d.divisors, (1 : ℝ) :=
@@ -152,7 +152,7 @@ theorem selbergTruncWeight_one (s : BoundingSieve) {Y : ℕ} (hY : 1 ≤ Y) :
     · rw [if_pos hle, if_pos hle]
       have hmusq := moebius_sq_eq_one_of_dvd (s := s) (Nat.dvd_of_mem_divisors hl)
       have hrw : (μ l : ℝ) * ((μ l : ℝ) * s.selbergTerms l / selbergMassLE s Y)
-          = (μ l : ℝ) ^ 2 * s.selbergTerms l / selbergMassLE s Y := by ring
+          = (μ l : ℝ) ^ (2 : ℕ) * s.selbergTerms l / selbergMassLE s Y := by ring
       rw [hrw, hmusq, one_mul]
     · rw [if_neg hle, if_neg hle, mul_zero]
   rw [Finset.sum_congr rfl hterm, ← Finset.sum_filter]
@@ -167,8 +167,8 @@ theorem mainSum_selbergTruncWeight (s : BoundingSieve) {Y : ℕ} (hY : 1 ≤ Y) 
   have hS := selbergMassLE_pos s hY
   rw [mainSum_lambdaSquared_eq_sum_selbergY]
   have hterm : ∀ l ∈ s.prodPrimes.divisors,
-      (s.selbergTerms l)⁻¹ * (selbergY s (selbergTruncWeight s Y) l) ^ 2
-        = if l ≤ Y then s.selbergTerms l / (selbergMassLE s Y) ^ 2 else 0 := by
+      (s.selbergTerms l)⁻¹ * (selbergY s (selbergTruncWeight s Y) l) ^ (2 : ℕ)
+        = if l ≤ Y then s.selbergTerms l / (selbergMassLE s Y) ^ (2 : ℕ) else 0 := by
     intro l hl
     have hdvd := Nat.dvd_of_mem_divisors hl
     have hy : selbergY s (selbergTruncWeight s Y) l = selbergTruncY s Y l :=

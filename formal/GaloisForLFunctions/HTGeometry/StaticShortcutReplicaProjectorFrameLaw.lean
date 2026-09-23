@@ -70,7 +70,7 @@ theorem inner_finitePureProjectorEuclidean (ψ φ : α → ℂ) :
         simp only [star_mul, star_star]
         ring
   rw [hfactor]
-  have hnorm : ((‖z‖ ^ 2 : ℝ) : ℂ) = star z * z := by
+  have hnorm : ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = star z * z := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
     rfl
   rw [hnorm]

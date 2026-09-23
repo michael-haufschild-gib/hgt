@@ -33,7 +33,7 @@ theorem suzukiRotatedDslope_rayLine (γ : ℂ) (σ ξ : ℝ) :
 theorem isHalfPlaneHardy_suzukiRotatedDslope (hRH : RiemannHypothesis) {γ : ℂ}
     (hγ : XiC γ = 0) {C : ℝ} (hC1 : 1 ≤ C)
     (hCb : ∀ z : ℂ, 0 ≤ z.im → ‖dslope suzukiHalfInner γ z‖ ≤ C) :
-    IsHalfPlaneHardy (suzukiRotatedDslope γ) (C ^ 2) := by
+    IsHalfPlaneHardy (suzukiRotatedDslope γ) (C ^ (2 : ℕ)) := by
   have hpi := Real.pi_pos
   have htwopi : (2 * Real.pi) ≠ 0 := by positivity
   refine ⟨?_, ?_, ?_⟩
@@ -48,15 +48,15 @@ theorem isHalfPlaneHardy_suzukiRotatedDslope (hRH : RiemannHypothesis) {γ : ℂ
   · intro σ hσ
     have hbase := memLp_dslope_line hRH hγ hC1 hCb (le_of_lt hσ)
     have hint : Integrable
-        (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2) volume :=
+        (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)) volume :=
       (memLp_two_iff_integrable_sq_norm
         (continuous_dslope_line hRH hγ (le_of_lt hσ)).aestronglyMeasurable).mp hbase
     have hcomp : Integrable
         (fun ξ : ℝ => ‖dslope suzukiHalfInner γ
-          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2) volume := by
+          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)) volume := by
       have hfun : (fun ξ : ℝ => ‖dslope suzukiHalfInner γ
-            (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2)
-          = (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2)
+            (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ))
+          = (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ))
             ∘ (fun ξ : ℝ => -(2 * Real.pi) * ξ) := by
         funext ξ
         congr 3
@@ -77,24 +77,24 @@ theorem isHalfPlaneHardy_suzukiRotatedDslope (hRH : RiemannHypothesis) {γ : ℂ
       filter_upwards with ξ
       rw [suzukiRotatedDslope_rayLine]
   · intro σ hσ
-    have hval : ∀ ξ : ℝ, ‖suzukiRotatedDslope γ (rayLine σ ξ)‖ ^ 2
+    have hval : ∀ ξ : ℝ, ‖suzukiRotatedDslope γ (rayLine σ ξ)‖ ^ (2 : ℕ)
         = ‖dslope suzukiHalfInner γ
-            (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2 := by
+            (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ) := by
       intro ξ
       rw [suzukiRotatedDslope_rayLine]
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hval)]
     have hchange : (∫ ξ : ℝ, ‖dslope suzukiHalfInner γ
-          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2)
+          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ))
         = |(-(2 * Real.pi))⁻¹| •
-          ∫ x : ℝ, ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2 := by
+          ∫ x : ℝ, ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ) := by
       rw [← MeasureTheory.Measure.integral_comp_mul_left
-        (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2)
+        (fun x : ℝ => ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ))
         (-(2 * Real.pi))]
       refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
       show ‖dslope suzukiHalfInner γ
-          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2
+          (((-(2 * Real.pi * ξ) : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)
         = ‖dslope suzukiHalfInner γ
-          (((-(2 * Real.pi) * ξ : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2
+          (((-(2 * Real.pi) * ξ : ℝ) : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)
       congr 4
       ring
     rw [hchange]
@@ -104,9 +104,9 @@ theorem isHalfPlaneHardy_suzukiRotatedDslope (hRH : RiemannHypothesis) {γ : ℂ
     rw [habs, smul_eq_mul]
     have hinv : (0 : ℝ) < (2 * Real.pi)⁻¹ := by positivity
     calc (2 * Real.pi)⁻¹ * ∫ x : ℝ,
-          ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ 2
-        ≤ (2 * Real.pi)⁻¹ * (2 * C ^ 2 * Real.pi) := by
+          ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)
+        ≤ (2 * Real.pi)⁻¹ * (2 * C ^ (2 : ℕ) * Real.pi) := by
           exact mul_le_mul_of_nonneg_left hbnd (le_of_lt hinv)
-      _ = C ^ 2 := by field_simp
+      _ = C ^ (2 : ℕ) := by field_simp
 
 end RHTower

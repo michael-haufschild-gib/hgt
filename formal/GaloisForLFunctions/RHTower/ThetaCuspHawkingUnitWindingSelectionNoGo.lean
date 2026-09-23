@@ -35,8 +35,8 @@ def delayedHawkingCayleyTransition (m : ℕ) (lambda : ℝ) : ℂ :=
 theorem delayedHawkingCayleyLoad_nonneg (m : ℕ) (lambda : ℝ) :
     0 ≤ delayedHawkingCayleyLoad m lambda := by
   rw [delayedHawkingCayleyLoad]
-  have hp : 0 ≤ (lambda ^ m) ^ 2 := sq_nonneg _
-  rw [show lambda ^ (2 * m) = (lambda ^ m) ^ 2 by
+  have hp : 0 ≤ (lambda ^ m) ^ (2 : ℕ) := sq_nonneg _
+  rw [show lambda ^ (2 * m) = (lambda ^ m) ^ (2 : ℕ) by
     rw [pow_two, ← pow_add]
     congr 1
     omega]
@@ -49,21 +49,21 @@ theorem delayedHawkingCayley_denominator_pos (m : ℕ) (lambda : ℝ) :
 /-- Exact two-port losslessness permits every positive onset order. -/
 theorem delayedHawkingCayleyRetention_sq_add_transition_normSq
     (m : ℕ) (lambda : ℝ) :
-    delayedHawkingCayleyRetention m lambda ^ 2 +
+    delayedHawkingCayleyRetention m lambda ^ (2 : ℕ) +
         Complex.normSq (delayedHawkingCayleyTransition m lambda) = 1 := by
   let j := delayedHawkingCayleyLoad m lambda
   have hj : lambda ^ (2 * m) = 4 * j := by
     dsimp [j]
     rw [delayedHawkingCayleyLoad]
     ring
-  have hpow : (lambda ^ m) ^ 2 = lambda ^ (2 * m) := by
+  have hpow : (lambda ^ m) ^ (2 : ℕ) = lambda ^ (2 * m) := by
     rw [pow_two, ← pow_add]
     congr 1
     omega
   have hden : 1 + j ≠ 0 :=
     (delayedHawkingCayley_denominator_pos m lambda).ne'
   rw [delayedHawkingCayleyRetention, delayedHawkingCayleyTransition]
-  change ((1 - j) / (1 + j)) ^ 2 +
+  change ((1 - j) / (1 + j)) ^ (2 : ℕ) +
       Complex.normSq (((lambda ^ m : ℝ) : ℂ) / (((1 + j : ℝ) : ℂ))) = 1
   rw [Complex.normSq_div, Complex.normSq_ofReal, Complex.normSq_ofReal]
   field_simp [hden]
@@ -113,7 +113,7 @@ theorem delayedHawkingCayleyTransition_ne_zero
 /-- Every nonzero coupling mixes even when the first `m-1` coupling channels are absent. -/
 theorem delayedHawkingCayleyRetention_sq_lt_one
     (m : ℕ) {lambda : ℝ} (hlambda : lambda ≠ 0) :
-    delayedHawkingCayleyRetention m lambda ^ 2 < 1 := by
+    delayedHawkingCayleyRetention m lambda ^ (2 : ℕ) < 1 := by
   have hunit := delayedHawkingCayleyRetention_sq_add_transition_normSq m lambda
   have htransition : 0 < Complex.normSq (delayedHawkingCayleyTransition m lambda) :=
     Complex.normSq_pos.mpr
@@ -166,7 +166,7 @@ theorem lossless_KMS_every_nonzero_mix_not_force_unitCouplingWinding :
             delayedHawkingCayleyHorizonOutput 2 lambda x h =
         conj x * x + conj h * h) ∧
     (∀ lambda : ℝ, lambda ≠ 0 →
-      delayedHawkingCayleyRetention 2 lambda ^ 2 < 1) ∧
+      delayedHawkingCayleyRetention 2 lambda ^ (2 : ℕ) < 1) ∧
     (∀ lambda kappa omega,
       delayedHawkingKMSCayleyUpProbability 2 lambda kappa omega =
         thetaCuspHawkingKMSBoltzmannRatio kappa omega *
@@ -174,7 +174,7 @@ theorem lossless_KMS_every_nonzero_mix_not_force_unitCouplingWinding :
     (∀ r : ℝ, 0 < r →
       windingNumber
           (fun theta : ℝ =>
-            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ 2))
+            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ (2 : ℕ)))
           0 (2 * Real.pi) = 2) := by
   refine ⟨delayedHawkingCayley_preserves_hermitian 2,
     fun lambda hlambda =>

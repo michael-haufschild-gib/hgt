@@ -38,8 +38,8 @@ theorem xiMassCriticalOutgoingDeepShiftBound_eq {sigma : ℝ} (hsigma : 0 < sigm
     xiMassCriticalOutgoingDeepShiftBound sigma d
       = xiMassCriticalOutgoingZeroShiftBound sigma
         + d * ∫ x : ℝ, Real.exp (-(sigma * |x|)) := by
-  have hE := integrable_exp_neg_mul_abs hsigma
-  have hA := integrable_abs_mul_exp_neg_mul_abs hsigma
+  have hE := integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hsigma
+  have hA := integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hsigma
   have hpt : ∀ x : ℝ, (|x| + d) * Real.exp (-(sigma * |x|))
       = |x| * Real.exp (-(sigma * |x|)) + d * Real.exp (-(sigma * |x|)) := fun x => by ring
   have hsplit : (∫ x : ℝ, (|x| + d) * Real.exp (-(sigma * |x|)))

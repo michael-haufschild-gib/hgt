@@ -22,14 +22,14 @@ coordinate `x = 1/(t - rho)` turns
 
 into the rational function
 
-`w(x) = alpha*beta*x^3 / ((rho x + 1)((rho - alpha) x + 1)((rho - beta) x + 1))`,
+`w(x) = alpha*beta*x^(3 : ℕ) / ((rho x + 1)((rho - alpha) x + 1)((rho - beta) x + 1))`,
 
 which is regular at `x = 0` and vanishes there.  Hence `d(A)` is a genuine continuous function of
-`R` even though `A` is unbounded, and the completion inequality `D + q(R)^2 >= 0` becomes exactly
-the pointwise inequality `w + q^2 >= 0` on the spectrum of `R`.
+`R` even though `A` is unbounded, and the completion inequality `D + q(R)^(2 : ℕ) >= 0` becomes exactly
+the pointwise inequality `w + q^(2 : ℕ) >= 0` on the spectrum of `R`.
 
 Zero constant term of the interpolant is what makes its operator realization compact, and the
-same zero constant term makes `w(0) + q(0)^2 = 0`, so the accumulation point `0` of the spectrum
+same zero constant term makes `w(0) + q(0)^(2 : ℕ) = 0`, so the accumulation point `0` of the spectrum
 of a compact resolvent costs nothing.
 
 Everything is unconditional: no RH premise, no Xi divisor, no estimate, and no computation.
@@ -46,7 +46,7 @@ noncomputable section
 /-- The affine Krein weight read in the resolvent coordinate `x = 1 / (t - rho)`.  The cubic
 numerator makes it regular, and zero, at the spectral accumulation point `x = 0`. -/
 def suzukiKreinResolventWeight (alpha beta rho x : ℝ) : ℝ :=
-  alpha * beta * x ^ 3 /
+  alpha * beta * x ^ (3 : ℕ) /
     ((rho * x + 1) * ((rho - alpha) * x + 1) * ((rho - beta) * x + 1))
 
 @[simp] theorem suzukiKreinResolventWeight_zero (alpha beta rho : ℝ) :
@@ -73,7 +73,7 @@ theorem suzukiKreinResolventWeight_resolventNode
     rw [eq_div_iff hd, add_mul, mul_assoc, hinv]
     ring
   have key : t / (t - rho) * ((t - alpha) / (t - rho)) * ((t - beta) / (t - rho))
-      = t * (t - alpha) * (t - beta) / (t - rho) ^ 3 := by
+      = t * (t - alpha) * (t - beta) / (t - rho) ^ (3 : ℕ) := by
     field_simp
   rw [suzukiAffineResolventKreinDefect_eq hab ht0 hta htb, suzukiFiniteMorseResolventNode,
     suzukiKreinResolventWeight, h1, h2, h3, key, div_div_eq_mul_div]
@@ -97,9 +97,9 @@ below-spectrum resolvent. -/
 def suzukiOperatorKreinDefect (alpha beta rho : ℝ) (R : H →L[ℂ] H) : H →L[ℂ] H :=
   cfc (suzukiKreinResolventWeight alpha beta rho) R
 
-/-- The finite resolvent-jet square `q(R)^2`. -/
+/-- The finite resolvent-jet square `q(R)^(2 : ℕ)`. -/
 def suzukiResolventJetSquare (q : ℝ[X]) (R : H →L[ℂ] H) : H →L[ℂ] H :=
-  (Polynomial.aeval R q) ^ 2
+  (Polynomial.aeval R q) ^ (2 : ℕ)
 
 theorem suzukiResolventJet_isSelfAdjoint (q : ℝ[X]) {R : H →L[ℂ] H} (hR : IsSelfAdjoint R) :
     IsSelfAdjoint (Polynomial.aeval R q) := by
@@ -151,7 +151,7 @@ theorem isCompactOperator_suzukiResolventJet {q : ℝ[X]} (hq : q.coeff 0 = 0)
   intro i _
   rcases Nat.eq_zero_or_pos i with hi | hi
   · subst hi
-    have : (q.coeff 0 • R ^ 0 : H →L[ℂ] H) = 0 := by rw [hq]; simp
+    have : (q.coeff 0 • R ^ (0 : ℕ) : H →L[ℂ] H) = 0 := by rw [hq]; simp
     rw [this]
     exact isCompactOperator_zero
   · obtain ⟨k, rfl⟩ : ∃ k, i = k + 1 := ⟨i - 1, by omega⟩
@@ -165,10 +165,10 @@ theorem suzukiOperatorCompletion_eq_cfc
     {alpha beta rho : ℝ} {R : H →L[ℂ] H} (hR : IsSelfAdjoint R) (q : ℝ[X])
     (hcont : ContinuousOn (suzukiKreinResolventWeight alpha beta rho) (spectrum ℝ R)) :
     suzukiOperatorKreinDefect alpha beta rho R + suzukiResolventJetSquare q R
-      = cfc (fun x => suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ 2) R := by
+      = cfc (fun x => suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ (2 : ℕ)) R := by
   have hpoly : ContinuousOn (fun x : ℝ => q.eval x) (spectrum ℝ R) :=
     (Polynomial.continuous_aeval q).continuousOn
-  have hsq : cfc (fun x : ℝ => (q.eval x) ^ 2) R = suzukiResolventJetSquare q R := by
+  have hsq : cfc (fun x : ℝ => (q.eval x) ^ (2 : ℕ)) R = suzukiResolventJetSquare q R := by
     rw [cfc_pow (fun x : ℝ => q.eval x) 2 R hpoly, suzukiResolventJetSquare, cfc_polynomial q R]
   rw [cfc_add R _ _ hcont (by exact hpoly.pow 2), hsq, suzukiOperatorKreinDefect]
 
@@ -180,7 +180,7 @@ theorem suzukiOperatorCompletion_nonneg_iff
     (hden : ∀ x ∈ spectrum ℝ R,
       (rho * x + 1) * ((rho - alpha) * x + 1) * ((rho - beta) * x + 1) ≠ 0) :
     0 ≤ suzukiOperatorKreinDefect alpha beta rho R + suzukiResolventJetSquare q R ↔
-      ∀ x ∈ spectrum ℝ R, 0 ≤ suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ 2 := by
+      ∀ x ∈ spectrum ℝ R, 0 ≤ suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ (2 : ℕ) := by
   have hcont : ContinuousOn (suzukiKreinResolventWeight alpha beta rho) (spectrum ℝ R) :=
     continuousOn_suzukiKreinResolventWeight alpha beta rho hden
   have hpoly : ContinuousOn (fun x : ℝ => q.eval x) (spectrum ℝ R) :=
@@ -294,12 +294,12 @@ omit [CompleteSpace H] in
 /-- The jet square acts on an eigenvector by the squared polynomial value. -/
 theorem suzukiResolventJetSquare_apply_of_eigenvector {q : ℝ[X]} {R : H →L[ℂ] H} {x : ℝ} {v : H}
     (hv : R v = ((x : ℝ) : ℂ) • v) :
-    suzukiResolventJetSquare q R v = (((q.eval x ^ 2 : ℝ)) : ℂ) • v := by
+    suzukiResolventJetSquare q R v = (((q.eval x ^ (2 : ℕ) : ℝ)) : ℂ) • v := by
   have hstep : suzukiResolventJetSquare q R v
       = (Polynomial.aeval R q) ((Polynomial.aeval R q) v) := by
     rw [suzukiResolventJetSquare, pow_two]
     rfl
-  have hsc : ((q.eval x : ℝ) : ℂ) * ((q.eval x : ℝ) : ℂ) = (((q.eval x ^ 2 : ℝ)) : ℂ) := by
+  have hsc : ((q.eval x : ℝ) : ℂ) * ((q.eval x : ℝ) : ℂ) = (((q.eval x ^ (2 : ℕ) : ℝ)) : ℂ) := by
     push_cast
     ring
   rw [hstep, aeval_apply_of_eigenvector hv, ContinuousLinearMap.map_smul,
@@ -329,17 +329,17 @@ theorem suzukiOperatorResolventJetSquare_exactProjector_impossible
     (hnegative : ∃ v : H, v ≠ 0 ∧ R v = ((negativeNode : ℝ) : ℂ) • v ∧
       suzukiResolventJetSquare q R v = ((debt : ℝ) : ℂ) • v)
     (hdebt : 0 < debt) : False := by
-  have htail : ∀ x ∈ positiveNodes, q.eval x ^ 2 = 0 := by
+  have htail : ∀ x ∈ positiveNodes, q.eval x ^ (2 : ℕ) = 0 := by
     intro x hx
     obtain ⟨v, hv0, hveig, hvzero⟩ := hpositive x hx
     rw [suzukiResolventJetSquare_apply_of_eigenvector hveig] at hvzero
-    have : ((q.eval x ^ 2 : ℝ) : ℂ) • v = ((0 : ℝ) : ℂ) • v := by
+    have : ((q.eval x ^ (2 : ℕ) : ℝ) : ℂ) • v = ((0 : ℝ) : ℂ) • v := by
       rw [hvzero]
       simp
     exact real_smul_left_cancel hv0 this
   obtain ⟨v, hv0, hveig, hvdebt⟩ := hnegative
   rw [suzukiResolventJetSquare_apply_of_eigenvector hveig] at hvdebt
-  have hmatch : q.eval negativeNode ^ 2 = debt := real_smul_left_cancel hv0 hvdebt
+  have hmatch : q.eval negativeNode ^ (2 : ℕ) = debt := real_smul_left_cancel hv0 hvdebt
   exact suzukiFiniteResolventPolynomial_exactProjector_impossible q hinfinite htail hdebt hmatch
 
 /-! ## `(T3)`: the interpolant is a finite shift jet of the resolvent family -/
@@ -385,7 +385,7 @@ theorem suzukiFiniteMorse_completedWeight_eq_zero
     suzukiKreinResolventWeight alpha beta rho
         (suzukiFiniteMorseResolventNode rho (negativeLevel i))
       + ((suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-          (suzukiFiniteMorseResolventNode rho (negativeLevel i))) ^ 2 = 0 := by
+          (suzukiFiniteMorseResolventNode rho (negativeLevel i))) ^ (2 : ℕ) = 0 := by
   rw [suzukiKreinResolventWeight_resolventNode (ne_of_lt hab) (ne_of_lt (hnegative i))
     (ne_of_gt (lt_trans hab (hbt i))) (ne_of_gt (hbt i)) (ne_of_gt (hrho i))]
   exact suzukiFiniteMorseKreinInterpolant_cancels_negativeDefect

@@ -89,7 +89,7 @@ theorem opTrace_tsum_rankOneTerms_of_summable_norm
 /-- Trace of a scalar multiple of a positive rank-one operator. -/
 theorem opTrace_smul_rankOne_self (c : ℂ) (x : H) :
     ContinuousLinearMap.opTrace (c • InnerProductSpace.rankOne ℂ x x) =
-      c * (‖x‖ ^ 2 : ℂ) := by
+      c * (‖x‖ ^ (2 : ℕ) : ℂ) := by
   rw [opTrace_smul, GaloisForLFunctions.HTGeometry.opTrace_rankOne,
     inner_self_eq_norm_sq_to_K]
   rfl

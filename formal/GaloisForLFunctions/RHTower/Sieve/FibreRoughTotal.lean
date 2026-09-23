@@ -21,7 +21,7 @@ theorem sum_sq_card_fibre_roughSet_le {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h)
     (hpos : (∑ d ∈ Finset.Ico 1 (⌊h⌋₊ + 1),
         ((((T ∩ fibreDyadicIndex x h).filter
           (fun m => m + d ∈ T ∩ fibreDyadicIndex x h)).card : ℕ) : ℝ)) ≤ B1) :
-    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ 2
+    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ (2 : ℕ)
       ≤ (2 * h + 1) * (2 * (B0 + B1)) := by
   classical
   set A : Finset ℕ := T ∩ fibreDyadicIndex x h with hA

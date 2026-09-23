@@ -64,8 +64,8 @@ theorem pairedEtaFiniteCutoffLog_oddHeatTranspose_mvHilbert_twentySix
     {K : ℕ} (hK : 0 < K) (x y : Fin K → ℂ) :
     ‖finiteGaussianOddHeatTransposeBilinear
         (fun r : Fin K ↦ pairedEtaCutoffLogFrequency r.val) x y‖ ≤
-      26 * Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖x r‖ ^ 2) *
-        Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖y r‖ ^ 2) := by
+      26 * Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖x r‖ ^ (2 : ℕ)) *
+        Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖y r‖ ^ (2 : ℕ)) := by
   rw [finiteGaussianOddHeatTransposeBilinear_eq_sesquilinear]
   have hbound :=
     pairedEtaFiniteCutoffLog_oddHeat_mvHilbert_twentySix
@@ -347,7 +347,7 @@ theorem pairedEtaTopPrefixFiniteHeatHilbertZeroLeadingBlock_eq_blockForm
 Montgomery--Vaughan bound. -/
 def pairedEtaFiniteCutoffLogHilbertScale
     (K : ℕ) (x : Fin K → ℂ) : ℝ :=
-  Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖x r‖ ^ 2)
+  Real.sqrt ((((2 * K : ℕ) : ℝ)) * ∑ r, ‖x r‖ ^ (2 : ℕ))
 
 /-- Explicit Montgomery--Vaughan envelope for one zero's transformed leading
 channel block. -/

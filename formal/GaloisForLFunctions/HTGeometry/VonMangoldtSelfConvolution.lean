@@ -7,7 +7,7 @@ import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 integers with at most two distinct prime divisors, and there it is explicit:
 
 ```text
-(Λ * Λ)(p^a)     = (a - 1) (log p)^2,
+(Λ * Λ)(p^a)     = (a - 1) (log p)^(2 : ℕ),
 (Λ * Λ)(p^a q^b) = 2 log p log q       (p ≠ q).
 ```
 -/
@@ -77,14 +77,14 @@ theorem vonMangoldt_mul_self_eq_zero_of_three_le {n : ℕ} (hn : 3 ≤ n.primeFa
 
 /-! ## The two explicit layers -/
 
-/-- **The one-prime layer.**  `(Λ * Λ)(p^a) = (a - 1)(log p)^2`. -/
+/-- **The one-prime layer.**  `(Λ * Λ)(p^a) = (a - 1)(log p)^(2 : ℕ)`. -/
 theorem vonMangoldt_mul_self_prime_pow {p a : ℕ} (hp : p.Prime) (ha : 1 ≤ a) :
-    (Λ * Λ) (p ^ a) = ((a : ℝ) - 1) * Real.log p ^ 2 := by
+    (Λ * Λ) (p ^ a) = ((a : ℝ) - 1) * Real.log p ^ (2 : ℕ) := by
   classical
   rw [ArithmeticFunction.mul_apply, Nat.sum_divisorsAntidiagonal (fun i j => Λ i * Λ j),
     Nat.sum_divisors_prime_pow hp]
   have hstep : ∀ x ∈ Finset.range (a + 1),
-      Λ (p ^ x) * Λ (p ^ a / p ^ x) = if x ∈ Finset.Ioo 0 a then Real.log p ^ 2 else 0 := by
+      Λ (p ^ x) * Λ (p ^ a / p ^ x) = if x ∈ Finset.Ioo 0 a then Real.log p ^ (2 : ℕ) else 0 := by
     intro x hx
     have hxa : x ≤ a := Nat.lt_succ_iff.mp (Finset.mem_range.mp hx)
     rw [Nat.pow_div hxa hp.pos]

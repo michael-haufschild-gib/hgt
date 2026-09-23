@@ -20,16 +20,16 @@ open Finset ArithmeticFunction
 /-- **Step 1 of the proof, with the mean-square input as a hypothesis.** -/
 theorem card_le_good_add_meanSquare {S Bad₂ : Finset ℕ} {L : ℕ} {D V : ℝ}
     (hδ : 0 < (1 / 8) * D * (L : ℝ))
-    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V)
+    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V)
     (h2 : ∀ t ∈ S, t ∉ Bad₂ →
-      (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2) :
+      (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) :
     (S.card : ℝ)
       ≤ ((S.filter (fun t =>
           (3 / 16) * D * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = 1)).card : ℝ)
             ∧ (3 / 16) * D * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / ((1 / 8) * D * (L : ℝ)) ^ 2 + (Bad₂.card : ℝ) := by
+        + V / ((1 / 8) * D * (L : ℝ)) ^ (2 : ℕ) + (Bad₂.card : ℝ) := by
   classical
   set δ : ℝ := (1 / 8) * D * (L : ℝ) with hδdef
   set M : ℕ → ℝ := fun t => ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) with hM
@@ -42,7 +42,7 @@ theorem card_le_good_add_meanSquare {S Bad₂ : Finset ℕ} {L : ℕ} {D V : ℝ
     linarith [not_le.mp this]
   have hcover := card_le_good_add_bad (S := S) (Bad₁ := Bad₁) (Bad₂ := Bad₂) (L := L) (D := D)
     h1 h2
-  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ 2 := by
+  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ (2 : ℕ) := by
     rw [hBad₁]
     exact RHTower.card_large_le_of_sum_sq_le hδ hms
   have hcast : (S.card : ℝ)

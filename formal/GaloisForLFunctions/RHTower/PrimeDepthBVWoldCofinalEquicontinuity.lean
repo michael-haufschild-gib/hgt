@@ -24,7 +24,7 @@ open PrimitivePromotedCofinalDepth
 /-- Centered `r`-step source-normal transport.  The square records the two polarized legs. -/
 def primeDepthBVWoldSourceNormalCofinalCenteredTransport
     (sourceDepth r : ℕ) (f : Nat.Primes → ℝ) (p : Nat.Primes) : ℝ :=
-  criticalDepthDeattenuation (p, sourceDepth) r ^ 2 * f p
+  criticalDepthDeattenuation (p, sourceDepth) r ^ (2 : ℕ) * f p
 
 /-- The source-normal transport multiplier is the exact prime power required by Wold depth. -/
 theorem primeDepthBVWoldSourceNormalCofinalCenteredTransport_eq

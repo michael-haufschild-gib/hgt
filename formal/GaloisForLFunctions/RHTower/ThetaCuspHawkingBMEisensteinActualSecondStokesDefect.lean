@@ -8,14 +8,14 @@ legs and the abstract balanced spin-two coefficient.  For the repeated actual co
 leg `F`, the three orthonormal hyperbolic Hessian components are
 
 ```text
-A = y^2 F_xx - y F_y,
-B = y^2 F_xy + y F_x,
-C = y^2 F_yy + y F_y.
+A = y^(2 : ℕ) F_xx - y F_y,
+B = y^(2 : ℕ) F_xy + y F_x,
+C = y^(2 : ℕ) F_yy + y F_y.
 ```
 
-The literal product `(R_2 R_0 F)(L_(-2) L_0 F)` is `(C-A)^2 + 4 B^2`.  The actual eigen equation
+The literal product `(R_2 R_0 F)(L_(-2) L_0 F)` is `(C-A)^(2 : ℕ) + 4 B^(2 : ℕ)`.  The actual eigen equation
 identifies `A+C` with `lambda F`, hence the product is exactly
-`2 (A^2 + 2 B^2 + C^2) - lambda^2 F^2`.  Multiplication by the projecting actual Poincare leg
+`2 (A^(2 : ℕ) + 2 B^(2 : ℕ) + C^(2 : ℕ)) - lambda^(2 : ℕ) F^(2 : ℕ)`.  Multiplication by the projecting actual Poincare leg
 therefore realizes the abstract balanced full-Hessian moment pointwise.  Instantiating the corpus
 exhaustive defect identity leaves precisely the actual first and second Stokes defects; C-A.9t3d
 has already closed the former after truncation and finite part.
@@ -35,21 +35,21 @@ noncomputable section
 def d4BMActualHyperbolicHessianXX
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  (z.y : ℂ) ^ 2 * d4BMCompletedPoincareHorizontalSecondJet z P -
+  (z.y : ℂ) ^ (2 : ℕ) * d4BMCompletedPoincareHorizontalSecondJet z P -
     (z.y : ℂ) * d4BMCompletedPoincareVerticalFirstJet z P
 
 /-- Orthonormal mixed covariant Hessian component of the actual Poincare leg. -/
 def d4BMActualHyperbolicHessianXY
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  (z.y : ℂ) ^ 2 * d4BMCompletedPoincareMixedSecondJet z P +
+  (z.y : ℂ) ^ (2 : ℕ) * d4BMCompletedPoincareMixedSecondJet z P +
     (z.y : ℂ) * d4BMCompletedPoincareHorizontalFirstJet z P
 
 /-- Orthonormal vertical-vertical covariant Hessian component of the actual Poincare leg. -/
 def d4BMActualHyperbolicHessianYY
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  (z.y : ℂ) ^ 2 * d4BMCompletedPoincareVerticalSecondJet z P +
+  (z.y : ℂ) ^ (2 : ℕ) * d4BMCompletedPoincareVerticalSecondJet z P +
     (z.y : ℂ) * d4BMCompletedPoincareVerticalFirstJet z P
 
 /-- Actual projecting-leg-weighted full covariant-Hessian density.  The bilinear square, rather
@@ -58,9 +58,9 @@ def d4BMActualSecondStokesHessianDensity
     (z : D4BMUpperHalfPlaneCoordinate)
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   d4BMCompletedEisensteinPoincareSeries z Q *
-    (d4BMActualHyperbolicHessianXX z P ^ 2 +
-      2 * d4BMActualHyperbolicHessianXY z P ^ 2 +
-      d4BMActualHyperbolicHessianYY z P ^ 2)
+    (d4BMActualHyperbolicHessianXX z P ^ (2 : ℕ) +
+      2 * d4BMActualHyperbolicHessianXY z P ^ (2 : ℕ) +
+      d4BMActualHyperbolicHessianYY z P ^ (2 : ℕ))
 
 /-- Literal actual balanced `++-` spin-two source density. -/
 def d4BMActualBalancedSpinTwoDensity
@@ -81,32 +81,32 @@ def d4BMActualSecondStokesDefectDensity
 
 private theorem d4BM_balancedMaass_product_eq_covariantHessian
     (y f fx fy fxx fxy fyy g lambda : ℂ)
-    (htrace : y ^ 2 * (fxx + fyy) = lambda * f) :
-    (y ^ 2 * (fyy - fxx + 2 * Complex.I * fxy) +
+    (htrace : y ^ (2 : ℕ) * (fxx + fyy) = lambda * f) :
+    (y ^ (2 : ℕ) * (fyy - fxx + 2 * Complex.I * fxy) +
         2 * y * (fy + Complex.I * fx)) *
-      (y ^ 2 * (fyy - fxx - 2 * Complex.I * fxy) +
+      (y ^ (2 : ℕ) * (fyy - fxx - 2 * Complex.I * fxy) +
         2 * y * (fy - Complex.I * fx)) * g =
       2 * g *
-          ((y ^ 2 * fxx - y * fy) ^ 2 +
-            2 * (y ^ 2 * fxy + y * fx) ^ 2 +
-            (y ^ 2 * fyy + y * fy) ^ 2) -
-        lambda ^ 2 * (f ^ 2 * g) := by
+          ((y ^ (2 : ℕ) * fxx - y * fy) ^ (2 : ℕ) +
+            2 * (y ^ (2 : ℕ) * fxy + y * fx) ^ (2 : ℕ) +
+            (y ^ (2 : ℕ) * fyy + y * fy) ^ (2 : ℕ)) -
+        lambda ^ (2 : ℕ) * (f ^ (2 : ℕ) * g) := by
   calc
-    _ = ((y ^ 2 * (fyy - fxx) + 2 * y * fy) ^ 2 +
-          4 * (y ^ 2 * fxy + y * fx) ^ 2) * g := by
+    _ = ((y ^ (2 : ℕ) * (fyy - fxx) + 2 * y * fy) ^ (2 : ℕ) +
+          4 * (y ^ (2 : ℕ) * fxy + y * fx) ^ (2 : ℕ)) * g := by
       ring_nf
       simp
       ring
     _ = (2 *
-          ((y ^ 2 * fxx - y * fy) ^ 2 +
-            2 * (y ^ 2 * fxy + y * fx) ^ 2 +
-            (y ^ 2 * fyy + y * fy) ^ 2) -
-          (y ^ 2 * (fxx + fyy)) ^ 2) * g := by ring
+          ((y ^ (2 : ℕ) * fxx - y * fy) ^ (2 : ℕ) +
+            2 * (y ^ (2 : ℕ) * fxy + y * fx) ^ (2 : ℕ) +
+            (y ^ (2 : ℕ) * fyy + y * fy) ^ (2 : ℕ)) -
+          (y ^ (2 : ℕ) * (fxx + fyy)) ^ (2 : ℕ)) * g := by ring
     _ = 2 * g *
-          ((y ^ 2 * fxx - y * fy) ^ 2 +
-            2 * (y ^ 2 * fxy + y * fx) ^ 2 +
-            (y ^ 2 * fyy + y * fy) ^ 2) -
-        lambda ^ 2 * (f ^ 2 * g) := by
+          ((y ^ (2 : ℕ) * fxx - y * fy) ^ (2 : ℕ) +
+            2 * (y ^ (2 : ℕ) * fxy + y * fx) ^ (2 : ℕ) +
+            (y ^ (2 : ℕ) * fyy + y * fy) ^ (2 : ℕ)) -
+        lambda ^ (2 : ℕ) * (f ^ (2 : ℕ) * g) := by
       rw [htrace]
       ring
 

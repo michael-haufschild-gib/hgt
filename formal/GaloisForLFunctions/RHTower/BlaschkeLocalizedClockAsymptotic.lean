@@ -88,14 +88,14 @@ theorem tendsto_blaschkeShiftedScale_div_natCast
 theorem tendsto_blaschkeSqrtShiftedScale_div_natCast_sq_zero
     (K : ℝ) :
     Tendsto (fun k : ℕ =>
-      blaschkeSqrtShiftedScale K k / (k : ℝ) ^ 2)
+      blaschkeSqrtShiftedScale K k / (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hmul :=
     (tendsto_blaschkeSqrtShiftedScale_div_natCast K).mul
       tendsto_inv_natCast_atTop_zero
   have ht :
       Tendsto (fun k : ℕ =>
-        blaschkeSqrtShiftedScale K k / (k : ℝ) ^ 2)
+        blaschkeSqrtShiftedScale K k / (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 * 0)) := by
     apply hmul.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -104,14 +104,14 @@ theorem tendsto_blaschkeSqrtShiftedScale_div_natCast_sq_zero
   simpa using ht
 
 theorem tendsto_const_div_natCast_sq_zero (C : ℝ) :
-    Tendsto (fun k : ℕ => C / (k : ℝ) ^ 2)
+    Tendsto (fun k : ℕ => C / (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hC :
       Tendsto (fun k : ℕ => C / (k : ℝ)) atTop (𝓝 0) :=
     Tendsto.div_atTop tendsto_const_nhds tendsto_natCast_atTop_atTop
   have hmul := hC.mul tendsto_inv_natCast_atTop_zero
   have ht :
-      Tendsto (fun k : ℕ => C / (k : ℝ) ^ 2)
+      Tendsto (fun k : ℕ => C / (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (0 * 0)) := by
     apply hmul.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -122,9 +122,9 @@ theorem tendsto_const_div_natCast_sq_zero (C : ℝ) :
 theorem tendsto_blaschkeSqrtShiftedQuadratic_normalized
     (a K : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
     Tendsto (fun k : ℕ =>
-      (blaschkeSqrtShiftedScale K k - blaschkeSpectralOffset a) ^ 2 /
+      (blaschkeSqrtShiftedScale K k - blaschkeSpectralOffset a) ^ (2 : ℕ) /
           (4 * blaschkeSpectralSlope a) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   have hc :
       Tendsto (fun k : ℕ =>
@@ -140,11 +140,11 @@ theorem tendsto_blaschkeSqrtShiftedQuadratic_normalized
   have ht :
       Tendsto (fun k : ℕ =>
         (blaschkeSqrtShiftedScale K k -
-            blaschkeSpectralOffset a) ^ 2 /
+            blaschkeSpectralOffset a) ^ (2 : ℕ) /
             (4 * blaschkeSpectralSlope a) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop
-        (𝓝 ((1 - 0) ^ 2 /
+        (𝓝 ((1 - 0) ^ (2 : ℕ) /
           (4 * blaschkeSpectralSlope a))) := by
     apply hscaled.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -159,7 +159,7 @@ theorem tendsto_blaschkeSqrtShiftedLinearError_normalized
           (blaschkeSqrtShiftedScale K k -
             blaschkeSpectralOffset a) / 2 +
           blaschkeSpectralSlope a / 4) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hS :=
     tendsto_blaschkeSqrtShiftedScale_div_natCast_sq_zero K
@@ -180,7 +180,7 @@ theorem tendsto_blaschkeSqrtShiftedLinearError_normalized
             (blaschkeSqrtShiftedScale K k -
               blaschkeSpectralOffset a) / 2 +
             blaschkeSpectralSlope a / 4) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 ((0 - 0) / 2 + (0 - 0) / 2 + 0 / 4)) := by
     apply hsum.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -196,7 +196,7 @@ theorem tendsto_blaschkeDepthWaterEntropy_sqrtShift_normalized
     Tendsto (fun k : ℕ =>
       blaschkeDepthWaterEntropy a
           (blaschkeSqrtShiftedScale K k) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   have hquad :=
     tendsto_blaschkeSqrtShiftedQuadratic_normalized
@@ -207,15 +207,15 @@ theorem tendsto_blaschkeDepthWaterEntropy_sqrtShift_normalized
   have hupper' :
       Tendsto (fun k : ℕ =>
         (blaschkeSqrtShiftedScale K k -
-            blaschkeSpectralOffset a) ^ 2 /
+            blaschkeSpectralOffset a) ^ (2 : ℕ) /
             (4 * blaschkeSpectralSlope a) /
-          (k : ℝ) ^ 2 +
+          (k : ℝ) ^ (2 : ℕ) +
         ((blaschkeSqrtShiftedScale K k -
               blaschkeSpectralSlope a) / 2 +
             (blaschkeSqrtShiftedScale K k -
               blaschkeSpectralOffset a) / 2 +
             blaschkeSpectralSlope a / 4) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
     simpa using hupper
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hquad hupper'
@@ -266,7 +266,7 @@ theorem tendsto_blaschkeActiveTailRadius_sqrtShift_normalized
     Tendsto (fun k : ℕ =>
       ((blaschkeActiveTailRadius a
           (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hS :=
     tendsto_blaschkeSqrtShiftedScale_div_natCast_sq_zero K
@@ -282,14 +282,14 @@ theorem tendsto_blaschkeActiveTailRadius_sqrtShift_normalized
         (((blaschkeSqrtShiftedScale K k -
             blaschkeSpectralOffset a) /
               blaschkeSpectralSlope a) + 1) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 0) := by
     have ht :
         Tendsto (fun k : ℕ =>
           (((blaschkeSqrtShiftedScale K k -
               blaschkeSpectralOffset a) /
                 blaschkeSpectralSlope a) + 1) /
-            (k : ℝ) ^ 2)
+            (k : ℝ) ^ (2 : ℕ))
           atTop (𝓝 ((0 - 0) / blaschkeSpectralSlope a + 0)) := by
       apply hmajor.congr'
       filter_upwards [eventually_ge_atTop 1] with k hk
@@ -330,7 +330,7 @@ theorem tendsto_blaschkeActiveHeadCost_sqrtShift_normalized
       (((blaschkeActiveTailRadius a
           (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
           Real.log projectivePhaseResolutionConstant) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have h :=
     (tendsto_blaschkeActiveTailRadius_sqrtShift_normalized
@@ -341,7 +341,7 @@ theorem tendsto_blaschkeActiveHeadCost_sqrtShift_normalized
         (((blaschkeActiveTailRadius a
             (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
             Real.log projectivePhaseResolutionConstant) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (0 * Real.log projectivePhaseResolutionConstant)) := by
     apply h.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -360,7 +360,7 @@ theorem tendsto_blaschkeConstructiveClockCarrier_normalized
           ((blaschkeActiveTailRadius a
               (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
             Real.log projectivePhaseResolutionConstant) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   have hH :=
     tendsto_blaschkeDepthWaterEntropy_sqrtShift_normalized
@@ -376,7 +376,7 @@ theorem tendsto_blaschkeConstructiveClockCarrier_normalized
             ((blaschkeActiveTailRadius a
                 (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
               Real.log projectivePhaseResolutionConstant) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a) + 0)) := by
     apply hsum.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -387,14 +387,14 @@ theorem tendsto_blaschkeConstructiveClockCarrier_normalized
 theorem tendsto_blaschkeShiftedScale_div_natCast_sq_zero
     (K : ℝ) :
     Tendsto (fun k : ℕ =>
-      blaschkeShiftedScale K k / (k : ℝ) ^ 2)
+      blaschkeShiftedScale K k / (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hmul :=
     (tendsto_blaschkeShiftedScale_div_natCast K).mul
       tendsto_inv_natCast_atTop_zero
   have ht :
       Tendsto (fun k : ℕ =>
-        blaschkeShiftedScale K k / (k : ℝ) ^ 2)
+        blaschkeShiftedScale K k / (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 * 0)) := by
     apply hmul.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -405,7 +405,7 @@ theorem tendsto_blaschkeShiftedScale_div_natCast_sq_zero
 theorem tendsto_blaschkeShiftedQuadraticClock_normalized
     (a K : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
     Tendsto (fun k : ℕ =>
-      blaschkeShiftedQuadraticClock a K k / (k : ℝ) ^ 2)
+      blaschkeShiftedQuadraticClock a K k / (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   have hc :
       Tendsto (fun k : ℕ =>
@@ -420,9 +420,9 @@ theorem tendsto_blaschkeShiftedQuadraticClock_normalized
     (blaschkeSpectralSlope_pos a ha0 ha1).ne'
   have ht :
       Tendsto (fun k : ℕ =>
-        blaschkeShiftedQuadraticClock a K k / (k : ℝ) ^ 2)
+        blaschkeShiftedQuadraticClock a K k / (k : ℝ) ^ (2 : ℕ))
         atTop
-        (𝓝 ((1 - 0) ^ 2 /
+        (𝓝 ((1 - 0) ^ (2 : ℕ) /
           (4 * blaschkeSpectralSlope a))) := by
     apply hscaled.congr'
     filter_upwards [eventually_ge_atTop 1] with k hk
@@ -436,7 +436,7 @@ theorem tendsto_blaschkeSubentropyCarrier_normalized
     Tendsto (fun k : ℕ =>
       ((1 - delta) * blaschkeShiftedQuadraticClock a K k -
           blaschkeShiftedScale K k) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop
       (𝓝 ((1 - delta) /
         (4 * blaschkeSpectralSlope a))) := by
@@ -449,7 +449,7 @@ theorem tendsto_blaschkeSubentropyCarrier_normalized
       Tendsto (fun k : ℕ =>
         ((1 - delta) * blaschkeShiftedQuadraticClock a K k -
             blaschkeShiftedScale K k) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop
         (𝓝 ((1 - delta) *
             (1 / (4 * blaschkeSpectralSlope a)) - 0)) := by
@@ -608,7 +608,7 @@ theorem tendsto_blaschkeFirstReturnClock_normalized_of_all_subentropy
             Real.log projectivePhaseResolutionConstant) :
     Tendsto (fun k : ℕ =>
       Real.log (blaschkeFirstReturnClock a x K k : ℝ) /
-        (k : ℝ) ^ 2)
+        (k : ℝ) ^ (2 : ℕ))
       atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   let c : ℝ := 1 / (4 * blaschkeSpectralSlope a)
   have hrho : 0 < blaschkeSpectralSlope a :=
@@ -653,18 +653,18 @@ theorem tendsto_blaschkeFirstReturnClock_normalized_of_all_subentropy
             ((1 - delta) *
                   blaschkeShiftedQuadraticClock a K k -
                 blaschkeShiftedScale K k) /
-              (k : ℝ) ^ 2 :=
+              (k : ℝ) ^ (2 : ℕ) :=
       (tendsto_order.1 hcarrier).1 b hlimit
     filter_upwards [
       hcarrierAbove, hlower m, eventually_ge_atTop 1] with k hb hlow hk
-    have hkpos : 0 < (k : ℝ) ^ 2 := by positivity
+    have hkpos : 0 < (k : ℝ) ^ (2 : ℕ) := by positivity
     have hnormalized :
         ((1 - delta) *
               blaschkeShiftedQuadraticClock a K k -
             blaschkeShiftedScale K k) /
-            (k : ℝ) ^ 2 <
+            (k : ℝ) ^ (2 : ℕ) <
           Real.log (blaschkeFirstReturnClock a x K k : ℝ) /
-            (k : ℝ) ^ 2 :=
+            (k : ℝ) ^ (2 : ℕ) :=
       (div_lt_div_iff_of_pos_right hkpos).2 (by
         simpa only [delta] using hlow)
     exact hb.trans hnormalized
@@ -676,20 +676,20 @@ theorem tendsto_blaschkeFirstReturnClock_normalized_of_all_subentropy
               ((blaschkeActiveTailRadius a
                   (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
                 Real.log projectivePhaseResolutionConstant) /
-              (k : ℝ) ^ 2 < b :=
+              (k : ℝ) ^ (2 : ℕ) < b :=
       (tendsto_order.1 hupperCarrier).2 b hcb
     filter_upwards [
       hcarrierBelow, hupper, eventually_ge_atTop 1] with k hb hup hk
-    have hkpos : 0 < (k : ℝ) ^ 2 := by positivity
+    have hkpos : 0 < (k : ℝ) ^ (2 : ℕ) := by positivity
     have hnormalized :
         Real.log (blaschkeFirstReturnClock a x K k : ℝ) /
-              (k : ℝ) ^ 2 ≤
+              (k : ℝ) ^ (2 : ℕ) ≤
             (blaschkeDepthWaterEntropy a
                   (blaschkeSqrtShiftedScale K k) +
                 ((blaschkeActiveTailRadius a
                     (blaschkeSqrtShiftedScale K k) + 1 : ℕ) : ℝ) *
                   Real.log projectivePhaseResolutionConstant) /
-              (k : ℝ) ^ 2 :=
+              (k : ℝ) ^ (2 : ℕ) :=
       (div_le_div_iff_of_pos_right hkpos).2 (by
         simpa only using hup)
     exact hnormalized.trans_lt hb
@@ -712,7 +712,7 @@ theorem ae_tendsto_blaschkeFirstReturnClock_normalized
           (volume : Measure UnitAddCircle)),
       Tendsto (fun k : ℕ =>
         Real.log (blaschkeFirstReturnClock a x K k : ℝ) /
-          (k : ℝ) ^ 2)
+          (k : ℝ) ^ (2 : ℕ))
         atTop (𝓝 (1 / (4 * blaschkeSpectralSlope a))) := by
   have hall :
       ∀ m : ℕ,

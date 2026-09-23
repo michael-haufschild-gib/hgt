@@ -20,50 +20,50 @@ noncomputable section
 two outer and two inner radial powers. -/
 theorem thetaProductFiberEvenMoment_primeCube
     {p : ℕ} (hp : p.Prime) (r : ℕ) :
-    thetaProductFiberEvenMoment (p ^ 3) r =
+    thetaProductFiberEvenMoment (p ^ (3 : ℕ)) r =
       2 * (3 * Real.log p / 2) ^ (2 * r) +
         2 * (Real.log p / 2) ^ (2 * r) := by
   rw [thetaProductFiberEvenMoment, thetaPositiveFactorPairs_prime_cube hp]
   obtain ⟨hpp, hp2p3⟩ := prime_lt_sq_and_sq_lt_cube hp
-  have hp3one : 1 < p ^ 3 := hp.one_lt.trans (hpp.trans hp2p3)
+  have hp3one : 1 < p ^ (3 : ℕ) := hp.one_lt.trans (hpp.trans hp2p3)
   have hpOne : 1 ≤ p := hp.one_lt.le
-  have hp2One : 1 ≤ p ^ 2 := hpOne.trans (hpp.le)
-  have hp3One : 1 ≤ p ^ 3 := hp3one.le
-  have hleft : (0, p ^ 3 - 1) ∉
-      ({(p - 1, p ^ 2 - 1), (p ^ 2 - 1, p - 1), (p ^ 3 - 1, 0)} :
+  have hp2One : 1 ≤ p ^ (2 : ℕ) := hpOne.trans (hpp.le)
+  have hp3One : 1 ≤ p ^ (3 : ℕ) := hp3one.le
+  have hleft : (0, p ^ (3 : ℕ) - 1) ∉
+      ({(p - 1, p ^ (2 : ℕ) - 1), (p ^ (2 : ℕ) - 1, p - 1), (p ^ (3 : ℕ) - 1, 0)} :
         Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_insert, Finset.mem_singleton, Prod.mk.injEq, not_or]
     omega
-  have hinnerLeft : (p - 1, p ^ 2 - 1) ∉
-      ({(p ^ 2 - 1, p - 1), (p ^ 3 - 1, 0)} : Finset (ℕ × ℕ)) := by
+  have hinnerLeft : (p - 1, p ^ (2 : ℕ) - 1) ∉
+      ({(p ^ (2 : ℕ) - 1, p - 1), (p ^ (3 : ℕ) - 1, 0)} : Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
     constructor
     · intro heq
-      have hfst : p - 1 = p ^ 2 - 1 := congrArg Prod.fst heq
-      have hpEq : p = p ^ 2 := by
+      have hfst : p - 1 = p ^ (2 : ℕ) - 1 := congrArg Prod.fst heq
+      have hpEq : p = p ^ (2 : ℕ) := by
         calc
           p = (p - 1) + 1 := (Nat.sub_add_cancel hpOne).symm
-          _ = (p ^ 2 - 1) + 1 := by rw [hfst]
-          _ = p ^ 2 := Nat.sub_add_cancel hp2One
+          _ = (p ^ (2 : ℕ) - 1) + 1 := by rw [hfst]
+          _ = p ^ (2 : ℕ) := Nat.sub_add_cancel hp2One
       exact (ne_of_lt hpp) hpEq
     · intro heq
-      have hfst : p - 1 = p ^ 3 - 1 := congrArg Prod.fst heq
-      have hpEq : p = p ^ 3 := by
+      have hfst : p - 1 = p ^ (3 : ℕ) - 1 := congrArg Prod.fst heq
+      have hpEq : p = p ^ (3 : ℕ) := by
         calc
           p = (p - 1) + 1 := (Nat.sub_add_cancel hpOne).symm
-          _ = (p ^ 3 - 1) + 1 := by rw [hfst]
-          _ = p ^ 3 := Nat.sub_add_cancel hp3One
+          _ = (p ^ (3 : ℕ) - 1) + 1 := by rw [hfst]
+          _ = p ^ (3 : ℕ) := Nat.sub_add_cancel hp3One
       exact (ne_of_lt (hpp.trans hp2p3)) hpEq
-  have hinnerRight : (p ^ 2 - 1, p - 1) ∉
-      ({(p ^ 3 - 1, 0)} : Finset (ℕ × ℕ)) := by
+  have hinnerRight : (p ^ (2 : ℕ) - 1, p - 1) ∉
+      ({(p ^ (3 : ℕ) - 1, 0)} : Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_singleton]
     intro heq
-    have hfst : p ^ 2 - 1 = p ^ 3 - 1 := congrArg Prod.fst heq
-    have hpEq : p ^ 2 = p ^ 3 := by
+    have hfst : p ^ (2 : ℕ) - 1 = p ^ (3 : ℕ) - 1 := congrArg Prod.fst heq
+    have hpEq : p ^ (2 : ℕ) = p ^ (3 : ℕ) := by
       calc
-        p ^ 2 = (p ^ 2 - 1) + 1 := (Nat.sub_add_cancel hp2One).symm
-        _ = (p ^ 3 - 1) + 1 := by rw [hfst]
-        _ = p ^ 3 := Nat.sub_add_cancel hp3One
+        p ^ (2 : ℕ) = (p ^ (2 : ℕ) - 1) + 1 := (Nat.sub_add_cancel hp2One).symm
+        _ = (p ^ (3 : ℕ) - 1) + 1 := by rw [hfst]
+        _ = p ^ (3 : ℕ) := Nat.sub_add_cancel hp3One
     exact (ne_of_lt hp2p3) hpEq
   rw [Finset.sum_insert hleft, Finset.sum_insert hinnerLeft,
     Finset.sum_insert hinnerRight, Finset.sum_singleton]
@@ -82,7 +82,7 @@ theorem thetaProductFiberEvenMoment_primeCube
 two-radius formula. -/
 theorem coeff_sum_finiteCosinePolynomial_primeCube_two_mul
     {p : ℕ} (hp : p.Prime) (d l : ℕ) :
-    (∑ q ∈ thetaPositiveFactorPairs (p ^ 3),
+    (∑ q ∈ thetaPositiveFactorPairs (p ^ (3 : ℕ)),
       finiteCosinePolynomial d (thetaFactorPairLogDisplacement q)).coeff (2 * l) =
       if l ≤ d then
         ((-1 : ℂ) ^ l *

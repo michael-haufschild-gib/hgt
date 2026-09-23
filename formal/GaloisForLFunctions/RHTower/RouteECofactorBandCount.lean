@@ -30,7 +30,7 @@ theorem one_le_of_mem_excludedPrimes {Band : ℕ → Prop} [DecidablePred Band] 
 
 /-- **The odd band-avoiding squarefree cofactors, counted from below.** -/
 theorem card_oddBase_ge {Band : ℕ → Prop} [DecidablePred Band] {T R : ℕ} (hR : 1 ≤ R)
-    (hRY : T / 2 ≤ R ^ 2) :
+    (hRY : T / 2 ≤ R ^ (2 : ℕ)) :
     ((T / 2 : ℕ) : ℝ) * Sieve.squarefreeDensity
         - ((R : ℝ) + ((T / 2 : ℕ) : ℝ) / (R : ℝ))
         - ∑ p ∈ excludedPrimes Band (T / 2), ((T / 2 : ℕ) : ℝ) / (p : ℝ)
@@ -53,7 +53,7 @@ theorem card_oddBase_ge {Band : ℕ → Prop} [DecidablePred Band] {T R : ℕ} (
 /-- **The card's `(7)` source sum, from below.**  Every weight `s^{-1/2}` with `s ≤ T/2` is at
 least `(T/2)^{-1/2}`, so the source sum dominates the count divided by `√(T/2)`. -/
 theorem sum_sqrtInv_oddBase_ge {Band : ℕ → Prop} [DecidablePred Band] {T R : ℕ} (hR : 1 ≤ R)
-    (hRY : T / 2 ≤ R ^ 2) :
+    (hRY : T / 2 ≤ R ^ (2 : ℕ)) :
     (((T / 2 : ℕ) : ℝ) * Sieve.squarefreeDensity
         - ((R : ℝ) + ((T / 2 : ℕ) : ℝ) / (R : ℝ))
         - ∑ p ∈ excludedPrimes Band (T / 2), ((T / 2 : ℕ) : ℝ) / (p : ℝ))
@@ -93,7 +93,7 @@ theorem sum_sqrtInv_oddBase_ge {Band : ℕ → Prop} [DecidablePred Band] {T R :
 least half the source sum, and the source sum is the odd band-avoiding squarefree count divided by
 `√(T/2)`.  At `R ≍ √T` and a band whose reciprocal mass is small the right side is `≍ √T`. -/
 theorem sum_sqrtInv_parityClass_ge {Band : ℕ → Prop} [DecidablePred Band] (hband : ¬ Band 2)
-    {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) {T R : ℕ} (hR : 1 ≤ R) (hRY : T / 2 ≤ R ^ 2) :
+    {σ : ℤ} (hσ : σ = 1 ∨ σ = -1) {T R : ℕ} (hR : 1 ≤ R) (hRY : T / 2 ≤ R ^ (2 : ℕ)) :
     (1 / 2 : ℝ) * ((((T / 2 : ℕ) : ℝ) * Sieve.squarefreeDensity
           - ((R : ℝ) + ((T / 2 : ℕ) : ℝ) / (R : ℝ))
           - ∑ p ∈ excludedPrimes Band (T / 2), ((T / 2 : ℕ) : ℝ) / (p : ℝ))

@@ -41,13 +41,13 @@ def fzzHJPhysicalRadialLabel (k P : ℝ) : ℂ :=
 def fzzCigarExternalHolomorphicWeight
     (k : ℝ) (j : ℂ) (p nu : ℤ) : ℂ :=
   -(j * (j + 1)) / ((k - 2 : ℝ) : ℂ) +
-    fzzCigarExternalVertexMomentum k p nu ^ 2 / (k : ℂ)
+    fzzCigarExternalVertexMomentum k p nu ^ (2 : ℕ) / (k : ℂ)
 
 /-- Antiholomorphic cigar weight of an external vertex. -/
 def fzzCigarExternalAntiholomorphicWeight
     (k : ℝ) (j : ℂ) (p nu : ℤ) : ℂ :=
   -(j * (j + 1)) / ((k - 2 : ℝ) : ℂ) +
-    fzzCigarExternalVertexBarMomentum k p nu ^ 2 / (k : ℂ)
+    fzzCigarExternalVertexBarMomentum k p nu ^ (2 : ℕ) / (k : ℂ)
 
 /-- Target-adaptive spectator weight needed to make the holomorphic weight one. -/
 def fzzHJExternalSpectatorWeight (k P : ℝ) (nu : ℤ) : ℂ :=

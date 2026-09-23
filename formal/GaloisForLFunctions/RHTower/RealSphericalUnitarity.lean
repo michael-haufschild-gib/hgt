@@ -45,13 +45,13 @@ theorem sphericalPrincipal_raising_norm_identity (s : ℝ)
     (hB : IsSphericalPrincipalInvariant s B) :
     B (sphericalPrincipalE (s : ℂ) (Finsupp.single 0 1))
         (sphericalPrincipalE (s : ℂ) (Finsupp.single 0 1)) =
-      (((1 - s ^ 2) / 4 : ℝ) : ℂ) *
+      (((1 - s ^ (2 : ℕ)) / 4 : ℝ) : ℂ) *
         B (Finsupp.single 0 1) (Finsupp.single 0 1) := by
   rw [hB]
   have hFE :
       sphericalPrincipalF (s : ℂ)
           (sphericalPrincipalE (s : ℂ) (Finsupp.single 0 1)) =
-        (((s ^ 2 - 1) / 4 : ℝ) : ℂ) • Finsupp.single 0 1 := by
+        (((s ^ (2 : ℕ) - 1) / 4 : ℝ) : ℂ) • Finsupp.single 0 1 := by
     ext j
     by_cases hj : (0 : ℤ) = j
     · subst j
@@ -98,10 +98,10 @@ theorem unitarizableSphericalPrincipalParameter_subset :
   have hid := sphericalPrincipal_raising_norm_identity s B hinv
   change
     B (sphericalPrincipalE (s : ℂ) v0) (sphericalPrincipalE (s : ℂ) v0) =
-      (((1 - s ^ 2) / 4 : ℝ) : ℂ) * B v0 v0 at hid
+      (((1 - s ^ (2 : ℕ)) / 4 : ℝ) : ℂ) * B v0 v0 at hid
   rw [hid] at hnorm
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hnorm
-  have hcoeff : 0 < (1 - s ^ 2) / 4 := pos_of_mul_pos_left hnorm hq.le
+  have hcoeff : 0 < (1 - s ^ (2 : ℕ)) / 4 := pos_of_mul_pos_left hnorm hq.le
   constructor <;> nlinarith
 
 /-- In complementary-exponent normalization `s=2ν`, unitarizability forces

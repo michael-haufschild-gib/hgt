@@ -17,26 +17,26 @@ open Finset ArithmeticFunction Filter Topology
 
 /-- The natural square root, below the real one. -/
 theorem natSqrt_le_sqrt (m : ℕ) : ((Nat.sqrt m : ℕ) : ℝ) ≤ Real.sqrt (m : ℝ) := by
-  have h : Nat.sqrt m ^ 2 ≤ m := Nat.sqrt_le' m
-  have hc : ((Nat.sqrt m : ℕ) : ℝ) ^ 2 ≤ (m : ℝ) := by exact_mod_cast h
+  have h : Nat.sqrt m ^ (2 : ℕ) ≤ m := Nat.sqrt_le' m
+  have hc : ((Nat.sqrt m : ℕ) : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) := by exact_mod_cast h
   calc ((Nat.sqrt m : ℕ) : ℝ)
-      = Real.sqrt (((Nat.sqrt m : ℕ) : ℝ) ^ 2) := (Real.sqrt_sq (by positivity)).symm
+      = Real.sqrt (((Nat.sqrt m : ℕ) : ℝ) ^ (2 : ℕ)) := (Real.sqrt_sq (by positivity)).symm
     _ ≤ Real.sqrt (m : ℝ) := Real.sqrt_le_sqrt hc
 
 /-- The real square root, below the natural one plus one. -/
 theorem sqrt_lt_natSqrt_succ (m : ℕ) :
     Real.sqrt (m : ℝ) < ((Nat.sqrt m + 1 : ℕ) : ℝ) := by
-  have h : m < (Nat.sqrt m + 1) ^ 2 := Nat.lt_succ_sqrt' m
-  have hc : (m : ℝ) < ((Nat.sqrt m + 1 : ℕ) : ℝ) ^ 2 := by exact_mod_cast h
+  have h : m < (Nat.sqrt m + 1) ^ (2 : ℕ) := Nat.lt_succ_sqrt' m
+  have hc : (m : ℝ) < ((Nat.sqrt m + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by exact_mod_cast h
   calc Real.sqrt (m : ℝ)
-      < Real.sqrt (((Nat.sqrt m + 1 : ℕ) : ℝ) ^ 2) :=
+      < Real.sqrt (((Nat.sqrt m + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
         Real.sqrt_lt_sqrt (by positivity) hc
     _ = ((Nat.sqrt m + 1 : ℕ) : ℝ) := Real.sqrt_sq (by positivity)
 
 /-- **The squarefree density over a dyadic window.** -/
 theorem tendsto_window_squarefree_density :
     Tendsto (fun y : ℝ =>
-        (∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, ((moebius n : ℤ) : ℝ) ^ 2) / y)
+        (∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) / y)
       atTop (𝓝 squarefreeDensity) := by
   have hD0 : 0 ≤ squarefreeDensity := by
     rw [squarefreeDensity_eq]
@@ -55,7 +55,7 @@ theorem tendsto_window_squarefree_density :
     have := (h1.add h2).add h3
     simpa using this
   have hkey : Tendsto (fun y : ℝ =>
-      |(∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, ((moebius n : ℤ) : ℝ) ^ 2) / y - squarefreeDensity|)
+      |(∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) / y - squarefreeDensity|)
       atTop (𝓝 0) := by
     refine squeeze_zero' ?_ ?_ hmaj
     · filter_upwards with y
@@ -69,7 +69,7 @@ theorem tendsto_window_squarefree_density :
       have htL : t + L = m := by omega
       set R : ℕ := Nat.sqrt m + 1 with hR
       have hR1 : 1 ≤ R := by omega
-      have hRM : t + L ≤ R ^ 2 := by
+      have hRM : t + L ≤ R ^ (2 : ℕ) := by
         rw [htL, hR]
         exact le_of_lt (Nat.lt_succ_sqrt' m)
       have hbound := abs_window_squarefree_sub_le (t := t) (L := L) hR1 hRM
@@ -104,7 +104,7 @@ theorem tendsto_window_squarefree_density :
           refine Real.sqrt_le_sqrt ?_
           linarith
         have h4 : Real.sqrt (4 * y) = 2 * Real.sqrt y := by
-          rw [show (4 : ℝ) * y = 2 ^ 2 * y by ring, Real.sqrt_mul (by positivity),
+          rw [show (4 : ℝ) * y = 2 ^ (2 : ℕ) * y by ring, Real.sqrt_mul (by positivity),
             Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
         linarith [h2, h4.le, h4.ge]
       have hLle : (L : ℝ) ≤ 2 * y := by rw [hLcast]; linarith
@@ -117,27 +117,27 @@ theorem tendsto_window_squarefree_density :
       have herr : (R : ℝ) + (L : ℝ) / (R : ℝ) ≤ 4 * Real.sqrt y + 1 := by
         linarith [hRhigh, hsqrt2y, hLR]
       -- assemble
-      have hsplit : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2) / y - squarefreeDensity|
+      have hsplit : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) / y - squarefreeDensity|
           ≤ (4 * Real.sqrt y + 1) / y + (2 / y) * squarefreeDensity := by
-        have hA : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2) - (L : ℝ) * squarefreeDensity|
+        have hA : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) - (L : ℝ) * squarefreeDensity|
             ≤ 4 * Real.sqrt y + 1 := le_trans hbound herr
         have hB : |((L : ℝ) - y) * squarefreeDensity| ≤ 2 * squarefreeDensity := by
           rw [abs_mul, abs_of_nonneg hD0]
           exact mul_le_mul_of_nonneg_right hLy hD0
-        have hC : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2)
+        have hC : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
               - y * squarefreeDensity|
             ≤ (4 * Real.sqrt y + 1) + 2 * squarefreeDensity := by
-          have := abs_sub_le (∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2)
+          have := abs_sub_le (∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
             ((L : ℝ) * squarefreeDensity) (y * squarefreeDensity)
           have hrw : |(L : ℝ) * squarefreeDensity - y * squarefreeDensity|
               = |((L : ℝ) - y) * squarefreeDensity| := by
             congr 1
             ring
           linarith [this, hrw ▸ hB]
-        have hdiv : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2) / y - squarefreeDensity|
-            = |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2) - y * squarefreeDensity| / y := by
-          rw [show (∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2) / y - squarefreeDensity
-                = ((∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ 2)
+        have hdiv : |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) / y - squarefreeDensity|
+            = |(∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) - y * squarefreeDensity| / y := by
+          rw [show (∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) / y - squarefreeDensity
+                = ((∑ n ∈ Finset.Ioc t m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
                   - y * squarefreeDensity) / y by field_simp,
             abs_div, abs_of_pos hy0]
         rw [hdiv, div_le_iff₀ hy0]

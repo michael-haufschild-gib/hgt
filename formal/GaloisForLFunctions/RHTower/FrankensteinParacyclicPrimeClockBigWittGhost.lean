@@ -127,7 +127,7 @@ theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_tw
         0 < deningerBigWittPrimePairExtendedPhysicalAtom
             deningerCalderonWittPrimeTwo deningerCalderonWittPrimeThree *
           ‖frankensteinPrimeClockParacyclicAnomaly rho deningerCalderonWittPrimeTwo -
-            frankensteinPrimeClockParacyclicAnomaly rho deningerCalderonWittPrimeThree‖ ^ 2 :=
+            frankensteinPrimeClockParacyclicAnomaly rho deningerCalderonWittPrimeThree‖ ^ (2 : ℕ) :=
       mul_pos hatom (sq_pos_of_pos hnorm)
     nlinarith
 

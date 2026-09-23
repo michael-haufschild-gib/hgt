@@ -11,7 +11,7 @@ copies of an Xi divisor differ by `I * (re rho - 1 / 2)`.  After quotienting the
 common causal redshift, the exact self-dual quadratic Einstein carrier is nonzero
 at every divisor copy and its two relative time orientations have projective energy
 
-`|C(rho)|^2 * (exp (2 * delta * t) + exp (-2 * delta * t))`,
+`|C(rho)|^(2 : ℕ) * (exp (2 * delta * t) + exp (-2 * delta * t))`,
 
 where `delta = re rho - 1 / 2`.  This normalized energy is uniformly bounded on
 the full relative-time axis exactly when `delta = 0`.
@@ -117,7 +117,7 @@ theorem d4ThetaHawkingBifurcateNonlinearBeatRegular_iff
       apply hline
       unfold d4ThetaHawkingBMBeatRate at hzero
       linarith
-    let a : ℝ := 2 * d4ThetaHawkingBMBeatRate q ^ 2
+    let a : ℝ := 2 * d4ThetaHawkingBMBeatRate q ^ (2 : ℕ)
     have haPos : 0 < a := by
       dsimp [a]
       positivity
@@ -147,7 +147,7 @@ theorem d4ThetaHawkingBifurcateNonlinearBeatRegular_iff
                 ((n : ℝ) * d4ThetaHawkingBMBeatRate q)) := by
         positivity
       dsimp [a]
-      rw [show 2 * d4ThetaHawkingBMBeatRate q ^ 2 * (n : ℝ) =
+      rw [show 2 * d4ThetaHawkingBMBeatRate q ^ (2 : ℕ) * (n : ℝ) =
           2 * d4ThetaHawkingBMBeatRate q *
             ((n : ℝ) * d4ThetaHawkingBMBeatRate q) by ring]
       linarith
@@ -175,8 +175,8 @@ def d4ThetaHawkingFullNonlinearBeatRadiation
 /-- Two-sided projective energy after applying the gauge-fixed radiation map. -/
 def d4ThetaHawkingFullBifurcateNonlinearBeatEnergy
     (amplitude : ℂ) (q : XiZeroCopy) (mixing : ℝ → ℂ) (t : ℝ) : ℝ :=
-  ‖d4ThetaHawkingFullNonlinearBeatRadiation amplitude q mixing t‖ ^ 2 +
-    ‖d4ThetaHawkingFullNonlinearBeatRadiation amplitude q mixing (-t)‖ ^ 2
+  ‖d4ThetaHawkingFullNonlinearBeatRadiation amplitude q mixing t‖ ^ (2 : ℕ) +
+    ‖d4ThetaHawkingFullNonlinearBeatRadiation amplitude q mixing (-t)‖ ^ (2 : ℕ)
 
 /-- Uniform normalized regularity after arbitrary orthogonal-helicity mixing. -/
 def D4ThetaHawkingFullBifurcateNonlinearBeatRegular
@@ -200,15 +200,15 @@ private lemma d4ThetaHawkingDirectBeatRadiation_eq
 private lemma d4ThetaHawkingDirectBeatRadiation_norm_sq_eq
     (amplitude : ℂ) (q : XiZeroCopy) (t : ℝ) :
     ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-        (d4ThetaHawkingOrientedNonlinearBeat amplitude q t, 0)‖ ^ 2 =
+        (d4ThetaHawkingOrientedNonlinearBeat amplitude q t, 0)‖ ^ (2 : ℕ) =
       Real.exp (2 * d4ThetaHawkingBMBeatRate q * t) *
         ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-          (d4ThetaHawkingNonlinearBeatCarrier amplitude q, 0)‖ ^ 2 := by
+          (d4ThetaHawkingNonlinearBeatCarrier amplitude q, 0)‖ ^ (2 : ℕ) := by
   rw [d4ThetaHawkingDirectBeatRadiation_eq, norm_smul, Complex.norm_real,
     Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos (d4ThetaHawkingBMBeatRate q * t)), mul_pow]
   congr 1
-  · rw [show Real.exp (d4ThetaHawkingBMBeatRate q * t) ^ 2 =
+  · rw [show Real.exp (d4ThetaHawkingBMBeatRate q * t) ^ (2 : ℕ) =
       Real.exp (d4ThetaHawkingBMBeatRate q * t) *
         Real.exp (d4ThetaHawkingBMBeatRate q * t) by ring,
       ← Real.exp_add]
@@ -220,11 +220,11 @@ theorem d4ThetaHawkingFullBifurcateNonlinearBeatEnergy_decomposition
     (amplitude : ℂ) (q : XiZeroCopy) (mixing : ℝ → ℂ) (t : ℝ) :
     d4ThetaHawkingFullBifurcateNonlinearBeatEnergy amplitude q mixing t =
       ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-        (d4ThetaHawkingOrientedNonlinearBeat amplitude q t, 0)‖ ^ 2 +
-      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing t)‖ ^ 2 +
+        (d4ThetaHawkingOrientedNonlinearBeat amplitude q t, 0)‖ ^ (2 : ℕ) +
+      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing t)‖ ^ (2 : ℕ) +
       (‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-        (d4ThetaHawkingOrientedNonlinearBeat amplitude q (-t), 0)‖ ^ 2 +
-      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing (-t))‖ ^ 2) := by
+        (d4ThetaHawkingOrientedNonlinearBeat amplitude q (-t), 0)‖ ^ (2 : ℕ) +
+      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing (-t))‖ ^ (2 : ℕ)) := by
   rw [d4ThetaHawkingFullBifurcateNonlinearBeatEnergy,
     d4ThetaHawkingFullNonlinearBeatRadiation,
     d4ThetaHawkingFullNonlinearBeatRadiation,
@@ -241,7 +241,7 @@ theorem d4ThetaHawkingFullBifurcateNonlinearBeatRegular_forces_critical
   rintro ⟨M, hM⟩
   let c : ℝ :=
     ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-      (d4ThetaHawkingNonlinearBeatCarrier amplitude q, 0)‖ ^ 2
+      (d4ThetaHawkingNonlinearBeatCarrier amplitude q, 0)‖ ^ (2 : ℕ)
   have hbase :
       d4BMGaugeFixedSecondHarmonicRadiationMap q
         (d4ThetaHawkingNonlinearBeatCarrier amplitude q, 0) ≠ 0 :=
@@ -256,7 +256,7 @@ theorem d4ThetaHawkingFullBifurcateNonlinearBeatRegular_forces_critical
     apply hline
     unfold d4ThetaHawkingBMBeatRate at hzero
     linarith
-  let a : ℝ := 2 * d4ThetaHawkingBMBeatRate q ^ 2
+  let a : ℝ := 2 * d4ThetaHawkingBMBeatRate q ^ (2 : ℕ)
   have haPos : 0 < a := by
     dsimp [a]
     positivity
@@ -274,22 +274,22 @@ theorem d4ThetaHawkingFullBifurcateNonlinearBeatRegular_forces_critical
       c * Real.exp (a * (n : ℝ)) ≤
         ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
           (d4ThetaHawkingOrientedNonlinearBeat amplitude q
-            ((n : ℝ) * d4ThetaHawkingBMBeatRate q), 0)‖ ^ 2 := by
+            ((n : ℝ) * d4ThetaHawkingBMBeatRate q), 0)‖ ^ (2 : ℕ) := by
     rw [d4ThetaHawkingDirectBeatRadiation_norm_sq_eq]
     dsimp [a, c]
-    rw [show 2 * d4ThetaHawkingBMBeatRate q ^ 2 * (n : ℝ) =
+    rw [show 2 * d4ThetaHawkingBMBeatRate q ^ (2 : ℕ) * (n : ℝ) =
       2 * d4ThetaHawkingBMBeatRate q *
         ((n : ℝ) * d4ThetaHawkingBMBeatRate q) by ring]
     rw [mul_comm]
   have hrest :
       0 ≤
         ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-          (0, mixing ((n : ℝ) * d4ThetaHawkingBMBeatRate q))‖ ^ 2 +
+          (0, mixing ((n : ℝ) * d4ThetaHawkingBMBeatRate q))‖ ^ (2 : ℕ) +
         (‖d4BMGaugeFixedSecondHarmonicRadiationMap q
           (d4ThetaHawkingOrientedNonlinearBeat amplitude q
-            (-((n : ℝ) * d4ThetaHawkingBMBeatRate q)), 0)‖ ^ 2 +
+            (-((n : ℝ) * d4ThetaHawkingBMBeatRate q)), 0)‖ ^ (2 : ℕ) +
         ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-          (0, mixing (-((n : ℝ) * d4ThetaHawkingBMBeatRate q)))‖ ^ 2) := by
+          (0, mixing (-((n : ℝ) * d4ThetaHawkingBMBeatRate q)))‖ ^ (2 : ℕ)) := by
     positivity
   linarith
 

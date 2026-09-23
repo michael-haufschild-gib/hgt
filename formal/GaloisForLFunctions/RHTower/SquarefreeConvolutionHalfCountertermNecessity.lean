@@ -134,7 +134,7 @@ theorem rhLadder_one_of_countertermScheduledLocallyBounded
       (hGlim.tendsto_at (farHalf_subset_rightHalf hs))
       ((tendstoLocallyUniformlyOn_poleClearedFirstTraceCountertermScheduledApprox
         hadm hkappa).tendsto_at hs)
-  let H : ℂ → ℂ := fun s => G s ^ 2 - poleClearedFirstTraceExponentialContinuation s
+  let H : ℂ → ℂ := fun s => G s ^ (2 : ℕ) - poleClearedFirstTraceExponentialContinuation s
   have hHana : AnalyticOnNhd ℂ H rightHalf :=
     ((hGdiff.analyticOnNhd isOpen_rightHalf).pow 2).sub
       analyticOnNhd_poleClearedFirstTraceExponentialContinuation_rightHalf
@@ -148,7 +148,7 @@ theorem rhLadder_one_of_countertermScheduledLocallyBounded
     convex_rightHalf.isPreconnected (farHalf_subset_rightHalf two_mem_farHalf) hfreq
   intro s hs
   have hzero' := hHall hs
-  change G s ^ 2 - poleClearedFirstTraceExponentialContinuation s = 0 at hzero'
+  change G s ^ (2 : ℕ) - poleClearedFirstTraceExponentialContinuation s = 0 at hzero'
   exact sub_eq_zero.mp hzero'
 
 /-- If the corrected arithmetic values have a bounded tail, the correction cannot also have one. -/

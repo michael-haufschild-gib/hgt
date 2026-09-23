@@ -32,7 +32,7 @@ def suzukiCriticalApertureDressedScalarSchurTax
     (h a t positiveBlock coupling : ℝ) (pe : Nat.Primes × ℕ) : ℝ :=
   Complex.normSq
       (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) *
-    (coupling ^ 2 / positiveBlock)
+    (coupling ^ (2 : ℕ) / positiveBlock)
 
 /-- Every actual dressed determinant-line density is strictly positive. -/
 theorem normSq_suzukiCriticalApertureBoundaryAtom_pos
@@ -51,7 +51,7 @@ theorem suzukiCriticalApertureDressedScalarSchurTax_eq_scaledBlocks
     (pe : Nat.Primes × ℕ) :
     let q := Complex.normSq
       (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2)
-    (q * coupling) ^ 2 / (q * positiveBlock) =
+    (q * coupling) ^ (2 : ℕ) / (q * positiveBlock) =
       suzukiCriticalApertureDressedScalarSchurTax
         h a t positiveBlock coupling pe := by
   dsimp only
@@ -75,7 +75,7 @@ theorem summable_suzukiCriticalApertureDressedScalarSchurTax_allPrime
     Summable (suzukiCriticalApertureDressedScalarSchurTax
       h a t positiveBlock coupling) := by
   have hs := summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
-  refine (hs.mul_right (coupling ^ 2 / positiveBlock)).congr ?_
+  refine (hs.mul_right (coupling ^ (2 : ℕ) / positiveBlock)).congr ?_
   intro pe
   rfl
 
@@ -88,7 +88,7 @@ theorem tsum_suzukiCriticalApertureDressedScalarSchurTax_eq
       (∑' pe : Nat.Primes × ℕ,
         Complex.normSq
           (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2)) *
-        (coupling ^ 2 / positiveBlock) := by
+        (coupling ^ (2 : ℕ) / positiveBlock) := by
   have hs := summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
   rw [show (∑' pe : Nat.Primes × ℕ,
       suzukiCriticalApertureDressedScalarSchurTax
@@ -96,11 +96,11 @@ theorem tsum_suzukiCriticalApertureDressedScalarSchurTax_eq
       ∑' pe : Nat.Primes × ℕ,
         Complex.normSq
           (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) *
-          (coupling ^ 2 / positiveBlock) by
+          (coupling ^ (2 : ℕ) / positiveBlock) by
       apply tsum_congr
       intro pe
       rfl]
-  exact hs.tsum_mul_right (coupling ^ 2 / positiveBlock)
+  exact hs.tsum_mul_right (coupling ^ (2 : ℕ) / positiveBlock)
 
 /-- **Uniform cofinal Schur-tax ceiling.** Right side is independent of observer aperture `a` and
 spectral height `t`. -/
@@ -110,10 +110,10 @@ theorem tsum_suzukiCriticalApertureDressedScalarSchurTax_le
     (∑' pe : Nat.Primes × ℕ,
       suzukiCriticalApertureDressedScalarSchurTax
         h a t positiveBlock coupling pe) ≤
-      (2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+      (2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹)) *
-        (coupling ^ 2 / positiveBlock) := by
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹)) *
+        (coupling ^ (2 : ℕ) / positiveBlock) := by
   rw [tsum_suzukiCriticalApertureDressedScalarSchurTax_eq
     hh ha t positiveBlock coupling]
   exact mul_le_mul_of_nonneg_right

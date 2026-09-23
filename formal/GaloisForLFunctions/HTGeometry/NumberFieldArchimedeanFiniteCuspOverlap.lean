@@ -24,10 +24,10 @@ variable {n : ℕ}
 def NumberFieldArchimedeanIsUniformlyCoercive (c : ℝ)
     (A : numberFieldArchimedeanPositiveForms K n) : Prop :=
   (∀ (w : {w : InfinitePlace K // w.IsReal}) (v : Fin n → ℝ),
-      c * ∑ k, (v k) ^ 2 ≤
+      c * ∑ k, (v k) ^ (2 : ℕ) ≤
         v ⬝ᵥ ((A.1.1 w : Matrix (Fin n) (Fin n) ℝ) *ᵥ v)) ∧
     ∀ (w : {w : InfinitePlace K // w.IsComplex}) (v : Fin n → ℂ),
-      c * ∑ k, ‖v k‖ ^ 2 ≤
+      c * ∑ k, ‖v k‖ ^ (2 : ℕ) ≤
         (star v ⬝ᵥ ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ) *ᵥ v)).re
 
 /-- Uniform placewise diagonal upper bound for a family of number-field archimedean forms. -/

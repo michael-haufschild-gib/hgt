@@ -51,7 +51,7 @@ theorem bdGram_half : bdGram (1 / (2 : ℝ)) (1 / (2 : ℝ)) = Real.log 2 / 4 :=
 
 /-- **A concrete unconditional bound.**  One generator already gives `d² ≤ 1 − log 2`. -/
 theorem bdDist_sq_le_one_sub_log_two :
-    bdDist (fun _ : Fin 1 => 1 / (2 : ℝ)) ^ 2 ≤ 1 - Real.log 2 := by
+    bdDist (fun _ : Fin 1 => 1 / (2 : ℝ)) ^ (2 : ℕ) ≤ 1 - Real.log 2 := by
   have hθ : ∀ _i : Fin 1, 0 < (1 / (2 : ℝ)) ∧ (1 / (2 : ℝ)) ≤ 1 := by
     intro _
     norm_num

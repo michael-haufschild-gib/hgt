@@ -83,13 +83,13 @@ theorem mean_series_mul (a b : ℕ → ℂ)
 
 /-- The actual squared norm mean is twice the complete squared coefficient norm mass. -/
 theorem mean_series_norm_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
-    (∫ x in Ioc (-1/2:ℝ) (1/2), ‖series a x‖^2) = 2*∑' N, ‖a N‖^2 := by
+    (∫ x in Ioc (-1/2:ℝ) (1/2), ‖series a x‖^(2 : ℕ)) = 2*∑' N, ‖a N‖^(2 : ℕ) := by
   have hb : Summable (fun N => ‖(starRingEnd ℂ) (a N)‖) := by simpa only [norm_conj] using ha
   have h := mean_series_mul (fun N => (starRingEnd ℂ) (a N)) a hb ha
   simp_rw [← series_conj,← Complex.normSq_eq_conj_mul_self,Complex.normSq_eq_norm_sq] at h
-  change (∫ x in Ioc (-1/2:ℝ) (1/2), ((‖series a x‖^2:ℝ):ℂ)) = _ at h
-  have hi : (∫ x in Ioc (-1/2:ℝ) (1/2), ((‖series a x‖^2:ℝ):ℂ)) =
-      ((∫ x in Ioc (-1/2:ℝ) (1/2), ‖series a x‖^2 : ℝ):ℂ) := integral_ofReal
+  change (∫ x in Ioc (-1/2:ℝ) (1/2), ((‖series a x‖^(2 : ℕ):ℝ):ℂ)) = _ at h
+  have hi : (∫ x in Ioc (-1/2:ℝ) (1/2), ((‖series a x‖^(2 : ℕ):ℝ):ℂ)) =
+      ((∫ x in Ioc (-1/2:ℝ) (1/2), ‖series a x‖^(2 : ℕ) : ℝ):ℂ) := integral_ofReal
   rw [hi,← Complex.ofReal_tsum] at h
   exact_mod_cast h
 

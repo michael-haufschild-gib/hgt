@@ -150,20 +150,20 @@ theorem norm_one_sub_mul_eq_norm_sub {z : ℂ} (hz : ‖z‖ = 1) (r : ℝ) :
 /-- **The Poisson integral of one Euler factor.** For `0 ≤ r < 1`,
 `⨍_{|z|=1} ‖1 - r z‖⁻² = (1 - r²)⁻¹`. -/
 theorem circleAverage_inv_normSq_one_sub_mul {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
-    circleAverage (fun z : ℂ => (‖1 - (r : ℂ) * z‖ ^ 2)⁻¹) 0 1 = (1 - r ^ 2)⁻¹ := by
-  have hr2 : 0 < 1 - r ^ 2 := by nlinarith
+    circleAverage (fun z : ℂ => (‖1 - (r : ℂ) * z‖ ^ (2 : ℕ))⁻¹) 0 1 = (1 - r ^ (2 : ℕ))⁻¹ := by
+  have hr2 : 0 < 1 - r ^ (2 : ℕ) := by nlinarith
   have hball : (r : ℂ) ∈ Metric.ball (0 : ℂ) 1 := by
     rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0]
     exact hr1
-  have hcongr : circleAverage (fun z : ℂ => (‖1 - (r : ℂ) * z‖ ^ 2)⁻¹) 0 1
-      = circleAverage ((1 - r ^ 2)⁻¹ • poissonKernel 0 (r : ℂ)) 0 1 := by
+  have hcongr : circleAverage (fun z : ℂ => (‖1 - (r : ℂ) * z‖ ^ (2 : ℕ))⁻¹) 0 1
+      = circleAverage ((1 - r ^ (2 : ℕ))⁻¹ • poissonKernel 0 (r : ℂ)) 0 1 := by
     apply Real.circleAverage_congr_sphere
     intro z hz
     have hz1 : ‖z‖ = 1 := by simpa using hz
     simp only [Pi.smul_apply, smul_eq_mul, poissonKernel, sub_zero]
     rw [norm_one_sub_mul_eq_norm_sub hz1, hz1, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hr0]
-    have hne : ‖z - (r : ℂ)‖ ^ 2 ≠ 0 := by
+    have hne : ‖z - (r : ℂ)‖ ^ (2 : ℕ) ≠ 0 := by
       have : z - (r : ℂ) ≠ 0 := by
         intro h
         have := congrArg norm h
@@ -262,7 +262,7 @@ def headRadii {k₀ m : ℕ} (r : Fin (k₀ + m) → ℝ) : Fin k₀ → ℝ :=
 
 /-- The mean-square energy of the last `m` coordinates: `∏ (1 - r_j²)⁻¹`. -/
 def tailEnergy {k₀ m : ℕ} (r : Fin (k₀ + m) → ℝ) : ℝ :=
-  ∏ j : Fin m, (1 - (r (Fin.natAdd k₀ j)) ^ 2)⁻¹
+  ∏ j : Fin m, (1 - (r (Fin.natAdd k₀ j)) ^ (2 : ℕ))⁻¹
 
 theorem eulerAmp_snoc {k : ℕ} (r : Fin (k + 1) → ℝ) (z : Fin k → ℂ) (w : ℂ) :
     eulerAmp r (Fin.snoc z w)
@@ -290,7 +290,7 @@ theorem headRadii_castSucc {k₀ m : ℕ} (r : Fin (k₀ + (m + 1)) → ℝ) :
 theorem tailEnergy_succ {k₀ m : ℕ} (r : Fin (k₀ + (m + 1)) → ℝ) :
     tailEnergy r
       = tailEnergy (fun j : Fin (k₀ + m) => r (Fin.castSucc j))
-        * (1 - (r (Fin.last (k₀ + m))) ^ 2)⁻¹ := by
+        * (1 - (r (Fin.last (k₀ + m))) ^ (2 : ℕ))⁻¹ := by
   unfold tailEnergy
   rw [Fin.prod_univ_castSucc]
   simp only [Fin.natAdd_castSucc, Fin.natAdd_last]
@@ -309,8 +309,8 @@ is the mean square over the first `k₀` coordinates times the tail energy `∏ 
 theorem torusAverage_normSq_eulerAmp_restrict {k₀ : ℕ} (Ψ : (Fin k₀ → ℂ) → ℂ) :
     ∀ (m : ℕ) (r : Fin (k₀ + m) → ℝ), (∀ j, 0 ≤ r j) → (∀ j, r j < 1) →
       torusAverage (k₀ + m)
-          (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2)
-        = torusAverage k₀ (fun z => ‖eulerAmp (headRadii r) z * Ψ z‖ ^ 2) * tailEnergy r := by
+          (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ))
+        = torusAverage k₀ (fun z => ‖eulerAmp (headRadii r) z * Ψ z‖ ^ (2 : ℕ)) * tailEnergy r := by
   intro m
   induction m with
   | zero =>
@@ -326,16 +326,16 @@ theorem torusAverage_normSq_eulerAmp_restrict {k₀ : ℕ} (Ψ : (Fin k₀ → �
     simp only [torusAverage]
     have hinner : (fun z : Fin (k₀ + m) → ℂ =>
         circleAverage (fun w => ‖eulerAmp r (Fin.snoc z w)
-          * Ψ (restrictFin (Nat.le_add_right k₀ (m + 1)) (Fin.snoc z w))‖ ^ 2) 0 1)
-        = fun z => (1 - (r (Fin.last (k₀ + m))) ^ 2)⁻¹ *
+          * Ψ (restrictFin (Nat.le_add_right k₀ (m + 1)) (Fin.snoc z w))‖ ^ (2 : ℕ)) 0 1)
+        = fun z => (1 - (r (Fin.last (k₀ + m))) ^ (2 : ℕ))⁻¹ *
             ‖eulerAmp (fun j : Fin (k₀ + m) => r (Fin.castSucc j)) z
-              * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2 := by
+              * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ) := by
       funext z
       have hfun : (fun w : ℂ => ‖eulerAmp r (Fin.snoc z w)
-            * Ψ (restrictFin (Nat.le_add_right k₀ (m + 1)) (Fin.snoc z w))‖ ^ 2)
+            * Ψ (restrictFin (Nat.le_add_right k₀ (m + 1)) (Fin.snoc z w))‖ ^ (2 : ℕ))
           = (‖eulerAmp (fun j : Fin (k₀ + m) => r (Fin.castSucc j)) z
-              * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2)
-            • (fun w : ℂ => (‖1 - (r (Fin.last (k₀ + m)) : ℂ) * w‖ ^ 2)⁻¹) := by
+              * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ))
+            • (fun w : ℂ => (‖1 - (r (Fin.last (k₀ + m)) : ℂ) * w‖ ^ (2 : ℕ))⁻¹) := by
         funext w
         rw [eulerAmp_snoc (k := k₀ + m), restrictFin_snoc]
         simp only [Pi.smul_apply, smul_eq_mul]
@@ -345,7 +345,7 @@ theorem torusAverage_normSq_eulerAmp_restrict {k₀ : ℕ} (Ψ : (Fin k₀ → �
         circleAverage_inv_normSq_one_sub_mul (hr0 _) (hr1 _), smul_eq_mul, mul_comm]
     have hmc := torusAverage_mul_const' (k := k₀ + m)
       (F := fun z => ‖eulerAmp (fun j : Fin (k₀ + m) => r (Fin.castSucc j)) z
-        * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2) ((1 - (r (Fin.last (k₀ + m))) ^ 2)⁻¹)
+        * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ)) ((1 - (r (Fin.last (k₀ + m))) ^ (2 : ℕ))⁻¹)
     rw [hinner]
     refine hmc.trans ?_
     rw [ih (fun j : Fin (k₀ + m) => r (Fin.castSucc j)) (fun j => hr0 _) (fun j => hr1 _),
@@ -408,37 +408,37 @@ mean square minus the mollifier's Jensen mass is at least half the large-prime e
 `Σ_{p > M} log (1 - 1/p)⁻¹`, for every mollifier of the primes `≤ M`. -/
 theorem torusJensenFloor {k₀ : ℕ} (Ψ : (Fin k₀ → ℂ) → ℂ) (hΨ : Continuous Ψ) (m : ℕ)
     (r : Fin (k₀ + m) → ℝ) (hr0 : ∀ j, 0 ≤ r j) (hr1 : ∀ j, r j < 1) {ε : ℝ} (hε : 0 < ε) :
-    2 * torusAverage k₀ (fun z => (1 / 2) * Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2)))
-      + ∑ j : Fin m, Real.log ((1 - (r (Fin.natAdd k₀ j)) ^ 2)⁻¹)
+    2 * torusAverage k₀ (fun z => (1 / 2) * Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ))))
+      + ∑ j : Fin m, Real.log ((1 - (r (Fin.natAdd k₀ j)) ^ (2 : ℕ))⁻¹)
     ≤ Real.log (torusAverage (k₀ + m)
-          (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2)
-        + ε ^ 2 * (∏ i, (1 - headRadii r i)⁻¹) ^ 2 * tailEnergy r) := by
+          (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ))
+        + ε ^ (2 : ℕ) * (∏ i, (1 - headRadii r i)⁻¹) ^ (2 : ℕ) * tailEnergy r) := by
   have hr₀0 : ∀ i, 0 ≤ headRadii r i := fun i => hr0 _
   have hr₀1 : ∀ i, headRadii r i < 1 := fun i => hr1 _
   set B : ℝ := ∏ i, (1 - headRadii r i)⁻¹ with hB
-  set A : ℝ := torusAverage k₀ (fun z => ‖eulerAmp (headRadii r) z * Ψ z‖ ^ 2) with hA
+  set A : ℝ := torusAverage k₀ (fun z => ‖eulerAmp (headRadii r) z * Ψ z‖ ^ (2 : ℕ)) with hA
   have hfac : torusAverage (k₀ + m)
-      (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ 2)
+      (fun z => ‖eulerAmp r z * Ψ (restrictFin (Nat.le_add_right k₀ m) z)‖ ^ (2 : ℕ))
       = A * tailEnergy r := torusAverage_normSq_eulerAmp_restrict Ψ m r hr0 hr1
-  have hfactor : ∀ j : Fin m, 0 < (1 - (r (Fin.natAdd k₀ j)) ^ 2)⁻¹ := fun j =>
+  have hfactor : ∀ j : Fin m, 0 < (1 - (r (Fin.natAdd k₀ j)) ^ (2 : ℕ))⁻¹ := fun j =>
     inv_pos.mpr (by nlinarith [hr0 (Fin.natAdd k₀ j), hr1 (Fin.natAdd k₀ j)])
   have hPpos : 0 < tailEnergy r := Finset.prod_pos (fun j _ => hfactor j)
   have hBpos : 0 < B := Finset.prod_pos (fun i _ => inv_pos.mpr (by linarith [hr₀1 i]))
   have hE : Continuous (eulerAmpSafe (headRadii r)) := continuous_eulerAmpSafe _ hr₀0 hr₀1
   have hEne : ∀ z, eulerAmpSafe (headRadii r) z ≠ 0 := eulerAmpSafe_ne_zero _ hr₀0 hr₀1
   have hEle : ∀ z, ‖eulerAmpSafe (headRadii r) z‖ ≤ B := norm_eulerAmpSafe_le _ hr₀0 hr₀1
-  have hAsafe : torusAverage k₀ (fun z => ‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ 2) = A := by
+  have hAsafe : torusAverage k₀ (fun z => ‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ (2 : ℕ)) = A := by
     rw [hA]
     apply torusAverage_congr
     intro z hz
     rw [eulerAmpSafe_eq_of_onTorus _ hz]
-  have hcontEΨ : Continuous (fun z => ‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ 2) :=
+  have hcontEΨ : Continuous (fun z => ‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ (2 : ℕ)) :=
     (hE.mul hΨ).norm.pow 2
   have hA0 : 0 ≤ A := by
     rw [← hAsafe]
     exact torusAverage_nonneg' hcontEΨ (fun z _ => by positivity)
-  have hlogE : torusAverage k₀ (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ 2)) = 0 := by
-    have h1 : (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ 2))
+  have hlogE : torusAverage k₀ (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ))) = 0 := by
+    have h1 : (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ)))
         = fun z => 2 * Real.log ‖eulerAmpSafe (headRadii r) z‖ := by
       funext z
       rw [Real.log_pow]
@@ -452,44 +452,44 @@ theorem torusJensenFloor {k₀ : ℕ} (Ψ : (Fin k₀ → ℂ) → ℂ) (hΨ : C
       rw [eulerAmpSafe_eq_of_onTorus _ hz]
       rfl
     rw [h2, torusAverage_log_norm_eulerProduct _ hr₀0 hr₀1, mul_zero]
-  have hJ : 2 * torusAverage k₀ (fun z => (1 / 2) * Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2)))
-      = torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2))) := by
-    rw [torusAverage_mul_const' (F := fun z => Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2))) (1 / 2)]
+  have hJ : 2 * torusAverage k₀ (fun z => (1 / 2) * Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ))))
+      = torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ)))) := by
+    rw [torusAverage_mul_const' (F := fun z => Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ)))) (1 / 2)]
     ring
-  have hε2 : (0 : ℝ) < ε ^ 2 := by positivity
-  have hcontJ : Continuous (fun z => Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2))) :=
+  have hε2 : (0 : ℝ) < ε ^ (2 : ℕ) := by positivity
+  have hcontJ : Continuous (fun z => Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ)))) :=
     ((hΨ.norm.pow 2).max continuous_const).log (fun z => (lt_max_of_lt_right hε2).ne')
-  have hcontE : Continuous (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ 2)) :=
+  have hcontE : Continuous (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ))) :=
     (hE.norm.pow 2).log (fun z => (pow_pos (norm_pos_iff.mpr (hEne z)) 2).ne')
-  have hεB : (0 : ℝ) < ε ^ 2 * B ^ 2 := by positivity
-  have hstep : torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2)))
+  have hεB : (0 : ℝ) < ε ^ (2 : ℕ) * B ^ (2 : ℕ) := by positivity
+  have hstep : torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ))))
       ≤ torusAverage k₀ (fun z =>
-          Real.log (max (‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ 2) (ε ^ 2 * B ^ 2))) := by
-    have hsum : torusAverage k₀ (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ 2)
-          + Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2)))
-        = torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ 2) (ε ^ 2))) := by
+          Real.log (max (‖eulerAmpSafe (headRadii r) z * Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ) * B ^ (2 : ℕ)))) := by
+    have hsum : torusAverage k₀ (fun z => Real.log (‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ))
+          + Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ))))
+        = torusAverage k₀ (fun z => Real.log (max (‖Ψ z‖ ^ (2 : ℕ)) (ε ^ (2 : ℕ)))) := by
       rw [torusAverage_add' hcontE hcontJ, hlogE, zero_add]
     rw [← hsum]
     refine torusAverage_mono' (hcontE.add hcontJ)
       ((hcontEΨ.max continuous_const).log (fun z => (lt_max_of_lt_right hεB).ne')) ?_
     intro z _
-    have hE2 : 0 < ‖eulerAmpSafe (headRadii r) z‖ ^ 2 := pow_pos (norm_pos_iff.mpr (hEne z)) 2
+    have hE2 : 0 < ‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ) := pow_pos (norm_pos_iff.mpr (hEne z)) 2
     rw [← Real.log_mul hE2.ne' (lt_max_of_lt_right hε2).ne']
     apply Real.log_le_log (by positivity)
     rw [mul_max_of_nonneg _ _ hE2.le, norm_mul, mul_pow]
     apply max_le_max le_rfl
-    calc ‖eulerAmpSafe (headRadii r) z‖ ^ 2 * ε ^ 2 ≤ B ^ 2 * ε ^ 2 := by
+    calc ‖eulerAmpSafe (headRadii r) z‖ ^ (2 : ℕ) * ε ^ (2 : ℕ) ≤ B ^ (2 : ℕ) * ε ^ (2 : ℕ) := by
           gcongr
           exact hEle z
-      _ = ε ^ 2 * B ^ 2 := by ring
+      _ = ε ^ (2 : ℕ) * B ^ (2 : ℕ) := by ring
   have hjen := torusAverage_log_max_le hcontEΨ (fun z _ => by positivity) hεB
   rw [hAsafe] at hjen
   have hlogP : Real.log (tailEnergy r)
-      = ∑ j : Fin m, Real.log ((1 - (r (Fin.natAdd k₀ j)) ^ 2)⁻¹) := by
+      = ∑ j : Fin m, Real.log ((1 - (r (Fin.natAdd k₀ j)) ^ (2 : ℕ))⁻¹) := by
     unfold tailEnergy
     exact Real.log_prod (fun j _ => (hfactor j).ne')
-  have hRHS : Real.log (A * tailEnergy r + ε ^ 2 * B ^ 2 * tailEnergy r)
-      = Real.log (A + ε ^ 2 * B ^ 2) + Real.log (tailEnergy r) := by
+  have hRHS : Real.log (A * tailEnergy r + ε ^ (2 : ℕ) * B ^ (2 : ℕ) * tailEnergy r)
+      = Real.log (A + ε ^ (2 : ℕ) * B ^ (2 : ℕ)) + Real.log (tailEnergy r) := by
     rw [← Real.log_mul (by positivity) hPpos.ne']
     congr 1
     ring

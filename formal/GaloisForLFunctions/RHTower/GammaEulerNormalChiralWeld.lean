@@ -35,7 +35,7 @@ def exponentialRayEulerFactor (rate s : ℂ) : ℂ :=
 
 /-- Explicit DA gauge relating the reciprocal symmetric Gamma endpoint to the Euler factor. -/
 def exponentialRayGammaGauge (rate s : ℂ) : ℂ :=
-  rate * s * Complex.exp (rate * s / 2) / (4 * (Real.pi : ℂ) ^ 2)
+  rate * s * Complex.exp (rate * s / 2) / (4 * (Real.pi : ℂ) ^ (2 : ℕ))
 
 /-- At rate `log p`, the exponential-ray factor is literally the corpus's entire inverse local
 Euler factor. -/
@@ -94,12 +94,12 @@ private theorem gauge_mul_euler_eq_neg_slope_sin_div_pi
   rw [sin_exponentialRayGammaSlope]
   unfold exponentialRayGammaGauge exponentialRayEulerFactor exponentialRayGammaSlope
   calc
-    rate * s * Complex.exp (rate * s / 2) / (4 * (Real.pi : ℂ) ^ 2) *
+    rate * s * Complex.exp (rate * s / 2) / (4 * (Real.pi : ℂ) ^ (2 : ℕ)) *
         (1 - Complex.exp (-rate * s)) =
-      rate * s / (4 * (Real.pi : ℂ) ^ 2) *
+      rate * s / (4 * (Real.pi : ℂ) ^ (2 : ℕ)) *
         (Complex.exp (rate * s / 2) -
           Complex.exp (rate * s / 2) * Complex.exp (-rate * s)) := by ring
-    _ = rate * s / (4 * (Real.pi : ℂ) ^ 2) *
+    _ = rate * s / (4 * (Real.pi : ℂ) ^ (2 : ℕ)) *
         (Complex.exp (rate * s / 2) -
           Complex.exp (-(rate * s / 2))) := by rw [hexp]
     _ = -(Complex.I * rate / (2 * (Real.pi : ℂ)) * s *

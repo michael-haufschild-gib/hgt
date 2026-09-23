@@ -84,7 +84,7 @@ def inverseDegreeVariation (G : RouteEWeightedGibbsGraph ι) : ℝ :=
 def inverseDegreeDirichletEnergy (G : RouteEWeightedGibbsGraph ι) : ℝ :=
   ∑ p ∈ strictPairs (Finset.univ : Finset ι),
     G.base p.1 p.2 * G.weight p.2 *
-      (G.inverseDegree p.1 - G.inverseDegree p.2) ^ 2
+      (G.inverseDegree p.1 - G.inverseDegree p.2) ^ (2 : ℕ)
 
 theorem weight_pos (G : RouteEWeightedGibbsGraph ι) (i : ι) : 0 < G.weight i :=
   Real.exp_pos _
@@ -606,7 +606,7 @@ theorem inverseDegreeDirichletEnergy_nonneg (K : RouteERecurrenceKernel ι) :
 energy. -/
 theorem inverseDegreeVariation_sq_le_budget_mul_dirichletEnergy
     (K : RouteERecurrenceKernel ι) :
-    K.toWeightedGibbsGraph.inverseDegreeVariation ^ 2 ≤
+    K.toWeightedGibbsGraph.inverseDegreeVariation ^ (2 : ℕ) ≤
       K.edgeWeightBudget * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy := by
   let s := strictPairs (Finset.univ : Finset ι)
   let e : ι × ι → ℝ := fun p =>
@@ -626,10 +626,10 @@ theorem inverseDegreeVariation_sq_le_budget_mul_dirichletEnergy
       Real.sqrt (e p) * (d p * Real.sqrt (e p)) =
           d p * (Real.sqrt (e p) * Real.sqrt (e p)) := by ring
       _ = e p * d p := by rw [hsqrt]; ring
-  have hsq1 : ∀ p, Real.sqrt (e p) ^ 2 = e p := fun p => Real.sq_sqrt (he p)
-  have hsq2 : ∀ p, (d p * Real.sqrt (e p)) ^ 2 =
+  have hsq1 : ∀ p, Real.sqrt (e p) ^ (2 : ℕ) = e p := fun p => Real.sq_sqrt (he p)
+  have hsq2 : ∀ p, (d p * Real.sqrt (e p)) ^ (2 : ℕ) =
       e p * (K.toWeightedGibbsGraph.inverseDegree p.1 -
-        K.toWeightedGibbsGraph.inverseDegree p.2) ^ 2 := by
+        K.toWeightedGibbsGraph.inverseDegree p.2) ^ (2 : ℕ) := by
     intro p
     rw [mul_pow, hsq1]
     simp only [d, sq_abs]
@@ -978,7 +978,7 @@ def coMovingTargetWeight (K : RouteEOneSidedKernel S T) (t : T) : ℝ :=
 def oneSidedDirichletEnergy (K : RouteEOneSidedKernel S T) : ℝ :=
   ∑ t, ∑ s,
     (K.transition s t / 2) * K.coMovingEdgeWeight s t *
-      (2 - 2 * K.inverseColumnLoad t) ^ 2
+      (2 - 2 * K.inverseColumnLoad t) ^ (2 : ℕ)
 
 theorem columnLoad_nonneg (K : RouteEOneSidedKernel S T) (t : T) :
     0 ≤ K.columnLoad t :=
@@ -997,7 +997,7 @@ theorem oneSidedDirichletEnergy_eq_coMovingReverseChiSquare
     K.oneSidedDirichletEnergy =
       2 * ∑ t,
         if K.columnLoad t = 0 then 0
-        else K.coMovingTargetWeight t * (K.columnLoad t - 1) ^ 2 / K.columnLoad t := by
+        else K.coMovingTargetWeight t * (K.columnLoad t - 1) ^ (2 : ℕ) / K.columnLoad t := by
   rw [oneSidedDirichletEnergy, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro t _ht
@@ -1009,18 +1009,18 @@ theorem oneSidedDirichletEnergy_eq_coMovingReverseChiSquare
       lt_of_le_of_ne (K.columnLoad_nonneg t) (Ne.symm hload)
     simp only [hload, if_false, inverseColumnLoad, coMovingTargetWeight]
     rw [show (∑ s, K.transition s t / 2 * K.coMovingEdgeWeight s t *
-          (2 - 2 * (K.columnLoad t)⁻¹) ^ 2) =
-        ((2 - 2 * (K.columnLoad t)⁻¹) ^ 2 / 2) * K.weightedIncoming t by
+          (2 - 2 * (K.columnLoad t)⁻¹) ^ (2 : ℕ)) =
+        ((2 - 2 * (K.columnLoad t)⁻¹) ^ (2 : ℕ) / 2) * K.weightedIncoming t by
       rw [weightedIncoming]
       calc
         (∑ s, K.transition s t / 2 * K.coMovingEdgeWeight s t *
-            (2 - 2 * (K.columnLoad t)⁻¹) ^ 2) =
-            ∑ s, ((2 - 2 * (K.columnLoad t)⁻¹) ^ 2 / 2) *
+            (2 - 2 * (K.columnLoad t)⁻¹) ^ (2 : ℕ)) =
+            ∑ s, ((2 - 2 * (K.columnLoad t)⁻¹) ^ (2 : ℕ) / 2) *
               (K.transition s t * K.coMovingEdgeWeight s t) := by
           apply Finset.sum_congr rfl
           intro s _hs
           ring
-        _ = ((2 - 2 * (K.columnLoad t)⁻¹) ^ 2 / 2) *
+        _ = ((2 - 2 * (K.columnLoad t)⁻¹) ^ (2 : ℕ) / 2) *
             ∑ s, K.transition s t * K.coMovingEdgeWeight s t :=
           (Finset.mul_sum _ _ _).symm]
     field_simp

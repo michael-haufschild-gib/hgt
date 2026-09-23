@@ -11,7 +11,7 @@ noncomputable section
 /-- The explicit full-square lift has an actual L² radial coefficient. -/
 theorem radialLift_memLp (s w a T : ℂ) (hw : 0 < w.re) :
     MemLp (radialLift s w a T) 2 radialMeasure := by
-  have h := sourceAmplitude_profile_memLp s w a T hw (fun u => (-s*(s-1)/4)*(u:ℂ)^3)
+  have h := sourceAmplitude_profile_memLp s w a T hw (fun u => (-s*(s-1)/4)*(u:ℂ)^(3 : ℕ))
     (by fun_prop)
   convert! h using 1
   ext t

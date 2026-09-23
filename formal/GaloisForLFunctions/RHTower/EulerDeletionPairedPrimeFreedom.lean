@@ -107,16 +107,16 @@ theorem paired_moments {p q N M : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hfq : ∀ j ∈ Finset.Icc 1 M, f (q*j) = f j) (t : ℝ) :
     (∑ n ∈ Finset.Icc 1 N, f n * primePairWeight p q t n) =
         ∑ n ∈ Finset.Icc 1 N, f n ∧
-    (∑ n ∈ Finset.Icc 1 N, f n * primePairWeight p q t n ^ 2) =
-        (∑ n ∈ Finset.Icc 1 N, f n) + 2*t^2*(∑ j ∈ Finset.Icc 1 M, f j) := by
+    (∑ n ∈ Finset.Icc 1 N, f n * primePairWeight p q t n ^ (2 : ℕ)) =
+        (∑ n ∈ Finset.Icc 1 N, f n) + 2*t^(2 : ℕ)*(∑ j ∈ Finset.Icc 1 M, f j) := by
   have hl (n : ℕ) (hn : n ∈ Finset.Icc 1 N) :
       f n * primePairWeight p q t n = f n + t * (if p ∣ n then f n else 0) -
         t * (if q ∣ n then f n else 0) := by
     rw [weight_restriction hp hq hpq hpp hqq hpqN hn]
     split_ifs <;> ring
   have hs (n : ℕ) (hn : n ∈ Finset.Icc 1 N) :
-      f n * primePairWeight p q t n ^ 2 = f n + (2*t+t^2) * (if p ∣ n then f n else 0) +
-        (-2*t+t^2) * (if q ∣ n then f n else 0) := by
+      f n * primePairWeight p q t n ^ (2 : ℕ) = f n + (2*t+t^(2 : ℕ)) * (if p ∣ n then f n else 0) +
+        (-2*t+t^(2 : ℕ)) * (if q ∣ n then f n else 0) := by
     rw [weight_restriction hp hq hpq hpp hqq hpqN hn]
     by_cases hpn : p ∣ n <;> by_cases hqn : q ∣ n
     · have h := Nat.le_of_dvd (by have := (Finset.mem_Icc.mp hn).1; omega)
@@ -191,8 +191,8 @@ theorem paired_curvature {p q N M : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hpq : p.Coprime q) (hpp : N < p*p) (hqq : N < q*q) (hpqN : N < p*q)
     (hMp : N / p = M) (hMq : N / q = M)
     (h30p : Nat.Coprime 30 p) (h30q : Nat.Coprime 30 q) (hN : 30 ∣ N) (t : ℝ) :
-    (∑ n ∈ Finset.Icc 1 N, curvatureCoefficient 2 3 5 n * primePairWeight p q t n ^ 2) =
-      4*t^2*((M % 6 : ℕ) - (M % 3 : ℕ) +
+    (∑ n ∈ Finset.Icc 1 N, curvatureCoefficient 2 3 5 n * primePairWeight p q t n ^ (2 : ℕ)) =
+      4*t^(2 : ℕ)*((M % 6 : ℕ) - (M % 3 : ℕ) +
         5*((M % 15 : ℕ) - (M % 30 : ℕ)) : ℝ) := by
   have h := (paired_moments hp hq hpq hpp hqq hpqN hMp hMq (curvatureCoefficient 2 3 5)
     (fun j _ => cell_dilation h30p j) (fun j _ => cell_dilation h30q j) t).2
@@ -235,7 +235,7 @@ theorem positive_endpoints (t : ℝ) :
     (by norm_num) (by norm_num) (by norm_num) t
 
 theorem negative_curvature (t : ℝ) :
-    (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * negativeWeight t n ^ 2) = -288*t^2 := by
+    (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * negativeWeight t n ^ (2 : ℕ)) = -288*t^(2 : ℕ) := by
   have h := paired_curvature (p := 59) (q := 61) (N := 930) (M := 15)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) t
@@ -245,7 +245,7 @@ theorem negative_curvature (t : ℝ) :
   ring
 
 theorem positive_curvature (t : ℝ) :
-    (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * positiveWeight t n ^ 2) = 12*t^2 := by
+    (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * positiveWeight t n ^ (2 : ℕ)) = 12*t^(2 : ℕ) := by
   have h := paired_curvature (p := 251) (q := 257) (N := 930) (M := 3)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) t
@@ -264,8 +264,8 @@ theorem completely_multiplicative_closed_endpoints_opposite_curvatures :
       (∀ d, d ∣ 30 →
         (∑ n ∈ Finset.Icc 1 930, coefficient d n * wMinus n) = 0 ∧
         (∑ n ∈ Finset.Icc 1 930, coefficient d n * wPlus n) = 0) ∧
-      (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * wMinus n ^ 2) = -72 ∧
-      (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * wPlus n ^ 2) = 3 := by
+      (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * wMinus n ^ (2 : ℕ)) = -72 ∧
+      (∑ n ∈ Finset.Icc 1 930, curvatureCoefficient 2 3 5 n * wPlus n ^ (2 : ℕ)) = 3 := by
   refine ⟨negativeWeight (1/2), positiveWeight (1/2), weight_one _ _ _, weight_one _ _ _,
     weight_mul _ _ _, weight_mul _ _ _, ?_, ?_, ?_, ?_⟩
   · intro n hn

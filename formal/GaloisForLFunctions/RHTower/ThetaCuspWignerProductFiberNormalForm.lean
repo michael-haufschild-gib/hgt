@@ -31,7 +31,7 @@ def thetaCuspWignerAtomCenteredCoordinate (n m : ℕ) (t : ℝ) : ℝ :=
 
 /-- Universal radial profile left after product/ratio separation of two actual source atoms. -/
 def thetaCuspWignerRadialProfile (c v : ℝ) : ℝ :=
-  (c ^ 4 - 6 * c ^ 3 * Real.cosh (2 * v) + 9 * c ^ 2) *
+  (c ^ (4 : ℕ) - 6 * c ^ (3 : ℕ) * Real.cosh (2 * v) + 9 * c ^ (2 : ℕ)) *
     Real.exp (-c * Real.cosh (2 * v))
 
 /-- **Actual atom-pair product/ratio separation.**  The source-pair amplitude depends on the
@@ -70,24 +70,24 @@ theorem thetaCuspSourceTerm_mul_reflect_eq_wignerRadialProfile
     rw [show -2 * t = -(t + t) by ring, Real.exp_neg, Real.exp_add]
     ring
   have hplus :
-      2 * Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ 2 =
+      2 * Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ (2 : ℕ) =
         c * Real.exp (2 * v) := by
-    change 2 * Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ 2 =
+    change 2 * Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ (2 : ℕ) =
       (2 * Real.pi * n * m * Real.exp (2 * u)) * Real.exp (2 * v)
     rw [Real.exp_add, heu, hevPlus, het]
     field_simp [hmR.ne']
   have hminus :
-      2 * Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ 2 =
+      2 * Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ (2 : ℕ) =
         c * Real.exp (-2 * v) := by
-    change 2 * Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ 2 =
+    change 2 * Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ (2 : ℕ) =
       (2 * Real.pi * n * m * Real.exp (2 * u)) * Real.exp (-2 * v)
     rw [Real.exp_sub, heu, hevMinus, hnegt]
     have het0 : Real.exp t ≠ 0 := (Real.exp_pos t).ne'
     field_simp [hnR.ne', hmR.ne', het0]
   have hseed (x : ℝ) :
       thetaCuspSeed x =
-        ((2 * Real.pi * x ^ 2) ^ 2 - 3 * (2 * Real.pi * x ^ 2)) *
-          Real.exp (-Real.pi * x ^ 2) := by
+        ((2 * Real.pi * x ^ (2 : ℕ)) ^ (2 : ℕ) - 3 * (2 * Real.pi * x ^ (2 : ℕ))) *
+          Real.exp (-Real.pi * x ^ (2 : ℕ)) := by
     unfold thetaCuspSeed
     ring
   rw [thetaCuspSourceTerm, thetaCuspSourceTerm, hseed, hseed]
@@ -98,40 +98,40 @@ theorem thetaCuspSourceTerm_mul_reflect_eq_wignerRadialProfile
     congr 1
     ring
   have hgauss :
-      Real.exp (-Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ 2) *
-          Real.exp (-Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ 2) =
+      Real.exp (-Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ (2 : ℕ)) *
+          Real.exp (-Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ (2 : ℕ)) =
         Real.exp (-c * Real.cosh (2 * v)) := by
     rw [← Real.exp_add]
     congr 1
-    have hp : Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ 2 =
+    have hp : Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ (2 : ℕ) =
         (c * Real.exp (2 * v)) / 2 := by linarith [hplus]
-    have hm' : Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ 2 =
+    have hm' : Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ (2 : ℕ) =
         (c * Real.exp (-2 * v)) / 2 := by linarith [hminus]
     rw [Real.cosh_eq]
     rw [show -(2 * v) = -2 * v by ring]
     linarith
   have hpolyPlus :
-      (c * Real.exp (2 * v)) ^ 2 - 3 * (c * Real.exp (2 * v)) =
-        c ^ 2 * Real.exp (4 * v) - 3 * c * Real.exp (2 * v) := by
+      (c * Real.exp (2 * v)) ^ (2 : ℕ) - 3 * (c * Real.exp (2 * v)) =
+        c ^ (2 : ℕ) * Real.exp (4 * v) - 3 * c * Real.exp (2 * v) := by
     rw [show Real.exp (4 * v) =
       Real.exp (2 * v) * Real.exp (2 * v) by
         rw [show 4 * v = 2 * v + 2 * v by ring, Real.exp_add]]
     ring
   have hpolyMinus :
-      (c * Real.exp (-2 * v)) ^ 2 - 3 * (c * Real.exp (-2 * v)) =
-        c ^ 2 * Real.exp (-4 * v) - 3 * c * Real.exp (-2 * v) := by
+      (c * Real.exp (-2 * v)) ^ (2 : ℕ) - 3 * (c * Real.exp (-2 * v)) =
+        c ^ (2 : ℕ) * Real.exp (-4 * v) - 3 * c * Real.exp (-2 * v) := by
     rw [show Real.exp (-4 * v) =
       Real.exp (-2 * v) * Real.exp (-2 * v) by
         rw [show -4 * v = -2 * v + -2 * v by ring, Real.exp_add]]
     ring
   calc
     _ = (Real.exp ((u + t) / 2) * Real.exp ((u - t) / 2)) *
-        (((c * Real.exp (2 * v)) ^ 2 -
+        (((c * Real.exp (2 * v)) ^ (2 : ℕ) -
             3 * (c * Real.exp (2 * v))) *
-          ((c * Real.exp (-2 * v)) ^ 2 -
+          ((c * Real.exp (-2 * v)) ^ (2 : ℕ) -
             3 * (c * Real.exp (-2 * v)))) *
-        (Real.exp (-Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ 2) *
-          Real.exp (-Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ 2)) := by
+        (Real.exp (-Real.pi * ((n : ℝ) * Real.exp (u + t)) ^ (2 : ℕ)) *
+          Real.exp (-Real.pi * ((m : ℝ) * Real.exp (u - t)) ^ (2 : ℕ))) := by
       rw [hplus, hminus]
       ring
     _ = Real.exp u *
@@ -386,10 +386,10 @@ theorem thetaCuspCompletedPositiveShell_nonneg (n : ℕ) (x : ℝ) :
     apply (thetaCuspSeed_pos ?_).le
     norm_num [Nat.cast_add, Nat.cast_one]
     have hn0 : (0 : ℝ) ≤ n := by positivity
-    have hn2 : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith
+    have hn2 : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) := by nlinarith
     have hmul :
         2 * Real.pi * 1 ≤
-          2 * Real.pi * (((n : ℝ) + 1) ^ 2) :=
+          2 * Real.pi * (((n : ℝ) + 1) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hn2 (by positivity)
     exact (show 3 < 2 * Real.pi by
       nlinarith [Real.pi_gt_three]).trans_le (by simpa using hmul)
@@ -452,7 +452,7 @@ private theorem integrable_thetaCuspFullSource_reflectedProduct
   let C : ℝ := thetaCuspDerivativeExpConstant 0
   have hC : 0 ≤ C := thetaCuspDerivativeExpConstant_nonneg 0
   have hmajor :
-      Integrable (fun t : ℝ => C ^ 2 * Real.exp (-|t|)) :=
+      Integrable (fun t : ℝ => C ^ (2 : ℕ) * Real.exp (-|t|)) :=
     integrable_exp_neg_abs.const_mul _
   apply hmajor.mono
   · have hsource : Continuous thetaCuspFullSource :=
@@ -478,7 +478,7 @@ private theorem integrable_thetaCuspFullSource_reflectedProduct
         ‖(thetaCuspFullSource (u + t) *
             thetaCuspFullSource (u - t) : ℂ) *
           thetaWignerDifferencePhase b t‖ ≤
-            C ^ 2 * Real.exp (-|t|) := by
+            C ^ (2 : ℕ) * Real.exp (-|t|) := by
       simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
         thetaWignerDifferencePhase, Complex.norm_exp]
       simp only [mul_re, ofReal_re, ofReal_im, I_re, I_im, mul_zero,
@@ -488,9 +488,9 @@ private theorem integrable_thetaCuspFullSource_reflectedProduct
             |thetaCuspFullSource (u - t)| ≤
           (C * Real.exp (-|u + t|)) *
             (C * Real.exp (-|u - t|)) := by gcongr
-        _ = C ^ 2 *
+        _ = C ^ (2 : ℕ) *
             (Real.exp (-|u + t|) * Real.exp (-|u - t|)) := by ring
-        _ ≤ C ^ 2 * Real.exp (-|t|) := by gcongr
+        _ ≤ C ^ (2 : ℕ) * Real.exp (-|t|) := by gcongr
     simpa only [Real.norm_eq_abs,
       abs_of_nonneg (mul_nonneg (sq_nonneg C) (Real.exp_pos _).le)] using hbound
 

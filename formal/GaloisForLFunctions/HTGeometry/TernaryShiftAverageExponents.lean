@@ -90,7 +90,7 @@ theorem binary_consistency : transferBound 2 (1/2) (5/6) = 1 := by
 `b` in `Σ_{h≤H} Δ₃ ≪ H^{1/2} x^{b}`.
 
 `β = 2` is the trivial input; `β = 4/3` is the strongest known bound, which however holds only when
-`σ(3) = 1/2`, i.e. only when `∫_0^T|ζ(1/2+it)|^6 dt ≪ T^{1+ε}` — the sixth moment conjecture itself.
+`σ(3) = 1/2`, i.e. only when `∫_0^T|ζ(1/2+it)|^(6 : ℕ) dt ≪ T^{1+ε}` — the sixth moment conjecture itself.
 -/
 def shortIntervalOutput (β : ℚ) : ℚ := 5/6 + (β - 1) / 3
 

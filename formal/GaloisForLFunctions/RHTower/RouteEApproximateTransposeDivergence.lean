@@ -150,9 +150,9 @@ theorem routeE_averageColumnMass_gradient_sq_eq_quarter_mismatchDivergence_gradi
     (hQ : ∀ i, routeERowMass Q i = 1)
     (i j : ι) :
     (routeEColumnMass (routeEKernelAverage P Q) i -
-        routeEColumnMass (routeEKernelAverage P Q) j) ^ 2 =
+        routeEColumnMass (routeEKernelAverage P Q) j) ^ (2 : ℕ) =
       (1 / 4 : ℝ) *
-        (routeEMismatchDivergence P Q i - routeEMismatchDivergence P Q j) ^ 2 := by
+        (routeEMismatchDivergence P Q i - routeEMismatchDivergence P Q j) ^ (2 : ℕ) := by
   rw [routeE_averageColumnMass_sub_eq_half_mismatchDivergence_sub P Q hP hQ]
   ring
 
@@ -164,10 +164,10 @@ theorem routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceE
     (edges : Finset (ι × ι)) (weight : ι × ι → ℝ) :
     (∑ p ∈ edges, weight p *
       (routeEColumnMass (routeEKernelAverage P Q) p.1 -
-        routeEColumnMass (routeEKernelAverage P Q) p.2) ^ 2) =
+        routeEColumnMass (routeEKernelAverage P Q) p.2) ^ (2 : ℕ)) =
       (1 / 4 : ℝ) * ∑ p ∈ edges, weight p *
         (routeEMismatchDivergence P Q p.1 -
-          routeEMismatchDivergence P Q p.2) ^ 2 := by
+          routeEMismatchDivergence P Q p.2) ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro p _hp
@@ -188,10 +188,10 @@ theorem routeE_normalizedBidirectionalColumnGradientEnergy_eq_quarterRawMismatch
             (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)) p.1 -
         routeEColumnMass
           (routeEKernelAverage
-            (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)) p.2) ^ 2) =
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)) p.2) ^ (2 : ℕ)) =
       (1 / 4 : ℝ) * ∑ p ∈ edges, weight p *
         (routeERawBidirectionalMismatchDivergence U V p.1 -
-          routeERawBidirectionalMismatchDivergence U V p.2) ^ 2 := by
+          routeERawBidirectionalMismatchDivergence U V p.2) ^ (2 : ℕ) := by
   rw [routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy
     (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)
     (fun i => routeE_rowMass_rowNormalizedKernel_eq_one U i (hU i))
@@ -215,10 +215,10 @@ theorem routeE_symmetricNormalizedColumnGradientEnergy_eq_normalizerFluxEnergy
             (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)) p.1 -
         routeEColumnMass
           (routeEKernelAverage
-            (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)) p.2) ^ 2) =
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)) p.2) ^ (2 : ℕ)) =
       ∑ p ∈ edges, weight p *
         (routeESymmetricNormalizerFlux U p.1 -
-          routeESymmetricNormalizerFlux U p.2) ^ 2 := by
+          routeESymmetricNormalizerFlux U p.2) ^ (2 : ℕ) := by
   rw [routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy
     (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)
     (fun i => routeE_rowMass_rowNormalizedKernel_eq_one U i (hU i))
@@ -227,17 +227,17 @@ theorem routeE_symmetricNormalizedColumnGradientEnergy_eq_normalizerFluxEnergy
   calc
     (1 / 4 : ℝ) * ∑ p ∈ edges, weight p *
         (2 * routeESymmetricNormalizerFlux U p.1 -
-          2 * routeESymmetricNormalizerFlux U p.2) ^ 2 =
+          2 * routeESymmetricNormalizerFlux U p.2) ^ (2 : ℕ) =
       (1 / 4 : ℝ) * ∑ p ∈ edges, 4 * (weight p *
         (routeESymmetricNormalizerFlux U p.1 -
-          routeESymmetricNormalizerFlux U p.2) ^ 2) := by
+          routeESymmetricNormalizerFlux U p.2) ^ (2 : ℕ)) := by
         congr 1
         apply Finset.sum_congr rfl
         intro p _hp
         ring
     _ = ∑ p ∈ edges, weight p *
         (routeESymmetricNormalizerFlux U p.1 -
-          routeESymmetricNormalizerFlux U p.2) ^ 2 := by
+          routeESymmetricNormalizerFlux U p.2) ^ (2 : ℕ) := by
       rw [← Finset.mul_sum]
       ring
 

@@ -41,7 +41,7 @@ theorem tendsto_vertical_ratio :
     Filter.Tendsto.atTop_mul_atTop₀ tendsto_id hlogtop
   -- the arctangent head
   have hA : Tendsto (fun T : ℝ =>
-      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ 2) + 1 / (1 + y ^ 2))) / (T * Real.log T))
+      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ (2 : ℕ)) + 1 / (1 + y ^ (2 : ℕ)))) / (T * Real.log T))
       atTop (𝓝 0) := tendsto_bounded_div_TlogT abs_integral_rational_head_le
   -- the zeta phase
   have hZ : Tendsto (fun T : ℝ =>
@@ -107,14 +107,14 @@ theorem tendsto_vertical_ratio :
       exact (Real.log_pos h1).ne'
     field_simp
   have hsum : Tendsto (fun T : ℝ =>
-      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ 2) + 1 / (1 + y ^ 2))) / (T * Real.log T)
+      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ (2 : ℕ)) + 1 / (1 + y ^ (2 : ℕ)))) / (T * Real.log T)
         - (T * Real.log Real.pi / 2) / (T * Real.log T)
         + gammaVerticalPhase 1 (T / 2) / (T * Real.log T)
         + (∫ y in (0 : ℝ)..T, (logDeriv riemannZeta ((2 : ℂ) + (y : ℂ) * I)).re)
             / (T * Real.log T)) atTop (𝓝 (0 - 0 + 1 / 2 + 0)) :=
     ((hA.sub hπ).add hΦ).add hZ
   have hsum' : Tendsto (fun T : ℝ =>
-      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ 2) + 1 / (1 + y ^ 2))) / (T * Real.log T)
+      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ (2 : ℕ)) + 1 / (1 + y ^ (2 : ℕ)))) / (T * Real.log T)
         - (T * Real.log Real.pi / 2) / (T * Real.log T)
         + gammaVerticalPhase 1 (T / 2) / (T * Real.log T)
         + (∫ y in (0 : ℝ)..T, (logDeriv riemannZeta ((2 : ℂ) + (y : ℂ) * I)).re)

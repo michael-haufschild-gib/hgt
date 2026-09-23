@@ -115,7 +115,7 @@ theorem schurVar_succ_eq_sum {L k : ℕ} :
         (-1 : MvPolynomial (Fin L) K) ^ i * dualVar K L (i + 1) * schurVar K L (k - i) := by
   have h := sum_dualVar_schurVar (K := K) (L := L) (k := k)
   rw [Finset.sum_range_succ'] at h
-  have hzero : (-1 : MvPolynomial (Fin L) K) ^ 0 * dualVar K L 0 * schurVar K L (k + 1 - 0) =
+  have hzero : (-1 : MvPolynomial (Fin L) K) ^ (0 : ℕ) * dualVar K L 0 * schurVar K L (k + 1 - 0) =
       schurVar K L (k + 1) := by
     rw [dualVar_zero, pow_zero, one_mul, one_mul, show k + 1 - 0 = k + 1 from rfl]
   rw [hzero] at h

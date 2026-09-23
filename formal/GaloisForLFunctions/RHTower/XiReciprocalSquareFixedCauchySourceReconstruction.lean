@@ -9,7 +9,7 @@ noncomputable section
 
 /-- Antiholomorphic adjoint-response test attached to a continued Cauchy pole. -/
 def xiReciprocalSquareCauchyAdjointResponseTest (z a : ℂ) : ℂ :=
-  ((starRingEnd ℂ) a)⁻¹ ^ 2 * ((starRingEnd ℂ) a - z)⁻¹
+  ((starRingEnd ℂ) a)⁻¹ ^ (2 : ℕ) * ((starRingEnd ℂ) a - z)⁻¹
 
 theorem xiReciprocalSquareCauchyAdjointResponseTest_squareSummable
     (z : XiContinuedCauchyPoint) :
@@ -43,7 +43,7 @@ theorem xiReciprocalSquareCauchyAdjointResponseTest_evaluation
 
 /-- Holomorphic reciprocal-square response before critical-line-reflection reindexing. -/
 def xiReciprocalSquareCauchyHolomorphicResponseTest (z a : ℂ) : ℂ :=
-  a⁻¹ ^ 2 * (a - z)⁻¹
+  a⁻¹ ^ (2 : ℕ) * (a - z)⁻¹
 
 theorem xiReciprocalSquareCauchyHolomorphicResponseTest_squareSummable
     (z : XiContinuedCauchyPoint) :
@@ -182,9 +182,9 @@ This is the algebraic input for a split-pole source realization. -/
 theorem xiReciprocalSquareCauchyHolomorphicResponseTest_partialFractions
     {z a : ℂ} (hz : z ≠ 0) (ha : a ≠ 0) (haz : a ≠ z) :
     xiReciprocalSquareCauchyHolomorphicResponseTest z a =
-      z⁻¹ ^ 2 * xiWeilCauchyTest z a -
-      z⁻¹ ^ 2 * xiWeilCauchyTest 0 a -
-      z⁻¹ * a⁻¹ ^ 2 := by
+      z⁻¹ ^ (2 : ℕ) * xiWeilCauchyTest z a -
+      z⁻¹ ^ (2 : ℕ) * xiWeilCauchyTest 0 a -
+      z⁻¹ * a⁻¹ ^ (2 : ℕ) := by
   rw [xiReciprocalSquareCauchyHolomorphicResponseTest,
     xiWeilCauchyTest, xiWeilCauchyTest]
   field_simp [hz, ha, sub_ne_zero.mpr haz]
@@ -214,7 +214,7 @@ theorem xiReciprocalSquareCauchySourcePlusTest_squareSummable
   symm
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) +
     I * xiReciprocalSquareCauchyAdjointResponseTest
-      (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
+      (z : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) = _
   rfl
 
 theorem xiReciprocalSquareCauchySourceMinusTest_squareSummable
@@ -231,7 +231,7 @@ theorem xiReciprocalSquareCauchySourceMinusTest_squareSummable
   symm
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) -
     I * xiReciprocalSquareCauchyAdjointResponseTest
-      (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
+      (z : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) = _
   rfl
 
 theorem xiReciprocalSquareCauchySourcePlusTest_evaluation

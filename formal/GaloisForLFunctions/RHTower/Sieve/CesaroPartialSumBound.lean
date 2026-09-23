@@ -101,7 +101,7 @@ logarithmic weight to the partial sum by differencing the cutoff.  No sieve, no 
 split, no recursion, and no Tauberian step. -/
 theorem exists_norm_sum_Icc_liouvilleC_le_cesaro :
     ∃ C : ℝ, ∀ (N z : ℕ) (σ T x x' : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 1 ≤ T → 9 ≤ T →
-      (N : ℝ) ≤ x → x ≤ x' → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ 9 →
+      (N : ℝ) ≤ x → x ≤ x' → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ (9 : ℕ) →
       ‖∑ n ∈ Finset.Icc 1 N, liouvilleC n‖ * Real.log (x' / x)
         ≤ ((∑ n ∈ Finset.Icc 1 N, cesaroError σ T (x / n))
               + (1 / (2 * Real.pi))

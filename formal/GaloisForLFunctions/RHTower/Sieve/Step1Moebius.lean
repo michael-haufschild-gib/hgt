@@ -32,9 +32,9 @@ theorem exists_card_le_good_add_moebius :
                 ∧ (3 / 16) * squarefreeDensity * (L : ℝ)
                   ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
             + (((Y : ℝ) * (1 + ε) ^ J)
-                * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((Bd N * N) ^ 2)
-                    ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ 2) W))
-              / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ 2
+                * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((Bd N * N) ^ (2 : ℕ))
+                    ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) W))
+              / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ (2 : ℕ)
             + ((L : ℝ) * ((((Y + K : ℕ) : ℝ) + (L : ℝ) - (Y : ℝ)) / (R : ℝ) + (Md : ℝ)))
               / ((1 / 2) * ((L : ℝ) * squarefreeDensity)
                   - ((R : ℝ) + (L : ℝ) / (R : ℝ)))) := by

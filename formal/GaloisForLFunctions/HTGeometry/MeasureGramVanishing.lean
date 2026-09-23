@@ -19,7 +19,7 @@ noncomputable section
 
 /-- **The dominant makes the atom kernel integrable at small heights.** -/
 theorem integrable_atomKernel_of_dominant (ν : Measure ℝ) (a R : ℝ) (hR : 0 < R)
-    (hdom : Integrable (atomDominant a R) ν) {y : ℝ} (hy : y ≠ 0) (hy1 : y ^ 2 ≤ 1) :
+    (hdom : Integrable (atomDominant a R) ν) {y : ℝ} (hy : y ≠ 0) (hy1 : y ^ (2 : ℕ) ≤ 1) :
     Integrable (fun t : ℝ => atomKernel a y t) ν := by
   refine hdom.mono' ((continuous_atomKernel hy).aestronglyMeasurable) ?_
   filter_upwards with t

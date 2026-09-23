@@ -20,7 +20,7 @@ open Finset
 
 /-- **The second moment of the balanced divisor count.** -/
 theorem sum_sq_card_divisors_window_le (X y : ℕ) :
-    ∑ m ∈ Finset.Icc 1 X, ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ 2
+    ∑ m ∈ Finset.Icc 1 X, ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ (2 : ℕ)
       ≤ (X : ℝ) * ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)),
           1 / ((Nat.lcm p.1 p.2 : ℕ) : ℝ) := by
   classical
@@ -28,7 +28,7 @@ theorem sum_sq_card_divisors_window_le (X y : ℕ) :
     ext x
     simp [Nat.lt_iff_add_one_le]
   have hsq : ∀ m : ℕ,
-      ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ 2
+      ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ (2 : ℕ)
         = ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)),
             (if Nat.lcm p.1 p.2 ∣ m then (1 : ℝ) else 0) := by
     intro m

@@ -5,8 +5,8 @@ import GaloisForLFunctions.HTGeometry.FarBandPowerTail
 /-!
 # Mean square of the finite critical Levinson detector
 
-At the integer-power schedule `L = N^100`, `M = N^49`, the product polynomial has length
-`N^149`, strictly below the averaging height `N^200`.  The arbitrary-window Dirichlet mean-value
+At the integer-power schedule `L = N^(100 : ℕ)`, `M = N^(49 : ℕ)`, the product polynomial has length
+`N^(149 : ℕ)`, strictly below the averaging height `N^(200 : ℕ)`.  The arbitrary-window Dirichlet mean-value
 theorem therefore transfers the exact coefficient-energy limit to the normalized polynomial mean
 square.  No infinite AFE or displacement estimate is used here.
 -/

@@ -6,8 +6,8 @@ import Mathlib
 Suzuki, arXiv:2206.03682v4, Theorem 8.2 defines the coefficients
 
 `b_{n,k} = n!/(k!(k+3)!) * [ (n+1)!/(n-k)! *
-  ((k-(4n+3)/2)^2 + 2n + 15/4)
-  + sum_{j=k+1}^n j!/(j-k-1)! * ((2j-k)^2+k+2) * a_{n-j+1} ]`.
+  ((k-(4n+3)/2)^(2 : ℕ) + 2n + 15/4)
+  + sum_{j=k+1}^n j!/(j-k-1)! * ((2j-k)^(2 : ℕ)+k+2) * a_{n-j+1} ]`.
 
 The source proves these coefficients are positive before using them in the
 moment recurrence.  This file records the printed finite expression and a
@@ -26,10 +26,10 @@ noncomputable section
 def suzukiLiRecurrenceCoefficient (a : ℕ → ℝ) (n k : ℕ) : ℝ :=
   (n.factorial : ℝ) / ((k.factorial : ℝ) * ((k + 3).factorial : ℝ)) *
     (((n + 1).factorial : ℝ) / ((n - k).factorial : ℝ) *
-        (((k : ℝ) - (4 * (n : ℝ) + 3) / 2) ^ 2 + 2 * (n : ℝ) + 15 / 4) +
+        (((k : ℝ) - (4 * (n : ℝ) + 3) / 2) ^ (2 : ℕ) + 2 * (n : ℝ) + 15 / 4) +
       ∑ j ∈ Finset.Icc (k + 1) n,
         (j.factorial : ℝ) / ((j - k - 1).factorial : ℝ) *
-          (((2 * (j : ℝ) - k) ^ 2 + k) + 2) * a (n - j + 1))
+          (((2 * (j : ℝ) - k) ^ (2 : ℕ) + k) + 2) * a (n - j + 1))
 
 /-- Positivity of Suzuki's printed expression under positivity of its abstract
 power-series coefficients.  This is infrastructure, not the source theorem. -/
@@ -41,11 +41,11 @@ theorem suzukiLiRecurrenceCoefficient_pos_of_positive_coefficients
       ((k.factorial : ℝ) * ((k + 3).factorial : ℝ)) := by
     positivity
   have hcore : 0 < ((n + 1).factorial : ℝ) / ((n - k).factorial : ℝ) *
-      (((k : ℝ) - (4 * (n : ℝ) + 3) / 2) ^ 2 + 2 * (n : ℝ) + 15 / 4) := by
+      (((k : ℝ) - (4 * (n : ℝ) + 3) / 2) ^ (2 : ℕ) + 2 * (n : ℝ) + 15 / 4) := by
     positivity
   have hsum : 0 ≤ ∑ j ∈ Finset.Icc (k + 1) n,
       (j.factorial : ℝ) / ((j - k - 1).factorial : ℝ) *
-        (((2 * (j : ℝ) - k) ^ 2 + k) + 2) * a (n - j + 1) := by
+        (((2 * (j : ℝ) - k) ^ (2 : ℕ) + k) + 2) * a (n - j + 1) := by
     apply Finset.sum_nonneg
     intro j hj
     have haj : 0 ≤ a (n - j + 1) := (ha _).le

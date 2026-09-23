@@ -86,9 +86,9 @@ theorem continuous_smoothAFEZetaDisplacedMollifiedPrincipalHead
 /-- Pointwise principal energy with the direct/reflected cross retained exactly. -/
 theorem normSq_smoothAFEZetaDisplacedMollifiedPrincipalHead_eq
     (lam d x : ℝ) (L M : ℕ) (t : ℝ) :
-    ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ 2 =
-      ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ 2 +
-      ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2 +
+    ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ (2 : ℕ) =
+      ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ (2 : ℕ) +
+      ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ) +
       2 * ((starRingEnd ℂ)
         (smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t) *
           smoothAFEZetaDisplacedReflectedMovingHead lam d L M t).re := by
@@ -99,9 +99,9 @@ theorem normSq_smoothAFEZetaDisplacedFiniteClassicalDetector_mul_mollifier_eq
     {d : ℝ} (hd : 0 < d) (hdhalf : d < 1 / 2)
     (lam x t : ℝ) (L M : ℕ) :
     ‖smoothAFEZetaDisplacedFiniteClassicalDetector lam d x t L *
-        Sieve.levinsonLinearMollifier M t‖ ^ 2 =
-      ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ 2 +
-      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ 2 +
+        Sieve.levinsonLinearMollifier M t‖ ^ (2 : ℕ) =
+      ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ (2 : ℕ) +
+      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ (2 : ℕ) +
       2 * ((starRingEnd ℂ)
         (smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t) *
           smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t).re := by
@@ -115,11 +115,11 @@ theorem integral_normSq_smoothAFEZetaDisplacedMollifiedPrincipalHead_eq
     {d : ℝ} (hd : 0 < d) (hdhalf : d < 1 / 2)
     (lam x : ℝ) (L M : ℕ) (a b : ℝ) :
     (∫ t in a..b,
-      ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ 2) =
+      ‖smoothAFEZetaDisplacedMollifiedPrincipalHead lam d x L M t‖ ^ (2 : ℕ)) =
       (∫ t in a..b,
-        ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ 2) +
+        ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ (2 : ℕ)) +
       (∫ t in a..b,
-        ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2) +
+        ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ)) +
       2 * (∫ t in a..b,
         ((starRingEnd ℂ)
           (smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t) *
@@ -130,23 +130,23 @@ theorem integral_normSq_smoothAFEZetaDisplacedMollifiedPrincipalHead_eq
     continuous_smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M
   have hR : Continuous R :=
     continuous_smoothAFEZetaDisplacedReflectedMovingHead hd hdhalf lam L M
-  have hDsq : Continuous (fun t => ‖D t‖ ^ 2) := hD.norm.pow 2
-  have hRsq : Continuous (fun t => ‖R t‖ ^ 2) := hR.norm.pow 2
+  have hDsq : Continuous (fun t => ‖D t‖ ^ (2 : ℕ)) := hD.norm.pow 2
+  have hRsq : Continuous (fun t => ‖R t‖ ^ (2 : ℕ)) := hR.norm.pow 2
   have hcross : Continuous (fun t => ((starRingEnd ℂ) (D t) * R t).re) := by
     fun_prop
   rw [intervalIntegral.integral_congr (fun t _ =>
     normSq_smoothAFEZetaDisplacedMollifiedPrincipalHead_eq lam d x L M t)]
   change (∫ t in a..b,
-      (‖D t‖ ^ 2 + ‖R t‖ ^ 2) +
+      (‖D t‖ ^ (2 : ℕ) + ‖R t‖ ^ (2 : ℕ)) +
         (2 * ((starRingEnd ℂ) (D t) * R t).re)) =
-    (∫ t in a..b, ‖D t‖ ^ 2) +
-      (∫ t in a..b, ‖R t‖ ^ 2) +
+    (∫ t in a..b, ‖D t‖ ^ (2 : ℕ)) +
+      (∫ t in a..b, ‖R t‖ ^ (2 : ℕ)) +
       2 * (∫ t in a..b, ((starRingEnd ℂ) (D t) * R t).re)
   have hsplit :
       (∫ t in a..b,
-        (‖D t‖ ^ 2 + ‖R t‖ ^ 2) +
+        (‖D t‖ ^ (2 : ℕ) + ‖R t‖ ^ (2 : ℕ)) +
           (2 * ((starRingEnd ℂ) (D t) * R t).re)) =
-        (∫ t in a..b, ‖D t‖ ^ 2 + ‖R t‖ ^ 2) +
+        (∫ t in a..b, ‖D t‖ ^ (2 : ℕ) + ‖R t‖ ^ (2 : ℕ)) +
           (∫ t in a..b, 2 * ((starRingEnd ℂ) (D t) * R t).re) :=
     intervalIntegral.integral_add
       ((hDsq.add hRsq).intervalIntegrable (μ := MeasureTheory.volume) a b)

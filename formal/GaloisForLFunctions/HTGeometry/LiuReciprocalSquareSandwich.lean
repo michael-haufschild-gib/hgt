@@ -46,8 +46,8 @@ strictly positive derivative, hence is strictly monotone. -/
 
 /-- `log (1 + x) > x - x²/2` for every `x > 0`.  The auxiliary function
 `t ↦ log (1 + t) - t + t²/2` vanishes at `0` and has derivative `t²/(1+t) > 0`. -/
-theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ 2 / 2 < Real.log (1 + x) := by
-  have key : StrictMonoOn (fun t : ℝ => Real.log (1 + t) - t + t ^ 2 / 2) (Set.Ici (0 : ℝ)) := by
+theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ (2 : ℕ) / 2 < Real.log (1 + x) := by
+  have key : StrictMonoOn (fun t : ℝ => Real.log (1 + t) - t + t ^ (2 : ℕ) / 2) (Set.Ici (0 : ℝ)) := by
     refine strictMonoOn_of_deriv_pos (convex_Ici 0) ?_ ?_
     · refine ContinuousOn.add (ContinuousOn.sub ?_ continuousOn_id) (by fun_prop)
       refine ContinuousOn.log (by fun_prop) ?_
@@ -63,18 +63,18 @@ theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ 2 / 2 < Real.log (1 +
         rw [show (fun t : ℝ => Real.log (1 + t)) =
           Real.log ∘ fun t => 1 + t by rfl]
         exact (Real.hasDerivAt_log (ne_of_gt ht1)).comp t h1
-      have h3 : HasDerivAt (fun t : ℝ => t ^ 2 / 2) ((2 : ℝ) * t ^ 1 / 2) t := by
+      have h3 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 2) ((2 : ℝ) * t ^ (1 : ℕ) / 2) t := by
         simpa using (hasDerivAt_pow 2 t).div_const 2
-      have hd : HasDerivAt (fun t : ℝ => Real.log (1 + t) - t + t ^ 2 / 2)
-          ((1 + t)⁻¹ * 1 - 1 + (2 : ℝ) * t ^ 1 / 2) t :=
+      have hd : HasDerivAt (fun t : ℝ => Real.log (1 + t) - t + t ^ (2 : ℕ) / 2)
+          ((1 + t)⁻¹ * 1 - 1 + (2 : ℝ) * t ^ (1 : ℕ) / 2) t :=
         (h2.sub (hasDerivAt_id t)).add h3
       rw [hd.deriv]
-      have hrw : (1 + t)⁻¹ * 1 - 1 + (2 : ℝ) * t ^ 1 / 2 = t ^ 2 / (1 + t) := by
+      have hrw : (1 + t)⁻¹ * 1 - 1 + (2 : ℝ) * t ^ (1 : ℕ) / 2 = t ^ (2 : ℕ) / (1 + t) := by
         field_simp
         ring
       rw [hrw]
       positivity
-  have h0 : Real.log (1 + (0 : ℝ)) - 0 + (0 : ℝ) ^ 2 / 2 = 0 := by norm_num
+  have h0 : Real.log (1 + (0 : ℝ)) - 0 + (0 : ℝ) ^ (2 : ℕ) / 2 = 0 := by norm_num
   have := key Set.self_mem_Ici (Set.mem_Ici.2 hx.le) hx
   simp only [h0] at this
   linarith
@@ -82,8 +82,8 @@ theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ 2 / 2 < Real.log (1 +
 /-- `log (1 - x) < -x - x²/2` for every `0 < x < 1`.  The auxiliary function
 `t ↦ -t - t²/2 - log (1 - t)` vanishes at `0` and has derivative `t²/(1-t) > 0`. -/
 theorem log_one_sub_upper {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
-    Real.log (1 - x) < -x - x ^ 2 / 2 := by
-  have key : StrictMonoOn (fun t : ℝ => -t - t ^ 2 / 2 - Real.log (1 - t))
+    Real.log (1 - x) < -x - x ^ (2 : ℕ) / 2 := by
+  have key : StrictMonoOn (fun t : ℝ => -t - t ^ (2 : ℕ) / 2 - Real.log (1 - t))
       (Set.Ico (0 : ℝ) 1) := by
     refine strictMonoOn_of_deriv_pos (convex_Ico 0 1) ?_ ?_
     · refine ContinuousOn.sub (by fun_prop) ?_
@@ -103,18 +103,18 @@ theorem log_one_sub_upper {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
         rw [show (fun t : ℝ => Real.log (1 - t)) =
           Real.log ∘ fun t => 1 - t by rfl]
         exact (Real.hasDerivAt_log (ne_of_gt hsub)).comp t h1
-      have h3 : HasDerivAt (fun t : ℝ => t ^ 2 / 2) ((2 : ℝ) * t ^ 1 / 2) t := by
+      have h3 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 2) ((2 : ℝ) * t ^ (1 : ℕ) / 2) t := by
         simpa using (hasDerivAt_pow 2 t).div_const 2
-      have hd : HasDerivAt (fun t : ℝ => -t - t ^ 2 / 2 - Real.log (1 - t))
-          (-1 - (2 : ℝ) * t ^ 1 / 2 - (1 - t)⁻¹ * (-1)) t :=
+      have hd : HasDerivAt (fun t : ℝ => -t - t ^ (2 : ℕ) / 2 - Real.log (1 - t))
+          (-1 - (2 : ℝ) * t ^ (1 : ℕ) / 2 - (1 - t)⁻¹ * (-1)) t :=
         (((hasDerivAt_id t).neg).sub h3).sub h2
       rw [hd.deriv]
-      have hrw : -1 - (2 : ℝ) * t ^ 1 / 2 - (1 - t)⁻¹ * (-1) = t ^ 2 / (1 - t) := by
+      have hrw : -1 - (2 : ℝ) * t ^ (1 : ℕ) / 2 - (1 - t)⁻¹ * (-1) = t ^ (2 : ℕ) / (1 - t) := by
         field_simp
         ring
       rw [hrw]
       positivity
-  have h0 : -(0 : ℝ) - (0 : ℝ) ^ 2 / 2 - Real.log (1 - (0 : ℝ)) = 0 := by norm_num
+  have h0 : -(0 : ℝ) - (0 : ℝ) ^ (2 : ℕ) / 2 - Real.log (1 - (0 : ℝ)) = 0 := by norm_num
   have hmem0 : (0 : ℝ) ∈ Set.Ico (0 : ℝ) 1 := ⟨le_refl _, by norm_num⟩
   have := key hmem0 ⟨hx0.le, hx1⟩ hx0
   simp only [h0] at this
@@ -129,11 +129,11 @@ noncomputable def logSum (a : ι → ℝ) (z : ℝ) : ℝ := ∑' m, Real.log (1
 
 /-- The alleged lower bound `L(z) = (2/z²)(S₁ z - Ψ(z))`. -/
 noncomputable def lowerBd (a : ι → ℝ) (z : ℝ) : ℝ :=
-  2 / z ^ 2 * ((∑' m, a m) * z - logSum a z)
+  2 / z ^ (2 : ℕ) * ((∑' m, a m) * z - logSum a z)
 
 /-- The alleged upper bound `U(z) = -(2/z²)(S₁ z + Ψ(-z))`. -/
 noncomputable def upperBd (a : ι → ℝ) (z : ℝ) : ℝ :=
-  -(2 / z ^ 2) * ((∑' m, a m) * z + logSum a (-z))
+  -(2 / z ^ (2 : ℕ)) * ((∑' m, a m) * z + logSum a (-z))
 
 @[simp] theorem logSum_neg (a : ι → ℝ) (z : ℝ) :
     logSum a (-z) = ∑' m, Real.log (1 - a m * z) := by
@@ -183,7 +183,7 @@ theorem summable_logSub (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
 /-- The squares are summable: `aₘ² ≤ (q/z) aₘ`. -/
 theorem summable_sq (hpos : ∀ m, 0 < a m) (hz : 0 < z)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
-    Summable fun m => (a m) ^ 2 := by
+    Summable fun m => (a m) ^ (2 : ℕ) := by
   refine Summable.of_nonneg_of_le (fun m => sq_nonneg _) (fun m => ?_)
     (hsum.mul_right (q / z))
   have h1 : a m ≤ q / z := by
@@ -203,28 +203,28 @@ theorem lowerExcess_eq (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hsum : Summable a) 
 /-- **Lower half of the sandwich.** `L(z) < S₂`. -/
 theorem lowerBd_lt_sumSq [Nonempty ι] (hpos : ∀ m, 0 < a m) (hz : 0 < z)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
-    lowerBd a z < ∑' m, (a m) ^ 2 := by
+    lowerBd a z < ∑' m, (a m) ^ (2 : ℕ) := by
   obtain ⟨m₀⟩ := ‹Nonempty ι›
   have hzne : z ≠ 0 := ne_of_gt hz
   have hsq := summable_sq hpos hz hb hsum
-  have hterm : ∀ m, a m * z - Real.log (1 + a m * z) < (a m) ^ 2 * (z ^ 2 / 2) := by
+  have hterm : ∀ m, a m * z - Real.log (1 + a m * z) < (a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2) := by
     intro m
     have hx : 0 < a m * z := mul_pos (hpos m) hz
     have h := log_one_add_lower hx
     nlinarith [h]
   have hsum1 : Summable fun m => a m * z - Real.log (1 + a m * z) :=
     (hsum.mul_right z).sub (summable_logAdd hpos hz hsum)
-  have hsum2 : Summable fun m => (a m) ^ 2 * (z ^ 2 / 2) := hsq.mul_right _
+  have hsum2 : Summable fun m => (a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2) := hsq.mul_right _
   have hlt : ∑' m, (a m * z - Real.log (1 + a m * z))
-      < ∑' m, ((a m) ^ 2 * (z ^ 2 / 2)) :=
+      < ∑' m, ((a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2)) :=
     hsum1.tsum_lt_tsum (i := m₀) (fun m => (hterm m).le) (hterm m₀) hsum2
   rw [tsum_mul_right] at hlt
-  have hpos2 : (0 : ℝ) < 2 / z ^ 2 := by positivity
-  calc lowerBd a z = 2 / z ^ 2 * (∑' m, (a m * z - Real.log (1 + a m * z))) := by
+  have hpos2 : (0 : ℝ) < 2 / z ^ (2 : ℕ) := by positivity
+  calc lowerBd a z = 2 / z ^ (2 : ℕ) * (∑' m, (a m * z - Real.log (1 + a m * z))) := by
         rw [lowerBd, lowerExcess_eq hpos hz hsum]
-    _ < 2 / z ^ 2 * ((∑' m, (a m) ^ 2) * (z ^ 2 / 2)) := by
+    _ < 2 / z ^ (2 : ℕ) * ((∑' m, (a m) ^ (2 : ℕ)) * (z ^ (2 : ℕ) / 2)) := by
         exact mul_lt_mul_of_pos_left hlt hpos2
-    _ = ∑' m, (a m) ^ 2 := by field_simp
+    _ = ∑' m, (a m) ^ (2 : ℕ) := by field_simp
 
 /-! ### The upper half of the sandwich -/
 
@@ -238,11 +238,11 @@ theorem upperExcess_eq (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
 /-- **Upper half of the sandwich.** `S₂ < U(z)`. -/
 theorem sumSq_lt_upperBd [Nonempty ι] (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
-    ∑' m, (a m) ^ 2 < upperBd a z := by
+    ∑' m, (a m) ^ (2 : ℕ) < upperBd a z := by
   obtain ⟨m₀⟩ := ‹Nonempty ι›
   have hzne : z ≠ 0 := ne_of_gt hz
   have hsq := summable_sq hpos hz hb hsum
-  have hterm : ∀ m, (a m) ^ 2 * (z ^ 2 / 2) < -(a m * z) - Real.log (1 - a m * z) := by
+  have hterm : ∀ m, (a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2) < -(a m * z) - Real.log (1 - a m * z) := by
     intro m
     have hx : 0 < a m * z := mul_pos (hpos m) hz
     have hx1 : a m * z < 1 := lt_of_le_of_lt (hb m) hq
@@ -250,16 +250,16 @@ theorem sumSq_lt_upperBd [Nonempty ι] (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq 
     nlinarith [h]
   have hsum1 : Summable fun m => -(a m * z) - Real.log (1 - a m * z) :=
     ((hsum.mul_right z).neg).sub (summable_logSub hpos hz hq hb hsum)
-  have hsum2 : Summable fun m => (a m) ^ 2 * (z ^ 2 / 2) := hsq.mul_right _
-  have hlt : ∑' m, ((a m) ^ 2 * (z ^ 2 / 2))
+  have hsum2 : Summable fun m => (a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2) := hsq.mul_right _
+  have hlt : ∑' m, ((a m) ^ (2 : ℕ) * (z ^ (2 : ℕ) / 2))
       < ∑' m, (-(a m * z) - Real.log (1 - a m * z)) :=
     hsum2.tsum_lt_tsum (i := m₀) (fun m => (hterm m).le) (hterm m₀) hsum1
   rw [tsum_mul_right] at hlt
-  have hpos2 : (0 : ℝ) < 2 / z ^ 2 := by positivity
-  have hU : upperBd a z = 2 / z ^ 2 * (-((∑' m, a m) * z) - logSum a (-z)) := by
+  have hpos2 : (0 : ℝ) < 2 / z ^ (2 : ℕ) := by positivity
+  have hU : upperBd a z = 2 / z ^ (2 : ℕ) * (-((∑' m, a m) * z) - logSum a (-z)) := by
     rw [upperBd]; ring
-  calc ∑' m, (a m) ^ 2 = 2 / z ^ 2 * ((∑' m, (a m) ^ 2) * (z ^ 2 / 2)) := by field_simp
-    _ < 2 / z ^ 2 * (∑' m, (-(a m * z) - Real.log (1 - a m * z))) :=
+  calc ∑' m, (a m) ^ (2 : ℕ) = 2 / z ^ (2 : ℕ) * ((∑' m, (a m) ^ (2 : ℕ)) * (z ^ (2 : ℕ) / 2)) := by field_simp
+    _ < 2 / z ^ (2 : ℕ) * (∑' m, (-(a m * z) - Real.log (1 - a m * z))) :=
         mul_lt_mul_of_pos_left hlt hpos2
     _ = upperBd a z := by rw [hU, upperExcess_eq hpos hz hq hb hsum]
 
@@ -270,7 +270,7 @@ theorem sumSq_lt_upperBd [Nonempty ι] (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq 
 theorem upperBd_sub_lowerBd_eq (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
     upperBd a z - lowerBd a z
-      = 2 / z ^ 2 * ∑' m, (Real.log (1 + a m * z) - Real.log (1 - a m * z) - 2 * (a m * z)) := by
+      = 2 / z ^ (2 : ℕ) * ∑' m, (Real.log (1 + a m * z) - Real.log (1 - a m * z) - 2 * (a m * z)) := by
   have hA := summable_logAdd hpos hz hsum
   have hB := summable_logSub hpos hz hq hb hsum
   have hC : Summable fun m => 2 * (a m * z) := (hsum.mul_right z).mul_left 2
@@ -365,7 +365,7 @@ theorem gap_term_pos {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
 theorem upperBd_sub_lowerBd_eq_oddSeries (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
     upperBd a z - lowerBd a z
-      = 4 / z ^ 2 *
+      = 4 / z ^ (2 : ℕ) *
         ∑' m, ∑' k : ℕ, (a m * z) ^ (2 * (k + 1) + 1) / (2 * (k + 1) + 1) := by
   have hterm : ∀ m,
       Real.log (1 + a m * z) - Real.log (1 - a m * z) - 2 * (a m * z)
@@ -401,7 +401,7 @@ bound is strictly below `S₂ = ∑ aₘ²`, which is strictly below the alleged
 particular the gap `U(z) - L(z)` is strictly positive. -/
 theorem liu_sandwich [Nonempty ι] (hpos : ∀ m, 0 < a m) (hz : 0 < z) (hq : q < 1)
     (hb : ∀ m, a m * z ≤ q) (hsum : Summable a) :
-    lowerBd a z < ∑' m, (a m) ^ 2 ∧ ∑' m, (a m) ^ 2 < upperBd a z ∧
+    lowerBd a z < ∑' m, (a m) ^ (2 : ℕ) ∧ ∑' m, (a m) ^ (2 : ℕ) < upperBd a z ∧
       0 < upperBd a z - lowerBd a z := by
   have hL := lowerBd_lt_sumSq (q := q) hpos hz hb hsum
   have hU := sumSq_lt_upperBd hpos hz hq hb hsum

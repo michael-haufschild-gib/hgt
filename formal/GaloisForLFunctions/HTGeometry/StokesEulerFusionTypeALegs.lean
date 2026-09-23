@@ -227,7 +227,7 @@ theorem fullFusionForm_eq_positive_add_rank {m : ℕ}
     (d : compatibleFullModes datum legLength) :
     fullFusionForm genus datum legLength d =
       globalFullPositiveForm datum legLength d +
-        fullRankCoefficient genus datum * fullCommonRank datum legLength d ^ 2 := by
+        fullRankCoefficient genus datum * fullCommonRank datum legLength d ^ (2 : ℕ) := by
   rw [fullFusionForm, QuadraticMap.add_apply, QuadraticMap.sum_apply,
     QuadraticMap.smul_apply, QuadraticMap.comp_apply, QuadraticMap.sq_apply]
   rw [globalFullPositiveForm, QuadraticMap.sum_apply]
@@ -296,8 +296,8 @@ theorem fullFusionForm_sigNeg_le_one {m : ℕ} {n : Fin (m + 1) → ℕ} (genus 
   intro d
   rw [fullFusionForm_eq_positive_add_rank]
   change 0 ≤ globalFullPositiveForm datum legLength d +
-    coeff * fullCommonRank datum legLength d ^ 2 +
-    (Real.sqrt (max 0 (-coeff)) * fullCommonRank datum legLength d) ^ 2
+    coeff * fullCommonRank datum legLength d ^ (2 : ℕ) +
+    (Real.sqrt (max 0 (-coeff)) * fullCommonRank datum legLength d) ^ (2 : ℕ)
   rw [mul_pow, Real.sq_sqrt (le_max_left 0 (-coeff))]
   by_cases hcoeff : 0 ≤ coeff
   · rw [max_eq_left (neg_nonpos.mpr hcoeff)]

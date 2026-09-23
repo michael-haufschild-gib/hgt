@@ -17,45 +17,45 @@ variable {ι E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- Ordered pairwise squared-distance energy is twice the weighted moment defect. -/
 theorem finite_pairwise_hilbert_dispersion
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) :
-    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) =
-      2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ 2) -
-        ‖∑ i ∈ s, w i • v i‖ ^ 2) := by
+    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ)) =
+      2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) -
+        ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ)) := by
   have hleft :
-      (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ 2) =
-        (∑ i ∈ s, w i * ‖v i‖ ^ 2) * (∑ j ∈ s, w j) := by
+      (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ (2 : ℕ)) =
+        (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) * (∑ j ∈ s, w j) := by
     calc
-      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ 2 =
-          ∑ i ∈ s, (w i * ‖v i‖ ^ 2) * (∑ j ∈ s, w j) := by
+      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ (2 : ℕ) =
+          ∑ i ∈ s, (w i * ‖v i‖ ^ (2 : ℕ)) * (∑ j ∈ s, w j) := by
             apply Finset.sum_congr rfl
             intro i hi
             rw [Finset.mul_sum]
             apply Finset.sum_congr rfl
             intro j hj
             ring
-      _ = (∑ i ∈ s, w i * ‖v i‖ ^ 2) * (∑ j ∈ s, w j) := by
+      _ = (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) * (∑ j ∈ s, w j) := by
             rw [Finset.sum_mul]
   have hright :
-      (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ 2) =
-        (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ 2) := by
+      (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ (2 : ℕ)) =
+        (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) := by
     calc
-      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ 2 =
-          ∑ i ∈ s, w i * (∑ j ∈ s, w j * ‖v j‖ ^ 2) := by
+      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ (2 : ℕ) =
+          ∑ i ∈ s, w i * (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i hi
             rw [Finset.mul_sum]
             apply Finset.sum_congr rfl
             intro j hj
             ring
-      _ = (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ 2) := by
+      _ = (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) := by
             calc
-              ∑ i ∈ s, w i * (∑ j ∈ s, w j * ‖v j‖ ^ 2) =
-                  ∑ i ∈ s, (∑ j ∈ s, w j * ‖v j‖ ^ 2) * w i := by
+              ∑ i ∈ s, w i * (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) =
+                  ∑ i ∈ s, (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) * w i := by
                     apply Finset.sum_congr rfl
                     intro i hi
                     ring
-              _ = (∑ j ∈ s, w j * ‖v j‖ ^ 2) * (∑ i ∈ s, w i) := by
-                    exact (Finset.mul_sum s w (∑ j ∈ s, w j * ‖v j‖ ^ 2)).symm
-              _ = (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ 2) := by ring
+              _ = (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) * (∑ i ∈ s, w i) := by
+                    exact (Finset.mul_sum s w (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ))).symm
+              _ = (∑ i ∈ s, w i) * (∑ j ∈ s, w j * ‖v j‖ ^ (2 : ℕ)) := by ring
   have hinner :
       (∑ i ∈ s, ∑ j ∈ s, w i * w j * inner ℝ (v i) (v j)) =
         inner ℝ (∑ i ∈ s, w i • v i) (∑ j ∈ s, w j • v j) := by
@@ -79,32 +79,32 @@ theorem finite_pairwise_hilbert_dispersion
       _ = 2 * (∑ i ∈ s, ∑ j ∈ s, w i * w j * inner ℝ (v i) (v j)) := by
             rw [Finset.mul_sum]
   calc
-    ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2 =
+    ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ) =
         ∑ i ∈ s, ∑ j ∈ s,
-          (w i * w j * ‖v i‖ ^ 2 -
-            2 * (w i * w j * inner ℝ (v i) (v j)) + w i * w j * ‖v j‖ ^ 2) := by
+          (w i * w j * ‖v i‖ ^ (2 : ℕ) -
+            2 * (w i * w j * inner ℝ (v i) (v j)) + w i * w j * ‖v j‖ ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro i hi
           apply Finset.sum_congr rfl
           intro j hj
           rw [norm_sub_sq_real]
           ring
-    _ = (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ 2) -
+    _ = (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i‖ ^ (2 : ℕ)) -
           2 * (∑ i ∈ s, ∑ j ∈ s, w i * w j * inner ℝ (v i) (v j)) +
-            (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ 2) := by
+            (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v j‖ ^ (2 : ℕ)) := by
           simp_rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
           rw [hmiddle]
-    _ = 2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ 2) -
-        ‖∑ i ∈ s, w i • v i‖ ^ 2) := by
+    _ = 2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) -
+        ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ)) := by
           rw [hleft, hright, hinner, real_inner_self_eq_norm_sq]
           ring
 
 /-- Exact finite weighted Hilbert variance.  This is the unconditional form of `(AH7)`. -/
 theorem finite_weighted_hilbert_dispersion
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) :
-    ‖∑ i ∈ s, w i • v i‖ ^ 2 =
-      (∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ 2) -
-        (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2 := by
+    ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ) =
+      (∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) -
+        (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ) := by
   rw [finite_pairwise_hilbert_dispersion]
   ring
 
@@ -112,20 +112,20 @@ theorem finite_weighted_hilbert_dispersion
 theorem finite_normalized_weighted_hilbert_dispersion
     (s : Finset ι) (w : ι → ℝ) (v : ι → E)
     (hw : ∑ i ∈ s, w i ≠ 0) :
-    ‖∑ i ∈ s, w i • v i‖ ^ 2 / (∑ i ∈ s, w i) ^ 2 =
-      (∑ i ∈ s, (w i / ∑ j ∈ s, w j) * ‖v i‖ ^ 2) -
+    ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ) / (∑ i ∈ s, w i) ^ (2 : ℕ) =
+      (∑ i ∈ s, (w i / ∑ j ∈ s, w j) * ‖v i‖ ^ (2 : ℕ)) -
         (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s,
           (w i / ∑ k ∈ s, w k) * (w j / ∑ k ∈ s, w k) *
-            ‖v i - v j‖ ^ 2 := by
+            ‖v i - v j‖ ^ (2 : ℕ) := by
   let W : ℝ := ∑ i ∈ s, w i
-  let M : ℝ := ∑ i ∈ s, w i * ‖v i‖ ^ 2
-  let D : ℝ := ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2
+  let M : ℝ := ∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)
+  let D : ℝ := ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ)
   have hW : W ≠ 0 := hw
   have hmoment :
-      (∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2) = M / W := by
+      (∑ i ∈ s, (w i / W) * ‖v i‖ ^ (2 : ℕ)) = M / W := by
     calc
-      ∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2 =
-          ∑ i ∈ s, (w i * ‖v i‖ ^ 2) / W := by
+      ∑ i ∈ s, (w i / W) * ‖v i‖ ^ (2 : ℕ) =
+          ∑ i ∈ s, (w i * ‖v i‖ ^ (2 : ℕ)) / W := by
             apply Finset.sum_congr rfl
             intro i hi
             ring
@@ -133,23 +133,23 @@ theorem finite_normalized_weighted_hilbert_dispersion
             simp only [M, Finset.sum_div]
   have hpair :
       (∑ i ∈ s, ∑ j ∈ s,
-        (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2) = D / W ^ 2 := by
+        (w i / W) * (w j / W) * ‖v i - v j‖ ^ (2 : ℕ)) = D / W ^ (2 : ℕ) := by
     calc
       ∑ i ∈ s, ∑ j ∈ s,
-          (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2 =
+          (w i / W) * (w j / W) * ‖v i - v j‖ ^ (2 : ℕ) =
           ∑ i ∈ s, ∑ j ∈ s,
-            (w i * w j * ‖v i - v j‖ ^ 2) / W ^ 2 := by
+            (w i * w j * ‖v i - v j‖ ^ (2 : ℕ)) / W ^ (2 : ℕ) := by
               apply Finset.sum_congr rfl
               intro i hi
               apply Finset.sum_congr rfl
               intro j hj
               ring
-      _ = D / W ^ 2 := by
+      _ = D / W ^ (2 : ℕ) := by
             simp only [D, Finset.sum_div]
-  change ‖∑ i ∈ s, w i • v i‖ ^ 2 / W ^ 2 =
-    (∑ i ∈ s, (w i / W) * ‖v i‖ ^ 2) -
+  change ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ) / W ^ (2 : ℕ) =
+    (∑ i ∈ s, (w i / W) * ‖v i‖ ^ (2 : ℕ)) -
       (1 / 2 : ℝ) * ∑ i ∈ s, ∑ j ∈ s,
-        (w i / W) * (w j / W) * ‖v i - v j‖ ^ 2
+        (w i / W) * (w j / W) * ‖v i - v j‖ ^ (2 : ℕ)
   rw [hmoment, hpair]
   rw [finite_weighted_hilbert_dispersion]
   field_simp [hW]
@@ -158,15 +158,15 @@ theorem finite_normalized_weighted_hilbert_dispersion
 /-- On a zero-total-weight packet, squared Hilbert distance is conditionally negative. -/
 theorem finite_pairwise_hilbert_dispersion_of_sum_eq_zero
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :
-    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) =
-      -2 * ‖∑ i ∈ s, w i • v i‖ ^ 2 := by
+    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ)) =
+      -2 * ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ) := by
   rw [finite_pairwise_hilbert_dispersion, hw]
   ring
 
 /-- Conditional negative type of squared Hilbert distance for every zero-total-weight packet. -/
 theorem finite_pairwise_hilbert_dispersion_nonpos_of_sum_eq_zero
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :
-    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) ≤ 0 := by
+    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ)) ≤ 0 := by
   rw [finite_pairwise_hilbert_dispersion_of_sum_eq_zero s w v hw]
   nlinarith [sq_nonneg ‖∑ i ∈ s, w i • v i‖]
 
@@ -174,7 +174,7 @@ theorem finite_pairwise_hilbert_dispersion_nonpos_of_sum_eq_zero
 theorem finite_pairwise_hilbert_dispersion_eq_zero_iff_of_sum_eq_zero
     {ι E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (s : Finset ι) (w : ι → ℝ) (v : ι → E) (hw : ∑ i ∈ s, w i = 0) :
-    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2) = 0 ↔
+    (∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ)) = 0 ↔
       ∑ i ∈ s, w i • v i = 0 := by
   rw [finite_pairwise_hilbert_dispersion_of_sum_eq_zero s w v hw]
   constructor

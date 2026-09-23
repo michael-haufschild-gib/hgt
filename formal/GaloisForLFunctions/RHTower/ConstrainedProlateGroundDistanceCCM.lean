@@ -63,7 +63,7 @@ strictly above `d₀`, so the zeroth denominator `d₀ − μ` is strictly negat
 theorem ccm_secularVector_zero_ne_zero {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ j, A 2 ≤ C ^ j * A (j + 2))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop
       (nhds (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))) :
@@ -89,18 +89,18 @@ theorem ccm_tendsto_min_norm_secularHead_sub_twoModeSeed
     {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ j, A 2 ≤ C ^ j * A (j + 2))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop
       (nhds (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))) :
     Tendsto (fun lam => min
         (‖(‖secularHead (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)‖)⁻¹
             • secularHead (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)
-          - (‖twoModeSeed (ℓ lam)‖)⁻¹ • twoModeSeed (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeed (ℓ lam)‖)⁻¹ • twoModeSeed (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularHead (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)‖)⁻¹
             • secularHead (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)
-          + (‖twoModeSeed (ℓ lam)‖)⁻¹ • twoModeSeed (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeed (ℓ lam)‖)⁻¹ • twoModeSeed (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   have ha0 : ((2 : ℝ) ^ ((1 : ℝ) / 4)) ≠ 0 := by positivity
   have ha1 : (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) ≠ 0 := by

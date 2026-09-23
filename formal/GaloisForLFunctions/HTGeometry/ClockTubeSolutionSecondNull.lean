@@ -27,7 +27,7 @@ theorem continuous_clampedTubeInnerSnd {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     Continuous fun p : ℝ × ℝ => ∫ t in (0 : ℝ)..p.1, clampedTubeStep V T z p.2 t := by
   have hFc := continuous_clampedTubeStep hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall hz
@@ -42,7 +42,7 @@ theorem hasDerivAt_tubeSolution_snd {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hη : |η| < T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     HasDerivAt (fun y : ℝ => tubeSolution V ξ y z)
@@ -72,7 +72,7 @@ theorem deriv_tubeSolution_snd {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hη : |η| < T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     deriv (fun y : ℝ => tubeSolution V ξ y z) η
@@ -85,7 +85,7 @@ theorem hasDerivAt_deriv_tubeSolution_snd {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξ : |ξ| < T) (hη : |η| < T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     HasDerivAt (fun x : ℝ => deriv (fun y : ℝ => tubeSolution V x y z) η)

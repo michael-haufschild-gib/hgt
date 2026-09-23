@@ -24,7 +24,7 @@ namespace RHTower
 /-! ## The `L²` norm of an ambient vector -/
 
 theorem norm_sq_lp_eq_integral_norm_sq {α : Type*} [MeasurableSpace α] {μ : Measure α}
-    (f : Lp ℂ 2 μ) : ‖f‖ ^ 2 = ∫ a, ‖f a‖ ^ 2 ∂μ := by
+    (f : Lp ℂ 2 μ) : ‖f‖ ^ (2 : ℕ) = ∫ a, ‖f a‖ ^ (2 : ℕ) ∂μ := by
   have h := norm_sq_toLp_eq_integral_norm_sq (Lp.memLp f)
   rwa [Lp.toLp_coeFn f (Lp.memLp f)] at h
 
@@ -51,12 +51,12 @@ theorem coeFn_even_ae {f : SoninL2} (hf : f ∈ evenSubspace) :
 /-- **Equal half-line masses.**  An even carrier splits its `L²` mass evenly between the two
 half-lines. -/
 theorem integral_Iio_norm_sq_eq_integral_Ioi {f : SoninL2} (hf : f ∈ evenSubspace) :
-    (∫ x in Iio (0 : ℝ), ‖f x‖ ^ 2) = ∫ x in Ioi (0 : ℝ), ‖f x‖ ^ 2 := by
+    (∫ x in Iio (0 : ℝ), ‖f x‖ ^ (2 : ℕ)) = ∫ x in Ioi (0 : ℝ), ‖f x‖ ^ (2 : ℕ) := by
   have hpre : (Neg.neg : ℝ → ℝ) ⁻¹' (Ioi (0 : ℝ)) = Iio 0 := by
     ext x
     simp
   have hmp := (Measure.measurePreserving_neg (volume : Measure ℝ)).setIntegral_preimage_emb
-    measurableEmbedding_neg (fun y : ℝ => ‖f y‖ ^ 2) (Ioi (0 : ℝ))
+    measurableEmbedding_neg (fun y : ℝ => ‖f y‖ ^ (2 : ℕ)) (Ioi (0 : ℝ))
   rw [hpre] at hmp
   rw [← hmp]
   refine setIntegral_congr_ae measurableSet_Iio ?_
@@ -65,13 +65,13 @@ theorem integral_Iio_norm_sq_eq_integral_Ioi {f : SoninL2} (hf : f ∈ evenSubsp
   rw [hx]
 
 theorem norm_sq_soninHalfLine {f : SoninL2} (hf : f ∈ evenSubspace) :
-    ‖soninHalfLine f‖ ^ 2 * 2 = ‖f‖ ^ 2 := by
-  have hint : Integrable (fun x : ℝ => ‖f x‖ ^ 2) volume :=
+    ‖soninHalfLine f‖ ^ (2 : ℕ) * 2 = ‖f‖ ^ (2 : ℕ) := by
+  have hint : Integrable (fun x : ℝ => ‖f x‖ ^ (2 : ℕ)) volume :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable f)).mp (Lp.memLp f)
   have hsplit := integral_add_compl (measurableSet_Iio (a := (0 : ℝ))) hint
   rw [compl_Iio, integral_Ici_eq_integral_Ioi,
     integral_Iio_norm_sq_eq_integral_Ioi hf] at hsplit
-  have hhalf : ‖soninHalfLine f‖ ^ 2 = ∫ x in Ioi (0 : ℝ), ‖f x‖ ^ 2 :=
+  have hhalf : ‖soninHalfLine f‖ ^ (2 : ℕ) = ∫ x in Ioi (0 : ℝ), ‖f x‖ ^ (2 : ℕ) :=
     norm_sq_toLp_eq_integral_norm_sq (memLp_restrict_Ioi f)
   rw [hhalf, ← norm_sq_lp_eq_integral_norm_sq f] at *
   linarith [hsplit]
@@ -82,7 +82,7 @@ theorem norm_soninHalfLine {f : SoninL2} (hf : f ∈ evenSubspace) :
     ‖soninHalfLine f‖ = ‖f‖ / Real.sqrt 2 := by
   have hsq := norm_sq_soninHalfLine hf
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hkey : ‖soninHalfLine f‖ ^ 2 = (‖f‖ / Real.sqrt 2) ^ 2 := by
+  have hkey : ‖soninHalfLine f‖ ^ (2 : ℕ) = (‖f‖ / Real.sqrt 2) ^ (2 : ℕ) := by
     rw [div_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     linarith
   have hnn1 : 0 ≤ ‖soninHalfLine f‖ := norm_nonneg _

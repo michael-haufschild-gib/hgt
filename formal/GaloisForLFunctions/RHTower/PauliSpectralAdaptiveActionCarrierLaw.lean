@@ -99,7 +99,7 @@ def twoLocalPauliCommutatorActivation
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) : ℝ :=
   (gaussianIntervalActivationMass / 2) *
     ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2
+      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ)
 
 theorem finiteMatrixHilbertSchmidtEnergy_reindexedPauliCommutator
     {n : ℕ} (x : TwoLocalPauliCoefficientSpace n)
@@ -109,7 +109,7 @@ theorem finiteMatrixHilbertSchmidtEnergy_reindexedPauliCommutator
             (reindexedTwoLocalPauliEndpoint U : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) -
           (reindexedTwoLocalPauliEndpoint U : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) *
             reindexedTwoLocalPauliHamiltonian x) =
-      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 := by
+      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) := by
   have hmatrix :
       reindexedTwoLocalPauliHamiltonian x *
             (reindexedTwoLocalPauliEndpoint U : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) -
@@ -140,7 +140,7 @@ theorem mem_gaussianHalfActivationTube_twoLocalPauliCommutator_iff
     x ∈ gaussianHalfActivationTube
         (n := Fintype.card (PauliTracelessLabel n 2))
         (twoLocalPauliUnitaryCommutatorMap U) ↔
-      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 ≤
+      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) ≤
         twoLocalPauliCommutatorActivation U := by
   rfl
 
@@ -172,7 +172,7 @@ theorem directStaticChoiTargetNearActionMass_twoLocalPauliSpectralEndpoint_le
       (twoLocalPauliCommutatorActivation U)
   change _ ≤ _ at h ⊢
   rw [finiteMatrixHilbertSchmidtEnergy_reindexedPauliCommutator] at h
-  by_cases hc : ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 ≤
+  by_cases hc : ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) ≤
       twoLocalPauliCommutatorActivation U
   · rw [if_pos hc] at h
     rw [if_pos]
@@ -251,7 +251,7 @@ theorem stdGaussian_measure_weightedTwoLocalPauliSpectralNearAction_gap_le
                 Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ))
             (twoLocalPauliSpectralEnergy x) r δ} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryCommutatorGramStableRatio (U c))) / κ := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_weightedCommutatorTubeMass_ge_le
@@ -288,7 +288,7 @@ theorem stdGaussian_measure_physicalOptimalDesignTwoLocalPauliSpectralNearAction
               (twoLocalPauliSpectralEnergy x) r δ} ≤
       (∑ c, physicalPauliChoiOptimalDesignWeight r U c *
         Real.exp
-          (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             twoLocalPauliUnitaryCommutatorGramStableRatio (U c))) / κ := by
   exact stdGaussian_measure_weightedTwoLocalPauliSpectralNearAction_gap_le
     U (physicalPauliChoiOptimalDesignWeight r U)

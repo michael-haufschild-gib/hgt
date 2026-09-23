@@ -211,7 +211,7 @@ theorem globalResidual_nonzero_on_fd (q : XiZeroCopy) :
 /-- The full cutoff differential expression; no derivative of the cutoff is discarded. -/
 def cutoffForcing (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ :=
   hyperbolicLaplacian (fun w => cutoff w*principal (physicalAngularParameter q) w) z -
-    ((physicalAngularParameter q)^2-1/4)*(cutoff z*principal (physicalAngularParameter q) z)
+    ((physicalAngularParameter q)^(2 : ℕ)-1/4)*(cutoff z*principal (physicalAngularParameter q) z)
 
 /-- The actual corrected source solves the original scattering equation with its retained forcing. -/
 theorem residual_equation (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
@@ -233,14 +233,14 @@ theorem residual_equation (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     hyperbolicLaplacian_const_mul (hc.mul hp)]
   have hs := scalarCusp_hyperbolicLaplacian (physicalAngularParameter q) z hz
   change hyperbolicLaplacian (scalar (physicalAngularParameter q)) z =
-    ((physicalAngularParameter q)^2-1/4)*scalar (physicalAngularParameter q) z at hs
+    ((physicalAngularParameter q)^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) z at hs
   rw [hs]
   dsimp [cutoffForcing]
   rw [physicalAngularParameter_eq]
   ring
 
 private theorem principal_equation (u : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
-    hyperbolicLaplacian (principal u) z = (u^2-1/4)*principal u z := by
+    hyperbolicLaplacian (principal u) z = (u^(2 : ℕ)-1/4)*principal u z := by
   have hn : domain ∈ 𝓝 z :=
     (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hz
   have hf (e : Bool) := ((contDiffOn_infty.mp (cuspConstantTerm_contDiffOn .scalar u e)) 2).contDiffAt hn

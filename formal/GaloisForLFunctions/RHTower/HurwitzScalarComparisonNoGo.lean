@@ -192,7 +192,7 @@ theorem no_continuous_scalar_comparison {ρ : ℂ} (hρ : ρ.re = 1 / 2)
 
 /-- The completed-density analytic defect germ `4 z_s² ΞC(z_s)` with `z_s = (s - ½)(-i)`. -/
 def xiHurwitzGerm (s : ℂ) : ℂ :=
-  4 * ((s - 1 / 2) * (-I)) ^ 2 * XiC ((s - 1 / 2) * (-I))
+  4 * ((s - 1 / 2) * (-I)) ^ (2 : ℕ) * XiC ((s - 1 / 2) * (-I))
 
 theorem xiHurwitzGerm_differentiable : Differentiable ℂ xiHurwitzGerm := by
   have haff : Differentiable ℂ fun s : ℂ => (s - 1 / 2) * (-I) := by fun_prop
@@ -218,7 +218,7 @@ theorem xiHurwitzGerm_not_eventually_zero (ρ : ℂ) :
   have hall : ∀ z : ℂ, xiHurwitzGerm z = 0 := fun z =>
     hana.eqOn_of_preconnected_of_eventuallyEq hzero isPreconnected_univ (Set.mem_univ ρ)
       hev (Set.mem_univ z)
-  have hs₀ : xiHurwitzGerm (1 / 2 + z₀ * I) = 4 * z₀ ^ 2 * XiC z₀ := by
+  have hs₀ : xiHurwitzGerm (1 / 2 + z₀ * I) = 4 * z₀ ^ (2 : ℕ) * XiC z₀ := by
     have harg : ((1 / 2 + z₀ * I) - 1 / 2) * (-I) = z₀ := by
       have hI : I * -I = 1 := by
         rw [mul_neg, Complex.I_mul_I]

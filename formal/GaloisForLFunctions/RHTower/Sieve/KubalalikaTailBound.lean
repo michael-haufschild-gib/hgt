@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.KubalalikaLargeScale
 /-!
 # The parity-weighted near-diagonal tail
 
-The card's `E_Λ(T)` is `O(T^{15/16} (log T)^6)`.  The three ingredients are the mixed hybrid
+The card's `E_Λ(T)` is `O(T^{15/16} (log T)^(6 : ℕ))`.  The three ingredients are the mixed hybrid
 Vaughan block estimate at `U ≍ T^{1/2}`, `V ≍ T^{1/8}`, the dyadic assembly of the `m`-range, and
 the harmonic total over the shift `r`.
 -/
@@ -29,7 +29,7 @@ theorem sum_inv_Icc_le_one_add_log {rLo rHi : ℕ} (hrLo : 1 ≤ rLo) (hrHi : 1 
   exact this
 
 set_option maxHeartbeats 1200000 in
-/-- **The parity-weighted near-diagonal tail is `O(T^{15/16} (log T)^6)`.** -/
+/-- **The parity-weighted near-diagonal tail is `O(T^{15/16} (log T)^(6 : ℕ))`.** -/
 theorem exists_norm_kubalalikaWeightedTail_le :
     ∃ D : ℝ, 0 < D ∧ ∀ {T : ℝ}, KubalalikaLarge T →
       ‖kubalalikaWeightedTail T‖ ≤ D * T ^ (15 / 16 : ℝ) * (1 + Real.log T) ^ 6 := by
@@ -275,7 +275,7 @@ theorem exists_eventually_norm_kubalalikaWeightedTail_le :
   exact hbound hT
 
 /-- **Equation (5) of the card.**  The parity-weighted near-diagonal tail is
-`O(T^{53/54} (log T)^6)`. -/
+`O(T^{53/54} (log T)^(6 : ℕ))`. -/
 theorem kubalalikaWeightedTail_isBigO :
     (fun T : ℝ => kubalalikaWeightedTail T) =O[atTop]
       (fun T : ℝ => T ^ (53 / 54 : ℝ) * Real.log T ^ 6) := by

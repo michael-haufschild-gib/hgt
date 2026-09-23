@@ -4,7 +4,7 @@
 The double-large-sieve step bounds a **twelfth** power of the summed short-curve norms by the
 first-spacing majorant, whose `H`-exponent is `9` when the sixth-moment input is sharp:
 
-    `(∑_i ‖S(x_i)‖)^12 ≤ K · H^9` .
+    `(∑_i ‖S(x_i)‖)^(12 : ℕ) ≤ K · H^(9 : ℕ)` .
 
 If the sixth-moment input degrades from `A₆(H) ≤ C H^(6+ε)` to `A₆(H) ≤ C H^(6+ρ)`, the majorant's
 exponent degrades to `9 + ρ`, and taking twelfth roots divides the loss by twelve:
@@ -42,7 +42,7 @@ theorem twelfth_root_transfer {X Y : ℝ} (hX : 0 ≤ X) (h : X ^ (12 : ℕ) ≤
   rw [h1]
   exact Real.rpow_le_rpow (by positivity) h (by norm_num)
 
-/-- **The chain in exponent form.**  A twelfth-power bound `X^12 ≤ K·H^(9+ρ)` gives
+/-- **The chain in exponent form.**  A twelfth-power bound `X^(12 : ℕ) ≤ K·H^(9+ρ)` gives
 `X ≤ K^(1/12) · H^(3/4 + ρ/12)`. -/
 theorem chain_exponent_transfer {X K H ρ : ℝ} (hX : 0 ≤ X) (hK : 0 ≤ K) (hH : 0 < H)
     (h : X ^ (12 : ℕ) ≤ K * H ^ (9 + ρ)) :

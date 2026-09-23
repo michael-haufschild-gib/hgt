@@ -201,7 +201,7 @@ def listWordWork (A : SymmetricGeneratingSet G) (w : List G) : ℕ :=
   (w.map (wordLength A)).sum
 
 def listQuadraticWordWork (A : SymmetricGeneratingSet G) (w : List G) : ℕ :=
-  (w.map fun g ↦ (wordLength A g) ^ 2).sum
+  (w.map fun g ↦ (wordLength A g) ^ (2 : ℕ)).sum
 
 theorem wordLength_list_prod_le (A : SymmetricGeneratingSet G) (w : List G) :
     wordLength A w.prod ≤ listWordWork A w := by
@@ -217,7 +217,7 @@ theorem conjugacyLength_le_listWordWork (A : SymmetricGeneratingSet G)
 
 /-- Exact balanced quadratic cost in `m` slots for total length `L`. -/
 def balancedWordWork (m L : ℕ) : ℕ :=
-  (m - L % m) * (L / m) ^ 2 + (L % m) * (L / m + 1) ^ 2
+  (m - L % m) * (L / m) ^ (2 : ℕ) + (L % m) * (L / m + 1) ^ (2 : ℕ)
 
 /-- Slot lengths realizing the Euclidean division balance. -/
 def balancedSizes (m L : ℕ) : List ℕ :=
@@ -241,12 +241,12 @@ theorem balancedSizes_sum {m L : ℕ} (hm : 0 < m) :
   omega
 
 theorem balancedSizes_square_sum {m L : ℕ} (_hm : 0 < m) :
-    ((balancedSizes m L).map fun n ↦ n ^ 2).sum = balancedWordWork m L := by
+    ((balancedSizes m L).map fun n ↦ n ^ (2 : ℕ)).sum = balancedWordWork m L := by
   simp [balancedSizes, balancedWordWork]
 
 theorem int_balanced_term_lower (q n : ℕ) :
     (((2 * q + 1) * n : ℕ) : ℤ) - ((q * (q + 1) : ℕ) : ℤ) ≤
-      ((n ^ 2 : ℕ) : ℤ) := by
+      ((n ^ (2 : ℕ) : ℕ) : ℤ) := by
   by_cases h : n ≤ q
   · have h₁ : (n : ℤ) - (q : ℤ) ≤ 0 :=
       sub_nonpos.mpr (by exact_mod_cast h)
@@ -266,7 +266,7 @@ theorem int_balanced_term_lower (q n : ℕ) :
 theorem int_balanced_sum_lower (q : ℕ) (ns : List ℕ) :
     (((2 * q + 1) * ns.sum : ℕ) : ℤ) -
         ((ns.length * q * (q + 1) : ℕ) : ℤ) ≤
-      (((ns.map fun n ↦ n ^ 2).sum : ℕ) : ℤ) := by
+      (((ns.map fun n ↦ n ^ (2 : ℕ)).sum : ℕ) : ℤ) := by
   induction ns with
   | nil => simp
   | cons n ns ih =>
@@ -278,7 +278,7 @@ theorem int_balanced_sum_lower (q : ℕ) (ns : List ℕ) :
 /-- Among `m` natural slot lengths with total at least `L`, balanced squares are minimal. -/
 theorem balancedWordWork_le_square_sum {m L : ℕ} (hm : 0 < m) (ns : List ℕ)
     (hlen : ns.length = m) (hsum : L ≤ ns.sum) :
-    balancedWordWork m L ≤ (ns.map fun n ↦ n ^ 2).sum := by
+    balancedWordWork m L ≤ (ns.map fun n ↦ n ^ (2 : ℕ)).sum := by
   let q := L / m
   let r := L % m
   have hr : r ≤ m := (Nat.mod_lt L hm).le
@@ -289,7 +289,7 @@ theorem balancedWordWork_le_square_sum {m L : ℕ} (hm : 0 < m) (ns : List ℕ)
   have hsumz : (L : ℤ) ≤ ns.sum := by exact_mod_cast hsum
   have hlower :
       (((2 * q + 1) * L : ℕ) : ℤ) - ((m * q * (q + 1) : ℕ) : ℤ) ≤
-        (((ns.map fun n ↦ n ^ 2).sum : ℕ) : ℤ) := by
+        (((ns.map fun n ↦ n ^ (2 : ℕ)).sum : ℕ) : ℤ) := by
     push_cast at hbase ⊢
     rw [hlen] at hbase
     nlinarith
@@ -297,15 +297,15 @@ theorem balancedWordWork_le_square_sum {m L : ℕ} (hm : 0 < m) (ns : List ℕ)
       (balancedWordWork m L : ℤ) =
         (((2 * q + 1) * L : ℕ) : ℤ) - ((m * q * (q + 1) : ℕ) : ℤ) := by
     simp only [balancedWordWork]
-    change (((m - r) * q ^ 2 + r * (q + 1) ^ 2 : ℕ) : ℤ) = _
+    change (((m - r) * q ^ (2 : ℕ) + r * (q + 1) ^ (2 : ℕ) : ℕ) : ℤ) = _
     push_cast [Nat.cast_sub hr]
     rw [show (L : ℤ) = m * q + r by exact_mod_cast hdiv]
     ring
   have hz : (balancedWordWork m L : ℤ) ≤
-      (((ns.map fun n ↦ n ^ 2).sum : ℕ) : ℤ) := hid.trans_le hlower
+      (((ns.map fun n ↦ n ^ (2 : ℕ)).sum : ℕ) : ℤ) := hid.trans_le hlower
   exact_mod_cast hz
 
-theorem balancedWordWork_one (L : ℕ) : balancedWordWork 1 L = L ^ 2 := by
+theorem balancedWordWork_one (L : ℕ) : balancedWordWork 1 L = L ^ (2 : ℕ) := by
   simp only [balancedWordWork, Nat.mod_one, Nat.div_one, Nat.sub_zero, zero_mul, add_zero,
     one_mul]
 
@@ -320,19 +320,19 @@ theorem self_le_balancedWordWork {m L : ℕ} (hm : 0 < m) :
   have hsum := balancedSizes_sum (m := m) (L := L) hm
   have hsquare := balancedSizes_square_sum (m := m) (L := L) hm
   have hterm : (balancedSizes m L).sum ≤
-      ((balancedSizes m L).map fun n ↦ n ^ 2).sum := by
+      ((balancedSizes m L).map fun n ↦ n ^ (2 : ℕ)).sum := by
     induction balancedSizes m L with
     | nil => simp
     | cons n ns ih =>
         simp only [List.sum_cons, List.map_cons]
-        have hn : n ≤ n ^ 2 := by
+        have hn : n ≤ n ^ (2 : ℕ) := by
           cases n with
           | zero => simp
           | succ n => nlinarith
         exact Nat.add_le_add hn ih
   calc
     L = (balancedSizes m L).sum := hsum.symm
-    _ ≤ ((balancedSizes m L).map fun n ↦ n ^ 2).sum := hterm
+    _ ≤ ((balancedSizes m L).map fun n ↦ n ^ (2 : ℕ)).sum := hterm
     _ = balancedWordWork m L := hsquare
 
 theorem balancedWordWork_eq_zero_iff {m L : ℕ} (hm : 0 < m) :
@@ -357,8 +357,8 @@ theorem sum_wordLength_prod_le_sum_length (A : SymmetricGeneratingSet G)
 theorem sum_square_wordLength_prod_le_sum_square_length (A : SymmetricGeneratingSet G)
     (blocks : List (List G))
     (hwords : ∀ b ∈ blocks, ∀ x ∈ b, x ∈ A.carrier) :
-    (blocks.map fun b ↦ (wordLength A b.prod) ^ 2).sum ≤
-      (blocks.map fun b ↦ b.length ^ 2).sum := by
+    (blocks.map fun b ↦ (wordLength A b.prod) ^ (2 : ℕ)).sum ≤
+      (blocks.map fun b ↦ b.length ^ (2 : ℕ)).sum := by
   induction blocks with
   | nil => simp
   | cons b blocks ih =>
@@ -413,20 +413,20 @@ theorem exists_balanced_word_factorization (A : SymmetricGeneratingSet G) (g : G
   have hlinear : listWordWork A factors = wordLength A g :=
     le_antisymm hlinearUpper hlinearLower
   have hsquareLengths :
-      (blocks.map fun b ↦ b.length ^ 2).sum = balancedWordWork m (wordLength A g) := by
+      (blocks.map fun b ↦ b.length ^ (2 : ℕ)).sum = balancedWordWork m (wordLength A g) := by
     calc
-      (blocks.map fun b ↦ b.length ^ 2).sum =
-          ((blocks.map List.length).map fun n ↦ n ^ 2).sum := by
+      (blocks.map fun b ↦ b.length ^ (2 : ℕ)).sum =
+          ((blocks.map List.length).map fun n ↦ n ^ (2 : ℕ)).sum := by
         simp [List.map_map, Function.comp_def]
-      _ = ((sizes.map fun n ↦ n ^ 2).sum) := by rw [hmaplen]
+      _ = ((sizes.map fun n ↦ n ^ (2 : ℕ)).sum) := by rw [hmaplen]
       _ = balancedWordWork m (wordLength A g) := balancedSizes_square_sum hm
   have hquadraticUpper :
       listQuadraticWordWork A factors ≤ balancedWordWork m (wordLength A g) := by
     calc
       listQuadraticWordWork A factors =
-          (blocks.map fun b ↦ (wordLength A b.prod) ^ 2).sum := by
+          (blocks.map fun b ↦ (wordLength A b.prod) ^ (2 : ℕ)).sum := by
         simp [listQuadraticWordWork, factors, Function.comp_def, List.map_map]
-      _ ≤ (blocks.map fun b ↦ b.length ^ 2).sum :=
+      _ ≤ (blocks.map fun b ↦ b.length ^ (2 : ℕ)).sum :=
         sum_square_wordLength_prod_le_sum_square_length A blocks hblocks
       _ = balancedWordWork m (wordLength A g) := hsquareLengths
   have hquadraticLower :

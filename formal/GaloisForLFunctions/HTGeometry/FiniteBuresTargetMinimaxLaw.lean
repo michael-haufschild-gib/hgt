@@ -148,7 +148,7 @@ theorem finiteBuresProductTargetMinimax
     finiteBuresProductCapacity source target =
       sSup {q : ℝ | ∃ p ∈ stdSimplex ℝ C,
         q = finiteBuresRootFidelity source
-          (finiteBuresTargetMixture p target)} ^ 2 := by
+          (finiteBuresTargetMixture p target)} ^ (2 : ℕ) := by
   rw [finiteBuresProductCapacity_eq_dualCapacity_sq hsource target]
   unfold finiteBuresDualCapacity
   rw [finiteBuresMixtureValueSet_eq_rootFidelitySet hsource target]
@@ -163,7 +163,7 @@ theorem exists_finiteBuresProductCapacity_maximizer
     ∃ p ∈ stdSimplex ℝ C,
       finiteBuresProductCapacity source target =
         finiteBuresRootFidelity source
-          (finiteBuresTargetMixture p target) ^ 2 := by
+          (finiteBuresTargetMixture p target) ^ (2 : ℕ) := by
   obtain ⟨p, hp, hmax⟩ :=
     exists_finiteBuresDualCapacity_maximizer hsource target
   refine ⟨p, hp, ?_⟩
@@ -212,7 +212,7 @@ theorem finiteBures_completeIncidence_minimax_bound
       sSup {q : ℝ | ∃ p ∈ stdSimplex ℝ C,
         q = finiteBuresRootFidelity
           (finitePositiveReporterSourceCovariance mu state)
-          (finiteBuresTargetMixture p target)} ^ 2 := by
+          (finiteBuresTargetMixture p target)} ^ (2 : ℕ) := by
   have hsource := finitePositiveReporterSourceCovariance_posSemidef
     mu state hprod
   calc
@@ -248,7 +248,7 @@ theorem finiteBures_returnExcisedIncidence_minimax_bound
           q = finiteBuresRootFidelity
             (finitePositiveReporterSourceCovariance
               (mu.restrict returnSetᶜ) state)
-            (finiteBuresTargetMixture p target)} ^ 2 / threshold := by
+            (finiteBuresTargetMixture p target)} ^ (2 : ℕ) / threshold := by
   let nu : Measure X := mu.restrict returnSetᶜ
   let E : Set X := finitePositiveReporterCaptureEvent target state threshold
   have hresidualScaled := finiteBures_completeIncidence_minimax_bound
@@ -258,7 +258,7 @@ theorem finiteBures_returnExcisedIncidence_minimax_bound
         sSup {q : ℝ | ∃ p ∈ stdSimplex ℝ C,
           q = finiteBuresRootFidelity
             (finitePositiveReporterSourceCovariance nu state)
-            (finiteBuresTargetMixture p target)} ^ 2 / threshold := by
+            (finiteBuresTargetMixture p target)} ^ (2 : ℕ) / threshold := by
     apply (le_div_iff₀' hthreshold).2
     simpa [E, mul_comm] using hresidualScaled
   have hcut := measureReal_le_return_add_restrict_compl

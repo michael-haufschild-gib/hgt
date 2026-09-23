@@ -220,7 +220,7 @@ theorem exists_tail_soninTripleNF {ρ₁ ρ₂ ρ : ℂ} {l m₁ m₂ mρ : ℕ}
     have hden : ((s : ℂ) - ρ₁) * ((s - ρ₂) * (s - ρ) ^ l) ≠ 0 :=
       mul_ne_zero (sub_ne_zero.2 hs₁)
         (mul_ne_zero (sub_ne_zero.2 hs₂) (pow_ne_zero _ (sub_ne_zero.2 hsρ)))
-    have hsq : ((s : ℂ)) ^ 2 ≠ 0 := pow_ne_zero _ hs0
+    have hsq : ((s : ℂ)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hs0
     show soninTripleNF ρ₁ ρ₂ ρ l s = K (s - 1 / 2)
     rw [soninTripleNF_eq hsone hs₁ hs₂ hsρ, hKval (s - 1 / 2) hw hwρ hw₁ hw₂,
       zetaShiftCoreNF_eq hwhalf hw,

@@ -8,16 +8,16 @@ This module retains the continuous heat transform of the complete spectrum of
 a finite Hermitian matrix.  For a Hermitian matrix `A` with eigenvalues
 `lambda_i`, the spectral functional calculus defines
 
-`heatFlow(A,u) = exp(-u*A^2)`
+`heatFlow(A,u) = exp(-u*A^(2 : ℕ))`
 
 and its sign-bearing companion
 
-`signedHeatFlow(A,u) = A*exp(-u*A^2)`.
+`signedHeatFlow(A,u) = A*exp(-u*A^(2 : ℕ))`.
 
 Their real traces are the finite sums
 
-`sum_i exp(-u*lambda_i^2)` and
-`sum_i lambda_i*exp(-u*lambda_i^2)`.
+`sum_i exp(-u*lambda_i^(2 : ℕ))` and
+`sum_i lambda_i*exp(-u*lambda_i^(2 : ℕ))`.
 
 Lean proves the scalar Mellin--Gaussian integral, its genuine positive-time
 integrability, the finite sum--integral exchange, and the exact formula
@@ -173,13 +173,13 @@ def zeroIndex {A : Matrix n n K} (hA : A.IsHermitian) : ℕ :=
   #{i | hA.eigenvalues i = 0}
 
 /-- The ordinary Hermitian heat flow obtained by applying
-`x ↦ exp(-u*x^2)` to the complete real spectrum. -/
+`x ↦ exp(-u*x^(2 : ℕ))` to the complete real spectrum. -/
 def hermitianHeatFlow {A : Matrix n n K} (hA : A.IsHermitian) (u : ℝ) :
     Matrix n n K :=
   specMap hA (fun x ↦ Real.exp (-u * x ^ 2))
 
 /-- The signed Hermitian heat flow obtained by applying
-`x ↦ x*exp(-u*x^2)` to the complete real spectrum. -/
+`x ↦ x*exp(-u*x^(2 : ℕ))` to the complete real spectrum. -/
 def hermitianSignedHeatFlow {A : Matrix n n K} (hA : A.IsHermitian)
     (u : ℝ) : Matrix n n K :=
   specMap hA (fun x ↦ x * Real.exp (-u * x ^ 2))

@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.ChronologicalTensor.CubicWeightedRecovery
 /-!
 # The intrinsic interval weight of chronological recovery
 
-The edge ratio c/2-c^2/4 maps [0,1] bijectively to [0,1/4], with inverse
+The edge ratio c/2-c^(2 : ℕ)/4 maps [0,1] bijectively to [0,1/4], with inverse
 1-sqrt(1-4r). Both inverse identities and interval bounds are proved,
 including the endpoints. The actual recovery-error set is therefore
 exactly the set of weighted polynomial norms with this weight, raised
@@ -36,7 +36,7 @@ theorem cubicRadialWeight_bounds (r : Icc (0:ℝ) (1/4)) :
 
 theorem cubicRadialWeight_edgeRatio (c : Icc (0:ℝ) 1) :
     cubicRadialWeight (cubicEdgeRatio c.val)=c.val := by
-  have hid : 1-4*cubicEdgeRatio c.val=(1-c.val)^2 := by unfold cubicEdgeRatio; ring
+  have hid : 1-4*cubicEdgeRatio c.val=(1-c.val)^(2 : ℕ) := by unfold cubicEdgeRatio; ring
   unfold cubicRadialWeight
   rw [hid,Real.sqrt_sq_eq_abs,abs_of_nonneg (sub_nonneg.mpr c.property.2)]
   ring

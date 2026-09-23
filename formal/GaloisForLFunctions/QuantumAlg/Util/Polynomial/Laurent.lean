@@ -65,7 +65,7 @@ theorem eval_exp_eq_zero_iff_lEval_eq_zero (L : ℕ) (F : ℂ[X]) (x : ℝ) :
 /-- A complex number with squared norm `1` has a real unit-circle phase. -/
 theorem exists_phase_of_normSq_eq_one {z : ℂ} (hz : Complex.normSq z = 1) :
     ∃ x : ℝ, Complex.exp ((x : ℂ) * Complex.I) = z := by
-  have hsq : ‖z‖ ^ 2 = (1 : ℝ) ^ 2 := by
+  have hsq : ‖z‖ ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by
     simpa [Complex.normSq_eq_norm_sq] using hz
   have habs : |‖z‖| = |(1 : ℝ)| :=
     (sq_eq_sq_iff_abs_eq_abs ‖z‖ (1 : ℝ)).mp hsq

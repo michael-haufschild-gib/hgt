@@ -206,7 +206,7 @@ theorem d4BMXiReflectionComplexWeightedCurrent_bioriented_eq_zero_iff
           (d4BMXiReflectionComplexCancellationRatio n q)⁻¹ := by
         apply (mul_left_cancel₀ ha)
         rw [← h, ← href]
-      have hsquare : (d4BMXiReflectionComplexCancellationRatio n q) ^ 2 = 1 := by
+      have hsquare : (d4BMXiReflectionComplexCancellationRatio n q) ^ (2 : ℕ) = 1 := by
         have hrne : d4BMXiReflectionComplexCancellationRatio n q ≠ 0 := by
           intro hz
           have := d4BMXiReflectionComplexCancellationRatio_im_ne_zero n q

@@ -386,8 +386,8 @@ theorem exists_quditPathChain_coordinateFamily_with_noncommutingPair
   letI := instPd
   have hq4 : 4 ≤ q ^ n := by
     calc
-      (4 : ℕ) = 2 ^ 2 := by norm_num
-      _ ≤ q ^ 2 := Nat.pow_le_pow_left hq 2
+      (4 : ℕ) = 2 ^ (2 : ℕ) := by norm_num
+      _ ≤ q ^ (2 : ℕ) := Nat.pow_le_pow_left hq 2
       _ ≤ q ^ n := Nat.pow_le_pow_right (by omega) hn
   refine ⟨q ^ n, rfl, hq4, Physical, Observer, instP, instPd, T, eObs,
     hgraph, hpair, ?_⟩

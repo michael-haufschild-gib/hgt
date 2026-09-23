@@ -48,11 +48,11 @@ theorem TowerSection.iterate_fe {c : ℂ} {rlo rhi : ℝ} (S : TowerSection c rl
         hpow i (Nat.le_succ_of_le hi)
       rw [Function.iterate_succ_apply', ih hpow']
       have hfe := S.fe (w ^ (2 ^ n)) (hpow n (Nat.le_succ n)) (by
-        have h1 : (w ^ (2 ^ n)) ^ 2 = w ^ (2 ^ (n + 1)) := by
+        have h1 : (w ^ (2 ^ n)) ^ (2 : ℕ) = w ^ (2 ^ (n + 1)) := by
           rw [← pow_mul, pow_succ]
         rw [h1]
         exact hpow (n + 1) le_rfl)
-      show quadratic c (S.T (w ^ 2 ^ n)) = S.T (w ^ 2 ^ (n + 1))
+      show quadratic c (S.T (w ^ (2 : ℕ) ^ n)) = S.T (w ^ (2 : ℕ) ^ (n + 1))
       unfold quadratic
       rw [← hfe]
       congr 1
@@ -74,7 +74,7 @@ theorem exists_arc_sqrt {P : ℂ → ℂ} {r R α β : ℝ} (hr : 0 < r) (hrR : 
     (hdne : ∀ v ∈ arcAnnulus r R α β, deriv P v ≠ 0) (c : ℂ) :
     ∃ α' β' : ℝ, α ≤ α' ∧ β' ≤ β ∧ α' < β' ∧ (β - α) / 4 ≤ β' - α' ∧
       ∃ σr : ℂ → ℂ, AnalyticOnNhd ℂ σr (arcAnnulus r R α' β') ∧
-        (∀ v ∈ arcAnnulus r R α' β', σr v ^ 2 = P v - c) ∧
+        (∀ v ∈ arcAnnulus r R α' β', σr v ^ (2 : ℕ) = P v - c) ∧
         (∀ v ∈ arcAnnulus r R α' β', σr v ≠ 0) ∧
         Set.InjOn σr (arcAnnulus r R α' β') ∧
         (∀ v ∈ arcAnnulus r R α' β', deriv σr v ≠ 0) := by
@@ -83,7 +83,7 @@ theorem exists_arc_sqrt {P : ℂ → ℂ} {r R α β : ℝ} (hr : 0 < r) (hrR : 
   have hmain : ∀ α' β' : ℝ, α ≤ α' → β' ≤ β → α' < β' →
       (∀ v ∈ arcAnnulus r R α' β', P v ≠ c) →
       ∃ σr : ℂ → ℂ, AnalyticOnNhd ℂ σr (arcAnnulus r R α' β') ∧
-        (∀ v ∈ arcAnnulus r R α' β', σr v ^ 2 = P v - c) ∧
+        (∀ v ∈ arcAnnulus r R α' β', σr v ^ (2 : ℕ) = P v - c) ∧
         (∀ v ∈ arcAnnulus r R α' β', σr v ≠ 0) ∧
         Set.InjOn σr (arcAnnulus r R α' β') ∧
         (∀ v ∈ arcAnnulus r R α' β', deriv σr v ≠ 0) := by
@@ -113,7 +113,7 @@ theorem exists_arc_sqrt {P : ℂ → ℂ} {r R α β : ℝ} (hr : 0 < r) (hrR : 
       exact hinj (hsub h₁) (hsub h₂) h3
     · intro v hv
       have hs_d : HasDerivAt s (deriv s v) v := (hs_an v hv).differentiableAt.hasDerivAt
-      have hLd : HasDerivAt (fun x => s x ^ 2) (2 * s v * deriv s v) v := by
+      have hLd : HasDerivAt (fun x => s x ^ (2 : ℕ)) (2 * s v * deriv s v) v := by
         have h4 := hs_d.pow 2
         have h5 : (2:ℕ) * s v ^ (2 - 1) * deriv s v = 2 * s v * deriv s v := by
           push_cast
@@ -121,7 +121,7 @@ theorem exists_arc_sqrt {P : ℂ → ℂ} {r R α β : ℝ} (hr : 0 < r) (hrR : 
         rwa [h5] at h4
       have hRd : HasDerivAt (fun x => P x - c) (deriv P v) v :=
         ((han v (hsub hv)).differentiableAt.hasDerivAt).sub_const c
-      have hEqF : (fun x => s x ^ 2) =ᶠ[nhds v] (fun x => P x - c) := by
+      have hEqF : (fun x => s x ^ (2 : ℕ)) =ᶠ[nhds v] (fun x => P x - c) := by
         filter_upwards [hWopen.mem_nhds hv] with z hz
         exact hs_sq z hz
       have h7 : HasDerivAt (fun x => P x - c) (2 * s v * deriv s v) v :=

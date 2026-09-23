@@ -27,7 +27,7 @@ abbrev Covector := Fin 2 → Field
 
 /-- Literal horizon metric in real upper-half-plane coordinates. -/
 def metric (z : Point) : Matrix (Fin 2) (Fin 2) ℂ :=
-  Matrix.diagonal (fun _ => (z 1 : ℂ)⁻¹ ^ 2)
+  Matrix.diagonal (fun _ => (z 1 : ℂ)⁻¹ ^ (2 : ℕ))
 
 /-- The metric jet consists of actual ordered coordinate derivatives. -/
 def metricJet (z : Point) : CoordinateMetricTwoJet 2 ℂ where
@@ -44,8 +44,8 @@ def connectionTable (Y : ℂ) : Fin 2 → Matrix (Fin 2) (Fin 2) ℂ :=
   ![!![0, -Y⁻¹; -Y⁻¹, 0], !![Y⁻¹, 0; 0, -Y⁻¹]]
 
 private theorem scale_hasFDerivAt (z : Point) (hz : 0 < z 1) :
-    HasFDerivAt (fun q : Point => (q 1 : ℂ)⁻¹ ^ 2)
-      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-2 * (z 1 : ℂ)⁻¹ ^ 3)) z := by
+    HasFDerivAt (fun q : Point => (q 1 : ℂ)⁻¹ ^ (2 : ℕ))
+      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-2 * (z 1 : ℂ)⁻¹ ^ (3 : ℕ))) z := by
   have hzC : (z 1 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   have hY := Complex.ofRealCLM.hasFDerivAt.comp z
     ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
@@ -57,7 +57,7 @@ private theorem scale_hasFDerivAt (z : Point) (hz : 0 < z 1) :
 
 private theorem metric_first (z : Point) (hz : 0 < z 1) (i j k : Fin 2) :
     (metricJet z).first i j k =
-      if j = k then (if i = 1 then -2 * (z 1 : ℂ)⁻¹ ^ 3 else 0) else 0 := by
+      if j = k then (if i = 1 then -2 * (z 1 : ℂ)⁻¹ ^ (3 : ℕ) else 0) else 0 := by
   by_cases hjk : j = k
   · subst k
     simp only [metricJet, metric, Matrix.diagonal_apply_eq, ↓reduceIte]
@@ -67,7 +67,7 @@ private theorem metric_first (z : Point) (hz : 0 < z 1) (i j k : Fin 2) :
 
 /-- The inverse used in the connection is the actual matrix inverse. -/
 theorem metric_inverse (z : Point) (hz : 0 < z 1) :
-    (metric z)⁻¹ = Matrix.diagonal (fun _ : Fin 2 => (z 1 : ℂ) ^ 2) := by
+    (metric z)⁻¹ = Matrix.diagonal (fun _ : Fin 2 => (z 1 : ℂ) ^ (2 : ℕ)) := by
   have hzC : (z 1 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   apply Matrix.inv_eq_left_inv
   rw [metric, Matrix.diagonal_mul_diagonal]
@@ -118,7 +118,7 @@ private theorem partial_sub {f g : Field} {z : Point}
 
 private theorem inv_height_hasFDerivAt (z : Point) (hz : 0 < z 1) :
     HasFDerivAt (fun q : Point => (q 1 : ℂ)⁻¹)
-      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1 : ℂ)⁻¹ ^ 2)) z := by
+      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1 : ℂ)⁻¹ ^ (2 : ℕ))) z := by
   have hY := Complex.ofRealCLM.hasFDerivAt.comp z
     ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
   have h := (hasDerivAt_inv (Complex.ofReal_ne_zero.mpr hz.ne')).comp_hasFDerivAt z hY
@@ -130,7 +130,7 @@ private theorem inv_height_hasFDerivAt (z : Point) (hz : 0 < z 1) :
 private theorem inv_mul_partial {f : Field} {z : Point}
     (hz : 0 < z 1) (hf : DifferentiableAt ℝ f z) (i : Fin 2) :
     coordDeriv i (fun q => (q 1 : ℂ)⁻¹ * f q) z =
-      (if i = 1 then -(z 1 : ℂ)⁻¹ ^ 2 else 0) * f z +
+      (if i = 1 then -(z 1 : ℂ)⁻¹ ^ (2 : ℕ) else 0) * f z +
         (z 1 : ℂ)⁻¹ * coordDeriv i f z := by
   change fderiv ℝ ((fun q : Point => (q 1 : ℂ)⁻¹) * f) z (Pi.single i 1) = _
   rw [((inv_height_hasFDerivAt z hz).mul hf.hasFDerivAt).fderiv]
@@ -156,7 +156,7 @@ theorem covariant_eq (V : Covector) (z : Point) (hz : 0 < z 1) (i j : Fin 2) :
 
 /-- Coordinate derivative of each first covariant derivative. -/
 def covariantPartialFormula (V : Covector) (k i j : Fin 2) (z : Point) : ℂ :=
-  let A (h : Fin 2) := (if k = 1 then -(z 1 : ℂ)⁻¹ ^ 2 else 0) * V h z +
+  let A (h : Fin 2) := (if k = 1 then -(z 1 : ℂ)⁻¹ ^ (2 : ℕ) else 0) * V h z +
     (z 1 : ℂ)⁻¹ * coordDeriv k (V h) z
   !![coordDeriv k (coordDeriv 0 (V 0)) z - A 1,
       coordDeriv k (coordDeriv 0 (V 1)) z + A 0;
@@ -178,7 +178,7 @@ theorem covariant_partial_eq (V : Covector) (z : Point) (hz : 0 < z 1)
   change coordDeriv k (covariantFormula V i j) z = _
   have hInv (l : Fin 2) :
       coordDeriv k ((fun q : Point => (q 1 : ℂ)⁻¹) * V l) z =
-        (if k = 1 then -(z 1 : ℂ)⁻¹ ^ 2 else 0) * V l z +
+        (if k = 1 then -(z 1 : ℂ)⁻¹ ^ (2 : ℕ) else 0) * V l z +
           (z 1 : ℂ)⁻¹ * coordDeriv k (V l) z := inv_mul_partial hz (hd l) k
   fin_cases i <;> fin_cases j
   · change coordDeriv k (fun q => coordDeriv 0 (V 0) q - (q 1 : ℂ)⁻¹ * V 1 q) z = _
@@ -208,7 +208,7 @@ def scalarLaplacian (S : Field) (z : Point) : ℂ :=
 
 /-- Scalar connection terms cancel in the metric trace. -/
 theorem scalarLaplacian_eq (S : Field) (z : Point) (hz : 0 < z 1) :
-    scalarLaplacian S z = (z 1 : ℂ) ^ 2 *
+    scalarLaplacian S z = (z 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) z + coordDeriv 1 (coordDeriv 1 S) z) := by
   simp only [scalarLaplacian, metric_inverse z hz, christoffel_eq z hz]
   simp [connectionTable, Fin.sum_univ_two]
@@ -216,16 +216,16 @@ theorem scalarLaplacian_eq (S : Field) (z : Point) (hz : 0 < z 1) :
 
 /-- The trace of the actual covector derivative has no remaining connection term. -/
 theorem divergence_eq (V : Covector) (z : Point) (hz : 0 < z 1) :
-    divergence V z = (z 1 : ℂ) ^ 2 * (coordDeriv 0 (V 0) z + coordDeriv 1 (V 1) z) := by
+    divergence V z = (z 1 : ℂ) ^ (2 : ℕ) * (coordDeriv 0 (V 0) z + coordDeriv 1 (V 1) z) := by
   simp only [divergence, metric_inverse z hz, covariant_eq V z hz]
   simp [covariantFormula, Fin.sum_univ_two]
   ring
 
 /-- Expanded rough covector Laplacian, including the curvature contribution. -/
 def roughFormula (V : Covector) (k : Fin 2) (z : Point) : ℂ :=
-  ![(z 1 : ℂ) ^ 2 * (coordDeriv 0 (coordDeriv 0 (V 0)) z + coordDeriv 1 (coordDeriv 1 (V 0)) z) +
+  ![(z 1 : ℂ) ^ (2 : ℕ) * (coordDeriv 0 (coordDeriv 0 (V 0)) z + coordDeriv 1 (coordDeriv 1 (V 0)) z) +
       2 * (z 1 : ℂ) * (coordDeriv 1 (V 0) z - coordDeriv 0 (V 1) z) - V 0 z,
-    (z 1 : ℂ) ^ 2 * (coordDeriv 0 (coordDeriv 0 (V 1)) z + coordDeriv 1 (coordDeriv 1 (V 1)) z) +
+    (z 1 : ℂ) ^ (2 : ℕ) * (coordDeriv 0 (coordDeriv 0 (V 1)) z + coordDeriv 1 (coordDeriv 1 (V 1)) z) +
       2 * (z 1 : ℂ) * (coordDeriv 1 (V 1) z + coordDeriv 0 (V 0) z) - V 1 z] k
 
 /-- Complete contraction of actual second covariant derivatives. -/
@@ -253,10 +253,10 @@ private theorem partial_mul {f g : Field} {z : Point}
   ring
 
 private theorem height_sq_partial (z : Point) (i : Fin 2) :
-    coordDeriv i (fun q : Point => (q 1 : ℂ) ^ 2) z = if i = 1 then 2 * (z 1 : ℂ) else 0 := by
+    coordDeriv i (fun q : Point => (q 1 : ℂ) ^ (2 : ℕ)) z = if i = 1 then 2 * (z 1 : ℂ) else 0 := by
   have hY := Complex.ofRealCLM.hasFDerivAt.comp z
     ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
-  have hd : HasFDerivAt (fun q : Point => (q 1 : ℂ) ^ 2) _ z := hY.pow 2
+  have hd : HasFDerivAt (fun q : Point => (q 1 : ℂ) ^ (2 : ℕ)) _ z := hY.pow 2
   rw [coordDeriv, hd.fderiv]
   fin_cases i <;> simp [smul_eq_mul]
 
@@ -266,20 +266,20 @@ theorem scalarLaplacian_partial (S : Field) (z : Point) (hz : 0 < z 1)
     coordDeriv i (scalarLaplacian S) z =
       (if i = 1 then 2 * (z 1 : ℂ) else 0) *
         (coordDeriv 0 (coordDeriv 0 S) z + coordDeriv 1 (coordDeriv 1 S) z) +
-      (z 1 : ℂ) ^ 2 * (coordDeriv i (coordDeriv 0 (coordDeriv 0 S)) z +
+      (z 1 : ℂ) ^ (2 : ℕ) * (coordDeriv i (coordDeriv 0 (coordDeriv 0 S)) z +
         coordDeriv i (coordDeriv 1 (coordDeriv 1 S)) z) := by
-  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun q => (q 1 : ℂ) ^ 2 *
+  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun q => (q 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) q + coordDeriv 1 (coordDeriv 1 S) q)) := by
     filter_upwards [positive_nhds z hz] with q hq
     exact scalarLaplacian_eq S q hq
-  have hY : DifferentiableAt ℝ (fun q : Point => (q 1 : ℂ) ^ 2) z :=
+  have hY : DifferentiableAt ℝ (fun q : Point => (q 1 : ℂ) ^ (2 : ℕ)) z :=
     ((Complex.ofRealCLM.hasFDerivAt.comp z
       ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)).pow 2).differentiableAt
   have h00 := (coordDeriv_hasFDerivAt (coordDeriv_contDiffAt (m := 2) hS 0) 0).differentiableAt
   have h11 := (coordDeriv_hasFDerivAt (coordDeriv_contDiffAt (m := 2) hS 1) 1).differentiableAt
   change fderiv ℝ (scalarLaplacian S) z (Pi.single i 1) = _
   rw [he.fderiv_eq]
-  change coordDeriv i (fun q => (q 1 : ℂ) ^ 2 *
+  change coordDeriv i (fun q => (q 1 : ℂ) ^ (2 : ℕ) *
     (coordDeriv 0 (coordDeriv 0 S) q + coordDeriv 1 (coordDeriv 1 S) q)) z = _
   have hsum : DifferentiableAt ℝ (fun q : Point =>
       coordDeriv 0 (coordDeriv 0 S) q + coordDeriv 1 (coordDeriv 1 S) q) z := h00.add h11
@@ -307,7 +307,7 @@ def coexact (S : Field) : Covector := ![coordDeriv 1 S, fun q => -coordDeriv 0 S
 
 /-- The coordinate area form of the literal horizon metric. -/
 def areaForm (z : Point) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![0, (z 1 : ℂ)⁻¹ ^ 2; -(z 1 : ℂ)⁻¹ ^ 2, 0]
+  !![0, (z 1 : ℂ)⁻¹ ^ (2 : ℕ); -(z 1 : ℂ)⁻¹ ^ (2 : ℕ), 0]
 
 /-- The rotated derivative is the literal area-form/inverse-metric contraction. -/
 theorem coexact_metric_contraction (S : Field) (z : Point) (hz : 0 < z 1) (i : Fin 2) :

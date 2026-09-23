@@ -3,14 +3,14 @@ Doc 25 §1/§2 (task #143): the rescaled `q_d` arithmetic used in tracking clear
 
 For `τ = a + bi`, the pair factor contributes
 
-  `q_d(c) = |τ|^2 - 2 a d c + d(d-1)c^2`.
+  `q_d(c) = |τ|^(2 : ℕ) - 2 a d c + d(d-1)c^(2 : ℕ)`.
 
 At the tracking scale `c = z/d`, this becomes
 
-  `(z-a)^2 + b^2 - z^2/d`,
+  `(z-a)^(2 : ℕ) + b^(2 : ℕ) - z^(2 : ℕ)/d`,
 
-so on a bounded window `|z| ≤ R` it is bounded below by `b^2/2` as soon as
-`d*b^2 ≥ 2R^2`.  This file banks that finite real-arithmetic input for doc 25
+so on a bounded window `|z| ≤ R` it is bounded below by `b^(2 : ℕ)/2` as soon as
+`d*b^(2 : ℕ) ≥ 2R^(2 : ℕ)`.  This file banks that finite real-arithmetic input for doc 25
 Theorem A; the analytic inputs (`Ã_d → g`, energy identity, nonvanishing) are separate
 constraints, not a flow.
 -/
@@ -20,11 +20,11 @@ namespace RHTower
 
 /-- The unscaled pair quadratic from doc 25: `q_d(c)`. -/
 noncomputable def spurQ (a b : ℝ) (d : ℕ) (c : ℝ) : ℝ :=
-  a ^ 2 + b ^ 2 - 2 * a * (d : ℝ) * c + (d : ℝ) * ((d : ℝ) - 1) * c ^ 2
+  a ^ (2 : ℕ) + b ^ (2 : ℕ) - 2 * a * (d : ℝ) * c + (d : ℝ) * ((d : ℝ) - 1) * c ^ (2 : ℕ)
 
 /-- The tracking-scale form of `spurQ a b d (z/d)`. -/
 noncomputable def spurQRescaled (a b : ℝ) (d : ℕ) (z : ℝ) : ℝ :=
-  a ^ 2 + b ^ 2 - 2 * a * z + (1 - (1 : ℝ) / d) * z ^ 2
+  a ^ (2 : ℕ) + b ^ (2 : ℕ) - 2 * a * z + (1 - (1 : ℝ) / d) * z ^ (2 : ℕ)
 
 /-- Exact rescaling identity for `q_d(z/d)`. -/
 theorem spurQ_rescale {a b z : ℝ} {d : ℕ} (hd : 0 < d) :
@@ -35,7 +35,7 @@ theorem spurQ_rescale {a b z : ℝ} {d : ℕ} (hd : 0 < d) :
 
 /-- Completing the square in the rescaled `q_d`. -/
 theorem spurQRescaled_eq_sq (a b : ℝ) (d : ℕ) (z : ℝ) :
-    spurQRescaled a b d z = (z - a) ^ 2 + b ^ 2 - z ^ 2 / (d : ℝ) := by
+    spurQRescaled a b d z = (z - a) ^ (2 : ℕ) + b ^ (2 : ℕ) - z ^ (2 : ℕ) / (d : ℝ) := by
   rw [spurQRescaled]
   ring
 
@@ -43,25 +43,25 @@ theorem spurQRescaled_eq_sq (a b : ℝ) (d : ℕ) (z : ℝ) :
 once `d*b² ≥ 2R²`. -/
 theorem spurQRescaled_lower_bound {a b R z : ℝ} {d : ℕ}
     (hdpos : 0 < d) (hz : |z| ≤ R)
-    (hd : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2) :
-    b ^ 2 / 2 ≤ spurQRescaled a b d z := by
+    (hd : 2 * R ^ (2 : ℕ) ≤ (d : ℝ) * b ^ (2 : ℕ)) :
+    b ^ (2 : ℕ) / 2 ≤ spurQRescaled a b d z := by
   have hd0 : (0 : ℝ) < d := by positivity
   have hR0 : 0 ≤ R := le_trans (abs_nonneg z) hz
-  have hzsq : z ^ 2 ≤ R ^ 2 := by
+  have hzsq : z ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by
     rw [← sq_abs z]
     nlinarith [hz, abs_nonneg z, hR0]
-  have hdiv : z ^ 2 / (d : ℝ) ≤ b ^ 2 / 2 := by
+  have hdiv : z ^ (2 : ℕ) / (d : ℝ) ≤ b ^ (2 : ℕ) / 2 := by
     rw [div_le_iff₀ hd0]
     nlinarith [hzsq, hd]
   rw [spurQRescaled_eq_sq]
-  have hsquare : 0 ≤ (z - a) ^ 2 := sq_nonneg _
+  have hsquare : 0 ≤ (z - a) ^ (2 : ℕ) := sq_nonneg _
   linarith
 
 /-- Unscaled version of the tracking-window lower bound for `q_d(z/d)`. -/
 theorem spurQ_rescaled_lower_bound {a b R z : ℝ} {d : ℕ}
     (hdpos : 0 < d) (hz : |z| ≤ R)
-    (hd : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2) :
-    b ^ 2 / 2 ≤ spurQ a b d (z / (d : ℝ)) := by
+    (hd : 2 * R ^ (2 : ℕ) ≤ (d : ℝ) * b ^ (2 : ℕ)) :
+    b ^ (2 : ℕ) / 2 ≤ spurQ a b d (z / (d : ℝ)) := by
   rw [spurQ_rescale hdpos]
   exact spurQRescaled_lower_bound hdpos hz hd
 
@@ -70,13 +70,13 @@ energy denominator give the margin lower bound. -/
 theorem theoremA_margin_lower_bound_arithmetic {q denom b m M R d : ℝ}
     (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R) (hd : 0 < d)
     (hdenpos : 0 < denom)
-    (hq : b ^ 2 / 2 ≤ q)
-    (hden : denom ≤ 2 * (M + 1) * R ^ 4 / (m * d ^ 2)) :
-    b ^ 2 * m * d ^ 2 / (4 * (M + 1) * R ^ 4) ≤ q / denom := by
-  have hmdpos : 0 < m * d ^ 2 := by positivity
-  have hden_cross : denom * (m * d ^ 2) ≤ 2 * (M + 1) * R ^ 4 := by
+    (hq : b ^ (2 : ℕ) / 2 ≤ q)
+    (hden : denom ≤ 2 * (M + 1) * R ^ (4 : ℕ) / (m * d ^ (2 : ℕ))) :
+    b ^ (2 : ℕ) * m * d ^ (2 : ℕ) / (4 * (M + 1) * R ^ (4 : ℕ)) ≤ q / denom := by
+  have hmdpos : 0 < m * d ^ (2 : ℕ) := by positivity
+  have hden_cross : denom * (m * d ^ (2 : ℕ)) ≤ 2 * (M + 1) * R ^ (4 : ℕ) := by
     rwa [le_div_iff₀ hmdpos] at hden
-  have hfourpos : 0 < 4 * (M + 1) * R ^ 4 := by positivity
+  have hfourpos : 0 < 4 * (M + 1) * R ^ (4 : ℕ) := by positivity
   rw [le_div_iff₀ hdenpos]
   rw [div_mul_eq_mul_div]
   rw [div_le_iff₀ hfourpos]
@@ -86,10 +86,10 @@ theorem theoremA_margin_lower_bound_arithmetic {q denom b m M R d : ℝ}
 theorem theoremA_margin_lower_bound_from_tracking {a b R z denom m M : ℝ} {d : ℕ}
     (hdpos : 0 < d) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
     (hz : |z| ≤ R)
-    (hdsize : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2)
+    (hdsize : 2 * R ^ (2 : ℕ) ≤ (d : ℝ) * b ^ (2 : ℕ))
     (hdenpos : 0 < denom)
-    (hden : denom ≤ 2 * (M + 1) * R ^ 4 / (m * (d : ℝ) ^ 2)) :
-    b ^ 2 * m * (d : ℝ) ^ 2 / (4 * (M + 1) * R ^ 4)
+    (hden : denom ≤ 2 * (M + 1) * R ^ (4 : ℕ) / (m * (d : ℝ) ^ (2 : ℕ))) :
+    b ^ (2 : ℕ) * m * (d : ℝ) ^ (2 : ℕ) / (4 * (M + 1) * R ^ (4 : ℕ))
       ≤ spurQ a b d (z / (d : ℝ)) / denom := by
   exact theoremA_margin_lower_bound_arithmetic (q := spurQ a b d (z / (d : ℝ)))
     (denom := denom) (b := b) (m := m) (M := M) (R := R) (d := (d : ℝ))
@@ -97,8 +97,8 @@ theorem theoremA_margin_lower_bound_from_tracking {a b R z denom m M : ℝ} {d :
 
 /-- Completing the square for the unscaled `q_d`; the dip is at `c = a/(d-1)`. -/
 theorem spurQ_eq_sq_about_dip {a b c : ℝ} {d : ℕ} (hd : 1 < d) :
-    spurQ a b d c = (d : ℝ) * ((d : ℝ) - 1) * (c - a / ((d : ℝ) - 1)) ^ 2
-      + b ^ 2 - a ^ 2 / ((d : ℝ) - 1) := by
+    spurQ a b d c = (d : ℝ) * ((d : ℝ) - 1) * (c - a / ((d : ℝ) - 1)) ^ (2 : ℕ)
+      + b ^ (2 : ℕ) - a ^ (2 : ℕ) / ((d : ℝ) - 1) := by
   have hd1 : (1 : ℝ) < d := by exact_mod_cast hd
   have hD : (d : ℝ) - 1 ≠ 0 := by linarith
   rw [spurQ]
@@ -107,7 +107,7 @@ theorem spurQ_eq_sq_about_dip {a b c : ℝ} {d : ℕ} (hd : 1 < d) :
 
 /-- The value of `q_d` at its dip point. -/
 theorem spurQ_dip_value {a b : ℝ} {d : ℕ} (hd : 1 < d) :
-    spurQ a b d (a / ((d : ℝ) - 1)) = b ^ 2 - a ^ 2 / ((d : ℝ) - 1) := by
+    spurQ a b d (a / ((d : ℝ) - 1)) = b ^ (2 : ℕ) - a ^ (2 : ℕ) / ((d : ℝ) - 1) := by
   rw [spurQ_eq_sq_about_dip hd]
   ring
 

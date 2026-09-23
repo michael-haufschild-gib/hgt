@@ -83,7 +83,7 @@ theorem dirRes_canonicalRoot (h2 : (2 : A) ≠ 0) {d : (Fin (m + 1) → Bool) �
     (hρsq : ∀ z, ρ z * ρ z
       = PowerSeries.C ((cubeSide d i true z - cubeSide d i false z)
           * (cubeSide d i true z - cubeSide d i false z))
-        + PowerSeries.C (4 : A) * PowerSeries.X ^ 2)
+        + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ))
     (hρconst : ∀ z, PowerSeries.constantCoeff (ρ z)
       = cubeSide d i true z - cubeSide d i false z)
     {Θ : (Fin (m + 1) → Bool) → MvPowerSeries (Fin (m + 1)) A}

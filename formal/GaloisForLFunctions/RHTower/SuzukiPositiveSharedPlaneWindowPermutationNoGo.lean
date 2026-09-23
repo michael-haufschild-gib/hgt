@@ -119,7 +119,7 @@ theorem suzukiPositiveSharedPlaneTwentyPrimePairFloor_sqrt_lower
       _ ≤ ((_root_.RHTower.suzukiMangoldtFivePrimeBlock n).card : ℝ) / 4 :=
         div_le_div_of_nonneg_right hm (by norm_num)
       _ ≤ _ := hq
-  have hsquare : 5 * (n : ℝ) ≤ (2 * (n : ℝ)) ^ 2 := by
+  have hsquare : 5 * (n : ℝ) ≤ (2 * (n : ℝ)) ^ (2 : ℕ) := by
     have hnFive : (5 : ℝ) ≤ n := by
       nlinarith [Real.add_one_le_exp (20 : ℝ)]
     nlinarith

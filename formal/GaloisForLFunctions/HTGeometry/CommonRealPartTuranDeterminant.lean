@@ -7,9 +7,9 @@ For a finite family of complex points `w i` carrying nonnegative weights `m i`, 
 
 `f n = sum_i m i * (w i) ^ n`.
 
-The elementary variance identity `f 0 * f 2 - f 1 ^ 2 = (1/2) sum_(i,j) m i m j (w i - w j)^2`
+The elementary variance identity `f 0 * f 2 - f 1 ^ (2 : ℕ) = (1/2) sum_(i,j) m i m j (w i - w j)^(2 : ℕ)`
 becomes a sign statement as soon as all the points share one real part: then every difference
-`w i - w j` is purely imaginary, its square is `-(Im w i - Im w j)^2`, and the determinant is
+`w i - w j` is purely imaginary, its square is `-(Im w i - Im w j)^(2 : ℕ)`, and the determinant is
 **nonpositive**, vanishing exactly when all weighted points have one common imaginary part.
 
 A positive measure on the real line has nonnegative Turán determinant, so this is the exact
@@ -32,15 +32,15 @@ def configMoment (s : Finset ι) (m : ι → ℝ) (w : ι → ℂ) (n : ℕ) : �
 
 /-- Second Hankel (Turán) determinant of a weighted finite complex configuration. -/
 def configTuranDeterminant (s : Finset ι) (m : ι → ℝ) (w : ι → ℂ) : ℂ :=
-  configMoment s m w 0 * configMoment s m w 2 - configMoment s m w 1 ^ 2
+  configMoment s m w 0 * configMoment s m w 2 - configMoment s m w 1 ^ (2 : ℕ)
 
 /-- **The variance identity.**  The Turán determinant is half the weighted sum of all pairwise
 squared differences. -/
 theorem configTuranDeterminant_eq_pair_sum (s : Finset ι) (m : ι → ℝ) (w : ι → ℂ) :
     (2 : ℂ) * configTuranDeterminant s m w =
-      ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * (m j : ℂ) * (w i - w j) ^ 2 := by
-  have hexpand : ∀ i ∈ s, ∑ j ∈ s, (m i : ℂ) * (m j : ℂ) * (w i - w j) ^ 2 =
-      (m i : ℂ) * w i ^ 2 * configMoment s m w 0 -
+      ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * (m j : ℂ) * (w i - w j) ^ (2 : ℕ) := by
+  have hexpand : ∀ i ∈ s, ∑ j ∈ s, (m i : ℂ) * (m j : ℂ) * (w i - w j) ^ (2 : ℕ) =
+      (m i : ℂ) * w i ^ (2 : ℕ) * configMoment s m w 0 -
         2 * ((m i : ℂ) * w i) * configMoment s m w 1 +
         (m i : ℂ) * configMoment s m w 2 := by
     intro i _
@@ -57,16 +57,16 @@ theorem configTuranDeterminant_eq_pair_sum (s : Finset ι) (m : ι → ℝ) (w :
   have h1 : ∑ i ∈ s, 2 * ((m i : ℂ) * w i) = 2 * configMoment s m w 1 := by
     rw [configMoment, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
-  have h2 : ∑ i ∈ s, (m i : ℂ) * w i ^ 2 = configMoment s m w 2 := rfl
+  have h2 : ∑ i ∈ s, (m i : ℂ) * w i ^ (2 : ℕ) = configMoment s m w 2 := rfl
   rw [h0, h1, h2, configTuranDeterminant]
   ring
 
 /-- One pair term of the variance identity, for two points of a common vertical line. -/
 private theorem re_pair_term {m₁ m₂ : ℝ} {u v : ℂ} (huv : u.re = v.re) :
-    ((m₁ : ℂ) * (m₂ : ℂ) * (u - v) ^ 2).re = -(m₁ * m₂ * (u.im - v.im) ^ 2) := by
+    ((m₁ : ℂ) * (m₂ : ℂ) * (u - v) ^ (2 : ℕ)).re = -(m₁ * m₂ * (u.im - v.im) ^ (2 : ℕ)) := by
   have hdiff : u - v = (((u.im - v.im : ℝ)) : ℂ) * Complex.I := by
     apply Complex.ext <;> simp [Complex.sub_re, Complex.sub_im, huv]
-  have hsq : (u - v) ^ 2 = (((-((u.im - v.im) ^ 2)) : ℝ) : ℂ) := by
+  have hsq : (u - v) ^ (2 : ℕ) = (((-((u.im - v.im) ^ (2 : ℕ))) : ℝ) : ℂ) := by
     rw [hdiff, mul_pow, Complex.I_sq]
     push_cast
     ring
@@ -77,7 +77,7 @@ private theorem re_pair_term {m₁ m₂ : ℝ} {u v : ℂ} (huv : u.re = v.re) :
 theorem two_mul_re_configTuranDeterminant {s : Finset ι} {m : ι → ℝ} {w : ι → ℂ}
     {A : ℝ} (hre : ∀ i ∈ s, (w i).re = A) :
     (2 : ℝ) * (configTuranDeterminant s m w).re =
-      ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ 2) := by
+      ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) := by
   have h := congrArg Complex.re (configTuranDeterminant_eq_pair_sum s m w)
   rw [Complex.mul_re] at h
   simp only [Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero] at h
@@ -92,13 +92,13 @@ theorem configTuranDeterminant_re_nonpos_of_common_re {s : Finset ι} {m : ι �
     (configTuranDeterminant s m w).re ≤ 0 := by
   have hkey := two_mul_re_configTuranDeterminant (m := m) hre
   have hterm : ∀ i ∈ s, ∀ j ∈ s,
-      -(m i * m j * ((w i).im - (w j).im) ^ 2) ≤ 0 := by
+      -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) ≤ 0 := by
     intro i hi j hj
-    have hnn : 0 ≤ m i * m j * ((w i).im - (w j).im) ^ 2 := by
+    have hnn : 0 ≤ m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ) := by
       have hmm := mul_nonneg (hm i hi) (hm j hj)
       positivity
     linarith
-  have hsum : ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ 2) ≤ 0 :=
+  have hsum : ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) ≤ 0 :=
     Finset.sum_nonpos fun i hi => Finset.sum_nonpos fun j hj => hterm i hi j hj
   linarith
 
@@ -112,28 +112,28 @@ theorem configTuranDeterminant_re_neg_of_common_re {s : Finset ι} {m : ι → �
   classical
   have hkey := two_mul_re_configTuranDeterminant (m := m) hre
   have hterm : ∀ i ∈ s, ∀ j ∈ s,
-      -(m i * m j * ((w i).im - (w j).im) ^ 2) ≤ 0 := by
+      -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) ≤ 0 := by
     intro i hi j hj
-    have hnn : 0 ≤ m i * m j * ((w i).im - (w j).im) ^ 2 := by
+    have hnn : 0 ≤ m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ) := by
       have hmm := mul_nonneg (hm i hi) (hm j hj)
       positivity
     linarith
-  have hstrict : -(m a * m b * ((w a).im - (w b).im) ^ 2) < 0 := by
+  have hstrict : -(m a * m b * ((w a).im - (w b).im) ^ (2 : ℕ)) < 0 := by
     have hne : (w a).im - (w b).im ≠ 0 := sub_ne_zero.mpr hab
-    have hsq : 0 < ((w a).im - (w b).im) ^ 2 := by positivity
+    have hsq : 0 < ((w a).im - (w b).im) ^ (2 : ℕ) := by positivity
     nlinarith [mul_pos hma hmb]
-  have hrow : ∑ j ∈ s, -(m a * m j * ((w a).im - (w j).im) ^ 2) < 0 := by
+  have hrow : ∑ j ∈ s, -(m a * m j * ((w a).im - (w j).im) ^ (2 : ℕ)) < 0 := by
     have hsplit := Finset.add_sum_erase s
-      (fun j => -(m a * m j * ((w a).im - (w j).im) ^ 2)) hb
-    have hrest : ∑ j ∈ s.erase b, -(m a * m j * ((w a).im - (w j).im) ^ 2) ≤ 0 :=
+      (fun j => -(m a * m j * ((w a).im - (w j).im) ^ (2 : ℕ))) hb
+    have hrest : ∑ j ∈ s.erase b, -(m a * m j * ((w a).im - (w j).im) ^ (2 : ℕ)) ≤ 0 :=
       Finset.sum_nonpos fun j hj => hterm a ha j (Finset.mem_of_mem_erase hj)
     rw [← hsplit]
     linarith
-  have hsum : ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ 2) < 0 := by
+  have hsum : ∑ i ∈ s, ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) < 0 := by
     have hsplit := Finset.add_sum_erase s
-      (fun i => ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ 2)) ha
+      (fun i => ∑ j ∈ s, -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ))) ha
     have hrest : ∑ i ∈ s.erase a, ∑ j ∈ s,
-        -(m i * m j * ((w i).im - (w j).im) ^ 2) ≤ 0 :=
+        -(m i * m j * ((w i).im - (w j).im) ^ (2 : ℕ)) ≤ 0 :=
       Finset.sum_nonpos fun i hi =>
         Finset.sum_nonpos fun j hj => hterm i (Finset.mem_of_mem_erase hi) j hj
     rw [← hsplit]

@@ -19,7 +19,7 @@ noncomputable section
 /-- Exact norm of the scalar Schur defect inside the open disk. -/
 theorem norm_suzukiSchurDefect_eq_of_norm_lt_one
     {alpha : ℂ} (halpha : ‖alpha‖ < 1) :
-    ‖1 - (starRingEnd ℂ) alpha * alpha‖ = 1 - ‖alpha‖ ^ 2 := by
+    ‖1 - (starRingEnd ℂ) alpha * alpha‖ = 1 - ‖alpha‖ ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
   norm_cast
   rw [Real.norm_eq_abs, abs_of_pos]
@@ -39,7 +39,7 @@ theorem deriv_suzukiDiskOutputRecenter
     {alpha z : ℂ} (hden : 1 - (starRingEnd ℂ) alpha * z ≠ 0) :
     deriv (suzukiDiskOutputRecenter alpha) z =
       (1 - (starRingEnd ℂ) alpha * alpha) /
-        (1 - (starRingEnd ℂ) alpha * z) ^ 2 := by
+        (1 - (starRingEnd ℂ) alpha * z) ^ (2 : ℕ) := by
   have hnum : HasDerivAt (fun u : ℂ => u - alpha) 1 z := by
     simpa only [id_eq] using (hasDerivAt_id z).sub_const alpha
   have hden' : HasDerivAt
@@ -53,7 +53,7 @@ theorem deriv_suzukiDiskOutputRecenter
       (1 - (starRingEnd ℂ) alpha * u)) z =
       (1 * (1 - (starRingEnd ℂ) alpha * z) -
         (z - alpha) * (-((starRingEnd ℂ) alpha))) /
-          (1 - (starRingEnd ℂ) alpha * z) ^ 2 := by
+          (1 - (starRingEnd ℂ) alpha * z) ^ (2 : ℕ) := by
     have h := (hnum.div hden' hden).deriv
     have hfun :
         (fun u : ℂ => (u - alpha) / (1 - (starRingEnd ℂ) alpha * u)) =
@@ -84,7 +84,7 @@ theorem iteratedDeriv_two_suzukiDiskOutputRecenter_self
     {alpha : ℂ} (halpha : ‖alpha‖ < 1) :
     iteratedDeriv 2 (suzukiDiskOutputRecenter alpha) alpha =
       2 * (starRingEnd ℂ) alpha /
-        (1 - (starRingEnd ℂ) alpha * alpha) ^ 2 := by
+        (1 - (starRingEnd ℂ) alpha * alpha) ^ (2 : ℕ) := by
   let delta : ℂ := 1 - (starRingEnd ℂ) alpha * alpha
   let den : ℂ → ℂ := fun z => 1 - (starRingEnd ℂ) alpha * z
   have hdelta : delta ≠ 0 := by
@@ -98,22 +98,22 @@ theorem iteratedDeriv_two_suzukiDiskOutputRecenter_self
     dsimp only [den]
     simpa only [sub_eq_add_neg, neg_mul] using
       (hasDerivAt_const_mul (x := alpha) (-((starRingEnd ℂ) alpha))).const_add 1
-  have hrhs : HasDerivAt (fun z => delta / den z ^ 2)
-      (2 * (starRingEnd ℂ) alpha / delta ^ 2) alpha := by
+  have hrhs : HasDerivAt (fun z => delta / den z ^ (2 : ℕ))
+      (2 * (starRingEnd ℂ) alpha / delta ^ (2 : ℕ)) alpha := by
     have hq := (hasDerivAt_const alpha delta).div (hdenAt.pow 2) (by
       simpa [den, delta] using pow_ne_zero 2 hdelta)
-    change HasDerivAt (fun z => delta / den z ^ 2) _ alpha at hq
+    change HasDerivAt (fun z => delta / den z ^ (2 : ℕ)) _ alpha at hq
     norm_num at hq
-    change HasDerivAt (fun z => delta / den z ^ 2)
-      (delta * (2 * delta * (starRingEnd ℂ) alpha) / (delta ^ 2) ^ 2) alpha at hq
-    have hcoeff : delta * (2 * delta * (starRingEnd ℂ) alpha) / (delta ^ 2) ^ 2 =
-        2 * (starRingEnd ℂ) alpha / delta ^ 2 := by
+    change HasDerivAt (fun z => delta / den z ^ (2 : ℕ))
+      (delta * (2 * delta * (starRingEnd ℂ) alpha) / (delta ^ (2 : ℕ)) ^ (2 : ℕ)) alpha at hq
+    have hcoeff : delta * (2 * delta * (starRingEnd ℂ) alpha) / (delta ^ (2 : ℕ)) ^ (2 : ℕ) =
+        2 * (starRingEnd ℂ) alpha / delta ^ (2 : ℕ) := by
       field_simp [hdelta]
     rw [hcoeff] at hq
     exact hq
   have hdenCont : ContinuousAt den alpha := hdenAt.continuousAt
   have heq : deriv (suzukiDiskOutputRecenter alpha) =ᶠ[nhds alpha]
-      fun z => delta / den z ^ 2 := by
+      fun z => delta / den z ^ (2 : ℕ) := by
     filter_upwards [hdenCont.eventually_ne (by simpa [den, delta] using hdelta)] with z hz
     exact deriv_suzukiDiskOutputRecenter hz
   rw [show iteratedDeriv 2 (suzukiDiskOutputRecenter alpha) alpha =
@@ -187,12 +187,12 @@ theorem iteratedDeriv_two_suzukiMovableSchurRecenter_zero
     iteratedDeriv 2 (suzukiMovableSchurRecenter theta c) 0 =
       (2 * (starRingEnd ℂ) (theta ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ) (theta ((c : ℂ) * I)) *
-            theta ((c : ℂ) * I)) ^ 2) *
-          (deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)) ^ 2 +
+            theta ((c : ℂ) * I)) ^ (2 : ℕ)) *
+          (deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)) ^ (2 : ℕ) +
         (1 - (starRingEnd ℂ) (theta ((c : ℂ) * I)) *
             theta ((c : ℂ) * I))⁻¹ *
           (iteratedDeriv 2 theta ((c : ℂ) * I) *
-              (2 * (c : ℂ) * I) ^ 2 +
+              (2 * (c : ℂ) * I) ^ (2 : ℕ) +
             deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)) := by
   let alpha := theta ((c : ℂ) * I)
   let zfun := suzukiCoalescingCayleyInv c
@@ -250,7 +250,7 @@ theorem norm_suzukiMovableSchurRecenter_secondJet_le_schurSlack
     (htheta : DifferentiableOn ℂ theta {z : ℂ | 0 < z.im})
     (hmap : ∀ z : ℂ, 0 < z.im → ‖theta z‖ < 1) :
     ‖iteratedDeriv 2 (suzukiMovableSchurRecenter theta c) 0‖ ≤
-      2 * (1 - ‖deriv (suzukiMovableSchurRecenter theta c) 0‖ ^ 2) := by
+      2 * (1 - ‖deriv (suzukiMovableSchurRecenter theta c) 0‖ ^ (2 : ℕ)) := by
   let alpha := theta ((c : ℂ) * I)
   let zfun := suzukiCoalescingCayleyInv c
   let f := suzukiMovableSchurRecenter theta c
@@ -308,17 +308,17 @@ theorem norm_suzukiMovableSchurCovariantSecondJet_le
     (hmap : ∀ z : ℂ, 0 < z.im → ‖theta z‖ < 1) :
     ‖(2 * (starRingEnd ℂ) (theta ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ) (theta ((c : ℂ) * I)) *
-            theta ((c : ℂ) * I)) ^ 2) *
-          (deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)) ^ 2 +
+            theta ((c : ℂ) * I)) ^ (2 : ℕ)) *
+          (deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)) ^ (2 : ℕ) +
         (1 - (starRingEnd ℂ) (theta ((c : ℂ) * I)) *
             theta ((c : ℂ) * I))⁻¹ *
           (iteratedDeriv 2 theta ((c : ℂ) * I) *
-              (2 * (c : ℂ) * I) ^ 2 +
+              (2 * (c : ℂ) * I) ^ (2 : ℕ) +
             deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I))‖ ≤
       2 * (1 -
         ‖(2 * (c : ℂ) * I * deriv theta ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ) (theta ((c : ℂ) * I)) *
-            theta ((c : ℂ) * I))‖ ^ 2) := by
+            theta ((c : ℂ) * I))‖ ^ (2 : ℕ)) := by
   have him : 0 < (((c : ℂ) * I).im) := by simp [hc]
   have hopen : IsOpen {z : ℂ | 0 < z.im} :=
     isOpen_lt continuous_const Complex.continuous_im
@@ -345,7 +345,7 @@ theorem differentiableOn_suzukiTaV2Livsic_upperHalfPlane
 theorem norm_suzukiTaV2MovableSchurRecenter_secondJet_le_schurSlack
     (a : SuzukiPositiveAperture) {c : ℝ} (hc : 0 < c) :
     ‖iteratedDeriv 2 (suzukiMovableSchurRecenter (suzukiTaV2Livsic a) c) 0‖ ≤
-      2 * (1 - ‖deriv (suzukiMovableSchurRecenter (suzukiTaV2Livsic a) c) 0‖ ^ 2) := by
+      2 * (1 - ‖deriv (suzukiMovableSchurRecenter (suzukiTaV2Livsic a) c) 0‖ ^ (2 : ℕ)) := by
   apply norm_suzukiMovableSchurRecenter_secondJet_le_schurSlack hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a
   · exact fun z hz => norm_suzukiTaV2Livsic_lt_one a hz
@@ -356,20 +356,20 @@ theorem norm_suzukiTaV2MovableSchurCovariantSecondJet_le
     (a : SuzukiPositiveAperture) {c : ℝ} (hc : 0 < c) :
     ‖(2 * (starRingEnd ℂ) (suzukiTaV2Livsic a ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ) (suzukiTaV2Livsic a ((c : ℂ) * I)) *
-            suzukiTaV2Livsic a ((c : ℂ) * I)) ^ 2) *
+            suzukiTaV2Livsic a ((c : ℂ) * I)) ^ (2 : ℕ)) *
           (deriv (suzukiTaV2Livsic a) ((c : ℂ) * I) *
-            (2 * (c : ℂ) * I)) ^ 2 +
+            (2 * (c : ℂ) * I)) ^ (2 : ℕ) +
         (1 - (starRingEnd ℂ) (suzukiTaV2Livsic a ((c : ℂ) * I)) *
             suzukiTaV2Livsic a ((c : ℂ) * I))⁻¹ *
           (iteratedDeriv 2 (suzukiTaV2Livsic a) ((c : ℂ) * I) *
-              (2 * (c : ℂ) * I) ^ 2 +
+              (2 * (c : ℂ) * I) ^ (2 : ℕ) +
             deriv (suzukiTaV2Livsic a) ((c : ℂ) * I) *
               (4 * (c : ℂ) * I))‖ ≤
       2 * (1 -
         ‖(2 * (c : ℂ) * I *
             deriv (suzukiTaV2Livsic a) ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ) (suzukiTaV2Livsic a ((c : ℂ) * I)) *
-            suzukiTaV2Livsic a ((c : ℂ) * I))‖ ^ 2) := by
+            suzukiTaV2Livsic a ((c : ℂ) * I))‖ ^ (2 : ℕ)) := by
   apply norm_suzukiMovableSchurCovariantSecondJet_le hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a
   · exact fun z hz => norm_suzukiTaV2Livsic_lt_one a hz
@@ -385,41 +385,41 @@ theorem norm_suzukiMovableSchur_defectClearedSecondJet_le
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-      2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) := by
+    ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+      2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) := by
   dsimp only
   let alpha := theta ((c : ℂ) * I)
   let D : ℂ := 1 - (starRingEnd ℂ) alpha * alpha
   let P : ℂ := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
   let Q : ℂ := iteratedDeriv 2 theta ((c : ℂ) * I) *
-      (2 * (c : ℂ) * I) ^ 2 +
+      (2 * (c : ℂ) * I) ^ (2 : ℕ) +
     deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-  change ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-    2 * (‖D‖ ^ 2 - ‖P‖ ^ 2)
+  change ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+    2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ))
   have him : 0 < (((c : ℂ) * I).im) := by simp [hc]
   have halpha : ‖alpha‖ < 1 := hmap _ him
   have hD0 : D ≠ 0 := by
     dsimp only [D]
     exact Bottcher.one_sub_conj_mul_ne_zero_of_norm_lt_one_norm_le_one halpha halpha.le
   have hraw := norm_suzukiMovableSchurCovariantSecondJet_le hc htheta hmap
-  change ‖(2 * (starRingEnd ℂ) alpha / D ^ 2) * P ^ 2 + D⁻¹ * Q‖ ≤
-    2 * (1 - ‖(2 * (c : ℂ) * I * deriv theta ((c : ℂ) * I)) / D‖ ^ 2) at hraw
+  change ‖(2 * (starRingEnd ℂ) alpha / D ^ (2 : ℕ)) * P ^ (2 : ℕ) + D⁻¹ * Q‖ ≤
+    2 * (1 - ‖(2 * (c : ℂ) * I * deriv theta ((c : ℂ) * I)) / D‖ ^ (2 : ℕ)) at hraw
   have hP : 2 * (c : ℂ) * I * deriv theta ((c : ℂ) * I) = P := by
     dsimp only [P]
     ring
   rw [hP] at hraw
   have hclear :
-      2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q =
-        D ^ 2 * ((2 * (starRingEnd ℂ) alpha / D ^ 2) * P ^ 2 + D⁻¹ * Q) := by
+      2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q =
+        D ^ (2 : ℕ) * ((2 * (starRingEnd ℂ) alpha / D ^ (2 : ℕ)) * P ^ (2 : ℕ) + D⁻¹ * Q) := by
     field_simp [hD0]
   rw [hclear, norm_mul]
   calc
-    ‖D ^ 2‖ * ‖(2 * (starRingEnd ℂ) alpha / D ^ 2) * P ^ 2 + D⁻¹ * Q‖ ≤
-        ‖D ^ 2‖ * (2 * (1 - ‖P / D‖ ^ 2)) :=
+    ‖D ^ (2 : ℕ)‖ * ‖(2 * (starRingEnd ℂ) alpha / D ^ (2 : ℕ)) * P ^ (2 : ℕ) + D⁻¹ * Q‖ ≤
+        ‖D ^ (2 : ℕ)‖ * (2 * (1 - ‖P / D‖ ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hraw (norm_nonneg _)
-    _ = 2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) := by
+    _ = 2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) := by
       rw [norm_pow, norm_div]
       field_simp [norm_ne_zero_iff.mpr hD0]
 
@@ -434,19 +434,19 @@ theorem norm_suzukiMovableSchur_defectNormalizedSecondJet_budget
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-        2 * ‖P‖ ^ 2 / ‖D‖ ≤ 2 * ‖D‖ := by
+    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+        2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ ≤ 2 * ‖D‖ := by
   dsimp only
   let alpha := theta ((c : ℂ) * I)
   let D : ℂ := 1 - (starRingEnd ℂ) alpha * alpha
   let P : ℂ := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
   let Q : ℂ := iteratedDeriv 2 theta ((c : ℂ) * I) *
-      (2 * (c : ℂ) * I) ^ 2 +
+      (2 * (c : ℂ) * I) ^ (2 : ℕ) +
     deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-      2 * ‖P‖ ^ 2 / ‖D‖ ≤ 2 * ‖D‖
+  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+      2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ ≤ 2 * ‖D‖
   have him : 0 < (((c : ℂ) * I).im) := by simp [hc]
   have halpha : ‖alpha‖ < 1 := hmap _ him
   have hD0 : D ≠ 0 := by
@@ -454,19 +454,19 @@ theorem norm_suzukiMovableSchur_defectNormalizedSecondJet_budget
     exact Bottcher.one_sub_conj_mul_ne_zero_of_norm_lt_one_norm_le_one halpha halpha.le
   have hDnormPos : 0 < ‖D‖ := norm_pos_iff.mpr hD0
   have hsharp := norm_suzukiMovableSchur_defectClearedSecondJet_le hc htheta hmap
-  change ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-    2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) at hsharp
+  change ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+    2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) at hsharp
   have hfactor :
-      2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q =
-        D * (Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2) := by
+      2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q =
+        D * (Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)) := by
     field_simp [hD0]
     ring
   rw [hfactor, norm_mul] at hsharp
   have hrearrange :
-      ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-          2 * ‖P‖ ^ 2 / ‖D‖ =
-        (‖D‖ * ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-          2 * ‖P‖ ^ 2) / ‖D‖ := by
+      ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+          2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ =
+        (‖D‖ * ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+          2 * ‖P‖ ^ (2 : ℕ)) / ‖D‖ := by
     field_simp [hDnormPos.ne']
   rw [hrearrange, (div_le_iff₀ hDnormPos)]
   nlinarith
@@ -482,29 +482,29 @@ theorem norm_suzukiMovableSchur_defectNormalizedSecondJet_le_two
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ ≤ 2 := by
+    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ ≤ 2 := by
   dsimp only
   let alpha := theta ((c : ℂ) * I)
   let D : ℂ := 1 - (starRingEnd ℂ) alpha * alpha
   let P : ℂ := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
   let Q : ℂ := iteratedDeriv 2 theta ((c : ℂ) * I) *
-      (2 * (c : ℂ) * I) ^ 2 +
+      (2 * (c : ℂ) * I) ^ (2 : ℕ) +
     deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ ≤ 2
+  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ ≤ 2
   have him : 0 < (((c : ℂ) * I).im) := by simp [hc]
   have halpha : ‖alpha‖ < 1 := hmap _ him
-  have hDnorm : ‖D‖ = 1 - ‖alpha‖ ^ 2 := by
+  have hDnorm : ‖D‖ = 1 - ‖alpha‖ ^ (2 : ℕ) := by
     simpa only [D] using norm_suzukiSchurDefect_eq_of_norm_lt_one halpha
   have hbudget := norm_suzukiMovableSchur_defectNormalizedSecondJet_budget hc htheta hmap
-  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-      2 * ‖P‖ ^ 2 / ‖D‖ ≤ 2 * ‖D‖ at hbudget
-  have hpenalty : 0 ≤ 2 * ‖P‖ ^ 2 / ‖D‖ := by positivity
+  change ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+      2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ ≤ 2 * ‖D‖ at hbudget
+  have hpenalty : 0 ≤ 2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ := by positivity
   calc
-    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ ≤
-        ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-          2 * ‖P‖ ^ 2 / ‖D‖ := le_add_of_nonneg_right hpenalty
+    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ ≤
+        ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+          2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ := le_add_of_nonneg_right hpenalty
     _ ≤ 2 * ‖D‖ := hbudget
     _ ≤ 2 := by rw [hDnorm]; nlinarith [sq_nonneg ‖alpha‖]
 
@@ -519,37 +519,37 @@ theorem norm_suzukiMovableSchur_denominatorClearedSecondJet_le_two
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤ 2 := by
+    ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤ 2 := by
   dsimp only
   let alpha := theta ((c : ℂ) * I)
   let D : ℂ := 1 - (starRingEnd ℂ) alpha * alpha
   let P : ℂ := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
   let Q : ℂ := iteratedDeriv 2 theta ((c : ℂ) * I) *
-      (2 * (c : ℂ) * I) ^ 2 +
+      (2 * (c : ℂ) * I) ^ (2 : ℕ) +
     deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-  change ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤ 2
+  change ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤ 2
   have him : 0 < (((c : ℂ) * I).im) := by simp [hc]
   have halpha : ‖alpha‖ < 1 := hmap _ him
-  have hDnorm : ‖D‖ = 1 - ‖alpha‖ ^ 2 := by
+  have hDnorm : ‖D‖ = 1 - ‖alpha‖ ^ (2 : ℕ) := by
     simpa only [D] using norm_suzukiSchurDefect_eq_of_norm_lt_one halpha
-  have hDnormLe : ‖D ^ 2‖ ≤ 1 := by
+  have hDnormLe : ‖D ^ (2 : ℕ)‖ ≤ 1 := by
     rw [norm_pow, hDnorm]
-    have halphaSq : ‖alpha‖ ^ 2 < (1 : ℝ) ^ 2 :=
+    have halphaSq : ‖alpha‖ ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ (norm_nonneg alpha) (by norm_num)).2 halpha
     have h := (sq_le_sq₀
       (sub_nonneg.mpr (le_of_lt (by simpa using halphaSq))) (by norm_num)).2
         (sub_le_self 1 (sq_nonneg ‖alpha‖))
     simpa using h
   have hsharp := norm_suzukiMovableSchur_defectClearedSecondJet_le hc htheta hmap
-  change ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-    2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) at hsharp
+  change ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+    2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) at hsharp
   calc
-    ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-        2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) := hsharp
-    _ ≤ 2 * ‖D‖ ^ 2 := by nlinarith [sq_nonneg ‖P‖]
-    _ = 2 * ‖D ^ 2‖ := by rw [norm_pow]
+    ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+        2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) := hsharp
+    _ ≤ 2 * ‖D‖ ^ (2 : ℕ) := by nlinarith [sq_nonneg ‖P‖]
+    _ = 2 * ‖D ^ (2 : ℕ)‖ := by rw [norm_pow]
     _ ≤ 2 * 1 := mul_le_mul_of_nonneg_left hDnormLe (by norm_num)
     _ = 2 := by norm_num
 

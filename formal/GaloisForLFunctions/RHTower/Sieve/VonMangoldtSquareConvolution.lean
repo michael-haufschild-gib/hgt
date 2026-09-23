@@ -9,10 +9,10 @@ namespace RHTower.Sieve
 
 /-- Pointwise square of the von Mangoldt arithmetic function. -/
 def vonMangoldtSquare : ArithmeticFunction ℝ :=
-  ⟨fun n => Λ n ^ 2, by simp⟩
+  ⟨fun n => Λ n ^ (2 : ℕ), by simp⟩
 
 @[simp] theorem vonMangoldtSquare_apply (n : ℕ) :
-    vonMangoldtSquare n = Λ n ^ 2 := rfl
+    vonMangoldtSquare n = Λ n ^ (2 : ℕ) := rfl
 
 theorem vonMangoldtSquare_ne_zero_iff (n : ℕ) :
     vonMangoldtSquare n ≠ 0 ↔ Λ n ≠ 0 := by
@@ -39,14 +39,14 @@ theorem vonMangoldtSquare_mul_self_eq_zero_of_three_le
 theorem vonMangoldtSquare_mul_self_prime_pow
     {p a : ℕ} (hp : p.Prime) (ha : 1 ≤ a) :
     (vonMangoldtSquare * vonMangoldtSquare) (p ^ a) =
-      ((a : ℝ) - 1) * Real.log p ^ 4 := by
+      ((a : ℝ) - 1) * Real.log p ^ (4 : ℕ) := by
   classical
   rw [ArithmeticFunction.mul_apply,
     Nat.sum_divisorsAntidiagonal (fun i j => vonMangoldtSquare i * vonMangoldtSquare j),
     Nat.sum_divisors_prime_pow hp]
   have hstep : ∀ x ∈ Finset.range (a + 1),
       vonMangoldtSquare (p ^ x) * vonMangoldtSquare (p ^ a / p ^ x) =
-        if x ∈ Finset.Ioo 0 a then Real.log p ^ 4 else 0 := by
+        if x ∈ Finset.Ioo 0 a then Real.log p ^ (4 : ℕ) else 0 := by
     intro x hx
     have hxa : x ≤ a := Nat.lt_succ_iff.mp (Finset.mem_range.mp hx)
     rw [Nat.pow_div hxa hp.pos]
@@ -74,7 +74,7 @@ theorem vonMangoldtSquare_mul_self_prime_pow
 theorem vonMangoldtSquare_mul_self_of_card_eq_two
     {n : ℕ} (hn : n.primeFactors.card = 2) :
     (vonMangoldtSquare * vonMangoldtSquare) n =
-      2 * ∏ p ∈ n.primeFactors, Real.log p ^ 2 := by
+      2 * ∏ p ∈ n.primeFactors, Real.log p ^ (2 : ℕ) := by
   classical
   obtain ⟨p, q, hpq, hfac⟩ := Finset.card_eq_two.mp hn
   have hn0 : n ≠ 0 := by
@@ -191,7 +191,7 @@ theorem vonMangoldtSquare_mul_self_of_card_eq_two
 
 theorem vonMangoldtSelfConv_sq_eq_two_mul_squareConv_of_card_eq_two
     {n : ℕ} (hn : n.primeFactors.card = 2) :
-    ((Λ * Λ) n) ^ 2 = 2 * (vonMangoldtSquare * vonMangoldtSquare) n := by
+    ((Λ * Λ) n) ^ (2 : ℕ) = 2 * (vonMangoldtSquare * vonMangoldtSquare) n := by
   obtain ⟨p, q, hpq, hfac⟩ := Finset.card_eq_two.mp hn
   rw [GaloisForLFunctions.HTGeometry.vonMangoldt_mul_self_of_card_eq_two hn,
     vonMangoldtSquare_mul_self_of_card_eq_two hn, hfac, Finset.prod_pair hpq,
@@ -202,7 +202,7 @@ theorem vonMangoldtSelfConv_sq_eq_two_mul_squareConv_of_card_eq_two
 pointwise von Mangoldt square. -/
 theorem vonMangoldtSelfConv_sq_eq_two_mul_squareConv_of_not_isPrimePow
     (n : ℕ) (hn : 1 ≤ n) (hpp : ¬ IsPrimePow n) :
-    ((Λ * Λ) n) ^ 2 = 2 * (vonMangoldtSquare * vonMangoldtSquare) n := by
+    ((Λ * Λ) n) ^ (2 : ℕ) = 2 * (vonMangoldtSquare * vonMangoldtSquare) n := by
   by_cases hcard0 : n.primeFactors.card = 0
   · have hempty : n.primeFactors = ∅ := Finset.card_eq_zero.mp hcard0
     have hn01 := Nat.primeFactors_eq_empty.mp hempty
@@ -222,36 +222,36 @@ theorem vonMangoldtSelfConv_sq_eq_two_mul_squareConv_of_not_isPrimePow
 pointwise correction is bounded by the fourth logarithmic power. -/
 theorem abs_vonMangoldtSelfConv_sq_sub_two_mul_squareConv_le_of_isPrimePow
     {n : ℕ} (hn : IsPrimePow n) :
-    |((Λ * Λ) n) ^ 2 - 2 * (vonMangoldtSquare * vonMangoldtSquare) n| ≤
-      Real.log n ^ 4 := by
+    |((Λ * Λ) n) ^ (2 : ℕ) - 2 * (vonMangoldtSquare * vonMangoldtSquare) n| ≤
+      Real.log n ^ (4 : ℕ) := by
   obtain ⟨p, a, hp, ha, hpa⟩ := (isPrimePow_nat_iff n).mp hn
   rw [← hpa, GaloisForLFunctions.HTGeometry.vonMangoldt_mul_self_prime_pow hp ha,
     vonMangoldtSquare_mul_self_prime_pow hp ha, Nat.cast_pow, Real.log_pow]
   have haR : (1 : ℝ) ≤ a := by exact_mod_cast ha
-  have hlog4 : 0 ≤ Real.log (p : ℝ) ^ 4 := by positivity
-  have habs : |((a : ℝ) - 1) ^ 2 - 2 * ((a : ℝ) - 1)| ≤ (a : ℝ) ^ 2 := by
+  have hlog4 : 0 ≤ Real.log (p : ℝ) ^ (4 : ℕ) := by positivity
+  have habs : |((a : ℝ) - 1) ^ (2 : ℕ) - 2 * ((a : ℝ) - 1)| ≤ (a : ℝ) ^ (2 : ℕ) := by
     rw [abs_le]
     constructor <;> nlinarith [sq_nonneg ((a : ℝ) - 1)]
   calc
-    |(((a : ℝ) - 1) * Real.log (p : ℝ) ^ 2) ^ 2 -
-        2 * (((a : ℝ) - 1) * Real.log (p : ℝ) ^ 4)| =
-        |(((a : ℝ) - 1) ^ 2 - 2 * ((a : ℝ) - 1)) *
-          Real.log (p : ℝ) ^ 4| := by
+    |(((a : ℝ) - 1) * Real.log (p : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) -
+        2 * (((a : ℝ) - 1) * Real.log (p : ℝ) ^ (4 : ℕ))| =
+        |(((a : ℝ) - 1) ^ (2 : ℕ) - 2 * ((a : ℝ) - 1)) *
+          Real.log (p : ℝ) ^ (4 : ℕ)| := by
       congr 1
       ring
-    _ = |((a : ℝ) - 1) ^ 2 - 2 * ((a : ℝ) - 1)| *
-          Real.log (p : ℝ) ^ 4 := by
+    _ = |((a : ℝ) - 1) ^ (2 : ℕ) - 2 * ((a : ℝ) - 1)| *
+          Real.log (p : ℝ) ^ (4 : ℕ) := by
       rw [abs_mul, abs_of_nonneg hlog4]
-    _ ≤ (a : ℝ) ^ 2 * Real.log (p : ℝ) ^ 4 :=
+    _ ≤ (a : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ) ^ (4 : ℕ) :=
       mul_le_mul_of_nonneg_right habs hlog4
-    _ ≤ ((a : ℝ) * Real.log (p : ℝ)) ^ 4 := by
+    _ ≤ ((a : ℝ) * Real.log (p : ℝ)) ^ (4 : ℕ) := by
       have ha0 : 0 ≤ (a : ℝ) := le_trans zero_le_one haR
-      have ha2 : (a : ℝ) ^ 2 ≤ (a : ℝ) ^ 4 := by
-        nlinarith [sq_nonneg ((a : ℝ) ^ 2 - 1)]
+      have ha2 : (a : ℝ) ^ (2 : ℕ) ≤ (a : ℝ) ^ (4 : ℕ) := by
+        nlinarith [sq_nonneg ((a : ℝ) ^ (2 : ℕ) - 1)]
       calc
-        (a : ℝ) ^ 2 * Real.log (p : ℝ) ^ 4 ≤
-            (a : ℝ) ^ 4 * Real.log (p : ℝ) ^ 4 :=
+        (a : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ) ^ (4 : ℕ) ≤
+            (a : ℝ) ^ (4 : ℕ) * Real.log (p : ℝ) ^ (4 : ℕ) :=
           mul_le_mul_of_nonneg_right ha2 hlog4
-        _ = ((a : ℝ) * Real.log (p : ℝ)) ^ 4 := by ring
+        _ = ((a : ℝ) * Real.log (p : ℝ)) ^ (4 : ℕ) := by ring
 
 end RHTower.Sieve

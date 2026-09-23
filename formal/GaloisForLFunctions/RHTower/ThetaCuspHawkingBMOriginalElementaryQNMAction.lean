@@ -18,7 +18,7 @@ set_option autoImplicit false
 
 /-- Exact first radial coefficient of the elementary fundamental source. -/
 def fundamentalSourceCoreSlope (w s amp : ℂ) : ℂ :=
-  -(2:ℂ)^(2*s-w)*amp^2*((2*s-w+2)/4*
+  -(2:ℂ)^(2*s-w)*amp^(2 : ℕ)*((2*s-w+2)/4*
     (fundamentalMomentConstant s+fundamentalMomentQuadratic w s)+fundamentalMomentQuadratic w s)
 
 theorem fundamentalSourceCore_hasDerivAt_zero (w s amp : ℂ) :
@@ -29,16 +29,16 @@ theorem fundamentalSourceCore_hasDerivAt_zero (w s amp : ℂ) :
     (hr.const_add 1)
   have hhalf := (power_derivatives (1/2) (by norm_num : (0:ℝ)<1-0)).1.scomp 0
     ((hasDerivAt_id (0:ℝ)).const_sub 1)
-  let A := (5*s^2+15*s+4)/4
-  let B := s*(s-1)/4*((s+2)^2-((w+1)*(w+2)/2-(s+1)*(s+2)))
+  let A := (5*s^(2 : ℕ)+15*s+4)/4
+  let B := s*(s-1)/4*((s+2)^(2 : ℕ)-((w+1)*(w+2)/2-(s+1)*(s+2)))
   have hpoly := ((((hasDerivAt_id (0:ℝ)).ofReal_comp).const_sub (1:ℂ)).mul_const B).const_add A
   have he : fundamentalSourceCore w s amp=fun z =>
-      power (1/2) (1-z)*(power (2*s-w) (1+Real.sqrt (1-z))*amp^2*(A+(1-(z:ℂ))*B)) := by
+      power (1/2) (1-z)*(power (2*s-w) (1+Real.sqrt (1-z))*amp^(2 : ℕ)*(A+(1-(z:ℂ))*B)) := by
     funext z
     dsimp only [fundamentalSourceCore,sourceRemainder,A,B]
     ring
   rw [he]
-  apply ((hhalf.mul ((hp.mul_const (amp^2)).mul hpoly))).congr_deriv
+  apply ((hhalf.mul ((hp.mul_const (amp^(2 : ℕ))).mul hpoly))).congr_deriv
   norm_num only [Function.comp_def,Pi.mul_apply,id_eq,Complex.ofReal_zero,powerFirst,power,sub_zero,Real.sqrt_one,one_mul,one_div,Complex.ofReal_one,
     Complex.one_cpow,div_one,Complex.real_smul,Complex.ofReal_neg,Complex.ofReal_div,
     Complex.ofReal_ofNat,Complex.ofReal_mul,Complex.ofReal_add]
@@ -109,7 +109,7 @@ theorem forcingCounterterms_QNM_evaluated (q : XiZeroCopy) (br side : Bool) (amp
 def elementaryQNMActionCutoff (q : XiZeroCopy) (br side : Bool) (amp : ℂ) (e : ℝ) : ℂ :=
   let w := physicalFundamentalFrequency q side
   let s := physicalRate q br
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   let T := continuedOnset s w
   let Td := deriv (continuedOnset s) w
   let F := fundamentalSourceCore w s amp
@@ -117,7 +117,7 @@ def elementaryQNMActionCutoff (q : XiZeroCopy) (br side : Bool) (amp : ℂ) (e :
   -mu*physicalSelfSourceCoefficient q*((∫ z in e..(1:ℝ),
     (z:ℂ)^w*F z*((mu-2)*((tortoiseOf z:ℂ)*T+Td)+w*T/(z:ℂ)))+
     (mu-2)*F 0*(e:ℂ)^(w+1)*
-      ((((Real.log e:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^2)+Td/(w+1))+
+      ((((Real.log e:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^(2 : ℕ))+Td/(w+1))+
     w*T*(F 0*(e:ℂ)^w/w+F1*(e:ℂ)^(w+1)/(w+1)))
 
 /-- The complete canonical QNM value is selected by this single elementary
@@ -129,7 +129,7 @@ theorem elementaryQNMActionCutoff_tendsto (q : XiZeroCopy) (br side : Bool) (amp
   let s := physicalRate q br
   let chi := physicalRadialFrequency q
   let K := D4BMOriginalCanonicalMetricCutoff.gradient q br
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   let C := physicalSelfSourceCoefficient q
   let T := continuedOnset s w
   have hw := physicalFundamentalFrequency_strip q side
@@ -176,7 +176,7 @@ theorem elementaryQNMActionCutoff_tendsto (q : XiZeroCopy) (br side : Bool) (amp
     linear_combination -hp+(physicalFundamentalFrequency q side)*hn
   have hprim : sourceActionIncomingPrimitive s chi amp 1 K w e=
       fundamentalSourceCore w s amp 0*(e:ℂ)^(w+1)*
-      ((((Real.log e:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^2)+
+      ((((Real.log e:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^(2 : ℕ))+
         deriv (continuedOnset s) w/(w+1)) := by
     have hf := physical_fundamental_root q side
     have hR : sourceRemainder s w amp 1 K 1 0=fundamentalSourceCore w s amp 0 := by

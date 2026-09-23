@@ -22,17 +22,17 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The image of the positive half-line under squaring. -/
-theorem image_sq_Ioi_zero : (fun x : ℝ => x ^ 2) '' Ioi 0 = Ioi 0 := by
+theorem image_sq_Ioi_zero : (fun x : ℝ => x ^ (2 : ℕ)) '' Ioi 0 = Ioi 0 := by
   ext u
   constructor
   · rintro ⟨x, hx, rfl⟩
     exact pow_pos (mem_Ioi.1 hx) 2
   · intro hu
     refine ⟨Real.sqrt u, Real.sqrt_pos.2 hu, ?_⟩
-    show Real.sqrt u ^ 2 = u
+    show Real.sqrt u ^ (2 : ℕ) = u
     rw [Real.sq_sqrt (le_of_lt hu)]
 
-theorem injOn_sq_Ioi_zero : InjOn (fun x : ℝ => x ^ 2) (Ioi 0) := by
+theorem injOn_sq_Ioi_zero : InjOn (fun x : ℝ => x ^ (2 : ℕ)) (Ioi 0) := by
   intro x hx y hy hxy
   have hx0 : (0 : ℝ) < x := hx
   have hy0 : (0 : ℝ) < y := hy
@@ -40,12 +40,12 @@ theorem injOn_sq_Ioi_zero : InjOn (fun x : ℝ => x ^ 2) (Ioi 0) := by
 
 /-- **The squared-variable substitution on the half-line.** -/
 theorem integral_Ioi_comp_sq (g : ℝ → ℝ) :
-    (∫ u in Ioi (0 : ℝ), g u) = ∫ x in Ioi (0 : ℝ), (2 * x) * g (x ^ 2) := by
+    (∫ u in Ioi (0 : ℝ), g u) = ∫ x in Ioi (0 : ℝ), (2 * x) * g (x ^ (2 : ℕ)) := by
   have hchange := MeasureTheory.integral_image_eq_integral_abs_deriv_smul
-    (s := Ioi (0 : ℝ)) (f := fun x : ℝ => x ^ 2) (f' := fun x : ℝ => 2 * x)
+    (s := Ioi (0 : ℝ)) (f := fun x : ℝ => x ^ (2 : ℕ)) (f' := fun x : ℝ => 2 * x)
     measurableSet_Ioi
     (fun x _ => by
-      have h : HasDerivAt (fun x : ℝ => x ^ 2) (2 * x ^ 1) x := by
+      have h : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ)) (2 * x ^ (1 : ℕ)) x := by
         simpa using (hasDerivAt_pow 2 x)
       simpa using h.hasDerivWithinAt)
     injOn_sq_Ioi_zero g
@@ -57,11 +57,11 @@ theorem integral_Ioi_comp_sq (g : ℝ → ℝ) :
 
 /-- The half-line form of the substitution with the square-root density. -/
 theorem integral_Ioi_sq_density (Φ : ℝ → ℝ) :
-    (∫ u in Ioi (0 : ℝ), Φ u / (2 * Real.sqrt u)) = ∫ x in Ioi (0 : ℝ), Φ (x ^ 2) := by
+    (∫ u in Ioi (0 : ℝ), Φ u / (2 * Real.sqrt u)) = ∫ x in Ioi (0 : ℝ), Φ (x ^ (2 : ℕ)) := by
   rw [integral_Ioi_comp_sq (fun u => Φ u / (2 * Real.sqrt u))]
   refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
   have hx0 : (0 : ℝ) < x := hx
-  have hsqrt : Real.sqrt (x ^ 2) = x := by
+  have hsqrt : Real.sqrt (x ^ (2 : ℕ)) = x := by
     rw [Real.sqrt_sq hx0.le]
   rw [hsqrt]
   field_simp
@@ -71,12 +71,12 @@ theorem integral_Ioi_sq_density (Φ : ℝ → ℝ) :
 /-- **The squared-variable substitution on the line.**  An even state integrates against the
 square-root density of the half-line. -/
 theorem integral_comp_sq_eq_integral_Ioi (Φ : ℝ → ℝ) :
-    (∫ x : ℝ, Φ (x ^ 2)) = ∫ u in Ioi (0 : ℝ), Φ u / Real.sqrt u := by
-  have habs : (∫ x : ℝ, Φ (x ^ 2)) = ∫ x : ℝ, (fun y : ℝ => Φ (y ^ 2)) |x| := by
+    (∫ x : ℝ, Φ (x ^ (2 : ℕ))) = ∫ u in Ioi (0 : ℝ), Φ u / Real.sqrt u := by
+  have habs : (∫ x : ℝ, Φ (x ^ (2 : ℕ))) = ∫ x : ℝ, (fun y : ℝ => Φ (y ^ (2 : ℕ))) |x| := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show Φ (x ^ 2) = Φ (|x| ^ 2)
+    show Φ (x ^ (2 : ℕ)) = Φ (|x| ^ (2 : ℕ))
     rw [sq_abs]
-  have hcomp := integral_comp_abs (f := fun y : ℝ => Φ (y ^ 2))
+  have hcomp := integral_comp_abs (f := fun y : ℝ => Φ (y ^ (2 : ℕ)))
   rw [habs, hcomp, ← integral_Ioi_sq_density, ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
   have hu0 : (0 : ℝ) < u := hu

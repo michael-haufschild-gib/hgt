@@ -18,7 +18,7 @@ After dilation by squared mass `v`, its Xi reciprocal-moment functional is the r
 completed-Abel current.  Every polynomial moment has a right limit at `v = 0`; only its constant
 coefficient survives.  The current therefore has the strictly positive central trace
 
-`2 * (n+1)^2 * normalizedPrimeArchMoment 0`.
+`2 * (n+1)^(2 : ℕ) * normalizedPrimeArchMoment 0`.
 
 Continuity then turns every nonpositive interior current value into an actual positive-mass zero.
 Consequently, excluding zeros of this one explicit current for every mode on `0 < v <= 1/4`
@@ -110,7 +110,7 @@ theorem liEvenCrossUnitFluxQuotient_eq_oddChebyshev (n : ℕ) :
   ring
 
 theorem eval_liEvenCrossUnitFluxQuotient_zero (n : ℕ) :
-    (liEvenCrossUnitFluxQuotient n).eval 0 = 2 * ((n : ℝ) + 1) ^ 2 := by
+    (liEvenCrossUnitFluxQuotient n).eval 0 = 2 * ((n : ℝ) + 1) ^ (2 : ℕ) := by
   rw [liEvenCrossUnitFluxQuotient_eq_oddChebyshev]
   simp [liEvenCrossUnitAffine, Polynomial.Chebyshev.U_eval_neg_one]
   ring
@@ -171,13 +171,13 @@ theorem tendsto_xiShiftedPolynomialMoment_zero (P : Polynomial ℝ) :
 theorem tendsto_liEvenCrossSquareMassAdjacentCurrent_zero (n : ℕ) :
     Tendsto (fun v : ℝ => liEvenCrossSquareMassAdjacentCurrent v n)
       (𝓝[≥] (0 : ℝ))
-      (𝓝 (2 * ((n : ℝ) + 1) ^ 2 * normalizedPrimeArchMoment 0)) := by
+      (𝓝 (2 * ((n : ℝ) + 1) ^ (2 : ℕ) * normalizedPrimeArchMoment 0)) := by
   have h := tendsto_xiShiftedPolynomialMoment_zero (liEvenCrossUnitFluxQuotient n)
   rw [eval_liEvenCrossUnitFluxQuotient_zero] at h
   exact h
 
 theorem liEvenCrossSquareMassAdjacentCurrent_limit_pos (n : ℕ) :
-    0 < 2 * ((n : ℝ) + 1) ^ 2 * normalizedPrimeArchMoment 0 := by
+    0 < 2 * ((n : ℝ) + 1) ^ (2 : ℕ) * normalizedPrimeArchMoment 0 := by
   exact mul_pos (mul_pos (by norm_num) (sq_pos_of_pos (by positivity)))
     normalizedPrimeArchMoment_zero_pos
 
@@ -188,7 +188,7 @@ theorem eventually_liEvenCrossSquareMassAdjacentCurrent_pos (n : ℕ) :
 
 theorem liEvenCrossSquareMassAdjacentCurrent_zero (n : ℕ) :
     liEvenCrossSquareMassAdjacentCurrent 0 n =
-      2 * ((n : ℝ) + 1) ^ 2 * normalizedPrimeArchMoment 0 := by
+      2 * ((n : ℝ) + 1) ^ (2 : ℕ) * normalizedPrimeArchMoment 0 := by
   have hpoly :
       (liEvenCrossUnitFluxQuotient n).comp (Polynomial.C (0 : ℝ) * X) =
         Polynomial.C ((liEvenCrossUnitFluxQuotient n).eval 0) := by

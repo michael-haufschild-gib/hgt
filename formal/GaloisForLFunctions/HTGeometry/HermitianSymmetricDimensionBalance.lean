@@ -23,7 +23,7 @@ namespace GaloisForLFunctions.HTGeometry
 namespace HermitianSymmetricDimension
 
 /-- Isotropy dimension of `AIII`: `dim s(u(p) ⊕ u(q)) = p² + q² − 1`. -/
-def aiiiIsotropy (p q : ℕ) : ℕ := p ^ 2 + q ^ 2 - 1
+def aiiiIsotropy (p q : ℕ) : ℕ := p ^ (2 : ℕ) + q ^ (2 : ℕ) - 1
 
 /-- Tangent dimension of `AIII`: `dim M_{p,q}(ℂ) = 2pq`. -/
 def aiiiTangent (p q : ℕ) : ℕ := 2 * p * q
@@ -35,13 +35,13 @@ def bdiIsotropy (n : ℕ) : ℕ := n * (n - 1) / 2 + 1
 def bdiTangent (n : ℕ) : ℕ := 2 * n
 
 /-- Isotropy dimension of `CI`: `dim u(n) = n²`. -/
-def ciIsotropy (n : ℕ) : ℕ := n ^ 2
+def ciIsotropy (n : ℕ) : ℕ := n ^ (2 : ℕ)
 
 /-- Tangent dimension of `CI`: `dim (Sp(n)/U(n)) = n(n+1)`. -/
 def ciTangent (n : ℕ) : ℕ := n * (n + 1)
 
 /-- Isotropy dimension of `DIII`: `dim u(n) = n²`. -/
-def diiiIsotropy (n : ℕ) : ℕ := n ^ 2
+def diiiIsotropy (n : ℕ) : ℕ := n ^ (2 : ℕ)
 
 /-- Tangent dimension of `DIII`: `dim (SO(2n)/U(n)) = n(n−1)`. -/
 def diiiTangent (n : ℕ) : ℕ := n * (n - 1)
@@ -78,15 +78,15 @@ theorem bdi_not_balanced (n : ℕ) : bdiIsotropy n ≠ bdiTangent n := by
 theorem ci_not_balanced {n : ℕ} (hn : 0 < n) : ciIsotropy n ≠ ciTangent n := by
   intro h
   unfold ciIsotropy ciTangent at h
-  have : n ^ 2 + n = n * (n + 1) := by ring
+  have : n ^ (2 : ℕ) + n = n * (n + 1) := by ring
   omega
 
 /-- **`DIII` is never balanced in positive rank.** -/
 theorem diii_not_balanced {n : ℕ} (hn : 0 < n) : diiiIsotropy n ≠ diiiTangent n := by
   intro h
   unfold diiiIsotropy diiiTangent at h
-  have hlt : n * (n - 1) < n ^ 2 := by
-    have : n * (n - 1) + n = n ^ 2 := by
+  have hlt : n * (n - 1) < n ^ (2 : ℕ) := by
+    have : n * (n - 1) + n = n ^ (2 : ℕ) := by
       obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
       simp only [Nat.add_sub_cancel]
       ring
@@ -105,13 +105,13 @@ theorem aiii_balanced_iff (p q : ℕ) (hpq : q < p) :
     aiiiIsotropy p q = aiiiTangent p q ↔ p = q + 1 := by
   obtain ⟨d, hd, rfl⟩ : ∃ d, 1 ≤ d ∧ p = q + d := ⟨p - q, by omega, by omega⟩
   unfold aiiiIsotropy aiiiTangent
-  have hexp : (q + d) ^ 2 + q ^ 2 = 2 * (q + d) * q + d ^ 2 := by ring
-  have hd2 : 1 ≤ d ^ 2 := Nat.one_le_pow _ _ (by omega)
+  have hexp : (q + d) ^ (2 : ℕ) + q ^ (2 : ℕ) = 2 * (q + d) * q + d ^ (2 : ℕ) := by ring
+  have hd2 : 1 ≤ d ^ (2 : ℕ) := Nat.one_le_pow _ _ (by omega)
   rw [hexp]
   set A : ℕ := 2 * (q + d) * q with hA
   constructor
   · intro h
-    have hd1 : d ^ 2 = 1 := by omega
+    have hd1 : d ^ (2 : ℕ) = 1 := by omega
     rw [pow_two] at hd1
     have hdle : d ≤ 1 := by
       by_contra hcon

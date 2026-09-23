@@ -26,18 +26,18 @@ namespace RHTower.Sieve
 open Filter Topology Asymptotics MeasureTheory Set
 
 /-- `1/log²t ≤ 3` on `[2,∞)`. -/
-theorem inv_log_sq_le_three {t : ℝ} (ht : 2 ≤ t) : (Real.log t ^ 2)⁻¹ ≤ 3 := by
+theorem inv_log_sq_le_three {t : ℝ} (ht : 2 ≤ t) : (Real.log t ^ (2 : ℕ))⁻¹ ≤ 3 := by
   have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
   have hmono : Real.log 2 ≤ Real.log t := Real.log_le_log (by norm_num) ht
-  have hge : (1 : ℝ) / 3 ≤ Real.log t ^ 2 := by nlinarith
-  have hpos : (0 : ℝ) < Real.log t ^ 2 := by linarith
-  have hinv : (0 : ℝ) < (Real.log t ^ 2)⁻¹ := inv_pos.mpr hpos
-  have hcancel : (Real.log t ^ 2)⁻¹ * Real.log t ^ 2 = 1 := inv_mul_cancel₀ (ne_of_gt hpos)
-  nlinarith [mul_nonneg hinv.le (show (0 : ℝ) ≤ Real.log t ^ 2 - 1 / 3 by linarith)]
+  have hge : (1 : ℝ) / 3 ≤ Real.log t ^ (2 : ℕ) := by nlinarith
+  have hpos : (0 : ℝ) < Real.log t ^ (2 : ℕ) := by linarith
+  have hinv : (0 : ℝ) < (Real.log t ^ (2 : ℕ))⁻¹ := inv_pos.mpr hpos
+  have hcancel : (Real.log t ^ (2 : ℕ))⁻¹ * Real.log t ^ (2 : ℕ) = 1 := inv_mul_cancel₀ (ne_of_gt hpos)
+  nlinarith [mul_nonneg hinv.le (show (0 : ℝ) ≤ Real.log t ^ (2 : ℕ) - 1 / 3 by linarith)]
 
 /-- The weight `1/log²t` is continuous on `[2,x]`. -/
 theorem continuousOn_inv_log_sq {x : ℝ} :
-    ContinuousOn (fun t : ℝ => (Real.log t ^ 2)⁻¹) (Set.Icc 2 x) := by
+    ContinuousOn (fun t : ℝ => (Real.log t ^ (2 : ℕ))⁻¹) (Set.Icc 2 x) := by
   refine ContinuousOn.inv₀ (ContinuousOn.pow (Real.continuousOn_log.mono ?_) 2) ?_
   · intro t ht
     have : (2 : ℝ) ≤ t := ht.1
@@ -45,7 +45,7 @@ theorem continuousOn_inv_log_sq {x : ℝ} :
     linarith
   · intro t ht
     have h2 : (2 : ℝ) ≤ t := ht.1
-    have hpos : (0 : ℝ) < Real.log t ^ 2 := by
+    have hpos : (0 : ℝ) < Real.log t ^ (2 : ℕ) := by
       have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
       have hmono : Real.log 2 ≤ Real.log t := Real.log_le_log (by norm_num) h2
       nlinarith
@@ -78,16 +78,16 @@ theorem primeCounting_sub_logIntegral_isBigO :
     exact le_of_mul_le_mul_left hstep ht0
   -- the integrand of the error integral
   have hFint : ∀ y : ℝ, 2 ≤ y →
-      IntegrableOn (fun t : ℝ => f t * (Real.log t ^ 2)⁻¹) (Set.Icc 2 y) :=
+      IntegrableOn (fun t : ℝ => f t * (Real.log t ^ (2 : ℕ))⁻¹) (Set.Icc 2 y) :=
     fun y hy => (f_int y hy).mul_continuousOn continuousOn_inv_log_sq isCompact_Icc
   have hFbd : ∀ᶠ t : ℝ in atTop,
-      |f t * (Real.log t ^ 2)⁻¹| ≤ (3 * |K|) * Real.exp (-c * Real.sqrt (Real.log t)) := by
+      |f t * (Real.log t ^ (2 : ℕ))⁻¹| ≤ (3 * |K|) * Real.exp (-c * Real.sqrt (Real.log t)) := by
     filter_upwards [hfbd, eventually_ge_atTop (2 : ℝ)] with t ht ht2
-    have hpos : (0 : ℝ) < Real.log t ^ 2 := by
+    have hpos : (0 : ℝ) < Real.log t ^ (2 : ℕ) := by
       have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
       have hmono : Real.log 2 ≤ Real.log t := Real.log_le_log (by norm_num) ht2
       nlinarith
-    have hinv : (0 : ℝ) < (Real.log t ^ 2)⁻¹ := inv_pos.mpr hpos
+    have hinv : (0 : ℝ) < (Real.log t ^ (2 : ℕ))⁻¹ := inv_pos.mpr hpos
     rw [abs_mul, abs_of_pos hinv]
     have h3 := inv_log_sq_le_three ht2
     have hE : (0 : ℝ) < Real.exp (-c * Real.sqrt (Real.log t)) := Real.exp_pos _
@@ -98,14 +98,14 @@ theorem primeCounting_sub_logIntegral_isBigO :
   have key : ∀ᶠ x : ℝ in atTop,
       (Nat.primeCounting ⌊x⌋₊ : ℝ) - ∫ t in Set.Icc 2 x, (Real.log t)⁻¹
         = (Real.log 2)⁻¹ * 2 + (Real.log x)⁻¹ * (x * f x)
-          + ∫ t in Set.Icc 2 x, f t * (Real.log t ^ 2)⁻¹ := by
+          + ∫ t in Set.Icc 2 x, f t * (Real.log t ^ (2 : ℕ))⁻¹ := by
     filter_upwards [eventually_ge_atTop (2 : ℝ)] with x hx
     have hx0 : (0 : ℝ) < x := by linarith
-    have hI1 : IntegrableOn (fun t : ℝ => (Real.log t ^ 2)⁻¹) (Set.Icc 2 x) :=
+    have hI1 : IntegrableOn (fun t : ℝ => (Real.log t ^ (2 : ℕ))⁻¹) (Set.Icc 2 x) :=
       continuousOn_inv_log_sq.integrableOn_Icc
-    have hsplit : ∫ t in Set.Icc 2 x, Chebyshev.theta t * (t * Real.log t ^ 2)⁻¹
-        = (∫ t in Set.Icc 2 x, (Real.log t ^ 2)⁻¹)
-          + ∫ t in Set.Icc 2 x, f t * (Real.log t ^ 2)⁻¹ := by
+    have hsplit : ∫ t in Set.Icc 2 x, Chebyshev.theta t * (t * Real.log t ^ (2 : ℕ))⁻¹
+        = (∫ t in Set.Icc 2 x, (Real.log t ^ (2 : ℕ))⁻¹)
+          + ∫ t in Set.Icc 2 x, f t * (Real.log t ^ (2 : ℕ))⁻¹ := by
       rw [← MeasureTheory.integral_add hI1 (hFint x hx)]
       refine setIntegral_congr_fun measurableSet_Icc fun t ht => ?_
       have ht2 : (2 : ℝ) ≤ t := ht.1
@@ -169,9 +169,9 @@ theorem primeCounting_sub_logIntegral_isBigO :
       _ ≤ |K| * (x * E) := hstep
   rw [hgn, Real.norm_eq_abs, hkey]
   have htri1 := abs_add_le ((Real.log 2)⁻¹ * 2 + (Real.log x)⁻¹ * (x * f x))
-    (∫ t in Set.Icc 2 x, f t * (Real.log t ^ 2)⁻¹)
+    (∫ t in Set.Icc 2 x, f t * (Real.log t ^ (2 : ℕ))⁻¹)
   have htri2 := abs_add_le ((Real.log 2)⁻¹ * 2) ((Real.log x)⁻¹ * (x * f x))
-  have hCle : |∫ t in Set.Icc 2 x, f t * (Real.log t ^ 2)⁻¹| ≤ C * (x * E) := hCx
+  have hCle : |∫ t in Set.Icc 2 x, f t * (Real.log t ^ (2 : ℕ))⁻¹| ≤ C * (x * E) := hCx
   have hexpand : (3 + |K| + C) * (x * E) = 3 * (x * E) + |K| * (x * E) + C * (x * E) := by ring
   linarith [htri1, htri2, hconst, hmain, hCle, hexpand]
 

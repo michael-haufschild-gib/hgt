@@ -13,7 +13,7 @@ connection. Consequently the projective scattering field is differentially algeb
 traceless delay field and the two finite families have equal differential-matroid rank.
 
 The nonredundant projective delay panel deletes one diagonal reporter. On the trace-zero sector its
-remaining `(n+1)^2-1` reporters generate exactly the full traceless matrix-entry field.
+remaining `(n+1)^(2 : ℕ)-1` reporters generate exactly the full traceless matrix-entry field.
 -/
 
 open scoped Differential Matrix BigOperators

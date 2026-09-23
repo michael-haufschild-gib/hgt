@@ -50,7 +50,7 @@ theorem finiteSuperzetaResolventValue_eq_fredholmDet1_logDeriv
   rw [hres, HilbertSchmidt.hsTraceDiag, htr] at hlog
   rw [hlog]
   have hterm : ∀ i : Fin n,
-      (1 - z * r i)⁻¹ = 1 + z * (r i + z * r i ^ 2 / (1 - z * r i)) := by
+      (1 - z * r i)⁻¹ = 1 + z * (r i + z * r i ^ (2 : ℕ) / (1 - z * r i)) := by
     intro i
     have hden : 1 - z * r i ≠ 0 := by
       intro h

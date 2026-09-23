@@ -27,13 +27,13 @@ theorem egbFixedChargeACriticalSlowFast_orthogonal (n : ℕ) :
     (egbFixedChargeACriticalSlowProfile n) (egbFixedChargeACriticalFastProfile n)
   rw [egbFixedChargeACriticalFastProfile_evolution, egbFixedChargeACriticalSlowProfile_evolution] at h
   have hl : (∑ i, egbFixedChargeACriticalSlowProfile n i *
-      ((1 / 6 : ℝ) ^ 1 * egbFixedChargeACriticalFastProfile n i)) =
+      ((1 / 6 : ℝ) ^ (1 : ℕ) * egbFixedChargeACriticalFastProfile n i)) =
       (1 / 6 : ℝ) * ∑ i, egbFixedChargeACriticalSlowProfile n i * egbFixedChargeACriticalFastProfile n i := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
     ring
-  have hr : (∑ i, ((2 / 3 : ℝ) ^ 1 * egbFixedChargeACriticalSlowProfile n i) *
+  have hr : (∑ i, ((2 / 3 : ℝ) ^ (1 : ℕ) * egbFixedChargeACriticalSlowProfile n i) *
       egbFixedChargeACriticalFastProfile n i) =
       (2 / 3 : ℝ) * ∑ i, egbFixedChargeACriticalSlowProfile n i * egbFixedChargeACriticalFastProfile n i := by
     rw [Finset.mul_sum]
@@ -45,13 +45,13 @@ theorem egbFixedChargeACriticalSlowFast_orthogonal (n : ℕ) :
 
 /-- The two real harmonics have an exact Pythagorean energy law for every real linear combination. -/
 theorem egbFixedChargeACriticalSlowFast_square_sum (n : ℕ) (a b : ℝ) :
-    (∑ i, (a * egbFixedChargeACriticalSlowProfile n i + b * egbFixedChargeACriticalFastProfile n i) ^ 2) =
-      a ^ 2 * egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalSlowProfile n) +
-      b ^ 2 * egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalFastProfile n) := by
+    (∑ i, (a * egbFixedChargeACriticalSlowProfile n i + b * egbFixedChargeACriticalFastProfile n i) ^ (2 : ℕ)) =
+      a ^ (2 : ℕ) * egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalSlowProfile n) +
+      b ^ (2 : ℕ) * egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalFastProfile n) := by
   have hp (i : Fin (2 ^ (n + 3))) :
-      (a * egbFixedChargeACriticalSlowProfile n i + b * egbFixedChargeACriticalFastProfile n i) ^ 2 =
-        a ^ 2 * egbFixedChargeACriticalSlowProfile n i ^ 2 +
-        b ^ 2 * egbFixedChargeACriticalFastProfile n i ^ 2 +
+      (a * egbFixedChargeACriticalSlowProfile n i + b * egbFixedChargeACriticalFastProfile n i) ^ (2 : ℕ) =
+        a ^ (2 : ℕ) * egbFixedChargeACriticalSlowProfile n i ^ (2 : ℕ) +
+        b ^ (2 : ℕ) * egbFixedChargeACriticalFastProfile n i ^ (2 : ℕ) +
         (2 * a * b) * (egbFixedChargeACriticalSlowProfile n i * egbFixedChargeACriticalFastProfile n i) := by ring
   simp only [hp, Finset.sum_add_distrib, ← Finset.mul_sum,
     egbFixedChargeACriticalSlowFast_orthogonal, mul_zero, add_zero,

@@ -26,8 +26,8 @@ theorem skewPlateauMuNumerator_reflect (s μ : ℂ) :
   ring
 
 theorem skewPlateauMu_denominator_reflect (s μ : ℂ) :
-    128 * (2 - μ) ^ 2 * (μ - (2 * (-3 - s) + 1) * (2 * (-3 - s) + 2)) * (μ - (2 * (-3 - s) + 4) * (2 * (-3 - s) + 5)) =
-      128 * (2 - μ) ^ 2 * (μ - (2 * s + 1) * (2 * s + 2)) * (μ - (2 * s + 4) * (2 * s + 5)) := by
+    128 * (2 - μ) ^ (2 : ℕ) * (μ - (2 * (-3 - s) + 1) * (2 * (-3 - s) + 2)) * (μ - (2 * (-3 - s) + 4) * (2 * (-3 - s) + 5)) =
+      128 * (2 - μ) ^ (2 : ℕ) * (μ - (2 * s + 1) * (2 * s + 2)) * (μ - (2 * s + 4) * (2 * s + 5)) := by
   ring
 
 /-- The plateau kernel is odd under the rate swap at every harmonic. -/

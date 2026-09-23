@@ -72,7 +72,7 @@ theorem hasDerivAt_woldActivationHolonomy_zero
         (fun h : ℂ => riemannZeta s / riemannZeta (s + h))
         ((0 * riemannZeta (s + 0) -
           riemannZeta s * deriv riemannZeta s) /
-            riemannZeta (s + 0) ^ 2) 0 := by
+            riemannZeta (s + 0) ^ (2 : ℕ)) 0 := by
     exact hnum.div hden (by simpa using hz)
   convert hdiv using 1
   simp only [add_zero, zero_mul, zero_sub, vonMangoldtCurrent]

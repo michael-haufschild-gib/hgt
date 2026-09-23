@@ -41,8 +41,8 @@ theorem hermitianRe_real_smul (t : ℝ) (u v : W) :
 /-- The quadratic expansion of the real part along a real direction. -/
 theorem hermitianRe_expand (t : ℝ) (u v : W) :
     hermitianRe H (u + ((t : ℝ) : ℂ) • v) (u + ((t : ℝ) : ℂ) • v)
-      = hermitianRe H u u + 2 * t * hermitianRe H u v + t ^ 2 * hermitianRe H v v := by
-  have hsq : hermitianRe H (((t : ℝ) : ℂ) • v) (((t : ℝ) : ℂ) • v) = t ^ 2 * hermitianRe H v v := by
+      = hermitianRe H u u + 2 * t * hermitianRe H u v + t ^ (2 : ℕ) * hermitianRe H v v := by
+  have hsq : hermitianRe H (((t : ℝ) : ℂ) • v) (((t : ℝ) : ℂ) • v) = t ^ (2 : ℕ) * hermitianRe H v v := by
     rw [hermitianRe, hermitianForm_smul_self hH, Complex.norm_real, Real.norm_eq_abs, sq_abs,
       hermitianRe]
   have hsym : hermitianRe H (((t : ℝ) : ℂ) • v) u = hermitianRe H u (((t : ℝ) : ℂ) • v) :=

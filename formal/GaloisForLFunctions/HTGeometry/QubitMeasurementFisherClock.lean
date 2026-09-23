@@ -15,7 +15,7 @@ namespace HTGeometry
 
 /-- Born probabilities in a real orthonormal measurement frame. -/
 def qubitClockBornProbability (angle : ℝ) : Fin 2 → ℝ :=
-  ![Real.cos angle ^ 2, Real.sin angle ^ 2]
+  ![Real.cos angle ^ (2 : ℕ), Real.sin angle ^ (2 : ℕ)]
 
 /-- Derivatives of the Born probabilities at angular velocity `v`. -/
 def qubitClockBornVelocity (angle v : ℝ) : Fin 2 → ℝ :=
@@ -23,7 +23,7 @@ def qubitClockBornVelocity (angle v : ℝ) : Fin 2 → ℝ :=
 
 /-- Classical discrete Fisher value, with Lean's zero-denominator convention at empty outcomes. -/
 def qubitClockClassicalFisher (angle v : ℝ) : ℝ :=
-  ∑ i, qubitClockBornVelocity angle v i ^ 2 / qubitClockBornProbability angle i
+  ∑ i, qubitClockBornVelocity angle v i ^ (2 : ℕ) / qubitClockBornProbability angle i
 
 theorem qubitClockBornProbability_sum (angle : ℝ) :
     ∑ i, qubitClockBornProbability angle i = 1 := by
@@ -53,7 +53,7 @@ theorem qubitClockBorn_hasDerivAt (angle v : ℝ) (i : Fin 2) :
 /-- Exact classification, including the singular measurement frames. -/
 theorem qubitClockClassicalFisher_formula (angle v : ℝ) :
     qubitClockClassicalFisher angle v =
-      if Real.sin angle = 0 ∨ Real.cos angle = 0 then 0 else 4 * v ^ 2 := by
+      if Real.sin angle = 0 ∨ Real.cos angle = 0 then 0 else 4 * v ^ (2 : ℕ) := by
   unfold qubitClockClassicalFisher qubitClockBornVelocity qubitClockBornProbability
   simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
   by_cases hs : Real.sin angle = 0
@@ -63,15 +63,15 @@ theorem qubitClockClassicalFisher_formula (angle v : ℝ) :
   simp only [hs, hc, or_self, ite_false]
   field_simp
   nlinarith [Real.sin_sq_add_cos_sq angle,
-    congrArg (fun z : ℝ => 4 * v ^ 2 * Real.sin angle ^ 2 * Real.cos angle ^ 2 * z)
+    congrArg (fun z : ℝ => 4 * v ^ (2 : ℕ) * Real.sin angle ^ (2 : ℕ) * Real.cos angle ^ (2 : ℕ) * z)
       (Real.sin_sq_add_cos_sq angle)]
 
 /-- Every measurement frame has at most the source's quantum Fisher information. -/
 theorem qubitClockClassicalFisher_le_quantum (stateAngle measurementAngle v : ℝ) :
     qubitClockClassicalFisher (stateAngle - measurementAngle) v ≤
-      pureStateQuantumFisherValue (‖qgtQubitState stateAngle‖ ^ 2)
+      pureStateQuantumFisherValue (‖qgtQubitState stateAngle‖ ^ (2 : ℕ))
         ‖inner ℂ (qgtQubitState stateAngle) (qgtQubitTangent stateAngle v)‖
-        (‖qgtQubitTangent stateAngle v‖ ^ 2) := by
+        (‖qgtQubitTangent stateAngle v‖ ^ (2 : ℕ)) := by
   rw [qgtQubit_fisher, qubitClockClassicalFisher_formula]
   split
   · positivity
@@ -80,9 +80,9 @@ theorem qubitClockClassicalFisher_le_quantum (stateAngle measurementAngle v : �
 /-- A frame offset by `π/4` from the state direction attains quantum Fisher information. -/
 theorem qubitClockClassicalFisher_optimal (stateAngle v : ℝ) :
     qubitClockClassicalFisher (stateAngle - (stateAngle - Real.pi / 4)) v =
-      pureStateQuantumFisherValue (‖qgtQubitState stateAngle‖ ^ 2)
+      pureStateQuantumFisherValue (‖qgtQubitState stateAngle‖ ^ (2 : ℕ))
         ‖inner ℂ (qgtQubitState stateAngle) (qgtQubitTangent stateAngle v)‖
-        (‖qgtQubitTangent stateAngle v‖ ^ 2) := by
+        (‖qgtQubitTangent stateAngle v‖ ^ (2 : ℕ)) := by
   rw [show stateAngle - (stateAngle - Real.pi / 4) = Real.pi / 4 by ring,
     qgtQubit_fisher, qubitClockClassicalFisher_formula,
     Real.sin_pi_div_four, Real.cos_pi_div_four]

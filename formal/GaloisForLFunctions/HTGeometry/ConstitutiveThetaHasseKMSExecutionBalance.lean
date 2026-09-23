@@ -54,28 +54,28 @@ theorem geometricLayerMass_succ_div (n : ℕ) {q : ℝ} (hq0 : 0 < q) (hq1 : q <
 
 /-- Purity of the geometric KMS packet. -/
 theorem tsum_sq_geometricLayerMass {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
-    ∑' n : ℕ, geometricLayerMass q n ^ 2 = (1 - q) / (1 + q) := by
-  have hq2 : q ^ 2 < 1 := by nlinarith
+    ∑' n : ℕ, geometricLayerMass q n ^ (2 : ℕ) = (1 - q) / (1 + q) := by
+  have hq2 : q ^ (2 : ℕ) < 1 := by nlinarith
   calc
-    ∑' n : ℕ, geometricLayerMass q n ^ 2 =
-        ∑' n : ℕ, (1 - q) ^ 2 * (q ^ 2) ^ n := by
+    ∑' n : ℕ, geometricLayerMass q n ^ (2 : ℕ) =
+        ∑' n : ℕ, (1 - q) ^ (2 : ℕ) * (q ^ (2 : ℕ)) ^ n := by
           apply tsum_congr
           intro n
           simp only [geometricLayerMass]
           ring
-    _ = (1 - q) ^ 2 * (1 - q ^ 2)⁻¹ := by
+    _ = (1 - q) ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
       rw [tsum_mul_left, tsum_geometric_of_lt_one (sq_nonneg q) hq2]
     _ = (1 - q) / (1 + q) := by
       have h1 : 1 - q ≠ 0 := by linarith
       have hp : 1 + q ≠ 0 := by linarith
-      have h2 : 1 - q ^ 2 ≠ 0 := by nlinarith
+      have h2 : 1 - q ^ (2 : ℕ) ≠ 0 := by nlinarith
       rw [inv_eq_one_div]
       field_simp [h2]
       ring
 
 /-- Reset-path collision loss equals KMS linear entropy exactly. -/
 theorem geometricExecutionTV_eq_one_sub_purity {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
-    geometricExecutionTV q = 1 - ∑' n : ℕ, geometricLayerMass q n ^ 2 := by
+    geometricExecutionTV q = 1 - ∑' n : ℕ, geometricLayerMass q n ^ (2 : ℕ) := by
   rw [tsum_sq_geometricLayerMass hq0 hq1]
   unfold geometricExecutionTV
   have hp : 1 + q ≠ 0 := by linarith
@@ -153,25 +153,25 @@ theorem strictMonoOn_geometricExecutionTV :
   nlinarith
 
 theorem hasDerivAt_geometricExecutionEntropy {q : ℝ} (hq0 : q ≠ 0) (hq1 : q ≠ 1) :
-    HasDerivAt geometricExecutionEntropy (-Real.log q / (1 - q) ^ 2) q := by
+    HasDerivAt geometricExecutionEntropy (-Real.log q / (1 - q) ^ (2 : ℕ)) q := by
   have hden : 1 - q ≠ 0 := sub_ne_zero.mpr (Ne.symm hq1)
   have hA : HasDerivAt (fun x : ℝ => -Real.log (1 - x)) (1 / (1 - q)) q := by
     have h := (((hasDerivAt_const q 1).sub (hasDerivAt_id q)).log hden).neg
     change HasDerivAt (fun x : ℝ => -Real.log (1 - x)) (-((0 - 1) / (1 - q))) q at h
     convert h using 1
     ring
-  have hB : HasDerivAt (fun x : ℝ => x / (1 - x)) (1 / (1 - q) ^ 2) q := by
+  have hB : HasDerivAt (fun x : ℝ => x / (1 - x)) (1 / (1 - q) ^ (2 : ℕ)) q := by
     have h := (hasDerivAt_id q).div
       ((hasDerivAt_const q 1).sub (hasDerivAt_id q)) hden
     change HasDerivAt (fun x : ℝ => x / (1 - x))
-      ((1 * (1 - q) - q * (0 - 1)) / (1 - q) ^ 2) q at h
+      ((1 * (1 - q) - q * (0 - 1)) / (1 - q) ^ (2 : ℕ)) q at h
     convert h using 1
     ring
   have hC : HasDerivAt (fun x : ℝ => Real.log x) (1 / q) q := by
     simpa using (hasDerivAt_id q).log hq0
   have h := hA.sub (hB.mul hC)
   change HasDerivAt geometricExecutionEntropy
-    (1 / (1 - q) - (1 / (1 - q) ^ 2 * Real.log q + q / (1 - q) * (1 / q))) q at h
+    (1 / (1 - q) - (1 / (1 - q) ^ (2 : ℕ) * Real.log q + q / (1 - q) * (1 / q))) q at h
   convert h using 1
   · field_simp
     ring
@@ -270,7 +270,7 @@ def finiteWeightedMean {ι : Type*} [Fintype ι] (w f : ι → ℝ) : ℝ :=
 
 /-- Variance in a finite weighted source fibre. -/
 def finiteWeightedVariance {ι : Type*} [Fintype ι] (w f : ι → ℝ) : ℝ :=
-  ∑ i, w i * (f i - finiteWeightedMean w f) ^ 2
+  ∑ i, w i * (f i - finiteWeightedMean w f) ^ (2 : ℕ)
 
 /-- Covariance in a finite weighted source fibre. -/
 def finiteWeightedCovariance {ι : Type*} [Fintype ι] (w f g : ι → ℝ) : ℝ :=
@@ -281,7 +281,7 @@ statistic variance.  No probability normalization is needed for this weighted Ca
 form; nonnegative weights are sufficient. -/
 theorem finiteWeightedCovariance_sq_le_variance_mul_variance
     {ι : Type*} [Fintype ι] {w f g : ι → ℝ} (hw : ∀ i, 0 ≤ w i) :
-    finiteWeightedCovariance w f g ^ 2 ≤
+    finiteWeightedCovariance w f g ^ (2 : ℕ) ≤
       finiteWeightedVariance w f * finiteWeightedVariance w g := by
   unfold finiteWeightedCovariance finiteWeightedVariance
   apply Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul Finset.univ

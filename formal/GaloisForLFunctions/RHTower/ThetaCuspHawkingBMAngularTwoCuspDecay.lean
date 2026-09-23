@@ -27,15 +27,15 @@ set_option autoImplicit false
 /-- Expanding cusp disks turn fourth-order test decay into first-order native decay. -/
 theorem periodized_scaled_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 4 < c.im)
     (hs : tsupport g.field ⊆ closedBall c (c.im/4)) (B : ℝ)
-    (hB : ∀ w, ‖g.field w‖ ≤ B/c.im^4) (z : UpperHalfPlane) (hz : z ∈ fd) :
-    ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^2*g.field w) z‖ ≤ 16*B/c.im := by
+    (hB : ∀ w, ‖g.field w‖ ≤ B/c.im^(4 : ℕ)) (z : UpperHalfPlane) (hz : z ∈ fd) :
+    ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^(2 : ℕ)*g.field w) z‖ ≤ 16*B/c.im := by
   classical
   have hY : 0 < c.im := by linarith
   have hB0 : 0 ≤ B := by
     have hb := (norm_nonneg (g.field c)).trans (hB c)
     have he := (le_div_iff₀ (pow_pos hY 4)).mp hb
     simpa only [zero_mul] using he
-  let f : UpperHalfPlane → ℂ := fun w => (w.im:ℂ)^2*g.field w
+  let f : UpperHalfPlane → ℂ := fun w => (w.im:ℂ)^(2 : ℕ)*g.field w
   have hsupport (w : UpperHalfPlane) (hw : g.field w ≠ 0) : ‖(w:ℂ)-c‖ ≤ c.im/4 := by
     simpa only [mem_closedBall,dist_eq_norm] using hs (subset_tsupport g.field hw)
   have hlow (w : UpperHalfPlane) (hw : w.im ≤ 2) : f w = 0 := by
@@ -46,14 +46,14 @@ theorem periodized_scaled_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 4 < c
       have hl := (abs_le.mp hi).1
       linarith
     simp only [f,hg,mul_zero]
-  have hbound (w : UpperHalfPlane) : ‖f w‖ ≤ 4*c.im^2*(B/c.im^4) := by
+  have hbound (w : UpperHalfPlane) : ‖f w‖ ≤ 4*c.im^(2 : ℕ)*(B/c.im^(4 : ℕ)) := by
     by_cases hg : g.field w = 0
     · simp only [f,hg,mul_zero,norm_zero]
       positivity
     · have hi := (Complex.abs_im_le_norm ((w:ℂ)-c)).trans (hsupport w hg)
       simp only [Complex.sub_im,UpperHalfPlane.coe_im] at hi
       have hu := (abs_le.mp hi).2
-      have hsquare : w.im^2 ≤ 4*c.im^2 := by nlinarith [w.im_pos]
+      have hsquare : w.im^(2 : ℕ) ≤ 4*c.im^(2 : ℕ) := by nlinarith [w.im_pos]
       simp only [f,norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_pos w.im_pos]
       exact mul_le_mul hsquare (hB w) (norm_nonneg _) (by positivity)
   let m : ℤ := ⌊c.re⌋
@@ -92,21 +92,21 @@ theorem periodized_scaled_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 4 < c
   rw [periodize_high_cusp f hlow z hz,tsum_eq_sum hfinite]
   calc
     ‖∑ n ∈ s, f (T^n • z)‖ ≤ ∑ n ∈ s, ‖f (T^n • z)‖ := norm_sum_le _ _
-    _ ≤ ∑ _n ∈ s, 4*c.im^2*(B/c.im^4) := Finset.sum_le_sum (fun n _ => hbound (T^n • z))
-    _ = (s.card:ℝ)*(4*c.im^2*(B/c.im^4)) := by simp only [Finset.sum_const,nsmul_eq_mul]
-    _ ≤ (4*c.im)*(4*c.im^2*(B/c.im^4)) := mul_le_mul_of_nonneg_right hcard (by positivity)
+    _ ≤ ∑ _n ∈ s, 4*c.im^(2 : ℕ)*(B/c.im^(4 : ℕ)) := Finset.sum_le_sum (fun n _ => hbound (T^n • z))
+    _ = (s.card:ℝ)*(4*c.im^(2 : ℕ)*(B/c.im^(4 : ℕ))) := by simp only [Finset.sum_const,nsmul_eq_mul]
+    _ ≤ (4*c.im)*(4*c.im^(2 : ℕ)*(B/c.im^(4 : ℕ))) := mul_le_mul_of_nonneg_right hcard (by positivity)
     _ = 16*B/c.im := by field_simp; ring
 
 /-- The original finite-energy correction has a decaying pairing against expanding cusp tests. -/
 theorem response_scaled_test_bound (q : XiZeroCopy) (g : PlanarChartTest) (c : ℂ)
     (hc : 4 < c.im) (hs : tsupport g.field ⊆ closedBall c (c.im/4))
-    (B : ℝ) (hB : ∀ w, ‖g.field w‖ ≤ B/c.im^4) :
+    (B : ℝ) (hB : ∀ w, ‖g.field w‖ ≤ B/c.im^(4 : ℕ)) :
     ‖∫ w : ℂ, g.field w*D4BMAngularTwo.globalResponse q (ofComplex w)‖ ≤
       (16*B/c.im)*responseMass q := by
   rw [response_pairing_unfold]
   have hb := norm_integral_le_of_norm_le ((response_integrable q).norm.const_mul (16*B/c.im))
     (show ∀ᵐ z ∂measure,
-      ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^2*g.field w) z*D4BMAngularTwo.globalResponse q z‖ ≤
+      ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^(2 : ℕ)*g.field w) z*D4BMAngularTwo.globalResponse q z‖ ≤
         (16*B/c.im)*‖D4BMAngularTwo.globalResponse q z‖ from by
       filter_upwards [ae_restrict_mem isClosed_fd.measurableSet] with z hz
       rw [norm_mul]
@@ -132,11 +132,11 @@ private theorem evaluationKernel_support (b : Bool) :
 
 /-- The evaluation density normalized by the area of its cusp-scale disk. -/
 def scaledKernel (b : Bool) (c z : ℂ) : ℂ :=
-  (c.im⁻¹:ℝ)^2 • evaluationKernel b (c.im⁻¹ • (z-c))
+  (c.im⁻¹:ℝ)^(2 : ℕ) • evaluationKernel b (c.im⁻¹ • (z-c))
 
 theorem scaledKernel_smooth (b : Bool) (c : ℂ) : ContDiff ℝ ∞ (scaledKernel b c) :=
   ((evaluationKernel_smooth b).comp
-    ((contDiff_id.sub contDiff_const).const_smul c.im⁻¹)).const_smul ((c.im⁻¹)^2)
+    ((contDiff_id.sub contDiff_const).const_smul c.im⁻¹)).const_smul ((c.im⁻¹)^(2 : ℕ))
 
 /-- The normalized kernel stays in a disk whose height is comparable to its center. -/
 theorem scaledKernel_support (b : Bool) (c : ℂ) (hc : 0 < c.im) :
@@ -146,7 +146,7 @@ theorem scaledKernel_support (b : Bool) (c : ℂ) (hc : 0 < c.im) :
     closure_mono (by
       intro z hz he
       apply hz
-      change (c.im⁻¹:ℝ)^2 • evaluationKernel b (c.im⁻¹ • (z-c)) = 0
+      change (c.im⁻¹:ℝ)^(2 : ℕ) • evaluationKernel b (c.im⁻¹ • (z-c)) = 0
       change evaluationKernel b (c.im⁻¹ • (z-c)) = 0 at he
       rw [he,smul_zero])
   intro z hz
@@ -198,15 +198,15 @@ private theorem kernelPartial_compact (b : Bool) (v : ℂ) : HasCompactSupport (
 
 private theorem scaledTest_partial (b : Bool) (c : ℂ) (hc : 0 < c.im) (v : ℂ) :
     ((scaledTest b c hc).derivative v).field = fun z =>
-      (c.im⁻¹:ℝ)^3 • kernelPartial b v (c.im⁻¹ • (z-c)) := by
+      (c.im⁻¹:ℝ)^(3 : ℕ) • kernelPartial b v (c.im⁻¹ • (z-c)) := by
   funext z
-  change fderiv ℝ (fun w => (c.im⁻¹:ℝ)^2 • evaluationKernel b (c.im⁻¹ • (w-c))) z v = _
+  change fderiv ℝ (fun w => (c.im⁻¹:ℝ)^(2 : ℕ) • evaluationKernel b (c.im⁻¹ • (w-c))) z v = _
   rw [rescaled_derivative _ (evaluationKernel_smooth b)]
   congr 1
 
 private theorem scaledTest_second (b : Bool) (c : ℂ) (hc : 0 < c.im) (v w : ℂ) :
     (((scaledTest b c hc).derivative v).derivative w).field = fun z =>
-      (c.im⁻¹:ℝ)^4 • fderiv ℝ (kernelPartial b v) (c.im⁻¹ • (z-c)) w := by
+      (c.im⁻¹:ℝ)^(4 : ℕ) • fderiv ℝ (kernelPartial b v) (c.im⁻¹ • (z-c)) w := by
   funext z
   change fderiv ℝ ((scaledTest b c hc).derivative v).field z w = _
   rw [scaledTest_partial,rescaled_derivative _ (kernelPartial_smooth b v)]
@@ -229,11 +229,11 @@ theorem exists_second_scaled_bound (b : Bool) (v w : ℂ) : ∃ C : ℝ, 0 ≤ C
   have hs : tsupport ((g.derivative v).derivative w).field ⊆ closedBall c (c.im/4) :=
     (tsupport_fderiv_apply_subset ℝ w).trans
       ((tsupport_fderiv_apply_subset ℝ v).trans (scaledKernel_support b c hY))
-  have hb (z : ℂ) : ‖((g.derivative v).derivative w).field z‖ ≤ B/c.im^4 := by
+  have hb (z : ℂ) : ‖((g.derivative v).derivative w).field z‖ ≤ B/c.im^(4 : ℕ) := by
     rw [show ((g.derivative v).derivative w).field = _ from scaledTest_second b c hY v w]
     simp only [norm_smul,Real.norm_eq_abs,abs_of_nonneg (pow_nonneg (inv_nonneg.mpr hY.le) 4)]
     calc
-      _ ≤ (c.im⁻¹)^4*B := mul_le_mul_of_nonneg_left (hB _) (by positivity)
+      _ ≤ (c.im⁻¹)^(4 : ℕ)*B := mul_le_mul_of_nonneg_left (hB _) (by positivity)
       _ = _ := by rw [inv_pow]; ring
   have ht := response_scaled_test_bound q ((g.derivative v).derivative w) c hc hs B hb
   have he := congrArg norm (mixed_green g (D4BMAngularTwo.globalResponse q ∘ ofComplex)
@@ -251,9 +251,9 @@ private theorem divHeight_support (g : PlanarChartTest) :
 private theorem scaled_divHeight_derivative_bound (g : PlanarChartTest) (c : ℂ) (hc : 0 < c.im)
     (hs : tsupport g.field ⊆ closedBall c (c.im/4)) (v : ℂ)
     (B D : ℝ) (hB : 0 ≤ B) (hD : 0 ≤ D)
-    (hgb : ∀ z, ‖g.field z‖ ≤ B/c.im^2)
-    (hgd : ∀ z, ‖(g.derivative v).field z‖ ≤ D/c.im^3) (z : ℂ) :
-    ‖((g.divHeight 1).derivative v).field z‖ ≤ (2*D+4*B*‖(v.im:ℂ)‖)/c.im^4 := by
+    (hgb : ∀ z, ‖g.field z‖ ≤ B/c.im^(2 : ℕ))
+    (hgd : ∀ z, ‖(g.derivative v).field z‖ ≤ D/c.im^(3 : ℕ)) (z : ℂ) :
+    ‖((g.divHeight 1).derivative v).field z‖ ≤ (2*D+4*B*‖(v.im:ℂ)‖)/c.im^(4 : ℕ) := by
   by_cases hz : z ∈ tsupport g.field
   · have hi := (Complex.abs_im_le_norm (z-c)).trans
       (show ‖z-c‖ ≤ c.im/4 from by simpa only [mem_closedBall,dist_eq_norm] using hs hz)
@@ -267,8 +267,8 @@ private theorem scaled_divHeight_derivative_bound (g : PlanarChartTest) (c : ℂ
     change fderiv ℝ (fun w => g.field w*(w.im:ℂ)⁻¹) z = _ at hd
     have he : ((g.divHeight 1).derivative v).field z =
         (g.derivative v).field z*(z.im:ℂ)⁻¹ +
-          g.field z*(-(z.im:ℂ)⁻¹^2*(v.im:ℂ)) := by
-      change fderiv ℝ (fun w => g.field w/(w.im:ℂ)^1) z v = _
+          g.field z*(-(z.im:ℂ)⁻¹^(2 : ℕ)*(v.im:ℂ)) := by
+      change fderiv ℝ (fun w => g.field w/(w.im:ℂ)^(1 : ℕ)) z v = _
       simp only [pow_one,div_eq_mul_inv]
       rw [hd]
       simp only [add_apply,smul_apply,
@@ -280,13 +280,13 @@ private theorem scaled_divHeight_derivative_bound (g : PlanarChartTest) (c : ℂ
       have hh := div_le_div_of_nonneg_left (by norm_num : (0:ℝ) ≤ 1)
         (by linarith : 0 < c.im/2) hy
       simpa only [one_div,inv_div] using hh
-    have hsq : ‖(z.im:ℂ)⁻¹‖^2 ≤ (2/c.im)^2 := by
+    have hsq : ‖(z.im:ℂ)⁻¹‖^(2 : ℕ) ≤ (2/c.im)^(2 : ℕ) := by
       nlinarith [norm_nonneg ((z.im:ℂ)⁻¹)]
     rw [he]
     calc
       _ ≤ ‖(g.derivative v).field z*(z.im:ℂ)⁻¹‖ +
-          ‖g.field z*(-(z.im:ℂ)⁻¹^2*(v.im:ℂ))‖ := norm_add_le _ _
-      _ ≤ (D/c.im^3)*(2/c.im)+(B/c.im^2)*((2/c.im)^2*‖(v.im:ℂ)‖) := by
+          ‖g.field z*(-(z.im:ℂ)⁻¹^(2 : ℕ)*(v.im:ℂ))‖ := norm_add_le _ _
+      _ ≤ (D/c.im^(3 : ℕ))*(2/c.im)+(B/c.im^(2 : ℕ))*((2/c.im)^(2 : ℕ)*‖(v.im:ℂ)‖) := by
         simp only [norm_mul,norm_neg,norm_pow]
         exact add_le_add
           (mul_le_mul (hgd z) hInv (norm_nonneg _) (by positivity))
@@ -314,11 +314,11 @@ theorem exists_connection_scaled_bound (b : Bool) (v : ℂ) : ∃ C : ℝ, 0 ≤
   let g := scaledTest b c hY
   have hs : tsupport ((g.divHeight 1).derivative v).field ⊆ closedBall c (c.im/4) :=
     (tsupport_fderiv_apply_subset ℝ v).trans ((divHeight_support g).trans (scaledKernel_support b c hY))
-  have hgb (z : ℂ) : ‖g.field z‖ ≤ B/c.im^2 := by
-    change ‖(c.im⁻¹:ℝ)^2 • evaluationKernel b (c.im⁻¹ • (z-c))‖ ≤ _
+  have hgb (z : ℂ) : ‖g.field z‖ ≤ B/c.im^(2 : ℕ) := by
+    change ‖(c.im⁻¹:ℝ)^(2 : ℕ) • evaluationKernel b (c.im⁻¹ • (z-c))‖ ≤ _
     simp only [norm_smul,Real.norm_eq_abs,abs_of_nonneg (sq_nonneg (c.im⁻¹))]
     exact (mul_le_mul_of_nonneg_left (hB _) (sq_nonneg (c.im⁻¹))).trans_eq (by rw [inv_pow]; ring)
-  have hgd (z : ℂ) : ‖(g.derivative v).field z‖ ≤ D/c.im^3 := by
+  have hgd (z : ℂ) : ‖(g.derivative v).field z‖ ≤ D/c.im^(3 : ℕ) := by
     rw [show (g.derivative v).field = _ from scaledTest_partial b c hY v]
     simp only [norm_smul,Real.norm_eq_abs,abs_of_nonneg (pow_nonneg (inv_nonneg.mpr hY.le) 3)]
     exact (mul_le_mul_of_nonneg_left (hD _) (by positivity)).trans_eq (by rw [inv_pow]; ring)
@@ -341,9 +341,9 @@ theorem exists_connection_scaled_bound (b : Bool) (v : ℂ) : ∃ C : ℝ, 0 ≤
 
 private theorem normalized_integral {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : ℂ → E) (c : ℂ) (hc : 0 < c.im) :
-    (∫ z : ℂ, (c.im⁻¹:ℝ)^2 • f (c.im⁻¹ • (z-c))) = ∫ z : ℂ, f z := by
+    (∫ z : ℂ, (c.im⁻¹:ℝ)^(2 : ℕ) • f (c.im⁻¹ • (z-c))) = ∫ z : ℂ, f z := by
   have ht := integral_add_right_eq_self (μ := (volume : Measure ℂ))
-    (fun z : ℂ => (c.im⁻¹:ℝ)^2 • f (c.im⁻¹ • (z-c))) c
+    (fun z : ℂ => (c.im⁻¹:ℝ)^(2 : ℕ) • f (c.im⁻¹ • (z-c))) c
   simp only [add_sub_cancel_right] at ht
   rw [← ht,integral_smul,Measure.integral_comp_inv_smul_of_nonneg volume f hc.le,
     Complex.finrank_real_complex,smul_smul,← mul_pow,inv_mul_cancel₀ hc.ne',one_pow,one_smul]
@@ -351,7 +351,7 @@ private theorem normalized_integral {E : Type*} [NormedAddCommGroup E] [NormedSp
 /-- Expanding the evaluation disk does not change its absolute test mass. -/
 theorem scaledTest_norm_integral (b : Bool) (c : ℂ) (hc : 0 < c.im) :
     (∫ z : ℂ, ‖(scaledTest b c hc).field z‖) = ∫ z : ℂ, ‖evaluationKernel b z‖ := by
-  change (∫ z : ℂ, ‖(c.im⁻¹:ℝ)^2 • evaluationKernel b (c.im⁻¹ • (z-c))‖) = _
+  change (∫ z : ℂ, ‖(c.im⁻¹:ℝ)^(2 : ℕ) • evaluationKernel b (c.im⁻¹ • (z-c))‖) = _
   simp only [norm_smul,Real.norm_eq_abs,abs_of_nonneg (sq_nonneg (c.im⁻¹))]
   exact normalized_integral (fun z => ‖evaluationKernel b z‖) c hc
 
@@ -376,10 +376,10 @@ theorem scaled_evaluation (F : ℂ → ℂ) (c : ℂ) (hc : 0 < c.im)
   have hi := normalized_integral (fun w : ℂ => kernel w*F (c.im • w+c)) c hc
   simp only [hn] at hi
   calc
-    _ = ∫ z : ℂ, (c.im⁻¹:ℝ)^2 • (kernel (c.im⁻¹ • (z-c))*F z) := by
+    _ = ∫ z : ℂ, (c.im⁻¹:ℝ)^(2 : ℕ) • (kernel (c.im⁻¹ • (z-c))*F z) := by
       apply integral_congr_ae
       filter_upwards [] with z
-      change ((c.im⁻¹:ℝ)^2 • kernel (c.im⁻¹ • (z-c)))*F z = _
+      change ((c.im⁻¹:ℝ)^(2 : ℕ) • kernel (c.im⁻¹ • (z-c)))*F z = _
       exact smul_mul_assoc _ _ _
     _ = _ := hi.trans he
 

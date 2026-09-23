@@ -40,15 +40,15 @@ theorem dist_innerKer_ge (v f : H) (hv : v ≠ 0) {g : H} (hg : inner 𝕜 v g =
 theorem dist_innerKer_attained (v f : H) (hv : v ≠ 0) :
     ∃ g : H, inner 𝕜 v g = 0 ∧ ‖f - g‖ = ‖inner 𝕜 v f‖ / ‖v‖ := by
   have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
-  have hv2 : inner 𝕜 v v = ((‖v‖ ^ 2 : ℝ) : 𝕜) := by
+  have hv2 : inner 𝕜 v v = ((‖v‖ ^ (2 : ℕ) : ℝ) : 𝕜) := by
     rw [inner_self_eq_norm_sq_to_K]; push_cast; ring
-  have hvne : ((‖v‖ ^ 2 : ℝ) : 𝕜) ≠ 0 := by
+  have hvne : ((‖v‖ ^ (2 : ℕ) : ℝ) : 𝕜) ≠ 0 := by
     simp only [ne_eq, RCLike.ofReal_eq_zero]
     positivity
-  refine ⟨f - (inner 𝕜 v f / ((‖v‖ ^ 2 : ℝ) : 𝕜)) • v, ?_, ?_⟩
+  refine ⟨f - (inner 𝕜 v f / ((‖v‖ ^ (2 : ℕ) : ℝ) : 𝕜)) • v, ?_, ?_⟩
   · rw [inner_sub_right, inner_smul_right, hv2, div_mul_cancel₀ _ hvne, sub_self]
   · rw [sub_sub_cancel, norm_smul, norm_div, RCLike.norm_ofReal,
-      abs_of_pos (by positivity : (0 : ℝ) < ‖v‖ ^ 2)]
+      abs_of_pos (by positivity : (0 : ℝ) < ‖v‖ ^ (2 : ℕ))]
     rw [div_mul_eq_mul_div, sq]
     rw [mul_comm ‖v‖ ‖v‖, ← div_div, mul_div_assoc, div_self (ne_of_gt hvpos), mul_one]
 

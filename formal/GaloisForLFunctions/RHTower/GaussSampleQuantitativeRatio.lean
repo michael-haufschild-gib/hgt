@@ -169,7 +169,7 @@ theorem exists_gaussSampleRatioDefect_backward_bound
   rw [hheight]
   exact hmain
 
-private theorem nat_le_sq_of_pos {J : ℕ} (hJ : 0 < J) : J ≤ J ^ 2 := by
+private theorem nat_le_sq_of_pos {J : ℕ} (hJ : 0 < J) : J ≤ J ^ (2 : ℕ) := by
   nlinarith
 
 /-- In the parabolic central band `J² ≤ I`, the forward defect is genuinely
@@ -178,9 +178,9 @@ algebraic: the exponential envelope is uniformly bounded and only
 theorem exists_gaussSampleRatioDefect_forward_central_bound
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
     ∃ D : ℝ, 0 < D ∧ ∀ I J : ℕ, 0 < I →
-      2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (I : ℤ) → J ^ 2 ≤ I →
+      2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (I : ℤ) → J ^ (2 : ℕ) ≤ I →
       ‖gaussSampleRatioDefect k p (J : ℤ) (I : ℤ)‖ ≤
-        D * ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) := by
+        D * ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
   obtain ⟨C, hC, hbound⟩ := exists_gaussSampleRatioDefect_forward_bound hm k p
   set q : ℝ := gaussPrimeSampleSpacing p with hq
   have hqpos : 0 < q := by rw [hq]; exact gaussPrimeSampleSpacing_pos p
@@ -191,18 +191,18 @@ theorem exists_gaussSampleRatioDefect_forward_central_bound
   intro I J hI ht hJI
   have hIR : 0 < (I : ℝ) := by exact_mod_cast hI
   have hJR : 0 ≤ (J : ℝ) := by positivity
-  have hJ2R : (J : ℝ) ^ 2 ≤ (I : ℝ) := by exact_mod_cast hJI
+  have hJ2R : (J : ℝ) ^ (2 : ℕ) ≤ (I : ℝ) := by exact_mod_cast hJI
   have hJleI : J ≤ I := by
     rcases Nat.eq_zero_or_pos J with rfl | hJ
     · exact Nat.zero_le _
     · exact le_trans (nat_le_sq_of_pos hJ) hJI
   have hJleIR : (J : ℝ) ≤ (I : ℝ) := by exact_mod_cast hJleI
-  set X : ℝ := ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) with hX
+  set X : ℝ := ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) with hX
   have hX0 : 0 ≤ X := by rw [hX]; positivity
   have hX2 : X ≤ 2 := by
     rw [hX, div_le_iff₀ hIR]
     nlinarith
-  set B : ℝ := (C * (J : ℝ) + q * (J : ℝ) ^ 2) / (I : ℝ) with hB
+  set B : ℝ := (C * (J : ℝ) + q * (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) with hB
   have hB0 : 0 ≤ B := by rw [hB]; positivity
   have hBX : B ≤ A * X := by
     rw [hB, hX, ← mul_div_assoc, div_le_div_iff₀ hIR hIR]
@@ -226,7 +226,7 @@ theorem exists_gaussSampleRatioDefect_forward_central_bound
     _ ≤ (A * X) * Real.exp (2 * A) :=
       mul_le_mul hBX (Real.exp_le_exp.mpr hB2A) (Real.exp_pos _).le
         (mul_nonneg hApos.le hX0)
-    _ = D * ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) := by
+    _ = D * ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
       rw [hD, hX]
       ring
 
@@ -234,9 +234,9 @@ theorem exists_gaussSampleRatioDefect_forward_central_bound
 theorem exists_gaussSampleRatioDefect_backward_central_bound
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
     ∃ D : ℝ, 0 < D ∧ ∀ I J : ℕ, 0 < I →
-      2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (I : ℤ) → J ^ 2 ≤ I →
+      2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (I : ℤ) → J ^ (2 : ℕ) ≤ I →
       ‖gaussSampleRatioDefect k p (-(J : ℤ)) ((I + J : ℕ) : ℤ)‖ ≤
-        D * ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) := by
+        D * ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
   obtain ⟨C, hC, hbound⟩ := exists_gaussSampleRatioDefect_backward_bound hm k p
   set q : ℝ := gaussPrimeSampleSpacing p with hq
   have hqpos : 0 < q := by rw [hq]; exact gaussPrimeSampleSpacing_pos p
@@ -247,18 +247,18 @@ theorem exists_gaussSampleRatioDefect_backward_central_bound
   intro I J hI ht hJI
   have hIR : 0 < (I : ℝ) := by exact_mod_cast hI
   have hJR : 0 ≤ (J : ℝ) := by positivity
-  have hJ2R : (J : ℝ) ^ 2 ≤ (I : ℝ) := by exact_mod_cast hJI
+  have hJ2R : (J : ℝ) ^ (2 : ℕ) ≤ (I : ℝ) := by exact_mod_cast hJI
   have hJleI : J ≤ I := by
     rcases Nat.eq_zero_or_pos J with rfl | hJ
     · exact Nat.zero_le _
     · exact le_trans (nat_le_sq_of_pos hJ) hJI
   have hJleIR : (J : ℝ) ≤ (I : ℝ) := by exact_mod_cast hJleI
-  set X : ℝ := ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) with hX
+  set X : ℝ := ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) with hX
   have hX0 : 0 ≤ X := by rw [hX]; positivity
   have hX2 : X ≤ 2 := by
     rw [hX, div_le_iff₀ hIR]
     nlinarith
-  set B : ℝ := (C * (J : ℝ) + 2 * q * (J : ℝ) ^ 2) / (I : ℝ) with hB
+  set B : ℝ := (C * (J : ℝ) + 2 * q * (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) with hB
   have hB0 : 0 ≤ B := by rw [hB]; positivity
   have hBX : B ≤ A * X := by
     rw [hB, hX, ← mul_div_assoc, div_le_div_iff₀ hIR hIR]
@@ -287,7 +287,7 @@ theorem exists_gaussSampleRatioDefect_backward_central_bound
     _ ≤ (A * X) * Real.exp (2 * A) :=
       mul_le_mul hBX (Real.exp_le_exp.mpr hB2A) (Real.exp_pos _).le
         (mul_nonneg hApos.le hX0)
-    _ = D * ((J : ℝ) + (J : ℝ) ^ 2) / (I : ℝ) := by
+    _ = D * ((J : ℝ) + (J : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
       rw [hD, hX]
       ring
 
@@ -298,9 +298,9 @@ theorem exists_gaussSampleRatioDefect_signed_central_bound
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
     ∃ D : ℝ, 0 < D ∧ ∀ I : ℕ, ∀ j : ℤ, 0 < I →
       2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p ((I / 2 : ℕ) : ℤ) →
-      2 * j.natAbs ^ 2 ≤ I →
+      2 * j.natAbs ^ (2 : ℕ) ≤ I →
       ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ≤
-        D * ((j.natAbs : ℝ) + (j.natAbs : ℝ) ^ 2) / (I : ℝ) := by
+        D * ((j.natAbs : ℝ) + (j.natAbs : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
   obtain ⟨Df, hDf, hforward⟩ :=
     exists_gaussSampleRatioDefect_forward_central_bound hm k p
   obtain ⟨Db, hDb, hbackward⟩ :=
@@ -320,15 +320,15 @@ theorem exists_gaussSampleRatioDefect_signed_central_bound
   · have hjrepr : (a : ℤ) = j := by
       rw [ha]
       exact Int.natAbs_of_nonneg hj
-    have ha2I : a ^ 2 ≤ I := by omega
+    have ha2I : a ^ (2 : ℕ) ≤ I := by omega
     have hheightI : 2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (I : ℤ) :=
       hheight.trans (hheight_mono (Nat.div_le_self I 2))
     have hbase := hforward I a hI hheightI ha2I
     rw [hjrepr] at hbase
     calc
       ‖gaussSampleRatioDefect k p j (I : ℤ)‖
-          ≤ Df * ((a : ℝ) + (a : ℝ) ^ 2) / (I : ℝ) := hbase
-      _ ≤ (Df + 2 * Db) * ((a : ℝ) + (a : ℝ) ^ 2) / (I : ℝ) := by
+          ≤ Df * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (I : ℝ) := hbase
+      _ ≤ (Df + 2 * Db) * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
         gcongr
         linarith
   · have hjneg : j < 0 := lt_of_not_ge hj
@@ -339,12 +339,12 @@ theorem exists_gaussSampleRatioDefect_signed_central_bound
       have h := Int.ofNat_natAbs_of_nonpos hjneg.le
       rw [← ha] at h
       omega
-    have ha_le_sq : a ≤ a ^ 2 := by nlinarith
+    have ha_le_sq : a ≤ a ^ (2 : ℕ) := by nlinarith
     have haI : a ≤ I := by omega
     set L : ℕ := I - a with hL
     have hLI : L + a = I := by
       rw [hL, Nat.sub_add_cancel haI]
-    have ha2L : a ^ 2 ≤ L := by omega
+    have ha2L : a ^ (2 : ℕ) ≤ L := by omega
     have hLpos : 0 < L := by omega
     have hhalfL : I / 2 ≤ L := by omega
     have hheightL : 2 * (m : ℝ) ≤ gaussPrimeSampleHeightInt p (L : ℤ) :=
@@ -354,17 +354,17 @@ theorem exists_gaussSampleRatioDefect_signed_central_bound
     have hIL : I ≤ 2 * L := by omega
     have hLR : 0 < (L : ℝ) := by exact_mod_cast hLpos
     have hscale :
-        Db * ((a : ℝ) + (a : ℝ) ^ 2) / (L : ℝ) ≤
-          (2 * Db) * ((a : ℝ) + (a : ℝ) ^ 2) / (I : ℝ) := by
+        Db * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (L : ℝ) ≤
+          (2 * Db) * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
       rw [div_le_div_iff₀ hLR hIR]
       have hILR : (I : ℝ) ≤ 2 * (L : ℝ) := by exact_mod_cast hIL
       nlinarith [mul_nonneg hDb.le
         (add_nonneg (Nat.cast_nonneg a) (sq_nonneg (a : ℝ)))]
     calc
       ‖gaussSampleRatioDefect k p j (I : ℤ)‖
-          ≤ Db * ((a : ℝ) + (a : ℝ) ^ 2) / (L : ℝ) := hbase
-      _ ≤ (2 * Db) * ((a : ℝ) + (a : ℝ) ^ 2) / (I : ℝ) := hscale
-      _ ≤ (Df + 2 * Db) * ((a : ℝ) + (a : ℝ) ^ 2) / (I : ℝ) := by
+          ≤ Db * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (L : ℝ) := hbase
+      _ ≤ (2 * Db) * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (I : ℝ) := hscale
+      _ ≤ (Df + 2 * Db) * ((a : ℝ) + (a : ℝ) ^ (2 : ℕ)) / (I : ℝ) := by
         gcongr
         linarith
 

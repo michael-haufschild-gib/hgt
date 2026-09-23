@@ -17,7 +17,7 @@ def covectorBlock (T R : ℂ) (V : Covector) (z : Point) : Matrix (Fin 4) (Fin 4
 
 /-- The covector pullback law supplies every component of the full mixed tensor law. -/
 theorem covectorBlock_modular (A : SL(2,ℤ)) (z : UpperHalfPlane) (V : Covector)
-    (hV : ∀ v, covectorAction V (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    (hV : ∀ v, covectorAction V (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction V (coordinates z) v) (T R : ℂ) :
     modularTensorPullback A z (covectorBlock T R V (coordinates (A • z))) =
       covectorBlock T R V (coordinates z) := by
@@ -27,7 +27,7 @@ theorem covectorBlock_modular (A : SL(2,ℤ)) (z : UpperHalfPlane) (V : Covector
     Complex.ofReal_one,Complex.ofReal_zero,one_mul,zero_mul,add_zero,zero_add,
     Complex.mul_I_re,Complex.mul_I_im,Complex.ofReal_neg] at h0 h1
   simp only [modularTensorPullback,modularJacobian]
-  generalize 1/(denom A z)^2 = c at h0 h1 ⊢
+  generalize 1/(denom A z)^(2 : ℕ) = c at h0 h1 ⊢
   simp only [sl_moeb] at h0 h1
   ext i j
   fin_cases i <;> fin_cases j
@@ -53,7 +53,7 @@ theorem modularTensorPullback_add (A : SL(2,ℤ)) (z : UpperHalfPlane)
 
 /-- The actual radial stream metric has the original modular tensor transformation law. -/
 theorem streamMetricField_modular (A : SL(2,ℤ)) (z : UpperHalfPlane) (V : Covector)
-    (hV : ∀ v, covectorAction V (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    (hV : ∀ v, covectorAction V (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction V (coordinates z) v) (w a : ℂ) (square : Bool) (t r : ℝ) :
     modularTensorPullback A z (streamMetricField w a square V (spacetimePoint t r (A • z))) =
       streamMetricField w a square V (spacetimePoint t r z) := by
@@ -76,10 +76,10 @@ theorem forcedMetricField_modular (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 
 private theorem source_blocks (q : XiZeroCopy) (branch : Bool) (r B : ℂ) (z : Point) :
     literalMixedSource q branch r B z =
-      covectorBlock (B^2*D4BMQuadraticMixedSource.timeSquare (physicalRate q branch) r)
-        (B^2*D4BMQuadraticMixedSource.radialSquare (physicalRate q branch) r) (fullSquareCovector q) z+
-      covectorBlock (B^2*D4BMQuadraticMixedSource.timeGradient (physicalRate q branch) r)
-        (B^2*D4BMQuadraticMixedSource.radialGradient (physicalRate q branch) r) (fullGradientCovector q branch) z := by
+      covectorBlock (B^(2 : ℕ)*D4BMQuadraticMixedSource.timeSquare (physicalRate q branch) r)
+        (B^(2 : ℕ)*D4BMQuadraticMixedSource.radialSquare (physicalRate q branch) r) (fullSquareCovector q) z+
+      covectorBlock (B^(2 : ℕ)*D4BMQuadraticMixedSource.timeGradient (physicalRate q branch) r)
+        (B^(2 : ℕ)*D4BMQuadraticMixedSource.radialGradient (physicalRate q branch) r) (fullGradientCovector q branch) z := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [literalMixedSource,covectorBlock] <;> ring
 

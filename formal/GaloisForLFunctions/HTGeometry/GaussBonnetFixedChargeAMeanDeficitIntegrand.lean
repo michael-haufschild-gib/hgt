@@ -16,7 +16,7 @@ def egbFixedChargeAMeanDeficitIntegrand (w φ τ u : ℝ) : ℝ :=
   egbFixedChargeAMeanRadius w φ τ * egbFixedChargeAMiddleQuadraticShift τ φ * egbFixedChargeAMeanDeficitForce τ φ u
 
 def egbFixedChargeAMeanDeficitCoefficient (w φ : ℝ) : ℝ :=
-  egbFixedChargeACriticalRadius w φ * (5 - 14 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+  egbFixedChargeACriticalRadius w φ * (5 - 14 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
     (2400 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ))
 
 def egbFixedChargeAMeanDeficitLimitIntegrand (w φ u : ℝ) : ℝ := 2 * egbFixedChargeAMeanDeficitCoefficient w φ * (1 - u)
@@ -41,7 +41,7 @@ theorem egbFixedChargeAMeanDeficitCoefficient_force_product (w φ : ℝ) :
 
 theorem egbFixedChargeAMeanDeficitCoefficient_barrier_product (w φ : ℝ) :
     egbFixedChargeAMeanDeficitCoefficient w φ =
-      2 * egbFixedChargeAGibbsBarrierCoefficient w φ * egbFixedChargeAMiddleMeanCorrection φ ^ 2 := by
+      2 * egbFixedChargeAGibbsBarrierCoefficient w φ * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ) := by
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hb6 := egbFixedChargeACriticalCouplingWeight_lt_sixth φ
   have h2 : 0 < 1 - 2 * egbFixedChargeACriticalCouplingWeight φ := by linarith
@@ -50,7 +50,7 @@ theorem egbFixedChargeAMeanDeficitCoefficient_barrier_product (w φ : ℝ) :
 
 theorem egbFixedChargeAMeanDeficitCoefficient_barrier_ratio (w φ : ℝ) :
     egbFixedChargeAMeanDeficitCoefficient w φ / egbFixedChargeAGibbsBarrierCoefficient w φ =
-      2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2 := by
+      2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ) := by
   have hB := egbFixedChargeAGibbsBarrierCoefficient_pos w φ
   rw [egbFixedChargeAMeanDeficitCoefficient_barrier_product]
   field_simp

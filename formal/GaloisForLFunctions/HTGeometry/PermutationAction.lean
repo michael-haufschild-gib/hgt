@@ -154,7 +154,7 @@ theorem rename_vandermonde_of_mem_alternating (K : Type u) [CommRing K] {n : ℕ
 
 /-- **Its square is symmetric.** -/
 theorem isSymmetric_vandermonde_sq (K : Type u) [CommRing K] (n : ℕ) :
-    ((vandermonde K n) ^ 2).IsSymmetric := by
+    ((vandermonde K n) ^ (2 : ℕ)).IsSymmetric := by
   intro e
   rw [map_pow, rename_vandermonde, mul_pow, ← Int.cast_pow]
   rcases Int.units_eq_one_or (Equiv.Perm.sign e) with h | h <;> rw [h] <;> simp

@@ -18,21 +18,21 @@ noncomputable section
 
 /-- The source-selected absolute cubic endpoint budget. -/
 def xiThermalCubicEndpointBudget : ℝ :=
-  (86 / 85 : ℝ) ^ 3 * xiEndpointCompletedCurvature ^ 3 / 16
+  (86 / 85 : ℝ) ^ (3 : ℕ) * xiEndpointCompletedCurvature ^ (3 : ℕ) / 16
 
 /-- The exact source-dependent cubic endpoint budget. -/
 def xiThermalExactCubicEndpointBudget : ℝ :=
   4 * (xiEndpointCompletedCurvature /
-    (4 - xiEndpointCompletedCurvature)) ^ 3
+    (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ)
 
 
 /-- **Exact atomwise cubic endpoint-charge law.**  Keeping the source curvature in the quartet
 height floor replaces the rational factor `86 / 85` by the strictly sharper factor
 `4 / (4 - C)`. -/
 theorem xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-        xiEndpointCrossCharge q ^ 3 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+        xiEndpointCrossCharge q ^ (3 : ℕ) := by
   have hC0 : 0 < xiEndpointCompletedCurvature :=
     xiEndpointCompletedCurvature_pos
   have hC4 : xiEndpointCompletedCurvature < 4 := by
@@ -46,8 +46,8 @@ theorem xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube (q : XiZeroCop
       simpa only [xiEndpointCrossCharge] using endpoint_cross_term_re_nonneg q
     rw [him, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
     exact mul_nonneg (pow_nonneg (by positivity) 3) (pow_nonneg hw 3)
-  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-    let v : ℝ := (q.1 : ℂ).im ^ 2
+  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+    let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
     have hu0 : 0 ≤ u := by dsimp [u]; positivity
     have hu : u ≤ 1 / 4 := by
       have hstrip := xi_divisor_support_re_mem_open_unit q.1
@@ -57,24 +57,24 @@ theorem xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube (q : XiZeroCop
       simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hon
     have hv0 : 0 < v := by linarith
     have huv0 : 0 < u + v := add_pos_of_nonneg_of_pos hu0 hv0
-    have hcore : 4 * u * v ^ 4 ≤ (u + v) ^ 4 := by
+    have hcore : 4 * u * v ^ (4 : ℕ) ≤ (u + v) ^ (4 : ℕ) := by
       have hcoef : 4 * u ≤ 1 := by linarith
-      have hleft : 4 * u * v ^ 4 ≤ v ^ 4 := by
+      have hleft : 4 * u * v ^ (4 : ℕ) ≤ v ^ (4 : ℕ) := by
         calc
-          4 * u * v ^ 4 ≤ 1 * v ^ 4 :=
+          4 * u * v ^ (4 : ℕ) ≤ 1 * v ^ (4 : ℕ) :=
             mul_le_mul_of_nonneg_right hcoef (pow_nonneg hv0.le 4)
-          _ = v ^ 4 := one_mul _
-      have hright : v ^ 4 ≤ (u + v) ^ 4 := by
+          _ = v ^ (4 : ℕ) := one_mul _
+      have hright : v ^ (4 : ℕ) ≤ (u + v) ^ (4 : ℕ) := by
         exact pow_le_pow_left₀ hv0.le (by linarith) 4
       exact hleft.trans hright
     have heInv :
-        (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := by
+        (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤ 1 / v ^ (3 : ℕ) := by
       rw [xiZeroCopyReciprocalSquare_im_formula]
-      rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-        show (q.1 : ℂ).im ^ 2 = v by rfl, div_pow]
-      rw [show (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 =
+      rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+        show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl, div_pow]
+      rw [show (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) =
           4 * u * v by dsimp [u, v]; ring,
-        show ((u + v) ^ 2) ^ 2 = (u + v) ^ 4 by ring]
+        show ((u + v) ^ (2 : ℕ)) ^ (2 : ℕ) = (u + v) ^ (4 : ℕ) by ring]
       rw [div_le_div_iff₀ (pow_pos huv0 4) (pow_pos hv0 3)]
       ring_nf at hcore ⊢
       exact hcore
@@ -98,21 +98,21 @@ theorem xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube (q : XiZeroCop
       hbase.trans (mul_le_mul_of_nonneg_left hcross (by positivity))
     have hpow := pow_le_pow_left₀ (by positivity : 0 ≤ 1 / v) hInvCharge 3
     calc
-      (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := heInv
-      _ = (1 / v) ^ 3 := by
+      (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤ 1 / v ^ (3 : ℕ) := heInv
+      _ = (1 / v) ^ (3 : ℕ) := by
         simpa only [one_div] using (inv_pow v 3).symm
       _ ≤ ((4 / (4 - xiEndpointCompletedCurvature)) *
-          xiEndpointCrossCharge q) ^ 3 := hpow
-      _ = (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-          xiEndpointCrossCharge q ^ 3 := by rw [mul_pow]
+          xiEndpointCrossCharge q) ^ (3 : ℕ) := hpow
+      _ = (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+          xiEndpointCrossCharge q ^ (3 : ℕ) := by rw [mul_pow]
 
 /-- **Atomwise cubic endpoint-charge law.**  The transverse reciprocal-square energy of every
 Xi copy is controlled by the cube of its endpoint cross charge.  On-line copies vanish.  For an
 off-line copy, the quartet height floor gives `v > 85`; then
-`e ≤ v⁻³ ≤ (86/85)^3 w^3`. -/
+`e ≤ v⁻³ ≤ (86/85)^(3 : ℕ) w^(3 : ℕ)`. -/
 theorem xiThermalOrientationTerm_le_endpointCrossCharge_cube (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (86 / 85 : ℝ) ^ (3 : ℕ) * xiEndpointCrossCharge q ^ (3 : ℕ) := by
   refine (xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube q).trans ?_
   have hC0 : 0 < xiEndpointCompletedCurvature := xiEndpointCompletedCurvature_pos
   have hCsmall := xiEndpointCompletedCurvature_lt_two_over_fortyThree
@@ -147,9 +147,9 @@ theorem tsum_xiEndpointCrossCharge_eq_curvature :
 
 /-- The four-copy cap turns the cubic atomwise law into a summable linear charge majorant. -/
 theorem xiThermalOrientationTerm_le_cubic_curvature_charge (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (86 / 85 : ℝ) ^ 3 *
-        (xiEndpointCompletedCurvature / 4) ^ 2 *
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (86 / 85 : ℝ) ^ (3 : ℕ) *
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
           xiEndpointCrossCharge q := by
   by_cases hon : (q.1 : ℂ).re = 1 / 2
   · have him : (xiZeroCopyReciprocalSquare q).im = 0 := by
@@ -165,43 +165,43 @@ theorem xiThermalOrientationTerm_le_cubic_curvature_charge (q : XiZeroCopy) :
         xiEndpointCompletedCurvature / 4 := by
       have hfour := four_mul_xiEndpointCrossCharge_le_curvature_of_offLine q hon
       linarith
-    have hwSq : xiEndpointCrossCharge q ^ 2 ≤
-        (xiEndpointCompletedCurvature / 4) ^ 2 :=
+    have hwSq : xiEndpointCrossCharge q ^ (2 : ℕ) ≤
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hw0 hwle 2
-    have hwCube : xiEndpointCrossCharge q ^ 3 ≤
-        (xiEndpointCompletedCurvature / 4) ^ 2 *
+    have hwCube : xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
           xiEndpointCrossCharge q := by
       calc
-        xiEndpointCrossCharge q ^ 3 =
-            xiEndpointCrossCharge q ^ 2 * xiEndpointCrossCharge q := by ring
-        _ ≤ (xiEndpointCompletedCurvature / 4) ^ 2 *
+        xiEndpointCrossCharge q ^ (3 : ℕ) =
+            xiEndpointCrossCharge q ^ (2 : ℕ) * xiEndpointCrossCharge q := by ring
+        _ ≤ (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
             xiEndpointCrossCharge q :=
           mul_le_mul_of_nonneg_right hwSq hw0
-    have hscaled : (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 ≤
-        (86 / 85 : ℝ) ^ 3 *
-          ((xiEndpointCompletedCurvature / 4) ^ 2 *
+    have hscaled : (86 / 85 : ℝ) ^ (3 : ℕ) * xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+        (86 / 85 : ℝ) ^ (3 : ℕ) *
+          ((xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
             xiEndpointCrossCharge q) :=
       mul_le_mul_of_nonneg_left hwCube (by positivity)
     apply (xiThermalOrientationTerm_le_endpointCrossCharge_cube q).trans
     calc
-      (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 ≤
-          (86 / 85 : ℝ) ^ 3 *
-            ((xiEndpointCompletedCurvature / 4) ^ 2 *
+      (86 / 85 : ℝ) ^ (3 : ℕ) * xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+          (86 / 85 : ℝ) ^ (3 : ℕ) *
+            ((xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
               xiEndpointCrossCharge q) := hscaled
-      _ = (86 / 85 : ℝ) ^ 3 *
-          (xiEndpointCompletedCurvature / 4) ^ 2 *
+      _ = (86 / 85 : ℝ) ^ (3 : ℕ) *
+          (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
             xiEndpointCrossCharge q := by ring
 
 /-- The exact quartet factor and four-copy charge cap give the sharp source-dependent linear
 majorant used in the global cubic estimate. -/
 theorem xiThermalOrientationTerm_le_exactCubicCurvatureCharge (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-        (xiEndpointCompletedCurvature / 4) ^ 2 *
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
           xiEndpointCrossCharge q := by
   have hC4 : xiEndpointCompletedCurvature < 4 := by
     nlinarith [xiEndpointCompletedCurvature_lt_two_over_fortyThree]
-  have hfactor0 : 0 ≤ (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 :=
+  have hfactor0 : 0 ≤ (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) :=
     pow_nonneg (div_nonneg (by norm_num) (sub_nonneg.mpr hC4.le)) 3
   by_cases hon : (q.1 : ℂ).re = 1 / 2
   · have him : (xiZeroCopyReciprocalSquare q).im = 0 := by
@@ -217,34 +217,34 @@ theorem xiThermalOrientationTerm_le_exactCubicCurvatureCharge (q : XiZeroCopy) :
         xiEndpointCompletedCurvature / 4 := by
       have hfour := four_mul_xiEndpointCrossCharge_le_curvature_of_offLine q hon
       linarith
-    have hwSq : xiEndpointCrossCharge q ^ 2 ≤
-        (xiEndpointCompletedCurvature / 4) ^ 2 :=
+    have hwSq : xiEndpointCrossCharge q ^ (2 : ℕ) ≤
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hw0 hwle 2
-    have hwCube : xiEndpointCrossCharge q ^ 3 ≤
-        (xiEndpointCompletedCurvature / 4) ^ 2 *
+    have hwCube : xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+        (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
           xiEndpointCrossCharge q := by
       calc
-        xiEndpointCrossCharge q ^ 3 =
-            xiEndpointCrossCharge q ^ 2 * xiEndpointCrossCharge q := by ring
-        _ ≤ (xiEndpointCompletedCurvature / 4) ^ 2 *
+        xiEndpointCrossCharge q ^ (3 : ℕ) =
+            xiEndpointCrossCharge q ^ (2 : ℕ) * xiEndpointCrossCharge q := by ring
+        _ ≤ (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) *
             xiEndpointCrossCharge q :=
           mul_le_mul_of_nonneg_right hwSq hw0
     apply (xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube q).trans
     calc
-      (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-          xiEndpointCrossCharge q ^ 3 ≤
-        (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-          ((xiEndpointCompletedCurvature / 4) ^ 2 * xiEndpointCrossCharge q) :=
+      (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+          xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+        (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+          ((xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q) :=
         mul_le_mul_of_nonneg_left hwCube hfactor0
-      _ = (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-          (xiEndpointCompletedCurvature / 4) ^ 2 * xiEndpointCrossCharge q := by ring
+      _ = (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+          (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q := by ring
 
 /-- **Global cubic endpoint budget.**  The transverse thermal defect is bounded by the cube of
 the exact completed endpoint source value. -/
 theorem xiThermalOrientationEnergy_le_cubicEndpointBudget :
     xiThermalOrientationEnergy ≤ xiThermalCubicEndpointBudget := by
-  let A : ℝ := (86 / 85 : ℝ) ^ 3 *
-    (xiEndpointCompletedCurvature / 4) ^ 2
+  let A : ℝ := (86 / 85 : ℝ) ^ (3 : ℕ) *
+    (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ)
   have hscaled : Summable (fun q : XiZeroCopy => A * xiEndpointCrossCharge q) :=
     summable_xiEndpointCrossCharge.mul_left A
   have hle := summable_xiThermalOrientationTerm.tsum_le_tsum
@@ -267,8 +267,8 @@ theorem xiThermalOrientationEnergy_le_cubicEndpointBudget :
 source-dependent quartet expression `4 (C / (4 - C))³`. -/
 theorem xiThermalOrientationEnergy_le_exactCubicEndpointBudget :
     xiThermalOrientationEnergy ≤ xiThermalExactCubicEndpointBudget := by
-  let A : ℝ := (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
-    (xiEndpointCompletedCurvature / 4) ^ 2
+  let A : ℝ := (4 / (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) *
+    (xiEndpointCompletedCurvature / 4) ^ (2 : ℕ)
   have hscaled : Summable (fun q : XiZeroCopy => A * xiEndpointCrossCharge q) :=
     summable_xiEndpointCrossCharge.mul_left A
   have hle := summable_xiThermalOrientationTerm.tsum_le_tsum
@@ -307,15 +307,15 @@ theorem xiThermalExactCubicEndpointBudget_lt_cubicEndpointBudget :
     dsimp [a, b]
     rw [div_lt_iff₀ hden]
     nlinarith
-  have hab3 : a ^ 3 < b ^ 3 := by
-    have hsum : 0 < b ^ 2 + b * a + a ^ 2 := by positivity
+  have hab3 : a ^ (3 : ℕ) < b ^ (3 : ℕ) := by
+    have hsum : 0 < b ^ (2 : ℕ) + b * a + a ^ (2 : ℕ) := by positivity
     have hprod := mul_pos (sub_pos.mpr hab) hsum
-    nlinarith [show (b - a) * (b ^ 2 + b * a + a ^ 2) = b ^ 3 - a ^ 3 by ring]
-  have hscale : 0 < c ^ 3 / 16 := by positivity
+    nlinarith [show (b - a) * (b ^ (2 : ℕ) + b * a + a ^ (2 : ℕ)) = b ^ (3 : ℕ) - a ^ (3 : ℕ) by ring]
+  have hscale : 0 < c ^ (3 : ℕ) / 16 := by positivity
   have hscaled := mul_lt_mul_of_pos_right hab3 hscale
   have hden0 : 4 - c ≠ 0 := ne_of_gt hden
-  change 4 * (c / (4 - c)) ^ 3 < b ^ 3 * c ^ 3 / 16
-  have hexact : 4 * (c / (4 - c)) ^ 3 = a ^ 3 * c ^ 3 / 16 := by
+  change 4 * (c / (4 - c)) ^ (3 : ℕ) < b ^ (3 : ℕ) * c ^ (3 : ℕ) / 16
+  have hexact : 4 * (c / (4 - c)) ^ (3 : ℕ) = a ^ (3 : ℕ) * c ^ (3 : ℕ) / 16 := by
     dsimp [a]
     field_simp [hden0]
     ring
@@ -331,14 +331,14 @@ theorem xiThermalCubicEndpointBudget_lt_one_over_oneHundredFiftyThousand :
   have hc : c < c0 := by
     simpa only [c, c0] using
       xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand
-  have hc03 : c ^ 3 < c0 ^ 3 := by
+  have hc03 : c ^ (3 : ℕ) < c0 ^ (3 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hc) (add_pos hc0 (by positivity : 0 < c0)),
       mul_pos (sub_pos.mpr hc)
-        (by nlinarith : 0 < c ^ 2 + c * c0 + c0 ^ 2)]
-  change (86 / 85 : ℝ) ^ 3 * c ^ 3 / 16 < 1 / 150000
-  have hK : 0 < (86 / 85 : ℝ) ^ 3 / 16 := by positivity
+        (by nlinarith : 0 < c ^ (2 : ℕ) + c * c0 + c0 ^ (2 : ℕ))]
+  change (86 / 85 : ℝ) ^ (3 : ℕ) * c ^ (3 : ℕ) / 16 < 1 / 150000
+  have hK : 0 < (86 / 85 : ℝ) ^ (3 : ℕ) / 16 := by positivity
   have hlt := mul_lt_mul_of_pos_left hc03 hK
-  have hrat : (86 / 85 : ℝ) ^ 3 * c0 ^ 3 / 16 < 1 / 150000 := by
+  have hrat : (86 / 85 : ℝ) ^ (3 : ℕ) * c0 ^ (3 : ℕ) / 16 < 1 / 150000 := by
     norm_num [c0]
   nlinarith
 

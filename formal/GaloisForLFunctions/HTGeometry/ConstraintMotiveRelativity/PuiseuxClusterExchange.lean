@@ -120,7 +120,7 @@ theorem cartanForm_sub_lorentz (base : (A → ℝ) → ℝ) (U : Finset A) (Δ :
     (hcross : ∀ a b, ¬(a ∈ U ↔ b ∈ U) → contact₁ a b = contact₀ a b + Δ)
     (x : A → ℝ) :
     cartanForm base contact₁ x - cartanForm base contact₀ x
-      = Δ / 2 * ((clusterSum U x - clusterSum Uᶜ x) ^ 2 - (∑ a, x a) ^ 2) := by
+      = Δ / 2 * ((clusterSum U x - clusterSum Uᶜ x) ^ (2 : ℕ) - (∑ a, x a) ^ (2 : ℕ)) := by
   rw [cartanForm_sub base U Δ contact₀ contact₁ hin hcross x,
     ← clusterSum_add_compl U x]
   ring
@@ -132,7 +132,7 @@ theorem cartanForm_sub_on_ker (base : (A → ℝ) → ℝ) (U : Finset A) {Δ : 
     (hcross : ∀ a b, ¬(a ∈ U ↔ b ∈ U) → contact₁ a b = contact₀ a b + Δ)
     (x : A → ℝ) (hx : ∑ a, x a = 0) :
     cartanForm base contact₁ x - cartanForm base contact₀ x
-      = 2 * Δ * clusterSum U x ^ 2 ∧
+      = 2 * Δ * clusterSum U x ^ (2 : ℕ) ∧
       0 ≤ cartanForm base contact₁ x - cartanForm base contact₀ x := by
   have hV : clusterSum Uᶜ x = -clusterSum U x := by
     have h := clusterSum_add_compl U x
@@ -151,11 +151,11 @@ end ClusterSplit
 section TwoBranch
 
 /-- The two-branch coefficient form `(10)` at common contact `j`. -/
-def branchForm (j x₁ x₂ : ℝ) : ℝ := 2 * x₁ ^ 2 + 2 * x₂ ^ 2 + 2 * (1 - j) * (x₁ * x₂)
+def branchForm (j x₁ x₂ : ℝ) : ℝ := 2 * x₁ ^ (2 : ℕ) + 2 * x₂ ^ (2 : ℕ) + 2 * (1 - j) * (x₁ * x₂)
 
 /-- Its diagonalization in the contrast and port coordinates. -/
 theorem branchForm_diag (j x₁ x₂ : ℝ) :
-    branchForm j x₁ x₂ = (1 + j) / 2 * (x₁ - x₂) ^ 2 + (3 - j) / 2 * (x₁ + x₂) ^ 2 := by
+    branchForm j x₁ x₂ = (1 + j) / 2 * (x₁ - x₂) ^ (2 : ℕ) + (3 - j) / 2 * (x₁ + x₂) ^ (2 : ℕ) := by
   rw [branchForm]; ring
 
 /-- The port gap `(11)`. -/
@@ -164,7 +164,7 @@ noncomputable def branchGap (j : ℝ) : ℝ := (3 - j) / 2
 /-- The coefficient determinant `(11)`. -/
 def branchDet (j : ℝ) : ℝ := (1 + j) * (3 - j)
 
-theorem branchDet_eq (j : ℝ) : branchDet j = 4 - (1 - j) ^ 2 := by
+theorem branchDet_eq (j : ℝ) : branchDet j = 4 - (1 - j) ^ (2 : ℕ) := by
   rw [branchDet]; ring
 
 /-- Below the wall the form is positive definite. -/
@@ -175,17 +175,17 @@ theorem branchForm_pos {j : ℝ} (h1 : -1 < j) (h2 : j < 3) (x₁ x₂ : ℝ)
   · have hx : x₁ + x₂ ≠ 0 := by
       intro hsum
       exact hne ⟨by linarith [h, hsum], by linarith [h, hsum]⟩
-    have hsq : 0 < (x₁ + x₂) ^ 2 := by positivity
+    have hsq : 0 < (x₁ + x₂) ^ (2 : ℕ) := by positivity
     have : (0:ℝ) < (3 - j) / 2 := by linarith
     nlinarith [sq_nonneg (x₁ - x₂), h1]
-  · have hsq : 0 < (x₁ - x₂) ^ 2 := by
+  · have hsq : 0 < (x₁ - x₂) ^ (2 : ℕ) := by
       have : x₁ - x₂ ≠ 0 := sub_ne_zero.2 h
       positivity
     nlinarith [sq_nonneg (x₁ + x₂), h2]
 
 /-- At the wall the form is positive semidefinite with a one-dimensional radical. -/
 theorem branchForm_at_three (x₁ x₂ : ℝ) :
-    branchForm 3 x₁ x₂ = 2 * (x₁ - x₂) ^ 2 := by
+    branchForm 3 x₁ x₂ = 2 * (x₁ - x₂) ^ (2 : ℕ) := by
   rw [branchForm_diag]; ring
 
 theorem branchForm_three_null (t : ℝ) : branchForm 3 t t = 0 := by
@@ -251,18 +251,18 @@ theorem projectiveScore_nonneg {q : ι → ℝ} (hq : ∀ i, 0 ≤ q i) (hq1 : �
 
 /-- **The Hessian of the score is a difference Laplacian** `(29)`. -/
 theorem gibbs_hessian_identity (p v : ι → ℝ) (hp : ∑ i, p i = 1) :
-    ∑ i, p i * v i ^ 2 - (∑ i, p i * v i) ^ 2
-      = 1 / 2 * ∑ i, ∑ j, p i * p j * (v i - v j) ^ 2 := by
+    ∑ i, p i * v i ^ (2 : ℕ) - (∑ i, p i * v i) ^ (2 : ℕ)
+      = 1 / 2 * ∑ i, ∑ j, p i * p j * (v i - v j) ^ (2 : ℕ) := by
   set S0 : ℝ := ∑ j, p j with hS0
   set S1 : ℝ := ∑ j, p j * v j with hS1
-  set S2 : ℝ := ∑ j, p j * v j ^ 2 with hS2
-  have h1 : ∀ i, ∑ j, p i * p j * (v i - v j) ^ 2
-      = p i * v i ^ 2 * S0 - p i * v i * (2 * S1) + p i * S2 := by
+  set S2 : ℝ := ∑ j, p j * v j ^ (2 : ℕ) with hS2
+  have h1 : ∀ i, ∑ j, p i * p j * (v i - v j) ^ (2 : ℕ)
+      = p i * v i ^ (2 : ℕ) * S0 - p i * v i * (2 * S1) + p i * S2 := by
     intro i
     rw [hS0, hS1, hS2, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum,
       ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => by ring
-  have h2 : ∑ i, ∑ j, p i * p j * (v i - v j) ^ 2 = S2 * S0 - S1 * (2 * S1) + S0 * S2 := by
+  have h2 : ∑ i, ∑ j, p i * p j * (v i - v j) ^ (2 : ℕ) = S2 * S0 - S1 * (2 * S1) + S0 * S2 := by
     rw [Finset.sum_congr rfl fun i _ => h1 i, Finset.sum_add_distrib, Finset.sum_sub_distrib,
       ← Finset.sum_mul, ← Finset.sum_mul, ← Finset.sum_mul]
   rw [h2, hp]
@@ -412,7 +412,7 @@ theorem crossQ_ker_le (P Pinv : E →L[ℝ] E) (hPinv : ∀ x, Pinv (P x) = x) (
 
 /-- **`(21)`.**  The value of the family on `u₀` is `c - λ c²`. -/
 theorem crossQ_quadratic (P Pinv : E →L[ℝ] E) (hPP : ∀ x, P (Pinv x) = x) (lam : ℝ) (r : E) :
-    ⟪Pinv r, crossQ P lam r (Pinv r)⟫ = ⟪r, Pinv r⟫ - lam * ⟪r, Pinv r⟫ ^ 2 := by
+    ⟪Pinv r, crossQ P lam r (Pinv r)⟫ = ⟪r, Pinv r⟫ - lam * ⟪r, Pinv r⟫ ^ (2 : ℕ) := by
   rw [crossQ_apply_inv P Pinv hPP lam r, real_inner_smul_right, real_inner_comm]
   ring
 
@@ -420,7 +420,7 @@ theorem crossQ_quadratic (P Pinv : E →L[ℝ] E) (hPP : ∀ x, P (Pinv x) = x) 
 theorem crossQ_quadratic_gap (P Pinv : E →L[ℝ] E) (hPP : ∀ x, P (Pinv x) = x) (lam : ℝ) (r : E)
     (hc : ⟪r, Pinv r⟫ ≠ 0) :
     ⟪Pinv r, crossQ P lam r (Pinv r)⟫
-      = ⟪r, Pinv r⟫ ^ 2 * ((⟪r, Pinv r⟫)⁻¹ - lam) := by
+      = ⟪r, Pinv r⟫ ^ (2 : ℕ) * ((⟪r, Pinv r⟫)⁻¹ - lam) := by
   rw [crossQ_quadratic P Pinv hPP lam r]
   field_simp
   try ring
@@ -432,17 +432,17 @@ theorem crossing_form (Q : ℝ → E →L[ℝ] E) (Q' : E →L[ℝ] E) (u : ℝ 
     (hQ : HasDerivAt Q Q' 0) (hu : HasDerivAt u u' 0)
     (hc : HasDerivAt c c' 0) (hΩ : HasDerivAt Ω Ω' 0)
     (hsymm : ∀ x y, ⟪Q 0 x, y⟫ = ⟪x, Q 0 y⟫)
-    (hval : ∀ t, ⟪u t, Q t (u t)⟫ = c t ^ 2 * Ω t)
+    (hval : ∀ t, ⟪u t, Q t (u t)⟫ = c t ^ (2 : ℕ) * Ω t)
     (hker : Q 0 (u 0) = 0) (hΩ0 : Ω 0 = 0) :
-    ⟪u 0, Q' (u 0)⟫ = c 0 ^ 2 * Ω' := by
+    ⟪u 0, Q' (u 0)⟫ = c 0 ^ (2 : ℕ) * Ω' := by
   have hL : HasDerivAt (fun t => ⟪u t, Q t (u t)⟫)
       (⟪u 0, Q' (u 0) + Q 0 u'⟫ + ⟪u', Q 0 (u 0)⟫) 0 := hu.inner ℝ (hQ.clm_apply hu)
-  have hL' : HasDerivAt (fun t => c t ^ 2 * Ω t)
+  have hL' : HasDerivAt (fun t => c t ^ (2 : ℕ) * Ω t)
       (⟪u 0, Q' (u 0) + Q 0 u'⟫ + ⟪u', Q 0 (u 0)⟫) 0 := by
     refine hL.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun t => (hval t).symm
-  have hR : HasDerivAt (fun t => c t ^ 2 * Ω t)
-      ((2 : ℕ) * c 0 ^ (2 - 1) * c' * Ω 0 + c 0 ^ 2 * Ω') 0 := (hc.pow 2).mul hΩ
+  have hR : HasDerivAt (fun t => c t ^ (2 : ℕ) * Ω t)
+      ((2 : ℕ) * c 0 ^ (2 - 1) * c' * Ω 0 + c 0 ^ (2 : ℕ) * Ω') 0 := (hc.pow 2).mul hΩ
   have huniq := hL'.unique hR
   have hz1 : ⟪u', Q 0 (u 0)⟫ = (0 : ℝ) := by rw [hker, inner_zero_right]
   have hz2 : ⟪u 0, Q 0 u'⟫ = (0 : ℝ) := by
@@ -472,8 +472,8 @@ variable {A : Type*} [Fintype A]
 /-- **A common central shift of every contact only rescales the rank port.** -/
 theorem cartanForm_central_shift (base : (A → ℝ) → ℝ) (δ : ℝ) (contact₀ contact₁ : A → A → ℝ)
     (hall : ∀ a b, contact₁ a b = contact₀ a b + δ) (x : A → ℝ) :
-    cartanForm base contact₁ x - cartanForm base contact₀ x = -δ * (∑ a, x a) ^ 2 := by
-  have hdiff : contactPairing contact₁ x - contactPairing contact₀ x = δ * (∑ a, x a) ^ 2 := by
+    cartanForm base contact₁ x - cartanForm base contact₀ x = -δ * (∑ a, x a) ^ (2 : ℕ) := by
+  have hdiff : contactPairing contact₁ x - contactPairing contact₀ x = δ * (∑ a, x a) ^ (2 : ℕ) := by
     rw [contactPairing, contactPairing, ← Finset.sum_sub_distrib]
     have h1 : ∀ a, (∑ b, contact₁ a b * (x a * x b)) - ∑ b, contact₀ a b * (x a * x b)
         = δ * x a * ∑ b, x b := by

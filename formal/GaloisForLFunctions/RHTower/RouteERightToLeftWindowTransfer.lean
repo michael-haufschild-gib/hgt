@@ -242,12 +242,12 @@ theorem routeE_oneShift_reverseFilteredWindow_card_ge_supply_sub_oscillation
   omega
 
 /-- For the actual fixed-shell radius `h(y)=c*sqrt(y)`, one-shift radius oscillation is at most
-`c²`.  At `c=(log X)^1.55`, this is the subpower width `(log X)^3.1`. -/
+`c²`.  At `c=(log X)^(1 : ℕ).55`, this is the subpower width `(log X)^(3 : ℕ).1`. -/
 theorem routeE_sqrtRadius_sub_oneShift_le_sq
-    (c y : ℝ) (hc : 0 ≤ c) (hy : c ^ 2 ≤ y) :
-    c * Real.sqrt y - c * Real.sqrt (y - c * Real.sqrt y) ≤ c ^ 2 := by
+    (c y : ℝ) (hc : 0 ≤ c) (hy : c ^ (2 : ℕ) ≤ y) :
+    c * Real.sqrt y - c * Real.sqrt (y - c * Real.sqrt y) ≤ c ^ (2 : ℕ) := by
   have hy0 : 0 ≤ y := le_trans (sq_nonneg c) hy
-  have hsqrty : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsqrty : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hcsqrt : c ≤ Real.sqrt y := by
     apply (sq_le_sq₀ hc (Real.sqrt_nonneg y)).mp
     simpa [hsqrty] using hy
@@ -255,7 +255,7 @@ theorem routeE_sqrtRadius_sub_oneShift_le_sq
     have hmul := mul_le_mul_of_nonneg_right hcsqrt (Real.sqrt_nonneg y)
     nlinarith [hsqrty]
   have hlower0 : 0 ≤ Real.sqrt y - c := sub_nonneg.mpr hcsqrt
-  have hlowerSq : (Real.sqrt y - c) ^ 2 ≤ y - c * Real.sqrt y := by
+  have hlowerSq : (Real.sqrt y - c) ^ (2 : ℕ) ≤ y - c * Real.sqrt y := by
     nlinarith [hsqrty, mul_le_mul_of_nonneg_left hcsqrt hc]
   have hlower : Real.sqrt y - c ≤ Real.sqrt (y - c * Real.sqrt y) := by
     apply (sq_le_sq₀ hlower0 (Real.sqrt_nonneg _)).mp

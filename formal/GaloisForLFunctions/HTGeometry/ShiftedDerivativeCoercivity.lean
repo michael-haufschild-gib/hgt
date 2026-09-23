@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The derivative of the squared modulus along a differentiable path. -/
 theorem hasDerivAt_normSq_comp {Y : ℝ → ℂ} {Y' : ℂ} {x : ℝ} (hY : HasDerivAt Y Y' x) :
-    HasDerivAt (fun t => ‖Y t‖ ^ 2) (2 * (Y' * (starRingEnd ℂ) (Y x)).re) x := by
+    HasDerivAt (fun t => ‖Y t‖ ^ (2 : ℕ)) (2 * (Y' * (starRingEnd ℂ) (Y x)).re) x := by
   have hre : HasDerivAt (fun t => (Y t).re) Y'.re x :=
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hY
   have him : HasDerivAt (fun t => (Y t).im) Y'.im x :=
@@ -32,7 +32,7 @@ theorem hasDerivAt_normSq_comp {Y : ℝ → ℂ} {Y' : ℂ} {x : ℝ} (hY : HasD
   have h2 : HasDerivAt (fun t => (Y t).im * (Y t).im)
       (Y'.im * (Y x).im + (Y x).im * Y'.im) x := him.mul him
   have hsum := h1.add h2
-  have hnorm : (fun t => ‖Y t‖ ^ 2) =
+  have hnorm : (fun t => ‖Y t‖ ^ (2 : ℕ)) =
       fun t => (Y t).re * (Y t).re + (Y t).im * (Y t).im := by
     funext t
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
@@ -49,7 +49,7 @@ theorem hasDerivAt_normSq_comp {Y : ℝ → ℂ} {Y' : ℂ} {x : ℝ} (hY : HasD
 
 /-- The pointwise expansion of the shifted derivative. -/
 theorem normSq_shifted (σ : ℝ) (a b : ℂ) :
-    ‖a - (σ : ℂ) * b‖ ^ 2 = ‖a‖ ^ 2 - σ * (2 * (a * (starRingEnd ℂ) b).re) + σ ^ 2 * ‖b‖ ^ 2 := by
+    ‖a - (σ : ℂ) * b‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) - σ * (2 * (a * (starRingEnd ℂ) b).re) + σ ^ (2 : ℕ) * ‖b‖ ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
     Complex.normSq_apply, Complex.normSq_apply, Complex.normSq_apply, Complex.mul_re,
     Complex.conj_re, Complex.conj_im]
@@ -91,7 +91,7 @@ theorem integral_cross_eq_zero {Y : ℝ → ℂ} (hdiff : Differentiable ℝ Y)
     exact (MeasureTheory.setIntegral_congr_set MeasureTheory.Ioc_ae_eq_Icc).symm
   rw [hbridge]
   have hderiv : ∀ x ∈ Set.uIcc (-R) R,
-      HasDerivAt (fun t => ‖Y t‖ ^ 2) (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) x :=
+      HasDerivAt (fun t => ‖Y t‖ ^ (2 : ℕ)) (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) x :=
     fun x _ => hasDerivAt_normSq_comp (hdiff x).hasDerivAt
   have hint : IntervalIntegrable
       (fun x => 2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) MeasureTheory.volume (-R) R := by
@@ -105,22 +105,22 @@ theorem integral_cross_eq_zero {Y : ℝ → ℂ} (hdiff : Differentiable ℝ Y)
   simp
 
 /-- **Coercivity of the shifted derivative.**  For a compactly supported differentiable path,
-`sigma^2 ‖Y‖² ≤ ‖Y' − sigma Y‖²` in `L²`, by one integration by parts.  No Fourier transform and
+`sigma^(2 : ℕ) ‖Y‖² ≤ ‖Y' − sigma Y‖²` in `L²`, by one integration by parts.  No Fourier transform and
 no Plancherel theorem enters. -/
 theorem sq_mul_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differentiable ℝ Y)
     (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y) :
-    σ ^ 2 * (∫ x, ‖Y x‖ ^ 2) ≤ ∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2 := by
+    σ ^ (2 : ℕ) * (∫ x, ‖Y x‖ ^ (2 : ℕ)) ≤ ∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ) := by
   have hcY : Continuous Y := hdiff.continuous
   have hcd : HasCompactSupport (deriv Y) := hc.deriv
-  have hsY : HasCompactSupport fun x => ‖Y x‖ ^ 2 :=
+  have hsY : HasCompactSupport fun x => ‖Y x‖ ^ (2 : ℕ) :=
     HasCompactSupport.intro hc fun x hx => by
       rw [image_eq_zero_of_notMem_tsupport hx]; simp
-  have hsD : HasCompactSupport fun x => ‖deriv Y x‖ ^ 2 :=
+  have hsD : HasCompactSupport fun x => ‖deriv Y x‖ ^ (2 : ℕ) :=
     HasCompactSupport.intro hcd fun x hx => by
       rw [image_eq_zero_of_notMem_tsupport hx]; simp
-  have iY : MeasureTheory.Integrable fun x => ‖Y x‖ ^ 2 :=
+  have iY : MeasureTheory.Integrable fun x => ‖Y x‖ ^ (2 : ℕ) :=
     (hcY.norm.pow 2).integrable_of_hasCompactSupport hsY
-  have iD : MeasureTheory.Integrable fun x => ‖deriv Y x‖ ^ 2 :=
+  have iD : MeasureTheory.Integrable fun x => ‖deriv Y x‖ ^ (2 : ℕ) :=
     (hcont.norm.pow 2).integrable_of_hasCompactSupport hsD
   have hcross : Continuous fun x => 2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re :=
     continuous_const.mul
@@ -130,21 +130,21 @@ theorem sq_mul_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differen
     refine HasCompactSupport.intro hc fun x hx => ?_
     rw [image_eq_zero_of_notMem_tsupport hx]
     simp
-  have hpoint : ∀ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2 =
-      ‖deriv Y x‖ ^ 2 - σ * (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) + σ ^ 2 * ‖Y x‖ ^ 2 :=
+  have hpoint : ∀ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ) =
+      ‖deriv Y x‖ ^ (2 : ℕ) - σ * (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) + σ ^ (2 : ℕ) * ‖Y x‖ ^ (2 : ℕ) :=
     fun x => normSq_shifted σ _ _
-  have hsplit : (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) =
-      (∫ x, ‖deriv Y x‖ ^ 2) - σ * (∫ x, 2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) +
-        σ ^ 2 * ∫ x, ‖Y x‖ ^ 2 := by
+  have hsplit : (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ)) =
+      (∫ x, ‖deriv Y x‖ ^ (2 : ℕ)) - σ * (∫ x, 2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re) +
+        σ ^ (2 : ℕ) * ∫ x, ‖Y x‖ ^ (2 : ℕ) := by
     have e1 : MeasureTheory.Integrable
-        (fun x => ‖deriv Y x‖ ^ 2 - σ * (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re)) :=
+        (fun x => ‖deriv Y x‖ ^ (2 : ℕ) - σ * (2 * (deriv Y x * (starRingEnd ℂ) (Y x)).re)) :=
       iD.sub (iC.const_mul σ)
     rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_const_mul,
       ← MeasureTheory.integral_sub iD (iC.const_mul σ),
-      ← MeasureTheory.integral_add e1 (iY.const_mul (σ ^ 2))]
+      ← MeasureTheory.integral_add e1 (iY.const_mul (σ ^ (2 : ℕ)))]
     exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => hpoint x)
   rw [hsplit, integral_cross_eq_zero hdiff hcont hc]
-  have hDnn : 0 ≤ ∫ x, ‖deriv Y x‖ ^ 2 :=
+  have hDnn : 0 ≤ ∫ x, ‖deriv Y x‖ ^ (2 : ℕ) :=
     MeasureTheory.integral_nonneg fun _ => by positivity
   linarith
 
@@ -152,12 +152,12 @@ theorem sq_mul_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differen
 shape the flux system consumes: `|σ| ‖Y‖₂ ≤ ‖Y' − σY‖₂`. -/
 theorem abs_mul_sqrt_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differentiable ℝ Y)
     (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y) :
-    |σ| * Real.sqrt (∫ x, ‖Y x‖ ^ 2) ≤ Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) := by
+    |σ| * Real.sqrt (∫ x, ‖Y x‖ ^ (2 : ℕ)) ≤ Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ)) := by
   have hsq := sq_mul_integral_normSq_le σ hdiff hcont hc
-  have hAnn : 0 ≤ ∫ x, ‖Y x‖ ^ 2 :=
+  have hAnn : 0 ≤ ∫ x, ‖Y x‖ ^ (2 : ℕ) :=
     MeasureTheory.integral_nonneg fun _ => by positivity
-  have hstep : Real.sqrt (σ ^ 2 * ∫ x, ‖Y x‖ ^ 2) ≤
-      Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) := Real.sqrt_le_sqrt hsq
+  have hstep : Real.sqrt (σ ^ (2 : ℕ) * ∫ x, ‖Y x‖ ^ (2 : ℕ)) ≤
+      Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_mul (sq_nonneg σ), Real.sqrt_sq_eq_abs] at hstep
 
 end GaloisForLFunctions.HTGeometry

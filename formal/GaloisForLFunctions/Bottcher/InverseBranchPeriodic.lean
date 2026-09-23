@@ -337,11 +337,11 @@ theorem exists_strongly_repelling_periodic_of_deriv_bound_inverse_branch_near_re
   · intro z hz
     have hF : HasDerivAt ((quadratic c)^[p])
         (deriv ((quadratic c)^[p]) (g z)) (g z) :=
-      (differentiable_quadratic_iterate c p).differentiableAt.hasDerivAt
+      (differentiable_quadratic_iterate_repellingFixedPoint c p).differentiableAt.hasDerivAt
     exact deriv_mul_deriv_eq_one_of_eventually_right_inverse hF (hderivAt z hz)
       (hinv_nhds z hz)
 
-/-- A `C^1` inverse branch whose derivative is strictly bounded at the center has the same
+/-- A `C^(1 : ℕ)` inverse branch whose derivative is strictly bounded at the center has the same
 derivative bound on some closed ball around the center. -/
 theorem exists_closedBall_deriv_bound_of_contDiffAt_one
     {g : ℂ → ℂ} {a : ℂ} {K : ℝ}

@@ -41,7 +41,7 @@ theorem xiMobiusPrimeContinuousApertureSzegoMetric_nat_eq_damped_valuation
     (a b : ℕ) (p : Nat.Primes) :
     xiMobiusPrimeContinuousApertureSzegoMetric (a : ℝ) (b : ℝ) p =
       (xiTransversePrimeApertureDiskNode 1 p /
-          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ 2 *
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ (2 : ℕ) *
         xiTransversePrimeValuationSzegoMetric a b p := by
   rw [xiMobiusPrimeContinuousApertureSzegoMetric,
     xiTransversePrimeValuationSzegoMetric,
@@ -68,7 +68,7 @@ theorem xiMobiusPrimeIntegralApertureSzegoGramMatrix_eq_smul_transverse
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) :
     xiMobiusPrimeIntegralApertureSzegoGramMatrix shift p =
       (xiTransversePrimeApertureDiskNode 1 p /
-          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ 2 •
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ (2 : ℕ) •
         xiTransversePrimeValuationSzegoGramMatrix shift p := by
   ext i j
   simp only [xiMobiusPrimeIntegralApertureSzegoGramMatrix,

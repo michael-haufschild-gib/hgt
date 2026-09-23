@@ -182,7 +182,7 @@ theorem sum_smoothWeight_prime_pow_le {t : ℝ} (ht : 0 ≤ t) {p : ℕ} (hp : p
   have hsplit : ∑ i ∈ Finset.range (Y + 1), smoothWeight t (p ^ i)
       = 1 + ∑ i ∈ Finset.range Y, t * r ^ (i + 1) := by
     rw [Finset.sum_range_succ']
-    have hzero : smoothWeight t (p ^ 0) = 1 := by simp [smoothWeight]
+    have hzero : smoothWeight t (p ^ (0 : ℕ)) = 1 := by simp [smoothWeight]
     have hterm : ∀ i ∈ Finset.range Y, smoothWeight t (p ^ (i + 1)) = t * r ^ (i + 1) := by
       intro i _
       have hcard : (p ^ (i + 1)).primeFactors.card = 1 := by

@@ -40,7 +40,7 @@ theorem continuous_perron_zeta_integrand {x a : ℝ} (hx : 0 < x)
       - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
         / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
       * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)) := by
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))) := by
   have hre : ∀ w : ℝ,
       ((a : ℂ) + 2 * Real.pi * w * Complex.I).re = a := by
     intro w
@@ -96,69 +96,69 @@ theorem integrable_perron_zeta_integrand {x a : ℝ} (hx : 0 < x)
       - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
         / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
       * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)) := by
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))) := by
   have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
   have ha1 : (0 : ℝ) < a - 1 := by linarith
   have ha0 : (0 : ℝ) < a := by linarith
   have hg : Integrable (fun w : ℝ =>
-      (8 / (a - 1) ^ 2 * x ^ a * (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)))
-        * (1 + w ^ 2)⁻¹) :=
+      (8 / (a - 1) ^ (2 : ℕ) * x ^ a * (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))))
+        * (1 + w ^ (2 : ℕ))⁻¹) :=
     integrable_inv_one_add_sq.const_mul _
   apply Integrable.mono hg
     (continuous_perron_zeta_integrand hx h1).aestronglyMeasurable
   filter_upwards with w
-  have hcmp : 1 + w ^ 2 ≤ (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-      * (a ^ 2 + (2 * Real.pi * w) ^ 2) := by
-    have hd1 : (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * a ^ 2
-        = 1 + a ^ 2 / (4 * Real.pi ^ 2) := by
+  have hcmp : 1 + w ^ (2 : ℕ) ≤ (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+      * (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ)) := by
+    have hd1 : (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * a ^ (2 : ℕ)
+        = 1 + a ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ)) := by
       field_simp
-    have hd2 : (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-          * (2 * Real.pi * w) ^ 2
-        = (2 * Real.pi * w) ^ 2 / a ^ 2 + w ^ 2 := by
+    have hd2 : (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+          * (2 * Real.pi * w) ^ (2 : ℕ)
+        = (2 * Real.pi * w) ^ (2 : ℕ) / a ^ (2 : ℕ) + w ^ (2 : ℕ) := by
       field_simp
       ring
-    have hd3 : (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-          * (a ^ 2 + (2 * Real.pi * w) ^ 2)
-        = (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * a ^ 2
-          + (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-            * (2 * Real.pi * w) ^ 2 := by
+    have hd3 : (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+          * (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))
+        = (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * a ^ (2 : ℕ)
+          + (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+            * (2 * Real.pi * w) ^ (2 : ℕ) := by
       ring
-    have hd4 : (0 : ℝ) ≤ a ^ 2 / (4 * Real.pi ^ 2) := by positivity
-    have hd5 : (0 : ℝ) ≤ (2 * Real.pi * w) ^ 2 / a ^ 2 := by positivity
+    have hd4 : (0 : ℝ) ≤ a ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ)) := by positivity
+    have hd5 : (0 : ℝ) ≤ (2 * Real.pi * w) ^ (2 : ℕ) / a ^ (2 : ℕ) := by positivity
     linarith [hd1, hd2, hd3, hd4, hd5]
-  have hgn : ‖8 / (a - 1) ^ 2 * x ^ a
-        * (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * (1 + w ^ 2)⁻¹‖
-      = 8 / (a - 1) ^ 2 * x ^ a
-        * (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * (1 + w ^ 2)⁻¹ := by
+  have hgn : ‖8 / (a - 1) ^ (2 : ℕ) * x ^ a
+        * (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * (1 + w ^ (2 : ℕ))⁻¹‖
+      = 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+        * (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * (1 + w ^ (2 : ℕ))⁻¹ := by
     rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
   rw [hgn]
   calc ‖- deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
         / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
       * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)‖
-      ≤ 8 / (a - 1) ^ 2 * x ^ a
-          * (a ^ 2 + (2 * Real.pi * w) ^ 2)⁻¹ :=
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))‖
+      ≤ 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+          * (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹ :=
         norm_perron_zeta_integrand hx h1 h2 w
-    _ ≤ 8 / (a - 1) ^ 2 * x ^ a
-        * (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * (1 + w ^ 2)⁻¹ := by
-        have hD0 : (0 : ℝ) < a ^ 2 + (2 * Real.pi * w) ^ 2 := by
+    _ ≤ 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+        * (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * (1 + w ^ (2 : ℕ))⁻¹ := by
+        have hD0 : (0 : ℝ) < a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ) := by
           positivity
-        have hstep : (a ^ 2 + (2 * Real.pi * w) ^ 2)⁻¹
-            ≤ (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * (1 + w ^ 2)⁻¹ := by
-          rw [show (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) * (1 + w ^ 2)⁻¹
-              = (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2)) / (1 + w ^ 2) from
+        have hstep : (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹
+            ≤ (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * (1 + w ^ (2 : ℕ))⁻¹ := by
+          rw [show (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) * (1 + w ^ (2 : ℕ))⁻¹
+              = (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ))) / (1 + w ^ (2 : ℕ)) from
             (div_eq_mul_inv _ _).symm]
           rw [inv_eq_one_div, div_le_div_iff₀ hD0 (by positivity)]
           rw [one_mul]
           exact hcmp
-        calc 8 / (a - 1) ^ 2 * x ^ a
-            * (a ^ 2 + (2 * Real.pi * w) ^ 2)⁻¹
-            ≤ 8 / (a - 1) ^ 2 * x ^ a
-              * ((1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-                * (1 + w ^ 2)⁻¹) :=
+        calc 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+            * (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹
+            ≤ 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+              * ((1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+                * (1 + w ^ (2 : ℕ))⁻¹) :=
               mul_le_mul_of_nonneg_left hstep (by positivity)
-          _ = 8 / (a - 1) ^ 2 * x ^ a
-              * (1 / a ^ 2 + 1 / (4 * Real.pi ^ 2))
-              * (1 + w ^ 2)⁻¹ := by ring
+          _ = 8 / (a - 1) ^ (2 : ℕ) * x ^ a
+              * (1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)))
+              * (1 + w ^ (2 : ℕ))⁻¹ := by ring
 
 end RHTower

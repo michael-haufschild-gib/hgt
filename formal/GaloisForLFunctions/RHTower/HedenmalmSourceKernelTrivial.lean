@@ -83,13 +83,13 @@ theorem not_integrable_inv_thetaSource :
 /-- **No nonzero constant is square integrable against the reciprocal source.**  The formal kernel
 of the closed derivative on the weighted space is therefore trivial. -/
 theorem not_integrable_const_mul_inv_thetaSource {c : ℝ} (hc : c ≠ 0) :
-    ¬ Integrable (fun x : ℝ => c ^ 2 * (thetaCuspFullSource x)⁻¹) (volume : Measure ℝ) := by
+    ¬ Integrable (fun x : ℝ => c ^ (2 : ℕ) * (thetaCuspFullSource x)⁻¹) (volume : Measure ℝ) := by
   intro h
   refine not_integrable_inv_thetaSource ?_
-  have hc2 : (c : ℝ) ^ 2 ≠ 0 := pow_ne_zero 2 hc
-  refine (h.const_mul (c ^ 2)⁻¹).congr ?_
+  have hc2 : (c : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hc
+  refine (h.const_mul (c ^ (2 : ℕ))⁻¹).congr ?_
   filter_upwards with x
-  show (c ^ 2)⁻¹ * (c ^ 2 * (thetaCuspFullSource x)⁻¹) = (thetaCuspFullSource x)⁻¹
+  show (c ^ (2 : ℕ))⁻¹ * (c ^ (2 : ℕ) * (thetaCuspFullSource x)⁻¹) = (thetaCuspFullSource x)⁻¹
   field_simp
 
 end HedenmalmThetaSource

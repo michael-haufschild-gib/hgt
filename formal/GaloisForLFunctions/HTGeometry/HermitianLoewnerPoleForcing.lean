@@ -78,7 +78,7 @@ theorem exists_eigenvalue_mem_Icc_of_symmetric_resolvent_cross_neg
       rcases hout with hout | hout
       · exact mul_pos (by linarith) (by linarith)
       · exact mul_pos_of_neg_of_neg (by linarith) (by linarith)
-    have heq : (e ⬝ᵥ u) ^ 2 =
+    have heq : (e ⬝ᵥ u) ^ (2 : ℕ) =
         ((x - lambda) * (y - lambda)) * ((e ⬝ᵥ v) * (e ⬝ᵥ w)) := by
       symm
       calc
@@ -86,7 +86,7 @@ theorem exists_eigenvalue_mem_Icc_of_symmetric_resolvent_cross_neg
             ((x - lambda) * (e ⬝ᵥ v)) *
               ((y - lambda) * (e ⬝ᵥ w)) := by ring
         _ = (e ⬝ᵥ u) * (e ⬝ᵥ u) := congrArg₂ (· * ·) hcoordV.symm hcoordW.symm
-        _ = (e ⬝ᵥ u) ^ 2 := (pow_two _).symm
+        _ = (e ⬝ᵥ u) ^ (2 : ℕ) := (pow_two _).symm
     have hlocal : 0 ≤ (e ⬝ᵥ v) * (e ⬝ᵥ w) := by
       nlinarith [sq_nonneg (e ⬝ᵥ u)]
     simpa [e, dotProduct_comm w e] using hlocal

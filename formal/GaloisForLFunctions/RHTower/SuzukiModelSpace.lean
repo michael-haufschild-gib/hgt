@@ -8,14 +8,14 @@ import Mathlib.Analysis.Fourier.LpSpace
 Masatoshi Suzuki, arXiv:2301.00421v3, Sections 2.4 and 5.  This file builds, from scratch, the two
 objects the RH-conditional half of the paper rests on and which neither mathlib nor the corpus had:
 
-* `hardyL2` — `H^2 = F(L^2(0,infty))`, the Hardy space of the upper half-plane realized as a closed
-  subspace of `L^2(R)` through boundary values, exactly as Suzuki sets it up;
-* `suzukiModelSpace` — `K(Theta_xi) = H^2 minus Theta_xi H^2` (eq. 2.7), also closed.
+* `hardyL2` — `H^(2 : ℕ) = F(L^(2 : ℕ)(0,infty))`, the Hardy space of the upper half-plane realized as a closed
+  subspace of `L^(2 : ℕ)(R)` through boundary values, exactly as Suzuki sets it up;
+* `suzukiModelSpace` — `K(Theta_xi) = H^(2 : ℕ) minus Theta_xi H^(2 : ℕ)` (eq. 2.7), also closed.
 
 Three design choices make this work in Lean.
 
-`L^2(0,infty)` is the *kernel* of multiplication by the indicator of the negative ray
-(`negRayProj`), so it is a submodule and closed for free.  `H^2` is its image under mathlib's
+`L^(2 : ℕ)(0,infty)` is the *kernel* of multiplication by the indicator of the negative ray
+(`negRayProj`), so it is a submodule and closed for free.  `H^(2 : ℕ)` is its image under mathlib's
 unitary `Lp.fourierTransformₗᵢ`, closed because that map is a homeomorphism.
 
 `Theta_xi = E^sharp/E` is only unimodular where `E` does not vanish, and `lpBoundedMulCLM_inner_unimodular`
@@ -23,7 +23,7 @@ wants unimodularity *everywhere*; so `suzukiThetaSymbol` is normalized to `1` at
 which changes nothing almost everywhere.  On the real line `E^sharp(x) = conj(E(x))`
 (`xiHedenmalmDeBrangesESharp_ofReal_eq_conj`), which is what makes the symbol unimodular at all.
 
-`Theta H^2` is closed not by an isometry-image argument but because it is the *preimage* of `H^2`
+`Theta H^(2 : ℕ)` is closed not by an isometry-image argument but because it is the *preimage* of `H^(2 : ℕ)`
 under multiplication by `conj Theta`, the explicit two-sided inverse of `thetaMul`.
 -/
 

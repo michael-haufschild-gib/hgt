@@ -11,7 +11,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalSlowDecayInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Integer-time causal evolution weighted by the actual elapsed time plus one. -/
 def causalWeightedEvolution (n : ℕ) : (hardyL2ᗮ) →L[ℂ] (hardyL2ᗮ) :=

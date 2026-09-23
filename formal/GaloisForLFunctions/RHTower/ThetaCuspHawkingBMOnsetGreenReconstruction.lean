@@ -401,7 +401,7 @@ private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
     mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k))=
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^2*
+      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ)*
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
          coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
     funext p
@@ -455,7 +455,7 @@ private def kernel (q : XiZeroCopy) (branch i : Bool) (h x y X k : ℝ) : ℂ :=
 private def radius (z : ℝ) : ℝ := Real.arcosh (max 1 z)
 private def forcing (q : XiZeroCopy) (branch i : Bool) (x X k u v : ℝ) : ℂ :=
   circleAction q branch i (radius (invariant ((u+v)/2) (x+(v-u)/2) x)) X k/
-    (4*(Real.cosh (x+(v-u)/2):ℂ)^2)
+    (4*(Real.cosh (x+(v-u)/2):ℂ)^(2 : ℕ))
 
 private theorem circleAction_continuous (q : XiZeroCopy) (branch i : Bool) (X k : ℝ) :
     Continuous (fun d => circleAction q branch i d X k) := by
@@ -484,7 +484,7 @@ private theorem forcing_raw (q : XiZeroCopy) (branch i : Bool) (x X k : ℝ)
     {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
     forcing q branch i x X k u v=
       circleAction q branch i (Real.arcosh (invariant ((u+v)/2) (x+(v-u)/2) x)) X k/
-        (4*(Real.cosh (x+(v-u)/2):ℂ)^2) := by
+        (4*(Real.cosh (x+(v-u)/2):ℂ)^(2 : ℕ)) := by
   have hz := invariant_causal (⟨_,_,_,null_cone x hu hv⟩ : CausalPoint)
   dsimp only [forcing,radius]
   rw [max_eq_right hz]
@@ -501,7 +501,7 @@ private theorem kernel_goursat (q : XiZeroCopy) (branch i : Bool) (p : CausalPoi
       ∫ a in (0:ℝ)..(p.time+p.target-p.source), ∫ b in (0:ℝ)..(p.time-p.target+p.source),
         circleAction q branch i
           (Real.arcosh (invariant ((a+b)/2) (p.source+(a-b)/2) p.source)) X k/
-          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^2) := by
+          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^(2 : ℕ)) := by
   cases i
   · have h := nativeRiemannKernel_goursat q p X k
     have he (z : ℝ) : D4BMNativeCircle.angularAction q z X k=laplaceMean q (Real.arcosh z) X k :=
@@ -549,7 +549,7 @@ private def sourceAction (q : XiZeroCopy) (branch i image : Bool)
   circleAction q branch i
     (Real.arcosh (invariant ((p+r-a-b)/2) ((p-r)/2)
       (if image then -(a-b)/2 else (a-b)/2))) X k/
-      (4*(Real.cosh ((a-b)/2):ℂ)^2)
+      (4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ))
 private def waveIntegrand (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (i image : Bool)
     (p r X k a b : ℝ) : ℂ :=
   sourceKernel q branch i image p r X k a b*betaAB q branch amp i a b-
@@ -680,9 +680,9 @@ private theorem angularAction_theta_continuous (q : XiZeroCopy) (branch i : Bool
     rw [he]
     exact continuous_const.mul ((angularField_theta_continuous q branch true d X k).add
       (angularField_theta_continuous q branch false d X k))
-private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^2=1/(Real.cosh t:ℂ)^2 := by
+private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^(2 : ℕ)=1/(Real.cosh t:ℂ)^(2 : ℕ) := by
   have hn : (Real.cosh t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.cosh_pos t).ne'
-  have he : (Real.cosh t:ℂ)^2-(Real.sinh t:ℂ)^2=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
+  have he : (Real.cosh t:ℂ)^(2 : ℕ)-(Real.sinh t:ℂ)^(2 : ℕ)=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
   dsimp only [radialUnit]
   simp only [Complex.ofReal_div,Complex.ofReal_neg]
   field_simp [hn]
@@ -693,7 +693,7 @@ private theorem onsetField_wave (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (i 
     timeFieldWave (onsetField q branch amp i) ((a+b)/2) ((a-b)/2) z=
       4*betaAB q branch amp i a b*angularField q branch i z-
         beta q branch amp i a b*scalarLaplacian (angularField q branch i) z/
-          (Real.cosh ((a-b)/2):ℂ)^2 := by
+          (Real.cosh ((a-b)/2):ℂ)^(2 : ℕ) := by
   have ht : (a+b)/2+(a-b)/2=a := by ring
   cases i
   · rw [show onsetField q branch amp false=timeLiftField q branch amp by rfl,
@@ -723,7 +723,7 @@ private theorem onsetField_wave_average (q : XiZeroCopy) (branch : Bool) (amp : 
     D4BMNativeCircle.average (fun theta => timeFieldWave (onsetField q branch amp i) ((a+b)/2) ((a-b)/2)
       (logCircle d theta X k))=
       4*betaAB q branch amp i a b*circleMean q branch i d X k-
-        beta q branch amp i a b*circleAction q branch i d X k/(Real.cosh ((a-b)/2):ℂ)^2 := by
+        beta q branch amp i a b*circleAction q branch i d X k/(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ) := by
   have he (theta : ℝ) := onsetField_wave q branch amp i a b (logCircle d theta X k)
     (mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _)))
   simp_rw [he,div_eq_mul_inv,mul_right_comm (beta q branch amp i a b)]
@@ -884,7 +884,7 @@ private theorem circleSource_wave_continuous (q : XiZeroCopy) (branch : Bool) (a
           beta q branch amp i z.1 z.2*
           circleAction q branch i (radius (invariant ((p+r-z.1-z.2)/2) ((p-r)/2)
             (if image then -(z.1-z.2)/2 else (z.1-z.2)/2))) X k/
-            (Real.cosh ((z.1-z.2)/2):ℂ)^2)/4 := by
+            (Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))/4 := by
     funext z
     exact congrArg (fun v : ℂ => v/4) (onsetField_wave_average q branch amp i z.1 z.2 _ X k)
   rw [he]

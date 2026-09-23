@@ -42,13 +42,13 @@ noncomputable def density (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T
 
 /-- Normalized physical column chi-square. -/
 noncomputable def chiSquare (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T) : ℝ :=
-  ∑ t, D.targetLaw t * (D.density K t - 1) ^ 2
+  ∑ t, D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ)
 
 /-- Physical centered column energy for source mass `A` and target mass `B`. -/
 noncomputable def physicalCenteredEnergy
     (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T) (A B : ℝ) : ℝ :=
   ∑ t,
-    (A * D.output K t - (A / B) * (B * D.targetLaw t)) ^ 2 /
+    (A * D.output K t - (A / B) * (B * D.targetLaw t)) ^ (2 : ℕ) /
       (B * D.targetLaw t)
 
 /-- Normalized two-row collision kernel. -/
@@ -86,7 +86,7 @@ theorem mean_density (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T) :
 theorem physicalCenteredEnergy_eq
     (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T)
     (A B : ℝ) (hB : B ≠ 0) :
-    D.physicalCenteredEnergy K A B = (A ^ 2 / B) * D.chiSquare K := by
+    D.physicalCenteredEnergy K A B = (A ^ (2 : ℕ) / B) * D.chiSquare K := by
   classical
   unfold physicalCenteredEnergy chiSquare density
   rw [Finset.mul_sum]
@@ -97,28 +97,28 @@ theorem physicalCenteredEnergy_eq
 
 theorem chiSquare_eq_secondMoment_sub_one
     (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T) :
-    D.chiSquare K = ∑ t, D.targetLaw t * (D.density K t) ^ 2 - 1 := by
+    D.chiSquare K = ∑ t, D.targetLaw t * (D.density K t) ^ (2 : ℕ) - 1 := by
   classical
   unfold chiSquare
   calc
-    (∑ t, D.targetLaw t * (D.density K t - 1) ^ 2) =
-        ∑ t, (D.targetLaw t * (D.density K t) ^ 2 -
+    (∑ t, D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ)) =
+        ∑ t, (D.targetLaw t * (D.density K t) ^ (2 : ℕ) -
           2 * (D.targetLaw t * D.density K t) + D.targetLaw t) := by
       apply Finset.sum_congr rfl
       intro t _ht
       ring
-    _ = (∑ t, D.targetLaw t * (D.density K t) ^ 2) -
+    _ = (∑ t, D.targetLaw t * (D.density K t) ^ (2 : ℕ)) -
         2 * (∑ t, D.targetLaw t * D.density K t) + ∑ t, D.targetLaw t := by
       rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
     _ = _ := by rw [D.mean_density K, D.target_sum]; ring
 
 private theorem output_square_expansion
     (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T) :
-    (∑ t, (D.output K t) ^ 2 / D.targetLaw t) =
+    (∑ t, (D.output K t) ^ (2 : ℕ) / D.targetLaw t) =
       ∑ s, ∑ s', D.sourceLaw s * D.sourceLaw s' * D.collision K s s' := by
   classical
   calc
-    (∑ t, (D.output K t) ^ 2 / D.targetLaw t) =
+    (∑ t, (D.output K t) ^ (2 : ℕ) / D.targetLaw t) =
         ∑ t, ∑ s, ∑ s',
           (D.sourceLaw s * K.transition s t) *
             (D.sourceLaw s' * K.transition s' t) / D.targetLaw t := by
@@ -156,8 +156,8 @@ theorem chiSquare_eq_collisionDefect
   rw [D.chiSquare_eq_secondMoment_sub_one]
   congr 1
   calc
-    (∑ t, D.targetLaw t * (D.density K t) ^ 2) =
-        ∑ t, (D.output K t) ^ 2 / D.targetLaw t := by
+    (∑ t, D.targetLaw t * (D.density K t) ^ (2 : ℕ)) =
+        ∑ t, (D.output K t) ^ (2 : ℕ) / D.targetLaw t := by
       apply Finset.sum_congr rfl
       intro t _ht
       have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
@@ -172,9 +172,9 @@ theorem chiSquare_le_oneSided
     D.chiSquare K ≤ ε := by
   rw [D.chiSquare_eq_secondMoment_sub_one]
   have hsecond :
-      (∑ t, D.targetLaw t * (D.density K t) ^ 2) ≤ 1 + ε := by
+      (∑ t, D.targetLaw t * (D.density K t) ^ (2 : ℕ)) ≤ 1 + ε := by
     calc
-      (∑ t, D.targetLaw t * (D.density K t) ^ 2) ≤
+      (∑ t, D.targetLaw t * (D.density K t) ^ (2 : ℕ)) ≤
           ∑ t, D.targetLaw t * ((1 + ε) * D.density K t) := by
         apply Finset.sum_le_sum
         intro t _ht
@@ -193,18 +193,18 @@ theorem chiSquare_le_oneSided
 theorem chiSquare_le_twoSided
     (D : RouteEHallANOVAData S T) (K : RouteERowKernel S T)
     (ε : ℝ) (herror : ∀ t, |D.density K t - 1| ≤ ε) :
-    D.chiSquare K ≤ ε ^ 2 := by
+    D.chiSquare K ≤ ε ^ (2 : ℕ) := by
   unfold chiSquare
   calc
-    (∑ t, D.targetLaw t * (D.density K t - 1) ^ 2) ≤
-        ∑ t, D.targetLaw t * ε ^ 2 := by
+    (∑ t, D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ)) ≤
+        ∑ t, D.targetLaw t * ε ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro t _ht
       apply mul_le_mul_of_nonneg_left _ (D.target_pos t).le
       have hε : 0 ≤ ε := le_trans (abs_nonneg _) (herror t)
       simpa only [sq_abs] using
         (sq_le_sq₀ (abs_nonneg (D.density K t - 1)) hε).2 (herror t)
-    _ = ε ^ 2 := by simp [← Finset.sum_mul, D.target_sum]
+    _ = ε ^ (2 : ℕ) := by simp [← Finset.sum_mul, D.target_sum]
 
 /-- Symbolic two-atom witness proving the one-sided rate is exactly sharp. -/
 theorem oneSided_rate_sharp (ε : ℝ) (hε : 0 < ε) :
@@ -214,7 +214,7 @@ theorem oneSided_rate_sharp (ε : ℝ) (hε : 0 < ε) :
       (∀ i, 0 ≤ r i ∧ r i ≤ 1 + ε) ∧
       (∑ i, β i = 1) ∧
       (∑ i, β i * r i = 1) ∧
-      (∑ i, β i * (r i - 1) ^ 2 = ε) := by
+      (∑ i, β i * (r i - 1) ^ (2 : ℕ) = ε) := by
   dsimp
   have hden : 0 < 1 + ε := by linarith
   constructor
@@ -278,44 +278,44 @@ theorem chiSquare_eq_within_add_between
     (P : D.Partition J) :
     D.chiSquare K =
       (∑ j, ∑ t with P.sector t = j,
-        D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ 2) +
-      ∑ j, P.targetSectorWeight D j * (P.sectorDensity D K j - 1) ^ 2 := by
+        D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ (2 : ℕ)) +
+      ∑ j, P.targetSectorWeight D j * (P.sectorDensity D K j - 1) ^ (2 : ℕ) := by
   classical
   unfold chiSquare
   rw [← Finset.sum_fiberwise (Finset.univ : Finset T) P.sector
-    (fun t => D.targetLaw t * (D.density K t - 1) ^ 2)]
+    (fun t => D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ))]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j _hj
   have hcenter := P.sector_centered_sum_eq_zero D K j
   calc
     (∑ t with P.sector t = j,
-        D.targetLaw t * (D.density K t - 1) ^ 2) =
+        D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ)) =
         (∑ t with P.sector t = j,
-          D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ 2) +
-        P.targetSectorWeight D j * (P.sectorDensity D K j - 1) ^ 2 := by
+          D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ (2 : ℕ)) +
+        P.targetSectorWeight D j * (P.sectorDensity D K j - 1) ^ (2 : ℕ) := by
       unfold targetSectorWeight
       calc
         (∑ t with P.sector t = j,
-            D.targetLaw t * (D.density K t - 1) ^ 2) =
+            D.targetLaw t * (D.density K t - 1) ^ (2 : ℕ)) =
             ∑ t with P.sector t = j,
               (D.targetLaw t *
-                  (D.density K t - P.sectorDensity D K j) ^ 2 +
+                  (D.density K t - P.sectorDensity D K j) ^ (2 : ℕ) +
                 2 * (P.sectorDensity D K j - 1) *
                   (D.targetLaw t *
                     (D.density K t - P.sectorDensity D K j)) +
-                D.targetLaw t * (P.sectorDensity D K j - 1) ^ 2) := by
+                D.targetLaw t * (P.sectorDensity D K j - 1) ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro t _ht
           ring
         _ =
             (∑ t with P.sector t = j,
-              D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ 2) +
+              D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ (2 : ℕ)) +
             2 * (P.sectorDensity D K j - 1) *
               (∑ t with P.sector t = j,
                 D.targetLaw t * (D.density K t - P.sectorDensity D K j)) +
             (∑ t with P.sector t = j, D.targetLaw t) *
-              (P.sectorDensity D K j - 1) ^ 2 := by
+              (P.sectorDensity D K j - 1) ^ (2 : ℕ) := by
           rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
             ← Finset.mul_sum, ← Finset.sum_mul]
         _ = _ := by rw [hcenter]; ring
@@ -325,9 +325,9 @@ end Partition
 /-- Exact between-sector term for a two-sector seam. -/
 theorem twoSector_between_eq
     (b g : ℝ) (hb : 0 < b) (hb1 : b < 1) :
-    b * (g / b - 1) ^ 2 +
-        (1 - b) * ((1 - g) / (1 - b) - 1) ^ 2 =
-      (g - b) ^ 2 / (b * (1 - b)) := by
+    b * (g / b - 1) ^ (2 : ℕ) +
+        (1 - b) * ((1 - g) / (1 - b) - 1) ^ (2 : ℕ) =
+      (g - b) ^ (2 : ℕ) / (b * (1 - b)) := by
   have hb0 : b ≠ 0 := ne_of_gt hb
   have h1b0 : 1 - b ≠ 0 := ne_of_gt (sub_pos.mpr hb1)
   field_simp

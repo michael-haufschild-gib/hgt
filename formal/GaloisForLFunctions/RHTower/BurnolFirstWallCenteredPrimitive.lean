@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.BurnolFirstWallSourceDecay
 
 The primitive `P(t) = ∫_0^t p` of the coboundary `p(t) = fract t - fract 2t` is one-periodic and
 bounded, but it does not have mean zero over a cell.  Subtracting its cell mean
-`m = ∫_0^1 P` produces the **centred primitive** `P₀ = P - m`, which is again one-periodic, has the
+`m = ∫_0^(1 : ℕ) P` produces the **centred primitive** `P₀ = P - m`, which is again one-periodic, has the
 same right derivative `p`, and integrates to zero over every cell.  Its own primitive
 `P₁(t) = ∫_0^t P₀` is therefore one-periodic and bounded as well.
 

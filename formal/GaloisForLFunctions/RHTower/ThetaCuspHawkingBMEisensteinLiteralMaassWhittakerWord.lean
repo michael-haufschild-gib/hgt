@@ -119,7 +119,7 @@ theorem d4BM_positiveFrequencyRaiseZeroMode_eq
   simp [d4BMPositiveFrequencyRaiseZeroMode, d4BMPositiveFrequencyMaassRaiseAt,
     d4BMWhittakerP0Deriv, d4BMWhittakerP0, d4BMWhittakerP1]
   have hsqrt : Real.sqrt (Y : ℝ) ≠ 0 := (Real.sqrt_pos.2 Y.2).ne'
-  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ 2 := by
+  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast (Real.sq_sqrt Y.2.le).symm
   rw [hYsqrt]
   field_simp [hsqrt]
@@ -135,7 +135,7 @@ theorem d4BM_positiveFrequencyLowerZeroMode_eq
   simp [d4BMPositiveFrequencyLowerZeroMode, d4BMPositiveFrequencyMaassLowerAt,
     d4BMWhittakerP0Deriv, d4BMWhittakerP0, d4BMWhittakerP1]
   have hsqrt : Real.sqrt (Y : ℝ) ≠ 0 := (Real.sqrt_pos.2 Y.2).ne'
-  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ 2 := by
+  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast (Real.sq_sqrt Y.2.le).symm
   rw [hYsqrt]
   field_simp [hsqrt]
@@ -235,7 +235,7 @@ theorem d4BM_positiveFrequencyRaiseTwoRaiseZeroMode_eq_shiftWord
     d4BMWhittakerP0Deriv, d4BMWhittakerP1Deriv,
     d4BMWhittakerP0, d4BMWhittakerP1, d4BMWhittakerP2]
   have hsqrt : Real.sqrt (Y : ℝ) ≠ 0 := (Real.sqrt_pos.2 Y.2).ne'
-  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ 2 := by
+  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast (Real.sq_sqrt Y.2.le).symm
   rw [hYsqrt]
   field_simp [hsqrt]
@@ -255,7 +255,7 @@ theorem d4BM_positiveFrequencyLowerNegTwoLowerZeroMode_eq_shiftWord
     d4BMWhittakerP0Deriv, d4BMWhittakerP1Deriv,
     d4BMWhittakerP0, d4BMWhittakerP1, d4BMWhittakerP2]
   have hsqrt : Real.sqrt (Y : ℝ) ≠ 0 := (Real.sqrt_pos.2 Y.2).ne'
-  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ 2 := by
+  have hYsqrt : (Y : ℂ) = (Real.sqrt (Y : ℝ) : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast (Real.sq_sqrt Y.2.le).symm
   rw [hYsqrt]
   field_simp [hsqrt]
@@ -270,12 +270,12 @@ def d4BMPositiveFrequencyRaiseTwoRaiseZeroWhittakerTail
     ((3 / 2 : ℂ) * (2 * Real.pi : ℂ)) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 1) 1 1 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 1) 1 1 Y) +
-    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u nu 2 2 Y +
-    (2 * Real.pi : ℂ) ^ 2 *
+    (2 * Real.pi : ℂ) ^ (2 : ℕ) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 1) 2 2 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 1) 2 2 Y) +
-    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 2) 2 2 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 2) 2 2 Y)
 
@@ -288,12 +288,12 @@ def d4BMPositiveFrequencyLowerNegTwoLowerZeroWhittakerTail
     ((3 / 2 : ℂ) * (2 * Real.pi : ℂ)) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 1) 1 1 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 1) 1 1 Y) +
-    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u nu 2 2 Y -
-    (2 * Real.pi : ℂ) ^ 2 *
+    (2 * Real.pi : ℂ) ^ (2 : ℕ) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 1) 2 2 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 1) 2 2 Y) +
-    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu + 2) 2 2 Y +
         d4BMCompletedEisensteinSqrtPolynomialBesselJetTail u (nu - 2) 2 2 Y)
 
@@ -314,9 +314,9 @@ theorem tendsto_d4BMPositiveFrequencyRaiseTwoRaiseZeroWhittakerTail_atTop_zero
     (((((h00.const_mul (3 / 4 : ℂ)).sub
       (h10.const_mul (3 * (2 * Real.pi : ℂ)))).sub
       ((h1p.add h1m).const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ)))).add
-      (h20.const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2))).add
-      ((h2p.add h2m).const_mul ((2 * Real.pi : ℂ) ^ 2))).add
-      ((h2pp.add h2mm).const_mul ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2))
+      (h20.const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)))).add
+      ((h2p.add h2m).const_mul ((2 * Real.pi : ℂ) ^ (2 : ℕ)))).add
+      ((h2pp.add h2mm).const_mul ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)))
 
 theorem tendsto_d4BMPositiveFrequencyLowerNegTwoLowerZeroWhittakerTail_atTop_zero
     (u nu : ℂ) :
@@ -335,9 +335,9 @@ theorem tendsto_d4BMPositiveFrequencyLowerNegTwoLowerZeroWhittakerTail_atTop_zer
     (((((h00.const_mul (3 / 4 : ℂ)).add
       (h10.const_mul (3 * (2 * Real.pi : ℂ)))).sub
       ((h1p.add h1m).const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ)))).add
-      (h20.const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2))).sub
-      ((h2p.add h2m).const_mul ((2 * Real.pi : ℂ) ^ 2))).add
-      ((h2pp.add h2mm).const_mul ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2))
+      (h20.const_mul ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)))).sub
+      ((h2p.add h2m).const_mul ((2 * Real.pi : ℂ) ^ (2 : ℕ)))).add
+      ((h2pp.add h2mm).const_mul ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)))
 
 end
 

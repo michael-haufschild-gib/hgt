@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory
 # Linear absolute mass of Barban--Vehov weights
 
 Using the exact taper `log(M/q)` and the Stirling lower bound, the absolute coefficient mass is
-at most `M`, not the crude `M log M`. Consequently the bilinear absolute mass is at most `M^2`.
+at most `M`, not the crude `M log M`. Consequently the bilinear absolute mass is at most `M^(2 : ℕ)`.
 -/
 
 open Finset ArithmeticFunction
@@ -54,7 +54,7 @@ theorem sum_abs_barbanVehovWeight_le_linear {M : ℕ} (hM : 1 ≤ M) :
 private theorem sum_product_abs_barbanVehovWeight_eq_sq_linear (M : ℕ) :
     ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| =
-      (∑ q ∈ Finset.Icc 1 M, |barbanVehovWeight M q|) ^ 2 := by
+      (∑ q ∈ Finset.Icc 1 M, |barbanVehovWeight M q|) ^ (2 : ℕ) := by
   rw [sq, Finset.sum_mul_sum, Finset.sum_product]
   apply Finset.sum_congr rfl
   intro q hq
@@ -67,7 +67,7 @@ theorem sum_product_abs_barbanVehovWeight_le_quadratic
     {M : ℕ} (hM : 1 ≤ M) :
     ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| ≤
-      (M : ℝ) ^ 2 := by
+      (M : ℝ) ^ (2 : ℕ) := by
   rw [sum_product_abs_barbanVehovWeight_eq_sq_linear]
   have hs := sum_abs_barbanVehovWeight_le_linear hM
   have hs0 : 0 ≤ ∑ q ∈ Finset.Icc 1 M, |barbanVehovWeight M q| :=

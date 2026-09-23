@@ -111,7 +111,7 @@ theorem notSquarefree_subset_biUnion {M Q : ℕ} (hQ2 : 2 ∣ Q) :
 
 /-- The odd primes of the covering carry at most `1/4` of the reciprocal squares. -/
 theorem sum_inv_sq_coveringPrimes_le (M : ℕ) :
-    ∑ p ∈ (Finset.Icc 3 M).filter Nat.Prime, 1 / ((p : ℝ)) ^ 2 ≤ 1 / 4 := by
+    ∑ p ∈ (Finset.Icc 3 M).filter Nat.Prime, 1 / ((p : ℝ)) ^ (2 : ℕ) ≤ 1 / 4 := by
   classical
   refine sum_inv_sq_odd_le ?_
   intro d hd
@@ -169,15 +169,15 @@ theorem sum_inv_coprime_squarefree_ge {M Q : ℕ} (hQ0 : Q ≠ 0) (hQ2 : 2 ∣ Q
     refine le_trans (sum_notSquarefree_le hQ2 (fun n => 1 / (n : ℝ)) hf) ?_
     have hterm : ∀ p ∈ (Finset.Icc 3 M).filter Nat.Prime,
         ∑ n ∈ (Finset.Icc 1 M).filter (fun n => p * p ∣ n), 1 / (n : ℝ)
-          ≤ (1 + Real.log (M : ℝ)) * (1 / ((p : ℝ)) ^ 2) := by
+          ≤ (1 + Real.log (M : ℝ)) * (1 / ((p : ℝ)) ^ (2 : ℕ)) := by
       intro p hp
       rw [Finset.mem_filter, Finset.mem_Icc] at hp
       have hpp1 : 1 ≤ p * p := by nlinarith [hp.1.1]
       have hstep := sum_inv_dvd_le (M := M) (p := p * p) hpp1 hM
-      have hcast : (((p * p : ℕ)) : ℝ) = ((p : ℝ)) ^ 2 := by push_cast; ring
+      have hcast : (((p * p : ℕ)) : ℝ) = ((p : ℝ)) ^ (2 : ℕ) := by push_cast; ring
       rw [hcast] at hstep
-      have heq : (1 + Real.log (M : ℝ)) / ((p : ℝ)) ^ 2
-          = (1 + Real.log (M : ℝ)) * (1 / ((p : ℝ)) ^ 2) := by ring
+      have heq : (1 + Real.log (M : ℝ)) / ((p : ℝ)) ^ (2 : ℕ)
+          = (1 + Real.log (M : ℝ)) * (1 / ((p : ℝ)) ^ (2 : ℕ)) := by ring
       linarith [hstep, heq.le, heq.ge]
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [← Finset.mul_sum]
@@ -228,15 +228,15 @@ theorem sum_inv_sqrt_coprime_squarefree_ge {M Q : ℕ} (hQ0 : Q ≠ 0) (hQ2 : 2 
     refine le_trans (sum_notSquarefree_le hQ2 (fun n => 1 / Real.sqrt (n : ℝ)) hf) ?_
     have hterm : ∀ p ∈ (Finset.Icc 3 M).filter Nat.Prime,
         ∑ n ∈ (Finset.Icc 1 M).filter (fun n => p * p ∣ n), 1 / Real.sqrt (n : ℝ)
-          ≤ (2 * Real.sqrt (M : ℝ)) * (1 / ((p : ℝ)) ^ 2) := by
+          ≤ (2 * Real.sqrt (M : ℝ)) * (1 / ((p : ℝ)) ^ (2 : ℕ)) := by
       intro p hp
       rw [Finset.mem_filter, Finset.mem_Icc] at hp
       have hpp1 : 1 ≤ p * p := by nlinarith [hp.1.1]
       have hstep := sum_inv_sqrt_dvd_le (M := M) (p := p * p) hpp1
-      have hcast : (((p * p : ℕ)) : ℝ) = ((p : ℝ)) ^ 2 := by push_cast; ring
+      have hcast : (((p * p : ℕ)) : ℝ) = ((p : ℝ)) ^ (2 : ℕ) := by push_cast; ring
       rw [hcast] at hstep
-      have heq : 2 * Real.sqrt (M : ℝ) / ((p : ℝ)) ^ 2
-          = (2 * Real.sqrt (M : ℝ)) * (1 / ((p : ℝ)) ^ 2) := by ring
+      have heq : 2 * Real.sqrt (M : ℝ) / ((p : ℝ)) ^ (2 : ℕ)
+          = (2 * Real.sqrt (M : ℝ)) * (1 / ((p : ℝ)) ^ (2 : ℕ)) := by ring
       linarith [hstep, heq.le, heq.ge]
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [← Finset.mul_sum]

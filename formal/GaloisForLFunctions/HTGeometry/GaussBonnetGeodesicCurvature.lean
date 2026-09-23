@@ -60,22 +60,22 @@ noncomputable def chr222 (p : ℝ × ℝ) : ℝ := py M.G p / (2 * M.G p)
 /-- The first coordinate of the covariant acceleration of a curve with 2-jet `(u₁, v₁, u₂)` at
 `p`. -/
 noncomputable def covAccU (p : ℝ × ℝ) (u₁ v₁ u₂ : ℝ) : ℝ :=
-  u₂ + M.chr111 p * u₁ ^ 2 + 2 * M.chr112 p * u₁ * v₁ + M.chr122 p * v₁ ^ 2
+  u₂ + M.chr111 p * u₁ ^ (2 : ℕ) + 2 * M.chr112 p * u₁ * v₁ + M.chr122 p * v₁ ^ (2 : ℕ)
 
 /-- The second coordinate of the covariant acceleration of a curve with 2-jet `(u₁, v₁, v₂)` at
 `p`. -/
 noncomputable def covAccV (p : ℝ × ℝ) (u₁ v₁ v₂ : ℝ) : ℝ :=
-  v₂ + M.chr211 p * u₁ ^ 2 + 2 * M.chr212 p * u₁ * v₁ + M.chr222 p * v₁ ^ 2
+  v₂ + M.chr211 p * u₁ ^ (2 : ℕ) + 2 * M.chr212 p * u₁ * v₁ + M.chr222 p * v₁ ^ (2 : ℕ)
 
 /-- The Riemannian speed `|c'| = √(E u'² + G v'²)` of a curve. -/
 noncomputable def speed (p : ℝ × ℝ) (u₁ v₁ : ℝ) : ℝ :=
-  Real.sqrt (M.E p * u₁ ^ 2 + M.G p * v₁ ^ 2)
+  Real.sqrt (M.E p * u₁ ^ (2 : ℕ) + M.G p * v₁ ^ (2 : ℕ))
 
 /-- **The intrinsic geodesic curvature** of a curve, read off its 2-jet:
 `κ_g = √(EG)(u' D^v - v' D^u)/|c'|³`, the normal component of the covariant acceleration divided by
 the squared speed. -/
 noncomputable def geodesicCurvature (p : ℝ × ℝ) (u₁ v₁ u₂ v₂ : ℝ) : ℝ :=
-  M.area p * (u₁ * M.covAccV p u₁ v₁ v₂ - v₁ * M.covAccU p u₁ v₁ u₂) / M.speed p u₁ v₁ ^ 3
+  M.area p * (u₁ * M.covAccV p u₁ v₁ v₂ - v₁ * M.covAccU p u₁ v₁ u₂) / M.speed p u₁ v₁ ^ (3 : ℕ)
 
 /-- A curve is a **geodesic** at a point when its covariant acceleration vanishes there. -/
 def IsGeodesicJet (p : ℝ × ℝ) (u₁ v₁ u₂ v₂ : ℝ) : Prop :=
@@ -98,7 +98,7 @@ theorem speed_vDirection (p : ℝ × ℝ) : M.speed p 0 1 = M.vSpeed p := by
 curvature of the curve `v = const`, traversed with unit coordinate speed, is `-E_v/(2E√G)`. -/
 theorem geodesicCurvature_uCurve (p : ℝ × ℝ) :
     M.geodesicCurvature p 1 0 0 0 = M.uCurveGeodesicCurvature p := by
-  have hE : M.E p = M.uSpeed p ^ 2 := (M.uSpeed_sq p).symm
+  have hE : M.E p = M.uSpeed p ^ (2 : ℕ) := (M.uSpeed_sq p).symm
   have he0 : M.uSpeed p ≠ 0 := (M.uSpeed_pos p).ne'
   have hg0 : M.vSpeed p ≠ 0 := (M.vSpeed_pos p).ne'
   have hG0 : M.G p ≠ 0 := (M.posG p).ne'
@@ -112,7 +112,7 @@ theorem geodesicCurvature_uCurve (p : ℝ × ℝ) :
 curvature of the curve `u = const`, traversed with unit coordinate speed, is `G_u/(2G√E)`. -/
 theorem geodesicCurvature_vCurve (p : ℝ × ℝ) :
     M.geodesicCurvature p 0 1 0 0 = M.vCurveGeodesicCurvature p := by
-  have hG : M.G p = M.vSpeed p ^ 2 := (M.vSpeed_sq p).symm
+  have hG : M.G p = M.vSpeed p ^ (2 : ℕ) := (M.vSpeed_sq p).symm
   have he0 : M.uSpeed p ≠ 0 := (M.uSpeed_pos p).ne'
   have hg0 : M.vSpeed p ≠ 0 := (M.vSpeed_pos p).ne'
   have hE0 : M.E p ≠ 0 := (M.posE p).ne'

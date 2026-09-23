@@ -27,7 +27,7 @@ products.  Source formation precedes reciprocal normalization and nodal aggregat
 def xiShiftedCanonicalAdmissionCompletedSourceWeylAggregate
     (w : ℝ) (n : ℕ) (z : ℝ) : ℝ :=
   ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
-    ((w ^ 2 * x ^ 4 *
+    ((w ^ (2 : ℕ) * x ^ (4 : ℕ) *
         HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1)) /
       (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
         xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
@@ -67,7 +67,7 @@ theorem xiShiftedCanonicalAdmissionCompletedSourceWeylAggregate_eq_terminalWeyl
       (w := w) (n := m + 1) (by omega) hH hx0 hrootAdmission
   have hnorm : HTGeometry.monicOrthoNormSq s m ≠ 0 :=
     ne_of_gt (HTGeometry.monicOrthoNorm_pos_below hbelow (by omega))
-  have hrhs : w ^ 2 * x ^ 4 * HTGeometry.monicOrthoNormSq s m ≠ 0 :=
+  have hrhs : w ^ (2 : ℕ) * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m ≠ 0 :=
     mul_ne_zero (mul_ne_zero (pow_ne_zero 2 hw) (pow_ne_zero 4 hx0)) hnorm
   have hsource :
       xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w (m + 1) x *
@@ -77,7 +77,7 @@ theorem xiShiftedCanonicalAdmissionCompletedSourceWeylAggregate_eq_terminalWeyl
     rw [hzero, mul_zero] at hproduct
     exact hrhs hproduct.symm
   have hratio :
-      (w ^ 2 * x ^ 4 * HTGeometry.monicOrthoNormSq s m) /
+      (w ^ (2 : ℕ) * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m) /
           (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w (m + 1) x *
             xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
               w (m + 1) x) =

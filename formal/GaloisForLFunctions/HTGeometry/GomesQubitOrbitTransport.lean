@@ -39,7 +39,7 @@ theorem gomesQubitOrbit_radius (b t theta : ℝ) :
   unfold qubitRadius
   congr 1
   dsimp [gomesQubitOrbitCoupling,gomesQubitOrbitBias]
-  linear_combination (b^2+t^2)*(Real.sin_sq_add_cos_sq theta)
+  linear_combination (b^(2 : ℕ)+t^(2 : ℕ))*(Real.sin_sq_add_cos_sq theta)
 
 /-- The existing Y gate transports the actual Hamiltonian through the complete parameter plane. -/
 theorem gomesQubitOrbit_hamiltonian (b t theta : ℝ) :
@@ -127,7 +127,7 @@ theorem gomesQubitOrbit_density_stabilizer (b t theta : ℝ) :
   constructor
   · rintro ⟨hb,ht⟩
     dsimp [gomesQubitOrbitCoupling,gomesQubitOrbitBias] at hb ht
-    have hp : (Real.cos theta-1)*(b^2+t^2) = 0 := by
+    have hp : (Real.cos theta-1)*(b^(2 : ℕ)+t^(2 : ℕ)) = 0 := by
       linear_combination b*hb+t*ht
     rcases mul_eq_zero.mp hp with hc | hz
     · right

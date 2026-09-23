@@ -335,9 +335,9 @@ by
     have h_unitary : (star G.val) * G.val = 1 := by
       convert mul_eq_one_comm.mp ( G.2.2 ) using 1;
     exact fun v => by rw [ Matrix.mulVec_mulVec, h_unitary, Matrix.one_mulVec ] ;
-  -- By definition of norm, we have that ‖Gv‖^2 = ⟨Gv, Gv⟩.
+  -- By definition of norm, we have that ‖Gv‖^(2 : ℕ) = ⟨Gv, Gv⟩.
   have h_norm_sq : ∀ (v : Quantum.Vector α),
-      (Quantum.norm (G.val.mulVec v))^2 =
+      (Quantum.norm (G.val.mulVec v))^(2 : ℕ) =
       ∑ i, (G.val.mulVec v i) * star (G.val.mulVec v i) := by
     simp +decide [ Quantum.norm, Complex.mul_conj, Complex.normSq_eq_norm_sq ];
     norm_cast ; norm_num [ Real.sq_sqrt ( Finset.sum_nonneg fun _ _ => sq_nonneg _ ) ];

@@ -24,7 +24,7 @@ def EulerSubsetNormSqExact
     {ι E : Type*} [NormedAddCommGroup E]
     (base : E) (packet : ι → E) (energy : ι → ℝ) (baseline : ℝ) : Prop :=
   ∀ F : Finset ι,
-    ‖base + ∑ i ∈ F, packet i‖ ^ 2 = baseline + ∑ i ∈ F, energy i
+    ‖base + ∑ i ∈ F, packet i‖ ^ (2 : ℕ) = baseline + ∑ i ∈ F, energy i
 
 /-- Lower-bound form of the Euler-subset positive energy law.  Exactness is unnecessary for the
 unboundedness obstruction. -/
@@ -32,14 +32,14 @@ def EulerSubsetNormSqLower
     {ι E : Type*} [NormedAddCommGroup E]
     (base : E) (packet : ι → E) (energy : ι → ℝ) (baseline : ℝ) : Prop :=
   ∀ F : Finset ι,
-    baseline + ∑ i ∈ F, energy i ≤ ‖base + ∑ i ∈ F, packet i‖ ^ 2
+    baseline + ∑ i ∈ F, energy i ≤ ‖base + ∑ i ∈ F, packet i‖ ^ (2 : ℕ)
 
 /-- The empty Euler subset fixes the scalar baseline to the squared boundary norm. -/
 theorem eulerSubsetNormSqExact_baseline_eq_normSq
     {ι E : Type*} [NormedAddCommGroup E]
     (base : E) (packet : ι → E) (energy : ι → ℝ) (baseline : ℝ)
     (h : EulerSubsetNormSqExact base packet energy baseline) :
-    baseline = ‖base‖ ^ 2 := by
+    baseline = ‖base‖ ^ (2 : ℕ) := by
   simpa only [Finset.sum_empty, add_zero] using (h ∅).symm
 
 /-- Exact finite-subset energy implies its lower-bound version. -/
@@ -84,7 +84,7 @@ theorem not_exists_bounded_eulerSubsetNormSqLower_of_not_summable
     (hnonneg : ∀ i, 0 ≤ energy i) (hnot : ¬ Summable energy)
     (h : EulerSubsetNormSqLower base packet energy baseline) :
     ¬ ∃ C : ℝ, ∀ F : Finset ι,
-      ‖base + ∑ i ∈ F, packet i‖ ^ 2 ≤ C := by
+      ‖base + ∑ i ∈ F, packet i‖ ^ (2 : ℕ) ≤ C := by
   rintro ⟨C, hC⟩
   apply hnot
   apply summable_of_sum_le (c := C - baseline) hnonneg
@@ -100,7 +100,7 @@ theorem not_exists_bounded_eulerSubsetNormSqExact_of_not_summable
     (hnonneg : ∀ i, 0 ≤ energy i) (hnot : ¬ Summable energy)
     (h : EulerSubsetNormSqExact base packet energy baseline) :
     ¬ ∃ C : ℝ, ∀ F : Finset ι,
-      ‖base + ∑ i ∈ F, packet i‖ ^ 2 ≤ C :=
+      ‖base + ∑ i ∈ F, packet i‖ ^ (2 : ℕ) ≤ C :=
   not_exists_bounded_eulerSubsetNormSqLower_of_not_summable
     base packet energy baseline hnonneg hnot h.toLower
 
@@ -110,7 +110,7 @@ theorem exists_finset_normSq_gt_of_eulerSubsetNormSqLower_of_not_summable
     (base : E) (packet : ι → E) (energy : ι → ℝ) (baseline : ℝ)
     (hnonneg : ∀ i, 0 ≤ energy i) (hnot : ¬ Summable energy)
     (h : EulerSubsetNormSqLower base packet energy baseline) (C : ℝ) :
-    ∃ F : Finset ι, C < ‖base + ∑ i ∈ F, packet i‖ ^ 2 := by
+    ∃ F : Finset ι, C < ‖base + ∑ i ∈ F, packet i‖ ^ (2 : ℕ) := by
   by_contra hbound
   push Not at hbound
   exact (not_exists_bounded_eulerSubsetNormSqLower_of_not_summable
@@ -131,7 +131,7 @@ theorem no_bounded_primeMellinJet_eulerSubsetPositiveLift
     (r : ℕ) (base : E) (packet : Nat.Primes → E) (baseline : ℝ)
     (h : EulerSubsetNormSqExact base packet (primeMellinJetDiagonalEnergy r) baseline) :
     ¬ ∃ C : ℝ, ∀ F : Finset Nat.Primes,
-      ‖base + ∑ p ∈ F, packet p‖ ^ 2 ≤ C :=
+      ‖base + ∑ p ∈ F, packet p‖ ^ (2 : ℕ) ≤ C :=
   not_exists_bounded_eulerSubsetNormSqExact_of_not_summable
     base packet (primeMellinJetDiagonalEnergy r) baseline
     (primeMellinJetDiagonalEnergy_nonneg r)
@@ -147,7 +147,7 @@ theorem primeMellinJet_eulerSubsetPositiveLift_classification
     (∀ {p q : Nat.Primes}, p ≠ q →
       RCLike.re (inner 𝕜 (packet p) (packet q)) = 0) ∧
       ¬ ∃ C : ℝ, ∀ F : Finset Nat.Primes,
-        ‖base + ∑ p ∈ F, packet p‖ ^ 2 ≤ C := by
+        ‖base + ∑ p ∈ F, packet p‖ ^ (2 : ℕ) ≤ C := by
   constructor
   · intro p q hpq
     exact eulerSubsetNormSqExact_pairwise_re_inner_zero

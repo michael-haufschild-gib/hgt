@@ -35,9 +35,9 @@ def egbFixedChargeAGibbsOddRationalFamily (w φ : ℝ) (s : EGBGibbsOddState) (t
   let l := s.2.2.2.2.1
   let n := s.2.2.2.2.2.1
   let r := s.2.2.2.2.2.2
-  (t ^ 2 - 1) * (a₁ * l * t + egbFixedChargeAGibbsCriticalPrefactor w φ * l₁ * t -
+  (t ^ (2 : ℕ) - 1) * (a₁ * l * t + egbFixedChargeAGibbsCriticalPrefactor w φ * l₁ * t -
     egbFixedChargeAGibbsCriticalPrefactor w φ * (4 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)) *
-      t ^ 2 * (2 + d * t) + a * (n * t ^ 2 + r)) / (1 + d * t) ^ 2
+      t ^ (2 : ℕ) * (2 + d * t) + a * (n * t ^ (2 : ℕ) + r)) / (1 + d * t) ^ (2 : ℕ)
 
 theorem egbFixedChargeAGibbsOddState_critical_limit (w φ : ℝ) :
     Tendsto (egbFixedChargeAGibbsOddState w φ) atBot (𝓝 (egbFixedChargeAGibbsOddCriticalState w φ)) := by
@@ -70,7 +70,7 @@ theorem egbFixedChargeAGibbsOddRationalFamily_critical (w φ t : ℝ) :
   unfold egbFixedChargeAGibbsOddLimitKernel
   calc
     _ = -(egbFixedChargeAGibbsCriticalPrefactor w φ * (1 - 14 * egbFixedChargeACriticalCouplingWeight φ / 5)) *
-        (t ^ 2 - 1) * (5 * t ^ 2 - 1) := by ring
+        (t ^ (2 : ℕ) - 1) * (5 * t ^ (2 : ℕ) - 1) := by ring
     _ = _ := by rw [hR]; ring
 
 end GaloisForLFunctions.HTGeometry

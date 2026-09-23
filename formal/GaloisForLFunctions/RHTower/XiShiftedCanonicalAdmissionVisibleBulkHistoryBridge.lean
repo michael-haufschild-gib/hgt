@@ -32,7 +32,7 @@ theorem adaptiveOrthoVisibleJacobiEnergy_le_effectivityWeight_mul_nextNondegener
       xiShiftedNondegenerateSourceEffectivityWeight n *
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s (n + 1) := by
   let a : ℝ := HTGeometry.monicOrthoAlpha s n
-  let A : ℝ := ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2
+  let A : ℝ := ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)
   let B : ℝ := ∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j
   let b : ℝ := HTGeometry.monicOrthoBeta s n
   let K : ℝ := xiShiftedNondegenerateSourceEffectivityWeight n
@@ -65,25 +65,25 @@ theorem adaptiveOrthoVisibleJacobiEnergy_le_effectivityWeight_mul_nextNondegener
     dsimp [K, xiShiftedNondegenerateSourceEffectivityWeight]
     nlinarith [sq_nonneg (n : ℝ)]
   have hcross (j : ℕ) :
-      (HTGeometry.monicOrthoAlpha s j + a / 2) ^ 2 ≤
-        2 * HTGeometry.monicOrthoAlpha s j ^ 2 + a ^ 2 / 2 := by
+      (HTGeometry.monicOrthoAlpha s j + a / 2) ^ (2 : ℕ) ≤
+        2 * HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) + a ^ (2 : ℕ) / 2 := by
     nlinarith [sq_nonneg (HTGeometry.monicOrthoAlpha s j - a / 2)]
   have hsumCross :
       (∑ j ∈ Finset.range n,
-        (HTGeometry.monicOrthoAlpha s j + a / 2) ^ 2) ≤
-        2 * A + (n : ℝ) * a ^ 2 / 2 := by
+        (HTGeometry.monicOrthoAlpha s j + a / 2) ^ (2 : ℕ)) ≤
+        2 * A + (n : ℝ) * a ^ (2 : ℕ) / 2 := by
     calc
       _ ≤ ∑ j ∈ Finset.range n,
-          (2 * HTGeometry.monicOrthoAlpha s j ^ 2 + a ^ 2 / 2) := by
+          (2 * HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) + a ^ (2 : ℕ) / 2) := by
         apply Finset.sum_le_sum
         intro j _
         exact hcross j
-      _ = 2 * A + (n : ℝ) * a ^ 2 / 2 := by
+      _ = 2 * A + (n : ℝ) * a ^ (2 : ℕ) / 2 := by
         rw [Finset.sum_add_distrib, Finset.mul_sum]
         simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
         ring
   have hhistoryLower :
-      A + a ^ 2 + 2 * B + 2 * b ≤
+      A + a ^ (2 : ℕ) + 2 * B + 2 * b ≤
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s (n + 1) := by
     unfold HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory
     rw [Finset.sum_range_succ, Finset.sum_range_succ]
@@ -93,14 +93,14 @@ theorem adaptiveOrthoVisibleJacobiEnergy_le_effectivityWeight_mul_nextNondegener
   have hleft :
       HTGeometry.adaptiveOrthoJacobiEnergy s n -
           (n + 1 : ℝ) * HTGeometry.monicOrthoBeta s (n + 1) ≤
-        2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ 2 + 2 * B +
+        2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ (2 : ℕ) + 2 * B +
           ((n : ℝ) + 1) * b := by
     unfold HTGeometry.adaptiveOrthoJacobiEnergy
     dsimp [a, A, B, b] at hsumCross ⊢
     nlinarith
   have hAcoeff : 2 * A ≤ K * A := by
     exact mul_le_mul_of_nonneg_right hKtwo hA
-  have hacoeff : (3 * (n : ℝ) / 2 + 1) * a ^ 2 ≤ K * a ^ 2 := by
+  have hacoeff : (3 * (n : ℝ) / 2 + 1) * a ^ (2 : ℕ) ≤ K * a ^ (2 : ℕ) := by
     exact mul_le_mul_of_nonneg_right hKalpha (sq_nonneg a)
   have hBcoeff : 2 * B ≤ K * (2 * B) := by
     have htwoK : 2 ≤ 2 * K := by linarith
@@ -113,19 +113,19 @@ theorem adaptiveOrthoVisibleJacobiEnergy_le_effectivityWeight_mul_nextNondegener
         mul_le_mul_of_nonneg_right hKbeta hb
       _ = K * (2 * b) := by ring
   have hweighted :
-      2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ 2 + 2 * B +
+      2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ (2 : ℕ) + 2 * B +
           ((n : ℝ) + 1) * b ≤
-        K * (A + a ^ 2 + 2 * B + 2 * b) := by
+        K * (A + a ^ (2 : ℕ) + 2 * B + 2 * b) := by
     calc
-      _ ≤ K * A + K * a ^ 2 + K * (2 * B) + K * (2 * b) := by
+      _ ≤ K * A + K * a ^ (2 : ℕ) + K * (2 * B) + K * (2 * b) := by
         linarith
       _ = _ := by ring
   calc
     HTGeometry.adaptiveOrthoJacobiEnergy s n -
         (n + 1 : ℝ) * HTGeometry.monicOrthoBeta s (n + 1) ≤
-      2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ 2 + 2 * B +
+      2 * A + (3 * (n : ℝ) / 2 + 1) * a ^ (2 : ℕ) + 2 * B +
           ((n : ℝ) + 1) * b := hleft
-    _ ≤ K * (A + a ^ 2 + 2 * B + 2 * b) := hweighted
+    _ ≤ K * (A + a ^ (2 : ℕ) + 2 * B + 2 * b) := hweighted
     _ ≤ K *
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s (n + 1) :=
       mul_le_mul_of_nonneg_left hhistoryLower hK
@@ -137,10 +137,10 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 1 ≤ n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef) :
-    xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+    xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
         xiShiftedAdaptiveGaussArithmeticBulk w n ≤
       routeUAdjacentLiteralSourceSupply w (n + 1) := by
-  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re
   have hseq : s = xiShiftedRealMomentSequence w := rfl
   have hH' : (HTGeometry.momentHankelMatrix s (n + 3)).PosDef := by
     rw [hseq]
@@ -152,24 +152,24 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
   have hvisible :=
     adaptiveOrthoVisibleJacobiEnergy_le_effectivityWeight_mul_nextNondegenerateHistory
       hbelow hn (by omega : n + 2 ≤ n + 3)
-  have hnormN : 0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ 2) n := by
+  have hnormN : 0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n := by
     rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hsmall]
     exact (HTGeometry.monicOrthoNorm_pos_below
       (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hsmall) (by omega)).le
-  have hnormNext : 0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := by
+  have hnormNext : 0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := by
     rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hH']
     exact (HTGeometry.monicOrthoNorm_pos_below hbelow (by omega)).le
   have hsourceNext :
-      xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) =
-        2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+      xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) =
+        2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
           HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s
             (n + 1) := by
     simpa only [s] using
       xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass_eq_norm_mul_history
-        (y := w ^ 2) (n := n + 1) (by omega) hH'
+        (y := w ^ (2 : ℕ)) (n := n + 1) (by omega) hH'
   have hgauss :
       xiShiftedAdaptiveGaussArithmeticBulk w n =
-        2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
+        2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
           (HTGeometry.adaptiveOrthoJacobiEnergy s n -
             (n + 1 : ℝ) * HTGeometry.monicOrthoBeta s (n + 1)) := by
     rw [xiShiftedAdaptiveGaussArithmeticBulk,
@@ -181,10 +181,10 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
     simp only [s]
     ring
   have hbulkSource :
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
           xiShiftedAdaptiveGaussArithmeticBulk w n ≤
-        K * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) := by
+        K * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) := by
     rw [hgauss, hsourceNext]
     have hscaled := mul_le_mul_of_nonneg_left hvisible
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2)
@@ -198,7 +198,7 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
       ring
     nlinarith
   have hsourcePos : 0 ≤
-      xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) := by
+      xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) := by
     rw [hsourceNext]
     have hhistory : 0 ≤
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s (n + 1) :=
@@ -206,20 +206,20 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
         (one_le_nondegenerateNullFlagCompletedJacobiHistory hbelow (by omega))
     exact mul_nonneg (mul_nonneg (by norm_num) hnormNext) hhistory
   have hfirst :
-      K * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) ≤
+      K * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) ≤
         xiShiftedNondegenerateSourceEffectivityWeight (n + 1) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) := by
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) := by
     exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_right hKmono hnormN) hsourcePos
   have hsecond : 0 ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
-        xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) n := by
-    have hsource : 0 ≤ xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) n := by
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
+        xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) n := by
+    have hsource : 0 ≤ xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) n := by
       rw [xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass_eq_norm_mul_history
-        (y := w ^ 2) (n := n) (by omega) hsmall]
+        (y := w ^ (2 : ℕ)) (n := n) (by omega) hsmall]
       have hhistory : 0 ≤
           HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n :=
         le_trans zero_le_one
@@ -231,20 +231,20 @@ theorem nextAdmissionNorm_mul_adaptiveGaussBulk_le_nextAdjacentLiteralSourceSupp
       positivity
     exact mul_nonneg (mul_nonneg hweight hnormNext) hsource
   calc
-    xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+    xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
         xiShiftedAdaptiveGaussArithmeticBulk w n ≤
-      K * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) :=
+      K * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) :=
       hbulkSource
     _ ≤ xiShiftedNondegenerateSourceEffectivityWeight (n + 1) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) := hfirst
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) := hfirst
     _ ≤ xiShiftedNondegenerateSourceEffectivityWeight (n + 1) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) (n + 1) +
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) (n + 1) +
         xiShiftedNondegenerateSourceEffectivityWeight n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
-          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) n :=
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
+          xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) n :=
       le_add_of_nonneg_right hsecond
     _ = routeUAdjacentLiteralSourceSupply w (n + 1) := by
       unfold routeUAdjacentLiteralSourceSupply
@@ -264,7 +264,7 @@ theorem relativeArithmeticGaussBulk_eq_fourth_mul_actualVisibleEnergy
     (hA : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 4)).PosDef) :
     relativeArithmeticGaussBulk w n =
-      w ^ 4 *
+      w ^ (4 : ℕ) *
         (HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n -
           (n + 1 : ℝ) * HTGeometry.monicOrthoBeta
             (xiShiftedRealMomentSequence w) (n + 1)) := by
@@ -276,42 +276,42 @@ theorem relativeArithmeticGaussBulk_eq_fourth_mul_actualVisibleEnergy
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hA' : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef := hA
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef := hA
   have halpha : ∀ j, j ≤ n →
       HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 2 * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
+        w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hNj : (HTGeometry.momentHankelMatrix
         (xiShiftedFarRightNormalizedMoment w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hN
     have hAj : (HTGeometry.momentHankelMatrix
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (j + 3)).PosDef :=
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA'
     change HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedAlpha_eq_square_mul_actualAlpha hw j hNj hAj
   have hbeta : ∀ j, j ≤ n + 1 →
       HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 4 * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
+        w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hNj : (HTGeometry.momentHankelMatrix
         (xiShiftedFarRightNormalizedMoment w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hN
     have hAj : (HTGeometry.momentHankelMatrix
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (j + 3)).PosDef :=
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA'
     change HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 4 * HTGeometry.monicOrthoBeta
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedBeta_eq_fourth_mul_actualBeta hw j hNj hAj
   have hsumShiftedAlpha :
       (∑ j ∈ Finset.range n,
         (HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j +
-          HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n / 2) ^ 2) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
+          HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n / 2) ^ (2 : ℕ)) =
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
         (HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j +
-          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n / 2) ^ 2 := by
+          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n / 2) ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro j hj
@@ -320,7 +320,7 @@ theorem relativeArithmeticGaussBulk_eq_fourth_mul_actualVisibleEnergy
   have hsumBeta :
       (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -340,7 +340,7 @@ theorem normalizedAdmissionNorm_eq_massGauge_mul_actualCanonicalNorm
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     normalizedAdmissionNorm w n =
       (2 * w / Real.log w) * w ^ (4 * n) *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) n := by
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
   have hN0 := xiShiftedFarRightNormalizedHankelMatrix_posDef_of_actual hw (n + 2) hA
   have hN : (HTGeometry.momentHankelMatrix
@@ -350,31 +350,31 @@ theorem normalizedAdmissionNorm_eq_massGauge_mul_actualCanonicalNorm
       (xiShiftedFarRightNormalizedMoment w) n).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAhead : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   have hsource := sourceCoordinateAdmission_eq_actualAdmission hw hn
     (ne_of_gt hNhead.det_pos) (ne_of_gt hAhead.det_pos)
-  have hactual : xiShiftedCanonicalAdmissionNorm (w ^ 2) n =
+  have hactual : xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n =
       HTGeometry.momentFunctional
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
-        ((sourceCoordinateAdmission w n) ^ 2) := by
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+        ((sourceCoordinateAdmission w n) ^ (2 : ℕ)) := by
     rw [xiShiftedCanonicalAdmissionNorm, HTGeometry.momentInner_self, ← hsource]
   have hsquare :
-      ((dimensionlessAdmission w n) ^ 2).comp (Polynomial.C (w ^ 2) * Polynomial.X) =
-        w ^ (4 * n) • (sourceCoordinateAdmission w n) ^ 2 := by
+      ((dimensionlessAdmission w n) ^ (2 : ℕ)).comp (Polynomial.C (w ^ (2 : ℕ)) * Polynomial.X) =
+        w ^ (4 * n) • (sourceCoordinateAdmission w n) ^ (2 : ℕ) := by
     rw [sourceCoordinateAdmission, smul_pow, ← mul_smul]
-    have hpow : w ^ (4 * n) * ((w ^ (2 * n))⁻¹) ^ 2 = 1 := by
-      have hfour : w ^ (4 * n) = (w ^ (2 * n)) ^ 2 := by
+    have hpow : w ^ (4 * n) * ((w ^ (2 * n))⁻¹) ^ (2 : ℕ) = 1 := by
+      have hfour : w ^ (4 * n) = (w ^ (2 * n)) ^ (2 : ℕ) := by
         calc
           w ^ (4 * n) = w ^ ((2 * n) * 2) := by
             congr 1
             omega
-          _ = (w ^ (2 * n)) ^ 2 := by rw [pow_mul]
+          _ = (w ^ (2 * n)) ^ (2 : ℕ) := by rw [pow_mul]
       rw [hfour]
       field_simp [pow_ne_zero _ hw0]
     rw [hpow, one_smul, Polynomial.pow_comp]
   rw [normalizedAdmissionNorm,
-    momentFunctional_normalized_eq_massDilation hw ((dimensionlessAdmission w n) ^ 2),
+    momentFunctional_normalized_eq_massDilation hw ((dimensionlessAdmission w n) ^ (2 : ℕ)),
     hsquare, HTGeometry.momentFunctional_smul, ← hactual]
   ring
 
@@ -384,10 +384,10 @@ theorem two_mul_admissionNorm_product_mul_relativeArithmeticGaussBulk_le_fourth_
     {w : ℝ} (hw : 1 < w) {n : ℕ} (hn : 1 ≤ n)
     (hA : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 4)).PosDef) :
-    2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+    2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
         relativeArithmeticGaussBulk w n ≤
-      w ^ 4 * routeUAdjacentLiteralSourceSupply w (n + 1) := by
+      w ^ (4 : ℕ) * routeUAdjacentLiteralSourceSupply w (n + 1) := by
   have hAthree : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
@@ -398,13 +398,13 @@ theorem two_mul_admissionNorm_product_mul_relativeArithmeticGaussBulk_le_fourth_
     (by linarith : 1 / 2 < w) hn hAthree
   have hscale := relativeArithmeticGaussBulk_eq_fourth_mul_actualVisibleEnergy hw
     (by omega : 0 < n) hA
-  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re
   have hseq : s = xiShiftedRealMomentSequence w := rfl
   have hAtwo' : (HTGeometry.momentHankelMatrix s (n + 2)).PosDef := by
     rw [hseq]
     exact hAtwo
   have hbulk : xiShiftedAdaptiveGaussArithmeticBulk w n =
-      2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
+      2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
         (HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n -
           (n + 1 : ℝ) * HTGeometry.monicOrthoBeta
             (xiShiftedRealMomentSequence w) (n + 1)) := by
@@ -416,15 +416,15 @@ theorem two_mul_admissionNorm_product_mul_relativeArithmeticGaussBulk_le_fourth_
     simp only [s]
     ring
   calc
-    2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+    2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
         relativeArithmeticGaussBulk w n =
-      w ^ 4 *
-        (xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+      w ^ (4 : ℕ) *
+        (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
           xiShiftedAdaptiveGaussArithmeticBulk w n) := by
         rw [hscale, hbulk]
         ring
-    _ ≤ w ^ 4 * routeUAdjacentLiteralSourceSupply w (n + 1) :=
+    _ ≤ w ^ (4 : ℕ) * routeUAdjacentLiteralSourceSupply w (n + 1) :=
       mul_le_mul_of_nonneg_left hbridge (by positivity)
 
 /-- **Uniform Route U consequence.**  The existing normalized `1/8` bulk floor forces a
@@ -435,9 +435,9 @@ theorem exists_uniform_admissionNormProduct_quarter_lt_fourth_mul_nextSupply :
     ∃ W : ℝ, ∀ w ≥ W, ∀ n : ℕ, 2 ≤ n →
       (HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence w) (n + 4)).PosDef →
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) / 4 <
-        w ^ 4 * routeUAdjacentLiteralSourceSupply w (n + 1) := by
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) / 4 <
+        w ^ (4 : ℕ) * routeUAdjacentLiteralSourceSupply w (n + 1) := by
   obtain ⟨W, hW⟩ := exists_uniform_relativeArithmeticGaussBulk_eighth_of_actual
   refine ⟨max W 2, ?_⟩
   intro w hw n hn hA
@@ -454,29 +454,29 @@ theorem exists_uniform_admissionNormProduct_quarter_lt_fourth_mul_nextSupply :
   have htransport :=
     two_mul_admissionNorm_product_mul_relativeArithmeticGaussBulk_le_fourth_mul_nextSupply
       hwOne (by omega) hA
-  have hnorm : 0 < xiShiftedCanonicalAdmissionNorm (w ^ 2) n := by
+  have hnorm : 0 < xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n := by
     rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hAtwo]
     exact HTGeometry.monicOrthoNorm_pos_below
       (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hAtwo) (by omega)
-  have hnormNext : 0 < xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := by
+  have hnormNext : 0 < xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := by
     rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hAthree]
     exact HTGeometry.monicOrthoNorm_pos_below
       (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hAthree) (by omega)
-  have hprod : 0 < xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := mul_pos hnorm hnormNext
+  have hprod : 0 < xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := mul_pos hnorm hnormNext
   have hscaledFloor := mul_lt_mul_of_pos_left hfloor hprod
-  have hstrict : xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) / 4 <
-      2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+  have hstrict : xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) / 4 <
+      2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
         relativeArithmeticGaussBulk w n := by
     calc
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) / 4 =
-        2 * (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) * (1 / 8 : ℝ)) := by ring
-      _ < 2 * (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) *
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) / 4 =
+        2 * (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) * (1 / 8 : ℝ)) := by ring
+      _ < 2 * (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) *
           relativeArithmeticGaussBulk w n) :=
         mul_lt_mul_of_pos_left hscaledFloor (by norm_num)
       _ = _ := by ring
@@ -489,7 +489,7 @@ theorem exists_uniform_logSq_mul_normalizedNormProduct_lt_massScaled_nextSupply 
     ∃ W : ℝ, ∀ w ≥ W, ∀ n : ℕ, 2 ≤ n →
       (HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence w) (n + 4)).PosDef →
-      Real.log w ^ 2 * normalizedAdmissionNorm w n * normalizedAdmissionNorm w (n + 1) <
+      Real.log w ^ (2 : ℕ) * normalizedAdmissionNorm w n * normalizedAdmissionNorm w (n + 1) <
         16 * w ^ (8 * n + 10) * routeUAdjacentLiteralSourceSupply w (n + 1) := by
   obtain ⟨W, hW⟩ := exists_uniform_admissionNormProduct_quarter_lt_fourth_mul_nextSupply
   refine ⟨max W 2, ?_⟩
@@ -513,53 +513,53 @@ theorem exists_uniform_logSq_mul_normalizedNormProduct_lt_massScaled_nextSupply 
     dsimp [K]
     positivity
   have hscaled := mul_lt_mul_of_pos_left hraw hKpos
-  have hnextPow : w ^ (4 * (n + 1)) = w ^ (4 * n) * w ^ 4 := by
+  have hnextPow : w ^ (4 * (n + 1)) = w ^ (4 * n) * w ^ (4 : ℕ) := by
     calc
       w ^ (4 * (n + 1)) = w ^ (4 * n + 4) := by
         congr 1
-      _ = w ^ (4 * n) * w ^ 4 := by rw [pow_add]
-  have hsourcePow : w ^ (8 * n + 10) = w ^ (8 * n + 6) * w ^ 4 := by
+      _ = w ^ (4 * n) * w ^ (4 : ℕ) := by rw [pow_add]
+  have hsourcePow : w ^ (8 * n + 10) = w ^ (8 * n + 6) * w ^ (4 : ℕ) := by
     calc
       w ^ (8 * n + 10) = w ^ ((8 * n + 6) + 4) := by
         congr 1
-      _ = w ^ (8 * n + 6) * w ^ 4 := by rw [pow_add]
+      _ = w ^ (8 * n + 6) * w ^ (4 : ℕ) := by rw [pow_add]
   rw [hnorm, hnormNext, hnextPow]
   have hlog : Real.log w ≠ 0 := ne_of_gt (Real.log_pos hwOne)
-  have hcancel : Real.log w ^ 2 * (2 * w / Real.log w) *
-      (2 * w / Real.log w) = 4 * w ^ 2 := by
+  have hcancel : Real.log w ^ (2 : ℕ) * (2 * w / Real.log w) *
+      (2 * w / Real.log w) = 4 * w ^ (2 : ℕ) := by
     field_simp [hlog]
     ring
-  have hpower : w ^ 2 * w ^ (4 * n) * w ^ (4 * n) * w ^ 4 =
+  have hpower : w ^ (2 : ℕ) * w ^ (4 * n) * w ^ (4 * n) * w ^ (4 : ℕ) =
       w ^ (8 * n + 6) := by
     rw [← pow_add, ← pow_add, ← pow_add]
     congr 1
     omega
-  have hleft : Real.log w ^ 2 *
-      ((2 * w / Real.log w) * w ^ (4 * n) * xiShiftedCanonicalAdmissionNorm (w ^ 2) n) *
-      ((2 * w / Real.log w) * (w ^ (4 * n) * w ^ 4) *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1)) =
-      K * (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) / 4) := by
+  have hleft : Real.log w ^ (2 : ℕ) *
+      ((2 * w / Real.log w) * w ^ (4 * n) * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n) *
+      ((2 * w / Real.log w) * (w ^ (4 * n) * w ^ (4 : ℕ)) *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1)) =
+      K * (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) / 4) := by
     dsimp [K]
     calc
-      _ = (Real.log w ^ 2 * (2 * w / Real.log w) * (2 * w / Real.log w)) *
-          (w ^ (4 * n) * w ^ (4 * n) * w ^ 4) *
-          (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1)) := by ring
-      _ = 4 * (w ^ 2 * w ^ (4 * n) * w ^ (4 * n) * w ^ 4) *
-          (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1)) := by
+      _ = (Real.log w ^ (2 : ℕ) * (2 * w / Real.log w) * (2 * w / Real.log w)) *
+          (w ^ (4 * n) * w ^ (4 * n) * w ^ (4 : ℕ)) *
+          (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1)) := by ring
+      _ = 4 * (w ^ (2 : ℕ) * w ^ (4 * n) * w ^ (4 * n) * w ^ (4 : ℕ)) *
+          (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1)) := by
         rw [hcancel]
         ring
       _ = _ := by rw [hpower]; ring
   calc
-    Real.log w ^ 2 *
-        ((2 * w / Real.log w) * w ^ (4 * n) * xiShiftedCanonicalAdmissionNorm (w ^ 2) n) *
-        ((2 * w / Real.log w) * (w ^ (4 * n) * w ^ 4) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1)) =
-      K * (xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) / 4) := hleft
-    _ < K * (w ^ 4 * routeUAdjacentLiteralSourceSupply w (n + 1)) := hscaled
+    Real.log w ^ (2 : ℕ) *
+        ((2 * w / Real.log w) * w ^ (4 * n) * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n) *
+        ((2 * w / Real.log w) * (w ^ (4 * n) * w ^ (4 : ℕ)) *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1)) =
+      K * (xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) / 4) := hleft
+    _ < K * (w ^ (4 : ℕ) * routeUAdjacentLiteralSourceSupply w (n + 1)) := hscaled
     _ = 16 * w ^ (8 * n + 10) * routeUAdjacentLiteralSourceSupply w (n + 1) := by
       dsimp [K]
       rw [hsourcePow]

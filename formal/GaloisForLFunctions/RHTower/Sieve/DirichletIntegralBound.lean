@@ -20,8 +20,8 @@ open Finset MeasureTheory
 
 /-- **The mean square of a Dirichlet polynomial.** -/
 theorem integral_normSq_dirPoly_le (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2)
-      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+    (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
   have hmvt := dirichlet_meanValue_theorem N a T
   have hle := (abs_le.mp hmvt).2
   nlinarith [hle]
@@ -38,9 +38,9 @@ theorem window_factor_nonneg (N : ℕ) {T : ℝ} (hT : 0 ≤ T) :
 
 /-- **The mean square of the derivative.** -/
 theorem integral_normSq_dirPoly_deriv_le (N : ℕ) (a : Fin N → ℂ) {T : ℝ} (hT : 0 ≤ T) :
-    (∫ t in (0 : ℝ)..T, ‖dirPoly N (dirDerivCoeff N a) t‖ ^ 2)
+    (∫ t in (0 : ℝ)..T, ‖dirPoly N (dirDerivCoeff N a) t‖ ^ (2 : ℕ))
       ≤ (T + 4 * (N : ℝ) * (1 + Real.log N))
-          * ((Real.log N) ^ 2 * ∑ m : Fin N, ‖a m‖ ^ 2) := by
+          * ((Real.log N) ^ (2 : ℕ) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ)) := by
   have hbase := integral_normSq_dirPoly_le N (dirDerivCoeff N a) T
   have henergy := sum_normSq_dirDerivCoeff_le N a
   have hfac := window_factor_nonneg N hT

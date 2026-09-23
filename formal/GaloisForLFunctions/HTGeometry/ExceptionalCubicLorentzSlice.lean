@@ -44,15 +44,15 @@ Exact cubic-to-Lorentz factorization in the complex corner of the exceptional Jo
 -/
 theorem exceptionalComplexCornerMatrix_det (s t x y z : ℝ) :
     (exceptionalComplexCornerMatrix s t x y z).det =
-      ((s * (t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2) : ℝ) : ℂ) := by
+      ((s * (t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [Matrix.det_fin_three]
   push_cast
   simp [exceptionalComplexCornerMatrix]
   calc
     ↑s * (↑t + ↑z) * (↑t - ↑z) -
           ↑s * (↑x + ↑y * Complex.I) * (↑x - ↑y * Complex.I) =
-        ↑s * (↑t ^ 2 - ↑x ^ 2 + ↑y ^ 2 * Complex.I ^ 2 - ↑z ^ 2) := by ring
-    _ = ↑s * (↑t ^ 2 - ↑x ^ 2 - ↑y ^ 2 - ↑z ^ 2) := by
+        ↑s * (↑t ^ (2 : ℕ) - ↑x ^ (2 : ℕ) + ↑y ^ (2 : ℕ) * Complex.I ^ (2 : ℕ) - ↑z ^ (2 : ℕ)) := by ring
+    _ = ↑s * (↑t ^ (2 : ℕ) - ↑x ^ (2 : ℕ) - ↑y ^ (2 : ℕ) - ↑z ^ (2 : ℕ)) := by
       rw [Complex.I_sq]
       ring
 
@@ -62,7 +62,7 @@ Lorentz quadratic form.
 -/
 theorem exceptionalPrimitiveIdempotentSlice_det (t x y z : ℝ) :
     (exceptionalComplexCornerMatrix 1 t x y z).det =
-      ((t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2 : ℝ) : ℂ) := by
+      ((t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ) : ℝ) : ℂ) := by
   simpa using exceptionalComplexCornerMatrix_det 1 t x y z
 
 /--

@@ -51,12 +51,12 @@ theorem exists_eventually_routeT_selectedCell_all_amplitude_first_or_second :
       (∀ r ∈ S, T ≤ lam r ∧ lam r ≤ 2 * T) →
       (∀ i, lam i + delta ≤ lam (i + 1)) →
       (∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T) →
-      (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+      (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
         ∀ r ∈ S,
           V ≤ ‖heathBrownWindowRelevantEligibleDyadicAggregate
             L X 60 T (mu / 120) N0
               ((c : ℂ) + (lam r : ℝ) * Complex.I)‖) →
-      (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+      (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
         ∀ box : HeathBrownBoxChoice L X 60,
           IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
           IsHeathBrownBoxWindowRelevant N0 X 60 box →
@@ -64,7 +64,7 @@ theorem exists_eventually_routeT_selectedCell_all_amplitude_first_or_second :
             (groupedDyadicLower
               (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) ^
                 (alpha - c) ≤ V) →
-      ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ 60 ∧
+      ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ (60 : ℕ) ∧
         (L : ℝ) ≤ T ^ (mu / 60) ∧
         ((S.card : ℝ) ≤ maynardHarmonicFactor K delta *
             T ^ (mu * (1 - alpha) -

@@ -44,7 +44,7 @@ def pureStateProjectorTangentCompression (u v : E) : Matrix (Fin 2) (Fin 2) ℂ 
 theorem det_pureStateProjectorTangentCompression_eq_neg_sq_det_gram
     (u v : E) :
     (pureStateProjectorTangentCompression u v).det =
-      -((Matrix.gram ℂ ![u, v]).det) ^ 2 := by
+      -((Matrix.gram ℂ ![u, v]).det) ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two, Matrix.det_fin_two]
   simp only [pureStateProjectorTangentCompression, pureStateProjectorTangent,
     Matrix.of_apply, Matrix.gram_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
@@ -56,7 +56,7 @@ theorem det_pureStateProjectorTangentCompression_eq_neg_sq_det_gram
 theorem det_pureStateProjectorTangentCompression_eq_neg_projectiveEnergy_sq
     (u v : E) :
     (pureStateProjectorTangentCompression u v).det =
-      -((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ 2) := by
+      -((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ (2 : ℕ)) := by
   rw [det_pureStateProjectorTangentCompression_eq_neg_sq_det_gram,
     det_gram_pair_eq_projectiveGramTangentEnergy]
 
@@ -79,14 +79,14 @@ theorem projectiveGramTangentEnergy_pos_iff_linearIndependent_pair
 
 private theorem not_posSemidef_of_det_eq_neg_sq
     {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} {e : ℝ}
-    (he : 0 < e) (hdet : M.det = -((e : ℂ) ^ 2)) :
+    (he : 0 < e) (hdet : M.det = -((e : ℂ) ^ (2 : ℕ))) :
     ¬ M.PosSemidef := by
   intro hpsd
   have hnonneg := hpsd.det_nonneg
   rw [hdet] at hnonneg
   have hre := (RCLike.nonneg_iff.mp hnonneg).1
   norm_num at hre
-  rw [show (((e : ℂ) ^ 2).re) = e ^ 2 by
+  rw [show (((e : ℂ) ^ (2 : ℕ)).re) = e ^ (2 : ℕ) by
     simp [pow_two, Complex.mul_re]] at hre
   nlinarith
 

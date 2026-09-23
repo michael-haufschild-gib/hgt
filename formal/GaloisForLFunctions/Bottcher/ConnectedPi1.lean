@@ -174,7 +174,7 @@ theorem rho_surjective_succ_of_antiperiod (c : ℂ) (hc : ∀ n, c ∉ escapeLev
   have hrho_eq : rho c n (t : ℂ) = quadratic c (y : ℂ) := congrArg Subtype.val ht_eq
   have hquad : quadratic c (rho c (n + 1) (t : ℂ)) = quadratic c (y : ℂ) := by
     rw [quadratic_rho_succ c hc n t.2, hrho_eq]
-  have hsq : (rho c (n + 1) (t : ℂ)) ^ 2 = (y : ℂ) ^ 2 := by
+  have hsq : (rho c (n + 1) (t : ℂ)) ^ (2 : ℕ) = (y : ℂ) ^ (2 : ℕ) := by
     rw [quadratic_apply, quadratic_apply] at hquad
     linear_combination hquad
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with hsame | hneg

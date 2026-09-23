@@ -21,7 +21,7 @@ namespace Bottcher
 the crude escape set: its image has norm at most `‖c‖² + ‖c‖`, so the crude/small-ball
 ceiling at the image halves back below the given level. -/
 theorem escapeOpen_of_green_gt_halfCeiling {c z : ℂ} (hc4 : (4:ℝ) ≤ ‖c‖)
-    (hz : (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < greenFunctionDyn c z) :
+    (hz : (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < greenFunctionDyn c z) :
     z ∈ escapeOpen c := by
   by_contra hcon
   have hmax : max 2 ‖c‖ = ‖c‖ := max_eq_right (by linarith)
@@ -29,14 +29,14 @@ theorem escapeOpen_of_green_gt_halfCeiling {c z : ℂ} (hc4 : (4:ℝ) ≤ ‖c�
     have h1 : ¬ (max 2 ‖c‖ < ‖z‖) := hcon
     push Not at h1
     rwa [hmax] at h1
-  have hfz : ‖quadratic c z‖ ≤ ‖z‖ ^ 2 + ‖c‖ := by
-    have h1 : ‖z ^ 2 + c‖ ≤ ‖z ^ 2‖ + ‖c‖ := norm_add_le _ _
+  have hfz : ‖quadratic c z‖ ≤ ‖z‖ ^ (2 : ℕ) + ‖c‖ := by
+    have h1 : ‖z ^ (2 : ℕ) + c‖ ≤ ‖z ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
     rw [norm_pow] at h1
     simpa [quadratic] using h1
-  have hfzc : ‖quadratic c z‖ ≤ ‖c‖ ^ 2 + ‖c‖ := by
-    have h2 : ‖z‖ ^ 2 ≤ ‖c‖ ^ 2 := pow_le_pow_left₀ (norm_nonneg z) hznorm 2
+  have hfzc : ‖quadratic c z‖ ≤ ‖c‖ ^ (2 : ℕ) + ‖c‖ := by
+    have h2 : ‖z‖ ^ (2 : ℕ) ≤ ‖c‖ ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg z) hznorm 2
     linarith
-  have hGfz : greenFunctionDyn c (quadratic c z) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) + 1 := by
+  have hGfz : greenFunctionDyn c (quadratic c z) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1 := by
     rcases le_or_gt ‖quadratic c z‖ (max 2 ‖c‖) with hcase | hcase
     · have h1 := greenFunctionDyn_le_small (c := c) hcase
       rwa [hmax] at h1
@@ -47,7 +47,7 @@ theorem escapeOpen_of_green_gt_halfCeiling {c z : ℂ} (hc4 : (4:ℝ) ≤ ‖c�
         have := le_max_left 2 ‖c‖
         linarith [hcase]
       have h3 := greenFunctionDyn_le_crude h1 h2
-      have h4 : Real.log ‖quadratic c z‖ ≤ Real.log (‖c‖ ^ 2 + ‖c‖) := by
+      have h4 : Real.log ‖quadratic c z‖ ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) := by
         apply Real.log_le_log (by linarith) hfzc
       linarith
   have hdd := greenFunctionDyn_quadratic c z
@@ -63,11 +63,11 @@ theorem sectionInverse_identity_of_level {c : ℂ} {rlo R₀ Ra : ℝ}
     (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
     {r₄ : ℝ} (hr₄pos : 0 < r₄)
-    (hr₄ : (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < Real.log r₄)
+    (hr₄ : (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < Real.log r₄)
     (hr₄lo : rlo ≤ r₄) (hr₄R₀ : r₄ < R₀) :
     ∀ w : ℂ, r₄ < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w := by
-  have hlogpos : (0:ℝ) < (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 := by
-    have h1 : (0:ℝ) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) := Real.log_nonneg (by nlinarith)
+  have hlogpos : (0:ℝ) < (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 := by
+    have h1 : (0:ℝ) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) := Real.log_nonneg (by nlinarith)
     linarith
   set A₄ : Set ℂ := annulusSet r₄ R₀ with hA₄def
   have hA₄o : IsOpen A₄ := isOpen_annulusSet _ _
@@ -78,7 +78,7 @@ theorem sectionInverse_identity_of_level {c : ℂ} {rlo R₀ Ra : ℝ}
     have hlev := S.level w ⟨lt_of_le_of_lt hr₄lo hw.1, hw.2⟩
     apply escapeOpen_of_green_gt_halfCeiling hc4
     rw [hlev]
-    calc (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < Real.log r₄ := hr₄
+    calc (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < Real.log r₄ := hr₄
       _ < Real.log ‖w‖ := Real.log_lt_log hr₄pos hw.1
   -- analyticity of the composite on the sub-annulus
   have hφT_an : AnalyticOnNhd ℂ (fun w => bottcherCoord c (S.T w)) A₄ := by
@@ -119,17 +119,17 @@ theorem sectionInverse_identity_at {c : ℂ} {rlo R₀ Ra : ℝ}
     (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
     (hrlo0 : 0 < rlo)
-    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2)
-    {w : ℂ} (hw_lo : (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < Real.log ‖w‖)
+    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2)
+    {w : ℂ} (hw_lo : (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < Real.log ‖w‖)
     (hwR₀ : ‖w‖ < R₀) :
     bottcherCoord c (S.T w) = w := by
-  set ceil : ℝ := (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 with hceildef
+  set ceil : ℝ := (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 with hceildef
   have hwpos : (0:ℝ) < ‖w‖ := by
     by_contra hcon
     push Not at hcon
     have h0 : ‖w‖ = 0 := le_antisymm hcon (norm_nonneg w)
     rw [h0, Real.log_zero] at hw_lo
-    have h1 : (0:ℝ) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) := Real.log_nonneg (by nlinarith)
+    have h1 : (0:ℝ) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) := Real.log_nonneg (by nlinarith)
     have h2 : (0:ℝ) < ceil := by rw [hceildef]; linarith
     linarith
   set r₄ : ℝ := Real.exp ((ceil + Real.log ‖w‖) / 2) with hr₄def

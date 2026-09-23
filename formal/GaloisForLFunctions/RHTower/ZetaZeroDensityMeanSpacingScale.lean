@@ -44,7 +44,7 @@ theorem exists_zetaZeroDensity_scale_le_of_mollified_meanSquare :
           edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
         (∫ t in T₁..T₂,
           ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
-            edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq →
+            edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq →
       ∀ Z : Finset ℂ,
         (∀ z : ℂ, z ∈ Z ↔
           z ∈ (uIcc (1 / 2 : ℝ) (15 / 2) ×ℂ uIcc T₁ T₂) ∧ riemannZeta z = 0) →

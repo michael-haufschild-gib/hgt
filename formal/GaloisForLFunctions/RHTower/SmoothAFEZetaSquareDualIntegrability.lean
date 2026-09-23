@@ -10,16 +10,16 @@ namespace RHTower
 on every retained dyadic block. -/
 theorem integrableOn_normSq_smoothAFEZetaSquareDualAFESummand
     {N : ℕ} (hN : 4 ≤ N) :
-    IntegrableOn (fun t : ℝ => ‖smoothAFEZetaSquareDualAFESummand N t‖ ^ 2)
+    IntegrableOn (fun t : ℝ => ‖smoothAFEZetaSquareDualAFESummand N t‖ ^ (2 : ℕ))
       (Set.Icc (N : ℝ) (2 * N : ℝ)) := by
   let S : Set ℝ := Set.Icc (N : ℝ) (2 * N : ℝ)
   let F : ℝ → ℂ := fun t =>
     smoothAFEZetaSquareDualSourceField (N : ℝ) (N : ℝ) t
   let V : ℝ → ℂ := fun t =>
     smoothAFEZetaSquareDualVariationSourceField (N : ℝ) (N : ℝ) t t
-  have hFint : Integrable (fun t => ‖F t‖ ^ 2) (volume.restrict S) :=
+  have hFint : Integrable (fun t => ‖F t‖ ^ (2 : ℕ)) (volume.restrict S) :=
     integrableOn_normSq_smoothAFEZetaSquareDualFrozenSourceField hN
-  have hVint : Integrable (fun t => ‖V t‖ ^ 2) (volume.restrict S) :=
+  have hVint : Integrable (fun t => ‖V t‖ ^ (2 : ℕ)) (volume.restrict S) :=
     integrableOn_normSq_smoothAFEZetaSquareDualVariationSourceField_diagonal hN
   have hFm : AEStronglyMeasurable F (volume.restrict S) :=
     (measurable_smoothAFEZetaSquareDualFrozenSourceField N).aestronglyMeasurable.restrict

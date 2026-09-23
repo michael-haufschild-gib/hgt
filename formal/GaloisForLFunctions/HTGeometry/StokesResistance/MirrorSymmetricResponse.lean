@@ -77,8 +77,8 @@ theorem mirrorSymmetricResponseProjection_isIdempotent
 theorem trace_mirrorSymmetricResponseProjection
     (A : Matrix i i ℂ) (hA : A * A = 1) :
     Matrix.trace (mirrorSymmetricResponseProjection A) =
-      ((Fintype.card i : ℂ) ^ 2 + 2 * Fintype.card i +
-        Matrix.trace A ^ 2) / 4 := by
+      ((Fintype.card i : ℂ) ^ (2 : ℕ) + 2 * Fintype.card i +
+        Matrix.trace A ^ (2 : ℕ)) / 4 := by
   rw [mirrorSymmetricResponseProjection, Matrix.mul_smul, Matrix.mul_add,
     Matrix.mul_one, Matrix.trace_smul, Matrix.trace_add,
     trace_symmetricTensorProjection,

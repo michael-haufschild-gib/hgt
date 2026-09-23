@@ -14,7 +14,7 @@ noncomputable section
 /-- **Route-T zero-free region at both signs of the ordinate.** -/
 theorem exists_routeT_zero_free_region_abs :
     ∃ A : ℝ, ∀ β γ : ℝ, 100000 ≤ |γ| →
-      routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight |γ| → β ≤ 1 →
+      routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight |γ| → β ≤ 1 →
       1 - routeTZeroFreeWidth A |γ| < β →
       riemannZeta ((β : ℂ) + (γ : ℂ) * Complex.I) ≠ 0 := by
   obtain ⟨A, hA⟩ := exists_routeT_zero_free_region

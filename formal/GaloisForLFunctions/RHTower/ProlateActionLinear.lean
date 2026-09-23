@@ -48,7 +48,7 @@ theorem prolateSLAction_finsetSum (s : Finset ι) (a : ι → ℝ) {F F' F'' : �
     (h2 : ∀ i ∈ s, ∀ x : ℝ, HasDerivAt (F' i) (F'' i x) x)
     (c x : ℝ) :
     prolateSLAction c (fun y => ∑ i ∈ s, a i * F i y) x
-      = ∑ i ∈ s, a i * ((1 - x ^ 2) * F'' i x - 2 * x * F' i x - c ^ 2 * x ^ 2 * F i x) := by
+      = ∑ i ∈ s, a i * ((1 - x ^ (2 : ℕ)) * F'' i x - 2 * x * F' i x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * F i x) := by
   have hd1 : deriv (fun y => ∑ i ∈ s, a i * F i y) = fun y => ∑ i ∈ s, a i * F' i y :=
     deriv_finsetSum_const_mul s a h1
   have hd2 : deriv (fun y => ∑ i ∈ s, a i * F' i y) = fun y => ∑ i ∈ s, a i * F'' i y :=
@@ -61,7 +61,7 @@ theorem prolateSLAction_finsetSum (s : Finset ι) (a : ι → ℝ) {F F' F'' : �
 /-- The prolate action of a single member of a `HasDerivAt` family. -/
 theorem prolateSLAction_of_hasDerivAt {f f' f'' : ℝ → ℝ}
     (h1 : ∀ x : ℝ, HasDerivAt f (f' x) x) (h2 : ∀ x : ℝ, HasDerivAt f' (f'' x) x) (c x : ℝ) :
-    prolateSLAction c f x = (1 - x ^ 2) * f'' x - 2 * x * f' x - c ^ 2 * x ^ 2 * f x := by
+    prolateSLAction c f x = (1 - x ^ (2 : ℕ)) * f'' x - 2 * x * f' x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * f x := by
   have hd1 : deriv f = f' := funext fun y => (h1 y).deriv
   have hd2 : deriv f' = f'' := funext fun y => (h2 y).deriv
   rw [prolateSLAction, hd1, hd2]
@@ -79,11 +79,11 @@ theorem integral_prolateSLAction_finsetSum_mul (s : Finset ι) (a : ι → ℝ)
         * (∑ i ∈ s, a i * F i x))
       = ∑ i ∈ s, ∑ k ∈ s, a i * a k
           * ∫ x in (-1 : ℝ)..1,
-              ((1 - x ^ 2) * F'' i x - 2 * x * F' i x - c ^ 2 * x ^ 2 * F i x) * F k x := by
+              ((1 - x ^ (2 : ℕ)) * F'' i x - 2 * x * F' i x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * F i x) * F k x := by
   have hpt : ∀ x : ℝ,
       prolateSLAction c (fun y => ∑ i ∈ s, a i * F i y) x * (∑ i ∈ s, a i * F i x)
         = ∑ i ∈ s, ∑ k ∈ s, a i * a k
-            * (((1 - x ^ 2) * F'' i x - 2 * x * F' i x - c ^ 2 * x ^ 2 * F i x) * F k x) := by
+            * (((1 - x ^ (2 : ℕ)) * F'' i x - 2 * x * F' i x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * F i x) * F k x) := by
     intro x
     rw [prolateSLAction_finsetSum s a h1 h2 c x, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -91,7 +91,7 @@ theorem integral_prolateSLAction_finsetSum_mul (s : Finset ι) (a : ι → ℝ)
     exact Finset.sum_congr rfl fun k _ => by ring
   have hint : ∀ i ∈ s, ∀ k ∈ s, IntervalIntegrable
       (fun x => a i * a k
-        * (((1 - x ^ 2) * F'' i x - 2 * x * F' i x - c ^ 2 * x ^ 2 * F i x) * F k x))
+        * (((1 - x ^ (2 : ℕ)) * F'' i x - 2 * x * F' i x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * F i x) * F k x))
       MeasureTheory.volume (-1) 1 := by
     intro i hi k hk
     apply Continuous.intervalIntegrable
@@ -101,7 +101,7 @@ theorem integral_prolateSLAction_finsetSum_mul (s : Finset ι) (a : ι → ℝ)
     have := hc k hk
     fun_prop
   rw [intervalIntegral.integral_congr (g := fun x => ∑ i ∈ s, ∑ k ∈ s, a i * a k
-      * (((1 - x ^ 2) * F'' i x - 2 * x * F' i x - c ^ 2 * x ^ 2 * F i x) * F k x))
+      * (((1 - x ^ (2 : ℕ)) * F'' i x - 2 * x * F' i x - c ^ (2 : ℕ) * x ^ (2 : ℕ) * F i x) * F k x))
     (fun x _ => hpt x)]
   rw [intervalIntegral.integral_finsetSum (fun i hi =>
     intervalIntegrable_finsetSum s (fun k hk => hint i hi k hk))]

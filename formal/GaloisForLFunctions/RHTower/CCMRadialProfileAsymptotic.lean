@@ -27,10 +27,10 @@ namespace GaloisForLFunctions.RHTower
 /-- `cos v + sin v = sqrt 2 cos(v - pi/4)`: the phase shift `pi/4` in trigonometric form. -/
 theorem cos_add_sin_eq (v : ℝ) :
     Real.cos v + Real.sin v = Real.sqrt 2 * Real.cos (v - Real.pi / 4) := by
-  have hs2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   rw [Real.cos_sub, Real.cos_pi_div_four, Real.sin_pi_div_four]
   have h : Real.sqrt 2 * (Real.cos v * (Real.sqrt 2 / 2) + Real.sin v * (Real.sqrt 2 / 2))
-      = Real.sqrt 2 ^ 2 / 2 * (Real.cos v + Real.sin v) := by ring
+      = Real.sqrt 2 ^ (2 : ℕ) / 2 * (Real.cos v + Real.sin v) := by ring
   rw [h, hs2]
   ring
 
@@ -80,23 +80,23 @@ from the card's `c sqrt(x²-1) - (c s/2) theta(x)` by at most `c s²/4` times th
 theorem abs_cos_phase_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 ≤ x)
     (hc : 0 ≤ c) :
     |Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
-        - Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
-      ≤ c * (s ^ 2 / 4) * GaloisForLFunctions.HTGeometry.endpointLog x := by
+        - Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
+      ≤ c * (s ^ (2 : ℕ) / 4) * GaloisForLFunctions.HTGeometry.endpointLog x := by
   have hphase := abs_xiEndpointPhase_sub_second_order_le hs0 hs1 hx
   have hlip := Real.abs_cos_sub_cos_le (c * xiEndpointPhase s x - Real.pi / 4)
-    (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
+    (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
   refine le_trans hlip ?_
   have hval : c * xiEndpointPhase s x - Real.pi / 4
-      - (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
-      = c * (xiEndpointPhase s x - (Real.sqrt (x ^ 2 - 1) - s / 2 * radialAngle x)) := by
+      - (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
+      = c * (xiEndpointPhase s x - (Real.sqrt (x ^ (2 : ℕ) - 1) - s / 2 * radialAngle x)) := by
     ring
   rw [hval, abs_mul, abs_of_nonneg hc]
-  have hstep : c * |xiEndpointPhase s x - (Real.sqrt (x ^ 2 - 1) - s / 2 * radialAngle x)|
-      ≤ c * (s ^ 2 / 4 * GaloisForLFunctions.HTGeometry.endpointLog x) :=
+  have hstep : c * |xiEndpointPhase s x - (Real.sqrt (x ^ (2 : ℕ) - 1) - s / 2 * radialAngle x)|
+      ≤ c * (s ^ (2 : ℕ) / 4 * GaloisForLFunctions.HTGeometry.endpointLog x) :=
     mul_le_mul_of_nonneg_left hphase hc
-  calc c * |xiEndpointPhase s x - (Real.sqrt (x ^ 2 - 1) - s / 2 * radialAngle x)|
-      ≤ c * (s ^ 2 / 4 * GaloisForLFunctions.HTGeometry.endpointLog x) := hstep
-    _ = c * (s ^ 2 / 4) * GaloisForLFunctions.HTGeometry.endpointLog x := by ring
+  calc c * |xiEndpointPhase s x - (Real.sqrt (x ^ (2 : ℕ) - 1) - s / 2 * radialAngle x)|
+      ≤ c * (s ^ (2 : ℕ) / 4 * GaloisForLFunctions.HTGeometry.endpointLog x) := hstep
+    _ = c * (s ^ (2 : ℕ) / 4) * GaloisForLFunctions.HTGeometry.endpointLog x := by ring
 
 
 /-! ## The radial profile
@@ -112,14 +112,14 @@ with no error at all.  So the profile is the fourth root times the cosine, and t
 Bessel remainder, the phase expansion and the `s`-dependence of the fourth root. -/
 
 /-- The algebraic fourth root `[(x²-1)(x²-s)]^{-1/4}`, the exact amplitude of the model. -/
-def ampFourth (s x : ℝ) : ℝ := 1 / Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)))
+def ampFourth (s x : ℝ) : ℝ := 1 / Real.sqrt (Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)))
 
 theorem ampFourth_pos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < ampFourth s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   rw [ampFourth]
-  have : (0 : ℝ) < Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) :=
+  have : (0 : ℝ) < Real.sqrt (Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (mul_pos hd hn))
   positivity
 
@@ -129,12 +129,12 @@ theorem sqrt_mul_xiAmplitude_div_eq {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1
     (hc : 0 < c) :
     Real.sqrt c * xiAmplitude s x / Real.sqrt (c * xiEndpointPhase s x) = ampFourth s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hsph : 0 < Real.sqrt (xiEndpointPhase s x) := Real.sqrt_pos.mpr hph
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
-  have hD : 0 < Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) :=
+  have hD : 0 < Real.sqrt (Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (mul_pos hd hn))
   have hsplit : Real.sqrt (c * xiEndpointPhase s x)
       = Real.sqrt c * Real.sqrt (xiEndpointPhase s x) := Real.sqrt_mul hc.le _
@@ -152,7 +152,7 @@ theorem abs_profile_sub_model_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
           * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)|
       ≤ 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   have hA : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx
@@ -200,13 +200,13 @@ theorem abs_radialProfile_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
     (hc : 0 < c) (hcxi : 1 ≤ c * xiEndpointPhase s x) :
     |Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
         - Real.sqrt (2 / Real.pi) * ampFourth 0 x
-          * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
+          * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
       ≤ Real.sqrt (2 / Real.pi) * ampFourth s x
-          * (c * (s ^ 2 / 4) * GaloisForLFunctions.HTGeometry.endpointLog x)
+          * (c * (s ^ (2 : ℕ) / 4) * GaloisForLFunctions.HTGeometry.endpointLog x)
         + Real.sqrt (2 / Real.pi) * |ampFourth s x - ampFourth 0 x|
         + 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   have hA : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx
@@ -223,27 +223,27 @@ theorem abs_radialProfile_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   have hph2 : |Real.sqrt (2 / Real.pi) * ampFourth s x
         * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
       - Real.sqrt (2 / Real.pi) * ampFourth s x
-        * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
+        * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
       ≤ Real.sqrt (2 / Real.pi) * ampFourth s x
-        * (c * (s ^ 2 / 4) * GaloisForLFunctions.HTGeometry.endpointLog x) := by
+        * (c * (s ^ (2 : ℕ) / 4) * GaloisForLFunctions.HTGeometry.endpointLog x) := by
     rw [← mul_sub, abs_mul,
       abs_of_pos (by positivity : (0 : ℝ) < Real.sqrt (2 / Real.pi) * ampFourth s x)]
     exact mul_le_mul_of_nonneg_left hphase (by positivity)
   -- the amplitude error
   have hamp2 : |Real.sqrt (2 / Real.pi) * ampFourth s x
-        * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
+        * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
       - Real.sqrt (2 / Real.pi) * ampFourth 0 x
-        * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
+        * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)|
       ≤ Real.sqrt (2 / Real.pi) * |ampFourth s x - ampFourth 0 x| := by
     have hfac : Real.sqrt (2 / Real.pi) * ampFourth s x
-          * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
+          * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
         - Real.sqrt (2 / Real.pi) * ampFourth 0 x
-          * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
+          * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4)
         = Real.sqrt (2 / Real.pi) * (ampFourth s x - ampFourth 0 x)
-          * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4) := by
+          * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4) := by
       ring
     rw [hfac, abs_mul, abs_mul, abs_of_pos hT]
-    have hcos : |Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x
+    have hcos : |Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x
       - Real.pi / 4)| ≤ 1 := Real.abs_cos_le_one _
     have hnn : (0 : ℝ) ≤ Real.sqrt (2 / Real.pi) * |ampFourth s x - ampFourth 0 x| := by
       positivity
@@ -254,14 +254,14 @@ theorem abs_radialProfile_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
     (Real.sqrt (2 / Real.pi) * ampFourth s x
       * Real.cos (c * xiEndpointPhase s x - Real.pi / 4))
     (Real.sqrt (2 / Real.pi) * ampFourth 0 x
-      * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
+      * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
   have htri2 := abs_sub_le
     (Real.sqrt (2 / Real.pi) * ampFourth s x
       * Real.cos (c * xiEndpointPhase s x - Real.pi / 4))
     (Real.sqrt (2 / Real.pi) * ampFourth s x
-      * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
+      * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
     (Real.sqrt (2 / Real.pi) * ampFourth 0 x
-      * Real.cos (c * Real.sqrt (x ^ 2 - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
+      * Real.cos (c * Real.sqrt (x ^ (2 : ℕ) - 1) - c * (s / 2) * radialAngle x - Real.pi / 4))
   linarith [htri1, htri2, hrem, hph2, hamp2]
 
 
@@ -269,82 +269,82 @@ theorem abs_radialProfile_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
 /-! ## The `s`-dependence of the fourth root -/
 
 theorem ampFourth_pow_four {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    ampFourth s x ^ 4 = 1 / ((x ^ 2 - 1) * (x ^ 2 - s)) := by
+    ampFourth s x ^ (4 : ℕ) = 1 / ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
-  have h1 : Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) ^ 2 = (x ^ 2 - 1) * (x ^ 2 - s) :=
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
+  have h1 : Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) ^ (2 : ℕ) = (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) :=
     Real.sq_sqrt hP.le
-  have h2 : Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) ^ 2
-      = Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sq_sqrt (Real.sqrt_nonneg _)
+  have h2 : Real.sqrt (Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) ^ (2 : ℕ)
+      = Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := Real.sq_sqrt (Real.sqrt_nonneg _)
   rw [ampFourth, div_pow, one_pow, show (4 : ℕ) = 2 * 2 from rfl, pow_mul, h2, h1]
 
 /-- **The `s`-dependence of the amplitude is linear.**
 `|A_s-fourth-root - A_0-fourth-root| <= s A_0-fourth-root/(x²-s)`, so it is `O(s)` on every compact. -/
 theorem abs_ampFourth_sub_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    |ampFourth s x - ampFourth 0 x| ≤ s * ampFourth 0 x / (x ^ 2 - s) := by
+    |ampFourth s x - ampFourth 0 x| ≤ s * ampFourth 0 x / (x ^ (2 : ℕ) - s) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hx2 : (0 : ℝ) < x ^ 2 := by positivity
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   have ha : 0 < ampFourth s x := ampFourth_pos hs1 hx
   have hb : 0 < ampFourth 0 x := ampFourth_pos (by norm_num) hx
   have ha4 := ampFourth_pow_four hs1 hx
-  have hb4 : ampFourth 0 x ^ 4 = 1 / ((x ^ 2 - 1) * x ^ 2) := by
+  have hb4 : ampFourth 0 x ^ (4 : ℕ) = 1 / ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ)) := by
     have h := ampFourth_pow_four (s := 0) (x := x) (by norm_num) hx
     rw [sub_zero] at h
     exact h
   -- the fourth powers are ordered
-  have hpow : ampFourth 0 x ^ 4 ≤ ampFourth s x ^ 4 := by
+  have hpow : ampFourth 0 x ^ (4 : ℕ) ≤ ampFourth s x ^ (4 : ℕ) := by
     rw [ha4, hb4]
     refine div_le_div_of_nonneg_left (by norm_num) (by positivity) ?_
     nlinarith
   have hab : ampFourth 0 x ≤ ampFourth s x :=
     le_of_pow_le_pow_left₀ (by norm_num) ha.le hpow
   -- the difference of fourth powers
-  have hdiff4 : ampFourth s x ^ 4 - ampFourth 0 x ^ 4
-      = s * (x ^ 2 - 1) / (((x ^ 2 - 1) * (x ^ 2 - s)) * ((x ^ 2 - 1) * x ^ 2)) := by
+  have hdiff4 : ampFourth s x ^ (4 : ℕ) - ampFourth 0 x ^ (4 : ℕ)
+      = s * (x ^ (2 : ℕ) - 1) / (((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) * ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ))) := by
     rw [ha4, hb4]
     field_simp
     ring
   -- factor the difference
   have hfac : (ampFourth s x - ampFourth 0 x)
-      * ((ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ 2 + ampFourth 0 x ^ 2))
-      = ampFourth s x ^ 4 - ampFourth 0 x ^ 4 := by ring
-  have hden : ampFourth 0 x ^ 3
-      ≤ (ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ 2 + ampFourth 0 x ^ 2) := by
+      * ((ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ (2 : ℕ) + ampFourth 0 x ^ (2 : ℕ)))
+      = ampFourth s x ^ (4 : ℕ) - ampFourth 0 x ^ (4 : ℕ) := by ring
+  have hden : ampFourth 0 x ^ (3 : ℕ)
+      ≤ (ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ (2 : ℕ) + ampFourth 0 x ^ (2 : ℕ)) := by
     have h1 : ampFourth 0 x ≤ ampFourth s x + ampFourth 0 x := by linarith
-    have h2 : ampFourth 0 x ^ 2 ≤ ampFourth s x ^ 2 + ampFourth 0 x ^ 2 := by
+    have h2 : ampFourth 0 x ^ (2 : ℕ) ≤ ampFourth s x ^ (2 : ℕ) + ampFourth 0 x ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (ampFourth s x)]
-    calc ampFourth 0 x ^ 3 = ampFourth 0 x * ampFourth 0 x ^ 2 := by ring
-      _ ≤ (ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ 2 + ampFourth 0 x ^ 2) :=
+    calc ampFourth 0 x ^ (3 : ℕ) = ampFourth 0 x * ampFourth 0 x ^ (2 : ℕ) := by ring
+      _ ≤ (ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ (2 : ℕ) + ampFourth 0 x ^ (2 : ℕ)) :=
           mul_le_mul h1 h2 (by positivity) (by positivity)
   -- conclude
-  have hb3 : ampFourth 0 x ^ 3 = 1 / (((x ^ 2 - 1) * x ^ 2) * ampFourth 0 x) := by
-    have h : ampFourth 0 x ^ 4 = ampFourth 0 x ^ 3 * ampFourth 0 x := by ring
+  have hb3 : ampFourth 0 x ^ (3 : ℕ) = 1 / (((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ)) * ampFourth 0 x) := by
+    have h : ampFourth 0 x ^ (4 : ℕ) = ampFourth 0 x ^ (3 : ℕ) * ampFourth 0 x := by ring
     rw [hb4] at h
     field_simp at h ⊢
     linarith [h]
   rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ ampFourth s x - ampFourth 0 x)]
-  have hkey : (ampFourth s x - ampFourth 0 x) * ampFourth 0 x ^ 3
-      ≤ ampFourth s x ^ 4 - ampFourth 0 x ^ 4 := by
-    calc (ampFourth s x - ampFourth 0 x) * ampFourth 0 x ^ 3
+  have hkey : (ampFourth s x - ampFourth 0 x) * ampFourth 0 x ^ (3 : ℕ)
+      ≤ ampFourth s x ^ (4 : ℕ) - ampFourth 0 x ^ (4 : ℕ) := by
+    calc (ampFourth s x - ampFourth 0 x) * ampFourth 0 x ^ (3 : ℕ)
         ≤ (ampFourth s x - ampFourth 0 x)
-          * ((ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ 2 + ampFourth 0 x ^ 2)) :=
+          * ((ampFourth s x + ampFourth 0 x) * (ampFourth s x ^ (2 : ℕ) + ampFourth 0 x ^ (2 : ℕ))) :=
           mul_le_mul_of_nonneg_left hden (by linarith)
-      _ = ampFourth s x ^ 4 - ampFourth 0 x ^ 4 := hfac
-  have hkey2 : (ampFourth s x - ampFourth 0 x) / (((x ^ 2 - 1) * x ^ 2) * ampFourth 0 x)
-      ≤ s * (x ^ 2 - 1) / (((x ^ 2 - 1) * (x ^ 2 - s)) * ((x ^ 2 - 1) * x ^ 2)) := by
+      _ = ampFourth s x ^ (4 : ℕ) - ampFourth 0 x ^ (4 : ℕ) := hfac
+  have hkey2 : (ampFourth s x - ampFourth 0 x) / (((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ)) * ampFourth 0 x)
+      ≤ s * (x ^ (2 : ℕ) - 1) / (((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) * ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ))) := by
     rw [← hdiff4, ← mul_one_div, ← hb3]
     exact hkey
   rw [div_le_div_iff₀ (by positivity) (by positivity)] at hkey2
-  have hpos2 : (0 : ℝ) < (x ^ 2 - 1) * ((x ^ 2 - 1) * x ^ 2) := by positivity
-  have hscaled : ((ampFourth s x - ampFourth 0 x) * (x ^ 2 - s))
-      * ((x ^ 2 - 1) * ((x ^ 2 - 1) * x ^ 2))
-      ≤ (s * ampFourth 0 x) * ((x ^ 2 - 1) * ((x ^ 2 - 1) * x ^ 2)) := by
+  have hpos2 : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ)) := by positivity
+  have hscaled : ((ampFourth s x - ampFourth 0 x) * (x ^ (2 : ℕ) - s))
+      * ((x ^ (2 : ℕ) - 1) * ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ)))
+      ≤ (s * ampFourth 0 x) * ((x ^ (2 : ℕ) - 1) * ((x ^ (2 : ℕ) - 1) * x ^ (2 : ℕ))) := by
     nlinarith [hkey2]
-  have hmain : (ampFourth s x - ampFourth 0 x) * (x ^ 2 - s) ≤ s * ampFourth 0 x :=
+  have hmain : (ampFourth s x - ampFourth 0 x) * (x ^ (2 : ℕ) - s) ≤ s * ampFourth 0 x :=
     le_of_mul_le_mul_right hscaled hpos2
   rw [le_div_iff₀ hn]
   exact hmain

@@ -72,9 +72,9 @@ theorem log_two_gt_half : (1 : ℝ) / 2 < Real.log 2 := by
 /-- **The Gaussian windows are disjoint.**  Zeros need `x ≤ γ₁^{-2}`, primes need
 `x ≥ (log 2)²/4`; incompatible once `γ₁ log 2 > 2`, which the true value `≈ 9.8` satisfies. -/
 theorem gaussian_windows_disjoint {x g1 : ℝ} (hg1 : 0 < g1) (hprod : 2 < g1 * Real.log 2)
-    (hzero : x ≤ 1 / g1 ^ 2) (hprime : Real.log 2 ^ 2 / 4 ≤ x) : False := by
-  have hg2 : (0 : ℝ) < g1 ^ 2 := by positivity
-  have h1 : Real.log 2 ^ 2 / 4 ≤ 1 / g1 ^ 2 := le_trans hprime hzero
+    (hzero : x ≤ 1 / g1 ^ (2 : ℕ)) (hprime : Real.log 2 ^ (2 : ℕ) / 4 ≤ x) : False := by
+  have hg2 : (0 : ℝ) < g1 ^ (2 : ℕ) := by positivity
+  have h1 : Real.log 2 ^ (2 : ℕ) / 4 ≤ 1 / g1 ^ (2 : ℕ) := le_trans hprime hzero
   rw [div_le_div_iff₀ (by norm_num) hg2] at h1
   nlinarith [hprod, h1, Real.log_two_gt_d9, hg1]
 

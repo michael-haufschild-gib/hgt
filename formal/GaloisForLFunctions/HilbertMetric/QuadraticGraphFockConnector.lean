@@ -168,7 +168,7 @@ theorem quadFockDilate_degOne (t : ℝ) (u : QuadMode e κ → ℝ) :
 omit [Fintype κ] in
 theorem quadFockDilate_degTwo (t : ℝ) (ht : 0 ≤ t) (w : Sym (QuadMode e κ) 2 → ℝ) :
     quadFockDilate t (quadDegTwo w) = quadDegTwo (fun β => t * w β) := by
-  have hsq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht
+  have hsq : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht
   funext x
   cases x with
   | inl a => simp [quadFockDilate, quadFockDegree, quadDegTwo]
@@ -213,7 +213,7 @@ theorem quadFockGram_quadFockFamily {m : ℕ}
       = Matrix.fromBlocks (1 : Matrix Unit Unit ℝ) 0 0
           (Matrix.fromBlocks (t • (1 : Matrix (Fin e) (Fin e) ℝ)) 0 0
             (quadraticGraphGram L t)) := by
-  have hsq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht
+  have hsq : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht
   have hmul : Real.sqrt t * Real.sqrt t = t := Real.mul_self_sqrt ht
   ext x y
   cases x with
@@ -285,7 +285,7 @@ theorem quadFockGram_quadFockFamily {m : ℕ}
                   simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply,
                     Matrix.mul_apply, Matrix.transpose_apply, smul_eq_mul]
                   have hdeg2 : ∑ β : Sym (QuadMode e κ) 2, t * q r β * (t * q s β)
-                      = t ^ 2 * (if r = s then 1 else 0) := by
+                      = t ^ (2 : ℕ) * (if r = s then 1 else 0) := by
                     rw [← hq r s, Finset.mul_sum]
                     exact Finset.sum_congr rfl fun β _ => by ring
                   have hdeg1 : ∑ i : QuadMode e κ,

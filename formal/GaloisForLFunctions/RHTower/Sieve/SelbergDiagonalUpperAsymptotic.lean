@@ -171,7 +171,7 @@ theorem tendsto_selbergPrincipalScaledModel_div_log_one
       hratio.eventually (Metric.ball_mem_nhds 1 zero_lt_one)
     rw [eventually_atTop] at hfull
     obtain ⟨Nfull, hNfull⟩ := hfull
-    let B : ℝ := C ^ 2 + 1
+    let B : ℝ := C ^ (2 : ℕ) + 1
     have hB : 0 ≤ B := by dsimp [B]; positivity
     have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
       Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
@@ -365,7 +365,7 @@ theorem tendsto_selbergCorrectionScaledTerm (mn : ℕ × ℕ) :
 theorem eventually_norm_selbergCorrectionScaledTerm_le :
     ∀ᶠ N : ℕ in atTop, ∀ mn : ℕ × ℕ,
       ‖selbergCorrectionScaledTerm N mn‖ ≤
-        2 * (6 + |Real.eulerMascheroniConstant|) ^ 2 *
+        2 * (6 + |Real.eulerMascheroniConstant|) ^ (2 : ℕ) *
           |selbergEulerCorrectionCoeff mn.1 mn.2| := by
   let C : ℝ := 6 + |Real.eulerMascheroniConstant|
   have hC : 0 ≤ C := by
@@ -390,7 +390,7 @@ theorem eventually_norm_selbergCorrectionScaledTerm_le :
           |(harmonic N : ℝ) / Real.log N - 1| := le_abs_self _
       linarith
     have hmodel : |selbergPrincipalScaledModel a b N| ≤
-        C ^ 2 * (harmonic N : ℝ) := by
+        C ^ (2 : ℕ) * (harmonic N : ℝ) := by
       rw [selbergPrincipalScaledModel]
       calc
         |∑ d ∈ Finset.Icc 1 (N / max a b),
@@ -401,7 +401,7 @@ theorem eventually_norm_selbergCorrectionScaledTerm_le :
               |coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
                 coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ)) /
                   (d : ℝ)| := Finset.abs_sum_le_sum_abs _ _
-        _ ≤ ∑ d ∈ Finset.Icc 1 (N / max a b), C ^ 2 * (1 / (d : ℝ)) := by
+        _ ≤ ∑ d ∈ Finset.Icc 1 (N / max a b), C ^ (2 : ℕ) * (1 / (d : ℝ)) := by
           apply Finset.sum_le_sum
           intro d hd
           have hdR : (0 : ℝ) < (d : ℝ) := by
@@ -413,30 +413,30 @@ theorem eventually_norm_selbergCorrectionScaledTerm_le :
             ((N : ℝ) / ((b * d : ℕ) : ℝ))
           change |coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ))| ≤ C at hA
           change |coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ))| ≤ C at hB
-          change _ ≤ C ^ 2 * (1 / (d : ℝ))
+          change _ ≤ C ^ (2 : ℕ) * (1 / (d : ℝ))
           have hprod :
               |coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ))| *
-                |coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ))| ≤ C ^ 2 := by
+                |coprimeLogMoebius 1 ((N : ℝ) / ((b * d : ℕ) : ℝ))| ≤ C ^ (2 : ℕ) := by
             have hp := mul_le_mul hA hB
               (abs_nonneg (coprimeLogMoebius 1
                 ((N : ℝ) / ((b * d : ℕ) : ℝ)))) hC
             simpa [pow_two] using hp
           simpa [div_eq_mul_inv] using
             mul_le_mul_of_nonneg_right hprod (by positivity : 0 ≤ 1 / (d : ℝ))
-        _ = C ^ 2 * (harmonic (N / max a b) : ℝ) := by
+        _ = C ^ (2 : ℕ) * (harmonic (N / max a b) : ℝ) := by
           rw [← Finset.mul_sum, sum_Icc_one_div_eq_harmonic]
-        _ ≤ C ^ 2 * (harmonic N : ℝ) := by
+        _ ≤ C ^ (2 : ℕ) * (harmonic N : ℝ) := by
           exact mul_le_mul_of_nonneg_left
             (RHTower.harmonic_cast_mono (Nat.div_le_self N (max a b))) (sq_nonneg C)
     rw [Real.norm_eq_abs, abs_mul, abs_div, abs_of_pos hlogpos]
     have hscaled : |selbergPrincipalScaledModel a b N| / Real.log N ≤
-        2 * C ^ 2 := by
+        2 * C ^ (2 : ℕ) := by
       calc
         |selbergPrincipalScaledModel a b N| / Real.log N ≤
-            C ^ 2 * (harmonic N : ℝ) / Real.log N :=
+            C ^ (2 : ℕ) * (harmonic N : ℝ) / Real.log N :=
           div_le_div_of_nonneg_right hmodel hlogpos.le
-        _ = C ^ 2 * ((harmonic N : ℝ) / Real.log N) := by ring
-        _ ≤ 2 * C ^ 2 := by nlinarith [sq_nonneg C]
+        _ = C ^ (2 : ℕ) * ((harmonic N : ℝ) / Real.log N) := by ring
+        _ ≤ 2 * C ^ (2 : ℕ) := by nlinarith [sq_nonneg C]
     dsimp [C] at hscaled ⊢
     simpa [mul_comm, mul_left_comm] using
       mul_le_mul_of_nonneg_left hscaled
@@ -464,7 +464,7 @@ theorem tendsto_tsum_selbergCorrectionScaledTerm_one :
     Tendsto (fun N : ℕ => ∑' mn : ℕ × ℕ,
       selbergCorrectionScaledTerm N mn) atTop (𝓝 1) := by
   have hsumAbs : Summable (fun mn : ℕ × ℕ =>
-      2 * (6 + |Real.eulerMascheroniConstant|) ^ 2 *
+      2 * (6 + |Real.eulerMascheroniConstant|) ^ (2 : ℕ) *
         |selbergEulerCorrectionCoeff mn.1 mn.2|) := by
     have hnorm := summable_selbergEulerCorrectionCoeff.norm
     have habs : Summable (fun mn : ℕ × ℕ =>
@@ -559,10 +559,10 @@ theorem barbanVehovSelbergDiagonal_eq_originalLogQuadratic (N : ℕ) :
   calc
     barbanVehovSelbergDiagonal N =
         ∑ e ∈ S.biUnion Nat.divisors, (Nat.totient e : ℝ) *
-          (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight N m / (m : ℝ)) ^ 2 := by
+          (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight N m / (m : ℝ)) ^ (2 : ℕ) := by
       rw [barbanVehovSelbergDiagonal]
       change (∑ e ∈ S, (Nat.totient e : ℝ) *
-        (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight N m / (m : ℝ)) ^ 2) = _
+        (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight N m / (m : ℝ)) ^ (2 : ℕ)) = _
       rw [hbi]
     _ = ∑ p ∈ S ×ˢ S,
         barbanVehovWeight N p.1 * barbanVehovWeight N p.2 /

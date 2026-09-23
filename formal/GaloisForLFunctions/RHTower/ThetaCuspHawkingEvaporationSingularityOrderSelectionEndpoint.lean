@@ -9,11 +9,11 @@ Schwarzschild evaporation singularity.
 
 In the semiclassical mass-loss model
 
-`dM/du = -alpha/M^2`,  `kappa(M) = 1/(4M)`,
+`dM/du = -alpha/M^(2 : ℕ)`,  `kappa(M) = 1/(4M)`,
 
-the remaining evaporation time is `M^3/(3 alpha)`.  On dyadic mass shells
+the remaining evaporation time is `M^(3 : ℕ)/(3 alpha)`.  On dyadic mass shells
 `M_n = 2^(-n)`, the time spent between `M_n` and `M_n/2` is exactly
-`7 M_n^3/(24 alpha)`.  If a scattering sector first appears at coupling order `m` and its
+`7 M_n^(3 : ℕ)/(24 alpha)`.  If a scattering sector first appears at coupling order `m` and its
 endpoint intensity follows the surface-gravity law `kappa^(2m)`, its shell load is a fixed
 positive constant times
 
@@ -57,7 +57,7 @@ noncomputable section
 def schwarzschildSurfaceGravity (M : ℝ) : ℝ :=
   1 / (4 * M)
 
-/-- Remaining lifetime obtained by integrating `dM/du = -alpha/M^2` down to zero mass. -/
+/-- Remaining lifetime obtained by integrating `dM/du = -alpha/M^(2 : ℕ)` down to zero mass. -/
 def schwarzschildEvaporationRemainingTime (alpha M : ℝ) : ℝ :=
   M ^ 3 / (3 * alpha)
 

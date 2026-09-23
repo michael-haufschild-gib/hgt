@@ -8,7 +8,7 @@ This module formalizes the two finite-dimensional algebraic layers of the quadra
 completion law.
 
 * A graph from a quadratic channel to an orthogonal linear channel has scaled Gram matrix
-  `t ^ 2 I + t LᵀL`, hence determinant `t ^ n det (t I + LᵀL)`.
+  `t ^ (2 : ℕ) I + t LᵀL`, hence determinant `t ^ n det (t I + LᵀL)`.
 * A deterministic degree baseline plus independent Bernoulli channels has Fano margin equal to
   the baseline plus the sum of the squared channel probabilities.
 
@@ -38,8 +38,8 @@ def graphFeatureRow {n : ℕ} (L : Matrix κ (Fin n) ℝ) (a b : ℝ)
 theorem standardFeatureGram_graphFeatureRow {n : ℕ}
     (L : Matrix κ (Fin n) ℝ) (a b : ℝ) :
     standardFeatureGram (graphFeatureRow L a b) =
-      a ^ 2 • (1 : Matrix (Fin n) (Fin n) ℝ) +
-        b ^ 2 • (L.transpose * L) := by
+      a ^ (2 : ℕ) • (1 : Matrix (Fin n) (Fin n) ℝ) +
+        b ^ (2 : ℕ) • (L.transpose * L) := by
   ext i j
   simp only [standardFeatureGram, Fintype.sum_sum_type, graphFeatureRow,
     Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply,
@@ -63,7 +63,7 @@ def quadraticGraphGram {n : ℕ} (L : Matrix κ (Fin n) ℝ) (t : ℝ) :
 theorem quadraticGraphGram_eq {n : ℕ} (L : Matrix κ (Fin n) ℝ)
     (t : ℝ) (ht : 0 ≤ t) :
     quadraticGraphGram L t =
-      t ^ 2 • (1 : Matrix (Fin n) (Fin n) ℝ) +
+      t ^ (2 : ℕ) • (1 : Matrix (Fin n) (Fin n) ℝ) +
         t • (L.transpose * L) := by
   rw [quadraticGraphGram, standardFeatureGram_graphFeatureRow, Real.sq_sqrt ht]
 
@@ -105,7 +105,7 @@ def bernoulliCompletionVariance (p : ι → ℝ) : ℝ :=
 deterministic baseline plus the squared channel probabilities. -/
 theorem bernoulliCompletion_fano_identity (baseline : ℝ) (p : ι → ℝ) :
     bernoulliCompletionMean baseline p - bernoulliCompletionVariance p =
-      baseline + ∑ i, (p i) ^ 2 := by
+      baseline + ∑ i, (p i) ^ (2 : ℕ) := by
   unfold bernoulliCompletionMean bernoulliCompletionVariance
   rw [show baseline + (∑ i, p i) - ∑ i, p i * (1 - p i) =
       baseline + ((∑ i, p i) - ∑ i, p i * (1 - p i)) by ring]

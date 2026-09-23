@@ -46,14 +46,14 @@ section CarrierPartialSum
 /-- **The mass carrier against its order-`m` deep-time partial sum**, with a constant free of the
 shell frequency. -/
 theorem norm_massBesselCarrier_sub_partialSum_le {a x r c : ℝ} (ha : 0 < a) (hr0 : 0 ≤ r)
-    (hr1 : r ≤ 1) (hxr : x ^ 2 * r ^ 2 ≤ 1 / 2) (hxc : x ^ 2 * r ≤ c)
+    (hr1 : r ≤ 1) (hxr : x ^ (2 : ℕ) * r ^ (2 : ℕ) ≤ 1 / 2) (hxc : x ^ (2 : ℕ) * r ≤ c)
     (hdef : a * shellDefectRate x * r ≤ 1 / 2) (m n : ℕ) {t : ℂ} (htre : 0 < t.re)
-    (htim : 0 < t.im) (hsmall : Real.sqrt 2 * x ^ 2 < t.re * ‖t‖) (hw : ‖t⁻¹‖ ≤ r) :
+    (htim : 0 < t.im) (hsmall : Real.sqrt 2 * x ^ (2 : ℕ) < t.re * ‖t‖) (hw : ‖t⁻¹‖ ≤ r) :
     ‖_root_.HTGeometry.massBesselCarrier a t x
         - _root_.HTGeometry.massBesselLeading a t
           * (truncBelow m (carrierProductPoly a x (n + 1) m)).eval t⁻¹‖
       ≤ ‖_root_.HTGeometry.massBesselLeading a t‖
-          * (carrierTruncConst a c (n + 1) m * max 1 (x ^ 2) ^ m * ‖t⁻¹‖ ^ m)
+          * (carrierTruncConst a c (n + 1) m * max 1 (x ^ (2 : ℕ)) ^ m * ‖t⁻¹‖ ^ m)
         + 2 * a * ‖t‖ / ‖_root_.HTGeometry.massBesselRoot t x‖
           * (Real.exp (-(a * (_root_.HTGeometry.massBesselRoot t x).re))
             * ((2 * (a * ‖_root_.HTGeometry.massBesselRoot t x‖)) ^ ((1 : ℝ) / 2))⁻¹
@@ -78,7 +78,7 @@ theorem norm_massBesselCarrier_sub_partialSum_le {a x r c : ℝ} (ha : 0 < a) (h
     ring
   have hdist : ‖carrierDistortion a t z (n + 1)
       - (truncBelow m (carrierProductPoly a x (n + 1) m)).eval t⁻¹‖
-      ≤ carrierTruncConst a c (n + 1) m * max 1 (x ^ 2) ^ m * ‖t⁻¹‖ ^ m := by
+      ≤ carrierTruncConst a c (n + 1) m * max 1 (x ^ (2 : ℕ)) ^ m * ‖t⁻¹‖ ^ m := by
     rw [hzdef, carrierDistortion_eq_shellCarrierProfile a htre htim x hsmall (n + 1)]
     exact norm_shellCarrierProfile_sub_trunc_le ha.le hr0 hr1 hxr hxc hdef (n + 1) m hw
   have hrem : ‖2 * (a : ℂ) * t * shellPoincareRemainder a z (n + 1) / z‖

@@ -135,7 +135,7 @@ theorem norm_integral_zetaChiCriticalDirichletCross_le
       simpa [mul_comm] using norm_integral_zetaChi_line_mul_exp_le hT
         (Real.log (((i : ℕ) : ℝ) + 1) - Real.log (((j : ℕ) : ℝ) + 1))
 
-/-- Factorized `ell^1` form of the full critical direct/reflected cross estimate. -/
+/-- Factorized `ell^(1 : ℕ)` form of the full critical direct/reflected cross estimate. -/
 theorem norm_integral_zetaChiCriticalDirichletCross_le_l1
     {T : ℝ} (hT : 4 ≤ T) (P N : ℕ) (a : Fin P → ℂ) (b : Fin N → ℂ) :
     ‖∫ t in T..(2 * T), zetaChiCriticalDirichletCross P N a b t‖ ≤

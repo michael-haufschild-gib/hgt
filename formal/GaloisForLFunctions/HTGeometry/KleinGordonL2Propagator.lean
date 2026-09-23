@@ -358,12 +358,12 @@ theorem kgPair_fst_snd (v : KGEnergy E) : kgPair E (v.fst, v.snd) = v := rfl
 theorem norm_kgPair_le (w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) :
     ‖kgPair E w‖ ≤ ‖w.1‖ + ‖w.2‖ := by
   rw [kgPair_apply, WithLp.prod_norm_eq_of_L2]
-  have hsq : ‖(WithLp.toLp 2 w).fst‖ ^ 2 + ‖(WithLp.toLp 2 w).snd‖ ^ 2
-      ≤ (‖w.1‖ + ‖w.2‖) ^ 2 := by
+  have hsq : ‖(WithLp.toLp 2 w).fst‖ ^ (2 : ℕ) + ‖(WithLp.toLp 2 w).snd‖ ^ (2 : ℕ)
+      ≤ (‖w.1‖ + ‖w.2‖) ^ (2 : ℕ) := by
     simp only [WithLp.toLp_fst, WithLp.toLp_snd]
     nlinarith [norm_nonneg w.1, norm_nonneg w.2]
-  calc Real.sqrt (‖(WithLp.toLp 2 w).fst‖ ^ 2 + ‖(WithLp.toLp 2 w).snd‖ ^ 2)
-      ≤ Real.sqrt ((‖w.1‖ + ‖w.2‖) ^ 2) := Real.sqrt_le_sqrt hsq
+  calc Real.sqrt (‖(WithLp.toLp 2 w).fst‖ ^ (2 : ℕ) + ‖(WithLp.toLp 2 w).snd‖ ^ (2 : ℕ))
+      ≤ Real.sqrt ((‖w.1‖ + ‖w.2‖) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
     _ = ‖w.1‖ + ‖w.2‖ :=
         Real.sqrt_sq (add_nonneg (norm_nonneg _) (norm_nonneg _))
 

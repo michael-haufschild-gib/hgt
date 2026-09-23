@@ -32,15 +32,15 @@ theorem cubicTriangleProbe_section : ∀ t ∈ Ioo (0:ℝ) 1,
 theorem cubicTriangleProbe_middle (t x : ℝ) : (cubicTriangleProbe t x) 2=t := rfl
 
 theorem cubicTriangleProbe_mode (t x : ℝ) :
-    cubicDecayMode 0 (cubicTriangleProbe t x)=t*(1-x^2)/4 := by
-  change t*(1-((1-t+x)/2-(1-t-x)/2)^2)/4=t*(1-x^2)/4
+    cubicDecayMode 0 (cubicTriangleProbe t x)=t*(1-x^(2 : ℕ))/4 := by
+  change t*(1-((1-t+x)/2-(1-t-x)/2)^(2 : ℕ))/4=t*(1-x^(2 : ℕ))/4
   ring
 
 theorem cubicTriangleCoordinate_injective (t : Ioo (0:ℝ) 1) :
-    InjOn (fun x => t.val*(1-x^2)/4) (Ioo 0 (1-t.val)) := by
+    InjOn (fun x => t.val*(1-x^(2 : ℕ))/4) (Ioo 0 (1-t.val)) := by
   intro x hx y hy he
   have ht : t.val ≠ 0 := ne_of_gt t.property.1
-  have hprod : t.val*(x^2-y^2)=0 := by linear_combination -4*he
+  have hprod : t.val*(x^(2 : ℕ)-y^(2 : ℕ))=0 := by linear_combination -4*he
   have hsq := (mul_eq_zero.mp hprod).resolve_left ht
   have hfac : (x-y)*(x+y)=0 := by nlinarith only [hsq]
   rcases mul_eq_zero.mp hfac with h | h
@@ -48,7 +48,7 @@ theorem cubicTriangleCoordinate_injective (t : Ioo (0:ℝ) 1) :
   · linarith [hx.1,hy.1]
 
 theorem cubicTriangleCoordinate_infinite (t : Ioo (0:ℝ) 1) :
-    ((fun x => t.val*(1-x^2)/4) '' Ioo 0 (1-t.val)).Infinite := by
+    ((fun x => t.val*(1-x^(2 : ℕ))/4) '' Ioo 0 (1-t.val)).Infinite := by
   apply (Set.infinite_image_iff (cubicTriangleCoordinate_injective t)).mpr
   exact Set.Ioo_infinite (by linarith [t.property.2])
 
@@ -81,7 +81,7 @@ theorem cubicPolynomialObservation_zero_iff (P : Polynomial (Polynomial ℝ)) :
       ((cubicTriangleProbe t x) 2) P=0 at he
     rw [cubicTriangleProbe_mode,cubicTriangleProbe_middle] at he
     have h := Polynomial.eval₂_hom (p := P)
-      (Polynomial.evalRingHom (t*(1-x^2)/4)) (Polynomial.C t)
+      (Polynomial.evalRingHom (t*(1-x^(2 : ℕ))/4)) (Polynomial.C t)
     simp only [Polynomial.coe_evalRingHom,Polynomial.eval_C] at h
     exact h.symm.trans he
   · rintro rfl
@@ -106,12 +106,12 @@ theorem cubicPolynomialObservation_firstMode :
   simp
 
 theorem cubicPolynomialObservation_secondMode :
-    cubicPolynomialObservation (Polynomial.X^2)=(fun g => cubicDecayMode 1 g.val) := by
+    cubicPolynomialObservation (Polynomial.X^(2 : ℕ))=(fun g => cubicDecayMode 1 g.val) := by
   rw [map_pow,cubicPolynomialObservation_middle]
   rfl
 
 theorem cubicPolynomialObservation_thirdMode :
-    cubicPolynomialObservation (Polynomial.X^3)=(fun g => cubicDecayMode 2 g.val) := by
+    cubicPolynomialObservation (Polynomial.X^(3 : ℕ))=(fun g => cubicDecayMode 2 g.val) := by
   rw [map_pow,cubicPolynomialObservation_middle]
   rfl
 

@@ -41,7 +41,7 @@ def greedyBumpPrimeMismatchParameter
   refine ⟨greedyBumpPrimeMismatchProbability σ p, ?_, ?_⟩
   · unfold greedyBumpPrimeMismatchProbability greedyBumpPrimeOccupationProbability
     positivity
-  · have hsquare : 0 ≤ (2 * (q / (1 + q)) - 1) ^ 2 := sq_nonneg _
+  · have hsquare : 0 ≤ (2 * (q / (1 + q)) - 1) ^ (2 : ℕ) := sq_nonneg _
     unfold greedyBumpPrimeMismatchProbability greedyBumpPrimeOccupationProbability
     change 2 * (q / (1 + q)) * (1 - q / (1 + q)) < 1
     nlinarith
@@ -50,8 +50,8 @@ def greedyBumpPrimeMismatchParameter
 theorem greedyBumpPrimeMismatch_void_eq_collisionFactor
     (σ : GreedyBumpPositivePrimeTemperature) (p : Nat.Primes) :
     1 - greedyBumpPrimeMismatchProbability σ p =
-      (1 + primeSchurWeight σ p ^ 2) /
-        (1 + primeSchurWeight σ p) ^ 2 := by
+      (1 + primeSchurWeight σ p ^ (2 : ℕ)) /
+        (1 + primeSchurWeight σ p) ^ (2 : ℕ) := by
   have hq : 0 < primeSchurWeight σ p := primeSchurWeight_pos σ p
   unfold greedyBumpPrimeMismatchProbability greedyBumpPrimeOccupationProbability
   field_simp
@@ -63,8 +63,8 @@ theorem greedyBumpPrimeMismatch_logPuritySeries_hasSum
     HasSum
       (GaloisForLFunctions.HTGeometry.greedyBumpBernoulliLogVoidContribution
         (greedyBumpPrimeMismatchParameter σ p))
-      (Real.log ((1 + primeSchurWeight σ p ^ 2) /
-        (1 + primeSchurWeight σ p) ^ 2)) := by
+      (Real.log ((1 + primeSchurWeight σ p ^ (2 : ℕ)) /
+        (1 + primeSchurWeight σ p) ^ (2 : ℕ))) := by
   have h := GaloisForLFunctions.HTGeometry.greedyBumpBernoulli_logVoidSeries_hasSum
     (greedyBumpPrimeMismatchParameter σ p)
   change HasSum
@@ -86,13 +86,13 @@ theorem greedyBumpFinitePrimeLoschmidt_totalCumulantSeries_eq_log_purity
     (∑ p ∈ S, ∑' k : ℕ,
         GaloisForLFunctions.HTGeometry.greedyBumpBernoulliLogVoidContribution
           (greedyBumpPrimeMismatchParameter σ p) k) =
-        ∑ p ∈ S, Real.log ((1 + primeSchurWeight σ p ^ 2) /
-          (1 + primeSchurWeight σ p) ^ 2) := by
+        ∑ p ∈ S, Real.log ((1 + primeSchurWeight σ p ^ (2 : ℕ)) /
+          (1 + primeSchurWeight σ p) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro p hp
       exact (greedyBumpPrimeMismatch_logPuritySeries_hasSum σ p).tsum_eq
-    _ = Real.log (∏ p ∈ S, (1 + primeSchurWeight σ p ^ 2) /
-          (1 + primeSchurWeight σ p) ^ 2) := by
+    _ = Real.log (∏ p ∈ S, (1 + primeSchurWeight σ p ^ (2 : ℕ)) /
+          (1 + primeSchurWeight σ p) ^ (2 : ℕ)) := by
       symm
       apply Real.log_prod
       intro p hp

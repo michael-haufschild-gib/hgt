@@ -9,7 +9,7 @@ inverse of the zeroth free raw coordinate.  The rational jet shift is the quotie
 of `x_n \mapsto x_(n+1)`.  Besides the opposite velocity current `F_1` constructed in
 `ProjectiveHorizonFreeJetCurrentCollapse`, the constant opposite current is
 
-`F_0(x_n) = -D^n(x^2)`.
+`F_0(x_n) = -D^n(x^(2 : ℕ))`.
 
 They satisfy `[D,F_0]=0` and `[D,F_1]=-F_0`.  Since `F_0(x⁻¹)=1` and `F_1(x⁻¹)=0`, every reciprocal
 jet of order at least two lies in the kernel of `F_1`.  Every raw jet of order at least one lies in
@@ -88,7 +88,7 @@ theorem freeScalarJetCoordinate_ne_zero
 /-! ## The constant opposite current and its shift brackets -/
 
 /-- The constant reciprocal-translation current on the polynomial raw free jet:
-`F_0(x_n)=-D^n(x^2)`. -/
+`F_0(x_n)=-D^n(x^(2 : ℕ))`. -/
 def freeJetFZeroPolynomialDerivation
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C) :=
@@ -232,7 +232,7 @@ theorem freeJetFZero_freeCoordinate_zero_inv
   rw [(freeJetFZero C).leibniz_inv,
     freeJetFZero_freeCoordinate, hsq]
   simp only [smul_eq_mul]
-  change -(x⁻¹) ^ 2 * -(x * x) = 1
+  change -(x⁻¹) ^ (2 : ℕ) * -(x * x) = 1
   rw [neg_mul_neg]
   field_simp [hx]
 

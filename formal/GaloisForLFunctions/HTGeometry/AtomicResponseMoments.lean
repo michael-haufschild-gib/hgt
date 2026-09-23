@@ -49,9 +49,9 @@ theorem finiteResponseForce_affine_moments {n : ℕ} (w z : Fin n → ℝ) (a b 
 
 /-- Quadratic response detects variance information discarded by mean-only compression. -/
 theorem finiteResponseForce_quadratic_moments {n : ℕ} (w z : Fin n → ℝ) (x : ℝ) :
-    finiteResponseForce (fun u => u ^ 2) w z x =
+    finiteResponseForce (fun u => u ^ (2 : ℕ)) w z x =
       RHTower.ccmAtomicMixedMoment w z 2 - 2 * x * RHTower.ccmAtomicMixedMoment w z 1 +
-        x ^ 2 * RHTower.ccmAtomicMixedMoment w z 0 := by
+        x ^ (2 : ℕ) * RHTower.ccmAtomicMixedMoment w z 0 := by
   simp only [finiteResponseForce, RHTower.ccmAtomicMixedMoment, pow_one, pow_zero, mul_one,
     Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
@@ -60,10 +60,10 @@ theorem finiteResponseForce_quadratic_moments {n : ℕ} (w z : Fin n → ℝ) (x
 
 /-- Cubic response additionally reads the third moment, with an exact triangular expansion. -/
 theorem finiteResponseForce_cubic_moments {n : ℕ} (w z : Fin n → ℝ) (x : ℝ) :
-    finiteResponseForce (fun u => u ^ 3) w z x =
+    finiteResponseForce (fun u => u ^ (3 : ℕ)) w z x =
       RHTower.ccmAtomicMixedMoment w z 3 - 3 * x * RHTower.ccmAtomicMixedMoment w z 2 +
-        3 * x ^ 2 * RHTower.ccmAtomicMixedMoment w z 1 -
-          x ^ 3 * RHTower.ccmAtomicMixedMoment w z 0 := by
+        3 * x ^ (2 : ℕ) * RHTower.ccmAtomicMixedMoment w z 1 -
+          x ^ (3 : ℕ) * RHTower.ccmAtomicMixedMoment w z 0 := by
   simp only [finiteResponseForce, RHTower.ccmAtomicMixedMoment, pow_one, pow_zero, mul_one,
     Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
@@ -86,7 +86,7 @@ theorem polynomial_response_equivalence_iff_moments {n m : ℕ}
 /-- Squared-polynomial response is exactly the corpus's Hankel quadratic form. -/
 theorem finiteResponseForce_squaredPolynomial_hankel {n J : ℕ}
     (w z : Fin n → ℝ) (a : Fin J → ℝ) :
-    finiteResponseForce (fun u => (Polynomial.ofFn J a).eval u ^ 2) w z 0 =
+    finiteResponseForce (fun u => (Polynomial.ofFn J a).eval u ^ (2 : ℕ)) w z 0 =
       a ⬝ᵥ (atomicHankel w z J *ᵥ a) := by
   rw [dotProduct_mulVec_atomicHankel]
   simp [finiteResponseForce]
@@ -94,8 +94,8 @@ theorem finiteResponseForce_squaredPolynomial_hankel {n J : ℕ}
 /-- Translating the probe translates the polynomial in the same Hankel energy identity. -/
 theorem finiteResponseForce_squaredPolynomial_translate {n : ℕ}
     (w z : Fin n → ℝ) (P : ℝ[X]) (x : ℝ) :
-    finiteResponseForce (fun u => P.eval u ^ 2) w z x =
-      ∑ i, w i * ((P.comp (X - C x)).eval (z i)) ^ 2 := by
+    finiteResponseForce (fun u => P.eval u ^ (2 : ℕ)) w z x =
+      ∑ i, w i * ((P.comp (X - C x)).eval (z i)) ^ (2 : ℕ) := by
   simp [finiteResponseForce]
 
 end

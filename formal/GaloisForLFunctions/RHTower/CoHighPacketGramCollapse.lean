@@ -47,7 +47,7 @@ theorem packetMoment_zero {ι : Type*} (s : Finset ι) (m : ι → ℝ) (u : ι 
 
 /-- The packet Gram expression `p₀p₂ − p₁²`. -/
 def packetGram {ι : Type*} (s : Finset ι) (m : ι → ℝ) (u : ι → ℂ) : ℂ :=
-  packetMoment s m u 0 * packetMoment s m u 2 - packetMoment s m u 1 ^ 2
+  packetMoment s m u 0 * packetMoment s m u 2 - packetMoment s m u 1 ^ (2 : ℕ)
 
 /-- The ordered index pairs `i < j` of a packet. -/
 def strictPairs {ι : Type*} [LinearOrder ι] (s : Finset ι) : Finset (ι × ι) :=
@@ -63,18 +63,18 @@ theorem mem_strictPairs {ι : Type*} [LinearOrder ι] {s : Finset ι} {p : ι ×
 /-- Double-sum expansion: the full symmetric pair-square sum is twice the Gram
 expression. -/
 theorem sum_sum_pairSquare_eq_two_mul_packetGram {ι : Type*} (s : Finset ι) (m : ι → ℝ) (u : ι → ℂ) :
-    ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * m j * (u i - u j) ^ 2 = 2 * packetGram s m u := by
-  have hexp : ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * m j * (u i - u j) ^ 2
+    ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * m j * (u i - u j) ^ (2 : ℕ) = 2 * packetGram s m u := by
+  have hexp : ∑ i ∈ s, ∑ j ∈ s, (m i : ℂ) * m j * (u i - u j) ^ (2 : ℕ)
       = ∑ i ∈ s, ∑ j ∈ s,
-          ((m i : ℂ) * u i ^ 2 * (m j : ℂ)
+          ((m i : ℂ) * u i ^ (2 : ℕ) * (m j : ℂ)
             - 2 * ((m i : ℂ) * u i) * ((m j : ℂ) * u j)
-            + (m i : ℂ) * ((m j : ℂ) * u j ^ 2)) :=
+            + (m i : ℂ) * ((m j : ℂ) * u j ^ (2 : ℕ))) :=
     Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   rw [hexp]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  rw [← Finset.sum_mul_sum s s (fun i => (m i : ℂ) * u i ^ 2) (fun j => (m j : ℂ)),
+  rw [← Finset.sum_mul_sum s s (fun i => (m i : ℂ) * u i ^ (2 : ℕ)) (fun j => (m j : ℂ)),
     ← Finset.sum_mul_sum s s (fun i => 2 * ((m i : ℂ) * u i)) (fun j => (m j : ℂ) * u j),
-    ← Finset.sum_mul_sum s s (fun i => (m i : ℂ)) (fun j => (m j : ℂ) * u j ^ 2),
+    ← Finset.sum_mul_sum s s (fun i => (m i : ℂ)) (fun j => (m j : ℂ) * u j ^ (2 : ℕ)),
     ← Finset.mul_sum s (fun i => (m i : ℂ) * u i) 2]
   simp only [packetGram, packetMoment, pow_zero, mul_one, pow_one]
   ring
@@ -82,7 +82,7 @@ theorem sum_sum_pairSquare_eq_two_mul_packetGram {ι : Type*} (s : Finset ι) (m
 /-- Product-set form of the symmetric pair-square sum. -/
 theorem sum_product_pairSquare_eq_two_mul_packetGram {ι : Type*} (s : Finset ι) (m : ι → ℝ)
     (u : ι → ℂ) :
-    ∑ p ∈ s ×ˢ s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2 = 2 * packetGram s m u := by
+    ∑ p ∈ s ×ˢ s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ) = 2 * packetGram s m u := by
   rw [Finset.sum_product]
   exact sum_sum_pairSquare_eq_two_mul_packetGram s m u
 
@@ -142,19 +142,19 @@ theorem sum_product_eq_two_mul_sum_strictPairs {ι : Type*} [LinearOrder ι] (s 
 `p₀p₂ − p₁² = ∑_{i<j} m i · m j · (u i − u j)²`. -/
 theorem packetGram_eq_sum_strictPairs {ι : Type*} [LinearOrder ι] (s : Finset ι) (m : ι → ℝ) (u : ι → ℂ) :
     packetGram s m u
-      = ∑ p ∈ strictPairs s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2 := by
+      = ∑ p ∈ strictPairs s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ) := by
   have h2 := sum_product_eq_two_mul_sum_strictPairs s
-    (fun p => (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2)
+    (fun p => (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ))
     (fun p => by
-      show (m p.2 : ℂ) * m p.1 * (u p.2 - u p.1) ^ 2
-        = (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2
+      show (m p.2 : ℂ) * m p.1 * (u p.2 - u p.1) ^ (2 : ℕ)
+        = (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ)
       ring)
     (fun p hp => by
-      show (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2 = 0
+      show (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ) = 0
       rw [hp]
       ring)
   have h3 : (2 : ℂ) * packetGram s m u
-      = 2 * ∑ p ∈ strictPairs s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ 2 := by
+      = 2 * ∑ p ∈ strictPairs s, (m p.1 : ℂ) * m p.2 * (u p.1 - u p.2) ^ (2 : ℕ) := by
     rw [← sum_product_pairSquare_eq_two_mul_packetGram s m u]
     exact h2
   exact mul_left_cancel₀ (by norm_num : (2 : ℂ) ≠ 0) h3
@@ -179,7 +179,7 @@ theorem coHighFamily_eq_iff {ι : Type*} (g : ℝ) (δ : ι → ℝ) (i j : ι) 
 /-- The real pair-interaction energy of a co-high packet:
 `∑_{i<j} m i · m j · (δ i − δ j)²`. -/
 def coHighPairEnergy {ι : Type*} [LinearOrder ι] (s : Finset ι) (m δ : ι → ℝ) : ℝ :=
-  ∑ p ∈ strictPairs s, m p.1 * m p.2 * (δ p.1 - δ p.2) ^ 2
+  ∑ p ∈ strictPairs s, m p.1 * m p.2 * (δ p.1 - δ p.2) ^ (2 : ℕ)
 
 /-- Nonnegative masses give nonnegative pair energy. -/
 theorem coHighPairEnergy_nonneg {ι : Type*} [LinearOrder ι] (s : Finset ι) {m : ι → ℝ} (δ : ι → ℝ)
@@ -195,14 +195,14 @@ theorem packetGram_coHigh_eq_neg_pairEnergy {ι : Type*} [LinearOrder ι] (s : F
     packetGram s m (coHighFamily g δ) = -((coHighPairEnergy s m δ : ℝ) : ℂ) :=
   calc packetGram s m (coHighFamily g δ)
       = ∑ p ∈ strictPairs s,
-          (m p.1 : ℂ) * m p.2 * (coHighFamily g δ p.1 - coHighFamily g δ p.2) ^ 2 :=
+          (m p.1 : ℂ) * m p.2 * (coHighFamily g δ p.1 - coHighFamily g δ p.2) ^ (2 : ℕ) :=
         packetGram_eq_sum_strictPairs s m (coHighFamily g δ)
-    _ = ∑ p ∈ strictPairs s, -(((m p.1 * m p.2 * (δ p.1 - δ p.2) ^ 2 : ℝ)) : ℂ) :=
+    _ = ∑ p ∈ strictPairs s, -(((m p.1 * m p.2 * (δ p.1 - δ p.2) ^ (2 : ℕ) : ℝ)) : ℂ) :=
         Finset.sum_congr rfl fun p _ => by
           unfold coHighFamily
           push_cast
           linear_combination
-            (m p.1 : ℂ) * (m p.2 : ℂ) * ((δ p.1 : ℂ) - (δ p.2 : ℂ)) ^ 2 * Complex.I_sq
+            (m p.1 : ℂ) * (m p.2 : ℂ) * ((δ p.1 : ℂ) - (δ p.2 : ℂ)) ^ (2 : ℕ) * Complex.I_sq
     _ = -((coHighPairEnergy s m δ : ℝ) : ℂ) := by
         unfold coHighPairEnergy
         push_cast
@@ -234,7 +234,7 @@ theorem coHighPairEnergy_eq_zero_iff {ι : Type*} [LinearOrder ι] (s : Finset �
     (hm : ∀ i ∈ s, 0 < m i) :
     coHighPairEnergy s m δ = 0 ↔ ∀ i ∈ s, ∀ j ∈ s, δ i = δ j := by
   unfold coHighPairEnergy
-  have hterm : ∀ p ∈ strictPairs s, 0 ≤ m p.1 * m p.2 * (δ p.1 - δ p.2) ^ 2 := by
+  have hterm : ∀ p ∈ strictPairs s, 0 ≤ m p.1 * m p.2 * (δ p.1 - δ p.2) ^ (2 : ℕ) := by
     intro p hp
     rw [mem_strictPairs] at hp
     exact mul_nonneg (mul_nonneg (hm p.1 hp.1).le (hm p.2 hp.2.1).le) (sq_nonneg _)
@@ -261,24 +261,24 @@ theorem coHighPairEnergy_eq_zero_iff {ι : Type*} [LinearOrder ι] (s : Finset �
 /-- Any single ordered pair bounds the pair energy from below. -/
 theorem pair_le_coHighPairEnergy {ι : Type*} [LinearOrder ι] (s : Finset ι) {m : ι → ℝ} (δ : ι → ℝ)
     (hm : ∀ i ∈ s, 0 ≤ m i) {i₀ j₀ : ι} (hi : i₀ ∈ s) (hj : j₀ ∈ s) (hne : i₀ ≠ j₀) :
-    m i₀ * m j₀ * (δ i₀ - δ j₀) ^ 2 ≤ coHighPairEnergy s m δ := by
+    m i₀ * m j₀ * (δ i₀ - δ j₀) ^ (2 : ℕ) ≤ coHighPairEnergy s m δ := by
   unfold coHighPairEnergy
-  have hterm : ∀ p ∈ strictPairs s, 0 ≤ m p.1 * m p.2 * (δ p.1 - δ p.2) ^ 2 := by
+  have hterm : ∀ p ∈ strictPairs s, 0 ≤ m p.1 * m p.2 * (δ p.1 - δ p.2) ^ (2 : ℕ) := by
     intro p hp
     rw [mem_strictPairs] at hp
     exact mul_nonneg (mul_nonneg (hm p.1 hp.1) (hm p.2 hp.2.1)) (sq_nonneg _)
   rcases lt_or_gt_of_ne hne with hlt | hlt
   · exact Finset.single_le_sum hterm (a := (i₀, j₀)) (mem_strictPairs.mpr ⟨hi, hj, hlt⟩)
   · have h := Finset.single_le_sum hterm (a := (j₀, i₀)) (mem_strictPairs.mpr ⟨hj, hi, hlt⟩)
-    calc m i₀ * m j₀ * (δ i₀ - δ j₀) ^ 2
-        = m j₀ * m i₀ * (δ j₀ - δ i₀) ^ 2 := by ring
+    calc m i₀ * m j₀ * (δ i₀ - δ j₀) ^ (2 : ℕ)
+        = m j₀ * m i₀ * (δ j₀ - δ i₀) ^ (2 : ℕ) := by ring
       _ ≤ _ := h
 
 /-- **Quantized violation**: any index pair with distinct members pushes the co-high Gram
 expression below minus that pair's energy contribution. -/
 theorem packetGram_coHigh_re_le_neg_pair {ι : Type*} [LinearOrder ι] (s : Finset ι) {m : ι → ℝ} (δ : ι → ℝ) (g : ℝ)
     (hm : ∀ i ∈ s, 0 ≤ m i) {i₀ j₀ : ι} (hi : i₀ ∈ s) (hj : j₀ ∈ s) (hne : i₀ ≠ j₀) :
-    (packetGram s m (coHighFamily g δ)).re ≤ -(m i₀ * m j₀ * (δ i₀ - δ j₀) ^ 2) := by
+    (packetGram s m (coHighFamily g δ)).re ≤ -(m i₀ * m j₀ * (δ i₀ - δ j₀) ^ (2 : ℕ)) := by
   rw [packetGram_coHigh_re]
   exact neg_le_neg (pair_le_coHighPairEnergy s δ hm hi hj hne)
 
@@ -290,7 +290,7 @@ theorem packetGram_coHigh_re_neg {ι : Type*} [LinearOrder ι] (s : Finset ι) {
     (packetGram s m (coHighFamily g δ)).re < 0 := by
   have hne : i₀ ≠ j₀ := fun h => hδ (congrArg δ h)
   have hsub : δ i₀ - δ j₀ ≠ 0 := sub_ne_zero.mpr hδ
-  have hq : 0 < m i₀ * m j₀ * (δ i₀ - δ j₀) ^ 2 :=
+  have hq : 0 < m i₀ * m j₀ * (δ i₀ - δ j₀) ^ (2 : ℕ) :=
     mul_pos (mul_pos hmi hmj)
       (lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hsub)))
   have hle := packetGram_coHigh_re_le_neg_pair s δ g hm hi hj hne
@@ -352,7 +352,7 @@ theorem strictPairs_pair {ι : Type*} [LinearOrder ι] {i j : ι} (hij : i < j) 
 
 /-- Pair energy of a two-point packet: the single interaction term. -/
 theorem coHighPairEnergy_pair {ι : Type*} [LinearOrder ι] {i j : ι} (hij : i < j) (m δ : ι → ℝ) :
-    coHighPairEnergy {i, j} m δ = m i * m j * (δ i - δ j) ^ 2 := by
+    coHighPairEnergy {i, j} m δ = m i * m j * (δ i - δ j) ^ (2 : ℕ) := by
   unfold coHighPairEnergy
   rw [strictPairs_pair hij]
   exact Finset.sum_singleton _ _
@@ -361,7 +361,7 @@ theorem coHighPairEnergy_pair {ι : Type*} [LinearOrder ι] {i j : ι} (hij : i 
 single explicit number `−m i · m j · (δ i − δ j)²`. -/
 theorem packetGram_coHigh_pair {ι : Type*} [LinearOrder ι] {i j : ι} (hij : i < j) (m δ : ι → ℝ) (g : ℝ) :
     packetGram {i, j} m (coHighFamily g δ)
-      = -((m i * m j * (δ i - δ j) ^ 2 : ℝ) : ℂ) := by
+      = -((m i * m j * (δ i - δ j) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [packetGram_coHigh_eq_neg_pairEnergy, coHighPairEnergy_pair hij]
 
 end

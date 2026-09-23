@@ -44,7 +44,7 @@ namespace RHTower
 equals the charge of `ξ` at `s`: the `u`-plane descent preserves the vanishing multiplicity, so an
 off-line odd ξ-zero is an off-seam odd `xiDescent`-zero and conversely. -/
 theorem carrierCharge_xiDescent_center_sq {s : ℂ} (hs : s ∈ rightHalf) :
-    carrierCharge xiDescent 1 ((s - (1 / 2 : ℂ)) ^ 2) = carrierCharge xi 1 s := by
+    carrierCharge xiDescent 1 ((s - (1 / 2 : ℂ)) ^ (2 : ℕ)) = carrierCharge xi 1 s := by
   rw [carrierCharge_one_eq_neg_one_pow, carrierCharge_one_eq_neg_one_pow,
     analyticOrderAt_xiDescent_center_sq hs]
 
@@ -67,7 +67,7 @@ theorem carrierCharge_xiDescent_farField {w : ℂ} (hw : w ∈ slitPlane) (hfar 
 
 /-- The island carrier `P(u) = u² + 1`, entire and real (reflection) symmetric, whose only zeros are
 the conjugate pair `±I`. -/
-def Pmodel : ℂ → ℂ := fun u => u ^ 2 + 1
+def Pmodel : ℂ → ℂ := fun u => u ^ (2 : ℕ) + 1
 
 theorem Pmodel_analyticOnNhd : AnalyticOnNhd ℂ Pmodel univ := by
   intro z _
@@ -76,11 +76,11 @@ theorem Pmodel_analyticOnNhd : AnalyticOnNhd ℂ Pmodel univ := by
 /-- `P` is nonvanishing on the entire real axis — in particular on the seam `(-∞, 0]` and the
 far-field drain `[0, ∞)`. -/
 theorem Pmodel_ne_zero_real (x : ℝ) : Pmodel (x : ℂ) ≠ 0 := by
-  have hcast : Pmodel (x : ℂ) = ((x ^ 2 + 1 : ℝ) : ℂ) := by
+  have hcast : Pmodel (x : ℂ) = ((x ^ (2 : ℕ) + 1 : ℝ) : ℂ) := by
     simp only [Pmodel]; push_cast; ring
   rw [hcast, Complex.ofReal_ne_zero]; positivity
 
-private theorem Pmodel_order_pt {ρ : ℂ} (hρ : ρ ^ 2 + 1 = 0) (hd : (2 : ℂ) * ρ ≠ 0) :
+private theorem Pmodel_order_pt {ρ : ℂ} (hρ : ρ ^ (2 : ℕ) + 1 = 0) (hd : (2 : ℂ) * ρ ≠ 0) :
     analyticOrderAt Pmodel ρ = 1 := by
   have han : AnalyticAt ℂ Pmodel ρ := (analyticAt_id.pow 2).add analyticAt_const
   have hf0 : Pmodel ρ = 0 := hρ
@@ -122,11 +122,11 @@ theorem island_aggregate_blind :
 /-! ### Refutation 2: the collision family `Q_t(u) = (u + 1)² + t²` -/
 
 /-- The collision family `Q_t(u) = (u − a)² + t²`. -/
-def coll (a t : ℂ) : ℂ → ℂ := fun u => (u - a) ^ 2 + t ^ 2
+def coll (a t : ℂ) : ℂ → ℂ := fun u => (u - a) ^ (2 : ℕ) + t ^ (2 : ℕ)
 
 /-- At the seam limit `t = 0`, `Q₀(u) = (u + 1)²` has even order `2` at the seam point `-1`. -/
 theorem coll_seam_order : analyticOrderAt (coll (-1) 0) (-1 : ℂ) = 2 := by
-  have hfun : coll (-1 : ℂ) 0 = (fun u : ℂ => u - (-1 : ℂ)) ^ 2 := by
+  have hfun : coll (-1 : ℂ) 0 = (fun u : ℂ => u - (-1 : ℂ)) ^ (2 : ℕ) := by
     funext u; simp [coll]
   rw [hfun]
   have hlin_an : AnalyticAt ℂ (fun u : ℂ => u - (-1 : ℂ)) (-1 : ℂ) :=
@@ -148,7 +148,7 @@ theorem coll_upper_order : analyticOrderAt (coll (-1) 1) (-1 + I) = 1 := by
   have hd0 : deriv (coll (-1 : ℂ) 1) (-1 + I) ≠ 0 := by
     have hb : HasDerivAt (coll (-1 : ℂ) 1)
         (((2 : ℕ) : ℂ) * ((-1 + I) - (-1 : ℂ)) ^ (2 - 1) * 1) (-1 + I) :=
-      (((hasDerivAt_id (-1 + I)).sub_const (-1 : ℂ)).pow 2).add_const ((1 : ℂ) ^ 2)
+      (((hasDerivAt_id (-1 + I)).sub_const (-1 : ℂ)).pow 2).add_const ((1 : ℂ) ^ (2 : ℕ))
     rw [hb.deriv]
     have hI : ((-1 + I) - (-1 : ℂ)) = I := by ring
     rw [hI]; simp

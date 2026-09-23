@@ -46,7 +46,7 @@ local instance : IsometricContinuousFunctionalCalculus ℝ (Space →L[ℂ] Spac
   IsSelfAdjoint.instIsometricContinuousFunctionalCalculus
 
 /-- Original native cusp energy, including the energy operator's shift by one. -/
-def cuspEnergy (tau : ℝ) : ℝ := 5 / 4 + tau ^ 2
+def cuspEnergy (tau : ℝ) : ℝ := 5 / 4 + tau ^ (2 : ℕ)
 
 theorem cuspEnergy_pos (tau : ℝ) : 0 < cuspEnergy tau := by
   dsimp [cuspEnergy]
@@ -57,7 +57,7 @@ def cuspEntireValue (tau : ℝ) : ℝ := Real.cosh (8 * Real.pi * tau)
 
 theorem cuspEntireValue_eq_transform (tau : ℝ) :
     (casimirTransform (cuspEnergy tau - 1 : ℝ)).re = cuspEntireValue tau := by
-  have he : ((cuspEnergy tau - 1 : ℝ) : ℂ) = 1 / 4 + (tau : ℂ) ^ 2 := by
+  have he : ((cuspEnergy tau - 1 : ℝ) : ℂ) = 1 / 4 + (tau : ℂ) ^ (2 : ℕ) := by
     dsimp [cuspEnergy]
     push_cast
     ring

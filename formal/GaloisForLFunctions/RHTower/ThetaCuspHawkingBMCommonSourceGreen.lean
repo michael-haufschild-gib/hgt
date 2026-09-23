@@ -235,15 +235,15 @@ private theorem unit_smooth : ContDiff ℝ ∞ radialUnit := by
 @[fun_prop] private theorem U_smooth : ContDiff ℝ ∞ U :=
   Complex.ofRealCLM.contDiff.comp unit_smooth
 
-private theorem U_derivative (x : ℝ) : HasDerivAt U (U x^2-1) x := by
+private theorem U_derivative (x : ℝ) : HasDerivAt U (U x^(2 : ℕ)-1) x := by
   simpa [U] using! (radialUnit_hasDerivAt x).ofReal_comp
 
-private def mass (x : ℝ) : ℂ := U x^2*(1-U x^2)
-private def S (x : ℝ) : ℂ := U x^4*(1+U x)
-private def H (x : ℝ) : ℂ := (U x^2-1)*(4*U x^3+5*U x^4)
-private def B (lam : ℂ) (x : ℝ) : ℂ := mass x*U x^2*(2-lam)/8
+private def mass (x : ℝ) : ℂ := U x^(2 : ℕ)*(1-U x^(2 : ℕ))
+private def S (x : ℝ) : ℂ := U x^(4 : ℕ)*(1+U x)
+private def H (x : ℝ) : ℂ := (U x^(2 : ℕ)-1)*(4*U x^(3 : ℕ)+5*U x^(4 : ℕ))
+private def B (lam : ℂ) (x : ℝ) : ℂ := mass x*U x^(2 : ℕ)*(2-lam)/8
 private def A (lam : ℂ) (x : ℝ) : ℂ :=
-  mass x*((5*lam-6)/4+U x^2*((4*lam+1)*(lam+2)/8-3*(7*lam-2)/8))
+  mass x*((5*lam-6)/4+U x^(2 : ℕ)*((4*lam+1)*(lam+2)/8-3*(7*lam-2)/8))
 
 @[fun_prop] private theorem S_smooth : ContDiff ℝ ∞ S := by unfold S; fun_prop
 @[fun_prop] private theorem H_smooth : ContDiff ℝ ∞ H := by unfold H; fun_prop
@@ -287,9 +287,9 @@ def producer (lam : ℂ) (f : Point → ℂ) (p : Point) : ℂ :=
 /-- Formal complex bilinear transpose in the original master measure.
 No complex coefficient is conjugated. -/
 def transposeProducer (lam : ℂ) (g : Point → ℂ) (p : Point) : ℂ :=
-  (5*lam-6)/4*g p+U (p 0)^2/8*((4*lam+1)*(lam+2)*g p-(lam+4)*L g p)+
-    (4*U (p 0)-U (p 0)^2)*K lam g p+
-    U (p 0)^2*(D 0 (K lam g) p/(U (p 0)-1)+3*K lam g p)
+  (5*lam-6)/4*g p+U (p 0)^(2 : ℕ)/8*((4*lam+1)*(lam+2)*g p-(lam+4)*L g p)+
+    (4*U (p 0)-U (p 0)^(2 : ℕ))*K lam g p+
+    U (p 0)^(2 : ℕ)*(D 0 (K lam g) p/(U (p 0)-1)+3*K lam g p)
 
 /-- Radial and both angular source-transfer fluxes, including the mixed
 radial/angular derivatives and the exact logarithmic-height measure. -/
@@ -541,7 +541,7 @@ private theorem base_secondK (q : XiZeroCopy) (p : Point) :
 
 private theorem base_laplacian (q : XiZeroCopy) (p : Point) :
     L (baseField q) p=scalarLaplacian (fullSquarePotential q) ![p 1,Real.exp (p 2)] := by
-  have he : E 2 p=(Real.exp (p 2):ℂ)^2 := by
+  have he : E 2 p=(Real.exp (p 2):ℂ)^(2 : ℕ) := by
     dsimp [E]
     rw [two_mul,Complex.exp_add]
     simp [Complex.ofReal_exp,pow_two]
@@ -591,7 +591,7 @@ fixed smooth onset. This supplies the source dictionary, not a vanishing claim. 
 theorem thetaSeed_producer_original (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (x : {x : ℝ // x < 0}) (z : UpperHalfPlane) :
     timeOriginalForcing q branch a (v-x.val) x.val (coordinates z)=
-      -2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)*
+      -2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)*
         producer (scalarParameter q) (thetaSeed q branch a v) ![x.val,z.re,Real.log z.im] := by
   rw [timeOriginalForcing_common_source]
   congr 1
@@ -805,7 +805,7 @@ private theorem sourceRadialTraceCurrent_characteristic (q : XiZeroCopy) (branch
     (a : ℂ) (v : ℝ) (image : Bool) (h target X k : ℝ) :
     sourceRadialTraceCurrent q branch a v image h target X k
         (sourceCharacteristic image h target)=
-      Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*
+      Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         thetaAngularCoupling q X k*
         sourceCharacteristicWeight (physicalRate q branch) (sourceCharacteristic image h target) := by
   let y := sourceCharacteristic image h target
@@ -860,7 +860,7 @@ theorem sourceRadialTraceCurrent_signed_faces (q : XiZeroCopy) (branch : Bool)
     (sourceRadialTraceCurrent q branch a v true h target X k 0-
       sourceRadialTraceCurrent q branch a v true h target X k
         (sourceCharacteristic true h target))=
-      Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*
+      Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         thetaAngularCoupling q X k*
         (sourceCharacteristicWeight (physicalRate q branch) (-h/2)-
           sourceCharacteristicWeight (physicalRate q branch) (target-h/2)) := by
@@ -887,7 +887,7 @@ theorem sourceRadialCurrent_characteristic_limit (q : XiZeroCopy) (branch : Bool
       (spinTwoKernelField image q h.val target.val) ![y,X,k] 0)
       (𝓝[{y : ℝ | 1 < invariant (h.val-target.val+y) target.val (if image then -y else y)}]
         (sourceCharacteristic image h.val target.val))
-      (𝓝 (Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*
+      (𝓝 (Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         thetaAngularCoupling q X k*sourceCharacteristicWeight (physicalRate q branch)
           (sourceCharacteristic image h.val target.val))) := by
   let e := sourceCharacteristic image h.val target.val
@@ -1056,7 +1056,7 @@ theorem sourceRadialTransfer_characteristic_integral (q : XiZeroCopy) (branch : 
     Tendsto (fun cut : ℝ => ∫ y in cut..0,
       radialTransferDensity q branch a v image h.val target.val X k y)
       (𝓝[>] (sourceCharacteristic image h.val target.val))
-      (𝓝 (-(Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*
+      (𝓝 (-(Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         thetaAngularCoupling q X k*sourceCharacteristicWeight (physicalRate q branch)
           (sourceCharacteristic image h.val target.val)))) := by
   let e := sourceCharacteristic image h.val target.val
@@ -1098,7 +1098,7 @@ theorem sourceRadialTransfer_signed_characteristic_integral (q : XiZeroCopy) (br
       (∫ y in (-h.val/2+d)..0,
         radialTransferDensity q branch a v true h.val target.val X k y))
       (𝓝[>] (0:ℝ))
-      (𝓝 (Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*
+      (𝓝 (Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         thetaAngularCoupling q X k*
         (sourceCharacteristicWeight (physicalRate q branch) (-h.val/2)-
           sourceCharacteristicWeight (physicalRate q branch) (target.val-h.val/2)))) := by
@@ -1131,11 +1131,11 @@ private theorem characteristicWeight_tendsto_horizon (s : ℂ) :
   have hp : ContinuousAt (fun u : ℝ => D4BMLaplaceRadial.power (2*s) (1+u)) 1 :=
     (D4BMLaplaceRadial.power_derivatives (2*s) (by norm_num : 0 < (1+(1:ℝ)))).1.continuousAt.comp
       (f := fun u : ℝ => 1+u) (by fun_prop)
-  have hc : ContinuousAt (fun u : ℝ => (u:ℂ)^4*(1+(u:ℂ))*
+  have hc : ContinuousAt (fun u : ℝ => (u:ℂ)^(4 : ℕ)*(1+(u:ℂ))*
       D4BMLaplaceRadial.power (2*s) (1+u)) 1 :=
-    (show ContinuousAt (fun u : ℝ => (u:ℂ)^4*(1+(u:ℂ))) 1 by fun_prop).mul hp
+    (show ContinuousAt (fun u : ℝ => (u:ℂ)^(4 : ℕ)*(1+(u:ℂ))) 1 by fun_prop).mul hp
   have hh := hc.tendsto.comp unit_tendsto_horizon
-  have hfun : sourceCharacteristicWeight s=fun y => (radialUnit y:ℂ)^4*(1+(radialUnit y:ℂ))*
+  have hfun : sourceCharacteristicWeight s=fun y => (radialUnit y:ℂ)^(4 : ℕ)*(1+(radialUnit y:ℂ))*
       D4BMLaplaceRadial.power (2*s) (1+radialUnit y) := by
     funext y
     simp [sourceCharacteristicWeight,S,U,sourceAmplitude]
@@ -1175,7 +1175,7 @@ theorem sourceRadialTraceCurrent_signed_faces_tendsto_zero (q : XiZeroCopy) (bra
   have hi := (characteristicWeight_tendsto_horizon (physicalRate q branch)).comp
     (sourceCharacteristic_tendsto true target)
   have hh := (hi.sub hd).const_mul
-    (Complex.exp (-(k:ℂ))*a^2*timeOnset (2*physicalRate q branch) v*thetaAngularCoupling q X k)
+    (Complex.exp (-(k:ℂ))*a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*thetaAngularCoupling q X k)
   simp_rw [sourceRadialTraceCurrent_signed_faces]
   simpa only [Function.comp_def,sub_self,mul_zero,sourceCharacteristic,
     Bool.false_eq_true,if_false,if_true] using! hh

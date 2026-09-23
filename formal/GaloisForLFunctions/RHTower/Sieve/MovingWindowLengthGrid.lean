@@ -47,19 +47,19 @@ theorem card_image_lengthGridQuantizer_le (q : ℕ) (L : ℕ → ℕ)
 
 theorem sum_lengthGridQuantizationError_le (q : ℕ) (hq : 0 < q)
     (L : ℕ → ℕ) (S : Finset ℕ) :
-    (∑ y ∈ S, |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ 2)
-      ≤ (S.card : ℝ) * (q : ℝ) ^ 2 := by
+    (∑ y ∈ S, |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ (2 : ℕ))
+      ≤ (S.card : ℝ) * (q : ℝ) ^ (2 : ℕ) := by
   have hpoint : ∀ y ∈ S,
-      |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ 2 ≤ (q : ℝ) ^ 2 := by
+      |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ (2 : ℕ) ≤ (q : ℝ) ^ (2 : ℕ) := by
     intro y _
     have hlt := abs_length_sub_lengthGridQuantizer_lt q hq L y
     have habs := abs_nonneg ((L y : ℝ) - (lengthGridQuantizer q L y : ℝ))
     have hq0 : (0 : ℝ) ≤ q := by positivity
     nlinarith
   calc
-    (∑ y ∈ S, |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ 2)
-        ≤ ∑ y ∈ S, (q : ℝ) ^ 2 := Finset.sum_le_sum hpoint
-    _ = (S.card : ℝ) * (q : ℝ) ^ 2 := by simp
+    (∑ y ∈ S, |(L y : ℝ) - (lengthGridQuantizer q L y : ℝ)| ^ (2 : ℕ))
+        ≤ ∑ y ∈ S, (q : ℝ) ^ (2 : ℕ) := Finset.sum_le_sum hpoint
+    _ = (S.card : ℝ) * (q : ℝ) ^ (2 : ℕ) := by simp
 
 theorem movingFibreWindowLength_le_ceil (x h : ℝ) (hx : 0 < x) (hh : 0 ≤ h)
     {y : ℕ} (hy : y ≤ ⌈Real.sqrt x⌉₊) :
@@ -93,13 +93,13 @@ theorem card_movingLengthGrid_le (x h : ℝ) (hx : 0 < x) (hh : 0 ≤ h)
 theorem sum_innerFibre_sq_le_lengthGridPartition (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 < x) (hh : 0 ≤ h)
     (q : ℕ) (hq : 0 < q) :
-    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2)
+    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ))
       ≤ 16 * ∑ ℓ ∈
           (Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).image
             (lengthGridQuantizer q (movingFibreWindowLength x h)),
             dyadicMeanSquare f ℓ (⌈Real.sqrt x / 2⌉₊ - 1) (⌈Real.sqrt x⌉₊ - 1)
-        + 16 * ((Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).card : ℝ) * (q : ℝ) ^ 2
-        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ 2 := by
+        + 16 * ((Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).card : ℝ) * (q : ℝ) ^ (2 : ℕ)
+        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ (2 : ℕ) := by
   have hbase := sum_innerFibre_sq_le_finitePartition f hf hx hh
     (lengthGridQuantizer q (movingFibreWindowLength x h))
   have herr := sum_lengthGridQuantizationError_le q hq

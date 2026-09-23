@@ -25,11 +25,11 @@ The complementary finite-height result is also exact.  Squarefree subset product
 injective frequency expansion with spacing at least the reciprocal primorial.  A general harmonic
 Schur estimate for finite separated real-frequency polynomials then yields
 
-`integral_{-W}^{W} |Psi(Q,r,t)|^2 dt
+`integral_{-W}^{W} |Psi(Q,r,t)|^(2 : ℕ) dt
   <= (2 W + 4 R_Q (1 + |Q| log 2)) V(Q,r)`.
 
 The coefficient energy is proved equal to
-`V(Q,r) = product_p (1 + p^(-2r)) / (1 + p^(-r))^2`, not merely bounded by it.  Finally,
+`V(Q,r) = product_p (1 + p^(-2r)) / (1 + p^(-r))^(2 : ℕ)`, not merely bounded by it.  Finally,
 `V(Q,r) <= exp (-1/2 * sum_p p^(-r))`; hence it tends to zero along every packet family whose
 `r`-mass diverges, and in particular along the canonical prime apertures for `0 < r <= 1`.
 

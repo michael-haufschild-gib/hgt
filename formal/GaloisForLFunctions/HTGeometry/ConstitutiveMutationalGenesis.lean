@@ -33,12 +33,12 @@ theorem mutationalLineage_recurrence (n : ℕ) :
 /-- The Cassini residual is conserved and equals one. -/
 theorem mutationalLineage_cassini (n : ℕ) :
     mutationalLineage (n + 2) * mutationalLineage n -
-      mutationalLineage (n + 1) ^ 2 = 1 := by
+      mutationalLineage (n + 1) ^ (2 : ℕ) = 1 := by
   induction n with
   | zero => norm_num [mutationalLineage]
   | succ n ih =>
       change mutationalLineage (n + 3) * mutationalLineage (n + 1) -
-          mutationalLineage (n + 2) ^ 2 = 1
+          mutationalLineage (n + 2) ^ (2 : ℕ) = 1
       have hnext := mutationalLineage_recurrence (n + 1)
       have hnow := mutationalLineage_recurrence n
       change mutationalLineage (n + 3) =
@@ -51,12 +51,12 @@ theorem mutationalLineage_cassini (n : ℕ) :
 /-- The linearized lineage reconstructs the nonlinear exchange exactly. -/
 theorem mutationalLineage_exchange (n : ℕ) :
     mutationalLineage (n + 2) * mutationalLineage n =
-      mutationalLineage (n + 1) ^ 2 + 1 := by
+      mutationalLineage (n + 1) ^ (2 : ℕ) + 1 := by
   nlinarith [mutationalLineage_cassini n]
 
 /-- Denominator-free form of the transported certificate `H = 3`. -/
 theorem mutationalLineage_certificate (n : ℕ) :
-    mutationalLineage n ^ 2 + mutationalLineage (n + 1) ^ 2 + 1 =
+    mutationalLineage n ^ (2 : ℕ) + mutationalLineage (n + 1) ^ (2 : ℕ) + 1 =
       3 * mutationalLineage n * mutationalLineage (n + 1) := by
   have hexchange := mutationalLineage_exchange n
   rw [mutationalLineage_recurrence n] at hexchange
@@ -65,16 +65,16 @@ theorem mutationalLineage_certificate (n : ℕ) :
 /-- Local exchange transports the numerator of the semantic certificate to either adjacent
 pair.  Division is deliberately absent. -/
 theorem mutationalCertificate_transport (a b c : ℤ)
-    (hexchange : a * c = b ^ 2 + 1) :
-    a ^ 2 + b ^ 2 + 1 = a * (a + c) ∧
-      b ^ 2 + c ^ 2 + 1 = c * (a + c) := by
+    (hexchange : a * c = b ^ (2 : ℕ) + 1) :
+    a ^ (2 : ℕ) + b ^ (2 : ℕ) + 1 = a * (a + c) ∧
+      b ^ (2 : ℕ) + c ^ (2 : ℕ) + 1 = c * (a + c) := by
   constructor <;> nlinarith
 
 /-- Exchange plus certificate value three forces the linear successor. -/
 theorem mutationalExchange_certificate_forces_linearization
     (a b c : ℤ) (ha : a ≠ 0)
-    (hexchange : a * c = b ^ 2 + 1)
-    (hcertificate : a ^ 2 + b ^ 2 + 1 = 3 * a * b) :
+    (hexchange : a * c = b ^ (2 : ℕ) + 1)
+    (hcertificate : a ^ (2 : ℕ) + b ^ (2 : ℕ) + 1 = 3 * a * b) :
     c = 3 * b - a := by
   apply mul_left_cancel₀ ha
   nlinarith
@@ -200,8 +200,8 @@ exchange, transported certificate, and open predictable lineage coexist in one f
 theorem constitutiveMutationalGenesisMechanism_closed :
     (∀ n, visibleMutationRule (n + 2) = visibleMutationRule n) ∧
     (∀ n, mutationalLineage (n + 2) * mutationalLineage n =
-      mutationalLineage (n + 1) ^ 2 + 1) ∧
-    (∀ n, mutationalLineage n ^ 2 + mutationalLineage (n + 1) ^ 2 + 1 =
+      mutationalLineage (n + 1) ^ (2 : ℕ) + 1) ∧
+    (∀ n, mutationalLineage n ^ (2 : ℕ) + mutationalLineage (n + 1) ^ (2 : ℕ) + 1 =
       3 * mutationalLineage n * mutationalLineage (n + 1)) ∧
     (∀ N : ℕ, (N : ℤ) < mutationalLineage (N + 2)) := by
   exact ⟨visibleMutationRule_period_two, mutationalLineage_exchange,

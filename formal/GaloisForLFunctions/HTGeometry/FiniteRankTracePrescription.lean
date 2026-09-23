@@ -37,13 +37,13 @@ theorem diagBlock_eq_zero_of_notMem {N M : ℕ} (t : ℂ) {p : ℕ × ℕ}
   · rw [if_neg h]
 
 theorem sum_diagBlock_normSq (N M : ℕ) (t : ℂ) :
-    ∑ p ∈ (Finset.range (N + M)) ×ˢ (Finset.range (N + M)), ‖diagBlock N M t p‖ ^ 2
-      = (M : ℝ) * ‖t‖ ^ 2 := by
+    ∑ p ∈ (Finset.range (N + M)) ×ˢ (Finset.range (N + M)), ‖diagBlock N M t p‖ ^ (2 : ℕ)
+      = (M : ℝ) * ‖t‖ ^ (2 : ℕ) := by
   classical
   rw [Finset.sum_product]
   have hinner : ∀ i ∈ Finset.range (N + M),
-      (∑ j ∈ Finset.range (N + M), ‖diagBlock N M t (i, j)‖ ^ 2)
-        = if N ≤ i ∧ i < N + M then ‖t‖ ^ 2 else 0 := by
+      (∑ j ∈ Finset.range (N + M), ‖diagBlock N M t (i, j)‖ ^ (2 : ℕ))
+        = if N ≤ i ∧ i < N + M then ‖t‖ ^ (2 : ℕ) else 0 := by
     intro i hi
     by_cases hrange : N ≤ i ∧ i < N + M
     · rw [if_pos hrange, Finset.sum_eq_single i]
@@ -75,7 +75,7 @@ theorem isHS_diagBlock (N M : ℕ) (t : ℂ) : IsHS (diagBlock N M t) := by
   simp
 
 theorem hsNormSq_diagBlock (N M : ℕ) (t : ℂ) :
-    hsNormSq (diagBlock N M t) = (M : ℝ) * ‖t‖ ^ 2 := by
+    hsNormSq (diagBlock N M t) = (M : ℝ) * ‖t‖ ^ (2 : ℕ) := by
   classical
   rw [hsNormSq, tsum_eq_sum (s := (Finset.range (N + M)) ×ˢ (Finset.range (N + M)))
     (fun p hp => by rw [diagBlock_eq_zero_of_notMem t hp, norm_zero]; simp),
@@ -134,11 +134,11 @@ theorem exists_finiteSupport_hsNorm_sub_lt_and_hsTraceDiag_eq
     · rw [if_neg h]
   have hTHS : IsHS T := by rw [hTdef]; exact isHS_truncKernel hK _
   obtain ⟨R, hRdef⟩ : ∃ R : ℂ, R = c - hsTraceDiag T := ⟨_, rfl⟩
-  obtain ⟨M₀, hM₀⟩ := exists_nat_gt (‖R‖ ^ 2 / (ε / 2) ^ 2)
+  obtain ⟨M₀, hM₀⟩ := exists_nat_gt (‖R‖ ^ (2 : ℕ) / (ε / 2) ^ (2 : ℕ))
   obtain ⟨M, hMdef⟩ : ∃ M : ℕ, M = M₀ + 1 := ⟨_, rfl⟩
   have hMpos : 0 < M := by omega
   have hMR : (0 : ℝ) < (M : ℝ) := by exact_mod_cast hMpos
-  have hMbig : ‖R‖ ^ 2 / (ε / 2) ^ 2 < (M : ℝ) := by
+  have hMbig : ‖R‖ ^ (2 : ℕ) / (ε / 2) ^ (2 : ℕ) < (M : ℝ) := by
     have : (M₀ : ℝ) ≤ (M : ℝ) := by
       have : M₀ ≤ M := by omega
       exact_mod_cast this
@@ -167,12 +167,12 @@ theorem exists_finiteSupport_hsNorm_sub_lt_and_hsTraceDiag_eq
       exact hN
     have hB : hsNorm (diagBlock N M t) < ε / 2 := by
       rw [hsNorm, hsNormSq_diagBlock, hnormt]
-      have hval : (M : ℝ) * (‖R‖ / (M : ℝ)) ^ 2 = ‖R‖ ^ 2 / (M : ℝ) := by
+      have hval : (M : ℝ) * (‖R‖ / (M : ℝ)) ^ (2 : ℕ) = ‖R‖ ^ (2 : ℕ) / (M : ℝ) := by
         field_simp
       rw [hval]
       refine (Real.sqrt_lt' hhalf).mpr ?_
       rw [div_lt_iff₀ hMR]
-      have hpos : (0 : ℝ) < (ε / 2) ^ 2 := by positivity
+      have hpos : (0 : ℝ) < (ε / 2) ^ (2 : ℕ) := by positivity
       rw [div_lt_iff₀ hpos] at hMbig
       nlinarith [hMbig]
     have := hsNorm_add_le (isHS_sub hTHS hK) (isHS_diagBlock N M t)

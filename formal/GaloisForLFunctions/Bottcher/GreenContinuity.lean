@@ -28,45 +28,45 @@ theorem abs_logMax_quadratic_sub_two_logMax (c w : ℂ) :
   have hcnn : (0 : ℝ) ≤ ‖c‖ := norm_nonneg c
   have hA1 : (1 : ℝ) ≤ max ‖quadratic c w‖ 1 := le_max_right _ _
   have hB1 : (1 : ℝ) ≤ max ‖w‖ 1 := le_max_right _ _
-  have hB1sq : (1 : ℝ) ≤ max ‖w‖ 1 ^ 2 := one_le_pow₀ hB1
+  have hB1sq : (1 : ℝ) ≤ max ‖w‖ 1 ^ (2 : ℕ) := one_le_pow₀ hB1
   have hApos : (0 : ℝ) < max ‖quadratic c w‖ 1 := lt_of_lt_of_le one_pos hA1
-  have hBsqpos : (0 : ℝ) < max ‖w‖ 1 ^ 2 := lt_of_lt_of_le one_pos hB1sq
+  have hBsqpos : (0 : ℝ) < max ‖w‖ 1 ^ (2 : ℕ) := lt_of_lt_of_le one_pos hB1sq
   have hfac : (0 : ℝ) < 1 + ‖c‖ := by linarith
   -- key norm facts
-  have hquad : ‖quadratic c w‖ ≤ ‖w‖ ^ 2 + ‖c‖ := by
+  have hquad : ‖quadratic c w‖ ≤ ‖w‖ ^ (2 : ℕ) + ‖c‖ := by
     unfold quadratic
-    calc ‖w ^ 2 + c‖ ≤ ‖w ^ 2‖ + ‖c‖ := norm_add_le _ _
-      _ = ‖w‖ ^ 2 + ‖c‖ := by rw [norm_pow]
-  have hrev : ‖w‖ ^ 2 ≤ ‖quadratic c w‖ + ‖c‖ := by
+    calc ‖w ^ (2 : ℕ) + c‖ ≤ ‖w ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
+      _ = ‖w‖ ^ (2 : ℕ) + ‖c‖ := by rw [norm_pow]
+  have hrev : ‖w‖ ^ (2 : ℕ) ≤ ‖quadratic c w‖ + ‖c‖ := by
     unfold quadratic
-    have : ‖w‖ ^ 2 = ‖w ^ 2‖ := by rw [norm_pow]
+    have : ‖w‖ ^ (2 : ℕ) = ‖w ^ (2 : ℕ)‖ := by rw [norm_pow]
     rw [this]
-    calc ‖w ^ 2‖ = ‖(w ^ 2 + c) - c‖ := by ring_nf
-      _ ≤ ‖w ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
-  have hmaxsq : max ‖w‖ 1 ^ 2 = max (‖w‖ ^ 2) 1 := by
+    calc ‖w ^ (2 : ℕ)‖ = ‖(w ^ (2 : ℕ) + c) - c‖ := by ring_nf
+      _ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖c‖ := norm_sub_le _ _
+  have hmaxsq : max ‖w‖ 1 ^ (2 : ℕ) = max (‖w‖ ^ (2 : ℕ)) 1 := by
     rcases le_total ‖w‖ 1 with h | h
     · rw [max_eq_right h, one_pow, max_eq_right (by nlinarith [norm_nonneg w])]
     · rw [max_eq_left h, max_eq_left (by nlinarith)]
   -- Claim 1: A ≤ B² (1 + ‖c‖)
-  have hclaim1 : max ‖quadratic c w‖ 1 ≤ max ‖w‖ 1 ^ 2 * (1 + ‖c‖) := by
+  have hclaim1 : max ‖quadratic c w‖ 1 ≤ max ‖w‖ 1 ^ (2 : ℕ) * (1 + ‖c‖) := by
     rw [hmaxsq]
-    have h1 : max ‖quadratic c w‖ 1 ≤ max (‖w‖ ^ 2) 1 + ‖c‖ := by
+    have h1 : max ‖quadratic c w‖ 1 ≤ max (‖w‖ ^ (2 : ℕ)) 1 + ‖c‖ := by
       apply max_le
-      · calc ‖quadratic c w‖ ≤ ‖w‖ ^ 2 + ‖c‖ := hquad
-          _ ≤ max (‖w‖ ^ 2) 1 + ‖c‖ := by gcongr; exact le_max_left _ _
-      · have : (1 : ℝ) ≤ max (‖w‖ ^ 2) 1 := le_max_right _ _; linarith
-    calc max ‖quadratic c w‖ 1 ≤ max (‖w‖ ^ 2) 1 + ‖c‖ := h1
-      _ ≤ max (‖w‖ ^ 2) 1 * (1 + ‖c‖) := by
-          have : (1 : ℝ) ≤ max (‖w‖ ^ 2) 1 := le_max_right _ _; nlinarith
+      · calc ‖quadratic c w‖ ≤ ‖w‖ ^ (2 : ℕ) + ‖c‖ := hquad
+          _ ≤ max (‖w‖ ^ (2 : ℕ)) 1 + ‖c‖ := by gcongr; exact le_max_left _ _
+      · have : (1 : ℝ) ≤ max (‖w‖ ^ (2 : ℕ)) 1 := le_max_right _ _; linarith
+    calc max ‖quadratic c w‖ 1 ≤ max (‖w‖ ^ (2 : ℕ)) 1 + ‖c‖ := h1
+      _ ≤ max (‖w‖ ^ (2 : ℕ)) 1 * (1 + ‖c‖) := by
+          have : (1 : ℝ) ≤ max (‖w‖ ^ (2 : ℕ)) 1 := le_max_right _ _; nlinarith
   -- Claim 2: B² ≤ A (1 + ‖c‖)
-  have hclaim2 : max ‖w‖ 1 ^ 2 ≤ max ‖quadratic c w‖ 1 * (1 + ‖c‖) := by
+  have hclaim2 : max ‖w‖ 1 ^ (2 : ℕ) ≤ max ‖quadratic c w‖ 1 * (1 + ‖c‖) := by
     rw [hmaxsq]
-    have h1 : max (‖w‖ ^ 2) 1 ≤ max ‖quadratic c w‖ 1 + ‖c‖ := by
+    have h1 : max (‖w‖ ^ (2 : ℕ)) 1 ≤ max ‖quadratic c w‖ 1 + ‖c‖ := by
       apply max_le
-      · calc ‖w‖ ^ 2 ≤ ‖quadratic c w‖ + ‖c‖ := hrev
+      · calc ‖w‖ ^ (2 : ℕ) ≤ ‖quadratic c w‖ + ‖c‖ := hrev
           _ ≤ max ‖quadratic c w‖ 1 + ‖c‖ := by gcongr; exact le_max_left _ _
       · have : (1 : ℝ) ≤ max ‖quadratic c w‖ 1 := le_max_right _ _; linarith
-    calc max (‖w‖ ^ 2) 1 ≤ max ‖quadratic c w‖ 1 + ‖c‖ := h1
+    calc max (‖w‖ ^ (2 : ℕ)) 1 ≤ max ‖quadratic c w‖ 1 + ‖c‖ := h1
       _ ≤ max ‖quadratic c w‖ 1 * (1 + ‖c‖) := by
           have : (1 : ℝ) ≤ max ‖quadratic c w‖ 1 := le_max_right _ _; nlinarith
   -- turn the two bounds into log bounds
@@ -196,9 +196,9 @@ theorem tendsto_greenLimit_sub_log (c : ℂ) :
     Tendsto (fun z => greenLimit c z - Real.log ‖z‖) (Bornology.cobounded ℂ) (𝓝 0) := by
   have hnorm : Tendsto (fun z : ℂ => ‖z‖) (Bornology.cobounded ℂ) atTop :=
     tendsto_norm_cobounded_atTop
-  have hsq : Tendsto (fun z : ℂ => ‖z‖ ^ 2) (Bornology.cobounded ℂ) atTop :=
+  have hsq : Tendsto (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) (Bornology.cobounded ℂ) atTop :=
     (tendsto_pow_atTop (two_ne_zero)).comp hnorm
-  have hbd : Tendsto (fun z : ℂ => 2 * ‖c‖ / ‖z‖ ^ 2) (Bornology.cobounded ℂ) (𝓝 0) :=
+  have hbd : Tendsto (fun z : ℂ => 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ)) (Bornology.cobounded ℂ) (𝓝 0) :=
     tendsto_const_nhds.div_atTop hsq
   refine squeeze_zero_norm' ?_ hbd
   filter_upwards [hnorm.eventually_gt_atTop (max 2 ‖c‖)] with z hz

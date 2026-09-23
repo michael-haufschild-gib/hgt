@@ -25,27 +25,27 @@ section Domination
 
 /-- A quadratic is eventually dominated by any positive multiple of `2^n`. -/
 theorem eventually_quadratic_lt_two_pow {θ : ℝ} (hθ : 0 < θ) (B : ℝ) :
-    ∀ᶠ n : ℕ in atTop, B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) < θ * 2 ^ n := by
+    ∀ᶠ n : ℕ in atTop, B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) < θ * 2 ^ n := by
   set B' : ℝ := max B 1 with hB'def
   have hB'pos : (0 : ℝ) < B' := lt_of_lt_of_le one_pos (le_max_right _ _)
   have hBle : B ≤ B' := le_max_left _ _
-  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ 2 / 2 ^ n) atTop (nhds 0) :=
+  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 : ℕ) / 2 ^ n) atTop (nhds 0) :=
     tendsto_pow_const_div_const_pow_of_one_lt 2 (by norm_num)
   have hev := hlim.eventually_lt_const (show (0 : ℝ) < θ / (3 * B') by positivity)
   filter_upwards [hev, eventually_ge_atTop 1] with n hn hn1
   have h2n : (0 : ℝ) < 2 ^ n := by positivity
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
   rw [div_lt_iff₀ h2n] at hn
-  have hkey : 3 * B' * (n : ℝ) ^ 2 < θ * 2 ^ n := by
+  have hkey : 3 * B' * (n : ℝ) ^ (2 : ℕ) < θ * 2 ^ n := by
     have hmul := mul_lt_mul_of_pos_left hn (show (0 : ℝ) < 3 * B' by positivity)
-    calc 3 * B' * (n : ℝ) ^ 2 < 3 * B' * (θ / (3 * B') * 2 ^ n) := hmul
+    calc 3 * B' * (n : ℝ) ^ (2 : ℕ) < 3 * B' * (θ / (3 * B') * 2 ^ n) := hmul
       _ = θ * 2 ^ n := by field_simp
-  have hq : (n : ℝ) ^ 2 + (n : ℝ) + 1 ≤ 3 * (n : ℝ) ^ 2 := by nlinarith
-  have hqnn : (0 : ℝ) ≤ (n : ℝ) ^ 2 + (n : ℝ) + 1 := by positivity
-  calc B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) ≤ B' * ((n : ℝ) ^ 2 + (n : ℝ) + 1) :=
+  have hq : (n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1 ≤ 3 * (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hqnn : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1 := by positivity
+  calc B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) ≤ B' * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) :=
         mul_le_mul_of_nonneg_right hBle hqnn
-    _ ≤ B' * (3 * (n : ℝ) ^ 2) := mul_le_mul_of_nonneg_left hq hB'pos.le
-    _ = 3 * B' * (n : ℝ) ^ 2 := by ring
+    _ ≤ B' * (3 * (n : ℝ) ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hq hB'pos.le
+    _ = 3 * B' * (n : ℝ) ^ (2 : ℕ) := by ring
     _ < θ * 2 ^ n := hkey
 
 end Domination
@@ -144,7 +144,7 @@ theorem eventually_heapCapacity_cap
     rwa [Real.log_mul (ne_of_gt hWpos) (by positivity), Real.log_pow] at h
   have hlogMsnn : (0 : ℝ) ≤ Real.log ((M : ℝ) + (s : ℝ)) := Real.log_nonneg hMs1
   have hlogW : Real.log W ≤ |Real.log W| := le_abs_self _
-  have hquadbound : (M : ℝ) * Real.log ((M : ℝ) + (s : ℝ)) ≤ B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) := by
+  have hquadbound : (M : ℝ) * Real.log ((M : ℝ) + (s : ℝ)) ≤ B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) := by
     have hstep : (M : ℝ) * Real.log ((M : ℝ) + (s : ℝ))
         ≤ (Cm * (n : ℝ) + Cm) * (Real.log W + (n : ℝ) * Real.log 2) :=
       mul_le_mul hM' hlogMs hlogMsnn (by nlinarith)
@@ -163,7 +163,7 @@ theorem eventually_heapCapacity_cap
       _ = c * (Δ : ℝ) * Real.log 2 * 2 ^ n := by ring
   -- assemble
   have hHle : ((heapCapacity M s Δ : ℕ) : ℝ)
-      ≤ Real.exp (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1)
+      ≤ Real.exp (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1)
           + c * (Δ : ℝ) * Real.log 2 * 2 ^ n) := by
     refine (heapCapacity_le_exp (hM1 n) s Δ).trans (Real.exp_le_exp.mpr ?_)
     linarith
@@ -172,36 +172,36 @@ theorem eventually_heapCapacity_cap
     exact hK n
   have hprod : Kfun n * ((heapCapacity M s Δ : ℕ) : ℝ) * Real.exp (-γ * 2 ^ n)
       ≤ Real.exp ((Real.log K₀ + η * 2 ^ n)
-          + (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1)
+          + (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1)
             + c * (Δ : ℝ) * Real.log 2 * 2 ^ n) + (-γ * 2 ^ n)) := by
     rw [Real.exp_add, Real.exp_add]
     exact mul_le_mul (mul_le_mul hKle hHle (by positivity) (Real.exp_pos _).le)
       le_rfl (Real.exp_pos _).le (by positivity)
   refine lt_of_le_of_lt hprod ?_
   have hrw : (Real.log K₀ + η * 2 ^ n)
-      + (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1)
+      + (Real.log (c + 1) + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1)
         + c * (Δ : ℝ) * Real.log 2 * 2 ^ n) + (-γ * 2 ^ n)
-      = C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) - θ * 2 ^ n := by
+      = C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) - θ * 2 ^ n := by
     simp only [hC₀def, hθdef]
     ring
   rw [hrw]
-  have hb : C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1)
-      ≤ B' * ((n : ℝ) ^ 2 + (n : ℝ) + 1) := by
+  have hb : C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1)
+      ≤ B' * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) := by
     have h1 : C₀ ≤ |C₀| := le_abs_self C₀
-    have h2 : (0 : ℝ) ≤ |C₀| * ((n : ℝ) ^ 2 + (n : ℝ)) :=
+    have h2 : (0 : ℝ) ≤ |C₀| * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ)) :=
       mul_nonneg (abs_nonneg _) (by positivity)
-    have h3 : (0 : ℝ) ≤ Real.log 2 * (n : ℝ) ^ 2 :=
+    have h3 : (0 : ℝ) ≤ Real.log 2 * (n : ℝ) ^ (2 : ℕ) :=
       mul_nonneg hlog2pos.le (sq_nonneg _)
-    have hexpand : B' * ((n : ℝ) ^ 2 + (n : ℝ) + 1)
-        = B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) + Real.log 2 * (n : ℝ) ^ 2
-          + Real.log 2 * (n : ℝ) + Real.log 2 + |C₀| * ((n : ℝ) ^ 2 + (n : ℝ)) + |C₀| := by
+    have hexpand : B' * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1)
+        = B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) + Real.log 2 * (n : ℝ) ^ (2 : ℕ)
+          + Real.log 2 * (n : ℝ) + Real.log 2 + |C₀| * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ)) + |C₀| := by
       simp only [hB'def]
       ring
     rw [hexpand]
     linarith
-  have hneg : C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) - θ * 2 ^ n < 0 := by
+  have hneg : C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) - θ * 2 ^ n < 0 := by
     linarith
-  calc Real.exp (C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ 2 + (n : ℝ) + 1) - θ * 2 ^ n)
+  calc Real.exp (C₀ + (n : ℝ) * Real.log 2 + B * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ) + 1) - θ * 2 ^ n)
       < Real.exp 0 := Real.exp_lt_exp.mpr hneg
     _ = 1 := Real.exp_zero
 
@@ -259,8 +259,8 @@ section CorollaryB1
 of dimension `D = 2^n` has arbitrarily late recurrence cycles all of whose `k-1` equally spaced
 interior rational slices have robust circuit complexity above the depth `⌊cD⌋`. -/
 theorem eventually_exists_prime_late_recurrence_hard_slices
-    {δ c η Cm : ℝ} {Δ : ℕ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1) (hc : 0 < c) (hη : 0 < η)
-    (hCm : 0 ≤ Cm) (hθ : η + c * (Δ : ℝ) * Real.log 2 < (1 - 4 * δ ^ 2) / 4)
+    {δ c η Cm : ℝ} {Δ : ℕ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1) (hc : 0 < c) (hη : 0 < η)
+    (hCm : 0 ≤ Cm) (hθ : η + c * (Δ : ℝ) * Real.log 2 < (1 - 4 * δ ^ (2 : ℕ)) / 4)
     (Mfun : ℕ → ℕ) (hM1 : ∀ n, 1 ≤ Mfun n) (hM : ∀ n, ((Mfun n : ℕ) : ℝ) ≤ Cm * (n : ℝ) + Cm) :
     ∀ᶠ n : ℕ in atTop, ∃ k : ℕ, k.Prime ∧ Real.exp (η * 2 ^ n) ≤ (k : ℝ) ∧
       ∀ d : ℕ, d + 1 = 2 ^ n →
@@ -273,7 +273,7 @@ theorem eventually_exists_prime_late_recurrence_hard_slices
         ∀ j : ℕ, 1 ≤ j → j ≤ k - 1 →
           ((⌊c * 2 ^ n⌋₊ : ℕ) : ℕ∞) < robustCircuitComplexity dict δ
             (flowRay E ((j : ℝ) * R / (k : ℝ))) := by
-  filter_upwards [eventually_exists_prime_cap (γ := (1 - 4 * δ ^ 2) / 4) hc hη hCm hθ Mfun hM1 hM]
+  filter_upwards [eventually_exists_prime_cap (γ := (1 - 4 * δ ^ (2 : ℕ)) / 4) hc hη hCm hθ Mfun hM1 hM]
     with n hn
   obtain ⟨k, hk, hklarge, hcap⟩ := hn
   refine ⟨k, hk, hklarge, ?_⟩

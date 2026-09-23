@@ -27,7 +27,7 @@ theorem differentiableOn_dClampedStep {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ : 0 < 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁ : ρ₁ < ρ) (s t : ℝ) :
     DifferentiableOn ℂ (fun w : ℂ => dClampedStep V T w s t) (imStrip ρ₁) :=
   differentiableOn_deriv_of_holomorphic hρ₁
@@ -39,7 +39,7 @@ theorem continuousOn_dClampedStep_joint {ρ₀ Mv ρ ρ₁ ρ₂ T : ℝ} (hρ�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) :
     ContinuousOn (fun r : (ℝ × ℝ) × ℂ => dClampedStep V T r.2 r.1.1 r.1.2)
       (univ ×ˢ imStrip ρ₂) := fun _ hq =>
@@ -52,7 +52,7 @@ theorem differentiableOn_dClampedInner {ρ₀ Mv ρ ρ₁ ρ₂ T : ℝ} (hρ₀
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) (s η : ℝ) :
     DifferentiableOn ℂ (fun w : ℂ => ∫ t in (0 : ℝ)..η, dClampedStep V T w s t)
       (imStrip ρ₂) := by
@@ -74,7 +74,7 @@ theorem hasDerivAt_dClampedInner_transverse {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : �
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) (hρ₃ : ρ₃ < ρ₂)
     (s η : ℝ) {z : ℂ} (hz : z ∈ imStrip ρ₃) :
     HasDerivAt (fun w : ℂ => ∫ t in (0 : ℝ)..η, dClampedStep V T w s t)
@@ -97,7 +97,7 @@ theorem hasDerivAt_dClampedBox_transverse {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) (hρ₃ : ρ₃ < ρ₂)
     (ξ η : ℝ) {z : ℂ} (hz : z ∈ imStrip ρ₃) :
     HasDerivAt (fun w : ℂ => ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η, dClampedStep V T w s t)
@@ -127,7 +127,7 @@ theorem hasDerivAt_deriv_clockSolution_box {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : �
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) (hρ₃ : ρ₃ < ρ₂)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T) {z : ℂ} (hz : z ∈ imStrip ρ₃) :
     HasDerivAt (deriv (clockSolution V ξ η))
@@ -147,7 +147,7 @@ theorem deriv_deriv_clockSolution_eq {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ} (h�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁) (hρ₃ : ρ₃ < ρ₂)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T) {z : ℂ} (hz : z ∈ imStrip ρ₃) :
     deriv (deriv (clockSolution V ξ η)) z

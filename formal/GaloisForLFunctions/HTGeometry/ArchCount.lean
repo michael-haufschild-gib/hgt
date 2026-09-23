@@ -24,7 +24,7 @@ strictly negative, which `0 ≤ h` already contradicts.  The weakening matters b
 bound apply on an interval where `g'' + γ² g` vanishes identically. -/
 theorem arch_length_ge {g gd gdd h : ℝ → ℝ} {γ a b p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hhpos : ∀ t ∈ Ioo a b, 0 ≤ h t)
     (hpa : a ≤ p) (hqb : q ≤ b) (hpq : p < q)
     (hgp : g p = 0) (hgq : g q = 0) (harch : ∀ t ∈ Ioo p q, 0 < g t) :
@@ -70,7 +70,7 @@ theorem nsmul_le_of_disjoint_intervals :
 pairwise disjoint positive arches of `g` fit inside. -/
 theorem card_arches_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hhpos : ∀ t ∈ Ioo a b, 0 ≤ h t)
     {n : ℕ} (p q : Fin n → ℝ)
     (hpa : ∀ k, a ≤ p k) (hqb : ∀ k, q k ≤ b) (hpq : ∀ k, p k < q k)
@@ -96,7 +96,7 @@ theorem card_arches_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) 
 is at least `π/γ` long. -/
 theorem arch_length_ge_neg {g gd gdd h : ℝ → ℝ} {γ a b p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hhneg : ∀ t ∈ Ioo a b, h t ≤ 0)
     (hpa : a ≤ p) (hqb : q ≤ b) (hpq : p < q)
     (hgp : g p = 0) (hgq : g q = 0) (harch : ∀ t ∈ Ioo p q, g t < 0) :
@@ -111,7 +111,7 @@ theorem arch_length_ge_neg {g gd gdd h : ℝ → ℝ} {γ a b p q : ℝ} (hγ : 
 /-- The mirrored arch count. -/
 theorem card_arches_le_neg {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hhneg : ∀ t ∈ Ioo a b, h t ≤ 0)
     {n : ℕ} (p q : Fin n → ℝ)
     (hpa : ∀ k, a ≤ p k) (hqb : ∀ k, q k ≤ b) (hpq : ∀ k, p k < q k)

@@ -10,7 +10,7 @@ open integrability intervals justify their analyticity. This proves dependence
 on the singular exponent through the first nonintegrable strip.
 
 For the regular exponent, log |z| is bounded and vanishes linearly on the disk
-at one. The exact fixed-interval identity exp(a X)-1 = a integral_0^1 X exp(a t X)
+at one. The exact fixed-interval identity exp(a X)-1 = a integral_0^(1 : ℕ) X exp(a t X)
 turns the original subtraction into a signed exponential integral over a product
 measure. The logarithmic weight and the product integral are integrable before
 Fubini is used. The resulting regular-exponent family is real analytic everywhere.

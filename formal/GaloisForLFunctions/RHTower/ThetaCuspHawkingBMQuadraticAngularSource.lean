@@ -24,7 +24,7 @@ noncomputable section
 /-- Complete coexact vector metric jet from the same scalar three-jet. -/
 def coexactJet (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMetricTwoJet 4 ℂ :=
   D4BMVectorLinearEquation.vectorJet s r y B Sy (-Sx) Sxy
-    ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)
+    ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)
 
 /-- Full fundamental scalar/vector jet with independent amplitudes. -/
 def combinedJet (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMetricTwoJet 4 ℂ :=
@@ -38,24 +38,24 @@ private theorem background_metric (r y : ℂ) :
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-       else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
-      (if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-        2*y⁻¹^2, 2*y⁻¹^2]
-       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-       else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
+      (if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+        2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+       else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
 
 /-- Scalar--scalar radial coefficient in the actual angular quadratic source. -/
-def scalarWeight (s r : ℂ) : ℂ := s^2*((s+1)^2-4*r^2)/(8*r^4)
+def scalarWeight (s r : ℂ) : ℂ := s^(2 : ℕ)*((s+1)^(2 : ℕ)-4*r^(2 : ℕ))/(8*r^(4 : ℕ))
 
 /-- Vector--vector radial coefficient in the actual angular quadratic source. -/
-def vectorWeight (s r : ℂ) : ℂ := s^2*(3*s^2+12*s+11)/(2*r^4)
+def vectorWeight (s r : ℂ) : ℂ := s^(2 : ℕ)*(3*s^(2 : ℕ)+12*s+11)/(2*r^(4 : ℕ))
 
 /-- Scalar--vector radial coefficient in the actual angular quadratic source. -/
-def mixedWeight (s r : ℂ) : ℂ := s^2*(s+1)/r^3
+def mixedWeight (s r : ℂ) : ℂ := s^(2 : ℕ)*(s+1)/r^(3 : ℕ)
 
 /-- Background first/second derivative entries with the index conditionals already
 resolved: the big expansion below then never evaluates a decidable branch. -/
@@ -64,13 +64,13 @@ private theorem background_first_0 (r y : ℂ) :
     (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_first_2 (r y : ℂ) :
     (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_0_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
@@ -88,13 +88,13 @@ private theorem background_second_1_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ), 2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_second_1_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_2_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
@@ -112,23 +112,23 @@ private theorem background_second_3_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_3_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] := rfl
 
 set_option maxRecDepth 32768 in
 set_option maxHeartbeats 8000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Quadratic.ricci (D4BMBackground.jet r y)
       (combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 2 3 / 2 =
-      B^2 * (aS^2 * scalarWeight s r * (2*S*(Sxy+Sx/y)+Sx*Sy) -
-        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2)/2 +
-        aV^2*vectorWeight s r*Sx*Sy) := by
+      B^(2 : ℕ) * (aS^(2 : ℕ) * scalarWeight s r * (2*S*(Sxy+Sx/y)+Sx*Sy) -
+        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ))/2 +
+        aV^(2 : ℕ)*vectorWeight s r*Sx*Sy) := by
   generalize hK : combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
   simp only [CoordinateMetricTwoJet.Quadratic.ricci,
     CoordinateMetricTwoJet.Quadratic.curvature, CoordinateMetricTwoJet.Quadratic.connectionSpatial,
@@ -151,15 +151,15 @@ private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ
 set_option maxRecDepth 32768 in
 set_option maxHeartbeats 8000000 in
 private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     (CoordinateMetricTwoJet.Quadratic.ricci (D4BMBackground.jet r y)
       (combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 2 2 -
       CoordinateMetricTwoJet.Quadratic.ricci (D4BMBackground.jet r y)
       (combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 3 3) / 2 =
-      B^2 * (aS^2 * scalarWeight s r *
-        (2*S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2) +
+      B^(2 : ℕ) * (aS^(2 : ℕ) * scalarWeight s r *
+        (2*S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ)) +
         2*aS*aV*mixedWeight s r*(S*(Sxy+Sx/y)+Sx*Sy) +
-        aV^2*vectorWeight s r*(Sx^2-Sy^2)) := by
+        aV^(2 : ℕ)*vectorWeight s r*(Sx^(2 : ℕ)-Sy^(2 : ℕ))) := by
   generalize hK : combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
   simp only [CoordinateMetricTwoJet.Quadratic.ricci,
     CoordinateMetricTwoJet.Quadratic.curvature, CoordinateMetricTwoJet.Quadratic.connectionSpatial,
@@ -205,15 +205,15 @@ private theorem combined_angular (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 source, at arbitrary height. No second or third free scalar angular derivative
 survives in the vector--vector channel. -/
 theorem angularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
-      (B^2 * (aS^2 * scalarWeight s r *
-        (2*S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2) +
+      (B^(2 : ℕ) * (aS^(2 : ℕ) * scalarWeight s r *
+        (2*S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ)) +
         2*aS*aV*mixedWeight s r*(S*(Sxy+Sx/y)+Sx*Sy) +
-        aV^2*vectorWeight s r*(Sx^2-Sy^2)),
-       B^2 * (aS^2 * scalarWeight s r * (2*S*(Sxy+Sx/y)+Sx*Sy) -
-        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2)/2 +
-        aV^2*vectorWeight s r*Sx*Sy)) := by
+        aV^(2 : ℕ)*vectorWeight s r*(Sx^(2 : ℕ)-Sy^(2 : ℕ))),
+       B^(2 : ℕ) * (aS^(2 : ℕ) * scalarWeight s r * (2*S*(Sxy+Sx/y)+Sx*Sy) -
+        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ))/2 +
+        aV^(2 : ℕ)*vectorWeight s r*Sx*Sy)) := by
   let J := D4BMBackground.jet r y
   let K := combinedJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy
   have hJ : J.metric.det ≠ 0 := by
@@ -244,10 +244,10 @@ theorem angularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 
 /-- Scalar times the actual trace-free hyperbolic Hessian, in the same two components. -/
 def hessianPair (s y S Sx Sy Sxx Sxy : ℂ) : ℂ × ℂ :=
-  (S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y), S*(Sxy+Sx/y))
+  (S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y), S*(Sxy+Sx/y))
 
 /-- Trace-free gradient square in the same two components. -/
-def gradientPair (Sx Sy : ℂ) : ℂ × ℂ := (Sx^2-Sy^2, Sx*Sy)
+def gradientPair (Sx Sy : ℂ) : ℂ × ℂ := (Sx^(2 : ℕ)-Sy^(2 : ℕ), Sx*Sy)
 
 /-- Oriented rotation of a symmetric trace-free angular tensor. -/
 def rotatePair (T : ℂ × ℂ) : ℂ × ℂ := (2*T.2, -T.1/2)
@@ -256,13 +256,13 @@ def rotatePair (T : ℂ × ℂ) : ℂ × ℂ := (2*T.2, -T.1/2)
 and a gradient-square remainder. The first two terms still require the actual
 left-test derivatives and boundary terms when integrated. -/
 theorem angularCoefficient_decomposition (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     let H := hessianPair s y S Sx Sy Sxx Sxy
     let G := gradientPair Sx Sy
     angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
-      B^2 • ((2*aS^2*scalarWeight s r) • (H+G) +
+      B^(2 : ℕ) • ((2*aS^(2 : ℕ)*scalarWeight s r) • (H+G) +
         (aS*aV*mixedWeight s r) • rotatePair (H+G) +
-        (aV^2*vectorWeight s r-aS^2*scalarWeight s r) • G) := by
+        (aV^(2 : ℕ)*vectorWeight s r-aS^(2 : ℕ)*scalarWeight s r) • G) := by
   rw [angularCoefficient_eq s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf]
   apply Prod.ext <;> dsimp [hessianPair, gradientPair, rotatePair] <;> ring
 

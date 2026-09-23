@@ -284,7 +284,7 @@ theorem amplitude_mul_direction_dir (q : Deck N) (v : ℂ) (z : ℍ) (hz : 0 < d
   rw [he, amplitude_dir N f v z hz] at hp
   simp only [amplitude, ofComplex_apply] at hp
   have hr : (Real.sqrt (density N f z) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr hz).ne'
-  have hs : (Real.sqrt (density N f z) : ℂ) ^ 2 = (density N f z : ℂ) := by
+  have hs : (Real.sqrt (density N f z) : ℂ) ^ (2 : ℕ) = (density N f z : ℂ) := by
     exact_mod_cast Real.sq_sqrt hz.le
   have hrad : direction N f q z * (current N f v z / (2 * Real.sqrt (density N f z)) : ℝ) =
       (radialSlope N f v z : ℂ) * (quotientForm N f q).1.1 z := by

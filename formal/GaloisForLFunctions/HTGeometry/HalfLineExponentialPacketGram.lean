@@ -148,32 +148,32 @@ theorem integrableOn_conj_expPacket_mul {n : ℕ} {w v c d : Fin n → ℂ}
 /-! ## Hermitian square minus bilinear square -/
 
 /-- The pointwise identity `‖F‖² - Re(F²) = 2 (Im F)²`. -/
-theorem normSq_sub_re_sq (F : ℂ) : ‖F‖ ^ 2 - (F ^ 2).re = 2 * F.im ^ 2 := by
+theorem normSq_sub_re_sq (F : ℂ) : ‖F‖ ^ (2 : ℕ) - (F ^ (2 : ℕ)).re = 2 * F.im ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, pow_two, Complex.mul_re]
   ring
 
 /-- **The imaginary-part energy identity.**  The Hermitian half-line square minus the bilinear
 half-line square is twice the half-line energy of the imaginary part of the packet. -/
 theorem integral_im_sq_expPacket {n : ℕ} {w c : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) :
-    2 * ∫ x in Ioi (0 : ℝ), ((halfLineExpPacket w c x).im) ^ 2
+    2 * ∫ x in Ioi (0 : ℝ), ((halfLineExpPacket w c x).im) ^ (2 : ℕ)
       = (∑ j, ∑ k, (starRingEnd ℂ) (c j) * c k / ((starRingEnd ℂ) (w j) + w k)).re
         - (∑ j, ∑ k, c j * c k / (w j + w k)).re := by
   have hint1 := integrableOn_conj_expPacket_mul (w := w) (v := w) (c := c) (d := c) hw hw
   have hint2 := integrableOn_expPacket_mul (w := w) (v := w) (c := c) (d := c) hw hw
   have hpoint : ∀ x : ℝ,
-      2 * ((halfLineExpPacket w c x).im) ^ 2
+      2 * ((halfLineExpPacket w c x).im) ^ (2 : ℕ)
         = (((starRingEnd ℂ) (halfLineExpPacket w c x)) * halfLineExpPacket w c x).re
           - ((halfLineExpPacket w c x * halfLineExpPacket w c x)).re := by
     intro x
     set F : ℂ := halfLineExpPacket w c x with hF
-    have h1 : ((starRingEnd ℂ) F * F).re = ‖F‖ ^ 2 := by
+    have h1 : ((starRingEnd ℂ) F * F).re = ‖F‖ ^ (2 : ℕ) := by
       rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, ← Complex.normSq_eq_norm_sq,
         Complex.normSq_apply]
       ring
-    have h2 : (F * F).re = (F ^ 2).re := by rw [pow_two]
+    have h2 : (F * F).re = (F ^ (2 : ℕ)).re := by rw [pow_two]
     rw [h1, h2]
     exact (normSq_sub_re_sq F).symm
-  have hEq : (fun x : ℝ => 2 * ((halfLineExpPacket w c x).im) ^ 2)
+  have hEq : (fun x : ℝ => 2 * ((halfLineExpPacket w c x).im) ^ (2 : ℕ))
       = fun x : ℝ => (((starRingEnd ℂ) (halfLineExpPacket w c x)) * halfLineExpPacket w c x).re
         - ((halfLineExpPacket w c x * halfLineExpPacket w c x)).re := funext hpoint
   rw [← integral_expPacket_mul (w := w) (v := w) (c := c) (d := c) hw hw,

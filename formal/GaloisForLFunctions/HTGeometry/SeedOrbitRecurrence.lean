@@ -51,7 +51,7 @@ theorem exists_late_seed_recurrence {H : Matrix α α ℂ} {e : α → α → �
     (linearIndependent_rat_projectiveFrequency lam hmax i₀) (fun _ => (0 : ℝ)) hρ A
   refine ⟨t, hA, ?_⟩
   rw [norm_finiteComplexInner_unitaryEvolution_eq heb hinj Om Om i₀ t]
-  obtain ⟨p, hpdef⟩ : ∃ p : α → ℝ, p = fun j => ‖finiteComplexInner (e j) Om‖ ^ 2 := ⟨_, rfl⟩
+  obtain ⟨p, hpdef⟩ : ∃ p : α → ℝ, p = fun j => ‖finiteComplexInner (e j) Om‖ ^ (2 : ℕ) := ⟨_, rfl⟩
   have hpnn : ∀ j, 0 ≤ p j := by intro j; rw [hpdef]; positivity
   have hpsum : ∑ j, p j = 1 := by
     rw [hpdef]
@@ -60,7 +60,7 @@ theorem exists_late_seed_recurrence {H : Matrix α α ℂ} {e : α → α → �
     intro j
     rw [spectralCrossWeight_eq heb hinj Om Om j, hpdef, ← Complex.normSq_eq_conj_mul_self]
     show ((Complex.normSq (finiteComplexInner (e j) Om) : ℝ) : ℂ)
-      = ((‖finiteComplexInner (e j) Om‖ ^ 2 : ℝ) : ℂ)
+      = ((‖finiteComplexInner (e j) Om‖ ^ (2 : ℕ) : ℝ) : ℂ)
     rw [Complex.sq_norm]
   have hphase : ∀ j : α, ‖Complex.exp (Complex.I * ((t : ℂ) * ((lam j : ℂ) - (lam i₀ : ℂ))))
       - 1‖ ≤ ρ := by

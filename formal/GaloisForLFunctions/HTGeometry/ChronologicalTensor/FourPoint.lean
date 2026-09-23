@@ -34,7 +34,7 @@ theorem plucker (u v w : ℝ) :
   ring
 
 theorem four_budget (u v w : ℝ) :
-    4 * |separated u v w| + |enclosing u v w| ≤ fourCost u v w ^ 2 := by
+    4 * |separated u v w| + |enclosing u v w| ≤ fourCost u v w ^ (2 : ℕ) := by
   have ht : |u + v + w| ≤ |u| + |v| + |w| :=
     (abs_add_le (u + v) w).trans (add_le_add (abs_add_le u v) le_rfl)
   have hb := mul_le_mul_of_nonneg_left ht (abs_nonneg v)
@@ -44,7 +44,7 @@ theorem four_budget (u v w : ℝ) :
   nlinarith [sq_nonneg (|u| - |w|)]
 
 theorem four_sharp_bound (a b u v w : ℝ) :
-    |fourResponse a b u v w| ≤ fourCapacity a b * fourCost u v w ^ 2 := by
+    |fourResponse a b u v w| ≤ fourCapacity a b * fourCost u v w ^ (2 : ℕ) := by
   have ha : |a| ≤ 4 * fourCapacity a b := by
     have := le_max_left (|a| / 4) |b|
     unfold fourCapacity
@@ -61,7 +61,7 @@ theorem four_sharp_bound (a b u v w : ℝ) :
       add_le_add (mul_le_mul_of_nonneg_right ha (abs_nonneg _))
         (mul_le_mul_of_nonneg_right hb (abs_nonneg _))
     _ = fourCapacity a b * (4 * |separated u v w| + |enclosing u v w|) := by ring
-    _ ≤ fourCapacity a b * fourCost u v w ^ 2 :=
+    _ ≤ fourCapacity a b * fourCost u v w ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left (four_budget u v w) hc
 
 theorem four_attained (a b : ℝ) :
@@ -81,7 +81,7 @@ theorem four_attained (a b : ℝ) :
 
 theorem four_classification (a b : ℝ) :
     (∀ u v w : ℝ, |fourResponse a b u v w| ≤
-      fourCapacity a b * fourCost u v w ^ 2) ∧
+      fourCapacity a b * fourCost u v w ^ (2 : ℕ)) ∧
     (∃ u v w : ℝ, fourCost u v w = 1 ∧
       |fourResponse a b u v w| = fourCapacity a b) :=
   ⟨four_sharp_bound a b, four_attained a b⟩

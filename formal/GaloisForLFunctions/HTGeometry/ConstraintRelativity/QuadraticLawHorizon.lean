@@ -37,7 +37,7 @@ abbrev LawBase : Type := Polynomial ℂ
 noncomputable abbrev lawParam : LawBase := Polynomial.X
 
 /-- The quadratic family `η² − hη`. -/
-noncomputable def lawPoly : LawBase[X] := X ^ 2 - C lawParam * X
+noncomputable def lawPoly : LawBase[X] := X ^ (2 : ℕ) - C lawParam * X
 
 theorem lawPoly_monic : lawPoly.Monic := by
   unfold lawPoly
@@ -53,11 +53,11 @@ abbrev LawAlgebra : Type := AdjoinRoot lawPoly
 /-- The generator `η`. -/
 noncomputable abbrev lawEta : LawAlgebra := AdjoinRoot.root lawPoly
 
-theorem lawEta_sq : lawEta ^ 2 = AdjoinRoot.of lawPoly lawParam * lawEta := by
+theorem lawEta_sq : lawEta ^ (2 : ℕ) = AdjoinRoot.of lawPoly lawParam * lawEta := by
   have h := AdjoinRoot.eval₂_root lawPoly
   rw [lawPoly] at h
   simp only [eval₂_sub, eval₂_pow, eval₂_X, eval₂_mul, eval₂_C] at h
-  have hx : (AdjoinRoot.root lawPoly) ^ 2
+  have hx : (AdjoinRoot.root lawPoly) ^ (2 : ℕ)
       - (AdjoinRoot.of lawPoly) lawParam * AdjoinRoot.root lawPoly = 0 := by
     convert h using 2 <;> rfl
   linear_combination hx
@@ -184,7 +184,7 @@ theorem range_lawObserver :
 /-! ## Theorem 2: the fibre classification -/
 
 /-- The fibre of the family at `h = c` is `ℂ[η]/(η(η−c))`. -/
-theorem fibre_discr (c : ℂ) : quadDiscr c 0 = c ^ 2 := by
+theorem fibre_discr (c : ℂ) : quadDiscr c 0 = c ^ (2 : ℕ) := by
   simp [quadDiscr]
 
 /-- **Split fibre.**  Away from the collision the fibre is `ℂ × ℂ`. -/
@@ -259,7 +259,7 @@ theorem hiddenDecoder_recovers (c : ℂ) (hc : c ≠ 0) (a b : ℂ) :
 /-- **The decoder norm.**  The coefficient vector of the decoder is `(−1/c, 1/c)`, of squared
 Euclidean norm `2/‖c‖²`. -/
 theorem hiddenDecoder_normSq (c : ℂ) (hc : c ≠ 0) :
-    ‖(-(1 / c) : ℂ)‖ ^ 2 + ‖(1 / c : ℂ)‖ ^ 2 = 2 / ‖c‖ ^ 2 := by
+    ‖(-(1 / c) : ℂ)‖ ^ (2 : ℕ) + ‖(1 / c : ℂ)‖ ^ (2 : ℕ) = 2 / ‖c‖ ^ (2 : ℕ) := by
   have hcn : ‖c‖ ≠ 0 := norm_ne_zero_iff.2 hc
   rw [norm_neg, norm_div, norm_one]
   field_simp
@@ -268,7 +268,7 @@ theorem hiddenDecoder_normSq (c : ℂ) (hc : c ≠ 0) :
 /-- **The conditioning law.**  The square root of the discriminant times the decoder norm is the
 constant `√2`: the decoder blows up exactly like `|Disc|^{-1/2}`. -/
 theorem conditioning_law (c : ℂ) (hc : c ≠ 0) :
-    Real.sqrt ‖c ^ 2‖ * (Real.sqrt 2 / ‖c‖) = Real.sqrt 2 := by
+    Real.sqrt ‖c ^ (2 : ℕ)‖ * (Real.sqrt 2 / ‖c‖) = Real.sqrt 2 := by
   have hcn : ‖c‖ ≠ 0 := norm_ne_zero_iff.2 hc
   rw [norm_pow, Real.sqrt_sq (norm_nonneg c)]
   field_simp
@@ -309,14 +309,14 @@ theorem norm_hiddenDecoderCLM (c : ℂ) (hc : c ≠ 0) :
   have hentry' : ‖(((starRingEnd ℂ) c)⁻¹)‖ = ‖c‖⁻¹ := by
     rw [norm_inv, RCLike.norm_conj]
   simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, hentry, hentry']
-  rw [show (‖c‖⁻¹ ^ 2 + ‖c‖⁻¹ ^ 2) = 2 * (‖c‖⁻¹) ^ 2 by ring,
+  rw [show (‖c‖⁻¹ ^ (2 : ℕ) + ‖c‖⁻¹ ^ (2 : ℕ)) = 2 * (‖c‖⁻¹) ^ (2 : ℕ) by ring,
     Real.sqrt_mul (by norm_num) _, Real.sqrt_sq (by positivity)]
   rw [div_eq_mul_inv]
 
 /-- **Card `(11)`, boxed, operator form.**  The square root of the framed fibre discriminant times
 the decoder operator norm is the constant `√2`. -/
 theorem conditioning_law_opNorm (c : ℂ) (hc : c ≠ 0) :
-    Real.sqrt ‖c ^ 2‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 := by
+    Real.sqrt ‖c ^ (2 : ℕ)‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 := by
   rw [norm_hiddenDecoderCLM c hc]
   exact conditioning_law c hc
 
@@ -462,8 +462,8 @@ theorem ker_collisionObserver :
 /-! ### The relative cotangent module as a base module -/
 
 theorem lawDifferent_sq :
-    (2 * lawEta - AdjoinRoot.of lawPoly lawParam) ^ 2
-      = AdjoinRoot.of lawPoly (lawParam ^ 2) := by
+    (2 * lawEta - AdjoinRoot.of lawPoly lawParam) ^ (2 : ℕ)
+      = AdjoinRoot.of lawPoly (lawParam ^ (2 : ℕ)) := by
   rw [map_pow]
   linear_combination (4 : LawAlgebra) * lawEta_sq
 
@@ -491,7 +491,7 @@ theorem lawCotangentMap_surjective : Function.Surjective lawCotangentMap := by
   linear_combination (-(AdjoinRoot.of lawPoly b * lawEta)) * h2
 
 theorem ker_lawCotangentMap :
-    LinearMap.ker lawCotangentMap = Ideal.span {lawParam ^ 2} := by
+    LinearMap.ker lawCotangentMap = Ideal.span {lawParam ^ (2 : ℕ)} := by
   refine le_antisymm ?_ ?_
   · intro b hb
     have hz : Ideal.Quotient.mk _ (AdjoinRoot.of lawPoly b) = 0 := hb
@@ -522,14 +522,14 @@ theorem ker_lawCotangentMap :
     ring
   · rw [Ideal.span_le]
     rintro _ rfl
-    show Ideal.Quotient.mk _ (AdjoinRoot.of lawPoly (lawParam ^ 2)) = 0
+    show Ideal.Quotient.mk _ (AdjoinRoot.of lawPoly (lawParam ^ (2 : ℕ))) = 0
     rw [Ideal.Quotient.eq_zero_iff_mem, ← lawDifferent_sq, ← rootDifferent_lawPoly, sq]
     exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
 
 /-- **Theorem 6.**  As a module over the base, the relative cotangent module of the quadratic
 family is `B/(h²)`: the nonreduced discriminant shadow. -/
 noncomputable def lawKaehlerBaseEquiv :
-    (LawBase ⧸ (Ideal.span {lawParam ^ 2})) ≃ₗ[LawBase] Ω[LawAlgebra⁄LawBase] :=
+    (LawBase ⧸ (Ideal.span {lawParam ^ (2 : ℕ)})) ≃ₗ[LawBase] Ω[LawAlgebra⁄LawBase] :=
   (Submodule.quotEquivOfEq _ _ ker_lawCotangentMap.symm).trans
     ((lawCotangentMap.quotKerEquivOfSurjective lawCotangentMap_surjective).trans
       (LinearEquiv.restrictScalars LawBase lawKaehlerEquiv).symm)
@@ -542,12 +542,12 @@ hidden decoder conditioning is `√2/|h|`, so `√|Disc| · ‖D_h‖ = √2`.  
 the card's claim that they are shadows of *one* object, not four independent facts. -/
 theorem four_shadow_table :
     rootDifferent lawPoly = 2 * lawEta - AdjoinRoot.of lawPoly lawParam
-      ∧ (2 * lawEta - AdjoinRoot.of lawPoly lawParam) ^ 2
-          = AdjoinRoot.of lawPoly (lawParam ^ 2)
-      ∧ Nonempty ((LawBase ⧸ (Ideal.span {lawParam ^ 2})) ≃ₗ[LawBase] Ω[LawAlgebra⁄LawBase])
+      ∧ (2 * lawEta - AdjoinRoot.of lawPoly lawParam) ^ (2 : ℕ)
+          = AdjoinRoot.of lawPoly (lawParam ^ (2 : ℕ))
+      ∧ Nonempty ((LawBase ⧸ (Ideal.span {lawParam ^ (2 : ℕ)})) ≃ₗ[LawBase] Ω[LawAlgebra⁄LawBase])
       ∧ RingHom.ker collisionObserver.toRingHom
           = Ideal.span {AdjoinRoot.root (quadPoly (0 : ℂ) 0)}
-      ∧ ∀ c : ℂ, c ≠ 0 → Real.sqrt ‖c ^ 2‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 :=
+      ∧ ∀ c : ℂ, c ≠ 0 → Real.sqrt ‖c ^ (2 : ℕ)‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 :=
   ⟨rootDifferent_lawPoly, lawDifferent_sq, ⟨lawKaehlerBaseEquiv⟩, ker_collisionObserver,
     fun c hc => conditioning_law_opNorm c hc⟩
 

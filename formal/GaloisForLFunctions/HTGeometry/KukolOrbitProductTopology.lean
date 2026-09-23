@@ -53,7 +53,7 @@ variable [Fintype κ]
   apply continuous_induced_rng.mpr
   change Continuous (fun p : (κ → ℂ) × KukolRegularPoint κ =>
     ((p.2).minus,(p.2).plus+2*(∑ k,(p.2).transverse k*p.1 k)+
-      ((p.2).minus : ℂ)*(∑ k,p.1 k^2),fun k => (p.2).transverse k+((p.2).minus : ℂ)*p.1 k))
+      ((p.2).minus : ℂ)*(∑ k,p.1 k^(2 : ℕ)),fun k => (p.2).transverse k+((p.2).minus : ℂ)*p.1 k))
   fun_prop
 
 variable {ι : Type*}

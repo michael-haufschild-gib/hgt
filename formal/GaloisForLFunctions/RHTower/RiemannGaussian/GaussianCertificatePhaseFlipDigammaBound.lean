@@ -18,7 +18,7 @@ noncomputable section
 
 private def gaussianDigammaPhaseFlipIntegrand (ε : ℝ) (u : ℝ) : ℝ :=
   gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u *
-    Real.exp (-u ^ 2 / (4 * ε))
+    Real.exp (-u ^ (2 : ℕ) / (4 * ε))
 
 private theorem gaussianDigammaPhaseFlipIntegrand_nonnegative
     {ε : ℝ} {u : ℝ} (hu : 0 < u) :
@@ -35,7 +35,7 @@ private theorem gaussianDigammaPhaseFlipIntegrand_nonnegative
 
 private theorem gaussianDigammaPhaseFlipGaussian_le_one
     {ε : ℝ} (hε : 0 < ε) (u : ℝ) :
-    Real.exp (-u ^ 2 / (4 * ε)) ≤ 1 := by
+    Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤ 1 := by
   rw [Real.exp_le_one_iff]
   have hden : 0 ≤ 4 * ε := mul_nonneg (by norm_num) hε.le
   exact div_nonpos_of_nonpos_of_nonneg
@@ -47,7 +47,7 @@ private theorem integrableOn_gaussianDigammaPhaseFlipIntegrand_Ioc
   apply IntegrableOn.of_bound measure_Ioc_lt_top
   · change AEStronglyMeasurable
         (gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) *
-          fun u => Real.exp (-u ^ 2 / (4 * ε)))
+          fun u => Real.exp (-u ^ (2 : ℕ) / (4 * ε)))
         (volume.restrict (Set.Ioc (0 : ℝ) 1))
     exact (((continuousOn_gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε)).mono
       Set.Ioc_subset_Ioi_self).mul
@@ -56,13 +56,13 @@ private theorem integrableOn_gaussianDigammaPhaseFlipIntegrand_Ioc
             measurableSet_Ioc
   · filter_upwards [ae_restrict_mem measurableSet_Ioc] with u hu
     unfold gaussianDigammaPhaseFlipIntegrand
-    have heq : ‖Real.exp (-u ^ 2 / (4 * ε))‖ =
-        Real.exp (-u ^ 2 / (4 * ε)) := by
+    have heq : ‖Real.exp (-u ^ (2 : ℕ) / (4 * ε))‖ =
+        Real.exp (-u ^ (2 : ℕ) / (4 * ε)) := by
       rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
     rw [norm_mul, heq]
     calc
       ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ *
-          Real.exp (-u ^ 2 / (4 * ε)) ≤
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤
         ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ * 1 := by
           gcongr
           exact gaussianDigammaPhaseFlipGaussian_le_one hε u
@@ -83,7 +83,7 @@ private theorem integrableOn_gaussianDigammaPhaseFlipIntegrand_Ioi_one
   apply hmajor.mono'
   · change AEStronglyMeasurable
         (gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) *
-          fun u => Real.exp (-u ^ 2 / (4 * ε)))
+          fun u => Real.exp (-u ^ (2 : ℕ) / (4 * ε)))
         (volume.restrict (Set.Ioi (1 : ℝ)))
     exact (((continuousOn_gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε)).mono (by
       intro u hu
@@ -95,13 +95,13 @@ private theorem integrableOn_gaussianDigammaPhaseFlipIntegrand_Ioi_one
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
     change 1 < u at hu
     unfold gaussianDigammaPhaseFlipIntegrand
-    have heq : ‖Real.exp (-u ^ 2 / (4 * ε))‖ =
-        Real.exp (-u ^ 2 / (4 * ε)) := by
+    have heq : ‖Real.exp (-u ^ (2 : ℕ) / (4 * ε))‖ =
+        Real.exp (-u ^ (2 : ℕ) / (4 * ε)) := by
       rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
     rw [norm_mul, heq]
     calc
       ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ *
-          Real.exp (-u ^ 2 / (4 * ε)) ≤
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤
         ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ * 1 := by
           gcongr
           exact gaussianDigammaPhaseFlipGaussian_le_one hε u
@@ -116,13 +116,13 @@ private theorem gaussianDigammaPhaseFlipIntegrand_near_le
   have hnorm : ‖gaussianDigammaPhaseFlipIntegrand ε u‖ ≤
       (3 / 2 : ℝ) * |Real.pi / ε| := by
     unfold gaussianDigammaPhaseFlipIntegrand
-    have heq : ‖Real.exp (-u ^ 2 / (4 * ε))‖ =
-        Real.exp (-u ^ 2 / (4 * ε)) := by
+    have heq : ‖Real.exp (-u ^ (2 : ℕ) / (4 * ε))‖ =
+        Real.exp (-u ^ (2 : ℕ) / (4 * ε)) := by
       rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
     rw [norm_mul, heq]
     calc
       ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ *
-          Real.exp (-u ^ 2 / (4 * ε)) ≤
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤
         ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ * 1 := by
           gcongr
           exact gaussianDigammaPhaseFlipGaussian_le_one hε u
@@ -141,13 +141,13 @@ private theorem gaussianDigammaPhaseFlipIntegrand_tail_le
   have hnorm : ‖gaussianDigammaPhaseFlipIntegrand ε u‖ ≤
       (2 / (1 - Real.exp (-2))) * Real.exp (-(1 / 2 : ℝ) * u) := by
     unfold gaussianDigammaPhaseFlipIntegrand
-    have heq : ‖Real.exp (-u ^ 2 / (4 * ε))‖ =
-        Real.exp (-u ^ 2 / (4 * ε)) := by
+    have heq : ‖Real.exp (-u ^ (2 : ℕ) / (4 * ε))‖ =
+        Real.exp (-u ^ (2 : ℕ) / (4 * ε)) := by
       rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
     rw [norm_mul, heq]
     calc
       ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ *
-          Real.exp (-u ^ 2 / (4 * ε)) ≤
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤
         ‖gaussianSuzukiDigammaOscillationIntegrand (Real.pi / ε) u‖ * 1 := by
           gcongr
           exact gaussianDigammaPhaseFlipGaussian_le_one hε u
@@ -207,7 +207,7 @@ theorem gaussianDigammaGain_phaseFlip_le_explicit
   have hintegral :
       (∫ u in Set.Ioi (0 : ℝ),
         gaussianSuzukiDigammaDensity u *
-          Real.exp (-u ^ 2 / (4 * ε)) *
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
             (1 - Real.cos ((Real.pi / ε) * u))) =
         ∫ u in Set.Ioi (0 : ℝ), gaussianDigammaPhaseFlipIntegrand ε u := by
     apply integral_congr_ae
@@ -227,7 +227,7 @@ theorem GaussianArithmeticWidthCertificate.phaseFlipPeak_sub_explicitDigamma_le_
     {ε : ℝ} (certificate : GaussianArithmeticWidthCertificate ε)
     (hphaseRadius : Real.pi / ε ≤ certificate.compactRadius) :
     4 * Real.exp (ε / 4) +
-        4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) -
+        4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) -
       2 / Real.sqrt (Real.pi * ε) *
         ((3 / 2 : ℝ) * |Real.pi / ε| +
           (2 / (1 - Real.exp (-2))) * (2 * Real.exp (-(1 / 2 : ℝ)))) ≤

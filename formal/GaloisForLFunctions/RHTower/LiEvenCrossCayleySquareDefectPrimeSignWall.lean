@@ -27,8 +27,8 @@ noncomputable section
 
 /-- Real Chebyshev norm identity used by every even-Li mode. -/
 theorem chebyshevT_sq_add_one_sub_X_sq_mul_chebyshevU_sq_real (n : ℕ) :
-    (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) ^ 2 +
-      (1 - X ^ 2) * (Polynomial.Chebyshev.U ℝ (n : ℤ)) ^ 2 = 1 := by
+    (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) ^ (2 : ℕ) +
+      (1 - X ^ (2 : ℕ)) * (Polynomial.Chebyshev.U ℝ (n : ℤ)) ^ (2 : ℕ) = 1 := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -43,7 +43,7 @@ theorem liCriticalEvenCrossCauchyDensity_eq_chebyshevSquareDefect
     (n : ℕ) (x : ℝ) :
     liCriticalEvenCrossCauchyDensity n x =
       (1 - (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)).eval
-        (liCriticalCayleyCoordinate x) ^ 2) / 2 := by
+        (liCriticalCayleyCoordinate x) ^ (2 : ℕ)) / 2 := by
   rw [liCriticalEvenCrossCauchyDensity_eq_squareDefect]
   have hnorm := congrArg
     (fun P : Polynomial ℝ => P.eval (liCriticalCayleyCoordinate x))
@@ -112,14 +112,14 @@ private theorem exp_neg_log_nat_div_two_div_sqrt
     Real.exp (-Real.log (n : ℝ) / 2) / Real.sqrt n = 1 / n := by
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
   have hsqrt : Real.sqrt (n : ℝ) = Real.exp (Real.log n / 2) := by
-    have hsq : Real.exp (Real.log (n : ℝ) / 2) ^ 2 = n := by
+    have hsq : Real.exp (Real.log (n : ℝ) / 2) ^ (2 : ℕ) = n := by
       rw [← Real.exp_nat_mul,
         show ((2 : ℕ) : ℝ) * (Real.log (n : ℝ) / 2) = Real.log n by
           push_cast
           ring]
       exact Real.exp_log hnR
     calc
-      Real.sqrt (n : ℝ) = Real.sqrt (Real.exp (Real.log n / 2) ^ 2) := by rw [hsq]
+      Real.sqrt (n : ℝ) = Real.sqrt (Real.exp (Real.log n / 2) ^ (2 : ℕ)) := by rw [hsq]
       _ = Real.exp (Real.log n / 2) := Real.sqrt_sq (Real.exp_pos _).le
   rw [hsqrt, ← Real.exp_sub]
   rw [show -Real.log (n : ℝ) / 2 - Real.log n / 2 = -Real.log n by ring]

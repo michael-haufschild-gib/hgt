@@ -51,7 +51,7 @@ def deningerPacketScalarResidueGreenForm :
 /-- Scalar residue energy is the square of the packet average. -/
 theorem deningerPacketScalarResidueGreenForm_self
     (f : C(X, ℝ)) :
-    deningerPacketScalarResidueGreenForm μ f f = (deningerPacketAv μ f) ^ 2 := by
+    deningerPacketScalarResidueGreenForm μ f f = (deningerPacketAv μ f) ^ (2 : ℕ) := by
   rw [deningerPacketScalarResidueGreenForm, deningerPullbackGreenForm_apply_apply,
     deningerPacketAvContinuous_apply, innerSL_apply_apply,
     real_inner_self_eq_norm_sq, Real.norm_eq_abs, sq_abs]

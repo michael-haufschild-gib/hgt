@@ -34,13 +34,13 @@ def eigenCoords (e : α → α → ℂ) (psi : α → ℂ) : α → ℂ :=
 theorem sum_normSq_eigenCoords {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (heb : IsOrthoEigenBasis H e lam) (psi : α → ℂ)
     (hpsi : finiteComplexInner psi psi = 1) :
-    ∑ j, ‖eigenCoords e psi j‖ ^ 2 = 1 := by
+    ∑ j, ‖eigenCoords e psi j‖ ^ (2 : ℕ) = 1 := by
   have hpar := parseval_finiteComplexInner heb psi psi
   rw [hpsi] at hpar
   have hterm : ∀ j, conj (finiteComplexInner (e j) psi) * finiteComplexInner (e j) psi
-      = ((‖eigenCoords e psi j‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖eigenCoords e psi j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro j
-    show conj (eigenCoords e psi j) * eigenCoords e psi j = ((‖eigenCoords e psi j‖ ^ 2 : ℝ) : ℂ)
+    show conj (eigenCoords e psi j) * eigenCoords e psi j = ((‖eigenCoords e psi j‖ ^ (2 : ℕ) : ℝ) : ℂ)
     rw [Complex.sq_norm]
     exact (Complex.normSq_eq_conj_mul_self).symm
   rw [Finset.sum_congr rfl (fun j _ => hterm j), ← Complex.ofReal_sum] at hpar

@@ -25,7 +25,7 @@ theorem thetaCuspSecondAtomMoment_antitone (n : ℕ) {A B : ℝ}
 /-- A single order-ten endpoint controls all ten lower moments on the full tilt ray. -/
 theorem thetaCuspSecondAtomMoment_le_middle {n : ℕ} (hn : n ≤ 10)
     {B : ℝ} (hB : 2 ≤ B) : thetaCuspSecondAtomMoment B n ≤ (3 : ℝ)^n/100 := by
-  have hscaled : (3 : ℝ)^10*thetaCuspSecondAtomMoment 2 n ≤
+  have hscaled : (3 : ℝ)^(10 : ℕ)*thetaCuspSecondAtomMoment 2 n ≤
       (3 : ℝ)^n*thetaCuspSecondAtomMoment 2 10 := by
     unfold thetaCuspSecondAtomMoment
     rw [← integral_const_mul, ← integral_const_mul]
@@ -35,9 +35,9 @@ theorem thetaCuspSecondAtomMoment_le_middle {n : ℕ} (hn : n ≤ 10)
     filter_upwards [ae_three_le_thetaCuspSecondAtomSpectralMeasure] with t ht
     have hp := pow_le_pow_right₀ (show (1 : ℝ) ≤ t/3 by linarith) hn
     rw [div_pow, div_pow] at hp
-    have hp' : (3 : ℝ)^10*t^n ≤ (3 : ℝ)^n*t^10 := by
+    have hp' : (3 : ℝ)^(10 : ℕ)*t^n ≤ (3 : ℝ)^n*t^(10 : ℕ) := by
       have := (div_le_div_iff₀ (by positivity : (0 : ℝ) < 3^n)
-        (by norm_num : (0 : ℝ) < 3^10)).mp hp
+        (by norm_num : (0 : ℝ) < 3^(10 : ℕ))).mp hp
       nlinarith only [this]
     have he := mul_le_mul_of_nonneg_right hp' (Real.exp_pos (-2*t)).le
     nlinarith only [he]

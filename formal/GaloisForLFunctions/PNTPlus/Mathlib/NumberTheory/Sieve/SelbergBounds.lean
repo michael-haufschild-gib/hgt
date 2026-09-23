@@ -17,7 +17,7 @@ This file proves a number of results to help bound `Sieve.selbergSum`
 ## Main Results
 * `selbergBoundingSum_ge_sum_div`: If `ν` is completely multiplicative then `S ≥ ∑_{n ≤ √y}, ν n`
 * `boundingSum_ge_log`: If `ν n = 1 / n` then `S ≥ log y / 2`
-* `rem_sum_le_of_const`: If `R_d ≤ C` then the error term is at most `C * y * (1 + log y)^3`
+* `rem_sum_le_of_const`: If `R_d ≤ C` then the error term is at most `C * y * (1 + log y)^(3 : ℕ)`
 -/
 
 set_option lang.lemmaCmd true
@@ -368,7 +368,7 @@ theorem selbergBoundingSum_ge_sum_div (s : SelbergSieve) (hP : ∀ p:ℕ, p.Prim
     s.selbergBoundingSum ≥ ∑ m ∈ Finset.Icc 1 (Nat.floor <| Real.sqrt s.level), s.nu m := by
   unfold selbergBoundingSum
   calc ∑ l ∈ s.prodPrimes.divisors, (if l ^ 2 ≤ s.level then selbergTerms _ l else 0)
-     ≥ ∑ l ∈ s.prodPrimes.divisors.filter (fun (l:ℕ) => l^2 ≤ s.level),
+     ≥ ∑ l ∈ s.prodPrimes.divisors.filter (fun (l:ℕ) => l^(2 : ℕ) ≤ s.level),
         ∑ m ∈ (l^(Nat.floor s.level)).divisors.filter (l ∣ ·), s.nu m         := ?_
    _ ≥ ∑ m ∈ Finset.Icc 1 (Nat.floor <| Real.sqrt s.level), s.nu m           := ?_
   · rw [←Finset.sum_filter]; apply Finset.sum_le_sum; intro l hl
@@ -512,7 +512,7 @@ open ArithmeticFunction
 
 theorem rem_sum_le_of_const (s : SelbergSieve) (C : ℝ) (hrem : ∀ d > 0, |rem (s := s.toBoundingSieve) d| ≤ C) :
     ∑ d ∈ s.prodPrimes.divisors, (if (d : ℝ) ≤ s.level then (3:ℝ) ^ ω d * |rem (s := s.toBoundingSieve) d| else 0)
-      ≤ C * s.level * (1+Real.log s.level)^3 := by
+      ≤ C * s.level * (1+Real.log s.level)^(3 : ℕ) := by
   rw [←Finset.sum_filter]
   trans (∑ d ∈  Finset.filter (fun d:ℕ => ↑d ≤ s.level) (s.prodPrimes.divisors),  3 ^ ω d * C )
   · gcongr with d hd

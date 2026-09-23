@@ -38,31 +38,31 @@ def transformed (s : ℂ) (c : Coefficients) (alpha beta sigma : ℂ) : Coeffici
 
 /-- The surviving scalar boundary coefficient after the three boundary gauge freedoms. -/
 def charge (s : ℂ) (c : Coefficients) : ℂ :=
-  c.tt+c.trace-2*s*c.mixed+s^2*c.hessian
+  c.tt+c.trace-2*s*c.mixed+s^(2 : ℕ)*c.hessian
 
 /-- The actual hyperbolic boundary metric at height y. -/
 def boundaryMetric (y : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  !![-1,0,0; 0,y⁻¹^2,0; 0,0,y⁻¹^2]
+  !![-1,0,0; 0,y⁻¹^(2 : ℕ),0; 0,0,y⁻¹^(2 : ℕ)]
 
 /-- Coordinate first jet of the actual boundary metric: only the height derivative is live. -/
 def boundaryMetricFirst (y : ℂ) (k : Fin 3) : Matrix (Fin 3) (Fin 3) ℂ :=
-  if k = 2 then !![0,0,0; 0,-2*y⁻¹^3,0; 0,0,-2*y⁻¹^3] else 0
+  if k = 2 then !![0,0,0; 0,-2*y⁻¹^(3 : ℕ),0; 0,0,-2*y⁻¹^(3 : ℕ)] else 0
 
 /-- Scalar-sector boundary vector, with its common exponential time factor removed. -/
 def gaugeVector (alpha beta y S Sx Sy : ℂ) : Fin 3 → ℂ :=
-  ![alpha*S,beta*y^2*Sx,beta*y^2*Sy]
+  ![alpha*S,beta*y^(2 : ℕ)*Sx,beta*y^(2 : ℕ)*Sy]
 
 /-- Full coordinate first jet of the scalar boundary vector, retaining angular Hessian data. -/
 def gaugeVectorFirst (s alpha beta y S Sx Sy Sxx Sxy Syy : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  !![s*alpha*S,s*beta*y^2*Sx,s*beta*y^2*Sy;
-     alpha*Sx,beta*y^2*Sxx,beta*y^2*Sxy;
-     alpha*Sy,beta*(2*y*Sx+y^2*Sxy),beta*(2*y*Sy+y^2*Syy)]
+  !![s*alpha*S,s*beta*y^(2 : ℕ)*Sx,s*beta*y^(2 : ℕ)*Sy;
+     alpha*Sx,beta*y^(2 : ℕ)*Sxx,beta*y^(2 : ℕ)*Sxy;
+     alpha*Sy,beta*(2*y*Sx+y^(2 : ℕ)*Sxy),beta*(2*y*Sy+y^(2 : ℕ)*Syy)]
 
 /-- Boundary tensor assembled with the actual hyperbolic covariant Hessian. -/
 def tensor (c : Coefficients) (y S Sx Sy Sxx Sxy Syy : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
   !![c.tt*S,c.mixed*Sx,c.mixed*Sy;
-     c.mixed*Sx,c.trace*S*y⁻¹^2+c.hessian*(Sxx-Sy*y⁻¹),c.hessian*(Sxy+Sx*y⁻¹);
-     c.mixed*Sy,c.hessian*(Sxy+Sx*y⁻¹),c.trace*S*y⁻¹^2+c.hessian*(Syy+Sy*y⁻¹)]
+     c.mixed*Sx,c.trace*S*y⁻¹^(2 : ℕ)+c.hessian*(Sxx-Sy*y⁻¹),c.hessian*(Sxy+Sx*y⁻¹);
+     c.mixed*Sy,c.hessian*(Sxy+Sx*y⁻¹),c.trace*S*y⁻¹^(2 : ℕ)+c.hessian*(Syy+Sy*y⁻¹)]
 
 /-- A nondegenerate scalar harmonic jet makes coefficient equality actual tensor equality.
 The hypotheses identify the exceptional harmonic issue instead of assuming a formal basis faithful. -/
@@ -78,8 +78,8 @@ theorem tensor_injective (y S Sx Sy Sxx Sxy Syy : ℂ)
   change c.tt*S=d.tt*S at h0
   change c.mixed*Sx=d.mixed*Sx at h1
   change c.hessian*(Sxy+Sx*y⁻¹)=d.hessian*(Sxy+Sx*y⁻¹) at h2
-  change c.trace*S*y⁻¹^2+c.hessian*(Sxx-Sy*y⁻¹) =
-    d.trace*S*y⁻¹^2+d.hessian*(Sxx-Sy*y⁻¹) at h3
+  change c.trace*S*y⁻¹^(2 : ℕ)+c.hessian*(Sxx-Sy*y⁻¹) =
+    d.trace*S*y⁻¹^(2 : ℕ)+d.hessian*(Sxx-Sy*y⁻¹) at h3
   have ht := mul_right_cancel₀ hS h0
   have hm : c.mixed = d.mixed := by
     rcases hGrad with hx | hy'
@@ -89,8 +89,8 @@ theorem tensor_injective (y S Sx Sy Sxx Sxy Syy : ℂ)
     rcases hH with hxy | hdiff
     · exact mul_right_cancel₀ hxy h2
     · have h4 := congrArg (fun M : Matrix (Fin 3) (Fin 3) ℂ => M 2 2) he
-      change c.trace*S*y⁻¹^2+c.hessian*(Syy+Sy*y⁻¹) =
-        d.trace*S*y⁻¹^2+d.hessian*(Syy+Sy*y⁻¹) at h4
+      change c.trace*S*y⁻¹^(2 : ℕ)+c.hessian*(Syy+Sy*y⁻¹) =
+        d.trace*S*y⁻¹^(2 : ℕ)+d.hessian*(Syy+Sy*y⁻¹) at h4
       apply mul_right_cancel₀ hdiff
       linear_combination h3-h4
   rw [hh] at h3
@@ -179,12 +179,12 @@ def tangential : Fin 3 → Fin 4 := ![0,2,3]
 
 /-- Exact normalized coefficients at finite radius before taking the AdS boundary limit. -/
 def normalizedFundamental (s r : ℂ) : Coefficients :=
-  ⟨r⁻¹^2*(s*(s-3)/2+s*(s+1)/(2*r^2)),0,
-   r⁻¹^2*(-r^2-s*(s+1)/2),0⟩
+  ⟨r⁻¹^(2 : ℕ)*(s*(s-3)/2+s*(s+1)/(2*r^(2 : ℕ))),0,
+   r⁻¹^(2 : ℕ)*(-r^(2 : ℕ)-s*(s+1)/2),0⟩
 
 /-- These coefficients are extracted from the original reconstructed scalar radial matrix. -/
 theorem normalizedFundamental_tensor (s r y S : ℂ) (i j : Fin 3) :
-    r⁻¹^2*S*D4BMFundamentalScalarMetric.radialMatrix s r y (tangential i) (tangential j) =
+    r⁻¹^(2 : ℕ)*S*D4BMFundamentalScalarMetric.radialMatrix s r y (tangential i) (tangential j) =
       tensor (normalizedFundamental s r) y S 0 0 0 0 0 i j := by
   fin_cases i <;> fin_cases j
   all_goals simp [D4BMFundamentalScalarMetric.radialMatrix, tangential,
@@ -193,7 +193,7 @@ theorem normalizedFundamental_tensor (s r y S : ℂ) (i j : Fin 3) :
 
 /-- The complete normalized scalar boundary charge retains a unit constant at every frequency. -/
 theorem charge_normalizedFundamental (s r : ℂ) (hr : r ≠ 0) :
-    charge s (normalizedFundamental s r) = -1-2*s*r⁻¹^2+s*(s+1)/2*r⁻¹^4 := by
+    charge s (normalizedFundamental s r) = -1-2*s*r⁻¹^(2 : ℕ)+s*(s+1)/2*r⁻¹^(4 : ℕ) := by
   simp only [charge, normalizedFundamental]
   field_simp
   ring
@@ -202,7 +202,7 @@ theorem charge_normalizedFundamental (s r : ℂ) (hr : r ≠ 0) :
 theorem charge_normalizedFundamental_limit (s : ℂ) :
     Tendsto (fun r : ℝ => charge s (normalizedFundamental s r)) atTop (𝓝 (-1)) := by
   have he : (fun r : ℝ => charge s (normalizedFundamental s r)) =ᶠ[atTop]
-      (fun r : ℝ => -1-2*s*((r : ℂ)⁻¹)^2+s*(s+1)/2*((r : ℂ)⁻¹)^4) := by
+      (fun r : ℝ => -1-2*s*((r : ℂ)⁻¹)^(2 : ℕ)+s*(s+1)/2*((r : ℂ)⁻¹)^(4 : ℕ)) := by
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with r hr
     exact charge_normalizedFundamental s r (by exact_mod_cast hr.ne')
   have hi : Tendsto (fun r : ℝ => (r : ℂ)⁻¹) atTop (𝓝 0) := by

@@ -465,7 +465,7 @@ theorem thetaCuspSourceProductFiberSeamCoefficient_one_pos :
     simp [thetaPositiveFactorPairs]
   have h :
       thetaCuspSourceProductFiberSeamCoefficient 1 =
-        thetaCuspShellSeamSlope 1 ^ 2 := by
+        thetaCuspShellSeamSlope 1 ^ (2 : ℕ) := by
     rw [thetaCuspSourceProductFiberSeamCoefficient, hf]
     simp [pow_two]
   rw [h]

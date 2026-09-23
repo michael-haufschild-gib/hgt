@@ -19,9 +19,9 @@ open GaloisForLFunctions.HTGeometry CoordinateMetricTwoJet
 noncomputable section
 variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 0 0 =
-      B ^ 2 * (((-1 : ℂ) * s ^ 2 * r ^ 2 + (5 / 4 : ℂ) * s ^ 3 + (-11 / 4 : ℂ) * s ^ 3 * r ^ 2 + (2 : ℂ) * s ^ 3 * r ^ 4 + (2 : ℂ) * s ^ 4 + (-2 : ℂ) * s ^ 4 * r ^ 2 + (3 / 4 : ℂ) * s ^ 5 + (-1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 4 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-11 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ) + (-2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (3 / 4 : ℂ) * s ^ (5 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -30,9 +30,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -43,9 +43,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 0 1 =
-      B ^ 2 * (((1 / 2 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (5 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-2 : ℂ) * s ^ 2 * r ^ 6 + (5 / 4 : ℂ) * s ^ 3 + (-13 / 4 : ℂ) * s ^ 3 * r ^ 2 + (5 / 2 : ℂ) * s ^ 3 * r ^ 4 + (1 : ℂ) * s ^ 4 + (-1 : ℂ) * s ^ 4 * r ^ 2 + (1 / 4 : ℂ) * s ^ 5 + (1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1) ^ 2) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((1 / 2 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-13 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -54,9 +54,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -67,9 +67,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 0 2 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -78,9 +78,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -91,9 +91,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 0 3 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -102,9 +102,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -115,9 +115,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1 0 =
-      B ^ 2 * (((1 / 2 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (5 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-2 : ℂ) * s ^ 2 * r ^ 6 + (5 / 4 : ℂ) * s ^ 3 + (-13 / 4 : ℂ) * s ^ 3 * r ^ 2 + (5 / 2 : ℂ) * s ^ 3 * r ^ 4 + (1 : ℂ) * s ^ 4 + (-1 : ℂ) * s ^ 4 * r ^ 2 + (1 / 4 : ℂ) * s ^ 5 + (1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1) ^ 2) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((1 / 2 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-13 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -126,9 +126,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -139,9 +139,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1 1 =
-      B ^ 2 * (((2 : ℂ) * s ^ 2 * r ^ 2 + (-3 : ℂ) * s ^ 2 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 3 * r ^ 2 + (1 : ℂ) * s ^ 3 * r ^ 4 + (1 / 4 : ℂ) * s ^ 5 + (1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 4 * (r ^ 2 - 1) ^ 3) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (3 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -150,9 +150,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -163,7 +163,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -174,9 +174,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -187,7 +187,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -198,9 +198,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -211,9 +211,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2 0 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -222,9 +222,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -235,7 +235,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -246,9 +246,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -259,9 +259,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2 2 =
-      B ^ 2 * (((-2 : ℂ) * s * r ^ 4 + (5 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 / 4 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 2 * (r ^ 2 - 1)) * S ^ 2 * y⁻¹ ^ 2) := by
+      B ^ (2 : ℕ) * (((-2 : ℂ) * s * r ^ (4 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -270,9 +270,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -283,7 +283,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -293,9 +293,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3 0 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -304,9 +304,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -317,7 +317,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -328,9 +328,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -341,7 +341,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -351,9 +351,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_0_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_0_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3 3 =
-      B ^ 2 * (((-2 : ℂ) * s * r ^ 4 + (5 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 / 4 : ℂ) * s ^ 3 + (-1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 2 * (r ^ 2 - 1)) * S ^ 2 * y⁻¹ ^ 2) := by
+      B ^ (2 : ℕ) * (((-2 : ℂ) * s * r ^ (4 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -362,9 +362,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -375,9 +375,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 0 0 =
-      B ^ 2 * (((-1 / 2 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (5 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-2 : ℂ) * s ^ 2 * r ^ 6 + (-5 / 4 : ℂ) * s ^ 3 + (5 / 4 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 * r ^ 4 + (-1 : ℂ) * s ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 4 + (-1 / 4 : ℂ) * s ^ 5 + (-1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 5) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 / 2 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (6 : ℕ) + (-5 / 4 : ℂ) * s ^ (3 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -386,9 +386,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -399,9 +399,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 0 1 =
-      B ^ 2 * (((1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 3 * r ^ 2 + (-1 : ℂ) * s ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5 + (-1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 4 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -410,9 +410,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -423,7 +423,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 0 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -434,9 +434,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -447,7 +447,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 0 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -458,9 +458,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -471,9 +471,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 1 0 =
-      B ^ 2 * (((1 : ℂ) * s ^ 2 * r ^ 2 + (-3 / 4 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 3 * r ^ 2 + (-1 : ℂ) * s ^ 4 + (1 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5 + (-1 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 4 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-3 / 4 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (4 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -482,9 +482,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -495,9 +495,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 1 1 =
-      B ^ 2 * (((1 / 2 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (5 / 2 : ℂ) * s ^ 2 * r ^ 4 + (5 / 4 : ℂ) * s ^ 3 + (-13 / 4 : ℂ) * s ^ 3 * r ^ 2 + (3 / 2 : ℂ) * s ^ 3 * r ^ 4 + (1 : ℂ) * s ^ 4 + (-2 : ℂ) * s ^ 4 * r ^ 2 + (1 : ℂ) * s ^ 4 * r ^ 4 + (1 / 4 : ℂ) * s ^ 5 + (-3 / 4 : ℂ) * s ^ 5 * r ^ 2) / (r ^ 5 * (r ^ 2 - 1) ^ 2) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((1 / 2 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-13 / 4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (4 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) + (-2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) * r ^ (4 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ) + (-3 / 4 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -506,9 +506,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -519,9 +519,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 1 2 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -530,9 +530,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -543,9 +543,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 1 3 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -554,9 +554,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -567,7 +567,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -578,9 +578,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -591,9 +591,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2 1 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -602,9 +602,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -615,9 +615,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2 2 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (1 / 2 : ℂ) * s ^ 2 + (-3 : ℂ) * s ^ 2 * r ^ 2 + (5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (1 : ℂ) * s ^ 4 + (-1 : ℂ) * s ^ 4 * r ^ 2 + (1 / 4 : ℂ) * s ^ 5) / (r ^ 3) * S ^ 2 * y⁻¹ ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (3 : ℕ)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -626,9 +626,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -639,7 +639,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -649,7 +649,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -660,9 +660,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   all_goals simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
   all_goals (
-    generalize hF : r ^ 2 - 1 = F
+    generalize hF : r ^ (2 : ℕ) - 1 = F
     have hF0 : F ≠ 0 := hF ▸ hf
-    apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+    apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
       mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
         (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
         (inv_ne_zero hF0))
@@ -673,9 +673,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
     subst hF
     ring)
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3 1 =
-      B ^ 2 * (((-1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -684,9 +684,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -697,7 +697,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -707,9 +707,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_1_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_1_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3 3 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (3 : ℂ) * s * r ^ 4 + (1 / 2 : ℂ) * s ^ 2 + (-3 : ℂ) * s ^ 2 * r ^ 2 + (5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (1 : ℂ) * s ^ 4 + (-1 : ℂ) * s ^ 4 * r ^ 2 + (1 / 4 : ℂ) * s ^ 5) / (r ^ 3) * S ^ 2 * y⁻¹ ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (3 : ℂ) * s * r ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (4 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (3 : ℕ)) * S ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -718,9 +718,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -731,9 +731,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 0 0 =
-      B ^ 2 * (((-1 / 2 : ℂ) * s * r ^ 2 + (3 / 2 : ℂ) * s * r ^ 4 + (-1 / 4 : ℂ) * s ^ 2 + (1 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6) * S * Sx * y ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ)) * S * Sx * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -742,9 +742,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -755,9 +755,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 0 1 =
-      B ^ 2 * (((1 : ℂ) * s * r ^ 4 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sx * y ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sx * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -766,9 +766,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -779,9 +779,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 0 2 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 4) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -790,9 +790,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -803,7 +803,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 0 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -813,9 +813,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 1 0 =
-      B ^ 2 * (((1 : ℂ) * s * r ^ 4 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sx * y ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sx * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -824,9 +824,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -837,9 +837,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 1 1 =
-      B ^ 2 * (((-1 / 2 : ℂ) * s * r ^ 2 + (3 / 2 : ℂ) * s * r ^ 4 + (-1 / 4 : ℂ) * s ^ 2 + (1 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2) * S * Sx * y ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sx * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -848,9 +848,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -861,9 +861,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 1 2 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 + (-3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -872,9 +872,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -885,7 +885,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 1 3 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -895,9 +895,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 2 0 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 4) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -906,9 +906,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -919,9 +919,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 2 1 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 + (-3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -930,9 +930,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -943,9 +943,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 2 2 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -954,9 +954,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -967,9 +967,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 2 3 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -978,9 +978,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -991,7 +991,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1001,7 +1001,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1011,9 +1011,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3 2 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1022,9 +1022,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1035,9 +1035,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_2_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_2_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3 3 =
-      B ^ 2 * (((1 : ℂ) * r ^ 4 + (1 : ℂ) * s * r ^ 2 + (1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (1 / 2 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * r ^ (4 : ℕ) + (1 : ℂ) * s * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1046,9 +1046,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1059,9 +1059,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 0 0 =
-      B ^ 2 * (((-1 / 2 : ℂ) * s * r ^ 2 + (3 / 2 : ℂ) * s * r ^ 4 + (-1 / 4 : ℂ) * s ^ 2 + (1 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6) * S * Sy * y ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ)) * S * Sy * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1070,9 +1070,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1083,9 +1083,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 0 1 =
-      B ^ 2 * (((1 : ℂ) * s * r ^ 4 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sy * y ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sy * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1094,9 +1094,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1107,7 +1107,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 0 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1117,9 +1117,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 0 3 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 4) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1128,9 +1128,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1141,9 +1141,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_1_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 1 0 =
-      B ^ 2 * (((1 : ℂ) * s * r ^ 4 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1)) * S * Sy * y ^ 2) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S * Sy * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1152,9 +1152,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1165,9 +1165,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 1 1 =
-      B ^ 2 * (((-1 / 2 : ℂ) * s * r ^ 2 + (3 / 2 : ℂ) * s * r ^ 4 + (-1 / 4 : ℂ) * s ^ 2 + (1 / 4 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 * r ^ 4 + (-1 / 2 : ℂ) * s ^ 3 + (1 / 2 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2) * S * Sy * y ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 / 2 : ℂ) * s * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s * r ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)) * S * Sy * y ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1176,9 +1176,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1189,7 +1189,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 1 2 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1199,9 +1199,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 1 3 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 + (-3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1210,9 +1210,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1223,7 +1223,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_2_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 2 0 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1233,7 +1233,7 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_2_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 2 1 = 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
@@ -1243,9 +1243,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 2 2 =
-      B ^ 2 * (((1 : ℂ) * r ^ 4 + (1 : ℂ) * s * r ^ 2 + (1 / 4 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (1 / 2 : ℂ) * s ^ 3 + (1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((1 : ℂ) * r ^ (4 : ℕ) + (1 : ℂ) * s * r ^ (2 : ℕ) + (1 / 4 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 / 2 : ℂ) * s ^ (3 : ℕ) + (1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1254,9 +1254,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1267,9 +1267,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 2 3 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1278,9 +1278,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1291,9 +1291,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_3_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 3 0 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 4 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 4 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 4) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (4 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (4 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1302,9 +1302,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1315,9 +1315,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_3_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 3 1 =
-      B ^ 2 * (((-1 : ℂ) * s * r ^ 2 + (-1 / 2 : ℂ) * s ^ 2 + (-3 / 2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 4 + (-5 / 4 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2 + (-1 / 4 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1)) * S ^ 2) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (2 : ℕ) + (-3 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (-5 / 4 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1)) * S ^ (2 : ℕ)) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1326,9 +1326,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1339,9 +1339,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_3_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 3 2 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sx) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sx) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1350,9 +1350,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))
@@ -1363,9 +1363,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
   subst hF
   ring
 
-@[bmJetTable] theorem scalarJet_quadConnection_3_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+@[bmJetTable] theorem scalarJet_quadConnection_3_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.connection (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 3 3 =
-      B ^ 2 * (((-1 : ℂ) * r ^ 4 + (-1 : ℂ) * s * r ^ 2 + (-1 / 4 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * r ^ 2 + (-1 / 2 : ℂ) * s ^ 3 + (-1 / 4 : ℂ) * s ^ 4) / (r ^ 4) * S * Sy) := by
+      B ^ (2 : ℕ) * (((-1 : ℂ) * r ^ (4 : ℕ) + (-1 : ℂ) * s * r ^ (2 : ℕ) + (-1 / 4 : ℂ) * s ^ (2 : ℕ) + (-1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (-1 / 2 : ℂ) * s ^ (3 : ℕ) + (-1 / 4 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ)) * S * Sy) := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
   rw [hd.quadratic_connection_eq]
   simp only [hd.quadratic_inverse_apply, hd.linearization_inverse_apply]
@@ -1374,9 +1374,9 @@ variable {s r y B S Sx Sy Sxx Sxy : ℂ}
 
     sub_zero, zero_sub, neg_zero, zero_div, div_zero, mul_neg, neg_mul, neg_neg]
   simp only [div_eq_mul_inv, mul_inv, inv_neg, ← inv_pow, inv_inv, one_div]
-  generalize hF : r ^ 2 - 1 = F
+  generalize hF : r ^ (2 : ℕ) - 1 = F
   have hF0 : F ≠ 0 := hF ▸ hf
-  apply mul_left_cancel₀ (show r ^ 9 * r⁻¹ * y ^ 7 * y⁻¹ * F ^ 7 * F⁻¹ ≠ 0 from
+  apply mul_left_cancel₀ (show r ^ (9 : ℕ) * r⁻¹ * y ^ (7 : ℕ) * y⁻¹ * F ^ (7 : ℕ) * F⁻¹ ≠ 0 from
     mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (pow_ne_zero _ hr)
       (inv_ne_zero hr)) (pow_ne_zero _ hy)) (inv_ne_zero hy)) (pow_ne_zero _ hF0))
       (inv_ne_zero hF0))

@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.GaussPrimeScaleFourier
 /-!
 # The moving amplitude and its exact period average
 
-The prime scale of a Gauss component is `s_p(x) = p^{1-x} = b_p(x)^2`, extended one-periodically.
+The prime scale of a Gauss component is `s_p(x) = p^{1-x} = b_p(x)^(2 : ℕ)`, extended one-periodically.
 Its moving translate
 
 `a_δ(x) = s_p(x) / s_p(x + δ)`
@@ -56,7 +56,7 @@ theorem gaussScaleSegment_pos (p x : ℝ) : 0 < gaussScaleSegment p x := Real.ex
 
 /-- The prime scale is the square of the prime-scale amplitude. -/
 theorem gaussScaleSegment_eq_gaussPrimeScale_sq (p x : ℝ) :
-    gaussScaleSegment p x = gaussPrimeScale p x ^ 2 := by
+    gaussScaleSegment p x = gaussPrimeScale p x ^ (2 : ℕ) := by
   rw [gaussScaleSegment, gaussPrimeScale, ← Real.exp_nat_mul]
   ring_nf
 
@@ -142,7 +142,7 @@ the period and the translation gives the product of the two elementary scale mom
 theorem intervalIntegral_intervalIntegral_gaussMovingAmplitude_pow
     (p : ℝ) (hp : 1 < p) (m : ℕ) (hm : 1 ≤ m) :
     (∫ δ in (0:ℝ)..1, ∫ x in (0:ℝ)..1, gaussMovingAmplitude p δ x ^ m)
-      = (p ^ m - 1) ^ 2 / (p ^ m * (m : ℝ) ^ 2 * (Real.log p) ^ 2) := by
+      = (p ^ m - 1) ^ (2 : ℕ) / (p ^ m * (m : ℝ) ^ (2 : ℕ) * (Real.log p) ^ (2 : ℕ)) := by
   have hcongr : ∀ δ ∈ Set.uIcc (0:ℝ) 1,
       (∫ x in (0:ℝ)..1, gaussMovingAmplitude p δ x ^ m) = gaussAmplitudeSegment p m δ := by
     intro δ hδ

@@ -57,7 +57,7 @@ theorem criticalMellinAtomWeight_mul_thirdGradeTriangularWeight_eq_oddPoleGreenR
     {n : ℕ} {H : ℝ} (hn : 2 ≤ n) (hH : H ≠ 0) :
     criticalMellinAtomWeight n *
         ccmGuinandWeilThirdGradeCesaroTriangularWeight H (Real.log n) =
-      criticalMellinAtomWeight n * (32 / (H * (Real.log n) ^ 3)) *
+      criticalMellinAtomWeight n * (32 / (H * (Real.log n) ^ (3 : ℕ))) *
         ccmWeilOddNormalizedGreenResidual n (H / 2) := by
   have hnreal : (1 : ℝ) < n := by exact_mod_cast hn
   have hlog : Real.log n ≠ 0 := ne_of_gt (Real.log_pos hnreal)
@@ -70,7 +70,7 @@ theorem criticalMellinAtomWeight_mul_thirdGradeTriangularWeight_eq_oddPoleGreenR
 def ccmWeilOddThirdGradeGreenResidualPrimeWindow (b H : ℝ) : ℝ :=
   ∑ n ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
     if b < Real.log n then
-      criticalMellinAtomWeight n * (32 / (H * (Real.log n) ^ 3)) *
+      criticalMellinAtomWeight n * (32 / (H * (Real.log n) ^ (3 : ℕ))) *
         ccmWeilOddNormalizedGreenResidual n (H / 2)
     else 0
 

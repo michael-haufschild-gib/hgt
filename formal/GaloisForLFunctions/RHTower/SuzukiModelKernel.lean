@@ -29,14 +29,14 @@ open GaloisForLFunctions.HTGeometry
 namespace RHTower
 
 theorem norm_sq_ofReal_sub (w : ℂ) (x : ℝ) :
-    ‖((x : ℝ) : ℂ) - w‖ ^ 2 = (x - w.re) ^ 2 + w.im ^ 2 := by
+    ‖((x : ℝ) : ℂ) - w‖ ^ (2 : ℕ) = (x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
   simp
   ring
 
 theorem memLp_two_of_poisson_bound {u : ℝ → ℂ} {a b D : ℝ} (hb : 0 < b)
     (hmeas : AEStronglyMeasurable u volume)
-    (hbd : ∀ x : ℝ, ‖u x‖ ^ 2 ≤ D / ((x - a) ^ 2 + b ^ 2)) :
+    (hbd : ∀ x : ℝ, ‖u x‖ ^ (2 : ℕ) ≤ D / ((x - a) ^ (2 : ℕ) + b ^ (2 : ℕ))) :
     MemLp u 2 volume := by
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
   refine Integrable.mono'
@@ -188,14 +188,14 @@ theorem continuous_suzukiModelKernel_ofReal (hRH : RiemannHypothesis) {w : ℂ} 
   exact hd.continuousAt.comp Complex.continuous_ofReal.continuousAt
 
 theorem norm_sq_ofReal_sub_conj (w : ℂ) (x : ℝ) :
-    ‖((x : ℝ) : ℂ) - (starRingEnd ℂ) w‖ ^ 2 = (x - w.re) ^ 2 + w.im ^ 2 := by
+    ‖((x : ℝ) : ℂ) - (starRingEnd ℂ) w‖ ^ (2 : ℕ) = (x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
   rw [norm_sq_ofReal_sub]
   simp
 
 theorem memLp_suzukiModelKernel (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im) :
     MemLp (fun x : ℝ => suzukiModelKernel w ((x : ℝ) : ℂ)) 2 (volume : Measure ℝ) := by
   refine memLp_two_of_poisson_bound (a := w.re) (b := w.im)
-    (D := (suzukiModelKernelBound w) ^ 2) hw
+    (D := (suzukiModelKernelBound w) ^ (2 : ℕ)) hw
     (continuous_suzukiModelKernel_ofReal hRH hw).aestronglyMeasurable ?_
   intro x
   have hz : (0 : ℝ) ≤ (((x : ℝ) : ℂ)).im := by simp
@@ -204,8 +204,8 @@ theorem memLp_suzukiModelKernel (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.
     norm_pos_iff.mpr (sub_conj_ne_zero hw hz)
   have hsq := norm_sq_ofReal_sub_conj w x
   have hB := suzukiModelKernelBound_nonneg w
-  have hle : ‖suzukiModelKernel w ((x : ℝ) : ℂ)‖ ^ 2
-      ≤ (suzukiModelKernelBound w) ^ 2 / ‖((x : ℝ) : ℂ) - (starRingEnd ℂ) w‖ ^ 2 := by
+  have hle : ‖suzukiModelKernel w ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)
+      ≤ (suzukiModelKernelBound w) ^ (2 : ℕ) / ‖((x : ℝ) : ℂ) - (starRingEnd ℂ) w‖ ^ (2 : ℕ) := by
     rw [← div_pow]
     exact pow_le_pow_left₀ (norm_nonneg _) h 2
   rwa [hsq] at hle
@@ -301,14 +301,14 @@ theorem memLp_suzukiModelKernelStar (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 
     MemLp (fun x : ℝ => suzukiModelKernelStar w ((x : ℝ) : ℂ)) 2 (volume : Measure ℝ) := by
   have hpi := Real.pi_pos
   refine memLp_two_of_poisson_bound (a := w.re) (b := w.im)
-    (D := (6 / (2 * Real.pi)) ^ 2) hw
+    (D := (6 / (2 * Real.pi)) ^ (2 : ℕ)) hw
     (continuous_suzukiModelKernelStar_ofReal hRH hw).aestronglyMeasurable ?_
   intro x
   have hz : (0 : ℝ) ≤ (((x : ℝ) : ℂ)).im := by simp
   have h := norm_suzukiModelKernelStar_le hRH hw hz (ofReal_ne_of_im_pos hw x)
   have hsq := norm_sq_ofReal_sub w x
-  have hle : ‖suzukiModelKernelStar w ((x : ℝ) : ℂ)‖ ^ 2
-      ≤ (6 / (2 * Real.pi)) ^ 2 / ‖((x : ℝ) : ℂ) - w‖ ^ 2 := by
+  have hle : ‖suzukiModelKernelStar w ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)
+      ≤ (6 / (2 * Real.pi)) ^ (2 : ℕ) / ‖((x : ℝ) : ℂ) - w‖ ^ (2 : ℕ) := by
     rw [← div_pow]
     exact pow_le_pow_left₀ (norm_nonneg _) h 2
   rwa [hsq] at hle
@@ -403,7 +403,7 @@ theorem suzukiModelKernel_mem_suzukiModelSpace (hRH : RiemannHypothesis) {w : �
 
 /-! ## The reproducing property -/
 
-theorem memLp_conj {f : ℝ → ℂ} (h : MemLp f 2 (volume : Measure ℝ)) :
+theorem memLp_conj_suzukiModelKernel {f : ℝ → ℂ} (h : MemLp f 2 (volume : Measure ℝ)) :
     MemLp (fun x : ℝ => (starRingEnd ℂ) (f x)) 2 (volume : Measure ℝ) := by
   refine ⟨(Complex.continuous_conj.comp_aestronglyMeasurable h.1), ?_⟩
   have hnorm : ∀ x : ℝ, ‖(starRingEnd ℂ) (f x)‖ = ‖f x‖ := fun x => RCLike.norm_conj _
@@ -423,7 +423,7 @@ theorem integrable_conj_lp_div_sub {w : ℂ} (hw : w.im ≠ 0) (f : Lp ℂ 2 (vo
     Integrable
       (fun x : ℝ => (starRingEnd ℂ) ((f : ℝ → ℂ) x) / (((x : ℝ) : ℂ) - w)) volume := by
   have h1 : MemLp (fun x : ℝ => (starRingEnd ℂ) ((f : ℝ → ℂ) x)) 2 (volume : Measure ℝ) :=
-    memLp_conj (MeasureTheory.Lp.memLp f)
+    memLp_conj_suzukiModelKernel (MeasureTheory.Lp.memLp f)
   have h2 := memLp_cauchyKernel hw
   have h := h1.integrable_mul h2
   refine h.congr ?_

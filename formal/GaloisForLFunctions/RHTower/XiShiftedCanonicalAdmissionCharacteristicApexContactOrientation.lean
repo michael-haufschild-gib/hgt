@@ -72,7 +72,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 3)).PosDef)
     (hcontact : xiShiftedCanonicalAdmissionApexValue y n = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexNormalizedTopProduct v n)
-      (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+      (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
         xiShiftedCanonicalAdmissionNorm y n) y := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   have hHn : (HTGeometry.momentHankelMatrix
@@ -113,7 +113,7 @@ theorem xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact_derivative_n
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 3)).PosDef)
     (hcontact : xiShiftedCanonicalAdmissionApexValue y n = 0) :
-    -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+    -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
         xiShiftedCanonicalAdmissionNorm y n < 0 := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   have hHn : (HTGeometry.momentHankelMatrix
@@ -129,7 +129,7 @@ theorem xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact_derivative_n
     rw [hNormEq]
     exact HTGeometry.monicOrthoNorm_pos_below hbelow (by omega)
   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
-  have hsq : 0 < xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 :=
+  have hsq : 0 < xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hNextNe
   have hneg : -2 * (n : ℝ) < 0 := by nlinarith
   exact div_neg_of_neg_of_pos (mul_neg_of_neg_of_pos hneg hsq) hNormPos
@@ -141,9 +141,9 @@ theorem xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact_oriented
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 3)).PosDef)
     (hcontact : xiShiftedCanonicalAdmissionApexValue y n = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexNormalizedTopProduct v n)
-        (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+        (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
           xiShiftedCanonicalAdmissionNorm y n) y ∧
-      -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+      -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
           xiShiftedCanonicalAdmissionNorm y n < 0 := by
   exact ⟨hasDerivAt_xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact
       hy hn hH hcontact,
@@ -187,17 +187,17 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexProjectiveTopRatio_contact
 `n+3` moment block needed to differentiate both adjacent canonical admissions. -/
 theorem xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact_oriented_of_parabolicDegreeHorizon
     {y : ℝ} {n : ℕ} (hn : 0 < n)
-    (hy : routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ 2) ≤ y)
+    (hy : routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y)
     (hcontact : xiShiftedCanonicalAdmissionApexValue y n = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexNormalizedTopProduct v n)
-        (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+        (-2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
           xiShiftedCanonicalAdmissionNorm y n) y ∧
-      -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 /
+      -2 * (n : ℝ) * xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) /
           xiShiftedCanonicalAdmissionNorm y n < 0 := by
   have hy0 : 0 < y := lt_of_lt_of_le
     (mul_pos routeUParabolicDegreeHorizon_pos (sq_pos_of_pos (by positivity))) hy
   have hy' : routeUParabolicDegreeHorizon *
-      ((((n + 1) + 2 : ℕ) : ℝ) ^ 2) ≤ y := by
+      ((((n + 1) + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y := by
     simpa only [Nat.add_assoc] using hy
   have hH' := xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon (n + 1) hy'
   have hH : (HTGeometry.momentHankelMatrix
@@ -211,14 +211,14 @@ theorem xiShiftedCanonicalAdmissionApexNormalizedTopProduct_contact_oriented_of_
 /-- Source-native universal projective slope at a positive-degree characteristic contact. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionApexProjectiveTopRatio_contact_of_parabolicDegreeHorizon
     {y : ℝ} {n : ℕ} (hn : 0 < n)
-    (hy : routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ 2) ≤ y)
+    (hy : routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y)
     (hcontact : xiShiftedCanonicalAdmissionApexValue y n = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexProjectiveTopRatio v n)
       (-2 * (n : ℝ)) y := by
   have hy0 : 0 < y := lt_of_lt_of_le
     (mul_pos routeUParabolicDegreeHorizon_pos (sq_pos_of_pos (by positivity))) hy
   have hy' : routeUParabolicDegreeHorizon *
-      ((((n + 1) + 2 : ℕ) : ℝ) ^ 2) ≤ y := by
+      ((((n + 1) + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y := by
     simpa only [Nat.add_assoc] using hy
   have hH' := xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon (n + 1) hy'
   have hH : (HTGeometry.momentHankelMatrix

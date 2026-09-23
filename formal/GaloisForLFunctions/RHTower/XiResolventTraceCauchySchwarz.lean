@@ -6,13 +6,13 @@ import GaloisForLFunctions.RHTower.XiResolventSingleMinorCriterion
 Let `L p = sum_q u_q * p (u_q)` be the resolvent trace functional on real polynomials at a
 shift `X`.  On the critical line the atoms `u_q` are positive reals, so `L` is integration
 against a positive discrete measure and satisfies the Cauchy–Schwarz inequality
-`L(f^2) L(g^2) ≥ L(fg)^2` by the Lagrange pair identity.  Conversely the special pairs
+`L(f^(2 : ℕ)) L(g^(2 : ℕ)) ≥ L(fg)^(2 : ℕ)` by the Lagrange pair identity.  Conversely the special pairs
 `(f, X f)` recover exactly the index-`0` polynomial Turán minors, which alone drive the
 spectral descent.
 
 **Theorem**: at any one shift `X ≥ 0`,
 
-`RH  ↔  ∀ f g : Polynomial ℝ, 0 ≤ Re (L (f*f) * L (g*g) - L (f*g)^2)`
+`RH  ↔  ∀ f g : Polynomial ℝ, 0 ≤ Re (L (f*f) * L (g*g) - L (f*g)^(2 : ℕ))`
 
 — the Riemann hypothesis is the Cauchy–Schwarz inequality of one explicit arithmetic
 functional.  The criterion is sign-blind: negating `L` preserves every inequality on the
@@ -46,7 +46,7 @@ theorem xiPolyFunctional_mul_self (p : Polynomial ℝ) (X : ℝ) :
   rw [show xiPolyFunctional (p * p) X = ∑' q : XiZeroCopy,
       xiResolventPoint X q * evalRealPolynomial (p * p) (xiResolventPoint X q) from rfl,
     show xiPolyMoment p 0 X = ∑' q : XiZeroCopy, xiResolventPoint X q ^ (0 + 1) *
-      evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl]
+      evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl]
   refine tsum_congr fun q => ?_
   rw [evalRealPolynomial_mul]
   ring
@@ -59,7 +59,7 @@ theorem xiPolyFunctional_X_mul_self (p : Polynomial ℝ) (X : ℝ) :
         evalRealPolynomial ((Polynomial.X * p) * (Polynomial.X * p))
           (xiResolventPoint X q) from rfl,
     show xiPolyMoment p 2 X = ∑' q : XiZeroCopy, xiResolventPoint X q ^ (2 + 1) *
-      evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl]
+      evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl]
   refine tsum_congr fun q => ?_
   simp only [evalRealPolynomial_mul, evalRealPolynomial_X]
   ring
@@ -71,7 +71,7 @@ theorem xiPolyFunctional_mul_X_mul (p : Polynomial ℝ) (X : ℝ) :
       ∑' q : XiZeroCopy, xiResolventPoint X q *
         evalRealPolynomial (p * (Polynomial.X * p)) (xiResolventPoint X q) from rfl,
     show xiPolyMoment p 1 X = ∑' q : XiZeroCopy, xiResolventPoint X q ^ (1 + 1) *
-      evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl]
+      evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl]
   refine tsum_congr fun q => ?_
   simp only [evalRealPolynomial_mul, evalRealPolynomial_X]
   ring
@@ -80,13 +80,13 @@ theorem xiPolyFunctional_mul_X_mul (p : Polynomial ℝ) (X : ℝ) :
 theorem two_mul_polyCauchySchwarz_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X)
     (f g : Polynomial ℝ) :
     2 * (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-      xiPolyFunctional (f * g) X ^ 2) =
+      xiPolyFunctional (f * g) X ^ (2 : ℕ)) =
     ∑' z : XiZeroCopy × XiZeroCopy,
       (xiResolventPoint X z.1 * xiResolventPoint X z.2) *
         (evalRealPolynomial f (xiResolventPoint X z.1) *
             evalRealPolynomial g (xiResolventPoint X z.2) -
           evalRealPolynomial f (xiResolventPoint X z.2) *
-            evalRealPolynomial g (xiResolventPoint X z.1)) ^ 2 := by
+            evalRealPolynomial g (xiResolventPoint X z.1)) ^ (2 : ℕ) := by
   have hff := summable_norm_polyFunctionalAtom hX (f * f)
   have hgg := summable_norm_polyFunctionalAtom hX (g * g)
   have hfg := summable_norm_polyFunctionalAtom hX (f * g)
@@ -101,7 +101,7 @@ theorem two_mul_polyCauchySchwarz_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X)
         (evalRealPolynomial f (xiResolventPoint X z.1) *
             evalRealPolynomial g (xiResolventPoint X z.2) -
           evalRealPolynomial f (xiResolventPoint X z.2) *
-            evalRealPolynomial g (xiResolventPoint X z.1)) ^ 2 =
+            evalRealPolynomial g (xiResolventPoint X z.1)) ^ (2 : ℕ) =
       (((xiResolventPoint X z.1 *
           evalRealPolynomial (f * f) (xiResolventPoint X z.1)) *
           (xiResolventPoint X z.2 *
@@ -132,21 +132,21 @@ is a sum of nonnegative reals. -/
 theorem polyCauchySchwarz_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis)
     {X : ℝ} (hX : 0 ≤ X) (f g : Polynomial ℝ) :
     0 ≤ (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-      xiPolyFunctional (f * g) X ^ 2).re := by
+      xiPolyFunctional (f * g) X ^ (2 : ℕ)).re := by
   have hhalf : (0 : ℝ) ≤ (2 * (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-      xiPolyFunctional (f * g) X ^ 2)).re := by
+      xiPolyFunctional (f * g) X ^ (2 : ℕ))).re := by
     rw [two_mul_polyCauchySchwarz_eq_tsum_pair hX f g]
     have hterm : ∀ z : XiZeroCopy × XiZeroCopy, ∃ w : ℝ, 0 ≤ w ∧
         (xiResolventPoint X z.1 * xiResolventPoint X z.2) *
           (evalRealPolynomial f (xiResolventPoint X z.1) *
               evalRealPolynomial g (xiResolventPoint X z.2) -
             evalRealPolynomial f (xiResolventPoint X z.2) *
-              evalRealPolynomial g (xiResolventPoint X z.1)) ^ 2 = (w : ℂ) := by
+              evalRealPolynomial g (xiResolventPoint X z.1)) ^ (2 : ℕ) = (w : ℂ) := by
       intro z
       obtain ⟨v₁, hv₁, he₁⟩ := exists_pos_ofReal_xiResolventPoint_of_rh hRH hX z.1
       obtain ⟨v₂, hv₂, he₂⟩ := exists_pos_ofReal_xiResolventPoint_of_rh hRH hX z.2
       refine ⟨(v₁ * v₂) * (Polynomial.eval v₁ f * Polynomial.eval v₂ g -
-        Polynomial.eval v₂ f * Polynomial.eval v₁ g) ^ 2, by positivity, ?_⟩
+        Polynomial.eval v₂ f * Polynomial.eval v₁ g) ^ (2 : ℕ), by positivity, ?_⟩
       rw [he₁, he₂]
       simp only [evalRealPolynomial_ofReal]
       push_cast
@@ -159,9 +159,9 @@ theorem polyCauchySchwarz_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesi
     · rw [tsum_eq_zero_of_not_summable hsum]
       simp
   have h2 : (2 * (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-      xiPolyFunctional (f * g) X ^ 2)).re =
+      xiPolyFunctional (f * g) X ^ (2 : ℕ))).re =
       2 * (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-        xiPolyFunctional (f * g) X ^ 2).re := by
+        xiPolyFunctional (f * g) X ^ (2 : ℕ)).re := by
     simp [Complex.mul_re]
   rw [h2] at hhalf
   linarith
@@ -171,7 +171,7 @@ recover the index-`0` polynomial Turán minors. -/
 theorem riemannHypothesis_of_forall_polyCauchySchwarz {X : ℝ} (hX : 0 ≤ X)
     (hcs : ∀ f g : Polynomial ℝ,
       0 ≤ (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-        xiPolyFunctional (f * g) X ^ 2).re) :
+        xiPolyFunctional (f * g) X ^ (2 : ℕ)).re) :
     RiemannHypothesis := by
   refine riemannHypothesis_of_forall_polyTuranMinor_zero_re_nonneg hX fun p => ?_
   have h := hcs p (Polynomial.X * p)
@@ -181,12 +181,12 @@ theorem riemannHypothesis_of_forall_polyCauchySchwarz {X : ℝ} (hX : 0 ≤ X)
 
 /-- **RH is the Cauchy–Schwarz inequality of the resolvent trace functional**: at any one
 shift, the Riemann hypothesis is equivalent to
-`Re (L (f*f) * L (g*g) - L (f*g)^2) ≥ 0` for all real polynomials `f, g`, where
+`Re (L (f*f) * L (g*g) - L (f*g)^(2 : ℕ)) ≥ 0` for all real polynomials `f, g`, where
 `L p = sum_q u_q * p (u_q)`. -/
 theorem riemannHypothesis_iff_forall_polyCauchySchwarz {X : ℝ} (hX : 0 ≤ X) :
     RiemannHypothesis ↔ ∀ f g : Polynomial ℝ,
       0 ≤ (xiPolyFunctional (f * f) X * xiPolyFunctional (g * g) X -
-        xiPolyFunctional (f * g) X ^ 2).re :=
+        xiPolyFunctional (f * g) X ^ (2 : ℕ)).re :=
   ⟨fun hRH f g => polyCauchySchwarz_re_nonneg_of_riemannHypothesis hRH hX f g,
     riemannHypothesis_of_forall_polyCauchySchwarz hX⟩
 

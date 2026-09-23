@@ -141,14 +141,14 @@ coefficient at `X` as `p - 2` and every coefficient at `X^(p^k)`, `k ≥ 1`, as
 `(p - 1)² p^(k - 1)`. -/
 noncomputable def ultrametricThermalSignal (p : ℕ) : ℂ⟦X⟧ :=
   PowerSeries.C (-1 / (p : ℂ)) * PowerSeries.X +
-    PowerSeries.C ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+    PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
       branchingThermalSignal p
 
 @[simp]
 theorem coeff_ultrametricThermalSignal (p n : ℕ) :
     coeff n (ultrametricThermalSignal p) =
       (-1 / (p : ℂ)) * (if n = 1 then 1 else 0) +
-        ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+        ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
           ((n : ℂ) * mahlerColliderCoefficient p n) := by
   simp [ultrametricThermalSignal, PowerSeries.coeff_X]
 
@@ -156,14 +156,14 @@ theorem coeff_ultrametricThermalSignal (p n : ℕ) :
 theorem ultrametricThermalCoefficient_recursion
     {p n : ℕ} (hp : 2 ≤ p) :
     (-1 / (p : ℂ)) * (if n = 1 then 1 else 0) +
-        ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+        ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
           ((n : ℂ) * mahlerColliderCoefficient p n) =
       ((p : ℂ) - 2) * (if n = 1 then 1 else 0) +
         (if n = p then 1 else 0) +
           (p : ℂ) *
             (if p ∣ n then
               (-1 / (p : ℂ)) * (if n / p = 1 then 1 else 0) +
-                ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+                ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
                   (((n / p : ℕ) : ℂ) *
                     mahlerColliderCoefficient p (n / p))
             else 0) := by

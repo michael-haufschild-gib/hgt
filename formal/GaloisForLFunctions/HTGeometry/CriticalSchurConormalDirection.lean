@@ -31,7 +31,7 @@ set_option synthInstance.maxHeartbeats 1000000
 a product of two non-units into a combination of differentials with non-unit coefficients. -/
 theorem repr_D_mem_maximalIdeal_of_mem_sq
     {k B : Type*} [CommRing k] [CommRing B] [Algebra k B] [IsLocalRing B]
-    {ι : Type*} (b : Module.Basis ι B Ω[B⁄k]) {x : B} (hx : x ∈ (maximalIdeal B) ^ 2) (i : ι) :
+    {ι : Type*} (b : Module.Basis ι B Ω[B⁄k]) {x : B} (hx : x ∈ (maximalIdeal B) ^ (2 : ℕ)) (i : ι) :
     b.repr (KaehlerDifferential.D k B x) i ∈ maximalIdeal B := by
   rw [pow_two] at hx
   refine Submodule.mul_induction_on hx ?_ ?_

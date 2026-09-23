@@ -23,23 +23,23 @@ namespace RHTower
 noncomputable section
 
 theorem norm_xiZeroCopyReciprocalSquare_eq (q : XiZeroCopy) :
-    ‖xiZeroCopyReciprocalSquare q‖ = ‖xiReciprocalCoordinate q‖ ^ 2 := by
+    ‖xiZeroCopyReciprocalSquare q‖ = ‖xiReciprocalCoordinate q‖ ^ (2 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare, xiReciprocalCoordinate, norm_pow]
 
 private theorem norm_xiZeroCopyReciprocalSquare_le (q : XiZeroCopy) :
     ‖xiZeroCopyReciprocalSquare q‖ ≤ 2 / 41 := by
   have hgap := xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hnorm : ‖xiSpectralPoint q‖ = ‖(q.1 : ℂ) - 1 / 2‖ := norm_xiSpectralPoint q
-  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ 2 =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + ((q.1 : ℂ).im) ^ 2 := by
+  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ (2 : ℕ) =
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + ((q.1 : ℂ).im) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im]
     norm_num
     ring
-  have hlarge : 41 / 2 < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hlarge : 41 / 2 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [hnorm, hsq]
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
-  have hpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 := by linarith
+  have hpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by linarith
   rw [norm_xiZeroCopyReciprocalSquare_eq, xiReciprocalCoordinate, norm_inv, inv_pow]
   rw [inv_le_comm₀ hpos (by norm_num)]
   linarith
@@ -81,12 +81,12 @@ theorem norm_le_elevenTenths_re (q : XiZeroCopy) :
     ‖xiZeroCopyReciprocalSquare q‖ ≤ (11 / 10) * (xiZeroCopyReciprocalSquare q).re := by
   have hre : 0 < (xiZeroCopyReciprocalSquare q).re := xiThermalNode_pos q
   have him := xiThermalOrientationTerm_le_one_over_eightyFour_node_sq q
-  have hnormsq : ‖xiZeroCopyReciprocalSquare q‖ ^ 2 =
-      (xiZeroCopyReciprocalSquare q).re ^ 2 + (xiZeroCopyReciprocalSquare q).im ^ 2 := by
+  have hnormsq : ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) =
+      (xiZeroCopyReciprocalSquare q).re ^ (2 : ℕ) + (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hbound : ‖xiZeroCopyReciprocalSquare q‖ ^ 2 ≤
-      ((11 / 10) * (xiZeroCopyReciprocalSquare q).re) ^ 2 := by
+  have hbound : ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) ≤
+      ((11 / 10) * (xiZeroCopyReciprocalSquare q).re) ^ (2 : ℕ) := by
     rw [hnormsq]
     rw [xiThermalNode] at him
     nlinarith
@@ -101,30 +101,30 @@ theorem xiReciprocalHermitianMass_le :
     norm_le_elevenTenths_re
 
 theorem summable_norm_sq_xiZeroCopyReciprocalSquare :
-    Summable (fun q : XiZeroCopy => ‖xiZeroCopyReciprocalSquare q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
     (summable_norm_xiZeroCopyReciprocalSquare.mul_left (2 / 41))
-  show ‖xiZeroCopyReciprocalSquare q‖ ^ 2 ≤ 2 / 41 * ‖xiZeroCopyReciprocalSquare q‖
-  have h1 : ‖xiZeroCopyReciprocalSquare q‖ ^ 2 =
+  show ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) ≤ 2 / 41 * ‖xiZeroCopyReciprocalSquare q‖
+  have h1 : ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) =
       ‖xiZeroCopyReciprocalSquare q‖ * ‖xiZeroCopyReciprocalSquare q‖ := by ring
   rw [h1, mul_comm (2 / 41 : ℝ)]
   exact mul_le_mul_of_nonneg_left (norm_xiZeroCopyReciprocalSquare_le q) (norm_nonneg _)
 
 theorem tsum_norm_sq_le :
-    (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ 2) ≤
+    (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)) ≤
       (2 / 41) * xiReciprocalHermitianMass := by
   rw [← tsum_norm_xiZeroCopyReciprocalSquare, ← tsum_mul_left]
   refine summable_norm_sq_xiZeroCopyReciprocalSquare.tsum_mono
     (summable_norm_xiZeroCopyReciprocalSquare.mul_left _) (fun q => ?_)
-  show ‖xiZeroCopyReciprocalSquare q‖ ^ 2 ≤ 2 / 41 * ‖xiZeroCopyReciprocalSquare q‖
-  have h1 : ‖xiZeroCopyReciprocalSquare q‖ ^ 2 =
+  show ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) ≤ 2 / 41 * ‖xiZeroCopyReciprocalSquare q‖
+  have h1 : ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) =
       ‖xiZeroCopyReciprocalSquare q‖ * ‖xiZeroCopyReciprocalSquare q‖ := by ring
   rw [h1, mul_comm (2 / 41 : ℝ)]
   exact mul_le_mul_of_nonneg_left (norm_xiZeroCopyReciprocalSquare_le q) (norm_nonneg _)
 
 /-- **The small-sector balance for the Xi divisor.** -/
 theorem xi_narrowSector_balance :
-    2 * (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ 2) ≤
+    2 * (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)) ≤
       (1 - 2 / 41) * primeArchCentralCurvature := by
   have h1 := tsum_norm_sq_le
   have h2 := xiReciprocalHermitianMass_le

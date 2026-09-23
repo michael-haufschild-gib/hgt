@@ -16,27 +16,27 @@ namespace RHTower
 noncomputable section
 
 lemma abs_norm_add_sq_sub_norm_sq_le (x y : ℂ) :
-    |‖x + y‖ ^ 2 - ‖x‖ ^ 2| ≤
-      2 * ‖x‖ * ‖y‖ + ‖y‖ ^ 2 := by
+    |‖x + y‖ ^ (2 : ℕ) - ‖x‖ ^ (2 : ℕ)| ≤
+      2 * ‖x‖ * ‖y‖ + ‖y‖ ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
     Complex.normSq_add]
   have hre : |(x * conj y).re| ≤ ‖x‖ * ‖y‖ := by
     calc
       |(x * conj y).re| ≤ ‖x * conj y‖ := abs_re_le_norm _
       _ = ‖x‖ * ‖y‖ := by rw [norm_mul, norm_conj]
-  have hnormsq : |Complex.normSq y| = ‖y‖ ^ 2 := by
+  have hnormsq : |Complex.normSq y| = ‖y‖ ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq, abs_of_nonneg (sq_nonneg _)]
   calc
     |Complex.normSq x + Complex.normSq y + 2 * (x * conj y).re -
         Complex.normSq x| = |Complex.normSq y + 2 * (x * conj y).re| := by ring_nf
     _ ≤ |Complex.normSq y| + |2 * (x * conj y).re| := abs_add_le _ _
-    _ = ‖y‖ ^ 2 + 2 * |(x * conj y).re| := by rw [hnormsq, abs_mul]; norm_num
-    _ ≤ ‖y‖ ^ 2 + 2 * (‖x‖ * ‖y‖) := by gcongr
-    _ = 2 * ‖x‖ * ‖y‖ + ‖y‖ ^ 2 := by ring_nf
+    _ = ‖y‖ ^ (2 : ℕ) + 2 * |(x * conj y).re| := by rw [hnormsq, abs_mul]; norm_num
+    _ ≤ ‖y‖ ^ (2 : ℕ) + 2 * (‖x‖ * ‖y‖) := by gcongr
+    _ = 2 * ‖x‖ * ‖y‖ + ‖y‖ ^ (2 : ℕ) := by ring_nf
 
 /-- Square energy of a general finite complex packet. -/
 def finiteComplexPacketSquareEnergy (a : ℕ → ℂ) (M : ℕ) : ℝ :=
-  ∑ k ∈ Finset.range M, ‖a k‖ ^ 2
+  ∑ k ∈ Finset.range M, ‖a k‖ ^ (2 : ℕ)
 
 /-- The energy change under a finite packet perturbation is controlled by the two `l1` norms. -/
 theorem abs_finiteComplexPacketSquareEnergy_add_sub_le
@@ -45,15 +45,15 @@ theorem abs_finiteComplexPacketSquareEnergy_add_sub_le
         finiteComplexPacketSquareEnergy a M| ≤
       2 * (∑ k ∈ Finset.range M, ‖a k‖) *
           (∑ k ∈ Finset.range M, ‖r k‖) +
-        (∑ k ∈ Finset.range M, ‖r k‖) ^ 2 := by
+        (∑ k ∈ Finset.range M, ‖r k‖) ^ (2 : ℕ) := by
   rw [finiteComplexPacketSquareEnergy, finiteComplexPacketSquareEnergy,
     ← Finset.sum_sub_distrib]
   calc
-    |∑ k ∈ Finset.range M, (‖a k + r k‖ ^ 2 - ‖a k‖ ^ 2)| ≤
-        ∑ k ∈ Finset.range M, |‖a k + r k‖ ^ 2 - ‖a k‖ ^ 2| :=
+    |∑ k ∈ Finset.range M, (‖a k + r k‖ ^ (2 : ℕ) - ‖a k‖ ^ (2 : ℕ))| ≤
+        ∑ k ∈ Finset.range M, |‖a k + r k‖ ^ (2 : ℕ) - ‖a k‖ ^ (2 : ℕ)| :=
       Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ k ∈ Finset.range M,
-        (2 * ‖a k‖ * ‖r k‖ + ‖r k‖ ^ 2) := by
+        (2 * ‖a k‖ * ‖r k‖ + ‖r k‖ ^ (2 : ℕ)) := by
       exact Finset.sum_le_sum fun k _ => abs_norm_add_sq_sub_norm_sq_le (a k) (r k)
     _ ≤ ∑ k ∈ Finset.range M,
         (2 * ‖a k‖ * (∑ j ∈ Finset.range M, ‖r j‖) +
@@ -65,7 +65,7 @@ theorem abs_finiteComplexPacketSquareEnergy_add_sub_le
       nlinarith [norm_nonneg (a k), norm_nonneg (r k)]
     _ = 2 * (∑ k ∈ Finset.range M, ‖a k‖) *
           (∑ k ∈ Finset.range M, ‖r k‖) +
-        (∑ k ∈ Finset.range M, ‖r k‖) ^ 2 := by
+        (∑ k ∈ Finset.range M, ‖r k‖) ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_mul]
       rw [← Finset.mul_sum]
       ring_nf
@@ -80,11 +80,11 @@ theorem tendsto_finiteComplexPacketSquareEnergy_add_of_exponentiallySmaller_l1
     (hr : ∀ n : ℕ, ∑ k ∈ Finset.range (n + 1), ‖r n k‖ ≤ R * beta ^ n)
     (hlead : Tendsto
       (fun n : ℕ => Real.sqrt n * finiteComplexPacketSquareEnergy (a n) (n + 1) /
-        (B ^ 2) ^ n) atTop (nhds L)) :
+        (B ^ (2 : ℕ)) ^ n) atTop (nhds L)) :
     Tendsto
       (fun n : ℕ => Real.sqrt n *
         finiteComplexPacketSquareEnergy (fun k => a n k + r n k) (n + 1) /
-          (B ^ 2) ^ n)
+          (B ^ (2 : ℕ)) ^ n)
       atTop (nhds L) := by
   let q : ℝ := beta / B
   have hq0 : 0 ≤ q := div_nonneg hbeta0 hB.le
@@ -93,11 +93,11 @@ theorem tendsto_finiteComplexPacketSquareEnergy_add_of_exponentiallySmaller_l1
     (mul_nonneg hq0 hq0) (by nlinarith [sq_nonneg (q - 1)])
   have hmajor : Tendsto
       (fun n : ℕ => 2 * A * R * (Real.sqrt n * q ^ n) +
-        R ^ 2 * (Real.sqrt n * (q ^ 2) ^ n))
+        R ^ (2 : ℕ) * (Real.sqrt n * (q ^ (2 : ℕ)) ^ n))
       atTop (nhds 0) := by
     have h :=
       ((tendsto_sqrtNat_mul_const_pow_of_lt_one hq0 hq1).const_mul (2 * A * R)).add
-        (hq2zero.const_mul (R ^ 2))
+        (hq2zero.const_mul (R ^ (2 : ℕ)))
     convert h using 1
     · funext n
       rw [pow_two q]
@@ -106,16 +106,16 @@ theorem tendsto_finiteComplexPacketSquareEnergy_add_of_exponentiallySmaller_l1
       (fun n : ℕ =>
         Real.sqrt n *
             finiteComplexPacketSquareEnergy (fun k => a n k + r n k) (n + 1) /
-              (B ^ 2) ^ n -
+              (B ^ (2 : ℕ)) ^ n -
           Real.sqrt n * finiteComplexPacketSquareEnergy (a n) (n + 1) /
-            (B ^ 2) ^ n)
+            (B ^ (2 : ℕ)) ^ n)
       atTop (nhds 0) := by
     apply squeeze_zero_norm'
       (a := fun n : ℕ => 2 * A * R * (Real.sqrt n * q ^ n) +
-        R ^ 2 * (Real.sqrt n * (q ^ 2) ^ n))
+        R ^ (2 : ℕ) * (Real.sqrt n * (q ^ (2 : ℕ)) ^ n))
     · filter_upwards with n
       have hBpow : 0 < B ^ n := pow_pos hB n
-      have hB2pow : 0 < (B ^ 2) ^ n := pow_pos (sq_pos_of_pos hB) n
+      have hB2pow : 0 < (B ^ (2 : ℕ)) ^ n := pow_pos (sq_pos_of_pos hB) n
       have hpert := abs_finiteComplexPacketSquareEnergy_add_sub_le (a n) (r n) (n + 1)
       have hal1 := ha n
       have hrl1 := hr n
@@ -126,18 +126,18 @@ theorem tendsto_finiteComplexPacketSquareEnergy_add_of_exponentiallySmaller_l1
         Real.sqrt n *
             |finiteComplexPacketSquareEnergy (fun k => a n k + r n k) (n + 1) -
               finiteComplexPacketSquareEnergy (a n) (n + 1)| /
-              (B ^ 2) ^ n ≤
+              (B ^ (2 : ℕ)) ^ n ≤
           Real.sqrt n *
             (2 * (∑ k ∈ Finset.range (n + 1), ‖a n k‖) *
                 (∑ k ∈ Finset.range (n + 1), ‖r n k‖) +
-              (∑ k ∈ Finset.range (n + 1), ‖r n k‖) ^ 2) /
-                (B ^ 2) ^ n := by gcongr
+              (∑ k ∈ Finset.range (n + 1), ‖r n k‖) ^ (2 : ℕ)) /
+                (B ^ (2 : ℕ)) ^ n := by gcongr
         _ ≤ Real.sqrt n *
-            (2 * (A * B ^ n) * (R * beta ^ n) + (R * beta ^ n) ^ 2) /
-              (B ^ 2) ^ n := by
+            (2 * (A * B ^ n) * (R * beta ^ n) + (R * beta ^ n) ^ (2 : ℕ)) /
+              (B ^ (2 : ℕ)) ^ n := by
           gcongr
         _ = 2 * A * R * (Real.sqrt n * q ^ n) +
-            R ^ 2 * (Real.sqrt n * (q ^ 2) ^ n) := by
+            R ^ (2 : ℕ) * (Real.sqrt n * (q ^ (2 : ℕ)) ^ n) := by
           dsimp only [q]
           simp only [pow_two, mul_pow, div_pow]
           field_simp [hBpow.ne']

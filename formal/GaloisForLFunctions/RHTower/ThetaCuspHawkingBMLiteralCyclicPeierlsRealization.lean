@@ -22,7 +22,7 @@ open Filter Topology
 
 namespace RHTower.D4BMLiteralCyclicPeierlsRealization
 
-open D4BMHorizon D4BMModularCore
+open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMLaplaceRadial D4BMCapNormalTrace
 open D4BMFutureSeedHorizon D4BMFutureHorizon D4BMCapRadialMemory
 open D4BMFullSeedCapPhysicalAction
 open D4BMLiteralCyclicPeierlsCorrectedFutureCap
@@ -41,7 +41,7 @@ theorem correctedFutureCapResidual_ingoing_normal_div_capScale_tendsto_cyclicPei
     Tendsto (fun x : ℝ =>
       deriv (fun y : ℝ => correctedFutureCapResidual q branch amp (v - y) y X k) x /
         (capScale x : ℂ)) atBot
-      (𝓝 (-parameter q branch * power (2 * physicalRate q branch) 2 * amp ^ 2 *
+      (𝓝 (-parameter q branch * power (2 * physicalRate q branch) 2 * amp ^ (2 : ℕ) *
         cyclicPeierlsPhysicalAction q branch X k * sourceMemory q branch v)) := by
   have hcoefficient :
       (2 * seedTraceCoefficient q branch amp *
@@ -71,7 +71,7 @@ theorem correctedFutureCapResidual_ingoing_normal_div_capScale_tendsto_expandedA
     Tendsto (fun x : ℝ =>
       deriv (fun y : ℝ => correctedFutureCapResidual q branch amp (v - y) y X k) x /
         (capScale x : ℂ)) atBot
-      (𝓝 (-parameter q branch * power (2 * physicalRate q branch) 2 * amp ^ 2 *
+      (𝓝 (-parameter q branch * power (2 * physicalRate q branch) 2 * amp ^ (2 : ℕ) *
         (parameter q branch * fullAngularField q branch ![X, Real.exp k] +
           (parameter q branch -
             (physicalRate q branch * (physicalRate q branch - 1) / 4) *

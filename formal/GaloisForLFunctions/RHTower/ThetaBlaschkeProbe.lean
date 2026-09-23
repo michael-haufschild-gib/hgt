@@ -19,7 +19,7 @@ noncomputable section
 namespace RHTower
 
 /-- The scaled `m`-th theta heat frequency. -/
-def thetaSquare (m : ℕ) : ℂ := (m : ℂ) ^ 2
+def thetaSquare (m : ℕ) : ℂ := (m : ℂ) ^ (2 : ℕ)
 
 /-- A right-half-plane Blaschke factor with zero at `m²`. -/
 def thetaBlaschkeFactor (m : ℕ) (z : ℂ) : ℂ :=
@@ -45,12 +45,12 @@ private theorem thetaSquare_ne_zero {m : ℕ} (hm : 1 ≤ m) : thetaSquare m ≠
 private theorem thetaSquare_ne {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) (hnm : n ≠ m) :
     thetaSquare n ≠ thetaSquare m := by
   intro h
-  have hreal : (n : ℝ) ^ 2 = (m : ℝ) ^ 2 := by
-    have hncast : thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) := by
+  have hreal : (n : ℝ) ^ (2 : ℕ) = (m : ℝ) ^ (2 : ℕ) := by
+    have hncast : thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
       unfold thetaSquare
       push_cast
       rfl
-    have hmcast : thetaSquare m = (((m : ℝ) ^ 2 : ℝ) : ℂ) := by
+    have hmcast : thetaSquare m = (((m : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
       unfold thetaSquare
       push_cast
       rfl
@@ -65,16 +65,16 @@ private theorem thetaSquare_ne {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) (hnm : 
 private theorem thetaSquare_add_ne_zero {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) :
     thetaSquare n + thetaSquare m ≠ 0 := by
   intro h
-  have hncast : thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) := by
+  have hncast : thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold thetaSquare
     push_cast
     rfl
-  have hmcast : thetaSquare m = (((m : ℝ) ^ 2 : ℝ) : ℂ) := by
+  have hmcast : thetaSquare m = (((m : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold thetaSquare
     push_cast
     rfl
   rw [hncast, hmcast] at h
-  have hreal : (n : ℝ) ^ 2 + (m : ℝ) ^ 2 = 0 := by exact_mod_cast h
+  have hreal : (n : ℝ) ^ (2 : ℕ) + (m : ℝ) ^ (2 : ℕ) = 0 := by exact_mod_cast h
   have hnR : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
   have hmR : (0 : ℝ) < m := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hm)
   nlinarith
@@ -115,10 +115,10 @@ theorem thetaFiniteBlaschkeProbe_other {n m N : ℕ}
 theorem norm_thetaBlaschkeFactor_mul_I {m : ℕ} (hm : 1 ≤ m) (t : ℝ) :
     ‖thetaBlaschkeFactor m ((t : ℂ) * I)‖ = 1 := by
   have hm0 : (0 : ℝ) < m := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hm)
-  have hsqpos : (0 : ℝ) < (m : ℝ) ^ 2 := sq_pos_of_pos hm0
+  have hsqpos : (0 : ℝ) < (m : ℝ) ^ (2 : ℕ) := sq_pos_of_pos hm0
   have hden : ((t : ℂ) * I + thetaSquare m) ≠ 0 := by
     intro h
-    have hre : (thetaSquare m).re = (m : ℝ) ^ 2 := by
+    have hre : (thetaSquare m).re = (m : ℝ) ^ (2 : ℕ) := by
       unfold thetaSquare
       simp [pow_two, Complex.mul_re]
     have hreal := congrArg Complex.re h
@@ -126,9 +126,9 @@ theorem norm_thetaBlaschkeFactor_mul_I {m : ℕ} (hm : 1 ≤ m) (t : ℝ) :
       Complex.I_re, Complex.I_im, zero_mul, hre, Complex.zero_re] at hreal
     nlinarith
   have hnum_norm : ‖(t : ℂ) * I - thetaSquare m‖ =
-      Real.sqrt (((m : ℝ) ^ 2) ^ 2 + t ^ 2) := by
+      Real.sqrt (((m : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     have heq : (t : ℂ) * I - thetaSquare m =
-        ((-((m : ℝ) ^ 2) : ℝ) : ℂ) + (t : ℂ) * I := by
+        ((-((m : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ) + (t : ℂ) * I := by
       unfold thetaSquare
       push_cast
       ring
@@ -136,9 +136,9 @@ theorem norm_thetaBlaschkeFactor_mul_I {m : ℕ} (hm : 1 ≤ m) (t : ℝ) :
     congr 2
     ring
   have hden_norm : ‖(t : ℂ) * I + thetaSquare m‖ =
-      Real.sqrt (((m : ℝ) ^ 2) ^ 2 + t ^ 2) := by
+      Real.sqrt (((m : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     have heq : (t : ℂ) * I + thetaSquare m =
-        ((((m : ℝ) ^ 2 : ℝ)) : ℂ) + (t : ℂ) * I := by
+        ((((m : ℝ) ^ (2 : ℕ) : ℝ)) : ℂ) + (t : ℂ) * I := by
       unfold thetaSquare
       push_cast
       ring
@@ -153,33 +153,33 @@ def thetaFiniteCondition (n N : ℕ) : ℝ :=
 
 private theorem norm_thetaBlaschkeNormalize_eq (n m : ℕ) :
     ‖thetaBlaschkeNormalize n m‖ =
-      ((n : ℝ) ^ 2 + (m : ℝ) ^ 2) / |(n : ℝ) ^ 2 - (m : ℝ) ^ 2| := by
-  have hncast : thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) := by
+      ((n : ℝ) ^ (2 : ℕ) + (m : ℝ) ^ (2 : ℕ)) / |(n : ℝ) ^ (2 : ℕ) - (m : ℝ) ^ (2 : ℕ)| := by
+  have hncast : thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold thetaSquare
     push_cast
     rfl
-  have hmcast : thetaSquare m = (((m : ℝ) ^ 2 : ℝ) : ℂ) := by
+  have hmcast : thetaSquare m = (((m : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold thetaSquare
     push_cast
     rfl
   unfold thetaBlaschkeNormalize
   rw [hncast, hmcast, ← Complex.ofReal_add, ← Complex.ofReal_sub, norm_div,
     norm_real, norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity : 0 ≤ (n : ℝ) ^ 2 + (m : ℝ) ^ 2)]
+    abs_of_nonneg (by positivity : 0 ≤ (n : ℝ) ^ (2 : ℕ) + (m : ℝ) ^ (2 : ℕ))]
 
 theorem one_le_norm_thetaBlaschkeNormalize {n m : ℕ}
     (hn : 1 ≤ n) (hm : 1 ≤ m) (hnm : n ≠ m) :
     1 ≤ ‖thetaBlaschkeNormalize n m‖ := by
   rw [norm_thetaBlaschkeNormalize_eq]
-  have hsq : (n : ℝ) ^ 2 ≠ (m : ℝ) ^ 2 := by
+  have hsq : (n : ℝ) ^ (2 : ℕ) ≠ (m : ℝ) ^ (2 : ℕ) := by
     intro h
     have hn0 : 0 ≤ (n : ℝ) := by positivity
     have hm0 : 0 ≤ (m : ℝ) := by positivity
     have heq : (n : ℝ) = (m : ℝ) := by nlinarith
     exact hnm (by exact_mod_cast heq)
-  have hden : 0 < |(n : ℝ) ^ 2 - (m : ℝ) ^ 2| := abs_pos.mpr (sub_ne_zero.mpr hsq)
+  have hden : 0 < |(n : ℝ) ^ (2 : ℕ) - (m : ℝ) ^ (2 : ℕ)| := abs_pos.mpr (sub_ne_zero.mpr hsq)
   rw [le_div_iff₀ hden]
-  rcases le_total ((n : ℝ) ^ 2) ((m : ℝ) ^ 2) with hle | hle
+  rcases le_total ((n : ℝ) ^ (2 : ℕ)) ((m : ℝ) ^ (2 : ℕ)) with hle | hle
   · rw [abs_of_nonpos (sub_nonpos.mpr hle)]
     nlinarith
   · rw [abs_of_nonneg (sub_nonneg.mpr hle)]
@@ -201,7 +201,7 @@ private theorem five_thirds_le_norm_thetaBlaschkeNormalize
   have hmnR : (m : ℝ) < n := by exact_mod_cast hmlt
   have htwom : n ≤ 2 * m := by omega
   have htwomR : (n : ℝ) ≤ 2 * (m : ℝ) := by exact_mod_cast htwom
-  have hden : 0 < (n : ℝ) ^ 2 - (m : ℝ) ^ 2 := by nlinarith
+  have hden : 0 < (n : ℝ) ^ (2 : ℕ) - (m : ℝ) ^ (2 : ℕ) := by nlinarith
   rw [abs_of_pos hden, le_div_iff₀ hden]
   nlinarith [sq_nonneg ((n : ℝ) - 2 * (m : ℝ)),
     mul_self_le_mul_self (by positivity : (0 : ℝ) ≤ n) htwomR]

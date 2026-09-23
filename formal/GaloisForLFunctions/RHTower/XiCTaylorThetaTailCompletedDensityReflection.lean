@@ -25,7 +25,7 @@ def thetaCuspTailSecondDensityEvenPhaseDerivative (z : ℂ) (x : ℝ) : ℂ :=
     (spectralTranslationPhase x z - spectralTranslationPhase x (-z))
 
 def thetaCuspTailSecondDensityEvenPhaseSecondDerivative (z : ℂ) (x : ℝ) : ℂ :=
-  -(z ^ 2) * thetaCuspTailSecondDensityEvenPhase z x
+  -(z ^ (2 : ℕ)) * thetaCuspTailSecondDensityEvenPhase z x
 
 theorem hasDerivAt_thetaCuspTailSecondDensityEvenPhase (z : ℂ) (x : ℝ) :
     HasDerivAt (thetaCuspTailSecondDensityEvenPhase z) (thetaCuspTailSecondDensityEvenPhaseDerivative z x) x := by
@@ -51,8 +51,8 @@ theorem hasDerivAt_thetaCuspTailSecondDensityEvenPhaseDerivative (z : ℂ) (x : 
     simp only [thetaCuspTailSecondDensityEvenPhaseDerivative, Pi.add_apply]
     ring
   have hval : thetaCuspTailSecondDensityEvenPhaseSecondDerivative z x =
-      -z ^ 2 * spectralTranslationPhase x z +
-        -(-z) ^ 2 * spectralTranslationPhase x (-z) := by
+      -z ^ (2 : ℕ) * spectralTranslationPhase x z +
+        -(-z) ^ (2 : ℕ) * spectralTranslationPhase x (-z) := by
     simp only [thetaCuspTailSecondDensityEvenPhaseSecondDerivative,
       thetaCuspTailSecondDensityEvenPhase]
     ring
@@ -206,7 +206,7 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
     {z : ℂ} (hz0 : 0 ≤ z.im) (hz1 : z.im < 1) :
     (∫ x : ℝ in Ioi 0,
       (thetaCuspTailDerivative 2 x : ℂ) * thetaCuspTailSecondDensityEvenPhase z x) =
-      1 / 2 - z ^ 2 * ∫ x : ℝ in Ioi 0,
+      1 / 2 - z ^ (2 : ℕ) * ∫ x : ℝ in Ioi 0,
         (thetaCuspTailDerivative 0 x : ℂ) * thetaCuspTailSecondDensityEvenPhase z x := by
   let f : ℝ → ℂ := fun x => (thetaCuspTailDerivative 0 x : ℂ)
   let f' : ℝ → ℂ := fun x => (thetaCuspTailDerivative 1 x : ℂ)
@@ -253,7 +253,7 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
     simp [g', f', thetaCuspTailSecondDensityEvenPhaseDerivative]
     ring
   have hg''f : IntegrableOn (g'' * f) (Ioi 0) := by
-    have h := (integrableOn_evenPhase_mul_thetaCuspTailDerivative 0 hz0 hz1).const_mul (-(z ^ 2))
+    have h := (integrableOn_evenPhase_mul_thetaCuspTailDerivative 0 hz0 hz1).const_mul (-(z ^ (2 : ℕ)))
     refine h.congr ?_
     filter_upwards with x
     simp [g'', f, thetaCuspTailSecondDensityEvenPhaseSecondDerivative]
@@ -316,9 +316,9 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
     thetaCuspTailSecondDensityEvenPhaseDerivative, thetaCuspTailSecondDensityEvenPhaseSecondDerivative] at h ⊢
   rw [show (fun x : ℝ =>
       (thetaCuspTailDerivative 0 x : ℂ) *
-        (-(z ^ 2) *
+        (-(z ^ (2 : ℕ)) *
           (spectralTranslationPhase x z + spectralTranslationPhase x (-z)))) =
-      fun x : ℝ => -(z ^ 2) *
+      fun x : ℝ => -(z ^ (2 : ℕ)) *
         ((thetaCuspTailDerivative 0 x : ℂ) *
           (spectralTranslationPhase x z + spectralTranslationPhase x (-z))) by
         funext x
@@ -434,10 +434,10 @@ the theta Fourier--Laplace strip.  Unlike the real-boundary relation, this retai
 phase values and therefore couples the growing and decaying spectral channels exactly. -/
 theorem thetaCuspTailSecondDensityPhaseValue_twoSided_crossed_upper
     {z : ℂ} (hz0 : 0 ≤ z.im) (hz1 : z.im < 1) :
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
         (thetaCuspTailSecondDensityPhaseValue z +
           thetaCuspTailSecondDensityPhaseValue (-z)) =
-      1 / 2 + 4 * z ^ 2 * XiC z := by
+      1 / 2 + 4 * z ^ (2 : ℕ) * XiC z := by
   let A : ℂ := ∫ x : ℝ in Ioi 0,
     (thetaCuspTailDerivative 0 x : ℂ) * thetaCuspTailSecondDensityEvenPhase z x
   let B : ℂ := ∫ x : ℝ in Ioi 0,
@@ -445,7 +445,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_crossed_upper
   let R : ℂ := thetaCuspTailSecondDensityPhaseValue z +
     thetaCuspTailSecondDensityPhaseValue (-z)
   let X : ℂ := XiC z
-  have hB : B = 1 / 2 - z ^ 2 * A := by
+  have hB : B = 1 / 2 - z ^ (2 : ℕ) * A := by
     dsimp only [B, A]
     exact integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail hz0 hz1
   have hR : R = 4 * B := by
@@ -455,15 +455,15 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_crossed_upper
     dsimp only [X, B, A]
     exact XiC_eq_integral_tail_second_sub_quarter_tail hz0 hz1
   dsimp only [R, X] at hR hX ⊢
-  linear_combination (z ^ 2 + 1 / 4) * hR - 4 * z ^ 2 * hX + hB
+  linear_combination (z ^ (2 : ℕ) + 1 / 4) * hR - 4 * z ^ (2 : ℕ) * hX + hB
 
 /-- The two-sided completion relation throughout the full open theta Fourier--Laplace strip. -/
 theorem thetaCuspTailSecondDensityPhaseValue_twoSided_crossed
     {z : ℂ} (hz : |z.im| < 1) :
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
         (thetaCuspTailSecondDensityPhaseValue z +
           thetaCuspTailSecondDensityPhaseValue (-z)) =
-      1 / 2 + 4 * z ^ 2 * XiC z := by
+      1 / 2 + 4 * z ^ (2 : ℕ) * XiC z := by
   by_cases hz0 : 0 ≤ z.im
   · exact thetaCuspTailSecondDensityPhaseValue_twoSided_crossed_upper
       hz0 (by simpa [abs_of_nonneg hz0] using hz)
@@ -527,7 +527,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_phaseDerivative_of_neg_one_l
   let c := (1 : ℝ) + z.im
   have hc : 0 < c := by dsimp only [c]; linarith
   have hmajor : IntegrableOn
-      (fun x : ℝ => C * (x ^ 1 * Real.exp (-c * x))) (Ioi 0) :=
+      (fun x : ℝ => C * (x ^ (1 : ℕ) * Real.exp (-c * x))) (Ioi 0) :=
     (integrableOn_pow_mul_exp_neg_real 1 hc).const_mul C
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondDensity x : ℂ) *
@@ -569,7 +569,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityPhaseValue
   let ε : ℝ := (1 + z₀.im) / 2
   let c : ℝ := (1 + z₀.im) / 2
   let C : ℝ := thetaCuspTailSecondDensityExpOneConstant
-  let bound : ℝ → ℝ := fun x => C * (x ^ 1 * Real.exp (-c * x))
+  let bound : ℝ → ℝ := fun x => C * (x ^ (1 : ℕ) * Real.exp (-c * x))
   let F : ℂ → ℝ → ℂ := fun z x =>
     (thetaCuspTailSecondDensity x : ℂ) * spectralTranslationPhase x z
   let F' : ℂ → ℝ → ℂ := fun z x =>
@@ -667,10 +667,10 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
     2 * z *
           (thetaCuspTailSecondDensityPhaseValue z +
             thetaCuspTailSecondDensityPhaseValue (-z)) +
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           (thetaCuspTailSecondDensityPhaseDerivative z -
             thetaCuspTailSecondDensityPhaseDerivative (-z)) =
-      8 * z * XiC z + 4 * z ^ 2 * deriv XiC z := by
+      8 * z * XiC z + 4 * z ^ (2 : ℕ) * deriv XiC z := by
   have hzstrip := abs_lt.mp hz
   have hFz := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := z) hzstrip.1
   have hFneg := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := -z) (by
@@ -691,7 +691,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
       ring
     rw [hval]
     exact hFz.add hFnegComp
-  have hp : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4)
+  have hp : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4)
       (2 * z) z := by
     have hval : (2 : ℂ) * z = ↑(2 : ℕ) * z ^ (2 - 1) := by
       push_cast
@@ -701,7 +701,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
   have hleft := hp.mul hsum
   have hXi : HasDerivAt XiC (deriv XiC z) z :=
     (XiC_analytic z (Set.mem_univ z)).differentiableAt.hasDerivAt
-  have hsq : HasDerivAt (fun w : ℂ => 4 * w ^ 2) (8 * z) z := by
+  have hsq : HasDerivAt (fun w : ℂ => 4 * w ^ (2 : ℕ)) (8 * z) z := by
     have hval : (8 : ℂ) * z = 4 * (↑(2 : ℕ) * z ^ (2 - 1)) := by
       push_cast
       ring
@@ -712,10 +712,10 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
     rw [thetaCuspFourierLaplaceStrip]
     exact hzstrip
   have heq : (fun w : ℂ =>
-      (w ^ 2 + 1 / 4) *
+      (w ^ (2 : ℕ) + 1 / 4) *
         (thetaCuspTailSecondDensityPhaseValue w +
           thetaCuspTailSecondDensityPhaseValue (-w))) =ᶠ[nhds z]
-      (fun w : ℂ => 1 / 2 + 4 * w ^ 2 * XiC w) := by
+      (fun w : ℂ => 1 / 2 + 4 * w ^ (2 : ℕ) * XiC w) := by
     filter_upwards [isOpen_thetaCuspFourierLaplaceStrip.mem_nhds hmem] with w hw
     apply thetaCuspTailSecondDensityPhaseValue_twoSided_crossed
     rw [thetaCuspFourierLaplaceStrip] at hw

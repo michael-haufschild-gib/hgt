@@ -23,7 +23,7 @@ namespace DecoratedStokesCore
 
 /-- Diagonal complementary contact `1 + (Bᵢᵢ-1)/rᵢ²`. -/
 def diagonalContact {n : ℕ} (g : DecoratedStokesCore n) (i : Fin n) : ℚ :=
-  1 + ((g.B i i - 1 : ℤ) : ℚ) / ((g.ramification i : ℚ) ^ 2)
+  1 + ((g.B i i - 1 : ℤ) : ℚ) / ((g.ramification i : ℚ) ^ (2 : ℕ))
 
 /-- Off-diagonal complementary contact `1 + Bᵢⱼ/(rᵢrⱼ)`. -/
 def pairContact {n : ℕ} (g : DecoratedStokesCore n) (i j : Fin n) : ℚ :=

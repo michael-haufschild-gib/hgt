@@ -59,8 +59,8 @@ theorem literal_contDiffAt (p : ExteriorPoint) (omega u aS aV : ℂ) (i j : Fin 
     ContDiffAt ℝ 2 (fun x => D4BMLiteralCusp.perturbation omega u aS aV x i j) p.val := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   let a := D4BMFundamentalMetric.primitives omega aS aV (D4BMLiteralCusp.scalar u)
     (D4BMLiteralCusp.vector u)

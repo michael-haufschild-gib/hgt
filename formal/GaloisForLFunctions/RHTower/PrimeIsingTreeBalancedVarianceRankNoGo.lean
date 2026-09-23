@@ -13,7 +13,7 @@ logarithms are positive, merging clusters can only increase the sum of squared c
 This file starts the unconditional no-go for locally uniform approximation of the pointed Xi germ
 by balanced finite prime Ising trees.  The first layer constructed here is the exact source-side
 cluster geometry: every FK configuration has cluster-square mass at least the sum of the squared
-prime logarithms of its vertices, hence at least one `(log 2)^2` unit per vertex.
+prime logarithms of its vertices, hence at least one `(log 2)^(2 : ℕ)` unit per vertex.
 -/
 
 open Complex Filter Topology
@@ -27,7 +27,7 @@ mutual
   /-- Sum of squared logarithmic prime masses over the vertices of a tree. -/
   def treePrimeLeeYangSqMass : PrimeIsingTree → ℝ
     | .node p branches =>
-        _root_.RHTower.primeLeeYangLog p ^ 2 + forestPrimeLeeYangSqMass branches
+        _root_.RHTower.primeLeeYangLog p ^ (2 : ℕ) + forestPrimeLeeYangSqMass branches
 
   /-- Forest form of the vertexwise squared prime mass. -/
   def forestPrimeLeeYangSqMass : PrimeIsingForest → ℝ
@@ -91,7 +91,7 @@ end
 
 /-- Total squared cluster mass. -/
 def BondClusterMassData.sqMass (data : BondClusterMassData) : ℝ :=
-  data.rootMass ^ 2 + (data.detachedMasses.map fun m => m ^ 2).sum
+  data.rootMass ^ (2 : ℕ) + (data.detachedMasses.map fun m => m ^ (2 : ℕ)).sum
 
 /-- All cluster masses, with the root component first. -/
 def BondClusterMassData.allMasses (data : BondClusterMassData) : List ℝ :=
@@ -189,7 +189,7 @@ theorem iteratedDeriv_one_centeredClusterFactor_zero (mass : ℝ) :
   rw [h, mul_zero]
 
 theorem iteratedDeriv_two_centeredClusterFactor_zero (mass : ℝ) :
-    iteratedDeriv 2 (centeredClusterFactor mass) 0 = -((mass : ℂ) ^ 2) / 4 := by
+    iteratedDeriv 2 (centeredClusterFactor mass) 0 = -((mass : ℂ) ^ (2 : ℕ)) / 4 := by
   unfold centeredClusterFactor
   rw [iteratedDeriv_comp_const_mul Complex.contDiff_cos ((mass : ℂ) / 2)]
   dsimp
@@ -216,7 +216,7 @@ theorem iteratedDeriv_one_centeredClusterProduct_zero (masses : List ℝ) :
 squared cluster mass. -/
 theorem iteratedDeriv_two_centeredClusterProduct_zero (masses : List ℝ) :
     iteratedDeriv 2 (centeredClusterProduct masses) 0 =
-      -(((masses.map fun mass => mass ^ 2).sum : ℝ) : ℂ) / 4 := by
+      -(((masses.map fun mass => mass ^ (2 : ℕ)).sum : ℝ) : ℂ) / 4 := by
   induction masses with
   | nil =>
       simp only [centeredClusterProduct]
@@ -500,10 +500,10 @@ theorem treePrimeLeeYangSqMass_le_bondConfiguration_clusterSqMass
   exact treePrimeLeeYangSqMass_erase_le_clusterSqMass B
 
 mutual
-  /-- One `(log 2)^2` floor per prime-labelled vertex. -/
+  /-- One `(log 2)^(2 : ℕ)` floor per prime-labelled vertex. -/
   theorem vertexCount_mul_logTwo_sq_le_treePrimeLeeYangSqMass
       (T : PrimeIsingTree) :
-      (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2 ≤
+      (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ) ≤
         treePrimeLeeYangSqMass T := by
     cases T with
     | node p branches =>
@@ -511,7 +511,7 @@ mutual
           vertexCount_mul_logTwo_sq_le_forestPrimeLeeYangSqMass branches
         have hp := log_two_le_primeLeeYangLog p
         have hlog : 0 ≤ Real.log 2 := (Real.log_pos (by norm_num)).le
-        have hpSq : Real.log 2 ^ 2 ≤ _root_.RHTower.primeLeeYangLog p ^ 2 := by
+        have hpSq : Real.log 2 ^ (2 : ℕ) ≤ _root_.RHTower.primeLeeYangLog p ^ (2 : ℕ) := by
           nlinarith
         simp only [primeIsingTreeVertexCount, treePrimeLeeYangSqMass]
         push_cast
@@ -520,7 +520,7 @@ mutual
   /-- Forest form of the per-vertex square-mass floor. -/
   theorem vertexCount_mul_logTwo_sq_le_forestPrimeLeeYangSqMass
       (F : PrimeIsingForest) :
-      (primeIsingForestVertexCount F : ℝ) * Real.log 2 ^ 2 ≤
+      (primeIsingForestVertexCount F : ℝ) * Real.log 2 ^ (2 : ℕ) ≤
         forestPrimeLeeYangSqMass F := by
     cases F with
     | nil => simp [primeIsingForestVertexCount, forestPrimeLeeYangSqMass]
@@ -538,7 +538,7 @@ are introduced, division by four gives the corresponding spin-variance floor. -/
 theorem vertexCount_mul_logTwo_sq_le_bondConfiguration_clusterSqMass
     (T : PrimeIsingTree) {B : PrimeIsingBondTree}
     (hB : B ∈ treeBondConfigurations T) :
-    (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2 ≤
+    (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ) ≤
       (bondTreeClusterMassData B).sqMass :=
   (vertexCount_mul_logTwo_sq_le_treePrimeLeeYangSqMass T).trans
     (treePrimeLeeYangSqMass_le_bondConfiguration_clusterSqMass T hB)
@@ -732,7 +732,7 @@ theorem iteratedDeriv_two_balancedPrimeIsingTreePartition_zero
 private theorem vertexFloor_mul_bondMixtureWeightList_le_sqMassWeightList
     (T : PrimeIsingTree) (configs : List PrimeIsingBondTree)
     (hconfigs : ∀ B ∈ configs, B ∈ treeBondConfigurations T) :
-    ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2) *
+    ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ)) *
         ((configs.map fun B =>
           treeBondCoefficient B *
             (2 : ℝ) ^ (bondTreeClusterMassData B).allMasses.length).sum) ≤
@@ -757,7 +757,7 @@ private theorem vertexFloor_mul_bondMixtureWeightList_le_sqMassWeightList
       have hhead := mul_le_mul_of_nonneg_left hcluster hweight
       simp only [List.map_cons, List.sum_cons]
       calc
-        ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2) *
+        ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ)) *
             (treeBondCoefficient B *
                 2 ^ (bondTreeClusterMassData B).allMasses.length +
               (tail.map fun C =>
@@ -765,8 +765,8 @@ private theorem vertexFloor_mul_bondMixtureWeightList_le_sqMassWeightList
                   2 ^ (bondTreeClusterMassData C).allMasses.length).sum) =
           (treeBondCoefficient B *
               2 ^ (bondTreeClusterMassData B).allMasses.length) *
-              ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2) +
-            ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2) *
+              ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ)) +
+            ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ)) *
               (tail.map fun C =>
                 treeBondCoefficient C *
                   2 ^ (bondTreeClusterMassData C).allMasses.length).sum := by ring
@@ -784,7 +784,7 @@ private theorem vertexFloor_mul_bondMixtureWeightList_le_sqMassWeightList
 balanced tree. -/
 theorem vertexCount_mul_logTwo_sq_mul_bondMixtureWeight_le_sqMassWeight
     (T : PrimeIsingTree) :
-    ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2) *
+    ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ)) *
         bondMixtureWeight T ≤
       bondMixtureSqMassWeight T := by
   unfold bondMixtureWeight bondMixtureSqMassWeight
@@ -817,10 +817,10 @@ theorem neg_re_iteratedDeriv_two_balancedPrimeIsingTreePartition_zero
       ring
 
 /-- **Model-level source-pure variance obstruction.**  The negative second central jet of every
-balanced finite prime Ising tree is at least one quarter of `(log 2)^2` per vertex. -/
+balanced finite prime Ising tree is at least one quarter of `(log 2)^(2 : ℕ)` per vertex. -/
 theorem vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced
     (T : PrimeIsingTree) :
-    (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2 / 4 ≤
+    (primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ) / 4 ≤
       -(iteratedDeriv 2 (balancedPrimeIsingTreePartition T) 0).re := by
   rw [neg_re_iteratedDeriv_two_balancedPrimeIsingTreePartition_zero]
   apply (le_div_iff₀ (mul_pos (by norm_num) (bondMixtureWeight_pos T))).2
@@ -876,20 +876,20 @@ theorem iteratedDeriv_rescaledBalancedPrimeIsingTreePartition
 `a²`; no positivity or nonvanishing assumption on the scale is needed. -/
 theorem scale_sq_mul_vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_rescaled
     (T : PrimeIsingTree) (a : ℝ) :
-    a ^ 2 * ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ 2 / 4) ≤
+    a ^ (2 : ℕ) * ((primeIsingTreeVertexCount T : ℝ) * Real.log 2 ^ (2 : ℕ) / 4) ≤
       -(iteratedDeriv 2 (rescaledBalancedPrimeIsingTreePartition T a) 0).re := by
   rw [iteratedDeriv_rescaledBalancedPrimeIsingTreePartition, mul_zero]
   have hbase :=
     vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced T
   have hscaled := mul_le_mul_of_nonneg_left hbase (sq_nonneg a)
-  have hreal (D : ℂ) : -(((a : ℂ) ^ 2 * D).re) = a ^ 2 * (-D.re) := by
-    have ha2 : (a : ℂ) ^ 2 = ((a ^ 2 : ℝ) : ℂ) := by norm_num
-    have hmul : (a : ℂ) ^ 2 * D = ((a ^ 2 : ℝ) : ℂ) * D :=
+  have hreal (D : ℂ) : -(((a : ℂ) ^ (2 : ℕ) * D).re) = a ^ (2 : ℕ) * (-D.re) := by
+    have ha2 : (a : ℂ) ^ (2 : ℕ) = ((a ^ (2 : ℕ) : ℝ) : ℂ) := by norm_num
+    have hmul : (a : ℂ) ^ (2 : ℕ) * D = ((a ^ (2 : ℕ) : ℝ) : ℂ) * D :=
       congrArg (fun z : ℂ => z * D) ha2
     calc
-      -(((a : ℂ) ^ 2 * D).re) = -(((((a ^ 2 : ℝ) : ℂ) * D)).re) :=
+      -(((a : ℂ) ^ (2 : ℕ) * D).re) = -(((((a ^ (2 : ℕ) : ℝ) : ℂ) * D)).re) :=
         congrArg (fun z : ℂ => -z.re) hmul
-      _ = a ^ 2 * (-D.re) := by
+      _ = a ^ (2 : ℕ) * (-D.re) := by
         simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
           zero_mul, sub_zero]
         ring
@@ -904,7 +904,7 @@ theorem eventually_scale_sq_mul_vertexCount_real_bounded_of_rescaled_tendstoLoca
       (fun n => rescaledBalancedPrimeIsingTreePartition (T n) (a n))
       unitCentralXiC atTop) :
     ∃ C : ℝ, ∀ᶠ n in atTop,
-      a n ^ 2 * (primeIsingTreeVertexCount (T n) : ℝ) ≤ C := by
+      a n ^ (2 : ℕ) * (primeIsingTreeVertexCount (T n) : ℝ) ≤ C := by
   have hjet := GaloisForLFunctions.iteratedDeriv_tendsto_of_locallyUniform
     isOpen_univ (tendstoLocallyUniformlyOn_univ.mpr hconv)
     (Filter.Eventually.of_forall (fun n =>
@@ -922,8 +922,8 @@ theorem eventually_scale_sq_mul_vertexCount_real_bounded_of_rescaled_tendstoLoca
       -(iteratedDeriv 2
         (rescaledBalancedPrimeIsingTreePartition (T n) (a n)) 0).re < K :=
     hcurv.eventually (Iio_mem_nhds (by dsimp [K]; linarith))
-  have hlogSq : 0 < Real.log 2 ^ 2 := sq_pos_of_pos (Real.log_pos (by norm_num))
-  refine ⟨4 * K / (Real.log 2 ^ 2), ?_⟩
+  have hlogSq : 0 < Real.log 2 ^ (2 : ℕ) := sq_pos_of_pos (Real.log_pos (by norm_num))
+  refine ⟨4 * K / (Real.log 2 ^ (2 : ℕ)), ?_⟩
   filter_upwards [hevent] with n hn
   apply (le_div_iff₀ hlogSq).2
   have hfloor :=
@@ -947,29 +947,29 @@ theorem tendsto_scale_zero_of_vertexCount_tendsto_atTop_of_rescaled_tendstoLocal
       T a hconv
   rw [Metric.tendsto_atTop]
   intro ε hε
-  have hεsq : 0 < ε ^ 2 := sq_pos_of_pos hε
+  have hεsq : 0 < ε ^ (2 : ℕ) := sq_pos_of_pos hε
   let M : ℝ := max C 0 + 1
   have hM : 0 < M := by
     dsimp [M]
     linarith [le_max_right C 0]
   have hlarge : ∀ᶠ n in atTop,
-      M / ε ^ 2 < (primeIsingTreeVertexCount (T n) : ℝ) :=
-    hvertices (Filter.eventually_gt_atTop (M / ε ^ 2))
+      M / ε ^ (2 : ℕ) < (primeIsingTreeVertexCount (T n) : ℝ) :=
+    hvertices (Filter.eventually_gt_atTop (M / ε ^ (2 : ℕ)))
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 (hC.and hlarge)
   refine ⟨N, fun n hn => ?_⟩
   obtain ⟨hbound, hnlarge⟩ := hN n hn
   rw [Real.dist_eq, sub_zero]
   by_contra hnot
   have habs : ε ≤ |a n| := le_of_not_gt hnot
-  have hsquare : ε ^ 2 ≤ a n ^ 2 := by
+  have hsquare : ε ^ (2 : ℕ) ≤ a n ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|a n| - ε), sq_abs (a n)]
   have hvertexPos : 0 < (primeIsingTreeVertexCount (T n) : ℝ) :=
     lt_trans (div_pos hM hεsq) hnlarge
-  have hmul : M < ε ^ 2 * (primeIsingTreeVertexCount (T n) : ℝ) :=
+  have hmul : M < ε ^ (2 : ℕ) * (primeIsingTreeVertexCount (T n) : ℝ) :=
     by simpa [mul_comm] using (div_lt_iff₀ hεsq).mp hnlarge
   have hprod :
-      ε ^ 2 * (primeIsingTreeVertexCount (T n) : ℝ) ≤
-        a n ^ 2 * (primeIsingTreeVertexCount (T n) : ℝ) :=
+      ε ^ (2 : ℕ) * (primeIsingTreeVertexCount (T n) : ℝ) ≤
+        a n ^ (2 : ℕ) * (primeIsingTreeVertexCount (T n) : ℝ) :=
     mul_le_mul_of_nonneg_right hsquare hvertexPos.le
   have hCle : C ≤ max C 0 := le_max_left C 0
   dsimp [M] at hmul
@@ -999,8 +999,8 @@ theorem eventually_vertexCount_real_bounded_of_balanced_tendstoLocallyUniformly
       -(iteratedDeriv 2
         (balancedPrimeIsingTreePartition (T n)) 0).re < K :=
     hcurv.eventually (Iio_mem_nhds (by dsimp [K]; linarith))
-  have hlogSq : 0 < Real.log 2 ^ 2 := sq_pos_of_pos (Real.log_pos (by norm_num))
-  refine ⟨4 * K / (Real.log 2 ^ 2), ?_⟩
+  have hlogSq : 0 < Real.log 2 ^ (2 : ℕ) := sq_pos_of_pos (Real.log_pos (by norm_num))
+  refine ⟨4 * K / (Real.log 2 ^ (2 : ℕ)), ?_⟩
   filter_upwards [hevent] with n hn
   apply (le_div_iff₀ hlogSq).2
   have hfloor :=

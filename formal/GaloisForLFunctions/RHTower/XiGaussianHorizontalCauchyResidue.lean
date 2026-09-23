@@ -36,16 +36,16 @@ theorem xiGaussianTest_rotated_eq
           _ = I * (x : ℂ) + (I * I) * (y : ℂ) := by rw [Complex.I_mul_I]
           _ = I * ((x : ℂ) + (y : ℂ) * I) := by ring
   let z : ℂ := (x : ℂ) + (y : ℂ) * I
-  have hbase : (I * z) ^ 2 = -(z ^ 2) := by
+  have hbase : (I * z) ^ (2 : ℕ) = -(z ^ (2 : ℕ)) := by
     rw [mul_pow, Complex.I_sq]
     ring
   have hpow : (I * z) ^ (2 * n) = (-1 : ℂ) ^ n * z ^ (2 * n) := by
     rw [pow_mul, hbase, neg_pow, ← pow_mul]
   rw [hcenter]
-  change (I * z) ^ (2 * n) * Complex.exp ((t : ℂ) * (I * z) ^ 2) =
-    (-1 : ℂ) ^ n * (z ^ (2 * n) * Complex.exp (-(t : ℂ) * z ^ 2))
+  change (I * z) ^ (2 * n) * Complex.exp ((t : ℂ) * (I * z) ^ (2 : ℕ)) =
+    (-1 : ℂ) ^ n * (z ^ (2 * n) * Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)))
   rw [hpow, hbase]
-  have hexp : (t : ℂ) * -(z ^ 2) = -(t : ℂ) * z ^ 2 := by ring
+  have hexp : (t : ℂ) * -(z ^ (2 : ℕ)) = -(t : ℂ) * z ^ (2 : ℕ) := by ring
   rw [hexp]
   ring
 
@@ -131,8 +131,8 @@ private theorem norm_xiGaussianTestC_le_on_horizontal_strip
     {t : ℝ} (ht : 0 < t) (n : ℕ) {a b x y : ℝ}
     (hy : y ∈ Set.uIoc a b) :
     ‖xiGaussianTestC t n ((x : ℂ) + (y : ℂ) * I)‖ ≤
-      (|a| + |b| + |x|) ^ (2 * n) * Real.exp (t * (|a| + |b|) ^ 2) *
-        Real.exp (-(t * x ^ 2)) := by
+      (|a| + |b| + |x|) ^ (2 * n) * Real.exp (t * (|a| + |b|) ^ (2 : ℕ)) *
+        Real.exp (-(t * x ^ (2 : ℕ))) := by
   rw [norm_xiGaussianTestC_eq_norm_rotated]
   have hyabs := abs_le_abs_add_abs_of_mem_uIoc hy
   have hbound := norm_xiGaussianTest_le_of_strip ht n
@@ -147,18 +147,18 @@ private theorem tendsto_xiGaussianTestC_cauchy_vertical_right
       xiGaussianTestC t n ((R : ℂ) + (y : ℂ) * I) *
         (((R : ℂ) + (y : ℂ) * I) - p)⁻¹) atTop (nhds 0) := by
   let D : ℝ := |a| + |b|
-  let K : ℝ := |b - a| * Real.exp (t * D ^ 2)
+  let K : ℝ := |b - a| * Real.exp (t * D ^ (2 : ℕ))
   have hbase := tendsto_polyGaussian_atTop ht (2 * n) D
   have hmajor : Tendsto (fun R : ℝ =>
-      K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ 2)))) atTop (nhds 0) := by
+      K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ (2 : ℕ))))) atTop (nhds 0) := by
     simpa using hbase.const_mul K
   refine squeeze_zero_norm' ?_ hmajor
   filter_upwards [eventually_ge_atTop (|p.re| + 1)] with R hR
   have hpoint : ∀ y ∈ Set.uIoc a b,
       ‖xiGaussianTestC t n ((R : ℂ) + (y : ℂ) * I) *
           (((R : ℂ) + (y : ℂ) * I) - p)⁻¹‖ ≤
-        (D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2)) := by
+        (D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ))) := by
     intro y hy
     rw [norm_mul, norm_inv]
     have hprofile := norm_xiGaussianTestC_le_on_horizontal_strip ht n (x := R) hy
@@ -174,16 +174,16 @@ private theorem tendsto_xiGaussianTestC_cauchy_vertical_right
           ‖((R : ℂ) + (y : ℂ) * I) - p‖⁻¹
         ≤ ‖xiGaussianTestC t n ((R : ℂ) + (y : ℂ) * I)‖ := by
           simpa using mul_le_of_le_one_right (norm_nonneg _) hinv
-      _ ≤ (D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2)) := by simpa only [D] using hprofile
+      _ ≤ (D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ))) := by simpa only [D] using hprofile
   calc
     ‖∫ y : ℝ in a..b,
         xiGaussianTestC t n ((R : ℂ) + (y : ℂ) * I) *
           (((R : ℂ) + (y : ℂ) * I) - p)⁻¹‖
-      ≤ ((D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2))) * |b - a| :=
+      ≤ ((D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ)))) * |b - a| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ 2))) := by
+    _ = K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
       simp only [K]
       ring
 
@@ -193,18 +193,18 @@ private theorem tendsto_xiGaussianTestC_cauchy_vertical_left
       xiGaussianTestC t n ((-R : ℂ) + (y : ℂ) * I) *
         (((-R : ℂ) + (y : ℂ) * I) - p)⁻¹) atTop (nhds 0) := by
   let D : ℝ := |a| + |b|
-  let K : ℝ := |b - a| * Real.exp (t * D ^ 2)
+  let K : ℝ := |b - a| * Real.exp (t * D ^ (2 : ℕ))
   have hbase := tendsto_polyGaussian_atTop ht (2 * n) D
   have hmajor : Tendsto (fun R : ℝ =>
-      K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ 2)))) atTop (nhds 0) := by
+      K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ (2 : ℕ))))) atTop (nhds 0) := by
     simpa using hbase.const_mul K
   refine squeeze_zero_norm' ?_ hmajor
   filter_upwards [eventually_ge_atTop (|p.re| + 1)] with R hR
   have hpoint : ∀ y ∈ Set.uIoc a b,
       ‖xiGaussianTestC t n ((-R : ℂ) + (y : ℂ) * I) *
           (((-R : ℂ) + (y : ℂ) * I) - p)⁻¹‖ ≤
-        (D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2)) := by
+        (D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ))) := by
     intro y hy
     rw [norm_mul, norm_inv]
     have hprofile := norm_xiGaussianTestC_le_on_horizontal_strip ht n (x := -R) hy
@@ -220,17 +220,17 @@ private theorem tendsto_xiGaussianTestC_cauchy_vertical_left
           ‖((-R : ℂ) + (y : ℂ) * I) - p‖⁻¹
         ≤ ‖xiGaussianTestC t n ((-R : ℂ) + (y : ℂ) * I)‖ := by
           simpa using mul_le_of_le_one_right (norm_nonneg _) hinv
-      _ ≤ (D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2)) := by
+      _ ≤ (D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ))) := by
         simpa only [D, abs_neg, neg_sq, Complex.ofReal_neg] using hprofile
   calc
     ‖∫ y : ℝ in a..b,
         xiGaussianTestC t n ((-R : ℂ) + (y : ℂ) * I) *
           (((-R : ℂ) + (y : ℂ) * I) - p)⁻¹‖
-      ≤ ((D + |R|) ^ (2 * n) * Real.exp (t * D ^ 2) *
-          Real.exp (-(t * R ^ 2))) * |b - a| :=
+      ≤ ((D + |R|) ^ (2 * n) * Real.exp (t * D ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ)))) * |b - a| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ 2))) := by
+    _ = K * ((D + |R|) ^ (2 * n) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
       simp only [K]
       ring
 
@@ -321,7 +321,7 @@ theorem xiGaussianTestC_neg_I_half (t : ℝ) (n : ℕ) :
     xiGaussianTestC t n (-I / 2) =
       ((-1 / 4 : ℂ) ^ n) * Complex.exp ((t / 4 : ℝ) : ℂ) := by
   rw [xiGaussianTestC]
-  have hsq : (-I / 2 : ℂ) ^ 2 = -1 / 4 := by
+  have hsq : (-I / 2 : ℂ) ^ (2 : ℕ) = -1 / 4 := by
     rw [div_pow, neg_sq, Complex.I_sq]
     norm_num
   rw [show 2 * n = 2 * n by rfl, pow_mul, hsq]

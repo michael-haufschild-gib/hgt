@@ -32,32 +32,32 @@ section Geometry
 
 variable {K : ℕ}
 
-theorem twentySeven_le_log_pow (hlogK : (3 : ℝ) ≤ Real.log K) : (27 : ℝ) ≤ (Real.log K) ^ 9 := by
-  calc (27 : ℝ) = 3 ^ 3 := by norm_num
-    _ ≤ (Real.log K) ^ 3 := by gcongr
-    _ ≤ (Real.log K) ^ 9 := pow_le_pow_right₀ (by linarith) (by norm_num)
+theorem twentySeven_le_log_pow (hlogK : (3 : ℝ) ≤ Real.log K) : (27 : ℝ) ≤ (Real.log K) ^ (9 : ℕ) := by
+  calc (27 : ℝ) = 3 ^ (3 : ℕ) := by norm_num
+    _ ≤ (Real.log K) ^ (3 : ℕ) := by gcongr
+    _ ≤ (Real.log K) ^ (9 : ℕ) := pow_le_pow_right₀ (by linarith) (by norm_num)
 
 theorem rightAbscissa_gap_small (hlogK : (3 : ℝ) ≤ Real.log K) :
-    zeroFreeConst / (2 * (Real.log K) ^ 9) ≤ 1 / 54 := by
+    zeroFreeConst / (2 * (Real.log K) ^ (9 : ℕ)) ≤ 1 / 54 := by
   have hL9 := twentySeven_le_log_pow hlogK
   rw [div_le_div_iff₀ (by positivity) (by norm_num)]
   nlinarith [hL9, zeroFreeConst_le_one, zeroFreeConst_pos]
 
 theorem leftAbscissa_gap_small (hlogK : (3 : ℝ) ≤ Real.log K) :
-    zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ 1 / 54 := by
+    zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ 1 / 54 := by
   have hL9 := twentySeven_le_log_pow hlogK
   rw [div_le_div_iff₀ (by positivity) (by norm_num)]
   nlinarith [hL9, zeroFreeConst_le_one, zeroFreeConst_pos]
 
 theorem rightAbscissa_gap_pos (hlogK : (3 : ℝ) ≤ Real.log K) :
-    0 < zeroFreeConst / (2 * (Real.log K) ^ 9) := by
-  have : (27 : ℝ) ≤ (Real.log K) ^ 9 := twentySeven_le_log_pow hlogK
+    0 < zeroFreeConst / (2 * (Real.log K) ^ (9 : ℕ)) := by
+  have : (27 : ℝ) ≤ (Real.log K) ^ (9 : ℕ) := twentySeven_le_log_pow hlogK
   have := zeroFreeConst_pos
   positivity
 
 theorem leftAbscissa_gap_pos (hlogK : (3 : ℝ) ≤ Real.log K) :
-    0 < zeroFreeConst / (16 * (Real.log K) ^ 9) := by
-  have : (27 : ℝ) ≤ (Real.log K) ^ 9 := twentySeven_le_log_pow hlogK
+    0 < zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) := by
+  have : (27 : ℝ) ≤ (Real.log K) ^ (9 : ℕ) := twentySeven_le_log_pow hlogK
   have := zeroFreeConst_pos
   positivity
 
@@ -97,7 +97,7 @@ end Geometry
 /-- **The band of the twisted contour is zero-free.** -/
 theorem zero_free_twist_rect {K : ℕ} {τ δ₀ : ℝ} (hlogK : (3 : ℝ) ≤ Real.log K) (hK2 : 2 ≤ K)
     (hzfbox : ∀ s : ℂ, 1 - δ₀ ≤ s.re → s.re ≤ 1 → |s.im| ≤ 1 → s ≠ 1 → riemannZeta s ≠ 0)
-    (hfit : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ δ₀)
+    (hfit : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ δ₀)
     (hKτ : 5 + 4 * |τ| ≤ (K : ℝ)) :
     ∀ s ∈ Set.uIcc (leftAbscissa K) (rightAbscissa K)
       ×ℂ Set.uIcc (-(|τ| + twistHeight K τ)) (|τ| + twistHeight K τ),
@@ -170,7 +170,7 @@ theorem norm_invZetaTwist_bot_le {K : ℕ} {τ : ℝ} (hlogK : (3 : ℝ) ≤ Rea
 theorem norm_invZetaTwist_left_le {K : ℕ} {τ δ₀ M₀ : ℝ} (hlogK : (3 : ℝ) ≤ Real.log K)
     (hK2 : 2 ≤ K)
     (hbdbox : ∀ s : ℂ, 1 - δ₀ ≤ s.re → s.re ≤ 2 → |s.im| ≤ 1 → ‖invZeta s‖ ≤ M₀)
-    (hfit : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ δ₀) :
+    (hfit : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ δ₀) :
     ∀ y ∈ Set.Icc (-twistHeight K τ) (twistHeight K τ),
       ‖invZeta ((leftAbscissa K : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I)‖
         ≤ max M₀ (invZetaEdgeBound K) := by

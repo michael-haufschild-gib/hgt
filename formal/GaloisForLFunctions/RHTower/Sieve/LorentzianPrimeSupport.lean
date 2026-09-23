@@ -37,13 +37,13 @@ theorem logPoly_eq_logPoly_filter (a : ℕ → ℂ) (s : Finset ℕ) (w : ℝ) :
 
 /-- **The Lorentzian mean value theorem against the support count.** -/
 theorem integral_lorentz_normSq_logPoly_le_support_count (a : ℕ → ℂ) (s : Finset ℕ) :
-    (∫ w : ℝ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    (∫ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ (25 * Real.pi / 2)
           * ∑ n ∈ {n ∈ s | a n ≠ 0},
-              (logNeighbourCount {n ∈ s | a n ≠ 0} (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 := by
+              (logNeighbourCount {n ∈ s | a n ≠ 0} (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) := by
   classical
-  have hcongr : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2)
-      = ‖logPoly a {n ∈ s | a n ≠ 0} w‖ ^ 2 / (1 + w ^ 2) := by
+  have hcongr : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ))
+      = ‖logPoly a {n ∈ s | a n ≠ 0} w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)) := by
     intro w
     rw [logPoly_eq_logPoly_filter a s w]
   rw [integral_congr_ae (Filter.Eventually.of_forall hcongr)]
@@ -55,11 +55,11 @@ sieve at any admissible level. -/
 theorem integral_lorentz_normSq_logPoly_le_prime_sieve (a : ℕ → ℂ) (s : Finset ℕ)
     (hsupp : ∀ n ∈ s, a n ≠ 0 → n.Prime) (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z)
     (hlog : 0 < Real.log Y) :
-    (∫ w : ℝ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    (∫ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ (25 * Real.pi / 2) * ∑ n ∈ s,
           (2 * ((n : ℝ) * (Real.exp (1 / (2 * Real.pi)) - Real.exp (-(1 / (2 * Real.pi)))) + 1)
               / Real.log Y
-            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ 2 := by
+            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ (2 : ℕ) := by
   classical
   set s' : Finset ℕ := {n ∈ s | a n ≠ 0} with hs'def
   have hprime : ∀ m ∈ s', m.Prime := by
@@ -68,10 +68,10 @@ theorem integral_lorentz_normSq_logPoly_le_prime_sieve (a : ℕ → ℂ) (s : Fi
     exact hsupp m hm.1 hm.2
   have hδ : (0 : ℝ) ≤ 1 / (2 * Real.pi) := by positivity
   have hbound : ∀ n ∈ s',
-      (logNeighbourCount s' (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2
+      (logNeighbourCount s' (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ)
         ≤ (2 * ((n : ℝ) * (Real.exp (1 / (2 * Real.pi)) - Real.exp (-(1 / (2 * Real.pi)))) + 1)
               / Real.log Y
-            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ 2 := by
+            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ (2 : ℕ) := by
     intro n hn
     have hn1 : 1 ≤ n := (hprime n hn).one_lt.le.trans' (by norm_num)
     exact mul_le_mul_of_nonneg_right
@@ -82,7 +82,7 @@ theorem integral_lorentz_normSq_logPoly_le_prime_sieve (a : ℕ → ℂ) (s : Fi
   have hnn : ∀ n ∈ s, n ∉ s' →
       0 ≤ (2 * ((n : ℝ) * (Real.exp (1 / (2 * Real.pi)) - Real.exp (-(1 / (2 * Real.pi)))) + 1)
               / Real.log Y
-            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ 2 := by
+            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ (2 : ℕ) := by
     intro n hn hnot
     have hzero : a n = 0 := by
       by_contra hne

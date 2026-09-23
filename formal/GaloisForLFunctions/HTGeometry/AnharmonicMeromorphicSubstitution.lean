@@ -71,7 +71,7 @@ def anharmonicMap : ℂ → ℂ := fun z => (1 - z)⁻¹
 def anharmonicMapInv : ℂ → ℂ := fun z => 1 - z⁻¹
 
 /-- The derivative factor `r'(z) = (1-z)⁻²`. -/
-def anharmonicFactorFun : ℂ → ℂ := fun z => ((1 - z) ^ 2)⁻¹
+def anharmonicFactorFun : ℂ → ℂ := fun z => ((1 - z) ^ (2 : ℕ))⁻¹
 
 theorem one_sub_ne_zero_of_mem {z : ℂ} (hz : z ∈ anharmonicDomain) : (1 : ℂ) - z ≠ 0 := by
   intro h
@@ -141,7 +141,7 @@ theorem deriv_anharmonicMap {z : ℂ} (hz : z ∈ anharmonicDomain) :
   have h1 : (1 : ℂ) - z ≠ 0 := one_sub_ne_zero_of_mem hz
   have hd : HasDerivAt (fun w : ℂ => 1 - w) (-1) z :=
     HasDerivAt.const_sub (1 : ℂ) (hasDerivAt_id z)
-  have hinv : HasDerivAt (fun w : ℂ => (1 - w)⁻¹) (-(-1) / (1 - z) ^ 2) z := hd.inv h1
+  have hinv : HasDerivAt (fun w : ℂ => (1 - w)⁻¹) (-(-1) / (1 - z) ^ (2 : ℕ)) z := hd.inv h1
   rw [(show anharmonicMap = fun w : ℂ => (1 - w)⁻¹ from rfl), hinv.deriv]
   simp only [anharmonicFactorFun]
   field_simp
@@ -440,12 +440,12 @@ theorem anharmonicMeroEquiv_ratfuncToMero (r : RatFunc ℂ) :
 theorem anharmonicFactorElement_eq :
     algebraMap (analyticSubring anharmonicDomain) (meroField anharmonicDomain)
         anharmonicFactorElement
-      = anharmonicRatfuncToMero (anharmonicRatFunc ^ 2) := by
+      = anharmonicRatfuncToMero (anharmonicRatFunc ^ (2 : ℕ)) := by
   have hsq : anharmonicFactorElement
-      = (analyticFunctionElement anharmonicMap analyticOnNhd_anharmonicMap) ^ 2 := by
+      = (analyticFunctionElement anharmonicMap analyticOnNhd_anharmonicMap) ^ (2 : ℕ) := by
     apply Subtype.ext
     change Germ.ofFun (l := 𝓟 anharmonicDomain) anharmonicFactorFun
-      = (Germ.ofFun (l := 𝓟 anharmonicDomain) anharmonicMap) ^ 2
+      = (Germ.ofFun (l := 𝓟 anharmonicDomain) anharmonicMap) ^ (2 : ℕ)
     rw [← Germ.coe_pow, Germ.coe_eq]
     refine eventually_principal.mpr fun z hz => ?_
     have h1 : (1 : ℂ) - z ≠ 0 := one_sub_ne_zero_of_mem hz
@@ -475,7 +475,7 @@ def anharmonicRescaledEquiv :
     DifferentialRescaledEquiv (RatFunc ℂ) (meroField anharmonicDomain) where
   baseEquiv := anharmonicRatFuncEquiv.toRingEquiv
   ambientEquiv := anharmonicMeroEquiv
-  factor := anharmonicRatFunc ^ 2
+  factor := anharmonicRatFunc ^ (2 : ℕ)
   factor_ne_zero := pow_ne_zero 2 anharmonicRatFunc_ne_zero
   map_algebraMap' := fun c => anharmonicMeroEquiv_ratfuncToMero c
   map_deriv' := fun x => by

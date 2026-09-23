@@ -35,20 +35,20 @@ theorem egbFixedChargeAMeanDeficitPathCoordinate_mapsTo (τ φ : ℝ) :
 
 theorem egbFixedChargeAMeanDeficitPathCoordinate_quadratic (τ φ u : ℝ) :
     egbCoexistenceASymmetricRatio τ * egbFixedChargeAMeanDeficitPathCoordinate τ φ u =
-      egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ * u := by
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ * u := by
   unfold egbFixedChargeAMeanDeficitPathCoordinate
   rw [← egbFixedChargeAMiddleQuadraticShift_gap]
   ring
 
 theorem egbFixedChargeAMeanDeficitPathRadius_mean_formula (w φ τ u : ℝ) :
     egbFixedChargeAMeanDeficitPathRadius w φ τ u = egbFixedChargeAMeanRadius w φ τ *
-      (1 + egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ * u) := by
+      (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ * u) := by
   unfold egbFixedChargeAMeanDeficitPathRadius
   rw [egbFixedChargeAMiddleRadius_quadratic_displacement]
   ring
 
 theorem egbFixedChargeAMeanDeficitPathScale_mapsTo (τ φ : ℝ) :
-    MapsTo (fun u => 1 + egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ * u)
+    MapsTo (fun u => 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ * u)
       (Icc (0 : ℝ) 1) (Icc (1 - egbCoexistenceASymmetricRatio τ) (1 + egbCoexistenceASymmetricRatio τ)) := by
   intro u hu
   dsimp only
@@ -79,7 +79,7 @@ theorem egbFixedChargeAMeanDeficitPathRadius_end (w φ τ : ℝ) :
 
 theorem egbFixedChargeAMeanDeficitPathRadius_hasDerivAt (w φ τ u : ℝ) :
     HasDerivAt (egbFixedChargeAMeanDeficitPathRadius w φ τ)
-      (egbFixedChargeAMeanRadius w φ τ * egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ) u := by
+      (egbFixedChargeAMeanRadius w φ τ * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ) u := by
   rw [← egbFixedChargeAMiddleRadius_quadratic_displacement]
   unfold egbFixedChargeAMeanDeficitPathRadius
   simpa only [mul_one, id_eq] using

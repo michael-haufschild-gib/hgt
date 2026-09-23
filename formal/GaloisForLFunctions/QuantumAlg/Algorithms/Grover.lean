@@ -19,7 +19,7 @@ Grover search evolves in the two-dimensional plane spanned by the uniform
 superposition over bad indices and the uniform superposition over good indices.
 In that plane the phase oracle and diffusion reflection form exactly the same
 rotation used by amplitude amplification [dW19, qcnotes.tex:2768], and after
-`k` Grover iterates the success probability is `sin((2k+1)θ)^2`
+`k` Grover iterates the success probability is `sin((2k+1)θ)^(2 : ℕ)`
 [dW19, qcnotes.tex:2817].
 
 This file states the Grover specialization against an explicit plane model:
@@ -47,7 +47,7 @@ noncomputable section
 
 /-- A Grover search instance restricted to its invariant two-dimensional
 bad/good plane. The initial state is `amplitudeAmplificationState θ 0`, so the
-initial marked-subspace probability is `sin θ ^ 2`; the oracle and diffusion
+initial marked-subspace probability is `sin θ ^ (2 : ℕ)`; the oracle and diffusion
 assumptions are the explicit theorem inputs. -/
 structure GroverModel where
   /-- Initial angle from the bad axis; for `t` marked items among `N`, the
@@ -72,12 +72,12 @@ theorem GroverSearch.main (M : GroverModel) (k : ℕ) :
 
 /-- Grover success probability in the good/bad-plane model. Measuring the good
 basis state after `k` Grover iterates succeeds with probability
-`sin((2k+1)θ)^2`. -/
+`sin((2k+1)θ)^(2 : ℕ)`. -/
 theorem GroverSearch.main_success_probability (M : GroverModel) (k : ℕ) :
     PureState.probOutcome
         (Gate.apply ((M.diffusion * M.phaseOracle) ^ k) (amplitudeAmplificationState M.θ 0))
-        (1 : Fin (2 ^ 1)) =
-      Real.sin (amplitudeAmplificationAngle M.θ k) ^ 2 := by
+        (1 : Fin (2 ^ (1 : ℕ))) =
+      Real.sin (amplitudeAmplificationAngle M.θ k) ^ (2 : ℕ) := by
   rw [main, amplitudeAmplificationState_good_probability]
 
 /-- Every Grover plane model is an amplitude-amplification model with the phase
@@ -125,8 +125,8 @@ theorem timedIterate_correct (M : GroverModel) (k : ℕ) :
 
 /-- The marked-subspace success probability after the timed Grover iterate. -/
 theorem timedIterate_success_probability (M : GroverModel) (k : ℕ) :
-    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ 1)) =
-      Real.sin (amplitudeAmplificationAngle M.θ k) ^ 2 := by
+    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ (1 : ℕ))) =
+      Real.sin (amplitudeAmplificationAngle M.θ k) ^ (2 : ℕ) := by
   rw [timedIterate_correct, amplitudeAmplificationState_good_probability]
 
 /-- The timed Grover iterate has the same return value as its amplitude-amplification view. -/
@@ -161,9 +161,9 @@ theorem success_probability_with_resources
     (M : GroverModel) {n t k : ℕ}
     (_ht_pos : 0 < t) (_ht_le : t ≤ 2 ^ n)
     (hθ : M.θ = Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) :
-    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ 1)) =
+    PureState.probOutcome (timedIterate M k).ret (1 : Fin (2 ^ (1 : ℕ))) =
         Real.sin (((2 : ℝ) * k + 1) *
-          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ 2 ∧
+          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ (2 : ℕ) ∧
       ResourceProfile.HasExactCounts (resourceProfile n k) k 0 (k * n) 0 := by
   constructor
   · rw [timedIterate_success_probability]
@@ -187,9 +187,9 @@ theorem GroverSearch.main_success_probability_with_resources
     (M : GroverModel) {n t k : ℕ}
     (ht_pos : 0 < t) (ht_le : t ≤ 2 ^ n)
     (hθ : M.θ = Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) :
-    PureState.probOutcome (Grover.timedIterate M k).ret (1 : Fin (2 ^ 1)) =
+    PureState.probOutcome (Grover.timedIterate M k).ret (1 : Fin (2 ^ (1 : ℕ))) =
         Real.sin (((2 : ℝ) * k + 1) *
-          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ 2 ∧
+          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ (2 : ℕ) ∧
       ResourceProfile.HasExactCounts (Grover.resourceProfile n k) k 0 (k * n) 0 := by
   exact Grover.success_probability_with_resources M ht_pos ht_le hθ
 
@@ -199,9 +199,9 @@ def GroverSearch.mainResourceCorrectWitness
     (ht_pos : 0 < t) (ht_le : t ≤ 2 ^ n)
     (hθ : M.θ = Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) :
     ResourceCorrectWitness (R := Qubits n)
-      (PureState.probOutcome (Grover.timedIterate M k).ret (1 : Fin (2 ^ 1)) =
+      (PureState.probOutcome (Grover.timedIterate M k).ret (1 : Fin (2 ^ (1 : ℕ))) =
         Real.sin (((2 : ℝ) * k + 1) *
-          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ 2)
+          Real.arcsin (Real.sqrt ((t : ℝ) / ((2 ^ n : ℕ) : ℝ)))) ^ (2 : ℕ))
       (ResourceProfile.HasExactCounts (Grover.circuit n k).resources k 0 (k * n) 0) := by
   exact
     { circuit := Grover.circuit n k

@@ -55,7 +55,7 @@ theorem deningerMertensM_rate :
 `exp(-(log N)^{1/3}/108)/N`. -/
 theorem deningerMertensM_div_sq_le :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ N : ℕ in atTop,
-      |Sieve.mertensM N| / (N : ℝ) ^ 2
+      |Sieve.mertensM N| / (N : ℝ) ^ (2 : ℕ)
         ≤ B * (deningerMertensSaving (N : ℝ) / (N : ℝ)) := by
   obtain ⟨B, hB, hrate⟩ := deningerMertensM_rate
   refine ⟨B, hB, ?_⟩
@@ -63,11 +63,11 @@ theorem deningerMertensM_div_sq_le :
   have hNr : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hNpos
   rw [div_le_iff₀ (by positivity)]
   have hstep : B * ((N : ℝ) * deningerMertensSaving (N : ℝ))
-      = (B * (deningerMertensSaving (N : ℝ) / (N : ℝ))) * (N : ℝ) ^ 2 := by
+      = (B * (deningerMertensSaving (N : ℝ) / (N : ℝ))) * (N : ℝ) ^ (2 : ℕ) := by
     field_simp
   calc |Sieve.mertensM N| ≤ B * (N : ℝ) * deningerMertensSaving (N : ℝ) := hN
     _ = B * ((N : ℝ) * deningerMertensSaving (N : ℝ)) := by ring
-    _ = (B * (deningerMertensSaving (N : ℝ) / (N : ℝ))) * (N : ℝ) ^ 2 := hstep
+    _ = (B * (deningerMertensSaving (N : ℝ) / (N : ℝ))) * (N : ℝ) ^ (2 : ℕ) := hstep
 
 end
 

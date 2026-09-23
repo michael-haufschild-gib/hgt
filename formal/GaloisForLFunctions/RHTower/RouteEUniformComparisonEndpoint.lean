@@ -21,7 +21,7 @@ variable {Ω Λ : Type*} [Fintype Ω] [Fintype Λ] [DecidableEq Λ]
 
 /-- Energy of a declared reference mean on each physical fibre, weighted by actual fibre mass. -/
 def referenceFibreEnergy (D : RouteEPhysicalFibreData Ω Λ) (theta : Λ → ℝ) : ℝ :=
-  ∑ l, D.fibreMass l * theta l ^ 2
+  ∑ l, D.fibreMass l * theta l ^ (2 : ℕ)
 
 theorem referenceFibreEnergy_nonneg
     (D : RouteEPhysicalFibreData Ω Λ) (theta : Λ → ℝ) :
@@ -31,7 +31,7 @@ theorem referenceFibreEnergy_nonneg
 
 private theorem projectedEnergy_eq_sum_fibreMass_mul_conditionalMean_sq
     (D : RouteEPhysicalFibreData Ω Λ) :
-    D.projectedEnergy = ∑ l, D.fibreMass l * D.conditionalMean l ^ 2 := by
+    D.projectedEnergy = ∑ l, D.fibreMass l * D.conditionalMean l ^ (2 : ℕ) := by
   rw [D.projectedEnergy_eq_fibreQuotient]
   apply Finset.sum_congr rfl
   intro l _hl
@@ -43,11 +43,11 @@ theorem projectedEnergy_le_two_reference_add_two_defect_sq
     (D : RouteEPhysicalFibreData Ω Λ) (theta : Λ → ℝ) (delta : ℝ)
     (_hdelta : 0 ≤ delta)
     (hcompare : ∀ l, |D.conditionalMean l - theta l| ≤ delta) :
-    D.projectedEnergy ≤ 2 * D.referenceFibreEnergy theta + 2 * delta ^ 2 := by
+    D.projectedEnergy ≤ 2 * D.referenceFibreEnergy theta + 2 * delta ^ (2 : ℕ) := by
   rw [D.projectedEnergy_eq_sum_fibreMass_mul_conditionalMean_sq]
   calc
-    (∑ l, D.fibreMass l * D.conditionalMean l ^ 2) ≤
-        ∑ l, D.fibreMass l * (2 * theta l ^ 2 + 2 * delta ^ 2) := by
+    (∑ l, D.fibreMass l * D.conditionalMean l ^ (2 : ℕ)) ≤
+        ∑ l, D.fibreMass l * (2 * theta l ^ (2 : ℕ) + 2 * delta ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro l _hl
       have hlower := (abs_le.mp (hcompare l)).1
@@ -55,17 +55,17 @@ theorem projectedEnergy_le_two_reference_add_two_defect_sq
       apply mul_le_mul_of_nonneg_left _ (D.fibreMass_pos l).le
       nlinarith [sq_nonneg (D.conditionalMean l - 2 * theta l),
         sq_nonneg (D.conditionalMean l + 2 * theta l)]
-    _ = 2 * D.referenceFibreEnergy theta + 2 * delta ^ 2 := by
+    _ = 2 * D.referenceFibreEnergy theta + 2 * delta ^ (2 : ℕ) := by
       unfold referenceFibreEnergy
       calc
-        (∑ l, D.fibreMass l * (2 * theta l ^ 2 + 2 * delta ^ 2)) =
-            ∑ l, (2 * (D.fibreMass l * theta l ^ 2) +
-              (2 * delta ^ 2) * D.fibreMass l) := by
+        (∑ l, D.fibreMass l * (2 * theta l ^ (2 : ℕ) + 2 * delta ^ (2 : ℕ))) =
+            ∑ l, (2 * (D.fibreMass l * theta l ^ (2 : ℕ)) +
+              (2 * delta ^ (2 : ℕ)) * D.fibreMass l) := by
           apply Finset.sum_congr rfl
           intro l _hl
           ring
-        _ = 2 * (∑ l, D.fibreMass l * theta l ^ 2) +
-            (2 * delta ^ 2) * ∑ l, D.fibreMass l := by
+        _ = 2 * (∑ l, D.fibreMass l * theta l ^ (2 : ℕ)) +
+            (2 * delta ^ (2 : ℕ)) * ∑ l, D.fibreMass l := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
         _ = _ := by rw [D.sum_fibreMass]; ring
 
@@ -75,7 +75,7 @@ theorem abs_mean_le_sqrt_two_reference_add_two_defect_sq
     (hdelta : 0 ≤ delta)
     (hcompare : ∀ l, |D.conditionalMean l - theta l| ≤ delta) :
     |∑ ω, D.mass ω * D.observable ω| ≤
-      Real.sqrt (2 * D.referenceFibreEnergy theta + 2 * delta ^ 2) := by
+      Real.sqrt (2 * D.referenceFibreEnergy theta + 2 * delta ^ (2 : ℕ)) := by
   have hbase := D.abs_mean_le_sqrt_projectedEnergy
   have henergy := D.projectedEnergy_le_two_reference_add_two_defect_sq
     theta delta hdelta hcompare

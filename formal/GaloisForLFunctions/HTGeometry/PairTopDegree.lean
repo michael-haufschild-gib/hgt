@@ -103,7 +103,7 @@ theorem topDegLE_pairTopShift_pairLogTerm (hα : α ≠ 0) (hp : p m' = affinePa
   have hinv : TopDegLE (m' + 1) (-1) ((pairFactor (p m') m')⁻¹) := by
     rw [hp]
     exact topDegLE_inv_pairFactor_affine hα β m'
-  have hsq : TopDegLE (m' + 1) (-2) (((pairFactor (p m') m') ^ 2)⁻¹) := by
+  have hsq : TopDegLE (m' + 1) (-2) (((pairFactor (p m') m') ^ (2 : ℕ))⁻¹) := by
     have := TopDegLE.mul hinv hinv
     rw [← mul_inv, ← pow_two] at this
     refine TopDegLE.mono ?_ this
@@ -144,7 +144,7 @@ theorem topDegLE_pairTopShift_logFactor_head {g : Polynomial ℂ} (hg : g ≠ 0)
       have := natDegree_headWr_le hdeg
       omega
     have hGinv : TopDegLE (m' + 1) (-(2 * (g.natDegree : ℤ)))
-        ((fact g (m' + 1) ^ 2)⁻¹) := by
+        ((fact g (m' + 1) ^ (2 : ℕ))⁻¹) := by
       have h1 := topDegLE_inv_fact (m' + 1) hg
       have h2 := TopDegLE.mul h1 h1
       rw [← mul_inv, ← pow_two] at h2

@@ -79,7 +79,7 @@ theorem momentInner_xiShiftedAdaptiveNullPairPolynomial_self_eq
     HTGeometry.momentInner s
         (xiShiftedAdaptiveNullPairPolynomial y U V)
         (xiShiftedAdaptiveNullPairPolynomial y U V) =
-      -(γ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) := by
+      -(γ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let γ := HTGeometry.momentInner s U V
   let a := HTGeometry.momentInner s V V
@@ -113,10 +113,10 @@ theorem momentInner_xiShiftedAdaptiveNullPairPolynomial_self_neg
   let γ := HTGeometry.momentInner s U V
   let a := HTGeometry.momentInner s V V
   rw [momentInner_xiShiftedAdaptiveNullPairPolynomial_self_eq U V hUU]
-  have hγ : 0 < γ ^ 2 := sq_pos_of_ne_zero (by simpa only [γ, s] using hUV)
+  have hγ : 0 < γ ^ (2 : ℕ) := sq_pos_of_ne_zero (by simpa only [γ, s] using hUV)
   have hfactor : 0 < 2 * (|a| + 1) - a := by
     linarith [le_abs_self a, abs_nonneg a]
-  have hden : 0 < (|a| + 1) ^ 2 := sq_pos_of_pos (by positivity)
+  have hden : 0 < (|a| + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
   exact neg_neg_of_pos (div_pos (mul_pos hγ hfactor) hden)
 
 /-- **Sharp adaptive null-pair frontier law.**  Exact source energy divided by actual global
@@ -133,7 +133,7 @@ theorem add_adaptiveNullPairEnergy_div_lipschitzWeight_le_terminalFrontier_sharp
     let a := HTGeometry.momentInner s V V
     let A := xiShiftedAdaptiveNullPairPolynomial y U V
     let x := Polynomial.toFn (k + 2) A
-    y + (γ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+    y + (γ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
       xiShiftedHigherBlockTerminalFrontier k := by
   let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
@@ -144,7 +144,7 @@ theorem add_adaptiveNullPairEnergy_div_lipschitzWeight_le_terminalFrontier_sharp
   have hA : A.natDegree < k + 2 :=
     natDegree_xiShiftedAdaptiveNullPairPolynomial_lt hU hV
   have henergy : xiShiftedMomentHankelQuadratic y (k + 2) x =
-      -(γ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) := by
+      -(γ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) := by
     rw [xiShiftedMomentHankelQuadratic_toFn_eq_momentInner hA]
     simpa only [s, γ, a, A] using
       momentInner_xiShiftedAdaptiveNullPairPolynomial_self_eq U V hUU
@@ -175,7 +175,7 @@ theorem add_firstOddPadeDefectAdaptiveEnergy_div_lipschitzWeight_le_terminalFron
     let a := HTGeometry.momentInner s V V
     let A := xiShiftedAdaptiveNullPairPolynomial y U V
     let x := Polynomial.toFn (n + m + 2) A
-    y + (δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+    y + (δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
       xiShiftedHigherBlockTerminalFrontier (n + m) := by
   let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
@@ -231,7 +231,7 @@ theorem add_firstEvenPadeDefectAdaptiveEnergy_div_lipschitzWeight_le_terminalFro
     let a := HTGeometry.momentInner s V V
     let A := xiShiftedAdaptiveNullPairPolynomial y U V
     let x := Polynomial.toFn (n + m + 2) A
-    y + (δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+    y + (δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
       xiShiftedHigherBlockTerminalFrontier (n + m) := by
   let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
@@ -260,19 +260,19 @@ theorem add_firstEvenPadeDefectAdaptiveEnergy_div_lipschitzWeight_le_terminalFro
     simpa only [s, U, P] using
       (momentInner_liftedNullPair_eq_zero_of_odd_contact
         c hlast hzeroOdd (i := m - 1) (j := m - 1) (by omega))
-  have hpoly : U * V = (P * X ^ m) ^ 2 := by
+  have hpoly : U * V = (P * X ^ m) ^ (2 : ℕ) := by
     dsimp only [U, V]
     calc
       (P * X ^ (m - 1)) * (P * X ^ (m + 1)) =
-          P ^ 2 * (X ^ (m - 1) * X ^ (m + 1)) := by ring
-      _ = P ^ 2 * X ^ ((m - 1) + (m + 1)) := by
+          P ^ (2 : ℕ) * (X ^ (m - 1) * X ^ (m + 1)) := by ring
+      _ = P ^ (2 : ℕ) * X ^ ((m - 1) + (m + 1)) := by
         congr 1
         exact (pow_add X (m - 1) (m + 1)).symm
-      _ = P ^ 2 * X ^ (2 * m) := by
+      _ = P ^ (2 : ℕ) * X ^ (2 * m) := by
         rw [show (m - 1) + (m + 1) = 2 * m by omega]
-      _ = P ^ 2 * (X ^ m * X ^ m) := by
+      _ = P ^ (2 : ℕ) * (X ^ m * X ^ m) := by
         rw [show 2 * m = m + m by omega, pow_add]
-      _ = (P * X ^ m) ^ 2 := by ring
+      _ = (P * X ^ m) ^ (2 : ℕ) := by ring
   have hUVeq : HTGeometry.momentInner s U V = δ := by
     have heven := xiShiftedHankelBoundaryPadeDefect_first_even_eq_liftedSquare
       c hlast hm hzero
@@ -356,19 +356,19 @@ theorem exists_sourceAdaptive_frontierCertificate_of_flatFace
       simpa only [U, P] using
         (momentInner_liftedNullPair_eq_zero_of_odd_contact
           c hlast hzeroOdd (i := m - 1) (j := m - 1) (by omega))
-    have hpoly : U * V = (P * X ^ m) ^ 2 := by
+    have hpoly : U * V = (P * X ^ m) ^ (2 : ℕ) := by
       dsimp only [U, V]
       calc
         (P * X ^ (m - 1)) * (P * X ^ (m + 1)) =
-            P ^ 2 * (X ^ (m - 1) * X ^ (m + 1)) := by ring
-        _ = P ^ 2 * X ^ ((m - 1) + (m + 1)) := by
+            P ^ (2 : ℕ) * (X ^ (m - 1) * X ^ (m + 1)) := by ring
+        _ = P ^ (2 : ℕ) * X ^ ((m - 1) + (m + 1)) := by
           congr 1
           exact (pow_add X (m - 1) (m + 1)).symm
-        _ = P ^ 2 * X ^ (2 * m) := by
+        _ = P ^ (2 : ℕ) * X ^ (2 * m) := by
           rw [show (m - 1) + (m + 1) = 2 * m by omega]
-        _ = P ^ 2 * (X ^ m * X ^ m) := by
+        _ = P ^ (2 : ℕ) * (X ^ m * X ^ m) := by
           rw [show 2 * m = m + m by omega, pow_add]
-        _ = (P * X ^ m) ^ 2 := by ring
+        _ = (P * X ^ m) ^ (2 : ℕ) := by ring
     have hUVeq : HTGeometry.momentInner
         (fun j => (xiShiftedReciprocalMoment y j).re) U V =
         xiShiftedHankelBoundaryPadeDefect y c (2 * n + 2 * m) := by

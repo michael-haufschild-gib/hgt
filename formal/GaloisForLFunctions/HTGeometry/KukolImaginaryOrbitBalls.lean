@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- Positive quadratic coefficient of an imaginary unipotent orbit. -/
-def kukolOrbitCoefficient (r a : ℝ) : ℝ := (Real.exp r)^2+a^2
+def kukolOrbitCoefficient (r a : ℝ) : ℝ := (Real.exp r)^(2 : ℕ)+a^(2 : ℕ)
 
 theorem kukolOrbitCoefficient_pos (r a : ℝ) : 0 < kukolOrbitCoefficient r a := by
   unfold kukolOrbitCoefficient
@@ -31,7 +31,7 @@ def kukolOrbitCenter (r a : ℝ) (x z : E) : E :=
 
 /-- The positive squared radius of the admissible imaginary orbit. -/
 def kukolOrbitRadiusSq (r s a : ℝ) (x z : E) : ℝ :=
-  (Real.exp s + ‖kukolOrbitDrift r a x z‖^2/kukolOrbitCoefficient r a) /
+  (Real.exp s + ‖kukolOrbitDrift r a x z‖^(2 : ℕ)/kukolOrbitCoefficient r a) /
     kukolOrbitCoefficient r a
 
 theorem kukolOrbitRadiusSq_pos (r s a : ℝ) (x z : E) :
@@ -43,8 +43,8 @@ theorem kukolOrbitRadiusSq_pos (r s a : ℝ) (x z : E) :
 
 /-- Exact completion of the square, valid in every real inner-product space. -/
 theorem kukolOrbit_complete_square (r a : ℝ) (B u : E) :
-    kukolOrbitCoefficient r a * ‖u-(kukolOrbitCoefficient r a)⁻¹ • B‖^2 =
-      kukolOrbitCoefficient r a * ‖u‖^2-2*inner ℝ B u+‖B‖^2/kukolOrbitCoefficient r a := by
+    kukolOrbitCoefficient r a * ‖u-(kukolOrbitCoefficient r a)⁻¹ • B‖^(2 : ℕ) =
+      kukolOrbitCoefficient r a * ‖u‖^(2 : ℕ)-2*inner ℝ B u+‖B‖^(2 : ℕ)/kukolOrbitCoefficient r a := by
   have hA := (kukolOrbitCoefficient_pos r a).ne'
   simp only [← real_inner_self_eq_norm_sq, inner_sub_left, inner_sub_right,
     inner_smul_left, inner_smul_right, RCLike.conj_to_real, real_inner_comm u B]
@@ -70,7 +70,7 @@ theorem kukolImaginaryAction_ball_iff (u : E) (a b r s : ℝ) (x z : E) :
   rw [lt_div_iff₀ hA]
   rw [← hdrift]
   change 0 < Real.exp s + 2*inner ℝ (kukolOrbitDrift r a x z) u -
-    kukolOrbitCoefficient r a*‖u‖^2 ↔ _
+    kukolOrbitCoefficient r a*‖u‖^(2 : ℕ) ↔ _
   constructor <;> intro h <;> nlinarith [hcomplete]
 
 /-- Strict future inputs produce nonempty imaginary orbit balls. -/

@@ -11,9 +11,9 @@ actual von Mangoldt--Gamma source feature square summable.  The proof is uncondi
 * the exact order-growing two-boundary residual;
 * `Lambda(n) <= log n`;
 * the already formalized Cauchy-condensation proof that
-  `sum 1 / (n * log(n)^2)` converges.
+  `sum 1 / (n * log(n)^(2 : ℕ))` converges.
 
-This proves the analytic existence of the full finite-depth `ell^2` source packet.  It does not
+This proves the analytic existence of the full finite-depth `ell^(2 : ℕ)` source packet.  It does not
 identify its limiting Gram with the completed prime--Gamma moment Hankel block.
 -/
 
@@ -36,7 +36,7 @@ theorem vonMangoldtInverseLogPowerWeight_nonneg (q n : ℕ) :
       (pow_nonneg (Real.log_nonneg (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n))) _)
 
 /-- `Lambda(n) <= log n` reduces every exponent at least three to the condensed
-`1/(n*log(n)^2)` majorant. -/
+`1/(n*log(n)^(2 : ℕ))` majorant. -/
 theorem vonMangoldtInverseLogPowerWeight_le_invNatLogSq (q n : ℕ) :
     vonMangoldtInverseLogPowerWeight q n ≤
       (Real.log 2) ^ (-(q : ℤ)) * invNatLogSq n := by
@@ -246,7 +246,7 @@ theorem normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyFeature_le
       rw [hsqrt]
       ring
 
-/-- Every single Gamma-jet coordinate of the concrete order-growing packet lies in `ell^2` over
+/-- Every single Gamma-jet coordinate of the concrete order-growing packet lies in `ell^(2 : ℕ)` over
 the actual von Mangoldt source atoms. -/
 theorem summable_normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyFeature
     (N : ℕ) (i : Fin N) (w : ℂ) :
@@ -266,7 +266,7 @@ theorem summable_normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyFeature
   exact normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyFeature_le N i w n hn hw
 
 /-- The complete packet, jointly over the finite Gamma depth and all source atoms, lies in
-`ell^2`.  The coordinate order is `Fin N × Nat`; swapping factors gives the aperture convention. -/
+`ell^(2 : ℕ)`.  The coordinate order is `Fin N × Nat`; swapping factors gives the aperture convention. -/
 theorem summable_normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyPacket
     (N : ℕ) (w : ℂ) :
     Summable (fun x : Fin N × ℕ =>

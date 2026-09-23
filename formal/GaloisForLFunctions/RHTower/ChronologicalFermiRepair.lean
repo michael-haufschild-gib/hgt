@@ -67,14 +67,14 @@ theorem chronologicalFermiRepair_sum (n : ℕ) (t : ℝ) :
       congrArg (fun z : ℝ => z * chronologicalFermi t ^ n) hf]
 
 theorem chronologicalFermiRepair_error_sq_le (n : ℕ) (t : ℝ) (ht : 0 ≤ t) :
-    (Real.exp (-t) - chronologicalFermiRepair n t)^2 ≤
+    (Real.exp (-t) - chronologicalFermiRepair n t)^(2 : ℕ) ≤
       (1/4:ℝ)^n * Real.exp (-2*t) := by
   rw [chronologicalFermiRepair_error, mul_pow]
   have hg := chronologicalFermi_bounds t ht
-  have hgp : chronologicalFermi t ^ 2 ≤ (1/4:ℝ) := by nlinarith
+  have hgp : chronologicalFermi t ^ (2 : ℕ) ≤ (1/4:ℝ) := by nlinarith
   have hp := pow_le_pow_left₀ (sq_nonneg (chronologicalFermi t)) hgp n
   rw [← pow_mul, mul_comm n 2, pow_mul]
-  have he : Real.exp (-t)^2 = Real.exp (-2*t) := by
+  have he : Real.exp (-t)^(2 : ℕ) = Real.exp (-2*t) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -90,7 +90,7 @@ theorem chronologicalFermiRepair_continuous (n : ℕ) : Continuous (chronologica
   | succ n ih => exact chronologicalFermi_continuous.mul (continuous_const.add ih)
 
 theorem chronologicalFermiRepair_error_integrable (n : ℕ) :
-    IntegrableOn (fun t => (Real.exp (-t) - chronologicalFermiRepair n t)^2) (Ioi 0) := by
+    IntegrableOn (fun t => (Real.exp (-t) - chronologicalFermiRepair n t)^(2 : ℕ)) (Ioi 0) := by
   have hb := (integrableOn_exp_mul_Ioi (a := (-2:ℝ)) (by linarith) 0).const_mul ((1/4:ℝ)^n)
   apply hb.mono' ((Real.continuous_exp.comp continuous_neg).sub
     (chronologicalFermiRepair_continuous n) |>.pow 2 |>.aestronglyMeasurable)
@@ -99,7 +99,7 @@ theorem chronologicalFermiRepair_error_integrable (n : ℕ) :
   exact chronologicalFermiRepair_error_sq_le n t ht.le
 
 def chronologicalFermiRepairEnergy (n : ℕ) : ℝ :=
-  ∫ t in Ioi (0:ℝ), (Real.exp (-t) - chronologicalFermiRepair n t)^2
+  ∫ t in Ioi (0:ℝ), (Real.exp (-t) - chronologicalFermiRepair n t)^(2 : ℕ)
 
 theorem chronologicalFermiRepairEnergy_bound (n : ℕ) :
     0 ≤ chronologicalFermiRepairEnergy n ∧
@@ -108,7 +108,7 @@ theorem chronologicalFermiRepairEnergy_bound (n : ℕ) :
   · exact integral_nonneg (fun t => sq_nonneg _)
   · have h := integral_mono_ae (chronologicalFermiRepair_error_integrable n)
       ((integrableOn_exp_mul_Ioi (a := (-2:ℝ)) (by linarith) 0).const_mul ((1/4:ℝ)^n))
-      (show (fun t => (Real.exp (-t) - chronologicalFermiRepair n t)^2) ≤ᵐ[volume.restrict (Ioi 0)]
+      (show (fun t => (Real.exp (-t) - chronologicalFermiRepair n t)^(2 : ℕ)) ≤ᵐ[volume.restrict (Ioi 0)]
         (fun t => (1/4:ℝ)^n * Real.exp (-2*t)) by
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
         exact chronologicalFermiRepair_error_sq_le n t ht.le)

@@ -201,7 +201,7 @@ theorem tendsto_log_twice_growing_window (X : ℕ → ℝ) (hX : Tendsto X atTop
 theorem eventually_growing_window_five_receiver_gap (A X : ℕ → ℝ)
     (hA : ∀ n, 0 < A n) (hX : Tendsto X atTop atTop)
     (hscale : Tendsto (fun n => Real.log (A n)/Real.log (X n)) atTop (𝓝 1)) :
-    ∀ᶠ n in atTop, (2*Sieve.growingReciprocalMarkerWindow (X n))^5 < (A n)^3 := by
+    ∀ᶠ n in atTop, (2*Sieve.growingReciprocalMarkerWindow (X n))^(5 : ℕ) < (A n)^(3 : ℕ) := by
   have ht := (hscale.const_mul (3:ℝ)).sub ((tendsto_log_twice_growing_window X hX).const_mul (5:ℝ))
   have hpositive := ht.eventually (Ioi_mem_nhds (show (0:ℝ) < 3*1-5*(1/2) by norm_num))
   filter_upwards [hpositive,hX.eventually (eventually_gt_atTop (1:ℝ))] with n hn hxn
@@ -292,7 +292,7 @@ theorem singleton_history_baseline_tenth_power (m K : ℕ) (k : C → Bool → �
     (L : ℝ) (hL : 0 ≤ L)
     (hlower : ∀ r, L ≤ routeEComponentSlotReceiver (fun _ : C => Bool)
       (fun i z => if z then (b i:ℝ) else (a i:ℝ)) history r) :
-    L^10 ≤ ((∏ i, a i : ℕ) : ℝ)^11 := by
+    L^(10 : ℕ) ≤ ((∏ i, a i : ℕ) : ℝ)^(11 : ℕ) := by
   let A : ℝ := ((∏ i, a i : ℕ) : ℝ)
   have hA : 1 ≤ A := by
     dsimp [A]
@@ -315,11 +315,11 @@ theorem singleton_history_baseline_tenth_power (m K : ℕ) (k : C → Bool → �
       _ = A^(m-1+K) := (pow_add _ _ _).symm
   have hraised := pow_le_pow_left₀ (pow_nonneg hL _) hwhole 10
   have hexp : (m-1+K)*10 ≤ 11*m := by omega
-  have ht : (L^10)^m ≤ (A^11)^m := by
+  have ht : (L^(10 : ℕ))^m ≤ (A^(11 : ℕ))^m := by
     calc
-      (L^10)^m = (L^m)^10 := by rw [← pow_mul,← pow_mul]; congr 1; omega
-      _ ≤ (A^(m-1+K))^10 := hraised
-      _ ≤ (A^11)^m := by
+      (L^(10 : ℕ))^m = (L^m)^(10 : ℕ) := by rw [← pow_mul,← pow_mul]; congr 1; omega
+      _ ≤ (A^(m-1+K))^(10 : ℕ) := hraised
+      _ ≤ (A^(11 : ℕ))^m := by
         rw [← pow_mul,← pow_mul]
         exact pow_le_pow_right₀ hA hexp
   exact (pow_le_pow_iff_left₀ (pow_nonneg hL _) (by positivity) (by omega)).mp ht
@@ -332,7 +332,7 @@ theorem singleton_history_no_five_of_power_activation
     (hmem : history ∈ routeEComponentHistogramCell (fun _ : C => Bool) m k)
     (hone : ∀ i, k i true = 1) (ha : ∀ i, 1 ≤ a i)
     (hactivation : ∀ i, b i ≤ a i^K) (hm : 10*(K+1) ≤ m)
-    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W^55 < L^30)
+    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W^(55 : ℕ) < L^(30 : ℕ))
     (hwindow : ∀ r, routeEComponentSlotReceiver (fun _ : C => Bool)
       (fun i z => if z then (b i:ℝ) else (a i:ℝ)) history r ∈ Set.Icc L (L+W))
     (e : Fin 5 → Fin m) :
@@ -351,13 +351,13 @@ theorem singleton_history_no_five_of_power_activation
   norm_num only at hwidth
   have ht1 := pow_le_pow_left₀ (pow_nonneg hL 10) hbase 3
   have ht2 := pow_le_pow_left₀ (by positivity) hwidth 11
-  have hbad : L^30 ≤ W^55 := by
+  have hbad : L^(30 : ℕ) ≤ W^(55 : ℕ) := by
     calc
-      L^30 = (L^10)^3 := by ring
-      _ ≤ (((∏ i, a i : ℕ) : ℝ)^11)^3 := ht1
-      _ = (((∏ i, a i : ℕ) : ℝ)^3)^11 := by ring
-      _ ≤ (W^5)^11 := ht2
-      _ = W^55 := by ring
+      L^(30 : ℕ) = (L^(10 : ℕ))^(3 : ℕ) := by ring
+      _ ≤ (((∏ i, a i : ℕ) : ℝ)^(11 : ℕ))^(3 : ℕ) := ht1
+      _ = (((∏ i, a i : ℕ) : ℝ)^(3 : ℕ))^(11 : ℕ) := by ring
+      _ ≤ (W^(5 : ℕ))^(11 : ℕ) := ht2
+      _ = W^(55 : ℕ) := by ring
   exact hgap.not_ge hbad
 
 /-- The actual window pays the stronger power separation needed by bounded activations. -/
@@ -365,8 +365,8 @@ theorem growing_window_divisor_aperture (X : ℕ → ℝ) (hX : Tendsto X atTop 
     ∀ᶠ n in atTop,
       0 ≤ X n-Sieve.growingReciprocalMarkerWindow (X n) ∧
       0 ≤ 2*Sieve.growingReciprocalMarkerWindow (X n) ∧
-      (2*Sieve.growingReciprocalMarkerWindow (X n))^55 <
-        (X n-Sieve.growingReciprocalMarkerWindow (X n))^30 := by
+      (2*Sieve.growingReciprocalMarkerWindow (X n))^(55 : ℕ) <
+        (X n-Sieve.growingReciprocalMarkerWindow (X n))^(30 : ℕ) := by
   have hc := (tendsto_inv_atTop_zero.comp (Real.tendsto_log_atTop.comp hX)).const_mul (Real.log 2)
   have hhalfLog : Tendsto (fun n => Real.log (X n/2)/Real.log (X n)) atTop (𝓝 1) := by
     have ht := (tendsto_const_nhds (x := (1:ℝ))).sub hc
@@ -386,11 +386,11 @@ theorem growing_window_divisor_aperture (X : ℕ → ℝ) (hX : Tendsto X atTop 
   have hL0 : 0 ≤ X n-Sieve.growingReciprocalMarkerWindow (X n) := sub_nonneg.mpr hw.2.1
   have hhalf : Sieve.growingReciprocalMarkerWindow (X n) ≤ X n/2 := by
     by_contra hh
-    have hcube : (X n)^3 ≤ (2*Sieve.growingReciprocalMarkerWindow (X n))^3 :=
+    have hcube : (X n)^(3 : ℕ) ≤ (2*Sieve.growingReciprocalMarkerWindow (X n))^(3 : ℕ) :=
       pow_le_pow_left₀ (by linarith) (by linarith) 3
-    have hsquare : (X n-Sieve.growingReciprocalMarkerWindow (X n))^2 ≤ (X n)^2 :=
+    have hsquare : (X n-Sieve.growingReciprocalMarkerWindow (X n))^(2 : ℕ) ≤ (X n)^(2 : ℕ) :=
       pow_le_pow_left₀ hL0 (by linarith [hw.1]) 2
-    have hpos : 0 < (X n-27)*(X n)^2 := mul_pos (by linarith) (by positivity)
+    have hpos : 0 < (X n-27)*(X n)^(2 : ℕ) := mul_pos (by linarith) (by positivity)
     nlinarith [hw.2.2]
   have hquot : 0 < (30*Real.log (X n/2)-55*Real.log (2*Sieve.growingReciprocalMarkerWindow (X n)))/
       Real.log (X n) := by
@@ -402,7 +402,7 @@ theorem growing_window_divisor_aperture (X : ℕ → ℝ) (hX : Tendsto X atTop 
   have hl : 0 < Real.log (X n) := Real.log_pos (by linarith)
   have hnum : 0 < 30*Real.log (X n/2)-55*Real.log (2*Sieve.growingReciprocalMarkerWindow (X n)) :=
     (div_pos_iff.mp hquot).resolve_right (by intro h; linarith [h.2]) |>.1
-  have hgap : (2*Sieve.growingReciprocalMarkerWindow (X n))^55 < (X n/2)^30 := by
+  have hgap : (2*Sieve.growingReciprocalMarkerWindow (X n))^(55 : ℕ) < (X n/2)^(30 : ℕ) := by
     apply (Real.log_lt_log_iff (by positivity) (by positivity)).mp
     rw [Real.log_pow,Real.log_pow]
     norm_num

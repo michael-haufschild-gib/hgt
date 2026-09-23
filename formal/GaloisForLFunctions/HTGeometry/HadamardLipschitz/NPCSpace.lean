@@ -5,7 +5,7 @@ This module introduces the metric backbone used by the `HadamardLipschitz` famil
 a geodesic metric space satisfying the Bruhat–Tits / Alexandrov *NPC inequality*
 
 ```
-d(x #_t y, z)^2 ≤ (1-t) d(x,z)^2 + t d(y,z)^2 - t(1-t) d(x,y)^2 .
+d(x #_t y, z)^(2 : ℕ) ≤ (1-t) d(x,z)^(2 : ℕ) + t d(y,z)^(2 : ℕ) - t(1-t) d(x,y)^(2 : ℕ) .
 ```
 
 Complete spaces with this property are exactly the *Hadamard spaces* (CAT(0) spaces); every
@@ -46,8 +46,8 @@ class NPCSpace (X : Type*) [MetricSpace X] where
     dist (gd x y t) y = (1 - t) * dist x y
   /-- The NPC (Bruhat–Tits) inequality. -/
   dist_gd_sq_le (x y z : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1) :
-    dist (gd x y t) z ^ 2 ≤
-      (1 - t) * dist x z ^ 2 + t * dist y z ^ 2 - t * (1 - t) * dist x y ^ 2
+    dist (gd x y t) z ^ (2 : ℕ) ≤
+      (1 - t) * dist x z ^ (2 : ℕ) + t * dist y z ^ (2 : ℕ) - t * (1 - t) * dist x y ^ (2 : ℕ)
 
 namespace NPCSpace
 
@@ -71,8 +71,8 @@ theorem eq_gd_of_dist (x q p : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1)
   have h := dist_gd_sq_le x q p t ht₀ ht₁
   have hqp : dist q p = (1 - t) * dist x q := by rw [dist_comm]; exact h2
   rw [h1, hqp] at h
-  have hzero : (1 - t) * (t * dist x q) ^ 2 + t * ((1 - t) * dist x q) ^ 2
-      - t * (1 - t) * dist x q ^ 2 = 0 := by ring
+  have hzero : (1 - t) * (t * dist x q) ^ (2 : ℕ) + t * ((1 - t) * dist x q) ^ (2 : ℕ)
+      - t * (1 - t) * dist x q ^ (2 : ℕ) = 0 := by ring
   rw [hzero] at h
   have : dist (gd x q t) p = 0 := by
     have hnn : 0 ≤ dist (gd x q t) p := dist_nonneg
@@ -83,7 +83,7 @@ theorem eq_gd_of_dist (x q p : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1)
 endpoints of the geodesic. -/
 theorem dist_sq_le_of_between (x q p z : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1)
     (h1 : dist x p = t * dist x q) (h2 : dist p q = (1 - t) * dist x q) :
-    dist p z ^ 2 ≤ (1 - t) * dist x z ^ 2 + t * dist q z ^ 2 - t * (1 - t) * dist x q ^ 2 := by
+    dist p z ^ (2 : ℕ) ≤ (1 - t) * dist x z ^ (2 : ℕ) + t * dist q z ^ (2 : ℕ) - t * (1 - t) * dist x q ^ (2 : ℕ) := by
   rw [eq_gd_of_dist x q p t ht₀ ht₁ h1 h2]
   exact dist_gd_sq_le x q z t ht₀ ht₁
 
@@ -92,7 +92,7 @@ theorem dist_gd_le (x y z : X) (t : ℝ) (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1) :
     dist (gd x y t) z ≤ (1 - t) * dist x z + t * dist y z := by
   have h := dist_gd_sq_le x y z t ht₀ ht₁
   have htri : |dist x z - dist y z| ≤ dist x y := abs_dist_sub_le _ _ _
-  have hsq : (dist x z - dist y z) ^ 2 ≤ dist x y ^ 2 := by
+  have hsq : (dist x z - dist y z) ^ (2 : ℕ) ≤ dist x y ^ (2 : ℕ) := by
     nlinarith [sq_abs (dist x z - dist y z), abs_nonneg (dist x z - dist y z),
       dist_nonneg (x := x) (y := y), htri]
   have hrhs : 0 ≤ (1 - t) * dist x z + t * dist y z := by
@@ -117,8 +117,8 @@ instance (priority := 100) InnerProductSpace.toNPCSpace
     rw [dist_eq_norm, dist_eq_norm, hx, norm_smul, Real.norm_eq_abs,
       abs_of_nonneg (by linarith : (0:ℝ) ≤ 1 - t)]
   dist_gd_sq_le x y z t _ _ := by
-    have key : ∀ a b : E, ‖(1 - t) • a + t • b‖ ^ 2
-        = (1 - t) * ‖a‖ ^ 2 + t * ‖b‖ ^ 2 - t * (1 - t) * ‖a - b‖ ^ 2 := by
+    have key : ∀ a b : E, ‖(1 - t) • a + t • b‖ ^ (2 : ℕ)
+        = (1 - t) * ‖a‖ ^ (2 : ℕ) + t * ‖b‖ ^ (2 : ℕ) - t * (1 - t) * ‖a - b‖ ^ (2 : ℕ) := by
       intro a b
       rw [norm_add_sq_real, norm_sub_sq_real, real_inner_smul_left, real_inner_smul_right,
         norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, mul_pow, mul_pow, sq_abs, sq_abs]

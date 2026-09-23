@@ -61,7 +61,7 @@ theorem multiEnvelope_eq_zero_iff {A : Fin r → ℝ} {z : ℂ} :
   simp
 
 theorem multiEnvelope_zero_re_sq {A : Fin r → ℝ} {z : ℂ} (hz : multiEnvelope A z = 0) :
-    ∃ j, z.re ^ 2 = (A j) ^ 2 := by
+    ∃ j, z.re ^ (2 : ℕ) = (A j) ^ (2 : ℕ) := by
   obtain ⟨j, hj⟩ := multiEnvelope_eq_zero_iff.mp hz
   exact ⟨j, coshQuartetEnvelope_zero_re_sq hj⟩
 
@@ -227,7 +227,7 @@ theorem multiEnvelope_mul_polynomial_periodic_eq_zero {A : Fin r → ℝ} (hr : 
   -- Step 1: the translation is purely imaginary.
   have hre : h.re = 0 := by
     by_contra hrene
-    set S : Set ℝ := {x : ℝ | ∃ j, x ^ 2 = (A j) ^ 2} with hSdef
+    set S : Set ℝ := {x : ℝ | ∃ j, x ^ (2 : ℕ) = (A j) ^ (2 : ℕ)} with hSdef
     have hSfin : S.Finite := by
       refine Set.Finite.subset ((Set.finite_range A).union
         (Set.finite_range fun j => -(A j))) ?_

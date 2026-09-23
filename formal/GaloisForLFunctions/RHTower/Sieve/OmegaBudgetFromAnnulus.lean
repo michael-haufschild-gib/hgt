@@ -29,15 +29,15 @@ theorem norm_primeBlockPoly_le_card (B : Finset ℕ) (w : ℝ) :
 theorem integral_kernel_normSq_omegaWeighted_head_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0 < A₀)
     {δ G β₀ : ℝ} (hδ : 0 < δ) (hG : 1 ≤ G)
     (hbound : (∫ w in Set.Icc (-G) G,
-        ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤ β₀) :
-    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2
-        * ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * β₀
-        + (4 * (5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖omegaCoeff P n‖ ^ 2)
-              / (Real.pi ^ 2 * G)
+        ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤ β₀) :
+    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ)
+        * ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * β₀
+        + (4 * (5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖omegaCoeff P n‖ ^ (2 : ℕ))
+              / (Real.pi ^ (2 : ℕ) * G)
             + 4 * (β₀ + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                * ∑ n ∈ Finset.Icc A₀ B₀, ‖omegaCoeff P n‖ ^ 2)
-              / (3 * Real.pi ^ 2 * G ^ 2)) := by
+                * ∑ n ∈ Finset.Icc A₀ B₀, ‖omegaCoeff P n‖ ^ (2 : ℕ))
+              / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))) := by
   classical
   set S : Finset ℕ := Finset.Icc A₀ B₀ with hS
   have hs0 : (0 : ℕ) ∉ S := by
@@ -47,7 +47,7 @@ theorem integral_kernel_normSq_omegaWeighted_head_le {P : Finset ℕ} {A₀ B₀
     intro n hn
     rw [hS, Finset.mem_Icc] at hn
     exact hn.2
-  have hbound' : (∫ w in Set.Icc (-G) G, ‖logPoly (omegaCoeff P) S w‖ ^ 2) ≤ β₀ := by
+  have hbound' : (∫ w in Set.Icc (-G) G, ‖logPoly (omegaCoeff P) S w‖ ^ (2 : ℕ)) ≤ β₀ := by
     refine le_trans (le_of_eq ?_) hbound
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [logPoly_omegaCoeff_eq]

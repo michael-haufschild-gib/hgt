@@ -234,21 +234,21 @@ theorem velocityPolyEval_mem_velocityField (W : Polynomial MahlerBase) :
 
 /-- The base monomial squared as an evaluated constant. -/
 theorem monoRatEval_one_X_sq :
-    monoRatEval 1 one_pos ((RatFunc.X : RatFunc ℂ) ^ 2) = mahlerT * mahlerT := by
+    monoRatEval 1 one_pos ((RatFunc.X : RatFunc ℂ) ^ (2 : ℕ)) = mahlerT * mahlerT := by
   rw [map_pow, monoRatEval_X, sq, mahlerT, HahnSeries.single_mul_single, mul_one]
 
 /-- The affine Mahler substitution on the velocity variable, `Y ↦ 2·Y − t²`, combined
 with the dyadic substitution on the base coefficients. -/
 def velocityTwoVarPolyHom : Polynomial MahlerBase →+* Polynomial MahlerBase :=
   letI : Invertible (2 : MahlerBase) := invertibleOfNonzero two_ne_zero
-  ((algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ 2))).toAlgHom.toRingHom).comp
+  ((algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ (2 : ℕ)))).toAlgHom.toRingHom).comp
     (Polynomial.mapRingHom (MahlerPolynomial.mahlerHom 0).toRingHom)
 
 theorem velocityTwoVarPolyHom_C (e : MahlerBase) :
     velocityTwoVarPolyHom (Polynomial.C e) =
       Polynomial.C (MahlerPolynomial.mahlerHom 0 e) := by
   letI : Invertible (2 : MahlerBase) := invertibleOfNonzero two_ne_zero
-  show (algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ 2)))
+  show (algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ (2 : ℕ))))
     (Polynomial.map (MahlerPolynomial.mahlerHom 0).toRingHom (Polynomial.C e)) = _
   rw [Polynomial.map_C, algEquivCMulXAddC_apply, Polynomial.aeval_C,
     Polynomial.algebraMap_eq]
@@ -256,9 +256,9 @@ theorem velocityTwoVarPolyHom_C (e : MahlerBase) :
 
 theorem velocityTwoVarPolyHom_X :
     velocityTwoVarPolyHom Polynomial.X =
-      Polynomial.C 2 * Polynomial.X + Polynomial.C (-(RatFunc.X ^ 2)) := by
+      Polynomial.C 2 * Polynomial.X + Polynomial.C (-(RatFunc.X ^ (2 : ℕ))) := by
   letI : Invertible (2 : MahlerBase) := invertibleOfNonzero two_ne_zero
-  show (algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ 2)))
+  show (algEquivCMulXAddC (2 : MahlerBase) (-(RatFunc.X ^ (2 : ℕ))))
     (Polynomial.map (MahlerPolynomial.mahlerHom 0).toRingHom Polynomial.X) = _
   rw [Polynomial.map_X, algEquivCMulXAddC_apply, Polynomial.aeval_X]
 

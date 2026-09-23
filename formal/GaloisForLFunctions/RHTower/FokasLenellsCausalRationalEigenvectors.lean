@@ -18,8 +18,8 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace UpperHardyL2 := isClosed_hardyL2.completeSpace_coe
+local instance fokasLenellsCausalRationalEigenvectorsInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalRationalEigenvectorsInst2 : CompleteSpace UpperHardyL2 := isClosed_hardyL2.completeSpace_coe
 
 /-- An actual lower Hardy rational vector with its pole at the supplied upper point. -/
 def causalCauchyEigenvector (w : {z : ℂ // 0 < z.im}) : hardyL2ᗮ :=
@@ -50,12 +50,12 @@ theorem causalLowerCauchyEvolution_eigenvector (t : ℝ≥0) (w : {z : ℂ // 0 
 
 /-- Rational eigenvectors have the exact original Cauchy-kernel norm. -/
 theorem norm_causalCauchyEigenvector_sq (w : {z : ℂ // 0 < z.im}) :
-    ‖causalCauchyEigenvector w‖^2 = Real.pi/w.val.im := by
-  change ‖causalHardyConjugation (lowerCauchyFeatureAt w.val w.property)‖^2 = _
+    ‖causalCauchyEigenvector w‖^(2 : ℕ) = Real.pi/w.val.im := by
+  change ‖causalHardyConjugation (lowerCauchyFeatureAt w.val w.property)‖^(2 : ℕ) = _
   rw [causalHardyConjugation.norm_map]
   have h := congrArg Complex.re (inner_lowerCauchyFeatureAt_self w.property)
   calc
-    ‖lowerCauchyFeatureAt w.val w.property‖^2 =
+    ‖lowerCauchyFeatureAt w.val w.property‖^(2 : ℕ) =
         (inner ℂ (lowerCauchyFeatureAt w.val w.property) (lowerCauchyFeatureAt w.val w.property)).re :=
       norm_sq_eq_re_inner (𝕜 := ℂ) _
     _ = Real.pi/w.val.im := by simpa only [Complex.ofReal_re] using h

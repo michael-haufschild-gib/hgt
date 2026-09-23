@@ -3,10 +3,10 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAQuarticHarmonicJets
 /-!
 # Classification of the critical profile's odd differential operators
 
-Among a*D^5+b*D^3+c*D, the critical quartic profile is annihilated
-exactly by scalar multiples of D(D^2+4)(D^2+16). The two critical
+Among a*D^(5 : ℕ)+b*D^(3 : ℕ)+c*D, the critical quartic profile is annihilated
+exactly by scalar multiples of D(D^(2 : ℕ)+4)(D^(2 : ℕ)+16). The two critical
 frequencies force both coefficient ratios. Consequently no nonzero
-operator b*D^3+c*D annihilates this profile. This classifies this
+operator b*D^(3 : ℕ)+c*D annihilates this profile. This classifies this
 specific odd family; it does not assert a general variable-coefficient
 minimal-order result.
 -/
@@ -16,14 +16,14 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAQuarticProfile_first_sine_harmonics (ψ : ℝ) :
-    iteratedDeriv 1 (fun x : ℝ => cos x ^ 4) ψ = (-1 : ℝ) * sin (2 * ψ) + (-1 / 2 : ℝ) * sin (4 * ψ) := by
+    iteratedDeriv 1 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ = (-1 : ℝ) * sin (2 * ψ) + (-1 / 2 : ℝ) * sin (4 * ψ) := by
   have h := egbFixedChargeAQuarticProfile_harmonic_jet 0 ψ
   rw [iteratedDeriv_cos_mul_succ, iteratedDeriv_cos_mul_succ] at h
   simp only [iteratedDeriv_zero] at h
   convert h using 1 <;> ring
 
 theorem egbFixedChargeAQuarticProfile_third_sine_harmonics (ψ : ℝ) :
-    iteratedDeriv 3 (fun x : ℝ => cos x ^ 4) ψ = (4 : ℝ) * sin (2 * ψ) + (8 : ℝ) * sin (4 * ψ) := by
+    iteratedDeriv 3 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ = (4 : ℝ) * sin (2 * ψ) + (8 : ℝ) * sin (4 * ψ) := by
   have h := egbFixedChargeAQuarticProfile_harmonic_jet 2 ψ
   rw [show 2 + 1 = 1 + 2 by omega, egbFixedChargeAQuarticMode_two_step,
     egbFixedChargeAQuarticMode_two_step] at h
@@ -32,7 +32,7 @@ theorem egbFixedChargeAQuarticProfile_third_sine_harmonics (ψ : ℝ) :
   convert h using 1 <;> ring
 
 theorem egbFixedChargeAQuarticProfile_fifth_sine_harmonics (ψ : ℝ) :
-    iteratedDeriv 5 (fun x : ℝ => cos x ^ 4) ψ = (-16 : ℝ) * sin (2 * ψ) + (-128 : ℝ) * sin (4 * ψ) := by
+    iteratedDeriv 5 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ = (-16 : ℝ) * sin (2 * ψ) + (-128 : ℝ) * sin (4 * ψ) := by
   have h := egbFixedChargeAQuarticProfile_harmonic_jet 4 ψ
   rw [show 4 + 1 = 1 + 4 by omega, egbFixedChargeAQuarticMode_four_step,
     egbFixedChargeAQuarticMode_four_step] at h
@@ -41,9 +41,9 @@ theorem egbFixedChargeAQuarticProfile_fifth_sine_harmonics (ψ : ℝ) :
   convert h using 1 <;> ring
 
 theorem egbFixedChargeAQuarticProfile_odd_operator_harmonics (a b c ψ : ℝ) :
-    a * iteratedDeriv 5 (fun x : ℝ => cos x ^ 4) ψ +
-      b * iteratedDeriv 3 (fun x : ℝ => cos x ^ 4) ψ +
-      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ 4) ψ =
+    a * iteratedDeriv 5 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ +
+      b * iteratedDeriv 3 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ +
+      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ =
       (-16 * a + 4 * b - c) * sin (2 * ψ) +
       (-128 * a + 8 * b - c / 2) * sin (4 * ψ) := by
   rw [egbFixedChargeAQuarticProfile_fifth_sine_harmonics,
@@ -52,9 +52,9 @@ theorem egbFixedChargeAQuarticProfile_odd_operator_harmonics (a b c ψ : ℝ) :
   ring
 
 theorem egbFixedChargeAQuarticProfile_odd_operator_classification (a b c : ℝ) :
-    (∀ ψ : ℝ, a * iteratedDeriv 5 (fun x : ℝ => cos x ^ 4) ψ +
-      b * iteratedDeriv 3 (fun x : ℝ => cos x ^ 4) ψ +
-      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ 4) ψ = 0) ↔
+    (∀ ψ : ℝ, a * iteratedDeriv 5 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ +
+      b * iteratedDeriv 3 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ +
+      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ = 0) ↔
       b = 20 * a ∧ c = 64 * a := by
   constructor
   · intro h
@@ -73,8 +73,8 @@ theorem egbFixedChargeAQuarticProfile_odd_operator_classification (a b c : ℝ) 
     ring
 
 theorem egbFixedChargeAQuarticProfile_third_order_obstruction (b c : ℝ) :
-    (∀ ψ : ℝ, b * iteratedDeriv 3 (fun x : ℝ => cos x ^ 4) ψ +
-      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ 4) ψ = 0) ↔ b = 0 ∧ c = 0 := by
+    (∀ ψ : ℝ, b * iteratedDeriv 3 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ +
+      c * iteratedDeriv 1 (fun x : ℝ => cos x ^ (4 : ℕ)) ψ = 0) ↔ b = 0 ∧ c = 0 := by
   simpa only [mul_zero, zero_mul, zero_add] using
     egbFixedChargeAQuarticProfile_odd_operator_classification 0 b c
 

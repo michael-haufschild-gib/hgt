@@ -67,10 +67,10 @@ theorem routePJuliaKrein_history_ordered_coordinate_asymmetry :
     (routePJuliaKreinChildHistoryStep * routePJuliaKreinNegativePivotHistoryStep) 0 0 =
         (63 / 64 : ℂ) ∧
       (routePJuliaKreinNegativePivotHistoryStep * routePJuliaKreinChildHistoryStep) 0 0 = 0 := by
-  have hdefect : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 = 63 / 64 := by
+  have hdefect : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) = 63 / 64 := by
     calc
-      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
-          ((routeEPCubicFourthDepthJuliaDefect ^ 2 : ℝ) : ℂ) :=
+      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
+          ((routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) : ℝ) : ℂ) :=
         (Complex.ofReal_pow _ _).symm
       _ = ((63 / 64 : ℝ) : ℂ) := by
         have h := routeEPCubicFourthDepthJulia_pythagoras

@@ -19,7 +19,7 @@ it the corpus's own power-of-log lower bound
     D(μ, n^{it}; x)²  ≥  log log x − 11 log log|t| − C .
 ```
 
-* `primeCosPlusSum_ge_of_zeta_lower`;
+* `primeCosPlusSum_ge_of_zeta_lower_primeCosSumHighFreq`;
 * `exists_primeCosPlusSum_ge_high_freq`.
 -/
 
@@ -31,7 +31,7 @@ noncomputable section
 
 /-- **The positive prime cosine sum, bounded by the value of `ζ` at the shifted point.**  No
 restriction on the frequency. -/
-theorem primeCosPlusSum_ge_of_zeta_lower {c : ℝ} (hc0 : 0 < c) {x t : ℝ}
+theorem primeCosPlusSum_ge_of_zeta_lower_primeCosSumHighFreq {c : ℝ} (hc0 : 0 < c) {x t : ℝ}
     (hx : Real.exp 2 ≤ x)
     (hzeta : c ≤ ‖riemannZeta (((1 + 1 / Real.log x : ℝ) : ℂ) + Complex.I * (t : ℂ))‖) :
     Real.log (Real.log x) + Real.log c + 2 * Sieve.meisselMertensConst
@@ -109,14 +109,14 @@ theorem exists_primeCosPlusSum_ge_high_freq :
   have ht9 : (9 : ℝ) ≤ |t| := le_trans ht₀ ht
   have hlogt : (2 : ℝ) ≤ Real.log |t| := two_le_log_of_eight_le (by linarith)
   have hlogt0 : (0 : ℝ) < Real.log |t| := by linarith
-  have hpow0 : (0 : ℝ) < (Real.log |t|) ^ 11 := by positivity
+  have hpow0 : (0 : ℝ) < (Real.log |t|) ^ (11 : ℕ) := by positivity
   have hzeta := hT (1 + 1 / Real.log x) t hσ1 hσ2 ht
   have hpt : ((1 + 1 / Real.log x : ℝ) : ℂ) + (t : ℂ) * Complex.I
       = ((1 + 1 / Real.log x : ℝ) : ℂ) + Complex.I * (t : ℂ) := by ring
   rw [hpt] at hzeta
-  have hcpos : (0 : ℝ) < c / (Real.log |t|) ^ 11 := by positivity
-  have hmain := primeCosPlusSum_ge_of_zeta_lower hcpos hx2 hzeta
-  have hlogdiv : Real.log (c / (Real.log |t|) ^ 11)
+  have hcpos : (0 : ℝ) < c / (Real.log |t|) ^ (11 : ℕ) := by positivity
+  have hmain := primeCosPlusSum_ge_of_zeta_lower_primeCosSumHighFreq hcpos hx2 hzeta
+  have hlogdiv : Real.log (c / (Real.log |t|) ^ (11 : ℕ))
       = Real.log c - 11 * Real.log (Real.log |t|) := by
     rw [Real.log_div (ne_of_gt hc0) (ne_of_gt hpow0), Real.log_pow]
     push_cast

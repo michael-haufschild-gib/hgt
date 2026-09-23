@@ -8,17 +8,17 @@ import GaloisForLFunctions.RHTower.DeningerGammaSixTraceIdealSoninStrictLiftObst
 The fixed-total-grade actual Gamma packets constructed at every valuation
 depth become one fixed Sonin commutator after division by their strictly
 positive source calibration.  This normalization is necessarily unbounded
-on the ambient cofinal `ell^2` carrier.
+on the ambient cofinal `ell^(2 : ℕ)` carrier.
 
 This module constructs its exact source-selected graph completion.  Finite
-cofinal packets are sent to their ambient `ell^2` realization together with
-their algebraic unit trace.  The graph is dense in `ell^2 direct-sum C`, so
+cofinal packets are sent to their ambient `ell^(2 : ℕ)` realization together with
+their algebraic unit trace.  The graph is dense in `ell^(2 : ℕ) direct-sum C`, so
 completion adds a one-dimensional vertical sector.  Actual normalized Gamma
 transport extends uniquely and continuously on this graph completion; its
 vertical generator maps to the fixed noncompact Sonin commutator.
 
 The resulting descent classification is sharp: graph transport factors
-through ambient `ell^2` exactly at neutral total grade.  This is a classifier,
+through ambient `ell^(2 : ℕ)` exactly at neutral total grade.  This is a classifier,
 not an assertion that the required Meyer/Rost--Schmid source annihilation
 holds.
 -/
@@ -33,7 +33,7 @@ noncomputable section
 /-- Finite cofinal depth packets before singular completion. -/
 abbrev DeningerGammaSixCofinalFinitePacket := ℕ →₀ ℂ
 
-/-- Coefficient-faithful finite-packet admission into ambient cofinal `ell^2`. -/
+/-- Coefficient-faithful finite-packet admission into ambient cofinal `ell^(2 : ℕ)`. -/
 def deningerGammaSixCofinalFinitePacketAdmission :
     DeningerGammaSixCofinalFinitePacket →ₗ[ℂ] EllTwo :=
   Finsupp.lsum ℂ (fun n => lp.lsingle (E := fun _ : ℕ => ℂ) 2 n)
@@ -105,7 +105,7 @@ theorem deningerGammaSixCofinalFiniteGraph_jointAnnihilator
   simp [hcoord n, hy]
 
 /-- **Exact graph saturation.**  Completion of finite cofinal packets for
-ambient norm plus unit-trace norm is all of `ell^2 direct-sum C`. -/
+ambient norm plus unit-trace norm is all of `ell^(2 : ℕ) direct-sum C`. -/
 theorem deningerGammaSixCofinalFiniteGraph_closure_eq_top :
     deningerGammaSixCofinalFiniteGraph.topologicalClosure = ⊤ := by
   apply GaloisForLFunctions.HTGeometry.linearGraphSubmodule_closure_eq_top_of_annihilator
@@ -134,7 +134,7 @@ theorem deningerGammaSixCofinalFiniteGraphAdmission_dense :
   exact Submodule.dense_iff_topologicalClosure_eq_top.mpr
     deningerGammaSixCofinalFiniteGraph_closure_eq_top
 
-/-- Forgetful projection from graph completion to ambient cofinal `ell^2`. -/
+/-- Forgetful projection from graph completion to ambient cofinal `ell^(2 : ℕ)`. -/
 def deningerGammaSixCofinalGraphAmbientProjection :
     DeningerGammaSixCofinalSingularGraph →L[ℂ] EllTwo :=
   WithLp.fstL 2 ℂ EllTwo ℂ
@@ -252,7 +252,7 @@ theorem tendsto_deningerGammaSixCofinalFinitePacketAdmission_averagingPacket :
       (deningerGammaSixCofinalAveragingPacket n))]
 
 /-- Uniform actual cofinal packets converge to the nonzero vertical graph
-generator while disappearing in ambient `ell^2`. -/
+generator while disappearing in ambient `ell^(2 : ℕ)`. -/
 theorem tendsto_deningerGammaSixCofinalFiniteGraphAdmission_averagingPacket :
     Tendsto (fun n => deningerGammaSixCofinalFiniteGraphAdmission
         (deningerGammaSixCofinalAveragingPacket n))
@@ -385,7 +385,7 @@ theorem deningerGammaSixCofinalGraphPhysicalTransport_unique
   rw [one_smul]
 
 /-- Every uniform finite average has the same actual fixed-Sonin value even
-though its ambient `ell^2` realization tends to zero. -/
+though its ambient `ell^(2 : ℕ)` realization tends to zero. -/
 theorem deningerGammaSixCofinalFiniteActualGammaTransport_averagingPacket
     (g : ℝ) (n : ℕ) :
     deningerGammaSixCofinalFiniteActualGammaTransport g
@@ -410,14 +410,14 @@ theorem deningerGammaSixFixedSoninPhysicalReceiver_eq_zero_iff (g : ℝ) :
     exact deningerGammaSixFixedSoninPhysicalReceiver_zero
 
 /-- Bounded ambient descent means graph transport forgets the singular
-coordinate and factors through ambient cofinal `ell^2`. -/
+coordinate and factors through ambient cofinal `ell^(2 : ℕ)`. -/
 def DeningerGammaSixCofinalGraphAmbientDescent (g : ℝ) : Prop :=
   ∃ F : EllTwo →L[ℂ] DeningerGammaSixSoninPhysicalOperator,
     deningerGammaSixCofinalGraphPhysicalTransport g =
       F.comp deningerGammaSixCofinalGraphAmbientProjection
 
 /-- **Singular graph descent law.**  Actual normalized Gamma transport
-factors through ambient `ell^2` exactly at neutral total grade. -/
+factors through ambient `ell^(2 : ℕ)` exactly at neutral total grade. -/
 theorem deningerGammaSixCofinalGraphAmbientDescent_iff (g : ℝ) :
     DeningerGammaSixCofinalGraphAmbientDescent g ↔ g = 0 := by
   constructor

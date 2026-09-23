@@ -31,7 +31,7 @@ def lowerWeylRadialDetector (q : XiZeroCopy) (branch side : Bool) (A : ℂ)
     (r : Ioi (1 : ℝ)) : ℂ :=
   A + lowerWeylFaceCoefficient q *
     overlapInverseSquare (physicalRate q branch)
-      (physicalFundamentalFrequency q side) / (r.val : ℂ) ^ 2
+      (physicalFundamentalFrequency q side) / (r.val : ℂ) ^ (2 : ℕ)
 
 private theorem lowerWeylFaceCoefficient_ne_zero (q : XiZeroCopy)
     (hleft : (q.1 : ℂ).re < 1 / 2) :

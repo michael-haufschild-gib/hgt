@@ -56,7 +56,7 @@ theorem deningerGreenForm_one_le_norm_of_normalized_packet
 theorem deningerGreenForm_one_le_norm_mul_packet_norm_sq
     (G : E →L[ℝ] E →L[ℝ] ℝ) (x : E)
     (henergy : G x x = 1) :
-    1 ≤ ‖G‖ * ‖x‖ ^ 2 := by
+    1 ≤ ‖G‖ * ‖x‖ ^ (2 : ℕ) := by
   have hinner := (G x).le_opNorm x
   have houter := G.le_opNorm x
   calc
@@ -64,7 +64,7 @@ theorem deningerGreenForm_one_le_norm_mul_packet_norm_sq
     _ ≤ ‖G x‖ * ‖x‖ := hinner
     _ ≤ (‖G‖ * ‖x‖) * ‖x‖ :=
       mul_le_mul_of_nonneg_right houter (norm_nonneg x)
-    _ = ‖G‖ * ‖x‖ ^ 2 := by ring
+    _ = ‖G‖ * ‖x‖ ^ (2 : ℕ) := by ring
 
 /-- Under all-place form summability, unit own-place energy forces packet norms to infinity. -/
 theorem deningerGreenForm_normalized_packets_norm_tendsto_atTop
@@ -78,24 +78,24 @@ theorem deningerGreenForm_normalized_packets_norm_tendsto_atTop
   let M : ℝ := max b 1
   have hbM : b ≤ M := le_max_left _ _
   have hM : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
-  have hthreshold : 0 < (M ^ 2)⁻¹ := inv_pos.mpr (sq_pos_of_pos hM)
+  have hthreshold : 0 < (M ^ (2 : ℕ))⁻¹ := inv_pos.mpr (sq_pos_of_pos hM)
   have hvanish := deningerSummableTerm_norm_tendsto_zero localForm hforms
-  have heventually : ∀ᶠ n in atTop, ‖localForm n‖ < (M ^ 2)⁻¹ :=
+  have heventually : ∀ᶠ n in atTop, ‖localForm n‖ < (M ^ (2 : ℕ))⁻¹ :=
     hvanish.eventually_lt_const hthreshold
   rcases (eventually_atTop.1 heventually) with ⟨N, hN⟩
   refine ⟨N, fun n hn => ?_⟩
   by_contra hnot
   have hxlt : ‖packet n‖ < b := lt_of_not_ge hnot
   have hxle : ‖packet n‖ ≤ M := (le_of_lt hxlt).trans hbM
-  have hsq : ‖packet n‖ ^ 2 ≤ M ^ 2 :=
+  have hsq : ‖packet n‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hM.le).2 hxle
   have hxne : packet n ≠ 0 := by
     intro hx
     simpa [hx] using hpacket_energy n
-  have hxnormsq : 0 < ‖packet n‖ ^ 2 :=
+  have hxnormsq : 0 < ‖packet n‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr hxne)
   have hprodlt :
-      ‖localForm n‖ * ‖packet n‖ ^ 2 < (M ^ 2)⁻¹ * M ^ 2 :=
+      ‖localForm n‖ * ‖packet n‖ ^ (2 : ℕ) < (M ^ (2 : ℕ))⁻¹ * M ^ (2 : ℕ) :=
     mul_lt_mul (hN n hn) hsq hxnormsq hthreshold.le
   rw [inv_mul_cancel₀ (pow_ne_zero 2 hM.ne')] at hprodlt
   exact (not_lt_of_ge

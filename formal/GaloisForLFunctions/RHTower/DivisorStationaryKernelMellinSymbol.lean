@@ -21,8 +21,8 @@ the positive zeroth logarithmic moment and proves strict positivity.
 
 The file also audits the card's claimed boundary step `(V21)`.  Finite critical mass alone does
 not imply a finite second logarithmic moment: the explicit coefficients
-`c(n) = 1 / log(n)^2` have summable `c(n)/n` but divergent
-`c(n) log(n)^2 / n`.  The final closed theorem records that obstruction, so the unqualified paper
+`c(n) = 1 / log(n)^(2 : ℕ)` have summable `c(n)/n` but divergent
+`c(n) log(n)^(2 : ℕ) / n`.  The final closed theorem records that obstruction, so the unqualified paper
 boundary inference cannot be formalized as stated.
 -/
 

@@ -55,22 +55,22 @@ theorem softLightFilter_le_self {p : I → ℝ} (hp : ∀ j, 0 ≤ p j) (a C : �
 /-- **The soft-light filter keeps almost all the mass.**  The mass above the threshold `4C/a` is at
 most `a/4` when the collision mass is at most `C`. -/
 theorem softLightFilter_mass_ge {p : I → ℝ} (hp : ∀ j, 0 ≤ p j) (hsum : ∑ j, p j = 1)
-    {a C : ℝ} (ha : 0 < a) (hCpos : 0 < C) (hC : ∑ j, p j ^ 2 ≤ C) :
+    {a C : ℝ} (ha : 0 < a) (hCpos : 0 < C) (hC : ∑ j, p j ^ (2 : ℕ) ≤ C) :
     1 - a / 4 ≤ ∑ j, softLightFilter p a C j := by
   classical
   set t : ℝ := 4 * C / a with ht
   have htpos : 0 < t := by positivity
   set B : Finset I := Finset.univ.filter fun j => ¬ (p j ≤ t) with hB
   have hdrop : ∑ j ∈ B, p j ≤ a / 4 := by
-    have hstep : ∀ j ∈ B, t * p j ≤ p j ^ 2 := by
+    have hstep : ∀ j ∈ B, t * p j ≤ p j ^ (2 : ℕ) := by
       intro j hj
       rw [hB, Finset.mem_filter] at hj
       have hgt : t < p j := not_le.mp hj.2
       nlinarith [hp j]
     have hkey : t * ∑ j ∈ B, p j ≤ C := by
       calc t * ∑ j ∈ B, p j = ∑ j ∈ B, t * p j := by rw [Finset.mul_sum]
-        _ ≤ ∑ j ∈ B, p j ^ 2 := Finset.sum_le_sum hstep
-        _ ≤ ∑ j, p j ^ 2 :=
+        _ ≤ ∑ j ∈ B, p j ^ (2 : ℕ) := Finset.sum_le_sum hstep
+        _ ≤ ∑ j, p j ^ (2 : ℕ) :=
             Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
               (fun i _ _ => sq_nonneg _)
         _ ≤ C := hC
@@ -119,19 +119,19 @@ theorem fidelityReplicaMultiplicityAmplitude_le {weight : I → ℝ} (hw : ∀ j
 collision mass at most `(r M)^r`. -/
 theorem replicaCollisionMass_le {weight : I → ℝ} (hw : ∀ j, 0 ≤ weight j)
     (hsum : ∑ j, weight j = 1) {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ j, weight j ≤ M) (r : ℕ) :
-    ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ 2
+    ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ)
       ≤ ((r : ℝ) * M) ^ r := by
   classical
   have hampnn : ∀ p : I → ℕ, 0 ≤ fidelityReplicaMultiplicityAmplitude weight p :=
     fun p => fidelityReplicaMultiplicityAmplitude_nonneg hw p
   have hstep : ∀ p ∈ Finset.univ.piAntidiag r,
-      fidelityReplicaMultiplicityAmplitude weight p ^ 2 ≤
+      fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ) ≤
         ((Nat.factorial r : ℝ) * M ^ r) * fidelityReplicaMultiplicityAmplitude weight p := by
     intro p hp
     rw [sq]
     exact mul_le_mul_of_nonneg_right (fidelityReplicaMultiplicityAmplitude_le hw hM0 hM hp)
       (hampnn p)
-  calc ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ 2
+  calc ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ)
       ≤ ∑ p ∈ Finset.univ.piAntidiag r,
           ((Nat.factorial r : ℝ) * M ^ r) * fidelityReplicaMultiplicityAmplitude weight p :=
         Finset.sum_le_sum hstep

@@ -39,49 +39,49 @@ theorem sum_offdiag_weighted_le (S : Finset ℕ) (H : ℕ) (b : ℕ → ℝ) (G 
     (hG : ∀ h, 0 ≤ G h)
     (hmap : ∀ m₁ ∈ S, ∀ m₂ ∈ S.erase m₁, Nat.dist m₁ m₂ ∈ Finset.Icc 1 H) :
     (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, |b m₁| * |b m₂| * G (Nat.dist m₁ m₂))
-      ≤ (∑ m ∈ S, |b m| ^ 2) * (2 * ∑ h ∈ Finset.Icc 1 H, G h) := by
+      ≤ (∑ m ∈ S, |b m| ^ (2 : ℕ)) * (2 * ∑ h ∈ Finset.Icc 1 H, G h) := by
   classical
   set T : ℝ := ∑ h ∈ Finset.Icc 1 H, G h with hT
   have hT0 : 0 ≤ T := Finset.sum_nonneg fun h _ => hG h
   have hsplit : ∀ m₁ ∈ S, ∀ m₂ ∈ S.erase m₁,
       |b m₁| * |b m₂| * G (Nat.dist m₁ m₂)
-        ≤ (|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2 + (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2 := by
+        ≤ (|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2 + (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2 := by
     intro m₁ _ m₂ _
     nlinarith [sq_nonneg (|b m₁| - |b m₂|), hG (Nat.dist m₁ m₂)]
   refine le_trans (Finset.sum_le_sum fun m₁ hm₁ =>
     Finset.sum_le_sum fun m₂ hm₂ => hsplit m₁ hm₁ m₂ hm₂) ?_
   have hdist : ∀ m₁ ∈ S,
-      (∑ m₂ ∈ S.erase m₁, ((|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2
-          + (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2))
-      = (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2)
-        + ∑ m₂ ∈ S.erase m₁, (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2 :=
+      (∑ m₂ ∈ S.erase m₁, ((|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2
+          + (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2))
+      = (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)
+        + ∑ m₂ ∈ S.erase m₁, (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2 :=
     fun m₁ _ => Finset.sum_add_distrib
   rw [Finset.sum_congr rfl hdist, Finset.sum_add_distrib]
-  have hA : (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, (|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2)
-      ≤ (∑ m ∈ S, |b m| ^ 2) * T := by
+  have hA : (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, (|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)
+      ≤ (∑ m ∈ S, |b m| ^ (2 : ℕ)) * T := by
     have hrow : ∀ m₁ ∈ S,
-        (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2) ≤ |b m₁| ^ 2 * T := by
+        (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2) ≤ |b m₁| ^ (2 : ℕ) * T := by
       intro m₁ hm₁
       have hgap := sum_row_gap_le S H G hG (fun m₂ hm₂ => hmap m₁ hm₁ m₂ hm₂)
-      have hid : (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ 2 * G (Nat.dist m₁ m₂)) / 2)
-          = |b m₁| ^ 2 / 2 * ∑ m₂ ∈ S.erase m₁, G (Nat.dist m₁ m₂) := by
+      have hid : (∑ m₂ ∈ S.erase m₁, (|b m₁| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)
+          = |b m₁| ^ (2 : ℕ) / 2 * ∑ m₂ ∈ S.erase m₁, G (Nat.dist m₁ m₂) := by
         rw [Finset.mul_sum]
         exact Finset.sum_congr rfl fun m₂ _ => by ring
       rw [hid, ← hT] at *
       nlinarith [hgap, sq_nonneg (|b m₁|)]
     refine le_trans (Finset.sum_le_sum hrow) (le_of_eq ?_)
     rw [← Finset.sum_mul]
-  have hB : (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2)
-      ≤ (∑ m ∈ S, |b m| ^ 2) * T := by
-    rw [sum_erase_swap_finset S (fun m₁ m₂ => (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2)]
+  have hB : (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)
+      ≤ (∑ m ∈ S, |b m| ^ (2 : ℕ)) * T := by
+    rw [sum_erase_swap_finset S (fun m₁ m₂ => (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)]
     have hrow : ∀ m₂ ∈ S,
-        (∑ m₁ ∈ S.erase m₂, (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2) ≤ |b m₂| ^ 2 * T := by
+        (∑ m₁ ∈ S.erase m₂, (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2) ≤ |b m₂| ^ (2 : ℕ) * T := by
       intro m₂ hm₂
       have hgap := sum_row_gap_le S H G hG (fun m₁ hm₁ => by
         have h := hmap m₂ hm₂ m₁ hm₁
         rwa [Nat.dist_comm] at h ⊢)
-      have hid : (∑ m₁ ∈ S.erase m₂, (|b m₂| ^ 2 * G (Nat.dist m₁ m₂)) / 2)
-          = |b m₂| ^ 2 / 2 * ∑ m₁ ∈ S.erase m₂, G (Nat.dist m₂ m₁) := by
+      have hid : (∑ m₁ ∈ S.erase m₂, (|b m₂| ^ (2 : ℕ) * G (Nat.dist m₁ m₂)) / 2)
+          = |b m₂| ^ (2 : ℕ) / 2 * ∑ m₁ ∈ S.erase m₂, G (Nat.dist m₂ m₁) := by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun m₁ _ => ?_
         rw [Nat.dist_comm m₂ m₁]
@@ -90,8 +90,8 @@ theorem sum_offdiag_weighted_le (S : Finset ℕ) (H : ℕ) (b : ℕ → ℝ) (G 
       nlinarith [hgap, sq_nonneg (|b m₂|)]
     refine le_trans (Finset.sum_le_sum hrow) (le_of_eq ?_)
     rw [← Finset.sum_mul]
-  have hfin : (∑ m ∈ S, |b m| ^ 2) * T + (∑ m ∈ S, |b m| ^ 2) * T
-      = (∑ m ∈ S, |b m| ^ 2) * (2 * T) := by ring
+  have hfin : (∑ m ∈ S, |b m| ^ (2 : ℕ)) * T + (∑ m ∈ S, |b m| ^ (2 : ℕ)) * T
+      = (∑ m ∈ S, |b m| ^ (2 : ℕ)) * (2 * T) := by ring
   linarith [hA, hB, hfin]
 
 end RHTower.Sieve

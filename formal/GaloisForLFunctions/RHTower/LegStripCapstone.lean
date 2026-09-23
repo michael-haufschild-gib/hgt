@@ -29,7 +29,7 @@ noncomputable section
 namespace RHTower
 
 theorem tsum_kk_geom {ρ : ℝ} (h0 : 0 ≤ ρ) (h1 : ρ < 1) :
-    ∑' k : ℕ, (k:ℝ)*((k:ℝ)+1) * ρ^k = 2*ρ/(1-ρ)^3 := by
+    ∑' k : ℕ, (k:ℝ)*((k:ℝ)+1) * ρ^k = 2*ρ/(1-ρ)^(3 : ℕ) := by
   have hnorm : ‖ρ‖ < 1 := by rw [Real.norm_eq_abs, abs_of_nonneg h0]; exact h1
   have h2 := tsum_choose_mul_geometric_of_norm_lt_one (𝕜 := ℝ) 2 hnorm
   have h1' := tsum_choose_mul_geometric_of_norm_lt_one (𝕜 := ℝ) 1 hnorm
@@ -39,11 +39,11 @@ theorem tsum_kk_geom {ρ : ℝ} (h0 : 0 ≤ ρ) (h1 : ρ < 1) :
     intro k; rw [Nat.choose_one_right]; push_cast; ring
   have sc2 := summable_choose_mul_geometric_of_norm_lt_one (R := ℝ) 2 hnorm
   have sc1 := summable_choose_mul_geometric_of_norm_lt_one (R := ℝ) 1 hnorm
-  have hA : ∑' k : ℕ, (((k:ℝ)+1)*((k:ℝ)+2))*ρ^k = 2/(1-ρ)^3 := by
+  have hA : ∑' k : ℕ, (((k:ℝ)+1)*((k:ℝ)+2))*ρ^k = 2/(1-ρ)^(3 : ℕ) := by
     have hc : ∀ k:ℕ, (((k:ℝ)+1)*((k:ℝ)+2))*ρ^k = 2*(((k+2).choose 2:ℝ)*ρ^k) := by
       intro k; rw [e2 k]; ring
     rw [tsum_congr hc, tsum_mul_left, h2, mul_one_div]
-  have hB : ∑' k : ℕ, ((k:ℝ)+1)*ρ^k = 1/(1-ρ)^2 := by
+  have hB : ∑' k : ℕ, ((k:ℝ)+1)*ρ^k = 1/(1-ρ)^(2 : ℕ) := by
     have hc : ∀ k:ℕ, ((k:ℝ)+1)*ρ^k = (((k+1).choose 1:ℝ))*ρ^k := by intro k; rw [e1 k]
     rw [tsum_congr hc, h1']
   have hsummA : Summable (fun k:ℕ => (((k:ℝ)+1)*((k:ℝ)+2))*ρ^k) := by
@@ -57,7 +57,7 @@ theorem tsum_kk_geom {ρ : ℝ} (h0 : 0 ≤ ρ) (h1 : ρ < 1) :
   field_simp; ring
 
 theorem phi_beta_bound {β : ℝ} (hβ : 0 < β) :
-    β^3 * Real.exp (-β) / (1 - Real.exp (-β))^3 ≤ 216 := by
+    β^(3 : ℕ) * Real.exp (-β) / (1 - Real.exp (-β))^(3 : ℕ) ≤ 216 := by
   have hβ0 : β ≠ 0 := ne_of_gt hβ
   have he : Real.exp (-β) < 1 := by rw [Real.exp_lt_one_iff]; linarith
   have hep : 0 < Real.exp (-β) := Real.exp_pos _
@@ -69,24 +69,24 @@ theorem phi_beta_bound {β : ℝ} (hβ : 0 < β) :
       rw [Real.exp_neg, ← one_div]; exact one_div_le_one_div_of_le h1p (by linarith)
     have hid : (1:ℝ) - 1/(1+β) = β/(1+β) := by field_simp; ring
     linarith [hrec]
-  have hcube : (β/(1+β))^3 ≤ (1 - Real.exp (-β))^3 := pow_le_pow_left₀ (by positivity) hkey 3
-  have hnum : 0 ≤ β^3 * Real.exp (-β) := by positivity
-  have hstep : β^3 * Real.exp (-β) / (1 - Real.exp (-β))^3
-      ≤ β^3 * Real.exp (-β) / (β/(1+β))^3 := div_le_div_of_nonneg_left hnum (by positivity) hcube
-  have hsimp : β^3 * Real.exp (-β) / (β/(1+β))^3 = Real.exp (-β) * (1+β)^3 := by
+  have hcube : (β/(1+β))^(3 : ℕ) ≤ (1 - Real.exp (-β))^(3 : ℕ) := pow_le_pow_left₀ (by positivity) hkey 3
+  have hnum : 0 ≤ β^(3 : ℕ) * Real.exp (-β) := by positivity
+  have hstep : β^(3 : ℕ) * Real.exp (-β) / (1 - Real.exp (-β))^(3 : ℕ)
+      ≤ β^(3 : ℕ) * Real.exp (-β) / (β/(1+β))^(3 : ℕ) := div_le_div_of_nonneg_left hnum (by positivity) hcube
+  have hsimp : β^(3 : ℕ) * Real.exp (-β) / (β/(1+β))^(3 : ℕ) = Real.exp (-β) * (1+β)^(3 : ℕ) := by
     rw [div_pow]; field_simp
   rw [hsimp] at hstep
-  have hcube_exp : (Real.exp (β/3))^3 = Real.exp β := by
+  have hcube_exp : (Real.exp (β/3))^(3 : ℕ) = Real.exp β := by
     rw [pow_three, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have hcube2 : (1+β)^3 ≤ 216 * Real.exp β := by
+  have hcube2 : (1+β)^(3 : ℕ) ≤ 216 * Real.exp β := by
     have h3 : 1 + β/3 ≤ Real.exp (β/3) := by have := Real.add_one_le_exp (β/3); linarith
     have h6 : (1:ℝ) + β ≤ 6 * Real.exp (β/3) := by nlinarith [h3, Real.exp_pos (β/3)]
-    calc (1+β)^3 ≤ (6 * Real.exp (β/3))^3 := pow_le_pow_left₀ (by linarith) h6 3
-      _ = 216 * (Real.exp (β/3))^3 := by ring
+    calc (1+β)^(3 : ℕ) ≤ (6 * Real.exp (β/3))^(3 : ℕ) := pow_le_pow_left₀ (by linarith) h6 3
+      _ = 216 * (Real.exp (β/3))^(3 : ℕ) := by ring
       _ = 216 * Real.exp β := by rw [hcube_exp]
-  have hle : Real.exp (-β) * (1+β)^3 ≤ 216 := by
+  have hle : Real.exp (-β) * (1+β)^(3 : ℕ) ≤ 216 := by
     rw [Real.exp_neg, inv_mul_le_iff₀ (Real.exp_pos β)]
-    calc (1+β)^3 ≤ 216 * Real.exp β := hcube2
+    calc (1+β)^(3 : ℕ) ≤ 216 * Real.exp β := hcube2
       _ = Real.exp β * 216 := by ring
   linarith [hstep, hle]
 
@@ -104,7 +104,7 @@ theorem gauss_sum_real (m : ℕ) :
 
 theorem region1_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤ i) :
     (1/(i:ℝ)) * ∑ k ∈ Finset.range ((i+1)/2), (aheadTerm c n i k - behindTerm c n i k)
-      ≤ 36864 / ((n:ℝ)*c)^2 := by
+      ≤ 36864 / ((n:ℝ)*c)^(2 : ℕ) := by
   obtain ⟨r, hr_def⟩ : ∃ r:ℝ, r = (n:ℝ)*c := ⟨_, rfl⟩
   rw [← hr_def]
   have hn1 : (1:ℝ) ≤ (n:ℝ) := by exact_mod_cast n.pos
@@ -120,13 +120,13 @@ theorem region1_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤ i) :
   have hρ0 : 0 < ρ := by rw [hρ_def]; exact Real.exp_pos _
   have hρ1 : ρ < 1 := by rw [hρ_def, Real.exp_lt_one_iff]; linarith
   have h1mρ : 0 < 1 - ρ := by linarith
-  have hden : 0 < (1-ρ)^3 := by positivity
-  have hi3 : 0 < (i:ℝ)^3 := by positivity
-  have hβ3 : β^3 = r^3/(8*((i:ℝ)+1)^3) := by rw [hβ_def]; field_simp; ring
+  have hden : 0 < (1-ρ)^(3 : ℕ) := by positivity
+  have hi3 : 0 < (i:ℝ)^(3 : ℕ) := by positivity
+  have hβ3 : β^(3 : ℕ) = r^(3 : ℕ)/(8*((i:ℝ)+1)^(3 : ℕ)) := by rw [hβ_def]; field_simp; ring
   -- termwise bound
   have hterm : ∀ k ∈ Finset.range ((i+1)/2),
       aheadTerm c n i k - behindTerm c n i k
-        ≤ ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^2))) := by
+        ≤ ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)))) := by
     intro k hk
     rw [Finset.mem_range] at hk
     have h2k1 : 2*k+1 ≤ i := by omega
@@ -176,11 +176,11 @@ theorem region1_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤ i) :
       have hoff : 0 ≤ (n:ℝ)*(c/(2*(i:ℝ))) := by positivity
       have h1 : r * ((k:ℝ)/(2*((i:ℝ)+1))) ≤ r*Sa := mul_le_mul_of_nonneg_left hSa_lb hr0.le
       rw [neg_mul, heq]; linarith
-    have hD : Sb - Sa ≤ 4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^2) := by
+    have hD : Sb - Sa ≤ 4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)) := by
       have hcombine : Sb - Sa = ∑ j ∈ Finset.range k, (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)) := by
         rw [hSa, hSb, ← Finset.sum_sub_distrib]
       have hterm_ub : ∀ j ∈ Finset.range k,
-          1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1) ≤ 8*((j:ℝ)+1)/(3*(i:ℝ)^2) := by
+          1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1) ≤ 8*((j:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)) := by
         intro j hj; rw [Finset.mem_range] at hj
         have hja : (0:ℝ) < (i:ℝ)-1-j := by
           have hh : j + 2 ≤ i := by omega
@@ -190,25 +190,25 @@ theorem region1_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤ i) :
         have h2j : 2*((j:ℝ)+1) ≤ (i:ℝ) := by
           have hh : 2*(j+1) ≤ i := by omega
           exact_mod_cast hh
-        have habpos : 3*(i:ℝ)^2/4 ≤ ((i:ℝ)-1-j)*((i:ℝ)+j+1) := by
-          have hsq : (2*((j:ℝ)+1))^2 ≤ (i:ℝ)^2 := pow_le_pow_left₀ (by positivity) h2j 2
+        have habpos : 3*(i:ℝ)^(2 : ℕ)/4 ≤ ((i:ℝ)-1-j)*((i:ℝ)+j+1) := by
+          have hsq : (2*((j:ℝ)+1))^(2 : ℕ) ≤ (i:ℝ)^(2 : ℕ) := pow_le_pow_left₀ (by positivity) h2j 2
           nlinarith [hsq]
         have heq : 1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)
             = 2*((j:ℝ)+1)/(((i:ℝ)-1-j)*((i:ℝ)+j+1)) := by
           field_simp; ring
         rw [heq, div_le_div_iff₀ (by positivity) (by positivity)]
         have hmul := mul_le_mul_of_nonneg_left habpos (show (0:ℝ) ≤ 8*((j:ℝ)+1) by positivity)
-        have hLid : 2*((j:ℝ)+1) * (3*(i:ℝ)^2) = 8*((j:ℝ)+1) * (3*(i:ℝ)^2/4) := by ring
+        have hLid : 2*((j:ℝ)+1) * (3*(i:ℝ)^(2 : ℕ)) = 8*((j:ℝ)+1) * (3*(i:ℝ)^(2 : ℕ)/4) := by ring
         rw [hLid]; exact hmul
       calc Sb - Sa = ∑ j ∈ Finset.range k, (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)) := hcombine
-        _ ≤ ∑ j ∈ Finset.range k, 8*((j:ℝ)+1)/(3*(i:ℝ)^2) := Finset.sum_le_sum hterm_ub
-        _ = (8/(3*(i:ℝ)^2)) * ∑ j ∈ Finset.range k, ((j:ℝ)+1) := by rw [Finset.mul_sum]; congr 1; ext j; ring
-        _ = (8/(3*(i:ℝ)^2)) * ((k:ℝ)*((k:ℝ)+1)/2) := by rw [gauss_sum_real]
-        _ = 4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^2) := by ring
+        _ ≤ ∑ j ∈ Finset.range k, 8*((j:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)) := Finset.sum_le_sum hterm_ub
+        _ = (8/(3*(i:ℝ)^(2 : ℕ))) * ∑ j ∈ Finset.range k, ((j:ℝ)+1) := by rw [Finset.mul_sum]; congr 1; ext j; ring
+        _ = (8/(3*(i:ℝ)^(2 : ℕ))) * ((k:ℝ)*((k:ℝ)+1)/2) := by rw [gauss_sum_real]
+        _ = 4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)) := by ring
     calc aheadTerm c n i k - behindTerm c n i k
         ≤ aheadTerm c n i k * (r*(Sb-Sa)) := h1e
       _ ≤ ρ^k * (r*(Sb-Sa)) := mul_le_mul_of_nonneg_right hC (mul_nonneg hr0.le hDnn)
-      _ ≤ ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^2))) :=
+      _ ≤ ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)))) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hD hr0.le) (pow_nonneg hρ0.le k)
   -- sum the termwise bound and finish
   have hsumm_kk : Summable (fun k:ℕ => ((k:ℝ)*((k:ℝ)+1))*ρ^k) := by
@@ -216,33 +216,33 @@ theorem region1_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤ i) :
     apply ((summable_pow_mul_geometric_of_norm_lt_one 2 hnorm).add
       (summable_pow_mul_geometric_of_norm_lt_one 1 hnorm)).congr
     intro k; ring
-  have hsumtsum : ∑ k ∈ Finset.range ((i+1)/2), ((k:ℝ)*((k:ℝ)+1))*ρ^k ≤ 2*ρ/(1-ρ)^3 := by
+  have hsumtsum : ∑ k ∈ Finset.range ((i+1)/2), ((k:ℝ)*((k:ℝ)+1))*ρ^k ≤ 2*ρ/(1-ρ)^(3 : ℕ) := by
     rw [← tsum_kk_geom hρ0.le hρ1]
     exact hsumm_kk.sum_le_tsum _ (fun k _ => by positivity)
   have hphi := phi_beta_bound hβ0
   rw [← hρ_def] at hphi
   have hstep1 : ∑ k ∈ Finset.range ((i+1)/2), (aheadTerm c n i k - behindTerm c n i k)
-      ≤ (4*r/(3*(i:ℝ)^2)) * (2*ρ/(1-ρ)^3) := by
+      ≤ (4*r/(3*(i:ℝ)^(2 : ℕ))) * (2*ρ/(1-ρ)^(3 : ℕ)) := by
     calc ∑ k ∈ Finset.range ((i+1)/2), (aheadTerm c n i k - behindTerm c n i k)
-        ≤ ∑ k ∈ Finset.range ((i+1)/2), ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^2))) :=
+        ≤ ∑ k ∈ Finset.range ((i+1)/2), ρ^k * (r * (4*(k:ℝ)*((k:ℝ)+1)/(3*(i:ℝ)^(2 : ℕ)))) :=
           Finset.sum_le_sum hterm
-      _ = (4*r/(3*(i:ℝ)^2)) * ∑ k ∈ Finset.range ((i+1)/2), ((k:ℝ)*((k:ℝ)+1))*ρ^k := by
+      _ = (4*r/(3*(i:ℝ)^(2 : ℕ))) * ∑ k ∈ Finset.range ((i+1)/2), ((k:ℝ)*((k:ℝ)+1))*ρ^k := by
           rw [Finset.mul_sum]; congr 1; ext k; ring
-      _ ≤ (4*r/(3*(i:ℝ)^2)) * (2*ρ/(1-ρ)^3) := mul_le_mul_of_nonneg_left hsumtsum (by positivity)
+      _ ≤ (4*r/(3*(i:ℝ)^(2 : ℕ))) * (2*ρ/(1-ρ)^(3 : ℕ)) := mul_le_mul_of_nonneg_left hsumtsum (by positivity)
   -- final arithmetic
-  have hphi_cl : r^3*ρ ≤ 1728*((i:ℝ)+1)^3*(1-ρ)^3 := by
+  have hphi_cl : r^(3 : ℕ)*ρ ≤ 1728*((i:ℝ)+1)^(3 : ℕ)*(1-ρ)^(3 : ℕ) := by
     have h := hphi
     rw [div_le_iff₀ hden] at h
     rw [hβ3, div_mul_eq_mul_div, div_le_iff₀ (by positivity)] at h
     nlinarith [h]
-  have hi18 : ((i:ℝ)+1)^3 ≤ 8*(i:ℝ)^3 := by nlinarith [hi1]
-  have hLHS : (1/(i:ℝ)) * ((4*r/(3*(i:ℝ)^2)) * (2*ρ/(1-ρ)^3)) = (8*r*ρ)/(3*(i:ℝ)^3*(1-ρ)^3) := by
+  have hi18 : ((i:ℝ)+1)^(3 : ℕ) ≤ 8*(i:ℝ)^(3 : ℕ) := by nlinarith [hi1]
+  have hLHS : (1/(i:ℝ)) * ((4*r/(3*(i:ℝ)^(2 : ℕ))) * (2*ρ/(1-ρ)^(3 : ℕ))) = (8*r*ρ)/(3*(i:ℝ)^(3 : ℕ)*(1-ρ)^(3 : ℕ)) := by
     field_simp; ring
   calc (1/(i:ℝ)) * ∑ k ∈ Finset.range ((i+1)/2), (aheadTerm c n i k - behindTerm c n i k)
-      ≤ (1/(i:ℝ)) * ((4*r/(3*(i:ℝ)^2)) * (2*ρ/(1-ρ)^3)) :=
+      ≤ (1/(i:ℝ)) * ((4*r/(3*(i:ℝ)^(2 : ℕ))) * (2*ρ/(1-ρ)^(3 : ℕ))) :=
         mul_le_mul_of_nonneg_left hstep1 (by positivity)
-    _ = (8*r*ρ)/(3*(i:ℝ)^3*(1-ρ)^3) := hLHS
-    _ ≤ 36864/r^2 := by
+    _ = (8*r*ρ)/(3*(i:ℝ)^(3 : ℕ)*(1-ρ)^(3 : ℕ)) := hLHS
+    _ ≤ 36864/r^(2 : ℕ) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         nlinarith [hphi_cl, hi18, mul_le_mul_of_nonneg_right hi18 (pow_nonneg (le_of_lt h1mρ) 3),
           pow_nonneg (le_of_lt h1mρ) 3, hr0, hρ0]
@@ -430,7 +430,7 @@ def shellDiffTerm (c : ℝ) (n : ℕ+) (i : ℕ) : ℝ :=
 
 /-- The summable, `i`-uniform dominating bound: bulk term `36864/(cn)²` plus geometric tail. -/
 def shellBound (c : ℝ) (n : ℕ+) : ℝ :=
-  36864/((n:ℝ)*c)^2 + (3/2)*(9/10)^((n:ℝ)*c)/((n:ℝ)*c-1)
+  36864/((n:ℝ)*c)^(2 : ℕ) + (3/2)*(9/10)^((n:ℝ)*c)/((n:ℝ)*c-1)
 
 set_option maxHeartbeats 800000 in
 /-- The ahead shell is summable: `aheadTerm c n i k ≤ (i+1)^{cn}(i+1+k)^{−cn}`, a convergent
@@ -535,7 +535,7 @@ theorem shellDiffTerm_le {c : ℝ} (hc : 1 < c) (n : ℕ+) {i : ℕ} (hi : 2 ≤
     _ = (1/(i:ℝ)) * ∑ k ∈ Finset.range ((i+1)/2), (aheadTerm c n i k - behindTerm c n i k)
         + (1/(i:ℝ)) * ∑' m, aheadTerm c n i (m+(i+1)/2) := by
           rw [Finset.sum_sub_distrib]; ring
-    _ ≤ 36864/((n:ℝ)*c)^2 + (3/2)*(9/10)^((n:ℝ)*c)/((n:ℝ)*c-1) :=
+    _ ≤ 36864/((n:ℝ)*c)^(2 : ℕ) + (3/2)*(9/10)^((n:ℝ)*c)/((n:ℝ)*c-1) :=
         add_le_add (region1_le hc n hi) (tail_le hc n hi)
 
 /-- The dominating bound is summable: the bulk term is `O(1/n²)`, the tail term geometric. -/
@@ -543,7 +543,7 @@ theorem shellBound_summable {c : ℝ} (hc : 1 < c) :
     Summable (fun n : ℕ+ => shellBound c n) := by
   have hc0 : 0 < c := by linarith
   apply Summable.add
-  · have hbase : Summable (fun n : ℕ+ => (36864/c^2) * (1/(n:ℝ)^2)) :=
+  · have hbase : Summable (fun n : ℕ+ => (36864/c^(2 : ℕ)) * (1/(n:ℝ)^(2 : ℕ))) :=
       (((Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)).comp_injective
         PNat.coe_injective).mul_left _
     apply hbase.congr; intro n
@@ -577,7 +577,7 @@ summable `shellBound`. This collapses the shell-resolved balance into the litera
 `(A−B)/i → Φ(c)`. -/
 theorem tendsto_shellSum_stripResidue {c : ℝ} (hc : 1 < c) :
     Tendsto (fun i : ℕ => ∑' n : ℕ+, shellDiffTerm c n i) atTop (𝓝 (stripResidue c)) := by
-  have hgeq : (∑' n : ℕ+, (2 / (((n:ℝ)*c)^2 - 1))) = stripResidue c := by
+  have hgeq : (∑' n : ℕ+, (2 / (((n:ℝ)*c)^(2 : ℕ) - 1))) = stripResidue c := by
     rw [stripResidue_eq_tsum hc]; exact tsum_congr (fun n => by rw [mul_comm])
   rw [← hgeq]
   refine tendsto_tsum_of_dominated_convergence (shellBound_summable hc) (fun n => ?_) ?_

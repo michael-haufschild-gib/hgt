@@ -38,7 +38,7 @@ theorem real_secondJet_add_schurBoundary_nonneg
     (hmap : MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 1))
     (hfirst : deriv f 0 = (firstJet : ℂ))
     (hsecond : iteratedDeriv 2 f 0 = (secondJet : ℂ)) :
-    0 ≤ secondJet + 2 * (1 - firstJet ^ 2) := by
+    0 ≤ secondJet + 2 * (1 - firstJet ^ (2 : ℕ)) := by
   have hbound := norm_iteratedDeriv_two_le_schurSlack_closed hf hf0 hmap
   rw [hfirst, hsecond] at hbound
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hbound
@@ -60,7 +60,7 @@ theorem suzukiAllAngleCarrier_forces_real_twoJetSlack
       GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
         (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)) 0 =
       (secondJet : ℂ)) :
-    0 ≤ secondJet + 2 * (1 - firstJet ^ 2) := by
+    0 ≤ secondJet + 2 * (1 - firstJet ^ (2 : ℕ)) := by
   have hbound := norm_suzukiAllAngleCarrier_secondJet_le_schurSlack
     hA hE hAi hreal
   dsimp only at hbound
@@ -76,10 +76,10 @@ theorem suzukiParity_twoJetSlack_eq
     suzukiSecondDefectParityCurvature
           evenEnergy oddEnergy evenTilt oddTilt +
         2 * (1 - GaloisForLFunctions.RHTower.suzukiDefectAngle
-          evenEnergy oddEnergy ^ 2) =
+          evenEnergy oddEnergy ^ (2 : ℕ)) =
       8 * (oddEnergy * (evenEnergy + evenTilt) -
           evenEnergy * oddTilt) /
-        (evenEnergy + oddEnergy) ^ 2 := by
+        (evenEnergy + oddEnergy) ^ (2 : ℕ) := by
   rw [suzukiSecondDefectParityCurvature,
     GaloisForLFunctions.RHTower.suzukiDefectAngle]
   field_simp [hsum]
@@ -106,7 +106,7 @@ theorem suzukiSchurCarrier_forces_parity_twoJetSlack
   have hslack := real_secondJet_add_schurBoundary_nonneg
     hf hf0 hmap hfirst hsecond
   rw [suzukiParity_twoJetSlack_eq hsum.ne'] at hslack
-  have hden : 0 < (evenEnergy + oddEnergy) ^ 2 :=
+  have hden : 0 < (evenEnergy + oddEnergy) ^ (2 : ℕ) :=
     sq_pos_of_pos hsum
   have hnum := (le_div_iff₀ hden).mp hslack
   nlinarith
@@ -136,7 +136,7 @@ theorem suzukiAllAngleCarrier_forces_parity_twoJetSlack
   have hslack := suzukiAllAngleCarrier_forces_real_twoJetSlack
     hA hE hAi hreal hfirst hsecond
   rw [suzukiParity_twoJetSlack_eq hsum.ne'] at hslack
-  have hden : 0 < (evenEnergy + oddEnergy) ^ 2 :=
+  have hden : 0 < (evenEnergy + oddEnergy) ^ (2 : ℕ) :=
     sq_pos_of_pos hsum
   have hnum := (le_div_iff₀ hden).mp hslack
   nlinarith
@@ -192,9 +192,9 @@ theorem suzukiParity_twoJetSlack_balanced_nonneg_iff
 /-- Generic moment algebra behind the shifted-Hankel identification. -/
 theorem moment_twoJetSlack_eq_hankelMinor
     {A B C : ℝ} (hA : A ≠ 0) :
-    8 * (2 * C / A - B / A - (B / A) ^ 2) +
-        2 * (1 - ((A - 2 * B) / A) ^ 2) =
-      16 * (A * C - B ^ 2) / A ^ 2 := by
+    8 * (2 * C / A - B / A - (B / A) ^ (2 : ℕ)) +
+        2 * (1 - ((A - 2 * B) / A) ^ (2 : ℕ)) =
+      16 * (A * C - B ^ (2 : ℕ)) / A ^ (2 : ℕ) := by
   field_simp [hA]
   ring
 
@@ -202,12 +202,12 @@ theorem moment_twoJetSlack_eq_hankelMinor
 equal to the normalized first `2 × 2` Hankel minor of the safe-shift reciprocal moments. -/
 theorem primeArchSuzuki_twoJetSlack_eq_shiftedHankelMinor :
     primeArchSuzukiSecondDefectCalibration +
-        2 * (1 - primeArchSuzukiFirstDefectCalibration ^ 2) =
+        2 * (1 - primeArchSuzukiFirstDefectCalibration ^ (2 : ℕ)) =
       16 *
           ((primeArchShiftedReciprocalMoment 1 0).re *
               (primeArchShiftedReciprocalMoment 1 2).re -
-            (primeArchShiftedReciprocalMoment 1 1).re ^ 2) /
-        (primeArchShiftedReciprocalMoment 1 0).re ^ 2 := by
+            (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ)) /
+        (primeArchShiftedReciprocalMoment 1 0).re ^ (2 : ℕ) := by
   have hA : (primeArchShiftedReciprocalMoment 1 0).re ≠ 0 :=
     ne_of_gt re_primeArchShiftedReciprocalMoment_one_zero_pos
   rw [primeArchSuzukiFirstDefectCalibration,
@@ -218,16 +218,16 @@ theorem primeArchSuzuki_twoJetSlack_eq_shiftedHankelMinor :
 nonnegativity of the safe-shift first Hankel minor. -/
 theorem primeArchSuzuki_twoJetSlack_nonneg_iff_shiftedHankelMinor_nonneg :
     0 ≤ primeArchSuzukiSecondDefectCalibration +
-          2 * (1 - primeArchSuzukiFirstDefectCalibration ^ 2) ↔
+          2 * (1 - primeArchSuzukiFirstDefectCalibration ^ (2 : ℕ)) ↔
       0 ≤
         (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re -
-          (primeArchShiftedReciprocalMoment 1 1).re ^ 2 := by
+          (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) := by
   rw [primeArchSuzuki_twoJetSlack_eq_shiftedHankelMinor]
   have hA : 0 < (primeArchShiftedReciprocalMoment 1 0).re :=
     re_primeArchShiftedReciprocalMoment_one_zero_pos
   have hden :
-      0 < (primeArchShiftedReciprocalMoment 1 0).re ^ 2 :=
+      0 < (primeArchShiftedReciprocalMoment 1 0).re ^ (2 : ℕ) :=
     sq_pos_of_pos hA
   constructor
   · intro h

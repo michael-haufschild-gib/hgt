@@ -10,12 +10,12 @@ One finite positive clock packet has four source-generated values:
 
 * the parity--clock Schur capacity;
 * the squared Gibbs-damped Mass current, namely the clock variance `C`;
-* the first positive Hankel determinant `A*C-B^2`;
+* the first positive Hankel determinant `A*C-B^(2 : ℕ)`;
 * the transverse pure-state QFI, four times the Schur capacity.
 
 Their exact conservation law is
 
-`transverseQFI * massEnergy = 4 * pi^2 * hankelDet`.
+`transverseQFI * massEnergy = 4 * pi^(2 : ℕ) * hankelDet`.
 
 The module also transports the certified Boolean tilt response into the QFI organ, re-exports the
 arbitrarily-late prime-clock return theorem, records the exact half-density Mass damping, and
@@ -35,7 +35,7 @@ def fusionMassEnergy (w lam : ι → ℝ) : ℝ := capC w lam
 
 /-- First positive prime-clock Hankel determinant. -/
 def fusionHankelDet (w lam : ι → ℝ) : ℝ :=
-  capA w * capC w lam - capB w lam ^ 2
+  capA w * capC w lam - capB w lam ^ (2 : ℕ)
 
 /-- Conventional pure-state QFI normal to clock reparametrisation. -/
 def fusionTransverseQFI (w lam : ι → ℝ) : ℝ :=
@@ -43,7 +43,7 @@ def fusionTransverseQFI (w lam : ι → ℝ) : ℝ :=
 
 /-- Directional QFI before minimising over the clock correction `t`. -/
 def fusionDirectionalQFI (w lam : ι → ℝ) (t : ℝ) : ℝ :=
-  4 * (Real.pi ^ 2 * capA w - 2 * Real.pi * t * capB w lam + t ^ 2 * capC w lam)
+  4 * (Real.pi ^ (2 : ℕ) * capA w - 2 * Real.pi * t * capB w lam + t ^ (2 : ℕ) * capC w lam)
 
 theorem fusionMassEnergy_eq_capC (w lam : ι → ℝ) :
     fusionMassEnergy w lam = capC w lam := rfl
@@ -59,18 +59,18 @@ theorem pureStateQuantumFisherValue_booleanParityClock_eq_directional
     (q lam : ι → ℝ) (t : ℝ) :
     pureStateQuantumFisherValue 1
       (bernoulliExp q (linearStat fun p => Real.pi - t * lam p))
-      (bernoulliExp q (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ 2))
+      (bernoulliExp q (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ (2 : ℕ)))
       = fusionDirectionalQFI (bernoulliVar q) lam t := by
   unfold pureStateQuantumFisherValue projectiveQuantumTangentValue fusionDirectionalQFI
   simp only [one_pow, div_one]
   have hcov := bernoulliCov_affine_clock q lam Real.pi t
   rw [quadratic_expand] at hcov
   have hvar :
-      bernoulliExp q (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ 2) -
-          bernoulliExp q (linearStat fun p => Real.pi - t * lam p) ^ 2 =
-        Real.pi ^ 2 * capA (bernoulliVar q)
+      bernoulliExp q (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ (2 : ℕ)) -
+          bernoulliExp q (linearStat fun p => Real.pi - t * lam p) ^ (2 : ℕ) =
+        Real.pi ^ (2 : ℕ) * capA (bernoulliVar q)
           - 2 * Real.pi * t * capB (bernoulliVar q) lam
-          + t ^ 2 * capC (bernoulliVar q) lam := by
+          + t ^ (2 : ℕ) * capC (bernoulliVar q) lam := by
     calc
       _ = bernoulliCov q (linearStat fun p => Real.pi - t * lam p)
           (linearStat fun p => Real.pi - t * lam p) := by
@@ -101,7 +101,7 @@ omit [DecidableEq ι] in
 theorem fusionTransverseQFI_mul_massEnergy {w lam : ι → ℝ}
     (hC : 0 < capC w lam) :
     fusionTransverseQFI w lam * fusionMassEnergy w lam =
-      4 * Real.pi ^ 2 * fusionHankelDet w lam := by
+      4 * Real.pi ^ (2 : ℕ) * fusionHankelDet w lam := by
   unfold fusionTransverseQFI fusionMassEnergy fusionHankelDet
   rw [schurCapacity_eq_ratio hC]
   field_simp
@@ -124,17 +124,17 @@ theorem fusionHankelDet_pos {w lam : ι → ℝ} (hw : ∀ p, 0 < w p)
 
 /-! ## Exact half-density Mass damping -/
 
-/-- Squared primitive-prime Mass coefficient `lam^2 / p`. -/
-def primitiveMassEnergy (p lam : ℝ) : ℝ := lam ^ 2 / p
+/-- Squared primitive-prime Mass coefficient `lam^(2 : ℕ) / p`. -/
+def primitiveMassEnergy (p lam : ℝ) : ℝ := lam ^ (2 : ℕ) / p
 
 /-- Squared Gibbs-damped coefficient at the half-density weight. -/
-def gibbsDampedMassEnergy (p lam : ℝ) : ℝ := p / (p + 1) ^ 2 * lam ^ 2
+def gibbsDampedMassEnergy (p lam : ℝ) : ℝ := p / (p + 1) ^ (2 : ℕ) * lam ^ (2 : ℕ)
 
-/-- At half density, Gibbs damping is exactly multiplication by `(p/(p+1))^2` on Mass energy. -/
+/-- At half density, Gibbs damping is exactly multiplication by `(p/(p+1))^(2 : ℕ)` on Mass energy. -/
 theorem gibbsDampedMassEnergy_eq_damping_sq_mul_primitive
     {p lam : ℝ} (hp : 0 < p) :
     gibbsDampedMassEnergy p lam =
-      (p / (p + 1)) ^ 2 * primitiveMassEnergy p lam := by
+      (p / (p + 1)) ^ (2 : ℕ) * primitiveMassEnergy p lam := by
   have hp0 : p ≠ 0 := ne_of_gt hp
   have hp1 : p + 1 ≠ 0 := by linarith
   unfold gibbsDampedMassEnergy primitiveMassEnergy
@@ -144,20 +144,20 @@ theorem gibbsDampedMassEnergy_eq_damping_sq_mul_primitive
 
 /-- Transverse QFI along the exact finite Boolean tilt. -/
 def booleanTiltTransverseQFI (q lam : ι → ℝ) (r : Finset ι → ℝ) (e : ℝ) : ℝ :=
-  4 * (Real.pi ^ 2 *
+  4 * (Real.pi ^ (2 : ℕ) *
     (tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat fun _ => 1)
-      - tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat lam) ^ 2
+      - tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat lam) ^ (2 : ℕ)
         / tiltCov (bernoulliWeight q) r e (linearStat lam) (linearStat lam)))
 
 /-- **Fourth-organ response law.**  The QFI response is four times the certified Schur-capacity
-response, hence `4*pi^2 Cov(r,R^2)`. -/
+response, hence `4*pi^(2 : ℕ) Cov(r,R^(2 : ℕ))`. -/
 theorem hasDerivAt_booleanTiltTransverseQFI (q lam : ι → ℝ) (r : Finset ι → ℝ)
     (hC : capC (bernoulliVar q) lam ≠ 0) :
     HasDerivAt (booleanTiltTransverseQFI q lam r)
-      (4 * (Real.pi ^ 2 * wcov (bernoulliWeight q) r (fun S =>
+      (4 * (Real.pi ^ (2 : ℕ) * wcov (bernoulliWeight q) r (fun S =>
         ((linearStat (fun _ => 1) S - wexp (bernoulliWeight q) (linearStat fun _ => 1))
           - (capB (bernoulliVar q) lam / capC (bernoulliVar q) lam)
-            * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ 2))) 0 := by
+            * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ (2 : ℕ)))) 0 := by
   unfold booleanTiltTransverseQFI
   exact (hasDerivAt_booleanTiltCapacity q lam r hC).const_mul 4
 

@@ -350,7 +350,7 @@ private theorem norm_one_sub_mean_exp (x : ℝ) :
   simp [Real.norm_eq_abs]
 
 theorem returningAmplitude_norm_sq (N : ℕ) (t : ℝ) :
-    ‖returningAmplitude N t‖ ^ 2 =
+    ‖returningAmplitude N t‖ ^ (2 : ℕ) =
       Real.cos (Real.pi * t) ^ (2 * N) := by
   rw [returningAmplitude]
   rw [show 2 * Real.pi * t = 2 * (Real.pi * t) by ring,
@@ -361,7 +361,7 @@ theorem returningAmplitude_norm_sq (N : ℕ) (t : ℝ) :
   rw [mul_comm 2 N, pow_mul, ← abs_pow, sq_abs]
 
 private theorem mean_exp_norm_sq (x : ℝ) :
-    ‖((1 : ℂ) + Complex.exp ((x : ℂ) * I)) / 2‖ ^ 2 =
+    ‖((1 : ℂ) + Complex.exp ((x : ℂ) * I)) / 2‖ ^ (2 : ℕ) =
       (1 + Real.cos x) / 2 := by
   rw [show
       ((1 : ℂ) + Complex.exp ((x : ℂ) * I)) / 2 =
@@ -380,11 +380,11 @@ private theorem mean_exp_norm_sq (x : ℝ) :
 
 /-- Directly observable return probability of the returning clock. -/
 def returningProbability (N : ℕ) (t : ℝ) : ℝ :=
-  ‖returningAmplitude N t‖ ^ 2
+  ‖returningAmplitude N t‖ ^ (2 : ℕ)
 
 /-- Directly observable return probability of the orthogonal clock. -/
 def orthogonalProbability (N : ℕ) (t : ℝ) : ℝ :=
-  ‖orthogonalAmplitude N t‖ ^ 2
+  ‖orthogonalAmplitude N t‖ ^ (2 : ℕ)
 
 /--
 The exact amplitude-discrepancy law is also exactly the separation of the
@@ -401,7 +401,7 @@ theorem survival_probability_difference (N : ℕ) (t : ℝ) :
 
 theorem amplitude_difference_norm_sq
     (N : ℕ) (t : ℝ) :
-    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ 2 =
+    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ (2 : ℕ) =
       Real.cos (Real.pi * t) ^ (2 * N) *
         (1 - Real.cos (Real.pi * t)) / 2 := by
   rw [orthogonalAmplitude]
@@ -430,7 +430,7 @@ theorem amplitude_difference_norm_sq
 /-- Explicit dimension-dependent uniform bound on the preceding half-period. -/
 theorem amplitude_difference_uniform_bound
     (N : ℕ) {t : ℝ} (ht : |t| ≤ (1 : ℝ) / 2) :
-    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ 2 ≤
+    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ (2 : ℕ) ≤
       1 / (4 * N + 2 : ℕ) := by
   rw [amplitude_difference_norm_sq N t]
   have hcos0 : 0 ≤ Real.cos (Real.pi * t) := by
@@ -459,7 +459,7 @@ theorem amplitude_difference_tail_bound
     (N : ℕ) {ρ t : ℝ}
     (hρhalf : (1 : ℝ) / 2 ≤ ρ) (hρone : ρ < 1)
     (htlow : (1 : ℝ) / 2 ≤ |t|) (hthigh : |t| ≤ ρ) :
-    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ 2 ≤
+    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ (2 : ℕ) ≤
       (-Real.cos (Real.pi * ρ)) ^ (2 * N) := by
   have hρnonneg : 0 ≤ ρ := by linarith
   have harg_nonneg : 0 ≤ Real.pi * |t| := mul_nonneg Real.pi_pos.le (abs_nonneg t)
@@ -532,7 +532,7 @@ theorem amplitude_difference_uniform_before_return
     (N : ℕ) {ρ t : ℝ}
     (hρhalf : (1 : ℝ) / 2 ≤ ρ) (hρone : ρ < 1)
     (ht : |t| ≤ ρ) :
-    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ 2 ≤
+    ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ (2 : ℕ) ≤
       max ((1 : ℝ) / (4 * N + 2 : ℕ))
         ((-Real.cos (Real.pi * ρ)) ^ (2 * N)) := by
   by_cases ht_half : |t| ≤ (1 : ℝ) / 2
@@ -568,11 +568,11 @@ theorem exists_finite_positive_clocks_uniformly_indistinguishable
     norm_cast
     omega
   have hn' :
-      (1 : ℝ) / (n + 1 : ℕ) < ε ^ 2 := by
+      (1 : ℝ) / (n + 1 : ℕ) < ε ^ (2 : ℕ) := by
     norm_cast at hn ⊢
   have hsq :
       ‖returningAmplitude (n + 1) t -
-        orthogonalAmplitude (n + 1) t‖ ^ 2 < ε ^ 2 :=
+        orthogonalAmplitude (n + 1) t‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) :=
     lt_of_le_of_lt (hs.trans hden) hn'
   nlinarith
     [norm_nonneg
@@ -629,8 +629,8 @@ theorem exists_finite_positive_clocks_indistinguishable_before_return
     refine ⟨N, ?_, returningAmplitude_one _, orthogonalAmplitude_one _⟩
     intro t ht
     have hsq :
-        ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ 2 <
-          ε ^ 2 := by
+        ‖returningAmplitude N t - orthogonalAmplitude N t‖ ^ (2 : ℕ) <
+          ε ^ (2 : ℕ) := by
       by_cases ht_half : |t| ≤ (1 : ℝ) / 2
       · have hs := amplitude_difference_uniform_bound N ht_half
         have hden :
@@ -640,7 +640,7 @@ theorem exists_finite_positive_clocks_indistinguishable_before_return
           norm_cast
           omega
         have hn' :
-            (1 : ℝ) / (n + 1 : ℕ) < ε ^ 2 := by
+            (1 : ℝ) / (n + 1 : ℕ) < ε ^ (2 : ℕ) := by
           norm_cast at hn ⊢
         exact lt_of_le_of_lt (hs.trans hden) hn'
       · have htail :=
@@ -809,7 +809,7 @@ theorem probability_instability_on_every_strict_pre_return_window
         scaledReturningProbability T N t -
             scaledOrthogonalProbability T N t =
           ‖scaledReturningAmplitude T N t -
-            scaledOrthogonalAmplitude T N t‖ ^ 2 := by
+            scaledOrthogonalAmplitude T N t‖ ^ (2 : ℕ) := by
       rw [scaledReturningProbability, scaledOrthogonalProbability,
         scaledReturningAmplitude, scaledOrthogonalAmplitude,
         survival_probability_difference,

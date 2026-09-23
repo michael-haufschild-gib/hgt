@@ -42,21 +42,21 @@ theorem card_squarefree_deficient_le {S : Finset ℕ} {L R M : ℕ} {V : ℝ} (h
     (hM : ∀ t ∈ S, t + L ≤ M)
     (hθ : 0 < (1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ)))
     (hdef : ∑ t ∈ S, ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) ≤ V) :
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) ≤ V) :
     (((S.filter (fun t =>
-        ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+        ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
           < (1 / 2) * ((L : ℝ) * squarefreeDensity))).card : ℕ) : ℝ)
       ≤ V / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) := by
   classical
   set θ : ℝ := (1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ)) with hθdef
   set g : ℕ → ℝ := fun t => ∑ d ∈ Finset.Icc (R + 1) M,
-      ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) with hg
+      ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) with hg
   have hgnn : ∀ t ∈ S, 0 ≤ g t := by
     intro t _
     rw [hg]
     exact Finset.sum_nonneg fun d _ => Nat.cast_nonneg _
   have hsubset : S.filter (fun t =>
-      ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+      ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         < (1 / 2) * ((L : ℝ) * squarefreeDensity))
       ⊆ S.filter (fun t => θ ≤ g t) := by
     intro t ht
@@ -75,26 +75,26 @@ theorem card_le_good_add_explicit {S : Finset ℕ} {L R M : ℕ} {V W : ℝ} (hR
     (hM : ∀ t ∈ S, t + L ≤ M)
     (hδ : 0 < (1 / 8) * squarefreeDensity * (L : ℝ))
     (hθ : 0 < (1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ)))
-    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V)
+    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V)
     (hdef : ∑ t ∈ S, ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) ≤ W) :
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) ≤ W) :
     (S.card : ℝ)
       ≤ ((S.filter (fun t =>
           (3 / 16) * squarefreeDensity * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = 1)).card : ℝ)
             ∧ (3 / 16) * squarefreeDensity * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ 2
+        + V / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ (2 : ℕ)
         + W / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) := by
   classical
   set Bad₂ := S.filter (fun t =>
-      ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+      ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         < (1 / 2) * ((L : ℝ) * squarefreeDensity)) with hBad₂
   have h2 : ∀ t ∈ S, t ∉ Bad₂ →
       (1 / 2) * squarefreeDensity * (L : ℝ)
-        ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2 := by
+        ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) := by
     intro t ht hnot
-    have : ¬ (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+    have : ¬ (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         < (1 / 2) * ((L : ℝ) * squarefreeDensity)) := by
       intro hc
       exact hnot (by rw [hBad₂, Finset.mem_filter]; exact ⟨ht, hc⟩)
@@ -114,7 +114,7 @@ theorem card_squarefree_deficient_Ico_le {A B L R M : ℕ} (hR : 1 ≤ R) (hAB :
     (hM : ∀ t ∈ Finset.Ico A B, t + L ≤ M)
     (hθ : 0 < (1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) :
     ((((Finset.Ico A B).filter (fun t =>
-        ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+        ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
           < (1 / 2) * ((L : ℝ) * squarefreeDensity))).card : ℕ) : ℝ)
       ≤ ((L : ℝ) * (((B : ℝ) + L - A) / (R : ℝ) + (M : ℝ)))
           / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) :=

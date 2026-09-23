@@ -35,7 +35,7 @@ theorem sub_conj_upperNode_self (a y : ℝ) :
 behind the scaled atomic diagonal. -/
 theorem sub_mul_sub_conj_upperNode (a y : ℝ) :
     ((a : ℂ) - upperNode a y) * ((a : ℂ) - (starRingEnd ℂ) (upperNode a y))
-      = (y : ℂ) ^ 2 := by
+      = (y : ℂ) ^ (2 : ℕ) := by
   rw [sub_upperNode_self, sub_conj_upperNode_self]
   have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
   ring_nf
@@ -46,7 +46,7 @@ theorem sub_mul_sub_conj_upperNode (a y : ℝ) :
 atom's own rank-one contribution at the node above it equals its coefficient, with no limit
 required. -/
 theorem scaled_atomic_diagonal (a y : ℝ) (hy : y ≠ 0) (c : ℂ) :
-    (y : ℂ) ^ 2 * (c / (((a : ℂ) - upperNode a y) *
+    (y : ℂ) ^ (2 : ℕ) * (c / (((a : ℂ) - upperNode a y) *
         ((a : ℂ) - (starRingEnd ℂ) (upperNode a y)))) = c := by
   rw [sub_mul_sub_conj_upperNode]
   have hyc : (y : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hy

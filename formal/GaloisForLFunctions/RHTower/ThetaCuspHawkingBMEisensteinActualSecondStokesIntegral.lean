@@ -36,22 +36,22 @@ theorem continuous_d4BMPoincareSeedHorizontalThirdJet_stokesPair
     exact_mod_cast (d4BMPoincareQuadratic_pos
       (d4BMStokesPairCoordinate w) p.pair p.pair_ne_zero).ne'
   have hA1 : Continuous (fun w : ℝ × ℝ =>
-      4 * s * (p.pair.1 : ℂ) ^ 3 *
+      4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) *
         (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2) := by
-    exact (hL.const_mul (4 * s * (p.pair.1 : ℂ) ^ 3)).div₀
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ)) := by
+    exact (hL.const_mul (4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ))).div₀
       (hQ.pow 2) fun w => pow_ne_zero 2 (hQne w)
   have hA2 : Continuous (fun w : ℝ × ℝ =>
-      8 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
+      8 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
         (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2) := by
-    exact (hL.const_mul (8 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3)).div₀
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ)) := by
+    exact (hL.const_mul (8 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ))).div₀
       (hQ.pow 2) fun w => pow_ne_zero 2 (hQne w)
   have hA3 : Continuous (fun w : ℝ × ℝ =>
-      16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
-        (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ 3 /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 3) := by
-    exact ((hL.pow 3).const_mul (16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3)).div₀
+      16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
+        (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ (3 : ℕ) /
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (3 : ℕ)) := by
+    exact ((hL.pow 3).const_mul (16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ))).div₀
       (hQ.pow 3) fun w => pow_ne_zero 3 (hQne w)
   have hB : Continuous (fun w : ℝ × ℝ =>
       -2 * s * (p.pair.1 : ℂ) *
@@ -61,15 +61,15 @@ theorem continuous_d4BMPoincareSeedHorizontalThirdJet_stokesPair
   have hseed := continuous_d4BMPoincareSeed_stokesPair s p
   have hsecond := continuous_d4BMPoincareSeedHorizontalSecondJet_stokesPair s p
   change Continuous (fun w : ℝ × ℝ =>
-    (4 * s * (p.pair.1 : ℂ) ^ 3 *
+    (4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) *
           (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
-          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2 +
-        8 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
+          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ) +
+        8 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
           (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
-          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2 -
-        16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
-          (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ 3 /
-          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 3) *
+          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ) -
+        16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
+          (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ (3 : ℕ) /
+          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (3 : ℕ)) *
         d4BMPoincareSeed (d4BMStokesPairCoordinate w) s p +
       (-2 * s * (p.pair.1 : ℂ) *
           (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
@@ -98,37 +98,37 @@ theorem continuous_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_stokesPa
   have hyne (w : ℝ × ℝ) : ((d4BMStokesPairCoordinate w).y : ℂ) ≠ 0 := by
     exact_mod_cast (d4BMStokesPairCoordinate w).y_pos.ne'
   have hA1 : Continuous (fun w : ℝ × ℝ =>
-      4 * s * (p.pair.1 : ℂ) ^ 4 * ((d4BMStokesPairCoordinate w).y : ℂ) /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2) := by
-    exact (hy.const_mul (4 * s * (p.pair.1 : ℂ) ^ 4)).div₀
+      4 * s * (p.pair.1 : ℂ) ^ (4 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) /
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ)) := by
+    exact (hy.const_mul (4 * s * (p.pair.1 : ℂ) ^ (4 : ℕ))).div₀
       (hQ.pow 2) fun w => pow_ne_zero 2 (hQne w)
   have hA2 : Continuous (fun w : ℝ × ℝ =>
-      16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 *
-        (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ 2 *
+      16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) *
+        (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ (2 : ℕ) *
         ((d4BMStokesPairCoordinate w).y : ℂ) /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 3) := by
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (3 : ℕ)) := by
     exact (((hL.pow 2).const_mul
-      (16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4)).mul hy).div₀
+      (16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ))).mul hy).div₀
       (hQ.pow 3) fun w => pow_ne_zero 3 (hQne w)
   have hB1 : Continuous (fun w : ℝ × ℝ =>
       s / ((d4BMStokesPairCoordinate w).y : ℂ)) := by
     exact continuous_const.div₀ hy hyne
   have hB2 : Continuous (fun w : ℝ × ℝ =>
-      2 * s * (p.pair.1 : ℂ) ^ 2 * ((d4BMStokesPairCoordinate w).y : ℂ) /
+      2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) /
         (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ)) := by
-    exact (hy.const_mul (2 * s * (p.pair.1 : ℂ) ^ 2)).div₀ hQ hQne
+    exact (hy.const_mul (2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ))).div₀ hQ hQne
   have hseed := continuous_d4BMPoincareSeed_stokesPair s p
   have hsecond := continuous_d4BMPoincareSeedHorizontalSecondJet_stokesPair s p
   change Continuous (fun w : ℝ × ℝ =>
-    (4 * s * (p.pair.1 : ℂ) ^ 4 * ((d4BMStokesPairCoordinate w).y : ℂ) /
-          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2 -
-        16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 *
-          (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ 2 *
+    (4 * s * (p.pair.1 : ℂ) ^ (4 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) /
+          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ) -
+        16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) *
+          (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) ^ (2 : ℕ) *
           ((d4BMStokesPairCoordinate w).y : ℂ) /
-          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 3) *
+          (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (3 : ℕ)) *
         d4BMPoincareSeed (d4BMStokesPairCoordinate w) s p +
       (s / ((d4BMStokesPairCoordinate w).y : ℂ) -
-          2 * s * (p.pair.1 : ℂ) ^ 2 * ((d4BMStokesPairCoordinate w).y : ℂ) /
+          2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) /
             (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ)) *
         d4BMPoincareSeedHorizontalSecondJet (d4BMStokesPairCoordinate w) s p)
   exact (hA1.sub hA2).mul hseed |>.add ((hB1.sub hB2).mul hsecond)
@@ -144,10 +144,10 @@ theorem continuous_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_stokesPair
   have hyne (w : ℝ × ℝ) : ((d4BMStokesPairCoordinate w).y : ℂ) ≠ 0 := by
     exact_mod_cast (d4BMStokesPairCoordinate w).y_pos.ne'
   have hcoef : Continuous (fun w : ℝ × ℝ =>
-      s * (s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ 2) := by
+      s * (s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ)) := by
     exact continuous_const.div₀ (hy.pow 2) fun w => pow_ne_zero 2 (hyne w)
   change Continuous (fun w : ℝ × ℝ =>
-    s * (s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+    s * (s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
         d4BMPoincareSeedHorizontalFirstJet (d4BMStokesPairCoordinate w) s p -
       d4BMPoincareSeedHorizontalThirdJet (d4BMStokesPairCoordinate w) s p)
   exact hcoef.mul (continuous_d4BMPoincareSeedHorizontalFirstJet_stokesPair s p) |>.sub
@@ -159,7 +159,7 @@ private theorem continuousOn_tsum_d4BMPoincareSeedThirdJet_stokesCompactCell
     (hC : 0 ≤ C)
     (hcont : ∀ p, Continuous (fun w : ℝ × ℝ => f p (d4BMStokesPairCoordinate w)))
     (hbound : ∀ z p, ‖f p z‖ ≤
-      (C / z.y ^ 3) * ‖d4BMPoincareSeed z P.s p‖) :
+      (C / z.y ^ (3 : ℕ)) * ‖d4BMPoincareSeed z P.s p‖) :
     ContinuousOn
       (fun w : ℝ × ℝ => ∑' p : D4BMPrimitiveIntegerPair,
         f p (d4BMStokesPairCoordinate w))
@@ -173,15 +173,15 @@ private theorem continuousOn_tsum_d4BMPoincareSeedThirdJet_stokesCompactCell
     change w.1 ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) ∧
       w.2 ∈ Set.Icc (1 / 2 : ℝ) Y at hw
     have hy0 : 0 < w.2 := lt_of_lt_of_le (by norm_num) hw.2.1
-    have hySq : (1 / 4 : ℝ) ≤ w.2 ^ 2 := by
+    have hySq : (1 / 4 : ℝ) ≤ w.2 ^ (2 : ℕ) := by
       have hs := (sq_le_sq₀ (by norm_num : (0 : ℝ) ≤ 1 / 2) hy0.le).2 hw.2.1
       norm_num at hs ⊢
       exact hs
-    have hyCube : (1 / 8 : ℝ) ≤ w.2 ^ 3 := by
+    have hyCube : (1 / 8 : ℝ) ≤ w.2 ^ (3 : ℕ) := by
       have hm := mul_le_mul hw.2.1 hySq (by norm_num : (0 : ℝ) ≤ 1 / 4) hy0.le
       nlinarith
     have hK : 0 ≤ K := by dsimp only [K]; positivity
-    have hfactor : C / w.2 ^ 3 ≤ K := by
+    have hfactor : C / w.2 ^ (3 : ℕ) ≤ K := by
       apply (div_le_iff₀ (pow_pos hy0 3)).2
       dsimp only [K]
       nlinarith
@@ -190,7 +190,7 @@ private theorem continuousOn_tsum_d4BMPoincareSeedThirdJet_stokesCompactCell
       exact max_eq_left hw.2.1
     calc
       ‖f p (d4BMStokesPairCoordinate w)‖ ≤
-          (C / w.2 ^ 3) *
+          (C / w.2 ^ (3 : ℕ)) *
             ‖d4BMPoincareSeed (d4BMStokesPairCoordinate w) P.s p‖ := by
         rw [← hycoord]
         exact hbound (d4BMStokesPairCoordinate w) p
@@ -311,10 +311,10 @@ theorem continuousOn_d4BMCompletedPoincareVerticalThirdJet_stokesCompactCell
   have hyne (w : ℝ × ℝ) : ((d4BMStokesPairCoordinate w).y : ℂ) ≠ 0 := by
     exact_mod_cast (d4BMStokesPairCoordinate w).y_pos.ne'
   have hcoef3 : Continuous (fun w : ℝ × ℝ =>
-      -2 * P.s * (P.s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ 3) := by
+      -2 * P.s * (P.s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ (3 : ℕ)) := by
     exact continuous_const.div₀ (hy.pow 3) fun w => pow_ne_zero 3 (hyne w)
   have hcoef2 : Continuous (fun w : ℝ × ℝ =>
-      P.s * (P.s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ 2) := by
+      P.s * (P.s - 1) / ((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ)) := by
     exact continuous_const.div₀ (hy.pow 2) fun w => pow_ne_zero 2 (hyne w)
   have hF := continuousOn_d4BMCompletedEisensteinPoincareSeries_stokesCompactCell
     P (Y := Y)
@@ -344,18 +344,18 @@ theorem continuous_d4BMPoincareSeedMixedSecondJet_stokesPair
   have hyne (w : ℝ × ℝ) : ((d4BMStokesPairCoordinate w).y : ℂ) ≠ 0 := by
     exact_mod_cast (d4BMStokesPairCoordinate w).y_pos.ne'
   have hA : Continuous (fun w : ℝ × ℝ =>
-      4 * s * (p.pair.1 : ℂ) ^ 3 * ((d4BMStokesPairCoordinate w).y : ℂ) *
+      4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) *
         (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
-        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ 2) := by
-    exact ((hy.const_mul (4 * s * (p.pair.1 : ℂ) ^ 3)).mul hL).div₀
+        (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ) ^ (2 : ℕ)) := by
+    exact ((hy.const_mul (4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ))).mul hL).div₀
       (hQ.pow 2) fun w => pow_ne_zero 2 (hQne w)
   have hB1 : Continuous (fun w : ℝ × ℝ =>
       s / ((d4BMStokesPairCoordinate w).y : ℂ)) :=
     continuous_const.div₀ hy hyne
   have hB2 : Continuous (fun w : ℝ × ℝ =>
-      2 * s * (p.pair.1 : ℂ) ^ 2 * ((d4BMStokesPairCoordinate w).y : ℂ) /
+      2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * ((d4BMStokesPairCoordinate w).y : ℂ) /
         (d4BMPoincareQuadratic (d4BMStokesPairCoordinate w) p.pair : ℂ)) := by
-    exact (hy.const_mul (2 * s * (p.pair.1 : ℂ) ^ 2)).div₀ hQ hQne
+    exact (hy.const_mul (2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ))).div₀ hQ hQne
   have hH : Continuous (fun w : ℝ × ℝ =>
       -2 * s * (p.pair.1 : ℂ) *
         (d4BMPoincareHorizontalLinear (d4BMStokesPairCoordinate w) p : ℂ) /
@@ -371,7 +371,7 @@ theorem continuousOn_tsum_d4BMPoincareSeedMixedSecondJet_stokesCompactCell
       (fun w : ℝ × ℝ => ∑' p : D4BMPrimitiveIntegerPair,
         d4BMPoincareSeedMixedSecondJet (d4BMStokesPairCoordinate w) P.s p)
       (d4BMStokesCompactCell Y) := by
-  let C : ℝ := 4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2
+  let C : ℝ := 4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)
   let K : ℝ := 4 * C
   apply continuousOn_tsum
   · intro p
@@ -381,13 +381,13 @@ theorem continuousOn_tsum_d4BMPoincareSeedMixedSecondJet_stokesCompactCell
     change w.1 ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2) ∧
       w.2 ∈ Set.Icc (1 / 2 : ℝ) Y at hw
     have hy0 : 0 < w.2 := lt_of_lt_of_le (by norm_num) hw.2.1
-    have hySq : (1 / 4 : ℝ) ≤ w.2 ^ 2 := by
+    have hySq : (1 / 4 : ℝ) ≤ w.2 ^ (2 : ℕ) := by
       have hs := (sq_le_sq₀ (by norm_num : (0 : ℝ) ≤ 1 / 2) hy0.le).2 hw.2.1
       norm_num at hs ⊢
       exact hs
     have hC : 0 ≤ C := by dsimp only [C]; positivity
     have hK : 0 ≤ K := by dsimp only [K]; positivity
-    have hfactor : C / w.2 ^ 2 ≤ K := by
+    have hfactor : C / w.2 ^ (2 : ℕ) ≤ K := by
       apply (div_le_iff₀ (sq_pos_of_pos hy0)).2
       dsimp only [K]
       nlinarith
@@ -396,7 +396,7 @@ theorem continuousOn_tsum_d4BMPoincareSeedMixedSecondJet_stokesCompactCell
       exact max_eq_left hw.2.1
     calc
       ‖d4BMPoincareSeedMixedSecondJet (d4BMStokesPairCoordinate w) P.s p‖ ≤
-          (C / w.2 ^ 2) *
+          (C / w.2 ^ (2 : ℕ)) *
             ‖d4BMPoincareSeed (d4BMStokesPairCoordinate w) P.s p‖ := by
         have h := norm_d4BMPoincareSeedMixedSecondJet_le
           (d4BMStokesPairCoordinate w) P.s p
@@ -745,7 +745,7 @@ theorem intervalIntegral_d4BMActualSecondStokesHorizontalDivergenceAt_eq_sub
   · exact hcont.intervalIntegrable
 
 /-- Horizontal divergence over the two side slivers below height one.  The central interval is
-excluded because the standard modular domain satisfies `x^2 + y^2 ≥ 1`. -/
+excluded because the standard modular domain satisfies `x^(2 : ℕ) + y^(2 : ℕ) ≥ 1`. -/
 def d4BMActualSecondStokesHorizontalLowerBulk
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   ∫ y in d4BMModularArcFloor..1,
@@ -1084,7 +1084,7 @@ theorem d4BM_actualSecondStokesDefectDensity_div_heightSq_eq_divergenceAt
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
     (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
     (2 * d4BMActualSecondStokesDefectDensity (d4BMStokesCoordinate x y) P Q) /
-        (y : ℂ) ^ 2 =
+        (y : ℂ) ^ (2 : ℕ) =
       d4BMActualSecondStokesHorizontalDivergenceAt P Q x y +
         d4BMActualSecondStokesVerticalDivergenceAt P Q x y := by
   have h := d4BM_actualSecondStokesDefectDensity_eq_divergence
@@ -1124,7 +1124,7 @@ def d4BMActualSecondStokesTruncatedDefectMoment
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (Y : ℝ) : ℂ :=
   ∫ w in d4BMTruncatedModularDomain Y,
     (2 * d4BMActualSecondStokesDefectDensity (d4BMStokesPairCoordinate w) P Q) /
-      (w.2 : ℂ) ^ 2
+      (w.2 : ℂ) ^ (2 : ℕ)
 
 /-- The standard hyperbolic first-defect moment is the integral of the actual Euclidean
 divergence on the genuine truncated modular domain. -/

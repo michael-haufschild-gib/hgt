@@ -9,7 +9,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 The half-wave multiplier with symbol
 
-`exp (-i * u * sqrt ((xi - i * lambda)^2 + a^2))`
+`exp (-i * u * sqrt ((xi - i * lambda)^(2 : ℕ) + a^(2 : ℕ)))`
 
 has exact operator norm `exp (|u| * lambda)` on `L2(ℝ)`.  Moreover, every
 nonzero datum has an unbounded two-sided orbit.  The lower bounds use

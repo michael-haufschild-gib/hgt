@@ -41,7 +41,7 @@ theorem full_response_smooth_planar_test (q : XiZeroCopy) (branch : Bool) (g : P
 private def responseResidual (q : XiZeroCopy) (branch : Bool) (z : ℂ) : ℂ :=
   planarLaplacian (globalResponse q branch ∘ ofComplex) z -
     (parameter q branch*globalResponse q branch (ofComplex z)+globalForcing q branch (ofComplex z)) /
-      (z.im : ℂ)^2
+      (z.im : ℂ)^(2 : ℕ)
 
 private theorem responseResidual_continuousOn (q : XiZeroCopy) (branch : Bool) :
     ContinuousOn (responseResidual q branch) {z : ℂ | 0 < z.im} := by
@@ -89,7 +89,7 @@ private theorem responseResidual_test_zero (q : XiZeroCopy) (branch : Bool) (g :
 theorem globalResponse_classical_planar (q : XiZeroCopy) (branch : Bool) (z : ℂ) (hz : 0 < z.im) :
     planarLaplacian (globalResponse q branch ∘ ofComplex) z =
       (parameter q branch*globalResponse q branch (ofComplex z)+globalForcing q branch (ofComplex z)) /
-        (z.im : ℂ)^2 := by
+        (z.im : ℂ)^(2 : ℕ) := by
   have hc := responseResidual_continuousOn q branch
   have ha := isOpen_upperHalfPlaneSet.ae_eq_zero_of_integral_contDiff_smul_eq_zero
     (hc.locallyIntegrableOn isOpen_upperHalfPlaneSet.measurableSet) (fun b hb hk hs => by
@@ -104,7 +104,7 @@ theorem globalResponse_classical_planar (q : XiZeroCopy) (branch : Bool) (z : �
 
 /-- The literal hyperbolic Laplacian of an upper-half-plane chart field. -/
 def chartLaplacian (f : UpperHalfPlane → ℂ) (z : UpperHalfPlane) : ℂ :=
-  (z.im : ℂ)^2*planarLaplacian (f ∘ ofComplex) (z:ℂ)
+  (z.im : ℂ)^(2 : ℕ)*planarLaplacian (f ∘ ofComplex) (z:ℂ)
 
 /-- The original complete forcing drives the actual smooth response pointwise on the entire half-plane. -/
 theorem globalResponse_classical_equation (q : XiZeroCopy) (branch : Bool) (z : UpperHalfPlane) :

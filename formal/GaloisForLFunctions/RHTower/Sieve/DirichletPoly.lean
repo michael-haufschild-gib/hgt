@@ -84,13 +84,13 @@ theorem hasDerivAt_dirPoly (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
 
 /-- **The derivative of the squared modulus.** -/
 theorem hasDerivAt_normSq_dirPoly (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
-    HasDerivAt (fun s : ℝ => ‖dirPoly N a s‖ ^ 2)
+    HasDerivAt (fun s : ℝ => ‖dirPoly N a s‖ ^ (2 : ℕ))
       ((inner ℝ (dirPoly N a t) (dirPoly N (dirDerivCoeff N a) t) : ℝ)
         + (inner ℝ (dirPoly N (dirDerivCoeff N a) t) (dirPoly N a t) : ℝ)) t := by
   have hd := hasDerivAt_dirPoly N a t
   have h := HasDerivAt.inner ℝ hd hd
   have hfun : (fun s : ℝ => (inner ℝ (dirPoly N a s) (dirPoly N a s) : ℝ))
-      = fun s : ℝ => ‖dirPoly N a s‖ ^ 2 := by
+      = fun s : ℝ => ‖dirPoly N a s‖ ^ (2 : ℕ) := by
     funext s
     exact real_inner_self_eq_norm_sq _
   rw [hfun] at h

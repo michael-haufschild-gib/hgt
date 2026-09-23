@@ -48,54 +48,54 @@ def xiJetStepQB (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) : Polyno
 
 theorem xiJetStepPA_eval (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) (w : ℂ) :
     (xiJetStepPA a τ PA QB j).eval w
-      = PA.derivative.eval w * (τ ^ 2 + w ^ 2) - 2 * (j : ℂ) * (w * PA.eval w)
-        - (a : ℂ) * (w * QB.eval w) * (τ ^ 2 + w ^ 2) := by
+      = PA.derivative.eval w * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) - 2 * (j : ℂ) * (w * PA.eval w)
+        - (a : ℂ) * (w * QB.eval w) * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
   rw [xiJetStepPA]
   simp [xiHeightCoeffDerivFst_eval, xiMassRadiusPoly_eval]
 
 theorem xiJetStepQA_eval (a : ℝ) (τ : ℂ) (QA PB : Polynomial ℂ) (j : ℕ) (w : ℂ) :
     (xiJetStepQA a τ QA PB j).eval w
-      = QA.derivative.eval w * (τ ^ 2 + w ^ 2) + (1 - 2 * (j : ℂ)) * (w * QA.eval w)
+      = QA.derivative.eval w * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) + (1 - 2 * (j : ℂ)) * (w * QA.eval w)
         - (a : ℂ) * (w * PB.eval w) := by
   rw [xiJetStepQA]
   simp [xiHeightCoeffDerivSnd_eval]
 
 theorem xiJetStepPB_eval (a : ℝ) (τ : ℂ) (QA PB : Polynomial ℂ) (j : ℕ) (w : ℂ) :
     (xiJetStepPB a τ QA PB j).eval w
-      = PB.derivative.eval w * (τ ^ 2 + w ^ 2) - 2 * (j : ℂ) * (w * PB.eval w)
-        - (a : ℂ) * (w * QA.eval w) * (τ ^ 2 + w ^ 2) - w * PB.eval w := by
+      = PB.derivative.eval w * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) - 2 * (j : ℂ) * (w * PB.eval w)
+        - (a : ℂ) * (w * QA.eval w) * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) - w * PB.eval w := by
   rw [xiJetStepPB]
   simp [xiHeightCoeffDerivFst_eval, xiMassRadiusPoly_eval]
 
 theorem xiJetStepQB_eval (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) (w : ℂ) :
     (xiJetStepQB a τ PA QB j).eval w
-      = QB.derivative.eval w * (τ ^ 2 + w ^ 2) + (1 - 2 * (j : ℂ)) * (w * QB.eval w)
+      = QB.derivative.eval w * (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) + (1 - 2 * (j : ℂ)) * (w * QB.eval w)
         - (a : ℂ) * (w * PA.eval w) - w * QB.eval w := by
   rw [xiJetStepQB]
   simp [xiHeightCoeffDerivSnd_eval]
 
 /-- The `K₀` coefficient of the derivative, in the height ring. -/
-theorem xiJetStep_fst {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem xiJetStep_fst {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (PA QA PB QB : Polynomial ℂ) (j : ℕ) :
     xiHeightCoeff τ (xiHeightCoeffDerivFst τ PA j) (xiHeightCoeffDerivSnd τ QA j) (j + 1) w
         - (a : ℂ) * (w / xiMassHeightRadius τ w) * xiHeightCoeff τ PB QB j w
       = xiHeightCoeff τ (xiJetStepPA a τ PA QB j) (xiJetStepQA a τ QA PB j) (j + 1) w := by
   have hZne : xiMassHeightRadius τ w ≠ 0 := xiMassHeightRadius_ne_zero hw
-  have hZ2 : xiMassHeightRadius τ w ^ 2 = τ ^ 2 + w ^ 2 := xiMassHeightRadius_sq hw
+  have hZ2 : xiMassHeightRadius τ w ^ (2 : ℕ) = τ ^ (2 : ℕ) + w ^ (2 : ℕ) := xiMassHeightRadius_sq hw
   rw [xiHeightCoeff, xiHeightCoeff, xiHeightCoeff, xiHeightCoeffDerivFst_eval,
     xiHeightCoeffDerivSnd_eval, xiJetStepPA_eval, xiJetStepQA_eval, ← hZ2]
   field_simp
   ring
 
 /-- The `K₁` coefficient of the derivative, in the height ring. -/
-theorem xiJetStep_snd {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem xiJetStep_snd {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (PA QA PB QB : Polynomial ℂ) (j : ℕ) :
     xiHeightCoeff τ (xiHeightCoeffDerivFst τ PB j) (xiHeightCoeffDerivSnd τ QB j) (j + 1) w
         - (a : ℂ) * (w / xiMassHeightRadius τ w) * xiHeightCoeff τ PA QA j w
-        - w / xiMassHeightRadius τ w ^ 2 * xiHeightCoeff τ PB QB j w
+        - w / xiMassHeightRadius τ w ^ (2 : ℕ) * xiHeightCoeff τ PB QB j w
       = xiHeightCoeff τ (xiJetStepPB a τ QA PB j) (xiJetStepQB a τ PA QB j) (j + 1) w := by
   have hZne : xiMassHeightRadius τ w ≠ 0 := xiMassHeightRadius_ne_zero hw
-  have hZ2 : xiMassHeightRadius τ w ^ 2 = τ ^ 2 + w ^ 2 := xiMassHeightRadius_sq hw
+  have hZ2 : xiMassHeightRadius τ w ^ (2 : ℕ) = τ ^ (2 : ℕ) + w ^ (2 : ℕ) := xiMassHeightRadius_sq hw
   rw [xiHeightCoeff, xiHeightCoeff, xiHeightCoeff, xiHeightCoeff, xiHeightCoeffDerivFst_eval,
     xiHeightCoeffDerivSnd_eval, xiJetStepPB_eval, xiJetStepQB_eval, ← hZ2]
   field_simp
@@ -103,7 +103,7 @@ theorem xiJetStep_snd {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
 
 /-- **One height step of a jet state.**  The derivative of a state with height-ring coefficients at
 exponent `j` is the state with the stepped coefficients at exponent `j+1`. -/
-theorem hasDerivAt_xiJetState {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem hasDerivAt_xiJetState {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (PA QA PB QB : Polynomial ℂ) (j : ℕ) :
     HasDerivAt
       (xiMassBesselState a τ (xiHeightCoeff τ PA QA j) (xiHeightCoeff τ PB QB j))
@@ -119,7 +119,7 @@ theorem hasDerivAt_xiJetState {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ 
         * xiMassHeightK0 a τ w
       + (xiHeightCoeff τ (xiHeightCoeffDerivFst τ PB j) (xiHeightCoeffDerivSnd τ QB j) (j + 1) w
           - (a : ℂ) * (w / xiMassHeightRadius τ w) * xiHeightCoeff τ PA QA j w
-          - w / xiMassHeightRadius τ w ^ 2 * xiHeightCoeff τ PB QB j w)
+          - w / xiMassHeightRadius τ w ^ (2 : ℕ) * xiHeightCoeff τ PB QB j w)
         * xiMassHeightK1 a τ w
       = xiMassBesselState a τ
           (xiHeightCoeff τ (xiJetStepPA a τ PA QB j) (xiJetStepQA a τ QA PB j) (j + 1))

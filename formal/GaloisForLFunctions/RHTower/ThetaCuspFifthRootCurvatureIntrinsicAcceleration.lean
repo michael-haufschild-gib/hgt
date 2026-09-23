@@ -33,7 +33,7 @@ def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicVelocity
   let D := thetaCuspReflectedSourceDecayFlux u t
   let N := thetaCuspReflectedSourceFifthRootCurvatureNumerator u t
   let V := thetaCuspReflectedSourceFifthRootCurvatureVelocity u t
-  (V * A - 2 * N * D) / A ^ 3
+  (V * A - 2 * N * D) / A ^ (3 : ℕ)
 
 /-- Second derivative of intrinsic C5 at an intrinsic stationary point. -/
 def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicAcceleration
@@ -43,7 +43,7 @@ def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicAcceleration
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let N := thetaCuspReflectedSourceFifthRootCurvatureNumerator u t
   let Acc := thetaCuspReflectedSourceFifthRootCurvatureAcceleration u t
-  (Acc * A ^ 2 - 2 * N * (D ^ 2 + A * J)) / A ^ 4
+  (Acc * A ^ (2 : ℕ) - 2 * N * (D ^ (2 : ℕ) + A * J)) / A ^ (4 : ℕ)
 
 /-- Division-free second-order numerator of intrinsic C5. -/
 def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderNumerator
@@ -53,13 +53,13 @@ def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderNumerator
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let N := thetaCuspReflectedSourceFifthRootCurvatureNumerator u t
   let Acc := thetaCuspReflectedSourceFifthRootCurvatureAcceleration u t
-  Acc * A ^ 2 - 2 * N * (D ^ 2 + A * J)
+  Acc * A ^ (2 : ℕ) - 2 * N * (D ^ (2 : ℕ) + A * J)
 
 theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicAcceleration_eq_secondOrder_div
     (u t : ℝ) :
     thetaCuspReflectedSourceFifthRootCurvatureIntrinsicAcceleration u t =
       thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderNumerator u t /
-        thetaCuspReflectedSourceFirstDrop u t ^ 4 := by
+        thetaCuspReflectedSourceFirstDrop u t ^ (4 : ℕ) := by
   rfl
 
 theorem deriv_thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance_eq_velocity
@@ -101,8 +101,8 @@ theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureIntrinsicVelocity_o
   have hraw := hnum.div hden
     (pow_ne_zero 3 (thetaCuspReflectedSourceFirstDrop_pos u ht).ne')
   have hfun :
-      (V * A - fun y => 2 * (N * D) y) / A ^ 3 =
-        fun s => (V s * A s - 2 * N s * D s) / A s ^ 3 := by
+      (V * A - fun y => 2 * (N * D) y) / A ^ (3 : ℕ) =
+        fun s => (V s * A s - 2 * N s * D s) / A s ^ (3 : ℕ) := by
     funext s
     simp only [Pi.div_apply, Pi.mul_apply, Pi.sub_apply, Pi.pow_apply]
     ring

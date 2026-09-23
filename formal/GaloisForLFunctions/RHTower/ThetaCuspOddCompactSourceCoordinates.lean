@@ -42,7 +42,7 @@ theorem thetaCuspFullSource_jet_eq_lyapunovSourcePolynomial (n : ℕ) (x : ℝ) 
 /-- Every native reflected jet is the literal squared mass times its reflected polynomial. -/
 theorem thetaCuspNativeReflectionJet_eq_lyapunovPolynomial (n : ℕ) (x : ℝ) :
     (thetaCuspNativeReflectionJet n x : ℂ) =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^2 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^(2 : ℕ) *
         MvPolynomial.eval (fun j => thetaCuspModularLyapunovState j x)
           (HTGeometry.oddCompactReflectedJetPolynomial n) := by
   rw [thetaCuspNativeReflectionJet_eq]
@@ -62,11 +62,11 @@ private theorem compactState_eq (x : ℝ) :
 
 /-- Exact arbitrary-center source realization of the normalized odd determinant. -/
 theorem thetaCuspNativeOddHankelThreeDet_eq_compactPolynomial (x : ℝ) :
-    thetaCuspNativeOddHankelThreeDet x = Bottcher.completedThetaProfile x^6 *
+    thetaCuspNativeOddHankelThreeDet x = Bottcher.completedThetaProfile x^(6 : ℕ) *
       HTGeometry.oddCompactDet (-(thetaCuspModularDrift x).re)
         (thetaCuspModularGapAmplitude x) (thetaCuspModularTransverseShear x) := by
   have hc : (thetaCuspNativeOddHankelThreeDet x : ℂ) =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^(6 : ℕ) *
         MvPolynomial.eval (fun j => thetaCuspModularLyapunovState j x)
           HTGeometry.oddCompactDetPolynomial := by
     unfold thetaCuspNativeOddHankelThreeDet HilbertMetric.signedEvenHankelThreeDet
@@ -82,11 +82,11 @@ theorem thetaCuspNativeOddHankelThreeDet_eq_compactPolynomial (x : ℝ) :
 
 /-- Exact arbitrary-center source realization of the leading odd minor. -/
 theorem thetaCuspNativeOddHeadDet_eq_compactPolynomial (x : ℝ) :
-    thetaCuspNativeOddHeadDet x = Bottcher.completedThetaProfile x^4 *
+    thetaCuspNativeOddHeadDet x = Bottcher.completedThetaProfile x^(4 : ℕ) *
       HTGeometry.oddCompactHead (-(thetaCuspModularDrift x).re)
         (thetaCuspModularGapAmplitude x) (thetaCuspModularTransverseShear x) := by
   have hc : (thetaCuspNativeOddHeadDet x : ℂ) =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^4 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x^(4 : ℕ) *
         MvPolynomial.eval (fun j => thetaCuspModularLyapunovState j x)
           HTGeometry.oddCompactHeadPolynomial := by
     unfold thetaCuspNativeOddHeadDet

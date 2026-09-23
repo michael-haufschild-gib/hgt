@@ -57,17 +57,17 @@ theorem norm_inner_expRow_countVec (q : ℕ) (A : Finset ℕ) (j : Fin q) :
 
 /-- The energy of the count vector. -/
 theorem norm_sq_countVec (q : ℕ) (A : Finset ℕ) :
-    ‖countVec q A‖ ^ 2 = ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 := by
+    ‖countVec q A‖ ^ (2 : ℕ) = ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) := by
   rw [countVec, EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity),
-    ← Fin.sum_univ_eq_sum_range (fun h => ((residueCount q A h : ℕ) : ℝ) ^ 2) q]
+    ← Fin.sum_univ_eq_sum_range (fun h => ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ)) q]
   refine Finset.sum_congr rfl fun h _ => ?_
   simp
 
 /-- **Parseval over the residues.** -/
 theorem sum_residue_parseval {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
     ∑ j : Fin q, ‖∑ h ∈ Finset.range q,
-        ((residueCount q A h : ℕ) : ℂ) * circleFreq (((h * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2
-      = (q : ℝ) * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 := by
+        ((residueCount q A h : ℕ) : ℂ) * circleFreq (((h * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ)
+      = (q : ℝ) * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) := by
   have hζ : IsPrimitiveRoot (rootOfUnity q) q := isPrimitiveRoot_rootOfUnity (by omega)
   have hbase := sum_norm_inner_expRow_root hq hζ (countVec q A)
   rw [norm_sq_countVec] at hbase
@@ -78,8 +78,8 @@ theorem sum_residue_parseval {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
 /-- **The full sum over fractions with denominator `q` is the second moment of the residue
 counts.** -/
 theorem sum_full_expSum_sq {q : ℕ} (hq : 0 < q) (A : Finset ℕ) :
-    ∑ j : Fin q, ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ 2
-      = (q : ℝ) * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ 2 := by
+    ∑ j : Fin q, ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (q : ℝ))‖ ^ (2 : ℕ)
+      = (q : ℝ) * ∑ h ∈ Finset.range q, ((residueCount q A h : ℕ) : ℝ) ^ (2 : ℕ) := by
   rw [← sum_residue_parseval hq A]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [sum_circleFreq_eq_residue hq]

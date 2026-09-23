@@ -88,7 +88,7 @@ theorem rawSecondEndpoint_third_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : 
 /-- This is an exact cubic expansion of the genuine Jost endpoint, at every real frequency. -/
 theorem rawAsymptoticVector_third_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (left : Bool) :
     rawAsymptoticVector q k v left = v+(k : ℂ) • rawFirstCoefficient q v+
-      (k : ℂ)^2 • rawSecondEndpoint q 0 v left+(k : ℂ)^3 • rawThirdEndpoint q k v left := by
+      (k : ℂ)^(2 : ℕ) • rawSecondEndpoint q 0 v left+(k : ℂ)^(3 : ℕ) • rawThirdEndpoint q k v left := by
   rw [rawAsymptoticVector_first_factor,rawFirstSlope_second_factor,rawSecondEndpoint_third_factor]
   simp only [smul_add,smul_smul,pow_succ,pow_zero,one_mul,mul_assoc,add_assoc]
 

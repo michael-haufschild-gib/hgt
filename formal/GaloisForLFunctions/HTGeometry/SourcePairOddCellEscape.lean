@@ -57,8 +57,8 @@ def pairShuffle : ((ι × Fin 4) × (ι × Fin 4)) ≃ ((ι × ι) × (Fin 4 × 
 
 private theorem internal_sum (r b : ℝ) :
     ∑ q : Fin 4 × Fin 4,
-      ‖sourcePairRealOddBlock b q.1 q.2 / (r : ℂ)‖ ^ 2 =
-      4 * (|b| / |r|) ^ 2 := by
+      ‖sourcePairRealOddBlock b q.1 q.2 / (r : ℂ)‖ ^ (2 : ℕ) =
+      4 * (|b| / |r|) ^ (2 : ℕ) := by
   simp [Fintype.sum_prod_type, Fin.sum_univ_four, sourcePairRealOddBlock,
     Complex.norm_real]
   ring
@@ -70,16 +70,16 @@ theorem isHS_sourcePairOddCellKernel {r : ℝ} (hr : 1 ≤ r)
   rw [HilbertSchmidt.IsHS]
   apply ((pairShuffle (ι := ι)).summable_iff (f := fun q =>
     ‖sourcePairOddCellKernel r K
-      (((pairShuffle (ι := ι)).symm q))‖ ^ 2)).mpr
+      (((pairShuffle (ι := ι)).symm q))‖ ^ (2 : ℕ))).mpr
   change Summable (fun p : (ι × ι) × (Fin 4 × Fin 4) =>
-    ‖sourcePairOddCellKernel r K ((p.1.1, p.2.1), (p.1.2, p.2.2))‖ ^ 2)
+    ‖sourcePairOddCellKernel r K ((p.1.1, p.2.1), (p.1.2, p.2.2))‖ ^ (2 : ℕ))
   rw [summable_prod_of_nonneg (fun _ => by positivity)]
   constructor
   · intro p
     exact Summable.of_finite
   · rw [show (fun p : ι × ι => ∑' q : Fin 4 × Fin 4,
-          ‖sourcePairOddCellKernel r K ((p.1, q.1), (p.2, q.2))‖ ^ 2) =
-        (fun p => 4 * (|(K p).im| / |r|) ^ 2) by
+          ‖sourcePairOddCellKernel r K ((p.1, q.1), (p.2, q.2))‖ ^ (2 : ℕ)) =
+        (fun p => 4 * (|(K p).im| / |r|) ^ (2 : ℕ)) by
         funext p
         rw [tsum_fintype]
         simpa [sourcePairOddCellKernel, Complex.norm_real] using
@@ -99,21 +99,21 @@ omit [DecidableEq ι] in
 theorem hsNormSq_sourcePairOddCellKernel {r : ℝ} (hr : 1 ≤ r)
     {K : ι × ι → ℂ} (hK : HilbertSchmidt.IsHS K) :
     HilbertSchmidt.hsNormSq (sourcePairOddCellKernel r K) =
-      ∑' p : ι × ι, 4 * (|(K p).im| / |r|) ^ 2 := by
+      ∑' p : ι × ι, 4 * (|(K p).im| / |r|) ^ (2 : ℕ) := by
   let f : (ι × ι) × (Fin 4 × Fin 4) → ℝ := fun p =>
-    ‖sourcePairOddCellKernel r K ((p.1.1, p.2.1), (p.1.2, p.2.2))‖ ^ 2
+    ‖sourcePairOddCellKernel r K ((p.1.1, p.2.1), (p.1.2, p.2.2))‖ ^ (2 : ℕ)
   have hodd := isHS_sourcePairOddCellKernel hr hK
-  change Summable (fun p => ‖sourcePairOddCellKernel r K p‖ ^ 2) at hodd
+  change Summable (fun p => ‖sourcePairOddCellKernel r K p‖ ^ (2 : ℕ)) at hodd
   have hf : Summable f := by
     apply ((pairShuffle (ι := ι)).summable_iff (f := f)).mp
     convert hodd using 1 <;> rfl
   rw [HilbertSchmidt.hsNormSq]
   calc
     (∑' p : (ι × Fin 4) × (ι × Fin 4),
-        ‖sourcePairOddCellKernel r K p‖ ^ 2) = ∑' p, f p := by
+        ‖sourcePairOddCellKernel r K p‖ ^ (2 : ℕ)) = ∑' p, f p := by
       exact (pairShuffle (ι := ι)).tsum_eq f
     _ = ∑' p : ι × ι, ∑' q : Fin 4 × Fin 4, f (p, q) := hf.tsum_prod
-    _ = ∑' p : ι × ι, 4 * (|(K p).im| / |r|) ^ 2 := by
+    _ = ∑' p : ι × ι, 4 * (|(K p).im| / |r|) ^ (2 : ℕ) := by
       apply tsum_congr
       intro p
       rw [tsum_fintype]
@@ -124,9 +124,9 @@ omit [DecidableEq ι] in
 theorem hsNormSq_sourcePairOddCellKernel_le {r : ℝ} (hr : 1 ≤ r)
     {K : ι × ι → ℂ} (hK : HilbertSchmidt.IsHS K) :
     HilbertSchmidt.hsNormSq (sourcePairOddCellKernel r K) ≤
-      (4 / r ^ 2) * HilbertSchmidt.hsNormSq K := by
+      (4 / r ^ (2 : ℕ)) * HilbertSchmidt.hsNormSq K := by
   have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
-  have hleft : Summable (fun p : ι × ι => 4 * (|(K p).im| / |r|) ^ 2) := by
+  have hleft : Summable (fun p : ι × ι => 4 * (|(K p).im| / |r|) ^ (2 : ℕ)) := by
     apply Summable.of_nonneg_of_le (fun _ => by positivity)
       (fun p => ?_) (hK.mul_left 4)
     have hrabs : 1 ≤ |r| := by simpa [abs_of_pos hr0] using hr
@@ -136,9 +136,9 @@ theorem hsNormSq_sourcePairOddCellKernel_le {r : ℝ} (hr : 1 ≤ r)
     nlinarith [sq_nonneg (|(K p).im| / |r|), sq_nonneg ‖K p‖]
   rw [hsNormSq_sourcePairOddCellKernel hr hK, HilbertSchmidt.hsNormSq,
     ← tsum_mul_left]
-  apply Summable.tsum_le_tsum (f := fun p : ι × ι => 4 * (|(K p).im| / |r|) ^ 2)
-    (g := fun p => (4 / r ^ 2) * ‖K p‖ ^ 2) (fun p => ?_) hleft
-    (hK.mul_left (4 / r ^ 2))
+  apply Summable.tsum_le_tsum (f := fun p : ι × ι => 4 * (|(K p).im| / |r|) ^ (2 : ℕ))
+    (g := fun p => (4 / r ^ (2 : ℕ)) * ‖K p‖ ^ (2 : ℕ)) (fun p => ?_) hleft
+    (hK.mul_left (4 / r ^ (2 : ℕ)))
   rw [abs_of_pos hr0]
   have him : |(K p).im| ≤ ‖K p‖ := Complex.abs_im_le_norm _
   have hnonneg : 0 ≤ |(K p).im| := abs_nonneg _

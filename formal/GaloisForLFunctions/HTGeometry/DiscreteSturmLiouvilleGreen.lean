@@ -40,11 +40,11 @@ def IsSLGSolution (ρ Q u : ℕ → ℝ) : Prop :=
 
 /-- The Sturm--Liouville energy. -/
 def slgEnergy (ρ Q u : ℕ → ℝ) (n : ℕ) : ℝ :=
-  slgFlux ρ u n ^ 2 + slgWeight ρ Q n * (u n * u (n + 1))
+  slgFlux ρ u n ^ (2 : ℕ) + slgWeight ρ Q n * (u n * u (n + 1))
 
 /-- The Sturm--Liouville virial expression. -/
 def slgVirial (ρ Q u : ℕ → ℝ) (n : ℕ) : ℝ :=
-  slgFlux ρ u n ^ 2 - slgWeight ρ Q n * u n ^ 2
+  slgFlux ρ u n ^ (2 : ℕ) - slgWeight ρ Q n * u n ^ (2 : ℕ)
 
 /-- The discrete primitive of the virial expression. -/
 def slgPrimitive (ρ u : ℕ → ℝ) (n : ℕ) : ℝ := u (n + 1) * slgFlux ρ u n
@@ -72,7 +72,7 @@ theorem slgVirial_succ (h : IsSLGSolution ρ Q u) (n : ℕ) :
 
 /-- **The virial splitting.** -/
 theorem two_mul_sq_slgFlux_sub_energy (hρ : ρ n ≠ 0) :
-    2 * slgFlux ρ u n ^ 2 - slgEnergy ρ Q u n
+    2 * slgFlux ρ u n ^ (2 : ℕ) - slgEnergy ρ Q u n
       = slgVirial ρ Q u n - Q n * (u n * slgFlux ρ u n) := by
   simp only [slgEnergy, slgVirial, slgWeight, slgFlux]
   field_simp
@@ -84,7 +84,7 @@ theorem slgEnergy_nonneg (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 4 * �
     0 ≤ slgEnergy ρ Q u n := by
   have hkey : 0 ≤ ρ n * slgEnergy ρ Q u n := by
     have hexp : ρ n * slgEnergy ρ Q u n
-        = ρ n * slgFlux ρ u n ^ 2 + Q n * (ρ n * u n) ^ 2
+        = ρ n * slgFlux ρ u n ^ (2 : ℕ) + Q n * (ρ n * u n) ^ (2 : ℕ)
           + Q n * (ρ n * u n) * slgFlux ρ u n := by
       simp only [slgEnergy, slgWeight, slgFlux]; ring
     rw [hexp]
@@ -94,10 +94,10 @@ theorem slgEnergy_nonneg (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 4 * �
   nlinarith [hkey, hρ]
 
 theorem slgWeight_mul_sq_le (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 2 * ρ n) :
-    slgWeight ρ Q n * u n ^ 2 ≤ 2 * slgEnergy ρ Q u n := by
-  have hkey : 0 ≤ ρ n * (2 * slgEnergy ρ Q u n - slgWeight ρ Q n * u n ^ 2) := by
-    have hexp : ρ n * (2 * slgEnergy ρ Q u n - slgWeight ρ Q n * u n ^ 2)
-        = 2 * ρ n * slgFlux ρ u n ^ 2 + Q n * (ρ n * u n) ^ 2
+    slgWeight ρ Q n * u n ^ (2 : ℕ) ≤ 2 * slgEnergy ρ Q u n := by
+  have hkey : 0 ≤ ρ n * (2 * slgEnergy ρ Q u n - slgWeight ρ Q n * u n ^ (2 : ℕ)) := by
+    have hexp : ρ n * (2 * slgEnergy ρ Q u n - slgWeight ρ Q n * u n ^ (2 : ℕ))
+        = 2 * ρ n * slgFlux ρ u n ^ (2 : ℕ) + Q n * (ρ n * u n) ^ (2 : ℕ)
           + 2 * (Q n * (ρ n * u n) * slgFlux ρ u n) := by
       simp only [slgEnergy, slgWeight, slgFlux]; ring
     rw [hexp]
@@ -107,10 +107,10 @@ theorem slgWeight_mul_sq_le (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 2 
   nlinarith [hkey, hρ]
 
 theorem sq_slgFlux_le (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 2 * ρ n) :
-    slgFlux ρ u n ^ 2 ≤ 2 * slgEnergy ρ Q u n := by
-  have hkey : 0 ≤ ρ n * (2 * slgEnergy ρ Q u n - slgFlux ρ u n ^ 2) := by
-    have hexp : ρ n * (2 * slgEnergy ρ Q u n - slgFlux ρ u n ^ 2)
-        = ρ n * slgFlux ρ u n ^ 2 + 2 * (Q n * (ρ n * u n) ^ 2)
+    slgFlux ρ u n ^ (2 : ℕ) ≤ 2 * slgEnergy ρ Q u n := by
+  have hkey : 0 ≤ ρ n * (2 * slgEnergy ρ Q u n - slgFlux ρ u n ^ (2 : ℕ)) := by
+    have hexp : ρ n * (2 * slgEnergy ρ Q u n - slgFlux ρ u n ^ (2 : ℕ))
+        = ρ n * slgFlux ρ u n ^ (2 : ℕ) + 2 * (Q n * (ρ n * u n) ^ (2 : ℕ))
           + 2 * (Q n * (ρ n * u n) * slgFlux ρ u n) := by
       simp only [slgEnergy, slgWeight, slgFlux]; ring
     rw [hexp]
@@ -151,9 +151,9 @@ noncomputable def slgRatioDefect (ρ Q : ℕ → ℝ) (n : ℕ) : ℝ :=
     / (2 * (Real.sqrt (slgWeight ρ Q n) + Real.sqrt (slgWeight ρ Q (n + 1))))
 
 theorem slg_increment_algebra {sa sb d M G : ℝ} (hsa : 0 < sa) (hsb : 0 < sb) :
-    ((d ^ 2 + sa ^ 2 * M) + (sb ^ 2 - sa ^ 2) * M + G) / sb - (d ^ 2 + sa ^ 2 * M) / sa
-      = ((sa ^ 2 - sb ^ 2) / (sa ^ 2 * sb))
-        * (d ^ 2 - (sb / (sa + sb)) * (d ^ 2 + sa ^ 2 * M)) + G / sb := by
+    ((d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M) + (sb ^ (2 : ℕ) - sa ^ (2 : ℕ)) * M + G) / sb - (d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M) / sa
+      = ((sa ^ (2 : ℕ) - sb ^ (2 : ℕ)) / (sa ^ (2 : ℕ) * sb))
+        * (d ^ (2 : ℕ) - (sb / (sa + sb)) * (d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M)) + G / sb := by
   have hsum : sa + sb ≠ 0 := by positivity
   have hsa' : sa ≠ 0 := hsa.ne'
   have hsb' : sb ≠ 0 := hsb.ne'
@@ -165,19 +165,19 @@ theorem slgNormalizedEnergy_succ_sub (h : IsSLGSolution ρ Q u) {n : ℕ}
     (hW : 0 < slgWeight ρ Q n) (hW' : 0 < slgWeight ρ Q (n + 1)) :
     slgNormalizedEnergy ρ Q u (n + 1) - slgNormalizedEnergy ρ Q u n
       = slgDrift ρ Q n
-          * (slgFlux ρ u n ^ 2 - slgWeightRatio ρ Q n * slgEnergy ρ Q u n)
+          * (slgFlux ρ u n ^ (2 : ℕ) - slgWeightRatio ρ Q n * slgEnergy ρ Q u n)
         + slgExtra ρ Q u n / Real.sqrt (slgWeight ρ Q (n + 1)) := by
   have hsa : 0 < Real.sqrt (slgWeight ρ Q n) := Real.sqrt_pos.mpr hW
   have hsb : 0 < Real.sqrt (slgWeight ρ Q (n + 1)) := Real.sqrt_pos.mpr hW'
-  have hsa2 : Real.sqrt (slgWeight ρ Q n) ^ 2 = slgWeight ρ Q n := Real.sq_sqrt hW.le
-  have hsb2 : Real.sqrt (slgWeight ρ Q (n + 1)) ^ 2 = slgWeight ρ Q (n + 1) :=
+  have hsa2 : Real.sqrt (slgWeight ρ Q n) ^ (2 : ℕ) = slgWeight ρ Q n := Real.sq_sqrt hW.le
+  have hsb2 : Real.sqrt (slgWeight ρ Q (n + 1)) ^ (2 : ℕ) = slgWeight ρ Q (n + 1) :=
     Real.sq_sqrt hW'.le
   have key := slg_increment_algebra (d := slgFlux ρ u n) (M := u n * u (n + 1))
     (G := slgExtra ρ Q u n) hsa hsb
   rw [hsa2, hsb2] at key
-  have hEn : slgEnergy ρ Q u n = slgFlux ρ u n ^ 2 + slgWeight ρ Q n * (u n * u (n + 1)) := rfl
+  have hEn : slgEnergy ρ Q u n = slgFlux ρ u n ^ (2 : ℕ) + slgWeight ρ Q n * (u n * u (n + 1)) := rfl
   have hEsucc : slgEnergy ρ Q u (n + 1)
-      = slgFlux ρ u n ^ 2 + slgWeight ρ Q n * (u n * u (n + 1))
+      = slgFlux ρ u n ^ (2 : ℕ) + slgWeight ρ Q n * (u n * u (n + 1))
         + (slgWeight ρ Q (n + 1) - slgWeight ρ Q n) * (u n * u (n + 1))
         + slgExtra ρ Q u n := by
     have := slgEnergy_succ_sub h n
@@ -209,7 +209,7 @@ theorem slgNormalizedEnergy_succ_sub_split (h : IsSLGSolution ρ Q u) {n : ℕ}
   have hratio := slgWeightRatio_eq (ρ := ρ) (Q := Q) (n := n) hW hW'
   have hvir := two_mul_sq_slgFlux_sub_energy (ρ := ρ) (Q := Q) (u := u) (n := n) hρ.ne'
   rw [hstep, hratio]
-  have hinner : slgFlux ρ u n ^ 2 - (1 / 2 - slgRatioDefect ρ Q n) * slgEnergy ρ Q u n
+  have hinner : slgFlux ρ u n ^ (2 : ℕ) - (1 / 2 - slgRatioDefect ρ Q n) * slgEnergy ρ Q u n
       = slgVirial ρ Q u n / 2 - Q n * (u n * slgFlux ρ u n) / 2
         + slgRatioDefect ρ Q n * slgEnergy ρ Q u n := by
     linarith [hvir]
@@ -230,10 +230,10 @@ theorem slgEnergy_eq_normalized (hW : 0 < slgWeight ρ Q n) :
 
 theorem sqrt_slgWeight_le (hρ : 0 < ρ n) (_hQ : 0 ≤ Q n) (hQρ : Q n ≤ ρ n) :
     Real.sqrt (slgWeight ρ Q n) ≤ ρ n := by
-  have hle : slgWeight ρ Q n ≤ ρ n ^ 2 := by
+  have hle : slgWeight ρ Q n ≤ ρ n ^ (2 : ℕ) := by
     simp only [slgWeight]
     nlinarith
-  calc Real.sqrt (slgWeight ρ Q n) ≤ Real.sqrt (ρ n ^ 2) := Real.sqrt_le_sqrt hle
+  calc Real.sqrt (slgWeight ρ Q n) ≤ Real.sqrt (ρ n ^ (2 : ℕ)) := Real.sqrt_le_sqrt hle
     _ = ρ n := Real.sqrt_sq hρ.le
 
 /-- The mixed term is controlled by twice the normalized energy. -/
@@ -244,19 +244,19 @@ theorem abs_mul_slgFlux_le (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ 2 *
   have hF := slgNormalizedEnergy_nonneg (ρ := ρ) (Q := Q) (u := u) (n := n) hρ hQ (by linarith)
   have h1 := slgWeight_mul_sq_le (ρ := ρ) (Q := Q) (u := u) (n := n) hρ hQ hQρ
   have h2 := sq_slgFlux_le (ρ := ρ) (Q := Q) (u := u) (n := n) hρ hQ hQρ
-  have hFsq : (2 * slgNormalizedEnergy ρ Q u n) ^ 2 * slgWeight ρ Q n
-      = 4 * slgEnergy ρ Q u n ^ 2 := by
+  have hFsq : (2 * slgNormalizedEnergy ρ Q u n) ^ (2 : ℕ) * slgWeight ρ Q n
+      = 4 * slgEnergy ρ Q u n ^ (2 : ℕ) := by
     rw [slgNormalizedEnergy, mul_pow, div_pow, Real.sq_sqrt hW.le]
     field_simp
     ring
-  have hsq : (u n * slgFlux ρ u n) ^ 2 * slgWeight ρ Q n
-      ≤ (2 * slgNormalizedEnergy ρ Q u n) ^ 2 * slgWeight ρ Q n := by
+  have hsq : (u n * slgFlux ρ u n) ^ (2 : ℕ) * slgWeight ρ Q n
+      ≤ (2 * slgNormalizedEnergy ρ Q u n) ^ (2 : ℕ) * slgWeight ρ Q n := by
     rw [hFsq]
-    have hvd : (u n * slgFlux ρ u n) ^ 2 * slgWeight ρ Q n
-        = (slgWeight ρ Q n * u n ^ 2) * slgFlux ρ u n ^ 2 := by ring
+    have hvd : (u n * slgFlux ρ u n) ^ (2 : ℕ) * slgWeight ρ Q n
+        = (slgWeight ρ Q n * u n ^ (2 : ℕ)) * slgFlux ρ u n ^ (2 : ℕ) := by ring
     rw [hvd]
     nlinarith [h1, h2, sq_nonneg (slgFlux ρ u n), hE]
-  have hsq' : (u n * slgFlux ρ u n) ^ 2 ≤ (2 * slgNormalizedEnergy ρ Q u n) ^ 2 :=
+  have hsq' : (u n * slgFlux ρ u n) ^ (2 : ℕ) ≤ (2 * slgNormalizedEnergy ρ Q u n) ^ (2 : ℕ) :=
     le_of_mul_le_mul_right (by linarith [hsq]) hW
   have hs := Real.sqrt_le_sqrt hsq'
   rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq (by positivity)] at hs
@@ -272,21 +272,21 @@ theorem abs_slgPrimitive_le (hρ : 0 < ρ n) (hQ : 0 ≤ Q n) (hQρ : Q n ≤ ρ
   have hEF := slgEnergy_eq_normalized (ρ := ρ) (Q := Q) (u := u) (n := n) hW
   have hsw := sqrt_slgWeight_le (ρ := ρ) (Q := Q) (n := n) hρ hQ hQρ
   have hsplit : ρ n * slgPrimitive ρ u n
-      = ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ 2 := by
+      = ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ (2 : ℕ) := by
     simp only [slgPrimitive, slgFlux]
     ring
   have habs : |ρ n * slgPrimitive ρ u n| ≤ ρ n * (4 * slgNormalizedEnergy ρ Q u n) := by
     rw [hsplit]
-    have hb1 : |ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ 2|
-        ≤ |ρ n * (u n * slgFlux ρ u n)| + slgFlux ρ u n ^ 2 := by
-      calc |ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ 2|
-          ≤ |ρ n * (u n * slgFlux ρ u n)| + |slgFlux ρ u n ^ 2| := abs_add_le _ _
-        _ = |ρ n * (u n * slgFlux ρ u n)| + slgFlux ρ u n ^ 2 := by
+    have hb1 : |ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ (2 : ℕ)|
+        ≤ |ρ n * (u n * slgFlux ρ u n)| + slgFlux ρ u n ^ (2 : ℕ) := by
+      calc |ρ n * (u n * slgFlux ρ u n) + slgFlux ρ u n ^ (2 : ℕ)|
+          ≤ |ρ n * (u n * slgFlux ρ u n)| + |slgFlux ρ u n ^ (2 : ℕ)| := abs_add_le _ _
+        _ = |ρ n * (u n * slgFlux ρ u n)| + slgFlux ρ u n ^ (2 : ℕ) := by
             rw [abs_of_nonneg (sq_nonneg (slgFlux ρ u n))]
     have hb2 : |ρ n * (u n * slgFlux ρ u n)| ≤ ρ n * (2 * slgNormalizedEnergy ρ Q u n) := by
       rw [abs_mul, abs_of_pos hρ]
       exact mul_le_mul_of_nonneg_left hmix hρ.le
-    have hb3 : slgFlux ρ u n ^ 2 ≤ ρ n * (2 * slgNormalizedEnergy ρ Q u n) := by
+    have hb3 : slgFlux ρ u n ^ (2 : ℕ) ≤ ρ n * (2 * slgNormalizedEnergy ρ Q u n) := by
       have : slgEnergy ρ Q u n ≤ ρ n * slgNormalizedEnergy ρ Q u n := by
         rw [hEF]
         nlinarith [hF, hsw]
@@ -483,14 +483,14 @@ theorem sq_le_of_slgControl (h : IsSLGSolution ρ Q u) {Dr dev : ℕ → ℝ} {N
     (hsum : ∀ K, ∑ k ∈ Finset.Ico N₀ K,
         (2 * |Dr (k + 1) - Dr k| + 2 * (slgControl ρ Q (k + 1) + 2 * dev (k + 1))) ≤ 1 / 8)
     {m : ℕ} (hm : N₀ ≤ m) :
-    u m ^ 2
+    u m ^ (2 : ℕ)
       ≤ 4 * max (slgNormalizedEnergy ρ Q u N₀) (slgNormalizedEnergy ρ Q u (N₀ + 1))
           / Real.sqrt (slgWeight ρ Q m) := by
   have hρm := hρ m hm
   have hQm := hQ m hm
   have hW : 0 < slgWeight ρ Q m := mul_pos hρm hQm
   have hs : 0 < Real.sqrt (slgWeight ρ Q m) := Real.sqrt_pos.mpr hW
-  have hs2 : Real.sqrt (slgWeight ρ Q m) ^ 2 = slgWeight ρ Q m := Real.sq_sqrt hW.le
+  have hs2 : Real.sqrt (slgWeight ρ Q m) ^ (2 : ℕ) = slgWeight ρ Q m := Real.sq_sqrt hW.le
   have hbound := slg_bootstrap h hρ hQ hQρ hdev hdev0 hbdry hsum hm
   have hEq := slgEnergy_eq_normalized (ρ := ρ) (Q := Q) (u := u) (n := m) hW
   have hsq := slgWeight_mul_sq_le (ρ := ρ) (Q := Q) (u := u) (n := m) hρm hQm.le
@@ -499,7 +499,7 @@ theorem sq_le_of_slgControl (h : IsSLGSolution ρ Q u) {Dr dev : ℕ → ℝ} {N
   have hE : slgEnergy ρ Q u m ≤ 2 * C * Real.sqrt (slgWeight ρ Q m) := by
     rw [hEq]
     exact mul_le_mul_of_nonneg_right hbound hs.le
-  have hkey : slgWeight ρ Q m * u m ^ 2 ≤ 4 * C * Real.sqrt (slgWeight ρ Q m) := by linarith
+  have hkey : slgWeight ρ Q m * u m ^ (2 : ℕ) ≤ 4 * C * Real.sqrt (slgWeight ρ Q m) := by linarith
   rw [le_div_iff₀ hs]
   nlinarith [hkey, hs, hs2, sq_nonneg (u m)]
 

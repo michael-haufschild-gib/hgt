@@ -28,11 +28,11 @@ noncomputable section
 /-- Squared finite-row energy of the source-normal Hedenmalm prime multipliers. -/
 def hedenmalmPrimeNormalEnergy (N : ℕ) (z : ℂ) : ℝ :=
   ∑ p ∈ Nat.primesLE N,
-    4 * ‖Complex.sin (z * (Real.log p / 2 : ℝ))‖ ^ 2 / p
+    4 * ‖Complex.sin (z * (Real.log p / 2 : ℝ))‖ ^ (2 : ℕ) / p
 
 /-- Complex sine separates exactly into trigonometric and hyperbolic squared components. -/
 lemma norm_sq_complex_sin_eq (z : ℂ) :
-    ‖Complex.sin z‖ ^ 2 = Real.sin z.re ^ 2 + Real.sinh z.im ^ 2 := by
+    ‖Complex.sin z‖ ^ (2 : ℕ) = Real.sin z.re ^ (2 : ℕ) + Real.sinh z.im ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sin_eq]
   simp only [Complex.sin_ofReal_re, Complex.sin_ofReal_im,
     Complex.cos_ofReal_re, Complex.cos_ofReal_im,
@@ -61,7 +61,7 @@ theorem hedenmalmPrimeNormalEnergy_eq_vertical_add_radial (N : ℕ) (z : ℂ) :
 energy. -/
 theorem im_sq_mul_primeClockSusceptibility_le_hedenmalmPrimeNormalEnergy
     (N : ℕ) (z : ℂ) :
-    z.im ^ 2 * primeClockSusceptibility N ≤ hedenmalmPrimeNormalEnergy N z := by
+    z.im ^ (2 : ℕ) * primeClockSusceptibility N ≤ hedenmalmPrimeNormalEnergy N z := by
   rw [hedenmalmPrimeNormalEnergy_eq_vertical_add_radial]
   have hradial := primeClockCutoffEnergy_quadratic_lower N (z.im / 2)
   have hvertical := primeClockVerticalEnergy_nonneg N z.re
@@ -69,7 +69,7 @@ theorem im_sq_mul_primeClockSusceptibility_le_hedenmalmPrimeNormalEnergy
 
 /-- The `o(log² N)` finite-domain condition for one source-normal prime row. -/
 def HedenmalmPrimeNormalSubLogSquare (z : ℂ) : Prop :=
-  Tendsto (fun N : ℕ => hedenmalmPrimeNormalEnergy N z / Real.log N ^ 2)
+  Tendsto (fun N : ℕ => hedenmalmPrimeNormalEnergy N z / Real.log N ^ (2 : ℕ))
     atTop (𝓝 0)
 
 /-- Sub-`log²` source-normal energy forces a point onto the real centered axis. -/
@@ -77,15 +77,15 @@ theorem im_eq_zero_of_hedenmalmPrimeNormalSubLogSquare
     {z : ℂ} (h : HedenmalmPrimeNormalSubLogSquare z) :
     z.im = 0 := by
   have hradial : Tendsto
-      (fun N : ℕ => primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2)
+      (fun N : ℕ => primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ))
       atTop (𝓝 0) := by
     have hnonneg : ∀ᶠ N : ℕ in atTop,
-        0 ≤ primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2 :=
+        0 ≤ primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ) :=
       Eventually.of_forall fun N =>
         div_nonneg (primeClockCutoffEnergy_nonneg N (z.im / 2)) (sq_nonneg _)
     have hle : ∀ᶠ N : ℕ in atTop,
-        primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2 ≤
-          hedenmalmPrimeNormalEnergy N z / Real.log N ^ 2 := by
+        primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ) ≤
+          hedenmalmPrimeNormalEnergy N z / Real.log N ^ (2 : ℕ) := by
       filter_upwards with N
       rw [hedenmalmPrimeNormalEnergy_eq_vertical_add_radial]
       exact div_le_div_of_nonneg_right

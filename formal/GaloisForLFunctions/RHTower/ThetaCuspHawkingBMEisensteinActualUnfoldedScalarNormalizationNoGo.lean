@@ -12,12 +12,12 @@ unfolding at the honest absolute-convergence point `(P,Q) = (2,5)`.  The actual 
 Whittaker coefficient is first identified with the corpus generalized-divisor arithmetic.  After
 the frequency pairing and the change of variables `x = 2πny`, the source is
 
-`8 · Λ(10) · (2π)^(-5) · ∫₀⁺∞ x⁴ K_{3/2}(x)^2 dx
+`8 · Λ(10) · (2π)^(-5) · ∫₀⁺∞ x⁴ K_{3/2}(x)^(2 : ℕ) dx
   · L(σ_{-3}σ_{-3}, 2)`.
 
 The two-shift Ramanujan product and two-K Mellin product give exactly
 
-`Λ(8) · Λ(5)^2 · Λ(2)`.
+`Λ(8) · Λ(5)^(2 : ℕ) · Λ(2)`.
 
 The global xi functional equation identifies `Λ(2) = Λ(-1)`, so this is also the corpus
 classical Rankin--Selberg--Zagier value.  In contrast, the prescribed canonical four-xi vertex is
@@ -244,7 +244,7 @@ lemma d4BM_reflectedCompletedLambda_neg_one_eq_two :
   norm_num at hfe
   rw [reflectedCompletedLambda, reflectedCompletedLambda,
     ← d4BM_completedRiemannZeta_neg_one_eq,
-    ← completedRiemannZeta_eq_Gammaℝ_mul (by norm_num : 0 < (2 : ℂ).re)]
+    ← completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by norm_num : 0 < (2 : ℂ).re)]
   rw [← hneg, hfe, hpos]
 
 /-- Projecting Eisenstein parameter `Q = 5`, inside the actual convergence chamber. -/
@@ -273,7 +273,7 @@ private lemma d4BM_completedXiFactor_fifteen_halves_eq :
   have harg : (1 / 2 : ℂ) + (-Complex.I * (15 / 2 : ℂ)) * Complex.I = 8 := by
     apply Complex.ext <;> norm_num
   rw [harg, xi_eq_mul_completedRiemannZeta (by norm_num) (by norm_num),
-    completedRiemannZeta_eq_Gammaℝ_mul (by norm_num)]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by norm_num)]
   unfold reflectedCompletedLambda
   ring
 
@@ -284,7 +284,7 @@ private lemma d4BM_completedXiFactor_nine_halves_eq :
   have harg : (1 / 2 : ℂ) + (-Complex.I * (9 / 2 : ℂ)) * Complex.I = 5 := by
     apply Complex.ext <;> norm_num
   rw [harg, xi_eq_mul_completedRiemannZeta (by norm_num) (by norm_num),
-    completedRiemannZeta_eq_Gammaℝ_mul (by norm_num)]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by norm_num)]
   unfold reflectedCompletedLambda
   ring
 

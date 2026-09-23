@@ -31,7 +31,7 @@ variable {α : Type*} [Fintype α] [DecidableEq α]
 
 /-- The spectral weights of a state in an orthonormal eigenbasis. -/
 def spectralWeights (e : α → α → ℂ) (Ω : α → ℂ) : α → ℝ :=
-  fun j => ‖finiteComplexInner (e j) Ω‖ ^ 2
+  fun j => ‖finiteComplexInner (e j) Ω‖ ^ (2 : ℕ)
 
 /-- The spectral phases of a state in an orthonormal eigenbasis. -/
 def spectralPhases (e : α → α → ℂ) (Ω : α → ℂ) : α → ℝ :=
@@ -134,15 +134,15 @@ theorem eigenCoords_sub_smul (e : α → α → ℂ) (v w : α → ℂ) (c : ℂ
 
 theorem sum_normSq_eigenCoords_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (heb : IsOrthoEigenBasis H e lam) (v : α → ℂ) :
-    ∑ j, ‖eigenCoords e v j‖ ^ 2 = ∑ x, ‖v x‖ ^ 2 := by
+    ∑ j, ‖eigenCoords e v j‖ ^ (2 : ℕ) = ∑ x, ‖v x‖ ^ (2 : ℕ) := by
   have hpar := finiteComplexInner_eigenCoords heb v v
   have hL : finiteComplexInner (eigenCoords e v) (eigenCoords e v)
-      = ((∑ j, ‖eigenCoords e v j‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∑ j, ‖eigenCoords e v j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [finiteComplexInner, Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun j _ => by
       rw [Complex.sq_norm]
       exact (Complex.normSq_eq_conj_mul_self).symm
-  have hR : finiteComplexInner v v = ((∑ x, ‖v x‖ ^ 2 : ℝ) : ℂ) := by
+  have hR : finiteComplexInner v v = ((∑ x, ‖v x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [finiteComplexInner, Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun x _ => by
       rw [Complex.sq_norm]
@@ -166,8 +166,8 @@ theorem norm_toLp_reindex (ρ : α ≃ β) (v : α → ℂ) :
       = ‖(WithLp.toLp 2 v : EuclideanSpace ℂ α)‖ := by
   have h1 := sq_norm_toLp (fun j => v (ρ.symm j))
   have h2 := sq_norm_toLp v
-  have h3 : ∑ j, ‖v (ρ.symm j)‖ ^ 2 = ∑ x, ‖v x‖ ^ 2 :=
-    Fintype.sum_equiv ρ.symm (fun j => ‖v (ρ.symm j)‖ ^ 2) (fun x => ‖v x‖ ^ 2) (fun _ => rfl)
+  have h3 : ∑ j, ‖v (ρ.symm j)‖ ^ (2 : ℕ) = ∑ x, ‖v x‖ ^ (2 : ℕ) :=
+    Fintype.sum_equiv ρ.symm (fun j => ‖v (ρ.symm j)‖ ^ (2 : ℕ)) (fun x => ‖v x‖ ^ (2 : ℕ)) (fun _ => rfl)
   nlinarith [norm_nonneg (WithLp.toLp 2 (fun j => v (ρ.symm j)) : EuclideanSpace ℂ β),
     norm_nonneg (WithLp.toLp 2 v : EuclideanSpace ℂ α)]
 

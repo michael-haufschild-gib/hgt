@@ -24,11 +24,11 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Preparation energy of a nonempty feed-forward interval, for arbitrary real hopping amplitude. -/
 def feedForwardBuildup (r : ℝ) (n : ℕ) : ℝ :=
-  ∑ i : Fin (n + 1), (r ^ 2) ^ i.val
+  ∑ i : Fin (n + 1), (r ^ (2 : ℕ)) ^ i.val
 
 theorem feedForwardBuildup_one_le (r : ℝ) (n : ℕ) : 1 ≤ feedForwardBuildup r n := by
   have h := Finset.single_le_sum
-    (f := fun i : Fin (n + 1) => (r ^ 2) ^ i.val)
+    (f := fun i : Fin (n + 1) => (r ^ (2 : ℕ)) ^ i.val)
     (fun i _ => pow_nonneg (sq_nonneg r) _) (Finset.mem_univ (0 : Fin (n + 1)))
   simpa [feedForwardBuildup] using h
 
@@ -37,7 +37,7 @@ theorem feedForwardBuildup_pos (r : ℝ) (n : ℕ) : 0 < feedForwardBuildup r n 
 
 /-- Site-local Fisher retention, including the zero-hopping limit. -/
 def feedForwardRetention (r : ℝ) (n : ℕ) (i : Fin (n + 1)) : ℝ :=
-  (r ^ 2) ^ i.val / feedForwardBuildup r n
+  (r ^ (2 : ℕ)) ^ i.val / feedForwardBuildup r n
 
 /-- Theorem S4, equation (S84): each port interval has exactly one unit of retention. -/
 theorem sum_feedForwardRetention (r : ℝ) (n : ℕ) :
@@ -62,11 +62,11 @@ theorem feedForwardBuildup_mul_upstreamRetention (r : ℝ) (n : ℕ) :
 
 /-- The finite-geometric closed form without a singular division at unit hopping. -/
 theorem feedForwardBuildup_geometric_identity (r : ℝ) (n : ℕ) :
-    feedForwardBuildup r n * (r ^ 2 - 1) = (r ^ 2) ^ (n + 1) - 1 := by
-  simpa [feedForwardBuildup, Fin.sum_univ_eq_sum_range] using geom_sum_mul (r ^ 2) (n + 1)
+    feedForwardBuildup r n * (r ^ (2 : ℕ) - 1) = (r ^ (2 : ℕ)) ^ (n + 1) - 1 := by
+  simpa [feedForwardBuildup, Fin.sum_univ_eq_sum_range] using geom_sum_mul (r ^ (2 : ℕ)) (n + 1)
 
 theorem feedForwardBuildup_succ (r : ℝ) (n : ℕ) :
-    feedForwardBuildup r (n + 1) = feedForwardBuildup r n + (r ^ 2) ^ (n + 1) := by
+    feedForwardBuildup r (n + 1) = feedForwardBuildup r n + (r ^ (2 : ℕ)) ^ (n + 1) := by
   simp only [feedForwardBuildup, Fin.sum_univ_castSucc, Fin.val_castSucc, Fin.val_last]
 
 /-- Unit hopping spreads coverage uniformly. -/
@@ -101,10 +101,10 @@ theorem exists_feedForwardRetention_le_average (r : ℝ) (n : ℕ) :
 
 /-- At hopping amplitude `1+a²`, upstream is a weakest task. -/
 theorem upstreamRetention_le_directedRetention (a : ℝ) (n : ℕ) (i : Fin (n + 1)) :
-    feedForwardRetention (1 + a ^ 2) n 0 ≤ feedForwardRetention (1 + a ^ 2) n i := by
+    feedForwardRetention (1 + a ^ (2 : ℕ)) n 0 ≤ feedForwardRetention (1 + a ^ (2 : ℕ)) n i := by
   apply div_le_div_of_nonneg_right _ (feedForwardBuildup_pos _ _).le
   simp only [Fin.val_zero, pow_zero]
-  exact one_le_pow₀ (by nlinarith [sq_nonneg a, sq_nonneg (a ^ 2)])
+  exact one_le_pow₀ (by nlinarith [sq_nonneg a, sq_nonneg (a ^ (2 : ℕ))])
 
 /-- Minimal interval preparation costs are summed by a probe shared across every task. -/
 def feedForwardCommonCost {m : ℕ} (r : ℝ) (n : Fin (m + 1) → ℕ) : ℝ :=
@@ -121,19 +121,19 @@ def feedForwardBalancedProbe {m : ℕ} (r : ℝ) (n : Fin (m + 1) → ℕ)
 
 theorem feedForwardBalancedProbe_sq {m : ℕ} (r : ℝ) (n : Fin (m + 1) → ℕ)
     (j : Fin (m + 1)) :
-    feedForwardBalancedProbe r n j ^ 2 =
+    feedForwardBalancedProbe r n j ^ (2 : ℕ) =
       feedForwardBuildup r (n j) / feedForwardCommonCost r n :=
   Real.sq_sqrt (div_nonneg (feedForwardBuildup_pos _ _).le
     (feedForwardCommonCost_pos _ _).le)
 
 theorem sum_sq_feedForwardBalancedProbe {m : ℕ} (r : ℝ) (n : Fin (m + 1) → ℕ) :
-    ∑ j, feedForwardBalancedProbe r n j ^ 2 = 1 := by
+    ∑ j, feedForwardBalancedProbe r n j ^ (2 : ℕ) = 1 := by
   simp only [feedForwardBalancedProbe_sq, ← Finset.sum_div]
   exact div_self (ne_of_gt (feedForwardCommonCost_pos r n))
 
 theorem feedForwardBalancedProbe_upstream {m : ℕ} (r : ℝ)
     (n : Fin (m + 1) → ℕ) (j : Fin (m + 1)) :
-    feedForwardBalancedProbe r n j ^ 2 * feedForwardRetention r (n j) 0 =
+    feedForwardBalancedProbe r n j ^ (2 : ℕ) * feedForwardRetention r (n j) 0 =
       1 / feedForwardCommonCost r n := by
   rw [feedForwardBalancedProbe_sq, feedForwardRetention]
   simp only [Fin.val_zero, pow_zero]
@@ -143,11 +143,11 @@ theorem feedForwardBalancedProbe_upstream {m : ℕ} (r : ℝ)
 /-- Every probe has an upstream task bounded by total energy divided by summed interval costs. -/
 theorem exists_feedForwardProbe_bottleneck {m : ℕ} (r : ℝ)
     (n : Fin (m + 1) → ℕ) (a : Fin (m + 1) → ℝ) :
-    ∃ j, a j ^ 2 * feedForwardRetention r (n j) 0 ≤
-      (∑ k, a k ^ 2) / feedForwardCommonCost r n := by
+    ∃ j, a j ^ (2 : ℕ) * feedForwardRetention r (n j) 0 ≤
+      (∑ k, a k ^ (2 : ℕ)) / feedForwardCommonCost r n := by
   have hc := feedForwardCommonCost_pos r n
-  have hs : (∑ j, a j ^ 2) ≤
-      ∑ j, ((∑ k, a k ^ 2) / feedForwardCommonCost r n) *
+  have hs : (∑ j, a j ^ (2 : ℕ)) ≤
+      ∑ j, ((∑ k, a k ^ (2 : ℕ)) / feedForwardCommonCost r n) *
         feedForwardBuildup r (n j) := by
     rw [← Finset.mul_sum]
     change _ ≤ _ / feedForwardCommonCost r n * feedForwardCommonCost r n
@@ -168,47 +168,47 @@ theorem feedForwardCommon_equal_intervals (r : ℝ) (m n : ℕ) :
 
 /-- Coverages simultaneously achievable at every site by one unit-resource probe. -/
 def feedForwardAchievableCoverage {m : ℕ} (r : ℝ) (n : Fin (m + 1) → ℕ) : Set ℝ :=
-  {t | ∃ a : Fin (m + 1) → ℝ, (∑ j, a j ^ 2) = 1 ∧
-    ∀ j i, t ≤ a j ^ 2 * feedForwardRetention r (n j) i}
+  {t | ∃ a : Fin (m + 1) → ℝ, (∑ j, a j ^ (2 : ℕ)) = 1 ∧
+    ∀ j i, t ≤ a j ^ (2 : ℕ) * feedForwardRetention r (n j) i}
 
 /-- Equation (28), with both optimality and an explicit attaining probe: the shared-probe
 max–min value is the reciprocal of the sum of the segment preparation costs. -/
 theorem feedForwardCommonProbe_isGreatest {m : ℕ} (a : ℝ)
     (n : Fin (m + 1) → ℕ) :
-    IsGreatest (feedForwardAchievableCoverage (1 + a ^ 2) n)
-      (1 / feedForwardCommonCost (1 + a ^ 2) n) := by
+    IsGreatest (feedForwardAchievableCoverage (1 + a ^ (2 : ℕ)) n)
+      (1 / feedForwardCommonCost (1 + a ^ (2 : ℕ)) n) := by
   constructor
-  · refine ⟨feedForwardBalancedProbe (1 + a ^ 2) n,
+  · refine ⟨feedForwardBalancedProbe (1 + a ^ (2 : ℕ)) n,
       sum_sq_feedForwardBalancedProbe _ _, ?_⟩
     intro j i
-    rw [← feedForwardBalancedProbe_upstream (1 + a ^ 2) n j]
+    rw [← feedForwardBalancedProbe_upstream (1 + a ^ (2 : ℕ)) n j]
     exact mul_le_mul_of_nonneg_left (upstreamRetention_le_directedRetention a (n j) i)
       (sq_nonneg _)
   · intro t ht
     obtain ⟨c, hc, hcover⟩ := ht
-    obtain ⟨j, hj⟩ := exists_feedForwardProbe_bottleneck (1 + a ^ 2) n c
+    obtain ⟨j, hj⟩ := exists_feedForwardProbe_bottleneck (1 + a ^ (2 : ℕ)) n c
     rw [hc] at hj
     exact (hcover j 0).trans hj
 
 /-- Splitting an interval separates its preparation costs by the intervening gain. -/
 theorem feedForwardBuildup_concat (r : ℝ) (n k : ℕ) :
     feedForwardBuildup r (n + k + 1) = feedForwardBuildup r n +
-      (r ^ 2) ^ (n + 1) * feedForwardBuildup r k := by
+      (r ^ (2 : ℕ)) ^ (n + 1) * feedForwardBuildup r k := by
   unfold feedForwardBuildup
   have h := Fin.sum_univ_add (a := n + 1) (b := k + 1)
-    (fun i => (r ^ 2) ^ i.val)
+    (fun i => (r ^ (2 : ℕ)) ^ i.val)
   have he : n + k + 1 + 1 = (n + 1) + (k + 1) := by omega
   conv_lhs => rw [he]
   simpa only [Fin.val_castAdd, Fin.val_natAdd, pow_add, Finset.mul_sum] using h
 
 /-- Every extra downstream site strictly reduces upstream coverage for directed gain. -/
 theorem directed_upstreamRetention_strict_step (a : ℝ) (n : ℕ) :
-    feedForwardRetention (1 + a ^ 2) (n + 1) 0 <
-      feedForwardRetention (1 + a ^ 2) n 0 := by
+    feedForwardRetention (1 + a ^ (2 : ℕ)) (n + 1) 0 <
+      feedForwardRetention (1 + a ^ (2 : ℕ)) n 0 := by
   simp only [feedForwardRetention, Fin.val_zero, pow_zero, one_div]
   apply (inv_lt_inv₀ (feedForwardBuildup_pos _ _) (feedForwardBuildup_pos _ _)).mpr
   rw [feedForwardBuildup_succ]
-  have hb : 0 < ((1 + a ^ 2) ^ 2) ^ (n + 1) := by positivity
+  have hb : 0 < ((1 + a ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (n + 1) := by positivity
   linarith
 
 end GaloisForLFunctions.HTGeometry

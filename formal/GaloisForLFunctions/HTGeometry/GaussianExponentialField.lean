@@ -128,14 +128,14 @@ instance ratFieldDifferentialAlgebra :
 /-! ### The Gaussian exponential -/
 
 theorem analyticOnNhd_gaussianExp :
-    AnalyticOnNhd ℂ (fun z : ℂ => Complex.exp (-z ^ 2)) (Set.univ : Set ℂ) := by
-  have hP : AnalyticOnNhd ℂ (fun z : ℂ => -z ^ 2) (Set.univ : Set ℂ) :=
+    AnalyticOnNhd ℂ (fun z : ℂ => Complex.exp (-z ^ (2 : ℕ))) (Set.univ : Set ℂ) := by
+  have hP : AnalyticOnNhd ℂ (fun z : ℂ => -z ^ (2 : ℕ)) (Set.univ : Set ℂ) :=
     (analyticOnNhd_id.pow 2).neg
   exact hP.cexp
 
 /-- The Gaussian exponential as an element of the meromorphic field. -/
 def gaussElem : meroField (Set.univ : Set ℂ) :=
-  analyticMeroElement (fun z : ℂ => Complex.exp (-z ^ 2)) analyticOnNhd_gaussianExp
+  analyticMeroElement (fun z : ℂ => Complex.exp (-z ^ (2 : ℕ))) analyticOnNhd_gaussianExp
 
 /-- The rational function `-2X`, the logarithmic derivative of the Gaussian exponential. -/
 def gaussLogDeriv : RatFunc ℂ :=
@@ -162,8 +162,8 @@ theorem deriv_gaussElem :
     ← analyticMeroElement_mul _ analyticOnNhd_gaussianExp]
   refine analyticMeroElement_congr _ _ ?_
   funext z
-  have hd : HasDerivAt (fun w : ℂ => Complex.exp (-w ^ 2)) (Complex.exp (-z ^ 2) * (-(2 * z))) z := by
-    have h2 : HasDerivAt (fun w : ℂ => -(w ^ 2)) (-((2 : ℕ) * z ^ (2 - 1))) z :=
+  have hd : HasDerivAt (fun w : ℂ => Complex.exp (-w ^ (2 : ℕ))) (Complex.exp (-z ^ (2 : ℕ)) * (-(2 * z))) z := by
+    have h2 : HasDerivAt (fun w : ℂ => -(w ^ (2 : ℕ))) (-((2 : ℕ) * z ^ (2 - 1))) z :=
       (hasDerivAt_pow 2 z).neg
     have hcoef : (-((2 : ℕ) * z ^ (2 - 1)) : ℂ) = -(2 * z) := by norm_num
     rw [hcoef] at h2

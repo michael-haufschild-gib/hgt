@@ -26,9 +26,9 @@ theorem lotz_stdGaussian_fiber (L : StrongDual ℝ E) (c : ℝ) :
       simp
     · simp [hc,Ne.symm hc]
   · rw [if_neg (fun h => hL h.1)]
-    have hv : (‖L‖^2).toNNReal ≠ 0 :=
+    have hv : (‖L‖^(2 : ℕ)).toNNReal ≠ 0 :=
       ne_of_gt (Real.toNNReal_pos.mpr (sq_pos_of_pos (norm_pos_iff.mpr hL)))
-    have hmap : (stdGaussian E).map L = gaussianReal 0 (‖L‖^2).toNNReal := by
+    have hmap : (stdGaussian E).map L = gaussianReal 0 (‖L‖^(2 : ℕ)).toNNReal := by
       rw [IsGaussian.map_eq_gaussianReal L,integral_strongDual_stdGaussian,
         variance_dual_stdGaussian]
     letI := nullSingletonClass_gaussianReal (μ := 0) hv

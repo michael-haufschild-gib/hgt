@@ -29,10 +29,10 @@ noncomputable section
 derived from the corpus order recurrence, not introduced as a special-function axiom. -/
 theorem d4BM_whittakerP0_secondJet_eigenEquation
     (c : D4BMPositiveReal) (nu : ℂ) (Y : D4BMPositiveReal) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         (d4BMWhittakerP0SecondJet c nu Y -
-          (c : ℂ) ^ 2 * d4BMWhittakerP0 c nu Y) =
-      (nu ^ 2 - 1 / 4) * d4BMWhittakerP0 c nu Y := by
+          (c : ℂ) ^ (2 : ℕ) * d4BMWhittakerP0 c nu Y) =
+      (nu ^ (2 : ℕ) - 1 / 4) * d4BMWhittakerP0 c nu Y := by
   have hrec0 :=
     GaloisForLFunctions.HTGeometry.modifiedBesselKOrder_add_one
       (mul_pos c.2 Y.2) nu
@@ -53,7 +53,7 @@ theorem d4BM_whittakerP0_secondJet_eigenEquation
   have hYne : (Y : ℂ) ≠ 0 := by exact_mod_cast Y.2.ne'
   have hcne : (c : ℂ) ≠ 0 := by exact_mod_cast c.2.ne'
   have hsqrt : Real.sqrt (Y : ℝ) ≠ 0 := (Real.sqrt_pos.2 Y.2).ne'
-  have hsqrt_sq : (Real.sqrt (Y : ℝ) : ℂ) ^ 2 = (Y : ℂ) := by
+  have hsqrt_sq : (Real.sqrt (Y : ℝ) : ℂ) ^ (2 : ℕ) = (Y : ℂ) := by
     exact_mod_cast Real.sq_sqrt Y.2.le
   push_cast at hrec0 hrecp hrecm ⊢
   have hpp :
@@ -101,22 +101,22 @@ theorem d4BM_whittakerP0_secondJet_eigenEquation
 theorem d4BM_signedWhittakerMode_secondJet_eigenEquation
     (negative : Bool) (N : ℕ) (nu : ℂ) (x : ℝ)
     (Y : D4BMPositiveReal) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         (d4BMSignedWhittakerModeHorizontalSecondJet
             negative N nu x Y +
           d4BMSignedWhittakerModeVerticalSecondJet
             negative N nu x Y) =
-      (nu ^ 2 - 1 / 4) *
+      (nu ^ (2 : ℕ) - 1 / 4) *
         d4BMSignedWhittakerMode negative N nu x Y := by
   have heigen := d4BM_whittakerP0_secondJet_eigenEquation
     (d4BMPositiveFourierScale N) nu Y
-  have hrate : d4BMSignedFourierRate negative N ^ 2 =
-      -(d4BMPositiveFourierScale N : ℂ) ^ 2 := by
+  have hrate : d4BMSignedFourierRate negative N ^ (2 : ℕ) =
+      -(d4BMPositiveFourierScale N : ℂ) ^ (2 : ℕ) := by
     unfold d4BMSignedFourierRate
     rw [show ((d4BMFourierSign negative : ℂ) *
-        (d4BMPositiveFourierScale N : ℂ) * Complex.I) ^ 2 =
-      (d4BMFourierSign negative : ℂ) ^ 2 *
-        (d4BMPositiveFourierScale N : ℂ) ^ 2 * Complex.I ^ 2 by ring,
+        (d4BMPositiveFourierScale N : ℂ) * Complex.I) ^ (2 : ℕ) =
+      (d4BMFourierSign negative : ℂ) ^ (2 : ℕ) *
+        (d4BMPositiveFourierScale N : ℂ) ^ (2 : ℕ) * Complex.I ^ (2 : ℕ) by ring,
       Complex.I_sq]
     cases negative <;> norm_num [d4BMFourierSign]
   unfold d4BMSignedWhittakerModeHorizontalSecondJet
@@ -219,15 +219,15 @@ def d4BMCompletedEisensteinPhasedMaassExpansionSummand
           u (nu + 1) negative x 1 1 Y N +
         d4BMCompletedEisensteinSignedSqrtWhittakerSummand
           u (nu - 1) negative x 1 1 Y N) +
-    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       d4BMCompletedEisensteinSignedSqrtWhittakerSummand
         u nu negative x 2 2 Y N +
-    (if raise then (2 * Real.pi : ℂ) ^ 2 else -(2 * Real.pi : ℂ) ^ 2) *
+    (if raise then (2 * Real.pi : ℂ) ^ (2 : ℕ) else -(2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (d4BMCompletedEisensteinSignedSqrtWhittakerSummand
           u (nu + 1) negative x 2 2 Y N +
         d4BMCompletedEisensteinSignedSqrtWhittakerSummand
           u (nu - 1) negative x 2 2 Y N) +
-    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (d4BMCompletedEisensteinSignedSqrtWhittakerSummand
           u (nu + 2) negative x 2 2 Y N +
         d4BMCompletedEisensteinSignedSqrtWhittakerSummand
@@ -253,12 +253,12 @@ theorem d4BMCompletedEisensteinPhasedMaassWord_eq_expansion_tsum
     ((3 / 2 : ℂ) * (2 * Real.pi : ℂ)) *
       (S (nu + 1) 1 1 N + S (nu - 1) 1 1 N)
   let e20 : ℕ → ℂ := fun N =>
-    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ 2) * S nu 2 2 N
+    ((3 / 2 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) * S nu 2 2 N
   let e2 : ℕ → ℂ := fun N =>
-    (if raise then (2 * Real.pi : ℂ) ^ 2 else -(2 * Real.pi : ℂ) ^ 2) *
+    (if raise then (2 * Real.pi : ℂ) ^ (2 : ℕ) else -(2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (S (nu + 1) 2 2 N + S (nu - 1) 2 2 N)
   let e22 : ℕ → ℂ := fun N =>
-    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ 2) *
+    ((1 / 4 : ℂ) * (2 * Real.pi : ℂ) ^ (2 : ℕ)) *
       (S (nu + 2) 2 2 N + S (nu - 2) 2 2 N)
   have hs (mu : ℂ) (j m : ℕ) : Summable (S mu j m) := by
     exact summable_d4BMCompletedEisensteinSignedSqrtWhittakerSummand
@@ -344,16 +344,16 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJ
       d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
         u negative N nu x Y) := by
   have h := (summable_d4BMCompletedEisensteinSignedSqrtWhittakerSummand
-    u nu negative x 2 0 Y).mul_left (-(2 * Real.pi : ℂ) ^ 2)
+    u nu negative x 2 0 Y).mul_left (-(2 * Real.pi : ℂ) ^ (2 : ℕ))
   apply h.congr
   intro N
-  have hrate : d4BMSignedFourierRate negative N ^ 2 =
-      -(2 * Real.pi : ℂ) ^ 2 * ((N + 1 : ℕ) : ℂ) ^ 2 := by
+  have hrate : d4BMSignedFourierRate negative N ^ (2 : ℕ) =
+      -(2 * Real.pi : ℂ) ^ (2 : ℕ) * ((N + 1 : ℕ) : ℂ) ^ (2 : ℕ) := by
     unfold d4BMSignedFourierRate
     rw [show ((d4BMFourierSign negative : ℂ) *
-        (d4BMPositiveFourierScale N : ℂ) * Complex.I) ^ 2 =
-      (d4BMFourierSign negative : ℂ) ^ 2 *
-        (d4BMPositiveFourierScale N : ℂ) ^ 2 * Complex.I ^ 2 by ring,
+        (d4BMPositiveFourierScale N : ℂ) * Complex.I) ^ (2 : ℕ) =
+      (d4BMFourierSign negative : ℂ) ^ (2 : ℕ) *
+        (d4BMPositiveFourierScale N : ℂ) ^ (2 : ℕ) * Complex.I ^ (2 : ℕ) by ring,
       Complex.I_sq]
     cases negative <;> norm_num [d4BMFourierSign, d4BMPositiveFourierScale]
     all_goals ring
@@ -376,7 +376,7 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerMixedSecondJet
   let M : ℕ → ℝ := fun N =>
     (2 * Real.pi * C) *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 2‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (2 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 2).mul_left
@@ -428,7 +428,7 @@ theorem d4BM_weightedSignedWhittakerVerticalSecondJet_eq_eigenReconstruction
     (Y : D4BMPositiveReal) :
     d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
         u negative N nu x Y =
-      ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+      ((nu ^ (2 : ℕ) - 1 / 4) / (Y : ℂ) ^ (2 : ℕ)) *
           d4BMCompletedEisensteinWeightedSignedWhittakerMode
             u negative N nu x Y -
         d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
@@ -438,25 +438,25 @@ theorem d4BM_weightedSignedWhittakerVerticalSecondJet_eq_eigenReconstruction
   have hYne : (Y : ℂ) ≠ 0 := by exact_mod_cast Y.2.ne'
   have hsolve :
       d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y =
-        ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+        ((nu ^ (2 : ℕ) - 1 / 4) / (Y : ℂ) ^ (2 : ℕ)) *
             d4BMSignedWhittakerMode negative N nu x Y -
           d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by
-    have hY2ne : (Y : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 hYne
+    have hY2ne : (Y : ℂ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hYne
     have hsum :
         d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y +
             d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y =
-          ((nu ^ 2 - 1 / 4) *
-            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ 2 := by
+          ((nu ^ (2 : ℕ) - 1 / 4) *
+            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ (2 : ℕ) := by
       apply (eq_div_iff hY2ne).2
       simpa only [mul_comm] using heigen
     calc
       _ = (d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y +
             d4BMSignedWhittakerModeVerticalSecondJet negative N nu x Y) -
           d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by ring
-      _ = ((nu ^ 2 - 1 / 4) *
-            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ 2 -
+      _ = ((nu ^ (2 : ℕ) - 1 / 4) *
+            d4BMSignedWhittakerMode negative N nu x Y) / (Y : ℂ) ^ (2 : ℕ) -
           d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by rw [hsum]
-      _ = ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2) *
+      _ = ((nu ^ (2 : ℕ) - 1 / 4) / (Y : ℂ) ^ (2 : ℕ)) *
             d4BMSignedWhittakerMode negative N nu x Y -
           d4BMSignedWhittakerModeHorizontalSecondJet negative N nu x Y := by ring
   unfold d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
@@ -474,7 +474,7 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
   let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
   have hvalue :=
     (summable_d4BMCompletedEisensteinWeightedSignedWhittakerMode
-      u nu negative x Y).mul_left ((nu ^ 2 - 1 / 4) / (Y : ℂ) ^ 2)
+      u nu negative x Y).mul_left ((nu ^ (2 : ℕ) - 1 / 4) / (Y : ℂ) ^ (2 : ℕ))
   have hxx :=
     summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalSecondJet
       u nu negative x Y
@@ -566,7 +566,7 @@ theorem d4BM_maassRaise_signedTailFullSecondJet_eq_tsum
   calc
     d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet (Y : ℂ)
         (d4BMCompletedEisensteinSignedTailFullSecondJet u nu negative x Y) =
-      (Y : ℂ) ^ 2 * (∑' N : ℕ, a N) +
+      (Y : ℂ) ^ (2 : ℕ) * (∑' N : ℕ, a N) +
         2 * (Y : ℂ) * (∑' N : ℕ, b N) := by
           unfold d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet
             d4BMCompletedEisensteinSignedTailFullSecondJet
@@ -575,9 +575,9 @@ theorem d4BM_maassRaise_signedTailFullSecondJet_eq_tsum
             hyy.tsum_sub hxx, tsum_mul_left,
             hy1.tsum_add (hx1.mul_left Complex.I), tsum_mul_left]
     _ = ∑' N : ℕ,
-        ((Y : ℂ) ^ 2 * a N + 2 * (Y : ℂ) * b N) := by
+        ((Y : ℂ) ^ (2 : ℕ) * a N + 2 * (Y : ℂ) * b N) := by
           rw [← tsum_mul_left, ← tsum_mul_left]
-          exact ((ha.mul_left ((Y : ℂ) ^ 2)).tsum_add
+          exact ((ha.mul_left ((Y : ℂ) ^ (2 : ℕ))).tsum_add
             (hb.mul_left (2 * (Y : ℂ)))).symm
     _ = ∑' N : ℕ,
         d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
@@ -646,7 +646,7 @@ theorem d4BM_maassLower_signedTailFullSecondJet_eq_tsum
   calc
     d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet (Y : ℂ)
         (d4BMCompletedEisensteinSignedTailFullSecondJet u nu negative x Y) =
-      (Y : ℂ) ^ 2 * (∑' N : ℕ, a N) +
+      (Y : ℂ) ^ (2 : ℕ) * (∑' N : ℕ, a N) +
         2 * (Y : ℂ) * (∑' N : ℕ, b N) := by
           unfold d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet
             d4BMCompletedEisensteinSignedTailFullSecondJet
@@ -655,9 +655,9 @@ theorem d4BM_maassLower_signedTailFullSecondJet_eq_tsum
             hyy.tsum_sub hxx, tsum_mul_left,
             hy1.tsum_sub (hx1.mul_left Complex.I), tsum_mul_left]
     _ = ∑' N : ℕ,
-        ((Y : ℂ) ^ 2 * a N + 2 * (Y : ℂ) * b N) := by
+        ((Y : ℂ) ^ (2 : ℕ) * a N + 2 * (Y : ℂ) * b N) := by
           rw [← tsum_mul_left, ← tsum_mul_left]
-          exact ((ha.mul_left ((Y : ℂ) ^ 2)).tsum_add
+          exact ((ha.mul_left ((Y : ℂ) ^ (2 : ℕ))).tsum_add
             (hb.mul_left (2 * (Y : ℂ)))).symm
     _ = ∑' N : ℕ,
         d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
@@ -818,7 +818,7 @@ theorem d4BM_maassLower_fullSignedTailFullSecondJet_eq_fullSignedLowerWord
 /-- Literal full-second-jet evaluation of a positive-height complex power. -/
 theorem d4BM_zeroFrequency_fullSecondJet_cpow
     (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
-    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
+    (Y : ℂ) ^ (2 : ℕ) * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
         2 * (Y : ℂ) * (w * (Y : ℂ) ^ (w - 1)) =
       w * (w + 1) * (Y : ℂ) ^ w := by
   have h1 := d4BM_zeroFrequency_cpow_mul_deriv w hY
@@ -829,7 +829,7 @@ theorem d4BM_zeroFrequency_fullSecondJet_cpow
     have hshift : w - 1 - 1 = w - 2 := by ring
     simpa only [hshift] using hm
   calc
-    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
+    (Y : ℂ) ^ (2 : ℕ) * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) +
         2 * (Y : ℂ) * (w * (Y : ℂ) ^ (w - 1)) =
       w * (Y : ℂ) *
           ((Y : ℂ) * ((w - 1) * (Y : ℂ) ^ (w - 2))) +
@@ -1107,12 +1107,12 @@ theorem hasDerivAt_d4BMCanonicalCuspVerticalFirstJet_horizontal
 theorem d4BM_signedTailFullSecondJet_eigenEquation
     (u nu : ℂ) (negative : Bool) (x : ℝ)
     (Y : {y : ℝ // 1 ≤ y}) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         ((d4BMCompletedEisensteinSignedTailFullSecondJet
             u nu negative x Y).horizonXHorizonX +
           (d4BMCompletedEisensteinSignedTailFullSecondJet
             u nu negative x Y).sigmaSigma) =
-      (nu ^ 2 - 1 / 4) *
+      (nu ^ (2 : ℕ) - 1 / 4) *
         (d4BMCompletedEisensteinSignedTailFullSecondJet
           u nu negative x Y).first.value := by
   let Yp : D4BMPositiveReal := ⟨Y, zero_lt_one.trans_le Y.2⟩
@@ -1135,8 +1135,8 @@ theorem d4BM_signedTailFullSecondJet_eigenEquation
     exact summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalSecondJet
       u nu negative x Y
   unfold d4BMCompletedEisensteinSignedTailFullSecondJet
-  change (Y : ℂ) ^ 2 * ((∑' N : ℕ, xx N) + ∑' N : ℕ, yy N) =
-    (nu ^ 2 - 1 / 4) * ∑' N : ℕ, v N
+  change (Y : ℂ) ^ (2 : ℕ) * ((∑' N : ℕ, xx N) + ∑' N : ℕ, yy N) =
+    (nu ^ (2 : ℕ) - 1 / 4) * ∑' N : ℕ, v N
   rw [← hxx.tsum_add hyy, ← tsum_mul_left, ← tsum_mul_left]
   apply tsum_congr
   intro N
@@ -1150,7 +1150,7 @@ theorem d4BM_signedTailFullSecondJet_eigenEquation
 
 theorem d4BM_zeroFrequency_secondJet_cpow_eigenEquation
     (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
-    (Y : ℂ) ^ 2 * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) =
+    (Y : ℂ) ^ (2 : ℕ) * (w * (w - 1) * (Y : ℂ) ^ (w - 2)) =
       w * (w - 1) * (Y : ℂ) ^ w := by
   have hfull := d4BM_zeroFrequency_fullSecondJet_cpow w hY
   have hfirst := d4BM_zeroFrequency_cpow_mul_deriv w hY
@@ -1158,18 +1158,18 @@ theorem d4BM_zeroFrequency_secondJet_cpow_eigenEquation
 
 theorem d4BM_cuspConstantFullSecondJet_eigenEquation
     (u : ℂ) {Y : ℝ} (hY : 0 < Y) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y).sigmaSigma =
-      (u ^ 2 - 1 / 4) *
+      (u ^ (2 : ℕ) - 1 / 4) *
         (d4BMCompletedEisensteinCuspConstantFullSecondJet u Y).first.value := by
   let w0 := d4BMCompletedEisensteinCuspWeylExponent u false
   let w1 := d4BMCompletedEisensteinCuspWeylExponent u true
   have h0 := d4BM_zeroFrequency_secondJet_cpow_eigenEquation w0 hY
   have h1 := d4BM_zeroFrequency_secondJet_cpow_eigenEquation w1 hY
-  have hw0 : w0 * (w0 - 1) = u ^ 2 - 1 / 4 := by
+  have hw0 : w0 * (w0 - 1) = u ^ (2 : ℕ) - 1 / 4 := by
     simp [w0, d4BMCompletedEisensteinCuspWeylExponent, d4BMCuspSign]
     ring
-  have hw1 : w1 * (w1 - 1) = u ^ 2 - 1 / 4 := by
+  have hw1 : w1 * (w1 - 1) = u ^ (2 : ℕ) - 1 / 4 := by
     simp [w1, d4BMCompletedEisensteinCuspWeylExponent, d4BMCuspSign]
     ring
   rw [hw0] at h0
@@ -1188,10 +1188,10 @@ theorem d4BM_cuspConstantFullSecondJet_eigenEquation
 
 theorem d4BM_fullSignedTailFullSecondJet_eigenEquation
     (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         ((d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).horizonXHorizonX +
           (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).sigmaSigma) =
-      (u ^ 2 - 1 / 4) *
+      (u ^ (2 : ℕ) - 1 / 4) *
         (d4BMCompletedEisensteinFullSignedTailFullSecondJet u x Y).first.value := by
   have hp := d4BM_signedTailFullSecondJet_eigenEquation u u false x Y
   have hn := d4BM_signedTailFullSecondJet_eigenEquation u u true x Y
@@ -1200,10 +1200,10 @@ theorem d4BM_fullSignedTailFullSecondJet_eigenEquation
 
 theorem d4BM_canonicalCuspFullSecondJet_eigenEquation
     (u : ℂ) (x : ℝ) (Y : {y : ℝ // 1 ≤ y}) :
-    (Y : ℂ) ^ 2 *
+    (Y : ℂ) ^ (2 : ℕ) *
         ((d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).horizonXHorizonX +
           (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).sigmaSigma) =
-      (u ^ 2 - 1 / 4) *
+      (u ^ (2 : ℕ) - 1 / 4) *
         (d4BMCompletedEisensteinCanonicalCuspFullSecondJet u x Y).first.value := by
   have hc := d4BM_cuspConstantFullSecondJet_eigenEquation
     u (zero_lt_one.trans_le Y.2)
@@ -1381,15 +1381,15 @@ theorem d4BM_actualCanonical_exterior_verticalSecondJet_eq
     simpa [d4BMHorizontalCoordinate] using
       d4BM_actualCanonical_exterior_horizontalSecondJet_eq Z P Z.1.x
   have hlambda :
-      (P.s - 1 / 2) ^ 2 - 1 / 4 = P.s * (P.s - 1) := by ring
+      (P.s - 1 / 2) ^ (2 : ℕ) - 1 / 4 = P.s * (P.s - 1) := by ring
   have hheight : ((d4BMExteriorCuspHeight Z : ℝ) : ℂ) = (Z.1.y : ℂ) := rfl
   rw [hlambda] at hcanonical
   rw [hcanonicalValue] at hcanonical
   rw [hheight] at hcanonical
   rw [hvalue, hxx] at hactual
   have hmul :
-      (Z.1.y : ℂ) ^ 2 * d4BMCompletedPoincareVerticalSecondJet Z.1 P =
-        (Z.1.y : ℂ) ^ 2 *
+      (Z.1.y : ℂ) ^ (2 : ℕ) * d4BMCompletedPoincareVerticalSecondJet Z.1 P =
+        (Z.1.y : ℂ) ^ (2 : ℕ) *
           (d4BMCompletedEisensteinCanonicalCuspFullSecondJet
             (P.s - 1 / 2) Z.1.x (d4BMExteriorCuspHeight Z)).sigmaSigma := by
     linear_combination hactual - hcanonical

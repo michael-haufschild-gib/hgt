@@ -32,14 +32,14 @@ private theorem centered_im_sq_le_covariance_product
     {n : Type*} [Fintype n] (ψ : MatrixMechanicsState n)
     (A B : HermitianObservable n) :
     (star (QuantumAlg.centered ψ.vector A.matrix) ⬝ᵥ
-        QuantumAlg.centered ψ.vector B.matrix).im ^ 2 ≤
+        QuantumAlg.centered ψ.vector B.matrix).im ^ (2 : ℕ) ≤
       QuantumAlg.qCov ψ.vector A.matrix A.matrix *
         QuantumAlg.qCov ψ.vector B.matrix B.matrix := by
   let u := QuantumAlg.centered ψ.vector A.matrix
   let v := QuantumAlg.centered ψ.vector B.matrix
   have hcs := inner_mul_inner_self_le
     (𝕜 := ℂ) (WithLp.toLp 2 u) (WithLp.toLp 2 v)
-  have him : (star u ⬝ᵥ v).im ^ 2 ≤ Complex.normSq (star u ⬝ᵥ v) := by
+  have him : (star u ⬝ᵥ v).im ^ (2 : ℕ) ≤ Complex.normSq (star u ⬝ᵥ v) := by
     simpa [pow_two] using Complex.im_sq_le_normSq (star u ⬝ᵥ v)
   have hnormprod :
       ‖v ⬝ᵥ star u‖ * ‖u ⬝ᵥ star v‖ = Complex.normSq (star u ⬝ᵥ v) := by
@@ -60,8 +60,8 @@ private theorem centered_im_sq_le_covariance_product
         rw [dotProduct_comm u (star u), dotProduct_comm v (star v)]
   calc
     (star (QuantumAlg.centered ψ.vector A.matrix) ⬝ᵥ
-        QuantumAlg.centered ψ.vector B.matrix).im ^ 2 =
-        (star u ⬝ᵥ v).im ^ 2 := rfl
+        QuantumAlg.centered ψ.vector B.matrix).im ^ (2 : ℕ) =
+        (star u ⬝ᵥ v).im ^ (2 : ℕ) := rfl
     _ ≤ Complex.normSq (star u ⬝ᵥ v) := him
     _ ≤ (star u ⬝ᵥ u).re * (star v ⬝ᵥ v).re := hnorm
     _ = QuantumAlg.qCov ψ.vector A.matrix A.matrix *
@@ -74,7 +74,7 @@ at most four times the product of the two quantum variances. -/
 theorem matrixMechanics_kennard
     {n : Type*} [Fintype n] (ψ : MatrixMechanicsState n)
     (A B : HermitianObservable n) :
-    (QuantumAlg.expval ψ.vector (A.matrix * B.matrix - B.matrix * A.matrix)).im ^ 2 ≤
+    (QuantumAlg.expval ψ.vector (A.matrix * B.matrix - B.matrix * A.matrix)).im ^ (2 : ℕ) ≤
       4 * QuantumAlg.qCov ψ.vector A.matrix A.matrix *
         QuantumAlg.qCov ψ.vector B.matrix B.matrix := by
   let z := star (QuantumAlg.centered ψ.vector A.matrix) ⬝ᵥ
@@ -126,7 +126,7 @@ theorem finitePauli_kennard
     (P Q : σ → Option (Fin 3)) :
     (QuantumAlg.expval ψ.vector
       (finitePauliMatrix P * finitePauliMatrix Q -
-        finitePauliMatrix Q * finitePauliMatrix P)).im ^ 2 ≤
+        finitePauliMatrix Q * finitePauliMatrix P)).im ^ (2 : ℕ) ≤
       4 * QuantumAlg.qCov ψ.vector (finitePauliMatrix P) (finitePauliMatrix P) *
         QuantumAlg.qCov ψ.vector (finitePauliMatrix Q) (finitePauliMatrix Q) :=
   matrixMechanics_kennard ψ (finitePauliObservable P) (finitePauliObservable Q)
@@ -137,7 +137,7 @@ theorem finitePauli_variance_eq_one_sub_mean_sq
     (ψ : MatrixMechanicsState (FiniteQubitConfiguration σ))
     (P : σ → Option (Fin 3)) :
     QuantumAlg.qCov ψ.vector (finitePauliMatrix P) (finitePauliMatrix P) =
-      1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ 2 := by
+      1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ (2 : ℕ) := by
   rw [QuantumAlg.qCov, finitePauliMatrix_mul_self]
   have hone : QuantumAlg.expval ψ.vector
       (1 : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) = 1 := by
@@ -153,9 +153,9 @@ theorem finitePauli_kennard_involution_form
     (P Q : σ → Option (Fin 3)) :
     (QuantumAlg.expval ψ.vector
       (finitePauliMatrix P * finitePauliMatrix Q -
-        finitePauliMatrix Q * finitePauliMatrix P)).im ^ 2 ≤
-      4 * (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ 2) *
-        (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix Q)).re ^ 2) := by
+        finitePauliMatrix Q * finitePauliMatrix P)).im ^ (2 : ℕ) ≤
+      4 * (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ (2 : ℕ)) *
+        (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix Q)).re ^ (2 : ℕ)) := by
   simpa only [finitePauli_variance_eq_one_sub_mean_sq] using finitePauli_kennard ψ P Q
 
 /-- Kennard bound after replacing the Pauli commutator by its exact phase-times-Pauli product. -/
@@ -165,9 +165,9 @@ theorem finitePauli_phase_kennard
     (P Q : σ → Option (Fin 3)) :
     (QuantumAlg.expval ψ.vector
       (((∏ s, optPhase (P s) (Q s)) - ∏ s, optPhase (Q s) (P s)) •
-        finitePauliMatrix fun s => optMul (P s) (Q s))).im ^ 2 ≤
-      4 * (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ 2) *
-        (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix Q)).re ^ 2) := by
+        finitePauliMatrix fun s => optMul (P s) (Q s))).im ^ (2 : ℕ) ≤
+      4 * (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix P)).re ^ (2 : ℕ)) *
+        (1 - (QuantumAlg.expval ψ.vector (finitePauliMatrix Q)).re ^ (2 : ℕ)) := by
   rw [← finitePauliMatrix_commutator]
   exact finitePauli_kennard_involution_form ψ P Q
 
@@ -175,7 +175,7 @@ theorem finitePauli_phase_kennard
 theorem singleQubit_pauliXZ_kennard (ψ : MatrixMechanicsState Bool) :
     (QuantumAlg.expval ψ.vector
       (finiteQubitPauli 0 * finiteQubitPauli 2 -
-        finiteQubitPauli 2 * finiteQubitPauli 0)).im ^ 2 ≤
+        finiteQubitPauli 2 * finiteQubitPauli 0)).im ^ (2 : ℕ) ≤
       4 * QuantumAlg.qCov ψ.vector (finiteQubitPauli 0) (finiteQubitPauli 0) *
         QuantumAlg.qCov ψ.vector (finiteQubitPauli 2) (finiteQubitPauli 2) :=
   matrixMechanics_kennard ψ

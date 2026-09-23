@@ -44,12 +44,12 @@ theorem kukol_convexOn_reciprocal : ConvexOn ℝ (Ioi (0 : ℝ)) (fun t => 1/t) 
     simpa only [smul_eq_mul,Set.mem_Ioi] using (convex_Ioi (0 : ℝ) hx hy ha hb hab)
   simp only [smul_eq_mul,mul_one_div]
   rw [div_le_iff₀ hmix]
-  have hid : (a/x+b/y)*(a*x+b*y)-1 = a*b*(x-y)^2/(x*y) := by
+  have hid : (a/x+b/y)*(a*x+b*y)-1 = a*b*(x-y)^(2 : ℕ)/(x*y) := by
     have hb' : b=1-a := by linarith
     rw [hb']
     field_simp
     ring
-  have hnonneg : 0 ≤ a*b*(x-y)^2/(x*y) :=
+  have hnonneg : 0 ≤ a*b*(x-y)^(2 : ℕ)/(x*y) :=
     div_nonneg (mul_nonneg (mul_nonneg ha hb) (sq_nonneg _)) (mul_pos hx hy).le
   linarith
 
@@ -60,16 +60,16 @@ theorem strictConcaveOn_kukolTubeMargin (v : KukolLightCone E) (r s : ℝ) (z : 
   intro u _ w _ huw a b ha hb hab
   have hb' : b=1-a := by linarith
   have hdef := kukolImaginaryAction_convex_defect u w v (kukolStrictState r s z) a
-  have hc : 0 < (Real.exp r)^2+v.1^2 :=
+  have hc : 0 < (Real.exp r)^(2 : ℕ)+v.1^(2 : ℕ) :=
     add_pos_of_pos_of_nonneg (sq_pos_of_pos (Real.exp_pos r)) (sq_nonneg _)
-  have hw : 0 < ‖u-w‖^2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr huw))
-  have hp : 0 < a*b*((Real.exp r)^2+v.1^2)*‖u-w‖^2 :=
+  have hw : 0 < ‖u-w‖^(2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr huw))
+  have hp : 0 < a*b*((Real.exp r)^(2 : ℕ)+v.1^(2 : ℕ))*‖u-w‖^(2 : ℕ) :=
     mul_pos (mul_pos (mul_pos ha hb) hc) hw
   change a*kukolTubeMargin v r s z u+b*kukolTubeMargin v r s z w <
     kukolTubeMargin v r s z (a • u+b • w)
   change kukolTubeMargin v r s z (a • u+(1-a) • w) =
     a*kukolTubeMargin v r s z u+(1-a)*kukolTubeMargin v r s z w+
-      a*(1-a)*((Real.exp r)^2+v.1^2)*‖u-w‖^2 at hdef
+      a*(1-a)*((Real.exp r)^(2 : ℕ)+v.1^(2 : ℕ))*‖u-w‖^(2 : ℕ) at hdef
   rw [← hb'] at hdef
   linarith
 

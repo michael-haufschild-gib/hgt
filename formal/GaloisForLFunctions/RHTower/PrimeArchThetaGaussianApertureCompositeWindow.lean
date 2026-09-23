@@ -8,9 +8,9 @@ import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 The two weighted Turan windows consumed by the Gaussian-aperture balance should not be estimated
 separately.  Their forced composite has a much more rigid derivative.  If `M_j` denotes the
 half-line moment of the tilted completed theta source, its derivative is the positive density
-factor `2 f(t) t^2` times the quadratic
+factor `2 f(t) t^(2 : ℕ)` times the quadratic
 
-`M_2^2 - (M_1 M_2 + M_0 M_3 / 5) t^2 + (M_0 M_2 / 5) t^4`.
+`M_2^(2 : ℕ) - (M_1 M_2 + M_0 M_3 / 5) t^(2 : ℕ) + (M_0 M_2 / 5) t^(4 : ℕ)`.
 
 This file constructs that literal source window.  It proves the derivative identity, its two
 zero-endpoint laws, positivity of every tilted half-moment, and nonnegativity of the quadratic
@@ -26,7 +26,7 @@ noncomputable section
 
 /-- The completed theta density after the physical Gaussian contraction `lambda ≤ 0`. -/
 def thetaCuspGaussianApertureDensity (lambda x : ℝ) : ℝ :=
-  Real.exp (lambda * x ^ 2) * thetaCuspFullSource x
+  Real.exp (lambda * x ^ (2 : ℕ)) * thetaCuspFullSource x
 
 /-- Half of the existing even Gaussian-aperture moment. -/
 def thetaCuspGaussianApertureHalfMoment (lambda : ℝ) (j : ℕ) : ℝ :=
@@ -54,23 +54,23 @@ def thetaCuspGaussianApertureCompositeWindow (lambda t : ℝ) : ℝ :=
 
 /-- The exact quadratic controlling the height derivative of the composite window. -/
 def thetaCuspGaussianApertureWindowDerivativePolynomial (lambda y : ℝ) : ℝ :=
-  thetaCuspGaussianApertureHalfMoment lambda 2 ^ 2 -
+  thetaCuspGaussianApertureHalfMoment lambda 2 ^ (2 : ℕ) -
       (thetaCuspGaussianApertureHalfMoment lambda 1 *
           thetaCuspGaussianApertureHalfMoment lambda 2 +
         thetaCuspGaussianApertureHalfMoment lambda 0 *
           thetaCuspGaussianApertureHalfMoment lambda 3 / 5) * y +
     thetaCuspGaussianApertureHalfMoment lambda 0 *
-      thetaCuspGaussianApertureHalfMoment lambda 2 / 5 * y ^ 2
+      thetaCuspGaussianApertureHalfMoment lambda 2 / 5 * y ^ (2 : ℕ)
 
 /-- The discriminant of the exact height-derivative quadratic. -/
 def thetaCuspGaussianApertureWindowDerivativeDiscriminant (lambda : ℝ) : ℝ :=
   (thetaCuspGaussianApertureHalfMoment lambda 1 *
         thetaCuspGaussianApertureHalfMoment lambda 2 +
       thetaCuspGaussianApertureHalfMoment lambda 0 *
-        thetaCuspGaussianApertureHalfMoment lambda 3 / 5) ^ 2 -
+        thetaCuspGaussianApertureHalfMoment lambda 3 / 5) ^ (2 : ℕ) -
     4 * (thetaCuspGaussianApertureHalfMoment lambda 0 *
       thetaCuspGaussianApertureHalfMoment lambda 2 / 5) *
-        thetaCuspGaussianApertureHalfMoment lambda 2 ^ 2
+        thetaCuspGaussianApertureHalfMoment lambda 2 ^ (2 : ℕ)
 
 theorem continuous_thetaCuspGaussianApertureDensity (lambda : ℝ) :
     Continuous (thetaCuspGaussianApertureDensity lambda) := by
@@ -111,8 +111,8 @@ theorem integrableOn_thetaCuspGaussianApertureMomentIntegrand
     have hpow : 0 ≤ x ^ (2 * j) := pow_nonneg hx.le _
     have hsource : 0 ≤ thetaCuspFullSource x :=
       (thetaCuspFullSource_pos_of_pos hx).le
-    have hexpNonneg : 0 ≤ Real.exp (lambda * x ^ 2) := Real.exp_nonneg _
-    have hexpLe : Real.exp (lambda * x ^ 2) ≤ 1 :=
+    have hexpNonneg : 0 ≤ Real.exp (lambda * x ^ (2 : ℕ)) := Real.exp_nonneg _
+    have hexpLe : Real.exp (lambda * x ^ (2 : ℕ)) ≤ 1 :=
       Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg hlambda (sq_nonneg x))
     rw [thetaCuspGaussianApertureDensity, Real.norm_eq_abs, Real.norm_eq_abs]
     rw [abs_of_nonneg (mul_nonneg hpow (mul_nonneg hexpNonneg hsource)),
@@ -151,14 +151,14 @@ theorem thetaCuspGaussianApertureHalfMoment_pos
 /-- Cauchy--Schwarz log-convexity of the four contracted moments used by the window. -/
 theorem thetaCuspGaussianApertureHalfMoment_two_sq_le_one_mul_three
     {lambda : ℝ} (hlambda : lambda ≤ 0) :
-    thetaCuspGaussianApertureHalfMoment lambda 2 ^ 2 ≤
+    thetaCuspGaussianApertureHalfMoment lambda 2 ^ (2 : ℕ) ≤
       thetaCuspGaussianApertureHalfMoment lambda 1 *
         thetaCuspGaussianApertureHalfMoment lambda 3 := by
   let mu : Measure ℝ := volume.restrict (Ioi 0)
   let f : ℝ → ℝ := fun x =>
     x * Real.sqrt (thetaCuspGaussianApertureDensity lambda x)
   let g : ℝ → ℝ := fun x =>
-    x ^ 3 * Real.sqrt (thetaCuspGaussianApertureDensity lambda x)
+    x ^ (3 : ℕ) * Real.sqrt (thetaCuspGaussianApertureDensity lambda x)
   have hdensity : 0 ≤ᵐ[mu] thetaCuspGaussianApertureDensity lambda := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     rw [thetaCuspGaussianApertureDensity]
@@ -171,13 +171,13 @@ theorem thetaCuspGaussianApertureHalfMoment_two_sq_le_one_mul_three
     exact Continuous.aestronglyMeasurable
       ((continuous_id.pow 3).mul (Real.continuous_sqrt.comp
         (continuous_thetaCuspGaussianApertureDensity lambda))) (μ := mu)
-  have hfSq : Integrable (fun x => f x ^ 2) mu := by
+  have hfSq : Integrable (fun x => f x ^ (2 : ℕ)) mu := by
     have h := integrableOn_thetaCuspGaussianApertureMomentIntegrand hlambda 1
     apply h.congr
     filter_upwards [hdensity] with x hx
     dsimp [f]
     rw [mul_pow, Real.sq_sqrt hx]
-  have hgSq : Integrable (fun x => g x ^ 2) mu := by
+  have hgSq : Integrable (fun x => g x ^ (2 : ℕ)) mu := by
     have h := integrableOn_thetaCuspGaussianApertureMomentIntegrand hlambda 3
     apply h.congr
     filter_upwards [hdensity] with x hx
@@ -194,18 +194,18 @@ theorem thetaCuspGaussianApertureHalfMoment_two_sq_le_one_mul_three
     dsimp [f, g]
     calc
       x * √(thetaCuspGaussianApertureDensity lambda x) *
-          (x ^ 3 * √(thetaCuspGaussianApertureDensity lambda x)) =
-          x ^ 4 * (√(thetaCuspGaussianApertureDensity lambda x)) ^ 2 := by ring
-      _ = x ^ 4 * thetaCuspGaussianApertureDensity lambda x := by
+          (x ^ (3 : ℕ) * √(thetaCuspGaussianApertureDensity lambda x)) =
+          x ^ (4 : ℕ) * (√(thetaCuspGaussianApertureDensity lambda x)) ^ (2 : ℕ) := by ring
+      _ = x ^ (4 : ℕ) * thetaCuspGaussianApertureDensity lambda x := by
         rw [Real.sq_sqrt hx]
-  have hf2 : (∫ x, f x ^ 2 ∂mu) =
+  have hf2 : (∫ x, f x ^ (2 : ℕ) ∂mu) =
       thetaCuspGaussianApertureHalfMoment lambda 1 := by
     rw [thetaCuspGaussianApertureHalfMoment]
     apply integral_congr_ae
     filter_upwards [hdensity] with x hx
     dsimp [f]
     rw [mul_pow, Real.sq_sqrt hx]
-  have hg2 : (∫ x, g x ^ 2 ∂mu) =
+  have hg2 : (∫ x, g x ^ (2 : ℕ) ∂mu) =
       thetaCuspGaussianApertureHalfMoment lambda 3 := by
     rw [thetaCuspGaussianApertureHalfMoment]
     apply integral_congr_ae
@@ -236,7 +236,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureCrossingWindow
     HasDerivAt (thetaCuspGaussianApertureCrossingWindow lambda m)
       (thetaCuspGaussianApertureDensity lambda t * t ^ (2 * m) *
         (thetaCuspGaussianApertureHalfMoment lambda (m + 1) -
-          t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda m)) t := by
+          t ^ (2 : ℕ) * thetaCuspGaussianApertureHalfMoment lambda m)) t := by
   have h₀ := (hasDerivAt_thetaCuspGaussianApertureMomentPrefix lambda m t).const_mul
     (thetaCuspGaussianApertureHalfMoment lambda (m + 1))
   have h₁ := (hasDerivAt_thetaCuspGaussianApertureMomentPrefix lambda (m + 1) t).const_mul
@@ -256,7 +256,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureCrossingWindow
         (t ^ (2 * (m + 1)) * thetaCuspGaussianApertureDensity lambda t) =
       thetaCuspGaussianApertureDensity lambda t * t ^ (2 * m) *
         (thetaCuspGaussianApertureHalfMoment lambda (m + 1) -
-          t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda m) := by
+          t ^ (2 : ℕ) * thetaCuspGaussianApertureHalfMoment lambda m) := by
     rw [show 2 * (m + 1) = 2 * m + 2 by omega, pow_add]
     ring
   rw [← hfun, ← hval]
@@ -267,8 +267,8 @@ derivative; no separate estimate on either component remains. -/
 theorem hasDerivAt_thetaCuspGaussianApertureCompositeWindow
     (lambda t : ℝ) :
     HasDerivAt (thetaCuspGaussianApertureCompositeWindow lambda)
-      (2 * thetaCuspGaussianApertureDensity lambda t * t ^ 2 *
-        thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ 2)) t := by
+      (2 * thetaCuspGaussianApertureDensity lambda t * t ^ (2 : ℕ) *
+        thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ (2 : ℕ))) t := by
   have h₁ := (hasDerivAt_thetaCuspGaussianApertureCrossingWindow lambda 1 t).const_mul
     (thetaCuspGaussianApertureMoment lambda 2)
   have h₂ := (hasDerivAt_thetaCuspGaussianApertureCrossingWindow lambda 2 t).const_mul
@@ -276,13 +276,13 @@ theorem hasDerivAt_thetaCuspGaussianApertureCompositeWindow
   have hval : thetaCuspGaussianApertureMoment lambda 2 *
         (thetaCuspGaussianApertureDensity lambda t * t ^ (2 * 1) *
           (thetaCuspGaussianApertureHalfMoment lambda (1 + 1) -
-            t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda 1)) -
+            t ^ (2 : ℕ) * thetaCuspGaussianApertureHalfMoment lambda 1)) -
       thetaCuspGaussianApertureMoment lambda 0 / 5 *
         (thetaCuspGaussianApertureDensity lambda t * t ^ (2 * 2) *
           (thetaCuspGaussianApertureHalfMoment lambda (2 + 1) -
-            t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda 2)) =
-      2 * thetaCuspGaussianApertureDensity lambda t * t ^ 2 *
-        thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ 2) := by
+            t ^ (2 : ℕ) * thetaCuspGaussianApertureHalfMoment lambda 2)) =
+      2 * thetaCuspGaussianApertureDensity lambda t * t ^ (2 : ℕ) *
+        thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ (2 : ℕ)) := by
     rw [thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment,
       thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment]
     simp only [thetaCuspGaussianApertureWindowDerivativePolynomial,
@@ -358,7 +358,7 @@ theorem thetaCuspGaussianApertureWindowDerivativeDiscriminant_nonneg
       (thetaCuspGaussianApertureHalfMoment lambda 1 *
           thetaCuspGaussianApertureHalfMoment lambda 2 -
         thetaCuspGaussianApertureHalfMoment lambda 0 *
-          thetaCuspGaussianApertureHalfMoment lambda 3 / 5) ^ 2 := sq_nonneg _
+          thetaCuspGaussianApertureHalfMoment lambda 3 / 5) ^ (2 : ℕ) := sq_nonneg _
   rw [thetaCuspGaussianApertureWindowDerivativeDiscriminant]
   nlinarith [mul_pos h0 h2, mul_pos h1 h3]
 
@@ -372,7 +372,7 @@ def thetaCuspGaussianApertureWindowDerivativeLinearCoefficient (lambda : ℝ) : 
 /-- A canonical height lying strictly inside the initial positive-derivative chamber. -/
 def thetaCuspGaussianApertureWindowInitialHeight (lambda : ℝ) : ℝ :=
   Real.sqrt
-    (thetaCuspGaussianApertureHalfMoment lambda 2 ^ 2 /
+    (thetaCuspGaussianApertureHalfMoment lambda 2 ^ (2 : ℕ) /
       (2 * thetaCuspGaussianApertureWindowDerivativeLinearCoefficient lambda))
 
 theorem thetaCuspGaussianApertureWindowDerivativeLinearCoefficient_pos
@@ -398,7 +398,7 @@ theorem thetaCuspGaussianApertureWindowInitialHeight_pos
 theorem thetaCuspGaussianApertureWindowDerivativePolynomial_pos_of_lt_initialHeight
     {lambda t : ℝ} (hlambda : lambda ≤ 0) (ht : 0 < t)
     (htInitial : t < thetaCuspGaussianApertureWindowInitialHeight lambda) :
-    0 < thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ 2) := by
+    0 < thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ (2 : ℕ)) := by
   let m0 := thetaCuspGaussianApertureHalfMoment lambda 0
   let m1 := thetaCuspGaussianApertureHalfMoment lambda 1
   let m2 := thetaCuspGaussianApertureHalfMoment lambda 2
@@ -407,24 +407,24 @@ theorem thetaCuspGaussianApertureWindowDerivativePolynomial_pos_of_lt_initialHei
   have hm0 : 0 < m0 := thetaCuspGaussianApertureHalfMoment_pos hlambda 0
   have hm2 : 0 < m2 := thetaCuspGaussianApertureHalfMoment_pos hlambda 2
   have hb : 0 < b := thetaCuspGaussianApertureWindowDerivativeLinearCoefficient_pos hlambda
-  have hyPos : 0 < m2 ^ 2 / (2 * b) :=
+  have hyPos : 0 < m2 ^ (2 : ℕ) / (2 * b) :=
     div_pos (sq_pos_of_pos hm2) (mul_pos (by norm_num) hb)
-  have hheightSq : thetaCuspGaussianApertureWindowInitialHeight lambda ^ 2 =
-      m2 ^ 2 / (2 * b) := by
+  have hheightSq : thetaCuspGaussianApertureWindowInitialHeight lambda ^ (2 : ℕ) =
+      m2 ^ (2 : ℕ) / (2 * b) := by
     rw [thetaCuspGaussianApertureWindowInitialHeight, Real.sq_sqrt]
     exact hyPos.le
-  have htSq : t ^ 2 < m2 ^ 2 / (2 * b) := by
+  have htSq : t ^ (2 : ℕ) < m2 ^ (2 : ℕ) / (2 * b) := by
     rw [← hheightSq]
     exact (sq_lt_sq₀ ht.le (thetaCuspGaussianApertureWindowInitialHeight_pos hlambda).le).2
       htInitial
-  have hcross : b * t ^ 2 < m2 ^ 2 / 2 := by
+  have hcross : b * t ^ (2 : ℕ) < m2 ^ (2 : ℕ) / 2 := by
     have hden : 0 < 2 * b := mul_pos (by norm_num) hb
     rw [lt_div_iff₀ hden] at htSq
     nlinarith
-  have hlead : 0 ≤ m0 * m2 / 5 * (t ^ 2) ^ 2 := by positivity
-  change 0 < m2 ^ 2 -
-      (m1 * m2 + m0 * m3 / 5) * t ^ 2 +
-        m0 * m2 / 5 * (t ^ 2) ^ 2
+  have hlead : 0 ≤ m0 * m2 / 5 * (t ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
+  change 0 < m2 ^ (2 : ℕ) -
+      (m1 * m2 + m0 * m3 / 5) * t ^ (2 : ℕ) +
+        m0 * m2 / 5 * (t ^ (2 : ℕ)) ^ (2 : ℕ)
   have hbEq : b = m1 * m2 + m0 * m3 / 5 := by
     rfl
   rw [← hbEq]
@@ -474,14 +474,14 @@ theorem thetaCuspGaussianApertureWindowDerivativeDiscriminant_pos
   have hm0 : 0 < m0 := thetaCuspGaussianApertureHalfMoment_pos hlambda 0
   have hm2 : 0 < m2 := thetaCuspGaussianApertureHalfMoment_pos hlambda 2
   have ha : 0 < a := by positivity
-  have hdiscEq : b ^ 2 - 4 * a * m2 ^ 2 = 0 := by
+  have hdiscEq : b ^ (2 : ℕ) - 4 * a * m2 ^ (2 : ℕ) = 0 := by
     simpa only [thetaCuspGaussianApertureWindowDerivativeDiscriminant, m0, m1, m2,
       m3, a, b] using hdiscZero
   have hpolyNonneg : ∀ y : ℝ,
       0 ≤ thetaCuspGaussianApertureWindowDerivativePolynomial lambda y := by
     intro y
-    have hsquare : 0 ≤ (2 * a * y - b) ^ 2 := sq_nonneg _
-    change 0 ≤ m2 ^ 2 - b * y + a * y ^ 2
+    have hsquare : 0 ≤ (2 * a * y - b) ^ (2 : ℕ) := sq_nonneg _
+    change 0 ≤ m2 ^ (2 : ℕ) - b * y + a * y ^ (2 : ℕ)
     nlinarith
   have hcont : ContinuousOn (thetaCuspGaussianApertureCompositeWindow lambda) (Ici 0) := by
     intro t ht
@@ -502,7 +502,7 @@ theorem thetaCuspGaussianApertureWindowDerivativeDiscriminant_pos
           exact mul_nonneg (Real.exp_nonneg _)
             (thetaCuspFullSource_pos_of_pos ht).le))
         (sq_nonneg t))
-      (hpolyNonneg (t ^ 2))
+      (hpolyNonneg (t ^ (2 : ℕ)))
   let T := thetaCuspGaussianApertureWindowInitialHeight lambda
   have hT : 0 < T := thetaCuspGaussianApertureWindowInitialHeight_pos hlambda
   have hlimit := tendsto_thetaCuspGaussianApertureCompositeWindow_atTop hlambda
@@ -543,7 +543,7 @@ theorem thetaCuspGaussianApertureWindowDerivativeLeadingCoefficient_pos
 theorem thetaCuspGaussianApertureWindowDerivativeDiscriminant_lt_linear_sq
     {lambda : ℝ} (hlambda : lambda ≤ 0) :
     thetaCuspGaussianApertureWindowDerivativeDiscriminant lambda <
-      thetaCuspGaussianApertureWindowDerivativeLinearCoefficient lambda ^ 2 := by
+      thetaCuspGaussianApertureWindowDerivativeLinearCoefficient lambda ^ (2 : ℕ) := by
   have ha := thetaCuspGaussianApertureWindowDerivativeLeadingCoefficient_pos hlambda
   have hm2 := thetaCuspGaussianApertureHalfMoment_pos hlambda 2
   simp only [thetaCuspGaussianApertureWindowDerivativeDiscriminant,
@@ -559,7 +559,7 @@ theorem thetaCuspGaussianApertureWindowLowerRootSq_pos
   have hdiscLt :=
     thetaCuspGaussianApertureWindowDerivativeDiscriminant_lt_linear_sq hlambda
   have hsqrtSq :
-      Real.sqrt (thetaCuspGaussianApertureWindowDerivativeDiscriminant lambda) ^ 2 =
+      Real.sqrt (thetaCuspGaussianApertureWindowDerivativeDiscriminant lambda) ^ (2 : ℕ) =
         thetaCuspGaussianApertureWindowDerivativeDiscriminant lambda :=
     Real.sq_sqrt hdisc.le
   have hsqrtLt :
@@ -598,18 +598,18 @@ theorem thetaCuspGaussianApertureWindowDerivativePolynomial_factor
         (y - thetaCuspGaussianApertureWindowUpperRootSq lambda) := by
   let a := thetaCuspGaussianApertureWindowDerivativeLeadingCoefficient lambda
   let b := thetaCuspGaussianApertureWindowDerivativeLinearCoefficient lambda
-  let c := thetaCuspGaussianApertureHalfMoment lambda 2 ^ 2
+  let c := thetaCuspGaussianApertureHalfMoment lambda 2 ^ (2 : ℕ)
   let d := thetaCuspGaussianApertureWindowDerivativeDiscriminant lambda
   have ha : a ≠ 0 :=
     (thetaCuspGaussianApertureWindowDerivativeLeadingCoefficient_pos hlambda).ne'
   have hd : 0 ≤ d :=
     (thetaCuspGaussianApertureWindowDerivativeDiscriminant_pos hlambda).le
-  have hsqrt : Real.sqrt d ^ 2 = d := Real.sq_sqrt hd
-  have hdEq : d = b ^ 2 - 4 * a * c := by
+  have hsqrt : Real.sqrt d ^ (2 : ℕ) = d := Real.sq_sqrt hd
+  have hdEq : d = b ^ (2 : ℕ) - 4 * a * c := by
     simp only [d, b, a, c, thetaCuspGaussianApertureWindowDerivativeDiscriminant,
       thetaCuspGaussianApertureWindowDerivativeLinearCoefficient,
       thetaCuspGaussianApertureWindowDerivativeLeadingCoefficient]
-  change c - b * y + a * y ^ 2 =
+  change c - b * y + a * y ^ (2 : ℕ) =
     a * (y - (b - Real.sqrt d) / (2 * a)) *
       (y - (b + Real.sqrt d) / (2 * a))
   field_simp [ha]
@@ -657,18 +657,18 @@ theorem thetaCuspGaussianApertureWindowDerivativePolynomial_pos_above_upperRoot
 falls, and rises again, with the two phase boundaries fixed by source moments. -/
 theorem thetaCuspGaussianApertureCompositeWindow_deriv_threePhase
     {lambda t : ℝ} (hlambda : lambda ≤ 0) (ht : 0 < t) :
-    (t ^ 2 < thetaCuspGaussianApertureWindowLowerRootSq lambda →
+    (t ^ (2 : ℕ) < thetaCuspGaussianApertureWindowLowerRootSq lambda →
         0 < deriv (thetaCuspGaussianApertureCompositeWindow lambda) t) ∧
-      (thetaCuspGaussianApertureWindowLowerRootSq lambda < t ^ 2 →
-        t ^ 2 < thetaCuspGaussianApertureWindowUpperRootSq lambda →
+      (thetaCuspGaussianApertureWindowLowerRootSq lambda < t ^ (2 : ℕ) →
+        t ^ (2 : ℕ) < thetaCuspGaussianApertureWindowUpperRootSq lambda →
           deriv (thetaCuspGaussianApertureCompositeWindow lambda) t < 0) ∧
-      (thetaCuspGaussianApertureWindowUpperRootSq lambda < t ^ 2 →
+      (thetaCuspGaussianApertureWindowUpperRootSq lambda < t ^ (2 : ℕ) →
         0 < deriv (thetaCuspGaussianApertureCompositeWindow lambda) t) := by
   rw [(hasDerivAt_thetaCuspGaussianApertureCompositeWindow lambda t).deriv]
   have hdensity : 0 < thetaCuspGaussianApertureDensity lambda t := by
     rw [thetaCuspGaussianApertureDensity]
     exact mul_pos (Real.exp_pos _) (thetaCuspFullSource_pos_of_pos ht)
-  have hprefactor : 0 < 2 * thetaCuspGaussianApertureDensity lambda t * t ^ 2 := by
+  have hprefactor : 0 < 2 * thetaCuspGaussianApertureDensity lambda t * t ^ (2 : ℕ) := by
     positivity
   constructor
   · intro hLower
@@ -702,14 +702,14 @@ theorem thetaCuspGaussianApertureWindowLowerTurningHeight_pos
 
 theorem thetaCuspGaussianApertureWindowLowerTurningHeight_sq
     {lambda : ℝ} (hlambda : lambda ≤ 0) :
-    thetaCuspGaussianApertureWindowLowerTurningHeight lambda ^ 2 =
+    thetaCuspGaussianApertureWindowLowerTurningHeight lambda ^ (2 : ℕ) =
       thetaCuspGaussianApertureWindowLowerRootSq lambda := by
   rw [thetaCuspGaussianApertureWindowLowerTurningHeight, Real.sq_sqrt]
   exact (thetaCuspGaussianApertureWindowLowerRootSq_pos hlambda).le
 
 theorem thetaCuspGaussianApertureWindowUpperTurningHeight_sq
     {lambda : ℝ} (hlambda : lambda ≤ 0) :
-    thetaCuspGaussianApertureWindowUpperTurningHeight lambda ^ 2 =
+    thetaCuspGaussianApertureWindowUpperTurningHeight lambda ^ (2 : ℕ) =
       thetaCuspGaussianApertureWindowUpperRootSq lambda := by
   rw [thetaCuspGaussianApertureWindowUpperTurningHeight, Real.sq_sqrt]
   exact (thetaCuspGaussianApertureWindowUpperRootSq_pos hlambda).le
@@ -737,7 +737,7 @@ theorem thetaCuspGaussianApertureCompositeWindow_strictMonoOn_initial
   apply strictMonoOn_of_deriv_pos (convex_Icc 0 L) hcont
   intro t ht
   rw [interior_Icc] at ht
-  have htSq : t ^ 2 < thetaCuspGaussianApertureWindowLowerRootSq lambda := by
+  have htSq : t ^ (2 : ℕ) < thetaCuspGaussianApertureWindowLowerRootSq lambda := by
     rw [← thetaCuspGaussianApertureWindowLowerTurningHeight_sq hlambda]
     exact (sq_lt_sq₀ ht.1.le hL.le).2 ht.2
   exact (thetaCuspGaussianApertureCompositeWindow_deriv_threePhase hlambda ht.1).1 htSq
@@ -758,10 +758,10 @@ theorem thetaCuspGaussianApertureCompositeWindow_strictAntiOn_middle
   intro t ht
   rw [interior_Icc] at ht
   have htpos : 0 < t := lt_trans hL ht.1
-  have hLower : thetaCuspGaussianApertureWindowLowerRootSq lambda < t ^ 2 := by
+  have hLower : thetaCuspGaussianApertureWindowLowerRootSq lambda < t ^ (2 : ℕ) := by
     rw [← thetaCuspGaussianApertureWindowLowerTurningHeight_sq hlambda]
     exact (sq_lt_sq₀ hL.le htpos.le).2 ht.1
-  have hUpper : t ^ 2 < thetaCuspGaussianApertureWindowUpperRootSq lambda := by
+  have hUpper : t ^ (2 : ℕ) < thetaCuspGaussianApertureWindowUpperRootSq lambda := by
     rw [← thetaCuspGaussianApertureWindowUpperTurningHeight_sq hlambda]
     exact (sq_lt_sq₀ htpos.le
       (le_trans hL.le
@@ -785,7 +785,7 @@ theorem thetaCuspGaussianApertureCompositeWindow_strictMonoOn_tail
   intro t ht
   rw [interior_Ici] at ht
   have htpos : 0 < t := lt_trans hU ht
-  have hUpper : thetaCuspGaussianApertureWindowUpperRootSq lambda < t ^ 2 := by
+  have hUpper : thetaCuspGaussianApertureWindowUpperRootSq lambda < t ^ (2 : ℕ) := by
     rw [← thetaCuspGaussianApertureWindowUpperTurningHeight_sq hlambda]
     exact (sq_lt_sq₀ hU.le htpos.le).2 ht
   exact (thetaCuspGaussianApertureCompositeWindow_deriv_threePhase hlambda htpos).2.2

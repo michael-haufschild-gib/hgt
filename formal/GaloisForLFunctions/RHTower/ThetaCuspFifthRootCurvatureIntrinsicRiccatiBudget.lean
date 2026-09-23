@@ -14,25 +14,25 @@ def thetaCuspReflectedActionNormalizedVelocityAtZero (t : ℝ) : ℝ :=
     thetaCuspReflectedActionRadiusAtZero t
 
 def thetaCuspReflectedActionNormalizedFluxCurvatureAtZero (t : ℝ) : ℝ :=
-  t ^ 2 *
+  t ^ (2 : ℕ) *
       (thetaCuspReflectedLogJetTwo 0 t -
-        thetaCuspReflectedLogJetOne 0 t ^ 2) /
+        thetaCuspReflectedLogJetOne 0 t ^ (2 : ℕ)) /
     thetaCuspReflectedActionRadiusAtZero t
 
 def thetaCuspReflectedActionNormalizedFluxThirdJetAtZero (t : ℝ) : ℝ :=
-  t ^ 3 *
+  t ^ (3 : ℕ) *
       (thetaCuspReflectedLogJetThree 0 t -
         3 * thetaCuspReflectedLogJetOne 0 t *
           thetaCuspReflectedLogJetTwo 0 t +
-        thetaCuspReflectedLogJetOne 0 t ^ 3) /
+        thetaCuspReflectedLogJetOne 0 t ^ (3 : ℕ)) /
     thetaCuspReflectedActionRadiusAtZero t
 
 def thetaCuspReflectedActionNormalizedRiccatiMarginAtZero (t : ℝ) : ℝ :=
-  t ^ 3 * thetaCuspReflectedLogRiccatiMargin 0 t /
+  t ^ (3 : ℕ) * thetaCuspReflectedLogRiccatiMargin 0 t /
     thetaCuspReflectedActionRadiusAtZero t
 
 def thetaCuspReflectedActionNormalizedTuranFourthFluxAtZero (t : ℝ) : ℝ :=
-  t ^ 4 *
+  t ^ (4 : ℕ) *
       (thetaCuspReflectedSourceDecayFluxFourthJetTuranCeilingAtZero t /
         thetaCuspReflectedSourceProduct 0 t) /
     thetaCuspReflectedActionRadiusAtZero t
@@ -43,8 +43,8 @@ def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderCoreAtZero
   let b := thetaCuspReflectedActionNormalizedFluxCurvatureAtZero t
   let c := thetaCuspReflectedActionNormalizedFluxThirdJetAtZero t
   let d := thetaCuspReflectedActionNormalizedTuranFourthFluxAtZero t
-  22 * s ^ 2 + 40 * b - 39 * s * b + 11 * c + 2 * s * c + 5 * d -
-    3 * b ^ 2 - 2 * (24 - 9 * s + 5 * b - 4 * s ^ 2) * (s ^ 2 + b)
+  22 * s ^ (2 : ℕ) + 40 * b - 39 * s * b + 11 * c + 2 * s * c + 5 * d -
+    3 * b ^ (2 : ℕ) - 2 * (24 - 9 * s + 5 * b - 4 * s ^ (2 : ℕ)) * (s ^ (2 : ℕ) + b)
 
 def thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero
     (t : ℝ) : ℝ :=
@@ -52,24 +52,24 @@ def thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero
   let s := thetaCuspReflectedActionNormalizedVelocityAtZero t
   let b := thetaCuspReflectedActionNormalizedFluxCurvatureAtZero t
   let rho := thetaCuspReflectedActionNormalizedRiccatiMarginAtZero t
-  99 * s - 123 * s ^ 2 + 24 * s ^ 4 - 51 * b + 36 * s * b +
-    16 * s ^ 2 * b - 65 * b ^ 2 + 100 * s * r * rho -
-    8000 * t ^ 4 / r - 25 * r * (b + 2 * s ^ 2 * r) ^ 2
+  99 * s - 123 * s ^ (2 : ℕ) + 24 * s ^ (4 : ℕ) - 51 * b + 36 * s * b +
+    16 * s ^ (2 : ℕ) * b - 65 * b ^ (2 : ℕ) + 100 * s * r * rho -
+    8000 * t ^ (4 : ℕ) / r - 25 * r * (b + 2 * s ^ (2 : ℕ) * r) ^ (2 : ℕ)
 
 private theorem intrinsicSecondOrderCore_eq_riccatiBudget_div_five
     {t r s b c d rho : ℝ}
-    (hstationary : -9 * s + b + s ^ 2 + 5 * c - 13 * s * b + 8 * s ^ 3 = 0)
+    (hstationary : -9 * s + b + s ^ (2 : ℕ) + 5 * c - 13 * s * b + 8 * s ^ (3 : ℕ) = 0)
     (hfourth :
-      d = -320 * t ^ 4 / r - b ^ 2 * r - 4 * s ^ 2 * b * r ^ 2 -
-        4 * s ^ 4 * r ^ 3 + 4 * s * r * rho) :
-    5 * (22 * s ^ 2 + 40 * b - 39 * s * b + 11 * c + 2 * s * c + 5 * d -
-        3 * b ^ 2 - 2 * (24 - 9 * s + 5 * b - 4 * s ^ 2) * (s ^ 2 + b)) =
-      99 * s - 123 * s ^ 2 + 24 * s ^ 4 - 51 * b + 36 * s * b +
-        16 * s ^ 2 * b - 65 * b ^ 2 + 100 * s * r * rho -
-        8000 * t ^ 4 / r - 25 * r * (b + 2 * s ^ 2 * r) ^ 2 := by
+      d = -320 * t ^ (4 : ℕ) / r - b ^ (2 : ℕ) * r - 4 * s ^ (2 : ℕ) * b * r ^ (2 : ℕ) -
+        4 * s ^ (4 : ℕ) * r ^ (3 : ℕ) + 4 * s * r * rho) :
+    5 * (22 * s ^ (2 : ℕ) + 40 * b - 39 * s * b + 11 * c + 2 * s * c + 5 * d -
+        3 * b ^ (2 : ℕ) - 2 * (24 - 9 * s + 5 * b - 4 * s ^ (2 : ℕ)) * (s ^ (2 : ℕ) + b)) =
+      99 * s - 123 * s ^ (2 : ℕ) + 24 * s ^ (4 : ℕ) - 51 * b + 36 * s * b +
+        16 * s ^ (2 : ℕ) * b - 65 * b ^ (2 : ℕ) + 100 * s * r * rho -
+        8000 * t ^ (4 : ℕ) / r - 25 * r * (b + 2 * s ^ (2 : ℕ) * r) ^ (2 : ℕ) := by
   calc
-    _ = 99 * s - 123 * s ^ 2 + 24 * s ^ 4 - 51 * b + 36 * s * b +
-          16 * s ^ 2 * b - 65 * b ^ 2 + 25 * d := by
+    _ = 99 * s - 123 * s ^ (2 : ℕ) + 24 * s ^ (4 : ℕ) - 51 * b + 36 * s * b +
+          16 * s ^ (2 : ℕ) * b - 65 * b ^ (2 : ℕ) + 25 * d := by
       linear_combination (11 + 2 * s) * hstationary
     _ = _ := by
       rw [hfourth]
@@ -105,8 +105,8 @@ private theorem thetaCuspReflectedActionNormalizedTuranFourthFluxAtZero_eq
       let s := thetaCuspReflectedActionNormalizedVelocityAtZero t;
       let b := thetaCuspReflectedActionNormalizedFluxCurvatureAtZero t;
       let rho := thetaCuspReflectedActionNormalizedRiccatiMarginAtZero t;
-      -320 * t ^ 4 / r - b ^ 2 * r - 4 * s ^ 2 * b * r ^ 2 -
-        4 * s ^ 4 * r ^ 3 + 4 * s * r * rho) := by
+      -320 * t ^ (4 : ℕ) / r - b ^ (2 : ℕ) * r - 4 * s ^ (2 : ℕ) * b * r ^ (2 : ℕ) -
+        4 * s ^ (4 : ℕ) * r ^ (3 : ℕ) + 4 * s * r * rho) := by
   have hr := (thetaCuspReflectedActionRadiusAtZero_pos ht).ne'
   have hP : thetaCuspReflectedSourceProduct 0 t ≠ 0 := by
     unfold thetaCuspReflectedSourceProduct
@@ -132,7 +132,7 @@ private theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicStationary_no
     (let s := thetaCuspReflectedActionNormalizedVelocityAtZero t;
     let b := thetaCuspReflectedActionNormalizedFluxCurvatureAtZero t;
     let c := thetaCuspReflectedActionNormalizedFluxThirdJetAtZero t;
-    -9 * s + b + s ^ 2 + 5 * c - 13 * s * b + 8 * s ^ 3 = 0) := by
+    -9 * s + b + s ^ (2 : ℕ) + 5 * c - 13 * s * b + 8 * s ^ (3 : ℕ) = 0) := by
   have hP : 0 < thetaCuspReflectedSourceProduct 0 t := by
     unfold thetaCuspReflectedSourceProduct
     exact mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _)
@@ -159,9 +159,9 @@ private theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicStationary_no
 
 private theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero_eq_core
     {t : ℝ} (ht : 0 < t) :
-    t ^ 2 *
+    t ^ (2 : ℕ) *
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero t =
-      thetaCuspReflectedSourceFirstDrop 0 t ^ 4 *
+      thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) *
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderCoreAtZero t := by
   have hP : 0 < thetaCuspReflectedSourceProduct 0 t := by
     unfold thetaCuspReflectedSourceProduct
@@ -196,9 +196,9 @@ theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeili
           thetaCuspReflectedSourceFirstDrop 0 t =
         2 * thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 t *
           thetaCuspReflectedSourceDecayFlux 0 t) :
-    5 * t ^ 2 *
+    5 * t ^ (2 : ℕ) *
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero t =
-      thetaCuspReflectedSourceFirstDrop 0 t ^ 4 *
+      thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) *
         thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero t := by
   have hcore :=
     thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero_eq_core ht
@@ -223,10 +223,10 @@ theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeili
         (r := r) (s := s) (b := b) (c := c) (d := d) (rho := rho)
         (t := t) hstat hfourth)
   calc
-    _ = 5 * (thetaCuspReflectedSourceFirstDrop 0 t ^ 4 *
+    _ = 5 * (thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) *
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderCoreAtZero t) := by
       linear_combination 5 * hcore
-    _ = thetaCuspReflectedSourceFirstDrop 0 t ^ 4 *
+    _ = thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) *
         (5 * thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderCoreAtZero t) := by
       ring
     _ = _ := by rw [hbudget]
@@ -248,16 +248,16 @@ theorem
   have hceil :=
     thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero_pos_of_isLocalMin
       ht hmin
-  have hleft : 0 < 5 * t ^ 2 *
+  have hleft : 0 < 5 * t ^ (2 : ℕ) *
       thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero t := by
     positivity
-  have hA4 : 0 < thetaCuspReflectedSourceFirstDrop 0 t ^ 4 := by
+  have hA4 : 0 < thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) := by
     exact pow_pos (thetaCuspReflectedSourceFirstDrop_pos 0 ht) 4
   by_contra hnot
   have hbudgetNonpos :
       thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero t ≤ 0 :=
     le_of_not_gt hnot
-  have hrightNonpos : thetaCuspReflectedSourceFirstDrop 0 t ^ 4 *
+  have hrightNonpos : thetaCuspReflectedSourceFirstDrop 0 t ^ (4 : ℕ) *
       thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero t ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos hA4.le hbudgetNonpos
   linarith
@@ -273,8 +273,8 @@ theorem
       IsLocalMin
         (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0) t ∧
       0 < thetaCuspReflectedSourceFifthRootCurvatureRiccatiCompensationBudgetAtZero t ∧
-      thetaCuspReflectedLogJetFour 0 t + 320 <
-        2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 ∧
+      thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+        2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) ∧
       thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero t <
         thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t := by
   obtain ⟨t, ht, hneg, hmin, _hceil, hfour, hover⟩ :=

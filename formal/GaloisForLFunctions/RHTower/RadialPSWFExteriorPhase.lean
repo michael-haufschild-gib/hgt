@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 For the radial PSWF equation, Dunster's exterior Liouville coordinate has speed
 
-`sqrt ((z^2 - sigma^2) / (z^2 - 1))`.
+`sqrt ((z^(2 : ℕ) - sigma^(2 : ℕ)) / (z^(2 : ℕ) - 1))`.
 
 This file defines that coordinate directly and proves its exact derivative and the uniform
 nonstationary lower bound on the exterior ray.  These are elementary consequences of
@@ -22,7 +22,7 @@ noncomputable section
 
 /-- The exact Liouville speed on the exterior radial ray. -/
 def radialPSWFExteriorSpeed (sigma z : ℝ) : ℝ :=
-  Real.sqrt ((z ^ 2 - sigma ^ 2) / (z ^ 2 - 1))
+  Real.sqrt ((z ^ (2 : ℕ) - sigma ^ (2 : ℕ)) / (z ^ (2 : ℕ) - 1))
 
 /-- The exterior phase, normalized to vanish at `z = 2`.  Its additive normalization is
 irrelevant for oscillatory estimates. -/
@@ -33,10 +33,10 @@ theorem continuousAt_radialPSWFExteriorSpeed
     (sigma : ℝ) {z : ℝ} (hz : 1 < z) :
     ContinuousAt (radialPSWFExteriorSpeed sigma) z := by
   have hz0 : 0 < z := zero_lt_one.trans hz
-  have hden : z ^ 2 - 1 ≠ 0 := by nlinarith [sq_pos_of_pos hz0]
-  have hnum : ContinuousAt (fun x : ℝ => x ^ 2 - sigma ^ 2) z :=
+  have hden : z ^ (2 : ℕ) - 1 ≠ 0 := by nlinarith [sq_pos_of_pos hz0]
+  have hnum : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ) - sigma ^ (2 : ℕ)) z :=
     (continuousAt_id.pow 2).sub continuousAt_const
-  have hdencont : ContinuousAt (fun x : ℝ => x ^ 2 - 1) z :=
+  have hdencont : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ) - 1) z :=
     (continuousAt_id.pow 2).sub continuousAt_const
   exact Real.continuous_sqrt.continuousAt.comp (hnum.div hdencont hden)
 
@@ -67,8 +67,8 @@ theorem one_le_radialPSWFExteriorSpeed
     {sigma z : ℝ} (hsigma0 : 0 ≤ sigma) (hsigma1 : sigma ≤ 1) (hz : 1 < z) :
     1 ≤ radialPSWFExteriorSpeed sigma z := by
   have hz0 : 0 < z := zero_lt_one.trans hz
-  have hden : 0 < z ^ 2 - 1 := by nlinarith [sq_pos_of_pos hz0]
-  have hsigmaSq : sigma ^ 2 ≤ 1 := by nlinarith
+  have hden : 0 < z ^ (2 : ℕ) - 1 := by nlinarith [sq_pos_of_pos hz0]
+  have hsigmaSq : sigma ^ (2 : ℕ) ≤ 1 := by nlinarith
   rw [radialPSWFExteriorSpeed, Real.one_le_sqrt]
   apply (le_div_iff₀ hden).2
   nlinarith

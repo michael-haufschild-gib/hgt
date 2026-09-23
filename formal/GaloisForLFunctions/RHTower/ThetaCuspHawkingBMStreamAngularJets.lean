@@ -59,9 +59,9 @@ theorem streamAngularJet_actual (V : Covector) (p : D4BMBackground.ExteriorPoint
 
 /-- The angular slot used by the full Einstein stream contraction. -/
 def streamAngularOperator (V : Covector) (k : Fin 2) (z : Point) : ℂ :=
-  if k = 0 then (z 1 : ℂ)^2*(coordDeriv 0 (coordDeriv 0 (V 0)) z+
+  if k = 0 then (z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (V 0)) z+
     coordDeriv 1 (coordDeriv 1 (V 0)) z)+2*(z 1 : ℂ)*(coordDeriv 1 (V 0) z-coordDeriv 0 (V 1) z)
-  else (z 1 : ℂ)^2*(coordDeriv 0 (coordDeriv 0 (V 1)) z-coordDeriv 0 (coordDeriv 1 (V 0)) z)
+  else (z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (V 1)) z-coordDeriv 0 (coordDeriv 1 (V 0)) z)
 
 /-- The stream angular slot equals the actual rough Laplacian plus its curvature correction. -/
 theorem streamAngularOperator_actual (V : Covector) (z : Point) (hz : 0 < z 1)
@@ -72,7 +72,7 @@ theorem streamAngularOperator_actual (V : Covector) (z : Point) (hz : 0 < z 1)
   rw [coordDeriv_commute (hV 0) 1 0] at hyy
   rw [roughLaplacian_eq V z hz hV k]
   fin_cases k <;> simp [streamAngularOperator,roughFormula]
-  linear_combination -(z 1 : ℂ)^2*hyy-2*(z 1 : ℂ)*hd
+  linear_combination -(z 1 : ℂ)^(2 : ℕ)*hyy-2*(z 1 : ℂ)*hd
 
 /-- The actual full-response angular stream slot contains the complete forcing J. -/
 theorem streamAngularOperator_response (q : XiZeroCopy) (branch : Bool)

@@ -28,7 +28,7 @@ theorem quadratic_intervalShiftSum_normSq_le_divisorQuarter [DecidableEq I]
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod P.modulus, Complex.normSq (quadraticIntervalShiftSum P M b x) ≤
       ((M : ℝ) * (Sieve.divisorBoundConst (1 / 4 : ℝ) * (P.modulus : ℝ) ^ (1 / 4 : ℝ)) +
-        (P.modulus : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        (P.modulus : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   exact quadratic_intervalShiftSum_normSq_le_divisorRpow P M b (by norm_num)
 
 end OddPrimeFamily

@@ -20,7 +20,7 @@ set_option linter.unusedVariables false
 namespace RHTower.D4BMScalarStream
 
 /-- The chiral line form is positive on the edge band `2t² ≤ l ≤ (17/4)t²` for `t ≥ 50`. -/
-theorem skewPlateauMuChiralLine_pos_edge (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : 2 * t ^ 2 ≤ l) (h2 : l ≤ 17 / 4 * t ^ 2) :
+theorem skewPlateauMuChiralLine_pos_edge (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : 2 * t ^ (2 : ℕ) ≤ l) (h2 : l ≤ 17 / 4 * t ^ (2 : ℕ)) :
     0 < skewPlateauMuChiralLine t l := by
   have ht0 : (0 : ℝ) ≤ t := by linarith
   have hpos_t : (0 : ℝ) < t := by linarith
@@ -140,9 +140,9 @@ theorem skewPlateauMuChiralLine_pos_edge (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1
 
 /-- For `t ≥ 50` the chiral kernel has positive imaginary part at every harmonic of the spectral
 support `0 ≤ l ≤ (17/4)t²`. -/
-theorem skewPlateauMuChiral_line_im_pos_support (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 17 / 4 * t ^ 2) :
+theorem skewPlateauMuChiral_line_im_pos_support (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 17 / 4 * t ^ (2 : ℕ)) :
     0 < (skewPlateauMuChiral ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im := by
-  rcases le_or_gt l (2 * t ^ 2) with hb | hb
+  rcases le_or_gt l (2 * t ^ (2 : ℕ)) with hb | hb
   · exact skewPlateauMuChiral_line_im_pos t l ht hl0 hb
   · have h := congrArg Complex.im (skewPlateauMuChiral_line t l hl0)
     simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_add, one_mul] at h

@@ -74,24 +74,24 @@ theorem summable_orbitTerm {r : ℕ} (lam : Fin r → ℂ) (g : Fin r → ℤ)
   have hjnorm : ∀ j : ℕ, ‖s‖ ≤ ‖s + (j : ℂ)‖ := fun j => norm_le_norm_add_natCast hre j
   set D : ℝ := 2 * K * B * ‖gammaMonomial lam g s‖ with hD
   have hD0 : 0 ≤ D := by positivity
-  have hmaj : ∀ j : ℕ, ‖orbitTerm lam g s j‖ ≤ D * (1 / ((j : ℝ) + 1) ^ 2) := by
+  have hmaj : ∀ j : ℕ, ‖orbitTerm lam g s j‖ ≤ D * (1 / ((j : ℝ) + 1) ^ (2 : ℕ)) := by
     intro j
     have hRb₀j : Rb₀ ≤ ‖s + (j : ℂ)‖ := le_trans hRb₀s (hjnorm j)
     have hb := hK (s + (j : ℂ)) hRb₀j (fun k => hjlam j k)
     have hlow := two_mul_norm_add_natCast_sq_ge hre j
-    have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ 2 := by
+    have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       positivity
     have hjnpos : (0 : ℝ) < ‖s + (j : ℂ)‖ := lt_of_lt_of_le hspos (hjnorm j)
     have hb2 : ‖(∏ k, (s + (j : ℂ) + lam k) ^ (g k)) - 1‖
-        ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by
+        ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
       refine le_trans hb ?_
-      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ 2)]
-      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2 := by
+      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ (2 : ℕ))]
+      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
         rw [le_div_iff₀ hpos]
         linarith [hlow]
-      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) * ‖s + (j : ℂ)‖ ^ 2
-          = K * (2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2) := by
+      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) * ‖s + (j : ℂ)‖ ^ (2 : ℕ)
+          = K * (2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
         field_simp
       rw [hfin]
       nlinarith [hratio, hK0]
@@ -99,33 +99,33 @@ theorem summable_orbitTerm {r : ℕ} (lam : Fin r → ℂ) (g : Fin r → ℤ)
       rw [gammaMonomial_shift_nat lam g hs j, norm_mul]
       exact mul_le_mul_of_nonneg_right (hB s hs hRb₁s j) (norm_nonneg _)
     have hstep : ‖orbitTerm lam g s j‖
-        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2)) * (B * ‖gammaMonomial lam g s‖) := by
-      have hnn4 : (0 : ℝ) ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by
+        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ))) * (B * ‖gammaMonomial lam g s‖) := by
+      have hnn4 : (0 : ℝ) ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
         have hjn : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
-        have h1 : (0 : ℝ) ≤ 1 / (‖s‖ + (j : ℝ)) ^ 2 := by positivity
+        have h1 : (0 : ℝ) ≤ 1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by positivity
         nlinarith [hK0, h1]
       rw [orbitTerm, norm_mul]
       exact mul_le_mul hb2 horb (norm_nonneg _) hnn4
-    have hshrink : (1 : ℝ) / (‖s‖ + (j : ℝ)) ^ 2 ≤ 1 / ((j : ℝ) + 1) ^ 2 := by
-      have h1 : ((j : ℝ) + 1) ^ 2 ≤ (‖s‖ + (j : ℝ)) ^ 2 := by
+    have hshrink : (1 : ℝ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ) ≤ 1 / ((j : ℝ) + 1) ^ (2 : ℕ) := by
+      have h1 : ((j : ℝ) + 1) ^ (2 : ℕ) ≤ (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
         have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
         nlinarith
-      have h2 : (0 : ℝ) < ((j : ℝ) + 1) ^ 2 := by positivity
+      have h2 : (0 : ℝ) < ((j : ℝ) + 1) ^ (2 : ℕ) := by positivity
       exact one_div_le_one_div_of_le h2 h1
     calc ‖orbitTerm lam g s j‖
-        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2)) * (B * ‖gammaMonomial lam g s‖) := hstep
-      _ ≤ (2 * K * (1 / ((j : ℝ) + 1) ^ 2)) * (B * ‖gammaMonomial lam g s‖) := by
+        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ))) * (B * ‖gammaMonomial lam g s‖) := hstep
+      _ ≤ (2 * K * (1 / ((j : ℝ) + 1) ^ (2 : ℕ))) * (B * ‖gammaMonomial lam g s‖) := by
           have hnn : (0 : ℝ) ≤ B * ‖gammaMonomial lam g s‖ := by positivity
           have h2K : (0 : ℝ) ≤ 2 * K := by positivity
           nlinarith [hshrink, hnn, h2K]
-      _ = D * (1 / ((j : ℝ) + 1) ^ 2) := by rw [hD]; ring
-  have hbase : Summable (fun j : ℕ => (1 : ℝ) / ((j : ℝ) + 1) ^ 2) := by
+      _ = D * (1 / ((j : ℝ) + 1) ^ (2 : ℕ)) := by rw [hD]; ring
+  have hbase : Summable (fun j : ℕ => (1 : ℝ) / ((j : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2)
-    have h2 := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) 1).mpr h
+    have h2 := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) 1).mpr h
     refine h2.congr fun j => ?_
     push_cast
     ring
-  have hbasesum : Summable (fun j : ℕ => D * (1 / ((j : ℝ) + 1) ^ 2)) := hbase.mul_left D
+  have hbasesum : Summable (fun j : ℕ => D * (1 / ((j : ℝ) + 1) ^ (2 : ℕ))) := hbase.mul_left D
   exact hbasesum.of_nonneg_of_le (fun j => norm_nonneg _) hmaj
 
 end

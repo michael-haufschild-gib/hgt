@@ -149,7 +149,7 @@ theorem tendsto_deningerOrdinaryIntegerAbelDefect_second
       (T - c • deningerOrdinaryIntegerReciprocalGreen))) (n : PNat) :
     Tendsto (fun ε : ℝ => (deningerOrdinaryIntegerAbelDefect ε n T -
       c * (deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n (((1 + ε) / 2 : ℝ) : ℂ) : ℂ)) /
-        (ε : ℂ)^2) (𝓝[>] 0) (𝓝 (deningerOrdinaryIntegerAbelSecondCoefficient n T c)) := by
+        (ε : ℂ)^(2 : ℕ)) (𝓝[>] 0) (𝓝 (deningerOrdinaryIntegerAbelSecondCoefficient n T c)) := by
   have hg := Complex.continuous_ofReal.continuousAt.tendsto.comp
     (tendsto_deningerOrdinaryIntegerAbelGain_slope n)
   have ht := hg.mul (tendsto_deningerOrdinaryIntegerAbelReader_summable_projection_slope _ hs n)
@@ -273,7 +273,7 @@ theorem tendsto_deningerGammaSixIntegral_abel_second
       (deningerGammaSixIntegralOperator k l w z) -
       (iteratedDeriv k XiC w * iteratedDeriv l XiC z) *
         (deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n (((1 + ε) / 2 : ℝ) : ℂ) : ℂ)) /
-          (ε : ℂ)^2) (𝓝[>] 0)
+          (ε : ℂ)^(2 : ℕ)) (𝓝[>] 0)
       (𝓝 (deningerOrdinaryIntegerAbelSecondCoefficient n
         (deningerGammaSixIntegralOperator k l w z) (iteratedDeriv k XiC w * iteratedDeriv l XiC z))) :=
   tendsto_deningerOrdinaryIntegerAbelDefect_second _ _
@@ -366,7 +366,7 @@ theorem deningerOrdinaryIntegerAbelDefect_second_zero_iff
       (T - c • deningerOrdinaryIntegerReciprocalGreen))) (n : PNat) :
     Tendsto (fun ε : ℝ => (deningerOrdinaryIntegerAbelDefect ε n T -
       c * (deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n (((1 + ε) / 2 : ℝ) : ℂ) : ℂ)) /
-        (ε : ℂ)^2) (𝓝[>] 0) (𝓝 0) ↔ deningerOrdinaryIntegerAbelSecondCoefficient n T c = 0 := by
+        (ε : ℂ)^(2 : ℕ)) (𝓝[>] 0) (𝓝 0) ↔ deningerOrdinaryIntegerAbelSecondCoefficient n T c = 0 := by
   constructor
   · intro h
     exact tendsto_nhds_unique (tendsto_deningerOrdinaryIntegerAbelDefect_second T c hs n) h
@@ -435,7 +435,7 @@ theorem deningerGammaSixIntegral_second_order_agreement_iff
       (deningerOrdinaryIntegerAbelDefect ε n (deningerGammaSixIntegralOperator k l w z) -
         (iteratedDeriv k XiC w * iteratedDeriv l XiC z) *
           (deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n (((1 + ε) / 2 : ℝ) : ℂ) : ℂ)) /
-            (ε : ℂ)^2) (𝓝[>] 0) (𝓝 0)) ↔ iteratedDeriv k XiC w * iteratedDeriv l XiC z = 0 := by
+            (ε : ℂ)^(2 : ℕ)) (𝓝[>] 0) (𝓝 0)) ↔ iteratedDeriv k XiC w * iteratedDeriv l XiC z = 0 := by
   have hlim := fun n => deningerOrdinaryIntegerAbelDefect_second_zero_iff _ _
     (deningerGammaSixIntegralOperator_principal_class k l hw hz hrw hrz) n
   simp_rw [hlim]
@@ -454,7 +454,7 @@ theorem deningerGammaSixIntegral_top_finite_repair_second_obstruction
         (iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho) *
           iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho)) *
             (deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n (((1 + ε) / 2 : ℝ) : ℂ) : ℂ)) /
-              (ε : ℂ)^2) (𝓝[>] 0) (𝓝 0) := by
+              (ε : ℂ)^(2 : ℕ)) (𝓝[>] 0) (𝓝 0) := by
   have hw := abs_im_xiSpectralPointSupport_lt_one rho
   have hrw : (1 / 3 : ℝ) < (mobiusThetaCenteredParameter (xiSpectralPointSupport rho)).re := by
     simpa only [mobiusThetaCenteredParameter_xiSpectralPointSupport] using hrho

@@ -13,7 +13,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAGibbsNormalizer (τ φ : ℝ) : ℝ :=
-  2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)
+  2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
 def egbFixedChargeAGibbsCriticalNormalizer (φ : ℝ) : ℝ := 12 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)
 def egbFixedChargeAGibbsPrefactor (w φ τ : ℝ) : ℝ := egbFixedChargeAMeanRadius w φ τ / egbFixedChargeAGibbsNormalizer τ φ
 def egbFixedChargeAGibbsCriticalPrefactor (w φ : ℝ) : ℝ := egbFixedChargeACriticalRadius w φ / egbFixedChargeAGibbsCriticalNormalizer φ
@@ -74,7 +74,7 @@ theorem egbFixedChargeAGibbsNormalizer_critical_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsNormalizer τ φ) atBot (𝓝 (egbFixedChargeAGibbsCriticalNormalizer φ)) := by
   have h2 := (tendsto_const_nhds (x := (1 : ℝ))).add (egbCoexistenceASymmetricRatio_critical_limit.pow 2)
   have h := ((tendsto_const_nhds (x := (2 : ℝ))).mul (egbFixedChargeAMeanDenominator_critical_limit φ)).mul h2
-  have he : 2 * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 0 ^ 2) = egbFixedChargeAGibbsCriticalNormalizer φ := by
+  have he : 2 * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 0 ^ (2 : ℕ)) = egbFixedChargeAGibbsCriticalNormalizer φ := by
     unfold egbFixedChargeAGibbsCriticalNormalizer
     ring
   rw [he] at h

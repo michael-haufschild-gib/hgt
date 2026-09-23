@@ -46,8 +46,8 @@ theorem finitePacketGauge_conj (a b : Fin r → ℝ) (s : ℂ) :
 
 theorem finitePacketGauge_ofReal (a b : Fin r → ℝ) (σ : ℝ) :
     finitePacketGauge a b (σ : ℂ)
-      = ((∏ j, ((((σ - 1 / 2) - a j) ^ 2 + (b j) ^ 2)
-          * (((σ - 1 / 2) + a j) ^ 2 + (b j) ^ 2)) : ℝ) : ℂ) := by
+      = ((∏ j, ((((σ - 1 / 2) - a j) ^ (2 : ℕ) + (b j) ^ (2 : ℕ))
+          * (((σ - 1 / 2) + a j) ^ (2 : ℕ) + (b j) ^ (2 : ℕ))) : ℝ) : ℂ) := by
   rw [finitePacketGauge, Complex.ofReal_prod]
   exact Finset.prod_congr rfl fun j _ => centeredQuartetGauge_ofReal (a j) (b j) σ
 
@@ -79,8 +79,8 @@ theorem finitePacketGauge_analyticAt (a b : Fin r → ℝ) (s : ℂ) :
 
 /-- The centered quartic gauge as a polynomial. -/
 def centeredQuartetPoly (a b : ℝ) : Polynomial ℂ :=
-  ((X - C ((1 : ℂ) / 2) - C ((a : ℝ) : ℂ)) ^ 2 + C (((b : ℝ) : ℂ) ^ 2)) *
-    ((X - C ((1 : ℂ) / 2) + C ((a : ℝ) : ℂ)) ^ 2 + C (((b : ℝ) : ℂ) ^ 2))
+  ((X - C ((1 : ℂ) / 2) - C ((a : ℝ) : ℂ)) ^ (2 : ℕ) + C (((b : ℝ) : ℂ) ^ (2 : ℕ))) *
+    ((X - C ((1 : ℂ) / 2) + C ((a : ℝ) : ℂ)) ^ (2 : ℕ) + C (((b : ℝ) : ℂ) ^ (2 : ℕ)))
 
 theorem centeredQuartetPoly_eval (a b : ℝ) (s : ℂ) :
     (centeredQuartetPoly a b).eval s = centeredQuartetGauge a b s := by

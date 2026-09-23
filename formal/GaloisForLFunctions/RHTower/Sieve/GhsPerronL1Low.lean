@@ -42,7 +42,7 @@ theorem norm_sum_Icc_ghsTriple_l1_low_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n�
     ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
         (LSeries.convolution (ghsOuter f N₀)
           (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
-      ≤ 2 * ((N : ℝ) + 1) * ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+      ≤ 2 * ((N : ℝ) + 1) * ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
               * (((N : ℝ) + 1 / 2)) ^ σ
               * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
           + (1 / (2 * Real.pi))
@@ -84,7 +84,7 @@ theorem norm_sum_Icc_ghsTriple_l1_low_near_le {f : ℕ → ℂ} (hf : ∀ n, ‖
     ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
         (LSeries.convolution (ghsOuter f N₀)
           (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
-      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
               * (((N : ℝ) + 1 / 2)) ^ σ
               * (5 * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
               / (Real.pi * (t₀ * 2 ^ K))

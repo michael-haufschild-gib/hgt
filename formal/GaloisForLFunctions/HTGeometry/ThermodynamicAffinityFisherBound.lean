@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 For positive oriented populations `forward` and `reverse`, the entropy-production value controls
 the quadratic current cost
 
-`2 (forward - reverse)^2 / (forward + reverse)`.
+`2 (forward - reverse)^(2 : ℕ) / (forward + reverse)`.
 
 This is the edge inequality behind the pseudo-entropy-production form of thermodynamic uncertainty
 relations.  It strengthens the qualitative second-law statement in
@@ -33,7 +33,7 @@ noncomputable section
 
 /-- Symmetric quadratic current cost, also called an edgewise pseudo entropy production. -/
 def pseudoEntropyProductionValue (forward reverse : ℝ) : ℝ :=
-  2 * (forward - reverse) ^ 2 / (forward + reverse)
+  2 * (forward - reverse) ^ (2 : ℕ) / (forward + reverse)
 
 /-- The quadratic current cost is independent of edge orientation. -/
 theorem pseudoEntropyProductionValue_reverse (forward reverse : ℝ) :
@@ -56,7 +56,7 @@ theorem pseudoEntropyProductionValue_eq_zero_iff_eq {forward reverse : ℝ}
   rw [pseudoEntropyProductionValue]
   constructor
   · intro hzero
-    have hnum : 2 * (forward - reverse) ^ 2 = 0 := by
+    have hnum : 2 * (forward - reverse) ^ (2 : ℕ) = 0 := by
       rcases div_eq_zero_iff.mp hzero with hnum | hden
       · exact hnum
       · exact False.elim ((add_pos hf hr).ne' hden)
@@ -104,7 +104,7 @@ private theorem pseudoEntropyProductionValue_le_entropyProductionValue_of_le
   have hmul := mul_le_mul_of_nonneg_left hlog (sub_nonneg.mpr hrf)
   rw [pseudoEntropyProductionValue, entropyProductionValue, thermodynamicAffinity]
   calc
-    2 * (forward - reverse) ^ 2 / (forward + reverse) =
+    2 * (forward - reverse) ^ (2 : ℕ) / (forward + reverse) =
         (forward - reverse) *
           (2 * (forward - reverse) / (forward + reverse)) := by ring
     _ ≤ (forward - reverse) * Real.log (forward / reverse) := hmul

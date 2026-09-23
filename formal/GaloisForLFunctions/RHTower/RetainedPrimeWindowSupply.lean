@@ -64,7 +64,7 @@ theorem divisorPrimeClipWeight_general_quotient_window {K b N p : ℕ}
   have he' : divisorPrimeClipWeight (K*(b+1)*N) p*(p:ℝ)*
       (Real.sqrt (K+1:ℕ)-Real.sqrt K)≤(K:ℝ)*N := by
     calc
-      _ = divisorPrimeClipWeight (K*(b+1)*N) p*(Real.sqrt p)^2*
+      _ = divisorPrimeClipWeight (K*(b+1)*N) p*(Real.sqrt p)^(2 : ℕ)*
           (Real.sqrt (K+1:ℕ)-Real.sqrt K) := by rw [hsp]
       _ = divisorPrimeClipWeight (K*(b+1)*N) p*Real.sqrt p*
           (Real.sqrt (K+1:ℕ)-Real.sqrt K)*Real.sqrt p := by ring

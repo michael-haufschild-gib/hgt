@@ -178,7 +178,7 @@ theorem inv_sqrt_one_sub_le {u : ℝ} (h0 : 0 ≤ u) (h1 : u ≤ 1/2) :
     (Real.sqrt (1 - u))⁻¹ ≤ 1 + 2 * u := by
   have hpos : (0:ℝ) < 1 - u := by linarith
   have hs : 0 < Real.sqrt (1 - u) := Real.sqrt_pos.mpr hpos
-  have hsq : Real.sqrt (1 - u) ^ 2 = 1 - u := Real.sq_sqrt hpos.le
+  have hsq : Real.sqrt (1 - u) ^ (2 : ℕ) = 1 - u := Real.sq_sqrt hpos.le
   have hle1 : Real.sqrt (1 - u) ≤ 1 := by
     nlinarith [hsq, hs]
   rw [inv_eq_one_div, div_le_iff₀ hs]
@@ -250,7 +250,7 @@ at most `1 + u/2`, and the reciprocal of `1+u` is at least `1−u`.
 theorem sqrt_one_add_le {u : ℝ} (hu : 0 ≤ u) : Real.sqrt (1 + u) ≤ 1 + u / 2 := by
   have h1 : (0:ℝ) ≤ 1 + u := by linarith
   have h2 : (0:ℝ) ≤ 1 + u / 2 := by linarith
-  rw [show (1 : ℝ) + u / 2 = Real.sqrt ((1 + u / 2) ^ 2) by
+  rw [show (1 : ℝ) + u / 2 = Real.sqrt ((1 + u / 2) ^ (2 : ℕ)) by
     rw [Real.sqrt_sq h2]]
   refine Real.sqrt_le_sqrt ?_
   nlinarith [sq_nonneg u]

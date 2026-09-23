@@ -40,7 +40,7 @@ theorem iteratedDeriv_const_mul' {g : ℂ → ℂ} (hg : ContDiff ℂ (⊤ : ℕ
   | succ n ih =>
     rw [iteratedDeriv_succ, ih]
     funext u
-    rw [deriv_const_mul _ ((differentiable_iteratedDeriv hg n) u), ← iteratedDeriv_succ]
+    rw [deriv_const_mul _ ((differentiable_iteratedDeriv_eulerOperatorDiagonal hg n) u), ← iteratedDeriv_succ]
 
 /-- Scaling passes through the Euler operator. -/
 theorem eulerOp_const_mul {Ψ : ℂ → ℂ} (hΨ : Differentiable ℂ Ψ) (c : ℂ) :

@@ -32,7 +32,7 @@ def unitRieszCesaroSourceRelativeCompletedReporterSymbol (b t a : ℝ) : ℝ :=
 
 /-- Coefficient-bearing value/first-jet term escaping through the positive lower source wall. -/
 def unitRieszCesaroSourceRelativeEscapedJet (b t a : ℝ) : ℝ :=
-  Real.exp (t / 2) / t ^ 3 * Real.exp (-(a * (t - b))) *
+  Real.exp (t / 2) / t ^ (3 : ℕ) * Real.exp (-(a * (t - b))) *
     (unitRieszCesaroTestDeriv t b - a * unitRieszCesaroTest t b)
 
 /-- Literal contribution before the finite reporter's unique moving wall. -/
@@ -121,9 +121,9 @@ boundary atom, but the value/first-jet pair at the actual lower source wall surv
 theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq
     {t : ℝ} (ht : 0 < t) (b a : ℝ) :
     unitRieszCesaroSourceRelativeCompletedReporterSymbol b t a =
-      Real.exp (t / 2) / t ^ 3 * Real.exp (-(a * (t - b))) *
+      Real.exp (t / 2) / t ^ (3 : ℕ) * Real.exp (-(a * (t - b))) *
           (unitRieszCesaroTestDeriv t b - a * unitRieszCesaroTest t b) -
-        Real.exp (t / 2) / t ^ 3 * a ^ 2 *
+        Real.exp (t / 2) / t ^ (3 : ℕ) * a ^ (2 : ℕ) *
           ∫ s in b..t,
             Real.exp (-(a * (t - s))) * unitRieszCesaroTest t s := by
   let f : ℝ → ℝ := fun s => Real.exp (-(a * (t - s)))
@@ -143,19 +143,19 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq
     hasDerivAt_unitRieszCesaroTestDeriv t s
   let F : ℝ → ℝ := fun s => f s * G' s - a * f s * G s
   have hF (s : ℝ) : HasDerivAt F
-      (f s * G'' s - a ^ 2 * f s * G s) s := by
+      (f s * G'' s - a ^ (2 : ℕ) * f s * G s) s := by
     have hleft := (hf s).mul (hG' s)
     have hright := ((hf s).mul (hG s)).const_mul a
     have hraw := hleft.sub hright
     have hderiv :
         a * f s * G' s + f s * G'' s -
             a * (a * f s * G s + f s * G' s) =
-          f s * G'' s - a ^ 2 * f s * G s := by
+          f s * G'' s - a ^ (2 : ℕ) * f s * G s := by
       ring
     have hraw' := hraw.congr_deriv hderiv
     change HasDerivAt
       (fun x => f x * G' x - a * f x * G x)
-      (f s * G'' s - a ^ 2 * f s * G s) s
+      (f s * G'' s - a ^ (2 : ℕ) * f s * G s) s
     apply hraw'.congr_of_eventuallyEq
     filter_upwards with x
     simp only [Pi.mul_apply, Pi.sub_apply, mul_assoc]
@@ -165,34 +165,34 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq
     exact (by fun_prop : Continuous (fun s : ℝ => Real.exp (-(a * (t - s))))).mul
       (continuous_unitRieszCesaroTestSecondDeriv t)
   have hsecondInt : IntervalIntegrable
-      (fun s : ℝ => a ^ 2 * f s * G s) volume b t := by
+      (fun s : ℝ => a ^ (2 : ℕ) * f s * G s) volume b t := by
     apply Continuous.intervalIntegrable
     dsimp only [f, G]
     have hc := ((by fun_prop : Continuous (fun s : ℝ => Real.exp (-(a * (t - s))))).mul
-      (continuous_unitRieszCesaroTest t)).const_mul (a ^ 2)
+      (continuous_unitRieszCesaroTest t)).const_mul (a ^ (2 : ℕ))
     simpa only [Pi.mul_apply, mul_assoc] using hc
   have hderivInt : IntervalIntegrable
-      (fun s : ℝ => f s * G'' s - a ^ 2 * f s * G s) volume b t :=
+      (fun s : ℝ => f s * G'' s - a ^ (2 : ℕ) * f s * G s) volume b t :=
     hfirstInt.sub hsecondInt
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun s _ => hF s) hderivInt
   rw [intervalIntegral.integral_sub hfirstInt hsecondInt] at hftc
   have hsecondEq :
-      (∫ s in b..t, a ^ 2 * f s * G s) =
-        a ^ 2 * ∫ s in b..t, f s * G s := by
-    rw [show (fun s : ℝ => a ^ 2 * f s * G s) =
-        fun s : ℝ => a ^ 2 * (f s * G s) by funext s; ring,
+      (∫ s in b..t, a ^ (2 : ℕ) * f s * G s) =
+        a ^ (2 : ℕ) * ∫ s in b..t, f s * G s := by
+    rw [show (fun s : ℝ => a ^ (2 : ℕ) * f s * G s) =
+        fun s : ℝ => a ^ (2 : ℕ) * (f s * G s) by funext s; ring,
       intervalIntegral.integral_const_mul]
   rw [hsecondEq] at hftc
   have hGt : G t = 0 := unitRieszCesaroTest_self t
-  have hG't : G' t = -(3 / 64) * t ^ 3 * Real.exp (-t / 2) :=
+  have hG't : G' t = -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) :=
     unitRieszCesaroTestDeriv_endpoint t
   have hft : f t = 1 := by simp [f]
   have hftc' :
       (∫ s in b..t, f s * G'' s) =
-        -(3 / 64) * t ^ 3 * Real.exp (-t / 2) -
+        -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) -
             f b * G' b + a * f b * G b +
-          a ^ 2 * ∫ s in b..t, f s * G s := by
+          a ^ (2 : ℕ) * ∫ s in b..t, f s * G s := by
     dsimp only [F] at hftc
     rw [hGt, hG't, hft] at hftc
     simp only [mul_zero, sub_zero] at hftc
@@ -204,7 +204,7 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq
     simpa using (intervalIntegral.integral_comp_sub_left
       (a := (0 : ℝ)) (b := t - b) H t).symm
   have hkernel : ∀ s : ℝ,
-      H (t - s) = -(Real.exp (t / 2) / t ^ 3) * (f s * G'' s) := by
+      H (t - s) = -(Real.exp (t / 2) / t ^ (3 : ℕ)) * (f s * G'' s) := by
     intro s
     dsimp only [H, f, G'']
     rw [unitRieszCesaroApertureKernel_eq_secondDeriv]
@@ -215,16 +215,16 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq
   rw [hcv]
   simp_rw [hkernel]
   rw [intervalIntegral.integral_const_mul, hftc']
-  have ht3 : t ^ 3 ≠ 0 := by positivity
+  have ht3 : t ^ (3 : ℕ) ≠ 0 := by positivity
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
     rw [← Real.exp_add, show t / 2 + -t / 2 = (0 : ℝ) by ring, Real.exp_zero]
   dsimp only [f, G, G']
   have hboundary :
-      -(Real.exp (t / 2) / t ^ 3) *
-          (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) = 3 / 64 := by
+      -(Real.exp (t / 2) / t ^ (3 : ℕ)) *
+          (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) = 3 / 64 := by
     calc
       _ = (3 / 64 : ℝ) *
-          (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ 3 / t ^ 3) := by ring
+          (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ (3 : ℕ) / t ^ (3 : ℕ)) := by ring
       _ = _ := by rw [hexp, div_self ht3]; ring
   linear_combination hboundary
 
@@ -233,7 +233,7 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq_escapedJet_sub
     {t : ℝ} (ht : 0 < t) (b a : ℝ) :
     unitRieszCesaroSourceRelativeCompletedReporterSymbol b t a =
       unitRieszCesaroSourceRelativeEscapedJet b t a -
-        Real.exp (t / 2) / t ^ 3 * a ^ 2 *
+        Real.exp (t / 2) / t ^ (3 : ℕ) * a ^ (2 : ℕ) *
           ∫ s in b..t,
             Real.exp (-(a * (t - s))) * unitRieszCesaroTest t s := by
   rw [unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq ht,
@@ -242,10 +242,10 @@ theorem unitRieszCesaroSourceRelativeCompletedReporterSymbol_eq_escapedJet_sub
 /-- Exact two-rate formula for the escaped lower-wall jet. -/
 theorem unitRieszCesaroSourceRelativeEscapedJet_eq (b t a : ℝ) :
     unitRieszCesaroSourceRelativeEscapedJet b t a =
-      (3 / 32 : ℝ) / t ^ 3 *
-        ((3 * b ^ 2 + (1 / 2 - a) * b ^ 3) *
+      (3 / 32 : ℝ) / t ^ (3 : ℕ) *
+        ((3 * b ^ (2 : ℕ) + (1 / 2 - a) * b ^ (3 : ℕ)) *
             Real.exp (-((a + 1 / 2) * (t - b))) -
-          (3 * b ^ 2 + (1 - a) * b ^ 3) *
+          (3 * b ^ (2 : ℕ) + (1 - a) * b ^ (3 : ℕ)) *
             Real.exp (-((a + 1) * (t - b)))) := by
   rw [unitRieszCesaroSourceRelativeEscapedJet,
     unitRieszCesaroTestDeriv, unitRieszCesaroTest]
@@ -261,20 +261,20 @@ theorem unitRieszCesaroSourceRelativeEscapedJet_eq (b t a : ℝ) :
     rw [← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
-  rw [show Real.exp (t / 2) / t ^ 3 * Real.exp (-(a * (t - b))) =
-      (Real.exp (t / 2) * Real.exp (-(a * (t - b)))) / t ^ 3 by ring]
-  rw [show (Real.exp (t / 2) * Real.exp (-(a * (t - b)))) / t ^ 3 *
+  rw [show Real.exp (t / 2) / t ^ (3 : ℕ) * Real.exp (-(a * (t - b))) =
+      (Real.exp (t / 2) * Real.exp (-(a * (t - b)))) / t ^ (3 : ℕ) by ring]
+  rw [show (Real.exp (t / 2) * Real.exp (-(a * (t - b)))) / t ^ (3 : ℕ) *
       ((3 / 32) *
-        (3 * b ^ 2 * (Real.exp (-t + b / 2) - Real.exp (-3 * t / 2 + b)) +
-          b ^ 3 * ((1 / 2) * Real.exp (-t + b / 2) -
+        (3 * b ^ (2 : ℕ) * (Real.exp (-t + b / 2) - Real.exp (-3 * t / 2 + b)) +
+          b ^ (3 : ℕ) * ((1 / 2) * Real.exp (-t + b / 2) -
             Real.exp (-3 * t / 2 + b))) -
         a * ((3 / 32) *
-          (b ^ 3 * (Real.exp (-t + b / 2) - Real.exp (-3 * t / 2 + b))))) =
-      (3 / 32 : ℝ) / t ^ 3 *
-        ((3 * b ^ 2 + (1 / 2 - a) * b ^ 3) *
+          (b ^ (3 : ℕ) * (Real.exp (-t + b / 2) - Real.exp (-3 * t / 2 + b))))) =
+      (3 / 32 : ℝ) / t ^ (3 : ℕ) *
+        ((3 * b ^ (2 : ℕ) + (1 / 2 - a) * b ^ (3 : ℕ)) *
             ((Real.exp (t / 2) * Real.exp (-(a * (t - b)))) *
               Real.exp (-t + b / 2)) -
-          (3 * b ^ 2 + (1 - a) * b ^ 3) *
+          (3 * b ^ (2 : ℕ) + (1 - a) * b ^ (3 : ℕ)) *
             ((Real.exp (t / 2) * Real.exp (-(a * (t - b)))) *
               Real.exp (-3 * t / 2 + b))) by ring]
   rw [hslow, hfast]
@@ -286,10 +286,10 @@ theorem tendsto_unitRieszCesaroSourceRelativeEscapedJet_zero
     Tendsto (fun t : ℝ => unitRieszCesaroSourceRelativeEscapedJet b t a)
       atTop (nhds 0) := by
   rw [show (fun t : ℝ => unitRieszCesaroSourceRelativeEscapedJet b t a) = fun t =>
-      (3 / 32 : ℝ) / t ^ 3 *
-        ((3 * b ^ 2 + (1 / 2 - a) * b ^ 3) *
+      (3 / 32 : ℝ) / t ^ (3 : ℕ) *
+        ((3 * b ^ (2 : ℕ) + (1 / 2 - a) * b ^ (3 : ℕ)) *
             Real.exp (-((a + 1 / 2) * (t - b))) -
-          (3 * b ^ 2 + (1 - a) * b ^ 3) *
+          (3 * b ^ (2 : ℕ) + (1 - a) * b ^ (3 : ℕ)) *
             Real.exp (-((a + 1) * (t - b)))) by
     funext t
     exact unitRieszCesaroSourceRelativeEscapedJet_eq b t a]
@@ -305,13 +305,13 @@ theorem tendsto_unitRieszCesaroSourceRelativeEscapedJet_zero
   have hslow := hdecay (a + 1 / 2) hslowPos
   have hfast := hdecay (a + 1) hfastPos
   have hbracket : Tendsto (fun t : ℝ =>
-      (3 * b ^ 2 + (1 / 2 - a) * b ^ 3) *
+      (3 * b ^ (2 : ℕ) + (1 / 2 - a) * b ^ (3 : ℕ)) *
           Real.exp (-((a + 1 / 2) * (t - b))) -
-        (3 * b ^ 2 + (1 - a) * b ^ 3) *
+        (3 * b ^ (2 : ℕ) + (1 - a) * b ^ (3 : ℕ)) *
           Real.exp (-((a + 1) * (t - b)))) atTop (nhds 0) := by
-    convert hslow.const_mul (3 * b ^ 2 + (1 / 2 - a) * b ^ 3) |>.sub
-      (hfast.const_mul (3 * b ^ 2 + (1 - a) * b ^ 3)) using 1 <;> ring
-  have hinv : Tendsto (fun t : ℝ => (3 / 32 : ℝ) / t ^ 3)
+    convert hslow.const_mul (3 * b ^ (2 : ℕ) + (1 / 2 - a) * b ^ (3 : ℕ)) |>.sub
+      (hfast.const_mul (3 * b ^ (2 : ℕ) + (1 - a) * b ^ (3 : ℕ))) using 1 <;> ring
+  have hinv : Tendsto (fun t : ℝ => (3 / 32 : ℝ) / t ^ (3 : ℕ))
       atTop (nhds 0) := by
     have h := (tendsto_inv_atTop_zero ( 𝕜 := ℝ)).pow 3 |>.const_mul (3 / 32 : ℝ)
     simpa [div_eq_mul_inv] using h

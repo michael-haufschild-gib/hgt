@@ -13,10 +13,10 @@ by the rank-three reflected eighth-curvature route.  Proof is source-only and co
 
 Key improvement over earlier seam enclosure is geometric majorant
 
-`exp (-pi * (n+1)^2) <= q^(3n+1)`,
+`exp (-pi * (n+1)^(2 : ℕ)) <= q^(3n+1)`,
 
 which gives `theta_3(i) < 2173/2000` and hence
-`R(0)^2 < (600/137)^2`.  Decrease of modular discriminant gap bounds absolute derivative of
+`R(0)^(2 : ℕ) < (600/137)^(2 : ℕ)`.  Decrease of modular discriminant gap bounds absolute derivative of
 `Z` by `600/137`; mean-value theorem then gives desired rational clock cap.
 
 This chamber theorem does not assert positivity of rank-three projective drift.  It removes
@@ -38,37 +38,37 @@ theorem thetaCuspSelfDualThetaMass_lt_2173_div_2000 :
   have hqexp : Real.exp (-Real.pi) ≤ q := by
     simpa [q] using exp_neg_pi_rationalEnclosure_upper
   have hterm (n : ℕ) :
-      Real.exp (-Real.pi * (n + 1) ^ 2) ≤ q ^ (3 * n + 1) := by
+      Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)) ≤ q ^ (3 * n + 1) := by
     calc
-      Real.exp (-Real.pi * (n + 1) ^ 2) =
-          Real.exp (-Real.pi) ^ ((n + 1) ^ 2) := by
+      Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)) =
+          Real.exp (-Real.pi) ^ ((n + 1) ^ (2 : ℕ)) := by
             rw [← Real.exp_nat_mul]
             congr 1
             push_cast
             ring
-      _ ≤ q ^ ((n + 1) ^ 2) :=
+      _ ≤ q ^ ((n + 1) ^ (2 : ℕ)) :=
         pow_le_pow_left₀ (Real.exp_nonneg _) hqexp _
       _ ≤ q ^ (3 * n + 1) :=
         pow_le_pow_of_le_one hq0 hq1.le (by
           rcases n with _ | n
           · norm_num
-          · have hself : n + 1 ≤ (n + 1) ^ 2 :=
+          · have hself : n + 1 ≤ (n + 1) ^ (2 : ℕ) :=
               Nat.le_self_pow (by norm_num : 2 ≠ 0) (n + 1)
             nlinarith)
   have hs0 := hasSum_nat_cosKernel₀ 0 (by norm_num : (0 : ℝ) < 1)
   have hs : HasSum (fun n : ℕ =>
-      2 * Real.exp (-Real.pi * (n + 1) ^ 2))
+      2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)))
       (thetaCuspSelfDualThetaMass - 1) := by
     have hs' : HasSum (fun n : ℕ =>
-        2 * Real.exp (-Real.pi * (n + 1) ^ 2 * 1))
+        2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ) * 1))
         (cosKernel (0 : UnitAddCircle) 1 - 1) := by
       simpa using hs0
     rw [← congrFun evenKernel_eq_cosKernel_of_zero (1 : ℝ)] at hs'
     simpa [thetaCuspSelfDualThetaMass] using hs'
-  have hq3_0 : 0 ≤ q ^ 3 := pow_nonneg hq0 _
-  have hq3_1 : q ^ 3 < 1 := pow_lt_one₀ hq0 hq1 (by norm_num)
+  have hq3_0 : 0 ≤ q ^ (3 : ℕ) := pow_nonneg hq0 _
+  have hq3_1 : q ^ (3 : ℕ) < 1 := pow_lt_one₀ hq0 hq1 (by norm_num)
   have hgeom : Summable (fun n : ℕ => 2 * q ^ (3 * n + 1)) := by
-    have hbase : Summable (fun n : ℕ => (2 * q) * (q ^ 3) ^ n) :=
+    have hbase : Summable (fun n : ℕ => (2 * q) * (q ^ (3 : ℕ)) ^ n) :=
       (summable_geometric_of_lt_one hq3_0 hq3_1).mul_left (2 * q)
     convert hbase using 1
     funext n
@@ -80,9 +80,9 @@ theorem thetaCuspSelfDualThetaMass_lt_2173_div_2000 :
     exact hs.summable.tsum_le_tsum (fun n => by
       gcongr
       exact hterm n) hgeom
-  rw [show (∑' n : ℕ, 2 * q ^ (3 * n + 1)) = 2 * q / (1 - q ^ 3) by
+  rw [show (∑' n : ℕ, 2 * q ^ (3 * n + 1)) = 2 * q / (1 - q ^ (3 : ℕ)) by
     rw [show (fun n : ℕ => 2 * q ^ (3 * n + 1)) =
-        fun n => (2 * q) * (q ^ 3) ^ n by
+        fun n => (2 * q) * (q ^ (3 : ℕ)) ^ n by
       funext n
       rw [← pow_mul, pow_add]
       ring,
@@ -91,9 +91,9 @@ theorem thetaCuspSelfDualThetaMass_lt_2173_div_2000 :
   norm_num [q] at hsum ⊢
   linarith
 
-/-- Squared self-dual modular scale is below exact derivative threshold `(600/137)^2`. -/
+/-- Squared self-dual modular scale is below exact derivative threshold `(600/137)^(2 : ℕ)`. -/
 theorem thetaCuspSelfDualModularScale_sq_lt_projectiveClockThreshold :
-    thetaCuspSelfDualModularScale ^ 2 < (360000 / 18769 : ℝ) := by
+    thetaCuspSelfDualModularScale ^ (2 : ℕ) < (360000 / 18769 : ℝ) := by
   have hp : Real.pi < (31416 / 10000 : ℝ) := by
     have h := Real.pi_lt_d4
     norm_num at h ⊢
@@ -105,9 +105,9 @@ theorem thetaCuspSelfDualModularScale_sq_lt_projectiveClockThreshold :
     linarith
   rw [thetaCuspSelfDualModularScale]
   calc
-    (Real.pi * thetaCuspSelfDualThetaMass ^ 4) ^ 2 =
-        Real.pi ^ 2 * thetaCuspSelfDualThetaMass ^ 8 := by ring
-    _ < (31416 / 10000 : ℝ) ^ 2 * (2173 / 2000 : ℝ) ^ 8 := by gcongr
+    (Real.pi * thetaCuspSelfDualThetaMass ^ (4 : ℕ)) ^ (2 : ℕ) =
+        Real.pi ^ (2 : ℕ) * thetaCuspSelfDualThetaMass ^ (8 : ℕ) := by ring
+    _ < (31416 / 10000 : ℝ) ^ (2 : ℕ) * (2173 / 2000 : ℝ) ^ (8 : ℕ) := by gcongr
     _ < (360000 / 18769 : ℝ) := by norm_num
 
 /-- Modular-lambda clock speed is uniformly bounded on positive physical half-line. -/
@@ -119,7 +119,7 @@ theorem norm_deriv_thetaCuspModularODEState_Z_re_le_600_div_137
       (600 / 137 : ℝ) := by
   let R := (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re
   let Z := (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re
-  let A := 1 - Z ^ 2
+  let A := 1 - Z ^ (2 : ℕ)
   have hR : 0 < R := by
     simpa [R] using thetaCuspModularODEState_R_re_pos x
   have hZ := thetaCuspModularODEState_Z_re_mem_Ioo x
@@ -137,13 +137,13 @@ theorem norm_deriv_thetaCuspModularODEState_Z_re_le_600_div_137
     nlinarith [sq_nonneg Z]
   have hgap_pos := thetaCuspModularGapAmplitude_pos x
   have hgap_le :
-      thetaCuspModularGapAmplitude x ≤ thetaCuspSelfDualModularScale ^ 2 := by
+      thetaCuspModularGapAmplitude x ≤ thetaCuspSelfDualModularScale ^ (2 : ℕ) := by
     rcases hx.eq_or_lt with rfl | hxpos
     · rw [thetaCuspModularGapAmplitude_zero]
     · exact (thetaCuspModularGapAmplitude_lt_selfDual_of_pos hxpos).le
-  have hgap_eq : thetaCuspModularGapAmplitude x = R ^ 2 * A := by
+  have hgap_eq : thetaCuspModularGapAmplitude x = R ^ (2 : ℕ) * A := by
     rfl
-  have hd_sq_lt : (R * A) ^ 2 < (360000 / 18769 : ℝ) := by
+  have hd_sq_lt : (R * A) ^ (2 : ℕ) < (360000 / 18769 : ℝ) := by
     have hscale := thetaCuspSelfDualModularScale_sq_lt_projectiveClockThreshold
     rw [hgap_eq] at hgap_pos hgap_le
     nlinarith [mul_nonneg (sq_nonneg R) hA.le]

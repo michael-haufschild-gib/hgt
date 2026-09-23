@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionTerminalCurvatureR
 # Recession of the degree-centered arithmetic source
 
 The degree-centered producer has exact positive shifted-arcsine margins: `1/16` in degree one and
-`monicScale(n)^2 * 5n/16` above degree one.  Its reciprocal-mass dilation has the same homogeneous
+`monicScale(n)^(2 : ℕ) * 5n/16` above degree one.  Its reciprocal-mass dilation has the same homogeneous
 weight as the adaptive source, and coefficientwise canonical admission recession transports these
 margins to the literal rational--Gamma-minus-von-Mangoldt source.
 
@@ -63,7 +63,7 @@ theorem monicOrthoNormSq_normalizedCentralBinom
     {n : ℕ} (hn : n ≠ 0) :
     HTGeometry.monicOrthoNormSq
       GaloisForLFunctions.HTGeometry.normalizedCentralBinom n =
-        Arc.monicScale n ^ 2 / 2 := by
+        Arc.monicScale n ^ (2 : ℕ) / 2 := by
   rw [HTGeometry.monicOrthoNormSq, HTGeometry.momentInner_self,
     monicOrtho_normalizedCentralBinom_eq_arc_amplitude,
     XiShiftedArcsineAdmission.momentFunctional_amplitude_sq hn]
@@ -88,7 +88,7 @@ theorem momentFunctional_degreeCenteredShear_arc_amplitude_of_two_le
     HTGeometry.momentFunctional
       GaloisForLFunctions.HTGeometry.normalizedCentralBinom
       (xiShiftedBoundaryDegreeCenteredShearPolynomial n (Arc.amplitude n)) =
-        Arc.monicScale n ^ 2 * (5 * (n : ℝ)) / 16 := by
+        Arc.monicScale n ^ (2 : ℕ) * (5 * (n : ℝ)) / 16 := by
   rw [← monicOrtho_normalizedCentralBinom_eq_arc_amplitude,
     xiShiftedBoundaryDegreeCenteredShearPolynomial_monicOrtho,
     HTGeometry.momentFunctional_degreeCenteredOrthoSourcePolynomial_eq_jacobiHistory
@@ -116,7 +116,7 @@ theorem momentFunctional_degreeCenteredShear_arc_amplitude_pos
 /-- Degree-centered shear is quadratic in amplitude. -/
 theorem degreeCenteredShear_smul (c : ℝ) (n : ℕ) (Q : Polynomial ℝ) :
     xiShiftedBoundaryDegreeCenteredShearPolynomial n (c • Q) =
-      c ^ 2 • xiShiftedBoundaryDegreeCenteredShearPolynomial n Q := by
+      c ^ (2 : ℕ) • xiShiftedBoundaryDegreeCenteredShearPolynomial n Q := by
   simp only [xiShiftedBoundaryDegreeCenteredShearPolynomial,
     xiShiftedBoundaryDegreeCenteredEuler, Polynomial.smul_eq_C_mul,
     Polynomial.derivative_C_mul]
@@ -126,7 +126,7 @@ theorem degreeCenteredShear_smul (c : ℝ) (n : ℕ) (Q : Polynomial ℝ) :
 /-- Coordinate dilation covariance of degree-centered shear. -/
 theorem degreeCenteredShear_comp_C_mul_X
     {d : ℝ} (n : ℕ) (Q : Polynomial ℝ) :
-    d ^ 2 • xiShiftedBoundaryDegreeCenteredShearPolynomial n
+    d ^ (2 : ℕ) • xiShiftedBoundaryDegreeCenteredShearPolynomial n
         (Q.comp (Polynomial.C d * X)) =
       (xiShiftedBoundaryDegreeCenteredShearPolynomial n Q).comp
         (Polynomial.C d * X) := by
@@ -143,15 +143,15 @@ theorem degreeCenteredShear_comp_C_mul_X
 theorem degreeCenteredShear_sourceCoordinateDilation
     {w : ℝ} (hw : w ≠ 0) (n : ℕ) (Q : Polynomial ℝ) :
     xiShiftedBoundaryDegreeCenteredShearPolynomial n
-        ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ 2) * X)) =
+        ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ (2 : ℕ)) * X)) =
       (w ^ (4 * n + 4))⁻¹ •
         (xiShiftedBoundaryDegreeCenteredShearPolynomial n Q).comp
-          (Polynomial.C (w ^ 2) * X) := by
-  have hw2 : w ^ 2 ≠ 0 := pow_ne_zero _ hw
+          (Polynomial.C (w ^ (2 : ℕ)) * X) := by
+  have hw2 : w ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hw
   rw [degreeCenteredShear_smul]
-  have hcomp := degreeCenteredShear_comp_C_mul_X (d := w ^ 2) n Q
-  have hscalar : (w ^ (2 * n))⁻¹ ^ 2 =
-      (w ^ (4 * n + 4))⁻¹ * (w ^ 2) ^ 2 := by
+  have hcomp := degreeCenteredShear_comp_C_mul_X (d := w ^ (2 : ℕ)) n Q
+  have hscalar : (w ^ (2 * n))⁻¹ ^ (2 : ℕ) =
+      (w ^ (4 * n + 4))⁻¹ * (w ^ (2 : ℕ)) ^ (2 : ℕ) := by
     field_simp [hw]
     ring
   rw [hscalar, mul_smul, hcomp]
@@ -161,14 +161,14 @@ theorem scaled_degreeCenteredArithmeticSource_sourceCoordinateDilation
     {w : ℝ} (hw : 1 < w) (n : ℕ) (Q : Polynomial ℝ) :
     w ^ (4 * n + 5) / Real.log w *
         xiShiftedDegreeCenteredCompletedArithmeticSource w n
-          ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ 2) * X)) =
+          ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ (2 : ℕ)) * X)) =
       HTGeometry.momentFunctional (xiShiftedFarRightNormalizedMoment w)
         (xiShiftedBoundaryDegreeCenteredShearPolynomial n Q) := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
   have hlog : Real.log w ≠ 0 := ne_of_gt (Real.log_pos hw)
   have hsource := xiShiftedDegreeCenteredCompletedArithmeticSource_eq_momentFunctional
     (by linarith : 1 / 2 < w) n
-      ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ 2) * X))
+      ((w ^ (2 * n))⁻¹ • Q.comp (Polynomial.C (w ^ (2 : ℕ)) * X))
   rw [degreeCenteredShear_sourceCoordinateDilation hw0 n Q,
     HTGeometry.momentFunctional_smul] at hsource
   unfold xiShiftedRealMomentSequence at hsource
@@ -183,8 +183,8 @@ theorem tendsto_X_mul_sq_coeff
     {α : Type*} {l : Filter α} {F : α → Polynomial ℝ} {P : Polynomial ℝ}
     (hcoeff : ∀ k, Tendsto (fun x => (F x).coeff k) l (nhds (P.coeff k)))
     (k : ℕ) :
-    Tendsto (fun x => (((X * F x) ^ 2).coeff k)) l
-      (nhds (((X * P) ^ 2).coeff k)) := by
+    Tendsto (fun x => (((X * F x) ^ (2 : ℕ)).coeff k)) l
+      (nhds (((X * P) ^ (2 : ℕ)).coeff k)) := by
   apply tendsto_sq_coeff (P := X * P)
   intro r
   cases r with
@@ -208,14 +208,14 @@ theorem tendsto_degreeCenteredShear_coeff
       (xiShiftedBoundaryDegreeCenteredShearPolynomial n (F x)).coeff k) =
       (fun x =>
         (xiShiftedBoundaryAdaptiveShearPolynomial (F x)).coeff k -
-          (n + 1 : ℝ) * (((X * F x) ^ 2).coeff k)) by
+          (n + 1 : ℝ) * (((X * F x) ^ (2 : ℕ)).coeff k)) by
       funext x
       rw [xiShiftedBoundaryDegreeCenteredShearPolynomial_eq_adaptive_sub_square,
         Polynomial.coeff_sub, Polynomial.coeff_smul]
       simp only [smul_eq_mul]]
   rw [show (xiShiftedBoundaryDegreeCenteredShearPolynomial n P).coeff k =
       (xiShiftedBoundaryAdaptiveShearPolynomial P).coeff k -
-        (n + 1 : ℝ) * (((X * P) ^ 2).coeff k) by
+        (n + 1 : ℝ) * (((X * P) ^ (2 : ℕ)).coeff k) by
       rw [xiShiftedBoundaryDegreeCenteredShearPolynomial_eq_adaptive_sub_square,
         Polynomial.coeff_sub, Polynomial.coeff_smul]
       simp only [smul_eq_mul]]
@@ -284,7 +284,7 @@ theorem tendsto_scaled_canonicalDegreeCenteredArithmeticSource
 
 theorem tendsto_scaled_canonicalDegreeCenteredArithmeticSource_one :
     Tendsto
-      (fun w : ℝ => w ^ 9 / Real.log w *
+      (fun w : ℝ => w ^ (9 : ℕ) / Real.log w *
         xiShiftedDegreeCenteredCompletedArithmeticSource w 1
           (sourceCoordinateAdmission w 1))
       atTop (nhds (1 / 16 : ℝ)) := by
@@ -299,7 +299,7 @@ theorem tendsto_scaled_canonicalDegreeCenteredArithmeticSource_of_two_le
       (fun w : ℝ => w ^ (4 * n + 5) / Real.log w *
         xiShiftedDegreeCenteredCompletedArithmeticSource w n
           (sourceCoordinateAdmission w n))
-      atTop (nhds (Arc.monicScale n ^ 2 * (5 * (n : ℝ)) / 16)) := by
+      atTop (nhds (Arc.monicScale n ^ (2 : ℕ) * (5 * (n : ℝ)) / 16)) := by
   have h := tendsto_scaled_canonicalDegreeCenteredArithmeticSource
     (n := n) (by omega)
   rw [momentFunctional_degreeCenteredShear_arc_amplitude_of_two_le hn] at h
@@ -369,7 +369,7 @@ theorem tendsto_dimensionlessAdmission_nextCoeff
 theorem sourceCoordinateAdmission_nextCoeff
     {w : ℝ} (hw : w ≠ 0) {n : ℕ} (hn : n ≠ 0) :
     (sourceCoordinateAdmission w n).nextCoeff =
-      (w ^ 2)⁻¹ * (dimensionlessAdmission w n).nextCoeff := by
+      (w ^ (2 : ℕ))⁻¹ * (dimensionlessAdmission w n).nextCoeff := by
   have hnpos := Nat.pos_of_ne_zero hn
   have hsourceDeg : (sourceCoordinateAdmission w n).natDegree = n :=
     sourceCoordinateAdmission_natDegree hw hn
@@ -434,7 +434,7 @@ theorem tendsto_scaled_canonicalTraceCoupledDegreeCenteredArithmeticSource
 
 theorem tendsto_scaled_canonicalTraceCoupledDegreeCenteredArithmeticSource_one :
     Tendsto
-      (fun w : ℝ => w ^ 11 / Real.log w *
+      (fun w : ℝ => w ^ (11 : ℕ) / Real.log w *
         xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource w 1
           (sourceCoordinateAdmission w 1))
       atTop (nhds (1 / 32 : ℝ)) := by
@@ -450,7 +450,7 @@ theorem tendsto_scaled_canonicalTraceCoupledDegreeCenteredArithmeticSource_of_tw
       (fun w : ℝ => w ^ (4 * n + 7) / Real.log w *
         xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource w n
           (sourceCoordinateAdmission w n))
-      atTop (nhds (Arc.monicScale n ^ 2 * (5 * (n : ℝ) ^ 2) / 32)) := by
+      atTop (nhds (Arc.monicScale n ^ (2 : ℕ) * (5 * (n : ℝ) ^ (2 : ℕ)) / 32)) := by
   have h := tendsto_scaled_canonicalTraceCoupledDegreeCenteredArithmeticSource
     (n := n) (by omega)
   rw [momentFunctional_degreeCenteredShear_arc_amplitude_of_two_le hn] at h

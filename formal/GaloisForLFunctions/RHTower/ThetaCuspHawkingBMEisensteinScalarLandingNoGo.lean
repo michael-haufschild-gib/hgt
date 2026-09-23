@@ -329,7 +329,7 @@ theorem d4BM_directScalarLanding_from_zeroCusp_not_forced :
 def d4BMClassicalCompletedDiagonalRSZValue
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   reflectedCompletedLambda (2 * P.s + Q.s - 1) *
-    reflectedCompletedLambda Q.s ^ 2 *
+    reflectedCompletedLambda Q.s ^ (2 : ℕ) *
     reflectedCompletedLambda (2 * P.s - Q.s)
 
 private theorem d4BM_completedXiFactor_nine_halves_eq :
@@ -339,7 +339,7 @@ private theorem d4BM_completedXiFactor_nine_halves_eq :
   have harg : (1 / 2 : ℂ) + (-Complex.I * (9 / 2 : ℂ)) * Complex.I = 5 := by
     apply Complex.ext <;> norm_num
   rw [harg, xi_eq_mul_completedRiemannZeta (by norm_num) (by norm_num),
-    completedRiemannZeta_eq_Gammaℝ_mul (by norm_num)]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by norm_num)]
   unfold reflectedCompletedLambda
   ring
 
@@ -350,7 +350,7 @@ private theorem d4BM_completedXiFactor_three_halves_eq :
   have harg : (1 / 2 : ℂ) + (-Complex.I * (3 / 2 : ℂ)) * Complex.I = 2 := by
     apply Complex.ext <;> norm_num
   rw [harg, xi_eq_mul_completedRiemannZeta (by norm_num) (by norm_num),
-    completedRiemannZeta_eq_Gammaℝ_mul (by norm_num)]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by norm_num)]
   unfold reflectedCompletedLambda
   ring
 

@@ -190,14 +190,14 @@ theorem map_thermodynamicBridgeEdge
     omega
 
 theorem nestedInfiniteEdgeWeight_even_index (j : ℕ) :
-    nestedInfiniteEdgeWeight (2 * j) = 1 / (((j + 1 : ℕ) : ℝ) ^ 2) := by
+    nestedInfiniteEdgeWeight (2 * j) = 1 / (((j + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   unfold nestedInfiniteEdgeWeight
   rw [if_pos (even_two_mul j)]
   congr 3
   omega
 
 theorem nestedInfiniteEdgeWeight_odd_index (j : ℕ) :
-    nestedInfiniteEdgeWeight (2 * j + 1) = 1 / (((j + 2 : ℕ) : ℝ) ^ 4) := by
+    nestedInfiniteEdgeWeight (2 * j + 1) = 1 / (((j + 2 : ℕ) : ℝ) ^ (4 : ℕ)) := by
   unfold nestedInfiniteEdgeWeight
   have hodd : ¬Even (2 * j + 1) := by simp
   rw [if_neg hodd]
@@ -207,7 +207,7 @@ theorem nestedInfiniteEdgeWeight_odd_index (j : ℕ) :
 @[simp] theorem thermodynamicPairTailPhaseWeight_matching
     (N K : ℕ) (j : Fin (N + 2)) :
     thermodynamicPairTailPhaseWeight N K (nestedMatchingEdge j) =
-      if 4 * K ≤ 2 * j.val then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0 := by
+      if 4 * K ≤ 2 * j.val then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0 := by
   unfold thermodynamicPairTailPhaseWeight
   rw [map_thermodynamicMatchingEdge, pathTailPhaseWeight_pathEdge]
   simp only [thermodynamicMatchingPathEdgeIndex]
@@ -219,7 +219,7 @@ theorem nestedInfiniteEdgeWeight_odd_index (j : ℕ) :
 @[simp] theorem thermodynamicPairTailPhaseWeight_bridge
     (N K : ℕ) (j : Fin ((N + 2) - 1)) :
     thermodynamicPairTailPhaseWeight N K (nestedBridgeEdge j) =
-      if 4 * K ≤ 2 * j.val + 1 then 1 / (((j.val + 2 : ℕ) : ℝ) ^ 4) else 0 := by
+      if 4 * K ≤ 2 * j.val + 1 then 1 / (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) else 0 := by
   unfold thermodynamicPairTailPhaseWeight
   rw [map_thermodynamicBridgeEdge, pathTailPhaseWeight_pathEdge]
   simp only [thermodynamicBridgePathEdgeIndex]
@@ -291,7 +291,7 @@ theorem sum_thermodynamicPairTail_matching_firstEndpoint
     (S : Finset (Fin (N + 2))) (hSblock : S ⊆ inverseSquareBlock hKL) :
     (∑ j : Fin (N + 2), if j ∈ S then
         |thermodynamicPairTailPhaseWeight N K (nestedMatchingEdge j)| else 0) =
-      ∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
+      ∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   rw [← Finset.sum_filter]
   apply Finset.sum_congr
   · ext j
@@ -308,7 +308,7 @@ theorem sum_thermodynamicPairTail_bridge_firstEndpoint_le_Ioc
     (S : Finset (Fin (N + 2))) (hSblock : S ⊆ inverseSquareBlock hKL) :
     (∑ j : Fin ((N + 2) - 1), if nestedBridgeRight j ∈ S then
         |thermodynamicPairTailPhaseWeight N K (nestedBridgeEdge j)| else 0) ≤
-      ∑ n ∈ Finset.Ioc (4 * K) (N + 2), (1 : ℝ) / (n : ℝ) ^ 4 := by
+      ∑ n ∈ Finset.Ioc (4 * K) (N + 2), (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) := by
   rw [← sum_bridge_tail_indicator_eq_Ioc (N + 2) (4 * K) (by omega)]
   apply Finset.sum_le_sum
   intro j hj
@@ -328,17 +328,17 @@ theorem sum_thermodynamicPairTail_bridge_firstEndpoint_le_inv_cube
     (S : Finset (Fin (N + 2))) (hSblock : S ⊆ inverseSquareBlock hKL) :
     (∑ j : Fin ((N + 2) - 1), if nestedBridgeRight j ∈ S then
         |thermodynamicPairTailPhaseWeight N K (nestedBridgeEdge j)| else 0) ≤
-      1 / ((4 * K : ℕ) : ℝ) ^ 3 := by
+      1 / ((4 * K : ℕ) : ℝ) ^ (3 : ℕ) := by
   have hbridge := sum_thermodynamicPairTail_bridge_firstEndpoint_le_Ioc
     hK hKL S hSblock
   have htail := sum_inv_fourth_Ioc_le (4 * K) (by omega) (N + 2) (by omega)
-  have hnonneg : 0 ≤ 1 / ((N + 2 : ℕ) : ℝ) ^ 3 := by positivity
+  have hnonneg : 0 ≤ 1 / ((N + 2 : ℕ) : ℝ) ^ (3 : ℕ) := by positivity
   linarith
 
 theorem thermodynamicPairTailCrossingWeight_firstEndpoint_lower
     {N K : ℕ} (hKL : 8 * K ≤ N + 2)
     (S : Finset (Fin (N + 2))) (hSblock : S ⊆ inverseSquareBlock hKL) :
-    (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) ≤
+    (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) ≤
       thermodynamicPairTailCrossingWeight N K (firstEndpointSites S) := by
   rw [thermodynamicPairTailCrossingWeight_firstEndpoint_expand,
     sum_thermodynamicPairTail_matching_firstEndpoint hKL S hSblock]
@@ -352,13 +352,13 @@ theorem thermodynamicPairTailCrossingWeight_firstEndpoint_upper
     {N K : ℕ} (hK : 8 ≤ K) (hKL : 8 * K ≤ N + 2)
     (S : Finset (Fin (N + 2))) (hSblock : S ⊆ inverseSquareBlock hKL) :
     thermodynamicPairTailCrossingWeight N K (firstEndpointSites S) ≤
-      (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) +
-        1 / ((4 * K : ℕ) : ℝ) ^ 3 := by
+      (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) +
+        1 / ((4 * K : ℕ) : ℝ) ^ (3 : ℕ) := by
   rw [thermodynamicPairTailCrossingWeight_firstEndpoint_expand,
     sum_thermodynamicPairTail_matching_firstEndpoint hKL S hSblock]
   simpa [add_comm] using add_le_add_left
     (sum_thermodynamicPairTail_bridge_firstEndpoint_le_inv_cube hK hKL S hSblock)
-    (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2))
+    (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
 
 /-- Tree orientation chooses four configurations whose tail-center mixed energy is the full
 positive crossing weight. -/
@@ -386,7 +386,7 @@ theorem time_mul_thermodynamicPairTailCrossingWeight_lower
   have hmass := thermodynamicPairTailCrossingWeight_firstEndpoint_lower hKL S hSblock
   have hmul := mul_le_mul_of_nonneg_left hmass ht0
   have hmatch :
-      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) =
+      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
         ∑ j ∈ S, inverseSquarePhaseWeight t j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -408,7 +408,7 @@ theorem time_mul_thermodynamicPairTailCrossingWeight_upper
     hK hKL S hSblock
   have hmul := mul_le_mul_of_nonneg_left hmass ht0
   have hmatch :
-      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) =
+      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
         ∑ j ∈ S, inverseSquarePhaseWeight t j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl

@@ -26,7 +26,7 @@ noncomputable section
 
 /-- The caustic symbol at a complex height. -/
 def xiMassCausticSymbolC (a : ℝ) (τ w : ℂ) : ℂ :=
-  4 * (a : ℂ) ^ 4 - (a : ℂ) ^ 2 * w ^ 2 / (τ ^ 2 + w ^ 2)
+  4 * (a : ℂ) ^ (4 : ℕ) - (a : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ) / (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
 
 theorem xiMassCausticSymbolC_ofReal (a sigma u h : ℝ) :
     xiMassCausticSymbolC a ((sigma : ℂ) + (u : ℂ) * Complex.I) (h : ℂ)
@@ -34,36 +34,36 @@ theorem xiMassCausticSymbolC_ofReal (a sigma u h : ℝ) :
   rw [xiMassCausticSymbolC, xiMassCausticSymbol, xiMassSpacelikePropagationArgument_eq]
 
 /-- The symbol is `4a⁴` minus the square of the transport rate `α = a·w/Z`. -/
-theorem xiMassCausticSymbolC_eq_sub_sq {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem xiMassCausticSymbolC_eq_sub_sq {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     xiMassCausticSymbolC a τ w
-      = 4 * (a : ℂ) ^ 4 - ((a : ℂ) * w / xiMassHeightRadius τ w) ^ 2 := by
-  have hZ2 : xiMassHeightRadius τ w ^ 2 = τ ^ 2 + w ^ 2 := xiMassHeightRadius_sq hw
+      = 4 * (a : ℂ) ^ (4 : ℕ) - ((a : ℂ) * w / xiMassHeightRadius τ w) ^ (2 : ℕ) := by
+  have hZ2 : xiMassHeightRadius τ w ^ (2 : ℕ) = τ ^ (2 : ℕ) + w ^ (2 : ℕ) := xiMassHeightRadius_sq hw
   rw [xiMassCausticSymbolC, div_pow, mul_pow, hZ2]
 
 /-- **The `K₁` diagonal of the caustic combination.**  The symbol multiplies `B`; everything else
 carries a transport factor or a coefficient derivative. -/
-theorem xiCaustic_K1_coefficient {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem xiCaustic_K1_coefficient {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (A A' B B' B₁' : ℂ) :
-    4 * (a : ℂ) ^ 4 * B
+    4 * (a : ℂ) ^ (4 : ℕ) * B
         - (B₁'
           - (a : ℂ) * w / xiMassHeightRadius τ w
               * (A' - (a : ℂ) * w / xiMassHeightRadius τ w * B)
-          - w / xiMassHeightRadius τ w ^ 2
+          - w / xiMassHeightRadius τ w ^ (2 : ℕ)
               * (B' - (a : ℂ) * w / xiMassHeightRadius τ w * A
-                - w / xiMassHeightRadius τ w ^ 2 * B))
+                - w / xiMassHeightRadius τ w ^ (2 : ℕ) * B))
       = xiMassCausticSymbolC a τ w * B
         + ((a : ℂ) * w / xiMassHeightRadius τ w * A' - B₁'
-          + w / xiMassHeightRadius τ w ^ 2
+          + w / xiMassHeightRadius τ w ^ (2 : ℕ)
               * (B' - (a : ℂ) * w / xiMassHeightRadius τ w * A
-                - w / xiMassHeightRadius τ w ^ 2 * B)) := by
+                - w / xiMassHeightRadius τ w ^ (2 : ℕ) * B)) := by
   rw [xiMassCausticSymbolC_eq_sub_sq hw]
   ring
 
 /-- **The `K₀` diagonal of the caustic combination.**  No symbol appears: the whole coefficient is a
 transport term against the `K₁` slot plus a coefficient derivative. -/
 theorem xiCaustic_K0_coefficient {a : ℝ} {τ w : ℂ} (A A₁' B₁' : ℂ) :
-    4 * (a : ℂ) ^ 4 * A - (A₁' - (a : ℂ) * w / xiMassHeightRadius τ w * B₁')
-      = 4 * (a : ℂ) ^ 4 * A - A₁' + (a : ℂ) * w / xiMassHeightRadius τ w * B₁' := by
+    4 * (a : ℂ) ^ (4 : ℕ) * A - (A₁' - (a : ℂ) * w / xiMassHeightRadius τ w * B₁')
+      = 4 * (a : ℂ) ^ (4 : ℕ) * A - A₁' + (a : ℂ) * w / xiMassHeightRadius τ w * B₁' := by
   ring
 
 end

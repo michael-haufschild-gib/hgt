@@ -5,11 +5,11 @@ import GaloisForLFunctions.RHTower.ThetaCuspTwoAtomScalePolynomials
 
 Along a reflected ordered pair, the scale product `a=p*r` is constant and the
 scale sum `w=p*exp(2*t)+r*exp(-2*t)` satisfies `w''=4*w` and
-`(w')^2=4*(w^2-4*a)`. The literal theta source product is
+`(w')^(2 : ℕ)=4*(w^(2 : ℕ)-4*a)`. The literal theta source product is
 `4*a*exp(x-w)*(4*a+9-6*w)`.
 
 Conjugating two derivatives by `exp(-w)` gives the polynomial operator
-`S_a P = -4*((w^2-4*a)*(P''-2*P'+P)+w*(P'-P))`.
+`S_a P = -4*((w^(2 : ℕ)-4*a)*(P''-2*P'+P)+w*(P'-P))`.
 Its iterates generate every even reflection derivative of the original atom
 pair. The source identification retains the actual squared frequencies and both
 atom indices. This supplies the higher moment polynomials for the finite affine
@@ -29,7 +29,7 @@ def thetaPairRadialProfile (p r : ℝ) (P : ℝ[X]) (t : ℝ) : ℝ :=
 
 /-- The exact operator for one signed even reflection-derivative step. -/
 def thetaPairRadialEvenStep (a : ℝ) (P : ℝ[X]) : ℝ[X] :=
-  -(C 4*((X^2-C (4*a))*(P.derivative.derivative-C 2*P.derivative+P)+
+  -(C 4*((X^(2 : ℕ)-C (4*a))*(P.derivative.derivative-C 2*P.derivative+P)+
     X*(P.derivative-P)))
 
 private theorem radialSum_deriv (p r t : ℝ) :
@@ -47,17 +47,17 @@ private theorem radialDifference_deriv (p r t : ℝ) :
   exact (hp.sub hr).congr_deriv (by ring)
 
 private theorem radial_invariant (p r t : ℝ) :
-    radialDifference p r t^2 = radialSum p r t^2-4*(p*r) := by
+    radialDifference p r t^(2 : ℕ) = radialSum p r t^(2 : ℕ)-4*(p*r) := by
   have he : Real.exp (2*t)*Real.exp (-2*t) = 1 := by
     rw [← Real.exp_add]
     convert Real.exp_zero using 1
     ring
   calc
-    radialDifference p r t^2 = radialSum p r t^2-
+    radialDifference p r t^(2 : ℕ) = radialSum p r t^(2 : ℕ)-
         4*(p*r)*(Real.exp (2*t)*Real.exp (-2*t)) := by
       unfold radialDifference radialSum
       ring
-    _ = radialSum p r t^2-4*(p*r) := by rw [he]; ring
+    _ = radialSum p r t^(2 : ℕ)-4*(p*r) := by rw [he]; ring
 
 private theorem radialProfile_deriv (p r : ℝ) (P : ℝ[X]) (t : ℝ) :
     HasDerivAt (thetaPairRadialProfile p r P)
@@ -112,7 +112,7 @@ theorem thetaPairRadialProfile_even (p r : ℝ) (k : ℕ) :
 private theorem sourceTerm_radial_zero (n : ℕ) (y : ℝ) :
     thetaCuspSourceTerm y n =
       Real.exp (y/2-thetaCuspSingleAtomReflectionScale n y)*
-        (4*thetaCuspSingleAtomReflectionScale n y^2-
+        (4*thetaCuspSingleAtomReflectionScale n y^(2 : ℕ)-
           6*thetaCuspSingleAtomReflectionScale n y) := by
   simpa only [iteratedDeriv_zero,thetaCuspFirstAtomJetPolynomial,
     eval_sub,eval_mul,eval_C,eval_pow,eval_X] using
@@ -155,8 +155,8 @@ theorem thetaCuspAtomPair_eq_radialProfile (n m : ℕ) (x : ℝ) :
       _ = p*r*(Real.exp (2*t)*Real.exp (-2*t)) := by ring
       _ = p*r := by rw [he]; ring
   have hseed :
-      (4*(p*Real.exp (2*t))^2-6*(p*Real.exp (2*t)))*
-        (4*(r*Real.exp (-2*t))^2-6*(r*Real.exp (-2*t))) =
+      (4*(p*Real.exp (2*t))^(2 : ℕ)-6*(p*Real.exp (2*t)))*
+        (4*(r*Real.exp (-2*t))^(2 : ℕ)-6*(r*Real.exp (-2*t))) =
       4*(p*r)*(4*(p*r)+9-6*(p*Real.exp (2*t)+r*Real.exp (-2*t))) := by
     calc
       _ = 4*((p*Real.exp (2*t))*(r*Real.exp (-2*t)))*
@@ -170,17 +170,17 @@ theorem thetaCuspAtomPair_eq_radialProfile (n m : ℕ) (x : ℝ) :
     congr 1
     ring
   change Real.exp ((x+t)/2-p*Real.exp (2*t))*
-      (4*(p*Real.exp (2*t))^2-6*(p*Real.exp (2*t)))*
+      (4*(p*Real.exp (2*t))^(2 : ℕ)-6*(p*Real.exp (2*t)))*
       (Real.exp ((x-t)/2-r*Real.exp (-2*t))*
-        (4*(r*Real.exp (-2*t))^2-6*(r*Real.exp (-2*t)))) = _
+        (4*(r*Real.exp (-2*t))^(2 : ℕ)-6*(r*Real.exp (-2*t)))) = _
   rw [show Real.exp ((x+t)/2-p*Real.exp (2*t))*
-      (4*(p*Real.exp (2*t))^2-6*(p*Real.exp (2*t)))*
+      (4*(p*Real.exp (2*t))^(2 : ℕ)-6*(p*Real.exp (2*t)))*
       (Real.exp ((x-t)/2-r*Real.exp (-2*t))*
-        (4*(r*Real.exp (-2*t))^2-6*(r*Real.exp (-2*t)))) =
+        (4*(r*Real.exp (-2*t))^(2 : ℕ)-6*(r*Real.exp (-2*t)))) =
       (Real.exp ((x+t)/2-p*Real.exp (2*t))*
         Real.exp ((x-t)/2-r*Real.exp (-2*t)))*
-      ((4*(p*Real.exp (2*t))^2-6*(p*Real.exp (2*t)))*
-        (4*(r*Real.exp (-2*t))^2-6*(r*Real.exp (-2*t)))) by ring]
+      ((4*(p*Real.exp (2*t))^(2 : ℕ)-6*(p*Real.exp (2*t)))*
+        (4*(r*Real.exp (-2*t))^(2 : ℕ)-6*(r*Real.exp (-2*t)))) by ring]
   rw [he,hseed]
   simp only [thetaPairRadialProfile,thetaPairRadialEvenPolynomial,radialSum,
     eval_sub,eval_mul,eval_C,eval_X]

@@ -16,17 +16,17 @@ namespace RHTower
 /-- Reparametrize an eighth-power asymptotic by `X = λ²`. -/
 theorem tendsto_div_pow_four_comp_sqrt_of_div_pow_eight
     {f : ℝ → ℝ} {L : ℝ}
-    (h : Tendsto (fun lam : ℝ => f lam / lam ^ 8) atTop (nhds L)) :
-    Tendsto (fun X : ℝ => f (Real.sqrt X) / X ^ 4) atTop (nhds L) := by
+    (h : Tendsto (fun lam : ℝ => f lam / lam ^ (8 : ℕ)) atTop (nhds L)) :
+    Tendsto (fun X : ℝ => f (Real.sqrt X) / X ^ (4 : ℕ)) atTop (nhds L) := by
   have hs := h.comp Real.tendsto_sqrt_atTop
   refine hs.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with X hX
-  have hsqrt : Real.sqrt X ^ 2 = X := Real.sq_sqrt hX
-  have hpow : Real.sqrt X ^ 8 = X ^ 4 := by
+  have hsqrt : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hX
+  have hpow : Real.sqrt X ^ (8 : ℕ) = X ^ (4 : ℕ) := by
     calc
-      Real.sqrt X ^ 8 = (Real.sqrt X ^ 2) ^ 4 := by ring
-      _ = X ^ 4 := by rw [hsqrt]
-  change f (Real.sqrt X) / Real.sqrt X ^ 8 = f (Real.sqrt X) / X ^ 4
+      Real.sqrt X ^ (8 : ℕ) = (Real.sqrt X ^ (2 : ℕ)) ^ (4 : ℕ) := by ring
+      _ = X ^ (4 : ℕ) := by rw [hsqrt]
+  change f (Real.sqrt X) / Real.sqrt X ^ (8 : ℕ) = f (Real.sqrt X) / X ^ (4 : ℕ)
   rw [hpow]
 
 /-- Exact adjacent-rung prime-scale law for the infinite-dimensional constrained Fuchs roots:
@@ -37,8 +37,8 @@ theorem ccm_fuchsModel_ladder_adjacent_primeScale_tendsto
     (hgrow2 : ∀ j, A (k + 2) ≤ C ^ j * A (j + (k + 2)))
     (hgrow3 : ∀ j, A (k + 3) ≤ C ^ j * A (j + (k + 3)))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 2 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun X : ℝ =>
@@ -47,7 +47,7 @@ theorem ccm_fuchsModel_ladder_adjacent_primeScale_tendsto
           (ℓ (Real.sqrt X)) (k + 1) /
         depthSecularRoot
           (fun j => fuchsRate (A j) (4 * j) (Real.sqrt X))
-          (ℓ (Real.sqrt X)) k) / X ^ 4)
+          (ℓ (Real.sqrt X)) k) / X ^ (4 : ℕ))
       atTop (nhds ((constrainedProlateHermiteTheta (k + 1) /
         constrainedProlateHermiteTheta k) * (A (k + 2) / A (k + 1)))) := by
   exact tendsto_div_pow_four_comp_sqrt_of_div_pow_eight

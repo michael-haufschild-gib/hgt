@@ -24,10 +24,10 @@ def channelSource (k : ℝ) (R : ℝ → ℝ) (u : ℝ) : ℝ := Real.sqrt (Real
 theorem abs_halfLineExpPrimitive_channelSource_le {s c k : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 2 ≤ k)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∀ t : ℝ, 0 ≤ t → |HTGeometry.halfLineExpPrimitive (channelSource k R) t|
-      ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)) := by
+      ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ))) := by
   have hk1 : (1 : ℝ) ≤ k := by linarith
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt
   refine HTGeometry.abs_halfLineExpPrimitive_le_of_radial
@@ -58,11 +58,11 @@ the source's square mass. -/
 theorem abs_integral_cosh_mul_autocorrelation_channelSource_le {s c k H : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 2 ≤ k) (hH : 0 ≤ H)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hR2 : IntegrableOn (fun u : ℝ => channelSource k R u ^ 2) (Ioi 0))
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hR2 : IntegrableOn (fun u : ℝ => channelSource k R u ^ (2 : ℕ)) (Ioi 0))
     (hR2h : ∀ h : ℝ, 0 ≤ h →
-      IntegrableOn (fun u : ℝ => channelSource k R (u + h) ^ 2) (Ioi 0))
+      IntegrableOn (fun u : ℝ => channelSource k R (u + h) ^ (2 : ℕ)) (Ioi 0))
     (hprodh : ∀ h : ℝ, 0 ≤ h →
       IntegrableOn (fun u : ℝ => channelSource k R (u + h) * channelSource k R u) (Ioi 0))
     (hlocal : ∀ a b : ℝ, IntervalIntegrable
@@ -82,9 +82,9 @@ theorem abs_integral_cosh_mul_autocorrelation_channelSource_le {s c k H : ℝ} {
       Real.exp (-h / 2) * HTGeometry.halfLineAutocorrelation (channelSource k R) h) (Ioc 0 H)) :
     |∫ h in Ioc (0 : ℝ) H,
         2 * Real.cosh (h / 2) * HTGeometry.halfLineAutocorrelation (channelSource k R) h|
-      ≤ 2 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)))
+      ≤ 2 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ))))
           * (∫ u in Ioi (0 : ℝ), |Real.exp (-u / 2) * channelSource k R u|)
-        + 2 * ∫ u in Ioi (0 : ℝ), channelSource k R u ^ 2 :=
+        + 2 * ∫ u in Ioi (0 : ℝ), channelSource k R u ^ (2 : ℕ) :=
   HTGeometry.abs_integral_cosh_mul_autocorrelation_source_le (channelSource k R) hH
     (abs_halfLineExpPrimitive_channelSource_le (DDR := DDR) hs0 hs1 hc hk hR hDR hode)
     hR2 hR2h hprodh hlocal hprod hG hT hintg hintd
@@ -96,8 +96,8 @@ the point. -/
 theorem tsum_abs_halfLineExpPrimitive_channelSource_le {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∀ t : ℝ, 0 ≤ t →
       ∑' j : ℕ, |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t|
         ≤ 4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c) := by
@@ -110,7 +110,7 @@ theorem tsum_abs_halfLineExpPrimitive_channelSource_le {s c : ℝ} {R DR DDR : �
   have hB : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
   have hterm : ∀ j : ℕ,
       |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t|
-        ≤ B * (1 / (2 + (j : ℝ)) ^ 2) := by
+        ≤ B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) := by
     intro j
     have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     have hk : (2 : ℝ) ≤ 2 + (j : ℝ) := by linarith
@@ -124,14 +124,14 @@ theorem tsum_abs_halfLineExpPrimitive_channelSource_le {s c : ℝ} {R DR DDR : �
   have hnn : ∀ j : ℕ,
       (0 : ℝ) ≤ |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t| :=
     fun j => abs_nonneg _
-  have hmaj : Summable fun j : ℕ => B * (1 / (2 + (j : ℝ)) ^ 2) :=
+  have hmaj : Summable fun j : ℕ => B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) :=
     (GaloisForLFunctions.HTGeometry.summable_inv_sq_shift (σ := 2) (by norm_num)).mul_left B
   have hsummable : Summable fun j : ℕ =>
       |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t| :=
     hmaj.of_nonneg_of_le hnn hterm
   calc ∑' j : ℕ, |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t|
-      ≤ ∑' j : ℕ, B * (1 / (2 + (j : ℝ)) ^ 2) := hsummable.tsum_le_tsum hterm hmaj
-    _ = B * ∑' j : ℕ, 1 / (2 + (j : ℝ)) ^ 2 := tsum_mul_left
+      ≤ ∑' j : ℕ, B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) := hsummable.tsum_le_tsum hterm hmaj
+    _ = B * ∑' j : ℕ, 1 / (2 + (j : ℝ)) ^ (2 : ℕ) := tsum_mul_left
     _ ≤ B * 1 := mul_le_mul_of_nonneg_left
         GaloisForLFunctions.HTGeometry.tsum_inv_sq_shift_two_le_one hB
     _ = 4500 * M / (Real.sqrt c * c) := by rw [hBdef]; ring
@@ -142,8 +142,8 @@ carries the endpoint term. -/
 theorem abs_halfLineExpPrimitive_firstChannelSource_le {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∀ t : ℝ, 0 ≤ t → |HTGeometry.halfLineExpPrimitive (channelSource 1 R) t|
       ≤ prolateEndpointConstant / (c * Real.sqrt c)
         + 2250 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c) := by
@@ -172,8 +172,8 @@ bounded by one constant, uniformly along the logarithmic half-line. -/
 theorem tsum_abs_halfLineExpPrimitive_allChannelSource_le {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∀ t : ℝ, 0 ≤ t →
       |HTGeometry.halfLineExpPrimitive (channelSource 1 R) t|
           + ∑' j : ℕ, |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t|
@@ -192,15 +192,15 @@ theorem tsum_abs_halfLineExpPrimitive_allChannelSource_le {s c : ℝ} {R DR DDR 
 
 
 /-- **`(18)` for a single radial channel.**  The polar charge of the `k`-th channel source is
-controlled by the mode's own energy, with the `1/(c^{3/2} k^2)` gain of `(16)`. -/
+controlled by the mode's own energy, with the `1/(c^{3/2} k^(2 : ℕ))` gain of `(16)`. -/
 theorem abs_polarCharge_channelSource_le {s c k a : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 2 ≤ k) (ha : 0 ≤ a)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hR2 : IntegrableOn (fun u : ℝ => channelSource k R u ^ 2) (Ioi 0))
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hR2 : IntegrableOn (fun u : ℝ => channelSource k R u ^ (2 : ℕ)) (Ioi 0))
     (hR2h : ∀ h : ℝ, 0 ≤ h →
-      IntegrableOn (fun u : ℝ => channelSource k R (u + h) ^ 2) (Ioi 0))
+      IntegrableOn (fun u : ℝ => channelSource k R (u + h) ^ (2 : ℕ)) (Ioi 0))
     (hprodh : ∀ h : ℝ, 0 ≤ h →
       IntegrableOn (fun u : ℝ => channelSource k R (u + h) * channelSource k R u) (Ioi 0))
     (hlocal : ∀ x y : ℝ, IntervalIntegrable
@@ -221,9 +221,9 @@ theorem abs_polarCharge_channelSource_le {s c k a : ℝ} {R DR DDR : ℝ → ℝ
       Real.exp (-h / 2) * HTGeometry.halfLineAutocorrelation (channelSource k R) h)
       (Ioc 0 (2 * a))) :
     |HTGeometry.polarCharge (channelSource k R) a|
-      ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)))
+      ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ))))
           * (∫ u in Ioi (0 : ℝ), |Real.exp (-u / 2) * channelSource k R u|)
-        + 4 * ∫ u in Ioi (0 : ℝ), channelSource k R u ^ 2 :=
+        + 4 * ∫ u in Ioi (0 : ℝ), channelSource k R u ^ (2 : ℕ) :=
   HTGeometry.abs_polarCharge_le (channelSource k R) ha
     (abs_halfLineExpPrimitive_channelSource_le (DDR := DDR) hs0 hs1 hc hk hR hDR hode)
     hR2 hR2h hprodh hlocal hprod hG hT hintg hintd
@@ -232,11 +232,11 @@ theorem abs_polarCharge_channelSource_le {s c k a : ℝ} {R DR DDR : ℝ → ℝ
 theorem abs_polarCharge_firstChannelSource_le {s c a : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1) (ha : 0 ≤ a)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hR2 : IntegrableOn (fun u : ℝ => channelSource 1 R u ^ 2) (Ioi 0))
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hR2 : IntegrableOn (fun u : ℝ => channelSource 1 R u ^ (2 : ℕ)) (Ioi 0))
     (hR2h : ∀ h : ℝ, 0 ≤ h →
-      IntegrableOn (fun u : ℝ => channelSource 1 R (u + h) ^ 2) (Ioi 0))
+      IntegrableOn (fun u : ℝ => channelSource 1 R (u + h) ^ (2 : ℕ)) (Ioi 0))
     (hprodh : ∀ h : ℝ, 0 ≤ h →
       IntegrableOn (fun u : ℝ => channelSource 1 R (u + h) * channelSource 1 R u) (Ioi 0))
     (hlocal : ∀ x y : ℝ, IntervalIntegrable
@@ -260,7 +260,7 @@ theorem abs_polarCharge_firstChannelSource_le {s c a : ℝ} {R DR DDR : ℝ → 
       ≤ 4 * (prolateEndpointConstant / (c * Real.sqrt c)
             + 2250 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c))
           * (∫ u in Ioi (0 : ℝ), |Real.exp (-u / 2) * channelSource 1 R u|)
-        + 4 * ∫ u in Ioi (0 : ℝ), channelSource 1 R u ^ 2 :=
+        + 4 * ∫ u in Ioi (0 : ℝ), channelSource 1 R u ^ (2 : ℕ) :=
   HTGeometry.abs_polarCharge_le (channelSource 1 R) ha
     (abs_halfLineExpPrimitive_firstChannelSource_le (DDR := DDR) hs0 hs1 hc hR1 hR hDR hode)
     hR2 hR2h hprodh hlocal hprod hG hT hintg hintd
@@ -269,8 +269,8 @@ theorem abs_polarCharge_firstChannelSource_le {s c a : ℝ} {R DR DDR : ℝ → 
 theorem summable_abs_halfLineExpPrimitive_channelSource {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     ∀ t : ℝ, 0 ≤ t → Summable fun j : ℕ =>
       |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t| := by
   intro t ht
@@ -281,7 +281,7 @@ theorem summable_abs_halfLineExpPrimitive_channelSource {s c : ℝ} {R DR DDR : 
   set B : ℝ := 4500 * M / (Real.sqrt c * c) with hBdef
   have hterm : ∀ j : ℕ,
       |HTGeometry.halfLineExpPrimitive (channelSource (2 + (j : ℝ)) R) t|
-        ≤ B * (1 / (2 + (j : ℝ)) ^ 2) := by
+        ≤ B * (1 / (2 + (j : ℝ)) ^ (2 : ℕ)) := by
     intro j
     have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     have hk : (2 : ℝ) ≤ 2 + (j : ℝ) := by linarith
@@ -300,8 +300,8 @@ primitive bounded by the same constant, uniformly along the half-line and in the
 theorem abs_halfLineExpPrimitive_channelTruncation_le {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) (N : ℕ) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) (N : ℕ) :
     ∀ t : ℝ, 0 ≤ t →
       |HTGeometry.halfLineExpPrimitive
           (fun u : ℝ => ∑ j ∈ Finset.range N, channelSource (2 + (j : ℝ)) R u) t|
@@ -329,8 +329,8 @@ from outside the radial analysis. -/
 theorem abs_halfLineExpPrimitive_radialLimit_le {s c : ℝ} {R DR DDR : ℝ → ℝ} {T : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hconv : ∀ t : ℝ, 0 ≤ t → Filter.Tendsto
       (fun N : ℕ => HTGeometry.halfLineExpPrimitive
         (fun u : ℝ => ∑ j ∈ Finset.range N, channelSource (2 + (j : ℝ)) R u) t)
@@ -348,14 +348,14 @@ and the endpoint of integration free. -/
 theorem abs_polarCharge_radialLimit_le {s c a : ℝ} {R DR DDR T : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (ha : 0 ≤ a)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hconv : ∀ t : ℝ, 0 ≤ t → Filter.Tendsto
       (fun N : ℕ => HTGeometry.halfLineExpPrimitive
         (fun u : ℝ => ∑ j ∈ Finset.range N, channelSource (2 + (j : ℝ)) R u) t)
       Filter.atTop (nhds (HTGeometry.halfLineExpPrimitive T t)))
-    (hT2 : IntegrableOn (fun u : ℝ => T u ^ 2) (Ioi 0))
-    (hT2h : ∀ h : ℝ, 0 ≤ h → IntegrableOn (fun u : ℝ => T (u + h) ^ 2) (Ioi 0))
+    (hT2 : IntegrableOn (fun u : ℝ => T u ^ (2 : ℕ)) (Ioi 0))
+    (hT2h : ∀ h : ℝ, 0 ≤ h → IntegrableOn (fun u : ℝ => T (u + h) ^ (2 : ℕ)) (Ioi 0))
     (hprodh : ∀ h : ℝ, 0 ≤ h → IntegrableOn (fun u : ℝ => T (u + h) * T u) (Ioi 0))
     (hlocal : ∀ x y : ℝ, IntervalIntegrable
       (fun u : ℝ => Real.exp (u / 2) * T u) MeasureTheory.volume x y)
@@ -374,7 +374,7 @@ theorem abs_polarCharge_radialLimit_le {s c a : ℝ} {R DR DDR T : ℝ → ℝ}
     |HTGeometry.polarCharge T a|
       ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * c))
           * (∫ u in Ioi (0 : ℝ), |Real.exp (-u / 2) * T u|)
-        + 4 * ∫ u in Ioi (0 : ℝ), T u ^ 2 :=
+        + 4 * ∫ u in Ioi (0 : ℝ), T u ^ (2 : ℕ) :=
   HTGeometry.abs_polarCharge_le T ha
     (abs_halfLineExpPrimitive_radialLimit_le (DDR := DDR) hs0 hs1 hc hR hDR hode hconv)
     hT2 hT2h hprodh hlocal hprod hG hTT hintg hintd

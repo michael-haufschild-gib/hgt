@@ -535,7 +535,7 @@ theorem greenBoundaryExcess (M : ℕ) (c : ℂ) :
         (taylorTranslate (c • coordVec M))
       - factorialForm (N := M + 1) (c • coordVec M) (c • coordVec M)
       = ((Complex.normSq c *
-          ∑ i ∈ range M, 1 / ((Nat.factorial (M - i) : ℝ) ^ 2 * (Nat.factorial i : ℝ)) : ℝ) : ℂ) := by
+          ∑ i ∈ range M, 1 / ((Nat.factorial (M - i) : ℝ) ^ (2 : ℕ) * (Nat.factorial i : ℝ)) : ℝ) : ℂ) := by
   have hM : M < M + 1 := Nat.lt_succ_self M
   have hsmul : taylorTranslate (c • coordVec (N := M + 1) M)
       = c • taylorTranslate (coordVec (N := M + 1) M) := by
@@ -551,7 +551,7 @@ theorem greenBoundaryExcess (M : ℕ) (c : ℂ) :
     rw [jetExt_of_lt hn, taylorTranslate_coordVec_apply hM, if_pos (by omega)]
   have hEnorm : ∀ n : ℕ, n < M + 1 →
       Complex.normSq (jetExt (c • taylorTranslate (coordVec (N := M + 1) M)) n)
-        = Complex.normSq c * (1 / (Nat.factorial (M - n) : ℝ) ^ 2) := by
+        = Complex.normSq c * (1 / (Nat.factorial (M - n) : ℝ) ^ (2 : ℕ)) := by
     intro n hn
     rw [jetExt_smul, Complex.normSq_mul, hE n hn]
     congr 1
@@ -574,7 +574,7 @@ theorem greenBoundaryExcess (M : ℕ) (c : ℂ) :
       Complex.normSq (jetExt (c • taylorTranslate (coordVec (N := M + 1) M)) n)
         / (Nat.factorial n : ℝ))
       = ∑ n ∈ range (M + 1), Complex.normSq c *
-          (1 / ((Nat.factorial (M - n) : ℝ) ^ 2 * (Nat.factorial n : ℝ))) := by
+          (1 / ((Nat.factorial (M - n) : ℝ) ^ (2 : ℕ) * (Nat.factorial n : ℝ))) := by
     refine Finset.sum_congr rfl fun n hn => ?_
     rw [hEnorm n (Finset.mem_range.mp hn)]
     have hfac : (0 : ℝ) < (Nat.factorial n : ℝ) := by positivity
@@ -598,7 +598,7 @@ theorem greenBoundaryExcess_pos {M : ℕ} (hM : 1 ≤ M) {c : ℂ} (hc : c ≠ 0
   rw [greenBoundaryExcess, Complex.ofReal_re]
   have hcpos : 0 < Complex.normSq c := Complex.normSq_pos.mpr hc
   have hsumpos : 0 < ∑ i ∈ range M,
-      1 / ((Nat.factorial (M - i) : ℝ) ^ 2 * (Nat.factorial i : ℝ)) := by
+      1 / ((Nat.factorial (M - i) : ℝ) ^ (2 : ℕ) * (Nat.factorial i : ℝ)) := by
     refine Finset.sum_pos (fun i _ => by positivity) ?_
     exact Finset.nonempty_range_iff.mpr (by omega)
   positivity

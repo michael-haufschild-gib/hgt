@@ -33,7 +33,7 @@ noncomputable section
 
 /-- Projective curvature energy selected by the C5 seam invariant. -/
 def thetaCuspLikelihoodHomotopyCurvatureEnergy (x : ℝ) : ℝ :=
-  3 * thetaCuspLikelihoodSourceLogPartitionJetThree x ^ 2 -
+  3 * thetaCuspLikelihoodSourceLogPartitionJetThree x ^ (2 : ℕ) -
     2 * thetaCuspLikelihoodSourceLogPartitionJetTwo x *
       thetaCuspLikelihoodSourceLogPartitionJetFour x
 
@@ -163,7 +163,7 @@ theorem three_mul_sq_thetaCuspLikelihoodSourceLogPartitionJetThree_gt
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     2 * thetaCuspLikelihoodSourceLogPartitionJetTwo x *
         thetaCuspLikelihoodSourceLogPartitionJetFour x <
-      3 * thetaCuspLikelihoodSourceLogPartitionJetThree x ^ 2 := by
+      3 * thetaCuspLikelihoodSourceLogPartitionJetThree x ^ (2 : ℕ) := by
   exact sub_pos.mp (thetaCuspLikelihoodHomotopyCurvatureEnergy_pos hx hscale)
 
 end

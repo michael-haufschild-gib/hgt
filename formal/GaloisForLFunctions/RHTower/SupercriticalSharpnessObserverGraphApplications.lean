@@ -33,10 +33,10 @@ theorem finiteObserverUnionWeight_empty_or_exists_averageRecord
     (lam : J → ℝ) (block : J → Fin d → Fin d → ℂ) (i j : Fin d) :
     Fintype.card J = 0 ∨ ∃ a : J,
       finiteObserverUnionWeight lam block i j ≤
-        (Fintype.card J : ℝ) * (lam a * ‖block a i j‖ ^ 2) := by
+        (Fintype.card J : ℝ) * (lam a * ‖block a i j‖ ^ (2 : ℕ)) := by
   simpa [finiteObserverUnionWeight] using
     (GaloisForLFunctions.HTGeometry.finiteFamilySum_empty_or_le_card_mul
-      (fun a : J ↦ lam a * ‖block a i j‖ ^ 2))
+      (fun a : J ↦ lam a * ‖block a i j‖ ^ (2 : ℕ)))
 
 /-- Every finite observer system either has no coherence edge, or some coherent pair has strictly
 positive target-avoiding anchored profile. -/

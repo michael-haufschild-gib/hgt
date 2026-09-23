@@ -84,8 +84,8 @@ theorem deckClass_root_indep {f g₁ g₂ h₁ h₂ : ℂ → ℂ} {U₁ U₂ : 
 /-- Coherence in the dyadic tower: the deck class of the squared roots is the square of
 the deck class — `w_k = w_{k+1}²` in the ladder's notation. -/
 theorem deckClass_sq (g₁ g₂ : ℂ → ℂ) (pP pM : ℂ) :
-    deckClass (fun s => g₁ s ^ 2) (fun s => g₂ s ^ 2) pP pM =
-      deckClass g₁ g₂ pP pM ^ 2 := by
+    deckClass (fun s => g₁ s ^ (2 : ℕ)) (fun s => g₂ s ^ (2 : ℕ)) pP pM =
+      deckClass g₁ g₂ pP pM ^ (2 : ℕ) := by
   simp only [deckClass, div_pow]
 
 /-- **Triviality ⟺ gluing.** On the standard two-chart annulus data — overlap exactly

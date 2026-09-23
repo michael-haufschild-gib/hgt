@@ -158,7 +158,7 @@ theorem causalLaplaceIntegral_const_mul (x : ℝ) (c : ℂ) (f : ℝ → ℂ) :
 
 def thetaSquareFiniteReaderValue (n N : ℕ) (x : ℝ) : ℂ :=
   -(thetaSquareBlaschkeNodeSlope n)⁻¹ *
-    (((n : ℂ) ^ 2 + x)⁻¹) *
+    (((n : ℂ) ^ (2 : ℕ) + x)⁻¹) *
     thetaSquareFiniteSkippedProduct n N x
 
 theorem causalLaplaceIntegral_thetaSquareFiniteCausalSource
@@ -286,11 +286,11 @@ theorem thetaSquareFiniteReaderValue_eq_blaschkeFinite
       (thetaSquareBlaschkeNodeSlope n)⁻¹ * thetaSquareBlaschkeFinite N x /
         ((x : ℂ) - thetaSquare n) := by
   let z : ℂ := x
-  have htheta : thetaSquare n = (n : ℂ) ^ 2 := by simp [thetaSquare]
-  have hminus : z - (n : ℂ) ^ 2 ≠ 0 := by
+  have htheta : thetaSquare n = (n : ℂ) ^ (2 : ℕ) := by simp [thetaSquare]
+  have hminus : z - (n : ℂ) ^ (2 : ℕ) ≠ 0 := by
     rw [← htheta, sub_ne_zero]
     exact hxnode
-  have hplus : (n : ℂ) ^ 2 + z ≠ 0 := by
+  have hplus : (n : ℂ) ^ (2 : ℕ) + z ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
     dsimp [z] at hre
@@ -301,10 +301,10 @@ theorem thetaSquareFiniteReaderValue_eq_blaschkeFinite
   have hsplit := thetaSquareBlaschkeFinite_split_selected hn hnN z
   calc
     thetaSquareFiniteReaderValue n N x =
-        (-S * ((n : ℂ) ^ 2 + z)⁻¹) * P := by rfl
-    _ = S * ((((n : ℂ) ^ 2 - z) / ((n : ℂ) ^ 2 + z)) * P) /
-        (z - (n : ℂ) ^ 2) := cancel_selected_blaschke_factor hminus hplus
-    _ = S * thetaSquareBlaschkeFinite N z / (z - (n : ℂ) ^ 2) := by rw [hsplit]
+        (-S * ((n : ℂ) ^ (2 : ℕ) + z)⁻¹) * P := by rfl
+    _ = S * ((((n : ℂ) ^ (2 : ℕ) - z) / ((n : ℂ) ^ (2 : ℕ) + z)) * P) /
+        (z - (n : ℂ) ^ (2 : ℕ)) := cancel_selected_blaschke_factor hminus hplus
+    _ = S * thetaSquareBlaschkeFinite N z / (z - (n : ℂ) ^ (2 : ℕ)) := by rw [hsplit]
     _ = (thetaSquareBlaschkeNodeSlope n)⁻¹ * thetaSquareBlaschkeFinite N z /
         (z - thetaSquare n) := by rw [htheta]
 
@@ -377,7 +377,7 @@ theorem inner_causalLaplaceWeightL2
 
 theorem norm_causalLaplaceWeightL2_sub_sq
     {x a : ℝ} (hx : 0 < x) (ha : 0 < a) :
-    ‖causalLaplaceWeightL2 x hx - causalLaplaceWeightL2 a ha‖ ^ 2 =
+    ‖causalLaplaceWeightL2 x hx - causalLaplaceWeightL2 a ha‖ ^ (2 : ℕ) =
       (2 * Real.pi * x)⁻¹ - 2 * (Real.pi * (x + a))⁻¹ +
         (2 * Real.pi * a)⁻¹ := by
   rw [norm_sub_sq (𝕜 := ℂ), ← inner_self_eq_norm_sq (𝕜 := ℂ),
@@ -449,10 +449,10 @@ theorem tendsto_positiveApproach (a : Set.Ioi (0 : ℝ)) :
 
 theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_self
     {n : ℕ} (hn : 1 ≤ n) :
-    causalLaplacePairing ((n : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+    causalLaplacePairing ((n : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
         (thetaHeatRateSourceReaderL2 n hn) = 1 := by
-  let a : Set.Ioi (0 : ℝ) := ⟨(n : ℝ) ^ 2, by
-    change (0 : ℝ) < (n : ℝ) ^ 2
+  let a : Set.Ioi (0 : ℝ) := ⟨(n : ℝ) ^ (2 : ℕ), by
+    change (0 : ℝ) < (n : ℝ) ^ (2 : ℕ)
     positivity⟩
   let q : ℕ → Set.Ioi (0 : ℝ) := positiveApproach a
   let g := thetaHeatRateSourceReaderL2 n hn
@@ -493,16 +493,16 @@ theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_self
     linarith
   rw [heq] at hleft
   have hvalue := tendsto_nhds_unique hleft hright
-  change causalLaplacePairing ((n : ℝ) ^ 2) _
+  change causalLaplacePairing ((n : ℝ) ^ (2 : ℕ)) _
       (thetaHeatRateSourceReaderL2 n hn) = _ at hvalue
   rw [thetaSquareBlaschkeReaderSymbol_self hn] at hvalue
   exact hvalue
 
 theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_other
     {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) (hmn : m ≠ n) :
-    causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+    causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
         (thetaHeatRateSourceReaderL2 n hn) = 0 := by
-  have hxnode : ((((m : ℝ) ^ 2 : ℝ) : ℂ)) ≠ thetaSquare n := by
+  have hxnode : ((((m : ℝ) ^ (2 : ℕ) : ℝ) : ℂ)) ≠ thetaSquare n := by
     simpa [thetaSquare] using (thetaSquare_ne_of_ne hmn)
   rw [causalLaplacePairing_thetaHeatRateSourceReaderL2_of_ne_node hn
     (sq_pos_of_pos (by positivity)) hxnode]
@@ -510,7 +510,7 @@ theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_other
 
 theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_kronecker
     {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) :
-    causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+    causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
         (thetaHeatRateSourceReaderL2 n hn) = if m = n then 1 else 0 := by
   by_cases hmn : m = n
   · subst m
@@ -522,7 +522,7 @@ theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_kronecker
 `π m²`: the parameter `x = m²` in `causalLaplaceIntegral` supplies the weight `exp (-π m² y)`. -/
 theorem causalLaplaceIntegral_thetaHeatRateSourceReaderL2_kronecker
     {n m : ℕ} (hn : 1 ≤ n) (hm : 1 ≤ m) :
-    causalLaplaceIntegral ((m : ℝ) ^ 2)
+    causalLaplaceIntegral ((m : ℝ) ^ (2 : ℕ))
         (fun y : ℝ => thetaHeatRateSourceReaderL2 n hn y) =
       if m = n then 1 else 0 := by
   rw [← causalLaplacePairing_eq_integral_of_lowerSupport

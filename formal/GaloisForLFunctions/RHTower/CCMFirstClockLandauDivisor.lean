@@ -12,27 +12,27 @@ theorem norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_global
     ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
       (ccmFirstClockHeadReciprocalSquareConstant +
         (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   by_cases hhead : L ≤ Real.pi / 2
   · calc
       ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
           ccmFirstClockHeadReciprocalSquareConstant /
-            ‖xiSpectralPoint q‖ ^ 2 :=
+            ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
         norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_head hL hhead q
       _ ≤ (ccmFirstClockHeadReciprocalSquareConstant +
           (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         apply div_le_div_of_nonneg_right _ (sq_nonneg _)
         exact le_add_of_nonneg_right (by positivity)
   · have htail : Real.pi / 2 ≤ L := le_of_not_ge hhead
     calc
       ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
           (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1) /
-            ‖xiSpectralPoint q‖ ^ 2 :=
+            ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
         norm_ccmFirstClockRationalKernel_xiSpectralPoint_le htail q
       _ ≤ (ccmFirstClockHeadReciprocalSquareConstant +
           (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         apply div_le_div_of_nonneg_right _ (sq_nonneg _)
         exact le_add_of_nonneg_left
           ccmFirstClockHeadReciprocalSquareConstant_nonneg
@@ -52,11 +52,11 @@ theorem summable_ccmFirstClockRationalKernel_xiSpectralPoint_global
     ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
         (ccmFirstClockHeadReciprocalSquareConstant +
           (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) /
-          ‖xiSpectralPoint q‖ ^ 2 :=
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_global hL q
     _ = (ccmFirstClockHeadReciprocalSquareConstant +
           (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem measurable_ccmFirstClockRationalKernel
     (z : ℂ) :
@@ -76,7 +76,7 @@ theorem norm_ccmFirstClockXiRationalDivisor_le
     ‖ccmFirstClockXiRationalDivisor L‖ ≤
       (ccmFirstClockHeadReciprocalSquareConstant +
         (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   let C : ℝ :=
     ccmFirstClockHeadReciprocalSquareConstant +
       (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)
@@ -90,16 +90,16 @@ theorem norm_ccmFirstClockXiRationalDivisor_le
         ∑' q : XiZeroCopy,
           ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ :=
       norm_tsum_le_tsum_norm hsum.norm
-    _ ≤ ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    _ ≤ ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       exact hsum.norm.tsum_le_tsum (fun q => by
         calc
           ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
-              C / ‖xiSpectralPoint q‖ ^ 2 := by
+              C / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
             simpa only [C] using
               norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_global hL q
-          _ = C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring)
+          _ = C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring)
         hmajor
-    _ = C * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+    _ = C * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [tsum_mul_left]
     _ = _ := rfl
 
@@ -111,7 +111,7 @@ theorem integrableOn_exp_mul_ccmFirstClockXiRationalDivisor
       (fun L : ℝ =>
         Complex.exp (-s * (L : ℂ)) *
           ccmFirstClockXiRationalDivisor L) (Ioi 0) := by
-  let M : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+  let M : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let g : ℝ → ℝ := fun L =>
     M * (ccmFirstClockHeadReciprocalSquareConstant * Real.exp (-s.re * L) +
       (1 + 2 * Real.pi) *
@@ -143,9 +143,9 @@ theorem integrableOn_exp_mul_ccmFirstClockXiRationalDivisor
           Real.exp (-s.re * L) *
             ((ccmFirstClockHeadReciprocalSquareConstant +
               (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) *
-                ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+                ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hQ (Real.exp_pos _).le
-      _ = (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2) *
+      _ = (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) *
           (ccmFirstClockHeadReciprocalSquareConstant *
               Real.exp (-s.re * L) +
             (1 + 2 * Real.pi) *
@@ -181,7 +181,7 @@ theorem integral_exp_mul_ccmFirstClockXiRationalDivisor_eq_continuation
           (integrableOn_exp_mul_Ioi hdecay0 0)).const_mul
             (1 + 2 * Real.pi))
   have hpointBound (q : XiZeroCopy) (L : ℝ) (hL : L ∈ Ioi (0 : ℝ)) :
-      ‖F q L‖ ≤ g L * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      ‖F q L‖ ≤ g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     have hkernel :=
       norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_global hL.le q
     have hexpRe : (-s * (L : ℂ)).re = -s.re * L := by
@@ -194,14 +194,14 @@ theorem integral_exp_mul_ccmFirstClockXiRationalDivisor_eq_continuation
         Real.exp (-s.re * L) *
           ((ccmFirstClockHeadReciprocalSquareConstant +
             (1 + 2 * Real.pi) * (Real.exp (L / 2) + 1)) /
-              ‖xiSpectralPoint q‖ ^ 2) :=
+              ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hkernel (Real.exp_pos _).le
       _ = (ccmFirstClockHeadReciprocalSquareConstant *
             Real.exp (-s.re * L) +
           (1 + 2 * Real.pi) *
             (Real.exp ((-s.re + 1 / 2) * L) +
               Real.exp (-s.re * L))) *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         rw [show (-s.re + 1 / 2) * L =
           -s.re * L + L / 2 by ring, Real.exp_add]
         ring
@@ -209,7 +209,7 @@ theorem integral_exp_mul_ccmFirstClockXiRationalDivisor_eq_continuation
     intro q
     have hmajor :
         IntegrableOn
-          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ 2)) (Ioi 0) :=
+          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) (Ioi 0) :=
       hgint.mul_const _
     apply Integrable.mono' hmajor
     · have hmeas : Measurable (F q) := by
@@ -228,17 +228,17 @@ theorem integral_exp_mul_ccmFirstClockXiRationalDivisor_eq_continuation
         (∫ L : ℝ in Ioi 0, g L))
     have hmajor :
         IntegrableOn
-          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ 2)) (Ioi 0) :=
+          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) (Ioi 0) :=
       hgint.mul_const _
     calc
       (∫ L : ℝ in Ioi 0, ‖F q L‖) ≤
           ∫ L : ℝ in Ioi 0,
-            g L * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+            g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         apply integral_mono_ae (hFint q).norm hmajor
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with L hL
         exact hpointBound q L hL
       _ = (∫ L : ℝ in Ioi 0, g L) *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         rw [integral_mul_const]
   have hswap :
       (∫ L : ℝ in Ioi 0, ∑' q : XiZeroCopy, F q L) =

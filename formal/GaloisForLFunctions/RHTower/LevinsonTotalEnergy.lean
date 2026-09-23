@@ -23,26 +23,26 @@ namespace RHTower
 
 /-- **The total mollified coefficient energy, short range plus polynomial main.** -/
 theorem abs_levinsonCriticalDetectorTotalEnergy_sub_le
-    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L) :
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |(∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
         - ((∑ k ∈ Finset.Icc 1 L,
-              ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+              ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
             + Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)|
-      ≤ (((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) +
-          2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 *
+      ≤ (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) +
+          2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
             (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ))) +
-          lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)))) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)))) /
+        Real.log M ^ (2 : ℕ) := by
   have hM1 : 1 ≤ M := le_of_lt hM
   rw [sum_levinsonCriticalDetectorFiniteEnergyTerm_eq_short_add_long lam L M hM1]
   have hlong := Sieve.abs_levinsonCriticalDetectorLongEnergy_sub_includedPolynomialMain_le
     lam hM hscale
   have hrw : (∑ k ∈ Finset.Icc 1 L,
-        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
         + levinsonCriticalDetectorLongEnergy lam L M
       - ((∑ k ∈ Finset.Icc 1 L,
-            ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+            ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
           + Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)
       = levinsonCriticalDetectorLongEnergy lam L M
         - Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M := by
@@ -57,13 +57,13 @@ give `|λ|log(LM+1) = O(1)`. -/
 theorem levinsonTotalEnergy_error_le_of_lam_small
     {lam : ℝ} {L M : ℕ} (hM : 1 < M) (hL : 0 < L)
     (hlam : |lam| * Real.log (L * M + 1 : ℕ) ≤ 1) :
-    (((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) +
-        2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 *
+    (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) +
+        2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
           (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ))) +
-        lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 *
-          (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)))) /
-      Real.log M ^ 2
-      ≤ 27 * (M : ℝ) ^ 2 / (L : ℝ) := by
+        lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+          (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)))) /
+      Real.log M ^ (2 : ℕ)
+      ≤ 27 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
   have hM2 : (2 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
   have hlogM : (0 : ℝ) < Real.log M := Real.log_pos (by linarith)
   have hLpos : (0 : ℝ) < (L : ℝ) := by exact_mod_cast hL
@@ -74,47 +74,47 @@ theorem levinsonTotalEnergy_error_le_of_lam_small
     have : (1 : ℕ) ≤ L * M + 1 := by omega
     exact_mod_cast this
   have hlam0 : (0 : ℝ) ≤ |lam| := abs_nonneg _
-  have hsq : lam ^ 2 * A ^ 2 ≤ 1 := by
+  have hsq : lam ^ (2 : ℕ) * A ^ (2 : ℕ) ≤ 1 := by
     have hprod : |lam| * A ≤ 1 := hlam
     have hnn : (0 : ℝ) ≤ |lam| * A := by positivity
-    have hlamsq : lam ^ 2 = |lam| ^ 2 := (sq_abs lam).symm
+    have hlamsq : lam ^ (2 : ℕ) = |lam| ^ (2 : ℕ) := (sq_abs lam).symm
     nlinarith [hprod, hnn]
-  have hnum : ((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) +
-      2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 * (6 * A / (L : ℝ))) +
-      lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 * (12 * A ^ 2 / (L : ℝ)))
-      = (((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) *
-        (3 + 12 * (|lam| * A) + 12 * (lam ^ 2 * A ^ 2)) := by
+  have hnum : ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) +
+      2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (6 * A / (L : ℝ))) +
+      lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (12 * A ^ (2 : ℕ) / (L : ℝ)))
+      = (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) *
+        (3 + 12 * (|lam| * A) + 12 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ))) := by
     field_simp
     ring
   rw [hnum]
-  have hfac : (0 : ℝ) < ((M : ℝ) * Real.log M) ^ 2 / (L : ℝ) := by positivity
-  have hbr : (3 : ℝ) + 12 * (|lam| * A) + 12 * (lam ^ 2 * A ^ 2) ≤ 27 := by
+  have hfac : (0 : ℝ) < ((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ) := by positivity
+  have hbr : (3 : ℝ) + 12 * (|lam| * A) + 12 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)) ≤ 27 := by
     linarith [hlam, hsq]
-  have hstep : (((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) *
-      (3 + 12 * (|lam| * A) + 12 * (lam ^ 2 * A ^ 2))
-      ≤ (((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) * 27 :=
+  have hstep : (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) *
+      (3 + 12 * (|lam| * A) + 12 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)))
+      ≤ (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) * 27 :=
     mul_le_mul_of_nonneg_left hbr hfac.le
-  have hdiv : ((((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) * 27) / Real.log M ^ 2
-      = 27 * (M : ℝ) ^ 2 / (L : ℝ) := by
+  have hdiv : ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) * 27) / Real.log M ^ (2 : ℕ)
+      = 27 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
     field_simp
-  calc ((((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) *
-        (3 + 12 * (|lam| * A) + 12 * (lam ^ 2 * A ^ 2))) / Real.log M ^ 2
-      ≤ ((((M : ℝ) * Real.log M) ^ 2 / (L : ℝ)) * 27) / Real.log M ^ 2 := by
+  calc ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) *
+        (3 + 12 * (|lam| * A) + 12 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)))) / Real.log M ^ (2 : ℕ)
+      ≤ ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (L : ℝ)) * 27) / Real.log M ^ (2 : ℕ) := by
         exact div_le_div_of_nonneg_right hstep (by positivity)
-    _ = 27 * (M : ℝ) ^ 2 / (L : ℝ) := hdiv
+    _ = 27 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := hdiv
 
 /-- **The total mollified coefficient energy with a clean error.** -/
 theorem abs_levinsonCriticalDetectorTotalEnergy_sub_le_sq_div
-    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L)
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ L)
     (hlam : |lam| * Real.log (L * M + 1 : ℕ) ≤ 1) :
     |(∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
         - ((∑ k ∈ Finset.Icc 1 L,
-              ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+              ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
             + Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)|
-      ≤ 27 * (M : ℝ) ^ 2 / (L : ℝ) := by
+      ≤ 27 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
   have hMpos : 0 < M := by omega
   have hL : 0 < L := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   exact le_trans (abs_levinsonCriticalDetectorTotalEnergy_sub_le lam hM hscale)
     (levinsonTotalEnergy_error_le_of_lam_small hM hL hlam)
@@ -127,17 +127,17 @@ polynomial main term, and the whole error is `O(M²/L)`.  Under the Levinson sca
 `L ≍ T^{1/2+θ}`, `M = T^θ` with `θ < 1/2` this error tends to zero, so the mollified coefficient
 energy is exactly the sum of the two explicit quadratic forms in the limit. -/
 theorem abs_levinsonCriticalDetectorTotalEnergy_sub_shortMain_add_longMain_le
-    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L)
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ L)
     (hlam : |lam| * Real.log (L * M + 1 : ℕ) ≤ 1) :
     |(∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r)
         - (Sieve.barbanVehovShortEnergyMain lam L M +
             Sieve.barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M)|
-      ≤ 36 * (M : ℝ) ^ 2 / (L : ℝ) := by
+      ≤ 36 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
   have hM1 : 1 ≤ M := le_of_lt hM
-  have hMsq : M ≤ M ^ 2 := by nlinarith [hM1]
+  have hMsq : M ≤ M ^ (2 : ℕ) := by nlinarith [hM1]
   have hML : M ≤ L := by omega
   have hL : 0 < L := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   have hLR : (0 : ℝ) < (L : ℝ) := by exact_mod_cast hL
   have hlamL : |lam| * Real.log ((L + 1 : ℕ) : ℝ) ≤ 1 := by
@@ -165,8 +165,8 @@ theorem abs_levinsonCriticalDetectorTotalEnergy_sub_shortMain_add_longMain_le
     ring
   rw [hsplit]
   refine (abs_add_le _ _).trans ?_
-  have : 27 * (M : ℝ) ^ 2 / (L : ℝ) + 9 * (M : ℝ) ^ 2 / (L : ℝ)
-      = 36 * (M : ℝ) ^ 2 / (L : ℝ) := by ring
+  have : 27 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) + 9 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ)
+      = 36 * (M : ℝ) ^ (2 : ℕ) / (L : ℝ) := by ring
   linarith [htotal, hshort]
 
 end RHTower

@@ -18,10 +18,10 @@ import Mathlib
 namespace RHTower
 
 /-- The cofactor-normalized carrier of doc 48 §2. -/
-def sweepW (η ε : ℝ) (q : ℝ → ℝ) (v : ℝ) : ℝ := v ^ 2 + η ^ 2 + ε * q v
+def sweepW (η ε : ℝ) (q : ℝ → ℝ) (v : ℝ) : ℝ := v ^ (2 : ℕ) + η ^ (2 : ℕ) + ε * q v
 
 theorem sweepW_center (η ε : ℝ) (q : ℝ → ℝ) :
-    sweepW η ε q 0 = η ^ 2 + ε * q 0 := by
+    sweepW η ε q 0 = η ^ (2 : ℕ) + ε * q 0 := by
   simp [sweepW]
 
 /-- **Kill half (doc 48 §2(a))**: nonpositive center value and positive edges
@@ -49,7 +49,7 @@ theorem sweep_kill_exists_zeros {W : ℝ → ℝ} {w : ℝ} (hw : 0 < w)
 /-- The kill condition of doc 48 in `sweepW` form. -/
 theorem sweepW_kill {η ε w : ℝ} {q : ℝ → ℝ} (hw : 0 < w)
     (hq : ContinuousOn q (Set.Icc (-w) w))
-    (hkill : ε * q 0 ≤ -η ^ 2)
+    (hkill : ε * q 0 ≤ -η ^ (2 : ℕ))
     (hleft : 0 < sweepW η ε q (-w)) (hright : 0 < sweepW η ε q w) :
     (∃ a ∈ Set.Icc (-w) 0, sweepW η ε q a = 0) ∧
       ∃ b ∈ Set.Icc 0 w, sweepW η ε q b = 0 := by
@@ -65,17 +65,17 @@ theorem sweepW_kill {η ε w : ℝ} {q : ℝ → ℝ} (hw : 0 < w)
 /-- **Survive half (doc 48 §2(b))**: a strict lower bound on the perturbation
 along the segment forbids on-line zeros — the pair stays off the line. -/
 theorem sweepW_survive {η ε w : ℝ} {q : ℝ → ℝ}
-    (hsurv : ∀ v ∈ Set.Icc (-w) w, -η ^ 2 < ε * q v) :
+    (hsurv : ∀ v ∈ Set.Icc (-w) w, -η ^ (2 : ℕ) < ε * q v) :
     ∀ v ∈ Set.Icc (-w) w, 0 < sweepW η ε q v := by
   intro v hv
   have := hsurv v hv
-  have hv2 : 0 ≤ v ^ 2 := sq_nonneg v
+  have hv2 : 0 ≤ v ^ (2 : ℕ) := sq_nonneg v
   unfold sweepW
   linarith
 
 /-- No on-line zeros in the survive regime. -/
 theorem sweepW_survive_ne_zero {η ε w : ℝ} {q : ℝ → ℝ}
-    (hsurv : ∀ v ∈ Set.Icc (-w) w, -η ^ 2 < ε * q v) :
+    (hsurv : ∀ v ∈ Set.Icc (-w) w, -η ^ (2 : ℕ) < ε * q v) :
     ∀ v ∈ Set.Icc (-w) w, sweepW η ε q v ≠ 0 :=
   fun v hv => (sweepW_survive hsurv v hv).ne'
 

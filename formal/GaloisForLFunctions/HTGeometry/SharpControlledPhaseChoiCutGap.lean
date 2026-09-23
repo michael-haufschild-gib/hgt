@@ -28,7 +28,7 @@ theorem norm_one_add_le_sqrt_two_of_unit_re_nonpos (z : ℂ)
     (hz : ‖z‖ = 1) (hre : z.re ≤ 0) :
     ‖1 + z‖ ≤ Real.sqrt 2 := by
   have hs := norm_add_sq (𝕜 := ℂ) (1 : ℂ) z
-  have hsq : ‖1 + z‖ ^ 2 ≤ 2 := by
+  have hsq : ‖1 + z‖ ^ (2 : ℕ) ≤ 2 := by
     simp [RCLike.inner_apply, hz] at hs
     nlinarith
   have hmono := Real.sqrt_le_sqrt hsq
@@ -37,8 +37,8 @@ theorem norm_one_add_le_sqrt_two_of_unit_re_nonpos (z : ℂ)
 /-- Sharp two-phase energy bound: the Gram largest eigenvalue is `2 + ‖1 + z‖ ≤ 2 + √2`. -/
 theorem two_phase_pair_energy_le_sharp (P Q z : ℂ)
     (hz : ‖z‖ = 1) (hre : z.re ≤ 0) :
-    ‖P + Q‖ ^ 2 + ‖P + z * Q‖ ^ 2 ≤
-      (2 + Real.sqrt 2) * (‖P‖ ^ 2 + ‖Q‖ ^ 2) := by
+    ‖P + Q‖ ^ (2 : ℕ) + ‖P + z * Q‖ ^ (2 : ℕ) ≤
+      (2 + Real.sqrt 2) * (‖P‖ ^ (2 : ℕ) + ‖Q‖ ^ (2 : ℕ)) := by
   have h1 := norm_add_sq (𝕜 := ℂ) P Q
   have h2 := norm_add_sq (𝕜 := ℂ) P (z * Q)
   have hzQ : ‖z * Q‖ = ‖Q‖ := by rw [norm_mul, hz, one_mul]
@@ -81,30 +81,30 @@ theorem phase_pair_energy_le_diagonalEnergy_sharp
     (B : Matrix (Bool × γ) (Bool × γ) ℂ) (z : ℂ)
     (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1) :
-    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ 2 +
-        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ 2 ≤
+    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ (2 : ℕ) +
+        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ (2 : ℕ) ≤
       (2 + Real.sqrt 2) * (Fintype.card γ : ℝ) * diagonalEnergy B := by
   have hp := phaseFibreSum_norm_sq_le B r hr false
   have hq := phaseFibreSum_norm_sq_le B r hr true
   have hpair := two_phase_pair_energy_le_sharp
     (phaseFibreSum B r false) (phaseFibreSum B r true) z hz hre
   have hdiag : diagonalEnergy B =
-      (∑ g : γ, ‖B (false, g) (false, g)‖ ^ 2) +
-        ∑ g : γ, ‖B (true, g) (true, g)‖ ^ 2 := by
+      (∑ g : γ, ‖B (false, g) (false, g)‖ ^ (2 : ℕ)) +
+        ∑ g : γ, ‖B (true, g) (true, g)‖ ^ (2 : ℕ) := by
     unfold diagonalEnergy
     rw [Fintype.sum_prod_type]
     simp only [Fintype.sum_bool]
     ring
-  have hsum : ‖phaseFibreSum B r false‖ ^ 2 + ‖phaseFibreSum B r true‖ ^ 2 ≤
+  have hsum : ‖phaseFibreSum B r false‖ ^ (2 : ℕ) + ‖phaseFibreSum B r true‖ ^ (2 : ℕ) ≤
       (Fintype.card γ : ℝ) * diagonalEnergy B := by
     rw [hdiag, mul_add]
     linarith
   have hc : (0 : ℝ) ≤ 2 + Real.sqrt 2 := by positivity
   calc
-    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ 2 +
-        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ 2
+    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ (2 : ℕ) +
+        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ (2 : ℕ)
         ≤ (2 + Real.sqrt 2) *
-            (‖phaseFibreSum B r false‖ ^ 2 + ‖phaseFibreSum B r true‖ ^ 2) := hpair
+            (‖phaseFibreSum B r false‖ ^ (2 : ℕ) + ‖phaseFibreSum B r true‖ ^ (2 : ℕ)) := hpair
     _ ≤ (2 + Real.sqrt 2) * ((Fintype.card γ : ℝ) * diagonalEnergy B) :=
         mul_le_mul_of_nonneg_left hsum hc
     _ = (2 + Real.sqrt 2) * (Fintype.card γ : ℝ) * diagonalEnergy B := by ring
@@ -113,7 +113,7 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_sharp
     (A : Matrix Bool Bool ℂ) (B : Matrix (Bool × γ) (Bool × γ) ℂ)
     (z : ℂ) (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1) :
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2 ≤
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ) ≤
       diagonalEnergy A * ((2 + Real.sqrt 2) * (Fintype.card γ : ℝ) *
         diagonalEnergy B) := by
   rw [trace_kronecker_conj_productControlledPhaseTarget_eq_pair]
@@ -122,7 +122,7 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_sharp
     (phaseFibreSum B r false + phaseFibreSum B r true)
     (phaseFibreSum B r false + z * phaseFibreSum B r true)
   have hpair := phase_pair_energy_le_diagonalEnergy_sharp B z r hz hre hr
-  have hdiagA : diagonalEnergy A = ‖A false false‖ ^ 2 + ‖A true true‖ ^ 2 := by
+  have hdiagA : diagonalEnergy A = ‖A false false‖ ^ (2 : ℕ) + ‖A true true‖ ^ (2 : ℕ) := by
     unfold diagonalEnergy
     simp
     ring
@@ -138,8 +138,8 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_sharp_const
     (z : ℂ) (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1)
     (hW : (A ⊗ₖ B)ᴴ * (A ⊗ₖ B) = 1) :
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2 ≤
-      ((2 + Real.sqrt 2) / 4) * (Fintype.card (ProductIndex γ) : ℝ) ^ 2 := by
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ) ≤
+      ((2 + Real.sqrt 2) / 4) * (Fintype.card (ProductIndex γ) : ℝ) ^ (2 : ℕ) := by
   have htrace := trace_productControlledPhaseTarget_norm_sq_le_sharp A B z r hz hre hr
   have hprod := diagonalEnergy_product_le_card_of_kronecker_unitary A B hW
   have hcoef : 0 ≤ (2 + Real.sqrt 2) * (Fintype.card γ : ℝ) := by positivity
@@ -151,14 +151,14 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_sharp_const
     simp [ProductIndex]
     ring
   calc
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ)
         ≤ diagonalEnergy A * ((2 + Real.sqrt 2) * (Fintype.card γ : ℝ) *
             diagonalEnergy B) := htrace
     _ = ((2 + Real.sqrt 2) * (Fintype.card γ : ℝ)) *
           (diagonalEnergy A * diagonalEnergy B) := by ring
     _ ≤ ((2 + Real.sqrt 2) * (Fintype.card γ : ℝ)) *
           (Fintype.card (ProductIndex γ) : ℝ) := hscaled
-    _ = ((2 + Real.sqrt 2) / 4) * (Fintype.card (ProductIndex γ) : ℝ) ^ 2 := by
+    _ = ((2 + Real.sqrt 2) / 4) * (Fintype.card (ProductIndex γ) : ℝ) ^ (2 : ℕ) := by
       rw [hcard]
       ring
 
@@ -202,7 +202,7 @@ theorem choiDist_kronecker_productControlledPhaseTarget_ge_sharp
   have htrace := trace_productControlledPhaseTarget_norm_sq_le_sharp_const
     A B z r hz hre hr hW
   have hratio :
-      (‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ / D) ^ 2 ≤
+      (‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ / D) ^ (2 : ℕ) ≤
         (2 + Real.sqrt 2) / 4 := by
     rw [div_pow, div_le_iff₀ (sq_pos_of_pos hD)]
     dsimp only [D]

@@ -19,7 +19,7 @@ cap action -> left-QNM contact comparison -> HB B2 decision`.
 namespace RHTower.D4BMLiteralCyclicPeierlsCapDefect
 
 open GaloisForLFunctions.HTGeometry
-open D4BMHorizon D4BMModularCore D4BMLaplaceRadial
+open D4BMHorizon D4BMModularCore D4BMLaplaceRadial D4BMGlobalAngularResponse
 open D4BMFutureSeedHorizon D4BMFutureHorizon D4BMCapRadialMemory
 open D4BMFullSeedCapPhysicalAction D4BMLiteralCyclicPeierlsLiftDefect
 

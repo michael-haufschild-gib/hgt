@@ -34,16 +34,16 @@ theorem abs_spectralPowerKernel_le {phi : iota → X → ℝ} {lam : iota → �
     (hlam : ∀ j, |lam j| ≤ 1) (hL : ∀ x, featureKernel phi x x ≤ L) (m : ℕ) (x y : X) :
     |spectralPowerKernel phi lam m x y| ≤ L := by
   have hL0 : 0 ≤ L := le_trans (featureKernel_diag_nonneg phi x) (hL x)
-  have hweight : ∀ j, (lam j ^ m) ^ 2 ≤ 1 := by
+  have hweight : ∀ j, (lam j ^ m) ^ (2 : ℕ) ≤ 1 := by
     intro j
     have h1 : |lam j ^ m| ≤ 1 := by
       rw [abs_pow]
       exact pow_le_one₀ (abs_nonneg _) (hlam j)
     nlinarith [abs_nonneg (lam j ^ m), sq_abs (lam j ^ m)]
-  have hdiag : ∀ z : X, (∑ j, (lam j ^ m * phi j z) ^ 2) ≤ L := by
+  have hdiag : ∀ z : X, (∑ j, (lam j ^ m * phi j z) ^ (2 : ℕ)) ≤ L := by
     intro z
     calc
-      (∑ j, (lam j ^ m * phi j z) ^ 2) ≤ ∑ j, phi j z ^ 2 := by
+      (∑ j, (lam j ^ m * phi j z) ^ (2 : ℕ)) ≤ ∑ j, phi j z ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun j _ => ?_
         rw [mul_pow]
         nlinarith [sq_nonneg (phi j z), hweight j]
@@ -54,12 +54,12 @@ theorem abs_spectralPowerKernel_le {phi : iota → X → ℝ} {lam : iota → �
   have heq : (∑ j, lam j ^ m * phi j x * phi j y) = spectralPowerKernel phi lam m x y := by
     unfold spectralPowerKernel
     exact Finset.sum_congr rfl fun j _ => by ring
-  have hy : (∑ j, phi j y ^ 2) ≤ L := by
-    calc (∑ j, phi j y ^ 2) = featureKernel phi y y :=
+  have hy : (∑ j, phi j y ^ (2 : ℕ)) ≤ L := by
+    calc (∑ j, phi j y ^ (2 : ℕ)) = featureKernel phi y y :=
           (Finset.sum_congr rfl fun j _ => by ring)
       _ ≤ L := hL y
   rw [heq] at hcs
-  have hsq : spectralPowerKernel phi lam m x y ^ 2 ≤ L * L := by
+  have hsq : spectralPowerKernel phi lam m x y ^ (2 : ℕ) ≤ L * L := by
     refine le_trans hcs ?_
     refine mul_le_mul (hdiag x) hy ?_ hL0
     exact Finset.sum_nonneg fun j _ => sq_nonneg _
@@ -114,14 +114,14 @@ theorem abs_spectralResolventKernel_le {phi : iota → X → ℝ} {lam : iota �
 the centred projection: the number of centred modes. -/
 theorem featureKernel_diag_eq_card_of_const {X : Type*} [Fintype X]
     (phi : iota → X → ℝ) (pi : X → ℝ) (hpi : ∑ x, pi x = 1)
-    (hortho : ∀ j, ∑ x, pi x * phi j x ^ 2 = 1)
+    (hortho : ∀ j, ∑ x, pi x * phi j x ^ (2 : ℕ) = 1)
     {c : ℝ} (hconst : ∀ x, featureKernel phi x x = c) :
     c = (Fintype.card iota : ℝ) := by
   have h1 : ∑ x, pi x * featureKernel phi x x = c := by
     simp_rw [hconst]
     rw [← Finset.sum_mul, hpi, one_mul]
   have h2 : ∑ x, pi x * featureKernel phi x x = (Fintype.card iota : ℝ) := by
-    have hexp : ∀ x : X, pi x * featureKernel phi x x = ∑ j, pi x * phi j x ^ 2 := by
+    have hexp : ∀ x : X, pi x * featureKernel phi x x = ∑ j, pi x * phi j x ^ (2 : ℕ) := by
       intro x
       unfold featureKernel
       rw [Finset.mul_sum]
@@ -149,9 +149,9 @@ def matrixCoefficientFamily (rho : X → Matrix (Fin N) (Fin N) ℂ) :
 complex dimension `N` has dimension at most `2N² + 1`. -/
 theorem finrank_matrixCoefficientSector_le (rho : X → Matrix (Fin N) (Fin N) ℂ) :
     Module.finrank ℝ
-      (Submodule.span ℝ (Set.range (matrixCoefficientFamily rho))) ≤ 2 * N ^ 2 + 1 := by
+      (Submodule.span ℝ (Set.range (matrixCoefficientFamily rho))) ≤ 2 * N ^ (2 : ℕ) + 1 := by
   refine le_trans (finrank_range_le_card (matrixCoefficientFamily rho)) ?_
-  have hcard : Fintype.card (Option (Bool × (Fin N × Fin N))) = 2 * N ^ 2 + 1 := by
+  have hcard : Fintype.card (Option (Bool × (Fin N × Fin N))) = 2 * N ^ (2 : ℕ) + 1 := by
     simp [Fintype.card_option, Fintype.card_prod]
     ring
   rw [hcard]
@@ -217,7 +217,7 @@ theorem featureKernel_diag_const_of_transitive {phi : iota → X → ℝ}
 /-- **`(8c)`.**  Under a transitive measure-preserving symmetry the leverage is exactly the number
 of centred modes. -/
 theorem featureKernel_diag_eq_card_of_transitive [Fintype X] {phi : iota → X → ℝ}
-    (pi : X → ℝ) (hpi : ∑ x, pi x = 1) (hortho : ∀ j, ∑ x, pi x * phi j x ^ 2 = 1)
+    (pi : X → ℝ) (hpi : ∑ x, pi x = 1) (hortho : ∀ j, ∑ x, pi x * phi j x ^ (2 : ℕ) = 1)
     (hsym : ∀ x y : X, ∃ (g : X → X) (O : Matrix iota iota ℝ),
       IsFeatureSymmetry phi g O ∧ g x = y) (x : X) :
     featureKernel phi x x = (Fintype.card iota : ℝ) :=
@@ -227,7 +227,7 @@ theorem featureKernel_diag_eq_card_of_transitive [Fintype X] {phi : iota → X �
 /-- **`(8c)`, the resolvent form.** -/
 theorem abs_spectralResolventKernel_le_card [Fintype X] {phi : iota → X → ℝ}
     {lam : iota → ℝ} {a : ℝ} (ha : 0 ≤ a) (ha1 : a < 1) (hlam : ∀ j, |lam j| ≤ 1)
-    (pi : X → ℝ) (hpi : ∑ x, pi x = 1) (hortho : ∀ j, ∑ x, pi x * phi j x ^ 2 = 1)
+    (pi : X → ℝ) (hpi : ∑ x, pi x = 1) (hortho : ∀ j, ∑ x, pi x * phi j x ^ (2 : ℕ) = 1)
     (hsym : ∀ x y : X, ∃ (g : X → X) (O : Matrix iota iota ℝ),
       IsFeatureSymmetry phi g O ∧ g x = y) (x y : X) :
     |spectralResolventKernel phi lam a x y| ≤ (Fintype.card iota : ℝ) / (1 - a) :=

@@ -82,9 +82,9 @@ private theorem normSq_sum_le_card_mul_sum_normSq
   have htri : ‖∑ n ∈ S, b n‖ ≤ ∑ n ∈ S, ‖b n‖ := norm_sum_le _ _
   have hsum0 : 0 ≤ ∑ n ∈ S, ‖b n‖ := by positivity
   calc
-    Complex.normSq (∑ n ∈ S, b n) = ‖∑ n ∈ S, b n‖ ^ 2 :=
+    Complex.normSq (∑ n ∈ S, b n) = ‖∑ n ∈ S, b n‖ ^ (2 : ℕ) :=
       (Complex.sq_norm _).symm
-    _ ≤ (∑ n ∈ S, ‖b n‖) ^ 2 := by
+    _ ≤ (∑ n ∈ S, ‖b n‖) ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (∑ n ∈ S, b n)]
     _ ≤ (S.card : ℝ) * ∑ n ∈ S, Complex.normSq (b n) := by
       simpa only [Complex.sq_norm] using
@@ -150,7 +150,7 @@ residue energy replaced by its unconditional multiplicity budget. -/
 theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_Icc_sq_le_interval_interpolated
     (M N : ℕ) (Q : Finset ℕ) (w b : ℕ → ℂ) :
     ‖kloostermanDistinctModulusTerminalGramQuadratic
-        M Q w (Finset.Icc 1 N) b‖ ^ 2 ≤
+        M Q w (Finset.Icc 1 N) b‖ ^ (2 : ℕ) ≤
       kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           kloostermanIntervalSourceEnergyBudget q N b *
@@ -231,7 +231,7 @@ def kloostermanIntervalTerminalSchurRowBudget
 /-- Squared modulus weights charged against their own literal-interval Schur rows. -/
 def kloostermanIntervalTerminalSchurWeightEnergy
     (M N : ℕ) (Q : Finset ℕ) (w b : ℕ → ℂ) : ℝ :=
-  ∑ q ∈ Q, ‖w q‖ ^ 2 *
+  ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
     kloostermanIntervalTerminalSchurRowBudget M N Q b q
 
 private theorem kloostermanIntervalSourceEnergyBudget_nonneg

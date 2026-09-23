@@ -22,15 +22,15 @@ open Set
 
 /-- The clock field of a bivariate function: its value at the null coordinates of an event. -/
 noncomputable def nullChartFun (u : ℝ → ℝ → ℝ) : (Fin (1 + 1) → ℝ) → ℝ :=
-  fun y => chartFun u (nullFrame y)
+  fun y => clockChartFun u (nullFrame y)
 
 theorem nullChartFun_apply (u : ℝ → ℝ → ℝ) (y : Fin (1 + 1) → ℝ) :
     nullChartFun u y = u (nullFrame y 0) (nullFrame y 1) := rfl
 
 theorem nullChartFun_comp_invNullFrame (u : ℝ → ℝ → ℝ) :
-    (fun y : Fin (1 + 1) → ℝ => nullChartFun u (invNullFrame y)) = chartFun u := by
+    (fun y : Fin (1 + 1) → ℝ => nullChartFun u (invNullFrame y)) = clockChartFun u := by
   funext y
-  show chartFun u (nullFrame (invNullFrame y)) = chartFun u y
+  show clockChartFun u (nullFrame (invNullFrame y)) = clockChartFun u y
   rw [nullFrame_invNullFrame]
 
 /-- **A twice continuously differentiable characteristic solution is a clock probe.** -/

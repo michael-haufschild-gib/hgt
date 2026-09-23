@@ -144,7 +144,7 @@ theorem isRieszMeasureOf_greenFunctionDyn_of_isBrolinMeasure {c : ℂ} {μ : Mea
 
 /-- The dynamical Green function satisfies the global quadratic scaling law,
 including points of the filled Julia set where both sides are zero. -/
-theorem greenFunctionDyn_quadratic (c z : ℂ) :
+theorem greenFunctionDyn_quadratic_basic (c z : ℂ) :
     greenFunctionDyn c (quadratic c z) = 2 * greenFunctionDyn c z := by
   by_cases hz : z ∈ filledJulia c
   · have hfz : quadratic c z ∈ filledJulia c :=
@@ -157,16 +157,16 @@ theorem greenFunctionDyn_quadratic (c z : ℂ) :
 
 /-- Iterated Green-function scaling: `G_c(f_c^[n] z)=2^n G_c(z)` on all of
 `ℂ`. -/
-theorem greenFunctionDyn_iterate (c z : ℂ) (n : ℕ) :
+theorem greenFunctionDyn_iterate_basic (c z : ℂ) (n : ℕ) :
     greenFunctionDyn c ((quadratic c)^[n] z) =
       (2 ^ n : ℝ) * greenFunctionDyn c z := by
   induction n with
   | zero => simp
   | succ n ih =>
-      rw [Function.iterate_succ_apply', greenFunctionDyn_quadratic, ih, pow_succ]
+      rw [Function.iterate_succ_apply', greenFunctionDyn_quadratic_basic, ih, pow_succ]
       ring
 
-/-- Antipodal points have the same forward-orbit norms under `z ↦ z^2 + c`. -/
+/-- Antipodal points have the same forward-orbit norms under `z ↦ z^(2 : ℕ) + c`. -/
 theorem quadratic_iterate_norm_neg (c z : ℂ) (n : ℕ) :
     ‖(quadratic c)^[n] (-z)‖ = ‖(quadratic c)^[n] z‖ := by
   cases n with

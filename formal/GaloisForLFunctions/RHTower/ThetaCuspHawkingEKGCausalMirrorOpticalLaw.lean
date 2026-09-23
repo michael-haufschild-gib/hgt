@@ -15,7 +15,7 @@ two causal orderings.
 The resulting exact optical law is
 
 `Gamma_R(a) + Gamma_R(-a)
-    = -32 pi (integral k_a) (integral (k_a')^2) < 0`.
+    = -32 pi (integral k_a) (integral (k_a')^(2 : ℕ)) < 0`.
 
 Thus genuine EKG dynamics fixes the entire reflection-even component of the cubic response in
 the negative chamber.  Only the reflection-odd causal anomaly can distinguish a tilted sector
@@ -35,7 +35,7 @@ namespace RHTower
 
 /-- Positive quadratic derivative-energy density of the tilted outgoing EKG generator. -/
 def thetaCuspTiltedEKGDerivativeEnergyDensity (a u : ℝ) : ℝ :=
-  deriv (thetaCuspTiltedSource a) u ^ 2
+  deriv (thetaCuspTiltedSource a) u ^ (2 : ℕ)
 
 /-- Retarded Einstein memory: derivative energy to the causal future of `s`. -/
 def thetaCuspTiltedEKGRetardedDerivativeEnergy (a s : ℝ) : ℝ :=
@@ -134,7 +134,7 @@ theorem integrable_thetaCuspTiltedEKGDerivativeEnergyDensity
     have hdx := abs_deriv_thetaCuspTiltedSource_le ha x
     rw [thetaCuspTiltedEKGDerivativeEnergyDensity, Real.norm_eq_abs,
       Real.norm_eq_abs]
-    change abs (deriv (thetaCuspTiltedSource a) x ^ 2) ≤
+    change abs (deriv (thetaCuspTiltedSource a) x ^ (2 : ℕ)) ≤
       abs (thetaCuspTiltedDerivativeConstant a 1 *
         abs (deriv (thetaCuspTiltedSource a) x))
     rw [abs_pow, abs_mul, abs_of_nonneg hC, abs_abs]
@@ -635,7 +635,7 @@ theorem integral_thetaCuspTiltedEKGDerivativeEnergyDensity_pos
     (continuous_thetaCuspTiltedEKGDerivativeEnergyDensity a)
     (integrable_thetaCuspTiltedEKGDerivativeEnergyDensity ha)
     (fun u => sq_nonneg _)
-  change deriv (thetaCuspTiltedSource a) x ^ 2 ≠ 0
+  change deriv (thetaCuspTiltedSource a) x ^ (2 : ℕ) ≠ 0
   exact pow_ne_zero 2 hx
 
 /-- **Exact causal-mirror EKG optical law.**  Mirror-sector retarded coefficients have a

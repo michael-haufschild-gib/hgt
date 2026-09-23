@@ -147,7 +147,7 @@ theorem exists_thetaCuspCenterMixed_oddParityWall_pos_right
   have h7 : iteratedDeriv 7 f 0 = 0 :=
     iteratedDeriv_zero_of_even_real_of_odd heven (by norm_num)
   have h6 : 0 < iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-      iteratedDeriv 4 f 0 ^ 2 :=
+      iteratedDeriv 4 f 0 ^ (2 : ℕ) :=
     thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos ha0 ha
   rcases HilbertMetric.exists_fourPointOddWall_pos_right hf h1 h3 h5 h7 h6 with
     ⟨delta, hdelta, hwall⟩

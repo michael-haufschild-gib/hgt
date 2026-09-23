@@ -240,7 +240,7 @@ private theorem hsInner_sum_right {ι κ : Type*} [DecidableEq κ]
   rw [← HilbertSchmidt.hsInner_conj_symm]
 
 /-- The source-built factor `K_a p(T_a)`.  Its Hilbert--Schmidt energy is the factorized form of
-`Tr(T_a p(T_a)^2)` and is defined without an Xi zero divisor. -/
+`Tr(T_a p(T_a)^(2 : ℕ))` and is defined without an Xi zero divisor. -/
 def soninAllPrimePolynomialProbeKernel (a : ℝ) (p : Polynomial ℝ) :
     SoninAllPrimeIndex × SoninAllPrimeIndex → ℂ :=
   ∑ n ∈ p.support,

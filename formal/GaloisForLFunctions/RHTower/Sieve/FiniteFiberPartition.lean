@@ -12,7 +12,7 @@ def finiteFiberCountWith {α β : Type*} [Fintype α] [DecidableEq β]
 
 def finiteFiberEnergyWith {α β : Type*} [Fintype α] [Fintype β]
     [DecidableEq β] (f : α → β) (p : α → Prop) [DecidablePred p] : ℕ :=
-  ∑ b : β, finiteFiberCountWith f p b ^ 2
+  ∑ b : β, finiteFiberCountWith f p b ^ (2 : ℕ)
 
 theorem finiteFiberCount_eq_add_with_not
     {α β : Type*} [Fintype α] [DecidableEq β]
@@ -26,13 +26,13 @@ theorem finiteFiberCount_eq_add_with_not
     and_comm, and_left_comm, and_assoc] using h.symm
 
 theorem add_sq_le_two_sq_add_sq (a b : ℕ) :
-    (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by
+    (a + b) ^ (2 : ℕ) ≤ 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
   calc
-    (a + b) ^ 2 = a ^ 2 + 2 * a * b + b ^ 2 := by ring
-    _ ≤ a ^ 2 + (a ^ 2 + b ^ 2) + b ^ 2 := by
+    (a + b) ^ (2 : ℕ) = a ^ (2 : ℕ) + 2 * a * b + b ^ (2 : ℕ) := by ring
+    _ ≤ a ^ (2 : ℕ) + (a ^ (2 : ℕ) + b ^ (2 : ℕ)) + b ^ (2 : ℕ) := by
       gcongr
       exact two_mul_le_add_sq a b
-    _ = 2 * (a ^ 2 + b ^ 2) := by ring
+    _ = 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by ring
 
 /-- Partitioning every fibre into good and bad elements costs only the
 binary square factor `2`. -/
@@ -45,20 +45,20 @@ theorem finiteFiberEnergy_le_partition
   classical
   unfold finiteFiberEnergy finiteFiberEnergyWith
   calc
-    (∑ b : β, finiteFiberCount f b ^ 2) =
+    (∑ b : β, finiteFiberCount f b ^ (2 : ℕ)) =
         ∑ b : β, (finiteFiberCountWith f p b +
-          finiteFiberCountWith f (fun a => ¬p a) b) ^ 2 := by
+          finiteFiberCountWith f (fun a => ¬p a) b) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro b _
       rw [finiteFiberCount_eq_add_with_not (p := p)]
     _ ≤ ∑ b : β, 2 *
-        (finiteFiberCountWith f p b ^ 2 +
-          finiteFiberCountWith f (fun a => ¬p a) b ^ 2) := by
+        (finiteFiberCountWith f p b ^ (2 : ℕ) +
+          finiteFiberCountWith f (fun a => ¬p a) b ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro b _
       exact add_sq_le_two_sq_add_sq _ _
-    _ = 2 * ((∑ b : β, finiteFiberCountWith f p b ^ 2) +
-        ∑ b : β, finiteFiberCountWith f (fun a => ¬p a) b ^ 2) := by
+    _ = 2 * ((∑ b : β, finiteFiberCountWith f p b ^ (2 : ℕ)) +
+        ∑ b : β, finiteFiberCountWith f (fun a => ¬p a) b ^ (2 : ℕ)) := by
       simp_rw [mul_add, Finset.sum_add_distrib, ← Finset.mul_sum]
 
 theorem finiteFiberEnergyWith_eq_card

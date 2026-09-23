@@ -71,7 +71,7 @@ theorem mtPrimeBlockAF_polynomialDivisorBounded (S : Finset ℕ) :
     MTPolynomialDivisorBounded (fun n => mtPrimeBlockAF S n) := by
   refine ⟨1, by norm_num, 0, ?_⟩
   intro n hn
-  change ‖mtPrimeBlockAF S n‖ ≤ 1 * (n.divisors.card : ℝ) ^ 0
+  change ‖mtPrimeBlockAF S n‖ ≤ 1 * (n.divisors.card : ℝ) ^ (0 : ℕ)
   rw [mtPrimeBlockAF_apply_of_pos S hn]
   by_cases hmem : n ∈ S <;> simp [hmem]
 

@@ -26,20 +26,20 @@ def equalPhaseAmplitude (phase : d → ℂ) : ℂ :=
 
 /-- The ordered pairwise squared-distance energy of a finite phase packet. -/
 def phasePairwiseSqEnergy (phase : d → ℂ) : ℝ :=
-  ∑ i, ∑ j, ‖phase i - phase j‖ ^ 2
+  ∑ i, ∑ j, ‖phase i - phase j‖ ^ (2 : ℕ)
 
 /-- For unit phases, ordered pairwise energy is exactly twice the square of
 the cardinality times the fidelity deficit of the normalized amplitude. -/
 theorem phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit
     (phase : d → ℂ) (hphase : ∀ i, ‖phase i‖ = 1) :
     phasePairwiseSqEnergy phase =
-      2 * (Fintype.card d : ℝ) ^ 2 *
-        (1 - ‖equalPhaseAmplitude phase‖ ^ 2) := by
+      2 * (Fintype.card d : ℝ) ^ (2 : ℕ) *
+        (1 - ‖equalPhaseAmplitude phase‖ ^ (2 : ℕ)) := by
   let D : ℝ := Fintype.card d
   have hcenter := sum_norm_sub_sq_eq_centered_add_card_mul phase (0 : ℂ)
   have hcentered :
-      ∑ i, ‖phase i - hilbertCentroid phase‖ ^ 2 =
-        D * (1 - ‖hilbertCentroid phase‖ ^ 2) := by
+      ∑ i, ‖phase i - hilbertCentroid phase‖ ^ (2 : ℕ) =
+        D * (1 - ‖hilbertCentroid phase‖ ^ (2 : ℕ)) := by
     simp only [sub_zero, hphase, one_pow, Finset.sum_const, Finset.card_univ,
       nsmul_eq_mul] at hcenter
     nlinarith
@@ -55,29 +55,29 @@ theorem exists_phasePivot_sum_norm_sub_sq_le
     [Nonempty d]
     (phase : d → ℂ) (hphase : ∀ i, ‖phase i‖ = 1)
     {η : ℝ} (hcoh : 1 - η ≤ ‖equalPhaseAmplitude phase‖) :
-    ∃ k, ∑ j, ‖phase j - phase k‖ ^ 2 ≤
+    ∃ k, ∑ j, ‖phase j - phase k‖ ^ (2 : ℕ) ≤
       4 * η * (Fintype.card d : ℝ) := by
   let D : ℝ := Fintype.card d
   have hnorm : ‖equalPhaseAmplitude phase‖ ≤ 1 := by
     exact norm_hilbertCentroid_le_of_norm_le phase fun i ↦ (hphase i).le
-  have hdefect : 1 - ‖equalPhaseAmplitude phase‖ ^ 2 ≤ 2 * η := by
+  have hdefect : 1 - ‖equalPhaseAmplitude phase‖ ^ (2 : ℕ) ≤ 2 * η := by
     nlinarith [norm_nonneg (equalPhaseAmplitude phase)]
-  have hpair : phasePairwiseSqEnergy phase ≤ 4 * η * D ^ 2 := by
+  have hpair : phasePairwiseSqEnergy phase ≤ 4 * η * D ^ (2 : ℕ) := by
     rw [phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit phase hphase]
     dsimp only [D]
     nlinarith [sq_nonneg D]
   by_contra h
   push Not at h
   have hstrict :
-      ∑ _k : d, (4 * η * D) < ∑ k, ∑ j, ‖phase j - phase k‖ ^ 2 := by
+      ∑ _k : d, (4 * η * D) < ∑ k, ∑ j, ‖phase j - phase k‖ ^ (2 : ℕ) := by
     apply Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty
     intro k hk
     simpa only [D] using h k
-  have hleft : ∑ _k : d, (4 * η * D) = 4 * η * D ^ 2 := by
+  have hleft : ∑ _k : d, (4 * η * D) = 4 * η * D ^ (2 : ℕ) := by
     simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, D]
     ring
   have hright :
-      (∑ k, ∑ j, ‖phase j - phase k‖ ^ 2) =
+      (∑ k, ∑ j, ‖phase j - phase k‖ ^ (2 : ℕ)) =
         phasePairwiseSqEnergy phase := by
     rw [phasePairwiseSqEnergy, Finset.sum_comm]
   rw [hleft, hright] at hstrict
@@ -102,7 +102,7 @@ normalized amplitude loses at most `2π²/(Q+1)²` from perfect coherence. -/
 theorem exists_phaseClockAmplitude_coherence_quantitative
     {d Q : ℕ} (hd : 0 < d) (ω : Fin d → ℝ) :
     ∃ n : ℕ, 0 < n ∧ n ≤ (Q + 1) ^ d ∧
-      1 - (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 / 2 ≤
+      1 - (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) / 2 ≤
         ‖phaseClockAmplitude ω n‖ := by
   letI : NeZero d := ⟨hd.ne'⟩
   obtain ⟨n, hnpos, hnTop, r, hr⟩ :=

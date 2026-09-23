@@ -22,7 +22,7 @@ theorem chart_jacobian (p : Point3) :
     Matrix.det (fun j i : Fin 3 => fderiv ℝ chart p (Pi.single i 1) j) = chart p 1 := by
   simp_rw [chart_fderiv_basis]
   rw [Matrix.det_fin_three]
-  change (-p 2*warp (p 0)^2)*0*0 - (-p 2*warp (p 0)^2)*warp (p 0)*1 -
+  change (-p 2*warp (p 0)^(2 : ℕ))*0*0 - (-p 2*warp (p 0)^(2 : ℕ))*warp (p 0)*1 -
     0*(p 2*warp (p 0)*radialUnit (p 0))*0 + 0*warp (p 0)*0 +
     radialUnit (p 0)*(p 2*warp (p 0)*radialUnit (p 0))*1 -
     radialUnit (p 0)*0*0 = p 2*warp (p 0)
@@ -35,7 +35,7 @@ theorem chart_jacobian_pos (p : Point3) (hp : 0 < p 2) :
 
 /-- The actual field weight has the exact positive square required by the transformed mass density. -/
 theorem weight_norm_sq (p : Point3) (hp : 0 < p 2) :
-    ‖weight p‖^2 = p 2/warp (p 0) := by
+    ‖weight p‖^(2 : ℕ) = p 2/warp (p 0) := by
   rw [weight,norm_mul,Complex.norm_real,Complex.norm_real,
     Real.norm_eq_abs,Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _),
     abs_of_pos (radialRoot_pos _),mul_pow]
@@ -45,9 +45,9 @@ theorem weight_norm_sq (p : Point3) (hp : 0 < p 2) :
 
 /-- Combining the actual Jacobian and field weight converts the native scalar mass density to Y⁻². -/
 theorem chart_weighted_mass_density (p : Point3) (hp : 0 < p 2) :
-    ‖weight p‖^2/((p 2)^2*
+    ‖weight p‖^(2 : ℕ)/((p 2)^(2 : ℕ)*
       Matrix.det (fun j i : Fin 3 => fderiv ℝ chart p (Pi.single i 1) j)) =
-      1/(chart p 1)^2 := by
+      1/(chart p 1)^(2 : ℕ) := by
   have hy := ne_of_gt hp
   have ha := ne_of_gt (warp_pos (p 0))
   rw [weight_norm_sq p hp,chart_jacobian]

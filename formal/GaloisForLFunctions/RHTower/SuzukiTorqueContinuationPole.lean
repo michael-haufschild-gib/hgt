@@ -159,18 +159,18 @@ theorem meromorphicOrderAt_continuation_eq_neg_two {ρ : ℂ} (h0 : 0 < ρ.re) (
     rw [hsum, hLord, hRneg] at h
     rw [h]
     exact min_eq_left (analytic_neg_two_le_meromorphicOrderAt hRan)
-  have hdenMero : MeromorphicAt (fun s : ℂ => 2 * s ^ 2) p :=
+  have hdenMero : MeromorphicAt (fun s : ℂ => 2 * s ^ (2 : ℕ)) p :=
     (analyticAt_const.mul (analyticAt_id.pow 2)).meromorphicAt
-  have hden : meromorphicOrderAt (fun s : ℂ => 2 * s ^ 2) p = 0 := by
-    have han : AnalyticAt ℂ (fun s : ℂ => 2 * s ^ 2) p :=
+  have hden : meromorphicOrderAt (fun s : ℂ => 2 * s ^ (2 : ℕ)) p = 0 := by
+    have han : AnalyticAt ℂ (fun s : ℂ => 2 * s ^ (2 : ℕ)) p :=
       analyticAt_const.mul (analyticAt_id.pow 2)
-    have hval : (fun s : ℂ => 2 * s ^ 2) p ≠ 0 :=
+    have hval : (fun s : ℂ => 2 * s ^ (2 : ℕ)) p ≠ 0 :=
       mul_ne_zero (by norm_num) (pow_ne_zero 2 hpne)
     rw [han.meromorphicOrderAt_eq, han.analyticOrderAt_eq_zero.mpr hval]
     simp
   have hdiv : suzukiPositionTorqueLaplaceContinuation
       = (fun s : ℂ => deriv (logDeriv xi) (s - 1 / 2) - deriv (logDeriv xi) (s + 3 / 2))
-        / (fun s : ℂ => 2 * s ^ 2) := by
+        / (fun s : ℂ => 2 * s ^ (2 : ℕ)) := by
     funext s
     rw [suzukiPositionTorqueLaplaceContinuation]
     rfl

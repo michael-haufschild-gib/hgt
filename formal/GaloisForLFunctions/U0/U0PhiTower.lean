@@ -19,7 +19,7 @@ open U0PhiLargeWindow U0PhiLargeCarrier U0PhiKummerLayers
 
 /-- Adjacent large-window Kummer layers square to the previous layer. -/
 theorem phiBRoot_succ_sq (k : ℕ) (b z : ℂ) :
-    phiBRoot (k + 1) b z ^ 2 = phiBRoot k b z := by
+    phiBRoot (k + 1) b z ^ (2 : ℕ) = phiBRoot k b z := by
   unfold phiBRoot
   rw [← Complex.exp_nat_mul]
   congr 1

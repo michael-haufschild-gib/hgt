@@ -40,16 +40,16 @@ theorem noetherFirst_hilbertLineTranslationEnergy
 theorem noetherFirst_symmetricFockLoweringCharge
     {I : Type*} [Fintype I] [DecidableEq I]
     (n : ℕ) (x : EuclideanSpace ℝ (Sym I (n + 1))) :
-    ∑ i, ‖(symmetricFockAnnihilation n i) x‖ ^ 2 =
-      ((n : ℝ) + 1) * ‖x‖ ^ 2 :=
+    ∑ i, ‖(symmetricFockAnnihilation n i) x‖ ^ (2 : ℕ) =
+      ((n : ℝ) + 1) * ‖x‖ ^ (2 : ℕ) :=
   symmetricFockAnnihilation_energy n x
 
 /-- Total adjoint-raising energy is degree plus mode-count charge. -/
 theorem noetherFirst_symmetricFockRaisingCharge
     {I : Type*} [Fintype I] [DecidableEq I]
     (n : ℕ) (y : EuclideanSpace ℝ (Sym I n)) :
-    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ 2 =
-      ((n : ℝ) + Fintype.card I) * ‖y‖ ^ 2 :=
+    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ (2 : ℕ) =
+      ((n : ℝ) + Fintype.card I) * ‖y‖ ^ (2 : ℕ) :=
   symmetricFockAnnihilation_adjoint_energy n y
 
 end GaloisForLFunctions.HilbertMetric

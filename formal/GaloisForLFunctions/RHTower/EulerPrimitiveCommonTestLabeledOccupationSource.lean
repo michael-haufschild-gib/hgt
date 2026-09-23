@@ -235,7 +235,7 @@ theorem tendsto_eulerPrimitiveBoundaryHeadOccupationMass
 
 /--
 The singular Hodge scale is the exact limiting occupation-mass ratio:
-`q(u)^2 * head(u) = tail(u)`.
+`q(u)^(2 : ℕ) * head(u) = tail(u)`.
 -/
 theorem eulerPrimitiveBoundaryHodgeScale_sq_mul_headWeight
     {u : ℝ} (hu : 0 < u) :

@@ -13,68 +13,68 @@ theorem centralPaired_reciprocalSquare_orderTwentyThree_gap
     (z : ℂ) (hzre : 0 < z.re) (hzreUpper : z.re ≤ 279 / 20)
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
     (2 / 215 : ℝ) <
-      (1 - (xiZeroCopyReciprocalSquare q).re * (z ^ 2).re) ^ 2 := by
+      (1 - (xiZeroCopyReciprocalSquare q).re * (z ^ (2 : ℕ)).re) ^ (2 : ℕ) := by
   let a : ℝ := (xiZeroCopyReciprocalSquare q).re
   let t : ℝ := (q.1 : ℂ).im
-  let u : ℝ := (z ^ 2).re
+  let u : ℝ := (z ^ (2 : ℕ)).re
   have ha : 0 < a := by
     simpa only [a, xiThermalNode] using xiThermalNode_pos q
-  have ht : (431 / 2 : ℝ) ≤ t ^ 2 := by
+  have ht : (431 / 2 : ℝ) ≤ t ^ (2 : ℕ) := by
     simpa only [t] using
       fourHundredThirtyOne_halves_le_im_sq_of_xiZeroCopy_offLine q hoff
-  have ht0 : 0 < t ^ 2 := by nlinarith
-  have hare : a ≤ 1 / t ^ 2 := by
+  have ht0 : 0 < t ^ (2 : ℕ) := by nlinarith
+  have hare : a ≤ 1 / t ^ (2 : ℕ) := by
     simpa only [a, t] using
       centralPaired_reciprocalSquare_re_le_inv_ordinate_sq q ht0
-  have hu : u ≤ z.re ^ 2 := by
+  have hu : u ≤ z.re ^ (2 : ℕ) := by
     dsimp only [u]
     rw [pow_two]
     simp only [Complex.mul_re]
     nlinarith [sq_nonneg z.im]
-  have hau : a * u ≤ a * z.re ^ 2 :=
+  have hau : a * u ≤ a * z.re ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hu ha.le
-  have hzr : z.re ^ 2 ≤ (279 / 20 : ℝ) ^ 2 := by
+  have hzr : z.re ^ (2 : ℕ) ≤ (279 / 20 : ℝ) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (z.re + 279 / 20)]
-  have hat : a * t ^ 2 ≤ 1 := by
+  have hat : a * t ^ (2 : ℕ) ≤ 1 := by
     calc
-      a * t ^ 2 ≤ (1 / t ^ 2) * t ^ 2 :=
+      a * t ^ (2 : ℕ) ≤ (1 / t ^ (2 : ℕ)) * t ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hare ht0.le
       _ = 1 := by
         have htne : t ≠ 0 := by
           intro hzero
-          have hsq : t ^ 2 = 0 := by rw [hzero]; norm_num
+          have hsq : t ^ (2 : ℕ) = 0 := by rw [hzero]; norm_num
           nlinarith
         field_simp [htne]
-  have hR0 : 0 ≤ (279 / 20 : ℝ) ^ 2 := sq_nonneg _
-  have haR0 : 0 ≤ a * (279 / 20 : ℝ) ^ 2 :=
+  have hR0 : 0 ≤ (279 / 20 : ℝ) ^ (2 : ℕ) := sq_nonneg _
+  have haR0 : 0 ≤ a * (279 / 20 : ℝ) ^ (2 : ℕ) :=
     mul_nonneg ha.le hR0
   have hprod :
-      a * (279 / 20 : ℝ) ^ 2 * (431 / 2 : ℝ) ≤
-        a * (279 / 20 : ℝ) ^ 2 * t ^ 2 :=
+      a * (279 / 20 : ℝ) ^ (2 : ℕ) * (431 / 2 : ℝ) ≤
+        a * (279 / 20 : ℝ) ^ (2 : ℕ) * t ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left ht haR0
-  have hAt : a * (279 / 20 : ℝ) ^ 2 * t ^ 2 ≤ (279 / 20 : ℝ) ^ 2 := by
+  have hAt : a * (279 / 20 : ℝ) ^ (2 : ℕ) * t ^ (2 : ℕ) ≤ (279 / 20 : ℝ) ^ (2 : ℕ) := by
     calc
-      a * (279 / 20 : ℝ) ^ 2 * t ^ 2 =
-          (279 / 20 : ℝ) ^ 2 * (a * t ^ 2) := by ring
-      _ ≤ (279 / 20 : ℝ) ^ 2 * 1 :=
+      a * (279 / 20 : ℝ) ^ (2 : ℕ) * t ^ (2 : ℕ) =
+          (279 / 20 : ℝ) ^ (2 : ℕ) * (a * t ^ (2 : ℕ)) := by ring
+      _ ≤ (279 / 20 : ℝ) ^ (2 : ℕ) * 1 :=
         mul_le_mul_of_nonneg_left hat hR0
-      _ = (279 / 20 : ℝ) ^ 2 := by ring
-  have haR : a * (279 / 20 : ℝ) ^ 2 ≤
-      (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ) := by
+      _ = (279 / 20 : ℝ) ^ (2 : ℕ) := by ring
+  have haR : a * (279 / 20 : ℝ) ^ (2 : ℕ) ≤
+      (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ) := by
     apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 431 / 2)).mpr
     exact hprod.trans hAt
-  have hauR : a * u ≤ (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ) := by
+  have hauR : a * u ≤ (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ) := by
     calc
-      a * u ≤ a * z.re ^ 2 := hau
-      _ ≤ a * (279 / 20 : ℝ) ^ 2 :=
+      a * u ≤ a * z.re ^ (2 : ℕ) := hau
+      _ ≤ a * (279 / 20 : ℝ) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hzr ha.le
-      _ ≤ (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ) := haR
-  have hratio : (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ) < 1 := by norm_num
+      _ ≤ (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ) := haR
+  have hratio : (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ) < 1 := by norm_num
   have hmargin : (2 / 215 : ℝ) <
-      (1 - (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ)) ^ 2 := by norm_num
-  change (2 / 215 : ℝ) < (1 - a * u) ^ 2
+      (1 - (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ)) ^ (2 : ℕ) := by norm_num
+  change (2 / 215 : ℝ) < (1 - a * u) ^ (2 : ℕ)
   nlinarith [sq_nonneg ((1 - a * u) +
-    (1 - (279 / 20 : ℝ) ^ 2 / (431 / 2 : ℝ)))]
+    (1 - (279 / 20 : ℝ) ^ (2 : ℕ) / (431 / 2 : ℝ)))]
 
 /-- Every literal line-conjugate reciprocal-square pair has nonnegative Route-Q imaginary
 response through the order-23 radius `279 / 20`. -/
@@ -84,23 +84,23 @@ theorem xiReciprocalSquareResolventTerm_lineConj_pair_im_nonneg_orderTwentyThree
     0 ≤ (xiReciprocalSquareResolventTerm z q +
       xiReciprocalSquareResolventTerm z (xiZeroCopyLineConjEquiv q)).im := by
   let lam : ℂ := xiZeroCopyReciprocalSquare q
-  have hden : 1 - z ^ 2 * lam ≠ 0 := by
+  have hden : 1 - z ^ (2 : ℕ) * lam ≠ 0 := by
     dsimp only [lam]
     exact one_sub_sq_mul_xiZeroCopyReciprocalSquare_ne_zero hXi q
-  have hdenconj : 1 - z ^ 2 * (starRingEnd ℂ) lam ≠ 0 := by
+  have hdenconj : 1 - z ^ (2 : ℕ) * (starRingEnd ℂ) lam ≠ 0 := by
     dsimp only [lam]
     rw [← centralPaired_lineConj_reciprocalSquare q]
     exact one_sub_sq_mul_xiZeroCopyReciprocalSquare_ne_zero hXi
       (xiZeroCopyLineConjEquiv q)
-  have hwim : 0 ≤ (z ^ 2).im := by
+  have hwim : 0 ≤ (z ^ (2 : ℕ)).im := by
     rw [pow_two]
     simp only [Complex.mul_im]
     exact (add_pos (mul_pos hzre hzim) (mul_pos hzim hzre)).le
   have hbarrier : 0 ≤
       Complex.normSq lam *
-          ((1 - (z ^ 2).re * lam.re) ^ 2 + ((z ^ 2).re * lam.im) ^ 2 +
-            (z ^ 2).im ^ 2 * Complex.normSq lam) -
-        2 * lam.im ^ 2 := by
+          ((1 - (z ^ (2 : ℕ)).re * lam.re) ^ (2 : ℕ) + ((z ^ (2 : ℕ)).re * lam.im) ^ (2 : ℕ) +
+            (z ^ (2 : ℕ)).im ^ (2 : ℕ) * Complex.normSq lam) -
+        2 * lam.im ^ (2 : ℕ) := by
     by_cases hoff : (q.1 : ℂ).re = 1 / 2
     · have him : lam.im = 0 := by
         dsimp only [lam]
@@ -108,29 +108,29 @@ theorem xiReciprocalSquareResolventTerm_lineConj_pair_im_nonneg_orderTwentyThree
         norm_num
       rw [him]
       have hnonneg : 0 ≤ Complex.normSq lam *
-          ((1 - (z ^ 2).re * lam.re) ^ 2 +
-            (z ^ 2).im ^ 2 * Complex.normSq lam) :=
+          ((1 - (z ^ (2 : ℕ)).re * lam.re) ^ (2 : ℕ) +
+            (z ^ (2 : ℕ)).im ^ (2 : ℕ) * Complex.normSq lam) :=
         mul_nonneg (Complex.normSq_nonneg _)
           (add_nonneg (sq_nonneg _)
             (mul_nonneg (sq_nonneg _) (Complex.normSq_nonneg _)))
       nlinarith
     · have ha : 0 < lam.re := by
         simpa only [lam, xiThermalNode] using xiThermalNode_pos q
-      have hphase : lam.im ^ 2 < (1 / 215 : ℝ) * lam.re ^ 2 := by
+      have hphase : lam.im ^ (2 : ℕ) < (1 / 215 : ℝ) * lam.re ^ (2 : ℕ) := by
         simpa only [lam] using
           xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt q hoff
       have hgap : (2 / 215 : ℝ) <
-          (1 - lam.re * (z ^ 2).re) ^ 2 := by
+          (1 - lam.re * (z ^ (2 : ℕ)).re) ^ (2 : ℕ) := by
         simpa only [lam] using
           centralPaired_reciprocalSquare_orderTwentyThree_gap z hzre hzreUpper q hoff
       have hpositive := centralPaired_reciprocalSquare_pair_barrier_pos
-        (v := (z ^ 2).im) ha hphase hgap
+        (v := (z ^ (2 : ℕ)).im) ha hphase hgap
       rw [Complex.normSq_apply]
       nlinarith [hpositive.le]
   rw [xiReciprocalSquareResolventTerm, xiReciprocalSquareResolventTerm,
     centralPaired_lineConj_reciprocalSquare q]
   exact centralPaired_lineConj_pair_im_nonneg_of_barrier
-    (z ^ 2) lam hden hdenconj hwim hbarrier
+    (z ^ (2 : ℕ)) lam hden hdenconj hwim hbarrier
 
 /-- The actual continued prime--Gamma reciprocal-square trace has nonnegative sector phase
 through the order-23 Route-Q band. -/

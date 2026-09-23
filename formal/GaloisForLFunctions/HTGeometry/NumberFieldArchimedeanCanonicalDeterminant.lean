@@ -87,7 +87,7 @@ theorem det_numberFieldArchimedeanCanonicalMatrix
     (A : numberFieldArchimedeanPositiveForms K n) :
     (numberFieldArchimedeanCanonicalMatrix A).det =
       (numberFieldArchimedeanSquareCoordinateMatrix
-        (K := K) (n := n)).det ^ 2 *
+        (K := K) (n := n)).det ^ (2 : ℕ) *
         (numberFieldArchimedeanBlockMatrix A).det := by
   rw [numberFieldArchimedeanCanonicalMatrix]
   rw [reindex_rectangular_real_congruence
@@ -104,7 +104,7 @@ theorem det_numberFieldArchimedeanCanonicalMatrix
 theorem normSq_det_eq_re_sq_of_posDef
     {d : Type*} [Fintype d] [DecidableEq d]
     {A : Matrix d d ℂ} (hA : A.PosDef) :
-    Complex.normSq A.det = A.det.re ^ 2 := by
+    Complex.normSq A.det = A.det.re ^ (2 : ℕ) := by
   have hreal : (A.det.re : ℂ) = A.det := by
     rw [hA.isHermitian.det_eq_prod_eigenvalues]
     norm_cast
@@ -119,7 +119,7 @@ theorem det_numberFieldArchimedeanBlockMatrix
       (∏ w : {w : InfinitePlace K // w.IsReal},
         (A.1.1 w : Matrix (Fin n) (Fin n) ℝ).det) *
       ∏ w : {w : InfinitePlace K // w.IsComplex},
-        ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ).det.re) ^ 2 := by
+        ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ).det.re) ^ (2 : ℕ) := by
   rw [numberFieldArchimedeanBlockMatrix, det_matrixOrthogonalSum,
     det_matrixFamilyBlockDiagonal, det_matrixFamilyBlockDiagonal]
   congr 1
@@ -221,7 +221,7 @@ theorem det_numberFieldArchimedeanCanonicalMatrix_eq_coordinate_exp
     (A : numberFieldArchimedeanPositiveForms K n) :
     (numberFieldArchimedeanCanonicalMatrix A).det =
       (numberFieldArchimedeanSquareCoordinateMatrix
-        (K := K) (n := n)).det ^ 2 *
+        (K := K) (n := n)).det ^ (2 : ℕ) *
       Real.exp (numberFieldInfinitePlaceWeight (K := K) *
         numberFieldWeightedPlaceMean
           (fun w ↦ Real.log (numberFieldArchimedeanDet A w))) := by

@@ -112,7 +112,7 @@ theorem criticalSchurRamificationChartElement_dvd :
   have hfm : 0 < m := Fact.out
   have hfn : 0 < n := Fact.out
   refine ⟨⟨(-1 : criticalSourceField K m n) ^ m *
-    (criticalSourceScale K hfm hfn ^ 2) ^ m, ?_⟩, ?_⟩
+    (criticalSourceScale K hfm hfn ^ (2 : ℕ)) ^ m, ?_⟩, ?_⟩
   · refine Subalgebra.mul_mem _
       (Subalgebra.pow_mem _ (Subalgebra.neg_mem _ (Subalgebra.one_mem _)) _) ?_
     refine Subalgebra.pow_mem _ (Subalgebra.pow_mem _ ?_ _) _
@@ -123,15 +123,15 @@ theorem criticalSchurRamificationChartElement_dvd :
         hfn) (criticalSourceSchurRamificationPolynomial K m n)
       = (criticalReciprocalJacobian (criticalSourceReciprocalPolynomial K m n) n m).det *
         ((-1 : criticalSourceField K m n) ^ m *
-          (criticalSourceScale K hfm hfn ^ 2) ^ m)
+          (criticalSourceScale K hfm hfn ^ (2 : ℕ)) ^ m)
     rw [criticalSourceReciprocalJacobian_det_eq_schurRamification K
       hfm hfn]
-    have hs : (criticalSourceScale K hfm hfn ^ 2) ≠ 0 :=
+    have hs : (criticalSourceScale K hfm hfn ^ (2 : ℕ)) ≠ 0 :=
       pow_ne_zero 2 (criticalSourceScale_ne_zero K _ _)
     field_simp
-    have hall : ((-1 : criticalSourceField K m n) ^ m) ^ 2 *
-        ((1 / criticalSourceScale K hfm hfn ^ 2) ^ m *
-          (criticalSourceScale K hfm hfn ^ 2) ^ m) = 1 := by
+    have hall : ((-1 : criticalSourceField K m n) ^ m) ^ (2 : ℕ) *
+        ((1 / criticalSourceScale K hfm hfn ^ (2 : ℕ)) ^ m *
+          (criticalSourceScale K hfm hfn ^ (2 : ℕ)) ^ m) = 1 := by
       rw [← mul_pow, one_div, inv_mul_cancel₀ hs, one_pow, mul_one, ← pow_mul, mul_comm m 2,
         pow_mul, neg_one_sq, one_pow]
     rw [mul_assoc, mul_assoc, hall, mul_one]

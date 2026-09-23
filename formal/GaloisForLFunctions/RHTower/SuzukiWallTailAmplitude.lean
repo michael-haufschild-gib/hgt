@@ -11,7 +11,7 @@ Written in the normalization of the weighted Hardy inequality — that is, after
 
 `t^{1-p}(1+t)^{p}(1+t)^{-2} ≤ (1+t)^{p}t^{-1-p}`,
 
-because `t^2 ≤ (1+t)^2`.  The right side is exactly the Hardy density of the terminal ray, whose
+because `t^(2 : ℕ) ≤ (1+t)^(2 : ℕ)`.  The right side is exactly the Hardy density of the terminal ray, whose
 square is integrable for every `p > 1/2`.  So the growth of the inverse propagator is entirely
 absorbed, and the three separate regimes `p < 1`, `p = 1`, `p > 1` of the classical computation never
 appear.

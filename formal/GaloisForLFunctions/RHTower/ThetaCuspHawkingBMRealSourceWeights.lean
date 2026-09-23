@@ -10,27 +10,27 @@ noncomputable section
 set_option autoImplicit false
 
 def realSourcePhase (u x : ℝ) : ℝ := x^u*(2-x)^(-4*u)
-def realSourceSecondWeight (x : ℝ) : ℝ := x*(1-x)*(8-4*x+6*x^2)/(2-x)^8/(2+3*x)^2
-def realSourceFourthWeight (x : ℝ) : ℝ := 4*x*(1-x)^3*(4+x)/(2-x)^8/(2+3*x)^2
+def realSourceSecondWeight (x : ℝ) : ℝ := x*(1-x)*(8-4*x+6*x^(2 : ℕ))/(2-x)^(8 : ℕ)/(2+3*x)^(2 : ℕ)
+def realSourceFourthWeight (x : ℝ) : ℝ := 4*x*(1-x)^(3 : ℕ)*(4+x)/(2-x)^(8 : ℕ)/(2+3*x)^(2 : ℕ)
 def realSourceSecondDensity (u x : ℝ) : ℝ := realSourcePhase u x*realSourceSecondWeight x
 def realSourceFourthDensity (u x : ℝ) : ℝ := realSourcePhase u x*realSourceFourthWeight x
 def realSourceSecondMoment (u : ℝ) : ℝ := ∫ x in Ioc (0:ℝ) 1, realSourceSecondDensity u x
 def realSourceFourthMoment (u : ℝ) : ℝ := ∫ x in Ioc (0:ℝ) 1, realSourceFourthDensity u x
 
 theorem nonstationaryPolynomial_second_first :
-    nonstationaryPolynomial 2 1=-Polynomial.X*(1-Polynomial.X)*(8-4*Polynomial.X+6*Polynomial.X^2) := by
+    nonstationaryPolynomial 2 1=-Polynomial.X*(1-Polynomial.X)*(8-4*Polynomial.X+6*Polynomial.X^(2 : ℕ)) := by
   have h := nonstationaryWeightStep_factor 1 0 1
   simp only [mul_one] at h
-  change nonstationaryWeightStep ((1-Polynomial.X)^2) 0 = _
+  change nonstationaryWeightStep ((1-Polynomial.X)^(2 : ℕ)) 0 = _
   rw [h]
   norm_num [nonstationaryWeightFactor]
   ring
 
 theorem nonstationaryPolynomial_fourth_first :
-    nonstationaryPolynomial 4 1=-4*Polynomial.X*(1-Polynomial.X)^3*(4+Polynomial.X) := by
+    nonstationaryPolynomial 4 1=-4*Polynomial.X*(1-Polynomial.X)^(3 : ℕ)*(4+Polynomial.X) := by
   have h := nonstationaryWeightStep_factor 1 0 3
   simp only [mul_one] at h
-  change nonstationaryWeightStep ((1-Polynomial.X)^4) 0 = _
+  change nonstationaryWeightStep ((1-Polynomial.X)^(4 : ℕ)) 0 = _
   rw [h]
   norm_num [nonstationaryWeightFactor]
   ring
@@ -87,7 +87,7 @@ theorem realSourceSecondDensity_nonneg (u : ℝ) {x : ℝ} (hx : x ∈ Ioc (0:�
     0 ≤ realSourceSecondDensity u x := by
   have hx0 : 0 < x := hx.1
   have ha : 0 < 2-x := by linarith [hx.2]
-  have hq : 0 ≤ 8-4*x+6*x^2 := by nlinarith [sq_nonneg x]
+  have hq : 0 ≤ 8-4*x+6*x^(2 : ℕ) := by nlinarith [sq_nonneg x]
   have hx1 : 0 ≤ 1-x := by linarith [hx.2]
   unfold realSourceSecondDensity realSourcePhase realSourceSecondWeight
   positivity
@@ -95,7 +95,7 @@ theorem realSourceSecondDensity_nonneg (u : ℝ) {x : ℝ} (hx : x ∈ Ioc (0:�
 theorem realSourceSecondDensity_pos (u : ℝ) {x : ℝ} (hx : x ∈ Ioo (0:ℝ) 1) :
     0 < realSourceSecondDensity u x := by
   have hx0 : 0 < x := hx.1
-  have hq : 0 < 8-4*x+6*x^2 := by nlinarith [sq_nonneg x]
+  have hq : 0 < 8-4*x+6*x^(2 : ℕ) := by nlinarith [sq_nonneg x]
   have hx1 : 0 < 1-x := by linarith [hx.2]
   have ha : 0 < 2-x := by linarith [hx.2]
   have hb : 0 < 2+3*x := by linarith [hx.1]
@@ -117,15 +117,15 @@ theorem realSourceFourthDensity_le_twice_second (u : ℝ) {x : ℝ} (hx : x ∈ 
   have hx0 : 0 < x := hx.1
   have ha : 0 < 2-x := by linarith [hx.2]
   have hx1 : 0 ≤ 1-x := by linarith [hx.2]
-  have hq : 0 ≤ 5+x-x^2 := by nlinarith [mul_nonneg hx.1.le hx1]
-  have hd : 0 ≤ 4*x^2*(1-x)*(5+x-x^2) := by positivity
-  have hn : 4*x*(1-x)^3*(4+x) ≤ 2*(x*(1-x)*(8-4*x+6*x^2)) := by nlinarith
+  have hq : 0 ≤ 5+x-x^(2 : ℕ) := by nlinarith [mul_nonneg hx.1.le hx1]
+  have hd : 0 ≤ 4*x^(2 : ℕ)*(1-x)*(5+x-x^(2 : ℕ)) := by positivity
+  have hn : 4*x*(1-x)^(3 : ℕ)*(4+x) ≤ 2*(x*(1-x)*(8-4*x+6*x^(2 : ℕ))) := by nlinarith
   have h := div_le_div_of_nonneg_right
     (div_le_div_of_nonneg_right hn (pow_nonneg (by linarith [hx.2] : 0 ≤ 2-x) 8)) (sq_nonneg (2+3*x))
   have hp : 0 ≤ realSourcePhase u x := by unfold realSourcePhase; positivity
   have hh := mul_le_mul_of_nonneg_left h hp
   calc
-    _ ≤ realSourcePhase u x*(2*(x*(1-x)*(8-4*x+6*x^2))/(2-x)^8/(2+3*x)^2) := hh
+    _ ≤ realSourcePhase u x*(2*(x*(1-x)*(8-4*x+6*x^(2 : ℕ)))/(2-x)^(8 : ℕ)/(2+3*x)^(2 : ℕ)) := hh
     _ = _ := by unfold realSourceSecondDensity realSourceSecondWeight; ring
 
 theorem realSourceSecondMoment_pos (u : ℝ) (hu : -2 < u) : 0 < realSourceSecondMoment u := by

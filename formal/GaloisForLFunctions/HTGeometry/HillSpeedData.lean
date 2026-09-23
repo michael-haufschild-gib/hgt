@@ -33,7 +33,7 @@ structure HillSpeed where
   hasDerivAt_speed : ∀ t, HasDerivAt speed (speedDeriv t) t
   speed_pos : ∀ t, 0 < speed t
   abs_speedDeriv_le : ∀ t, |speedDeriv t| ≤ logBound * speed t
-  speed_sq_le : ∀ t, speed t ^ 2 ≤ sizeBound ^ 2
+  speed_sq_le : ∀ t, speed t ^ (2 : ℕ) ≤ sizeBound ^ (2 : ℕ)
   lower_pos : 0 < lower
   lower_le : ∀ t, lower ≤ speed t
 
@@ -219,11 +219,11 @@ theorem abs_coscSymbolDeriv_le_window {T t : ℝ} (ht : |t| ≤ T) (ξ : E) :
 
 /-- The bound on the fibre frequency that the flow construction consumes. -/
 noncomputable def freqBound (a : HillSpeed) (ξ : E) : ℝ :=
-  max 1 (a.mass ^ 2 + a.sizeBound ^ 2 * ‖ξ‖ ^ 2)
+  max 1 (a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ))
 
 theorem one_le_freqBound (ξ : E) : 1 ≤ a.freqBound ξ := le_max_left _ _
 
-theorem freq_sq_le (ξ : E) (r : ℝ) : a.freq ξ r ^ 2 ≤ a.freqBound ξ :=
+theorem freq_sq_le (ξ : E) (r : ℝ) : a.freq ξ r ^ (2 : ℕ) ≤ a.freqBound ξ :=
   (massiveFreq_sq_le a.mass_pos a.speed_sq_le le_rfl r).trans (le_max_right _ _)
 
 theorem continuous_freq (ξ : E) : Continuous (a.freq ξ) :=
@@ -246,7 +246,7 @@ theorem hasDerivAt_hillCos_freq (ξ : E) (t : ℝ) :
   hasDerivAt_hillCos (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
 
 theorem hasDerivAt_hillCosDeriv_freq (ξ : E) (t : ℝ) :
-    HasDerivAt (hillCosDeriv (a.freq ξ)) (-(a.freq ξ t ^ 2) * hillCos (a.freq ξ) t) t :=
+    HasDerivAt (hillCosDeriv (a.freq ξ)) (-(a.freq ξ t ^ (2 : ℕ)) * hillCos (a.freq ξ) t) t :=
   hasDerivAt_hillCosDeriv (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
 
 theorem hasDerivAt_hillSin_freq (ξ : E) (t : ℝ) :
@@ -254,7 +254,7 @@ theorem hasDerivAt_hillSin_freq (ξ : E) (t : ℝ) :
   hasDerivAt_hillSin (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
 
 theorem hasDerivAt_hillSinDeriv_freq (ξ : E) (t : ℝ) :
-    HasDerivAt (hillSinDeriv (a.freq ξ)) (-(a.freq ξ t ^ 2) * hillSin (a.freq ξ) t) t :=
+    HasDerivAt (hillSinDeriv (a.freq ξ)) (-(a.freq ξ t ^ (2 : ℕ)) * hillSin (a.freq ξ) t) t :=
   hasDerivAt_hillSinDeriv (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
 
 theorem continuous_hillCos_freq_time (ξ : E) : Continuous (hillCos (a.freq ξ)) :=

@@ -82,7 +82,7 @@ theorem gauge_invariant_data {ι : Type*} [Fintype ι] [DecidableEq ι] [CharZer
         ↔ DifferentialIndependent F x) ∧
       (DifferentialIndependent F (fun i => y i + algebraMap F L (b i))
         ↔ DifferentialIndependent F y) ∧
-      (∀ i m, jetField F (algebraMap F L (a i) * x i) m = jetField F (x i) m) ∧
+      (∀ i m, jetField_baseGaugeJetField F (algebraMap F L (a i) * x i) m = jetField_baseGaugeJetField F (x i) m) ∧
       (∀ i m, JetAlgebraicOver F (algebraMap F L (a i) * x i) m ↔ JetAlgebraicOver F (x i) m) :=
   ⟨differentialAdjoin_gauge_eq x a ha, differentialAdjoin_logDerivGauge_eq y b,
     differentialIndependent_gauge_iff x a ha, differentialIndependent_logDerivGauge_iff y b,

@@ -17,7 +17,7 @@ noncomputable def maDenominatorX (φ : MaAngle) (ξ : ℝ) : ℝ :=
   Real.cosh (φ : ℝ) * maWaveNumber φ * Real.sinh (maWaveNumber φ * ξ)
 
 noncomputable def maDenominatorXX (φ : MaAngle) (ξ : ℝ) : ℝ :=
-  Real.cosh (φ : ℝ) * maWaveNumber φ ^ 2 * Real.cosh (maWaveNumber φ * ξ)
+  Real.cosh (φ : ℝ) * maWaveNumber φ ^ (2 : ℕ) * Real.cosh (maWaveNumber φ * ξ)
 
 noncomputable def maNumeratorT (φ : MaAngle) (τ : ℝ) : ℂ :=
   ((maOmega φ * Real.sin (maOmega φ * τ) * Real.cosh (2 * (φ : ℝ)) : ℝ) : ℂ) -
@@ -33,21 +33,21 @@ noncomputable def maNumeratorXX (φ : MaAngle) (ξ : ℝ) : ℂ :=
 noncomputable def maCoreT (φ : MaAngle) (ξ τ : ℝ) : ℂ :=
   -((maNumeratorT φ τ * (maDenominator φ ξ τ : ℂ) -
       maNumerator φ ξ τ * (maDenominatorT φ τ : ℂ)) /
-    (maDenominator φ ξ τ : ℂ) ^ 2)
+    (maDenominator φ ξ τ : ℂ) ^ (2 : ℕ))
 
 noncomputable def maCoreX (φ : MaAngle) (ξ τ : ℝ) : ℂ :=
   -((maNumeratorX φ ξ * (maDenominator φ ξ τ : ℂ) -
       maNumerator φ ξ τ * (maDenominatorX φ ξ : ℂ)) /
-    (maDenominator φ ξ τ : ℂ) ^ 2)
+    (maDenominator φ ξ τ : ℂ) ^ (2 : ℕ))
 
 noncomputable def maCoreXX (φ : MaAngle) (ξ τ : ℝ) : ℂ :=
   -(((maNumeratorXX φ ξ * (maDenominator φ ξ τ : ℂ) -
         maNumerator φ ξ τ * (maDenominatorXX φ ξ : ℂ)) *
-        (maDenominator φ ξ τ : ℂ) ^ 2 -
+        (maDenominator φ ξ τ : ℂ) ^ (2 : ℕ) -
       (maNumeratorX φ ξ * (maDenominator φ ξ τ : ℂ) -
         maNumerator φ ξ τ * (maDenominatorX φ ξ : ℂ)) *
         (2 * (maDenominator φ ξ τ : ℂ) * (maDenominatorX φ ξ : ℂ))) /
-    ((maDenominator φ ξ τ : ℂ) ^ 2) ^ 2)
+    ((maDenominator φ ξ τ : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ))
 
 theorem hasDerivAt_maDenominator_time (φ : MaAngle) (ξ τ : ℝ) :
     HasDerivAt (fun r => maDenominator φ ξ r) (maDenominatorT φ τ) τ := by
@@ -149,7 +149,7 @@ theorem hasDerivAt_maCore_space_one (φ : MaAngle) (ξ τ : ℝ) :
   have hquot' : HasDerivAt
       (fun y => -((maNumeratorX φ y * (maDenominator φ y τ : ℂ) -
           maNumerator φ y τ * (maDenominatorX φ y : ℂ)) /
-        (maDenominator φ y τ : ℂ) ^ 2))
+        (maDenominator φ y τ : ℂ) ^ (2 : ℕ)))
       (maCoreXX φ ξ τ) ξ := by
     apply hquot.neg.congr_deriv
     simp only [maCoreXX, Pi.mul_apply, Pi.sub_apply, Pi.pow_apply, Nat.cast_ofNat]
@@ -188,7 +188,7 @@ noncomputable def maBreatherJet (φ : MaAngle) : ComplexEvolutionJet2 where
 /-- The Ma quotient core satisfies the carrier-reduced focusing-NLS identity. -/
 theorem maCore_nls_residual (φ : MaAngle) (ξ τ : ℝ) :
     Complex.I * maCoreT φ ξ τ - maCore φ ξ τ + maCoreXX φ ξ τ +
-        ((maNumeratorSq φ ξ τ / maDenominator φ ξ τ ^ 2 : ℝ) : ℂ) *
+        ((maNumeratorSq φ ξ τ / maDenominator φ ξ τ ^ (2 : ℕ) : ℝ) : ℂ) *
           maCore φ ξ τ = 0 := by
   let d : ℂ := (maDenominator φ ξ τ : ℂ)
   let n : ℂ := maNumerator φ ξ τ
@@ -202,10 +202,10 @@ theorem maCore_nls_residual (φ : MaAngle) (ξ τ : ℝ) :
   have hd : d ≠ 0 := by
     exact Complex.ofReal_ne_zero.mpr (ne_of_gt (maDenominator_pos φ ξ τ))
   have halgebra :
-      Complex.I * (-((nt * d - n * dt) / d ^ 2)) - (-n / d) +
-          (-(((nxx * d - n * dxx) * d ^ 2 -
-            (nx * d - n * dx) * (2 * d * dx)) / (d ^ 2) ^ 2)) +
-          (nsq / d ^ 2) * (-n / d) = 0 := by
+      Complex.I * (-((nt * d - n * dt) / d ^ (2 : ℕ))) - (-n / d) +
+          (-(((nxx * d - n * dxx) * d ^ (2 : ℕ) -
+            (nx * d - n * dx) * (2 * d * dx)) / (d ^ (2 : ℕ)) ^ (2 : ℕ))) +
+          (nsq / d ^ (2 : ℕ)) * (-n / d) = 0 := by
     field_simp [hd]
     dsimp [d, n, nt, dt, nx, nxx, dx, dxx, nsq]
     rw [maNumeratorT, maNumeratorX, maNumeratorXX, maDenominatorT,
@@ -219,47 +219,47 @@ theorem maCore_nls_residual (φ : MaAngle) (ξ τ : ℝ) :
       Complex.sinh ((φ : ℝ) : ℂ) * (τ : ℂ) * 2
     let zx : ℂ := ((Real.sqrt 2 : ℝ) : ℂ) *
       Complex.sinh ((φ : ℝ) : ℂ) * (ξ : ℂ)
-    have hparam : Complex.sinh ((φ : ℝ) : ℂ) ^ 2 =
-        Complex.cosh ((φ : ℝ) : ℂ) ^ 2 - 1 := by
+    have hparam : Complex.sinh ((φ : ℝ) : ℂ) ^ (2 : ℕ) =
+        Complex.cosh ((φ : ℝ) : ℂ) ^ (2 : ℕ) - 1 := by
       linear_combination -(Complex.cosh_sq_sub_sinh_sq (((φ : ℝ) : ℂ)))
-    have htime : Complex.sin zt ^ 2 = 1 - Complex.cos zt ^ 2 := by
+    have htime : Complex.sin zt ^ (2 : ℕ) = 1 - Complex.cos zt ^ (2 : ℕ) := by
       linear_combination Complex.sin_sq_add_cos_sq zt
-    have hspace : Complex.sinh zx ^ 2 = Complex.cosh zx ^ 2 - 1 := by
+    have hspace : Complex.sinh zx ^ (2 : ℕ) = Complex.cosh zx ^ (2 : ℕ) - 1 := by
       linear_combination -(Complex.cosh_sq_sub_sinh_sq zx)
-    have hsqrt : (((Real.sqrt 2 : ℝ) : ℂ)) ^ 2 = 2 := by
+    have hsqrt : (((Real.sqrt 2 : ℝ) : ℂ)) ^ (2 : ℕ) = 2 := by
       exact_mod_cast Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
-    have hparamCube : Complex.sinh ((φ : ℝ) : ℂ) ^ 3 =
+    have hparamCube : Complex.sinh ((φ : ℝ) : ℂ) ^ (3 : ℕ) =
         Complex.sinh ((φ : ℝ) : ℂ) *
-          (Complex.cosh ((φ : ℝ) : ℂ) ^ 2 - 1) := by
+          (Complex.cosh ((φ : ℝ) : ℂ) ^ (2 : ℕ) - 1) := by
       calc
-        Complex.sinh ((φ : ℝ) : ℂ) ^ 3 =
+        Complex.sinh ((φ : ℝ) : ℂ) ^ (3 : ℕ) =
             Complex.sinh ((φ : ℝ) : ℂ) *
-              Complex.sinh ((φ : ℝ) : ℂ) ^ 2 := by ring
+              Complex.sinh ((φ : ℝ) : ℂ) ^ (2 : ℕ) := by ring
         _ = _ := by rw [hparam]
-    have hparamFour : Complex.sinh ((φ : ℝ) : ℂ) ^ 4 =
-        (Complex.cosh ((φ : ℝ) : ℂ) ^ 2 - 1) ^ 2 := by
+    have hparamFour : Complex.sinh ((φ : ℝ) : ℂ) ^ (4 : ℕ) =
+        (Complex.cosh ((φ : ℝ) : ℂ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
       calc
-        Complex.sinh ((φ : ℝ) : ℂ) ^ 4 =
-            (Complex.sinh ((φ : ℝ) : ℂ) ^ 2) ^ 2 := by ring
+        Complex.sinh ((φ : ℝ) : ℂ) ^ (4 : ℕ) =
+            (Complex.sinh ((φ : ℝ) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
         _ = _ := by rw [hparam]
-    have hparamFive : Complex.sinh ((φ : ℝ) : ℂ) ^ 5 =
+    have hparamFive : Complex.sinh ((φ : ℝ) : ℂ) ^ (5 : ℕ) =
         Complex.sinh ((φ : ℝ) : ℂ) *
-          (Complex.cosh ((φ : ℝ) : ℂ) ^ 2 - 1) ^ 2 := by
+          (Complex.cosh ((φ : ℝ) : ℂ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
       calc
-        Complex.sinh ((φ : ℝ) : ℂ) ^ 5 =
+        Complex.sinh ((φ : ℝ) : ℂ) ^ (5 : ℕ) =
             Complex.sinh ((φ : ℝ) : ℂ) *
-              (Complex.sinh ((φ : ℝ) : ℂ) ^ 2) ^ 2 := by ring
+              (Complex.sinh ((φ : ℝ) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
         _ = _ := by rw [hparam]
-    have hparamSix : Complex.sinh ((φ : ℝ) : ℂ) ^ 6 =
-        (Complex.cosh ((φ : ℝ) : ℂ) ^ 2 - 1) ^ 3 := by
+    have hparamSix : Complex.sinh ((φ : ℝ) : ℂ) ^ (6 : ℕ) =
+        (Complex.cosh ((φ : ℝ) : ℂ) ^ (2 : ℕ) - 1) ^ (3 : ℕ) := by
       calc
-        Complex.sinh ((φ : ℝ) : ℂ) ^ 6 =
-            (Complex.sinh ((φ : ℝ) : ℂ) ^ 2) ^ 3 := by ring
+        Complex.sinh ((φ : ℝ) : ℂ) ^ (6 : ℕ) =
+            (Complex.sinh ((φ : ℝ) : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
         _ = _ := by rw [hparam]
-    have htimeCube : Complex.sin zt ^ 3 =
-        Complex.sin zt * (1 - Complex.cos zt ^ 2) := by
+    have htimeCube : Complex.sin zt ^ (3 : ℕ) =
+        Complex.sin zt * (1 - Complex.cos zt ^ (2 : ℕ)) := by
       calc
-        Complex.sin zt ^ 3 = Complex.sin zt * Complex.sin zt ^ 2 := by ring
+        Complex.sin zt ^ (3 : ℕ) = Complex.sin zt * Complex.sin zt ^ (2 : ℕ) := by ring
         _ = _ := by rw [htime]
     dsimp only [zt, zx] at htime hspace htimeCube
     rw [hparam, htime, hspace, hsqrt, hparamCube, hparamFour, hparamFive,
@@ -275,7 +275,7 @@ theorem maBreather_solves (φ : MaAngle) : SolvesFocusingNLS (maBreatherJet φ) 
   rw [norm_maBreather_sq, maBreather]
   have hcore := maCore_nls_residual φ ξ τ
   let P := linearPhase 1 0 τ ξ
-  let a : ℂ := ((maNumeratorSq φ ξ τ / maDenominator φ ξ τ ^ 2 : ℝ) : ℂ)
+  let a : ℂ := ((maNumeratorSq φ ξ τ / maDenominator φ ξ τ ^ (2 : ℕ) : ℝ) : ℂ)
   have hcarrier :
       Complex.I * (maCoreT φ ξ τ * P + maCore φ ξ τ * (P * Complex.I)) +
         maCoreXX φ ξ τ * P + a * (maCore φ ξ τ * P) = 0 := by
@@ -291,7 +291,7 @@ theorem maBreather_solves (φ : MaAngle) : SolvesFocusingNLS (maBreatherJet φ) 
           (Real.sqrt 2 : ℂ)) +
       maCoreXX φ ξ τ * P / (Real.sqrt 2 : ℂ) +
       (((2 * (maNumeratorSq φ ξ τ /
-        (2 * maDenominator φ ξ τ ^ 2)) : ℝ) : ℂ) *
+        (2 * maDenominator φ ξ τ ^ (2 : ℕ))) : ℝ) : ℂ) *
         (maCore φ ξ τ * P / (Real.sqrt 2 : ℂ))) = 0
   calc
     _ = (Complex.I * (maCoreT φ ξ τ * P + maCore φ ξ τ * (P * Complex.I)) +

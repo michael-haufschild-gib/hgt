@@ -59,7 +59,7 @@ private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A �
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    change (z 1:ℂ)^2*(fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
+    change (z 1:ℂ)^(2 : ℕ)*(fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
       fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 1 1)) z (Pi.single 1 1))=0
     simp
   | @insert i s hi ih =>
@@ -140,7 +140,7 @@ private theorem square_laplacian_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w
   filter_upwards [] with k
   rw [square_laplacian_decomposition q _ (Real.exp_pos k),principal_laplacian q _ (Real.exp_pos k)]
   simp only [Matrix.cons_val,exp_cpow,D4BMSquareCuspJets.coordinateJet]
-  have he : Complex.exp ((w+2)*(k:ℂ))=Complex.exp (w*(k:ℂ))*(Real.exp k:ℂ)^2 := by
+  have he : Complex.exp ((w+2)*(k:ℂ))=Complex.exp (w*(k:ℂ))*(Real.exp k:ℂ)^(2 : ℕ) := by
     rw [show (w+2)*(k:ℂ)=w*(k:ℂ)+2*(k:ℂ) by ring,Complex.exp_add,
       ← exp_cpow (2:ℂ) k,Complex.cpow_two]
   rw [he]
@@ -676,8 +676,8 @@ private theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth 
   have hR : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
   change ContDiffAt ℝ ∞ (fun z : P =>
-    -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
+    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
     2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
   exact ((((hR.pow 2).neg.mul ((hR.pow 2).sub contDiffAt_const)).mul h11).sub
     ((hR.pow 2).mul (h01.add h10)) |>.sub ((contDiffAt_const.mul hR).mul h1)).add
@@ -698,28 +698,28 @@ private theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : 
   intro x hp hr hy
   let U := sourceScalar q branch amp
   have he : D4BMOriginalSourceContact.originalForcing q branch amp =ᶠ[𝓝 x]
-      fun z => (((z 1:ℂ)^2-1)/(z 1:ℂ)^3)*
+      fun z => (((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ))*
         (scalarContact U z-angularLap U z+2*U z) := by
     filter_upwards [(isOpen_lt continuous_const (continuous_apply 0)).mem_nhds hp,
       (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hr,
       (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hz0 hz1 hz3
     have hc := original_scalar_contact q branch amp z hz0 hz1 hz3
     have hh : scalarContact U z-angularLap U z+2*U z=
-        (z 1:ℂ)^3/((z 1:ℂ)^2-1)*D4BMOriginalSourceContact.originalForcing q branch amp z := by
+        (z 1:ℂ)^(3 : ℕ)/((z 1:ℂ)^(2 : ℕ)-1)*D4BMOriginalSourceContact.originalForcing q branch amp z := by
       dsimp only [U]
       linear_combination hc
     rw [hh]
     have hR : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-    have hf : (z 1:ℂ)^2-1≠0 := by exact_mod_cast (show (z 1)^2-1≠0 by nlinarith)
+    have hf : (z 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show (z 1)^(2 : ℕ)-1≠0 by nlinarith)
     field_simp [hR,hf]
   have hR : ContDiffAt ℝ ∞ (fun z : P => z 1) x :=
     (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt
-  have hnum : ContDiffAt ℝ ∞ (fun z : P => (z 1)^2-1) x :=
+  have hnum : ContDiffAt ℝ ∞ (fun z : P => (z 1)^(2 : ℕ)-1) x :=
     (hR.pow 2).sub contDiffAt_const
   have hreal := hnum.div (hR.pow 3) (pow_ne_zero 3 (show x 1≠0 by linarith))
-  have hs : ContDiffAt ℝ ∞ (fun z : P => ((z 1:ℂ)^2-1)/(z 1:ℂ)^3) x := by
+  have hs : ContDiffAt ℝ ∞ (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ)) x := by
     have hc := Complex.ofRealCLM.contDiff.contDiffAt.comp x hreal
-    change ContDiffAt ℝ ∞ (fun z : P => ((((z 1)^2-1)/(z 1)^3:ℝ):ℂ)) x at hc
+    change ContDiffAt ℝ ∞ (fun z : P => ((((z 1)^(2 : ℕ)-1)/(z 1)^(3 : ℕ):ℝ):ℂ)) x at hc
     simpa only [Complex.ofReal_div,Complex.ofReal_sub,Complex.ofReal_pow,Complex.ofReal_one] using! hc
   have hv : ContDiffAt ℝ ∞ (fun z => scalarContact U z-angularLap U z+2*U z) x :=
     ((contact_smooth (source_smooth q branch amp) x hp hr hy).sub
@@ -862,13 +862,13 @@ The first term retains both temporal endpoints; the four moments retain
 source value, source normal derivative, source Laplacian and full forcing. -/
 def compactBoundaryCoefficient (q r : XiZeroCopy) (br outer : Bool) (amp w : ℂ)
     (a b R : ℝ) (i : Fin 3) : ℂ :=
-  let f := (R:ℂ)^2-1
+  let f := (R:ℂ)^(2 : ℕ)-1
   let mu := eigenvalue r
   let lam := mu-2
   let c := modeTransferCoefficient q r br outer amp w
   (-lam*(c 0 b R i-c 0 a R i)+w*
     (mu*(∫ p in a..b,c 1 p R i)-(∫ p in a..b,c 2 p R i)-
-      2*lam*(∫ p in a..b,c 0 p R i)-(R:ℂ)^3/f*(∫ p in a..b,c 3 p R i)))/((R:ℂ)^2*f)
+      2*lam*(∫ p in a..b,c 0 p R i)-(R:ℂ)^(3 : ℕ)/f*(∫ p in a..b,c 3 p R i)))/((R:ℂ)^(2 : ℕ)*f)
 
 /-- The actual complete metric boundary admits its original three-power
 subtraction after compact-time integration. All estimates and integral
@@ -879,18 +879,18 @@ theorem mode_complete_boundary_compact_cusp (q r : XiZeroCopy) (br outer : Bool)
     Tendsto (fun k : ℝ =>
       (∫ p in a..b,
         (D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 0 p R (Real.exp k)-
-          D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 1 p R (Real.exp k)/((R:ℂ)^2-1))/(R:ℂ)^2)-
+          D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 1 p R (Real.exp k)/((R:ℂ)^(2 : ℕ)-1))/(R:ℂ)^(2 : ℕ))-
       ∑ i : Fin 3,compactBoundaryCoefficient q r br outer amp w a b R i*
         Complex.exp (fluxExponent q r i*(k:ℂ))) atTop (𝓝 0) := by
   let mu := eigenvalue r
   let lam := mu-2
-  let f := (R:ℂ)^2-1
-  let den := (R:ℂ)^2*f
+  let f := (R:ℂ)^(2 : ℕ)-1
+  let den := (R:ℂ)^(2 : ℕ)*f
   have ht := transfer_time_restoration q r br outer amp w hw a b R ha hab hr
   have hb := transfer_fixed_restoration q r br outer amp w hw b R (ha.trans_le hab) hr 0
   have ha' := transfer_fixed_restoration q r br outer amp w hw a R ha hr 0
   have hbulk := ((((ht 1).const_mul mu).sub (ht 2)).sub ((ht 0).const_mul (2*lam))).sub
-    ((ht 3).const_mul ((R:ℂ)^3/f))
+    ((ht 3).const_mul ((R:ℂ)^(3 : ℕ)/f))
   have h := (((hb.sub ha').const_mul (-lam)).add (hbulk.const_mul w)).div_const den
   simp only [sub_zero,mul_zero,add_zero,zero_div] at h
   apply h.congr'
@@ -909,7 +909,7 @@ theorem mode_complete_boundary_compact_cusp (q r : XiZeroCopy) (br outer : Bool)
   simp only [transferLeft,transferRight,Matrix.cons_val] at h0 h1 h2 h3
   rw [hc]
   rw [intervalIntegral.integral_sub (((h1.const_mul (eigenvalue r)).sub h2).sub (h0.const_mul (2*(eigenvalue r-2))))
-        (h3.const_mul ((R:ℂ)^3/((R:ℂ)^2-1))),
+        (h3.const_mul ((R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1))),
       intervalIntegral.integral_sub ((h1.const_mul (eigenvalue r)).sub h2) (h0.const_mul (2*(eigenvalue r-2))),
       intervalIntegral.integral_sub (h1.const_mul (eigenvalue r)) h2]
   simp only [intervalIntegral.integral_const_mul,transferLeft,transferRight,Matrix.cons_val,
@@ -926,7 +926,7 @@ theorem mode_complete_boundary_compact_finitePart (q r : XiZeroCopy) (br outer :
     Tendsto (fun k : ℝ =>
       (∫ p in a..b,
         (D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 0 p R (Real.exp k)-
-          D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 1 p R (Real.exp k)/((R:ℂ)^2-1))/(R:ℂ)^2)-
+          D4BMOriginalModularOrbit.modeCompleteTopFlux q r br outer amp w 1 p R (Real.exp k)/((R:ℂ)^(2 : ℕ)-1))/(R:ℂ)^(2 : ℕ))-
       ∑ i : Fin 3,if fluxExponent q r i=0 then 0 else
         compactBoundaryCoefficient q r br outer amp w a b R i*Complex.exp (fluxExponent q r i*(k:ℂ)))
       atTop (𝓝 0) := by

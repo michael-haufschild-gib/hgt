@@ -145,20 +145,20 @@ theorem infiniteMobiusCriticalFisherTangentWeight_eq_packetEdgeWardScore
 
 /-- The energy of the conditional edge flux score. -/
 def packetEdgeWardEnergy (ω ε : ℝ) (μ : Measure ℝ) : ℝ :=
-  ∫ x, packetEdgeWardScore ω ε μ x ^ 2 ∂μ
+  ∫ x, packetEdgeWardScore ω ε μ x ^ (2 : ℕ) ∂μ
 
 /-- **The edge flux score carries four times the clock variance.** -/
 theorem packetEdgeWardEnergy_eq {ω ε : ℝ} (hω : 0 ≤ ω) (hε : 0 < ε) {μ : Measure ℝ}
     [IsProbabilityMeasure μ] (hint : Integrable (fun y : ℝ => y) μ)
-    (hsq : Integrable (fun y : ℝ => y ^ 2) μ) (hsupp : ∀ᵐ y ∂μ, 0 ≤ y) :
-    packetEdgeWardEnergy ω ε μ = 4 * ((∫ x, x ^ 2 ∂μ) - (∫ x, x ∂μ) ^ 2) := by
+    (hsq : Integrable (fun y : ℝ => y ^ (2 : ℕ)) μ) (hsupp : ∀ᵐ y ∂μ, 0 ≤ y) :
+    packetEdgeWardEnergy ω ε μ = 4 * ((∫ x, x ^ (2 : ℕ) ∂μ) - (∫ x, x ∂μ) ^ (2 : ℕ)) := by
   set m : ℝ := ∫ y, y ∂μ with hm
-  have h1 : Integrable (fun x : ℝ => 4 * x ^ 2) μ := hsq.const_mul 4
+  have h1 : Integrable (fun x : ℝ => 4 * x ^ (2 : ℕ)) μ := hsq.const_mul 4
   have h2 : Integrable (fun x : ℝ => (-8 * m) * x) μ := hint.const_mul _
-  have h3 : Integrable (fun _ : ℝ => 4 * m ^ 2) μ := integrable_const _
-  have h23 : Integrable (fun x : ℝ => (-8 * m) * x + 4 * m ^ 2) μ := h2.add h3
+  have h3 : Integrable (fun _ : ℝ => 4 * m ^ (2 : ℕ)) μ := integrable_const _
+  have h23 : Integrable (fun x : ℝ => (-8 * m) * x + 4 * m ^ (2 : ℕ)) μ := h2.add h3
   have hcongr : packetEdgeWardEnergy ω ε μ
-      = ∫ x, (4 * x ^ 2 + ((-8 * m) * x + 4 * m ^ 2)) ∂μ := by
+      = ∫ x, (4 * x ^ (2 : ℕ) + ((-8 * m) * x + 4 * m ^ (2 : ℕ))) ∂μ := by
     rw [packetEdgeWardEnergy]
     refine integral_congr_ae ?_
     filter_upwards [hsupp] with x hx

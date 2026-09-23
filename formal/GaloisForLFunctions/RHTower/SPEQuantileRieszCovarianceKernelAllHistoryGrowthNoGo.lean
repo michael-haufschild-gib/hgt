@@ -38,7 +38,7 @@ private theorem centroid_prefix_le_terminal (r : ℕ) :
   calc
     criticalMellinAtomWeight (i + 2) * ccmActualHeadMatchedPolarCentroid (i + 2) ≤
         criticalMellinAtomWeight (i + 2) * ccmActualHeadMatchedPolarCentroid (r + 2) :=
-      mul_le_mul_of_nonneg_left hcent (criticalMellinAtomWeight_nonneg _)
+      mul_le_mul_of_nonneg_left hcent (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
     _ = _ := mul_comm _ _
 
 private theorem centroid_ge_two_mul_sqrt {n : ℕ} (hn : 0 < n) :
@@ -94,7 +94,7 @@ private theorem mass_mul_log_le_covarianceGapKernel_of_centroid_lt_sqrt
           ccmActualHeadMatchedPolarCentroid (i + 2) := by
     have hmul := mul_le_mul_of_nonneg_left hcentgap hmass
     nlinarith
-  have hweight : 0 ≤ criticalMellinAtomWeight (p : ℕ) := criticalMellinAtomWeight_nonneg _
+  have hweight : 0 ≤ criticalMellinAtomWeight (p : ℕ) := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   have hscaled := mul_le_mul_of_nonneg_left hinner hweight
   calc
     ccmActualHeadParabolicMass r * Real.log (p : ℝ) =

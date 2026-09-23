@@ -24,10 +24,10 @@ open Complex MeasureTheory Set Finset
 /-- **The truncated mean square against the dyadic blocks.**  Minkowski over the restricted measure. -/
 theorem sqrt_integral_Icc_normSq_LSeries_le_sum_blocks {a : ℕ → ℂ} {M : ℕ}
     (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ Finset.Icc 1 M) (σ T : ℝ) :
-    Real.sqrt (∫ y in Set.Icc (-T) T, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+    Real.sqrt (∫ y in Set.Icc (-T) T, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
       ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1),
           Real.sqrt (∫ y in Set.Icc (-T) T,
-            ‖LSeries (coeffBlock a (fun n => Nat.log 2 n) j) ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2) := by
+            ‖LSeries (coeffBlock a (fun n => Nat.log 2 n) j) ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ)) := by
   classical
   have hs0 : (0 : ℕ) ∉ Finset.Icc 1 M := by simp
   set g : ℕ → ℝ → ℂ := fun j y =>
@@ -39,10 +39,10 @@ theorem sqrt_integral_Icc_normSq_LSeries_le_sum_blocks {a : ℕ → ℂ} {M : �
       AEStronglyMeasurable (g j) (volume.restrict (Set.Icc (-T) T)) :=
     fun j _ => (hcont j).aestronglyMeasurable.restrict
   have hig : ∀ j ∈ Finset.range (Nat.log 2 M + 1),
-      Integrable (fun y => ‖g j y‖ ^ 2) (volume.restrict (Set.Icc (-T) T)) :=
+      Integrable (fun y => ‖g j y‖ ^ (2 : ℕ)) (volume.restrict (Set.Icc (-T) T)) :=
     fun j _ => ((hcont j).norm.pow 2).integrableOn_Icc
-  have hpt : ∀ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2
-      = ‖∑ j ∈ Finset.range (Nat.log 2 M + 1), g j y‖ ^ 2 := by
+  have hpt : ∀ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ)
+      = ‖∑ j ∈ Finset.range (Nat.log 2 M + 1), g j y‖ ^ (2 : ℕ) := by
     intro y
     rw [hg, LSeries_eq_sum_dyadic_blocks hsupp ((σ : ℂ) + (y : ℝ) * I)]
   rw [setIntegral_congr_fun measurableSet_Icc (fun y _ => hpt y)]
@@ -56,7 +56,7 @@ theorem sqrt_integral_Icc_normSq_LSeries_le_sum_block_sieve {a : ℕ → ℂ} {M
     (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) {T : ℝ} (hT : 0 < T)
     (Z Yl : ℕ → ℕ) (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
     (hlog : ∀ j, 0 < Real.log (Yl j)) :
-    Real.sqrt (∫ y in Set.Icc (-T) T, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+    Real.sqrt (∫ y in Set.Icc (-T) T, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
       ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1),
           Real.sqrt (truncSieveSum (coeffBlock a (fun n => Nat.log 2 n) j) (Finset.Icc 1 M) σ T
             (Z j) (Yl j)) := by

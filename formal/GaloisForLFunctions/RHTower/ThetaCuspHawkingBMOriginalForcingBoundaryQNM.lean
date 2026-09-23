@@ -52,26 +52,26 @@ this forcing kernel, with the unchanged damped onset. -/
 theorem physical_metric_kernel (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)
     (p L x k : ℝ) (hL : 0<L) :
     let R := D4BMJointWave.tortoiseRadius (-L/2)
-    let f := (R:ℂ)^2-1
-    f*((-w*(R:ℂ))/f^2*D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)=
+    let f := (R:ℂ)^(2 : ℕ)-1
+    f*((-w*(R:ℂ))/f^(2 : ℕ)*D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)=
       -w*Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p*
         boundaryKernel q br amp w x k (-L/2) := by
   dsimp only
   let R := D4BMJointWave.tortoiseRadius (-L/2)
   have hR : 1<R := D4BMJointWave.tortoiseRadius_exterior (-L/2) (by linarith)
   have hR0 : (R:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (R:ℂ)^2-1≠0 := by exact_mod_cast (ne_of_gt (show 0<R^2-1 by nlinarith))
-  have hZ : (R:ℂ)^2*(horizonCoordinate (-L/2):ℂ)=(R:ℂ)^2-1 := by
+  have hf : (R:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (ne_of_gt (show 0<R^(2 : ℕ)-1 by nlinarith))
+  have hZ : (R:ℂ)^(2 : ℕ)*(horizonCoordinate (-L/2):ℂ)=(R:ℂ)^(2 : ℕ)-1 := by
     rw [horizonCoordinate,radialUnit_inverse_radius]
     push_cast
-    change (R:ℂ)^2*(1-(R:ℂ)⁻¹^2)=(R:ℂ)^2-1
+    change (R:ℂ)^(2 : ℕ)*(1-(R:ℂ)⁻¹^(2 : ℕ))=(R:ℂ)^(2 : ℕ)-1
     field_simp
   rw [D4BMOriginalMetricForcingMatch.forcing_transfer_cut q br amp w hwi p L x k hL,
     raw_product_factor q br amp w true p L x k hL,original_product_kernel q br amp w p L x k hL]
-  have halg (r z c : ℂ) (hf : r^2-1≠0) (hz : r^2*z=r^2-1) :
-      (r^2-1)*((-w*r)/(r^2-1)^2*(r*z*c))=-w*c := by
+  have halg (r z c : ℂ) (hf : r^(2 : ℕ)-1≠0) (hz : r^(2 : ℕ)*z=r^(2 : ℕ)-1) :
+      (r^(2 : ℕ)-1)*((-w*r)/(r^(2 : ℕ)-1)^(2 : ℕ)*(r*z*c))=-w*c := by
     calc
-      _ = -w*c*(r^2*z/(r^2-1)) := by field_simp
+      _ = -w*c*(r^(2 : ℕ)*z/(r^(2 : ℕ)-1)) := by field_simp
       _ = _ := by rw [hz,div_self hf,mul_one]
   convert halg (R:ℂ) (horizonCoordinate (-L/2))
     (Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p*
@@ -82,16 +82,16 @@ the forcing convergence domain, with the unchanged onset transform. -/
 theorem physical_metric_laplace (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)
     (hw : (2*physicalRate q br).re<w.re) (L x k : ℝ) (hL : 0<L) :
     let R := D4BMJointWave.tortoiseRadius (-L/2)
-    let f := (R:ℂ)^2-1
-    IntegrableOn (fun p : ℝ => f*((-w*(R:ℂ))/f^2*
+    let f := (R:ℂ)^(2 : ℕ)-1
+    IntegrableOn (fun p : ℝ => f*((-w*(R:ℂ))/f^(2 : ℕ)*
       D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)) (Ioi (0:ℝ)) ∧
-    (∫ p in Ioi (0:ℝ),f*((-w*(R:ℂ))/f^2*
+    (∫ p in Ioi (0:ℝ),f*((-w*(R:ℂ))/f^(2 : ℕ)*
       D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k))=
         -w*continuedOnset (physicalRate q br) w*boundaryKernel q br amp w x k (-L/2) := by
   dsimp only
-  have he (p : ℝ) : ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)*
+  have he (p : ℝ) : ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
       ((-w*(D4BMJointWave.tortoiseRadius (-L/2):ℂ))/
-        ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)^2*
+        ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ)*
           D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)=
       (-w*boundaryKernel q br amp w x k (-L/2))*
         (Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p) := by
@@ -109,10 +109,10 @@ theorem physical_metric_QNM_laplace (q : XiZeroCopy) (br side : Bool) (amp : ℂ
     (L x k : ℝ) (hL : 0<L) :
     let w := physicalFundamentalFrequency q side
     let R := D4BMJointWave.tortoiseRadius (-L/2)
-    let f := (R:ℂ)^2-1
-    IntegrableOn (fun p : ℝ => f*((-w*(R:ℂ))/f^2*
+    let f := (R:ℂ)^(2 : ℕ)-1
+    IntegrableOn (fun p : ℝ => f*((-w*(R:ℂ))/f^(2 : ℕ)*
       D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)) (Ioi (0:ℝ)) ∧
-    (∫ p in Ioi (0:ℝ),f*((-w*(R:ℂ))/f^2*
+    (∫ p in Ioi (0:ℝ),f*((-w*(R:ℂ))/f^(2 : ℕ)*
       D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k))=
         -w*continuedOnset (physicalRate q br) w*boundaryKernel q br amp w x k (-L/2) := by
   have hw := physicalFundamentalFrequency_strip q side
@@ -125,15 +125,15 @@ theorem physical_metric_QNM_laplace (q : XiZeroCopy) (br side : Bool) (amp : ℂ
 theorem physical_metric_time_cut (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)
     (T L x k : ℝ) (hL : 0<L) :
     let R := D4BMJointWave.tortoiseRadius (-L/2)
-    let f := (R:ℂ)^2-1
-    (∫ p in (0:ℝ)..T,f*((-w*(R:ℂ))/f^2*
+    let f := (R:ℂ)^(2 : ℕ)-1
+    (∫ p in (0:ℝ)..T,f*((-w*(R:ℂ))/f^(2 : ℕ)*
       D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k))=
         -w*(∫ p in (0:ℝ)..T,Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p)*
           boundaryKernel q br amp w x k (-L/2) := by
   dsimp only
-  have he (p : ℝ) : ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)*
+  have he (p : ℝ) : ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
       ((-w*(D4BMJointWave.tortoiseRadius (-L/2):ℂ))/
-        ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)^2*
+        ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ)*
           D4BMOriginalMetricForcingMatch.forcingTransferCut q br amp w p L x k)=
       (-w*boundaryKernel q br amp w x k (-L/2))*
         (Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p) := by

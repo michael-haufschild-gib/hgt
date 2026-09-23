@@ -21,7 +21,7 @@ private theorem tanh_continuous : Continuous Real.tanh :=
 private theorem tanh_norm_le (x : ℝ) : ‖(Real.tanh x:ℂ)‖ ≤ 1 := by
   rw [Complex.norm_real,Real.norm_eq_abs,abs_le]
   have h := _root_.HTGeometry.one_sub_tanh_sq x
-  have hp : 0 ≤ 1 / Real.cosh x^2 := by positivity
+  have hp : 0 ≤ 1 / Real.cosh x^(2 : ℕ) := by positivity
   constructor <;> nlinarith [sq_nonneg (Real.tanh x+1),sq_nonneg (Real.tanh x-1)]
 
 private theorem sech_continuous : Continuous (fun x : ℝ => (((Real.cosh x)⁻¹:ℝ):ℂ)) :=
@@ -47,15 +47,15 @@ private theorem sech_ae (v : RadialSpace) : radialSech v =ᵐ[radialMeasure]
     fun x => (((Real.cosh x)⁻¹:ℝ):ℂ)*v x := lpBoundedMulCLM_coeFn _ _ _ v
 
 private theorem hyperbolic_partition (x : ℝ) :
-    (Real.tanh x:ℂ)^2+(((Real.cosh x)⁻¹:ℝ):ℂ)^2=1 := by
+    (Real.tanh x:ℂ)^(2 : ℕ)+(((Real.cosh x)⁻¹:ℝ):ℂ)^(2 : ℕ)=1 := by
   have h := _root_.HTGeometry.one_sub_tanh_sq x
-  have hr : Real.tanh x^2+((Real.cosh x)⁻¹)^2=1 := by
+  have hr : Real.tanh x^(2 : ℕ)+((Real.cosh x)⁻¹)^(2 : ℕ)=1 := by
     rw [inv_pow,← one_div] 
     linarith
   exact_mod_cast hr
 
 private theorem multiplier_partition (v : RadialSpace) :
-    ‖radialTanh v‖^2+‖radialSech v‖^2=‖v‖^2 := by
+    ‖radialTanh v‖^(2 : ℕ)+‖radialSech v‖^(2 : ℕ)=‖v‖^(2 : ℕ) := by
   have h : inner ℂ (radialTanh v) (radialTanh v)+inner ℂ (radialSech v) (radialSech v)=inner ℂ v v := by
     rw [L2.inner_def,L2.inner_def,L2.inner_def,
       ← integral_add (L2.integrable_inner (𝕜 := ℂ) (radialTanh v) (radialTanh v))
@@ -92,7 +92,7 @@ private theorem core_boundary_zero (f g : RadialCore) :
       conj (K x*f.field x)*(K x*g.field x)
   have hfD (x : ℝ) : HasDerivAt f.field (deriv f.field x) x := (f.smooth.differentiable (by simp)).differentiableAt.hasDerivAt
   have hgD (x : ℝ) : HasDerivAt g.field (deriv g.field x) x := (g.smooth.differentiable (by simp)).differentiableAt.hasDerivAt
-  have hTD (x : ℝ) : HasDerivAt T (K x^2) x := by
+  have hTD (x : ℝ) : HasDerivAt T (K x^(2 : ℕ)) x := by
     have h := (_root_.HTGeometry.hasDerivAt_tanh x).ofReal_comp
     convert! h using 1
     simp only [K,Complex.ofReal_pow,Complex.ofReal_inv,inv_pow,one_div]
@@ -178,9 +178,9 @@ private theorem boundaryForm_zero (u v : radialDirichletDomain) : boundaryForm u
 
 /-- Exact square completion holds on the original completed Dirichlet graph, retaining its endpoint realization. -/
 theorem radialDirichlet_hyperbolic_factorization (u : radialDirichletDomain) :
-    ‖(u : RadialDerivativeSpace) 1+radialTanh ((u : RadialDerivativeSpace) 0)‖^2+
-      2*‖radialSech ((u : RadialDerivativeSpace) 0)‖^2 =
-    ‖(u : RadialDerivativeSpace) 1‖^2+‖(u : RadialDerivativeSpace) 0‖^2 := by
+    ‖(u : RadialDerivativeSpace) 1+radialTanh ((u : RadialDerivativeSpace) 0)‖^(2 : ℕ)+
+      2*‖radialSech ((u : RadialDerivativeSpace) 0)‖^(2 : ℕ) =
+    ‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+‖(u : RadialDerivativeSpace) 0‖^(2 : ℕ) := by
   have hb := congrArg Complex.re (boundaryForm_zero u u)
   simp only [boundaryForm_apply,Complex.add_re,Complex.zero_re,inner_self_eq_norm_sq_to_K,RCLike.ofReal_eq_complex_ofReal,← Complex.ofReal_pow,Complex.ofReal_re] at hb
   have hp := multiplier_partition ((u : RadialDerivativeSpace) 0)
@@ -192,12 +192,12 @@ theorem radialDirichlet_hyperbolic_factorization (u : radialDirichletDomain) :
 
 private theorem rotated_scalar_bound (a b c d eta N H D : ℝ)
     (hN : 0 ≤ N) (hH : 0 ≤ H) (hHN : H ≤ N)
-    (hfac : 2*H ≤ D+N) (hc : c ≤ 2) (hd : d^2 ≤ 9) :
-    (a-3/2)*(D+(a^2+b^2+2)*N+(eta^2-c)*H) ≤
-      a*D+a*(a^2+b^2)*N+(a*(eta^2-c)-b*d*eta)*H := by
-  have hcross : b*d*eta ≤ (3/2)*(b^2+eta^2) := by
+    (hfac : 2*H ≤ D+N) (hc : c ≤ 2) (hd : d^(2 : ℕ) ≤ 9) :
+    (a-3/2)*(D+(a^(2 : ℕ)+b^(2 : ℕ)+2)*N+(eta^(2 : ℕ)-c)*H) ≤
+      a*D+a*(a^(2 : ℕ)+b^(2 : ℕ))*N+(a*(eta^(2 : ℕ)-c)-b*d*eta)*H := by
+  have hcross : b*d*eta ≤ (3/2)*(b^(2 : ℕ)+eta^(2 : ℕ)) := by
     nlinarith [sq_nonneg (eta-b*d/3),mul_nonneg (sub_nonneg.mpr hd) (sq_nonneg b)]
-  have ha : 2*a ≤ (3/2)*(a^2+1) := by nlinarith [sq_nonneg (a-2/3)]
+  have ha : 2*a ≤ (3/2)*(a^(2 : ℕ)+1) := by nlinarith [sq_nonneg (a-2/3)]
   have h1 := mul_le_mul_of_nonneg_right ha hN
   have h2 := mul_le_mul_of_nonneg_right hcross hH
   have h3 := mul_nonneg (sq_nonneg b) (sub_nonneg.mpr hHN)
@@ -218,14 +218,14 @@ private theorem domain_inner (u v : radialDirichletDomain) :
   simp only [PiLp.inner_apply,Fin.sum_univ_two]
 
 private theorem domain_norm (u : radialDirichletDomain) :
-    ‖u‖^2=‖(u : RadialDerivativeSpace) 0‖^2+‖(u : RadialDerivativeSpace) 1‖^2 := by
+    ‖u‖^(2 : ℕ)=‖(u : RadialDerivativeSpace) 0‖^(2 : ℕ)+‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ) := by
   have h := congrArg Complex.re (domain_inner u u)
   simpa only [Complex.add_re,inner_self_eq_norm_sq_to_K,RCLike.ofReal_eq_complex_ofReal,← Complex.ofReal_pow,Complex.ofReal_re] using h
 
 /-- The original radial form with the complex principal potential, before Laplace rotation. -/
 def principalDirichletFormOperator (m w : ℂ) : radialDirichletDomain →L[ℂ] radialDirichletDomain :=
   ContinuousLinearMap.id ℂ radialDirichletDomain +
-    (w^2-1) • principalDirichletValue.adjoint.comp principalDirichletValue -
+    (w^(2 : ℕ)-1) • principalDirichletValue.adjoint.comp principalDirichletValue -
     (m*(m-1)) • principalDirichletSech.adjoint.comp principalDirichletSech
 
 /-- Rotation retains the principal parameter and the independent frequency. -/
@@ -236,7 +236,7 @@ def principalDirichletRotatedOperator (m w : ℂ) : radialDirichletDomain →L[�
 theorem principalDirichletFormOperator_inner (m w : ℂ) (u v : radialDirichletDomain) :
     inner ℂ u (principalDirichletFormOperator m w v) =
       inner ℂ ((u : RadialDerivativeSpace) 1) ((v : RadialDerivativeSpace) 1)+
-      w^2*inner ℂ (principalDirichletValue u) (principalDirichletValue v)-
+      w^(2 : ℕ)*inner ℂ (principalDirichletValue u) (principalDirichletValue v)-
       m*(m-1)*inner ℂ (principalDirichletSech u) (principalDirichletSech v) := by
   simp only [principalDirichletFormOperator,sub_apply,
     add_apply,smul_apply,ContinuousLinearMap.comp_apply,
@@ -249,9 +249,9 @@ theorem principalDirichletFormOperator_inner (m w : ℂ) (u v : radialDirichletD
 
 private theorem rotated_energy_exact (m w : ℂ) (u : radialDirichletDomain) :
     (inner ℂ (principalDirichletRotatedOperator m w u) u).re =
-      w.re*‖(u : RadialDerivativeSpace) 1‖^2+
-      w.re*(w.re^2+w.im^2)*‖principalDirichletValue u‖^2+
-      (w.re*(m.im^2-m.re*(m.re-1))-w.im*(2*m.re-1)*m.im)*‖principalDirichletSech u‖^2 := by
+      w.re*‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+
+      w.re*(w.re^(2 : ℕ)+w.im^(2 : ℕ))*‖principalDirichletValue u‖^(2 : ℕ)+
+      (w.re*(m.im^(2 : ℕ)-m.re*(m.re-1))-w.im*(2*m.re-1)*m.im)*‖principalDirichletSech u‖^(2 : ℕ) := by
   change (inner ℂ (conj w • principalDirichletFormOperator m w u) u).re = _
   rw [inner_smul_left]
   have he : inner ℂ (principalDirichletFormOperator m w u) u =
@@ -262,18 +262,18 @@ private theorem rotated_energy_exact (m w : ℂ) (u : radialDirichletDomain) :
   ring
 
 private def principalDirichletEnergy (m w : ℂ) (u : radialDirichletDomain) : ℝ :=
-  ‖(u : RadialDerivativeSpace) 1‖^2+(w.re^2+w.im^2+2)*‖principalDirichletValue u‖^2+
-    (m.im^2-m.re*(m.re-1))*‖principalDirichletSech u‖^2
+  ‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+(w.re^(2 : ℕ)+w.im^(2 : ℕ)+2)*‖principalDirichletValue u‖^(2 : ℕ)+
+    (m.im^(2 : ℕ)-m.re*(m.re-1))*‖principalDirichletSech u‖^(2 : ℕ)
 
 private theorem sech_square_le (u : radialDirichletDomain) :
-    ‖principalDirichletSech u‖^2 ≤ ‖principalDirichletValue u‖^2 := by
+    ‖principalDirichletSech u‖^(2 : ℕ) ≤ ‖principalDirichletValue u‖^(2 : ℕ) := by
   have h := multiplier_partition (principalDirichletValue u)
-  change ‖radialSech (principalDirichletValue u)‖^2 ≤ _
+  change ‖radialSech (principalDirichletValue u)‖^(2 : ℕ) ≤ _
   nlinarith [sq_nonneg ‖radialTanh (principalDirichletValue u)‖]
 
 private theorem principal_energy_lower (m w : ℂ) (hm0 : 0 ≤ m.re) (hm2 : m.re ≤ 2)
     (u : radialDirichletDomain) :
-    ‖(u : RadialDerivativeSpace) 1‖^2+Complex.normSq w*‖principalDirichletValue u‖^2 ≤
+    ‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+Complex.normSq w*‖principalDirichletValue u‖^(2 : ℕ) ≤
       principalDirichletEnergy m w u := by
   have hc : m.re*(m.re-1) ≤ 2 := by
     nlinarith [mul_nonneg (show 0 ≤ m.re+1 by linarith) (sub_nonneg.mpr hm2)]
@@ -290,12 +290,12 @@ private theorem principal_rotated_energy (m w : ℂ) (hm0 : 0 ≤ m.re) (hm2 : m
       (inner ℂ (principalDirichletRotatedOperator m w u) u).re := by
   have hc : m.re*(m.re-1) ≤ 2 := by
     nlinarith [mul_nonneg (show 0 ≤ m.re+1 by linarith) (sub_nonneg.mpr hm2)]
-  have hd : (2*m.re-1)^2 ≤ 9 := by nlinarith [hc]
+  have hd : (2*m.re-1)^(2 : ℕ) ≤ 9 := by nlinarith [hc]
   have hf := radialDirichlet_hyperbolic_factorization u
-  have hfac : 2*‖principalDirichletSech u‖^2 ≤
-      ‖(u : RadialDerivativeSpace) 1‖^2+‖principalDirichletValue u‖^2 := by
-    change 2*‖radialSech ((u : RadialDerivativeSpace) 0)‖^2 ≤ _
-    change _ ≤ ‖(u : RadialDerivativeSpace) 1‖^2+‖(u : RadialDerivativeSpace) 0‖^2
+  have hfac : 2*‖principalDirichletSech u‖^(2 : ℕ) ≤
+      ‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+‖principalDirichletValue u‖^(2 : ℕ) := by
+    change 2*‖radialSech ((u : RadialDerivativeSpace) 0)‖^(2 : ℕ) ≤ _
+    change _ ≤ ‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ)+‖(u : RadialDerivativeSpace) 0‖^(2 : ℕ)
     nlinarith [sq_nonneg ‖(u : RadialDerivativeSpace) 1+radialTanh ((u : RadialDerivativeSpace) 0)‖]
   rw [rotated_energy_exact]
   exact rotated_scalar_bound w.re w.im (m.re*(m.re-1)) (2*m.re-1) m.im
@@ -304,14 +304,14 @@ private theorem principal_rotated_energy (m w : ℂ) (hm0 : 0 ≤ m.re) (hm2 : m
 /-- Uniform principal coercivity throughout Re(w)>3/2; no restriction on Im(m). -/
 theorem principalDirichletRotatedOperator_coercive (m w : ℂ)
     (hm0 : 0 ≤ m.re) (hm2 : m.re ≤ 2) (hw : 3/2 < w.re) (u : radialDirichletDomain) :
-    (w.re-3/2)*‖u‖^2 ≤ (inner ℂ (principalDirichletRotatedOperator m w u) u).re := by
+    (w.re-3/2)*‖u‖^(2 : ℕ) ≤ (inner ℂ (principalDirichletRotatedOperator m w u) u).re := by
   have hn : 1 ≤ Complex.normSq w := by
     rw [Complex.normSq_apply]
     nlinarith [sq_nonneg w.im]
   have he := principal_energy_lower m w hm0 hm2 u
-  have hdom : ‖u‖^2 ≤ principalDirichletEnergy m w u := by
+  have hdom : ‖u‖^(2 : ℕ) ≤ principalDirichletEnergy m w u := by
     rw [domain_norm]
-    change ‖principalDirichletValue u‖^2+‖(u : RadialDerivativeSpace) 1‖^2 ≤ _
+    change ‖principalDirichletValue u‖^(2 : ℕ)+‖(u : RadialDerivativeSpace) 1‖^(2 : ℕ) ≤ _
     nlinarith [mul_nonneg (sub_nonneg.mpr hn) (sq_nonneg ‖principalDirichletValue u‖)]
   exact (mul_le_mul_of_nonneg_left hdom (by linarith)).trans
     (principal_rotated_energy m w hm0 hm2 u)
@@ -370,7 +370,7 @@ theorem principalDirichletFormSolution_mass_bound (m w : ℂ)
       _ ≤ ‖w‖*(‖F‖*‖principalDirichletValue u‖) :=
         mul_le_mul_of_nonneg_left (norm_inner_le_norm _ _) hwn.le
       _ = _ := by ring
-  have hb : (w.re-3/2)*‖w‖^2*‖principalDirichletValue u‖^2 ≤
+  have hb : (w.re-3/2)*‖w‖^(2 : ℕ)*‖principalDirichletValue u‖^(2 : ℕ) ≤
       ‖w‖*‖F‖*‖principalDirichletValue u‖ := by
     rw [Complex.normSq_eq_norm_sq] at hlow
     have hh := mul_le_mul_of_nonneg_left hlow hc.le

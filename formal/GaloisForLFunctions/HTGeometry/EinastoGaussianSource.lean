@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- Regular extension of the actual Gaussian curvature source through the center. -/
 def einastoGaussianSource (d l σ r : ℝ) : ℝ :=
   2 * einastoGaussianRicci d l r * einastoDensity d l einastoGaussianShape r +
-    σ * einastoGaussianRicci d l r ^ 2 / (16 * Real.pi) -
+    σ * einastoGaussianRicci d l r ^ (2 : ℕ) / (16 * Real.pi) -
     einastoMetric d l einastoGaussianShape r * einastoGaussianRicciSecond d l r / (4 * Real.pi) -
     einastoMetric d l einastoGaussianShape r * einastoGaussianRicciSlopeQuotient d l r / (2 * Real.pi) -
     einastoMetricFirstJet d l einastoGaussianShape r * einastoGaussianRicciSlope d l r / (8 * Real.pi)
@@ -93,7 +93,7 @@ theorem einastoGaussianSourceSlope_continuous (d l σ : ℝ) : Continuous (einas
 
 /-- A finite source remains after the derivative-pole cancellation. -/
 theorem einastoGaussianSource_core (d l σ : ℝ) :
-    einastoGaussianSource d l σ 0 = -72 * exp d / exp l ^ 2 + 64 * Real.pi * (σ - 1) * exp d ^ 2 := by
+    einastoGaussianSource d l σ 0 = -72 * exp d / exp l ^ (2 : ℕ) + 64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ) := by
   unfold einastoGaussianSource
   rw [einastoGaussianRicci_core, einastoDensity_zero, einastoMetric_zero,
     einastoGaussianRicciSecond_core, einastoGaussianRicciQuotient_core,
@@ -111,7 +111,7 @@ theorem einastoGaussianSourceSlope_core (d l σ : ℝ) : einastoGaussianSourceSl
 /-- The actual radial source has a finite limit for the Gaussian halo, for either algebraic sign. -/
 theorem einastoGaussianSource_core_limit (d l σ : ℝ) :
     Tendsto (fun t => quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) (exp t)) atBot
-      (𝓝 (-72 * exp d / exp l ^ 2 + 64 * Real.pi * (σ - 1) * exp d ^ 2)) := by
+      (𝓝 (-72 * exp d / exp l ^ (2 : ℕ) + 64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ))) := by
   have he : (fun t => quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) (exp t)) =
       (fun t => einastoGaussianSource d l σ (exp t)) := by
     funext t

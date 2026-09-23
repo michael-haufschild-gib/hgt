@@ -46,7 +46,7 @@ def finiteDenominatorFiber (tau : ℝ) : Set X := {x | W.c x * tau + W.d x = 0}
 /-- Denominator-zero fiber for the projective parameter at infinity. -/
 def infinityDenominatorFiber : Set X := {x | W.c x = 0}
 
-/-- Explicit projective support label `[-D:C]` in the one-point model of `RP^1(R)`. -/
+/-- Explicit projective support label `[-D:C]` in the one-point model of `RP^(1 : ℕ)(R)`. -/
 def projectiveLabel (x : X) : OnePoint ℝ :=
   if W.c x = 0 then ∞ else ((-W.d x / W.c x : ℝ) : OnePoint ℝ)
 
@@ -222,7 +222,7 @@ variable {W}
 theorem mobius_difference (x : X) (tau : ℝ)
     (hC : W.c x ≠ 0) (hden : W.c x * tau + W.d x ≠ 0) :
     (W.a x * tau + W.b x) / (W.c x * tau + W.d x) =
-      W.a x / W.c x + (-1 / W.c x ^ 2) / (tau - (-W.d x / W.c x)) := by
+      W.a x / W.c x + (-1 / W.c x ^ (2 : ℕ)) / (tau - (-W.d x / W.c x)) := by
   have hdet := W.det_one x
   have hden' : tau * W.c x + W.d x ≠ 0 := by simpa [mul_comm] using hden
   field_simp [hC, hden, hden']

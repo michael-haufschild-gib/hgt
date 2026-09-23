@@ -36,9 +36,9 @@ theorem dirichlet_meanValue (N R : ℕ) (τ : ℕ → ℝ) {δ V : ℝ} (hδ0 : 
     (hgap : ∀ i, τ i + δ ≤ τ (i + 1))
     (hspread : ∀ r ∈ Finset.range R, ∀ t ∈ Finset.range R, |τ t - τ r| ≤ V)
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ Finset.range R, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ 2
+    ∑ r ∈ Finset.range R, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ (2 : ℕ)
       ≤ ((N : ℝ) + 2 * ((N : ℝ) + 2) * (1 + Real.log R) / δ
-          + (R : ℝ) * V * (1 + Real.log N)) * ‖a‖ ^ 2 := by
+          + (R : ℝ) * V * (1 + Real.log N)) * ‖a‖ ^ (2 : ℕ) := by
   classical
   have hlogN : 0 ≤ Real.log (N : ℝ) := by
     rcases Nat.eq_zero_or_pos N with rfl | hN

@@ -24,7 +24,7 @@ abbrev PrimeSeamPacket (m : ℕ) :=
 
 def primeSeamPacketNormSq {m : ℕ}
     (z : PrimeSeamPacket m) : ℝ :=
-  ∑ i, ((z.1 i) ^ 2 + (z.2 i) ^ 2)
+  ∑ i, ((z.1 i) ^ (2 : ℕ) + (z.2 i) ^ (2 : ℕ))
 
 def primeSeamAtomQuadratic {m : ℕ}
     (w : ℝ) (z : PrimeSeamPacket m) : ℝ :=
@@ -56,7 +56,7 @@ theorem primeSeamOddEmbedding_injective (m : ℕ) :
 
 theorem primeSeamPacketNormSq_even {m : ℕ} (c : Fin m → ℝ) :
     primeSeamPacketNormSq (primeSeamEvenEmbedding m c) =
-      2 * ∑ i, (c i) ^ 2 := by
+      2 * ∑ i, (c i) ^ (2 : ℕ) := by
   simp only [primeSeamPacketNormSq, primeSeamEvenEmbedding,
     LinearMap.coe_mk, AddHom.coe_mk]
   simp_rw [Finset.sum_add_distrib]
@@ -64,7 +64,7 @@ theorem primeSeamPacketNormSq_even {m : ℕ} (c : Fin m → ℝ) :
 
 theorem primeSeamPacketNormSq_odd {m : ℕ} (c : Fin m → ℝ) :
     primeSeamPacketNormSq (primeSeamOddEmbedding m c) =
-      2 * ∑ i, (c i) ^ 2 := by
+      2 * ∑ i, (c i) ^ (2 : ℕ) := by
   simp only [primeSeamPacketNormSq, primeSeamOddEmbedding,
     LinearMap.coe_mk, AddHom.coe_mk,
     Pi.neg_apply, neg_sq]
@@ -92,7 +92,7 @@ theorem primeSeamAtomQuadratic_odd {m : ℕ}
 
 theorem sum_sq_pos_of_ne_zero {m : ℕ}
     {c : Fin m → ℝ} (hc : c ≠ 0) :
-    0 < ∑ i, (c i) ^ 2 := by
+    0 < ∑ i, (c i) ^ (2 : ℕ) := by
   have hex : ∃ i, c i ≠ 0 := by
     by_contra h
     apply hc

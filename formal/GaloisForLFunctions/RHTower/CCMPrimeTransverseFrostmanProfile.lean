@@ -27,13 +27,13 @@ def ccmFrostmanTransverseValue (q θ : ℝ) : ℂ :=
     ((q : ℂ) - Complex.exp ((θ : ℂ) * Complex.I))
 
 def ccmFrostmanTransverseDefect (q θ : ℝ) : ℝ :=
-  1 - ‖ccmFrostmanTransverseValue q θ‖ ^ 2
+  1 - ‖ccmFrostmanTransverseValue q θ‖ ^ (2 : ℕ)
 
 def ccmFrostmanPoissonProfile (q θ : ℝ) : ℝ :=
-  (q - 1) ^ 2 / (q ^ 2 - 2 * q * Real.cos θ + 1)
+  (q - 1) ^ (2 : ℕ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1)
 
 lemma ccmFrostman_denominator_pos {q θ : ℝ} (hq : 1 < q) :
-    0 < q ^ 2 - 2 * q * Real.cos θ + 1 := by
+    0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 := by
   have hc : Real.cos θ ≤ 1 := Real.cos_le_one θ
   nlinarith [sq_nonneg (q - 1)]
 
@@ -58,7 +58,7 @@ lemma normSq_one_sub_exp_I_mul (θ : ℝ) :
 
 lemma normSq_real_sub_exp_I_mul (q θ : ℝ) :
     Complex.normSq ((q : ℂ) - Complex.exp ((θ : ℂ) * Complex.I)) =
-      q ^ 2 - 2 * q * Real.cos θ + 1 := by
+      q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 := by
   rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
     Complex.normSq_apply]
   simp only [Complex.sub_re, Complex.ofReal_re, Complex.add_re, Complex.mul_re,
@@ -67,9 +67,9 @@ lemma normSq_real_sub_exp_I_mul (q θ : ℝ) :
   nlinarith [Real.sin_sq_add_cos_sq θ]
 
 lemma norm_sq_ccmFrostmanTransverseValue {q θ : ℝ} (hq : 1 < q) :
-    ‖ccmFrostmanTransverseValue q θ‖ ^ 2 =
+    ‖ccmFrostmanTransverseValue q θ‖ ^ (2 : ℕ) =
       q * (2 - 2 * Real.cos θ) /
-        (q ^ 2 - 2 * q * Real.cos θ + 1) := by
+        (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) := by
   rw [Complex.sq_norm, ccmFrostmanTransverseValue, map_div₀, map_mul]
   rw [Complex.normSq_ofReal, Real.mul_self_sqrt (by linarith : 0 ≤ q)]
   rw [normSq_one_sub_exp_I_mul, normSq_real_sub_exp_I_mul]
@@ -80,7 +80,7 @@ theorem ccmFrostmanTransverseDefect_eq_poisson {q θ : ℝ} (hq : 1 < q) :
   rw [ccmFrostmanTransverseDefect, ccmFrostmanPoissonProfile,
     norm_sq_ccmFrostmanTransverseValue hq]
   have hden := (ccmFrostman_denominator_pos hq :
-    0 < q ^ 2 - 2 * q * Real.cos θ + 1).ne'
+    0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1).ne'
   rw [one_sub_div hden]
   congr 1
   ring
@@ -89,23 +89,23 @@ end RHTower
 
 namespace RHTower
 
-def ccmFrostmanProfileFloor (q : ℝ) : ℝ := (q - 1) ^ 2 / (q + 1) ^ 2
+def ccmFrostmanProfileFloor (q : ℝ) : ℝ := (q - 1) ^ (2 : ℕ) / (q + 1) ^ (2 : ℕ)
 
 lemma ccmFrostmanProfileFloor_le {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanProfileFloor q ≤ ccmFrostmanPoissonProfile q θ := by
-  have hD : 0 < q ^ 2 - 2 * q * Real.cos θ + 1 := ccmFrostman_denominator_pos hq
-  have hQ : 0 < (q + 1) ^ 2 := sq_pos_of_pos (by linarith)
+  have hD : 0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 := ccmFrostman_denominator_pos hq
+  have hQ : 0 < (q + 1) ^ (2 : ℕ) := sq_pos_of_pos (by linarith)
   rw [ccmFrostmanProfileFloor, ccmFrostmanPoissonProfile]
   rw [div_le_div_iff₀ hQ hD]
   have hc := Real.neg_one_le_cos θ
-  have hnum : 0 ≤ (q - 1) ^ 2 := sq_nonneg _
-  have hdenle : q ^ 2 - 2 * q * Real.cos θ + 1 ≤ (q + 1) ^ 2 := by
+  have hnum : 0 ≤ (q - 1) ^ (2 : ℕ) := sq_nonneg _
+  have hdenle : q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 ≤ (q + 1) ^ (2 : ℕ) := by
     nlinarith
   exact mul_le_mul_of_nonneg_left hdenle hnum
 
 lemma ccmFrostmanPoissonProfile_le_one {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanPoissonProfile q θ ≤ 1 := by
-  have hD : 0 < q ^ 2 - 2 * q * Real.cos θ + 1 := ccmFrostman_denominator_pos hq
+  have hD : 0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 := ccmFrostman_denominator_pos hq
   rw [ccmFrostmanPoissonProfile, div_le_one hD]
   have hc := Real.cos_le_one θ
   nlinarith
@@ -114,7 +114,7 @@ lemma ccmFrostmanPoissonProfile_le_one {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanPoissonProfile q 0 = 1 := by
   rw [ccmFrostmanPoissonProfile, Real.cos_zero]
   have hq1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq
-  have hden : q ^ 2 - 2 * q * 1 + 1 = (q - 1) ^ 2 := by ring
+  have hden : q ^ (2 : ℕ) - 2 * q * 1 + 1 = (q - 1) ^ (2 : ℕ) := by ring
   rw [hden, div_self (pow_ne_zero 2 hq1)]
 
 @[simp] theorem ccmFrostmanPoissonProfile_pi {q : ℝ} :
@@ -133,7 +133,7 @@ end RHTower
 namespace RHTower
 
 def ccmFrostmanAngleProfile (q : ℝ) (θ : Real.Angle) : ℝ :=
-  (q - 1) ^ 2 / (q ^ 2 - 2 * q * θ.cos + 1)
+  (q - 1) ^ (2 : ℕ) / (q ^ (2 : ℕ) - 2 * q * θ.cos + 1)
 
 lemma continuous_ccmFrostmanAngleProfile {q : ℝ} (hq : 1 < q) :
     Continuous (ccmFrostmanAngleProfile q) := by
@@ -273,7 +273,7 @@ theorem sqrt_ccmFrostmanProfileFloor {q : ℝ} (hq : 1 < q) :
   have hq1 : 0 < q - 1 := sub_pos.mpr hq
   have hqp : 0 < q + 1 := by linarith
   rw [ccmFrostmanProfileFloor]
-  have hsq : (q - 1) ^ 2 / (q + 1) ^ 2 = ((q - 1) / (q + 1)) ^ 2 := by
+  have hsq : (q - 1) ^ (2 : ℕ) / (q + 1) ^ (2 : ℕ) = ((q - 1) / (q + 1)) ^ (2 : ℕ) := by
     field_simp
   rw [hsq, Real.sqrt_sq_eq_abs, abs_of_pos (div_pos hq1 hqp)]
 

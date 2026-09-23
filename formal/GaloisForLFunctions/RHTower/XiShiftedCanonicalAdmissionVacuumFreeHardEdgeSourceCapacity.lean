@@ -25,10 +25,10 @@ noncomputable section
 the doubled unit-renormalized nondegenerate source polynomial. -/
 def xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection
     (n : ℕ) (A B : Polynomial ℝ) : Polynomial ℝ :=
-  (-2 * (n + 1 : ℝ)) • X ^ 2 +
+  (-2 * (n + 1 : ℝ)) • X ^ (2 : ℕ) +
     (2 * (1 + A.nextCoeff)) • X +
-    C (4 * A.nextCoeff ^ 2 +
-      2 * ((A.nextCoeff - B.nextCoeff) ^ 2 -
+    C (4 * A.nextCoeff ^ (2 : ℕ) +
+      2 * ((A.nextCoeff - B.nextCoeff) ^ (2 : ℕ) -
         (A.nextCoeff - B.nextCoeff)))
 
 theorem natDegree_xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection_le
@@ -51,7 +51,7 @@ theorem two_smul_unitRenormalizedNondegenerateShear_eq_adaptiveBilinear_add_sq_m
     (2 : ℝ) •
         xiShiftedBoundaryUnitRenormalizedNondegenerateNullFlagShearPolynomial n A B =
       xiShiftedBoundaryAdaptiveBilinearShearPolynomial A A +
-        A ^ 2 * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B := by
+        A ^ (2 : ℕ) * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B := by
   rw [xiShiftedBoundaryUnitRenormalizedNondegenerateNullFlagShearPolynomial,
     xiShiftedBoundaryNondegenerateNullFlagCompletedShearPolynomial,
     xiShiftedBoundaryRiccatiCompletedDegreeCenteredShearPolynomial,
@@ -77,30 +77,30 @@ theorem xiShiftedUnitRenormalizedNondegenerateHardEdgeSource_eq_adaptive_add_sq_
     {A B : Polynomial ℝ} {n : ℕ} (hA : A.natDegree ≤ n) (y : ℝ) :
     xiShiftedUnitRenormalizedNondegenerateHardEdgeSource y n A B =
       xiShiftedHardEdgeAdaptiveBilinearSource y n n A A +
-        (xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+        (xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
           xiShiftedHardEdgeReciprocalClearing y 2
             (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
-  have hAsq : (A ^ 2).natDegree ≤ n + n := by
+  have hAsq : (A ^ (2 : ℕ)).natDegree ≤ n + n := by
     calc
-      (A ^ 2).natDegree ≤ 2 * A.natDegree := Polynomial.natDegree_pow_le
+      (A ^ (2 : ℕ)).natDegree ≤ 2 * A.natDegree := Polynomial.natDegree_pow_le
       _ ≤ 2 * n := Nat.mul_le_mul_left 2 hA
       _ = n + n := by omega
   have hcorrection :
       xiShiftedHardEdgeReciprocalClearing y (2 * n + 2)
-          (A ^ 2 * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
-        (xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+          (A ^ (2 : ℕ) * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
+        (xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
           xiShiftedHardEdgeReciprocalClearing y 2
             (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
     rw [show 2 * n + 2 = (n + n) + 2 by omega,
       xiShiftedHardEdgeReciprocalClearing_mul hAsq
         (natDegree_xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection_le n A B) y]
-    rw [show A ^ 2 = A * A by ring,
+    rw [show A ^ (2 : ℕ) = A * A by ring,
       xiShiftedHardEdgeReciprocalClearing_mul hA hA y]
     ring
   have hcorrection' :
       xiShiftedHardEdgeReciprocalClearing y (n + n + 2)
-          (A ^ 2 * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
-        (xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+          (A ^ (2 : ℕ) * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
+        (xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
           xiShiftedHardEdgeReciprocalClearing y 2
             (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
     simpa only [show n + n = 2 * n by omega] using hcorrection
@@ -109,14 +109,14 @@ theorem xiShiftedUnitRenormalizedNondegenerateHardEdgeSource_eq_adaptive_add_sq_
   calc
     xiShiftedHardEdgeReciprocalClearing y (2 * n + 2)
         (xiShiftedBoundaryAdaptiveBilinearShearPolynomial A A +
-          A ^ 2 * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
+          A ^ (2 : ℕ) * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
       xiShiftedHardEdgeReciprocalClearing y (2 * n + 2)
           (xiShiftedBoundaryAdaptiveBilinearShearPolynomial A A) +
         xiShiftedHardEdgeReciprocalClearing y (2 * n + 2)
-          (A ^ 2 * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
+          (A ^ (2 : ℕ) * xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
             simp [xiShiftedHardEdgeReciprocalClearing]
     _ = xiShiftedHardEdgeAdaptiveBilinearSource y n n A A +
-        (xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+        (xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
           xiShiftedHardEdgeReciprocalClearing y 2
             (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) := by
       rw [show 2 * n + 2 = n + n + 2 by omega,
@@ -145,18 +145,18 @@ theorem derivative_xiShiftedUnitRenormalizedNondegenerateHardEdgeSource_eval_cen
     let S := xiShiftedHardEdgeReciprocalClearing y n A
     (xiShiftedUnitRenormalizedNondegenerateHardEdgeSource y n A B).derivative.eval
         (x⁻¹ - y) =
-      -2 * x⁻¹ * (S.derivative.eval (x⁻¹ - y)) ^ 2 := by
+      -2 * x⁻¹ * (S.derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) := by
   dsimp only
   rw [xiShiftedUnitRenormalizedNondegenerateHardEdgeSource_eq_adaptive_add_sq_mul_correction
     hA y, Polynomial.derivative_add]
   have hS := xiShiftedHardEdgeReciprocalClearing_eval_centeredReciprocal_eq_zero
     hA y hx hroot
   have hcorrection :
-      ((xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+      ((xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
         xiShiftedHardEdgeReciprocalClearing y 2
           (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B)).derivative.eval
             (x⁻¹ - y) = 0 := by
-    rw [show (xiShiftedHardEdgeReciprocalClearing y n A) ^ 2 *
+    rw [show (xiShiftedHardEdgeReciprocalClearing y n A) ^ (2 : ℕ) *
         xiShiftedHardEdgeReciprocalClearing y 2
           (xiShiftedUnitRenormalizedNondegenerateHardEdgeCorrection n A B) =
       (xiShiftedHardEdgeReciprocalClearing y n A *
@@ -181,7 +181,7 @@ theorem xiShiftedUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity_e
     {A B : Polynomial ℝ} {n : ℕ} (hA : A.natDegree ≤ n)
     (y : ℝ) {x : ℝ} (hx : x ≠ 0) (hroot : A.eval x = 0) :
     xiShiftedUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity y n A B x =
-      ((xiShiftedHardEdgeReciprocalClearing y n A).derivative.eval (x⁻¹ - y)) ^ 2 := by
+      ((xiShiftedHardEdgeReciprocalClearing y n A).derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) := by
   rw [xiShiftedUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity,
     derivative_xiShiftedUnitRenormalizedNondegenerateHardEdgeSource_eval_centeredReciprocal
       hA y hx hroot]
@@ -204,7 +204,7 @@ theorem xiShiftedUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity_e
 hard-edge clearing. -/
 def xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSource
     (w : ℝ) (n : ℕ) : Polynomial ℝ :=
-  xiShiftedUnitRenormalizedNondegenerateHardEdgeSource (w ^ 2) n
+  xiShiftedUnitRenormalizedNondegenerateHardEdgeSource (w ^ (2 : ℕ)) n
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) (n + 1))
 
@@ -216,7 +216,7 @@ theorem xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource_
         (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
         (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) (n + 1)) =
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
-        (xiShiftedHardEdgeReciprocalUnclearing (w ^ 2) (2 * n + 2)
+        (xiShiftedHardEdgeReciprocalUnclearing (w ^ (2 : ℕ)) (2 * n + 2)
           (xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSource w n)) := by
   rw [xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource,
     xiShiftedPolynomialCompletedArithmeticSource_eq_momentFunctional hw]
@@ -230,12 +230,12 @@ def xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSourceTransv
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
   -(x / 2) *
     (xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSource w n).derivative.eval
-      (x⁻¹ - w ^ 2)
+      (x⁻¹ - w ^ (2 : ℕ))
 
 /-- Effective compact hard-edge capacity of the actual two-amplitude source. -/
 def xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  (w ^ 2) * x ^ (2 * n + 1) *
+  (w ^ (2 : ℕ)) * x ^ (2 * n + 1) *
     xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity
       w n x
 
@@ -261,7 +261,7 @@ theorem xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSourceTr
     xiShiftedCanonicalAdmissionHardEdgeSource,
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity, A, B] using
     xiShiftedUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity_eq_adaptive
-      hA (w ^ 2) hx hroot
+      hA (w ^ (2 : ℕ)) hx hroot
 
 /-- Effective capacity of the literal two-amplitude source has no new degree normalization. -/
 theorem xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity_eq_adaptive
@@ -301,21 +301,21 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_residue_mul_unitRenorma
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
-    (-xdot / (x (w ^ 2)) ^ 2 - 1) *
-        (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n (x (w ^ 2)) *
+    (-xdot / (x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1) *
+        (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n (x (w ^ (2 : ℕ))) *
           xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
-            w n (x (w ^ 2))) =
-      2 * (n : ℝ) * (w ^ 2) * (x (w ^ 2)) ^ 2 *
+            w n (x (w ^ (2 : ℕ)))) =
+      2 * (n : ℝ) * (w ^ (2 : ℕ)) * (x (w ^ (2 : ℕ))) ^ (2 : ℕ) *
         HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n := by
   have hroot0 :
       (HTGeometry.monicMomentAdmissionPolynomial
-        (xiShiftedRealMomentSequence w) n).eval (x (w ^ 2)) = 0 := by
+        (xiShiftedRealMomentSequence w) n).eval (x (w ^ (2 : ℕ))) = 0 := by
     exact hroot.eq_of_nhds
   rw [xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity_eq_adaptive
     hx0 hroot0]
@@ -332,17 +332,17 @@ theorem xiShiftedCanonicalAdmissionParabolicHardEdgeWorldline_mul_residue_mul_un
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
-    (2 * w * (-xdot / (x (w ^ 2)) ^ 2 - 1)) *
-        (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n (x (w ^ 2)) *
+    (2 * w * (-xdot / (x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1)) *
+        (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n (x (w ^ (2 : ℕ))) *
           xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
-            w n (x (w ^ 2))) =
-      4 * (n : ℝ) * w ^ 3 * (x (w ^ 2)) ^ 2 *
+            w n (x (w ^ (2 : ℕ)))) =
+      4 * (n : ℝ) * w ^ (3 : ℕ) * (x (w ^ (2 : ℕ))) ^ (2 : ℕ) *
         HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n := by
   have hworld :=
     xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_residue_mul_unitRenormalizedNondegenerateSourceCapacity_eq_normSq
@@ -360,8 +360,8 @@ theorem literal_unitRenormalizedNondegenerateSource_pays_effectivity_and_hardRoo
     (hroot :
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n).eval x = 0) :
-    (2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n ^ 2 ≤
+    (2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n ^ (2 : ℕ) ≤
         xiShiftedNondegenerateSourceEffectivityWeight n *
           xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource w n
             (HTGeometry.monicMomentAdmissionPolynomial
@@ -382,40 +382,40 @@ strictly positive first transverse capacity.  Vanishing carrier motion therefore
 source production; it shifts the obstruction to terminal mass/contact order. -/
 theorem xiShiftedCanonicalAdmission_flatHardRoot_freezes_but_unitRenormalizedSourceCapacity_pos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0)
-    (hx0 : x (w ^ 2) ≠ 0)
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hsimple : (HTGeometry.monicMomentAdmissionPolynomial
-      (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ 2)) ≠ 0) :
-    HasDerivAt (fun v => (x v)⁻¹ - v) 0 (w ^ 2) ∧
+      (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ (2 : ℕ))) ≠ 0) :
+    HasDerivAt (fun v => (x v)⁻¹ - v) 0 (w ^ (2 : ℕ)) ∧
       0 < xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity
-        w n (x (w ^ 2)) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (lt_trans (by norm_num) hw)
+        w n (x (w ^ (2 : ℕ))) := by
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (lt_trans (by norm_num) hw)
   have hroot0 : (HTGeometry.monicMomentAdmissionPolynomial
-      (xiShiftedRealMomentSequence w) n).eval (x (w ^ 2)) = 0 := by
+      (xiShiftedRealMomentSequence w) n).eval (x (w ^ (2 : ℕ))) = 0 := by
     exact hroot.eq_of_nhds
   have hdegree : (HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n).natDegree ≤ n := by
     rw [HTGeometry.monicMomentAdmissionPolynomial_natDegree]
   have hcleared :
-      (xiShiftedHardEdgeReciprocalClearing (w ^ 2) n
+      (xiShiftedHardEdgeReciprocalClearing (w ^ (2 : ℕ)) n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n)).derivative.eval
-            ((x (w ^ 2))⁻¹ - w ^ 2) ≠ 0 := by
+            ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) ≠ 0 := by
     intro hzero
     have hrelation :=
       pow_mul_derivative_xiShiftedHardEdgeReciprocalClearing_eval_centeredReciprocal
-        hdegree (w ^ 2) hx0 hroot0
+        hdegree (w ^ (2 : ℕ)) hx0 hroot0
     rw [hzero, mul_zero] at hrelation
-    have hproduct : (x (w ^ 2)) ^ 2 *
+    have hproduct : (x (w ^ (2 : ℕ))) ^ (2 : ℕ) *
         (HTGeometry.monicMomentAdmissionPolynomial
-          (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ 2)) = 0 := by
+          (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ (2 : ℕ))) = 0 := by
       linarith only [hrelation]
     rcases mul_eq_zero.mp hproduct with hsquare | hderiv
     · exact hx0 (sq_eq_zero_iff.mp hsquare)
@@ -424,8 +424,8 @@ theorem xiShiftedCanonicalAdmission_flatHardRoot_freezes_but_unitRenormalizedSou
   · apply hasDerivAt_xiShiftedCanonicalAdmission_reciprocalHardRoot_zero_of_flatFace
       hy hn hhead hflat hx hroot hx0
     change (HTGeometry.monicMomentAdmissionPolynomial
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n).derivative.eval
-        (x (w ^ 2)) ≠ 0 at hsimple
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n).derivative.eval
+        (x (w ^ (2 : ℕ))) ≠ 0 at hsimple
     exact hsimple
   · rw [xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeSourceTransverseCapacity_eq_adaptive
       hx0 hroot0,
@@ -437,24 +437,24 @@ vacuum removal cannot create a hidden capacity escape. -/
 theorem tendsto_xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
     {w : ℕ → ℝ} {n : ℕ → ℕ} {x u : ℕ → ℝ} {d : ℝ}
     (hw : ∀ k, 1 / 2 < w k)
-    (hdenom : ∀ k, w k ^ 2 + u k ≠ 0)
-    (hx : ∀ k, x k = (w k ^ 2 + u k)⁻¹)
+    (hdenom : ∀ k, w k ^ (2 : ℕ) + u k ≠ 0)
+    (hx : ∀ k, x k = (w k ^ (2 : ℕ) + u k)⁻¹)
     (hroot : ∀ k,
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence (w k)) (n k)).eval (x k) = 0)
     (hsmall : Tendsto
       (fun k => ((2 * n k + 1 : ℕ) : ℝ) *
-        |u k / (w k ^ 2 + u k)|) atTop (nhds 0))
+        |u k / (w k ^ (2 : ℕ) + u k)|) atTop (nhds 0))
     (hderiv : Tendsto
       (fun k =>
         (xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
-          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ 2))
+          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ (2 : ℕ)))
       atTop (nhds d)) :
     Tendsto
       (fun k =>
         xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
           (w k) (n k) (x k))
-      atTop (nhds (d ^ 2)) := by
+      atTop (nhds (d ^ (2 : ℕ))) := by
   have heq :
       (fun k =>
         xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity

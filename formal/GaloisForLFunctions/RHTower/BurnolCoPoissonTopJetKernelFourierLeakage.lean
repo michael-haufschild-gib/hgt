@@ -35,8 +35,8 @@ theorem burnolWindowTopJetKernelWitness_exact_jets
     iteratedDeriv (burnolCoPoissonXiConormalOrder rho)
         (fun w : ℂ => soninMellinEvaluation w (soninCosineUnitary V : SoninL2))
         (rho : ℂ) =
-      burnolWindowFourierCompletedTopJet L hL rho ^ 2 -
-        burnolWindowCompletedTopJet L hL rho ^ 2 := by
+      burnolWindowFourierCompletedTopJet L hL rho ^ (2 : ℕ) -
+        burnolWindowCompletedTopJet L hL rho ^ (2 : ℕ) := by
   let hc := Real.exp_pos (-L)
   have hcd : Real.exp (-L) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
   let a := subWindowAperture (Real.exp (-L)) 1
@@ -113,15 +113,15 @@ theorem burnolWindowTopJetKernelWitness_fourier_jet_lower_bound
     {L : ℝ} (hL : 0 < L) (rho : XiDivisorSupport)
     (hr : 1 / 2 < (rho : ℂ).re) :
     (Real.exp (L * (2 * (rho : ℂ).re - 1)) - 1) *
-        ‖burnolWindowFourierCompletedTopJet L hL rho‖ ^ 2 <
+        ‖burnolWindowFourierCompletedTopJet L hL rho‖ ^ (2 : ℕ) <
       ‖iteratedDeriv (burnolCoPoissonXiConormalOrder rho)
         (fun w : ℂ => soninMellinEvaluation w
           (soninCosineUnitary (burnolWindowTopJetKernelWitness L hL rho) : SoninL2))
         (rho : ℂ)‖ := by
   rw [(burnolWindowTopJetKernelWitness_exact_jets hL rho hr).2.2]
   have hb := norm_sub_norm_le
-    (burnolWindowCompletedTopJet L hL rho ^ 2)
-    (burnolWindowFourierCompletedTopJet L hL rho ^ 2)
+    (burnolWindowCompletedTopJet L hL rho ^ (2 : ℕ))
+    (burnolWindowFourierCompletedTopJet L hL rho ^ (2 : ℕ))
   rw [norm_pow, norm_pow, norm_sub_rev] at hb
   have hs := burnolWindowCompletedTopJets_strict_radial_bias hL rho hr
   nlinarith

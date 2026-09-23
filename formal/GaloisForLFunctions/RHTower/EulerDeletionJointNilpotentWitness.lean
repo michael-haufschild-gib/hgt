@@ -12,7 +12,7 @@ proves sixth powers vanish for every linear combination. The actual exponential 
 therefore the displayed finite polynomial.
 
 For the literal moduli-two-and-three six-factor source block, the exact value is
-`1 - (z^5/60) • E₀₅`. The retained coordinate is nonzero, squares to zero, and is
+`1 - (z^(5 : ℕ)/60) • E₀₅`. The retained coordinate is nonzero, squares to zero, and is
 absorbed on both sides by every block with arbitrary within-block weights. These
 identities provide the fixed finite-dimensional witness for the one-fifth sharpness
 argument. Infinite-product divergence still requires its summable-error proof.
@@ -28,7 +28,7 @@ noncomputable section
 set_option maxRecDepth 4096
 
 abbrev A := Matrix (Fin 6) (Fin 6) ℂ
-local instance : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
+local instance eulerDeletionJointNilpotentWitnessInst1 : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
 
 def chain (a b : ℂ) : A :=
   !![0,a,0,0,0,0;
@@ -39,62 +39,62 @@ def chain (a b : ℂ) : A :=
      0,0,0,0,0,0]
 
 def chainSquare (a b : ℂ) : A :=
-  !![0,0,a^2,0,0,0;
+  !![0,0,a^(2 : ℕ),0,0,0;
      0,0,0,a*b,0,0;
-     0,0,0,0,b^2,0;
-     0,0,0,0,0,b^2;
+     0,0,0,0,b^(2 : ℕ),0;
+     0,0,0,0,0,b^(2 : ℕ);
      0,0,0,0,0,0;
      0,0,0,0,0,0]
 
 def chainCube (a b : ℂ) : A :=
-  !![0,0,0,a^2*b,0,0;
-     0,0,0,0,a*b^2,0;
-     0,0,0,0,0,b^3;
+  !![0,0,0,a^(2 : ℕ)*b,0,0;
+     0,0,0,0,a*b^(2 : ℕ),0;
+     0,0,0,0,0,b^(3 : ℕ);
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0]
 
 def chainFourth (a b : ℂ) : A :=
-  !![0,0,0,0,a^2*b^2,0;
-     0,0,0,0,0,a*b^3;
+  !![0,0,0,0,a^(2 : ℕ)*b^(2 : ℕ),0;
+     0,0,0,0,0,a*b^(3 : ℕ);
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0]
 
 def chainFifth (a b : ℂ) : A :=
-  !![0,0,0,0,0,a^2*b^3;
+  !![0,0,0,0,0,a^(2 : ℕ)*b^(3 : ℕ);
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0;
      0,0,0,0,0,0]
 
-private theorem chain_sq (a b : ℂ) : chain a b ^ 2 = chainSquare a b := by
+private theorem chain_sq (a b : ℂ) : chain a b ^ (2 : ℕ) = chainSquare a b := by
   rw [pow_two]
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [chain, chainSquare, Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
-private theorem chain_cube (a b : ℂ) : chain a b ^ 3 = chainCube a b := by
+private theorem chain_cube (a b : ℂ) : chain a b ^ (3 : ℕ) = chainCube a b := by
   rw [pow_succ (chain a b) 2, chain_sq]
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [chain, chainSquare, chainCube, Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
-private theorem chain_fourth (a b : ℂ) : chain a b ^ 4 = chainFourth a b := by
+private theorem chain_fourth (a b : ℂ) : chain a b ^ (4 : ℕ) = chainFourth a b := by
   rw [pow_succ (chain a b) 3, chain_cube]
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [chain, chainCube, chainFourth, Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
-private theorem chain_fifth (a b : ℂ) : chain a b ^ 5 = chainFifth a b := by
+private theorem chain_fifth (a b : ℂ) : chain a b ^ (5 : ℕ) = chainFifth a b := by
   rw [pow_succ (chain a b) 4, chain_fourth]
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [chain, chainFourth, chainFifth, Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
 
-theorem chain_sixth (a b : ℂ) : chain a b ^ 6 = 0 := by
+theorem chain_sixth (a b : ℂ) : chain a b ^ (6 : ℕ) = 0 := by
   rw [pow_succ (chain a b) 5, chain_fifth]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -110,10 +110,10 @@ private theorem chain_exp_sum (a b : ℂ) :
   rw [pow_eq_zero_of_le hn' (chain_sixth a b), smul_zero]
 
 def chainExp (a b : ℂ) : A :=
-  !![1,a,a^2/2,a^2*b/6,a^2*b^2/24,a^2*b^3/120;
-     0,1,a,a*b/2,a*b^2/6,a*b^3/24;
-     0,0,1,b,b^2/2,b^3/6;
-     0,0,0,1,b,b^2/2;
+  !![1,a,a^(2 : ℕ)/2,a^(2 : ℕ)*b/6,a^(2 : ℕ)*b^(2 : ℕ)/24,a^(2 : ℕ)*b^(3 : ℕ)/120;
+     0,1,a,a*b/2,a*b^(2 : ℕ)/6,a*b^(3 : ℕ)/24;
+     0,0,1,b,b^(2 : ℕ)/2,b^(3 : ℕ)/6;
+     0,0,0,1,b,b^(2 : ℕ)/2;
      0,0,0,0,1,b;
      0,0,0,0,0,1]
 
@@ -132,7 +132,7 @@ set_option maxHeartbeats 4000000 in
 theorem frozen_chain (z : ℂ) :
     chainExp z z * (chainExp (-z) z * (chainExp z (-2*z) *
       (chainExp (-z) z * (chainExp z z * chainExp (-z) (-2*z))))) =
-      1 - (z^5/60) • topWord := by
+      1 - (z^(5 : ℕ)/60) • topWord := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [chainExp, topWord, Matrix.mul_apply, Fin.sum_univ_succ,
@@ -165,7 +165,7 @@ theorem variableBlock_chain (u : Fin 6 → ℂ) :
 
 theorem frozen_source_exact (z : ℂ) :
     DeletionJointExponential.twoThreeSourceBlock generatorX generatorY z =
-      1 - (z^5/60) • topWord := by
+      1 - (z^(5 : ℕ)/60) • topWord := by
   rw [← DeletionJointProduct.variableBlock_frozen, variableBlock_chain]
   exact frozen_chain z
 

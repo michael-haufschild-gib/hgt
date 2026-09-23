@@ -108,7 +108,7 @@ theorem twistedPairMoment_plateauProfile_eq_eval {a : ℝ} (ha : 1 / 2 ≤ a) (h
 
 /-- The ray-term polynomial of a copy at a centre. -/
 def rayTermPoly (γ : ℝ) (q : XiZeroCopy) : ExpPoly :=
-  ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2)
+  ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ))
     (ExpPoly.mul (rayPairPoly γ q) (rayPairPoly γ q))
 
 /-- **The ray term of the plateau profile is an exponential polynomial in the aperture.** -/
@@ -122,7 +122,7 @@ theorem twistedRayTerm_plateauProfile_eq_eval {a : ℝ} (ha : 1 / 2 ≤ a) (ha0 
 /-- The normalised ray-term polynomial: exponents shifted by `−2Θ`, realised as the product of the
 two `−Θ`-shifted pair polynomials. -/
 def normalizedRayTermPoly (Θ γ : ℝ) (q : XiZeroCopy) : ExpPoly :=
-  ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2)
+  ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ))
     (ExpPoly.mul (expPolyShift (-(Θ : ℂ)) (rayPairPoly γ q))
       (expPolyShift (-(Θ : ℂ)) (rayPairPoly γ q)))
 

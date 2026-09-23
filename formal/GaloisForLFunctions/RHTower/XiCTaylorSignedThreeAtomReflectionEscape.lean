@@ -52,8 +52,8 @@ def signedThreeAtomFullTurnValue
 /-- Real-coordinate derivative at a full-turn point. -/
 def signedThreeAtomFullTurnDerivative
     (T r a₁ a₂ a₃ : ℝ) : ℂ :=
-  ⟨0, -T * r * a₁ - 2 * T * r ^ 2 * a₂ -
-    3 * T * r ^ 3 * a₃⟩
+  ⟨0, -T * r * a₁ - 2 * T * r ^ (2 : ℕ) * a₂ -
+    3 * T * r ^ (3 : ℕ) * a₃⟩
 
 theorem spectralTranslationPhase_fullTurn
     {T : ℝ} (hT : T ≠ 0) (y : ℝ) :
@@ -74,8 +74,8 @@ theorem spectralTranslationPhase_fullTurn
 theorem signedThreeAtomCompletion_of_phase
     {T r a₁ a₂ a₃ : ℝ} {z : ℂ}
     (h₁ : spectralTranslationPhase T z = (r : ℂ))
-    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ 2)
-    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ 3) :
+    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ (2 : ℕ))
+    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ (3 : ℕ)) :
     signedThreeAtomCompletion T a₁ a₂ a₃ z =
       signedThreeAtomFullTurnValue r a₁ a₂ a₃ := by
   rw [signedThreeAtomCompletion, signedFourAtomCompletion, h₁, h₂, h₃]
@@ -87,8 +87,8 @@ theorem signedThreeAtomCompletion_of_phase
 theorem signedThreeAtomCompletionDerivative_of_phase
     {T r a₁ a₂ a₃ : ℝ} {z : ℂ}
     (h₁ : spectralTranslationPhase T z = (r : ℂ))
-    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ 2)
-    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ 3) :
+    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ (2 : ℕ))
+    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ (3 : ℕ)) :
     signedThreeAtomCompletionDerivative T a₁ a₂ a₃ z =
       signedThreeAtomFullTurnDerivative T r a₁ a₂ a₃ := by
   rw [signedThreeAtomCompletionDerivative,
@@ -108,19 +108,19 @@ theorem signedThreeAtomCompletion_fullTurn_eq
   have hbase := spectralTranslationPhase_fullTurn hT y
   have htwo :
       spectralTranslationPhase (2 * T) (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 2 := by
+        (Real.exp (-T * y) : ℂ) ^ (2 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 2 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (2 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 2 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hthree :
       spectralTranslationPhase (3 * T) (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 3 := by
+        (Real.exp (-T * y) : ℂ) ^ (3 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 3 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (3 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 3 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
@@ -135,19 +135,19 @@ theorem signedThreeAtomCompletionDerivative_fullTurn_eq
   have hbase := spectralTranslationPhase_fullTurn hT y
   have htwo :
       spectralTranslationPhase (2 * T) (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 2 := by
+        (Real.exp (-T * y) : ℂ) ^ (2 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 2 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (2 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 2 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hthree :
       spectralTranslationPhase (3 * T) (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 3 := by
+        (Real.exp (-T * y) : ℂ) ^ (3 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 3 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (3 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 3 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
@@ -155,11 +155,11 @@ theorem signedThreeAtomCompletionDerivative_fullTurn_eq
 
 /-- First coordinate of the common reflected value-kernel ray. -/
 def signedThreeAtomReflectionRayOne (r : ℝ) : ℝ :=
-  -(1 - r ^ 3)
+  -(1 - r ^ (3 : ℕ))
 
 /-- Second coordinate of the common reflected value-kernel ray. -/
 def signedThreeAtomReflectionRayTwo (r : ℝ) : ℝ :=
-  1 - r ^ 3
+  1 - r ^ (3 : ℕ)
 
 /-- Third coordinate of the common reflected value-kernel ray. -/
 def signedThreeAtomReflectionRayThree (r : ℝ) : ℝ :=
@@ -167,7 +167,7 @@ def signedThreeAtomReflectionRayThree (r : ℝ) : ℝ :=
 
 /-- Derivative charge of the common ray at radius `r`. -/
 def signedThreeAtomReflectionRayCharge (T r : ℝ) : ℝ :=
-  T * r * (1 - r) ^ 2 * (1 - r ^ 2)
+  T * r * (1 - r) ^ (2 : ℕ) * (1 - r ^ (2 : ℕ))
 
 theorem signedThreeAtomReflectionRay_value_zero (r : ℝ) :
     signedThreeAtomFullTurnValue r
@@ -219,9 +219,9 @@ theorem signedThreeAtomReflectionRay_reflectedValue_zero
 theorem signedThreeAtomReflectionRay_reflectedDerivative
     {T r : ℝ} (hr : r ≠ 0) :
     signedThreeAtomFullTurnDerivative T (1 / r)
-        (r ^ 3 * signedThreeAtomReflectionRayOne r)
-        (r ^ 3 * signedThreeAtomReflectionRayTwo r)
-        (r ^ 3 * signedThreeAtomReflectionRayThree r) =
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayOne r)
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayTwo r)
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayThree r) =
       ⟨0, signedThreeAtomReflectionRayCharge T r⟩ := by
   apply Complex.ext
   · simp [signedThreeAtomFullTurnDerivative]
@@ -241,10 +241,10 @@ theorem signedThreeAtomReflectionRayCharge_ne_zero
       (mul_ne_zero hT hrpos.ne')
       (pow_ne_zero 2 (sub_ne_zero.mpr hr1.symm)))
     (by
-      have : 1 - r ^ 2 ≠ 0 := by
+      have : 1 - r ^ (2 : ℕ) ≠ 0 := by
         intro hs
-        have hrsq : r ^ 2 = 1 := by linarith
-        have hrsq' : r ^ 2 = (1 : ℝ) ^ 2 := by simpa using hrsq
+        have hrsq : r ^ (2 : ℕ) = 1 := by linarith
+        have hrsq' : r ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by simpa using hrsq
         rcases (sq_eq_sq_iff_eq_or_eq_neg).mp hrsq' with h | h
         · exact hr1 h
         · nlinarith
@@ -252,10 +252,10 @@ theorem signedThreeAtomReflectionRayCharge_ne_zero
 
 /-- Determinant of the first two value/derivative columns. -/
 def signedThreeAtomCorrectionDet (T r : ℝ) : ℝ :=
-  T * r * (1 - r) ^ 2
+  T * r * (1 - r) ^ (2 : ℕ)
 
 def signedThreeAtomCorrectionOne (T r c : ℝ) : ℝ :=
-  (-2 * T * r ^ 2 - (1 - r ^ 2) * c) /
+  (-2 * T * r ^ (2 : ℕ) - (1 - r ^ (2 : ℕ)) * c) /
     signedThreeAtomCorrectionDet T r
 
 def signedThreeAtomCorrectionTwo (T r c : ℝ) : ℝ :=
@@ -272,7 +272,7 @@ theorem signedThreeAtomCorrection_value
     {T r : ℝ} (hT : T ≠ 0) (hr : r ≠ 0) (hr1 : r ≠ 1)
     (c : ℝ) :
     (1 - r) * signedThreeAtomCorrectionOne T r c +
-      (1 - r ^ 2) * signedThreeAtomCorrectionTwo T r c = 1 := by
+      (1 - r ^ (2 : ℕ)) * signedThreeAtomCorrectionTwo T r c = 1 := by
   have hdet := signedThreeAtomCorrectionDet_ne_zero hT hr hr1
   simp only [signedThreeAtomCorrectionOne,
     signedThreeAtomCorrectionTwo, signedThreeAtomCorrectionDet]
@@ -283,7 +283,7 @@ theorem signedThreeAtomCorrection_derivative
     {T r : ℝ} (hT : T ≠ 0) (hr : r ≠ 0) (hr1 : r ≠ 1)
     (c : ℝ) :
     (-T * r) * signedThreeAtomCorrectionOne T r c +
-      (-2 * T * r ^ 2) * signedThreeAtomCorrectionTwo T r c = c := by
+      (-2 * T * r ^ (2 : ℕ)) * signedThreeAtomCorrectionTwo T r c = c := by
   have hdet := signedThreeAtomCorrectionDet_ne_zero hT hr hr1
   simp only [signedThreeAtomCorrectionOne,
     signedThreeAtomCorrectionTwo, signedThreeAtomCorrectionDet]
@@ -305,17 +305,17 @@ def signedThreeAtomPlusWeightThree (T r δ : ℝ) : ℝ :=
     signedThreeAtomReflectionRayCharge T r / δ
 
 def signedThreeAtomMinusWeightOne (T r δ c : ℝ) : ℝ :=
-  r ^ 3 * signedThreeAtomReflectionRayOne r /
+  r ^ (3 : ℕ) * signedThreeAtomReflectionRayOne r /
       signedThreeAtomReflectionRayCharge T r / δ +
     signedThreeAtomCorrectionOne T (1 / r) c
 
 def signedThreeAtomMinusWeightTwo (T r δ c : ℝ) : ℝ :=
-  r ^ 3 * signedThreeAtomReflectionRayTwo r /
+  r ^ (3 : ℕ) * signedThreeAtomReflectionRayTwo r /
       signedThreeAtomReflectionRayCharge T r / δ +
     signedThreeAtomCorrectionTwo T (1 / r) c
 
 def signedThreeAtomMinusWeightThree (T r δ : ℝ) : ℝ :=
-  r ^ 3 * signedThreeAtomReflectionRayThree r /
+  r ^ (3 : ℕ) * signedThreeAtomReflectionRayThree r /
     signedThreeAtomReflectionRayCharge T r / δ
 
 /-- Exact scalar jet at the positive centered height. -/
@@ -333,9 +333,9 @@ theorem signedThreeAtomPlusJet
           ⟨0, 1 / δ + c⟩ := by
   have hr := hrpos.ne'
   have hm := signedThreeAtomReflectionRayCharge_ne_zero hT hrpos hr1
-  have hg₂ : 1 - r ^ 2 ≠ 0 := by
+  have hg₂ : 1 - r ^ (2 : ℕ) ≠ 0 := by
     intro h
-    have hrsq : r ^ 2 = (1 : ℝ) ^ 2 := by nlinarith
+    have hrsq : r ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by nlinarith
     rcases (sq_eq_sq_iff_eq_or_eq_neg).mp hrsq with hEq | hNeg
     · exact hr1 hEq
     · nlinarith
@@ -387,9 +387,9 @@ theorem signedThreeAtomMinusJet
           ⟨0, 1 / δ + c⟩ := by
   have hr := hrpos.ne'
   have hm := signedThreeAtomReflectionRayCharge_ne_zero hT hrpos hr1
-  have hg₂ : 1 - r ^ 2 ≠ 0 := by
+  have hg₂ : 1 - r ^ (2 : ℕ) ≠ 0 := by
     intro h
-    have hrsq : r ^ 2 = (1 : ℝ) ^ 2 := by nlinarith
+    have hrsq : r ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by nlinarith
     rcases (sq_eq_sq_iff_eq_or_eq_neg).mp hrsq with hEq | hNeg
     · exact hr1 hEq
     · nlinarith
@@ -557,17 +557,17 @@ theorem tendsto_signedThreeAtomNormalizedWeights
       Filter.Tendsto
         (fun n => δ n * signedThreeAtomMinusWeightOne T r (δ n) cm)
         Filter.atTop
-        (nhds (r ^ 3 * signedThreeAtomReflectionRayOne r /
+        (nhds (r ^ (3 : ℕ) * signedThreeAtomReflectionRayOne r /
           signedThreeAtomReflectionRayCharge T r)) ∧
       Filter.Tendsto
         (fun n => δ n * signedThreeAtomMinusWeightTwo T r (δ n) cm)
         Filter.atTop
-        (nhds (r ^ 3 * signedThreeAtomReflectionRayTwo r /
+        (nhds (r ^ (3 : ℕ) * signedThreeAtomReflectionRayTwo r /
           signedThreeAtomReflectionRayCharge T r)) ∧
       Filter.Tendsto
         (fun n => δ n * signedThreeAtomMinusWeightThree T r (δ n))
         Filter.atTop
-        (nhds (r ^ 3 * signedThreeAtomReflectionRayThree r /
+        (nhds (r ^ (3 : ℕ) * signedThreeAtomReflectionRayThree r /
           signedThreeAtomReflectionRayCharge T r)) := by
   constructor
   · simpa only [signedThreeAtomPlusWeightOne] using
@@ -589,17 +589,17 @@ theorem tendsto_signedThreeAtomNormalizedWeights
   constructor
   · simpa only [signedThreeAtomMinusWeightOne] using
       tendsto_scaledSingular_plus_bounded hδ hδne
-        (r ^ 3 * signedThreeAtomReflectionRayOne r /
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayOne r /
           signedThreeAtomReflectionRayCharge T r)
         (signedThreeAtomCorrectionOne T (1 / r) cm)
   constructor
   · simpa only [signedThreeAtomMinusWeightTwo] using
       tendsto_scaledSingular_plus_bounded hδ hδne
-        (r ^ 3 * signedThreeAtomReflectionRayTwo r /
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayTwo r /
           signedThreeAtomReflectionRayCharge T r)
         (signedThreeAtomCorrectionTwo T (1 / r) cm)
   · have h := tendsto_scaledSingular_plus_bounded hδ hδne
-        (r ^ 3 * signedThreeAtomReflectionRayThree r /
+        (r ^ (3 : ℕ) * signedThreeAtomReflectionRayThree r /
           signedThreeAtomReflectionRayCharge T r) 0
     simpa only [signedThreeAtomMinusWeightThree, add_zero] using h
 
@@ -612,11 +612,11 @@ theorem signedThreeAtomLimitDirections_projective
       signedThreeAtomReflectionRayCharge T r
     let b₃ := signedThreeAtomReflectionRayThree r /
       signedThreeAtomReflectionRayCharge T r
-    let c₁ := r ^ 3 * signedThreeAtomReflectionRayOne r /
+    let c₁ := r ^ (3 : ℕ) * signedThreeAtomReflectionRayOne r /
       signedThreeAtomReflectionRayCharge T r
-    let c₂ := r ^ 3 * signedThreeAtomReflectionRayTwo r /
+    let c₂ := r ^ (3 : ℕ) * signedThreeAtomReflectionRayTwo r /
       signedThreeAtomReflectionRayCharge T r
-    let c₃ := r ^ 3 * signedThreeAtomReflectionRayThree r /
+    let c₃ := r ^ (3 : ℕ) * signedThreeAtomReflectionRayThree r /
       signedThreeAtomReflectionRayCharge T r
     b₁ * c₂ = c₁ * b₂ ∧
       b₁ * c₃ = c₁ * b₃ ∧

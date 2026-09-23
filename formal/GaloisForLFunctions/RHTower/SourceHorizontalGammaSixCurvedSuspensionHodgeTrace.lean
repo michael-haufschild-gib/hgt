@@ -70,7 +70,7 @@ theorem mobiusCriticalTwoSidedRapidity_sourceHorizontalGammaSixRapidityAperture
     sourceHorizontalGammaSixRapidityAperture]
   have hexp : 0 < Real.exp a := Real.exp_pos _
   have hsquare :
-      1 + 2 * ((Real.exp (2 * a) - 1) / 2) = (Real.exp a) ^ 2 := by
+      1 + 2 * ((Real.exp (2 * a) - 1) / 2) = (Real.exp a) ^ (2 : ℕ) := by
     rw [show 2 * a = a + a by ring, Real.exp_add]
     ring
   rw [hsquare, Real.sqrt_sq hexp.le, Real.log_exp]
@@ -255,7 +255,7 @@ theorem re_det_sourceHorizontalGammaSixCurvedSuspension_mul_hardyGauge_eq_cayley
           (1 + HedenmalmThetaSource.mobiusCriticalTwoSidedUnitHardyGram
             (sourceHorizontalGammaSixRapidityAperture a) 0) =
       2 * HedenmalmThetaSource.mobiusCriticalTwoSidedCayleyDiscrepancy
-        (sourceHorizontalGammaSixRapidityAperture a) 0 ^ 2 := by
+        (sourceHorizontalGammaSixRapidityAperture a) 0 ^ (2 : ℕ) := by
   rw [det_sourceHorizontalGammaSixCurvedSuspension]
   simp only [ofReal_re]
   rw [sourceHorizontalGammaSixCurvature_mul_hardyGram_eq_loss]
@@ -306,7 +306,7 @@ theorem sourceHorizontalGammaSix_thetaCurrent_constant_but_determinant_nonzero_i
 radial character `exp a`. -/
 theorem sourceHorizontalGammaSixForwardBoundaryDefect_sq_eq_geometricRefinementEnergy
     (a : ℝ) :
-    sourceHorizontalGammaSixUnitForwardBoundaryDefect a ^ 2 =
+    sourceHorizontalGammaSixUnitForwardBoundaryDefect a ^ (2 : ℕ) =
       GaloisForLFunctions.HTGeometry.geometricRefinementEnergy (Real.exp a) 0 := by
   rw [sourceHorizontalGammaSixUnitForwardBoundaryDefect_eq,
     GaloisForLFunctions.HTGeometry.geometricRefinementEnergy]
@@ -316,7 +316,7 @@ theorem sourceHorizontalGammaSixForwardBoundaryDefect_sq_eq_geometricRefinementE
 with the reflection orientation retained before squaring. -/
 theorem sourceHorizontalGammaSixReflectedBoundaryDefect_sq_eq_geometricRefinementEnergy
     (a : ℝ) :
-    sourceHorizontalGammaSixUnitReflectedBoundaryDefect a ^ 2 =
+    sourceHorizontalGammaSixUnitReflectedBoundaryDefect a ^ (2 : ℕ) =
       GaloisForLFunctions.HTGeometry.geometricRefinementEnergy (Real.exp a)⁻¹ 0 := by
   rw [sourceHorizontalGammaSixUnitReflectedBoundaryDefect_eq,
     GaloisForLFunctions.HTGeometry.geometricRefinementEnergy, Real.exp_neg]

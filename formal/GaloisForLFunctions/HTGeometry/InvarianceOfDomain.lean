@@ -230,7 +230,7 @@ Then `f(0)` lies in the interior of `f(B^n)`. -/
 theorem invariance_of_domain_interior (f : E → E)
     (hf_cont : ContinuousOn f (closedBall 0 1)) (hf_inj : Set.InjOn f (closedBall 0 1))
     : f 0 ∈ interior (f ''(closedBall 0 1)) := by
-  -- In the case where `n = 0`, `ℝ^0` has only a single point.
+  -- In the case where `n = 0`, `ℝ^(0 : ℕ)` has only a single point.
   cases subsingleton_or_nontrivial E
   · have himage : f '' closedBall 0 1 = Set.univ := by
       ext y

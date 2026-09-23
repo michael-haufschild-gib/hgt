@@ -19,7 +19,7 @@ noncomputable section
 
 /-- Critical soft Fisher coefficient selected by positive exponential damping. -/
 def mobiusCriticalSoftFisherCoefficientLimit (u : ℝ) : ℝ :=
-  2 * u / (1 + u) ^ 2
+  2 * u / (1 + u) ^ (2 : ℕ)
 
 /-- The independently constructed damped Hilbert-space coefficient converges to the soft critical
 profile. -/
@@ -39,7 +39,7 @@ theorem tendsto_squarefreeMobiusCriticalFisherCutoffWardLimit_div_softFisherCoef
       (fun u : ℝ => squarefreeMobiusCriticalFisherCutoffWardLimit u /
         mobiusCriticalSoftFisherCoefficientLimit u)
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 4) := by
-  have hscale : Tendsto (fun u : ℝ => (1 + u) ^ 2)
+  have hscale : Tendsto (fun u : ℝ => (1 + u) ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 1) := by
     have hu : Tendsto (fun u : ℝ => u)
         (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) :=

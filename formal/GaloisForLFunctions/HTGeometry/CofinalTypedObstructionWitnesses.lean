@@ -110,7 +110,7 @@ theorem identityRational_typedObstruction_ne_zero {n : ℕ} (hn : 2 ≤ n) :
   norm_num at hone
 
 /-- The identity model has nonzero typed obstructions above every cutoff. -/
-theorem hasCofinalNonzeroBundledTypedObstructions_identityRational :
+theorem hasCofinalNonzeroBundledTypedObstructions_identityRational_cofinalTypedObstructionWitnesses :
     HasCofinalNonzeroBundledTypedObstructions constantRationalBigradedModule
       identityRationalTwistedComponent := by
   intro c

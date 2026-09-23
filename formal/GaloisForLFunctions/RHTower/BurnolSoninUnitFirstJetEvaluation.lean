@@ -102,7 +102,7 @@ def burnolExtendedSoninUnitFirstJetEvaluation
     (w : ℂ) (hlo : 1 / 2 < w.re) : soninExtendedSpace (1 : ℝ) →L[ℂ] ℂ :=
   (deriv mellinCompletionFactor w) • burnolExtendedSoninUnitRawEvaluation w hlo +
     mellinCompletionFactor w •
-      ((1 - w)⁻¹ ^ 2 • burnolExtendedSoninUnitHeadCoefficient +
+      ((1 - w)⁻¹ ^ (2 : ℕ) • burnolExtendedSoninUnitHeadCoefficient +
         (soninMellinTailDerivativeEvaluation w hlo).comp
           (evenSubspace.subtypeL.comp (soninExtendedSpace (1 : ℝ)).subtypeL))
 
@@ -116,7 +116,7 @@ theorem burnolExtendedSoninUnitFirstJetEvaluation_apply
           (c * (1 - w)⁻¹ + soninMellinTailIntegral
             (((f : soninExtendedSpace (1 : ℝ)) : evenSubspace) : SoninL2) w) +
         mellinCompletionFactor w *
-      (c * (1 - w)⁻¹ ^ 2 +
+      (c * (1 - w)⁻¹ ^ (2 : ℕ) +
             soninMellinTailDerivativeEvaluation w hlo
               (((f : soninExtendedSpace (1 : ℝ)) : evenSubspace) : SoninL2)) := by
   have hhead := burnolExtendedSoninUnitHeadCoefficient_eq_headConstant f hc
@@ -151,7 +151,7 @@ theorem hasDerivAt_soninMellinEvaluation_unit_firstJet
     have hre := congrArg Complex.re h
     norm_num at hre
     linarith
-  have hinv : HasDerivAt ((fun z : ℂ => 1 - z)⁻¹) ((1 - w)⁻¹ ^ 2) w := by
+  have hinv : HasDerivAt ((fun z : ℂ => 1 - z)⁻¹) ((1 - w)⁻¹ ^ (2 : ℕ)) w := by
     simpa only [neg_neg, one_div, inv_pow] using hsub.inv hne
   have hheadFun : (fun z : ℂ => c * (1 - z)⁻¹) =
       fun z : ℂ => c * ((fun y : ℂ => 1 - y)⁻¹) z := by
@@ -159,7 +159,7 @@ theorem hasDerivAt_soninMellinEvaluation_unit_firstJet
     change c * (1 - z)⁻¹ = c * (1 - z)⁻¹
     rfl
   have hhead : HasDerivAt (fun z : ℂ => c * (1 - z)⁻¹)
-      (c * (1 - w)⁻¹ ^ 2) w := by
+      (c * (1 - w)⁻¹ ^ (2 : ℕ)) w := by
     rw [hheadFun]
     exact hinv.const_mul c
   have htail := hasDerivAt_soninMellinTailIntegral_eq_tailDerivativeEvaluation hlo

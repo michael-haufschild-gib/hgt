@@ -50,7 +50,7 @@ theorem hasDerivAt_logPhaseAntideriv {lam : ℝ} (hlam : lam ≠ 0) {t : ℝ} (h
 noncomputable def invLogC (t : ℝ) : ℂ := ((Real.log t : ℝ) : ℂ)⁻¹
 
 theorem hasDerivAt_invLogC {t : ℝ} (ht : 1 < t) :
-    HasDerivAt invLogC (-((((t * (Real.log t) ^ 2)⁻¹ : ℝ)) : ℂ)) t := by
+    HasDerivAt invLogC (-((((t * (Real.log t) ^ (2 : ℕ))⁻¹ : ℝ)) : ℂ)) t := by
   have ht0 : t ≠ 0 := by linarith
   have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
   have hbase : HasDerivAt (fun x : ℝ => ((Real.log x : ℝ) : ℂ)) (((t⁻¹ : ℝ) : ℂ)) t :=
@@ -64,8 +64,8 @@ theorem hasDerivAt_invLogC {t : ℝ} (ht : 1 < t) :
 
 /-! ## Integrability of the logarithmic tail weight -/
 
-theorem hasDerivAt_negInvLog {t : ℝ} (ht : 1 < t) :
-    HasDerivAt (fun x : ℝ => -(Real.log x)⁻¹) ((t * (Real.log t) ^ 2)⁻¹) t := by
+theorem hasDerivAt_negInvLog_oscillatoryLogIntegral {t : ℝ} (ht : 1 < t) :
+    HasDerivAt (fun x : ℝ => -(Real.log x)⁻¹) ((t * (Real.log t) ^ (2 : ℕ))⁻¹) t := by
   have ht0 : t ≠ 0 := by linarith
   have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
   have h := ((Real.hasDerivAt_log ht0).inv hlog).neg
@@ -73,7 +73,7 @@ theorem hasDerivAt_negInvLog {t : ℝ} (ht : 1 < t) :
   field_simp
 
 theorem integrableOn_logTailWeight :
-    MeasureTheory.IntegrableOn (fun t : ℝ => (t * (Real.log t) ^ 2)⁻¹) (Set.Ioi 2) := by
+    MeasureTheory.IntegrableOn (fun t : ℝ => (t * (Real.log t) ^ (2 : ℕ))⁻¹) (Set.Ioi 2) := by
   refine MeasureTheory.integrableOn_Ioi_deriv_of_nonneg (g := fun x : ℝ => -(Real.log x)⁻¹)
     (l := 0) ?_ ?_ ?_ ?_
   · refine ContinuousAt.continuousWithinAt ?_
@@ -81,7 +81,7 @@ theorem integrableOn_logTailWeight :
     exact ((Real.continuousAt_log (by norm_num)).inv₀ hlog).neg
   · intro x hx
     have hx2 : (2 : ℝ) < x := hx
-    exact hasDerivAt_negInvLog (by linarith)
+    exact hasDerivAt_negInvLog_oscillatoryLogIntegral (by linarith)
   · intro x hx
     have hx2 : (2 : ℝ) < x := hx
     have hlog : 0 < Real.log x := Real.log_pos (by linarith)
@@ -104,27 +104,27 @@ noncomputable def oscLogKernel (lam : ℝ) (t : ℝ) : ℂ :=
 
 /-- The integrand of the integrated-by-parts remainder. -/
 noncomputable def oscLogRemainder (lam : ℝ) (t : ℝ) : ℂ :=
-  (-((((t * (Real.log t) ^ 2)⁻¹ : ℝ)) : ℂ)) * logPhaseAntideriv lam t
+  (-((((t * (Real.log t) ^ (2 : ℕ))⁻¹ : ℝ)) : ℂ)) * logPhaseAntideriv lam t
 
 theorem norm_oscLogRemainder (lam : ℝ) {t : ℝ} (ht : 1 < t) :
-    ‖oscLogRemainder lam t‖ = |lam|⁻¹ * (t * (Real.log t) ^ 2)⁻¹ := by
+    ‖oscLogRemainder lam t‖ = |lam|⁻¹ * (t * (Real.log t) ^ (2 : ℕ))⁻¹ := by
   have hlog : 0 < Real.log t := Real.log_pos ht
-  have hpos : (0 : ℝ) < t * (Real.log t) ^ 2 := by positivity
+  have hpos : (0 : ℝ) < t * (Real.log t) ^ (2 : ℕ) := by positivity
   rw [oscLogRemainder, norm_mul, norm_neg, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos (by positivity : (0:ℝ) < (t * (Real.log t) ^ 2)⁻¹), norm_logPhaseAntideriv]
+    abs_of_pos (by positivity : (0:ℝ) < (t * (Real.log t) ^ (2 : ℕ))⁻¹), norm_logPhaseAntideriv]
   ring
 
 theorem integral_oscLogKernel_eq {lam : ℝ} (hlam : lam ≠ 0) {U : ℝ} (hU : 2 ≤ U) :
     ∫ t in (2 : ℝ)..U, oscLogKernel lam t
       = invLogC U * logPhaseAntideriv lam U - invLogC 2 * logPhaseAntideriv lam 2
         - ∫ t in (2 : ℝ)..U, oscLogRemainder lam t := by
-  have hcontRem : ContinuousOn (fun t : ℝ => -((((t * (Real.log t) ^ 2)⁻¹ : ℝ)) : ℂ))
+  have hcontRem : ContinuousOn (fun t : ℝ => -((((t * (Real.log t) ^ (2 : ℕ))⁻¹ : ℝ)) : ℂ))
       (Set.uIcc (2 : ℝ) U) := by
     rw [Set.uIcc_of_le hU]
     intro x hx
     have hx2 : (2 : ℝ) ≤ x := hx.1
     have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-    have hne : x * (Real.log x) ^ 2 ≠ 0 := by positivity
+    have hne : x * (Real.log x) ^ (2 : ℕ) ≠ 0 := by positivity
     refine ContinuousAt.continuousWithinAt ?_
     refine (Complex.continuous_ofReal.continuousAt.comp ?_).neg
     exact (continuousAt_id.mul ((Real.continuousAt_log (by linarith)).pow 2)).inv₀ hne
@@ -154,7 +154,7 @@ theorem integrableOn_oscLogRemainder {lam : ℝ} (hlam : lam ≠ 0) :
     intro x hx
     have hx2 : (2 : ℝ) < x := hx
     have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-    have hne : x * (Real.log x) ^ 2 ≠ 0 := by positivity
+    have hne : x * (Real.log x) ^ (2 : ℕ) ≠ 0 := by positivity
     refine ContinuousAt.continuousWithinAt ?_
     refine ContinuousAt.mul ?_ ?_
     · refine (Complex.continuous_ofReal.continuousAt.comp ?_).neg
@@ -165,7 +165,7 @@ theorem integrableOn_oscLogRemainder {lam : ℝ} (hlam : lam ≠ 0) :
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with x hx
   have hx2 : (2 : ℝ) < x := hx
   have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-  have hnn : (0 : ℝ) ≤ |lam|⁻¹ * (x * Real.log x ^ 2)⁻¹ := by positivity
+  have hnn : (0 : ℝ) ≤ |lam|⁻¹ * (x * Real.log x ^ (2 : ℕ))⁻¹ := by positivity
   rw [norm_oscLogRemainder lam (by linarith), Real.norm_eq_abs, abs_of_nonneg hnn]
 
 /-- **The oscillatory logarithmic integral converges.**  Integration by parts against the phase
@@ -204,24 +204,24 @@ theorem exists_tendsto_integral_oscLogKernel {lam : ℝ} (hlam : lam ≠ 0) :
 /-! ## The de la Vallée Poussin error weight -/
 
 theorem exp_neg_sqrt_le {c : ℝ} (hc : 0 < c) {u : ℝ} (hu : 0 < u) :
-    Real.exp (-c * Real.sqrt u) ≤ 24 / (c ^ 4 * u ^ 2) := by
+    Real.exp (-c * Real.sqrt u) ≤ 24 / (c ^ (4 : ℕ) * u ^ (2 : ℕ)) := by
   have hs : 0 ≤ Real.sqrt u := Real.sqrt_nonneg u
   have hcs : 0 ≤ c * Real.sqrt u := by positivity
   have hbound := Real.sum_le_exp_of_nonneg hcs 5
-  have hterm : (c * Real.sqrt u) ^ 4 / 24 ≤ Real.exp (c * Real.sqrt u) := by
+  have hterm : (c * Real.sqrt u) ^ (4 : ℕ) / 24 ≤ Real.exp (c * Real.sqrt u) := by
     refine le_trans ?_ hbound
     have hsum : ∑ i ∈ Finset.range 5, (c * Real.sqrt u) ^ i / (i.factorial : ℝ)
-        = 1 + (c * Real.sqrt u) + (c * Real.sqrt u) ^ 2 / 2 + (c * Real.sqrt u) ^ 3 / 6 +
-          (c * Real.sqrt u) ^ 4 / 24 := by
+        = 1 + (c * Real.sqrt u) + (c * Real.sqrt u) ^ (2 : ℕ) / 2 + (c * Real.sqrt u) ^ (3 : ℕ) / 6 +
+          (c * Real.sqrt u) ^ (4 : ℕ) / 24 := by
       simp [Finset.sum_range_succ]
       ring
     rw [hsum]
     nlinarith [pow_nonneg hcs 2, pow_nonneg hcs 3, pow_nonneg hcs 4]
-  have hsq : (Real.sqrt u) ^ 4 = u ^ 2 := by
-    have h2 : (Real.sqrt u) ^ 2 = u := Real.sq_sqrt hu.le
-    calc (Real.sqrt u) ^ 4 = ((Real.sqrt u) ^ 2) ^ 2 := by ring
-      _ = u ^ 2 := by rw [h2]
-  have hpow : (c * Real.sqrt u) ^ 4 = c ^ 4 * u ^ 2 := by
+  have hsq : (Real.sqrt u) ^ (4 : ℕ) = u ^ (2 : ℕ) := by
+    have h2 : (Real.sqrt u) ^ (2 : ℕ) = u := Real.sq_sqrt hu.le
+    calc (Real.sqrt u) ^ (4 : ℕ) = ((Real.sqrt u) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = u ^ (2 : ℕ) := by rw [h2]
+  have hpow : (c * Real.sqrt u) ^ (4 : ℕ) = c ^ (4 : ℕ) * u ^ (2 : ℕ) := by
     rw [mul_pow, hsq]
   rw [hpow] at hterm
   have hexp : Real.exp (-c * Real.sqrt u) = (Real.exp (c * Real.sqrt u))⁻¹ := by
@@ -230,7 +230,7 @@ theorem exp_neg_sqrt_le {c : ℝ} (hc : 0 < c) {u : ℝ} (hu : 0 < u) :
     ring
   rw [hexp]
   rw [inv_le_iff_one_le_mul₀ (Real.exp_pos _)]
-  have hden : (0 : ℝ) < c ^ 4 * u ^ 2 := by positivity
+  have hden : (0 : ℝ) < c ^ (4 : ℕ) * u ^ (2 : ℕ) := by positivity
   rw [div_mul_eq_mul_div, le_div_iff₀ hden]
   nlinarith [hterm, hden]
 
@@ -247,7 +247,7 @@ theorem integrableOn_pntErrorWeight {c : ℝ} (hc : 0 < c) :
     exact Real.continuous_exp.continuousAt.comp
       ((Real.continuous_sqrt.continuousAt.comp
         (Real.continuousAt_log (by linarith))).const_mul _)
-  refine Integrable.mono (integrableOn_logTailWeight.const_mul (24 / c ^ 4)) hmeas ?_
+  refine Integrable.mono (integrableOn_logTailWeight.const_mul (24 / c ^ (4 : ℕ))) hmeas ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   have hx2 : (2 : ℝ) < x := hx
   have hlog : 0 < Real.log x := Real.log_pos (by linarith)
@@ -255,12 +255,12 @@ theorem integrableOn_pntErrorWeight {c : ℝ} (hc : 0 < c) :
   have hxpos : (0 : ℝ) < x := by linarith
   rw [Real.norm_eq_abs, Real.norm_eq_abs,
     abs_of_nonneg (by positivity : (0:ℝ) ≤ Real.exp (-c * Real.sqrt (Real.log x)) / x),
-    abs_of_nonneg (by positivity : (0:ℝ) ≤ 24 / c ^ 4 * (x * Real.log x ^ 2)⁻¹)]
+    abs_of_nonneg (by positivity : (0:ℝ) ≤ 24 / c ^ (4 : ℕ) * (x * Real.log x ^ (2 : ℕ))⁻¹)]
   have hgoal : Real.exp (-c * Real.sqrt (Real.log x)) / x
-      ≤ 24 / c ^ 4 * (x * Real.log x ^ 2)⁻¹ := by
+      ≤ 24 / c ^ (4 : ℕ) * (x * Real.log x ^ (2 : ℕ))⁻¹ := by
     rw [div_le_iff₀ hxpos]
-    have hkey : Real.exp (-c * Real.sqrt (Real.log x)) ≤ 24 / (c ^ 4 * Real.log x ^ 2) := hle
-    have hrw : 24 / c ^ 4 * (x * Real.log x ^ 2)⁻¹ * x = 24 / (c ^ 4 * Real.log x ^ 2) := by
+    have hkey : Real.exp (-c * Real.sqrt (Real.log x)) ≤ 24 / (c ^ (4 : ℕ) * Real.log x ^ (2 : ℕ)) := hle
+    have hrw : 24 / c ^ (4 : ℕ) * (x * Real.log x ^ (2 : ℕ))⁻¹ * x = 24 / (c ^ (4 : ℕ) * Real.log x ^ (2 : ℕ)) := by
       field_simp
     rw [hrw]
     exact hkey

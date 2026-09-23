@@ -63,9 +63,9 @@ def regularReverseReflectionCoefficient (q : SchwartzMap ℝ ℂ) (z : ℝ) : �
 
 /-- The regularized reflection definitions agree with the gauge factors in (3.33). -/
 theorem regularReflectionCoefficients_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    regularReflectionCoefficient q ((Real.exp κ)^2) =
+    regularReflectionCoefficient q ((Real.exp κ)^(2 : ℕ)) =
       -(2*(Real.exp κ:ℂ))*reflectionCoefficient q κ ∧
-    regularReverseReflectionCoefficient q ((Real.exp κ)^2) =
+    regularReverseReflectionCoefficient q ((Real.exp κ)^(2 : ℕ)) =
       -(reverseReflectionCoefficient q κ)/(2*(Real.exp κ:ℂ)) := by
   constructor <;> simp [regularReflectionCoefficient, regularReverseReflectionCoefficient, regularScatteringMatrix,
     uniformizedScatteringMatrix_amplitudes, ← Complex.ofReal_exp,

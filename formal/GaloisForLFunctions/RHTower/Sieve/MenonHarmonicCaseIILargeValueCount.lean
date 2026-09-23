@@ -22,9 +22,9 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
       ∀ᶠ a : ℕ in atTop,
         ∀ {L X cells : ℕ} {T0 t B sigma V Δ T : ℝ}
           {S : Finset ℕ} {w : ℕ → ℝ},
-        1 ≤ X → a < X → X < (L + 1) ^ 3 → 1 < T0 →
-        ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
-        (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
+        1 ≤ X → a < X → X < (L + 1) ^ (3 : ℕ) → 1 < T0 →
+        ((2 ^ (6 : ℕ) : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
+        (64 : ℝ) ^ (8 : ℕ) ≤ (a : ℝ) → 1 ≤ L →
         (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
         1 < sigma → 0 ≤ B → 0 ≤ V → 1 ≤ Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -47,17 +47,17 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
                 ((a + 1 : ℕ) : ℝ) <
             ‖harmonicPrimeBlockPoly (primesRange a X) (w r)‖) →
         let D : ℕ :=
-          3 * (Nat.log 2 X + 1) ^ 3 * (Nat.log 2 L + 1) ^ 3
+          3 * (Nat.log 2 X + 1) ^ (3 : ℕ) * (Nat.log 2 L + 1) ^ (3 : ℕ)
         let W : ℝ := menonHeathBrownCaseIIComplementWidthConstant
         let Vexp : ℝ :=
           min T (((a : ℝ) ^ (1 / 8 : ℝ)) ^ maynardDerivativeDeficit 26) /
               (5120 * maynardLongPolylogEnvelope X) * (Q / ((D : ℝ) * 8))
         let Hmax : ℝ :=
-          (12 * W ^ 2 *
+          (12 * W ^ (2 : ℕ) *
               (1 + Real.log (W * (X : ℝ))) ^
                 (menonHeathBrownCaseIIComplementPolylogExponent + 2)) *
             (T + 1) * (((a : ℝ) / 64) ^ (2 - 2 * sigma))
-        (S.card : ℝ) * Vexp ^ 2 ≤ (((cells * D * 12 : ℕ) : ℝ)) * Hmax := by
+        (S.card : ℝ) * Vexp ^ (2 : ℕ) ≤ (((cells * D * 12 : ℕ) : ℝ)) * Hmax := by
   obtain ⟨C0, hC0, haggregate⟩ :=
     exists_absolute_eventually_card_mul_sq_le_menonHeathBrownCaseII_variableUpper A
   refine ⟨C0, hC0, ?_⟩
@@ -67,7 +67,7 @@ theorem exists_absolute_eventually_card_mul_sq_le_menonHarmonicPrimeBlock_caseII
   dsimp only
   intro hQ hA habsorb hlarge
   have haOne : 1 ≤ a := by
-    have haReal : (1 : ℝ) ≤ (a : ℝ) := (by norm_num : (1 : ℝ) ≤ 64 ^ 8).trans ha
+    have haReal : (1 : ℝ) ≤ (a : ℝ) := (by norm_num : (1 : ℝ) ≤ 64 ^ (8 : ℕ)).trans ha
     exact_mod_cast haReal
   have hprefix : ∀ r : ℕ, r ∈ S →
       ∃ m ∈ Finset.Ioc a X,

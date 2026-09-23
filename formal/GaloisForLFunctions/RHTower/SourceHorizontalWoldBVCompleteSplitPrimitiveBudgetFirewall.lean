@@ -185,11 +185,11 @@ theorem tsum_prime_invNatLogSq_lt_two :
   have hl2p : 0 < Real.log 2 := by linarith
   have hl3p : 0 < Real.log 3 := by linarith
   have hl5p : 0 < Real.log 5 := by linarith
-  have hs2 : (0.6931471803 : ℝ) ^ 2 < Real.log 2 ^ 2 :=
+  have hs2 : (0.6931471803 : ℝ) ^ (2 : ℕ) < Real.log 2 ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hl2p.le).2 hlog2
-  have hs3 : (1.0986122885 : ℝ) ^ 2 < Real.log 3 ^ 2 :=
+  have hs3 : (1.0986122885 : ℝ) ^ (2 : ℕ) < Real.log 3 ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hl3p.le).2 hlog3
-  have hs5 : (1.6094379123 : ℝ) ^ 2 < Real.log 5 ^ 2 :=
+  have hs5 : (1.6094379123 : ℝ) ^ (2 : ℕ) < Real.log 5 ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hl5p.le).2 hlog5
   have hf2 : invNatLogSq 2 < (21 / 20 : ℝ) := by
     rw [invNatLogSq]
@@ -380,9 +380,9 @@ theorem tendsto_ccmActualHeadMatchedSuzukiOpenPrimeClockCurrent_div_logHeightCub
     (f : SoninL2) :
     Tendsto (fun N : ℕ =>
       ccmActualHeadMatchedSuzukiOpenPrimeClockCurrent N f /
-        xiMassNthPrimeLogHeight N ^ 3) atTop (nhds 0) := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) atTop (nhds 0) := by
   have hnum := tendsto_ccmActualHeadMatchedSuzukiOpenPrimeClockCurrent f
-  have hden : Tendsto (fun N : ℕ => xiMassNthPrimeLogHeight N ^ 3)
+  have hden : Tendsto (fun N : ℕ => xiMassNthPrimeLogHeight N ^ (3 : ℕ))
       atTop atTop := by
     apply Filter.tendsto_atTop_mono' atTop _
       tendsto_xiMassNthPrimeLogHeight_atTop
@@ -401,7 +401,7 @@ def sourceHorizontalWoldBVKreinRouteOMatchedCompensatedEnergy
     (c : ℂ) (f : SoninL2) (k : ℝ) (N : ℕ) : ℝ :=
   sourceHorizontalWoldBVKreinSignedSplitEnergy c N -
     k * (ccmActualHeadMatchedSuzukiOpenPrimeClockCurrent N f /
-      xiMassNthPrimeLogHeight N ^ 3)
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 /-- Absolute summability makes every fixed Route-O matched-current compensation invisible at the
 cubic Wold horizon; the obstructing `8/3` signed limit is unchanged. -/
@@ -414,7 +414,7 @@ theorem tendsto_sourceHorizontalWoldBVKreinRouteOMatchedCompensatedEnergy
   change Tendsto (fun N : ℕ =>
     sourceHorizontalWoldBVKreinSignedSplitEnergy c N -
       k * (ccmActualHeadMatchedSuzukiOpenPrimeClockCurrent N f /
-        xiMassNthPrimeLogHeight N ^ 3)) atTop
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))) atTop
     (nhds ((8 / 3 : ℝ) * Complex.normSq c))
   simpa using (tendsto_sourceHorizontalWoldBVKreinSignedSplitEnergy c).sub hzero
 

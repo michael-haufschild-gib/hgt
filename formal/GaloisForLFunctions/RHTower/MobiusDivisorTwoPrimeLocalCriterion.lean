@@ -19,7 +19,7 @@ namespace RHTower
 theorem nonnegative_two_coordinate_square_le_of_double
     {a b c e : ℝ} (_ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (he : 0 ≤ e)
     (hba : b ≤ 2*a) (hca : c ≤ 2*a) (heb : e ≤ 2*b) (hec : e ≤ 2*c) :
-    (a-b-c+e)^2 ≤ a^2+b^2+c^2+e^2 := by
+    (a-b-c+e)^(2 : ℕ) ≤ a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+e^(2 : ℕ) := by
   have hex : e ≤ b+c := by linarith only [heb,hec]
   have hbc : b*c ≤ a*(b+c) := by
     have h1 := mul_nonneg (sub_nonneg.mpr hba) hc
@@ -37,7 +37,7 @@ theorem nonnegative_two_coordinate_square_le_of_double
 theorem nonnegative_two_coordinate_factor_iff (κ : ℝ) :
     (∀ a b c e : ℝ,0 ≤ a → 0 ≤ b → 0 ≤ c → 0 ≤ e →
       b ≤ κ*a → c ≤ κ*a → e ≤ κ*b → e ≤ κ*c →
-      (a-b-c+e)^2 ≤ a^2+b^2+c^2+e^2) ↔ κ ≤ 2 := by
+      (a-b-c+e)^(2 : ℕ) ≤ a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+e^(2 : ℕ)) ↔ κ ≤ 2 := by
   constructor
   · intro h
     by_contra hn
@@ -148,14 +148,14 @@ theorem mobiusDivisorSelectionEnergy_empty_eq_two_prime_blocks
     (M : ℕ) {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpM : p<M) (hqM : q<M) (hpq : p≠q) :
     mobiusDivisorSelectionEnergy M ∅ =
       ∑ R ∈ (((mobiusDivisorSelectionPrimes M).erase p).erase q).powerset,
-        ((mobiusDivisorOrientedFibre M ∅ R)^2+
-        (mobiusDivisorOrientedFibre M ∅ (insert p R))^2+
-        (mobiusDivisorOrientedFibre M ∅ (insert q R))^2+
-        (mobiusDivisorOrientedFibre M ∅ (insert p (insert q R)))^2) := by
+        ((mobiusDivisorOrientedFibre M ∅ R)^(2 : ℕ)+
+        (mobiusDivisorOrientedFibre M ∅ (insert p R))^(2 : ℕ)+
+        (mobiusDivisorOrientedFibre M ∅ (insert q R))^(2 : ℕ)+
+        (mobiusDivisorOrientedFibre M ∅ (insert p (insert q R)))^(2 : ℕ)) := by
   have hpU : p ∈ mobiusDivisorSelectionPrimes M := mem_filter.mpr ⟨mem_range.mpr hpM,hp⟩
   have hqU : q ∈ mobiusDivisorSelectionPrimes M := mem_filter.mpr ⟨mem_range.mpr hqM,hq⟩
   simp_rw [mobiusDivisorOrientedFibre_sq]
-  exact two_label_split _ p q hpU hqU hpq (fun R => (mobiusDivisorSelectionFibre M ∅ R)^2)
+  exact two_label_split _ p q hpU hqU hpq (fun R => (mobiusDivisorSelectionFibre M ∅ R)^(2 : ℕ))
 
 /-- Processing two primes leaves the alternating sum in every original four-coefficient block. -/
 theorem mobiusDivisorSelectionEnergy_two_primes_eq_blocks
@@ -165,7 +165,7 @@ theorem mobiusDivisorSelectionEnergy_two_primes_eq_blocks
         (mobiusDivisorOrientedFibre M ∅ R-
         mobiusDivisorOrientedFibre M ∅ (insert p R)-
         mobiusDivisorOrientedFibre M ∅ (insert q R)+
-        mobiusDivisorOrientedFibre M ∅ (insert p (insert q R)))^2 := by
+        mobiusDivisorOrientedFibre M ∅ (insert p (insert q R)))^(2 : ℕ) := by
   change subsetLabelEnergy _ _ _ _ _ = _
   rw [subsetLabelEnergy_remaining]
   have he : mobiusDivisorSelectionPrimes M \ insert q {p} =
@@ -176,7 +176,7 @@ theorem mobiusDivisorSelectionEnergy_two_primes_eq_blocks
   rw [he]
   apply sum_congr rfl
   intro R hR
-  change (mobiusDivisorSelectionFibre M (insert q {p}) R)^2 = _
+  change (mobiusDivisorSelectionFibre M (insert q {p}) R)^(2 : ℕ) = _
   rw [← mobiusDivisorOrientedFibre_sq]
   obtain ⟨hpR,hqR⟩ := label_not_mem hR
   rw [mobiusDivisorOrientedFibre_insert M {p} R q hqR]

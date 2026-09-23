@@ -71,7 +71,7 @@ theorem pairJetMix_top (m : ℕ) (Φ : CascadeField) :
 /-- **The scalar operator on a logarithmic derivative is a Wronskian over a square.** -/
 theorem pairTopShift_logDeriv {m : ℕ} {Φ : CascadeField} (hmem : Φ ∈ coordField m) (hΦ : Φ ≠ 0) :
     pairTopShift p m (fpderiv m Φ / Φ)
-      = (fpderiv m (pairDerivation p Φ) * Φ - fpderiv m Φ * pairDerivation p Φ) / Φ ^ 2 := by
+      = (fpderiv m (pairDerivation p Φ) * Φ - fpderiv m Φ * pairDerivation p Φ) / Φ ^ (2 : ℕ) := by
   have hmix := fpderiv_pairDerivation_mixed_coordField (p := p) (m := m) (k := m) hmem
   rw [pairJetMix_top] at hmix
   have hsub : pairDerivation p (fpderiv m Φ)
@@ -132,7 +132,7 @@ theorem fpderiv_top_pairDerivation_pairFactor (hp : p m' = affinePair α β) :
 theorem pairTopShift_pairLogTerm (hα : α ≠ 0) (hp : p m' = affinePair α β) :
     pairTopShift p (m' + 1) (pairLogTerm p m' (m' + 1))
       = pairJet p m' * fact (α.derivative * β - α * β.derivative) m'
-          / (pairFactor (p m') m') ^ 2 := by
+          / (pairFactor (p m') m') ^ (2 : ℕ) := by
   have hne : pairFactor (p m') m' ≠ 0 := pairFactor_top_ne_zero hα hp
   have hmem : pairFactor (p m') m' ∈ coordField (m' + 1) :=
     pairFactor_mem_coordField (le_refl (m' + 1)) (p m')
@@ -168,7 +168,7 @@ theorem pairTopShift_logFactor_head {g : Polynomial ℂ} (hg : g ≠ 0)
     (hp : p m' = affinePair α β) :
     pairTopShift p (m' + 1) (logFactor g (m' + 1))
       = pairJet p m' * (fact α m' * fact (headDefect g) (m' + 1)
-          + fact β m' * fact (headWr g) (m' + 1)) / (fact g (m' + 1)) ^ 2 := by
+          + fact β m' * fact (headWr g) (m' + 1)) / (fact g (m' + 1)) ^ (2 : ℕ) := by
   have hne : fact g (m' + 1) ≠ 0 := fact_ne_zero hg (m' + 1)
   have hmem : fact g (m' + 1) ∈ coordField (m' + 1) :=
     fact_mem_coordField (le_refl (m' + 1)) g

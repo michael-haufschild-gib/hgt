@@ -38,7 +38,7 @@ theorem dilatonHamiltonian_kernel_iff (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) :
   · intro h
     have hp := dilatonHamiltonian_energy H ψ
     rw [h, schwartzPair_zero_right] at hp
-    have hn : ‖(dilatonSuperchargeCLM H ψ).toLp 2 (volume : Measure ℝ)‖ ^ 2 = 0 := by
+    have hn : ‖(dilatonSuperchargeCLM H ψ).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) = 0 := by
       exact_mod_cast hp.symm
     apply SchwartzMap.injective_toLp 2 (volume : Measure ℝ)
     have hzero := (SchwartzMap.toLpCLM ℂ ℂ 2 (volume : Measure ℝ)).map_zero
@@ -54,7 +54,7 @@ theorem dilatonHamiltonian_kernel_classification (H : ℝ[X]) (ψ : 𝓢(ℝ, �
 
 def quarticDilatonSquareScale (k : ℝ) : ℝ := Real.sqrt (Real.exp k / (2 * Real.pi))
 
-def quarticDilatonSquareMap (k x : ℝ) : ℝ := quarticDilatonSquareScale k * x ^ 2
+def quarticDilatonSquareMap (k x : ℝ) : ℝ := quarticDilatonSquareScale k * x ^ (2 : ℕ)
 
 theorem quarticDilatonSquareScale_pos (k : ℝ) : 0 < quarticDilatonSquareScale k := by
   unfold quarticDilatonSquareScale
@@ -70,12 +70,12 @@ private theorem quarticDilatonSquareMap_growth (k : ℝ) :
   let c := quarticDilatonSquareScale k
   have hc : 0 < c := quarticDilatonSquareScale_pos k
   refine ⟨1, 1 + c⁻¹, fun x => ?_⟩
-  have habs : |x| ≤ 1 + x ^ 2 := by nlinarith [sq_nonneg (|x| - 1), sq_abs x]
-  have hprod : c⁻¹ * (c * x ^ 2) = x ^ 2 := by field_simp
+  have habs : |x| ≤ 1 + x ^ (2 : ℕ) := by nlinarith [sq_nonneg (|x| - 1), sq_abs x]
+  have hprod : c⁻¹ * (c * x ^ (2 : ℕ)) = x ^ (2 : ℕ) := by field_simp
   have hineq := mul_le_mul_of_nonneg_right (by linarith : c⁻¹ ≤ 1 + c⁻¹)
-    (by positivity : 0 ≤ c * x ^ 2)
+    (by positivity : 0 ≤ c * x ^ (2 : ℕ))
   rw [hprod] at hineq
-  change ‖x‖ ≤ (1 + c⁻¹) * (1 + ‖c * x ^ 2‖) ^ 1
+  change ‖x‖ ≤ (1 + c⁻¹) * (1 + ‖c * x ^ (2 : ℕ)‖) ^ (1 : ℕ)
   simp only [Real.norm_eq_abs, abs_mul, abs_of_pos hc, abs_pow, sq_abs, pow_one]
   nlinarith [inv_pos.mpr hc]
 
@@ -85,7 +85,7 @@ def quarticDilatonGroundState (k : ℝ) : 𝓢(ℝ, ℂ) :=
     gaussianSchwartz
 
 theorem quarticDilatonGroundState_apply (k x : ℝ) :
-    quarticDilatonGroundState k x = ((Real.exp (-Real.exp k * x ^ 4 / 2) : ℝ) : ℂ) := by
+    quarticDilatonGroundState k x = ((Real.exp (-Real.exp k * x ^ (4 : ℕ) / 2) : ℝ) : ℂ) := by
   change gaussianSchwartz (quarticDilatonSquareMap k x) = _
   rw [gaussianSchwartz_apply]
   unfold gaussReal quarticDilatonSquareMap quarticDilatonSquareScale
@@ -106,7 +106,7 @@ theorem quarticDilatonGroundState_undressed (k x : ℝ) :
   rw [dilatonUndressed, quarticDilatonGroundState_apply]
   simp only [dilatonGauge, quarticDilatonLogWeight, eval_mul, eval_C, eval_pow, eval_X]
   rw [← Complex.ofReal_mul, ← Real.exp_add]
-  rw [show -(-Real.exp k * x ^ 4) / 2 + -Real.exp k * x ^ 4 / 2 = 0 by ring,
+  rw [show -(-Real.exp k * x ^ (4 : ℕ)) / 2 + -Real.exp k * x ^ (4 : ℕ) / 2 = 0 by ring,
     Real.exp_zero, Complex.ofReal_one]
 
 theorem quarticDilatonGroundState_supercharge (k : ℝ) :

@@ -41,7 +41,7 @@ def XiHedenmalmCommonKummerRootUpperHalf (d : ℕ) : Prop :=
 def XiHedenmalmESquareRootUpperHalf : Prop :=
   ∃ h : ℂ → ℂ,
     AnalyticOnNhd ℂ h xiCenteredUpperHalfPlane ∧
-      ∀ z ∈ xiCenteredUpperHalfPlane, h z ^ 2 = xiHedenmalmDeBrangesE z
+      ∀ z ∈ xiCenteredUpperHalfPlane, h z ^ (2 : ℕ) = xiHedenmalmDeBrangesE z
 
 /-- At an XiC zero of order `k+1`, the Hedenmalm function `XiC + I*XiC'` has exact order `k`.
 The derivative term cannot cancel against XiC because their local orders are different. -/
@@ -150,9 +150,9 @@ theorem riemannHypothesis_of_rhLadder_one_of_xiHedenmalmESquareRootUpperHalf
     dsimp only [G]
     exact AnalyticAt.comp (f := pull) (x := z)
       (hg (pull z) (hpull_mem z hz)) (by dsimp only [pull]; fun_prop)
-  have hGpow : ∀ z ∈ xiCenteredUpperHalfPlane, G z ^ 2 = XiC z := by
+  have hGpow : ∀ z ∈ xiCenteredUpperHalfPlane, G z ^ (2 : ℕ) = XiC z := by
     intro z hz
-    rw [show G z ^ 2 = xi (pull z) by
+    rw [show G z ^ (2 : ℕ) = xi (pull z) by
       exact hgpow (pull z) (hpull_mem z hz)]
     rw [XiC]
     have hreflect : pull z = 1 - (1 / 2 + z * I) := by

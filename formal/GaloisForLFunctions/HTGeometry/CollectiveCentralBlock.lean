@@ -223,8 +223,8 @@ theorem exists_unitary_mulVec_basis_of_unit (psi : α → ℂ)
       A.mulVec (fun a => if a = a0 then (1 : ℂ) else 0) = psi := by
   classical
   set t : α → ℝ := fun a => ‖psi a‖ with ht
-  have htsum : ∑ a, t a ^ 2 = 1 := by
-    have hcx : ((∑ a, t a ^ 2 : ℝ) : ℂ) = 1 := by
+  have htsum : ∑ a, t a ^ (2 : ℕ) = 1 := by
+    have hcx : ((∑ a, t a ^ (2 : ℕ) : ℝ) : ℂ) = 1 := by
       rw [← hunit, finiteComplexInner]
       push_cast
       refine Finset.sum_congr rfl fun a _ => ?_

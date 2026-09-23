@@ -34,12 +34,12 @@ open Finset Set
 
 /-- Prime-log weighted mass of a coefficient field at cutoff `X`:
 `∑_{p ≤ X} (log p / p)·|b_p|`. -/
-def primeLogMass (b : ℕ → ℝ) (X : ℕ) : ℝ :=
+def primeLogMass_weightedEulerCoefficientSpaces (b : ℕ → ℝ) (X : ℕ) : ℝ :=
   ∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n * |b n|
 
 /-- Logarithmic Marcinkiewicz quotient at cutoff `X`. -/
 def marcinkiewiczLogQuotient (b : ℕ → ℝ) (X : ℕ) : ℝ :=
-  primeLogMass b X / Real.log X
+  primeLogMass_weightedEulerCoefficientSpaces b X / Real.log X
 
 /-- Membership in the critical summable layer `T_1`. -/
 def MemCriticalSummableLayer (b : ℕ → ℝ) : Prop :=
@@ -70,33 +70,33 @@ theorem primeLog_term_nonneg (b : ℕ → ℝ) (n : ℕ) :
   mul_nonneg (div_nonneg (Real.log_natCast_nonneg n) (Nat.cast_nonneg n))
     (abs_nonneg _)
 
-theorem primeLogMass_nonneg (b : ℕ → ℝ) (X : ℕ) : 0 ≤ primeLogMass b X :=
+theorem primeLogMass_nonneg_weightedEulerCoefficientSpaces (b : ℕ → ℝ) (X : ℕ) : 0 ≤ primeLogMass_weightedEulerCoefficientSpaces b X :=
   Finset.sum_nonneg fun n _ => primeLog_term_nonneg b n
 
 /-- The tail mass is the mass restricted to primes past the truncation. -/
 theorem primeLogMass_tail (b : ℕ → ℝ) (P X : ℕ) :
-    primeLogMass (primeCoefficientTail b P) X
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b P) X
       = ∑ n ∈ Finset.Icc 1 X with (n.Prime ∧ P < n), Real.log n / n * |b n| := by
-  unfold primeLogMass primeCoefficientTail
+  unfold primeLogMass_weightedEulerCoefficientSpaces primeCoefficientTail
   rw [Finset.sum_filter, Finset.sum_filter]
   refine Finset.sum_congr rfl fun n _ => ?_
   by_cases hp : n.Prime <;> by_cases hP : P < n <;> simp [hp, hP]
 
 /-- The head mass is the mass restricted to primes up to the truncation. -/
 theorem primeLogMass_head (b : ℕ → ℝ) (P X : ℕ) :
-    primeLogMass (primeCoefficientHead b P) X
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead b P) X
       = ∑ n ∈ Finset.Icc 1 X with (n.Prime ∧ ¬ P < n), Real.log n / n * |b n| := by
-  unfold primeLogMass primeCoefficientHead
+  unfold primeLogMass_weightedEulerCoefficientSpaces primeCoefficientHead
   rw [Finset.sum_filter, Finset.sum_filter]
   refine Finset.sum_congr rfl fun n _ => ?_
   by_cases hp : n.Prime <;> by_cases hP : P < n <;> simp [hp, hP]
 
 /-- Mass splits exactly into head and tail. -/
 theorem primeLogMass_head_add_tail (b : ℕ → ℝ) (P X : ℕ) :
-    primeLogMass b X
-      = primeLogMass (primeCoefficientHead b P) X
-        + primeLogMass (primeCoefficientTail b P) X := by
-  unfold primeLogMass primeCoefficientHead primeCoefficientTail
+    primeLogMass_weightedEulerCoefficientSpaces b X
+      = primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead b P) X
+        + primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b P) X := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces primeCoefficientHead primeCoefficientTail
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun n _ => ?_
   by_cases hP : P < n <;> simp [hP]
@@ -104,9 +104,9 @@ theorem primeLogMass_head_add_tail (b : ℕ → ℝ) (P X : ℕ) :
 /-- The head mass at any cutoff is dominated by the full mass at the
 truncation point. -/
 theorem primeLogMass_head_le (b : ℕ → ℝ) (P X : ℕ) :
-    primeLogMass (primeCoefficientHead b P) X ≤ primeLogMass b P := by
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead b P) X ≤ primeLogMass_weightedEulerCoefficientSpaces b P := by
   rw [primeLogMass_head]
-  unfold primeLogMass
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   apply Finset.sum_le_sum_of_subset_of_nonneg
   · intro n hn
     rw [Finset.mem_filter, Finset.mem_Icc] at hn ⊢
@@ -117,9 +117,9 @@ theorem primeLogMass_head_le (b : ℕ → ℝ) (P X : ℕ) :
 /-- The head mass equals the truncation-point mass once the cutoff has
 passed the truncation point. -/
 theorem primeLogMass_head_eq (b : ℕ → ℝ) {P X : ℕ} (hPX : P ≤ X) :
-    primeLogMass (primeCoefficientHead b P) X = primeLogMass b P := by
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead b P) X = primeLogMass_weightedEulerCoefficientSpaces b P := by
   rw [primeLogMass_head]
-  unfold primeLogMass
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   apply Finset.sum_congr _ fun n _ => rfl
   ext n
   simp only [Finset.mem_filter, Finset.mem_Icc, not_lt]
@@ -131,16 +131,16 @@ theorem primeLogMass_head_eq (b : ℕ → ℝ) {P X : ℕ} (hPX : P ≤ X) :
 
 /-- Exact tail identity beyond the truncation point. -/
 theorem primeLogMass_tail_eq_sub (b : ℕ → ℝ) {P X : ℕ} (hPX : P ≤ X) :
-    primeLogMass (primeCoefficientTail b P) X
-      = primeLogMass b X - primeLogMass b P := by
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b P) X
+      = primeLogMass_weightedEulerCoefficientSpaces b X - primeLogMass_weightedEulerCoefficientSpaces b P := by
   have hsplit := primeLogMass_head_add_tail b P X
   have hhead := primeLogMass_head_eq b hPX
   linarith
 
 /-- Later truncations have smaller tails. -/
 theorem primeLogMass_tail_anti (b : ℕ → ℝ) {P Q : ℕ} (hPQ : P ≤ Q) (X : ℕ) :
-    primeLogMass (primeCoefficientTail b Q) X
-      ≤ primeLogMass (primeCoefficientTail b P) X := by
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b Q) X
+      ≤ primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b P) X := by
   rw [primeLogMass_tail, primeLogMass_tail]
   apply Finset.sum_le_sum_of_subset_of_nonneg
   · intro n hn
@@ -186,14 +186,14 @@ theorem mertensPrimeConstant_nonneg : 0 ≤ mertensPrimeConstant := by
 
 /-- The unit-field mass is the plain Mertens prime sum. -/
 theorem primeLogMass_unit (X : ℕ) :
-    primeLogMass (fun _ => (1:ℝ)) X
+    primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) X
       = ∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n := by
-  unfold primeLogMass
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   exact Finset.sum_congr rfl fun n _ => by simp
 
 /-- Mertens upper bound for the unit-field mass. -/
 theorem primeLogMass_unit_le (X : ℕ) (hX : 1 ≤ X) :
-    primeLogMass (fun _ => (1:ℝ)) X ≤ Real.log X + mertensPrimeConstant := by
+    primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) X ≤ Real.log X + mertensPrimeConstant := by
   have h := (abs_le.1 (Mertens.mertens_first_prime X hX)).2
   rw [primeLogMass_unit]
   unfold mertensPrimeConstant
@@ -201,7 +201,7 @@ theorem primeLogMass_unit_le (X : ℕ) (hX : 1 ≤ X) :
 
 /-- Mertens lower bound for the unit-field mass. -/
 theorem le_primeLogMass_unit (X : ℕ) (hX : 1 ≤ X) :
-    Real.log X - mertensPrimeConstant ≤ primeLogMass (fun _ => (1:ℝ)) X := by
+    Real.log X - mertensPrimeConstant ≤ primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) X := by
   have h := (abs_le.1 (Mertens.mertens_first_prime X hX)).1
   rw [primeLogMass_unit]
   unfold mertensPrimeConstant
@@ -267,8 +267,8 @@ theorem coordinate_quotient_value {p : ℕ} (hp : p.Prime) :
   rw [div_div, mul_comm (p:ℝ) (Real.log p), ← div_div, div_self hlogp]
 
 theorem primeLogMass_coordinate_of_le {p X : ℕ} (hp : p.Prime) (hpX : p ≤ X) :
-    primeLogMass (primeCoordinateField p) X = Real.log p / p := by
-  unfold primeLogMass
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoordinateField p) X = Real.log p / p := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   rw [Finset.sum_eq_single_of_mem p]
   · simp [primeCoordinateField]
   · rw [Finset.mem_filter, Finset.mem_Icc]
@@ -277,8 +277,8 @@ theorem primeLogMass_coordinate_of_le {p X : ℕ} (hp : p.Prime) (hpX : p ≤ X)
     simp [primeCoordinateField, hnp]
 
 theorem primeLogMass_coordinate_of_lt {p X : ℕ} (hXp : X < p) :
-    primeLogMass (primeCoordinateField p) X = 0 := by
-  unfold primeLogMass
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoordinateField p) X = 0 := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   apply Finset.sum_eq_zero
   intro n hn
   rw [Finset.mem_filter, Finset.mem_Icc] at hn
@@ -328,7 +328,7 @@ theorem memVanishingTailLayer_of_memCriticalSummableLayer {b : ℕ → ℝ}
   refine ⟨N, fun X hX => ?_⟩
   have hlogX : (0:ℝ) < Real.log X := log_cutoff_pos hX
   have h2X : Real.log 2 ≤ Real.log X := log_two_le_log_cutoff hX
-  have hmass_lt : primeLogMass (primeCoefficientTail b N) X
+  have hmass_lt : primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail b N) X
       < ε * Real.log 2 := by
     rw [primeLogMass_tail]
     have hsub : (↑((Finset.Icc 1 X).filter fun n => n.Prime ∧ N < n) : Set ℕ)
@@ -355,7 +355,7 @@ theorem memMarcinkiewiczLogLayer_of_memVanishingTailLayer {b : ℕ → ℝ}
     (hb : MemVanishingTailLayer b) : MemMarcinkiewiczLogLayer b := by
   obtain ⟨P, hP⟩ := hb 1 one_pos
   have hlog2 : (0:ℝ) < Real.log 2 := Real.log_pos (by norm_num)
-  refine ⟨primeLogMass b P / Real.log 2 + 1, fun X hX => ?_⟩
+  refine ⟨primeLogMass_weightedEulerCoefficientSpaces b P / Real.log 2 + 1, fun X hX => ?_⟩
   have hlogX : 0 < Real.log X := log_cutoff_pos hX
   have h2X : Real.log 2 ≤ Real.log X := log_two_le_log_cutoff hX
   have hsplit := primeLogMass_head_add_tail b P X
@@ -363,13 +363,13 @@ theorem memMarcinkiewiczLogLayer_of_memVanishingTailLayer {b : ℕ → ℝ}
   have htail := hP X hX
   unfold marcinkiewiczLogQuotient at htail ⊢
   rw [div_le_iff₀ hlogX] at htail ⊢
-  have h1 : primeLogMass b P / Real.log 2 * Real.log 2
-      ≤ primeLogMass b P / Real.log 2 * Real.log X := by
+  have h1 : primeLogMass_weightedEulerCoefficientSpaces b P / Real.log 2 * Real.log 2
+      ≤ primeLogMass_weightedEulerCoefficientSpaces b P / Real.log 2 * Real.log X := by
     apply mul_le_mul_of_nonneg_left h2X
-    exact div_nonneg (primeLogMass_nonneg b P) hlog2.le
+    exact div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces b P) hlog2.le
   rw [div_mul_cancel₀ _ hlog2.ne'] at h1
-  have hexp : (primeLogMass b P / Real.log 2 + 1) * Real.log X
-      = primeLogMass b P / Real.log 2 * Real.log X + Real.log X := by ring
+  have hexp : (primeLogMass_weightedEulerCoefficientSpaces b P / Real.log 2 + 1) * Real.log X
+      = primeLogMass_weightedEulerCoefficientSpaces b P / Real.log 2 * Real.log X + Real.log X := by ring
   linarith
 
 /-- Finitely supported fields are critically summable; in particular every
@@ -413,8 +413,8 @@ theorem unitField_not_memVanishingTailLayer :
   have hlogQ : 0 ≤ Real.log Q := Real.log_natCast_nonneg Q
   have hC := mertensPrimeConstant_nonneg
   have hlogX : 0 < Real.log X := by linarith
-  have hsub : primeLogMass (primeCoefficientTail (fun _ => (1:ℝ)) Q) X
-      = primeLogMass (fun _ => (1:ℝ)) X - primeLogMass (fun _ => (1:ℝ)) Q :=
+  have hsub : primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail (fun _ => (1:ℝ)) Q) X
+      = primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) X - primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) Q :=
     primeLogMass_tail_eq_sub _ hQX
   have hanti := primeLogMass_tail_anti (fun _ => (1:ℝ)) (le_max_left P 1) X
   have hXlo := le_primeLogMass_unit X (by omega)
@@ -452,8 +452,8 @@ theorem invLogField_memVanishingTailLayer :
   refine ⟨P, fun X hX => ?_⟩
   have hlogX : (0:ℝ) < Real.log X := log_cutoff_pos hX
   have h2X : Real.log 2 ≤ Real.log X := log_two_le_log_cutoff hX
-  have hmass : Real.log P * primeLogMass (primeCoefficientTail invLogField P) X
-      ≤ primeLogMass (fun _ => (1:ℝ)) X := by
+  have hmass : Real.log P * primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail invLogField P) X
+      ≤ primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1:ℝ)) X := by
     rw [primeLogMass_tail, primeLogMass_unit, Finset.mul_sum]
     refine le_trans (Finset.sum_le_sum ?_)
       (Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_)
@@ -474,7 +474,7 @@ theorem invLogField_memVanishingTailLayer :
       exact ⟨hn.1, hn.2.1⟩
     · intro n _ _
       exact div_nonneg (Real.log_natCast_nonneg n) (Nat.cast_nonneg n)
-  have hmassU : Real.log P * primeLogMass (primeCoefficientTail invLogField P) X
+  have hmassU : Real.log P * primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail invLogField P) X
       ≤ Real.log X + mertensPrimeConstant :=
     le_trans hmass (primeLogMass_unit_le X (by omega))
   have hεP : K ≤ ε * Real.log P := by
@@ -487,9 +487,9 @@ theorem invLogField_memVanishingTailLayer :
   rw [div_mul_cancel₀ _ hlog2.ne'] at h1
   unfold marcinkiewiczLogQuotient
   rw [div_le_iff₀ hlogX]
-  have hgoal : Real.log P * primeLogMass (primeCoefficientTail invLogField P) X
+  have hgoal : Real.log P * primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail invLogField P) X
       ≤ Real.log P * (ε * Real.log X) := by
-    calc Real.log P * primeLogMass (primeCoefficientTail invLogField P) X
+    calc Real.log P * primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail invLogField P) X
         ≤ Real.log X + mertensPrimeConstant := hmassU
       _ ≤ Real.log X + mertensPrimeConstant / Real.log 2 * Real.log X := by linarith
       _ = Real.log X * (1 + mertensPrimeConstant / Real.log 2) := by ring

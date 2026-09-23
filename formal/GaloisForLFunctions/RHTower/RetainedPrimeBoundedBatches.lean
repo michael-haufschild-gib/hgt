@@ -25,7 +25,7 @@ theorem exists_retainedPrimeField_bounded_batches (Q : Finset Nat.Primes) :
       Disjoint P (Q.image (fun q : Nat.Primes => (q : ℕ))) ∧
       ∀ n T : ℕ, ∃ M : ℕ, T ≤ M ∧
         Q.image (fun q : Nat.Primes => (q : ℕ)) ⊆ mobiusDivisorSelectionPrimes M ∧
-        (∀ A ⊆ P, mobiusDivisorSelectionEnergy M A ≤ (2:ℝ)^P.card * 722 * (M:ℝ)^2) ∧
+        (∀ A ⊆ P, mobiusDivisorSelectionEnergy M A ≤ (2:ℝ)^P.card * 722 * (M:ℝ)^(2 : ℕ)) ∧
         ∃ l : List ℕ, l.Nodup ∧ l.length = n ∧
           Disjoint l.toFinset (P ∪ Q.image (fun q : Nat.Primes => (q : ℕ))) ∧
           (∀ p ∈ l, p.Prime ∧ p < M) ∧

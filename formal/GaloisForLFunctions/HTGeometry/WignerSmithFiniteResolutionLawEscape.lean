@@ -186,7 +186,7 @@ theorem compactPacketAverage_tendsto {u : ℝ → ℝ} (hu : Continuous u) (x : 
     (Eventually.of_forall fun _ => hu.aestronglyMeasurable)
     ((hu.tendsto x).comp tendsto_snd) tendsto_const_nhds
 
-theorem hasCompactSupport_iteratedDeriv_real {u : ℝ → ℝ}
+theorem hasCompactSupport_iteratedDeriv_real_wignerSmithFiniteResolutionLawEscape {u : ℝ → ℝ}
     (hu : HasCompactSupport u) (k : ℕ) : HasCompactSupport (iteratedDeriv k u) := by
   induction k with
   | zero => simpa [iteratedDeriv_zero] using hu

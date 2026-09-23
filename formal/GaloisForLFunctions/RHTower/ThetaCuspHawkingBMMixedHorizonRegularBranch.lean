@@ -249,13 +249,13 @@ theorem hypergeometric_resonantRegularBranch_jet_eq_zero
       a * b * (z ^ (N + 1) * F) = 0 := by
   have hpowN : z ^ N = z ^ (N - 1) * z := by
     rw [← pow_succ, Nat.sub_add_cancel hN]
-  have hpowN1 : z ^ (N + 1) = z ^ (N - 1) * z ^ 2 := by
+  have hpowN1 : z ^ (N + 1) = z ^ (N - 1) * z ^ (2 : ℕ) := by
     rw [← pow_add]
     congr 1
     omega
   push_cast at hshifted ⊢
   rw [hpowN, hpowN1]
-  linear_combination z ^ (N - 1) * z ^ 2 * hshifted
+  linear_combination z ^ (N - 1) * z ^ (2 : ℕ) * hshifted
 
 /-- The analytic factor satisfies its shifted Gauss equation in the unit disk. -/
 theorem d4BMMixedHorizonRegularHypergeometricFactor_jet_eq_zero

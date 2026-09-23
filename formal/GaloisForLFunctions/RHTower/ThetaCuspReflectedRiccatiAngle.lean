@@ -180,15 +180,15 @@ theorem thetaCuspSourceTerm_reflectedCorrelationAngle_subadditive
     Real.arccos
         (thetaCuspSourceTerm (u + (x + y)) n *
             thetaCuspSourceTerm (u - (x + y)) n /
-          thetaCuspSourceTerm u n ^ 2) ≤
+          thetaCuspSourceTerm u n ^ (2 : ℕ)) ≤
       Real.arccos
           (thetaCuspSourceTerm (u + x) n *
               thetaCuspSourceTerm (u - x) n /
-            thetaCuspSourceTerm u n ^ 2) +
+            thetaCuspSourceTerm u n ^ (2 : ℕ)) +
         Real.arccos
           (thetaCuspSourceTerm (u + y) n *
               thetaCuspSourceTerm (u - y) n /
-            thetaCuspSourceTerm u n ^ 2) := by
+            thetaCuspSourceTerm u n ^ (2 : ℕ)) := by
   rw [
     thetaCuspSourceTerm_reflected_normalized_eq_singleAtomModel hn
       (add_nonneg hx hy) hxyu,
@@ -241,8 +241,8 @@ theorem thetaCuspCompletedReflectedCumulantAction_pos
     0 < thetaCuspCompletedReflectedCumulantAction u t := by
   let ratio :=
     thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-      thetaCuspFullSource u ^ 2
-  have hden : 0 < thetaCuspFullSource u ^ 2 :=
+      thetaCuspFullSource u ^ (2 : ℕ)
+  have hden : 0 < thetaCuspFullSource u ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspFullSource_pos_all u)
   have hnum :
       0 < thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) :=
@@ -267,10 +267,10 @@ theorem exp_neg_thetaCuspCompletedReflectedCumulantAction
     {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     Real.exp (-thetaCuspCompletedReflectedCumulantAction u t) =
       thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-        thetaCuspFullSource u ^ 2 := by
+        thetaCuspFullSource u ^ (2 : ℕ) := by
   let ratio :=
     thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-      thetaCuspFullSource u ^ 2
+      thetaCuspFullSource u ^ (2 : ℕ)
   have hratioPos : 0 < ratio := by
     dsimp [ratio]
     exact div_pos
@@ -293,13 +293,13 @@ theorem thetaCuspFullSource_reflectedCorrelationAngle_subadditive_of_margin_nonn
     Real.arccos
         (thetaCuspFullSource (u + (x + y)) *
             thetaCuspFullSource (u - (x + y)) /
-          thetaCuspFullSource u ^ 2) ≤
+          thetaCuspFullSource u ^ (2 : ℕ)) ≤
       Real.arccos
           (thetaCuspFullSource (u + x) * thetaCuspFullSource (u - x) /
-            thetaCuspFullSource u ^ 2) +
+            thetaCuspFullSource u ^ (2 : ℕ)) +
         Real.arccos
           (thetaCuspFullSource (u + y) * thetaCuspFullSource (u - y) /
-            thetaCuspFullSource u ^ 2) := by
+            thetaCuspFullSource u ^ (2 : ℕ)) := by
   let q : ℝ → ℝ := thetaCuspCompletedReflectedCumulantAction u
   let q₁ : ℝ → ℝ := thetaCuspCompletedReflectedCumulantJetOne u
   let q₂ : ℝ → ℝ := thetaCuspCompletedReflectedCumulantJetTwo u
@@ -400,13 +400,13 @@ theorem thetaCuspFullSource_reflectedCorrelationAngle_subadditive_of_cumulantCor
     Real.arccos
         (thetaCuspFullSource (u + (x + y)) *
             thetaCuspFullSource (u - (x + y)) /
-          thetaCuspFullSource u ^ 2) ≤
+          thetaCuspFullSource u ^ (2 : ℕ)) ≤
       Real.arccos
           (thetaCuspFullSource (u + x) * thetaCuspFullSource (u - x) /
-            thetaCuspFullSource u ^ 2) +
+            thetaCuspFullSource u ^ (2 : ℕ)) +
         Real.arccos
           (thetaCuspFullSource (u + y) * thetaCuspFullSource (u - y) /
-            thetaCuspFullSource u ^ 2) := by
+            thetaCuspFullSource u ^ (2 : ℕ)) := by
   apply thetaCuspFullSource_reflectedCorrelationAngle_subadditive_of_margin_nonneg
     hx hy hxyu
   intro t ht

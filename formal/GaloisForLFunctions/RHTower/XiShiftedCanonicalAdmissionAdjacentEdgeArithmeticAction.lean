@@ -101,7 +101,7 @@ theorem hasDerivAt_log_xiShiftedCanonicalAdmissionAdjacentEdge
         xiShiftedCanonicalAdmissionNorm y n *
           (-xiShiftedCanonicalAdmissionEffectivityRate y (n - 1) *
             xiShiftedCanonicalAdmissionNorm y (n - 1))) /
-          xiShiftedCanonicalAdmissionNorm y (n - 1) ^ 2) /
+          xiShiftedCanonicalAdmissionNorm y (n - 1) ^ (2 : ℕ)) /
         (xiShiftedCanonicalAdmissionNorm y n /
           xiShiftedCanonicalAdmissionNorm y (n - 1)) = _
   field_simp [hNpos.ne', hPpos.ne']
@@ -116,7 +116,7 @@ theorem log_adjacentEdge_sub_log_adjacentEdge_sq_le_two_literalArithmeticGaussBu
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     (Real.log (xiShiftedCanonicalAdmissionAdjacentEdge b n) -
-        Real.log (xiShiftedCanonicalAdmissionAdjacentEdge a n)) ^ 2 ≤
+        Real.log (xiShiftedCanonicalAdmissionAdjacentEdge a n)) ^ (2 : ℕ) ≤
       2 * (b - a) *
         (xiShiftedAdmissionEffectivityCauchyWeight n *
             (∫ y in a..b, xiShiftedCanonicalAdmissionLiteralGaussBulkAtMass y n) +
@@ -153,15 +153,15 @@ theorem log_adjacentEdge_sub_log_adjacentEdge_sq_le_two_literalArithmeticGaussBu
     simp only [xiShiftedCanonicalAdmissionAdjacentEdge]
     rw [Real.log_div hNb.ne' hPb.ne', Real.log_div hNa.ne' hPa.ne']
     ring
-  have hquad : (x - z) ^ 2 ≤ 2 * (x ^ 2 + z ^ 2) := by
+  have hquad : (x - z) ^ (2 : ℕ) ≤ 2 * (x ^ (2 : ℕ) + z ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (x + z)]
   have hsum := add_le_add hnAction hprevAction
-  change x ^ 2 + z ^ 2 ≤ _ at hsum
+  change x ^ (2 : ℕ) + z ^ (2 : ℕ) ≤ _ at hsum
   calc
     (Real.log (xiShiftedCanonicalAdmissionAdjacentEdge b n) -
-        Real.log (xiShiftedCanonicalAdmissionAdjacentEdge a n)) ^ 2 =
-        (x - z) ^ 2 := by rw [hedgeLog]
-    _ ≤ 2 * (x ^ 2 + z ^ 2) := hquad
+        Real.log (xiShiftedCanonicalAdmissionAdjacentEdge a n)) ^ (2 : ℕ) =
+        (x - z) ^ (2 : ℕ) := by rw [hedgeLog]
+    _ ≤ 2 * (x ^ (2 : ℕ) + z ^ (2 : ℕ)) := hquad
     _ ≤ 2 *
         ((b - a) * xiShiftedAdmissionEffectivityCauchyWeight n *
             (∫ y in a..b, xiShiftedCanonicalAdmissionLiteralGaussBulkAtMass y n) +
@@ -186,7 +186,7 @@ theorem log_monicOrthoBeta_sub_log_monicOrthoBeta_sq_le_two_literalArithmeticGau
     (Real.log (HTGeometry.monicOrthoBeta
           (fun k => (xiShiftedReciprocalMoment b k).re) n) -
         Real.log (HTGeometry.monicOrthoBeta
-          (fun k => (xiShiftedReciprocalMoment a k).re) n)) ^ 2 ≤
+          (fun k => (xiShiftedReciprocalMoment a k).re) n)) ^ (2 : ℕ) ≤
       2 * (b - a) *
         (xiShiftedAdmissionEffectivityCauchyWeight n *
             (∫ y in a..b, xiShiftedCanonicalAdmissionLiteralGaussBulkAtMass y n) +

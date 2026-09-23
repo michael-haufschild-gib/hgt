@@ -34,7 +34,7 @@ theorem xiMass_subcriticalBoundary_phase_defect
     let M := ((xiMassFamily haHalf).pt q).re
     let K := ((xiMassFamily haHalf).pt q).im
     M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) -
+      -σ * ((A - R) ^ (2 : ℕ) + A) -
         |u| * R * xiWardZeroFreeMargin (2 * A) / 2 := by
   dsimp only
   let haHalf : 1 / 2 ≤ a := by linarith
@@ -53,7 +53,7 @@ theorem xiMass_subcriticalBoundary_phase_defect
         HTGeometry.AbstractSpectralFamily.mass_pt, HTGeometry.csqrt_re] using
         xiPoissonAbstract.re_lt_csqrtRe_massArg haHalf q
     linarith
-  have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only [xiPoissonAbstract_pt, xiMassFamily_pt_eq_mass_pt] using
       xiPoissonAbstract.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha q
@@ -97,10 +97,10 @@ theorem xiMass_subcriticalBoundary_phase_defect
     dsimp only [A, d] at hlayerR ⊢
     nlinarith
   have hphase : M * (-σ * M + u * K) ≤
-      -σ * M ^ 2 + 2 * σ * A * R - |u| * R * d / 2 := by
+      -σ * M ^ (2 : ℕ) + 2 * σ * A * R - |u| * R * d / 2 := by
     nlinarith
   change M * (-σ * M + u * K) ≤
-    -σ * ((A - R) ^ 2 + A) - |u| * R * d / 2
+    -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * d / 2
   nlinarith
 
 /-- Every boundary-layer corona term has explicit zero-free decay. -/
@@ -157,8 +157,8 @@ theorem norm_xiMassFamily_term_le_subcriticalBoundary
       M * (-(3 * σ / 20) * A * d) := by
     dsimp only at hdefect
     change M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) - |u| * R * d / 2 at hdefect
-    have hbase : 0 ≤ σ * ((A - R) ^ 2 + A) := by positivity
+      -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * d / 2 at hdefect
+    have hbase : 0 ≤ σ * ((A - R) ^ (2 : ℕ) + A) := by positivity
     nlinarith
   have hphase : -σ * M + u * K ≤ -(3 * σ / 20) * A * d :=
     le_of_mul_le_mul_left hphaseMul hM
@@ -200,7 +200,7 @@ theorem xiMass_subcriticalBoundary_phase_le_outside_corona
         HTGeometry.AbstractSpectralFamily.mass_pt, HTGeometry.csqrt_re] using
         xiPoissonAbstract.re_lt_csqrtRe_massArg haHalf q
     linarith
-  have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only [xiPoissonAbstract_pt, xiMassFamily_pt_eq_mass_pt] using
       xiPoissonAbstract.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha q
@@ -234,7 +234,7 @@ theorem xiMass_subcriticalBoundary_phase_le_outside_corona
   have hucrit : |u| * (R / 2) ≤ (16 / 7 : ℝ) * σ * A * R := by
     nlinarith
   have hphase : M * (-σ * M + u * K) ≤
-      -σ * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) := by
+      -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) := by
     nlinarith
   have hMupRaw := xiPoissonAbstract.csqrtRe_massArg_le_add haHalf q
   have hMup : M ≤ A + R + 1 / 2 := by
@@ -256,39 +256,39 @@ theorem xiMass_subcriticalBoundary_phase_le_outside_corona
     by_cases hlo : A / 2 ≤ R
     · exact Or.inr (lt_of_not_ge (fun hupper => hnot ⟨hlo, hupper⟩))
     · exact Or.inl (lt_of_not_ge hlo)
-  have hquad : (A + R) ^ 2 ≤
-      21 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) := by
+  have hquad : (A + R) ^ (2 : ℕ) ≤
+      21 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) := by
     rcases hout with hlo | hhi
     · have h1 : 0 ≤ A - 2 * R := by linarith
       have h2 : 0 ≤ 2 * A - R := by linarith
       have hp := mul_nonneg h1 h2
-      rw [show 21 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) =
-        (A + R) ^ 2 + 10 * ((A - 2 * R) * (2 * A - R)) by ring]
+      rw [show 21 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) =
+        (A + R) ^ (2 : ℕ) + 10 * ((A - 2 * R) * (2 * A - R)) by ring]
       exact le_add_of_nonneg_right (mul_nonneg (by norm_num) hp)
     · have h1 : 0 ≤ R - 2 * A := by linarith
       have h2 : 0 ≤ 2 * R - A := by linarith
       have hp := mul_nonneg h1 h2
-      rw [show 21 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) =
-        (A + R) ^ 2 + 10 * ((R - 2 * A) * (2 * R - A)) by ring]
+      rw [show 21 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) =
+        (A + R) ^ (2 : ℕ) + 10 * ((R - 2 * A) * (2 * R - A)) by ring]
       exact le_add_of_nonneg_right (mul_nonneg (by norm_num) hp)
   have hratio : (A + R) * M ≤
-      28 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) := by
+      28 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) := by
     have hmul := mul_le_mul_of_nonneg_left hMup' (by positivity : 0 ≤ A + R)
     calc
       (A + R) * M ≤ (A + R) * ((4 / 3 : ℝ) * (A + R)) := hmul
-      _ = (4 / 3 : ℝ) * (A + R) ^ 2 := by ring
+      _ = (4 / 3 : ℝ) * (A + R) ^ (2 : ℕ) := by ring
       _ ≤ (4 / 3 : ℝ) *
-          (21 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R)) :=
+          (21 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R)) :=
         mul_le_mul_of_nonneg_left hquad (by norm_num)
-      _ = 28 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) := by ring
+      _ = 28 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) := by ring
   have hscaled :
-      -σ * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) ≤
+      -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) ≤
         M * (-(σ / 28) * (A + R)) := by
     have hσratio := mul_le_mul_of_nonneg_left hratio (show 0 ≤ σ / 28 by positivity)
     calc
-      -σ * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R) =
+      -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R) =
           -(σ / 28 *
-            (28 * (A ^ 2 + R ^ 2 - (16 / 7 : ℝ) * A * R))) := by ring
+            (28 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (16 / 7 : ℝ) * A * R))) := by ring
       _ ≤ -(σ / 28 * ((A + R) * M)) := neg_le_neg hσratio
       _ = M * (-(σ / 28) * (A + R)) := by ring
   have hmul : M * (-σ * M + u * K) ≤ M * (-(σ / 28) * (A + R)) :=

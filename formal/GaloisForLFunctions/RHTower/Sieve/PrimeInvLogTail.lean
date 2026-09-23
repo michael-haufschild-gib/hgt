@@ -26,13 +26,13 @@ open Finset
 
 /-- The absolute bound for the tail sum. -/
 noncomputable def primeInvLogConst : ℝ :=
-  2 * (max mertensBlockConst (2 * Real.log 4)) / (Real.log 2) ^ 2
+  2 * (max mertensBlockConst (2 * Real.log 4)) / (Real.log 2) ^ (2 : ℕ)
 
 /-- **One dyadic fibre of the tail sum.** -/
 theorem sum_fiber_inv_mul_log_le {x : ℕ} {k : ℕ} (hk : 1 ≤ k) :
     ∑ p ∈ Finset.filter (fun p => Nat.log 2 p = k) (Nat.primesLE x),
         1 / ((p : ℝ) * Real.log (p : ℝ))
-      ≤ (max mertensBlockConst (2 * Real.log 4)) / ((k : ℝ) * Real.log 2) ^ 2 := by
+      ≤ (max mertensBlockConst (2 * Real.log 4)) / ((k : ℝ) * Real.log 2) ^ (2 : ℕ) := by
   classical
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hkR : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
@@ -40,7 +40,7 @@ theorem sum_fiber_inv_mul_log_le {x : ℕ} {k : ℕ} (hk : 1 ≤ k) :
   -- the pointwise comparison on the fibre
   have hpt : ∀ p ∈ Finset.filter (fun p => Nat.log 2 p = k) (Nat.primesLE x),
       1 / ((p : ℝ) * Real.log (p : ℝ))
-        ≤ (Real.log (p : ℝ) / (p : ℝ)) / ((k : ℝ) * Real.log 2) ^ 2 := by
+        ≤ (Real.log (p : ℝ) / (p : ℝ)) / ((k : ℝ) * Real.log 2) ^ (2 : ℕ) := by
     intro p hp
     rw [Finset.mem_filter, Nat.mem_primesLE] at hp
     have hprime := hp.1.2
@@ -58,10 +58,10 @@ theorem sum_fiber_inv_mul_log_le {x : ℕ} {k : ℕ} (hk : 1 ≤ k) :
       have hval : Real.log ((2 ^ k : ℕ) : ℝ) = (k : ℝ) * Real.log 2 := by
         rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow]
       rwa [hval] at hlogle
-    have hsq : ((k : ℝ) * Real.log 2) ^ 2 ≤ (Real.log (p : ℝ)) ^ 2 :=
+    have hsq : ((k : ℝ) * Real.log 2) ^ (2 : ℕ) ≤ (Real.log (p : ℝ)) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hkpos.le hklog 2
-    have hrhs : (Real.log (p : ℝ) / (p : ℝ)) / (((k : ℝ) * Real.log 2) ^ 2)
-        = Real.log (p : ℝ) / ((p : ℝ) * (((k : ℝ) * Real.log 2) ^ 2)) := by
+    have hrhs : (Real.log (p : ℝ) / (p : ℝ)) / (((k : ℝ) * Real.log 2) ^ (2 : ℕ))
+        = Real.log (p : ℝ) / ((p : ℝ) * (((k : ℝ) * Real.log 2) ^ (2 : ℕ))) := by
       rw [div_div]
     rw [hrhs, div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hsq, hp0, hlogp]
@@ -108,7 +108,7 @@ theorem sum_fiber_inv_mul_log_le {x : ℕ} {k : ℕ} (hk : 1 ≤ k) :
       have hne : p ≠ 2 ^ k := by
         intro heq
         have h4 : 4 ≤ p := by
-          have : (4 : ℕ) = 2 ^ 2 := by norm_num
+          have : (4 : ℕ) = 2 ^ (2 : ℕ) := by norm_num
           rw [heq, this]
           exact Nat.pow_le_pow_right (by norm_num) hk2
         have hdvd : 2 ∣ p := by
@@ -158,7 +158,7 @@ theorem sum_prime_inv_mul_log_le (x : ℕ) :
   have hterm : ∀ k ∈ Finset.Icc 1 K,
       ∑ p ∈ Finset.filter (fun p => Nat.log 2 p = k) (Nat.primesLE x),
           1 / ((p : ℝ) * Real.log (p : ℝ))
-        ≤ (C / (Real.log 2) ^ 2) * (1 / (k : ℝ) ^ 2) := by
+        ≤ (C / (Real.log 2) ^ (2 : ℕ)) * (1 / (k : ℝ) ^ (2 : ℕ)) := by
     intro k hk
     rw [Finset.mem_Icc] at hk
     have hb := sum_fiber_inv_mul_log_le (x := x) hk.1
@@ -170,12 +170,12 @@ theorem sum_prime_inv_mul_log_le (x : ℕ) :
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.mul_sum]
   have hsq := sum_inv_sq_le_two K
-  have hcoef : (0 : ℝ) ≤ C / (Real.log 2) ^ 2 := by positivity
+  have hcoef : (0 : ℝ) ≤ C / (Real.log 2) ^ (2 : ℕ) := by positivity
   have hstep := mul_le_mul_of_nonneg_left hsq hcoef
   rw [primeInvLogConst, hC]
-  calc (C / (Real.log 2) ^ 2) * ∑ k ∈ Finset.Icc 1 K, 1 / (k : ℝ) ^ 2
-      ≤ (C / (Real.log 2) ^ 2) * 2 := hstep
-    _ = 2 * C / (Real.log 2) ^ 2 := by ring
+  calc (C / (Real.log 2) ^ (2 : ℕ)) * ∑ k ∈ Finset.Icc 1 K, 1 / (k : ℝ) ^ (2 : ℕ)
+      ≤ (C / (Real.log 2) ^ (2 : ℕ)) * 2 := hstep
+    _ = 2 * C / (Real.log 2) ^ (2 : ℕ) := by ring
 
 end RHTower.Sieve
 end

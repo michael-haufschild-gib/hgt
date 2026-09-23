@@ -19,7 +19,7 @@ theorem det_squarefreeMobiusCritical_pointedFisherConnectionCompression
       (infiniteMobiusSignedWeightLp sigma hsigma)
       (infiniteMobiusCriticalFisherTangentLp sigma hsigma)).det =
       -(1 / 2 : ℂ) *
-        (squarefreeMobiusCriticalProjectiveFisherEnergy sigma : ℂ) ^ 2 := by
+        (squarefreeMobiusCriticalProjectiveFisherEnergy sigma : ℂ) ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.HTGeometry.det_pointedFisherConnectionCompression_eq_neg_half_projectiveEnergy_sq]
   congr 2
   unfold _root_.HTGeometry.projectiveGramTangentEnergy
@@ -34,7 +34,7 @@ pointed-Fisher compression by the universal negative half-square transform. -/
 theorem tendsto_negHalfSq_finiteMobiusDoubledErasedQFI_to_connectionDet
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Tendsto (fun N : ℕ =>
-      -(1 / 2 : ℂ) * (finiteMobiusDoubledErasedQFI sigma N : ℂ) ^ 2)
+      -(1 / 2 : ℂ) * (finiteMobiusDoubledErasedQFI sigma N : ℂ) ^ (2 : ℕ))
       atTop
       (nhds
         (GaloisForLFunctions.HTGeometry.pointedFisherConnectionCompression
@@ -64,7 +64,7 @@ theorem squarefreeMobiusCritical_fisherQFIDeterminantUniversality :
       M.IsHermitian ∧ M.det ≠ 0 ∧
         ¬ M.PosSemidef ∧ ¬ (-M).PosSemidef ∧
         Tendsto (fun N : ℕ =>
-          -(1 / 2 : ℂ) * (finiteMobiusDoubledErasedQFI sigma N : ℂ) ^ 2)
+          -(1 / 2 : ℂ) * (finiteMobiusDoubledErasedQFI sigma N : ℂ) ^ (2 : ℕ))
           atTop (nhds M.det) := by
   constructor
   · have henergy : Tendsto (fun sigma : ℝ =>
@@ -74,7 +74,7 @@ theorem squarefreeMobiusCritical_fisherQFIDeterminantUniversality :
         tendsto_squarefreeMobiusCriticalProjectiveFisherEnergy
     have hdet : Tendsto (fun sigma : ℝ =>
         -(1 / 2 : ℂ) *
-          (squarefreeMobiusCriticalProjectiveFisherEnergy sigma : ℂ) ^ 2)
+          (squarefreeMobiusCriticalProjectiveFisherEnergy sigma : ℂ) ^ (2 : ℕ))
         (nhdsWithin 1 (Set.Ioi 1)) (nhds (-8 : ℂ)) := by
       convert tendsto_const_nhds.mul (henergy.pow 2) using 1
       norm_num

@@ -28,7 +28,7 @@ section Summability
 /-- **A product of square-summable nonnegative families is summable**, by the arithmetic-geometric
 mean inequality. -/
 theorem deningerSummable_mul_of_sq {κ : Type*} {f g : κ → ℝ}
-    (hf : Summable fun i => f i ^ 2) (hg : Summable fun i => g i ^ 2)
+    (hf : Summable fun i => f i ^ (2 : ℕ)) (hg : Summable fun i => g i ^ (2 : ℕ))
     (hfn : ∀ i, 0 ≤ f i) (hgn : ∀ i, 0 ≤ g i) : Summable fun i => f i * g i := by
   refine Summable.of_nonneg_of_le (fun i => mul_nonneg (hfn i) (hgn i)) (fun i => ?_)
     ((hf.add hg).mul_left (1 / 2))
@@ -44,7 +44,7 @@ square-summable. -/
 def DeningerIsHilbertSchmidtOn {ι : Type} {E F : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     (b : HilbertBasis ι ℂ E) (A : E →L[ℂ] F) : Prop :=
-  Summable fun i => ‖A (b i)‖ ^ 2
+  Summable fun i => ‖A (b i)‖ ^ (2 : ℕ)
 
 variable {ι : Type} {H₁ H₂ H₃ : Type*}
 variable [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [CompleteSpace H₁]

@@ -17,15 +17,15 @@ noncomputable section
 
 /-- Moving direct logarithmic eighth floor on the scale-`18/5` chamber. -/
 def thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile (q : ℝ) : ℝ :=
-  1629162 * (q + 3 / 2) ^ 8 * (1 / 49150) *
+  1629162 * (q + 3 / 2) ^ (8 : ℕ) * (1 / 49150) *
     (1 - 3 * (q - 21 / 10))
 
 /-- Compact reserve with fourth, sixth, and direct eighth displacements independent. -/
 def thetaCuspFirstAtomEighthScale18Over5DirectJointReserve
     (q e4 e6 e8 : ℝ) : ℝ :=
   thetaCuspFirstAtomEighthNoSixthLossBaseline q +
-    e4 * (68 * e4 ^ 2 +
-      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+    e4 * (68 * e4 ^ (2 : ℕ) +
+      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
         204 * thetaCuspFirstAtomFourthProfile q) * e4 +
       thetaCuspFullReflectionEighthCompactFourthCoefficient q) +
     (thetaCuspFullReflectionEighthCompactEighthCoefficient q + e4) * e8 -
@@ -43,7 +43,7 @@ theorem thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_pos_at_baseline
   let y := q - 21 / 10
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hyhi : y ≤ 43 / 1920 := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 16 *
+  have hmul : 0 < q ^ (16 : ℕ) *
       thetaCuspFirstAtomEighthScale18Over5DirectJointReserve
         q (2416 / 5 - 192 * q)
         ((40096 / 625 : ℝ) * (13049 / 10 - 480 * q))
@@ -60,30 +60,30 @@ theorem thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_pos_at_baseline
     field_simp [hqpos.ne']
     rw [show q = 21 / 10 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : y ^ 2 ≤ (43 / 1920 : ℝ) ^ 2 := pow_le_pow_left₀ hy hyhi 2
-    have hy3 : y ^ 3 ≤ (43 / 1920 : ℝ) ^ 3 := pow_le_pow_left₀ hy hyhi 3
-    have hy4 : y ^ 4 ≤ (43 / 1920 : ℝ) ^ 4 := pow_le_pow_left₀ hy hyhi 4
-    have hy5 : y ^ 5 ≤ (43 / 1920 : ℝ) ^ 5 := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ 6 ≤ (43 / 1920 : ℝ) ^ 6 := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ 7 ≤ (43 / 1920 : ℝ) ^ 7 := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : y ^ 8 ≤ (43 / 1920 : ℝ) ^ 8 := pow_le_pow_left₀ hy hyhi 8
-    have hy9 : y ^ 9 ≤ (43 / 1920 : ℝ) ^ 9 := pow_le_pow_left₀ hy hyhi 9
-    have hy10 : y ^ 10 ≤ (43 / 1920 : ℝ) ^ 10 := pow_le_pow_left₀ hy hyhi 10
-    have hy11 : y ^ 11 ≤ (43 / 1920 : ℝ) ^ 11 := pow_le_pow_left₀ hy hyhi 11
-    have hy12 : y ^ 12 ≤ (43 / 1920 : ℝ) ^ 12 := pow_le_pow_left₀ hy hyhi 12
-    have hy13 : y ^ 13 ≤ (43 / 1920 : ℝ) ^ 13 := pow_le_pow_left₀ hy hyhi 13
-    have hy14 : y ^ 14 ≤ (43 / 1920 : ℝ) ^ 14 := pow_le_pow_left₀ hy hyhi 14
-    have hy15 : y ^ 15 ≤ (43 / 1920 : ℝ) ^ 15 := pow_le_pow_left₀ hy hyhi 15
-    have hy16 : y ^ 16 ≤ (43 / 1920 : ℝ) ^ 16 := pow_le_pow_left₀ hy hyhi 16
-    have hy17 : y ^ 17 ≤ (43 / 1920 : ℝ) ^ 17 := pow_le_pow_left₀ hy hyhi 17
-    have hy18 : y ^ 18 ≤ (43 / 1920 : ℝ) ^ 18 := pow_le_pow_left₀ hy hyhi 18
-    have hy19 : y ^ 19 ≤ (43 / 1920 : ℝ) ^ 19 := pow_le_pow_left₀ hy hyhi 19
-    have hy20 : y ^ 20 ≤ (43 / 1920 : ℝ) ^ 20 := pow_le_pow_left₀ hy hyhi 20
-    have hy21 : y ^ 21 ≤ (43 / 1920 : ℝ) ^ 21 := pow_le_pow_left₀ hy hyhi 21
-    have hy22 : y ^ 22 ≤ (43 / 1920 : ℝ) ^ 22 := pow_le_pow_left₀ hy hyhi 22
-    have hy23 : y ^ 23 ≤ (43 / 1920 : ℝ) ^ 23 := pow_le_pow_left₀ hy hyhi 23
-    have hy24 : y ^ 24 ≤ (43 / 1920 : ℝ) ^ 24 := pow_le_pow_left₀ hy hyhi 24
-    have hy25 : 0 ≤ y ^ 25 := by positivity
+    have hy2 : y ^ (2 : ℕ) ≤ (43 / 1920 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hy hyhi 2
+    have hy3 : y ^ (3 : ℕ) ≤ (43 / 1920 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hy hyhi 3
+    have hy4 : y ^ (4 : ℕ) ≤ (43 / 1920 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hy hyhi 4
+    have hy5 : y ^ (5 : ℕ) ≤ (43 / 1920 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
+    have hy6 : y ^ (6 : ℕ) ≤ (43 / 1920 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
+    have hy7 : y ^ (7 : ℕ) ≤ (43 / 1920 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
+    have hy8 : y ^ (8 : ℕ) ≤ (43 / 1920 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hy hyhi 8
+    have hy9 : y ^ (9 : ℕ) ≤ (43 / 1920 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hy hyhi 9
+    have hy10 : y ^ (10 : ℕ) ≤ (43 / 1920 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hy hyhi 10
+    have hy11 : y ^ (11 : ℕ) ≤ (43 / 1920 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hy hyhi 11
+    have hy12 : y ^ (12 : ℕ) ≤ (43 / 1920 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hy hyhi 12
+    have hy13 : y ^ (13 : ℕ) ≤ (43 / 1920 : ℝ) ^ (13 : ℕ) := pow_le_pow_left₀ hy hyhi 13
+    have hy14 : y ^ (14 : ℕ) ≤ (43 / 1920 : ℝ) ^ (14 : ℕ) := pow_le_pow_left₀ hy hyhi 14
+    have hy15 : y ^ (15 : ℕ) ≤ (43 / 1920 : ℝ) ^ (15 : ℕ) := pow_le_pow_left₀ hy hyhi 15
+    have hy16 : y ^ (16 : ℕ) ≤ (43 / 1920 : ℝ) ^ (16 : ℕ) := pow_le_pow_left₀ hy hyhi 16
+    have hy17 : y ^ (17 : ℕ) ≤ (43 / 1920 : ℝ) ^ (17 : ℕ) := pow_le_pow_left₀ hy hyhi 17
+    have hy18 : y ^ (18 : ℕ) ≤ (43 / 1920 : ℝ) ^ (18 : ℕ) := pow_le_pow_left₀ hy hyhi 18
+    have hy19 : y ^ (19 : ℕ) ≤ (43 / 1920 : ℝ) ^ (19 : ℕ) := pow_le_pow_left₀ hy hyhi 19
+    have hy20 : y ^ (20 : ℕ) ≤ (43 / 1920 : ℝ) ^ (20 : ℕ) := pow_le_pow_left₀ hy hyhi 20
+    have hy21 : y ^ (21 : ℕ) ≤ (43 / 1920 : ℝ) ^ (21 : ℕ) := pow_le_pow_left₀ hy hyhi 21
+    have hy22 : y ^ (22 : ℕ) ≤ (43 / 1920 : ℝ) ^ (22 : ℕ) := pow_le_pow_left₀ hy hyhi 22
+    have hy23 : y ^ (23 : ℕ) ≤ (43 / 1920 : ℝ) ^ (23 : ℕ) := pow_le_pow_left₀ hy hyhi 23
+    have hy24 : y ^ (24 : ℕ) ≤ (43 / 1920 : ℝ) ^ (24 : ℕ) := pow_le_pow_left₀ hy hyhi 24
+    have hy25 : 0 ≤ y ^ (25 : ℕ) := by positivity
     norm_num at hyhi hy2 hy3 hy4 hy5 hy6 hy7 hy8 hy9 hy10 hy11 hy12 hy13 hy14
     norm_num at hy15 hy16 hy17 hy18 hy19 hy20 hy21 hy22 hy23 hy24 ⊢
     nlinarith
@@ -94,29 +94,29 @@ set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScale18Over5_fourthQuadraticCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (hqhi : q ≤ 815 / 384) :
     0 < 204 * (2416 / 5 - 192 * q) +
-      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
         204 * thetaCuspFirstAtomFourthProfile q) := by
   have hqpos : 0 < q := by linarith
   let y := q - 21 / 10
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hyhi : y ≤ 43 / 1920 := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 8 *
+  have hmul : 0 < q ^ (8 : ℕ) *
       (204 * (2416 / 5 - 192 * q) +
-        (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+        (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
           204 * thetaCuspFirstAtomFourthProfile q)) := by
     dsimp [thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomFourthProfile]
     field_simp [hqpos.ne']
     rw [show q = 21 / 10 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : 0 ≤ y ^ 2 := by positivity
-    have hy3 : 0 ≤ y ^ 3 := by positivity
-    have hy4 : 0 ≤ y ^ 4 := by positivity
-    have hy5 : y ^ 5 ≤ (43 / 1920 : ℝ) ^ 5 := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ 6 ≤ (43 / 1920 : ℝ) ^ 6 := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ 7 ≤ (43 / 1920 : ℝ) ^ 7 := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : 0 ≤ y ^ 8 := by positivity
-    have hy9 : 0 ≤ y ^ 9 := by positivity
-    have hy10 : 0 ≤ y ^ 10 := by positivity
+    have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+    have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+    have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
+    have hy5 : y ^ (5 : ℕ) ≤ (43 / 1920 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
+    have hy6 : y ^ (6 : ℕ) ≤ (43 / 1920 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
+    have hy7 : y ^ (7 : ℕ) ≤ (43 / 1920 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
+    have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
+    have hy9 : 0 ≤ y ^ (9 : ℕ) := by positivity
+    have hy10 : 0 ≤ y ^ (10 : ℕ) := by positivity
     norm_num at hy5 hy6 hy7 ⊢
     nlinarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
@@ -126,17 +126,17 @@ set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScale18Over5_fourthConstantCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (_hqhi : q ≤ 815 / 384) :
     let L := 2416 / 5 - 192 * q
-    let C := 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+    let C := 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
       204 * thetaCuspFirstAtomFourthProfile q
-    0 < 204 * L ^ 2 + 2 * C * L +
+    0 < 204 * L ^ (2 : ℕ) + 2 * C * L +
       thetaCuspFullReflectionEighthCompactFourthCoefficient q := by
   dsimp only
   have hqpos : 0 < q := by linarith
   let y := q - 21 / 10
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 16 *
-      (204 * (2416 / 5 - 192 * q) ^ 2 +
-        2 * (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+  have hmul : 0 < q ^ (16 : ℕ) *
+      (204 * (2416 / 5 - 192 * q) ^ (2 : ℕ) +
+        2 * (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
           204 * thetaCuspFirstAtomFourthProfile q) * (2416 / 5 - 192 * q) +
         thetaCuspFullReflectionEighthCompactFourthCoefficient q) := by
     dsimp [thetaCuspFullReflectionEighthCompactFourthCoefficient,
@@ -158,7 +158,7 @@ theorem thetaCuspFirstAtomEighthScale18Over5_eighthGainCoefficient_pos
   let y := q - 21 / 10
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hyhi : y ≤ 43 / 1920 := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 8 *
+  have hmul : 0 < q ^ (8 : ℕ) *
       (thetaCuspFullReflectionEighthCompactEighthCoefficient q +
         (2416 / 5 - 192 * q)) := by
     dsimp [thetaCuspFullReflectionEighthCompactEighthCoefficient,
@@ -166,14 +166,14 @@ theorem thetaCuspFirstAtomEighthScale18Over5_eighthGainCoefficient_pos
     field_simp [hqpos.ne']
     rw [show q = 21 / 10 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : y ^ 2 ≤ (43 / 1920 : ℝ) ^ 2 := pow_le_pow_left₀ hy hyhi 2
-    have hy3 : y ^ 3 ≤ (43 / 1920 : ℝ) ^ 3 := pow_le_pow_left₀ hy hyhi 3
-    have hy4 : y ^ 4 ≤ (43 / 1920 : ℝ) ^ 4 := pow_le_pow_left₀ hy hyhi 4
-    have hy5 : y ^ 5 ≤ (43 / 1920 : ℝ) ^ 5 := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ 6 ≤ (43 / 1920 : ℝ) ^ 6 := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ 7 ≤ (43 / 1920 : ℝ) ^ 7 := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : 0 ≤ y ^ 8 := by positivity
-    have hy9 : 0 ≤ y ^ 9 := by positivity
+    have hy2 : y ^ (2 : ℕ) ≤ (43 / 1920 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hy hyhi 2
+    have hy3 : y ^ (3 : ℕ) ≤ (43 / 1920 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hy hyhi 3
+    have hy4 : y ^ (4 : ℕ) ≤ (43 / 1920 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hy hyhi 4
+    have hy5 : y ^ (5 : ℕ) ≤ (43 / 1920 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
+    have hy6 : y ^ (6 : ℕ) ≤ (43 / 1920 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
+    have hy7 : y ^ (7 : ℕ) ≤ (43 / 1920 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
+    have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
+    have hy9 : 0 ≤ y ^ (9 : ℕ) := by positivity
     norm_num at hy2 hy3 hy4 hy5 hy6 hy7 ⊢
     nlinarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
@@ -186,7 +186,7 @@ theorem thetaCuspFirstAtomEighthScale18Over5_sixthLossCoefficient_pos
   have hqpos : 0 < q := by linarith
   let y := q - 21 / 10
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 6 * thetaCuspFullReflectionEighthCompactSixthCoefficient q := by
+  have hmul : 0 < q ^ (6 : ℕ) * thetaCuspFullReflectionEighthCompactSixthCoefficient q := by
     dsimp [thetaCuspFullReflectionEighthCompactSixthCoefficient,
       thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomSixthProfile]
     field_simp [hqpos.ne']
@@ -214,22 +214,22 @@ theorem thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_mono_fourth
   let a := e4 - (2416 / 5 - 192 * q)
   have ha : 0 ≤ a := by dsimp only [a]; linarith
   let L := 2416 / 5 - 192 * q
-  let C := 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+  let C := 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
     204 * thetaCuspFirstAtomFourthProfile q
   let D := thetaCuspFullReflectionEighthCompactFourthCoefficient q
   have hquad : 0 < 204 * L + C := by
     simpa only [L, C] using
       thetaCuspFirstAtomEighthScale18Over5_fourthQuadraticCoefficient_pos hqlo hqhi
-  have hconst : 0 < 204 * L ^ 2 + 2 * C * L + D := by
+  have hconst : 0 < 204 * L ^ (2 : ℕ) + 2 * C * L + D := by
     simpa only [L, C, D] using
       thetaCuspFirstAtomEighthScale18Over5_fourthConstantCoefficient_pos hqlo hqhi
-  have hbracket : 0 ≤ 68 * a ^ 2 + (204 * L + C) * a +
-      (204 * L ^ 2 + 2 * C * L + D) + e8 := by positivity
+  have hbracket : 0 ≤ 68 * a ^ (2 : ℕ) + (204 * L + C) * a +
+      (204 * L ^ (2 : ℕ) + 2 * C * L + D) + e8 := by positivity
   have hid :
       thetaCuspFirstAtomEighthScale18Over5DirectJointReserve q e4 e6 e8 -
           thetaCuspFirstAtomEighthScale18Over5DirectJointReserve q L e6 e8 =
-        a * (68 * a ^ 2 + (204 * L + C) * a +
-          (204 * L ^ 2 + 2 * C * L + D) + e8) := by
+        a * (68 * a ^ (2 : ℕ) + (204 * L + C) * a +
+          (204 * L ^ (2 : ℕ) + 2 * C * L + D) + e8) := by
     dsimp [thetaCuspFirstAtomEighthScale18Over5DirectJointReserve, a, L, C, D]
     ring
   rw [show 2416 / 5 - 192 * q = L by rfl]
@@ -321,7 +321,7 @@ theorem thetaCuspFullReflectionEighthCompactReserve_pos_of_scale18Over5_mem
     dsimp only [A, q, thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hqlo : (21 / 10 : ℝ) ≤ q := by
@@ -356,22 +356,22 @@ theorem thetaCuspFullReflectionEighthCompactReserve_pos_of_scale18Over5_mem
   have he8 : thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile q ≤ e8 := by
     have hlower :
         thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile q <
-          1629162 * A ^ 8 * Real.exp (-(3 * A)) := by
+          1629162 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
       have hprofileEq :
           thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile q =
-            (1629162 * A ^ 8) *
+            (1629162 * A ^ (8 : ℕ)) *
               ((1 / 49150 : ℝ) * (1 - 3 * (A - 18 / 5))) := by
         dsimp only [thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile]
         rw [hAq]
         ring
       calc
         thetaCuspFirstAtomEighthScale18Over5DirectEighthProfile q =
-            (1629162 * A ^ 8) *
+            (1629162 * A ^ (8 : ℕ)) *
               ((1 / 49150 : ℝ) * (1 - 3 * (A - 18 / 5))) := hprofileEq
-        _ < (1629162 * A ^ 8) * Real.exp (-(3 * A)) :=
+        _ < (1629162 * A ^ (8 : ℕ)) * Real.exp (-(3 * A)) :=
           mul_lt_mul_of_pos_left hexp' (by positivity)
-        _ = 1629162 * A ^ 8 * Real.exp (-(3 * A)) := by ring
-    have hfloor : 1629162 * A ^ 8 * Real.exp (-(3 * A)) < e8 := by
+        _ = 1629162 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by ring
+    have hfloor : 1629162 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) < e8 := by
       simpa only [A, e8] using heighthFloor
     exact (hlower.trans hfloor).le
   have hjoint := thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_pos
@@ -401,7 +401,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_21Over10_le_weight
       dsimp only [thetaCuspSingleAtomReflectionScale]
       rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
       norm_num
-      rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+      rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
         rw [show 2 * x = x + x by ring, Real.exp_add]
         ring]
     have hAlo : (18 / 5 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x := by
@@ -441,7 +441,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_oneHundredThirtySeve
   have hqBound : (21 / 10 : ℝ) ≤ thetaCuspBornWittenWeight 1 x := by
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
     linarith

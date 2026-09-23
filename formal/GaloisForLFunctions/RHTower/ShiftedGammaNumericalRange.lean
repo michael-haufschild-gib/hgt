@@ -28,39 +28,39 @@ noncomputable section
 namespace GaloisForLFunctions.RHTower
 
 /-- The termwise lower bound of the shifted Gauss series. -/
-def kappaTerm (σ : ℝ) (n : ℕ) : ℝ := 2 * σ ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 - σ ^ 2))
+def kappaTerm (σ : ℝ) (n : ℕ) : ℝ := 2 * σ ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ)))
 
 theorem kappaTerm_nonneg {σ : ℝ} (hσ1 : σ < 1) (hσ0 : 0 < σ) (n : ℕ) : 0 ≤ kappaTerm σ n := by
   have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := by
     have := Nat.cast_nonneg (α := ℝ) n
     linarith
-  have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ 2 - σ ^ 2 := by nlinarith
+  have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ) := by nlinarith
   rw [kappaTerm]
   positivity
 
 theorem kappaTerm_le {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (n : ℕ) :
-    kappaTerm σ n ≤ 2 * σ ^ 2 / ((1 - σ ^ 2) * ((n : ℝ) + 1) ^ 3) := by
+    kappaTerm σ n ≤ 2 * σ ^ (2 : ℕ) / ((1 - σ ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ)) := by
   have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := by
     have := Nat.cast_nonneg (α := ℝ) n
     linarith
-  have hsq : (1 : ℝ) - σ ^ 2 > 0 := by nlinarith
-  have h1 : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith
-  have hkey : ((n : ℝ) + 1) ^ 2 * (1 - σ ^ 2) ≤ ((n : ℝ) + 1) ^ 2 - σ ^ 2 := by
+  have hsq : (1 : ℝ) - σ ^ (2 : ℕ) > 0 := by nlinarith
+  have h1 : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) := by nlinarith
+  have hkey : ((n : ℝ) + 1) ^ (2 : ℕ) * (1 - σ ^ (2 : ℕ)) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg σ, h1]
-  have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ 2 - σ ^ 2 := by nlinarith
+  have hpos : (0 : ℝ) < ((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ) := by nlinarith
   rw [kappaTerm, div_le_div_iff₀ (by positivity) (by positivity)]
   nlinarith [hkey, hn, hsq, sq_nonneg σ, mul_nonneg (sq_nonneg σ) (by linarith : (0:ℝ) ≤ (n:ℝ)+1)]
 
 theorem summable_kappaTerm {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) : Summable (kappaTerm σ) := by
-  have hcube : Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 3 := by
-    have h : Summable fun n : ℕ => 1 / (n : ℝ) ^ 3 :=
+  have hcube : Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (3 : ℕ) := by
+    have h : Summable fun n : ℕ => 1 / (n : ℝ) ^ (3 : ℕ) :=
       Real.summable_one_div_nat_pow.mpr (by norm_num)
     refine ((summable_nat_add_iff 1).mpr h).congr fun n => ?_
     push_cast
     ring
-  have hmaj : Summable fun n : ℕ => 2 * σ ^ 2 / ((1 - σ ^ 2) * ((n : ℝ) + 1) ^ 3) := by
-    refine (hcube.mul_left (2 * σ ^ 2 / (1 - σ ^ 2))).congr fun n => ?_
-    rw [div_mul_eq_mul_div, mul_one_div, div_div, mul_comm (((n : ℝ) + 1) ^ 3) (1 - σ ^ 2)]
+  have hmaj : Summable fun n : ℕ => 2 * σ ^ (2 : ℕ) / ((1 - σ ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ)) := by
+    refine (hcube.mul_left (2 * σ ^ (2 : ℕ) / (1 - σ ^ (2 : ℕ)))).congr fun n => ?_
+    rw [div_mul_eq_mul_div, mul_one_div, div_div, mul_comm (((n : ℝ) + 1) ^ (3 : ℕ)) (1 - σ ^ (2 : ℕ))]
   exact Summable.of_nonneg_of_le (fun n => kappaTerm_nonneg hσ1 hσ0 n)
     (fun n => kappaTerm_le hσ0 hσ1 n) hmaj
 
@@ -74,7 +74,7 @@ theorem gammaShiftKappa_nonneg {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) : 0 �
 
 /-- The real Gauss series is summable on every vertical line in the right half plane. -/
 theorem summable_gaussRealTerm {a t : ℝ} (ha : 0 < a) :
-    Summable fun n : ℕ => 1 / ((n : ℝ) + 1) - (a + n) / ((a + n) ^ 2 + t ^ 2) := by
+    Summable fun n : ℕ => 1 / ((n : ℝ) + 1) - (a + n) / ((a + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
   have hre : (0 : ℝ) < ((a : ℂ) + (t : ℂ) * Complex.I).re := by simpa using ha
   have hs := _root_.RHTower.summable_gaussDigammaSeriesTerm hre
   have hmap := hs.map (Complex.reCLM.toLinearMap.toAddMonoidHom) Complex.reCLM.continuous
@@ -89,15 +89,15 @@ theorem summable_gaussRealTerm {a t : ℝ} (ha : 0 < a) :
 /-- **The shifted symbol as a real Gauss series.** -/
 theorem re_wallSymbol_eq_tsum {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (x : ℝ) :
     (wallSymbol σ x).re
-      = (∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 - σ) + n) / (((1 - σ) + n) ^ 2 + x ^ 2)))
-        + ∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ 2 + x ^ 2)) := by
+      = (∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 - σ) + n) / (((1 - σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ))))
+        + ∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
   have hlow : (0 : ℝ) < 1 - σ := by linarith
   have hup : (0 : ℝ) < 1 + σ := by linarith
   have h₁ := re_digamma_vertical_series hlow x
   have h₂ := re_digamma_vertical_series hup (-x)
   have h₂' : (Complex.digamma (((1 + σ : ℝ) : ℂ) + ((-x : ℝ) : ℂ) * Complex.I)).re
       = -Real.eulerMascheroniConstant
-        + ∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ 2 + x ^ 2)) := by
+        + ∑' n : ℕ, (1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
     rw [h₂]
     congr 1
     exact tsum_congr fun k => by rw [neg_sq]
@@ -113,9 +113,9 @@ theorem neg_gammaShiftKappa_le_re_wallSymbol {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
     -gammaShiftKappa σ ≤ (wallSymbol σ x).re := by
   have hlow : (0 : ℝ) < 1 - σ := by linarith
   have hup : (0 : ℝ) < 1 + σ := by linarith
-  set F₁ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1) - ((1 - σ) + n) / (((1 - σ) + n) ^ 2 + x ^ 2)
+  set F₁ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1) - ((1 - σ) + n) / (((1 - σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ))
     with hF₁
-  set F₂ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ 2 + x ^ 2)
+  set F₂ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1) - ((1 + σ) + n) / (((1 + σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ))
     with hF₂
   have hs₁ : Summable F₁ := summable_gaussRealTerm hlow
   have hs₂ : Summable F₂ := summable_gaussRealTerm hup
@@ -132,10 +132,10 @@ theorem neg_gammaShiftKappa_le_re_wallSymbol {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
     have ha₂ : (0 : ℝ) < (1 + σ) + n := by
       have := Nat.cast_nonneg (α := ℝ) n
       linarith
-    have hb₁ : ((1 - σ) + n) / (((1 - σ) + n) ^ 2 + x ^ 2) ≤ 1 / ((1 - σ) + n) := by
+    have hb₁ : ((1 - σ) + n) / (((1 - σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ)) ≤ 1 / ((1 - σ) + n) := by
       rw [div_le_div_iff₀ (by positivity) ha₁]
       nlinarith [sq_nonneg x]
-    have hb₂ : ((1 + σ) + n) / (((1 + σ) + n) ^ 2 + x ^ 2) ≤ 1 / ((1 + σ) + n) := by
+    have hb₂ : ((1 + σ) + n) / (((1 + σ) + n) ^ (2 : ℕ) + x ^ (2 : ℕ)) ≤ 1 / ((1 + σ) + n) := by
       rw [div_le_div_iff₀ (by positivity) ha₂]
       nlinarith [sq_nonneg x]
     have hkey : 2 / ((n : ℝ) + 1) - 1 / ((1 - σ) + n) - 1 / ((1 + σ) + n)
@@ -151,8 +151,8 @@ theorem neg_gammaShiftKappa_le_re_wallSymbol {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
         rw [h2] at ha₂
         linarith
       have hne₃ : ((n : ℝ) + 1) ≠ 0 := by linarith
-      have hne₄ : ((n : ℝ) + 1) ^ 2 - σ ^ 2 ≠ 0 := by
-        have : ((n : ℝ) + 1) ^ 2 - σ ^ 2 = (((n : ℝ) + 1) - σ) * (((n : ℝ) + 1) + σ) := by ring
+      have hne₄ : ((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ) ≠ 0 := by
+        have : ((n : ℝ) + 1) ^ (2 : ℕ) - σ ^ (2 : ℕ) = (((n : ℝ) + 1) - σ) * (((n : ℝ) + 1) + σ) := by ring
         rw [this]
         exact mul_ne_zero hne₁ hne₂
       field_simp

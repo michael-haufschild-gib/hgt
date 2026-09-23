@@ -75,10 +75,10 @@ theorem tendsto_coeffSq_of_ladderPin
     (hP : ∀ i m, |P i m| ≤ B m)
     (hc : Tendsto c L atTop)
     (hμ : Tendsto μ L (𝓝 (2 * (n : ℝ) + 1)))
-    (hE : ∀ i, Summable fun m : ℕ => (2 * (m : ℝ) + 1) * (A i m) ^ 2)
-    (htotal : ∀ i, (∑' m : ℕ, (A i m) ^ 2) = 1)
-    (hC : ∀ i, (∑' m : ℕ, (2 * (m : ℝ) + 1) * (A i m) ^ 2) ≤ C) :
-    Tendsto (fun i => (A i n) ^ 2) L (𝓝 1) := by
+    (hE : ∀ i, Summable fun m : ℕ => (2 * (m : ℝ) + 1) * (A i m) ^ (2 : ℕ))
+    (htotal : ∀ i, (∑' m : ℕ, (A i m) ^ (2 : ℕ)) = 1)
+    (hC : ∀ i, (∑' m : ℕ, (2 * (m : ℝ) + 1) * (A i m) ^ (2 : ℕ)) ≤ C) :
+    Tendsto (fun i => (A i n) ^ (2 : ℕ)) L (𝓝 1) := by
   refine GaloisForLFunctions.HTGeometry.tendsto_coeff_of_vanishing_of_moment_le n
     (fun i m => sq_nonneg _) hE htotal hC ?_
   intro m hm
@@ -94,9 +94,9 @@ theorem tendsto_coeffSq_of_ladderPin
 /-- The absolute value of the saturating coordinate tends to one. -/
 theorem tendsto_abs_coeff_of_coeffSq
     {ι : Type*} {L : Filter ι} {A : ι → ℝ}
-    (h : Tendsto (fun i => (A i) ^ 2) L (𝓝 1)) :
+    (h : Tendsto (fun i => (A i) ^ (2 : ℕ)) L (𝓝 1)) :
     Tendsto (fun i => |A i|) L (𝓝 1) := by
-  have hsqrt : Tendsto (fun i => Real.sqrt ((A i) ^ 2)) L (𝓝 (Real.sqrt 1)) :=
+  have hsqrt : Tendsto (fun i => Real.sqrt ((A i) ^ (2 : ℕ))) L (𝓝 (Real.sqrt 1)) :=
     (Real.continuous_sqrt.tendsto 1).comp h
   simpa [Real.sqrt_sq_eq_abs] using hsqrt
 

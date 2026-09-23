@@ -345,7 +345,7 @@ theorem jointAncestryThetaDensityAtomDomain_coeFn
       (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)
       (jointAncestryThetaDensityTranslateDomain n :
         Lp ℂ 2 (volume : Measure ℝ)),
-    translation_coeFn (Real.log n) jointAncestryThetaDensitySeedL2,
+    translation_coeFn_massGaugeSuperluminalCompression (Real.log n) jointAncestryThetaDensitySeedL2,
     hseed] with x hsmul htrans hseedx
   change ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) •
       (jointAncestryThetaDensityTranslateDomain n :

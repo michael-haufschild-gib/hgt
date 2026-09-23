@@ -37,8 +37,8 @@ theorem jetDerivation_sub (M M' : Matrix n n K) :
     jetDerivation (M - M') = jetDerivation M - jetDerivation M' := by
   refine GaloisForLFunctions.fractionRing_derivation_ext
     (A := MvPolynomial (n × ℕ) K) _ _ fun p => ?_
-  rw [jetDerivation_algebraMap, jetDerivationPoly_sub, Derivation.sub_apply, map_sub,
-    Derivation.sub_apply, jetDerivation_algebraMap, jetDerivation_algebraMap]
+  rw [jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivationPoly_sub, Derivation.sub_apply, map_sub,
+    Derivation.sub_apply, jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivation_algebraMap_projectiveHorizonJetDerivation]
 
 /-- An elementary infinitesimal transvection moves the jet coordinate of its row to the jet
 coordinate of its column. -/

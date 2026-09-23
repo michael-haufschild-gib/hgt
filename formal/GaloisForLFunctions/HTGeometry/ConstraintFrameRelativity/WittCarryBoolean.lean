@@ -248,19 +248,19 @@ theorem jointExp_carry_card (q u : ι → ℝ) :
 
 /-- **Replica carry statistics.**  Two replicas of the same Gibbs law. -/
 theorem jointExp_carry_card_self (q : ι → ℝ) :
-    jointExp q q (fun S T => ((S ∩ T).card : ℝ)) = ∑ p, q p ^ 2 := by
+    jointExp q q (fun S T => ((S ∩ T).card : ℝ)) = ∑ p, q p ^ (2 : ℕ) := by
   rw [jointExp_carry_card]
   exact Finset.sum_congr rfl fun p _ => by ring
 
 theorem jointExp_empty_carry_self (q : ι → ℝ) :
-    jointExp q q (fun S T => if S ∩ T = ∅ then 1 else 0) = ∏ p, (1 - q p ^ 2) := by
+    jointExp q q (fun S T => if S ∩ T = ∅ then 1 else 0) = ∏ p, (1 - q p ^ (2 : ℕ)) := by
   rw [jointExp_empty_carry]
   exact Finset.prod_congr rfl fun p _ => by ring
 
 omit [Fintype ι] in
 /-- The replica zero-carry factor of a fugacity. -/
 theorem one_sub_sq_oddsToProb {x : ℝ} (hx : 0 < x) :
-    1 - (oddsToProb x) ^ 2 = (1 + 2 * x) / (1 + x) ^ 2 := by
+    1 - (oddsToProb x) ^ (2 : ℕ) = (1 + 2 * x) / (1 + x) ^ (2 : ℕ) := by
   have hd : (1 : ℝ) + x ≠ 0 := by linarith
   rw [oddsToProb]
   field_simp
@@ -314,9 +314,9 @@ theorem two_digitSection_ne_zero {S : Finset ι} (hS : S.Nonempty) :
 
 /-- The integral history never closes, and its norm grows linearly. -/
 theorem sum_sq_markedHistory (S : Finset ι) (n : ℕ) :
-    ∑ p, ((markedHistory S n p : ℤ) : ℝ) ^ 2 = (n : ℝ) ^ 2 * S.card := by
-  have hpt : ∀ p : ι, ((markedHistory S n p : ℤ) : ℝ) ^ 2
-      = if p ∈ S then ((n : ℝ) ^ 2) else 0 := by
+    ∑ p, ((markedHistory S n p : ℤ) : ℝ) ^ (2 : ℕ) = (n : ℝ) ^ (2 : ℕ) * S.card := by
+  have hpt : ∀ p : ι, ((markedHistory S n p : ℤ) : ℝ) ^ (2 : ℕ)
+      = if p ∈ S then ((n : ℝ) ^ (2 : ℕ)) else 0 := by
     intro p
     rw [markedHistory]
     by_cases h : p ∈ S <;> simp [h]

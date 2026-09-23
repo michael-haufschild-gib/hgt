@@ -89,9 +89,9 @@ private theorem terminal_fibre_sum (M : ℕ) (P : Finset ℕ)
 /-- The literal retained energy is exactly the head square plus remaining singleton squares. -/
 theorem mobiusDivisorSelectionEnergy_terminal (M : ℕ) (P : Finset ℕ)
     (hP : mobiusDivisorSmallSelectionPrimes M ⊆ P) :
-    mobiusDivisorSelectionEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^2+
-      ∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^2 := by
-  exact terminal_fibre_sum M P hP (fun x => x^2) (by simp)
+    mobiusDivisorSelectionEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+      ∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) := by
+  exact terminal_fibre_sum M P hP (fun x => x^(2 : ℕ)) (by simp)
 
 /-- The head and remaining singleton leaves retain the complete signed arithmetic source. -/
 theorem mobiusDivisorSelectionHead_add_terminal_leaves (M : ℕ) (P : Finset ℕ)
@@ -159,7 +159,7 @@ theorem exists_mobiusDivisorTerminalPrimeOrder (M : ℕ) (P : Finset ℕ)
     ∃ l : List ℕ,l.Nodup ∧ l.toFinset=mobiusDivisorSelectionPrimes M \ P ∧ ∀ k : ℕ,
       mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤
         max (mobiusDivisorSelectionEnergy M P)
-          ((∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^2) := by
+          ((∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^(2 : ℕ)) := by
   obtain ⟨l,hl,hset,hbound⟩ := exists_scalarSubsetMergeOrder
     (fun p => mobiusDivisorSelectionFibre M P {p}) (mobiusDivisorSelectionFibre M P ∅)
     (mobiusDivisorSelectionPrimes M \ P)
@@ -176,7 +176,7 @@ theorem exists_mobiusDivisorTerminalPrimeOrder_iff (M : ℕ) (P : Finset ℕ)
     (∃ l : List ℕ,l.Nodup ∧ l.toFinset=mobiusDivisorSelectionPrimes M \ P ∧ ∀ k : ℕ,
       mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤ B) ↔
       mobiusDivisorSelectionEnergy M P ≤ B ∧
-        (∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^2 ≤ B := by
+        (∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^(2 : ℕ) ≤ B := by
   constructor
   · rintro ⟨l,hl,hset,hbound⟩
     constructor
@@ -195,7 +195,7 @@ theorem exists_mobiusDivisorSquareRootTerminalOrder (M : ℕ) :
       l.toFinset=mobiusDivisorSelectionPrimes M \ mobiusDivisorSmallSelectionPrimes M ∧ ∀ k : ℕ,
       mobiusDivisorSelectionEnergy M (mobiusDivisorSmallSelectionPrimes M ∪ (l.take k).toFinset) ≤
         max (mobiusDivisorSelectionEnergy M (mobiusDivisorSmallSelectionPrimes M))
-          ((∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^2) := by
+          ((∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d)^(2 : ℕ)) := by
   exact exists_mobiusDivisorTerminalPrimeOrder M (mobiusDivisorSmallSelectionPrimes M) Subset.rfl
 end RHTower
 

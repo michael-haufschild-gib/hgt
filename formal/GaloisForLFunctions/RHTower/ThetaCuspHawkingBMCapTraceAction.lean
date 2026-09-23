@@ -22,42 +22,42 @@ set_option autoImplicit false
 
 /-- The regular original master, including its angular term. -/
 def master (r y : ℂ) (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (a : Fin 2) : ℂ :=
-  r^2*(r^2-1)*(P a).second 1 1+r^2*((P a).second 0 1+(P a).second 1 0)+
+  r^(2 : ℕ)*(r^(2 : ℕ)-1)*(P a).second 1 1+r^(2 : ℕ)*((P a).second 0 1+(P a).second 1 0)+
     2*r*(P a).first 1-2*r*(P a).first 0+streamAngularAction y P a
 
 /-- Source contact before deleting any wave residual or boundary component. -/
 def contact (r y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
-  ![(∑ a : Fin 2, ((P a).first 1*master r y Q a-(Q a).first 1*master r y P a))/r^2,
-    (∑ a : Fin 2, (((r^2-1)*(P a).first 1+(P a).first 0)*master r y Q a-
-      ((r^2-1)*(Q a).first 1+(Q a).first 0)*master r y P a))/r^2,0,0]
+  ![(∑ a : Fin 2, ((P a).first 1*master r y Q a-(Q a).first 1*master r y P a))/r^(2 : ℕ),
+    (∑ a : Fin 2, (((r^(2 : ℕ)-1)*(P a).first 1+(P a).first 0)*master r y Q a-
+      ((r^(2 : ℕ)-1)*(Q a).first 1+(Q a).first 0)*master r y P a))/r^(2 : ℕ),0,0]
 
 /-- All four faces after the original master contact is included. -/
 def angularCurrent (r y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
   ![(∑ a : Fin 2, ((P a).first 1*streamAngularAction y Q a-
-      (Q a).first 1*streamAngularAction y P a))/r^2,
-    (∑ a : Fin 2, (((r^2-1)*(P a).first 1+(P a).first 0)*streamAngularAction y Q a-
-      ((r^2-1)*(Q a).first 1+(Q a).first 0)*streamAngularAction y P a))/r^2,
+      (Q a).first 1*streamAngularAction y P a))/r^(2 : ℕ),
+    (∑ a : Fin 2, (((r^(2 : ℕ)-1)*(P a).first 1+(P a).first 0)*streamAngularAction y Q a-
+      ((r^(2 : ℕ)-1)*(Q a).first 1+(Q a).first 0)*streamAngularAction y P a))/r^(2 : ℕ),
     regularCurrent r y P Q 2,regularCurrent r y P Q 3]
 
 theorem current_add_contact (r y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) :
     regularCurrent r y P Q+contact r y P Q=angularCurrent r y P Q := by
   let O := fun J : ScalarTwoJet (Fin 4) ℂ =>
-    r^2*(r^2-1)*J.second 1 1+r^2*(J.second 0 1+J.second 1 0)+
+    r^(2 : ℕ)*(r^(2 : ℕ)-1)*J.second 1 1+r^(2 : ℕ)*(J.second 0 1+J.second 1 0)+
       2*r*J.first 1-2*r*J.first 0
   ext j
   fin_cases j
-  · change ((∑ a : Fin 2, ((Q a).first 1*O (P a)-(P a).first 1*O (Q a)))/r^2)+
-      ((∑ a : Fin 2, ((P a).first 1*master r y Q a-(Q a).first 1*master r y P a))/r^2)=_
+  · change ((∑ a : Fin 2, ((Q a).first 1*O (P a)-(P a).first 1*O (Q a)))/r^(2 : ℕ))+
+      ((∑ a : Fin 2, ((P a).first 1*master r y Q a-(Q a).first 1*master r y P a))/r^(2 : ℕ))=_
     rw [← add_div,← Finset.sum_add_distrib]
     congr 1
     apply Finset.sum_congr rfl
     intro a _
     dsimp [O,master]
     ring
-  · change ((∑ a : Fin 2, (((r^2-1)*(Q a).first 1+(Q a).first 0)*O (P a)-
-        ((r^2-1)*(P a).first 1+(P a).first 0)*O (Q a)))/r^2)+
-      ((∑ a : Fin 2, (((r^2-1)*(P a).first 1+(P a).first 0)*master r y Q a-
-        ((r^2-1)*(Q a).first 1+(Q a).first 0)*master r y P a))/r^2)=_
+  · change ((∑ a : Fin 2, (((r^(2 : ℕ)-1)*(Q a).first 1+(Q a).first 0)*O (P a)-
+        ((r^(2 : ℕ)-1)*(P a).first 1+(P a).first 0)*O (Q a)))/r^(2 : ℕ))+
+      ((∑ a : Fin 2, (((r^(2 : ℕ)-1)*(P a).first 1+(P a).first 0)*master r y Q a-
+        ((r^(2 : ℕ)-1)*(Q a).first 1+(Q a).first 0)*master r y P a))/r^(2 : ℕ))=_
     rw [← add_div,← Finset.sum_add_distrib]
     congr 1
     apply Finset.sum_congr rfl
@@ -72,8 +72,8 @@ theorem contact_is_original (p : D4BMBackground.ExteriorPoint)
     ingoingContact p (fun a => staticJet (p.val 1) (P a))
       (fun a => staticJet (p.val 1) (Q a))=contact (p.val 1) (p.val 3) P Q := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (show p.val 1 ≠ 0 by linarith [p.property.1])
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   ext j
   fin_cases j
   all_goals simp [ingoingContact,contact,staticJet,streamMasterValue,streamAngularAction,
@@ -204,7 +204,7 @@ private theorem profile_factor (s a b : ℂ) :
     norm_num
   simp only [profile,Complex.ofReal_one,inv_one,one_pow,mul_one,show (1:ℝ)+1=2 by norm_num]
   calc
-    _ = (2*(2*s+3)*(-s*(s-1)/4)*(-(-s-3)*(-s-3-1)/4)*a^2*b^2)*
+    _ = (2*(2*s+3)*(-s*(s-1)/4)*(-(-s-3)*(-s-3-1)/4)*a^(2 : ℕ)*b^(2 : ℕ))*
         (D4BMLaplaceRadial.power (2*s) 2*D4BMLaplaceRadial.power (2*(-s-3)) 2) := by ring
     _ = horizonFactor s a b := by rw [hp]; unfold horizonFactor; ring
 

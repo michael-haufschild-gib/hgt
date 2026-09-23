@@ -11,7 +11,7 @@ set_option backward.isDefEq.respectTransparency false
 
 /-- Difference between an original principal eigenvalue and the actual physical target eigenvalue. -/
 def physicalAngularGap (q r : XiZeroCopy) (i : Fin 3) : ℂ :=
-  principalExponent q i*(principalExponent q i-1)+(1/4+physicalRadialFrequency r^2)
+  principalExponent q i*(principalExponent q i-1)+(1/4+physicalRadialFrequency r^(2 : ℕ))
 
 def physicalAngularGapProduct (q r : XiZeroCopy) : ℂ := ∏ i : Fin 3, physicalAngularGap q r i
 

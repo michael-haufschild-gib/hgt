@@ -33,7 +33,7 @@ def pairQubitProjectiveStaticChoiSpeedCeiling
     (L : ℕ) (rho scale : ℝ) : ℝ :=
   (Fintype.card (FiniteQubitConfiguration (Fin (L * 2))) : ℝ) *
     ((L : ℝ) + 1 + rho * nearestNeighborPathLocalGeneratorMass L +
-      |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) + 1
+      |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) + 1
 
 /-- Full spectral Choi speed is at most dimension times operator norm plus one. -/
 theorem staticChoiSpeed_eigenvalues_le_card_mul_norm_add_one
@@ -73,7 +73,7 @@ theorem pairQubitProjective_staticChoiSpeed_le_ceiling
   have hs := staticChoiSpeed_eigenvalues_le_card_mul_norm_add_one hH
   have hnorm : ‖H‖ ≤
       (L : ℝ) + 1 + rho * nearestNeighborPathLocalGeneratorMass L +
-        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3) := by
+        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ)) := by
     rw [show H = Matrix.reindexAlgEquiv ℂ ℂ
         (Fintype.equivFin (FiniteQubitConfiguration (Fin (L * 2))))
       (Matrix.reindexAlgEquiv ℂ ℂ (pairQubitPathConfigurationEquiv L)
@@ -109,18 +109,18 @@ theorem exists_pairQubitProjective_growth_noCompleteTargetReturn
           (pairQubitPathUnitaryReindex L (U c))))))
     {guard eta returnRadius thetaN thetaW : ℝ}
     (hguard : 0 ≤ guard)
-    (hTpos : 0 < 2 * Real.pi * (L : ℝ) ^ 3 - guard)
+    (hTpos : 0 < 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)
     (hreturnPos : 0 < returnRadius)
     (hthetaW : 0 < thetaW) (hgap : thetaW < thetaN)
     (hmeshReturn : thetaN - thetaW ≤ returnRadius)
-    (hreturnT : returnRadius ≤ 2 * Real.pi * (L : ℝ) ^ 3 - guard)
+    (hreturnT : returnRadius ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)
     (hguardStart : guard ≤ returnRadius)
     (hscalarBudget :
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
-        (2 * Real.pi * (L : ℝ) ^ 3) *
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
+        (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
           (rho * nearestNeighborPathLocalGeneratorMass L +
-            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) < eta)
+            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) < eta)
     (hselect : pairQubitWeakTwoLocalGrowthFailureBudget L +
         Real.exp (-twoLocalAnchorTransverseUniformRate (L * 2) r scale
           (pairQubitProjectiveSeedGrowingReplicaOscillationCeiling L rho scale)) /
@@ -134,12 +134,12 @@ theorem exists_pairQubitProjective_growth_noCompleteTargetReturn
             (Fintype.card
               (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
           kappa +
-          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2)) <
+          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           (((thetaN - thetaW) /
               pairQubitProjectiveStaticChoiSpeedCeiling L rho scale) /
-            (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-              (thetaW ^ 2) ^ r) :
+            (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+              (thetaW ^ (2 : ℕ)) ^ r) :
     ∃ x : TwoLocalPauliCoefficientSpace (L * 2),
       x ∈ weakTwoLocalPauliCertifiedGrowthSet L ∧
       MaximallyProjectiveEnergy
@@ -148,7 +148,7 @@ theorem exists_pairQubitProjective_growth_noCompleteTargetReturn
           (returnRadius + (thetaN - thetaW) /
             staticChoiSpeed
               (pairQubitProjectiveSeedWeakTwoLocalSpectralEnergy L p scale x))
-          (2 * Real.pi * (L : ℝ) ^ 3 - guard),
+          (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard),
         ∃ c, eta + thetaN ≤ ‖inner ℂ
           (staticSpectralChoiVector
             (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) t
@@ -291,22 +291,22 @@ theorem exists_pairQubitProjective_growth_noCompleteTargetReturn
             (Fintype.card (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
           ∑ c, w c * directStaticChoiTargetNearActionMass
             (staticChoiTracelessResidual energy (target c)) energy r delta +
-          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2)) <
+          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           (((thetaN - thetaW) / staticChoiSpeed energy) /
-            (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-              (thetaW ^ 2) ^ r := by
+            (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+              (thetaW ^ (2 : ℕ)) ^ r := by
     rw [hrank]
     have hinside :
         (r.factorial : ℝ) *
               (Fintype.card (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
             ∑ c, w c * directStaticChoiTargetNearActionMass
               (staticChoiTracelessResidual energy (target c)) energy r delta +
-            Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2) <
+            Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2) <
           (r.factorial : ℝ) *
               (Fintype.card (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
             kappa +
-            Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2) := by
+            Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2) := by
       linarith
     have hrankPhysicalPos : 0 <
         (Module.finrank ℂ (replicaTargetSpan r
@@ -326,18 +326,18 @@ theorem exists_pairQubitProjective_growth_noCompleteTargetReturn
         gaussianFloorTwo *
             (((thetaN - thetaW) /
                 pairQubitProjectiveStaticChoiSpeedCeiling L rho scale) /
-              (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-                (thetaW ^ 2) ^ r ≤
+              (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+                (thetaW ^ (2 : ℕ)) ^ r ≤
           gaussianFloorTwo *
             (((thetaN - thetaW) / staticChoiSpeed energy) /
-              (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-                (thetaW ^ 2) ^ r := by
+              (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+                (thetaW ^ (2 : ℕ)) ^ r := by
       have hgf : 0 ≤ gaussianFloorTwo := gaussianFloorTwo_pos.le
       gcongr
     exact hfixed.trans_le hright
   have hscalar : ∀ t ∈ Icc
       (returnRadius + (thetaN - thetaW) / staticChoiSpeed energy)
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard),
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard),
       ‖inner ℂ (staticSpectralChoiVector
           (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) t energy)
         (staticSpectralChoiVector

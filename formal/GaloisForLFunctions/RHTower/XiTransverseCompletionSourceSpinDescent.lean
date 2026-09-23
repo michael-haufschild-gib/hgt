@@ -79,7 +79,7 @@ theorem xiDivisor_offLine_internalChannel_and_transverseSpinNonDescent
       GaloisForLFunctions.RHTower.eulerWickCompletedJetExtension (rho : ℂ) n *
         GaloisForLFunctions.RHTower.eulerWickCompletedJetExtension (rho : ℂ) n = 0) ∧
     xiTransverseCompletionDefect rho ≠ 0 ∧
-    xiTransverseCompletionDefect rho ^ 2 = 0 ∧
+    xiTransverseCompletionDefect rho ^ (2 : ℕ) = 0 ∧
     routeRSummableHadamardShiftEquiv (xiTransverseCompletionDefect rho) =
       xiTransverseCompletionDefect rho ∧
     ¬ XiCenteredThetaSpinCoherent rho ∧

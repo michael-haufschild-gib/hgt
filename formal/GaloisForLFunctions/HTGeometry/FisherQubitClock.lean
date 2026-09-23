@@ -21,10 +21,10 @@ def fisherQubitClockTangent (frequency phase t : ℝ) : EuclideanSpace ℂ (Fin 
 
 /-- Quantum Fisher information of the actual normalized state and its tangent. -/
 def fisherQubitClockInformation (frequency phase t : ℝ) : ℝ :=
-  pureStateQuantumFisherValue (‖fisherQubitClockState frequency phase t‖ ^ 2)
+  pureStateQuantumFisherValue (‖fisherQubitClockState frequency phase t‖ ^ (2 : ℕ))
     ‖inner ℂ (fisherQubitClockState frequency phase t)
       (fisherQubitClockTangent frequency phase t)‖
-    (‖fisherQubitClockTangent frequency phase t‖ ^ 2)
+    (‖fisherQubitClockTangent frequency phase t‖ ^ (2 : ℕ))
 
 theorem fisherQubitClock_hasDerivAt (frequency phase t : ℝ) :
     HasDerivAt (fisherQubitClockState frequency phase)
@@ -46,7 +46,7 @@ theorem fisherQubitClock_hasDerivAt (frequency phase t : ℝ) :
   exact ((PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin 2 => ℂ)).symm.toContinuousLinearMap.hasFDerivAt).comp_hasDerivAt t hv
 
 theorem fisherQubitClock_information (frequency phase t : ℝ) :
-    fisherQubitClockInformation frequency phase t = frequency ^ 2 := by
+    fisherQubitClockInformation frequency phase t = frequency ^ (2 : ℕ) := by
   unfold fisherQubitClockInformation fisherQubitClockState fisherQubitClockTangent
   rw [qgtQubit_fisher]
   ring

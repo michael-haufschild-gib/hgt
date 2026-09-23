@@ -35,16 +35,16 @@ theorem integrable_hermiteFun (n : ℕ) : Integrable (hermiteFun n) := by
   refine (integrable_polyEval_mul_gauss p (b := 1 / 2) (by norm_num)).congr ?_
   exact Filter.Eventually.of_forall fun x => (hp x).symm
 
-theorem integral_hermiteFun_sq_pos_line (n : ℕ) : 0 < ∫ x, hermiteFun n x ^ 2 := by
-  have hint : Integrable fun x => hermiteFun n x ^ 2 := integrable_hermiteFun_sq n
-  have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume] fun x => hermiteFun n x ^ 2 :=
+theorem integral_hermiteFun_sq_pos_line (n : ℕ) : 0 < ∫ x, hermiteFun n x ^ (2 : ℕ) := by
+  have hint : Integrable fun x => hermiteFun n x ^ (2 : ℕ) := integrable_hermiteFun_sq n
+  have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume] fun x => hermiteFun n x ^ (2 : ℕ) :=
     Filter.Eventually.of_forall fun x => by simpa using sq_nonneg (hermiteFun n x)
-  have hwin : 0 < ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ 2 :=
+  have hwin : 0 < ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ (2 : ℕ) :=
     integral_hermiteFun_sq_pos n (by norm_num : (-1 : ℝ) < 1)
-  have hset : (∫ x in (-1 : ℝ)..1, hermiteFun n x ^ 2)
-      = ∫ x in Ioc (-1 : ℝ) 1, hermiteFun n x ^ 2 :=
+  have hset : (∫ x in (-1 : ℝ)..1, hermiteFun n x ^ (2 : ℕ))
+      = ∫ x in Ioc (-1 : ℝ) 1, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_of_le (by norm_num)
-  have hle : (∫ x in Ioc (-1 : ℝ) 1, hermiteFun n x ^ 2) ≤ ∫ x, hermiteFun n x ^ 2 :=
+  have hle : (∫ x in Ioc (-1 : ℝ) 1, hermiteFun n x ^ (2 : ℕ)) ≤ ∫ x, hermiteFun n x ^ (2 : ℕ) :=
     MeasureTheory.setIntegral_le_integral hint hnn
   rw [hset] at hwin
   linarith
@@ -55,10 +55,10 @@ theorem tendsto_intervalIntegral_hermiteFun (n : ℕ) :
 
 /-! ## Two pointwise identities -/
 
-theorem hermiteFun_zero_eq (x : ℝ) : hermiteFun 0 x = Real.exp (-(x ^ 2 / 2)) := by
+theorem hermiteFun_zero_eq (x : ℝ) : hermiteFun 0 x = Real.exp (-(x ^ (2 : ℕ) / 2)) := by
   show probHermiteFun 0 (Real.sqrt 2 * x) = _
   rw [probHermiteFun, Polynomial.hermite_zero]
-  have hsq : (Real.sqrt 2 * x) ^ 2 = 2 * x ^ 2 := by
+  have hsq : (Real.sqrt 2 * x) ^ (2 : ℕ) = 2 * x ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   rw [hsq]
   simp only [map_one, one_mul]
@@ -78,11 +78,11 @@ theorem hermiteFun_add_two (n : ℕ) (x : ℝ) :
     rw [Polynomial.hermite_succ (n + 1), derivative_hermite_succ n]
   show probHermiteFun (n + 2) (Real.sqrt 2 * x) = _
   show Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite (n + 2))
-      * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)) = _
+      * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)) = _
   show _ = Real.sqrt 2 * x * (Polynomial.aeval (Real.sqrt 2 * x)
-      (Polynomial.hermite (n + 1)) * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)))
+      (Polynomial.hermite (n + 1)) * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)))
     - ((n : ℝ) + 1) * (Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite n)
-      * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)))
+      * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)))
   rw [hrec]
   simp only [map_sub, map_mul, map_add, map_natCast, map_one, Polynomial.aeval_X]
   ring
@@ -94,11 +94,11 @@ theorem deriv_hermiteFun_succ (n : ℕ) (x : ℝ) :
   rw [deriv_hermiteFun_eq, deriv_probHermiteFun]
   simp only
   rw [derivative_hermite_succ n]
-  have hsq : (Real.sqrt 2 * x) ^ 2 = 2 * x ^ 2 := by
+  have hsq : (Real.sqrt 2 * x) ^ (2 : ℕ) = 2 * x ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   have hval1 : probHermiteFun (n + 1) (Real.sqrt 2 * x) = hermiteFun (n + 1) x := rfl
   have hvaln : Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite n)
-      * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)) = hermiteFun n x := rfl
+      * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)) = hermiteFun n x := rfl
   have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
   simp only [map_mul, map_add, map_natCast, map_one]
   rw [hval1]
@@ -111,7 +111,7 @@ theorem integrable_id_mul_hermiteFun (n : ℕ) : Integrable fun x : ℝ => x * h
   obtain ⟨p, hp⟩ := exists_poly_hermiteFun n
   refine (integrable_polyEval_mul_gauss (Polynomial.X * p) (b := 1 / 2) (by norm_num)).congr ?_
   refine Filter.Eventually.of_forall fun x => ?_
-  show Polynomial.eval x (Polynomial.X * p) * Real.exp (-(1 / 2 * x ^ 2)) = x * hermiteFun n x
+  show Polynomial.eval x (Polynomial.X * p) * Real.exp (-(1 / 2 * x ^ (2 : ℕ))) = x * hermiteFun n x
   rw [hp x, Polynomial.eval_mul, Polynomial.eval_X]
   ring
 

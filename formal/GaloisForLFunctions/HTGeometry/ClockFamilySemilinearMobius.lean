@@ -36,7 +36,7 @@ theorem clock_family_scaling_character_from_semilinear
       ∀ w : E, (ρ lam).toAlgHom w′ = algebraMap C E lam * ((ρ lam).toAlgHom w)′)
     (hanchor : (ρ ν₀).toAlgHom q = algebraMap C E ν * q)
     (hlin : ∀ x y z : C, algebraMap C E x + algebraMap C E y * q
-        + algebraMap C E z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0)
+        + algebraMap C E z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0)
     (hcomm : ∀ lam, lam ≠ 0 →
       (ρ lam).toAlgHom ((ρ ν₀).toAlgHom q) = (ρ ν₀).toAlgHom ((ρ lam).toAlgHom q))
     (hmul : ∀ lam mu, lam ≠ 0 → mu ≠ 0 →

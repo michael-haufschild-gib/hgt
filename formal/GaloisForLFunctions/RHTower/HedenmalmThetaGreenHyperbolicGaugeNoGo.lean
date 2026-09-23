@@ -68,8 +68,8 @@ theorem inner_pinnedBoundaryCLM_eq_thetaGreenHyperbolicCurrent (g : H) :
 /-- The same split current is the incoming-minus-outgoing intensity. -/
 theorem thetaGreenHyperbolicCurrent_eq_amplitudeDifference (g : H) :
     thetaGreenHyperbolicCurrent (thetaGreenBoundaryMomentPlane g) =
-      ((‖pinnedInAmplitude g‖ : ℂ) ^ 2 -
-        (‖pinnedOutAmplitude g‖ : ℂ) ^ 2) := by
+      ((‖pinnedInAmplitude g‖ : ℂ) ^ (2 : ℕ) -
+        (‖pinnedOutAmplitude g‖ : ℂ) ^ (2 : ℕ)) := by
   rw [← inner_pinnedBoundaryCLM_eq_thetaGreenHyperbolicCurrent,
     inner_pinnedBoundaryCLM_eq_amplitudes]
 
@@ -171,7 +171,7 @@ theorem thetaGreenQuantileNullFrame_gauge_balanced_iff (a : ℝ) :
     pinnedFirstMoment_thetaQuantileCoordinate_ne_zero
   constructor
   · intro h
-    have hsquares : Real.exp (-a) ^ 2 = Real.exp a ^ 2 := by
+    have hsquares : Real.exp (-a) ^ (2 : ℕ) = Real.exp a ^ (2 : ℕ) := by
       dsimp only [d] at hd
       nlinarith
     have hexp : Real.exp (-a) = Real.exp a := by

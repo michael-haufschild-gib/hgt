@@ -20,10 +20,10 @@ theorem intervalIntegrable_sq_norm_inverseMellinDilate_suzukiSourceG
     {omega : ℝ} (homega : 1 / 2 < omega) {n : ℕ} (hn : 0 < n)
     {a : ℝ} (hna : (n : ℝ) < a) :
     IntervalIntegrable (fun x : ℝ =>
-      ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ 2) volume n a := by
+      ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ (2 : ℕ)) volume n a := by
   let phi : ℝ → ℝ := (fun _x : ℝ => (n : ℝ)) / id
-  let dphi : ℝ → ℝ := fun x => -(n : ℝ) / x ^ 2
-  let q : ℝ → ℝ := fun u => ‖suzukiSourceG omega u‖ ^ 2
+  let dphi : ℝ → ℝ := fun x => -(n : ℝ) / x ^ (2 : ℕ)
+  let q : ℝ → ℝ := fun u => ‖suzukiSourceG omega u‖ ^ (2 : ℕ)
   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
   have hdelta : 0 < (n : ℝ) / a := div_pos hnR (lt_trans hnR hna)
   have hdelta1 : (n : ℝ) / a < 1 := (div_lt_one (lt_trans hnR hna)).2 hna
@@ -77,12 +77,12 @@ theorem memLp_inverseMellinDilate_suzukiSourceG_local_two
     exact ((measurable_suzukiSourceG omega).comp harg).div (by fun_prop)
   have hzero (b : ℝ) (h1b : 1 ≤ b) (hb : b ≤ n) :
       IntervalIntegrable (fun x : ℝ =>
-        ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ 2) volume 1 b := by
+        ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ (2 : ℕ)) volume 1 b := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le h1b]
     refine integrableOn_zero.congr_fun ?_ measurableSet_Ioc
     intro x hx
     have hxb : x ≤ n := le_trans hx.2 hb
-    change 0 = ‖suzukiSourceG omega ((n : ℝ) / x) / x‖ ^ 2
+    change 0 = ‖suzukiSourceG omega ((n : ℝ) / x) / x‖ ^ (2 : ℕ)
     by_cases hx0 : x ≤ 0
     · have harg : (n : ℝ) / x ≤ 0 := div_nonpos_of_nonneg_of_nonpos hnR.le hx0
       rw [suzukiSourceG_eq_zero_of_nonpos omega harg]
@@ -93,7 +93,7 @@ theorem memLp_inverseMellinDilate_suzukiSourceG_local_two
       · simp
       · exact fun h => (not_lt_of_ge hratio) h.2
   have hint : IntervalIntegrable (fun x : ℝ =>
-      ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ 2) volume 1 a := by
+      ‖inverseMellinDilate (suzukiSourceG omega) n x‖ ^ (2 : ℕ)) volume 1 a := by
     by_cases hlt : (n : ℝ) < a
     · exact (hzero n hn1 le_rfl).trans
         (intervalIntegrable_sq_norm_inverseMellinDilate_suzukiSourceG homega hn hlt)

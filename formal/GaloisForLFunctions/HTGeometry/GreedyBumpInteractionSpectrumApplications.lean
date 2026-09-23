@@ -37,7 +37,7 @@ def GreedyBumpInteractionSource.activationSource
       intro h
       apply source.bias_ne_half i
       linarith
-    have hsq : 0 < (1 - 2 * source.bias i) ^ 2 := sq_pos_of_ne_zero hlin
+    have hsq : 0 < (1 - 2 * source.bias i) ^ (2 : ℕ) := sq_pos_of_ne_zero hlin
     unfold interactionActivation
     nlinarith
 
@@ -75,7 +75,7 @@ theorem GreedyBumpInteractionSource.degreeVariance_eq_sum_cumulantOne_add_cumula
     greedyBumpBernoulli_factorialCumulantTwo]
   change interactionActivation (source.bias i) *
       (1 - interactionActivation (source.bias i)) =
-    interactionActivation (source.bias i) - interactionActivation (source.bias i) ^ 2
+    interactionActivation (source.bias i) - interactionActivation (source.bias i) ^ (2 : ℕ)
   ring
 
 /-- Pair cumulants measure the exact mean--variance deficit of interaction degree. -/
@@ -107,7 +107,7 @@ theorem GreedyBumpInteractionSource.totalCumulantSeries_eq_log_emptyParityEnergy
     (source : GreedyBumpInteractionSource I) :
     (∑ i : I, ∑' k : ℕ,
       greedyBumpBernoulliLogVoidContribution (source.activationSource.coordinate i) k) =
-      Real.log ((biasedWalshCoefficient source.bias biasedWalshParity ∅) ^ 2) := by
+      Real.log ((biasedWalshCoefficient source.bias biasedWalshParity ∅) ^ (2 : ℕ)) := by
   rw [source.totalCumulantSeries_eq_log_emptyWork]
   rw [← sq_biasedWalshCoefficient_parity_eq_interactionWorkWeight
     source.bias_pos source.bias_lt_one ∅]

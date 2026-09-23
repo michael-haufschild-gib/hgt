@@ -42,14 +42,14 @@ noncomputable def adaptiveOrthoSourcePolynomial (s : ℕ → ℝ) (n : ℕ) : Po
 
 /-- Polynomial paired with `Pₙ` after commuting the adaptive source factors. -/
 noncomputable def adaptiveOrthoCompanion (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
-  Polynomial.X ^ 2 * monicOrtho s n +
-    Polynomial.X ^ 3 * (monicOrtho s n).derivative
+  Polynomial.X ^ (2 : ℕ) * monicOrtho s n +
+    Polynomial.X ^ (3 : ℕ) * (monicOrtho s n).derivative
 
 /-- Completed-square Jacobi energy carried by the adaptive source. -/
 noncomputable def adaptiveOrthoJacobiEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   (∑ j ∈ Finset.range n,
-      (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2) +
-    (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ 2 +
+      (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ)) +
+    (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ (2 : ℕ) +
     2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
     (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1))
 
@@ -141,8 +141,8 @@ theorem monicOrthoSecondCoeff_succ {s : ℕ → ℝ} (h : PositiveMomentForm s) 
 
 /-- Exact quadratic invariant of the first two coefficient jets. -/
 theorem monicOrtho_coeffJet_energy {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
-    monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+    monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n =
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by
   induction n with
   | zero => simp [monicOrthoFirstCoeff, monicOrthoSecondCoeff]
@@ -195,9 +195,9 @@ noncomputable def adaptiveOrthoProjectionCoeff (s : ℕ → ℝ) (n : ℕ) : ℝ
 theorem adaptiveOrthoProjectionCoeff_eq_coeffJet {s : ℕ → ℝ}
     (h : PositiveMomentForm s) {n : ℕ} (hn : 0 < n) :
     adaptiveOrthoProjectionCoeff s n =
-      monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n -
+      monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n -
         monicOrthoAlpha s n * monicOrthoFirstCoeff s n +
-        (n + 1 : ℝ) * monicOrthoAlpha s n ^ 2 +
+        (n + 1 : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) +
         (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1)) := by
   have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
     have hc : ((n - 1 : ℕ) : ℝ) + 1 = (n : ℝ) := by
@@ -212,21 +212,21 @@ theorem adaptiveOrthoProjectionCoeff_eq_coeffJet {s : ℕ → ℝ}
 theorem adaptiveOrthoJacobiEnergy_eq_coeffJet {s : ℕ → ℝ}
     (h : PositiveMomentForm s) (n : ℕ) :
     adaptiveOrthoJacobiEnergy s n =
-      monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n -
+      monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n -
         monicOrthoAlpha s n * monicOrthoFirstCoeff s n +
-        (n + 1 : ℝ) * monicOrthoAlpha s n ^ 2 +
+        (n + 1 : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) +
         (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1)) := by
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
           monicOrthoAlpha s n * (∑ j ∈ Finset.range n, monicOrthoAlpha s j) +
-          (n : ℝ) * monicOrthoAlpha s n ^ 2 / 4 := by
+          (n : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2 =
-          monicOrthoAlpha s j ^ 2 +
+        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ) =
+          monicOrthoAlpha s j ^ (2 : ℕ) +
             monicOrthoAlpha s n * monicOrthoAlpha s j +
-            monicOrthoAlpha s n ^ 2 / 4 := by ring
+            monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -358,10 +358,10 @@ theorem adaptiveOrthoJacobiEnergy_pos {s : ℕ → ℝ} (h : PositiveMomentForm 
     (hn : 0 < n) : 0 < adaptiveOrthoJacobiEnergy s n := by
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
-        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2 := by
+        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ) := by
     exact Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
-      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ 2 := by
+      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by
@@ -452,8 +452,8 @@ theorem monicOrthoSecondCoeff_succ_below {s : ℕ → ℝ} {N : ℕ}
 
 theorem monicOrtho_coeffJet_energy_below {s : ℕ → ℝ} {N : ℕ}
     (h : PositiveMomentFormBelow s N) {n : ℕ} (hnN : n ≤ N) :
-    monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+    monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n =
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by
   induction n with
   | zero => simp [monicOrthoFirstCoeff, monicOrthoSecondCoeff]
@@ -467,9 +467,9 @@ theorem adaptiveOrthoProjectionCoeff_eq_coeffJet_below
     {s : ℕ → ℝ} {N : ℕ} (h : PositiveMomentFormBelow s N)
     {n : ℕ} (hn : 0 < n) (hnN : n + 2 ≤ N) :
     adaptiveOrthoProjectionCoeff s n =
-      monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n -
+      monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n -
         monicOrthoAlpha s n * monicOrthoFirstCoeff s n +
-        (n + 1 : ℝ) * monicOrthoAlpha s n ^ 2 +
+        (n + 1 : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) +
         (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1)) := by
   have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
     have hc : ((n - 1 : ℕ) : ℝ) + 1 = (n : ℝ) := by
@@ -487,21 +487,21 @@ theorem adaptiveOrthoJacobiEnergy_eq_coeffJet_below
     {s : ℕ → ℝ} {N : ℕ} (h : PositiveMomentFormBelow s N)
     {n : ℕ} (hnN : n ≤ N) :
     adaptiveOrthoJacobiEnergy s n =
-      monicOrthoFirstCoeff s n ^ 2 - 2 * monicOrthoSecondCoeff s n -
+      monicOrthoFirstCoeff s n ^ (2 : ℕ) - 2 * monicOrthoSecondCoeff s n -
         monicOrthoAlpha s n * monicOrthoFirstCoeff s n +
-        (n + 1 : ℝ) * monicOrthoAlpha s n ^ 2 +
+        (n + 1 : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) +
         (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1)) := by
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
           monicOrthoAlpha s n * (∑ j ∈ Finset.range n, monicOrthoAlpha s j) +
-          (n : ℝ) * monicOrthoAlpha s n ^ 2 / 4 := by
+          (n : ℝ) * monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2 =
-          monicOrthoAlpha s j ^ 2 +
+        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ) =
+          monicOrthoAlpha s j ^ (2 : ℕ) +
             monicOrthoAlpha s n * monicOrthoAlpha s j +
-            monicOrthoAlpha s n ^ 2 / 4 := by ring
+            monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -526,10 +526,10 @@ theorem adaptiveOrthoJacobiEnergy_pos_below
     0 < adaptiveOrthoJacobiEnergy s n := by
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
-        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2 :=
+        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
-      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ 2 := by
+      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by

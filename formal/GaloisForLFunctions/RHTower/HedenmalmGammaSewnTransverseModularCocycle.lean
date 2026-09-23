@@ -11,7 +11,7 @@ after the literal prime deconvolution
 `1 + sign(t) * p * Q_t(p) = p^(-2|t|)`.
 
 The multiplier `p` is forced pointwise away from neutral grade.  It is unbounded, does not
-preserve the fixed all-prime `ell^1` ideal, and therefore has no diagonal action on the physical
+preserve the fixed all-prime `ell^(1 : ℕ)` ideal, and therefore has no diagonal action on the physical
 quotient.  Thus the modular half-density lives before fixed-trace completion: recovering it is
 exactly a singular Cartier base change, not a bounded Hilbert or quotient operation.
 
@@ -148,7 +148,7 @@ theorem routeNGammaSewn_modularDeconvolution_unique
   apply (mul_right_cancel₀ hproduct)
   nlinarith [hm, hcanonical]
 
-/-- Summable test sequence used to expose failure of prime deconvolution on `ell^1`. -/
+/-- Summable test sequence used to expose failure of prime deconvolution on `ell^(1 : ℕ)`. -/
 def routeNGammaSewnModularDeconvolutionKernelWitness : AllPrimeComplexSequence :=
   fun p => Complex.ofReal ((p : ℝ) ^ (-2 : ℝ))
 
@@ -179,7 +179,7 @@ theorem routeNGammaSewnModularDeconvolution_mul_kernelWitness :
       _ = (p : ℝ) ^ (-1 : ℝ) := by norm_num
   exact_mod_cast hmul
 
-/-- Singular prime deconvolution does not preserve the fixed physical `ell^1` ideal. -/
+/-- Singular prime deconvolution does not preserve the fixed physical `ell^(1 : ℕ)` ideal. -/
 theorem routeNGammaSewnModularDeconvolution_not_preservesL1 :
     ¬ PrimeDiagonalPreservesL1 routeNGammaSewnModularDeconvolutionSequence := by
   intro hpreserves
@@ -198,7 +198,7 @@ theorem routeNGammaSewnModularDeconvolution_not_isBounded :
   exact routeNGammaSewnModularDeconvolution_not_preservesL1
 
 /-- Therefore the unique modular deconvolution has no diagonal action on the fixed all-prime
-quotient by `ell^1`. -/
+quotient by `ell^(1 : ℕ)`. -/
 theorem routeNGammaSewnModularDeconvolution_not_hasQuotientMap :
     ¬ HasPrimeDiagonalQuotientMap
       routeNGammaSewnModularDeconvolutionSequence := by
@@ -282,7 +282,7 @@ theorem routeRGammaSewnFisherGauge_mul_modularDeconvolutionSequence :
   push_cast
   field_simp [(routeNGammaSewnFisherGauge_pos p).ne']
 
-/-- Route R modular recovery cannot preserve the fixed physical `ell^1` ideal either. -/
+/-- Route R modular recovery cannot preserve the fixed physical `ell^(1 : ℕ)` ideal either. -/
 theorem routeRGammaSewnModularDeconvolution_not_preservesL1 :
     ¬ PrimeDiagonalPreservesL1 routeRGammaSewnModularDeconvolutionSequence := by
   intro hrouteR
@@ -345,7 +345,7 @@ theorem routeRScalarCartier_contractible_iff_not_summable_routeNKrein
     summable_routeNGammaSewnXiCriticalHorizonKreinPrimeSequence_iff]
 
 /-- Dually, coefficient-faithful survival of the scalar Cartier atom occurs exactly when the
-physical Route N Krein wall disappears into `ell^1`. -/
+physical Route N Krein wall disappears into `ell^(1 : ℕ)`. -/
 theorem routeRScalarCartier_atomLanding_injective_iff_summable_routeNKrein
     (p : Nat.Primes) (rho : XiDivisorSupport) :
     Function.Injective (routeRPrimeXiScalarCartierAtomLanding p rho) ↔

@@ -16,7 +16,7 @@ open GaloisForLFunctions.HTGeometry.FDNLS
 /-- Brizard's NLS after multiplying `-i D⁻¹ ψₜ = ψₛₛ + |ψ|²ψ/2` by `D`. -/
 def SolvesNLS (D : ℝ) (J : ComplexEvolutionJet2) : Prop :=
   ∀ t x, Complex.I * J.ut t x + (D : ℂ) * J.uxx t x
-    + (((D / 2) * ‖J.u t x‖ ^ 2 : ℝ) : ℂ) * J.u t x = 0
+    + (((D / 2) * ‖J.u t x‖ ^ (2 : ℕ) : ℝ) : ℂ) * J.u t x = 0
 
 /-- Unit complex phase `exp(i(ωt + kx))`, built from the corpus FDNLS phase. -/
 noncomputable def linearPhase (ω k t x : ℝ) : ℂ :=
@@ -45,54 +45,54 @@ theorem hasDerivAt_linearPhase_space (ω k t x : ℝ) :
 
 theorem hasDerivAt_linearPhase_space_one (ω k t x : ℝ) :
     HasDerivAt (fun y : ℝ => linearPhase ω k t y * (Complex.I * (k : ℂ)))
-      (linearPhase ω k t x * (Complex.I * (k : ℂ)) ^ 2) x := by
+      (linearPhase ω k t x * (Complex.I * (k : ℂ)) ^ (2 : ℕ)) x := by
   have h := (hasDerivAt_linearPhase_space ω k t x).mul_const (Complex.I * (k : ℂ))
   apply h.congr_deriv
   ring
 
 private theorem planeResidual_zero (D a k P : ℂ) :
-    Complex.I * (a * (P * (Complex.I * (D * (a ^ 2 / 2 - k ^ 2)))))
-      + D * (a * (P * (Complex.I * k) ^ 2))
-      + (D / 2 * a ^ 2) * (a * P) = 0 := by
+    Complex.I * (a * (P * (Complex.I * (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))))))
+      + D * (a * (P * (Complex.I * k) ^ (2 : ℕ)))
+      + (D / 2 * a ^ (2 : ℕ)) * (a * P) = 0 := by
   calc
-    Complex.I * (a * (P * (Complex.I * (D * (a ^ 2 / 2 - k ^ 2)))))
-          + D * (a * (P * (Complex.I * k) ^ 2))
-          + (D / 2 * a ^ 2) * (a * P) =
-        (D * a ^ 3 * P / 2) * (Complex.I * Complex.I + 1) := by ring
+    Complex.I * (a * (P * (Complex.I * (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))))))
+          + D * (a * (P * (Complex.I * k) ^ (2 : ℕ)))
+          + (D / 2 * a ^ (2 : ℕ)) * (a * P) =
+        (D * a ^ (3 : ℕ) * P / 2) * (Complex.I * Complex.I + 1) := by ring
     _ = 0 := by rw [Complex.I_mul_I]; ring
 
 private theorem envelopeResidual_zero (D k v A Ax P : ℂ) :
     Complex.I *
-          ((-2 * D * v * Ax) * P + A * (P * (Complex.I * (D * (k ^ 2 - v ^ 2)))))
+          ((-2 * D * v * Ax) * P + A * (P * (Complex.I * (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))))))
       + D *
-          ((k ^ 2 * A - A ^ 3 / 2) * P
+          ((k ^ (2 : ℕ) * A - A ^ (3 : ℕ) / 2) * P
             + 2 * Ax * (P * (Complex.I * v))
-            + A * (P * (Complex.I * v) ^ 2))
-      + (D / 2 * A ^ 2) * (A * P) = 0 := by
+            + A * (P * (Complex.I * v) ^ (2 : ℕ)))
+      + (D / 2 * A ^ (2 : ℕ)) * (A * P) = 0 := by
   calc
     Complex.I *
-            ((-2 * D * v * Ax) * P + A * (P * (Complex.I * (D * (k ^ 2 - v ^ 2)))))
+            ((-2 * D * v * Ax) * P + A * (P * (Complex.I * (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))))))
         + D *
-            ((k ^ 2 * A - A ^ 3 / 2) * P
+            ((k ^ (2 : ℕ) * A - A ^ (3 : ℕ) / 2) * P
               + 2 * Ax * (P * (Complex.I * v))
-              + A * (P * (Complex.I * v) ^ 2))
-        + (D / 2 * A ^ 2) * (A * P) =
-      (D * k ^ 2 * A * P) * (Complex.I * Complex.I + 1) := by ring
+              + A * (P * (Complex.I * v) ^ (2 : ℕ)))
+        + (D / 2 * A ^ (2 : ℕ)) * (A * P) =
+      (D * k ^ (2 : ℕ) * A * P) * (Complex.I * Complex.I + 1) := by ring
     _ = 0 := by rw [Complex.I_mul_I]; ring
 
 /-- Equation (27), with temporal frequency `D(a²/2-k²)`. -/
 noncomputable def planeWave (D a k t x : ℝ) : ℂ :=
-  (a : ℂ) * linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x
+  (a : ℂ) * linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x
 
 noncomputable def planeWaveJet (D a k : ℝ) : ComplexEvolutionJet2 where
   u := planeWave D a k
   ut := fun t x => (a : ℂ) *
-    (linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x *
-      (Complex.I * ((D * (a ^ 2 / 2 - k ^ 2) : ℝ) : ℂ)))
+    (linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x *
+      (Complex.I * ((D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ)) : ℝ) : ℂ)))
   ux := fun t x => (a : ℂ) *
-    (linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x * (Complex.I * (k : ℂ)))
+    (linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x * (Complex.I * (k : ℂ)))
   uxx := fun t x => (a : ℂ) *
-    (linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x * (Complex.I * (k : ℂ)) ^ 2)
+    (linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x * (Complex.I * (k : ℂ)) ^ (2 : ℕ))
   hasDerivAt_time := by
     intro t x
     exact (hasDerivAt_linearPhase_time _ _ t x).const_mul (a : ℂ)
@@ -103,7 +103,7 @@ noncomputable def planeWaveJet (D a k : ℝ) : ComplexEvolutionJet2 where
     intro t x
     exact (hasDerivAt_linearPhase_space_one _ _ t x).const_mul (a : ℂ)
 
-theorem norm_planeWave_sq (D a k t x : ℝ) : ‖planeWave D a k t x‖ ^ 2 = a ^ 2 := by
+theorem norm_planeWave_sq (D a k t x : ℝ) : ‖planeWave D a k t x‖ ^ (2 : ℕ) = a ^ (2 : ℕ) := by
   rw [planeWave, norm_mul, norm_linearPhase, mul_one, Complex.norm_real, Real.norm_eq_abs,
     sq_abs]
 
@@ -112,12 +112,12 @@ theorem planeWave_solves (D a k : ℝ) : SolvesNLS D (planeWaveJet D a k) := by
   intro t x
   simp only [planeWaveJet, planeWave]
   have hnorm :
-      ‖(a : ℂ) * linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x‖ ^ 2 = a ^ 2 := by
+      ‖(a : ℂ) * linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x‖ ^ (2 : ℕ) = a ^ (2 : ℕ) := by
     simpa only [planeWave] using norm_planeWave_sq D a k t x
   rw [hnorm]
   push_cast
   exact planeResidual_zero (D : ℂ) (a : ℂ) (k : ℂ)
-    (linearPhase (D * (a ^ 2 / 2 - k ^ 2)) k t x)
+    (linearPhase (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ))) k t x)
 
 /-- Galilean coordinate `k(x - 2Dvt)` from equations (30)--(31). -/
 def envelopeCoordinate (D k v t x : ℝ) : ℝ := k * (x - 2 * D * v * t)
@@ -146,7 +146,7 @@ noncomputable def envelopeX (D k v t x : ℝ) : ℝ :=
   2 * k * solitonA1 (envelopeCoordinate D k v t x) * k
 
 noncomputable def envelopeXX (D k v t x : ℝ) : ℝ :=
-  2 * k * solitonA2 (envelopeCoordinate D k v t x) * k ^ 2
+  2 * k * solitonA2 (envelopeCoordinate D k v t x) * k ^ (2 : ℕ)
 
 theorem hasDerivAt_envelope_time (D k v t x : ℝ) :
     HasDerivAt (fun s : ℝ => envelope D k v s x) (envelopeT D k v t x) t := by
@@ -183,31 +183,31 @@ theorem envelopeT_eq (D k v t x : ℝ) :
 /-- Scaled `sech` profile equation behind paper equation (28). -/
 theorem envelope_schrodinger (D k v t x : ℝ) :
     envelopeXX D k v t x =
-      k ^ 2 * envelope D k v t x - envelope D k v t x ^ 3 / 2 := by
+      k ^ (2 : ℕ) * envelope D k v t x - envelope D k v t x ^ (3 : ℕ) / 2 := by
   rw [envelopeXX, envelope, solitonA2]
   ring
 
 /-- Equations (30)--(31), parameterized by `v = c/(2D)` without a division premise. -/
 noncomputable def envelopeSoliton (D k v t x : ℝ) : ℂ :=
-  (envelope D k v t x : ℂ) * linearPhase (D * (k ^ 2 - v ^ 2)) v t x
+  (envelope D k v t x : ℂ) * linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x
 
 noncomputable def envelopeSolitonJet (D k v : ℝ) : ComplexEvolutionJet2 where
   u := envelopeSoliton D k v
   ut := fun t x =>
-    (envelopeT D k v t x : ℂ) * linearPhase (D * (k ^ 2 - v ^ 2)) v t x
+    (envelopeT D k v t x : ℂ) * linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x
       + (envelope D k v t x : ℂ) *
-        (linearPhase (D * (k ^ 2 - v ^ 2)) v t x *
-          (Complex.I * ((D * (k ^ 2 - v ^ 2) : ℝ) : ℂ)))
+        (linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x *
+          (Complex.I * ((D * (k ^ (2 : ℕ) - v ^ (2 : ℕ)) : ℝ) : ℂ)))
   ux := fun t x =>
-    (envelopeX D k v t x : ℂ) * linearPhase (D * (k ^ 2 - v ^ 2)) v t x
+    (envelopeX D k v t x : ℂ) * linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x
       + (envelope D k v t x : ℂ) *
-        (linearPhase (D * (k ^ 2 - v ^ 2)) v t x * (Complex.I * (v : ℂ)))
+        (linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x * (Complex.I * (v : ℂ)))
   uxx := fun t x =>
-    (envelopeXX D k v t x : ℂ) * linearPhase (D * (k ^ 2 - v ^ 2)) v t x
+    (envelopeXX D k v t x : ℂ) * linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x
       + 2 * (envelopeX D k v t x : ℂ) *
-        (linearPhase (D * (k ^ 2 - v ^ 2)) v t x * (Complex.I * (v : ℂ)))
+        (linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x * (Complex.I * (v : ℂ)))
       + (envelope D k v t x : ℂ) *
-        (linearPhase (D * (k ^ 2 - v ^ 2)) v t x * (Complex.I * (v : ℂ)) ^ 2)
+        (linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x * (Complex.I * (v : ℂ)) ^ (2 : ℕ))
   hasDerivAt_time := by
     intro t x
     exact (hasDerivAt_envelope_time D k v t x).ofReal_comp.mul
@@ -219,14 +219,14 @@ noncomputable def envelopeSolitonJet (D k v : ℝ) : ComplexEvolutionJet2 where
   hasDerivAt_space_one := by
     intro t x
     have h₁ := (hasDerivAt_envelope_space_one D k v t x).ofReal_comp.mul
-      (hasDerivAt_linearPhase_space (D * (k ^ 2 - v ^ 2)) v t x)
+      (hasDerivAt_linearPhase_space (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x)
     have h₂ := (hasDerivAt_envelope_space D k v t x).ofReal_comp.mul
-      (hasDerivAt_linearPhase_space_one (D * (k ^ 2 - v ^ 2)) v t x)
+      (hasDerivAt_linearPhase_space_one (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x)
     apply (h₁.add h₂).congr_deriv
     ring
 
 theorem norm_envelopeSoliton_sq (D k v t x : ℝ) :
-    ‖envelopeSoliton D k v t x‖ ^ 2 = envelope D k v t x ^ 2 := by
+    ‖envelopeSoliton D k v t x‖ ^ (2 : ℕ) = envelope D k v t x ^ (2 : ℕ) := by
   rw [envelopeSoliton, norm_mul, norm_linearPhase, mul_one, Complex.norm_real,
     Real.norm_eq_abs, sq_abs]
 
@@ -235,8 +235,8 @@ theorem envelopeSoliton_solves (D k v : ℝ) : SolvesNLS D (envelopeSolitonJet D
   intro t x
   simp only [envelopeSolitonJet, envelopeSoliton]
   have hnorm :
-      ‖(envelope D k v t x : ℂ) * linearPhase (D * (k ^ 2 - v ^ 2)) v t x‖ ^ 2 =
-        envelope D k v t x ^ 2 := by
+      ‖(envelope D k v t x : ℂ) * linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x‖ ^ (2 : ℕ) =
+        envelope D k v t x ^ (2 : ℕ) := by
     simpa only [envelopeSoliton] using norm_envelopeSoliton_sq D k v t x
   rw [hnorm]
   have ht := envelopeT_eq D k v t x
@@ -245,7 +245,7 @@ theorem envelopeSoliton_solves (D k v : ℝ) : SolvesNLS D (envelopeSolitonJet D
   push_cast
   exact envelopeResidual_zero (D : ℂ) (k : ℂ) (v : ℂ)
     (envelope D k v t x : ℂ) (envelopeX D k v t x : ℂ)
-    (linearPhase (D * (k ^ 2 - v ^ 2)) v t x)
+    (linearPhase (D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))) v t x)
 
 /-- Equation (28), stationary optical soliton. -/
 noncomputable def opticalSoliton (D k : ℝ) : ℝ → ℝ → ℂ := envelopeSoliton D k 0

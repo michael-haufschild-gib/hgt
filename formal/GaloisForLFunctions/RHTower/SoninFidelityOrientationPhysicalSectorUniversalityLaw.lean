@@ -21,7 +21,7 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
     ∀ ψ : SoninL2,
       GaloisForLFunctions.PhysicalState
           (soninLogFourierScattering - 1).toLinearMap ψ ↔
-        ‖ψ‖ ^ 4 - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ 2 = 0 ∧
+        ‖ψ‖ ^ (4 : ℕ) - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ (2 : ℕ) = 0 ∧
           0 ≤ (inner ℂ ψ (soninLogFourierScattering ψ)).re := by
   intro ψ
   constructor
@@ -46,19 +46,19 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
       exact sq_nonneg ‖ψ‖
   · rintro ⟨hdeficit, hoverlapNonneg⟩
     have hsectorProduct :
-        ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
-            ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 = 0 := by
+        ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) *
+            ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) = 0 := by
       rw [soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights]
         at hdeficit
       nlinarith
     have hoverlap :
         (inner ℂ ψ (soninLogFourierScattering ψ)).re =
-          ‖soninLogFourierInvariantAverage ψ‖ ^ 2 -
-            ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 := by
+          ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) -
+            ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) := by
       exact congrArg Complex.re
         (inner_soninLogFourierScattering_eq_sectorNormSq_sub ψ)
     have hcomplementSq :
-        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 = 0 := by
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.mp hsectorProduct with hinvariant | hcomplement
       · rw [hinvariant] at hoverlap
         nlinarith [sq_nonneg ‖(1 - soninLogFourierInvariantAverage) ψ‖]

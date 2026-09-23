@@ -11,7 +11,7 @@ variable {I E H : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
   [NormedAddCommGroup H] [NormedSpace ℂ H]
 
 private def observedCesaro (T : E ≃ₗᵢ[ℂ] E) (J : E →L[ℂ] H) (N : ℕ) (u : E) : ℝ :=
-  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖J ((T ^ n) u)‖ ^ 2
+  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖J ((T ^ n) u)‖ ^ (2 : ℕ)
 
 private theorem observed_amplitude_zero_iff
     (a : I → E →L[ℂ] ℂ) (v : I → E) (J : E →L[ℂ] H)
@@ -38,9 +38,9 @@ private theorem observed_amplitude_shift_norm
     (T : E ≃ₗᵢ[ℂ] E) (a : I → E →L[ℂ] ℂ) (v : I → E) (z : I → ℂ)
     (hz : ∀ i, ‖z i‖ = 1) (ha : ∀ i u, a i (T u) = z i * a i u)
     (J : E →L[ℂ] H) (W : E →L[ℂ] lp (fun _ : I => ℂ) 2)
-    (hW : ∀ u, ‖W u‖ ^ 2 = ∑' i, ‖a i u‖ ^ 2 * ‖J (v i)‖ ^ 2) (u : E) :
+    (hW : ∀ u, ‖W u‖ ^ (2 : ℕ) = ∑' i, ‖a i u‖ ^ (2 : ℕ) * ‖J (v i)‖ ^ (2 : ℕ)) (u : E) :
     ‖W (T u)‖ = ‖W u‖ := by
-  have hs : ‖W (T u)‖ ^ 2 = ‖W u‖ ^ 2 := by
+  have hs : ‖W (T u)‖ ^ (2 : ℕ) = ‖W u‖ ^ (2 : ℕ) := by
     rw [hW, hW]
     apply tsum_congr
     intro i
@@ -60,7 +60,7 @@ private theorem observed_amplitude_pow_norm
 
 private theorem observed_mean_zero_iff
     (T : E ≃ₗᵢ[ℂ] E) (J : E →L[ℂ] H) (W : E →L[ℂ] lp (fun _ : I => ℂ) 2)
-    (hm : ∀ u, Tendsto (fun N => observedCesaro T J N u) atTop (𝓝 (‖W u‖ ^ 2)))
+    (hm : ∀ u, Tendsto (fun N => observedCesaro T J N u) atTop (𝓝 (‖W u‖ ^ (2 : ℕ))))
     (u : E) : Tendsto (fun N => observedCesaro T J N u) atTop (𝓝 0) ↔ W u = 0 := by
   constructor
   · intro h
@@ -201,7 +201,7 @@ theorem causalFrequencyShift_completed_hilbert_mean_zero_iff
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop (𝓝 0) ↔
+      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop (𝓝 0) ↔
       causalFrequencyObservedAmplitude b J u = 0 :=
   observed_mean_zero_iff (causalFrequencyShift b) J (causalFrequencyObservedAmplitude b J)
     (causalFrequencyShift_completed_hilbert_square_mean b J) u
@@ -212,7 +212,7 @@ theorem causalFrequencyShift_completed_hilbert_zero_spectrum_iff
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop (𝓝 0) ↔
+      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop (𝓝 0) ↔
       ∀ ω : ℝ, causalFrequencyCoefficient b ω u = 0 ∨ J (causalFrequencyMode b ω) = 0 :=
   (causalFrequencyShift_completed_hilbert_mean_zero_iff b J u).trans
     (causalFrequencyObservedAmplitude_eq_zero_iff b J u)
@@ -236,7 +236,7 @@ theorem causalFrequencyShift_completed_hilbert_zero_orbit_iff
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop (𝓝 0) ↔
+      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop (𝓝 0) ↔
       ∀ n : ℕ, J (((causalFrequencyShift b) ^ n) u) = 0 :=
   observed_zero_orbit_iff (causalFrequencyShift b) J (causalFrequencyObservedAmplitude b J)
     (causalFrequencyShift_completed_hilbert_mean_zero_iff b J)
@@ -251,7 +251,7 @@ theorem causalFrequencyShift_completed_hilbert_observable_iff
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) :
     (∀ u : causalFrequencySpace b,
       Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop (𝓝 0) ↔ u = 0) ↔
+        ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop (𝓝 0) ↔ u = 0) ↔
       ∀ ω : ℝ, J (causalFrequencyMode b ω) ≠ 0 :=
   (observed_observable_iff_injective (causalFrequencyShift b) J
     (causalFrequencyObservedAmplitude b J)

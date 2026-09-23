@@ -303,23 +303,23 @@ def bernsteinCoefficientSquareDiscrepancyAtDefectDegree
     (m a : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ i ∈ Finset.range (N + 2),
     (bernsteinCoefficient m (N + 1) i -
-      bernsteinCoefficient a (N + 1) i) ^ 2
+      bernsteinCoefficient a (N + 1) i) ^ (2 : ℕ)
 
 /-- Cauchy--Schwarz converts the dimension-normalized quadratic discrepancy into the aggregate
 `l1` discrepancy needed by the finite-ceiling law. -/
 lemma bernsteinCoefficientL1Discrepancy_le_of_card_mul_squareDiscrepancy_le_sq
     {m a : ℕ → ℝ} {N : ℕ} {C : ℝ} (hC : 0 ≤ C)
     (henergy : (N + 2 : ℝ) *
-      bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N ≤ C ^ 2) :
+      bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N ≤ C ^ (2 : ℕ)) :
     bernsteinCoefficientL1DiscrepancyAtDefectDegree m a N ≤ C := by
   let s := Finset.range (N + 2)
   let f : ℕ → ℝ := fun i =>
     |bernsteinCoefficient m (N + 1) i - bernsteinCoefficient a (N + 1) i|
   have hcs := sq_sum_le_card_mul_sum_sq (s := s) (f := f)
   have hcard : ((s.card : ℕ) : ℝ) = (N + 2 : ℝ) := by simp [s]
-  have hsq : (∑ i ∈ s, f i) ^ 2 ≤ C ^ 2 := by
+  have hsq : (∑ i ∈ s, f i) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     calc
-      (∑ i ∈ s, f i) ^ 2 ≤ (s.card : ℝ) * ∑ i ∈ s, f i ^ 2 := hcs
+      (∑ i ∈ s, f i) ^ (2 : ℕ) ≤ (s.card : ℝ) * ∑ i ∈ s, f i ^ (2 : ℕ) := hcs
       _ = (N + 2 : ℝ) *
           bernsteinCoefficientSquareDiscrepancyAtDefectDegree m a N := by
         rw [hcard]
@@ -327,7 +327,7 @@ lemma bernsteinCoefficientL1Discrepancy_le_of_card_mul_squareDiscrepancy_le_sq
         apply Finset.sum_congr rfl
         intro i hi
         simp only [f, sq_abs]
-      _ ≤ C ^ 2 := henergy
+      _ ≤ C ^ (2 : ℕ) := henergy
   have hsum : 0 ≤ ∑ i ∈ s, f i := Finset.sum_nonneg fun _ _ => abs_nonneg _
   change (∑ i ∈ s, f i) ≤ C
   nlinarith
@@ -341,7 +341,7 @@ theorem riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscr
     (henergy : ∀ j, (d j + 2 : ℝ) *
       bernsteinCoefficientSquareDiscrepancyAtDefectDegree
         (radiusNormalizedMoment primeArchEndpointHausdorffRadius
-          normalizedPrimeArchMoment) (a j) (d j) ≤ C ^ 2) :
+          normalizedPrimeArchMoment) (a j) (d j) ≤ C ^ (2 : ℕ)) :
     RiemannHypothesis := by
   apply
     riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_l1Discrepancy_bounded
@@ -359,7 +359,7 @@ theorem riemannHypothesis_of_cofinal_xiThermalTruncation_bernsteinSquareDiscrepa
         (radiusNormalizedMoment primeArchEndpointHausdorffRadius
           normalizedPrimeArchMoment)
         (radiusNormalizedMoment primeArchEndpointHausdorffRadius
-          (xiThermalTruncation (M j))) (d j) ≤ C ^ 2) :
+          (xiThermalTruncation (M j))) (d j) ≤ C ^ (2 : ℕ)) :
     RiemannHypothesis := by
   exact
     riemannHypothesis_of_cofinal_hausdorffBernsteinApproximation_squareDiscrepancy

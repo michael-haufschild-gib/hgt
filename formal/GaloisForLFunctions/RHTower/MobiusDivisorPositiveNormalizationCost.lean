@@ -45,7 +45,7 @@ private lemma mass_nonneg (M : ℕ) : 0 ≤ mobiusDivisorAbsoluteMass M :=
 private lemma energy_nonneg (M : ℕ) (P : Finset ℕ) :
     0 ≤ mobiusDivisorSelectionEnergy M P := by
   change 0 ≤ ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
   exact sum_nonneg (fun _ _ => sq_nonneg _)
 
 /-- The uniform channel ceiling gives the upper absolute mass scale. -/
@@ -69,7 +69,7 @@ theorem mobiusDivisorDiagonal_le_sqrt_mul_absoluteMass (M : ℕ) :
 /-- The actual first-prime reserve forces a positive quadratic diagonal. -/
 theorem exists_mobiusDivisorDiagonal_quadratic_lower :
     ∃ c : ℝ,0<c ∧ ∃ N : ℕ,1≤N ∧ ∀ M : ℕ,N≤M →
-      c*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M ∅ := by
+      c*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M ∅ := by
   obtain ⟨c,hc,T,hT,hreserve⟩ := exists_mobiusDivisorSelectionEnergy_first_prime_reserve
   refine ⟨c/2,by positivity,2*T,by omega,?_⟩
   intro M hM
@@ -88,16 +88,16 @@ theorem exists_mobiusDivisorAbsoluteMass_lower :
   have hm : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
   have h := (hbound M hM).trans (mobiusDivisorDiagonal_le_sqrt_mul_absoluteMass M)
   have hs := Real.sq_sqrt hm.le
-  have he : c*(M:ℝ)^2 = Real.sqrt M*(c*(M:ℝ)*Real.sqrt M) := by
+  have he : c*(M:ℝ)^(2 : ℕ) = Real.sqrt M*(c*(M:ℝ)*Real.sqrt M) := by
     calc
-      _ = c*(M:ℝ)*(Real.sqrt M)^2 := by rw [hs]; ring
+      _ = c*(M:ℝ)*(Real.sqrt M)^(2 : ℕ) := by rw [hs]; ring
       _ = _ := by ring
   rw [he] at h
   exact (mul_le_mul_iff_right₀ (Real.sqrt_pos.mpr hm)).mp h
 
 /-- Finite Cauchy bounds the effective source size above by `M`. -/
 theorem mobiusDivisorAbsoluteMass_sq_le_card_diagonal (M : ℕ) :
-    (mobiusDivisorAbsoluteMass M)^2 ≤ (M:ℝ)*mobiusDivisorSelectionEnergy M ∅ := by
+    (mobiusDivisorAbsoluteMass M)^(2 : ℕ) ≤ (M:ℝ)*mobiusDivisorSelectionEnergy M ∅ := by
   have hh := sum_mul_sq_le_sq_mul_sq (Icc 1 M)
     (fun d => |mobiusDivisorDilationChannel M d|) (fun _ => (1:ℝ))
   simpa [mobiusDivisorAbsoluteMass,mobiusDivisorSelectionEnergy_empty,sq_abs,mul_comm] using hh
@@ -105,7 +105,7 @@ theorem mobiusDivisorAbsoluteMass_sq_le_card_diagonal (M : ℕ) :
 /-- The effective size of the actual source is at least a fixed multiple of `M`. -/
 theorem exists_mobiusDivisorAbsoluteMass_sq_lower_diagonal :
     ∃ c : ℝ,0<c ∧ ∃ N : ℕ,1≤N ∧ ∀ M : ℕ,N≤M →
-      c*(M:ℝ)*mobiusDivisorSelectionEnergy M ∅ ≤ (mobiusDivisorAbsoluteMass M)^2 := by
+      c*(M:ℝ)*mobiusDivisorSelectionEnergy M ∅ ≤ (mobiusDivisorAbsoluteMass M)^(2 : ℕ) := by
   obtain ⟨c,hc,N,hN,hbound⟩ := exists_mobiusDivisorDiagonal_quadratic_lower
   refine ⟨c,hc,N,hN,?_⟩
   intro M hM
@@ -115,11 +115,11 @@ theorem exists_mobiusDivisorAbsoluteMass_sq_lower_diagonal :
   have he := mobiusDivisorDiagonal_le_sqrt_mul_absoluteMass M
   have he2 := mul_le_mul he he hQ (by positivity)
   have hs := Real.sq_sqrt hm.le
-  have he2' : (mobiusDivisorSelectionEnergy M ∅)^2 ≤ (M:ℝ)*(mobiusDivisorAbsoluteMass M)^2 := by
+  have he2' : (mobiusDivisorSelectionEnergy M ∅)^(2 : ℕ) ≤ (M:ℝ)*(mobiusDivisorAbsoluteMass M)^(2 : ℕ) := by
     nlinarith only [he2,hs]
   have hl := mul_le_mul_of_nonneg_right (hbound M hM) hQ
   have hfinal : (M:ℝ)*(c*(M:ℝ)*mobiusDivisorSelectionEnergy M ∅) ≤
-      (M:ℝ)*(mobiusDivisorAbsoluteMass M)^2 := by nlinarith only [hl,he2']
+      (M:ℝ)*(mobiusDivisorAbsoluteMass M)^(2 : ℕ) := by nlinarith only [hl,he2']
   exact (mul_le_mul_iff_right₀ hm).mp hfinal
 
 /-- Probability normalization cannot reduce weighted energy below absolute mass squared. -/
@@ -127,11 +127,11 @@ theorem mobiusDivisorAbsoluteMass_sq_le_weightedEnergy
     (M : ℕ) (w : ℕ→ℝ) (hw : ∀d∈Icc 1 M,0≤w d)
     (hsum : ∑d∈Icc 1 M,w d=1)
     (hsupport : ∀d∈Icc 1 M,w d=0 → mobiusDivisorDilationChannel M d=0) :
-    (mobiusDivisorAbsoluteMass M)^2 ≤
-      ∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^2/w d := by
+    (mobiusDivisorAbsoluteMass M)^(2 : ℕ) ≤
+      ∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d := by
   have h := sum_sq_le_sum_mul_sum_of_sq_le_mul (Icc 1 M)
     (r:=fun d => |mobiusDivisorDilationChannel M d|)
-    (f:=fun d => (mobiusDivisorDilationChannel M d)^2/w d) (g:=w)
+    (f:=fun d => (mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d) (g:=w)
     (fun d hd => div_nonneg (sq_nonneg _) (hw d hd)) hw ?_
   · simpa only [hsum,mul_one,mobiusDivisorAbsoluteMass] using h
   · intro d hd
@@ -145,14 +145,14 @@ theorem mobiusDivisorAbsoluteMass_optimal_weights (M : ℕ)
     let w := fun d => |mobiusDivisorDilationChannel M d|/mobiusDivisorAbsoluteMass M
     (∀d∈Icc 1 M,0≤w d) ∧ (∑d∈Icc 1 M,w d=1) ∧
       (∀d∈Icc 1 M,w d=0 → mobiusDivisorDilationChannel M d=0) ∧
-      (∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^2/w d)=(mobiusDivisorAbsoluteMass M)^2 := by
+      (∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d)=(mobiusDivisorAbsoluteMass M)^(2 : ℕ) := by
   dsimp only
   refine ⟨fun _ _ => div_nonneg (abs_nonneg _) hU.le,?_,?_,?_⟩
   · rw [← sum_div]
     exact div_self hU.ne'
   · intro d hd hz
     exact abs_eq_zero.mp ((div_eq_zero_iff).mp hz |>.resolve_right hU.ne')
-  · have he (d : ℕ) : (mobiusDivisorDilationChannel M d)^2/
+  · have he (d : ℕ) : (mobiusDivisorDilationChannel M d)^(2 : ℕ)/
         (|mobiusDivisorDilationChannel M d|/mobiusDivisorAbsoluteMass M)=
         |mobiusDivisorDilationChannel M d| * mobiusDivisorAbsoluteMass M := by
       by_cases hz : mobiusDivisorDilationChannel M d=0
@@ -171,7 +171,7 @@ theorem exists_mobiusDivisor_positiveNormalization_cost :
       (∀d∈Icc 1 M,0≤w d) → (∑d∈Icc 1 M,w d=1) →
       (∀d∈Icc 1 M,w d=0 → mobiusDivisorDilationChannel M d=0) →
       c*(M:ℝ)*mobiusDivisorSelectionEnergy M ∅ ≤
-        ∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^2/w d := by
+        ∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d := by
   obtain ⟨c,hc,N,hN,hbound⟩ := exists_mobiusDivisorAbsoluteMass_sq_lower_diagonal
   exact ⟨c,hc,N,hN,fun M hM w hw hsum hs =>
     (hbound M hM).trans (mobiusDivisorAbsoluteMass_sq_le_weightedEnergy M w hw hsum hs)⟩
@@ -181,8 +181,8 @@ of the optimal weighted energy. -/
 theorem exists_mobiusDivisor_strictlyPositiveNormalization_upper (M : ℕ)
     (hM : 0<M) (hU : 0 < mobiusDivisorAbsoluteMass M) :
     ∃ w : ℕ→ℝ,(∀d∈Icc 1 M,0<w d) ∧ (∑d∈Icc 1 M,w d=1) ∧
-      (∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^2/w d) ≤
-        2*(mobiusDivisorAbsoluteMass M)^2 := by
+      (∑d∈Icc 1 M,(mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d) ≤
+        2*(mobiusDivisorAbsoluteMass M)^(2 : ℕ) := by
   have hm : (0:ℝ)<M := by exact_mod_cast hM
   let U := mobiusDivisorAbsoluteMass M
   let e := U/(M:ℝ)
@@ -199,7 +199,7 @@ theorem exists_mobiusDivisor_strictlyPositiveNormalization_upper (M : ℕ)
       ring
     dsimp [w]
     rw [← sum_div,hsum,div_self hden.ne']
-  · have hterm (d : ℕ) : (mobiusDivisorDilationChannel M d)^2/w d ≤
+  · have hterm (d : ℕ) : (mobiusDivisorDilationChannel M d)^(2 : ℕ)/w d ≤
         2*U*|mobiusDivisorDilationChannel M d| := by
       have ha := abs_nonneg (mobiusDivisorDilationChannel M d)
       have ha' : 0 < |mobiusDivisorDilationChannel M d|+e := by positivity
@@ -212,6 +212,6 @@ theorem exists_mobiusDivisor_strictlyPositiveNormalization_upper (M : ℕ)
       nlinarith only [hn]
     calc
       _ ≤ ∑d∈Icc 1 M,2*U*|mobiusDivisorDilationChannel M d| := sum_le_sum (fun d _ => hterm d)
-      _ = _ := by rw [← mul_sum]; change 2*U*U=2*U^2; ring
+      _ = _ := by rw [← mul_sum]; change 2*U*U=2*U^(2 : ℕ); ring
 
 end RHTower

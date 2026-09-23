@@ -41,13 +41,13 @@ theorem adjoint_eigenvector_of_contraction
       _ = ‖x‖ := one_mul _
   have hv : ‖star lam • x‖ = ‖x‖ := by
     rw [norm_smul, norm_star, hlam, one_mul]
-  have hinner : ⟪T.adjoint x, star lam • x⟫_ℂ = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
+  have hinner : ⟪T.adjoint x, star lam • x⟫_ℂ = ((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_smul_right, T.adjoint_inner_left, hx, inner_smul_right,
       ← mul_assoc, ← starRingEnd_apply, RCLike.conj_mul]
     simp [hlam, inner_self_eq_norm_sq_to_K]
-  have hlow : ‖x‖ ^ 2 ≤ ‖T.adjoint x‖ * ‖star lam • x‖ := by
+  have hlow : ‖x‖ ^ (2 : ℕ) ≤ ‖T.adjoint x‖ * ‖star lam • x‖ := by
     calc
-      ‖x‖ ^ 2 = ‖((‖x‖ ^ 2 : ℝ) : ℂ)‖ := by
+      ‖x‖ ^ (2 : ℕ) = ‖((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ)‖ := by
         simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg ‖x‖)]
       _ = ‖⟪T.adjoint x, star lam • x⟫_ℂ‖ := by rw [hinner]
       _ ≤ ‖T.adjoint x‖ * ‖star lam • x‖ := norm_inner_le_norm _ _

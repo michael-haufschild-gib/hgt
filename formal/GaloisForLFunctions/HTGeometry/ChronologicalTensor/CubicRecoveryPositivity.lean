@@ -17,8 +17,8 @@ attribute [local instance] cubicGradedLineNormedGroup cubicGradedLineInnerProduc
 
 
 def cubicRecoveryCommutatorWeight : ℕ → ℝ
-  | 0 => (cubicRecoveryShiftWeight 0)^2
-  | k+1 => (cubicRecoveryShiftWeight (k+1))^2-(cubicRecoveryShiftWeight k)^2
+  | 0 => (cubicRecoveryShiftWeight 0)^(2 : ℕ)
+  | k+1 => (cubicRecoveryShiftWeight (k+1))^(2 : ℕ)-(cubicRecoveryShiftWeight k)^(2 : ℕ)
 
 theorem cubicRecoveryCommutator_basis (k : ℕ) :
     cubicRecoveryCommutator (cubicHilbertBasis k)=
@@ -28,12 +28,12 @@ theorem cubicRecoveryCommutator_basis (k : ℕ) :
   | succ k => exact cubicRecoveryCommutator_successor_basis k
 
 theorem cubicRecoveryCommutator_quadratic_hasSum (x : cubicDefectHilbert) :
-    HasSum (fun k : ℕ => cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^2)
+    HasSum (fun k : ℕ => cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^(2 : ℕ))
       (inner ℝ x (cubicRecoveryCommutator x)) := by
   let F := (innerSL ℝ x).comp cubicRecoveryCommutator
   have hs := (cubicHilbertBasis.hasSum_repr x).mapL F
   have he : (fun k : ℕ => F (cubicHilbertBasis.repr x k • cubicHilbertBasis k))=
-      (fun k : ℕ => cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^2) := by
+      (fun k : ℕ => cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^(2 : ℕ)) := by
     funext k
     simp only [F,ContinuousLinearMap.comp_apply,map_smul,innerSL_apply_apply,
       cubicRecoveryCommutator_basis]
@@ -45,7 +45,7 @@ theorem cubicRecoveryCommutator_quadratic_hasSum (x : cubicDefectHilbert) :
 
 theorem cubicRecoveryCommutator_quadratic (x : cubicDefectHilbert) :
     inner ℝ x (cubicRecoveryCommutator x)=
-      ∑' k : ℕ, cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^2 :=
+      ∑' k : ℕ, cubicRecoveryCommutatorWeight k*(cubicHilbertBasis.repr x k)^(2 : ℕ) :=
   (cubicRecoveryCommutator_quadratic_hasSum x).tsum_eq.symm
 
 theorem cubicRecoveryCommutator_positive_iff_weights :
@@ -66,13 +66,13 @@ theorem cubicRecoveryCommutatorWeight_nonneg_iff :
   constructor
   · intro h k
     have hk := h (k+1)
-    change 0 ≤ (cubicRecoveryShiftWeight (k+1))^2-(cubicRecoveryShiftWeight k)^2 at hk
+    change 0 ≤ (cubicRecoveryShiftWeight (k+1))^(2 : ℕ)-(cubicRecoveryShiftWeight k)^(2 : ℕ) at hk
     nlinarith [(cubicRecoveryShiftWeight_bounds k).1,(cubicRecoveryShiftWeight_bounds (k+1)).1]
   · intro h k
     cases k with
     | zero => exact sq_nonneg _
     | succ k =>
-      change 0 ≤ (cubicRecoveryShiftWeight (k+1))^2-(cubicRecoveryShiftWeight k)^2
+      change 0 ≤ (cubicRecoveryShiftWeight (k+1))^(2 : ℕ)-(cubicRecoveryShiftWeight k)^(2 : ℕ)
       have hs := h k
       have hp := (cubicRecoveryShiftWeight_bounds k).1
       have hq := (cubicRecoveryShiftWeight_bounds (k+1)).1
@@ -81,7 +81,7 @@ theorem cubicRecoveryCommutatorWeight_nonneg_iff :
 
 theorem cubicRecoveryShiftWeight_monotone_iff :
     (∀ k, cubicRecoveryShiftWeight k ≤ cubicRecoveryShiftWeight (k+1)) ↔
-      ∀ k, (cubicGradedRecoveryGap (k+1))^2 ≤
+      ∀ k, (cubicGradedRecoveryGap (k+1))^(2 : ℕ) ≤
         cubicGradedRecoveryGap k*cubicGradedRecoveryGap (k+2) := by
   constructor
   · intro h k
@@ -95,7 +95,7 @@ theorem cubicRecoveryShiftWeight_monotone_iff :
 
 theorem cubicRecoveryCommutator_positive_iff_logconvex :
     (∀ x : cubicDefectHilbert, 0 ≤ inner ℝ x (cubicRecoveryCommutator x)) ↔
-      ∀ k, (cubicGradedRecoveryGap (k+1))^2 ≤
+      ∀ k, (cubicGradedRecoveryGap (k+1))^(2 : ℕ) ≤
         cubicGradedRecoveryGap k*cubicGradedRecoveryGap (k+2) := by
   rw [cubicRecoveryCommutator_positive_iff_weights,cubicRecoveryCommutatorWeight_nonneg_iff,
     cubicRecoveryShiftWeight_monotone_iff]

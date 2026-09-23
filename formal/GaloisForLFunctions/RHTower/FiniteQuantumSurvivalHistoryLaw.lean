@@ -75,7 +75,7 @@ theorem finiteQuantumExpectationDisplacement_survivalCoefficient
     finiteQuantumExpectationDisplacement z
         (finiteSpectralSurvivalCoefficient p) () =
       (finiteSpectralSurvivalProbability p z : ℂ) -
-        (((∑ i, p i) ^ 2 : ℝ) : ℂ) := by
+        (((∑ i, p i) ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   unfold finiteQuantumExpectationDisplacement
     finiteSpectralSurvivalCoefficient
@@ -87,7 +87,7 @@ theorem finiteQuantumExpectationDisplacement_survivalCoefficient
   push_cast
   simp_rw [Finset.sum_mul, Finset.mul_sum]
   have hsum :
-      (∑ i, (p i : ℂ)) ^ 2 =
+      (∑ i, (p i : ℂ)) ^ (2 : ℕ) =
         ∑ i, ∑ j, (p i : ℂ) * (p j : ℂ) := by
     rw [pow_two, Finset.sum_mul]
     apply Finset.sum_congr rfl

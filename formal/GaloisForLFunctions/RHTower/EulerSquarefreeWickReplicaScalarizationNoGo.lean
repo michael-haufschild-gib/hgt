@@ -79,7 +79,7 @@ theorem eulerWickReplicaFlippedDensity_apply_one_one
       finiteBuresTargetRay, Matrix.vecMulVec, eulerLogValuationProfile, h]
 
 /-- Every unsquared EWQ Euler-log character coefficient is nonzero. -/
-theorem eulerWickQuadraticEulerLogReplica_ne_zero
+theorem eulerWickQuadraticEulerLogReplica_ne_zero_eulerSquarefreeWickReplicaScalarizationNoGo
     (x : PrimePowerClockIndex) :
     eulerWickQuadraticEulerLogReplica x ≠ 0 := by
   unfold eulerWickQuadraticEulerLogReplica
@@ -100,7 +100,7 @@ theorem eulerWickReplicaDensity_ne_flippedDensity
     eulerWickReplicaFlippedDensity_apply_zero_one] at hentry
   have htwo : (2 : ℂ) * eulerWickQuadraticEulerLogReplica x = 0 := by
     linear_combination hentry
-  exact (eulerWickQuadraticEulerLogReplica_ne_zero x)
+  exact (eulerWickQuadraticEulerLogReplica_ne_zero_eulerSquarefreeWickReplicaScalarizationNoGo x)
     ((mul_eq_zero.mp htwo).resolve_left (by norm_num))
 
 /-- **Positive survivor.**  Keeping both opposite gauge lifts produces a strictly positive scalar
@@ -129,7 +129,7 @@ theorem eulerWickReplicaDensity_add_flippedDensity_posDef
 theorem det_eulerWickReplicaDensity_add_flippedDensity
     (x : PrimePowerClockIndex) :
     (eulerWickReplicaDensity x + eulerWickReplicaFlippedDensity x).det =
-      (((2 * (((x.2 + 1 : ℕ) : ℝ))⁻¹ : ℝ) : ℂ) ^ 2) := by
+      (((2 * (((x.2 + 1 : ℕ) : ℝ))⁻¹ : ℝ) : ℂ) ^ (2 : ℕ)) := by
   rw [eulerWickReplicaDensity_add_flippedDensity_eq_smul_one,
     Matrix.det_fin_two]
   simp
@@ -219,7 +219,7 @@ theorem no_eulerWickDiagonalOrientationRecovery
     eulerWickReplicaFlippedDensity_apply_zero_one] at hopposite
   have htwo : (2 : ℂ) * eulerWickQuadraticEulerLogReplica x = 0 := by
     linear_combination hopposite
-  exact (eulerWickQuadraticEulerLogReplica_ne_zero x)
+  exact (eulerWickQuadraticEulerLogReplica_ne_zero_eulerSquarefreeWickReplicaScalarizationNoGo x)
     ((mul_eq_zero.mp htwo).resolve_left (by norm_num))
 
 end

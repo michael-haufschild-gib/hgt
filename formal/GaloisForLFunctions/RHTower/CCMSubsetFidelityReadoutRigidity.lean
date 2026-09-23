@@ -145,12 +145,12 @@ count. -/
 theorem diagonalCoefficientOne_energy_product_ge_card_sq
     {ι : Type*} (s : Finset ι) (feature readout : ι → ℝ)
     (hfaithful : ∀ i ∈ s, feature i * readout i = 1) :
-    ((s.card : ℝ) ^ 2) ≤
-      (∑ i ∈ s, feature i ^ 2) * (∑ i ∈ s, readout i ^ 2) := by
+    ((s.card : ℝ) ^ (2 : ℕ)) ≤
+      (∑ i ∈ s, feature i ^ (2 : ℕ)) * (∑ i ∈ s, readout i ^ (2 : ℕ)) := by
   have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul s
     (r := fun _ : ι => (1 : ℝ))
-    (f := fun i => feature i ^ 2)
-    (g := fun i => readout i ^ 2)
+    (f := fun i => feature i ^ (2 : ℕ))
+    (g := fun i => readout i ^ (2 : ℕ))
     (fun i _ => sq_nonneg (feature i))
     (fun i _ => sq_nonneg (readout i))
     (fun i hi => by
@@ -165,8 +165,8 @@ theorem coefficientOneHilbertReadout_energy_product_ge_card_sq
     {ι E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     (s : Finset ι) (reader : E) (channel : ι → E)
     (hread : ∀ i ∈ s, inner ℂ reader (channel i) = 1) :
-    ((s.card : ℝ) ^ 2) ≤
-      ‖reader‖ ^ 2 * ‖∑ i ∈ s, channel i‖ ^ 2 := by
+    ((s.card : ℝ) ^ (2 : ℕ)) ≤
+      ‖reader‖ ^ (2 : ℕ) * ‖∑ i ∈ s, channel i‖ ^ (2 : ℕ) := by
   have hinner :
       inner ℂ reader (∑ i ∈ s, channel i) = (s.card : ℂ) := by
     rw [inner_sum]
@@ -183,10 +183,10 @@ theorem coefficientOneHilbertReadout_energy_product_ge_card_sq
   have hcast : ‖(s.card : ℂ)‖ = (s.card : ℝ) := by simp
   rw [hcast] at hbound
   calc
-    ((s.card : ℝ) ^ 2) ≤
-        (‖reader‖ * ‖∑ i ∈ s, channel i‖) ^ 2 :=
+    ((s.card : ℝ) ^ (2 : ℕ)) ≤
+        (‖reader‖ * ‖∑ i ∈ s, channel i‖) ^ (2 : ℕ) :=
       (sq_le_sq₀ (by positivity) (mul_nonneg (norm_nonneg _) (norm_nonneg _))).2 hbound
-    _ = ‖reader‖ ^ 2 * ‖∑ i ∈ s, channel i‖ ^ 2 := by ring
+    _ = ‖reader‖ ^ (2 : ℕ) * ‖∑ i ∈ s, channel i‖ ^ (2 : ℕ) := by ring
 
 /-- Subset coordinates carrying the actual CCM multiplicative covariance anomaly. -/
 def ccmHigherSubsetChannels {α : Type*} [DecidableEq α] (V : Finset α) :
@@ -202,9 +202,9 @@ theorem ccmHigherSubsetCoefficientOneReadout_energy_product_ge_card_sq
     (V : Finset α) (reader : E) (channel : Finset α → E)
     (hread : ∀ T ∈ ccmHigherSubsetChannels V,
       inner ℂ reader (channel T) = 1) :
-    (((ccmHigherSubsetChannels V).card : ℝ) ^ 2) ≤
-      ‖reader‖ ^ 2 *
-        ‖∑ T ∈ ccmHigherSubsetChannels V, channel T‖ ^ 2 :=
+    (((ccmHigherSubsetChannels V).card : ℝ) ^ (2 : ℕ)) ≤
+      ‖reader‖ ^ (2 : ℕ) *
+        ‖∑ T ∈ ccmHigherSubsetChannels V, channel T‖ ^ (2 : ℕ) :=
   coefficientOneHilbertReadout_energy_product_ge_card_sq
     (ccmHigherSubsetChannels V) reader channel hread
 

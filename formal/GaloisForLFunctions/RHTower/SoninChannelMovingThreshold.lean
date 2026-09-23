@@ -28,9 +28,9 @@ theorem norm_evenLogShellChannel_apply_le_of_moving_powerTail
       |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C)
     (htail : ∀ t : ℝ, T ≤ t →
-      ‖u - evenIndicatorCutoff t u‖ ^ 2 ≤ C / t ^ (p + 1)) :
+      ‖u - evenIndicatorCutoff t u‖ ^ (2 : ℕ) ≤ C / t ^ (p + 1)) :
     ‖evenLogShellChannel a r n u‖ ≤
-      Real.sqrt (M ^ 2 * ‖u‖ ^ 2 +
+      Real.sqrt (M ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) +
         4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹) := by
   classical
   have hrp : (1 : ℝ) < r ^ p := one_lt_pow₀ hr hp
@@ -40,18 +40,18 @@ theorem norm_evenLogShellChannel_apply_le_of_moving_powerTail
   have hap : (0 : ℝ) < a ^ p := pow_pos ha p
   have hD0 : (0 : ℝ) ≤ 4 * C / a ^ p := by positivity
   have hterm : ∀ k ∈ Finset.range n,
-      |Real.log (logShellRadius a r k)| ^ 2 *
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
-        M ^ 2 * ‖evenIndicatorLayer (logShellRadius a r k)
-            (logShellRadius a r (k + 1)) u‖ ^ 2 +
+      |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
+        M ^ (2 : ℕ) * ‖evenIndicatorLayer (logShellRadius a r k)
+            (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) +
           (4 * C / a ^ p) * (r ^ p)⁻¹ ^ k := by
     intro k hk
     by_cases hnear : logShellRadius a r k ≤ T
     · have hlog := hM k hnear
-      have hsq : |Real.log (logShellRadius a r k)| ^ 2 ≤ M ^ 2 := by
+      have hsq : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
         nlinarith [abs_nonneg (Real.log (logShellRadius a r k))]
       have hmass0 : 0 ≤
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 :=
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) :=
         sq_nonneg _
       have hmain := mul_le_mul_of_nonneg_right hsq hmass0
       have hgeom0 : 0 ≤ (4 * C / a ^ p) * (r ^ p)⁻¹ ^ k := by positivity
@@ -62,19 +62,19 @@ theorem norm_evenLogShellChannel_apply_le_of_moving_powerTail
       have hshell := norm_evenIndicatorLayer_apply_le_high
         (logShellRadius_mono ha hr (Nat.le_succ k)) u
       have hsqmass :
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
-            ‖u - evenIndicatorCutoff (logShellRadius a r k) u‖ ^ 2 := by
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
+            ‖u - evenIndicatorCutoff (logShellRadius a r k) u‖ ^ (2 : ℕ) := by
         rw [pow_two, pow_two]
         exact mul_self_le_mul_self (norm_nonneg _) hshell
       have hmass := hsqmass.trans (htail _ hfar)
-      have hlogsq : |Real.log (logShellRadius a r k)| ^ 2 ≤
+      have hlogsq : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) ≤
           4 * logShellRadius a r k := sq_abs_log_le_four_mul hρ1
-      have hweighted : |Real.log (logShellRadius a r k)| ^ 2 *
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
+      have hweighted : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
             4 * C / a ^ p * (r ^ p)⁻¹ ^ k := by
-        have hmul : |Real.log (logShellRadius a r k)| ^ 2 *
+        have hmul : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
             ‖evenIndicatorLayer (logShellRadius a r k)
-                (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
+                (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
               4 * logShellRadius a r k *
                 (C / logShellRadius a r k ^ (p + 1)) :=
           mul_le_mul hlogsq hmass (sq_nonneg _) (by positivity)
@@ -87,30 +87,30 @@ theorem norm_evenLogShellChannel_apply_le_of_moving_powerTail
           field_simp
         rw [hstep, logShellRadius_pow a r p k, inv_pow]
         field_simp
-      have hfirst0 : 0 ≤ M ^ 2 *
+      have hfirst0 : 0 ≤ M ^ (2 : ℕ) *
           ‖evenIndicatorLayer (logShellRadius a r k)
-            (logShellRadius a r (k + 1)) u‖ ^ 2 := by positivity
+            (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) := by positivity
       linarith
   have hgeom : ∑ k ∈ Finset.range n, (r ^ p)⁻¹ ^ k ≤ (1 - (r ^ p)⁻¹)⁻¹ := by
     rw [Finset.range_eq_Ico]
     simpa using sum_Ico_geom_le hx0 hx1 0 n
   have hmass := sum_norm_sq_evenIndicatorLayer_le a r ha hr n u
-  have hsq : ‖evenLogShellChannel a r n u‖ ^ 2 ≤
-      M ^ 2 * ‖u‖ ^ 2 + 4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹ := by
+  have hsq : ‖evenLogShellChannel a r n u‖ ^ (2 : ℕ) ≤
+      M ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) + 4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹ := by
     rw [norm_sq_evenLogShellChannel_apply a r ha hr n u]
-    calc ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ 2 *
+    calc ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
             ‖evenIndicatorLayer (logShellRadius a r k)
-              (logShellRadius a r (k + 1)) u‖ ^ 2
+              (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ)
         ≤ ∑ k ∈ Finset.range n,
-            (M ^ 2 * ‖evenIndicatorLayer (logShellRadius a r k)
-                (logShellRadius a r (k + 1)) u‖ ^ 2 +
+            (M ^ (2 : ℕ) * ‖evenIndicatorLayer (logShellRadius a r k)
+                (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) +
               (4 * C / a ^ p) * (r ^ p)⁻¹ ^ k) := Finset.sum_le_sum hterm
-      _ = M ^ 2 * (∑ k ∈ Finset.range n,
+      _ = M ^ (2 : ℕ) * (∑ k ∈ Finset.range n,
             ‖evenIndicatorLayer (logShellRadius a r k)
-              (logShellRadius a r (k + 1)) u‖ ^ 2) +
+              (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ)) +
           (4 * C / a ^ p) * (∑ k ∈ Finset.range n, (r ^ p)⁻¹ ^ k) := by
             rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
-      _ ≤ M ^ 2 * ‖u‖ ^ 2 + 4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹ :=
+      _ ≤ M ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) + 4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹ :=
         add_le_add (mul_le_mul_of_nonneg_left hmass (sq_nonneg M))
           (mul_le_mul_of_nonneg_left hgeom hD0)
   have hsqrt := Real.sqrt_le_sqrt hsq
@@ -124,10 +124,10 @@ theorem norm_evenFourierLogShellChannel_apply_le_of_moving_powerTail
       |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C)
     (htail : ∀ t : ℝ, T ≤ t →
-      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ 2 ≤
+      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ (2 : ℕ) ≤
         C / t ^ (p + 1)) :
     ‖evenFourierLogShellChannel a r n w‖ ≤
-      Real.sqrt (M ^ 2 * ‖w‖ ^ 2 +
+      Real.sqrt (M ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) +
         4 * C / a ^ p * (1 - (r ^ p)⁻¹)⁻¹) := by
   rw [norm_evenFourierLogShellChannel_apply]
   have h := norm_evenLogShellChannel_apply_le_of_moving_powerTail ha hr hT hp n

@@ -8,7 +8,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- Positive fourth root `r`; the elliptic nome is `q=r^4`. -/
+/-- Positive fourth root `r`; the elliptic nome is `q=r^(4 : ℕ)`. -/
 structure TateQuarterNome where
   root : ℝ
   root_pos : 0 < root
@@ -16,7 +16,7 @@ structure TateQuarterNome where
 
 namespace TateQuarterNome
 
-/-- The actual elliptic nome `q=r^4`. -/
+/-- The actual elliptic nome `q=r^(4 : ℕ)`. -/
 def nome (r : TateQuarterNome) : EulerNome where
   val := (r.root : ℂ) ^ 4
   norm_lt_one := by
@@ -39,7 +39,7 @@ end TateQuarterNome
 def tateThetaZeroOrbit (r : TateQuarterNome) (x : ℂ) : Prop :=
   ∃ k : ℤ, x = (r.root : ℂ) ^ (4 * k + 1)
 
-/-- Pole orbit `[r^3]` on `ℂˣ/q^ℤ`, written in the fourth-root coordinate. -/
+/-- Pole orbit `[r^(3 : ℕ)]` on `ℂˣ/q^ℤ`, written in the fourth-root coordinate. -/
 def tateThetaPoleOrbit (r : TateQuarterNome) (x : ℂ) : Prop :=
   ∃ k : ℤ, x = (r.root : ℂ) ^ (4 * k + 3)
 
@@ -80,7 +80,7 @@ theorem tateThetaNumerator_eq_zero_iff (r : TateQuarterNome) (x : ℂ) :
   · rintro ⟨k, hk⟩
     exact Or.inl ⟨k, by convert hk using 1 <;> ring⟩
 
-/-- Denominator theta factor vanishes exactly on the orbit `[r^3]`. -/
+/-- Denominator theta factor vanishes exactly on the orbit `[r^(3 : ℕ)]`. -/
 theorem tateThetaDenominator_eq_zero_iff (r : TateQuarterNome) (x : ℂ) :
     multiplicativeTheta r.nome ((r.root : ℂ) ^ (1 : ℤ) * x) = 0 ↔
       tateThetaPoleOrbit r x := by
@@ -111,7 +111,7 @@ theorem tateThetaZeroOrbit_disjoint_poleOrbit (r : TateQuarterNome) (x : ℂ) :
   have hexp : 4 * k + 1 = 4 * l + 3 := hinj habs
   omega
 
-/-- Tate-theta meromorphic gauge from the card, in the coordinate `q=r^4`. -/
+/-- Tate-theta meromorphic gauge from the card, in the coordinate `q=r^(4 : ℕ)`. -/
 def tateThetaGauge (r : TateQuarterNome) (x : ℂ) : ℂ :=
   -(r.root : ℂ) *
     multiplicativeTheta r.nome ((r.root : ℂ) ^ (-1 : ℤ) * x) *

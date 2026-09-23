@@ -108,12 +108,12 @@ theorem norm_kgHighPassOp (hd : 0 < Module.finrank ℝ E) {c : ℝ} (hc0 : 0 ≤
 
 /-- **A perturbation living above frequency `R` enters the Duhamel term damped by `⟨R⟩⁻¹`.** -/
 theorem norm_kgSinFreqOp_comp_kgHighPassOp {c : ℝ} (hc0 : 0 ≤ c) {R : ℝ} (hR : 0 ≤ R) (τ : ℝ) :
-    ‖(kgSinFreqOp (E := E) τ).comp (kgHighPassOp hc0 R)‖ ≤ c / Real.sqrt (1 + R ^ 2) := by
-  have hSpos : 0 < Real.sqrt (1 + R ^ 2) := Real.sqrt_pos.mpr (by nlinarith)
-  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ 2) := by positivity
+    ‖(kgSinFreqOp (E := E) τ).comp (kgHighPassOp hc0 R)‖ ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) := by
+  have hSpos : 0 < Real.sqrt (1 + R ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by nlinarith)
+  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) := by positivity
   have hmeas : Measurable fun ξ : E => kgSinOverFreq τ ξ * kgHighPass c R ξ :=
     (measurable_kgSinOverFreq τ).mul (measurable_kgHighPass c R)
-  have hbound : ∀ ξ : E, ‖kgSinOverFreq τ ξ * kgHighPass c R ξ‖ ≤ c / Real.sqrt (1 + R ^ 2) := by
+  have hbound : ∀ ξ : E, ‖kgSinOverFreq τ ξ * kgHighPass c R ξ‖ ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) := by
     intro ξ
     rw [norm_mul, kgHighPass]
     by_cases hmem : R ≤ ‖ξ‖
@@ -123,16 +123,16 @@ theorem norm_kgSinFreqOp_comp_kgHighPassOp {c : ℝ} (hc0 : 0 ≤ c) {R : ℝ} (
         rw [kgSinOverFreq, Complex.norm_real, Real.norm_eq_abs, abs_div,
           abs_of_pos hpos, div_le_iff₀ hpos, inv_mul_cancel₀ hpos.ne']
         exact Real.abs_sin_le_one _
-      have hfr : Real.sqrt (1 + R ^ 2) ≤ kgFreq ξ := by
+      have hfr : Real.sqrt (1 + R ^ (2 : ℕ)) ≤ kgFreq ξ := by
         rw [kgFreq]
         refine Real.sqrt_le_sqrt ?_
         nlinarith [norm_nonneg ξ]
-      have hinv : (kgFreq ξ)⁻¹ ≤ (Real.sqrt (1 + R ^ 2))⁻¹ := by
+      have hinv : (kgFreq ξ)⁻¹ ≤ (Real.sqrt (1 + R ^ (2 : ℕ)))⁻¹ := by
         gcongr
       calc ‖kgSinOverFreq τ ξ‖ * c ≤ (kgFreq ξ)⁻¹ * c :=
             mul_le_mul_of_nonneg_right hsin hc0
-        _ ≤ (Real.sqrt (1 + R ^ 2))⁻¹ * c := mul_le_mul_of_nonneg_right hinv hc0
-        _ = c / Real.sqrt (1 + R ^ 2) := by
+        _ ≤ (Real.sqrt (1 + R ^ (2 : ℕ)))⁻¹ * c := mul_le_mul_of_nonneg_right hinv hc0
+        _ = c / Real.sqrt (1 + R ^ (2 : ℕ)) := by
             rw [inv_mul_eq_div, div_eq_div_iff hSpos.ne' hSpos.ne']
     · rw [if_neg hmem]
       simpa using hB0
@@ -145,19 +145,19 @@ data. -/
 theorem norm_kgFieldMild_kgHighPassOp_sub_free_le {c : ℝ} (hc0 : 0 ≤ c) {R : ℝ} (hR : 0 ≤ R)
     (f h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldMild (kgHighPassOp hc0 R) f h t - kgFieldFree f h t‖
-      ≤ c / Real.sqrt (1 + R ^ 2) * (|t| * ((‖f‖ + ‖h‖) * Real.exp (c * |t|))) := by
-  have hSpos : 0 < Real.sqrt (1 + R ^ 2) := Real.sqrt_pos.mpr (by nlinarith)
-  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ 2) := by positivity
+      ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) * (|t| * ((‖f‖ + ‖h‖) * Real.exp (c * |t|))) := by
+  have hSpos : 0 < Real.sqrt (1 + R ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by nlinarith)
+  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) := by positivity
   set W := kgHighPassOp (E := E) hc0 R with hW
   have hWb : ‖W‖ ≤ c := norm_kgHighPassOp_le hc0 R
   have hD0 : (0 : ℝ) ≤ ‖f‖ + ‖h‖ := by positivity
   have hbd : ∀ s ∈ Set.uIoc (0 : ℝ) t,
       ‖kgFieldKernel W t s (kgFieldMild W f h s)‖
-        ≤ c / Real.sqrt (1 + R ^ 2) * ((‖f‖ + ‖h‖) * Real.exp (c * |t|)) := by
+        ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) * ((‖f‖ + ‖h‖) * Real.exp (c * |t|)) := by
     intro s hs
     have habs : |s| ≤ |t| := abs_le_abs_of_mem_uIoc_zero hs
     have h1 : ‖kgFieldKernel W t s (kgFieldMild W f h s)‖
-        ≤ c / Real.sqrt (1 + R ^ 2) * ‖kgFieldMild W f h s‖ := by
+        ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) * ‖kgFieldMild W f h s‖ := by
       have hcomp : kgFieldKernel W t s (kgFieldMild W f h s)
           = ((kgSinFreqOp (E := E) (t - s)).comp W) (kgFieldMild W f h s) :=
         kgFieldKernel_apply W t s _
@@ -194,12 +194,12 @@ theorem exists_norm_eq_and_kgFieldMild_close (hd : 0 < Module.finrank ℝ E) {c 
   have hc0 : (0 : ℝ) ≤ c := hc.le
   set R : ℝ := c * T * Real.exp (c * T) / ε with hRdef
   have hR0 : 0 ≤ R := by rw [hRdef]; positivity
-  have hSpos : 0 < Real.sqrt (1 + R ^ 2) := Real.sqrt_pos.mpr (by nlinarith)
-  have hRlt : R < Real.sqrt (1 + R ^ 2) := by
-    have h1 : R ^ 2 < 1 + R ^ 2 := by linarith
-    have h2 : Real.sqrt (R ^ 2) < Real.sqrt (1 + R ^ 2) := Real.sqrt_lt_sqrt (by positivity) h1
+  have hSpos : 0 < Real.sqrt (1 + R ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by nlinarith)
+  have hRlt : R < Real.sqrt (1 + R ^ (2 : ℕ)) := by
+    have h1 : R ^ (2 : ℕ) < 1 + R ^ (2 : ℕ) := by linarith
+    have h2 : Real.sqrt (R ^ (2 : ℕ)) < Real.sqrt (1 + R ^ (2 : ℕ)) := Real.sqrt_lt_sqrt (by positivity) h1
     rwa [Real.sqrt_sq hR0] at h2
-  have hkey : c * T * Real.exp (c * T) / Real.sqrt (1 + R ^ 2) ≤ ε := by
+  have hkey : c * T * Real.exp (c * T) / Real.sqrt (1 + R ^ (2 : ℕ)) ≤ ε := by
     rw [div_le_iff₀ hSpos]
     have hmul : c * T * Real.exp (c * T) = ε * R := by
       rw [hRdef]
@@ -220,10 +220,10 @@ theorem exists_norm_eq_and_kgFieldMild_close (hd : 0 < Module.finrank ℝ E) {c 
       mul_le_mul_of_nonneg_left hexp hD0
     have h2 : (0 : ℝ) ≤ (‖f‖ + ‖h‖) * Real.exp (c * T) := by positivity
     exact mul_le_mul htT h1 (by positivity) (by linarith [abs_nonneg t])
-  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ 2) := by positivity
+  have hB0 : (0 : ℝ) ≤ c / Real.sqrt (1 + R ^ (2 : ℕ)) := by positivity
   refine (mul_le_mul_of_nonneg_left hstep hB0).trans ?_
-  have hfac : c / Real.sqrt (1 + R ^ 2) * (T * ((‖f‖ + ‖h‖) * Real.exp (c * T)))
-      = (c * T * Real.exp (c * T) / Real.sqrt (1 + R ^ 2)) * (‖f‖ + ‖h‖) := by
+  have hfac : c / Real.sqrt (1 + R ^ (2 : ℕ)) * (T * ((‖f‖ + ‖h‖) * Real.exp (c * T)))
+      = (c * T * Real.exp (c * T) / Real.sqrt (1 + R ^ (2 : ℕ))) * (‖f‖ + ‖h‖) := by
     field_simp
   rw [hfac]
   exact mul_le_mul_of_nonneg_right hkey hD0

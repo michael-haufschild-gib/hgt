@@ -77,11 +77,11 @@ theorem summable_strip_weighted_eventSource {d : ℕ} {σ κ Ca C : ℝ}
     (hτ : ∀ ν, τ ν ≤ Ca * (1 + latticeEll1 ν))
     (hm : ∀ ν, |m ν| ≤ C * Real.exp (-κ * latticeEll1 ν))
     (hκ : σ * Ca < κ) :
-    Summable (fun ν => Real.exp (2 * σ * τ ν) * m ν ^ 2) := by
+    Summable (fun ν => Real.exp (2 * σ * τ ν) * m ν ^ (2 : ℕ)) := by
   have hc : 0 < 2 * (κ - σ * Ca) := by linarith
   have hdom : Summable
       (fun ν : Fin d → ℤ =>
-        (C ^ 2 * Real.exp (2 * σ * Ca)) * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν)) :=
+        (C ^ (2 : ℕ) * Real.exp (2 * σ * Ca)) * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν)) :=
     (summable_exp_neg_latticeEll1 d hc).mul_left _
   refine hdom.of_nonneg_of_le (fun ν => by positivity) (fun ν => ?_)
   have hE : latticeEll1 ν ≥ 0 := latticeEll1_nonneg ν
@@ -89,17 +89,17 @@ theorem summable_strip_weighted_eventSource {d : ℕ} {σ κ Ca C : ℝ}
     refine Real.exp_le_exp.mpr ?_
     have := hτ ν
     nlinarith
-  have h2 : m ν ^ 2 ≤ (C * Real.exp (-κ * latticeEll1 ν)) ^ 2 := by
+  have h2 : m ν ^ (2 : ℕ) ≤ (C * Real.exp (-κ * latticeEll1 ν)) ^ (2 : ℕ) := by
     have habs : |m ν| ≤ C * Real.exp (-κ * latticeEll1 ν) := hm ν
     have hnn : 0 ≤ C * Real.exp (-κ * latticeEll1 ν) := by positivity
-    calc m ν ^ 2 = |m ν| ^ 2 := (sq_abs _).symm
-      _ ≤ (C * Real.exp (-κ * latticeEll1 ν)) ^ 2 := by
+    calc m ν ^ (2 : ℕ) = |m ν| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ (C * Real.exp (-κ * latticeEll1 ν)) ^ (2 : ℕ) := by
           exact pow_le_pow_left₀ (abs_nonneg _) habs 2
-  calc Real.exp (2 * σ * τ ν) * m ν ^ 2
-      ≤ Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν))) * (C * Real.exp (-κ * latticeEll1 ν)) ^ 2 := by
+  calc Real.exp (2 * σ * τ ν) * m ν ^ (2 : ℕ)
+      ≤ Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν))) * (C * Real.exp (-κ * latticeEll1 ν)) ^ (2 : ℕ) := by
         exact mul_le_mul h1 h2 (by positivity) (Real.exp_pos _).le
-    _ = (C ^ 2 * Real.exp (2 * σ * Ca)) * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν) := by
-        have hsq : Real.exp (-κ * latticeEll1 ν) ^ 2 = Real.exp (-(2 * κ) * latticeEll1 ν) := by
+    _ = (C ^ (2 : ℕ) * Real.exp (2 * σ * Ca)) * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν) := by
+        have hsq : Real.exp (-κ * latticeEll1 ν) ^ (2 : ℕ) = Real.exp (-(2 * κ) * latticeEll1 ν) := by
           rw [pow_two, ← Real.exp_add]; congr 1; ring
         have hL : Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν)))
               * Real.exp (-(2 * κ) * latticeEll1 ν)
@@ -107,12 +107,12 @@ theorem summable_strip_weighted_eventSource {d : ℕ} {σ κ Ca C : ℝ}
           rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
         rw [mul_pow, hsq]
         calc Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν)))
-              * (C ^ 2 * Real.exp (-(2 * κ) * latticeEll1 ν))
-            = C ^ 2 * (Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν)))
+              * (C ^ (2 : ℕ) * Real.exp (-(2 * κ) * latticeEll1 ν))
+            = C ^ (2 : ℕ) * (Real.exp (2 * σ * (Ca * (1 + latticeEll1 ν)))
               * Real.exp (-(2 * κ) * latticeEll1 ν)) := by ring
-          _ = C ^ 2 * (Real.exp (2 * σ * Ca)
+          _ = C ^ (2 : ℕ) * (Real.exp (2 * σ * Ca)
               * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν)) := by rw [hL]
-          _ = C ^ 2 * Real.exp (2 * σ * Ca)
+          _ = C ^ (2 : ℕ) * Real.exp (2 * σ * Ca)
               * Real.exp (-(2 * (κ - σ * Ca)) * latticeEll1 ν) := by ring
 
 end GaloisForLFunctions.HTGeometry

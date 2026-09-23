@@ -30,10 +30,10 @@ private theorem integral_ofReal_eq
 
 /-- Real positive-axis form of the second-factorial Borel kernel. -/
 def secondFactorialBorelRealKernel (r : ℝ) : ℝ :=
-  ∑' k : ℕ, r ^ k / ((k.factorial : ℝ) ^ 2)
+  ∑' k : ℕ, r ^ k / ((k.factorial : ℝ) ^ (2 : ℕ))
 
 theorem summable_secondFactorialBorelRealKernelTerm (r : ℝ) :
-    Summable (fun k : ℕ => r ^ k / ((k.factorial : ℝ) ^ 2)) := by
+    Summable (fun k : ℕ => r ^ k / ((k.factorial : ℝ) ^ (2 : ℕ))) := by
   apply Summable.of_norm
   have hmajor := (NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℝ) |r|).summable
   apply Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => ?_) hmajor
@@ -52,13 +52,13 @@ theorem secondFactorialBorelKernel_ofReal
       (secondFactorialBorelRealKernel r : ℂ) := by
   rw [secondFactorialBorelKernel, secondFactorialBorelRealKernel]
   calc
-    (∑' k : ℕ, (r : ℂ) ^ k / ((k.factorial : ℂ) ^ 2)) =
-        ∑' k : ℕ, ((r ^ k / ((k.factorial : ℝ) ^ 2) : ℝ) : ℂ) := by
+    (∑' k : ℕ, (r : ℂ) ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) =
+        ∑' k : ℕ, ((r ^ k / ((k.factorial : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ) := by
       apply tsum_congr
       intro k
       push_cast
       rfl
-    _ = ((∑' k : ℕ, r ^ k / ((k.factorial : ℝ) ^ 2) : ℝ) : ℂ) := by
+    _ = ((∑' k : ℕ, r ^ k / ((k.factorial : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ) := by
       rw [← Complex.ofRealCLM_apply]
       exact (ContinuousLinearMap.map_tsum Complex.ofRealCLM
         (summable_secondFactorialBorelRealKernelTerm r)).symm
@@ -70,7 +70,7 @@ theorem secondFactorialBorelRealKernel_mono
   refine Summable.tsum_le_tsum (fun k => ?_)
     (summable_secondFactorialBorelRealKernelTerm r)
     (summable_secondFactorialBorelRealKernelTerm R)
-  have hfac : 0 ≤ ((k.factorial : ℝ) ^ 2) := sq_nonneg _
+  have hfac : 0 ≤ ((k.factorial : ℝ) ^ (2 : ℕ)) := sq_nonneg _
   exact div_le_div_of_nonneg_right (pow_le_pow_left₀ hr hrR k) hfac
 
 /-- One source-ordered atom on the positive normal Borel ray. -/

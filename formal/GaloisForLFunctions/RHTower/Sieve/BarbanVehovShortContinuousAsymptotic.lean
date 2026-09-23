@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.Sieve.SelbergGcdLogSquareTwoOneAsymptotic
 The continuous lcm fibres are expanded without discarding their three harmonic-moment constants.
 At logarithmic separation `log X = (2 + τ) log M`, every term becomes one of the ordinary,
 gcd-logarithmic, or higher-gcd-logarithmic Selberg moments.  The two asymmetric
-`log(gcd)^2` moments are supplied by `SelbergGcdLogSquareTwoOneAsymptotic`.
+`log(gcd)^(2 : ℕ)` moments are supplied by `SelbergGcdLogSquareTwoOneAsymptotic`.
 -/
 
 open Finset Filter Topology
@@ -47,7 +47,7 @@ def barbanVehovShortBaseContinuousPolynomial (τ : ℝ) (M : ℕ) : ℝ :=
 /-- Exact ordinary/gcd-moment expansion of the continuous cross fibre. -/
 def barbanVehovShortCrossContinuousPolynomial (τ : ℝ) (M : ℕ) : ℝ :=
   let L := Real.log M
-  (-1 : ℝ) * (τ + τ ^ 2 / 2) * L ^ 2 * selbergOriginalLogMonomial 1 1 M -
+  (-1 : ℝ) * (τ + τ ^ (2 : ℕ) / 2) * L ^ (2 : ℕ) * selbergOriginalLogMonomial 1 1 M -
       L * selbergOriginalLogMonomial 2 1 M -
       L * selbergOriginalGcdLogMonomial 1 1 M -
       (1 + τ) * L * selbergOriginalLogMonomial 1 2 M +
@@ -64,10 +64,10 @@ def barbanVehovShortCrossContinuousPolynomial (τ : ℝ) (M : ℕ) : ℝ :=
 /-- Exact ordinary/gcd-moment expansion of the continuous differentiated-square fibre. -/
 def barbanVehovShortDerivativeContinuousPolynomial (τ : ℝ) (M : ℕ) : ℝ :=
   let L := Real.log M
-  (τ + τ ^ 2 + τ ^ 3 / 3) * L ^ 3 * selbergOriginalLogMonomial 1 1 M +
-    (1 + τ + τ ^ 2 / 2) * L ^ 2 *
+  (τ + τ ^ (2 : ℕ) + τ ^ (3 : ℕ) / 3) * L ^ (3 : ℕ) * selbergOriginalLogMonomial 1 1 M +
+    (1 + τ + τ ^ (2 : ℕ) / 2) * L ^ (2 : ℕ) *
       (selbergOriginalLogMonomial 2 1 M + selbergOriginalLogMonomial 1 2 M) +
-    L ^ 2 * selbergOriginalGcdLogMonomial 1 1 M +
+    L ^ (2 : ℕ) * selbergOriginalGcdLogMonomial 1 1 M +
     τ * L * selbergOriginalLogMonomial 2 2 M -
     L * (selbergOriginalGcdLogMonomial 2 1 M +
       selbergOriginalGcdLogMonomial 1 2 M +
@@ -81,7 +81,7 @@ def barbanVehovShortDerivativeContinuousPolynomial (τ : ℝ) (M : ℕ) : ℝ :=
       selbergOriginalGcdLogSquareOneTwoMonomial M) +
     (1 / 3 : ℝ) * selbergOriginalGcdLogPowerMonomial 3 M +
     harmonicLogMomentTotalConstant 0 *
-      (L ^ 2 * selbergOriginalLogMonomial 1 1 M -
+      (L ^ (2 : ℕ) * selbergOriginalLogMonomial 1 1 M -
         L * (selbergOriginalLogMonomial 2 1 M +
           selbergOriginalLogMonomial 1 2 M +
           2 * selbergOriginalGcdLogMonomial 1 1 M) +
@@ -187,14 +187,14 @@ theorem barbanVehovShortCrossContinuous_eq_polynomial
         (Real.log (((Nat.lcm q r / r : ℕ) : ℝ)) *
             (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) +
               harmonicLogMomentTotalConstant 0) +
-          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 2 / 2 +
+          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (2 : ℕ) / 2 +
             harmonicLogMomentTotalConstant 1))) =
       (barbanVehovWeight M q * barbanVehovWeight M r /
         (Nat.lcm q r : ℝ)) *
         (Real.log (((Nat.lcm q r / r : ℕ) : ℝ)) *
             (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) +
               harmonicLogMomentTotalConstant 0) +
-          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 2 / 2 +
+          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (2 : ℕ) / 2 +
             harmonicLogMomentTotalConstant 1)) by ring, hweight, hz, hb]
   ring
 
@@ -230,9 +230,9 @@ theorem barbanVehovShortDerivativeContinuous_eq_polynomial
                 harmonicLogMomentTotalConstant 0) +
           (Real.log (((Nat.lcm q r / q : ℕ) : ℝ)) +
               Real.log (((Nat.lcm q r / r : ℕ) : ℝ))) *
-            (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 2 / 2 +
+            (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (2 : ℕ) / 2 +
               harmonicLogMomentTotalConstant 1) +
-          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 3 / 3 +
+          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (3 : ℕ) / 3 +
             harmonicLogMomentTotalConstant 2))) =
       (barbanVehovWeight M q * barbanVehovWeight M r /
         (Nat.lcm q r : ℝ)) *
@@ -242,9 +242,9 @@ theorem barbanVehovShortDerivativeContinuous_eq_polynomial
                 harmonicLogMomentTotalConstant 0) +
           (Real.log (((Nat.lcm q r / q : ℕ) : ℝ)) +
               Real.log (((Nat.lcm q r / r : ℕ) : ℝ))) *
-            (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 2 / 2 +
+            (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (2 : ℕ) / 2 +
               harmonicLogMomentTotalConstant 1) +
-          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ 3 / 3 +
+          (Real.log ((X : ℝ) / (Nat.lcm q r : ℝ)) ^ (3 : ℕ) / 3 +
             harmonicLogMomentTotalConstant 2)) by ring, hweight, hz, ha, hb]
   ring
 

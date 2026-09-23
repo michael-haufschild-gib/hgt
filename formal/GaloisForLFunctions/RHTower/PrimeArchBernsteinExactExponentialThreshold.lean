@@ -154,7 +154,7 @@ theorem primeArchEndpointBernsteinPurity_le_of_atomAmplitudeBase
     (hmax : ∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B)
     (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
-      (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 := by
+      (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ) := by
   have htv := primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase B hmax n
   exact (bernsteinCoefficientPurity_le_l1_sq _ _).trans
     ((sq_le_sq₀
@@ -165,17 +165,17 @@ theorem primeArchEndpointBernsteinPurity_le_of_atomAmplitudeBase
 theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_atomAmplitudeBase_sq_lt
     {B r : ℝ} (hB : 0 ≤ B)
     (hmax : ∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B)
-    (hr : B ^ 2 < r) :
+    (hr : B ^ (2 : ℕ) < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) := by
   have hrpos : 0 < r := lt_of_le_of_lt (sq_nonneg B) hr
-  let q : ℝ := B ^ 2 / r
+  let q : ℝ := B ^ (2 : ℕ) / r
   have hq0 : 0 ≤ q := div_nonneg (sq_nonneg B) hrpos.le
   have hq1 : q < 1 := (div_lt_one hrpos).2 hr
   have hpow : Tendsto (fun n : ℕ => q ^ n) atTop (nhds 0) :=
     tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
   have hupper : Tendsto
-      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n)
+      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n)
       atTop (nhds 0) := by
     simpa using tendsto_const_nhds.mul hpow
   apply squeeze_zero
@@ -184,11 +184,11 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_atomAmplitudeBase_sq
     (fun n => ?_) hupper
   calc
     primeArchEndpointBernsteinPurity n / r ^ n ≤
-        (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 / r ^ n :=
+        (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ) / r ^ n :=
       div_le_div_of_nonneg_right
         (primeArchEndpointBernsteinPurity_le_of_atomAmplitudeBase B hB hmax n)
         (pow_nonneg hrpos.le n)
-    _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+    _ = xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n := by
       dsimp only [q]
       rw [div_pow]
       ring
@@ -196,22 +196,22 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_atomAmplitudeBase_sq
 /-- An eventual lower envelope at amplitude `B` forces divergence after normalization by every
 strictly smaller positive squared base. -/
 theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_atTop_of_lowerEnvelope
-    {B η r : ℝ} (hη : 0 < η) (hr : 0 < r) (hthreshold : r < B ^ 2)
+    {B η r : ℝ} (hη : 0 < η) (hr : 0 < r) (hthreshold : r < B ^ (2 : ℕ))
     (hlower : ∀ᶠ n : ℕ in atTop,
-      η * (B ^ 2) ^ n ≤
+      η * (B ^ (2 : ℕ)) ^ n ≤
         (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop atTop := by
-  have hρ : 1 < B ^ 2 / r := (one_lt_div hr).2 hthreshold
+  have hρ : 1 < B ^ (2 : ℕ) / r := (one_lt_div hr).2 hthreshold
   have hbase := tendsto_const_mul_pow_div_nat_add_one_atTop hρ hη
   have hbound : ∀ᶠ n : ℕ in atTop,
-      η * (B ^ 2 / r) ^ n / (n + 1 : ℝ) ≤
+      η * (B ^ (2 : ℕ) / r) ^ n / (n + 1 : ℝ) ≤
         primeArchEndpointBernsteinPurity n / r ^ n := by
     filter_upwards [hlower] with n hn
     have hden : 0 ≤ (n + 1 : ℝ) * r ^ n := by positivity
     calc
-      η * (B ^ 2 / r) ^ n / (n + 1 : ℝ) =
-          (η * (B ^ 2) ^ n) / ((n + 1 : ℝ) * r ^ n) := by
+      η * (B ^ (2 : ℕ) / r) ^ n / (n + 1 : ℝ) =
+          (η * (B ^ (2 : ℕ)) ^ n) / ((n + 1 : ℝ) * r ^ n) := by
         rw [div_pow]
         field_simp [hr.ne']
       _ ≤ ((n + 1 : ℝ) * primeArchEndpointBernsteinPurity n) /
@@ -225,7 +225,7 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_atTop_of_lt_one
     {r : ℝ} (hr : 0 < r) (hr1 : r < 1) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop atTop := by
-  let C : ℝ := normalizedPrimeArchMoment 0 ^ 2
+  let C : ℝ := normalizedPrimeArchMoment 0 ^ (2 : ℕ)
   have hC : 0 < C := by
     dsimp only [C]
     exact sq_pos_of_pos normalizedPrimeArchMoment_zero_pos
@@ -305,7 +305,7 @@ theorem primeArchEndpointBernsteinExactExponentialExponent_unique
 
 /-- **Exact false-RH exponential-threshold law.**  Failure of RH produces an attained maximal
 atom amplitude `B` strictly inside the source sector.  The purity has exact exponential threshold
-`B^2`: every larger normalization vanishes, while every smaller positive normalization diverges. -/
+`B^(2 : ℕ)`: every larger normalization vanishes, while every smaller positive normalization diverges. -/
 theorem exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ B η : ℝ,
@@ -314,14 +314,14 @@ theorem exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh
       (∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B) ∧
       (∀ n : ℕ,
         primeArchEndpointBernsteinPurity n ≤
-          (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2) ∧
+          (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ)) ∧
       (∀ᶠ n : ℕ in atTop,
-        η * (B ^ 2) ^ n ≤
+        η * (B ^ (2 : ℕ)) ^ n ≤
           (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n) ∧
-      (∀ r : ℝ, B ^ 2 < r →
+      (∀ r : ℝ, B ^ (2 : ℕ) < r →
         Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0)) ∧
-      (∀ r : ℝ, 0 < r → r < B ^ 2 →
+      (∀ r : ℝ, 0 < r → r < B ^ (2 : ℕ) →
         Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop atTop) := by
   obtain ⟨w, B, δ, hw, hB, hδ, hmax, hattained, hevent⟩ :=
@@ -331,12 +331,12 @@ theorem exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh
     rw [← hqmax]
     exact xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined qmax
   have hBpos : 0 < B := lt_trans zero_lt_one hB
-  let η : ℝ := δ ^ 2
+  let η : ℝ := δ ^ (2 : ℕ)
   have hη : 0 < η := by
     dsimp only [η]
     exact sq_pos_of_pos hδ
   have hlower : ∀ᶠ n : ℕ in atTop,
-      η * (B ^ 2) ^ n ≤
+      η * (B ^ (2 : ℕ)) ^ n ≤
         (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n := by
     filter_upwards [hevent] with n hn
     have hBpow : 0 < B ^ n := pow_pos hBpos n
@@ -356,19 +356,19 @@ theorem exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh
       rw [primeArchEndpointBernsteinTotalVariation, bernsteinCoefficientL1]
       exact Finset.sum_nonneg fun _ _ => abs_nonneg _
     have hsq :
-        (δ * B ^ n) ^ 2 ≤ primeArchEndpointBernsteinTotalVariation n ^ 2 := by
+        (δ * B ^ n) ^ (2 : ℕ) ≤ primeArchEndpointBernsteinTotalVariation n ^ (2 : ℕ) := by
       exact (sq_le_sq₀
         (mul_nonneg hδ.le (pow_nonneg hBpos.le n)) htvnonneg).2
         (hpencil.trans htransform)
     have hcard := bernsteinCoefficientL1_sq_le_card_mul_purity
       (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment) n
-    change primeArchEndpointBernsteinTotalVariation n ^ 2 ≤
+    change primeArchEndpointBernsteinTotalVariation n ^ (2 : ℕ) ≤
       (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n at hcard
     calc
-      η * (B ^ 2) ^ n = (δ * B ^ n) ^ 2 := by
+      η * (B ^ (2 : ℕ)) ^ n = (δ * B ^ n) ^ (2 : ℕ) := by
         dsimp only [η]
         ring
-      _ ≤ primeArchEndpointBernsteinTotalVariation n ^ 2 := hsq
+      _ ≤ primeArchEndpointBernsteinTotalVariation n ^ (2 : ℕ) := hsq
       _ ≤ (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n := hcard
   refine ⟨B, η, hB, hBsector, hη, ⟨qmax, hqmax⟩, hmax,
     fun n => primeArchEndpointBernsteinPurity_le_of_atomAmplitudeBase B hBpos.le hmax n,
@@ -386,7 +386,7 @@ def PrimeArchEndpointBernsteinAttainedExactThreshold (B : ℝ) : Prop :=
   1 < B ∧ B < xiSectorConfinedBernsteinAmplitudeBase ∧
     (∃ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
     (∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B) ∧
-    PrimeArchEndpointBernsteinExactExponentialExponent (B ^ 2)
+    PrimeArchEndpointBernsteinExactExponentialExponent (B ^ (2 : ℕ))
 
 /-- False RH has a source-attained exact threshold inside the narrow sector. -/
 theorem exists_primeArchEndpointBernsteinAttainedExactThreshold_of_not_rh
@@ -405,7 +405,7 @@ amplitude. -/
 theorem existsUnique_primeArchEndpointBernsteinExactExponentialExponent :
     ∃! E : ℝ,
       1 ≤ E ∧
-      E < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      E < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
       PrimeArchEndpointBernsteinExactExponentialExponent E ∧
       (RiemannHypothesis ↔ E = 1) := by
   by_cases hRH : RiemannHypothesis
@@ -420,14 +420,14 @@ theorem existsUnique_primeArchEndpointBernsteinExactExponentialExponent :
     have hBpos : 0 < B := lt_trans zero_lt_one hB
     have hSpos : 0 < xiSectorConfinedBernsteinAmplitudeBase :=
       lt_trans zero_lt_one one_lt_xiSectorConfinedBernsteinAmplitudeBase
-    have hBsq : 1 < B ^ 2 := by
+    have hBsq : 1 < B ^ (2 : ℕ) := by
       nlinarith [sq_pos_of_pos (sub_pos.mpr hB)]
     have hBsquareSector :
-        B ^ 2 < xiSectorConfinedBernsteinAmplitudeBase ^ 2 := by
+        B ^ (2 : ℕ) < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) := by
       nlinarith [mul_pos (sub_pos.mpr hBsector) (add_pos hSpos hBpos)]
-    have hE : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ 2) :=
+    have hE : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ (2 : ℕ)) :=
       ⟨sq_pos_of_pos hBpos, habove, hbelow⟩
-    refine ⟨B ^ 2, ⟨hBsq.le, hBsquareSector, hE, ?_⟩, ?_⟩
+    refine ⟨B ^ (2 : ℕ), ⟨hBsq.le, hBsquareSector, hE, ?_⟩, ?_⟩
     · exact ⟨fun h => (hRH h).elim, fun heq => ((ne_of_gt hBsq) heq).elim⟩
     · intro F hF
       exact primeArchEndpointBernsteinExactExponentialExponent_unique hF.2.2.1 hE

@@ -19,11 +19,11 @@ different way:
 * `F₀` contributes an element of `A` in degree `n`, and `q ^ (2n)` is a large power for `n ≥ 3`;
 * `F₁ · w` is *linear* in `w`, and pays through the strict drop of the index: `w` is the truncation
   below degree `n`, so every surviving coefficient of `w` sits at index at most `n − 1`, which is one
-  factor `q ^ 2` better than the normalisation at `n`;
-* `w² · Q(w)` is *quadratic* in `w`, and pays through the gain: two bounded factors gain `q ^ 2`.
+  factor `q ^ (2 : ℕ)` better than the normalisation at `n`;
+* `w² · Q(w)` is *quadratic* in `w`, and pays through the gain: two bounded factors gain `q ^ (2 : ℕ)`.
 
 The exponent `2` is exactly what makes the first two mechanisms overlap: the index drop is worth
-`q ^ 2` and the loss is `q ^ 1`.
+`q ^ (2 : ℕ)` and the loss is `q ^ (1 : ℕ)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -33,8 +33,8 @@ open Polynomial PowerSeries
 variable {K : Type*} [Field K]
 
 /-- The split of a polynomial into constant, linear, and quadratic-and-higher parts. -/
-theorem eval_split (F : Polynomial (PowerSeries K)) (w : PowerSeries K) :
-    F.eval w = F.coeff 0 + F.coeff 1 * w + w ^ 2 * (F.divX.divX).eval w := by
+theorem eval_split_eisensteinSimpleRoot (F : Polynomial (PowerSeries K)) (w : PowerSeries K) :
+    F.eval w = F.coeff 0 + F.coeff 1 * w + w ^ (2 : ℕ) * (F.divX.divX).eval w := by
   have h1 : F.eval w = (F.divX).eval w * w + F.coeff 0 := by
     conv_lhs => rw [← Polynomial.divX_mul_X_add F]
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_C]
@@ -97,8 +97,8 @@ theorem coeffBnd_of_isRoot_of_constantCoeff_ne_zero {A : Subring K} {q : K} (hq 
       intro i N
       rw [Polynomial.coeff_divX, Polynomial.coeff_divX]
       exact hF (i + 1 + 1) N
-    have hA2 : CoeffBnd A q 2 2 ((truncPS n y) ^ 2 * (F.divX.divX).eval (truncPS n y)) := by
-      have hsq : CoeffBnd A q 2 (1 + 1) ((truncPS n y) ^ 2) := by
+    have hA2 : CoeffBnd A q 2 2 ((truncPS n y) ^ (2 : ℕ) * (F.divX.divX).eval (truncPS n y)) := by
+      have hsq : CoeffBnd A q 2 (1 + 1) ((truncPS n y) ^ (2 : ℕ)) := by
         have := hwbnd.mul hwbnd
         rwa [← sq] at this
       have hev : CoeffBnd A q 2 0 ((F.divX.divX).eval (truncPS n y)) :=
@@ -107,7 +107,7 @@ theorem coeffBnd_of_isRoot_of_constantCoeff_ne_zero {A : Subring K} {q : K} (hq 
       rwa [Nat.add_zero] at this
     -- the three parts together
     have htotal : IsPowMul A q 2 (q ^ (2 * n) * PowerSeries.coeff n (F.eval (truncPS n y))) := by
-      rw [eval_split, map_add, map_add, mul_add, mul_add]
+      rw [eval_split_eisensteinSimpleRoot, map_add, map_add, mul_add, mul_add]
       refine IsPowMul.add (IsPowMul.add ?_ ?_) (hA2 n)
       · refine ⟨q ^ (2 * n - 2) * PowerSeries.coeff n (F.coeff 0),
           A.mul_mem (A.pow_mem hq _) (hF 0 n), ?_⟩
@@ -116,7 +116,7 @@ theorem coeffBnd_of_isRoot_of_constantCoeff_ne_zero {A : Subring K} {q : K} (hq 
         omega
       · obtain ⟨c, hc, hce⟩ := hA1
         refine ⟨q * c, A.mul_mem hq hc, ?_⟩
-        have hexp : q ^ (2 * n) = q ^ 2 * q ^ (2 * (n - 1)) := by
+        have hexp : q ^ (2 * n) = q ^ (2 : ℕ) * q ^ (2 * (n - 1)) := by
           rw [← pow_add]
           congr 1
           omega
@@ -140,7 +140,7 @@ theorem coeffBnd_of_isRoot_of_constantCoeff_ne_zero {A : Subring K} {q : K} (hq 
           = q ^ (2 * n) * (q * PowerSeries.coeff n y) := by ring
         _ = q ^ (2 * n) * -(a * PowerSeries.coeff n (F.eval (truncPS n y))) := by rw [hqy]
         _ = -(a * (q ^ (2 * n) * PowerSeries.coeff n (F.eval (truncPS n y)))) := by ring
-        _ = -(a * (q ^ 2 * c)) := by rw [hce]
+        _ = -(a * (q ^ (2 : ℕ) * c)) := by rw [hce]
         _ = q * (q * (-(a * c))) := by ring
     refine ⟨-(a * c), A.neg_mem (A.mul_mem ha hc), ?_⟩
     have := mul_left_cancel₀ hq0 hkey
@@ -182,11 +182,11 @@ theorem exists_coeffBnd_of_isRoot {A : Subring K}
           * (d₁ * PowerSeries.coeff 1 y) := by ring
     rw [hrw]
     exact A.mul_mem (A.mul_mem heu hd₂) hd₁y
-  · refine ⟨(PowerSeries.coeff 0 ((Polynomial.derivative F).eval y) * (e * d₁ * d₂)) ^ 3
+  · refine ⟨(PowerSeries.coeff 0 ((Polynomial.derivative F).eval y) * (e * d₁ * d₂)) ^ (3 : ℕ)
       * PowerSeries.coeff 2 y, ?_, by norm_num; ring⟩
-    have hrw : (PowerSeries.coeff 0 ((Polynomial.derivative F).eval y) * (e * d₁ * d₂)) ^ 3
+    have hrw : (PowerSeries.coeff 0 ((Polynomial.derivative F).eval y) * (e * d₁ * d₂)) ^ (3 : ℕ)
         * PowerSeries.coeff 2 y
-        = (e * PowerSeries.coeff 0 ((Polynomial.derivative F).eval y)) ^ 3 * d₁ ^ 3 * d₂ ^ 2
+        = (e * PowerSeries.coeff 0 ((Polynomial.derivative F).eval y)) ^ (3 : ℕ) * d₁ ^ (3 : ℕ) * d₂ ^ (2 : ℕ)
           * (d₂ * PowerSeries.coeff 2 y) := by ring
     rw [hrw]
     exact A.mul_mem (A.mul_mem (A.mul_mem (A.pow_mem heu 3) (A.pow_mem hd₁ 3))

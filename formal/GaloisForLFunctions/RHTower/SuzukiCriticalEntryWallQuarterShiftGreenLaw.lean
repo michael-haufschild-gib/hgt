@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.SuzukiCriticalApertureQuarterShiftCurrent
 
 The delayed-hinge near/far gap satisfies an exact causal transport equation:
 
-`(d/dell - I*z) gap'' = z^2 * exp (I*a*z) * endpointTrace`.
+`(d/dell - I*z) gap'' = z^(2 : ℕ) * exp (I*a*z) * endpointTrace`.
 
 For a prime power `n = p^(e+1)`, its entry wall is `a = log(n)/2`.  At that wall the oscillatory
 factor is exactly the conjugated critical Gamma-height phase `exp(I*t*log(n)/2)`.  Consequently
@@ -42,7 +42,7 @@ theorem suzukiDelayedHingeCompletedGapJet3_sub_transport
     (a ell : ℝ) (highMoment wholeMoment endpointTrace z : ℂ) :
     suzukiDelayedHingeCompletedGapJet3 a ell highMoment wholeMoment endpointTrace z -
         I * z * suzukiDelayedHingeCompletedGapJet2 ell highMoment wholeMoment z =
-      z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace := by
+      z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace := by
   simp only [suzukiDelayedHingeCompletedGapJet3,
     suzukiDelayedHingeCompletedGapJet2,
     suzukiDelayedHingeNearCompletedJet2,
@@ -68,7 +68,7 @@ theorem hasDerivAt_suzukiDelayedHingeCompletedGapJet2
   have hfar : HasDerivAt
       (fun u => suzukiDelayedHingeFarCompletedJet2 u wholeMoment z)
       (suzukiDelayedHingeFarCompletedJet3 ell wholeMoment z) ell := by
-    refine ((hosc.const_mul (z ^ 2)).mul_const wholeMoment).congr_deriv ?_
+    refine ((hosc.const_mul (z ^ (2 : ℕ))).mul_const wholeMoment).congr_deriv ?_
     simp only [suzukiDelayedHingeFarCompletedJet3]
     ring_nf
   exact hnear.sub hfar
@@ -85,7 +85,7 @@ theorem hasDerivAt_suzukiDelayedHingeCompletedGapJet2_eq_transport_add_endpoint
         (highMoment u) wholeMoment z)
       (I * z * suzukiDelayedHingeCompletedGapJet2 ell
           (highMoment ell) wholeMoment z +
-        z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace) ell := by
+        z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace) ell := by
   have hgap := hasDerivAt_suzukiDelayedHingeCompletedGapJet2
     a ell z endpointTrace wholeMoment highMoment hHigh
   convert hgap using 1
@@ -94,8 +94,8 @@ theorem hasDerivAt_suzukiDelayedHingeCompletedGapJet2_eq_transport_add_endpoint
   calc
     I * z * suzukiDelayedHingeCompletedGapJet2 ell
           (highMoment ell) wholeMoment z +
-        z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace =
-      z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace +
+        z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace =
+      z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace +
         I * z * suzukiDelayedHingeCompletedGapJet2 ell
           (highMoment ell) wholeMoment z := by ring_nf
     _ = suzukiDelayedHingeCompletedGapJet3 a ell
@@ -195,10 +195,10 @@ theorem suzukiCriticalApertureBoundaryAtom_eq_entryWallAmplitude_mul_kernel
 /-- Third-jet entry forcing carried by one critical prime-power atom. -/
 def suzukiCriticalEntryWallThirdJetAtom
     (h b t : ℝ) (p : Nat.Primes) (e : ℕ) : ℂ :=
-  (t : ℂ) ^ 2 * suzukiCriticalApertureBoundaryAtom h b t p e
+  (t : ℂ) ^ (2 : ℕ) * suzukiCriticalApertureBoundaryAtom h b t p e
 
 /-- **Entry-current identification.**  With the source-selected endpoint amplitude, the actual
-near/far third-jet defect at the prime-power wall is exactly the quarter-shift atom times `t^2`. -/
+near/far third-jet defect at the prime-power wall is exactly the quarter-shift atom times `t^(2 : ℕ)`. -/
 theorem suzukiDelayedHingeCompletedJet3_entryWall_eq_criticalThirdJetAtom
     (h b t : ℝ) (p : Nat.Primes) (e : ℕ) (wholeMoment : ℂ) :
     suzukiDelayedHingeNearCompletedJet3
@@ -229,17 +229,17 @@ theorem suzukiCriticalEntryWallThirdJetAtom_succ
 theorem summable_suzukiCriticalEntryWallThirdJetAtom
     {h b : ℝ} (hh : 0 < h) (hb : 0 < b) (t : ℝ) (p : Nat.Primes) :
     Summable (suzukiCriticalEntryWallThirdJetAtom h b t p) := by
-  exact (summable_suzukiCriticalApertureBoundaryAtom hh hb t p).mul_left ((t : ℂ) ^ 2)
+  exact (summable_suzukiCriticalApertureBoundaryAtom hh hb t p).mul_left ((t : ℂ) ^ (2 : ℕ))
 
 /-- **Completed causal entry current.**  The quarter-shift resolvent is precisely the sum of all
 calibrated prime-power third-jet forcings. -/
 theorem tsum_suzukiCriticalEntryWallThirdJetAtom_eq_resolvent
     {h b : ℝ} (hh : 0 < h) (hb : 0 < b) (t : ℝ) (p : Nat.Primes) :
     (∑' e : ℕ, suzukiCriticalEntryWallThirdJetAtom h b t p e) =
-      (t : ℂ) ^ 2 * suzukiCriticalApertureBoundaryAtom h b t p 0 *
+      (t : ℂ) ^ (2 : ℕ) * suzukiCriticalApertureBoundaryAtom h b t p 0 *
         (1 - suzukiCriticalApertureDepthRatio h b t p)⁻¹ := by
   rw [show (∑' e : ℕ, suzukiCriticalEntryWallThirdJetAtom h b t p e) =
-      (t : ℂ) ^ 2 * ∑' e : ℕ, suzukiCriticalApertureBoundaryAtom h b t p e by
+      (t : ℂ) ^ (2 : ℕ) * ∑' e : ℕ, suzukiCriticalApertureBoundaryAtom h b t p e by
         simp only [suzukiCriticalEntryWallThirdJetAtom]
         rw [tsum_mul_left]
         ]
@@ -252,7 +252,7 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_unique
     (h b t : ℝ) (p : Nat.Primes) (e : ℕ) (endpointTrace : ℂ)
     (ht : t ≠ 0)
     (hmatch :
-      (t : ℂ) ^ 2 *
+      (t : ℂ) ^ (2 : ℕ) *
           suzukiOscillatoryKernel (t : ℂ)
             (suzukiPrimePowerEntryWallAperture p e) * endpointTrace =
         suzukiCriticalEntryWallThirdJetAtom h b t p e) :
@@ -263,24 +263,24 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_unique
   have hkernel : suzukiOscillatoryKernel (t : ℂ)
       (suzukiPrimePowerEntryWallAperture p e) ≠ 0 := by
     exact Complex.exp_ne_zero _
-  have hcoeff : (t : ℂ) ^ 2 *
+  have hcoeff : (t : ℂ) ^ (2 : ℕ) *
       suzukiOscillatoryKernel (t : ℂ)
         (suzukiPrimePowerEntryWallAperture p e) ≠ 0 :=
     mul_ne_zero (pow_ne_zero 2 htC) hkernel
   apply mul_left_cancel₀ hcoeff
   calc
-    ((t : ℂ) ^ 2 *
+    ((t : ℂ) ^ (2 : ℕ) *
         suzukiOscillatoryKernel (t : ℂ)
           (suzukiPrimePowerEntryWallAperture p e)) * endpointTrace =
-      (t : ℂ) ^ 2 *
+      (t : ℂ) ^ (2 : ℕ) *
         (suzukiOscillatoryKernel (t : ℂ)
           (suzukiPrimePowerEntryWallAperture p e) * endpointTrace) := by ring_nf
-    _ = (t : ℂ) ^ 2 *
+    _ = (t : ℂ) ^ (2 : ℕ) *
         ((suzukiCriticalEntryWallEndpointAmplitude h b p e : ℂ) *
           suzukiOscillatoryKernel (t : ℂ)
             (suzukiPrimePowerEntryWallAperture p e)) := by
       simpa only [mul_assoc] using hmatch
-    _ = ((t : ℂ) ^ 2 *
+    _ = ((t : ℂ) ^ (2 : ℕ) *
         suzukiOscillatoryKernel (t : ℂ)
           (suzukiPrimePowerEntryWallAperture p e)) *
           (suzukiCriticalEntryWallEndpointAmplitude h b p e : ℂ) := by

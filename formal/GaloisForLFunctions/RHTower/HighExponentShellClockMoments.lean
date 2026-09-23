@@ -163,7 +163,7 @@ theorem tendsto_shellLogMoment_one {m : ℕ} (hm : 12 ≤ m) :
 
 /-- **Second critical clock moment of the shell.**  `(σ-1)²·E[(log n)²] → 2` as `σ ↓ 1`. -/
 theorem tendsto_shellLogMoment_two {m : ℕ} (hm : 12 ≤ m) :
-    Tendsto (fun σ : ℝ => (σ - 1) ^ 2 * shellLogMoment m 2 σ) (𝓝[>] (1 : ℝ)) (𝓝 2) := by
+    Tendsto (fun σ : ℝ => (σ - 1) ^ (2 : ℕ) * shellLogMoment m 2 σ) (𝓝[>] (1 : ℝ)) (𝓝 2) := by
   have hcomplex := (tendsto_shellSource_secondDeriv hm).comp tendsto_ofReal_nhdsGT_one_nhdsNE
   refine tendsto_ofReal_of_tendsto_ofReal (c := 2) ?_
   rw [show (((2 : ℝ)) : ℂ) = 2 by norm_num]
@@ -181,13 +181,13 @@ theorem tendsto_shellLogMoment_two {m : ℕ} (hm : 12 ≤ m) :
 
 /-- The variance of the rescaled shell clock. -/
 def shellClockVariance (m : ℕ) (σ : ℝ) : ℝ :=
-  (σ - 1) ^ 2 * shellLogMoment m 2 σ - ((σ - 1) * shellLogMoment m 1 σ) ^ 2
+  (σ - 1) ^ (2 : ℕ) * shellLogMoment m 2 σ - ((σ - 1) * shellLogMoment m 1 σ) ^ (2 : ℕ)
 
 /-- **The rescaled shell clock has asymptotic variance one** — the variance of `Exp(1)`. -/
 theorem tendsto_shellClockVariance {m : ℕ} (hm : 12 ≤ m) :
     Tendsto (shellClockVariance m) (𝓝[>] (1 : ℝ)) (𝓝 1) := by
   have h := (tendsto_shellLogMoment_two hm).sub ((tendsto_shellLogMoment_one hm).pow 2)
-  have hval : (2 : ℝ) - 1 ^ 2 = 1 := by norm_num
+  have hval : (2 : ℝ) - 1 ^ (2 : ℕ) = 1 := by norm_num
   rw [hval] at h
   exact h
 

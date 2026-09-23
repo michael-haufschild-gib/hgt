@@ -25,12 +25,12 @@ def correctionJet (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMe
   let Rinv := R.inv
   let U := angular s y S Sx Sy Sxx Sxy
   let V0 := D4BMVectorLinearEquation.angular0 s y Sy Sxy
-    ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)
+    ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)
   let V1 := D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-    Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)
-  let W := temporalRadial (2*s) r (B^2)
-  let T := (((((ScalarTwoJet.constant (aS^2*s^2/8)).mul W).mul
-    ((ScalarTwoJet.constant ((s+1)^2)).add ((ScalarTwoJet.constant (-4)).mul R2))).mul
+    Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)
+  let W := temporalRadial (2*s) r (B^(2 : ℕ))
+  let T := (((((ScalarTwoJet.constant (aS^(2 : ℕ)*s^(2 : ℕ)/8)).mul W).mul
+    ((ScalarTwoJet.constant ((s+1)^(2 : ℕ))).add ((ScalarTwoJet.constant (-4)).mul R2))).mul
     ((Rinv.mul Rinv).mul (Rinv.mul Rinv))).mul (U.mul U))
   let RR := ((ScalarTwoJet.constant 2).mul T).mul F.inv
   let V := ((((ScalarTwoJet.constant (aS*aV*s*(s+1)/2)).mul W).mul F).mul
@@ -47,25 +47,25 @@ private theorem background_metric (r y : ℂ) :
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-       else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
-      (if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-        2*y⁻¹^2, 2*y⁻¹^2]
-       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-       else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
+      (if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+        2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+       else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
 
 
 set_option maxRecDepth 8192 in
 set_option maxHeartbeats 1000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 2 3 =
-      B^2 * (-2*aS^2*scalarWeight s r*(S*(Sxy+Sx/y)+Sx*Sy) +
-        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2)/2) := by
+      B^(2 : ℕ) * (-2*aS^(2 : ℕ)*scalarWeight s r*(S*(Sxy+Sx/y)+Sx*Sy) +
+        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ))/2) := by
   generalize hK : correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
   simp only [CoordinateMetricTwoJet.Linearization.ricci,
     CoordinateMetricTwoJet.Linearization.curvature,
@@ -88,13 +88,13 @@ private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ
 set_option maxRecDepth 8192 in
 set_option maxHeartbeats 1000000 in
 private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 2 2 -
       CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 3 3 =
-      B^2 * (-2*aS^2*scalarWeight s r*
-        (S*(2*Sxx-(s+1)*(s+2)*S/y^2-2*Sy/y)+Sx^2-Sy^2) -
+      B^(2 : ℕ) * (-2*aS^(2 : ℕ)*scalarWeight s r*
+        (S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ)) -
         2*aS*aV*mixedWeight s r*(S*(Sxy+Sx/y)+Sx*Sy)) := by
   generalize hK : correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
   simp only [CoordinateMetricTwoJet.Linearization.ricci,
@@ -131,11 +131,11 @@ def linearAngularCoefficient (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : �
 /-- The constructed correction cancels exactly the squared-scalar Hessian and its
 rotation. It does not assert the other Einstein equations or physical endpoint admission. -/
 theorem linearAngularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     let H := hessianPair s y S Sx Sy Sxx Sxy
     let G := gradientPair Sx Sy
     linearAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
-      -(B^2 • ((2*aS^2*scalarWeight s r) • (H+G) +
+      -(B^(2 : ℕ) • ((2*aS^(2 : ℕ)*scalarWeight s r) • (H+G) +
         (aS*aV*mixedWeight s r) • rotatePair (H+G))) := by
   let J := D4BMBackground.jet r y
   let K := correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy
@@ -184,7 +184,7 @@ def correctedAngularCoefficient (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) 
 /-- The actual corrected source keeps both the correction's first variation and
 the original field's quadratic Hessian, with their forced normalization. -/
 theorem correctedAngularCoefficient_eq_sum (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     correctedAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
       linearAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy +
         angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy := by
@@ -200,9 +200,9 @@ theorem correctedAngularCoefficient_eq_sum (s r y B aS aV S Sx Sy Sxx Sxy Sxxx S
 square with a completely determined radial coefficient. No physical response or
 extinction hypothesis is used. -/
 theorem correctedAngularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     correctedAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
-      (B^2*(aV^2*vectorWeight s r-aS^2*scalarWeight s r)) • gradientPair Sx Sy := by
+      (B^(2 : ℕ)*(aV^(2 : ℕ)*vectorWeight s r-aS^(2 : ℕ)*scalarWeight s r)) • gradientPair Sx Sy := by
   rw [correctedAngularCoefficient_eq_sum s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf,
     linearAngularCoefficient_eq s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf,
     angularCoefficient_decomposition s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf]

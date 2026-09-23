@@ -96,7 +96,7 @@ theorem
           (LinearMap.det
             (finiteHardyCrossAngleComplementGramOperator A tau).toLinearMap).re ≤
         2 * upperHalfPlanePseudoHyperbolicDistance z alpha /
-          (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ 2) := by
+          (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ (2 : ℕ)) := by
   intro alpha halphaInside
   have halphaUpper : alpha ∈ upperResidual :=
     Multiset.mem_of_mem_filter halphaInside

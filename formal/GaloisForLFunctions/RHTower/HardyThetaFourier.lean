@@ -100,7 +100,7 @@ theorem fourier_hardySource (t : ℝ) :
     (μ := 1 / 4) (by norm_num) (t / (4 * π))
   have hsplit := fourier_xiThetaLogSource_eq (t / (4 * π))
   have hpolarval : 𝓕 (fun a : ℝ => ((Real.exp (-(1 / 4 * |a|)) : ℝ) : ℂ)) (t / (4 * π))
-      = 2 / ((t : ℂ) ^ 2 + 1 / 4) := by
+      = 2 / ((t : ℂ) ^ (2 : ℕ) + 1 / 4) := by
     rw [hpolar]
     have hcast : ((t / (4 * π) : ℝ) : ℂ) = (t : ℂ) / (4 * (π : ℂ)) := by
       push_cast
@@ -121,14 +121,14 @@ theorem fourier_hardySource (t : ℝ) :
     simp at this
     norm_num at this
   have hpole : 1 / (1 / 2 + (t : ℂ) * I) + 1 / (1 - (1 / 2 + (t : ℂ) * I))
-      = 1 / ((t : ℂ) ^ 2 + 1 / 4) := by
-    have hne : ((t : ℂ) ^ 2 + 1 / 4) ≠ 0 := by
+      = 1 / ((t : ℂ) ^ (2 : ℕ) + 1 / 4) := by
+    have hne : ((t : ℂ) ^ (2 : ℕ) + 1 / 4) ≠ 0 := by
       intro h
       have hre := congrArg Complex.re h
       simp [Complex.add_re, pow_two, Complex.mul_re] at hre
       nlinarith [sq_nonneg t]
     rw [div_add_div _ _ hden1 hden2, div_eq_div_iff (mul_ne_zero hden1 hden2) hne]
-    linear_combination ((t : ℂ) ^ 2) * Complex.I_sq
+    linear_combination ((t : ℂ) ^ (2 : ℕ)) * Complex.I_sq
   rw [hsplit, hpolarval] at hcorpus
   rw [hzeta, hcorpus]
   linear_combination hpole

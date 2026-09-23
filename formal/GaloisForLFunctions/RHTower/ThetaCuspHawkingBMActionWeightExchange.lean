@@ -114,8 +114,8 @@ theorem literal_vector_trace (p : ExteriorPoint) (omega u aV : ℂ) :
   have hr : (p.val 1 : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2 - 1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2 - 1 ≠ 0)
+  have hf : (p.val 1 : ℂ)^(2 : ℕ) - 1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ) - 1 ≠ 0)
   rw [metric_inverse _ _ hr hy hf]
   simp only [Matrix.trace, Matrix.diag_apply, Matrix.diagonal_mul, hd, mul_zero,
     Finset.sum_const_zero]

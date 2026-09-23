@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.OddEulerCombTemperedAdmissionWall
 The first common-reversal channel in the even-Li prime--Gamma criterion has critical hard-edge
 density
 
-`g(x) = (1/2) x^2 / (x^2 + 1/4)^2`.
+`g(x) = (1/2) x^(2 : ℕ) / (x^(2 : ℕ) + 1/4)^(2 : ℕ)`.
 
 Its exact no-`2π` Fourier transform is
 
@@ -35,14 +35,14 @@ noncomputable section
 
 /-- First critical common-reversal density in physical Cauchy coordinates. -/
 def liCriticalFirstCrossCauchyDensity (x : ℝ) : ℝ :=
-  (1 / 2 : ℝ) * x ^ 2 / (x ^ 2 + 1 / 4) ^ 2
+  (1 / 2 : ℝ) * x ^ (2 : ℕ) / (x ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ)
 
 /-- Polarized hard-edge Cauchy density for two polynomial channels. -/
 def routeUHardEdgeCrossCauchyDensity
     (a : ℝ) (P Q : Polynomial ℝ) (x : ℝ) : ℝ :=
-  a ^ 2 / (a ^ 2 + x ^ 2) *
-    P.eval ((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2)) *
-    Q.eval ((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2))
+  a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) *
+    P.eval ((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) *
+    Q.eval ((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))
 
 /-- Polarization on the diagonal recovers the existing square density. -/
 theorem routeUHardEdgeCrossCauchyDensity_self
@@ -62,13 +62,13 @@ theorem liCriticalFirstCrossCauchyDensity_eq_hardEdgeCross (x : ℝ) :
     Polynomial.eval_one, Polynomial.eval_mul,
     Polynomial.eval_sub, Polynomial.eval_X]
   norm_num
-  have h : x ^ 2 + (1 / 4 : ℝ) ≠ 0 := by positivity
+  have h : x ^ (2 : ℕ) + (1 / 4 : ℝ) ≠ 0 := by positivity
   field_simp [h]
   ring
 
 /-- Critical Cayley coordinate exposed by the hard-edge cancellation. -/
 def liCriticalCayleyCoordinate (x : ℝ) : ℝ :=
-  ((1 / 2 : ℝ) ^ 2 - x ^ 2) / ((1 / 2 : ℝ) ^ 2 + x ^ 2)
+  ((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) / ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))
 
 /-- Every LI common-reversal mode after critical hard-edge filtering. -/
 def liCriticalEvenCrossCauchyDensity (n : ℕ) (x : ℝ) : ℝ :=
@@ -78,10 +78,10 @@ def liCriticalEvenCrossCauchyDensity (n : ℕ) (x : ℝ) : ℝ :=
 /-- Positive survivor: every critical LI cross density is a Cayley square defect. -/
 theorem liCriticalEvenCrossCauchyDensity_eq_squareDefect (n : ℕ) (x : ℝ) :
     liCriticalEvenCrossCauchyDensity n x =
-      (1 - liCriticalCayleyCoordinate x ^ 2) / 2 *
+      (1 - liCriticalCayleyCoordinate x ^ (2 : ℕ)) / 2 *
         ((liEvenCrossLeftPolynomial n).eval
-          (liCriticalCayleyCoordinate x)) ^ 2 := by
-  have hden : (1 / 2 : ℝ) ^ 2 + x ^ 2 ≠ 0 := by positivity
+          (liCriticalCayleyCoordinate x)) ^ (2 : ℕ) := by
+  have hden : (1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by positivity
   simp only [liCriticalEvenCrossCauchyDensity,
     routeUHardEdgeCrossCauchyDensity, liEvenCrossRightPolynomial,
     Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_one,
@@ -91,17 +91,17 @@ theorem liCriticalEvenCrossCauchyDensity_eq_squareDefect (n : ℕ) (x : ℝ) :
 
 /-- The critical Cayley coordinate remains in the closed unit interval. -/
 theorem liCriticalCayleyCoordinate_square_le_one (x : ℝ) :
-    liCriticalCayleyCoordinate x ^ 2 ≤ 1 := by
-  have hden : (1 / 2 : ℝ) ^ 2 + x ^ 2 ≠ 0 := by positivity
+    liCriticalCayleyCoordinate x ^ (2 : ℕ) ≤ 1 := by
+  have hden : (1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by positivity
   rw [liCriticalCayleyCoordinate]
-  rw [show (((1 / 2 : ℝ) ^ 2 - x ^ 2) /
-      ((1 / 2 : ℝ) ^ 2 + x ^ 2)) ^ 2 =
-      1 - 4 * (1 / 2 : ℝ) ^ 2 * x ^ 2 /
-        ((1 / 2 : ℝ) ^ 2 + x ^ 2) ^ 2 by
+  rw [show (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) /
+      ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))) ^ (2 : ℕ) =
+      1 - 4 * (1 / 2 : ℝ) ^ (2 : ℕ) * x ^ (2 : ℕ) /
+        ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (2 : ℕ) by
     field_simp [hden]
     ring]
-  have hq : 0 ≤ 4 * (1 / 2 : ℝ) ^ 2 * x ^ 2 /
-      ((1 / 2 : ℝ) ^ 2 + x ^ 2) ^ 2 := by positivity
+  have hq : 0 ≤ 4 * (1 / 2 : ℝ) ^ (2 : ℕ) * x ^ (2 : ℕ) /
+      ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
   linarith
 
 /-- Closed, hypothesis-free nonnegativity of every critical LI cross density. -/
@@ -119,13 +119,13 @@ def liUnitFirstCrossCauchyDensity (x : ℝ) : ℂ :=
 /-- Rational closed form of the unit-scale density. -/
 theorem liUnitFirstCrossCauchyDensity_eq (x : ℝ) :
     liUnitFirstCrossCauchyDensity x =
-      ((2 * x ^ 2 / (1 + x ^ 2) ^ 2 : ℝ) : ℂ) := by
+      ((2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [liUnitFirstCrossCauchyDensity, routeUCauchyKernel,
     routeUCayleyCosineSquareKernel_eq]
   norm_num only [Nat.cast_one, one_mul]
   rw [Real.cos_sq_arctan]
   push_cast
-  have h : (1 : ℂ) + (x : ℂ) ^ 2 ≠ 0 := by
+  have h : (1 : ℂ) + (x : ℂ) ^ (2 : ℕ) ≠ 0 := by
     norm_cast
     nlinarith [sq_nonneg x]
   field_simp [h]
@@ -136,8 +136,8 @@ theorem liCriticalFirstCrossCauchyDensity_eq_scaled (x : ℝ) :
     (liCriticalFirstCrossCauchyDensity x : ℂ) =
       liUnitFirstCrossCauchyDensity (2 * x) := by
   rw [liUnitFirstCrossCauchyDensity_eq, liCriticalFirstCrossCauchyDensity]
-  have h₁ : x ^ 2 + (1 / 4 : ℝ) ≠ 0 := by positivity
-  have h₂ : 1 + (2 * x) ^ 2 ≠ 0 := by positivity
+  have h₁ : x ^ (2 : ℕ) + (1 / 4 : ℝ) ≠ 0 := by positivity
+  have h₂ : 1 + (2 * x) ^ (2 : ℕ) ≠ 0 := by positivity
   norm_cast
   field_simp [h₁, h₂]
   ring
@@ -189,7 +189,7 @@ theorem routeUFourierIntegral_liUnitFirstCrossCauchyDensity (ξ : ℝ) :
   rw [show (∫ x : ℝ, routeUCayleyCosineSquareKernel 1 x *
       Complex.exp (-I * ((ξ * x : ℝ) : ℂ))) =
       routeUFourierIntegral (fun x : ℝ =>
-        ((Real.cos (Real.arctan x) ^ 2 / (1 + x ^ 2) : ℝ) : ℂ)) ξ by
+        ((Real.cos (Real.arctan x) ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ)) ξ by
     rw [routeUFourierIntegral]
     apply integral_congr_ae
     filter_upwards with x
@@ -246,14 +246,14 @@ private theorem exp_neg_abs_log_nat_div_two_div_sqrt
   have hone : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hlog : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg hone
   have hsqrt : Real.sqrt (n : ℝ) = Real.exp (Real.log n / 2) := by
-    have hsq : Real.exp (Real.log (n : ℝ) / 2) ^ 2 = n := by
+    have hsq : Real.exp (Real.log (n : ℝ) / 2) ^ (2 : ℕ) = n := by
       rw [← Real.exp_nat_mul,
         show ((2 : ℕ) : ℝ) * (Real.log (n : ℝ) / 2) = Real.log n by
           push_cast
           ring]
       exact Real.exp_log hnR
     calc
-      Real.sqrt (n : ℝ) = Real.sqrt (Real.exp (Real.log n / 2) ^ 2) := by rw [hsq]
+      Real.sqrt (n : ℝ) = Real.sqrt (Real.exp (Real.log n / 2) ^ (2 : ℕ)) := by rw [hsq]
       _ = Real.exp (Real.log n / 2) := Real.sqrt_sq (Real.exp_pos _).le
   rw [abs_of_nonneg hlog, hsqrt, ← Real.exp_sub]
   rw [show -Real.log (n : ℝ) / 2 - Real.log n / 2 = -Real.log n by ring]

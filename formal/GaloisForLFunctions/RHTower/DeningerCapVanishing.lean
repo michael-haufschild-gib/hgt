@@ -49,7 +49,7 @@ theorem abs_le_abs_of_mem_uIcc {x y : ℝ} (hy : y ∈ Set.uIcc (0 : ℝ) x) : |
 /-- **A member of Meyer's space vanishes to second order at the origin.** -/
 theorem norm_le_seminorm_mul_sq {f : 𝓢(ℝ, ℂ)} (he : ∀ x : ℝ, f (-x) = f x) (h0 : f 0 = 0)
     (x : ℝ) :
-    ‖f x‖ ≤ SchwartzMap.seminorm ℂ 0 0 (derivSCLM (derivSCLM f)) * x ^ 2 := by
+    ‖f x‖ ≤ SchwartzMap.seminorm ℂ 0 0 (derivSCLM (derivSCLM f)) * x ^ (2 : ℕ) := by
   set M : ℝ := SchwartzMap.seminorm ℂ 0 0 (derivSCLM (derivSCLM f)) with hM
   have hMnn : 0 ≤ M := apply_nonneg _ _
   have hderiv2 : ∀ y : ℝ, ‖deriv (derivSCLM f : ℝ → ℂ) y‖ ≤ M := by
@@ -88,7 +88,7 @@ theorem norm_le_seminorm_mul_sq {f : 𝓢(ℝ, ℂ)} (he : ∀ x : ℝ, f (-x) =
       (mul_le_mul_of_nonneg_left (abs_le_abs_of_mem_uIcc hz) hMnn))
     (convex_uIcc 0 x) Set.left_mem_uIcc Set.right_mem_uIcc
   rw [h0, sub_zero, sub_zero, Real.norm_eq_abs] at hbound2
-  have hsq : M * |x| * |x| = M * x ^ 2 := by
+  have hsq : M * |x| * |x| = M * x ^ (2 : ℕ) := by
     rw [mul_assoc, abs_mul_abs_self]
     ring
   rw [hsq] at hbound2

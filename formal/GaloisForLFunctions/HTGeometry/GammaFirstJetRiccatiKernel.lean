@@ -33,16 +33,16 @@ variable {R : Type u} [CommRing R]
 
 /-- The reciprocal first-jet boundary equation `Z - W²`. -/
 def riccatiBoundaryFactor : Polynomial (Polynomial R) :=
-  Polynomial.X - Polynomial.C (Polynomial.X ^ 2)
+  Polynomial.X - Polynomial.C (Polynomial.X ^ (2 : ℕ))
 
 /-- Substitute the reciprocal boundary relation `Z = W²`. -/
 def riccatiBoundarySubstitution (P : Polynomial (Polynomial R)) : Polynomial R :=
-  P.eval (Polynomial.X ^ 2)
+  P.eval (Polynomial.X ^ (2 : ℕ))
 
 /-- The boundary substitution as a ring homomorphism. -/
 def riccatiBoundarySubstitutionHom :
     Polynomial (Polynomial R) →+* Polynomial R :=
-  Polynomial.evalRingHom (Polynomial.X ^ 2)
+  Polynomial.evalRingHom (Polynomial.X ^ (2 : ℕ))
 
 @[simp] theorem riccatiBoundarySubstitutionHom_apply
     (P : Polynomial (Polynomial R)) :
@@ -80,7 +80,7 @@ theorem exists_riccatiBoundary_remainder (P : Polynomial (Polynomial R)) :
 
 /-- Multiplicity along the reciprocal first-jet boundary. -/
 def riccatiBoundaryMultiplicity (P : Polynomial (Polynomial R)) : ℕ :=
-  P.rootMultiplicity (Polynomial.X ^ 2)
+  P.rootMultiplicity (Polynomial.X ^ (2 : ℕ))
 
 /-- Every nonzero relation has a unique maximal Riccati-factor layer in the sense that removing
 that power leaves a quotient with nonzero boundary substitution. -/
@@ -90,7 +90,7 @@ theorem exists_riccatiBoundaryMultiplicity_normalForm
       P = riccatiBoundaryFactor ^ riccatiBoundaryMultiplicity P * Q ∧
         riccatiBoundarySubstitution Q ≠ 0 := by
   rcases Polynomial.exists_eq_pow_rootMultiplicity_mul_and_not_dvd
-      P hP (Polynomial.X ^ 2) with ⟨Q, hPQ, hQ⟩
+      P hP (Polynomial.X ^ (2 : ℕ)) with ⟨Q, hPQ, hQ⟩
   refine ⟨Q, ?_, ?_⟩
   · simpa [riccatiBoundaryFactor, riccatiBoundaryMultiplicity] using hPQ
   · exact (riccatiBoundaryFactor_dvd_iff Q).not.mp hQ
@@ -102,9 +102,9 @@ theorem eval₂_riccatiBoundary_remainder
       riccatiBoundaryFactor * Q) :
     P.eval₂ (Polynomial.evalRingHom w) z =
       (riccatiBoundarySubstitution P).eval w +
-        (z - w ^ 2) * Q.eval₂ (Polynomial.evalRingHom w) z := by
+        (z - w ^ (2 : ℕ)) * Q.eval₂ (Polynomial.evalRingHom w) z := by
   have hfactor : riccatiBoundaryFactor.eval₂ (Polynomial.evalRingHom w) z =
-      z - w ^ 2 := by
+      z - w ^ (2 : ℕ) := by
     rw [riccatiBoundaryFactor, Polynomial.eval₂_sub, Polynomial.eval₂_X,
       Polynomial.eval₂_C]
     simp

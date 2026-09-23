@@ -27,24 +27,24 @@ theorem egbFixedChargeAMeanGibbsForceCoefficient_neg (φ : ℝ) : egbFixedCharge
 theorem egbFixedChargeAMeanGibbs_force_formula (w φ τ l : ℝ) :
     deriv (egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
       (exp w * cos φ) (exp w * sin φ) l) (egbFixedChargeAMeanRadius w φ τ) /
-      egbCoexistenceASymmetricRatio τ ^ 4 =
+      egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) =
       -((egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ +
-        egbFixedChargeAMiddleMeanConstant τ φ) / egbCoexistenceASymmetricRatio τ ^ 2) /
-        (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) := by
+        egbFixedChargeAMiddleMeanConstant τ φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) /
+        (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
   have h := (egbFixedChargeA_mean_gibbs_derivative w φ τ l 0).deriv
   simp only [exp_zero, mul_one, one_pow] at h
   rw [h, egbFixedChargeAMeanStationaryPolynomial_factorization]
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
-  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   field_simp <;> ring
 
 theorem egbFixedChargeAMeanGibbs_quartic_force_limit (w φ l : ℝ) :
     Tendsto (fun τ => deriv (egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
       (exp w * cos φ) (exp w * sin φ) l) (egbFixedChargeAMeanRadius w φ τ) /
-      egbCoexistenceASymmetricRatio τ ^ 4) atBot (𝓝 (egbFixedChargeAMeanGibbsForceCoefficient φ)) := by
+      egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) atBot (𝓝 (egbFixedChargeAMeanGibbsForceCoefficient φ)) := by
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
-  have h2 : Tendsto (fun τ => 1 + egbCoexistenceASymmetricRatio τ ^ 2) atBot (𝓝 (1 : ℝ)) := by
+  have h2 : Tendsto (fun τ => 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) atBot (𝓝 (1 : ℝ)) := by
     simpa using (tendsto_const_nhds (x := (1 : ℝ))).add (egbCoexistenceASymmetricRatio_critical_limit.pow 2)
   have hd := ((tendsto_const_nhds (x := (2 : ℝ))).mul (egbFixedChargeAMeanDenominator_critical_limit φ)).mul h2
   have h := (egbFixedChargeAMiddleMeanResidual_critical_limit φ).neg.div hd (by positivity)
@@ -63,7 +63,7 @@ theorem egbFixedChargeAMeanGibbs_force_eventually_neg (w φ l : ℝ) :
     (egbFixedChargeAMeanGibbsForceCoefficient_neg φ)
   filter_upwards [h] with τ hτ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd4 : 0 < egbCoexistenceASymmetricRatio τ ^ 4 := by positivity
+  have hd4 : 0 < egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) := by positivity
   have hcross := (div_lt_iff₀ hd4).1 hτ
   linarith
 

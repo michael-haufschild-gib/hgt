@@ -16,7 +16,7 @@ def routeUHardEdgeKelvinNormalizedCrossDensity
 /-- The normalized cross state is exactly anti-invariant under physical inversion. -/
 theorem routeUHardEdgeKelvinNormalizedCrossDensity_inversion
     {a x : ℝ} (ha : 0 < a) (hx : 0 < x) (P : Polynomial ℝ) :
-    routeUHardEdgeKelvinNormalizedCrossDensity a P (a ^ 2 / x) =
+    routeUHardEdgeKelvinNormalizedCrossDensity a P (a ^ (2 : ℕ) / x) =
       -routeUHardEdgeKelvinNormalizedCrossDensity a P x := by
   rw [routeUHardEdgeKelvinNormalizedCrossDensity,
     routeUHardEdgeKelvinNormalizedCrossDensity,
@@ -24,16 +24,16 @@ theorem routeUHardEdgeKelvinNormalizedCrossDensity_inversion
   simp only [zero_mul, neg_zero, Real.exp_zero]
   have ha0 : a ≠ 0 := ne_of_gt ha
   have hx0 : x ≠ 0 := ne_of_gt hx
-  have hinv : a / (a ^ 2 / x) = x / a := by
+  have hinv : a / (a ^ (2 : ℕ) / x) = x / a := by
     field_simp [ha0, hx0]
-  have hratio : (x / a) * (a ^ 2 / x ^ 2) = a / x := by
+  have hratio : (x / a) * (a ^ (2 : ℕ) / x ^ (2 : ℕ)) = a / x := by
     field_simp [ha0, hx0]
   rw [hinv]
   simp only [mul_one]
   rw [show (x / a) ^ (2 * routeUHardEdgeKelvinDegree a P) *
-      (-(a ^ 2 / x ^ 2) ^ (2 * routeUHardEdgeKelvinDegree a P) *
+      (-(a ^ (2 : ℕ) / x ^ (2 : ℕ)) ^ (2 * routeUHardEdgeKelvinDegree a P) *
         routeUHardEdgeKelvinCrossDensity a P 0 x) =
-      -(((x / a) * (a ^ 2 / x ^ 2)) ^
+      -(((x / a) * (a ^ (2 : ℕ) / x ^ (2 : ℕ))) ^
         (2 * routeUHardEdgeKelvinDegree a P)) *
           routeUHardEdgeKelvinCrossDensity a P 0 x by
     rw [mul_pow]
@@ -52,7 +52,7 @@ theorem routeUHardEdgeMellinOddCrossDensity_neg
     routeUHardEdgeMellinOddCrossDensity a P (-u) =
       -routeUHardEdgeMellinOddCrossDensity a P u := by
   have hx : 0 < a * Real.exp u := mul_pos ha (Real.exp_pos u)
-  have harg : a * Real.exp (-u) = a ^ 2 / (a * Real.exp u) := by
+  have harg : a * Real.exp (-u) = a ^ (2 : ℕ) / (a * Real.exp u) := by
     rw [Real.exp_neg]
     field_simp [ne_of_gt ha, Real.exp_ne_zero]
   rw [routeUHardEdgeMellinOddCrossDensity,
@@ -69,7 +69,7 @@ theorem routeUHardEdgeMellinOddCrossDensity_zero
 /-- Unique heat time at which one positive log-radius orbit has zero pure heat defect. -/
 def routeUHardEdgeKelvinCriticalHeatTime
     (a : ℝ) (d : ℕ) (u : ℝ) : ℝ :=
-  (((2 * d + 1 : ℕ) : ℝ) * u) / (a ^ 2 * Real.sinh (2 * u))
+  (((2 * d + 1 : ℕ) : ℝ) * u) / (a ^ (2 : ℕ) * Real.sinh (2 * u))
 
 theorem routeUHardEdgeKelvinCriticalHeatTime_pos
     {a u : ℝ} (ha : 0 < a) (hu : 0 < u) (d : ℕ) :
@@ -83,13 +83,13 @@ def routeUHardEdgeKelvinHeatDefect
     (a : ℝ) (d : ℕ) (t u : ℝ) : ℝ :=
   1 - Real.exp
     (2 * (((2 * d + 1 : ℕ) : ℝ) * u) -
-      2 * t * a ^ 2 * Real.sinh (2 * u))
+      2 * t * a ^ (2 : ℕ) * Real.sinh (2 * u))
 
 theorem routeUHardEdgeKelvinHeatDefect_pos_iff
     {a t u : ℝ} (ha : 0 < a) (hu : 0 < u) (d : ℕ) :
     0 < routeUHardEdgeKelvinHeatDefect a d t u ↔
       routeUHardEdgeKelvinCriticalHeatTime a d u < t := by
-  have hden : 0 < a ^ 2 * Real.sinh (2 * u) :=
+  have hden : 0 < a ^ (2 : ℕ) * Real.sinh (2 * u) :=
     mul_pos (sq_pos_of_pos ha) (Real.sinh_pos_iff.mpr (by positivity))
   rw [routeUHardEdgeKelvinHeatDefect, sub_pos, Real.exp_lt_one_iff,
     routeUHardEdgeKelvinCriticalHeatTime, div_lt_iff₀ hden]
@@ -99,7 +99,7 @@ theorem routeUHardEdgeKelvinHeatDefect_neg_iff
     {a t u : ℝ} (ha : 0 < a) (hu : 0 < u) (d : ℕ) :
     routeUHardEdgeKelvinHeatDefect a d t u < 0 ↔
       t < routeUHardEdgeKelvinCriticalHeatTime a d u := by
-  have hden : 0 < a ^ 2 * Real.sinh (2 * u) :=
+  have hden : 0 < a ^ (2 : ℕ) * Real.sinh (2 * u) :=
     mul_pos (sq_pos_of_pos ha) (Real.sinh_pos_iff.mpr (by positivity))
   rw [routeUHardEdgeKelvinHeatDefect, sub_neg, Real.one_lt_exp_iff,
     routeUHardEdgeKelvinCriticalHeatTime, lt_div_iff₀ hden]
@@ -109,7 +109,7 @@ theorem routeUHardEdgeKelvinHeatDefect_eq_zero_iff
     {a t u : ℝ} (ha : 0 < a) (hu : 0 < u) (d : ℕ) :
     routeUHardEdgeKelvinHeatDefect a d t u = 0 ↔
       t = routeUHardEdgeKelvinCriticalHeatTime a d u := by
-  have hden : 0 < a ^ 2 * Real.sinh (2 * u) :=
+  have hden : 0 < a ^ (2 : ℕ) * Real.sinh (2 * u) :=
     mul_pos (sq_pos_of_pos ha) (Real.sinh_pos_iff.mpr (by positivity))
   rw [routeUHardEdgeKelvinHeatDefect, sub_eq_zero, eq_comm,
     Real.exp_eq_one_iff, routeUHardEdgeKelvinCriticalHeatTime,
@@ -135,8 +135,8 @@ theorem exists_pos_heatTimes_with_opposite_routeUHardEdgeKelvinHeatDefect
 /-- Physical pure heat defect before log-radius substitution. -/
 def routeUHardEdgeKelvinPhysicalHeatDefect
     (a : ℝ) (d : ℕ) (t x : ℝ) : ℝ :=
-  1 - (a ^ 2 / x ^ 2) ^ (2 * d + 1) *
-    Real.exp (-(t * ((a ^ 2 / x) ^ 2 - x ^ 2)))
+  1 - (a ^ (2 : ℕ) / x ^ (2 : ℕ)) ^ (2 * d + 1) *
+    Real.exp (-(t * ((a ^ (2 : ℕ) / x) ^ (2 : ℕ) - x ^ (2 : ℕ))))
 
 /-- Inner log-radius converts the physical defect to its exact critical-phase normal form. -/
 theorem routeUHardEdgeKelvinPhysicalHeatDefect_logRadius
@@ -145,16 +145,16 @@ theorem routeUHardEdgeKelvinPhysicalHeatDefect_logRadius
       routeUHardEdgeKelvinHeatDefect a d t u := by
   have ha0 : a ≠ 0 := ne_of_gt ha
   have he0 : Real.exp u ≠ 0 := Real.exp_ne_zero u
-  have hexpSq : Real.exp (2 * u) = Real.exp u ^ 2 := by
+  have hexpSq : Real.exp (2 * u) = Real.exp u ^ (2 : ℕ) := by
     rw [show 2 * u = (2 : ℕ) * u by norm_num]
     exact Real.exp_nat_mul u 2
-  have hratio : a ^ 2 / (a * Real.exp (-u)) ^ 2 = Real.exp (2 * u) := by
+  have hratio : a ^ (2 : ℕ) / (a * Real.exp (-u)) ^ (2 : ℕ) = Real.exp (2 * u) := by
     rw [Real.exp_neg, hexpSq]
     field_simp [ha0, he0]
-  have hgap : (a ^ 2 / (a * Real.exp (-u))) ^ 2 -
-      (a * Real.exp (-u)) ^ 2 = 2 * a ^ 2 * Real.sinh (2 * u) := by
+  have hgap : (a ^ (2 : ℕ) / (a * Real.exp (-u))) ^ (2 : ℕ) -
+      (a * Real.exp (-u)) ^ (2 : ℕ) = 2 * a ^ (2 : ℕ) * Real.sinh (2 * u) := by
     rw [Real.exp_neg, Real.sinh_eq]
-    have hexpNegSq : Real.exp (-(2 * u)) = (Real.exp u)⁻¹ ^ 2 := by
+    have hexpNegSq : Real.exp (-(2 * u)) = (Real.exp u)⁻¹ ^ (2 : ℕ) := by
       rw [Real.exp_neg, hexpSq, inv_pow]
     rw [hexpSq, hexpNegSq]
     field_simp [ha0, he0]

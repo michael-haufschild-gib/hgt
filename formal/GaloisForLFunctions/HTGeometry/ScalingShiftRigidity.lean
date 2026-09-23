@@ -30,7 +30,7 @@ theorem natDegree_comp_C_mul_X {lam : ℂ} (hlam : lam ≠ 0) (p : ℂ[X]) :
     rw [natDegree_C_mul hlam, natDegree_X]
   rw [natDegree_comp, hdeg, mul_one]
 
-theorem comp_C_mul_X_ne_zero {lam : ℂ} (hlam : lam ≠ 0) {p : ℂ[X]} (hp : p ≠ 0) :
+theorem comp_C_mul_X_ne_zero_scalingShiftRigidity {lam : ℂ} (hlam : lam ≠ 0) {p : ℂ[X]} (hp : p ≠ 0) :
     p.comp (C lam * X) ≠ 0 := by
   intro h0
   have hcoeff : (p.comp (C lam * X)).coeff p.natDegree = p.coeff p.natDegree * lam ^ p.natDegree :=
@@ -55,7 +55,7 @@ theorem scale_const_quotient_eq_zero {p q : ℂ[X]} {c lam : ℂ} (hq : q ≠ 0)
     c = 0 := by
   classical
   set A : ℂ[X] := q.comp (C lam * X) with hA
-  have hAne : A ≠ 0 := comp_C_mul_X_ne_zero hlam hq
+  have hAne : A ≠ 0 := comp_C_mul_X_ne_zero_scalingShiftRigidity hlam hq
   have hcs : IsCoprime (p.comp (C lam * X)) A := by
     have hmap := hco.map (Polynomial.aeval (C lam * X) : ℂ[X] →ₐ[ℂ] ℂ[X]).toRingHom
     simpa only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, ← comp_eq_aeval, hA] using hmap

@@ -28,7 +28,7 @@ open GaloisForLFunctions.HTGeometry
 
 /-- The Taylor localisation constant `τ_N(a, ξ) = 8 a^{2N+1} ξ^{2N} / ((N!)² (2N+1))`. -/
 noncomputable def taylorLocalizationBound (a : ℝ) (N : ℕ) (ξ : ℝ) : ℝ :=
-  8 * a ^ (2 * N + 1) * ξ ^ (2 * N) / ((Nat.factorial N : ℝ) ^ 2 * (2 * N + 1))
+  8 * a ^ (2 * N + 1) * ξ ^ (2 * N) / ((Nat.factorial N : ℝ) ^ (2 : ℕ) * (2 * N + 1))
 
 /-- The degree-`< N` Taylor polynomial of the phase `e^{-ixξ}` in the variable `x`. -/
 noncomputable def expPhasePartialSum (N : ℕ) (ξ x : ℝ) : ℂ :=
@@ -65,19 +65,19 @@ theorem integral_Icc_pow_even {a : ℝ} (ha : 0 ≤ a) (N : ℕ) :
 theorem integral_norm_sq_exp_sub_expPhasePartialSum_le {a : ℝ} (ha : 0 ≤ a) (N : ℕ) {ξ : ℝ}
     (hN : 2 * (a * |ξ|) ≤ (N : ℝ) + 1) :
     (∫ x in Icc (-a) a,
-      ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ 2) ≤
+      ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ (2 : ℕ)) ≤
       taylorLocalizationBound a N ξ := by
   have hpt : ∀ x ∈ Icc (-a) a,
-      ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ 2 ≤
-        4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ 2 * x ^ (2 * N) := by
+      ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ (2 : ℕ) ≤
+        4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ (2 : ℕ) * x ^ (2 * N) := by
     intro x hx
     have hxa : |x| ≤ a := abs_le.2 ⟨hx.1, hx.2⟩
     have hN' : 2 * (|x| * |ξ|) ≤ (N : ℝ) + 1 := by
       have : |x| * |ξ| ≤ a * |ξ| := mul_le_mul_of_nonneg_right hxa (abs_nonneg _)
       linarith
     have h1 := norm_exp_sub_expPhasePartialSum_le hN'
-    have h2 : (2 * (|x| * |ξ|) ^ N / Nat.factorial N) ^ 2 =
-        4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ 2 * x ^ (2 * N) := by
+    have h2 : (2 * (|x| * |ξ|) ^ N / Nat.factorial N) ^ (2 : ℕ) =
+        4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ (2 : ℕ) * x ^ (2 * N) := by
       have hx2 : |x| ^ (2 * N) = x ^ (2 * N) := by rw [pow_mul, sq_abs, ← pow_mul]
       have hξ2 : |ξ| ^ (2 * N) = ξ ^ (2 * N) := by rw [pow_mul, sq_abs, ← pow_mul]
       rw [div_pow, mul_pow, mul_pow, mul_pow, ← pow_mul, ← pow_mul, mul_comm N 2, hx2, hξ2]
@@ -88,13 +88,13 @@ theorem integral_norm_sq_exp_sub_expPhasePartialSum_le {a : ℝ} (ha : 0 ≤ a) 
       Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x :=
     (Complex.continuous_exp.comp (by fun_prop)).sub (continuous_expPhasePartialSum N ξ)
   calc (∫ x in Icc (-a) a,
-        ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ 2)
-      ≤ ∫ x in Icc (-a) a, 4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ 2 * x ^ (2 * N) := by
+        ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ (2 : ℕ))
+      ≤ ∫ x in Icc (-a) a, 4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ (2 : ℕ) * x ^ (2 * N) := by
         refine setIntegral_mono_on ?_ ?_ measurableSet_Icc hpt
         · exact ((hcont.norm.pow 2)).integrableOn_Icc
         · exact (by fun_prop : Continuous fun x : ℝ =>
-            4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ 2 * x ^ (2 * N)).integrableOn_Icc
-    _ = 4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ 2 * (2 * a ^ (2 * N + 1) / (2 * N + 1)) := by
+            4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ (2 : ℕ) * x ^ (2 * N)).integrableOn_Icc
+    _ = 4 * ξ ^ (2 * N) / (Nat.factorial N : ℝ) ^ (2 : ℕ) * (2 * a ^ (2 * N + 1) / (2 * N + 1)) := by
         rw [integral_const_mul, integral_Icc_pow_even ha]
     _ = taylorLocalizationBound a N ξ := by
         unfold taylorLocalizationBound
@@ -105,10 +105,10 @@ theorem integral_norm_sq_exp_sub_expPhasePartialSum_le {a : ℝ} (ha : 0 ≤ a) 
 /-- A square-integrable function on a bounded interval is integrable against every polynomial. -/
 theorem integrableOn_mul_pow_of_sq {g : ℝ → ℝ} {a : ℝ}
     (hgm : AEStronglyMeasurable g (volume.restrict (Icc (-a) a)))
-    (hg2 : IntegrableOn (fun x => g x ^ 2) (Icc (-a) a)) (j : ℕ) :
+    (hg2 : IntegrableOn (fun x => g x ^ (2 : ℕ)) (Icc (-a) a)) (j : ℕ) :
     IntegrableOn (fun x => g x * x ^ j) (Icc (-a) a) := by
   have hone : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Icc (-a) a) := continuous_const.integrableOn_Icc
-  have hbound : IntegrableOn (fun x => (1 + g x ^ 2) / 2 * |a| ^ j) (Icc (-a) a) :=
+  have hbound : IntegrableOn (fun x => (1 + g x ^ (2 : ℕ)) / 2 * |a| ^ j) (Icc (-a) a) :=
     ((hone.add hg2).div_const 2).mul_const _
   refine hbound.mono' (hgm.mul (by fun_prop : Continuous fun x : ℝ => x ^ j).aestronglyMeasurable) ?_
   rw [ae_restrict_iff' measurableSet_Icc]
@@ -118,14 +118,14 @@ theorem integrableOn_mul_pow_of_sq {g : ℝ → ℝ} {a : ℝ}
     rw [abs_le]; constructor
     · have := hx.1; linarith [neg_abs_le a, le_abs_self a]
     · have := hx.2; linarith [le_abs_self a]
-  have h1 : |g x| ≤ (1 + g x ^ 2) / 2 := by nlinarith [sq_nonneg (|g x| - 1), sq_abs (g x)]
+  have h1 : |g x| ≤ (1 + g x ^ (2 : ℕ)) / 2 := by nlinarith [sq_nonneg (|g x| - 1), sq_abs (g x)]
   have h2 : |x| ^ j ≤ |a| ^ j := pow_le_pow_left₀ (abs_nonneg _) hxa j
   exact mul_le_mul h1 h2 (by positivity) (by positivity)
 
 /-- Orthogonality to polynomials kills the Taylor polynomial of the phase. -/
 theorem integral_mul_expPhasePartialSum_eq_zero {g : ℝ → ℝ} {a : ℝ}
     (hgm : AEStronglyMeasurable g (volume.restrict (Icc (-a) a)))
-    (hg2 : IntegrableOn (fun x => g x ^ 2) (Icc (-a) a)) (N : ℕ)
+    (hg2 : IntegrableOn (fun x => g x ^ (2 : ℕ)) (Icc (-a) a)) (N : ℕ)
     (horth : ∀ j < N, (∫ x in Icc (-a) a, g x * x ^ j) = 0) (ξ : ℝ) :
     (∫ x in Icc (-a) a, (g x : ℂ) * expPhasePartialSum N ξ x) = 0 := by
   unfold expPhasePartialSum
@@ -170,11 +170,11 @@ and `2 a |ξ| ≤ N + 1`,
 `|∫ g(x) e^{-ixξ} dx|² ≤ τ_N(a, ξ) ∫ g²`. -/
 theorem norm_fourierIntegral_sq_le_taylorLocalization {g : ℝ → ℝ} {a : ℝ} (ha : 0 ≤ a)
     (hgm : AEStronglyMeasurable g (volume.restrict (Icc (-a) a)))
-    (hg2 : IntegrableOn (fun x => g x ^ 2) (Icc (-a) a)) (N : ℕ)
+    (hg2 : IntegrableOn (fun x => g x ^ (2 : ℕ)) (Icc (-a) a)) (N : ℕ)
     (horth : ∀ j < N, (∫ x in Icc (-a) a, g x * x ^ j) = 0) {ξ : ℝ}
     (hN : 2 * (a * |ξ|) ≤ (N : ℝ) + 1) :
-    ‖∫ x in Icc (-a) a, (g x : ℂ) * Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I)‖ ^ 2 ≤
-      taylorLocalizationBound a N ξ * ∫ x in Icc (-a) a, g x ^ 2 := by
+    ‖∫ x in Icc (-a) a, (g x : ℂ) * Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) ≤
+      taylorLocalizationBound a N ξ * ∫ x in Icc (-a) a, g x ^ (2 : ℕ) := by
   have hg1 : IntegrableOn g (Icc (-a) a) := by
     simpa using integrableOn_mul_pow_of_sq hgm hg2 0
   have hecont : Continuous fun x : ℝ => Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) :=
@@ -215,13 +215,13 @@ theorem norm_fourierIntegral_sq_le_taylorLocalization {g : ℝ → ℝ} {a : ℝ
   simp only [Complex.conj_conj, Complex.norm_real, Real.norm_eq_abs, sq_abs, Complex.norm_conj] at hCS
   rw [hsplit]
   calc ‖∫ x in Icc (-a) a, (g x : ℂ) *
-        (Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x)‖ ^ 2
-      ≤ (∫ x in Icc (-a) a, g x ^ 2) * ∫ x in Icc (-a) a,
-          ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ 2 := hCS
-    _ ≤ (∫ x in Icc (-a) a, g x ^ 2) * taylorLocalizationBound a N ξ := by
+        (Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x)‖ ^ (2 : ℕ)
+      ≤ (∫ x in Icc (-a) a, g x ^ (2 : ℕ)) * ∫ x in Icc (-a) a,
+          ‖Complex.exp (-((x * ξ : ℝ) : ℂ) * Complex.I) - expPhasePartialSum N ξ x‖ ^ (2 : ℕ) := hCS
+    _ ≤ (∫ x in Icc (-a) a, g x ^ (2 : ℕ)) * taylorLocalizationBound a N ξ := by
         refine mul_le_mul_of_nonneg_left
           (integral_norm_sq_exp_sub_expPhasePartialSum_le ha N hN) ?_
         exact integral_nonneg fun x => sq_nonneg _
-    _ = taylorLocalizationBound a N ξ * ∫ x in Icc (-a) a, g x ^ 2 := mul_comm _ _
+    _ = taylorLocalizationBound a N ξ * ∫ x in Icc (-a) a, g x ^ (2 : ℕ) := mul_comm _ _
 
 end RHTower

@@ -35,8 +35,8 @@ theorem isBohrAlmostPeriodic_fejerKernel (β : ℝ) (N : ℕ) :
 
 /-- The real form of the Fejér kernel is continuous. -/
 theorem continuous_fejerKernelReal (β : ℝ) (N : ℕ) :
-    Continuous fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) := by
-  have hre : (fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1))
+    Continuous fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) := by
+  have hre : (fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1))
       = fun u => (fejerKernel β N u).re := by
     funext u
     rw [fejerKernel_eq_ofReal β N u, Complex.ofReal_re]
@@ -45,7 +45,7 @@ theorem continuous_fejerKernelReal (β : ℝ) (N : ℕ) :
 
 /-- The real form of the Fejér kernel is almost periodic. -/
 theorem isBohrAlmostPeriodic_fejerKernelReal (β : ℝ) (N : ℕ) :
-    HTGeometry.IsBohrAlmostPeriodic fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) := by
+    HTGeometry.IsBohrAlmostPeriodic fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) := by
   intro ε hε
   obtain ⟨L, hL, hdense⟩ := isBohrAlmostPeriodic_fejerKernel β N ε hε
   refine ⟨L, hL, fun a => ?_⟩
@@ -58,10 +58,10 @@ theorem isBohrAlmostPeriodic_fejerKernelReal (β : ℝ) (N : ℕ) :
 
 /-- The real form of the Fejér kernel has mean one. -/
 theorem bohrMean_fejerKernelReal {β : ℝ} (hβ : β ≠ 0) (N : ℕ) :
-    bohrMean (fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) = 1 := by
+    bohrMean (fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) = 1 := by
   have h := bohrMean_fejerKernel hβ N
-  have hcast : bohrMean (fun u => ((‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) : ℝ) : ℂ))
-      = ((bohrMean (fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) : ℝ) : ℂ) :=
+  have hcast : bohrMean (fun u => ((‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) : ℝ) : ℂ))
+      = ((bohrMean (fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) : ℝ) : ℂ) :=
     bohrMean_ofReal (continuous_fejerKernelReal β N) (isBohrAlmostPeriodic_fejerKernelReal β N)
   rw [funext fun u => fejerKernel_eq_ofReal β N u, hcast] at h
   exact_mod_cast h
@@ -80,7 +80,7 @@ theorem norm_bohrMean_fejer_sub_le {β : ℝ} (hβ : β ≠ 0)
       ≤ 2 * ε + ω + 2 * ‖f‖ * (2 / (((N : ℝ) + 1) * c)) := by
   classical
   set C : ℝ := 2 * ‖f‖ * (2 / (((N : ℝ) + 1) * c)) with hC
-  set Kr : ℝ → ℝ := fun u => ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) with hKrdef
+  set Kr : ℝ → ℝ := fun u => ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) with hKrdef
   have hKcont : Continuous (fejerKernel β N) := continuous_fejerKernel β N
   have hKap : HTGeometry.IsBohrAlmostPeriodic (fejerKernel β N) :=
     isBohrAlmostPeriodic_fejerKernel β N

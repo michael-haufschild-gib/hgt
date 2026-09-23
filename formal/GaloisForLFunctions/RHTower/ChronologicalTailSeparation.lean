@@ -184,7 +184,7 @@ theorem differentiable_tailMomentE {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1) 
 
 /-! ### The critical moment -/
 
-theorem cpow_ofReal_eq_exp {θ : ℝ} (hθ0 : 0 < θ) (z : ℂ) :
+theorem cpow_ofReal_eq_exp_chronologicalTailSeparation {θ : ℝ} (hθ0 : 0 < θ) (z : ℂ) :
     (θ : ℂ) ^ z = Complex.exp (((Real.log θ : ℝ) : ℂ) * z) := by
   rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hθ0)),
     Complex.ofReal_log hθ0.le]
@@ -195,7 +195,7 @@ def criticalMomentE (θ : ℝ) (ρ : ℂ) (w : ℂ) : ℂ :=
 
 theorem criticalMomentE_eq_div {θ : ℝ} (hθ0 : 0 < θ) (ρ w : ℂ) :
     criticalMomentE θ ρ w = (θ : ℂ) ^ (ρ - w) / (ρ - w) := by
-  rw [criticalMomentE, cpow_ofReal_eq_exp hθ0]
+  rw [criticalMomentE, cpow_ofReal_eq_exp_chronologicalTailSeparation hθ0]
 
 theorem norm_criticalMomentE {θ : ℝ} (hθ0 : 0 < θ) (ρ w : ℂ) :
     ‖criticalMomentE θ ρ w‖ = θ ^ (ρ - w).re / ‖ρ - w‖ := by

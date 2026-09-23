@@ -8,13 +8,13 @@ part.  A pointwise two-coordinate estimate strengthens that scalar fact to the t
 
 `Im(z) * ‖F(z)‖ ≤ Im(z * F(z))`.
 
-The completion target `E(z) = (z^2 + 1/4)F(z) - 1/4` cannot vanish off the imaginary axis because
-the cone would force `‖z^2 + 1/4‖ ≤ 1/4 - ‖z‖^2`, whose squared defect is exactly `Re(z)^2`.
+The completion target `E(z) = (z^(2 : ℕ) + 1/4)F(z) - 1/4` cannot vanish off the imaginary axis because
+the cone would force `‖z^(2 : ℕ) + 1/4‖ ≤ 1/4 - ‖z‖^(2 : ℕ)`, whose squared defect is exactly `Re(z)^(2 : ℕ)`.
 On the positive imaginary axis, positivity and unit mass of the density exclude the remaining
 case.  Hence `E` is zero-free on the whole open upper half-plane.
 
 The final declarations package the affine pencil joining `E` to its sharp reflection.  Its center
-is `2 z^2 XiC(z)`, so the unresolved RH mechanism is now zero transport from a zero-free endpoint,
+is `2 z^(2 : ℕ) XiC(z)`, so the unresolved RH mechanism is now zero transport from a zero-free endpoint,
 not a meromorphic projective chart.  All results here are unconditional.
 -/
 
@@ -96,8 +96,8 @@ lemma pointwise_cone
     mul_nonneg hz.le (norm_nonneg _)
   have hright : 0 ≤ d * ‖z‖ := mul_nonneg hd (norm_nonneg _)
   have hsquares :
-      (z.im * ‖1 - spectralTranslationPhase t z‖) ^ 2 ≤
-        (d * ‖z‖) ^ 2 := by
+      (z.im * ‖1 - spectralTranslationPhase t z‖) ^ (2 : ℕ) ≤
+        (d * ‖z‖) ^ (2 : ℕ) := by
     rw [mul_pow, mul_pow, Complex.sq_norm, Complex.sq_norm,
       Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im]
@@ -207,17 +207,17 @@ theorem thetaCuspTailSecondDensityPhaseValue_transversePickCone
 
 lemma completedQuadraticTarget_not_in_transversePickCone
     {z f : ℂ} (hz : 0 < z.im) (hx : z.re ≠ 0)
-    (htarget : (z ^ 2 + 1 / 4) * f = 1 / 4) :
+    (htarget : (z ^ (2 : ℕ) + 1 / 4) * f = 1 / 4) :
     ¬ ‖f‖ ≤ (z * f).im / z.im := by
   intro hcone
-  let q : ℂ := z ^ 2 + 1 / 4
+  let q : ℂ := z ^ (2 : ℕ) + 1 / 4
   let x : ℝ := z.re
   let y : ℝ := z.im
   let u : ℝ := f.re
   let v : ℝ := f.im
-  let a : ℝ := x ^ 2 - y ^ 2 + 1 / 4
+  let a : ℝ := x ^ (2 : ℕ) - y ^ (2 : ℕ) + 1 / 4
   let b : ℝ := 2 * x * y
-  let D : ℝ := a ^ 2 + b ^ 2
+  let D : ℝ := a ^ (2 : ℕ) + b ^ (2 : ℕ)
   have hqtarget : q * f = 1 / 4 := by simpa only [q] using htarget
   have hq0 : q ≠ 0 := by
     intro hq
@@ -237,7 +237,7 @@ lemma completedQuadraticTarget_not_in_transversePickCone
     rw [Complex.normSq_apply, hqre, hqim]
     dsimp only [D]
     ring
-  have hDnorm : D = ‖q‖ ^ 2 := by
+  have hDnorm : D = ‖q‖ ^ (2 : ℕ) := by
     rw [← hD, ← Complex.sq_norm]
   have hDpos : 0 < D := by rw [hDnorm]; positivity
   have hre := congrArg Complex.re hqtarget
@@ -255,10 +255,10 @@ lemma completedQuadraticTarget_not_in_transversePickCone
     dsimp only [D]
     linear_combination 4 * a * him' - 4 * b * hre'
   have hphase : 4 * D * (z * f).im =
-      y * (1 / 4 - (x ^ 2 + y ^ 2)) := by
+      y * (1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
     simp only [Complex.mul_im]
     change 4 * D * (x * v + y * u) =
-      y * (1 / 4 - (x ^ 2 + y ^ 2))
+      y * (1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ)))
     dsimp only [a, b] at hDu hDv
     linear_combination x * hDv + y * hDu
   have hnormtarget := congrArg norm hqtarget
@@ -271,22 +271,22 @@ lemma completedQuadraticTarget_not_in_transversePickCone
   have hcross : y * ‖f‖ ≤ (z * f).im := by
     have h := (le_div_iff₀ hz).mp hcone
     simpa only [y, mul_comm] using h
-  have hscaled : y * ‖q‖ ≤ y * (1 / 4 - (x ^ 2 + y ^ 2)) := by
+  have hscaled : y * ‖q‖ ≤ y * (1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
     have hm := mul_le_mul_of_nonneg_left hcross (show 0 ≤ 4 * D by positivity)
     rw [show 4 * D * (y * ‖f‖) = y * (4 * D * ‖f‖) by ring,
       hscaledNorm, hphase] at hm
     exact hm
-  have hqle : ‖q‖ ≤ 1 / 4 - (x ^ 2 + y ^ 2) := by
+  have hqle : ‖q‖ ≤ 1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     exact le_of_mul_le_mul_left (by simpa only [y] using hscaled) hz
-  have hrightnonneg : 0 ≤ 1 / 4 - (x ^ 2 + y ^ 2) :=
+  have hrightnonneg : 0 ≤ 1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ)) :=
     le_trans (norm_nonneg q) hqle
-  have hsquare : ‖q‖ ^ 2 ≤ (1 / 4 - (x ^ 2 + y ^ 2)) ^ 2 :=
+  have hsquare : ‖q‖ ^ (2 : ℕ) ≤ (1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg q) hrightnonneg).2 hqle
-  have hidentity : D - (1 / 4 - (x ^ 2 + y ^ 2)) ^ 2 = x ^ 2 := by
+  have hidentity : D - (1 / 4 - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) ^ (2 : ℕ) = x ^ (2 : ℕ) := by
     dsimp only [D, a, b]
     ring
   rw [← hDnorm] at hsquare
-  have hxSq : x ^ 2 ≤ 0 := by nlinarith only [hsquare, hidentity]
+  have hxSq : x ^ (2 : ℕ) ≤ 0 := by nlinarith only [hsquare, hidentity]
   have hxzero : x = 0 := sq_eq_zero_iff.mp (le_antisymm hxSq (sq_nonneg x))
   exact hx (by simpa only [x] using hxzero)
 
@@ -294,7 +294,7 @@ theorem thetaCuspTailSecondDensityDeBrangesE_ne_zero_of_re_ne_zero
     {z : ℂ} (hz : 0 < z.im) (hx : z.re ≠ 0) :
     thetaCuspTailSecondDensityDeBrangesE z ≠ 0 := by
   intro hE
-  have htarget : (z ^ 2 + 1 / 4) *
+  have htarget : (z ^ (2 : ℕ) + 1 / 4) *
       thetaCuspTailSecondDensityPhaseValue z = 1 / 4 := by
     unfold thetaCuspTailSecondDensityDeBrangesE at hE
     exact sub_eq_zero.mp hE
@@ -332,22 +332,22 @@ theorem thetaCuspTailSecondDensityDeBrangesE_I_mul_ne_zero
     thetaCuspTailSecondDensityDeBrangesE (I * (v : ℂ)) ≠ 0 := by
   rw [thetaCuspTailSecondDensityDeBrangesE_I_mul]
   intro hzero
-  have htarget : (1 / 4 - v ^ 2) *
+  have htarget : (1 / 4 - v ^ (2 : ℕ)) *
       thetaCuspTailSecondDensityRealLaplace v = 1 / 4 := by
-    have hreal : (1 / 4 - v ^ 2) *
+    have hreal : (1 / 4 - v ^ (2 : ℕ)) *
         thetaCuspTailSecondDensityRealLaplace v - 1 / 4 = 0 := by
       exact_mod_cast hzero
     exact sub_eq_zero.mp hreal
   by_cases hvhalf : v < 1 / 2
-  · have hqpos : 0 < 1 / 4 - v ^ 2 := by nlinarith
+  · have hqpos : 0 < 1 / 4 - v ^ (2 : ℕ) := by nlinarith
     have hLle := thetaCuspTailSecondDensityRealLaplace_le_one hv.le
-    have hprodle : (1 / 4 - v ^ 2) *
-        thetaCuspTailSecondDensityRealLaplace v ≤ 1 / 4 - v ^ 2 := by
+    have hprodle : (1 / 4 - v ^ (2 : ℕ)) *
+        thetaCuspTailSecondDensityRealLaplace v ≤ 1 / 4 - v ^ (2 : ℕ) := by
       simpa only [mul_one] using mul_le_mul_of_nonneg_left hLle hqpos.le
     nlinarith [sq_pos_of_pos hv]
-  · have hqnonpos : 1 / 4 - v ^ 2 ≤ 0 := by nlinarith
+  · have hqnonpos : 1 / 4 - v ^ (2 : ℕ) ≤ 0 := by nlinarith
     have hLnonneg := thetaCuspTailSecondDensityRealLaplace_nonneg v
-    have hprodnonpos : (1 / 4 - v ^ 2) *
+    have hprodnonpos : (1 / 4 - v ^ (2 : ℕ)) *
         thetaCuspTailSecondDensityRealLaplace v ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hqnonpos hLnonneg
     nlinarith
@@ -384,7 +384,7 @@ theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_neg_one (z : ℂ) :
 theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_zero
     {z : ℂ} (hz : |z.im| < 1) :
     thetaCuspTailSecondDensityDeBrangesAffinePencil 0 z =
-      2 * z ^ 2 * XiC z := by
+      2 * z ^ (2 : ℕ) * XiC z := by
   have hsum := thetaCuspTailSecondDensityDeBrangesE_add_sharp hz
   unfold thetaCuspTailSecondDensityDeBrangesAffinePencil
   norm_num

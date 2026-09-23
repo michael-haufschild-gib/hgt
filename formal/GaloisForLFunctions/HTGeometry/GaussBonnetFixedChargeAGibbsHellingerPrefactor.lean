@@ -8,7 +8,7 @@ noncomputable section
 def egbFixedChargeAGibbsSlowHellingerSquared (n m : ℕ) : ℝ :=
   finitePacketHellinger
     (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-    (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2
+    (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ)
 open Filter Topology
 
 /-- Relative squared Hellinger distance normalized by its sharp exponential decay factor. -/

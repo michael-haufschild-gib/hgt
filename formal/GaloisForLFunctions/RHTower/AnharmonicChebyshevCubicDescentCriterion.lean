@@ -9,7 +9,7 @@ The anharmonic quotient coordinate
 `q(s) = ((s - 2)(s + 1)(2s - 1)) / (2s(s - 1))`
 
 is fixed by the order-three Mobius action and changes sign under reflection
-`s ↦ 1 - s`. Consequently `q(s)^2` descends through the full six-point
+`s ↦ 1 - s`. Consequently `q(s)^(2 : ℕ)` descends through the full six-point
 anharmonic orbit. This file proves the exact Xi-zero endpoint: the square of
 the descended coordinate is strictly negative real at every Xi zero if and
 only if RH holds.
@@ -44,7 +44,7 @@ part greater than one. -/
 theorem chebyshevAnharmonicQ_ne_zero_of_xiZeroCopy (q : XiZeroCopy) :
     chebyshevAnharmonicQ (q.1 : ℂ) ≠ 0 := by
   let s : ℂ := q.1
-  have him : 1 < s.im ^ 2 := by
+  have him : 1 < s.im ^ (2 : ℕ) := by
     simpa only [s] using xiZeroCopy_one_lt_im_sq q
   have hsne (x : ℝ) : s ≠ (x : ℂ) := by
     intro h
@@ -76,13 +76,13 @@ theorem xiZeroCopy_chebyshevAnharmonicQ_re_eq_zero_of_re_eq_half
   let s : ℂ := q.1
   have hs0 : s ≠ 0 := by
     have him := xiZeroCopy_one_lt_im_sq q
-    change 1 < s.im ^ 2 at him
+    change 1 < s.im ^ (2 : ℕ) at him
     intro h
     rw [h] at him
     norm_num at him
   have hs1 : s ≠ 1 := by
     have him := xiZeroCopy_one_lt_im_sq q
-    change 1 < s.im ^ 2 at him
+    change 1 < s.im ^ (2 : ℕ) at him
     intro h
     rw [h] at him
     norm_num at him
@@ -120,7 +120,7 @@ theorem xiZeroCopy_chebyshevAnharmonicQ_re_eq_zero_of_re_eq_half
 negative real. Strictness uses nonvanishing at Xi zeros. -/
 theorem xiZeroCopy_chebyshevAnharmonicQ_sq_strictlyNegativeReal_of_re_eq_half
     (q : XiZeroCopy) (hline : (q.1 : ℂ).re = 1 / 2) :
-    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ 2) := by
+    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ (2 : ℕ)) := by
   let Q := chebyshevAnharmonicQ (q.1 : ℂ)
   have hQre : Q.re = 0 :=
     xiZeroCopy_chebyshevAnharmonicQ_re_eq_zero_of_re_eq_half q hline
@@ -129,7 +129,7 @@ theorem xiZeroCopy_chebyshevAnharmonicQ_sq_strictlyNegativeReal_of_re_eq_half
     intro him
     apply hQne
     apply Complex.ext <;> simp [hQre, him]
-  refine ⟨-(Q.im ^ 2), neg_lt_zero.mpr (sq_pos_of_ne_zero hQim), ?_⟩
+  refine ⟨-(Q.im ^ (2 : ℕ)), neg_lt_zero.mpr (sq_pos_of_ne_zero hQim), ?_⟩
   apply Complex.ext
   · simp only [pow_two, mul_re, ofReal_re]
     rw [hQre]
@@ -144,7 +144,7 @@ the Xi height gap rules both out. -/
 theorem xiZeroCopy_re_eq_half_of_chebyshevAnharmonicQ_sq_strictlyNegativeReal
     (q : XiZeroCopy)
     (hneg : IsStrictlyNegativeReal
-      (chebyshevAnharmonicQ (q.1 : ℂ) ^ 2)) :
+      (chebyshevAnharmonicQ (q.1 : ℂ) ^ (2 : ℕ))) :
     (q.1 : ℂ).re = 1 / 2 := by
   let s : ℂ := q.1
   let Q : ℂ := chebyshevAnharmonicQ s
@@ -158,7 +158,7 @@ theorem xiZeroCopy_re_eq_half_of_chebyshevAnharmonicQ_sq_strictlyNegativeReal
     have hQim : Q.im = 0 := (mul_eq_zero.mp hprod).resolve_left hre
     rw [hQim] at hreSq
     nlinarith [sq_nonneg Q.re]
-  have him : 1 < s.im ^ 2 := by
+  have him : 1 < s.im ^ (2 : ℕ) := by
     simpa only [s] using xiZeroCopy_one_lt_im_sq q
   have hsne (y : ℝ) : s ≠ (y : ℂ) := by
     intro h
@@ -225,7 +225,7 @@ theorem xiZeroCopy_re_eq_half_of_chebyshevAnharmonicQ_sq_strictlyNegativeReal
 /-- Pointwise cubic-coordinate criterion on an actual Xi zero. -/
 theorem xiZeroCopy_chebyshevAnharmonicQ_sq_strictlyNegativeReal_iff_re_eq_half
     (q : XiZeroCopy) :
-    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ 2) ↔
+    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ (2 : ℕ)) ↔
       (q.1 : ℂ).re = 1 / 2 := by
   exact
     ⟨xiZeroCopy_re_eq_half_of_chebyshevAnharmonicQ_sq_strictlyNegativeReal q,
@@ -234,10 +234,10 @@ theorem xiZeroCopy_chebyshevAnharmonicQ_sq_strictlyNegativeReal_iff_re_eq_half
 /-- Every copied Xi divisor maps to the strictly negative real quotient ray. -/
 def AllXiZeroChebyshevQSquaresStrictlyNegative : Prop :=
   ∀ q : XiZeroCopy,
-    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ 2)
+    IsStrictlyNegativeReal (chebyshevAnharmonicQ (q.1 : ℂ) ^ (2 : ℕ))
 
 /-- Exact cubic anharmonic descent endpoint: RH holds iff every Xi zero maps
-to the strictly negative real ray under `q(s)^2`. -/
+to the strictly negative real ray under `q(s)^(2 : ℕ)`. -/
 theorem allXiZeroChebyshevQSquaresStrictlyNegative_iff_riemannHypothesis :
     AllXiZeroChebyshevQSquaresStrictlyNegative ↔ RiemannHypothesis := by
   constructor

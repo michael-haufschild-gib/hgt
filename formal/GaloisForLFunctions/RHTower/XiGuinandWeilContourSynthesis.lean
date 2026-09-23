@@ -183,7 +183,7 @@ theorem rectangularTwoEdgeTransform_differentiable (L a : ℝ) :
 
 /-- The squared rectangular Xi test is entire. -/
 theorem xiRectangularTwoEdgeTransform_sq_analyticOnNhd (L a : ℝ) :
-    AnalyticOnNhd ℂ (fun z => xiRectangularTwoEdgeTransform L a z ^ 2) Set.univ := by
+    AnalyticOnNhd ℂ (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)) Set.univ := by
   have hlin : Differentiable ℂ (fun z : ℂ => I * z) :=
     (differentiable_const _).mul differentiable_id
   have hxi : Differentiable ℂ (xiRectangularTwoEdgeTransform L a) := by
@@ -201,10 +201,10 @@ theorem rectIntegral_finset_xiRectangularTwoEdgeKernel_eq
       z₁.re < (xiSpectralPoint q).re ∧ (xiSpectralPoint q).re < z₂.re ∧
       z₁.im < (xiSpectralPoint q).im ∧ (xiSpectralPoint q).im < z₂.im) :
     rectIntegral (fun z => ∑ q ∈ t,
-        xiRectangularTwoEdgeTransform L a z ^ 2 *
+        xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *
           xiCauchyRegularizedKernel z (xiSpectralPoint q)) z₁ z₂ =
       2 * Real.pi * I * ∑ q ∈ t,
-        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
   exact rectIntegral_finset_regularizedCauchySynthesis_entire t
     (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a) xiSpectralPoint
     (fun q _ => xiSpectralPoint_ne_zero q) hin

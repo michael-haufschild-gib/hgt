@@ -163,75 +163,75 @@ end WeightedPair
 
 /-- Doc 37 numerical boundary: `C₀ ≤ 1/10` gives the non-strict remainder bound. -/
 theorem two_hundred_mul_sq_le_two_of_le_one_tenth {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
-    (h : C₀ ≤ (1 : ℝ) / 10) : 200 * C₀ ^ 2 ≤ 2 := by
+    (h : C₀ ≤ (1 : ℝ) / 10) : 200 * C₀ ^ (2 : ℕ) ≤ 2 := by
   nlinarith [sq_nonneg (C₀ - (1 : ℝ) / 10)]
 
-/-- Strict positivity margin for Theorem B″: to get `200*C₀^2 < 2`, use `C₀ < 1/10`. -/
+/-- Strict positivity margin for Theorem B″: to get `200*C₀^(2 : ℕ) < 2`, use `C₀ < 1/10`. -/
 theorem two_hundred_mul_sq_lt_two_of_lt_one_tenth {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
-    (h : C₀ < (1 : ℝ) / 10) : 200 * C₀ ^ 2 < 2 := by
+    (h : C₀ < (1 : ℝ) / 10) : 200 * C₀ ^ (2 : ℕ) < 2 := by
   nlinarith [sq_nonneg (C₀ - (1 : ℝ) / 10)]
 
-/-- The same strict margin in the form consumed by a ledger lower bound `2 - 200*C₀^2`. -/
+/-- The same strict margin in the form consumed by a ledger lower bound `2 - 200*C₀^(2 : ℕ)`. -/
 theorem sub_two_hundred_mul_sq_pos_of_lt_one_tenth {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
-    (h : C₀ < (1 : ℝ) / 10) : 0 < 2 - 200 * C₀ ^ 2 := by
+    (h : C₀ < (1 : ℝ) / 10) : 0 < 2 - 200 * C₀ ^ (2 : ℕ) := by
   linarith [two_hundred_mul_sq_lt_two_of_lt_one_tenth hC₀ h]
 
 /-- The stronger numerical threshold used by doc 37 Theorem S′:
 `C₀ ≤ 1/15` leaves at least unit march margin. -/
 theorem sub_two_hundred_mul_sq_ge_one_of_le_one_fifteenth {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
-    (h : C₀ ≤ (1 : ℝ) / 15) : 1 ≤ 2 - 200 * C₀ ^ 2 := by
+    (h : C₀ ≤ (1 : ℝ) / 15) : 1 ≤ 2 - 200 * C₀ ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (C₀ - (1 : ℝ) / 15)]
 
 /-- Constant fold in doc 37 Lemma H's near range: `N` terms, each bounded by
-`43*C₀^2*δ`, and `N*δ ≤ 4` give total `≤ 172*C₀^2`. -/
+`43*C₀^(2 : ℕ)*δ`, and `N*δ ≤ 4` give total `≤ 172*C₀^(2 : ℕ)`. -/
 theorem lemmaH_nearRange_const_bound {C₀ δ : ℝ} {N : ℕ}
     (hN : (N : ℝ) * δ ≤ 4) :
-    (∑ _k ∈ range N, 43 * C₀ ^ 2 * δ) ≤ 172 * C₀ ^ 2 := by
+    (∑ _k ∈ range N, 43 * C₀ ^ (2 : ℕ) * δ) ≤ 172 * C₀ ^ (2 : ℕ) := by
   rw [sum_const, card_range, nsmul_eq_mul]
-  have hC : 0 ≤ 43 * C₀ ^ 2 := by positivity
+  have hC : 0 ≤ 43 * C₀ ^ (2 : ℕ) := by positivity
   calc
-    (N : ℝ) * (43 * C₀ ^ 2 * δ) = (43 * C₀ ^ 2) * ((N : ℝ) * δ) := by ring
-    _ ≤ (43 * C₀ ^ 2) * 4 := mul_le_mul_of_nonneg_left hN hC
-    _ = 172 * C₀ ^ 2 := by ring
+    (N : ℝ) * (43 * C₀ ^ (2 : ℕ) * δ) = (43 * C₀ ^ (2 : ℕ)) * ((N : ℝ) * δ) := by ring
+    _ ≤ (43 * C₀ ^ (2 : ℕ)) * 4 := mul_le_mul_of_nonneg_left hN hC
+    _ = 172 * C₀ ^ (2 : ℕ) := by ring
 
 /-- Finite-sum version of the near-range constant fold. -/
 theorem lemmaH_nearRange_sum_bound {ι : Type*} (s : Finset ι) {C₀ δ : ℝ}
     (hcard : (s.card : ℝ) * δ ≤ 4) (a : ι → ℝ)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ) :
-    (∑ x ∈ s, a x) ≤ 172 * C₀ ^ 2 := by
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ) :
+    (∑ x ∈ s, a x) ≤ 172 * C₀ ^ (2 : ℕ) := by
   calc
-    (∑ x ∈ s, a x) ≤ ∑ _x ∈ s, 43 * C₀ ^ 2 * δ := by
+    (∑ x ∈ s, a x) ≤ ∑ _x ∈ s, 43 * C₀ ^ (2 : ℕ) * δ := by
       exact sum_le_sum ha
-    _ = (s.card : ℝ) * (43 * C₀ ^ 2 * δ) := by
+    _ = (s.card : ℝ) * (43 * C₀ ^ (2 : ℕ) * δ) := by
       rw [sum_const, nsmul_eq_mul]
-    _ = (43 * C₀ ^ 2) * ((s.card : ℝ) * δ) := by ring
-    _ ≤ (43 * C₀ ^ 2) * 4 := by
+    _ = (43 * C₀ ^ (2 : ℕ)) * ((s.card : ℝ) * δ) := by ring
+    _ ≤ (43 * C₀ ^ (2 : ℕ)) * 4 := by
       exact mul_le_mul_of_nonneg_left hcard (by positivity)
-    _ = 172 * C₀ ^ 2 := by ring
+    _ = 172 * C₀ ^ (2 : ℕ) := by ring
 
-/-- Doc 37 Lemma H final fold: the near-range `172*C₀^2` bound plus a `28*C₀^2`
-tail bound gives the advertised `200*C₀^2`. -/
+/-- Doc 37 Lemma H final fold: the near-range `172*C₀^(2 : ℕ)` bound plus a `28*C₀^(2 : ℕ)`
+tail bound gives the advertised `200*C₀^(2 : ℕ)`. -/
 theorem lemmaH_total_bound_of_near_and_tail {C₀ near tail : ℝ}
-    (hnear : near ≤ 172 * C₀ ^ 2) (htail : tail ≤ 28 * C₀ ^ 2) :
-    near + tail ≤ 200 * C₀ ^ 2 := by
+    (hnear : near ≤ 172 * C₀ ^ (2 : ℕ)) (htail : tail ≤ 28 * C₀ ^ (2 : ℕ)) :
+    near + tail ≤ 200 * C₀ ^ (2 : ℕ) := by
   linarith
 
-/-- A direct form: if a near sum is bounded termwise by `43*C₀^2*δ` with
-cardinality scale `card*δ ≤ 4`, and the remaining tail is bounded by `28*C₀^2`,
-the whole reversal budget is bounded by `200*C₀^2`. -/
+/-- A direct form: if a near sum is bounded termwise by `43*C₀^(2 : ℕ)*δ` with
+cardinality scale `card*δ ≤ 4`, and the remaining tail is bounded by `28*C₀^(2 : ℕ)`,
+the whole reversal budget is bounded by `200*C₀^(2 : ℕ)`. -/
 theorem lemmaH_sum_add_tail_bound {ι : Type*} (s : Finset ι) {C₀ δ tail : ℝ}
     (hcard : (s.card : ℝ) * δ ≤ 4) (a : ι → ℝ)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ) (htail : tail ≤ 28 * C₀ ^ 2) :
-    (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ 2 := by
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ) (htail : tail ≤ 28 * C₀ ^ (2 : ℕ)) :
+    (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ (2 : ℕ) := by
   exact lemmaH_total_bound_of_near_and_tail (lemmaH_nearRange_sum_bound s hcard a ha) htail
 
 /-- Corrected doc 37 Theorem B″ arithmetic: two far-field extras, nonnegative paired
-near-range contribution, and a `200*C₀^2` reversal budget give the ledger lower bound. -/
+near-range contribution, and a `200*C₀^(2 : ℕ)` reversal budget give the ledger lower bound. -/
 theorem corrected_march_lower_bound {C₀ extra paired reversal ΔG : ℝ}
     (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
-    (hreversal : reversal ≤ 200 * C₀ ^ 2)
+    (hreversal : reversal ≤ 200 * C₀ ^ (2 : ℕ))
     (hΔ : ΔG = extra + paired - reversal) :
-    2 - 200 * C₀ ^ 2 ≤ ΔG := by
+    2 - 200 * C₀ ^ (2 : ℕ) ≤ ΔG := by
   rw [hΔ]
   linarith
 
@@ -239,10 +239,10 @@ theorem corrected_march_lower_bound {C₀ extra paired reversal ΔG : ℝ}
 theorem corrected_march_positive_of_C₀_lt_one_tenth {C₀ extra paired reversal ΔG : ℝ}
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ < (1 : ℝ) / 10)
     (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
-    (hreversal : reversal ≤ 200 * C₀ ^ 2)
+    (hreversal : reversal ≤ 200 * C₀ ^ (2 : ℕ))
     (hΔ : ΔG = extra + paired - reversal) :
     0 < ΔG := by
-  have hlow : 2 - 200 * C₀ ^ 2 ≤ ΔG :=
+  have hlow : 2 - 200 * C₀ ^ (2 : ℕ) ≤ ΔG :=
     corrected_march_lower_bound hextra hpaired hreversal hΔ
   exact lt_of_lt_of_le (sub_two_hundred_mul_sq_pos_of_lt_one_tenth hC₀ hCsmall) hlow
 
@@ -250,15 +250,15 @@ theorem corrected_march_positive_of_C₀_lt_one_tenth {C₀ extra paired reversa
 theorem corrected_march_ge_one_of_C₀_le_one_fifteenth {C₀ extra paired reversal ΔG : ℝ}
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
-    (hreversal : reversal ≤ 200 * C₀ ^ 2)
+    (hreversal : reversal ≤ 200 * C₀ ^ (2 : ℕ))
     (hΔ : ΔG = extra + paired - reversal) :
     1 ≤ ΔG := by
-  have hlow : 2 - 200 * C₀ ^ 2 ≤ ΔG :=
+  have hlow : 2 - 200 * C₀ ^ (2 : ℕ) ≤ ΔG :=
     corrected_march_lower_bound hextra hpaired hreversal hΔ
   exact le_trans (sub_two_hundred_mul_sq_ge_one_of_le_one_fifteenth hC₀ hCsmall) hlow
 
 /-- Per-carrier protocol shell: a direct finite evaluation margin `γᵢ` implies the
-corrected march step, independent of the crude `200*C₀^2` theorem range. -/
+corrected march step, independent of the crude `200*C₀^(2 : ℕ)` theorem range. -/
 theorem corrected_march_positive_of_direct_eval {extra paired reversal ΔG γᵢ : ℝ}
     (hγᵢ : 0 < γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
     (hΔ : ΔG = extra + paired - reversal) :
@@ -281,11 +281,11 @@ theorem corrected_march_positive_of_sum_tail {ι : Type*} (s : Finset ι)
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ < (1 : ℝ) / 10)
     (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔ : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail)) :
     0 < ΔG := by
-  have hrev : (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ 2 :=
+  have hrev : (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ (2 : ℕ) :=
     lemmaH_sum_add_tail_bound s hcard a ha htail
   exact corrected_march_positive_of_C₀_lt_one_tenth hC₀ hCsmall hextra hpaired hrev hΔ
 
@@ -295,11 +295,11 @@ theorem corrected_march_ge_one_of_sum_tail {ι : Type*} (s : Finset ι)
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔ : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail)) :
     1 ≤ ΔG := by
-  have hrev : (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ 2 :=
+  have hrev : (∑ x ∈ s, a x) + tail ≤ 200 * C₀ ^ (2 : ℕ) :=
     lemmaH_sum_add_tail_bound s hcard a ha htail
   exact corrected_march_ge_one_of_C₀_le_one_fifteenth hC₀ hCsmall hextra hpaired hrev hΔ
 
@@ -307,10 +307,10 @@ theorem corrected_march_ge_one_of_sum_tail {ι : Type*} (s : Finset ι)
 `ΔG/(2W̄) ≥ δ²/80`. -/
 theorem corrected_march_increment_lower_bound {ΔG W inc δ : ℝ}
     (hδ : 0 < δ) (hWpos : 0 < W) (hΔG : 1 ≤ ΔG)
-    (hW : W ≤ 40 / δ ^ 2) (hinc : inc = ΔG / (2 * W)) :
-    δ ^ 2 / 80 ≤ inc := by
-  have hδsq : 0 < δ ^ 2 := sq_pos_of_pos hδ
-  have hWbound : W * δ ^ 2 ≤ 40 := by
+    (hW : W ≤ 40 / δ ^ (2 : ℕ)) (hinc : inc = ΔG / (2 * W)) :
+    δ ^ (2 : ℕ) / 80 ≤ inc := by
+  have hδsq : 0 < δ ^ (2 : ℕ) := sq_pos_of_pos hδ
+  have hWbound : W * δ ^ (2 : ℕ) ≤ 40 := by
     rwa [le_div_iff₀ hδsq] at hW
   rw [hinc]
   rw [le_div_iff₀ (by positivity : 0 < 2 * W)]
@@ -319,14 +319,14 @@ theorem corrected_march_increment_lower_bound {ΔG W inc δ : ℝ}
 /-- Doc 37 §4 deep-band arithmetic:
 `(δ²/80)*(1.4*27/δ³)` beats the tip error when `M²δ ≥ 36`. -/
 theorem corrected_deep_regime_margin_pos {δ M : ℝ}
-    (hδ : 0 < δ) (hM : 36 ≤ M ^ 2 * δ) :
-    0 < (δ ^ 2 / 80) * (((189 : ℝ) / 5) / δ ^ 3) - 16 / (M ^ 2 * δ ^ 2) := by
-  have hMδpos : 0 < M ^ 2 * δ := lt_of_lt_of_le (by norm_num) hM
-  have hdenpos : 0 < M ^ 2 * δ ^ 2 := by nlinarith [hMδpos, hδ]
-  have hmain : (δ ^ 2 / 80) * (((189 : ℝ) / 5) / δ ^ 3) = 189 / (400 * δ) := by
+    (hδ : 0 < δ) (hM : 36 ≤ M ^ (2 : ℕ) * δ) :
+    0 < (δ ^ (2 : ℕ) / 80) * (((189 : ℝ) / 5) / δ ^ (3 : ℕ)) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := by
+  have hMδpos : 0 < M ^ (2 : ℕ) * δ := lt_of_lt_of_le (by norm_num) hM
+  have hdenpos : 0 < M ^ (2 : ℕ) * δ ^ (2 : ℕ) := by nlinarith [hMδpos, hδ]
+  have hmain : (δ ^ (2 : ℕ) / 80) * (((189 : ℝ) / 5) / δ ^ (3 : ℕ)) = 189 / (400 * δ) := by
     field_simp [hδ.ne']
     ring
-  have htail : 16 / (M ^ 2 * δ ^ 2) ≤ 4 / (9 * δ) := by
+  have htail : 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ 4 / (9 * δ) := by
     rw [div_le_iff₀ hdenpos]
     rw [div_mul_eq_mul_div]
     rw [le_div_iff₀ (by positivity : 0 < 9 * δ)]
@@ -336,60 +336,60 @@ theorem corrected_deep_regime_margin_pos {δ M : ℝ}
     _ = 189 / (400 * δ) - 4 / (9 * δ) := by
       field_simp [hδ.ne']
       ring
-    _ ≤ (δ ^ 2 / 80) * (((189 : ℝ) / 5) / δ ^ 3) - 16 / (M ^ 2 * δ ^ 2) := by
+    _ ≤ (δ ^ (2 : ℕ) / 80) * (((189 : ℝ) / 5) / δ ^ (3 : ℕ)) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := by
       rw [hmain]
       linarith
 
 /-- Doc 37 §4 endpoint-band arithmetic:
 `(δ²/80)*(5/(12δ²))` beats the tip error when `M²δ² ≥ 56²`. -/
 theorem corrected_endpoint_regime_margin_pos {δ M : ℝ}
-    (hδ : 0 < δ) (hM : 3136 ≤ M ^ 2 * δ ^ 2) :
-    0 < (δ ^ 2 / 80) * ((5 : ℝ) / (12 * δ ^ 2)) - 16 / (M ^ 2 * δ ^ 2) := by
-  have hδ2 : 0 < δ ^ 2 := sq_pos_of_pos hδ
-  have hdenpos : 0 < M ^ 2 * δ ^ 2 := lt_of_lt_of_le (by norm_num) hM
-  have hmain : (δ ^ 2 / 80) * ((5 : ℝ) / (12 * δ ^ 2)) = 1 / 192 := by
+    (hδ : 0 < δ) (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ)) :
+    0 < (δ ^ (2 : ℕ) / 80) * ((5 : ℝ) / (12 * δ ^ (2 : ℕ))) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := by
+  have hδ2 : 0 < δ ^ (2 : ℕ) := sq_pos_of_pos hδ
+  have hdenpos : 0 < M ^ (2 : ℕ) * δ ^ (2 : ℕ) := lt_of_lt_of_le (by norm_num) hM
+  have hmain : (δ ^ (2 : ℕ) / 80) * ((5 : ℝ) / (12 * δ ^ (2 : ℕ))) = 1 / 192 := by
     field_simp [hδ2.ne']
     ring
-  have htail : 16 / (M ^ 2 * δ ^ 2) ≤ 1 / 196 := by
+  have htail : 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ 1 / 196 := by
     rw [div_le_iff₀ hdenpos]
     nlinarith [hM]
   calc
     0 < (1 : ℝ) / 192 - 1 / 196 := by norm_num
-    _ ≤ (δ ^ 2 / 80) * ((5 : ℝ) / (12 * δ ^ 2)) - 16 / (M ^ 2 * δ ^ 2) := by
+    _ ≤ (δ ^ (2 : ℕ) / 80) * ((5 : ℝ) / (12 * δ ^ (2 : ℕ))) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := by
       rw [hmain]
       linarith
 
 /-- Deep-band assembly shell for doc 37 Theorem S′.  The response and tip-error
 estimates remain explicit hypotheses; this theorem is only the finite arithmetic. -/
 theorem corrected_deep_regime_assembly_pos {δ M inc response error ΔS : ℝ}
-    (hδ : 0 < δ) (hM : 36 ≤ M ^ 2 * δ)
-    (hinc : δ ^ 2 / 80 ≤ inc)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hδ : 0 < δ) (hM : 36 ≤ M ^ (2 : ℕ) * δ)
+    (hinc : δ ^ (2 : ℕ) / 80 ≤ inc)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
-  have hbase : 0 < (δ ^ 2 / 80) * (((189 : ℝ) / 5) / δ ^ 3) -
-      16 / (M ^ 2 * δ ^ 2) := corrected_deep_regime_margin_pos hδ hM
+  have hbase : 0 < (δ ^ (2 : ℕ) / 80) * (((189 : ℝ) / 5) / δ ^ (3 : ℕ)) -
+      16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := corrected_deep_regime_margin_pos hδ hM
   have hinc_nonneg : 0 ≤ inc := le_trans (by positivity) hinc
-  have hresp_base_nonneg : 0 ≤ ((189 : ℝ) / 5) / δ ^ 3 := by positivity
-  have hprod : (δ ^ 2 / 80) * (((189 : ℝ) / 5) / δ ^ 3) ≤ inc * response := by
+  have hresp_base_nonneg : 0 ≤ ((189 : ℝ) / 5) / δ ^ (3 : ℕ) := by positivity
+  have hprod : (δ ^ (2 : ℕ) / 80) * (((189 : ℝ) / 5) / δ ^ (3 : ℕ)) ≤ inc * response := by
     exact mul_le_mul hinc hresponse hresp_base_nonneg hinc_nonneg
   rw [hΔS]
   linarith
 
 /-- Endpoint-band assembly shell for doc 37 Theorem S′. -/
 theorem corrected_endpoint_regime_assembly_pos {δ M inc response error ΔS : ℝ}
-    (hδ : 0 < δ) (hM : 3136 ≤ M ^ 2 * δ ^ 2)
-    (hinc : δ ^ 2 / 80 ≤ inc)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hδ : 0 < δ) (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ))
+    (hinc : δ ^ (2 : ℕ) / 80 ≤ inc)
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
-  have hbase : 0 < (δ ^ 2 / 80) * ((5 : ℝ) / (12 * δ ^ 2)) -
-      16 / (M ^ 2 * δ ^ 2) := corrected_endpoint_regime_margin_pos hδ hM
+  have hbase : 0 < (δ ^ (2 : ℕ) / 80) * ((5 : ℝ) / (12 * δ ^ (2 : ℕ))) -
+      16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := corrected_endpoint_regime_margin_pos hδ hM
   have hinc_nonneg : 0 ≤ inc := le_trans (by positivity) hinc
-  have hresp_base_nonneg : 0 ≤ (5 : ℝ) / (12 * δ ^ 2) := by positivity
-  have hprod : (δ ^ 2 / 80) * ((5 : ℝ) / (12 * δ ^ 2)) ≤ inc * response := by
+  have hresp_base_nonneg : 0 ≤ (5 : ℝ) / (12 * δ ^ (2 : ℕ)) := by positivity
+  have hprod : (δ ^ (2 : ℕ) / 80) * ((5 : ℝ) / (12 * δ ^ (2 : ℕ))) ≤ inc * response := by
     exact mul_le_mul hinc hresponse hresp_base_nonneg hinc_nonneg
   rw [hΔS]
   linarith
@@ -401,19 +401,19 @@ theorem corrected_deep_regime_of_sum_tail {ι : Type*} (s : Finset ι)
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 36 ≤ M ^ 2 * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 36 ≤ M ^ (2 : ℕ) * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
   have hΔG1 : 1 ≤ ΔG :=
     corrected_march_ge_one_of_sum_tail s a hC₀ hCsmall hextra hpaired hcard ha htail hΔG
-  have hincLower : δ ^ 2 / 80 ≤ inc :=
+  have hincLower : δ ^ (2 : ℕ) / 80 ≤ inc :=
     corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
   exact corrected_deep_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
 
@@ -423,19 +423,19 @@ theorem corrected_endpoint_regime_of_sum_tail {ι : Type*} (s : Finset ι)
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ))
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
   have hΔG1 : 1 ≤ ΔG :=
     corrected_march_ge_one_of_sum_tail s a hC₀ hCsmall hextra hpaired hcard ha htail hΔG
-  have hincLower : δ ^ 2 / 80 ≤ inc :=
+  have hincLower : δ ^ (2 : ℕ) / 80 ≤ inc :=
     corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
   exact corrected_endpoint_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
 
@@ -444,15 +444,15 @@ theorem corrected_deep_regime_of_direct_eval
     {δ extra paired reversal ΔG γᵢ W inc M response error ΔS : ℝ}
     (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
     (hΔG : ΔG = extra + paired - reversal)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 36 ≤ M ^ 2 * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 36 ≤ M ^ (2 : ℕ) * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
   have hΔG1 : 1 ≤ ΔG := corrected_march_ge_one_of_direct_eval hγᵢ heval hΔG
-  have hincLower : δ ^ 2 / 80 ≤ inc :=
+  have hincLower : δ ^ (2 : ℕ) / 80 ≤ inc :=
     corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
   exact corrected_deep_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
 
@@ -461,41 +461,41 @@ theorem corrected_endpoint_regime_of_direct_eval
     {δ extra paired reversal ΔG γᵢ W inc M response error ΔS : ℝ}
     (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
     (hΔG : ΔG = extra + paired - reversal)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ))
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : ΔS = inc * response - error) :
     0 < ΔS := by
   have hΔG1 : 1 ≤ ΔG := corrected_march_ge_one_of_direct_eval hγᵢ heval hΔG
-  have hincLower : δ ^ 2 / 80 ≤ inc :=
+  have hincLower : δ ^ (2 : ℕ) / 80 ≤ inc :=
     corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
   exact corrected_endpoint_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
 
 /-- Doc 42 S″ band arithmetic: the squared band `64 ≤ M²*c₈*δ`
 makes the retained-drift swap lower bound nonnegative. -/
 theorem sdouble_swap_lower_nonneg {c₈ δ M : ℝ}
-    (hδ : 0 < δ) (hband : 64 ≤ M ^ 2 * c₈ * δ) :
-    0 ≤ c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) := by
-  have hprod_pos : 0 < M ^ 2 * c₈ * δ := lt_of_lt_of_le (by norm_num) hband
-  have hM2pos : 0 < M ^ 2 := by
+    (hδ : 0 < δ) (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ) :
+    0 ≤ c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) := by
+  have hprod_pos : 0 < M ^ (2 : ℕ) * c₈ * δ := lt_of_lt_of_le (by norm_num) hband
+  have hM2pos : 0 < M ^ (2 : ℕ) := by
     by_contra hnot
-    have hM2le : M ^ 2 ≤ 0 := le_of_not_gt hnot
-    have hM2nonneg : 0 ≤ M ^ 2 := sq_nonneg M
-    have hM2zero : M ^ 2 = 0 := le_antisymm hM2le hM2nonneg
+    have hM2le : M ^ (2 : ℕ) ≤ 0 := le_of_not_gt hnot
+    have hM2nonneg : 0 ≤ M ^ (2 : ℕ) := sq_nonneg M
+    have hM2zero : M ^ (2 : ℕ) = 0 := le_antisymm hM2le hM2nonneg
     rw [hM2zero] at hprod_pos
     norm_num at hprod_pos
   rw [sub_nonneg]
-  rw [div_le_div_iff₀ (by positivity : 0 < M ^ 2 * δ ^ 2)
+  rw [div_le_div_iff₀ (by positivity : 0 < M ^ (2 : ℕ) * δ ^ (2 : ℕ))
     (by positivity : 0 < 4 * δ)]
   nlinarith [hband, hδ, hM2pos]
 
 /-- Doc 42 S″ swap sign: if the actual swap is above Lemma E″'s lower bound,
 then it is nonnegative on the S″ band. -/
 theorem sdouble_swap_nonneg {c₈ δ M swap : ℝ}
-    (hδ : 0 < δ) (hband : 64 ≤ M ^ 2 * c₈ * δ)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap) :
+    (hδ : 0 < δ) (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap) :
     0 ≤ swap :=
   le_trans (sdouble_swap_lower_nonneg hδ hband) hswap
 
@@ -512,14 +512,14 @@ and the retained-drift swap band. -/
 theorem corrected_sdouble_regime_of_unit_march
     {δ c₈ M ΔG W inc response swap ΔS : ℝ}
     (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
     (hresponse : 0 < response)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap)
     (hΔS : ΔS = inc * response + swap) :
     0 < ΔS := by
-  have hincLower : δ ^ 2 / 80 ≤ inc :=
+  have hincLower : δ ^ (2 : ℕ) / 80 ≤ inc :=
     corrected_march_increment_lower_bound hδ hWpos hΔG hW hinc
   have hincpos : 0 < inc := lt_of_lt_of_le (by positivity) hincLower
   have hswap0 : 0 ≤ swap := sdouble_swap_nonneg hδ hband hswap
@@ -529,11 +529,11 @@ theorem corrected_sdouble_regime_of_unit_march
 theorem corrected_sdouble_deep_regime_of_unit_march
     {δ c₈ M ΔG W inc response swap ΔS : ℝ}
     (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hband : 64 ≤ M ^ 2 * c₈ * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap)
     (hΔS : ΔS = inc * response + swap) :
     0 < ΔS := by
   have hresppos : 0 < response := lt_of_lt_of_le (by positivity) hresponse
@@ -544,11 +544,11 @@ theorem corrected_sdouble_deep_regime_of_unit_march
 theorem corrected_sdouble_endpoint_regime_of_unit_march
     {δ c₈ M ΔG W inc response swap ΔS : ℝ}
     (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hband : 64 ≤ M ^ 2 * c₈ * δ)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap)
     (hΔS : ΔS = inc * response + swap) :
     0 < ΔS := by
   have hresppos : 0 < response := lt_of_lt_of_le (by positivity) hresponse

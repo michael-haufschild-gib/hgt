@@ -24,8 +24,8 @@ open scoped FourierTransform
 
 /-- The squared profile is integrable. -/
 theorem integrable_soninScaledAnnulusBump_sq (m δ : ℝ) (hδ : 0 < δ) :
-    Integrable fun x : ℝ => soninScaledAnnulusBump m δ x ^ 2 := by
-  have hcont : Continuous fun x : ℝ => soninScaledAnnulusBump m δ x ^ 2 :=
+    Integrable fun x : ℝ => soninScaledAnnulusBump m δ x ^ (2 : ℕ) := by
+  have hcont : Continuous fun x : ℝ => soninScaledAnnulusBump m δ x ^ (2 : ℕ) :=
     (contDiff_soninScaledAnnulusBump m δ hδ).continuous.pow 2
   refine hcont.integrable_of_hasCompactSupport ?_
   refine HasCompactSupport.of_support_subset_isCompact
@@ -38,9 +38,9 @@ theorem integrable_soninScaledAnnulusBump_sq (m δ : ℝ) (hδ : 0 < δ) :
 /-- The squared profile against a cosine is integrable. -/
 theorem integrable_soninScaledAnnulusBump_sq_mul_cos (m δ w : ℝ) (hδ : 0 < δ) :
     Integrable fun x : ℝ =>
-      soninScaledAnnulusBump m δ x ^ 2 * Real.cos (2 * Real.pi * w * x) := by
+      soninScaledAnnulusBump m δ x ^ (2 : ℕ) * Real.cos (2 * Real.pi * w * x) := by
   have hcont : Continuous fun x : ℝ =>
-      soninScaledAnnulusBump m δ x ^ 2 * Real.cos (2 * Real.pi * w * x) :=
+      soninScaledAnnulusBump m δ x ^ (2 : ℕ) * Real.cos (2 * Real.pi * w * x) :=
     ((contDiff_soninScaledAnnulusBump m δ hδ).continuous.pow 2).mul
       (Real.continuous_cos.comp (continuous_const.mul continuous_id))
   refine hcont.integrable_of_hasCompactSupport ?_
@@ -55,55 +55,55 @@ theorem integrable_soninScaledAnnulusBump_sq_mul_cos (m δ w : ℝ) (hδ : 0 < �
 /-- **The energy identity.**  Half the squared profile's mass, two oscillatory corrections, and a
 nonnegative mean term. -/
 theorem norm_sq_soninScaledPacketEven_eq_expansion (m δ w : ℝ) (hδ : 0 < δ) :
-    ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 =
-      2⁻¹ * (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2) +
-        2⁻¹ * (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2 *
+    ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) =
+      2⁻¹ * (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ)) +
+        2⁻¹ * (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
           Real.cos (2 * Real.pi * (2 * w) * x)) +
         -(2 * soninScaledPacketMean m δ (2 * Real.pi * w)) *
-          (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2 * Real.cos (2 * Real.pi * w * x)) +
-        soninScaledPacketMean m δ (2 * Real.pi * w) ^ 2 *
-          (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2) := by
+          (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ) * Real.cos (2 * Real.pi * w * x)) +
+        soninScaledPacketMean m δ (2 * Real.pi * w) ^ (2 : ℕ) *
+          (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ)) := by
   set μ : ℝ := soninScaledPacketMean m δ (2 * Real.pi * w) with hμ
   have hsq := integrable_soninScaledAnnulusBump_sq m δ hδ
   have hcos2 := integrable_soninScaledAnnulusBump_sq_mul_cos m δ (2 * w) hδ
   have hcos1 := integrable_soninScaledAnnulusBump_sq_mul_cos m δ w hδ
-  have hsplit : ∀ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ 2 =
-      2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2) +
-        2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+  have hsplit : ∀ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ (2 : ℕ) =
+      2⁻¹ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ)) +
+        2⁻¹ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
           Real.cos (2 * Real.pi * (2 * w) * x)) +
-        -(2 * μ) * (soninScaledAnnulusBump m δ x ^ 2 *
+        -(2 * μ) * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
           Real.cos (2 * Real.pi * w * x)) +
-        μ ^ 2 * (soninScaledAnnulusBump m δ x ^ 2) := by
+        μ ^ (2 : ℕ) * (soninScaledAnnulusBump m δ x ^ (2 : ℕ)) := by
     intro x
-    have hc : Real.cos (2 * Real.pi * w * x) ^ 2 =
+    have hc : Real.cos (2 * Real.pi * w * x) ^ (2 : ℕ) =
         2⁻¹ + 2⁻¹ * Real.cos (2 * Real.pi * (2 * w) * x) := by
       have h := Real.cos_sq (2 * Real.pi * w * x)
       have harg : 2 * (2 * Real.pi * w * x) = 2 * Real.pi * (2 * w) * x := by ring
       rw [harg] at h
       linarith
-    calc soninScaledPacket m δ (2 * Real.pi * w) x ^ 2
-        = soninScaledAnnulusBump m δ x ^ 2 * Real.cos (2 * Real.pi * w * x) ^ 2 -
-            2 * μ * (soninScaledAnnulusBump m δ x ^ 2 *
+    calc soninScaledPacket m δ (2 * Real.pi * w) x ^ (2 : ℕ)
+        = soninScaledAnnulusBump m δ x ^ (2 : ℕ) * Real.cos (2 * Real.pi * w * x) ^ (2 : ℕ) -
+            2 * μ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
               Real.cos (2 * Real.pi * w * x)) +
-            μ ^ 2 * soninScaledAnnulusBump m δ x ^ 2 := by
+            μ ^ (2 : ℕ) * soninScaledAnnulusBump m δ x ^ (2 : ℕ) := by
           rw [soninScaledPacket]
           ring
       _ = _ := by rw [hc]; ring
-  have hI1 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2) volume :=
+  have hI1 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ (2 : ℕ)) volume :=
     hsq.const_mul _
-  have hI2 : Integrable (fun x : ℝ => 2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+  have hI2 : Integrable (fun x : ℝ => 2⁻¹ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
       Real.cos (2 * Real.pi * (2 * w) * x))) volume := hcos2.const_mul _
-  have hI3 : Integrable (fun x : ℝ => -(2 * μ) * (soninScaledAnnulusBump m δ x ^ 2 *
+  have hI3 : Integrable (fun x : ℝ => -(2 * μ) * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
       Real.cos (2 * Real.pi * w * x))) volume := hcos1.const_mul _
-  have hI4 : Integrable (fun x : ℝ => μ ^ 2 * soninScaledAnnulusBump m δ x ^ 2) volume :=
+  have hI4 : Integrable (fun x : ℝ => μ ^ (2 : ℕ) * soninScaledAnnulusBump m δ x ^ (2 : ℕ)) volume :=
     hsq.const_mul _
-  have hI12 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2 +
-      2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+  have hI12 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ (2 : ℕ) +
+      2⁻¹ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
         Real.cos (2 * Real.pi * (2 * w) * x))) volume := hI1.add hI2
-  have hI123 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2 +
-      2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+  have hI123 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ (2 : ℕ) +
+      2⁻¹ * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
         Real.cos (2 * Real.pi * (2 * w) * x)) +
-      -(2 * μ) * (soninScaledAnnulusBump m δ x ^ 2 *
+      -(2 * μ) * (soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
         Real.cos (2 * Real.pi * w * x))) volume := hI12.add hI3
   rw [norm_sq_soninScaledPacketEven m δ (2 * Real.pi * w) hδ,
     integral_congr_ae (Filter.Eventually.of_forall hsplit),
@@ -117,17 +117,17 @@ theorem norm_sq_soninScaledPacketEven_ge (m δ w : ℝ) (hδ : 0 < δ) (hm : δ 
         (2 * δ * soninRefSqTailSup (δ * |w|) +
           2 * (|soninScaledPacketMean m δ (2 * Real.pi * w)| *
             (4 * δ * soninRefSqTailSup (δ * |w|)))) ≤
-      ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by
+      ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by
   set μ : ℝ := soninScaledPacketMean m δ (2 * Real.pi * w) with hμ
   set S : ℝ := soninRefSqTailSup (δ * |w|) with hS
   set I : ℝ := ∫ y : ℝ, soninUnitBumpSq y with hI
-  set B : ℝ := ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2 *
+  set B : ℝ := ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
     Real.cos (2 * Real.pi * (2 * w) * x) with hB
-  set C : ℝ := ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2 *
+  set C : ℝ := ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ) *
     Real.cos (2 * Real.pi * w * x) with hC
   have hIpos : 0 < I := integral_soninUnitBumpSq_pos
   have hSnn : 0 ≤ S := soninRefSqTailSup_nonneg _
-  have hA : (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2) = 2 * δ * I :=
+  have hA : (∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ)) = 2 * δ * I :=
     integral_soninScaledAnnulusBump_sq_eq m δ hδ hm
   have hBbound : |B| ≤ 4 * δ * S := by
     refine abs_integral_soninScaledAnnulusBump_sq_mul_cos_le_tailSup m δ (2 * w) (δ * |w|)
@@ -145,7 +145,7 @@ theorem norm_sq_soninScaledPacketEven_ge (m δ w : ℝ) (hδ : 0 < δ) (hm : δ 
     exact le_abs_self _
   have hmuC : |μ| * |C| ≤ |μ| * (4 * δ * S) :=
     mul_le_mul_of_nonneg_left hCbound (abs_nonneg μ)
-  have hmean : 0 ≤ μ ^ 2 * (2 * δ * I) := by positivity
+  have hmean : 0 ≤ μ ^ (2 : ℕ) * (2 * δ * I) := by positivity
   rw [norm_sq_soninScaledPacketEven_eq_expansion m δ w hδ, hA, ← hB, ← hC, ← hμ]
   linarith [hBbound, hnegB, hnegC, hmuC, hmean]
 

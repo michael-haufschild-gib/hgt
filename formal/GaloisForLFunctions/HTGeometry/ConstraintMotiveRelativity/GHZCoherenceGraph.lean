@@ -524,7 +524,7 @@ noncomputable def diagProj (d : ℕ) : (Fin d → ℝ) →ₗ[ℝ] (Fin d → �
 
 /-- **`(GCR.11)`.**  The minimum executed action of a winding class. -/
 noncomputable def minAction (d : ℕ) (T : ℝ) (m : Fin d → ℝ) : ℝ :=
-  2 * Real.pi ^ 2 / (d * T) * ∑ j, diagProj d m j ^ 2
+  2 * Real.pi ^ (2 : ℕ) / (d * T) * ∑ j, diagProj d m j ^ (2 : ℕ)
 
 /-- The minimum action depends only on the winding class modulo the diagonal, so a connected family
 of lifted edge histories determines it. -/

@@ -24,7 +24,7 @@ namespace RHTower
 noncomputable section
 
 def d4TopologicalDarbouxRadialPolynomial (s : ℝ) : ℝ → ℝ :=
-  (fun _ => s) - id ^ 2 - id ^ 3
+  (fun _ => s) - id ^ (2 : ℕ) - id ^ (3 : ℕ)
 
 def d4TopologicalDarbouxAlgebraicConstant (Q : ℝ) : ℝ :=
   Q * (Q + 2) / 6
@@ -36,7 +36,7 @@ def d4TopologicalDarbouxReducedSuperpotential (Q s : ℝ) : ℝ → ℝ :=
 
 lemma hasDerivAt_d4TopologicalDarbouxRadialPolynomial (s x : ℝ) :
     HasDerivAt (d4TopologicalDarbouxRadialPolynomial s)
-      (-2 * x - 3 * x ^ 2) x := by
+      (-2 * x - 3 * x ^ (2 : ℕ)) x := by
   have h := (((hasDerivAt_const (x := x) s).sub ((hasDerivAt_id x).pow 2)).sub
     ((hasDerivAt_id x).pow 3))
   change HasDerivAt (d4TopologicalDarbouxRadialPolynomial s)
@@ -45,18 +45,18 @@ lemma hasDerivAt_d4TopologicalDarbouxRadialPolynomial (s x : ℝ) :
   norm_num
 
 lemma d4ScalarU_fixedScale (Q s x : ℝ) (hx : x ≠ 0) :
-    d4ScalarU Q x (s / x ^ 2) =
-      16 * (18 * s + 9 * x ^ 3 + 9 * (Q + 2) * x ^ 2 +
-        3 * (Q + 2) ^ 2 * x + (Q + 2) ^ 2 * Q) := by
+    d4ScalarU Q x (s / x ^ (2 : ℕ)) =
+      16 * (18 * s + 9 * x ^ (3 : ℕ) + 9 * (Q + 2) * x ^ (2 : ℕ) +
+        3 * (Q + 2) ^ (2 : ℕ) * x + (Q + 2) ^ (2 : ℕ) * Q) := by
   unfold d4ScalarU
   field_simp [hx]
   ring
 
 lemma d4ScalarBracket_fixedScale (Q s x : ℝ) (hx : x ≠ 0) :
-    d4ScalarBracket Q x (s / x ^ 2) =
-      (18 * s + 9 * x ^ 3 + 9 * (Q + 2) * x ^ 2 +
-        3 * (Q + 2) ^ 2 * x + (Q + 2) ^ 2 * Q) /
-        ((Q + 2) + 3 * x) ^ 2 := by
+    d4ScalarBracket Q x (s / x ^ (2 : ℕ)) =
+      (18 * s + 9 * x ^ (3 : ℕ) + 9 * (Q + 2) * x ^ (2 : ℕ) +
+        3 * (Q + 2) ^ (2 : ℕ) * x + (Q + 2) ^ (2 : ℕ) * Q) /
+        ((Q + 2) + 3 * x) ^ (2 : ℕ) := by
   rw [d4ScalarBracket, d4ScalarU_fixedScale Q s x hx]
   by_cases hD : (Q + 2) + 3 * x = 0
   · simp [hD]
@@ -64,10 +64,10 @@ lemma d4ScalarBracket_fixedScale (Q s x : ℝ) (hx : x ≠ 0) :
 
 lemma d4TopologicalDarboux_bracket_sum
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
-    d4ScalarBracket Q x (s / x ^ 2) + d4VectorBracket Q x =
+    d4ScalarBracket Q x (s / x ^ (2 : ℕ)) + d4VectorBracket Q x =
       2 * (Q * (Q + 2) * ((Q + 2) + 3 * x) +
         9 * d4TopologicalDarbouxRadialPolynomial s x) /
-        ((Q + 2) + 3 * x) ^ 2 := by
+        ((Q + 2) + 3 * x) ^ (2 : ℕ) := by
   rw [d4ScalarBracket_fixedScale Q s x hx]
   apply (eq_div_iff (pow_ne_zero 2 hD)).2
   rw [add_mul, div_mul_cancel₀ _ (pow_ne_zero 2 hD)]
@@ -77,9 +77,9 @@ lemma d4TopologicalDarboux_bracket_sum
 
 lemma d4TopologicalDarboux_bracket_difference
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
-    d4ScalarBracket Q x (s / x ^ 2) - d4VectorBracket Q x =
-      6 * (3 * s + 2 * (Q + 2) * x + 3 * (Q + 3) * x ^ 2 + 6 * x ^ 3) /
-        ((Q + 2) + 3 * x) ^ 2 := by
+    d4ScalarBracket Q x (s / x ^ (2 : ℕ)) - d4VectorBracket Q x =
+      6 * (3 * s + 2 * (Q + 2) * x + 3 * (Q + 3) * x ^ (2 : ℕ) + 6 * x ^ (3 : ℕ)) /
+        ((Q + 2) + 3 * x) ^ (2 : ℕ) := by
   rw [d4ScalarBracket_fixedScale Q s x hx]
   apply (eq_div_iff (pow_ne_zero 2 hD)).2
   rw [sub_mul, div_mul_cancel₀ _ (pow_ne_zero 2 hD)]
@@ -89,9 +89,9 @@ lemma d4TopologicalDarboux_bracket_difference
 theorem d4TopologicalDarboux_average_factorization
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
     d4TopologicalDarbouxRadialPolynomial s x *
-        (d4ScalarBracket Q x (s / x ^ 2) + d4VectorBracket Q x) / 2 =
-      d4TopologicalDarbouxReducedSuperpotential Q s x ^ 2 -
-        d4TopologicalDarbouxAlgebraicConstant Q ^ 2 := by
+        (d4ScalarBracket Q x (s / x ^ (2 : ℕ)) + d4VectorBracket Q x) / 2 =
+      d4TopologicalDarbouxReducedSuperpotential Q s x ^ (2 : ℕ) -
+        d4TopologicalDarbouxAlgebraicConstant Q ^ (2 : ℕ) := by
   rw [d4TopologicalDarboux_bracket_sum Q s x hx hD]
   unfold d4TopologicalDarbouxReducedSuperpotential
     d4TopologicalDarbouxAlgebraicConstant
@@ -102,28 +102,28 @@ theorem d4TopologicalDarboux_average_factorization
 theorem d4TopologicalDarboux_scalar_factorization
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
     d4TopologicalDarbouxRadialPolynomial s x *
-        d4ScalarBracket Q x (s / x ^ 2) =
-      d4TopologicalDarbouxReducedSuperpotential Q s x ^ 2 -
-        d4TopologicalDarbouxAlgebraicConstant Q ^ 2 +
+        d4ScalarBracket Q x (s / x ^ (2 : ℕ)) =
+      d4TopologicalDarbouxReducedSuperpotential Q s x ^ (2 : ℕ) -
+        d4TopologicalDarbouxAlgebraicConstant Q ^ (2 : ℕ) +
         d4TopologicalDarbouxRadialPolynomial s x *
-          (d4ScalarBracket Q x (s / x ^ 2) - d4VectorBracket Q x) / 2 := by
+          (d4ScalarBracket Q x (s / x ^ (2 : ℕ)) - d4VectorBracket Q x) / 2 := by
   have havg := d4TopologicalDarboux_average_factorization Q s x hx hD
   linear_combination havg
 
 theorem d4TopologicalDarboux_vector_factorization
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
     d4TopologicalDarbouxRadialPolynomial s x * d4VectorBracket Q x =
-      d4TopologicalDarbouxReducedSuperpotential Q s x ^ 2 -
-        d4TopologicalDarbouxAlgebraicConstant Q ^ 2 -
+      d4TopologicalDarbouxReducedSuperpotential Q s x ^ (2 : ℕ) -
+        d4TopologicalDarbouxAlgebraicConstant Q ^ (2 : ℕ) -
         d4TopologicalDarbouxRadialPolynomial s x *
-          (d4ScalarBracket Q x (s / x ^ 2) - d4VectorBracket Q x) / 2 := by
+          (d4ScalarBracket Q x (s / x ^ (2 : ℕ)) - d4VectorBracket Q x) / 2 := by
   have havg := d4TopologicalDarboux_average_factorization Q s x hx hD
   linear_combination havg
 
 theorem hasDerivAt_d4TopologicalDarbouxReducedSuperpotential
     (Q s x : ℝ) (hx : x ≠ 0) (hD : (Q + 2) + 3 * x ≠ 0) :
     HasDerivAt (d4TopologicalDarbouxReducedSuperpotential Q s)
-      (-(d4ScalarBracket Q x (s / x ^ 2) - d4VectorBracket Q x) / 2) x := by
+      (-(d4ScalarBracket Q x (s / x ^ (2 : ℕ)) - d4VectorBracket Q x) / 2) x := by
   have hp := hasDerivAt_d4TopologicalDarbouxRadialPolynomial s x
   have hden : HasDerivAt (fun y : ℝ => (Q + 2) + 3 * y) 3 x := by
     have h := (hasDerivAt_const (x := x) (Q + 2)).add
@@ -137,9 +137,9 @@ theorem hasDerivAt_d4TopologicalDarbouxReducedSuperpotential
       (hquot.const_mul 3)
   change HasDerivAt (d4TopologicalDarbouxReducedSuperpotential Q s) _ x
   have hW' : HasDerivAt (d4TopologicalDarbouxReducedSuperpotential Q s)
-      (0 + 3 * (((-2 * x - 3 * x ^ 2) * ((Q + 2) + 3 * x) -
+      (0 + 3 * (((-2 * x - 3 * x ^ (2 : ℕ)) * ((Q + 2) + 3 * x) -
         d4TopologicalDarbouxRadialPolynomial s x * 3) /
-          ((Q + 2) + 3 * x) ^ 2)) x := by
+          ((Q + 2) + 3 * x) ^ (2 : ℕ))) x := by
     simpa only [d4TopologicalDarbouxReducedSuperpotential] using hW
   convert hW' using 1
   rw [d4TopologicalDarboux_bracket_difference Q s x hx hD]
@@ -343,7 +343,7 @@ theorem d4BMXiThetaMirrorAIMEChiralKernelDefect_ne_zero_iff (q : XiZeroCopy) :
 
 theorem d4BMXiThetaMirrorAIMEOrientedFlow_eq (q : XiZeroCopy) :
     ((q.1 : ℂ).re - 1 / 2) * d4BMXiThetaMirrorAIMEChiralKernelDefect q =
-      24 * ((q.1 : ℂ).re - 1 / 2) ^ 2 /
+      24 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) /
         d4BMXiThetaMirrorAIMEDenominator q := by
   rw [d4BMXiThetaMirrorAIMEChiralKernelDefect_eq]
   ring

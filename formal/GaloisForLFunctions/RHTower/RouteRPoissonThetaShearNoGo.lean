@@ -40,9 +40,9 @@ def routeRPoissonThetaShearArchimedean : CCMRationalArchimedeanSchwartz :=
 
 theorem routeRPoissonThetaShearArchimedean_apply (x : ℝ) :
     routeRPoissonThetaShearArchimedean x =
-      ((Real.exp (-Real.pi * x ^ 2) -
-        4 * Real.exp (-Real.pi * (2 * x) ^ 2) +
-        3 * Real.exp (-Real.pi * (3 * x) ^ 2) : ℝ) : ℂ) := by
+      ((Real.exp (-Real.pi * x ^ (2 : ℕ)) -
+        4 * Real.exp (-Real.pi * (2 * x) ^ (2 : ℕ)) +
+        3 * Real.exp (-Real.pi * (3 * x) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   simp [routeRPoissonThetaShearArchimedean,
     ccmRationalArchimedeanDilation_apply, gaussianSchwartz_apply, gaussReal]
 
@@ -84,31 +84,31 @@ theorem routeRPoissonThetaShearArchimedean_int_pos_of_ne_zero
     0 < (routeRPoissonThetaShearArchimedean (n : ℝ)).re := by
   rw [routeRPoissonThetaShearArchimedean_apply]
   simp only [ofReal_re]
-  let y := Real.exp (-Real.pi * (n : ℝ) ^ 2)
+  let y := Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ))
   have hypos : 0 < y := Real.exp_pos _
   have habs : (1 : ℝ) ≤ |(n : ℝ)| := by
     exact_mod_cast Int.one_le_abs hn
-  have hx2 : 1 ≤ (n : ℝ) ^ 2 := by
+  have hx2 : 1 ≤ (n : ℝ) ^ (2 : ℕ) := by
     nlinarith [sq_abs (n : ℝ)]
   have hyle : y ≤ Real.exp (-Real.pi) := by
     apply Real.exp_le_exp.mpr
     nlinarith [Real.pi_pos]
   have hyhalf : y < 1 / 2 := lt_of_le_of_lt hyle routeR_exp_neg_pi_lt_half
-  have h2 : Real.exp (-Real.pi * (2 * (n : ℝ)) ^ 2) = y ^ 4 := by
-    rw [show -Real.pi * (2 * (n : ℝ)) ^ 2 =
-        4 * (-Real.pi * (n : ℝ) ^ 2) by ring,
+  have h2 : Real.exp (-Real.pi * (2 * (n : ℝ)) ^ (2 : ℕ)) = y ^ (4 : ℕ) := by
+    rw [show -Real.pi * (2 * (n : ℝ)) ^ (2 : ℕ) =
+        4 * (-Real.pi * (n : ℝ) ^ (2 : ℕ)) by ring,
       show (4 : ℝ) = ((4 : ℕ) : ℝ) by norm_num,
       Real.exp_nat_mul]
-  have h3 : Real.exp (-Real.pi * (3 * (n : ℝ)) ^ 2) = y ^ 9 := by
-    rw [show -Real.pi * (3 * (n : ℝ)) ^ 2 =
-        9 * (-Real.pi * (n : ℝ) ^ 2) by ring,
+  have h3 : Real.exp (-Real.pi * (3 * (n : ℝ)) ^ (2 : ℕ)) = y ^ (9 : ℕ) := by
+    rw [show -Real.pi * (3 * (n : ℝ)) ^ (2 : ℕ) =
+        9 * (-Real.pi * (n : ℝ) ^ (2 : ℕ)) by ring,
       show (9 : ℝ) = ((9 : ℕ) : ℝ) by norm_num,
       Real.exp_nat_mul]
   rw [h2, h3]
-  have hy3 : y ^ 3 < (1 / 2 : ℝ) ^ 3 :=
+  have hy3 : y ^ (3 : ℕ) < (1 / 2 : ℝ) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ hyhalf hypos.le (by norm_num)
-  have hy8 : 0 ≤ 3 * y ^ 8 := by positivity
-  have hbracket : 0 < 1 - 4 * y ^ 3 + 3 * y ^ 8 := by
+  have hy8 : 0 ≤ 3 * y ^ (8 : ℕ) := by positivity
+  have hbracket : 0 < 1 - 4 * y ^ (3 : ℕ) + 3 * y ^ (8 : ℕ) := by
     nlinarith
   nlinarith [mul_pos hypos hbracket]
 

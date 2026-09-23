@@ -89,7 +89,7 @@ theorem integral_zetaChiDisplacedDirichletCross_eq_sum
     rw [← heq]
     exact hs
 
-/-- Factorized `ell^1` bound for the full displaced direct/reflected finite cross. -/
+/-- Factorized `ell^(1 : ℕ)` bound for the full displaced direct/reflected finite cross. -/
 theorem exists_norm_integral_zetaChiDisplacedDirichletCross_le_l1
     {d₀ : ℝ} (hd₀0 : 0 ≤ d₀) (hd₀quarter : d₀ ≤ 1 / 4) :
     ∃ K : ℝ, 0 ≤ K ∧

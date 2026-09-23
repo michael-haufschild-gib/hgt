@@ -20,9 +20,9 @@ def monotonicityCounterGateBudget : ℕ := 1513
 
 noncomputable def monotonicityCounterTail : ℝ :=
   (∑ n ∈ Finset.Ioc monotonicityCounterMatchingCutoff monotonicityCounterLength,
-      (1 : ℝ) / (n : ℝ) ^ 2) +
+      (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
     ∑ n ∈ Finset.Ioc monotonicityCounterBridgeCutoff monotonicityCounterLength,
-      (1 : ℝ) / (n : ℝ) ^ 4
+      (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)
 
 theorem monotonicityCounterTail_nonneg : 0 ≤ monotonicityCounterTail := by
   unfold monotonicityCounterTail
@@ -31,26 +31,26 @@ theorem monotonicityCounterTail_nonneg : 0 ≤ monotonicityCounterTail := by
 theorem monotonicityCounterTail_upper :
     monotonicityCounterTail ≤
       2 / 2955 - 2 / 32769 +
-        (8 / 3 : ℝ) * (1 / 77 ^ 3 - 1 / 32769 ^ 3) := by
+        (8 / 3 : ℝ) * (1 / 77 ^ (3 : ℕ) - 1 / 32769 ^ (3 : ℕ)) := by
   have hs := sum_inv_sq_Ioc_le_halfstep 1477 16384 (by omega) (by omega)
   have hb := sum_inv_fourth_Ioc_le_halfstep 38 16384 (by omega) (by omega)
   unfold monotonicityCounterTail monotonicityCounterMatchingCutoff
     monotonicityCounterBridgeCutoff monotonicityCounterLength
   calc
-    (∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2) +
-          ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 ≤
+    (∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
+          ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) ≤
         (2 / (2 * 1477 + 1 : ℕ) - 2 / (2 * 16384 + 1 : ℕ)) +
           (8 / 3 : ℝ) *
-            (1 / ((2 * 38 + 1 : ℕ) : ℝ) ^ 3 -
-              1 / ((2 * 16384 + 1 : ℕ) : ℝ) ^ 3) := add_le_add hs hb
+            (1 / ((2 * 38 + 1 : ℕ) : ℝ) ^ (3 : ℕ) -
+              1 / ((2 * 16384 + 1 : ℕ) : ℝ) ^ (3 : ℕ)) := add_le_add hs hb
     _ = 2 / 2955 - 2 / 32769 +
-          (8 / 3 : ℝ) * (1 / 77 ^ 3 - 1 / 32769 ^ 3) := by norm_num
+          (8 / 3 : ℝ) * (1 / 77 ^ (3 : ℕ) - 1 / 32769 ^ (3 : ℕ)) := by norm_num
 
 theorem monotonicityCounterTail_lower :
     1 / 1478 - 1 / 16385 +
-          (1 / 2 : ℝ) * (1 / 1478 ^ 2 - 1 / 16385 ^ 2) +
-        ((1 / 3 : ℝ) * (1 / 39 ^ 3 - 1 / 16385 ^ 3) +
-          (1 / 2 : ℝ) * (1 / 39 ^ 4 - 1 / 16385 ^ 4)) ≤
+          (1 / 2 : ℝ) * (1 / 1478 ^ (2 : ℕ) - 1 / 16385 ^ (2 : ℕ)) +
+        ((1 / 3 : ℝ) * (1 / 39 ^ (3 : ℕ) - 1 / 16385 ^ (3 : ℕ)) +
+          (1 / 2 : ℝ) * (1 / 39 ^ (4 : ℕ) - 1 / 16385 ^ (4 : ℕ))) ≤
       monotonicityCounterTail := by
   have hs := sum_inv_sq_Ioc_ge_twoterm 1477 16384 (by omega)
   have hb := sum_inv_fourth_Ioc_ge_twoterm 38 16384 (by omega)
@@ -58,21 +58,21 @@ theorem monotonicityCounterTail_lower :
     monotonicityCounterBridgeCutoff monotonicityCounterLength
   calc
     1 / 1478 - 1 / 16385 +
-          (1 / 2 : ℝ) * (1 / 1478 ^ 2 - 1 / 16385 ^ 2) +
-        ((1 / 3 : ℝ) * (1 / 39 ^ 3 - 1 / 16385 ^ 3) +
-          (1 / 2 : ℝ) * (1 / 39 ^ 4 - 1 / 16385 ^ 4)) =
+          (1 / 2 : ℝ) * (1 / 1478 ^ (2 : ℕ) - 1 / 16385 ^ (2 : ℕ)) +
+        ((1 / 3 : ℝ) * (1 / 39 ^ (3 : ℕ) - 1 / 16385 ^ (3 : ℕ)) +
+          (1 / 2 : ℝ) * (1 / 39 ^ (4 : ℕ) - 1 / 16385 ^ (4 : ℕ))) =
         (1 / (((1477 + 1 : ℕ) : ℝ)) - 1 / (((16384 + 1 : ℕ) : ℝ)) +
             (1 / 2 : ℝ) *
-              (1 / (((1477 + 1 : ℕ) : ℝ)) ^ 2 -
-                1 / (((16384 + 1 : ℕ) : ℝ)) ^ 2)) +
+              (1 / (((1477 + 1 : ℕ) : ℝ)) ^ (2 : ℕ) -
+                1 / (((16384 + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) +
           ((1 / 3 : ℝ) *
-              (1 / (((38 + 1 : ℕ) : ℝ)) ^ 3 -
-                1 / (((16384 + 1 : ℕ) : ℝ)) ^ 3) +
+              (1 / (((38 + 1 : ℕ) : ℝ)) ^ (3 : ℕ) -
+                1 / (((16384 + 1 : ℕ) : ℝ)) ^ (3 : ℕ)) +
             (1 / 2 : ℝ) *
-              (1 / (((38 + 1 : ℕ) : ℝ)) ^ 4 -
-                1 / (((16384 + 1 : ℕ) : ℝ)) ^ 4)) := by norm_num
-    _ ≤ (∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2) +
-          ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 := add_le_add hs hb
+              (1 / (((38 + 1 : ℕ) : ℝ)) ^ (4 : ℕ) -
+                1 / (((16384 + 1 : ℕ) : ℝ)) ^ (4 : ℕ))) := by norm_num
+    _ ≤ (∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
+          ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) := add_le_add hs hb
 
 /-- At the exact `2π` time, omitted folded phase mass is strictly below `4ε`. -/
 theorem monotonicityCounterLateTail_lt_fourEpsilon :
@@ -89,7 +89,7 @@ theorem monotonicityCounterLateTail_lt_fourEpsilon :
     2 * Real.pi * monotonicityCounterTail ≤
         2 * (3141593 / 1000000 : ℝ) *
           (2 / 2955 - 2 / 32769 +
-            (8 / 3 : ℝ) * (1 / 77 ^ 3 - 1 / 32769 ^ 3)) := by
+            (8 / 3 : ℝ) * (1 / 77 ^ (3 : ℕ) - 1 / 32769 ^ (3 : ℕ))) := by
       exact mul_le_mul (mul_le_mul_of_nonneg_left hpi' (by norm_num)) hW
         monotonicityCounterTail_nonneg
         (mul_nonneg (by positivity) (by norm_num))
@@ -97,9 +97,9 @@ theorem monotonicityCounterLateTail_lt_fourEpsilon :
 
 noncomputable def monotonicityCounterTailFloor : ℝ :=
   1 / 1478 - 1 / 16385 +
-      (1 / 2 : ℝ) * (1 / 1478 ^ 2 - 1 / 16385 ^ 2) +
-    ((1 / 3 : ℝ) * (1 / 39 ^ 3 - 1 / 16385 ^ 3) +
-      (1 / 2 : ℝ) * (1 / 39 ^ 4 - 1 / 16385 ^ 4))
+      (1 / 2 : ℝ) * (1 / 1478 ^ (2 : ℕ) - 1 / 16385 ^ (2 : ℕ)) +
+    ((1 / 3 : ℝ) * (1 / 39 ^ (3 : ℕ) - 1 / 16385 ^ (3 : ℕ)) +
+      (1 / 2 : ℝ) * (1 / 39 ^ (4 : ℕ) - 1 / 16385 ^ (4 : ℕ)))
 
 noncomputable def monotonicityCounterTailPhaseFloor : ℝ :=
   monotonicityCounterDelta +
@@ -112,7 +112,7 @@ theorem monotonicityCounterTailPhaseFloor_pos : 0 < monotonicityCounterTailPhase
 
 theorem monotonicityCounterTailPhaseFloor_sub_cube_gt :
     4 * monotonicityCounterEpsilon <
-      monotonicityCounterTailPhaseFloor - monotonicityCounterTailPhaseFloor ^ 3 / 24 := by
+      monotonicityCounterTailPhaseFloor - monotonicityCounterTailPhaseFloor ^ (3 : ℕ) / 24 := by
   unfold monotonicityCounterTailPhaseFloor monotonicityCounterTailFloor
     monotonicityCounterDelta monotonicityCounterEpsilon
   norm_num
@@ -147,7 +147,7 @@ theorem monotonicityCounterEarlyTail_sub_cube_gt :
       (monotonicityCounterDelta +
           monotonicityCounterEarlyTime * monotonicityCounterTail) -
         (monotonicityCounterDelta +
-          monotonicityCounterEarlyTime * monotonicityCounterTail) ^ 3 / 24 := by
+          monotonicityCounterEarlyTime * monotonicityCounterTail) ^ (3 : ℕ) / 24 := by
   have hfloor := monotonicityCounterEarlyTail_ge_floor
   have hfloor0 := monotonicityCounterTailPhaseFloor_pos.le
   have hlate := monotonicityCounterLateTail_lt_fourEpsilon
@@ -169,33 +169,33 @@ theorem monotonicityCounterEarlyTail_sub_cube_gt :
   linarith [monotonicityCounterTailPhaseFloor_sub_cube_gt]
 
 noncomputable def monotonicityCounterTotalNonfirstMass : ℝ :=
-  (∑ n ∈ Finset.Ioc 1 monotonicityCounterLength, (1 : ℝ) / (n : ℝ) ^ 2) +
-    ∑ n ∈ Finset.Ioc 1 monotonicityCounterLength, (1 : ℝ) / (n : ℝ) ^ 4
+  (∑ n ∈ Finset.Ioc 1 monotonicityCounterLength, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
+    ∑ n ∈ Finset.Ioc 1 monotonicityCounterLength, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)
 
 theorem monotonicityCounterTotalNonfirstMass_upper :
     monotonicityCounterTotalNonfirstMass ≤
-      (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ 2) +
+      (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
         ((1 : ℝ) / 10 - 1 / 16384) +
-      ((∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ 4) +
-        ((1 : ℝ) / 5 ^ 3 - 1 / 16384 ^ 3)) := by
+      ((∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)) +
+        ((1 : ℝ) / 5 ^ (3 : ℕ) - 1 / 16384 ^ (3 : ℕ))) := by
   have hsTail := sum_inv_sq_Ioc_le 10 (by omega) 16384 (by omega)
   have hbTail := sum_inv_fourth_Ioc_le 5 (by omega) 16384 (by omega)
   have hsSplit := Finset.sum_Ioc_consecutive
-    (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) (by omega : 1 ≤ 10) (by omega : 10 ≤ 16384)
+    (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) (by omega : 1 ≤ 10) (by omega : 10 ≤ 16384)
   have hbSplit := Finset.sum_Ioc_consecutive
-    (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 4) (by omega : 1 ≤ 5) (by omega : 5 ≤ 16384)
+    (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)) (by omega : 1 ≤ 5) (by omega : 5 ≤ 16384)
   unfold monotonicityCounterTotalNonfirstMass monotonicityCounterLength
   rw [← hsSplit, ← hbSplit]
   have hsAll :
-      (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ 2) +
-          ∑ n ∈ Finset.Ioc (10 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2 ≤
-        (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ 2) +
+      (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
+          ∑ n ∈ Finset.Ioc (10 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) ≤
+        (∑ n ∈ Finset.Ioc (1 : ℕ) 10, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) +
           ((1 : ℝ) / 10 - 1 / 16384) := by linarith
   have hbAll :
-      (∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ 4) +
-          ∑ n ∈ Finset.Ioc (5 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 ≤
-        (∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ 4) +
-          ((1 : ℝ) / 5 ^ 3 - 1 / 16384 ^ 3) := by linarith
+      (∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)) +
+          ∑ n ∈ Finset.Ioc (5 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) ≤
+        (∑ n ∈ Finset.Ioc (1 : ℕ) 5, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ)) +
+          ((1 : ℝ) / 5 ^ (3 : ℕ) - 1 / 16384 ^ (3 : ℕ)) := by linarith
   exact add_le_add hsAll hbAll
 
 /-- Total folded phase at the early time is below `3π/2`, so no second winding is possible. -/

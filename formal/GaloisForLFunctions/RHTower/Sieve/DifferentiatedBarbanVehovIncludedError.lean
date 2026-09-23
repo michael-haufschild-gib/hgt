@@ -17,7 +17,7 @@ noncomputable section
 
 theorem abs_barbanVehovIncludedLongHarmonicKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongHarmonicKernel L (L * M) q r -
         barbanVehovLongHarmonicKernelContinuous L (L * min q r) q r| ≤
       3 / (L : ℝ) := by
@@ -31,7 +31,7 @@ theorem abs_barbanVehovIncludedLongHarmonicKernel_sub_continuous_le
 
 theorem abs_barbanVehovIncludedLongFirstLogKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongFirstLogKernel L (L * M) q r -
         barbanVehovLongFirstLogKernelContinuous L (L * min q r) q r| ≤
       6 * Real.log (L * M + 1 : ℕ) / (L : ℝ) := by
@@ -50,10 +50,10 @@ theorem abs_barbanVehovIncludedLongFirstLogKernel_sub_continuous_le
 
 theorem abs_barbanVehovIncludedLongSecondLogKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongSecondLogKernel L (L * M) q r -
         barbanVehovLongSecondLogKernelContinuous L (L * min q r) q r| ≤
-      12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ) := by
+      12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ) := by
   have hmin1 : 1 ≤ min q r := le_min hq hr
   have hminM : min q r ≤ M := (Nat.min_le_left q r).trans hqM
   have hLmin : L ≤ L * min q r := by
@@ -70,10 +70,10 @@ theorem abs_barbanVehovIncludedLongSecondLogKernel_sub_continuous_le
   gcongr
 
 theorem abs_barbanVehovIncludedLongBaseLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongBaseLcm L M -
         barbanVehovIncludedLongBaseContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) := by
   rw [barbanVehovIncludedLongBaseLcm,
     barbanVehovIncludedLongBaseContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
@@ -95,10 +95,10 @@ theorem abs_barbanVehovIncludedLongBaseLcm_sub_continuous_le
     (sum_product_abs_barbanVehovWeight_le hM) (by positivity))
 
 theorem abs_barbanVehovIncludedLongCrossLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongCrossLcm L M -
         barbanVehovIncludedLongCrossContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 *
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) *
         (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovIncludedLongCrossLcm,
     barbanVehovIncludedLongCrossContinuous]
@@ -137,11 +137,11 @@ theorem abs_barbanVehovIncludedLongCrossLcm_sub_continuous_le
       (sum_product_abs_barbanVehovWeight_le hM) (by positivity)
 
 theorem abs_barbanVehovIncludedLongDerivativeLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongDerivativeLcm L M -
         barbanVehovIncludedLongDerivativeContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 *
-        (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+        (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovIncludedLongDerivativeLcm,
     barbanVehovIncludedLongDerivativeContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
@@ -149,7 +149,7 @@ theorem abs_barbanVehovIncludedLongDerivativeLcm_sub_continuous_le
       |barbanVehovIncludedLongSecondLogKernel L (L * M) p.1 p.2 -
           barbanVehovLongSecondLogKernelContinuous
             L (L * min p.1 p.2) p.1 p.2| ≤
-        12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ) := by
+        12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ) := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_Icc] at hp1 hp2

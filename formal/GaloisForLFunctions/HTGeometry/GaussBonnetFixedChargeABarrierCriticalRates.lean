@@ -14,9 +14,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAGibbsBarrier_temperature_amplitude (w φ : ℝ) :
-    egbFixedChargeAGibbsBarrierCoefficient w φ / egbFixedChargeATemperatureGapCoefficient w φ ^ 2 =
-      3 * Real.pi ^ 2 * egbFixedChargeACriticalRadius w φ ^ 3 *
-        (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+    egbFixedChargeAGibbsBarrierCoefficient w φ / egbFixedChargeATemperatureGapCoefficient w φ ^ (2 : ℕ) =
+      3 * Real.pi ^ (2 : ℕ) * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ) *
+        (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -27,9 +27,9 @@ theorem egbFixedChargeAGibbsBarrier_temperature_amplitude (w φ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAGibbsBarrier_pressure_amplitude (w φ : ℝ) :
-    egbFixedChargeAGibbsBarrierCoefficient w φ / egbFixedChargeAPressureGapCoefficient w φ ^ 2 =
-      12 * Real.pi ^ 2 * egbFixedChargeACriticalRadius w φ ^ 5 *
-        (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+    egbFixedChargeAGibbsBarrierCoefficient w φ / egbFixedChargeAPressureGapCoefficient w φ ^ (2 : ℕ) =
+      12 * Real.pi ^ (2 : ℕ) * egbFixedChargeACriticalRadius w φ ^ (5 : ℕ) *
+        (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -41,9 +41,9 @@ theorem egbFixedChargeAGibbsBarrier_pressure_amplitude (w φ : ℝ) :
 
 theorem egbFixedChargeAGibbsBarrier_temperature_quadratic_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l /
-      (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) ^ 2)
-      atBot (𝓝 (3 * Real.pi ^ 2 * egbFixedChargeACriticalRadius w φ ^ 3 *
-        (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+      (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) ^ (2 : ℕ))
+      atBot (𝓝 (3 * Real.pi ^ (2 : ℕ) * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ) *
+        (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         (1 - 2 * egbFixedChargeACriticalCouplingWeight φ))) := by
   have hT := egbFixedChargeATemperatureGapCoefficient_pos w φ
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l).div
@@ -58,9 +58,9 @@ theorem egbFixedChargeAGibbsBarrier_temperature_quadratic_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeAGibbsBarrier_pressure_quadratic_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l /
-      (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) ^ 2)
-      atBot (𝓝 (12 * Real.pi ^ 2 * egbFixedChargeACriticalRadius w φ ^ 5 *
-        (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+      (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) ^ (2 : ℕ))
+      atBot (𝓝 (12 * Real.pi ^ (2 : ℕ) * egbFixedChargeACriticalRadius w φ ^ (5 : ℕ) *
+        (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)))) := by
   have hP := egbFixedChargeAPressureGapCoefficient_pos w φ
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l).div
@@ -75,13 +75,13 @@ theorem egbFixedChargeAGibbsBarrier_pressure_quadratic_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeAGibbsBarrier_radius_quartic_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l /
-      (egbFixedChargeALargeRadius w φ τ - egbFixedChargeASmallRadius w φ τ) ^ 4)
+      (egbFixedChargeALargeRadius w φ τ - egbFixedChargeASmallRadius w φ τ) ^ (4 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalQuarticCoefficient w φ / 16)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l).div
     ((egbFixedChargeA_radius_gap_asymmetry_limit w φ).pow 4) (by positivity)
   simp only [Pi.div_def] at h
-  have he : egbFixedChargeAGibbsBarrierCoefficient w φ / (2 * egbFixedChargeACriticalRadius w φ) ^ 4 =
+  have he : egbFixedChargeAGibbsBarrierCoefficient w φ / (2 * egbFixedChargeACriticalRadius w φ) ^ (4 : ℕ) =
       egbFixedChargeACriticalQuarticCoefficient w φ / 16 := by
     rw [egbFixedChargeAGibbsBarrierCoefficient_critical_quartic]
     field_simp

@@ -103,7 +103,7 @@ theorem hardyDiskLineCayleyUnitary_hardyOne :
 
 theorem normalizedCayleyBlaschkeUnit_I :
     normalizedCayleyBlaschkeUnit I = 1 := by
-  simp [normalizedCayleyBlaschkeUnit, normalizedBlaschkePhase,
+  simp [normalizedCayleyBlaschkeUnit, normalizedBlaschkePhase_upperHalfPlaneNormalizedBlaschkeCayley,
     cayleyBlaschkeUnit, upperToDiskCayley]
   have htwoI : I + I ≠ (0 : ℂ) := by
     intro h

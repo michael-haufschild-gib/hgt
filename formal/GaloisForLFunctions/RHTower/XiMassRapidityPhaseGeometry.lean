@@ -24,31 +24,31 @@ open Real
 /-! ## The timelike collapse -/
 
 /-- The timelike rapidity, defined from the spacelike-free separation. -/
-noncomputable def timelikeRapidity (u h : ℝ) : ℝ := Real.arsinh (h / Real.sqrt (u ^ 2 - h ^ 2))
+noncomputable def timelikeRapidity (u h : ℝ) : ℝ := Real.arsinh (h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)))
 
 theorem cosh_timelikeRapidity {u h : ℝ} (hu : 0 < u) (hh : 0 ≤ h) (hhu : h < u) :
-    Real.cosh (timelikeRapidity u h) = u / Real.sqrt (u ^ 2 - h ^ 2) := by
-  have hq2 : 0 < u ^ 2 - h ^ 2 := by nlinarith
-  have hq : 0 < Real.sqrt (u ^ 2 - h ^ 2) := Real.sqrt_pos.2 hq2
+    Real.cosh (timelikeRapidity u h) = u / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := by
+  have hq2 : 0 < u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
+  have hq : 0 < Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := Real.sqrt_pos.2 hq2
   rw [timelikeRapidity, Real.cosh_arsinh]
-  have hsq : Real.sqrt (u ^ 2 - h ^ 2) ^ 2 = u ^ 2 - h ^ 2 := Real.sq_sqrt hq2.le
-  have hval : 1 + (h / Real.sqrt (u ^ 2 - h ^ 2)) ^ 2
-      = (u / Real.sqrt (u ^ 2 - h ^ 2)) ^ 2 := by
+  have hsq : Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) ^ (2 : ℕ) = u ^ (2 : ℕ) - h ^ (2 : ℕ) := Real.sq_sqrt hq2.le
+  have hval : 1 + (h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))) ^ (2 : ℕ)
+      = (u / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))) ^ (2 : ℕ) := by
     field_simp
     nlinarith [hsq]
   rw [hval, Real.sqrt_sq (by positivity)]
 
 theorem sinh_timelikeRapidity (u h : ℝ) :
-    Real.sinh (timelikeRapidity u h) = h / Real.sqrt (u ^ 2 - h ^ 2) := by
+    Real.sinh (timelikeRapidity u h) = h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := by
   rw [timelikeRapidity, Real.sinh_arsinh]
 
 /-- **(8.2) The timelike collapse.**  Inside the light cone the mass phase is a single hyperbolic
 cosine. -/
 theorem massPhase_timelike {u h : ℝ} (hu : 0 < u) (hh : 0 ≤ h) (hhu : h < u) (t : ℝ) :
     u * Real.cosh t + h * Real.sinh t
-      = Real.sqrt (u ^ 2 - h ^ 2) * Real.cosh (t + timelikeRapidity u h) := by
-  have hq2 : 0 < u ^ 2 - h ^ 2 := by nlinarith
-  have hq : 0 < Real.sqrt (u ^ 2 - h ^ 2) := Real.sqrt_pos.2 hq2
+      = Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) * Real.cosh (t + timelikeRapidity u h) := by
+  have hq2 : 0 < u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
+  have hq : 0 < Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := Real.sqrt_pos.2 hq2
   rw [Real.cosh_add, cosh_timelikeRapidity hu hh hhu, sinh_timelikeRapidity]
   field_simp
 
@@ -57,10 +57,10 @@ the negative rapidity. -/
 theorem massPhase_timelike_stationary_iff {u h : ℝ} (hu : 0 < u) (hh : 0 ≤ h) (hhu : h < u)
     (t : ℝ) :
     u * Real.sinh t + h * Real.cosh t = 0 ↔ t = -timelikeRapidity u h := by
-  have hq2 : 0 < u ^ 2 - h ^ 2 := by nlinarith
-  have hq : 0 < Real.sqrt (u ^ 2 - h ^ 2) := Real.sqrt_pos.2 hq2
+  have hq2 : 0 < u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
+  have hq : 0 < Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := Real.sqrt_pos.2 hq2
   have hderiv : u * Real.sinh t + h * Real.cosh t
-      = Real.sqrt (u ^ 2 - h ^ 2) * Real.sinh (t + timelikeRapidity u h) := by
+      = Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) * Real.sinh (t + timelikeRapidity u h) := by
     rw [Real.sinh_add, cosh_timelikeRapidity hu hh hhu, sinh_timelikeRapidity]
     field_simp
   rw [hderiv]
@@ -79,16 +79,16 @@ theorem massPhase_timelike_stationary_iff {u h : ℝ} (hu : 0 < u) (hh : 0 ≤ h
 /-- Rationalized separation of two timelike stationary actions. -/
 theorem timelikeStationaryAction_gap_eq
     {u h k : ℝ} (hh : 0 ≤ h) (hhk : h ≤ k) (hku : k < u) :
-    Real.sqrt (u ^ 2 - h ^ 2) - Real.sqrt (u ^ 2 - k ^ 2) =
-      (k ^ 2 - h ^ 2) /
-        (Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2)) := by
-  have hrad_h : 0 < u ^ 2 - h ^ 2 := by nlinarith
-  have hrad_k : 0 < u ^ 2 - k ^ 2 := by nlinarith
-  have hs_h : Real.sqrt (u ^ 2 - h ^ 2) ^ 2 = u ^ 2 - h ^ 2 :=
+    Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) - Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) =
+      (k ^ (2 : ℕ) - h ^ (2 : ℕ)) /
+        (Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) + Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ))) := by
+  have hrad_h : 0 < u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
+  have hrad_k : 0 < u ^ (2 : ℕ) - k ^ (2 : ℕ) := by nlinarith
+  have hs_h : Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) ^ (2 : ℕ) = u ^ (2 : ℕ) - h ^ (2 : ℕ) :=
     Real.sq_sqrt hrad_h.le
-  have hs_k : Real.sqrt (u ^ 2 - k ^ 2) ^ 2 = u ^ 2 - k ^ 2 :=
+  have hs_k : Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) ^ (2 : ℕ) = u ^ (2 : ℕ) - k ^ (2 : ℕ) :=
     Real.sq_sqrt hrad_k.le
-  have hden : Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2) ≠ 0 := by
+  have hden : Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) + Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) ≠ 0 := by
     positivity
   apply (eq_div_iff hden).mpr
   nlinarith
@@ -96,22 +96,22 @@ theorem timelikeStationaryAction_gap_eq
 /-- Deep timelike stationary actions are compressed on every fixed frequency pair. -/
 theorem timelikeStationaryAction_gap_le_inverse_height
     {u h k : ℝ} (hh : 0 ≤ h) (hhk : h < k) (hdeep : 2 * k ≤ u) :
-    Real.sqrt (u ^ 2 - h ^ 2) - Real.sqrt (u ^ 2 - k ^ 2) ≤
-      (k ^ 2 - h ^ 2) / u := by
+    Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) - Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) ≤
+      (k ^ (2 : ℕ) - h ^ (2 : ℕ)) / u := by
   have hk0 : 0 < k := lt_of_le_of_lt hh hhk
   have hu0 : 0 < u := lt_of_lt_of_le (by linarith) hdeep
   have hku : k < u := by linarith
-  have hrad_order : u ^ 2 - k ^ 2 ≤ u ^ 2 - h ^ 2 := by nlinarith
-  have hsqrt_order : Real.sqrt (u ^ 2 - k ^ 2) ≤
-      Real.sqrt (u ^ 2 - h ^ 2) := Real.sqrt_le_sqrt hrad_order
-  have hhalf_sq : (u / 2) ^ 2 ≤ u ^ 2 - k ^ 2 := by nlinarith
+  have hrad_order : u ^ (2 : ℕ) - k ^ (2 : ℕ) ≤ u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
+  have hsqrt_order : Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) ≤
+      Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := Real.sqrt_le_sqrt hrad_order
+  have hhalf_sq : (u / 2) ^ (2 : ℕ) ≤ u ^ (2 : ℕ) - k ^ (2 : ℕ) := by nlinarith
   have hhalf_nonneg : 0 ≤ u / 2 := by linarith
-  have hsqrt_half : u / 2 ≤ Real.sqrt (u ^ 2 - k ^ 2) := by
+  have hsqrt_half : u / 2 ≤ Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) := by
     rw [← Real.sqrt_sq hhalf_nonneg]
     exact Real.sqrt_le_sqrt hhalf_sq
-  have hden : u ≤ Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2) := by
+  have hden : u ≤ Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) + Real.sqrt (u ^ (2 : ℕ) - k ^ (2 : ℕ)) := by
     linarith
-  have hnum : 0 ≤ k ^ 2 - h ^ 2 := by nlinarith
+  have hnum : 0 ≤ k ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
   rw [timelikeStationaryAction_gap_eq hh hhk.le hku]
   exact div_le_div_of_nonneg_left hnum hu0 hden
 
@@ -121,40 +121,40 @@ theorem timelikeRapidity_le_two_mul_div
     timelikeRapidity u h ≤ 2 * h / u := by
   have hu0 : 0 < u := lt_of_lt_of_le (by linarith) hdeep
   have hhu : h < u := by linarith
-  have hsqrt : u / 2 ≤ Real.sqrt (u ^ 2 - h ^ 2) := by
-    have hhalf_sq : (u / 2) ^ 2 ≤ u ^ 2 - h ^ 2 := by nlinarith
+  have hsqrt : u / 2 ≤ Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := by
+    have hhalf_sq : (u / 2) ^ (2 : ℕ) ≤ u ^ (2 : ℕ) - h ^ (2 : ℕ) := by nlinarith
     have hhalf_nonneg : 0 ≤ u / 2 := by linarith
     rw [← Real.sqrt_sq hhalf_nonneg]
     exact Real.sqrt_le_sqrt hhalf_sq
-  have harg_nonneg : 0 ≤ h / Real.sqrt (u ^ 2 - h ^ 2) := by positivity
-  have harsinh : Real.arsinh (h / Real.sqrt (u ^ 2 - h ^ 2)) ≤
-      h / Real.sqrt (u ^ 2 - h ^ 2) := by
+  have harg_nonneg : 0 ≤ h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := by positivity
+  have harsinh : Real.arsinh (h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))) ≤
+      h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := by
     rw [← Real.sinh_le_sinh, Real.sinh_arsinh]
     exact Real.self_le_sinh_iff.mpr harg_nonneg
   rw [timelikeRapidity]
   calc
-    Real.arsinh (h / Real.sqrt (u ^ 2 - h ^ 2)) ≤
-        h / Real.sqrt (u ^ 2 - h ^ 2) := harsinh
+    Real.arsinh (h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))) ≤
+        h / Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ)) := harsinh
     _ ≤ h / (u / 2) := div_le_div_of_nonneg_left hh.le (by linarith) hsqrt
     _ = 2 * h / u := by field_simp
 
 /-! ## The spacelike collapse -/
 
 /-- The spacelike rapidity. -/
-noncomputable def spacelikeRapidity (u h : ℝ) : ℝ := Real.arsinh (u / Real.sqrt (h ^ 2 - u ^ 2))
+noncomputable def spacelikeRapidity (u h : ℝ) : ℝ := Real.arsinh (u / Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))
 
 theorem sinh_spacelikeRapidity (u h : ℝ) :
-    Real.sinh (spacelikeRapidity u h) = u / Real.sqrt (h ^ 2 - u ^ 2) := by
+    Real.sinh (spacelikeRapidity u h) = u / Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := by
   rw [spacelikeRapidity, Real.sinh_arsinh]
 
 theorem cosh_spacelikeRapidity {u h : ℝ} (hu : 0 ≤ u) (hh : 0 < h) (huh : u < h) :
-    Real.cosh (spacelikeRapidity u h) = h / Real.sqrt (h ^ 2 - u ^ 2) := by
-  have hr2 : 0 < h ^ 2 - u ^ 2 := by nlinarith
-  have hr : 0 < Real.sqrt (h ^ 2 - u ^ 2) := Real.sqrt_pos.2 hr2
+    Real.cosh (spacelikeRapidity u h) = h / Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := by
+  have hr2 : 0 < h ^ (2 : ℕ) - u ^ (2 : ℕ) := by nlinarith
+  have hr : 0 < Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := Real.sqrt_pos.2 hr2
   rw [spacelikeRapidity, Real.cosh_arsinh]
-  have hsq : Real.sqrt (h ^ 2 - u ^ 2) ^ 2 = h ^ 2 - u ^ 2 := Real.sq_sqrt hr2.le
-  have hval : 1 + (u / Real.sqrt (h ^ 2 - u ^ 2)) ^ 2
-      = (h / Real.sqrt (h ^ 2 - u ^ 2)) ^ 2 := by
+  have hsq : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) ^ (2 : ℕ) = h ^ (2 : ℕ) - u ^ (2 : ℕ) := Real.sq_sqrt hr2.le
+  have hval : 1 + (u / Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))) ^ (2 : ℕ)
+      = (h / Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))) ^ (2 : ℕ) := by
     field_simp
     nlinarith [hsq]
   rw [hval, Real.sqrt_sq (by positivity)]
@@ -163,9 +163,9 @@ theorem cosh_spacelikeRapidity {u h : ℝ} (hu : 0 ≤ u) (hh : 0 < h) (huh : u 
 sine. -/
 theorem massPhase_spacelike {u h : ℝ} (hu : 0 ≤ u) (hh : 0 < h) (huh : u < h) (t : ℝ) :
     u * Real.cosh t + h * Real.sinh t
-      = Real.sqrt (h ^ 2 - u ^ 2) * Real.sinh (t + spacelikeRapidity u h) := by
-  have hr2 : 0 < h ^ 2 - u ^ 2 := by nlinarith
-  have hr : 0 < Real.sqrt (h ^ 2 - u ^ 2) := Real.sqrt_pos.2 hr2
+      = Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) * Real.sinh (t + spacelikeRapidity u h) := by
+  have hr2 : 0 < h ^ (2 : ℕ) - u ^ (2 : ℕ) := by nlinarith
+  have hr : 0 < Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := Real.sqrt_pos.2 hr2
   rw [Real.sinh_add, cosh_spacelikeRapidity hu hh huh, sinh_spacelikeRapidity]
   field_simp
   ring
@@ -173,10 +173,10 @@ theorem massPhase_spacelike {u h : ℝ} (hu : 0 ≤ u) (hh : 0 < h) (huh : u < h
 /-- **(8.3) No stationary point.**  Outside the light cone the phase derivative never vanishes. -/
 theorem massPhase_spacelike_nonstationary {u h : ℝ} (hu : 0 ≤ u) (hh : 0 < h) (huh : u < h)
     (t : ℝ) : u * Real.sinh t + h * Real.cosh t ≠ 0 := by
-  have hr2 : 0 < h ^ 2 - u ^ 2 := by nlinarith
-  have hr : 0 < Real.sqrt (h ^ 2 - u ^ 2) := Real.sqrt_pos.2 hr2
+  have hr2 : 0 < h ^ (2 : ℕ) - u ^ (2 : ℕ) := by nlinarith
+  have hr : 0 < Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := Real.sqrt_pos.2 hr2
   have hderiv : u * Real.sinh t + h * Real.cosh t
-      = Real.sqrt (h ^ 2 - u ^ 2) * Real.cosh (t + spacelikeRapidity u h) := by
+      = Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) * Real.cosh (t + spacelikeRapidity u h) := by
     rw [Real.cosh_add, cosh_spacelikeRapidity hu hh huh, sinh_spacelikeRapidity]
     field_simp
     ring

@@ -34,7 +34,7 @@ noncomputable section
 
 /-- Birmingham--Mokhtari radial coordinate in the inverse-radius Rindler chart. -/
 def d4BMBlackHoleRadialCoordinateFromRindlerRho (rho : ℝ) : ℝ :=
-  1 - rho ^ 2
+  1 - rho ^ (2 : ℕ)
 
 /-- Poincare radial coordinate pulled back to the massless topological-black-hole chart. -/
 def d4PoincareRadialCoordinateFromBMRindler (rho sigma : ℝ) : ℝ :=

@@ -118,21 +118,21 @@ theorem norm_mvRemSum_le {ι : Type} [Fintype ι] (u : ι → ℝ) (d : ι → �
 theorem normSq_mvRemSum_le {ι : Type} [Fintype ι] (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ)
     {τ : ℝ} (hτ0 : 0 ≤ τ) (hτ1 : τ ≤ 1) (hθ : ∀ r, |θ r| ≤ τ) {K : ℕ} (hK : 1 ≤ K)
     {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α ≤ 1) :
-    ‖mvRemSum u d θ K α‖ ^ 2 ≤
-      (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ 2 *
-        ((Fintype.card ι : ℝ) * ∑ r, ‖d r‖ ^ 2) := by
+    ‖mvRemSum u d θ K α‖ ^ (2 : ℕ) ≤
+      (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ (2 : ℕ) *
+        ((Fintype.card ι : ℝ) * ∑ r, ‖d r‖ ^ (2 : ℕ)) := by
   have h1 := norm_mvRemSum_le u d θ hτ1 hθ hK hα0 hα1
-  have h2 : (∑ r, ‖d r‖) ^ 2 ≤ (Fintype.card ι : ℝ) * ∑ r, ‖d r‖ ^ 2 := by
+  have h2 : (∑ r, ‖d r‖) ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) * ∑ r, ‖d r‖ ^ (2 : ℕ) := by
     have := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset ι)) (f := fun r => ‖d r‖)
     simpa using this
   have hρ : 0 ≤ τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K)) :=
     mul_nonneg (pow_nonneg hτ0 K)
       (div_nonneg (Nat.cast_nonneg _) (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)))
   have hsum0 : 0 ≤ ∑ r, ‖d r‖ := Finset.sum_nonneg fun r _ => norm_nonneg _
-  calc ‖mvRemSum u d θ K α‖ ^ 2
-      ≤ (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K)) * ∑ r, ‖d r‖) ^ 2 :=
+  calc ‖mvRemSum u d θ K α‖ ^ (2 : ℕ)
+      ≤ (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K)) * ∑ r, ‖d r‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) h1 2
-    _ = (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ 2 * (∑ r, ‖d r‖) ^ 2 := by ring
+    _ = (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ (2 : ℕ) * (∑ r, ‖d r‖) ^ (2 : ℕ) := by ring
     _ ≤ _ := by gcongr
 
 /-- Each Taylor layer obeys the Montgomery–Vaughan upper bound with the coefficient budget
@@ -141,20 +141,20 @@ theorem integral_normSq_mvPowerSum_le {ι : Type} [Fintype ι] [DecidableEq ι]
     (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) {D a ℓ τ : ℝ} (hD : 0 < D) (hℓ : 0 ≤ ℓ)
     (hθ : ∀ r, |θ r| ≤ τ)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) (m : ℕ) :
-    (∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ 2) ≤
-      (ℓ + 26 / (Real.pi * D)) * (τ ^ (2 * m) * ∑ r, ‖d r‖ ^ 2) := by
+    (∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)) ≤
+      (ℓ + 26 / (Real.pi * D)) * (τ ^ (2 * m) * ∑ r, ‖d r‖ ^ (2 : ℕ)) := by
   have h := interval_integral_normSq_expSum_le u (fun r => d r * ((θ r ^ m : ℝ) : ℂ))
     (a := a) (ℓ := ℓ) hD hsep
-  have hcoef : ∑ r, ‖d r * ((θ r ^ m : ℝ) : ℂ)‖ ^ 2 ≤ τ ^ (2 * m) * ∑ r, ‖d r‖ ^ 2 := by
+  have hcoef : ∑ r, ‖d r * ((θ r ^ m : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ τ ^ (2 * m) * ∑ r, ‖d r‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun r _ => ?_
     have hθr := hθ r
-    have hsq : θ r ^ 2 ≤ τ ^ 2 := sq_le_sq' (abs_le.mp hθr).1 (abs_le.mp hθr).2
+    have hsq : θ r ^ (2 : ℕ) ≤ τ ^ (2 : ℕ) := sq_le_sq' (abs_le.mp hθr).1 (abs_le.mp hθr).2
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs, ← pow_mul, mul_comm m 2]
     have : (θ r) ^ (2 * m) ≤ τ ^ (2 * m) := by
       rw [pow_mul, pow_mul]
       exact pow_le_pow_left₀ (sq_nonneg _) hsq m
-    calc ‖d r‖ ^ 2 * θ r ^ (2 * m) ≤ ‖d r‖ ^ 2 * τ ^ (2 * m) := by gcongr
+    calc ‖d r‖ ^ (2 : ℕ) * θ r ^ (2 * m) ≤ ‖d r‖ ^ (2 : ℕ) * τ ^ (2 * m) := by gcongr
       _ = _ := by ring
   unfold mvPowerSum
   refine h.trans ?_
@@ -197,16 +197,16 @@ theorem sum_Ico_inv_factorial_le_two (K : ℕ) :
 
 /-- Weighted Cauchy–Schwarz: `(Σ w_m x_m)² ≤ (Σ w_m)(Σ w_m x_m²)` for `w ≥ 0`. -/
 theorem sq_sum_weighted_le {ι : Type*} (s : Finset ι) (w x : ι → ℝ) (hw : ∀ m ∈ s, 0 ≤ w m) :
-    (∑ m ∈ s, w m * x m) ^ 2 ≤ (∑ m ∈ s, w m) * ∑ m ∈ s, w m * x m ^ 2 := by
+    (∑ m ∈ s, w m * x m) ^ (2 : ℕ) ≤ (∑ m ∈ s, w m) * ∑ m ∈ s, w m * x m ^ (2 : ℕ) := by
   have h := Finset.sum_mul_sq_le_sq_mul_sq s (fun m => Real.sqrt (w m))
     (fun m => Real.sqrt (w m) * x m)
   have h1 : ∑ m ∈ s, Real.sqrt (w m) * (Real.sqrt (w m) * x m) = ∑ m ∈ s, w m * x m := by
     refine Finset.sum_congr rfl fun m hm => ?_
     rw [← mul_assoc, Real.mul_self_sqrt (hw m hm)]
-  have h2 : ∑ m ∈ s, Real.sqrt (w m) ^ 2 = ∑ m ∈ s, w m := by
+  have h2 : ∑ m ∈ s, Real.sqrt (w m) ^ (2 : ℕ) = ∑ m ∈ s, w m := by
     refine Finset.sum_congr rfl fun m hm => ?_
     exact Real.sq_sqrt (hw m hm)
-  have h3 : ∑ m ∈ s, (Real.sqrt (w m) * x m) ^ 2 = ∑ m ∈ s, w m * x m ^ 2 := by
+  have h3 : ∑ m ∈ s, (Real.sqrt (w m) * x m) ^ (2 : ℕ) = ∑ m ∈ s, w m * x m ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun m hm => ?_
     rw [mul_pow, Real.sq_sqrt (hw m hm)]
   rw [h1, h2, h3] at h
@@ -223,12 +223,12 @@ theorem interval_integral_normSq_mvBandSum_ge {ι : Type} [Fintype ι] [Decidabl
     {K : ℕ} (hK : 1 ≤ K) :
     (1 / 2 * (ℓ - 26 / (Real.pi * D))
         - 4 * (ℓ + 26 / (Real.pi * D)) * ∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)
-        - 2 * ℓ * (Fintype.card ι : ℝ) * (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ 2)
-      * ∑ r, ‖d r‖ ^ 2
-      ≤ ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2 := by
+        - 2 * ℓ * (Fintype.card ι : ℝ) * (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ (2 : ℕ))
+      * ∑ r, ‖d r‖ ^ (2 : ℕ)
+      ≤ ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
   classical
   set b := a + ℓ with hb
-  set Sd : ℝ := ∑ r, ‖d r‖ ^ 2 with hSd
+  set Sd : ℝ := ∑ r, ‖d r‖ ^ (2 : ℕ) with hSd
   set c : ℝ := 26 / (Real.pi * D) with hc
   set ρ : ℝ := τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K)) with hρ
   set N : ℝ := (Fintype.card ι : ℝ) with hN
@@ -261,10 +261,10 @@ theorem interval_integral_normSq_mvBandSum_ge {ι : Type} [Fintype ι] [Decidabl
     unfold mvBandSum; fun_prop
   -- pointwise bounds on the window
   have hpt : ∀ α ∈ Set.Icc a b,
-      1 / 2 * ‖P α‖ ^ 2
-        - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-            + 2 * (ρ ^ 2 * (N * Sd)))
-        ≤ ‖mvBandSum u d θ α‖ ^ 2 := by
+      1 / 2 * ‖P α‖ ^ (2 : ℕ)
+        - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+            + 2 * (ρ ^ (2 : ℕ) * (N * Sd)))
+        ≤ ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
     intro α hα
     have hα0 : 0 ≤ α := le_trans ha hα.1
     have hα1 : α ≤ 1 := le_trans hα.2 hab
@@ -284,53 +284,53 @@ theorem interval_integral_normSq_mvBandSum_ge {ι : Type} [Fintype ι] [Decidabl
         have : α ^ m ≤ 1 := pow_le_one₀ hα0 hα1
         gcongr
       exact mul_le_mul_of_nonneg_right hαm (norm_nonneg _)
-    have hX2 : X ^ 2 ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 := by
+    have hX2 : X ^ (2 : ℕ) ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := by
       have h := sq_sum_weighted_le (Finset.Ico 1 K) (fun m => 1 / (m.factorial : ℝ))
         (fun m => ‖mvPowerSum u d θ m α‖) (fun m _ => by positivity)
       have hw := sum_Ico_inv_factorial_le_two K
-      have hsum0 : 0 ≤ ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 :=
+      have hsum0 : 0 ≤ ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) :=
         Finset.sum_nonneg fun m _ => by positivity
-      calc X ^ 2 ≤ (∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ))) *
-            ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 := h
-        _ ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 :=
+      calc X ^ (2 : ℕ) ≤ (∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ))) *
+            ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := h
+        _ ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_right hw hsum0
-    have hRm2 : ‖Rm α‖ ^ 2 ≤ ρ ^ 2 * (N * Sd) := by
+    have hRm2 : ‖Rm α‖ ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) * (N * Sd) := by
       rw [hρ, hN, hSd]
       exact normSq_mvRemSum_le u d θ hτ0 hτ1 hθ hK hα0 hα1
-    have hQR : ‖Q α + Rm α‖ ^ 2 ≤ 2 * X ^ 2 + 2 * ‖Rm α‖ ^ 2 := by
+    have hQR : ‖Q α + Rm α‖ ^ (2 : ℕ) ≤ 2 * X ^ (2 : ℕ) + 2 * ‖Rm α‖ ^ (2 : ℕ) := by
       have h1 : ‖Q α + Rm α‖ ≤ X + ‖Rm α‖ := (norm_add_le _ _).trans (by linarith)
       have h0 : 0 ≤ ‖Q α + Rm α‖ := norm_nonneg _
       nlinarith [sq_nonneg (X - ‖Rm α‖), norm_nonneg (Rm α), norm_nonneg (Q α)]
-    have hPsq : ‖P α‖ ^ 2 ≤ 2 * ‖mvBandSum u d θ α‖ ^ 2 + 2 * ‖Q α + Rm α‖ ^ 2 := by
+    have hPsq : ‖P α‖ ^ (2 : ℕ) ≤ 2 * ‖mvBandSum u d θ α‖ ^ (2 : ℕ) + 2 * ‖Q α + Rm α‖ ^ (2 : ℕ) := by
       have h0 : 0 ≤ ‖P α‖ := norm_nonneg _
       nlinarith [sq_nonneg (‖mvBandSum u d θ α‖ - ‖Q α + Rm α‖), norm_nonneg (mvBandSum u d θ α),
         norm_nonneg (Q α + Rm α)]
     nlinarith [hX2, hRm2, hQR, hPsq]
   -- integrate the pointwise bound
-  have hint1 : IntervalIntegrable (fun α => 1 / 2 * ‖P α‖ ^ 2
-      - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-          + 2 * (ρ ^ 2 * (N * Sd)))) volume a b := by
+  have hint1 : IntervalIntegrable (fun α => 1 / 2 * ‖P α‖ ^ (2 : ℕ)
+      - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+          + 2 * (ρ ^ (2 : ℕ) * (N * Sd)))) volume a b := by
     apply Continuous.intervalIntegrable
     refine (continuous_const.mul (hcontP.norm.pow 2)).sub (Continuous.add ?_ continuous_const)
     refine continuous_const.mul (continuous_finsetSum _ fun m _ => ?_)
     exact continuous_const.mul ((hcontPm m).norm.pow 2)
-  have hint2 : IntervalIntegrable (fun α => ‖mvBandSum u d θ α‖ ^ 2) volume a b :=
+  have hint2 : IntervalIntegrable (fun α => ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) volume a b :=
     (hcontB.norm.pow 2).intervalIntegrable _ _
   have hmono := intervalIntegral.integral_mono_on hab' hint1 hint2 hpt
   -- evaluate the left-hand integral
-  have hintP : IntervalIntegrable (fun α => ‖P α‖ ^ 2) volume a b :=
+  have hintP : IntervalIntegrable (fun α => ‖P α‖ ^ (2 : ℕ)) volume a b :=
     (hcontP.norm.pow 2).intervalIntegrable _ _
   have hintS : IntervalIntegrable (fun α =>
-      ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2) volume a b := by
+      ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)) volume a b := by
     apply Continuous.intervalIntegrable
     exact continuous_finsetSum _ fun m _ => continuous_const.mul ((hcontPm m).norm.pow 2)
-  have hsplit : (∫ α in a..b, (1 / 2 * ‖P α‖ ^ 2
-      - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-          + 2 * (ρ ^ 2 * (N * Sd)))))
-      = 1 / 2 * (∫ α in a..b, ‖P α‖ ^ 2)
+  have hsplit : (∫ α in a..b, (1 / 2 * ‖P α‖ ^ (2 : ℕ)
+      - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+          + 2 * (ρ ^ (2 : ℕ) * (N * Sd)))))
+      = 1 / 2 * (∫ α in a..b, ‖P α‖ ^ (2 : ℕ))
         - (4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-            (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
-          + 2 * (ρ ^ 2 * (N * Sd)) * ℓ) := by
+            (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
+          + 2 * (ρ ^ (2 : ℕ) * (N * Sd)) * ℓ) := by
     rw [intervalIntegral.integral_sub (hintP.const_mul _)
       ((hintS.const_mul _).add intervalIntegrable_const),
       intervalIntegral.integral_const_mul,
@@ -339,8 +339,8 @@ theorem interval_integral_normSq_mvBandSum_ge {ι : Type} [Fintype ι] [Decidabl
       intervalIntegral.integral_finsetSum]
     · simp only [smul_eq_mul, hb]
       have : ∀ m ∈ Finset.Ico 1 K,
-          (∫ α in a..a + ℓ, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2)
-            = (1 / (m.factorial : ℝ)) * ∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ 2 := by
+          (∫ α in a..a + ℓ, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
+            = (1 / (m.factorial : ℝ)) * ∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := by
         intro m _
         rw [intervalIntegral.integral_const_mul]
       rw [Finset.sum_congr rfl this]
@@ -349,37 +349,37 @@ theorem interval_integral_normSq_mvBandSum_ge {ι : Type} [Fintype ι] [Decidabl
       exact (continuous_const.mul ((hcontPm m).norm.pow 2)).intervalIntegrable _ _
   rw [hsplit] at hmono
   -- the constant-coefficient lower bound and the layer upper bounds
-  have hPlow : (ℓ - c) * Sd ≤ ∫ α in a..b, ‖P α‖ ^ 2 := by
-    have h := interval_integral_normSq_expSum_ge u (fun r => d r * ((θ r ^ 0 : ℝ) : ℂ))
+  have hPlow : (ℓ - c) * Sd ≤ ∫ α in a..b, ‖P α‖ ^ (2 : ℕ) := by
+    have h := interval_integral_normSq_expSum_ge u (fun r => d r * ((θ r ^ (0 : ℕ) : ℝ) : ℂ))
       (a := a) (ℓ := ℓ) hD hsep
-    have hcoef : ∑ r, ‖d r * ((θ r ^ 0 : ℝ) : ℂ)‖ ^ 2 = Sd := by
+    have hcoef : ∑ r, ‖d r * ((θ r ^ (0 : ℕ) : ℝ) : ℂ)‖ ^ (2 : ℕ) = Sd := by
       rw [hSd]
       refine Finset.sum_congr rfl fun r _ => ?_
       simp
     rw [hcoef] at h
     simpa only [hP, mvPowerSum, hb, hc] using h
   have hlayer : ∀ m ∈ Finset.Ico 1 K,
-      (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2) ≤ (ℓ + c) * (τ ^ (2 * m) * Sd) := by
+      (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)) ≤ (ℓ + c) * (τ ^ (2 * m) * Sd) := by
     intro m _
     rw [hb, hc, hSd]
     exact integral_normSq_mvPowerSum_le u d θ (a := a) hD hℓ hθ hsep m
   have hsumbound : ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
       ≤ ∑ m ∈ Finset.Ico 1 K, (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by
     refine Finset.sum_le_sum fun m hm => ?_
     have := hlayer m hm
-    calc (1 / (m.factorial : ℝ)) * (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+    calc (1 / (m.factorial : ℝ)) * (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
         ≤ (1 / (m.factorial : ℝ)) * ((ℓ + c) * (τ ^ (2 * m) * Sd)) := by gcongr
       _ = (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by ring
   have hsum_eq : ∑ m ∈ Finset.Ico 1 K, (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd
       = (ℓ + c) * (∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by
     rw [Finset.mul_sum, Finset.sum_mul]
   have hprod : 4 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
       ≤ 4 * ((ℓ + c) * (∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)) * Sd) := by
     rw [← hsum_eq]
     exact mul_le_mul_of_nonneg_left hsumbound (by norm_num)
-  have hhalf : 1 / 2 * ((ℓ - c) * Sd) ≤ 1 / 2 * ∫ α in a..b, ‖P α‖ ^ 2 :=
+  have hhalf : 1 / 2 * ((ℓ - c) * Sd) ≤ 1 / 2 * ∫ α in a..b, ‖P α‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hPlow (by norm_num)
   rw [hb] at hmono hprod hhalf
   linarith [hmono, hprod, hhalf]
@@ -392,14 +392,14 @@ theorem interval_integral_normSq_mvBandSum_le {ι : Type} [Fintype ι] [Decidabl
     (ha : 0 ≤ a) (hab : a + ℓ ≤ 1) (hτ0 : 0 ≤ τ) (hτ1 : τ ≤ 1)
     (hθ : ∀ r, |θ r| ≤ τ) (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|)
     {K : ℕ} (hK : 1 ≤ K) :
-    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2) ≤
+    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) ≤
       (2 * (ℓ + 26 / (Real.pi * D))
         + 8 * (ℓ + 26 / (Real.pi * D)) * ∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)
-        + 4 * ℓ * (Fintype.card ι : ℝ) * (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ 2)
-      * ∑ r, ‖d r‖ ^ 2 := by
+        + 4 * ℓ * (Fintype.card ι : ℝ) * (τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K))) ^ (2 : ℕ))
+      * ∑ r, ‖d r‖ ^ (2 : ℕ) := by
   classical
   set b := a + ℓ with hb
-  set Sd : ℝ := ∑ r, ‖d r‖ ^ 2 with hSd
+  set Sd : ℝ := ∑ r, ‖d r‖ ^ (2 : ℕ) with hSd
   set c : ℝ := 26 / (Real.pi * D) with hc
   set ρ : ℝ := τ ^ K * ((K.succ : ℝ) / ((K.factorial : ℝ) * K)) with hρ
   set N : ℝ := (Fintype.card ι : ℝ) with hN
@@ -419,10 +419,10 @@ theorem interval_integral_normSq_mvBandSum_le {ι : Type} [Fintype ι] [Decidabl
   have hcontB : Continuous (mvBandSum u d θ) := by
     unfold mvBandSum; fun_prop
   have hpt : ∀ α ∈ Set.Icc a b,
-      ‖mvBandSum u d θ α‖ ^ 2 ≤
-        2 * ‖P α‖ ^ 2
-          + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-            + 4 * (ρ ^ 2 * (N * Sd))) := by
+      ‖mvBandSum u d θ α‖ ^ (2 : ℕ) ≤
+        2 * ‖P α‖ ^ (2 : ℕ)
+          + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+            + 4 * (ρ ^ (2 : ℕ) * (N * Sd))) := by
     intro α hα
     have hα0 : 0 ≤ α := le_trans ha hα.1
     have hα1 : α ≤ 1 := le_trans hα.2 hab
@@ -439,47 +439,47 @@ theorem interval_integral_normSq_mvBandSum_le {ι : Type} [Fintype ι] [Decidabl
         have : α ^ m ≤ 1 := pow_le_one₀ hα0 hα1
         gcongr
       exact mul_le_mul_of_nonneg_right hαm (norm_nonneg _)
-    have hX2 : X ^ 2 ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 := by
+    have hX2 : X ^ (2 : ℕ) ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := by
       have h := sq_sum_weighted_le (Finset.Ico 1 K) (fun m => 1 / (m.factorial : ℝ))
         (fun m => ‖mvPowerSum u d θ m α‖) (fun m _ => by positivity)
       have hw := sum_Ico_inv_factorial_le_two K
-      have hsum0 : 0 ≤ ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 :=
+      have hsum0 : 0 ≤ ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) :=
         Finset.sum_nonneg fun m _ => by positivity
-      calc X ^ 2 ≤ (∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ))) *
-            ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 := h
-        _ ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2 :=
+      calc X ^ (2 : ℕ) ≤ (∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ))) *
+            ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := h
+        _ ≤ 2 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_right hw hsum0
-    have hRm2 : ‖Rm α‖ ^ 2 ≤ ρ ^ 2 * (N * Sd) := by
+    have hRm2 : ‖Rm α‖ ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) * (N * Sd) := by
       rw [hρ, hN, hSd]
       exact normSq_mvRemSum_le u d θ hτ0 hτ1 hθ hK hα0 hα1
-    have hQR : ‖Q α + Rm α‖ ^ 2 ≤ 2 * X ^ 2 + 2 * ‖Rm α‖ ^ 2 := by
+    have hQR : ‖Q α + Rm α‖ ^ (2 : ℕ) ≤ 2 * X ^ (2 : ℕ) + 2 * ‖Rm α‖ ^ (2 : ℕ) := by
       have h1 : ‖Q α + Rm α‖ ≤ X + ‖Rm α‖ := (norm_add_le _ _).trans (by linarith)
       have h0 : 0 ≤ ‖Q α + Rm α‖ := norm_nonneg _
       nlinarith [sq_nonneg (X - ‖Rm α‖), norm_nonneg (Rm α), norm_nonneg (Q α)]
-    have hBsq : ‖mvBandSum u d θ α‖ ^ 2 ≤ 2 * ‖P α‖ ^ 2 + 2 * ‖Q α + Rm α‖ ^ 2 := by
+    have hBsq : ‖mvBandSum u d θ α‖ ^ (2 : ℕ) ≤ 2 * ‖P α‖ ^ (2 : ℕ) + 2 * ‖Q α + Rm α‖ ^ (2 : ℕ) := by
       have h0 : 0 ≤ ‖mvBandSum u d θ α‖ := norm_nonneg _
       nlinarith [sq_nonneg (‖P α‖ - ‖Q α + Rm α‖), norm_nonneg (P α), norm_nonneg (Q α + Rm α)]
     nlinarith [hX2, hRm2, hQR, hBsq]
   have hintS : IntervalIntegrable (fun α =>
-      ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2) volume a b := by
+      ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)) volume a b := by
     apply Continuous.intervalIntegrable
     exact continuous_finsetSum _ fun m _ => continuous_const.mul ((hcontPm m).norm.pow 2)
-  have hintP : IntervalIntegrable (fun α => ‖P α‖ ^ 2) volume a b :=
+  have hintP : IntervalIntegrable (fun α => ‖P α‖ ^ (2 : ℕ)) volume a b :=
     (hcontP.norm.pow 2).intervalIntegrable _ _
-  have hint1 : IntervalIntegrable (fun α => 2 * ‖P α‖ ^ 2
-      + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-          + 4 * (ρ ^ 2 * (N * Sd)))) volume a b :=
+  have hint1 : IntervalIntegrable (fun α => 2 * ‖P α‖ ^ (2 : ℕ)
+      + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+          + 4 * (ρ ^ (2 : ℕ) * (N * Sd)))) volume a b :=
     (hintP.const_mul _).add ((hintS.const_mul _).add intervalIntegrable_const)
-  have hint2 : IntervalIntegrable (fun α => ‖mvBandSum u d θ α‖ ^ 2) volume a b :=
+  have hint2 : IntervalIntegrable (fun α => ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) volume a b :=
     (hcontB.norm.pow 2).intervalIntegrable _ _
   have hmono := intervalIntegral.integral_mono_on hab' hint2 hint1 hpt
-  have hsplit : (∫ α in a..b, (2 * ‖P α‖ ^ 2
-      + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2
-          + 4 * (ρ ^ 2 * (N * Sd)))))
-      = 2 * (∫ α in a..b, ‖P α‖ ^ 2)
+  have hsplit : (∫ α in a..b, (2 * ‖P α‖ ^ (2 : ℕ)
+      + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)
+          + 4 * (ρ ^ (2 : ℕ) * (N * Sd)))))
+      = 2 * (∫ α in a..b, ‖P α‖ ^ (2 : ℕ))
         + (8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-            (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
-          + 4 * (ρ ^ 2 * (N * Sd)) * ℓ) := by
+            (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
+          + 4 * (ρ ^ (2 : ℕ) * (N * Sd)) * ℓ) := by
     rw [intervalIntegral.integral_add (hintP.const_mul _)
       ((hintS.const_mul _).add intervalIntegrable_const),
       intervalIntegral.integral_const_mul,
@@ -488,8 +488,8 @@ theorem interval_integral_normSq_mvBandSum_le {ι : Type} [Fintype ι] [Decidabl
       intervalIntegral.integral_finsetSum]
     · simp only [smul_eq_mul, hb]
       have : ∀ m ∈ Finset.Ico 1 K,
-          (∫ α in a..a + ℓ, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ 2)
-            = (1 / (m.factorial : ℝ)) * ∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ 2 := by
+          (∫ α in a..a + ℓ, (1 / (m.factorial : ℝ)) * ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
+            = (1 / (m.factorial : ℝ)) * ∫ α in a..a + ℓ, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ) := by
         intro m _
         rw [intervalIntegral.integral_const_mul]
       rw [Finset.sum_congr rfl this]
@@ -497,37 +497,37 @@ theorem interval_integral_normSq_mvBandSum_le {ι : Type} [Fintype ι] [Decidabl
     · intro m _
       exact (continuous_const.mul ((hcontPm m).norm.pow 2)).intervalIntegrable _ _
   rw [hsplit] at hmono
-  have hPup : (∫ α in a..b, ‖P α‖ ^ 2) ≤ (ℓ + c) * Sd := by
-    have h := interval_integral_normSq_expSum_le u (fun r => d r * ((θ r ^ 0 : ℝ) : ℂ))
+  have hPup : (∫ α in a..b, ‖P α‖ ^ (2 : ℕ)) ≤ (ℓ + c) * Sd := by
+    have h := interval_integral_normSq_expSum_le u (fun r => d r * ((θ r ^ (0 : ℕ) : ℝ) : ℂ))
       (a := a) (ℓ := ℓ) hD hsep
-    have hcoef : ∑ r, ‖d r * ((θ r ^ 0 : ℝ) : ℂ)‖ ^ 2 = Sd := by
+    have hcoef : ∑ r, ‖d r * ((θ r ^ (0 : ℕ) : ℝ) : ℂ)‖ ^ (2 : ℕ) = Sd := by
       rw [hSd]
       refine Finset.sum_congr rfl fun r _ => ?_
       simp
     rw [hcoef] at h
     simpa only [hP, mvPowerSum, hb, hc] using h
   have hlayer : ∀ m ∈ Finset.Ico 1 K,
-      (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2) ≤ (ℓ + c) * (τ ^ (2 * m) * Sd) := by
+      (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ)) ≤ (ℓ + c) * (τ ^ (2 * m) * Sd) := by
     intro m _
     rw [hb, hc, hSd]
     exact integral_normSq_mvPowerSum_le u d θ (a := a) hD hℓ hθ hsep m
   have hsumbound : ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
       ≤ ∑ m ∈ Finset.Ico 1 K, (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by
     refine Finset.sum_le_sum fun m hm => ?_
     have := hlayer m hm
-    calc (1 / (m.factorial : ℝ)) * (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+    calc (1 / (m.factorial : ℝ)) * (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
         ≤ (1 / (m.factorial : ℝ)) * ((ℓ + c) * (τ ^ (2 * m) * Sd)) := by gcongr
       _ = (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by ring
   have hsum_eq : ∑ m ∈ Finset.Ico 1 K, (ℓ + c) * (τ ^ (2 * m) / (m.factorial : ℝ)) * Sd
       = (ℓ + c) * (∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)) * Sd := by
     rw [Finset.mul_sum, Finset.sum_mul]
   have hprod : 8 * ∑ m ∈ Finset.Ico 1 K, (1 / (m.factorial : ℝ)) *
-        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ 2)
+        (∫ α in a..b, ‖mvPowerSum u d θ m α‖ ^ (2 : ℕ))
       ≤ 8 * ((ℓ + c) * (∑ m ∈ Finset.Ico 1 K, τ ^ (2 * m) / (m.factorial : ℝ)) * Sd) := by
     rw [← hsum_eq]
     exact mul_le_mul_of_nonneg_left hsumbound (by norm_num)
-  have hdouble : 2 * (∫ α in a..b, ‖P α‖ ^ 2) ≤ 2 * ((ℓ + c) * Sd) :=
+  have hdouble : 2 * (∫ α in a..b, ‖P α‖ ^ (2 : ℕ)) ≤ 2 * ((ℓ + c) * Sd) :=
     mul_le_mul_of_nonneg_left hPup (by norm_num)
   rw [hb] at hmono hprod hdouble
   linarith [hmono, hprod, hdouble]

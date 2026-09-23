@@ -11,7 +11,7 @@ such contrasts to vanish through a jet cutoff, their entire span lies in the
 unresolved temporal constraint space.
 
 For two `q`-level factors with `n - 2` spectator factors this gives
-`(q - 1)^2 q^(n - 2)` independent unresolved characters, all already carried
+`(q - 1)^(2 : ℕ) q^(n - 2)` independent unresolved characters, all already carried
 by second-replica rectangles.  When this span is later released, exact
 rank-nullity forces at least the same increase in temporal dimension.
 -/
@@ -225,7 +225,7 @@ theorem rectangleTemporalDimension_gain_lower_bound_of_release
   exact hdrop
 
 /-- In an `n`-site `q`-level product spectrum, endpoint rectangle causality
-leaves at least `(q - 1)^2 q^(n - 2)` unresolved rational characters. -/
+leaves at least `(q - 1)^(2 : ℕ) q^(n - 2)` unresolved rational characters. -/
 theorem quditPair_constraint_finrank_lower_bound
     {q n : ℕ} (a₀ b₀ : Fin q)
     (jet : ℕ → Fin q × Fin q × (Fin (n - 2) → Fin q) → ℂ) (r : ℕ)
@@ -234,7 +234,7 @@ theorem quditPair_constraint_finrank_lower_bound
           (Fin q) (Fin q) (Fin (n - 2) → Fin q) a₀ b₀) (m : Fin r),
         ∑ x, ((rectangleContrastRelation (R := ℚ) a₀ b₀ j x : ℚ) : ℂ) *
           jet m x = 0) :
-    (q - 1) ^ 2 * q ^ (n - 2) ≤
+    (q - 1) ^ (2 : ℕ) * q ^ (n - 2) ≤
       Module.finrank ℚ (rationalSpectralConstraintSpace jet r) := by
   simpa [pow_two] using
     rectangleConstraint_finrank_lower_bound a₀ b₀ jet r hvanish

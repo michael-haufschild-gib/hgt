@@ -79,7 +79,7 @@ private theorem closedSpin_segment (q : XiZeroCopy) (X k : ℝ) {z t : ℝ}
 
 /-- Both primitives factor by their exact original-source moment and characteristic power. -/
 theorem primitive_factor (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
-    primitive q X k z=(z.val-1:ℂ)^2*secondMoment q X k z ∧
+    primitive q X k z=(z.val-1:ℂ)^(2 : ℕ)*secondMoment q X k z ∧
     primitiveFirst q X k z=(z.val-1:ℂ)*firstMoment q X k z := by
   have hs (f : ℝ → ℂ) :
       ((z.val-1:ℝ):ℂ)*(∫ t in (0:ℝ)..1, f (1+t*(z.val-1)))=∫ r in (1:ℝ)..z.val, f r := by
@@ -119,7 +119,7 @@ theorem moments_at_one (q : XiZeroCopy) (X k : ℝ) :
   · simp only [secondMoment,sub_self,mul_zero,add_zero,closedSpin,max_self]
     rw [intervalIntegral.integral_mul_const]
     have hi : (∫ t in (0:ℝ)..1, (1-(t:ℂ)))=(1:ℂ)/2 := by
-      have hd (t : ℝ) : HasDerivAt (fun r : ℝ => (r:ℂ)-(r:ℂ)^2/2) (1-(t:ℂ)) t := by
+      have hd (t : ℝ) : HasDerivAt (fun r : ℝ => (r:ℂ)-(r:ℂ)^(2 : ℕ)/2) (1-(t:ℂ)) t := by
         apply (((hasDerivAt_id t).ofReal_comp).sub (((hasDerivAt_id t).ofReal_comp.pow 2).div_const 2)).congr_deriv
         simp only [id_eq,Complex.ofReal_one]
         ring
@@ -247,7 +247,7 @@ private theorem profile_zero (s : ℂ) (u : ℝ) : clockProfile s u 0=0 := by
 /-- This profile is exactly the original reduced wave-image source coefficient. -/
 theorem clockProfile_original (s a : ℂ) (tau x : ℝ) :
     timeReducedCoefficient s a tau x=
-      -(radialUnit x:ℂ)*(1-(radialUnit x:ℂ)^2)*sourceAmplitude s 0 a 1 x*
+      -(radialUnit x:ℂ)*(1-(radialUnit x:ℂ)^(2 : ℕ))*sourceAmplitude s 0 a 1 x*
         clockProfile s (radialUnit x) (tau+x) := by
   rw [D4BMReducedOpticalTail.timeReducedCoefficient_closed]
   have hu : 1+(radialUnit x:ℂ) ≠ 0 := by
@@ -306,12 +306,12 @@ theorem clockDensity_terminal (q : XiZeroCopy) (branch : Bool) (u w V : ℝ) :
     simpa only [Pi.mul_apply,id_eq,hm,mul_zero,sub_self,zero_mul,add_zero] using! hd.deriv
 
 private def Z (x h : ℝ) : ℝ := invariant h x x
-private def A (x h : ℝ) : ℝ := Real.sinh h/Real.cosh x^2
-private def B (x h : ℝ) : ℝ := Real.cosh h/Real.cosh x^2
+private def A (x h : ℝ) : ℝ := Real.sinh h/Real.cosh x^(2 : ℕ)
+private def B (x h : ℝ) : ℝ := Real.cosh h/Real.cosh x^(2 : ℕ)
 private def ratioOne (h : ℝ) : ℝ := Real.sinh h/(Real.cosh h+1)
-private def ratioTwo (x h : ℝ) : ℝ := Real.cosh x^2/(Real.cosh h+1)
+private def ratioTwo (x h : ℝ) : ℝ := Real.cosh x^(2 : ℕ)/(Real.cosh h+1)
 
-private theorem Z_eq (x h : ℝ) : Z x h=1+(Real.cosh h-1)/Real.cosh x^2 := by
+private theorem Z_eq (x h : ℝ) : Z x h=1+(Real.cosh h-1)/Real.cosh x^(2 : ℕ) := by
   have hc := (Real.cosh_pos x).ne'
   unfold Z invariant
   field_simp [hc]
@@ -346,11 +346,11 @@ theorem diagonal_original_trace (q : XiZeroCopy) (x h X k : ℝ) :
   simp
 
 private theorem diagonal_ratios (x : ℝ) {h : ℝ} (hh : 0 < h) :
-    (Z x h-1)/A x h=ratioOne h ∧ (Z x h-1)/(A x h)^2=ratioTwo x h := by
+    (Z x h-1)/A x h=ratioOne h ∧ (Z x h-1)/(A x h)^(2 : ℕ)=ratioTwo x h := by
   have hc := (Real.cosh_pos x).ne'
   have hs := (Real.sinh_pos_iff.mpr hh).ne'
   have hp : Real.cosh h+1 ≠ 0 := by linarith [Real.cosh_pos h]
-  have he : Real.sinh h^2=(Real.cosh h-1)*(Real.cosh h+1) := by
+  have he : Real.sinh h^(2 : ℕ)=(Real.cosh h-1)*(Real.cosh h+1) := by
     nlinarith [Real.cosh_sq_sub_sinh_sq h]
   rw [Z_eq]
   dsimp [A,ratioOne,ratioTwo]
@@ -362,23 +362,23 @@ private abbrev W (q : XiZeroCopy) (branch : Bool) (x V : ℝ) :=
 /-- The actual twice-transposed source-delay boundary expression on the direct diagonal. -/
 def diagonalCurrent (q : XiZeroCopy) (branch : Bool) (x V X k h : ℝ) : ℂ :=
   -W q branch x V h*primitiveFirst q X k (Z x h)/(A x h:ℂ)+
-    (deriv (W q branch x V) h/(A x h:ℂ)^2-
-      W q branch x V h*(B x h:ℂ)/(A x h:ℂ)^3)*primitive q X k (Z x h)
+    (deriv (W q branch x V) h/(A x h:ℂ)^(2 : ℕ)-
+      W q branch x V h*(B x h:ℂ)/(A x h:ℂ)^(3 : ℕ))*primitive q X k (Z x h)
 
 /-- The complete twice-transposed finite source bulk, including both onset derivatives. -/
 def diagonalBulk (q : XiZeroCopy) (branch : Bool) (x V X k h : ℝ) : ℂ :=
-  primitive q X k (Z x h)*(deriv (deriv (W q branch x V)) h/(A x h:ℂ)^2-
-    3*(B x h:ℂ)*deriv (W q branch x V) h/(A x h:ℂ)^3+
-    (3*(B x h:ℂ)^2-(A x h:ℂ)^2)*W q branch x V h/(A x h:ℂ)^4)
+  primitive q X k (Z x h)*(deriv (deriv (W q branch x V)) h/(A x h:ℂ)^(2 : ℕ)-
+    3*(B x h:ℂ)*deriv (W q branch x V) h/(A x h:ℂ)^(3 : ℕ)+
+    (3*(B x h:ℂ)^(2 : ℕ)-(A x h:ℂ)^(2 : ℕ))*W q branch x V h/(A x h:ℂ)^(4 : ℕ))
 
 private def regularCurrent (q : XiZeroCopy) (branch : Bool) (x V X k h : ℝ) : ℂ :=
   -W q branch x V h*(ratioOne h:ℂ)*firstMoment q X k (Z x h)+
-    (deriv (W q branch x V) h*(ratioOne h:ℂ)^2-
+    (deriv (W q branch x V) h*(ratioOne h:ℂ)^(2 : ℕ)-
       W q branch x V h*(B x h:ℂ)*(ratioOne h:ℂ)*(ratioTwo x h:ℂ))*secondMoment q X k (Z x h)
 private def regularBulk (q : XiZeroCopy) (branch : Bool) (x V X k h : ℝ) : ℂ :=
-  (ratioOne h:ℂ)^2*secondMoment q X k (Z x h)*deriv (deriv (W q branch x V)) h-
+  (ratioOne h:ℂ)^(2 : ℕ)*secondMoment q X k (Z x h)*deriv (deriv (W q branch x V)) h-
     3*(B x h:ℂ)*(ratioOne h:ℂ)*(ratioTwo x h:ℂ)*secondMoment q X k (Z x h)*deriv (W q branch x V) h+
-    (3*(B x h:ℂ)^2-(A x h:ℂ)^2)*(ratioTwo x h:ℂ)^2*secondMoment q X k (Z x h)*W q branch x V h
+    (3*(B x h:ℂ)^(2 : ℕ)-(A x h:ℂ)^(2 : ℕ))*(ratioTwo x h:ℂ)^(2 : ℕ)*secondMoment q X k (Z x h)*W q branch x V h
 
 private theorem regular_eq (q : XiZeroCopy) (branch : Bool) (x V X k : ℝ) {h : ℝ} (hh : 0 < h) :
     diagonalCurrent q branch x V X k h=regularCurrent q branch x V X k h ∧
@@ -388,7 +388,7 @@ private theorem regular_eq (q : XiZeroCopy) (branch : Bool) (x V X k : ℝ) {h :
   change primitiveFirst q X k (Z x h)=_ at hJ1
   obtain ⟨hr,ht⟩ := diagonal_ratios x hh
   have hr' : ((Z x h:ℂ)-1)/(A x h:ℂ)=(ratioOne h:ℂ) := by exact_mod_cast hr
-  have ht' : ((Z x h:ℂ)-1)/(A x h:ℂ)^2=(ratioTwo x h:ℂ) := by exact_mod_cast ht
+  have ht' : ((Z x h:ℂ)-1)/(A x h:ℂ)^(2 : ℕ)=(ratioTwo x h:ℂ) := by exact_mod_cast ht
   have ha : (A x h:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (A_pos x hh).ne'
   constructor
   · dsimp [diagonalCurrent,regularCurrent]
@@ -524,19 +524,19 @@ theorem diagonal_finite_transfer (q : XiZeroCopy) (branch : Bool) (x X k : ℝ) 
 theorem diagonal_regular_formula (q : XiZeroCopy) (branch : Bool) (x V X k : ℝ) (h : Ioi (0:ℝ)) :
     diagonalCurrent q branch x V X k h=
       -W q branch x V h*(Real.sinh h:ℂ)/(Real.cosh h+1:ℂ)*firstMoment q X k (Z x h)+
-      ((Real.sinh h:ℂ)^2*deriv (W q branch x V) h-
-        (Real.cosh h:ℂ)*(Real.sinh h:ℂ)*W q branch x V h)/(Real.cosh h+1:ℂ)^2*
+      ((Real.sinh h:ℂ)^(2 : ℕ)*deriv (W q branch x V) h-
+        (Real.cosh h:ℂ)*(Real.sinh h:ℂ)*W q branch x V h)/(Real.cosh h+1:ℂ)^(2 : ℕ)*
           secondMoment q X k (Z x h) ∧
     diagonalBulk q branch x V X k h=
-      secondMoment q X k (Z x h)/(Real.cosh h+1:ℂ)^2*
-        ((Real.sinh h:ℂ)^2*deriv (deriv (W q branch x V)) h-
+      secondMoment q X k (Z x h)/(Real.cosh h+1:ℂ)^(2 : ℕ)*
+        ((Real.sinh h:ℂ)^(2 : ℕ)*deriv (deriv (W q branch x V)) h-
           3*(Real.cosh h:ℂ)*(Real.sinh h:ℂ)*deriv (W q branch x V) h+
-          (2*(Real.cosh h:ℂ)^2+1)*W q branch x V h) := by
+          (2*(Real.cosh h:ℂ)^(2 : ℕ)+1)*W q branch x V h) := by
   obtain ⟨hcur,hbulk⟩ := regular_eq q branch x V X k h.property
   have hc : (Real.cosh x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.cosh_pos x).ne'
   have hp : (Real.cosh h+1:ℂ) ≠ 0 := by
     exact_mod_cast (show Real.cosh h+1 ≠ 0 by linarith [Real.cosh_pos h])
-  have hh : (Real.cosh h:ℂ)^2-(Real.sinh h:ℂ)^2=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq h.val
+  have hh : (Real.cosh h:ℂ)^(2 : ℕ)-(Real.sinh h:ℂ)^(2 : ℕ)=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq h.val
   constructor
   · rw [hcur]
     dsimp [regularCurrent,A,B,ratioOne,ratioTwo]
@@ -546,7 +546,7 @@ theorem diagonal_regular_formula (q : XiZeroCopy) (branch : Bool) (x V X k : ℝ
     dsimp [regularBulk,A,B,ratioOne,ratioTwo]
     simp only [Complex.ofReal_div,Complex.ofReal_pow,Complex.ofReal_add,Complex.ofReal_one]
     linear_combination (norm := (field_simp [hc,hp]; ring))
-      (secondMoment q X k (Z x h)*W q branch x V h/(Real.cosh h+1:ℂ)^2)*hh
+      (secondMoment q X k (Z x h)*W q branch x V h/(Real.cosh h+1:ℂ)^(2 : ℕ))*hh
 
 private def reflectedSource (image : Bool) (y : ℝ) : ℝ := if image then -y else y
 
@@ -653,17 +653,17 @@ private abbrev fullClock (q : XiZeroCopy) (branch : Bool) (x y V : ℝ) :=
 /-- Original twice-transposed boundary current on either complete causal branch. -/
 def delayCurrent (image : Bool) (q : XiZeroCopy) (branch : Bool) (x y V X k h : ℝ) : ℂ :=
   -fullClock q branch x y V h*primitiveFirst q X k (delayArgument image x y h)/(delaySlope image x y h:ℂ)+
-    (deriv (fullClock q branch x y V) h/(delaySlope image x y h:ℂ)^2-
-      fullClock q branch x y V h*(delayAcceleration image x y h:ℂ)/(delaySlope image x y h:ℂ)^3)*
+    (deriv (fullClock q branch x y V) h/(delaySlope image x y h:ℂ)^(2 : ℕ)-
+      fullClock q branch x y V h*(delayAcceleration image x y h:ℂ)/(delaySlope image x y h:ℂ)^(3 : ℕ))*
         primitive q X k (delayArgument image x y h)
 
 /-- Complete source bulk after the actual delay transpose, retaining the original finite clock. -/
 def delayBulk (image : Bool) (q : XiZeroCopy) (branch : Bool) (x y V X k h : ℝ) : ℂ :=
   primitive q X k (delayArgument image x y h)*
-    (deriv (deriv (fullClock q branch x y V)) h/(delaySlope image x y h:ℂ)^2-
-      3*(delayAcceleration image x y h:ℂ)*deriv (fullClock q branch x y V) h/(delaySlope image x y h:ℂ)^3+
-      (3*(delayAcceleration image x y h:ℂ)^2-(delaySlope image x y h:ℂ)^2)*
-        fullClock q branch x y V h/(delaySlope image x y h:ℂ)^4)
+    (deriv (deriv (fullClock q branch x y V)) h/(delaySlope image x y h:ℂ)^(2 : ℕ)-
+      3*(delayAcceleration image x y h:ℂ)*deriv (fullClock q branch x y V) h/(delaySlope image x y h:ℂ)^(3 : ℕ)+
+      (3*(delayAcceleration image x y h:ℂ)^(2 : ℕ)-(delaySlope image x y h:ℂ)^(2 : ℕ))*
+        fullClock q branch x y V h/(delaySlope image x y h:ℂ)^(4 : ℕ))
 
 /-- The general delay chart is the literal radius-frozen physical spin-two trace. -/
 theorem delay_original_trace (image : Bool) (q : XiZeroCopy) (x y h X k : ℝ) :

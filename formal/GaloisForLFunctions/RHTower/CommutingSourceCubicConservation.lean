@@ -6,7 +6,7 @@ Commuting-source cubic conservation without compact displacement.
 
 Paper proof. For commuting orthogonal P,Q and orthogonal R, set
 U=Q-PQ, V=P-PQ, W=I-U-V, A=WRU, B=WRV, J=VRU,
-C=(R-P)^3-(R-Q)^3-(Q-P)^3. The joint source projections U,V,W are
+C=(R-P)^(3 : ℕ)-(R-Q)^(3 : ℕ)-(Q-P)^(3 : ℕ). The joint source projections U,V,W are
 orthogonal and sum to I. Projection algebra gives
   UCU=-(A* A+2 J* J), VCV=B* B+2 J J*, WCW=A A*-B B*.
 If C is nuclear, the negative U-compression has a summable nonnegative
@@ -192,8 +192,8 @@ theorem commutingSourceCubicAssociator_nuclear_conservation
     rw [hnegative] at hn
     simpa only [neg_one_smul,neg_neg] using memSchattenClass_one_smul hn (-1 : ℂ)
   have hdiag := hsumGram.one_summable_inner_diag
-  have hsum : Summable (fun i => ‖A (hsBasis ℂ H i)‖^2 +
-      ‖J (hsBasis ℂ H i)‖^2+‖J (hsBasis ℂ H i)‖^2) := by
+  have hsum : Summable (fun i => ‖A (hsBasis ℂ H i)‖^(2 : ℕ) +
+      ‖J (hsBasis ℂ H i)‖^(2 : ℕ)+‖J (hsBasis ℂ H i)‖^(2 : ℕ)) := by
     rw [← RCLike.summable_ofReal (𝕜 := ℂ)]
     refine hdiag.congr fun i => ?_
     simp only [add_apply,inner_add_right,mul_apply_eq_comp,

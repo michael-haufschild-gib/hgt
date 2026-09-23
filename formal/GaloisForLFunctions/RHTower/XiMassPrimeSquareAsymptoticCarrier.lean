@@ -441,7 +441,7 @@ theorem integrable_xiMassPrimeSquareHigherBottomAtom
     Integrable (xiMassBottomPrimeAtomIntegrand a d tau
       (xiMassPrimeSquareHigherExponent pk)) := by
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs htau).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic htau).const_mul
       (Real.exp (|tau.im| * d) *
         xiMassPrimePowerCriticalWeight pk.1 (2 * pk.2 + 3)))
     (continuous_xiMassPrimeSquareHigherBottomAtom hd hda tau pk).aestronglyMeasurable
@@ -462,7 +462,7 @@ theorem summable_integral_norm_xiMassPrimeSquareHigherBottomAtom
   have hmajor : Integrable (fun x : ℝ =>
       (E * xiMassPrimePowerCriticalWeight pk.1 (2 * pk.2 + 3)) *
         Real.exp (-(tau.re * |x|))) :=
-    (integrable_exp_neg_mul_abs htau).const_mul _
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic htau).const_mul _
   calc
     (∫ x : ℝ, ‖xiMassBottomPrimeAtomIntegrand a d tau
         (xiMassPrimeSquareHigherExponent pk) x‖) ≤
@@ -567,7 +567,7 @@ theorem integrable_xiMassPrimeSquareHigherBottomIntegrand
         (((1 + 2 * d : ℝ) : ℂ) + 2 * x * I)) := by
   let T : ℝ := ∑' pk : Nat.Primes × ℕ, xiPrimeLogHigherValuationWeight pk
   let C : ℝ := Real.exp (|tau.im| * d) * T
-  have hmajor := (integrable_exp_neg_mul_abs htau).const_mul C
+  have hmajor := (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic htau).const_mul C
   apply Integrable.mono' hmajor
   · exact (continuous_xiMassBottomTest_of_nonneg hd hda tau).aestronglyMeasurable.mul
       (aestronglyMeasurable_xiPrimeLogHigherValuation_line (1 + 2 * d))

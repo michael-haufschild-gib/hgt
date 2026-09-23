@@ -11,11 +11,11 @@ theorem eventually_routeT_adjacentDefect_centralInterval_base_or_forcedSecond
     {D : ℝ} (hD : 0 < D) :
     ∀ᶠ T : ℝ in atTop,
       ∀ {L X : ℕ} {mu N0 H R b : ℝ},
-      1 < X → 1 ≤ L → L ≤ X → X < (L + 1) ^ 60 →
+      1 < X → 1 ≤ L → L ≤ X → X < (L + 1) ^ (60 : ℕ) →
       T ^ mu = (X : ℝ) →
       (L : ℝ) ≤ T ^ (2 * (mu / 120)) →
       4 / 3 ≤ mu → mu ≤ 19 / 9 →
-      1 < N0 / (2 ^ 120 : ℝ) →
+      1 < N0 / (2 ^ (120 : ℕ) : ℝ) →
       (X : ℝ) ≤ 4 * N0 → N0 ≤ (X : ℝ) →
       0 < H → 0 < R → H ≤ R →
       T + 2 ≤ b → b ≤ 2 * T →

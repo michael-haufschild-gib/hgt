@@ -20,17 +20,17 @@ set_option maxHeartbeats 4000000
 /-- Determinant of the complex signed even-jet Hankel matrix. -/
 def signedEvenHankelThreeDetC
     (p₀ p₂ p₄ p₆ p₈ : ℂ) : ℂ :=
-  p₀ * p₄ * p₈ - p₀ * p₆ ^ 2 - p₂ ^ 2 * p₈ +
-    2 * p₂ * p₄ * p₆ - p₄ ^ 3
+  p₀ * p₄ * p₈ - p₀ * p₆ ^ (2 : ℕ) - p₂ ^ (2 : ℕ) * p₈ +
+    2 * p₂ * p₄ * p₆ - p₄ ^ (3 : ℕ)
 
 /-- Degree-twelve modular polynomial governing rank-three reflected eighth-jet curvature. -/
 def modularThetaReflectedEighthSeamPolynomial (X : ℂ) : ℂ :=
-  3444525 / 512 - 80754975 / 2048 * X + 4194195795 / 65536 * X ^ 2 -
-    2646917595 / 65536 * X ^ 3 + 5201727255 / 524288 * X ^ 4 -
-    1723813569 / 1048576 * X ^ 5 + 4581650223 / 16777216 * X ^ 6 -
-    612571059 / 16777216 * X ^ 7 + 35927199 / 16777216 * X ^ 8 +
-    1999197 / 268435456 * X ^ 9 - 117855 / 134217728 * X ^ 10 -
-    13245 / 536870912 * X ^ 11 + 14025 / 8589934592 * X ^ 12
+  3444525 / 512 - 80754975 / 2048 * X + 4194195795 / 65536 * X ^ (2 : ℕ) -
+    2646917595 / 65536 * X ^ (3 : ℕ) + 5201727255 / 524288 * X ^ (4 : ℕ) -
+    1723813569 / 1048576 * X ^ (5 : ℕ) + 4581650223 / 16777216 * X ^ (6 : ℕ) -
+    612571059 / 16777216 * X ^ (7 : ℕ) + 35927199 / 16777216 * X ^ (8 : ℕ) +
+    1999197 / 268435456 * X ^ (9 : ℕ) - 117855 / 134217728 * X ^ (10 : ℕ) -
+    13245 / 536870912 * X ^ (11 : ℕ) + 14025 / 8589934592 * X ^ (12 : ℕ)
 
 /-- Exact ten-jet elimination for the rank-three signed reflected Hankel seam. -/
 theorem modularThetaReflectedEighthSeamJetElimination
@@ -58,12 +58,12 @@ theorem modularThetaReflectedEighthSeamJetElimination
     let f : ℕ → ℂ :=
       fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
     signedEvenHankelThreeDetC
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (2 * f 0 * f 6 + 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
-      M ^ 6 * modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) =
+      M ^ (6 : ℕ) * modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   have hh1 := hh 0
   have hz1 := hz 0
   have hr1 := hr 0
@@ -194,12 +194,12 @@ theorem modularThetaReflectedEighthSeamClosure_of_ode
       (iteratedDeriv (n + 2) h 0 -
         (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
     signedEvenHankelThreeDetC
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (2 * f 0 * f 6 + 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
-      M ^ 6 * modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) =
+      M ^ (6 : ℕ) * modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   let jh : ℕ → ℂ := fun n => iteratedDeriv n h 0
   let jz : ℕ → ℂ := fun n => iteratedDeriv n z 0
   let jr : ℕ → ℂ := fun n => iteratedDeriv n r 0

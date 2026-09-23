@@ -23,7 +23,7 @@ set_option synthInstance.maxHeartbeats 2000000
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K] {m n : ℕ}
 variable [Fact (0 < m)] [Fact (0 < n)] [Fact (1 < m)] [Fact (1 < n)]
 
-noncomputable local instance : DecidableEq (criticalGeometricSheet K m n) :=
+noncomputable local instance criticalBlockFieldAllSchurUnramifiedInst1 : DecidableEq (criticalGeometricSheet K m n) :=
   Classical.decEq _
 
 /-- Inertia at every valuation above the Schur place lies in a non-singleton block stabilizer. -/

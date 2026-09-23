@@ -339,10 +339,10 @@ theorem pointedCutoffWardTrace_self_eq_phase
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi chi : H) (horth : inner ℂ psi chi = 0) :
     pointedCutoffWardTrace e (pointedFisherConnection psi chi) psi chi =
-      (((‖chi‖ ^ 2 - ‖e chi‖ ^ 2) * ‖e psi‖ ^ 2 +
-        (‖psi‖ ^ 2 - ‖e psi‖ ^ 2) * ‖e chi‖ ^ 2 -
-        2 * ‖inner ℂ (e chi) (e psi)‖ ^ 2 +
-        4 * (inner ℂ (e chi) (e psi)).im ^ 2 : ℝ) : ℂ) := by
+      (((‖chi‖ ^ (2 : ℕ) - ‖e chi‖ ^ (2 : ℕ)) * ‖e psi‖ ^ (2 : ℕ) +
+        (‖psi‖ ^ (2 : ℕ) - ‖e psi‖ ^ (2 : ℕ)) * ‖e chi‖ ^ (2 : ℕ) -
+        2 * ‖inner ℂ (e chi) (e psi)‖ ^ (2 : ℕ) +
+        4 * (inner ℂ (e chi) (e psi)).im ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [pointedCutoffWardTrace_self_eq_hsNormSq,
     hsNormSq_pointedFisherConnection_cutoffCommutator_phase
       e he heAdj psi chi horth]

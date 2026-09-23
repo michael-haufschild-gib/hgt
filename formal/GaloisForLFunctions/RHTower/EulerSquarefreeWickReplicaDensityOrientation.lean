@@ -27,7 +27,7 @@ noncomputable section
 
 /-- Every prime-depth EWQ character remains an involution. -/
 theorem eulerWickQuadraticDepthCharacter_sq (x : PrimePowerClockIndex) :
-    eulerWickQuadraticDepthCharacter x ^ 2 = 1 := by
+    eulerWickQuadraticDepthCharacter x ^ (2 : ℕ) = 1 := by
   unfold eulerWickQuadraticDepthCharacter
   rw [← pow_mul, Nat.mul_comm (x.2 + 1) 2, pow_mul,
     quadraticResidueProductPrimeCoefficient_sq, one_pow]

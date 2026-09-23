@@ -54,7 +54,7 @@ theorem barbanVehovLongFirstLogKernelContinuous_minEndpoint_eq
       1 / (Nat.lcm q r : ℝ) *
         (Real.log ((min q r : ℕ) : ℝ) *
             Real.log ((L : ℝ) / (r : ℝ)) +
-          Real.log ((min q r : ℕ) : ℝ) ^ 2 / 2) := by
+          Real.log ((min q r : ℕ) : ℝ) ^ (2 : ℕ) / 2) := by
   have hm : 0 < min q r := lt_min hq hr
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have her := log_natDiv_eq_sub_log_of_dvd he (Nat.dvd_lcm_right q r)
@@ -71,10 +71,10 @@ theorem barbanVehovLongSecondLogKernelContinuous_minEndpoint_eq
         (Real.log ((min q r : ℕ) : ℝ) *
             Real.log ((L : ℝ) / (q : ℝ)) *
             Real.log ((L : ℝ) / (r : ℝ)) +
-          Real.log ((min q r : ℕ) : ℝ) ^ 2 / 2 *
+          Real.log ((min q r : ℕ) : ℝ) ^ (2 : ℕ) / 2 *
             (Real.log ((L : ℝ) / (q : ℝ)) +
               Real.log ((L : ℝ) / (r : ℝ))) +
-          Real.log ((min q r : ℕ) : ℝ) ^ 3 / 3) := by
+          Real.log ((min q r : ℕ) : ℝ) ^ (3 : ℕ) / 3) := by
   have hm : 0 < min q r := lt_min hq hr
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have heq := log_natDiv_eq_sub_log_of_dvd he (Nat.dvd_lcm_left q r)
@@ -97,7 +97,7 @@ def barbanVehovIncludedLongCrossPolynomialMain (ell : ℝ) (M : ℕ) : ℝ :=
       (Nat.lcm p.1 p.2 : ℝ)) *
         (Real.log ((min p.1 p.2 : ℕ) : ℝ) *
             (ell - Real.log (p.2 : ℝ)) +
-          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ 2 / 2)
+          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ (2 : ℕ) / 2)
 
 /-- Polynomial main term for the included-head differentiated-square moment. -/
 def barbanVehovIncludedLongDerivativePolynomialMain (ell : ℝ) (M : ℕ) : ℝ :=
@@ -106,9 +106,9 @@ def barbanVehovIncludedLongDerivativePolynomialMain (ell : ℝ) (M : ℕ) : ℝ 
       (Nat.lcm p.1 p.2 : ℝ) *
         (Real.log ((min p.1 p.2 : ℕ) : ℝ) *
             (ell - Real.log (p.1 : ℝ)) * (ell - Real.log (p.2 : ℝ)) +
-          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ 2 / 2 *
+          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ (2 : ℕ) / 2 *
             (2 * ell - Real.log (p.1 : ℝ) - Real.log (p.2 : ℝ)) +
-          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ 3 / 3)
+          Real.log ((min p.1 p.2 : ℕ) : ℝ) ^ (3 : ℕ) / 3)
 
 theorem barbanVehovIncludedLongBaseContinuous_eq_polynomialMain
     {L M : ℕ} (hL : 0 < L) :

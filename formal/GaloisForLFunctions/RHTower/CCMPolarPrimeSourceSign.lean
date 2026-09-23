@@ -59,13 +59,13 @@ theorem neg_ccmPolarPotential_secondDerivative_eq_polarKernel (x y : ℝ) :
 def polarCosinePrimitive (ξ t : ℝ) : ℝ :=
   (Real.sinh (t / 2) * Real.cos (ξ * t) +
       2 * ξ * Real.cosh (t / 2) * Real.sin (ξ * t)) /
-    (ξ ^ 2 + 1 / 4)
+    (ξ ^ (2 : ℕ) + 1 / 4)
 
 /-- The primitive differentiates to `2 cosh(t/2) cos(ξt)`. -/
 theorem hasDerivAt_polarCosinePrimitive (ξ t : ℝ) :
     HasDerivAt (polarCosinePrimitive ξ)
       (2 * Real.cosh (t / 2) * Real.cos (ξ * t)) t := by
-  have hden : ξ ^ 2 + 1 / 4 ≠ 0 := by positivity
+  have hden : ξ ^ (2 : ℕ) + 1 / 4 ≠ 0 := by positivity
   have hsinh : HasDerivAt (fun u : ℝ => Real.sinh (u / 2))
       ((1 / 2 : ℝ) * Real.cosh (t / 2)) t := by
     apply ((Real.hasDerivAt_sinh (t / 2)).comp t
@@ -90,11 +90,11 @@ theorem hasDerivAt_polarCosinePrimitive (ξ t : ℝ) :
   rw [show polarCosinePrimitive ξ = fun u : ℝ =>
       (Real.sinh (u / 2) * Real.cos (ξ * u) +
         2 * ξ * (Real.cosh (u / 2) * Real.sin (ξ * u))) /
-          (ξ ^ 2 + 1 / 4) by
+          (ξ ^ (2 : ℕ) + 1 / 4) by
     funext u
     rw [polarCosinePrimitive]
     ring]
-  apply (hnum.div_const (ξ ^ 2 + 1 / 4)).congr_deriv
+  apply (hnum.div_const (ξ ^ (2 : ℕ) + 1 / 4)).congr_deriv
   field_simp [hden]
   ring
 
@@ -104,9 +104,9 @@ theorem integral_polarCosineSource_Ioc
     (∫ h in Ioc (0 : ℝ) (2 * a),
       2 * Real.cosh (h / 2) * Real.cos (ξ * h)) =
       Real.sinh a * Real.cos (2 * a * ξ) /
-          (ξ ^ 2 + 1 / 4) +
+          (ξ ^ (2 : ℕ) + 1 / 4) +
         2 * ξ * Real.cosh a * Real.sin (2 * a * ξ) /
-          (ξ ^ 2 + 1 / 4) := by
+          (ξ ^ (2 : ℕ) + 1 / 4) := by
   rw [← intervalIntegral.integral_of_le (by linarith : (0 : ℝ) ≤ 2 * a)]
   have hint : IntervalIntegrable
       (fun h : ℝ => 2 * Real.cosh (h / 2) * Real.cos (ξ * h)) volume 0 (2 * a) := by

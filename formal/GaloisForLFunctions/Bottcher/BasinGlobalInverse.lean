@@ -28,7 +28,7 @@ theorem exists_global_branch_with_inverse_of_mem_mandelbrot (c : ℂ) (hcM : c �
       (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       AnalyticOnNhd ℂ ψ {w : ℂ | 1 < ‖w‖} ∧
       (∀ w : ℂ, 1 < ‖w‖ → ψ w ∈ (filledJulia c)ᶜ) ∧
       (∀ w : ℂ, 1 < ‖w‖ → β (ψ w) = w) ∧

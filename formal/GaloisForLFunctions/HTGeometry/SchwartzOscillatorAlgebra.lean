@@ -74,7 +74,7 @@ theorem numberCLM_annihilationCLM (f : 𝓢(ℝ, ℂ)) :
 /-! ## The linear form of the `L²` bounds -/
 
 theorem le_half_add_of_sq_le_mul {x a b : ℝ} (_hx : 0 ≤ x) (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (h : x ^ 2 ≤ a * b) : x ≤ (a + b) / 2 := by
+    (h : x ^ (2 : ℕ) ≤ a * b) : x ≤ (a + b) / 2 := by
   nlinarith [sq_nonneg (a - b), sq_nonneg (x - (a + b) / 2)]
 
 /-- The linear `L²` bound for the creation operator. -/

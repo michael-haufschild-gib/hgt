@@ -27,8 +27,8 @@ theorem largeSieve_gallagher_circle (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) (
     (hδ : 0 < δ) (hne : s.Nonempty)
     (hsep : ∀ x ∈ s, ∀ y ∈ s, x ≠ y → δ ≤ toIntDist (x - y))
     (hmem : ∀ x ∈ s, δ / 2 ≤ x ∧ x + δ / 2 ≤ 1) :
-    ∑ x ∈ s, ‖expSum N c x‖ ^ 2
-      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ x ∈ s, ‖expSum N c x‖ ^ (2 : ℕ)
+      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   refine largeSieve_gallagher_finset N hN c s hδ hne (fun x hx y hy hxy => ?_) hmem
   exact le_trans (hsep x hx y hy hxy) (toIntDist_le_abs (x - y))
 

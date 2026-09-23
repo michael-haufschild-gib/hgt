@@ -6,7 +6,7 @@ arcs, so each arc carries `N^(1-3v)` blocks.  A block admits the trivial bound `
 Farey denominator is comparable to its length, square-root cancellation `N^(v/2)`.  Combining the two
 levels — within an arc, and across arcs — in the four possible ways gives
 
-    both coherent            **N^1**
+    both coherent            **N^(1 : ℕ)**
     blocks incoherent only   **N^(1/2 + v)**
     arcs incoherent only     **N^(1 - v)**
     both incoherent          **N^(1/2)**

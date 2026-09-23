@@ -57,12 +57,12 @@ theorem egbFixedChargeAAlignedAngularCorrection_contDiffOn (w φ : ℝ) :
   let y : EGBAlignedForceState × ℝ → ℝ :=
     fun z => ((sin z.2) + z.1.2.2.1) / (1 + z.1.2.2.1 * (sin z.2))
   let j : EGBAlignedForceState × ℝ → ℝ :=
-    fun z => (1 - z.1.2.2.1 ^ 2) / (1 + z.1.2.2.1 * (sin z.2)) ^ 2
+    fun z => (1 - z.1.2.2.1 ^ (2 : ℕ)) / (1 + z.1.2.2.1 * (sin z.2)) ^ (2 : ℕ)
   let y₁ : EGBAlignedForceState × ℝ → ℝ :=
-    fun z => z.1.2.1 * (1 - (sin z.2) ^ 2) / (1 + z.1.2.2.1 * (sin z.2))
+    fun z => z.1.2.1 * (1 - (sin z.2) ^ (2 : ℕ)) / (1 + z.1.2.2.1 * (sin z.2))
   let j₁ : EGBAlignedForceState × ℝ → ℝ :=
-    fun z => -z.1.2.1 * (2 * (sin z.2) + z.1.2.2.1 * (1 + (sin z.2) ^ 2)) /
-      (1 + z.1.2.2.1 * (sin z.2)) ^ 2
+    fun z => -z.1.2.1 * (2 * (sin z.2) + z.1.2.2.1 * (1 + (sin z.2) ^ (2 : ℕ))) /
+      (1 + z.1.2.2.1 * (sin z.2)) ^ (2 : ℕ)
   have hY : ContDiffAt ℝ ∞ y p := by dsimp [y]; fun_prop (disch := positivity)
   have hJ : ContDiffAt ℝ ∞ j p := by dsimp [j]; fun_prop (disch := positivity)
   have hY₁ : ContDiffAt ℝ ∞ y₁ p := by dsimp [y₁]; fun_prop (disch := positivity)
@@ -87,7 +87,7 @@ theorem egbFixedChargeAAlignedAngularCorrection_contDiffOn (w φ : ℝ) :
   have hB := egbFixedChargeAGibbsBarrierCoefficient_pos w φ
   change ContDiffAt ℝ ∞ (fun z =>
     (egbFixedChargeAGibbsOddRationalFamily w φ z.1.1 (y z) * j z +
-      4 * egbFixedChargeAGibbsBarrierCoefficient w φ * y₁ z * (y z ^ 2 + y z * (sin z.2) + (sin z.2) ^ 2 - 1) * j z +
+      4 * egbFixedChargeAGibbsBarrierCoefficient w φ * y₁ z * (y z ^ (2 : ℕ) + y z * (sin z.2) + (sin z.2) ^ (2 : ℕ) - 1) * j z +
       egbFixedChargeAGibbsLeadingKernel w φ (sin z.2) * j₁ z -
       egbFixedChargeAGibbsLeadingKernel w φ (sin z.2) / egbFixedChargeAGibbsBarrierCoefficient w φ * z.1.2.2.2.1) / z.1.2.2.2.2 * cos z.2) p
   unfold egbFixedChargeAGibbsLeadingKernel

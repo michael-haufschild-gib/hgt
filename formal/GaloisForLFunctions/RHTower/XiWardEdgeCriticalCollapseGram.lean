@@ -22,13 +22,13 @@ noncomputable section
 `π/x₂`, independently of the first width and of both heights. -/
 theorem integral_mul_lorentzianHalves_le {x₁ x₂ : ℝ} (hx₁ : 0 < x₁)
     (hx₂ : 0 < x₂) (β₁ β₂ : ℝ) :
-    ∫ t : ℝ, (x₁ / (x₁ ^ 2 + (t + β₁) ^ 2)) *
-      (x₂ / (x₂ ^ 2 + (t + β₂) ^ 2)) ≤ π / x₂ := by
+    ∫ t : ℝ, (x₁ / (x₁ ^ (2 : ℕ) + (t + β₁) ^ (2 : ℕ))) *
+      (x₂ / (x₂ ^ (2 : ℕ) + (t + β₂) ^ (2 : ℕ))) ≤ π / x₂ := by
   rw [integral_mul_lorentzianHalves_general hx₁ hx₂ β₁ β₂]
   have hs : 0 < x₁ + x₂ := by linarith
-  have hD : (0 : ℝ) < (x₁ + x₂) ^ 2 + (β₁ - β₂) ^ 2 := by positivity
-  calc π * (x₁ + x₂) / ((x₁ + x₂) ^ 2 + (β₁ - β₂) ^ 2)
-      ≤ π * (x₁ + x₂) / (x₁ + x₂) ^ 2 :=
+  have hD : (0 : ℝ) < (x₁ + x₂) ^ (2 : ℕ) + (β₁ - β₂) ^ (2 : ℕ) := by positivity
+  calc π * (x₁ + x₂) / ((x₁ + x₂) ^ (2 : ℕ) + (β₁ - β₂) ^ (2 : ℕ))
+      ≤ π * (x₁ + x₂) / (x₁ + x₂) ^ (2 : ℕ) :=
         div_le_div₀ (by positivity) le_rfl (by positivity)
           (by nlinarith [sq_nonneg (β₁ - β₂)])
     _ = π / (x₁ + x₂) := by
@@ -39,7 +39,7 @@ theorem integral_mul_lorentzianHalves_le {x₁ x₂ : ℝ} (hx₁ : 0 < x₁)
 /-- **Self-energy divergence**: the squared mass of a collapsing kernel
 tends to infinity. -/
 theorem tendsto_integral_sq_lorentzianHalf_atTop (β : ℝ) :
-    Tendsto (fun x : ℝ => ∫ t : ℝ, (x / (x ^ 2 + (t + β) ^ 2)) ^ 2)
+    Tendsto (fun x : ℝ => ∫ t : ℝ, (x / (x ^ (2 : ℕ) + (t + β) ^ (2 : ℕ))) ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) atTop := by
   have h1 : Tendsto (fun x : ℝ => x⁻¹) (nhdsWithin 0 (Set.Ioi 0))
       atTop := tendsto_inv_nhdsGT_zero
@@ -55,10 +55,10 @@ Lorentzian half is dominated by four times the width-`x₂` one whenever
 `x₁ ≤ 4x₂` and `x₂ ≤ 4x₁`. -/
 theorem lorentzianHalf_le_four_mul {x₁ x₂ u : ℝ} (hx₁ : 0 < x₁)
     (hx₂ : 0 < x₂) (h12 : x₁ ≤ 4 * x₂) (h21 : x₂ ≤ 4 * x₁) :
-    x₁ / (x₁ ^ 2 + u ^ 2) ≤ 4 * (x₂ / (x₂ ^ 2 + u ^ 2)) := by
-  have hD1 : (0 : ℝ) < x₁ ^ 2 + u ^ 2 := by positivity
-  have hD2 : (0 : ℝ) < x₂ ^ 2 + u ^ 2 := by positivity
-  rw [show 4 * (x₂ / (x₂ ^ 2 + u ^ 2)) = 4 * x₂ / (x₂ ^ 2 + u ^ 2) from by
+    x₁ / (x₁ ^ (2 : ℕ) + u ^ (2 : ℕ)) ≤ 4 * (x₂ / (x₂ ^ (2 : ℕ) + u ^ (2 : ℕ))) := by
+  have hD1 : (0 : ℝ) < x₁ ^ (2 : ℕ) + u ^ (2 : ℕ) := by positivity
+  have hD2 : (0 : ℝ) < x₂ ^ (2 : ℕ) + u ^ (2 : ℕ) := by positivity
+  rw [show 4 * (x₂ / (x₂ ^ (2 : ℕ) + u ^ (2 : ℕ))) = 4 * x₂ / (x₂ ^ (2 : ℕ) + u ^ (2 : ℕ)) from by
     ring, div_le_div_iff₀ hD1 hD2]
   nlinarith [sq_nonneg u, mul_pos hx₁ hx₂,
     mul_nonneg (mul_nonneg hx₁.le hx₂.le) (sq_nonneg u),
@@ -70,11 +70,11 @@ theorem re_xiAntiCausalWardSchwarzPairResponse_line_eq
     (xiAntiCausalWardSchwarzPairResponse q
         (((σ : ℝ) : ℂ) + I * (t : ℂ))).re =
       2 * ((σ + (xiRightCenteredZero q.1).re) /
-        ((σ + (xiRightCenteredZero q.1).re) ^ 2 +
-          (t + (xiRightCenteredZero q.1).im) ^ 2)) +
+        ((σ + (xiRightCenteredZero q.1).re) ^ (2 : ℕ) +
+          (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ))) +
       2 * ((σ + (xiRightCenteredZero q.1).re) /
-        ((σ + (xiRightCenteredZero q.1).re) ^ 2 +
-          (t - (xiRightCenteredZero q.1).im) ^ 2)) := by
+        ((σ + (xiRightCenteredZero q.1).re) ^ (2 : ℕ) +
+          (t - (xiRightCenteredZero q.1).im) ^ (2 : ℕ))) := by
   rw [xiAntiCausalWardSchwarzPairResponse, xiRightCenteredZero_conj q.1]
   have h1re : ((((σ : ℝ) : ℂ) + I * (t : ℂ)) +
       xiRightCenteredZero q.1).re =

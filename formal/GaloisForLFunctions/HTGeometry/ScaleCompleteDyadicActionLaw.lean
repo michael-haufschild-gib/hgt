@@ -15,10 +15,10 @@ def bilateralDyadicGaussianActionMass (action : ℝ) (N : ℕ) : ℝ :=
 
 theorem bilateralDyadicGaussianActionMass_eq (action : ℝ) (N : ℕ) :
     bilateralDyadicGaussianActionMass action N =
-      Real.exp (-((((1 / 2 : ℝ) ^ N) * action) ^ 2) / 2) -
-        Real.exp (-((((2 : ℝ) ^ N) * action) ^ 2) / 2) := by
+      Real.exp (-((((1 / 2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2) -
+        Real.exp (-((((2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2) := by
   let f : ℕ → ℝ := fun j =>
-    Real.exp (-((((2 : ℝ) ^ j * (1 / 2 : ℝ) ^ N) * action) ^ 2) / 2)
+    Real.exp (-((((2 : ℝ) ^ j * (1 / 2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2)
   have hterm : ∀ j,
       dyadicGaussianActionKernel
           (((2 : ℝ) ^ j * (1 / 2 : ℝ) ^ N) * action) =
@@ -65,39 +65,39 @@ theorem tendsto_bilateralDyadicGaussianActionMass (action : ℝ) :
         atTop (𝓝 0) := by
       simpa using hloBase.mul_const action
     have hloExponent : Tendsto
-        (fun N : ℕ => -((((1 / 2 : ℝ) ^ N) * action) ^ 2) / 2)
+        (fun N : ℕ => -((((1 / 2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2)
         atTop (𝓝 0) := by
       convert ((hloArg.pow 2).neg.div_const 2) using 1
       all_goals norm_num
     have hlo : Tendsto
         (fun N : ℕ => Real.exp
-          (-((((1 / 2 : ℝ) ^ N) * action) ^ 2) / 2))
+          (-((((1 / 2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2))
         atTop (𝓝 1) := by
       convert Real.continuous_exp.continuousAt.tendsto.comp hloExponent using 1
       · rfl
       · rw [Real.exp_zero]
     have hhiBase : Tendsto (fun N : ℕ => (4 : ℝ) ^ N)
         atTop atTop := tendsto_pow_atTop_atTop_of_one_lt (by norm_num)
-    have ha2 : 0 < action ^ 2 / 2 := by positivity
+    have ha2 : 0 < action ^ (2 : ℕ) / 2 := by positivity
     have hhiPositive : Tendsto
-        (fun N : ℕ => (4 : ℝ) ^ N * (action ^ 2 / 2))
+        (fun N : ℕ => (4 : ℝ) ^ N * (action ^ (2 : ℕ) / 2))
         atTop atTop := hhiBase.atTop_mul_const ha2
     have hhiExponent : Tendsto
-        (fun N : ℕ => -((((2 : ℝ) ^ N) * action) ^ 2) / 2)
+        (fun N : ℕ => -((((2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2)
         atTop atBot := by
       have hneg := tendsto_neg_atTop_atBot.comp hhiPositive
       convert hneg using 1
       funext N
-      change -((((2 : ℝ) ^ N) * action) ^ 2) / 2 =
-        -((4 : ℝ) ^ N * (action ^ 2 / 2))
-      have hfour : (4 : ℝ) ^ N = ((2 : ℝ) ^ N) ^ 2 := by
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul,
+      change -((((2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2 =
+        -((4 : ℝ) ^ N * (action ^ (2 : ℕ) / 2))
+      have hfour : (4 : ℝ) ^ N = ((2 : ℝ) ^ N) ^ (2 : ℕ) := by
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul,
           mul_comm 2 N, pow_mul]
       rw [hfour]
       ring
     have hhi : Tendsto
         (fun N : ℕ => Real.exp
-          (-((((2 : ℝ) ^ N) * action) ^ 2) / 2))
+          (-((((2 : ℝ) ^ N) * action) ^ (2 : ℕ)) / 2))
         atTop (𝓝 0) := Real.tendsto_exp_atBot.comp hhiExponent
     have hsub := hlo.sub hhi
     norm_num at hsub

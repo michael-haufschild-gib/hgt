@@ -30,25 +30,25 @@ namespace GaloisForLFunctions.HTGeometry
 
 theorem eq_zero_of_harmonic {u a : ℝ} (hu : u ≠ 0) {y y' : ℝ → ℝ}
     (hy : ∀ x, HasDerivAt y (y' x) x)
-    (hy' : ∀ x, HasDerivAt y' (-(u ^ 2) * y x) x)
+    (hy' : ∀ x, HasDerivAt y' (-(u ^ (2 : ℕ)) * y x) x)
     (ha : y a = 0) (ha' : y' a = 0) : ∀ x, y x = 0 := by
-  set E : ℝ → ℝ := fun x => (y' x) ^ 2 + u ^ 2 * (y x) ^ 2 with hE
+  set E : ℝ → ℝ := fun x => (y' x) ^ (2 : ℕ) + u ^ (2 : ℕ) * (y x) ^ (2 : ℕ) with hE
   have hEd : ∀ x, HasDerivAt E 0 x := by
     intro x
-    have hA : HasDerivAt y' (-(u ^ 2) * y x) x := hy' x
+    have hA : HasDerivAt y' (-(u ^ (2 : ℕ)) * y x) x := hy' x
     have hB : HasDerivAt y (y' x) x := hy x
-    have h1 : HasDerivAt (fun t => (y' t) ^ 2) (2 * y' x * (-(u ^ 2) * y x)) x := by
+    have h1 : HasDerivAt (fun t => (y' t) ^ (2 : ℕ)) (2 * y' x * (-(u ^ (2 : ℕ)) * y x)) x := by
       have hp := HasDerivAt.pow hA 2
-      have hval : ((2 : ℕ) : ℝ) * y' x ^ (2 - 1) * (-(u ^ 2) * y x)
-          = 2 * y' x * (-(u ^ 2) * y x) := by norm_num
+      have hval : ((2 : ℕ) : ℝ) * y' x ^ (2 - 1) * (-(u ^ (2 : ℕ)) * y x)
+          = 2 * y' x * (-(u ^ (2 : ℕ)) * y x) := by norm_num
       rwa [hval] at hp
-    have h2 : HasDerivAt (fun t => u ^ 2 * (y t) ^ 2) (u ^ 2 * (2 * y x * y' x)) x := by
+    have h2 : HasDerivAt (fun t => u ^ (2 : ℕ) * (y t) ^ (2 : ℕ)) (u ^ (2 : ℕ) * (2 * y x * y' x)) x := by
       have hp := HasDerivAt.pow hB 2
       have hval : ((2 : ℕ) : ℝ) * y x ^ (2 - 1) * y' x = 2 * y x * y' x := by norm_num
       rw [hval] at hp
-      exact HasDerivAt.const_mul (u ^ 2) hp
+      exact HasDerivAt.const_mul (u ^ (2 : ℕ)) hp
     have h3 := h1.add h2
-    have hzero : 2 * y' x * (-(u ^ 2) * y x) + u ^ 2 * (2 * y x * y' x) = 0 := by ring
+    have hzero : 2 * y' x * (-(u ^ (2 : ℕ)) * y x) + u ^ (2 : ℕ) * (2 * y x * y' x) = 0 := by ring
     rwa [hzero] at h3
   have hdiff : Differentiable ℝ E := fun x => (hEd x).differentiableAt
   have hderiv : ∀ x, deriv E x = 0 := fun x => (hEd x).deriv
@@ -57,14 +57,14 @@ theorem eq_zero_of_harmonic {u a : ℝ} (hu : u ≠ 0) {y y' : ℝ → ℝ}
     rw [hE]
     simp [ha, ha']
   intro x
-  have hx : (y' x) ^ 2 + u ^ 2 * (y x) ^ 2 = 0 := by
+  have hx : (y' x) ^ (2 : ℕ) + u ^ (2 : ℕ) * (y x) ^ (2 : ℕ) = 0 := by
     have h := hconst x
     rw [hEa] at h
     exact h
-  have h1 : (0 : ℝ) ≤ (y' x) ^ 2 := sq_nonneg _
-  have h2 : (0 : ℝ) ≤ u ^ 2 * (y x) ^ 2 := mul_nonneg (sq_nonneg _) (sq_nonneg _)
-  have h3 : u ^ 2 * (y x) ^ 2 = 0 := by linarith
-  have h4 : (y x) ^ 2 = 0 := by
+  have h1 : (0 : ℝ) ≤ (y' x) ^ (2 : ℕ) := sq_nonneg _
+  have h2 : (0 : ℝ) ≤ u ^ (2 : ℕ) * (y x) ^ (2 : ℕ) := mul_nonneg (sq_nonneg _) (sq_nonneg _)
+  have h3 : u ^ (2 : ℕ) * (y x) ^ (2 : ℕ) = 0 := by linarith
+  have h4 : (y x) ^ (2 : ℕ) = 0 := by
     rcases mul_eq_zero.mp h3 with h | h
     · exact absurd (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h) hu
     · exact h
@@ -131,7 +131,7 @@ theorem hasDerivAt_sinKernelIntegral (a u : ℝ) {F : ℝ → ℝ} (hF : Continu
 theorem hasDerivAt_sinKernelIntegral_deriv (a u : ℝ) {F : ℝ → ℝ} (hF : Continuous F) (ξ : ℝ) :
     HasDerivAt (fun y => u * (Real.cos (u * y) * (∫ t in a..y, Real.cos (u * t) * F t)
         + Real.sin (u * y) * (∫ t in a..y, Real.sin (u * t) * F t)))
-      (u * F ξ - u ^ 2 * sinKernelIntegral a u F ξ) ξ := by
+      (u * F ξ - u ^ (2 : ℕ) * sinKernelIntegral a u F ξ) ξ := by
   have hc : Continuous fun t : ℝ => Real.cos (u * t) * F t := by fun_prop
   have hs : Continuous fun t : ℝ => Real.sin (u * t) * F t := by fun_prop
   have hP : HasDerivAt (fun y => ∫ t in a..y, Real.cos (u * t) * F t)
@@ -146,12 +146,12 @@ theorem hasDerivAt_sinKernelIntegral_deriv (a u : ℝ) {F : ℝ → ℝ} (hF : C
   have hsin : HasDerivAt (fun y : ℝ => Real.sin (u * y)) (Real.cos (u * ξ) * u) ξ := HasDerivAt.sin hlin
   have hcos : HasDerivAt (fun y : ℝ => Real.cos (u * y)) (-Real.sin (u * ξ) * u) ξ := HasDerivAt.cos hlin
   have h := ((hcos.mul hP).add (hsin.mul hQ)).const_mul u
-  have hpy : Real.sin (u * ξ) ^ 2 + Real.cos (u * ξ) ^ 2 = 1 := Real.sin_sq_add_cos_sq _
+  have hpy : Real.sin (u * ξ) ^ (2 : ℕ) + Real.cos (u * ξ) ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq _
   have hval : u * (-Real.sin (u * ξ) * u * (∫ t in a..ξ, Real.cos (u * t) * F t)
         + Real.cos (u * ξ) * (Real.cos (u * ξ) * F ξ)
       + (Real.cos (u * ξ) * u * (∫ t in a..ξ, Real.sin (u * t) * F t)
         + Real.sin (u * ξ) * (Real.sin (u * ξ) * F ξ)))
-      = u * F ξ - u ^ 2 * sinKernelIntegral a u F ξ := by
+      = u * F ξ - u ^ (2 : ℕ) * sinKernelIntegral a u F ξ := by
     rw [sinKernelIntegral]
     linear_combination (u * F ξ) * hpy
   rwa [hval] at h
@@ -162,7 +162,7 @@ theorem hasDerivAt_sinKernelIntegral_deriv (a u : ℝ) {F : ℝ → ℝ} (hF : C
 theorem isOscillatoryLGSolution_of_ode {b : ℝ} (hu : u ≠ 0)
     (hψ : Continuous ψ) (hWc : Continuous W)
     (hW : ∀ x, HasDerivAt W (W' x) x)
-    (hW' : ∀ x, HasDerivAt W' (-(u ^ 2 + ψ x) * W x) x)
+    (hW' : ∀ x, HasDerivAt W' (-(u ^ (2 : ℕ) + ψ x) * W x) x)
     (hWa : W a = 1) (hW'a : W' a = 0) :
     IsOscillatoryLGSolution a u ψ W b := by
   set F : ℝ → ℝ := fun t => ψ t * W t with hFdef
@@ -179,18 +179,18 @@ theorem isOscillatoryLGSolution_of_ode {b : ℝ} (hu : u ≠ 0)
     have hc : HasDerivAt (fun y : ℝ => Real.cos (u * (y - a))) (-Real.sin (u * (x - a)) * u) x :=
       HasDerivAt.cos (hshift x)
     exact hc.sub ((hasDerivAt_sinKernelIntegral a u hF x).const_mul (1 / u))
-  have hR'd : ∀ x, HasDerivAt R' (-(u ^ 2) * R x - F x) x := by
+  have hR'd : ∀ x, HasDerivAt R' (-(u ^ (2 : ℕ)) * R x - F x) x := by
     intro x
     have h2 : HasDerivAt (fun y : ℝ => Real.sin (u * (y - a))) (Real.cos (u * (x - a)) * u) x :=
       HasDerivAt.sin (hshift x)
     have h3 := (h2.neg).mul_const u
-    have hcval : -(Real.cos (u * (x - a)) * u) * u = -(u ^ 2) * Real.cos (u * (x - a)) := by ring
+    have hcval : -(Real.cos (u * (x - a)) * u) * u = -(u ^ (2 : ℕ)) * Real.cos (u * (x - a)) := by ring
     rw [hcval] at h3
     have hd := (hasDerivAt_sinKernelIntegral_deriv a u hF x).const_mul (1 / u)
     have h := h3.sub hd
-    have hval : -(u ^ 2) * Real.cos (u * (x - a))
-        - 1 / u * (u * F x - u ^ 2 * sinKernelIntegral a u F x)
-        = -(u ^ 2) * R x - F x := by
+    have hval : -(u ^ (2 : ℕ)) * Real.cos (u * (x - a))
+        - 1 / u * (u * F x - u ^ (2 : ℕ) * sinKernelIntegral a u F x)
+        = -(u ^ (2 : ℕ)) * R x - F x := by
       rw [hRdef]
       field_simp
       ring
@@ -204,10 +204,10 @@ theorem isOscillatoryLGSolution_of_ode {b : ℝ} (hu : u ≠ 0)
         + Real.sin (u * a) * (∫ t in a..a, Real.sin (u * t) * F t))) = 0
     simp [intervalIntegral.integral_same]
   have hdiff : ∀ x, HasDerivAt (fun y => W y - R y) (W' x - R' x) x := fun x => (hW x).sub (hRd x)
-  have hdiff2 : ∀ x, HasDerivAt (fun y => W' y - R' y) (-(u ^ 2) * (W x - R x)) x := by
+  have hdiff2 : ∀ x, HasDerivAt (fun y => W' y - R' y) (-(u ^ (2 : ℕ)) * (W x - R x)) x := by
     intro x
     have h := (hW' x).sub (hR'd x)
-    have hval : -(u ^ 2 + ψ x) * W x - (-(u ^ 2) * R x - F x) = -(u ^ 2) * (W x - R x) := by
+    have hval : -(u ^ (2 : ℕ) + ψ x) * W x - (-(u ^ (2 : ℕ)) * R x - F x) = -(u ^ (2 : ℕ)) * (W x - R x) := by
       rw [hFdef]
       ring
     rwa [hval] at h

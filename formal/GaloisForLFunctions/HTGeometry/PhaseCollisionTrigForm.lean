@@ -64,7 +64,7 @@ theorem card_freqSupport_collisionFreq_le (q : Fin 4 → α) :
 
 /-- The coefficient of one quartic register term. -/
 def collisionCoeff (e : ι → α → ℂ) (q : Fin 4 → α) : ℂ :=
-  ((Fintype.card α : ℂ))⁻¹ ^ 2 *
+  ((Fintype.card α : ℂ))⁻¹ ^ (2 : ℕ) *
     ∑ j, e j (q 0) * conj (e j (q 1)) * e j (q 2) * conj (e j (q 3))
 
 /-! ## The expansion -/
@@ -90,12 +90,12 @@ theorem conj_finiteComplexInner_uniformPhaseSeed (e : ι → α → ℂ) (x : α
   rw [map_mul, ← charLift_neg_index, neg_neg]
 
 theorem sqrt_inv_pow_four (D : ℕ) :
-    ((Real.sqrt ((D : ℝ))⁻¹ : ℝ) : ℂ) ^ 4 = ((D : ℂ))⁻¹ ^ 2 := by
+    ((Real.sqrt ((D : ℝ))⁻¹ : ℝ) : ℂ) ^ (4 : ℕ) = ((D : ℂ))⁻¹ ^ (2 : ℕ) := by
   have hnn : (0 : ℝ) ≤ ((D : ℝ))⁻¹ := by positivity
-  have h : (Real.sqrt ((D : ℝ))⁻¹) ^ 4 = (((D : ℝ))⁻¹) ^ 2 := by
-    have h2 : (Real.sqrt ((D : ℝ))⁻¹) ^ 2 = ((D : ℝ))⁻¹ := Real.sq_sqrt hnn
-    calc (Real.sqrt ((D : ℝ))⁻¹) ^ 4 = ((Real.sqrt ((D : ℝ))⁻¹) ^ 2) ^ 2 := by ring
-      _ = (((D : ℝ))⁻¹) ^ 2 := by rw [h2]
+  have h : (Real.sqrt ((D : ℝ))⁻¹) ^ (4 : ℕ) = (((D : ℝ))⁻¹) ^ (2 : ℕ) := by
+    have h2 : (Real.sqrt ((D : ℝ))⁻¹) ^ (2 : ℕ) = ((D : ℝ))⁻¹ := Real.sq_sqrt hnn
+    calc (Real.sqrt ((D : ℝ))⁻¹) ^ (4 : ℕ) = ((Real.sqrt ((D : ℝ))⁻¹) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (((D : ℝ))⁻¹) ^ (2 : ℕ) := by rw [h2]
   rw [← Complex.ofReal_pow, h]
   push_cast
   ring
@@ -110,16 +110,16 @@ theorem phaseCollision_eq_trigLift (e : ι → α → ℂ) (x : α → ℝ) :
       f = fun j a => charLift (-(Pi.single a 1)) x * e j a := ⟨_, rfl⟩
   obtain ⟨g, hgdef⟩ : ∃ g : ι → α → ℂ,
       g = fun j b => charLift (Pi.single b 1) x * (starRingEnd ℂ) (e j b) := ⟨_, rfl⟩
-  have hterm : ∀ j : ι, ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2 : ℝ) : ℂ)
-      = s ^ 4 * ∑ q : Fin 4 → α, f j (q 0) * g j (q 1) * f j (q 2) * g j (q 3) := by
+  have hterm : ∀ j : ι, ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ) : ℝ) : ℂ)
+      = s ^ (4 : ℕ) * ∑ q : Fin 4 → α, f j (q 0) * g j (q 1) * f j (q 2) * g j (q 3) := by
     intro j
     obtain ⟨z, hzdef⟩ : ∃ z, z = finiteComplexInner (uniformPhaseSeed x) (e j) := ⟨_, rfl⟩
     have hz2 : ((finitePureStateFidelity (uniformPhaseSeed x) (e j) : ℝ) : ℂ)
         = (starRingEnd ℂ) z * z := by
       rw [finitePureStateFidelity, Complex.sq_norm, ← hzdef]
       exact Complex.normSq_eq_conj_mul_self
-    have hz4 : ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2 : ℝ) : ℂ)
-        = ((starRingEnd ℂ) z * z) ^ 2 := by
+    have hz4 : ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ) : ℝ) : ℂ)
+        = ((starRingEnd ℂ) z * z) ^ (2 : ℕ) := by
       rw [Complex.ofReal_pow, hz2]
     rw [hz4]
     have hzf : z = s * ∑ a, f j a := by
@@ -146,7 +146,7 @@ theorem phaseCollision_eq_trigLift (e : ι → α → ℂ) (x : α → ℝ) :
     rw [hzg, hzf, ← hprod]
     ring
   have hcast : ((phaseCollision e x : ℝ) : ℂ)
-      = ∑ j, ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2 : ℝ) : ℂ) := by
+      = ∑ j, ((finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [phaseCollision, Complex.ofReal_sum]
   have hAq : ∀ (j : ι) (q : Fin 4 → α), f j (q 0) * g j (q 1) * f j (q 2) * g j (q 3)
       = (e j (q 0) * (starRingEnd ℂ) (e j (q 1)) * e j (q 2) * (starRingEnd ℂ) (e j (q 3)))
@@ -206,7 +206,7 @@ theorem trigLift_mul {κ σ : Type*} (P : Finset κ) (Q : Finset σ)
 /-- **The square of the collision is a trigonometric polynomial** indexed by eight register
 points. -/
 theorem phaseCollision_sq_eq_trigLift (e : ι → α → ℂ) (x : α → ℝ) :
-    ((phaseCollision e x ^ 2 : ℝ) : ℂ)
+    ((phaseCollision e x ^ (2 : ℕ) : ℝ) : ℂ)
       = trigLift (Finset.univ : Finset ((Fin 4 → α) × (Fin 4 → α)))
         (fun r => collisionFreq r.1 + collisionFreq r.2)
         (fun r => collisionCoeff e r.1 * collisionCoeff e r.2) x := by
@@ -265,7 +265,7 @@ def sqCoeff (e : ι → α → ℂ) (r : Fin 8 → α) : ℂ :=
 
 /-- **The square of the collision is a trigonometric polynomial on a plain octuple index.** -/
 theorem phaseCollision_sq_eq_trigLift_fin8 (e : ι → α → ℂ) (x : α → ℝ) :
-    ((phaseCollision e x ^ 2 : ℝ) : ℂ)
+    ((phaseCollision e x ^ (2 : ℕ) : ℝ) : ℂ)
       = trigLift (Finset.univ : Finset (Fin 8 → α)) sqFreq (sqCoeff e) x := by
   rw [phaseCollision_sq_eq_trigLift, trigLift, trigLift]
   refine Eq.trans ?_ (Equiv.sum_comp (pairToFin8 α)

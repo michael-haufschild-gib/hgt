@@ -85,7 +85,7 @@ theorem primeWordSquarefreeMarker_separates_parityBlindWords :
 /-- Positive capstone: the same pair is invisible after binary specialization but separated before
 specialization by its canonical squarefree source marker. -/
 theorem multivariateMarker_repairs_binaryLift_support_blindness
-    (σ : Fin 2 → ℤ) (hσ : ∀ i, σ i ^ 2 = 1) :
+    (σ : Fin 2 → ℤ) (hσ : ∀ i, σ i ^ (2 : ℕ) = 1) :
     binaryLiftCharacter σ singletonLiftMultiplicity =
         binaryLiftCharacter σ doubledSecondLiftMultiplicity ∧
       primeWordSquarefreeMarker singletonLiftWord ≠

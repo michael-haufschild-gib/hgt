@@ -496,7 +496,7 @@ end Bottcher
 
 namespace Bottcher
 
-/-- **`−4 = (1+i)^4` in `ℂ`.** Over any field containing `ℂ` (so containing `i` and all roots of
+/-- **`−4 = (1+i)^(4 : ℕ)` in `ℂ`.** Over any field containing `ℂ` (so containing `i` and all roots of
 unity), `−4` is a 4th power. This collapses the **2-power Vahlen–Capelli** irreducibility criterion:
 `X^{2ⁿ} − C g` (`n ≥ 2`) is irreducible iff `g` is not a square AND `−4g` is not a 4th power — but
 since `−4` is a 4th power, `−4g` is a 4th power ⟺ `g` is a 4th power ⟹ `g` is a square; so the second

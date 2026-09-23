@@ -116,7 +116,7 @@ theorem routeRFixedOrientationSymmetricHermitianHeadReading_defect
         (routeRCartierHeadTransport rho routeRFixedGammaHeadVector) -
       routeRFixedHermitianHeadReading A A C routeRFixedGammaHeadVector =
     A * ((Complex.normSq (burnolCartierForwardHeadGain rho) - 1) +
-      (Real.log 2) ^ 2 *
+      (Real.log 2) ^ (2 : ℕ) *
         (Complex.normSq (burnolCartierCosineHeadGain rho) - 1)) := by
   rw [routeRFixedHermitianHeadReading_transport hzero hone]
   simp only [routeRFixedGammaHeadVector, Complex.normSq_one,
@@ -149,7 +149,7 @@ theorem xiDivisor_routeRFixedOrientationSymmetricHermitianHeadReading_strictly_a
     xiDivisor_burnolSoninGammaHeadEnergy_cartierZeroTransfer rho hright] at hbase
   have hcore :
       0 < (Complex.normSq (burnolCartierForwardHeadGain (rho : ℂ)) - 1) +
-        (Real.log 2) ^ 2 *
+        (Real.log 2) ^ (2 : ℕ) *
           (Complex.normSq (burnolCartierCosineHeadGain (rho : ℂ)) - 1) := by
     rw [← Complex.sq_norm, ← Complex.sq_norm]
     linarith

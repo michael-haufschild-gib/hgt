@@ -31,22 +31,22 @@ theorem primeLogRank_mobiusDistortion_sqrtQuarterSquareWindow
       1 + 4 * ((Nat.primeCounting' (N + 1) : ℝ) / (N : ℝ)) ≤
         finiteCriticalPrimeMobiusPhaseDistortion (Nat.primesBelow (N + 1)) ∧
       (∫ ω,
-          ‖∑ n ∈ Finset.Icc 1 (N ^ 2),
-            (sqrtQuarterWindowCoeff n : ℂ) * X n ω‖ ^ 2 ∂steinhausMeasure =
-        ∑ n ∈ Finset.Icc 1 (N ^ 2), sqrtQuarterWindowCoeff n ^ 2) ∧
+          ‖∑ n ∈ Finset.Icc 1 (N ^ (2 : ℕ)),
+            (sqrtQuarterWindowCoeff n : ℂ) * X n ω‖ ^ (2 : ℕ) ∂steinhausMeasure =
+        ∑ n ∈ Finset.Icc 1 (N ^ (2 : ℕ)), sqrtQuarterWindowCoeff n ^ (2 : ℕ)) ∧
       (∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹) ≤
         ∫ ω,
-          ‖∑ n ∈ Finset.Icc 1 (N ^ 2),
-            (sqrtQuarterWindowCoeff n : ℂ) * X n ω‖ ^ 2 ∂steinhausMeasure ∧
+          ‖∑ n ∈ Finset.Icc 1 (N ^ (2 : ℕ)),
+            (sqrtQuarterWindowCoeff n : ℂ) * X n ω‖ ^ (2 : ℕ) ∂steinhausMeasure ∧
       (∑ p ∈ Nat.primesBelow (N + 1), (p : ℝ)⁻¹) -
           dpolySincOffDiagonalEnergy
-            sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ 2)) T ≤
+            sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ (2 : ℕ))) T ≤
         (∫ t in (-T)..T,
-          ‖dpoly sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ 2)) t‖ ^ 2) / (2 * T) := by
+          ‖dpoly sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ (2 : ℕ))) t‖ ^ (2 : ℕ)) / (2 * T) := by
   have hrank := primeLogRank_and_mobiusPhaseDistortion N
   have hwindow :=
     sqrtQuarterWindow_primeMass_randomExact_deterministicWindowLowerBound
-      (N ^ 2) T hT
+      (N ^ (2 : ℕ)) T hT
   refine ⟨hrank.1, hrank.2, ?_⟩
   simpa only [pow_two, Nat.sqrt_eq] using hwindow
 

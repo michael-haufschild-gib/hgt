@@ -152,7 +152,7 @@ theorem characteristic_pow_le {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.un
       ≤ (n : ℝ) * ValueDistribution.characteristic f ⊤ r := by
   induction n with
   | zero =>
-      have hfun : (fun z : ℂ => f z ^ 0) = fun _ : ℂ => (1 : ℂ) := by
+      have hfun : (fun z : ℂ => f z ^ (0 : ℕ)) = fun _ : ℂ => (1 : ℂ) := by
         funext z
         rw [pow_zero]
       rw [hfun, characteristic_const_eq]

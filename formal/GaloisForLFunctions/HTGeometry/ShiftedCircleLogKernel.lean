@@ -69,11 +69,11 @@ theorem circleAverage_log_norm_innerLogKernel {u c : ℂ} {R r : ℝ}
           simpa using this
         _ ≤ r + ‖c‖ := by linarith
         _ < R := by linarith
-    have hprod : ‖u‖ * ‖w‖ < R ^ 2 := by
+    have hprod : ‖u‖ * ‖w‖ < R ^ (2 : ℕ) := by
       calc
         ‖u‖ * ‖w‖ ≤ R * ‖w‖ := mul_le_mul_of_nonneg_right huR (norm_nonneg w)
         _ < R * R := mul_lt_mul_of_pos_left hwR hR
-        _ = R ^ 2 := by ring
+        _ = R ^ (2 : ℕ) := by ring
     simpa using hprod
   exact hanalytic.circleAverage_log_norm_of_ne_zero hfree
 
@@ -85,17 +85,17 @@ theorem norm_innerLogKernel_zero_center_le {u c : ℂ} {R : ℝ}
     simpa [mem_closedBall_iff_norm] using hu
   rw [PoissonJensen.innerLogKernel, norm_div, Complex.norm_real,
     Real.norm_of_nonneg hR.le]
-  have hnum : ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) (u - 0) * (c - 0))‖
-      ≤ R ^ 2 + R * ‖c‖ := by
+  have hnum : ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - 0) * (c - 0))‖
+      ≤ R ^ (2 : ℕ) + R * ‖c‖ := by
     calc
-      ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) (u - 0) * (c - 0))‖
-          ≤ ‖((R : ℂ) ^ 2)‖ + ‖(starRingEnd ℂ) (u - 0) * (c - 0)‖ :=
+      ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - 0) * (c - 0))‖
+          ≤ ‖((R : ℂ) ^ (2 : ℕ))‖ + ‖(starRingEnd ℂ) (u - 0) * (c - 0)‖ :=
             norm_sub_le _ _
-      _ = R ^ 2 + ‖u‖ * ‖c‖ := by
+      _ = R ^ (2 : ℕ) + ‖u‖ * ‖c‖ := by
         rw [norm_pow, Complex.norm_real, Real.norm_of_nonneg hR.le,
           norm_mul, RCLike.norm_conj]
         simp
-      _ ≤ R ^ 2 + R * ‖c‖ := by
+      _ ≤ R ^ (2 : ℕ) + R * ‖c‖ := by
         gcongr
   rw [div_le_iff₀ hR]
   nlinarith
@@ -107,31 +107,31 @@ theorem norm_sub_le_norm_innerLogKernel {u w : ℂ} {R : ℝ}
     ‖w - u‖ ≤ ‖PoissonJensen.innerLogKernel 0 u R w‖ := by
   have huR : ‖u‖ ≤ R := by simpa [mem_closedBall_iff_norm] using hu
   have hwR : ‖w‖ ≤ R := by simpa [mem_closedBall_iff_norm] using hw
-  have hcast : ((R : ℂ) ^ 2) = ((R ^ 2 : ℝ) : ℂ) := by norm_num
+  have hcast : ((R : ℂ) ^ (2 : ℕ)) = ((R ^ (2 : ℕ) : ℝ) : ℂ) := by norm_num
   have hid :
-      Complex.normSq (((R : ℂ) ^ 2) - (starRingEnd ℂ) u * w) -
-          R ^ 2 * Complex.normSq (w - u) =
-        (R ^ 2 - Complex.normSq u) * (R ^ 2 - Complex.normSq w) := by
+      Complex.normSq (((R : ℂ) ^ (2 : ℕ)) - (starRingEnd ℂ) u * w) -
+          R ^ (2 : ℕ) * Complex.normSq (w - u) =
+        (R ^ (2 : ℕ) - Complex.normSq u) * (R ^ (2 : ℕ) - Complex.normSq w) := by
     rw [hcast]
     simp [Complex.normSq_sub, Complex.normSq_mul, Complex.normSq_conj,
       Complex.normSq_ofReal, Complex.mul_re, Complex.mul_im,
       Complex.ofReal_re, Complex.ofReal_im, pow_two]
     ring
-  have huSq : Complex.normSq u ≤ R ^ 2 := by
+  have huSq : Complex.normSq u ≤ R ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg u]
-  have hwSq : Complex.normSq w ≤ R ^ 2 := by
+  have hwSq : Complex.normSq w ≤ R ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg w]
-  have hsq : R ^ 2 * Complex.normSq (w - u) ≤
-      Complex.normSq (((R : ℂ) ^ 2) - (starRingEnd ℂ) u * w) := by
+  have hsq : R ^ (2 : ℕ) * Complex.normSq (w - u) ≤
+      Complex.normSq (((R : ℂ) ^ (2 : ℕ)) - (starRingEnd ℂ) u * w) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr huSq) (sub_nonneg.mpr hwSq)]
   have hRne : ‖(R : ℂ)‖ ≠ 0 := by simpa using hR.ne'
   rw [PoissonJensen.innerLogKernel, sub_zero, norm_div,
     Complex.norm_real, Real.norm_of_nonneg hR.le]
   simp only [sub_zero]
-  have hsq' : ‖w - u‖ ^ 2 ≤
-      (‖((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ / R) ^ 2 := by
+  have hsq' : ‖w - u‖ ^ (2 : ℕ) ≤
+      (‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ / R) ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq] at hsq
     rw [div_pow]
     apply (le_div_iff₀ (sq_pos_of_pos hR)).mpr
@@ -181,11 +181,11 @@ theorem circleAverage_innerLogKernel_sub_log_norm_le {u c : ℂ} {R r : ℝ}
     have huR : ‖u‖ ≤ R := by
       simpa [mem_closedBall_iff_norm] using hu
     have hcR : ‖c‖ < R := by linarith [norm_nonneg c]
-    have hprod : ‖u‖ * ‖c‖ < R ^ 2 := by
+    have hprod : ‖u‖ * ‖c‖ < R ^ (2 : ℕ) := by
       calc
         ‖u‖ * ‖c‖ ≤ R * ‖c‖ := mul_le_mul_of_nonneg_right huR (norm_nonneg c)
         _ < R * R := mul_lt_mul_of_pos_left hcR hR
-        _ = R ^ 2 := by ring
+        _ = R ^ (2 : ℕ) := by ring
     simpa using hprod
   have hsum0 : 0 < R + ‖c‖ := by positivity
   have hlogKernel : Real.log ‖PoissonJensen.innerLogKernel 0 u R c‖ ≤

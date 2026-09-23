@@ -37,16 +37,16 @@ set_option maxHeartbeats 1000000 in
 register. -/
 theorem kgFieldEnergy_band_split_static (hφ : Measurable φ) (hb0 : 0 ≤ b)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-        + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
+    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
       = (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2)
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ))
         + (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2) := by
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)) := by
   have hsplit := kgFieldEnergyT_band_split (w := fun _ : ℝ => φ) (fun _ => hφ) hb0
     (fun _ => hC) (fun _ => continuous_const) R g h t
   simp only [kgFieldGradT_const, kgFieldVelT_const] at hsplit
@@ -59,11 +59,11 @@ theorem kgFieldEnergy_high_le (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-          (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+          (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
         + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-          (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+          (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
       ≤ (1 + b) / (1 - b)
-          * (‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2) :=
+          * (‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ)) :=
   (kgFieldEnergy_trapped_diagonal hφ hb0 hb1 hC hreal (g - kgLowPassOp R g)
     (h - kgLowPassOp R h) t).2
 
@@ -75,26 +75,26 @@ theorem exists_cutoff_high_energy_small (hφ : Measurable φ) (hb0 : 0 ≤ b) (h
     (g h : Lp ℂ 2 (volume : Measure E)) {ε : ℝ} (hε : 0 < ε) :
     ∃ R₀ : ℝ, ∀ R : ℝ, R₀ ≤ R → ∀ t : ℝ,
       ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2 ≤ ε := by
+            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ) ≤ ε := by
   have hK : (0 : ℝ) < (1 + b) / (1 - b) := div_pos (by linarith) (by linarith)
   have hquot : (0 : ℝ) < ε / ((1 + b) / (1 - b)) := div_pos hε hK
   have hg := tendsto_norm_sub_kgLowPassOp g
   have hh := tendsto_norm_sub_kgLowPassOp h
   have hsum : Tendsto (fun R : ℝ =>
-      ‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2) atTop (𝓝 0) := by
+      ‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hpow := (hg.pow 2).add (hh.pow 2)
     simpa using hpow
   have hev : ∀ᶠ R : ℝ in atTop,
-      ‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2
+      ‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ)
         < ε / ((1 + b) / (1 - b)) := hsum.eventually_lt_const hquot
   obtain ⟨R₀, hR₀⟩ := eventually_atTop.mp hev
   refine ⟨R₀, fun R hR t => ?_⟩
   have hbound := kgFieldEnergy_high_le hφ hb0 hb1 hC hreal R g h t
   have hlt := hR₀ R hR
   have hchain : (1 + b) / (1 - b)
-      * (‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2)
+      * (‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ))
       ≤ (1 + b) / (1 - b) * (ε / ((1 + b) / (1 - b))) :=
     mul_le_mul_of_nonneg_left hlt.le hK.le
   have hcancel : (1 + b) / (1 - b) * (ε / ((1 + b) / (1 - b))) = ε := by
@@ -107,20 +107,20 @@ theorem kgFieldEnergy_no_uv_cascade (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 :
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (g h : Lp ℂ 2 (volume : Measure E)) {ε : ℝ} (hε : 0 < ε) :
     ∃ R₀ : ℝ, ∀ R : ℝ, R₀ ≤ R → ∀ t : ℝ,
-      ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-            + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
+      ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+            + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
           = (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+                (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
               + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2)
+                (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ))
             + (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+                (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
               + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2)
+                (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ))
         ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2 ≤ ε := by
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ) ≤ ε := by
   obtain ⟨R₀, hR₀⟩ := exists_cutoff_high_energy_small hφ hb0 hb1 hC hreal g h hε
   exact ⟨R₀, fun R hR t =>
     ⟨kgFieldEnergy_band_split_static hφ hb0 hC R g h t, hR₀ R hR t⟩⟩

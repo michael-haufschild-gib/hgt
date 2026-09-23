@@ -31,10 +31,10 @@ noncomputable section
 longitudinal parts satisfy `|K| M = R|J|` and `a ≤ M ≤ a + R`. -/
 theorem massOrbit_bounds {R J a M K : ℝ} (hR : 0 < R) (hJ : J ≠ 0) (hRJ : |J| ≤ R)
     (ha : 0 ≤ a) (hM : 0 < M)
-    (hsq : M ^ 2 - K ^ 2 = R ^ 2 - J ^ 2 + a ^ 2) (hprod : M * K = R * J) :
+    (hsq : M ^ (2 : ℕ) - K ^ (2 : ℕ) = R ^ (2 : ℕ) - J ^ (2 : ℕ) + a ^ (2 : ℕ)) (hprod : M * K = R * J) :
     |K| * M = R * |J| ∧ a ≤ M ∧ M ≤ a + R := by
-  have hJ2 : 0 < J ^ 2 := by positivity
-  have hRJ2 : J ^ 2 ≤ R ^ 2 := by nlinarith [abs_nonneg J, sq_abs J]
+  have hJ2 : 0 < J ^ (2 : ℕ) := by positivity
+  have hRJ2 : J ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by nlinarith [abs_nonneg J, sq_abs J]
   have habs : |K| * M = R * |J| := by
     have h1 : |K| * M = |K * M| := by
       rw [abs_mul, abs_of_pos hM]
@@ -42,33 +42,33 @@ theorem massOrbit_bounds {R J a M K : ℝ} (hR : 0 < R) (hJ : J ≠ 0) (hRJ : |J
       rw [mul_comm K M, hprod]
     rw [h1, h2, abs_mul, abs_of_pos hR]
   -- the quartic relation `M²(M² − R² + J² − a²) = R²J²`
-  have hquart : M ^ 2 * (M ^ 2 - R ^ 2 + J ^ 2 - a ^ 2) = R ^ 2 * J ^ 2 := by
-    have hK : M ^ 2 * K ^ 2 = R ^ 2 * J ^ 2 := by
+  have hquart : M ^ (2 : ℕ) * (M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ) - a ^ (2 : ℕ)) = R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
+    have hK : M ^ (2 : ℕ) * K ^ (2 : ℕ) = R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       rw [← mul_pow, ← mul_pow, hprod]
     nlinarith [hsq, hK]
-  have hposFactor : 0 < M ^ 2 - R ^ 2 + J ^ 2 - a ^ 2 := by
+  have hposFactor : 0 < M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ) - a ^ (2 : ℕ) := by
     by_contra hcon
-    have hle : M ^ 2 - R ^ 2 + J ^ 2 - a ^ 2 ≤ 0 := not_lt.mp hcon
+    have hle : M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ) - a ^ (2 : ℕ) ≤ 0 := not_lt.mp hcon
     nlinarith [sq_nonneg M, hquart, mul_pos (mul_pos hR hR) hJ2]
   have hlow : a ≤ M := by
-    have hkey2 : (M ^ 2 - a ^ 2) * (M ^ 2 - R ^ 2 + J ^ 2)
-        = (R ^ 2 - J ^ 2) * a ^ 2 + R ^ 2 * J ^ 2 := by
+    have hkey2 : (M ^ (2 : ℕ) - a ^ (2 : ℕ)) * (M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ))
+        = (R ^ (2 : ℕ) - J ^ (2 : ℕ)) * a ^ (2 : ℕ) + R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       linear_combination hquart
-    have hrhs : 0 ≤ (R ^ 2 - J ^ 2) * a ^ 2 + R ^ 2 * J ^ 2 := by
+    have hrhs : 0 ≤ (R ^ (2 : ℕ) - J ^ (2 : ℕ)) * a ^ (2 : ℕ) + R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       nlinarith [hRJ2, sq_nonneg a, hJ2, hR]
-    have hpos2 : 0 < M ^ 2 - R ^ 2 + J ^ 2 := by nlinarith [hposFactor, sq_nonneg a]
-    have hM2 : a ^ 2 ≤ M ^ 2 := by nlinarith [hkey2, hrhs, hpos2]
+    have hpos2 : 0 < M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ) := by nlinarith [hposFactor, sq_nonneg a]
+    have hM2 : a ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by nlinarith [hkey2, hrhs, hpos2]
     nlinarith [hM, ha]
   have hhigh : M ≤ a + R := by
     have haR : 0 < a + R := by linarith
     have haRnn : 0 ≤ a * R := mul_nonneg ha hR.le
-    have hkey : ((a + R) ^ 2 - M ^ 2) * (2 * a * R + M ^ 2 + J ^ 2)
-        = (a + R) ^ 2 * (2 * a * R + J ^ 2) - R ^ 2 * J ^ 2 := by
+    have hkey : ((a + R) ^ (2 : ℕ) - M ^ (2 : ℕ)) * (2 * a * R + M ^ (2 : ℕ) + J ^ (2 : ℕ))
+        = (a + R) ^ (2 : ℕ) * (2 * a * R + J ^ (2 : ℕ)) - R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       linear_combination -hquart
-    have hfs : 0 ≤ (a + R) ^ 2 * (2 * a * R + J ^ 2) - R ^ 2 * J ^ 2 := by
+    have hfs : 0 ≤ (a + R) ^ (2 : ℕ) * (2 * a * R + J ^ (2 : ℕ)) - R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       nlinarith [haRnn, hJ2, hR, ha, sq_nonneg (a + R)]
-    have hfactor : 0 < 2 * a * R + M ^ 2 + J ^ 2 := by nlinarith [haRnn, sq_nonneg M, hJ2]
-    have hM2 : M ^ 2 ≤ (a + R) ^ 2 := by nlinarith [hkey, hfs, hfactor]
+    have hfactor : 0 < 2 * a * R + M ^ (2 : ℕ) + J ^ (2 : ℕ) := by nlinarith [haRnn, sq_nonneg M, hJ2]
+    have hM2 : M ^ (2 : ℕ) ≤ (a + R) ^ (2 : ℕ) := by nlinarith [hkey, hfs, hfactor]
     nlinarith [hM, haR]
   exact ⟨habs, hlow, hhigh⟩
 
@@ -103,7 +103,7 @@ theorem le_massOrbitExponent {sigma u R J a M : ℝ} (hsigma : 0 < sigma) (hu : 
 /-- **(24.99) Erasure half of the phase diagram.**  A mass well above `√u` extinguishes the
 orbit. -/
 theorem massOrbitExponent_neg {sigma u R J a M : ℝ} (hsigma : 0 < sigma) (hu : 0 ≤ u)
-    (hR : 0 < R) (ha : 0 < a) (haM : a ≤ M) (hphase : u * (R * |J|) < sigma * a ^ 2) :
+    (hR : 0 < R) (ha : 0 < a) (haM : a ≤ M) (hphase : u * (R * |J|) < sigma * a ^ (2 : ℕ)) :
     massOrbitExponent sigma u R J M < 0 := by
   refine lt_of_le_of_lt (massOrbitExponent_le hsigma hu hR ha haM) ?_
   rw [sub_neg, div_lt_iff₀ ha]
@@ -113,7 +113,7 @@ theorem massOrbitExponent_neg {sigma u R J a M : ℝ} (hsigma : 0 < sigma) (hu :
 visible. -/
 theorem massOrbitExponent_pos {sigma u R J a M : ℝ} (hsigma : 0 < sigma) (hu : 0 ≤ u)
     (hR : 0 < R) (ha : 0 < a) (hM : 0 < M) (hMa : M ≤ a + R)
-    (hphase : sigma * (a + R) ^ 2 < u * (R * |J|)) :
+    (hphase : sigma * (a + R) ^ (2 : ℕ) < u * (R * |J|)) :
     0 < massOrbitExponent sigma u R J M := by
   refine lt_of_lt_of_le ?_ (le_massOrbitExponent hsigma hu hR ha hM hMa)
   have haR : 0 < a + R := by linarith
@@ -123,7 +123,7 @@ theorem massOrbitExponent_pos {sigma u R J a M : ℝ} (hsigma : 0 < sigma) (hu :
 /-- **(24.98) The transition constant.**  At `a = c√u` the leading coefficient of the exponent
 vanishes exactly when `σ c² = R|J|`. -/
 theorem massOrbit_transition {sigma R J c : ℝ} (hc : 0 < c) :
-    R * |J| / c - sigma * c = 0 ↔ sigma * c ^ 2 = R * |J| := by
+    R * |J| / c - sigma * c = 0 ↔ sigma * c ^ (2 : ℕ) = R * |J| := by
   rw [sub_eq_zero, div_eq_iff (ne_of_gt hc)]
   constructor <;> intro h <;> nlinarith
 

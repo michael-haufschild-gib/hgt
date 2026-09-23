@@ -113,6 +113,27 @@ theorem tsum_twoLevelAtomSquared_sq
   rw [hrange, sum_range_ite_zero_eq _ _ (by omega),
     twoLevel_secondMoment hN hlow]
 
+theorem tsum_twoLevelAtomSquared_cube
+    {E F : ℝ} {N : ℕ} (hN : 2 ≤ N) :
+    ∑' k : ℕ, twoLevelAtomSquared E F N k ^ 3 =
+      twoLevelLarge E F N ^ 3 +
+        ((N : ℝ) - 1) * twoLevelSmall E F N ^ 3 := by
+  rw [tsum_eq_sum (s := Finset.range N) (by
+    intro k hk
+    simp only [Finset.mem_range, not_lt] at hk
+    have hk0 : k ≠ 0 := by omega
+    simp [twoLevelAtomSquared, hk0, hk])]
+  have hrange :
+      (∑ k ∈ Finset.range N, twoLevelAtomSquared E F N k ^ 3) =
+      ∑ k ∈ Finset.range N,
+        if k = 0 then twoLevelLarge E F N ^ 3
+        else twoLevelSmall E F N ^ 3 := by
+    apply Finset.sum_congr rfl
+    intro k hk
+    simp only [Finset.mem_range] at hk
+    simp [twoLevelAtomSquared, hk]
+  rw [hrange, sum_range_ite_zero_eq _ _ (by omega)]
+
 def twoLevelPrimeWeight (E F : ℝ) (N : ℕ) (p : Nat.Primes) : ℝ :=
   twoLevelAtomWeight E F N (nthPrimeEquiv.symm p)
 
@@ -148,6 +169,23 @@ theorem tsum_twoLevelPrimeWeight_four
       twoLevelAtomWeight_sq hE hN hlow hhigh]
   simp only [twoLevelPrimeWeight, Equiv.symm_apply_apply]
   rw [heq, tsum_twoLevelAtomSquared_sq hN hlow]
+
+theorem tsum_twoLevelPrimeWeight_six
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
+    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2) :
+    ∑' p : Nat.Primes, twoLevelPrimeWeight E F N p ^ 6 =
+      twoLevelLarge E F N ^ 3 +
+        ((N : ℝ) - 1) * twoLevelSmall E F N ^ 3 := by
+  rw [← nthPrimeEquiv.tsum_eq]
+  have heq :
+      (fun k : ℕ => twoLevelAtomWeight E F N k ^ 6) =
+        fun k : ℕ => twoLevelAtomSquared E F N k ^ 3 := by
+    funext k
+    rw [show twoLevelAtomWeight E F N k ^ 6 =
+      (twoLevelAtomWeight E F N k ^ 2) ^ 3 by ring,
+      twoLevelAtomWeight_sq hE hN hlow hhigh]
+  simp only [twoLevelPrimeWeight, Equiv.symm_apply_apply]
+  rw [heq, tsum_twoLevelAtomSquared_cube hN]
 
 def twoLevelPrimeDiagonalKernel
     (E F : ℝ) (N : ℕ) (pq : Nat.Primes × Nat.Primes) : ℂ :=
@@ -281,6 +319,61 @@ theorem hsNormSq_sq_twoLevelPrimeDiagonalOperator
       (by norm_num : (0 : ENNReal) < 2), norm_one, mul_one,
     norm_pow, Complex.norm_real, Real.norm_eq_abs,
     sq_abs]
+  ring
+
+theorem twoLevelPrimeDiagonalOperator_cube_basis
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
+    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2)
+    (p : Nat.Primes) :
+    (twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 3)
+        (routeKPrimeBasis p) =
+      (twoLevelPrimeWeight E F N p ^ 3 : ℂ) • routeKPrimeBasis p := by
+  rw [show twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 3 =
+      twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 2 *
+        twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh by
+      noncomm_ring,
+    mul_apply_eq_comp,
+    twoLevelPrimeDiagonalOperator_basis hE hN hlow hhigh,
+    map_smul,
+    twoLevelPrimeDiagonalOperator_sq_basis hE hN hlow hhigh,
+    smul_smul]
+  congr 1
+  ring
+
+theorem twoLevelPrimeDiagonalOperator_cube_isHilbertSchmidt
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
+    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 3) := by
+  rw [show 3 = 2 + 1 by norm_num, pow_succ, ContinuousLinearMap.mul_def]
+  exact (twoLevelPrimeDiagonalOperator_isHilbertSchmidt hE hN hlow hhigh).comp_left
+    (twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 2)
+
+theorem hsNormSq_cube_twoLevelPrimeDiagonalOperator
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
+    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2) :
+    hsNormSq
+        (twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 3) =
+      twoLevelLarge E F N ^ 3 +
+        ((N : ℝ) - 1) * twoLevelSmall E F N ^ 3 := by
+  rw [hsNormSq_eq
+    (twoLevelPrimeDiagonalOperator_cube_isHilbertSchmidt hE hN hlow hhigh)
+    (HilbertSchmidt.lpBasis Nat.Primes)]
+  apply Eq.trans _ (tsum_twoLevelPrimeWeight_six hE hN hlow hhigh)
+  apply tsum_congr
+  intro p
+  rw [HilbertSchmidt.lpBasis_apply]
+  change
+    ‖(twoLevelPrimeDiagonalOperator E F N hE hN hlow hhigh ^ 3)
+      (routeKPrimeBasis p)‖ ^ 2 =
+        twoLevelPrimeWeight E F N p ^ 6
+  have hweight : 0 ≤ twoLevelPrimeWeight E F N p := by
+    exact Real.sqrt_nonneg _
+  rw [twoLevelPrimeDiagonalOperator_cube_basis hE hN hlow hhigh,
+    norm_smul, routeKPrimeBasis, lp.norm_single
+      (by norm_num : (0 : ENNReal) < 2), norm_one, mul_one,
+    norm_pow, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg hweight]
   ring
 
 theorem twoLevelPrimeDiagonalOperator_basis_eq_zero_of_le_index

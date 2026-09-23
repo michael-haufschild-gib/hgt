@@ -32,17 +32,17 @@ open GaloisForLFunctions GaloisForLFunctions.HTGeometry
 
 /-- Real polynomial--Gaussian energy, embedded in `ℂ` for the Fourier integral. -/
 def polynomialGaussianEnergy (P : Polynomial ℝ) (x : ℝ) : ℂ :=
-  (((P.eval x) ^ 2 * Real.exp (-(2 * Real.pi * x ^ 2)) : ℝ) : ℂ)
+  (((P.eval x) ^ (2 : ℕ) * Real.exp (-(2 * Real.pi * x ^ (2 : ℕ))) : ℝ) : ℂ)
 
 @[simp] theorem polynomialGaussianEnergy_apply (P : Polynomial ℝ) (x : ℝ) :
     polynomialGaussianEnergy P x =
-      (((P.eval x) ^ 2 * Real.exp (-(2 * Real.pi * x ^ 2)) : ℝ) : ℂ) := by
+      (((P.eval x) ^ (2 : ℕ) * Real.exp (-(2 * Real.pi * x ^ (2 : ℕ))) : ℝ) : ℂ) := by
   rfl
 
 /-- Entire continuation of the Fourier integrand. -/
 def polynomialGaussianFourierEntire (P : Polynomial ℝ) (η : ℝ) (z : ℂ) : ℂ :=
-  (P.map (algebraMap ℝ ℂ)).eval z ^ 2 *
-    Complex.exp (-(2 * (Real.pi : ℂ) * z ^ 2) -
+  (P.map (algebraMap ℝ ℂ)).eval z ^ (2 : ℕ) *
+    Complex.exp (-(2 * (Real.pi : ℂ) * z ^ (2 : ℕ)) -
       2 * (Real.pi : ℂ) * Complex.I * (η : ℂ) * z)
 
 theorem polynomialGaussianFourierEntire_real_apply (P : Polynomial ℝ) (η x : ℝ) :
@@ -55,10 +55,10 @@ theorem polynomialGaussianFourierEntire_real_apply (P : Polynomial ℝ) (η x : 
   rw [hpoly]
   push_cast
   have harg :
-      -(2 * (Real.pi : ℂ) * (x : ℂ) ^ 2) -
+      -(2 * (Real.pi : ℂ) * (x : ℂ) ^ (2 : ℕ)) -
           2 * (Real.pi : ℂ) * Complex.I * (η : ℂ) * (x : ℂ) =
         ((-2 * Real.pi * x * η : ℝ) : ℂ) * Complex.I +
-          -(2 * (Real.pi : ℂ) * (x : ℂ) ^ 2) := by
+          -(2 * (Real.pi : ℂ) * (x : ℂ) ^ (2 : ℕ)) := by
     push_cast
     ring
   rw [harg, Complex.exp_add]
@@ -73,10 +73,10 @@ theorem polynomialGaussianFourierEntire_real_apply (P : Polynomial ℝ) (η x : 
 /-- The pointwise mass of the energy is exactly the squared Gaussian `L²` norm. -/
 theorem integral_norm_polynomialGaussianEnergy (P : Polynomial ℝ) :
     (∫ x : ℝ, ‖polynomialGaussianEnergy P x‖) =
-      ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+      ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   rw [norm_toLp_sq_eq_integral]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  change ‖polynomialGaussianEnergy P x‖ = ‖polyGaussSchwartz P x‖ ^ 2
+  change ‖polynomialGaussianEnergy P x‖ = ‖polyGaussSchwartz P x‖ ^ (2 : ℕ)
   rw [polynomialGaussianEnergy_apply, polyGaussSchwartz_apply]
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos (gaussReal_pos x), gaussReal]
@@ -96,9 +96,9 @@ private theorem one_add_pow_le_exp {t : ℝ} (ht : 0 ≤ t) (N : ℕ) :
 /-- Explicit strip majorant.  Its coefficient dependence is used only to justify contour motion. -/
 def polynomialGaussianStripConstant (P : Polynomial ℝ) (c : ℝ) : ℝ :=
   let PC := P.map (algebraMap ℝ ℂ)
-  (coeffNormSum PC) ^ 2 * Real.exp
-    (2 * P.natDegree * c + 2 * Real.pi * c ^ 2 +
-      (2 * P.natDegree + 1 : ℝ) ^ 2 / 8)
+  (coeffNormSum PC) ^ (2 : ℕ) * Real.exp
+    (2 * P.natDegree * c + 2 * Real.pi * c ^ (2 : ℕ) +
+      (2 * P.natDegree + 1 : ℝ) ^ (2 : ℕ) / 8)
 
 theorem norm_polynomialGaussianFourierEntire_le_strip
     (P : Polynomial ℝ) {η c : ℝ} (hη : 0 ≤ η) (hc : 0 ≤ c)
@@ -123,64 +123,64 @@ theorem norm_polynomialGaussianFourierEntire_le_strip
   have hpoly0 := norm_eval_le_coeffNormSum PC z
   rw [hdeg] at hpoly0
   change ‖PC.eval z‖ ≤ S * (1 + ‖z‖) ^ d at hpoly0
-  have hpoly : ‖PC.eval z‖ ^ 2 ≤
-      S ^ 2 * Real.exp ((2 * d : ℕ) * (|z.re| + c)) := by
+  have hpoly : ‖PC.eval z‖ ^ (2 : ℕ) ≤
+      S ^ (2 : ℕ) * Real.exp ((2 * d : ℕ) * (|z.re| + c)) := by
     calc
-      ‖PC.eval z‖ ^ 2 ≤ (S * (1 + ‖z‖) ^ d) ^ 2 :=
+      ‖PC.eval z‖ ^ (2 : ℕ) ≤ (S * (1 + ‖z‖) ^ d) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hpoly0 2
-      _ = S ^ 2 * (1 + ‖z‖) ^ (2 * d) := by ring
-      _ ≤ S ^ 2 * (1 + (|z.re| + c)) ^ (2 * d) := by gcongr
-      _ ≤ S ^ 2 * Real.exp ((2 * d : ℕ) * (|z.re| + c)) := by
+      _ = S ^ (2 : ℕ) * (1 + ‖z‖) ^ (2 * d) := by ring
+      _ ≤ S ^ (2 : ℕ) * (1 + (|z.re| + c)) ^ (2 * d) := by gcongr
+      _ ≤ S ^ (2 : ℕ) * Real.exp ((2 * d : ℕ) * (|z.re| + c)) := by
         gcongr
         exact one_add_pow_le_exp ht (2 * d)
   have hexpre :
-      (-(2 * (Real.pi : ℂ) * z ^ 2) -
+      (-(2 * (Real.pi : ℂ) * z ^ (2 : ℕ)) -
           2 * (Real.pi : ℂ) * Complex.I * (η : ℂ) * z).re =
-        -2 * Real.pi * z.re ^ 2 + 2 * Real.pi * z.im ^ 2 +
+        -2 * Real.pi * z.re ^ (2 : ℕ) + 2 * Real.pi * z.im ^ (2 : ℕ) +
           2 * Real.pi * η * z.im := by
-    rw [show z ^ 2 = z * z by ring]
+    rw [show z ^ (2 : ℕ) = z * z by ring]
     simp only [Complex.sub_re, Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im]
     norm_num
     ring
-  have himsq : z.im ^ 2 ≤ c ^ 2 := by
+  have himsq : z.im ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (z.im + c), sq_nonneg z.im]
   have hexparg :
-      -2 * Real.pi * z.re ^ 2 + 2 * Real.pi * z.im ^ 2 +
+      -2 * Real.pi * z.re ^ (2 : ℕ) + 2 * Real.pi * z.im ^ (2 : ℕ) +
           2 * Real.pi * η * z.im ≤
-        -2 * Real.pi * z.re ^ 2 + 2 * Real.pi * c ^ 2 := by
+        -2 * Real.pi * z.re ^ (2 : ℕ) + 2 * Real.pi * c ^ (2 : ℕ) := by
     have hpi : 0 ≤ Real.pi := Real.pi_pos.le
     have hcoef : 0 ≤ 2 * Real.pi * η := by positivity
     have hlast : 2 * Real.pi * η * z.im ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hcoef hzup
     nlinarith
   have hvertex :
-      (2 * d : ℝ) * |z.re| - 2 * Real.pi * z.re ^ 2 ≤
-        -|z.re| + (2 * d + 1 : ℝ) ^ 2 / 8 := by
+      (2 * d : ℝ) * |z.re| - 2 * Real.pi * z.re ^ (2 : ℕ) ≤
+        -|z.re| + (2 * d + 1 : ℝ) ^ (2 : ℕ) / 8 := by
     have hpi : 1 ≤ Real.pi := by linarith [Real.pi_gt_three]
-    have habsq : |z.re| ^ 2 = z.re ^ 2 := sq_abs _
+    have habsq : |z.re| ^ (2 : ℕ) = z.re ^ (2 : ℕ) := sq_abs _
     have hs := sq_nonneg (2 * |z.re| - (2 * d + 1 : ℝ) / 2)
     nlinarith [habsq,
       mul_nonneg (by positivity : 0 ≤ 2 * (Real.pi - 1)) (sq_nonneg z.re)]
   rw [polynomialGaussianFourierEntire, norm_mul, norm_pow, Complex.norm_exp, hexpre]
   calc
-    ‖PC.eval z‖ ^ 2 * Real.exp
-        (-2 * Real.pi * z.re ^ 2 + 2 * Real.pi * z.im ^ 2 +
+    ‖PC.eval z‖ ^ (2 : ℕ) * Real.exp
+        (-2 * Real.pi * z.re ^ (2 : ℕ) + 2 * Real.pi * z.im ^ (2 : ℕ) +
           2 * Real.pi * η * z.im)
-      ≤ (S ^ 2 * Real.exp ((2 * d : ℕ) * (|z.re| + c))) *
-          Real.exp (-2 * Real.pi * z.re ^ 2 + 2 * Real.pi * c ^ 2) := by
+      ≤ (S ^ (2 : ℕ) * Real.exp ((2 * d : ℕ) * (|z.re| + c))) *
+          Real.exp (-2 * Real.pi * z.re ^ (2 : ℕ) + 2 * Real.pi * c ^ (2 : ℕ)) := by
         exact mul_le_mul hpoly (Real.exp_le_exp.mpr hexparg)
           (Real.exp_nonneg _) (by positivity)
-    _ = S ^ 2 * Real.exp
-          (2 * d * c + 2 * Real.pi * c ^ 2 +
-            ((2 * d : ℝ) * |z.re| - 2 * Real.pi * z.re ^ 2)) := by
+    _ = S ^ (2 : ℕ) * Real.exp
+          (2 * d * c + 2 * Real.pi * c ^ (2 : ℕ) +
+            ((2 * d : ℝ) * |z.re| - 2 * Real.pi * z.re ^ (2 : ℕ))) := by
         conv_lhs => rw [mul_assoc, ← Real.exp_add]
         congr 1
         push_cast
         ring
-    _ ≤ S ^ 2 * Real.exp
-          (2 * d * c + 2 * Real.pi * c ^ 2 +
-            (-|z.re| + (2 * d + 1 : ℝ) ^ 2 / 8)) := by gcongr
+    _ ≤ S ^ (2 : ℕ) * Real.exp
+          (2 * d * c + 2 * Real.pi * c ^ (2 : ℕ) +
+            (-|z.re| + (2 * d + 1 : ℝ) ^ (2 : ℕ) / 8)) := by gcongr
     _ = polynomialGaussianStripConstant P c * Real.exp (-|z.re|) := by
         rw [polynomialGaussianStripConstant]
         simp only [PC, S, d]
@@ -210,8 +210,8 @@ theorem polynomialGaussianFourierEntire_shift_apply
     (P : Polynomial ℝ) (η x : ℝ) :
     polynomialGaussianFourierEntire P η
         ((x : ℂ) - ((η / 2 : ℝ) : ℂ) * Complex.I) =
-      (Real.exp (-(Real.pi * η ^ 2 / 2)) : ℂ) *
-        (complexTranslatedPolyGauss P (-((η / 2 : ℝ) : ℂ) * Complex.I) x) ^ 2 := by
+      (Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2)) : ℂ) *
+        (complexTranslatedPolyGauss P (-((η / 2 : ℝ) : ℂ) * Complex.I) x) ^ (2 : ℕ) := by
   rw [polynomialGaussianFourierEntire, complexTranslatedPolyGauss_apply]
   have heval :
       (P.map (algebraMap ℝ ℂ)).eval
@@ -222,8 +222,8 @@ theorem polynomialGaussianFourierEntire_shift_apply
     congr 1
     ring
   rw [heval]
-  have hgauss : ((gaussReal x : ℝ) : ℂ) ^ 2 =
-      Complex.exp (-(2 * (Real.pi : ℂ) * (x : ℂ) ^ 2)) := by
+  have hgauss : ((gaussReal x : ℝ) : ℂ) ^ (2 : ℕ) =
+      Complex.exp (-(2 * (Real.pi : ℂ) * (x : ℂ) ^ (2 : ℕ))) := by
     rw [gaussReal, Complex.ofReal_exp]
     push_cast
     rw [← Complex.exp_nat_mul]
@@ -233,11 +233,11 @@ theorem polynomialGaussianFourierEntire_shift_apply
   rw [mul_pow, hgauss, Complex.ofReal_exp]
   have hexp :
       -(2 * (Real.pi : ℂ) *
-          ((x : ℂ) - ((η / 2 : ℝ) : ℂ) * Complex.I) ^ 2) -
+          ((x : ℂ) - ((η / 2 : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)) -
           2 * (Real.pi : ℂ) * Complex.I * (η : ℂ) *
             ((x : ℂ) - ((η / 2 : ℝ) : ℂ) * Complex.I) =
-        ((-(Real.pi * η ^ 2 / 2) : ℝ) : ℂ) +
-          -(2 * (Real.pi : ℂ) * (x : ℂ) ^ 2) := by
+        ((-(Real.pi * η ^ (2 : ℕ) / 2) : ℝ) : ℂ) +
+          -(2 * (Real.pi : ℂ) * (x : ℂ) ^ (2 : ℕ)) := by
     push_cast
     ring_nf
     rw [Complex.I_sq]
@@ -248,9 +248,9 @@ theorem polynomialGaussianFourierEntire_shift_apply
 theorem norm_fourier_polynomialGaussianEnergy_le_of_nonneg
     (P : Polynomial ℝ) {η : ℝ} (hη : 0 ≤ η) :
     ‖𝓕 (polynomialGaussianEnergy P) η‖ ≤
-      Real.exp (-(Real.pi * η ^ 2 / 2) +
+      Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2) +
         η * Real.sqrt (4 * Real.pi * P.natDegree)) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   rw [Real.fourier_real_eq_integral_exp_smul]
   have hreal := integral_polynomialGaussianFourierEntire_shift P hη
   have hunshift :
@@ -265,9 +265,9 @@ theorem norm_fourier_polynomialGaussianEnergy_le_of_nonneg
   have hshiftpoint (x : ℝ) :
       polynomialGaussianFourierEntire P η
           ((x : ℂ) - ((η / 2 : ℝ) : ℂ) * Complex.I) =
-        (Real.exp (-(Real.pi * η ^ 2 / 2)) : ℂ) *
+        (Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2)) : ℂ) *
           (complexTranslatedPolyGauss P
-            (-((η / 2 : ℝ) : ℂ) * Complex.I) x) ^ 2 :=
+            (-((η / 2 : ℝ) : ℂ) * Complex.I) x) ^ (2 : ℕ) :=
     polynomialGaussianFourierEntire_shift_apply P η x
   rw [integral_congr_ae (Filter.Eventually.of_forall hshiftpoint),
     MeasureTheory.integral_const_mul]
@@ -277,16 +277,16 @@ theorem norm_fourier_polynomialGaussianEnergy_le_of_nonneg
     (norm_integral_le_integral_norm _) (Real.exp_nonneg _)) ?_
   have hmass :
       (∫ x : ℝ, ‖complexTranslatedPolyGauss P
-          (-((η / 2 : ℝ) : ℂ) * Complex.I) x ^ 2‖) =
+          (-((η / 2 : ℝ) : ℂ) * Complex.I) x ^ (2 : ℕ)‖) =
         ‖(complexTranslatedPolyGauss P
           (-((η / 2 : ℝ) : ℂ) * Complex.I)).toLp 2
-            (volume : Measure ℝ)‖ ^ 2 := by
+            (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
     rw [norm_toLp_sq_eq_integral]
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     change ‖complexTranslatedPolyGauss P
-      (-((η / 2 : ℝ) : ℂ) * Complex.I) x ^ 2‖ =
+      (-((η / 2 : ℝ) : ℂ) * Complex.I) x ^ (2 : ℕ)‖ =
         ‖complexTranslatedPolyGauss P
-          (-((η / 2 : ℝ) : ℂ) * Complex.I) x‖ ^ 2
+          (-((η / 2 : ℝ) : ℂ) * Complex.I) x‖ ^ (2 : ℕ)
     rw [norm_pow]
   rw [hmass]
   have htrans := norm_complexTranslatedPolyGauss_le P
@@ -297,16 +297,16 @@ theorem norm_fourier_polynomialGaussianEnergy_le_of_nonneg
   rw [hnormz] at htrans
   have hsq := pow_le_pow_left₀ (norm_nonneg _) htrans 2
   calc
-    Real.exp (-(Real.pi * η ^ 2 / 2)) *
+    Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2)) *
         ‖(complexTranslatedPolyGauss P
-          (-((η / 2 : ℝ) : ℂ) * Complex.I)).toLp 2 volume‖ ^ 2
-      ≤ Real.exp (-(Real.pi * η ^ 2 / 2)) *
+          (-((η / 2 : ℝ) : ℂ) * Complex.I)).toLp 2 volume‖ ^ (2 : ℕ)
+      ≤ Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2)) *
           (Real.exp (η / 2 * Real.sqrt (4 * Real.pi * P.natDegree)) *
-            ‖(polyGaussSchwartz P).toLp 2 volume‖) ^ 2 :=
+            ‖(polyGaussSchwartz P).toLp 2 volume‖) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq (Real.exp_nonneg _)
-    _ = Real.exp (-(Real.pi * η ^ 2 / 2) +
+    _ = Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2) +
           η * Real.sqrt (4 * Real.pi * P.natDegree)) *
-          ‖(polyGaussSchwartz P).toLp 2 volume‖ ^ 2 := by
+          ‖(polyGaussSchwartz P).toLp 2 volume‖ ^ (2 : ℕ) := by
         rw [mul_pow, ← Real.exp_nat_mul]
         conv_lhs => rw [← mul_assoc, ← Real.exp_add]
         congr 1
@@ -316,9 +316,9 @@ theorem norm_fourier_polynomialGaussianEnergy_le_of_nonneg
 /-- **Polynomial--Gaussian Fourier aperture (FGA.1).**  Exact signed-frequency form. -/
 theorem norm_fourier_polynomialGaussianEnergy_le (P : Polynomial ℝ) (η : ℝ) :
     ‖𝓕 (polynomialGaussianEnergy P) η‖ ≤
-      Real.exp (-(Real.pi * η ^ 2 / 2) +
+      Real.exp (-(Real.pi * η ^ (2 : ℕ) / 2) +
         |η| * Real.sqrt (4 * Real.pi * P.natDegree)) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   rcases lt_or_ge η 0 with hηneg | hη
   · have hpos : 0 ≤ -η := by linarith
     have hbound := norm_fourier_polynomialGaussianEnergy_le_of_nonneg P hpos
@@ -343,17 +343,17 @@ private theorem routeU_sqrt_linear_identity (d : ℕ) {t : ℝ} (ht : 0 < t) :
     Real.sqrt (2 * Real.pi / t) / (2 * Real.pi) *
         Real.sqrt (4 * Real.pi * (2 * d : ℕ)) =
       2 * Real.sqrt d / Real.sqrt t := by
-  have hsδ : Real.sqrt (2 * Real.pi / t) ^ 2 = 2 * Real.pi / t := by
+  have hsδ : Real.sqrt (2 * Real.pi / t) ^ (2 : ℕ) = 2 * Real.pi / t := by
     rw [Real.sq_sqrt]
     positivity
-  have hsD : Real.sqrt (4 * Real.pi * (2 * d : ℕ)) ^ 2 =
+  have hsD : Real.sqrt (4 * Real.pi * (2 * d : ℕ)) ^ (2 : ℕ) =
       4 * Real.pi * (2 * d : ℕ) := by
     rw [Real.sq_sqrt]
     positivity
-  have hsd : Real.sqrt (d : ℝ) ^ 2 = d := by
+  have hsd : Real.sqrt (d : ℝ) ^ (2 : ℕ) = d := by
     rw [Real.sq_sqrt]
     positivity
-  have hst : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
+  have hst : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht.le
   have hL0 : 0 ≤ Real.sqrt (2 * Real.pi / t) / (2 * Real.pi) *
       Real.sqrt (4 * Real.pi * (2 * d : ℕ)) := by positivity
   have hR0 : 0 ≤ 2 * Real.sqrt d / Real.sqrt t := by positivity
@@ -366,12 +366,12 @@ private theorem routeU_sqrt_linear_identity (d : ℕ) {t : ℝ} (ht : 0 < t) :
 
 private theorem routeU_frequency_exponent_identity
     (d : ℕ) {t : ℝ} (ht : 0 < t) (ξ : ℝ) :
-    -(Real.pi * (Real.sqrt (2 * Real.pi / t) * (ξ / (2 * Real.pi))) ^ 2 / 2) +
+    -(Real.pi * (Real.sqrt (2 * Real.pi / t) * (ξ / (2 * Real.pi))) ^ (2 : ℕ) / 2) +
         |Real.sqrt (2 * Real.pi / t) * (ξ / (2 * Real.pi))| *
           Real.sqrt (4 * Real.pi * (2 * d : ℕ)) =
-      -(ξ ^ 2 / (4 * t)) + 2 * Real.sqrt d * |ξ| / Real.sqrt t := by
+      -(ξ ^ (2 : ℕ) / (4 * t)) + 2 * Real.sqrt d * |ξ| / Real.sqrt t := by
   have hδ : 0 < Real.sqrt (2 * Real.pi / t) := Real.sqrt_pos.2 (by positivity)
-  have hδsq : Real.sqrt (2 * Real.pi / t) ^ 2 = 2 * Real.pi / t := by
+  have hδsq : Real.sqrt (2 * Real.pi / t) ^ (2 : ℕ) = 2 * Real.pi / t := by
     rw [Real.sq_sqrt]
     positivity
   have habs :
@@ -380,8 +380,8 @@ private theorem routeU_frequency_exponent_identity
     rw [abs_mul, abs_div, abs_of_pos hδ, abs_of_pos (by positivity : 0 < 2 * Real.pi)]
     field_simp
   have hquad :
-      Real.pi * (Real.sqrt (2 * Real.pi / t) * (ξ / (2 * Real.pi))) ^ 2 / 2 =
-        ξ ^ 2 / (4 * t) := by
+      Real.pi * (Real.sqrt (2 * Real.pi / t) * (ξ / (2 * Real.pi))) ^ (2 : ℕ) / 2 =
+        ξ ^ (2 : ℕ) / (4 * t) := by
     rw [mul_pow, hδsq]
     field_simp
     ring
@@ -411,7 +411,7 @@ def routeURescaledEvenPolynomial (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) :
 /-- Native Route-U heat-filter density `Q(x²)² exp(-t x²)`. -/
 def routeUPolynomialGaussianDensity
     (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) (x : ℝ) : ℂ :=
-  ((((evenSquarePolynomial Q).eval x) ^ 2 * Real.exp (-((t : ℝ) * x ^ 2)) : ℝ) : ℂ)
+  ((((evenSquarePolynomial Q).eval x) ^ (2 : ℕ) * Real.exp (-((t : ℝ) * x ^ (2 : ℕ))) : ℝ) : ℂ)
 
 theorem routeUPolynomialGaussianDensity_eq_dilate
     (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) (x : ℝ) :
@@ -422,8 +422,8 @@ theorem routeUPolynomialGaussianDensity_eq_dilate
   have harg : 0 ≤ 2 * Real.pi / (t : ℝ) :=
     (div_pos (by positivity) t.property).le
   have hδ : 0 < δ := Real.sqrt_pos.2 (div_pos (by positivity) t.property)
-  have hδsq : δ ^ 2 = 2 * Real.pi / (t : ℝ) := by
-    change Real.sqrt (2 * Real.pi / (t : ℝ)) ^ 2 = _
+  have hδsq : δ ^ (2 : ℕ) = 2 * Real.pi / (t : ℝ) := by
+    change Real.sqrt (2 * Real.pi / (t : ℝ)) ^ (2 : ℕ) = _
     exact Real.sq_sqrt harg
   rw [routeUPolynomialGaussianDensity, polynomialGaussianEnergy,
     routeURescaledEvenPolynomial, Polynomial.eval_comp, Polynomial.eval_mul,
@@ -434,17 +434,17 @@ theorem routeUPolynomialGaussianDensity_eq_dilate
   rw [heval]
   push_cast
   congr 2
-  have hexp : 2 * Real.pi * (x / δ) ^ 2 = (t : ℝ) * x ^ 2 := by
+  have hexp : 2 * Real.pi * (x / δ) ^ (2 : ℕ) = (t : ℝ) * x ^ (2 : ℕ) := by
     calc
-      2 * Real.pi * (x / δ) ^ 2 = (2 * Real.pi / δ ^ 2) * x ^ 2 := by
+      2 * Real.pi * (x / δ) ^ (2 : ℕ) = (2 * Real.pi / δ ^ (2 : ℕ)) * x ^ (2 : ℕ) := by
         field_simp
-      _ = (t : ℝ) * x ^ 2 := by
+      _ = (t : ℝ) * x ^ (2 : ℕ) := by
         rw [hδsq]
         field_simp
   have hexpC := congrArg (fun r : ℝ => ((r : ℝ) : ℂ)) hexp
   push_cast at hexpC
-  change -((t : ℂ) * (x : ℂ) ^ 2) =
-    -(2 * (Real.pi : ℂ) * ((x : ℂ) / (δ : ℂ)) ^ 2)
+  change -((t : ℂ) * (x : ℂ) ^ (2 : ℕ)) =
+    -(2 * (Real.pi : ℂ) * ((x : ℂ) / (δ : ℂ)) ^ (2 : ℕ))
   exact congrArg Neg.neg hexpC.symm
 
 /-- Native unnormalized Fourier transform used by C43-Y and PDH.9. -/
@@ -477,7 +477,7 @@ theorem routeUPolynomialGaussianMass_eq
     routeUPolynomialGaussianMass Q t =
       Real.sqrt (2 * Real.pi / (t : ℝ)) *
         ‖(polyGaussSchwartz (routeURescaledEvenPolynomial Q t)).toLp 2
-          (volume : Measure ℝ)‖ ^ 2 := by
+          (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   let δ : ℝ := Real.sqrt (2 * Real.pi / (t : ℝ))
   have hδ : 0 < δ := Real.sqrt_pos.2 (div_pos (by positivity) t.property)
   rw [routeUPolynomialGaussianMass]
@@ -488,7 +488,7 @@ theorem routeUPolynomialGaussianMass_eq
   rw [hpoint]
   change (∫ x : ℝ, (fun y : ℝ =>
     ‖polynomialGaussianEnergy (routeURescaledEvenPolynomial Q t) y‖) (x / δ)) =
-      δ * ‖(polyGaussSchwartz (routeURescaledEvenPolynomial Q t)).toLp 2 volume‖ ^ 2
+      δ * ‖(polyGaussSchwartz (routeURescaledEvenPolynomial Q t)).toLp 2 volume‖ ^ (2 : ℕ)
   calc
     (∫ x : ℝ, (fun y : ℝ =>
         ‖polynomialGaussianEnergy (routeURescaledEvenPolynomial Q t) y‖) (x / δ)) =
@@ -497,7 +497,7 @@ theorem routeUPolynomialGaussianMass_eq
       MeasureTheory.Measure.integral_comp_div
         (fun y : ℝ => ‖polynomialGaussianEnergy
           (routeURescaledEvenPolynomial Q t) y‖) δ
-    _ = δ * ‖(polyGaussSchwartz (routeURescaledEvenPolynomial Q t)).toLp 2 volume‖ ^ 2 := by
+    _ = δ * ‖(polyGaussSchwartz (routeURescaledEvenPolynomial Q t)).toLp 2 volume‖ ^ (2 : ℕ) := by
       rw [abs_of_pos hδ, smul_eq_mul, integral_norm_polynomialGaussianEnergy]
 
 theorem routeUPolynomialGaussianMass_nonneg
@@ -510,7 +510,7 @@ theorem routeUPolynomialGaussianMass_nonneg
 theorem norm_routeUPolynomialGaussianFourier_le
     (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) (ξ : ℝ) :
     ‖routeUPolynomialGaussianFourier Q t ξ‖ ≤
-      Real.exp (-(ξ ^ 2 / (4 * (t : ℝ))) +
+      Real.exp (-(ξ ^ (2 : ℕ) / (4 * (t : ℝ))) +
         2 * Real.sqrt Q.natDegree * |ξ| / Real.sqrt (t : ℝ)) *
         routeUPolynomialGaussianMass Q t := by
   let δ : ℝ := Real.sqrt (2 * Real.pi / (t : ℝ))
@@ -534,9 +534,9 @@ theorem norm_routeUPolynomialGaussianFourier_le
   rw [hdegree]
   have hexponent := routeU_frequency_exponent_identity Q.natDegree t.property ξ
   change δ *
-      (Real.exp (-(Real.pi * (δ * η) ^ 2 / 2) +
+      (Real.exp (-(Real.pi * (δ * η) ^ (2 : ℕ) / 2) +
           |δ * η| * Real.sqrt (4 * Real.pi * (2 * Q.natDegree : ℕ))) *
-        ‖(polyGaussSchwartz R).toLp 2 volume‖ ^ 2) ≤ _
+        ‖(polyGaussSchwartz R).toLp 2 volume‖ ^ (2 : ℕ)) ≤ _
   rw [show δ * η = Real.sqrt (2 * Real.pi / (t : ℝ)) *
       (ξ / (2 * Real.pi)) from rfl, hexponent]
   rw [routeUPolynomialGaussianMass_eq]
@@ -551,7 +551,7 @@ theorem routeUPolynomialGaussianFourier_div_mass_le
     (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) (ξ : ℝ) :
     ‖routeUPolynomialGaussianFourier Q t ξ‖ /
         routeUPolynomialGaussianMass Q t ≤
-      Real.exp (-(ξ ^ 2 / (4 * (t : ℝ))) +
+      Real.exp (-(ξ ^ (2 : ℕ) / (4 * (t : ℝ))) +
         2 * Real.sqrt Q.natDegree * |ξ| / Real.sqrt (t : ℝ)) := by
   by_cases hmass : routeUPolynomialGaussianMass Q t = 0
   · rw [hmass, div_zero]

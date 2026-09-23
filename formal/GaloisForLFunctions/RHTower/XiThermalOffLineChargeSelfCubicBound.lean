@@ -30,7 +30,7 @@ def xiEndpointOffLineCharge : ℝ :=
 
 /-- The exact self-localized cubic budget selected by the off-line endpoint charge. -/
 def xiThermalOffLineChargeCubicBudget : ℝ :=
-  4 * (xiEndpointOffLineCharge / (4 - xiEndpointOffLineCharge)) ^ 3
+  4 * (xiEndpointOffLineCharge / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ)
 
 theorem xiEndpointOffLineSet_lineConj (q : XiZeroCopy)
     (h : (q.1 : ℂ).re ≠ 1 / 2) :
@@ -154,18 +154,18 @@ theorem four_mul_xiEndpointCrossCharge_le_offLineCharge
 /-- The self-budget quartet height law. -/
 theorem four_le_offLineCharge_mul_one_add_im_sq
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ 2 + 1) := by
+    4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) := by
   have hlower := endpoint_cross_term_re_ge_inv_one_add_im_sq q
   have horbit := four_mul_xiEndpointCrossCharge_le_offLineCharge q hoff
-  have hden : 0 < (q.1 : ℂ).im ^ 2 + 1 := by positivity
-  have hcharge : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hden : 0 < (q.1 : ℂ).im ^ (2 : ℕ) + 1 := by positivity
+  have hcharge : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       4 * xiEndpointCrossCharge q := by
     calc
-      4 / ((q.1 : ℂ).im ^ 2 + 1) =
-          4 * (1 / ((q.1 : ℂ).im ^ 2 + 1)) := by ring
+      4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) =
+          4 * (1 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1)) := by ring
       _ ≤ 4 * xiEndpointCrossCharge q :=
         mul_le_mul_of_nonneg_left hlower (by norm_num)
-  have hbudget : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hbudget : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       xiEndpointOffLineCharge := hcharge.trans horbit
   rwa [div_le_iff₀ hden] at hbudget
 
@@ -180,7 +180,7 @@ theorem xiEndpointOffLineCharge_eq_zero_iff_rh :
       by_contra hoff
       have hwpos : 0 < xiEndpointCrossCharge q := by
         have hlower := endpoint_cross_term_re_ge_inv_one_add_im_sq q
-        exact (by positivity : 0 < 1 / ((q.1 : ℂ).im ^ 2 + 1)).trans_le hlower
+        exact (by positivity : 0 < 1 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1)).trans_le hlower
       have htermpos : 0 < xiEndpointOffLineChargeTerm q := by
         rw [xiEndpointOffLineChargeTerm_eq q hoff]
         exact hwpos
@@ -189,7 +189,7 @@ theorem xiEndpointOffLineCharge_eq_zero_iff_rh :
       rw [← xiEndpointOffLineCharge, hzero] at hle
       linarith
     rw [xiThermalOrientationEnergy]
-    have hfun : (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ 2) =
+    have hfun : (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) =
         fun _ => 0 := by
       funext q
       rw [xiZeroCopyReciprocalSquare_im_formula, hline q]
@@ -218,9 +218,9 @@ theorem xiEndpointOffLineCharge_pos_iff_not_rh :
 the cube of its endpoint cross charge with a factor depending only on the total off-line charge. -/
 theorem xiThermalOrientationTerm_le_offLineCharge_endpointCrossCharge_cube
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-        xiEndpointCrossCharge q ^ 3 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+        xiEndpointCrossCharge q ^ (3 : ℕ) := by
   have hB4 : xiEndpointOffLineCharge < 4 := xiEndpointOffLineCharge_lt_four
   have hden : 0 < 4 - xiEndpointOffLineCharge := sub_pos.mpr hB4
   by_cases hon : (q.1 : ℂ).re = 1 / 2
@@ -231,8 +231,8 @@ theorem xiThermalOrientationTerm_le_offLineCharge_endpointCrossCharge_cube
       simpa only [xiEndpointCrossCharge] using endpoint_cross_term_re_nonneg q
     rw [him, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
     exact mul_nonneg (pow_nonneg (by positivity) 3) (pow_nonneg hw 3)
-  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-    let v : ℝ := (q.1 : ℂ).im ^ 2
+  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+    let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
     have hu0 : 0 ≤ u := by dsimp [u]; positivity
     have hu : u ≤ 1 / 4 := by
       have hstrip := xi_divisor_support_re_mem_open_unit q.1
@@ -242,24 +242,24 @@ theorem xiThermalOrientationTerm_le_offLineCharge_endpointCrossCharge_cube
       simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hon
     have hv0 : 0 < v := by linarith
     have huv0 : 0 < u + v := add_pos_of_nonneg_of_pos hu0 hv0
-    have hcore : 4 * u * v ^ 4 ≤ (u + v) ^ 4 := by
+    have hcore : 4 * u * v ^ (4 : ℕ) ≤ (u + v) ^ (4 : ℕ) := by
       have hcoef : 4 * u ≤ 1 := by linarith
-      have hleft : 4 * u * v ^ 4 ≤ v ^ 4 := by
+      have hleft : 4 * u * v ^ (4 : ℕ) ≤ v ^ (4 : ℕ) := by
         calc
-          4 * u * v ^ 4 ≤ 1 * v ^ 4 :=
+          4 * u * v ^ (4 : ℕ) ≤ 1 * v ^ (4 : ℕ) :=
             mul_le_mul_of_nonneg_right hcoef (pow_nonneg hv0.le 4)
-          _ = v ^ 4 := one_mul _
-      have hright : v ^ 4 ≤ (u + v) ^ 4 := by
+          _ = v ^ (4 : ℕ) := one_mul _
+      have hright : v ^ (4 : ℕ) ≤ (u + v) ^ (4 : ℕ) := by
         exact pow_le_pow_left₀ hv0.le (by linarith) 4
       exact hleft.trans hright
     have heInv :
-        (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := by
+        (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤ 1 / v ^ (3 : ℕ) := by
       rw [xiZeroCopyReciprocalSquare_im_formula]
-      rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-        show (q.1 : ℂ).im ^ 2 = v by rfl, div_pow]
-      rw [show (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 =
+      rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+        show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl, div_pow]
+      rw [show (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) =
           4 * u * v by dsimp [u, v]; ring,
-        show ((u + v) ^ 2) ^ 2 = (u + v) ^ 4 by ring]
+        show ((u + v) ^ (2 : ℕ)) ^ (2 : ℕ) = (u + v) ^ (4 : ℕ) by ring]
       rw [div_le_div_iff₀ (pow_pos huv0 4) (pow_pos hv0 3)]
       ring_nf at hcore ⊢
       exact hcore
@@ -283,25 +283,25 @@ theorem xiThermalOrientationTerm_le_offLineCharge_endpointCrossCharge_cube
       hbase.trans (mul_le_mul_of_nonneg_left hcross (by positivity))
     have hpow := pow_le_pow_left₀ (by positivity : 0 ≤ 1 / v) hInvCharge 3
     calc
-      (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := heInv
-      _ = (1 / v) ^ 3 := by
+      (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤ 1 / v ^ (3 : ℕ) := heInv
+      _ = (1 / v) ^ (3 : ℕ) := by
         simpa only [one_div] using (inv_pow v 3).symm
       _ ≤ ((4 / (4 - xiEndpointOffLineCharge)) *
-          xiEndpointCrossCharge q) ^ 3 := hpow
-      _ = (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-          xiEndpointCrossCharge q ^ 3 := by rw [mul_pow]
+          xiEndpointCrossCharge q) ^ (3 : ℕ) := hpow
+      _ = (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+          xiEndpointCrossCharge q ^ (3 : ℕ) := by rw [mul_pow]
 
 /-- The four-copy cap converts the self-localized cubic law into a summable off-line charge
 majorant. -/
 theorem xiThermalOrientationTerm_le_offLineChargeCubicMajorant
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-        (xiEndpointOffLineCharge / 4) ^ 2 *
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+        (xiEndpointOffLineCharge / 4) ^ (2 : ℕ) *
           xiEndpointOffLineChargeTerm q := by
   have hden0 : 0 ≤ 4 - xiEndpointOffLineCharge :=
     sub_nonneg.mpr xiEndpointOffLineCharge_lt_four.le
-  have hfactor0 : 0 ≤ (4 / (4 - xiEndpointOffLineCharge)) ^ 3 :=
+  have hfactor0 : 0 ≤ (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) :=
     pow_nonneg (div_nonneg (by norm_num) hden0) 3
   by_cases hon : (q.1 : ℂ).re = 1 / 2
   · rw [xiEndpointOffLineChargeTerm_eq_zero q hon]
@@ -314,32 +314,32 @@ theorem xiThermalOrientationTerm_le_offLineChargeCubicMajorant
     have hwle : xiEndpointCrossCharge q ≤ xiEndpointOffLineCharge / 4 := by
       have hfour := four_mul_xiEndpointCrossCharge_le_offLineCharge q hon
       linarith
-    have hwSq : xiEndpointCrossCharge q ^ 2 ≤
-        (xiEndpointOffLineCharge / 4) ^ 2 :=
+    have hwSq : xiEndpointCrossCharge q ^ (2 : ℕ) ≤
+        (xiEndpointOffLineCharge / 4) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hw0 hwle 2
-    have hwCube : xiEndpointCrossCharge q ^ 3 ≤
-        (xiEndpointOffLineCharge / 4) ^ 2 * xiEndpointCrossCharge q := by
+    have hwCube : xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+        (xiEndpointOffLineCharge / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q := by
       calc
-        xiEndpointCrossCharge q ^ 3 =
-            xiEndpointCrossCharge q ^ 2 * xiEndpointCrossCharge q := by ring
-        _ ≤ (xiEndpointOffLineCharge / 4) ^ 2 * xiEndpointCrossCharge q :=
+        xiEndpointCrossCharge q ^ (3 : ℕ) =
+            xiEndpointCrossCharge q ^ (2 : ℕ) * xiEndpointCrossCharge q := by ring
+        _ ≤ (xiEndpointOffLineCharge / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q :=
           mul_le_mul_of_nonneg_right hwSq hw0
     rw [xiEndpointOffLineChargeTerm_eq q hon]
     apply (xiThermalOrientationTerm_le_offLineCharge_endpointCrossCharge_cube q).trans
     calc
-      (4 / (4 - xiEndpointOffLineCharge)) ^ 3 * xiEndpointCrossCharge q ^ 3 ≤
-          (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-            ((xiEndpointOffLineCharge / 4) ^ 2 * xiEndpointCrossCharge q) :=
+      (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) * xiEndpointCrossCharge q ^ (3 : ℕ) ≤
+          (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+            ((xiEndpointOffLineCharge / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q) :=
         mul_le_mul_of_nonneg_left hwCube hfactor0
-      _ = (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-          (xiEndpointOffLineCharge / 4) ^ 2 * xiEndpointCrossCharge q := by ring
+      _ = (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+          (xiEndpointOffLineCharge / 4) ^ (2 : ℕ) * xiEndpointCrossCharge q := by ring
 
 /-- **Self-localized global cubic law.**  Only the endpoint charge actually carried by off-line
 copies pays for the complete transverse thermal defect. -/
 theorem xiThermalOrientationEnergy_le_offLineChargeCubicBudget :
     xiThermalOrientationEnergy ≤ xiThermalOffLineChargeCubicBudget := by
-  let A : ℝ := (4 / (4 - xiEndpointOffLineCharge)) ^ 3 *
-    (xiEndpointOffLineCharge / 4) ^ 2
+  let A : ℝ := (4 / (4 - xiEndpointOffLineCharge)) ^ (3 : ℕ) *
+    (xiEndpointOffLineCharge / 4) ^ (2 : ℕ)
   have hscaled : Summable
       (fun q : XiZeroCopy => A * xiEndpointOffLineChargeTerm q) :=
     summable_xiEndpointOffLineChargeTerm.mul_left A

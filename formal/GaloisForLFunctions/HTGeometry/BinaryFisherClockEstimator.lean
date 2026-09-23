@@ -26,7 +26,7 @@ def binaryFisherEstimatorMean (calibration actual : ℝ) : ℝ :=
 /-- Actual centered estimation variance at calibration. -/
 def binaryFisherEstimatorVariance (calibration : ℝ) : ℝ :=
   ∑ i, finiteExponentialTilt binaryEscortWeight binaryEscortScore calibration i *
-    (binaryFisherClockEstimator calibration i - calibration) ^ 2
+    (binaryFisherClockEstimator calibration i - calibration) ^ (2 : ℕ)
 
 theorem binaryFisherEstimatorMean_formula (calibration actual : ℝ) :
     binaryFisherEstimatorMean calibration actual = calibration +
@@ -81,9 +81,9 @@ theorem binaryFisherEstimatorVariance_formula (calibration : ℝ) :
   unfold binaryFisherEstimatorVariance binaryFisherClockEstimator
   have he : (∑ i, finiteExponentialTilt binaryEscortWeight binaryEscortScore calibration i *
       (calibration + (binaryEscortScore i - finiteTiltMean binaryEscortWeight binaryEscortScore calibration) /
-        finiteTiltVariance binaryEscortWeight binaryEscortScore calibration - calibration) ^ 2) =
+        finiteTiltVariance binaryEscortWeight binaryEscortScore calibration - calibration) ^ (2 : ℕ)) =
       finiteTiltVariance binaryEscortWeight binaryEscortScore calibration /
-        finiteTiltVariance binaryEscortWeight binaryEscortScore calibration ^ 2 := by
+        finiteTiltVariance binaryEscortWeight binaryEscortScore calibration ^ (2 : ℕ) := by
     rw [finiteTiltVariance, Finset.sum_div]
     apply Finset.sum_congr rfl
     intro i _

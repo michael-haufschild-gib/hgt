@@ -13,7 +13,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Second-order Taylor bound for the logarithm on `|x| ≤ 3/4`. -/
 theorem abs_log_one_add_taylor_le {x : ℝ} (h : |x| ≤ 3 / 4) :
-    |Real.log (1 + x) - x + x ^ 2 / 2| ≤ 4 * |x| ^ 3 := by
+    |Real.log (1 + x) - x + x ^ (2 : ℕ) / 2| ≤ 4 * |x| ^ (3 : ℕ) := by
   have hx : |(-x)| < 1 := by
     rw [abs_neg]; linarith
   have h2 := Real.abs_log_sub_add_sum_range_le hx 2
@@ -21,7 +21,7 @@ theorem abs_log_one_add_taylor_le {x : ℝ} (h : |x| ≤ 3 / 4) :
   have hsub : (1 : ℝ) - -x = 1 + x := by ring
   rw [hsub] at h2
   have hexpand : (0 : ℝ) + (-x) ^ (0 + 1) / ((0 : ℕ) + 1) + (-x) ^ (1 + 1) / ((1 : ℕ) + 1)
-      + Real.log (1 + x) = Real.log (1 + x) - x + x ^ 2 / 2 := by
+      + Real.log (1 + x) = Real.log (1 + x) - x + x ^ (2 : ℕ) / 2 := by
     push_cast
     ring
   rw [hexpand] at h2
@@ -32,27 +32,27 @@ theorem abs_log_one_add_taylor_le {x : ℝ} (h : |x| ≤ 3 / 4) :
   have hden : (1 : ℝ) / 4 ≤ 1 - |x| := by linarith
   have hpos : (0 : ℝ) < 1 - |x| := by linarith
   rw [div_le_iff₀ hpos]
-  have hkey : (0 : ℝ) ≤ |x| ^ 3 * (4 * (1 - |x|) - 1) :=
+  have hkey : (0 : ℝ) ≤ |x| ^ (3 : ℕ) * (4 * (1 - |x|) - 1) :=
     mul_nonneg (pow_nonneg habs 3) (by linarith)
   nlinarith [hkey]
 
 /-- **The parity digit's affinity is `1 − ½(√a − √b)² + O(a² + b²)` in logarithm.** -/
 theorem abs_log_bitHellingerAffinity_zero_add_le {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (ha' : a ≤ 3 / 4) (hb' : b ≤ 3 / 4) :
-    |Real.log (bitHellingerAffinity a b 0) + (Real.sqrt a - Real.sqrt b) ^ 2 / 2|
-      ≤ 4 * (a ^ 2 + b ^ 2) := by
+    |Real.log (bitHellingerAffinity a b 0) + (Real.sqrt a - Real.sqrt b) ^ (2 : ℕ) / 2|
+      ≤ 4 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
   have hab : 0 ≤ a * b := mul_nonneg ha hb
   set s : ℝ := Real.sqrt (a * b) with hsdef
   have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = a * b := Real.sq_sqrt hab
+  have hs2 : s ^ (2 : ℕ) = a * b := Real.sq_sqrt hab
   have hsle : s ≤ 3 / 4 := by
-    have hle : a * b ≤ (3 / 4) ^ 2 := by nlinarith
+    have hle : a * b ≤ (3 / 4) ^ (2 : ℕ) := by nlinarith
     nlinarith [hs2, hs0]
-  have hsqa : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha
-  have hsqb : Real.sqrt b ^ 2 = b := Real.sq_sqrt hb
+  have hsqa : Real.sqrt a ^ (2 : ℕ) = a := Real.sq_sqrt ha
+  have hsqb : Real.sqrt b ^ (2 : ℕ) = b := Real.sq_sqrt hb
   have hsab : s = Real.sqrt a * Real.sqrt b := by
     rw [hsdef, Real.sqrt_mul ha]
-  have hsqdiff : (Real.sqrt a - Real.sqrt b) ^ 2 = a - 2 * s + b := by
+  have hsqdiff : (Real.sqrt a - Real.sqrt b) ^ (2 : ℕ) = a - 2 * s + b := by
     rw [hsab]
     nlinarith [hsqa, hsqb]
   -- the affinity in logarithmic form
@@ -73,29 +73,29 @@ theorem abs_log_bitHellingerAffinity_zero_add_le {a b : ℝ} (ha : 0 ≤ a) (hb 
   rw [abs_of_nonneg ha] at hTa
   rw [abs_of_nonneg hb] at hTb
   -- the cubic bounds
-  have hcs : s ^ 3 ≤ 3 / 8 * (a ^ 2 + b ^ 2) := by
-    have h1 : s ^ 3 = s * s ^ 2 := by ring
+  have hcs : s ^ (3 : ℕ) ≤ 3 / 8 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
+    have h1 : s ^ (3 : ℕ) = s * s ^ (2 : ℕ) := by ring
     rw [h1, hs2]
     nlinarith [sq_nonneg (a - b), ha, hb, hs0, hsle]
-  have hca : a ^ 3 ≤ 3 / 4 * a ^ 2 := by nlinarith [sq_nonneg a, ha]
-  have hcb : b ^ 3 ≤ 3 / 4 * b ^ 2 := by nlinarith [sq_nonneg b, hb]
+  have hca : a ^ (3 : ℕ) ≤ 3 / 4 * a ^ (2 : ℕ) := by nlinarith [sq_nonneg a, ha]
+  have hcb : b ^ (3 : ℕ) ≤ 3 / 4 * b ^ (2 : ℕ) := by nlinarith [sq_nonneg b, hb]
   -- assemble
-  have hkey : Real.log (bitHellingerAffinity a b 0) + (Real.sqrt a - Real.sqrt b) ^ 2 / 2
-      = (Real.log (1 + s) - s + s ^ 2 / 2)
-        - (1 / 2) * (Real.log (1 + a) - a + a ^ 2 / 2)
-        - (1 / 2) * (Real.log (1 + b) - b + b ^ 2 / 2)
-        + (a - b) ^ 2 / 4 := by
+  have hkey : Real.log (bitHellingerAffinity a b 0) + (Real.sqrt a - Real.sqrt b) ^ (2 : ℕ) / 2
+      = (Real.log (1 + s) - s + s ^ (2 : ℕ) / 2)
+        - (1 / 2) * (Real.log (1 + a) - a + a ^ (2 : ℕ) / 2)
+        - (1 / 2) * (Real.log (1 + b) - b + b ^ (2 : ℕ) / 2)
+        + (a - b) ^ (2 : ℕ) / 4 := by
     rw [hlog, hsqdiff, hs2]
     ring
   rw [hkey, abs_le]
-  have hA1 := neg_abs_le (Real.log (1 + s) - s + s ^ 2 / 2)
-  have hA2 := le_abs_self (Real.log (1 + s) - s + s ^ 2 / 2)
-  have hB1 := neg_abs_le (Real.log (1 + a) - a + a ^ 2 / 2)
-  have hB2 := le_abs_self (Real.log (1 + a) - a + a ^ 2 / 2)
-  have hC1 := neg_abs_le (Real.log (1 + b) - b + b ^ 2 / 2)
-  have hC2 := le_abs_self (Real.log (1 + b) - b + b ^ 2 / 2)
-  have hD0 : (0 : ℝ) ≤ (a - b) ^ 2 / 4 := by positivity
-  have hD1 : (a - b) ^ 2 / 4 ≤ (a ^ 2 + b ^ 2) / 2 := by nlinarith [sq_nonneg (a + b)]
+  have hA1 := neg_abs_le (Real.log (1 + s) - s + s ^ (2 : ℕ) / 2)
+  have hA2 := le_abs_self (Real.log (1 + s) - s + s ^ (2 : ℕ) / 2)
+  have hB1 := neg_abs_le (Real.log (1 + a) - a + a ^ (2 : ℕ) / 2)
+  have hB2 := le_abs_self (Real.log (1 + a) - a + a ^ (2 : ℕ) / 2)
+  have hC1 := neg_abs_le (Real.log (1 + b) - b + b ^ (2 : ℕ) / 2)
+  have hC2 := le_abs_self (Real.log (1 + b) - b + b ^ (2 : ℕ) / 2)
+  have hD0 : (0 : ℝ) ≤ (a - b) ^ (2 : ℕ) / 4 := by positivity
+  have hD1 : (a - b) ^ (2 : ℕ) / 4 ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) / 2 := by nlinarith [sq_nonneg (a + b)]
   constructor <;> linarith [hTs, hTa, hTb, hcs, hca, hcb]
 
 end GaloisForLFunctions.HTGeometry

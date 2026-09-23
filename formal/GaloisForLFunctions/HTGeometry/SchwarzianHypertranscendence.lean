@@ -47,8 +47,8 @@ theorem hypertranscendentalOver_schwarzian
     simpa [differentialJet_succ, hzero] using
       (isAlgebraic_zero : IsAlgebraic C (0 : K))
   have hcross :
-      2 * x′ * x′′′ - 3 * x′′ ^ 2 - 2 * algebraMap S K c * x′ ^ 2 = 0 := by
-    change 2 * x′ * x′′′ - 3 * x′′ ^ 2 - 2 * schwarzian x * x′ ^ 2 = 0
+      2 * x′ * x′′′ - 3 * x′′ ^ (2 : ℕ) - 2 * algebraMap S K c * x′ ^ (2 : ℕ) = 0 := by
+    change 2 * x′ * x′′′ - 3 * x′′ ^ (2 : ℕ) - 2 * schwarzian x * x′ ^ (2 : ℕ) = 0
     unfold schwarzian
     field_simp [hdx]
     ring

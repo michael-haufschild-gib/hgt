@@ -354,7 +354,7 @@ theorem exists_uniform_routeUComplexTiltUniformDecay_one
     exists_uniform_routeUComplexTiltDerivL1Bound f hf 0
   obtain ⟨C2, hC2, h2⟩ :=
     exists_uniform_routeUComplexTiltDerivL1Bound f hf 2
-  let C : ℝ := 2 * (C0 + ((2 * Real.pi) ^ 2)⁻¹ * C2)
+  let C : ℝ := 2 * (C0 + ((2 * Real.pi) ^ (2 : ℕ))⁻¹ * C2)
   have hC : 0 ≤ C := by
     dsimp only [C]
     positivity
@@ -369,16 +369,16 @@ theorem exists_uniform_routeUComplexTiltUniformDecay_one
 theorem exists_uniform_routeUXiComplexCutoffDivisorMajorant
     (f : SchwartzMap ℝ ℂ) (hf : f ∈ DeningerExpSchwartz) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (q : XiZeroCopy),
-      ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ 2‖ ≤
+      ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ (2 : ℕ)‖ ≤
         C * ‖xiZeroCopyReciprocalSquare q‖ := by
   obtain ⟨D, hD, hdecayD⟩ :=
     exists_uniform_routeUComplexTiltUniformDecay_one f hf
-  let A : ℝ := D * (2 * Real.pi) ^ 2
+  let A : ℝ := D * (2 * Real.pi) ^ (2 : ℕ)
   have hA : 0 ≤ A := mul_nonneg hD (sq_nonneg _)
-  refine ⟨A ^ 2, sq_nonneg A, fun n q => ?_⟩
+  refine ⟨A ^ (2 : ℕ), sq_nonneg A, fun n q => ?_⟩
   let h : ℝ := |(xiSpectralPoint q).re|
   let x : ℝ := -(xiSpectralPoint q).re / (2 * Real.pi)
-  have hreSq : 2 < (xiSpectralPoint q).re ^ 2 := by
+  have hreSq : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have hz := xiZeroCopy_two_lt_im_sq q
     simpa [xiSpectralPoint, Complex.mul_re] using hz
   have hh : 0 < h := by
@@ -394,7 +394,7 @@ theorem exists_uniform_routeUXiComplexCutoffDivisorMajorant
     rw [him, abs_le]
     constructor <;> linarith
   have hdecay :
-      kgFreq x ^ 2 *
+      kgFreq x ^ (2 : ℕ) *
           ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ≤ D := by
     exact (routeUComplexPositiveFourierExtension_uniform_decay n f hstrip 1).trans
       (hdecayD n)
@@ -406,46 +406,46 @@ theorem exists_uniform_routeUXiComplexCutoffDivisorMajorant
     exact abs_le_kgFreq_real x
   have hnorm :
       ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ≤
-        A / h ^ 2 := by
+        A / h ^ (2 : ℕ) := by
     have hfirst :
         ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ≤
-          D / kgFreq x ^ 2 := by
+          D / kgFreq x ^ (2 : ℕ) := by
       apply (le_div_iff₀ (pow_pos (kgFreq_pos x) 2)).2
       simpa only [mul_comm] using hdecay
     calc
       ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ≤
-          D / kgFreq x ^ 2 := hfirst
-      _ ≤ D / (h / (2 * Real.pi)) ^ 2 := by
+          D / kgFreq x ^ (2 : ℕ) := hfirst
+      _ ≤ D / (h / (2 * Real.pi)) ^ (2 : ℕ) := by
         exact div_le_div_of_nonneg_left hD (pow_pos (by positivity) 2)
           (pow_le_pow_left₀ (by positivity) hlower 2)
-      _ = A / h ^ 2 := by
+      _ = A / h ^ (2 : ℕ) := by
         dsimp only [A]
         field_simp [hh.ne', Real.pi_ne_zero]
-  have hnormPos : 0 < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hnormPos : 0 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     have hz : xiSpectralPoint q ≠ 0 := by
       intro hz
       rw [hz] at hreSq
       norm_num at hreSq
     exact sq_pos_of_pos (norm_pos_iff.mpr hz)
-  have hnormSq : ‖xiSpectralPoint q‖ ^ 2 ≤ h ^ 4 := by
+  have hnormSq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ h ^ (4 : ℕ) := by
     simpa only [h] using norm_xiSpectralPoint_sq_le_abs_re_pow_four q
-  have hinv : 1 / h ^ 4 ≤ ‖xiZeroCopyReciprocalSquare q‖ := by
+  have hinv : 1 / h ^ (4 : ℕ) ≤ ‖xiZeroCopyReciprocalSquare q‖ := by
     rw [norm_xiZeroCopyReciprocalSquare_eq_inv_norm_sq]
     exact (div_le_div_iff₀ (pow_pos hh 4) hnormPos).2 (by simpa using hnormSq)
   rw [norm_pow]
   calc
-    ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ^ 2 ≤
-        (A / h ^ 2) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-    _ = A ^ 2 * (1 / h ^ 4) := by ring
-    _ ≤ A ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by gcongr
+    ‖routeUComplexPositiveFourierExtension n f (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+        (A / h ^ (2 : ℕ)) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) hnorm 2
+    _ = A ^ (2 : ℕ) * (1 / h ^ (4 : ℕ)) := by ring
+    _ ≤ A ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by gcongr
 
 theorem tendsto_routeUXiComplexCutoffDivisorTrace
     (f : SchwartzMap ℝ ℂ) (hf : f ∈ DeningerExpSchwartz) :
     Tendsto (fun n : ℕ => ∑' q : XiZeroCopy,
-        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ 2)
+        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ (2 : ℕ))
       atTop
       (nhds (∑' q : XiZeroCopy,
-        routeUEntirePositiveFourierExtension f (xiSpectralPoint q) ^ 2)) := by
+        routeUEntirePositiveFourierExtension f (xiSpectralPoint q) ^ (2 : ℕ))) := by
   obtain ⟨C, hC, hmajor⟩ :=
     exists_uniform_routeUXiComplexCutoffDivisorMajorant f hf
   apply tendsto_tsum_of_dominated_convergence
@@ -460,7 +460,7 @@ theorem tendsto_routeUXiPolynomialGaussianCutoffDivisorTrace
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) :
     Tendsto (fun n : ℕ => ∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2)
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ))
       atTop (nhds (xiPolynomialGaussianHeatTrace P (t : ℝ))) := by
   have hlim := tendsto_routeUXiComplexCutoffDivisorTrace
     (routeUXiHeatPhysicalComplex P t)
@@ -468,7 +468,7 @@ theorem tendsto_routeUXiPolynomialGaussianCutoffDivisorTrace
   have heq :
       (∑' q : XiZeroCopy,
         routeUEntirePositiveFourierExtension (routeUXiHeatPhysicalComplex P t)
-          (xiSpectralPoint q) ^ 2) =
+          (xiSpectralPoint q) ^ (2 : ℕ)) =
         xiPolynomialGaussianHeatTrace P (t : ℝ) := by
     rw [xiPolynomialGaussianHeatTrace]
     apply tsum_congr

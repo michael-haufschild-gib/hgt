@@ -18,7 +18,7 @@ noncomputable section
 
 /-- Real interpolation of the explicit depth-one Gauss critical residue. -/
 def primeQuasiInnerResidueScale (q : ℝ) : ℝ :=
-  2 * (q - 1) ^ 4 / (q ^ 2 * Real.log q)
+  2 * (q - 1) ^ (4 : ℕ) / (q ^ (2 : ℕ) * Real.log q)
 
 /-- At a prime, the interpolated scale is exactly the depth-one Gauss-channel residue. -/
 theorem primeQuasiInnerResidueScale_prime (p : Nat.Primes) :
@@ -37,7 +37,7 @@ theorem primeQuasiInnerResidueScale_pos {q : ℝ} (hq : 1 < q) :
 
 /-- Algebraic factor in the residue-scale factorization. -/
 def primeQuasiInnerAlgebraicFactor (q : ℝ) : ℝ :=
-  (q - 1) ^ 3 / q ^ 2
+  (q - 1) ^ (3 : ℕ) / q ^ (2 : ℕ)
 
 /-- Logarithmic-mean factor in the residue-scale factorization. -/
 def primeQuasiInnerLogMeanFactor (q : ℝ) : ℝ :=
@@ -87,19 +87,19 @@ theorem primeQuasiInnerAlgebraicFactor_strictMonoOn :
   have hinv : r⁻¹ < q⁻¹ := by
     exact (inv_lt_inv₀ hr0 hq0).2 hqr
   have hunit : 1 - q⁻¹ < 1 - r⁻¹ := by linarith
-  have hsquare : (1 - q⁻¹) ^ 2 < (1 - r⁻¹) ^ 2 := by nlinarith
+  have hsquare : (1 - q⁻¹) ^ (2 : ℕ) < (1 - r⁻¹) ^ (2 : ℕ) := by nlinarith
   have hsub : q - 1 < r - 1 := by linarith
-  have hprod : (q - 1) * (1 - q⁻¹) ^ 2 < (r - 1) * (1 - r⁻¹) ^ 2 := by
+  have hprod : (q - 1) * (1 - q⁻¹) ^ (2 : ℕ) < (r - 1) * (1 - r⁻¹) ^ (2 : ℕ) := by
     calc
-      (q - 1) * (1 - q⁻¹) ^ 2 < (r - 1) * (1 - q⁻¹) ^ 2 :=
+      (q - 1) * (1 - q⁻¹) ^ (2 : ℕ) < (r - 1) * (1 - q⁻¹) ^ (2 : ℕ) :=
         mul_lt_mul_of_pos_right hsub (sq_pos_of_pos hunitq)
-      _ < (r - 1) * (1 - r⁻¹) ^ 2 :=
+      _ < (r - 1) * (1 - r⁻¹) ^ (2 : ℕ) :=
         mul_lt_mul_of_pos_left hsquare (sub_pos.mpr hr)
   have hqne : q ≠ 0 := ne_of_gt hq0
   have hrne : r ≠ 0 := ne_of_gt hr0
   unfold primeQuasiInnerAlgebraicFactor
-  rw [show (q - 1) ^ 3 / q ^ 2 = (q - 1) * (1 - q⁻¹) ^ 2 by field_simp [hqne],
-    show (r - 1) ^ 3 / r ^ 2 = (r - 1) * (1 - r⁻¹) ^ 2 by field_simp [hrne]]
+  rw [show (q - 1) ^ (3 : ℕ) / q ^ (2 : ℕ) = (q - 1) * (1 - q⁻¹) ^ (2 : ℕ) by field_simp [hqne],
+    show (r - 1) ^ (3 : ℕ) / r ^ (2 : ℕ) = (r - 1) * (1 - r⁻¹) ^ (2 : ℕ) by field_simp [hrne]]
   exact hprod
 
 /-- The logarithmic-mean factor is strictly increasing above one. -/
@@ -176,7 +176,7 @@ theorem primeQuasiInnerResidueScale_eq_iff {q r : ℝ} (hq : 1 < q) (hr : 1 < r)
 
 /-- A cubic upper bound controlling the residue at the endpoint `q = 1`. -/
 theorem primeQuasiInnerResidueScale_upper {q : ℝ} (hq : 1 < q) :
-    primeQuasiInnerResidueScale q ≤ 2 * (q - 1) ^ 3 / q := by
+    primeQuasiInnerResidueScale q ≤ 2 * (q - 1) ^ (3 : ℕ) / q := by
   have hq0 : 0 < q := zero_lt_one.trans hq
   have hB : primeQuasiInnerLogMeanFactor q ≤ q := by
     unfold primeQuasiInnerLogMeanFactor
@@ -192,7 +192,7 @@ theorem primeQuasiInnerResidueScale_upper {q : ℝ} (hq : 1 < q) :
     2 * primeQuasiInnerAlgebraicFactor q * primeQuasiInnerLogMeanFactor q ≤
         2 * primeQuasiInnerAlgebraicFactor q * q :=
       mul_le_mul_of_nonneg_left hB hA
-    _ = 2 * (q - 1) ^ 3 / q := by
+    _ = 2 * (q - 1) ^ (3 : ℕ) / q := by
       unfold primeQuasiInnerAlgebraicFactor
       field_simp [ne_of_gt hq0]
 
@@ -221,9 +221,9 @@ theorem primeQuasiInnerResidueScale_linear_lower {q : ℝ} (hq : 1 < q) :
   calc
     q - 6 ≤ 2 * primeQuasiInnerAlgebraicFactor q := by
       unfold primeQuasiInnerAlgebraicFactor
-      rw [show 2 * ((q - 1) ^ 3 / q ^ 2) = (2 * (q - 1) ^ 3) / q ^ 2 by ring]
+      rw [show 2 * ((q - 1) ^ (3 : ℕ) / q ^ (2 : ℕ)) = (2 * (q - 1) ^ (3 : ℕ)) / q ^ (2 : ℕ) by ring]
       rw [le_div_iff₀ (sq_pos_of_pos hq0)]
-      have hcube : 0 < q ^ 3 := pow_pos hq0 3
+      have hcube : 0 < q ^ (3 : ℕ) := pow_pos hq0 3
       nlinarith
     _ ≤ primeQuasiInnerResidueScale q := primeQuasiInnerResidueScale_lower hq
 
@@ -235,9 +235,9 @@ theorem tendsto_primeQuasiInnerResidueScale_nhdsGT_one :
     exact (primeQuasiInnerResidueScale_pos hq).le
   · filter_upwards [self_mem_nhdsWithin] with q hq
     exact primeQuasiInnerResidueScale_upper hq
-  · have hcont : ContinuousAt (fun q : ℝ => 2 * (q - 1) ^ 3 / q) 1 := by
+  · have hcont : ContinuousAt (fun q : ℝ => 2 * (q - 1) ^ (3 : ℕ) / q) 1 := by
       fun_prop (disch := norm_num)
-    have hfull : Tendsto (fun q : ℝ => 2 * (q - 1) ^ 3 / q) (nhds 1) (nhds 0) := by
+    have hfull : Tendsto (fun q : ℝ => 2 * (q - 1) ^ (3 : ℕ) / q) (nhds 1) (nhds 0) := by
       simpa using hcont.tendsto
     exact hfull.mono_left inf_le_left
 
@@ -271,8 +271,8 @@ theorem exists_primeQuasiInnerResidueScale_eq {y : ℝ} (hy : 0 < y) :
   have hδpos : 0 < δ := by simp [δ, hy]
   have hδone : δ ≤ 1 := min_le_left _ _
   have hδy : δ ≤ y / 4 := min_le_right _ _
-  have hδsq : δ ^ 2 ≤ 1 := by nlinarith [sq_nonneg δ]
-  have hδcube : δ ^ 3 ≤ δ := by
+  have hδsq : δ ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg δ]
+  have hδcube : δ ^ (3 : ℕ) ≤ δ := by
     nlinarith [mul_nonneg hδpos.le (sub_nonneg.mpr hδsq)]
   let a : ℝ := 1 + δ
   have ha1 : 1 < a := by simp [a, hδpos]
@@ -280,12 +280,12 @@ theorem exists_primeQuasiInnerResidueScale_eq {y : ℝ} (hy : 0 < y) :
   have ha2 : a ≤ 2 := by dsimp [a]; linarith
   have hRa : primeQuasiInnerResidueScale a < y := by
     calc
-      primeQuasiInnerResidueScale a ≤ 2 * (a - 1) ^ 3 / a :=
+      primeQuasiInnerResidueScale a ≤ 2 * (a - 1) ^ (3 : ℕ) / a :=
         primeQuasiInnerResidueScale_upper ha1
-      _ = 2 * δ ^ 3 / a := by simp [a]
-      _ ≤ 2 * δ ^ 3 := by
+      _ = 2 * δ ^ (3 : ℕ) / a := by simp [a]
+      _ ≤ 2 * δ ^ (3 : ℕ) := by
         rw [div_le_iff₀ ha0]
-        have hnum : 0 ≤ 2 * δ ^ 3 := by positivity
+        have hnum : 0 ≤ 2 * δ ^ (3 : ℕ) := by positivity
         nlinarith
       _ ≤ 2 * δ := by linarith
       _ < y := by linarith

@@ -124,7 +124,7 @@ theorem xiShiftedMomentHankelMatrix_succ_posSemidef_iff_evenPadeDefect_nonneg_of
     change 0 ≤ HTGeometry.momentFunctional
       (fun k => (xiShiftedReciprocalMoment y k).re)
       ((Polynomial.ofFn (n + 2)
-        (xiShiftedHankelBoundaryLiftedNullVector c 1)) ^ 2) at hquad
+        (xiShiftedHankelBoundaryLiftedNullVector c 1)) ^ (2 : ℕ)) at hquad
     rw [ofFn_xiShiftedHankelBoundaryLiftedNullVector c hlast] at hquad
     rw [xiShiftedHankelBoundaryPadeDefect_first_even_eq_liftedSquare
       c hlast (by omega : 0 < 1) hzero]
@@ -138,13 +138,13 @@ the completed adaptive `P^sharp` packet is equivalent to survival of the next PS
 This is a nonlinear source law because admission occurs before packet formation. -/
 theorem xiShiftedCanonicalAdmission_succ_posSemidef_iff_completedSource_nonneg_of_flatTangent
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ}
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
-    (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosSemidef ↔
-      0 ≤ xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosSemidef ↔
+      0 ≤ xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket
             (HTGeometry.monicMomentAdmissionPolynomial
@@ -154,17 +154,17 @@ theorem xiShiftedCanonicalAdmission_succ_posSemidef_iff_completedSource_nonneg_o
   have hface :=
     xiShiftedMomentHankelMatrix_succ_posSemidef_iff_evenPadeDefect_nonneg_of_flatTangent
       c hhead hflat hlast htangent
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have hsource :=
     xiShiftedCompletedMomentAggregate_canonicalFlatTangent_eq_evenPadeDefect
       hy hhead hflat htangent
-  change xiShiftedCompletedMomentAggregate (w ^ 2) 2
+  change xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
       (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
         (xiShiftedOddCrossingCoefficientPacket
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n))) =
     2 * ((n + 1 : ℕ) : ℝ) *
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2) at hsource
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + 2) at hsource
   rw [hface, hsource]
   have hfactor : (0 : ℝ) < 2 * ((n + 1 : ℕ) : ℝ) := by positivity
   exact (mul_nonneg_iff_of_pos_left hfactor).symm
@@ -175,31 +175,31 @@ defect.  This is the Schur-complement boundary acceleration without dividing by 
 norm. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_evenPadeDefect_of_flatTangent
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
       (2 * ((2 * n + 1 : ℕ) : ℝ) * ((n + 1 : ℕ) : ℝ) *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
           (HTGeometry.monicMomentAdmissionVector
-            (xiShiftedRealMomentSequence w) n) (2 * n + 2)) (w ^ 2) := by
+            (xiShiftedRealMomentSequence w) n) (2 * n + 2)) (w ^ (2 : ℕ)) := by
   have hflux :=
     hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
       hw hn hhead hflat htangent
   dsimp only at hflux
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have hsource :=
     xiShiftedCompletedMomentAggregate_canonicalFlatTangent_eq_evenPadeDefect
       hy hhead hflat htangent
-  change xiShiftedCompletedMomentAggregate (w ^ 2) 2
+  change xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
       (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
         (xiShiftedOddCrossingCoefficientPacket
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n))) =
     2 * ((n + 1 : ℕ) : ℝ) *
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
         (HTGeometry.monicMomentAdmissionVector
           (xiShiftedRealMomentSequence w) n) (2 * n + 2) at hsource
   rw [hsource] at hflux

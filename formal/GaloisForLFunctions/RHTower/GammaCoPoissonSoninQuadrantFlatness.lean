@@ -351,7 +351,7 @@ theorem coPoissonWordOp_ladderKernel {w : ℂ} {hlo : 1 / 2 < w.re} {hhi : w.re 
         omega
 
 /-- **The anti-diagonal determinant character.**  The endpoint scalar of a word with `p` forward and
-`q` inverse letters, compared with its reflected word, is the relative torsion `abs(λ)^2` raised to
+`q` inverse letters, compared with its reflected word, is the relative torsion `abs(λ)^(2 : ℕ)` raised to
 `p - q`; it is trivial exactly on the anti-diagonal `p = q`. -/
 theorem coPoissonEndpointScalar_ratio {r : ℝ} (hr : 0 < r) (w : ℂ) (p q : ℤ) :
     ‖((starRingEnd ℂ) (soninLadderCharacter w r)) ^ (p - q)‖ /

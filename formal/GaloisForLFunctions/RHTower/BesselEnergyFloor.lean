@@ -41,7 +41,7 @@ theorem besselNormalForm_wronskian {u : ℝ} (hu : 0 < u) :
 /-- The companion energy is bounded by its value at `u = 1`. -/
 theorem besselKV_oscEnergy_le {u : ℝ} (hu : 1 ≤ u) :
     oscEnergy besselKV besselKVDeriv u
-      ≤ (besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2) := by
+      ≤ (besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2) := by
   rw [oscEnergy]
   exact sq_add_sq_le_of_perturbed_harmonic
     (fun x hx => hasDerivAt_besselKV (lt_of_lt_of_le zero_lt_one hx))
@@ -49,7 +49,7 @@ theorem besselKV_oscEnergy_le {u : ℝ} (hu : 1 ≤ u) :
 
 /-- The companion energy constant is positive, because the Wronskian is not zero. -/
 theorem besselKV_energy_const_pos :
-    0 < (besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2) := by
+    0 < (besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2) := by
   have hW : besselNormalForm 1 * besselKVDeriv 1 - besselNormalFormDeriv 1 * besselKV 1
       = Real.pi / 4 := by
     rw [besselNormalForm_wronskian (by norm_num : (0:ℝ) < 1)]
@@ -57,7 +57,7 @@ theorem besselKV_energy_const_pos :
   have hπ : (0 : ℝ) < Real.pi / 4 := by
     have := Real.pi_pos
     linarith
-  have hne : besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2 ≠ 0 := by
+  have hne : besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ) ≠ 0 := by
     intro h
     have h1 : besselKV 1 = 0 := by nlinarith [sq_nonneg (besselKV 1), sq_nonneg (besselKVDeriv 1)]
     have h2 : besselKVDeriv 1 = 0 := by
@@ -65,13 +65,13 @@ theorem besselKV_energy_const_pos :
     rw [h1, h2] at hW
     simp at hW
     linarith [hW, hπ]
-  have hnn : 0 ≤ besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2 := by positivity
-  have hpos : 0 < besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2 := lt_of_le_of_ne hnn (Ne.symm hne)
+  have hnn : 0 ≤ besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ) := by positivity
+  have hpos : 0 < besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ) := lt_of_le_of_ne hnn (Ne.symm hne)
   positivity
 
 /-- **The Bessel energy floor.**  Absolute, and proved without evaluating any Bessel function. -/
 theorem besselEnergy_lower {u : ℝ} (hu : 1 ≤ u) :
-    (Real.pi / 4) ^ 2 / ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2))
+    (Real.pi / 4) ^ (2 : ℕ) / ((besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2))
       ≤ besselEnergy u := by
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
   have hWval : besselNormalForm u * besselKVDeriv u - besselNormalFormDeriv u * besselKV u
@@ -85,7 +85,7 @@ theorem besselEnergy_lower {u : ℝ} (hu : 1 ≤ u) :
 
 /-- The floor constant of the Bessel energy. -/
 def besselEnergyFloor : ℝ :=
-  (Real.pi / 4) ^ 2 / ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2))
+  (Real.pi / 4) ^ (2 : ℕ) / ((besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2))
 
 theorem besselEnergyFloor_pos : 0 < besselEnergyFloor := by
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
@@ -106,7 +106,7 @@ theorem half_le_exp_neg_half : (1 : ℝ) / 2 ≤ Real.exp (-(1 / 2 : ℝ)) := by
 /-- **The Bessel normal form carries absolute mass on every window of length four.**  The energy
 floor and the virial mass bound combine with no numerical input beyond `e^(1/2) ≤ 2`. -/
 theorem besselMass_lower_window {α : ℝ} (hα : 1 ≤ α) :
-    4 / 9 * besselEnergyFloor ≤ ∫ u in α..(α + 4), besselNormalForm u ^ 2 := by
+    4 / 9 * besselEnergyFloor ≤ ∫ u in α..(α + 4), besselNormalForm u ^ (2 : ℕ) := by
   have hα0 : (0 : ℝ) < α := lt_of_lt_of_le zero_lt_one hα
   have hαβ : α ≤ α + 4 := by linarith
   have hmain := besselMass_lower hα0 hαβ
@@ -141,15 +141,15 @@ theorem besselMass_lower_window {α : ℝ} (hα : 1 ≤ α) :
     rw [hsimp]
     nlinarith [h1, h2, h3, hE, hE0]
   -- the denominator
-  have hden : (0 : ℝ) < 2 + (1 / 4 : ℝ) / α ^ 2 := by positivity
-  have hden' : 2 + (1 / 4 : ℝ) / α ^ 2 ≤ 9 / 4 := by
-    have : (1 : ℝ) / 4 / α ^ 2 ≤ 1 / 4 := by
+  have hden : (0 : ℝ) < 2 + (1 / 4 : ℝ) / α ^ (2 : ℕ) := by positivity
+  have hden' : 2 + (1 / 4 : ℝ) / α ^ (2 : ℕ) ≤ 9 / 4 := by
+    have : (1 : ℝ) / 4 / α ^ (2 : ℕ) ≤ 1 / 4 := by
       rw [div_le_iff₀ (by positivity)]
       nlinarith [hα]
     linarith
   have hstep : 4 / 9 * besselEnergyFloor
       ≤ ((α + 4 - α) * (besselEnergy α * Real.exp (1 / 4 / (α + 4) - 1 / 4 / α))
-          - besselEnergy α * Real.exp (1 / 4 / α)) / (2 + (1 / 4 : ℝ) / α ^ 2) := by
+          - besselEnergy α * Real.exp (1 / 4 / α)) / (2 + (1 / 4 : ℝ) / α ^ (2 : ℕ)) := by
     rw [le_div_iff₀ hden]
     nlinarith [hnum, hden', besselEnergyFloor_pos]
   linarith [hmain, hstep]
@@ -165,7 +165,7 @@ theorem continuous_besselNormalForm : Continuous besselNormalForm := by
 units of the exterior ray contribute a fixed amount. -/
 theorem besselMass_lower_tiled {α : ℝ} (hα : 1 ≤ α) (n : ℕ) :
     (n : ℝ) * (4 / 9 * besselEnergyFloor)
-      ≤ ∫ u in α..(α + 4 * (n : ℝ)), besselNormalForm u ^ 2 := by
+      ≤ ∫ u in α..(α + 4 * (n : ℝ)), besselNormalForm u ^ (2 : ℕ) := by
   induction n with
   | zero => simp
   | succ k ih =>
@@ -173,10 +173,10 @@ theorem besselMass_lower_tiled {α : ℝ} (hα : 1 ≤ α) (n : ℕ) :
       have : (0 : ℝ) ≤ 4 * (k : ℝ) := by positivity
       linarith
     have hstep := besselMass_lower_window hk
-    have hcont : Continuous fun u : ℝ => besselNormalForm u ^ 2 :=
+    have hcont : Continuous fun u : ℝ => besselNormalForm u ^ (2 : ℕ) :=
       continuous_besselNormalForm.pow 2
     have hadd := intervalIntegral.integral_add_adjacent_intervals
-      (f := fun u : ℝ => besselNormalForm u ^ 2) (μ := MeasureTheory.volume)
+      (f := fun u : ℝ => besselNormalForm u ^ (2 : ℕ)) (μ := MeasureTheory.volume)
       (a := α) (b := α + 4 * (k : ℝ)) (c := α + 4 * ((k : ℝ) + 1))
       (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
     have hshift : α + 4 * (k : ℝ) + 4 = α + 4 * ((k : ℝ) + 1) := by ring

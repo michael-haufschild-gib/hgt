@@ -121,7 +121,7 @@ theorem realModifiedBesselKOrder_factorial_lower
 theorem realModifiedBesselOrderIntensity_factorialSq_lower
     {s x : ℝ} (hs : 0 < s) (hx : 3 ≤ x) {N : ℕ} (hN : 1 ≤ N) :
     (realModifiedBesselKOrder s x * realModifiedBesselKOrder s (x - 2)) *
-        (2 / s) ^ (2 * N) * (N.factorial : ℝ) ^ 2 <
+        (2 / s) ^ (2 * N) * (N.factorial : ℝ) ^ (2 : ℕ) <
       realModifiedBesselKOrder s (x + N) *
         realModifiedBesselKOrder s (x - 2 + N) := by
   exact mul_realAffineOrderShiftRecurrence_factorial_lower
@@ -166,7 +166,7 @@ theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_up
       realModifiedBesselKOrder s (x + n) *
           realModifiedBesselKOrder s (x - 2 + n) ≤
         C * ((n : ℝ) + 1) ^ d * A ^ n) := by
-  let c : ℝ := (2 / s) ^ 2
+  let c : ℝ := (2 / s) ^ (2 : ℕ)
   have hc : 0 < c := pow_pos (div_pos (by norm_num) hs) 2
   have hy₀ : 0 < realModifiedBesselKOrder s x * realModifiedBesselKOrder s (x - 2) :=
     mul_pos (realModifiedBesselKOrder_pos hs x)
@@ -176,7 +176,7 @@ theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_up
       realModifiedBesselKOrder s (x - 2 + n)) hy₀ hc (by
         intro n hn
         have hsq := realModifiedBesselOrderIntensity_factorialSq_lower hs hx hn
-        have hfac : (n.factorial : ℝ) ≤ (n.factorial : ℝ) ^ 2 := by
+        have hfac : (n.factorial : ℝ) ≤ (n.factorial : ℝ) ^ (2 : ℕ) := by
           have h1 : (1 : ℝ) ≤ n.factorial := by
             have hnpos := Nat.factorial_pos n
             exact_mod_cast hnpos
@@ -197,7 +197,7 @@ theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_up
       realModifiedBesselKOrder s (x + (ell * n : ℕ)) *
           realModifiedBesselKOrder s (x - 2 + (ell * n : ℕ)) ≤
         C * ((n : ℝ) + 1) ^ d * A ^ n) := by
-  let c : ℝ := (2 / s) ^ 2
+  let c : ℝ := (2 / s) ^ (2 : ℕ)
   have hc : 0 < c := pow_pos (div_pos (by norm_num) hs) 2
   have hy₀ : 0 < realModifiedBesselKOrder s x * realModifiedBesselKOrder s (x - 2) :=
     mul_pos (realModifiedBesselKOrder_pos hs x)
@@ -210,7 +210,7 @@ theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_up
           (Nat.one_le_iff_ne_zero.mp hell) (Nat.one_le_iff_ne_zero.mp hn))
         have hsq := realModifiedBesselOrderIntensity_factorialSq_lower hs hx hN
         have hfac : (((ell * n).factorial : ℝ)) ≤
-            ((ell * n).factorial : ℝ) ^ 2 := by
+            ((ell * n).factorial : ℝ) ^ (2 : ℕ) := by
           have h1 : (1 : ℝ) ≤ (ell * n).factorial := by
             exact_mod_cast Nat.factorial_pos (ell * n)
           nlinarith

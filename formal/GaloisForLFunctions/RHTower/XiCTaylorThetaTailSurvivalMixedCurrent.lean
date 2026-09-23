@@ -46,7 +46,7 @@ theorem hasDerivAt_thetaCuspTailSecondSectionDerivative_source
 def thetaCuspTailSecondCoreAtomSourceSpectralDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
   -2 * z * thetaCuspTailSecondSectionSourceDerivative d z x -
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
       thetaCuspTailSecondSectionSourceSpectralDerivative d z x
 
 theorem hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source
@@ -58,7 +58,7 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source
   simpa only [Pi.sub_apply] using!
     ((hasDerivAt_thetaCuspTailSecondSection_source d z x).const_mul (-2 * z)).sub
       ((hasDerivAt_thetaCuspTailSecondSectionDerivative_source d z x).const_mul
-        (z ^ 2 + 1 / 4))
+        (z ^ (2 : ℕ) + 1 / 4))
 
 theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceDerivative
     (d : ℕ) (z : ℂ) :
@@ -123,13 +123,13 @@ theorem integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceSpectralDerivative
       fun x : ℝ => (-2 * z) *
           ((thetaCuspTailSurvival x : ℂ) *
             thetaCuspTailSecondSectionSourceDerivative d z x) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSurvival x : ℂ) *
             thetaCuspTailSecondSectionSourceSpectralDerivative d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtomSourceSpectralDerivative
     ring]
-  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ 2 + 1 / 4))
+  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
 theorem thetaCuspTailSurvival_mul_section_tendsto_atTop_zero
     (d : ℕ) (z : ℂ) :
@@ -199,7 +199,7 @@ theorem thetaCuspTailSurvival_mul_coreAtomDerivative_tendsto_atTop_zero
       fun x : ℝ => (-2 * z) *
           ((thetaCuspTailSurvival x : ℂ) *
             thetaCuspTailSecondSection d z x) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSurvival x : ℂ) *
             thetaCuspTailSecondSectionDerivative d z x) by
     funext x
@@ -208,7 +208,7 @@ theorem thetaCuspTailSurvival_mul_coreAtomDerivative_tendsto_atTop_zero
   simpa using
     ((thetaCuspTailSurvival_mul_section_tendsto_atTop_zero d z).const_mul (-2 * z)).sub
       ((thetaCuspTailSurvival_mul_sectionDerivative_tendsto_atTop_zero d z).const_mul
-        (z ^ 2 + 1 / 4))
+        (z ^ (2 : ℕ) + 1 / 4))
 
 @[simp] theorem thetaCuspTailSecondCoreAtomDerivative_zero
     (d : ℕ) (z : ℂ) :

@@ -125,11 +125,11 @@ theorem tendsto_atomicBernsteinPacketSquareEnergy_of_finiteCoordinatePacket
     (hlead : Tendsto
       (fun n : ℕ => Real.sqrt n *
         finiteBernsteinCoordinatePacketEnergy (D.image u)
-          (finiteExponentialFiberCoefficient D c u) n / (B ^ 2) ^ n)
+          (finiteExponentialFiberCoefficient D c u) n / (B ^ (2 : ℕ)) ^ n)
       atTop (nhds L)) :
     Tendsto
       (fun n : ℕ => Real.sqrt n * atomicBernsteinPacketSquareEnergy c u n /
-        (B ^ 2) ^ n)
+        (B ^ (2 : ℕ)) ^ n)
       atTop (nhds L) := by
   let a : ℕ → ℕ → ℂ := fun n =>
     finiteBernsteinCoordinatePacket (D.image u)
@@ -144,7 +144,7 @@ theorem tendsto_atomicBernsteinPacketSquareEnergy_of_finiteCoordinatePacket
     exact finitePacketL1_atomicBernsteinComplementPacket_le D c u hc hsub n
   have hlead' : Tendsto
       (fun n : ℕ => Real.sqrt n * finiteComplexPacketSquareEnergy (a n) (n + 1) /
-        (B ^ 2) ^ n) atTop (nhds L) := by
+        (B ^ (2 : ℕ)) ^ n) atTop (nhds L) := by
     simpa only [a, finiteComplexPacketSquareEnergy,
       finiteBernsteinCoordinatePacketEnergy] using hlead
   have htransfer :=

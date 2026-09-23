@@ -78,8 +78,8 @@ theorem norm_integral_zetaLogDerivRegTwist_truncated_le {N H : ℝ} (hH : 0 < H)
 /-- The explicit factor of the twisted main term. -/
 noncomputable def twistMainFactor (d T τ : ℝ) : ℂ :=
   (((Real.arctan ((T + τ) / (d - 1)) - Real.arctan ((-T + τ) / (d - 1)) : ℝ)) : ℂ)
-    - ((((Real.log ((d - 1) ^ 2 + (T + τ) ^ 2)
-          - Real.log ((d - 1) ^ 2 + (-T + τ) ^ 2)) / 2 : ℝ)) : ℂ) * Complex.I
+    - ((((Real.log ((d - 1) ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+          - Real.log ((d - 1) ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2 : ℝ)) : ℂ) * Complex.I
 
 /-- **The twisted smoothed Chebyshev sum, minus its main term, bounded by three pieces.**  The tail
 beyond height `T`, the divided difference on the truncated line, and the regular part there — the

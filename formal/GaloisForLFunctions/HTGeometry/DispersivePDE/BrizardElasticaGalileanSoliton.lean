@@ -16,7 +16,7 @@ noncomputable def envelopeSolitonCompatibleJet (D k v : ℝ) : TransportCompatib
   toComplexEvolutionJet2 := envelopeSolitonJet D k v
   hasDerivAt_transport := by
     intro c t x
-    let ω : ℝ := D * (k ^ 2 - v ^ 2)
+    let ω : ℝ := D * (k ^ (2 : ℕ) - v ^ (2 : ℕ))
     have hcoord : HasDerivAt
         (fun s : ℝ => envelopeCoordinate D k v s (x - c * s))
         (-k * (2 * D * v + c)) t := by

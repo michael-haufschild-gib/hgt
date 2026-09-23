@@ -54,7 +54,7 @@ def cglSmoothBumpDyadicWeight (w : CGLSmoothBump) (N : CGLPositiveLength)
 /-- Unit-supported squared CGL cutoff mass on the finite character-matrix columns. -/
 def cglSmoothBumpDyadicUnitWeightMass (w : CGLSmoothBump) (N : CGLPositiveLength)
     (Q : CGLPositiveModulus) : ℝ :=
-  ∑ j : Fin N.value, ‖cglSmoothBumpDyadicWeight w N j‖ ^ 2 *
+  ∑ j : Fin N.value, ‖cglSmoothBumpDyadicWeight w N j‖ ^ (2 : ℕ) *
     cglCharacterDyadicUnitSupport N.value Q.value j
 
 /-- The finite CGL column mass is literally the coprime sum over `(N,2N]`. -/
@@ -62,13 +62,13 @@ theorem cglSmoothBumpDyadicUnitWeightMass_eq_dyadicCoprimeSum
     (w : CGLSmoothBump) (N : CGLPositiveLength) (Q : CGLPositiveModulus) :
     cglSmoothBumpDyadicUnitWeightMass w N Q =
       ∑ n ∈ cglCharacterDyadicBlock N,
-        ‖w.value ((n : ℝ) / N.value)‖ ^ 2 *
+        ‖w.value ((n : ℝ) / N.value)‖ ^ (2 : ℕ) *
           if n.Coprime Q.value then 1 else 0 := by
   unfold cglSmoothBumpDyadicUnitWeightMass
   simp only [cglSmoothBumpDyadicWeight, cglCharacterDyadicUnitSupport,
     ZMod.isUnit_iff_coprime]
   exact (cglCharacterDyadicBlock_sum_eq_sum_fin N
-    (fun n => ‖w.value ((n : ℝ) / N.value)‖ ^ 2 *
+    (fun n => ‖w.value ((n : ℝ) / N.value)‖ ^ (2 : ℕ) *
       if n.Coprime Q.value then 1 else 0)).symm
 
 /-- CGL's weighted Hilbert--Schmidt mass in literal source dyadic notation. -/
@@ -78,7 +78,7 @@ theorem cglSmoothBumpDyadicWeighted_hilbertSchmidtMass_eq_card_mul_dyadicCoprime
     cglCharacterDyadicWeightedHilbertSchmidtMass N.value Q.value R
       (cglSmoothBumpDyadicWeight w N) rows =
       (R : ℝ) * ∑ n ∈ cglCharacterDyadicBlock N,
-        ‖w.value ((n : ℝ) / N.value)‖ ^ 2 *
+        ‖w.value ((n : ℝ) / N.value)‖ ^ (2 : ℕ) *
           if n.Coprime Q.value then 1 else 0 := by
   calc
     cglCharacterDyadicWeightedHilbertSchmidtMass N.value Q.value R
@@ -97,7 +97,7 @@ theorem cglSmoothBumpDyadicWeighted_trace_self_mul_conjTranspose_re_eq_card_mul_
       (cglCharacterDyadicWeightedEvaluationMatrix N.value Q.value R
         (cglSmoothBumpDyadicWeight w N) rows)ᴴ).trace).re =
       (R : ℝ) * ∑ n ∈ cglCharacterDyadicBlock N,
-        ‖w.value ((n : ℝ) / N.value)‖ ^ 2 *
+        ‖w.value ((n : ℝ) / N.value)‖ ^ (2 : ℕ) *
           if n.Coprime Q.value then 1 else 0 := by
   calc
     ((cglCharacterDyadicWeightedEvaluationMatrix N.value Q.value R

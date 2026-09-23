@@ -75,13 +75,13 @@ theorem exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh
         (fun n : ℕ => Real.sqrt n *
           finiteBernsteinCoordinatePacketEnergy
             (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) n /
-              (B ^ 2) ^ n)
+              (B ^ (2 : ℕ)) ^ n)
         atTop
         (nhds (∑ u ∈ xiEndpointCoordinateSet D,
-          ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+          ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
             bernsteinAffineRowHalfOrderConstant u)) ∧
       0 < ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u := by
   classical
   obtain ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub⟩ :=
@@ -107,7 +107,7 @@ theorem exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh
     norm_num at huB
     linarith
   have hmixed : ∀ u ∈ U, ∀ v ∈ U, u ≠ v →
-      ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+      ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
         ∀ n : ℕ, ‖reflectedBernsteinCrossMoment u v n‖ ≤ gamma ^ n := by
     intro u hu v hv huv
     obtain ⟨q, hqD, hqu⟩ := Finset.mem_image.mp hu
@@ -123,13 +123,13 @@ theorem exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh
     tendsto_sqrtNat_mul_finiteBernsteinCoordinatePacketEnergy_div_pow
       U C (lt_trans zero_lt_one hB) hamp hu0 hu1 hmixed
   have htermpos : ∀ u ∈ U,
-      0 < ‖C u‖ ^ 2 * bernsteinAffineRowHalfOrderConstant u := by
+      0 < ‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant u := by
     intro u hu
     exact mul_pos (sq_pos_of_pos (norm_pos_iff.mpr
       (xiEndpointCoordinateWeight_ne_zero hu)))
       (bernsteinAffineRowHalfOrderConstant_pos (hu0 u hu) (hu1 u hu))
   have hsumpos : 0 < ∑ u ∈ U,
-      ‖C u‖ ^ 2 * bernsteinAffineRowHalfOrderConstant u := by
+      ‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant u := by
     apply Finset.sum_pos' (fun u hu => (htermpos u hu).le)
     obtain ⟨u, hu⟩ := hUne
     exact ⟨u, hu, htermpos u hu⟩
@@ -151,13 +151,13 @@ theorem
         (fun n : ℕ => Real.sqrt n *
           finiteBernsteinCoordinatePacketEnergy
             (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) n /
-              (B ^ 2) ^ n)
+              (B ^ (2 : ℕ)) ^ n)
         atTop
         (nhds (∑ u ∈ xiEndpointCoordinateSet D,
-          ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+          ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
             bernsteinAffineRowHalfOrderConstant u)) ∧
       0 < ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u := by
   obtain ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub, hlimit, hpos⟩ :=
     exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh hRH

@@ -44,7 +44,7 @@ theorem primeArchEndpointBernsteinCumulativeDissipationExactExponent_iff_purity
 theorem existsUnique_primeArchEndpointBernsteinPurityDissipationExactExponent :
     ∃! E : ℝ,
       1 ≤ E ∧
-      E < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      E < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
       PrimeArchEndpointBernsteinExactExponentialExponent E ∧
       PrimeArchEndpointBernsteinCumulativeDissipationExactExponentialExponent E ∧
       (RiemannHypothesis ↔ E = 1) := by
@@ -61,27 +61,27 @@ unique exact exponent in the universal narrow chamber.  RH is exactly its critic
 the cofinally linearly dissipative phase; false RH makes the common exponent source-attained and
 forces simultaneous purity and mean-dissipation divergence. -/
 theorem primeArchBernsteinNarrowSectorDissipationMaster :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 ∧
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 201 / 200 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) = 251001 / 250000 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < 201 / 200 ∧
     (∀ n : ℕ,
-      normalizedPrimeArchMoment 0 ^ 2 ≤
+      normalizedPrimeArchMoment 0 ^ (2 : ℕ) ≤
           (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n ∧
         primeArchEndpointBernsteinPurity n ≤
           (xiReciprocalSquareAbsoluteMass *
-            xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2) ∧
+            xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ (2 : ℕ)) ∧
     (RiemannHypothesis ↔
       PrimeArchEndpointBernsteinPurityCofinallyBounded) ∧
     (RiemannHypothesis ↔
       PrimeArchEndpointBernsteinCofinalLinearDissipation) ∧
     (∃! E : ℝ,
       1 ≤ E ∧
-      E < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      E < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
       PrimeArchEndpointBernsteinExactExponentialExponent E ∧
       PrimeArchEndpointBernsteinCumulativeDissipationExactExponentialExponent E ∧
       (RiemannHypothesis ↔ E = 1)) ∧
     ((RiemannHypothesis ∧
         ∀ n : ℕ,
-          primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ 2) ∨
+          primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ (2 : ℕ)) ∨
       (¬ RiemannHypothesis ∧
         Tendsto primeArchEndpointBernsteinPurity atTop atTop ∧
         Tendsto primeArchEndpointBernsteinMeanDissipation atTop atTop ∧

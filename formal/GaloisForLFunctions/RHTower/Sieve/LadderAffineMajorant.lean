@@ -24,22 +24,22 @@ def ladderDefectSum (L B₀ : ℕ) (Q η : ℝ) : ℝ :=
   Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
     * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
         * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-          + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)
+          + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))
 
 /-- The slope of the ladder's affine majorant. -/
 def ladderAffineSlope (L B₀ : ℕ) (Q η ρ : ℝ) : ℝ :=
-  4 * (5 * Real.pi / 2) * ρ ^ 2
+  4 * (5 * Real.pi / 2) * ρ ^ (2 : ℕ)
       * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
-          * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ 2
+          * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ (2 : ℕ)
     + 2 * (5 * Real.pi / 2) * ladderDefectSum L B₀ Q η
 
 /-- The constant of the ladder's affine majorant. -/
 def ladderAffineConst (z₀ z L B₀ : ℕ) (Q η ρ s w₀ : ℝ) : ℝ :=
-  4 * (5 * Real.exp 1 / 2) * ρ ^ 2
+  4 * (5 * Real.exp 1 / 2) * ρ ^ (2 : ℕ)
       * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
           * Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j))
-              * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ 2
-    + 2 * (∑ j ∈ Finset.range L, discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ 2
+              * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ (2 : ℕ)
+    + 2 * (∑ j ∈ Finset.range L, discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ (2 : ℕ)
     + 2 * (5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ)) * ladderDefectSum L B₀ Q η
 
 /-- **The ladder's affine majorant at a height where its analytic input holds.** -/
@@ -52,7 +52,7 @@ theorem integral_normSq_omegaWeighted_affine_le {z₀ z L B₀ : ℕ} {Q η w₀
       ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₀ Q η j) w‖
         ≤ s * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) :
     (∫ w in Set.Icc (-T) T,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ 2)
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
       ≤ ladderAffineSlope L B₀ Q η ρ * T + ladderAffineConst z₀ z L B₀ Q η ρ s w₀ := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ1
@@ -80,11 +80,11 @@ theorem integral_normSq_omegaWeighted_affine_le {z₀ z L B₀ : ℕ} {Q η w₀
   have hdpos : ∀ j ∈ Finset.range L, 0 < discMajorant (primesRange z₀ z) B₀ Q η s w₀ j :=
     fun j _ => discMajorant_pos hQ0 hη0 hs j
   have hcT : ∀ j ∈ Finset.range L,
-      V j ^ 2 * ladderStepMVT B₀ Q η T j ≤ (stepAffineMajorant B₀ Q η ρ T j) ^ 2 := fun j _ =>
+      V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η T j ≤ (stepAffineMajorant B₀ Q η ρ T j) ^ (2 : ℕ) := fun j _ =>
     stepAffineMajorant_sq_ge hQ0 hη0 hρ.le hT0.le j (hVpos j) le_rfl
   have hdT : ∀ j ∈ Finset.range L,
-      Vlow j ^ 2 * U j ^ 2 * (2 * w₀)
-        ≤ (discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ 2 := fun j _ =>
+      Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)
+        ≤ (discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ (2 : ℕ) := fun j _ =>
     discMajorant_sq_ge hQ0 hη0 hs hw₀ j (hUpos j) (hVlowpos j) le_rfl le_rfl
   have hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock (primesRange z₀ z) Q (1 + η) j) w‖ ≤ Vlow j := by
@@ -111,28 +111,28 @@ theorem affineMajorant_two_regime {a : ℕ → ℂ} {s : Finset ℕ} (hs0 : (0 :
     (hsM : ∀ n ∈ s, n ≤ M) {G T₀ α₁ β₁ : ℝ} (hG : 1 ≤ G) (hGT₀ : G ≤ T₀)
     (hα₁ : 0 ≤ α₁) (hβ₁ : 0 ≤ β₁)
     (hmid : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α₁ * T + β₁) :
+      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ α₁ * T + β₁) :
     ∀ T : ℝ, G ≤ T →
-      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2)
-        ≤ (α₁ + 5 * Real.pi / 2 * (∑ n ∈ s, ‖a n‖ ^ 2)
-            + 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2) / T₀) * T + β₁ := by
+      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ (α₁ + 5 * Real.pi / 2 * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ))
+            + 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) / T₀) * T + β₁ := by
   intro T hT
   have hT1 : (1 : ℝ) ≤ T := le_trans hG hT
   have hT0 : (0 : ℝ) < T := lt_of_lt_of_le zero_lt_one hT1
   have hT₀0 : (0 : ℝ) < T₀ := lt_of_lt_of_le zero_lt_one (le_trans hG hGT₀)
-  have hE0 : (0 : ℝ) ≤ ∑ n ∈ s, ‖a n‖ ^ 2 := Finset.sum_nonneg fun n _ => by positivity
+  have hE0 : (0 : ℝ) ≤ ∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) := Finset.sum_nonneg fun n _ => by positivity
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
-  have hextra : (0 : ℝ) ≤ 5 * Real.pi / 2 * (∑ n ∈ s, ‖a n‖ ^ 2)
-      + 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2) / T₀ := by positivity
+  have hextra : (0 : ℝ) ≤ 5 * Real.pi / 2 * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ))
+      + 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) / T₀ := by positivity
   rcases le_or_gt T T₀ with hle | hgt
   · have h := hmid T hT hle
     nlinarith [h, hextra, hT0]
   · have hmvt := integral_Icc_normSq_logPoly_le_energy a hs0 hsM hT1
-    have habs : 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2)
-        ≤ 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2) / T₀ * T := by
-      have hbase : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2) := by positivity
-      have hid : 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2) / T₀ * T
-          = (5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ 2)) * (T / T₀) := by
+    have habs : 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ))
+        ≤ 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) / T₀ * T := by
+      have hbase : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) := by positivity
+      have hid : 5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) / T₀ * T
+          = (5 * Real.exp 1 / 2 * (M : ℝ) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ))) * (T / T₀) := by
         field_simp
       rw [hid]
       have hTT : (1 : ℝ) ≤ T / T₀ := (one_le_div hT₀0).2 hgt.le

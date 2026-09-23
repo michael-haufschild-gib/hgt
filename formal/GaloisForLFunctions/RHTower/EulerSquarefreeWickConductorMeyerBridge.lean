@@ -5,10 +5,10 @@ import GaloisForLFunctions.RHTower.DirichletLZeroExistence
 /-!
 # The EWQ conductor is a composite Meyer modular character
 
-The primitive Euler--Wick interaction has conductor `12 = 2^2 * 3`.  This arithmetic factor is
+The primitive Euler--Wick interaction has conductor `12 = 2^(2 : ℕ) * 3`.  This arithmetic factor is
 exactly the product of two prime-two Meyer/Koszul characters and one prime-three character:
 
-`12^(1/2-s) = delta_s(2)^2 delta_s(3)`.
+`12^(1/2-s) = delta_s(2)^(2 : ℕ) delta_s(3)`.
 
 Consequently reflection of the conductor half-density `12^(s/2)` produces the exact composite
 Meyer character, while reflection of the unrenormalized completed Dirichlet L-function produces
@@ -47,7 +47,7 @@ private theorem natCast_mul_cpow (m n : ℕ) (z : ℂ) :
 characters, with the `4`-part resolved into two prime-two clocks. -/
 theorem ewqConductorMeyerCharacter_eq_primeProduct (s : ℂ) :
     ewqConductorMeyerCharacter s =
-      _root_.RHTower.deltaS 2 s ^ 2 * _root_.RHTower.deltaS 3 s := by
+      _root_.RHTower.deltaS 2 s ^ (2 : ℕ) * _root_.RHTower.deltaS 3 s := by
   rw [ewqConductorMeyerCharacter, _root_.RHTower.deltaS,
     _root_.RHTower.deltaS, _root_.RHTower.deltaS]
   let z : ℂ := 1 / 2 - s
@@ -57,7 +57,7 @@ theorem ewqConductorMeyerCharacter_eq_primeProduct (s : ℂ) :
     _ = (((2 * 2 : ℕ) : ℂ) ^ z) * ((3 : ℕ) : ℂ) ^ z := by norm_num
     _ = (((2 : ℕ) : ℂ) ^ z * ((2 : ℕ) : ℂ) ^ z) *
         ((3 : ℕ) : ℂ) ^ z := by rw [natCast_mul_cpow 2 2 z]
-    _ = (((2 : ℕ) : ℂ) ^ z) ^ 2 * ((3 : ℕ) : ℂ) ^ z := by ring
+    _ = (((2 : ℕ) : ℂ) ^ z) ^ (2 : ℕ) * ((3 : ℕ) : ℂ) ^ z := by ring
 
 /-- Reflection of the EWQ conductor half-density is multiplication by the composite Meyer
 character. -/
@@ -92,7 +92,7 @@ reporters used by the Meyer/Koszul/Gamma source. -/
 theorem ewqConductorMeyerCharacter_eq_selectedPrimeProduct
     (rho : _root_.RHTower.XiDivisorSupport) :
     ewqConductorMeyerCharacter (rho : ℂ) =
-      _root_.RHTower.deningerMeyerXiPrimeGammaCharacter rho ewqPrimeTwo ^ 2 *
+      _root_.RHTower.deningerMeyerXiPrimeGammaCharacter rho ewqPrimeTwo ^ (2 : ℕ) *
         _root_.RHTower.deningerMeyerXiPrimeGammaCharacter rho ewqPrimeThree := by
   rw [_root_.RHTower.deningerMeyerXiPrimeGammaCharacter_eq_deltaS,
     _root_.RHTower.deningerMeyerXiPrimeGammaCharacter_eq_deltaS]
@@ -109,11 +109,11 @@ theorem norm_ewqConductorMeyerCharacter_eq_one_iff (s : ℂ) :
   exact _root_.RHTower.norm_deltaS_eq_one_iff (by norm_num : 2 ≤ 12) s
 
 /-- Its Hermitian square is exactly the product of the actual prime-two and prime-three modular
-weights, with conductor multiplicity `12 = 2^2 * 3`. -/
+weights, with conductor multiplicity `12 = 2^(2 : ℕ) * 3`. -/
 theorem norm_sq_ewqConductorMeyerCharacter_eq_selectedModularWeightProduct
     (rho : _root_.RHTower.XiDivisorSupport) :
-    ‖ewqConductorMeyerCharacter (rho : ℂ)‖ ^ 2 =
-      (_root_.RHTower.deningerMeyerXiPrimeGammaModularWeight rho ewqPrimeTwo) ^ 2 *
+    ‖ewqConductorMeyerCharacter (rho : ℂ)‖ ^ (2 : ℕ) =
+      (_root_.RHTower.deningerMeyerXiPrimeGammaModularWeight rho ewqPrimeTwo) ^ (2 : ℕ) *
         _root_.RHTower.deningerMeyerXiPrimeGammaModularWeight rho ewqPrimeThree := by
   rw [ewqConductorMeyerCharacter_eq_selectedPrimeProduct, norm_mul, norm_pow,
     _root_.RHTower.deningerMeyerXiPrimeGammaModularWeight,

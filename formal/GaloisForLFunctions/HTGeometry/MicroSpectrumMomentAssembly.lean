@@ -139,7 +139,7 @@ theorem exists_block_realizing {p k : ℕ} (hk : 0 < k) (hkp : k < p) (R : ℂ) 
     have hlt : ‖t‖ ^ (p - k) < δ ^ (p - k) :=
       pow_lt_pow_left₀ htδ (norm_nonneg t) (by omega)
     have hδpow : δ ^ (p - k) ≤ δ := by
-      calc δ ^ (p - k) ≤ δ ^ 1 := pow_le_pow_of_le_one (le_of_lt hδpos) hδle hek
+      calc δ ^ (p - k) ≤ δ ^ (1 : ℕ) := pow_le_pow_of_le_one (le_of_lt hδpos) hδle hek
         _ = δ := pow_one δ
     calc ‖R‖ * ‖t‖ ^ (p - k) ≤ ‖R‖ * δ ^ (p - k) :=
           mul_le_mul_of_nonneg_left (le_of_lt hlt) (norm_nonneg R)

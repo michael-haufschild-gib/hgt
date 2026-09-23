@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.TraceClassCompressionCurvature
 Nested-source cubic conservation beyond compact displacement.
 
 Paper proof: let P <= Q be orthogonal projections, R another orthogonal projection,
-D=Q-P, E=1-D, A=E R D, and C=(R-P)^3-(R-Q)^3-(Q-P)^3.
+D=Q-P, E=1-D, A=E R D, and C=(R-P)^(3 : ℕ)-(R-Q)^(3 : ℕ)-(Q-P)^(3 : ℕ).
 Projection algebra gives D C D=-A* A and E C E=A A*.
 If only C is nuclear, its D-compression is nuclear, hence A is Hilbert--Schmidt.
 Trace-class pinching and Hilbert--Schmidt cyclicity give Tr C=0.

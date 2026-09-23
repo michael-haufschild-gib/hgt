@@ -93,7 +93,7 @@ theorem sum_normSq_convPow_le_fixed_polylog
     {N ell w : ℕ} (hN : 1 ≤ N) {C : ℝ} (hC : 0 ≤ C) (a : Fin N → ℂ)
     (hpoint : ∀ n : Fin N,
       ‖a n‖ ≤ C * ((((n : ℕ) + 1).divisors.card : ℝ) ^ w)) :
-    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ 2 ≤
+    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ (2 : ℕ) ≤
       C ^ (2 * ell) *
         (((N ^ ell : ℕ) : ℝ) *
           (1 + Real.log ((N ^ ell : ℕ) : ℝ)) ^
@@ -101,22 +101,22 @@ theorem sum_normSq_convPow_le_fixed_polylog
   have hM : 1 ≤ N ^ ell := Nat.one_le_pow ell N (by omega)
   have hCpow : 0 ≤ C ^ (2 * ell) := pow_nonneg hC _
   have hpoint' : ∀ j : Fin (N ^ ell),
-      ‖convPow N ell a j‖ ^ 2 ≤
+      ‖convPow N ell a j‖ ^ (2 : ℕ) ≤
         C ^ (2 * ell) *
           ((((j : ℕ) + 1).divisors.card : ℝ) ^ (2 * ((w + 1) * ell))) := by
     intro j
     have hnorm := norm_convPow_le_const_mul_divisors_pow hC a hpoint j
     have hsq := pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     calc
-      ‖convPow N ell a j‖ ^ 2
+      ‖convPow N ell a j‖ ^ (2 : ℕ)
           ≤ (C ^ ell *
-              ((((j : ℕ) + 1).divisors.card : ℝ) ^ ((w + 1) * ell))) ^ 2 := hsq
+              ((((j : ℕ) + 1).divisors.card : ℝ) ^ ((w + 1) * ell))) ^ (2 : ℕ) := hsq
       _ = C ^ (2 * ell) *
           ((((j : ℕ) + 1).divisors.card : ℝ) ^ (2 * ((w + 1) * ell))) := by
             rw [mul_pow, ← pow_mul, ← pow_mul]
             congr 2 <;> ring
   calc
-    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ 2
+    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ (2 : ℕ)
         ≤ ∑ j : Fin (N ^ ell),
             C ^ (2 * ell) *
               ((((j : ℕ) + 1).divisors.card : ℝ) ^ (2 * ((w + 1) * ell))) := by
@@ -140,7 +140,7 @@ theorem sum_normSq_convPow_groupedDyadicCoeffVector_le_fixed_polylog
     (hfactor : ∀ i n, ‖arithmeticDyadicBlock (F i) (q i) n‖ ≤ L)
     (ell : ℕ) :
     ∑ j : Fin ((groupedDyadicUpper q) ^ ell),
-        ‖convPow (groupedDyadicUpper q) ell (groupedDyadicCoeffVector F q) j‖ ^ 2 ≤
+        ‖convPow (groupedDyadicUpper q) ell (groupedDyadicCoeffVector F q) j‖ ^ (2 : ℕ) ≤
       (L ^ Fintype.card ι) ^ (2 * ell) *
         (((((groupedDyadicUpper q) ^ ell : ℕ) : ℝ)) *
           (1 + Real.log ((((groupedDyadicUpper q) ^ ell : ℕ) : ℝ))) ^
@@ -169,7 +169,7 @@ theorem sum_normSq_convPow_heathBrownGrouped_le_fixed_polylog
     ∑ j : Fin ((groupedDyadicUpper q) ^ ell),
         ‖convPow (groupedDyadicUpper q) ell
           (groupedDyadicCoeffVector
-            (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ 2 ≤
+            (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ (2 : ℕ) ≤
       (((groupedDyadicUpper q) ^ ell : ℕ) : ℝ) *
         (1 + Real.log ((((groupedDyadicUpper q) ^ ell : ℕ) : ℝ))) ^
           (2 * (Fintype.card ι * ell) +
@@ -208,7 +208,7 @@ theorem sum_normSq_convPow_heathBrownGrouped_le_fixed_polylog
     ∑ j : Fin ((groupedDyadicUpper q) ^ ell),
         ‖convPow (groupedDyadicUpper q) ell
           (groupedDyadicCoeffVector
-            (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ 2
+            (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ (2 : ℕ)
         ≤ (W ^ Fintype.card ι) ^ (2 * ell) *
           ((Z : ℝ) * (1 + Real.log (Z : ℝ)) ^ P) := by
             simpa [M, Z, W, P] using hraw

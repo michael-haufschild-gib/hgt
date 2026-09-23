@@ -10,7 +10,7 @@ noncomputable section
 
 def c5HyperbolicShiftedSinhTerm (x : ℝ) : ℕ → ℝ
   | 0 => 0
-  | n + 1 => 5 * x ^ 2 *
+  | n + 1 => 5 * x ^ (2 : ℕ) *
       (x ^ (2 * n + 1) / (Nat.factorial (2 * n + 1) : ℝ))
 
 def c5HyperbolicCertificateSeriesTerm (x : ℝ) (n : ℕ) : ℝ :=
@@ -25,14 +25,14 @@ def c5HyperbolicCertificateSeriesTerm (x : ℝ) (n : ℕ) : ℝ :=
 
 def c5HyperbolicCertificate (x : ℝ) : ℝ :=
   Real.sinh x *
-      (72 * Real.cosh x ^ 2 - 119 * Real.cosh x + 47 + 5 * x ^ 2) -
-    x * (82 * Real.cosh x ^ 2 - 129 * Real.cosh x + 47)
+      (72 * Real.cosh x ^ (2 : ℕ) - 119 * Real.cosh x + 47 + 5 * x ^ (2 : ℕ)) -
+    x * (82 * Real.cosh x ^ (2 : ℕ) - 129 * Real.cosh x + 47)
 
 private theorem hasSum_c5HyperbolicShiftedSinhTerm (x : ℝ) :
-    HasSum (c5HyperbolicShiftedSinhTerm x) (5 * x ^ 2 * Real.sinh x) := by
+    HasSum (c5HyperbolicShiftedSinhTerm x) (5 * x ^ (2 : ℕ) * Real.sinh x) := by
   have htail : HasSum (fun n => c5HyperbolicShiftedSinhTerm x (n + 1))
-      (5 * x ^ 2 * Real.sinh x) := by
-    have h := HasSum.const_smul (5 * x ^ 2) (Real.hasSum_sinh x)
+      (5 * x ^ (2 : ℕ) * Real.sinh x) := by
+    have h := HasSum.const_smul (5 * x ^ (2 : ℕ)) (Real.hasSum_sinh x)
     convert h using 1 <;> simp [c5HyperbolicShiftedSinhTerm, smul_eq_mul]
   have hfull := (hasSum_nat_add_iff (f := c5HyperbolicShiftedSinhTerm x) 1).1 htail
   simpa only [Finset.sum_range_one, c5HyperbolicShiftedSinhTerm, add_zero] using hfull
@@ -49,7 +49,7 @@ private theorem hasSum_c5HyperbolicCertificateSeriesTerm (x : ℝ) :
   have h := (((((h3.add h2).add h1).add hs).add hc2).add hc1).add hlin
   have hraw : HasSum (c5HyperbolicCertificateSeriesTerm x)
       (18 * Real.sinh (3 * x) - 119 / 2 * Real.sinh (2 * x) +
-          65 * Real.sinh x + 5 * x ^ 2 * Real.sinh x -
+          65 * Real.sinh x + 5 * x ^ (2 : ℕ) * Real.sinh x -
         41 * x * Real.cosh (2 * x) + 129 * x * Real.cosh x + -88 * x) := by
     convert h using 1
     · funext n
@@ -58,7 +58,7 @@ private theorem hasSum_c5HyperbolicCertificateSeriesTerm (x : ℝ) :
     · ring
   have hvalue : c5HyperbolicCertificate x =
       18 * Real.sinh (3 * x) - 119 / 2 * Real.sinh (2 * x) +
-          65 * Real.sinh x + 5 * x ^ 2 * Real.sinh x -
+          65 * Real.sinh x + 5 * x ^ (2 : ℕ) * Real.sinh x -
         41 * x * Real.cosh (2 * x) + 129 * x * Real.cosh x + -88 * x := by
     unfold c5HyperbolicCertificate
     rw [Real.sinh_three_mul, Real.sinh_two_mul, Real.cosh_two_mul]
@@ -101,7 +101,7 @@ private theorem c5HyperbolicCertificateSeriesTerm_nonneg
   · have hcore := c5Hyperbolic_exponential_core_pos (show 3 ≤ n by omega)
     have hcoeff : 0 <
         54 * (9 : ℝ) ^ n - (160 + 82 * (n : ℝ)) * (4 : ℝ) ^ n +
-          (20 * (n : ℝ) ^ 2 + 268 * (n : ℝ) + 194) := by
+          (20 * (n : ℝ) ^ (2 : ℕ) + 268 * (n : ℝ) + 194) := by
       have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
       nlinarith [sq_nonneg (n : ℝ)]
     have hfac : 0 < (Nat.factorial (2 * n + 1) : ℝ) := by positivity
@@ -109,7 +109,7 @@ private theorem c5HyperbolicCertificateSeriesTerm_nonneg
     have hformula :
         c5HyperbolicCertificateSeriesTerm x n =
           (54 * (9 : ℝ) ^ n - (160 + 82 * (n : ℝ)) * (4 : ℝ) ^ n +
-              (20 * (n : ℝ) ^ 2 + 268 * (n : ℝ) + 194)) *
+              (20 * (n : ℝ) ^ (2 : ℕ) + 268 * (n : ℝ) + 194)) *
             x ^ (2 * n + 1) / (Nat.factorial (2 * n + 1) : ℝ) := by
       cases n with
       | zero => omega
@@ -132,11 +132,11 @@ private theorem c5HyperbolicCertificateSeriesTerm_nonneg
             push_cast
             ring
           have hxpow : x ^ (2 * (Nat.succ k) + 1) =
-              x ^ 2 * x ^ (2 * k + 1) := by rw [hodd, pow_add]; ring
+              x ^ (2 : ℕ) * x ^ (2 * k + 1) := by rw [hodd, pow_add]; ring
           have hxpow' : x ^ (2 * (k + 1) + 1) =
-              x ^ 2 * x ^ (2 * k + 1) := by
+              x ^ (2 : ℕ) * x ^ (2 * k + 1) := by
             simpa only [Nat.succ_eq_add_one] using hxpow
-          have hxeven : x ^ (2 * (k + 1)) = x ^ 2 * x ^ (2 * k) := by
+          have hxeven : x ^ (2 * (k + 1)) = x ^ (2 : ℕ) * x ^ (2 * k) := by
             rw [show 2 * (k + 1) = 2 + 2 * k by omega, pow_add]
           have htwoOdd : (2 : ℝ) ^ (2 * (k + 1) + 1) =
               2 * 4 ^ (k + 1) := by
@@ -318,7 +318,7 @@ def c5HyperbolicGaussianVelocitySlopeCenterNumerator (A t : ℝ) : ℝ :=
   let s := 2 * q
   let m := 2 * a
   let n := 2 * b
-  a * (t * m + t ^ 2 * n) - (a + 3 * t * b + t ^ 2 * c) * s
+  a * (t * m + t ^ (2 : ℕ) * n) - (a + 3 * t * b + t ^ (2 : ℕ) * c) * s
 
 /-- Exact direct-C5 compensation numerator for the pure hyperbolic Gaussian scale flow. -/
 def c5HyperbolicGaussianCompensationMargin (A t : ℝ) : ℝ :=
@@ -331,7 +331,7 @@ def c5HyperbolicGaussianCompensationMargin (A t : ℝ) : ℝ :=
 private theorem c5HyperbolicGaussianVelocityCenterNumerator_eq
     (A t : ℝ) :
     c5HyperbolicGaussianVelocityCenterNumerator A t =
-      -16 * A ^ 2 * (Real.cosh (2 * t) - 1) *
+      -16 * A ^ (2 : ℕ) * (Real.cosh (2 * t) - 1) *
         (Real.sinh (2 * t) - 2 * t) := by
   unfold c5HyperbolicGaussianVelocityCenterNumerator
     c5HyperbolicGaussianAction c5HyperbolicGaussianJetOne
@@ -344,11 +344,11 @@ private theorem c5HyperbolicGaussianVelocityCenterNumerator_eq
 private theorem c5HyperbolicGaussianVelocitySlopeCenterNumerator_eq
     (A t : ℝ) :
     c5HyperbolicGaussianVelocitySlopeCenterNumerator A t =
-      -16 * A ^ 2 *
+      -16 * A ^ (2 : ℕ) *
         ((Real.cosh (2 * t) - 1) * Real.sinh (2 * t) +
           2 * t * (Real.cosh (2 * t) - 1) *
             (2 * (Real.cosh (2 * t) - 1) + 1) -
-          4 * t ^ 2 * Real.sinh (2 * t)) := by
+          4 * t ^ (2 : ℕ) * Real.sinh (2 * t)) := by
   unfold c5HyperbolicGaussianVelocitySlopeCenterNumerator
     c5HyperbolicGaussianAction c5HyperbolicGaussianJetOne
     c5HyperbolicGaussianJetTwo c5HyperbolicGaussianJetThree
@@ -375,7 +375,7 @@ theorem c5HyperbolicGaussianCompensationMargin_pos
   let r := Real.exp q - 1
   let h := 2 * t * S / z
   let D := S - 2 * t
-  let K := z * S + 2 * t * z * (2 * z + 1) - 4 * t ^ 2 * S
+  let K := z * S + 2 * t * z * (2 * z + 1) - 4 * t ^ (2 : ℕ) * S
   let W := 14 + 10 * v + 8 * v / r
   have hz : 0 < z := by
     dsimp only [z]
@@ -436,7 +436,7 @@ theorem c5HyperbolicGaussianCompensationMargin_pos
     nlinarith [mul_lt_mul_of_pos_right hW hzd]
   have hfactor :
       c5HyperbolicGaussianCompensationMargin A t =
-        16 * A ^ 2 * (W * z * D - 5 * K) := by
+        16 * A ^ (2 : ℕ) * (W * z * D - 5 * K) := by
     unfold c5HyperbolicGaussianCompensationMargin
     rw [c5HyperbolicGaussianVelocityCenterNumerator_eq,
       c5HyperbolicGaussianVelocitySlopeCenterNumerator_eq]

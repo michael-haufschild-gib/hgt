@@ -11,7 +11,7 @@ propagator. If the third action variation is cyclic and the causal source pairin
 
 is skew, the mixed `+-` response in the phase-normalized cubic cut is a causal self-pairing and
 vanishes. The complete cut is instead twice the polarized pairing of the `++` and `--` quadratic
-sources. Consequently it is branch-antisymmetric, zero on the diagonal, and scales by `|A|^4`
+sources. Consequently it is branch-antisymmetric, zero on the diagonal, and scales by `|A|^(4 : ℕ)`
 under the physical amplitude law `p ↦ A p`, `m ↦ conj(A) m`.
 
 This is an abstract variational identity. Applying it to Birmingham--Mokhtari modes still requires
@@ -137,7 +137,7 @@ theorem d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut_smul_conj
     (A : ℂ) (p m : X) :
     d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut pairing B Delta
         (A • p) ((starRingEnd ℂ A) • m) =
-      (Complex.normSq A : ℂ) ^ 2 *
+      (Complex.normSq A : ℂ) ^ (2 : ℕ) *
         d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut pairing B Delta p m := by
   simp [d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut,
     d4GaugeFixedTeukolskyQuadraticPlusMinusResidual,

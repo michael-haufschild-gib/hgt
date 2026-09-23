@@ -12,7 +12,7 @@ This file closes the route-specific obstruction.  The two exact positive squared
 carriers already known to share one singular face have crossing upper tails, so neither first-order
 stochastically dominates the other.  Moreover the actual adaptive observable
 
-`t^2 P^sharp(t) = t^2 (t - 9) / 36`
+`t^(2 : ℕ) P^sharp(t) = t^(2 : ℕ) (t - 9) / 36`
 
 is neither monotone nor antitone on the positive ray.  Thus first stochastic order has neither an
 ordered carrier pair nor an admissible observable at this face.  Higher-order order specialized to
@@ -90,7 +90,7 @@ theorem squaredFactorialCarriers_not_upperTailComparable :
 
 /-- Adaptive observable tested by the positive carrier on the first hostile null face. -/
 def squaredFactorialCarrierNoGoAdaptiveTest (t : ℝ) : ℝ :=
-  t ^ 2 * xiShiftedBoundaryFactorialCarrierPolynomial 2
+  t ^ (2 : ℕ) * xiShiftedBoundaryFactorialCarrierPolynomial 2
     squaredFactorialCarrierNoGoKernel t
 
 @[simp] theorem squaredFactorialCarrierNoGoAdaptiveTest_zero :

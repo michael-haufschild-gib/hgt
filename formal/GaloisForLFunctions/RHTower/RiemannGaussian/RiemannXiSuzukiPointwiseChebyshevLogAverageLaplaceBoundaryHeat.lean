@@ -13,7 +13,7 @@ derivative.
 
 The resulting kernel is
 
-`-2 * re p * exp (-tau * ((x - im p)^2 + (re p)^2))`.
+`-2 * re p * exp (-tau * ((x - im p)^(2 : ℕ) + (re p)^(2 : ℕ)))`.
 
 It vanishes on the critical boundary `re p = 0`, is positive in the selected
 half-strip `re p < 0`, and its local pole-cleared arithmetic residues sum to
@@ -42,14 +42,14 @@ def suzukiChebyshevLaplaceBoundaryHeatKernel
   Complex.ofRealCLM ∘
     ((fun p : ℂ => -2 * p.re) *
       fun p : ℂ => Real.exp
-        (-tau * ((x - p.im) ^ 2 + p.re ^ 2)))
+        (-tau * ((x - p.im) ^ (2 : ℕ) + p.re ^ (2 : ℕ))))
 
 /-- Pointwise formula for the shifted-coordinate boundary heat kernel. -/
 @[simp] theorem suzukiChebyshevLaplaceBoundaryHeatKernel_apply
     (x tau : ℝ) (p : ℂ) :
     suzukiChebyshevLaplaceBoundaryHeatKernel x tau p =
       ((-2 * p.re * Real.exp
-        (-tau * ((x - p.im) ^ 2 + p.re ^ 2))) : ℝ) := rfl
+        (-tau * ((x - p.im) ^ (2 : ℕ) + p.re ^ (2 : ℕ)))) : ℝ) := rfl
 
 /-- Boundary-to-spectral distance written in the shifted arithmetic zero
 coordinate. -/
@@ -57,8 +57,8 @@ theorem normSq_boundary_sub_zetaSpectralCoordinate_eq_laplaceZeroCoordinate
     (x : ℝ) (rho : NontrivialZetaZero) :
     Complex.normSq
         ((x : ℂ) - zetaSpectralCoordinate rho.1) =
-      (x - (suzukiChebyshevLaplaceZeroCoordinate rho).im) ^ 2 +
-        (suzukiChebyshevLaplaceZeroCoordinate rho).re ^ 2 := by
+      (x - (suzukiChebyshevLaplaceZeroCoordinate rho).im) ^ (2 : ℕ) +
+        (suzukiChebyshevLaplaceZeroCoordinate rho).re ^ (2 : ℕ) := by
   unfold suzukiChebyshevLaplaceZeroCoordinate zetaSpectralCoordinate
     Complex.normSq
   simp
@@ -184,11 +184,11 @@ theorem fderiv_real_suzukiChebyshevLaplaceBoundaryHeatKernel
     (x tau : ℝ) (p : ℂ) :
     fderiv ℝ (suzukiChebyshevLaplaceBoundaryHeatKernel x tau) p =
       Complex.reCLM.smulRight
-          (((4 * tau * p.re ^ 2 - 2) * Real.exp
-            (-(tau * ((x - p.im) ^ 2 + p.re ^ 2))) : ℝ) : ℂ) +
+          (((4 * tau * p.re ^ (2 : ℕ) - 2) * Real.exp
+            (-(tau * ((x - p.im) ^ (2 : ℕ) + p.re ^ (2 : ℕ)))) : ℝ) : ℂ) +
         Complex.imCLM.smulRight
           (((-4 * tau * p.re * (x - p.im)) * Real.exp
-            (-(tau * ((x - p.im) ^ 2 + p.re ^ 2))) : ℝ) : ℂ) := by
+            (-(tau * ((x - p.im) ^ (2 : ℕ) + p.re ^ (2 : ℕ)))) : ℝ) : ℂ) := by
   have hre : HasFDerivAt (fun w : ℂ => w.re) Complex.reCLM p :=
     Complex.reCLM.hasFDerivAt
   have him : HasFDerivAt (fun w : ℂ => w.im) Complex.imCLM p :=
@@ -212,9 +212,9 @@ theorem fderiv_real_suzukiChebyshevLaplaceBoundaryHeatKernel
 heat kernel. -/
 def suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource
     (x tau : ℝ) (p : ℂ) : ℂ :=
-  (2 * Real.exp (-tau * ((x - p.im) ^ 2 + p.re ^ 2)) : ℂ) *
+  (2 * Real.exp (-tau * ((x - p.im) ^ (2 : ℕ) + p.re ^ (2 : ℕ))) : ℂ) *
     (2 * tau * p.re * (x - p.im) +
-      Complex.I * (2 * tau * p.re ^ 2 - 1))
+      Complex.I * (2 * tau * p.re ^ (2 : ℕ) - 1))
 
 /-- The Cauchy--Green source is exactly
 `i * partial_re kernel - partial_im kernel`. -/
@@ -250,7 +250,7 @@ nonzero imaginary Gaussian. -/
 theorem suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource_of_re_eq_zero
     (x tau : ℝ) {p : ℂ} (hp : p.re = 0) :
     suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource x tau p =
-      -(2 * Real.exp (-tau * (x - p.im) ^ 2) : ℂ) * Complex.I := by
+      -(2 * Real.exp (-tau * (x - p.im) ^ (2 : ℕ)) : ℂ) * Complex.I := by
   unfold suzukiChebyshevLaplaceBoundaryHeatCauchyGreenSource
   rw [hp]
   norm_num

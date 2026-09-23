@@ -38,7 +38,7 @@ theorem isOpen_criticalFeaturePoleFreeDomain (t : ℝ) :
 
 theorem analyticOnNhd_criticalFeatureCauchyKernelTest_sq
     (t : ℝ) :
-    AnalyticOnNhd ℂ (fun z => criticalFeatureCauchyKernelTest t z ^ 2)
+    AnalyticOnNhd ℂ (fun z => criticalFeatureCauchyKernelTest t z ^ (2 : ℕ))
       (criticalFeaturePoleFreeDomain t) := by
   intro z hz
   rw [criticalFeaturePoleFreeDomain, Set.mem_setOf_eq] at hz
@@ -194,13 +194,13 @@ def criticalFeatureThinStripSourceContour
     (t A B delta : ℝ) : ℂ :=
   (2 * Real.pi * I : ℂ)⁻¹ *
     rectIntegral
-      (fun z => criticalFeatureCauchyKernelTest t z ^ 2 *
+      (fun z => criticalFeatureCauchyKernelTest t z ^ (2 : ℕ) *
         continuedPrimeArchSourceRelativeTrace z)
       (xiThinStripLowerCorner A delta)
       (xiThinStripUpperCorner B delta)
 
 private theorem sq_eq_normSq_of_im_eq_zero {z : ℂ} (hz : z.im = 0) :
-    z ^ 2 = (Complex.normSq z : ℂ) := by
+    z ^ (2 : ℕ) = (Complex.normSq z : ℂ) := by
   apply Complex.ext <;> simp [pow_two, Complex.normSq_apply, hz]
 
 theorem criticalFeatureThinStripSourceContour_eq_lineEnergy

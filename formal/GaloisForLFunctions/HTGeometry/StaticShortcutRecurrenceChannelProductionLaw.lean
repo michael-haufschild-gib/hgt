@@ -62,7 +62,7 @@ theorem selectorRecurrenceEnergy_nonneg
 /-- Total history mass is controlled by occupied-channel count times channel-load energy. -/
 theorem selectorTotalWeight_sq_le_occupied_mul_load
     (chosen : J → C) (w : J → ℝ) :
-    (∑ j, w j) ^ 2 ≤
+    (∑ j, w j) ^ (2 : ℕ) ≤
       (selectorOccupiedChannels chosen w).card * selectorLoadEnergy chosen w := by
   have hcs := sq_sum_le_card_mul_sum_sq
     (s := selectorOccupiedChannels chosen w)
@@ -74,7 +74,7 @@ theorem selectorTotalWeight_sq_le_occupied_mul_load
     exact sum_selectorChannelWeight_eq_sum chosen w
   have hright :
       (∑ c ∈ selectorOccupiedChannels chosen w,
-          selectorChannelWeight chosen w c ^ 2) = selectorLoadEnergy chosen w := by
+          selectorChannelWeight chosen w c ^ (2 : ℕ)) = selectorLoadEnergy chosen w := by
     simp only [selectorOccupiedChannels, selectorLoadEnergy]
     rw [Finset.sum_filter]
     apply Finset.sum_congr rfl
@@ -93,20 +93,20 @@ theorem selectorRecurrence_or_channelProduction
     (heta : 0 ≤ eta)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B) :
-    eta ^ 2 * (∑ j, w j) ^ 2 ≤
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B) :
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) ≤
       B * (selectorOccupiedChannels chosen w).card *
         selectorRecurrenceEnergy r chosen w := by
   have hmass := selectorTotalWeight_sq_le_occupied_mul_load chosen w
   have hrec := selectorThreshold_sq_load_le_recurrenceEnergy
     r q chosen w heta hw halign hq
   calc
-    eta ^ 2 * (∑ j, w j) ^ 2 ≤
-        eta ^ 2 * ((selectorOccupiedChannels chosen w).card *
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) ≤
+        eta ^ (2 : ℕ) * ((selectorOccupiedChannels chosen w).card *
           selectorLoadEnergy chosen w) :=
       mul_le_mul_of_nonneg_left hmass (sq_nonneg eta)
     _ = (selectorOccupiedChannels chosen w).card *
-        (eta ^ 2 * selectorLoadEnergy chosen w) := by ring
+        (eta ^ (2 : ℕ) * selectorLoadEnergy chosen w) := by ring
     _ ≤ (selectorOccupiedChannels chosen w).card *
         (B * selectorRecurrenceEnergy r chosen w) := by
       exact mul_le_mul_of_nonneg_left hrec (by positivity)
@@ -121,14 +121,14 @@ theorem selectorMass_sq_le_capacity_mul_recurrence
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
     (hcapacity : (selectorOccupiedChannels chosen w).card ≤ K) :
-    eta ^ 2 * (∑ j, w j) ^ 2 ≤
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) ≤
       B * K * selectorRecurrenceEnergy r chosen w := by
   have hmain := selectorRecurrence_or_channelProduction
     r q chosen w heta hw halign hq
   calc
-    eta ^ 2 * (∑ j, w j) ^ 2 ≤
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) ≤
         B * (selectorOccupiedChannels chosen w).card *
           selectorRecurrenceEnergy r chosen w := hmain
     _ ≤ B * K * selectorRecurrenceEnergy r chosen w := by
@@ -143,9 +143,9 @@ theorem selectorOccupiedChannels_gt_of_recurrenceBudget_lt
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
     (hgap : B * K * selectorRecurrenceEnergy r chosen w <
-      eta ^ 2 * (∑ j, w j) ^ 2) :
+      eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ)) :
     K < (selectorOccupiedChannels chosen w).card := by
   by_contra hnot
   have hcapacity : (selectorOccupiedChannels chosen w).card ≤ K :=
@@ -163,9 +163,9 @@ theorem separatedSelectorOccupiedChannels_gt_of_recurrenceBudget_lt
     (hsep : ObserverChannelsSeparated q δ)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
     (hgap : B * K * selectorRecurrenceEnergy r chosen w <
-      eta ^ 2 * (∑ j, w j) ^ 2) :
+      eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ)) :
     Function.Injective q ∧ K < (selectorOccupiedChannels chosen w).card := by
   exact ⟨observerChannelsSeparated_injective q hδ hsep,
     selectorOccupiedChannels_gt_of_recurrenceBudget_lt
@@ -173,7 +173,7 @@ theorem separatedSelectorOccupiedChannels_gt_of_recurrenceBudget_lt
 
 /-- Fresh unit-weight identity channels saturate the mass/load occupancy inequality exactly. -/
 theorem selectorIdentity_unitWeight_occupancy_saturation :
-    ((∑ _j : C, (1 : ℝ)) ^ 2) =
+    ((∑ _j : C, (1 : ℝ)) ^ (2 : ℕ)) =
       (selectorOccupiedChannels (fun j : C => j) (fun _ => 1)).card *
         selectorLoadEnergy (fun j : C => j) (fun _ => 1) := by
   simp [selectorOccupiedChannels, selectorChannelWeight, selectorMaskedWeight,
@@ -197,13 +197,13 @@ theorem adaptive_shortcuts_force_recurrence_or_channelProduction
     (hPiy : ∀ c, PiOp (target c) = PiOp x)
     (heta : 0 ≤ eta)
     (hw : ∀ j, 0 ≤ w j)
-    (hq : ∀ c, ‖preparationMemory PiOp x (target c)‖ ^ 2 ≤ B)
+    (hq : ∀ c, ‖preparationMemory PiOp x (target c)‖ ^ (2 : ℕ) ≤ B)
     (hcollision : ∀ j,
       inner ℝ (universalSector PiOp x) (universalSector PiOp x) +
           inner ℝ (staticMemory PiOp P x)
             (preparationMemory PiOp x (target (chosen j))) + eta ≤
         inner ℝ (U.op (time j) x) (target (chosen j))) :
-    eta ^ 2 * (∑ j, w j) ^ 2 ≤
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) ≤
       B * (selectorOccupiedChannels chosen w).card *
         (∑ i, ∑ j,
           if chosen i = chosen j then

@@ -26,7 +26,7 @@ polynomial times a Gaussian. -/
 theorem exists_poly_hermiteCombination (n : ℕ) (p q : Polynomial ℝ) :
     ∃ r : Polynomial ℝ, ∀ x : ℝ,
       p.eval x * hermiteFun n x + q.eval x * deriv (hermiteFun n) x
-        = r.eval x * Real.exp (-(1 / 2 * x ^ 2)) := by
+        = r.eval x * Real.exp (-(1 / 2 * x ^ (2 : ℕ))) := by
   obtain ⟨P, hP⟩ := exists_poly_hermiteFun n
   obtain ⟨Q, hQ⟩ := deriv_hermiteFun_poly n
   refine ⟨p * P + q * Q, fun x => ?_⟩
@@ -106,7 +106,7 @@ theorem deriv2_hermiteFun_package (n : ℕ) :
     Integrable (deriv (deriv (hermiteFun n)))
       ∧ Tendsto (deriv (deriv (hermiteFun n))) atTop (𝓝 0)
       ∧ Tendsto (deriv (deriv (hermiteFun n))) atBot (𝓝 0) := by
-  refine hermiteWeight_package n (X ^ 2 - C (2 * (n : ℝ) + 1)) 0 fun x => ?_
+  refine hermiteWeight_package n (X ^ (2 : ℕ) - C (2 * (n : ℝ) + 1)) 0 fun x => ?_
   rw [deriv2_hermiteFun]
   simp only [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_C,
     Polynomial.eval_zero, zero_mul, add_zero]
@@ -115,14 +115,14 @@ theorem deriv2_hermiteFun_package (n : ℕ) :
 theorem hermiteSqWeight_package (n : ℕ) :
     Integrable (hermiteSqWeight n) ∧ Tendsto (hermiteSqWeight n) atTop (𝓝 0)
       ∧ Tendsto (hermiteSqWeight n) atBot (𝓝 0) := by
-  refine hermiteWeight_package n (X ^ 2) 0 fun x => ?_
+  refine hermiteWeight_package n (X ^ (2 : ℕ)) 0 fun x => ?_
   rw [hermiteSqWeight]
   simp
 
 theorem hermiteSqWeightDeriv_package (n : ℕ) :
     Integrable (hermiteSqWeightDeriv n) ∧ Tendsto (hermiteSqWeightDeriv n) atTop (𝓝 0)
       ∧ Tendsto (hermiteSqWeightDeriv n) atBot (𝓝 0) := by
-  refine hermiteWeight_package n (C 2 * X) (X ^ 2) fun x => ?_
+  refine hermiteWeight_package n (C 2 * X) (X ^ (2 : ℕ)) fun x => ?_
   rw [hermiteSqWeightDeriv]
   simp
 
@@ -130,7 +130,7 @@ theorem hermiteSqWeightSecondDeriv_package (n : ℕ) :
     Integrable (hermiteSqWeightSecondDeriv n)
       ∧ Tendsto (hermiteSqWeightSecondDeriv n) atTop (𝓝 0)
       ∧ Tendsto (hermiteSqWeightSecondDeriv n) atBot (𝓝 0) := by
-  refine hermiteWeight_package n (C 2 + X ^ 2 * (X ^ 2 - C (2 * (n : ℝ) + 1))) (C 4 * X)
+  refine hermiteWeight_package n (C 2 + X ^ (2 : ℕ) * (X ^ (2 : ℕ) - C (2 * (n : ℝ) + 1))) (C 4 * X)
     fun x => ?_
   rw [hermiteSqWeightSecondDeriv, deriv2_hermiteFun]
   simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
@@ -153,12 +153,12 @@ theorem hermiteLinWeightDeriv_package (n : ℕ) :
 
 /-- The explicit weight of the transferred defect pairing. -/
 def prolateDefectWeight (n : ℕ) (x : ℝ) : ℝ :=
-  x ^ 2 * (x ^ 2 - 2 * n - 1) * hermiteFun n x + 2 * x * deriv (hermiteFun n) x
+  x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 2 * n - 1) * hermiteFun n x + 2 * x * deriv (hermiteFun n) x
 
 theorem prolateDefectWeight_package (n : ℕ) :
     Integrable (prolateDefectWeight n) ∧ Tendsto (prolateDefectWeight n) atTop (𝓝 0)
       ∧ Tendsto (prolateDefectWeight n) atBot (𝓝 0) := by
-  refine hermiteWeight_package n (X ^ 2 * (X ^ 2 - C (2 * (n : ℝ) + 1))) (C 2 * X) fun x => ?_
+  refine hermiteWeight_package n (X ^ (2 : ℕ) * (X ^ (2 : ℕ) - C (2 * (n : ℝ) + 1))) (C 2 * X) fun x => ?_
   rw [prolateDefectWeight]
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X,
     Polynomial.eval_C]
@@ -174,7 +174,7 @@ theorem abs_sub_ladder_mul_eq_of_bounded {u u' u'' : ℝ → ℝ} {c μ B B₂ :
     (hcu : Continuous u) (hcu' : Continuous u') (hcu'' : Continuous u'')
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hB : ∀ x, |u x| ≤ B) (hB' : ∀ x, |u' x| ≤ B₂) (hB'' : ∀ x, |u'' x| ≤ B₂)
-    (heq : ∀ x, hermiteSLAction u x + μ * u x = (x ^ 2 * u'' x + 2 * x * u' x) / c) :
+    (heq : ∀ x, hermiteSLAction u x + μ * u x = (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c) :
     |μ - (2 * n + 1)| * |∫ x, u x * hermiteFun n x|
       = |∫ x, u x * prolateDefectWeight n x| / |c| := by
   obtain ⟨hHint, hHtop, hHbot⟩ := hermiteFun_package n
@@ -191,7 +191,7 @@ theorem abs_sub_ladder_mul_eq_of_bounded {u u' u'' : ℝ → ℝ} {c μ B B₂ :
     integrable_bounded_mul hcu hB hD2int
   have hintU : Integrable fun x => u x * hermiteFun n x :=
     integrable_bounded_mul hcu hB hHint
-  have hintSq : Integrable fun x => x ^ 2 * (u x * hermiteFun n x) := by
+  have hintSq : Integrable fun x => x ^ (2 : ℕ) * (u x * hermiteFun n x) := by
     refine (integrable_bounded_mul hcu hB hSint).congr ?_
     refine Filter.Eventually.of_forall fun x => ?_
     simp only [hermiteSqWeight]
@@ -225,14 +225,14 @@ theorem abs_sub_ladder_mul_eq_of_bounded {u u' u'' : ℝ → ℝ} {c μ B B₂ :
   have hPminus : Tendsto (fun x => u x * hermiteLinWeight n x) atBot (𝓝 0) :=
     tendsto_bounded_mul_zero hB hLbot
   have hpin := hermitePairing_pin (u := u) (u' := u') (u'' := u'')
-    (D := fun x => (x ^ 2 * u'' x + 2 * x * u' x) / c) (μ := μ) n hu hu' heq
+    (D := fun x => (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c) (μ := μ) n hu hu' heq
     hintL hintR hintSq hintU hplus hminus
   have htransfer := integral_prolateDefect_transfer_explicit n hu hu' hiA hiB hiC hiD
     hWplus hWminus hPplus hPminus
   have hside := prolateLadder_pin_hermiteSide (u := u) (u' := u') (u'' := u'')
-    (D := fun x => (x ^ 2 * u'' x + 2 * x * u' x) / c) (c := c) (μ := μ) n hc hpin
+    (D := fun x => (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c) (c := c) (μ := μ) n hc hpin
     (fun x => rfl) htransfer hiA hiC
-  have hweight : (∫ x, u x * (x ^ 2 * (x ^ 2 - 2 * n - 1) * hermiteFun n x
+  have hweight : (∫ x, u x * (x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 2 * n - 1) * hermiteFun n x
         + 2 * x * deriv (hermiteFun n) x))
       = ∫ x, u x * prolateDefectWeight n x := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
@@ -265,7 +265,7 @@ theorem abs_sub_ladder_le_of_bounded {u u' u'' : ℝ → ℝ} {c μ B B₂ : ℝ
     (hcu : Continuous u) (hcu' : Continuous u') (hcu'' : Continuous u'')
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hB : ∀ x, |u x| ≤ B) (hB' : ∀ x, |u' x| ≤ B₂) (hB'' : ∀ x, |u'' x| ≤ B₂)
-    (heq : ∀ x, hermiteSLAction u x + μ * u x = (x ^ 2 * u'' x + 2 * x * u' x) / c)
+    (heq : ∀ x, hermiteSLAction u x + μ * u x = (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c)
     (hne : (∫ x, u x * hermiteFun n x) ≠ 0) :
     |μ - (2 * n + 1)|
       ≤ B * (∫ x, |prolateDefectWeight n x|)

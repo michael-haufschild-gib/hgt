@@ -169,7 +169,7 @@ theorem one_twentieth_le_xiWardCubicPositiveShiftDiagonalAnomalyProfile
   have h1 : 0 < 3 * x + 3 / 2 := by linarith
   have h2 : 0 < 4 * x + 1 := by linarith
   field_simp [h0.ne', h1.ne', h2.ne']
-  nlinarith [sq_nonneg x, sq_nonneg (x ^ 2), sq_nonneg (x ^ 3),
+  nlinarith [sq_nonneg x, sq_nonneg (x ^ (2 : ℕ)), sq_nonneg (x ^ (3 : ℕ)),
     mul_nonneg hx0 (sub_nonneg.mpr hx1)]
 
 /-- The separator tends to its full off-diagonal quantum at the remote end of the signed scale

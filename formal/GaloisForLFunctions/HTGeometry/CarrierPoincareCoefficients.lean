@@ -225,7 +225,7 @@ theorem natDegree_poincareCoeffPoly (a : ℝ) {n m j : ℕ} (ha : a ≠ 0) (hn :
 variable. -/
 theorem coeff_carrierProductPoly (a x : ℝ) (n m j : ℕ) :
     (carrierProductPoly a x n m).coeff j
-      = (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ 2) := by
+      = (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ (2 : ℕ)) := by
   rw [← shellEval_carrierProductSeries a n m x, coeff_shellEval, poincareCoeffPoly]
 
 /-- **The mass carrier's deep-time expansion at every finite order, with classified
@@ -235,22 +235,22 @@ The distortion of the carrier against its deep-time profile agrees, to order `m`
 spectral parameter, with a polynomial whose coefficient at inverse order `j` is a polynomial of
 degree exactly `j` in the squared shell variable, with extremal coefficient `(-a/2)^j / j!`. -/
 theorem carrier_poincare_expansion {a x : ℝ} (ha : 0 ≤ a) {n m : ℕ} (hn : 0 < n) (hm : 0 < m)
-    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r ≤ 1) (hxr : x ^ 2 * r ^ 2 ≤ 1 / 2)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r ≤ 1) (hxr : x ^ (2 : ℕ) * r ^ (2 : ℕ) ≤ 1 / 2)
     (hdef : a * shellDefectRate x * r ≤ 1 / 2) :
     ∃ C : ℝ, 0 ≤ C ∧
       (∀ j, (poincareCoeffPoly a n m j).natDegree ≤ j) ∧
       (∀ j < m, (poincareCoeffPoly a n m j).coeff j
         = ((Nat.factorial j : ℕ) : ℂ)⁻¹ * (-(a : ℂ) / 2) ^ j) ∧
-      ∀ t : ℂ, 0 < t.re → 0 < t.im → Real.sqrt 2 * x ^ 2 < t.re * ‖t‖ → ‖t⁻¹‖ ≤ r →
+      ∀ t : ℂ, 0 < t.re → 0 < t.im → Real.sqrt 2 * x ^ (2 : ℕ) < t.re * ‖t‖ → ‖t⁻¹‖ ≤ r →
         ‖carrierDistortion a t (_root_.HTGeometry.massBesselRoot t x) n
-            - ∑ j ∈ Finset.range m, (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ 2)
+            - ∑ j ∈ Finset.range m, (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ (2 : ℕ))
                 * (t⁻¹) ^ j‖
           ≤ C * ‖t⁻¹‖ ^ m := by
   obtain ⟨C, hC, hbound⟩ := exists_poly_approx_carrierDistortion ha n m hr0 hr1 hxr hdef
   refine ⟨C, hC, natDegree_poincareCoeffPoly_le a n m,
     fun j hj => coeff_poincareCoeffPoly_self a hn hm hj, fun t htre htim hsm hw => ?_⟩
   have heval : (truncBelow m (carrierProductPoly a x n m)).eval t⁻¹
-      = ∑ j ∈ Finset.range m, (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ 2) * (t⁻¹) ^ j := by
+      = ∑ j ∈ Finset.range m, (poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ (2 : ℕ)) * (t⁻¹) ^ j := by
     rw [eval_truncBelow]
     exact Finset.sum_congr rfl fun j _ => by rw [coeff_carrierProductPoly]
   rw [← heval]

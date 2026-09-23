@@ -82,7 +82,7 @@ def thetaTiltLogDensity (κ w : ℝ) : ℝ :=
   (2 * κ + 1) * w + thetaCuspLogSource (Real.exp w)
 
 /-- The unnormalised tilted density `ρ_κ(w) = e^{(2κ+1)w} Φ(e^w)`. -/
-def thetaTiltDensity (κ w : ℝ) : ℝ :=
+def thetaTiltDensity_thetaTiltLogDensity (κ w : ℝ) : ℝ :=
   Real.exp ((2 * κ + 1) * w) * thetaCuspFullSource (Real.exp w)
 
 /-- The score `V_κ'(w) = −(2κ+1) − e^w ℓ'(e^w)`. -/
@@ -92,14 +92,14 @@ def thetaTiltScore (κ w : ℝ) : ℝ :=
 /-- The curvature `V''(w) = −e^w ℓ'(e^w) − e^{2w} ℓ''(e^w)` (independent of the tilt). -/
 def thetaTiltCurvature (w : ℝ) : ℝ :=
   -(Real.exp w * deriv thetaCuspLogSource (Real.exp w) +
-    Real.exp w ^ 2 * iteratedDeriv 2 thetaCuspLogSource (Real.exp w))
+    Real.exp w ^ (2 : ℕ) * iteratedDeriv 2 thetaCuspLogSource (Real.exp w))
 
-theorem thetaTiltDensity_pos (κ w : ℝ) : 0 < thetaTiltDensity κ w :=
+theorem thetaTiltDensity_pos_thetaTiltLogDensity (κ w : ℝ) : 0 < thetaTiltDensity_thetaTiltLogDensity κ w :=
   mul_pos (Real.exp_pos _) (thetaCuspFullSource_pos_all _)
 
 theorem thetaTiltDensity_eq_exp (κ w : ℝ) :
-    thetaTiltDensity κ w = Real.exp (thetaTiltLogDensity κ w) := by
-  unfold thetaTiltDensity thetaTiltLogDensity thetaCuspLogSource
+    thetaTiltDensity_thetaTiltLogDensity κ w = Real.exp (thetaTiltLogDensity κ w) := by
+  unfold thetaTiltDensity_thetaTiltLogDensity thetaTiltLogDensity thetaCuspLogSource
   rw [Real.exp_add, Real.exp_log (thetaCuspFullSource_pos_all _)]
 
 theorem hasDerivAt_thetaTiltLogDensity (κ w : ℝ) :
@@ -117,9 +117,9 @@ theorem hasDerivAt_thetaTiltLogDensity (κ w : ℝ) :
   ring
 
 theorem hasDerivAt_thetaTiltDensity (κ w : ℝ) :
-    HasDerivAt (thetaTiltDensity κ) (-(thetaTiltScore κ w * thetaTiltDensity κ w)) w := by
+    HasDerivAt (thetaTiltDensity_thetaTiltLogDensity κ) (-(thetaTiltScore κ w * thetaTiltDensity_thetaTiltLogDensity κ w)) w := by
   have h := (hasDerivAt_thetaTiltLogDensity κ w).exp
-  have e : (fun x => Real.exp (thetaTiltLogDensity κ x)) = thetaTiltDensity κ := by
+  have e : (fun x => Real.exp (thetaTiltLogDensity κ x)) = thetaTiltDensity_thetaTiltLogDensity κ := by
     funext x; exact (thetaTiltDensity_eq_exp κ x).symm
   rw [e] at h
   refine h.congr_deriv ?_
@@ -152,7 +152,7 @@ theorem thetaTiltCurvature_pos (w : ℝ) : 0 < thetaTiltCurvature w := by
   have h1 := deriv_thetaCuspLogSource_neg_of_pos hx
   have h2 := iteratedDeriv_two_thetaCuspLogSource_neg (Real.exp w)
   have : Real.exp w * deriv thetaCuspLogSource (Real.exp w) < 0 := mul_neg_of_pos_of_neg hx h1
-  have : Real.exp w ^ 2 * iteratedDeriv 2 thetaCuspLogSource (Real.exp w) < 0 :=
+  have : Real.exp w ^ (2 : ℕ) * iteratedDeriv 2 thetaCuspLogSource (Real.exp w) < 0 :=
     mul_neg_of_pos_of_neg (by positivity) h2
   linarith
 

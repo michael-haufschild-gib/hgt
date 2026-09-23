@@ -36,7 +36,7 @@ private theorem sourceInvariant_closed (image : Bool) {h target y : ℝ}
 
 private theorem sourceInvariant_derivative (image : Bool) (h target y : ℝ) :
     HasDerivAt (sourceInvariant image h target)
-      (kernelArgumentSlope image h target*(1-radialUnit y^2)) y := by
+      (kernelArgumentSlope image h target*(1-radialUnit y^(2 : ℕ))) y := by
   have hD := ((radialUnit_hasDerivAt y).const_mul (kernelArgumentSlope image h target)).const_sub
     (kernelArgumentBase h target)
   have he : sourceInvariant image h target=
@@ -50,7 +50,7 @@ private theorem sourceInvariant_derivative (image : Bool) (h target y : ℝ) :
 static separation and source position vary in the literal causal kernel. -/
 def sourceFirst (image : Bool) (q : XiZeroCopy) (h target X k y : ℝ) : ℂ :=
   characteristicFirst q (sourceInvariant image h target y) X k*
-    (kernelArgumentSlope image h target*(1-radialUnit y^2):ℝ)
+    (kernelArgumentSlope image h target*(1-radialUnit y^(2 : ℕ)):ℝ)
 
 /-- The full native causal kernel has its integral-valued source derivative on
 both closed physical characteristic rays, including zero delay. -/
@@ -127,7 +127,7 @@ theorem kernelField_source_characteristic_derivative (image : Bool) (q : XiZeroC
     HasDerivWithinAt (fun r => kernelField image q h target ![r,X,k])
       ((scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
         (kernelArgumentSlope image h target*
-          (1-radialUnit (sourceCharacteristic image h target)^2):ℝ))
+          (1-radialUnit (sourceCharacteristic image h target)^(2 : ℕ)):ℝ))
       (Ici (sourceCharacteristic image h target)) (sourceCharacteristic image h target) := by
   have hd := kernelField_source_derivative image q h target X k
     ⟨sourceCharacteristic image h target,by simp⟩
@@ -141,7 +141,7 @@ theorem kernelField_source_derivative_tendsto (image : Bool) (q : XiZeroCopy)
       (𝓝[>] (sourceCharacteristic image h target))
       (𝓝 ((scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
         (kernelArgumentSlope image h target*
-          (1-radialUnit (sourceCharacteristic image h target)^2):ℝ))) := by
+          (1-radialUnit (sourceCharacteristic image h target)^(2 : ℕ)):ℝ))) := by
   have hc := ((sourceFirst_continuousOn image q h target X k)
     (sourceCharacteristic image h target) (by simp)).mono Ioi_subset_Ici_self
   have hl := hc.tendsto

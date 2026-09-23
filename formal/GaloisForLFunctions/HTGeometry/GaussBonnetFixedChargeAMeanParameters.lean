@@ -20,13 +20,13 @@ def egbFixedChargeAMeanRadius (w φ τ : ℝ) : ℝ :=
   (egbFixedChargeALargeRadius w φ τ + egbFixedChargeASmallRadius w φ τ) / 2
 
 def egbFixedChargeAMeanWeight (τ φ : ℝ) : ℝ :=
-  egbFixedChargeAWeight τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ 2
+  egbFixedChargeAWeight τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ)
 
 def egbFixedChargeAMeanCoupling (τ φ : ℝ) : ℝ :=
   egbFixedChargeAFraction φ * egbFixedChargeAMeanWeight τ φ
 
 def egbFixedChargeAMeanDenominator (τ φ : ℝ) : ℝ :=
-  6 - 2 * egbCoexistenceASymmetricRatio τ ^ 2 +
+  6 - 2 * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) +
     4 * egbFixedChargeAMeanCoupling τ φ * egbCoexistenceALogKernel τ
 
 theorem egbFixedChargeAMeanRadius_pos (w φ τ : ℝ) : 0 < egbFixedChargeAMeanRadius w φ τ :=
@@ -66,28 +66,28 @@ theorem egbFixedChargeA_radius_gap_mean (w φ τ : ℝ) :
   ring
 
 theorem egbFixedChargeA_mean_effective_scale (w φ τ : ℝ) :
-    egbFixedChargeAMeanRadius w φ τ ^ 2 * egbFixedChargeAMeanWeight τ φ = exp w ^ 2 := by
+    egbFixedChargeAMeanRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAMeanWeight τ φ = exp w ^ (2 : ℕ) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   rw [egbFixedChargeAMeanRadius_formula]
   unfold egbFixedChargeAMeanWeight
   calc
-    _ = egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeAWeight τ φ := by field_simp
+    _ = egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAWeight τ φ := by field_simp
     _ = _ := egbFixedChargeA_effective_scale w φ τ
 
 theorem egbFixedChargeA_mean_coupling_scale (w φ τ : ℝ) :
-    egbFixedChargeAMeanRadius w φ τ ^ 2 * egbFixedChargeAMeanCoupling τ φ = (exp w * sin φ) ^ 2 := by
+    egbFixedChargeAMeanRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAMeanCoupling τ φ = (exp w * sin φ) ^ (2 : ℕ) := by
   unfold egbFixedChargeAMeanCoupling egbFixedChargeAFraction
   calc
-    _ = (egbFixedChargeAMeanRadius w φ τ ^ 2 * egbFixedChargeAMeanWeight τ φ) * sin φ ^ 2 := by ring
+    _ = (egbFixedChargeAMeanRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAMeanWeight τ φ) * sin φ ^ (2 : ℕ) := by ring
     _ = _ := by rw [egbFixedChargeA_mean_effective_scale]; ring
 
 theorem egbFixedChargeAMeanCoupling_formula (τ φ : ℝ) :
-    egbFixedChargeAMeanCoupling τ φ = egbFixedChargeACouplingWeight τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ 2 := by
+    egbFixedChargeAMeanCoupling τ φ = egbFixedChargeACouplingWeight τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) := by
   unfold egbFixedChargeAMeanCoupling egbFixedChargeAMeanWeight egbFixedChargeACouplingWeight
   ring
 
 theorem egbFixedChargeAMeanDenominator_formula (τ φ : ℝ) :
-    egbFixedChargeAMeanDenominator τ φ = (1 + egbCoexistenceASymmetricRatio τ) ^ 2 * egbFixedChargeADenominator τ φ := by
+    egbFixedChargeAMeanDenominator τ φ = (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) * egbFixedChargeADenominator τ φ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanDenominator egbFixedChargeADenominator
   rw [egbFixedChargeAMeanCoupling_formula, egbCoexistenceASymmetricRatio_shape]
@@ -105,7 +105,7 @@ theorem egbFixedChargeAMeanRadius_critical_limit (w φ : ℝ) :
 
 theorem egbFixedChargeAMeanWeight_critical_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMeanWeight τ φ) atBot (𝓝 (egbFixedChargeACriticalWeight φ)) := by
-  have hd : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ) ^ 2) atBot (𝓝 (1 : ℝ)) := by
+  have hd : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ)) atBot (𝓝 (1 : ℝ)) := by
     simpa only [add_zero, one_pow] using ((tendsto_const_nhds (x := (1 : ℝ))).add egbCoexistenceASymmetricRatio_critical_limit).pow 2
   simpa only [egbFixedChargeAMeanWeight, mul_one] using (egbFixedChargeAWeight_critical_limit φ).mul hd
 
@@ -115,7 +115,7 @@ theorem egbFixedChargeAMeanCoupling_critical_limit (φ : ℝ) :
 
 theorem egbFixedChargeAMeanDenominator_critical_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMeanDenominator τ φ) atBot (𝓝 (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) := by
-  have hd : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ) ^ 2) atBot (𝓝 (1 : ℝ)) := by
+  have hd : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ)) atBot (𝓝 (1 : ℝ)) := by
     simpa only [add_zero, one_pow] using ((tendsto_const_nhds (x := (1 : ℝ))).add egbCoexistenceASymmetricRatio_critical_limit).pow 2
   simp only [egbFixedChargeAMeanDenominator_formula]
   simpa only [one_mul] using hd.mul (egbFixedChargeADenominator_critical_limit φ)

@@ -38,7 +38,7 @@ theorem singleWitness_hamburgerContinuumPolarizationUniversality
       BoundedKernel s (x : ℂ) ∧
       FirstKindBounded s (x : ℂ) ∧
       0 < christoffelLimit s x ∧
-      Summable (fun k => ((monicOrtho s k).eval x) ^ 2 /
+      Summable (fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k)) ∧
       Tendsto (fun k => (orthonormalPoly s k).eval x) atTop (nhds 0) ∧
       ∀ C : ℝ, ∃ n : ℕ,
@@ -72,7 +72,7 @@ theorem singleWitness_hamburgerMaximalTVContinuumPolarizationUniversality
       BoundedKernel s (x : ℂ) ∧
       FirstKindBounded s (x : ℂ) ∧
       0 < christoffelLimit s x ∧
-      Summable (fun k => ((monicOrtho s k).eval x) ^ 2 /
+      Summable (fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k)) ∧
       Tendsto (fun k => (orthonormalPoly s k).eval x) atTop (nhds 0) ∧
       ∀ C : ℝ, ∃ n : ℕ,

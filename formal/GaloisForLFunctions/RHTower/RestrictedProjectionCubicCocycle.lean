@@ -5,9 +5,9 @@ import GaloisForLFunctions.RHTower.TraceClassCyclicity
 # Cubic trace cocycle for Hilbert--Schmidt projection differences
 
 For three orthogonal projections `R`, `Q`, and `P`, put `A = R - Q` and `B = Q - P`.
-The mixed part of `(A + B)^3` has zero trace.  The key projection identity is
+The mixed part of `(A + B)^(3 : ℕ)` has zero trace.  The key projection identity is
 
-`A^2 B + A B^2 = (A B) Q - Q (A B)`,
+`A^(2 : ℕ) B + A B^(2 : ℕ) = (A B) Q - Q (A B)`,
 
 whose right side is a trace-class commutator.  Cyclicity moves the remaining mixed monomials
 onto this same zero-trace pair.  Consequently the cubic projection trace is an additive cocycle.

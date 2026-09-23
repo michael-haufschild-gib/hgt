@@ -31,13 +31,13 @@ private theorem exp_neg_log_ratio_half_eq_sqrt_div
     exact_mod_cast lt_of_lt_of_le hk hkN
   have hfull : Real.exp (-(Real.log (N : ℝ) - Real.log (k : ℝ))) = (k : ℝ) / N := by
     rw [neg_sub, Real.exp_sub, Real.exp_log hkR, Real.exp_log hNR]
-  have hhalfSq : Real.exp (-(Real.log (N : ℝ) - Real.log (k : ℝ)) / 2) ^ 2 =
+  have hhalfSq : Real.exp (-(Real.log (N : ℝ) - Real.log (k : ℝ)) / 2) ^ (2 : ℕ) =
       (k : ℝ) / N := by
     rw [pow_two, ← Real.exp_add]
     convert hfull using 1
     ring
   have hratio : 0 ≤ (k : ℝ) / N := div_nonneg hkR.le hNR.le
-  have hsqrtSq : Real.sqrt ((k : ℝ) / N) ^ 2 = (k : ℝ) / N :=
+  have hsqrtSq : Real.sqrt ((k : ℝ) / N) ^ (2 : ℕ) = (k : ℝ) / N :=
     Real.sq_sqrt hratio
   nlinarith [Real.exp_pos (-(Real.log (N : ℝ) - Real.log (k : ℝ)) / 2),
     Real.sqrt_nonneg ((k : ℝ) / N)]
@@ -52,14 +52,14 @@ private theorem outgoing_summand_eq_dilation_normalForm
     Real.sqrt_div (Nat.cast_nonneg k) (N : ℝ)]
   have hNR : (0 : ℝ) < N := by exact_mod_cast lt_of_lt_of_le hk hkN
   have hsN : Real.sqrt (N : ℝ) ≠ 0 := (Real.sqrt_pos.2 hNR).ne'
-  have hsN2 : Real.sqrt (N : ℝ) ^ 2 = N := Real.sq_sqrt hNR.le
+  have hsN2 : Real.sqrt (N : ℝ) ^ (2 : ℕ) = N := Real.sq_sqrt hNR.le
   field_simp [hsN]
   calc
     ArithmeticFunction.vonMangoldt k * (Real.sqrt (N : ℝ) - Real.sqrt (k : ℝ)) * N =
         ArithmeticFunction.vonMangoldt k * (Real.sqrt (N : ℝ) - Real.sqrt (k : ℝ)) *
-          Real.sqrt (N : ℝ) ^ 2 := by rw [hsN2]
+          Real.sqrt (N : ℝ) ^ (2 : ℕ) := by rw [hsN2]
     _ = ArithmeticFunction.vonMangoldt k * Real.sqrt (N : ℝ) *
-          (Real.sqrt (N : ℝ) ^ 2 - Real.sqrt (N : ℝ) * Real.sqrt (k : ℝ)) := by ring
+          (Real.sqrt (N : ℝ) ^ (2 : ℕ) - Real.sqrt (N : ℝ) * Real.sqrt (k : ℝ)) := by ring
     _ = ArithmeticFunction.vonMangoldt k * Real.sqrt (N : ℝ) *
           (N - Real.sqrt (N : ℝ) * Real.sqrt (k : ℝ)) := by rw [hsN2]
 
@@ -92,7 +92,7 @@ theorem unitRieszCoherentPrimeOutgoingCharge_succ_sub_eq_dilationFlux
       (1 / Real.sqrt ((N + 1 : ℕ) : ℝ) - Real.sqrt ((N + 1 : ℕ) : ℝ) / (N + 1 : ℕ)) = 0 := by
     have hNp : (0 : ℝ) < (N + 1 : ℕ) := by positivity
     have hsNp : Real.sqrt ((N + 1 : ℕ) : ℝ) ≠ 0 := (Real.sqrt_pos.2 hNp).ne'
-    have hsNp2 : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ 2 = (N : ℝ) + 1 := by
+    have hsNp2 : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) = (N : ℝ) + 1 := by
       simpa only [Nat.cast_add, Nat.cast_one] using Real.sq_sqrt hNp.le
     field_simp [hsNp]
     rw [hsNp2]
@@ -104,17 +104,17 @@ theorem unitRieszCoherentPrimeOutgoingCharge_succ_sub_eq_dilationFlux
   ring
 
 private theorem dilation_weight_algebra {a b c n : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (ha2 : a ^ 2 = n) (hb2 : b ^ 2 = n + 1) :
+    (ha2 : a ^ (2 : ℕ) = n) (hb2 : b ^ (2 : ℕ) = n + 1) :
     (1 / b - 1 / a) + c * (1 / n - 1 / (n + 1)) =
       (c * (a + b) - a * b) / (n * (n + 1) * (a + b)) := by
   have hab : a + b ≠ 0 := by positivity
   have hn : n ≠ 0 := by nlinarith
   have hnp : n + 1 ≠ 0 := by nlinarith
-  have hprod : a ^ 2 * b ^ 2 = n * (n + 1) := by
+  have hprod : a ^ (2 : ℕ) * b ^ (2 : ℕ) = n * (n + 1) := by
     rw [ha2, hb2]
   field_simp [ha.ne', hb.ne', hab, hn, hnp]
-  linear_combination (2 * b ^ 2 + n + n ^ 2) * ha2 +
-    (n - n ^ 2) * hb2 - hprod
+  linear_combination (2 * b ^ (2 : ℕ) + n + n ^ (2 : ℕ)) * ha2 +
+    (n - n ^ (2 : ℕ)) * hb2 - hprod
 
 private theorem outgoingDilationWeight_eq_signedScale
     {N k : ℕ} (hN : 0 < N) :
@@ -126,8 +126,8 @@ private theorem outgoingDilationWeight_eq_signedScale
           (Real.sqrt (N : ℝ) + Real.sqrt ((N + 1 : ℕ) : ℝ))) := by
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have hNpR : (0 : ℝ) < (N + 1 : ℕ) := by positivity
-  have hsN2 : Real.sqrt (N : ℝ) ^ 2 = N := Real.sq_sqrt hNR.le
-  have hsNp2 : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ 2 = (N : ℝ) + 1 := by
+  have hsN2 : Real.sqrt (N : ℝ) ^ (2 : ℕ) = N := Real.sq_sqrt hNR.le
+  have hsNp2 : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) = (N : ℝ) + 1 := by
     simpa only [Nat.cast_add, Nat.cast_one] using Real.sq_sqrt hNpR.le
   simpa only [unitRieszCoherentOutgoingDilationWeight, Nat.cast_add, Nat.cast_one] using
     (dilation_weight_algebra (a := Real.sqrt (N : ℝ))

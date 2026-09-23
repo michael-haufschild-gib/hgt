@@ -23,14 +23,14 @@ namespace Homological
 namespace BB
 namespace Z3Z6
 
-private theorem classify_fast : ∀ m : Fin (2 ^ 18),
+private theorem classify_fast : ∀ m : Fin (2 ^ (18 : ℕ)),
     bndMask m.val ≠ 0 → natWt 36 (bndMask m.val) ≤ 7 →
     natWt 36 (bndMask m.val) = 6 ∧
     ∃ c0 c1 : ZMod 2, SeamGood (chainOf m.val + kcombo c0 c1) := by
   native_decide
 
 theorem light_boundary_classification_mask :
-    ∀ m : Fin (2 ^ 18),
+    ∀ m : Fin (2 ^ (18 : ℕ)),
       bbBoundary2Fn a36 b36 (chainOf m.val) ≠ 0 →
       (Finset.univ.filter fun j : G36 × Fin 2 =>
         bbBoundary2Fn a36 b36 (chainOf m.val) j ≠ 0).card ≤ 7 →

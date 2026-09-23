@@ -17,7 +17,7 @@ reflection-odd orientation vector.  Balancing the two vectors produces the equal
 
 For separated continued-Cauchy packets this yields the literal finite prime--Gamma inequality
 
-`orientationEnergy <= 2 * dist(packet.evaluation, orientationVector)^2`.
+`orientationEnergy <= 2 * dist(packet.evaluation, orientationVector)^(2 : ℕ)`.
 
 No RH premise, computation, or nonstandard assumption is used.  The equality witness is target-defined, so it
 classifies the obstruction but does not manufacture the missing source-first packet.
@@ -34,9 +34,9 @@ reflection-odd vector `w`, in division-free squared form. -/
 theorem antiFixed_norm_sq_le_two_mul_norm_sub_sq_of_quadratic_nonneg
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J)
     {w v : H} (hw : J w = -w) (hv : 0 ≤ quadratic J v) :
-    ‖w‖ ^ 2 ≤ 2 * ‖v - w‖ ^ 2 := by
+    ‖w‖ ^ (2 : ℕ) ≤ 2 * ‖v - w‖ ^ (2 : ℕ) := by
   have hbalanceV := four_mul_quadratic_eq_even_sub_odd J hJ v
-  have hchannels : ‖v - J v‖ ^ 2 ≤ ‖v + J v‖ ^ 2 := by
+  have hchannels : ‖v - J v‖ ^ (2 : ℕ) ≤ ‖v + J v‖ ^ (2 : ℕ) := by
     nlinarith
   let a : H := v - w
   have hplus : a + J a = v + J v := by
@@ -50,7 +50,7 @@ theorem antiFixed_norm_sq_le_two_mul_norm_sub_sq_of_quadratic_nonneg
   have hplusEnergy := plus_channel_energy_eq J hJ a
   have hminusEnergy := minus_channel_energy_eq J hJ a
   have hparallelogram :
-      ‖a + J a‖ ^ 2 + ‖a - J a‖ ^ 2 = 4 * ‖a‖ ^ 2 := by
+      ‖a + J a‖ ^ (2 : ℕ) + ‖a - J a‖ ^ (2 : ℕ) = 4 * ‖a‖ ^ (2 : ℕ) := by
     nlinarith
   have htriangle : ‖w + w‖ ≤ ‖v - J v‖ + ‖(v - J v) - (w + w)‖ := by
     calc
@@ -62,8 +62,8 @@ theorem antiFixed_norm_sq_le_two_mul_norm_sub_sq_of_quadratic_nonneg
     rw [← two_smul ℂ w, norm_smul]
     norm_num
   have hmidpoint :
-      2 * ‖w‖ ^ 2 ≤
-        ‖v - J v‖ ^ 2 + ‖(v - J v) - (w + w)‖ ^ 2 := by
+      2 * ‖w‖ ^ (2 : ℕ) ≤
+        ‖v - J v‖ ^ (2 : ℕ) + ‖(v - J v) - (w + w)‖ ^ (2 : ℕ) := by
     rw [haddnorm] at htriangle
     nlinarith [sq_nonneg
       (‖v - J v‖ - ‖(v - J v) - (w + w)‖),
@@ -78,7 +78,7 @@ vector exists. -/
 theorem exists_quadratic_zero_with_antiFixed_distance_eq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J)
     {w e : H} (hw : J w = -w) (he : J e = e) (hnorm : ‖e‖ = ‖w‖) :
-    ∃ v : H, quadratic J v = 0 ∧ ‖w‖ ^ 2 = 2 * ‖v - w‖ ^ 2 := by
+    ∃ v : H, quadratic J v = 0 ∧ ‖w‖ ^ (2 : ℕ) = 2 * ‖v - w‖ ^ (2 : ℕ) := by
   let v : H := (1 / 2 : ℂ) • (w + e)
   have hvplus : v + J v = e := by
     dsimp [v]
@@ -108,7 +108,7 @@ theorem exists_quadratic_zero_with_antiFixed_distance_eq
   have hplusEnergy := plus_channel_energy_eq J hJ a
   have hminusEnergy := minus_channel_energy_eq J hJ a
   have hparallelogram :
-      ‖a + J a‖ ^ 2 + ‖a - J a‖ ^ 2 = 4 * ‖a‖ ^ 2 := by
+      ‖a + J a‖ ^ (2 : ℕ) + ‖a - J a‖ ^ (2 : ℕ) = 4 * ‖a‖ ^ (2 : ℕ) := by
     nlinarith
   rw [haplus, haminus, norm_neg, hnorm] at hparallelogram
   refine ⟨v, hq, ?_⟩
@@ -145,11 +145,11 @@ theorem xiWeilLineConjLp_xiHurwitzOrientationAbsoluteVector :
 
 /-- Sign-forgetting preserves exactly the full orientation energy. -/
 theorem norm_sq_xiHurwitzOrientationAbsoluteVector :
-    ‖xiHurwitzOrientationAbsoluteVector‖ ^ 2 =
+    ‖xiHurwitzOrientationAbsoluteVector‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   change (∑' q : XiZeroCopy,
-    ‖((‖xiHurwitzOrientationCoordinate q‖ : ℝ) : ℂ)‖ ^ 2) = _
+    ‖((‖xiHurwitzOrientationCoordinate q‖ : ℝ) : ℂ)‖ ^ (2 : ℕ)) = _
   rw [← norm_sq_xiHurwitzOrientationVector,
     HilbertSchmidt.lp_norm_sq_eq]
   apply tsum_congr
@@ -158,8 +158,8 @@ theorem norm_sq_xiHurwitzOrientationAbsoluteVector :
 
 theorem norm_xiHurwitzOrientationAbsoluteVector_eq_orientationVector :
     ‖xiHurwitzOrientationAbsoluteVector‖ = ‖xiHurwitzOrientationVector‖ := by
-  have hsq : ‖xiHurwitzOrientationAbsoluteVector‖ ^ 2 =
-      ‖xiHurwitzOrientationVector‖ ^ 2 := by
+  have hsq : ‖xiHurwitzOrientationAbsoluteVector‖ ^ (2 : ℕ) =
+      ‖xiHurwitzOrientationVector‖ ^ (2 : ℕ) := by
     rw [norm_sq_xiHurwitzOrientationAbsoluteVector,
       norm_sq_xiHurwitzOrientationVector]
   nlinarith [norm_nonneg xiHurwitzOrientationAbsoluteVector,
@@ -168,8 +168,8 @@ theorem norm_xiHurwitzOrientationAbsoluteVector_eq_orientationVector :
 /-- Every Weil-nonnegative vector lies outside the exact orientation exclusion ball. -/
 theorem orientation_norm_sq_le_two_mul_dist_sq_of_weil_nonnegative
     (v : XiWeilCarrier) (hv : 0 ≤ xiWeilHilbertQuadratic v) :
-    ‖xiHurwitzOrientationVector‖ ^ 2 ≤
-      2 * dist v xiHurwitzOrientationVector ^ 2 := by
+    ‖xiHurwitzOrientationVector‖ ^ (2 : ℕ) ≤
+      2 * dist v xiHurwitzOrientationVector ^ (2 : ℕ) := by
   rw [dist_eq_norm]
   exact CliffordWeil.antiFixed_norm_sq_le_two_mul_norm_sub_sq_of_quadratic_nonneg
     xiWeilLineConjLinearIsometry xiWeilLineConjLinearIsometry_involutive
@@ -180,7 +180,7 @@ orientation-distance obstruction. -/
 theorem orientationEnergy_le_two_mul_packet_dist_sq_of_sourceEnergy_nonnegative
     (P : XiSeparatedContinuedCauchyPacket) (hP : 0 ≤ P.sourceEnergy) :
     xiHurwitzOrientationEnergy ≤
-      2 * dist P.evaluation xiHurwitzOrientationVector ^ 2 := by
+      2 * dist P.evaluation xiHurwitzOrientationVector ^ (2 : ℕ) := by
   rw [← norm_sq_xiHurwitzOrientationVector]
   apply orientation_norm_sq_le_two_mul_dist_sq_of_weil_nonnegative
   rwa [← P.sourceEnergy_eq_hilbertQuadratic]
@@ -190,7 +190,7 @@ theorem exists_weilBoundaryVector_at_exact_orientationRadius :
     ∃ v : XiWeilCarrier,
       xiWeilHilbertQuadratic v = 0 ∧
       xiHurwitzOrientationEnergy =
-        2 * dist v xiHurwitzOrientationVector ^ 2 := by
+        2 * dist v xiHurwitzOrientationVector ^ (2 : ℕ) := by
   obtain ⟨v, hvq, hvdist⟩ :=
     CliffordWeil.exists_quadratic_zero_with_antiFixed_distance_eq
       xiWeilLineConjLinearIsometry xiWeilLineConjLinearIsometry_involutive
@@ -207,10 +207,10 @@ every cone point satisfies the lower bound and one zero-energy boundary point at
 theorem xiHurwitzOrientation_exact_nonnegativeCone_radius :
     (∀ v : XiWeilCarrier, 0 ≤ xiWeilHilbertQuadratic v →
       xiHurwitzOrientationEnergy ≤
-        2 * dist v xiHurwitzOrientationVector ^ 2) ∧
+        2 * dist v xiHurwitzOrientationVector ^ (2 : ℕ)) ∧
     (∃ v : XiWeilCarrier, xiWeilHilbertQuadratic v = 0 ∧
       xiHurwitzOrientationEnergy =
-        2 * dist v xiHurwitzOrientationVector ^ 2) := by
+        2 * dist v xiHurwitzOrientationVector ^ (2 : ℕ)) := by
   refine ⟨?_, exists_weilBoundaryVector_at_exact_orientationRadius⟩
   intro v hv
   rw [← norm_sq_xiHurwitzOrientationVector]

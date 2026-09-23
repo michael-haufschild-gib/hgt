@@ -44,7 +44,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_min_mass_filter
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hprime : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V j) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ menonHarmonicActiveBlocks P Q eta L,
           min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j) E j)
             (menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j)
@@ -81,7 +81,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_levelTrivial_mass_filter
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hbudget : volume.real E ≤ vol) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ menonHarmonicActiveBlocks P Q eta L,
           menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W vol k j (J j) (V₀ j)
             / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
@@ -122,7 +122,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_mass_filter
     (J : ℕ → ℕ)
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ menonHarmonicActiveBlocks P Q eta L,
             min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
                   (menonHarmonicAllBlocksSmall P Q eta L V W) j)
@@ -135,10 +135,10 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_mass_filter
               / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
   classical
   have hcont : Continuous fun w : ℝ =>
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 :=
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) :=
     ((continuous_harmonicRamareBilinear P (Finset.Icc A₀ B₀)).norm).pow 2
   have hpart := setIntegral_menonHarmonic_frequencyPartition P Q eta L V W
-    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
     hcont.integrableOn_Icc
   rw [hpart]
   refine add_le_add ?_ ?_

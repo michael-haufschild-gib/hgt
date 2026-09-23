@@ -392,7 +392,7 @@ theorem unitRieszCompletedSource_eq_FUCesaroCurvature
   exact unitRieszCesaro_actualSource_secondIntegrationByParts hb hbt
 
 /-- Endpoint-normalized form: surviving boundary channel is exact slow exponential coefficient
-`-(3/64) t^3 exp(-t/2)`. -/
+`-(3/64) t^(3 : ℕ) exp(-t/2)`. -/
 theorem unitRieszCompletedSource_eq_FUCesaroCurvature_explicitEndpoint
     {b t : ℝ} (hb : 0 < b) (hbt : b ≤ t) :
     -criticalMellinCompletedError b *
@@ -400,7 +400,7 @@ theorem unitRieszCompletedSource_eq_FUCesaroCurvature_explicitEndpoint
         (∫ s in b..t,
           criticalMellinCompletedError s *
             unitRieszCompletedSourceTestDerivReal t s) =
-      -(3 / 64) * t ^ 3 * Real.exp (-t / 2) *
+      -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) *
           ccmCesaroPrimitive
             (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b t -
         ∫ s in b..t,

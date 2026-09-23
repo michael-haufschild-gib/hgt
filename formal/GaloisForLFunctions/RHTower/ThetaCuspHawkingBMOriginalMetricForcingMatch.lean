@@ -131,16 +131,16 @@ def horizonForcingTransfer (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (p L x k :
 
 /-- The fourth term's exact coefficient in the complete finite-time metric boundary. -/
 def metricForcingBoundaryError (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (T L x k : ℝ) : ℂ :=
-  (-w*(tortoiseRadius (-L/2):ℂ))/((tortoiseRadius (-L/2):ℂ)^2-1)^2*
+  (-w*(tortoiseRadius (-L/2):ℂ))/((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ)*
     ∫ p in (0:ℝ)..T,forcingTransferCut q br amp w p L x k-horizonForcingTransfer q br amp w p L x k
 
 theorem metric_forcing_boundary_error (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)
     (T L x k : ℝ) (hL : 0<L) :
     metricForcingBoundaryError q br amp w T L x k=
-      -w*((tortoiseRadius (-L/2):ℂ)^2*
+      -w*((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*
         (∫ p in (0:ℝ)..T,Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w true p L x k-
           (horizonCoordinate (-L/2):ℂ)*horizonProduct q br amp w true p x k))/
-            ((tortoiseRadius (-L/2):ℂ)^2-1)^2) := by
+            ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ)) := by
   have he (p : ℝ) : forcingTransferCut q br amp w p L x k-horizonForcingTransfer q br amp w p L x k=
       (tortoiseRadius (-L/2):ℂ)*(Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w true p L x k-
         (horizonCoordinate (-L/2):ℂ)*horizonProduct q br amp w true p x k)) := by

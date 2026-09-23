@@ -25,18 +25,18 @@ theorem horizonCoordinate_continuous : Continuous horizonCoordinate := by
 
 /-- The added mass cancels the restored free generator's mass, leaving the original potential. -/
 def principalWavePotential (q : XiZeroCopy) (i : Fin 3) (t : ℝ) : ℂ :=
-  ((2*Real.pi)^2:ℝ)+principalExponent q i*(principalExponent q i-1)*(horizonCoordinate t:ℂ)
+  ((2*Real.pi)^(2 : ℕ):ℝ)+principalExponent q i*(principalExponent q i-1)*(horizonCoordinate t:ℂ)
 
 theorem principalWavePotential_bound (q : XiZeroCopy) (i : Fin 3) (t : ℝ) :
-    ‖principalWavePotential q i t‖ ≤ (2*Real.pi)^2+‖principalExponent q i*(principalExponent q i-1)‖ := by
+    ‖principalWavePotential q i t‖ ≤ (2*Real.pi)^(2 : ℕ)+‖principalExponent q i*(principalExponent q i-1)‖ := by
   have hz : ‖(horizonCoordinate t:ℂ)‖ ≤ 1 := by
     rw [Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (horizonCoordinate_nonneg t)]
     exact horizonCoordinate_le_one t
   unfold principalWavePotential
   calc
-    _ ≤ ‖(((2*Real.pi)^2:ℝ):ℂ)‖+
+    _ ≤ ‖(((2*Real.pi)^(2 : ℕ):ℝ):ℂ)‖+
         ‖principalExponent q i*(principalExponent q i-1)‖*‖(horizonCoordinate t:ℂ)‖ := by
-      simpa only [norm_mul] using norm_add_le (((2*Real.pi)^2:ℝ):ℂ)
+      simpa only [norm_mul] using norm_add_le (((2*Real.pi)^(2 : ℕ):ℝ):ℂ)
         (principalExponent q i*(principalExponent q i-1)*(horizonCoordinate t:ℂ))
     _ ≤ _ := by
       rw [Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]

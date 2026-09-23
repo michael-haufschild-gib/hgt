@@ -16,7 +16,7 @@ namespace HilbertMetric
 /-- The scalar wall left by the second first-gap derivative at `0,x,x+y`. -/
 def threePointCoalescedWall
     (f f₁ f₂ : ℝ → ℝ) (y : ℝ) : ℝ :=
-  (-f₂ 0) * (f 0 ^ 2 - f y ^ 2) - f 0 * f₁ y ^ 2
+  (-f₂ 0) * (f 0 ^ (2 : ℕ) - f y ^ (2 : ℕ)) - f 0 * f₁ y ^ (2 : ℕ)
 
 def threePointCoalescedWallFirstJet
     (f f₁ f₂ : ℝ → ℝ) (y : ℝ) : ℝ :=
@@ -48,7 +48,7 @@ theorem hasDerivAt_threePointCoalescedWall
       (threePointCoalescedWallFirstJet f f₁ f₂ y) y := by
   have h := ((((hf y).mul (hf y)).const_mul (f₂ 0)).sub
     (((hf₁ y).mul (hf₁ y)).const_mul (f 0))).add_const
-      ((-f₂ 0) * f 0 ^ 2)
+      ((-f₂ 0) * f 0 ^ (2 : ℕ))
   unfold threePointCoalescedWall threePointCoalescedWallFirstJet
   convert! h using 1 <;>
     (try funext x) <;>
@@ -108,7 +108,7 @@ theorem threePointCoalescedWallFourthJet_zero
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
     (h₁ : f₁ 0 = 0) (h₃ : f₃ 0 = 0) :
     threePointCoalescedWallFourthJet f f₁ f₂ f₃ f₄ f₅ 0 =
-      -6 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) := by
+      -6 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) := by
   simp [threePointCoalescedWallFourthJet, h₁, h₃]
   ring
 
@@ -123,7 +123,7 @@ theorem exists_threePointCoalescedWall_pos_right
     (hf₄ : ∀ x, HasDerivAt f₄ (f₅ x) x)
     (hf₅ : Continuous f₅)
     (h₁ : f₁ 0 = 0) (h₃ : f₃ 0 = 0)
-    (h₂ : f₂ 0 < 0) (h₄ : 0 < f 0 * f₄ 0 - f₂ 0 ^ 2) :
+    (h₂ : f₂ 0 < 0) (h₄ : 0 < f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ y, 0 < y → y < δ →
       0 < threePointCoalescedWall f f₁ f₂ y := by
   let W := threePointCoalescedWall f f₁ f₂
@@ -161,7 +161,7 @@ theorem exists_threePointCoalescedWall_pos_right
   have hW₃zero : W₃ 0 = 0 := by
     simp [W₃, threePointCoalescedWallThirdJet, h₁, h₃]
   have hW₄pos : 0 < W₄ 0 := by
-    rw [show W₄ 0 = -6 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) by
+    rw [show W₄ 0 = -6 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) by
       exact threePointCoalescedWallFourthJet_zero h₁ h₃]
     exact mul_pos (mul_pos_of_neg_of_neg (by norm_num) h₂) h₄
   rcases exists_pos_right_of_secondJet_pos hW₂ hW₃ hW₄ hW₂zero hW₃zero hW₄pos with

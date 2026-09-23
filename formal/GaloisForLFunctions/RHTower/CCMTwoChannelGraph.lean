@@ -90,11 +90,11 @@ theorem cauchy_insertion_split (c w z : ℂ) (F : ℂ → ℂ) (hz : z - w ≠ 0
 `|c|²/(2 Im w)`: the inverse-horizontal charge. -/
 theorem residue_vector_energy {c : ℂ} {a b : ℝ} (ha : 0 < a) :
     (∫ t in Ioi (0 : ℝ), ‖c * Complex.exp (-(a : ℂ) * (t : ℂ))
-        * Complex.exp (-Complex.I * (b : ℂ) * (t : ℂ))‖ ^ 2)
-      = ‖c‖ ^ 2 / (2 * a) := by
+        * Complex.exp (-Complex.I * (b : ℂ) * (t : ℂ))‖ ^ (2 : ℕ))
+      = ‖c‖ ^ (2 : ℕ) / (2 * a) := by
   have hpt : ∀ t : ℝ, ‖c * Complex.exp (-(a : ℂ) * (t : ℂ))
-      * Complex.exp (-Complex.I * (b : ℂ) * (t : ℂ))‖ ^ 2
-      = ‖c‖ ^ 2 * (Real.exp (-(a * t)) * Real.exp (-(a * t))) := by
+      * Complex.exp (-Complex.I * (b : ℂ) * (t : ℂ))‖ ^ (2 : ℕ)
+      = ‖c‖ ^ (2 : ℕ) * (Real.exp (-(a * t)) * Real.exp (-(a * t))) := by
     intro t
     rw [norm_mul, norm_mul, Complex.norm_exp, Complex.norm_exp]
     have h1 : (-(a : ℂ) * (t : ℂ)).re = -(a * t) := by

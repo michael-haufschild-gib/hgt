@@ -26,8 +26,8 @@ theorem exists_setIntegral_disc_normSq_geomCofactorBlockAt_rel_le :
         ≤ ((contourParam (((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
             + smoothWidth ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)) : ℕ) : ℝ) →
       (∫ w in Set.Icc (-w₀) w₀,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₀ Q η j) w‖ ^ 2)
-        ≤ (relMoebiusSharp Nmin * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) ^ 2 * (2 * w₀) := by
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₀ Q η j) w‖ ^ (2 : ℕ))
+        ≤ (relMoebiusSharp Nmin * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) ^ (2 : ℕ) * (2 * w₀) := by
   obtain ⟨K₀, N₁, hbd⟩ := exists_norm_logPoly_geomCofactorBlockAt_rel_le
   refine ⟨K₀, N₁, ?_⟩
   intro B₀ j Q η w₀ Nmin hQ hη hw₀ hNmin hN₁ hNle hK hτ

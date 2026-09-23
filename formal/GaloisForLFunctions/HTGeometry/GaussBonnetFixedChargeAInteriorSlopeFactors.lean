@@ -10,7 +10,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAInterior_radial_factor_limit (w φ ψ : ℝ) :
-    Tendsto (fun τ => 8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 +
+    Tendsto (fun τ => 8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) +
       2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ)
       atBot (𝓝 ((1 - 2 * egbFixedChargeACriticalCouplingWeight φ) / 2)) := by
   have h := ((tendsto_const_nhds (x := 8 * Real.pi * egbFixedChargeACriticalPressure w φ)).mul
@@ -19,27 +19,27 @@ theorem egbFixedChargeAInterior_radial_factor_limit (w φ ψ : ℝ) :
   rwa [egbFixedChargeACritical_radial_factor_at_critical] at h
 
 theorem egbFixedChargeAInterior_radial_denominator_limit (w φ ψ : ℝ) :
-    Tendsto (fun τ => 4 * Real.pi * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 *
-      (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2)
-      atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 6 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2)) := by
+    Tendsto (fun τ => 4 * Real.pi * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) *
+      (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ))
+      atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (6 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ))) := by
   have hr := egbFixedChargeAInteriorRadius_critical_limit w φ ψ
   have h := ((tendsto_const_nhds (x := 4 * Real.pi)).mul (hr.pow 2)).mul
-    (((hr.pow 2).add (tendsto_const_nhds (x := 2 * (exp w * sin φ) ^ 2))).pow 2)
+    (((hr.pow 2).add (tendsto_const_nhds (x := 2 * (exp w * sin φ) ^ (2 : ℕ)))).pow 2)
   convert h using 1
   rw [egbFixedChargeACritical_coupling_scaling]
   ring
 
 theorem egbFixedChargeAInterior_pressure_slope_limit (w φ ψ : ℝ) :
-    Tendsto (fun τ => 2 * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 *
-      (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 6 * (exp w * sin φ) ^ 2) /
-        (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2)
-      atBot (𝓝 (2 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) / (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2)) := by
+    Tendsto (fun τ => 2 * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) *
+      (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 6 * (exp w * sin φ) ^ (2 : ℕ)) /
+        (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ))
+      atBot (𝓝 (2 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ) / (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ))) := by
   have hr := egbFixedChargeAInteriorRadius_critical_limit w φ ψ
   have hc := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hn := ((tendsto_const_nhds (x := (2 : ℝ))).mul (hr.pow 2)).mul
-    ((hr.pow 2).add (tendsto_const_nhds (x := 6 * (exp w * sin φ) ^ 2)))
-  have hd := ((hr.pow 2).add (tendsto_const_nhds (x := 2 * (exp w * sin φ) ^ 2))).pow 2
+    ((hr.pow 2).add (tendsto_const_nhds (x := 6 * (exp w * sin φ) ^ (2 : ℕ))))
+  have hd := ((hr.pow 2).add (tendsto_const_nhds (x := 2 * (exp w * sin φ) ^ (2 : ℕ)))).pow 2
   have h := hn.div hd (by positivity)
   simp only [Pi.div_def] at h
   convert h using 1
@@ -48,19 +48,19 @@ theorem egbFixedChargeAInterior_pressure_slope_limit (w φ ψ : ℝ) :
 
 theorem egbFixedChargeAInterior_radial_slope_decomposition (w φ τ ψ : ℝ) :
     egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) (egbFixedChargeAInteriorRadius w φ τ ψ) /
-      egbCoexistenceASymmetricRatio τ ^ 2 =
-      ((egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 - egbFixedChargeACriticalRadius w φ ^ 2) / egbCoexistenceASymmetricRatio τ) ^ 2 *
-        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 +
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+      ((egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) - egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) / egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) *
+        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) +
           2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ) /
-        (4 * Real.pi * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 *
-          (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2) -
-      ((egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2) *
-        (2 * egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 * (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 6 * (exp w * sin φ) ^ 2) /
-          (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2) := by
+        (4 * Real.pi * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) *
+          (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ)) -
+      ((egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
+        (2 * egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) * (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 6 * (exp w * sin φ) ^ (2 : ℕ)) /
+          (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hr := egbFixedChargeAInteriorRadius_pos w φ τ ψ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hpi := Real.pi_pos
-  have hD : 0 < egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 + 2 * (exp w * sin φ) ^ 2 := by positivity
+  have hD : 0 < egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ) := by positivity
   have h := egbFixedChargeA_radial_slope_pressure_decomposition (egbFixedChargeAPressure w φ τ) w φ (log (egbFixedChargeAInteriorRadius w φ τ ψ))
   rw [exp_log hr] at h
   rw [h]

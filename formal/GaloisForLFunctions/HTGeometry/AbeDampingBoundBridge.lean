@@ -44,7 +44,7 @@ theorem abeDampingBound_of_appellHumbert
     (hrad : ∀ i : FiniteJetPacketIndex d I m,
       ((Fintype.card (MultiIndexSlot i.2.1) : ℕ) : ℝ) ≤ Rad)
     (hDsup : ∀ (i : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
-      ‖y - w i.1‖ ≤ Rad → (Hu y y - Hl y y).re ≤ C₀ ^ 2)
+      ‖y - w i.1‖ ≤ Rad → (Hu y y - Hl y y).re ≤ C₀ ^ (2 : ℕ))
     (hLsup : ∀ (i : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
       ‖y - w i.1‖ ≤ Rad → (Hl y y).re ≤ L)
     (hseednorm : ∀ B : ℝ, 0 ≤ B → ∀ (j : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
@@ -54,11 +54,11 @@ theorem abeDampingBound_of_appellHumbert
         ‖multiIndexJetEvalCLM (w i.1) i.2.1
             (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) (seed B j)
               (complementEmbedding comp comp_mem z))‖
-          ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ 2) := by
+          ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ (2 : ℕ)) := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
   obtain ⟨sigma, hsigma, hgauss⟩ :=
     exists_gaussian_of_posDef hD v hgram (t := Real.pi / 4) (by positivity)
-  refine ⟨sigma, hsigma, Cs * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2),
+  refine ⟨sigma, hsigma, Cs * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ)),
     by positivity, ?_⟩
   intro B hB z i j
   have hball : ∀ y : Fin d → ℂ,
@@ -71,7 +71,7 @@ theorem abeDampingBound_of_appellHumbert
     (fun y hy => hDsup i y (hball y hy)) (fun y hy => hLsup i y (hball y hy))
     (complementEmbedding comp comp_mem z)
   rw [one_pow, div_one] at hbase
-  set F : ℝ := Real.exp (-sigma * ∑ k, ((z k : ℝ)) ^ 2) with hFdef
+  set F : ℝ := Real.exp (-sigma * ∑ k, ((z k : ℝ)) ^ (2 : ℕ)) with hFdef
   have hexp : Real.exp (-(Real.pi / 4)
       * (Hu (complementEmbedding comp comp_mem z).1 (complementEmbedding comp comp_mem z).1
           - Hl (complementEmbedding comp comp_mem z).1
@@ -81,16 +81,16 @@ theorem abeDampingBound_of_appellHumbert
       (hcomp z).symm] at h
     exact h
   have hnn : (0 : ℝ) ≤ Cs * B ^ r * Real.exp (Real.pi / 2 * L)
-      * Real.exp (Real.pi * C₀ ^ 2) := by positivity
+      * Real.exp (Real.pi * C₀ ^ (2 : ℕ)) := by positivity
   refine le_trans hbase ?_
-  calc Cs * B ^ r * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
+  calc Cs * B ^ r * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
         * Real.exp (-(Real.pi / 4)
           * (Hu (complementEmbedding comp comp_mem z).1 (complementEmbedding comp comp_mem z).1
             - Hl (complementEmbedding comp comp_mem z).1
                 (complementEmbedding comp comp_mem z).1).re)
-      ≤ Cs * B ^ r * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2) * F :=
+      ≤ Cs * B ^ r * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ)) * F :=
         mul_le_mul_of_nonneg_left hexp hnn
-    _ = Cs * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2) * B ^ r * F := by ring
+    _ = Cs * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ)) * B ^ r * F := by ring
 
 /-- **The compatibility field of the damping datum, for Appell--Humbert factors.**  The upper factor
 restricts to the lower one along `ΓH` exactly when the two forms and the two semicharacters agree

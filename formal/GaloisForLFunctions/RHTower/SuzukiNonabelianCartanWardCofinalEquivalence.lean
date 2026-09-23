@@ -8,7 +8,7 @@ The opposite-root `SL₂` source constructed in
 `SuzukiNonabelianCartanWardCompletion` differs from the literal completed Suzuki Green source by
 twice a positive cubic Cartan remainder.  The earlier module proves the sharp finite-aperture bound
 
-`0 ≤ R_A ≤ log(A)^3 / (24 * sqrt(A))`.
+`0 ≤ R_A ≤ log(A)^(3 : ℕ) / (24 * sqrt(A))`.
 
 This file closes the cofinal question: the majorant tends to zero, hence the nonlinear Cartan
 source and the completed prime--polar--Gamma Ward source are asymptotically identical.  It also

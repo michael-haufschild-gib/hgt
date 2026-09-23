@@ -108,14 +108,14 @@ directions.**  For unit weight vectors the distance at parameter `t` is `|t| √
 the rate is `2 sin (θ/2)` for the Euclidean angle `θ` between the directions: the boundary of a
 maximal flat carries the spherical metric, which is the Tits metric of an apartment. -/
 theorem observerDist_metricRay_diagOp_unit {n : ℕ} (b : OrthonormalBasis (Fin n) ℂ E)
-    (hn : finrank ℂ E = n) (w w' : Fin n → ℝ) (hw : ∑ i, w i ^ 2 = 1)
-    (hw' : ∑ i, w' i ^ 2 = 1) (t : ℝ) :
+    (hn : finrank ℂ E = n) (w w' : Fin n → ℝ) (hw : ∑ i, w i ^ (2 : ℕ) = 1)
+    (hw' : ∑ i, w' i ^ (2 : ℕ) = 1) (t : ℝ) :
     observerDist (isSymmetric_metricRay (isSymmetric_diagOp b w) hn t) hn
         (isSymmetric_metricRay (isSymmetric_diagOp b w') hn t)
       = |t| * Real.sqrt (2 - 2 * ∑ i, w i * w' i) := by
   rw [observerDist_metricRay_diagOp b hn w w' t]
   congr 2
-  have hexp : ∀ i, (w' i - w i) ^ 2 = w' i ^ 2 - 2 * (w i * w' i) + w i ^ 2 := by
+  have hexp : ∀ i, (w' i - w i) ^ (2 : ℕ) = w' i ^ (2 : ℕ) - 2 * (w i * w' i) + w i ^ (2 : ℕ) := by
     intro i
     ring
   rw [Finset.sum_congr rfl fun i _ => hexp i, Finset.sum_add_distrib, Finset.sum_sub_distrib,

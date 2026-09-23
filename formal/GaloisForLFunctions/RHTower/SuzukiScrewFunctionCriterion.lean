@@ -98,7 +98,7 @@ def xiCriticalScrewHilbertPoint (hRH : RiemannHypothesis) (t : ℝ) :
 /-- Squared Hilbert chord length is the exact critical-zero screw series. -/
 theorem sq_norm_xiCriticalScrewHilbertPoint_sub
     (hRH : RiemannHypothesis) (t u : ℝ) :
-    ‖xiCriticalScrewHilbertPoint hRH t - xiCriticalScrewHilbertPoint hRH u‖ ^ 2 =
+    ‖xiCriticalScrewHilbertPoint hRH t - xiCriticalScrewHilbertPoint hRH u‖ ^ (2 : ℕ) =
       xiCriticalScrewSeries (t - u) := by
   exact sq_norm_screwEmbed_screwPhase_sub xiCriticalScrewWeight_nonneg
     (summable_xiCriticalScrewWeight_of_rh hRH) xiRealSpectralPoint t u
@@ -148,10 +148,10 @@ theorem suzukiScrewKernel_eq_inner_of_rh
   have htu := sq_norm_xiCriticalScrewHilbertPoint_sub hRH t u
   have ht0 := sq_norm_xiCriticalScrewHilbertPoint_sub hRH t 0
   have hu0 := sq_norm_xiCriticalScrewHilbertPoint_sub hRH u 0
-  have ht : ‖xiCriticalScrewHilbertPoint hRH t‖ ^ 2 =
+  have ht : ‖xiCriticalScrewHilbertPoint hRH t‖ ^ (2 : ℕ) =
       xiCriticalScrewSeries t := by
     simpa using ht0
-  have hu : ‖xiCriticalScrewHilbertPoint hRH u‖ ^ 2 =
+  have hu : ‖xiCriticalScrewHilbertPoint hRH u‖ ^ (2 : ℕ) =
       xiCriticalScrewSeries u := by
     simpa using hu0
   rw [inner_xiCriticalScrewDoubledPoint]

@@ -153,7 +153,7 @@ def ladderCoeffOfTwo (P : Polynomial (Polynomial ℂ)) (M : ℕ) : Polynomial �
 
 /-- The shifted ladder polynomial with the shift kept as a second indeterminate. -/
 def shiftLadderPolyTwo : ℕ → Polynomial (Polynomial ℂ)
-  | 0 => -(C (Polynomial.X : Polynomial ℂ)) * X ^ 2
+  | 0 => -(C (Polynomial.X : Polynomial ℂ)) * X ^ (2 : ℕ)
   | (M + 1) =>
       (1 + X) * shiftLadderPolyTwo M
         - C (Polynomial.C ((-1 : ℂ) ^ (M + 1) / ((M : ℂ) + 2)))
@@ -199,7 +199,7 @@ theorem subGraded_shiftLadderPolyTwo : ∀ M : ℕ, SubGraded (shiftLadderPolyTw
   intro M
   induction M with
   | zero =>
-      have h : -(C (Polynomial.X : Polynomial ℂ)) * (X : Polynomial (Polynomial ℂ)) ^ 2
+      have h : -(C (Polynomial.X : Polynomial ℂ)) * (X : Polynomial (Polynomial ℂ)) ^ (2 : ℕ)
           = -((C (Polynomial.X : Polynomial ℂ) * X) * X) := by ring
       rw [shiftLadderPolyTwo, h]
       exact (graded_C_muY_mul_X.mul_subGraded (by simpa using subGraded_X_pow_succ 0)).neg

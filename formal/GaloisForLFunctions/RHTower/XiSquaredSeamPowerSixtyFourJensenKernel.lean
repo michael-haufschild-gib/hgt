@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 This module proves the exact radial Tonelli kernel behind the Cassini--Jensen source coordinate.
 For a reciprocal seam atom `z`, its inverse radius is `a = ‖z⁻¹‖`.  The elementary identity
 
-`∫_a^∞ log (r/a) / r^65 dr = 1 / (4096 a^64)`
+`∫_a^∞ log (r/a) / r^(65 : ℕ) dr = 1 / (4096 a^(64 : ℕ))`
 
 turns the summed radial divisor integral into `1/4096` of the Hermitian power-64 mass.  No zero
 location, estimate, or numerical computation occurs.  Identifying this doubled divisor profile

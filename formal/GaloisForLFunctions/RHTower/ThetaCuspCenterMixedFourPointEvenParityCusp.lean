@@ -56,7 +56,7 @@ theorem exists_thetaCuspCenterMixed_evenParityWall_pos_right
   have h3 : iteratedDeriv 3 f 0 = 0 := by
     rw [hderiv3]
     exact thetaCuspCenterMixedDensityThirdJet_zero a
-  have h4 : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ 2 := by
+  have h4 : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ (2 : ℕ) := by
     rw [hderiv4, hderiv2]
     exact thetaCuspCenterMixedDensity_fourthHankel_pos ha0 ha
   rcases HilbertMetric.exists_fourPointEvenWall_pos_right hf h1 h3 h4 with

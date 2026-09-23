@@ -61,19 +61,19 @@ theorem finite_realZeroSet_of_tendsto_atTop {W : ℝ → ℝ}
 
 /-! ## The damped rational factor -/
 
-theorem one_add_sq_ne_zero (ξ : ℝ) : (1 : ℂ) + (ξ : ℂ) ^ 2 ≠ 0 := by
-  have hcast : (1 : ℂ) + (ξ : ℂ) ^ 2 = ((1 + ξ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+theorem one_add_sq_ne_zero (ξ : ℝ) : (1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ) ≠ 0 := by
+  have hcast : (1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ) = ((1 + ξ ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
   rw [hcast]
   exact Complex.ofReal_ne_zero.mpr (by positivity)
 
 /-- The damped rational factor `(4)`, `b_a = p_a/(1+ξ²)^{L_a}`. -/
 def dampedFactor (p : Polynomial ℂ) (N : ℕ) (ξ : ℝ) : ℂ :=
-  p.eval (ξ : ℂ) / ((1 : ℂ) + (ξ : ℂ) ^ 2) ^ N
+  p.eval (ξ : ℂ) / ((1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ)) ^ N
 
 /-- **Equation (11).**  The local differential operator `(1+D²)^{L}` restores the polynomial
 factor exactly. -/
 theorem localOperator_dampedFactor (p : Polynomial ℂ) (N : ℕ) (ξ : ℝ) :
-    ((1 : ℂ) + (ξ : ℂ) ^ 2) ^ N * dampedFactor p N ξ = p.eval (ξ : ℂ) := by
+    ((1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ)) ^ N * dampedFactor p N ξ = p.eval (ξ : ℂ) := by
   rw [dampedFactor, mul_div_cancel₀]
   exact pow_ne_zero _ (one_add_sq_ne_zero ξ)
 
@@ -125,7 +125,7 @@ theorem polynomial_symbol_eq_zero {W c u v : ℝ → ℂ} {p : Polynomial ℂ} {
     (hzero : ∀ ξ, W ξ * u ξ = 0) (ξ : ℝ) :
     p.eval (ξ : ℂ) * v ξ = 0 := by
   have hstep : p.eval (ξ : ℂ) * v ξ
-      = ((1 : ℂ) + (ξ : ℂ) ^ 2) ^ N * (W ξ * u ξ) := by
+      = ((1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ)) ^ N * (W ξ * u ξ) := by
     rw [← localOperator_dampedFactor p N ξ, hv, hW]
     ring
   rw [hstep, hzero, mul_zero]

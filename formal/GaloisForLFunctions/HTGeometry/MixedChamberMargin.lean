@@ -42,19 +42,19 @@ theorem re_quadForm_diagonal_le_margin_on_negSupported {d : ℕ} (c : Fin d → 
     (hδ : 0 ≤ δ) (hc : ∀ j, c j < 0 → c j ≤ -δ)
     (x : Fin d → ℂ) (hx : x ∈ negSupported c) :
     (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re
-      ≤ -δ * ‖x‖ ^ 2 := by
+      ≤ -δ * ‖x‖ ^ (2 : ℕ) := by
   classical
   rw [re_quadForm_diagonal]
-  have hterm : ∀ j, c j * ‖x j‖ ^ 2 ≤ (-δ) * ‖x j‖ ^ 2 := by
+  have hterm : ∀ j, c j * ‖x j‖ ^ (2 : ℕ) ≤ (-δ) * ‖x j‖ ^ (2 : ℕ) := by
     intro j
     by_cases hj : c j < 0
     · exact mul_le_mul_of_nonneg_right (hc j hj) (by positivity)
     · rw [(mem_negSupported c x).1 hx j hj]
       simp
-  have h1 : ∑ j, c j * ‖x j‖ ^ 2 ≤ ∑ j, (-δ) * ‖x j‖ ^ 2 :=
+  have h1 : ∑ j, c j * ‖x j‖ ^ (2 : ℕ) ≤ ∑ j, (-δ) * ‖x j‖ ^ (2 : ℕ) :=
     Finset.sum_le_sum fun j _ => hterm j
   rw [← Finset.mul_sum] at h1
-  have h2 : -δ * ∑ j, ‖x j‖ ^ 2 ≤ -δ * ‖x‖ ^ 2 :=
+  have h2 : -δ * ∑ j, ‖x j‖ ^ (2 : ℕ) ≤ -δ * ‖x‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonpos_left (sq_pi_norm_le_sum_sq x) (by linarith)
   linarith
 
@@ -66,14 +66,14 @@ theorem negDef_on_negSupported_of_perturbed {d : ℕ} (c : Fin d → ℝ) {δ : 
     (hpert : ∀ x : Fin d → ℂ,
       |(star x ⬝ᵥ G.mulVec x).re
         - (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re|
-        ≤ (δ / 2) * ‖x‖ ^ 2) :
+        ≤ (δ / 2) * ‖x‖ ^ (2 : ℕ)) :
     ∀ x ∈ negSupported c, x ≠ 0 → (star x ⬝ᵥ G.mulVec x).re < 0 := by
   intro x hx hxne
   have hmargin := re_quadForm_diagonal_le_margin_on_negSupported c hδ.le hc x hx
   have hp := hpert x
   have hupper := (abs_le.1 hp).2
-  have hnn : (0 : ℝ) ≤ ‖x‖ ^ 2 := by positivity
-  have hpos : 0 < ‖x‖ ^ 2 := by
+  have hnn : (0 : ℝ) ≤ ‖x‖ ^ (2 : ℕ) := by positivity
+  have hpos : 0 < ‖x‖ ^ (2 : ℕ) := by
     have : 0 < ‖x‖ := norm_pos_iff.2 hxne
     positivity
   nlinarith [hmargin, hupper, hpos, hδ]

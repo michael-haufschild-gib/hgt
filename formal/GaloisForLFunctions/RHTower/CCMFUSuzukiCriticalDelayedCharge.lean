@@ -27,7 +27,7 @@ remains inside each active atom; no zeroth and first moment is estimated separat
 theorem ccmFUSuzukiCriticalActiveCauchyCodiagonal_eq_delayedCharge_div_sq
     {H y : ℝ} (hy : y ≠ 0) :
     ccmFUSuzukiCriticalActiveCauchyCodiagonal H y =
-      ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2 := by
+      ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ) := by
   unfold ccmFUSuzukiCriticalActiveCauchyCodiagonal
     ccmFUSuzukiCriticalActiveDelayedCharge cauchyVolterraKernel
   rw [Finset.sum_div]

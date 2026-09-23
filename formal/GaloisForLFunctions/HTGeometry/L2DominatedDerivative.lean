@@ -33,11 +33,11 @@ theorem hasDerivAt_toLp_two_of_dominated (μ : Measure A) (f f' : ℝ → A → 
       _ ≤ ‖r-t‖⁻¹*(b a*‖r-t‖) := mul_le_mul_of_nonneg_left he (by positivity)
       _ = b a := by
         rw [mul_left_comm,inv_mul_cancel₀ (norm_ne_zero_iff.mpr (sub_ne_zero.mpr hr)),mul_one]
-  have hi : Integrable (fun a => 4*(b a)^2) μ :=
+  have hi : Integrable (fun a => 4*(b a)^(2 : ℕ)) μ :=
     ((memLp_two_iff_integrable_sq hb.aestronglyMeasurable).mp hb).const_mul 4
-  have hlim : Tendsto (fun r => ∫ a, ‖g r a-f' t a‖^2 ∂μ) (𝓝[≠] t) (𝓝 0) := by
+  have hlim : Tendsto (fun r => ∫ a, ‖g r a-f' t a‖^(2 : ℕ) ∂μ) (𝓝[≠] t) (𝓝 0) := by
     have h := tendsto_integral_filter_of_dominated_convergence (μ := μ) (l := 𝓝[≠] t)
-      (F := fun r a => ‖g r a-f' t a‖^2) (f := fun _ : A => (0:ℝ)) (fun a => 4*(b a)^2)
+      (F := fun r a => ‖g r a-f' t a‖^(2 : ℕ)) (f := fun _ : A => (0:ℝ)) (fun a => 4*(b a)^(2 : ℕ))
       (Eventually.of_forall (fun r => ((hg r).aestronglyMeasurable.sub
         (hf' t).aestronglyMeasurable).norm.pow 2))
       (Eventually.of_forall (fun r => ?_)) hi ?_
@@ -55,8 +55,8 @@ theorem hasDerivAt_toLp_two_of_dominated (μ : Measure A) (f f' : ℝ → A → 
       (r-t)⁻¹ • ((hf r).toLp (f r)-(hf t).toLp (f t)) := by
     change (((hf r).sub (hf t)).const_smul (r-t)⁻¹).toLp _ = _
     rw [MemLp.toLp_const_smul _ ((hf r).sub (hf t)),MemLp.toLp_sub]
-  have hn (r : ℝ) : ‖(hg r).toLp (g r)-(hf' t).toLp (f' t)‖^2 =
-      ∫ a, ‖g r a-f' t a‖^2 ∂μ := by
+  have hn (r : ℝ) : ‖(hg r).toLp (g r)-(hf' t).toLp (f' t)‖^(2 : ℕ) =
+      ∫ a, ‖g r a-f' t a‖^(2 : ℕ) ∂μ := by
     rw [← MemLp.toLp_sub,_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [((hg r).sub (hf' t)).coeFn_toLp] with a ha
@@ -64,7 +64,7 @@ theorem hasDerivAt_toLp_two_of_dominated (μ : Measure A) (f f' : ℝ → A → 
     rfl
   apply hasDerivAt_iff_tendsto_slope.mpr
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  have hs : Tendsto (fun r => ‖(hg r).toLp (g r)-(hf' t).toLp (f' t)‖^2)
+  have hs : Tendsto (fun r => ‖(hg r).toLp (g r)-(hf' t).toLp (f' t)‖^(2 : ℕ))
       (𝓝[≠] t) (𝓝 0) := by simpa only [hn] using hlim
   have h := (Real.continuous_sqrt.tendsto 0).comp hs
   simpa only [Function.comp_def,Real.sqrt_zero,Real.sqrt_sq (norm_nonneg _),he,slope_def_module] using h

@@ -60,7 +60,7 @@ theorem gomesGammaFrame_positive_metric_iff (r : ℝ) (n : ℕ) (x : ℝ) :
     (∃ B : Matrix (Fin 2) (Fin 2) ℝ, B.PosDef ∧
       (gomesJacobiStep (recurDiag (gammaShapeMoment (Real.exp r)) n) (recurOff (gammaShapeMoment (Real.exp r)) n) x)ᵀ * B *
         gomesJacobiStep (recurDiag (gammaShapeMoment (Real.exp r)) n) (recurOff (gammaShapeMoment (Real.exp r)) n) x = recurOff (gammaShapeMoment (Real.exp r)) n • B) ↔
-      (x-recurDiag (gammaShapeMoment (Real.exp r)) n)^2 < 4*recurOff (gammaShapeMoment (Real.exp r)) n :=
+      (x-recurDiag (gammaShapeMoment (Real.exp r)) n)^(2 : ℕ) < 4*recurOff (gammaShapeMoment (Real.exp r)) n :=
   gomesJacobiStep_exists_positive_metric_iff _ _ _
 
 /-- The gamma complex step's Hermitian defect detects exactly the closed upper half-plane. -/

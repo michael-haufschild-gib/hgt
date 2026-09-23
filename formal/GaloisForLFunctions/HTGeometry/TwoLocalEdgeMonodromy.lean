@@ -93,7 +93,7 @@ theorem twoLocalSelectedEdgeParameter_closed :
     twoLocalMonodromySqrtArgument]
 
 private theorem twoLocalMonodromySqrt_sq (s : I) :
-    (Complex.sqrt (twoLocalMonodromySqrtArgument s)) ^ 2 =
+    (Complex.sqrt (twoLocalMonodromySqrtArgument s)) ^ (2 : ℕ) =
       twoLocalMonodromySqrtArgument s := by
   simp [Complex.sqrt]
 
@@ -145,13 +145,13 @@ theorem twoLocalSelectedEdgeParameter_dist_I_le_quarter (s : I) :
       twoLocalSelectedEdgeRadicand_eq_phase
         (m := 0) (fun i => Fin.elim0 i) s
     have hselected' :
-        w ^ 2 + 1 =
+        w ^ (2 : ℕ) + 1 =
           (1 / 4 : ℂ) * twoLocalMonodromyPhase s := by
       simpa [w, twoLocalEdgeBranchRadicand] using hselected
     calc
       (w - Complex.I) * (w + Complex.I) =
-          w ^ 2 - Complex.I ^ 2 := by ring
-      _ = w ^ 2 + 1 := by rw [Complex.I_sq]; ring
+          w ^ (2 : ℕ) - Complex.I ^ (2 : ℕ) := by ring
+      _ = w ^ (2 : ℕ) + 1 := by rw [Complex.I_sq]; ring
       _ = (1 / 4 : ℂ) * twoLocalMonodromyPhase s :=
         hselected'
   have hnormProduct :
@@ -220,7 +220,7 @@ theorem twoLocalSelectedEigenvalueLift_ne_zero (s : I) :
 /-- The explicit lift squares to the selected characteristic radicand. -/
 theorem twoLocalSelectedEigenvalueLift_sq {m : ℕ}
     (z₀ : Fin m → Bool) (s : I) :
-    (twoLocalSelectedEigenvalueLift s) ^ 2 =
+    (twoLocalSelectedEigenvalueLift s) ^ (2 : ℕ) =
       twoLocalEdgeBranchRadicand z₀ z₀
         (twoLocalSelectedEdgeParameter s) := by
   rw [twoLocalSelectedEdgeRadicand_eq_phase]
@@ -263,19 +263,19 @@ theorem twoLocalSelectedEigenvalueLift_endpoint_swap_of_oddWinding :
     twoLocalSelectedEigenvalueLift_ne_zero
     (by
       change
-        (twoLocalSelectedEigenvalueLift 1) ^ 2 =
-          (twoLocalSelectedEigenvalueLift 0) ^ 2
+        (twoLocalSelectedEigenvalueLift 1) ^ (2 : ℕ) =
+          (twoLocalSelectedEigenvalueLift 0) ^ (2 : ℕ)
       rw [twoLocalSelectedEigenvalueLift_endpoint_swap]
       ring)
     Pi1CMinusZero.circleLoop
   · intro s
     change
       (twoLocalSelectedEigenvalueLift s /
-          twoLocalSelectedEigenvalueLift 0) ^ 2 =
+          twoLocalSelectedEigenvalueLift 0) ^ (2 : ℕ) =
         (Pi1CMinusZero.circleLoop s : ℂ)
     show
       (twoLocalSelectedEigenvalueLift s /
-          twoLocalSelectedEigenvalueLift 0) ^ 2 =
+          twoLocalSelectedEigenvalueLift 0) ^ (2 : ℕ) =
         (Pi1CMinusZero.circleLoop s : ℂ)
     simp [twoLocalSelectedEigenvalueLift,
       Pi1CMinusZero.circleLoop, Pi1CMinusZero.pexp,
@@ -306,9 +306,9 @@ theorem twoLocalEdgeBranchRadicand_injective_along_selectedLoop
   intro z y heq
   have hsquare :
       ((starIsingBinaryCode z₀ z : ℂ) +
-          twoLocalSelectedEdgeParameter s) ^ 2 =
+          twoLocalSelectedEdgeParameter s) ^ (2 : ℕ) =
         ((starIsingBinaryCode z₀ y : ℂ) +
-          twoLocalSelectedEdgeParameter s) ^ 2 := by
+          twoLocalSelectedEdgeParameter s) ^ (2 : ℕ) := by
     change
       twoLocalEdgeBranchRadicand z₀ z
           (twoLocalSelectedEdgeParameter s) =
@@ -336,11 +336,11 @@ theorem twoLocalCrossBlockEigenvalue_ne_along_selectedLoop
     {m : ℕ} (z₀ z y : Fin m → Bool) (hzy : z ≠ y)
     (s : I) {lam mu : ℂ}
     (hlam :
-      lam ^ 2 =
+      lam ^ (2 : ℕ) =
         twoLocalEdgeBranchRadicand z₀ z
           (twoLocalSelectedEdgeParameter s))
     (hmu :
-      mu ^ 2 =
+      mu ^ (2 : ℕ) =
         twoLocalEdgeBranchRadicand z₀ y
           (twoLocalSelectedEdgeParameter s)) :
     lam ≠ mu := by
@@ -387,22 +387,22 @@ theorem twoLocalNonselectedEdgeRadicand_re_pos {m : ℕ}
     (abs_le.mp hphaseAbs).1
   have hdecomposition :
       twoLocalEdgeBranchRadicand z₀ z w =
-        (c : ℂ) ^ 2 + 2 * (c : ℂ) * w +
+        (c : ℂ) ^ (2 : ℕ) + 2 * (c : ℂ) * w +
           (1 / 4 : ℂ) * twoLocalMonodromyPhase s := by
     have hselected :=
       twoLocalSelectedEdgeRadicand_eq_phase z₀ s
     rw [twoLocalEdgeBranchRadicand,
       starIsingBinaryCode_self, Nat.cast_zero, zero_add] at hselected
     rw [twoLocalEdgeBranchRadicand]
-    change ((c : ℂ) + w) ^ 2 + 1 =
-      (c : ℂ) ^ 2 + 2 * (c : ℂ) * w +
+    change ((c : ℂ) + w) ^ (2 : ℕ) + 1 =
+      (c : ℂ) ^ (2 : ℕ) + 2 * (c : ℂ) * w +
         (1 / 4 : ℂ) * twoLocalMonodromyPhase s
     rw [← hselected]
     ring
   have hre := congrArg Complex.re hdecomposition
   norm_num [pow_two, Complex.mul_re] at hre
   have hcNonneg : (0 : ℝ) ≤ c := by positivity
-  have hcsq : (c : ℝ) ≤ (c : ℝ) ^ 2 := by
+  have hcsq : (c : ℝ) ≤ (c : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hcReal) hcNonneg]
   rw [hre]
   nlinarith
@@ -519,7 +519,7 @@ theorem continuous_twoLocalNonselectedEigenvalueLift {m : ℕ}
 
 theorem twoLocalNonselectedEigenvalueLift_sq {m : ℕ}
     (z₀ z : Fin m → Bool) (s : I) :
-    (twoLocalNonselectedEigenvalueLift z₀ z s) ^ 2 =
+    (twoLocalNonselectedEigenvalueLift z₀ z s) ^ (2 : ℕ) =
       twoLocalEdgeBranchRadicand z₀ z
         (twoLocalSelectedEdgeParameter s) := by
   simp [twoLocalNonselectedEigenvalueLift, Complex.sqrt]
@@ -570,7 +570,7 @@ theorem continuous_twoLocalBaseEigenvalueLift {m : ℕ}
 
 theorem twoLocalBaseEigenvalueLift_sq {m : ℕ}
     (z₀ z : Fin m → Bool) (s : I) :
-    (twoLocalBaseEigenvalueLift z₀ z s) ^ 2 =
+    (twoLocalBaseEigenvalueLift z₀ z s) ^ (2 : ℕ) =
       twoLocalEdgeBranchRadicand z₀ z
         (twoLocalSelectedEdgeParameter s) := by
   classical
@@ -635,7 +635,7 @@ theorem continuous_twoLocalGlobalEigenvalueLift {m : ℕ}
 theorem twoLocalGlobalEigenvalueLift_sq {m : ℕ}
     (z₀ : Fin m → Bool)
     (x : Bool × (Fin m → Bool)) (s : I) :
-    (twoLocalGlobalEigenvalueLift z₀ x s) ^ 2 =
+    (twoLocalGlobalEigenvalueLift z₀ x s) ^ (2 : ℕ) =
       twoLocalEdgeBranchRadicand z₀ x.2
         (twoLocalSelectedEdgeParameter s) := by
   cases x.1 <;>
@@ -681,7 +681,7 @@ theorem twoLocalGlobalEigenvalueLift_injective {m : ℕ}
     Function.Injective fun x : Bool × (Fin m → Bool) =>
       twoLocalGlobalEigenvalueLift z₀ x s := by
   rintro ⟨b, z⟩ ⟨d, y⟩ heq
-  have hsq := congrArg (fun q : ℂ => q ^ 2) heq
+  have hsq := congrArg (fun q : ℂ => q ^ (2 : ℕ)) heq
   rw [twoLocalGlobalEigenvalueLift_sq,
     twoLocalGlobalEigenvalueLift_sq] at hsq
   have hzy : z = y :=

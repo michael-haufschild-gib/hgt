@@ -28,28 +28,28 @@ theorem mtIterationErrorExponent_succ (J : ℕ) :
 
 /-- Squared norm of a pointwise sum costs at most twice the two squared norms. -/
 theorem norm_add_sq_le_two (x y : ℂ) :
-    ‖x + y‖ ^ 2 ≤ 2 * ‖x‖ ^ 2 + 2 * ‖y‖ ^ 2 := by
+    ‖x + y‖ ^ (2 : ℕ) ≤ 2 * ‖x‖ ^ (2 : ℕ) + 2 * ‖y‖ ^ (2 : ℕ) := by
   have hnorm := norm_add_le x y
   have hxy : 0 ≤ ‖x‖ + ‖y‖ := add_nonneg (norm_nonneg _) (norm_nonneg _)
   calc
-    ‖x + y‖ ^ 2 ≤ (‖x‖ + ‖y‖) ^ 2 :=
+    ‖x + y‖ ^ (2 : ℕ) ≤ (‖x‖ + ‖y‖) ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _) hxy).2 hnorm
-    _ ≤ 2 * ‖x‖ ^ 2 + 2 * ‖y‖ ^ 2 := by
+    _ ≤ 2 * ‖x‖ ^ (2 : ℕ) + 2 * ‖y‖ ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (‖x‖ - ‖y‖)]
 
 /-- Finite `L²` triangle inequality with the elementary factor `2`. -/
 theorem sum_norm_add_sq_le_two (S : Finset ℕ) (f g : ℕ → ℂ) :
-    ∑ n ∈ S, ‖f n + g n‖ ^ 2 ≤
-      2 * (∑ n ∈ S, ‖f n‖ ^ 2) +
-        2 * (∑ n ∈ S, ‖g n‖ ^ 2) := by
+    ∑ n ∈ S, ‖f n + g n‖ ^ (2 : ℕ) ≤
+      2 * (∑ n ∈ S, ‖f n‖ ^ (2 : ℕ)) +
+        2 * (∑ n ∈ S, ‖g n‖ ^ (2 : ℕ)) := by
   calc
-    ∑ n ∈ S, ‖f n + g n‖ ^ 2 ≤
-        ∑ n ∈ S, (2 * ‖f n‖ ^ 2 + 2 * ‖g n‖ ^ 2) := by
+    ∑ n ∈ S, ‖f n + g n‖ ^ (2 : ℕ) ≤
+        ∑ n ∈ S, (2 * ‖f n‖ ^ (2 : ℕ) + 2 * ‖g n‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro n hn
       exact norm_add_sq_le_two (f n) (g n)
-    _ = 2 * (∑ n ∈ S, ‖f n‖ ^ 2) +
-        2 * (∑ n ∈ S, ‖g n‖ ^ 2) := by
+    _ = 2 * (∑ n ∈ S, ‖f n‖ ^ (2 : ℕ)) +
+        2 * (∑ n ∈ S, ‖g n‖ ^ (2 : ℕ)) := by
       rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
 
 /-- Exact scalar absorption that keeps the implicit constant independent of iteration depth. -/
@@ -60,9 +60,9 @@ theorem mtIterationError_scalar_absorption
   have hKone : 1 ≤ Kreal := by linarith
   have hKS : 1 ≤ Kreal ^ S := by
     simpa using pow_le_pow_right₀ hKone (Nat.zero_le S)
-  have hKsq : 4 ≤ Kreal ^ 2 := by
+  have hKsq : 4 ≤ Kreal ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (Kreal - 2)]
-  have hpowMono : Kreal ^ 2 ≤ Kreal ^ (2 * r) :=
+  have hpowMono : Kreal ^ (2 : ℕ) ≤ Kreal ^ (2 * r) :=
     pow_le_pow_right₀ hKone (by omega)
   have hKr : 4 ≤ Kreal ^ (2 * r) := hKsq.trans hpowMono
   have hscalar :
@@ -87,12 +87,12 @@ theorem sum_norm_sq_sum_layers_le_iterationExponent
     (C : ℝ) (K : ℕ) (hC : 0 ≤ C) (hK : 2 ≤ K)
     (J : ℕ)
     (hlayer : ∀ j ≤ J,
-      ∑ n ∈ S, ‖errorLayer j n‖ ^ 2 ≤ C * (K : ℝ) ^ (2 * j)) :
-    ∑ n ∈ S, ‖∑ j ∈ Finset.range (J + 1), errorLayer j n‖ ^ 2 ≤
+      ∑ n ∈ S, ‖errorLayer j n‖ ^ (2 : ℕ) ≤ C * (K : ℝ) ^ (2 * j)) :
+    ∑ n ∈ S, ‖∑ j ∈ Finset.range (J + 1), errorLayer j n‖ ^ (2 : ℕ) ≤
       8 * C * (K : ℝ) ^ mtIterationErrorExponent J := by
   induction J with
   | zero =>
-      have hzero : ∑ n ∈ S, ‖errorLayer 0 n‖ ^ 2 ≤ C := by
+      have hzero : ∑ n ∈ S, ‖errorLayer 0 n‖ ^ (2 : ℕ) ≤ C := by
         simpa using hlayer 0 (by omega)
       have hC8 : C ≤ 8 * C := by nlinarith
       simpa [mtIterationErrorExponent] using hzero.trans hC8
@@ -101,16 +101,16 @@ theorem sum_norm_sq_sum_layers_le_iterationExponent
       have hnew := hlayer (J + 1) (by omega)
       rw [mtIterationErrorExponent_succ]
       calc
-        ∑ n ∈ S, ‖∑ j ∈ Finset.range (J + 2), errorLayer j n‖ ^ 2 =
+        ∑ n ∈ S, ‖∑ j ∈ Finset.range (J + 2), errorLayer j n‖ ^ (2 : ℕ) =
             ∑ n ∈ S,
               ‖(∑ j ∈ Finset.range (J + 1), errorLayer j n) +
-                errorLayer (J + 1) n‖ ^ 2 := by
+                errorLayer (J + 1) n‖ ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro n hn
           rw [Finset.sum_range_succ]
         _ ≤ 2 * (∑ n ∈ S,
-              ‖∑ j ∈ Finset.range (J + 1), errorLayer j n‖ ^ 2) +
-            2 * (∑ n ∈ S, ‖errorLayer (J + 1) n‖ ^ 2) :=
+              ‖∑ j ∈ Finset.range (J + 1), errorLayer j n‖ ^ (2 : ℕ)) +
+            2 * (∑ n ∈ S, ‖errorLayer (J + 1) n‖ ^ (2 : ℕ)) :=
           sum_norm_add_sq_le_two S _ _
         _ ≤ 2 * (8 * C * (K : ℝ) ^ mtIterationErrorExponent J) +
             2 * (C * (K : ℝ) ^ (2 * (J + 1))) := by
@@ -126,9 +126,9 @@ theorem MTFiniteIterationSourceData.sum_norm_sq_accumulatedError_le
     (C : ℝ) (K : ℕ) (hC : 0 ≤ C) (hK : 2 ≤ K)
     (J : ℕ) (j : Fin (t + 1))
     (hlayer : ∀ layer ≤ J,
-      ∑ n ∈ S, ‖mtSignedSourceErrorLayerAF data a layer j n‖ ^ 2 ≤
+      ∑ n ∈ S, ‖mtSignedSourceErrorLayerAF data a layer j n‖ ^ (2 : ℕ) ≤
         C * (K : ℝ) ^ (2 * layer)) :
-    ∑ n ∈ S, ‖mtAccumulatedSourceErrorAF data a J j n‖ ^ 2 ≤
+    ∑ n ∈ S, ‖mtAccumulatedSourceErrorAF data a J j n‖ ^ (2 : ℕ) ≤
       8 * C * (K : ℝ) ^ mtIterationErrorExponent J := by
   rw [mtAccumulatedSourceErrorAF_eq_sum_signedLayers]
   simp only [arithmeticFunction_finset_sum_apply]

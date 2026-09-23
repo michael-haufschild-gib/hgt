@@ -19,7 +19,7 @@ Spreading a depth-zero cell over
 `ceil (log p)`
 
 actual depths therefore retains its primitive landing and changes its
-squared carrier cost from `log(p)^2 / p` to at most `log(p) / p`.
+squared carrier cost from `log(p)^(2 : ℕ) / p` to at most `log(p) / p`.
 Applied on both legs of the two-scale current, the resulting depth rectangle
 has an aperture-independent capacity.  Reversing both finite depth intervals
 and exchanging the exterior legs fixes the landed profile, which is the
@@ -83,7 +83,7 @@ theorem criticalDepthDeattenuation_mul_landing
 /-- The forced deattenuation has exactly the primitive gauge square `p^r`. -/
 theorem criticalDepthDeattenuation_sq
     (pe : Nat.Primes × ℕ) (r : ℕ) :
-    criticalDepthDeattenuation pe r ^ 2 = (pe.1 : ℝ) ^ r := by
+    criticalDepthDeattenuation pe r ^ (2 : ℕ) = (pe.1 : ℝ) ^ r := by
   have hsource :=
     xiGammaEulerPrimitiveBoundaryAmplitude_sq 0 pe
   have hrealized :=
@@ -110,7 +110,7 @@ theorem criticalDepthDeattenuation_sq
 /-- Squared critical depth-zero mass divided by the source-forced depth
 multiplicity. -/
 def depthNormalizedPrimeMass (p : ℕ) : ℝ :=
-  xiGammaEulerPrimitiveDepthZeroAmplitude p ^ 2 /
+  xiGammaEulerPrimitiveDepthZeroAmplitude p ^ (2 : ℕ) /
     (primeDepthMultiplicity p : ℝ)
 
 theorem depthNormalizedPrimeMass_nonneg
@@ -352,13 +352,13 @@ theorem sum_landedDepthPairProfile
 def landedDepthPairCapacity (n p q : ℕ) : ℝ :=
   ∑ r : Fin (primeDepthMultiplicity p),
     ∑ s : Fin (primeDepthMultiplicity q),
-      landedDepthPairProfile n p q r s ^ 2
+      landedDepthPairProfile n p q r s ^ (2 : ℕ)
 
 theorem landedDepthPairCapacity_eq
     {n p q : ℕ}
     (hp : 1 < p) (hq : 1 < q) :
     landedDepthPairCapacity n p q =
-      4 * PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+      4 * PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
         ((primeDepthMultiplicity p : ℝ) *
           (primeDepthMultiplicity q : ℝ)) := by
   have hKp : (primeDepthMultiplicity p : ℝ) ≠ 0 := by
@@ -388,8 +388,8 @@ theorem anchoredCrossPair_upper
   rcases hpRel with ⟨hpRelLower, hpRelUpper⟩
   rcases hqRel with ⟨hqRelLower, hqRelUpper⟩
   have hgap :
-      |PrimitivePromotedTwoScale.relativeHeight n q ^ 2 -
-          PrimitivePromotedTwoScale.relativeHeight n p ^ 2| ≤ 289 := by
+      |PrimitivePromotedTwoScale.relativeHeight n q ^ (2 : ℕ) -
+          PrimitivePromotedTwoScale.relativeHeight n p ^ (2 : ℕ)| ≤ 289 := by
     rw [abs_le]
     constructor
     · nlinarith [
@@ -418,8 +418,8 @@ theorem anchoredCrossPair_upper
     _ =
         xiGammaEulerPrimitiveDepthZeroAmplitude p *
           xiGammaEulerPrimitiveDepthZeroAmplitude q *
-          |PrimitivePromotedTwoScale.relativeHeight n q ^ 2 -
-            PrimitivePromotedTwoScale.relativeHeight n p ^ 2| *
+          |PrimitivePromotedTwoScale.relativeHeight n q ^ (2 : ℕ) -
+            PrimitivePromotedTwoScale.relativeHeight n p ^ (2 : ℕ)| *
           |Real.sin
             (PrimitivePromotedTwoScale.twoScalePhase *
               (PrimitivePromotedTwoScale.relativeHeight n q -
@@ -442,10 +442,10 @@ theorem anchoredCrossPair_sq_upper
     (hp : p ∈ suzukiMangoldtFivePrimeBlock n)
     (hq : q ∈ suzukiMangoldtFivePrimeBlock
       (PrimitivePromotedTwoScale.sourceDilation * n)) :
-    PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 ≤
-      289 ^ 2 *
-        xiGammaEulerPrimitiveDepthZeroAmplitude p ^ 2 *
-        xiGammaEulerPrimitiveDepthZeroAmplitude q ^ 2 := by
+    PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) ≤
+      289 ^ (2 : ℕ) *
+        xiGammaEulerPrimitiveDepthZeroAmplitude p ^ (2 : ℕ) *
+        xiGammaEulerPrimitiveDepthZeroAmplitude q ^ (2 : ℕ) := by
   have hpPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hp).1
   have hqPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hq).1
   have hA :
@@ -477,7 +477,7 @@ def cofinalDepthCountertransportCapacity (n : ℕ) : ℝ :=
   4 * ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
     ∑ q ∈ suzukiMangoldtFivePrimeBlock
         (PrimitivePromotedTwoScale.sourceDilation * n),
-      PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+      PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
         ((primeDepthMultiplicity p : ℝ) *
           (primeDepthMultiplicity q : ℝ))
 
@@ -514,7 +514,7 @@ theorem reflectedHodgeCountertransportCapacity_eq
           ∑ q ∈ suzukiMangoldtFivePrimeBlock
               (PrimitivePromotedTwoScale.sourceDilation * n),
             2 * (4 *
-              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
                 ((primeDepthMultiplicity p : ℝ) *
                   (primeDepthMultiplicity q : ℝ))) := by
       apply Finset.sum_congr rfl
@@ -534,7 +534,7 @@ theorem reflectedHodgeCountertransportCapacity_eq
           ∑ q ∈ suzukiMangoldtFivePrimeBlock
               (PrimitivePromotedTwoScale.sourceDilation * n),
             4 *
-              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
                 ((primeDepthMultiplicity p : ℝ) *
                   (primeDepthMultiplicity q : ℝ))) := by
       rw [Finset.mul_sum]
@@ -545,7 +545,7 @@ theorem reflectedHodgeCountertransportCapacity_eq
         ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
           ∑ q ∈ suzukiMangoldtFivePrimeBlock
               (PrimitivePromotedTwoScale.sourceDilation * n),
-            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
               ((primeDepthMultiplicity p : ℝ) *
                 (primeDepthMultiplicity q : ℝ))) := by
       apply congrArg (fun x : ℝ => 2 * x)
@@ -566,7 +566,7 @@ aperture-independent source-normal capacity.
 -/
 theorem cofinalDepthCountertransportCapacity_le
     {n : ℕ} (hn : 0 < n) :
-    cofinalDepthCountertransportCapacity n ≤ 100 * 289 ^ 2 := by
+    cofinalDepthCountertransportCapacity n ≤ 100 * 289 ^ (2 : ℕ) := by
   have hKn :
       0 < PrimitivePromotedTwoScale.sourceDilation * n :=
     Nat.mul_pos PrimitivePromotedTwoScale.sourceDilation_pos hn
@@ -574,10 +574,10 @@ theorem cofinalDepthCountertransportCapacity_le
       ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
           ∑ q ∈ suzukiMangoldtFivePrimeBlock
               (PrimitivePromotedTwoScale.sourceDilation * n),
-            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
               ((primeDepthMultiplicity p : ℝ) *
                 (primeDepthMultiplicity q : ℝ)) ≤
-        289 ^ 2 *
+        289 ^ (2 : ℕ) *
           depthNormalizedFivePrimeBlockMass n *
           depthNormalizedFivePrimeBlockMass
             (PrimitivePromotedTwoScale.sourceDilation * n) := by
@@ -585,13 +585,13 @@ theorem cofinalDepthCountertransportCapacity_le
       ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
           ∑ q ∈ suzukiMangoldtFivePrimeBlock
               (PrimitivePromotedTwoScale.sourceDilation * n),
-            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
               ((primeDepthMultiplicity p : ℝ) *
                 (primeDepthMultiplicity q : ℝ)) ≤
           ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
             ∑ q ∈ suzukiMangoldtFivePrimeBlock
                 (PrimitivePromotedTwoScale.sourceDilation * n),
-              289 ^ 2 *
+              289 ^ (2 : ℕ) *
                 depthNormalizedPrimeMass p *
                 depthNormalizedPrimeMass q := by
         apply Finset.sum_le_sum
@@ -607,16 +607,16 @@ theorem cofinalDepthCountertransportCapacity_le
               (primeDepthMultiplicity q : ℝ) := by positivity
         have hsquare := anchoredCrossPair_sq_upper hn hp hq
         calc
-          PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+          PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ (2 : ℕ) /
                 ((primeDepthMultiplicity p : ℝ) *
                   (primeDepthMultiplicity q : ℝ)) ≤
-              (289 ^ 2 *
-                xiGammaEulerPrimitiveDepthZeroAmplitude p ^ 2 *
-                xiGammaEulerPrimitiveDepthZeroAmplitude q ^ 2) /
+              (289 ^ (2 : ℕ) *
+                xiGammaEulerPrimitiveDepthZeroAmplitude p ^ (2 : ℕ) *
+                xiGammaEulerPrimitiveDepthZeroAmplitude q ^ (2 : ℕ)) /
                 ((primeDepthMultiplicity p : ℝ) *
                   (primeDepthMultiplicity q : ℝ)) :=
             div_le_div_of_nonneg_right hsquare hden
-          _ = 289 ^ 2 *
+          _ = 289 ^ (2 : ℕ) *
                 depthNormalizedPrimeMass p *
                 depthNormalizedPrimeMass q := by
             rw [depthNormalizedPrimeMass, depthNormalizedPrimeMass]
@@ -625,7 +625,7 @@ theorem cofinalDepthCountertransportCapacity_le
                 exact_mod_cast (primeDepthMultiplicity_pos hpOne).ne'),
               (show (primeDepthMultiplicity q : ℝ) ≠ 0 by
                 exact_mod_cast (primeDepthMultiplicity_pos hqOne).ne')]
-      _ = 289 ^ 2 *
+      _ = 289 ^ (2 : ℕ) *
           depthNormalizedFivePrimeBlockMass n *
           depthNormalizedFivePrimeBlockMass
             (PrimitivePromotedTwoScale.sourceDilation * n) := by
@@ -634,10 +634,10 @@ theorem cofinalDepthCountertransportCapacity_le
           ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
               ∑ q ∈ suzukiMangoldtFivePrimeBlock
                   (PrimitivePromotedTwoScale.sourceDilation * n),
-                289 ^ 2 * depthNormalizedPrimeMass p *
+                289 ^ (2 : ℕ) * depthNormalizedPrimeMass p *
                   depthNormalizedPrimeMass q =
               ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-                (289 ^ 2 * depthNormalizedPrimeMass p) *
+                (289 ^ (2 : ℕ) * depthNormalizedPrimeMass p) *
                   (∑ q ∈ suzukiMangoldtFivePrimeBlock
                       (PrimitivePromotedTwoScale.sourceDilation * n),
                     depthNormalizedPrimeMass q) := by
@@ -646,12 +646,12 @@ theorem cofinalDepthCountertransportCapacity_le
             rw [Finset.mul_sum]
           _ =
               (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-                289 ^ 2 * depthNormalizedPrimeMass p) *
+                289 ^ (2 : ℕ) * depthNormalizedPrimeMass p) *
                   (∑ q ∈ suzukiMangoldtFivePrimeBlock
                       (PrimitivePromotedTwoScale.sourceDilation * n),
                     depthNormalizedPrimeMass q) := by
             rw [Finset.sum_mul]
-          _ = 289 ^ 2 *
+          _ = 289 ^ (2 : ℕ) *
                 (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
                   depthNormalizedPrimeMass p) *
                   (∑ q ∈ suzukiMangoldtFivePrimeBlock
@@ -688,7 +688,7 @@ counts both ordered orientations.
 -/
 theorem reflectedHodgeCountertransportCapacity_le
     {n : ℕ} (hn : 0 < n) :
-    reflectedHodgeCountertransportCapacity n ≤ 200 * 289 ^ 2 := by
+    reflectedHodgeCountertransportCapacity n ≤ 200 * 289 ^ (2 : ℕ) := by
   rw [reflectedHodgeCountertransportCapacity_eq hn]
   have hcapacity := cofinalDepthCountertransportCapacity_le hn
   nlinarith
@@ -754,7 +754,7 @@ theorem scalarReadoutGain_linear_lower
   have hcapUpper :=
     cofinalDepthCountertransportCapacity_le hnPos
   have hsqrtSq :
-      Real.sqrt (cofinalDepthCountertransportCapacity n) ^ 2 =
+      Real.sqrt (cofinalDepthCountertransportCapacity n) ^ (2 : ℕ) =
         cofinalDepthCountertransportCapacity n :=
     Real.sq_sqrt hcapNonneg
   have hsqrtUpper :
@@ -776,7 +776,7 @@ theorem scalarReadoutGain_linear_lower
 def shiftedCrossPrimeDepthCarrier
     {p q : Nat.Primes} (_hpq : p ≠ q)
     (e f r s : ℕ) :
-    ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne :=
   exteriorPower.ιMulti ℂ 2
     ![
       DirectSum.lof ℂ XiGammaEulerCalderonWittCell
@@ -800,7 +800,7 @@ theorem shiftedCrossPrimeDepthCarrier_green
     (e f r s : ℕ) :
     (xiGammaEulerCalderonWittCellMilnorGreenRetraction
         (shiftedCrossPrimeDepthCarrier hpq e f r s) :
-      ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) =
+      ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) =
       shiftedCrossPrimeDepthCarrier hpq e f r s := by
   rw [xiGammaEulerCalderonWittCellMilnorGreenRetraction_coe]
   have hcup :
@@ -827,7 +827,7 @@ theorem sourceNormalDepthSpreadCarrier_mem_incidence
     {p q : Nat.Primes} (hpq : p ≠ q)
     (e f : ℕ) (N M : ℕ) (w : ℂ) :
     (sourceNormalDepthSpreadCarrier hpq e f N M w :
-        ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) ∈
+        ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) ∈
       xiGammaEulerCalderonWittCellMilnorIncidence := by
   exact (sourceNormalDepthSpreadCarrier hpq e f N M w).property
 
@@ -837,14 +837,14 @@ theorem sourceNormalDepthSpreadCarrier_green
     (e f : ℕ) (N M : ℕ) (w : ℂ) :
     (xiGammaEulerCalderonWittCellMilnorGreenRetraction
         (sourceNormalDepthSpreadCarrier hpq e f N M w :
-          ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne)) =
+          ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne)) =
       sourceNormalDepthSpreadCarrier hpq e f N M w := by
   apply Subtype.ext
   rw [xiGammaEulerCalderonWittCellMilnorGreenRetraction_coe]
   have hcup :
       xiGammaEulerCalderonWittCellExteriorCup
           (sourceNormalDepthSpreadCarrier hpq e f N M w :
-            ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) = 0 :=
+            ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) = 0 :=
     (sourceNormalDepthSpreadCarrier hpq e f N M w).property
   rw [hcup, map_zero, sub_zero]
 

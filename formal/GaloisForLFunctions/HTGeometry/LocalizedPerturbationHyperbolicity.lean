@@ -47,17 +47,17 @@ private theorem eval_sub_le_aux {p : ℝ[X]} {c M r : ℝ}
     (hp' : p.derivative.eval c = 0)
     (hM : ∀ s ∈ Icc (c - r) (c + r), p.derivative.derivative.eval s ≤ M)
     {t : ℝ} (ht : t ∈ Icc (c - r) (c + r)) :
-    p.eval t - p.eval c ≤ M * (t - c) ^ 2 / 2 := by
+    p.eval t - p.eval c ≤ M * (t - c) ^ (2 : ℕ) / 2 := by
   have hr : 0 ≤ r := by
     have := ht.1.trans ht.2
     linarith
   have hcmem : c ∈ Icc (c - r) (c + r) := ⟨by linarith, by linarith⟩
-  set φ : ℝ → ℝ := fun s => M / 2 * (s - c) ^ 2 - p.eval s with hφ
+  set φ : ℝ → ℝ := fun s => M / 2 * (s - c) ^ (2 : ℕ) - p.eval s with hφ
   set φ' : ℝ → ℝ := fun s => M * (s - c) - p.derivative.eval s with hφ'
   set φ'' : ℝ → ℝ := fun s => M - p.derivative.derivative.eval s with hφ''
   have hd : ∀ s : ℝ, HasDerivAt φ (φ' s) s := by
     intro s
-    have h1 : HasDerivAt (fun s : ℝ => M / 2 * (s - c) ^ 2) (M / 2 * (2 * (s - c))) s := by
+    have h1 : HasDerivAt (fun s : ℝ => M / 2 * (s - c) ^ (2 : ℕ)) (M / 2 * (2 * (s - c))) s := by
       have := ((hasDerivAt_id s).sub_const c).pow 2
       simpa using this.const_mul (M / 2)
     have h2 := p.hasDerivAt s
@@ -118,10 +118,10 @@ theorem abs_eval_sub_le_of_abs_second_derivative_bound {p : ℝ[X]} {c M r : ℝ
     (hp' : p.derivative.eval c = 0)
     (hM : ∀ s ∈ Icc (c - r) (c + r), |p.derivative.derivative.eval s| ≤ M)
     {t : ℝ} (ht : t ∈ Icc (c - r) (c + r)) :
-    |p.eval t - p.eval c| ≤ M * (t - c) ^ 2 / 2 := by
-  have h1 : p.eval t - p.eval c ≤ M * (t - c) ^ 2 / 2 :=
+    |p.eval t - p.eval c| ≤ M * (t - c) ^ (2 : ℕ) / 2 := by
+  have h1 : p.eval t - p.eval c ≤ M * (t - c) ^ (2 : ℕ) / 2 :=
     eval_sub_le_aux hp' (fun s hs => le_trans (le_abs_self _) (hM s hs)) ht
-  have h2 : (-p).eval t - (-p).eval c ≤ M * (t - c) ^ 2 / 2 := by
+  have h2 : (-p).eval t - (-p).eval c ≤ M * (t - c) ^ (2 : ℕ) / 2 := by
     refine eval_sub_le_aux (p := -p) (by simp [hp']) (fun s hs => ?_) ht
     simp only [derivative_neg, eval_neg]
     have := hM s hs
@@ -373,7 +373,7 @@ theorem hyperbolic_of_localized_perturbation
     (hbcond : ∀ i, i < n → e i < m i * w i)
     (hεdef : ∀ i, i < n → ε i = e i / m i)
     (hdb : ∀ i, i < n → ∀ t ∈ Icc (x i - ε i) (x i + ε i), |D.eval t| ≤ dbnd i)
-    (hacond : ∀ i, i < n → dbnd i + M i * (ε i) ^ 2 / 2 < |C.eval (x i)|) :
+    (hacond : ∀ i, i < n → dbnd i + M i * (ε i) ^ (2 : ℕ) / 2 < |C.eval (x i)|) :
     Hyperbolic (C + D) := by
   classical
   set F : ℝ[X] := C + D with hF
@@ -409,23 +409,23 @@ theorem hyperbolic_of_localized_perturbation
     have hmemε : x' i ∈ Icc (x i - ε i) (x i + ε i) := by
       have h := abs_le.mp (hx'1 i hi)
       exact ⟨by linarith [h.1], by linarith [h.2]⟩
-    have htaylor : |C.eval (x' i) - C.eval (x i)| ≤ M i * (x' i - x i) ^ 2 / 2 :=
+    have htaylor : |C.eval (x' i) - C.eval (x i)| ≤ M i * (x' i - x i) ^ (2 : ℕ) / 2 :=
       abs_eval_sub_le_of_abs_second_derivative_bound (hcrit i hi) (hMbound i hi) hmemw
-    have hsq : (x' i - x i) ^ 2 ≤ (ε i) ^ 2 := by
+    have hsq : (x' i - x i) ^ (2 : ℕ) ≤ (ε i) ^ (2 : ℕ) := by
       have h := hx'1 i hi
       have h0 := abs_nonneg (x' i - x i)
-      calc (x' i - x i) ^ 2 = |x' i - x i| ^ 2 := (sq_abs _).symm
-        _ ≤ (ε i) ^ 2 := by nlinarith [hε0 i hi]
+      calc (x' i - x i) ^ (2 : ℕ) = |x' i - x i| ^ (2 : ℕ) := (sq_abs _).symm
+        _ ≤ (ε i) ^ (2 : ℕ) := by nlinarith [hε0 i hi]
     have hMnn : 0 ≤ M i := le_trans (abs_nonneg _) (hMbound i hi (x i) ⟨by linarith [hw0 i hi],
       by linarith [hw0 i hi]⟩)
     have hD : |D.eval (x' i)| ≤ dbnd i := hdb i hi (x' i) hmemε
-    have hsum : |F.eval (x' i) - C.eval (x i)| ≤ dbnd i + M i * (ε i) ^ 2 / 2 := by
+    have hsum : |F.eval (x' i) - C.eval (x i)| ≤ dbnd i + M i * (ε i) ^ (2 : ℕ) / 2 := by
       have hsplit : F.eval (x' i) - C.eval (x i)
           = D.eval (x' i) + (C.eval (x' i) - C.eval (x i)) := by
         rw [hF]; simp; ring
       rw [hsplit]
       refine le_trans (abs_add_le _ _) ?_
-      have : M i * (x' i - x i) ^ 2 / 2 ≤ M i * (ε i) ^ 2 / 2 := by nlinarith
+      have : M i * (x' i - x i) ^ (2 : ℕ) / 2 ≤ M i * (ε i) ^ (2 : ℕ) / 2 := by nlinarith
       linarith
     exact lt_of_le_of_lt hsum (hacond i hi)
   -- the perturbed critical points are increasing

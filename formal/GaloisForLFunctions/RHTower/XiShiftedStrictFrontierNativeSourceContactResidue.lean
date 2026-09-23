@@ -99,7 +99,7 @@ theorem xiShiftedAdaptiveMixedCompletedFirstContactSourceValue_eq_multiplier_mul
     (hsource : XiShiftedAdaptiveMixedCompletedFirstContactSourceLaw w n d c) :
     xiShiftedAdaptiveMixedCompletedFirstContactSourceValue w n d c =
       xiShiftedAdaptiveMixedCompletedFirstContactSourceMultiplier n d *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) := by
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) := by
   dsimp only [XiShiftedAdaptiveMixedCompletedFirstContactSourceLaw] at hsource
   rcases hsource with heven | hodd
   · obtain ⟨r, _hr, hd, hvalue, _hpos⟩ := heven
@@ -145,7 +145,7 @@ theorem choose_mul_signed_xiShiftedAdaptiveMixedCompletedFirstContactSourceValue
           xiShiftedAdaptiveMixedCompletedFirstContactSourceValue w n d c) =
       xiShiftedAdaptiveMixedCompletedFirstContactSourceMultiplier n d *
         ((-1 : ℝ) ^ d * (Nat.choose (2 * n + d) d : ℝ) *
-          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)) := by
+          xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)) := by
   rw [xiShiftedAdaptiveMixedCompletedFirstContactSourceValue_eq_multiplier_mul_defect
     hsource]
   ring

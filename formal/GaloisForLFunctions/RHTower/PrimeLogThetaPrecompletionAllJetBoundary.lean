@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.PrimeLogThetaPrecompletionWeightedBoundary
 The four retained precompletion boundary coordinates are honest Hilbert reporters, but that fact
 cannot be extrapolated to the full Wronskian jet.  At one prime with `log p > 1`, the squared
 norms of the literal degree reporters form a positive geometric sequence with ratio
-`log(p)^2 > 1`.  Thus the all-degree reporter family is not an `ℓ²` vector in its degree index.
+`log(p)^(2 : ℕ) > 1`.  Thus the all-degree reporter family is not an `ℓ²` vector in its degree index.
 
 This gives a sharp architectural consequence of the Route P/C1 boundary change: a boundary
 object preserving the full Xi filtration cannot be a bounded analysis map into a Hilbert direct

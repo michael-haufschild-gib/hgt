@@ -36,10 +36,10 @@ theorem formEmbeddingCovariance_nonneg (J : V →L[ℂ] H) : 0 ≤ formEmbedding
 
 /-- `‖J J†‖ ≤ ‖J‖²`. -/
 theorem norm_formEmbeddingCovariance_le (J : V →L[ℂ] H) :
-    ‖formEmbeddingCovariance J‖ ≤ ‖J‖ ^ 2 := by
+    ‖formEmbeddingCovariance J‖ ≤ ‖J‖ ^ (2 : ℕ) := by
   calc ‖formEmbeddingCovariance J‖ = ‖J.comp J.adjoint‖ := rfl
     _ ≤ ‖J‖ * ‖J.adjoint‖ := ContinuousLinearMap.opNorm_comp_le _ _
-    _ = ‖J‖ ^ 2 := by rw [ContinuousLinearMap.adjoint.norm_map, sq]
+    _ = ‖J‖ ^ (2 : ℕ) := by rw [ContinuousLinearMap.adjoint.norm_map, sq]
 
 /-- For a contractive form embedding the real spectrum of the covariance lies in `[0, 1]`. -/
 theorem spectrum_formEmbeddingCovariance_subset_Icc (J : V →L[ℂ] H) (hJ : ‖J‖ ≤ 1) :
@@ -50,7 +50,7 @@ theorem spectrum_formEmbeddingCovariance_subset_Icc (J : V →L[ℂ] H) (hJ : �
   rw [Metric.mem_closedBall, dist_zero_right, Real.norm_eq_abs] at h1
   have h2 : ‖(1 : H →L[ℂ] H)‖ ≤ 1 := ContinuousLinearMap.norm_id_le
   have h3 := norm_formEmbeddingCovariance_le J
-  have h4 : ‖J‖ ^ 2 ≤ 1 := by
+  have h4 : ‖J‖ ^ (2 : ℕ) ≤ 1 := by
     have := norm_nonneg J
     nlinarith
   have h5 : ‖formEmbeddingCovariance J‖ * ‖(1 : H →L[ℂ] H)‖ ≤ 1 := by
@@ -78,7 +78,7 @@ and a real `g` continuous on `[0, 1]` with `c ≤ g` there, every `F` satisfies
 theorem re_inner_cfc_formEmbeddingCovariance_ge (J : V →L[ℂ] H) (hJ : ‖J‖ ≤ 1) {v : V}
     (hv : ∀ w : V, ⟪v, w⟫_ℂ = ⟪J v, J w⟫_ℂ) (hv0 : J v ≠ 0) {g : ℝ → ℝ}
     (hg : ContinuousOn g (Set.Icc 0 1)) {c : ℝ} (hc : ∀ x ∈ Set.Icc (0 : ℝ) 1, c ≤ g x) (F : H) :
-    g 1 * (‖⟪J v, F⟫_ℂ‖ ^ 2 / ‖J v‖ ^ 2) + c * ‖F - (ℂ ∙ J v).starProjection F‖ ^ 2 ≤
+    g 1 * (‖⟪J v, F⟫_ℂ‖ ^ (2 : ℕ) / ‖J v‖ ^ (2 : ℕ)) + c * ‖F - (ℂ ∙ J v).starProjection F‖ ^ (2 : ℕ) ≤
       RCLike.re ⟪cfc g (formEmbeddingCovariance J) F, F⟫_ℂ := by
   have hsub := spectrum_formEmbeddingCovariance_subset_Icc J hJ
   exact re_inner_cfc_self_ge_rankOne (formEmbeddingCovariance J)

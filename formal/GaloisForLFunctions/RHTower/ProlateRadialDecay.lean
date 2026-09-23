@@ -39,8 +39,8 @@ modulus, so the mode is bounded by the sum of the two amplitude bounds. -/
 theorem abs_radialProlate_dilate_le {s c k x : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     |R (k * x)| ≤ radialDecayConstant s c R DR / (k * x) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
@@ -96,8 +96,8 @@ theorem abs_radialProlate_dilate_le {s c k x : ℝ} {R DR DDR : ℝ → ℝ} (hs
 theorem abs_radialProlate_le {s c y : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hy : 2 ≤ y)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     |R y| ≤ radialDecayConstant s c R DR / y := by
   have h := abs_radialProlate_dilate_le (k := 1) (x := y) (DDR := DDR) hs0 hs1 hc le_rfl
     (by linarith) (by linarith) hR hDR hode
@@ -110,8 +110,8 @@ the mode becomes a half-density factor. -/
 theorem abs_channelSource_le {s c k u : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 2 ≤ k) (hu : 0 ≤ u)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     |channelSource k R u| ≤ radialDecayConstant s c R DR / k * Real.exp (-u / 2) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_two hk
   have hexp : (1 : ℝ) ≤ Real.exp u := Real.one_le_exp hu
@@ -141,50 +141,50 @@ theorem abs_channelSource_le {s c k u : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 �
 theorem integral_channelSource_sq_le {s c k : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 2 ≤ k)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
-    IntegrableOn (fun u : ℝ => channelSource k R u ^ 2) (Ioi (0 : ℝ))
-      ∧ (∫ u in Ioi (0 : ℝ), channelSource k R u ^ 2)
-        ≤ (radialDecayConstant s c R DR / k) ^ 2 := by
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
+    IntegrableOn (fun u : ℝ => channelSource k R u ^ (2 : ℕ)) (Ioi (0 : ℝ))
+      ∧ (∫ u in Ioi (0 : ℝ), channelSource k R u ^ (2 : ℕ))
+        ≤ (radialDecayConstant s c R DR / k) ^ (2 : ℕ) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_two hk
   have hC : (0 : ℝ) ≤ radialDecayConstant s c R DR := radialDecayConstant_nonneg hc
   set C : ℝ := radialDecayConstant s c R DR with hCdef
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun u => (hR u).continuousAt
-  have hcont : Continuous (fun u : ℝ => channelSource k R u ^ 2) := by
-    rw [show (fun u : ℝ => channelSource k R u ^ 2)
-        = fun u : ℝ => (Real.sqrt (Real.exp u) * R (k * Real.exp u)) ^ 2 from rfl]
+  have hcont : Continuous (fun u : ℝ => channelSource k R u ^ (2 : ℕ)) := by
+    rw [show (fun u : ℝ => channelSource k R u ^ (2 : ℕ))
+        = fun u : ℝ => (Real.sqrt (Real.exp u) * R (k * Real.exp u)) ^ (2 : ℕ) from rfl]
     exact (((Real.continuous_sqrt.comp Real.continuous_exp).mul
       (hRc.comp (continuous_const.mul Real.continuous_exp))).pow 2)
-  have hmaj : IntegrableOn (fun u : ℝ => (C / k) ^ 2 * Real.exp (-u)) (Ioi (0 : ℝ)) :=
+  have hmaj : IntegrableOn (fun u : ℝ => (C / k) ^ (2 : ℕ) * Real.exp (-u)) (Ioi (0 : ℝ)) :=
     (integrableOn_exp_neg_Ioi 0).const_mul _
-  have hpt : ∀ u ∈ Ioi (0 : ℝ), ‖channelSource k R u ^ 2‖ ≤ (C / k) ^ 2 * Real.exp (-u) := by
+  have hpt : ∀ u ∈ Ioi (0 : ℝ), ‖channelSource k R u ^ (2 : ℕ)‖ ≤ (C / k) ^ (2 : ℕ) * Real.exp (-u) := by
     intro u hu
     have hu0 : (0 : ℝ) ≤ u := le_of_lt hu
     have h := abs_channelSource_le (DDR := DDR) hs0 hs1 hc hk hu0 hR hDR hode
     rw [← hCdef] at h
     have hnn : (0 : ℝ) ≤ |channelSource k R u| := abs_nonneg _
     have hbnd : (0 : ℝ) ≤ C / k * Real.exp (-u / 2) := by positivity
-    have hsq : channelSource k R u ^ 2 ≤ (C / k * Real.exp (-u / 2)) ^ 2 := by
+    have hsq : channelSource k R u ^ (2 : ℕ) ≤ (C / k * Real.exp (-u / 2)) ^ (2 : ℕ) := by
       have := abs_le_abs h (by linarith [abs_nonneg (channelSource k R u)])
       nlinarith [sq_abs (channelSource k R u), h, hnn, hbnd]
-    have hexpsq : (Real.exp (-u / 2)) ^ 2 = Real.exp (-u) := by
+    have hexpsq : (Real.exp (-u / 2)) ^ (2 : ℕ) = Real.exp (-u) := by
       rw [sq, ← Real.exp_add]
       ring_nf
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-    calc channelSource k R u ^ 2 ≤ (C / k * Real.exp (-u / 2)) ^ 2 := hsq
-      _ = (C / k) ^ 2 * Real.exp (-u) := by rw [mul_pow, hexpsq]
-  have hint : IntegrableOn (fun u : ℝ => channelSource k R u ^ 2) (Ioi (0 : ℝ)) := by
+    calc channelSource k R u ^ (2 : ℕ) ≤ (C / k * Real.exp (-u / 2)) ^ (2 : ℕ) := hsq
+      _ = (C / k) ^ (2 : ℕ) * Real.exp (-u) := by rw [mul_pow, hexpsq]
+  have hint : IntegrableOn (fun u : ℝ => channelSource k R u ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
     refine Integrable.mono' hmaj hcont.aestronglyMeasurable.restrict ?_
     exact (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall hpt)
   refine ⟨hint, ?_⟩
-  have hle : (∫ u in Ioi (0 : ℝ), channelSource k R u ^ 2)
-      ≤ ∫ u in Ioi (0 : ℝ), (C / k) ^ 2 * Real.exp (-u) := by
+  have hle : (∫ u in Ioi (0 : ℝ), channelSource k R u ^ (2 : ℕ))
+      ≤ ∫ u in Ioi (0 : ℝ), (C / k) ^ (2 : ℕ) * Real.exp (-u) := by
     refine integral_mono_ae hint hmaj ?_
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun u hu => ?_)
     have := hpt u hu
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)] at this
     exact this
-  have hval : (∫ u in Ioi (0 : ℝ), (C / k) ^ 2 * Real.exp (-u)) = (C / k) ^ 2 := by
+  have hval : (∫ u in Ioi (0 : ℝ), (C / k) ^ (2 : ℕ) * Real.exp (-u)) = (C / k) ^ (2 : ℕ) := by
     rw [integral_const_mul, integral_exp_neg_Ioi]
     simp
   rw [hval] at hle
@@ -194,11 +194,11 @@ theorem integral_channelSource_sq_le {s c k : ℝ} {R DR DDR : ℝ → ℝ} (hs0
 mass of the exterior channels is finite — the size input a Gram argument for the radial sum
 consumes. -/
 theorem summable_channelSource_sq_bound {s c : ℝ} {R DR : ℝ → ℝ} :
-    Summable (fun j : ℕ => (radialDecayConstant s c R DR / (2 + (j : ℝ))) ^ 2) := by
+    Summable (fun j : ℕ => (radialDecayConstant s c R DR / (2 + (j : ℝ))) ^ (2 : ℕ)) := by
   set C : ℝ := radialDecayConstant s c R DR with hCdef
-  have hbase : Summable (fun n : ℕ => C ^ 2 * (1 / (n : ℝ) ^ 2)) :=
+  have hbase : Summable (fun n : ℕ => C ^ (2 : ℕ) * (1 / (n : ℝ) ^ (2 : ℕ))) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left _
-  have hshift : Summable (fun j : ℕ => C ^ 2 * (1 / ((j : ℝ) + 2) ^ 2)) := by
+  have hshift : Summable (fun j : ℕ => C ^ (2 : ℕ) * (1 / ((j : ℝ) + 2) ^ (2 : ℕ))) := by
     refine ((summable_nat_add_iff 2).mpr hbase).congr fun j => ?_
     push_cast
     ring_nf
@@ -221,12 +221,12 @@ differential equation is assumed. -/
 theorem abs_polarCharge_channelSource_le_of_ode {s c k a : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 2 ≤ k) (ha : 0 ≤ a)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     |HTGeometry.polarCharge (channelSource k R) a|
-      ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)))
+      ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ (2 : ℕ))))
             * (radialDecayConstant s c R DR / k)
-        + 4 * (radialDecayConstant s c R DR / k) ^ 2 := by
+        + 4 * (radialDecayConstant s c R DR / k) ^ (2 : ℕ) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_two hk
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun u => (hR u).continuousAt

@@ -100,12 +100,12 @@ theorem inner_one_gaussPrincipalStep_cube
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) :
     (inner ℂ (fourierLp 2 0)
-        ((gaussPrincipalStepBlock hm k p hp i ^ 3) (fourierLp 2 0)) : ℂ) =
+        ((gaussPrincipalStepBlock hm k p hp i ^ (3 : ℕ)) (fourierLp 2 0)) : ℂ) =
       inner ℂ
         (gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0))
         (gaussPrincipalStepBlock hm k p hp i
           (gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0))) := by
-  have happ : (gaussPrincipalStepBlock hm k p hp i ^ 3) (fourierLp 2 0) =
+  have happ : (gaussPrincipalStepBlock hm k p hp i ^ (3 : ℕ)) (fourierLp 2 0) =
       gaussPrincipalStepBlock hm k p hp i
         (gaussPrincipalStepBlock hm k p hp i
           (gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0))) := by
@@ -135,7 +135,7 @@ theorem re_inner_gaussPrincipalRelativeError_principalStep_le
     re (inner ℂ (gaussPrincipalRelativeErrorVector hm k p hp i)
         (gaussPrincipalStepBlock hm k p hp i
           (gaussPrincipalRelativeErrorVector hm k p hp i))) ≤
-      ‖gaussCubicPropagatedRelativeErrorVector hm k p hp i‖ ^ 2 := by
+      ‖gaussCubicPropagatedRelativeErrorVector hm k p hp i‖ ^ (2 : ℕ) := by
   rw [inner_gaussPrincipalRelativeError_principalStep_eq hm k p hp i]
   set v := gaussCubicPropagatedRelativeErrorVector hm k p hp i
   calc
@@ -146,7 +146,7 @@ theorem re_inner_gaussPrincipalRelativeError_principalStep_le
       refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
       refine (gaussPrimeScaleInvSqBlock hp).le_opNorm v |>.trans ?_
       exact mul_le_of_le_one_left (norm_nonneg v) (norm_gaussPrimeScaleInvSqBlock_le hp)
-    _ = ‖v‖ ^ 2 := by ring
+    _ = ‖v‖ ^ (2 : ℕ) := by ring
 
 end
 

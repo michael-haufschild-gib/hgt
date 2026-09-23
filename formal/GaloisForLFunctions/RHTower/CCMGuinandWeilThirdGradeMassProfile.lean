@@ -31,7 +31,7 @@ def ccmThirdGradeCesaroPolarMassProfileDeriv (H y : ℝ) : ℝ :=
 
 /-- Curvature of the literal triangular profile in polar mass coordinate. -/
 def ccmThirdGradeCesaroPolarMassProfileCurvature (H y : ℝ) : ℝ :=
-  (2 / y ^ 2) *
+  (2 / y ^ (2 : ℕ)) *
     (ccmGuinandWeilThirdGradeCesaroErrorKernel H
         (ccmActualHeadPolarHeightCoordinate y) +
       2 * ccmThirdGradeCesaroRectangularMixDensity H
@@ -67,7 +67,7 @@ theorem hasDerivAt_ccmThirdGradeCesaroPolarMassProfile
 
 private theorem hasDerivAt_neg_two_div
     {y : ℝ} (hy : y ≠ 0) :
-    HasDerivAt (fun x : ℝ => -(2 / x)) (2 / y ^ 2) y := by
+    HasDerivAt (fun x : ℝ => -(2 / x)) (2 / y ^ (2 : ℕ)) y := by
   have hraw := (hasDerivAt_inv hy).const_mul (-2 : ℝ)
   have hfun : (fun x : ℝ => -(2 / x)) = fun x : ℝ => -2 * x⁻¹ := by
     funext x
@@ -99,12 +99,12 @@ theorem hasDerivAt_ccmThirdGradeCesaroPolarMassProfileDeriv
     simp only [Pi.mul_apply, Function.comp_apply]
   rw [hfun]
   exact (hfactor.mul hcompose).congr_deriv (by
-    change 2 / y ^ 2 * ccmGuinandWeilThirdGradeCesaroErrorKernel H
+    change 2 / y ^ (2 : ℕ) * ccmGuinandWeilThirdGradeCesaroErrorKernel H
         (ccmActualHeadPolarHeightCoordinate y) +
       (-(2 / y)) *
         (-ccmThirdGradeCesaroRectangularMixDensity H
           (ccmActualHeadPolarHeightCoordinate y) * (2 / y)) =
-      (2 / y ^ 2) *
+      (2 / y ^ (2 : ℕ)) *
         (ccmGuinandWeilThirdGradeCesaroErrorKernel H
           (ccmActualHeadPolarHeightCoordinate y) +
           2 * ccmThirdGradeCesaroRectangularMixDensity H

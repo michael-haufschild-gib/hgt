@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.UnitPowerSumOscillation
 The diagonal of the resolvent Hankel criterion — nonnegativity of the moments
 `R n X = sum_q u_q^(n+1)` alone, with no bilinear input — already carries zero-location
 information: if every moment at a single shift `X ≥ 0` is nonnegative, then among the divisor
-copies of **maximal resolvent modulus** (the zeros minimizing `‖alpha^2 + X‖`, i.e. the lowest
+copies of **maximal resolvent modulus** (the zeros minimizing `‖alpha^(2 : ℕ) + X‖`, i.e. the lowest
 zeros of `xi`) at least one lies on the critical line.
 
 Mechanism: normalize the finitely many maximal-modulus resolvent points to the unit circle.  If

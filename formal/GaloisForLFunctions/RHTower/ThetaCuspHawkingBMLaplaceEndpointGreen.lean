@@ -95,7 +95,7 @@ theorem response_equation {w chi : ℂ} (h : Chamber w chi) (s a J K T : ℂ)
   have hV := normalizable_equation h hz
   have hW := wronskian_eq h hz
   have hc := connection_ne_zero h
-  have hs : (Real.sqrt (1-z):ℂ)^2=1-(z:ℂ) := by
+  have hs : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=1-(z:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hz.2.le)
   dsimp [wronskian,integratingFactor] at hW
   rw [power_half_eq_sqrt (sub_nonneg.mpr hz.2.le)] at hW

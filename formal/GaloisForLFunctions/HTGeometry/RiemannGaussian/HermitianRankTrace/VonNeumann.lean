@@ -49,7 +49,7 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- Entrywise squared-norm `‖Wᵢⱼ‖²` of a matrix, as a real matrix. -/
 def normSqMatrix (W : Matrix n n 𝕜) : Matrix n n ℝ :=
-  Matrix.of fun i j => ‖W i j‖ ^ 2
+  Matrix.of fun i j => ‖W i j‖ ^ (2 : ℕ)
 
 section Bilinear
 
@@ -118,8 +118,8 @@ lemma re_trace_mul_eq_eigenvalue_bilinear {A B : Matrix n n 𝕜}
   -- Step 3: take `Re`; identify `z · conj z = ‖z‖²` and push reals.
   simp only [RCLike.mul_conj, map_sum, normSqMatrix, Matrix.of_apply]
   refine sum_congr rfl fun k _ => sum_congr rfl fun l _ => ?_
-  rw [show ((hA.eigenvalues k : 𝕜) * hB.eigenvalues l * (‖W k l‖ : 𝕜) ^ 2 : 𝕜)
-        = ((hA.eigenvalues k * hB.eigenvalues l * ‖W k l‖ ^ 2 : ℝ) : 𝕜) by push_cast; ring,
+  rw [show ((hA.eigenvalues k : 𝕜) * hB.eigenvalues l * (‖W k l‖ : 𝕜) ^ (2 : ℕ) : 𝕜)
+        = ((hA.eigenvalues k * hB.eigenvalues l * ‖W k l‖ ^ (2 : ℕ) : ℝ) : 𝕜) by push_cast; ring,
     RCLike.ofReal_re]
   ring
 

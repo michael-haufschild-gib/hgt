@@ -21,17 +21,17 @@ noncomputable section
 
 /-- Fourth ordinary source score in the intrinsic spectral variable. -/
 def thetaLikelihoodFourthScore (z : ℝ) : ℝ :=
-  z ^ 4 - 6 * z ^ 3 + 7 * z ^ 2 - z
+  z ^ (4 : ℕ) - 6 * z ^ (3 : ℕ) + 7 * z ^ (2 : ℕ) - z
 
 /-- At the physical support edge, two fifths of the leading fourth monomial survive. -/
 theorem two_fifths_mul_pow_four_le_thetaLikelihoodFourthScore
     {z : ℝ} (hz : (47 / 5 : ℝ) ≤ z) :
-    (2 / 5 : ℝ) * z ^ 4 ≤ thetaLikelihoodFourthScore z := by
+    (2 / 5 : ℝ) * z ^ (4 : ℕ) ≤ thetaLikelihoodFourthScore z := by
   let y := z - 47 / 5
   have hy : 0 ≤ y := by dsimp [y]; linarith
-  have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
   rw [show z = 47 / 5 + y by dsimp [y]; ring]
   dsimp [thetaLikelihoodFourthScore]
   ring_nf
@@ -44,11 +44,11 @@ theorem thetaLikelihoodFourthScore_le_threeTwentieths_sixthScore
       (3 / 20 : ℝ) * thetaLikelihoodSixthScore z := by
   let y := z - 47 / 5
   have hy : 0 ≤ y := by dsimp [y]; linarith
-  have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
-  have hy5 : 0 ≤ y ^ 5 := by positivity
-  have hy6 : 0 ≤ y ^ 6 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := by positivity
+  have hy6 : 0 ≤ y ^ (6 : ℕ) := by positivity
   rw [show z = 47 / 5 + y by dsimp [y]; ring]
   dsimp [thetaLikelihoodFourthScore, thetaLikelihoodSixthScore]
   ring_nf
@@ -58,18 +58,18 @@ theorem thetaLikelihoodFourthScore_le_threeTwentieths_sixthScore
 def thetaCuspLikelihoodSourceOrdinaryJetFour (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  16 * (A ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 -
-    6 * A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 +
-    7 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 -
+  16 * (A ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 -
+    6 * A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 +
+    7 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
     A * thetaCuspLikelihoodMean B)
 
 private theorem integrable_thetaLikelihoodFourthScore_tilted
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodFourthScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   convert (((h4.sub h3).add h2).sub h1) using 1
   funext t
@@ -80,11 +80,11 @@ private theorem integrable_thetaLikelihoodSixthScore_tilted
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodSixthScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
-  have h6 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 6 hB).const_mul (A ^ 6)
-  have h5 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 5 hB).const_mul (15 * A ^ 5)
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (65 * A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (90 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (31 * A ^ 2)
+  have h6 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 6 hB).const_mul (A ^ (6 : ℕ))
+  have h5 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 5 hB).const_mul (15 * A ^ (5 : ℕ))
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (65 * A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (90 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (31 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   convert ((((h6.sub h5).add h4).sub h3).add h2).sub h1 using 1
   funext t
@@ -95,18 +95,18 @@ private theorem integral_thetaLikelihoodFourthScore_tilted_eq
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodFourthScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
-      A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+      A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
-  let f4 : ℝ → ℝ := fun t => A ^ 4 * t ^ 4
-  let f3 : ℝ → ℝ := fun t => (6 * A ^ 3) * t ^ 3
-  let f2 : ℝ → ℝ := fun t => (7 * A ^ 2) * t ^ 2
-  let f1 : ℝ → ℝ := fun t => A * t ^ 1
+  let f4 : ℝ → ℝ := fun t => A ^ (4 : ℕ) * t ^ (4 : ℕ)
+  let f3 : ℝ → ℝ := fun t => (6 * A ^ (3 : ℕ)) * t ^ (3 : ℕ)
+  let f2 : ℝ → ℝ := fun t => (7 * A ^ (2 : ℕ)) * t ^ (2 : ℕ)
+  let f1 : ℝ → ℝ := fun t => A * t ^ (1 : ℕ)
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t)) =
       ((f4 - f3) + f2) - f1 by
     funext t
@@ -121,24 +121,24 @@ private theorem integral_thetaLikelihoodSixthScore_tilted_eq
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodSixthScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
-      A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 -
-        15 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-        65 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        90 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        31 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+      A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 -
+        15 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+        65 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        90 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        31 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  have h6 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 6 hB).const_mul (A ^ 6)
-  have h5 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 5 hB).const_mul (15 * A ^ 5)
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (65 * A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (90 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (31 * A ^ 2)
+  have h6 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 6 hB).const_mul (A ^ (6 : ℕ))
+  have h5 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 5 hB).const_mul (15 * A ^ (5 : ℕ))
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (65 * A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (90 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (31 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
-  let f6 : ℝ → ℝ := fun t => A ^ 6 * t ^ 6
-  let f5 : ℝ → ℝ := fun t => (15 * A ^ 5) * t ^ 5
-  let f4 : ℝ → ℝ := fun t => (65 * A ^ 4) * t ^ 4
-  let f3 : ℝ → ℝ := fun t => (90 * A ^ 3) * t ^ 3
-  let f2 : ℝ → ℝ := fun t => (31 * A ^ 2) * t ^ 2
-  let f1 : ℝ → ℝ := fun t => A * t ^ 1
+  let f6 : ℝ → ℝ := fun t => A ^ (6 : ℕ) * t ^ (6 : ℕ)
+  let f5 : ℝ → ℝ := fun t => (15 * A ^ (5 : ℕ)) * t ^ (5 : ℕ)
+  let f4 : ℝ → ℝ := fun t => (65 * A ^ (4 : ℕ)) * t ^ (4 : ℕ)
+  let f3 : ℝ → ℝ := fun t => (90 * A ^ (3 : ℕ)) * t ^ (3 : ℕ)
+  let f2 : ℝ → ℝ := fun t => (31 * A ^ (2 : ℕ)) * t ^ (2 : ℕ)
+  let f1 : ℝ → ℝ := fun t => A * t ^ (1 : ℕ)
   rw [show (fun t : ℝ => thetaLikelihoodSixthScore (A * t)) =
       ((((f6 - f5) + f4) - f3) + f2) - f1 by
     funext t
@@ -195,9 +195,9 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetFour_le_threeEightieths_six
   calc
     thetaCuspLikelihoodSourceOrdinaryJetFour x =
         (16 / P) *
-          (A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-            6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-            7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+          (A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+            6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+            7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
             A * thetaCuspHigherLikelihoodSpectralMoment B 1) := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryJetFour, A, B]
       unfold thetaCuspLikelihoodNormalizedMoment thetaCuspLikelihoodMean
@@ -205,11 +205,11 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetFour_le_threeEightieths_six
       field_simp [hP.ne']
       ring
     _ ≤ (16 / P) * ((3 / 20 : ℝ) *
-          (A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 -
-            15 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-            65 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-            90 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-            31 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+          (A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 -
+            15 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+            65 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+            90 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+            31 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
             A * thetaCuspHigherLikelihoodSpectralMoment B 1)) := hscaled
     _ = (3 / 80 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetSix x := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryJetSix, A, B]
@@ -221,7 +221,7 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetFour_le_threeEightieths_six
 /-- The ordinary fourth score retains two fifths of its leading spectral moment. -/
 theorem two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour
     {x : ℝ} (hx : 0 ≤ x) :
-    (32 / 5 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    (32 / 5 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 ≤
       thetaCuspLikelihoodSourceOrdinaryJetFour x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -232,11 +232,11 @@ theorem two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour
     simpa only [A] using fortySevenFifteenths_lt_thetaCuspFirstReflectionScale hx
   have hI4 := integrable_thetaLikelihoodFourthScore_tilted A hB
   have hlead : Integrable (fun t : ℝ =>
-      (2 / 5 : ℝ) * A ^ 4 * t ^ 4)
+      (2 / 5 : ℝ) * A ^ (4 : ℕ) * t ^ (4 : ℕ))
       (thetaCuspHigherLikelihoodTiltedMeasure B) :=
     (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul _
   have hpoint : ∀ᵐ t ∂thetaCuspHigherLikelihoodTiltedMeasure B,
-      (2 / 5 : ℝ) * A ^ 4 * t ^ 4 ≤ thetaLikelihoodFourthScore (A * t) := by
+      (2 / 5 : ℝ) * A ^ (4 : ℕ) * t ^ (4 : ℕ) ≤ thetaLikelihoodFourthScore (A * t) := by
     filter_upwards [ae_three_le_thetaCuspHigherLikelihoodTiltedMeasure B] with t ht
     have hAt : (47 / 5 : ℝ) ≤ A * t := by
       nlinarith [mul_lt_mul_of_pos_right hA (show 0 < t by linarith)]
@@ -245,16 +245,16 @@ theorem two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour
     all_goals ring
   have hint := integral_mono_ae hlead hI4 hpoint
   rw [integral_const_mul,
-    show (∫ t : ℝ, t ^ 4 ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
+    show (∫ t : ℝ, t ^ (4 : ℕ) ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
       thetaCuspHigherLikelihoodSpectralMoment B 4 by rfl,
     integral_thetaLikelihoodFourthScore_tilted_eq A hB] at hint
   have hP : 0 < P := by simpa only [P] using thetaCuspLikelihoodPartition_pos hB
   have hcoeff : 0 ≤ 16 / P := div_nonneg (by norm_num) hP.le
   have hscaled := mul_le_mul_of_nonneg_left hint hcoeff
   calc
-    (32 / 5 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    (32 / 5 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 =
-      (16 / P) * ((2 / 5 : ℝ) * A ^ 4 *
+      (16 / P) * ((2 / 5 : ℝ) * A ^ (4 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment B 4) := by
           dsimp only [A, B]
           unfold thetaCuspLikelihoodNormalizedMoment
@@ -262,9 +262,9 @@ theorem two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour
           field_simp [hP.ne']
           ring
     _ ≤ (16 / P) *
-        (A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-          6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-          7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+        (A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+          6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+          7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
           A * thetaCuspHigherLikelihoodSpectralMoment B 1) := hscaled
     _ = thetaCuspLikelihoodSourceOrdinaryJetFour x := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryJetFour, A, B]
@@ -286,8 +286,8 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_ordinary
   let e3 := thetaCuspLikelihoodNormalizedMoment B 3
   let e4 := thetaCuspLikelihoodNormalizedMoment B 4
   let b1 := 2 * A * e1
-  let b2 := 4 * (A ^ 2 * e2 - A * e1)
-  let b3 := 8 * (A ^ 3 * e3 - 3 * A ^ 2 * e2 + A * e1)
+  let b2 := 4 * (A ^ (2 : ℕ) * e2 - A * e1)
+  let b3 := 8 * (A ^ (3 : ℕ) * e3 - 3 * A ^ (2 : ℕ) * e2 + A * e1)
   let b4 := thetaCuspLikelihoodSourceOrdinaryJetFour x
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hA : 3 < A := by
@@ -313,14 +313,14 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_ordinary
       four_hundred_mul_thetaCuspLikelihoodTailProbability_coordinate_lt_one hx
   have hp : 0 < p := by
     have h22 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
-    have h22' : e2 ^ 2 ≤ p * e4 := by
+    have h22' : e2 ^ (2 : ℕ) ≤ p * e4 := by
       simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h22
     nlinarith [sq_pos_of_pos he2]
-  have h11 : e1 ^ 2 ≤ p * e2 := by
+  have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 = 2 by norm_num, pow_two] using h
-  have h22 : e2 ^ 2 ≤ p * e4 := by
+  have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
@@ -331,7 +331,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_ordinary
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
     nlinarith
-  have hb2Upper : b2 ≤ 4 * A ^ 2 * e2 := by
+  have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
     nlinarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
@@ -341,38 +341,38 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_ordinary
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
     nlinarith [mul_pos hA0 he1]
-  have hb4Lower : (32 / 5 : ℝ) * A ^ 4 * e4 ≤ b4 := by
+  have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using
       two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
-  have hb1SqB2 : b1 ^ 2 * b2 ≤ 16 * A ^ 4 * (e1 ^ 2 * e2) := by
+  have hb1SqB2 : b1 ^ (2 : ℕ) * b2 ≤ 16 * A ^ (4 : ℕ) * (e1 ^ (2 : ℕ) * e2) := by
     calc
-      b1 ^ 2 * b2 ≤ (2 * A * e1) ^ 2 * (4 * A ^ 2 * e2) := by gcongr
-      _ = 16 * A ^ 4 * (e1 ^ 2 * e2) := by ring
-  have he112 : e1 ^ 2 * e2 ≤ p ^ 2 * e4 := by
+      b1 ^ (2 : ℕ) * b2 ≤ (2 * A * e1) ^ (2 : ℕ) * (4 * A ^ (2 : ℕ) * e2) := by gcongr
+      _ = 16 * A ^ (4 : ℕ) * (e1 ^ (2 : ℕ) * e2) := by ring
+  have he112 : e1 ^ (2 : ℕ) * e2 ≤ p ^ (2 : ℕ) * e4 := by
     calc
-      e1 ^ 2 * e2 ≤ (p * e2) * e2 :=
+      e1 ^ (2 : ℕ) * e2 ≤ (p * e2) * e2 :=
         mul_le_mul_of_nonneg_right h11 he2.le
-      _ = p * e2 ^ 2 := by ring
+      _ = p * e2 ^ (2 : ℕ) := by ring
       _ ≤ p * (p * e4) := mul_le_mul_of_nonneg_left h22 hp.le
-      _ = p ^ 2 * e4 := by ring
-  have hparticle : 12 * b1 ^ 2 * b2 ≤ 30 * p ^ 2 * b4 := by
+      _ = p ^ (2 : ℕ) * e4 := by ring
+  have hparticle : 12 * b1 ^ (2 : ℕ) * b2 ≤ 30 * p ^ (2 : ℕ) * b4 := by
     have h1 := mul_le_mul_of_nonneg_left hb1SqB2 (by norm_num : (0 : ℝ) ≤ 12)
     have h2 := mul_le_mul_of_nonneg_left he112
-      (show 0 ≤ 192 * A ^ 4 by positivity)
+      (show 0 ≤ 192 * A ^ (4 : ℕ) by positivity)
     have h3 := mul_le_mul_of_nonneg_left hb4Lower
-      (show 0 ≤ 30 * p ^ 2 by positivity)
+      (show 0 ≤ 30 * p ^ (2 : ℕ) by positivity)
     nlinarith
-  have hp2 : p ^ 2 < (1 / 400 : ℝ) ^ 2 :=
+  have hp2 : p ^ (2 : ℕ) < (1 / 400 : ℝ) ^ (2 : ℕ) :=
     pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp.le (by norm_num)
-  have hbudget : 30 * p ^ 2 < (1 / 5000 : ℝ) := by
+  have hbudget : 30 * p ^ (2 : ℕ) < (1 / 5000 : ℝ) := by
     norm_num at hp2 ⊢
     nlinarith
-  have hparticleSmall : 12 * b1 ^ 2 * b2 < (1 / 5000 : ℝ) * b4 :=
+  have hparticleSmall : 12 * b1 ^ (2 : ℕ) * b2 < (1 / 5000 : ℝ) * b4 :=
     lt_of_le_of_lt hparticle (mul_lt_mul_of_pos_right hbudget hb4)
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetFour x =
-        b4 - 4 * b1 * b3 - 3 * b2 ^ 2 + 12 * b1 ^ 2 * b2 - 6 * b1 ^ 4 := by
+        b4 - 4 * b1 * b3 - 3 * b2 ^ (2 : ℕ) + 12 * b1 ^ (2 : ℕ) * b2 - 6 * b1 ^ (4 : ℕ) := by
     dsimp only [b1, b2, b3, b4, A, B, e1, e2, e3, e4]
     unfold thetaCuspLikelihoodSourceOrdinaryJetFour
       thetaCuspLikelihoodSourceLogPartitionJetFour thetaCuspLikelihoodFourthCumulant
@@ -397,7 +397,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_oneTwentyFifth_six
 def thetaCuspLikelihoodSixthSharpEnvelope : ℝ :=
   (16 * 50000 + 18 * (25 / 41 : ℝ) * 950000) *
       Real.exp (-(471 / 50 : ℝ)) +
-    (10 / 999 : ℝ) * Real.pi ^ 6
+    (10 / 999 : ℝ) * Real.pi ^ (6 : ℕ)
 
 theorem thetaCuspLikelihoodSixthScoreIntegral_le_sharpEnvelope
     {x : ℝ} (hx : 0 ≤ x) :
@@ -426,7 +426,7 @@ theorem thetaCuspLikelihoodSixthScoreIntegral_le_sharpEnvelope
 
 private theorem exp_neg_nine_lt_oneEightThousand :
     Real.exp (-9) < (1 / 8000 : ℝ) := by
-  have hpow : Real.exp (-1) ^ 9 < (0.3678794412 : ℝ) ^ 9 :=
+  have hpow : Real.exp (-1) ^ (9 : ℕ) < (0.3678794412 : ℝ) ^ (9 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_neg_one_lt_d9 (Real.exp_pos (-1)).le (by norm_num)
   rw [show (-9 : ℝ) = (9 : ℕ) * (-1 : ℝ) by norm_num, Real.exp_nat_mul]
   exact hpow.trans (by norm_num)
@@ -460,14 +460,14 @@ private theorem exp_neg_471Fiftieth_lt_oneTwelveThousand :
 theorem thetaCuspLikelihoodSixthSharpEnvelope_lt_nineHundredFifty :
     thetaCuspLikelihoodSixthSharpEnvelope < 950 := by
   have he := exp_neg_471Fiftieth_lt_oneTwelveThousand
-  have hpi2 : Real.pi ^ 2 < (10 : ℝ) := by
+  have hpi2 : Real.pi ^ (2 : ℕ) < (10 : ℝ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d4]
-  have hpi6 : Real.pi ^ 6 < (1000 : ℝ) := by
+  have hpi6 : Real.pi ^ (6 : ℕ) < (1000 : ℝ) := by
     have h := pow_lt_pow_left₀ hpi2 (sq_nonneg Real.pi)
       (by norm_num : (3 : ℕ) ≠ 0)
     calc
-      Real.pi ^ 6 = (Real.pi ^ 2) ^ 3 := by ring
-      _ < (10 : ℝ) ^ 3 := h
+      Real.pi ^ (6 : ℕ) = (Real.pi ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
+      _ < (10 : ℝ) ^ (3 : ℕ) := h
       _ = 1000 := by norm_num
   have hcoeff :
       0 < (16 * 50000 + 18 * (25 / 41 : ℝ) * 950000) := by norm_num
@@ -551,8 +551,8 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
   let e3 := thetaCuspLikelihoodNormalizedMoment B 3
   let e4 := thetaCuspLikelihoodNormalizedMoment B 4
   let b1 := 2 * A * e1
-  let b2 := 4 * (A ^ 2 * e2 - A * e1)
-  let b3 := 8 * (A ^ 3 * e3 - 3 * A ^ 2 * e2 + A * e1)
+  let b2 := 4 * (A ^ (2 : ℕ) * e2 - A * e1)
+  let b3 := 8 * (A ^ (3 : ℕ) * e3 - 3 * A ^ (2 : ℕ) * e2 + A * e1)
   let b4 := thetaCuspLikelihoodSourceOrdinaryJetFour x
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hA : 3 < A := by
@@ -576,11 +576,11 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
   have hpSmall : 400 * p < 1 := by
     simpa only [B, p] using
       four_hundred_mul_thetaCuspLikelihoodTailProbability_coordinate_lt_one hx
-  have h22 : e2 ^ 2 ≤ p * e4 := by
+  have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
   have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
-  have h11 : e1 ^ 2 ≤ p * e2 := by
+  have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 = 2 by norm_num, pow_two] using h
@@ -597,7 +597,7 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
     nlinarith
-  have hb2Upper : b2 ≤ 4 * A ^ 2 * e2 := by
+  have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
     nlinarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
@@ -608,63 +608,63 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
     dsimp only [b3]
     nlinarith [mul_pos hA0 he1]
   have he13nine : 9 * e1 ≤ e3 := by nlinarith
-  have hA2 : 9 < A ^ 2 := by nlinarith [sq_pos_of_pos (sub_pos.mpr hA)]
+  have hA2 : 9 < A ^ (2 : ℕ) := by nlinarith [sq_pos_of_pos (sub_pos.mpr hA)]
   have hscaleA := mul_lt_mul_of_pos_right hA2 (mul_pos hA0 he1)
-  have hfirst : 81 * A * e1 < 9 * A ^ 3 * e1 := by
+  have hfirst : 81 * A * e1 < 9 * A ^ (3 : ℕ) * e1 := by
     nlinarith
-  have hsecond : 9 * A ^ 3 * e1 ≤ A ^ 3 * e3 := by
+  have hsecond : 9 * A ^ (3 : ℕ) * e1 ≤ A ^ (3 : ℕ) * e3 := by
     have hmul := mul_le_mul_of_nonneg_left he13nine (pow_nonneg hA0.le 3)
     nlinarith
-  have hAe1 : 81 * A * e1 ≤ A ^ 3 * e3 := le_trans hfirst.le hsecond
-  have hb3Upper : b3 ≤ (656 / 81 : ℝ) * A ^ 3 * e3 := by
+  have hAe1 : 81 * A * e1 ≤ A ^ (3 : ℕ) * e3 := le_trans hfirst.le hsecond
+  have hb3Upper : b3 ≤ (656 / 81 : ℝ) * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
     nlinarith [mul_nonneg (pow_nonneg hA0.le 2) he2.le]
-  have hb4Lower : (32 / 5 : ℝ) * A ^ 4 * e4 ≤ b4 := by
+  have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using
       two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
-  have hb1b3 : b1 * b3 ≤ (1312 / 81 : ℝ) * p * A ^ 4 * e4 := by
+  have hb1b3 : b1 * b3 ≤ (1312 / 81 : ℝ) * p * A ^ (4 : ℕ) * e4 := by
     calc
-      b1 * b3 ≤ b1 * ((656 / 81 : ℝ) * A ^ 3 * e3) :=
+      b1 * b3 ≤ b1 * ((656 / 81 : ℝ) * A ^ (3 : ℕ) * e3) :=
         mul_le_mul_of_nonneg_left hb3Upper hb1.le
-      _ = (1312 / 81 : ℝ) * A ^ 4 * (e1 * e3) := by dsimp only [b1]; ring
-      _ ≤ (1312 / 81 : ℝ) * A ^ 4 * (p * e4) := by gcongr
-      _ = (1312 / 81 : ℝ) * p * A ^ 4 * e4 := by ring
-  have hb2sq : b2 ^ 2 ≤ 16 * p * A ^ 4 * e4 := by
+      _ = (1312 / 81 : ℝ) * A ^ (4 : ℕ) * (e1 * e3) := by dsimp only [b1]; ring
+      _ ≤ (1312 / 81 : ℝ) * A ^ (4 : ℕ) * (p * e4) := by gcongr
+      _ = (1312 / 81 : ℝ) * p * A ^ (4 : ℕ) * e4 := by ring
+  have hb2sq : b2 ^ (2 : ℕ) ≤ 16 * p * A ^ (4 : ℕ) * e4 := by
     calc
-      b2 ^ 2 ≤ (4 * A ^ 2 * e2) ^ 2 :=
+      b2 ^ (2 : ℕ) ≤ (4 * A ^ (2 : ℕ) * e2) ^ (2 : ℕ) :=
         (sq_le_sq₀ hb2.le (by positivity)).2 hb2Upper
-      _ = 16 * A ^ 4 * e2 ^ 2 := by ring
-      _ ≤ 16 * A ^ 4 * (p * e4) := by gcongr
-      _ = 16 * p * A ^ 4 * e4 := by ring
-  have he1111 : e1 ^ 4 ≤ p ^ 3 * e4 := by
+      _ = 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by ring
+      _ ≤ 16 * A ^ (4 : ℕ) * (p * e4) := by gcongr
+      _ = 16 * p * A ^ (4 : ℕ) * e4 := by ring
+  have he1111 : e1 ^ (4 : ℕ) ≤ p ^ (3 : ℕ) * e4 := by
     calc
-      e1 ^ 4 = (e1 ^ 2) * (e1 ^ 2) := by ring
+      e1 ^ (4 : ℕ) = (e1 ^ (2 : ℕ)) * (e1 ^ (2 : ℕ)) := by ring
       _ ≤ (p * e2) * (p * e2) := by gcongr
-      _ = p ^ 2 * e2 ^ 2 := by ring
-      _ ≤ p ^ 2 * (p * e4) := by gcongr
-      _ = p ^ 3 * e4 := by ring
-  have hb1four : b1 ^ 4 ≤ 16 * p ^ 3 * A ^ 4 * e4 := by
+      _ = p ^ (2 : ℕ) * e2 ^ (2 : ℕ) := by ring
+      _ ≤ p ^ (2 : ℕ) * (p * e4) := by gcongr
+      _ = p ^ (3 : ℕ) * e4 := by ring
+  have hb1four : b1 ^ (4 : ℕ) ≤ 16 * p ^ (3 : ℕ) * A ^ (4 : ℕ) * e4 := by
     calc
-      b1 ^ 4 = 16 * A ^ 4 * e1 ^ 4 := by dsimp only [b1]; ring
-      _ ≤ 16 * A ^ 4 * (p ^ 3 * e4) := by gcongr
-      _ = 16 * p ^ 3 * A ^ 4 * e4 := by ring
-  have hp3 : p ^ 3 < (1 / 400 : ℝ) ^ 3 :=
+      b1 ^ (4 : ℕ) = 16 * A ^ (4 : ℕ) * e1 ^ (4 : ℕ) := by dsimp only [b1]; ring
+      _ ≤ 16 * A ^ (4 : ℕ) * (p ^ (3 : ℕ) * e4) := by gcongr
+      _ = 16 * p ^ (3 : ℕ) * A ^ (4 : ℕ) * e4 := by ring
+  have hp3 : p ^ (3 : ℕ) < (1 / 400 : ℝ) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp.le (by norm_num)
-  have hcoef : 4 * (1312 / 81 : ℝ) * p + 48 * p + 96 * p ^ 3 < (8 / 25 : ℝ) := by
+  have hcoef : 4 * (1312 / 81 : ℝ) * p + 48 * p + 96 * p ^ (3 : ℕ) < (8 / 25 : ℝ) := by
     norm_num at hpSmall hp3 ⊢
     nlinarith
-  have hweight : 0 < A ^ 4 * e4 := by positivity
+  have hweight : 0 < A ^ (4 : ℕ) * e4 := by positivity
   have hlossBudget :
-      4 * ((1312 / 81 : ℝ) * p * A ^ 4 * e4) +
-          3 * (16 * p * A ^ 4 * e4) +
-          6 * (16 * p ^ 3 * A ^ 4 * e4) <
+      4 * ((1312 / 81 : ℝ) * p * A ^ (4 : ℕ) * e4) +
+          3 * (16 * p * A ^ (4 : ℕ) * e4) +
+          6 * (16 * p ^ (3 : ℕ) * A ^ (4 : ℕ) * e4) <
         (1 / 20 : ℝ) * b4 := by
     have hc := mul_lt_mul_of_pos_right hcoef hweight
     nlinarith
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetFour x =
-        b4 - 4 * b1 * b3 - 3 * b2 ^ 2 + 12 * b1 ^ 2 * b2 - 6 * b1 ^ 4 := by
+        b4 - 4 * b1 * b3 - 3 * b2 ^ (2 : ℕ) + 12 * b1 ^ (2 : ℕ) * b2 - 6 * b1 ^ (4 : ℕ) := by
     dsimp only [b1, b2, b3, b4, A, B, e1, e2, e3, e4]
     unfold thetaCuspLikelihoodSourceOrdinaryJetFour
       thetaCuspLikelihoodSourceLogPartitionJetFour thetaCuspLikelihoodFourthCumulant

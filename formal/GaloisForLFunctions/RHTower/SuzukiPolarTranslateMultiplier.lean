@@ -167,7 +167,7 @@ theorem translateSymbol_polarMultiplier (h : ℝ) (z : ℂ) :
   simp only [Fin.sum_univ_five, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.cons_val_three, Matrix.cons_val_four, Matrix.tail_cons]
   have e0 : Complex.exp (z * ((0 : ℝ) : ℂ)) = 1 := by simp
-  have e2 : Complex.exp (z * ((2 * h : ℝ) : ℂ)) = Complex.exp (z * h) ^ 2 := by
+  have e2 : Complex.exp (z * ((2 * h : ℝ) : ℂ)) = Complex.exp (z * h) ^ (2 : ℕ) := by
     rw [sq, ← Complex.exp_add]
     congr 1
     push_cast
@@ -176,7 +176,7 @@ theorem translateSymbol_polarMultiplier (h : ℝ) (z : ℂ) :
     congr 1
     push_cast
     ring
-  have em2 : Complex.exp (z * ((-(2 * h) : ℝ) : ℂ)) = Complex.exp (-(z * h)) ^ 2 := by
+  have em2 : Complex.exp (z * ((-(2 * h) : ℝ) : ℂ)) = Complex.exp (-(z * h)) ^ (2 : ℕ) := by
     rw [sq, ← Complex.exp_add]
     congr 1
     push_cast
@@ -323,7 +323,7 @@ theorem ccmRestrictedWeilSourceQuadratic_nonneg_of_polarGroundEnergy_nonneg
     {u : CCMArchimedeanFormDomain a} (hu : IsPolarConstrained a u) :
     0 ≤ ccmRestrictedWeilSourceQuadratic a u := by
   have h := ccmRestrictedWeilPolarGroundEnergy_mul_le a u hu
-  have h0 : 0 ≤ ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 :=
+  have h0 : 0 ≤ ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) :=
     mul_nonneg hμ (sq_nonneg _)
   linarith
 

@@ -15,13 +15,13 @@ noncomputable section
 def gammaSewnFourRateComplementaryEulerHeightFinitePart
     (cell : Fin 4 → Nat.Primes × ℕ) (s : Fin 6) : ℝ :=
   fourRateComplementarySum
-    (fun i => (-1 / 3 : ℝ) * Real.log ((cell i).1 : ℝ) ^ 2) s
+    (fun i => (-1 / 3 : ℝ) * Real.log ((cell i).1 : ℝ) ^ (2 : ℕ)) s
 
 /-- Complementary-pair boundary Fisher mass supplied by the two-state sewing channel. -/
 def gammaSewnFourRateComplementarySewingBoundaryFisher
     (cell : Fin 4 → Nat.Primes × ℕ) (s : Fin 6) : ℝ :=
   fourRateComplementarySum
-    (fun i => Real.log ((cell i).1 : ℝ) ^ 2) s
+    (fun i => Real.log ((cell i).1 : ℝ) ^ (2 : ℕ)) s
 
 theorem gammaSewnFourRateComplementaryEulerHeightFinitePart_eq_neg_half_fisher
     (cell : Fin 4 → Nat.Primes × ℕ) (s : Fin 6) :
@@ -34,9 +34,9 @@ theorem gammaSewnFourRateComplementaryEulerHeightFinitePart_eq_neg_half_fisher
   unfold gammaSewnFourRateComplementaryEulerHeightFinitePart
     gammaSewnFourRateComplementaryFisher fourRateComplementarySum
   change (-1 / 3 : ℝ) *
-          Real.log ((cell (fourRatePairComplementLeft s)).1 : ℝ) ^ 2 +
+          Real.log ((cell (fourRatePairComplementLeft s)).1 : ℝ) ^ (2 : ℕ) +
         (-1 / 3 : ℝ) *
-          Real.log ((cell (fourRatePairComplementRight s)).1 : ℝ) ^ 2 =
+          Real.log ((cell (fourRatePairComplementRight s)).1 : ℝ) ^ (2 : ℕ) =
       -(1 / 2 : ℝ) *
         (gammaSewnMobiusApertureBoundaryFisherClock
             (cell (fourRatePairComplementLeft s)).1 +
@@ -55,8 +55,8 @@ theorem gammaSewnFourRateComplementarySewingBoundaryFisher_eq_three_halves_fishe
     (cell (fourRatePairComplementRight s)).1
   unfold gammaSewnFourRateComplementarySewingBoundaryFisher
     gammaSewnFourRateComplementaryFisher fourRateComplementarySum
-  change Real.log ((cell (fourRatePairComplementLeft s)).1 : ℝ) ^ 2 +
-        Real.log ((cell (fourRatePairComplementRight s)).1 : ℝ) ^ 2 =
+  change Real.log ((cell (fourRatePairComplementLeft s)).1 : ℝ) ^ (2 : ℕ) +
+        Real.log ((cell (fourRatePairComplementRight s)).1 : ℝ) ^ (2 : ℕ) =
       (3 / 2 : ℝ) *
         (gammaSewnMobiusApertureBoundaryFisherClock
             (cell (fourRatePairComplementLeft s)).1 +
@@ -133,7 +133,7 @@ theorem gammaSewnFourRateBoundaryComplementary_neg_heightFinite_eq_one_third_sew
 theorem gammaSewnFourRateBoundaryComplementarySewingMass_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < gammaSewnFourRateBoundaryComplementarySewingMass a rate cell := by
   unfold gammaSewnFourRateBoundaryComplementarySewingMass complementaryFisherMean
   apply Finset.sum_pos
@@ -155,7 +155,7 @@ third of the sewing mass, and their residual is the positive complementary Fishe
 theorem gammaSewnFourRateBoundaryComplementary_sourceJordanControl
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < gammaSewnFourRateBoundaryComplementarySewingMass a rate cell ∧
       gammaSewnFourRateBoundaryComplementaryEulerHeightFiniteMass a rate cell < 0 ∧
       -gammaSewnFourRateBoundaryComplementaryEulerHeightFiniteMass a rate cell =

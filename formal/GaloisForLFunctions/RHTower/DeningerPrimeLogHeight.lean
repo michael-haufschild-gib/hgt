@@ -259,22 +259,22 @@ theorem deningerHeight_eq_split (m : Nat.Primes →₀ ℤ) :
 negative prime products embed the lattice into pairs of positive integers, so the series is a
 subseries of `ζ(2)²`. -/
 private theorem deningerHeightPair_summable :
-    Summable fun q : ℕ × ℕ => (1 / ((q.1 : ℝ) ^ 2)) * (1 / ((q.2 : ℝ) ^ 2)) := by
-  have hone : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) :=
+    Summable fun q : ℕ × ℕ => (1 / ((q.1 : ℝ) ^ (2 : ℕ))) * (1 / ((q.2 : ℝ) ^ (2 : ℕ))) := by
+  have hone : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hnn : (0 : ℕ → ℝ) ≤ fun n : ℕ => 1 / (n : ℝ) ^ 2 := by
+  have hnn : (0 : ℕ → ℝ) ≤ fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) := by
     intro n; positivity
-  exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / (n : ℝ) ^ 2)
-    (g := fun n : ℕ => 1 / (n : ℝ) ^ 2) hone hone hnn hnn
+  exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ))
+    (g := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) hone hone hnn hnn
 
 private theorem deningerHeightSplit_summable :
     Summable fun m : Nat.Primes →₀ ℤ =>
-      (1 / (((deningerHeightSplit m).1 : ℝ) ^ 2)) *
-        (1 / (((deningerHeightSplit m).2 : ℝ) ^ 2)) :=
+      (1 / (((deningerHeightSplit m).1 : ℝ) ^ (2 : ℕ))) *
+        (1 / (((deningerHeightSplit m).2 : ℝ) ^ (2 : ℕ))) :=
   deningerHeightPair_summable.comp_injective deningerHeightSplit_injective
 
 theorem deningerHeight_summable_inv_sq :
-    Summable fun m : Nat.Primes →₀ ℤ => (deningerHeight m)⁻¹ ^ 2 := by
+    Summable fun m : Nat.Primes →₀ ℤ => (deningerHeight m)⁻¹ ^ (2 : ℕ) := by
   refine deningerHeightSplit_summable.congr fun m => ?_
   rw [deningerHeight_eq_split m, mul_inv, mul_pow]
   rw [one_div, one_div, inv_pow, inv_pow]

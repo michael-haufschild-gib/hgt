@@ -15,11 +15,11 @@ theorem exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_refl
         r ∈ Set.Icc (N : ℝ) (2 * N : ℝ) → 1 ≤ H →
         (∫ y in Set.Icc (-H) H,
           ‖smoothAFEZetaSquareDualDerivativeSourceField
-            (N : ℝ) r (center - y)‖ ^ 2) ≤
+            (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) ≤
           5 * Real.pi * Real.exp 1 *
-              (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+              (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
             (5 * Real.pi / 2) *
-              (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) * H := by
+              (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) * H := by
   obtain ⟨A, K, hA, hK, hmv⟩ :=
     exists_integral_normSq_smoothAFEZetaSquareDualDerivativeLSeries_le_polylog
   refine ⟨A, K, hA, hK, ?_⟩
@@ -32,10 +32,10 @@ theorem exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_refl
       (fun y : ℝ =>
         ‖LSeries
           (smoothAFEZetaSquareDualDerivativeNatCoefficient (N : ℝ) r center)
-          ((y : ℝ) * I)‖ ^ 2) =
+          ((y : ℝ) * I)‖ ^ (2 : ℕ)) =
       (fun y : ℝ =>
         ‖smoothAFEZetaSquareDualDerivativeSourceField
-          (N : ℝ) r (center - y)‖ ^ 2) := by
+          (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) := by
     funext y
     rw [smoothAFEZetaSquareDualDerivativeLSeries_eq_sourceField hr4 hN0]
   rwa [heq] at hbound
@@ -45,11 +45,11 @@ theorem exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_le_p
       ∀ {N : ℕ} {r center H : ℝ}, 4 ≤ N →
         r ∈ Set.Icc (N : ℝ) (2 * N : ℝ) → 1 ≤ H →
         (∫ t in Set.Icc (center - H) (center + H),
-          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2) ≤
+          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ)) ≤
           5 * Real.pi * Real.exp 1 *
-              (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+              (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
             (5 * Real.pi / 2) *
-              (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) * H := by
+              (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) * H := by
   obtain ⟨A, K, hA, hK, hmv⟩ :=
     exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_reflected_le_polylog
   refine ⟨A, K, hA, hK, ?_⟩
@@ -58,14 +58,14 @@ theorem exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_le_p
   have hreflect :
       (∫ y in Set.Icc (-H) H,
           ‖smoothAFEZetaSquareDualDerivativeSourceField
-            (N : ℝ) r (center - y)‖ ^ 2) =
+            (N : ℝ) r (center - y)‖ ^ (2 : ℕ)) =
         ∫ t in Set.Icc (center - H) (center + H),
-          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2 := by
+          ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ) := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by linarith : -H ≤ H)]
     rw [intervalIntegral.integral_comp_sub_left
       (fun t : ℝ =>
-        ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2)
+        ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ))
       center]
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le hleft]

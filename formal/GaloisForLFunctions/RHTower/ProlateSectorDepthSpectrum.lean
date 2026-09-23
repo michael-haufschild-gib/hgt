@@ -29,7 +29,7 @@ namespace RHTower
 /-- **The depth-`k` converse in coordinates.**  A nonzero solution of the span-form constrained
 eigen-system whose parameter stays below the tail floor forces the depth-`k` secular equation. -/
 theorem depthSecular_eq_zero_of_constrained_eigen {d ℓ : ℕ → ℝ} {k : ℕ} {B μ c : ℝ}
-    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ 2) (hμB : μ < B)
+    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) (hμB : μ < B)
     (hpole : ∀ j, d j - μ ≠ 0) {v : ℕ → ℝ}
     (heig : ∀ j, d j * v j = μ * v j + c * ℓ j)
     (hconstraint : (∑' j : ℕ, ℓ j * v j) = 0) (hvne : v ≠ 0) :
@@ -179,7 +179,7 @@ theorem depthSecular_eq_zero_of_isSectorConstrainedEigen {a : ℝ} (ha : 0 < a)
     depthSecular (sectorLeakage a σ) (sectorCoord a σ) k μ = 0 := by
   obtain ⟨c, v, hvne, heig, hcon⟩ :=
     exists_constrained_coordinates_of_isSectorConstrainedEigen ha hσ hℓ1 hg
-  have hsumL : Summable fun j : ℕ => sectorCoord a σ j ^ 2 := summable_sectorCoord_sq a hσ
+  have hsumL : Summable fun j : ℕ => sectorCoord a σ j ^ (2 : ℕ) := summable_sectorCoord_sq a hσ
   have hμB : μ < sectorLeakage a σ (k + 2) := lt_trans hμ.2 hk12
   have hpole : ∀ j, sectorLeakage a σ j - μ ≠ 0 :=
     sectorLeakage_sub_ne_zero_of_mem_gap hhead hk12 hfloor hμ
@@ -195,7 +195,7 @@ def sectorDepthCoeff (a : ℝ) (σ : ℕ → ℕ) (k j : ℕ) : ℝ :=
 
 /-- The depth-`k` secular coordinates synthesise an honest vector of the even carrier. -/
 theorem exists_hasSum_sectorDepth {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ} (hσ : Function.Injective σ)
-    {k : ℕ} (hsq : Summable fun j => sectorDepthCoeff a σ k j ^ 2) :
+    {k : ℕ} (hsq : Summable fun j => sectorDepthCoeff a σ k j ^ (2 : ℕ)) :
     ∃ f : evenSubspace,
       HasSum (fun j : ℕ => ((sectorDepthCoeff a σ k j : ℝ) : ℂ) • sectorMode a σ j) f := by
   refine exists_hasSum_sector ha hσ ?_
@@ -209,7 +209,7 @@ theorem isSectorConstrainedEigen_depth {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ}
     (hσ : Function.Injective σ) {k : ℕ}
     (hpole : ∀ j, sectorLeakage a σ j
         - depthSecularRoot (sectorLeakage a σ) (sectorCoord a σ) k ≠ 0)
-    (hsq : Summable fun j => sectorDepthCoeff a σ k j ^ 2)
+    (hsq : Summable fun j => sectorDepthCoeff a σ k j ^ (2 : ℕ))
     (hvne : sectorDepthCoeff a σ k ≠ 0)
     (hcon : (∑' j : ℕ, sectorCoord a σ j * sectorDepthCoeff a σ k j) = 0)
     {f : evenSubspace}
@@ -222,10 +222,10 @@ theorem isSectorConstrainedEigen_depth {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ}
   set μ : ℝ := depthSecularRoot D L k with hμdef
   set v : ℕ → ℝ := sectorDepthCoeff a σ k with hvdef
   have hvon := orthonormal_sectorMode ha hσ
-  have hnormfun : (fun j : ℕ => ‖((v j : ℝ) : ℂ)‖ ^ 2) = fun j : ℕ => v j ^ 2 := by
+  have hnormfun : (fun j : ℕ => ‖((v j : ℝ) : ℂ)‖ ^ (2 : ℕ)) = fun j : ℕ => v j ^ (2 : ℕ) := by
     funext j
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
-  have hns : HasSum (fun j : ℕ => v j ^ 2) (‖f‖ ^ 2) := by
+  have hns : HasSum (fun j : ℕ => v j ^ (2 : ℕ)) (‖f‖ ^ (2 : ℕ)) := by
     have h := hasSum_norm_sq_of_hasSum_smul hvon hf
     rwa [hnormfun] at h
   obtain ⟨j0, hj0⟩ : ∃ j : ℕ, v j ≠ 0 := by
@@ -233,11 +233,11 @@ theorem isSectorConstrainedEigen_depth {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ}
     exact hvne (funext fun j => by simpa using not_not.mp fun hj => hall ⟨j, hj⟩)
   have hfne : f ≠ 0 := by
     intro hzero
-    have hle : v j0 ^ 2 ≤ ‖f‖ ^ 2 := le_hasSum hns j0 fun j _ => sq_nonneg _
+    have hle : v j0 ^ (2 : ℕ) ≤ ‖f‖ ^ (2 : ℕ) := le_hasSum hns j0 fun j _ => sq_nonneg _
     rw [hzero, norm_zero] at hle
-    have hpos : (0 : ℝ) < v j0 ^ 2 := by positivity
+    have hpos : (0 : ℝ) < v j0 ^ (2 : ℕ) := by positivity
     nlinarith [hle]
-  have hsumL : Summable fun j : ℕ => L j ^ 2 := summable_sectorCoord_sq a hσ
+  have hsumL : Summable fun j : ℕ => L j ^ (2 : ℕ) := summable_sectorCoord_sq a hσ
   have hfcon : inner ℂ (evenCentralIndicator a) f = 0 := by
     have h := hasSum_constraint_of_hasSum_smul (inner_evenCentralIndicator_sectorMode a σ) hf
     have hreal : Summable fun j : ℕ => L j * v j := summable_mul_of_sq_summable hsumL hsq
@@ -314,7 +314,7 @@ theorem eventually_positiveSector_depth_data (k : ℕ) :
       ∧ (∑' j : ℕ, sectorCoord a positiveSectorIndex j
           * sectorDepthCoeff a positiveSectorIndex k j) = 0
       ∧ sectorDepthCoeff a positiveSectorIndex k ≠ 0
-      ∧ Summable fun j : ℕ => sectorDepthCoeff a positiveSectorIndex k j ^ 2 := by
+      ∧ Summable fun j : ℕ => sectorDepthCoeff a positiveSectorIndex k j ^ (2 : ℕ) := by
   have hpair := (constrainedProlateEven_exactEigenpair_and_allRawDefects k).1
   have hsq := ladderEnvelope_evenProlateSignedLeakage.ccm_depth_summable_secularVector_sq k
     evenProlateLadder_sum evenProlateLadder_bessel
@@ -358,7 +358,7 @@ theorem eventually_sectorDepthEigen_unique_positive (k : ℕ) :
             (fun j => ‖evenProlateConstraintCoord a (2 * j)‖) k := by
   filter_upwards [eventually_positiveSector_depth_data k] with a hd μ g hμ hg
   obtain ⟨ha, hhead, hk12, hfloor, h1, hk1, hmem, hroot, -, -, -⟩ := hd
-  have hsumL : Summable fun j : ℕ => sectorCoord a positiveSectorIndex j ^ 2 :=
+  have hsumL : Summable fun j : ℕ => sectorCoord a positiveSectorIndex j ^ (2 : ℕ) :=
     summable_sectorCoord_sq a positiveSectorIndex_injective
   have hzero := depthSecular_eq_zero_of_isSectorConstrainedEigen ha positiveSectorIndex_injective
     hhead hk12 hfloor h1 hμ hg
@@ -406,7 +406,7 @@ theorem constrainedProlateEven_operator_adjacent_ratio_tendsto (k : ℕ) :
 /-- **Equations `(10)`--`(11)` of the fixed-mode spectral ladder card, in the operator's own
 terms.**  The coefficients of the depth-`k` constrained eigenvector against the sector's
 orthonormal prolate family are exactly the depth-`k` secular coordinates, whose oriented
-normalization converges in `ell^2` to the canonical Hermite contrast unit — an orthonormal family. -/
+normalization converges in `ell^(2 : ℕ)` to the canonical Hermite contrast unit — an orthonormal family. -/
 theorem constrainedProlateEven_operator_depth_eigenvector_coeff (k : ℕ) :
     (∀ᶠ a : ℝ in atTop, ∀ f : evenSubspace,
         HasSum (fun j : ℕ => ((sectorDepthCoeff a positiveSectorIndex k j : ℝ) : ℂ)

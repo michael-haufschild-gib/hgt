@@ -19,8 +19,8 @@ theorem log_natCast_nonneg (k : ℕ) : 0 ≤ Real.log k := by
   · simp [h]
   · exact Real.log_nonneg (by exact_mod_cast h)
 
-/-- `∑ log k / k^2` converges, from the absolute convergence of `ζ'` at `s = 2`. -/
-theorem summable_log_div_sq : Summable (fun k : ℕ => Real.log k / (k : ℝ) ^ 2) :=
+/-- `∑ log k / k^(2 : ℕ)` converges, from the absolute convergence of `ζ'` at `s = 2`. -/
+theorem summable_log_div_sq : Summable (fun k : ℕ => Real.log k / (k : ℝ) ^ (2 : ℕ)) :=
   _root_.RHTower.Sieve.summable_log_div_sq
 
 /-- Per-`k` slice: `∑_j c_j·log k / k^{2j+2} = (log k / k)·arcsin(1/k)`. -/
@@ -69,7 +69,7 @@ theorem arcsine_row_summable :
   have hlk : 0 ≤ Real.log k / k := div_nonneg (log_natCast_nonneg k) (Nat.cast_nonneg k)
   calc Real.log k / k * Real.arcsin (1 / (k : ℝ))
       ≤ Real.log k / k * (Real.pi / 2 * (1 / (k : ℝ))) := mul_le_mul_of_nonneg_left harc hlk
-    _ = Real.pi / 2 * (Real.log k / (k : ℝ) ^ 2) := by ring
+    _ = Real.pi / 2 * (Real.log k / (k : ℝ) ^ (2 : ℕ)) := by ring
 
 /-- **Arcsine–Dirichlet transform.**  The arcsine dilation charge equals the central-binomial
 superposition of the even log-Dirichlet sums. -/

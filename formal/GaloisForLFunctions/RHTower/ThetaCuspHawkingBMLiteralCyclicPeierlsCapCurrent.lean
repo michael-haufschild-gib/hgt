@@ -22,7 +22,7 @@ namespace RHTower.D4BMLiteralCyclicPeierlsCapCurrent
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMJointSource
 open D4BMMixedQuadraticCurrent D4BMCapAngularFluxCusp
-open D4BMLiteralCyclicPeierlsCapDefect
+open D4BMLiteralCyclicPeierlsCapDefect D4BMFullSeedCapPhysicalAction
 
 noncomputable section
 set_option autoImplicit false
@@ -93,7 +93,8 @@ theorem cyclicPeierlsAngularCurrent_eq_green (q reader : XiZeroCopy) (branch : B
   rw [fullAngularField_equation q branch z.val z.property,
     angularFlux_eq q reader j z.val]
   simp only [angularGreenCurrent, D4BMAngularTwoTensor.source,
-    D4BMLeftModeRadialEquation.eigenvalue]
+    D4BMLeftModeRadialEquation.eigenvalue, D4BMLiteralCusp.scalar,
+    D4BMGlobalAngularResponse.scalar]
   ring
 
 /-- Equivalent potential form of the same current.  This identifies an

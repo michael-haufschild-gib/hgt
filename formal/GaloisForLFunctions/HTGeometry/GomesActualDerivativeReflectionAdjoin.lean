@@ -79,7 +79,7 @@ theorem gomesPolynomialDerivativeReflectionAdjoin_eq_constantLine (c : K) :
 /-- Exact membership in the actual adjoin has no hidden commutation or preservation premise. -/
 theorem gomesPolynomialDerivativeReflectionAdjoin_mem_iff (c : K) (E : Module.End K K[X]) :
     E ∈ gomesPolynomialDerivativeReflectionAdjoin K c ↔
-      Commute E (Polynomial.derivative ^ 2 : Module.End K K[X]) ∧
+      Commute E (Polynomial.derivative ^ (2 : ℕ) : Module.End K K[X]) ∧
         ∀ a : K, (E (C a)).derivative = 0 := by
   rw [gomesPolynomialDerivativeReflectionAdjoin_eq_constantLine, gomesPolynomialConstantLineAlgebra_mem_iff]
 

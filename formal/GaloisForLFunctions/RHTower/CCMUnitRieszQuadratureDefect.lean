@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.CCMUnitRieszProfileLimit
 /-!
 # The exact layer-cake form of the unit-Riesz quadrature defect
 
-The elementary identity `1 - sqrt u = int_u^1 dv/(2 sqrt v)` turns the progression sum
+The elementary identity `1 - sqrt u = int_u^(1 : ℕ) dv/(2 sqrt v)` turns the progression sum
 
 ```text
 g(t) = sum_{1 <= r <= t} (1 - sqrt (r/t))
@@ -13,8 +13,8 @@ into a single layer-cake integral of the counting function, and its defect from 
 continuum into the corresponding fractional-part integral:
 
 ```text
-g(t)   = int_0^1 floor (t v) dv / (2 sqrt v),
-eta(t) = t/3 - g(t) = int_0^1 (t v - floor (t v)) dv / (2 sqrt v).
+g(t)   = int_0^(1 : ℕ) floor (t v) dv / (2 sqrt v),
+eta(t) = t/3 - g(t) = int_0^(1 : ℕ) (t v - floor (t v)) dv / (2 sqrt v).
 ```
 
 Since the fractional part lies between `0` and `t v`, and below `1`, this gives the card's `(6)`
@@ -62,7 +62,7 @@ theorem intervalIntegrable_layerWeight {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
   refine hrpow.congr fun v hv => ?_
   exact (layerWeight_eq_rpow (le_trans (le_min ha hb) (le_of_lt hv.1))).symm
 
-/-- The layer-cake identity `1 - sqrt a = int_a^1 dv/(2 sqrt v)`. -/
+/-- The layer-cake identity `1 - sqrt a = int_a^(1 : ℕ) dv/(2 sqrt v)`. -/
 theorem integral_layerWeight {a : ℝ} (ha : 0 < a) :
     (∫ v in a..1, layerWeight v) = 1 - Real.sqrt a := by
   have hderiv : ∀ v ∈ Set.uIcc a 1, HasDerivAt Real.sqrt (layerWeight v) v := by

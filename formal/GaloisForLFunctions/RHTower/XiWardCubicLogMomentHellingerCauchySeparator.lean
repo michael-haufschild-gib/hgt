@@ -4,9 +4,9 @@ import GaloisForLFunctions.RHTower.XiWardMultiscaleHellingerCauchySeparator
 # Cubic log-moment Hellinger--Cauchy separator
 
 Replacing the dilation-invariant horizontal measure `dr/r` by the cubic log-moment measure
-`r^2 dr` suppresses high Euler frequencies while strengthening the zero-side response near the
+`r^(2 : ℕ) dr` suppresses high Euler frequencies while strengthening the zero-side response near the
 critical line.  The closed horizontal Gram is positive on every pair of positive shifts and has
-self-charge `115 / (864 a^3)`.  Since every strict-right centered Xi zero has `a < 1/2`, each copy
+self-charge `115 / (864 a^(3 : ℕ))`.  Since every strict-right centered Xi zero has `a < 1/2`, each copy
 therefore costs at least `115 / 108`, uniformly and with increasing cost as `a -> 0+`.
 
 This module proves the finite-packet census and exact `75%` receiver.  The companion Euler module
@@ -21,7 +21,7 @@ namespace RHTower
 noncomputable section
 
 /-- Closed positive form of the cubic log-moment Gram
-`integral r^2 (exp (-a r) - exp (-2 a r)) (exp (-b r) - exp (-2 b r)) dr`.
+`integral r^(2 : ℕ) (exp (-a r) - exp (-2 a r)) (exp (-b r) - exp (-2 b r)) dr`.
 Critical displacement is totalized to zero. -/
 def cubicLogMomentHellingerHorizontalKernel (a b : ℝ) : ℝ :=
   if a = 0 ∨ b = 0 then 0
@@ -234,7 +234,7 @@ theorem not_exists_cubicLogMomentHellingerHorizontalKernel_eq_fun_add :
       all_goals norm_num
 
 /-- Real cross entry of the source-compatible holomorphic cubic Laplace kernel
-`2 / (x + i delta)^3`.  Unlike the horizontally split tensor kernel above, it couples abscissa
+`2 / (x + i delta)^(3 : ℕ)`.  Unlike the horizontally split tensor kernel above, it couples abscissa
 and height in one complex coordinate. -/
 def holomorphicCubicLaplaceCrossKernel (x delta : ℝ) : ℝ :=
   2 * x * (x ^ 2 - 3 * delta ^ 2) / (x ^ 2 + delta ^ 2) ^ 3

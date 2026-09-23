@@ -151,7 +151,7 @@ theorem entireOperator_shift_norm_lower (x : entireOperator.domain) :
 
 /-- The actual transformed operator has the unconditional quadratic-form lower bound `−1`. -/
 theorem entireOperator_re_inner_lower (x : entireOperator.domain) :
-    -‖(x : Space)‖ ^ 2 ≤ (inner ℂ (entireOperator x) (x : Space)).re := by
+    -‖(x : Space)‖ ^ (2 : ℕ) ≤ (inner ℂ (entireOperator x) (x : Space)).re := by
   classical
   by_cases hsub : Subsingleton Space
   · letI := hsub
@@ -170,7 +170,7 @@ theorem entireOperator_re_inner_lower (x : entireOperator.domain) :
   have hlower := closedDenseInverse_re_inner_lower entireCovariance entireCovariance_injective
     ((ContinuousLinearMap.nonneg_iff_isPositive _).mp entireCovariance_nonneg) x
   have hnorm := mul_le_mul_of_nonneg_right hinv (sq_nonneg ‖(x : Space)‖)
-  change -‖(x : Space)‖ ^ 2 ≤
+  change -‖(x : Space)‖ ^ (2 : ℕ) ≤
     (inner ℂ (closedDenseInverse entireCovariance x + (-2 : ℂ) • (x : Space)) (x : Space)).re
   rw [inner_add_left, inner_smul_left, inner_self_eq_norm_sq_to_K]
   norm_num [← Complex.ofReal_pow, Complex.mul_re]

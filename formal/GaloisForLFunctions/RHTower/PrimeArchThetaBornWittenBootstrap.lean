@@ -22,7 +22,7 @@ def thetaCuspBornWittenLogCurvature (n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Negative logarithm of the exact Born/Witten density. -/
 def thetaCuspBornWittenLogDensityPotential (n : ℕ) (x : ℝ) : ℝ :=
-  -Real.log (thetaCuspBornWittenAmplitude n x ^ 2)
+  -Real.log (thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))
 
 /-- Polynomial bootstrap vector dressed by the exact Born/Witten ground state. -/
 def thetaCuspBornWittenDressedPolynomial
@@ -42,7 +42,7 @@ theorem thetaCuspBornWittenAmplitude_pos
 theorem thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq_of_nonneg
     (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspSourceTerm x n =
-      Real.pi * thetaCuspBornWittenAmplitude n x ^ 2 := by
+      Real.pi * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   cases n with
   | zero =>
       simp [thetaCuspSourceTerm, thetaCuspSeed, thetaCuspBornWittenAmplitude,
@@ -54,7 +54,7 @@ theorem thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq_of_nonneg
 theorem thetaCuspFullSource_eq_pi_mul_tsum_bornWittenAmplitude_sq
     {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspFullSource x =
-      Real.pi * ∑' n : ℕ, thetaCuspBornWittenAmplitude n x ^ 2 := by
+      Real.pi * ∑' n : ℕ, thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   unfold thetaCuspFullSource
   rw [tsum_congr (fun n =>
     thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq_of_nonneg n hx),
@@ -70,7 +70,7 @@ theorem hasDerivAt_thetaCuspBornWittenLogDensityPotential
   have hlog := hsq.log (pow_ne_zero 2 hχpos.ne')
   change HasDerivAt
     (-(fun y : ℝ =>
-      Real.log ((thetaCuspBornWittenAmplitude n ^ 2) y)))
+      Real.log ((thetaCuspBornWittenAmplitude n ^ (2 : ℕ)) y)))
     (2 * thetaCuspBornWittenSuperpotential n x) x
   exact hlog.neg.congr_deriv
     (g' := 2 * thetaCuspBornWittenSuperpotential n x) (by
@@ -87,7 +87,7 @@ theorem hasDerivAt_two_thetaCuspBornWittenSuperpotential
 
 theorem thetaCuspBornWittenLogCurvature_floor
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    4 * Real.pi * (n : ℝ) ^ 2 ≤ thetaCuspBornWittenLogCurvature n x := by
+    4 * Real.pi * (n : ℝ) ^ (2 : ℕ) ≤ thetaCuspBornWittenLogCurvature n x := by
   have h := thetaCuspBornWittenCurvature_floor hn hx
   simp only [thetaCuspBornWittenLogCurvature]
   nlinarith
@@ -159,7 +159,7 @@ theorem iteratedDeriv_XiC_zero_eq_tsum_bornWittenAmplitude_sq (j : ℕ) :
       (((-1 : ℝ) ^ j *
         ∑' n : ℕ, 2 * Real.pi *
           ∫ x : ℝ in Ioi 0,
-            x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2 : ℝ) : ℂ) := by
+            x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [iteratedDeriv_XiC_zero_eq_rawEvenMoment,
     thetaCuspRawEvenMoment_eq_tsum_integral_bornWittenAmplitude_sq]
 
@@ -168,18 +168,18 @@ prime-archimedean Hankel consumer. -/
 theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_bornWittenAmplitude
     (hupper :
       14 * ((3005 / 2997 : ℝ) *
-          (∫ x : ℝ in Ioi 0, x ^ 4 * thetaCuspBornWittenAmplitude 1 x ^ 2)) ^ 2 ≤
+          (∫ x : ℝ in Ioi 0, x ^ (4 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ))) ^ (2 : ℕ) ≤
         9 *
-          (∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspBornWittenAmplitude 1 x ^ 2) *
-          (∫ x : ℝ in Ioi 0, x ^ 6 * thetaCuspBornWittenAmplitude 1 x ^ 2))
+          (∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) *
+          (∫ x : ℝ in Ioi 0, x ^ (6 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)))
     (hrelaxed :
       16 * ((3005 / 2997 : ℝ) *
-          (∫ x : ℝ in Ioi 0, thetaCuspBornWittenAmplitude 1 x ^ 2)) *
+          (∫ x : ℝ in Ioi 0, thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ))) *
           ((3005 / 2997 : ℝ) *
-            (∫ x : ℝ in Ioi 0, x ^ 4 * thetaCuspBornWittenAmplitude 1 x ^ 2)) ≤
+            (∫ x : ℝ in Ioi 0, x ^ (4 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ))) ≤
         45 *
           (∫ x : ℝ in Ioi 0,
-            x ^ 2 * thetaCuspBornWittenAmplitude 1 x ^ 2) ^ 2) :
+            x ^ (2 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   apply forall_primeArchSourceTraceHankel_linear_nonneg_of_morseBorn
   · rw [thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq,

@@ -31,7 +31,7 @@ def thetaCuspLikelihoodEighthDominantPairCore (A : ℝ) : ℝ :=
   let B := A - 3 / 2
   256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
     576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-    324 / B ^ 2 *
+    324 / B ^ (2 : ℕ) *
       thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)
 
 /-- Actual dominant one-particle score mass after restoring its exact exponential factor. -/
@@ -54,16 +54,16 @@ theorem thetaCuspLikelihoodEighthDominantPairCore_pos
     linarith
   change 0 < 256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
     576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-    324 / B ^ 2 *
+    324 / B ^ (2 : ℕ) *
       thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)
   let s := A - 157 / 50
   have hs : 0 ≤ s := by
     dsimp only [s]
     linarith
-  have hmul : 0 < B ^ 10 *
+  have hmul : 0 < B ^ (10 : ℕ) *
       (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
         576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-        324 / B ^ 2 *
+        324 / B ^ (2 : ℕ) *
           thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)) := by
     unfold thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform
       thetaCuspLikelihoodEighthSourceScoreRayTransform
@@ -100,7 +100,7 @@ theorem three_halves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul
   change
     (3 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
         576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-        324 / B ^ 2 *
+        324 / B ^ (2 : ℕ) *
           thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)) <
       thetaCuspLikelihoodEighthDominantTaylorTwenty A *
         (16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
@@ -109,13 +109,13 @@ theorem three_halves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul
   have hs : 0 ≤ s := by
     dsimp only [s]
     linarith
-  have hmul : 0 < B ^ 10 *
+  have hmul : 0 < B ^ (10 : ℕ) *
       (thetaCuspLikelihoodEighthDominantTaylorTwenty A *
           (16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
             18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A)) -
         (3 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
           576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-          324 / B ^ 2 *
+          324 / B ^ (2 : ℕ) *
             thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A))) := by
     unfold thetaCuspLikelihoodEighthDominantTaylorTwenty
       thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform
@@ -141,7 +141,7 @@ theorem three_halves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul
             18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A)) -
         (3 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
           576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-          324 / B ^ 2 *
+          324 / B ^ (2 : ℕ) *
             thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)) :=
     pos_of_mul_pos_right hmul (pow_nonneg hB.le 10)
   linarith

@@ -29,7 +29,7 @@ theorem exists_norm_sum_vonMangoldt_sub_mass_kappa_one_rate :
         ≤ B * (N + chebWidthOne N + 1)
             * Real.exp (-(Real.sqrt (Real.log (N + chebWidthOne N + 1)) / 960000)) := by
   obtain ⟨B₁, hB₁, hrate⟩ := exists_norm_tsum_vonMangoldt_kappa_one_rate
-  refine ⟨(B₁ + 2) + 8 * 960000 ^ 2, by nlinarith [hB₁], ?_⟩
+  refine ⟨(B₁ + 2) + 8 * 960000 ^ (2 : ℕ), by nlinarith [hB₁], ?_⟩
   filter_upwards [hrate, eventually_ge_atTop (3 : ℝ),
     Real.tendsto_log_atTop.eventually_ge_atTop (16 : ℝ)] with N hcap hN3 hlogN
   have hN0 : (0 : ℝ) < N := by linarith
@@ -110,10 +110,10 @@ theorem exists_norm_sum_vonMangoldt_sub_mass_kappa_one_rate :
   -- absorb the polynomial
   have habs := sq_mul_exp_neg_le' hs0
   have hZE : (0 : ℝ) ≤ N + chebWidthOne N + 1 := by linarith
-  have hkey : 2 * (Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ 2
+  have hkey : 2 * (Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ (2 : ℕ)
         * ((N + chebWidthOne N + 1)
             * Real.exp (-(Real.sqrt (Real.log (N + chebWidthOne N + 1)) / 480000))))
-      ≤ 8 * 960000 ^ 2 * ((N + chebWidthOne N + 1)
+      ≤ 8 * 960000 ^ (2 : ℕ) * ((N + chebWidthOne N + 1)
           * Real.exp (-(Real.sqrt (Real.log (N + chebWidthOne N + 1)) / 960000))) := by
     have h := mul_le_mul_of_nonneg_left habs
       (by linarith : (0 : ℝ) ≤ 2 * (N + chebWidthOne N + 1))

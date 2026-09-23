@@ -39,8 +39,8 @@ theorem xiSquaredEulerOrbitCharge_nonneg (q : XiZeroCopy) :
 three-point matrix. -/
 theorem xiSquaredEulerOrbitCharge_lt_t_add_quarter (q : XiZeroCopy) :
     xiSquaredEulerOrbitCharge q < xiSquaredEulerOrbitT q + 1 / 4 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   have hu : u < 1 / 4 := by
     simpa only [u] using xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hv : 41 / 2 < v := by

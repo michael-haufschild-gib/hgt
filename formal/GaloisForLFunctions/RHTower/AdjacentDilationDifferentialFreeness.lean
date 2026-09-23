@@ -164,7 +164,7 @@ theorem adjacentDilationCoeff_prime_pow {m : ℕ} (hm : 0 < m) (q : Nat.Primes) 
     rw [h1, one_pow] at hb
     have h2 : (2 : ℕ) ≤ (q : ℕ) ^ m := by
       calc (2 : ℕ) ≤ (q : ℕ) := q.2.two_le
-        _ = (q : ℕ) ^ 1 := (pow_one _).symm
+        _ = (q : ℕ) ^ (1 : ℕ) := (pow_one _).symm
         _ ≤ (q : ℕ) ^ m := Nat.pow_le_pow_right q.2.one_lt.le hm
     rw [hb] at h2
     omega

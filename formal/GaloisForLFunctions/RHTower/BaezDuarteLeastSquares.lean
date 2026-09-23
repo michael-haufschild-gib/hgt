@@ -45,7 +45,7 @@ theorem bdDist_eq_of_normalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧
 theorem bdDist_sq_eq_of_normalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (c : I → ℂ)
     (hc : ∀ i, ∑ j, ((bdGram (θ i) (θ j) : ℝ) : ℂ) * c j
       = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ)) :
-    bdDist θ ^ 2
+    bdDist θ ^ (2 : ℕ)
       = 1 - RCLike.re (∑ i, (starRingEnd ℂ) (c i) * ((-(θ i * Real.log (θ i)) : ℝ) : ℂ)) := by
   have hnorm : ∀ i, inner ℂ (bdGen (θ i)) bdTarget = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ) :=
     fun i => inner_bdGen_bdTarget (hθ i).1 (hθ i).2
@@ -66,7 +66,7 @@ theorem bdDist_sq_eq_of_normalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i 
 Báez-Duarte distance is `1 + ∑ᵢ cᵢ θᵢ log θᵢ`. -/
 theorem bdDist_sq_eq_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (c : I → ℝ)
     (hc : ∀ i, ∑ j, bdGram (θ i) (θ j) * c j = -(θ i * Real.log (θ i))) :
-    bdDist θ ^ 2 = 1 + ∑ i, c i * (θ i * Real.log (θ i)) := by
+    bdDist θ ^ (2 : ℕ) = 1 + ∑ i, c i * (θ i * Real.log (θ i)) := by
   have hcC : ∀ i, ∑ j, ((bdGram (θ i) (θ j) : ℝ) : ℂ) * ((c j : ℝ) : ℂ)
       = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ) := by
     intro i
@@ -97,7 +97,7 @@ theorem bdDist_sq_eq_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < �
 carries exactly `−∑ᵢ cᵢ θᵢ log θᵢ` of the target's unit mass, the complement of the squared distance. -/
 theorem norm_sq_bdProjection_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1)
     (c : I → ℝ) (hc : ∀ i, ∑ j, bdGram (θ i) (θ j) * c j = -(θ i * Real.log (θ i))) :
-    ‖∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j)‖ ^ 2 = -∑ i, c i * (θ i * Real.log (θ i)) := by
+    ‖∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j)‖ ^ (2 : ℕ) = -∑ i, c i * (θ i * Real.log (θ i)) := by
   have hcC : ∀ i, ∑ j, ((bdGram (θ i) (θ j) : ℝ) : ℂ) * ((c j : ℝ) : ℂ)
       = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ) := by
     intro i
@@ -132,7 +132,7 @@ theorem norm_sq_bdProjection_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ 
 `d² ≤ 1 + 2∑ᵢ cᵢθᵢ log θᵢ + ∑ᵢⱼ cᵢcⱼ·bdGram θᵢ θⱼ`, with no hypothesis on `c`.  Minimising the right-hand
 side is the normal system, and `bdDist_sq_eq_of_realNormalEquations` is the value at its solution. -/
 theorem bdDist_sq_le_quadratic (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (c : I → ℝ) :
-    bdDist θ ^ 2
+    bdDist θ ^ (2 : ℕ)
       ≤ 1 + 2 * (∑ i, c i * (θ i * Real.log (θ i)))
         + ∑ i, ∑ j, c i * c j * bdGram (θ i) (θ j) := by
   classical
@@ -187,7 +187,7 @@ def BdDiscreteGramReciprocalCertificates : Prop :=
     ∃ c : {n // n ∈ Finset.range N} → ℝ,
       1 + 2 * (∑ i, c i * (bdDiscrete i * Real.log (bdDiscrete i)))
           + ∑ i, ∑ j, c i * c j * bdGram (bdDiscrete i) (bdDiscrete j)
-        < (1 / ((k + 1 : ℕ) : ℝ)) ^ 2
+        < (1 / ((k + 1 : ℕ) : ℝ)) ^ (2 : ℕ)
 
 /-- Every explicit finite Gram certificate supplies the corresponding reciprocal distance witness. -/
 theorem bdDistDiscrete_reciprocalWitnesses_of_gramCertificates
@@ -197,7 +197,7 @@ theorem bdDistDiscrete_reciprocalWitnesses_of_gramCertificates
   have hsq := bdDist_sq_le_quadratic
     (fun i : {n // n ∈ Finset.range N} => bdDiscrete i)
     (fun i => bdDiscrete_mem i.1) c
-  have hlt : bdDistDiscrete N ^ 2 < (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 :=
+  have hlt : bdDistDiscrete N ^ (2 : ℕ) < (1 / ((k + 1 : ℕ) : ℝ)) ^ (2 : ℕ) :=
     hsq.trans_lt hc
   have hd0 : 0 ≤ bdDistDiscrete N := (bdDistDiscrete_mem_Icc N).1
   have ht0 : 0 < 1 / ((k + 1 : ℕ) : ℝ) := by positivity

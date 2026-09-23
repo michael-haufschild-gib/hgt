@@ -65,7 +65,7 @@ omit [CharZero K] in
 /-- Every clocked quadratic detector generator remains square-zero. -/
 theorem quadraticCompletionDetectorGenerator_sq
     (q : K) (i : Fin n) :
-    (quadraticCompletionDetectorGenerator (M := M) (d := d) q i) ^ 2 = 0 := by
+    (quadraticCompletionDetectorGenerator (M := M) (d := d) q i) ^ (2 : ℕ) = 0 := by
   apply LinearMap.ext
   intro f
   funext x k
@@ -87,7 +87,7 @@ theorem quadraticCompletionDetectorGenerator_pow_degree
   have hpow : G ^ d = G ^ (2 + (d - 2)) :=
     congrArg (fun r : ℕ ↦ G ^ r) hdegree
   rw [show quadraticCompletionDetectorGenerator (M := M) (d := d) q i = G from rfl,
-    hpow, pow_add, show G ^ 2 = 0 by
+    hpow, pow_add, show G ^ (2 : ℕ) = 0 by
       exact quadraticCompletionDetectorGenerator_sq q i]
   simp
 

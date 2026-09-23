@@ -30,28 +30,28 @@ theorem integral_Icc_normSq_menonShellRough_le_count
     {A B z : ℕ} (hA : 1 ≤ A) {T : ℝ} (hT : 0 ≤ T) {C : ℝ}
     (hC : ((menonShellRough A B z).card : ℝ) ≤ C) :
     (∫ w in Set.Icc (-T) T,
-      ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ 2)
-      ≤ (5 * Real.pi / 2) * (C / (A : ℝ) ^ 2) * T
+      ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ (2 : ℕ))
+      ≤ (5 * Real.pi / 2) * (C / (A : ℝ) ^ (2 : ℕ)) * T
         + ((5 * Real.exp 1 / 2) * (C / (A : ℝ))
-          + (5 / 4) * (C / (A : ℝ) ^ 2)) := by
+          + (5 / 4) * (C / (A : ℝ) ^ (2 : ℕ))) := by
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast Nat.zero_lt_of_lt hA
   have hbase := integral_Icc_normSq_logPoly_harmonicMoebius_le_card
     (S := menonShellRough A B z) (A := A) (N := B) hA (menonShellRough_subset A B z) hT
   refine hbase.trans ?_
-  have h1 : ((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ 2 ≤ C / (A : ℝ) ^ 2 :=
+  have h1 : ((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ (2 : ℕ) ≤ C / (A : ℝ) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_right hC (by positivity)
   have h2 : ((menonShellRough A B z).card : ℝ) / (A : ℝ) ≤ C / (A : ℝ) :=
     div_le_div_of_nonneg_right hC hA0.le
   have hpi : (0 : ℝ) ≤ 5 * Real.pi / 2 := by positivity
   have he : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 := by positivity
-  have s1 : (5 * Real.pi / 2) * (((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ 2) * T
-      ≤ (5 * Real.pi / 2) * (C / (A : ℝ) ^ 2) * T :=
+  have s1 : (5 * Real.pi / 2) * (((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ (2 : ℕ)) * T
+      ≤ (5 * Real.pi / 2) * (C / (A : ℝ) ^ (2 : ℕ)) * T :=
     mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 hpi) hT
   have s2 : (5 * Real.exp 1 / 2) * (((menonShellRough A B z).card : ℝ) / (A : ℝ))
       ≤ (5 * Real.exp 1 / 2) * (C / (A : ℝ)) :=
     mul_le_mul_of_nonneg_left h2 he
-  have s3 : (5 / 4 : ℝ) * (((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ 2)
-      ≤ (5 / 4 : ℝ) * (C / (A : ℝ) ^ 2) :=
+  have s3 : (5 / 4 : ℝ) * (((menonShellRough A B z).card : ℝ) / (A : ℝ) ^ (2 : ℕ))
+      ≤ (5 / 4 : ℝ) * (C / (A : ℝ) ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left h1 (by norm_num)
   linarith
 
@@ -61,14 +61,14 @@ theorem integral_Icc_normSq_menonShellRough_le_brun
     {A B z r : ℕ} (hA : 1 ≤ A) (hz : 2 ≤ z) (hAB : A - 1 ≤ B) (hr : Even r)
     {lam : ℝ} (hlam : 1 ≤ lam) {T : ℝ} (hT : 0 ≤ T) :
     (∫ w in Set.Icc (-T) T,
-      ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2) *
             (((((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                   * (Real.exp mertensSecondLowerConst / Real.log z)
                 + ((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                     * (Real.exp (lam * mertensSecondUpperConst)
                         * (Real.log z) ^ lam / lam ^ r)
-                + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ 2) * T
+                + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ (2 : ℕ)) * T
         + ((5 * Real.exp 1 / 2) *
               (((((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                     * (Real.exp mertensSecondLowerConst / Real.log z)
@@ -82,7 +82,7 @@ theorem integral_Icc_normSq_menonShellRough_le_brun
                   + ((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                       * (Real.exp (lam * mertensSecondUpperConst)
                           * (Real.log z) ^ lam / lam ^ r)
-                  + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ 2)) := by
+                  + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ (2 : ℕ))) := by
   classical
   have hIcc : Finset.Icc A B = Finset.Ioc (A - 1) B := by
     ext n

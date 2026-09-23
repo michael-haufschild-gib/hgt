@@ -171,8 +171,8 @@ theorem JacobiData.projNorm_eq_form_sub (J : JacobiData n) (i : Fin n) (v : Fin 
   classical
   obtain ⟨w, hw, hmatch⟩ := J.exists_proj i v
   refine ⟨w, hw, ?_⟩
-  have hall : ∀ m : Fin n, J.d m * ((J.U *ᵥ (v - w)) m) ^ 2
-      = if i ≤ m then J.d m * ((J.U *ᵥ v) m) ^ 2 else 0 := by
+  have hall : ∀ m : Fin n, J.d m * ((J.U *ᵥ (v - w)) m) ^ (2 : ℕ)
+      = if i ≤ m then J.d m * ((J.U *ᵥ v) m) ^ (2 : ℕ) else 0 := by
     intro m
     by_cases hm : i ≤ m
     · rw [if_pos hm]

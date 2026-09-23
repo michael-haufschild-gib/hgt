@@ -25,9 +25,9 @@ def belinskiZakharovJacobiTodaAPrime (_ : ℕ) : ℝ := 0
 
 /-- The diagonal derivative required by the nonisospectral Toda law. -/
 def belinskiZakharovJacobiTodaBPrime (n : ℕ) : ℝ :=
-  2 * ((n : ℝ) - 1) * belinskiZakharovJacobiTodaA n ^ 2 -
-    2 * ((n : ℝ) + 1) * belinskiZakharovJacobiTodaA (n + 1) ^ 2 -
-      belinskiZakharovJacobiTodaB n ^ 2
+  2 * ((n : ℝ) - 1) * belinskiZakharovJacobiTodaA n ^ (2 : ℕ) -
+    2 * ((n : ℝ) + 1) * belinskiZakharovJacobiTodaA (n + 1) ^ (2 : ℕ) -
+      belinskiZakharovJacobiTodaB n ^ (2 : ℕ)
 
 /-- The declared coefficient system satisfies the Toda derivative relations without any external
 solution or regularity premise. -/
@@ -52,7 +52,7 @@ theorem belinskiZakharovJacobiToda_riccati (m : ℕ) :
           jacobiCompression belinskiZakharovJacobiTodaA belinskiZakharovJacobiTodaB (m + 1)
         - jacobiCompression belinskiZakharovJacobiTodaA belinskiZakharovJacobiTodaB (m + 1) *
           jacobiCompression belinskiZakharovJacobiTodaA belinskiZakharovJacobiTodaB (m + 1)
-        - (2 * ((m : ℝ) + 1) * belinskiZakharovJacobiTodaA (m + 1) ^ 2) •
+        - (2 * ((m : ℝ) + 1) * belinskiZakharovJacobiTodaA (m + 1) ^ (2 : ℕ)) •
             Matrix.vecMulVec (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0)
               (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0) :=
   jacobiCompression_deriv_eq_riccati _ _ _ _ belinskiZakharovJacobiToda_deriv m

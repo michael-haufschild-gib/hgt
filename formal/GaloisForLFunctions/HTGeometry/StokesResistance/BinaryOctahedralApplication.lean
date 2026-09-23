@@ -122,7 +122,7 @@ theorem ker_qubitClifford_invarianceDefect_eq_bot :
 theorem qubitClifford_symmetricTensor_character (g : BinaryOctahedral) :
     Matrix.trace
         (symmetricTensorProjection * (qubitClifford g ⊗ₖ qubitClifford g)) =
-      (Matrix.trace (qubitClifford g) ^ 2 +
+      (Matrix.trace (qubitClifford g) ^ (2 : ℕ) +
         Matrix.trace (qubitClifford g * qubitClifford g)) / 2 :=
   trace_symmetricTensorProjection_mul_kronecker_self (qubitClifford g)
 

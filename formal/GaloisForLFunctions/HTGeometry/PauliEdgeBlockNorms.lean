@@ -31,7 +31,7 @@ section HilbertSchmidt
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- The squared Hilbert--Schmidt norm of a finite matrix. -/
-def hsNormSq (A : Matrix n n ℂ) : ℝ := ∑ y, ∑ x, ‖A x y‖ ^ 2
+def hsNormSq (A : Matrix n n ℂ) : ℝ := ∑ y, ∑ x, ‖A x y‖ ^ (2 : ℕ)
 
 theorem hsNormSq_nonneg (A : Matrix n n ℂ) : 0 ≤ hsNormSq A :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
@@ -46,7 +46,7 @@ theorem hsNormSq_eq_sum_star (A : Matrix n n ℂ) :
 
 /-- **One column of a matrix is shorter than its operator norm.** -/
 theorem sum_sq_column_le (A : Matrix n n ℂ) (y : n) :
-    (∑ x, ‖A x y‖ ^ 2) ≤ ‖A‖ ^ 2 := by
+    (∑ x, ‖A x y‖ ^ (2 : ℕ)) ≤ ‖A‖ ^ (2 : ℕ) := by
   have hsingle : ‖(EuclideanSpace.single y (1 : ℂ))‖ = 1 := by simp
   have hbound := Matrix.l2_opNorm_mulVec A (EuclideanSpace.single y (1 : ℂ))
   rw [hsingle, mul_one] at hbound
@@ -55,20 +55,20 @@ theorem sum_sq_column_le (A : Matrix n n ℂ) (y : n) :
     simp [Matrix.mulVec_apply]
   rw [hvec] at hbound
   have hnorm : ‖(EuclideanSpace.equiv n ℂ).symm (fun x => A x y)‖
-      = Real.sqrt (∑ x, ‖A x y‖ ^ 2) := by
+      = Real.sqrt (∑ x, ‖A x y‖ ^ (2 : ℕ)) := by
     rw [EuclideanSpace.norm_eq]
     rfl
   rw [hnorm] at hbound
   have hsqrt := Real.sq_sqrt
-    (Finset.sum_nonneg fun x _ => by positivity : (0:ℝ) ≤ ∑ x, ‖A x y‖ ^ 2)
-  nlinarith [Real.sqrt_nonneg (∑ x, ‖A x y‖ ^ 2), norm_nonneg A]
+    (Finset.sum_nonneg fun x _ => by positivity : (0:ℝ) ≤ ∑ x, ‖A x y‖ ^ (2 : ℕ))
+  nlinarith [Real.sqrt_nonneg (∑ x, ‖A x y‖ ^ (2 : ℕ)), norm_nonneg A]
 
 /-- **The Hilbert--Schmidt norm is at most the dimension times the operator norm.** -/
 theorem hsNormSq_le_card_mul_sq (A : Matrix n n ℂ) :
-    hsNormSq A ≤ (Fintype.card n : ℝ) * ‖A‖ ^ 2 := by
-  calc hsNormSq A = ∑ y, ∑ x, ‖A x y‖ ^ 2 := rfl
-    _ ≤ ∑ _y : n, ‖A‖ ^ 2 := Finset.sum_le_sum fun y _ => sum_sq_column_le A y
-    _ = (Fintype.card n : ℝ) * ‖A‖ ^ 2 := by
+    hsNormSq A ≤ (Fintype.card n : ℝ) * ‖A‖ ^ (2 : ℕ) := by
+  calc hsNormSq A = ∑ y, ∑ x, ‖A x y‖ ^ (2 : ℕ) := rfl
+    _ ≤ ∑ _y : n, ‖A‖ ^ (2 : ℕ) := Finset.sum_le_sum fun y _ => sum_sq_column_le A y
+    _ = (Fintype.card n : ℝ) * ‖A‖ ^ (2 : ℕ) := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 end HilbertSchmidt
@@ -128,25 +128,25 @@ string has operator norm one, so a real combination of `N` of them has operator 
 theorem l2_opNorm_pauliCombination_le {κ : Type*} [Fintype κ]
     (P : κ → σ → Option (Fin 3)) (J : κ → ℝ) :
     ‖∑ k, ((J k : ℝ) : ℂ) • finitePauliMatrix (P k)‖
-      ≤ Real.sqrt (Fintype.card κ) * Real.sqrt (∑ k, J k ^ 2) := by
+      ≤ Real.sqrt (Fintype.card κ) * Real.sqrt (∑ k, J k ^ (2 : ℕ)) := by
   classical
   have hsum : ‖∑ k, ((J k : ℝ) : ℂ) • finitePauliMatrix (P k)‖ ≤ ∑ k, |J k| := by
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun k _ => ?_)
     rw [norm_smul, l2_opNorm_finitePauliMatrix, mul_one, Complex.norm_real, Real.norm_eq_abs]
-  have hsq : (∑ k, |J k|) ^ 2 ≤ (Fintype.card κ : ℝ) * ∑ k, J k ^ 2 := by
+  have hsq : (∑ k, |J k|) ^ (2 : ℕ) ≤ (Fintype.card κ : ℝ) * ∑ k, J k ^ (2 : ℕ) := by
     have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset κ)) (f := fun k => |J k|)
     rw [Finset.card_univ] at h
-    calc (∑ k, |J k|) ^ 2 ≤ (Fintype.card κ : ℝ) * ∑ k, |J k| ^ 2 := h
-      _ = (Fintype.card κ : ℝ) * ∑ k, J k ^ 2 := by
+    calc (∑ k, |J k|) ^ (2 : ℕ) ≤ (Fintype.card κ : ℝ) * ∑ k, |J k| ^ (2 : ℕ) := h
+      _ = (Fintype.card κ : ℝ) * ∑ k, J k ^ (2 : ℕ) := by
           refine congrArg _ (Finset.sum_congr rfl fun k _ => ?_)
           rw [sq_abs]
   have hnn : 0 ≤ ∑ k, |J k| := Finset.sum_nonneg fun _ _ => abs_nonneg _
-  have hprod : Real.sqrt (Fintype.card κ) * Real.sqrt (∑ k, J k ^ 2)
-      = Real.sqrt ((Fintype.card κ : ℝ) * ∑ k, J k ^ 2) :=
+  have hprod : Real.sqrt (Fintype.card κ) * Real.sqrt (∑ k, J k ^ (2 : ℕ))
+      = Real.sqrt ((Fintype.card κ : ℝ) * ∑ k, J k ^ (2 : ℕ)) :=
     (Real.sqrt_mul (by positivity) _).symm
   rw [hprod]
   refine le_trans hsum ?_
-  rw [show (∑ k, |J k|) = Real.sqrt ((∑ k, |J k|) ^ 2) from (Real.sqrt_sq hnn).symm]
+  rw [show (∑ k, |J k|) = Real.sqrt ((∑ k, |J k|) ^ (2 : ℕ)) from (Real.sqrt_sq hnn).symm]
   exact Real.sqrt_le_sqrt hsq
 
 end PauliNorm
@@ -185,19 +185,19 @@ def edgeInteraction (J : Fin 3 × Fin 3 → ℝ) :
   ∑ ab, ((J ab : ℝ) : ℂ) • finitePauliMatrix (edgeWord ab)
 
 /-- The Euclidean norm of the nine edge coefficients. -/
-def edgeRho (J : Fin 3 × Fin 3 → ℝ) : ℝ := Real.sqrt (∑ ab, J ab ^ 2)
+def edgeRho (J : Fin 3 × Fin 3 → ℝ) : ℝ := Real.sqrt (∑ ab, J ab ^ (2 : ℕ))
 
 theorem edgeRho_nonneg (J : Fin 3 × Fin 3 → ℝ) : 0 ≤ edgeRho J := Real.sqrt_nonneg _
 
-theorem edgeRho_sq (J : Fin 3 × Fin 3 → ℝ) : edgeRho J ^ 2 = ∑ ab, J ab ^ 2 :=
+theorem edgeRho_sq (J : Fin 3 × Fin 3 → ℝ) : edgeRho J ^ (2 : ℕ) = ∑ ab, J ab ^ (2 : ℕ) :=
   Real.sq_sqrt (Finset.sum_nonneg fun _ _ => by positivity)
 
 /-- **`(21)`, the Hilbert--Schmidt half.**  The squared Hilbert--Schmidt norm of the edge
 interaction is four times the squared coefficient norm. -/
 theorem hsNormSq_edgeInteraction (J : Fin 3 × Fin 3 → ℝ) :
-    hsNormSq (edgeInteraction J) = 4 * edgeRho J ^ 2 := by
+    hsNormSq (edgeInteraction J) = 4 * edgeRho J ^ (2 : ℕ) := by
   classical
-  have hcomplex : ((hsNormSq (edgeInteraction J) : ℝ) : ℂ) = ((4 * edgeRho J ^ 2 : ℝ) : ℂ) := by
+  have hcomplex : ((hsNormSq (edgeInteraction J) : ℝ) : ℂ) = ((4 * edgeRho J ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hsNormSq_eq_sum_star]
     have hexp : ∀ x y : FiniteQubitConfiguration Bool,
         star (edgeInteraction J x y) * edgeInteraction J x y
@@ -235,12 +235,12 @@ theorem hsNormSq_edgeInteraction (J : Fin 3 × Fin 3 → ℝ) :
             (if edgeWord ab = edgeWord cd then (2 : ℂ) ^ Fintype.card Bool else 0) := by
           refine Finset.sum_congr rfl fun ab _ => Finset.sum_congr rfl fun cd _ => ?_
           rw [sum_star_finitePauliMatrix, finitePauliHilbertSchmidt_eq]
-      _ = ((4 * edgeRho J ^ 2 : ℝ) : ℂ) := by
+      _ = ((4 * edgeRho J ^ (2 : ℕ) : ℝ) : ℂ) := by
           have hcard : Fintype.card Bool = 2 := rfl
           simp only [hcard]
           have hinner : ∀ ab : Fin 3 × Fin 3,
               (∑ cd, ((J ab : ℝ) : ℂ) * ((J cd : ℝ) : ℂ) *
-                (if edgeWord ab = edgeWord cd then (2 : ℂ) ^ 2 else 0))
+                (if edgeWord ab = edgeWord cd then (2 : ℂ) ^ (2 : ℕ) else 0))
                 = 4 * ((J ab : ℝ) : ℂ) * ((J ab : ℝ) : ℂ) := by
             intro ab
             rw [Finset.sum_eq_single ab]
@@ -267,13 +267,13 @@ theorem l2_opNorm_edgeInteraction_le (J : Fin 3 × Fin 3 → ℝ) :
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun ab _ => ?_)
     rw [norm_smul, l2_opNorm_finitePauliMatrix, mul_one, Complex.norm_real, Real.norm_eq_abs]
   have hcs : (∑ ab, |J ab|) ≤ 3 * edgeRho J := by
-    have hsq : (∑ ab, |J ab|) ^ 2 ≤ 9 * ∑ ab, J ab ^ 2 := by
+    have hsq : (∑ ab, |J ab|) ^ (2 : ℕ) ≤ 9 * ∑ ab, J ab ^ (2 : ℕ) := by
       have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Fin 3 × Fin 3)))
         (f := fun ab => |J ab|)
       have hcard : (((Finset.univ : Finset (Fin 3 × Fin 3)).card : ℕ) : ℝ) = 9 := by simp
       rw [hcard] at h
-      calc (∑ ab, |J ab|) ^ 2 ≤ 9 * ∑ ab, |J ab| ^ 2 := h
-        _ = 9 * ∑ ab, J ab ^ 2 := by
+      calc (∑ ab, |J ab|) ^ (2 : ℕ) ≤ 9 * ∑ ab, |J ab| ^ (2 : ℕ) := h
+        _ = 9 * ∑ ab, J ab ^ (2 : ℕ) := by
             refine congrArg _ (Finset.sum_congr rfl fun ab _ => ?_)
             rw [sq_abs]
     have hnn : 0 ≤ ∑ ab, |J ab| := Finset.sum_nonneg fun _ _ => abs_nonneg _

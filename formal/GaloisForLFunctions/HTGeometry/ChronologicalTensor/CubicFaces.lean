@@ -120,9 +120,9 @@ theorem cubicFaces_disjoint :
 def cubicFacePolynomial (z : ℤ) : ℤ := ∑ σ ∈ cubicFaces, z^σ.card
 
 theorem cubicFacePolynomial_eq (z : ℤ) :
-    cubicFacePolynomial z=(1+z)^3+2*z+3*z^2 := by
+    cubicFacePolynomial z=(1+z)^(3 : ℕ)+2*z+3*z^(2 : ℕ) := by
   have ht := Finset.prod_add (fun _ : Fin 5 => z) (fun _ => (1 : ℤ)) {0,2,4}
-  have ht' : ∑ σ ∈ ({0,2,4} : Finset (Fin 5)).powerset, z^σ.card=(1+z)^3 := by
+  have ht' : ∑ σ ∈ ({0,2,4} : Finset (Fin 5)).powerset, z^σ.card=(1+z)^(3 : ℕ) := by
     simpa [add_comm] using ht.symm
   unfold cubicFacePolynomial
   rw [cubicFaces_decomposition,Finset.sum_union cubicFaces_disjoint,ht']

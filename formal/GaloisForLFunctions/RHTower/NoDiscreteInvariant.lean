@@ -49,18 +49,18 @@ namespace RHTower
 /-- The deforming quartic: an off-critical quadruple `½ ± a ± iγ` for `a > 0`, degenerating to a
 doubled critical pair at `a = 0`. -/
 def quadrupleFactor (a gam : ℝ) (s : ℂ) : ℂ :=
-  ((s - 1 / 2) ^ 2 - ((a : ℂ) + (gam : ℂ) * I) ^ 2) *
-    ((s - 1 / 2) ^ 2 - ((a : ℂ) - (gam : ℂ) * I) ^ 2)
+  ((s - 1 / 2) ^ (2 : ℕ) - ((a : ℂ) + (gam : ℂ) * I) ^ (2 : ℕ)) *
+    ((s - 1 / 2) ^ (2 : ℕ) - ((a : ℂ) - (gam : ℂ) * I) ^ (2 : ℕ))
 
 /-- **The degeneration.**  At `a = 0` the quadruple collapses to a doubled critical pair
 `((s-½)² + γ²)²`. -/
 theorem quadrupleFactor_zero (gam : ℝ) (s : ℂ) :
-    quadrupleFactor 0 gam s = ((s - 1 / 2) ^ 2 + (gam : ℂ) ^ 2) ^ 2 := by
+    quadrupleFactor 0 gam s = ((s - 1 / 2) ^ (2 : ℕ) + (gam : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   unfold quadrupleFactor
   simp only [Complex.ofReal_zero, zero_add, zero_sub]
-  have h : ((gam : ℂ) * I) ^ 2 = -(gam : ℂ) ^ 2 := by
+  have h : ((gam : ℂ) * I) ^ (2 : ℕ) = -(gam : ℂ) ^ (2 : ℕ) := by
     rw [mul_pow, Complex.I_sq]; ring
-  rw [show (-((gam : ℂ) * I)) ^ 2 = ((gam : ℂ) * I) ^ 2 from by ring, h]
+  rw [show (-((gam : ℂ) * I)) ^ (2 : ℕ) = ((gam : ℂ) * I) ^ (2 : ℕ) from by ring, h]
   ring
 
 /-- The deformation is continuous in the parameter. -/

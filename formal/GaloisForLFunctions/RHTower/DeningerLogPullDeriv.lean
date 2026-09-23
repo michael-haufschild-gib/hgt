@@ -62,8 +62,8 @@ theorem deningerExpSchwartz_deriv_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h ∈ Denin
 factor exactly, so `x H_h'(x)` obeys the same bound as the pullback. -/
 theorem deningerLogPullDeriv_weighted_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y →
-      y * ‖deningerLogPullDeriv h y‖ ≤ C * y ^ 2 ∧
-      y * ‖deningerLogPullDeriv h y‖ ≤ C / y ^ 2 := by
+      y * ‖deningerLogPullDeriv h y‖ ≤ C * y ^ (2 : ℕ) ∧
+      y * ‖deningerLogPullDeriv h y‖ ≤ C / y ^ (2 : ℕ) := by
   obtain ⟨C, hCnn, hC⟩ := deningerExpSchwartz_deriv_norm_le hh 2
   refine ⟨C, hCnn, fun y hy => ?_⟩
   have hcancel : y * ‖deningerLogPullDeriv h y‖ = ‖deriv (h : ℝ → ℂ) (Real.log y)‖ := by
@@ -79,19 +79,19 @@ theorem deningerLogPullDeriv_weighted_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h ∈ D
         = Real.exp (2 * |Real.log y|) * ‖deriv (h : ℝ → ℂ) (Real.log y)‖ := by ring
       _ ≤ C := hval
   have hlog : Real.exp (Real.log y) = y := Real.exp_log hy
-  have hup : Real.exp (-(2 * |Real.log y|)) ≤ y ^ 2 := by
+  have hup : Real.exp (-(2 * |Real.log y|)) ≤ y ^ (2 : ℕ) := by
     have hle : -(2 * |Real.log y|) ≤ 2 * Real.log y := by
       have := neg_abs_le (Real.log y)
       linarith [abs_nonneg (Real.log y)]
     have hexp := Real.exp_le_exp.mpr hle
     rwa [show (2 : ℝ) * Real.log y = Real.log y + Real.log y by ring, Real.exp_add, hlog,
       ← pow_two] at hexp
-  have hdown : Real.exp (-(2 * |Real.log y|)) ≤ 1 / y ^ 2 := by
+  have hdown : Real.exp (-(2 * |Real.log y|)) ≤ 1 / y ^ (2 : ℕ) := by
     have hle : -(2 * |Real.log y|) ≤ -(2 * Real.log y) := by
       have := le_abs_self (Real.log y)
       linarith
     have hexp := Real.exp_le_exp.mpr hle
-    have hval : Real.exp (-(2 * Real.log y)) = 1 / y ^ 2 := by
+    have hval : Real.exp (-(2 * Real.log y)) = 1 / y ^ (2 : ℕ) := by
       rw [Real.exp_neg, show (2 : ℝ) * Real.log y = Real.log y + Real.log y by ring,
         Real.exp_add, hlog, ← pow_two, one_div]
     rwa [hval] at hexp

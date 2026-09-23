@@ -96,7 +96,7 @@ theorem abs_criticalMellinChebyshevResolventSource_log_nat_le_of_integerLagMeanB
         calc
           (M : ℝ) = 1 * M := (one_mul _).symm
           _ ≤ M * M := mul_le_mul_of_nonneg_right hMone hMpos.le
-          _ = (M : ℝ) ^ 2 := (pow_two _).symm
+          _ = (M : ℝ) ^ (2 : ℕ) := (pow_two _).symm
   have hcharge := coherentCompletedOutgoing_eq_abel_add_latticeDefect_div hM
   rw [← hshift, coherentSelbergSquareRootAbelMoment_eq_integerLagMean, add_div] at hcharge
   have hchargeM : unitRieszCoherentCompletedOutgoingCharge M =

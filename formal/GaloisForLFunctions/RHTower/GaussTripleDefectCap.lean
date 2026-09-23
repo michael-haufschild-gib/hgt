@@ -15,22 +15,22 @@ noncomputable section
 
 theorem three_mul_mul_mul_le_sum_cubes {x y z : ℝ}
     (hx : 0 ≤ x) (hy : 0 ≤ y) (hz : 0 ≤ z) :
-    3 * x * y * z ≤ x ^ 3 + y ^ 3 + z ^ 3 := by
+    3 * x * y * z ≤ x ^ (3 : ℕ) + y ^ (3 : ℕ) + z ^ (3 : ℕ) := by
   have hsum : 0 ≤ x + y + z := by linarith
-  have hsquares : 0 ≤ (x - y) ^ 2 + (y - z) ^ 2 + (z - x) ^ 2 := by positivity
+  have hsquares : 0 ≤ (x - y) ^ (2 : ℕ) + (y - z) ^ (2 : ℕ) + (z - x) ^ (2 : ℕ) := by positivity
   have hprod := mul_nonneg hsum hsquares
   nlinarith
 
 theorem three_mul_le_cube_add_two {x : ℝ} (hx : 0 ≤ x) :
-    3 * x ≤ x ^ 3 + 2 := by
-  have hprod : 0 ≤ (x - 1) ^ 2 * (x + 2) :=
+    3 * x ≤ x ^ (3 : ℕ) + 2 := by
+  have hprod : 0 ≤ (x - 1) ^ (2 : ℕ) * (x + 2) :=
     mul_nonneg (sq_nonneg _) (by linarith)
   nlinarith
 
 theorem triple_one_add_product_le_cube_sum {x y z : ℝ}
     (hx : 0 ≤ x) (hy : 0 ≤ y) (hz : 0 ≤ z) :
     (x + 1) * (y + 1) * (z + 1) ≤
-      4 + (4 / 3 : ℝ) * (x ^ 3 + y ^ 3 + z ^ 3) := by
+      4 + (4 / 3 : ℝ) * (x ^ (3 : ℕ) + y ^ (3 : ℕ) + z ^ (3 : ℕ)) := by
   have hxyz := three_mul_mul_mul_le_sum_cubes hx hy hz
   have hxy := three_mul_mul_mul_le_sum_cubes hx hy (by norm_num : (0 : ℝ) ≤ 1)
   have hxz := three_mul_mul_mul_le_sum_cubes hx hz (by norm_num : (0 : ℝ) ≤ 1)
@@ -48,9 +48,9 @@ theorem norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
       ‖gaussSampleValue k p a‖ ^ (2 * m) * (a.natAbs : ℝ)
         ≤ K * (‖gaussSampleValue k p b‖ ^ (2 * m) * (b.natAbs : ℝ)))
     (I : ℕ) (j l r : ℤ) :
-    ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 *
-        ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2
+    ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ (2 : ℕ) *
+        ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ (2 : ℕ) *
+          ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ (2 : ℕ)
       ≤ 64 + 12 * K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) +
           12 * K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ) +
           12 * K * (I : ℝ) / (((I : ℤ) + r).natAbs : ℝ) := by
@@ -72,7 +72,7 @@ theorem norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
     rw [norm_div, norm_gaussSampleRotation (m := m)]
   have hsq : ∀ (x : ℤ) (R : ℝ),
       R = ‖gaussSampleValue k p ((I : ℤ) + x)‖ / ‖gaussSampleValue k p (I : ℤ)‖ →
-      ‖gaussSampleRatioDefect k p x (I : ℤ)‖ ^ 2 ≤ 2 * R ^ 2 + 2 := by
+      ‖gaussSampleRatioDefect k p x (I : ℤ)‖ ^ (2 : ℕ) ≤ 2 * R ^ (2 : ℕ) + 2 := by
     intro x R hR
     have h := htri x
     rw [← hR] at h
@@ -80,43 +80,43 @@ theorem norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
   have hsqj := hsq j Rj hRj
   have hsql := hsq l Rl hRl
   have hsqr := hsq r Rr hRr
-  have hpow6 : ∀ {R : ℝ}, 0 ≤ R → R ^ 6 ≤ 1 + R ^ (2 * m) := by
+  have hpow6 : ∀ {R : ℝ}, 0 ≤ R → R ^ (6 : ℕ) ≤ 1 + R ^ (2 * m) := by
     intro R hR
     rcases le_or_gt R 1 with h | h
-    · have h1 : R ^ 6 ≤ 1 := pow_le_one₀ hR h
+    · have h1 : R ^ (6 : ℕ) ≤ 1 := pow_le_one₀ hR h
       exact h1.trans (le_add_of_nonneg_right (pow_nonneg hR _))
-    · have h1 : R ^ 6 ≤ R ^ (2 * m) := pow_le_pow_right₀ h.le (by omega)
+    · have h1 : R ^ (6 : ℕ) ≤ R ^ (2 * m) := pow_le_pow_right₀ h.le (by omega)
       linarith
   have hcapj := norm_gaussSampleRatio_pow_le hm1 k p hKb I j
   have hcapl := norm_gaussSampleRatio_pow_le hm1 k p hKb I l
   have hcapr := norm_gaussSampleRatio_pow_le hm1 k p hKb I r
-  have hj6 : Rj ^ 6 ≤ 1 + K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) :=
+  have hj6 : Rj ^ (6 : ℕ) ≤ 1 + K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) :=
     (hpow6 hRj0).trans (by linarith)
-  have hl6 : Rl ^ 6 ≤ 1 + K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ) :=
+  have hl6 : Rl ^ (6 : ℕ) ≤ 1 + K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ) :=
     (hpow6 hRl0).trans (by linarith)
-  have hr6 : Rr ^ 6 ≤ 1 + K * (I : ℝ) / (((I : ℤ) + r).natAbs : ℝ) :=
+  have hr6 : Rr ^ (6 : ℕ) ≤ 1 + K * (I : ℝ) / (((I : ℤ) + r).natAbs : ℝ) :=
     (hpow6 hRr0).trans (by linarith)
   have hprod :
-      ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 *
-            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2
-        ≤ (2 * Rj ^ 2 + 2) * (2 * Rl ^ 2 + 2) * (2 * Rr ^ 2 + 2) := by
-    have hj0 : 0 ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 := by positivity
-    have hl0 : 0 ≤ ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 := by positivity
-    have hr0 : 0 ≤ ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2 := by positivity
+      ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ (2 : ℕ) *
+          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ (2 : ℕ) *
+            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ (2 : ℕ)
+        ≤ (2 * Rj ^ (2 : ℕ) + 2) * (2 * Rl ^ (2 : ℕ) + 2) * (2 * Rr ^ (2 : ℕ) + 2) := by
+    have hj0 : 0 ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ (2 : ℕ) := by positivity
+    have hl0 : 0 ≤ ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ (2 : ℕ) := by positivity
+    have hr0 : 0 ≤ ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ (2 : ℕ) := by positivity
     have hleft := mul_le_mul hsqj hsql hl0 (by positivity)
     exact mul_le_mul hleft hsqr hr0 (by positivity)
   have hone := triple_one_add_product_le_cube_sum
-    (x := Rj ^ 2) (y := Rl ^ 2) (z := Rr ^ 2) (by positivity) (by positivity) (by positivity)
+    (x := Rj ^ (2 : ℕ)) (y := Rl ^ (2 : ℕ)) (z := Rr ^ (2 : ℕ)) (by positivity) (by positivity) (by positivity)
   calc
-    ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 *
-            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2
-        ≤ (2 * Rj ^ 2 + 2) * (2 * Rl ^ 2 + 2) * (2 * Rr ^ 2 + 2) := hprod
-    _ = 8 * ((Rj ^ 2 + 1) * (Rl ^ 2 + 1) * (Rr ^ 2 + 1)) := by ring
-    _ ≤ 8 * (4 + (4 / 3 : ℝ) * ((Rj ^ 2) ^ 3 + (Rl ^ 2) ^ 3 + (Rr ^ 2) ^ 3)) := by
+    ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ (2 : ℕ) *
+          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ (2 : ℕ) *
+            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ (2 : ℕ)
+        ≤ (2 * Rj ^ (2 : ℕ) + 2) * (2 * Rl ^ (2 : ℕ) + 2) * (2 * Rr ^ (2 : ℕ) + 2) := hprod
+    _ = 8 * ((Rj ^ (2 : ℕ) + 1) * (Rl ^ (2 : ℕ) + 1) * (Rr ^ (2 : ℕ) + 1)) := by ring
+    _ ≤ 8 * (4 + (4 / 3 : ℝ) * ((Rj ^ (2 : ℕ)) ^ (3 : ℕ) + (Rl ^ (2 : ℕ)) ^ (3 : ℕ) + (Rr ^ (2 : ℕ)) ^ (3 : ℕ))) := by
       exact mul_le_mul_of_nonneg_left hone (by norm_num)
-    _ = 32 + (32 / 3 : ℝ) * (Rj ^ 6 + Rl ^ 6 + Rr ^ 6) := by ring
+    _ = 32 + (32 / 3 : ℝ) * (Rj ^ (6 : ℕ) + Rl ^ (6 : ℕ) + Rr ^ (6 : ℕ)) := by ring
     _ ≤ 32 + (32 / 3 : ℝ) *
         ((1 + K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ)) +
          (1 + K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ)) +
@@ -149,9 +149,9 @@ theorem norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
 /-- Closed three-component cubic defect cap with its arithmetic constant constructed internally. -/
 theorem exists_gaussTripleDefectCap (k : Fin 3) (p : Nat.Primes) :
     ∃ K : ℝ, 0 < K ∧ ∀ (I : ℕ) (j l r : ℤ),
-      ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 *
-            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2
+      ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ (2 : ℕ) *
+          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ (2 : ℕ) *
+            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ (2 : ℕ)
         ≤ 64 + 12 * K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) +
             12 * K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ) +
             12 * K * (I : ℝ) / (((I : ℤ) + r).natAbs : ℝ) := by

@@ -244,13 +244,13 @@ noncomputable def evenPowerSeriesSubstHom : PowerSeries ℂ →ₐ[ℂ] PowerSer
 
 @[simp]
 theorem evenPowerSeriesSubstHom_X :
-    evenPowerSeriesSubstHom PowerSeries.X = (PowerSeries.X : PowerSeries ℂ) ^ 2 := by
+    evenPowerSeriesSubstHom PowerSeries.X = (PowerSeries.X : PowerSeries ℂ) ^ (2 : ℕ) := by
   exact PowerSeries.substAlgHom_X
     (PowerSeries.HasSubst.X_pow (by omega : 2 ≠ 0))
 
 theorem evenPowerSeriesSubstHom_apply (f : PowerSeries ℂ) :
     evenPowerSeriesSubstHom f =
-      PowerSeries.subst ((PowerSeries.X : PowerSeries ℂ) ^ 2) f := by
+      PowerSeries.subst ((PowerSeries.X : PowerSeries ℂ) ^ (2 : ℕ)) f := by
   exact congrFun (PowerSeries.coe_substAlgHom
     (PowerSeries.HasSubst.X_pow (by omega : 2 ≠ 0))) f
 
@@ -297,7 +297,7 @@ theorem evenPowerSeriesSubstHom_covariance_mul
 
 omit [DecidableEq K] in
 theorem matrixDysonResolventSeries_eq (A : K → Matrix I I ℂ) :
-    matrixDysonResolventSeries A = 1 + (PowerSeries.X ^ 2 : PowerSeries ℂ) •
+    matrixDysonResolventSeries A = 1 + (PowerSeries.X ^ (2 : ℕ) : PowerSeries ℂ) •
       (matrixSemicircleCovariancePowerSeries A (matrixDysonResolventSeries A) *
         matrixDysonResolventSeries A) := by
   let φ := evenPowerSeriesSubstHom
@@ -308,7 +308,7 @@ theorem matrixDysonResolventSeries_eq (A : K → Matrix I I ℂ) :
   simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, map_add, map_mul] at hij
   change evenPowerSeriesSubstHom (matrixDysonFormalSeries A i j) = _
   rw [hij]
-  rw [show φ PowerSeries.X = (PowerSeries.X : PowerSeries ℂ) ^ 2 by
+  rw [show φ PowerSeries.X = (PowerSeries.X : PowerSeries ℂ) ^ (2 : ℕ) by
     exact evenPowerSeriesSubstHom_X]
   rw [show φ ((matrixSemicircleCovariancePowerSeries A (matrixDysonFormalSeries A) *
       matrixDysonFormalSeries A) i j) =
@@ -342,7 +342,7 @@ omit [DecidableEq K] in
 theorem freeFockResolventWordMatrix_nil_eq
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) :
     freeFockResolventWordMatrix A [] = 1 +
-      (PowerSeries.X ^ 2 : PowerSeries ℂ) •
+      (PowerSeries.X ^ (2 : ℕ) : PowerSeries ℂ) •
         ∑ k : K, constantPowerSeriesMatrix (A k) *
           freeFockResolventWordMatrix A [k] := by
   rw [freeFockResolventWordMatrix_nil, matrixDysonResolventSeries_eq]
@@ -358,7 +358,7 @@ theorem freeFockResolventWordMatrix_cons_eq
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (k : K) (w : List K) :
     freeFockResolventWordMatrix A (k :: w) =
       constantPowerSeriesMatrix (A k) * freeFockResolventWordMatrix A w +
-        (PowerSeries.X ^ 2 : PowerSeries ℂ) •
+        (PowerSeries.X ^ (2 : ℕ) : PowerSeries ℂ) •
           ∑ l : K, constantPowerSeriesMatrix (A l) *
             freeFockResolventWordMatrix A (l :: k :: w) := by
   rw [freeFockResolventWordMatrix_cons, matrixDysonResolventSeries_eq]

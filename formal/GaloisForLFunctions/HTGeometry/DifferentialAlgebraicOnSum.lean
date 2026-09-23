@@ -30,7 +30,7 @@ theorem differentiallyAlgebraicOn_const (U : Set ℂ) (c : ℂ) :
     simp only [map_sub, MvPolynomial.eval_X, MvPolynomial.eval_C, hval, sub_self]
 
 /-- **Sums.**  Differential algebraicity on a domain is closed under addition. -/
-theorem differentiallyAlgebraicOn_add {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+theorem differentiallyAlgebraicOn_add_differentialAlgebraicOnSum {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite) {f g : ℂ → ℂ}
     (hf : AnalyticOnNhd ℂ f U) (hg : AnalyticOnNhd ℂ g U)
     (hfDA : DifferentiallyAlgebraicOn f U) (hgDA : DifferentiallyAlgebraicOn g U) :
@@ -71,7 +71,7 @@ theorem differentiallyAlgebraicOn_finsetSum {U : Set ℂ} (hUo : IsOpen U) (hUc 
         exact Finset.analyticAt_sum _ fun i hi => hf i (Finset.mem_insert_of_mem hi) z hz
       have hrestDA := ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
         (fun i hi => hfDA i (Finset.mem_insert_of_mem hi))
-      have hadd := differentiallyAlgebraicOn_add hUo hUc hUne hUinf hfj hrest hfjDA hrestDA
+      have hadd := differentiallyAlgebraicOn_add_differentialAlgebraicOnSum hUo hUc hUne hUinf hfj hrest hfjDA hrestDA
       have hfun : (fun z => ∑ i ∈ insert j s, f i z) = fun z => f j z + ∑ i ∈ s, f i z := by
         funext z
         rw [Finset.sum_insert hj]

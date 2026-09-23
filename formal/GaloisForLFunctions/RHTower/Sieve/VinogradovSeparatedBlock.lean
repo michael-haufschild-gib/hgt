@@ -26,7 +26,7 @@ sieve supplies the only analytic estimate; arithmetic separation comes from
 theorem sum_finiteFejerKernel_halfBlock_le
     {H q a : ℕ} (hH : H ≠ 0) (hq : 0 < q)
     {α : ℝ} (hcop : Nat.Coprime a q)
-    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2)
+    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ))
     (s : Finset ℕ)
     (hdiam : ∀ n ∈ s, ∀ m ∈ s,
       |(n : ℝ) - (m : ℝ)| ≤ (q : ℝ) / 2) :
@@ -51,7 +51,7 @@ theorem sum_finiteFejerKernel_halfBlock_le
     (fun n : ℕ => α * (n : ℝ)) hδ0 hδhalf hsep (conjVec H c)
   simp_rw [norm_inner_expRow_conjVec H _ c] at hlarge
   rw [norm_sq_conjVec] at hlarge
-  have hcenergy : (∑ n : Fin H, ‖c n‖ ^ 2) = (H : ℝ) := by
+  have hcenergy : (∑ n : Fin H, ‖c n‖ ^ (2 : ℕ)) = (H : ℝ) := by
     simp [c]
   rw [hcenergy] at hlarge
   have hHr : (0 : ℝ) < H := by exact_mod_cast Nat.pos_of_ne_zero hH
@@ -59,7 +59,7 @@ theorem sum_finiteFejerKernel_halfBlock_le
   calc
     (∑ n ∈ s, finiteFejerKernel H (α * (n : ℝ))) =
         (2 / (H : ℝ)) *
-          ∑ n ∈ s, ‖expSum H c (α * (n : ℝ))‖ ^ 2 := by
+          ∑ n ∈ s, ‖expSum H c (α * (n : ℝ))‖ ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro n _

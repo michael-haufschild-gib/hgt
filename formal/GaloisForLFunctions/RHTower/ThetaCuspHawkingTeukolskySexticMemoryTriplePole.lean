@@ -4,8 +4,8 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskyChargeDecayResonance
 # Sextic Hawking--Teukolsky memory triple pole
 
 The first charge-minus-two source frequency that can meet the quadratically dealiased
-Birmingham--Mokhtari tower has radiative monomial `A^2 * conj(A)^4`. It is the quadratic partner
-carrier `conj(A)^2` dressed by two neutral horizon memories `(A * conj(A))^2`.
+Birmingham--Mokhtari tower has radiative monomial `A^(2 : ℕ) * conj(A)^(4 : ℕ)`. It is the quadratic partner
+carrier `conj(A)^(2 : ℕ)` dressed by two neutral horizon memories `(A * conj(A))^(2 : ℕ)`.
 
 Two stationary mass insertions are governed by the second inverse-family identity
 
@@ -16,10 +16,10 @@ The `L''` term has only two Green factors. The same is true of any direct or tra
 whose two- and one-Green numerators are continuous at the QNM. Multiplication by the cube of the
 local frequency coordinate kills all those lower pole grades and leaves
 
-`2 * conj(A)^2 * (|A|^2 K)^2 / J'(omega_0)^3`,
+`2 * conj(A)^(2 : ℕ) * (|A|^(2 : ℕ) K)^(2 : ℕ) / J'(omega_0)^(3 : ℕ)`,
 
 where `K=-12/(Q+2)` is the exact chiral Birmingham--Mokhtari first mass insertion evaluated in the
-dealiased channel `Q=1/4+z^2`. This coefficient is nonzero at every Xi divisor for `A != 0`.
+dealiased channel `Q=1/4+z^(2 : ℕ)`. This coefficient is nonzero at every Xi divisor for `A != 0`.
 
 Thus a local second mass-potential term cannot cancel the sextic repeated-memory principal part.
 Any cancellation must introduce another genuine three-Green stationary insertion. Combined with
@@ -76,7 +76,7 @@ lemma d4ThetaHawkingDealiasedAngularQ_xi_add_two_ne_zero (q : XiZeroCopy) :
         (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q)) + 2 ≠ 0 := by
   rw [d4ThetaCuspHawkingQuadraticDealiased_q]
   intro h
-  have hQ : (1 / 4 : ℂ) + xiSpectralPoint q ^ 2 = -2 := by
+  have hQ : (1 / 4 : ℂ) + xiSpectralPoint q ^ (2 : ℕ) = -2 := by
     linear_combination h
   have him0 :
       (d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue
@@ -111,9 +111,9 @@ theorem d4ThetaHawkingSexticFirstMemoryInsertion_xi_ne_zero
 /-- Triple-pole coefficient of the first sextic charge-decay rung. -/
 def d4ThetaHawkingSexticRepeatedMemoryTriplePoleCoefficient
     (amplitude z : ℂ) : ℂ :=
-  2 * star amplitude ^ 2 *
-    d4ThetaHawkingSexticFirstMemoryInsertion amplitude z ^ 2 *
-      (teukolskyNormalizedJostOmegaDerivative 3)⁻¹ ^ 3
+  2 * star amplitude ^ (2 : ℕ) *
+    d4ThetaHawkingSexticFirstMemoryInsertion amplitude z ^ (2 : ℕ) *
+      (teukolskyNormalizedJostOmegaDerivative 3)⁻¹ ^ (3 : ℕ)
 
 /-- The protected coefficient is nonzero at every Xi divisor exactly for nonzero radiative
 amplitude. -/
@@ -140,11 +140,11 @@ theorem d4ThetaHawkingSexticRepeatedMemoryTriplePoleCoefficient_xi_ne_zero_iff
 def d4ThetaHawkingSexticRepeatedMemoryCompletion
     (amplitude z : ℂ) (twoGreenNumerator oneGreenNumerator : ℂ → ℂ)
     (omega : ℂ) : ℂ :=
-  2 * star amplitude ^ 2 *
-      d4ThetaHawkingSexticFirstMemoryInsertion amplitude z ^ 2 *
-      d4ThetaHawkingDealiasedNormalizedMinusGreen z omega ^ 3 +
+  2 * star amplitude ^ (2 : ℕ) *
+      d4ThetaHawkingSexticFirstMemoryInsertion amplitude z ^ (2 : ℕ) *
+      d4ThetaHawkingDealiasedNormalizedMinusGreen z omega ^ (3 : ℕ) +
     twoGreenNumerator omega *
-      d4ThetaHawkingDealiasedNormalizedMinusGreen z omega ^ 2 +
+      d4ThetaHawkingDealiasedNormalizedMinusGreen z omega ^ (2 : ℕ) +
     oneGreenNumerator omega *
       d4ThetaHawkingDealiasedNormalizedMinusGreen z omega
 
@@ -162,7 +162,7 @@ theorem d4ThetaHawkingSexticRepeatedMemoryCompletion_tendsto_triplePoleCoefficie
     Tendsto
       (fun omega =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
-          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ 3 *
+          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ (3 : ℕ) *
           d4ThetaHawkingSexticRepeatedMemoryCompletion amplitude
             (xiSpectralPoint q) twoGreenNumerator oneGreenNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
@@ -190,22 +190,22 @@ theorem d4ThetaHawkingSexticRepeatedMemoryCompletion_tendsto_triplePoleCoefficie
   have h1 := hN1.tendsto.mono_left
     (nhdsWithin_le_nhds : 𝓝[≠] sigma ≤ 𝓝 sigma)
   have htop : Tendsto
-      (fun omega => x omega ^ 3 *
-        (2 * star amplitude ^ 2 *
+      (fun omega => x omega ^ (3 : ℕ) *
+        (2 * star amplitude ^ (2 : ℕ) *
           d4ThetaHawkingSexticFirstMemoryInsertion amplitude
-              (xiSpectralPoint q) ^ 2 * G omega ^ 3))
+              (xiSpectralPoint q) ^ (2 : ℕ) * G omega ^ (3 : ℕ)))
       (𝓝[≠] sigma)
       (𝓝 (d4ThetaHawkingSexticRepeatedMemoryTriplePoleCoefficient amplitude
         (xiSpectralPoint q))) := by
     have h := (hG.pow 3).const_mul
-      (2 * star amplitude ^ 2 *
-        d4ThetaHawkingSexticFirstMemoryInsertion amplitude (xiSpectralPoint q) ^ 2)
+      (2 * star amplitude ^ (2 : ℕ) *
+        d4ThetaHawkingSexticFirstMemoryInsertion amplitude (xiSpectralPoint q) ^ (2 : ℕ))
     convert h using 1
     · funext omega
       ring
     · simp [d4ThetaHawkingSexticRepeatedMemoryTriplePoleCoefficient]
   have hlower2 : Tendsto
-      (fun omega => x omega ^ 3 * (twoGreenNumerator omega * G omega ^ 2))
+      (fun omega => x omega ^ (3 : ℕ) * (twoGreenNumerator omega * G omega ^ (2 : ℕ)))
       (𝓝[≠] sigma) (𝓝 0) := by
     have h := hx.mul ((hG.pow 2).mul h2)
     convert h using 1
@@ -213,7 +213,7 @@ theorem d4ThetaHawkingSexticRepeatedMemoryCompletion_tendsto_triplePoleCoefficie
       ring
     · ring
   have hlower1 : Tendsto
-      (fun omega => x omega ^ 3 * (oneGreenNumerator omega * G omega))
+      (fun omega => x omega ^ (3 : ℕ) * (oneGreenNumerator omega * G omega))
       (𝓝[≠] sigma) (𝓝 0) := by
     have h := (hx.pow 2).mul (hG.mul h1)
     convert h using 1
@@ -241,7 +241,7 @@ theorem d4ThetaHawkingSexticRepeatedMemoryCompletion_cannot_cancel
     ¬ Tendsto
       (fun omega =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMMinus 3
-          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ 3 *
+          (d4ThetaCuspHawkingQuadraticDealiasedLift (xiSpectralPoint q))) ^ (3 : ℕ) *
           d4ThetaHawkingSexticRepeatedMemoryCompletion amplitude
             (xiSpectralPoint q) twoGreenNumerator oneGreenNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMMinus 3

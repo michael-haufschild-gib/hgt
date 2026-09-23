@@ -25,13 +25,13 @@ theorem exists_logTaylor_rationalApproximants
     ∃ a q : Fin k → ℕ, ∀ j,
       0 < q j ∧ Nat.Coprime (a j) (q j) ∧
       |logTaylorMagnitude t x j - (a j : ℝ) / (q j : ℝ)| ≤
-        1 / (q j : ℝ) ^ 2 ∧
+        1 / (q j : ℝ) ^ (2 : ℕ) ∧
       1 / logTaylorMagnitude t x j - 1 / 2 ≤ (q j : ℝ) ∧
       (q j : ℝ) < 2 / logTaylorMagnitude t x j + 1 := by
   have hpoint : ∀ j : Fin k, ∃ a q : ℕ,
       0 < q ∧ Nat.Coprime a q ∧
       |logTaylorMagnitude t x j - (a : ℝ) / (q : ℝ)| ≤
-        1 / (q : ℝ) ^ 2 ∧
+        1 / (q : ℝ) ^ (2 : ℕ) ∧
       1 / logTaylorMagnitude t x j - 1 / 2 ≤ (q : ℝ) ∧
       (q : ℝ) < 2 / logTaylorMagnitude t x j + 1 := by
     intro j
@@ -64,12 +64,12 @@ theorem exists_logTaylor_rationalApproximants_in_window
       (∀ j, U j → Nat.Coprime (a j) (q j)) ∧
       (∀ j, U j →
         |logTaylorMagnitude t x j - (a j : ℝ) / (q j : ℝ)| ≤
-          1 / (q j : ℝ) ^ 2) ∧
+          1 / (q j : ℝ) ^ (2 : ℕ)) ∧
       (∀ j, U j →
         P ^ (2 * vinogradovCoordinateSavingExponent j) ≤ q j) ∧
       (∀ j, U j →
         q j * P ^ (2 * vinogradovCoordinateSavingExponent j) ≤
-          (P ^ (j.val + 1)) ^ 2) := by
+          (P ^ (j.val + 1)) ^ (2 : ℕ)) := by
   obtain ⟨a, q, hdata⟩ := exists_logTaylor_rationalApproximants ht hx
   refine ⟨a, q, ?_, ?_, ?_, ?_, ?_⟩
   · intro j _
@@ -102,7 +102,7 @@ theorem exists_logTaylor_rationalApproximants_in_window
         rw [← pow_add]
         congr 1
         omega
-      _ = (P ^ d) ^ 2 := by rw [← pow_mul]; congr 1; omega
+      _ = (P ^ d) ^ (2 : ℕ) := by rw [← pow_mul]; congr 1; omega
 
 /-- A polynomial denominator window makes the explicit large-sieve
 logarithm only linear in `P`. -/
@@ -145,30 +145,30 @@ theorem one_add_log_denominator_le_linear
 large-sieve block estimate. -/
 theorem vinogradov_largeSieveLog_absorbed
     {P b q k : ℕ} (hP : 1 ≤ P)
-    (hthreshold : 160 * b ^ 2 * k ≤ P)
+    (hthreshold : 160 * b ^ (2 : ℕ) * k ≤ P)
     (j : Fin k) (he : 2 ≤ vinogradovCoordinateSavingExponent j)
     (hq : q ≤ P ^ (2 * (j.val + 1))) :
-    32 * (b : ℝ) ^ 2 * (1 + Real.log ((q : ℝ) + 1)) ≤
+    32 * (b : ℝ) ^ (2 : ℕ) * (1 + Real.log ((q : ℝ) + 1)) ≤
       (P : ℝ) ^ vinogradovCoordinateSavingExponent j := by
   let e := vinogradovCoordinateSavingExponent j
   let d := j.val + 1
   have hlog := one_add_log_denominator_le_linear hP (by omega : 1 ≤ d) hq
   have hleft :
-      32 * (b : ℝ) ^ 2 * (1 + Real.log ((q : ℝ) + 1)) ≤
-        160 * (b : ℝ) ^ 2 * d * P := by
+      32 * (b : ℝ) ^ (2 : ℕ) * (1 + Real.log ((q : ℝ) + 1)) ≤
+        160 * (b : ℝ) ^ (2 : ℕ) * d * P := by
     calc
-      _ ≤ 32 * (b : ℝ) ^ 2 * (5 * (d : ℝ) * P) := by
+      _ ≤ 32 * (b : ℝ) ^ (2 : ℕ) * (5 * (d : ℝ) * P) := by
         gcongr
-      _ = 160 * (b : ℝ) ^ 2 * d * P := by ring
+      _ = 160 * (b : ℝ) ^ (2 : ℕ) * d * P := by ring
   have hdle : d ≤ k := by unfold d; omega
-  have hthresholdReal : 160 * (b : ℝ) ^ 2 * k ≤ P := by
+  have hthresholdReal : 160 * (b : ℝ) ^ (2 : ℕ) * k ≤ P := by
     exact_mod_cast hthreshold
-  have hlinear : 160 * (b : ℝ) ^ 2 * d * P ≤ (P : ℝ) ^ 2 := by
+  have hlinear : 160 * (b : ℝ) ^ (2 : ℕ) * d * P ≤ (P : ℝ) ^ (2 : ℕ) := by
     have hdReal : (d : ℝ) ≤ k := by exact_mod_cast hdle
-    have hscale : 160 * (b : ℝ) ^ 2 * d ≤ P := by
+    have hscale : 160 * (b : ℝ) ^ (2 : ℕ) * d ≤ P := by
       nlinarith [sq_nonneg (b : ℝ)]
     nlinarith
-  have hpower : (P : ℝ) ^ 2 ≤ (P : ℝ) ^ e :=
+  have hpower : (P : ℝ) ^ (2 : ℕ) ≤ (P : ℝ) ^ e :=
     pow_le_pow_right₀ (by exact_mod_cast hP) he
   exact hleft.trans (hlinear.trans hpower)
 
@@ -177,7 +177,7 @@ coefficients, including the explicit large-sieve logarithm. -/
 theorem exists_routeT_logTaylor_approximants
     {u P : ℕ} {t x : ℝ} (hu : 141 ≤ u) (ht : 0 < t) (hx : 0 < x)
     (hthreshold :
-      160 * vinogradovRouteTMoment (4 * u) ^ 2 *
+      160 * vinogradovRouteTMoment (4 * u) ^ (2 : ℕ) *
           vinogradovRouteTOrder (4 * u) ≤ P)
     (hlower : ∀ j : Fin (vinogradovRouteTOrder (4 * u)),
       vinogradovUsefulCoordinate u j →
@@ -193,14 +193,14 @@ theorem exists_routeT_logTaylor_approximants
       (∀ j, vinogradovUsefulCoordinate u j → Nat.Coprime (a j) (q j)) ∧
       (∀ j, vinogradovUsefulCoordinate u j →
         |logTaylorMagnitude t x j - (a j : ℝ) / (q j : ℝ)| ≤
-          1 / (q j : ℝ) ^ 2) ∧
+          1 / (q j : ℝ) ^ (2 : ℕ)) ∧
       (∀ j, vinogradovUsefulCoordinate u j →
         P ^ (2 * vinogradovCoordinateSavingExponent j) ≤ q j) ∧
       (∀ j, vinogradovUsefulCoordinate u j →
         q j * P ^ (2 * vinogradovCoordinateSavingExponent j) ≤
-          (P ^ (j.val + 1)) ^ 2) ∧
+          (P ^ (j.val + 1)) ^ (2 : ℕ)) ∧
       (∀ j, vinogradovUsefulCoordinate u j →
-        32 * (vinogradovRouteTMoment (4 * u) : ℝ) ^ 2 *
+        32 * (vinogradovRouteTMoment (4 * u) : ℝ) ^ (2 : ℕ) *
             (1 + Real.log ((q j : ℝ) + 1)) ≤
           (P : ℝ) ^ vinogradovCoordinateSavingExponent j) := by
   let k := vinogradovRouteTOrder (4 * u)
@@ -208,7 +208,7 @@ theorem exists_routeT_logTaylor_approximants
   have hb : 1 ≤ b := Nat.one_le_iff_ne_zero.mpr
     (vinogradovRouteTMoment_ne_zero (by omega))
   have hk : 1 ≤ k := by unfold k vinogradovRouteTOrder; omega
-  have hfactor : 1 ≤ 160 * b ^ 2 * k := by nlinarith
+  have hfactor : 1 ≤ 160 * b ^ (2 : ℕ) * k := by nlinarith
   have hP : 1 ≤ P := hfactor.trans (by simpa [b, k] using hthreshold)
   obtain ⟨a, q, hq, hcop, happrox, hRq, hqR⟩ :=
     exists_logTaylor_rationalApproximants_in_window ht hx
@@ -223,7 +223,7 @@ theorem exists_routeT_logTaylor_approximants
   have hqPower : q j ≤ P ^ (2 * d) := by
     calc
       q j ≤ q j * P ^ (2 * e) := hqNatural
-      _ ≤ (P ^ d) ^ 2 := hqR j hj
+      _ ≤ (P ^ d) ^ (2 : ℕ) := hqR j hj
       _ = P ^ (2 * d) := by rw [← pow_mul]; congr 1; omega
   have heU : u ≤ e := by
     exact vinogradovCoordinateSavingExponent_ge u ⟨j, hj⟩

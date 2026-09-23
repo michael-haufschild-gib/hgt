@@ -4,12 +4,12 @@ import GaloisForLFunctions.RHTower.SuzukiMarkedSecantMidpointLorentzCompletion
 # Suzuki causal hinge boundary--tail Green law
 
 On the positive half-line, one von-Mangoldt prime-power source is a delayed hinge
-`a * (t - ell)₊`.  Its one-sided multiplier is `-a * exp (I*z*ell) / z^2`.
+`a * (t - ell)₊`.  Its one-sided multiplier is `-a * exp (I*z*ell) / z^(2 : ℕ)`.
 At finite aperture, direct integration of the compact Volterra triangle leaves one truncated
 source tail and two boundary moments.  The algebraic cancellation is formalized below.
 
 For delays beyond twice the aperture the triangle is zero, so the normalized jump retains the
-pure far-prime atom `-I*a*exp(I*z*ell)/z^2`.  Its Pick diagonal has both signs in the upper half
+pure far-prime atom `-I*a*exp(I*z*ell)/z^(2 : ℕ)`.  Its Pick diagonal has both signs in the upper half
 plane: positive on the imaginary axis and negative at the phase-aligned point
 `2*pi/ell + I*pi/ell`.  Multiplication by any nonzero compound denominator preserves the negative
 diagonal.  Hence an atomwise direct-sum prime Gram cannot factor Suzuki's compound Bezoutian;
@@ -28,7 +28,7 @@ noncomputable section
 
 /-- One-sided Fourier--Laplace multiplier of the unit delayed hinge `(t-ell)₊`. -/
 def suzukiDelayedHingeMultiplier (ell : ℝ) (z : ℂ) : ℂ :=
-  -Complex.exp (Complex.I * z * (ell : ℂ)) / z ^ 2
+  -Complex.exp (Complex.I * z * (ell : ℂ)) / z ^ (2 : ℕ)
 
 /-- Closed form of the compact Volterra triangle after cutting the source at `c=a-ell`.
 `Wlow` is the Fourier mass below the cut, while `A` and `B` are its first boundary moment and
@@ -36,8 +36,8 @@ mass. -/
 def suzukiDelayedHingeTriangleFromCut
     (a ell : ℝ) (Wlow A B z : ℂ) : ℂ :=
   Complex.exp (Complex.I * z * (a : ℂ)) *
-      (A / (Complex.I * z) + B / z ^ 2) -
-    Complex.exp (Complex.I * z * (ell : ℂ)) * Wlow / z ^ 2
+      (A / (Complex.I * z) + B / z ^ (2 : ℕ)) -
+    Complex.exp (Complex.I * z * (ell : ℂ)) * Wlow / z ^ (2 : ℕ)
 
 /-- Right exterior after subtracting the compact triangle from multiplier times total source. -/
 def suzukiDelayedHingeExteriorFromCut
@@ -50,9 +50,9 @@ remains is the truncated upper source tail and two endpoint moments. -/
 theorem suzukiDelayedHingeExteriorFromCut_eq_boundaryTail
     (a ell : ℝ) (Wlow Whigh A B z : ℂ) (hz : z ≠ 0) :
     suzukiDelayedHingeExteriorFromCut a ell Wlow Whigh A B z =
-      -Complex.exp (Complex.I * z * (ell : ℂ)) * Whigh / z ^ 2 -
+      -Complex.exp (Complex.I * z * (ell : ℂ)) * Whigh / z ^ (2 : ℕ) -
         Complex.exp (Complex.I * z * (a : ℂ)) *
-          (A / (Complex.I * z) + B / z ^ 2) := by
+          (A / (Complex.I * z) + B / z ^ (2 : ℕ)) := by
   simp only [suzukiDelayedHingeExteriorFromCut, suzukiDelayedHingeMultiplier,
     suzukiDelayedHingeTriangleFromCut]
   field_simp [hz, Complex.I_ne_zero]
@@ -70,18 +70,18 @@ theorem suzukiDelayedHingeExteriorFromCut_entryWall
 theorem suzukiDelayedHingeMultiplier_mul
     (ell : ℝ) (W z : ℂ) :
     suzukiDelayedHingeMultiplier ell z * W =
-      -Complex.exp (Complex.I * z * (ell : ℂ)) * W / z ^ 2 := by
+      -Complex.exp (Complex.I * z * (ell : ℂ)) * W / z ^ (2 : ℕ) := by
   simp [suzukiDelayedHingeMultiplier]
   ring_nf
 
 /-! ## Xi-real far-prime jump atom -/
 
 /-- Xi-real normalized jump contribution of one far prime-power hinge with positive coefficient
-`weight`.  Physical multiplier is `-exp(I*z*ell)/z^2`; the jump is `I` times the right exterior. -/
+`weight`.  Physical multiplier is `-exp(I*z*ell)/z^(2 : ℕ)`; the jump is `I` times the right exterior. -/
 def suzukiCriticalDelayedHingeJumpAtom
     (weight ell : ℝ) (z : ℂ) : ℂ :=
   -Complex.I * (weight : ℂ) *
-    Complex.exp (Complex.I * z * (ell : ℂ)) / z ^ 2
+    Complex.exp (Complex.I * z * (ell : ℂ)) / z ^ (2 : ℕ)
 
 /-- Physical far exterior rotates to the Xi-real jump atom with the correct quarter-turn. -/
 theorem I_mul_suzukiDelayedHingeMultiplier
@@ -132,7 +132,7 @@ theorem suzukiCriticalDelayedHingeJumpAtom_im_neg_phaseAligned
       2 * Real.pi / ell * (2 * Real.pi / ell) -
         Real.pi / ell * (Real.pi / ell) := by
     rw [show 2 * Real.pi / ell * (2 * Real.pi / ell) -
-        Real.pi / ell * (Real.pi / ell) = 3 * (Real.pi / ell) ^ 2 by ring]
+        Real.pi / ell * (Real.pi / ell) = 3 * (Real.pi / ell) ^ (2 : ℕ) by ring]
     positivity
   have hden : 0 <
       Complex.normSq (2 * (Real.pi : ℂ) / (ell : ℂ) +

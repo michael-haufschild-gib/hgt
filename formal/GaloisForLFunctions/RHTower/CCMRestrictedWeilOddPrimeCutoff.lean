@@ -38,7 +38,7 @@ private theorem sinh_div_strictMono : StrictMonoOn (fun t : ℝ => Real.sinh t/t
   · intro t ht
     rw [interior_Ioi,mem_Ioi] at ht
     have hd : HasDerivAt (fun t : ℝ => Real.sinh t/t)
-        ((Real.cosh t*t-Real.sinh t)/t^2) t := by
+        ((Real.cosh t*t-Real.sinh t)/t^(2 : ℕ)) t := by
       simpa only [Pi.div_apply,id_eq,mul_one] using!
         (Real.hasDerivAt_sinh t).div (hasDerivAt_id t) ht.ne'
     rw [hd.deriv]

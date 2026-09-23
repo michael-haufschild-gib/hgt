@@ -23,12 +23,12 @@ theorem finiteComplexInner_finiteCoordinateKet_right {D : ℕ}
 theorem norm_orthoEigenBasis_coordinate_le_one {D : ℕ}
     {H : Matrix (Fin D) (Fin D) ℂ} {e : Fin D → Fin D → ℂ} {lam : Fin D → ℝ}
     (heb : IsOrthoEigenBasis H e lam) (j i : Fin D) : ‖e j i‖ ≤ 1 := by
-  have hsum : ∑ x, ‖e j x‖ ^ 2 = 1 := by
+  have hsum : ∑ x, ‖e j x‖ ^ (2 : ℕ) = 1 := by
     have hinner : finiteComplexInner (e j) (e j) = (1 : ℂ) := by
       simpa using heb.orth j j
     rw [finiteComplexInner_self_eq_sum_normSq] at hinner
     exact Complex.ofReal_injective hinner
-  have hsq : ‖e j i‖ ^ 2 ≤ 1 := by
+  have hsq : ‖e j i‖ ^ (2 : ℕ) ≤ 1 := by
     rw [← hsum]
     exact Finset.single_le_sum (fun x _ => sq_nonneg ‖e j x‖) (Finset.mem_univ i)
   nlinarith [norm_nonneg (e j i)]

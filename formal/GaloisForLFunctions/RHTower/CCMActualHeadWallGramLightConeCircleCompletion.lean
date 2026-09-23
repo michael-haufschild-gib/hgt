@@ -83,9 +83,9 @@ theorem ccmActualHeadWallChord_lightImbalance_circle
     (xi : ℝ) (p : Nat.Primes) (e : ℕ) :
     let n := xiGammaEulerValuationNat (p, e)
     (criticalMellinAtomWeight n -
-        normSq (ccmActualHeadMellinWallChord xi n) / 2) ^ 2 +
-      ccmActualHeadMatchedWallLightImbalance p e xi ^ 2 =
-        criticalMellinAtomWeight n ^ 2 := by
+        normSq (ccmActualHeadMellinWallChord xi n) / 2) ^ (2 : ℕ) +
+      ccmActualHeadMatchedWallLightImbalance p e xi ^ (2 : ℕ) =
+        criticalMellinAtomWeight n ^ (2 : ℕ) := by
   let n := xiGammaEulerValuationNat (p, e)
   have hweight :
       criticalMellinAtomWeight n =
@@ -107,7 +107,7 @@ theorem ccmActualHeadWallChord_lightImbalance_circle
 theorem ccmActualHeadWallLightImbalance_sq_eq_chord_mul_complement
     (xi : ℝ) (p : Nat.Primes) (e : ℕ) :
     let n := xiGammaEulerValuationNat (p, e)
-    ccmActualHeadMatchedWallLightImbalance p e xi ^ 2 =
+    ccmActualHeadMatchedWallLightImbalance p e xi ^ (2 : ℕ) =
       normSq (ccmActualHeadMellinWallChord xi n) *
         (criticalMellinAtomWeight n -
           normSq (ccmActualHeadMellinWallChord xi n) / 4) := by
@@ -122,7 +122,7 @@ theorem centered_negativeLight_sq_eq_chord_mul_complement
     let n := xiGammaEulerValuationNat (p, e)
     (2 * normSq
         (suzukiCriticalWallNegativeLightAmplitude (2 * Real.pi * xi) p e) -
-      criticalMellinAtomWeight n) ^ 2 =
+      criticalMellinAtomWeight n) ^ (2 : ℕ) =
       normSq (ccmActualHeadMellinWallChord xi n) *
         (criticalMellinAtomWeight n -
           normSq (ccmActualHeadMellinWallChord xi n) / 4) := by

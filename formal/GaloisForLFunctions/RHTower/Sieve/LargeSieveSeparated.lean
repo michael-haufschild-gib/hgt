@@ -50,8 +50,8 @@ theorem largeSieve_separated {ι : Type*} [DecidableEq ι] (N : ℕ) (s : Finset
     (hsep : ∀ a ∈ s, ∀ b ∈ s, a ≠ b → δ ≤ toIntDist (lam b - lam a))
     {M : ℕ} (hM : 1 / (2 * δ) ≤ (M : ℝ))
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ 2
-      ≤ ((N : ℝ) + (1 / δ) * ∑ k ∈ Finset.Icc 1 M, 1 / (k : ℝ)) * ‖a‖ ^ 2 := by
+    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (1 / δ) * ∑ k ∈ Finset.Icc 1 M, 1 / (k : ℝ)) * ‖a‖ ^ (2 : ℕ) := by
   classical
   have hH0 : (0 : ℝ) ≤ ∑ k ∈ Finset.Icc 1 M, 1 / (k : ℝ) :=
     Finset.sum_nonneg fun k _ => by positivity

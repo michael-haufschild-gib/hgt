@@ -310,8 +310,8 @@ theorem separation_eq_of_same_live_odd_band
   have hgap : (chi_g - chi_f) * (f 1 * g 1) = 0 := by
     calc
       (chi_g - chi_f) * (f 1 * g 1) =
-          (-(chi_f + c ^ 2) * f 1) * g 1 -
-            f 1 * (-(chi_g + c ^ 2) * g 1) := by ring
+          (-(chi_f + c ^ (2 : ℕ)) * f 1) * g 1 -
+            f 1 * (-(chi_g + c ^ (2 : ℕ)) * g 1) := by ring
       _ = (2 * deriv f 1) * g 1 - f 1 * (2 * deriv g 1) := by
         rw [hfend, hgend]
       _ = 2 * (deriv f 1 * g 1 - f 1 * deriv g 1) := by ring
@@ -603,14 +603,14 @@ theorem joint_prolate_even_or_odd
   have hPhiOne : Phi 1 ≠ 0 :=
     value_one_ne_of_joint_prolate_band_eigen
       hPhiSmooth hPhiNe hlam hPhiBand hPhiProlate
-  have hEqCycle : Phi 1 = mu ^ 2 * Phi 1 := by
+  have hEqCycle : Phi 1 = mu ^ (2 : ℕ) * Phi 1 := by
     calc
       Phi 1 = mu * Phi (-1) := hEqOne
       _ = mu * (mu * Phi 1) := by rw [hEqNegOne]
-      _ = mu ^ 2 * Phi 1 := by ring
-  have hsqProd : (mu ^ 2 - 1) * Phi 1 = 0 := by
+      _ = mu ^ (2 : ℕ) * Phi 1 := by ring
+  have hsqProd : (mu ^ (2 : ℕ) - 1) * Phi 1 = 0 := by
     linarith [hEqCycle]
-  have hmuSq : mu ^ 2 = 1 := by
+  have hmuSq : mu ^ (2 : ℕ) = 1 := by
     rcases mul_eq_zero.mp hsqProd with h | h
     · linarith
     · exact False.elim (hPhiOne h)

@@ -31,8 +31,8 @@ theorem weylSuperTranslationBracket_self_eq_seibergWittenInvariant
 /-- The finite invariant obeys the inherited future-null Lorentz-coordinate relation. -/
 theorem seibergWittenInvariant_future_null (psi : SeibergWittenSpinor) :
     0 ≤ higgsSpinorTime psi ∧
-      higgsSpinorTime psi ^ 2 - higgsSpinorX psi ^ 2 - higgsSpinorY psi ^ 2 -
-        higgsSpinorZ psi ^ 2 = 0 :=
+      higgsSpinorTime psi ^ (2 : ℕ) - higgsSpinorX psi ^ (2 : ℕ) - higgsSpinorY psi ^ (2 : ℕ) -
+        higgsSpinorZ psi ^ (2 : ℕ) = 0 :=
   weylSuperMomentum_future_null psi
 
 /-- Weyl supermomentum is invariant under the finite Seiberg--Witten phase gauge action. -/

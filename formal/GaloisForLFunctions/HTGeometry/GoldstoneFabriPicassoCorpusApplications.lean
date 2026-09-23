@@ -92,7 +92,7 @@ theorem fabriPicasso_unitRadialPivotMissesPeriodicGaugeMode :
       ¬ Summable (fun n : ℕ => ‖gammaPeriodicModeRadialTail 1 m n‖ ^ 2) :=
   exists_gammaPeriodicMode_not_summable_at_radialPivot (by norm_num)
 
-/-- The critical Euler-prime half-density source has no standard prime `ell^2` realization. -/
+/-- The critical Euler-prime half-density source has no standard prime `ell^(2 : ℕ)` realization. -/
 theorem fabriPicasso_eulerPrimeHalfDensityOutsideHilbert :
     ¬ Summable (fun p : Nat.Primes => ‖eulerPrimeHalfDensityAmplitude p‖ ^ 2) :=
   not_summable_normSq_eulerPrimeHalfDensityAmplitude

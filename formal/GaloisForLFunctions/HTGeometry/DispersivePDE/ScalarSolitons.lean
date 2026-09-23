@@ -441,11 +441,11 @@ theorem kawaharaSoliton_peak (t : ℝ) : kawaharaSoliton t (576 * t) = 1680 := b
   simp [kawaharaSoliton, solitonR, solitonQ, solitonT]
 
 theorem modifiedKdVKink_miura_plus (t x : ℝ) :
-    modifiedKdVKinkJet.ux t x + modifiedKdVKink t x ^ 2 = 1 := by
+    modifiedKdVKinkJet.ux t x + modifiedKdVKink t x ^ (2 : ℕ) = 1 := by
   simp [modifiedKdVKinkJet, modifiedKdVKink, solitonQ]
 
 theorem modifiedKdVKink_miura_minus (t x : ℝ) :
-    modifiedKdVKink t x ^ 2 - modifiedKdVKinkJet.ux t x =
+    modifiedKdVKink t x ^ (2 : ℕ) - modifiedKdVKinkJet.ux t x =
       1 - 2 * solitonQ (x + 2 * t) := by
   simp [modifiedKdVKinkJet, modifiedKdVKink, solitonQ]
   ring

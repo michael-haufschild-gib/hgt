@@ -67,7 +67,7 @@ theorem exists_mid_range_bound {ω₀ δ : ℝ} (hω₀ : 0 < ω₀) (hδ : 0 < 
     ∃ C : ℝ, 0 ≤ C ∧ ∀ ω : ℝ, 0 < ω → ω ≤ ω₀ →
       ‖(riemannZeta (1 + 2 * (ω : ℂ)) +
           2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-        ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2‖ ≤ 3 →
+        ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ)‖ ≤ 3 →
       ∀ τ : ℝ, δ ≤ |τ| → |τ| ≤ 9 →
         ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ≤ C := by
   have hcomp := isCompact_midRangeSet ω₀ δ
@@ -188,16 +188,16 @@ theorem exists_mid_range_bound {ω₀ δ : ℝ} (hω₀ : 0 < ω₀) (hδ : 0 < 
     -- the subtracted pole term
     have hpole : ‖1 / z * ((riemannZeta (1 + 2 * (ω : ℂ)) +
         2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-          ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)‖ ≤ 3 / δ := by
+          ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))‖ ≤ 3 / δ := by
       rw [norm_mul, norm_div, norm_one, hznorm, one_div]
       have hinvτ : |τ|⁻¹ ≤ δ⁻¹ := inv_anti₀ hδ hτδ
       have hstep : |τ|⁻¹ * ‖(riemannZeta (1 + 2 * (ω : ℂ)) +
           2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2‖ ≤ δ⁻¹ * 3 :=
+            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ)‖ ≤ δ⁻¹ * 3 :=
         mul_le_mul hinvτ hK (norm_nonneg _) (by positivity)
       calc |τ|⁻¹ * ‖(riemannZeta (1 + 2 * (ω : ℂ)) +
               2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2‖ ≤ δ⁻¹ * 3 := hstep
+            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ)‖ ≤ δ⁻¹ * 3 := hstep
         _ = 3 / δ := by
             rw [div_eq_mul_inv]
             ring

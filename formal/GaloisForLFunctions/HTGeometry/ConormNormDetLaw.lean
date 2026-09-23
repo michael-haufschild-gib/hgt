@@ -46,7 +46,7 @@ theorem linearMap_normDet_lower_of_norm_lower
       have heig :=
         A.isSymmetric_adjoint_comp_self.hasEigenvector_eigenvectorBasis hm i
       calc
-        c ^ 2 ≤ ‖A (b i)‖ ^ 2 := hsq
+        c ^ (2 : ℕ) ≤ ‖A (b i)‖ ^ (2 : ℕ) := hsq
         _ = inner ℝ (A (b i)) (A (b i)) :=
           (real_inner_self_eq_norm_sq (A (b i))).symm
         _ = inner ℝ (b i) (A.adjoint (A (b i))) :=

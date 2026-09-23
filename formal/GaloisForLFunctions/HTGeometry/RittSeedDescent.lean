@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.RittMonotoneDescent
 # The seed of the tower collapse descends to a nontrivial base multiplier
 
 The relation the collapse of the jet tower produces has a very particular scalar: the shift of the
-`n`-th jet is `q/ρ^n`, that is `q^1·ρ^{−n}`, whose weighted exponent at weight `M = n − 1` is
+`n`-th jet is `q/ρ^n`, that is `q^(1 : ℕ)·ρ^{−n}`, whose weighted exponent at weight `M = n − 1` is
 
 `(−n) + (n − 1)·1 = −1`.
 

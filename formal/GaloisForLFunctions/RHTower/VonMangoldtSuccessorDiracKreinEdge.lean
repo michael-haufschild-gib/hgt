@@ -104,7 +104,7 @@ summable source-relative moments. -/
 theorem vonMangoldtSuccessorDiracMajorantEdgeTerm_eq
     (i n : ℕ) :
     vonMangoldtSuccessorDiracMajorantEdgeTerm i n =
-      ((((i + 1 : ℕ) : ℝ) ^ 2) / ((2 * i + 1 : ℕ) : ℝ)) *
+      ((((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / ((2 * i + 1 : ℕ) : ℝ)) *
           vonMangoldtSuccessorRelativeMomentTerm (2 * i + 1) n +
         (1 / ((2 * i + 3 : ℕ) : ℝ)) *
           vonMangoldtSuccessorRelativeMomentTerm (2 * i + 3) n := by
@@ -122,7 +122,7 @@ theorem summable_vonMangoldtSuccessorDiracMajorantEdgeTerm
     Summable (vonMangoldtSuccessorDiracMajorantEdgeTerm i) := by
   rw [show vonMangoldtSuccessorDiracMajorantEdgeTerm i =
       fun n =>
-        ((((i + 1 : ℕ) : ℝ) ^ 2) / ((2 * i + 1 : ℕ) : ℝ)) *
+        ((((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / ((2 * i + 1 : ℕ) : ℝ)) *
             vonMangoldtSuccessorRelativeMomentTerm (2 * i + 1) n +
           (1 / ((2 * i + 3 : ℕ) : ℝ)) *
             vonMangoldtSuccessorRelativeMomentTerm (2 * i + 3) n by
@@ -130,7 +130,7 @@ theorem summable_vonMangoldtSuccessorDiracMajorantEdgeTerm
     exact vonMangoldtSuccessorDiracMajorantEdgeTerm_eq i n]
   exact
     ((summable_vonMangoldtSuccessorRelativeMomentTerm (2 * i + 1)).mul_left
-      ((((i + 1 : ℕ) : ℝ) ^ 2) / ((2 * i + 1 : ℕ) : ℝ))).add
+      ((((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / ((2 * i + 1 : ℕ) : ℝ))).add
       ((summable_vonMangoldtSuccessorRelativeMomentTerm (2 * i + 3)).mul_left
         (1 / ((2 * i + 3 : ℕ) : ℝ)))
 

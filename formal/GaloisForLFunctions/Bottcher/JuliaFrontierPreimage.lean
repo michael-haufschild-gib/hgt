@@ -16,7 +16,7 @@ noncomputable section
 
 /-- A nonconstant complex polynomial map is open; in particular `z ↦ z² + c` is open. -/
 theorem isOpenMap_quadratic (c : ℂ) : IsOpenMap (quadratic c) := by
-  let P : Polynomial ℂ := Polynomial.X ^ 2 + Polynomial.C c
+  let P : Polynomial ℂ := Polynomial.X ^ (2 : ℕ) + Polynomial.C c
   have hdeg : P.natDegree ≠ 0 := by
     dsimp [P]
     norm_num

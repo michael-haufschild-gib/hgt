@@ -350,7 +350,7 @@ theorem thetaCuspHawkingMassDilatedRayJetTwo_comoving
 theorem thetaCuspHawkingMassDilatedRayJetThree_comoving
     (a lambda v : ℝ) {M : ℝ} (hM : M ≠ 0) :
     thetaCuspHawkingMassDilatedRayJetThree a M lambda (M * v) =
-      M⁻¹ ^ 2 * thetaCuspHawkingRayJetThree a lambda v := by
+      M⁻¹ ^ (2 : ℕ) * thetaCuspHawkingRayJetThree a lambda v := by
   rw [thetaCuspHawkingMassDilatedRayJetThree,
     thetaCuspHawkingRayJetThree,
     iteratedDeriv_thetaCuspHawkingMassDilatedTimelikeRay a lambda
@@ -358,7 +358,7 @@ theorem thetaCuspHawkingMassDilatedRayJetThree_comoving
   field_simp
 
 def thetaCuspHawkingSchwarzianFromThreeJets (p1 p2 p3 : ℝ) : ℝ :=
-  p3 / p1 - (3 / 2 : ℝ) * (p2 / p1) ^ 2
+  p3 / p1 - (3 / 2 : ℝ) * (p2 / p1) ^ (2 : ℕ)
 
 def thetaCuspHawkingSchwarzian (a lambda v : ℝ) : ℝ :=
   thetaCuspHawkingSchwarzianFromThreeJets
@@ -377,7 +377,7 @@ def thetaCuspHawkingMassDilatedSchwarzian
 theorem thetaCuspHawkingMassDilatedSchwarzian_comoving
     (a lambda v : ℝ) {M : ℝ} (hM : M ≠ 0) :
     thetaCuspHawkingMassDilatedSchwarzian a M lambda (M * v) =
-      M⁻¹ ^ 2 * thetaCuspHawkingSchwarzian a lambda v := by
+      M⁻¹ ^ (2 : ℕ) * thetaCuspHawkingSchwarzian a lambda v := by
   rw [thetaCuspHawkingMassDilatedSchwarzian,
     thetaCuspHawkingSchwarzian,
     thetaCuspHawkingMassDilatedRayJetOne_comoving a lambda v hM,
@@ -397,7 +397,7 @@ def thetaCuspHawkingConformalFlux
 theorem thetaCuspHawkingMassDilatedConformalFlux_comoving
     (C a lambda v : ℝ) {M : ℝ} (hM : M ≠ 0) :
     thetaCuspHawkingMassDilatedConformalFlux C a M lambda (M * v) =
-      M⁻¹ ^ 2 * thetaCuspHawkingConformalFlux C a lambda v := by
+      M⁻¹ ^ (2 : ℕ) * thetaCuspHawkingConformalFlux C a lambda v := by
   rw [thetaCuspHawkingMassDilatedConformalFlux,
     thetaCuspHawkingConformalFlux,
     thetaCuspHawkingMassDilatedSchwarzian_comoving a lambda v hM]
@@ -427,8 +427,8 @@ theorem thetaCuspHawkingMassDilationDyadicShellLoad_eq
   rw [schwarzschildEvaporationDyadicShellDuration_eq halpha,
     thetaCuspHawkingMassDilatedConformalFlux_comoving
       C a lambda v hM.ne']
-  change 7 / (24 * alpha) * M ^ 3 *
-      (M⁻¹ ^ 2 * thetaCuspHawkingConformalFlux C a lambda v) = _
+  change 7 / (24 * alpha) * M ^ (3 : ℕ) *
+      (M⁻¹ ^ (2 : ℕ) * thetaCuspHawkingConformalFlux C a lambda v) = _
   field_simp
   ring
 

@@ -36,20 +36,20 @@ theorem deningerRankIdem_add_signIdem (ε : A) :
   have h : (1 + ε) + (1 - ε) = 2 * 1 := by ring
   rw [h, ← mul_assoc, invOf_mul_self, one_mul]
 
-theorem deningerRankIdem_sq (hε : ε ^ 2 = 1) :
+theorem deningerRankIdem_sq (hε : ε ^ (2 : ℕ) = 1) :
     deningerRankIdem ε * deningerRankIdem ε = deningerRankIdem ε := by
   rw [deningerRankIdem]
-  have hexp : (1 + ε) * (1 + ε) = 2 * (1 + ε) + (ε ^ 2 - 1) := by ring
+  have hexp : (1 + ε) * (1 + ε) = 2 * (1 + ε) + (ε ^ (2 : ℕ) - 1) := by ring
   calc ⅟(2 : A) * (1 + ε) * (⅟(2 : A) * (1 + ε))
       = ⅟(2 : A) * (⅟(2 : A) * ((1 + ε) * (1 + ε))) := by ring
     _ = ⅟(2 : A) * (⅟(2 : A) * (2 * (1 + ε))) := by rw [hexp, hε]; ring
     _ = ⅟(2 : A) * (1 + ε) := by
         rw [← mul_assoc ⅟(2 : A) 2 (1 + ε), invOf_mul_self, one_mul]
 
-theorem deningerSignIdem_sq (hε : ε ^ 2 = 1) :
+theorem deningerSignIdem_sq (hε : ε ^ (2 : ℕ) = 1) :
     deningerSignIdem ε * deningerSignIdem ε = deningerSignIdem ε := by
   rw [deningerSignIdem]
-  have hexp : (1 - ε) * (1 - ε) = 2 * (1 - ε) + (ε ^ 2 - 1) := by ring
+  have hexp : (1 - ε) * (1 - ε) = 2 * (1 - ε) + (ε ^ (2 : ℕ) - 1) := by ring
   calc ⅟(2 : A) * (1 - ε) * (⅟(2 : A) * (1 - ε))
       = ⅟(2 : A) * (⅟(2 : A) * ((1 - ε) * (1 - ε))) := by ring
     _ = ⅟(2 : A) * (⅟(2 : A) * (2 * (1 - ε))) := by rw [hexp, hε]; ring
@@ -57,27 +57,27 @@ theorem deningerSignIdem_sq (hε : ε ^ 2 = 1) :
         rw [← mul_assoc ⅟(2 : A) 2 (1 - ε), invOf_mul_self, one_mul]
 
 /-- The two idempotents are orthogonal. -/
-theorem deningerRankIdem_mul_signIdem (hε : ε ^ 2 = 1) :
+theorem deningerRankIdem_mul_signIdem (hε : ε ^ (2 : ℕ) = 1) :
     deningerRankIdem ε * deningerSignIdem ε = 0 := by
   rw [deningerRankIdem, deningerSignIdem]
-  have hexp : (1 + ε) * (1 - ε) = 1 - ε ^ 2 := by ring
+  have hexp : (1 + ε) * (1 - ε) = 1 - ε ^ (2 : ℕ) := by ring
   calc ⅟(2 : A) * (1 + ε) * (⅟(2 : A) * (1 - ε))
       = ⅟(2 : A) * (⅟(2 : A) * ((1 + ε) * (1 - ε))) := by ring
     _ = 0 := by rw [hexp, hε]; ring
 
 /-- The orientation class acts as `+1` on the rank summand. -/
-theorem deningerEpsilon_mul_rankIdem (hε : ε ^ 2 = 1) :
+theorem deningerEpsilon_mul_rankIdem (hε : ε ^ (2 : ℕ) = 1) :
     ε * deningerRankIdem ε = deningerRankIdem ε := by
   rw [deningerRankIdem]
-  have hexp : ε * (1 + ε) = (1 + ε) + (ε ^ 2 - 1) := by ring
+  have hexp : ε * (1 + ε) = (1 + ε) + (ε ^ (2 : ℕ) - 1) := by ring
   calc ε * (⅟(2 : A) * (1 + ε)) = ⅟(2 : A) * (ε * (1 + ε)) := by ring
     _ = ⅟(2 : A) * (1 + ε) := by rw [hexp, hε]; ring
 
 /-- The orientation class acts as `-1` on the signature summand. -/
-theorem deningerEpsilon_mul_signIdem (hε : ε ^ 2 = 1) :
+theorem deningerEpsilon_mul_signIdem (hε : ε ^ (2 : ℕ) = 1) :
     ε * deningerSignIdem ε = -deningerSignIdem ε := by
   rw [deningerSignIdem]
-  have hexp : ε * (1 - ε) = -(1 - ε) + (1 - ε ^ 2) := by ring
+  have hexp : ε * (1 - ε) = -(1 - ε) + (1 - ε ^ (2 : ℕ)) := by ring
   calc ε * (⅟(2 : A) * (1 - ε)) = ⅟(2 : A) * (ε * (1 - ε)) := by ring
     _ = -(⅟(2 : A) * (1 - ε)) := by rw [hexp, hε]; ring
 
@@ -88,10 +88,10 @@ theorem deningerHyperbolic_eq_two_mul_rankIdem (ε : A) :
 
 /-- **The signature summand is annihilated by the hyperbolic class.**  This is why inverting `h`
 kills it. -/
-theorem deningerSignIdem_mul_hyperbolic (hε : ε ^ 2 = 1) :
+theorem deningerSignIdem_mul_hyperbolic (hε : ε ^ (2 : ℕ) = 1) :
     deningerSignIdem ε * (1 + ε) = 0 := by
   rw [deningerSignIdem]
-  have hexp : (1 - ε) * (1 + ε) = 1 - ε ^ 2 := by ring
+  have hexp : (1 - ε) * (1 + ε) = 1 - ε ^ (2 : ℕ) := by ring
   calc ⅟(2 : A) * (1 - ε) * (1 + ε) = ⅟(2 : A) * ((1 - ε) * (1 + ε)) := by ring
     _ = 0 := by rw [hexp, hε]; ring
 

@@ -22,7 +22,7 @@ namespace RHTower
 /-- Two distinct primes above `y` dividing `n` push every `y`-bounded divisor
 of `n` strictly below the truncation window: `e * N < n`. -/
 theorem window_lt_of_two_large_primes
-    {N y n p q e : ℕ} (hNy : N < (y + 1) ^ 2)
+    {N y n p q e : ℕ} (hNy : N < (y + 1) ^ (2 : ℕ))
     (hp : p.Prime) (hq : q.Prime) (hpy : y < p) (hqy : y < q) (hpq : p ≠ q)
     (hpn : p ∣ n) (hqn : q ∣ n) (hn : 0 < n)
     (he : e ∣ n) (hey : e ≤ y) :
@@ -38,7 +38,7 @@ theorem window_lt_of_two_large_primes
   have hall : (p * q) * e ∣ n := Nat.Coprime.mul_dvd_of_dvd_of_dvd hcop hpqn he
   have hle : (p * q) * e ≤ n := Nat.le_of_dvd hn hall
   have hyy : N < (y + 1) * (y + 1) := by
-    have h2 : (y + 1) ^ 2 = (y + 1) * (y + 1) := sq (y + 1)
+    have h2 : (y + 1) ^ (2 : ℕ) = (y + 1) * (y + 1) := sq (y + 1)
     rw [h2] at hNy
     exact hNy
   have hpq2 : N < p * q :=
@@ -50,7 +50,7 @@ theorem window_lt_of_two_large_primes
 /-- The mollified product's divisor window at a two-large-prime boundary
 element is empty. -/
 theorem boundary_filter_empty
-    {N y n p q : ℕ} (hNy : N < (y + 1) ^ 2)
+    {N y n p q : ℕ} (hNy : N < (y + 1) ^ (2 : ℕ))
     (hp : p.Prime) (hq : q.Prime) (hpy : y < p) (hqy : y < q) (hpq : p ≠ q)
     (hpn : p ∣ n) (hqn : q ∣ n) (hn : 0 < n) :
     n.divisors.filter (fun e => e ≤ y ∧ n ≤ N * e) = ∅ := by
@@ -66,7 +66,7 @@ theorem boundary_filter_empty
 mollified product at a two-large-prime element vanishes, for ANY mollifier
 weights supported on [1, y] — sharp μ and BV alike. -/
 theorem boundary_coeff_eq_zero
-    (lam : ℕ → ℝ) {N y n p q : ℕ} (hNy : N < (y + 1) ^ 2)
+    (lam : ℕ → ℝ) {N y n p q : ℕ} (hNy : N < (y + 1) ^ (2 : ℕ))
     (hp : p.Prime) (hq : q.Prime) (hpy : y < p) (hqy : y < q) (hpq : p ≠ q)
     (hpn : p ∣ n) (hqn : q ∣ n) (hn : 0 < n) :
     ∑ e ∈ n.divisors.filter (fun e => e ≤ y ∧ n ≤ N * e), lam e = 0 := by
@@ -77,18 +77,18 @@ theorem boundary_coeff_eq_zero
 a prime above `y`: each large prime appears at most linearly (the conditional
 linearity substrate, doc 84 §§4, 10). -/
 theorem not_support_of_large_prime_sq
-    {N y m p e : ℕ} (hNy : N < (y + 1) ^ 2)
-    (hp : p.Prime) (hpy : y < p) (hsq : p ^ 2 ∣ m) (hm : 0 < m)
+    {N y m p e : ℕ} (hNy : N < (y + 1) ^ (2 : ℕ))
+    (hp : p.Prime) (hpy : y < p) (hsq : p ^ (2 : ℕ) ∣ m) (hm : 0 < m)
     (he : e ∣ m) (hey : e ≤ y) (hwin : m ≤ N * e) : False := by
   have hepos : 0 < e := Nat.pos_of_dvd_of_pos he hm
   have hpe : ¬ p ∣ e := fun h => absurd (Nat.le_of_dvd hepos h) (by omega)
-  have hcop : Nat.Coprime (p ^ 2) e :=
+  have hcop : Nat.Coprime (p ^ (2 : ℕ)) e :=
     Nat.Coprime.pow_left 2 ((hp.coprime_iff_not_dvd).mpr hpe)
-  have hall : p ^ 2 * e ∣ m := Nat.Coprime.mul_dvd_of_dvd_of_dvd hcop hsq he
-  have hle : p ^ 2 * e ≤ m := Nat.le_of_dvd hm hall
-  have hp2 : N < p ^ 2 :=
+  have hall : p ^ (2 : ℕ) * e ∣ m := Nat.Coprime.mul_dvd_of_dvd_of_dvd hcop hsq he
+  have hle : p ^ (2 : ℕ) * e ≤ m := Nat.le_of_dvd hm hall
+  have hp2 : N < p ^ (2 : ℕ) :=
     lt_of_lt_of_le hNy (Nat.pow_le_pow_left (by omega) 2)
-  have hgt : N * e < p ^ 2 * e := mul_lt_mul_of_pos_right hp2 hepos
+  have hgt : N * e < p ^ (2 : ℕ) * e := mul_lt_mul_of_pos_right hp2 hepos
   exact Nat.lt_irrefl m (Nat.lt_of_le_of_lt hwin (Nat.lt_of_lt_of_le hgt hle))
 
 end RHTower

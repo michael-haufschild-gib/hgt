@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.AutonomousExponentDichotomy
 /-!
 # A dominant constant term forces the wild branch everywhere
 
-If the coefficient of `W^0` carries strictly more total degree than every other coefficient,
+If the coefficient of `W^(0 : ℕ)` carries strictly more total degree than every other coefficient,
 
 ```text
 deg C_k + k < deg C_0    for every  1 ≤ k ≤ m,

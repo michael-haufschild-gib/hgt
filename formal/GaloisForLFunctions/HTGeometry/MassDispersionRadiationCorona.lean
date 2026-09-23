@@ -6,7 +6,7 @@ import Mathlib.Topology.Algebra.Order.Field
 
 For the principal dispersion
 
-`sqrt ((xi - i * lambda)^2 + a^2)`,
+`sqrt ((xi - i * lambda)^(2 : ℕ) + a^(2 : ℕ))`,
 
 the two frequency ends retain only the exponential gauge.  The mass disappears
 at both ends: the positive end differs from `xi` by `-i * lambda`, while the
@@ -20,7 +20,7 @@ open Complex Filter Topology
 
 /-- The squared exponentially gauged mass frequency. -/
 noncomputable def massGaugeRadicand (a lambda xi : ℝ) : ℂ :=
-  ((xi : ℂ) - (lambda : ℂ) * I) ^ 2 + (a ^ 2 : ℝ)
+  ((xi : ℂ) - (lambda : ℂ) * I) ^ (2 : ℕ) + (a ^ (2 : ℕ) : ℝ)
 
 /-- The principal exponentially gauged mass dispersion. -/
 noncomputable def massGaugeDispersion (a lambda xi : ℝ) : ℂ :=
@@ -28,21 +28,21 @@ noncomputable def massGaugeDispersion (a lambda xi : ℝ) : ℂ :=
 
 @[simp]
 theorem massGaugeRadicand_re (a lambda xi : ℝ) :
-    (massGaugeRadicand a lambda xi).re = xi ^ 2 + a ^ 2 - lambda ^ 2 := by
-  change (((xi : ℂ) - (lambda : ℂ) * I) ^ 2 + (a ^ 2 : ℝ)).re = _
+    (massGaugeRadicand a lambda xi).re = xi ^ (2 : ℕ) + a ^ (2 : ℕ) - lambda ^ (2 : ℕ) := by
+  change (((xi : ℂ) - (lambda : ℂ) * I) ^ (2 : ℕ) + (a ^ (2 : ℕ) : ℝ)).re = _
   simp [pow_two, Complex.mul_re]
   ring
 
 @[simp]
 theorem massGaugeRadicand_im (a lambda xi : ℝ) :
     (massGaugeRadicand a lambda xi).im = -2 * xi * lambda := by
-  change (((xi : ℂ) - (lambda : ℂ) * I) ^ 2 + (a ^ 2 : ℝ)).im = _
+  change (((xi : ℂ) - (lambda : ℂ) * I) ^ (2 : ℕ) + (a ^ (2 : ℕ) : ℝ)).im = _
   simp [pow_two, Complex.mul_im]
   ring
 
 /-- The principal complex square root squares to the gauged radicand. -/
 theorem massGaugeDispersion_sq (a lambda xi : ℝ) :
-    massGaugeDispersion a lambda xi ^ 2 = massGaugeRadicand a lambda xi := by
+    massGaugeDispersion a lambda xi ^ (2 : ℕ) = massGaugeRadicand a lambda xi := by
   simp only [massGaugeDispersion, Complex.sqrt]
   exact Complex.cpow_nat_inv_pow _ (by norm_num)
 
@@ -60,8 +60,8 @@ theorem abs_le_massGaugeDispersion_re {a lambda : ℝ} (ha : lambda ≤ a)
     (hlambda : 0 ≤ lambda) (xi : ℝ) :
     |xi| ≤ (massGaugeDispersion a lambda xi).re := by
   rw [massGaugeDispersion_re]
-  have ha2 : lambda ^ 2 ≤ a ^ 2 := by nlinarith
-  have hzre : xi ^ 2 ≤ (massGaugeRadicand a lambda xi).re := by
+  have ha2 : lambda ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by nlinarith
+  have hzre : xi ^ (2 : ℕ) ≤ (massGaugeRadicand a lambda xi).re := by
     rw [massGaugeRadicand_re]
     nlinarith
   have hnorm :
@@ -101,7 +101,7 @@ theorem tendsto_massGaugeDispersion_sub_line_atTop_zero {a lambda : ℝ}
       _ ≤ |(den xi).re| := le_abs_self _
       _ ≤ ‖den xi‖ := Complex.abs_re_le_norm _
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
-  have hquot : Tendsto (fun xi : ℝ => a ^ 2 / ‖den xi‖) atTop (nhds 0) :=
+  have hquot : Tendsto (fun xi : ℝ => a ^ (2 : ℕ) / ‖den xi‖) atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop hden
   apply hquot.congr'
   filter_upwards [eventually_gt_atTop 0] with xi hxi
@@ -119,19 +119,19 @@ theorem tendsto_massGaugeDispersion_sub_line_atTop_zero {a lambda : ℝ}
     linarith
   have hprod :
       (massGaugeDispersion a lambda xi - ((xi : ℂ) - (lambda : ℂ) * I)) *
-          den xi = (a ^ 2 : ℝ) := by
+          den xi = (a ^ (2 : ℕ) : ℝ) := by
     dsimp [den]
     calc
       (massGaugeDispersion a lambda xi - ((xi : ℂ) - (lambda : ℂ) * I)) *
           (massGaugeDispersion a lambda xi + ((xi : ℂ) - (lambda : ℂ) * I)) =
-          massGaugeDispersion a lambda xi ^ 2 -
-            ((xi : ℂ) - (lambda : ℂ) * I) ^ 2 := by ring
-      _ = (a ^ 2 : ℝ) := by
+          massGaugeDispersion a lambda xi ^ (2 : ℕ) -
+            ((xi : ℂ) - (lambda : ℂ) * I) ^ (2 : ℕ) := by ring
+      _ = (a ^ (2 : ℕ) : ℝ) := by
         rw [massGaugeDispersion_sq]
         simp [massGaugeRadicand]
   have hrat :
       massGaugeDispersion a lambda xi - ((xi : ℂ) - (lambda : ℂ) * I) =
-        (a ^ 2 : ℝ) / den xi :=
+        (a ^ (2 : ℕ) : ℝ) / den xi :=
     (eq_div_iff hdenne).2 hprod
   rw [hrat, norm_div, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (sq_nonneg a)]
@@ -177,7 +177,7 @@ theorem tendsto_massGaugeDispersion_add_line_atBot_zero {a lambda : ℝ}
       _ ≤ |(den xi).re| := le_abs_self _
       _ ≤ ‖den xi‖ := Complex.abs_re_le_norm _
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
-  have hquot : Tendsto (fun xi : ℝ => a ^ 2 / ‖den xi‖) atBot (nhds 0) :=
+  have hquot : Tendsto (fun xi : ℝ => a ^ (2 : ℕ) / ‖den xi‖) atBot (nhds 0) :=
     tendsto_const_nhds.div_atTop hden
   apply hquot.congr'
   filter_upwards [eventually_lt_atBot 0] with xi hxi
@@ -195,19 +195,19 @@ theorem tendsto_massGaugeDispersion_add_line_atBot_zero {a lambda : ℝ}
     linarith
   have hprod :
       (massGaugeDispersion a lambda xi + ((xi : ℂ) - (lambda : ℂ) * I)) *
-          den xi = (a ^ 2 : ℝ) := by
+          den xi = (a ^ (2 : ℕ) : ℝ) := by
     dsimp [den]
     calc
       (massGaugeDispersion a lambda xi + ((xi : ℂ) - (lambda : ℂ) * I)) *
           (massGaugeDispersion a lambda xi - ((xi : ℂ) - (lambda : ℂ) * I)) =
-          massGaugeDispersion a lambda xi ^ 2 -
-            ((xi : ℂ) - (lambda : ℂ) * I) ^ 2 := by ring
-      _ = (a ^ 2 : ℝ) := by
+          massGaugeDispersion a lambda xi ^ (2 : ℕ) -
+            ((xi : ℂ) - (lambda : ℂ) * I) ^ (2 : ℕ) := by ring
+      _ = (a ^ (2 : ℕ) : ℝ) := by
         rw [massGaugeDispersion_sq]
         simp [massGaugeRadicand]
   have hrat :
       massGaugeDispersion a lambda xi + ((xi : ℂ) - (lambda : ℂ) * I) =
-        (a ^ 2 : ℝ) / den xi :=
+        (a ^ (2 : ℕ) : ℝ) / den xi :=
     (eq_div_iff hdenne).2 hprod
   rw [hrat, norm_div, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (sq_nonneg a)]
@@ -290,8 +290,8 @@ theorem abs_lt_massGaugeDispersion_re {a lambda : ℝ} (ha : lambda < a)
     (hlambda : 0 ≤ lambda) (xi : ℝ) :
     |xi| < (massGaugeDispersion a lambda xi).re := by
   rw [massGaugeDispersion_re]
-  have ha2 : lambda ^ 2 < a ^ 2 := by nlinarith
-  have hzre : xi ^ 2 < (massGaugeRadicand a lambda xi).re := by
+  have ha2 : lambda ^ (2 : ℕ) < a ^ (2 : ℕ) := by nlinarith
+  have hzre : xi ^ (2 : ℕ) < (massGaugeRadicand a lambda xi).re := by
     rw [massGaugeRadicand_re]
     nlinarith
   have hnorm :

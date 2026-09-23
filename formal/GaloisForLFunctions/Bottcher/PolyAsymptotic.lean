@@ -55,7 +55,7 @@ theorem tendsto_eval_div_pow_zero {Q : Polynomial ℂ} {d : ℕ} (hQd : Q.natDeg
   rw [div_le_div_iff_of_pos_right hpos]
   exact norm_eval_le_of_one_le hz1
 
-/-- The quadratic polynomial `z^2 + c` is monic. -/
+/-- The quadratic polynomial `z^(2 : ℕ) + c` is monic. -/
 theorem quadraticPoly_monic (c : ℂ) : (quadraticPoly c).Monic := by
   unfold quadraticPoly
   exact monic_X_pow_add (lt_of_le_of_lt degree_C_le (by decide))
@@ -853,7 +853,7 @@ theorem tendsto_real_mul_bottcherCoord_quadratic_sub_quadratic_atTop (c a : ℂ)
       field_simp [norm_ne_zero_iff.mpr hZne]
 
 /-- The transported shifted-parabola defect gains one inverse power:
-`t * (φ_{c₁}(t²+c₂) - (φ_{c₁}(t)^2 + c₂-c₁)) → 0`. -/
+`t * (φ_{c₁}(t²+c₂) - (φ_{c₁}(t)^(2 : ℕ) + c₂-c₁)) → 0`. -/
 theorem tendsto_real_mul_transported_quadratic_defect_atTop (c₁ c₂ : ℂ) :
     Tendsto (fun t : ℝ => (t : ℂ) *
       (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) -
@@ -931,7 +931,7 @@ namespace Bottcher
 /-- **Finite weighted top extraction with a vanishing tail.**
 The divided weighted relation may carry an extra term tending to `0`; it still cannot contribute to the
 top weighted coefficient. This is the tail-aware form needed after subtracting a shifted parabola factor,
-where the remaining error is multiplied by the small defect `Z(t)-W(t)^2-d`. -/
+where the remaining error is multiplied by the small defect `Z(t)-W(t)^(2 : ℕ)-d`. -/
 theorem weighted_top_sum_zero_of_eventual_relation_filter_with_tail {α ι : Type*} [Fintype ι]
     {l : Filter α} [l.NeBot]
     {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {x P Q Tail : α → ℂ}

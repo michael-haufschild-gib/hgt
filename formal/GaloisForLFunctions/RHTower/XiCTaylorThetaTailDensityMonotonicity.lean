@@ -17,18 +17,18 @@ noncomputable section
 
 private theorem densityDerivativePolynomial_neg {u : ℝ}
     (hu : Real.pi ≤ u) :
-    1 / 2 - 62 * u + 120 * u ^ 2 - 32 * u ^ 3 < 0 := by
+    1 / 2 - 62 * u + 120 * u ^ (2 : ℕ) - 32 * u ^ (3 : ℕ) < 0 := by
   have hpi : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
   have hu314 : (3.14 : ℝ) < u := hpi.trans_le hu
-  have hderneg : -62 + 240 * u - 96 * u ^ 2 < 0 := by
+  have hderneg : -62 + 240 * u - 96 * u ^ (2 : ℕ) < 0 := by
     nlinarith [sq_nonneg (u - 5 / 4)]
   have hbase :
-      1 / 2 - 62 * (3.14 : ℝ) + 120 * (3.14 : ℝ) ^ 2 -
-          32 * (3.14 : ℝ) ^ 3 < 0 := by norm_num
+      1 / 2 - 62 * (3.14 : ℝ) + 120 * (3.14 : ℝ) ^ (2 : ℕ) -
+          32 * (3.14 : ℝ) ^ (3 : ℕ) < 0 := by norm_num
   have hdiff :
-      (1 / 2 - 62 * u + 120 * u ^ 2 - 32 * u ^ 3) -
-        (1 / 2 - 62 * (3.14 : ℝ) + 120 * (3.14 : ℝ) ^ 2 -
-          32 * (3.14 : ℝ) ^ 3) < 0 := by
+      (1 / 2 - 62 * u + 120 * u ^ (2 : ℕ) - 32 * u ^ (3 : ℕ)) -
+        (1 / 2 - 62 * (3.14 : ℝ) + 120 * (3.14 : ℝ) ^ (2 : ℕ) -
+          32 * (3.14 : ℝ) ^ (3 : ℕ)) < 0 := by
     nlinarith [sq_nonneg (u - (3.14 : ℝ))]
   linarith
 
@@ -45,9 +45,9 @@ theorem hasDerivAt_thetaCuspTailSecondDensityAtom
 
 private theorem thetaCuspTailDerivativePolynomial_three_value :
     thetaCuspTailDerivativePolynomial 3 =
-      C (1 / 8) - C (31 * Real.pi / 2) * X ^ 2 +
-        C (30 * Real.pi ^ 2) * X ^ 4 -
-          C (8 * Real.pi ^ 3) * X ^ 6 := by
+      C (1 / 8) - C (31 * Real.pi / 2) * X ^ (2 : ℕ) +
+        C (30 * Real.pi ^ (2 : ℕ)) * X ^ (4 : ℕ) -
+          C (8 * Real.pi ^ (3 : ℕ)) * X ^ (6 : ℕ) := by
   apply Polynomial.funext
   intro y
   simp [thetaCuspTailDerivativePolynomial, thetaCuspLogDerivativeStep]
@@ -59,7 +59,7 @@ theorem thetaCuspTailSecondDensityAtom_deriv_neg
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     4 * thetaCuspPolynomialAtom
         (thetaCuspTailDerivativePolynomial 3) n x < 0 := by
-  let u : ℝ := Real.pi * ((n : ℝ) * Real.exp x) ^ 2
+  let u : ℝ := Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hexp : 1 ≤ Real.exp x := Real.one_le_exp hx
   have hscale : 1 ≤ (n : ℝ) * Real.exp x := by nlinarith
@@ -71,29 +71,29 @@ theorem thetaCuspTailSecondDensityAtom_deriv_neg
   unfold thetaCuspPolynomialAtom
   simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   have hrewrite :
-      1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ 2 +
-          30 * Real.pi ^ 2 * ((n : ℝ) * Real.exp x) ^ 4 -
-          8 * Real.pi ^ 3 * ((n : ℝ) * Real.exp x) ^ 6 =
+      1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) +
+          30 * Real.pi ^ (2 : ℕ) * ((n : ℝ) * Real.exp x) ^ (4 : ℕ) -
+          8 * Real.pi ^ (3 : ℕ) * ((n : ℝ) * Real.exp x) ^ (6 : ℕ) =
         (1 / 4 : ℝ) *
-          (1 / 2 - 62 * u + 120 * u ^ 2 - 32 * u ^ 3) := by
+          (1 / 2 - 62 * u + 120 * u ^ (2 : ℕ) - 32 * u ^ (3 : ℕ)) := by
     dsimp [u]
     ring
   have hnegative :
-      1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ 2 +
-          30 * Real.pi ^ 2 * ((n : ℝ) * Real.exp x) ^ 4 -
-          8 * Real.pi ^ 3 * ((n : ℝ) * Real.exp x) ^ 6 < 0 := by
+      1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) +
+          30 * Real.pi ^ (2 : ℕ) * ((n : ℝ) * Real.exp x) ^ (4 : ℕ) -
+          8 * Real.pi ^ (3 : ℕ) * ((n : ℝ) * Real.exp x) ^ (6 : ℕ) < 0 := by
     rw [hrewrite]
     nlinarith
   rw [show 4 * (Real.exp (x / 2) *
-      (1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ 2 +
-        30 * Real.pi ^ 2 * ((n : ℝ) * Real.exp x) ^ 4 -
-        8 * Real.pi ^ 3 * ((n : ℝ) * Real.exp x) ^ 6) *
-      Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)) =
+      (1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) +
+        30 * Real.pi ^ (2 : ℕ) * ((n : ℝ) * Real.exp x) ^ (4 : ℕ) -
+        8 * Real.pi ^ (3 : ℕ) * ((n : ℝ) * Real.exp x) ^ (6 : ℕ)) *
+      Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) =
     (4 * Real.exp (x / 2) *
-      Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)) *
-      (1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ 2 +
-        30 * Real.pi ^ 2 * ((n : ℝ) * Real.exp x) ^ 4 -
-        8 * Real.pi ^ 3 * ((n : ℝ) * Real.exp x) ^ 6) by ring]
+      Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) *
+      (1 / 8 - 31 * Real.pi / 2 * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) +
+        30 * Real.pi ^ (2 : ℕ) * ((n : ℝ) * Real.exp x) ^ (4 : ℕ) -
+        8 * Real.pi ^ (3 : ℕ) * ((n : ℝ) * Real.exp x) ^ (6 : ℕ)) by ring]
   exact mul_neg_of_pos_of_neg (by positivity) hnegative
 
 /-- Every positive-index exact density atom is strictly decreasing on `[0,∞)`. -/

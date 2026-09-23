@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovOmittedError
 # Omitted long-energy errors at quadratic-horizon scale
 
 Keeping the omitted sector's exact lower endpoint `L * max q r` exposes a reciprocal-max gain
-lost by the uniform endpoint estimate. Consequently `8*M ≤ L`, rather than `8*M^2 ≤ L`, suffices
+lost by the uniform endpoint estimate. Consequently `8*M ≤ L`, rather than `8*M^(2 : ℕ) ≤ L`, suffices
 pointwise, and the aggregate coefficient budget is linear in `M` up to logarithms.
 -/
 
@@ -67,7 +67,7 @@ theorem abs_barbanVehovOmittedLongSecondLogKernel_sub_continuous_le_sharp
     |barbanVehovOmittedLongSecondLogKernel L (L * M) q r -
         barbanVehovLongSecondLogKernelContinuous
           (L * max q r) (L * M) q r| ≤
-      12 * Real.log (L * M + 1 : ℕ) ^ 2 /
+      12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) /
         ((L * max q r : ℕ) : ℝ) := by
   have hmaxM : max q r ≤ M := max_le hqM hrM
   have hLmax : L * max q r ≤ L * M := Nat.mul_le_mul_left L hmaxM
@@ -125,7 +125,7 @@ theorem sum_product_abs_barbanVehovWeight_div_max_le
     (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
       |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| /
         ((max p.1 p.2 : ℕ) : ℝ)) ≤
-      (M : ℝ) * Real.log M ^ 2 * (1 + Real.log M) := by
+      (M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M) := by
   let S := Finset.Icc 1 M
   calc
     (∑ p ∈ S ×ˢ S,
@@ -152,13 +152,13 @@ theorem sum_product_abs_barbanVehovWeight_div_max_le
         (Finset.sum_nonneg fun _ _ => abs_nonneg _)
         (mul_nonneg (Real.log_nonneg (by exact_mod_cast hM))
           (by positivity))
-    _ = (M : ℝ) * Real.log M ^ 2 * (1 + Real.log M) := by ring
+    _ = (M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M) := by ring
 
 theorem abs_barbanVehovOmittedLongBaseLcm_sub_continuous_le_quadratic
     {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ≤ L) :
     |barbanVehovOmittedLongBaseLcm L M -
         barbanVehovOmittedLongBaseContinuous L M| ≤
-      ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
+      ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
         (3 / (L : ℝ)) := by
   rw [barbanVehovOmittedLongBaseLcm,
     barbanVehovOmittedLongBaseContinuous, ← Finset.sum_sub_distrib]
@@ -203,7 +203,7 @@ theorem abs_barbanVehovOmittedLongBaseLcm_sub_continuous_le_quadratic
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| /
           ((max p.1 p.2 : ℕ) : ℝ)) * (3 / (L : ℝ)) := by
       rw [Finset.sum_mul]
-    _ ≤ ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
+    _ ≤ ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
         (3 / (L : ℝ)) :=
       mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_div_max_le hM) (by positivity)
@@ -212,7 +212,7 @@ theorem abs_barbanVehovOmittedLongCrossLcm_sub_continuous_le_quadratic
     {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ≤ L) :
     |barbanVehovOmittedLongCrossLcm L M -
         barbanVehovOmittedLongCrossContinuous L M| ≤
-      ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
+      ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
         (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovOmittedLongCrossLcm,
     barbanVehovOmittedLongCrossContinuous, ← Finset.sum_sub_distrib]
@@ -269,7 +269,7 @@ theorem abs_barbanVehovOmittedLongCrossLcm_sub_continuous_le_quadratic
           ((max p.1 p.2 : ℕ) : ℝ)) *
             (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ)) := by
       rw [Finset.sum_mul]
-    _ ≤ ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
+    _ ≤ ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
         (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ)) :=
       mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_div_max_le hM) (by positivity)
@@ -278,8 +278,8 @@ theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le_quadratic
     {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ≤ L) :
     |barbanVehovOmittedLongDerivativeLcm L M -
         barbanVehovOmittedLongDerivativeContinuous L M| ≤
-      ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
-        (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+      ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
+        (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovOmittedLongDerivativeLcm,
     barbanVehovOmittedLongDerivativeContinuous, ← Finset.sum_sub_distrib]
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
@@ -293,7 +293,7 @@ theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le_quadratic
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         (|barbanVehovWeight M p.1 * barbanVehovWeight M p.2| /
           ((max p.1 p.2 : ℕ) : ℝ)) *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
       apply Finset.sum_le_sum
       intro p hp
       obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
@@ -310,12 +310,12 @@ theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le_quadratic
               congr 1
               ring
         _ ≤ |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 /
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) /
               ((L * max p.1 p.2 : ℕ) : ℝ)) :=
           mul_le_mul_of_nonneg_left hk (abs_nonneg _)
         _ = (|barbanVehovWeight M p.1 * barbanVehovWeight M p.2| /
               ((max p.1 p.2 : ℕ) : ℝ)) *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
           have hL : (L : ℝ) ≠ 0 := by
             exact_mod_cast (show L ≠ 0 by omega)
           have hmax : ((max p.1 p.2 : ℕ) : ℝ) ≠ 0 := by
@@ -325,10 +325,10 @@ theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le_quadratic
     _ = (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| /
           ((max p.1 p.2 : ℕ) : ℝ)) *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
       rw [Finset.sum_mul]
-    _ ≤ ((M : ℝ) * Real.log M ^ 2 * (1 + Real.log M)) *
-        (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) :=
+    _ ≤ ((M : ℝ) * Real.log M ^ (2 : ℕ) * (1 + Real.log M)) *
+        (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) :=
       mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_div_max_le hM) (by positivity)
 

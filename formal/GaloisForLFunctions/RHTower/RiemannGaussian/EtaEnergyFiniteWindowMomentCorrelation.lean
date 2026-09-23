@@ -131,11 +131,11 @@ def pairedEtaTopPrefixFiniteCutoffFamilyWeightedMomentSelfMass
     (rho : NontrivialZetaZero) : ℝ :=
   ∑ j,
     (‖pairedEtaTopPrefixFiniteCompletionWeight
-        (NontrivialZetaZero.conjugatePartner rho)‖ ^ 2 *
+        (NontrivialZetaZero.conjugatePartner rho)‖ ^ (2 : ℕ) *
       ‖pairedEtaTopPrefixFiniteCenteredMoment
-        (NontrivialZetaZero.conjugatePartner rho) (cutoff j)‖ ^ 2 +
-    ‖pairedEtaTopPrefixFiniteCompletionWeight rho‖ ^ 2 *
-      ‖pairedEtaTopPrefixFiniteCenteredMoment rho (cutoff j)‖ ^ 2)
+        (NontrivialZetaZero.conjugatePartner rho) (cutoff j)‖ ^ (2 : ℕ) +
+    ‖pairedEtaTopPrefixFiniteCompletionWeight rho‖ ^ (2 : ℕ) *
+      ‖pairedEtaTopPrefixFiniteCenteredMoment rho (cutoff j)‖ ^ (2 : ℕ))
 
 /-- The one-channel reflected self-mass factors into completion weights and
 finite centered-moment norms. -/
@@ -160,9 +160,9 @@ weights from finite eta moments. -/
 def pairedEtaTopPrefixFiniteZeroWindowDiagonalWeightedMomentMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ) (T : ℝ) : ℝ :=
   4 * ∑ rho ∈ spectralZetaZeroWindow T,
-    (analyticZetaZeroMultiplicity rho : ℝ) ^ 2 *
+    (analyticZetaZeroMultiplicity rho : ℝ) ^ (2 : ℕ) *
       pairedEtaTopPrefixFiniteCutoffFamilyWeightedMomentSelfMass
-        cutoff rho ^ 2
+        cutoff rho ^ (2 : ℕ)
 
 /-- The signed distinct-zero finite-window mass after separating fixed
 completion weights from finite eta-moment correlations. -/
@@ -174,7 +174,7 @@ def pairedEtaTopPrefixFiniteZeroWindowOffDiagonalWeightedMomentMass
           (analyticZetaZeroMultiplicity sigma : ℝ) : ℝ) : ℂ) *
         (2 *
           pairedEtaTopPrefixFiniteCutoffFamilyWeightedReflectionCorrelation
-            cutoff sigma rho) ^ 2).re
+            cutoff sigma rho) ^ (2 : ℕ)).re
 
 /-- The reflected-original diagonal mass equals its completion-weighted
 finite-moment form. -/

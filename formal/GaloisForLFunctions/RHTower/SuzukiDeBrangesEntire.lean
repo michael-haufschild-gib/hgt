@@ -28,12 +28,12 @@ namespace RHTower
 /-- The multiplicity-weighted inverse-square spectral sum is summable. -/
 theorem summable_xiSupportMult_inv_one_add_sq (hRH : RiemannHypothesis) :
     Summable (fun ρ : XiDivisorSupport =>
-      (xiSupportMult ρ : ℝ) / (1 + (xiRealSpectralPointSupport ρ) ^ 2)) := by
+      (xiSupportMult ρ : ℝ) / (1 + (xiRealSpectralPointSupport ρ) ^ (2 : ℕ))) := by
   have hI : (0 : ℝ) < (I : ℂ).im := by simp
   have hbase := (hasSum_xiSupport_mult_inv_normSq hRH hI).summable
   refine hbase.congr fun ρ => ?_
-  have hnorm : ‖(I : ℂ) - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2
-      = 1 + (xiRealSpectralPointSupport ρ) ^ 2 := by
+  have hnorm : ‖(I : ℂ) - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ)
+      = 1 + (xiRealSpectralPointSupport ρ) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp
     ring
@@ -134,7 +134,7 @@ theorem norm_suzukiDeBrangesVector_le {γ R : ℝ} {m : ℕ} {z : ℂ}
 
 /-- The dominating series for the de Branges expansion on a ball. -/
 theorem summable_deBrangesBound (hRH : RiemannHypothesis)
-    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ 2)
+    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ (2 : ℕ))
     {R M : ℝ} (hR : 0 < R) (hM0 : 0 ≤ M)
     (hM : ∀ z ∈ Metric.closedBall (0 : ℂ) R, ‖XiC z‖ ≤ M) :
     Summable (fun ρ : XiDivisorSupport =>
@@ -172,25 +172,25 @@ theorem summable_deBrangesBound (hRH : RiemannHypothesis)
     set g : ℝ := xiRealSpectralPointSupport ρ with hg
     set mm : ℝ := (xiSupportMult ρ : ℝ) with hmm
     have hm : (0 : ℝ) ≤ mm := Nat.cast_nonneg _
-    have hden : (0 : ℝ) < 1 + g ^ 2 := by positivity
+    have hden : (0 : ℝ) < 1 + g ^ (2 : ℕ) := by positivity
     have habs : (0 : ℝ) < |g| := by linarith
-    have hsqle : Real.sqrt (1 + g ^ 2) ≤ Real.sqrt 2 * |g| := by
-      have h1 : (1 : ℝ) + g ^ 2 ≤ 2 * g ^ 2 := by nlinarith [sq_abs g]
-      calc Real.sqrt (1 + g ^ 2) ≤ Real.sqrt (2 * g ^ 2) := Real.sqrt_le_sqrt h1
+    have hsqle : Real.sqrt (1 + g ^ (2 : ℕ)) ≤ Real.sqrt 2 * |g| := by
+      have h1 : (1 : ℝ) + g ^ (2 : ℕ) ≤ 2 * g ^ (2 : ℕ) := by nlinarith [sq_abs g]
+      calc Real.sqrt (1 + g ^ (2 : ℕ)) ≤ Real.sqrt (2 * g ^ (2 : ℕ)) := Real.sqrt_le_sqrt h1
         _ = Real.sqrt 2 * |g| := by
             rw [Real.sqrt_mul (by norm_num), Real.sqrt_sq_eq_abs]
-    have hinv : 1 / |g| ≤ Real.sqrt 2 / Real.sqrt (1 + g ^ 2) := by
+    have hinv : 1 / |g| ≤ Real.sqrt 2 / Real.sqrt (1 + g ^ (2 : ℕ)) := by
       rw [div_le_div_iff₀ habs (Real.sqrt_pos.mpr hden), one_mul]
       exact hsqle
     have hsplit : Real.sqrt (mm / Real.pi) = Real.sqrt mm / Real.sqrt Real.pi :=
       Real.sqrt_div hm _
-    have hb : Real.sqrt (mm / (1 + g ^ 2)) = Real.sqrt mm / Real.sqrt (1 + g ^ 2) :=
+    have hb : Real.sqrt (mm / (1 + g ^ (2 : ℕ))) = Real.sqrt mm / Real.sqrt (1 + g ^ (2 : ℕ)) :=
       Real.sqrt_div hm _
-    have hb2 : (Real.sqrt (mm / (1 + g ^ 2))) ^ 2 = mm / (1 + g ^ 2) :=
+    have hb2 : (Real.sqrt (mm / (1 + g ^ (2 : ℕ)))) ^ (2 : ℕ) = mm / (1 + g ^ (2 : ℕ)) :=
       Real.sq_sqrt (by positivity)
-    have hamgm : ‖c ρ‖ * Real.sqrt (mm / (1 + g ^ 2))
-        ≤ (‖c ρ‖ ^ 2 + mm / (1 + g ^ 2)) / 2 := by
-      nlinarith [sq_nonneg (‖c ρ‖ - Real.sqrt (mm / (1 + g ^ 2))), hb2]
+    have hamgm : ‖c ρ‖ * Real.sqrt (mm / (1 + g ^ (2 : ℕ)))
+        ≤ (‖c ρ‖ ^ (2 : ℕ) + mm / (1 + g ^ (2 : ℕ))) / 2 := by
+      nlinarith [sq_nonneg (‖c ρ‖ - Real.sqrt (mm / (1 + g ^ (2 : ℕ)))), hb2]
     have hP : (0 : ℝ) ≤ ‖c ρ‖ * (Real.sqrt mm / Real.sqrt Real.pi) * (2 * M) := by
       have := Real.sqrt_nonneg mm
       have := Real.sqrt_nonneg Real.pi
@@ -207,25 +207,25 @@ theorem summable_deBrangesBound (hRH : RiemannHypothesis)
         = (‖c ρ‖ * (Real.sqrt mm / Real.sqrt Real.pi) * (2 * M)) * (1 / |g|) := by
       field_simp
     have hpine : Real.sqrt Real.pi ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hpi)
-    have hdne : Real.sqrt (1 + g ^ 2) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hden)
-    have hRr : K * (‖c ρ‖ * Real.sqrt (mm / (1 + g ^ 2)))
+    have hdne : Real.sqrt (1 + g ^ (2 : ℕ)) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hden)
+    have hRr : K * (‖c ρ‖ * Real.sqrt (mm / (1 + g ^ (2 : ℕ))))
         = (‖c ρ‖ * (Real.sqrt mm / Real.sqrt Real.pi) * (2 * M))
-          * (Real.sqrt 2 / Real.sqrt (1 + g ^ 2)) := by
+          * (Real.sqrt 2 / Real.sqrt (1 + g ^ (2 : ℕ))) := by
       rw [hK, hb]
       field_simp
     have hmid : ‖c ρ‖ * (Real.sqrt mm / Real.sqrt Real.pi) * (2 * M / |g|)
-        ≤ K * (‖c ρ‖ * Real.sqrt (mm / (1 + g ^ 2))) := by
+        ≤ K * (‖c ρ‖ * Real.sqrt (mm / (1 + g ^ (2 : ℕ)))) := by
       rw [hL, hRr]
       exact mul_le_mul_of_nonneg_left hinv hP
     have hfinal := mul_le_mul_of_nonneg_left hamgm hK0
-    show u ρ ≤ K / 2 * (‖c ρ‖ ^ 2 + mm / (1 + g ^ 2))
+    show u ρ ≤ K / 2 * (‖c ρ‖ ^ (2 : ℕ) + mm / (1 + g ^ (2 : ℕ)))
     linarith
 
 
 /-- **The de Branges series is entire.**  Near a spectral point the divided slope removes the
 pole, and far from the ball the terms are dominated by the square-summable weights. -/
 theorem differentiable_suzukiDeBrangesSeries (hRH : RiemannHypothesis)
-    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ 2) :
+    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ (2 : ℕ)) :
     Differentiable ℂ (suzukiDeBrangesSeries c) := by
   have hpi := Real.pi_pos
   have hspec := summable_xiSupportMult_inv_one_add_sq hRH

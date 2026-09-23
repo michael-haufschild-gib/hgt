@@ -33,7 +33,7 @@ theorem integrable_weight_mul_hillDensity_all {w : E → ℝ} (hw : ∀ ξ, 0 �
     (hmw : AEStronglyMeasurable (fun ξ : E => w ξ * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E))
     (hm : 0 < m) (hc : Continuous c) (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r)
-    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (hint : Integrable (fun ξ : E => w ξ * ‖G₀ ξ‖) (volume : Measure E)) :
     Integrable (fun ξ : E => w ξ * ‖hillDensity m c G₀ t ξ‖) (volume : Measure E) := by
   refine Integrable.mono' (hint.const_mul (max 1 (c 0 / c t) * Real.exp (K * |t|))) hmw ?_
@@ -52,7 +52,7 @@ theorem integrable_weight_mul_hillDensity_all {w : E → ℝ} (hw : ∀ ξ, 0 �
 density. -/
 theorem hasDerivAt_hillEvolutionField_dir_all (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖G₀ ξ‖) (volume : Measure E))
     (t : ℝ) (x v : E) (r : ℝ) :
@@ -73,7 +73,7 @@ theorem hasDerivAt_hillEvolutionField_dir_all (hm : 0 < m) (hc : Continuous c)
 /-- **The real field has spatial directional derivatives at every time.** -/
 theorem hasDerivAt_hillRealField_dir_all (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖G₀ ξ‖) (volume : Measure E))
     (t : ℝ) (x v : E) (r : ℝ) :
@@ -128,7 +128,7 @@ theorem hillChartPartial_succ (m : ℝ) (c : ℝ → ℝ) (G : EuclideanSpace �
 /-- **The derivative of the chart field along the time axis.** -/
 theorem hasDerivAt_hillChartField_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))
@@ -145,7 +145,7 @@ theorem hasDerivAt_hillChartField_zero (hm : 0 < m) (hc : Continuous c)
 /-- **The derivative of the chart field along a spatial axis.** -/
 theorem hasDerivAt_hillChartField_succ (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (h1 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ * ‖G ξ‖) (volume))
     (y : Fin (d + 1) → ℝ) (i : Fin d) :
@@ -178,7 +178,7 @@ theorem hasDerivAt_hillChartField_succ (hm : 0 < m) (hc : Continuous c)
 /-- **The chart field has all coordinate derivatives.** -/
 theorem hasDerivAt_hillChartField_update (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))

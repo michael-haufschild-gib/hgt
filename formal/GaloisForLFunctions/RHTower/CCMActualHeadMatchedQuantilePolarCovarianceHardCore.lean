@@ -298,7 +298,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel_succ_sub_nonneg
     0 ≤ ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel (K + 1) r -
       ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel K r := by
   rw [ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel_succ_sub]
-  apply mul_nonneg (criticalMellinAtomWeight_nonneg _)
+  apply mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
   have hrewrite :
       ccmActualHeadMatchedPolarCentroid (K + 3) *
           (∑ i ∈ Finset.range (r + 1), criticalMellinAtomWeight (i + 2)) -
@@ -316,7 +316,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel_succ_sub_nonneg
   rw [hrewrite]
   apply Finset.sum_nonneg
   intro i hi
-  apply mul_nonneg (criticalMellinAtomWeight_nonneg _)
+  apply mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
   apply sub_nonneg.mpr
   have hi_lt : i < K + 1 := by
     have hir : i < r + 1 := Finset.mem_range.mp hi
@@ -368,7 +368,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel_lt_succ_of_isPr
         (ccmActualHeadMatchedPolarCentroid (K + 3) -
           ccmActualHeadMatchedPolarCentroid (i + 2)) := by
     intro i hi
-    apply mul_nonneg (criticalMellinAtomWeight_nonneg _)
+    apply mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
     apply sub_nonneg.mpr
     have hi_lt : i < K + 1 := by
       have hir : i < r + 1 := Finset.mem_range.mp hi

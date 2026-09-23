@@ -36,9 +36,9 @@ def modularThetaPositiveVectorField :
     ModularThetaPositiveState → ModularThetaPositivePolynomial
   | .U => MvPolynomial.C 3 +
       MvPolynomial.C (1 / 4 : ℂ) * modularThetaPositiveGap +
-      MvPolynomial.C 3 * MvPolynomial.X .B ^ 2 +
+      MvPolynomial.C 3 * MvPolynomial.X .B ^ (2 : ℕ) +
       MvPolynomial.C 2 * MvPolynomial.X .B * MvPolynomial.X .U
-  | .B => MvPolynomial.C (-1 : ℂ) + MvPolynomial.X .B ^ 2 +
+  | .B => MvPolynomial.C (-1 : ℂ) + MvPolynomial.X .B ^ (2 : ℕ) +
       MvPolynomial.C (1 / 4 : ℂ) * modularThetaPositiveGap
   | .C => -MvPolynomial.X .C *
       (MvPolynomial.C 2 * MvPolynomial.X .U +
@@ -71,17 +71,17 @@ def modularThetaPositiveNormalizedSourceJet (n : ℕ) :
 /-- Rank-three reflected eighth polynomial in positive-chamber coordinates. -/
 def modularThetaPositiveReflectedEighthPolynomial : ModularThetaPositivePolynomial :=
   let f := modularThetaPositiveNormalizedSourceJet
-  let p0 := f 0 ^ 2
-  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ 2)
+  let p0 := f 0 ^ (2 : ℕ)
+  let p2 := MvPolynomial.C 2 * (f 0 * f 2 - f 1 ^ (2 : ℕ))
   let p4 := MvPolynomial.C 2 * f 0 * f 4 - MvPolynomial.C 8 * f 1 * f 3 +
-    MvPolynomial.C 6 * f 2 ^ 2
+    MvPolynomial.C 6 * f 2 ^ (2 : ℕ)
   let p6 := MvPolynomial.C 2 * f 0 * f 6 - MvPolynomial.C 12 * f 1 * f 5 +
-    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ 2
+    MvPolynomial.C 30 * f 2 * f 4 - MvPolynomial.C 20 * f 3 ^ (2 : ℕ)
   let p8 := MvPolynomial.C 2 * f 0 * f 8 - MvPolynomial.C 16 * f 1 * f 7 +
     MvPolynomial.C 56 * f 2 * f 6 - MvPolynomial.C 112 * f 3 * f 5 +
-    MvPolynomial.C 70 * f 4 ^ 2
-  p0 * p4 * p8 - p0 * p6 ^ 2 - p2 ^ 2 * p8 +
-    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ 3
+    MvPolynomial.C 70 * f 4 ^ (2 : ℕ)
+  p0 * p4 * p8 - p0 * p6 ^ (2 : ℕ) - p2 ^ (2 : ℕ) * p8 +
+    MvPolynomial.C 2 * p2 * p4 * p6 - p4 ^ (3 : ℕ)
 
 /-- Polynomial observables differentiate by the positive-chamber Lie derivative. -/
 theorem hasDerivAt_eval_modularThetaPositivePolynomial
@@ -161,13 +161,13 @@ theorem modularThetaPositiveReflectedEighthClosure_of_ode
       (iteratedDeriv (n + 2) H x -
         (1 / 4 : ℂ) * iteratedDeriv n H x) / 2
     signedEvenHankelThreeDetC
-      (f 0 ^ 2)
-      (2 * (f 0 * f 2 - f 1 ^ 2))
-      (2 * f 0 * f 4 - 8 * f 1 * f 3 + 6 * f 2 ^ 2)
-      (2 * f 0 * f 6 - 12 * f 1 * f 5 + 30 * f 2 * f 4 - 20 * f 3 ^ 2)
+      (f 0 ^ (2 : ℕ))
+      (2 * (f 0 * f 2 - f 1 ^ (2 : ℕ)))
+      (2 * f 0 * f 4 - 8 * f 1 * f 3 + 6 * f 2 ^ (2 : ℕ))
+      (2 * f 0 * f 6 - 12 * f 1 * f 5 + 30 * f 2 * f 4 - 20 * f 3 ^ (2 : ℕ))
       (2 * f 0 * f 8 - 16 * f 1 * f 7 + 56 * f 2 * f 6 -
-        112 * f 3 * f 5 + 70 * f 4 ^ 2) =
-      H x ^ 6 * MvPolynomial.eval (fun j => v j x)
+        112 * f 3 * f 5 + 70 * f 4 ^ (2 : ℕ)) =
+      H x ^ (6 : ℕ) * MvPolynomial.eval (fun j => v j x)
         modularThetaPositiveReflectedEighthPolynomial := by
   dsimp only
   unfold modularThetaPositiveReflectedEighthPolynomial

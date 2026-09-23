@@ -58,23 +58,23 @@ theorem tendsto_strelitzMaximumSlope_atTop
 subquadratic. -/
 theorem tendsto_convexRightSlope_div_id_zero_of_abs_subquadratic
     {f : ℝ → ℝ} (hf : ConvexOn ℝ Set.univ f)
-    (hfsq : Tendsto (fun x : ℝ => |f x| / x ^ 2) atTop (nhds 0))
+    (hfsq : Tendsto (fun x : ℝ => |f x| / x ^ (2 : ℕ)) atTop (nhds 0))
     (hK : Tendsto (convexRightSlope f) atTop atTop) :
     Tendsto (fun x : ℝ => convexRightSlope f x / x) atTop (nhds 0) := by
   have harg : Tendsto (fun x : ℝ => 2 * x) atTop atTop :=
     tendsto_id.const_mul_atTop (by norm_num)
   have htwoRaw := hfsq.comp harg
-  have htwo : Tendsto (fun x : ℝ => |f (2 * x)| / x ^ 2) atTop (nhds 0) := by
+  have htwo : Tendsto (fun x : ℝ => |f (2 * x)| / x ^ (2 : ℕ)) atTop (nhds 0) := by
     convert htwoRaw.const_mul 4 using 1
     · funext x
       simp only [Function.comp_apply]
       by_cases hx : x = 0
       · simp [hx]
-      · rw [show (2 * x) ^ 2 = 4 * x ^ 2 by ring]
+      · rw [show (2 * x) ^ (2 : ℕ) = 4 * x ^ (2 : ℕ) by ring]
         field_simp [hx]
     · norm_num
   have hupp : Tendsto (fun x : ℝ =>
-      |f (2 * x)| / x ^ 2 + |f x| / x ^ 2) atTop (nhds 0) := by
+      |f (2 * x)| / x ^ (2 : ℕ) + |f x| / x ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using htwo.add hfsq
   refine squeeze_zero' ?_ ?_ hupp
   · filter_upwards [hK.eventually_ge_atTop 0, eventually_gt_atTop (0 : ℝ)] with x hK0 hx
@@ -92,7 +92,7 @@ theorem tendsto_convexRightSlope_div_id_zero_of_abs_subquadratic
       convexRightSlope f x ≤ (f (2 * x) - f x) / x := hKs
       _ ≤ (|f (2 * x)| + |f x|) / x :=
         (div_le_div_iff_of_pos_right hx).mpr (by linarith)
-      _ = (|f (2 * x)| / x ^ 2 + |f x| / x ^ 2) * x := by
+      _ = (|f (2 * x)| / x ^ (2 : ℕ) + |f x| / x ^ (2 : ℕ)) * x := by
         field_simp [ne_of_gt hx]
 
 /-- The exact circle maximum is bounded by the coefficient majorant at the same radius. -/
@@ -112,7 +112,7 @@ theorem tendsto_log_maxTerm_exp_two_mul_div_sq_zero_of_centralIndex
     {a : ℕ → ℂ} (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (hν : Tendsto (fun r : ℝ => (centralIndex a r : ℝ) / Real.log r)
       atTop (nhds 0)) :
-    Tendsto (fun x : ℝ => Real.log (maxTerm a (Real.exp (2 * x))) / x ^ 2)
+    Tendsto (fun x : ℝ => Real.log (maxTerm a (Real.exp (2 * x))) / x ^ (2 : ℕ))
       atTop (nhds 0) := by
   have harg : Tendsto (fun x : ℝ => 2 * x) atTop atTop :=
     tendsto_id.const_mul_atTop (by norm_num)
@@ -121,26 +121,26 @@ theorem tendsto_log_maxTerm_exp_two_mul_div_sq_zero_of_centralIndex
     simpa [Function.comp_def] using
       hν.comp (Real.tendsto_exp_atTop.comp harg)
   have hinv : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
-  have hinvSq : Tendsto (fun x : ℝ => x⁻¹ ^ 2) atTop (nhds 0) := by
+  have hinvSq : Tendsto (fun x : ℝ => x⁻¹ ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hinv.pow 2
   let C0 := Real.log ‖a n₀‖
   let C1 := Real.log (maxTerm a 1)
   have hlow : Tendsto (fun x : ℝ =>
-      (C0 + (2 * (n₀ : ℝ)) * x) / x ^ 2) atTop (nhds 0) := by
+      (C0 + (2 * (n₀ : ℝ)) * x) / x ^ (2 : ℕ)) atTop (nhds 0) := by
     have hraw := (hinvSq.const_mul C0).add (hinv.const_mul (2 * (n₀ : ℝ)))
-    have heq : (fun x : ℝ => C0 * x⁻¹ ^ 2 + 2 * (n₀ : ℝ) * x⁻¹) =ᶠ[atTop]
-        (fun x : ℝ => (C0 + (2 * (n₀ : ℝ)) * x) / x ^ 2) := by
+    have heq : (fun x : ℝ => C0 * x⁻¹ ^ (2 : ℕ) + 2 * (n₀ : ℝ) * x⁻¹) =ᶠ[atTop]
+        (fun x : ℝ => (C0 + (2 * (n₀ : ℝ)) * x) / x ^ (2 : ℕ)) := by
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with x hx
       field_simp [hx]
     simpa using hraw.congr' heq
   have hupp : Tendsto (fun x : ℝ =>
-      (C1 + (centralIndex a (Real.exp (2 * x)) : ℝ) * (2 * x)) / x ^ 2)
+      (C1 + (centralIndex a (Real.exp (2 * x)) : ℝ) * (2 * x)) / x ^ (2 : ℕ))
       atTop (nhds 0) := by
     have hraw := (hinvSq.const_mul C1).add (hν2.const_mul 4)
-    have heq : (fun x : ℝ => C1 * x⁻¹ ^ 2 +
+    have heq : (fun x : ℝ => C1 * x⁻¹ ^ (2 : ℕ) +
         4 * ((centralIndex a (Real.exp (2 * x)) : ℝ) / (2 * x))) =ᶠ[atTop]
         (fun x : ℝ =>
-          (C1 + (centralIndex a (Real.exp (2 * x)) : ℝ) * (2 * x)) / x ^ 2) := by
+          (C1 + (centralIndex a (Real.exp (2 * x)) : ℝ) * (2 * x)) / x ^ (2 : ℕ)) := by
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with x hx
       field_simp [hx]
       ring
@@ -169,32 +169,32 @@ theorem tendsto_abs_strelitzLogMaximum_div_sq_zero_of_centralIndex
     {a : ℕ → ℂ} (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (hν : Tendsto (fun r : ℝ => (centralIndex a r : ℝ) / Real.log r)
       atTop (nhds 0)) :
-    Tendsto (fun x : ℝ => |strelitzLogMaximum a x| / x ^ 2) atTop (nhds 0) := by
+    Tendsto (fun x : ℝ => |strelitzLogMaximum a x| / x ^ (2 : ℕ)) atTop (nhds 0) := by
   have hmu2 := tendsto_log_maxTerm_exp_two_mul_div_sq_zero_of_centralIndex ha hn₀ hν
   have hinv : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
-  have hinvSq : Tendsto (fun x : ℝ => x⁻¹ ^ 2) atTop (nhds 0) := by
+  have hinvSq : Tendsto (fun x : ℝ => x⁻¹ ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hinv.pow 2
   let C0 := Real.log ‖a n₀‖
-  have hlow : Tendsto (fun x : ℝ => (C0 + (n₀ : ℝ) * x) / x ^ 2)
+  have hlow : Tendsto (fun x : ℝ => (C0 + (n₀ : ℝ) * x) / x ^ (2 : ℕ))
       atTop (nhds 0) := by
     have hraw := (hinvSq.const_mul C0).add (hinv.const_mul (n₀ : ℝ))
-    have heq : (fun x : ℝ => C0 * x⁻¹ ^ 2 + (n₀ : ℝ) * x⁻¹) =ᶠ[atTop]
-        (fun x : ℝ => (C0 + (n₀ : ℝ) * x) / x ^ 2) := by
+    have heq : (fun x : ℝ => C0 * x⁻¹ ^ (2 : ℕ) + (n₀ : ℝ) * x⁻¹) =ᶠ[atTop]
+        (fun x : ℝ => (C0 + (n₀ : ℝ) * x) / x ^ (2 : ℕ)) := by
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with x hx
       field_simp [hx]
     simpa using hraw.congr' heq
   have hupp : Tendsto (fun x : ℝ =>
-      (Real.log 2 + Real.log (maxTerm a (Real.exp (2 * x)))) / x ^ 2)
+      (Real.log 2 + Real.log (maxTerm a (Real.exp (2 * x)))) / x ^ (2 : ℕ))
       atTop (nhds 0) := by
     have hraw := (hinvSq.const_mul (Real.log 2)).add hmu2
-    have heq : (fun x : ℝ => Real.log 2 * x⁻¹ ^ 2 +
-        Real.log (maxTerm a (Real.exp (2 * x))) / x ^ 2) =ᶠ[atTop]
+    have heq : (fun x : ℝ => Real.log 2 * x⁻¹ ^ (2 : ℕ) +
+        Real.log (maxTerm a (Real.exp (2 * x))) / x ^ (2 : ℕ)) =ᶠ[atTop]
         (fun x : ℝ =>
-          (Real.log 2 + Real.log (maxTerm a (Real.exp (2 * x)))) / x ^ 2) := by
+          (Real.log 2 + Real.log (maxTerm a (Real.exp (2 * x)))) / x ^ (2 : ℕ)) := by
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with x hx
       field_simp [hx]
     simpa using hraw.congr' heq
-  have hphi : Tendsto (fun x : ℝ => strelitzLogMaximum a x / x ^ 2)
+  have hphi : Tendsto (fun x : ℝ => strelitzLogMaximum a x / x ^ (2 : ℕ))
       atTop (nhds 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow hupp
     · filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
@@ -229,8 +229,8 @@ theorem tendsto_abs_strelitzLogMaximum_div_sq_zero_of_centralIndex
       rw [div_le_div_iff_of_pos_right (sq_pos_of_pos hx)]
       simpa [strelitzLogMaximum] using hlog
   have habs := hphi.abs
-  have heq : (fun x : ℝ => |strelitzLogMaximum a x / x ^ 2|) =ᶠ[atTop]
-      (fun x : ℝ => |strelitzLogMaximum a x| / x ^ 2) := by
+  have heq : (fun x : ℝ => |strelitzLogMaximum a x / x ^ (2 : ℕ)|) =ᶠ[atTop]
+      (fun x : ℝ => |strelitzLogMaximum a x| / x ^ (2 : ℕ)) := by
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
     rw [abs_div, abs_of_nonneg (sq_nonneg x)]
   simpa using habs.congr' heq

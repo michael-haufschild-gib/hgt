@@ -28,8 +28,8 @@ theorem exists_norm_sq_sub_evenFourierCutoff_le_of_tail (N : ℕ) (hN : 1 ≤ N)
     ∃ K : ℝ, 0 ≤ K ∧ ∀ (m δ w t : ℝ) (hδ : 0 < δ), 0 < w → 2 * w ≤ t →
       2 * soninRefTailSup (δ * |w|) ≤ ∫ y : ℝ, soninUnitBumpData y →
         ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ -
-            evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ 2 ≤
-          2 * (K * δ ^ 2 / δ ^ (2 * N)) *
+            evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ (2 : ℕ) ≤
+          2 * (K * δ ^ (2 : ℕ) / δ ^ (2 * N)) *
             (t ^ (1 - (2 * N : ℝ)) / ((2 * N : ℝ) - 1)) := by
   obtain ⟨K, hK0, hK⟩ := exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le N hN
   refine ⟨K, hK0, ?_⟩
@@ -47,8 +47,8 @@ theorem exists_norm_sq_sub_evenFourierCutoff_soninShellCutPacket_le (N : ℕ) (h
               (2 * Real.pi * (r * q)) (soninShellCutWidth_pos b c hbc hM) -
             evenFourierCutoff (r * b)
               (soninScaledPacketEven (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
-                (2 * Real.pi * (r * q)) (soninShellCutWidth_pos b c hbc hM))‖ ^ 2 ≤
-          2 * (K * soninShellCutWidth b c M ^ 2 / soninShellCutWidth b c M ^ (2 * N)) *
+                (2 * Real.pi * (r * q)) (soninShellCutWidth_pos b c hbc hM))‖ ^ (2 : ℕ) ≤
+          2 * (K * soninShellCutWidth b c M ^ (2 : ℕ) / soninShellCutWidth b c M ^ (2 * N)) *
             ((r * b) ^ (1 - (2 * N : ℝ)) / ((2 * N : ℝ) - 1)) := by
   obtain ⟨K, hK0, hK⟩ := exists_norm_sq_sub_evenFourierCutoff_le_of_tail N hN
   refine ⟨K, hK0, ?_⟩

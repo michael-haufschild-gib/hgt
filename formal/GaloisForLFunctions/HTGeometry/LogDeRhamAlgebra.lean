@@ -65,7 +65,7 @@ section ExteriorOne
 variable (R) (M : Type u) [AddCommGroup M] [Module R M]
 
 /-- The class of a vector in the first exterior power, as a linear map. -/
-noncomputable def exteriorιₗ : M →ₗ[R] (⋀[R]^1 M) where
+noncomputable def exteriorιₗ : M →ₗ[R] (⋀[R]^(1 : ℕ) M) where
   toFun x := exteriorι R x
   map_add' x y := Subtype.ext (by
     show ExteriorAlgebra.ι R (x + y) = ExteriorAlgebra.ι R x + ExteriorAlgebra.ι R y
@@ -75,12 +75,12 @@ noncomputable def exteriorιₗ : M →ₗ[R] (⋀[R]^1 M) where
     rw [map_smul])
 
 /-- The first exterior power, back to the module. -/
-noncomputable def exteriorOneToBase : (⋀[R]^1 M) →ₗ[R] M :=
+noncomputable def exteriorOneToBase : (⋀[R]^(1 : ℕ) M) →ₗ[R] M :=
   exteriorPower.alternatingMapLinearEquiv
     (AlternatingMap.ofSubsingleton R M M (0 : Fin 1) LinearMap.id)
 
 theorem exteriorOneToBase_ι (x : M) : exteriorOneToBase R M (exteriorιₗ R M x) = x := by
-  have hι : (exteriorιₗ R M x : ⋀[R]^1 M) = exteriorPower.ιMulti R 1 (fun _ => x) := by
+  have hι : (exteriorιₗ R M x : ⋀[R]^(1 : ℕ) M) = exteriorPower.ιMulti R 1 (fun _ => x) := by
     refine Subtype.ext ?_
     rw [exteriorPower.ιMulti_apply_coe, ExteriorAlgebra.ιMulti_succ_apply]
     show ExteriorAlgebra.ι R x = ExteriorAlgebra.ι R x * ExteriorAlgebra.ιMulti R 0 _
@@ -89,7 +89,7 @@ theorem exteriorOneToBase_ι (x : M) : exteriorOneToBase R M (exteriorιₗ R M 
   rfl
 
 /-- **The first exterior power is the module itself.** -/
-noncomputable def exteriorOneEquiv : (⋀[R]^1 M) ≃ₗ[R] M := by
+noncomputable def exteriorOneEquiv : (⋀[R]^(1 : ℕ) M) ≃ₗ[R] M := by
   refine LinearEquiv.ofLinear (exteriorOneToBase R M) (exteriorιₗ R M) ?_ ?_
   · exact LinearMap.ext fun x => exteriorOneToBase_ι R M x
   · refine exteriorPower.linearMap_ext ?_
@@ -101,15 +101,15 @@ noncomputable def exteriorOneEquiv : (⋀[R]^1 M) ≃ₗ[R] M := by
     rw [hval]
     refine Subtype.ext ?_
     show (ExteriorAlgebra.ι R (v 0) : ExteriorAlgebra R M)
-      = ((exteriorPower.ιMulti R 1 v : ⋀[R]^1 M) : ExteriorAlgebra R M)
+      = ((exteriorPower.ιMulti R 1 v : ⋀[R]^(1 : ℕ) M) : ExteriorAlgebra R M)
     rw [exteriorPower.ιMulti_apply_coe, ExteriorAlgebra.ιMulti_succ_apply,
       ExteriorAlgebra.ιMulti_zero_apply, mul_one]
 
 /-- The unit of the zeroth exterior power. -/
-def exteriorZeroOne : (⋀[R]^0 M) := ⟨1, SetLike.one_mem_graded _⟩
+def exteriorZeroOne : (⋀[R]^(0 : ℕ) M) := ⟨1, SetLike.one_mem_graded _⟩
 
 /-- The zeroth exterior power, to the ring. -/
-noncomputable def exteriorZeroToBase : (⋀[R]^0 M) →ₗ[R] R :=
+noncomputable def exteriorZeroToBase : (⋀[R]^(0 : ℕ) M) →ₗ[R] R :=
   exteriorPower.alternatingMapLinearEquiv (AlternatingMap.constOfIsEmpty R M (Fin 0) (1 : R))
 
 theorem exteriorZeroOne_eq_ιMulti (v : Fin 0 → M) :
@@ -124,7 +124,7 @@ theorem exteriorZeroToBase_one : exteriorZeroToBase R M (exteriorZeroOne R M) = 
   rfl
 
 /-- **Every element of the zeroth exterior power is a multiple of the unit.** -/
-theorem exteriorZero_eq_smul_one (z : ⋀[R]^0 M) :
+theorem exteriorZero_eq_smul_one (z : ⋀[R]^(0 : ℕ) M) :
     z = exteriorZeroToBase R M z • exteriorZeroOne R M := by
   have hmem : z ∈ Submodule.span R (Set.range (exteriorPower.ιMulti R 0 (M := M))) := by
     rw [exteriorPower.ιMulti_span R 0 M]
@@ -139,7 +139,7 @@ theorem exteriorZero_eq_smul_one (z : ⋀[R]^0 M) :
     rw [map_smul, smul_assoc, ← hy]
 
 /-- **The zeroth exterior power is the ring.** -/
-noncomputable def exteriorZeroEquiv : (⋀[R]^0 M) ≃ₗ[R] R := by
+noncomputable def exteriorZeroEquiv : (⋀[R]^(0 : ℕ) M) ≃ₗ[R] R := by
   refine LinearEquiv.ofLinear (exteriorZeroToBase R M)
     ((LinearMap.id (R := R) (M := R)).smulRight (exteriorZeroOne R M)) ?_ ?_
   · refine LinearMap.ext fun r => ?_
@@ -230,7 +230,7 @@ theorem logResidue_surjective (k : ℕ) : Function.Surjective (logResidue (R := 
 
 /-- The bidegree the residue reads, as an isomorphism. -/
 noncomputable def logResidueEquiv (k : ℕ) :
-    TensorProduct R (X k) (⋀[R]^1 R) ≃ₗ[R] X k :=
+    TensorProduct R (X k) (⋀[R]^(1 : ℕ) R) ≃ₗ[R] X k :=
   (TensorProduct.congr (LinearEquiv.refl R (X k)) (exteriorOneEquiv R R)).trans
     (TensorProduct.rid R (X k))
 
@@ -241,7 +241,7 @@ theorem logResidue_eq_equiv (k : ℕ)
 
 /-- The bidegree of the ordinary forms, as an isomorphism. -/
 noncomputable def logZeroEquiv (k : ℕ) :
-    TensorProduct R (X (k + 1)) (⋀[R]^0 R) ≃ₗ[R] X (k + 1) :=
+    TensorProduct R (X (k + 1)) (⋀[R]^(0 : ℕ) R) ≃ₗ[R] X (k + 1) :=
   (TensorProduct.congr (LinearEquiv.refl R (X (k + 1))) (exteriorZeroEquiv R R)).trans
     (TensorProduct.rid R (X (k + 1)))
 
@@ -311,7 +311,7 @@ theorem logResidue_eq_zero_iff (A : CDGAStructure R X) (k : ℕ)
 
 /-- The residue commutes with the differential through the bidegree it reads. -/
 theorem logResidueEquiv_map_d (A : CDGAStructure R X) (k : ℕ)
-    (z : TensorProduct R (X k) (⋀[R]^1 R)) :
+    (z : TensorProduct R (X k) (⋀[R]^(1 : ℕ) R)) :
     logResidueEquiv (X := X) (k + 1) (TensorProduct.map (A.dₗ k) LinearMap.id z)
       = A.d k (logResidueEquiv (X := X) k z) := by
   induction z using TensorProduct.induction_on with
@@ -347,13 +347,13 @@ theorem logResidue_d (A : CDGAStructure R X) (k : ℕ)
         ⟨(k + 1, 1), by omega⟩ = _
     rw [tensorCarrier_add_apply, tensorDL_succ, tensorDR_succ]
     have hzero : (zeroActModule (A := A) (exteriorModuleCDGA R R)).dₗ 0
-        = (0 : (⋀[R]^0 R) →ₗ[R] (⋀[R]^1 R)) := by
+        = (0 : (⋀[R]^(0 : ℕ) R) →ₗ[R] (⋀[R]^(1 : ℕ) R)) := by
       refine LinearMap.ext fun w => ?_
       rfl
     rw [hzero]
     show TensorProduct.map (A.dₗ k) LinearMap.id (F ⟨(k, 1), by omega⟩)
       + ((-1 : R)) ^ (k + 1) • TensorProduct.map LinearMap.id
-        (0 : (⋀[R]^0 R) →ₗ[R] (⋀[R]^1 R)) (F ⟨(k + 1, 0), by omega⟩) = _
+        (0 : (⋀[R]^(0 : ℕ) R) →ₗ[R] (⋀[R]^(1 : ℕ) R)) (F ⟨(k + 1, 0), by omega⟩) = _
     rw [TensorProduct.map_zero_right, LinearMap.zero_apply, smul_zero, add_zero]
   rw [logResidue_eq_equiv, hcomp, logResidueEquiv_map_d, ← logResidue_eq_equiv]
 

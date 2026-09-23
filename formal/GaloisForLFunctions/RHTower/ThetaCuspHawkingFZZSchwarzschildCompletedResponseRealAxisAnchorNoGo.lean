@@ -8,12 +8,12 @@ interpolation route.  In response coordinate `z = s - 2`, let `X(z)=xi(z+2)` and
 the symmetric reciprocal-Gamma generator already proved invisible to every physical response
 order.  The anchor polynomial
 
-`A(z) = (z+1)(z+2)(z+3/2)^2`
+`A(z) = (z+1)(z+2)(z+3/2)^(2 : ℕ)`
 
 also fixes the canonical completed values at `s=0,1/2,1`.  For every entire, order-one,
 reflection-even, Schwarz-real multiplier `P`, the square gauge
 
-`G_P(z) = 1 + (P(z) A(z) K(z))^2`
+`G_P(z) = 1 + (P(z) A(z) K(z))^(2 : ℕ)`
 
 equals one at all completed physical samples and the three anchors, and is a strictly positive
 real number on the full real axis.  This is the exact positive survivor: an infinite cone of
@@ -54,7 +54,7 @@ open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
 def canonicalCompletedResponseAnchorPolynomial (z : ℂ) : ℂ :=
-  (z + 1) * (z + 2) * (z + (3 / 2 : ℂ)) ^ 2
+  (z + 1) * (z + 2) * (z + (3 / 2 : ℂ)) ^ (2 : ℕ)
 
 def anchoredSymmetricJetNullGenerator (z : ℂ) : ℂ :=
   canonicalCompletedResponseAnchorPolynomial z * symmetricJetNullGenerator z
@@ -177,7 +177,7 @@ theorem anchoredSymmetricJetNullGenerator_neg_three_halves :
 
 /-- Positive square gauge built from the anchored two-ladder null generator. -/
 def completedResponsePositiveSquareGauge (P : ℂ → ℂ) (z : ℂ) : ℂ :=
-  1 + (P z * anchoredSymmetricJetNullGenerator z) ^ 2
+  1 + (P z * anchoredSymmetricJetNullGenerator z) ^ (2 : ℕ)
 
 theorem differentiable_completedResponsePositiveSquareGauge
     {P : ℂ → ℂ} (hP : Differentiable ℂ P) :
@@ -253,8 +253,8 @@ theorem completedResponsePositiveSquareGauge_real_positive
     have hi := congrArg Complex.im hwstar
     simp at hi
     linarith
-  refine ⟨1 + w.re ^ 2, by positivity, ?_⟩
-  change 1 + w ^ 2 = (((1 + w.re ^ 2 : ℝ) : ℂ))
+  refine ⟨1 + w.re ^ (2 : ℕ), by positivity, ?_⟩
+  change 1 + w ^ (2 : ℕ) = (((1 + w.re ^ (2 : ℕ) : ℝ) : ℂ))
   apply Complex.ext
   · simp [pow_two, mul_re, hwim]
   · simp [pow_two, mul_im, hwim]
@@ -294,13 +294,13 @@ def positiveSquareInterpolationTarget : ℂ :=
 def positiveSquareInterpolationPolynomial (z : ℂ) : ℂ :=
   (positiveSquareInterpolationTarget.re : ℂ) +
     ((2 * positiveSquareInterpolationTarget.im : ℝ) : ℂ) *
-      ((z + (3 / 2 : ℂ)) ^ 2 + 15 / 16)
+      ((z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16)
 
 theorem positiveSquareInterpolationPolynomial_nonrealInteriorResponsePoint :
     positiveSquareInterpolationPolynomial nonrealInteriorResponsePoint =
       positiveSquareInterpolationTarget := by
   have hu :
-      (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ 2 + 15 / 16 = I / 2 := by
+      (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16 = I / 2 := by
     rw [nonrealInteriorResponsePoint]
     ring_nf
     rw [Complex.I_sq]
@@ -333,14 +333,14 @@ theorem orderOneEnvelope_positiveSquareInterpolationPolynomial :
   have hid : OrderOneEnvelope (fun z : ℂ => z) := orderOneEnvelope_id
   have hc : OrderOneEnvelope (fun z : ℂ => z + (3 / 2 : ℂ)) :=
     hid.add (orderOneEnvelope_const (3 / 2))
-  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2) := by
+  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ)) := by
     exact (hc.mul hc).congr fun z => by ring
   have hoff : OrderOneEnvelope
-      (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2 + 15 / 16) :=
+      (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16) :=
     hsq.add (orderOneEnvelope_const (15 / 16))
   have hscaled : OrderOneEnvelope
       (fun z : ℂ => ((2 * positiveSquareInterpolationTarget.im : ℝ) : ℂ) *
-        ((z + (3 / 2 : ℂ)) ^ 2 + 15 / 16)) :=
+        ((z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16)) :=
     hoff.const_mul ((2 * positiveSquareInterpolationTarget.im : ℝ) : ℂ)
   exact ((orderOneEnvelope_const (positiveSquareInterpolationTarget.re : ℂ)).add
     hscaled).congr fun z => rfl

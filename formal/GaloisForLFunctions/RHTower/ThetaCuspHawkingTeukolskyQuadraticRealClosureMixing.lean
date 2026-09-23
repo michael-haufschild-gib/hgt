@@ -265,7 +265,7 @@ theorem d4AIME_tilted_realClosure_card_and_numerators_ne_zero
 /-- Starobinsky crossing determinant after adjoining the Schwarz-conjugate theta pair. -/
 def d4BMXiThetaMirrorStarobinskyRealClosureProduct
     (n : ℕ) (M : ℝ) (q : XiZeroCopy) : ℝ :=
-  d4BMXiThetaMirrorStarobinskyCrossingProduct n M q ^ 2
+  d4BMXiThetaMirrorStarobinskyCrossingProduct n M q ^ (2 : ℕ)
 
 /-- Full FE--Schwarz closure turns the signed two-sector product into a square. -/
 theorem d4BMXiThetaMirrorStarobinskyRealClosureProduct_nonnegative

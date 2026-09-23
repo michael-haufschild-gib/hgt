@@ -40,11 +40,11 @@ def StrictNegativeOn (A : E →L[ℂ] E) (W : Submodule ℂ E) : Prop :=
 
 /-- Positivity with margin `ε`: `ε ‖y‖² < Re ⟪A y, y⟫` on the submodule. -/
 def MarginPositiveOn (A : E →L[ℂ] E) (ε : ℝ) (V : Submodule ℂ E) : Prop :=
-  ∀ y ∈ V, y ≠ 0 → ε * ‖y‖ ^ 2 < reQuad A y
+  ∀ y ∈ V, y ≠ 0 → ε * ‖y‖ ^ (2 : ℕ) < reQuad A y
 
 /-- Negativity with margin `ε`: `Re ⟪A y, y⟫ < -ε ‖y‖²` on the submodule. -/
 def MarginNegativeOn (A : E →L[ℂ] E) (ε : ℝ) (W : Submodule ℂ E) : Prop :=
-  ∀ y ∈ W, y ≠ 0 → reQuad A y < -(ε * ‖y‖ ^ 2)
+  ∀ y ∈ W, y ≠ 0 → reQuad A y < -(ε * ‖y‖ ^ (2 : ℕ))
 
 @[simp]
 theorem reQuad_zero (A : E →L[ℂ] E) : reQuad A (0 : E) = 0 := by
@@ -52,10 +52,10 @@ theorem reQuad_zero (A : E →L[ℂ] E) : reQuad A (0 : E) = 0 := by
 
 /-- The real quadratic form is homogeneous of degree two. -/
 theorem reQuad_smul (A : E →L[ℂ] E) (c : ℂ) (y : E) :
-    reQuad A (c • y) = ‖c‖ ^ 2 * reQuad A y := by
+    reQuad A (c • y) = ‖c‖ ^ (2 : ℕ) * reQuad A y := by
   unfold reQuad
   rw [map_smul, inner_smul_left, inner_smul_right, ← mul_assoc, Complex.conj_mul' c]
-  have hcast : ((‖c‖ : ℂ) ^ 2) = ((‖c‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+  have hcast : ((‖c‖ : ℂ) ^ (2 : ℕ)) = ((‖c‖ ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
   rw [hcast, Complex.re_ofReal_mul]
 
 /-- Strictly positive and strictly negative subspaces are disjoint. -/
@@ -78,7 +78,7 @@ theorem strictNegativeOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : reQuad
     rintro rfl
     simp at hy0
   rw [reQuad_smul]
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  have hc2 : 0 < ‖c‖ ^ (2 : ℕ) := by positivity
   exact mul_neg_of_pos_of_neg hc2 hm
 
 /-- A strictly positive vector spans a strictly positive line. -/
@@ -90,7 +90,7 @@ theorem strictPositiveOn_span_singleton {A : E →L[ℂ] E} {m : E} (hm : 0 < re
     rintro rfl
     simp at hy0
   rw [reQuad_smul]
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  have hc2 : 0 < ‖c‖ ^ (2 : ℕ) := by positivity
   exact mul_pos hc2 hm
 
 /-- A vector with strictly negative quadratic value is nonzero. -/
@@ -225,7 +225,7 @@ end SelfAdjoint
 
 /-- The quadratic forms of two operators differ by at most `‖B - A‖ ‖y‖²`. -/
 theorem reQuad_sub_le {A B : E →L[ℂ] E} (y : E) :
-    reQuad B y - reQuad A y ≤ ‖B - A‖ * ‖y‖ ^ 2 := by
+    reQuad B y - reQuad A y ≤ ‖B - A‖ * ‖y‖ ^ (2 : ℕ) := by
   have hrepr : reQuad B y - reQuad A y = (inner ℂ ((B - A) y) y : ℂ).re := by
     unfold reQuad
     rw [sub_apply, inner_sub_left, Complex.sub_re]
@@ -236,14 +236,14 @@ theorem reQuad_sub_le {A B : E →L[ℂ] E} (y : E) :
     _ ≤ ‖(B - A) y‖ * ‖y‖ := norm_inner_le_norm _ _
     _ ≤ (‖B - A‖ * ‖y‖) * ‖y‖ :=
         mul_le_mul_of_nonneg_right ((B - A).le_opNorm y) (norm_nonneg _)
-    _ = ‖B - A‖ * ‖y‖ ^ 2 := by ring
+    _ = ‖B - A‖ * ‖y‖ ^ (2 : ℕ) := by ring
 
 /-- An `ε`-positive subspace of `B` is strictly positive for every `A` with `‖B - A‖ < ε`. -/
 theorem strictPositiveOn_of_marginPositiveOn {A B : E →L[ℂ] E} {ε : ℝ} (hAB : ‖B - A‖ < ε)
     {V : Submodule ℂ E} (hB : MarginPositiveOn B ε V) : StrictPositiveOn A V := by
   intro y hy hy0
   have hεy := hB y hy hy0
-  have hnorm : 0 < ‖y‖ ^ 2 := by positivity
+  have hnorm : 0 < ‖y‖ ^ (2 : ℕ) := by positivity
   have hdiff := reQuad_sub_le (A := A) (B := B) y
   have hmul := mul_lt_mul_of_pos_right hAB hnorm
   linarith
@@ -253,7 +253,7 @@ theorem strictNegativeOn_of_marginNegativeOn {A B : E →L[ℂ] E} {ε : ℝ} (h
     {W : Submodule ℂ E} (hB : MarginNegativeOn B ε W) : StrictNegativeOn A W := by
   intro y hy hy0
   have hεy := hB y hy hy0
-  have hnorm : 0 < ‖y‖ ^ 2 := by positivity
+  have hnorm : 0 < ‖y‖ ^ (2 : ℕ) := by positivity
   have hdiff := reQuad_sub_le (A := B) (B := A) y
   have hnormsym : ‖A - B‖ = ‖B - A‖ := norm_sub_rev _ _
   have hmul := mul_lt_mul_of_pos_right hAB hnorm
@@ -262,39 +262,39 @@ theorem strictNegativeOn_of_marginNegativeOn {A B : E →L[ℂ] E} {ε : ℝ} (h
 
 /-- A vector with `ε`-positive quadratic value spans an `ε`-positive line. -/
 theorem marginPositiveOn_span_singleton {B : E →L[ℂ] E} {ε : ℝ} {m : E}
-    (hm : ε * ‖m‖ ^ 2 < reQuad B m) : MarginPositiveOn B ε (ℂ ∙ m) := by
+    (hm : ε * ‖m‖ ^ (2 : ℕ) < reQuad B m) : MarginPositiveOn B ε (ℂ ∙ m) := by
   intro y hy hy0
   obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
   have hc : c ≠ 0 := by
     rintro rfl
     simp at hy0
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  have hc2 : 0 < ‖c‖ ^ (2 : ℕ) := by positivity
   rw [reQuad_smul, norm_smul, mul_pow]
-  calc ε * (‖c‖ ^ 2 * ‖m‖ ^ 2) = ‖c‖ ^ 2 * (ε * ‖m‖ ^ 2) := by ring
-    _ < ‖c‖ ^ 2 * reQuad B m := mul_lt_mul_of_pos_left hm hc2
+  calc ε * (‖c‖ ^ (2 : ℕ) * ‖m‖ ^ (2 : ℕ)) = ‖c‖ ^ (2 : ℕ) * (ε * ‖m‖ ^ (2 : ℕ)) := by ring
+    _ < ‖c‖ ^ (2 : ℕ) * reQuad B m := mul_lt_mul_of_pos_left hm hc2
 
 /-- A vector with `ε`-negative quadratic value spans an `ε`-negative line. -/
 theorem marginNegativeOn_span_singleton {B : E →L[ℂ] E} {ε : ℝ} {m : E}
-    (hm : reQuad B m < -(ε * ‖m‖ ^ 2)) : MarginNegativeOn B ε (ℂ ∙ m) := by
+    (hm : reQuad B m < -(ε * ‖m‖ ^ (2 : ℕ))) : MarginNegativeOn B ε (ℂ ∙ m) := by
   intro y hy hy0
   obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
   have hc : c ≠ 0 := by
     rintro rfl
     simp at hy0
-  have hc2 : 0 < ‖c‖ ^ 2 := by positivity
+  have hc2 : 0 < ‖c‖ ^ (2 : ℕ) := by positivity
   rw [reQuad_smul, norm_smul, mul_pow]
-  calc ‖c‖ ^ 2 * reQuad B m < ‖c‖ ^ 2 * (-(ε * ‖m‖ ^ 2)) := mul_lt_mul_of_pos_left hm hc2
-    _ = -(ε * (‖c‖ ^ 2 * ‖m‖ ^ 2)) := by ring
+  calc ‖c‖ ^ (2 : ℕ) * reQuad B m < ‖c‖ ^ (2 : ℕ) * (-(ε * ‖m‖ ^ (2 : ℕ))) := mul_lt_mul_of_pos_left hm hc2
+    _ = -(ε * (‖c‖ ^ (2 : ℕ) * ‖m‖ ^ (2 : ℕ))) := by ring
 
 /-- A vector with `ε`-positive quadratic value is nonzero. -/
 theorem ne_zero_of_margin_pos {B : E →L[ℂ] E} {ε : ℝ} {m : E}
-    (hm : ε * ‖m‖ ^ 2 < reQuad B m) : m ≠ 0 := by
+    (hm : ε * ‖m‖ ^ (2 : ℕ) < reQuad B m) : m ≠ 0 := by
   rintro rfl
   simp at hm
 
 /-- A vector with `ε`-negative quadratic value is nonzero. -/
 theorem ne_zero_of_margin_neg {B : E →L[ℂ] E} {ε : ℝ} {m : E}
-    (hm : reQuad B m < -(ε * ‖m‖ ^ 2)) : m ≠ 0 := by
+    (hm : reQuad B m < -(ε * ‖m‖ ^ (2 : ℕ))) : m ≠ 0 := by
   rintro rfl
   simp at hm
 
@@ -311,7 +311,7 @@ theorem approximant_exact_margin_inertia {A B : E →L[ℂ] E} (hA : IsSelfAdjoi
     (hR : finrank ℂ (LinearMap.range A.toLinearMap) = 2)
     {p₀ m₀ : E} (hp₀ : 0 < reQuad A p₀) (hm₀ : reQuad A m₀ < 0)
     {ε : ℝ} (hAB : ‖B - A‖ < ε)
-    {p m : E} (hp : ε * ‖p‖ ^ 2 < reQuad B p) (hm : reQuad B m < -(ε * ‖m‖ ^ 2)) :
+    {p m : E} (hp : ε * ‖p‖ ^ (2 : ℕ) < reQuad B p) (hm : reQuad B m < -(ε * ‖m‖ ^ (2 : ℕ))) :
     (∀ V : Submodule ℂ E, MarginPositiveOn B ε V →
         FiniteDimensional ℂ V ∧ finrank ℂ V ≤ 1) ∧
     (∃ V : Submodule ℂ E, finrank ℂ V = 1 ∧ MarginPositiveOn B ε V) ∧

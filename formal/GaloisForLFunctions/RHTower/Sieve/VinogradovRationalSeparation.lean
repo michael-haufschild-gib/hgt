@@ -36,7 +36,7 @@ theorem coprime_mul_int_sub_not_dvd
 This is the arithmetic input needed by the existing separated large sieve. -/
 theorem rationalApprox_halfBlock_separated
     {α : ℝ} {a q n m : ℕ} (hq : 0 < q) (hcop : Nat.Coprime a q)
-    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2)
+    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ))
     (hnm : n ≠ m)
     (hdiff : |(n : ℝ) - (m : ℝ)| ≤ (q : ℝ) / 2) :
     1 / (2 * (q : ℝ)) ≤ toIntDist (α * (n : ℝ) - α * (m : ℝ)) := by
@@ -58,7 +58,7 @@ theorem rationalApprox_halfBlock_separated
   have herr : |ε * d| ≤ 1 / (2 * (q : ℝ)) := by
     rw [abs_mul]
     calc
-      |ε| * |d| ≤ (1 / (q : ℝ) ^ 2) * ((q : ℝ) / 2) := by
+      |ε| * |d| ≤ (1 / (q : ℝ) ^ (2 : ℕ)) * ((q : ℝ) / 2) := by
         exact mul_le_mul happrox hdiff (abs_nonneg _) (by positivity)
       _ = 1 / (2 * (q : ℝ)) := by field_simp
   have htriangle := toIntDist_le_toIntDist_add_add_abs

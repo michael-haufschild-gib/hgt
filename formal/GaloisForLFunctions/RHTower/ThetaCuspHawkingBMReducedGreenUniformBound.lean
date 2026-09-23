@@ -79,8 +79,8 @@ theorem clearedReducedGreen_hasDerivAt (w chi s a : ℂ) (hw : w.im ≠ 0)
     (hwr : -2 < w.re) (hs : w-2*s ≠ 0) (hc : connection w chi ≠ 0) (t : ℝ) (ht : t < 0) :
     HasDerivAt (clearedReducedGreen w chi s a) (clearedReducedGreenFirst w chi s a t) t ∧
       HasDerivAt (clearedReducedGreenFirst w chi s a)
-        (w^2*clearedReducedGreen w chi s a t+
-          (horizonCoordinate t:ℂ)*(1/4+chi^2)*clearedReducedGreen w chi s a t-
+        (w^(2 : ℕ)*clearedReducedGreen w chi s a t+
+          (horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ))*clearedReducedGreen w chi s a t-
           clearedReducedForcing w chi s a t) t := by
   have hU : clearedReducedGreen w chi s a =
       fun r => reducedGreenClearingFactor w chi s*continuedReducedGreen w chi s a 1 r :=
@@ -103,7 +103,7 @@ theorem clearedReducedGreen_compact_bound (chi s a : ℂ) (Ω : Set ℂ) (hΩ : 
       ‖clearedReducedGreen w chi s a t‖ ≤ C*Real.exp (-|w.re| *t) := by
   let U (w : ℂ) := clearedReducedGreen w chi s a
   let V (w : ℂ) := clearedReducedGreenFirst w chi s a
-  let A : ℝ := 4*‖(1/4:ℂ)+chi^2‖
+  let A : ℝ := 4*‖(1/4:ℂ)+chi^(2 : ℕ)‖
   obtain ⟨B,hB,hf0⟩ := reducedCoefficient_family_norm_le_exp s a 1 (clearedOnset s)
     (fun w => -connection w chi) Ω hΩ (clearedOnset_entire s).continuous.continuousOn
     (fun w hw => (connection_frequency_analyticAt w chi (hstrip w hw).1).continuousAt.neg.continuousWithinAt)
@@ -111,7 +111,7 @@ theorem clearedReducedGreen_compact_bound (chi s a : ℂ) (Ω : Set ℂ) (hΩ : 
       ‖clearedReducedForcing w chi s a t‖ ≤ B*Real.exp ((w.re+2)*t) := by
     simpa only [clearedReducedForcing,mul_one] using hf0 w hw t ht
   have hp (t : ℝ) (ht : t < 0) :
-      ‖(horizonCoordinate t:ℂ)*((1/4:ℂ)+chi^2)‖ ≤ A*Real.exp (2*t) := by
+      ‖(horizonCoordinate t:ℂ)*((1/4:ℂ)+chi^(2 : ℕ))‖ ≤ A*Real.exp (2*t) := by
     rw [norm_mul]
     exact (mul_le_mul_of_nonneg_right (horizonCoordinate_norm_le_exp t ht) (norm_nonneg _)).trans_eq (by ring)
   let D (w : ℂ) := symmetricHorizonGrowthCoefficient w (U w (-1)) (V w (-1)) A B
@@ -131,7 +131,7 @@ theorem clearedReducedGreen_compact_bound (chi s a : ℂ) (Ω : Set ℂ) (hΩ : 
     have hw0 : w ≠ 0 := by intro he; apply h.1; simp [he]
     have hd (r : ℝ) (hr : r < 0) := clearedReducedGreen_hasDerivAt w chi s a h.1 h.2 hs hc r hr
     have hbound := forcedSecondOrder_horizon_bound_symmetric w hw0 (U w) (V w)
-      (fun r => (horizonCoordinate r:ℂ)*(1/4+chi^2)) (clearedReducedForcing w chi s a) A B
+      (fun r => (horizonCoordinate r:ℂ)*(1/4+chi^(2 : ℕ))) (clearedReducedForcing w chi s a) A B
       (by dsimp [A]; positivity) hB (fun r hr => (hd r hr).1) (fun r hr => (hd r hr).2) hp (hf w hw) t ht
     exact hbound.trans (mul_le_mul_of_nonneg_right ((le_abs_self (D w)).trans
       ((show |D w| ≤ C from hC w hw).trans (le_max_left _ _))) (Real.exp_pos _).le)

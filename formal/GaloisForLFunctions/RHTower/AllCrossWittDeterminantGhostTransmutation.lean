@@ -31,14 +31,14 @@ private theorem crossGhost_two (a b : A) :
 private theorem crossGhost_three (a b : A) :
     deningerBigWittGhostComponent 3 (by omega)
         (deningerBigWittTeichmullerCrossEffect a b) =
-      -(a ^ 2 * b * 3) - a * b ^ 2 * 3 := by
+      -(a ^ (2 : ℕ) * b * 3) - a * b ^ (2 : ℕ) * 3 := by
   simp [deningerBigWittTeichmullerCrossEffect]
   ring
 
 private theorem crossGhost_four (a b : A) :
     deningerBigWittGhostComponent 4 (by omega)
         (deningerBigWittTeichmullerCrossEffect a b) =
-      -(a ^ 3 * b * 4) - a ^ 2 * b ^ 2 * 6 - a * b ^ 3 * 4 := by
+      -(a ^ (3 : ℕ) * b * 4) - a ^ (2 : ℕ) * b ^ (2 : ℕ) * 6 - a * b ^ (3 : ℕ) * 4 := by
   simp [deningerBigWittTeichmullerCrossEffect]
   ring
 

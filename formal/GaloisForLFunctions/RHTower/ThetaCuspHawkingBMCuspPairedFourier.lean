@@ -75,7 +75,7 @@ theorem mean_series (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) : mea
 /-- Opposite-frequency selection for an absolutely convergent complex squared series.
 The coefficient is a square, not a conjugate square. -/
 theorem mean_series_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
-    mean (fun x => series a x^2) = 2*∑' N, a N^2 := by
+    mean (fun x => series a x^(2 : ℕ)) = 2*∑' N, a N^(2 : ℕ) := by
   let B : ℕ × ℕ → ℝ := fun p => (2*‖a p.1‖)*(2*‖a p.2‖)
   have hB : Summable B := (ha.mul_left 2).mul_of_nonneg (ha.mul_left 2)
     (fun _ => by positivity) (fun _ => by positivity)
@@ -84,7 +84,7 @@ theorem mean_series_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
     rw [norm_mul]
     exact mul_le_mul (series_term_norm a _ _) (series_term_norm a _ _)
       (norm_nonneg _) (by positivity)
-  have hprod (x : ℝ) : series a x^2 =
+  have hprod (x : ℝ) : series a x^(2 : ℕ) =
       ∑' p : ℕ × ℕ, (a p.1*wave p.1 x)*(a p.2*wave p.2 x) := by
     have hn : Summable (fun N => ‖a N*wave N x‖) :=
       Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun N => series_term_norm a N x)
@@ -94,7 +94,7 @@ theorem mean_series_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
   rw [mean_tsum (fun p x => (a p.1*wave p.1 x)*(a p.2*wave p.2 x)) B hB (fun p => (continuous_const.mul (wave_continuous p.1)).mul
     (continuous_const.mul (wave_continuous p.2))) hterm]
   have hm (p : ℕ × ℕ) : mean (fun x => (a p.1*wave p.1 x)*(a p.2*wave p.2 x)) =
-      if p.1=p.2 then 2*a p.1^2 else 0 := by
+      if p.1=p.2 then 2*a p.1^(2 : ℕ) else 0 := by
     have he : (fun x => (a p.1*wave p.1 x)*(a p.2*wave p.2 x)) =
       (fun x => (a p.1*a p.2)*(wave p.1 x*wave p.2 x)) := by funext x; ring
     rw [he,mean_const_mul,mean_wave_mul]
@@ -102,7 +102,7 @@ theorem mean_series_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
     · rw [h]; ring
     · ring
   simp_rw [hm]
-  have hd : Summable (fun p : ℕ × ℕ => if p.1=p.2 then 2*a p.1^2 else 0) := by
+  have hd : Summable (fun p : ℕ × ℕ => if p.1=p.2 then 2*a p.1^(2 : ℕ) else 0) := by
     apply Summable.of_norm_bounded hB
     intro p
     split_ifs with h
@@ -114,7 +114,7 @@ theorem mean_series_sq (a : ℕ → ℂ) (ha : Summable (fun N => ‖a N‖)) :
       dsimp [B]
       positivity
   rw [hd.tsum_prod]
-  have hi (N : ℕ) : (∑' M : ℕ, if N=M then 2*a N^2 else 0) = 2*a N^2 := by
+  have hi (N : ℕ) : (∑' M : ℕ, if N=M then 2*a N^(2 : ℕ) else 0) = 2*a N^(2 : ℕ) := by
     rw [tsum_eq_single N]
     · simp
     · intro M hM

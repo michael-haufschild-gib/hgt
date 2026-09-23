@@ -20,7 +20,7 @@ open Finset Nat
 
 /-- `∑_{m ≤ Y} 1/m² ≤ 2`, by telescoping `1/m² ≤ 1/(m(m-1))`. -/
 theorem sum_inv_sq_le_two (Y : ℕ) :
-    ∑ m ∈ Finset.Icc 1 Y, (1 : ℝ) / (m : ℝ) ^ 2 ≤ 2 := by
+    ∑ m ∈ Finset.Icc 1 Y, (1 : ℝ) / (m : ℝ) ^ (2 : ℕ) ≤ 2 := by
   classical
   rcases Nat.lt_or_ge Y 1 with hY | hY
   · have : Finset.Icc 1 Y = ∅ := Finset.Icc_eq_empty (by omega)
@@ -32,13 +32,13 @@ theorem sum_inv_sq_le_two (Y : ℕ) :
     omega
   have hnot : (1 : ℕ) ∉ Finset.Ico 2 (Y + 1) := by simp
   rw [hsplit, Finset.sum_insert hnot]
-  have htail : ∑ m ∈ Finset.Ico 2 (Y + 1), (1 : ℝ) / (m : ℝ) ^ 2 ≤ 1 := by
+  have htail : ∑ m ∈ Finset.Ico 2 (Y + 1), (1 : ℝ) / (m : ℝ) ^ (2 : ℕ) ≤ 1 := by
     have hterm : ∀ m ∈ Finset.Ico 2 (Y + 1),
-        (1 : ℝ) / (m : ℝ) ^ 2 ≤ 1 / ((m : ℝ) * ((m : ℝ) - 1)) := by
+        (1 : ℝ) / (m : ℝ) ^ (2 : ℕ) ≤ 1 / ((m : ℝ) * ((m : ℝ) - 1)) := by
       intro m hm
       have hmR : (2 : ℝ) ≤ (m : ℝ) := by exact_mod_cast (Finset.mem_Ico.1 hm).1
       have hpos : (0 : ℝ) < (m : ℝ) * ((m : ℝ) - 1) := by nlinarith
-      have hsq : (0 : ℝ) < (m : ℝ) ^ 2 := by nlinarith
+      have hsq : (0 : ℝ) < (m : ℝ) ^ (2 : ℕ) := by nlinarith
       rw [div_le_div_iff₀ hsq hpos]
       nlinarith
     refine le_trans (Finset.sum_le_sum hterm) ?_
@@ -66,7 +66,7 @@ theorem sum_inv_sq_le_two (Y : ℕ) :
     have hYR : (1 : ℝ) ≤ (Y : ℝ) := by exact_mod_cast hY
     have hinvpos : (0 : ℝ) < 1 / (Y : ℝ) := by positivity
     linarith
-  have hone : (1 : ℝ) / ((1 : ℕ) : ℝ) ^ 2 = 1 := by norm_num
+  have hone : (1 : ℝ) / ((1 : ℕ) : ℝ) ^ (2 : ℕ) = 1 := by norm_num
   rw [hone]
   linarith [htail]
 
@@ -79,7 +79,7 @@ noncomputable def sqfreeSplit (n : ℕ) : ℕ × ℕ :=
 
 theorem sqfreeSplit_spec {n : ℕ} (hn : 0 < n) :
     0 < (sqfreeSplit n).1 ∧ 0 < (sqfreeSplit n).2
-      ∧ (sqfreeSplit n).2 ^ 2 * (sqfreeSplit n).1 = n ∧ Squarefree (sqfreeSplit n).1 := by
+      ∧ (sqfreeSplit n).2 ^ (2 : ℕ) * (sqfreeSplit n).1 = n ∧ Squarefree (sqfreeSplit n).1 := by
   unfold sqfreeSplit
   rw [dif_pos hn]
   exact (Nat.sq_mul_squarefree_of_pos hn).choose_spec.choose_spec
@@ -96,13 +96,13 @@ theorem sum_inv_le_two_mul_sum_inv_squarefree (Y : ℕ) :
     obtain ⟨hn1, hnY⟩ := Finset.mem_Icc.1 hn
     obtain ⟨ha, hb, hab, hsq⟩ := sqfreeSplit_spec (by omega : 0 < n)
     have hale : (sqfreeSplit n).1 ≤ n := by
-      calc (sqfreeSplit n).1 ≤ (sqfreeSplit n).2 ^ 2 * (sqfreeSplit n).1 := by
+      calc (sqfreeSplit n).1 ≤ (sqfreeSplit n).2 ^ (2 : ℕ) * (sqfreeSplit n).1 := by
             refine Nat.le_mul_of_pos_left _ ?_
             positivity
         _ = n := hab
     have hble : (sqfreeSplit n).2 ≤ n := by
-      calc (sqfreeSplit n).2 ≤ (sqfreeSplit n).2 ^ 2 := by nlinarith
-        _ ≤ (sqfreeSplit n).2 ^ 2 * (sqfreeSplit n).1 := by
+      calc (sqfreeSplit n).2 ≤ (sqfreeSplit n).2 ^ (2 : ℕ) := by nlinarith
+        _ ≤ (sqfreeSplit n).2 ^ (2 : ℕ) * (sqfreeSplit n).1 := by
             refine Nat.le_mul_of_pos_right _ ha
         _ = n := hab
     exact Finset.mem_product.2
@@ -118,11 +118,11 @@ theorem sum_inv_le_two_mul_sum_inv_squarefree (Y : ℕ) :
     rw [hxy] at hx3
     exact hx3.symm.trans hy3
   have hval : ∀ n ∈ Finset.Icc 1 Y,
-      (1 : ℝ) / n = (1 : ℝ) / (sqfreeSplit n).1 * ((1 : ℝ) / ((sqfreeSplit n).2 : ℝ) ^ 2) := by
+      (1 : ℝ) / n = (1 : ℝ) / (sqfreeSplit n).1 * ((1 : ℝ) / ((sqfreeSplit n).2 : ℝ) ^ (2 : ℕ)) := by
     intro n hn
     obtain ⟨hn1, -⟩ := Finset.mem_Icc.1 hn
     obtain ⟨ha, hb, hab, -⟩ := sqfreeSplit_spec (by omega : 0 < n)
-    have hcast : (n : ℝ) = ((sqfreeSplit n).2 : ℝ) ^ 2 * ((sqfreeSplit n).1 : ℝ) := by
+    have hcast : (n : ℝ) = ((sqfreeSplit n).2 : ℝ) ^ (2 : ℕ) * ((sqfreeSplit n).1 : ℝ) := by
       have hc := congrArg (fun k : ℕ => (k : ℝ)) hab
       push_cast at hc
       exact hc.symm
@@ -132,10 +132,10 @@ theorem sum_inv_le_two_mul_sum_inv_squarefree (Y : ℕ) :
     field_simp
   rw [Finset.sum_congr rfl hval]
   have hstep : ∑ n ∈ Finset.Icc 1 Y,
-      (1 : ℝ) / (sqfreeSplit n).1 * ((1 : ℝ) / ((sqfreeSplit n).2 : ℝ) ^ 2)
-      ≤ ∑ x ∈ A ×ˢ B, (1 : ℝ) / (x.1 : ℝ) * ((1 : ℝ) / (x.2 : ℝ) ^ 2) := by
+      (1 : ℝ) / (sqfreeSplit n).1 * ((1 : ℝ) / ((sqfreeSplit n).2 : ℝ) ^ (2 : ℕ))
+      ≤ ∑ x ∈ A ×ˢ B, (1 : ℝ) / (x.1 : ℝ) * ((1 : ℝ) / (x.2 : ℝ) ^ (2 : ℕ)) := by
     rw [← Finset.sum_image (f := fun x : ℕ × ℕ =>
-      (1 : ℝ) / (x.1 : ℝ) * ((1 : ℝ) / (x.2 : ℝ) ^ 2)) hinj]
+      (1 : ℝ) / (x.1 : ℝ) * ((1 : ℝ) / (x.2 : ℝ) ^ (2 : ℕ))) hinj]
     refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
     · intro x hx
       obtain ⟨n, hn, rfl⟩ := Finset.mem_image.1 hx
@@ -145,8 +145,8 @@ theorem sum_inv_le_two_mul_sum_inv_squarefree (Y : ℕ) :
   refine le_trans hstep ?_
   rw [Finset.sum_product]
   have hfactor : ∑ l ∈ A, ∑ m ∈ B,
-      (1 : ℝ) / (l : ℝ) * ((1 : ℝ) / (m : ℝ) ^ 2)
-      = (∑ l ∈ A, (1 : ℝ) / l) * ∑ m ∈ B, (1 : ℝ) / (m : ℝ) ^ 2 := by
+      (1 : ℝ) / (l : ℝ) * ((1 : ℝ) / (m : ℝ) ^ (2 : ℕ))
+      = (∑ l ∈ A, (1 : ℝ) / l) * ∑ m ∈ B, (1 : ℝ) / (m : ℝ) ^ (2 : ℕ) := by
     rw [Finset.sum_mul]
     exact Finset.sum_congr rfl fun l _ => (Finset.mul_sum _ _ _).symm
   rw [hfactor]

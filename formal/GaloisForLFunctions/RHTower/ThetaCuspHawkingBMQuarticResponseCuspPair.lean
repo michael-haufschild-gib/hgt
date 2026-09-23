@@ -116,9 +116,9 @@ private theorem full_response_integrable (q : XiZeroCopy) (branch : Bool) (f : U
   let P := parameter q branch
   let A := d4BMCompletedEisensteinCuspConstantCoefficient (center q) true
   let B := d4BMCompletedEisensteinCuspConstantCoefficient (center q) false
-  let c0 := (P/2)*(A^2/((2*rho)*(2*rho-1)-P))
+  let c0 := (P/2)*(A^(2 : ℕ)/((2*rho)*(2*rho-1)-P))
   let c1 := (P/2)*((2*A*B)/(-P))
-  let c2 := (P/2)*(B^2/((2-2*rho)*(1-2*rho)-P))
+  let c2 := (P/2)*(B^(2 : ℕ)/((2-2*rho)*(1-2*rho)-P))
   have h := (((hc (2*rho)).const_mul c0).add ((hc 1).const_mul c1)).add
     ((hc (2-2*rho)).const_mul c2)
   have hK : Integrable (fun z => f z*cutoffResponse q branch (coordinates z)) measure := by
@@ -358,20 +358,20 @@ theorem tested_square_response_cusp_mean (q : XiZeroCopy) (branch : Bool) (u : �
       rfl
 
 private theorem quartic_zero_field (q : XiZeroCopy) (z : Fin 2 → ℝ) :
-    quarticContactField q 0 z=fullSquarePotential q z^2 := by
+    quarticContactField q 0 z=fullSquarePotential q z^(2 : ℕ) := by
   change fullSquarePotential q z*fullSquarePotential q z=_
   ring
 
 private theorem quartic_zero_principal (q : XiZeroCopy) (z : Fin 2 → ℝ) :
-    quarticContactPrincipal q 0 z=principalSquare q z^2 := by
+    quarticContactPrincipal q 0 z=principalSquare q z^(2 : ℕ) := by
   let X := D4BMGlobalAngularResponse.principal (center q) z
-  change ((1/2:ℂ)*(X*X))*((1/2:ℂ)*(X*X))=(X^2/2)^2
+  change ((1/2:ℂ)*(X*X))*((1/2:ℂ)*(X*X))=(X^(2 : ℕ)/2)^(2 : ℕ)
   ring
 
 /-- The local Q² source term with both its source tail and full scalar test retained. -/
 def testedSquareTail (q : XiZeroCopy) (u : ℂ) (z : Fin 2 → ℝ) : ℂ :=
-  scalar u z*fullSquarePotential q z^2-
-    cutoff z*D4BMGlobalAngularResponse.principal u z*principalSquare q z^2
+  scalar u z*fullSquarePotential q z^(2 : ℕ)-
+    cutoff z*D4BMGlobalAngularResponse.principal u z*principalSquare q z^(2 : ℕ)
 
 /-- Absolute admission of the complete scalar-tested Q² remainder at the original cutoff. -/
 theorem testedSquareTail_integrable (q : XiZeroCopy) (u : ℂ) :
@@ -395,8 +395,8 @@ theorem testedSquareTail_integrable (q : XiZeroCopy) (u : ℂ) :
 
 /-- The full scalar-tested local Q² cusp mean includes its complete integrable remainder. -/
 theorem tested_square_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (3:ℝ)) :
-    D4BMCuspProjection.mean (fun x => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2)=
-      D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ 2+
+    D4BMCuspProjection.mean (fun x => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ))=
+      D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ (2 : ℕ)+
         D4BMCuspProjection.mean (fun x => testedSquareTail q u ![x,y]) := by
   have hp : 0 < (y:ℝ) := lt_trans (by norm_num) y.2
   have hc : Continuous (fun x : ℝ => (![x,(y:ℝ)] : Fin 2 → ℝ)) := by fun_prop
@@ -407,18 +407,18 @@ theorem tested_square_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (3:ℝ)) :
     rw [Real.smoothTransition.one_of_one_le (by have : 3 < (y:ℝ) := y.2; linarith)]
     rfl
   have he (x : ℝ) : testedSquareTail q u ![x,y]=
-      scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2-
-        D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ 2 := by
+      scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ)-
+        D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ (2 : ℕ) := by
     dsimp only [testedSquareTail]
     rw [hcut,one_mul]
     rfl
   have hR : Continuous (fun x : ℝ => testedSquareTail q u ![x,y]) := by
     simp_rw [he]
     exact (hs.mul ((square_slice_continuous q hp).pow 2)).sub continuous_const
-  change (∫ x in Ioc (-1/2:ℝ) (1/2), scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2)=_
+  change (∫ x in Ioc (-1/2:ℝ) (1/2), scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ))=_
   calc
     _ = ∫ x in Ioc (-1/2:ℝ) (1/2),
-        D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ 2+
+        D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ (2 : ℕ)+
           testedSquareTail q u ![x,y] := by
       apply setIntegral_congr_fun measurableSet_Ioc
       intro x _hx
@@ -435,7 +435,7 @@ theorem reducedSourceWork_tested_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (
       D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y]*
         (sourceWorkWeights q 0*parameter q true*fullResponseCuspMean q true y+
           sourceWorkWeights q 1*parameter q false*fullResponseCuspMean q false y)+
-      squareWorkCoefficient q*(D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ 2+
+      squareWorkCoefficient q*(D4BMGlobalAngularResponse.principal u ![0,y]*principalSquare q ![0,y] ^ (2 : ℕ)+
         D4BMCuspProjection.mean (fun x => testedSquareTail q u ![x,y]))+
       sourceWorkWeights q 0*parameter q true*D4BMCuspProjection.mean (fun x => testedResponseTail q true u ![x,y])+
       sourceWorkWeights q 1*parameter q false*D4BMCuspProjection.mean (fun x => testedResponseTail q false u ![x,y]) := by
@@ -448,7 +448,7 @@ theorem reducedSourceWork_tested_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (
       scalar u ![x,y]*fullSquarePotential q ![x,y]*fullAngularField q branch ![x,y])
       (Ioc (-1/2:ℝ) (1/2)) volume :=
     ((hs.mul hQ).mul (full_slice_continuous q branch hp)).integrableOn_Ioc
-  have hQ2 : IntegrableOn (fun x : ℝ => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2)
+  have hQ2 : IntegrableOn (fun x : ℝ => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ))
       (Ioc (-1/2:ℝ) (1/2)) volume := (hs.mul (hQ.pow 2)).integrableOn_Ioc
   change (∫ x in Ioc (-1/2:ℝ) (1/2), scalar u ![x,y]*reducedSourceWork q ![x,y])=_
   calc
@@ -457,7 +457,7 @@ theorem reducedSourceWork_tested_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (
           (scalar u ![x,y]*fullSquarePotential q ![x,y]*fullAngularField q true ![x,y])+
         (sourceWorkWeights q 1*parameter q false)*
           (scalar u ![x,y]*fullSquarePotential q ![x,y]*fullAngularField q false ![x,y])+
-        squareWorkCoefficient q*(scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2) := by
+        squareWorkCoefficient q*(scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ)) := by
       apply setIntegral_congr_fun measurableSet_Ioc
       intro x _hx
       dsimp only [reducedSourceWork]
@@ -466,7 +466,7 @@ theorem reducedSourceWork_tested_cusp_mean (q : XiZeroCopy) (u : ℂ) (y : Ioi (
           scalar u ![x,y]*fullSquarePotential q ![x,y]*fullAngularField q true ![x,y])+
         (sourceWorkWeights q 1*parameter q false)*D4BMCuspProjection.mean (fun x =>
           scalar u ![x,y]*fullSquarePotential q ![x,y]*fullAngularField q false ![x,y])+
-        squareWorkCoefficient q*D4BMCuspProjection.mean (fun x => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ 2) := by
+        squareWorkCoefficient q*D4BMCuspProjection.mean (fun x => scalar u ![x,y]*fullSquarePotential q ![x,y] ^ (2 : ℕ)) := by
       have h0 := (hi true).const_mul (sourceWorkWeights q 0*parameter q true)
       have h1 := (hi false).const_mul (sourceWorkWeights q 1*parameter q false)
       have h2 := hQ2.const_mul (squareWorkCoefficient q)

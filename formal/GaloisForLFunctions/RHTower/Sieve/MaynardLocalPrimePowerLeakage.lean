@@ -95,7 +95,7 @@ private theorem theta_root_window_le_sqrt_width_mul_log
       exact mul_le_mul_of_nonneg_right hcard (Real.log_nonneg hb1)
 
 /-- Prime powers in an additive interval have total von Mangoldt mass
-`O(sqrt(width) * log(bound)^2)`, with all constants explicit. -/
+`O(sqrt(width) * log(bound)^(2 : ℕ))`, with all constants explicit. -/
 theorem chebyshevPsi_window_le_theta_window_add_local_primePower
     {a b : ℝ} (ha : 2 ≤ a) (hab : a ≤ b) (hd : 1 ≤ b - a) :
     Chebyshev.psi b - Chebyshev.psi a ≤

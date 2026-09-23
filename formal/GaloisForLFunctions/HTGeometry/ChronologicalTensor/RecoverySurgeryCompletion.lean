@@ -93,8 +93,8 @@ theorem recoverySurgeryHilbertEmbedding_injective (n : ℕ) :
 
 theorem recoverySurgeryHilbertEmbedding_norm_sq (n : ℕ)
     (x : Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule) :
-    ‖recoverySurgeryHilbertEmbedding n x‖^2 =
-      ∑' k, (recoverySurgeryGap n k)^2*((cubicCuspDefectEquiv x).coeff k)^2 := by
+    ‖recoverySurgeryHilbertEmbedding n x‖^(2 : ℕ) =
+      ∑' k, (recoverySurgeryGap n k)^(2 : ℕ)*((cubicCuspDefectEquiv x).coeff k)^(2 : ℕ) := by
   rw [← real_inner_self_eq_norm_sq, ← cubicHilbertBasis.tsum_inner_mul_inner]
   congr 1
   funext k
@@ -168,7 +168,7 @@ def recoverySurgeryCompletion (n : ℕ) :
 theorem recoverySurgeryQuotientNorm_sq (n : ℕ)
     (x : Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule) :
     letI := recoverySurgeryQuotientNormedGroup n
-    ‖x‖^2=∑' k, (recoverySurgeryGap n k)^2*((cubicCuspDefectEquiv x).coeff k)^2 :=
+    ‖x‖^(2 : ℕ)=∑' k, (recoverySurgeryGap n k)^(2 : ℕ)*((cubicCuspDefectEquiv x).coeff k)^(2 : ℕ) :=
   recoverySurgeryHilbertEmbedding_norm_sq n x
 
 theorem recoverySurgeryQuotientBasis_norm (n k : ℕ) :

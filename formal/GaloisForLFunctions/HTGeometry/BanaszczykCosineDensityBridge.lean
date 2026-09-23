@@ -87,13 +87,13 @@ theorem integral_banaszczykCosineDensity :
   rw [← integral_Icc_eq_integral_Ioo, integral_Icc_eq_integral_Ioc]
   rw [← intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1)]
   rw [show alternativeHypothesisLemma4GOne =
-      fun x : ℝ => Real.cos (x * (Real.pi / 2)) ^ 2 by
+      fun x : ℝ => Real.cos (x * (Real.pi / 2)) ^ (2 : ℕ) by
     funext x
     unfold alternativeHypothesisLemma4GOne
     congr 2
     ring]
   rw [intervalIntegral.integral_comp_mul_right
-    (fun x : ℝ => Real.cos x ^ 2) (by positivity : Real.pi / 2 ≠ 0)]
+    (fun x : ℝ => Real.cos x ^ (2 : ℕ)) (by positivity : Real.pi / 2 ≠ 0)]
   rw [smul_eq_mul, integral_cos_sq]
   rw [show (-1 : ℝ) * (Real.pi / 2) = -(Real.pi / 2) by ring,
     show (1 : ℝ) * (Real.pi / 2) = Real.pi / 2 by ring,
@@ -121,7 +121,7 @@ theorem banaszczykTangentCoordinate_mem (t : ℝ) :
 
 theorem hasDerivAt_banaszczykTangentCoordinate (t : ℝ) :
     HasDerivAt banaszczykTangentCoordinate
-      ((2 / Real.pi) * (1 + t ^ 2)⁻¹) t := by
+      ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹) t := by
   unfold banaszczykTangentCoordinate
   simpa [one_div] using (Real.hasDerivAt_arctan t).const_mul (2 / Real.pi)
 
@@ -129,7 +129,7 @@ theorem hasDerivAt_banaszczykTangentCoordinate (t : ℝ) :
 density to the paper's rational density. -/
 theorem banaszczyk_tangent_jacobian (t : ℝ) :
     banaszczykCosineDensity (banaszczykTangentCoordinate t) *
-        ((2 / Real.pi) * (1 + t ^ 2)⁻¹) =
+        ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹) =
       banaszczykRationalDensity t := by
   rw [banaszczykCosineDensity,
     Set.indicator_of_mem (banaszczykTangentCoordinate_mem t)]
@@ -138,6 +138,6 @@ theorem banaszczyk_tangent_jacobian (t : ℝ) :
     field_simp [Real.pi_ne_zero]
   rw [harg, Real.cos_sq_arctan]
   unfold banaszczykRationalDensity
-  field_simp [Real.pi_ne_zero, show (1 + t ^ 2 : ℝ) ≠ 0 by positivity]
+  field_simp [Real.pi_ne_zero, show (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 by positivity]
 
 end GaloisForLFunctions.HTGeometry

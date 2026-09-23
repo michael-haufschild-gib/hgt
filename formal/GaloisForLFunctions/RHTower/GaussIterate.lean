@@ -48,21 +48,21 @@ theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
   induction r with
   | zero =>
       have hz : ∀ n : ℕ,
-          ‖(gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (ι n) (fourierLp 2 0)) -
+          ‖(gaussQuasiInnerG hm k p ^ (0 : ℕ)) (fourierMulBlock (ι n) (fourierLp 2 0)) -
             ((((p : ℝ) : ℂ) *
                 (starRingEnd ℂ (gaussSampleValue k p (ι n)) *
-                  gaussSampleValue k p (ι n))) ^ 0) •
+                  gaussSampleValue k p (ι n))) ^ (0 : ℕ)) •
               fourierMulBlock (ι n)
                 ((gaussMovingAmplitudeBlock hp
-                  ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+                  ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ))
                     (fourierLp 2 0))‖ = 0 := by
         intro n
-        have h1 : (gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (ι n) (fourierLp 2 0))
+        have h1 : (gaussQuasiInnerG hm k p ^ (0 : ℕ)) (fourierMulBlock (ι n) (fourierLp 2 0))
             = fourierMulBlock (ι n) (fourierLp 2 0) := by
           rw [pow_zero]
           rfl
         have h2 : (gaussMovingAmplitudeBlock hp
-              ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ 0) (fourierLp 2 0)
+              ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ)) (fourierLp 2 0)
             = (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
           rw [pow_zero]
           rfl

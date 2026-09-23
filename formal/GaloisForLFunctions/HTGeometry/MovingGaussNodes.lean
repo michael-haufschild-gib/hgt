@@ -143,8 +143,8 @@ theorem eval_nodeCofactorPoly (x : Fin (n + 1) → ℝ) (i j : Fin (n + 1)) :
 /-- The velocity test polynomial: it vanishes at every node and its derivative is the indicator
 of the chosen node. -/
 def nodeVelocityTest (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : Polynomial ℝ :=
-  Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) *
-    ((Polynomial.X - Polynomial.C (x i)) * (nodeCofactorPoly x i) ^ 2)
+  Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) *
+    ((Polynomial.X - Polynomial.C (x i)) * (nodeCofactorPoly x i) ^ (2 : ℕ))
 
 theorem eval_nodeVelocityTest (x : Fin (n + 1) → ℝ) (i j : Fin (n + 1)) :
     (nodeVelocityTest x i).eval (x j) = 0 := by
@@ -163,8 +163,8 @@ theorem eval_derivative_nodeVelocityTest (x : Fin (n + 1) → ℝ) (i : Fin (n +
     (nodeVelocityTest x i).derivative.eval (x j) = if j = i then 1 else 0 := by
   classical
   have hder : (nodeVelocityTest x i).derivative
-      = Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) *
-        ((nodeCofactorPoly x i) ^ 2 +
+      = Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) *
+        ((nodeCofactorPoly x i) ^ (2 : ℕ) +
           (Polynomial.X - Polynomial.C (x i)) *
             (Polynomial.C 2 * (nodeCofactorPoly x i) *
               (nodeCofactorPoly x i).derivative)) := by
@@ -187,7 +187,7 @@ theorem eval_derivative_nodeVelocityTest (x : Fin (n + 1) → ℝ) (i : Fin (n +
 
 /-- The monic part of the velocity test polynomial. -/
 def nodeVelocityCore (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : Polynomial ℝ :=
-  (Polynomial.X - Polynomial.C (x i)) * (nodeCofactorPoly x i) ^ 2
+  (Polynomial.X - Polynomial.C (x i)) * (nodeCofactorPoly x i) ^ (2 : ℕ)
 
 theorem monic_nodeVelocityCore (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
     (nodeVelocityCore x i).Monic :=
@@ -202,7 +202,7 @@ theorem natDegree_nodeVelocityCore (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
   ring
 
 theorem nodeVelocityTest_eq (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
-    nodeVelocityTest x i = Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) * nodeVelocityCore x i := rfl
+    nodeVelocityTest x i = Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) * nodeVelocityCore x i := rfl
 
 theorem natDegree_nodeVelocityTest_le (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
     (nodeVelocityTest x i).natDegree ≤ 2 * n + 1 := by
@@ -211,7 +211,7 @@ theorem natDegree_nodeVelocityTest_le (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)
     (le_of_eq (natDegree_nodeVelocityCore x i))
 
 theorem coeff_nodeVelocityTest_top (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
-    (nodeVelocityTest x i).coeff (2 * n + 1) = (nodeSeparation x i)⁻¹ ^ 2 := by
+    (nodeVelocityTest x i).coeff (2 * n + 1) = (nodeSeparation x i)⁻¹ ^ (2 : ℕ) := by
   rw [nodeVelocityTest_eq, Polynomial.coeff_C_mul]
   have h := (monic_nodeVelocityCore x i).coeff_natDegree
   rw [natDegree_nodeVelocityCore] at h
@@ -229,11 +229,11 @@ theorem momentFunctional_eq_quadSum_add_top {s : ℕ → ℝ} {x w : Fin (n + 1)
       momentFunctional s g = ∑ i, w i * g.eval (x i))
     (q : Polynomial ℝ) (hq : q.natDegree ≤ 2 * n + 2) :
     momentFunctional s q
-      = (∑ i, w i * q.eval (x i)) + q.coeff (2 * n + 2) * momentFunctional s ((nodePoly x) ^ 2) := by
+      = (∑ i, w i * q.eval (x i)) + q.coeff (2 * n + 2) * momentFunctional s ((nodePoly x) ^ (2 : ℕ)) := by
   obtain ⟨c, hc⟩ : ∃ c : ℝ, c = q.coeff (2 * n + 2) := ⟨_, rfl⟩
-  obtain ⟨r, hr⟩ : ∃ r : Polynomial ℝ, r = q - Polynomial.C c * (nodePoly x) ^ 2 := ⟨_, rfl⟩
-  have hmonic : ((nodePoly x) ^ 2).Monic := (monic_nodePoly x).pow 2
-  have hdeg : ((nodePoly x) ^ 2).natDegree = 2 * n + 2 := by
+  obtain ⟨r, hr⟩ : ∃ r : Polynomial ℝ, r = q - Polynomial.C c * (nodePoly x) ^ (2 : ℕ) := ⟨_, rfl⟩
+  have hmonic : ((nodePoly x) ^ (2 : ℕ)).Monic := (monic_nodePoly x).pow 2
+  have hdeg : ((nodePoly x) ^ (2 : ℕ)).natDegree = 2 * n + 2 := by
     rw [Polynomial.natDegree_pow, natDegree_nodePoly]
     ring
   have hrdeg : r.natDegree ≤ 2 * n + 1 := by
@@ -241,21 +241,21 @@ theorem momentFunctional_eq_quadSum_add_top {s : ℕ → ℝ} {x w : Fin (n + 1)
     rw [hr, Polynomial.coeff_sub, Polynomial.coeff_C_mul]
     rcases eq_or_lt_of_le (Nat.succ_le_of_lt hm) with hm2 | hm2
     · rw [← hm2, hc]
-      have hcm : ((nodePoly x) ^ 2).coeff (2 * n + 2) = 1 := by
+      have hcm : ((nodePoly x) ^ (2 : ℕ)).coeff (2 * n + 2) = 1 := by
         have := hmonic.coeff_natDegree
         rwa [hdeg] at this
       rw [hcm, mul_one, sub_self]
     · have h1 : q.coeff m = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
-      have h2 : ((nodePoly x) ^ 2).coeff m = 0 :=
+      have h2 : ((nodePoly x) ^ (2 : ℕ)).coeff m = 0 :=
         Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
       rw [h1, h2, mul_zero, sub_zero]
-  have hq' : q = r + Polynomial.C c * (nodePoly x) ^ 2 := by rw [hr]; ring
-  have hnodes : ∀ j, ((nodePoly x) ^ 2).eval (x j) = 0 := by
+  have hq' : q = r + Polynomial.C c * (nodePoly x) ^ (2 : ℕ) := by rw [hr]; ring
+  have hnodes : ∀ j, ((nodePoly x) ^ (2 : ℕ)).eval (x j) = 0 := by
     intro j
     rw [Polynomial.eval_pow, eval_nodePoly]
     ring
   have hLHS : momentFunctional s q
-      = momentFunctional s r + c * momentFunctional s ((nodePoly x) ^ 2) := by
+      = momentFunctional s r + c * momentFunctional s ((nodePoly x) ^ (2 : ℕ)) := by
     rw [hq', momentFunctional_add, ← Polynomial.smul_eq_C_mul, momentFunctional_smul]
   have hsum : ∑ i, w i * q.eval (x i) = ∑ i, w i * r.eval (x i) := by
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -308,18 +308,18 @@ theorem weight_mul_nodeVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
       momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
     (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0) :
     w i₀ y * x' i₀
-      = -(w i₀ y * (x i₀ y) ^ 2
-          + (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-              / (nodeSeparation (fun j => x j y) i₀) ^ 2) := by
+      = -(w i₀ y * (x i₀ y) ^ (2 : ℕ)
+          + (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+              / (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ)) := by
   classical
   obtain ⟨X0, hX0⟩ : ∃ X0 : Fin (n + 1) → ℝ, X0 = fun j => x j y := ⟨_, rfl⟩
   obtain ⟨G, hG⟩ : ∃ G : Polynomial ℝ, G = nodeVelocityTest X0 i₀ := ⟨_, rfl⟩
-  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ 2) := ⟨_, rfl⟩
+  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ (2 : ℕ)) := ⟨_, rfl⟩
   obtain ⟨sep, hsepdef⟩ : ∃ sep : ℝ, sep = nodeSeparation X0 i₀ := ⟨_, rfl⟩
   have hsep' : sep ≠ 0 := by rw [hsepdef, hX0]; exact hsep
   have hGdeg : G.natDegree ≤ 2 * n + 1 := by
     rw [hG]; exact natDegree_nodeVelocityTest_le X0 i₀
-  have hGtop : G.coeff (2 * n + 1) = sep⁻¹ ^ 2 := by
+  have hGtop : G.coeff (2 * n + 1) = sep⁻¹ ^ (2 : ℕ) := by
     rw [hG, hsepdef]; exact coeff_nodeVelocityTest_top X0 i₀
   have hGeval : ∀ j, G.eval (X0 j) = 0 := by
     intro j; rw [hG]; exact eval_nodeVelocityTest X0 i₀ j
@@ -371,7 +371,7 @@ theorem weight_mul_nodeVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
     refine le_trans Polynomial.natDegree_mul_le ?_
     rw [Polynomial.natDegree_X]
     omega
-  have hval1 : momentFunctional (s y) (Polynomial.X * G) = sep⁻¹ ^ 2 * hh := by
+  have hval1 : momentFunctional (s y) (Polynomial.X * G) = sep⁻¹ ^ (2 : ℕ) * hh := by
     rw [momentFunctional_eq_quadSum_add_top hquadY _ hdeg1]
     have hz : ∀ i : Fin (n + 1), w i y * (Polynomial.X * G).eval (X0 i) = 0 := by
       intro i
@@ -380,11 +380,11 @@ theorem weight_mul_nodeVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
     rw [Finset.sum_congr rfl fun i _ => hz i, Finset.sum_const_zero, zero_add,
       Polynomial.coeff_X_mul, hGtop, hhdef]
   have hval2 : momentFunctional (s y) (Polynomial.X * (Polynomial.X * G.derivative))
-      = w i₀ y * (X0 i₀) ^ 2 + (2 * (n : ℝ) + 1) * (sep⁻¹ ^ 2 * hh) := by
+      = w i₀ y * (X0 i₀) ^ (2 : ℕ) + (2 * (n : ℝ) + 1) * (sep⁻¹ ^ (2 : ℕ) * hh) := by
     rw [momentFunctional_eq_quadSum_add_top hquadY _ hdeg2]
     have hz : ∀ i : Fin (n + 1),
         w i y * (Polynomial.X * (Polynomial.X * G.derivative)).eval (X0 i)
-          = if i = i₀ then w i₀ y * (X0 i₀) ^ 2 else 0 := by
+          = if i = i₀ then w i₀ y * (X0 i₀) ^ (2 : ℕ) else 0 := by
       intro i
       rw [Polynomial.eval_mul, Polynomial.eval_mul, Polynomial.eval_X, hGderiv i]
       by_cases hi : i = i₀
@@ -407,7 +407,7 @@ theorem weight_mul_nodeVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
 
 /-- The Christoffel-type normalization `γ_i = w_i · p'(x_i)²`. -/
 def nodeEnergy (x w : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : ℝ :=
-  w i * (nodeSeparation x i) ^ 2
+  w i * (nodeSeparation x i) ^ (2 : ℕ)
 
 set_option maxHeartbeats 2000000 in
 /-- **The hard-coordinate velocity.**  The centred reciprocal coordinate `y - 1/x_i` moves with
@@ -421,21 +421,21 @@ theorem hasDerivAt_hardCoordinate {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin
     (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
     (hw0 : w i₀ y ≠ 0) (hx0 : x i₀ y ≠ 0) :
     HasDerivAt (fun t => t - (x i₀ t)⁻¹)
-      (-((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-          / ((x i₀ y) ^ 2 * nodeEnergy (fun j => x j y) (fun j => w j y) i₀))) y := by
+      (-((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+          / ((x i₀ y) ^ (2 : ℕ) * nodeEnergy (fun j => x j y) (fun j => w j y) i₀))) y := by
   have hvel := weight_mul_nodeVelocity hs hx hw hquad i₀ hsep
-  have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ 2 ≠ 0 := pow_ne_zero 2 hsep
-  have hx2 : (x i₀ y) ^ 2 ≠ 0 := pow_ne_zero 2 hx0
-  have hkey : (w i₀ y * (nodeSeparation (fun j => x j y) i₀) ^ 2) * ((x i₀ y) ^ 2 + x' i₀)
-      = -((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)) := by
+  have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hsep
+  have hx2 : (x i₀ y) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hx0
+  have hkey : (w i₀ y * (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ)) * ((x i₀ y) ^ (2 : ℕ) + x' i₀)
+      = -((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))) := by
     field_simp at hvel
     linear_combination hvel
-  have hinv : HasDerivAt (fun t => (x i₀ t)⁻¹) (-x' i₀ / (x i₀ y) ^ 2) y := (hx i₀).inv hx0
-  have hsub : HasDerivAt (fun t => t - (x i₀ t)⁻¹) (1 - -x' i₀ / (x i₀ y) ^ 2) y :=
+  have hinv : HasDerivAt (fun t => (x i₀ t)⁻¹) (-x' i₀ / (x i₀ y) ^ (2 : ℕ)) y := (hx i₀).inv hx0
+  have hsub : HasDerivAt (fun t => t - (x i₀ t)⁻¹) (1 - -x' i₀ / (x i₀ y) ^ (2 : ℕ)) y :=
     (hasDerivAt_id y).sub hinv
-  have hval : -((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-      / ((x i₀ y) ^ 2 * nodeEnergy (fun j => x j y) (fun j => w j y) i₀))
-      = 1 - -x' i₀ / (x i₀ y) ^ 2 := by
+  have hval : -((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+      / ((x i₀ y) ^ (2 : ℕ) * nodeEnergy (fun j => x j y) (fun j => w j y) i₀))
+      = 1 - -x' i₀ / (x i₀ y) ^ (2 : ℕ) := by
     rw [nodeEnergy]
     field_simp
     linear_combination -hkey
@@ -446,17 +446,17 @@ theorem hasDerivAt_hardCoordinate {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin
 node energy are positive, so the velocity is negative. -/
 theorem hardCoordinateVelocity_neg {x w : Fin (n + 1) → ℝ} {h : ℝ} (i₀ : Fin (n + 1))
     (hh : 0 < h) (hw : 0 < w i₀) (hsep : nodeSeparation x i₀ ≠ 0) (hx0 : x i₀ ≠ 0) :
-    -((2 * (n : ℝ) + 2) * h / ((x i₀) ^ 2 * nodeEnergy x w i₀)) < 0 := by
-  have hsep2 : (0 : ℝ) < (nodeSeparation x i₀) ^ 2 :=
+    -((2 * (n : ℝ) + 2) * h / ((x i₀) ^ (2 : ℕ) * nodeEnergy x w i₀)) < 0 := by
+  have hsep2 : (0 : ℝ) < (nodeSeparation x i₀) ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hsep))
-  have hx2 : (0 : ℝ) < (x i₀) ^ 2 :=
+  have hx2 : (0 : ℝ) < (x i₀) ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hx0))
   have hE : (0 : ℝ) < nodeEnergy x w i₀ := by
     rw [nodeEnergy]
     exact mul_pos hw hsep2
   have hnum : (0 : ℝ) < (2 * (n : ℝ) + 2) * h := by positivity
-  have hden : (0 : ℝ) < (x i₀) ^ 2 * nodeEnergy x w i₀ := mul_pos hx2 hE
-  have : (0 : ℝ) < (2 * (n : ℝ) + 2) * h / ((x i₀) ^ 2 * nodeEnergy x w i₀) :=
+  have hden : (0 : ℝ) < (x i₀) ^ (2 : ℕ) * nodeEnergy x w i₀ := mul_pos hx2 hE
+  have : (0 : ℝ) < (2 * (n : ℝ) + 2) * h / ((x i₀) ^ (2 : ℕ) * nodeEnergy x w i₀) :=
     div_pos hnum hden
   linarith
 
@@ -490,9 +490,9 @@ theorem eval_derivative_nodeCofactorPoly (x : Fin (n + 1) → ℝ) (i : Fin (n +
 
 /-- The Hermite basis element dual to the weight of one node. -/
 def nodeWeightTest (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : Polynomial ℝ :=
-  Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) *
+  Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) *
     ((1 - Polynomial.C (2 * nodeLogDeriv x i) * (Polynomial.X - Polynomial.C (x i))) *
-      (nodeCofactorPoly x i) ^ 2)
+      (nodeCofactorPoly x i) ^ (2 : ℕ))
 
 theorem eval_nodeWeightTest (x : Fin (n + 1) → ℝ) (i j : Fin (n + 1))
     (hsep : nodeSeparation x i ≠ 0) :
@@ -514,8 +514,8 @@ theorem eval_derivative_nodeWeightTest (x : Fin (n + 1) → ℝ) (i j : Fin (n +
     (nodeWeightTest x i).derivative.eval (x j) = 0 := by
   classical
   have hder : (nodeWeightTest x i).derivative
-      = Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) *
-        ((-(Polynomial.C (2 * nodeLogDeriv x i))) * (nodeCofactorPoly x i) ^ 2
+      = Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) *
+        ((-(Polynomial.C (2 * nodeLogDeriv x i))) * (nodeCofactorPoly x i) ^ (2 : ℕ)
           + (1 - Polynomial.C (2 * nodeLogDeriv x i) * (Polynomial.X - Polynomial.C (x i))) *
               (Polynomial.C 2 * (nodeCofactorPoly x i) *
                 (nodeCofactorPoly x i).derivative)) := by
@@ -539,8 +539,8 @@ theorem eval_derivative_nodeWeightTest (x : Fin (n + 1) → ℝ) (i j : Fin (n +
     ring
 
 theorem nodeWeightTest_eq (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
-    nodeWeightTest x i = Polynomial.C ((nodeSeparation x i)⁻¹ ^ 2) *
-      ((nodeCofactorPoly x i) ^ 2
+    nodeWeightTest x i = Polynomial.C ((nodeSeparation x i)⁻¹ ^ (2 : ℕ)) *
+      ((nodeCofactorPoly x i) ^ (2 : ℕ)
         - Polynomial.C (2 * nodeLogDeriv x i) * nodeVelocityCore x i) := by
   rw [nodeWeightTest, nodeVelocityCore]
   ring
@@ -550,7 +550,7 @@ theorem natDegree_nodeWeightTest_le (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) 
   rw [nodeWeightTest_eq]
   refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
   refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
-  have h1 : ((nodeCofactorPoly x i) ^ 2).natDegree ≤ 2 * n + 1 := by
+  have h1 : ((nodeCofactorPoly x i) ^ (2 : ℕ)).natDegree ≤ 2 * n + 1 := by
     rw [Polynomial.natDegree_pow, natDegree_nodeCofactorPoly]
     omega
   have h2 : (Polynomial.C (2 * nodeLogDeriv x i) * nodeVelocityCore x i).natDegree
@@ -561,9 +561,9 @@ theorem natDegree_nodeWeightTest_le (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) 
 
 theorem coeff_nodeWeightTest_top (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
     (nodeWeightTest x i).coeff (2 * n + 1)
-      = -(2 * nodeLogDeriv x i) * (nodeSeparation x i)⁻¹ ^ 2 := by
+      = -(2 * nodeLogDeriv x i) * (nodeSeparation x i)⁻¹ ^ (2 : ℕ) := by
   rw [nodeWeightTest_eq, Polynomial.coeff_C_mul, Polynomial.coeff_sub, Polynomial.coeff_C_mul]
-  have h1 : ((nodeCofactorPoly x i) ^ 2).coeff (2 * n + 1) = 0 := by
+  have h1 : ((nodeCofactorPoly x i) ^ (2 : ℕ)).coeff (2 * n + 1) = 0 := by
     refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
     rw [Polynomial.natDegree_pow, natDegree_nodeCofactorPoly]
     omega
@@ -586,8 +586,8 @@ theorem weightVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) �
     (hdist : ∀ k ∈ Finset.univ.erase i₀, x i₀ y - x k y ≠ 0) :
     w' i₀ = -(w i₀ y * x i₀ y)
       + (2 * (n : ℝ) + 2) * (2 * nodeLogDeriv (fun j => x j y) i₀)
-          * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-          / (nodeSeparation (fun j => x j y) i₀) ^ 2 := by
+          * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+          / (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) := by
   classical
   obtain ⟨X0, hX0⟩ : ∃ X0 : Fin (n + 1) → ℝ, X0 = fun j => x j y := ⟨_, rfl⟩
   have hsep' : nodeSeparation X0 i₀ ≠ 0 := by rw [hX0]; exact hsep
@@ -596,8 +596,8 @@ theorem weightVelocity {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) �
     rw [hX0]
     exact hdist k hk
   obtain ⟨G, hG⟩ : ∃ G : Polynomial ℝ, G = nodeWeightTest X0 i₀ := ⟨_, rfl⟩
-  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ 2) := ⟨_, rfl⟩
-  obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, c₁ = -(2 * nodeLogDeriv X0 i₀) * (nodeSeparation X0 i₀)⁻¹ ^ 2 :=
+  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ (2 : ℕ)) := ⟨_, rfl⟩
+  obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, c₁ = -(2 * nodeLogDeriv X0 i₀) * (nodeSeparation X0 i₀)⁻¹ ^ (2 : ℕ) :=
     ⟨_, rfl⟩
   have hGdeg : G.natDegree ≤ 2 * n + 1 := by
     rw [hG]; exact natDegree_nodeWeightTest_le X0 i₀
@@ -694,32 +694,32 @@ theorem hasDerivAt_nodeResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n
     (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
     (hdist : ∀ k ∈ Finset.univ.erase i₀, x i₀ y - x k y ≠ 0) (hx0 : x i₀ y ≠ 0) :
     HasDerivAt (fun t => w i₀ t / x i₀ t)
-      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
         * (1 + 2 * nodeLogDeriv (fun j => x j y) i₀ * x i₀ y)
-        / ((x i₀ y) ^ 2 * (nodeSeparation (fun j => x j y) i₀) ^ 2)) y := by
+        / ((x i₀ y) ^ (2 : ℕ) * (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ))) y := by
   have hwv := weightVelocity hs hx hw hquad i₀ hsep hdist
   have hxv := weight_mul_nodeVelocity hs hx hw hquad i₀ hsep
   have hquot : HasDerivAt (fun t => w i₀ t / x i₀ t)
-      ((w' i₀ * x i₀ y - w i₀ y * x' i₀) / (x i₀ y) ^ 2) y :=
+      ((w' i₀ * x i₀ y - w i₀ y * x' i₀) / (x i₀ y) ^ (2 : ℕ)) y :=
     (hw i₀).div (hx i₀) hx0
   have hnum : w' i₀ * x i₀ y - w i₀ y * x' i₀
-      = (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+      = (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
         * (1 + 2 * nodeLogDeriv (fun j => x j y) i₀ * x i₀ y)
-        / (nodeSeparation (fun j => x j y) i₀) ^ 2 := by
-    have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ 2 ≠ 0 := pow_ne_zero 2 hsep
+        / (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) := by
+    have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hsep
     rw [hwv]
     field_simp
     field_simp at hxv
     linear_combination -hxv
   rw [hnum] at hquot
-  have hx2 : (x i₀ y) ^ 2 ≠ 0 := pow_ne_zero 2 hx0
-  have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ 2 ≠ 0 := pow_ne_zero 2 hsep
-  have hrw : (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+  have hx2 : (x i₀ y) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hx0
+  have hsep2 : (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hsep
+  have hrw : (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
         * (1 + 2 * nodeLogDeriv (fun j => x j y) i₀ * x i₀ y)
-        / (nodeSeparation (fun j => x j y) i₀) ^ 2 / (x i₀ y) ^ 2
-      = (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+        / (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ) / (x i₀ y) ^ (2 : ℕ)
+      = (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
         * (1 + 2 * nodeLogDeriv (fun j => x j y) i₀ * x i₀ y)
-        / ((x i₀ y) ^ 2 * (nodeSeparation (fun j => x j y) i₀) ^ 2) := by
+        / ((x i₀ y) ^ (2 : ℕ) * (nodeSeparation (fun j => x j y) i₀) ^ (2 : ℕ)) := by
     field_simp
   rw [← hrw]
   exact hquot
@@ -728,13 +728,13 @@ theorem hasDerivAt_nodeResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n
 
 /-- The Hermite interpolant of `1/X` at the nodes: `(1 - p²/p(0)²)/X`. -/
 def reciprocalNodeTest (x : Fin (n + 1) → ℝ) : Polynomial ℝ :=
-  Polynomial.divX (1 - Polynomial.C ((((nodePoly x).eval 0) ^ 2)⁻¹) * (nodePoly x) ^ 2)
+  Polynomial.divX (1 - Polynomial.C ((((nodePoly x).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ))
 
 theorem X_mul_reciprocalNodeTest (x : Fin (n + 1) → ℝ) (h0 : (nodePoly x).eval 0 ≠ 0) :
     Polynomial.X * reciprocalNodeTest x
-      = 1 - Polynomial.C ((((nodePoly x).eval 0) ^ 2)⁻¹) * (nodePoly x) ^ 2 := by
+      = 1 - Polynomial.C ((((nodePoly x).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ) := by
   obtain ⟨q, hq⟩ : ∃ q : Polynomial ℝ,
-      q = 1 - Polynomial.C ((((nodePoly x).eval 0) ^ 2)⁻¹) * (nodePoly x) ^ 2 := ⟨_, rfl⟩
+      q = 1 - Polynomial.C ((((nodePoly x).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ) := ⟨_, rfl⟩
   have hc : q.coeff 0 = 0 := by
     rw [hq, Polynomial.coeff_sub, Polynomial.coeff_one_zero, Polynomial.coeff_C_mul,
       Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_pow]
@@ -747,11 +747,11 @@ theorem X_mul_reciprocalNodeTest (x : Fin (n + 1) → ℝ) (h0 : (nodePoly x).ev
 theorem natDegree_reciprocalNodeTest_le (x : Fin (n + 1) → ℝ) :
     (reciprocalNodeTest x).natDegree ≤ 2 * n + 1 := by
   rw [reciprocalNodeTest, Polynomial.natDegree_divX_eq_natDegree_tsub_one]
-  have hq : (1 - Polynomial.C ((((nodePoly x).eval 0) ^ 2)⁻¹) * (nodePoly x) ^ 2).natDegree
+  have hq : (1 - Polynomial.C ((((nodePoly x).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ)).natDegree
       ≤ 2 * n + 2 := by
     refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
     have h1 : (1 : Polynomial ℝ).natDegree = 0 := Polynomial.natDegree_one
-    have h2 : (Polynomial.C ((((nodePoly x).eval 0) ^ 2)⁻¹) * (nodePoly x) ^ 2).natDegree
+    have h2 : (Polynomial.C ((((nodePoly x).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ)).natDegree
         ≤ 2 * n + 2 := by
       refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
       rw [Polynomial.natDegree_pow, natDegree_nodePoly]
@@ -772,7 +772,7 @@ theorem eval_reciprocalNodeTest (x : Fin (n + 1) → ℝ) (h0 : (nodePoly x).eva
 
 theorem eval_derivative_reciprocalNodeTest (x : Fin (n + 1) → ℝ)
     (h0 : (nodePoly x).eval 0 ≠ 0) (j : Fin (n + 1)) (hxj : x j ≠ 0) :
-    (reciprocalNodeTest x).derivative.eval (x j) = -((x j) ^ 2)⁻¹ := by
+    (reciprocalNodeTest x).derivative.eval (x j) = -((x j) ^ (2 : ℕ))⁻¹ := by
   have hder := congrArg Polynomial.derivative (X_mul_reciprocalNodeTest x h0)
   rw [Polynomial.derivative_mul, Polynomial.derivative_X, one_mul, Polynomial.derivative_sub,
     Polynomial.derivative_one, Polynomial.derivative_C_mul, Polynomial.derivative_pow] at hder
@@ -798,8 +798,8 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
       momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
     (h0 : (nodePoly (fun j => x j y)).eval 0 ≠ 0) (hxj : ∀ j, x j y ≠ 0) :
     HasDerivAt (fun t => ∑ i, w i t / x i t)
-      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-        / ((nodePoly (fun j => x j y)).eval 0) ^ 2) y := by
+      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+        / ((nodePoly (fun j => x j y)).eval 0) ^ (2 : ℕ)) y := by
   classical
   obtain ⟨X0, hX0⟩ : ∃ X0 : Fin (n + 1) → ℝ, X0 = fun j => x j y := ⟨_, rfl⟩
   have h0'' : (nodePoly X0).eval 0 ≠ 0 := by rw [hX0]; exact h0
@@ -809,9 +809,9 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
   have hmaster := moving_master (g := reciprocalNodeTest X0) hs hx hw
     (fun t => hquad t (reciprocalNodeTest X0) hgdeg)
   have hsum0 : HasDerivAt (∑ i : Fin (n + 1), fun t : ℝ => w i t / x i t)
-      (∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ 2) y := by
+      (∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ (2 : ℕ)) y := by
     refine HasDerivAt.sum (A := fun i t => w i t / x i t)
-      (A' := fun i => (w' i * x i y - w i y * x' i) / (x i y) ^ 2) fun i _ => ?_
+      (A' := fun i => (w' i * x i y - w i y * x' i) / (x i y) ^ (2 : ℕ)) fun i _ => ?_
     exact (hw i).div (hx i) (hxj i)
   have hfun : (∑ i : Fin (n + 1), fun t : ℝ => w i t / x i t)
       = fun t : ℝ => ∑ i : Fin (n + 1), w i t / x i t := by
@@ -821,13 +821,13 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
   have hLHS : ∑ i : Fin (n + 1),
       (w' i * (reciprocalNodeTest X0).eval (x i y)
         + w i y * ((reciprocalNodeTest X0).derivative.eval (x i y) * x' i))
-      = ∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ 2 := by
+      = ∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     have hne : x i y ≠ 0 := hxj i
     have hev : (reciprocalNodeTest X0).eval (x i y) = (x i y)⁻¹ := by
       rw [← congrFun hX0 i]
       exact eval_reciprocalNodeTest X0 h0'' i (hxj' i)
-    have hdv : (reciprocalNodeTest X0).derivative.eval (x i y) = -((x i y) ^ 2)⁻¹ := by
+    have hdv : (reciprocalNodeTest X0).derivative.eval (x i y) = -((x i y) ^ (2 : ℕ))⁻¹ := by
       rw [← congrFun hX0 i]
       exact eval_derivative_reciprocalNodeTest X0 h0'' i (hxj' i)
     rw [hev, hdv, eq_div_iff (pow_ne_zero 2 hne)]
@@ -835,10 +835,10 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
     ring
   rw [hLHS] at hmaster
   have hXg : Polynomial.X * reciprocalNodeTest X0
-      = 1 - Polynomial.C (((( nodePoly X0).eval 0) ^ 2)⁻¹) * (nodePoly X0) ^ 2 :=
+      = 1 - Polynomial.C (((( nodePoly X0).eval 0) ^ (2 : ℕ))⁻¹) * (nodePoly X0) ^ (2 : ℕ) :=
     X_mul_reciprocalNodeTest X0 h0''
   have hflow : momentFlowPoly (reciprocalNodeTest X0)
-      = Polynomial.C (-(2 * (((nodePoly X0).eval 0) ^ 2)⁻¹)) *
+      = Polynomial.C (-(2 * (((nodePoly X0).eval 0) ^ (2 : ℕ))⁻¹)) *
         (Polynomial.X * ((nodePoly X0) * (nodePoly X0).derivative)) := by
     rw [momentFlowPoly, hXg, Polynomial.derivative_sub, Polynomial.derivative_one,
       Polynomial.derivative_C_mul, Polynomial.derivative_pow]
@@ -876,7 +876,7 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
     exact hquad y q hq
   have hLXpp : momentFunctional (s y)
       (Polynomial.X * ((nodePoly X0) * (nodePoly X0).derivative))
-      = ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly X0) ^ 2) := by
+      = ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly X0) ^ (2 : ℕ)) := by
     rw [momentFunctional_eq_quadSum_add_top hquadY _ hdegXpp, htop]
     have hz : ∀ i : Fin (n + 1),
         w i y * (Polynomial.X * ((nodePoly X0) * (nodePoly X0).derivative)).eval (X0 i) = 0 := by
@@ -886,13 +886,13 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
       ring
     rw [Finset.sum_congr rfl fun i _ => hz i, Finset.sum_const_zero, zero_add]
   have hval : momentFunctional (s y) (momentFlowPoly (reciprocalNodeTest X0))
-      = -(2 * (((nodePoly X0).eval 0) ^ 2)⁻¹) *
-        (((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly X0) ^ 2)) := by
+      = -(2 * (((nodePoly X0).eval 0) ^ (2 : ℕ))⁻¹) *
+        (((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly X0) ^ (2 : ℕ))) := by
     rw [hflow, ← Polynomial.smul_eq_C_mul, momentFunctional_smul, hLXpp]
   rw [hval] at hmaster
-  have hgoal : (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-      / ((nodePoly (fun j => x j y)).eval 0) ^ 2
-      = ∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ 2 := by
+  have hgoal : (2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+      / ((nodePoly (fun j => x j y)).eval 0) ^ (2 : ℕ)
+      = ∑ i : Fin (n + 1), (w' i * x i y - w i y * x' i) / (x i y) ^ (2 : ℕ) := by
     rw [hmaster, ← hX0]
     field_simp
   rw [hgoal]
@@ -912,8 +912,8 @@ theorem hasDerivAt_hardNodeCoordinate {s : ℝ → ℕ → ℝ} {y : ℝ} {x w :
     (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
     (hw0 : w i₀ y ≠ 0) (hx0 : x i₀ y ≠ 0) :
     HasDerivAt (fun t => (x i₀ t)⁻¹ - t)
-      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-          / ((x i₀ y) ^ 2 * nodeEnergy (fun j => x j y) (fun j => w j y) i₀)) y := by
+      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+          / ((x i₀ y) ^ (2 : ℕ) * nodeEnergy (fun j => x j y) (fun j => w j y) i₀)) y := by
   have h := hasDerivAt_hardCoordinate hs hx hw hquad i₀ hsep hw0 hx0
   have hn := h.neg
   rw [neg_neg] at hn
@@ -962,7 +962,7 @@ theorem hasDerivAt_hardNodeCoordinate_flat {s : ℝ → ℕ → ℝ} {y : ℝ} {
       momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
     (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
     (hw0 : w i₀ y ≠ 0) (hx0 : x i₀ y ≠ 0)
-    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ)) = 0) :
     HasDerivAt (fun t => (x i₀ t)⁻¹ - t) 0 y := by
   have h := hasDerivAt_hardNodeCoordinate hs hx hw hquad i₀ hsep hw0 hx0
   rw [hflat] at h
@@ -979,7 +979,7 @@ theorem hasDerivAt_topQuadratureMoment_flat {s : ℝ → ℕ → ℝ} {y : ℝ} 
       momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
     (hsep : ∀ i, nodeSeparation (fun j => x j y) i ≠ 0)
     (hdist : ∀ i : Fin (n + 1), ∀ k ∈ Finset.univ.erase i, x i y - x k y ≠ 0)
-    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ)) = 0) :
     HasDerivAt (fun t => ∑ i, w i t * (x i t) ^ (2 * n + 2))
       (-(2 * (n : ℝ) + 3) * ∑ i, w i y * (x i y) ^ (2 * n + 3)) y := by
   have hterm : ∀ i : Fin (n + 1),
@@ -1032,7 +1032,7 @@ theorem hasDerivAt_topDefect_flat {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin
       momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
     (hsep : ∀ i, nodeSeparation (fun j => x j y) i ≠ 0)
     (hdist : ∀ i : Fin (n + 1), ∀ k ∈ Finset.univ.erase i, x i y - x k y ≠ 0)
-    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ)) = 0) :
     HasDerivAt (fun t => s t (2 * n + 2) - ∑ i, w i t * (x i t) ^ (2 * n + 2))
       (-(2 * (n : ℝ) + 3) * (s y (2 * n + 3) - ∑ i, w i y * (x i y) ^ (2 * n + 3))) y := by
   have hquadDeriv := hasDerivAt_topQuadratureMoment_flat hs hx hw hquad hsep hdist hflat
@@ -1058,26 +1058,26 @@ theorem hasDerivAt_hardEdgeNormalization_root (y₀ : ℝ) (hy₀ : y₀ ≠ 0) 
     (p : Polynomial ℝ) (u : ℝ) (hu : y₀ + u ≠ 0)
     (hroot : p.eval ((y₀ + u)⁻¹) = 0) :
     HasDerivAt (fun v => (1 + v / y₀) ^ nn * p.eval ((y₀ + v)⁻¹))
-      (-((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ 2 * p.derivative.eval ((y₀ + u)⁻¹))) u := by
+      (-((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ (2 : ℕ) * p.derivative.eval ((y₀ + u)⁻¹))) u := by
   have hlin : HasDerivAt (fun v : ℝ => 1 + v / y₀) (1 / y₀) u := by
     have h : HasDerivAt (fun v : ℝ => v / y₀) (1 / y₀) u := by
       simpa using (hasDerivAt_id u).div_const y₀
     simpa using h.const_add (1 : ℝ)
   have hpow : HasDerivAt (fun v : ℝ => (1 + v / y₀) ^ nn)
       ((nn : ℝ) * (1 + u / y₀) ^ (nn - 1) * (1 / y₀)) u := hlin.pow nn
-  have hinv : HasDerivAt (fun v : ℝ => (y₀ + v)⁻¹) (-1 / (y₀ + u) ^ 2) u := by
+  have hinv : HasDerivAt (fun v : ℝ => (y₀ + v)⁻¹) (-1 / (y₀ + u) ^ (2 : ℕ)) u := by
     have hbase : HasDerivAt (fun v : ℝ => y₀ + v) 1 u := by
       simpa using (hasDerivAt_id u).const_add y₀
     exact hbase.inv hu
   have hp : HasDerivAt (fun v : ℝ => p.eval ((y₀ + v)⁻¹))
-      (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ 2)) u := by
+      (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ (2 : ℕ))) u := by
     have h2 : HasDerivAt (fun x : ℝ => p.eval x) (p.derivative.eval ((y₀ + u)⁻¹))
         ((y₀ + u)⁻¹) := Polynomial.hasDerivAt p ((y₀ + u)⁻¹)
     exact h2.comp u hinv
   have hmul := hpow.mul hp
   have hval : (nn : ℝ) * (1 + u / y₀) ^ (nn - 1) * (1 / y₀) * p.eval ((y₀ + u)⁻¹)
-      + (1 + u / y₀) ^ nn * (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ 2))
-      = -((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ 2 * p.derivative.eval ((y₀ + u)⁻¹)) := by
+      + (1 + u / y₀) ^ nn * (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ (2 : ℕ)))
+      = -((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ (2 : ℕ) * p.derivative.eval ((y₀ + u)⁻¹)) := by
     rw [hroot, mul_zero, zero_add, inv_pow]
     field_simp
   rwa [hval] at hmul
@@ -1086,14 +1086,14 @@ theorem hasDerivAt_hardEdgeNormalization_root (y₀ : ℝ) (hy₀ : y₀ ≠ 0) 
 `y₀ x⁴ γ` divided by `t^{2n+1} S'(u)²`. -/
 theorem gaussNodeResidue_law (y₀ x ω pd : ℝ) (ht : y₀ * x ≠ 0) (hx : x ≠ 0) (hpd : pd ≠ 0)
     (nn : ℕ) :
-    (y₀ * x ^ 4 * (ω * pd ^ 2))
-      / ((y₀ * x) ^ (2 * nn + 1) * (-(((y₀ * x) ^ nn)⁻¹ * x ^ 2 * pd)) ^ 2)
+    (y₀ * x ^ (4 : ℕ) * (ω * pd ^ (2 : ℕ)))
+      / ((y₀ * x) ^ (2 * nn + 1) * (-(((y₀ * x) ^ nn)⁻¹ * x ^ (2 : ℕ) * pd)) ^ (2 : ℕ))
       = ω / x := by
   have hy₀ : y₀ ≠ 0 := by
     intro h
     exact ht (by rw [h]; ring)
   have htn : ((y₀ * x) ^ nn) ≠ 0 := pow_ne_zero _ ht
-  have hsplit : (y₀ * x) ^ (2 * nn + 1) = ((y₀ * x) ^ nn) ^ 2 * (y₀ * x) := by
+  have hsplit : (y₀ * x) ^ (2 * nn + 1) = ((y₀ * x) ^ nn) ^ (2 : ℕ) * (y₀ * x) := by
     rw [← pow_mul, ← pow_succ]
     congr 1
     omega

@@ -121,8 +121,8 @@ theorem ofReal_cosKernel_eq_sum (K : ℕ) (x : ℝ) :
       ring
     rw [hinv]
     ring
-  have hbase : (((1 + Real.cos x) / 2 : ℝ) : ℂ) = (1 + z) ^ 2 / (4 * z) := by
-    have h : (1 + z) ^ 2 / (4 * z) = (z + z⁻¹ + 2) / 4 := by
+  have hbase : (((1 + Real.cos x) / 2 : ℝ) : ℂ) = (1 + z) ^ (2 : ℕ) / (4 * z) := by
+    have h : (1 + z) ^ (2 : ℕ) / (4 * z) = (z + z⁻¹ + 2) / 4 := by
       field_simp
       ring
     rw [h, hcosz]
@@ -245,7 +245,7 @@ theorem four_pow_le_succ_mul_centralBinom (K : ℕ) :
     have h := Nat.choose_le_middle r (2 * K)
     rwa [Nat.mul_div_cancel_left K (by norm_num : 0 < 2)] at h
   rw [Finset.sum_const, Finset.card_range, smul_eq_mul] at hle
-  rw [show (4 : ℕ) ^ K = 2 ^ (2 * K) by rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul,
+  rw [show (4 : ℕ) ^ K = 2 ^ (2 * K) by rw [show (4 : ℕ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul,
     mul_comm], ← hsum]
   exact hle
 
@@ -253,7 +253,7 @@ theorem four_pow_le_succ_mul_centralBinom (K : ℕ) :
 
 /-- The distance between two unit characters in terms of the cosine of the phase gap. -/
 theorem norm_expChar_sub_sq (a b : ℝ) :
-    ‖Complex.exp ((a : ℝ) * Complex.I) - Complex.exp ((b : ℝ) * Complex.I)‖ ^ 2
+    ‖Complex.exp ((a : ℝ) * Complex.I) - Complex.exp ((b : ℝ) * Complex.I)‖ ^ (2 : ℕ)
       = 2 - 2 * Real.cos (a - b) := by
   have hfac : Complex.exp ((a : ℝ) * Complex.I) - Complex.exp ((b : ℝ) * Complex.I)
       = Complex.exp ((b : ℝ) * Complex.I) *
@@ -282,7 +282,7 @@ theorem kronecker_approx {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι �
   set m : ℕ := Fintype.card ι with hm
   by_contra hcon
   push Not at hcon
-  set q : ℝ := max 0 (1 - ε ^ 2 / 4) with hqdef
+  set q : ℝ := max 0 (1 - ε ^ (2 : ℕ) / 4) with hqdef
   have hq0 : 0 ≤ q := le_max_left _ _
   have hq1 : q < 1 := by
     refine max_lt one_pos ?_
@@ -294,14 +294,14 @@ theorem kronecker_approx {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι �
     obtain ⟨j₀, hj₀⟩ := hcon t
     have hcos : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ q := by
       have hsq := norm_expChar_sub_sq (lam j₀ * t) (θ j₀)
-      have hge : ε ^ 2 ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ ^ 2 := by
+      have hge : ε ^ (2 : ℕ) ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by
         have hnn : (0 : ℝ) ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ :=
           norm_nonneg _
         nlinarith [hj₀]
       have hexpeq : expChar (lam j₀) t = Complex.exp (((lam j₀ * t : ℝ) : ℝ) * Complex.I) := rfl
       rw [hexpeq, hsq] at hge
-      have : Real.cos (lam j₀ * t - θ j₀) ≤ 1 - ε ^ 2 / 2 := by linarith
-      have hle : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ 1 - ε ^ 2 / 4 := by linarith
+      have : Real.cos (lam j₀ * t - θ j₀) ≤ 1 - ε ^ (2 : ℕ) / 2 := by linarith
+      have hle : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ 1 - ε ^ (2 : ℕ) / 4 := by linarith
       exact hle.trans (le_max_right _ _)
     have hbad : cosKernel K (lam j₀ * t - θ j₀) ≤ q ^ K := cosKernel_le_pow hcos
     calc ∏ j : ι, cosKernel K (lam j * t - θ j)

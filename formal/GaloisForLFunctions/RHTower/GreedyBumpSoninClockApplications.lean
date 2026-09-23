@@ -46,7 +46,7 @@ theorem greedyBump_soninClock_profileGain_eq_commutator
         (greedyBumpDisplacement Q A.toInvolutiveClock.toFiniteClock.erasedTangent) =
       ‖((A.observable * soninLogFourierScattering -
         soninLogFourierScattering * A.observable) :
-        SoninL2 →L[ℂ] SoninL2) A.state‖ ^ 2 / (8 * (Q : ℝ)) := by
+        SoninL2 →L[ℂ] SoninL2) A.state‖ ^ (2 : ℕ) / (8 * (Q : ℝ)) := by
   simpa [GreedyBumpSoninClockData.toInvolutiveClock] using
     greedyBump_involutiveClock_profileGain_eq_commutator
       A.toInvolutiveClock Q
@@ -56,7 +56,7 @@ theorem greedyBump_soninClock_profileGain_eq_doubleCommutator
     (A : GreedyBumpSoninClockData) (Q : PositiveSignal) :
     greedyBumpProfile Q A.toInvolutiveClock.toFiniteClock.erasedTangent
         (greedyBumpDisplacement Q A.toInvolutiveClock.toFiniteClock.erasedTangent) =
-      ‖soninLogFourierDoubleCommutator A.observable A.state‖ ^ 2 /
+      ‖soninLogFourierDoubleCommutator A.observable A.state‖ ^ (2 : ℕ) /
         (32 * (Q : ℝ)) := by
   simpa [GreedyBumpSoninClockData.toInvolutiveClock,
     soninLogFourierDoubleCommutator] using

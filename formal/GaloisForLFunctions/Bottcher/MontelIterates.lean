@@ -132,16 +132,16 @@ stereographic third coordinate to `1`. -/
 theorem stereo_third_tendsto_one_of_norm_tendsto_atTop {u : ℕ → ℂ}
     (h : Tendsto (fun n => ‖u n‖) atTop atTop) :
     Tendsto (fun n => (stereo (u n)).ofLp (2 : Fin 3)) atTop (𝓝 (1 : ℝ)) := by
-  have hsq : Tendsto (fun n => ‖u n‖ ^ 2) atTop atTop := by
+  have hsq : Tendsto (fun n => ‖u n‖ ^ (2 : ℕ)) atTop atTop := by
     exact (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp h
-  have hden : Tendsto (fun n => (1 : ℝ) + ‖u n‖ ^ 2) atTop atTop := by
+  have hden : Tendsto (fun n => (1 : ℝ) + ‖u n‖ ^ (2 : ℕ)) atTop atTop := by
     simpa [add_comm] using tendsto_atTop_add_const_right atTop 1 hsq
-  have hinv : Tendsto (fun n => ((1 : ℝ) + ‖u n‖ ^ 2)⁻¹) atTop (𝓝 (0 : ℝ)) := by
+  have hinv : Tendsto (fun n => ((1 : ℝ) + ‖u n‖ ^ (2 : ℕ))⁻¹) atTop (𝓝 (0 : ℝ)) := by
     exact tendsto_inv_atTop_zero.comp hden
-  have htwo : Tendsto (fun n => (2 : ℝ) * ((1 : ℝ) + ‖u n‖ ^ 2)⁻¹)
+  have htwo : Tendsto (fun n => (2 : ℝ) * ((1 : ℝ) + ‖u n‖ ^ (2 : ℕ))⁻¹)
       atTop (𝓝 (0 : ℝ)) := by
     simpa using hinv.const_mul (2 : ℝ)
-  have hlim : Tendsto (fun n => (1 : ℝ) - (2 : ℝ) * ((1 : ℝ) + ‖u n‖ ^ 2)⁻¹)
+  have hlim : Tendsto (fun n => (1 : ℝ) - (2 : ℝ) * ((1 : ℝ) + ‖u n‖ ^ (2 : ℕ))⁻¹)
       atTop (𝓝 (1 : ℝ)) := by
     simpa using tendsto_const_nhds.sub htwo
   refine hlim.congr' ?_
@@ -205,7 +205,7 @@ theorem no_spherical_normal_limit_of_frontier {c z₀ : ℂ} {ρ : ℝ}
   have hzK : z₀ ∈ filledJulia c := by
     rwa [(isClosed_filledJulia c).closure_eq] at hzKcl
   let M : ℝ := max 2 ‖c‖
-  let B : ℝ := 1 - 2 / (1 + M ^ 2)
+  let B : ℝ := 1 - 2 / (1 + M ^ (2 : ℕ))
   have hcoord_le : ∀ k, (stereo ((quadratic c)^[φ k] z₀)).ofLp (2 : Fin 3) ≤ B := by
     intro k
     have hiterK : (quadratic c)^[φ k] z₀ ∈ filledJulia c := filledJulia_forward hzK (φ k)
@@ -217,16 +217,16 @@ theorem no_spherical_normal_limit_of_frontier {c z₀ : ℂ} {ρ : ℝ}
     have hMnonneg : 0 ≤ M := by
       have h2 : (0 : ℝ) ≤ (2 : ℝ) := by norm_num
       exact le_trans h2 (le_max_left 2 ‖c‖)
-    have hx2le : x ^ 2 ≤ M ^ 2 := by nlinarith
-    have hdenle : 1 + x ^ 2 ≤ 1 + M ^ 2 := by nlinarith
-    have hdenpos : 0 < 1 + x ^ 2 := by nlinarith [sq_nonneg x]
-    have hfrac : 2 / (1 + M ^ 2) ≤ 2 / (1 + x ^ 2) := by
+    have hx2le : x ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by nlinarith
+    have hdenle : 1 + x ^ (2 : ℕ) ≤ 1 + M ^ (2 : ℕ) := by nlinarith
+    have hdenpos : 0 < 1 + x ^ (2 : ℕ) := by nlinarith [sq_nonneg x]
+    have hfrac : 2 / (1 + M ^ (2 : ℕ)) ≤ 2 / (1 + x ^ (2 : ℕ)) := by
       exact div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 2) hdenpos hdenle
-    have hrewrite : (x ^ 2 - 1) / (1 + x ^ 2) = 1 - 2 / (1 + x ^ 2) := by
+    have hrewrite : (x ^ (2 : ℕ) - 1) / (1 + x ^ (2 : ℕ)) = 1 - 2 / (1 + x ^ (2 : ℕ)) := by
       field_simp [hdenpos.ne']
       ring
     have hst : (stereo ((quadratic c)^[φ k] z₀)).ofLp (2 : Fin 3) =
-        (x ^ 2 - 1) / (1 + x ^ 2) := by
+        (x ^ (2 : ℕ) - 1) / (1 + x ^ (2 : ℕ)) := by
       simp [stereo, x]
     rw [hst, hrewrite]
     dsimp [B]
@@ -240,8 +240,8 @@ theorem no_spherical_normal_limit_of_frontier {c z₀ : ℂ} {ρ : ℝ}
       hconvz₀
   have hGz₀_le : (G z₀).ofLp (2 : Fin 3) ≤ B := le_of_tendsto' hconvz₀_coord hcoord_le
   have hBlt : B < 1 := by
-    have hdenposM : 0 < 1 + M ^ 2 := by nlinarith [sq_nonneg M]
-    have hfracpos : 0 < 2 / (1 + M ^ 2) := div_pos (by norm_num) hdenposM
+    have hdenposM : 0 < 1 + M ^ (2 : ℕ) := by nlinarith [sq_nonneg M]
+    have hfracpos : 0 < 2 / (1 + M ^ (2 : ℕ)) := div_pos (by norm_num) hdenposM
     dsimp [B]
     linarith
   linarith
@@ -329,26 +329,26 @@ theorem newton_center_displacement_lt_of_sphericalDeriv_gt
     deriv F z ≠ 0 ∧
       dist (z - (deriv F z)⁻¹ * (F z - z)) z < η := by
   unfold sphericalDeriv at hσ
-  have hdenpos : 0 < (1 : ℝ) + ‖F z‖ ^ 2 := by positivity
-  have hlarge : M * (1 + ‖F z‖ ^ 2) < ‖deriv F z‖ := by
+  have hdenpos : 0 < (1 : ℝ) + ‖F z‖ ^ (2 : ℕ) := by positivity
+  have hlarge : M * (1 + ‖F z‖ ^ (2 : ℕ)) < ‖deriv F z‖ := by
     rwa [lt_div_iff₀ hdenpos] at hσ
-  have hprodpos : 0 < M * (1 + ‖F z‖ ^ 2) := mul_pos hMpos hdenpos
+  have hprodpos : 0 < M * (1 + ‖F z‖ ^ (2 : ℕ)) := mul_pos hMpos hdenpos
   have hderiv_norm_pos : 0 < ‖deriv F z‖ := lt_trans hprodpos hlarge
   have hderiv_ne : deriv F z ≠ 0 := norm_pos_iff.mp hderiv_norm_pos
   refine ⟨hderiv_ne, ?_⟩
   have hdist_le : ‖F z - z‖ ≤ ‖F z‖ + ‖z‖ := norm_sub_le _ _
   have hfrac_deriv : ‖F z - z‖ / ‖deriv F z‖ ≤
-      ‖F z - z‖ / (M * (1 + ‖F z‖ ^ 2)) := by
+      ‖F z - z‖ / (M * (1 + ‖F z‖ ^ (2 : ℕ))) := by
     exact div_le_div_of_nonneg_left (norm_nonneg _) hprodpos (le_of_lt hlarge)
-  have hfrac_num : ‖F z - z‖ / (M * (1 + ‖F z‖ ^ 2)) ≤
-      (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ 2)) := by
+  have hfrac_num : ‖F z - z‖ / (M * (1 + ‖F z‖ ^ (2 : ℕ))) ≤
+      (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ (2 : ℕ))) := by
     exact div_le_div_of_nonneg_right hdist_le (le_of_lt hprodpos)
-  have hratio : (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ 2)) ≤ (‖z‖ + 1) / M := by
+  have hratio : (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ (2 : ℕ))) ≤ (‖z‖ + 1) / M := by
     rw [div_le_div_iff₀ hprodpos hMpos]
-    have ha_le : ‖F z‖ ≤ 1 + ‖F z‖ ^ 2 := by
+    have ha_le : ‖F z‖ ≤ 1 + ‖F z‖ ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (‖F z‖ - 1 / 2)]
-    have hbterm : 0 ≤ ‖z‖ * ‖F z‖ ^ 2 := mul_nonneg (norm_nonneg _) (sq_nonneg _)
-    have hbase : ‖F z‖ + ‖z‖ ≤ (‖z‖ + 1) * (1 + ‖F z‖ ^ 2) := by
+    have hbterm : 0 ≤ ‖z‖ * ‖F z‖ ^ (2 : ℕ) := mul_nonneg (norm_nonneg _) (sq_nonneg _)
+    have hbase : ‖F z‖ + ‖z‖ ≤ (‖z‖ + 1) * (1 + ‖F z‖ ^ (2 : ℕ)) := by
       nlinarith
     have hmul := mul_le_mul_of_nonneg_right hbase (le_of_lt hMpos)
     nlinarith

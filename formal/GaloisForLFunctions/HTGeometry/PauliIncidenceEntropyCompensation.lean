@@ -181,26 +181,26 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_allPauliCommutatorTube_le_binom
     {n : ℕ} :
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         (⋃ P : NonzeroPauliCharacter (Fin n), {x |
-          ‖twoLocalPauliUnitaryCommutatorMap (finitePauliUnitary P.1) x‖ ^ 2 ≤
+          ‖twoLocalPauliUnitaryCommutatorMap (finitePauliUnitary P.1) x‖ ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 (2 * pauliWeight P.1 *
                   (3 * n - 2 * pauliWeight P.1) : ℕ))}) ≤
       (1 + 3 * Real.exp
-        (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+        (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
   let U : NonzeroPauliCharacter (Fin n) →
       Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ :=
     fun P => finitePauliUnitary P.1
   have hbase :=
     stdGaussian_twoLocalPauli_measure_iUnion_fullWeightPolynomialCommutatorTube_le U
   have hsum := sum_nonzeroPauli_exp_neg_fullWeightPolynomial_le_binomial
-    (n := n) (gaussianIntervalActivationMass ^ 2 / 2) (by positivity)
+    (n := n) (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) (by positivity)
   have hsum' :
       (∑ P : NonzeroPauliCharacter (Fin n),
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryFullWeightPolynomialMoment (U P))) ≤
         (1 + 3 * Real.exp
-          (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+          (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
     simpa [U,
       twoLocalPauliUnitaryFullWeightPolynomialMoment_finitePauliUnitary] using hsum
   simpa [U,
@@ -219,26 +219,26 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_allPauliReturnTube_le_binomial
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (finitePauliUnitary P.1 :
                   Matrix (FiniteQubitConfiguration (Fin n))
-                    (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                    (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 (2 * pauliWeight P.1 *
                   (3 * n - 2 * pauliWeight P.1) : ℕ))}) ≤
       (1 + 3 * Real.exp
-        (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+        (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
   let U : NonzeroPauliCharacter (Fin n) →
       Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ :=
     fun P => finitePauliUnitary P.1
   have hbase :=
     stdGaussian_twoLocalPauli_measure_iUnion_fullWeightPolynomialReturnTube_le U t
   have hsum := sum_nonzeroPauli_exp_neg_fullWeightPolynomial_le_binomial
-    (n := n) (gaussianIntervalActivationMass ^ 2 / 2) (by positivity)
+    (n := n) (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) (by positivity)
   have hsum' :
       (∑ P : NonzeroPauliCharacter (Fin n),
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryFullWeightPolynomialMoment (U P))) ≤
         (1 + 3 * Real.exp
-          (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+          (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
     simpa [U,
       twoLocalPauliUnitaryFullWeightPolynomialMoment_finitePauliUnitary] using hsum
   simpa [U,
@@ -265,7 +265,7 @@ theorem tendsto_pauliIncidenceCompensatedBinomial_atTop
         atTop (nhds 0) := by
     have hcomp :
         Tendsto
-          ((fun x : ℝ => 3 * (x ^ 1 * Real.exp (-(2 * a * x)))) ∘
+          ((fun x : ℝ => 3 * (x ^ (1 : ℕ) * Real.exp (-(2 * a * x)))) ∘
             fun n : ℕ => (n : ℝ))
           atTop (nhds 0) := by
       simpa using hdecayReal.comp hcast
@@ -320,7 +320,7 @@ noncomputable def twoLocalPauliAllPauliReturnTubeProbability
           (unitaryEvolution (realActivePauliHamiltonian x) t -
             (finitePauliUnitary P.1 :
               Matrix (FiniteQubitConfiguration (Fin n))
-                (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
         (gaussianIntervalActivationMass / 2) *
           (4 * (2 : ℝ) ^ n *
             (2 * pauliWeight P.1 *
@@ -330,7 +330,7 @@ theorem twoLocalPauliAllPauliReturnTubeProbability_le_binomial
     (n : ℕ) (t : ℝ) :
     twoLocalPauliAllPauliReturnTubeProbability n t ≤
       (1 + 3 * Real.exp
-        (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+        (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
   exact stdGaussian_twoLocalPauli_measure_iUnion_allPauliReturnTube_le_binomial t
 
 /-- Uniform-in-schedule asymptotic law. Along every chosen laboratory-time
@@ -347,7 +347,7 @@ theorem tendsto_twoLocalPauliAllPauliReturnTubeProbability_atTop
   · intro n
     exact twoLocalPauliAllPauliReturnTubeProbability_le_binomial n (time n)
   · exact tendsto_pauliIncidenceCompensatedBinomial_atTop
-      (a := gaussianIntervalActivationMass ^ 2 / 2)
+      (a := gaussianIntervalActivationMass ^ (2 : ℕ) / 2)
       (by nlinarith [gaussianIntervalActivationMass_pos])
 
 end

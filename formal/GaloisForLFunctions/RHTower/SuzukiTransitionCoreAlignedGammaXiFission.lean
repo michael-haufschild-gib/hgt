@@ -30,7 +30,7 @@ def suzukiTransitionCoreGammaAlignmentFactor (N : ℕ) : ℝ :=
 theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_eq (N : ℕ) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy N =
       suzukiNaturalApertureTransitionCoreCauchyEnergy N *
-        suzukiTransitionCoreGammaAlignmentFactor N ^ 2 := by
+        suzukiTransitionCoreGammaAlignmentFactor N ^ (2 : ℕ) := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy,
     suzukiTransitionCoreGammaAlignmentFactor]
   split_ifs <;> simp
@@ -128,7 +128,7 @@ def suzukiTransitionCoreAlignedXiFibreCornerEnergy
 theorem suzukiTransitionCoreAlignedXiFibreCornerEnergy_eq
     (N : ℕ) (rho : XiDivisorSupport) (r : ℝ) :
     suzukiTransitionCoreAlignedXiFibreCornerEnergy N rho r =
-      suzukiTransitionCoreGammaAlignmentFactor N ^ 2 *
+      suzukiTransitionCoreGammaAlignmentFactor N ^ (2 : ℕ) *
         suzukiTransitionCoreXiFibreCornerEnergy N rho r := by
   classical
   rw [suzukiTransitionCoreAlignedXiFibreCornerEnergy,

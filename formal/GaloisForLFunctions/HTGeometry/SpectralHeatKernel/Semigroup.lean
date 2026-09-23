@@ -21,12 +21,12 @@ namespace GaloisForLFunctions.HTGeometry
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X}
 
 /-- Pointwise arithmetic–geometric bound. -/
-theorem norm_mul_norm_le_half_add_sq (u v : ℝ) : u * v ≤ (u ^ 2 + v ^ 2) / 2 := by
+theorem norm_mul_norm_le_half_add_sq (u v : ℝ) : u * v ≤ (u ^ (2 : ℕ) + v ^ (2 : ℕ)) / 2 := by
   nlinarith [sq_nonneg (u - v)]
 
 /-- The product of two square-integrable functions is integrable. -/
 theorem integrable_norm_mul_norm {f g : X → ℂ}
-    (hf : Integrable (fun z => ‖f z‖ ^ 2) μ) (hg : Integrable (fun z => ‖g z‖ ^ 2) μ)
+    (hf : Integrable (fun z => ‖f z‖ ^ (2 : ℕ)) μ) (hg : Integrable (fun z => ‖g z‖ ^ (2 : ℕ)) μ)
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ) :
     Integrable (fun z => ‖f z‖ * ‖g z‖) μ := by
   refine ((hf.add hg).div_const 2).mono' (hfm.norm.mul hgm.norm) ?_
@@ -36,11 +36,11 @@ theorem integrable_norm_mul_norm {f g : X → ℂ}
 
 /-- **The arithmetic–geometric bound for two normalized `L²` functions.** -/
 theorem integral_norm_mul_le_one {f g : X → ℂ}
-    (hf : Integrable (fun z => ‖f z‖ ^ 2) μ) (hg : Integrable (fun z => ‖g z‖ ^ 2) μ)
+    (hf : Integrable (fun z => ‖f z‖ ^ (2 : ℕ)) μ) (hg : Integrable (fun z => ‖g z‖ ^ (2 : ℕ)) μ)
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ)
-    (hfn : ∫ z, ‖f z‖ ^ 2 ∂μ = 1) (hgn : ∫ z, ‖g z‖ ^ 2 ∂μ = 1) :
+    (hfn : ∫ z, ‖f z‖ ^ (2 : ℕ) ∂μ = 1) (hgn : ∫ z, ‖g z‖ ^ (2 : ℕ) ∂μ = 1) :
     ∫ z, ‖f z‖ * ‖g z‖ ∂μ ≤ 1 := by
-  have hmaj : Integrable (fun z => (‖f z‖ ^ 2 + ‖g z‖ ^ 2) / 2) μ := (hf.add hg).div_const 2
+  have hmaj : Integrable (fun z => (‖f z‖ ^ (2 : ℕ) + ‖g z‖ ^ (2 : ℕ)) / 2) μ := (hf.add hg).div_const 2
   have hint := integrable_norm_mul_norm hf hg hfm hgm
   refine le_trans (MeasureTheory.integral_mono hint hmaj
     (fun z => norm_mul_norm_le_half_add_sq _ _)) (le_of_eq ?_)
@@ -49,7 +49,7 @@ theorem integral_norm_mul_le_one {f g : X → ℂ}
 
 /-- The product of two eigenfunctions is integrable. -/
 theorem integrable_conj_mul {f g : X → ℂ}
-    (hf : Integrable (fun z => ‖f z‖ ^ 2) μ) (hg : Integrable (fun z => ‖g z‖ ^ 2) μ)
+    (hf : Integrable (fun z => ‖f z‖ ^ (2 : ℕ)) μ) (hg : Integrable (fun z => ‖g z‖ ^ (2 : ℕ)) μ)
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ) :
     Integrable (fun z => (starRingEnd ℂ) (f z) * g z) μ := by
   refine (integrable_norm_mul_norm hf hg hfm hgm).mono'
@@ -60,8 +60,8 @@ theorem integrable_conj_mul {f g : X → ℂ}
 /-- **The semigroup property of a spectral heat kernel.** -/
 theorem spectralHeatKernel_semigroup (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) {s t : ℝ} {x y : X}
     (hmeas : ∀ n, AEStronglyMeasurable (φ n) μ)
-    (hsq : ∀ n, Integrable (fun z => ‖φ n z‖ ^ 2) μ)
-    (hnorm : ∀ n, ∫ z, ‖φ n z‖ ^ 2 ∂μ = 1)
+    (hsq : ∀ n, Integrable (fun z => ‖φ n z‖ ^ (2 : ℕ)) μ)
+    (hnorm : ∀ n, ∫ z, ‖φ n z‖ ^ (2 : ℕ) ∂μ = 1)
     (horth : ∀ m n, ∫ z, (starRingEnd ℂ) (φ m z) * φ n z ∂μ = if m = n then 1 else 0)
     (hsx : Summable fun m => Real.exp (-(s * lam m)) * ‖φ m x‖)
     (hty : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n y‖)

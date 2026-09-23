@@ -16,8 +16,8 @@ noncomputable section
 
 /-- Hybrid correlation envelope as a function only of the pair gap. -/
 def hybridGapCorrBound (T r : ℝ) (M₀ M₁ P Q h : ℕ) : ℝ :=
-  5000 * Real.sqrt (T * (r * h / (M₀ : ℝ) ^ 2) / (36 * Real.pi * P))
-    + 75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 /
+  5000 * Real.sqrt (T * (r * h / (M₀ : ℝ) ^ (2 : ℕ)) / (36 * Real.pi * P))
+    + 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) /
       (16 * T * r * h) + 1
 
 theorem hybridGapCorrBound_nonneg {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
@@ -49,36 +49,36 @@ theorem norm_masked_correlation_hybrid_gap_le {T r : ℝ} (hT : 0 < T) (hr : 0 <
   have hlow := le_abs_inv_diff hr.le hm₁ hm₂ hhi₁ hhi₂
   have hhigh := abs_inv_diff_le hr.le hm₁ hm₂ hM₀ hlo₁ hlo₂
   rw [← cast_natDist] at hlow hhigh
-  have hY₁ : (0 : ℝ) < T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ 2) := by positivity
-  have hYlow : T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ 2)
+  have hY₁ : (0 : ℝ) < T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)) := by positivity
+  have hYlow : T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ (2 : ℕ))
       ≤ T * |r / m₁ - r / m₂| := by
     apply mul_le_mul_of_nonneg_left _ hT.le
     simpa [sq] using hlow
   have hY : (0 : ℝ) < T * |r / m₁ - r / m₂| := lt_of_lt_of_le hY₁ hYlow
   have hY₂ : T * |r / m₁ - r / m₂|
-      ≤ T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ 2) := by
+      ≤ T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ (2 : ℕ)) := by
     apply mul_le_mul_of_nonneg_left _ hT.le
     simpa [sq] using hhigh
   have hfirst : Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
-      ≤ Real.sqrt (T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ 2)
+      ≤ Real.sqrt (T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ (2 : ℕ))
         / (36 * Real.pi * P)) := by
     apply Real.sqrt_le_sqrt
     exact div_le_div_of_nonneg_right hY₂ (by positivity)
-  have hrec : 75 * Real.pi * (Q : ℝ) ^ 2 /
+  have hrec : 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) /
       (16 * (T * |r / m₁ - r / m₂|))
-      ≤ 75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 /
+      ≤ 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) /
         (16 * T * r * (Nat.dist m₁ m₂ : ℝ)) := by
-    have hden : 16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ 2))
+    have hden : 16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)))
         ≤ 16 * (T * |r / m₁ - r / m₂|) := by
       nlinarith [hYlow]
     have hdiv := div_le_div_of_nonneg_left
-      (by positivity : (0 : ℝ) ≤ 75 * Real.pi * (Q : ℝ) ^ 2)
-      (by positivity : (0 : ℝ) < 16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ 2))) hden
+      (by positivity : (0 : ℝ) ≤ 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ))
+      (by positivity : (0 : ℝ) < 16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)))) hden
     calc
-      75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|))
-          ≤ 75 * Real.pi * (Q : ℝ) ^ 2 /
-            (16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ 2))) := hdiv
-      _ = 75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 /
+      75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) / (16 * (T * |r / m₁ - r / m₂|))
+          ≤ 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) /
+            (16 * (T * (r * (Nat.dist m₁ m₂ : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)))) := hdiv
+      _ = 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) /
             (16 * T * r * (Nat.dist m₁ m₂ : ℝ)) := by field_simp
   rw [hybridGapCorrBound]
   nlinarith [hmain, hfirst, hrec]

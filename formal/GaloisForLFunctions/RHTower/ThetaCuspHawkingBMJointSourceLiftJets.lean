@@ -8,15 +8,15 @@ attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
 def liftFirstPolynomial (s w u : ℂ) : ℂ :=
-  amplitudeRate s w u*u^3+3*u^2*(u^2-1)
+  amplitudeRate s w u*u^(3 : ℕ)+3*u^(2 : ℕ)*(u^(2 : ℕ)-1)
 
 def liftSecondPolynomial (s w u : ℂ) : ℂ :=
-  (amplitudeRate s w u)^2*u^3+6*amplitudeRate s w u*u^2*(u^2-1)+
-    2*s*(u^2-1)*u^3+6*u*(u^2-1)^2+6*u^3*(u^2-1)
+  (amplitudeRate s w u)^(2 : ℕ)*u^(3 : ℕ)+6*amplitudeRate s w u*u^(2 : ℕ)*(u^(2 : ℕ)-1)+
+    2*s*(u^(2 : ℕ)-1)*u^(3 : ℕ)+6*u*(u^(2 : ℕ)-1)^(2 : ℕ)+6*u^(3 : ℕ)*(u^(2 : ℕ)-1)
 
 /-- Explicit original radial field absorbing the full coexact gradient contribution. -/
 def radialLift (s w a T : ℂ) (t : ℝ) : ℂ :=
-  (-s*(s-1)/4)*(sourceAmplitude s w a T t*(radialUnit t:ℂ)^3)
+  (-s*(s-1)/4)*(sourceAmplitude s w a T t*(radialUnit t:ℂ)^(3 : ℕ))
 
 def radialLiftFirst (s w a T : ℂ) (t : ℝ) : ℂ :=
   (-s*(s-1)/4)*(sourceAmplitude s w a T t*liftFirstPolynomial s w (radialUnit t))

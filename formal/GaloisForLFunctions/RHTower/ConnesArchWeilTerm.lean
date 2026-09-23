@@ -47,8 +47,8 @@ theorem connesArchWeilKernel_eq_weil {t : ℝ} (ht : 0 < t) :
   have hne : Real.exp (t / 2) - Real.exp (-(t / 2)) ≠ 0 := by
     have : Real.exp (-(t / 2)) < Real.exp (t / 2) := Real.exp_lt_exp.mpr (by linarith)
     linarith
-  have hsq : Real.exp (t / 2) ^ 2 - 1 ≠ 0 := by
-    have he : Real.exp (t / 2) ^ 2 = Real.exp t := by rw [sq, ← Real.exp_add]; ring_nf
+  have hsq : Real.exp (t / 2) ^ (2 : ℕ) - 1 ≠ 0 := by
+    have he : Real.exp (t / 2) ^ (2 : ℕ) = Real.exp t := by rw [sq, ← Real.exp_add]; ring_nf
     rw [he]; linarith
   rw [connesArchWeilKernel, hsinh, habs, eq_div_iff (by linarith)]
   rw [Real.exp_neg, hexp]

@@ -3,9 +3,9 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonPureTailFiber
 /-!
 # The rectangular Schur caustic of the critical horizon map
 
-For an inverse jet `Y`, first-order inversion is `dY = -Y^2 dX`.  If the raw tail is held fixed,
+For an inverse jet `Y`, first-order inversion is `dY = -Y^(2 : ℕ) dX`.  If the raw tail is held fixed,
 the critical low-to-high differential is therefore a finite Toeplitz section of the coefficient
-sequence of `Y^2`.  Its determinant is the rectangular Jacobi--Trudi determinant of shape `n^m`.
+sequence of `Y^(2 : ℕ)`.  Its determinant is the rectangular Jacobi--Trudi determinant of shape `n^m`.
 
 This module formalizes the exact truncated tangent identity, the coefficient matrix, and the
 determinant identification.  It does not assert the still-open geometric monodromy statement.
@@ -47,7 +47,7 @@ noncomputable def criticalReciprocalJacobian {K : Type*} [CommRing K]
     (Y : K[X]) (n m : ℕ) : Matrix (Fin m) (Fin m) K :=
   fun r i => (criticalReciprocalInfinitesimal Y (X ^ (i : ℕ))).coeff (n + r)
 
-/-- Each Jacobian entry is the negative corresponding Toeplitz coefficient of `Y^2`. -/
+/-- Each Jacobian entry is the negative corresponding Toeplitz coefficient of `Y^(2 : ℕ)`. -/
 theorem criticalReciprocalJacobian_apply {K : Type*} [CommRing K]
     (Y : K[X]) (n m : ℕ) (r i : Fin m) :
     criticalReciprocalJacobian Y n m r i =

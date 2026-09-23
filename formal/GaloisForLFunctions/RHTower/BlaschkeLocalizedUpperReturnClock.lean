@@ -30,7 +30,7 @@ theorem exp_neg_le_blaschkeLocalizedWeight_activeHead
   refine Fin.cases ?_ (fun j => ?_) i
   · change Real.exp (-L) ≤ blaschkeLocalizedWeight a 0
     rw [blaschkeLocalizedWeight_zero]
-    have ha2pos : 0 < a ^ 2 := sq_pos_of_pos ha0
+    have ha2pos : 0 < a ^ (2 : ℕ) := sq_pos_of_pos ha0
     rw [← Real.exp_log ha2pos]
     apply Real.exp_le_exp.mpr
     rw [blaschkeSpectralSlope] at hLzero
@@ -162,8 +162,8 @@ theorem
 def blaschkeActiveWaterReturnDefect (a L : ℝ) : ℝ :=
   ((blaschkeActiveTailRadius a L + 1 : ℕ) : ℝ) *
       Real.exp (-L) +
-    2 * ((1 - a ^ 2) *
-      (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1))
+    2 * ((1 - a ^ (2 : ℕ)) *
+      (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1))
 
 /--
 Exact constructive upper clock at Blaschke water level `L`.
@@ -233,8 +233,8 @@ theorem exists_blaschkeLocalizedCoherenceDeadline_activeWater
     have htail :
         (∑' j : ℕ,
           blaschkeLocalizedWeight a (M + j)) =
-        (1 - a ^ 2) *
-          (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1) := by
+        (1 - a ^ (2 : ℕ)) *
+          (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1) := by
       have htailBase :=
         summablePurePointSurvivalTail_blaschkeLocalizedWeight
           a ha0 ha1 M (by omega)

@@ -16,7 +16,7 @@ noncomputable section
 
 /-- Uniform envelope for the short Vaughan coefficient energy on an initial segment. -/
 def typeIIShortEnergyEnvelope (N : ℕ) : ℝ :=
-  2 * (N : ℝ) + 2 * ((N : ℝ) * invSum N ^ 3)
+  2 * (N : ℝ) + 2 * ((N : ℝ) * invSum N ^ (3 : ℕ))
 
 /-- Explicit gap envelope in the long orientation. -/
 def typeIIUnswapGapEnvelope (T r : ℝ) (A B P : ℕ) : ℝ :=
@@ -38,9 +38,9 @@ theorem exists_norm_maskedBlockSum_sq_le_unswap_explicit :
     ∃ C : ℝ, 0 < C ∧ ∀ {T r : ℝ} {A B L U V P Q : ℕ},
       0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
       Q ≤ 2 * P → Q ≤ L + 1 → P < B → 8 * r ≤ (A : ℝ) →
-      T * r ≤ 9 * Real.pi * A * P ^ 2 →
+      T * r ≤ 9 * Real.pi * A * P ^ (2 : ℕ) →
       ‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-          (fun m => typeIIShort V m)‖ ^ 2
+          (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
         ≤ (C * (Q : ℝ) * Real.log L)
           * (((Q - P : ℕ) : ℝ) * typeIIShortEnergyEnvelope (effHigh B P)
             + typeIIShortEnergyEnvelope (effHigh B P)
@@ -64,7 +64,7 @@ theorem exists_norm_maskedBlockSum_sq_le_unswap_explicit :
     omega
   have hgap := (sum_gapCorrBound_le' hT hr (one_le_effLow A Q) hM₁).trans
     (gapSumBound_le_unswap hT hr hA hP hQ hQ2P)
-  have hshort' : (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+  have hshort' : (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
       ≤ typeIIShortEnergyEnvelope (effHigh B P) := by
     simpa only [typeIIShortEnergyEnvelope] using hshort
   have hgap' : (∑ h ∈ Finset.Icc 1 (effGap A B P Q),
@@ -77,8 +77,8 @@ theorem exists_norm_maskedBlockSum_sq_le_unswap_explicit :
   have hE0 := typeIIShortEnergyEnvelope_nonneg (effHigh B P)
   have hG0 := typeIIUnswapGapEnvelope_nonneg T r A B P
   have hbracket :
-      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
-          + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
+          + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
             * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
               gapCorrBound T r (effLow A Q) (effHigh B P) P Q h))
         ≤ (((Q - P : ℕ) : ℝ) * typeIIShortEnergyEnvelope (effHigh B P)
@@ -89,8 +89,8 @@ theorem exists_norm_maskedBlockSum_sq_le_unswap_explicit :
     have : (0 : ℝ) ≤ Real.log L := Real.log_nonneg (by exact_mod_cast hL)
     positivity
   have hraw0 : 0 ≤
-      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
-        + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ 2)
+      (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
+        + (∑ m ∈ effSet A B P Q L, |typeIIShort V m| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
             gapCorrBound T r (effLow A Q) (effHigh B P) P Q h)) := by
     positivity

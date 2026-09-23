@@ -27,7 +27,7 @@ def StringTwoSiteHasMode (k m e ell tau x : ℝ) (ω : ℂ) : Prop :=
 
 /-- The charged half-gap has its exact variance-scale value. -/
 theorem stringTwoSiteHalfGap_sq (e ell tau x : ℝ) :
-    stringTwoSiteHalfGap e ell tau x ^ 2 = e ^ 2 * stringTwoSiteGap ell tau x ^ 2 / 4 := by
+    stringTwoSiteHalfGap e ell tau x ^ (2 : ℕ) = e ^ (2 : ℕ) * stringTwoSiteGap ell tau x ^ (2 : ℕ) / 4 := by
   unfold stringTwoSiteHalfGap
   ring
 
@@ -35,9 +35,9 @@ theorem stringTwoSiteHalfGap_sq (e ell tau x : ℝ) :
 theorem stringTwoSitePencil_apply (k m e ell tau x : ℝ) (ω : ℂ) (v : ℂ × ℂ) :
     stringTwoSitePencil k m e ell tau x ω v =
       ((((chargedTwoSiteBase k m : ℝ) : ℂ) -
-        (ω - ((e * (stringTwoSitePotential ell tau x).1 : ℝ) : ℂ)) ^ 2) * v.1 - (Real.exp k : ℂ) * v.2,
+        (ω - ((e * (stringTwoSitePotential ell tau x).1 : ℝ) : ℂ)) ^ (2 : ℕ)) * v.1 - (Real.exp k : ℂ) * v.2,
       (((chargedTwoSiteBase k m : ℝ) : ℂ) -
-        (ω - ((e * (stringTwoSitePotential ell tau x).2 : ℝ) : ℂ)) ^ 2) * v.2 - (Real.exp k : ℂ) * v.1) := by
+        (ω - ((e * (stringTwoSitePotential ell tau x).2 : ℝ) : ℂ)) ^ (2 : ℕ)) * v.2 - (Real.exp k : ℂ) * v.1) := by
   have h0 : stringTwoSiteCenter e ell tau x + stringTwoSiteHalfGap e ell tau x =
       e * (stringTwoSitePotential ell tau x).1 := by
     unfold stringTwoSiteCenter stringTwoSiteHalfGap stringTwoSiteGap
@@ -53,21 +53,21 @@ theorem stringTwoSitePencil_apply (k m e ell tau x : ℝ) (ω : ℂ) (v : ℂ ×
 theorem stringTwoSite_growing_frequency_classification (k m e ell tau x : ℝ) (ω : ℂ) :
     (StringTwoSiteHasMode k m e ell tau x ω ∧ 0 < ω.im) ↔
       ω.re = stringTwoSiteCenter e ell tau x ∧ 0 < ω.im ∧
-        ω.im ^ 2 = chargedTwoSiteGrowthSquare k m (stringTwoSiteHalfGap e ell tau x) :=
+        ω.im ^ (2 : ℕ) = chargedTwoSiteGrowthSquare k m (stringTwoSiteHalfGap e ell tau x) :=
   chargedTwoSite_growing_frequency_classification k m _ _ ω
 
 /-- The entire actual string-sample instability window is exactly the two strict charge-gap inequalities. -/
 theorem stringTwoSite_exists_growing_mode_iff (k m e ell tau x : ℝ) :
     (∃ ω : ℂ, StringTwoSiteHasMode k m e ell tau x ω ∧ 0 < ω.im) ↔
-      m ^ 2 < e ^ 2 * stringTwoSiteGap ell tau x ^ 2 / 4 ∧
-        e ^ 2 * stringTwoSiteGap ell tau x ^ 2 / 4 < m ^ 2 + 2 * Real.exp k := by
+      m ^ (2 : ℕ) < e ^ (2 : ℕ) * stringTwoSiteGap ell tau x ^ (2 : ℕ) / 4 ∧
+        e ^ (2 : ℕ) * stringTwoSiteGap ell tau x ^ (2 : ℕ) / 4 < m ^ (2 : ℕ) + 2 * Real.exp k := by
   unfold StringTwoSiteHasMode
   rw [chargedTwoSite_exists_growing_mode_iff, stringTwoSiteHalfGap_sq]
 
 /-- Temperature controls the actual charged half-gap with the sharp doubled-radius geometric coefficient. -/
 theorem stringTwoSiteHalfGap_temperature_bound (e ell tau x : ℝ) :
-    stringTwoSiteHalfGap e ell tau x ^ 2 ≤
-      e ^ 2 * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64 := by
+    stringTwoSiteHalfGap e ell tau x ^ (2 : ℕ) ≤
+      e ^ (2 : ℕ) * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64 := by
   rw [stringTwoSiteHalfGap_sq]
   have h := mul_le_mul_of_nonneg_left (stringTwoSiteGap_temperature_bound ell tau x) (sq_nonneg e)
   nlinarith
@@ -75,7 +75,7 @@ theorem stringTwoSiteHalfGap_temperature_bound (e ell tau x : ℝ) :
 /-- No actual growing mode reaches the temperature-calibrated upper squared growth bound. -/
 theorem stringTwoSite_no_growth_at_temperature_bound (k m e ell tau x : ℝ) :
     ¬ ∃ ω : ℂ, StringTwoSiteHasMode k m e ell tau x ω ∧ 0 < ω.im ∧
-      e ^ 2 * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64 ≤ ω.im ^ 2 := by
+      e ^ (2 : ℕ) * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64 ≤ ω.im ^ (2 : ℕ) := by
   rintro ⟨ω, hm, hy, hb⟩
   apply chargedTwoSite_no_growth_at_or_above_variance k m
     (stringTwoSiteCenter e ell tau x) (stringTwoSiteHalfGap e ell tau x)

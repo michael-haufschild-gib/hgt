@@ -3,24 +3,24 @@ import GaloisForLFunctions.RHTower.XiResolventTraceHankelCriterion
 /-!
 # The resolvent ladder: RH from the Hankel array of the Euler-ray response
 
-`xiResolventTrace X p = sum_q u q * (p (u q))^2` with `u q = (w q + X)^(-1)`.  Expanding `p` in the
+`xiResolventTrace X p = sum_q u q * (p (u q))^(2 : ℕ)` with `u q = (w q + X)^(-1)`.  Expanding `p` in the
 monomial basis turns the criterion of `XiResolventTraceHankelCriterion` into positive
 semidefiniteness of the Hankel array of the **resolvent moments**
 
 `R n X = sum_q (u q)^(n+1)`,
 
-whose order zero is the Euler-ray response `logDeriv xi (1/2 + x) / x` at `X = x^2`.  So the open
+whose order zero is the Euler-ray response `logDeriv xi (1/2 + x) / x` at `X = x^(2 : ℕ)`.  So the open
 core becomes a single explicit matrix condition on the derivative array of one prime--Gamma
 function.
 
 Two structural facts are recorded with it.  The resolvent coordinates are bounded by `1`, because
-the divisor's height gap `2 < g^2` keeps every squared spectral point at distance at least `2` in
+the divisor's height gap `2 < g^(2 : ℕ)` keeps every squared spectral point at distance at least `2` in
 the `normSq` scale; this makes every moment absolutely summable.  And the second Hankel minor has
 the variance form
 
-`R0 R2 - R1^2 = (1/2) sum_(q,q') u q * u q' * (u q - u q')^2`,
+`R0 R2 - R1^(2 : ℕ) = (1/2) sum_(q,q') u q * u q' * (u q - u q')^(2 : ℕ)`,
 
-whose conjugate-pair terms are the exact negative reals `-4 ‖u q‖^2 (Im (u q))^2`.
+whose conjugate-pair terms are the exact negative reals `-4 ‖u q‖^(2 : ℕ) (Im (u q))^(2 : ℕ)`.
 -/
 
 open Complex
@@ -150,7 +150,7 @@ theorem xiResolventPoint_lineConj (X : ℝ) (q : XiZeroCopy) :
     Complex.conj_ofReal]
 
 /-- **The exact negative core of the resolvent Turán minor.**  Pairing a copy with its
-critical-line conjugate contributes the closed-form real number `-4 ‖u‖^2 (Im u)^2`. -/
+critical-line conjugate contributes the closed-form real number `-4 ‖u‖^(2 : ℕ) (Im u)^(2 : ℕ)`. -/
 theorem xiResolventPairTerm_lineConj (X : ℝ) (q : XiZeroCopy) :
     xiResolventPairTerm X (q, xiZeroCopyLineConjEquiv q) =
       (((-4 * ‖xiResolventPoint X q‖ ^ 2 *

@@ -22,7 +22,7 @@ noncomputable section
 
 /-- The effective potential of equation (2.8); u=q_x, v=(qPT)_x, w=q_xx. -/
 def effectivePotential (u v w : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![I*u*v/2, -I*v/2; w+I*u^2*v/2, -I*u*v/2]
+  !![I*u*v/2, -I*v/2; w+I*u^(2 : ℕ)*v/2, -I*u*v/2]
 
 /-- Lower triangular shear removing q_x from the eigenvalue invariants. -/
 def potentialShear (u : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := !![1,0;u,1]
@@ -31,7 +31,7 @@ def potentialShear (u : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := !![1,0;u,1]
 def uniformizationGauge (u k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := !![1,0;u,-2*k]
 
 def spatialLax (u v k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![I*k^2,I*k*v;I*k*u,-I*k^2]
+  !![I*k^(2 : ℕ),I*k*v;I*k*u,-I*k^(2 : ℕ)]
 
 def uniformizedLax (u v w z : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![I*z,0;0,-I*z]+effectivePotential u v w
@@ -40,7 +40,7 @@ def uniformizedLax (u v w z : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
 excluding the degenerate gauge at zero. -/
 theorem uniformization_identity (u v w k : ℂ) :
     !![0,0;w,0] + uniformizationGauge u k * spatialLax u v k =
-      uniformizedLax u v w (k^2) * uniformizationGauge u k := by
+      uniformizedLax u v w (k^(2 : ℕ)) * uniformizationGauge u k := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [uniformizationGauge, spatialLax, uniformizedLax, effectivePotential,
@@ -75,14 +75,14 @@ theorem effectivePotential_det (u v w : ℂ) :
 
 /-- The full square is a scalar matrix; the nonlinear shear coordinate disappears. -/
 theorem effectivePotential_square (u v w : ℂ) :
-    effectivePotential u v w ^ 2 = (-I*v*w/2) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+    effectivePotential u v w ^ (2 : ℕ) = (-I*v*w/2) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [effectivePotential, pow_two, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
 /-- Exact degeneracy classification in the effective potential, with no side assumptions. -/
 theorem effectivePotential_square_zero_iff (u v w : ℂ) :
-    effectivePotential u v w ^ 2 = 0 ↔ v = 0 ∨ w = 0 := by
+    effectivePotential u v w ^ (2 : ℕ) = 0 ↔ v = 0 ∨ w = 0 := by
   rw [effectivePotential_square]
   constructor
   · intro h

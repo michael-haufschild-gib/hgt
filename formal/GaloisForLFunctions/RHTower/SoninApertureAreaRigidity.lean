@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 /-!
 # Exact unitary rigidity of symmetric Sonin aperture
 
-The exact Sonin projection correction has squared Hilbert--Schmidt norm `8 a^2`.  This module
+The exact Sonin projection correction has squared Hilbert--Schmidt norm `8 a^(2 : ℕ)`.  This module
 proves the required general unitary-invariance bridge and obtains a complete classification:
 positive symmetric Sonin corrections are unitarily equivalent exactly when their apertures are
 equal.  Thus aperture is not a removable unitary gauge.

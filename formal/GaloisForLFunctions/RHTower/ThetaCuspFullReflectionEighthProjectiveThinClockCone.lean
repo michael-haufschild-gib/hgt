@@ -52,7 +52,7 @@ def thetaCuspModularUpperProjectiveClockGap (x : ℝ) : ℝ :=
 theorem hasDerivAt_thetaCuspModularPositiveLambdaClock (x : ℝ) :
     HasDerivAt thetaCuspModularPositiveLambdaClock
       ((thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-        (1 - thetaCuspModularPositiveLambdaClock x ^ 2)) x := by
+        (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ))) x := by
   have h := (hasDerivAt_thetaCuspModularODEState_Z_re x).neg
   have hfun :
       (-fun y : ℝ =>
@@ -64,25 +64,25 @@ theorem hasDerivAt_thetaCuspModularPositiveLambdaClock (x : ℝ) :
   rw [hfun] at h
   have hcoef :
       -(-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-          (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)) =
+          (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))) =
         (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-          (1 - (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) ^ 2) := by
+          (1 - (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) ^ (2 : ℕ)) := by
     ring
   rw [hcoef] at h
   change HasDerivAt
     (fun y => -(thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re)
     ((thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-      (1 - (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) ^ 2)) x
+      (1 - (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) ^ (2 : ℕ))) x
   exact h
 
 theorem hasDerivAt_thetaCuspModularLowerProjectiveClockGap (x : ℝ) :
     HasDerivAt thetaCuspModularLowerProjectiveClockGap
       ((3 + thetaCuspModularGapAmplitude x / 4 +
-            (thetaCuspModularDrift x).re ^ 2 / 3) /
+            (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3) /
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re -
         (2 / 5 : ℝ) *
           ((thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-            (1 - thetaCuspModularPositiveLambdaClock x ^ 2))) x := by
+            (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ)))) x := by
   exact (hasDerivAt_thetaCuspModularNormalizedQuasimodularDrift x).sub
     ((hasDerivAt_thetaCuspModularPositiveLambdaClock x).const_mul (2 / 5 : ℝ))
 
@@ -90,9 +90,9 @@ theorem hasDerivAt_thetaCuspModularUpperProjectiveClockGap (x : ℝ) :
     HasDerivAt thetaCuspModularUpperProjectiveClockGap
       ((1 / 2 : ℝ) *
           ((thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
-            (1 - thetaCuspModularPositiveLambdaClock x ^ 2)) -
+            (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ))) -
         (3 + thetaCuspModularGapAmplitude x / 4 +
-            (thetaCuspModularDrift x).re ^ 2 / 3) /
+            (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3) /
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re) x := by
   exact ((hasDerivAt_thetaCuspModularPositiveLambdaClock x).const_mul
     (1 / 2 : ℝ)).sub
@@ -114,20 +114,20 @@ theorem deriv_thetaCuspModularLowerProjectiveClockGap_pos
     simpa only [R] using thetaCuspModularODEState_R_re_pos x
   have hA : A < 20 := by
     simpa only [A] using thetaCuspModularGapAmplitude_lt_twenty_of_pos hx
-  have hgap : A = R ^ 2 * (1 - thetaCuspModularPositiveLambdaClock x ^ 2) := by
+  have hgap : A = R ^ (2 : ℕ) * (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ)) := by
     dsimp only [A, R, thetaCuspModularGapAmplitude,
       thetaCuspModularPositiveLambdaClock]
     ring
   rw [(hasDerivAt_thetaCuspModularLowerProjectiveClockGap x).deriv]
   have heq :
-      (3 + A / 4 + S ^ 2 / 3) / R -
-          (2 / 5 : ℝ) * (R * (1 - thetaCuspModularPositiveLambdaClock x ^ 2)) =
-        (3 - (3 / 20 : ℝ) * A + S ^ 2 / 3) / R := by
+      (3 + A / 4 + S ^ (2 : ℕ) / 3) / R -
+          (2 / 5 : ℝ) * (R * (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ))) =
+        (3 - (3 / 20 : ℝ) * A + S ^ (2 : ℕ) / 3) / R := by
     rw [hgap]
     field_simp [hR.ne']
     ring
-  change 0 < (3 + A / 4 + S ^ 2 / 3) / R -
-    (2 / 5 : ℝ) * (R * (1 - thetaCuspModularPositiveLambdaClock x ^ 2))
+  change 0 < (3 + A / 4 + S ^ (2 : ℕ) / 3) / R -
+    (2 / 5 : ℝ) * (R * (1 - thetaCuspModularPositiveLambdaClock x ^ (2 : ℕ)))
   rw [heq]
   exact div_pos (by nlinarith [sq_nonneg S]) hR
 
@@ -162,7 +162,7 @@ theorem strictMonoOn_thetaCuspModularODEState_R_re_nonneg :
 theorem nineteen_point_one_lt_thetaCuspModularScale_sq_of_pos
     {x : ℝ} (hx : 0 < x) :
     (191 / 10 : ℝ) <
-      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 := by
+      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) := by
   let R : ℝ → ℝ := fun y =>
     (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R y).re
   have hRmono : R 0 < R x := by
@@ -170,8 +170,8 @@ theorem nineteen_point_one_lt_thetaCuspModularScale_sq_of_pos
       (by simp) (by simp [hx.le]) hx
   have hR0 : 0 < R 0 := by
     simpa only [R] using thetaCuspModularODEState_R_re_pos 0
-  have hsq : R 0 ^ 2 < R x ^ 2 := by nlinarith
-  have hzero : R 0 ^ 2 = thetaCuspSelfDualModularScale ^ 2 := by
+  have hsq : R 0 ^ (2 : ℕ) < R x ^ (2 : ℕ) := by nlinarith
+  have hzero : R 0 ^ (2 : ℕ) = thetaCuspSelfDualModularScale ^ (2 : ℕ) := by
     have hgap := thetaCuspModularGapAmplitude_zero
     simpa [R, thetaCuspModularGapAmplitude,
       thetaCuspModularPositiveLambdaClock] using hgap
@@ -203,7 +203,7 @@ theorem deriv_thetaCuspModularUpperProjectiveClockGap_pos
     {x : ℝ} (hx0 : 0 < x) (hx1 : x < (137 / 2000 : ℝ)) :
     0 < deriv thetaCuspModularUpperProjectiveClockGap x := by
   let R := (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re
-  let X := R ^ 2
+  let X := R ^ (2 : ℕ)
   let z := thetaCuspModularPositiveLambdaClock x
   let v := thetaCuspModularNormalizedQuasimodularDrift x
   let S := (thetaCuspModularDrift x).re
@@ -228,34 +228,34 @@ theorem deriv_thetaCuspModularUpperProjectiveClockGap_pos
     nlinarith
   have hS : S = R * (v - z) := by
     simpa only [S, R, v, z] using thetaCuspModularDrift_re_eq_scale_mul_clock_sub_lambda x
-  have hgap : thetaCuspModularGapAmplitude x = X * (1 - z ^ 2) := by
+  have hgap : thetaCuspModularGapAmplitude x = X * (1 - z ^ (2 : ℕ)) := by
     dsimp only [thetaCuspModularGapAmplitude, X, R, z,
       thetaCuspModularPositiveLambdaClock]
     ring
-  have hSsq : S ^ 2 < X * z ^ 2 := by
+  have hSsq : S ^ (2 : ℕ) < X * z ^ (2 : ℕ) := by
     rw [hS]
-    have hdiffsq : (v - z) ^ 2 < z ^ 2 := by nlinarith
+    have hdiffsq : (v - z) ^ (2 : ℕ) < z ^ (2 : ℕ) := by nlinarith
     have hXpos : 0 < X := sq_pos_of_pos hR
     nlinarith
   rw [(hasDerivAt_thetaCuspModularUpperProjectiveClockGap x).deriv]
   have heq :
-      (1 / 2 : ℝ) * (R * (1 - z ^ 2)) -
-          (3 + thetaCuspModularGapAmplitude x / 4 + S ^ 2 / 3) / R =
-        (thetaCuspModularGapAmplitude x / 4 - 3 - S ^ 2 / 3) / R := by
+      (1 / 2 : ℝ) * (R * (1 - z ^ (2 : ℕ))) -
+          (3 + thetaCuspModularGapAmplitude x / 4 + S ^ (2 : ℕ) / 3) / R =
+        (thetaCuspModularGapAmplitude x / 4 - 3 - S ^ (2 : ℕ) / 3) / R := by
     rw [hgap]
     field_simp [hR.ne']
     ring
-  change 0 < (1 / 2 : ℝ) * (R * (1 - z ^ 2)) -
-    (3 + thetaCuspModularGapAmplitude x / 4 + S ^ 2 / 3) / R
+  change 0 < (1 / 2 : ℝ) * (R * (1 - z ^ (2 : ℕ))) -
+    (3 + thetaCuspModularGapAmplitude x / 4 + S ^ (2 : ℕ) / 3) / R
   rw [heq]
   apply div_pos _ hR
   rw [hgap]
-  have hcoef : 0 < (1 / 4 : ℝ) - 7 * z ^ 2 / 12 := by
+  have hcoef : 0 < (1 / 4 : ℝ) - 7 * z ^ (2 : ℕ) / 12 := by
     nlinarith [sq_nonneg z]
-  have hmain : 3 < X * ((1 / 4 : ℝ) - 7 * z ^ 2 / 12) := by
-    have hfloor : 3 < (191 / 10 : ℝ) * ((1 / 4 : ℝ) - 7 * (3 / 10 : ℝ) ^ 2 / 12) := by
+  have hmain : 3 < X * ((1 / 4 : ℝ) - 7 * z ^ (2 : ℕ) / 12) := by
+    have hfloor : 3 < (191 / 10 : ℝ) * ((1 / 4 : ℝ) - 7 * (3 / 10 : ℝ) ^ (2 : ℕ) / 12) := by
       norm_num
-    have hzsq : z ^ 2 < (3 / 10 : ℝ) ^ 2 := by nlinarith
+    have hzsq : z ^ (2 : ℕ) < (3 / 10 : ℝ) ^ (2 : ℕ) := by nlinarith
     nlinarith [mul_pos (sub_pos.mpr hX) hcoef]
   nlinarith
 

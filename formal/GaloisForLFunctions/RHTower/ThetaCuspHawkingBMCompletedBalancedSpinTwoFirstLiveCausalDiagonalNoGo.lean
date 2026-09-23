@@ -34,13 +34,13 @@ private theorem neg_I_pow_mul_real_square_im_eq_zero (m : ℕ) (a : ℝ) :
     congr 1
     rw [neg_mul_neg, Complex.I_mul_I]
   have heq : ((-Complex.I) ^ m * (a : ℂ)) * ((-Complex.I) ^ m * (a : ℂ)) =
-      ((((-1 : ℝ) ^ m) * a ^ 2 : ℝ) : ℂ) := by
+      ((((-1 : ℝ) ^ m) * a ^ (2 : ℕ) : ℝ) : ℂ) := by
     calc
-      _ = ((-1 : ℂ) ^ m) * ((a ^ 2 : ℝ) : ℂ) := by
+      _ = ((-1 : ℂ) ^ m) * ((a ^ (2 : ℕ) : ℝ) : ℂ) := by
         rw [← hp]
         push_cast
         ring
-      _ = ((((-1 : ℝ) ^ m) * a ^ 2 : ℝ) : ℂ) := by
+      _ = ((((-1 : ℝ) ^ m) * a ^ (2 : ℕ) : ℝ) : ℂ) := by
         push_cast
         rfl
   rw [heq]
@@ -129,10 +129,10 @@ theorem d4BMCompletedBalancedSpinTwoProjectingSideFactor_actualRepeated_im_eq_ze
       _ = -xiSpectralPoint q - 3 * Complex.I := by rw [Complex.I_mul_I]; ring]
   rw [hpair]
   have hcoeffIm :
-      (((4 * xiSpectralPoint q ^ 2 + 1) *
-        (4 * xiSpectralPoint q ^ 2 + 25)) / 32).im = 0 := by
+      (((4 * xiSpectralPoint q ^ (2 : ℕ) + 1) *
+        (4 * xiSpectralPoint q ^ (2 : ℕ) + 25)) / 32).im = 0 := by
     rw [hz]
-    have hsqIm : ((((xiSpectralPoint q).re : ℂ) ^ 2)).im = 0 := by
+    have hsqIm : ((((xiSpectralPoint q).re : ℂ) ^ (2 : ℕ))).im = 0 := by
       rw [pow_two, Complex.mul_im]
       simp
     simp
@@ -144,12 +144,12 @@ theorem d4BMCompletedBalancedSpinTwoProjectingSideFactor_actualRepeated_im_eq_ze
     simp [Complex.mul_im]
     ring
   rw [show
-      ((4 * xiSpectralPoint q ^ 2 + 1) *
-          (4 * xiSpectralPoint q ^ 2 + 25)) / 32 *
+      ((4 * xiSpectralPoint q ^ (2 : ℕ) + 1) *
+          (4 * xiSpectralPoint q ^ (2 : ℕ) + 25)) / 32 *
           XiC (xiSpectralPoint q - 3 * Complex.I) *
           (starRingEnd ℂ) (XiC (xiSpectralPoint q - 3 * Complex.I)) =
-        (((4 * xiSpectralPoint q ^ 2 + 1) *
-          (4 * xiSpectralPoint q ^ 2 + 25)) / 32) *
+        (((4 * xiSpectralPoint q ^ (2 : ℕ) + 1) *
+          (4 * xiSpectralPoint q ^ (2 : ℕ) + 25)) / 32) *
           (XiC (xiSpectralPoint q - 3 * Complex.I) *
           (starRingEnd ℂ) (XiC (xiSpectralPoint q - 3 * Complex.I))) by ring]
   rw [Complex.mul_im, hcoeffIm, hpairIm]

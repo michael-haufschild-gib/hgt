@@ -35,47 +35,47 @@ theorem prolate_leakage_two_sided {c s α b : ℝ} {Φ DΦ R DR DDR : ℝ → �
     (hc : 8 ≤ c) (hs0 : 0 < s) (hs8 : s ≤ 1 / 8) (hcs : 4 ≤ c * s)
     (hc0 : 1728 * radialProlateDensityTransferConstant / besselEnergyFloor ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
     (h2sα : 2 * Real.sqrt s ≤ α)
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hz : 1 ≤ c * bandEndpointPhase s α)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc (2 * Real.sqrt s) 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t)
     (hb : 2 * Real.sqrt s < b) (hb1 : b < 1)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hIntR : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)))
-    (hvalue : 1 / 2 ≤ value ^ 2) (hv2 : value ^ 2 ≤ 1) (hv : value ≠ 0) (hleak : 0 ≤ leakage)
-    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2)
-      = (∫ y in (-1 : ℝ)..1, Φ y ^ 2) * leakage / value ^ 2) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hIntR : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)))
+    (hvalue : 1 / 2 ≤ value ^ (2 : ℕ)) (hv2 : value ^ (2 : ℕ) ≤ 1) (hv : value ≠ 0) (hleak : 0 ≤ leakage)
+    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) * leakage / value ^ (2 : ℕ)) :
     besselEnergyFloor / 864 / c
-          / (2 * (2 * (3 * (1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-                    / (c ^ 2 * (α ^ 2 - s))) + 1)
+          / (2 * (2 * (3 * (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+                    / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s))) + 1)
             * Real.exp (2 * c * (1 + s / 4 * Real.log s)
-                + ((Real.log (α ^ 2 - s) - Real.log (3 * s))
-                  + (Real.log (1 - 4 * s) - Real.log (1 - α ^ 2)))
+                + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (3 * s))
+                  + (Real.log (1 - 4 * s) - Real.log (1 - α ^ (2 : ℕ))))
                 + 10 * (c * s))))
         ≤ leakage ∧
       leakage ≤ radialProlateExteriorMassConstant / c
-        * ((6 * Real.pi * Real.sqrt (c * bandEndpointPhase s α)) ^ 2
-            * Real.exp (2 * ((c * b + 12) * (b - 2 * Real.sqrt s) / (1 - b ^ 2)))
+        * ((6 * Real.pi * Real.sqrt (c * bandEndpointPhase s α)) ^ (2 : ℕ)
+            * Real.exp (2 * ((c * b + 12) * (b - 2 * Real.sqrt s) / (1 - b ^ (2 : ℕ))))
             / (b - 2 * Real.sqrt s))
         * Real.exp (-(2 * (c * bandEndpointPhase s (2 * Real.sqrt s)
             + 6 * (Real.log (1 - α) - Real.log (1 - 2 * Real.sqrt s))))) := by
   have hcpos : (0 : ℝ) < c := by linarith
   have hsqrt : (0 : ℝ) < Real.sqrt s := Real.sqrt_pos.2 hs0
   have hy00 : (0 : ℝ) < 2 * Real.sqrt s := by linarith
-  have hsq : (2 * Real.sqrt s) ^ 2 = 4 * s := by
+  have hsq : (2 * Real.sqrt s) ^ (2 : ℕ) = 4 * s := by
     rw [mul_pow, Real.sq_sqrt hs0.le]
     ring
-  have hsy0 : s < (2 * Real.sqrt s) ^ 2 := by rw [hsq]; linarith
+  have hsy0 : s < (2 * Real.sqrt s) ^ (2 : ℕ) := by rw [hsq]; linarith
   refine ⟨prolate_leakage_ge_explicit hc hs0 hs8 hcs hc0 hsm heig hΦ1 heven h2sα hα1 houter
     hposΦ hΦd hfluxd hR1 hR hDR hode hIntR hvalue hleak hmass, ?_⟩
   -- the interior mass from below on the window `[2 sqrt s, b]`
@@ -84,8 +84,8 @@ theorem prolate_leakage_two_sided {c s α b : ℝ} {Φ DΦ R DR DDR : ℝ → �
   have hw : (0 : ℝ) < b - 2 * Real.sqrt s := by linarith
   exact prolate_leakage_le_exp_action (c := c) (s := s) (α := α) (y₀ := 2 * Real.sqrt s)
     (w := b - 2 * Real.sqrt s)
-    (E := (c * b + 12) * (b - 2 * Real.sqrt s) / (1 - b ^ 2))
-    (inside := ∫ y in (-1 : ℝ)..1, Φ y ^ 2) (value := value) (leakage := leakage)
+    (E := (c * b + 12) * (b - 2 * Real.sqrt s) / (1 - b ^ (2 : ℕ)))
+    (inside := ∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) (value := value) (leakage := leakage)
     hs0.le hs8 (by linarith) hα hα1 hcollar hsm heig hΦ1 hy00.le h2sα hsy0 hposΦ hz
     hR1 hR hDR hode hw hin hv2 hv hleak hmass
 

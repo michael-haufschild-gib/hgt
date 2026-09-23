@@ -43,7 +43,7 @@ theorem gradPair_nullTransLift (h : IsC1On3 u A B C Ω) {x : Fin (n + 3) → ℝ
     (SmoothPseudoMetric.ofSignature (slabEps (n + 1))
         (slabEps_ne_zero (n + 1))).chart.gradPair (nullTransLift u n) (nullTransLift u n) x
       = -4 * (A (x 0 + x 1) (x 0 - x 1) (x 2) * B (x 0 + x 1) (x 0 - x 1) (x 2))
-        + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ 2 := by
+        + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ (2 : ℕ) := by
   have hz : ∀ i : Fin (n + 3), i ≠ 0 → i ≠ 1 → i ≠ 2 →
       (slabEps (n + 1) i)⁻¹ * coordPartial i (nullTransLift u n) x
         * coordPartial i (nullTransLift u n) x = 0 := by
@@ -65,7 +65,7 @@ noncomputable def conformalPotentialTri (a massSq : ℝ) (u A B C Ab Ba Cc : ℝ
     ℝ → ℝ → ℝ → ℝ :=
   fun s t w => massSq * Real.exp (2 * u s t w)
     - a * (-2 * (Ab s t w + Ba s t w) + Cc s t w)
-    - a ^ 2 * (-4 * (A s t w * B s t w) + C s t w ^ 2)
+    - a ^ (2 : ℕ) * (-4 * (A s t w * B s t w) + C s t w ^ (2 : ℕ))
 
 /-- **The effective potential of such a scale function is again a function of the same three
 coordinates**, given explicitly by the derivatives of the scale. -/
@@ -78,20 +78,20 @@ theorem conformalPotential_nullTransLift (h : IsC1On3 u A B C Ω) (hA : IsC1On3 
   show massSq * Real.exp (2 * nullTransLift u n x)
       - (a * (SmoothPseudoMetric.ofSignature (slabEps (n + 1))
           (slabEps_ne_zero (n + 1))).chart.dalembert (nullTransLift u n) x
-        + a ^ 2 * (SmoothPseudoMetric.ofSignature (slabEps (n + 1))
+        + a ^ (2 : ℕ) * (SmoothPseudoMetric.ofSignature (slabEps (n + 1))
           (slabEps_ne_zero (n + 1))).chart.gradPair (nullTransLift u n) (nullTransLift u n) x)
     = _
   rw [dalembert_nullTransLift h hA hB hC hx, gradPair_nullTransLift h hx]
   show massSq * Real.exp (2 * u (x 0 + x 1) (x 0 - x 1) (x 2))
       - (a * (-2 * (Ab (x 0 + x 1) (x 0 - x 1) (x 2) + Ba (x 0 + x 1) (x 0 - x 1) (x 2))
             + Cc (x 0 + x 1) (x 0 - x 1) (x 2))
-        + a ^ 2 * (-4 * (A (x 0 + x 1) (x 0 - x 1) (x 2) * B (x 0 + x 1) (x 0 - x 1) (x 2))
-            + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ 2))
+        + a ^ (2 : ℕ) * (-4 * (A (x 0 + x 1) (x 0 - x 1) (x 2) * B (x 0 + x 1) (x 0 - x 1) (x 2))
+            + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ (2 : ℕ)))
     = massSq * Real.exp (2 * u (x 0 + x 1) (x 0 - x 1) (x 2))
       - a * (-2 * (Ab (x 0 + x 1) (x 0 - x 1) (x 2) + Ba (x 0 + x 1) (x 0 - x 1) (x 2))
           + Cc (x 0 + x 1) (x 0 - x 1) (x 2))
-      - a ^ 2 * (-4 * (A (x 0 + x 1) (x 0 - x 1) (x 2) * B (x 0 + x 1) (x 0 - x 1) (x 2))
-          + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ 2)
+      - a ^ (2 : ℕ) * (-4 * (A (x 0 + x 1) (x 0 - x 1) (x 2) * B (x 0 + x 1) (x 0 - x 1) (x 2))
+          + C (x 0 + x 1) (x 0 - x 1) (x 2) ^ (2 : ℕ))
   ring
 
 /-- **The effective potential, as an identity of fields on the region where the scale is

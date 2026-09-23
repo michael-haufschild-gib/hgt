@@ -31,8 +31,8 @@ structure TowerSection (c : ℂ) (rlo rhi : ℝ) where
   an : AnalyticOnNhd ℂ T (annulusSet rlo rhi)
   level : ∀ w ∈ annulusSet rlo rhi, greenFunctionDyn c (T w) = Real.log ‖w‖
   odd : ∀ w ∈ annulusSet rlo rhi, T (-w) = -T w
-  fe : ∀ w : ℂ, w ∈ annulusSet rlo rhi → w ^ 2 ∈ annulusSet rlo rhi →
-    T (w ^ 2) = (T w) ^ 2 + c
+  fe : ∀ w : ℂ, w ∈ annulusSet rlo rhi → w ^ (2 : ℕ) ∈ annulusSet rlo rhi →
+    T (w ^ (2 : ℕ)) = (T w) ^ (2 : ℕ) + c
   inj : Set.InjOn T (annulusSet rlo rhi)
   dne : ∀ w ∈ annulusSet rlo rhi, deriv T w ≠ 0
   wind : ∀ r : ℝ, rlo < r → r < rhi →
@@ -74,7 +74,7 @@ theorem exists_tower_anchor (c : ℂ) :
     rw [hRdef]; nlinarith [norm_nonneg c, le_max_right M₁ 0]
   have hRc : 16 * ‖c‖ + 17 ≤ R := by
     rw [hRdef]; nlinarith [norm_nonneg c, le_max_right M₁ 0]
-  have hR2 : 16 * ‖c‖ < R ^ 2 := by nlinarith [norm_nonneg c]
+  have hR2 : 16 * ‖c‖ < R ^ (2 : ℕ) := by nlinarith [norm_nonneg c]
   have hRpos : (0:ℝ) < R := by linarith
   have hmaxR : max 2 ‖c‖ < R := by
     rw [hRdef]; nlinarith [norm_nonneg c, le_max_right M₁ 0]
@@ -159,19 +159,19 @@ theorem exists_tower_anchor (c : ℂ) :
       rw [bottcherCoord_neg hz0, hzeq]
     have hnz : R < ‖(-z : ℂ)‖ := by rwa [norm_neg]
     rw [← hneg, hψleft _ hnz, hψv]
-  have hψfe : ∀ v : ℂ, R₁ < ‖v‖ → ψ (v ^ 2) = (ψ v) ^ 2 + c := by
+  have hψfe : ∀ v : ℂ, R₁ < ‖v‖ → ψ (v ^ (2 : ℕ)) = (ψ v) ^ (2 : ℕ) + c := by
     intro v hv
     obtain ⟨z, hz, hzeq, hψv⟩ := hwit v hv
     obtain ⟨hc', h2'⟩ := hcrude z hz
-    have hfz : bottcherCoord c (quadratic c z) = v ^ 2 := by
+    have hfz : bottcherCoord c (quadratic c z) = v ^ (2 : ℕ) := by
       rw [bottcherCoord_quadratic hc' h2', hzeq]
     have hfzdeep : R < ‖quadratic c z‖ := by
       unfold quadratic
-      have h1 : ‖z ^ 2 + c‖ ≥ ‖z‖ ^ 2 - ‖c‖ := by
-        have h2 : ‖z ^ 2‖ ≤ ‖z ^ 2 + c‖ + ‖c‖ := by
-          calc ‖z ^ 2‖ = ‖(z ^ 2 + c) + (-c)‖ := by ring_nf
-            _ ≤ ‖z ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
-            _ = ‖z ^ 2 + c‖ + ‖c‖ := by rw [norm_neg]
+      have h1 : ‖z ^ (2 : ℕ) + c‖ ≥ ‖z‖ ^ (2 : ℕ) - ‖c‖ := by
+        have h2 : ‖z ^ (2 : ℕ)‖ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖c‖ := by
+          calc ‖z ^ (2 : ℕ)‖ = ‖(z ^ (2 : ℕ) + c) + (-c)‖ := by ring_nf
+            _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
+            _ = ‖z ^ (2 : ℕ) + c‖ + ‖c‖ := by rw [norm_neg]
         rw [norm_pow] at h2
         linarith
       nlinarith [norm_nonneg c]

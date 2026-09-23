@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiWardEndpointSourceIndex
 
 For one conjugate pole pair, evaluate its Pick diagonal at the canonical inward and outward
 normal witnesses.  Before transverse renormalization the values are
-`-8 / (3 * delta^2)` and `2 / (3 * delta^2)`.  Multiplication by the squared pole height produces
+`-8 / (3 * delta^(2 : ℕ))` and `2 / (3 * delta^(2 : ℕ))`.  Multiplication by the squared pole height produces
 the rigid quanta `-8/3` and `2/3`, hence a four-to-one signed balance.
 
 Specializing the pole to the upper spectral representative of a strict-right Xi zero gives a

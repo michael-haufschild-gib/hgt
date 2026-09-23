@@ -39,62 +39,62 @@ theorem exists_spaced_families_blockProduct_gramRows (a : ℕ → ℂ) (B : Fins
       ∧ (∀ j, ∀ w ∈ P₂ j, w ∈ primeBlockLevelSet B G (2 ^ j * V₀))
       ∧ (∀ j, ∀ w ∈ P₁ j, ∀ u ∈ P₁ j, w ≠ u → (1 : ℝ) ≤ |w - u|)
       ∧ (∀ j, ∀ w ∈ P₂ j, ∀ u ∈ P₂ j, w ≠ u → (1 : ℝ) ≤ |w - u|)
-      ∧ (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-          ≤ V₀ ^ 2 * (∫ w in Set.Icc (-G) G, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-            + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
+      ∧ (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+          ≤ V₀ ^ (2 : ℕ) * (∫ w in Set.Icc (-G) G, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+            + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
                 (((Nat.log 2 M + 1 : ℕ) : ℝ) *
                   ∑ i ∈ Finset.range (Nat.log 2 M + 1),
                     ((∑ w ∈ P₁ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                        blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)
+                        blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))
                       + ∑ w ∈ P₂ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                          blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)) := by
+                          blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))) := by
   classical
   obtain ⟨P₁, P₂, h₁, h₂, h₃, h₄, hbound⟩ :=
     exists_spaced_families_blockProduct_levelSplit a B (Finset.Icc 1 M) hG hV₀ hJ
   refine ⟨P₁, P₂, h₁, h₂, h₃, h₄, hbound.trans ?_⟩
   have hgram : ∀ (P : Finset ℝ) (i : ℕ),
-      ∑ w ∈ P, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ 2
+      ∑ w ∈ P, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ (2 : ℕ)
         = ∑ w ∈ P, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-            blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2 := by
+            blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ) := by
     intro P i
     refine Finset.sum_congr rfl fun w _ => ?_
     rw [logPoly_dyadicSegmentBlock_eq_inner]
   have hstep : ∀ j : ℕ,
-      (∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+      (∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
         ≤ ((Nat.log 2 M + 1 : ℕ) : ℝ) *
             ∑ i ∈ Finset.range (Nat.log 2 M + 1),
               ((∑ w ∈ P₁ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                  blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)
+                  blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))
                 + ∑ w ∈ P₂ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                    blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2) := by
+                    blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ)) := by
     intro j
     have hA := sum_normSq_logPoly_Icc_le_card_mul_sum_blocks a M (P₁ j)
     have hB' := sum_normSq_logPoly_Icc_le_card_mul_sum_blocks a M (P₂ j)
     have hsplit : ∑ i ∈ Finset.range (Nat.log 2 M + 1),
           ((∑ w ∈ P₁ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-              blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)
+              blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))
             + ∑ w ∈ P₂ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)
+                blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))
         = (∑ i ∈ Finset.range (Nat.log 2 M + 1),
-              ∑ w ∈ P₁ j, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ 2)
+              ∑ w ∈ P₁ j, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ (2 : ℕ))
           + ∑ i ∈ Finset.range (Nat.log 2 M + 1),
-              ∑ w ∈ P₂ j, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ 2 := by
+              ∑ w ∈ P₂ j, ‖logPoly a (dyadicSegmentBlock M i) w‖ ^ (2 : ℕ) := by
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [hgram (P₁ j) i, hgram (P₂ j) i]
     rw [hsplit, mul_add]
     exact add_le_add hA hB'
-  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
-        ((∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
+  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
+        ((∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
         (((Nat.log 2 M + 1 : ℕ) : ℝ) *
           ∑ i ∈ Finset.range (Nat.log 2 M + 1),
             ((∑ w ∈ P₁ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)
+                blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))
               + ∑ w ∈ P₂ j, ‖⟪dyadicDirRow (2 ^ i) (-(2 * Real.pi * w)),
-                  blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ 2)) :=
+                  blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0⟫_ℂ‖ ^ (2 : ℕ))) :=
     Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hstep j) (sq_nonneg _)
   linarith [hsum]
 

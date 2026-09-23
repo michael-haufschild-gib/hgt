@@ -116,7 +116,7 @@ theorem exists_primeCosPlusSum_ge_logLog :
   have ht8 : (8 : ℝ) ≤ |t| := by linarith
   have hL2 : (2 : ℝ) ≤ Real.log |t| := two_le_log_of_eight_le ht8
   have hL0 : (0 : ℝ) < Real.log |t| := by linarith
-  have hLpow : (0 : ℝ) < (Real.log |t|) ^ 11 := by positivity
+  have hLpow : (0 : ℝ) < (Real.log |t|) ^ (11 : ℕ) := by positivity
   -- the zeta lower bound at the shifted point
   have hzeta := hbound σ t hσ1 hσ2 ht
   have hcomm : ((σ : ℝ) : ℂ) + (t : ℂ) * Complex.I
@@ -124,8 +124,8 @@ theorem exists_primeCosPlusSum_ge_logLog :
     rw [hσdef]
     ring
   rw [hcomm] at hzeta
-  have hcpos : (0 : ℝ) < c / (Real.log |t|) ^ 11 := by positivity
-  have hlogc : Real.log (c / (Real.log |t|) ^ 11)
+  have hcpos : (0 : ℝ) < c / (Real.log |t|) ^ (11 : ℕ) := by positivity
+  have hlogc : Real.log (c / (Real.log |t|) ^ (11 : ℕ))
       = Real.log c - 11 * Real.log (Real.log |t|) := by
     rw [Real.log_div (ne_of_gt hc0) (by positivity), Real.log_pow]
     push_cast

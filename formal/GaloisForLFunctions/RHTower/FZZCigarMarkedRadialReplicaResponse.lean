@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.FZZCigarReplicaBackreaction
 /-!
 # Integrated radial replica insertion and its surviving mixed response
 
-Set `b=exp(v)`, `k=2+b^2`, `c=k/(k-2)`. The radial factor of the first-order marked
+Set `b=exp(v)`, `k=2+b^(2 : ℕ)`, `c=k/(k-2)`. The radial factor of the first-order marked
 winding operator has weight `r(delta)=1-c*delta`. With the background exponential potential
 and effective coupling fixed, its original radial integral is
 

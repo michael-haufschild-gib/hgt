@@ -53,10 +53,10 @@ theorem exp_ofReal_mul_I (u : ℝ) :
 theorem two_sin_mul_I_mul_exp (θ : ℝ) :
     (2 : ℂ) * ((Real.sin θ : ℝ) : ℂ) * Complex.I * Complex.exp (((θ : ℝ) : ℂ) * Complex.I)
       = Complex.exp (((θ : ℝ) : ℂ) * Complex.I) * Complex.exp (((θ : ℝ) : ℂ) * Complex.I) - 1 := by
-  have hpyth : ((Real.sin θ : ℝ) : ℂ) ^ 2 + ((Real.cos θ : ℝ) : ℂ) ^ 2 = 1 := by
+  have hpyth : ((Real.sin θ : ℝ) : ℂ) ^ (2 : ℕ) + ((Real.cos θ : ℝ) : ℂ) ^ (2 : ℕ) = 1 := by
     exact_mod_cast congrArg (fun r : ℝ => (r : ℂ)) (Real.sin_sq_add_cos_sq θ)
   rw [exp_ofReal_mul_I]
-  linear_combination (-1 : ℂ) * hpyth + ((Real.sin θ : ℝ) : ℂ) ^ 2 * Complex.I_sq
+  linear_combination (-1 : ℂ) * hpyth + ((Real.sin θ : ℝ) : ℂ) ^ (2 : ℕ) * Complex.I_sq
 
 /-- **The defining property of the amplitude symbol.**  `A t Δ · (i Δ) = exp (i t Δ) − 1`, with no
 case distinction at the resonance. -/
@@ -100,7 +100,7 @@ theorem norm_ampSymbol (t Δ : ℝ) : ‖ampSymbol t Δ‖ = |t| * |Real.sinc (t
     Complex.norm_exp_ofReal_mul_I, Real.norm_eq_abs, Real.norm_eq_abs, mul_one]
 
 /-- **The squared amplitude symbol is the golden-rule kernel.** -/
-theorem normSq_ampSymbol (t Δ : ℝ) : ‖ampSymbol t Δ‖ ^ 2 = goldenRuleKernel t Δ := by
+theorem normSq_ampSymbol (t Δ : ℝ) : ‖ampSymbol t Δ‖ ^ (2 : ℕ) = goldenRuleKernel t Δ := by
   rw [norm_ampSymbol, goldenRuleKernel, mul_pow, sq_abs, sq_abs,
     show Δ * t / 2 = t * Δ / 2 by ring]
 
@@ -114,7 +114,7 @@ theorem norm_ampSymbol_le (t Δ : ℝ) : ‖ampSymbol t Δ‖ ≤ |t| := by
 theorem ampSymbol_taylor (t Δ h : ℝ) (hb : |h * Δ| ≤ 1) :
     ‖ampSymbol (t + h) Δ - ampSymbol t Δ
         - (h : ℂ) * Complex.exp (((t * Δ : ℝ) : ℂ) * Complex.I)‖
-      ≤ 3 / 4 * h ^ 2 * |Δ| := by
+      ≤ 3 / 4 * h ^ (2 : ℕ) * |Δ| := by
   rcases eq_or_ne Δ 0 with hΔ | hΔ
   · subst hΔ
     simp
@@ -139,16 +139,16 @@ theorem ampSymbol_taylor (t Δ h : ℝ) (hb : |h * Δ| ≤ 1) :
       have h1 : ‖u * ((Δ : ℂ) * Complex.I)‖ = ‖u‖ * |Δ| := by
         rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_I, Real.norm_eq_abs, mul_one]
       rw [← h1, hmul, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
-    have hbound : ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * (h * Δ) ^ 2 := by
+    have hbound : ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * (h * Δ) ^ (2 : ℕ) := by
       have := norm_exp_sub_one_sub_le (z := z) (by rw [hznorm]; exact hb)
       rw [hznorm] at this
-      calc ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * |h * Δ| ^ 2 := this
-        _ = 3 / 4 * (h * Δ) ^ 2 := by rw [sq_abs]
+      calc ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * |h * Δ| ^ (2 : ℕ) := this
+        _ = 3 / 4 * (h * Δ) ^ (2 : ℕ) := by rw [sq_abs]
     have habs : (0 : ℝ) < |Δ| := abs_pos.mpr hΔ
-    have hfinal : ‖u‖ * |Δ| ≤ (3 / 4 * h ^ 2 * |Δ|) * |Δ| := by
+    have hfinal : ‖u‖ * |Δ| ≤ (3 / 4 * h ^ (2 : ℕ) * |Δ|) * |Δ| := by
       rw [hnormmul]
       refine hbound.trans (le_of_eq ?_)
-      have : (h * Δ) ^ 2 = h ^ 2 * (|Δ| * |Δ|) := by
+      have : (h * Δ) ^ (2 : ℕ) = h ^ (2 : ℕ) * (|Δ| * |Δ|) := by
         rw [← abs_mul, abs_of_nonneg (mul_self_nonneg Δ)]
         ring
       rw [this]
@@ -163,14 +163,14 @@ variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
 /-- The squared `L²` norm of a class as an integral of squared norms, for an arbitrary measure. -/
 theorem lpTwo_norm_sq_eq_integral (f : Lp ℂ 2 μ) :
-    ‖f‖ ^ 2 = ∫ x, ‖(f : α → ℂ) x‖ ^ 2 ∂μ := by
+    ‖f‖ ^ (2 : ℕ) = ∫ x, ‖(f : α → ℂ) x‖ ^ (2 : ℕ) ∂μ := by
   have h1 : (inner ℂ f f : ℂ) = ∫ x, (inner ℂ ((f : α → ℂ) x) ((f : α → ℂ) x) : ℂ) ∂μ :=
     L2.inner_def f f
-  have h2 : ∀ z : ℂ, (inner ℂ z z : ℂ) = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  have h2 : ∀ z : ℂ, (inner ℂ z z : ℂ) = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro z
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
-  have h3 : (inner ℂ f f : ℂ) = ((‖f‖ ^ 2 : ℝ) : ℂ) := by
+  have h3 : (inner ℂ f f : ℂ) = ((‖f‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   rw [h3] at h1
@@ -261,8 +261,8 @@ theorem hasDerivAt_ampOp (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) {C
       linarith
     calc ‖ampSymbol (t + h) (ω x - E₀) - ampSymbol t (ω x - E₀)
             - (h : ℂ) * Complex.exp (((t * (ω x - E₀) : ℝ) : ℂ) * Complex.I)‖
-        ≤ 3 / 4 * h ^ 2 * |ω x - E₀| := ampSymbol_taylor t (ω x - E₀) h hbx
-      _ ≤ 3 / 4 * (C + |E₀|) * h ^ 2 := by nlinarith [sq_nonneg h, hD x]
+        ≤ 3 / 4 * h ^ (2 : ℕ) * |ω x - E₀| := ampSymbol_taylor t (ω x - E₀) h hbx
+      _ ≤ 3 / 4 * (C + |E₀|) * h ^ (2 : ℕ) := by nlinarith [sq_nonneg h, hD x]
 
 theorem ampOp_zero (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) :
     ampOp (μ := μ) E₀ ω hω 0 = 0 := by
@@ -291,8 +291,8 @@ theorem integral_intOp_apply (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω
 /-- **The first-order transition probability is the golden-rule kernel integrated against the
 form-factor density.** -/
 theorem norm_sq_ampOp_apply (E₀ : ℝ) (ω : α → ℝ) (hω : Measurable ω) (t : ℝ) (f : Lp ℂ 2 μ) :
-    ‖(ampOp (μ := μ) E₀ ω hω t) f‖ ^ 2
-      = ∫ x, goldenRuleKernel t (ω x - E₀) * ‖(f : α → ℂ) x‖ ^ 2 ∂μ := by
+    ‖(ampOp (μ := μ) E₀ ω hω t) f‖ ^ (2 : ℕ)
+      = ∫ x, goldenRuleKernel t (ω x - E₀) * ‖(f : α → ℂ) x‖ ^ (2 : ℕ) ∂μ := by
   rw [lpTwo_norm_sq_eq_integral]
   refine integral_congr_ae ?_
   filter_upwards [ampOp_coeFn E₀ ω hω t f] with x hx

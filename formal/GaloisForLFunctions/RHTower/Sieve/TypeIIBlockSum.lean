@@ -39,8 +39,8 @@ theorem norm_typeII_piece_le_sum_blockSums {A B L : ℕ} (hA : 1 ≤ A) (hB : 1 
 
 /-- **Cauchy--Schwarz on the long variable.** -/
 theorem norm_maskedBlockSum_sq_le (T r : ℝ) (A B L P Q : ℕ) (a b : ℕ → ℝ) :
-    ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
+    ‖maskedBlockSum T r A B L P Q a b‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
         * ∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L, |b m₁| * |b m₂|
             * ‖∑ d ∈ Finset.Ico P Q,
                 maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖ := by
@@ -112,8 +112,8 @@ theorem maskedBlockSum_eq_swap {A B L P Q : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (
 /-- **Cauchy--Schwarz on the short variable.** -/
 theorem norm_maskedBlockSum_sq_le_swap {A B L P Q : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hP : 1 ≤ P)
     (hQ : 2 ≤ Q) (hBL : B - 1 ≤ L) (T r : ℝ) (a b : ℕ → ℝ) :
-    ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
-      ≤ (∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1), |b m| ^ 2)
+    ‖maskedBlockSum T r A B L P Q a b‖ ^ (2 : ℕ)
+      ≤ (∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1), |b m| ^ (2 : ℕ))
         * ∑ d₁ ∈ Finset.Ico P Q, ∑ d₂ ∈ Finset.Ico P Q, |a d₁| * |a d₂|
             * ‖∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1),
                 maskedNdExp T r A B m d₁ * (starRingEnd ℂ) (maskedNdExp T r A B m d₂)‖ := by

@@ -53,12 +53,12 @@ theorem hasDerivAt_bandKernel_snd (c x t : ℝ) :
 /-- **The prolate operator acts identically on the two variables of the band kernel.**  This is the
 commutation identity, before any integration by parts. -/
 theorem prolate_bandKernel_symm (c x t : ℝ) :
-    ((1 - ((x : ℝ) : ℂ) ^ 2) * (-(((c * t : ℝ) : ℂ)) ^ 2)
+    ((1 - ((x : ℝ) : ℂ) ^ (2 : ℕ)) * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ))
         - 2 * ((x : ℝ) : ℂ) * (Complex.I * ((c * t : ℝ) : ℂ))
-        - ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2) * bandKernel c x t
-      = ((1 - ((t : ℝ) : ℂ) ^ 2) * (-(((c * x : ℝ) : ℂ)) ^ 2)
+        - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ)) * bandKernel c x t
+      = ((1 - ((t : ℝ) : ℂ) ^ (2 : ℕ)) * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))
         - 2 * ((t : ℝ) : ℂ) * (Complex.I * ((c * x : ℝ) : ℂ))
-        - ((c : ℝ) : ℂ) ^ 2 * ((t : ℝ) : ℂ) ^ 2) * bandKernel c x t := by
+        - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((t : ℝ) : ℂ) ^ (2 : ℕ)) * bandKernel c x t := by
   have hcast : ((c * t : ℝ) : ℂ) = ((c : ℝ) : ℂ) * ((t : ℝ) : ℂ) := by push_cast; ring
   have hcast' : ((c * x : ℝ) : ℂ) = ((c : ℝ) : ℂ) * ((x : ℝ) : ℂ) := by push_cast; ring
   rw [hcast, hcast']
@@ -66,34 +66,34 @@ theorem prolate_bandKernel_symm (c x t : ℝ) :
 
 theorem hasDerivAt_bandKernelDeriv_fst (c t x : ℝ) :
     HasDerivAt (fun y : ℝ => bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)))
-      (bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2)) x := by
+      (bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ))) x := by
   have h := (hasDerivAt_bandKernel_fst c t x).mul_const (Complex.I * ((c * t : ℝ) : ℂ))
   refine h.congr_deriv ?_
   have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
   calc bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * (Complex.I * ((c * t : ℝ) : ℂ))
-      = bandKernel c x t * ((Complex.I * Complex.I) * ((c * t : ℝ) : ℂ) ^ 2) := by ring
-    _ = bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) := by rw [hI]; ring
+      = bandKernel c x t * ((Complex.I * Complex.I) * ((c * t : ℝ) : ℂ) ^ (2 : ℕ)) := by ring
+    _ = bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) := by rw [hI]; ring
 
 theorem hasDerivAt_bandKernelDeriv_snd (c x t : ℝ) :
     HasDerivAt (fun u : ℝ => bandKernel c x u * (Complex.I * ((c * x : ℝ) : ℂ)))
-      (bandKernel c x t * (-(((c * x : ℝ) : ℂ)) ^ 2)) t := by
+      (bandKernel c x t * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t := by
   have h := (hasDerivAt_bandKernel_snd c x t).mul_const (Complex.I * ((c * x : ℝ) : ℂ))
   refine h.congr_deriv ?_
   have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
   calc bandKernel c x t * (Complex.I * ((c * x : ℝ) : ℂ)) * (Complex.I * ((c * x : ℝ) : ℂ))
-      = bandKernel c x t * ((Complex.I * Complex.I) * ((c * x : ℝ) : ℂ) ^ 2) := by ring
-    _ = bandKernel c x t * (-(((c * x : ℝ) : ℂ)) ^ 2) := by rw [hI]; ring
+      = bandKernel c x t * ((Complex.I * Complex.I) * ((c * x : ℝ) : ℂ) ^ (2 : ℕ)) := by ring
+    _ = bandKernel c x t * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ)) := by rw [hI]; ring
 
 /-- The prolate operator applied to a value, its first and its second derivative. -/
-def prolateSymbol (c v dv ddv : ℂ) : ℂ := (1 - v ^ 2) * ddv - 2 * v * dv - (c : ℂ) ^ 2 * v ^ 2
+def prolateSymbol (c v dv ddv : ℂ) : ℂ := (1 - v ^ (2 : ℕ)) * ddv - 2 * v * dv - (c : ℂ) ^ (2 : ℕ) * v ^ (2 : ℕ)
 
 /-- **The commutation identity, stated on the actual derivatives.**  Applying the prolate operator
 to the band kernel in `x` and in `t` gives the same function. -/
 theorem prolateSymbol_bandKernel_symm (c x t : ℝ) :
     prolateSymbol ((c : ℝ) : ℂ) ((x : ℝ) : ℂ)
-        (Complex.I * ((c * t : ℝ) : ℂ)) (-(((c * t : ℝ) : ℂ)) ^ 2) * bandKernel c x t
+        (Complex.I * ((c * t : ℝ) : ℂ)) (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * bandKernel c x t
       = prolateSymbol ((c : ℝ) : ℂ) ((t : ℝ) : ℂ)
-        (Complex.I * ((c * x : ℝ) : ℂ)) (-(((c * x : ℝ) : ℂ)) ^ 2) * bandKernel c x t := by
+        (Complex.I * ((c * x : ℝ) : ℂ)) (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ)) * bandKernel c x t := by
   rw [prolateSymbol, prolateSymbol]
   exact prolate_bandKernel_symm c x t
 
@@ -101,12 +101,12 @@ theorem prolateSymbol_bandKernel_symm (c x t : ℝ) :
 /-- The prolate operator applied to a complex-valued function of a real variable, presented through
 its value and its first two derivatives. -/
 def prolateActionC (c : ℝ) (u Du DDu : ℝ → ℂ) (t : ℝ) : ℂ :=
-  (1 - ((t : ℝ) : ℂ) ^ 2) * DDu t - 2 * ((t : ℝ) : ℂ) * Du t
-    - ((c : ℝ) : ℂ) ^ 2 * ((t : ℝ) : ℂ) ^ 2 * u t
+  (1 - ((t : ℝ) : ℂ) ^ (2 : ℕ)) * DDu t - 2 * ((t : ℝ) : ℂ) * Du t
+    - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((t : ℝ) : ℂ) ^ (2 : ℕ) * u t
 
 theorem hasDerivAt_prolateWeight (t : ℝ) :
-    HasDerivAt (fun y : ℝ => ((1 - y ^ 2 : ℝ) : ℂ)) (((-2 * t : ℝ) : ℂ)) t := by
-  have h : HasDerivAt (fun y : ℝ => 1 - y ^ 2) (-2 * t) t := by
+    HasDerivAt (fun y : ℝ => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ)) (((-2 * t : ℝ) : ℂ)) t := by
+  have h : HasDerivAt (fun y : ℝ => 1 - y ^ (2 : ℕ)) (-2 * t) t := by
     simpa using ((hasDerivAt_pow 2 t).const_sub 1)
   exact h.ofReal_comp
 
@@ -125,21 +125,21 @@ theorem integral_prolate_pairing_eq_zero {c : ℝ} {u v Du Dv DDu DDv : ℝ → 
         (prolateActionC c u Du DDu t * v t - u t * prolateActionC c v Dv DDv t)) = 0 := by
   have hcongr : ∀ t : ℝ,
       prolateActionC c u Du DDu t * v t - u t * prolateActionC c v Dv DDv t
-        = (((-2 * t : ℝ) : ℂ) * Du t + ((1 - t ^ 2 : ℝ) : ℂ) * DDu t) * v t
-          - u t * (((-2 * t : ℝ) : ℂ) * Dv t + ((1 - t ^ 2 : ℝ) : ℂ) * DDv t) := by
+        = (((-2 * t : ℝ) : ℂ) * Du t + ((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * DDu t) * v t
+          - u t * (((-2 * t : ℝ) : ℂ) * Dv t + ((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * DDv t) := by
     intro t
     rw [prolateActionC, prolateActionC]
     push_cast
     ring
   have hint' : IntervalIntegrable
-      (fun t : ℝ => (((-2 * t : ℝ) : ℂ) * Du t + ((1 - t ^ 2 : ℝ) : ℂ) * DDu t) * v t
-        - u t * (((-2 * t : ℝ) : ℂ) * Dv t + ((1 - t ^ 2 : ℝ) : ℂ) * DDv t))
+      (fun t : ℝ => (((-2 * t : ℝ) : ℂ) * Du t + ((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * DDu t) * v t
+        - u t * (((-2 * t : ℝ) : ℂ) * Dv t + ((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * DDv t))
       MeasureTheory.volume (-1) 1 := by
     refine hint.congr ?_
     intro t _
     exact hcongr t
   have hmain := HTGeometry.integral_sturm_pairing_sub_complex_eq_zero
-    (p := fun y : ℝ => ((1 - y ^ 2 : ℝ) : ℂ)) (Dp := fun y : ℝ => ((-2 * y : ℝ) : ℂ))
+    (p := fun y : ℝ => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ)) (Dp := fun y : ℝ => ((-2 * y : ℝ) : ℂ))
     (u := u) (v := v) (Du := Du) (Dv := Dv) (DDu := DDu) (DDv := DDv)
     (fun x _ => hasDerivAt_prolateWeight x) hu hv hDu hDv hint' (by norm_num) (by norm_num)
   rw [← hmain]
@@ -240,7 +240,7 @@ theorem hasDerivAt_bandTransformDeriv {c : ℝ} {f : ℝ → ℂ}
     (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (x : ℝ) :
     HasDerivAt (fun y : ℝ =>
         ∫ t in (-1 : ℝ)..1, bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
-      (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t) x := by
+      (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t) x := by
   have hmul : IntervalIntegrable
       (fun t : ℝ => (Complex.I * ((c * t : ℝ) : ℂ)) * f t) MeasureTheory.volume (-1) 1 := by
     refine intervalIntegrable_kernelMul hf _ ?_ |c| ?_
@@ -262,13 +262,13 @@ theorem hasDerivAt_bandTransformDeriv {c : ℝ} {f : ℝ → ℂ}
     ring
   have hcongr2 : (∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ))
         * ((Complex.I * ((c * t : ℝ) : ℂ)) * f t))
-      = ∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t := by
+      = ∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t := by
     refine intervalIntegral.integral_congr (fun t _ => ?_)
     have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
     calc bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ))
           * ((Complex.I * ((c * t : ℝ) : ℂ)) * f t)
-        = bandKernel c x t * ((Complex.I * Complex.I) * ((c * t : ℝ) : ℂ) ^ 2) * f t := by ring
-      _ = bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t := by rw [hI]; ring
+        = bandKernel c x t * ((Complex.I * Complex.I) * ((c * t : ℝ) : ℂ) ^ (2 : ℕ)) * f t := by ring
+      _ = bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t := by rw [hI]; ring
   rw [← hcongr2]
   simpa only [hcongr1] using h
 
@@ -287,15 +287,15 @@ theorem intervalIntegrable_bandKernel_mul {c : ℝ} {f : ℝ → ℂ}
 variable.**  Combining the two differentiations with the pointwise kernel identity. -/
 theorem prolateAction_bandTransform_eq {c : ℝ} {f : ℝ → ℂ}
     (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (x : ℝ) :
-    (1 - ((x : ℝ) : ℂ) ^ 2)
-        * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t)
+    (1 - ((x : ℝ) : ℂ) ^ (2 : ℕ))
+        * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t)
       - 2 * ((x : ℝ) : ℂ)
         * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
-      - ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2
+      - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ)
         * (∫ t in (-1 : ℝ)..1, bandKernel c x t * f t)
       = ∫ t in (-1 : ℝ)..1,
           prolateSymbol ((c : ℝ) : ℂ) ((t : ℝ) : ℂ)
-            (Complex.I * ((c * x : ℝ) : ℂ)) (-(((c * x : ℝ) : ℂ)) ^ 2)
+            (Complex.I * ((c * x : ℝ) : ℂ)) (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))
             * bandKernel c x t * f t := by
   have hle : ∀ t ∈ Set.uIoc (-1 : ℝ) 1, |t| ≤ 1 := by
     intro t ht
@@ -303,15 +303,15 @@ theorem prolateAction_bandTransform_eq {c : ℝ} {f : ℝ → ℂ}
     rw [abs_le]
     exact ⟨le_of_lt ht.1, ht.2⟩
   have hi2 : IntervalIntegrable
-      (fun t : ℝ => bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t)
+      (fun t : ℝ => bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t)
       MeasureTheory.volume (-1) 1 := by
-    refine intervalIntegrable_bandKernel_mul hf x _ ?_ (c ^ 2) (fun t ht => ?_)
+    refine intervalIntegrable_bandKernel_mul hf x _ ?_ (c ^ (2 : ℕ)) (fun t ht => ?_)
     · exact (Complex.continuous_ofReal.comp (continuous_const.mul continuous_id)).pow 2 |>.neg
     · rw [norm_neg, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_mul]
-      have ht2 : t ^ 2 ≤ 1 := by nlinarith [sq_abs t, abs_nonneg t, hle t ht]
-      calc (|c| * |t|) ^ 2 = c ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs, sq_abs]
-        _ ≤ c ^ 2 * 1 := by nlinarith [sq_nonneg c, ht2]
-        _ = c ^ 2 := by ring
+      have ht2 : t ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_abs t, abs_nonneg t, hle t ht]
+      calc (|c| * |t|) ^ (2 : ℕ) = c ^ (2 : ℕ) * t ^ (2 : ℕ) := by rw [mul_pow, sq_abs, sq_abs]
+        _ ≤ c ^ (2 : ℕ) * 1 := by nlinarith [sq_nonneg c, ht2]
+        _ = c ^ (2 : ℕ) := by ring
   have hi1 : IntervalIntegrable
       (fun t : ℝ => bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
       MeasureTheory.volume (-1) 1 := by
@@ -334,12 +334,12 @@ theorem prolateAction_bandTransform_eq {c : ℝ} {f : ℝ → ℂ}
   refine intervalIntegral.integral_congr (fun t _ => ?_)
   have hsym := prolate_bandKernel_symm c x t
   rw [prolateSymbol]
-  have hexpand : (1 - ((x : ℝ) : ℂ) ^ 2) * (bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t)
+  have hexpand : (1 - ((x : ℝ) : ℂ) ^ (2 : ℕ)) * (bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t)
       - 2 * ((x : ℝ) : ℂ) * (bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
-      - ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2 * (bandKernel c x t * f t)
-      = (((1 - ((x : ℝ) : ℂ) ^ 2) * (-(((c * t : ℝ) : ℂ)) ^ 2)
+      - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ) * (bandKernel c x t * f t)
+      = (((1 - ((x : ℝ) : ℂ) ^ (2 : ℕ)) * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ))
           - 2 * ((x : ℝ) : ℂ) * (Complex.I * ((c * t : ℝ) : ℂ))
-          - ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2) * bandKernel c x t) * f t := by ring
+          - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ)) * bandKernel c x t) * f t := by ring
   rw [hexpand, hsym]
 
 
@@ -352,29 +352,29 @@ theorem prolateAction_bandTransform_commutes {c : ℝ} {f Df DDf : ℝ → ℂ} 
     (hleft : IntervalIntegrable
       (fun t : ℝ => prolateActionC c (fun s => bandKernel c x s)
           (fun s => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2)) t * f t)
+          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       MeasureTheory.volume (-1) 1)
     (hright : IntervalIntegrable
       (fun t : ℝ => bandKernel c x t * prolateActionC c f Df DDf t)
       MeasureTheory.volume (-1) 1) :
-    (1 - ((x : ℝ) : ℂ) ^ 2)
-        * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t)
+    (1 - ((x : ℝ) : ℂ) ^ (2 : ℕ))
+        * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t)
       - 2 * ((x : ℝ) : ℂ)
         * (∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
-      - ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2
+      - ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ)
         * (∫ t in (-1 : ℝ)..1, bandKernel c x t * f t)
       = ∫ t in (-1 : ℝ)..1, bandKernel c x t * prolateActionC c f Df DDf t := by
   have hpair := integral_prolate_pairing_eq_zero (c := c)
     (u := fun s : ℝ => bandKernel c x s)
     (Du := fun s : ℝ => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-    (DDu := fun s : ℝ => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2))
+    (DDu := fun s : ℝ => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ)))
     (v := f) (Dv := Df) (DDv := DDf)
     (fun y _ => hasDerivAt_bandKernel_snd c x y) hfd
     (fun y _ => hasDerivAt_bandKernelDeriv_snd c x y) hfd2 (hleft.sub hright)
   rw [intervalIntegral.integral_sub hleft hright] at hpair
   have hstep : (∫ t in (-1 : ℝ)..1, prolateActionC c (fun s => bandKernel c x s)
         (fun s => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-        (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2)) t * f t)
+        (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       = ∫ t in (-1 : ℝ)..1, bandKernel c x t * prolateActionC c f Df DDf t :=
     sub_eq_zero.mp hpair
   rw [prolateAction_bandTransform_eq hf x, ← hstep]
@@ -389,7 +389,7 @@ def bandEigenDeriv (c : ℝ) (χ : ℂ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
 
 /-- Its second derivative. -/
 def bandEigenSecondDeriv (c : ℝ) (χ : ℂ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
-  χ⁻¹ * ∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t
+  χ⁻¹ * ∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t
 
 /-- **Regularity bootstrap.**  An eigenfunction of the band transform is differentiable, with the
 derivative given by the transform against the differentiated kernel.  No smoothness of `f` is
@@ -437,7 +437,7 @@ theorem prolateAction_bandEigen_isEigen {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (
     (hleft : IntervalIntegrable
       (fun t : ℝ => prolateActionC c (fun s => bandKernel c x s)
           (fun s => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2)) t * f t)
+          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       MeasureTheory.volume (-1) 1)
     (hright : IntervalIntegrable
       (fun t : ℝ => bandKernel c x t
@@ -455,7 +455,7 @@ theorem prolateAction_bandEigen_isEigen {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (
   have h1 : (∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t)
       = χ * bandEigenDeriv c χ f x := by
     rw [bandEigenDeriv, ← mul_assoc, mul_inv_cancel₀ hχ, one_mul]
-  have h2 : (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t)
+  have h2 : (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t)
       = χ * bandEigenSecondDeriv c χ f x := by
     rw [bandEigenSecondDeriv, ← mul_assoc, mul_inv_cancel₀ hχ, one_mul]
   rw [h0, h1, h2, prolateActionC]
@@ -472,7 +472,7 @@ theorem prolateAction_bandEigen_eq_smul {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (
     (hleft : ∀ x : ℝ, IntervalIntegrable
       (fun t : ℝ => prolateActionC c (fun s => bandKernel c x s)
           (fun s => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2)) t * f t)
+          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       MeasureTheory.volume (-1) 1)
     (hright : ∀ x : ℝ, IntervalIntegrable
       (fun t : ℝ => bandKernel c x t
@@ -539,7 +539,7 @@ theorem bandTransformPow_zero {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (hχ : χ �
   funext y
   rw [bandTransformPow]
   have hcongr : (∫ t in (-1 : ℝ)..1,
-      bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)) ^ 0 * f t)
+      bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)) ^ (0 : ℕ) * f t)
       = ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t := by
     refine intervalIntegral.integral_congr (fun t _ => ?_)
     ring

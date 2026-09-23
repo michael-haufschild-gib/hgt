@@ -64,7 +64,7 @@ theorem fibreSmooth_eq_zero_of_large {x h : ℝ} (hx : 16 ≤ x) (hh : 0 ≤ h)
     fibreSmooth x h k i = 0 := by
   have hs4 : (4 : ℝ) ≤ Real.sqrt x := by
     have h16 : Real.sqrt 16 = 4 := by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
     rw [← h16]
     exact Real.sqrt_le_sqrt hx
   have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt (by linarith)
@@ -77,12 +77,12 @@ theorem fibreSmooth_eq_zero_of_large {x h : ℝ} (hx : 16 ≤ x) (hh : 0 ≤ h)
   have hbig : 3 * Real.sqrt x ≤ ((i + k : ℕ) : ℝ) := by
     have : (i : ℝ) ≤ ((i + k : ℕ) : ℝ) := by push_cast; linarith [Nat.cast_nonneg (α := ℝ) k]
     linarith
-  have hhigh : fibreHigh x h (i + k) ≤ 2 * Real.sqrt x / 3 := by
+  have hhigh : fibreHigh_fibreKernelExact x h (i + k) ≤ 2 * Real.sqrt x / 3 := by
     refine le_trans (fibreHigh_le_div x h (i + k)) ?_
     rw [div_le_iff₀ hden]
     have hs0 : (0 : ℝ) < Real.sqrt x := by linarith
     nlinarith [hbig, hwin, hsq, hs0]
-  have hlow : Real.sqrt x ≤ fibreLow x i := sqrt_le_fibreLow x i
+  have hlow : Real.sqrt x ≤ fibreLow_fibreKernelExact x i := sqrt_le_fibreLow x i
   rw [fibreSmooth, kernelSmooth, max_eq_right (by linarith)]
 
 /-- **A bounded weight supported on an initial segment: the trivial bound.** -/

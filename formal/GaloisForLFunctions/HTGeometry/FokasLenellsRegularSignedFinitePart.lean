@@ -29,8 +29,8 @@ private theorem common_two_ray_limit (f : ℝ → ℂ) (c : ℂ)
 
 /-- The upper actual negative-ray transmission is the lower positive-ray transmission of the twisted profile. -/
 theorem regularTransmission_upper_negative_exp_swap (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    regularScatteringMatrix q (-((Real.exp κ)^2)) 1 1 =
-      regularScatteringMatrix (twistedPotential q) ((Real.exp κ)^2) 0 0 := by
+    regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) 1 1 =
+      regularScatteringMatrix (twistedPotential q) ((Real.exp κ)^(2 : ℕ)) 0 0 := by
   rw [regularScatteringMatrix_negative_exp]
   change transmission (twistedPotential q) κ = _
   rw [regularTransmission_exp_eq_raw, rawScatteringMatrix_exp_eq]

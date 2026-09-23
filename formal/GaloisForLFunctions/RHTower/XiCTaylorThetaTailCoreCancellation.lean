@@ -119,7 +119,7 @@ theorem thetaCuspTailSecondSectionSourceSecondDerivative_eq_truncatedCosine
 
 def thetaCuspTailSecondCoreAtomSourceDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
-  -(z ^ 2 + 1 / 4) *
+  -(z ^ (2 : ℕ) + 1 / 4) *
     thetaCuspTailSecondSectionSourceDerivative d z x
 
 theorem hasDerivAt_thetaCuspTailSecondCoreAtom_source
@@ -130,9 +130,9 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtom_source
     thetaCuspTailSecondCoreAtomSourceDerivative
   have hraw := (hasDerivAt_const x (1 : ℂ)).sub
     ((hasDerivAt_thetaCuspTailSecondSection_source d z x).const_mul
-      (z ^ 2 + 1 / 4))
+      (z ^ (2 : ℕ) + 1 / 4))
   have hclean : HasDerivAt _
-      (-(z ^ 2 + 1 / 4) * thetaCuspTailSecondSectionSourceDerivative d z x) x :=
+      (-(z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSectionSourceDerivative d z x) x :=
     hraw.congr_deriv (by ring)
   simpa only [Pi.sub_apply] using! hclean
 
@@ -140,10 +140,10 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomSourceDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) :
     HasDerivAt (fun t : ℝ =>
       thetaCuspTailSecondCoreAtomSourceDerivative d z t)
-      (-(z ^ 2 + 1 / 4) * truncatedCosineSection d z x) x := by
+      (-(z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection d z x) x := by
   unfold thetaCuspTailSecondCoreAtomSourceDerivative
   have h := (hasDerivAt_thetaCuspTailSecondSectionSourceDerivative d z x).const_mul
-    (-(z ^ 2 + 1 / 4))
+    (-(z ^ (2 : ℕ) + 1 / 4))
   rw [thetaCuspTailSecondSectionSourceSecondDerivative_eq_truncatedCosine] at h
   exact h
 
@@ -151,7 +151,7 @@ theorem thetaCuspTailSecondCoreAtom_sourceSecondDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) :
     deriv (fun t : ℝ => deriv
       (fun u : ℝ => thetaCuspTailSecondCoreAtom d z u) t) x =
-      -(z ^ 2 + 1 / 4) * truncatedCosineSection d z x := by
+      -(z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection d z x := by
   have hfirst : deriv (fun u : ℝ => thetaCuspTailSecondCoreAtom d z u) =
       fun t : ℝ => thetaCuspTailSecondCoreAtomSourceDerivative d z t := by
     funext t
@@ -189,21 +189,21 @@ theorem thetaCuspTailSecondDensity_sub_tail_neg (x : ℝ) :
   ring
 
 /-- Exact finite-section completion identity.  The shifted second section is not an independent
-kernel: after multiplication by `z^2` it is the defect of the next ordinary cosine section. -/
+kernel: after multiplication by `z^(2 : ℕ)` it is the defect of the next ordinary cosine section. -/
 theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection
     (d : ℕ) (z : ℂ) (x : ℝ) :
     truncatedCosineSection (d + 1) z x =
-      1 - z ^ 2 * thetaCuspTailSecondSection d z x := by
+      1 - z ^ (2 : ℕ) * thetaCuspTailSecondSection d z x := by
   unfold truncatedCosineSection thetaCuspTailSecondSection
   rw [Finset.sum_range_succ']
   simp only [Nat.mul_zero, pow_zero, Nat.factorial_zero, Nat.cast_one, div_one,
     one_mul]
-  rw [show z ^ 2 *
+  rw [show z ^ (2 : ℕ) *
       (∑ k ∈ Finset.range (d + 1),
         (-1 : ℂ) ^ k * z ^ (2 * k) *
           ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) =
       ∑ k ∈ Finset.range (d + 1),
-        z ^ 2 * ((-1 : ℂ) ^ k * z ^ (2 * k) *
+        z ^ (2 : ℕ) * ((-1 : ℂ) ^ k * z ^ (2 * k) *
           ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) by
     rw [Finset.mul_sum]]
   have hsum :
@@ -211,7 +211,7 @@ theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection
         (-1 : ℂ) ^ (k + 1) * (z * (x : ℂ)) ^ (2 * (k + 1)) /
           (2 * (k + 1)).factorial) =
       -(∑ k ∈ Finset.range (d + 1),
-        z ^ 2 * ((-1 : ℂ) ^ k * z ^ (2 * k) *
+        z ^ (2 : ℕ) * ((-1 : ℂ) ^ k * z ^ (2 * k) *
           ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial))) := by
     rw [← Finset.sum_neg_distrib]
     apply Finset.sum_congr rfl
@@ -221,7 +221,7 @@ theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection
       rw [pow_succ]
       ring]
     rw [mul_pow]
-    rw [show z ^ (2 * k + 2) = z ^ 2 * z ^ (2 * k) by
+    rw [show z ^ (2 * k + 2) = z ^ (2 : ℕ) * z ^ (2 * k) by
       rw [pow_add]
       ring]
     ring
@@ -232,27 +232,27 @@ theorem truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection
 `-1/4` and the next finite cosine section without dividing by `z`. -/
 theorem sq_mul_thetaCuspTailSecondCoreAtom_eq_completion_mul_cosine_sub
     (d : ℕ) (z : ℂ) (x : ℝ) :
-    z ^ 2 * thetaCuspTailSecondCoreAtom d z x =
-      (z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by
-  have hsection : z ^ 2 * thetaCuspTailSecondSection d z x =
+    z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtom d z x =
+      (z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by
+  have hsection : z ^ (2 : ℕ) * thetaCuspTailSecondSection d z x =
       1 - truncatedCosineSection (d + 1) z x := by
     rw [truncatedCosineSection_succ_eq_one_sub_sq_mul_secondSection]
     ring
   unfold thetaCuspTailSecondCoreAtom
   calc
-    z ^ 2 * (1 - (z ^ 2 + 1 / 4) * thetaCuspTailSecondSection d z x) =
-        z ^ 2 - (z ^ 2 + 1 / 4) *
-          (z ^ 2 * thetaCuspTailSecondSection d z x) := by ring
-    _ = z ^ 2 - (z ^ 2 + 1 / 4) *
+    z ^ (2 : ℕ) * (1 - (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSection d z x) =
+        z ^ (2 : ℕ) - (z ^ (2 : ℕ) + 1 / 4) *
+          (z ^ (2 : ℕ) * thetaCuspTailSecondSection d z x) := by ring
+    _ = z ^ (2 : ℕ) - (z ^ (2 : ℕ) + 1 / 4) *
           (1 - truncatedCosineSection (d + 1) z x) := by rw [hsection]
-    _ = (z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by ring
+    _ = (z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4 := by ring
 
-/-- Multiplication by the completion monomial `z^2` has one exact radial current cost.  This
+/-- Multiplication by the completion monomial `z^(2 : ℕ)` has one exact radial current cost.  This
 identity isolates that cost from the completion-compensated cosine correlation. -/
 theorem orientedPolynomialCurrent_X_sq_mul
     (P : Polynomial ℂ) (z : ℂ) :
-    orientedPolynomialCurrent (X ^ 2 * P) z =
-      Complex.normSq z ^ 2 * orientedPolynomialCurrent P z -
+    orientedPolynomialCurrent (X ^ (2 : ℕ) * P) z =
+      Complex.normSq z ^ (2 : ℕ) * orientedPolynomialCurrent P z -
         2 * Complex.normSq z * z.im * Complex.normSq (P.eval z) := by
   unfold orientedPolynomialCurrent
   simp only [derivative_mul, derivative_X_pow, Nat.cast_ofNat, eval_add, eval_mul,
@@ -271,7 +271,7 @@ theorem integral_thetaCuspTailSecondDensity_mul_coreAtom_eq_seam_sub_tail
     (∫ x : ℝ in Ioi 0,
       (thetaCuspTailSecondDensity x : ℂ) *
         thetaCuspTailSecondCoreAtom d z x) =
-      1 - 4 * (z ^ 2 + 1 / 4) *
+      1 - 4 * (z ^ (2 : ℕ) + 1 / 4) *
         ∫ x : ℝ in Ioi 0,
           (thetaCuspTailDerivative 0 x : ℂ) *
             truncatedCosineSection d z x := by
@@ -284,11 +284,11 @@ theorem integral_thetaCuspTailSecondDensity_mul_coreAtom_eq_seam_sub_tail
         2 * (xiCTaylorThetaTailCorePolynomial d).eval z := by
           rw [hrho]
           ring
-    _ = 2 * (1 / 2 - (z ^ 2 + 1 / 4) *
+    _ = 2 * (1 / 2 - (z ^ (2 : ℕ) + 1 / 4) *
           (2 * ∫ x : ℝ in Ioi 0,
             (thetaCuspTailDerivative 0 x : ℂ) *
               truncatedCosineSection d z x)) := by rw [htail]
-    _ = 1 - 4 * (z ^ 2 + 1 / 4) *
+    _ = 1 - 4 * (z ^ (2 : ℕ) + 1 / 4) *
           ∫ x : ℝ in Ioi 0,
             (thetaCuspTailDerivative 0 x : ℂ) *
               truncatedCosineSection d z x := by ring
@@ -307,7 +307,7 @@ theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixed
           (thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondCoreAtomDerivative d z x) *
         (starRingEnd ℂ)
-          ((z ^ 2 + 1 / 4) *
+          ((z ^ (2 : ℕ) + 1 / 4) *
             ∫ y : ℝ in Ioi 0,
               (thetaCuspTailDerivative 0 y : ℂ) *
                 truncatedCosineSection d z y)).im := by
@@ -321,7 +321,7 @@ theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixed
       thetaCuspTailSecondCoreAtomDerivative d z x
   let M : ℂ := ∫ y : ℝ in Ioi 0,
     (thetaCuspTailDerivative 0 y : ℂ) * truncatedCosineSection d z y
-  let A : ℂ := z ^ 2 + 1 / 4
+  let A : ℂ := z ^ (2 : ℕ) + 1 / 4
   change (((1 / 2 : ℂ) * I) *
       (starRingEnd ℂ) (1 / 2 - A * (2 * M))).im =
     (1 / 4 : ℝ) * I.im - (I * (starRingEnd ℂ) (A * M)).im
@@ -368,7 +368,7 @@ def xiCTaylorThetaTailCoreMixedCorrelationKernel
   (((thetaCuspTailSecondDensity p.1 : ℂ) *
       thetaCuspTailSecondCoreAtomDerivative d z p.1) *
     (starRingEnd ℂ)
-      ((z ^ 2 + 1 / 4) *
+      ((z ^ (2 : ℕ) + 1 / 4) *
         ((thetaCuspTailDerivative 0 p.2 : ℂ) *
           truncatedCosineSection d z p.2))).im
 
@@ -389,13 +389,13 @@ theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixedCorrelationIntegral
     (thetaCuspTailSecondDensity x : ℂ) *
       thetaCuspTailSecondCoreAtomDerivative d z x
   let g : ℝ → ℂ := fun y =>
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
       ((thetaCuspTailDerivative 0 y : ℂ) * truncatedCosineSection d z y)
   have hf : Integrable f mu :=
     integrableOn_thetaCuspTailSecondDensity_mul_coreAtomDerivative d z
   have hg : Integrable g mu :=
     (integrableOn_thetaCuspTailDerivative_mul_truncatedCosineSection d z).const_mul
-      (z ^ 2 + 1 / 4)
+      (z ^ (2 : ℕ) + 1 / 4)
   have hgconj : Integrable (fun y => (starRingEnd ℂ) (g y)) mu :=
     (RCLike.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.integrable_comp hg
   have hprod : Integrable (fun p : ℝ × ℝ =>
@@ -421,16 +421,16 @@ theorem xiCTaylorThetaTailCore_current_eq_seam_sub_mixedCorrelationIntegral
   change (1 / 4 : ℝ) * (∫ x : ℝ, f x ∂mu).im -
       ((∫ x : ℝ, f x ∂mu) *
         (starRingEnd ℂ)
-          ((z ^ 2 + 1 / 4) *
+          ((z ^ (2 : ℕ) + 1 / 4) *
             ∫ y : ℝ, (thetaCuspTailDerivative 0 y : ℂ) *
               truncatedCosineSection d z y ∂mu)).im = _
   rw [hfim]
   have hgIntegral : (∫ y : ℝ, g y ∂mu) =
-      (z ^ 2 + 1 / 4) *
+      (z ^ (2 : ℕ) + 1 / 4) *
         ∫ y : ℝ, (thetaCuspTailDerivative 0 y : ℂ) *
           truncatedCosineSection d z y ∂mu := by
     simpa only [g] using
-      (MeasureTheory.integral_const_mul (μ := mu) (z ^ 2 + 1 / 4)
+      (MeasureTheory.integral_const_mul (μ := mu) (z ^ (2 : ℕ) + 1 / 4)
         (fun y : ℝ => (thetaCuspTailDerivative 0 y : ℂ) *
           truncatedCosineSection d z y))
   rw [← hgIntegral, ← hmul, him]

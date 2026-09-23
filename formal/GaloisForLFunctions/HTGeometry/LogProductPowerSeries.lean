@@ -32,7 +32,7 @@ theorem summable_norm_pow (ha : Summable fun i => ‖a i‖) (hb : ∀ i, ‖a i
     (hk : 1 ≤ k) : Summable fun i => ‖(a i) ^ k‖ := by
   refine ha.of_nonneg_of_le (fun _ => norm_nonneg _) fun i => ?_
   rw [norm_pow]
-  calc ‖a i‖ ^ k ≤ ‖a i‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
+  calc ‖a i‖ ^ k ≤ ‖a i‖ ^ (1 : ℕ) := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
     _ = ‖a i‖ := pow_one _
 
 /-- The double family whose sum is the logarithm of the product. -/
@@ -50,7 +50,7 @@ theorem summable_logTerm (ha : Summable fun i => ‖a i‖) (hb : ∀ i, ‖a i�
       rw [norm_div, norm_pow, norm_mul, mul_pow, Complex.norm_natCast]
     rw [hnorm]
     have h1 : ‖a i‖ ^ k ≤ ‖a i‖ := by
-      calc ‖a i‖ ^ k ≤ ‖a i‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
+      calc ‖a i‖ ^ k ≤ ‖a i‖ ^ (1 : ℕ) := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
         _ = ‖a i‖ := pow_one _
     have hnn : (0 : ℝ) ≤ ‖t‖ ^ k * ‖a i‖ ^ k := by positivity
     calc (‖t‖ ^ k * ‖a i‖ ^ k) / (k : ℝ) ≤ ‖t‖ ^ k * ‖a i‖ ^ k := by
@@ -275,13 +275,13 @@ theorem summable_norm_log_one_sub_mul (ha : Summable fun i => ‖a i‖) (hb : �
       refine inv_anti₀ htpos ?_
       linarith
     have hTA : ‖t‖ * ‖a i‖ ≤ ‖a i‖ := by nlinarith [hnn, ht.le]
-    have hsq : (‖t‖ * ‖a i‖) ^ 2 ≤ ‖a i‖ := by
-      have h1 : (‖t‖ * ‖a i‖) ^ 2 ≤ ‖a i‖ ^ 2 := by
+    have hsq : (‖t‖ * ‖a i‖) ^ (2 : ℕ) ≤ ‖a i‖ := by
+      have h1 : (‖t‖ * ‖a i‖) ^ (2 : ℕ) ≤ ‖a i‖ ^ (2 : ℕ) := by
         refine pow_le_pow_left₀ (by positivity) hTA 2
-      have h2 : ‖a i‖ ^ 2 ≤ ‖a i‖ := by nlinarith [hnn, hai1]
+      have h2 : ‖a i‖ ^ (2 : ℕ) ≤ ‖a i‖ := by nlinarith [hnn, hai1]
       linarith
     have hinvnn : (0 : ℝ) ≤ (1 - ‖t‖ * ‖a i‖)⁻¹ := by positivity
-    have hkey : (‖t‖ * ‖a i‖) ^ 2 * (1 - ‖t‖ * ‖a i‖)⁻¹ ≤ ‖a i‖ * (1 - ‖t‖)⁻¹ :=
+    have hkey : (‖t‖ * ‖a i‖) ^ (2 : ℕ) * (1 - ‖t‖ * ‖a i‖)⁻¹ ≤ ‖a i‖ * (1 - ‖t‖)⁻¹ :=
       le_trans (mul_le_mul_of_nonneg_right hsq hinvnn)
         (mul_le_mul_of_nonneg_left hinvle hnn)
     have hlin : ‖t‖ * ‖a i‖ ≤ ‖a i‖ := hTA

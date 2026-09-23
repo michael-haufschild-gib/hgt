@@ -25,8 +25,8 @@ theorem windowOverlap_shift_eq_zero {X L n h : ℕ} (hh : L ≤ h) :
 
 /-- **The correlation sum runs over `h < L`.** -/
 theorem sum_normSq_window_eq_autocorrelation_lt (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      = ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      = ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ (2 : ℕ)
         + 2 * ∑ h ∈ Finset.Ico 1 L, ∑ n ∈ Finset.range (X + L + 1 - h),
             ((windowOverlap X L n (n + h) : ℕ) : ℝ)
               * (a n * (starRingEnd ℂ) (a (n + h))).re := by

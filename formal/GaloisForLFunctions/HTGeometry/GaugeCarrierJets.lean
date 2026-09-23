@@ -44,7 +44,7 @@ theorem iteratedDeriv_polynomial_eval_fun (k : ℕ) (P : Polynomial ℂ) :
       rw [iteratedDeriv_succ, ih P, Function.iterate_succ_apply']
       exact Polynomial.deriv _
 
-theorem iteratedDeriv_polynomial_eval (P : Polynomial ℂ) (k : ℕ) (z : ℂ) :
+theorem iteratedDeriv_polynomial_eval_gaugeCarrierJets (P : Polynomial ℂ) (k : ℕ) (z : ℂ) :
     iteratedDeriv k (fun w => Polynomial.eval w P) z = (Polynomial.derivative^[k] P).eval z :=
   congrFun (iteratedDeriv_polynomial_eval_fun k P) z
 

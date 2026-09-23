@@ -19,14 +19,14 @@ noncomputable section
 
 /-- **The scaled Cauchy kernel has the atom kernel as its pointwise energy.** -/
 theorem normSq_scaled_cauchy_eq_atomKernel (a y t : ℝ) :
-    ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ 2 = atomKernel a y t := by
+    ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ (2 : ℕ) = atomKernel a y t := by
   rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs,
     Complex.sq_norm, normSq_inv_sub_upperNode, atomKernel, div_eq_mul_inv]
 
 /-- The energy of the scaled Cauchy kernel is the atom kernel integral, so the scaled Gram diagonal
 is exactly the quantity whose limit the atom law computes. -/
 theorem integral_normSq_scaled_cauchy (ν : Measure ℝ) (a y : ℝ) :
-    ∫ t, ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ 2 ∂ν
+    ∫ t, ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ (2 : ℕ) ∂ν
       = ∫ t, atomKernel a y t ∂ν := by
   congr 1
   funext t
@@ -35,7 +35,7 @@ theorem integral_normSq_scaled_cauchy (ν : Measure ℝ) (a y : ℝ) :
 /-- The scaled Cauchy kernel is square integrable exactly when the atom kernel is integrable, which
 the Herglotz dominant supplies. -/
 theorem integrable_normSq_scaled_cauchy_iff (ν : Measure ℝ) (a y : ℝ) :
-    Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ 2) ν ↔
+    Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ (2 : ℕ)) ν ↔
       Integrable (fun t : ℝ => atomKernel a y t) ν := by
   constructor
   · intro h

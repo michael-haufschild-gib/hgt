@@ -12,7 +12,7 @@ expansion `(17)`:
   boundary-layer scale differs from its Dickman limit by an even jet in `1/log N`;
 * vertical axis, test function `2(1 - cos (c u))`: the same for the vertical clock energy.
 
-The leading correction `(18)` is the second higher-order Mertens constant at scale `(log N)^2`,
+The leading correction `(18)` is the second higher-order Mertens constant at scale `(log N)^(2 : ℕ)`,
 every test function flat at the collapsed endpoint has defect beyond all algebraic orders `(19)`,
 and every finite truncation is zero-free after exponentiation `(20)`.
 
@@ -398,13 +398,13 @@ open Filter Topology Set MeasureTheory
 
 /-! ## The leading correction and the beyond-all-orders statement -/
 
-/-- **`(18)`: the first symmetric normalization is `(log N)^2` and its coefficient is the second
+/-- **`(18)`: the first symmetric normalization is `(log N)^(2 : ℕ)` and its coefficient is the second
 higher-order Mertens constant.** -/
 theorem tendsto_logSq_mul_primeClockRadialEnergy_sub (c : ℝ) :
-    Tendsto (fun n : ℕ => (Real.log n) ^ 2 *
+    Tendsto (fun n : ℕ => (Real.log n) ^ (2 : ℕ) *
         (primeClockRadialEnergy n (c / Real.log n)
           - ∫ u in (0 : ℝ)..1, radialProfileTest c u))
-      atTop (𝓝 (c ^ 2 * mertensLogPowConstantFull 1)) := by
+      atTop (𝓝 (c ^ (2 : ℕ) * mertensLogPowConstantFull 1)) := by
   obtain ⟨B, X₀, hB, hX₀, hmain⟩ := exists_abs_primeClockRadialEnergy_jet_le 1 c
   have hX₀nat : ∀ᶠ n : ℕ in atTop, X₀ ≤ (n : ℝ) := by
     have h := tendsto_natCast_atTop_atTop (R := ℝ)
@@ -418,25 +418,25 @@ theorem tendsto_logSq_mul_primeClockRadialEnergy_sub (c : ℝ) :
     have hjet : ∑ k ∈ Finset.range 2,
         ((if (k + 1) % 2 = 0 then 2 * c ^ (k + 1) else 0) / (((k + 1).factorial : ℕ) : ℝ))
           * mertensLogPowConstantFull k / (Real.log (n : ℝ)) ^ (k + 1)
-        = c ^ 2 * mertensLogPowConstantFull 1 / (Real.log (n : ℝ)) ^ 2 := by
+        = c ^ (2 : ℕ) * mertensLogPowConstantFull 1 / (Real.log (n : ℝ)) ^ (2 : ℕ) := by
       rw [Finset.sum_range_succ, Finset.sum_range_one]
       norm_num
     rw [hjet] at h
-    have hkey : |(Real.log (n : ℝ)) ^ 2 *
+    have hkey : |(Real.log (n : ℝ)) ^ (2 : ℕ) *
         (primeClockRadialEnergy n (c / Real.log (n : ℝ))
           - ∫ u in (0 : ℝ)..1, radialProfileTest c u)
-        - c ^ 2 * mertensLogPowConstantFull 1|
-        ≤ (Real.log (n : ℝ)) ^ 2 * (B / (Real.log (n : ℝ)) ^ 3) := by
-      have hfac : (Real.log (n : ℝ)) ^ 2 *
+        - c ^ (2 : ℕ) * mertensLogPowConstantFull 1|
+        ≤ (Real.log (n : ℝ)) ^ (2 : ℕ) * (B / (Real.log (n : ℝ)) ^ (3 : ℕ)) := by
+      have hfac : (Real.log (n : ℝ)) ^ (2 : ℕ) *
           (primeClockRadialEnergy n (c / Real.log (n : ℝ))
             - ∫ u in (0 : ℝ)..1, radialProfileTest c u)
-          - c ^ 2 * mertensLogPowConstantFull 1
-          = (Real.log (n : ℝ)) ^ 2 *
+          - c ^ (2 : ℕ) * mertensLogPowConstantFull 1
+          = (Real.log (n : ℝ)) ^ (2 : ℕ) *
             ((primeClockRadialEnergy n (c / Real.log (n : ℝ))
               - ∫ u in (0 : ℝ)..1, radialProfileTest c u)
-              - c ^ 2 * mertensLogPowConstantFull 1 / (Real.log (n : ℝ)) ^ 2) := by
+              - c ^ (2 : ℕ) * mertensLogPowConstantFull 1 / (Real.log (n : ℝ)) ^ (2 : ℕ)) := by
         field_simp
-      rw [hfac, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (Real.log (n : ℝ)) ^ 2)]
+      rw [hfac, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (Real.log (n : ℝ)) ^ (2 : ℕ))]
       exact mul_le_mul_of_nonneg_left h (by positivity)
     rw [Real.norm_eq_abs]
     refine hkey.trans_eq ?_

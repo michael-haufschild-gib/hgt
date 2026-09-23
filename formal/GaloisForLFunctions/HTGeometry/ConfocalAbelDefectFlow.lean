@@ -73,22 +73,22 @@ theorem confocalDefect_antitone {R₁ R₂ : ℝ} (hR : R₁ ≤ R₂) (z : ℂ)
 
 private theorem sqrt_sq_add_sq_sub_le
     {a b : ℝ} (ha : 0 < a) :
-    0 ≤ Real.sqrt (a ^ 2 + b ^ 2) - a ∧
-      Real.sqrt (a ^ 2 + b ^ 2) - a ≤ b ^ 2 / (2 * a) := by
-  have hrad : 0 ≤ a ^ 2 + b ^ 2 := by positivity
-  have hsqa : Real.sqrt (a ^ 2) = a := by
+    0 ≤ Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) - a ∧
+      Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) - a ≤ b ^ (2 : ℕ) / (2 * a) := by
+  have hrad : 0 ≤ a ^ (2 : ℕ) + b ^ (2 : ℕ) := by positivity
+  have hsqa : Real.sqrt (a ^ (2 : ℕ)) = a := by
     rw [Real.sqrt_sq_eq_abs, abs_of_pos ha]
-  have hsqrt_ge : a ≤ Real.sqrt (a ^ 2 + b ^ 2) := by
-    have hs0 := Real.sqrt_nonneg (a ^ 2 + b ^ 2)
+  have hsqrt_ge : a ≤ Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
+    have hs0 := Real.sqrt_nonneg (a ^ (2 : ℕ) + b ^ (2 : ℕ))
     have hs2 := Real.sq_sqrt hrad
     nlinarith [sq_nonneg b]
   constructor
   · linarith
-  · let s := Real.sqrt (a ^ 2 + b ^ 2)
+  · let s := Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ))
     have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-    have hs2 : s ^ 2 = a ^ 2 + b ^ 2 := Real.sq_sqrt hrad
+    have hs2 : s ^ (2 : ℕ) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := Real.sq_sqrt hrad
     have hden : 0 < s + a := by positivity
-    have hid : s - a = b ^ 2 / (s + a) := by
+    have hid : s - a = b ^ (2 : ℕ) / (s + a) := by
       apply (eq_div_iff hden.ne').2
       nlinarith
     rw [hid]
@@ -100,33 +100,33 @@ private theorem sqrt_sq_add_sq_sub_le
 theorem confocalDefect_sub_transverseDefect_bounds
     {M R : ℝ} (hM : 0 ≤ M) (hRM : M < R) {z : ℂ} (hz : ‖z‖ ≤ M) :
     0 ≤ confocalDefect R z - transverseDefect z ∧
-      confocalDefect R z - transverseDefect z ≤ M ^ 2 / (2 * (R - M)) := by
+      confocalDefect R z - transverseDefect z ≤ M ^ (2 : ℕ) / (2 * (R - M)) := by
   let a : ℝ := R - z.re
   let b : ℝ := z.im
   have hzre : z.re ≤ M := (Complex.re_le_norm z).trans hz
   have ha : 0 < a := by dsimp [a]; linarith
   have hRM0 : 0 < R - M := sub_pos.mpr hRM
   have haRM : R - M ≤ a := by dsimp [a]; linarith
-  have hnorm : ‖(R : ℂ) - z‖ = Real.sqrt (a ^ 2 + b ^ 2) := by
+  have hnorm : ‖(R : ℂ) - z‖ = Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
     rw [Complex.norm_def]
     congr 1
     simp only [Complex.normSq_apply]
     dsimp [a, b]
     ring
   have hsqrt := sqrt_sq_add_sq_sub_le (b := b) ha
-  have hbM : b ^ 2 ≤ M ^ 2 := by
+  have hbM : b ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     have hbabs : |b| ≤ ‖z‖ := by
       dsimp [b]
       exact Complex.abs_im_le_norm z
     have hb : |b| ≤ M := hbabs.trans hz
     rw [sq_le_sq]
     simpa [abs_of_nonneg hM] using hb
-  have hdiv₁ : b ^ 2 / (2 * a) ≤ b ^ 2 / (2 * (R - M)) := by
+  have hdiv₁ : b ^ (2 : ℕ) / (2 * a) ≤ b ^ (2 : ℕ) / (2 * (R - M)) := by
     exact div_le_div_of_nonneg_left (sq_nonneg b) (by positivity) (by nlinarith)
-  have hdiv₂ : b ^ 2 / (2 * (R - M)) ≤ M ^ 2 / (2 * (R - M)) := by
+  have hdiv₂ : b ^ (2 : ℕ) / (2 * (R - M)) ≤ M ^ (2 : ℕ) / (2 * (R - M)) := by
     exact div_le_div_of_nonneg_right hbM (by positivity)
   have hrewrite : confocalDefect R z - transverseDefect z =
-      Real.sqrt (a ^ 2 + b ^ 2) - a := by
+      Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) - a := by
     rw [confocalDefect, transverseDefect, hnorm]
     dsimp [a]
     ring
@@ -194,7 +194,7 @@ theorem transverseDefectEnvelope_le_confocalDefectEnvelope_le
     (hM : 0 ≤ M) (hRM : M < R) (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     transverseDefectEnvelope S ≤ confocalDefectEnvelope S R ∧
       confocalDefectEnvelope S R ≤
-        transverseDefectEnvelope S + M ^ 2 / (2 * (R - M)) := by
+        transverseDefectEnvelope S + M ^ (2 : ℕ) / (2 * (R - M)) := by
   have hR0 : 0 ≤ R := le_trans hM hRM.le
   have hbConf := bddAbove_confocalDefect_image hR0 hbound
   have hbTrans := bddAbove_transverseDefect_image hbound
@@ -219,7 +219,7 @@ def confocalAmplitudeEnvelope (S : Set ℂ) (R : ℝ) : ℝ :=
 
 /-- Abel radius selected by the squared affine-amplitude envelope. -/
 def confocalAbelRadius (S : Set ℂ) (R : ℝ) : ℝ :=
-  (confocalAmplitudeEnvelope S R ^ 2)⁻¹
+  (confocalAmplitudeEnvelope S R ^ (2 : ℕ))⁻¹
 
 /-- The intrinsic amplitude envelope agrees with the literal supremum of affine Bernstein
 amplitudes. -/
@@ -377,7 +377,7 @@ theorem confocalAbelRadius_eq_one_iff
     positivity
   constructor
   · intro hA
-    have hBsq : confocalAmplitudeEnvelope S R ^ 2 = 1 := by
+    have hBsq : confocalAmplitudeEnvelope S R ^ (2 : ℕ) = 1 := by
       exact inv_eq_one.mp hA
     have hB : confocalAmplitudeEnvelope S R = 1 := by nlinarith
     exact (confocalAmplitudeEnvelope_eq_one_iff hne hM hRM hbound).mp hB
@@ -386,14 +386,14 @@ theorem confocalAbelRadius_eq_one_iff
     norm_num
 
 private theorem tendsto_confocal_collar_zero (M : ℝ) :
-    Tendsto (fun R : ℝ => M ^ 2 / (2 * (R - M))) atTop (nhds 0) := by
+    Tendsto (fun R : ℝ => M ^ (2 : ℕ) / (2 * (R - M))) atTop (nhds 0) := by
   have hshift : Tendsto (fun R : ℝ => R - M) atTop atTop := by
     change Tendsto (fun R : ℝ => id R + -M) atTop atTop
     exact tendsto_atTop_add_const_right atTop (-M) tendsto_id
   have hden : Tendsto (fun R : ℝ => 2 * (R - M)) atTop atTop :=
     hshift.const_mul_atTop (by norm_num)
   simpa only [Function.comp_apply, div_eq_mul_inv, zero_mul, mul_zero] using
-    (tendsto_inv_atTop_zero.comp hden).const_mul (M ^ 2)
+    (tendsto_inv_atTop_zero.comp hden).const_mul (M ^ (2 : ℕ))
 
 /-- The confocal envelope decreases to the normalization-free transverse envelope. -/
 theorem tendsto_confocalDefectEnvelope_atTop
@@ -410,7 +410,7 @@ theorem tendsto_confocalDefectEnvelope_atTop
   · intro b hb
     have hgap : 0 < b - transverseDefectEnvelope S := sub_pos.mpr hb
     have hevent : ∀ᶠ R : ℝ in atTop,
-        M ^ 2 / (2 * (R - M)) < b - transverseDefectEnvelope S :=
+        M ^ (2 : ℕ) / (2 * (R - M)) < b - transverseDefectEnvelope S :=
       (tendsto_order.1 (tendsto_confocal_collar_zero M)).2 _ hgap
     filter_upwards [eventually_gt_atTop M, hevent] with R hRM hsmall
     have hu :=
@@ -434,13 +434,13 @@ theorem tendsto_mul_confocalAmplitudeEnvelope_sq_sub_one
     {S : Set ℂ} (hne : S.Nonempty) {M : ℝ} (hM : 0 ≤ M)
     (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     Tendsto
-      (fun R : ℝ => R * (confocalAmplitudeEnvelope S R ^ 2 - 1))
+      (fun R : ℝ => R * (confocalAmplitudeEnvelope S R ^ (2 : ℕ) - 1))
       atTop (nhds (2 * transverseDefectEnvelope S)) := by
   have hD := tendsto_confocalDefectEnvelope_atTop hne hM hbound
   have hinv : Tendsto (fun R : ℝ => R⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
   have hmodel : Tendsto
       (fun R : ℝ => 2 * confocalDefectEnvelope S R +
-        confocalDefectEnvelope S R ^ 2 * R⁻¹)
+        confocalDefectEnvelope S R ^ (2 : ℕ) * R⁻¹)
       atTop (nhds (2 * transverseDefectEnvelope S)) := by
     simpa using (hD.const_mul 2).add ((hD.pow 2).mul hinv)
   apply hmodel.congr'
@@ -456,7 +456,7 @@ theorem tendsto_confocalAbelRadius_atTop
     Tendsto (confocalAbelRadius S) atTop (nhds 1) := by
   have hB := tendsto_confocalAmplitudeEnvelope_atTop hne hM hbound
   change Tendsto
-    (fun R : ℝ => (confocalAmplitudeEnvelope S R ^ 2)⁻¹) atTop (nhds 1)
+    (fun R : ℝ => (confocalAmplitudeEnvelope S R ^ (2 : ℕ))⁻¹) atTop (nhds 1)
   simpa only [one_pow, inv_one] using
     (hB.pow 2).inv₀ (pow_ne_zero 2 (by norm_num : (1 : ℝ) ≠ 0))
 
@@ -469,12 +469,12 @@ theorem tendsto_mul_one_sub_confocalAbelRadius
   have hnum := tendsto_mul_confocalAmplitudeEnvelope_sq_sub_one hne hM hbound
   have hB := tendsto_confocalAmplitudeEnvelope_atTop hne hM hbound
   have hdenInv : Tendsto
-      (fun R : ℝ => (confocalAmplitudeEnvelope S R ^ 2)⁻¹)
+      (fun R : ℝ => (confocalAmplitudeEnvelope S R ^ (2 : ℕ))⁻¹)
       atTop (nhds 1) := by
     simpa using (hB.pow 2).inv₀ (pow_ne_zero 2 (by norm_num : (1 : ℝ) ≠ 0))
   have hmodel : Tendsto
-      (fun R : ℝ => R * (confocalAmplitudeEnvelope S R ^ 2 - 1) *
-        (confocalAmplitudeEnvelope S R ^ 2)⁻¹)
+      (fun R : ℝ => R * (confocalAmplitudeEnvelope S R ^ (2 : ℕ) - 1) *
+        (confocalAmplitudeEnvelope S R ^ (2 : ℕ))⁻¹)
       atTop (nhds (2 * transverseDefectEnvelope S)) := by
     simpa only [mul_one] using hnum.mul hdenInv
   have hBpos : ∀ᶠ R : ℝ in atTop, 0 < confocalAmplitudeEnvelope S R :=

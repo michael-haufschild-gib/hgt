@@ -23,13 +23,13 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 
 /-- The exponential replica deficit. -/
 noncomputable def replicaDeficit (r : ℕ) (a b : ℝ) : ℝ :=
-  Real.exp (-((r : ℝ) * (a - b) ^ 2 / 2))
+  Real.exp (-((r : ℝ) * (a - b) ^ (2 : ℕ) / 2))
 
 theorem replicaDeficit_pos (r : ℕ) (a b : ℝ) : 0 < replicaDeficit r a b := Real.exp_pos _
 
 theorem replicaDeficit_le_one (r : ℕ) (a b : ℝ) : replicaDeficit r a b ≤ 1 := by
   rw [replicaDeficit, Real.exp_le_one_iff]
-  have : (0 : ℝ) ≤ (r : ℝ) * (a - b) ^ 2 / 2 := by positivity
+  have : (0 : ℝ) ≤ (r : ℝ) * (a - b) ^ (2 : ℕ) / 2 := by positivity
   linarith
 
 private theorem integrable_binomialTail_comp (ν : Measure Ω) [IsProbabilityMeasure ν] {Y : Ω → ℝ}
@@ -120,25 +120,25 @@ end ReporterExpectation
 section ReplicaOrder
 
 /-- The replica order that achieves a prescribed reporter error at a prescribed threshold gap. -/
-noncomputable def replicaOrderOf (ζ δ : ℝ) : ℕ := ⌈2 * Real.log (1 / ζ) / δ ^ 2⌉₊
+noncomputable def replicaOrderOf (ζ δ : ℝ) : ℕ := ⌈2 * Real.log (1 / ζ) / δ ^ (2 : ℕ)⌉₊
 
 /-- **Prescribed reporter error.**  The stated replica order makes the exponential deficit at most
 the prescribed error. -/
 theorem replicaDeficit_replicaOrderOf_le {ζ δ a b : ℝ} (hζ0 : 0 < ζ) (hζ1 : ζ ≤ 1)
     (hδ : 0 < δ) (hab : a - b = δ) :
     replicaDeficit (replicaOrderOf ζ δ) a b ≤ ζ := by
-  have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
+  have hδ2 : (0 : ℝ) < δ ^ (2 : ℕ) := by positivity
   have hlog : 0 ≤ Real.log (1 / ζ) := by
     refine Real.log_nonneg ?_
     rw [le_div_iff₀ hζ0, one_mul]
     exact hζ1
-  have hceil : 2 * Real.log (1 / ζ) / δ ^ 2 ≤ (replicaOrderOf ζ δ : ℝ) :=
+  have hceil : 2 * Real.log (1 / ζ) / δ ^ (2 : ℕ) ≤ (replicaOrderOf ζ δ : ℝ) :=
     Nat.le_ceil _
-  have hkey : Real.log (1 / ζ) ≤ (replicaOrderOf ζ δ : ℝ) * δ ^ 2 / 2 := by
+  have hkey : Real.log (1 / ζ) ≤ (replicaOrderOf ζ δ : ℝ) * δ ^ (2 : ℕ) / 2 := by
     rw [div_le_iff₀ hδ2] at hceil
     linarith
   rw [replicaDeficit, hab]
-  have hexp : Real.exp (-((replicaOrderOf ζ δ : ℝ) * δ ^ 2 / 2)) ≤
+  have hexp : Real.exp (-((replicaOrderOf ζ δ : ℝ) * δ ^ (2 : ℕ) / 2)) ≤
       Real.exp (-Real.log (1 / ζ)) := by
     refine Real.exp_le_exp.mpr ?_
     linarith

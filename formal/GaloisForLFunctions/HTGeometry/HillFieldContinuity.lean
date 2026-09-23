@@ -26,10 +26,10 @@ variable {m K C cmin : ℝ} {c dc : ℝ → ℝ} {G₀ : E → ℂ}
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- The fibre of the density is continuous in time. -/
-theorem continuous_hillDensity_time (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem continuous_hillDensity_time (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (ξ : E) : Continuous fun t : ℝ => hillDensity m c G₀ t ξ := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hcont : Continuous fun t : ℝ => hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t := by
     refine continuous_iff_continuousAt.mpr fun t => ?_
@@ -39,7 +39,7 @@ theorem continuous_hillDensity_time (hm : 0 < m) (hc : Continuous c) (hC : ∀ r
 /-- **The field is continuous in the time and the point together.** -/
 theorem continuousAt_hillEvolutionField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀) (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (t₀ : ℝ) (x₀ : E) :
     ContinuousAt (fun p : ℝ × E => hillEvolutionField m c G₀ p.1 p.2) (t₀, x₀) := by
@@ -100,7 +100,7 @@ theorem continuousAt_hillEvolutionField (hm : 0 < m) (hc : Continuous c)
 /-- **The field does not vanish near an event where its datum's synthesis does not vanish.** -/
 theorem eventually_hillEvolutionField_ne_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀) (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     {x₀ : E} (hne : kgSynthesis G₀ x₀ ≠ 0) :
     ∀ᶠ p : ℝ × E in nhds ((0 : ℝ), x₀), hillEvolutionField m c G₀ p.1 p.2 ≠ 0 := by

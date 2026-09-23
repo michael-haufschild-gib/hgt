@@ -22,7 +22,7 @@ theorem routeT_dlvp_inequality
     (hA : ∀ σ : ℝ, 1 < σ → σ ≤ 2 →
       (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re ≤ 1 / (σ - 1) + A)
     (hγ : 100000 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     (hβ1 : β ≤ 1)
     (hclose : 1 + δ - β ≤ routeTLandauRadius γ / 4)
@@ -57,7 +57,7 @@ theorem riemannZeta_ne_zero_routeT_of_dlvp_lt
     (hA : ∀ σ : ℝ, 1 < σ → σ ≤ 2 →
       (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re ≤ 1 / (σ - 1) + A)
     (hγ : 100000 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     (hβ1 : β ≤ 1)
     (hclose : 1 + δ - β ≤ routeTLandauRadius γ / 4)

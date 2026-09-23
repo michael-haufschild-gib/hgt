@@ -35,7 +35,7 @@ cutoff-free form: the divided-difference integral plus the exact logarithmic ter
 `ε → 0` value of `cutoffFinitePart`, whose split is cutoff-independent. -/
 def cauchyFinitePart (a x : ℝ) (u : ℝ → ℝ) : ℝ :=
   (∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) + (∫ y in x..a, (u y - u x) * (y - x)⁻¹) +
-    u x * Real.log (a ^ 2 - x ^ 2)
+    u x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))
 
 /-- The finite-part block of the form. -/
 def weilFinitePartBlock (a : ℝ) (u φ : ℝ → ℝ) : ℝ :=
@@ -48,7 +48,7 @@ def weilScalarBlock (a A : ℝ) (u φ : ℝ → ℝ) : ℝ :=
 /-- The prime block: a symmetric translation pair for each visible prime power. -/
 def weilPrimeBlock (s : Finset ℕ) (u φ : ℝ → ℝ) : ℝ :=
   -∑ n ∈ s, primePairWeight n *
-    (pairing (fun x => u (x + Real.log n)) φ + pairing (fun x => u (x - Real.log n)) φ)
+    (l2Pairing (fun x => u (x + Real.log n)) φ + l2Pairing (fun x => u (x - Real.log n)) φ)
 
 /-- The smooth archimedean remainder block.  Suzuki's remainder `r` is `C²` on the compact
 difference interval, so its second derivative enters as an ordinary continuous convolution kernel;
@@ -98,7 +98,7 @@ def restrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) 
 logarithmic term leaves the divided difference, three bounded blocks, and nothing else. -/
 theorem restrictedWeilRepresentative_eq (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u : ℝ → ℝ) (x : ℝ) :
     restrictedWeilRepresentative a A s k u x =
-      -(1 / 2) * (u x * Real.log (a ^ 2 - x ^ 2)) +
+      -(1 / 2) * (u x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) +
         (-(1 / 2) * ((∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) +
             ∫ y in x..a, (u y - u x) * (y - x)⁻¹) - (2 * A + 1) * u x -
           (∑ n ∈ s, primePairWeight n * (u (x + Real.log n) + u (x - Real.log n))) +
@@ -162,7 +162,7 @@ theorem weilPrimeBlock_eq {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Contin
   rw [weilPrimeBlock, hrhs, MeasureTheory.integral_finsetSum s hterm]
   congr 1
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [pairing, pairing]
+  rw [l2Pairing, l2Pairing]
   rw [show (∫ a, primePairWeight n * (u (a + Real.log n) + u (a - Real.log n)) * φ a)
       = primePairWeight n * ∫ a, (u (a + Real.log n) * φ a + u (a - Real.log n) * φ a) from by
     rw [← MeasureTheory.integral_const_mul]
@@ -202,16 +202,16 @@ theorem weilPrimeBlock_eq_jumpForms {u φ : ℝ → ℝ} (hu : Continuous u) (h�
     (hcu : HasCompactSupport u) (s : Finset ℕ) :
     weilPrimeBlock s u φ =
       (∑ n ∈ s, primePairWeight n * jumpForm (Real.log n) u φ) -
-        2 * (∑ n ∈ s, primePairWeight n) * pairing u φ := by
+        2 * (∑ n ∈ s, primePairWeight n) * l2Pairing u φ := by
   have hstep : ∀ n ∈ s,
       primePairWeight n *
-          (pairing (fun x => u (x + Real.log n)) φ + pairing (fun x => u (x - Real.log n)) φ) =
-        2 * primePairWeight n * pairing u φ -
+          (l2Pairing (fun x => u (x + Real.log n)) φ + l2Pairing (fun x => u (x - Real.log n)) φ) =
+        2 * primePairWeight n * l2Pairing u φ -
           primePairWeight n * jumpForm (Real.log n) u φ := by
     intro n _
     have h := jumpForm_eq_two_pairing_sub hu hφ hcu (Real.log n)
-    have : pairing (fun x => u (x + Real.log n)) φ + pairing (fun x => u (x - Real.log n)) φ =
-        2 * pairing u φ - jumpForm (Real.log n) u φ := by linarith
+    have : l2Pairing (fun x => u (x + Real.log n)) φ + l2Pairing (fun x => u (x - Real.log n)) φ =
+        2 * l2Pairing u φ - jumpForm (Real.log n) u φ := by linarith
     rw [this]
     ring
   rw [weilPrimeBlock, Finset.sum_congr rfl hstep]
@@ -233,7 +233,7 @@ with the divided-difference integrals completed. -/
 theorem cutoffFinitePart_eq_of_split {a x ε : ℝ} (u : ℝ → ℝ) (hu : Continuous u)
     (hxa : -a < x) (hax : x < a) (hε : 0 < ε) (hleft : -a ≤ x - ε) (hright : x + ε ≤ a) :
     cutoffFinitePart a x ε u =
-      cutoffDividedDifference a x ε u + u x * Real.log (a ^ 2 - x ^ 2) :=
+      cutoffDividedDifference a x ε u + u x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) :=
   cutoffFinitePart_eq u hu hxa hax hε hleft hright
 
 /-- The logarithmic coefficient of the finite part at an interior point is the value of the weight
@@ -241,7 +241,7 @@ there — an exact invariant of the kernel, independent of every cutoff. -/
 theorem cauchyFinitePart_log_coefficient (a x : ℝ) (u : ℝ → ℝ) :
     cauchyFinitePart a x u -
         ((∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) + ∫ y in x..a, (u y - u x) * (y - x)⁻¹) =
-      u x * Real.log (a ^ 2 - x ^ 2) := by
+      u x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) := by
   rw [cauchyFinitePart]
   ring
 
@@ -253,6 +253,6 @@ theorem weilScalarBlock_zero (a A : ℝ) (φ : ℝ → ℝ) :
 
 theorem weilPrimeBlock_zero (s : Finset ℕ) (φ : ℝ → ℝ) :
     weilPrimeBlock s (fun _ => 0) φ = 0 := by
-  simp [weilPrimeBlock, pairing]
+  simp [weilPrimeBlock, l2Pairing]
 
 end GaloisForLFunctions.RHTower

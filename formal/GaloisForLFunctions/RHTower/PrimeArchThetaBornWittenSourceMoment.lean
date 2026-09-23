@@ -19,7 +19,7 @@ noncomputable section
 def thetaCuspBornWittenRawMoment (j : ℕ) : ℝ :=
   ∑' n : ℕ, 2 * Real.pi *
     ∫ x : ℝ in Ioi 0,
-      x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2
+      x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)
 
 /-- The Born/Witten raw moments are exactly the theta-cusp raw moments. -/
 theorem thetaCuspBornWittenRawMoment_eq_thetaCuspRawEvenMoment (j : ℕ) :
@@ -30,7 +30,7 @@ theorem thetaCuspBornWittenRawMoment_eq_thetaCuspRawEvenMoment (j : ℕ) :
 /-- The source-side quadratic functional selected by the first nontrivial centered trace
 moment. -/
 def thetaCuspBornWittenQuadraticSource : ℝ :=
-  (thetaCuspBornWittenRawMoment 1 / thetaCuspBornWittenRawMoment 0) ^ 2 / 2 -
+  (thetaCuspBornWittenRawMoment 1 / thetaCuspBornWittenRawMoment 0) ^ (2 : ℕ) / 2 -
     (thetaCuspBornWittenRawMoment 2 / thetaCuspBornWittenRawMoment 0) / 6
 
 /-- The first nontrivial normalized prime--archimedean moment is exactly the quadratic

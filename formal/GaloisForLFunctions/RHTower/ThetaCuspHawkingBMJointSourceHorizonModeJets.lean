@@ -17,7 +17,7 @@ def tortoiseMode (outer : Bool) (w chi : ℂ) (t : ℝ) : ℂ := radialMode oute
 def tortoiseModeFirst (outer : Bool) (w chi : ℂ) (t : ℝ) : ℂ :=
   (coordinateFirst t:ℂ)*radialModeFirst outer w chi (horizonCoordinate t)
 def tortoiseModeSecond (outer : Bool) (w chi : ℂ) (t : ℝ) : ℂ :=
-  (coordinateFirst t:ℂ)^2*radialModeSecond outer w chi (horizonCoordinate t)+
+  (coordinateFirst t:ℂ)^(2 : ℕ)*radialModeSecond outer w chi (horizonCoordinate t)+
     (coordinateSecond t:ℂ)*radialModeFirst outer w chi (horizonCoordinate t)
 
 private theorem radialMode_jets {w chi : ℂ} (h : Chamber w chi) (outer : Bool)
@@ -48,7 +48,7 @@ theorem tortoiseMode_hasDerivAt {w chi : ℂ} (h : Chamber w chi) (outer : Bool)
 theorem tortoiseMode_equation {w chi : ℂ} (h : Chamber w chi) (outer : Bool)
     (t : ℝ) (ht : t < 0) :
     tortoiseModeSecond outer w chi t =
-      (w^2+(horizonCoordinate t:ℂ)*(1/4+chi^2))*tortoiseMode outer w chi t := by
+      (w^(2 : ℕ)+(horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ)))*tortoiseMode outer w chi t := by
   have hz := horizonCoordinate_interior t ht
   have he : D4BMPhysicalMaster.radialJet (Complex.I*w) chi (horizonCoordinate t)
       (radialMode outer w chi (horizonCoordinate t)) (radialModeFirst outer w chi (horizonCoordinate t))
@@ -61,7 +61,7 @@ theorem tortoiseMode_equation {w chi : ℂ} (h : Chamber w chi) (outer : Bool)
   have hz0 : (horizonCoordinate t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz.1)
   field_simp [hz0] at he
   dsimp only [tortoiseMode,tortoiseModeSecond,coordinateFirst,coordinateSecond]
-  have hu : (radialUnit t:ℂ)^2=1-(horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ)^(2 : ℕ)=1-(horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
     ring
   push_cast

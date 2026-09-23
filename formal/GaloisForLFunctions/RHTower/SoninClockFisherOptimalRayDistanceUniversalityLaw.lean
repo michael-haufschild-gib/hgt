@@ -23,13 +23,13 @@ theorem soninLogClock_invariantWeight_mul_erasedQFI_eq_rayDistanceSq_mul_massCom
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
-    ‖soninLogFourierInvariantAverage (X ψ)‖ ^ 2 *
-        HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    ‖soninLogFourierInvariantAverage (X ψ)‖ ^ (2 : ℕ) *
+        HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
           (‖inner ℂ ψ
             ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-          (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
+          (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) =
       soninLogFourierScatteringRayDistanceSq (X ψ) *
-        (‖X ψ‖ ^ 2 -
+        (‖X ψ‖ ^ (2 : ℕ) -
           soninLogFourierScatteringRayDistanceSq (X ψ) / 4) := by
   have hfisher :=
     soninLogClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQFI
@@ -38,13 +38,13 @@ theorem soninLogClock_invariantWeight_mul_erasedQFI_eq_rayDistanceSq_mul_massCom
     soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_massComplement
       (X ψ)
   calc
-    ‖soninLogFourierInvariantAverage (X ψ)‖ ^ 2 *
-          HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    ‖soninLogFourierInvariantAverage (X ψ)‖ ^ (2 : ℕ) *
+          HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
             (‖inner ℂ ψ
               ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-            (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
-        ‖X ψ‖ ^ 4 -
-          ‖inner ℂ (X ψ) (soninLogFourierScattering (X ψ))‖ ^ 2 :=
+            (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) =
+        ‖X ψ‖ ^ (4 : ℕ) -
+          ‖inner ℂ (X ψ) (soninLogFourierScattering (X ψ))‖ ^ (2 : ℕ) :=
       hfisher.symm
     _ = HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ)
         (X ψ) (soninLogFourierScattering (X ψ)) := by
@@ -52,7 +52,7 @@ theorem soninLogClock_invariantWeight_mul_erasedQFI_eq_rayDistanceSq_mul_massCom
       rw [soninLogFourierScattering_norm]
       ring
     _ = soninLogFourierScatteringRayDistanceSq (X ψ) *
-        (‖X ψ‖ ^ 2 -
+        (‖X ψ‖ ^ (2 : ℕ) -
           soninLogFourierScatteringRayDistanceSq (X ψ) / 4) := hray
 
 /-- **Sonin clock Fisher optimal-ray-distance universality.**  One real scattering phase attains
@@ -63,16 +63,16 @@ theorem exists_sign_soninLogClock_invariantWeight_mul_erasedQFI_eq_rayDistance
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
     ∃ c : ℂ, (c = 1 ∨ c = -1) ∧ ‖c‖ = 1 ∧
-      ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ 2 =
+      ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ (2 : ℕ) =
         soninLogFourierScatteringRayDistanceSq (X ψ) ∧
-      ‖soninLogFourierInvariantAverage (X ψ)‖ ^ 2 *
-          HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+      ‖soninLogFourierInvariantAverage (X ψ)‖ ^ (2 : ℕ) *
+          HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
             (‖inner ℂ ψ
               ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-            (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
-        ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ 2 *
-          (‖X ψ‖ ^ 2 -
-            ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ 2 / 4) := by
+            (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) =
+        ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ (2 : ℕ) *
+          (‖X ψ‖ ^ (2 : ℕ) -
+            ‖soninLogFourierScattering (X ψ) - c • X ψ‖ ^ (2 : ℕ) / 4) := by
   obtain ⟨c, hc, hcnorm, hdistance⟩ :=
     exists_sign_soninLogFourierScatteringRayDistanceSq (X ψ)
   refine ⟨c, hc, hcnorm, hdistance, ?_⟩

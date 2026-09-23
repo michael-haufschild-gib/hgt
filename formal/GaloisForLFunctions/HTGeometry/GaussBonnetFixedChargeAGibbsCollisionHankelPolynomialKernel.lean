@@ -12,7 +12,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private theorem weighted_square_zero (c a z : ℝ) (hc : c ≠ 0) :
-    c * a * z ^ 2 = 0 ↔ a = 0 ∨ z = 0 := by
+    c * a * z ^ (2 : ℕ) = 0 ↔ a = 0 ∨ z = 0 := by
   simp only [mul_eq_zero, hc, false_or, pow_eq_zero_iff (by norm_num : (2 : ℕ) ≠ 0)]
 
 /-- The full Hankel kernel is exactly the coefficient polynomials vanishing at every active collision node. -/
@@ -32,13 +32,13 @@ theorem egbFixedChargeAGibbsCollisionHankelMatrix_kernel_iff_roots (n o d : ℕ)
     have hq := egbFixedChargeAGibbsCollisionHankelMatrix_quadratic_polynomial n o d β E v
     rw [hv, dotProduct_zero] at hq
     have hAr : 0 ≤ ((4 / 9 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ 2 := by positivity
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ (2 : ℕ) := by positivity
     have hBs : 0 ≤ ((1 / 36 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ 2 := by positivity
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ (2 : ℕ) := by positivity
     have ha0 : ((4 / 9 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ 2 = 0 := by linarith
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ (2 : ℕ) = 0 := by linarith
     have hb0 : ((1 / 36 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ 2 = 0 := by linarith
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ (2 : ℕ) = 0 := by linarith
     exact ⟨(weighted_square_zero _ _ _ hr).mp ha0, (weighted_square_zero _ _ _ hs).mp hb0⟩
   · rintro ⟨ha, hb⟩
     rcases ha with ha | ha <;> rcases hb with hb | hb <;>

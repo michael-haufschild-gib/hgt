@@ -43,9 +43,9 @@ theorem integral_norm_hardySegment_le {F : ℂ → ℂ} {M : ℝ} (hF : IsHalfPl
   have hm1 := aestronglyMeasurable_hardySegment hF (d := d) hc T
   have hm2 : AEStronglyMeasurable (fun _ : ℝ => (1 : ℂ)) (volume.restrict (Icc c d)) :=
     aestronglyMeasurable_const
-  have h1 : Integrable (fun σ : ℝ => ‖F ((σ : ℂ) + (T : ℝ) * Complex.I)‖ ^ 2)
+  have h1 : Integrable (fun σ : ℝ => ‖F ((σ : ℂ) + (T : ℝ) * Complex.I)‖ ^ (2 : ℕ))
       (volume.restrict (Icc c d)) := integrableOn_stripMassIntegrand (d := d) hF hc T
-  have h2 : Integrable (fun _ : ℝ => ‖(1 : ℂ)‖ ^ 2) (volume.restrict (Icc c d)) := by
+  have h2 : Integrable (fun _ : ℝ => ‖(1 : ℂ)‖ ^ (2 : ℕ)) (volume.restrict (Icc c d)) := by
     simp only [norm_one, one_pow]
     exact integrableOn_const (by simp [Real.volume_Icc])
   have hcs := integral_mul_le_sqrt_mul_sqrt_measure (μ := volume.restrict (Icc c d)) hm1 hm2 h1 h2
@@ -102,7 +102,7 @@ theorem integral_hardyMulTest_line_indep_of_le {F : ℂ → ℂ} {M : ℝ} (hF :
         rw [hre, Set.uIcc_of_le hαβ]
         exact hu
       have hb := hC _ hmem
-      have hden : (0 : ℝ) < 1 + ((u : ℂ) + ((S : ℝ) : ℂ) * Complex.I).im ^ 2 := by positivity
+      have hden : (0 : ℝ) < 1 + ((u : ℂ) + ((S : ℝ) : ℂ) * Complex.I).im ^ (2 : ℕ) := by positivity
       have hbC : ‖expTestTransform ψ ((u : ℂ) + ((S : ℝ) : ℂ) * Complex.I)‖ ≤ C := by
         refine le_trans hb ?_
         rw [div_le_iff₀ hden]

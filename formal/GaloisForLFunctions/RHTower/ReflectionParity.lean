@@ -174,8 +174,8 @@ theorem xi_deckClass_central_sq_trivial :
     ∃ R₀ > 0, ∀ {R : ℝ}, 0 < R → R ≤ R₀ → ∀ {G₁ G₂ : ℂ → ℂ},
       AnalyticOnNhd ℂ G₁ (chartR (1 / 2 : ℂ) R) →
       AnalyticOnNhd ℂ G₂ (chartL (1 / 2 : ℂ) R) →
-      (∀ z ∈ chartR (1 / 2 : ℂ) R, G₁ z ^ 2 = xi z) →
-      (∀ z ∈ chartL (1 / 2 : ℂ) R, G₂ z ^ 2 = xi z) →
+      (∀ z ∈ chartR (1 / 2 : ℂ) R, G₁ z ^ (2 : ℕ) = xi z) →
+      (∀ z ∈ chartL (1 / 2 : ℂ) R, G₂ z ^ (2 : ℕ) = xi z) →
       deckClass G₁ G₂ ((1 / 2 : ℂ) + ((R / 2 : ℝ) : ℂ) * I)
         ((1 / 2 : ℂ) - ((R / 2 : ℝ) : ℂ) * I) = 1 := by
   obtain ⟨R₀, hR₀, hiff⟩ := xi_deckClass_eq_one_iff_ladder_dvd (1 / 2 : ℂ) 1

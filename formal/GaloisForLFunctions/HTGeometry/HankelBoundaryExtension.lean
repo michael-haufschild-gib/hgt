@@ -52,7 +52,7 @@ theorem det_finiteHankelMatrix_add_two_of_monic_kernel
     (hlast : c (Fin.last n) = 1)
     (hc : finiteHankelMatrix m (n + 1) *ᵥ c = 0) :
     (finiteHankelMatrix m (n + 2)).det =
-      -(hankelFirstOmittedCoupling m (n + 1) c) ^ 2 *
+      -(hankelFirstOmittedCoupling m (n + 1) c) ^ (2 : ℕ) *
         (finiteHankelMatrix m n).det := by
   let M := finiteHankelMatrix m (n + 2)
   let v : Fin (n + 2) → ℝ := padTerminalZero c

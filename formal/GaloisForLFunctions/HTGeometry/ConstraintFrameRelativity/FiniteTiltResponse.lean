@@ -156,18 +156,18 @@ theorem hasDerivAt_tiltCov {μ : Ω → ℝ} (hμ : ∑ ω, μ ω = 1) (r f g : 
 theorem hasDerivAt_capacityOfMoments {A B C : ℝ → ℝ} {a b c : ℝ}
     (hA : HasDerivAt A a 0) (hB : HasDerivAt B b 0) (hC : HasDerivAt C c 0)
     (hC0 : C 0 ≠ 0) :
-    HasDerivAt (fun e => Real.pi ^ 2 * (A e - B e ^ 2 / C e))
-      (Real.pi ^ 2 * (a - 2 * (B 0 / C 0) * b + (B 0 / C 0) ^ 2 * c)) 0 := by
-  have hsq : HasDerivAt (fun e => B e ^ 2) (2 * B 0 * b) 0 := by
+    HasDerivAt (fun e => Real.pi ^ (2 : ℕ) * (A e - B e ^ (2 : ℕ) / C e))
+      (Real.pi ^ (2 : ℕ) * (a - 2 * (B 0 / C 0) * b + (B 0 / C 0) ^ (2 : ℕ) * c)) 0 := by
+  have hsq : HasDerivAt (fun e => B e ^ (2 : ℕ)) (2 * B 0 * b) 0 := by
     have hmm := hB.mul hB
-    have hfun : (fun e => B e ^ 2) = fun e => B e * B e := by
+    have hfun : (fun e => B e ^ (2 : ℕ)) = fun e => B e * B e := by
       funext e
       ring
     rw [hfun]
     exact hmm.congr_deriv (by ring)
-  have hdiv : HasDerivAt (fun e => B e ^ 2 / C e)
-      ((2 * B 0 * b * C 0 - B 0 ^ 2 * c) / C 0 ^ 2) 0 := hsq.div hC hC0
-  have hmul := (hA.sub hdiv).const_mul (Real.pi ^ 2)
+  have hdiv : HasDerivAt (fun e => B e ^ (2 : ℕ) / C e)
+      ((2 * B 0 * b * C 0 - B 0 ^ (2 : ℕ) * c) / C 0 ^ (2 : ℕ)) 0 := hsq.div hC hC0
+  have hmul := (hA.sub hdiv).const_mul (Real.pi ^ (2 : ℕ))
   refine hmul.congr_deriv ?_
   field_simp
   ring
@@ -178,10 +178,10 @@ the derivative of `π² (Var_e f - Cov_e(f,g)² / Var_e g)` is `π² Cov(r, R²)
 theorem hasDerivAt_tiltSchurCapacity {μ : Ω → ℝ} (hμ : ∑ ω, μ ω = 1) (r f g : Ω → ℝ)
     (hC0 : wcov μ g g ≠ 0) :
     HasDerivAt
-      (fun e => Real.pi ^ 2 *
-        (tiltCov μ r e f f - tiltCov μ r e f g ^ 2 / tiltCov μ r e g g))
-      (Real.pi ^ 2 * wcov μ r (fun ω =>
-        ((f ω - wexp μ f) - (wcov μ f g / wcov μ g g) * (g ω - wexp μ g)) ^ 2)) 0 := by
+      (fun e => Real.pi ^ (2 : ℕ) *
+        (tiltCov μ r e f f - tiltCov μ r e f g ^ (2 : ℕ) / tiltCov μ r e g g))
+      (Real.pi ^ (2 : ℕ) * wcov μ r (fun ω =>
+        ((f ω - wexp μ f) - (wcov μ f g / wcov μ g g) * (g ω - wexp μ g)) ^ (2 : ℕ))) 0 := by
   set β := wcov μ f g / wcov μ g g with hβ
   have hA := hasDerivAt_tiltCov hμ r f f
   have hB := hasDerivAt_tiltCov hμ r f g
@@ -191,25 +191,25 @@ theorem hasDerivAt_tiltSchurCapacity {μ : Ω → ℝ} (hμ : ∑ ω, μ ω = 1)
   have h := hasDerivAt_capacityOfMoments hA hB hC hC0'
   rw [tiltCov_zero hμ, tiltCov_zero hμ] at h
   refine h.congr_deriv ?_
-  have hrw : (fun ω => ((f ω - wexp μ f) - β * (g ω - wexp μ g)) ^ 2)
+  have hrw : (fun ω => ((f ω - wexp μ f) - β * (g ω - wexp μ g)) ^ (2 : ℕ))
       = fun ω => (f ω - wexp μ f) * (f ω - wexp μ f)
           - 2 * β * ((f ω - wexp μ f) * (g ω - wexp μ g))
-          + β ^ 2 * ((g ω - wexp μ g) * (g ω - wexp μ g)) := by
+          + β ^ (2 : ℕ) * ((g ω - wexp μ g) * (g ω - wexp μ g)) := by
     funext ω
     ring
   have hfinal : wcov μ r (fun ω => (f ω - wexp μ f) * (f ω - wexp μ f)
         - 2 * β * ((f ω - wexp μ f) * (g ω - wexp μ g))
-        + β ^ 2 * ((g ω - wexp μ g) * (g ω - wexp μ g)))
+        + β ^ (2 : ℕ) * ((g ω - wexp μ g) * (g ω - wexp μ g)))
       = wcov μ r (fun ω => (f ω - wexp μ f) * (f ω - wexp μ f))
         - 2 * β * wcov μ r (fun ω => (f ω - wexp μ f) * (g ω - wexp μ g))
-        + β ^ 2 * wcov μ r (fun ω => (g ω - wexp μ g) * (g ω - wexp μ g)) := by
+        + β ^ (2 : ℕ) * wcov μ r (fun ω => (g ω - wexp μ g) * (g ω - wexp μ g)) := by
     simp only [wcov]
     have h1 : (fun ω => r ω * ((f ω - wexp μ f) * (f ω - wexp μ f)
           - 2 * β * ((f ω - wexp μ f) * (g ω - wexp μ g))
-          + β ^ 2 * ((g ω - wexp μ g) * (g ω - wexp μ g))))
+          + β ^ (2 : ℕ) * ((g ω - wexp μ g) * (g ω - wexp μ g))))
         = fun ω => r ω * ((f ω - wexp μ f) * (f ω - wexp μ f))
             - 2 * β * (r ω * ((f ω - wexp μ f) * (g ω - wexp μ g)))
-            + β ^ 2 * (r ω * ((g ω - wexp μ g) * (g ω - wexp μ g))) := by
+            + β ^ (2 : ℕ) * (r ω * ((g ω - wexp μ g) * (g ω - wexp μ g))) := by
       funext ω
       ring
     rw [h1, wexp_add, wexp_sub, wexp_const_mul, wexp_const_mul, wexp_add, wexp_sub,

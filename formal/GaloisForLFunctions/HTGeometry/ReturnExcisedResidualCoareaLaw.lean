@@ -26,10 +26,10 @@ theorem quenchedReplica_returnExcisedMinimalIncidence_bound_of_replicaNorm_le_on
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (returnExcisedReplicaIncidenceSpan r target state returnSet)
-        (state x) i‖ ^ 2) (μ.restrict returnSetᶜ)) :
+        (state x) i‖ ^ (2 : ℕ)) (μ.restrict returnSetᶜ)) :
     (((μ.restrict returnSetᶜ).real {x | ∃ c,
           threshold ≤ finitePureStateFidelity (state x) (target c)} *
-        threshold ^ r) ^ 2) ≤
+        threshold ^ r) ^ (2 : ℕ)) ≤
       (returnExcisedReplicaIncidenceNumber r target state returnSet : ℝ) *
         returnExcisedReplicaMinimalIncidenceAction
           μ r target state returnSet := by
@@ -73,7 +73,7 @@ theorem quenchedReplica_returnExcisedMinimalRankCoareaIncidence_bound_of_replica
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (returnExcisedReplicaIncidenceSpan r target state returnSet)
-        (state x) i‖ ^ 2) (μ.restrict returnSetᶜ)) :
+        (state x) i‖ ^ (2 : ℕ)) (μ.restrict returnSetᶜ)) :
     (μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} ≤
       μ.real returnSet +
@@ -81,7 +81,7 @@ theorem quenchedReplica_returnExcisedMinimalRankCoareaIncidence_bound_of_replica
           threshold ≤ finitePureStateFidelity (state x) (target c)}) ∧
     (((μ.restrict returnSetᶜ).real {x | ∃ c,
           threshold ≤ finitePureStateFidelity (state x) (target c)} *
-        threshold ^ r) ^ 2 ≤
+        threshold ^ r) ^ (2 : ℕ) ≤
       (returnExcisedReplicaIncidenceNumber r target state returnSet : ℝ) *
         returnExcisedReplicaIncidenceAction
           μ r target state returnSet) := by

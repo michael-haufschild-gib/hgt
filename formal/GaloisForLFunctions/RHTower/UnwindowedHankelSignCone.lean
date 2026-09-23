@@ -125,7 +125,7 @@ theorem completeHankelCone_rawMoment_iff_of_expDecay {J : ℝ → ℝ} (hJ : Con
     let g : ℝ → ℝ := fun x => Real.exp ((ε / 2) * |x|) * J x
     have hμ : IsFiniteMeasure μ :=
       isFiniteMeasure_withDensity_ofReal
-        (integrable_exp_neg_mul_abs (half_pos hε)).hasFiniteIntegral
+        (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (half_pos hε)).hasFiniteIntegral
     letI := hμ
     have hgc : Continuous g := by fun_prop
     have hcancel (x : ℝ) : Real.exp (-(ε / 2 * |x|)) * g x = J x := by
@@ -150,7 +150,7 @@ theorem completeHankelCone_rawMoment_iff_of_expDecay {J : ℝ → ℝ} (hJ : Con
       rw [integrable_withDensity_iff_integrable_smul₀' (by fun_prop)
         (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
       simp_rw [ENNReal.toReal_ofReal (Real.exp_pos _).le, smul_eq_mul, ← Real.exp_add]
-      convert integrable_exp_neg_mul_abs (by linarith : 0 < ε / 4) using 1 <;> try rfl
+      convert integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by linarith : 0 < ε / 4) using 1 <;> try rfl
       funext x
       congr 1
       ring

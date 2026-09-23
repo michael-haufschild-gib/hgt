@@ -143,12 +143,12 @@ theorem eventually_exists_canonical_sixty_perronRelevant_coloring_at_high_amplit
           1 - maynardLongGlobalAmplitudeDeficit < alpha → 0 < V →
           ∀ S : Finset ℕ, ∀ lam : ℕ → ℝ,
             (∀ r ∈ S, T ≤ lam r ∧ lam r ≤ 2 * T) →
-            (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+            (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
               ∀ r ∈ S,
                 V ≤ ‖heathBrownPerronRelevantEligibleDyadicAggregate
                   L X 60 T (mu / 120)
                     ((c : ℂ) + (lam r : ℝ) * Complex.I)‖) →
-            (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+            (∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
               ∀ box : HeathBrownBoxChoice L X 60,
                 IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
                 IsHeathBrownBoxPerronRelevant X 60 box →
@@ -156,7 +156,7 @@ theorem eventually_exists_canonical_sixty_perronRelevant_coloring_at_high_amplit
                   (groupedDyadicLower
                     (heathBrownBoxFactorExponent box.a box.b box.q) : ℝ) ^
                       (alpha - c) ≤ V) →
-            ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ 60 ∧
+            ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ (60 : ℕ) ∧
               (L : ℝ) ≤ T ^ (2 * (mu / 120)) ∧
               ∃ color : ℕ → HeathBrownSelectionLabel L X 60,
                 ∀ r ∈ S,

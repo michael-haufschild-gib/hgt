@@ -77,16 +77,16 @@ theorem deningerFloquetEnergy_shift (g : DeningerExpSchwartz) (a : ℝ) :
       rw [deningerEscapeFamily_periodizationSum]
       have hone : ((Real.exp (-(0 * a)) : ℝ) : ℂ) = 1 := by norm_num
       rw [hone, one_mul, hS]
-    have hper : Function.Periodic (fun t : ℝ => ‖S t‖ ^ 2) L := by
+    have hper : Function.Periodic (fun t : ℝ => ‖S t‖ ^ (2 : ℕ)) L := by
       intro s
-      show ‖S (s + L)‖ ^ 2 = ‖S s‖ ^ 2
+      show ‖S (s + L)‖ ^ (2 : ℕ) = ‖S s‖ ^ (2 : ℕ)
       rw [hS, deningerPeriodizationSum_periodic]
-    have hshift : (∫ t in (0 : ℝ)..L, ‖S (t - a)‖ ^ 2) = ∫ t in (0 : ℝ)..L, ‖S t‖ ^ 2 := by
-      have hcomp : (∫ t in (0 : ℝ)..L, ‖S (t - a)‖ ^ 2)
-          = ∫ t in (0 - a)..(L - a), ‖S t‖ ^ 2 :=
-        intervalIntegral.integral_comp_sub_right (fun t => ‖S t‖ ^ 2) a
+    have hshift : (∫ t in (0 : ℝ)..L, ‖S (t - a)‖ ^ (2 : ℕ)) = ∫ t in (0 : ℝ)..L, ‖S t‖ ^ (2 : ℕ) := by
+      have hcomp : (∫ t in (0 : ℝ)..L, ‖S (t - a)‖ ^ (2 : ℕ))
+          = ∫ t in (0 - a)..(L - a), ‖S t‖ ^ (2 : ℕ) :=
+        intervalIntegral.integral_comp_sub_right (fun t => ‖S t‖ ^ (2 : ℕ)) a
       rw [hcomp]
-      have hrange : (∫ t in (-a)..(-a + L), ‖S t‖ ^ 2) = ∫ t in (0 : ℝ)..(0 + L), ‖S t‖ ^ 2 :=
+      have hrange : (∫ t in (-a)..(-a + L), ‖S t‖ ^ (2 : ℕ)) = ∫ t in (0 : ℝ)..(0 + L), ‖S t‖ ^ (2 : ℕ) :=
         hper.intervalIntegral_add_eq (-a) 0
       have hL1 : (0 : ℝ) - a = -a := by ring
       have hL2 : L - a = -a + L := by ring
@@ -94,8 +94,8 @@ theorem deningerFloquetEnergy_shift (g : DeningerExpSchwartz) (a : ℝ) :
     rw [deningerFloquetTerm, deningerFloquetTerm]
     congr 1
     have hfun : (fun t : ℝ => ‖deningerPeriodizationSum
-        ((deningerEscapeFamily 0 a g : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) L t‖ ^ 2)
-        = fun t : ℝ => ‖S (t - a)‖ ^ 2 := funext fun t => by rw [hrot t]
+        ((deningerEscapeFamily 0 a g : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) L t‖ ^ (2 : ℕ))
+        = fun t : ℝ => ‖S (t - a)‖ ^ (2 : ℕ) := funext fun t => by rw [hrot t]
     rw [hfun, hshift]
   rw [deningerFloquetEnergy, deningerFloquetEnergy, tsum_congr hterm]
 
@@ -112,8 +112,8 @@ theorem deningerSecondaryFloquetEnergy_nonneg (hp hm : DeningerExpSchwartz) :
 /-- **The secondary energy is finite and dominated by the Meyer seminorm of the defect.** -/
 theorem deningerSecondaryFloquetEnergy_le (hp hm : DeningerExpSchwartz) :
     deningerSecondaryFloquetEnergy hp hm
-      ≤ 25 * deningerMeyerSeminormFun 1 0 (deningerSecondaryDefectSource hp hm) ^ 2
-        * ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ 2 :=
+      ≤ 25 * deningerMeyerSeminormFun 1 0 (deningerSecondaryDefectSource hp hm) ^ (2 : ℕ)
+        * ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ (2 : ℕ) :=
   deningerFloquetEnergy_le _
 
 /-- **The radical of the secondary energy is the reflected Calderón graph.**  This is `(6)` ⟺ `(7)`

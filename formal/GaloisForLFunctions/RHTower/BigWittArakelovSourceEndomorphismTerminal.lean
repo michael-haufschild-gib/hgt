@@ -10,10 +10,10 @@ import GaloisForLFunctions.RHTower.LocalDivisorJetAdamsDilation
 This module attacks the open source operation behind `ArakelovPowerOrbitRH`.
 The canonical Big-Witt Frobenius does supply the desired reporter law:
 
-`F₂(T(w(rho))) = T(w(rho)^2) = T(w(P₂(rho)))`.
+`F₂(T(w(rho))) = T(w(rho)^(2 : ℕ)) = T(w(P₂(rho)))`.
 
 The law does not extend to the requested global completed-Xi source geometry.
-The square lift is the rational map `rho^2 / (2*rho - 1)` and is not
+The square lift is the rational map `rho^(2 : ℕ) / (2*rho - 1)` and is not
 continuous at `rho = 1/2`.  Consequently no endomorphism of the algebra of
 entire functions can act by precomposition with it: applying such an
 endomorphism to the coordinate would make the square lift entire.
@@ -60,12 +60,12 @@ theorem arakelovPowerLift_two_eq_self_iff (rho : ℂ) :
     arakelovPowerLift 2 rho = rho ↔ rho = 0 ∨ rho = 1 := by
   constructor
   · intro hfixed
-    have hw : arakelovW rho ^ 2 = arakelovW rho := by
+    have hw : arakelovW rho ^ (2 : ℕ) = arakelovW rho := by
       rw [← arakelovW_arakelovPowerLift 2 rho, hfixed]
     have hfactor : arakelovW rho * (arakelovW rho - 1) = 0 := by
       calc
         arakelovW rho * (arakelovW rho - 1) =
-            arakelovW rho ^ 2 - arakelovW rho := by ring
+            arakelovW rho ^ (2 : ℕ) - arakelovW rho := by ring
         _ = 0 := sub_eq_zero.mpr hw
     rcases mul_eq_zero.mp hfactor with hw0 | hw1
     · exact Or.inr (GaloisForLFunctions.arakelovW_injective
@@ -111,7 +111,7 @@ theorem ccmZetaCircleCover_not_arakelovPowerLift_two
 /-- Rational expression for the square lift, with Lean's total inverse
 convention at the pole. -/
 theorem arakelovPowerLift_two_eq_rational (rho : ℂ) :
-    arakelovPowerLift 2 rho = rho ^ 2 * (2 * rho - 1)⁻¹ := by
+    arakelovPowerLift 2 rho = rho ^ (2 : ℕ) * (2 * rho - 1)⁻¹ := by
   rcases eq_or_ne rho 0 with rfl | hrho
   · simp [arakelovPowerLift, arakelovW]
   · rw [arakelovPowerLift, arakelovW]
@@ -141,7 +141,7 @@ theorem not_continuousAt_arakelovPowerLift_two :
     ¬ ContinuousAt (arakelovPowerLift 2) (1 / 2) := by
   intro hcontinuous
   have hquotient : ContinuousAt
-      (fun rho : ℂ => arakelovPowerLift 2 rho / rho ^ 2) (1 / 2) := by
+      (fun rho : ℂ => arakelovPowerLift 2 rho / rho ^ (2 : ℕ)) (1 / 2) := by
     apply hcontinuous.div
     · fun_prop
     · norm_num

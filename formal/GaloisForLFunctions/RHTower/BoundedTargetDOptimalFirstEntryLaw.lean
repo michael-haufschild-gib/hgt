@@ -35,7 +35,7 @@ theorem no_second_capture_of_boundedDOptimalMoment
         (Icc (-(epsw / speed / T)) (epsw / speed / T))ᶜ))
     (q : ℝ)
     (hmoment : ∀ c, ∫ x,
-      ‖finiteComplexInner (psi (T * x)) (target c)‖ ^ 2
+      ‖finiteComplexInner (psi (T * x)) (target c)‖ ^ (2 : ℕ)
         ∂((gaussianReal 0 1).restrict
           (Icc (-(epsw / speed / T)) (epsw / speed / T))ᶜ) ≤ q)
     (hbudget : (n + 1 : ℝ) * q <

@@ -31,17 +31,17 @@ theorem deriv_neg_eq_zero_iff_of_reciprocal
     simpa using! (hf (-t)).hasDerivAt.scomp t (hasDerivAt_id t).neg
   have hrecip :
       HasDerivAt (fun u : ℝ => lam / f u)
-        ((0 * f t - lam * deriv f t) / f t ^ 2) t :=
+        ((0 * f t - lam * deriv f t) / f t ^ (2 : ℕ)) t :=
     (hasDerivAt_const t lam).div (hf t).hasDerivAt (hzero t)
   have heq : (fun u : ℝ => f (-u)) = fun u => lam / f u :=
     funext hreflect
   rw [heq] at hneg
   have hderiv :
-      -deriv f (-t) = (0 * f t - lam * deriv f t) / f t ^ 2 :=
+      -deriv f (-t) = (0 * f t - lam * deriv f t) / f t ^ (2 : ℕ) :=
     hneg.unique hrecip
   constructor
   · intro hleft
-    have hquot : (-lam * deriv f t) / f t ^ 2 = 0 := by
+    have hquot : (-lam * deriv f t) / f t ^ (2 : ℕ) = 0 := by
       simpa [hleft] using hderiv.symm
     have hnum : -lam * deriv f t = 0 :=
       (div_eq_zero_iff.mp hquot).resolve_right

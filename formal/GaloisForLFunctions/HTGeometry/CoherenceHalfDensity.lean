@@ -66,8 +66,8 @@ theorem diagonalExpectation_booleanHalfDensity
 /-- The order-two purity of the dephased diagonal is independent of the Boolean phase lift. -/
 theorem dephasedPurity_booleanHalfDensity
     [Fintype I] (p : I → ℝ) (ε : I → Bool) (hp : ∀ i, 0 ≤ p i) :
-    (∑ i, (realRankOneKernel (booleanHalfDensity p ε) i i) ^ 2) =
-      ∑ i, (p i) ^ 2 := by
+    (∑ i, (realRankOneKernel (booleanHalfDensity p ε) i i) ^ (2 : ℕ)) =
+      ∑ i, (p i) ^ (2 : ℕ) := by
   apply Finset.sum_congr rfl
   intro i _
   rw [realRankOneKernel_booleanHalfDensity_diag p ε hp]

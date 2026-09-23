@@ -22,7 +22,7 @@ open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 theorem finiteBuresRootFidelity_sq_le_trace_mul_trace
     {n : ℕ} {C M : Matrix (Fin n) (Fin n) ℂ}
     (hC : C.PosSemidef) (hM : M.PosSemidef) :
-    finiteBuresRootFidelity C M ^ 2 ≤ C.trace.re * M.trace.re := by
+    finiteBuresRootFidelity C M ^ (2 : ℕ) ≤ C.trace.re * M.trace.re := by
   have h := finiteBuresRootFidelity_sq_le_reporter_product
     hC hM Matrix.PosDef.one
   simpa [finiteBuresReporterProduct] using h
@@ -49,8 +49,8 @@ theorem finiteBuresRootFidelity_sq_smul_left
     {n : ℕ} (r : ℝ) (hr : 0 ≤ r)
     {C M : Matrix (Fin n) (Fin n) ℂ}
     (hC : C.PosSemidef) (hM : M.PosSemidef) :
-    finiteBuresRootFidelity (r • C) M ^ 2 =
-      r * finiteBuresRootFidelity C M ^ 2 := by
+    finiteBuresRootFidelity (r • C) M ^ (2 : ℕ) =
+      r * finiteBuresRootFidelity C M ^ (2 : ℕ) := by
   exact finiteBuresTrace_sq_smul_left r hr hC hM
 
 /-- Self-fidelity of a positive covariance is its trace. -/
@@ -425,7 +425,7 @@ theorem compactBuresDualCapacity_sq_eq_one_iff_mem
     (hKne : K.Nonempty) (hKcompact : IsCompact K)
     (hKpsd : K ⊆ {M : Matrix (Fin n) (Fin n) ℂ | M.PosSemidef})
     (hKtrace : ∀ M ∈ K, M.trace.re = 1) :
-    compactBuresDualCapacity source K ^ 2 = 1 ↔ source ∈ K := by
+    compactBuresDualCapacity source K ^ (2 : ℕ) = 1 ↔ source ∈ K := by
   obtain ⟨M, hM, hcap⟩ :=
     exists_compactBuresRootFidelity_eq_dualCapacity
       source hKne hKcompact hKpsd
@@ -466,7 +466,7 @@ theorem compactBuresDistance_sq_eq_two_mul_one_sub_capacity
     (hKne : K.Nonempty) (hKcompact : IsCompact K)
     (hKpsd : K ⊆ {M : Matrix (Fin n) (Fin n) ℂ | M.PosSemidef})
     (hKtrace : ∀ M ∈ K, M.trace.re = 1) :
-    compactBuresDistance source K ^ 2 =
+    compactBuresDistance source K ^ (2 : ℕ) =
       2 * (1 - compactBuresDualCapacity source K) := by
   rw [compactBuresDistance_eq_sqrt_one_sub_dualCapacity
     source hKne hKcompact hKpsd]
@@ -549,11 +549,11 @@ theorem occupiedTargetBures_distance_identity
     {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
     (hVbounded : Bornology.IsBounded V)
     (hVunit : ∀ v ∈ V, (finiteComplexInner v v).re = 1) :
-    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ 2 =
+    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ (2 : ℕ) =
       source.trace.re *
         (1 - compactBuresDistance
           (finiteBuresNormalizedSource source)
-          (finiteBuresOccupiedTargetBody V) ^ 2 / 2) ^ 2 := by
+          (finiteBuresOccupiedTargetBody V) ^ (2 : ℕ) / 2) ^ (2 : ℕ) := by
   let rho := finiteBuresNormalizedSource source
   let K := finiteBuresOccupiedTargetBody V
   have hrho : rho.PosSemidef :=
@@ -570,7 +570,7 @@ theorem occupiedTargetBures_distance_identity
   have hdist := compactBuresDistance_sq_eq_two_mul_one_sub_capacity
     hrho hrhotrace hKne hKcompact hKpsd hKtrace
   have hcap : compactBuresDualCapacity rho K =
-      1 - compactBuresDistance rho K ^ 2 / 2 := by
+      1 - compactBuresDistance rho K ^ (2 : ℕ) / 2 := by
     linarith
   have hscale : compactBuresDualCapacity source K =
       Real.sqrt source.trace.re * compactBuresDualCapacity rho K := by
@@ -581,8 +581,8 @@ theorem occupiedTargetBures_distance_identity
       _ = Real.sqrt source.trace.re * compactBuresDualCapacity rho K :=
         compactBuresDualCapacity_smul_left hrho source.trace.re
           htrace.le hKne hKcompact hKpsd
-  change compactBuresDualCapacity source K ^ 2 =
-    source.trace.re * (1 - compactBuresDistance rho K ^ 2 / 2) ^ 2
+  change compactBuresDualCapacity source K ^ (2 : ℕ) =
+    source.trace.re * (1 - compactBuresDistance rho K ^ (2 : ℕ) / 2) ^ (2 : ℕ)
   rw [hscale, hcap, mul_pow, Real.sq_sqrt htrace.le]
 
 /-- **Exact occupied-body saturation rigidity `(13)`.**  Complete Bures
@@ -594,7 +594,7 @@ theorem occupiedTargetBures_saturation_iff_normalizedSource_mem
     {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
     (hVbounded : Bornology.IsBounded V)
     (hVunit : ∀ v ∈ V, (finiteComplexInner v v).re = 1) :
-    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ 2 =
+    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ (2 : ℕ) =
         source.trace.re ↔
       finiteBuresNormalizedSource source ∈ finiteBuresOccupiedTargetBody V := by
   have hn : n ≠ 0 := by
@@ -616,7 +616,7 @@ theorem occupiedTargetBures_saturation_iff_normalizedSource_mem
     finiteBuresOccupiedTargetBody_posSemidef V
   have hKtrace : ∀ M ∈ K, M.trace.re = 1 :=
     finiteBuresOccupiedTargetBody_trace_eq_one hVunit
-  have hsat : compactBuresDualCapacity rho K ^ 2 = 1 ↔ rho ∈ K :=
+  have hsat : compactBuresDualCapacity rho K ^ (2 : ℕ) = 1 ↔ rho ∈ K :=
     compactBuresDualCapacity_sq_eq_one_iff_mem
       hrho hrhotrace hKne hKcompact hKpsd hKtrace
   have hscale : compactBuresDualCapacity source K =
@@ -628,10 +628,10 @@ theorem occupiedTargetBures_saturation_iff_normalizedSource_mem
       _ = Real.sqrt source.trace.re * compactBuresDualCapacity rho K :=
         compactBuresDualCapacity_smul_left hrho source.trace.re
           htrace.le hKne hKcompact hKpsd
-  have hscaleSq : compactBuresDualCapacity source K ^ 2 =
-      source.trace.re * compactBuresDualCapacity rho K ^ 2 := by
+  have hscaleSq : compactBuresDualCapacity source K ^ (2 : ℕ) =
+      source.trace.re * compactBuresDualCapacity rho K ^ (2 : ℕ) := by
     rw [hscale, mul_pow, Real.sq_sqrt htrace.le]
-  change compactBuresDualCapacity source K ^ 2 = source.trace.re ↔ rho ∈ K
+  change compactBuresDualCapacity source K ^ (2 : ℕ) = source.trace.re ↔ rho ∈ K
   rw [hscaleSq]
   constructor
   · intro h
@@ -695,7 +695,7 @@ theorem occupiedTargetBures_dualCapacity_sq_eq_zero_iff
     (hsource : source.PosSemidef)
     {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
     (hVbounded : Bornology.IsBounded V) :
-    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ 2 = 0 ↔
+    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ (2 : ℕ) = 0 ↔
       ∀ v ∈ V, Matrix.mulVec source v = 0 := by
   let K := finiteBuresOccupiedTargetBody V
   have hKne : K.Nonempty := finiteBuresOccupiedTargetBody_nonempty hVne
@@ -721,7 +721,7 @@ theorem occupiedTargetBures_dualCapacity_sq_eq_zero_iff
         (finiteBuresTargetRay v) = 0 := by
       rw [hcapzero] at hle
       exact le_antisymm hle hnonneg
-    have hsqzero := congrArg (fun x : ℝ ↦ x ^ 2) hfidzero
+    have hsqzero := congrArg (fun x : ℝ ↦ x ^ (2 : ℕ)) hfidzero
     exact (finiteBuresTrace_sq_rankOne_right_eq_zero_iff hsource v).mp (by
       simpa [finiteBuresRootFidelity, finiteBuresTargetRay] using hsqzero)
   · intro hkill
@@ -736,7 +736,7 @@ theorem occupiedTargetBures_dualCapacity_sq_eq_zero_iff
     simp only [Matrix.trace_zero, Complex.zero_re, mul_zero] at hsq
     have hnonneg := finiteBuresRootFidelity_nonneg (C := source) (hKpsd hM)
     have hfidzero : finiteBuresRootFidelity source M = 0 := by
-      change finiteBuresRootFidelity source M ^ 2 ≤ 0 at hsq
+      change finiteBuresRootFidelity source M ^ (2 : ℕ) ≤ 0 at hsq
       nlinarith
     rw [hcap, hfidzero, zero_pow (by norm_num : 2 ≠ 0)]
 
@@ -788,7 +788,7 @@ theorem occupiedTargetBures_dualCapacity_sq_le_trace
     {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
     (hVbounded : Bornology.IsBounded V)
     (hVunit : ∀ v ∈ V, (finiteComplexInner v v).re ≤ 1) :
-    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ 2 ≤
+    compactBuresDualCapacity source (finiteBuresOccupiedTargetBody V) ^ (2 : ℕ) ≤
       source.trace.re := by
   let K := finiteBuresOccupiedTargetBody V
   have hKne : K.Nonempty := finiteBuresOccupiedTargetBody_nonempty hVne

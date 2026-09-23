@@ -175,7 +175,7 @@ def factorClosedFibreResidueEquiv
 def factorSquareRelation
     {k : Type*} [CommRing k] {d : ℕ} (i : Fin d) :
     FactorTensorPolynomial k d :=
-  MvPolynomial.X i ^ 2
+  MvPolynomial.X i ^ (2 : ℕ)
 
 def factorSquareRelationIdeal
     {k : Type*} [CommRing k] {d : ℕ} : Ideal (FactorTensorPolynomial k d) :=

@@ -40,8 +40,8 @@ theorem collisionHelicity_rotate (T : ℂ × ℂ) :
 
 /-- The gradient-square angular tensor is a pure square in each helicity. -/
 theorem collisionHelicity_gradient (x y : ℂ) :
-    collisionHelicityPlus (gradientPair x y) = (x + I * y)^2 ∧
-    collisionHelicityMinus (gradientPair x y) = (x - I * y)^2 := by
+    collisionHelicityPlus (gradientPair x y) = (x + I * y)^(2 : ℕ) ∧
+    collisionHelicityMinus (gradientPair x y) = (x - I * y)^(2 : ℕ) := by
   constructor <;> dsimp [collisionHelicityPlus, collisionHelicityMinus, gradientPair] <;>
     ring_nf <;> simp [sub_eq_add_neg]
 
@@ -53,10 +53,10 @@ def collisionRotateGradient (θ : ℝ) (x y : ℂ) : ℂ × ℂ :=
 theorem collisionHelicity_gradient_rotation (θ : ℝ) (x y : ℂ) :
     collisionHelicityPlus (gradientPair (collisionRotateGradient θ x y).1
       (collisionRotateGradient θ x y).2) =
-      ((Real.cos θ : ℂ) + I * Real.sin θ)^2 * collisionHelicityPlus (gradientPair x y) ∧
+      ((Real.cos θ : ℂ) + I * Real.sin θ)^(2 : ℕ) * collisionHelicityPlus (gradientPair x y) ∧
     collisionHelicityMinus (gradientPair (collisionRotateGradient θ x y).1
       (collisionRotateGradient θ x y).2) =
-      ((Real.cos θ : ℂ) - I * Real.sin θ)^2 * collisionHelicityMinus (gradientPair x y) := by
+      ((Real.cos θ : ℂ) - I * Real.sin θ)^(2 : ℕ) * collisionHelicityMinus (gradientPair x y) := by
   rw [(collisionHelicity_gradient _ _).1, (collisionHelicity_gradient _ _).2,
     (collisionHelicity_gradient x y).1, (collisionHelicity_gradient x y).2]
   dsimp [collisionRotateGradient]
@@ -70,16 +70,16 @@ theorem angularCoefficient_collisionHelicityPlus
     let y : ℂ := (Real.exp η : ℝ)
     collisionHelicityPlus
       (angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) =
-      B^2 * ((2*aS^2*scalarWeight s r - I*aS*aV*mixedWeight s r) *
+      B^(2 : ℕ) * ((2*aS^(2 : ℕ)*scalarWeight s r - I*aS*aV*mixedWeight s r) *
         collisionHelicityPlus (hessianPair s y S Sx Sy Sxx Sxy) +
-        (aS^2*scalarWeight s r - I*aS*aV*mixedWeight s r + aV^2*vectorWeight s r) *
-          (Sx + I*Sy)^2) := by
+        (aS^(2 : ℕ)*scalarWeight s r - I*aS*aV*mixedWeight s r + aV^(2 : ℕ)*vectorWeight s r) *
+          (Sx + I*Sy)^(2 : ℕ)) := by
   dsimp only
   have hr : ((1 + Real.exp ρ : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (by positivity))
   have hy : ((Real.exp η : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero η)
-  have hf : ((1 + Real.exp ρ : ℝ) : ℂ)^2 - 1 ≠ 0 := by
+  have hf : ((1 + Real.exp ρ : ℝ) : ℂ)^(2 : ℕ) - 1 ≠ 0 := by
     norm_cast
     nlinarith [Real.exp_pos ρ, sq_nonneg (Real.exp ρ)]
   rw [angularCoefficient_decomposition _ _ _ _ _ _ _ _ _ _ _ _ _ hr hy hf]
@@ -94,16 +94,16 @@ theorem angularCoefficient_collisionHelicityMinus
     let y : ℂ := (Real.exp η : ℝ)
     collisionHelicityMinus
       (angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) =
-      B^2 * ((2*aS^2*scalarWeight s r + I*aS*aV*mixedWeight s r) *
+      B^(2 : ℕ) * ((2*aS^(2 : ℕ)*scalarWeight s r + I*aS*aV*mixedWeight s r) *
         collisionHelicityMinus (hessianPair s y S Sx Sy Sxx Sxy) +
-        (aS^2*scalarWeight s r + I*aS*aV*mixedWeight s r + aV^2*vectorWeight s r) *
-          (Sx - I*Sy)^2) := by
+        (aS^(2 : ℕ)*scalarWeight s r + I*aS*aV*mixedWeight s r + aV^(2 : ℕ)*vectorWeight s r) *
+          (Sx - I*Sy)^(2 : ℕ)) := by
   dsimp only
   have hr : ((1 + Real.exp ρ : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (by positivity))
   have hy : ((Real.exp η : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero η)
-  have hf : ((1 + Real.exp ρ : ℝ) : ℂ)^2 - 1 ≠ 0 := by
+  have hf : ((1 + Real.exp ρ : ℝ) : ℂ)^(2 : ℕ) - 1 ≠ 0 := by
     norm_cast
     nlinarith [Real.exp_pos ρ, sq_nonneg (Real.exp ρ)]
   rw [angularCoefficient_decomposition _ _ _ _ _ _ _ _ _ _ _ _ _ hr hy hf]

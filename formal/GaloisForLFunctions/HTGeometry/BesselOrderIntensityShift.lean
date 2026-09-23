@@ -29,13 +29,13 @@ def AffineOrderShiftRecurrence (c : ℂ) (y : ℂ → ℂ) : Prop :=
 def orderShiftIntensity (y : ℂ → ℂ) (z : ℂ) : ℂ :=
   y z * y (z - 2)
 
-/-- Symmetric-square state `(y(z)^2, y(z)y(z-1), y(z-1)^2)`. -/
+/-- Symmetric-square state `(y(z)^(2 : ℕ), y(z)y(z-1), y(z-1)^(2 : ℕ))`. -/
 def orderShiftSymmetricState (y : ℂ → ℂ) (z : ℂ) : Fin 3 → ℂ :=
-  ![y z ^ 2, y z * y (z - 1), y (z - 1) ^ 2]
+  ![y z ^ (2 : ℕ), y z * y (z - 1), y (z - 1) ^ (2 : ℕ)]
 
 /-- Recurrent coefficient of `y(z+2)` in front of `y z`. -/
 def orderShiftAlpha (c z : ℂ) : ℂ :=
-  1 + c ^ 2 * z * (z + 1)
+  1 + c ^ (2 : ℕ) * z * (z + 1)
 
 /-- Recurrent coefficient of `y(z+3)` in front of `y z`. -/
 def orderShiftA (c z : ℂ) : ℂ :=
@@ -43,7 +43,7 @@ def orderShiftA (c z : ℂ) : ℂ :=
 
 /-- Recurrent coefficient of `y(z+3)` in front of `y(z-1)`. -/
 def orderShiftR (c z : ℂ) : ℂ :=
-  1 + c ^ 2 * (z + 2) * (z + 1)
+  1 + c ^ (2 : ℕ) * (z + 2) * (z + 1)
 
 /-- The four intensity shifts as linear forms on the symmetric-square state. -/
 def orderShiftIntensityRow (c z : ℂ) : Fin 4 → Fin 3 → ℂ
@@ -178,14 +178,14 @@ theorem orderShiftIntensity_scalar_annihilator
 /-! Polynomial realization of the annihilator coefficients. -/
 
 def orderShiftAlphaPoly (c : ℂ) : Polynomial ℂ :=
-  1 + Polynomial.C (c ^ 2) * Polynomial.X * (Polynomial.X + 1)
+  1 + Polynomial.C (c ^ (2 : ℕ)) * Polynomial.X * (Polynomial.X + 1)
 
 def orderShiftAPoly (c : ℂ) : Polynomial ℂ :=
   Polynomial.C c * (Polynomial.X + 2) * orderShiftAlphaPoly c +
     Polynomial.C c * Polynomial.X
 
 def orderShiftRPoly (c : ℂ) : Polynomial ℂ :=
-  1 + Polynomial.C (c ^ 2) * (Polynomial.X + 2) * (Polynomial.X + 1)
+  1 + Polynomial.C (c ^ (2 : ℕ)) * (Polynomial.X + 2) * (Polynomial.X + 1)
 
 def orderShiftIntensityRowPoly (c : ℂ) : Fin 4 → Fin 3 → Polynomial ℂ
   | 0 => ![1, -Polynomial.C c * (Polynomial.X - 1), 0]

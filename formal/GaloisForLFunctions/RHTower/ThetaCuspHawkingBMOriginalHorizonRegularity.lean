@@ -174,17 +174,17 @@ private theorem compactForcing_comp_smooth {E : Type} [NormedAddCommGroup E] [No
   have hRU : ContDiff ℝ ∞ (fun x => compactUnit (z x)) :=
     (contDiff_const.sub hz).div (contDiff_const.add hz) (fun x => (hp x).ne')
   have hRealNum : ContDiff ℝ ∞ (fun x => (-8:ℝ)*compactUnit (z x)) := contDiff_const.mul hRU
-  have hRealDen : ContDiff ℝ ∞ (fun x => (1+z x)^2) := (contDiff_const.add hz).pow 2
+  have hRealDen : ContDiff ℝ ∞ (fun x => (1+z x)^(2 : ℕ)) := (contDiff_const.add hz).pow 2
   have hRealD := hRealNum.div hRealDen (fun x => pow_ne_zero 2 (hp x).ne')
-  have hD : ContDiff ℝ ∞ (fun x => (-8:ℂ)*(compactUnit (z x):ℂ)/(1+(z x:ℂ))^2) := by
-    have h : ContDiff ℝ ∞ (fun x => (((-8:ℝ)*compactUnit (z x)/(1+z x)^2:ℝ):ℂ)) :=
+  have hD : ContDiff ℝ ∞ (fun x => (-8:ℂ)*(compactUnit (z x):ℂ)/(1+(z x:ℂ))^(2 : ℕ)) := by
+    have h : ContDiff ℝ ∞ (fun x => (((-8:ℝ)*compactUnit (z x)/(1+z x)^(2 : ℕ):ℝ):ℂ)) :=
       Complex.ofRealCLM.contDiff.comp hRealD
     push_cast at h
     exact h
 
   unfold compactForcing
-  have hB : ContDiff ℝ ∞ (fun x => (((5*s^2+15*s+4)/4)*J x+
-      s*(s-1)*(compactUnit (z x):ℂ)^2/4*((s+2)^2*J x-K x))) := by
+  have hB : ContDiff ℝ ∞ (fun x => (((5*s^(2 : ℕ)+15*s+4)/4)*J x+
+      s*(s-1)*(compactUnit (z x):ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J x-K x))) := by
     simpa only [div_eq_mul_inv] using
       ((contDiff_const.mul hJ).add (((contDiff_const.mul (hU.pow 2)).mul contDiff_const).mul
         ((contDiff_const.mul hJ).sub hK)))
@@ -216,10 +216,10 @@ private theorem chartCircle_height_pos (image : Bool) (z : (Fin 4 → ℝ) × (F
 def extendedIntegrand (image : Bool) (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (z : (Fin 4 → ℝ) × (Fin 3 → ℝ)) : ℂ :=
   ((Real.exp (z.1 0)*(1-sourceLower image (Real.exp (z.1 0)) (horizonChart (z.1 1))
-    (Real.sin (z.2 0)^2)):ℝ):ℂ)*
-    compactForcing (physicalRate q branch) amp (Real.exp (z.1 0)*Real.sin (z.2 0)^2)
+    (Real.sin (z.2 0)^(2 : ℕ))):ℝ):ℂ)*
+    compactForcing (physicalRate q branch) amp (Real.exp (z.1 0)*Real.sin (z.2 0)^(2 : ℕ))
       (sourceZ image (Real.exp (z.1 0)) (horizonChart (z.1 1))
-        (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2))
+        (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ)))
       (fullSquarePotential q (chartCircle image z)) (fullGradientEnergy q (chartCircle image z)/2)/4
 
 theorem extendedIntegrand_smooth (image : Bool) (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
@@ -240,15 +240,15 @@ theorem extendedIntegrand_smooth (image : Bool) (q : XiZeroCopy) (branch : Bool)
   have hZ := (sourceZ_chart_smooth image).comp chartParameters_smooth
   have hF := compactForcing_comp_smooth (physicalRate q branch) amp
     (by fun_prop : ContDiff ℝ ∞ (fun z : (Fin 4 → ℝ) × (Fin 3 → ℝ) =>
-      Real.exp (z.1 0)*Real.sin (z.2 0)^2)) hZ hJ hK
+      Real.exp (z.1 0)*Real.sin (z.2 0)^(2 : ℕ))) hZ hJ hK
     (fun z => sourceZ_chart_add_one_pos image (chartParameters z))
   have hRealExp : ContDiff ℝ ∞ (fun z : (Fin 4 → ℝ) × (Fin 3 → ℝ) => Real.exp (z.1 0)) := by fun_prop
   have hLower : ContDiff ℝ ∞ (fun z : (Fin 4 → ℝ) × (Fin 3 → ℝ) =>
-      sourceLower image (Real.exp (z.1 0)) (horizonChart (z.1 1)) (Real.sin (z.2 0)^2)) := by
+      sourceLower image (Real.exp (z.1 0)) (horizonChart (z.1 1)) (Real.sin (z.2 0)^(2 : ℕ))) := by
     cases image <;> dsimp [sourceLower] <;> fun_prop
   have hL : ContDiff ℝ ∞ (fun z : (Fin 4 → ℝ) × (Fin 3 → ℝ) =>
       ((Real.exp (z.1 0)*(1-sourceLower image (Real.exp (z.1 0)) (horizonChart (z.1 1))
-        (Real.sin (z.2 0)^2)):ℝ):ℂ)) :=
+        (Real.sin (z.2 0)^(2 : ℕ))):ℝ):ℂ)) :=
     Complex.ofRealCLM.contDiff.comp (hRealExp.mul (contDiff_const.sub hLower))
 
   exact smooth_div_const (hL.mul hF) 4
@@ -304,9 +304,9 @@ private theorem extendedIntegrand_eq_sample (image : Bool) (q : XiZeroCopy) (bra
   unfold extendedIntegrand
   rw [hC]
   change ((Real.exp u*(1-sourceLower image (Real.exp u) (horizonChart v)
-    (Real.sin (angleMap alpha)^2)):ℝ):ℂ)*
-    compactForcing (physicalRate q branch) amp (Real.exp u*Real.sin (angleMap alpha)^2)
-      (sourceZ image (Real.exp u) (horizonChart v) (Real.sin (angleMap alpha)^2) (Real.sin (angleMap beta)^2))
+    (Real.sin (angleMap alpha)^(2 : ℕ))):ℝ):ℂ)*
+    compactForcing (physicalRate q branch) amp (Real.exp u*Real.sin (angleMap alpha)^(2 : ℕ))
+      (sourceZ image (Real.exp u) (horizonChart v) (Real.sin (angleMap alpha)^(2 : ℕ)) (Real.sin (angleMap beta)^(2 : ℕ)))
       _ _/4=_
   rw [angleMap_sine_square ha,angleMap_sine_square hb]
   rfl

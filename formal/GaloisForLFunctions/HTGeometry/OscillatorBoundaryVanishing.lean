@@ -17,13 +17,13 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- **The boundary term vanishes at `+∞`.** -/
 theorem tendsto_oscBoundary_atTop_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
-    (ha : 0 < a) (hmu : mu < a ^ 2)
+    (ha : 0 < a) (hmu : mu < a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
-    (hint : Integrable (fun x => v x ^ 2)) :
+    (hint : Integrable (fun x => v x ^ (2 : ℕ))) :
     Tendsto (oscBoundary v v') atTop (𝓝 0) := by
-  have hintI : IntegrableOn (fun x => v x ^ 2) (Ici a) volume := hint.integrableOn
+  have hintI : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici a) volume := hint.integrableOn
   have hneg : ∀ x ∈ Ici a, oscProduct v v' x < 0 :=
     oscProduct_neg_of_integrableOn ha hmu.le hv hv' hnt hintI
   have hE : ∀ x ∈ Ici a, 0 ≤ oscillatorMonotoneEnergy mu v v' x :=
@@ -40,7 +40,7 @@ theorem tendsto_oscBoundary_atTop_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     rcases sign_locally_const_of_ne_zero hcv hnz with hpos | hnegv
     · exact tendsto_deriv_zero_of_pos ha hmu.le hv hv' hpos hneg
     · have hvv : ∀ x, HasDerivAt (fun y => -v y) ((fun y => -v' y) x) x := fun x => (hv x).neg
-      have hvv' : ∀ x, HasDerivAt (fun y => -v' y) ((x ^ 2 - mu) * (fun y => -v y) x) x := by
+      have hvv' : ∀ x, HasDerivAt (fun y => -v' y) ((x ^ (2 : ℕ) - mu) * (fun y => -v y) x) x := by
         intro x
         refine ((hv' x).neg).congr_deriv ?_
         ring
@@ -55,7 +55,7 @@ theorem tendsto_oscBoundary_atTop_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
       have := tendsto_deriv_zero_of_pos ha hmu.le hvv hvv' hposn hnegn
       have hneg0 : Tendsto (fun x => -(-v' x)) atTop (𝓝 (-0)) := this.neg
       simpa using hneg0
-  have hmuIci : ∀ x ∈ Ici a, mu ≤ x ^ 2 := by
+  have hmuIci : ∀ x ∈ Ici a, mu ≤ x ^ (2 : ℕ) := by
     intro x hx
     have hax : a ≤ x := Set.mem_Ici.1 hx
     nlinarith
@@ -73,11 +73,11 @@ theorem oscBoundary_reflect {v v' : ℝ → ℝ} (R : ℝ) :
 
 /-- **The boundary term vanishes at `−∞`.** -/
 theorem tendsto_oscBoundary_atBot_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
-    (ha : 0 < a) (hmu : mu < a ^ 2)
+    (ha : 0 < a) (hmu : mu < a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
-    (hint : Integrable (fun x => v x ^ 2)) :
+    (hint : Integrable (fun x => v x ^ (2 : ℕ))) :
     Tendsto (fun R : ℝ => oscBoundary v v' (-R)) atTop (𝓝 0) := by
   obtain ⟨hw, hw'⟩ := hasDerivAt_oscillatorReflect hv hv'
   have hntw : ∀ y, (fun t => v (-t)) y ≠ 0 ∨ (fun t => -v' (-t)) y ≠ 0 := by
@@ -85,7 +85,7 @@ theorem tendsto_oscBoundary_atBot_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     rcases hnt (-y) with h | h
     · exact Or.inl h
     · exact Or.inr (by simpa using h)
-  have hintw : Integrable (fun x => (fun t => v (-t)) x ^ 2) := by
+  have hintw : Integrable (fun x => (fun t => v (-t)) x ^ (2 : ℕ)) := by
     have := hint.comp_neg
     simpa using this
   have hlim := tendsto_oscBoundary_atTop_zero (mu := mu) (a := a) ha hmu hw hw' hntw hintw

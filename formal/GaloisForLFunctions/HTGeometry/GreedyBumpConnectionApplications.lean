@@ -65,7 +65,7 @@ theorem CovariantPositiveMatrixFrame.greedyBump_localizationRadius {r : ℕ}
     Matrix.trace
         (greedyBumpLocalizationCovariance Q (F.greedyBumpMetric s n) *
           (F.greedyBumpMetric s n).matrix) =
-      ((r + r : ℕ) : ℝ) / (Q : ℝ) ^ 2 :=
+      ((r + r : ℕ) : ℝ) / (Q : ℝ) ^ (2 : ℕ) :=
   greedyBumpLocalizationCovariance_trace_mul Q _
 
 end

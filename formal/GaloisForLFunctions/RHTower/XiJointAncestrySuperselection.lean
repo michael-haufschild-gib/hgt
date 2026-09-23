@@ -91,7 +91,7 @@ structure XiRightJointAncestrySuperselectionCertificate
           (q.1.1 : ℂ) n = 0
   transverseChannel :
     xiTransverseCompletionDefect q.1.1 ≠ 0 ∧
-    xiTransverseCompletionDefect q.1.1 ^ 2 = 0 ∧
+    xiTransverseCompletionDefect q.1.1 ^ (2 : ℕ) = 0 ∧
     routeRSummableHadamardShiftEquiv
         (xiTransverseCompletionDefect q.1.1) =
       xiTransverseCompletionDefect q.1.1

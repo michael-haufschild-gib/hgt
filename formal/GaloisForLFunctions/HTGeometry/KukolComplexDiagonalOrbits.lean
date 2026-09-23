@@ -24,18 +24,18 @@ variable {κ : Type*} [Fintype κ]
 
 /-- The complex bilinear Lorentz quadratic; no complex conjugation occurs here. -/
 def kukolRegularQuadratic (x : KukolRegularPoint κ) : ℂ :=
-  (x.minus : ℂ)*x.plus-∑ k,x.transverse k^2
+  (x.minus : ℂ)*x.plus-∑ k,x.transverse k^(2 : ℕ)
 
 /-- Kukol's complex unipotent action in arbitrary transverse dimension. -/
 def kukolRegularAction (u : κ → ℂ) (x : KukolRegularPoint κ) : KukolRegularPoint κ where
   minus := x.minus
-  plus := x.plus+2*(∑ k,x.transverse k*u k)+(x.minus : ℂ)*(∑ k,u k^2)
+  plus := x.plus+2*(∑ k,x.transverse k*u k)+(x.minus : ℂ)*(∑ k,u k^(2 : ℕ))
   transverse k := x.transverse k+(x.minus : ℂ)*u k
 
 /-- The quadratic and transverse coordinates recover the omitted plus coordinate exactly. -/
 def kukolRegularChart : KukolRegularPoint κ ≃ ℂˣ × ℂ × (κ → ℂ) where
   toFun x := (x.minus,kukolRegularQuadratic x,x.transverse)
-  invFun a := ⟨a.1,(a.2.1+∑ k,a.2.2 k^2)/(a.1 : ℂ),a.2.2⟩
+  invFun a := ⟨a.1,(a.2.1+∑ k,a.2.2 k^(2 : ℕ))/(a.1 : ℂ),a.2.2⟩
   left_inv x := by
     apply KukolRegularPoint.ext
     · rfl
@@ -65,9 +65,9 @@ theorem kukolRegularPoint_eq_iff (x y : KukolRegularPoint κ) :
 /-- The actual complex shear preserves the Lorentz quadratic. -/
 theorem kukolRegularQuadratic_action (u : κ → ℂ) (x : KukolRegularPoint κ) :
     kukolRegularQuadratic (kukolRegularAction u x)=kukolRegularQuadratic x := by
-  have hs : (∑ k,(x.transverse k+(x.minus : ℂ)*u k)^2) =
-      (∑ k,x.transverse k^2)+2*(x.minus : ℂ)*(∑ k,x.transverse k*u k)+
-        (x.minus : ℂ)^2*(∑ k,u k^2) := by
+  have hs : (∑ k,(x.transverse k+(x.minus : ℂ)*u k)^(2 : ℕ)) =
+      (∑ k,x.transverse k^(2 : ℕ))+2*(x.minus : ℂ)*(∑ k,x.transverse k*u k)+
+        (x.minus : ℂ)^(2 : ℕ)*(∑ k,u k^(2 : ℕ)) := by
     simp only [Finset.mul_sum,← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl
     intro k _

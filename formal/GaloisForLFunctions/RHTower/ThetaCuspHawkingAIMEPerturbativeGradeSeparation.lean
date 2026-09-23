@@ -12,7 +12,7 @@ negative-helicity weight `conj(s)`, its complete grade support is therefore
 `{2s, s + conj(s), 2conj(s)}`.
 
 Absorption-induced mode excitation is different.  Horizon mass change is quadratic in the seed,
-and its action on the surviving seed is cubic.  Its monomial `A * |A|^2 = A^2 * conj(A)` has cusp
+and its action on the surviving seed is cubic.  Its monomial `A * |A|^(2 : ℕ) = A^(2 : ℕ) * conj(A)` has cusp
 weight
 
 `2s + conj(s)`.
@@ -94,16 +94,16 @@ theorem d4ThetaEinsteinArbitraryQuadraticGradeSource_at_aimeCubic_eq_zero
 
 /-! ## Unique same-grade cubic helicity channel -/
 
-/-- Cusp weight of the pure positive-helicity cubic monomial `A^3`. -/
+/-- Cusp weight of the pure positive-helicity cubic monomial `A^(3 : ℕ)`. -/
 def d4ThetaEinsteinPureChiralCubicCuspWeight (z : ℂ) : ℂ :=
   3 * d4ThetaTeukolskyLinearCuspWeight z
 
-/-- Cusp weight of the conjugate mixed cubic monomial `A * conj(A)^2`. -/
+/-- Cusp weight of the conjugate mixed cubic monomial `A * conj(A)^(2 : ℕ)`. -/
 def d4ThetaEinsteinConjugateMixedCubicCuspWeight (z : ℂ) : ℂ :=
   d4ThetaTeukolskyLinearCuspWeight z +
     2 * star (d4ThetaTeukolskyLinearCuspWeight z)
 
-/-- Cusp weight of the pure negative-helicity cubic monomial `conj(A)^3`. -/
+/-- Cusp weight of the pure negative-helicity cubic monomial `conj(A)^(3 : ℕ)`. -/
 def d4ThetaEinsteinPureAntiChiralCubicCuspWeight (z : ℂ) : ℂ :=
   3 * star (d4ThetaTeukolskyLinearCuspWeight z)
 
@@ -207,8 +207,8 @@ theorem d4ThetaEinsteinThroughCubicAIMENumerator_eq_zero_iff
 theorem d4ThetaQuadraticCubicScaleSeparation
     (quadratic cubic : ℂ)
     (hcancel : ∀ scale : ℝ,
-      ((scale ^ 2 : ℝ) : ℂ) * quadratic +
-        ((scale ^ 3 : ℝ) : ℂ) * cubic = 0) :
+      ((scale ^ (2 : ℕ) : ℝ) : ℂ) * quadratic +
+        ((scale ^ (3 : ℕ) : ℝ) : ℂ) * cubic = 0) :
     quadratic = 0 ∧ cubic = 0 := by
   have h1 := hcancel 1
   have h2 := hcancel 2
@@ -221,7 +221,7 @@ theorem d4ThetaQuadraticCubicScaleSeparation
 theorem d4FundamentalQNMCrossBranchAIMENumerator_realScale
     (scale : ℝ) (amplitude z : ℂ) :
     d4FundamentalQNMCrossBranchAIMENumerator ((scale : ℂ) * amplitude) z =
-      ((scale ^ 3 : ℝ) : ℂ) *
+      ((scale ^ (3 : ℕ) : ℝ) : ℂ) *
         d4FundamentalQNMCrossBranchAIMENumerator amplitude z := by
   rw [d4FundamentalQNMCrossBranchAIMENumerator,
     d4FundamentalQNMCrossBranchAIMENumerator,
@@ -233,13 +233,13 @@ theorem d4FundamentalQNMCrossBranchAIMENumerator_realScale
 theorem d4ThetaNoQuadraticSourceCancelsAIMEAtEveryScale
     (amplitude quadratic : ℂ) (q : XiZeroCopy) (ha : amplitude ≠ 0) :
     ¬ (∀ scale : ℝ,
-      ((scale ^ 2 : ℝ) : ℂ) * quadratic +
+      ((scale ^ (2 : ℕ) : ℝ) : ℂ) * quadratic +
         d4FundamentalQNMCrossBranchAIMENumerator
           ((scale : ℂ) * amplitude) (xiSpectralPoint q) = 0) := by
   intro h
   have hcubic : ∀ scale : ℝ,
-      ((scale ^ 2 : ℝ) : ℂ) * quadratic +
-        ((scale ^ 3 : ℝ) : ℂ) *
+      ((scale ^ (2 : ℕ) : ℝ) : ℂ) * quadratic +
+        ((scale ^ (3 : ℕ) : ℝ) : ℂ) *
           d4FundamentalQNMCrossBranchAIMENumerator amplitude (xiSpectralPoint q) = 0 := by
     intro scale
     rw [← d4FundamentalQNMCrossBranchAIMENumerator_realScale]

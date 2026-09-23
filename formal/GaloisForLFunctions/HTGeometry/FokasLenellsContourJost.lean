@@ -30,7 +30,7 @@ theorem baseJostMatrix_det (q : SchwartzMap ℝ ℂ) (κ : ℝ) (left : Bool) (x
   · exact leftJostMatrix_det q κ x
 
 theorem baseJostFunction_eq (q : SchwartzMap ℝ ℂ) (κ : ℝ) (left : Bool) (x : ℝ) :
-    baseJostFunction q κ left x = baseJostMatrix q κ left x*diagonalFrame ((Real.exp κ)^2) x := by
+    baseJostFunction q κ left x = baseJostMatrix q κ left x*diagonalFrame ((Real.exp κ)^(2 : ℕ)) x := by
   cases left <;> rfl
 
 theorem baseJostFunction_tendsto (q : SchwartzMap ℝ ℂ) (κ : ℝ) (left : Bool) :

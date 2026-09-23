@@ -18,7 +18,7 @@ open Filter Topology
 
 /-- **The linear term is at most half the quadratic one past an explicit threshold.** -/
 theorem two_mul_le_half_sq {κ v : ℝ} (hκ : 0 < κ) (hv : 4 / κ ≤ v) :
-    2 * v ≤ κ * v ^ 2 / 2 := by
+    2 * v ≤ κ * v ^ (2 : ℕ) / 2 := by
   have h4 : (0 : ℝ) < 4 / κ := by positivity
   have hv0 : (0 : ℝ) < v := lt_of_lt_of_le h4 hv
   have hκv : (4 : ℝ) ≤ κ * v := by
@@ -28,14 +28,14 @@ theorem two_mul_le_half_sq {κ v : ℝ} (hκ : 0 < κ) (hv : 4 / κ ≤ v) :
 
 /-- **The quadratic decay, with an explicit threshold.** -/
 theorem exp_two_sub_sq_le {κ v : ℝ} (hκ : 0 < κ) (hv : 4 / κ ≤ v) :
-    Real.exp (2 * v - κ * v ^ 2) ≤ Real.exp (-(κ * v ^ 2 / 2)) := by
+    Real.exp (2 * v - κ * v ^ (2 : ℕ)) ≤ Real.exp (-(κ * v ^ (2 : ℕ) / 2)) := by
   refine Real.exp_le_exp.2 ?_
   have := two_mul_le_half_sq hκ hv
   linarith
 
 /-- The same, as an eventual statement. -/
 theorem eventually_exp_two_sub_sq_le {κ : ℝ} (hκ : 0 < κ) :
-    ∀ᶠ v : ℝ in atTop, Real.exp (2 * v - κ * v ^ 2) ≤ Real.exp (-(κ * v ^ 2 / 2)) := by
+    ∀ᶠ v : ℝ in atTop, Real.exp (2 * v - κ * v ^ (2 : ℕ)) ≤ Real.exp (-(κ * v ^ (2 : ℕ) / 2)) := by
   filter_upwards [eventually_ge_atTop (4 / κ)] with v hv
   exact exp_two_sub_sq_le hκ hv
 

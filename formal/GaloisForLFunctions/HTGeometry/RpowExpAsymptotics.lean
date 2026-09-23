@@ -89,7 +89,7 @@ theorem eventually_mul_rpow_log_le (C : ℝ) {γ ε : ℝ} (hγ : γ < 1) (hε :
 /-! ## The Wiman--Valiron parameter conditions -/
 
 /-- **The tail condition holds eventually.**  With the scale `s = t^β` and the window
-`H = t^{-α} s / (8t)`, the condition `(1 + 4/H)^3 e^{-sH/2} ≤ 1` holds for all large `t` exactly
+`H = t^{-α} s / (8t)`, the condition `(1 + 4/H)^(3 : ℕ) e^{-sH/2} ≤ 1` holds for all large `t` exactly
 because `sH/2 = t^{2β-α-1}/16` has a positive exponent while `4/H = 32 t^{1+α-β}` is only a
 power. -/
 theorem eventually_tail_condition {α β : ℝ} (hα : 0 < α) (hβ1 : β ≤ 1) (hlow : 1 + α < 2 * β) :

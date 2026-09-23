@@ -17,12 +17,12 @@ open Set
 private abbrev u := thetaCuspModularMassDrift
 private abbrev a := thetaCuspModularGapAmplitude
 private abbrev w := thetaCuspModularTransverseShear
-private abbrev e (x : ℝ) := a x + (4 / 3 : ℝ) * u x ^ 2
+private abbrev e (x : ℝ) := a x + (4 / 3 : ℝ) * u x ^ (2 : ℕ)
 
-private theorem source_reserve (x : ℝ) : 0 < 2 * u x ^ 2 + 3 * a x - 18 := by
+private theorem source_reserve (x : ℝ) : 0 < 2 * u x ^ (2 : ℕ) + 3 * a x - 18 := by
   have h := thetaCuspModularSourceFactor_re_pos x
   rw [thetaCuspModularSourceFactor_re_eq_driftCone] at h
-  have hq : 0 < (2 * u x ^ 2 + 3 * a x - 18) / 48 := by
+  have hq : 0 < (2 * u x ^ (2 : ℕ) + 3 * a x - 18) / 48 := by
     convert h using 1
     dsimp only [u, a, thetaCuspModularMassDrift, thetaCuspModularGapAmplitude]
     ring
@@ -30,7 +30,7 @@ private theorem source_reserve (x : ℝ) : 0 < 2 * u x ^ 2 + 3 * a x - 18 := by
 
 private theorem energy_deriv (x : ℝ) :
     HasDerivAt e
-      (-2 * a x * (w x - u x) - (8 * u x / 9) * (9 - u x ^ 2)) x := by
+      (-2 * a x * (w x - u x) - (8 * u x / 9) * (9 - u x ^ (2 : ℕ))) x := by
   convert (hasDerivAt_thetaCuspModularGapAmplitude x).add
     ((hasDerivAt_thetaCuspModularMassDrift x).pow 2 |>.const_mul (4 / 3 : ℝ)) using 1 <;>
     first | rfl | ring
@@ -38,7 +38,7 @@ private theorem energy_deriv (x : ℝ) :
 /-- The actual strong modular energy decreases strictly on the nonnegative ray. -/
 theorem strictAntiOn_thetaCuspModularStrongEnergy :
     StrictAntiOn (fun x => thetaCuspModularGapAmplitude x +
-      (4 / 3 : ℝ) * thetaCuspModularMassDrift x ^ 2) (Ici 0) := by
+      (4 / 3 : ℝ) * thetaCuspModularMassDrift x ^ (2 : ℕ)) (Ici 0) := by
   apply strictAntiOn_of_hasDerivWithinAt_neg (convex_Ici 0)
     (fun x _ => (energy_deriv x).continuousAt.continuousWithinAt)
     (fun x _ => (energy_deriv x).hasDerivWithinAt)
@@ -48,7 +48,7 @@ theorem strictAntiOn_thetaCuspModularStrongEnergy :
   have hu3 := thetaCuspModularMassDrift_lt_three hx0.le
   have hp := mul_nonneg (thetaCuspModularGapAmplitude_pos x).le
     (sub_nonneg.mpr (thetaCuspModularMassDrift_le_shear hx0.le))
-  have hq := mul_pos hu (show 0 < 9 - u x ^ 2 by nlinarith only [hu, hu3])
+  have hq := mul_pos hu (show 0 < 9 - u x ^ (2 : ℕ) by nlinarith only [hu, hu3])
   nlinarith only [hp, hq]
 
 private theorem energy_lower {x : ℝ} (hx : 0 ≤ x) : 12 ≤ e x := by
@@ -83,7 +83,7 @@ private theorem energy_lower {x : ℝ} (hx : 0 ≤ x) : 12 ≤ e x := by
 /-- Completeness and positive source force the strong energy strictly above twelve. -/
 theorem thetaCuspModularStrongEnergy_gt_twelve {x : ℝ} (hx : 0 ≤ x) :
     12 < thetaCuspModularGapAmplitude x +
-      (4 / 3 : ℝ) * thetaCuspModularMassDrift x ^ 2 := by
+      (4 / 3 : ℝ) * thetaCuspModularMassDrift x ^ (2 : ℕ) := by
   have hl := energy_lower (show 0 ≤ x + 1 by linarith)
   have hs := strictAntiOn_thetaCuspModularStrongEnergy hx
     (show 0 ≤ x + 1 by linarith) (show x < x + 1 by linarith)
@@ -92,13 +92,13 @@ theorem thetaCuspModularStrongEnergy_gt_twelve {x : ℝ} (hx : 0 ≤ x) :
 /-- The curvature bracket of every theta power through four is strictly positive. -/
 theorem thetaCuspModularPowerSourceBracket_pos {x v : ℝ}
     (hx : 0 ≤ x) (hv : v ≤ 4) :
-    0 < (-3 + thetaCuspModularMassDrift x ^ 2 / 3 +
+    0 < (-3 + thetaCuspModularMassDrift x ^ (2 : ℕ) / 3 +
         3 * thetaCuspModularGapAmplitude x / 4) / 6 -
-      v * (1 / 4 - thetaCuspModularMassDrift x ^ 2 / 36) := by
+      v * (1 / 4 - thetaCuspModularMassDrift x ^ (2 : ℕ) / 36) := by
   have he := thetaCuspModularStrongEnergy_gt_twelve hx
   have hu := thetaCuspModularMassDrift_nonneg hx
   have hu3 := thetaCuspModularMassDrift_lt_three hx
-  have hs : 0 ≤ (1 / 4 : ℝ) - thetaCuspModularMassDrift x ^ 2 / 36 := by
+  have hs : 0 ≤ (1 / 4 : ℝ) - thetaCuspModularMassDrift x ^ (2 : ℕ) / 36 := by
     nlinarith only [hu, hu3]
   have hp := mul_nonneg (sub_nonneg.mpr hv) hs
   nlinarith only [he, hp]
@@ -149,8 +149,8 @@ private theorem powerMass_deriv (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
 private theorem powerMass_second_deriv (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
     HasDerivAt (deriv (thetaCuspNormalizedPowerMass v))
       (thetaCuspNormalizedPowerMass v x *
-        (thetaCuspModularMassDrift (x / v) ^ 2 / 36 +
-          (-3 + thetaCuspModularMassDrift (x / v) ^ 2 / 3 +
+        (thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 36 +
+          (-3 + thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 3 +
             3 * thetaCuspModularGapAmplitude (x / v) / 4) / (6 * v))) x := by
   have hf : deriv (thetaCuspNormalizedPowerMass v) = fun t =>
       thetaCuspNormalizedPowerMass v t * thetaCuspModularMassDrift (t / v) / 6 := by
@@ -158,7 +158,7 @@ private theorem powerMass_second_deriv (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
     exact (powerMass_deriv v hv t).deriv
   rw [hf]
   have hu : HasDerivAt (fun t => thetaCuspModularMassDrift (t / v))
-      ((-3 + thetaCuspModularMassDrift (x / v) ^ 2 / 3 +
+      ((-3 + thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 3 +
         3 * thetaCuspModularGapAmplitude (x / v) / 4) / v) x := by
     simpa only [Function.comp_def, id_eq, div_eq_mul_inv, one_mul] using
       (hasDerivAt_thetaCuspModularMassDrift (x / v)).comp x ((hasDerivAt_id x).div_const v)
@@ -166,7 +166,7 @@ private theorem powerMass_second_deriv (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
       thetaCuspModularMassDrift (t / v) / 6)
       ((thetaCuspNormalizedPowerMass v x * thetaCuspModularMassDrift (x / v) / 6 *
           thetaCuspModularMassDrift (x / v) + thetaCuspNormalizedPowerMass v x *
-          ((-3 + thetaCuspModularMassDrift (x / v) ^ 2 / 3 +
+          ((-3 + thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 3 +
             3 * thetaCuspModularGapAmplitude (x / v) / 4) / v)) / 6) x :=
     ((powerMass_deriv v hv x).mul hu).div_const 6
   convert h using 1
@@ -175,9 +175,9 @@ private theorem powerMass_second_deriv (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
 /-- Exact mass-normalized source factor for every nonzero theta-power parameter. -/
 theorem thetaCuspNormalizedPowerSource_eq (v : ℝ) (hv : v ≠ 0) (x : ℝ) :
     thetaCuspNormalizedPowerSource v x = thetaCuspNormalizedPowerMass v x / (2 * v) *
-      ((-3 + thetaCuspModularMassDrift (x / v) ^ 2 / 3 +
+      ((-3 + thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 3 +
           3 * thetaCuspModularGapAmplitude (x / v) / 4) / 6 -
-        v * (1 / 4 - thetaCuspModularMassDrift (x / v) ^ 2 / 36)) := by
+        v * (1 / 4 - thetaCuspModularMassDrift (x / v) ^ (2 : ℕ) / 36)) := by
   unfold thetaCuspNormalizedPowerSource
   rw [iteratedDeriv_succ, iteratedDeriv_one,
     (powerMass_second_deriv v hv x).deriv]

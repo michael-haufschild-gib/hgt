@@ -16,9 +16,9 @@ private theorem pwGammaMobiusSameSourceAtom_measurable (z : ℂ) (n : ℕ) :
   fun_prop
 
 private theorem pwGammaSameSource_reciprocal_summable :
-    Summable (fun n : ℕ => 1/((n : ℝ)+1)^2) := by
+    Summable (fun n : ℕ => 1/((n : ℝ)+1)^(2 : ℕ)) := by
   have ht := (Real.summable_one_div_nat_pow.mpr one_lt_two).comp_injective Nat.succ_injective
-  change Summable (fun n : ℕ => 1/((n+1 : ℕ) : ℝ)^2) at ht
+  change Summable (fun n : ℕ => 1/((n+1 : ℕ) : ℝ)^(2 : ℕ)) at ht
   simpa only [Nat.cast_add, Nat.cast_one] using ht
 
 theorem pwGammaMobiusSameSourceAtom_integrable (z : ℂ) (n : ℕ) :
@@ -33,7 +33,7 @@ theorem pwGammaMobiusSameSourceAtom_integrable (z : ℂ) (n : ℕ) :
     filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod measurableSet_Ioi)] with p hp
     exact (pwGammaMobiusSameSourceAtom_one z hp.1.le hp.2).symm
   have hg := (pwGammaSameSourceMajorant_integrable (N+3)).const_mul
-    ((2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^2))
+    ((2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^(2 : ℕ)))
   apply Integrable.mono' hg (pwGammaMobiusSameSourceAtom_measurable z (n+2)).aestronglyMeasurable
   rw [Measure.prod_restrict]
   filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod measurableSet_Ioi)] with p hp
@@ -50,7 +50,7 @@ theorem pwGammaMobiusSameSourceAtom_integrable_section (z : ℂ) (n : ℕ) {x : 
     intro h hh
     exact (pwGammaMobiusSameSourceAtom_one z hh.le hx).symm
   have hg := (pwGammaSameSourceMajorant_integrable_section (N+3) x).const_mul
-    ((2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^2))
+    ((2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^(2 : ℕ)))
   have hm : Measurable (fun h : ℝ => pwGammaMobiusSameSourceAtom z (n+2) (h,x)) :=
     (pwGammaMobiusSameSourceAtom_measurable z (n+2)).comp (measurable_id.prodMk measurable_const)
   apply Integrable.mono' hg hm.aestronglyMeasurable
@@ -68,7 +68,7 @@ theorem pwGammaMobiusSameSourceAtom_norm_integrals_summable (z : ℂ) :
   refine hs.of_nonneg_of_le (fun n => integral_nonneg (fun p => norm_nonneg _)) ?_
   intro n
   calc
-    _ ≤ ∫ p, (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^2)*
+    _ ≤ ∫ p, (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^(2 : ℕ))*
         pwGammaSameSourceMajorant (N+3) p
         ∂((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
       apply integral_mono_ae (pwGammaMobiusSameSourceAtom_integrable z (n+2)).norm
@@ -87,7 +87,7 @@ theorem pwGammaMobiusSameSourceAtom_section_norm_integrals_summable (z : ℂ) {x
   refine hs.of_nonneg_of_le (fun n => integral_nonneg (fun h => norm_nonneg _)) ?_
   intro n
   calc
-    _ ≤ ∫ h in Ioi (0 : ℝ), (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^2)*
+    _ ≤ ∫ h in Ioi (0 : ℝ), (2^(N+1)*((N+4).factorial : ℝ)*2^(N+2))*(1/((n : ℝ)+1)^(2 : ℕ))*
         pwGammaSameSourceMajorant (N+3) (h,x) := by
       apply integral_mono_ae (pwGammaMobiusSameSourceAtom_integrable_section z (n+2) hx).norm
         ((pwGammaSameSourceMajorant_integrable_section (N+3) x).const_mul _)

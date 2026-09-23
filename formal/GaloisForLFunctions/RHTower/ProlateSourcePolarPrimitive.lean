@@ -62,9 +62,9 @@ theorem exists_prolate_source_polar_primitive_bound :
           ≤ B / Real.sqrt lam := by
   have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
   have ha : (0 : ℝ) < 10 := by norm_num
-  have hka : (0 : ℝ) < (10 : ℝ) ^ 2 := by norm_num
-  have hc : (400 : ℝ) ≤ 2 * Real.pi * (10 : ℝ) ^ 2 := by nlinarith [hpi]
-  have hc1 : (1 : ℝ) ≤ 2 * Real.pi * (10 : ℝ) ^ 2 := by linarith
+  have hka : (0 : ℝ) < (10 : ℝ) ^ (2 : ℕ) := by norm_num
+  have hc : (400 : ℝ) ≤ 2 * Real.pi * (10 : ℝ) ^ (2 : ℕ) := by nlinarith [hpi]
+  have hc1 : (1 : ℝ) ≤ 2 * Real.pi * (10 : ℝ) ^ (2 : ℕ) := by linarith
   obtain ⟨lamB, eta, Φ, hlamB, hsm, hne, heven, hband, heig, hsep⟩ :=
     exists_even_joint_prolate_eigen_separation_lt_half hc
   have hΦc : Continuous Φ := hsm.continuous
@@ -74,22 +74,22 @@ theorem exists_prolate_source_polar_primitive_bound :
   have hΦ1 : Φ 1 ≠ 0 := value_one_ne_of_joint_prolate_band_eigen hsm hne hlamB hband heig
   obtain ⟨C, hC0, hC⟩ := exists_bound_of_bandTransform_eigen hlamB hΦc hband
   obtain ⟨mu, hmune, hmusq, hmu⟩ :=
-    exists_realFourierBandTransform_eigen (κ := (10 : ℝ) ^ 2) hka hsm hne heven hlamB hband heig
+    exists_realFourierBandTransform_eigen (κ := (10 : ℝ) ^ (2 : ℕ)) hka hsm hne heven hlamB hband heig
   -- the normalized radial profile
   set R : ℝ → ℝ := prolateEndpointNormalize Φ with hRdef
   have hRsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) R := contDiff_prolateEndpointNormalize hsm
   have hRd1 : Differentiable ℝ R := (contDiff_infty_iff_deriv.mp hRsm).1
   have hRd2 : Differentiable ℝ (deriv R) :=
     (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hRsm).2).1
-  have hReig : ∀ x : ℝ, prolateSLAction (2 * Real.pi * (10 : ℝ) ^ 2) R x = eta * R x :=
+  have hReig : ∀ x : ℝ, prolateSLAction (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) R x = eta * R x :=
     prolateSLAction_endpointNormalize hd1 hd2 heig
   have hchi : eta ≤ 0 :=
     GaloisForLFunctions.RHTower.prolateSeparation_nonpos_of_global_joint hlamB hsm hne hband heig
-  have hs0 : 0 ≤ radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ 2) eta :=
+  have hs0 : 0 ≤ radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) eta :=
     div_nonneg (neg_nonneg.mpr hchi) (sq_nonneg _)
-  have hs1 : radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ 2) eta ≤ 1 / 2 := le_of_lt hsep
+  have hs1 : radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) eta ≤ 1 / 2 := le_of_lt hsep
   have hode := radialProlate_ode_of_prolateSLAction_eq
-    (by positivity : (2 * Real.pi * (10 : ℝ) ^ 2) ≠ 0) hReig
+    (by positivity : (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) ≠ 0) hReig
   have hΦR : ∀ u : ℝ, Φ u = Φ 1 * R u := by
     intro u
     rw [hRdef, prolateEndpointNormalize]
@@ -97,12 +97,12 @@ theorem exists_prolate_source_polar_primitive_bound :
   -- the source
   set F : ℝ → ℝ := prolateMeanZeroSource 10 2 Φ with hF
   set M : ℝ := GaloisForLFunctions.RHTower.exactEnergyBudget
-    (radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ 2) eta)
-    (2 * Real.pi * (10 : ℝ) ^ 2) R (deriv R) 2 with hM
+    (radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) eta)
+    (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) R (deriv R) 2 with hM
   have hM0 : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
-  set B : ℝ := 2 * ((10 : ℝ) ^ 2 * |mu| * |Φ 1| *
-    (2 * (4500 * M / (Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) *
-      (2 * Real.pi * (10 : ℝ) ^ 2) * 2)))) with hB
+  set B : ℝ := 2 * ((10 : ℝ) ^ (2 : ℕ) * |mu| * |Φ 1| *
+    (2 * (4500 * M / (Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) *
+      (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * 2)))) with hB
   have hB0 : (0 : ℝ) ≤ B := by
     rw [hB]
     positivity
@@ -114,29 +114,29 @@ theorem exists_prolate_source_polar_primitive_bound :
       linarith
     obtain ⟨hsum, hbnd⟩ := tsum_abs_channelPrimitive_prolateMeanZeroSource
       (a := 10) (lamDil := 2) (lamR := lam) (mu := mu) (C := C) (Φ := Φ)
-      (s := radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ 2) eta)
-      (cc := 2 * Real.pi * (10 : ℝ) ^ 2) (R := R) (DR := deriv R) (DDR := deriv (deriv R))
+      (s := radialSeparationRatio (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) eta)
+      (cc := 2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) (R := R) (DR := deriv R) (DDR := deriv (deriv R))
       ha (by norm_num) hlam0 hΦc heven hC hC0 hmu hΦR hs0 hs1 hc1
       (fun u => (hRd1 u).hasDerivAt) (fun u => (hRd2 u).hasDerivAt) hode hbeta ht
-    have hmono : 2 * ((10 : ℝ) ^ 2 * |mu| * |Φ 1| *
-        (2 * (4500 * M / (Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) *
-          (2 * Real.pi * (10 : ℝ) ^ 2) * (lam / 10))))) ≤ B := by
+    have hmono : 2 * ((10 : ℝ) ^ (2 : ℕ) * |mu| * |Φ 1| *
+        (2 * (4500 * M / (Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) *
+          (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * (lam / 10))))) ≤ B := by
       rw [hB]
-      have hden : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) *
-          (2 * Real.pi * (10 : ℝ) ^ 2) * 2 := by
-        have : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) :=
+      have hden : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) *
+          (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * 2 := by
+        have : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) :=
           Real.sqrt_pos.mpr (by positivity)
         positivity
-      have hle : Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) * (2 * Real.pi * (10 : ℝ) ^ 2) * 2
-          ≤ Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) * (2 * Real.pi * (10 : ℝ) ^ 2) * (lam / 10) := by
-        have hpos : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) *
-            (2 * Real.pi * (10 : ℝ) ^ 2) := by
-          have : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ 2) :=
+      have hle : Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * 2
+          ≤ Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) * (lam / 10) := by
+        have hpos : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) *
+            (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) := by
+          have : (0 : ℝ) < Real.sqrt (2 * Real.pi * (10 : ℝ) ^ (2 : ℕ)) :=
             Real.sqrt_pos.mpr (by positivity)
           positivity
         nlinarith [mul_nonneg hpos.le (by linarith [hbeta] : (0 : ℝ) ≤ lam / 10 - 2)]
       have hdiv := div_le_div_of_nonneg_left (by positivity : (0 : ℝ) ≤ 4500 * M) hden hle
-      have hAnn : (0 : ℝ) ≤ (10 : ℝ) ^ 2 * |mu| * |Φ 1| := by positivity
+      have hAnn : (0 : ℝ) ≤ (10 : ℝ) ^ (2 : ℕ) * |mu| * |Φ 1| := by positivity
       nlinarith [hdiv, hAnn]
     exact abs_halfLineExpPrimitive_radialFullLogSource_le_of_channel_bound
       (integrable_prolateMeanZeroSource ha (by norm_num) hΦc hC hC0)

@@ -27,7 +27,7 @@ def connesVanSuijlekomA1Mu (n m : ℤ) : ℝ :=
     if m = -1 then -1 else if m = 0 then -1 else if m = 1 then 1 / 2 else 1 / (-1 + m)
   else if m = -1 then 1 / (-1 - n)
   else if m = 1 then 1 / (-1 + n)
-  else if n = m then 2 / (1 - (n : ℝ) ^ 2)
+  else if n = m then 2 / (1 - (n : ℝ) ^ (2 : ℕ))
   else 0
 
 /-- The matrix-element formula claimed for the quadratic form in Lemma A.1. -/
@@ -244,7 +244,7 @@ theorem connesVanSuijlekomA1_mu_off_special_zero
 
 theorem connesVanSuijlekomA1_mu_diag
     {n : ℤ} (hn : n ≠ -1) (hn0 : n ≠ 0) (hn1 : n ≠ 1) :
-    connesVanSuijlekomA1Mu n n = 2 / (1 - (n : ℝ) ^ 2) := by
+    connesVanSuijlekomA1Mu n n = 2 / (1 - (n : ℝ) ^ (2 : ℕ)) := by
   simp [connesVanSuijlekomA1Mu, hn, hn0, hn1]
 
 theorem connesVanSuijlekomA1_mu_right_neg_one
@@ -259,7 +259,7 @@ theorem connesVanSuijlekomA1_mu_right_one
 
 /-- The diagonal operator in Lemma A.2(i), at the matrix-entry level. -/
 def connesVanSuijlekomA2Diagonal (n : ℤ) : ℝ :=
-  if n = -1 then 1 / 2 else if n = 1 then 1 / 2 else 2 / (1 - (n : ℝ) ^ 2)
+  if n = -1 then 1 / 2 else if n = 1 then 1 / 2 else 2 / (1 - (n : ℝ) ^ (2 : ℕ))
 
 /-- The vector `ξ` of Lemma A.2(i), at the level of Fourier coefficients. -/
 def connesVanSuijlekomA2Xi (n : ℤ) : ℝ :=
@@ -281,7 +281,7 @@ def connesVanSuijlekomA2Delta (n m : ℤ) : ℝ := if n = m then 1 else 0
 
 theorem connesVanSuijlekomA2_diagonal_eq_source (n : ℤ) :
     connesVanSuijlekomA2Diagonal n =
-      if n ^ 2 = 1 then 1 / 2 else 2 / (1 - (n : ℝ) ^ 2) := by
+      if n ^ (2 : ℕ) = 1 then 1 / 2 else 2 / (1 - (n : ℝ) ^ (2 : ℕ)) := by
   by_cases hn : n = -1
   · subst n
     norm_num [connesVanSuijlekomA2Diagonal]
@@ -289,7 +289,7 @@ theorem connesVanSuijlekomA2_diagonal_eq_source (n : ℤ) :
   · subst n
     norm_num [connesVanSuijlekomA2Diagonal]
   rw [connesVanSuijlekomA2Diagonal, if_neg hn, if_neg hn1]
-  have hs : n ^ 2 ≠ 1 := by
+  have hs : n ^ (2 : ℕ) ≠ 1 := by
     intro h
     have : n = 1 ∨ n = -1 := by
       exact (sq_eq_one_iff).mp h
@@ -411,7 +411,7 @@ theorem connesVanSuijlekomA2_fourier_coefficient_zero :
       (∫ x in (0 : ℝ)..1, (x - 1 / 2) * Real.sin (2 * Real.pi * x)) = -1 := by
   let F : ℝ → ℝ := fun x =>
     -(x - 1 / 2) * Real.cos (2 * Real.pi * x) / (2 * Real.pi)
-      + Real.sin (2 * Real.pi * x) / (4 * Real.pi ^ 2)
+      + Real.sin (2 * Real.pi * x) / (4 * Real.pi ^ (2 : ℕ))
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   have hF : ∀ x : ℝ,
       HasDerivAt (𝕜 := ℝ) F ((x - 1 / 2) * Real.sin (2 * Real.pi * x)) x := by
@@ -432,7 +432,7 @@ theorem connesVanSuijlekomA2_fourier_coefficient_zero :
       convert! (((hasDerivAt_id (𝕜 := ℝ) x).sub_const (1 / 2)).neg.mul hc) using 1
       simp only [Pi.neg_apply, id_eq]
       ring
-    have hsum := (h1.div_const (2 * Real.pi)).add (hs.div_const (4 * Real.pi ^ 2))
+    have hsum := (h1.div_const (2 * Real.pi)).add (hs.div_const (4 * Real.pi ^ (2 : ℕ)))
     convert! hsum using 1
     field_simp [hpi]
     ring
@@ -458,7 +458,7 @@ theorem connesVanSuijlekomA2_weighted_sin_integral
     (κ : ℝ) (hκ : κ ≠ 0) (hsin : Real.sin κ = 0) (hcos : Real.cos κ = 1) :
     κ * (∫ x in (0 : ℝ)..1, (x - 1 / 2) * Real.sin (κ * x)) = -1 := by
   let F : ℝ → ℝ := fun x =>
-    -(x - 1 / 2) * Real.cos (κ * x) / κ + Real.sin (κ * x) / κ ^ 2
+    -(x - 1 / 2) * Real.cos (κ * x) / κ + Real.sin (κ * x) / κ ^ (2 : ℕ)
   have hF : ∀ x : ℝ,
       HasDerivAt (𝕜 := ℝ) F ((x - 1 / 2) * Real.sin (κ * x)) x := by
     intro x
@@ -477,7 +477,7 @@ theorem connesVanSuijlekomA2_weighted_sin_integral
       convert! (((hasDerivAt_id (𝕜 := ℝ) x).sub_const (1 / 2)).neg.mul hc) using 1
       simp only [Pi.neg_apply, id_eq]
       ring
-    have hsum := (h1.div_const κ).add (hs.div_const (κ ^ 2))
+    have hsum := (h1.div_const κ).add (hs.div_const (κ ^ (2 : ℕ)))
     convert! hsum using 1
     field_simp [hκ]
     ring
@@ -554,7 +554,7 @@ theorem connesVanSuijlekomA2_fourier_coefficient_of_ne
     2 * Real.pi *
       (∫ x in (0 : ℝ)..1,
         (x - 1 / 2) * Real.sin (2 * Real.pi * x) * Real.cos (2 * Real.pi * (n : ℝ) * x)) =
-      1 / ((n : ℝ) ^ 2 - 1) := by
+      1 / ((n : ℝ) ^ (2 : ℕ) - 1) := by
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   have hplus : (1 : ℤ) + n ≠ 0 := by
     intro h
@@ -658,9 +658,9 @@ theorem connesVanSuijlekomA2_fourier_coefficient_of_ne
   rw [hscale, hsplit, hIplus, hIminus]
   have hnNegR : (n : ℝ) ≠ -1 := by exact_mod_cast hnNeg
   have hnOneR : (n : ℝ) ≠ 1 := by exact_mod_cast hnOne
-  have hden : (n : ℝ) ^ 2 - 1 ≠ 0 := by
+  have hden : (n : ℝ) ^ (2 : ℕ) - 1 ≠ 0 := by
     intro h
-    have hsquare : (n : ℝ) ^ 2 = 1 := by linarith
+    have hsquare : (n : ℝ) ^ (2 : ℕ) = 1 := by linarith
     rcases (sq_eq_one_iff).mp hsquare with h' | h'
     · exact hnOneR h'
     · exact hnNegR h'
@@ -725,19 +725,19 @@ theorem connesVanSuijlekomA2_alpha_cos_coefficient (n : ℤ) :
     rw [connesVanSuijlekomA2Alpha]
     ring, intervalIntegral.integral_const_mul]
   have h := connesVanSuijlekomA2_fourier_coefficient_of_ne n hnNeg hnOne
-  have hden : 1 - (n : ℝ) ^ 2 ≠ 0 := by
+  have hden : 1 - (n : ℝ) ^ (2 : ℕ) ≠ 0 := by
     intro hz
-    have hsquare : (n : ℝ) ^ 2 = 1 := by linarith
+    have hsquare : (n : ℝ) ^ (2 : ℕ) = 1 := by linarith
     have hnNegR : (n : ℝ) ≠ -1 := by exact_mod_cast hnNeg
     have hnOneR : (n : ℝ) ≠ 1 := by exact_mod_cast hnOne
     rcases (sq_eq_one_iff).mp hsquare with h' | h'
     · exact hnOneR h'
     · exact hnNegR h'
-  have hdenSrc : (n : ℝ) ^ 2 - 1 ≠ 0 := by
+  have hdenSrc : (n : ℝ) ^ (2 : ℕ) - 1 ≠ 0 := by
     intro hzero
     apply hden
     linarith
-  rw [show 2 / (1 - (n : ℝ) ^ 2) = -2 * (1 / ((n : ℝ) ^ 2 - 1)) by
+  rw [show 2 / (1 - (n : ℝ) ^ (2 : ℕ)) = -2 * (1 / ((n : ℝ) ^ (2 : ℕ) - 1)) by
     field_simp [hden, hdenSrc]
     ring]
   nlinarith [h]
@@ -1129,11 +1129,11 @@ theorem connesVanSuijlekomA2_norm_diagonal_le_two (n : ℤ) :
     rw [← Int.natCast_natAbs]
     exact_mod_cast hnat
   have habs : (2 : ℝ) ≤ |(n : ℝ)| := by exact_mod_cast hnatZ
-  have hsq : (4 : ℝ) ≤ (n : ℝ) ^ 2 := by
-    have hsqabs : (4 : ℝ) ≤ |(n : ℝ)| ^ 2 := by nlinarith
+  have hsq : (4 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
+    have hsqabs : (4 : ℝ) ≤ |(n : ℝ)| ^ (2 : ℕ) := by nlinarith
     simpa only [sq_abs] using hsqabs
-  have hdenNonpos : 1 - (n : ℝ) ^ 2 ≤ 0 := by linarith
-  have hdenAbs : (1 : ℝ) ≤ |1 - (n : ℝ) ^ 2| := by
+  have hdenNonpos : 1 - (n : ℝ) ^ (2 : ℕ) ≤ 0 := by linarith
+  have hdenAbs : (1 : ℝ) ≤ |1 - (n : ℝ) ^ (2 : ℕ)| := by
     rw [abs_of_nonpos hdenNonpos]
     linarith
   rw [Complex.norm_real, Real.norm_eq_abs, abs_div,

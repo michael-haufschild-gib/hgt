@@ -32,7 +32,7 @@ noncomputable section
 
 /-- Energy renormalization forced by the missing `p-1` in Connes--Consani Lemma 3.3. -/
 def connesConsaniCorrectedPrimeEnergyScale (p : Nat.Primes) : ℝ :=
-  ((p : ℝ) - 1)⁻¹ ^ 2
+  ((p : ℝ) - 1)⁻¹ ^ (2 : ℕ)
 
 /-- Correctly normalized reduced distinguished prime-pole block. -/
 def connesConsaniCorrectedReducedPrimePoleDefect (p : Nat.Primes) :
@@ -59,7 +59,7 @@ theorem adjoint_connesConsaniCorrectedReducedPrimePoleDefect (p : Nat.Primes) :
   rw [ContinuousLinearMap.adjoint_inner_right]
   exact connesConsaniCorrectedReducedPrimePoleDefect_inner p u v
 
-/-- Exact corrected energy: the printed energy is too large by `(p-1)^2`. -/
+/-- Exact corrected energy: the printed energy is too large by `(p-1)^(2 : ℕ)`. -/
 theorem connesConsaniCorrectedReducedPrimePoleDefect_modulusSq (p : Nat.Primes) :
     ContinuousLinearMap.adjoint (connesConsaniCorrectedReducedPrimePoleDefect p) ∘L
         connesConsaniCorrectedReducedPrimePoleDefect p =
@@ -86,7 +86,7 @@ theorem connesConsaniCorrectedReducedPrimePoleDefect_modulusSq (p : Nat.Primes) 
 
 /-- Corrected measurable residue of the distinguished prime-pole energy. -/
 def connesConsaniCorrectedPrimePoleResidue (p : Nat.Primes) : ℝ :=
-  2 * ((p : ℝ) - 1) ^ 2 / ((p : ℝ) ^ 2 * Real.log (p : ℝ))
+  2 * ((p : ℝ) - 1) ^ (2 : ℕ) / ((p : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ))
 
 /-- The corrected residue is the corrected energy scale times the old raw-channel residue. -/
 theorem connesConsaniCorrectedPrimeEnergyScale_mul_gaussChannelResidue (p : Nat.Primes) :

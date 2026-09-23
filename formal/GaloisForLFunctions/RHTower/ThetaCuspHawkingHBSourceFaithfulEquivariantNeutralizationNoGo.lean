@@ -47,7 +47,7 @@ theorem inner_thetaCuspHawkingPrimeVisibleChargedDoubleKMS_partner_eq_affinity_s
         (thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p) =
       ((geometricHellingerAffinity
         (thetaCuspHawkingPrimeVisibleKMSRatio r p)
-        (thetaCuspHawkingPrimePartnerKMSRatio r p) : ℝ) : ℂ) ^ 2 := by
+        (thetaCuspHawkingPrimePartnerKMSRatio r p) : ℝ) : ℂ) ^ (2 : ℕ) := by
   rw [thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity,
     thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity,
     inner_lpTensorProductVector,
@@ -254,7 +254,7 @@ def D4HBSourceFaithfulSwapEquivariantNeutralizationRouteKilled : Prop :=
         (thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p) =
       ((geometricHellingerAffinity
         (thetaCuspHawkingPrimeVisibleKMSRatio r p)
-        (thetaCuspHawkingPrimePartnerKMSRatio r p) : ℝ) : ℂ) ^ 2 ∧
+        (thetaCuspHawkingPrimePartnerKMSRatio r p) : ℝ) : ℂ) ^ (2 : ℕ) ∧
     (thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p =
         thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p ↔
       thetaCuspHawkingBackreactionHorizonCharge r = 0) ∧

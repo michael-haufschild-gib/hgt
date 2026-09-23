@@ -48,24 +48,24 @@ theorem hasDerivAt_horner_real (cs : List ℂ) (r : ℝ) :
 
 /-- Rational coefficient `horner cs r / (r^p (r²−1)^q)`. -/
 def ratCoef (cs : List ℂ) (p q : ℕ) (r : ℝ) : ℂ :=
-  horner cs r / ((r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q)
+  horner cs r / ((r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q)
 
 /-- Its derivative, over the denominator `r^(p+1) (r²−1)^(q+1)`. -/
 def ratCoefDeriv (cs : List ℂ) (p q : ℕ) (r : ℝ) : ℂ :=
-  (hornerDeriv cs r * r * ((r : ℂ) ^ 2 - 1) -
-      horner cs r * ((p : ℂ) * ((r : ℂ) ^ 2 - 1) + 2 * (q : ℂ) * (r : ℂ) ^ 2)) /
-    ((r : ℂ) ^ (p + 1) * ((r : ℂ) ^ 2 - 1) ^ (q + 1))
+  (hornerDeriv cs r * r * ((r : ℂ) ^ (2 : ℕ) - 1) -
+      horner cs r * ((p : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1) + 2 * (q : ℂ) * (r : ℂ) ^ (2 : ℕ))) /
+    ((r : ℂ) ^ (p + 1) * ((r : ℂ) ^ (2 : ℕ) - 1) ^ (q + 1))
 
 theorem hasDerivAt_ratCoef (cs : List ℂ) (p q : ℕ) {r : ℝ} (hr : (r : ℂ) ≠ 0)
-    (hf : (r : ℂ) ^ 2 - 1 ≠ 0) :
+    (hf : (r : ℂ) ^ (2 : ℕ) - 1 ≠ 0) :
     HasDerivAt (ratCoef cs p q) (ratCoefDeriv cs p q r) r := by
   have hR : HasDerivAt (fun r : ℝ => (r : ℂ)) 1 r := by
     simpa using (hasDerivAt_id r).ofReal_comp
-  have hD : HasDerivAt (fun r : ℝ => (r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q)
-      ((p : ℂ) * (r : ℂ) ^ (p - 1) * 1 * ((r : ℂ) ^ 2 - 1) ^ q +
-        (r : ℂ) ^ p * ((q : ℂ) * ((r : ℂ) ^ 2 - 1) ^ (q - 1) * ((2 : ℂ) * (r : ℂ) ^ (2 - 1) * 1 - 0))) r :=
+  have hD : HasDerivAt (fun r : ℝ => (r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q)
+      ((p : ℂ) * (r : ℂ) ^ (p - 1) * 1 * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q +
+        (r : ℂ) ^ p * ((q : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1) ^ (q - 1) * ((2 : ℂ) * (r : ℂ) ^ (2 - 1) * 1 - 0))) r :=
     (hR.pow p).mul (((hR.pow 2).sub (hasDerivAt_const r (1 : ℂ))).pow q)
-  have hden : (r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q ≠ 0 := mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ hf)
+  have hden : (r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q ≠ 0 := mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ hf)
   have h := (hasDerivAt_horner_real cs r).div hD hden
   refine h.congr_deriv ?_
   unfold ratCoefDeriv
@@ -76,7 +76,7 @@ theorem hasDerivAt_ratCoef (cs : List ℂ) (p q : ℕ) {r : ℝ} (hr : (r : ℂ)
 
 /-- The twisted radial derivative `g' + (2s/(r(r²−1))) g`. -/
 def twist (s : ℂ) (g : ℝ → ℂ) (r : ℝ) : ℂ :=
-  deriv g r + 2 * s / ((r : ℂ) * ((r : ℂ) ^ 2 - 1)) * g r
+  deriv g r + 2 * s / ((r : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1)) * g r
 
 /-- Iterated twisted derivative. -/
 def twistIter (s : ℂ) : ℕ → (ℝ → ℂ) → ℝ → ℂ
@@ -100,7 +100,7 @@ theorem twist_eventuallyEq_zero (s : ℂ) {g : ℝ → ℂ} {r : ℝ} (hg : g =�
 
 /-- Twisted derivative of a rational-coefficient linear form. -/
 theorem twist_linear (s : ℂ) {n : ℕ} (cs : Fin n → List ℂ) (p q : Fin n → ℕ) (X : Fin n → ℝ → ℂ)
-    {r : ℝ} (hr : (r : ℂ) ≠ 0) (hf : (r : ℂ) ^ 2 - 1 ≠ 0)
+    {r : ℝ} (hr : (r : ℂ) ≠ 0) (hf : (r : ℂ) ^ (2 : ℕ) - 1 ≠ 0)
     (hX : ∀ i, DifferentiableAt ℝ (X i) r) :
     twist s (fun r => ∑ i, ratCoef (cs i) (p i) (q i) r * X i r) r =
       ∑ i, (ratCoefDeriv (cs i) (p i) (q i) r * X i r +
@@ -127,25 +127,25 @@ open scoped ContDiff
     simp only [horner]
     exact contDiff_const.add (contDiff_ofReal_real.mul ih)
 theorem contDiffOn_ratCoef (cs : List ℂ) (p q : ℕ) : ContDiffOn ℝ ∞ (ratCoef cs p q) (Ioi 1) := by
-  have h0 : ∀ r ∈ Ioi (1 : ℝ), (r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q ≠ 0 := by
+  have h0 : ∀ r ∈ Ioi (1 : ℝ), (r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q ≠ 0 := by
     intro r hr
     have hr1 : (1 : ℝ) < r := hr
     exact mul_ne_zero (pow_ne_zero _ (by exact_mod_cast (by linarith : r ≠ 0)))
-      (pow_ne_zero _ (by exact_mod_cast (by nlinarith : r ^ 2 - 1 ≠ 0)))
-  have hden : ContDiffOn ℝ ∞ (fun r : ℝ => (r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q) (Ioi 1) := by fun_prop
-  have hinv : ContDiffOn ℝ ∞ (fun r : ℝ => ((r : ℂ) ^ p * ((r : ℂ) ^ 2 - 1) ^ q)⁻¹) (Ioi 1) :=
+      (pow_ne_zero _ (by exact_mod_cast (by nlinarith : r ^ (2 : ℕ) - 1 ≠ 0)))
+  have hden : ContDiffOn ℝ ∞ (fun r : ℝ => (r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q) (Ioi 1) := by fun_prop
+  have hinv : ContDiffOn ℝ ∞ (fun r : ℝ => ((r : ℂ) ^ p * ((r : ℂ) ^ (2 : ℕ) - 1) ^ q)⁻¹) (Ioi 1) :=
     hden.inv h0
   have hnum : ContDiffOn ℝ ∞ (fun r : ℝ => horner cs r) (Ioi 1) := (contDiff_horner cs).contDiffOn
   have := hnum.mul hinv
   refine this.congr ?_
   intro r _
   simp [ratCoef, div_eq_mul_inv]
-theorem contDiffOn_twistWeight (s : ℂ) : ContDiffOn ℝ ∞ (fun r : ℝ => 2 * s / ((r : ℂ) * ((r : ℂ) ^ 2 - 1))) (Ioi 1) := by
-  have h0 : ∀ r ∈ Ioi (1 : ℝ), (r : ℂ) * ((r : ℂ) ^ 2 - 1) ≠ 0 := by
+theorem contDiffOn_twistWeight (s : ℂ) : ContDiffOn ℝ ∞ (fun r : ℝ => 2 * s / ((r : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1))) (Ioi 1) := by
+  have h0 : ∀ r ∈ Ioi (1 : ℝ), (r : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1) ≠ 0 := by
     intro r hr
     have hr1 : (1 : ℝ) < r := hr
-    exact mul_ne_zero (by exact_mod_cast (by linarith : r ≠ 0)) (by exact_mod_cast (by nlinarith : r ^ 2 - 1 ≠ 0))
-  have hden : ContDiffOn ℝ ∞ (fun r : ℝ => (r : ℂ) * ((r : ℂ) ^ 2 - 1)) (Ioi 1) := by fun_prop
+    exact mul_ne_zero (by exact_mod_cast (by linarith : r ≠ 0)) (by exact_mod_cast (by nlinarith : r ^ (2 : ℕ) - 1 ≠ 0))
+  have hden : ContDiffOn ℝ ∞ (fun r : ℝ => (r : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1)) (Ioi 1) := by fun_prop
   have := (contDiffOn_const (c := 2 * s)).mul (hden.inv h0)
   refine this.congr ?_
   intro r _
@@ -199,16 +199,16 @@ theorem contDiffOn_of_linear_ode {s : Set ℝ} (hs : IsOpen s) (y y1 a b c : ℝ
 
 /-- Derivative of the twisted derivative: `(twist s g)' = g'' + tw' g + tw g'`. -/
 theorem hasDerivAt_twist (s : ℂ) {g g1 : ℝ → ℂ} {g2 : ℂ} {r : ℝ} (hr : (r : ℂ) ≠ 0)
-    (hf : (r : ℂ) ^ 2 - 1 ≠ 0)
+    (hf : (r : ℂ) ^ (2 : ℕ) - 1 ≠ 0)
     (hg : ∀ᶠ r' in 𝓝 r, HasDerivAt g (g1 r') r') (hg1 : HasDerivAt g1 g2 r) :
     HasDerivAt (twist s g)
-      (g2 + (-(2 * s * (3 * (r : ℂ) ^ 2 - 1)) / ((r : ℂ) ^ 2 * ((r : ℂ) ^ 2 - 1) ^ 2)) * g r +
-        2 * s / ((r : ℂ) * ((r : ℂ) ^ 2 - 1)) * g1 r) r := by
+      (g2 + (-(2 * s * (3 * (r : ℂ) ^ (2 : ℕ) - 1)) / ((r : ℂ) ^ (2 : ℕ) * ((r : ℂ) ^ (2 : ℕ) - 1) ^ (2 : ℕ))) * g r +
+        2 * s / ((r : ℂ) * ((r : ℂ) ^ (2 : ℕ) - 1)) * g1 r) r := by
   have hdg : deriv g =ᶠ[𝓝 r] g1 := hg.mono fun r' h => h.deriv
   have h1 : HasDerivAt (deriv g) g2 r := hg1.congr_of_eventuallyEq hdg
   have hR : HasDerivAt (fun r' : ℝ => (r' : ℂ)) 1 r := by simpa using (hasDerivAt_id r).ofReal_comp
-  have htw : HasDerivAt (fun r' : ℝ => 2 * s / ((r' : ℂ) * ((r' : ℂ) ^ 2 - 1)))
-      (-(2 * s * (3 * (r : ℂ) ^ 2 - 1)) / ((r : ℂ) ^ 2 * ((r : ℂ) ^ 2 - 1) ^ 2)) r := by
+  have htw : HasDerivAt (fun r' : ℝ => 2 * s / ((r' : ℂ) * ((r' : ℂ) ^ (2 : ℕ) - 1)))
+      (-(2 * s * (3 * (r : ℂ) ^ (2 : ℕ) - 1)) / ((r : ℂ) ^ (2 : ℕ) * ((r : ℂ) ^ (2 : ℕ) - 1) ^ (2 : ℕ))) r := by
     have h := (hasDerivAt_const r (2 * s)).div (hR.mul ((hR.pow 2).sub (hasDerivAt_const r (1 : ℂ))))
       (mul_ne_zero hr hf)
     refine h.congr_deriv ?_

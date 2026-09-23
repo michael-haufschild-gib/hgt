@@ -25,7 +25,7 @@ def routeUHardEdgeKelvinGammaInteriorChart (a : ℝ) : ℝ :=
 
 /-- Gamma-rate difference in the fixed physical boundary chart. -/
 def routeUHardEdgeKelvinGammaPhysicalBoundaryChart (a : ℝ) : ℝ :=
-  gammaHardyPhaseRate 1 - gammaHardyPhaseRate (a ^ 2)
+  gammaHardyPhaseRate 1 - gammaHardyPhaseRate (a ^ (2 : ℕ))
 
 /-- The interior Kelvin chart has finite Gamma-rate defect `-1`. -/
 theorem routeUHardEdgeKelvinGammaInteriorChart_tendsto :
@@ -65,12 +65,12 @@ theorem routeUHardEdgeKelvinGammaPhysicalBoundaryChart_tendsto :
       (nhds (gammaHardyPhaseRate 1 + Real.log (2 * Real.pi) / 2)) := by
   let e : ℝ → ℝ := fun t =>
     gammaHardyPhaseRate t - Real.log (t / (2 * Real.pi)) / 2
-  have hsq : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
+  have hsq : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) atTop atTop :=
     tendsto_pow_atTop (n := 2) (by norm_num)
-  have he : Tendsto (fun a : ℝ => e (a ^ 2)) atTop (nhds 0) :=
+  have he : Tendsto (fun a : ℝ => e (a ^ (2 : ℕ))) atTop (nhds 0) :=
     gammaHardyPhaseRate_sub_log_conductor_tendsto_zero.comp hsq
   have hmain : Tendsto
-      (fun a : ℝ => gammaHardyPhaseRate 1 - e (a ^ 2) +
+      (fun a : ℝ => gammaHardyPhaseRate 1 - e (a ^ (2 : ℕ)) +
         Real.log (2 * Real.pi) / 2)
       atTop
       (nhds (gammaHardyPhaseRate 1 + Real.log (2 * Real.pi) / 2)) := by

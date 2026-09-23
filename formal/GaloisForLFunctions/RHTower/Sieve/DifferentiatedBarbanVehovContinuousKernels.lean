@@ -17,8 +17,8 @@ def barbanVehovLongFirstLogKernelContinuous (L U q r : ℕ) : ℝ :=
   1 / (e : ℝ) *
     (Real.log (((e / r : ℕ) : ℝ)) *
         (Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))) +
-      (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-        Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2))
+      (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+        Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2))
 
 /-- Continuous-quotient main term for the twice differentiated long lcm fibre. -/
 def barbanVehovLongSecondLogKernelContinuous (L U q r : ℕ) : ℝ :=
@@ -27,10 +27,10 @@ def barbanVehovLongSecondLogKernelContinuous (L U q r : ℕ) : ℝ :=
     (Real.log (((e / q : ℕ) : ℝ)) * Real.log (((e / r : ℕ) : ℝ)) *
         (Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))) +
       (Real.log (((e / q : ℕ) : ℝ)) + Real.log (((e / r : ℕ) : ℝ))) *
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2) +
-      (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-        Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3))
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2) +
+      (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+        Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3))
 
 private theorem abs_log_natDiv_le_log_succ
     {U e d : ℕ} (he : 0 < e) (hd : 0 < d) (hde : d ∣ e) (heU : e ≤ U) :
@@ -80,8 +80,8 @@ theorem abs_barbanVehovLongFirstLogKernel_sub_continuous_le
   let H0 := harmonicLogWindowMoment 0 (L / e) (U / e)
   let H1 := harmonicLogWindowMoment 1 (L / e) (U / e)
   let C0 := Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))
-  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2
+  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2
   let K := Real.log ((U + 1 : ℕ) : ℝ)
   have he : 0 < e := Nat.lcm_pos hq hr
   have hL : 0 < L := by nlinarith
@@ -124,7 +124,7 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
     (hscale : 8 * Nat.lcm q r ≤ L) (hLU : L ≤ U) :
     |barbanVehovLongSecondLogKernel L U q r -
         barbanVehovLongSecondLogKernelContinuous L U q r| ≤
-      12 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 / (L : ℝ) := by
+      12 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
   let e := Nat.lcm q r
   let a := Real.log (((e / q : ℕ) : ℝ))
   let b := Real.log (((e / r : ℕ) : ℝ))
@@ -132,10 +132,10 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
   let H1 := harmonicLogWindowMoment 1 (L / e) (U / e)
   let H2 := harmonicLogWindowMoment 2 (L / e) (U / e)
   let C0 := Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))
-  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2
-  let C2 := Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3
+  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2
+  let C2 := Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3
   let K := Real.log ((U + 1 : ℕ) : ℝ)
   have he : 0 < e := Nat.lcm_pos hq hr
   have hL : 0 < L := by nlinarith
@@ -148,7 +148,7 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
     exact abs_log_natDiv_le_log_succ he hq (Nat.dvd_lcm_left q r) heU
   have hb : |b| ≤ K := by
     exact abs_log_natDiv_le_log_succ he hr (Nat.dvd_lcm_right q r) heU
-  have hab : |a * b| ≤ K ^ 2 := by
+  have hab : |a * b| ≤ K ^ (2 : ℕ) := by
     rw [abs_mul]
     nlinarith [mul_le_mul ha hb (abs_nonneg b) hK0]
   have habadd : |a + b| ≤ 2 * K := by
@@ -157,12 +157,12 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
     exact abs_harmonicLogWindowMoment_zero_natDiv_sub_continuous_le he hscale hLU
   have h1 : |H1 - C1| ≤ 3 * K * ((e : ℝ) / (L : ℝ)) := by
     exact abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le he hscale hLU
-  have h2 : |H2 - C2| ≤ 3 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+  have h2 : |H2 - C2| ≤ 3 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     exact abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le he hscale hLU
   have hinner :
       |a * b * H0 + (a + b) * H1 + H2 -
         (a * b * C0 + (a + b) * C1 + C2)| ≤
-      12 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      12 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ = |(a * b * (H0 - C0) + (a + b) * (H1 - C1)) + (H2 - C2)| := by ring_nf
       _ ≤ |a * b * (H0 - C0) + (a + b) * (H1 - C1)| + |H2 - C2| :=
@@ -171,14 +171,14 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
         add_le_add (abs_add_le _ _) le_rfl
       _ = (|a * b| * |H0 - C0| + |a + b| * |H1 - C1|) + |H2 - C2| := by
         simp only [abs_mul]
-      _ ≤ (K ^ 2 * (3 * (e : ℝ) / (L : ℝ)) +
+      _ ≤ (K ^ (2 : ℕ) * (3 * (e : ℝ) / (L : ℝ)) +
             (2 * K) * (3 * K * ((e : ℝ) / (L : ℝ)))) +
-          3 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+          3 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
         exact add_le_add
           (add_le_add
             (mul_le_mul hab h0 (abs_nonneg _) (sq_nonneg K))
             (mul_le_mul habadd h1 (abs_nonneg _) (by positivity))) h2
-      _ = 12 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
+      _ = 12 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
   rw [barbanVehovLongSecondLogKernel_eq_moments hq hr,
     barbanVehovLongSecondLogKernelContinuous]
   change |1 / (e : ℝ) * (a * b * H0 + (a + b) * H1 + H2) -
@@ -188,9 +188,9 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le
     1 / (e : ℝ) *
         |a * b * H0 + (a + b) * H1 + H2 -
           (a * b * C0 + (a + b) * C1 + C2)| ≤
-      1 / (e : ℝ) * (12 * K ^ 2 * ((e : ℝ) / (L : ℝ))) :=
+      1 / (e : ℝ) * (12 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ))) :=
         mul_le_mul_of_nonneg_left hinner (by positivity)
-    _ = 12 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 / (L : ℝ) := by
+    _ = 12 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
       dsimp [K]
       field_simp
 

@@ -26,10 +26,10 @@ open Finset MeasureTheory
 theorem gallagher_period (N : ℕ) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ : ℝ} (hδ : 0 < δ)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ 1) :
-    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2
-      ≤ (1 / δ) * (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ 2)
+    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ (2 : ℕ))
         + (∫ t in (0 : ℝ)..1, 2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) := by
-  have hcont1 : Continuous (fun t : ℝ => ‖expSum N c t‖ ^ 2) :=
+  have hcont1 : Continuous (fun t : ℝ => ‖expSum N c t‖ ^ (2 : ℕ)) :=
     ((continuous_expSum N c).norm).pow 2
   have hcont2 : Continuous (fun t : ℝ =>
       2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) :=
@@ -44,8 +44,8 @@ theorem gallagher_period (N : ℕ) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ :
   have hright : (0 : ℝ) ≤ lam R + δ / 2 := by linarith
   have hbase := gallagher_sum N c hδ hgap hA R
   -- enlarge both integrals to the full period
-  have hext1 : (∫ t in (0 : ℝ)..(lam R + δ / 2), ‖expSum N c t‖ ^ 2)
-      ≤ ∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ 2 :=
+  have hext1 : (∫ t in (0 : ℝ)..(lam R + δ / 2), ‖expSum N c t‖ ^ (2 : ℕ))
+      ≤ ∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_mono_interval le_rfl hright hhigh
       (Filter.Eventually.of_forall (fun t => sq_nonneg _)) (hcont1.intervalIntegrable _ _)
   have hext2 : (∫ t in (0 : ℝ)..(lam R + δ / 2),
@@ -62,19 +62,19 @@ theorem gallagher_period (N : ℕ) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ :
 theorem largeSieve_gallagher (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ : ℝ}
     (hδ : 0 < δ) (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ 1) :
-    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2
-      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set ε : ℝ := 2 * Real.pi * (N : ℝ) with hεdef
   have hε : (0 : ℝ) < ε := by rw [hεdef]; positivity
-  set E₀ : ℝ := ∑ n : Fin N, ‖c n‖ ^ 2 with hE₀
+  set E₀ : ℝ := ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) with hE₀
   -- the two energies
-  have hpar : (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ 2) = E₀ := integral_normSq_expSum N c
-  have hpar' : (∫ t in (0 : ℝ)..1, ‖expSum N (derivCoeff N c) t‖ ^ 2)
-      = ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ 2 * ‖c n‖ ^ 2 :=
+  have hpar : (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ (2 : ℕ)) = E₀ := integral_normSq_expSum N c
+  have hpar' : (∫ t in (0 : ℝ)..1, ‖expSum N (derivCoeff N c) t‖ ^ (2 : ℕ))
+      = ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ (2 : ℕ) * ‖c n‖ ^ (2 : ℕ) :=
     integral_normSq_derivCoeff N c
-  have hE₁ : ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ 2 * ‖c n‖ ^ 2 ≤ ε ^ 2 * E₀ := by
+  have hE₁ : ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ (2 : ℕ) * ‖c n‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) * E₀ := by
     rw [hE₀, Finset.mul_sum]
     refine Finset.sum_le_sum fun n _ => ?_
     have hn : ((n : ℕ) : ℝ) ≤ (N : ℝ) := by
@@ -90,9 +90,9 @@ theorem largeSieve_gallagher (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) {lam : �
   have hmix := integral_mixed_le N c (A := (0 : ℝ)) (B := (1 : ℝ)) (by norm_num) hε
   rw [hpar, hpar'] at hmix
   have hεinv : (0 : ℝ) < 1 / ε := by positivity
-  have hstep : (1 / ε) * (∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ 2 * ‖c n‖ ^ 2)
-      ≤ (1 / ε) * (ε ^ 2 * E₀) := mul_le_mul_of_nonneg_left hE₁ (le_of_lt hεinv)
-  have hval : (1 / ε) * (ε ^ 2 * E₀) = ε * E₀ := by
+  have hstep : (1 / ε) * (∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ (2 : ℕ) * ‖c n‖ ^ (2 : ℕ))
+      ≤ (1 / ε) * (ε ^ (2 : ℕ) * E₀) := mul_le_mul_of_nonneg_left hE₁ (le_of_lt hεinv)
+  have hval : (1 / ε) * (ε ^ (2 : ℕ) * E₀) = ε * E₀ := by
     field_simp
   rw [hval] at hstep
   have hfinal : (1 / δ + 4 * Real.pi * (N : ℝ)) * E₀ = (1 / δ) * E₀ + ε * E₀ + ε * E₀ := by

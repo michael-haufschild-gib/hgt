@@ -10,7 +10,7 @@ Everything Suzuki's Proposition 1.2 needs about the *individual blocks* of eq. (
 axis, assembled without a single appeal to a Titchmarsh-type zero-density or `zeta'/zeta` bound.
 
 The mechanism replacing Titchmarsh 9.6(A) and 9.2 is elementary.  On the real axis `A = XiC` and
-`A'` are real, so the Schwarz partner `E# = A - i A'` has `|E#|^2 = A^2 + A'^2`; hence *both*
+`A'` are real, so the Schwarz partner `E# = A - i A'` has `|E#|^(2 : ℕ) = A^(2 : ℕ) + A'^(2 : ℕ)`; hence *both*
 quotients
 
 `|A / E#| <= 1`   and   `|A' / E#| <= 1`

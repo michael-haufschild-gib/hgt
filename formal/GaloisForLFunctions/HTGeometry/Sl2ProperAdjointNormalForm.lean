@@ -23,7 +23,7 @@ theorem exists_conj_eq_E_of_trace_eq_zero_of_det_eq_zero
   have h11 : X 1 1 = -(X 0 0) := by
     rw [Matrix.trace_fin_two] at htr
     linear_combination htr
-  have hrel : X 0 0 ^ 2 + X 0 1 * X 1 0 = 0 := by
+  have hrel : X 0 0 ^ (2 : ℕ) + X 0 1 * X 1 0 = 0 := by
     rw [Matrix.det_fin_two, h11] at hdet
     linear_combination -hdet
   by_cases hb : X 0 1 = 0

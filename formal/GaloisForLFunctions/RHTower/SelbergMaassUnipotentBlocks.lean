@@ -80,8 +80,8 @@ variable (N : ℕ) {lam : ℝ}
 
 /-- Orthogonal variances discarded by the two complete unipotent averages. -/
 def blockVariance (z : ℍ) : ℝ :=
-  ‖sourceVector N f z-blockAverage (upperBlock N) (sourceVector N f z)‖^2+
-    ‖sourceVector N f z-blockAverage (lowerBlock N) (sourceVector N f z)‖^2
+  ‖sourceVector N f z-blockAverage (upperBlock N) (sourceVector N f z)‖^(2 : ℕ)+
+    ‖sourceVector N f z-blockAverage (lowerBlock N) (sourceVector N f z)‖^(2 : ℕ)
 
 /-- Averaged literal upper and lower modular displacements of the full original source. -/
 def blockEnergy (z : ℍ) : ℝ :=

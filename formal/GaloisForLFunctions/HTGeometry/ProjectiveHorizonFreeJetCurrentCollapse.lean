@@ -128,7 +128,7 @@ theorem freeJetEPolynomialDerivation_X
       hkn]
 
 /-- The first reciprocal-translation current.  On the formal arc it is
-`F_1(x_n) = -n D^(n-1)(x^2)`, i.e. the infinitesimal law `delta x(t) = -t x(t)^2`. -/
+`F_1(x_n) = -n D^(n-1)(x^(2 : ℕ))`, i.e. the infinitesimal law `delta x(t) = -t x(t)^(2 : ℕ)`. -/
 def freeJetFOnePolynomialDerivation
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C) :=

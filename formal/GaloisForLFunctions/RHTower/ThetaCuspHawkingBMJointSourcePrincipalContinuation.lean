@@ -19,7 +19,7 @@ theorem sourceAmplitude_continued_meromorphic (s a : ℂ) (t : ℝ) :
     (show AnalyticAt ℂ (fun _ : ℂ => (1:ℂ)) w from analyticAt_const).meromorphicAt.div
       (show AnalyticAt ℂ (fun u : ℂ => u-2*s) w by fun_prop).meromorphicAt
   have hT := hi.add ((onsetCorrection_entire (2*s)).analyticAt w).meromorphicAt
-  have hp : AnalyticAt ℂ (fun u : ℂ => Complex.exp (u*(t:ℂ))*power (2*s) (1+radialUnit t)*a^2) w := by fun_prop
+  have hp : AnalyticAt ℂ (fun u : ℂ => Complex.exp (u*(t:ℂ))*power (2*s) (1+radialUnit t)*a^(2 : ℕ)) w := by fun_prop
   exact hp.meromorphicAt.mul hT
 
 /-- Meromorphy of the full-square lift with its original smooth onset retained. -/
@@ -27,7 +27,7 @@ theorem radialLift_continued_meromorphic (s a : ℂ) (t : ℝ) :
     Meromorphic (fun w => radialLift s w a (continuedOnset s w) t) := by
   intro w
   have h := (sourceAmplitude_continued_meromorphic s a t w).mul
-    (show AnalyticAt ℂ (fun _ : ℂ => (radialUnit t:ℂ)^3) w from analyticAt_const).meromorphicAt
+    (show AnalyticAt ℂ (fun _ : ℂ => (radialUnit t:ℂ)^(3 : ℕ)) w from analyticAt_const).meromorphicAt
   exact (show AnalyticAt ℂ (fun _ : ℂ => -s*(s-1)/4) w from analyticAt_const).meromorphicAt.mul h
 
 /-- Meromorphy of the original reduced source coefficient, including every differentiated amplitude term. -/
@@ -102,7 +102,7 @@ theorem continuedPrincipalDifference_secondDerivative (q : XiZeroCopy) (branch :
 theorem continuedPrincipalDifference_equation (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : w.im ≠ 0) (hwre : -2 < w.re) (i : Fin 3)
     (hc : connection w (principalFrequency q i) ≠ 0) (t : ℝ) (ht : t < 0) :
-    w^2*continuedPrincipalDifference q branch w a i t-
+    w^(2 : ℕ)*continuedPrincipalDifference q branch w a i t-
         deriv (deriv (continuedPrincipalDifference q branch w a i)) t-
         (horizonCoordinate t:ℂ)*principalExponent q i*(principalExponent q i-1)*
           continuedPrincipalDifference q branch w a i t =

@@ -84,7 +84,7 @@ omit [DecidableEq ι] in
 theorem covKernel_quadratic_form {κ : Type*} (V : Finset ι) (u : ι → ℝ → ℂ) (J : Finset κ)
     (c : κ → ℂ) (t : κ → ℝ) :
     (∑ j ∈ J, ∑ k ∈ J, (starRingEnd ℂ) (c j) * c k * covKernel V u (t j) (t k))
-      = (((∑ I ∈ covIndex V, ‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ 2 : ℝ)) : ℂ) := by
+      = (((∑ I ∈ covIndex V, ‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
   calc (∑ j ∈ J, ∑ k ∈ J, (starRingEnd ℂ) (c j) * c k * covKernel V u (t j) (t k))
       = ∑ j ∈ J, ∑ k ∈ J, ∑ I ∈ covIndex V,
           (starRingEnd ℂ) (c j * covFeature u I (t j)) * (c k * covFeature u I (t k)) := by
@@ -99,11 +99,11 @@ theorem covKernel_quadratic_form {κ : Type*} (V : Finset ι) (u : ι → ℝ �
     _ = ∑ I ∈ covIndex V, ∑ j ∈ J, ∑ k ∈ J,
           (starRingEnd ℂ) (c j * covFeature u I (t j)) * (c k * covFeature u I (t k)) :=
         Finset.sum_comm
-    _ = ∑ I ∈ covIndex V, (((‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ 2 : ℝ)) : ℂ) := by
+    _ = ∑ I ∈ covIndex V, (((‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
         refine Finset.sum_congr rfl fun I _ => ?_
         rw [← Finset.sum_mul_sum, ← map_sum, RCLike.conj_mul]
         norm_num
-    _ = (((∑ I ∈ covIndex V, ‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ 2 : ℝ)) : ℂ) := by
+    _ = (((∑ I ∈ covIndex V, ‖∑ j ∈ J, c j * covFeature u I (t j)‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
         rw [Complex.ofReal_sum]
 
 omit [DecidableEq ι] in
@@ -186,7 +186,7 @@ theorem card_covGradeTwo (V : Finset ι) : (covGrade V 2).card = V.card.choose 2
 /-- The degree-two grade sum, in closed form. -/
 theorem sum_powersetCard_two (V : Finset ι) (c : ι → ℂ) :
     (∑ I ∈ covGrade V 2, ∏ v ∈ I, c v)
-      = ((∑ v ∈ V, c v) ^ 2 - ∑ v ∈ V, c v ^ 2) / 2 := by
+      = ((∑ v ∈ V, c v) ^ (2 : ℕ) - ∑ v ∈ V, c v ^ (2 : ℕ)) / 2 := by
   classical
   induction V using Finset.induction_on with
   | empty =>
@@ -246,7 +246,7 @@ omit [DecidableEq ι] in
 /-- **Equations (10)–(11).**  A degree-two coordinate has quadratic jet `c_v c_w`. -/
 theorem tendsto_covFeature_div_sq_of_card_two {u : ι → ℝ → ℂ} {c : ι → ℂ}
     (hu : ∀ v, u v 0 = 1) (hd : ∀ v, HasDerivAt (u v) (c v) 0) {I : Finset ι} (hI : I.card = 2) :
-    Tendsto (fun t : ℝ => covFeature u I t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 (∏ v ∈ I, c v)) := by
+    Tendsto (fun t : ℝ => covFeature u I t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ)) (𝓝 (∏ v ∈ I, c v)) := by
   have h := tendsto_covFeature_div_pow hu hd I
   rw [hI] at h
   exact h
@@ -256,7 +256,7 @@ omit [DecidableEq ι] in
 quadratic jet: the higher grades are successively more diagonal-regular. -/
 theorem tendsto_covFeature_div_sq_of_three_le {u : ι → ℝ → ℂ} {c : ι → ℂ}
     (hu : ∀ v, u v 0 = 1) (hd : ∀ v, HasDerivAt (u v) (c v) 0) {I : Finset ι} (hI : 3 ≤ I.card) :
-    Tendsto (fun t : ℝ => covFeature u I t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    Tendsto (fun t : ℝ => covFeature u I t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
   have hbase := tendsto_covFeature_div_pow hu hd I
   have hpow : Tendsto (fun t : ℝ => ((t : ℂ)) ^ (I.card - 2)) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
     have hcont : Tendsto (fun t : ℝ => ((t : ℂ))) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
@@ -271,7 +271,7 @@ theorem tendsto_covFeature_div_sq_of_three_le {u : ι → ℝ → ℂ} {c : ι �
   filter_upwards [self_mem_nhdsWithin] with t ht
   have htne : ((t : ℂ)) ≠ 0 := Complex.ofReal_ne_zero.mpr (by simpa using ht)
   have hpne : ((t : ℂ)) ^ (I.card - 2) ≠ 0 := pow_ne_zero _ htne
-  have hsplit : ((t : ℂ)) ^ I.card = ((t : ℂ)) ^ (I.card - 2) * ((t : ℂ)) ^ 2 := by
+  have hsplit : ((t : ℂ)) ^ I.card = ((t : ℂ)) ^ (I.card - 2) * ((t : ℂ)) ^ (2 : ℕ) := by
     rw [← pow_add]
     congr 1
     omega
@@ -282,7 +282,7 @@ theorem tendsto_covFeature_div_sq_of_three_le {u : ι → ℝ → ℂ} {c : ι �
 cofinal curvature charge lives entirely in `H^(2)`. -/
 theorem tendsto_covarianceAnomaly_div_sq_eq_gradeTwo {u : ι → ℝ → ℂ} {c : ι → ℂ}
     (hu : ∀ v, u v 0 = 1) (hd : ∀ v, HasDerivAt (u v) (c v) 0) (V : Finset ι) :
-    Tendsto (fun t : ℝ => covarianceAnomaly V u t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
+    Tendsto (fun t : ℝ => covarianceAnomaly V u t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
       (𝓝 (∑ I ∈ covGrade V 2, ∏ v ∈ I, c v)) := by
   rw [sum_powersetCard_two V c]
   exact tendsto_covarianceAnomaly_div_sq hu hd V
@@ -308,26 +308,26 @@ omit [DecidableEq ι] in
 `sqrt(dim)` times the carrier norm. -/
 theorem norm_readout_le (V : Finset ι) (x : Finset ι → ℂ) :
     ‖∑ I ∈ covIndex V, x I‖
-      ≤ Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ 2) := by
+      ≤ Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ)) := by
   have h1 : ‖∑ I ∈ covIndex V, x I‖ ≤ ∑ I ∈ covIndex V, ‖x I‖ := norm_sum_le _ _
-  have h2 : (∑ I ∈ covIndex V, ‖x I‖) ^ 2
-      ≤ ((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ 2 := sq_sum_le_card_mul_sum_sq
+  have h2 : (∑ I ∈ covIndex V, ‖x I‖) ^ (2 : ℕ)
+      ≤ ((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ) := sq_sum_le_card_mul_sum_sq
   have hnn : 0 ≤ ∑ I ∈ covIndex V, ‖x I‖ := Finset.sum_nonneg fun I _ => norm_nonneg _
-  have hsq : Real.sqrt (((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ 2)
-      = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ 2) :=
+  have hsq : Real.sqrt (((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ))
+      = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ)) :=
     Real.sqrt_mul (by positivity) _
   calc ‖∑ I ∈ covIndex V, x I‖ ≤ ∑ I ∈ covIndex V, ‖x I‖ := h1
-    _ = Real.sqrt ((∑ I ∈ covIndex V, ‖x I‖) ^ 2) := (Real.sqrt_sq hnn).symm
-    _ ≤ Real.sqrt (((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ 2) :=
+    _ = Real.sqrt ((∑ I ∈ covIndex V, ‖x I‖) ^ (2 : ℕ)) := (Real.sqrt_sq hnn).symm
+    _ ≤ Real.sqrt (((covIndex V).card : ℝ) * ∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt h2
-    _ = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ 2) := hsq
+    _ = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ I ∈ covIndex V, ‖x I‖ ^ (2 : ℕ)) := hsq
 
 omit [DecidableEq ι] in
 /-- **Equation (15), sharpness.**  The bound is attained at the all-ones vector, so the readout norm
 is exactly `sqrt(2^m - m - 1)`. -/
 theorem norm_readout_ones (V : Finset ι) :
     ‖∑ _I ∈ covIndex V, (1 : ℂ)‖
-      = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ _I ∈ covIndex V, ‖(1 : ℂ)‖ ^ 2) := by
+      = Real.sqrt ((covIndex V).card) * Real.sqrt (∑ _I ∈ covIndex V, ‖(1 : ℂ)‖ ^ (2 : ℕ)) := by
   have hcard : (0 : ℝ) ≤ ((covIndex V).card : ℝ) := Nat.cast_nonneg _
   rw [Finset.sum_const, Finset.sum_const]
   simp only [nsmul_eq_mul, mul_one, norm_one, one_pow]

@@ -141,10 +141,10 @@ theorem thermalCircleAPSEta_reflection_pair_cancel (a : ℝ) :
   ring
 
 def d4TopologicalBlackHoleDimensionlessMass (x : ℝ) : ℝ :=
-  x * (x ^ 2 - 1)
+  x * (x ^ (2 : ℕ) - 1)
 
 def d4TopologicalBlackHoleDimensionlessSurfaceGravity (x : ℝ) : ℝ :=
-  (3 * x ^ 2 - 1) / (2 * x)
+  (3 * x ^ (2 : ℕ) - 1) / (2 * x)
 
 def d4TopologicalBlackHoleIngoingExponent (x decay : ℝ) : ℝ :=
   -decay / (2 * d4TopologicalBlackHoleDimensionlessSurfaceGravity x)
@@ -167,8 +167,8 @@ lemma hasDerivAt_d4TopologicalBlackHoleDimensionlessSurfaceGravity_one :
   have hnum := ((hx.pow 2).const_mul 3).sub_const 1
   have hden := hx.const_mul 2
   have hraw := hnum.div hden (by norm_num)
-  rw [show (fun x : ℝ => (3 * x ^ 2 - 1) / (2 * x)) =
-    (fun x : ℝ => 3 * x ^ 2 - 1) / (fun x : ℝ => 2 * x) by rfl]
+  rw [show (fun x : ℝ => (3 * x ^ (2 : ℕ) - 1) / (2 * x)) =
+    (fun x : ℝ => 3 * x ^ (2 : ℕ) - 1) / (fun x : ℝ => 2 * x) by rfl]
   exact hraw.congr_deriv (by norm_num)
 
 lemma hasDerivAt_d4TopologicalBlackHoleIngoingExponent_one (decay : ℝ) :

@@ -111,32 +111,32 @@ theorem normalizedWeightedRemainder_im_neg_of_height_le_five {s : ℂ}
     {N : ℕ} (hN : 1 ≤ N) (htN : s.im ≤ N) :
     (normalizedWeightedRemainder s N).im < 0 := by
   have htpos : 0 < s.im := by linarith
-  have e1 : Complex.normSq (s+1)=(s.re+1)^2+s.im^2 := by simp [Complex.normSq_apply,pow_two]
-  have e2 : ‖s+2‖^2=(s.re+2)^2+s.im^2 := by
+  have e1 : Complex.normSq (s+1)=(s.re+1)^(2 : ℕ)+s.im^(2 : ℕ) := by simp [Complex.normSq_apply,pow_two]
+  have e2 : ‖s+2‖^(2 : ℕ)=(s.re+2)^(2 : ℕ)+s.im^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply,pow_two]
-  have e3 : ‖s+3‖^2=(s.re+3)^2+s.im^2 := by
+  have e3 : ‖s+3‖^(2 : ℕ)=(s.re+3)^(2 : ℕ)+s.im^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply,pow_two]
-  have b1 : Complex.normSq (s+1) ≤ s.im^2+4 := by
+  have b1 : Complex.normSq (s+1) ≤ s.im^(2 : ℕ)+4 := by
     rw [e1]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+3 by linarith)]
-  have b2 : ‖s+2‖^2 ≤ s.im^2+9 := by
+  have b2 : ‖s+2‖^(2 : ℕ) ≤ s.im^(2 : ℕ)+9 := by
     rw [e2]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+5 by linarith)]
-  have b3 : ‖s+3‖^2 ≤ s.im^2+16 := by
+  have b3 : ‖s+3‖^(2 : ℕ) ≤ s.im^(2 : ℕ)+16 := by
     rw [e3]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+7 by linarith)]
-  have bp : ‖s+2‖*‖s+3‖ ≤ s.im^2+25/2 := by
+  have bp : ‖s+2‖*‖s+3‖ ≤ s.im^(2 : ℕ)+25/2 := by
     nlinarith [sq_nonneg (‖s+2‖-‖s+3‖)]
-  have bfull := mul_le_mul bp b1 (Complex.normSq_nonneg _) (by positivity : 0 ≤ s.im^2+25/2)
-  have bt2 : s.im^2 ≤ s.im^3 := by nlinarith [mul_nonneg (sub_nonneg.mpr ht) (sq_nonneg s.im)]
-  have bt3 : 1 ≤ s.im^3 := by nlinarith [sq_nonneg (s.im-1)]
-  have bt4 : s.im^4 ≤ 5*s.im^3 := by nlinarith [mul_nonneg (sub_nonneg.mpr ht5) (pow_nonneg htpos.le 3)]
-  have bN : s.im^2 ≤ (N:ℝ)^2 := by nlinarith
+  have bfull := mul_le_mul bp b1 (Complex.normSq_nonneg _) (by positivity : 0 ≤ s.im^(2 : ℕ)+25/2)
+  have bt2 : s.im^(2 : ℕ) ≤ s.im^(3 : ℕ) := by nlinarith [mul_nonneg (sub_nonneg.mpr ht) (sq_nonneg s.im)]
+  have bt3 : 1 ≤ s.im^(3 : ℕ) := by nlinarith [sq_nonneg (s.im-1)]
+  have bt4 : s.im^(4 : ℕ) ≤ 5*s.im^(3 : ℕ) := by nlinarith [mul_nonneg (sub_nonneg.mpr ht5) (pow_nonneg htpos.le 3)]
+  have bN : s.im^(2 : ℕ) ≤ (N:ℝ)^(2 : ℕ) := by nlinarith
   have hx := mul_le_mul_of_nonneg_left bN htpos.le
   apply normalizedWeightedRemainder_im_neg_of_quartic_bound hs htpos hN
-  have hst := mul_pos hs (mul_pos htpos (by positivity : 0 < (N:ℝ)^2))
+  have hst := mul_pos hs (mul_pos htpos (by positivity : 0 < (N:ℝ)^(2 : ℕ)))
   nlinarith [bfull, bt2, bt3, bt4, hx, hst]
 
 /-- Uniform linear cutoff: every actual remainder with `N ≥ Im(s) ≥ 1` has negative phase. -/
@@ -146,7 +146,7 @@ theorem normalizedWeightedRemainder_im_neg_of_height_le_cutoff {s : ℂ}
   by_cases ht5 : s.im ≤ 5
   · exact normalizedWeightedRemainder_im_neg_of_height_le_five hs hs' ht ht5 hN htN
   apply normalizedWeightedRemainder_im_neg_of_linear_bound hs (by linarith) hN htN
-  have e1 : Complex.normSq (s+1)=(s.re+1)^2+s.im^2 := by simp [Complex.normSq_apply,pow_two]
+  have e1 : Complex.normSq (s+1)=(s.re+1)^(2 : ℕ)+s.im^(2 : ℕ) := by simp [Complex.normSq_apply,pow_two]
   rw [e1]
   have hr := mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+3 by linarith)
   have hprod := mul_le_mul_of_nonneg_left htN (by linarith : 0 ≤ s.im)

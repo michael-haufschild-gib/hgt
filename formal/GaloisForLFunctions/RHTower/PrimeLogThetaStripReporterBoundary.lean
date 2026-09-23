@@ -6,13 +6,13 @@ import GaloisForLFunctions.RHTower.PrimeLogThetaStripWronskianCubicJet
 The finite theta transform has literal prime coefficient
 
 ```text
-2 log(p)^2 / sqrt(p) * exp(-i w log(p)).
+2 log(p)^(2 : ℕ) / sqrt(p) * exp(-i w log(p)).
 ```
 
 This file determines its source-Hilbert status at the relevant boundary.  On the lower
 imaginary ray `w = -i t`, `t > 0`, this coefficient is exactly `t⁻¹` times the existing
 critical-Laplace evaluation vector, hence is an honest source `ℓ²` reporter.  On every real
-coordinate, its squared norm is `4 log(p)^4 / p`; prime-reciprocal divergence therefore proves
+coordinate, its squared norm is `4 log(p)^(4 : ℕ) / p`; prime-reciprocal divergence therefore proves
 that it is not a source `ℓ²` vector.
 
 Thus ordinary source-vector evaluation has a sharp boundary at the real theta axis.  This does

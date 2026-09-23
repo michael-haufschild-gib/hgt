@@ -6,9 +6,9 @@ import GaloisForLFunctions.RHTower.SuzukiNonabelianCartanWardCofinalEquivalence
 The literal opposite-root `SL₂` construction uses `log (1+x)` in each source-labelled Levi
 coordinate.  This module classifies every fixed replacement with the same forced first two jets:
 
-`phi(x) = x - x^2/2 + O(x^3)`.
+`phi(x) = x - x^(2 : ℕ)/2 + O(x^(3 : ℕ))`.
 
-The assembled cubic remainder is at most `O(log(A)^3/sqrt(A))`, hence vanishes cofinally.  After
+The assembled cubic remainder is at most `O(log(A)^(3 : ℕ)/sqrt(A))`, hence vanishes cofinally.  After
 the forced quadratic counterterm, every such completed observable is Suzuki Green plus `o(1)`.
 Its uniform boundedness is therefore equivalent to RH.  This kills the whole fixed local analytic
 Cartan/Stokes-fusion producer class: any surviving coercive mechanism must couple source labels

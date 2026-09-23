@@ -9,11 +9,11 @@ sectors, or nonlocal Hilbert--Schmidt counterterms while retaining one exact off
 entry.  This module closes that entire loophole.
 
 For an arbitrary self-adjoint Hilbert--Schmidt kernel `L`, its holomorphic square trace is the
-positive energy `||L||_HS^2`.  If distinct entries `(i,j)` and `(j,i)` carry a faithful source
-coefficient `c` and its adjoint, this energy is at least `2|c|^2`.  By contrast the rank-one
-holomorphic source kernel `c e_00` has square trace `c^2`, whose modulus is only `|c|^2`.  Equality
+positive energy `||L||_HS^(2 : ℕ)`.  If distinct entries `(i,j)` and `(j,i)` carry a faithful source
+coefficient `c` and its adjoint, this energy is at least `2|c|^(2 : ℕ)`.  By contrast the rank-one
+holomorphic source kernel `c e_00` has square trace `c^(2 : ℕ)`, whose modulus is only `|c|^(2 : ℕ)`.  Equality
 of their entire Hilbert--Carleman determinants would equate the quadratic Taylor jets and hence
-force `2|c|^2 <= |c|^2`.
+force `2|c|^(2 : ℕ) <= |c|^(2 : ℕ)`.
 
 The exact reduced Teukolsky coefficient is nonzero precisely on tilted Xi fibres.  Therefore no
 self-adjoint Hilbert--Schmidt completion, of any carrier size and with arbitrary extra
@@ -54,7 +54,7 @@ theorem two_mul_normSq_entry_le_hsNormSq_of_selfAdjoint
     {κ : Type*} [DecidableEq κ]
     (L : κ × κ → ℂ) (hL : IsHS L) (hself : hsAdjoint L = L)
     (i j : κ) (hij : i ≠ j) :
-    2 * ‖L (i, j)‖ ^ 2 ≤ hsNormSq L := by
+    2 * ‖L (i, j)‖ ^ (2 : ℕ) ≤ hsNormSq L := by
   have hreverse : L (j, i) = (starRingEnd ℂ) (L (i, j)) := by
     have h := congrFun hself (j, i)
     simpa [hsAdjoint] using h.symm
@@ -82,19 +82,19 @@ theorem selfAdjoint_sourceBlock_entireDet2_ne_diagKernel
     taylorCoeff_entireDet2_two hK] at hcoeff
   have htraceL := hsTraceSquare_eq_hsNormSq_of_selfAdjoint L hL hself
   have htraceK :
-      (∑' q : ℕ, hsPow (diagKernel 0 c) 1 (q, q)) = c ^ 2 := by
+      (∑' q : ℕ, hsPow (diagKernel 0 c) 1 (q, q)) = c ^ (2 : ℕ) := by
     rw [hsPow_diagKernel, tsum_diagKernel_diag]
   rw [htraceL, htraceK] at hcoeff
-  have heqTrace : (hsNormSq L : ℂ) = c ^ 2 := by
+  have heqTrace : (hsNormSq L : ℂ) = c ^ (2 : ℕ) := by
     linear_combination -2 * hcoeff
   have hnorm := congrArg norm heqTrace
   have hnonneg := hsNormSq_nonneg L
-  have hnormEq : hsNormSq L = ‖c‖ ^ 2 := by
+  have hnormEq : hsNormSq L = ‖c‖ ^ (2 : ℕ) := by
     simpa [Real.norm_eq_abs, abs_of_nonneg hnonneg, norm_pow] using hnorm
   have hfloor := two_mul_normSq_entry_le_hsNormSq_of_selfAdjoint
     L hL hself i j hij
   rw [hentry, hnormEq] at hfloor
-  have hczero : ‖c‖ ^ 2 = 0 := by nlinarith [sq_nonneg ‖c‖]
+  have hczero : ‖c‖ ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg ‖c‖]
   exact hc (norm_eq_zero.mp (sq_eq_zero_iff.mp hczero))
 
 /-- The coefficient used below is literally the actual mixed-horizon HB optical source projection,
@@ -119,7 +119,7 @@ theorem d4HBReducedTeukolskyArbitraryHermitianCompletion_tilted
     (hentry : L (i, j) =
       d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q) :
     2 * ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient
-          amplitude mixed anti q‖ ^ 2 ≤ hsNormSq L ∧
+          amplitude mixed anti q‖ ^ (2 : ℕ) ≤ hsNormSq L ∧
       entireDet2 L ≠ entireDet2 (diagKernel (0 : ℕ)
         (d4HBReducedTeukolskyHermitianDilationSourceCoefficient
           amplitude mixed anti q)) := by
@@ -147,7 +147,7 @@ def D4HBReducedTeukolskyArbitraryHermitianCompletionFidelityRouteKilled : Prop :
       L (i, j) =
         d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q →
       2 * ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient
-            amplitude mixed anti q‖ ^ 2 ≤ hsNormSq L ∧
+            amplitude mixed anti q‖ ^ (2 : ℕ) ≤ hsNormSq L ∧
         entireDet2 L ≠ entireDet2 (diagKernel (0 : ℕ)
           (d4HBReducedTeukolskyHermitianDilationSourceCoefficient
             amplitude mixed anti q))

@@ -89,7 +89,7 @@ theorem tendstoUniformlyOn_deriv_of_tendstoUniformlyOn {α : Type*} {p : Filter 
 theorem norm_logDeriv_sub_le {F f : ℂ → ℂ} {z : ℂ} {m Mf η : ℝ} (hm : 0 < m)
     (hfz : m ≤ ‖f z‖) (hFz : m / 2 ≤ ‖F z‖) (hMf : 0 ≤ Mf) (hdf : ‖deriv f z‖ ≤ Mf)
     (h1 : ‖f z - F z‖ ≤ η) (h2 : ‖deriv (F) z - deriv f z‖ ≤ η) :
-    ‖logDeriv F z - logDeriv f z‖ ≤ 2 * η / m + 2 * Mf * η / m ^ 2 := by
+    ‖logDeriv F z - logDeriv f z‖ ≤ 2 * η / m + 2 * Mf * η / m ^ (2 : ℕ) := by
   have hFne : F z ≠ 0 := by
     intro h
     rw [h, norm_zero] at hFz
@@ -110,21 +110,21 @@ theorem norm_logDeriv_sub_le {F f : ℂ → ℂ} {z : ℂ} {m Mf η : ℝ} (hm :
     rw [norm_div, div_le_div_iff₀ hFpos hm]
     calc ‖deriv F z - deriv f z‖ * m ≤ η * m := mul_le_mul_of_nonneg_right h2 hm.le
       _ ≤ 2 * η * ‖F z‖ := by nlinarith [hη, hFz]
-  have hb2 : ‖deriv f z * (f z - F z) / (F z * f z)‖ ≤ 2 * Mf * η / m ^ 2 := by
+  have hb2 : ‖deriv f z * (f z - F z) / (F z * f z)‖ ≤ 2 * Mf * η / m ^ (2 : ℕ) := by
     rw [norm_div, norm_mul, norm_mul]
     have hden : 0 < ‖F z‖ * ‖f z‖ := by positivity
-    rw [div_le_div_iff₀ hden (by positivity : (0:ℝ) < m ^ 2)]
+    rw [div_le_div_iff₀ hden (by positivity : (0:ℝ) < m ^ (2 : ℕ))]
     have hprod : ‖deriv f z‖ * ‖f z - F z‖ ≤ Mf * η :=
       mul_le_mul hdf h1 (norm_nonneg _) hMf
-    have hFf : m ^ 2 / 2 ≤ ‖F z‖ * ‖f z‖ := by nlinarith [hFz, hfz, hm]
-    calc ‖deriv f z‖ * ‖f z - F z‖ * m ^ 2 ≤ Mf * η * m ^ 2 :=
+    have hFf : m ^ (2 : ℕ) / 2 ≤ ‖F z‖ * ‖f z‖ := by nlinarith [hFz, hfz, hm]
+    calc ‖deriv f z‖ * ‖f z - F z‖ * m ^ (2 : ℕ) ≤ Mf * η * m ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hprod (by positivity)
       _ ≤ 2 * Mf * η * (‖F z‖ * ‖f z‖) := by nlinarith [mul_nonneg hMf hη, hFf]
   calc ‖logDeriv F z - logDeriv f z‖
       = ‖(deriv F z - deriv f z) / F z + deriv f z * (f z - F z) / (F z * f z)‖ := by rw [hid]
     _ ≤ ‖(deriv F z - deriv f z) / F z‖ + ‖deriv f z * (f z - F z) / (F z * f z)‖ :=
         norm_add_le _ _
-    _ ≤ 2 * η / m + 2 * Mf * η / m ^ 2 := add_le_add hb1 hb2
+    _ ≤ 2 * η / m + 2 * Mf * η / m ^ (2 : ℕ) := add_le_add hb1 hb2
 
 /-- The derivative of an entire function is entire. -/
 theorem differentiable_deriv_of_differentiable {f : ℂ → ℂ} (hf : Differentiable ℂ f) :
@@ -159,7 +159,7 @@ theorem tendsto_circleIntegral_logDeriv {α : Type*} {p : Filter α}
     linarith
   have hderivU := tendstoUniformlyOn_deriv_of_tendstoUniformlyOn hF hf hρR huniform
   rw [Metric.tendstoUniformlyOn_iff] at huniform hderivU
-  set Cb : ℝ := 2 / m + 2 * Mf / m ^ 2 with hCbdef
+  set Cb : ℝ := 2 / m + 2 * Mf / m ^ (2 : ℕ) with hCbdef
   have hCb : 0 ≤ Cb := by rw [hCbdef]; positivity
   refine Metric.tendsto_nhds.mpr fun ε hε => ?_
   set K : ℝ := 2 * Real.pi * r * Cb + 1 with hKdef
@@ -187,7 +187,7 @@ theorem tendsto_circleIntegral_logDeriv {α : Type*} {p : Filter α}
       have := norm_sub_norm_le (f z) (F a z)
       linarith
     have := norm_logDeriv_sub_le hm (hmle z hz) hFz hMf (hMfle z hz) h1 h2
-    calc ‖logDeriv (F a) z - logDeriv f z‖ ≤ 2 * η / m + 2 * Mf * η / m ^ 2 := this
+    calc ‖logDeriv (F a) z - logDeriv f z‖ ≤ 2 * η / m + 2 * Mf * η / m ^ (2 : ℕ) := this
       _ = η * Cb := by rw [hCbdef]; field_simp
   -- circle integrability of both logarithmic derivatives
   have hciF : CircleIntegrable (fun z => logDeriv (F a) z) c r := by

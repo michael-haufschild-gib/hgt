@@ -13,7 +13,7 @@ intensity defect satisfies
 For any symmetric gauge-fixed angular operator, real and imaginary residual quadratures are
 orthogonal in canonical energy.  Consequently
 
-`S(rho)^2 E_mix = 4096 Im(rho)^2 D(rho)^2 ||psi||^2`.
+`S(rho)^(2 : ℕ) E_mix = 4096 Im(rho)^(2 : ℕ) D(rho)^(2 : ℕ) ||psi||^(2 : ℕ)`.
 
 Conjugate parity responses identify the imaginary residual with the off-diagonal helicity
 coefficient.  Any horizon-plus-boundary radiation map whose optical Gram preserves angular
@@ -67,7 +67,7 @@ theorem normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient
     (q : XiZeroCopy) :
     Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) =
       (d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-        (xiSpectralPoint q)).im ^ 2 := by
+        (xiSpectralPoint q)).im ^ (2 : ℕ) := by
   rw [d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient_eq]
   simp [Complex.normSq_apply]
   ring
@@ -159,7 +159,7 @@ variable {H : Type*} [NormedAddCommGroup H]
 def d4ThetaTeukolskyOrthogonalHelicityMixingEnergy
     (psi : H) (q : XiZeroCopy) : ℝ :=
   (d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-      (xiSpectralPoint q)).im ^ 2 * ‖psi‖ ^ 2
+      (xiSpectralPoint q)).im ^ (2 : ℕ) * ‖psi‖ ^ (2 : ℕ)
 
 theorem d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_nonneg
     (psi : H) (q : XiZeroCopy) :
@@ -170,26 +170,26 @@ theorem d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_nonneg
 height-weighted square of the local self-dual intensity defect. -/
 theorem d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_scaled_eq_responseDefect
     (psi : H) (q : XiZeroCopy) :
-    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ 2 *
+    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ (2 : ℕ) *
         d4ThetaTeukolskyOrthogonalHelicityMixingEnergy psi q =
-      4096 * (q.1 : ℂ).im ^ 2 *
-        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ 2 * ‖psi‖ ^ 2 := by
+      4096 * (q.1 : ℂ).im ^ (2 : ℕ) *
+        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ (2 : ℕ) * ‖psi‖ ^ (2 : ℕ) := by
   rw [d4ThetaTeukolskyOrthogonalHelicityMixingEnergy]
   have h := d4ThetaHawkingSelfDualResponseDefect_angularTransgression q
   calc
-    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ 2 *
+    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ (2 : ℕ) *
         ((d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-          (xiSpectralPoint q)).im ^ 2 * ‖psi‖ ^ 2) =
+          (xiSpectralPoint q)).im ^ (2 : ℕ) * ‖psi‖ ^ (2 : ℕ)) =
       ((d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
           (xiSpectralPoint q)).im *
-        d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ)) ^ 2 *
-          ‖psi‖ ^ 2 := by ring
+        d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ)) ^ (2 : ℕ) *
+          ‖psi‖ ^ (2 : ℕ) := by ring
     _ = (-64 * (q.1 : ℂ).im *
-        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q) ^ 2 *
-          ‖psi‖ ^ 2 := by rw [h]
-    _ = 4096 * (q.1 : ℂ).im ^ 2 *
-        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ 2 *
-          ‖psi‖ ^ 2 := by ring
+        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q) ^ (2 : ℕ) *
+          ‖psi‖ ^ (2 : ℕ) := by rw [h]
+    _ = 4096 * (q.1 : ℂ).im ^ (2 : ℕ) *
+        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ (2 : ℕ) *
+          ‖psi‖ ^ (2 : ℕ) := by ring
 
 /-- A nonzero Xi source has no orthogonal angular mixing exactly on the critical line. -/
 theorem d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_eq_zero_iff
@@ -197,7 +197,7 @@ theorem d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_eq_zero_iff
     d4ThetaTeukolskyOrthogonalHelicityMixingEnergy psi q = 0 ↔
       (q.1 : ℂ).re = 1 / 2 := by
   rw [d4ThetaTeukolskyOrthogonalHelicityMixingEnergy, mul_eq_zero]
-  have hnorm : ‖psi‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hpsi)
+  have hnorm : ‖psi‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hpsi)
   simp only [hnorm, or_false, sq_eq_zero_iff]
   have hlambda :
       (d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
@@ -226,10 +226,10 @@ theorem d4ThetaTeukolskyGaugeFixedAngularOpticalDecomposition
     (hsa : ⟪psi, A psi⟫_ℂ = ⟪A psi, psi⟫_ℂ) :
     ‖A psi -
           d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-              (xiSpectralPoint q) • psi‖ ^ 2 =
+              (xiSpectralPoint q) • psi‖ ^ (2 : ℕ) =
       ‖A psi -
           ((d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-              (xiSpectralPoint q)).re : ℂ) • psi‖ ^ 2 +
+              (xiSpectralPoint q)).re : ℂ) • psi‖ ^ (2 : ℕ) +
         d4ThetaTeukolskyOrthogonalHelicityMixingEnergy psi q := by
   rw [d4ThetaTeukolskyOrthogonalHelicityMixingEnergy]
   exact complexSymmetric_residual_norm_sq
@@ -242,7 +242,7 @@ variable {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
 def d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux
     (radiation : H →ₗ[ℂ] K) (psi : H) (q : XiZeroCopy) : ℝ :=
   (d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-      (xiSpectralPoint q)).im ^ 2 * ‖radiation psi‖ ^ 2
+      (xiSpectralPoint q)).im ^ (2 : ℕ) * ‖radiation psi‖ ^ (2 : ℕ)
 
 theorem d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux_nonneg
     (radiation : H →ₗ[ℂ] K) (psi : H) (q : XiZeroCopy) :
@@ -252,11 +252,11 @@ theorem d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux_nonneg
 /-- Greybody transfer preserves the exact defect law without an isometry assumption. -/
 theorem d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux_scaled_eq_responseDefect
     (radiation : H →ₗ[ℂ] K) (psi : H) (q : XiZeroCopy) :
-    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ 2 *
+    d4ThetaHawkingSelfDualResponseSusceptibility (q.1 : ℂ) ^ (2 : ℕ) *
         d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux radiation psi q =
-      4096 * (q.1 : ℂ).im ^ 2 *
-        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ 2 *
-          ‖radiation psi‖ ^ 2 := by
+      4096 * (q.1 : ℂ).im ^ (2 : ℕ) *
+        d4ThetaHawkingSelfDualPartnerResponseIntensityDefect q ^ (2 : ℕ) *
+          ‖radiation psi‖ ^ (2 : ℕ) := by
   exact d4ThetaTeukolskyOrthogonalHelicityMixingEnergy_scaled_eq_responseDefect
     (radiation psi) q
 
@@ -279,11 +279,11 @@ theorem d4ThetaTeukolskyGaugeFixedGlobalOpticalDecomposition
     ‖radiation
         (A psi -
           d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-              (xiSpectralPoint q) • psi)‖ ^ 2 =
+              (xiSpectralPoint q) • psi)‖ ^ (2 : ℕ) =
       ‖radiation
         (A psi -
           ((d4ThetaTeukolskyQuadraticChiralAngularEigenvalue
-              (xiSpectralPoint q)).re : ℂ) • psi)‖ ^ 2 +
+              (xiSpectralPoint q)).re : ℂ) • psi)‖ ^ (2 : ℕ) +
         d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux radiation psi q := by
   rw [d4ThetaTeukolskyGlobalOrthogonalHelicityMixingFlux]
   simpa only [map_sub, map_smul] using

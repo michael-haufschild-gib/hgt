@@ -32,7 +32,7 @@ them only eventually. -/
 theorem tendsto_prolateProfile_hermiteRung_eventually
     {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K B : ℝ} {n : ℕ}
     {u u' u'' : ι → ℝ → ℝ} (hK : 0 < K)
-    (hgood : ∀ᶠ i in L, 2 * K ^ 2 ≤ c i ∧
+    (hgood : ∀ᶠ i in L, 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x, HasDerivAt (u i) (u' i x) x) ∧ (∀ x, HasDerivAt (u' i) (u'' i x) x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x
         = rescaledProlateP (c i) (mu i) x * u i x + rescaledProlateQ (c i) x * u' i x) ∧

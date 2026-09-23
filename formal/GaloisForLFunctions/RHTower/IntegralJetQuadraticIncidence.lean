@@ -48,11 +48,11 @@ def jetCoeffZeroRingHomInt (m : ℕ) (hm : 1 ≤ m) :
 /-- Square of the canonical integral constant coefficient of a divisor jet. -/
 def integralJetQuadraticIndex (m : ℕ) (hm : 1 ≤ m)
     (J : LocalDivisorJet ℤ m) : ℤ :=
-  (jetCoeffZeroRingHomInt m hm J) ^ 2
+  (jetCoeffZeroRingHomInt m hm J) ^ (2 : ℕ)
 
 @[simp] theorem integralJetQuadraticIndex_constJet
     (m : ℕ) (hm : 1 ≤ m) (t : ℤ) :
-    integralJetQuadraticIndex m hm (jetClass ℤ m (C t)) = t ^ 2 := by
+    integralJetQuadraticIndex m hm (jetClass ℤ m (C t)) = t ^ (2 : ℕ) := by
   simp [integralJetQuadraticIndex]
 
 /-- The source-defined completed-SEM contour boundary has quadratic index equal to the square of
@@ -61,7 +61,7 @@ theorem integralJetQuadraticIndex_completedSEMContourBoundaryZ
     (ρ : ℂ) (r₀ R : ℝ) (N m : ℕ) (hm : 1 ≤ m) :
     integralJetQuadraticIndex m hm
         (completedSEMContourBoundaryZ ρ r₀ R N m) =
-      (completedSEMContourIndexZ ρ r₀ R N) ^ 2 := by
+      (completedSEMContourIndexZ ρ r₀ R N) ^ (2 : ℕ) := by
   rw [completedSEMContourBoundaryZ_eq_indexJet]
   exact integralJetQuadraticIndex_constJet m hm _
 
@@ -72,7 +72,7 @@ theorem integralJetQuadraticIndex_eq_splitCount_sq
     (h : SEMSplitData ρ r₀ R N zs u) {m : ℕ} (hm : 1 ≤ m) :
     integralJetQuadraticIndex m hm
         (completedSEMContourBoundaryZ ρ r₀ R N m) =
-      (zs.length : ℤ) ^ 2 := by
+      (zs.length : ℤ) ^ (2 : ℕ) := by
   rw [integralJetQuadraticIndex_completedSEMContourBoundaryZ,
     completedSEMContourIndexZ_eq_splitCount h]
 
@@ -82,7 +82,7 @@ theorem integralJetQuadraticIndex_eq_xiOrder_sq
     (h : SEMSplitData ρ r₀ R N zs u) {m : ℕ} (hm : 1 ≤ m) :
     integralJetQuadraticIndex m hm
         (completedSEMContourBoundaryZ ρ r₀ R N m) =
-      (((analyticOrderAt xi ρ).toNat : ℤ) ^ 2) := by
+      (((analyticOrderAt xi ρ).toNat : ℤ) ^ (2 : ℕ)) := by
   rw [integralJetQuadraticIndex_completedSEMContourBoundaryZ,
     completedSEMContourIndexZ_eq_xiOrder h]
 

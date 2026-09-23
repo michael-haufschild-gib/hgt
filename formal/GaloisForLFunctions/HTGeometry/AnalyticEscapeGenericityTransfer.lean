@@ -133,7 +133,7 @@ theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analy
       (hbranchInj p hpU) (fun x => hbranchRoot x p hpU) i
   simp only [hcoeff]
   rw [eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
-    eval₂_spectralRelationOrbitPolynomial_complex]
+    eval₂_spectralRelationOrbitPolynomial]
   exact hp
 
 

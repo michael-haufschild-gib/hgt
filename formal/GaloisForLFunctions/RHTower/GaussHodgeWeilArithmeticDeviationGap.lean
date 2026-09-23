@@ -49,7 +49,7 @@ deviation of every `xi` zero strictly below the strip constant by the de la Vall
 margin. -/
 theorem exists_xi_deviation_gap_high :
     ∃ A : ℝ, A ∈ Set.Ioc 0 (1 / 2) ∧ ∀ ρ : ℂ, xi ρ = 0 → 3 < |ρ.im| →
-      (ρ.re - 1 / 2) ^ 2 ≤ 1 / 4 - A / Real.log |ρ.im| ^ 9 / 2 := by
+      (ρ.re - 1 / 2) ^ (2 : ℕ) ≤ 1 / 4 - A / Real.log |ρ.im| ^ (9 : ℕ) / 2 := by
   obtain ⟨A, hA, hfree⟩ := ZetaZeroFree
   refine ⟨A, hA, ?_⟩
   intro ρ hρ ht
@@ -58,15 +58,15 @@ theorem exists_xi_deviation_gap_high :
   have hlog : 1 < Real.log |ρ.im| := by
     rw [Real.lt_log_iff_exp_lt (by linarith)]
     linarith [Real.exp_one_lt_d9]
-  have hpow : 1 ≤ Real.log |ρ.im| ^ 9 := one_le_pow₀ hlog.le
-  have hεpos : 0 < A / Real.log |ρ.im| ^ 9 := div_pos hA.1 (by linarith)
-  have hεle : A / Real.log |ρ.im| ^ 9 ≤ 1 / 2 :=
+  have hpow : 1 ≤ Real.log |ρ.im| ^ (9 : ℕ) := one_le_pow₀ hlog.le
+  have hεpos : 0 < A / Real.log |ρ.im| ^ (9 : ℕ) := div_pos hA.1 (by linarith)
+  have hεle : A / Real.log |ρ.im| ^ (9 : ℕ) ≤ 1 / 2 :=
     le_trans (div_le_self hA.1.le hpow) hA.2
-  have hupper : ρ.re < 1 - A / Real.log |ρ.im| ^ 9 := by
+  have hupper : ρ.re < 1 - A / Real.log |ρ.im| ^ (9 : ℕ) := by
     by_contra hge
     exact hfree ρ.re ρ.im ht ⟨not_lt.mp hge, hre1⟩
       (by rw [Complex.re_add_im]; exact hζ)
-  have hlower : A / Real.log |ρ.im| ^ 9 < ρ.re := by
+  have hlower : A / Real.log |ρ.im| ^ (9 : ℕ) < ρ.re := by
     by_contra hge
     have hxi1 : xi (1 - ρ) = 0 := by rw [xi_one_sub]; exact hρ
     have hζ1 : riemannZeta (1 - ρ) = 0 := zeta_zero_of_xi_zero hxi1
@@ -80,7 +80,7 @@ theorem exists_xi_deviation_gap_high :
       linarith [not_lt.mp hge]
     · rw [hre1']
       linarith
-  have hsq : (ρ.re - 1 / 2) ^ 2 ≤ (1 / 2 - A / Real.log |ρ.im| ^ 9) ^ 2 :=
+  have hsq : (ρ.re - 1 / 2) ^ (2 : ℕ) ≤ (1 / 2 - A / Real.log |ρ.im| ^ (9 : ℕ)) ^ (2 : ℕ) :=
     sq_le_sq' (by linarith) (by linarith)
   nlinarith [hεpos, hεle]
 
@@ -88,14 +88,14 @@ theorem exists_xi_deviation_gap_high :
 arithmetic gap between the squared deviations and the strip constant. -/
 theorem exists_xi_deviation_gap_low :
     ∃ δ : ℝ, 0 < δ ∧ ∀ ρ : ℂ, xi ρ = 0 → |ρ.im| ≤ 3 →
-      (ρ.re - 1 / 2) ^ 2 ≤ 1 / 4 - δ := by
+      (ρ.re - 1 / 2) ^ (2 : ℕ) ≤ 1 / 4 - δ := by
   obtain ⟨σ₁, hσ₁, hbox⟩ := ZetaNoZerosInBox 3
   set σ₂ : ℝ := max σ₁ (3 / 4) with hσ₂def
   have hσ₂lt : σ₂ < 1 := by
     rw [hσ₂def]
     exact max_lt hσ₁ (by norm_num)
   have hσ₂ge : (3 / 4 : ℝ) ≤ σ₂ := le_max_right _ _
-  refine ⟨1 / 4 - (σ₂ - 1 / 2) ^ 2, by nlinarith, ?_⟩
+  refine ⟨1 / 4 - (σ₂ - 1 / 2) ^ (2 : ℕ), by nlinarith, ?_⟩
   intro ρ hρ ht
   have hζ : riemannZeta ρ = 0 := zeta_zero_of_xi_zero hρ
   have hupper : ρ.re < σ₂ := by
@@ -114,7 +114,7 @@ theorem exists_xi_deviation_gap_low :
     have hσ₁le : σ₁ ≤ σ₂ := by rw [hσ₂def]; exact le_max_left _ _
     rw [hre1']
     linarith [not_lt.mp hge]
-  have hsq : (ρ.re - 1 / 2) ^ 2 ≤ (σ₂ - 1 / 2) ^ 2 :=
+  have hsq : (ρ.re - 1 / 2) ^ (2 : ℕ) ≤ (σ₂ - 1 / 2) ^ (2 : ℕ) :=
     sq_le_sq' (by linarith) (by linarith)
   linarith
 
@@ -128,14 +128,14 @@ theorem xiSpectralPoint_re (q : XiZeroCopy) :
 
 /-- The squared deviation of a divisor copy in classical coordinates. -/
 theorem xiSpectralPoint_im_sq (q : XiZeroCopy) :
-    (xiSpectralPoint q).im ^ 2 = (((q.1 : ℂ)).re - 1 / 2) ^ 2 := by
+    (xiSpectralPoint q).im ^ (2 : ℕ) = (((q.1 : ℂ)).re - 1 / 2) ^ (2 : ℕ) := by
   rw [xiSpectralPoint_im]
   ring
 
 /-- The low-height deviation gap on the multiplicity-exact divisor. -/
 theorem exists_xiSpectralPoint_deviation_gap_low :
     ∃ δ : ℝ, 0 < δ ∧ ∀ q : XiZeroCopy, |(xiSpectralPoint q).re| ≤ 3 →
-      (xiSpectralPoint q).im ^ 2 ≤ 1 / 4 - δ := by
+      (xiSpectralPoint q).im ^ (2 : ℕ) ≤ 1 / 4 - δ := by
   obtain ⟨δ, hδ, hbound⟩ := exists_xi_deviation_gap_low
   refine ⟨δ, hδ, ?_⟩
   intro q hq
@@ -146,8 +146,8 @@ theorem exists_xiSpectralPoint_deviation_gap_low :
 /-- The high-height deviation gap on the multiplicity-exact divisor. -/
 theorem exists_xiSpectralPoint_deviation_gap_high :
     ∃ A : ℝ, A ∈ Set.Ioc 0 (1 / 2) ∧ ∀ q : XiZeroCopy, 3 < |(xiSpectralPoint q).re| →
-      (xiSpectralPoint q).im ^ 2 ≤
-        1 / 4 - A / Real.log |(xiSpectralPoint q).re| ^ 9 / 2 := by
+      (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+        1 / 4 - A / Real.log |(xiSpectralPoint q).re| ^ (9 : ℕ) / 2 := by
   obtain ⟨A, hA, hbound⟩ := exists_xi_deviation_gap_high
   refine ⟨A, hA, ?_⟩
   intro q hq
@@ -166,31 +166,31 @@ is RH. -/
 theorem exists_arithmetic_gap_lowSupported :
     ∃ δ : ℝ, 0 < δ ∧ ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
       Summable (fun q : XiZeroCopy =>
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) →
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) →
       (∀ q : XiZeroCopy, 3 < |(xiSpectralPoint q).re| →
         dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q) = 0) →
-      (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2) -
+      (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)) -
           (1 / 4 - δ) * ∑' q : XiZeroCopy,
-            ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 ≤
+            ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
         (xiWeilPolarization F F).re := by
   obtain ⟨δ, hδ, hgap⟩ := exists_xiSpectralPoint_deviation_gap_low
   refine ⟨δ, hδ, ?_⟩
   intro F hF hD hsupp
   rw [xiWeilPolarization_re_eq_deviation_moment hF]
   have hpt : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q).im ^ 2 *
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 ≤
+      (xiSpectralPoint q).im ^ (2 : ℕ) *
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
         (1 / 4 - δ) *
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     intro q
     by_cases hq : 3 < |(xiSpectralPoint q).re|
     · rw [hsupp q hq]
       simp
     · exact mul_le_mul_of_nonneg_right (hgap q (not_lt.mp hq)) (sq_nonneg _)
-  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) ≤
+  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) ≤
       (1 / 4 - δ) * ∑' q : XiZeroCopy,
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [← tsum_mul_left]
     exact (deviation_dslope_energy_summable hF).tsum_le_tsum hpt (hD.mul_left _)
   linarith

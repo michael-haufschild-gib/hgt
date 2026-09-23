@@ -262,7 +262,7 @@ theorem norm_sq_centeredIndicatorOn
     (hΩ : MeasurableSet Ω) (hΩfin : μ Ω ≠ ⊤)
     (hE : MeasurableSet E) (hEfin : μ E ≠ ⊤)
     (hEΩ : E ⊆ Ω) (hΩpos : 0 < μ.real Ω) :
-    ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin‖ ^ 2 =
+    ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin‖ ^ (2 : ℕ) =
       μ.real E * (μ.real Ω - μ.real E) / μ.real Ω := by
   rw [← real_inner_self_eq_norm_sq,
     real_inner_centeredIndicatorOn μ Ω E E hΩ hΩfin hE hEfin hE hEfin hEΩ hEΩ hΩpos,
@@ -320,8 +320,8 @@ theorem norm_sub_sq_centeredIndicatorOn
     (hF : MeasurableSet F) (hFfin : μ F ≠ ⊤)
     (hEΩ : E ⊆ Ω) (hFΩ : F ⊆ Ω) (hΩpos : 0 < μ.real Ω) :
     ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin -
-        centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ 2 =
-      μ.real (E ∆ F) - (μ.real E - μ.real F) ^ 2 / μ.real Ω := by
+        centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ (2 : ℕ) =
+      μ.real (E ∆ F) - (μ.real E - μ.real F) ^ (2 : ℕ) / μ.real Ω := by
   rw [norm_sub_sq_real, ← real_inner_self_eq_norm_sq,
     ← real_inner_self_eq_norm_sq,
     real_inner_centeredIndicatorOn μ Ω E E hΩ hΩfin hE hEfin hE hEfin hEΩ hEΩ hΩpos,
@@ -374,10 +374,10 @@ theorem norm_sq_indicator_sub_indicator_sub_const_eq
     (hEΩ : E ⊆ Ω) (hFΩ : F ⊆ Ω) (hΩpos : 0 < μ.real Ω)
     (r : ℝ) :
     ‖indicatorConstLp 2 hE hEfin (1 : ℝ) - indicatorConstLp 2 hF hFfin (1 : ℝ) -
-        r • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ 2 =
+        r • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ (2 : ℕ) =
       ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin -
-          centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ 2 +
-        μ.real Ω * (μ.real E / μ.real Ω - μ.real F / μ.real Ω - r) ^ 2 := by
+          centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ (2 : ℕ) +
+        μ.real Ω * (μ.real E / μ.real Ω - μ.real F / μ.real Ω - r) ^ (2 : ℕ) := by
   rw [indicator_sub_indicator_sub_const_eq_centered_add μ Ω E F hΩ hΩfin hE hEfin hF hFfin r,
     norm_add_sq_real]
   have horth := real_inner_centeredIndicatorOn_sub_indicatorOn_eq_zero μ Ω E F hΩ hΩfin
@@ -385,7 +385,7 @@ theorem norm_sq_indicator_sub_indicator_sub_const_eq
   rw [real_inner_smul_right, horth, mul_zero]
   ring_nf
   rw [norm_smul, Real.norm_eq_abs, mul_pow, sq_abs]
-  have hbase : ‖indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ 2 = μ.real Ω := by
+  have hbase : ‖indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ (2 : ℕ) = μ.real Ω := by
     rw [← real_inner_self_eq_norm_sq]
     simp only [MeasureTheory.L2.real_inner_indicatorConstLp_one_indicatorConstLp_one,
       Set.inter_self]
@@ -411,9 +411,9 @@ theorem norm_centeredIndicatorOn_sub_le_indicator_sub_indicator_sub_const
         ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin -
           centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ =
         ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin -
-          centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ 2 := (pow_two _).symm
+          centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ (2 : ℕ) := (pow_two _).symm
     _ ≤ ‖indicatorConstLp 2 hE hEfin (1 : ℝ) - indicatorConstLp 2 hF hFfin (1 : ℝ) -
-          r • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ 2 := by
+          r • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ (2 : ℕ) := by
       rw [norm_sq_indicator_sub_indicator_sub_const_eq μ Ω E F hΩ hΩfin hE hEfin hF hFfin
         hEΩ hFΩ hΩpos r]
       exact le_add_of_nonneg_right <| mul_nonneg measureReal_nonneg (sq_nonneg _)
@@ -438,9 +438,9 @@ theorem norm_indicator_sub_indicator_sub_nearest_const_eq_centered
     field_simp [hΩpos.ne']
     ring
   have hsq : ‖indicatorConstLp 2 hE hEfin (1 : ℝ) - indicatorConstLp 2 hF hFfin (1 : ℝ) -
-      ((μ.real E - μ.real F) / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ 2 =
+      ((μ.real E - μ.real F) / μ.real Ω) • indicatorConstLp 2 hΩ hΩfin (1 : ℝ)‖ ^ (2 : ℕ) =
       ‖centeredIndicatorOn μ Ω E hΩ hΩfin hE hEfin -
-        centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ 2 := by
+        centeredIndicatorOn μ Ω F hΩ hΩfin hF hFfin‖ ^ (2 : ℕ) := by
     rw [norm_sq_indicator_sub_indicator_sub_const_eq μ Ω E F hΩ hΩfin hE hEfin hF hFfin
       hEΩ hFΩ hΩpos, hzero]
     ring

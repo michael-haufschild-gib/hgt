@@ -9,7 +9,7 @@ so the mass sits at `T = XV = y^{2/k}`.
 Hölder against the fourth moment of `ζ` (exponents `4/k` and `4/(4-k)`, valid for `k < 4`, and by
 continuity at `k = 4`) yields
 
-    |G_k(y)| ≪ (∫_{|t|≍T}|ζ|^4)^{k/4} · (∫|M|^{q})^{1/q},   q = 4/(4-k),
+    |G_k(y)| ≪ (∫_{|t|≍T}|ζ|^(4 : ℕ))^{k/4} · (∫|M|^{q})^{1/q},   q = 4/(4-k),
 
 and the two exponents combine to `1/2 + 1/k`.  The same computation with the sixth moment
 (`m(3) ≤ 5/4`) covers `4 < k < 6` and gives `5/12 + (k+6)/(6k)`.

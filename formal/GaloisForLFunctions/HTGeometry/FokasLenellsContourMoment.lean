@@ -42,10 +42,10 @@ theorem compatibilityMoment_contourSource_zero_iff (q : SchwartzMap ℝ ℂ) (ve
 /-- Dividing by the actual cubic spectral parameter cancels both ray signs. -/
 theorem contourReflection_cubic_quotient_eq (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) (κ : ℝ) :
-    contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^3 =
+    contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(3 : ℕ) =
       (if vertical then -I else 1)*
-        (reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^3) := by
-  have hi : (-I)^3 = I := by
+        (reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^(3 : ℕ)) := by
+  have hi : (-I)^(3 : ℕ) = I := by
     ring_nf
     simp only [I_pow_three,neg_neg]
   cases vertical <;> cases negative <;>
@@ -56,7 +56,7 @@ theorem contourReflection_cubic_quotient_eq (q : SchwartzMap ℝ ℂ)
 theorem contourReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => contourReflectionAmplitude q vertical negative κ/
-      (contourParameter vertical negative κ)^3) atBot (𝓝 (2*compatibilityMoment q)) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)) atBot (𝓝 (2*compatibilityMoment q)) := by
   have hh := (reflectionAmplitude_cubic_quotient_tendsto (contourSource q vertical)).const_mul
     (if vertical then -I else 1)
   have he : (if vertical then -I else 1)*(2*compatibilityMoment (contourSource q vertical)) =
@@ -69,8 +69,8 @@ theorem contourReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ)
       simp only [I_sq]
       ring
   have hfun : (fun κ : ℝ => contourReflectionAmplitude q vertical negative κ/
-      (contourParameter vertical negative κ)^3) = fun κ =>
-      (if vertical then -I else 1)*(reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^3) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)) = fun κ =>
+      (if vertical then -I else 1)*(reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^(3 : ℕ)) := by
     funext κ
     exact contourReflection_cubic_quotient_eq q vertical negative κ
   rw [hfun]
@@ -80,10 +80,10 @@ theorem contourReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ)
 theorem contourReverseReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => contourReverseReflectionAmplitude q vertical negative κ/
-      (contourParameter vertical negative κ)^3) atBot (𝓝 (-2*compatibilityMoment q)) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)) atBot (𝓝 (-2*compatibilityMoment q)) := by
   have he : (fun κ : ℝ => contourReverseReflectionAmplitude q vertical negative κ/
-      (contourParameter vertical negative κ)^3) =
-      fun κ => -(contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^3) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)) =
+      fun κ => -(contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(3 : ℕ)) := by
     funext κ
     rw [contourReverseReflectionAmplitude_eq_neg,neg_div]
   rw [he]

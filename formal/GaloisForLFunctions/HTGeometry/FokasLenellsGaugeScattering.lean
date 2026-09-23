@@ -32,13 +32,13 @@ theorem gaugeVector_inverseGauge_exp (u a : ℂ) (v : SpectralVector) :
 theorem spatialEigenfunction_direct_gauge (q : SchwartzMap ℝ ℂ) (a : ℂ)
     (v : SpectralVector) (x : ℝ) :
     gaugeVector (deriv q x) (Complex.exp a) (spatialEigenfunction q a v x) =
-      initialSpectralSolution q ((Complex.exp a)^2) (gaugeVector (deriv q 0) (Complex.exp a) v) x := by
+      initialSpectralSolution q ((Complex.exp a)^(2 : ℕ)) (gaugeVector (deriv q 0) (Complex.exp a) v) x := by
   rw [spatialEigenfunction, gaugeVector_inverseGauge_exp]
 
 /-- The initial gauge is retained explicitly; it is not assumed to be the identity. -/
 theorem uniformizedFundamentalMatrix_gauge (q : SchwartzMap ℝ ℂ) (a : ℂ) (x : ℝ) :
     uniformizedFundamentalMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Complex.exp a)^2) x *
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Complex.exp a)^(2 : ℕ)) x *
       uniformizationGauge (deriv q 0) (Complex.exp a) =
     uniformizationGauge (deriv q x) (Complex.exp a)*spatialFundamentalMatrix q a x := by
   have h0 := spatialEigenfunction_direct_gauge q a (1,0) x
@@ -80,28 +80,28 @@ theorem uniformizedOrbitMatrix_eq_diagonal_mul (f g h : SchwartzMap ℝ ℂ)
 
 theorem interactionFundamentalMatrix_eq_diagonal_mul (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
     interactionFundamentalMatrix q κ x =
-      diagonalFrame ((Real.exp κ)^2) x*spatialFundamentalMatrix q (κ:ℂ) x := by
+      diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*spatialFundamentalMatrix q (κ:ℂ) x := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [interactionFundamentalMatrix, interactionSolution, rotatingFrame,
       spatialFundamentalMatrix, diagonalFrame, Matrix.mul_apply, Fin.sum_univ_two]
 
 def oscillatingGauge (q : SchwartzMap ℝ ℂ) (κ x : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  diagonalFrame ((Real.exp κ)^2) x*uniformizationGauge (deriv q x) (Complex.exp (κ:ℂ))*
-    diagonalFrame (-((Real.exp κ)^2)) x
+  diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*uniformizationGauge (deriv q x) (Complex.exp (κ:ℂ))*
+    diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x
 
 theorem uniformizedOrbitMatrix_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) (b : Bool) (x : ℝ) :
     uniformizedOrbitMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) b x *
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) b x *
       uniformizationGauge (deriv q 0) (Complex.exp (κ:ℂ)) =
     oscillatingGauge q κ (if b then -x else x)*interactionFundamentalMatrix q κ (if b then -x else x) := by
   rw [uniformizedOrbitMatrix_eq_diagonal_mul, Matrix.mul_assoc]
-  have he : (↑((Real.exp κ)^2) : ℂ) = (Complex.exp (κ:ℂ))^2 := by simp [Complex.ofReal_exp]
+  have he : (↑((Real.exp κ)^(2 : ℕ)) : ℂ) = (Complex.exp (κ:ℂ))^(2 : ℕ) := by simp [Complex.ofReal_exp]
   rw [he, uniformizedFundamentalMatrix_gauge, ← Matrix.mul_assoc,
     interactionFundamentalMatrix_eq_diagonal_mul]
   unfold oscillatingGauge
   simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc (diagonalFrame (-((Real.exp κ)^2)) _),
+  rw [← Matrix.mul_assoc (diagonalFrame (-((Real.exp κ)^(2 : ℕ))) _),
     diagonalFrame_neg_inverse, one_mul]
 
 /-- The constant limiting diagonal gauge commutes with every oscillating frame. -/
@@ -123,13 +123,13 @@ theorem uniformizationGauge_difference_norm (u k : ℂ) :
 theorem oscillatingGauge_difference_norm (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
     ‖oscillatingGauge q κ x-uniformizationGauge 0 (Complex.exp (κ:ℂ))‖ = ‖deriv q x‖ := by
   have he : oscillatingGauge q κ x-uniformizationGauge 0 (Complex.exp (κ:ℂ)) =
-      diagonalFrame ((Real.exp κ)^2) x*
+      diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*
         (uniformizationGauge (deriv q x) (Complex.exp (κ:ℂ))-uniformizationGauge 0 (Complex.exp (κ:ℂ)))*
-        diagonalFrame (-((Real.exp κ)^2)) x := by
+        diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x := by
     rw [mul_sub, sub_mul, diagonalFrame_gauge_zero_conjugation]
     rfl
   rw [he]
-  have hn := diagonalFrame_conjugation_norm (-((Real.exp κ)^2)) x
+  have hn := diagonalFrame_conjugation_norm (-((Real.exp κ)^(2 : ℕ))) x
     (uniformizationGauge (deriv q x) (Complex.exp (κ:ℂ))-uniformizationGauge 0 (Complex.exp (κ:ℂ)))
   simp only [neg_neg] at hn
   rw [hn, uniformizationGauge_difference_norm]
@@ -163,11 +163,11 @@ theorem interactionFundamentalMatrix_oriented_tendsto (q : SchwartzMap ℝ ℂ) 
 /-- The endpoint gauge relation keeps both the initial gauge and the limiting gauge. -/
 theorem uniformizedAsymptoticMatrix_gauge_endpoint (q : SchwartzMap ℝ ℂ) (κ : ℝ) (b : Bool) :
     uniformizedAsymptoticMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) b *
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) b *
       uniformizationGauge (deriv q 0) (Complex.exp (κ:ℂ)) =
     uniformizationGauge 0 (Complex.exp (κ:ℂ))*originalAsymptoticMatrix q κ b := by
   have hu := (uniformizedOrbitMatrix_tendsto (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) b).mul_const
+    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) b).mul_const
       (uniformizationGauge (deriv q 0) (Complex.exp (κ:ℂ)))
   have ho := (oscillatingGauge_tendsto q κ b).mul (interactionFundamentalMatrix_oriented_tendsto q κ b)
   simp only [uniformizedOrbitMatrix_gauge] at hu
@@ -180,7 +180,7 @@ theorem uniformizationGauge_exp_isUnit_det (u a : ℂ) :
 
 theorem uniformizedAsymptoticMatrix_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) (b : Bool) :
     uniformizedAsymptoticMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) b =
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) b =
     uniformizationGauge 0 (Complex.exp (κ:ℂ))*originalAsymptoticMatrix q κ b*
       (uniformizationGauge (deriv q 0) (Complex.exp (κ:ℂ)))⁻¹ := by
   have he := congrArg (fun M => M*(uniformizationGauge (deriv q 0) (Complex.exp (κ:ℂ)))⁻¹)
@@ -191,7 +191,7 @@ theorem uniformizedAsymptoticMatrix_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) (
 /-- Equation (3.13)'s gauge comparison holds for the two independently constructed scattering matrices. -/
 theorem uniformizedScatteringMatrix_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
     uniformizedScatteringMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) =
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) =
     uniformizationGauge 0 (Complex.exp (κ:ℂ))*scatteringMatrix q κ*
       (uniformizationGauge 0 (Complex.exp (κ:ℂ)))⁻¹ := by
   have hi := Matrix.nonsing_inv_mul _ (uniformizationGauge_exp_isUnit_det (deriv q 0) (κ:ℂ))
@@ -204,7 +204,7 @@ theorem uniformizedScatteringMatrix_gauge (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
 /-- Both reciprocal spectral factors are exact, including their signs. -/
 theorem uniformizedScatteringMatrix_amplitudes (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
     uniformizedScatteringMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) =
+        (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) =
       !![transmission q κ,-reverseReflectionAmplitude q κ/(2*Complex.exp (κ:ℂ));
         -2*Complex.exp (κ:ℂ)*reflectionAmplitude q κ,reverseTransmission q κ] := by
   rw [uniformizedScatteringMatrix_gauge]
@@ -232,10 +232,10 @@ theorem reflectionAmplitude_reciprocal_bounds (q : SchwartzMap ℝ ℂ) (κ : �
     ‖reflectionAmplitude q κ‖/(2*Real.exp κ) ≤ potentialScatteringError q := by
   have h10 := uniformizedScatteringMatrix_entry_displacement
     (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) 1 0
+    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) 1 0
   have h01 := uniformizedScatteringMatrix_entry_displacement
     (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) 0 1
+    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) 0 1
   constructor
   · simpa [uniformizedScatteringMatrix_amplitudes, potentialScatteringError,
       norm_mul, Complex.norm_exp] using h10
@@ -249,10 +249,10 @@ theorem scattering_amplitudes_spectral_bound (q : SchwartzMap ℝ ℂ) (κ : ℝ
     ‖reflectionAmplitude q κ‖ ≤ potentialScatteringError q := by
   have h00 := uniformizedScatteringMatrix_entry_displacement
     (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) 0 0
+    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) 0 0
   have h11 := uniformizedScatteringMatrix_entry_displacement
     (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2) 1 1
+    (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ)) 1 1
   refine ⟨?_, ?_, ?_⟩
   · simpa [uniformizedScatteringMatrix_amplitudes, potentialScatteringError] using h00
   · simpa [uniformizedScatteringMatrix_amplitudes, potentialScatteringError] using h11

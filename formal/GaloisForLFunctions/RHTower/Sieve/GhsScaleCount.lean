@@ -59,14 +59,14 @@ theorem two_pow_ghsScaleCount_le {N : ℕ} (hN : 16 ≤ N) :
 
 /-- **The scale count's fourth power, in the form the height inequality consumes.** -/
 theorem four_pow_ghsScaleCount_le {N : ℕ} (hN : 16 ≤ N) :
-    (4 : ℝ) ^ ghsScaleCount N ≤ (Real.log N / (4 * Real.log 2)) ^ 2 := by
+    (4 : ℝ) ^ ghsScaleCount N ≤ (Real.log N / (4 * Real.log 2)) ^ (2 : ℕ) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hbase := two_pow_ghsScaleCount_le hN
   have hle : (2 : ℝ) ^ ghsScaleCount N ≤ Real.log N / (4 * Real.log 2) := by
     rw [le_div_iff₀ (by positivity)]
     linarith
   have h0 : (0 : ℝ) ≤ (2 : ℝ) ^ ghsScaleCount N := by positivity
-  have heq : (4 : ℝ) ^ ghsScaleCount N = ((2 : ℝ) ^ ghsScaleCount N) ^ 2 := by
+  have heq : (4 : ℝ) ^ ghsScaleCount N = ((2 : ℝ) ^ ghsScaleCount N) ^ (2 : ℕ) := by
     rw [← pow_mul, mul_comm, pow_mul]
     norm_num
   rw [heq]
@@ -75,8 +75,8 @@ theorem four_pow_ghsScaleCount_le {N : ℕ} (hN : 16 ≤ N) :
 /-- The common upper bound for the three error levels. -/
 def ghsTotalError (N n K : ℕ) (σ : ℝ) : ℝ :=
   max (ghsUniformError N n σ)
-    (max ((N : ℝ) * (((Real.log ((n ^ 2 : ℕ) : ℝ) + Real.log 4)
-              / Real.log ((N / n ^ 2 : ℕ) : ℝ)) * (Real.log N + Real.log 4)))
+    (max ((N : ℝ) * (((Real.log ((n ^ (2 : ℕ) : ℕ) : ℝ) + Real.log 4)
+              / Real.log ((N / n ^ (2 : ℕ) : ℕ) : ℝ)) * (Real.log N + Real.log 4)))
       ((N : ℝ) * (((1 / Real.log 2)
               * (Real.log (N : ℝ) - Real.log ((ghsPart N n (K + 1) : ℕ) : ℝ)
                   + mertensBlockGapConst))
@@ -92,8 +92,8 @@ theorem norm_sum_Icc_le_ghs_total
     (hunif : ∀ y : ℝ, |y| ≤ (n : ℝ) →
       δ ≤ Real.sqrt (mulDistSqPair f (charFn y) (Nat.primesLE z)))
     (hn : 1 ≤ n) (hne : Real.exp 4 ≤ (n : ℝ)) (hN : 2 ≤ N)
-    (hPN : n ^ 2 ≤ N) (hNP : 2 ≤ N / n ^ 2)
-    (hroot : n ^ 2 ≤ ghsScale N 1)
+    (hPN : n ^ (2 : ℕ) ≤ N) (hNP : 2 ≤ N / n ^ (2 : ℕ))
+    (hroot : n ^ (2 : ℕ) ≤ ghsScale N 1)
     (hK : (2 : ℝ) ^ K * (4 * Real.log 2) ≤ Real.log N)
     (hheightK : (5 / (4 * (n : ℝ))) * ((16 / 9) * 4 ^ K * (Real.log N + Real.log 4))
         ≤ 1750 * ghsShapeConst) :

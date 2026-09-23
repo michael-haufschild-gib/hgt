@@ -52,7 +52,7 @@ theorem abs_exp_sub_exp_le {a b F : ℝ} (ha : |a| ≤ F) (hb : |b| ≤ F) :
     exact key b a hab haF
 
 /-- The exponential weight profile. -/
-def expProfile (f : ℝ → ℝ) (t : ℝ) : ℝ := (Real.exp (f t) - 1) ^ 2
+def expProfile (f : ℝ → ℝ) (t : ℝ) : ℝ := (Real.exp (f t) - 1) ^ (2 : ℕ)
 
 theorem expProfile_nonneg (f : ℝ → ℝ) (t : ℝ) : 0 ≤ expProfile f t := sq_nonneg _
 
@@ -102,7 +102,7 @@ theorem expProfile_lipschitz {f : ℝ → ℝ} {F Lf : ℝ} (hfb : ∀ t, |f t| 
 /-- **The profile vanishes linearly at the origin.** -/
 theorem expProfile_le_linear {f : ℝ → ℝ} {F Lf : ℝ} (hfb : ∀ t, |f t| ≤ F)
     (hf0 : f 0 = 0) (hflip : ∀ s t, |f s - f t| ≤ Lf * |s - t|) {t : ℝ} (ht : 0 ≤ t) :
-    |expProfile f t| ≤ max ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2) * t := by
+    |expProfile f t| ≤ max ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ)) * t := by
   have hFnn : 0 ≤ F := le_trans (abs_nonneg (f 0)) (hfb 0)
   have hEnn : (0 : ℝ) ≤ Real.exp F - 1 := by
     have := Real.one_le_exp hFnn
@@ -124,29 +124,29 @@ theorem expProfile_le_linear {f : ℝ → ℝ} {F Lf : ℝ} (hfb : ∀ t, |f t| 
       refine le_trans hstep ?_
       have hexpF : (0 : ℝ) < Real.exp F := Real.exp_pos F
       exact mul_le_mul_of_nonneg_left hz hexpF.le
-    have hsq : expProfile f t ≤ (Real.exp F * (Lf * t)) ^ 2 := by
+    have hsq : expProfile f t ≤ (Real.exp F * (Lf * t)) ^ (2 : ℕ) := by
       unfold expProfile
       nlinarith [sq_abs (Real.exp (f t) - 1), abs_nonneg (Real.exp (f t) - 1), hroot,
         mul_nonneg (Real.exp_pos F).le (mul_nonneg hLnn ht)]
-    have hquad : (Real.exp F * (Lf * t)) ^ 2 = (Real.exp F * Lf) ^ 2 * t ^ 2 := by ring
-    have hle : (Real.exp F * Lf) ^ 2 * t ^ 2 ≤ (Real.exp F * Lf) ^ 2 * t := by
-      have hsq0 : (0 : ℝ) ≤ (Real.exp F * Lf) ^ 2 := sq_nonneg _
-      have ht2 : t ^ 2 ≤ t := by nlinarith [ht, ht1]
+    have hquad : (Real.exp F * (Lf * t)) ^ (2 : ℕ) = (Real.exp F * Lf) ^ (2 : ℕ) * t ^ (2 : ℕ) := by ring
+    have hle : (Real.exp F * Lf) ^ (2 : ℕ) * t ^ (2 : ℕ) ≤ (Real.exp F * Lf) ^ (2 : ℕ) * t := by
+      have hsq0 : (0 : ℝ) ≤ (Real.exp F * Lf) ^ (2 : ℕ) := sq_nonneg _
+      have ht2 : t ^ (2 : ℕ) ≤ t := by nlinarith [ht, ht1]
       nlinarith [hsq0, ht2]
-    calc expProfile f t ≤ (Real.exp F * (Lf * t)) ^ 2 := hsq
-      _ = (Real.exp F * Lf) ^ 2 * t ^ 2 := hquad
-      _ ≤ (Real.exp F * Lf) ^ 2 * t := hle
-      _ ≤ max ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2) * t := by
-          have := le_max_left ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2)
+    calc expProfile f t ≤ (Real.exp F * (Lf * t)) ^ (2 : ℕ) := hsq
+      _ = (Real.exp F * Lf) ^ (2 : ℕ) * t ^ (2 : ℕ) := hquad
+      _ ≤ (Real.exp F * Lf) ^ (2 : ℕ) * t := hle
+      _ ≤ max ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ)) * t := by
+          have := le_max_left ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ))
           nlinarith [this, ht]
   · -- away from the origin the profile is simply bounded
-    have hbound : expProfile f t ≤ (Real.exp F - 1) ^ 2 := by
+    have hbound : expProfile f t ≤ (Real.exp F - 1) ^ (2 : ℕ) := by
       unfold expProfile
       exact sq_exp_sub_one_le (hfb t)
-    calc expProfile f t ≤ (Real.exp F - 1) ^ 2 := hbound
-      _ ≤ max ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2) * t := by
-          have hmax := le_max_right ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2)
-          have hmax0 : (0 : ℝ) ≤ max ((Real.exp F * Lf) ^ 2) ((Real.exp F - 1) ^ 2) :=
+    calc expProfile f t ≤ (Real.exp F - 1) ^ (2 : ℕ) := hbound
+      _ ≤ max ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ)) * t := by
+          have hmax := le_max_right ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ))
+          have hmax0 : (0 : ℝ) ≤ max ((Real.exp F * Lf) ^ (2 : ℕ)) ((Real.exp F - 1) ^ (2 : ℕ)) :=
             le_trans (sq_nonneg _) (le_max_left _ _)
           nlinarith [hmax, hmax0, ht1]
 

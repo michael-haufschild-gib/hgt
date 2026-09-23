@@ -8,7 +8,7 @@ This module proves that same connector is not free: newborn literal adaptive mix
 `P^sharp` source action strictly pays its square.
 
 The coefficient `3/2` is sharp for the visible pair because newborn dissipation contains
-`2 alpha_n^2 + alpha_(n+1)^2`.  Its exact reserve is a sum of a weighted diagonal square, all
+`2 alpha_n^(2 : ℕ) + alpha_(n+1)^(2 : ℕ)`.  Its exact reserve is a sum of a weighted diagonal square, all
 earlier diagonal energy, and positive Jacobi edges.  Thus the producer supplies a genuine
 discrete--continuous Dirichlet law before reflection aggregation, not another orientation map or
 fixed linear reporter.
@@ -28,11 +28,11 @@ theorem three_halves_mul_cumulativeJacobiDissipation_sub_adjacentAlpha_sq_eq_res
     let s := fun k => (xiShiftedReciprocalMoment y k).re
     (3 / 2 : ℝ) * xiShiftedCanonicalAdmissionCumulativeJacobiDissipation y (n + 1) -
         (HTGeometry.monicOrthoAlpha s n +
-          HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 =
-      3 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) =
+      3 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
         (1 / 2 : ℝ) *
           (2 * HTGeometry.monicOrthoAlpha s n -
-            HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 +
+            HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) +
         6 * (∑ j ∈ Finset.range (n + 1), HTGeometry.monicOrthoBeta s j) +
         3 * (n + 2 : ℝ) *
           (HTGeometry.monicOrthoBeta s (n + 1) +
@@ -49,8 +49,8 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_sq_lt_sourceA
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef) :
-    (xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) (n + 1) -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n) ^ 2 <
+    (xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) (n + 1) -
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n) ^ (2 : ℕ) <
       (3 / 2 : ℝ) *
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1) := by
   let s := xiShiftedRealMomentSequence w
@@ -62,11 +62,11 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_sq_lt_sourceA
     hn hH
   have hreserve :=
     three_halves_mul_cumulativeJacobiDissipation_sub_adjacentAlpha_sq_eq_reserve
-      (w ^ 2) n
+      (w ^ (2 : ℕ)) n
   have hbeta : 0 < HTGeometry.monicOrthoBeta s (n + 1) :=
     HTGeometry.monicOrthoBeta_pos_below hbelow (by omega) (by omega)
   have hsumAlpha : 0 ≤
-      ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2 := by
+      ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) := by
     apply Finset.sum_nonneg
     intro j _
     exact sq_nonneg _
@@ -83,29 +83,29 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_sq_lt_sourceA
     (HTGeometry.monicOrthoBeta_pos_below hbelow (by omega) (by omega)).le
   have hreservePos : 0 <
       (3 / 2 : ℝ) *
-          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) (n + 1) -
+          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) (n + 1) -
         (HTGeometry.monicOrthoAlpha s n +
-          HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 := by
+          HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) := by
     change 0 < (3 / 2 : ℝ) *
-          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) (n + 1) -
+          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) (n + 1) -
         (HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n +
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n +
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 1)) ^ 2
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 1)) ^ (2 : ℕ)
     rw [hreserve]
     have hsquare : 0 ≤
         (2 * HTGeometry.monicOrthoAlpha s n -
-          HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 := sq_nonneg _
+          HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) := sq_nonneg _
     have hterminal : 0 <
         3 * (n + 2 : ℝ) *
           (HTGeometry.monicOrthoBeta s (n + 1) +
             HTGeometry.monicOrthoBeta s (n + 2)) := by positivity
     have hfirst : 0 ≤
-        3 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) :=
+        3 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) :=
       mul_nonneg (by norm_num) hsumAlpha
     have hsecond : 0 ≤ (1 / 2 : ℝ) *
         (2 * HTGeometry.monicOrthoAlpha s n -
-          HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 :=
+          HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) :=
       mul_nonneg (by norm_num) hsquare
     have hthird : 0 ≤
         6 * (∑ j ∈ Finset.range (n + 1), HTGeometry.monicOrthoBeta s j) :=
@@ -121,11 +121,11 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_sq_lt_neg_der
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef) :
-    (xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) (n + 1) -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n) ^ 2 <
+    (xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) (n + 1) -
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n) ^ (2 : ℕ) <
       -(3 / 2 : ℝ) *
         deriv (fun y => xiShiftedCanonicalAdmissionCumulativeJacobiFlux y (n + 1))
-          (w ^ 2) := by
+          (w ^ (2 : ℕ)) := by
   have hsource :=
     xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_sq_lt_sourceAction_succ
       hw hn hH

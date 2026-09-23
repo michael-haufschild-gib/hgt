@@ -78,21 +78,21 @@ def velocityCenterTwo (d : C5LikelihoodAffineData) : ℝ :=
 
 /-- Velocity--slope transport along the affine homotopy. -/
 def velocitySlope (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
-  jetOne d l * (d.t * scaleMixedOne d l + d.t ^ 2 * scaleMixedTwo d l) -
-    (jetOne d l + 3 * d.t * jetTwo d l + d.t ^ 2 * jetThree d l) *
+  jetOne d l * (d.t * scaleMixedOne d l + d.t ^ (2 : ℕ) * scaleMixedTwo d l) -
+    (jetOne d l + 3 * d.t * jetTwo d l + d.t ^ (2 : ℕ) * jetThree d l) *
       scaleAction d l
 
 /-- First interpolation derivative of velocity--slope transport. -/
 def velocitySlopeOne (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
-  d.da * (d.t * scaleMixedOne d l + d.t ^ 2 * scaleMixedTwo d l) +
-    jetOne d l * (d.t * d.dm + d.t ^ 2 * d.dn) -
-    (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * scaleAction d l -
-    (jetOne d l + 3 * d.t * jetTwo d l + d.t ^ 2 * jetThree d l) * d.ds
+  d.da * (d.t * scaleMixedOne d l + d.t ^ (2 : ℕ) * scaleMixedTwo d l) +
+    jetOne d l * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+    (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * scaleAction d l -
+    (jetOne d l + 3 * d.t * jetTwo d l + d.t ^ (2 : ℕ) * jetThree d l) * d.ds
 
 /-- Constant second interpolation derivative of velocity--slope transport. -/
 def velocitySlopeTwo (d : C5LikelihoodAffineData) : ℝ :=
-  2 * (d.da * (d.t * d.dm + d.t ^ 2 * d.dn) -
-    (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * d.ds)
+  2 * (d.da * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+    (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * d.ds)
 
 theorem hasDerivAt_action (d : C5LikelihoodAffineData) (l : ℝ) :
     HasDerivAt d.action d.dq l := hasDerivAt_affine d.q d.dq l
@@ -162,8 +162,8 @@ theorem hasDerivAt_velocitySlope (d : C5LikelihoodAffineData) (l : ℝ) :
   have hm := d.hasDerivAt_scaleMixedOne l
   have hn := d.hasDerivAt_scaleMixedTwo l
   have hraw :=
-    (ha.mul ((hm.const_mul d.t).add (hn.const_mul (d.t ^ 2)))).sub
-      (((ha.add (hb.const_mul (3 * d.t))).add (hc.const_mul (d.t ^ 2))).mul hs)
+    (ha.mul ((hm.const_mul d.t).add (hn.const_mul (d.t ^ (2 : ℕ))))).sub
+      (((ha.add (hb.const_mul (3 * d.t))).add (hc.const_mul (d.t ^ (2 : ℕ)))).mul hs)
   refine (hraw.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun y => ?_)).congr_deriv ?_
   · rfl
@@ -180,10 +180,10 @@ theorem hasDerivAt_velocitySlopeOne (d : C5LikelihoodAffineData) (l : ℝ) :
   have hm := d.hasDerivAt_scaleMixedOne l
   have hn := d.hasDerivAt_scaleMixedTwo l
   have hraw :=
-    (((((hm.const_mul d.t).add (hn.const_mul (d.t ^ 2))).const_mul d.da).add
-      (ha.const_mul (d.t * d.dm + d.t ^ 2 * d.dn))).sub
-      (hs.const_mul (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc))).sub
-      (((ha.add (hb.const_mul (3 * d.t))).add (hc.const_mul (d.t ^ 2))).const_mul d.ds)
+    (((((hm.const_mul d.t).add (hn.const_mul (d.t ^ (2 : ℕ)))).const_mul d.da).add
+      (ha.const_mul (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn))).sub
+      (hs.const_mul (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc))).sub
+      (((ha.add (hb.const_mul (3 * d.t))).add (hc.const_mul (d.t ^ (2 : ℕ)))).const_mul d.ds)
   refine (hraw.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun y => ?_)).congr_deriv ?_
   · unfold velocitySlopeOne
@@ -204,17 +204,17 @@ def boseReciprocal (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
 def boseReciprocalOne (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
   let e := Real.exp (d.action l)
   let r := e - 1
-  (-e) * d.dq / r ^ 2
+  (-e) * d.dq / r ^ (2 : ℕ)
 
 def boseReciprocalTwo (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
   let e := Real.exp (d.action l)
   let r := e - 1
-  e * (e + 1) * d.dq ^ 2 / r ^ 3
+  e * (e + 1) * d.dq ^ (2 : ℕ) / r ^ (3 : ℕ)
 
 def boseReciprocalThree (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
   let e := Real.exp (d.action l)
   let r := e - 1
-  (-e) * (e ^ 2 + 4 * e + 1) * d.dq ^ 3 / r ^ 4
+  (-e) * (e ^ (2 : ℕ) + 4 * e + 1) * d.dq ^ (3 : ℕ) / r ^ (4 : ℕ)
 
 theorem hasDerivAt_boseReciprocal (d : C5LikelihoodAffineData) {l : ℝ}
     (hr : Real.exp (d.action l) - 1 ≠ 0) :
@@ -254,7 +254,7 @@ theorem hasDerivAt_boseReciprocalTwo (d : C5LikelihoodAffineData) {l : ℝ}
     HasDerivAt d.boseReciprocalTwo (d.boseReciprocalThree l) l := by
   have hE := (d.hasDerivAt_action l).exp
   have hR := hE.sub_const 1
-  have hnum := ((hE.mul (hE.const_add 1)).mul_const (d.dq ^ 2))
+  have hnum := ((hE.mul (hE.const_add 1)).mul_const (d.dq ^ (2 : ℕ)))
   have hraw := hnum.div (hR.pow 3) (pow_ne_zero 3 hr)
   refine (hraw.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun y => ?_)).congr_deriv ?_

@@ -78,7 +78,7 @@ theorem not_eqOn_sq_of_odd_period {U : Set ℂ} {a : ℂ → ℂ} {γ γ' La : �
     (hperiod : La (2 * Real.pi) - La 0
       = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))
     (b : ℂ → ℂ) (hb : AnalyticOnNhd ℂ b U) :
-    ¬ Set.EqOn (fun w => b w ^ 2) a U := by
+    ¬ Set.EqOn (fun w => b w ^ (2 : ℕ)) a U := by
   intro hb2
   set B : ℝ → ℂ := fun t => b (γ t) with hBdef
   have hbdiff : ∀ t ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt b (deriv b (γ t)) (γ t) :=
@@ -100,9 +100,9 @@ theorem not_eqOn_sq_of_odd_period {U : Set ℂ} {a : ℂ → ℂ} {γ γ' La : �
       logDeriv a (γ t) * γ' t = 2 * (deriv B t / B t) := by
     intro t ht
     have hmem : γ t ∈ U := hγU t ht
-    have hEq : a =ᶠ[nhds (γ t)] (fun w => b w ^ 2) :=
+    have hEq : a =ᶠ[nhds (γ t)] (fun w => b w ^ (2 : ℕ)) :=
       Filter.eventuallyEq_of_mem (hUo.mem_nhds hmem) (fun w hw => (hb2 hw).symm)
-    have hcong : logDeriv a (γ t) = logDeriv (fun w => b w ^ 2) (γ t) := by
+    have hcong : logDeriv a (γ t) = logDeriv (fun w => b w ^ (2 : ℕ)) (γ t) := by
       rw [logDeriv_apply, logDeriv_apply, hEq.deriv_eq, hEq.eq_of_nhds]
     rw [hcong, logDeriv_sq (hbdiff t ht).differentiableAt, hderivB t ht, logDeriv_apply]
     have hBt : B t = b (γ t) := rfl
@@ -134,6 +134,6 @@ theorem germ_not_sq_of_odd_period {U : Set ℂ} {a : ℂ → ℂ} {γ γ' La : �
   have hEq : (fun w => f w * f w) =ᶠ[𝓟 U] a := Germ.coe_eq.mp hgg'
   have hpt : ∀ w ∈ U, f w * f w = a w := Filter.eventually_principal.mp hEq
   exact not_eqOn_sq_of_odd_period hUo ha_ne hγU hγclosed hdγ hLa hperiod f hf
-    (fun w hw => by show f w ^ 2 = a w; rw [sq]; exact hpt w hw)
+    (fun w hw => by show f w ^ (2 : ℕ) = a w; rw [sq]; exact hpt w hw)
 
 end Bottcher

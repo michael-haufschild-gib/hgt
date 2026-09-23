@@ -50,7 +50,7 @@ theorem exists_eval_shellPullback_ne_zero (P : Fin m → Matrix S S ℂ) (c : S 
     {θ₀ : Fin m → ℂ} {energy₀ : S → ℂ} (hinj₀ : Function.Injective energy₀)
     (hroot₀ : ∀ i, matrixCharpolyRelation (∑ a, θ₀ a • P a, energy₀ i) = 0)
     (hfail : ∀ σ : Equiv.Perm S,
-      (∑ j, c (σ.symm j) * energy₀ j) ^ 2 - κ * ∑ j, energy₀ j ^ 2 ≠ 0) :
+      (∑ j, c (σ.symm j) * energy₀ j) ^ (2 : ℕ) - κ * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0) :
     ∃ θ : Fin m → ℂ, MvPolynomial.eval₂ (RingHom.id ℂ) θ
       (quadraticRateObstructionPullback (genericShellMatrix P) c κ) ≠ 0 := by
   refine ⟨θ₀, ?_⟩
@@ -71,12 +71,12 @@ theorem exists_mem_real_shell_quadraticRate_ne_zero (P : Fin m → Matrix S S �
     {θ₀ : Fin m → ℂ} {energy₀ : S → ℂ} (hinj₀ : Function.Injective energy₀)
     (hroot₀ : ∀ i, matrixCharpolyRelation (∑ a, θ₀ a • P a, energy₀ i) = 0)
     (hfail : ∀ σ : Equiv.Perm S,
-      (∑ j, c (σ.symm j) * energy₀ j) ^ 2 - κ * ∑ j, energy₀ j ^ 2 ≠ 0)
+      (∑ j, c (σ.symm j) * energy₀ j) ^ (2 : ℕ) - κ * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0)
     {V : Set (Fin m → ℝ)} (hVopen : IsOpen V) (hVne : V.Nonempty) :
     ∃ q ∈ V, ∀ energy : S → ℂ, Function.Injective energy →
       (∀ i, matrixCharpolyRelation (∑ a, ((q a : ℝ) : ℂ) • P a, energy i) = 0) →
       ∀ σ : Equiv.Perm S,
-        (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 ≠ 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   obtain ⟨q, hq, hqne⟩ := exists_mem_eval₂_ne_zero_of_exists _
     (exists_eval_shellPullback_ne_zero P c κ hinj₀ hroot₀ hfail) hVopen hVne
   refine ⟨q, hq, fun energy hinj hroot σ hσ => hqne ?_⟩

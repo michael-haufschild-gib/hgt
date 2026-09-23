@@ -18,7 +18,7 @@ open Filter Topology
 noncomputable section
 
 /-- The scaled Poisson kernel appearing in the Krein index limit. -/
-def atomKernel (a y t : ℝ) : ℝ := y ^ 2 / ((t - a) ^ 2 + y ^ 2)
+def atomKernel (a y t : ℝ) : ℝ := y ^ (2 : ℕ) / ((t - a) ^ (2 : ℕ) + y ^ (2 : ℕ))
 
 theorem atomKernel_nonneg (a t : ℝ) {y : ℝ} : 0 ≤ atomKernel a y t := by
   rw [atomKernel]
@@ -40,8 +40,8 @@ theorem atomKernel_self (a : ℝ) {y : ℝ} (hy : y ≠ 0) : atomKernel a y a = 
 /-- Away from the node the kernel is dominated by the square ratio, which is the bound used against
 the Herglotz tail condition. -/
 theorem atomKernel_le_sq_div (a t : ℝ) {y : ℝ} (hta : t ≠ a) :
-    atomKernel a y t ≤ y ^ 2 / (t - a) ^ 2 := by
-  have hpos : (0 : ℝ) < (t - a) ^ 2 := by
+    atomKernel a y t ≤ y ^ (2 : ℕ) / (t - a) ^ (2 : ℕ) := by
+  have hpos : (0 : ℝ) < (t - a) ^ (2 : ℕ) := by
     have : t - a ≠ 0 := sub_ne_zero.2 hta
     positivity
   rw [atomKernel]
@@ -52,11 +52,11 @@ theorem atomKernel_le_sq_div (a t : ℝ) {y : ℝ} (hta : t ≠ a) :
 kernel tends to zero as the height tends to zero. -/
 theorem tendsto_atomKernel_of_ne (a t : ℝ) (hta : t ≠ a) :
     Tendsto (fun y : ℝ => atomKernel a y t) (𝓝 0) (𝓝 0) := by
-  have hpos : (0 : ℝ) < (t - a) ^ 2 := by
+  have hpos : (0 : ℝ) < (t - a) ^ (2 : ℕ) := by
     have : t - a ≠ 0 := sub_ne_zero.2 hta
     positivity
-  have hcont : Tendsto (fun y : ℝ => y ^ 2 / ((t - a) ^ 2 + y ^ 2)) (𝓝 0)
-      (𝓝 (0 ^ 2 / ((t - a) ^ 2 + 0 ^ 2))) := by
+  have hcont : Tendsto (fun y : ℝ => y ^ (2 : ℕ) / ((t - a) ^ (2 : ℕ) + y ^ (2 : ℕ))) (𝓝 0)
+      (𝓝 (0 ^ (2 : ℕ) / ((t - a) ^ (2 : ℕ) + 0 ^ (2 : ℕ)))) := by
     apply Tendsto.div
     · exact (continuous_pow 2).tendsto 0
     · exact ((continuous_const.add (continuous_pow 2)).tendsto 0)

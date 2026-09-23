@@ -105,9 +105,9 @@ theorem exists_exceptional_scalar_in_finite_genericUnitarySymPower_family (D : F
   obtain ⟨ν, hν, hadmit⟩ :=
     exists_positive_exponent_in_genericUnitarySymPower_initial_segment N
   refine ⟨ν, hν, fun d hd => hadmit d (hN hd), ?_⟩
-  have hsquare : ν ^ 2 < (1 / 2 : ℝ) ^ 2 :=
+  have hsquare : ν ^ (2 : ℕ) < (1 / 2 : ℝ) ^ (2 : ℕ) :=
     (sq_lt_sq₀ hν.1.le (by positivity)).mpr hν.2
-  have hpositive : 0 < ν ^ 2 := sq_pos_of_pos hν.1
+  have hpositive : 0 < ν ^ (2 : ℕ) := sq_pos_of_pos hν.1
   constructor <;> dsimp [eigenvalueOfComplementaryExponent] <;> linarith
 
 end GaloisForLFunctions.RHTower

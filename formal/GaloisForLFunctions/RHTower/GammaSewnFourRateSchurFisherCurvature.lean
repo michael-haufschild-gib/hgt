@@ -35,7 +35,7 @@ def twoBoundaryCauchyPairDet (a lambda mu : ℝ) : ℝ :=
 /-- The simplified Pluecker coordinate of the two boundary rows. -/
 def twoBoundaryCauchyPairPlucker (a lambda mu : ℝ) : ℝ :=
   2 * a * (lambda - mu) /
-    ((lambda ^ 2 - a ^ 2) * (mu ^ 2 - a ^ 2))
+    ((lambda ^ (2 : ℕ) - a ^ (2 : ℕ)) * (mu ^ (2 : ℕ) - a ^ (2 : ℕ)))
 
 /-- Exact two-boundary Cauchy determinant formula. -/
 theorem twoBoundaryCauchyPairDet_eq_plucker
@@ -44,12 +44,12 @@ theorem twoBoundaryCauchyPairDet_eq_plucker
     (hmp : a + mu ≠ 0) (hmm : -a + mu ≠ 0) :
     twoBoundaryCauchyPairDet a lambda mu =
       twoBoundaryCauchyPairPlucker a lambda mu := by
-  have hl : lambda ^ 2 - a ^ 2 ≠ 0 := by
+  have hl : lambda ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero
       (by simpa [add_comm] using hlp)
       (by simpa [sub_eq_add_neg, add_comm] using hlm)
-  have hm : mu ^ 2 - a ^ 2 ≠ 0 := by
+  have hm : mu ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero
       (by simpa [add_comm] using hmp)
@@ -60,11 +60,11 @@ theorem twoBoundaryCauchyPairDet_eq_plucker
 
 /-- Squared boundary Pluecker weight carried by a pair of source rates. -/
 def twoBoundaryCauchyPairPluckerSq (a lambda mu : ℝ) : ℝ :=
-  twoBoundaryCauchyPairPlucker a lambda mu ^ 2
+  twoBoundaryCauchyPairPlucker a lambda mu ^ (2 : ℕ)
 
 theorem twoBoundaryCauchyPairPluckerSq_pos
     {a lambda mu : ℝ} (ha : a ≠ 0) (hlm : lambda ≠ mu)
-    (hl : lambda ^ 2 - a ^ 2 ≠ 0) (hm : mu ^ 2 - a ^ 2 ≠ 0) :
+    (hl : lambda ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (hm : mu ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < twoBoundaryCauchyPairPluckerSq a lambda mu := by
   apply sq_pos_of_ne_zero
   unfold twoBoundaryCauchyPairPlucker
@@ -116,12 +116,12 @@ theorem fourRateSelectedSum_add_complementarySum
 /-- Variance of an observable under a normalized finite weight. -/
 def normalizedFiniteVariance {β : Type*} [Fintype β]
     (weight value : β → ℝ) : ℝ :=
-  (∑ b, weight b * value b ^ 2) - (∑ b, weight b * value b) ^ 2
+  (∑ b, weight b * value b ^ (2 : ℕ)) - (∑ b, weight b * value b) ^ (2 : ℕ)
 
 /-- Ordered pairwise dispersion under a normalized finite weight. -/
 def normalizedFinitePairDispersion {β : Type*} [Fintype β]
     (weight value : β → ℝ) : ℝ :=
-  ∑ b, ∑ c, weight b * weight c * (value b - value c) ^ 2
+  ∑ b, ∑ c, weight b * weight c * (value b - value c) ^ (2 : ℕ)
 
 /-- Boundary logarithmic curvature forced by a four-rate Schur quotient.
 
@@ -232,11 +232,11 @@ def boundaryPairPartitionJetOne {β : Type*} [Fintype β]
   ∑ b, -2 * selectedHeight b * rawWeight b
 
 /-- Second jet.  The source identity
-`F''/F - (F'/F)^2 = -kappa` gives the coefficient
-`4 * selectedHeight^2 - 2 * selectedFisher` for a squared pair amplitude. -/
+`F''/F - (F'/F)^(2 : ℕ) = -kappa` gives the coefficient
+`4 * selectedHeight^(2 : ℕ) - 2 * selectedFisher` for a squared pair amplitude. -/
 def boundaryPairPartitionJetTwo {β : Type*} [Fintype β]
     (rawWeight selectedHeight selectedFisher : β → ℝ) : ℝ :=
-  ∑ b, (4 * selectedHeight b ^ 2 - 2 * selectedFisher b) * rawWeight b
+  ∑ b, (4 * selectedHeight b ^ (2 : ℕ) - 2 * selectedFisher b) * rawWeight b
 
 /-- Literal logarithmic curvature obtained from the three boundary partition jets. -/
 def boundaryPairPartitionLogCurvatureFromJets {β : Type*} [Fintype β]
@@ -244,7 +244,7 @@ def boundaryPairPartitionLogCurvatureFromJets {β : Type*} [Fintype β]
   boundaryPairPartitionJetTwo rawWeight selectedHeight selectedFisher /
       boundaryPairPartitionJetZero rawWeight -
     (boundaryPairPartitionJetOne rawWeight selectedHeight /
-      boundaryPairPartitionJetZero rawWeight) ^ 2
+      boundaryPairPartitionJetZero rawWeight) ^ (2 : ℕ)
 
 /-- Literal boundary logarithmic curvature of the four-rate Schur quotient.  The full four-column
 numerator contributes `-2 * totalFisher`; the denominator is the boundary-pair partition. -/
@@ -285,7 +285,7 @@ theorem fourRateSchurBoundaryLogCurvatureFromJets_eq
     ring
   have hTwo :
       boundaryPairPartitionJetTwo rawWeight selectedHeight selectedFisher =
-        4 * (∑ b, rawWeight b * selectedHeight b ^ 2) -
+        4 * (∑ b, rawWeight b * selectedHeight b ^ (2 : ℕ)) -
           2 * (∑ b, rawWeight b * selectedFisher b) := by
     rw [boundaryPairPartitionJetTwo, Finset.mul_sum, Finset.mul_sum,
       ← Finset.sum_sub_distrib]
@@ -298,7 +298,7 @@ theorem fourRateSchurBoundaryLogCurvatureFromJets_eq
     fourRateSchurBoundaryLogCurvature, normalizedFiniteVariance]
   rw [sum_div_mul_eq_div_sum_mul rawWeight selectedFisher]
   rw [sum_div_mul_eq_div_sum_mul rawWeight selectedHeight]
-  rw [sum_div_mul_eq_div_sum_mul rawWeight (fun b => selectedHeight b ^ 2)]
+  rw [sum_div_mul_eq_div_sum_mul rawWeight (fun b => selectedHeight b ^ (2 : ℕ))]
   ring
 
 /-! ## The actual Gamma-sewn four-rate boundary object -/
@@ -310,7 +310,7 @@ def gammaSewnFourRateBoundaryPairRawWeight
   twoBoundaryCauchyPairPluckerSq a
       (rate (fourRatePairLeft s)) (rate (fourRatePairRight s)) *
     (gammaSewnMobiusApertureBoundaryAmplitude (cell (fourRatePairLeft s)).1 *
-      gammaSewnMobiusApertureBoundaryAmplitude (cell (fourRatePairRight s)).1) ^ 2
+      gammaSewnMobiusApertureBoundaryAmplitude (cell (fourRatePairRight s)).1) ^ (2 : ℕ)
 
 /-- The six boundary minors normalized to a probability packet. -/
 def gammaSewnFourRateBoundaryPairProbability
@@ -365,16 +365,16 @@ theorem gammaSewnFourRateSelectedFisher_add_complementaryFisher
 prime-only Fisher clock. -/
 theorem gammaSewnBoundaryTwoJetLogCurvature_eq_neg_fisher
     (p : Nat.Primes) (e : ℕ) :
-    (gammaSewnMobiusApertureCellMidHeight p e ^ 2 -
+    (gammaSewnMobiusApertureCellMidHeight p e ^ (2 : ℕ) -
         gammaSewnMobiusApertureBoundaryFisherClock p) -
-      (-gammaSewnMobiusApertureCellMidHeight p e) ^ 2 =
+      (-gammaSewnMobiusApertureCellMidHeight p e) ^ (2 : ℕ) =
         -gammaSewnMobiusApertureBoundaryFisherClock p := by
   ring
 
 theorem gammaSewnFourRateBoundaryPairRawWeight_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) (s : Fin 6) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (s : Fin 6) :
     0 < gammaSewnFourRateBoundaryPairRawWeight a rate cell s := by
   unfold gammaSewnFourRateBoundaryPairRawWeight
   apply mul_pos
@@ -390,7 +390,7 @@ theorem gammaSewnFourRateBoundaryPairRawWeight_pos
 theorem gammaSewnFourRateBoundaryPairPartition_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < ∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s := by
   exact Finset.sum_pos
     (fun s _hs => gammaSewnFourRateBoundaryPairRawWeight_pos ha hrate hboundary s)
@@ -407,7 +407,7 @@ theorem sum_gammaSewnFourRateBoundaryPairProbability
 theorem gammaSewnFourRateBoundaryPairProbability_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) (s : Fin 6) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (s : Fin 6) :
     0 < gammaSewnFourRateBoundaryPairProbability a rate cell s := by
   unfold gammaSewnFourRateBoundaryPairProbability
   exact div_pos
@@ -452,7 +452,7 @@ theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq
 theorem gammaSewnFourRateSchurBoundaryLogCurvature_neg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateSchurBoundaryLogCurvature a rate cell < 0 := by
   rw [gammaSewnFourRateSchurBoundaryLogCurvature,
     fourRateSchurBoundaryLogCurvatureFromJets_eq]

@@ -30,7 +30,7 @@ def suzukiCayleyPhase (c x : ℝ) : ℝ := -2 * Real.arctan (c / x)
 theorem suzukiCoalescingCayley_eq_exp_phase {c x : ℝ} (hx : 0 < x) :
     suzukiCoalescingCayley c (x : ℂ) =
       Complex.exp ((suzukiCayleyPhase c x : ℂ) * I) := by
-  have hr : 0 < Real.sqrt (x ^ 2 + c ^ 2) := Real.sqrt_pos.mpr (by positivity)
+  have hr : 0 < Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
   have hexp : ∀ θ : ℝ, Complex.exp ((θ : ℂ) * I)
       = (Real.cos θ : ℂ) + (Real.sin θ : ℂ) * I := by
     intro θ
@@ -40,15 +40,15 @@ theorem suzukiCoalescingCayley_eq_exp_phase {c x : ℝ} (hx : 0 < x) :
     have := congrArg Complex.re hzero
     simp at this
     exact absurd this (ne_of_gt hx)
-  have hrC : ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ) ≠ 0 := by
+  have hrC : ((Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast ne_of_gt hr
   have h1 : Complex.exp ((Real.arctan (c / x) : ℂ) * I)
-      = ((x : ℂ) + (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ) := by
+      = ((x : ℂ) + (c : ℂ) * I) / ((Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [hexp, GaloisForLFunctions.HTGeometry.cos_arctan_div hx, GaloisForLFunctions.HTGeometry.sin_arctan_div hx]
     push_cast
     field_simp
   have h2 : Complex.exp (((-Real.arctan (c / x) : ℝ) : ℂ) * I)
-      = ((x : ℂ) - (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ) := by
+      = ((x : ℂ) - (c : ℂ) * I) / ((Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [hexp, Real.cos_neg, Real.sin_neg, GaloisForLFunctions.HTGeometry.cos_arctan_div hx, GaloisForLFunctions.HTGeometry.sin_arctan_div hx]
     push_cast
     field_simp
@@ -61,31 +61,31 @@ theorem suzukiCoalescingCayley_eq_exp_phase {c x : ℝ} (hx : 0 < x) :
     rw [suzukiCayleyPhase]
     push_cast
     ring
-  have hcancel : ((x : ℂ) - (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ)
-      / (((x : ℂ) + (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ))
+  have hcancel : ((x : ℂ) - (c : ℂ) * I) / ((Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) : ℝ) : ℂ)
+      / (((x : ℂ) + (c : ℂ) * I) / ((Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) : ℝ) : ℂ))
       = ((x : ℂ) - (c : ℂ) * I) / ((x : ℂ) + (c : ℂ) * I) := by
     field_simp
   rw [hsplit, h1, h2, suzukiCoalescingCayley, hcancel]
 
 /-- `(40)`: the real-axis phase rate of the movable Cayley anchor. -/
 theorem hasDerivAt_suzukiCayleyPhase (c : ℝ) {x : ℝ} (hx : x ≠ 0) :
-    HasDerivAt (suzukiCayleyPhase c) (2 * c / (x ^ 2 + c ^ 2)) x := by
-  have hinv : HasDerivAt (fun y : ℝ => c * y⁻¹) (c * -(x ^ 2)⁻¹) x :=
+    HasDerivAt (suzukiCayleyPhase c) (2 * c / (x ^ (2 : ℕ) + c ^ (2 : ℕ))) x := by
+  have hinv : HasDerivAt (fun y : ℝ => c * y⁻¹) (c * -(x ^ (2 : ℕ))⁻¹) x :=
     (hasDerivAt_inv hx).const_mul c
-  have harc : HasDerivAt Real.arctan (1 / (1 + (c * x⁻¹) ^ 2)) (c * x⁻¹) :=
+  have harc : HasDerivAt Real.arctan (1 / (1 + (c * x⁻¹) ^ (2 : ℕ))) (c * x⁻¹) :=
     Real.hasDerivAt_arctan (c * x⁻¹)
   have hcomp := harc.comp x hinv
   simp only [Function.comp_def] at hcomp
   have hres : HasDerivAt (suzukiCayleyPhase c)
-      (-2 * ((1 / (1 + (c * x⁻¹) ^ 2)) * (c * -(x ^ 2)⁻¹))) x := by
+      (-2 * ((1 / (1 + (c * x⁻¹) ^ (2 : ℕ))) * (c * -(x ^ (2 : ℕ))⁻¹))) x := by
     have hfun : suzukiCayleyPhase c = fun y : ℝ => -2 * Real.arctan (c * y⁻¹) := by
       funext y
       rw [suzukiCayleyPhase, div_eq_mul_inv]
     rw [hfun]
     exact hcomp.const_mul (-2)
   convert hres using 1
-  have hx2 : x ^ 2 ≠ 0 := pow_ne_zero 2 hx
-  have hsum : (1 : ℝ) + (c * x⁻¹) ^ 2 ≠ 0 := by positivity
+  have hx2 : x ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hx
+  have hsum : (1 : ℝ) + (c * x⁻¹) ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
 
 /-- The anchor phase is strictly increasing on the positive real axis. -/

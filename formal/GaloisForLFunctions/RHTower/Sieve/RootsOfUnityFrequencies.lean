@@ -96,8 +96,8 @@ theorem gram_row_root_eq {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPrimitiveRoo
 
 /-- **The large sieve is sharp at the roots of unity.** -/
 theorem largeSieve_roots {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPrimitiveRoot ζ Q) (c : ℕ → ℂ) :
-    ‖∑ j ∈ Finset.range Q, c j • expRow Q (ζ ^ j)‖ ^ 2
-      ≤ (Q : ℝ) * ∑ j ∈ Finset.range Q, ‖c j‖ ^ 2 :=
+    ‖∑ j ∈ Finset.range Q, c j • expRow Q (ζ ^ j)‖ ^ (2 : ℕ)
+      ≤ (Q : ℝ) * ∑ j ∈ Finset.range Q, ‖c j‖ ^ (2 : ℕ) :=
   norm_sum_smul_sq_le_of_schur (Finset.range Q) (fun j => expRow Q (ζ ^ j))
     (fun _ hj => le_of_eq (gram_row_root_eq hQ hζ hj)) c
 

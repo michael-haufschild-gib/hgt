@@ -100,8 +100,8 @@ theorem entireFEDensity_nonneg {a0 gam u : ℝ} (ha0 : 0 < a0) (ha1 : a0 < 1 / 2
 /-- Real form of the transform of the correction. -/
 def entireFETransformReal (a0 gam : ℝ) (σ : ℝ) : ℝ :=
   2 * (1 / (σ - 1) + 1 / σ) -
-    2 * ((σ - 1 / 2 - a0) / ((σ - 1 / 2 - a0) ^ 2 + gam ^ 2) +
-      (σ - 1 / 2 + a0) / ((σ - 1 / 2 + a0) ^ 2 + gam ^ 2))
+    2 * ((σ - 1 / 2 - a0) / ((σ - 1 / 2 - a0) ^ (2 : ℕ) + gam ^ (2 : ℕ)) +
+      (σ - 1 / 2 + a0) / ((σ - 1 / 2 + a0) ^ (2 : ℕ) + gam ^ (2 : ℕ)))
 
 theorem integral_entireFEDensity {a0 gam σ : ℝ} (ha0 : 0 < a0) (ha1 : a0 < 1 / 2)
     (hσ : 1 < σ) :
@@ -120,7 +120,7 @@ theorem integral_entireFEDensity {a0 gam σ : ℝ} (ha0 : 0 < a0) (ha1 : a0 < 1 
     rw [hcongr, integral_Ioi_exp_neg_mul hp]
   have keycos : ∀ p : ℝ, 0 < σ - p →
       (∫ u in Ioi (0 : ℝ), Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (p * u)))
-        = (σ - p) / ((σ - p) ^ 2 + gam ^ 2) := by
+        = (σ - p) / ((σ - p) ^ (2 : ℕ) + gam ^ (2 : ℕ)) := by
     intro p hp
     have hcongr : (fun u : ℝ => Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (p * u)))
         = fun u : ℝ => Real.exp (-((σ - p) * u)) * Real.cos (gam * u) := by
@@ -238,13 +238,13 @@ def offLineQuartet (a0 gam : ℝ) (s : ℂ) : ℂ :=
 
 /-- The rational gauge whose logarithmic derivative is the correction transform. -/
 def entireFEGauge (a0 gam : ℝ) (s : ℂ) : ℂ :=
-  offLineQuartet a0 gam s / (s * (s - 1)) ^ 2
+  offLineQuartet a0 gam s / (s * (s - 1)) ^ (2 : ℕ)
 
 /-- **Entirety.**  Clearing the gauge's poles by the completion factor already present in the
 standard `ξ` leaves a polynomial: the completed function of the perturbed system is
 `ξ(s)·offLineQuartet(s)`, entire of order one. -/
 theorem entireFEGauge_mul_completion (a0 gam : ℝ) (s : ℂ) (hs : s ≠ 0) (hs1 : s ≠ 1) :
-    entireFEGauge a0 gam s * (s * (s - 1)) ^ 2 = offLineQuartet a0 gam s := by
+    entireFEGauge a0 gam s * (s * (s - 1)) ^ (2 : ℕ) = offLineQuartet a0 gam s := by
   unfold entireFEGauge
   have h0 : s ≠ 0 := hs
   have h1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
@@ -299,7 +299,7 @@ theorem lambdaPositive_entire_functionalEquation_not_criticalLine
         entireFETransformReal a0 gam σ) ∧
     (∀ s : ℂ, entireFETransform a0 gam s + entireFETransform a0 gam (1 - s) = 0) ∧
     (∀ s : ℂ, s ≠ 0 → s ≠ 1 →
-      entireFEGauge a0 gam s * (s * (s - 1)) ^ 2 = offLineQuartet a0 gam s) ∧
+      entireFEGauge a0 gam s * (s * (s - 1)) ^ (2 : ℕ) = offLineQuartet a0 gam s) ∧
     (∀ s : ℂ, offLineQuartet a0 gam (1 - s) = offLineQuartet a0 gam s) ∧
     offLineQuartet a0 gam (((1 / 2 + a0 : ℝ) : ℂ) + (gam : ℂ) * I) = 0 ∧
     1 / 2 < ((((1 / 2 + a0 : ℝ) : ℂ) + (gam : ℂ) * I)).re ∧

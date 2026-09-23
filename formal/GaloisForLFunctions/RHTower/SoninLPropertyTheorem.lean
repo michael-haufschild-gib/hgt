@@ -13,7 +13,7 @@ satisfies **Burnol's L-Property** (Definition 10): on every vertical strip `A �
 The proof is a Phragmén--Lindelöf interpolation between the two edges of a slightly larger strip
 `[A', B']`, `A' = min(A,1/2) - ε/2`, `B' = max(B,1)`:
 
-* on the right edge the Hardy bound gives the numerator `O((1+|τ|)^2)`
+* on the right edge the Hardy bound gives the numerator `O((1+|τ|)^(2 : ℕ))`
   (`exists_norm_numerator_right_line`);
 * on the left edge the functional equation together with the sharp line bound for `χ` gives
   `O((1+|τ|)^{2 + (1/2 - A')})` (`exists_norm_numerator_left_line`);

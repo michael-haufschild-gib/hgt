@@ -49,15 +49,15 @@ theorem continuous_suzukiDonoghueKernel {z : ℂ} (hz : 0 < z.im) :
 
 /-- **Size control by the imaginary height alone.** -/
 theorem norm_suzukiDonoghueKernel_le {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
-    ‖suzukiDonoghueKernel t z‖ ≤ ‖z‖ + (‖z‖ ^ 2 + 1) / z.im := by
+    ‖suzukiDonoghueKernel t z‖ ≤ ‖z‖ + (‖z‖ ^ (2 : ℕ) + 1) / z.im := by
   have hden : z.im ≤ ‖(t : ℂ) - z‖ := le_norm_suzukiDonoghueDenom t
   have hdenpos : 0 < ‖(t : ℂ) - z‖ := lt_of_lt_of_le hz hden
-  have hnum : ‖z ^ 2 + 1‖ ≤ ‖z‖ ^ 2 + 1 := by
+  have hnum : ‖z ^ (2 : ℕ) + 1‖ ≤ ‖z‖ ^ (2 : ℕ) + 1 := by
     refine le_trans (norm_add_le _ _) ?_
     rw [norm_pow, norm_one]
-  have hfrac : ‖(z ^ 2 + 1) / ((t : ℂ) - z)‖ ≤ (‖z‖ ^ 2 + 1) / z.im := by
+  have hfrac : ‖(z ^ (2 : ℕ) + 1) / ((t : ℂ) - z)‖ ≤ (‖z‖ ^ (2 : ℕ) + 1) / z.im := by
     rw [norm_div, div_le_div_iff₀ hdenpos hz]
-    nlinarith [norm_nonneg (z ^ 2 + 1), norm_nonneg z, hz.le, hdenpos.le]
+    nlinarith [norm_nonneg (z ^ (2 : ℕ) + 1), norm_nonneg z, hz.le, hdenpos.le]
   refine le_trans (norm_add_le _ _) ?_
   linarith
 
@@ -66,12 +66,12 @@ imaginary height at least `η`, the kernel is bounded by one constant independen
 variable. -/
 theorem norm_suzukiDonoghueKernel_le_of_window {z : ℂ} {eta R : ℝ} (heta : 0 < eta)
     (him : eta ≤ z.im) (hR : ‖z‖ ≤ R) (t : ℝ) :
-    ‖suzukiDonoghueKernel t z‖ ≤ R + (R ^ 2 + 1) / eta := by
+    ‖suzukiDonoghueKernel t z‖ ≤ R + (R ^ (2 : ℕ) + 1) / eta := by
   have hz : 0 < z.im := lt_of_lt_of_le heta him
   refine le_trans (norm_suzukiDonoghueKernel_le hz t) ?_
   have hnn : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
-  have h1 : ‖z‖ ^ 2 + 1 ≤ R ^ 2 + 1 := by nlinarith
-  have h2 : (‖z‖ ^ 2 + 1) / z.im ≤ (R ^ 2 + 1) / eta := by
+  have h1 : ‖z‖ ^ (2 : ℕ) + 1 ≤ R ^ (2 : ℕ) + 1 := by nlinarith
+  have h2 : (‖z‖ ^ (2 : ℕ) + 1) / z.im ≤ (R ^ (2 : ℕ) + 1) / eta := by
     rw [div_le_div_iff₀ hz heta]
     nlinarith [hnn, heta.le, hz.le]
   linarith
@@ -112,7 +112,7 @@ theorem continuousOn_projectiveDonoghueKernel {z : ℂ} (hz : 0 < z.im) :
 coordinate. -/
 theorem norm_projectiveDonoghueKernel_le_of_window {z : ℂ} {eta R : ℝ} (heta : 0 < eta)
     (him : eta ≤ z.im) (hR : ‖z‖ ≤ R) (t : ℝ) :
-    ‖projectiveDonoghueKernel t z‖ ≤ R + (R ^ 2 + 1) / eta :=
+    ‖projectiveDonoghueKernel t z‖ ≤ R + (R ^ (2 : ℕ) + 1) / eta :=
   norm_suzukiDonoghueKernel_le_of_window heta him hR _
 
 /-! ## The continuous extension to the closed projective interval -/

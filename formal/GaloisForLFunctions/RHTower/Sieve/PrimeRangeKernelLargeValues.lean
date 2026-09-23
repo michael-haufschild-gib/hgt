@@ -89,8 +89,8 @@ theorem exists_sum_normSq_logPoly_primeRange_le :
       ∀ (a : ℕ → ℂ) (B : Finset ℕ) (lo hi : ℕ) (T : Finset ℝ) (E : ℝ),
         lo ≤ hi → (∀ p, p ∈ B ↔ (p.Prime ∧ lo < p ∧ p ≤ hi)) → 0 ≤ E →
         (∀ u ∈ T, ∀ v ∈ T, u ≠ v → routeTPrimeKernel A delta C lo hi (u - v) ≤ E) →
-        ∑ w ∈ T, ‖logPoly a B w‖ ^ 2
-          ≤ ((B.card : ℝ) + E * (T.card : ℝ)) * ∑ p ∈ B, ‖a p‖ ^ 2 := by
+        ∑ w ∈ T, ‖logPoly a B w‖ ^ (2 : ℕ)
+          ≤ ((B.card : ℝ) + E * (T.card : ℝ)) * ∑ p ∈ B, ‖a p‖ ^ (2 : ℕ) := by
   obtain ⟨A, delta, C, hdelta, hC, hker⟩ := exists_norm_sum_unitLogPhase_primeRange_le
   refine ⟨A, delta, C, hdelta, hC, ?_⟩
   intro a B lo hi T E hle hB hE0 hE

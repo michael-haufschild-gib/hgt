@@ -98,17 +98,17 @@ theorem indexTrigPoly_eq_ccmTrigPoly (N : ℕ) (c : Fin N → ℂ) (theta : ℝ)
 /-- The mean-square error on `[0, 2π]` is `2π` times the mean-square error on the unit interval. -/
 theorem integral_ccmTrigPoly_sub_sq (N : ℕ) (c : Fin N → ℂ) (xi : ℝ → ℂ) :
     (∫ theta in (0 : ℝ)..(2 * Real.pi),
-        ‖ccmTrigPoly N (ccmOddGroundCoeff N c) theta - xi (theta / (2 * Real.pi))‖ ^ 2)
+        ‖ccmTrigPoly N (ccmOddGroundCoeff N c) theta - xi (theta / (2 * Real.pi))‖ ^ (2 : ℕ))
       = (2 * Real.pi) * l2NormSq (fun x =>
           indexTrigPoly (ccmParityCenteredMode N) (ccmOddParityFrame N *ᵥ c) x - xi x) := by
   have hpi : (2 * Real.pi) ≠ 0 := by positivity
   set g : ℝ → ℝ := fun theta =>
-    ‖ccmTrigPoly N (ccmOddGroundCoeff N c) theta - xi (theta / (2 * Real.pi))‖ ^ 2 with hg
+    ‖ccmTrigPoly N (ccmOddGroundCoeff N c) theta - xi (theta / (2 * Real.pi))‖ ^ (2 : ℕ) with hg
   have harg : ∀ x : ℝ, (2 * Real.pi * x) / (2 * Real.pi) = x := by
     intro x
     field_simp
   have hscale : ∀ x : ℝ, g (2 * Real.pi * x)
-      = ‖indexTrigPoly (ccmParityCenteredMode N) (ccmOddParityFrame N *ᵥ c) x - xi x‖ ^ 2 := by
+      = ‖indexTrigPoly (ccmParityCenteredMode N) (ccmOddParityFrame N *ᵥ c) x - xi x‖ ^ (2 : ℕ) := by
     intro x
     rw [hg]
     simp only
@@ -116,7 +116,7 @@ theorem integral_ccmTrigPoly_sub_sq (N : ℕ) (c : Fin N → ℂ) (xi : ℝ → 
   have hcomp := intervalIntegral.integral_comp_mul_left (a := (0 : ℝ)) (b := (1 : ℝ)) g hpi
   rw [mul_zero, mul_one] at hcomp
   have hkey : (∫ x in (0 : ℝ)..1,
-      ‖indexTrigPoly (ccmParityCenteredMode N) (ccmOddParityFrame N *ᵥ c) x - xi x‖ ^ 2)
+      ‖indexTrigPoly (ccmParityCenteredMode N) (ccmOddParityFrame N *ᵥ c) x - xi x‖ ^ (2 : ℕ))
       = ∫ x in (0 : ℝ)..1, g (2 * Real.pi * x) :=
     intervalIntegral.integral_congr fun x _ => (hscale x).symm
   rw [l2NormSq, hkey, hcomp, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hpi, one_mul]

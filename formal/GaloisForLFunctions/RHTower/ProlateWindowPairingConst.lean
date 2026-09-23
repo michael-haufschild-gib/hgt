@@ -22,7 +22,7 @@ theorem tendsto_prolateWindowPairing_const {ι : Type*} {L : Filter ι}
     (hK : 0 < K) (hg : Continuous g)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (heu : ∀ i, Function.Even (u i))
-    (hev : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)

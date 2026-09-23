@@ -32,13 +32,13 @@ theorem routePBurnolApertureEnergy_primeGammaCauchyCubicEndpointScalePort :
   let f2 : ℝ → ℝ := fun u => Real.exp ((-3 / 2 : ℝ) * u)
   let f3 : ℝ → ℝ := fun u => Real.exp ((-2 : ℝ) * u)
   have hnorm (u : ℝ) :
-      ‖primeGammaCauchyCubicEndpointScalePort u‖ ^ 2 =
+      ‖primeGammaCauchyCubicEndpointScalePort u‖ ^ (2 : ℕ) =
         f1 u - 2 * f2 u + f3 u := by
     unfold primeGammaCauchyCubicEndpointScalePort
     rw [integral_primeGammaCauchyCubicRayFeature_half_one]
     dsimp only [f1, f2, f3]
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
-    have hfirst : Real.exp (-(u / 2)) ^ 2 = Real.exp ((-1 : ℝ) * u) := by
+    have hfirst : Real.exp (-(u / 2)) ^ (2 : ℕ) = Real.exp ((-1 : ℝ) * u) := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring
@@ -47,14 +47,14 @@ theorem routePBurnolApertureEnergy_primeGammaCauchyCubicEndpointScalePort :
       rw [← Real.exp_add]
       congr 1
       ring
-    have hlast : Real.exp (-u) ^ 2 = Real.exp ((-2 : ℝ) * u) := by
+    have hlast : Real.exp (-u) ^ (2 : ℕ) = Real.exp ((-2 : ℝ) * u) := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring
     calc
-      (Real.exp (-(u / 2)) - Real.exp (-u)) ^ 2 =
-          Real.exp (-(u / 2)) ^ 2 -
-            2 * (Real.exp (-(u / 2)) * Real.exp (-u)) + Real.exp (-u) ^ 2 := by ring
+      (Real.exp (-(u / 2)) - Real.exp (-u)) ^ (2 : ℕ) =
+          Real.exp (-(u / 2)) ^ (2 : ℕ) -
+            2 * (Real.exp (-(u / 2)) * Real.exp (-u)) + Real.exp (-u) ^ (2 : ℕ) := by ring
       _ = _ := by rw [hfirst, hcross, hlast]
   have hint1 : IntegrableOn f1 (Ioi 0) := by
     dsimp only [f1]

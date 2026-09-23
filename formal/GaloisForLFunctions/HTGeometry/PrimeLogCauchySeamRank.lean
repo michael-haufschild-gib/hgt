@@ -349,7 +349,7 @@ def primeLogCauchyPacketTransportEnergy {n : ℕ}
     (∑ j, c j * (z j - (primeLogSupport p : ℂ))⁻¹)
 
 /-- Every nonzero finite packet of distinct upper-half-plane Cauchy sections remains outside
-the prime `ell^2` space after every positive exponential transport. -/
+the prime `ell^(2 : ℕ)` space after every positive exponential transport. -/
 theorem not_summable_primeLogCauchyPacketTransportEnergy_of_pos {n : ℕ}
     (z c : Fin n → ℂ) (hz : Function.Injective z) (hzUpper : ∀ j, 0 < (z j).im)
     (hc : c ≠ 0) {b : ℝ} (hb : 0 < b) :

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiPrimeMarkedCofiniteRVMQuarticReserve
 import GaloisForLFunctions.RHTower.XiPrimeMarkedCofinalTriangleNuclearCarrier
 import GaloisForLFunctions.HTGeometry.QuantumMasterEffectPurity
+import GaloisForLFunctions.HTGeometry.QuantumReplicaHausdorff
 
 /-!
 # Exact quadratic and quartic Route K source incidence
@@ -27,7 +28,7 @@ def routeKQuarticHalfEnergy : ℝ :=
   routeKSourceFirstMoment / 2
 
 def routeKQuarticGap : ℝ :=
-  routeKQuarticHalfMass ^ 2 - routeKQuarticHalfEnergy
+  routeKQuarticHalfMass ^ (2 : ℕ) - routeKQuarticHalfEnergy
 
 theorem routeKQuarticHalfMass_pos : 0 < routeKQuarticHalfMass := by
   exact div_pos routeKSourceZerothMoment_pos (by norm_num)
@@ -79,7 +80,7 @@ theorem two_mul_halfMass_mul_routeKQuarticControlRadius_lt_gap :
   nlinarith
 
 theorem routeKQuarticControlRadius_sq_lt_halfEnergy_half :
-    routeKQuarticControlRadius ^ 2 <
+    routeKQuarticControlRadius ^ (2 : ℕ) <
       routeKQuarticHalfEnergy / 2 := by
   have hle :
       routeKQuarticControlRadius ≤
@@ -87,7 +88,7 @@ theorem routeKQuarticControlRadius_sq_lt_halfEnergy_half :
     min_le_right _ _ |>.trans (min_le_right _ _)
   have hη := routeKQuarticControlRadius_pos
   have hsqrt :
-      (Real.sqrt (routeKQuarticHalfEnergy / 2)) ^ 2 =
+      (Real.sqrt (routeKQuarticHalfEnergy / 2)) ^ (2 : ℕ) =
         routeKQuarticHalfEnergy / 2 :=
     Real.sq_sqrt (div_nonneg routeKQuarticHalfEnergy_pos.le (by norm_num))
   nlinarith [Real.sqrt_nonneg (routeKQuarticHalfEnergy / 2)]
@@ -107,7 +108,7 @@ theorem exists_pos_scale_hsNormSq_smul_lt
   refine ⟨δ, hδ, ?_⟩
   rw [hsNormSq_smul_eq hC, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos hδ]
-  have hsq : δ ^ 2 = ε / (1 + c) := by
+  have hsq : δ ^ (2 : ℕ) = ε / (1 + c) := by
     exact Real.sq_sqrt (div_nonneg hε.le hden.le)
   rw [hsq]
   have hfrac : c / (1 + c) < 1 := by
@@ -126,7 +127,7 @@ structure RouteKQuarticReserveParameters where
   N : ℕ
   hN : 2 ≤ N
   hratio :
-    2 * routeKQuarticHalfMass ^ 2 / routeKQuarticHalfEnergy < N
+    2 * routeKQuarticHalfMass ^ (2 : ℕ) / routeKQuarticHalfEnergy < N
   delta : ℝ
   hdelta : 0 < delta
   htail :
@@ -141,7 +142,7 @@ theorem exists_routeKQuarticReserveParameters :
     Nonempty RouteKQuarticReserveParameters := by
   obtain ⟨N₀, hN₀⟩ :=
     exists_nat_gt
-      (2 * routeKQuarticHalfMass ^ 2 / routeKQuarticHalfEnergy)
+      (2 * routeKQuarticHalfMass ^ (2 : ℕ) / routeKQuarticHalfEnergy)
   obtain ⟨N, hNlower, htail⟩ :=
     exists_routeKRVM_initial_tail_energy_lt
       (div_pos routeKQuarticControlRadius_pos
@@ -219,13 +220,13 @@ theorem hsNormSq_routeKQuarticReserve_lt_control :
   nlinarith
 
 theorem routeKQuarticReserve_sq_isHilbertSchmidt :
-    (routeKQuarticReserve ^ 2).IsHilbertSchmidt := by
+    (routeKQuarticReserve ^ (2 : ℕ)).IsHilbertSchmidt := by
   simpa only [pow_two, ContinuousLinearMap.mul_def] using
     routeKQuarticReserve_isHilbertSchmidt.comp_left routeKQuarticReserve
 
 theorem hsNormSq_routeKQuarticReserve_sq_le :
-    hsNormSq (routeKQuarticReserve ^ 2) ≤
-      hsNormSq routeKQuarticReserve ^ 2 := by
+    hsNormSq (routeKQuarticReserve ^ (2 : ℕ)) ≤
+      hsNormSq routeKQuarticReserve ^ (2 : ℕ) := by
   have hpurity :=
     HTGeometry.hsNormSq_adjoint_comp_self_le_sq
       routeKQuarticReserve routeKQuarticReserve_isHilbertSchmidt
@@ -238,7 +239,7 @@ def routeKQuarticReserveMass : ℝ :=
   hsNormSq routeKQuarticReserve
 
 def routeKQuarticReserveEnergy : ℝ :=
-  hsNormSq (routeKQuarticReserve ^ 2)
+  hsNormSq (routeKQuarticReserve ^ (2 : ℕ))
 
 def routeKQuarticResidualMass : ℝ :=
   routeKQuarticHalfMass - routeKQuarticReserveMass
@@ -259,7 +260,7 @@ theorem routeKQuarticReserveEnergy_nonneg :
   hsNormSq_nonneg _
 
 theorem routeKQuarticReserveEnergy_le_sq_mass :
-    routeKQuarticReserveEnergy ≤ routeKQuarticReserveMass ^ 2 :=
+    routeKQuarticReserveEnergy ≤ routeKQuarticReserveMass ^ (2 : ℕ) :=
   hsNormSq_routeKQuarticReserve_sq_le
 
 theorem routeKQuarticResidualMass_pos :
@@ -276,8 +277,8 @@ theorem routeKQuarticReserveEnergy_lt_halfEnergy_half :
   have he0 := routeKQuarticReserveMass_nonneg
   have hη := routeKQuarticControlRadius_pos
   have hsquare :
-      routeKQuarticReserveMass ^ 2 <
-        routeKQuarticControlRadius ^ 2 := by nlinarith
+      routeKQuarticReserveMass ^ (2 : ℕ) <
+        routeKQuarticControlRadius ^ (2 : ℕ) := by nlinarith
   exact lt_of_le_of_lt hf
     (hsquare.trans routeKQuarticControlRadius_sq_lt_halfEnergy_half)
 
@@ -289,7 +290,7 @@ theorem routeKQuarticResidualEnergy_pos :
   linarith
 
 theorem routeKQuarticResidualEnergy_lt_residualMass_sq :
-    routeKQuarticResidualEnergy < routeKQuarticResidualMass ^ 2 := by
+    routeKQuarticResidualEnergy < routeKQuarticResidualMass ^ (2 : ℕ) := by
   have he := routeKQuarticReserveMass_lt_control
   have he0 := routeKQuarticReserveMass_nonneg
   have hf0 := routeKQuarticReserveEnergy_nonneg
@@ -305,7 +306,7 @@ theorem routeKQuarticResidualEnergy_lt_residualMass_sq :
   nlinarith
 
 theorem routeKQuarticResidualMass_sq_div_N_lt_residualEnergy :
-    routeKQuarticResidualMass ^ 2 /
+    routeKQuarticResidualMass ^ (2 : ℕ) /
         routeKQuarticReserveParameters.N <
       routeKQuarticResidualEnergy := by
   let N := routeKQuarticReserveParameters.N
@@ -313,25 +314,25 @@ theorem routeKQuarticResidualMass_sq_div_N_lt_residualEnergy :
   have hN : (0 : ℝ) < N := by positivity
   have hratio := routeKQuarticReserveParameters.hratio
   change
-    2 * routeKQuarticHalfMass ^ 2 /
+    2 * routeKQuarticHalfMass ^ (2 : ℕ) /
         routeKQuarticHalfEnergy < (N : ℝ) at hratio
   have hB := routeKQuarticHalfEnergy_pos
   have hAN :
-      routeKQuarticHalfMass ^ 2 / (N : ℝ) <
+      routeKQuarticHalfMass ^ (2 : ℕ) / (N : ℝ) <
         routeKQuarticHalfEnergy / 2 := by
     rw [div_lt_iff₀ hN]
     rw [div_lt_iff₀ hB] at hratio
     nlinarith
   have hE_le :
-      routeKQuarticResidualMass ^ 2 ≤
-        routeKQuarticHalfMass ^ 2 := by
+      routeKQuarticResidualMass ^ (2 : ℕ) ≤
+        routeKQuarticHalfMass ^ (2 : ℕ) := by
     have he0 := routeKQuarticReserveMass_nonneg
     have hres := routeKQuarticResidualMass_pos
     rw [routeKQuarticResidualMass] at hres ⊢
     nlinarith
   have hdiv_le :
-      routeKQuarticResidualMass ^ 2 / (N : ℝ) ≤
-        routeKQuarticHalfMass ^ 2 / (N : ℝ) :=
+      routeKQuarticResidualMass ^ (2 : ℕ) / (N : ℝ) ≤
+        routeKQuarticHalfMass ^ (2 : ℕ) / (N : ℝ) :=
     div_le_div_of_nonneg_right hE_le hN.le
   have hF :
       routeKQuarticHalfEnergy / 2 <
@@ -376,7 +377,7 @@ theorem hsNormSq_routeKQuarticHead :
     routeKQuarticResidualEnergy_lt_residualMass_sq.le
 
 theorem routeKQuarticHead_sq_isHilbertSchmidt :
-    (routeKQuarticHead ^ 2).IsHilbertSchmidt :=
+    (routeKQuarticHead ^ (2 : ℕ)).IsHilbertSchmidt :=
   twoLevelPrimeDiagonalOperator_sq_isHilbertSchmidt
     routeKQuarticResidualMass_pos
     routeKQuarticReserveParameters.hN
@@ -384,7 +385,7 @@ theorem routeKQuarticHead_sq_isHilbertSchmidt :
     routeKQuarticResidualEnergy_lt_residualMass_sq.le
 
 theorem hsNormSq_routeKQuarticHead_sq :
-    hsNormSq (routeKQuarticHead ^ 2) =
+    hsNormSq (routeKQuarticHead ^ (2 : ℕ)) =
       routeKQuarticResidualEnergy :=
   hsNormSq_sq_twoLevelPrimeDiagonalOperator
     routeKQuarticResidualMass_pos
@@ -493,19 +494,19 @@ theorem hsInner_routeKQuarticHead_reserve_eq_zero :
 theorem routeKQuarticHead_sq_basis_eq_zero_of_index_ge
     {p : Nat.Primes}
     (hp : routeKQuarticReserveParameters.N ≤ nthPrimeEquiv.symm p) :
-    (routeKQuarticHead ^ 2) (routeKPrimeBasis p) = 0 := by
+    (routeKQuarticHead ^ (2 : ℕ)) (routeKPrimeBasis p) = 0 := by
   rw [pow_two, mul_apply_eq_comp,
     routeKQuarticHead_basis_eq_zero_of_index_ge hp, map_zero]
 
 theorem routeKQuarticReserve_sq_basis_eq_zero_of_index_lt
     {p : Nat.Primes}
     (hp : nthPrimeEquiv.symm p < routeKQuarticReserveParameters.N) :
-    (routeKQuarticReserve ^ 2) (routeKPrimeBasis p) = 0 := by
+    (routeKQuarticReserve ^ (2 : ℕ)) (routeKPrimeBasis p) = 0 := by
   rw [pow_two, mul_apply_eq_comp,
     routeKQuarticReserve_basis_eq_zero_of_index_lt hp, map_zero]
 
 theorem hsInner_routeKQuarticHead_sq_reserve_sq_eq_zero :
-    hsInner (routeKQuarticHead ^ 2) (routeKQuarticReserve ^ 2) = 0 := by
+    hsInner (routeKQuarticHead ^ (2 : ℕ)) (routeKQuarticReserve ^ (2 : ℕ)) = 0 := by
   rw [hsInner_eq_tsum_basis
     routeKQuarticHead_sq_isHilbertSchmidt
     routeKQuarticReserve_sq_isHilbertSchmidt
@@ -513,15 +514,15 @@ theorem hsInner_routeKQuarticHead_sq_reserve_sq_eq_zero :
   have hterm :
       (fun p : Nat.Primes =>
         inner ℂ
-          ((routeKQuarticHead ^ 2)
+          ((routeKQuarticHead ^ (2 : ℕ))
             (HilbertSchmidt.lpBasis Nat.Primes p))
-          ((routeKQuarticReserve ^ 2)
+          ((routeKQuarticReserve ^ (2 : ℕ))
             (HilbertSchmidt.lpBasis Nat.Primes p))) = 0 := by
     funext p
     rw [HilbertSchmidt.lpBasis_apply]
     change inner ℂ
-      ((routeKQuarticHead ^ 2) (routeKPrimeBasis p))
-      ((routeKQuarticReserve ^ 2) (routeKPrimeBasis p)) = 0
+      ((routeKQuarticHead ^ (2 : ℕ)) (routeKPrimeBasis p))
+      ((routeKQuarticReserve ^ (2 : ℕ)) (routeKPrimeBasis p)) = 0
     by_cases hp :
         nthPrimeEquiv.symm p < routeKQuarticReserveParameters.N
     · rw [routeKQuarticReserve_sq_basis_eq_zero_of_index_lt hp]
@@ -565,8 +566,8 @@ theorem hsNormSq_routeKQuarticallyAdmittedOperator :
   ring
 
 theorem routeKQuarticallyAdmittedOperator_sq :
-    routeKQuarticallyAdmittedOperator ^ 2 =
-      routeKQuarticHead ^ 2 + routeKQuarticReserve ^ 2 := by
+    routeKQuarticallyAdmittedOperator ^ (2 : ℕ) =
+      routeKQuarticHead ^ (2 : ℕ) + routeKQuarticReserve ^ (2 : ℕ) := by
   rw [routeKQuarticallyAdmittedOperator, pow_two, add_mul,
     mul_add, mul_add, routeKQuarticHead_mul_reserve_eq_zero,
     routeKQuarticReserve_mul_head_eq_zero]
@@ -575,21 +576,146 @@ theorem routeKQuarticallyAdmittedOperator_sq :
 /-- The finite moment head and cofinite reserve are reducing summands, hence their cubic
 traces cannot generate mixed terms. -/
 theorem routeKQuarticallyAdmittedOperator_cube :
-    routeKQuarticallyAdmittedOperator ^ 3 =
-      routeKQuarticHead ^ 3 + routeKQuarticReserve ^ 3 := by
+    routeKQuarticallyAdmittedOperator ^ (3 : ℕ) =
+      routeKQuarticHead ^ (3 : ℕ) + routeKQuarticReserve ^ (3 : ℕ) := by
   rw [show 3 = 2 + 1 by norm_num, pow_add,
     routeKQuarticallyAdmittedOperator_sq, routeKQuarticallyAdmittedOperator]
   noncomm_ring [routeKQuarticHead_mul_reserve_eq_zero,
     routeKQuarticReserve_mul_head_eq_zero]
 
+theorem routeKQuarticHead_cube_isHilbertSchmidt :
+    (routeKQuarticHead ^ (3 : ℕ)).IsHilbertSchmidt := by
+  rw [show 3 = 2 + 1 by norm_num, pow_succ, ContinuousLinearMap.mul_def]
+  exact routeKQuarticHead_isHilbertSchmidt.comp_left (routeKQuarticHead ^ (2 : ℕ))
+
+/-- The old quartic head has an exact sixth energy: it is the lower endpoint of the
+three-level cubic-moment interval. -/
+theorem hsNormSq_routeKQuarticHead_cube :
+    hsNormSq (routeKQuarticHead ^ (3 : ℕ)) =
+      twoLevelLarge routeKQuarticResidualMass routeKQuarticResidualEnergy
+        routeKQuarticReserveParameters.N ^ (3 : ℕ) +
+      ((routeKQuarticReserveParameters.N : ℝ) - 1) *
+        twoLevelSmall routeKQuarticResidualMass routeKQuarticResidualEnergy
+          routeKQuarticReserveParameters.N ^ (3 : ℕ) := by
+  exact hsNormSq_cube_twoLevelPrimeDiagonalOperator
+    routeKQuarticResidualMass_pos
+    routeKQuarticReserveParameters.hN
+    routeKQuarticResidualMass_sq_div_N_lt_residualEnergy
+    routeKQuarticResidualEnergy_lt_residualMass_sq.le
+
+theorem routeKQuarticReserve_cube_isHilbertSchmidt :
+    (routeKQuarticReserve ^ (3 : ℕ)).IsHilbertSchmidt := by
+  rw [show 3 = 2 + 1 by norm_num, pow_succ, ContinuousLinearMap.mul_def]
+  exact routeKQuarticReserve_isHilbertSchmidt.comp_left (routeKQuarticReserve ^ (2 : ℕ))
+
+/-- The cofinal RVM/cycle reserve loses at least two powers of its retained
+Hilbert--Schmidt mass at sixth energy.  Thus making the reserve small at quadratic order makes
+its cubic power-energy small cubically as well. -/
+theorem hsNormSq_routeKQuarticReserve_cube_le_mass_cubed :
+    hsNormSq (routeKQuarticReserve ^ (3 : ℕ)) ≤ routeKQuarticReserveMass ^ (3 : ℕ) := by
+  have hcomp := HTGeometry.hsNormSq_comp_left_le_opNorm
+    routeKQuarticReserve_sq_isHilbertSchmidt routeKQuarticReserve
+  have hcomp' : hsNormSq (routeKQuarticReserve ^ (3 : ℕ)) ≤
+      ‖routeKQuarticReserve‖ ^ (2 : ℕ) * routeKQuarticReserveEnergy := by
+    rw [show routeKQuarticReserve ^ (3 : ℕ) =
+      routeKQuarticReserve ∘L routeKQuarticReserve ^ (2 : ℕ) by
+        change routeKQuarticReserve ^ (3 : ℕ) =
+          routeKQuarticReserve * routeKQuarticReserve ^ (2 : ℕ)
+        rw [← pow_succ']]
+    exact hcomp
+  have hop := ContinuousLinearMap.opNorm_le_hsNorm routeKQuarticReserve_isHilbertSchmidt
+  have hhs : hsNorm routeKQuarticReserve ^ (2 : ℕ) = routeKQuarticReserveMass := by
+    change hsNorm routeKQuarticReserve ^ (2 : ℕ) = hsNormSq routeKQuarticReserve
+    rw [ContinuousLinearMap.hsNorm,
+      Real.sq_sqrt (hsNormSq_nonneg routeKQuarticReserve)]
+  have hopSq : ‖routeKQuarticReserve‖ ^ (2 : ℕ) ≤ routeKQuarticReserveMass := by
+    calc
+      ‖routeKQuarticReserve‖ ^ (2 : ℕ) ≤ hsNorm routeKQuarticReserve ^ (2 : ℕ) :=
+        (sq_le_sq₀ (norm_nonneg _) (ContinuousLinearMap.hsNorm_nonneg _)).mpr hop
+      _ = routeKQuarticReserveMass := hhs
+  calc
+    hsNormSq (routeKQuarticReserve ^ (3 : ℕ)) ≤
+        ‖routeKQuarticReserve‖ ^ (2 : ℕ) * routeKQuarticReserveEnergy := hcomp'
+    _ ≤ routeKQuarticReserveMass * routeKQuarticReserveEnergy := by
+      exact mul_le_mul_of_nonneg_right hopSq routeKQuarticReserveEnergy_nonneg
+    _ ≤ routeKQuarticReserveMass * routeKQuarticReserveMass ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_left routeKQuarticReserveEnergy_le_sq_mass
+        routeKQuarticReserveMass_nonneg
+    _ = routeKQuarticReserveMass ^ (3 : ℕ) := by ring
+
+/-- The sixth energy of the retained RVM/cycle reserve lies strictly below the cubic control
+budget.  A three-level head can therefore be designed against a genuine open sixth-energy margin. -/
+theorem hsNormSq_routeKQuarticReserve_cube_lt_control_cubed :
+    hsNormSq (routeKQuarticReserve ^ (3 : ℕ)) < routeKQuarticControlRadius ^ (3 : ℕ) := by
+  refine (hsNormSq_routeKQuarticReserve_cube_le_mass_cubed).trans_lt ?_
+  exact pow_lt_pow_left₀ routeKQuarticReserveMass_lt_control
+    routeKQuarticReserveMass_nonneg (by norm_num)
+
+theorem routeKQuarticHead_cube_mul_reserve_cube_eq_zero :
+    routeKQuarticHead ^ (3 : ℕ) * routeKQuarticReserve ^ (3 : ℕ) = 0 := by
+  calc
+    routeKQuarticHead ^ (3 : ℕ) * routeKQuarticReserve ^ (3 : ℕ) =
+        routeKQuarticHead ^ (2 : ℕ) *
+          (routeKQuarticHead * routeKQuarticReserve) *
+            routeKQuarticReserve ^ (2 : ℕ) := by
+      rw [show routeKQuarticHead ^ (3 : ℕ) = routeKQuarticHead ^ (2 : ℕ) * routeKQuarticHead by
+        rw [pow_succ]]
+      rw [show routeKQuarticReserve ^ (3 : ℕ) =
+          routeKQuarticReserve * routeKQuarticReserve ^ (2 : ℕ) by
+        rw [← pow_succ']]
+      noncomm_ring
+    _ = 0 := by rw [routeKQuarticHead_mul_reserve_eq_zero]; simp
+
+theorem hsInner_routeKQuarticHead_cube_reserve_cube_eq_zero :
+    hsInner (routeKQuarticHead ^ (3 : ℕ)) (routeKQuarticReserve ^ (3 : ℕ)) = 0 := by
+  have hself : IsSelfAdjoint (routeKQuarticHead ^ (3 : ℕ)) := by
+    have hhead := routeKQuarticHead_isSelfAdjoint
+    change star routeKQuarticHead = routeKQuarticHead at hhead
+    change star (routeKQuarticHead ^ (3 : ℕ)) = routeKQuarticHead ^ (3 : ℕ)
+    rw [star_pow, hhead]
+  rw [ContinuousLinearMap.isSelfAdjoint_iff'] at hself
+  calc
+    hsInner (routeKQuarticHead ^ (3 : ℕ)) (routeKQuarticReserve ^ (3 : ℕ)) =
+        opTrace (ContinuousLinearMap.adjoint (routeKQuarticHead ^ (3 : ℕ)) ∘L
+          routeKQuarticReserve ^ (3 : ℕ)) := by
+      symm
+      calc
+        opTrace (ContinuousLinearMap.adjoint (routeKQuarticHead ^ (3 : ℕ)) ∘L
+            routeKQuarticReserve ^ (3 : ℕ)) =
+            hsInner (ContinuousLinearMap.adjoint
+              (ContinuousLinearMap.adjoint (routeKQuarticHead ^ (3 : ℕ))))
+              (routeKQuarticReserve ^ (3 : ℕ)) :=
+          opTrace_comp_eq_hsInner
+            (ContinuousLinearMap.adjoint (routeKQuarticHead ^ (3 : ℕ)))
+            (routeKQuarticReserve ^ (3 : ℕ))
+        _ = hsInner (routeKQuarticHead ^ (3 : ℕ)) (routeKQuarticReserve ^ (3 : ℕ)) := by
+          rw [ContinuousLinearMap.adjoint_adjoint]
+    _ = opTrace (routeKQuarticHead ^ (3 : ℕ) * routeKQuarticReserve ^ (3 : ℕ)) := by
+      rw [hself]
+      rfl
+    _ = 0 := by
+      rw [routeKQuarticHead_cube_mul_reserve_cube_eq_zero]
+      simp
+
+/-- The sixth energy has no mixed head--reserve contribution. -/
+theorem hsNormSq_routeKQuarticallyAdmittedOperator_cube :
+    hsNormSq (routeKQuarticallyAdmittedOperator ^ (3 : ℕ)) =
+      hsNormSq (routeKQuarticHead ^ (3 : ℕ)) +
+        hsNormSq (routeKQuarticReserve ^ (3 : ℕ)) := by
+  rw [routeKQuarticallyAdmittedOperator_cube,
+    hsNormSq_add_eq_of_hsInner_eq_zero
+      routeKQuarticHead_cube_isHilbertSchmidt
+      routeKQuarticReserve_cube_isHilbertSchmidt
+      hsInner_routeKQuarticHead_cube_reserve_cube_eq_zero]
+
 theorem routeKQuarticallyAdmittedOperator_sq_isHilbertSchmidt :
-    (routeKQuarticallyAdmittedOperator ^ 2).IsHilbertSchmidt := by
+    (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)).IsHilbertSchmidt := by
   rw [routeKQuarticallyAdmittedOperator_sq]
   exact routeKQuarticHead_sq_isHilbertSchmidt.add
     routeKQuarticReserve_sq_isHilbertSchmidt
 
 theorem hsNormSq_routeKQuarticallyAdmittedOperator_sq :
-    hsNormSq (routeKQuarticallyAdmittedOperator ^ 2) =
+    hsNormSq (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) =
       routeKQuarticHalfEnergy := by
   rw [routeKQuarticallyAdmittedOperator_sq,
     hsNormSq_add_eq_of_hsInner_eq_zero
@@ -597,7 +723,7 @@ theorem hsNormSq_routeKQuarticallyAdmittedOperator_sq :
       routeKQuarticReserve_sq_isHilbertSchmidt
       hsInner_routeKQuarticHead_sq_reserve_sq_eq_zero,
     hsNormSq_routeKQuarticHead_sq,
-    show hsNormSq (routeKQuarticReserve ^ 2) =
+    show hsNormSq (routeKQuarticReserve ^ (2 : ℕ)) =
       routeKQuarticReserveEnergy by rfl,
     routeKQuarticResidualEnergy]
   ring
@@ -612,23 +738,23 @@ theorem two_mul_hsNormSq_routeKQuarticallyAdmittedOperator :
 
 /-- Exact reflected quartic source moment. -/
 theorem two_mul_hsNormSq_sq_routeKQuarticallyAdmittedOperator :
-    2 * hsNormSq (routeKQuarticallyAdmittedOperator ^ 2) =
+    2 * hsNormSq (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) =
       routeKSourceFirstMoment := by
   rw [hsNormSq_routeKQuarticallyAdmittedOperator_sq,
     routeKQuarticHalfEnergy]
   ring
 
 theorem routeKQuarticallyAdmittedOperator_sq_isSelfAdjoint :
-    IsSelfAdjoint (routeKQuarticallyAdmittedOperator ^ 2) := by
+    IsSelfAdjoint (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) := by
   have hT := routeKQuarticallyAdmittedOperator_isSelfAdjoint
   change star routeKQuarticallyAdmittedOperator =
     routeKQuarticallyAdmittedOperator at hT
-  change star (routeKQuarticallyAdmittedOperator ^ 2) =
-    routeKQuarticallyAdmittedOperator ^ 2
+  change star (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) =
+    routeKQuarticallyAdmittedOperator ^ (2 : ℕ)
   rw [star_pow, hT]
 
 theorem two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator :
-    2 * opTrace (routeKQuarticallyAdmittedOperator ^ 2) =
+    2 * opTrace (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) =
       (routeKSourceZerothMoment : ℂ) := by
   have hT := routeKQuarticallyAdmittedOperator_isSelfAdjoint
   rw [ContinuousLinearMap.isSelfAdjoint_iff'] at hT
@@ -640,13 +766,13 @@ theorem two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator :
   simpa using h
 
 theorem two_mul_opTrace_four_routeKQuarticallyAdmittedOperator :
-    2 * opTrace (routeKQuarticallyAdmittedOperator ^ 4) =
+    2 * opTrace (routeKQuarticallyAdmittedOperator ^ (4 : ℕ)) =
       (routeKSourceFirstMoment : ℂ) := by
   have hT2 := routeKQuarticallyAdmittedOperator_sq_isSelfAdjoint
   rw [ContinuousLinearMap.isSelfAdjoint_iff'] at hT2
   have hpow :
-      routeKQuarticallyAdmittedOperator ^ 4 =
-        (routeKQuarticallyAdmittedOperator ^ 2) ^ 2 := by
+      routeKQuarticallyAdmittedOperator ^ (4 : ℕ) =
+        (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) ^ (2 : ℕ) := by
     noncomm_ring
   rw [hpow, HTGeometry.opTrace_sq_eq_ofReal_hsNormSq
     routeKQuarticallyAdmittedOperator_sq_isHilbertSchmidt hT2]

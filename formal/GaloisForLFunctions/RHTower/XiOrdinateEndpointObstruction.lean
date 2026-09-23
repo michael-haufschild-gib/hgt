@@ -36,7 +36,7 @@ theorem tendsto_norm_xiSpectralPoint_cofinite :
   set M : ℝ := max B 1 with hM
   have hMpos : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
   have hev := Filter.Tendsto.eventually_lt_const
-    (show (0 : ℝ) < 1 / M ^ 2 by positivity) hsq.tendsto_cofinite_zero
+    (show (0 : ℝ) < 1 / M ^ (2 : ℕ) by positivity) hsq.tendsto_cofinite_zero
   filter_upwards [hev] with q hq
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   rw [div_lt_div_iff₀ (by positivity) (by positivity)] at hq

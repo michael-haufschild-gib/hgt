@@ -15,7 +15,7 @@ open Real MeasureTheory
 
 noncomputable section
 
-/-- The real beta integral `∫_0^1 y^a (1-y)^n dy`. -/
+/-- The real beta integral `∫_0^(1 : ℕ) y^a (1-y)^n dy`. -/
 def bdBeta (a : ℝ) (n : ℕ) : ℝ := ∫ y in (0:ℝ)..1, y ^ a * (1 - y) ^ n
 
 theorem bdBeta_eq {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :

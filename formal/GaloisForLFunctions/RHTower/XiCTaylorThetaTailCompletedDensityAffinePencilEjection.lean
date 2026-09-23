@@ -10,7 +10,7 @@ parameter and hence a zero of the source-to-Xi affine pencil. More decisively, t
 be upper-half-plane zero-free throughout the homotopy: at every positive simple real Xi zero with
 negative slope, the analytic implicit-function branch has exact velocity
 
-g'(0) = -E(t) / (2 t^2 XiC'(t)).
+g'(0) = -E(t) / (2 t^(2 : ℕ) XiC'(t)).
 
 It enters the open upper half-plane for positive pencil parameter. This is a local structural
 obstruction; no estimate at infinity is involved. All results are unconditional implications
@@ -76,7 +76,7 @@ theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_eq_tau_E_add_center
     {tau : ℝ} {z : ℂ} (hz : |z.im| < 1) :
     thetaCuspTailSecondDensityDeBrangesAffinePencil tau z =
       (tau : ℂ) * thetaCuspTailSecondDensityDeBrangesE z +
-        ((1 - tau : ℝ) : ℂ) * (2 * z ^ 2 * XiC z) := by
+        ((1 - tau : ℝ) : ℂ) * (2 * z ^ (2 : ℕ) * XiC z) := by
   rw [← thetaCuspTailSecondDensityDeBrangesAffinePencil_zero hz]
   unfold thetaCuspTailSecondDensityDeBrangesAffinePencil
   push_cast
@@ -85,20 +85,20 @@ theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_eq_tau_E_add_center
 theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_positive_incidence
     {z : ℂ} (hzstrip : |z.im| < 1)
     (hinc : 0 < (incidence thetaCuspTailSecondDensityDeBrangesE
-      (fun w => 2 * w ^ 2 * XiC w) z).re)
+      (fun w => 2 * w ^ (2 : ℕ) * XiC w) z).re)
     (him : (incidence thetaCuspTailSecondDensityDeBrangesE
-      (fun w => 2 * w ^ 2 * XiC w) z).im = 0) :
+      (fun w => 2 * w ^ (2 : ℕ) * XiC w) z).im = 0) :
     ∃ tau : ℝ, tau ∈ Set.Ioo 0 1 ∧
       thetaCuspTailSecondDensityDeBrangesAffinePencil tau z = 0 := by
   let c : ℝ := (incidence thetaCuspTailSecondDensityDeBrangesE
-    (fun w => 2 * w ^ 2 * XiC w) z).re
+    (fun w => 2 * w ^ (2 : ℕ) * XiC w) z).re
   let tau : ℝ := c / (1 + c)
   have hc : 0 < c := hinc
   have honec : 0 < 1 + c := by linarith
   have htau0 : 0 < tau := div_pos hc honec
   have htau1 : tau < 1 := (div_lt_one honec).2 (by linarith)
   have hincReal : incidence thetaCuspTailSecondDensityDeBrangesE
-      (fun w => 2 * w ^ 2 * XiC w) z = (c : ℂ) := by
+      (fun w => 2 * w ^ (2 : ℕ) * XiC w) z = (c : ℂ) := by
     apply Complex.ext
     · rfl
     · simpa [c] using him
@@ -110,8 +110,8 @@ theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_positive_inciden
     simp [c] at this
     linarith
   have hrelation : (c : ℂ) * thetaCuspTailSecondDensityDeBrangesE z +
-      2 * z ^ 2 * XiC z = 0 := by
-    have hdiv : -(2 * z ^ 2 * XiC z) /
+      2 * z ^ (2 : ℕ) * XiC z = 0 := by
+    have hdiv : -(2 * z ^ (2 : ℕ) * XiC z) /
         thetaCuspTailSecondDensityDeBrangesE z = (c : ℂ) := by
       simpa [incidence] using hincReal
     rw [div_eq_iff hE] at hdiv
@@ -135,7 +135,7 @@ theorem exists_thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_two_pi_in
     (hR : ∀ u ∈ Set.Icc a b, 0 < R u)
     (hpolar : ∀ u ∈ Set.Icc a b,
       incidence thetaCuspTailSecondDensityDeBrangesE
-          (fun w => 2 * w ^ 2 * XiC w) (gamma u) =
+          (fun w => 2 * w ^ (2 : ℕ) * XiC w) (gamma u) =
         (R u : ℂ) * Complex.exp ((theta u : ℝ) * I))
     (htheta : ContinuousOn theta (Set.Icc a b))
     (hadvance : theta a + 2 * Real.pi ≤ theta b) :
@@ -151,7 +151,7 @@ theorem exists_thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_two_pi_in
 /-- The complex incidence parameter whose zero set is the affine source-to-Xi pencil after
 the real reparametrization `tau = c / (1 + c)`. -/
 def thetaCuspTailSecondDensityDeBrangesIncidencePencil (c z : ℂ) : ℂ :=
-  c * thetaCuspTailSecondDensityDeBrangesE z + 2 * z ^ 2 * XiC z
+  c * thetaCuspTailSecondDensityDeBrangesE z + 2 * z ^ (2 : ℕ) * XiC z
 
 theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_incidenceParameter
     {c : ℝ} {z : ℂ} (hc : 0 < c) (hzstrip : |z.im| < 1)
@@ -171,8 +171,8 @@ theorem thetaCuspTailSecondDensityDeBrangesAffinePencil_zero_of_incidenceParamet
   unfold thetaCuspTailSecondDensityDeBrangesIncidencePencil at hzero
   calc
     ↑c / (1 + ↑c) * thetaCuspTailSecondDensityDeBrangesE z +
-          (1 / (1 + ↑c)) * (2 * z ^ 2 * XiC z) =
-        (↑c * thetaCuspTailSecondDensityDeBrangesE z + 2 * z ^ 2 * XiC z) /
+          (1 / (1 + ↑c)) * (2 * z ^ (2 : ℕ) * XiC z) =
+        (↑c * thetaCuspTailSecondDensityDeBrangesE z + 2 * z ^ (2 : ℕ) * XiC z) /
           (1 + ↑c) := by ring
     _ = 0 := by rw [hzero]; simp
 
@@ -195,7 +195,7 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
       g 0 = (t : ℂ) ∧
       HasDerivAt g
         (-thetaCuspTailSecondDensityDeBrangesE (t : ℂ) /
-          (2 * (t : ℂ) ^ 2 * deriv XiC (t : ℂ))) 0 ∧
+          (2 * (t : ℂ) ^ (2 : ℕ) * deriv XiC (t : ℂ))) 0 ∧
       ∀ᶠ c : ℝ in 𝓝[>] 0,
         0 < (g (c : ℂ)).im ∧
         |(g (c : ℂ)).im| < 1 ∧
@@ -204,9 +204,9 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
           (c / (1 + c)) (g (c : ℂ)) = 0 := by
   let E := thetaCuspTailSecondDensityDeBrangesE
   let X := deriv XiC (t : ℂ)
-  let D : ℂ := 2 * (t : ℂ) ^ 2 * X
+  let D : ℂ := 2 * (t : ℂ) ^ (2 : ℕ) * X
   let V : ℂ := -E (t : ℂ) / D
-  let H : ℂ → ℂ := fun z => 2 * z ^ 2 * XiC z
+  let H : ℂ → ℂ := fun z => 2 * z ^ (2 : ℕ) * XiC z
   have hXine : X ≠ 0 := by
     intro h
     have := congrArg Complex.re h
@@ -222,9 +222,9 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
     have htwo : AnalyticAt ℂ (fun _ : ℂ => (2 : ℂ)) (t : ℂ) := analyticAt_const
     have hprod := htwo.mul
       ((analyticAt_id.pow 2).mul (XiC_analytic (t : ℂ) (Set.mem_univ _)))
-    have hfun : H = fun z : ℂ => (2 : ℂ) * (z ^ 2 * XiC z) := by
+    have hfun : H = fun z : ℂ => (2 : ℂ) * (z ^ (2 : ℕ) * XiC z) := by
       funext z
-      show 2 * z ^ 2 * XiC z = 2 * (z ^ 2 * XiC z)
+      show 2 * z ^ (2 : ℕ) * XiC z = 2 * (z ^ (2 : ℕ) * XiC z)
       ring
     rw [hfun]
     exact hprod
@@ -234,9 +234,9 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
   have hHder : HasDerivAt H D (t : ℂ) := by
     have hprod := ((hasDerivAt_id (t : ℂ)).pow 2).mul hXiDer
     have hscaled := hprod.const_mul (2 : ℂ)
-    have hfun : H = fun w : ℂ => (2 : ℂ) * (w ^ 2 * XiC w) := by
+    have hfun : H = fun w : ℂ => (2 : ℂ) * (w ^ (2 : ℕ) * XiC w) := by
       funext w
-      show 2 * w ^ 2 * XiC w = 2 * (w ^ 2 * XiC w)
+      show 2 * w ^ (2 : ℕ) * XiC w = 2 * (w ^ (2 : ℕ) * XiC w)
       ring
     rw [hfun]
     exact hscaled.congr_deriv (by simp [D, hz]; ring)
@@ -265,15 +265,15 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
       apply Complex.ext <;> simp [hXiim]
     have hEeq : E (t : ℂ) = I * ((E (t : ℂ)).im : ℂ) := by
       apply Complex.ext <;> simp [E, hEre]
-    have ht2 : 0 < t ^ 2 := sq_pos_of_pos ht
-    have hdenneg : 2 * t ^ 2 * X.re < 0 :=
+    have ht2 : 0 < t ^ (2 : ℕ) := sq_pos_of_pos ht
+    have hdenneg : 2 * t ^ (2 : ℕ) * X.re < 0 :=
       mul_neg_of_pos_of_neg (mul_pos (by norm_num) ht2) hXi'
-    have hdenne : 2 * t ^ 2 * X.re ≠ 0 := hdenneg.ne
-    have hDeq : D = ((2 * t ^ 2 * X.re : ℝ) : ℂ) := by
+    have hdenne : 2 * t ^ (2 : ℕ) * X.re ≠ 0 := hdenneg.ne
+    have hDeq : D = ((2 * t ^ (2 : ℕ) * X.re : ℝ) : ℂ) := by
       dsimp [D]
       rw [hXeq]
       norm_num
-    have hVimEq : V.im = -(E (t : ℂ)).im / (2 * t ^ 2 * X.re) := by
+    have hVimEq : V.im = -(E (t : ℂ)).im / (2 * t ^ (2 : ℕ) * X.re) := by
       dsimp [V]
       rw [hDeq, Complex.div_ofReal_im]
       simp

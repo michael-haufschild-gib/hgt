@@ -56,7 +56,7 @@ lemma constrainedProlateArchSeriesTerm_nonneg (n : ℕ) :
 /-- The coefficient series is dominated termwise by a shifted inverse-square series. -/
 lemma constrainedProlateArchSeriesTerm_le (n : ℕ) :
     constrainedProlateArchSeriesTerm n ≤
-      (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ 2)) := by
+      (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ (2 : ℕ))) := by
   have hn : 0 < (n : ℝ) + 1 := by positivity
   have hx0 : 0 ≤ 1 / ((n : ℝ) + 1) := by positivity
   have hx1 : 1 / ((n : ℝ) + 1) ≤ 1 := by
@@ -67,16 +67,16 @@ lemma constrainedProlateArchSeriesTerm_le (n : ℕ) :
     Real.arcsin (1 / ((n : ℝ) + 1)) / ((n : ℝ) + 1)
         ≤ ((Real.pi / 2) * (1 / ((n : ℝ) + 1))) / ((n : ℝ) + 1) :=
           div_le_div_of_nonneg_right h hn.le
-    _ = (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ 2)) := by field_simp
+    _ = (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ (2 : ℕ))) := by field_simp
 
 /-- Absolute convergence of the coefficient series. -/
 lemma summable_constrainedProlateArchSeriesTerm :
     Summable constrainedProlateArchSeriesTerm := by
-  have hs : Summable (fun n : ℕ => (1 : ℝ) / (((n : ℝ) + 1) ^ 2)) := by
+  have hs : Summable (fun n : ℕ => (1 : ℝ) / (((n : ℝ) + 1) ^ (2 : ℕ))) := by
     have h := (Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)
     exact ((summable_nat_add_iff 1).mpr h).congr (fun n => by push_cast; ring)
   have hscaled : Summable (fun n : ℕ =>
-      (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ 2))) := hs.mul_left _
+      (Real.pi / 2) * (1 / (((n : ℝ) + 1) ^ (2 : ℕ)))) := hs.mul_left _
   exact hscaled.of_nonneg_of_le constrainedProlateArchSeriesTerm_nonneg
     constrainedProlateArchSeriesTerm_le
 
@@ -152,7 +152,7 @@ lemma constrainedProlatePrimeSeriesTerm_nonneg (n : ℕ) :
 /-- The radial prime series is dominated by a logarithmically weighted inverse-square series. -/
 lemma constrainedProlatePrimeSeriesTerm_le (n : ℕ) :
     constrainedProlatePrimeSeriesTerm n ≤
-      (Real.pi / 2) * (Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 2)) := by
+      (Real.pi / 2) * (Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   let k : ℝ := ((n + 2 : ℕ) : ℝ)
   have hk : 0 < k := by
     dsimp [k]
@@ -170,17 +170,17 @@ lemma constrainedProlatePrimeSeriesTerm_le (n : ℕ) :
     Real.log k / k * Real.arcsin (1 / k)
         ≤ Real.log k / k * ((Real.pi / 2) * (1 / k)) :=
       mul_le_mul_of_nonneg_left ha hlog
-    _ = (Real.pi / 2) * (Real.log k / k ^ 2) := by field_simp
+    _ = (Real.pi / 2) * (Real.log k / k ^ (2 : ℕ)) := by field_simp
 
 /-- Absolute convergence of the lower-order radial prime coefficient. -/
 lemma summable_constrainedProlatePrimeSeriesTerm :
     Summable constrainedProlatePrimeSeriesTerm := by
   have hs : Summable (fun n : ℕ =>
-      Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 2)) := by
+      Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ))) := by
     exact ((summable_nat_add_iff 2).mpr summable_log_nat_div_sq).congr (fun n => by simp)
   have hscaled : Summable (fun n : ℕ =>
       (Real.pi / 2) *
-        (Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 2))) := hs.mul_left _
+        (Real.log ((n + 2 : ℕ) : ℝ) / (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ)))) := hs.mul_left _
   exact hscaled.of_nonneg_of_le constrainedProlatePrimeSeriesTerm_nonneg
     constrainedProlatePrimeSeriesTerm_le
 

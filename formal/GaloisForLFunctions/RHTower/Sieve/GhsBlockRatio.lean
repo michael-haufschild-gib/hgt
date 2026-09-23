@@ -88,7 +88,7 @@ theorem ghs_block_dom_le {N n k M : ℕ} (hN : 1 ≤ N) (hn : 1 ≤ n)
       ≤ 1750 * Γ) :
     (5 / (4 * (n : ℝ)))
         * ((Real.log ((ghsBlockRight N k : ℕ) : ℝ)
-              / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2
+              / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ)
           * (Real.log M + Real.log 4))
       ≤ 1750 * Γ := by
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
@@ -105,13 +105,13 @@ theorem ghs_block_dom_le {N n k M : ℕ} (hN : 1 ≤ N) (hn : 1 ≤ n)
       Real.log_natCast_nonneg _
     positivity
   have hsq : (Real.log ((ghsBlockRight N k : ℕ) : ℝ)
-        / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2
+        / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ)
       ≤ (16 / 9) * 4 ^ (k + 1) := by
     have hstep : (Real.log ((ghsBlockRight N k : ℕ) : ℝ)
-          / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2
-        ≤ ((4 / 3) * 2 ^ (k + 1)) ^ 2 := by
+          / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ)
+        ≤ ((4 / 3) * 2 ^ (k + 1)) ^ (2 : ℕ) := by
       refine pow_le_pow_left₀ hr0 hratio 2
-    have heq : ((4 / 3 : ℝ) * 2 ^ (k + 1)) ^ 2 = (16 / 9) * 4 ^ (k + 1) := by
+    have heq : ((4 / 3 : ℝ) * 2 ^ (k + 1)) ^ (2 : ℕ) = (16 / 9) * 4 ^ (k + 1) := by
       rw [mul_pow, ← pow_mul, mul_comm (k + 1) 2, pow_mul]
       norm_num
     linarith [hstep, heq.le, heq.ge]
@@ -130,11 +130,11 @@ theorem ghs_block_dom_le {N n k M : ℕ} (hN : 1 ≤ N) (hn : 1 ≤ n)
     have : (0 : ℝ) ≤ Real.log M := Real.log_natCast_nonneg _
     linarith
   have hprod : (Real.log ((ghsBlockRight N k : ℕ) : ℝ)
-        / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2 * (Real.log M + Real.log 4)
+        / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ) * (Real.log M + Real.log 4)
       ≤ (16 / 9) * 4 ^ (k + 1) * (Real.log N + Real.log 4) := by
     have hpos : (0 : ℝ) ≤ (16 / 9 : ℝ) * 4 ^ (k + 1) := by positivity
     calc (Real.log ((ghsBlockRight N k : ℕ) : ℝ)
-          / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2 * (Real.log M + Real.log 4)
+          / Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ) * (Real.log M + Real.log 4)
         ≤ ((16 / 9) * 4 ^ (k + 1)) * (Real.log M + Real.log 4) :=
           mul_le_mul_of_nonneg_right hsq hM0
       _ ≤ ((16 / 9) * 4 ^ (k + 1)) * (Real.log N + Real.log 4) :=

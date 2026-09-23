@@ -12,7 +12,7 @@ theorem continuedAngularSourceProjection_physical_value (q : XiZeroCopy)
     continuedAngularSourceProjection q branch (((q.1:ℂ)-1)/2) a w t =
       reducedCoefficient (physicalRate q branch) w a
         (continuedOnset (physicalRate q branch) w) t *
-        ((reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+        ((reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
           reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2+
           reflectedCompletedLambda ((q.1:ℂ)-1)*nativePrincipalMomentContinuation q (-((q.1:ℂ)/2)))+
       ∑ i : Fin 3, continuedCutoffRadialCoefficient q branch w a i t*

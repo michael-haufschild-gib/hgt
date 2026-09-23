@@ -50,8 +50,8 @@ theorem PlanarChartTest.laplace_conjugate (g : PlanarChartTest) (z : ℂ) :
         conj (fderiv ℝ (g.derivative v).field z v) := by
     rw [g.derivative_conjugate]
     exact (g.derivative v).conjugate_deriv v z
-  change (∑ i : Fin 2, (z.im : ℂ)^2*fderiv ℝ (g.conjugate.derivative (direction i)).field z (direction i)) =
-    conj (∑ i : Fin 2, (z.im : ℂ)^2*fderiv ℝ (g.derivative (direction i)).field z (direction i))
+  change (∑ i : Fin 2, (z.im : ℂ)^(2 : ℕ)*fderiv ℝ (g.conjugate.derivative (direction i)).field z (direction i)) =
+    conj (∑ i : Fin 2, (z.im : ℂ)^(2 : ℕ)*fderiv ℝ (g.derivative (direction i)).field z (direction i))
   simp only [hd,map_sum,map_mul,map_pow,Complex.conj_ofReal]
 
 /-- The full lifted response equation with ordinary, unconjugated test functions. -/

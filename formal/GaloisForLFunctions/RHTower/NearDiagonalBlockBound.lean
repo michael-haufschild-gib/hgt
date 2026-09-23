@@ -16,13 +16,13 @@ noncomputable section
 /-- The clean dyadic block bound `720 √(T r/(36 π M)) + 12 √(36 π M³/(T r))`. -/
 def nearDiagonalBlockBound (T r M : ℝ) : ℝ :=
   720 * Real.sqrt (T * r / (36 * Real.pi * M))
-    + 12 * Real.sqrt (36 * Real.pi * M ^ 3 / (T * r))
+    + 12 * Real.sqrt (36 * Real.pi * M ^ (3 : ℕ) / (T * r))
 
 theorem mul_sqrt_nearDiagonalLambda {T r M : ℝ} (hM : 0 < M) :
     M * Real.sqrt (nearDiagonalLambda T r M) = Real.sqrt (T * r / (36 * Real.pi * M)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have h : M * Real.sqrt (nearDiagonalLambda T r M)
-      = Real.sqrt (M ^ 2 * nearDiagonalLambda T r M) := by
+      = Real.sqrt (M ^ (2 : ℕ) * nearDiagonalLambda T r M) := by
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hM.le]
   rw [h]
   congr 1
@@ -31,7 +31,7 @@ theorem mul_sqrt_nearDiagonalLambda {T r M : ℝ} (hM : 0 < M) :
 
 theorem inv_sqrt_nearDiagonalLambda {T r M : ℝ} (hT : 0 < T) (hr : 0 < r) (hM : 0 < M) :
     1 / Real.sqrt (nearDiagonalLambda T r M)
-      = Real.sqrt (36 * Real.pi * M ^ 3 / (T * r)) := by
+      = Real.sqrt (36 * Real.pi * M ^ (3 : ℕ) / (T * r)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hlam : 0 < nearDiagonalLambda T r M := nearDiagonalLambda_pos hT hr hM
   rw [one_div, ← Real.sqrt_inv, nearDiagonalLambda]
@@ -39,14 +39,14 @@ theorem inv_sqrt_nearDiagonalLambda {T r M : ℝ} (hT : 0 < T) (hr : 0 < r) (hM 
   field_simp
 
 theorem block_algebra {N M s : ℝ} (hs0 : 0 < s) (hs1 : s ≤ 1) (hN0 : 0 ≤ N) (hNM : N ≤ M) :
-    (2 * N * 90 * s ^ 2 + 3) * (3 / s + 1) ≤ 720 * (M * s) + 12 * (1 / s) := by
+    (2 * N * 90 * s ^ (2 : ℕ) + 3) * (3 / s + 1) ≤ 720 * (M * s) + 12 * (1 / s) := by
   have hM0 : 0 ≤ M := le_trans hN0 hNM
-  have hsq : s ^ 2 ≤ s := by nlinarith
+  have hsq : s ^ (2 : ℕ) ≤ s := by nlinarith
   have hinv : 1 ≤ 1 / s := by
     rw [le_div_iff₀ hs0]
     linarith
-  have hexp : (2 * N * 90 * s ^ 2 + 3) * (3 / s + 1)
-      = 540 * N * s + 180 * N * s ^ 2 + 9 * (1 / s) + 3 := by
+  have hexp : (2 * N * 90 * s ^ (2 : ℕ) + 3) * (3 / s + 1)
+      = 540 * N * s + 180 * N * s ^ (2 : ℕ) + 9 * (1 / s) + 3 := by
     field_simp
     ring
   rw [hexp]
@@ -66,7 +66,7 @@ theorem norm_nearDiagonalBlock_le_bound {T r M : ℝ} (hT : 0 < T) (hr : 0 < r) 
   have hs1 : s ≤ 1 := by
     rw [hsdef, show (1 : ℝ) = Real.sqrt 1 by simp]
     exact Real.sqrt_le_sqrt hlam1
-  have hssq : s ^ 2 = nearDiagonalLambda T r M := Real.sq_sqrt hlam0.le
+  have hssq : s ^ (2 : ℕ) = nearDiagonalLambda T r M := Real.sq_sqrt hlam0.le
   have hraw := norm_nearDiagonalBlock_le hT hr hM hrM hN hspan hlam1
   refine hraw.trans ?_
   have hgoal : (2 * (N : ℝ) * 90 * nearDiagonalLambda T r M + 3)

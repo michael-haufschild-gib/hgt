@@ -187,7 +187,7 @@ noncomputable def coupledCos (ε : ℝ) : ℝ → ℝ → ℂ → ℂ :=
 noncomputable def coupledPotential (a massSq ε : ℝ) : ℝ → ℝ → ℂ → ℂ :=
   fun s t z => ((massSq : ℝ) : ℂ) * Complex.exp (2 * coupledSin ε s t z)
     - ((3 * a : ℝ) : ℂ) * coupledSin ε s t z
-    + ((3 * a ^ 2 : ℝ) : ℂ) * (coupledCos ε s t z * coupledCos ε s t z)
+    + ((3 * a ^ (2 : ℕ) : ℝ) : ℂ) * (coupledCos ε s t z * coupledCos ε s t z)
 
 theorem im_add_ofReal_ofReal (s t : ℝ) (z : ℂ) : ((s : ℂ) + (t : ℂ) + z).im = z.im := by
   simp
@@ -236,7 +236,7 @@ theorem exists_boundedC1_coupledPotential (a massSq ε : ℝ) {ρ : ℝ} (hρ : 
   have hExp := hSin.cexp_two
   have hT1 := (BoundedC1Potential.const ((massSq : ℝ) : ℂ) ρ).mul hExp
   have hT2 := (BoundedC1Potential.const ((3 * a : ℝ) : ℂ) ρ).mul hSin
-  have hT3 := (BoundedC1Potential.const ((3 * a ^ 2 : ℝ) : ℂ) ρ).mul (hCos.mul hCos)
+  have hT3 := (BoundedC1Potential.const ((3 * a ^ (2 : ℕ) : ℝ) : ℂ) ρ).mul (hCos.mul hCos)
   exact ⟨_, _, _, (hT1.sub hT2).add hT3⟩
 
 /-- **The effective potential of the coupled scale is a real quantity on the real axis**, and its
@@ -245,7 +245,7 @@ theorem coupledPotential_ofReal (a massSq ε : ℝ) (s t w : ℝ) :
     coupledPotential a massSq ε s t ((w : ℝ) : ℂ)
       = ((massSq * Real.exp (2 * (ε * Real.sin (s + t + w)))
           - 3 * a * (ε * Real.sin (s + t + w))
-          + 3 * a ^ 2 * (ε * Real.cos (s + t + w) * (ε * Real.cos (s + t + w))) : ℝ) : ℂ) := by
+          + 3 * a ^ (2 : ℕ) * (ε * Real.cos (s + t + w) * (ε * Real.cos (s + t + w))) : ℝ) : ℂ) := by
   have hz : ((s : ℂ) + (t : ℂ) + ((w : ℝ) : ℂ)) = ((s + t + w : ℝ) : ℂ) := by
     push_cast
     ring
@@ -274,7 +274,7 @@ theorem conformalPotentialTri_coupledScale (a massSq ε : ℝ) :
 /-- An admissible potential carries a clock datum, once the radii and the rectangle are chosen. -/
 theorem clockDatum_of_boundedC1 {V Vs Vt : ℝ → ℝ → ℂ → ℂ} {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ}
     (hV : BoundedC1Potential V Vs Vt ρ₀ Mv) (hρ₀ : 0 < ρ₀) (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀)
-    (hT : 0 ≤ T) (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hT : 0 ≤ T) (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 < ρ₃) (hρ₃ : ρ₃ < ρ₂) :
     ClockDatum V Vs Vt ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T where
@@ -326,7 +326,7 @@ theorem twoSpecies_scale_reconstruction_coupledScale (n : ℕ) (a ε : ℝ) {mas
   obtain ⟨Vs, Vt, Mv, hV⟩ := exists_boundedC1_coupledPotential a massSq ε zero_le_one
   have hMv0 : 0 ≤ Mv := hV.boundNonneg
   obtain ⟨T, hTpos, hsmall⟩ := exists_small_side
-    (A := 4 + Mv * (1 : ℝ) ^ 2 / 4) (B := ((1 : ℝ) - 1 / 2) / 2) (by positivity) (by norm_num)
+    (A := 4 + Mv * (1 : ℝ) ^ (2 : ℕ) / 4) (B := ((1 : ℝ) - 1 / 2) / 2) (by positivity) (by norm_num)
   have hD := clockDatum_of_boundedC1 (ρ := (1 : ℝ) / 2) (ρ₁ := (1 : ℝ) / 4)
     (ρ₂ := (1 : ℝ) / 8) (ρ₃ := (1 : ℝ) / 16) hV one_pos (by norm_num) (by norm_num)
     hTpos.le hsmall (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)

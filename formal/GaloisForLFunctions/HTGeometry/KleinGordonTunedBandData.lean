@@ -28,7 +28,7 @@ variable {b c R : ℝ}
 set_option maxHeartbeats 1000000 in
 /-- **The field of the tuned clock from band-limited data.** -/
 theorem kgFieldMildT_kgTunedPot_band (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {g h : Lp ℂ 2 (volume : Measure E)} (hg : kgLowPassOp R g = g)
     (hh : kgLowPassOp R h = h) (t : ℝ) :
     kgFieldMildT (kgBandOpT (fun _ : ℝ => fourierMulCLM
@@ -53,7 +53,7 @@ theorem kgFieldMildT_kgTunedPot_band (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
 set_option maxHeartbeats 1000000 in
 /-- **The velocity of the tuned clock from band-limited data.** -/
 theorem kgFieldVelT_kgTunedPot_band (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {g h : Lp ℂ 2 (volume : Measure E)} (hg : kgLowPassOp R g = g)
     (hh : kgLowPassOp R h = h) (t : ℝ) :
     kgFieldVelT (kgBandOpT (fun _ : ℝ => fourierMulCLM

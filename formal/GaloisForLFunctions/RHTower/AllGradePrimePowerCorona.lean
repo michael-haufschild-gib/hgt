@@ -103,8 +103,8 @@ theorem primePowerIndex_filter_grade_zero (X : ℕ) :
 /-- **The grade-one embedding is an isometry.**  Its all-grade mass is the prime-log mass of the
 underlying field. -/
 theorem primePowerMass_gradeOneEmbed (b : ℕ → ℝ) (X : ℕ) :
-    primePowerMass (gradeOneEmbed b) X = primeLogMass b X := by
-  rw [primePowerMass, primeLogMass,
+    primePowerMass (gradeOneEmbed b) X = primeLogMass_weightedEulerCoefficientSpaces b X := by
+  rw [primePowerMass, primeLogMass_weightedEulerCoefficientSpaces,
     ← Finset.sum_filter_add_sum_filter_not (primePowerIndex X) (fun z => z.2 = 0)]
   have hzero : ∑ z ∈ (primePowerIndex X).filter (fun z => ¬ z.2 = 0),
       |gradeOneEmbed b z| / ((z.1 : ℝ) ^ (z.2 + 1)) = 0 := by
@@ -120,8 +120,8 @@ theorem primePowerMass_gradeOneEmbed (b : ℕ → ℝ) (X : ℕ) :
 
 /-- **Grade-one projection is contractive.** -/
 theorem primeLogMass_gradeOneProj_le (c : ℕ × ℕ → ℝ) (X : ℕ) :
-    primeLogMass (gradeOneProj c) X ≤ primePowerMass c X := by
-  rw [primeLogMass, primePowerMass]
+    primeLogMass_weightedEulerCoefficientSpaces (gradeOneProj c) X ≤ primePowerMass c X := by
+  rw [primeLogMass_weightedEulerCoefficientSpaces, primePowerMass]
   have hsub : (Finset.filter (fun n : ℕ => n.Prime) (Finset.Icc 1 X)).image (fun p : ℕ => (p, 0))
       ⊆ primePowerIndex X := by
     rw [← primePowerIndex_filter_grade_zero]
@@ -324,7 +324,7 @@ theorem abs_eulerRay_unit (z : ℕ × ℕ) :
 
 theorem primePowerMass_eulerRay_unit (X : ℕ) :
     primePowerMass (eulerRay fun _ => (1 : ℝ)) X
-      = primeLogMass (fun _ => (1 : ℝ)) X
+      = primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1 : ℝ)) X
         + primePowerMass (eulerRayHigher fun _ => (1 : ℝ)) X := by
   rw [← primePowerMass_gradeOneEmbed, primePowerMass, primePowerMass, primePowerMass,
     ← Finset.sum_add_distrib]
@@ -462,7 +462,7 @@ def eulerTangent (b : ℕ → ℝ) : ℕ × ℕ → ℝ := fun z => ((z.2 : ℝ)
 critical summable topology: the complete tangent ray has weighted mass at most four times the
 grade-one mass. -/
 theorem primePowerMass_eulerTangent_le (b : ℕ → ℝ) (X : ℕ) :
-    primePowerMass (eulerTangent b) X ≤ 4 * primeLogMass b X := by
+    primePowerMass (eulerTangent b) X ≤ 4 * primeLogMass_weightedEulerCoefficientSpaces b X := by
   set g : ℕ → ℕ → ℝ :=
     fun p m => ((m : ℝ) + 1) * Real.log p * |b p| * (((p : ℝ))⁻¹) ^ (m + 1) with hg
   have hgnn : ∀ p m, 0 ≤ g p m := by
@@ -522,8 +522,8 @@ theorem primePowerMass_eulerTangent_le (b : ℕ → ℝ) (X : ℕ) :
       _ = 4 * (Real.log p / p * |b p|) := by field_simp
   calc ∑ p ∈ Nat.primesBelow (X + 1), ∑ m ∈ Finset.range (X + 1), g p m
       ≤ ∑ p ∈ Nat.primesBelow (X + 1), 4 * (Real.log p / p * |b p|) := Finset.sum_le_sum hinner
-    _ = 4 * primeLogMass b X := by
-        rw [← Finset.mul_sum, primeLogMass, primesBelow_succ_eq_filter]
+    _ = 4 * primeLogMass_weightedEulerCoefficientSpaces b X := by
+        rw [← Finset.mul_sum, primeLogMass_weightedEulerCoefficientSpaces, primesBelow_succ_eq_filter]
 
 /-! ### The Marcinkiewicz tangent extension -/
 
@@ -575,14 +575,14 @@ theorem sum_Ico_succ_mul_pow_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r ≤ 1 / 2) (M
 /-- The dyadic Marcinkiewicz bound: a logarithmic-layer field has summable reciprocal-weighted
 prime mass, with the explicit constant `4 K log 2`. -/
 theorem sum_primesBelow_primeLog_div_le {b : ℕ → ℝ} {K : ℝ}
-    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass b Y ≤ K * Real.log Y) (X : ℕ) :
+    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass_weightedEulerCoefficientSpaces b Y ≤ K * Real.log Y) (X : ℕ) :
     ∑ p ∈ Nat.primesBelow (X + 1), Real.log p / p * |b p| / p ≤ 4 * K * Real.log 2 := by
   classical
   have hKnn : 0 ≤ K := by
     by_contra hneg
     rw [not_le] at hneg
     have h2 := hK 2 le_rfl
-    have hmass : 0 ≤ primeLogMass b 2 := primeLogMass_nonneg b 2
+    have hmass : 0 ≤ primeLogMass_weightedEulerCoefficientSpaces b 2 := primeLogMass_nonneg_weightedEulerCoefficientSpaces b 2
     have hlog2 : (0 : ℝ) < Real.log ((2 : ℕ) : ℝ) := by
       rw [Nat.cast_ofNat]
       exact Real.log_pos (by norm_num)
@@ -628,11 +628,11 @@ theorem sum_primesBelow_primeLog_div_le {b : ℕ → ℝ} {K : ℝ}
       rw [hp2] at hlt2
       omega
     have hmass : ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
-        Real.log p / p * |b p| ≤ primeLogMass b (2 ^ (k + 1)) := by
-      rw [primeLogMass]
+        Real.log p / p * |b p| ≤ primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (k + 1)) := by
+      rw [primeLogMass_weightedEulerCoefficientSpaces]
       exact Finset.sum_le_sum_of_subset_of_nonneg hsub fun p _ _ =>
         mul_nonneg (div_nonneg (Real.log_natCast_nonneg p) (by positivity)) (abs_nonneg _)
-    have hKmass : primeLogMass b (2 ^ (k + 1)) ≤ K * ((k : ℝ) + 1) * Real.log 2 := by
+    have hKmass : primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (k + 1)) ≤ K * ((k : ℝ) + 1) * Real.log 2 := by
       have h2 : 2 ≤ 2 ^ (k + 1) := Nat.le_self_pow (by omega) 2
       have h := hK (2 ^ (k + 1)) h2
       have hlog : Real.log ((2 ^ (k + 1) : ℕ) : ℝ) = ((k : ℝ) + 1) * Real.log 2 := by
@@ -641,7 +641,7 @@ theorem sum_primesBelow_primeLog_div_le {b : ℕ → ℝ} {K : ℝ}
         push_cast
         ring
       rw [hlog] at h
-      calc primeLogMass b (2 ^ (k + 1)) ≤ K * (((k : ℝ) + 1) * Real.log 2) := h
+      calc primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (k + 1)) ≤ K * (((k : ℝ) + 1) * Real.log 2) := h
         _ = K * ((k : ℝ) + 1) * Real.log 2 := by ring
     calc ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k}, Real.log p / p * |b p| / p
         ≤ ∑ p ∈ {p ∈ Nat.primesBelow (X + 1) | Nat.log 2 p = k},
@@ -677,7 +677,7 @@ Marcinkiewicz layer the tangent grades `m ≥ 2` carry weighted mass bounded uni
 continuously in the layer constant: the all-grade tangent over `M_0` is exactly the vanishing-tail
 tangent. -/
 theorem primePowerMass_eulerTangentHigher_le {b : ℕ → ℝ} {K : ℝ}
-    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass b Y ≤ K * Real.log Y) (X : ℕ) :
+    (hK : ∀ Y : ℕ, 2 ≤ Y → primeLogMass_weightedEulerCoefficientSpaces b Y ≤ K * Real.log Y) (X : ℕ) :
     primePowerMass (eulerTangentHigher b) X ≤ 24 * K * Real.log 2 := by
   set g : ℕ → ℕ → ℝ := fun p m =>
     if m = 0 then 0 else ((m : ℝ) + 1) * (Real.log p * |b p|) * (((p : ℝ))⁻¹) ^ (m + 1) with hg

@@ -82,8 +82,8 @@ theorem thetaCuspTailTwoSidedPhaseValue_ne_zero_of_XiC_eq_zero
     thetaCuspTailTwoSidedPhaseValue z ≠ 0 := by
   have hcross :=
     thetaCuspTailSecondDensityPhaseValue_twoSided_crossed hz
-  change (z ^ 2 + 1 / 4) * thetaCuspTailTwoSidedPhaseValue z =
-    1 / 2 + 4 * z ^ 2 * XiC z at hcross
+  change (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailTwoSidedPhaseValue z =
+    1 / 2 + 4 * z ^ (2 : ℕ) * XiC z at hcross
   rw [hXi, mul_zero, add_zero] at hcross
   intro hzero
   rw [hzero, mul_zero] at hcross

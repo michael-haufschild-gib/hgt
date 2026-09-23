@@ -247,7 +247,7 @@ def boseApertureFactor (x : ℝ) : ℝ :=
 private theorem boseApertureFactor_hasDerivAt
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt boseApertureFactor
-      ((Real.exp x - 1 - x * Real.exp x) / (Real.exp x - 1) ^ 2) x := by
+      ((Real.exp x - 1 - x * Real.exp x) / (Real.exp x - 1) ^ (2 : ℕ)) x := by
   have hden : Real.exp x - 1 ≠ 0 := by
     exact (sub_pos.mpr (Real.one_lt_exp_iff.mpr hx)).ne'
   simpa [boseApertureFactor] using!

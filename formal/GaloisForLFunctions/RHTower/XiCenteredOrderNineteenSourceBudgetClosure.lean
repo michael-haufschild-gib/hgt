@@ -5,8 +5,8 @@ import GaloisForLFunctions.RHTower.XiCenteredOrdersNineteenTwentySourceBudgetBou
 # Unconditional closure of the centered order-nineteen source moment
 
 A sixteenth-mesh theta certificate sharpens the complete fourth reciprocal-trace budget below
-`147 / 10^6`.  Every zero in the formerly residual order-twenty annulus contributes more than
-`147 / (4 * 10^6)` to that nonnegative trace, and its four distinct FE--Schwarz copies therefore
+`147 / 10^(6 : ℕ)`.  Every zero in the formerly residual order-twenty annulus contributes more than
+`147 / (4 * 10^(6 : ℕ))` to that nonnegative trace, and its four distinct FE--Schwarz copies therefore
 overspend the source budget.  The annulus is empty unconditionally, giving
 
 `0 < normalizedPrimeArchMoment 19`.
@@ -23,7 +23,7 @@ noncomputable section
 certificate to `2.53102`. -/
 lemma twoHundredFiftyThreeThousandOneHundredTwo_over_oneHundredThousand_lt_log_four_mul_pi :
     (253102 / 100000 : ℝ) < Real.log (4 * Real.pi) := by
-  let v : ℝ := 5 ^ 26 / (2 ^ 6 * 3 ^ 32)
+  let v : ℝ := 5 ^ (26 : ℕ) / (2 ^ (6 : ℕ) * 3 ^ (32 : ℕ))
   let c : ℝ := 1 + 1 / 9000
   have hvpos : 0 < v := by
     dsimp [v]
@@ -90,13 +90,13 @@ theorem normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over
   have hmu :=
     oneHundredThirtyNine_div_twentyFiveThousand_lt_thetaCuspNormalizedEvenMoment_two
   have hsource : normalizedPrimeArchMoment 1 <
-      M ^ 2 / 2 - (139 / 25000 : ℝ) / 6 := by
+      M ^ (2 : ℕ) / 2 - (139 / 25000 : ℝ) / 6 := by
     rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
       ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
     dsimp only [M]
     nlinarith
   have hthermal : xiThermalSecondMoment <
-      (84 / 83 : ℝ) * (M ^ 2 / 2 - (139 / 25000 : ℝ) / 6) :=
+      (84 / 83 : ℝ) * (M ^ (2 : ℕ) / 2 - (139 / 25000 : ℝ) / 6) :=
     xiThermalSecondMoment_le_eightyFour_over_eightyThree_source.trans_lt
       (mul_lt_mul_of_pos_left hsource (by norm_num))
   have hgap :=
@@ -106,7 +106,7 @@ theorem normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over
     xiEndpointCompletedCurvature_lt_oneThousandOneHundredFiftySeven_over_twentyFiveThousand
   have hmaster :
       M < 1157 / 25000 +
-        (21 / 83 : ℝ) * (M ^ 2 / 2 - (139 / 25000 : ℝ) / 6) := by
+        (21 / 83 : ℝ) * (M ^ (2 : ℕ) / 2 - (139 / 25000 : ℝ) / 6) := by
     dsimp only [M] at hgap ⊢
     nlinarith
   by_contra hnot
@@ -114,17 +114,17 @@ theorem normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over
   have hfactor : 0 < 1 - (21 / 166 : ℝ) * (M + 4633 / 100000) := by
     nlinarith
   have hmonotone :
-      (4633 / 100000 : ℝ) - (21 / 166 : ℝ) * (4633 / 100000) ^ 2 ≤
-        M - (21 / 166 : ℝ) * M ^ 2 := by
+      (4633 / 100000 : ℝ) - (21 / 166 : ℝ) * (4633 / 100000) ^ (2 : ℕ) ≤
+        M - (21 / 166 : ℝ) * M ^ (2 : ℕ) := by
     have hprod := mul_nonneg (sub_nonneg.mpr hMlower) hfactor.le
     nlinarith
   have hupper :
-      M - (21 / 166 : ℝ) * M ^ 2 <
+      M - (21 / 166 : ℝ) * M ^ (2 : ℕ) <
         1157 / 25000 - (21 / 498 : ℝ) * (139 / 25000) := by
     nlinarith [hmaster]
   have hrat :
       1157 / 25000 - (21 / 498 : ℝ) * (139 / 25000) <
-        (4633 / 100000 : ℝ) - (21 / 166 : ℝ) * (4633 / 100000) ^ 2 := by
+        (4633 / 100000 : ℝ) - (21 / 166 : ℝ) * (4633 / 100000) ^ (2 : ℕ) := by
     norm_num
   linarith
 
@@ -136,7 +136,7 @@ theorem normalizedPrimeArchMoment_one_lt_oneHundredFortySeven_over_oneMillion :
     simpa only [M] using normalizedPrimeArchMoment_zero_pos
   have hM :=
     normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over_oneHundredThousand
-  have hMsq : M ^ 2 < (4633 / 100000 : ℝ) ^ 2 := by
+  have hMsq : M ^ (2 : ℕ) < (4633 / 100000 : ℝ) ^ (2 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr (by simpa only [M] using hM))
       (add_pos (by norm_num : (0 : ℝ) < 4633 / 100000) hM0)
     nlinarith
@@ -145,19 +145,19 @@ theorem normalizedPrimeArchMoment_one_lt_oneHundredFortySeven_over_oneMillion :
   rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
     ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
   simpa only [M] using (by nlinarith :
-    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 147 / 1000000)
+    M ^ (2 : ℕ) / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 147 / 1000000)
 
 /-- Every fourth-trace atom throughout the old order-twenty residual height window exceeds one
 quarter of the sharpened global source threshold. -/
 theorem oneHundredFortySeven_over_fourMillion_lt_xiFourthReciprocalTraceAtom_below_327_over_2
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 327 / 2) :
-    (147 / 4000000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 327 / 2) :
+    (147 / 4000000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 655 / 4
   have hu0 : 0 < u := by simpa only [u] using huLower
@@ -169,21 +169,21 @@ theorem oneHundredFortySeven_over_fourMillion_lt_xiFourthReciprocalTraceAtom_bel
   have hwLower : 2365 / 16 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 :=
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsqLower : (2365 / 16 : ℝ) ^ 2 < w ^ 2 :=
+  have hsqLower : (2365 / 16 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
-  have hsecond : 0 < 147 * (W ^ 2 + w ^ 2) - 4000000 := by
+  have hsecond : 0 < 147 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 4000000 := by
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      4000000 * W ^ 2 - 147 * W ^ 4 <
-        4000000 * w ^ 2 - 147 * w ^ 4 := by
+      4000000 * W ^ (2 : ℕ) - 147 * W ^ (4 : ℕ) <
+        4000000 * w ^ (2 : ℕ) - 147 * w ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (4000000 * w ^ 2 - 147 * w ^ 4) -
-            (4000000 * W ^ 2 - 147 * W ^ 4) =
-          (W ^ 2 - w ^ 2) * (147 * (W ^ 2 + w ^ 2) - 4000000) := by
+        (4000000 * w ^ (2 : ℕ) - 147 * w ^ (4 : ℕ)) -
+            (4000000 * W ^ (2 : ℕ) - 147 * W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (147 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 4000000) := by
       ring
     nlinarith
   have huv : u * v < 327 / 8 := by
@@ -194,23 +194,23 @@ theorem oneHundredFortySeven_over_fourMillion_lt_xiFourthReciprocalTraceAtom_bel
       _ = 327 / 8 := by ring
   have hendpoint :
       32000000 * (327 / 8 : ℝ) <
-        4000000 * W ^ 2 - 147 * W ^ 4 := by
+        4000000 * W ^ (2 : ℕ) - 147 * W ^ (4 : ℕ) := by
     norm_num [W]
   have huvScaled : 32000000 * (u * v) < 32000000 * (327 / 8 : ℝ) :=
     mul_lt_mul_of_pos_left huv (by norm_num)
   have hchain :
-      32000000 * (u * v) < 4000000 * w ^ 2 - 147 * w ^ 4 :=
+      32000000 * (u * v) < 4000000 * w ^ (2 : ℕ) - 147 * w ^ (4 : ℕ) :=
     huvScaled.trans (hendpoint.trans hshape)
   have hG :
-      0 < 4000000 * (v ^ 2 - 6 * u * v + u ^ 2) - 147 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 4000000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 147 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith [hchain]
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -238,7 +238,7 @@ theorem xiCenteredOrderTwentyResidualAnnulusEmpty :
 
 /-- Every centered reciprocal-square twentieth power has positive real part unconditionally. -/
 theorem xiZeroCopyReciprocalSquare_pow_twenty_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 20).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (20 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_twenty_re_pos_of_residualAnnulusEmpty
     xiCenteredOrderTwentyResidualAnnulusEmpty q
 

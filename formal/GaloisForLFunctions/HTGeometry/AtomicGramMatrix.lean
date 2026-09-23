@@ -19,14 +19,14 @@ noncomputable section
 
 /-- The scaled atomic part of the Pick Gram matrix at the nodes above the atoms. -/
 def atomicGram {d : ℕ} (a c : Fin d → ℝ) (y : ℝ) : Matrix (Fin d) (Fin d) ℂ :=
-  fun l m => (y : ℂ) ^ 2 * ∑ j, (c j : ℂ) /
+  fun l m => (y : ℂ) ^ (2 : ℕ) * ∑ j, (c j : ℂ) /
     (((a j : ℂ) - upperNode (a l) y) *
       ((a j : ℂ) - (starRingEnd ℂ) (upperNode (a m) y)))
 
 /-- **The atomic diagonal splits off its own coefficient exactly.** -/
 theorem atomicGram_diagonal_split {d : ℕ} (a c : Fin d → ℝ) {y : ℝ} (hy : y ≠ 0) (l : Fin d) :
     atomicGram a c y l l = (c l : ℂ) +
-      ∑ j ∈ univ.erase l, (y : ℂ) ^ 2 * ((c j : ℂ) /
+      ∑ j ∈ univ.erase l, (y : ℂ) ^ (2 : ℕ) * ((c j : ℂ) /
         (((a j : ℂ) - upperNode (a l) y) *
           ((a j : ℂ) - (starRingEnd ℂ) (upperNode (a l) y)))) := by
   classical
@@ -40,7 +40,7 @@ by the height squared times the sum of the other coefficients over their squared
 theorem norm_atomicGram_diagonal_sub_le {d : ℕ} (a c : Fin d → ℝ)
     (ha : Function.Injective a) {y : ℝ} (hy : y ≠ 0) (l : Fin d) :
     ‖atomicGram a c y l l - (c l : ℂ)‖ ≤
-      ∑ j ∈ univ.erase l, y ^ 2 * ‖(c j : ℂ)‖ / (a j - a l) ^ 2 := by
+      ∑ j ∈ univ.erase l, y ^ (2 : ℕ) * ‖(c j : ℂ)‖ / (a j - a l) ^ (2 : ℕ) := by
   classical
   rw [atomicGram_diagonal_split a c hy l, add_sub_cancel_left]
   refine le_trans (norm_sum_le _ _) ?_

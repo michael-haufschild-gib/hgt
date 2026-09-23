@@ -145,7 +145,7 @@ theorem tendsto_xiWardCubicPrimitiveGeneratedSecant
         xiWardCubicPrimitiveGeneratedSecant pe kappa c q)
       (nhdsWithin 0 (Ioi 0))
       (nhds ((xiRightCenteredZero q +
-        routePPrimitiveBurnolCenteredMode pe kappa)⁻¹ ^ 2)) := by
+        routePPrimitiveBurnolCenteredMode pe kappa)⁻¹ ^ (2 : ℕ))) := by
   let X : ℂ := xiRightCenteredZero q +
     routePPrimitiveBurnolCenteredMode pe kappa
   have hX : X ≠ 0 := by

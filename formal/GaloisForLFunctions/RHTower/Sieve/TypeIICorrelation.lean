@@ -52,7 +52,7 @@ theorem norm_sum_correlation_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {m₁ m₂
           * (starRingEnd ℂ) (phaseExp (nearDiagonalPhase T r ((m₂ : ℝ) * (d : ℝ))))‖
       ≤ 2500 * Real.sqrt (T * (r / m₁ - r / m₂) / (36 * Real.pi * A))
         + 22 * Real.sqrt (36 * Real.pi / (T * (r / m₁ - r / m₂)))
-            * Real.sqrt (((B : ℝ)) ^ 3) := by
+            * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
   have hm₁0 : (0 : ℝ) < (m₁ : ℝ) := by exact_mod_cast hm₁
   have hm₂0 : (0 : ℝ) < (m₂ : ℝ) := by
     have : 1 ≤ m₂ := by omega

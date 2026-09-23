@@ -29,17 +29,17 @@ noncomputable section
 
 /-- `0 ≤ 1 − cos t ≤ t²/2`. -/
 theorem connes_one_sub_cos_bounds (t : ℝ) :
-    0 ≤ 1 - Real.cos t ∧ 1 - Real.cos t ≤ t ^ 2 / 2 := by
-  have hhalf : Real.sin (t / 2) ^ 2 = (1 - Real.cos t) / 2 := by
+    0 ≤ 1 - Real.cos t ∧ 1 - Real.cos t ≤ t ^ (2 : ℕ) / 2 := by
+  have hhalf : Real.sin (t / 2) ^ (2 : ℕ) = (1 - Real.cos t) / 2 := by
     have hpyth := Real.sin_sq_add_cos_sq (t / 2)
-    have hdouble : Real.cos t = 2 * Real.cos (t / 2) ^ 2 - 1 := by
+    have hdouble : Real.cos t = 2 * Real.cos (t / 2) ^ (2 : ℕ) - 1 := by
       have h := Real.cos_two_mul (t / 2)
       rwa [show 2 * (t / 2) = t by ring] at h
     nlinarith [hpyth, hdouble]
   refine ⟨by nlinarith [sq_nonneg (Real.sin (t / 2))], ?_⟩
   have habs : |Real.sin (t / 2)| ≤ |t / 2| := Real.abs_sin_le_abs
-  have hsq : Real.sin (t / 2) ^ 2 ≤ (t / 2) ^ 2 := by
-    have h1 : |Real.sin (t / 2)| ^ 2 ≤ |t / 2| ^ 2 :=
+  have hsq : Real.sin (t / 2) ^ (2 : ℕ) ≤ (t / 2) ^ (2 : ℕ) := by
+    have h1 : |Real.sin (t / 2)| ^ (2 : ℕ) ≤ |t / 2| ^ (2 : ℕ) :=
       pow_le_pow_left₀ (abs_nonneg _) habs 2
     rwa [sq_abs, sq_abs] at h1
   nlinarith [hhalf, hsq]
@@ -56,7 +56,7 @@ theorem connes_boundedM_intervalIntegrable {f : ℝ → ℂ} {M : ℝ} {a b : �
 /-- The oscillating quotient is bounded on the whole line for a fixed cut-off. -/
 theorem connes_oscQuotient_bound (X u : ℝ) :
     ‖(((1 - Real.cos (2 * Real.pi * X * u)) / u : ℝ) : ℂ)‖
-      ≤ 2 * Real.pi ^ 2 * X ^ 2 * |u| := by
+      ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * |u| := by
   obtain ⟨hnn, hle⟩ := connes_one_sub_cos_bounds (2 * Real.pi * X * u)
   rw [Complex.norm_real, Real.norm_eq_abs]
   rcases eq_or_ne u 0 with hu | hu
@@ -64,9 +64,9 @@ theorem connes_oscQuotient_bound (X u : ℝ) :
   · have hu0 : (0 : ℝ) < |u| := abs_pos.mpr hu
     rw [abs_div, abs_of_nonneg hnn, div_le_iff₀ hu0]
     calc 1 - Real.cos (2 * Real.pi * X * u)
-        ≤ (2 * Real.pi * X * u) ^ 2 / 2 := hle
-      _ = 2 * Real.pi ^ 2 * X ^ 2 * u ^ 2 := by ring
-      _ = 2 * Real.pi ^ 2 * X ^ 2 * |u| * |u| := by
+        ≤ (2 * Real.pi * X * u) ^ (2 : ℕ) / 2 := hle
+      _ = 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * u ^ (2 : ℕ) := by ring
+      _ = 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * |u| * |u| := by
           rw [← sq_abs u]
           ring
 
@@ -85,7 +85,7 @@ theorem connes_oscQuotient_ball_vanishes (X : ℝ) :
     (∫ u in (-1 : ℝ)..1, (((1 - Real.cos (2 * Real.pi * X * u)) / u : ℝ) : ℂ)) = 0 := by
   refine connes_integral_odd_symmetric (a := (1 : ℝ)) zero_le_one
     (fun u => connes_oscQuotient_odd X u) ?_
-  refine connes_boundedM_intervalIntegrable (M := 2 * Real.pi ^ 2 * X ^ 2) ?_ ?_
+  refine connes_boundedM_intervalIntegrable (M := 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ)) ?_ ?_
   · refine Measurable.aestronglyMeasurable ?_
     refine Complex.measurable_ofReal.comp ?_
     exact (measurable_const.sub
@@ -95,12 +95,12 @@ theorem connes_oscQuotient_ball_vanishes (X : ℝ) :
       rw [Set.uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at hu
       rw [abs_le]
       exact ⟨hu.1.le, hu.2⟩
-    have hM0 : (0 : ℝ) ≤ 2 * Real.pi ^ 2 * X ^ 2 := by positivity
+    have hM0 : (0 : ℝ) ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) := by positivity
     calc ‖(((1 - Real.cos (2 * Real.pi * X * u)) / u : ℝ) : ℂ)‖
-        ≤ 2 * Real.pi ^ 2 * X ^ 2 * |u| := connes_oscQuotient_bound X u
-      _ ≤ 2 * Real.pi ^ 2 * X ^ 2 * 1 := by
+        ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * |u| := connes_oscQuotient_bound X u
+      _ ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * 1 := by
           exact mul_le_mul_of_nonneg_left hu1 hM0
-      _ = 2 * Real.pi ^ 2 * X ^ 2 := mul_one _
+      _ = 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) := mul_one _
 
 end
 

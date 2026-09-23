@@ -22,7 +22,7 @@ def regularSecondInverseJump (q : SchwartzMap ℝ ℂ) (t x : ℝ) (reverse : Bo
 theorem regularSecondInverseJump_eq (q : SchwartzMap ℝ ℂ) (t x : ℝ) (reverse : Bool) (z : ℝ) :
     regularSecondInverseJump q t x reverse z =
       (if reverse then regularJumpReverseReflection (globalSmallScatteringPotential q) t x z
-        else regularJumpReflection (globalSmallScatteringPotential q) t x z) / (z : ℂ)^2 := by
+        else regularJumpReflection (globalSmallScatteringPotential q) t x z) / (z : ℂ)^(2 : ℕ) := by
   simp only [regularSecondInverseJump, regularInverseFrequencyJump, div_div, pow_two]
 
 /-- Both physical phases preserve the second-inverse-weight channel norm exactly. -/

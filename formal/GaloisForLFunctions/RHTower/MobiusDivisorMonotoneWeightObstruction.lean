@@ -95,8 +95,8 @@ private theorem gamma_lower : (0.545 : ℝ) < Real.eulerMascheroniConstant := by
   linarith [Real.log_two_lt_d9]
 
 private def sixGap (g a b c : ℝ) : ℝ :=
-  (8*a+4*b+2*c-21+12*g)^2 - (12*a+5*b+2*c-41+42*g)^2 -
-    (13-18*g-3*a-b)^2 - (6-10*g-a)^2 - (2-4*g)^2 - (2*g-1)^2
+  (8*a+4*b+2*c-21+12*g)^(2 : ℕ) - (12*a+5*b+2*c-41+42*g)^(2 : ℕ) -
+    (13-18*g-3*a-b)^(2 : ℕ) - (6-10*g-a)^(2 : ℕ) - (2-4*g)^(2 : ℕ) - (2*g-1)^(2 : ℕ)
 
 private theorem sixGap_center_lower {g : ℝ} (hlo : 545/1000 ≤ g)
     (hhi : g ≤ 577216/1000000) :
@@ -106,7 +106,7 @@ private theorem sixGap_center_lower {g : ℝ} (hlo : 545/1000 ≤ g)
   nlinarith
 
 private theorem square_error_bound {x y : ℝ} (hxy : |x-y| ≤ 1/10000) (hy : |y| ≤ 2) :
-    |x^2-y^2| ≤ 1/1000 := by
+    |x^(2 : ℕ)-y^(2 : ℕ)| ≤ 1/1000 := by
   have hxb := (abs_le.mp hxy)
   have hyb := (abs_le.mp hy)
   have hsum : |x+y| ≤ 5 := by apply abs_le.mpr; constructor <;> linarith
@@ -176,8 +176,8 @@ theorem mobiusDivisorTimeChannel_sqrt (M d : ℕ) :
 
 /-- Source square minus diagonal energy, with the complete finite arithmetic channels. -/
 def mobiusDivisorTimeGap (M : ℕ) (w : ℕ → ℝ) : ℝ :=
-  (∑ d ∈ Icc 1 M, mobiusDivisorTimeChannel M w d)^2 -
-    ∑ d ∈ Icc 1 M, (mobiusDivisorTimeChannel M w d)^2
+  (∑ d ∈ Icc 1 M, mobiusDivisorTimeChannel M w d)^(2 : ℕ) -
+    ∑ d ∈ Icc 1 M, (mobiusDivisorTimeChannel M w d)^(2 : ℕ)
 
 /-- Ordinary nonnegative decreasing time weights do not produce diagonal dominance. -/
 theorem mobiusDivisorTimeGap_flat_seven_pos :

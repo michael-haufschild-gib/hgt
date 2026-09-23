@@ -96,7 +96,7 @@ theorem thetaCuspUpperAdjacentRatioSeparation_of_reflectedBudget
     (hfirst :
       14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
         9 * thetaCuspFirstAtomHalfDensityPairBudget *
           thetaCuspAtomRawEvenMoment 1 1 *
             thetaCuspAtomRawEvenMoment 3 1) :
@@ -120,26 +120,26 @@ theorem thetaCuspUpperAdjacentRatioSeparation_of_reflectedBudget
   have hcross : m2 * a1 ≤ a2 * m1 := by
     simpa only [m1, m2, a1, a2] using
       thetaCuspRawFirst_rawEvenMoment_cross_le 1 1
-  have hcrossSq : (m2 * a1) ^ 2 ≤ (a2 * m1) ^ 2 :=
+  have hcrossSq : (m2 * a1) ^ (2 : ℕ) ≤ (a2 * m1) ^ (2 : ℕ) :=
     (sq_le_sq₀ (mul_nonneg hm2 ha1.le) (mul_nonneg ha2 hm1)).2 hcross
   have ha3m3 : a3 ≤ m3 := by
     simpa only [a3, m3] using thetaCuspAtomRawEvenMoment_one_le_raw 3
-  have hfirst' : 14 * (W + H) * a2 ^ 2 ≤ 9 * W * a1 * a3 := by
+  have hfirst' : 14 * (W + H) * a2 ^ (2 : ℕ) ≤ 9 * W * a1 * a3 := by
     simpa only [W, H, a1, a2, a3] using hfirst
-  have hfactor : 0 < W * a1 ^ 2 := mul_pos hW (sq_pos_of_pos ha1)
+  have hfactor : 0 < W * a1 ^ (2 : ℕ) := mul_pos hW (sq_pos_of_pos ha1)
   apply (mul_le_mul_iff_of_pos_left hfactor).mp
   calc
-    (W * a1 ^ 2) * (14 * m2 ^ 2) = 14 * W * (m2 * a1) ^ 2 := by ring
-    _ ≤ 14 * W * (a2 * m1) ^ 2 :=
+    (W * a1 ^ (2 : ℕ)) * (14 * m2 ^ (2 : ℕ)) = 14 * W * (m2 * a1) ^ (2 : ℕ) := by ring
+    _ ≤ 14 * W * (a2 * m1) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hcrossSq (by positivity)
-    _ = (14 * a2 ^ 2 * m1) * (m1 * W) := by ring
-    _ ≤ (14 * a2 ^ 2 * m1) * (a1 * (W + H)) :=
+    _ = (14 * a2 ^ (2 : ℕ) * m1) * (m1 * W) := by ring
+    _ ≤ (14 * a2 ^ (2 : ℕ) * m1) * (a1 * (W + H)) :=
       mul_le_mul_of_nonneg_left hm1W (by positivity)
-    _ = (14 * (W + H) * a2 ^ 2) * (a1 * m1) := by ring
+    _ = (14 * (W + H) * a2 ^ (2 : ℕ)) * (a1 * m1) := by ring
     _ ≤ (9 * W * a1 * a3) * (a1 * m1) :=
       mul_le_mul_of_nonneg_right hfirst' (mul_nonneg ha1.le hm1)
-    _ = (W * a1 ^ 2) * (9 * m1 * a3) := by ring
-    _ ≤ (W * a1 ^ 2) * (9 * m1 * m3) := by
+    _ = (W * a1 ^ (2 : ℕ)) * (9 * m1 * a3) := by ring
+    _ ≤ (W * a1 ^ (2 : ℕ)) * (9 * m1 * m3) := by
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left ha3m3 (mul_nonneg (by norm_num) hm1))
         hfactor.le
@@ -151,7 +151,7 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_reflectedBudget
       16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
           thetaCuspAtomRawEvenMoment 2 1 ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ThetaCuspRelaxedFourthMomentConcentration := by
   rw [ThetaCuspRelaxedFourthMomentConcentration]
   let H := thetaCuspHigherHalfDensityBudget
@@ -173,7 +173,7 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_reflectedBudget
   have hcross : m2 * a1 ≤ a2 * m1 := by
     simpa only [m1, m2, a1, a2] using
       thetaCuspRawFirst_rawEvenMoment_cross_le 1 1
-  have hfirst' : 16 * (a0 + H) * a2 ≤ 45 * a1 ^ 2 := by
+  have hfirst' : 16 * (a0 + H) * a2 ≤ 45 * a1 ^ (2 : ℕ) := by
     simpa only [H, a0, a1, a2] using hfirst
   apply (mul_le_mul_iff_of_pos_left ha1).mp
   calc
@@ -185,9 +185,9 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_reflectedBudget
         (mul_le_mul_of_nonneg_left hm0Upper (by norm_num))
         (mul_nonneg ha2 hm1)
     _ = (16 * (a0 + H) * a2) * m1 := by ring
-    _ ≤ (45 * a1 ^ 2) * m1 :=
+    _ ≤ (45 * a1 ^ (2 : ℕ)) * m1 :=
       mul_le_mul_of_nonneg_right hfirst' hm1
-    _ ≤ a1 * (45 * m1 ^ 2) := by
+    _ ≤ a1 * (45 * m1 ^ (2 : ℕ)) := by
       have hfactor : 0 ≤ 45 * a1 * m1 :=
         mul_nonneg (mul_nonneg (by norm_num) ha1.le) hm1
       convert mul_le_mul_of_nonneg_left ha1m1 hfactor using 1 <;> first | rfl | ring
@@ -198,7 +198,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_reflectedBudget
     (hupper :
       14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
         9 * thetaCuspFirstAtomHalfDensityPairBudget *
           thetaCuspAtomRawEvenMoment 1 1 *
             thetaCuspAtomRawEvenMoment 3 1)
@@ -206,7 +206,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_reflectedBudget
       16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
           thetaCuspAtomRawEvenMoment 2 1 ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (Polynomial.C a + Polynomial.C b * Polynomial.X)).re :=
   forall_primeArchSourceTraceHankel_linear_nonneg_of_ratioSplit
     (thetaCuspUpperAdjacentRatioSeparation_of_reflectedBudget hupper)
@@ -218,7 +218,7 @@ theorem riemannHypothesis_of_reflectedBudget_of_primeArchDegreeTwoTail
     (hupper :
       14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
         9 * thetaCuspFirstAtomHalfDensityPairBudget *
           thetaCuspAtomRawEvenMoment 1 1 *
             thetaCuspAtomRawEvenMoment 3 1)
@@ -226,7 +226,7 @@ theorem riemannHypothesis_of_reflectedBudget_of_primeArchDegreeTwoTail
       16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
           thetaCuspAtomRawEvenMoment 2 1 ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2)
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ))
     (htail : PrimeArchSourceTraceHankelIntDegreeTwoTailNonnegative) :
     RiemannHypothesis :=
   riemannHypothesis_of_thetaCuspRatioSplit_of_primeArchDegreeTwoTail

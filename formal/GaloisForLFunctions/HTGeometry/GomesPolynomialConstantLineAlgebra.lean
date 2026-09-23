@@ -21,7 +21,7 @@ def gomesPolynomialConstantLineAlgebra (c : K) : Subalgebra K (Module.End K K[X]
 /-- The full actual-image algebra is exactly the second-derivative symmetries preserving constants. -/
 theorem gomesPolynomialConstantLineAlgebra_mem_iff (c : K) (E : Module.End K K[X]) :
     E ∈ gomesPolynomialConstantLineAlgebra K c ↔
-      Commute E (Polynomial.derivative ^ 2 : Module.End K K[X]) ∧
+      Commute E (Polynomial.derivative ^ (2 : ℕ) : Module.End K K[X]) ∧
         ∀ a : K, (E (C a)).derivative = 0 := by
   rw [gomesPolynomialConstantLineAlgebra, Subalgebra.mem_map]
   constructor

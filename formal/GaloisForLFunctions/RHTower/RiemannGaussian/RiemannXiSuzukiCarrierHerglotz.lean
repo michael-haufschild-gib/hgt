@@ -7,7 +7,7 @@ The arithmetic carrier density is bounded but need not have finite total
 mass.  Its unregularized Cauchy transform therefore has only `1 / |x|`
 decay.  This file installs the standard real normalization
 
-`1 / (x - z) - x / (1 + x^2)`
+`1 / (x - z) - x / (1 + x^(2 : ℕ))`
 
 whose decay is quadratic.  We prove its absolute integrability directly in
 Lean for every nonreal `z`, multiply it by the exact spectral-xi carrier

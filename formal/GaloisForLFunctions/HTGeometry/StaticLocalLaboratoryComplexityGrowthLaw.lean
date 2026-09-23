@@ -344,7 +344,7 @@ theorem inverseSquareBlock_index_bounds {L K : ℕ} (hKL : 8 * K ≤ L)
   constructor <;> omega
 
 noncomputable def inverseSquarePhaseWeight {L : ℕ} (t : ℝ) (j : Fin L) : ℝ :=
-  t / ((j.val + 1 : ℕ) : ℝ) ^ 2
+  t / ((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)
 
 theorem inverseSquarePhaseWeight_nonneg {L : ℕ} {t : ℝ} (ht : 0 ≤ t) (j : Fin L) :
     0 ≤ inverseSquarePhaseWeight t j := by
@@ -361,20 +361,20 @@ theorem inverseSquarePhaseWeight_le {L K : ℕ} {t ε : ℝ}
   have hjpos : (0 : ℝ) < ((j.val + 1 : ℕ) : ℝ) := by positivity
   have hjlo : (4 * (K : ℝ)) < ((j.val + 1 : ℕ) : ℝ) := by exact_mod_cast hb.1
   have hp : 0 < Real.pi * ε := mul_pos Real.pi_pos hε
-  have hquad : 4 * ((K : ℝ) + 1) ≤ (K : ℝ) ^ 2 := by
+  have hquad : 4 * ((K : ℝ) + 1) ≤ (K : ℝ) ^ (2 : ℕ) := by
     have hk : (8 : ℝ) ≤ K := by exact_mod_cast hK
     nlinarith
   have hscale : 128 * (Real.pi * ε) * ((K : ℝ) + 1) ≤
-      2 * (Real.pi * ε) * (4 * (K : ℝ)) ^ 2 := by
+      2 * (Real.pi * ε) * (4 * (K : ℝ)) ^ (2 : ℕ) := by
     have hprod := mul_nonneg (le_of_lt hp) (sub_nonneg.mpr hquad)
     nlinarith
-  have hsq : (4 * (K : ℝ)) ^ 2 ≤ (((j.val + 1 : ℕ) : ℝ)) ^ 2 := by
+  have hsq : (4 * (K : ℝ)) ^ (2 : ℕ) ≤ (((j.val + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     nlinarith
-  have htarget : t ≤ 2 * Real.pi * ε * (((j.val + 1 : ℕ) : ℝ)) ^ 2 := by
+  have htarget : t ≤ 2 * Real.pi * ε * (((j.val + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     have ht' : t < 128 * (Real.pi * ε) * ((K : ℝ) + 1) := by
       simpa [mul_assoc] using ht
-    have hmono : 2 * (Real.pi * ε) * (4 * (K : ℝ)) ^ 2 ≤
-        2 * (Real.pi * ε) * (((j.val + 1 : ℕ) : ℝ)) ^ 2 := by
+    have hmono : 2 * (Real.pi * ε) * (4 * (K : ℝ)) ^ (2 : ℕ) ≤
+        2 * (Real.pi * ε) * (((j.val + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_left hsq (by positivity)
     linarith
   unfold inverseSquarePhaseWeight
@@ -384,12 +384,12 @@ theorem inverseSquarePhaseWeight_le {L K : ℕ} {t ε : ℝ}
 theorem inverseSquarePhaseWeight_lower {L K : ℕ} {t : ℝ}
     (hK : 0 < K) (ht : 0 ≤ t) (hKL : 8 * K ≤ L)
     {j : Fin L} (hj : j ∈ inverseSquareBlock hKL) :
-    t / (64 * (K : ℝ) ^ 2) ≤ inverseSquarePhaseWeight t j := by
+    t / (64 * (K : ℝ) ^ (2 : ℕ)) ≤ inverseSquarePhaseWeight t j := by
   have hb := inverseSquareBlock_index_bounds hKL hj
   have hjpos : (0 : ℝ) < ((j.val + 1 : ℕ) : ℝ) := by positivity
   have hkpos : (0 : ℝ) < K := by exact_mod_cast hK
   have hjhi : ((j.val + 1 : ℕ) : ℝ) ≤ 8 * (K : ℝ) := by exact_mod_cast hb.2
-  have hsq : (((j.val + 1 : ℕ) : ℝ)) ^ 2 ≤ 64 * (K : ℝ) ^ 2 := by nlinarith
+  have hsq : (((j.val + 1 : ℕ) : ℝ)) ^ (2 : ℕ) ≤ 64 * (K : ℝ) ^ (2 : ℕ) := by nlinarith
   unfold inverseSquarePhaseWeight
   rw [div_le_div_iff₀ (by positivity) (sq_pos_of_pos hjpos)]
   nlinarith
@@ -420,20 +420,20 @@ theorem circuit_exists_inverseSquare_phase_subset {L K : ℕ}
     exact lt_of_lt_of_le hp htlo
   have htotal : 4 * Real.pi * ε < ∑ j ∈ T, inverseSquarePhaseWeight t j := by
     have hKposN : 0 < K := by omega
-    have hbasepos : 0 < t / (64 * (K : ℝ) ^ 2) := div_pos htpos (by positivity)
-    have hsum : (T.card : ℝ) * (t / (64 * (K : ℝ) ^ 2)) ≤
+    have hbasepos : 0 < t / (64 * (K : ℝ) ^ (2 : ℕ)) := div_pos htpos (by positivity)
+    have hsum : (T.card : ℝ) * (t / (64 * (K : ℝ) ^ (2 : ℕ))) ≤
         ∑ j ∈ T, inverseSquarePhaseWeight t j := by
       calc
-        (T.card : ℝ) * (t / (64 * (K : ℝ) ^ 2)) =
-            ∑ _j ∈ T, t / (64 * (K : ℝ) ^ 2) := by simp
+        (T.card : ℝ) * (t / (64 * (K : ℝ) ^ (2 : ℕ))) =
+            ∑ _j ∈ T, t / (64 * (K : ℝ) ^ (2 : ℕ)) := by simp
         _ ≤ ∑ j ∈ T, inverseSquarePhaseWeight t j := by
           apply Finset.sum_le_sum
           intro j hj
           apply inverseSquarePhaseWeight_lower hKposN (le_of_lt htpos) hKL
           exact (Finset.mem_sdiff.mp hj).1
     have hcardR : (2 * K : ℝ) < T.card := by exact_mod_cast hTcard
-    have hstrict : (2 * K : ℝ) * (t / (64 * (K : ℝ) ^ 2)) <
-        (T.card : ℝ) * (t / (64 * (K : ℝ) ^ 2)) :=
+    have hstrict : (2 * K : ℝ) * (t / (64 * (K : ℝ) ^ (2 : ℕ))) <
+        (T.card : ℝ) * (t / (64 * (K : ℝ) ^ (2 : ℕ))) :=
       mul_lt_mul_of_pos_right hcardR hbasepos
     have hratio : 4 * Real.pi * ε ≤ t / (32 * (K : ℝ)) := by
       rw [le_div_iff₀ (by positivity)]
@@ -441,7 +441,7 @@ theorem circuit_exists_inverseSquare_phase_subset {L K : ℕ}
           128 * Real.pi * ε * (K : ℝ) := by ring
       rw [hreassoc]
       exact htlo
-    have heq : (2 * K : ℝ) * (t / (64 * (K : ℝ) ^ 2)) =
+    have heq : (2 * K : ℝ) * (t / (64 * (K : ℝ) ^ (2 : ℕ))) =
         t / (32 * (K : ℝ)) := by
       field_simp
       ring
@@ -467,10 +467,10 @@ theorem circuit_exists_inverseSquare_phase_subset {L K : ℕ}
 
 noncomputable def inverseSquareMatchingEnergy {L : ℕ} (x : Config (PairQubit L)) : ℝ :=
   ∑ j : Fin L, if x (j, false) = true ∧ x (j, true) = true
-    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0
+    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0
 
 noncomputable def inverseCubeBridgeEnergy {L : ℕ} (x : Config (PairQubit L)) : ℝ :=
-  (1 / (L : ℝ) ^ 3) *
+  (1 / (L : ℝ) ^ (3 : ℕ)) *
     ∑ j : Fin L, if h : j.val + 1 < L then
       if x (j, true) = true ∧ x (⟨j.val + 1, h⟩, false) = true then 1 else 0
     else 0
@@ -501,7 +501,7 @@ theorem mem_unitaryGroup_diagonal_general {ι : Type*} [Fintype ι] [DecidableEq
   funext i
   have hsq : Complex.normSq (w i) = 1 := by
     have h1 := hw i
-    have h2 : ‖w i‖ ^ 2 = 1 := by rw [h1]; norm_num
+    have h2 : ‖w i‖ ^ (2 : ℕ) = 1 := by rw [h1]; norm_num
     rw [← Complex.normSq_eq_norm_sq] at h2
     exact h2
   have hmul : (w i) * (starRingEnd ℂ) (w i) = 1 := by
@@ -528,7 +528,7 @@ theorem inverseCubeBridgeEnergy_nonneg {L : ℕ} (x : Config (PairQubit L)) :
     split_ifs <;> norm_num
 
 theorem inverseCubeBridgeEnergy_le {L : ℕ} (hL : 0 < L) (x : Config (PairQubit L)) :
-    inverseCubeBridgeEnergy x ≤ 1 / (L : ℝ) ^ 2 := by
+    inverseCubeBridgeEnergy x ≤ 1 / (L : ℝ) ^ (2 : ℕ) := by
   have hLR : (0 : ℝ) < L := by exact_mod_cast hL
   have hsum :
       (∑ j : Fin L, if h : j.val + 1 < L then
@@ -541,9 +541,9 @@ theorem inverseCubeBridgeEnergy_le {L : ℕ} (hL : 0 < L) (x : Config (PairQubit
         split_ifs <;> norm_num
       _ = L := by simp
   unfold inverseCubeBridgeEnergy
-  have hcoef : 0 ≤ 1 / (L : ℝ) ^ 3 := by positivity
+  have hcoef : 0 ≤ 1 / (L : ℝ) ^ (3 : ℕ) := by positivity
   have hmul := mul_le_mul_of_nonneg_left hsum hcoef
-  have heq : (1 / (L : ℝ) ^ 3) * (L : ℝ) = 1 / (L : ℝ) ^ 2 := by
+  have heq : (1 / (L : ℝ) ^ (3 : ℕ)) * (L : ℝ) = 1 / (L : ℝ) ^ (2 : ℕ) := by
     field_simp
   rwa [heq] at hmul
 
@@ -560,7 +560,7 @@ theorem inverseSquareMatchingEnergy_pairFourConfig_false_right {L : ℕ}
 theorem inverseSquareMatchingEnergy_pairFourConfig_true {L : ℕ}
     (S : Finset (Fin L)) :
     inverseSquareMatchingEnergy (pairFourConfig S true true) =
-      ∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
+      ∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   simp [inverseSquareMatchingEnergy, pairFourConfig]
 
 theorem inverseCubeBridgeEnergy_pairFourConfig_false_left {L : ℕ}
@@ -590,7 +590,7 @@ theorem inverseSquareChainEnergy_pairFourConfig_false_right {L : ℕ}
 theorem inverseSquareChainEnergy_pairFourConfig_true {L : ℕ}
     (S : Finset (Fin L)) :
     inverseSquareChainEnergy (pairFourConfig S true true) =
-      (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) +
+      (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) +
         inverseCubeBridgeEnergy (pairFourConfig S true true) := by
   rw [inverseSquareChainEnergy, inverseSquareMatchingEnergy_pairFourConfig_true]
 
@@ -619,11 +619,11 @@ theorem time_mul_inverseCubeBridgeEnergy_le_quarter {L : ℕ} {t ε : ℝ}
   have hLposN : 0 < L := by omega
   have hLpos : (0 : ℝ) < L := by exact_mod_cast hLposN
   have hb := inverseCubeBridgeEnergy_le hLposN x
-  have hmul : t * inverseCubeBridgeEnergy x ≤ t * (1 / (L : ℝ) ^ 2) :=
+  have hmul : t * inverseCubeBridgeEnergy x ≤ t * (1 / (L : ℝ) ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left hb ht0
-  have htdiv : t * (1 / (L : ℝ) ^ 2) ≤ ε / (2 * (L : ℝ)) := by
+  have htdiv : t * (1 / (L : ℝ) ^ (2 : ℕ)) ≤ ε / (2 * (L : ℝ)) := by
     rw [mul_one_div, div_le_iff₀ (by positivity)]
-    have hreassoc : ε / (2 * (L : ℝ)) * (L : ℝ) ^ 2 = ε * (L : ℝ) / 2 := by
+    have hreassoc : ε / (2 * (L : ℝ)) * (L : ℝ) ^ (2 : ℕ) = ε * (L : ℝ) / 2 := by
       field_simp
     rw [hreassoc]
     exact ht
@@ -693,7 +693,7 @@ theorem inverseSquareChain_twoGateCount_ge {L K : ℕ}
     rw [hUdiag]
     simp [φ]
   have hmatch :
-      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) =
+      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
         ∑ j ∈ S, inverseSquarePhaseWeight t j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl

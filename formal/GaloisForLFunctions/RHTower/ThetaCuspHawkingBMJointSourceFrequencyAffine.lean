@@ -6,7 +6,7 @@ noncomputable section
 
 /-- Coefficient of the independent transform frequency in the original reduced source. -/
 def reducedSlope (s u : ℂ) : ℂ :=
-  -s*(s-1)/2*u^2*(u-1)*((2*s+3)*u+3)
+  -s*(s-1)/2*u^(2 : ℕ)*(u-1)*((2*s+3)*u+3)
 
 /-- The frequency-square terms cancel in the literal source polynomial. -/
 theorem reducedPolynomial_affine (s w u : ℂ) :

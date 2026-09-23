@@ -93,7 +93,7 @@ theorem complexLoss_self (v : EuclideanSpace ℂ (Deck N)) :
   rfl
 
 private theorem complexLoss_norm_le (v w : EuclideanSpace ℂ (Deck N)) :
-    ‖complexLoss N r s v w‖ ≤ ‖v‖^2+‖w‖^2 := by
+    ‖complexLoss N r s v w‖ ≤ ‖v‖^(2 : ℕ)+‖w‖^(2 : ℕ) := by
   have ht (a : EuclideanSpace ℂ (Deck N)) : ‖inversionTransfer N r s a‖ ≤ ‖a‖ := by
     have h := lossEnergy_nonneg N r s a
     unfold lossEnergy at h
@@ -141,7 +141,7 @@ variable {lam : ℝ}
 /-- The full original height vector satisfies its actual modal second-order equation. -/
 theorem coefficientHeightVector_hasDerivAt (n : ℤ) {y : ℝ} (hy : 0 < y) :
     HasDerivAt (coefficientHeightVector N f n)
-      (((signedFrequency (N+1 : ℕ) n^2-lam/y^2 : ℝ) : ℂ) • coefficientVector N f n y) y := by
+      (((signedFrequency (N+1 : ℕ) n^(2 : ℕ)-lam/y^(2 : ℕ) : ℝ) : ℂ) • coefficientVector N f n y) y := by
   have hq (q : Deck N) := maassCoefficient_second_hasDerivAt N (quotientForm N f q) n hy
   simp_rw [maassCoefficient_second_eq N (quotientForm N f _) n hy] at hq
   have h := hasDerivAt_pi.mpr hq
@@ -173,7 +173,7 @@ theorem coefficientWronskian_conj_exchange (n m : ℤ) (y : ℝ) :
 /-- The common Maass potential cancels exactly in the full arithmetic mixed current. -/
 theorem coefficientWronskian_hasDerivAt (n m : ℤ) {y : ℝ} (hy : 0 < y) :
     HasDerivAt (coefficientWronskian N r s f n m)
-      (((signedFrequency (N+1 : ℕ) n^2-signedFrequency (N+1 : ℕ) m^2 : ℝ) : ℂ)*
+      (((signedFrequency (N+1 : ℕ) n^(2 : ℕ)-signedFrequency (N+1 : ℕ) m^(2 : ℕ) : ℝ) : ℂ)*
         coefficientLoss N r s f n m y) y := by
   have hn := coefficientVector_hasDerivAt N f n hy
   have hm := coefficientVector_hasDerivAt N f m hy
@@ -197,7 +197,7 @@ theorem coefficientLoss_continuousOn (n m : ℤ) :
 /-- Exact transport of original off-diagonal arithmetic currents between any two positive cutoffs. -/
 theorem coefficientWronskian_transport (n m : ℤ) {Y Z : ℝ} (hY : 0 < Y) (hZ : 0 < Z) :
     coefficientWronskian N r s f n m Z-coefficientWronskian N r s f n m Y=
-      ((signedFrequency (N+1 : ℕ) n^2-signedFrequency (N+1 : ℕ) m^2 : ℝ) : ℂ)*
+      ((signedFrequency (N+1 : ℕ) n^(2 : ℕ)-signedFrequency (N+1 : ℕ) m^(2 : ℕ) : ℝ) : ℂ)*
         ∫ y in Y..Z, coefficientLoss N r s f n m y := by
   have hp {y : ℝ} (hy : y ∈ uIcc Y Z) : 0 < y := (lt_min hY hZ).trans_le hy.1
   have hc := (coefficientLoss_continuousOn N r s f n m).mono (fun _ hy => hp hy)
@@ -234,10 +234,10 @@ variable (e : Ioo (0 : ℝ) (1/4))
     (g : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (e : ℝ))
 
 private theorem coefficient_norm_integrable (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
-    IntegrableOn (fun y => ‖coefficientVector N g n y‖^2) (Ioi Y) := by
+    IntegrableOn (fun y => ‖coefficientVector N g n y‖^(2 : ℕ)) (Ioi Y) := by
   have h := integrable_finsetSum (Finset.univ : Finset (Deck N))
     (fun q _ => SelbergMaassBessel.mode_mass_integrable N e (quotientForm N g q) n hY)
-  have he : (fun y => ‖coefficientVector N g n y‖^2)=
+  have he : (fun y => ‖coefficientVector N g n y‖^(2 : ℕ))=
       fun y => ∑ q : Deck N, normSq (maassCoefficient N (quotientForm N g q) n y) := by
     funext y
     rw [EuclideanSpace.norm_sq_eq]
@@ -246,10 +246,10 @@ private theorem coefficient_norm_integrable (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
   exact h
 
 private theorem height_norm_integrable (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
-    IntegrableOn (fun y => ‖coefficientHeightVector N g n y‖^2) (Ioi Y) := by
+    IntegrableOn (fun y => ‖coefficientHeightVector N g n y‖^(2 : ℕ)) (Ioi Y) := by
   have h := integrable_finsetSum (Finset.univ : Finset (Deck N))
     (fun q _ => SelbergMaassBessel.mode_deriv_integrable N e (quotientForm N g q) n hY)
-  have he : (fun y => ‖coefficientHeightVector N g n y‖^2)=
+  have he : (fun y => ‖coefficientHeightVector N g n y‖^(2 : ℕ))=
       fun y => ∑ q : Deck N, normSq (deriv (maassCoefficient N (quotientForm N g q) n) y) := by
     funext y
     rw [EuclideanSpace.norm_sq_eq]
@@ -259,8 +259,8 @@ private theorem height_norm_integrable (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
 
 private theorem loss_integrable {u v : ℝ → EuclideanSpace ℂ (Deck N)} {Y : ℝ}
     (hu : ContinuousOn u (Ioi Y)) (hv : ContinuousOn v (Ioi Y))
-    (hiu : IntegrableOn (fun y => ‖u y‖^2) (Ioi Y))
-    (hiv : IntegrableOn (fun y => ‖v y‖^2) (Ioi Y)) :
+    (hiu : IntegrableOn (fun y => ‖u y‖^(2 : ℕ)) (Ioi Y))
+    (hiv : IntegrableOn (fun y => ‖v y‖^(2 : ℕ)) (Ioi Y)) :
     IntegrableOn (fun y => complexLoss N r s (u y) (v y)) (Ioi Y) := by
   let T := (inversionTransfer N r s).toContinuousLinearMap
   have hc : ContinuousOn (fun y => complexLoss N r s (u y) (v y)) (Ioi Y) :=
@@ -301,7 +301,7 @@ theorem coefficientWronskian_tendsto_zero (n m : ℤ) :
 /-- The boundary Wronskian equals the exact frequency difference times the full arithmetic tail kernel. -/
 theorem coefficientWronskian_eq_tail (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
     coefficientWronskian N r s g n m Y=
-      ((signedFrequency (N+1 : ℕ) m^2-signedFrequency (N+1 : ℕ) n^2 : ℝ) : ℂ)*
+      ((signedFrequency (N+1 : ℕ) m^(2 : ℕ)-signedFrequency (N+1 : ℕ) n^(2 : ℕ) : ℝ) : ℂ)*
         tailLoss N r s g n m Y := by
   have h := integral_Ioi_of_hasDerivAt_of_tendsto'
     (fun y hy => coefficientWronskian_hasDerivAt N r s g n m (hY.trans_le hy))
@@ -330,7 +330,7 @@ theorem tailLoss_eq_zero_of_residue_ne (n m : ℤ)
 theorem coefficientWronskian_neg_eq_zero (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
     coefficientWronskian N r s g n (-n) Y=0 := by
   rw [coefficientWronskian_eq_tail N r s e g n (-n) hY]
-  have he : signedFrequency (N+1 : ℕ) (-n)^2=signedFrequency (N+1 : ℕ) n^2 := by
+  have he : signedFrequency (N+1 : ℕ) (-n)^(2 : ℕ)=signedFrequency (N+1 : ℕ) n^(2 : ℕ) := by
     simp only [signedFrequency,Int.cast_neg]
     ring
   rw [he,sub_self,Complex.ofReal_zero,zero_mul]
@@ -380,7 +380,7 @@ theorem tailLoss_self_nonneg (n : ℤ) (Y : ℝ) : 0 ≤ (tailLoss N r s g n n Y
 
 /-- A phase-sensitive Cauchy bound for every original off-diagonal infinite-tail Gram entry. -/
 theorem tailLoss_norm_sq_le (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
-    ‖tailLoss N r s g n m Y‖^2 ≤
+    ‖tailLoss N r s g n m Y‖^(2 : ℕ) ≤
       (tailLoss N r s g n n Y).re*(tailLoss N r s g m m Y).re := by
   classical
   let A := tailLoss N r s g n n Y
@@ -391,11 +391,11 @@ theorem tailLoss_norm_sq_le (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
   have hC : 0 ≤ C.re := tailLoss_self_nonneg N r s e g m Y
   by_cases hnm : n=m
   · subst m
-    change ‖A‖^2 ≤ A.re*A.re
+    change ‖A‖^(2 : ℕ) ≤ A.re*A.re
     rw [Complex.sq_norm,Complex.normSq_apply,hAi]
     nlinarith
   · have hmn : m≠n := Ne.symm hnm
-    have hquad (t : ℝ) : 0 ≤ A.re+2*normSq B*t+(normSq B*C.re)*t^2 := by
+    have hquad (t : ℝ) : 0 ≤ A.re+2*normSq B*t+(normSq B*C.re)*t^(2 : ℕ) := by
       let z : ℂ := (t : ℂ)*(starRingEnd ℂ) B
       have h := tailLoss_quadratic_nonneg N r s e g {n,m}
         (fun k => if k=n then (1 : ℂ) else z) hY
@@ -410,7 +410,7 @@ theorem tailLoss_norm_sq_le (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
       ring
     have h := sq_le_mul_of_quadratic_nonneg
       (mul_nonneg (Complex.normSq_nonneg B) hC) hquad
-    change ‖B‖^2 ≤ A.re*C.re
+    change ‖B‖^(2 : ℕ) ≤ A.re*C.re
     rw [Complex.sq_norm]
     have hB := Complex.normSq_nonneg B
     by_cases hz : normSq B=0
@@ -421,8 +421,8 @@ theorem tailLoss_norm_sq_le (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
 
 /-- Quantitative control of each actual mixed boundary current by its two original tail-loss masses. -/
 theorem coefficientWronskian_norm_sq_le (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
-    ‖coefficientWronskian N r s g n m Y‖^2 ≤
-      (signedFrequency (N+1 : ℕ) m^2-signedFrequency (N+1 : ℕ) n^2)^2*
+    ‖coefficientWronskian N r s g n m Y‖^(2 : ℕ) ≤
+      (signedFrequency (N+1 : ℕ) m^(2 : ℕ)-signedFrequency (N+1 : ℕ) n^(2 : ℕ))^(2 : ℕ)*
         ((tailLoss N r s g n n Y).re*(tailLoss N r s g m m Y).re) := by
   rw [coefficientWronskian_eq_tail N r s e g n m hY,norm_mul,mul_pow,
     Complex.norm_real,Real.norm_eq_abs,sq_abs]

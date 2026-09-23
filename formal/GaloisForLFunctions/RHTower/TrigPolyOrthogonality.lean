@@ -20,7 +20,7 @@ theorem integral_trigPoly_normSq (s : Finset ℤ) (a : ℤ → ℂ) :
     (∫ θ in Ioc (-Real.pi) Real.pi,
         (∑ n ∈ s, a n * Complex.exp (I * (n : ℂ) * (θ : ℂ)))
           * (starRingEnd ℂ) (∑ n ∈ s, a n * Complex.exp (I * (n : ℂ) * (θ : ℂ))))
-      = 2 * Real.pi * ∑ n ∈ s, ((‖a n‖ ^ 2 : ℝ) : ℂ) := by
+      = 2 * Real.pi * ∑ n ∈ s, ((‖a n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hexpand : ∀ θ : ℝ,
       (∑ n ∈ s, a n * Complex.exp (I * (n : ℂ) * (θ : ℂ)))
         * (starRingEnd ℂ) (∑ n ∈ s, a n * Complex.exp (I * (n : ℂ) * (θ : ℂ)))
@@ -49,13 +49,13 @@ theorem integral_trigPoly_normSq (s : Finset ℤ) (a : ℤ → ℂ) :
       fun m _ => ((integrableOn_exp_int_mul (n - m)).const_mul _))]
   have hinner : ∀ n ∈ s, (∫ θ in Ioc (-Real.pi) Real.pi, ∑ m ∈ s,
       (a n * (starRingEnd ℂ) (a m)) * Complex.exp (I * ((n - m : ℤ) : ℂ) * (θ : ℂ)))
-      = 2 * Real.pi * ((‖a n‖ ^ 2 : ℝ) : ℂ) := by
+      = 2 * Real.pi * ((‖a n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro n hn
     rw [MeasureTheory.integral_finsetSum _ (fun m _ =>
       ((integrableOn_exp_int_mul (n - m)).const_mul _))]
     have hterm : ∀ m ∈ s, (∫ θ in Ioc (-Real.pi) Real.pi,
         (a n * (starRingEnd ℂ) (a m)) * Complex.exp (I * ((n - m : ℤ) : ℂ) * (θ : ℂ)))
-        = if m = n then 2 * Real.pi * ((‖a n‖ ^ 2 : ℝ) : ℂ) else 0 := by
+        = if m = n then 2 * Real.pi * ((‖a n‖ ^ (2 : ℕ) : ℝ) : ℂ) else 0 := by
       intro m _
       rw [MeasureTheory.integral_const_mul, setIntegral_exp_int_mul]
       by_cases hmn : m = n

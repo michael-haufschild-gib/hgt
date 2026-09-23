@@ -45,17 +45,17 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- **Perturbation of a squared norm.**  Adding one vector changes the square by at most
 `2‖z‖‖c‖ + ‖c‖²`. -/
 theorem sq_norm_perturbation (z c : E) :
-    |‖z + c‖ ^ 2 - ‖z‖ ^ 2| ≤ 2 * ‖z‖ * ‖c‖ + ‖c‖ ^ 2 := by
-  have hexp : ‖z + c‖ ^ 2 = ‖z‖ ^ 2 + 2 * inner ℝ z c + ‖c‖ ^ 2 := norm_add_sq_real z c
+    |‖z + c‖ ^ (2 : ℕ) - ‖z‖ ^ (2 : ℕ)| ≤ 2 * ‖z‖ * ‖c‖ + ‖c‖ ^ (2 : ℕ) := by
+  have hexp : ‖z + c‖ ^ (2 : ℕ) = ‖z‖ ^ (2 : ℕ) + 2 * inner ℝ z c + ‖c‖ ^ (2 : ℕ) := norm_add_sq_real z c
   have hcs : |(inner ℝ z c : ℝ)| ≤ ‖z‖ * ‖c‖ := abs_real_inner_le_norm z c
   rw [hexp]
-  have : ‖z‖ ^ 2 + 2 * inner ℝ z c + ‖c‖ ^ 2 - ‖z‖ ^ 2 = 2 * inner ℝ z c + ‖c‖ ^ 2 := by ring
+  have : ‖z‖ ^ (2 : ℕ) + 2 * inner ℝ z c + ‖c‖ ^ (2 : ℕ) - ‖z‖ ^ (2 : ℕ) = 2 * inner ℝ z c + ‖c‖ ^ (2 : ℕ) := by ring
   rw [this]
-  calc |2 * (inner ℝ z c : ℝ) + ‖c‖ ^ 2| ≤ |2 * (inner ℝ z c : ℝ)| + |‖c‖ ^ 2| := abs_add_le _ _
-    _ ≤ 2 * ‖z‖ * ‖c‖ + ‖c‖ ^ 2 := by
+  calc |2 * (inner ℝ z c : ℝ) + ‖c‖ ^ (2 : ℕ)| ≤ |2 * (inner ℝ z c : ℝ)| + |‖c‖ ^ (2 : ℕ)| := abs_add_le _ _
+    _ ≤ 2 * ‖z‖ * ‖c‖ + ‖c‖ ^ (2 : ℕ) := by
         have h1 : |2 * (inner ℝ z c : ℝ)| = 2 * |(inner ℝ z c : ℝ)| := by
           rw [abs_mul]; norm_num
-        have h2 : |‖c‖ ^ 2| = ‖c‖ ^ 2 := abs_of_nonneg (by positivity)
+        have h2 : |‖c‖ ^ (2 : ℕ)| = ‖c‖ ^ (2 : ℕ) := abs_of_nonneg (by positivity)
         rw [h1, h2]
         nlinarith [hcs]
 

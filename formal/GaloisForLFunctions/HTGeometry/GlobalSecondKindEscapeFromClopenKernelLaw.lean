@@ -31,7 +31,7 @@ theorem weightedSecondKind_escape_everywhere_of_isClosed_boundedKernel
   intro x C
   have hsumComplex :=
     summable_kernel_everywhere_of_isClosed h hclosed hz0 (x : ℂ)
-  have hsumReal : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+  have hsumReal : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k) := by
     convert hsumComplex using 1
     funext k

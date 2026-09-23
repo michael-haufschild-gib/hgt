@@ -30,12 +30,12 @@ theorem tendsto_poly_sqrt_exp_neg (n : ℕ) {κ : ℝ} (hκ : 0 < κ) :
   have hle : ∀ᶠ t : ℝ in atTop,
       t ^ n * Real.exp (2 * Real.sqrt t) * Real.exp (-(κ * t))
         ≤ t ^ n * Real.exp (-(κ / 2 * t)) := by
-    filter_upwards [eventually_ge_atTop ((4 / κ) ^ 2), eventually_ge_atTop (0 : ℝ)] with t ht ht0
+    filter_upwards [eventually_ge_atTop ((4 / κ) ^ (2 : ℕ)), eventually_ge_atTop (0 : ℝ)] with t ht ht0
     have hsqrt : 2 * Real.sqrt t ≤ κ / 2 * t := by
       have hs0 : 0 ≤ Real.sqrt t := Real.sqrt_nonneg t
-      have hsq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht0
+      have hsq : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht0
       have hge : 4 / κ ≤ Real.sqrt t := by
-        have h1 : ((4 : ℝ) / κ) ^ 2 ≤ Real.sqrt t ^ 2 := by rw [hsq]; exact ht
+        have h1 : ((4 : ℝ) / κ) ^ (2 : ℕ) ≤ Real.sqrt t ^ (2 : ℕ) := by rw [hsq]; exact ht
         have h2 : (0 : ℝ) ≤ 4 / κ := by positivity
         nlinarith [hs0, h1, h2]
       have hid : κ / 2 * Real.sqrt t * (4 / κ) = 2 * Real.sqrt t := by

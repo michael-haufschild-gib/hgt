@@ -8,7 +8,7 @@ Laplacian* (arXiv:2509.06151v2), converts the large-time part of the analytic to
 product of the small eigenvalues.  The conversion rests on the identity
 
 ```text
-∫_λ^∞ e^{−t} dt/t  =  −log λ + ∫_1^∞ e^{−t} dt/t + ∫_0^1 (e^{−t} − 1) dt/t + o(1)   (λ → 0⁺),
+∫_λ^∞ e^{−t} dt/t  =  −log λ + ∫_1^∞ e^{−t} dt/t + ∫_0^(1 : ℕ) (e^{−t} − 1) dt/t + o(1)   (λ → 0⁺),
 ```
 
 whose constant is exactly the constant `c/(N−1)` of that theorem.  The two Frullani integrals are
@@ -31,7 +31,7 @@ namespace GaloisForLFunctions.HTGeometry.DaiYoshikawa
 /-- The exponential integral `E₁(a) = ∫_a^∞ e^{−t} dt/t`. -/
 noncomputable def expIntegralE1 (a : ℝ) : ℝ := ∫ t in Ioi a, Real.exp (-t) / t
 
-/-- Splitting `E₁` at `1`: for `0 < a ≤ 1`, `E₁(a) = ∫_a^1 e^{−t}dt/t + ∫_1^∞ e^{−t}dt/t`. -/
+/-- Splitting `E₁` at `1`: for `0 < a ≤ 1`, `E₁(a) = ∫_a^(1 : ℕ) e^{−t}dt/t + ∫_1^∞ e^{−t}dt/t`. -/
 theorem expIntegralE1_eq_add {a : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) :
     expIntegralE1 a = (∫ t in a..1, Real.exp (-t) / t) + RHTower.frullaniTail := by
   have hsplit : Ioc a 1 ∪ Ioi (1 : ℝ) = Ioi a := Ioc_union_Ioi_eq_Ioi ha1
@@ -53,7 +53,7 @@ theorem expIntegralE1_eq_add {a : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) :
   exact hunion
 
 /-- The head of the exponential integral, regularized: for `0 < a ≤ 1`,
-`∫_a^1 e^{−t}dt/t = log(1/a) − (∫_0^1 (1−e^{−t})dt/t − Ein(a))`. -/
+`∫_a^(1 : ℕ) e^{−t}dt/t = log(1/a) − (∫_0^(1 : ℕ) (1−e^{−t})dt/t − Ein(a))`. -/
 theorem integral_exp_neg_div_eq {a : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) :
     (∫ t in a..1, Real.exp (-t) / t)
       = Real.log (1 / a) - (RHTower.frullaniHead - RHTower.ein a) := by
@@ -155,7 +155,7 @@ theorem sum_ein_bounds {m : ℕ} (lam : Fin m → ℝ) (hpos : ∀ i, 0 < lam i)
   · exact Finset.sum_le_sum fun i _ => ein_le_self (hpos i).le
 
 /-- **Dai–Yoshikawa's constant `c`.**  In Theorem 3.9 the constant is
-`c = (N−1)(∫_1^∞ e^{−t}dt/t + ∫_0^1 (e^{−t}−1)dt/t)`; it equals `−(N−1)γ`. -/
+`c = (N−1)(∫_1^∞ e^{−t}dt/t + ∫_0^(1 : ℕ) (e^{−t}−1)dt/t)`; it equals `−(N−1)γ`. -/
 theorem daiYoshikawa_constant (N : ℕ) :
     ((N : ℝ) - 1) * (RHTower.frullaniTail - RHTower.frullaniHead)
       = -(((N : ℝ) - 1) * Real.eulerMascheroniConstant) := by

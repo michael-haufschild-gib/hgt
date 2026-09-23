@@ -55,13 +55,13 @@ namespace RHTower
 contribution is at most the lattice value `1/(m(m+1)δ²)`. -/
 theorem term_le_lattice {delta D : ℝ} (hd : 0 < delta) {m : ℕ} (hm : 1 ≤ m)
     (hD : (m : ℝ) * delta ≤ D) :
-    1 / (D * (D + delta)) ≤ 1 / (((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2) := by
+    1 / (D * (D + delta)) ≤ 1 / (((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ)) := by
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hDpos : 0 < D := lt_of_lt_of_le (by positivity) hD
-  have hlow : ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2 ≤ D * (D + delta) := by
+  have hlow : ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ) ≤ D * (D + delta) := by
     have h1 : (m : ℝ) * delta ≤ D := hD
     have h2 : ((m : ℝ) + 1) * delta ≤ D + delta := by linarith
-    calc ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2
+    calc ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ)
         = ((m : ℝ) * delta) * (((m : ℝ) + 1) * delta) := by ring
       _ ≤ D * (D + delta) := by
           apply mul_le_mul h1 h2 (by positivity) (le_of_lt hDpos)
@@ -71,12 +71,12 @@ theorem term_le_lattice {delta D : ℝ} (hd : 0 < delta) {m : ℕ} (hm : 1 ≤ m
 contribution is strictly smaller. -/
 theorem term_lt_lattice {delta D : ℝ} (hd : 0 < delta) {m : ℕ} (hm : 1 ≤ m)
     (hD : (m : ℝ) * delta < D) :
-    1 / (D * (D + delta)) < 1 / (((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2) := by
+    1 / (D * (D + delta)) < 1 / (((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ)) := by
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hDpos : 0 < D := lt_of_lt_of_le (by positivity) (le_of_lt hD)
-  have hlow : ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2 < D * (D + delta) := by
+  have hlow : ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ) < D * (D + delta) := by
     have h2 : ((m : ℝ) + 1) * delta < D + delta := by linarith
-    calc ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ 2
+    calc ((m : ℝ) * ((m : ℝ) + 1)) * delta ^ (2 : ℕ)
         = ((m : ℝ) * delta) * (((m : ℝ) + 1) * delta) := by ring
       _ < D * (D + delta) := by
           apply mul_lt_mul' (le_of_lt hD) h2 (by positivity) hDpos

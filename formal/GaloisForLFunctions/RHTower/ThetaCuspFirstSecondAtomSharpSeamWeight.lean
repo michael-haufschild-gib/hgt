@@ -59,18 +59,18 @@ theorem twentyOne_lt_thetaCuspBornWittenFirstSecondMixedSignedSecondProfile
     exact mul_nonneg hrho (by linarith)
   have hcurvq : 12 < thetaCuspBornWittenLogCurvatureFactoredProfile q := by
     have hleft : 0 < 2 * q + 3 := by positivity
-    have hright : 2 < 2 + 3 / q ^ 2 := by
-      have hdiv : 0 < 3 / q ^ 2 := div_pos (by norm_num) (sq_pos_of_pos hq0)
+    have hright : 2 < 2 + 3 / q ^ (2 : ℕ) := by
+      have hdiv : 0 < 3 / q ^ (2 : ℕ) := div_pos (by norm_num) (sq_pos_of_pos hq0)
       linarith
     have hmul : (2 * q + 3) * 2 <
-        (2 * q + 3) * (2 + 3 / q ^ 2) :=
+        (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) :=
       mul_lt_mul_of_pos_left hright hleft
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     nlinarith
   have hcurvr : 0 ≤ thetaCuspBornWittenLogCurvatureFactoredProfile r := by
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     positivity
-  have hdiag : 0 ≤ 2 * rho ^ 2 *
+  have hdiag : 0 ≤ 2 * rho ^ (2 : ℕ) *
       thetaCuspBornWittenLogCurvatureFactoredProfile r := by positivity
   unfold thetaCuspBornWittenFirstSecondMixedSignedSecondProfile
   dsimp only [r] at hcurvr hdiag ⊢

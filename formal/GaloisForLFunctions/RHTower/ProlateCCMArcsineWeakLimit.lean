@@ -24,8 +24,8 @@ theorem tendsto_integral_Ioi_radialProlateDensity_to_ccmLeakage
     (hR1 : ∀ᶠ i in l, R i 1 = 1)
     (hR : ∀ᶠ i in l, ∀ t, HasDerivAt (R i) (DR i t) t)
     (hDR : ∀ᶠ i in l, ∀ t, HasDerivAt (DR i) (DDR i t) t)
-    (hode : ∀ᶠ i in l, ∀ t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
-      - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
+    (hode : ∀ᶠ i in l, ∀ t, (t ^ (2 : ℕ) - 1) * DDR i t + 2 * t * DR i t
+      - (s i * c i ^ (2 : ℕ) - c i ^ (2 : ℕ) * t ^ (2 : ℕ)) * R i t = 0)
     {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => ∫ x in Ioi a, radialProlateDensity (c i) (R i) x) l
       (nhds ((∫ x in Ioi a, _root_.RHTower.radialLeakageDensity x) / Real.pi)) := by

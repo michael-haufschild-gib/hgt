@@ -74,15 +74,15 @@ theorem smallLadderGroup_le {P : Finset ℕ} (M : ℕ) {R η W θ : ℝ} (hR : 0
     (hW : 0 ≤ W) {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, R < (p : ℝ) ∧ (p : ℝ) ≤ R * (1 + η) ^ L) :
     2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-        (θ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ 2
+        (θ * ((geomBlock P R (1 + η) j).card : ℝ)) ^ (2 : ℕ)
           * ((5 * Real.pi / 2 * W
                 + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (R * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
               * ((geomCofactorBlock M R η j).card : ℝ))
-      ≤ 5 * Real.pi * (L : ℝ) * θ ^ 2 * W
+      ≤ 5 * Real.pi * (L : ℝ) * θ ^ (2 : ℕ) * W
             * ((R * (1 + η) ^ L * η + 1) * ((1 + η) * (M : ℝ) * rangeHarmonic P)
               + (R * (1 + η) ^ L * η + 1) * (P.card : ℝ))
-        + 5 * Real.exp 1 * (L : ℝ) * θ ^ 2
-            * (((1 + η) * (M : ℝ) * rangeHarmonic P) ^ 2
+        + 5 * Real.exp 1 * (L : ℝ) * θ ^ (2 : ℕ)
+            * (((1 + η) * (M : ℝ) * rangeHarmonic P) ^ (2 : ℕ)
               + (R * (1 + η) ^ L * η + 1) * ((1 + η) * (M : ℝ) * rangeHarmonic P)) := by
   have hBmax0 : (0 : ℝ) ≤ R * (1 + η) ^ L * η + 1 := by positivity
   have hS0 : (0 : ℝ) ≤ (1 + η) * (M : ℝ) * rangeHarmonic P := by

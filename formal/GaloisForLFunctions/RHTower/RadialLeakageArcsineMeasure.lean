@@ -33,7 +33,7 @@ noncomputable section
 namespace RHTower
 
 /-- The limiting radial leakage density `1/(x√(x² − 1))` on `(1, ∞)`. -/
-def radialLeakageDensity (x : ℝ) : ℝ := 1 / (x * Real.sqrt (x ^ 2 - 1))
+def radialLeakageDensity (x : ℝ) : ℝ := 1 / (x * Real.sqrt (x ^ (2 : ℕ) - 1))
 
 theorem radialLeakageDensity_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ radialLeakageDensity x := by
   unfold radialLeakageDensity
@@ -43,22 +43,22 @@ theorem radialLeakageDensity_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ radialLeaka
 theorem hasDerivAt_neg_arcsin_one_div {x : ℝ} (hx : 1 < x) :
     HasDerivAt (fun y : ℝ => -Real.arcsin (1 / y)) (radialLeakageDensity x) x := by
   have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
-  have hx2 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hx2 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hlt : 1 / x < 1 := (div_lt_one hx0).2 hx
   have hpos : (0 : ℝ) < 1 / x := by positivity
   have hne1 : (1 : ℝ) / x ≠ 1 := ne_of_lt hlt
   have hne2 : (1 : ℝ) / x ≠ -1 := by
     intro h; rw [h] at hpos; linarith
-  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-(1 / x ^ 2)) x := by
+  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-(1 / x ^ (2 : ℕ))) x := by
     simpa [one_div] using hasDerivAt_inv hx0.ne'
   have hcomp := (Real.hasDerivAt_arcsin hne2 hne1).comp x hinv
-  have hsqrt : Real.sqrt (1 - (1 / x) ^ 2) = Real.sqrt (x ^ 2 - 1) / x := by
-    have hEq : (1 : ℝ) - (1 / x) ^ 2 = (Real.sqrt (x ^ 2 - 1) / x) ^ 2 := by
-      rw [div_pow (Real.sqrt (x ^ 2 - 1)) x, Real.sq_sqrt hx2.le]
+  have hsqrt : Real.sqrt (1 - (1 / x) ^ (2 : ℕ)) = Real.sqrt (x ^ (2 : ℕ) - 1) / x := by
+    have hEq : (1 : ℝ) - (1 / x) ^ (2 : ℕ) = (Real.sqrt (x ^ (2 : ℕ) - 1) / x) ^ (2 : ℕ) := by
+      rw [div_pow (Real.sqrt (x ^ (2 : ℕ) - 1)) x, Real.sq_sqrt hx2.le]
       field_simp
     rw [hEq, Real.sqrt_sq (div_nonneg (Real.sqrt_nonneg _) hx0.le)]
-  have hsne : Real.sqrt (x ^ 2 - 1) ≠ 0 := (Real.sqrt_pos.2 hx2).ne'
-  have hval : 1 / Real.sqrt (1 - (1 / x) ^ 2) * -(1 / x ^ 2)
+  have hsne : Real.sqrt (x ^ (2 : ℕ) - 1) ≠ 0 := (Real.sqrt_pos.2 hx2).ne'
+  have hval : 1 / Real.sqrt (1 - (1 / x) ^ (2 : ℕ)) * -(1 / x ^ (2 : ℕ))
       = -radialLeakageDensity x := by
     rw [hsqrt]
     unfold radialLeakageDensity

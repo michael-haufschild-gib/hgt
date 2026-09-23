@@ -43,7 +43,7 @@ private lemma common_negative_band (F : Finset (Finset ℕ))
       linarith only [h,hc]
 
 private lemma ratio_weight_lower {p q U : ℝ} (hp : 0 < p) (hpq : p ≤ q)
-    (hU : 1 ≤ U) (hqU : q ≤ U*p) : 1/U^2 ≤ (p/q)*Real.sqrt (p/q) := by
+    (hU : 1 ≤ U) (hqU : q ≤ U*p) : 1/U^(2 : ℕ) ≤ (p/q)*Real.sqrt (p/q) := by
   have hq : 0 < q := hp.trans_le hpq
   have hU0 : 0 < U := lt_of_lt_of_le zero_lt_one hU
   have ha : 0 < p/q := div_pos hp hq
@@ -72,17 +72,17 @@ private lemma negative_window_release (P : Finset ℕ)
     apply mul_pos
     · rw [Sieve.squarefreeDensity_eq]; positivity
     · exact prod_pos (fun r hr => div_pos (by exact_mod_cast (hprime r hr).pos) (by positivity))
-  let c := ρ*k/(2*U^2)
+  let c := ρ*k/(2*U^(2 : ℕ))
   have hU : 0 < U := lt_of_lt_of_le zero_lt_one (hL.trans hLU.le)
   have hc : 0 < c := by dsimp [c]; positivity
-  refine ⟨c,(C/c+1)^2,hc,?_⟩
+  refine ⟨c,(C/c+1)^(2 : ℕ),hc,?_⟩
   intro p q hp hq hpP hqP hpq hpT hlo hhi
   have hpR : (0:ℝ) < p := by exact_mod_cast hp.pos
   have hpqR : (p:ℝ) ≤ q := by exact_mod_cast hpq.le
   have hratio := hW ((q:ℝ)/p) ((le_div_iff₀ hpR).mpr hlo) ((div_le_iff₀ hpR).mpr hhi)
   let τ := ((p:ℝ)/q)*Real.sqrt ((p:ℝ)/q)
   have hτ : 0 ≤ τ := by dsimp [τ]; positivity
-  have hτlo : 1/U^2 ≤ τ := ratio_weight_lower hpR hpqR (hL.trans hLU.le) hhi
+  have hτlo : 1/U^(2 : ℕ) ≤ τ := ratio_weight_lower hpR hpqR (hL.trans hLU.le) hhi
   have herror := (abs_le.mp (hprofile p q hp hq hpP hqP hpq.ne' hpq.le)).2
   have hsmall : C/Real.sqrt p < c := by
     have hroot := Real.sqrt_le_sqrt hpT
@@ -94,7 +94,7 @@ private lemma negative_window_release (P : Finset ℕ)
   have hmain : 2*ρ*τ*mobiusDivisorDilationMean P ((q:ℝ)/p) ≤ -4*c := by
     have hm := mul_le_mul_of_nonneg_left hratio (show 0 ≤ 2*ρ*τ by positivity)
     have hl := mul_le_mul_of_nonneg_left hτlo (show 0 ≤ 2*ρ*k by positivity)
-    have he : 4*c = 2*ρ*k*(1/U^2) := by dsimp [c]; ring
+    have he : 4*c = 2*ρ*k*(1/U^(2 : ℕ)) := by dsimp [c]; ring
     rw [← he] at hl
     nlinarith only [hm,hl]
   apply (div_le_iff₀ hpR).mpr
@@ -146,7 +146,7 @@ private lemma sample_vanish (P : Finset ℕ) {M r : ℕ} (hr : 0<r) (hMr : M≤r
 private lemma common_prime_cost (P : Finset ℕ) (hP : ∀ q ∈ P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p ∉ P) (M : ℕ) :
     mobiusDivisorSelectionEnergy M (insert p P) ≤ mobiusDivisorSelectionEnergy M P+
-      (2*((3/5:ℝ)*2^(P.card-1))^2/(p:ℝ))*(M:ℝ)^2 := by
+      (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(p:ℝ))*(M:ℝ)^(2 : ℕ) := by
   let S := fixedCoreSquarefreeIndices (insert p P) M
   have he : mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P)=
       ∑ r ∈ S,mobiusDivisorPrimeCorrelationTerm P p M r := by
@@ -166,7 +166,7 @@ private lemma common_prime_cost (P : Finset ℕ) (hP : ∀ q ∈ P,q.Prime)
       sample_vanish P (Nat.mul_pos hp.pos hr0) hlt.le,mul_zero,abs_zero]
   have hb := mobiusDivisorPrimeCorrelation_absolute_tail_le P hP hp hpP M hp.pos
   have ha : |mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P)| ≤
-      (2*((3/5:ℝ)*2^(P.card-1))^2/(p:ℝ))*(M:ℝ)^2 := by
+      (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(p:ℝ))*(M:ℝ)^(2 : ℕ) := by
     rw [he]
     exact (abs_sum_le_sum_abs _ _).trans (by rw [hfilter]; exact hb)
   have hn := neg_le_abs (mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P))
@@ -175,11 +175,11 @@ private lemma common_prime_cost (P : Finset ℕ) (hP : ∀ q ∈ P,q.Prime)
 private lemma uniform_insertion_threshold (K : ℕ) (ε : ℝ) (hε : 0 < ε) :
     ∃ A : ℕ,∀ P : Finset ℕ,P.card ≤ K → (∀ r ∈ P,r.Prime) →
       ∀ p : ℕ,p.Prime → p ∉ P → A ≤ p → ∀ M : ℕ,
-      mobiusDivisorSelectionEnergy M (insert p P) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^2 := by
-  let C : ℝ := 2*((3/5:ℝ)*2^K)^2
+      mobiusDivisorSelectionEnergy M (insert p P) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^(2 : ℕ) := by
+  let C : ℝ := 2*((3/5:ℝ)*2^K)^(2 : ℕ)
   obtain ⟨A,hA⟩ := exists_nat_gt (C/ε)
   refine ⟨A,fun P hPK hP p hp hpP hAp M => ?_⟩
-  have hcoeff : 2*((3/5:ℝ)*2^(P.card-1))^2 ≤ C := by
+  have hcoeff : 2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ) ≤ C := by
     dsimp [C]
     gcongr
     · norm_num
@@ -203,12 +203,12 @@ theorem exists_mobiusDivisorCommonReserveProducer :
     ∀ N : ℕ,∀ ε : ℝ,0 < ε → ∃ a : ℕ,N < a ∧ a.Prime ∧
       ∀ B : ℕ,∃ p q : ℕ,B ≤ p ∧ a < p ∧ p < q ∧ p.Prime ∧ q.Prime ∧
         (∀ M : ℕ,∀ P : Finset ℕ,P ⊆ mobiusDivisorSelectionPrimes N →
-          mobiusDivisorSelectionEnergy M (insert a P) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^2 ∧
-          mobiusDivisorSelectionEnergy M (insert p (insert a P)) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^2 ∧
-          mobiusDivisorSelectionEnergy M (insert q (insert p (insert a P))) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^2) ∧
+          mobiusDivisorSelectionEnergy M (insert a P) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^(2 : ℕ) ∧
+          mobiusDivisorSelectionEnergy M (insert p (insert a P)) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^(2 : ℕ) ∧
+          mobiusDivisorSelectionEnergy M (insert q (insert p (insert a P))) ≤ mobiusDivisorSelectionEnergy M P+ε*(M:ℝ)^(2 : ℕ)) ∧
         ∃ c : ℝ,0 < c ∧ ∀ᶠ M : ℕ in atTop,∀ P : Finset ℕ,
           P ⊆ mobiusDivisorSelectionPrimes N → P.Nonempty →
-          c*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M (insert a P)-
+          c*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M (insert a P)-
             mobiusDivisorSelectionEnergy M (insert q (insert p (insert a P))) := by
   classical
   intro N ε hε
@@ -307,7 +307,7 @@ theorem exists_mobiusDivisorCommonReserveProducer :
     · nlinarith only [h₀,hm]
     constructor <;> nlinarith only [h₀,h₁,h₂,hm]
   · have hevent : ∀ P ∈ F,∀ᶠ M : ℕ in atTop,
-        d/(2*(p:ℝ))*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M (insert a P)-
+        d/(2*(p:ℝ))*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M (insert a P)-
           mobiusDivisorSelectionEnergy M (insert q (insert p (insert a P))) := by
       intro P hP
       have hPS := (hFP P hP).1

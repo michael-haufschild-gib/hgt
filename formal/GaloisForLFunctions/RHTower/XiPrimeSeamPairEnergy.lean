@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
 
 The two-particle Sonin route naturally controls finite sums of
 
-`|a_p-a_q|^2 / (p q)`.
+`|a_p-a_q|^(2 : ℕ) / (p q)`.
 
 This module proves the exact arithmetic endpoint of that route.  Uniform boundedness of those
 finite pair energies forces every prime potential to be equal, because the reciprocal-prime
@@ -27,7 +27,7 @@ noncomputable section
 /-- The reciprocal-prime weighted difference row based at one prime. -/
 def primePairDifferenceRow (a : Nat.Primes → ℂ) (p : Nat.Primes)
     (s : Finset Nat.Primes) : ℝ :=
-  ∑ q ∈ s, ‖a p - a q‖ ^ 2 / (q : ℝ)
+  ∑ q ∈ s, ‖a p - a q‖ ^ (2 : ℕ) / (q : ℝ)
 
 /-- The ordered finite reciprocal-prime pair energy of a prime-indexed potential. -/
 def primePairDifferenceEnergy (a : Nat.Primes → ℂ)
@@ -39,14 +39,14 @@ def PrimePairDifferenceEnergyBounded (a : Nat.Primes → ℂ) : Prop :=
   ∃ B : ℝ, ∀ s : Finset Nat.Primes, primePairDifferenceEnergy a s ≤ B
 
 private theorem norm_sub_sq_le_two_add_two (x y z : ℂ) :
-    ‖x - y‖ ^ 2 ≤ 2 * ‖x - z‖ ^ 2 + 2 * ‖y - z‖ ^ 2 := by
+    ‖x - y‖ ^ (2 : ℕ) ≤ 2 * ‖x - z‖ ^ (2 : ℕ) + 2 * ‖y - z‖ ^ (2 : ℕ) := by
   have hnorm : ‖x - y‖ ≤ ‖x - z‖ + ‖y - z‖ := by
     calc
       ‖x - y‖ = ‖(x - z) + (z - y)‖ := by ring_nf
       _ ≤ ‖x - z‖ + ‖z - y‖ := norm_add_le _ _
       _ = ‖x - z‖ + ‖y - z‖ :=
         congrArg (fun u : ℝ => ‖x - z‖ + u) (norm_sub_rev z y)
-  have hsq : ‖x - y‖ ^ 2 ≤ (‖x - z‖ + ‖y - z‖) ^ 2 :=
+  have hsq : ‖x - y‖ ^ (2 : ℕ) ≤ (‖x - z‖ + ‖y - z‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr hnorm
   nlinarith [sq_nonneg (‖x - z‖ - ‖y - z‖)]
 
@@ -102,20 +102,20 @@ theorem primePairDifferenceRow_le_prime_mul_energy
 reciprocal-prime rows. -/
 theorem primePairDifference_weighted_triangle
     (a : Nat.Primes → ℂ) (p r : Nat.Primes) (s : Finset Nat.Primes) :
-    ‖a p - a r‖ ^ 2 * (∑ q ∈ s, 1 / (q : ℝ)) ≤
+    ‖a p - a r‖ ^ (2 : ℕ) * (∑ q ∈ s, 1 / (q : ℝ)) ≤
       2 * primePairDifferenceRow a p s +
         2 * primePairDifferenceRow a r s := by
   calc
-    ‖a p - a r‖ ^ 2 * (∑ q ∈ s, 1 / (q : ℝ)) =
-        ∑ q ∈ s, ‖a p - a r‖ ^ 2 / (q : ℝ) := by
+    ‖a p - a r‖ ^ (2 : ℕ) * (∑ q ∈ s, 1 / (q : ℝ)) =
+        ∑ q ∈ s, ‖a p - a r‖ ^ (2 : ℕ) / (q : ℝ) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro q _
       simp only [div_eq_mul_inv]
       ring
     _ ≤ ∑ q ∈ s,
-        (2 * ‖a p - a q‖ ^ 2 / (q : ℝ) +
-          2 * ‖a r - a q‖ ^ 2 / (q : ℝ)) := by
+        (2 * ‖a p - a q‖ ^ (2 : ℕ) / (q : ℝ) +
+          2 * ‖a r - a q‖ ^ (2 : ℕ) / (q : ℝ)) := by
       apply Finset.sum_le_sum
       intro q _
       have hq0 : (0 : ℝ) ≤ (q : ℝ) := by exact_mod_cast q.prop.pos.le
@@ -142,9 +142,9 @@ theorem primePairDifference_eq_of_energyBounded
     (primePairDifferenceEnergy_nonneg a ∅).trans (hB ∅)
   by_contra hne
   have hnorm : 0 < ‖a p - a r‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hne)
-  have hsq : 0 < ‖a p - a r‖ ^ 2 := sq_pos_of_pos hnorm
+  have hsq : 0 < ‖a p - a r‖ ^ (2 : ℕ) := sq_pos_of_pos hnorm
   let threshold : ℝ :=
-    2 * ((p : ℝ) + (r : ℝ)) * B / ‖a p - a r‖ ^ 2
+    2 * ((p : ℝ) + (r : ℝ)) * B / ‖a p - a r‖ ^ (2 : ℕ)
   obtain ⟨s, hs⟩ := exists_finset_primes_sum_one_div_gt threshold
   let t : Finset Nat.Primes := insert p (insert r s)
   have hst : s ⊆ t := by
@@ -161,17 +161,17 @@ theorem primePairDifference_eq_of_energyBounded
       ((primePairDifferenceRow_le_prime_mul_energy a hrt).trans
         (mul_le_mul_of_nonneg_left (hB t) (by positivity)))
   have hupper :
-      ‖a p - a r‖ ^ 2 * (∑ q ∈ s, 1 / (q : ℝ)) ≤
+      ‖a p - a r‖ ^ (2 : ℕ) * (∑ q ∈ s, 1 / (q : ℝ)) ≤
         2 * ((p : ℝ) + (r : ℝ)) * B := by
     calc
-      ‖a p - a r‖ ^ 2 * (∑ q ∈ s, 1 / (q : ℝ)) ≤
+      ‖a p - a r‖ ^ (2 : ℕ) * (∑ q ∈ s, 1 / (q : ℝ)) ≤
           2 * primePairDifferenceRow a p s +
             2 * primePairDifferenceRow a r s :=
         primePairDifference_weighted_triangle a p r s
       _ ≤ 2 * ((p : ℝ) + (r : ℝ)) * B := by nlinarith
   have hlower :
       2 * ((p : ℝ) + (r : ℝ)) * B <
-        ‖a p - a r‖ ^ 2 * (∑ q ∈ s, 1 / (q : ℝ)) := by
+        ‖a p - a r‖ ^ (2 : ℕ) * (∑ q ∈ s, 1 / (q : ℝ)) := by
     have hmul := mul_lt_mul_of_pos_left hs hsq
     dsimp only [threshold] at hmul
     field_simp [hsq.ne'] at hmul

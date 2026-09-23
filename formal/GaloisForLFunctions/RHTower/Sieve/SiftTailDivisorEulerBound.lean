@@ -48,7 +48,7 @@ theorem card_pow_mul_rpow_invLog_le
   have heDiv : e ∣ siftModulus z := (Nat.mem_divisors.mp he).1
   have hePos : 0 < e := Nat.pos_of_mem_divisors he
   have heSq : Squarefree e := (siftModulus_squarefree z).squarefree_of_dvd heDiv
-  have hcard := card_divisors_of_squarefree heSq hePos.ne'
+  have hcard := card_divisors_of_squarefree_squarefreeDivisorCount heSq hePos.ne'
   have hrpow := divisor_rpow_invLog_le_exp_card_primeFactors hz he
   have hcast : (e.divisors.card : ℝ) = (2 : ℝ) ^ e.primeFactors.card := by
     exact_mod_cast hcard

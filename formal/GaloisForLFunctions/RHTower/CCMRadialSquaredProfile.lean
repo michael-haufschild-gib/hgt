@@ -29,18 +29,18 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The `s`-dependent density weight `1/(pi sqrt((x²-1)(x²-s)))`.  At `s = 0` it is the limiting profile
 density `1/(pi x sqrt(x²-1))`. -/
-def profileWeight (s x : ℝ) : ℝ := 1 / (Real.pi * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)))
+def profileWeight (s x : ℝ) : ℝ := 1 / (Real.pi * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)))
 
 /-- Its derivative. -/
 def profileWeightDeriv (s x : ℝ) : ℝ :=
-  -(x * (2 * x ^ 2 - s - 1))
-    / (Real.pi * ((x ^ 2 - 1) * (x ^ 2 - s)) * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)))
+  -(x * (2 * x ^ (2 : ℕ) - s - 1))
+    / (Real.pi * ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)))
 
 theorem profileWeight_pos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < profileWeight s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) :=
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) :=
     Real.sqrt_pos.mpr (mul_pos hd hn)
   rw [profileWeight]
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
@@ -49,31 +49,31 @@ theorem profileWeight_pos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < pro
 theorem hasDerivAt_profileWeight {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     HasDerivAt (profileWeight s) (profileWeightDeriv s x) x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
-  have hsP : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sqrt_pos.mpr hP
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
+  have hsP : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := Real.sqrt_pos.mpr hP
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hinner : HasDerivAt (fun t : ℝ => (t ^ 2 - 1) * (t ^ 2 - s))
-      (2 * x * (x ^ 2 - s) + (x ^ 2 - 1) * (2 * x)) x := by
-    have h1 : HasDerivAt (fun t : ℝ => t ^ 2 - 1) (2 * x) x := by
+  have hinner : HasDerivAt (fun t : ℝ => (t ^ (2 : ℕ) - 1) * (t ^ (2 : ℕ) - s))
+      (2 * x * (x ^ (2 : ℕ) - s) + (x ^ (2 : ℕ) - 1) * (2 * x)) x := by
+    have h1 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) - 1) (2 * x) x := by
       simpa using (hasDerivAt_pow 2 x).sub_const 1
-    have h2 : HasDerivAt (fun t : ℝ => t ^ 2 - s) (2 * x) x := by
+    have h2 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) - s) (2 * x) x := by
       simpa using (hasDerivAt_pow 2 x).sub_const s
     exact h1.fun_mul h2
   have hsqrt := hinner.sqrt hP.ne'
   have hmul := hsqrt.const_mul Real.pi
   have hinv := hmul.inv (by positivity)
-  have hfun : profileWeight s = fun t : ℝ => (Real.pi * Real.sqrt ((t ^ 2 - 1) * (t ^ 2 - s)))⁻¹ := by
+  have hfun : profileWeight s = fun t : ℝ => (Real.pi * Real.sqrt ((t ^ (2 : ℕ) - 1) * (t ^ (2 : ℕ) - s)))⁻¹ := by
     funext t
     rw [profileWeight, one_div]
-  have hval : -(Real.pi * ((2 * x * (x ^ 2 - s) + (x ^ 2 - 1) * (2 * x))
-        / (2 * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)))))
-      / (Real.pi * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) ^ 2
+  have hval : -(Real.pi * ((2 * x * (x ^ (2 : ℕ) - s) + (x ^ (2 : ℕ) - 1) * (2 * x))
+        / (2 * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)))))
+      / (Real.pi * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) ^ (2 : ℕ)
       = profileWeightDeriv s x := by
-    obtain ⟨S, hS0, hSsq, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = (x ^ 2 - 1) * (x ^ 2 - s)
-        ∧ Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) = S :=
-      ⟨Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)), hsP, Real.mul_self_sqrt hP.le, rfl⟩
+    obtain ⟨S, hS0, hSsq, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)
+        ∧ Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) = S :=
+      ⟨Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)), hsP, Real.mul_self_sqrt hP.le, rfl⟩
     rw [profileWeightDeriv, hSeq, ← hSsq]
     field_simp
     ring
@@ -83,12 +83,12 @@ theorem hasDerivAt_profileWeight {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
 theorem profileWeightDeriv_nonpos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     profileWeightDeriv s x ≤ 0 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
-  have hsP : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sqrt_pos.mpr hP
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
+  have hsP : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := Real.sqrt_pos.mpr hP
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hnum : 0 ≤ x * (2 * x ^ 2 - s - 1) := by nlinarith
+  have hnum : 0 ≤ x * (2 * x ^ (2 : ℕ) - s - 1) := by nlinarith
   rw [profileWeightDeriv, div_nonpos_iff]
   right
   refine ⟨by linarith, by positivity⟩
@@ -96,18 +96,18 @@ theorem profileWeightDeriv_nonpos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
 theorem continuousOn_profileWeightDeriv {s : ℝ} (hs1 : s ≤ 1 / 2) :
     ContinuousOn (profileWeightDeriv s) (Set.Ioi 1) := by
   have hden : ∀ x ∈ Set.Ioi (1 : ℝ),
-      Real.pi * ((x ^ 2 - 1) * (x ^ 2 - s)) * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) ≠ 0 := by
+      Real.pi * ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) ≠ 0 := by
     intro x hx
     have hx1 : (1 : ℝ) < x := hx
     have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx1
-    have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-    have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-    have hsP : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) :=
+    have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+    have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+    have hsP : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) :=
       Real.sqrt_pos.mpr (mul_pos hd hn)
     have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
     positivity
-  rw [show profileWeightDeriv s = fun x : ℝ => -(x * (2 * x ^ 2 - s - 1))
-      / (Real.pi * ((x ^ 2 - 1) * (x ^ 2 - s)) * Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) from by
+  rw [show profileWeightDeriv s = fun x : ℝ => -(x * (2 * x ^ (2 : ℕ) - s - 1))
+      / (Real.pi * ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) * Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) from by
     funext x
     rw [profileWeightDeriv]]
   refine ContinuousOn.div (by fun_prop) ?_ hden
@@ -118,7 +118,7 @@ theorem continuousOn_profileWeightDeriv {s : ℝ} (hs1 : s ≤ 1 / 2) :
 
 theorem xiSpeedDeriv_nonpos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) : xiSpeedDeriv s x ≤ 0 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
   rw [xiSpeedDeriv, div_nonpos_iff]
   right
@@ -207,35 +207,35 @@ theorem abs_integral_profileWeight_mul_sin_le {s c α β : ℝ} (hs0 : 0 ≤ s) 
 
 theorem profileWeight_zero_eq {x : ℝ} (hx : 1 < x) : profileWeight 0 x = profileDensity x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hsplit : Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - 0)) = x * Real.sqrt (x ^ 2 - 1) := by
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hsplit : Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - 0)) = x * Real.sqrt (x ^ (2 : ℕ) - 1) := by
     rw [sub_zero, mul_comm, Real.sqrt_mul (by positivity), Real.sqrt_sq hx0.le]
   rw [profileWeight, profileDensity, hsplit]
   ring
 
 theorem ampFourth_sq {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    ampFourth s x ^ 2 = 1 / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
+    ampFourth s x ^ (2 : ℕ) = 1 / Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
   rw [ampFourth, div_pow, one_pow,
-    Real.sq_sqrt (Real.sqrt_nonneg ((x ^ 2 - 1) * (x ^ 2 - s)))]
+    Real.sq_sqrt (Real.sqrt_nonneg ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)))]
 
 /-- The leading term squared is exactly the density times `1 + sin(2 c xi_s)`. -/
 theorem model_sq_eq {s c x : ℝ} (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     (Real.sqrt (2 / Real.pi) * ampFourth s x
-        * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)) ^ 2
+        * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)) ^ (2 : ℕ)
       = profileWeight s x * (1 + Real.sin (2 * (c * xiEndpointPhase s x))) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
-  have hsP : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sqrt_pos.mpr hP
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
+  have hsP : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := Real.sqrt_pos.mpr hP
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hT : Real.sqrt (2 / Real.pi) ^ 2 = 2 / Real.pi := Real.sq_sqrt (by positivity)
+  have hT : Real.sqrt (2 / Real.pi) ^ (2 : ℕ) = 2 / Real.pi := Real.sq_sqrt (by positivity)
   have hq := ampFourth_sq hs1 hx
-  have hcos : Real.cos (c * xiEndpointPhase s x - Real.pi / 4) ^ 2
+  have hcos : Real.cos (c * xiEndpointPhase s x - Real.pi / 4) ^ (2 : ℕ)
       = 1 / 2 + Real.sin (2 * (c * xiEndpointPhase s x)) / 2 := by
     rw [Real.cos_sq]
     have hval : 2 * (c * xiEndpointPhase s x - Real.pi / 4)
@@ -247,7 +247,7 @@ theorem model_sq_eq {s c x : ℝ} (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 <
 /-- **The pointwise squared-profile identity with its error.**  Only the Bessel remainder enters. -/
 theorem abs_profileSq_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     (hc : 0 < c) (hcxi : 1 ≤ c * xiEndpointPhase s x) :
-    |(Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+    |(Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)
         - profileWeight s x * (1 + Real.sin (2 * (c * xiEndpointPhase s x)))|
       ≤ (2 * Real.sqrt (2 / Real.pi) * ampFourth s x
           + 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)))
@@ -263,9 +263,9 @@ theorem abs_profileSq_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (
   have hmodel := model_sq_eq (s := s) (c := c) hs0 hs1 hx
   rw [← hmodel]
   -- write the difference of squares as a product
-  have hfac : (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+  have hfac : (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)
       - (Real.sqrt (2 / Real.pi) * ampFourth s x
-        * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)) ^ 2
+        * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)) ^ (2 : ℕ)
       = (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
           - Real.sqrt (2 / Real.pi) * ampFourth s x
             * Real.cos (c * xiEndpointPhase s x - Real.pi / 4))
@@ -320,12 +320,12 @@ theorem ampFourth_le_of_le {s α x : ℝ} (hs1 : s ≤ 1 / 2) (hα : 1 < α) (h�
   have hα0 : (0 : ℝ) < α := lt_trans zero_lt_one hα
   have hx : 1 < x := lt_of_lt_of_le hα hαx
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hdα : (0 : ℝ) < α ^ 2 - 1 := by nlinarith
-  have hnα : (0 : ℝ) < α ^ 2 - s := by nlinarith
-  have hle : (α ^ 2 - 1) * (α ^ 2 - s) ≤ (x ^ 2 - 1) * (x ^ 2 - s) := by
-    have h1 : α ^ 2 ≤ x ^ 2 := by nlinarith
+  have hdα : (0 : ℝ) < α ^ (2 : ℕ) - 1 := by nlinarith
+  have hnα : (0 : ℝ) < α ^ (2 : ℕ) - s := by nlinarith
+  have hle : (α ^ (2 : ℕ) - 1) * (α ^ (2 : ℕ) - s) ≤ (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := by
+    have h1 : α ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by nlinarith
     nlinarith [h1, hdα, hnα]
-  have hsα : 0 < Real.sqrt (Real.sqrt ((α ^ 2 - 1) * (α ^ 2 - s))) :=
+  have hsα : 0 < Real.sqrt (Real.sqrt ((α ^ (2 : ℕ) - 1) * (α ^ (2 : ℕ) - s))) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (mul_pos hdα hnα))
   rw [ampFourth, ampFourth]
   refine div_le_div_of_nonneg_left (by norm_num) hsα ?_
@@ -336,7 +336,7 @@ squared profile over any interval inside `(1, ∞)` equals the integral of the d
 oscillatory half and `O(c^{-1/4})` from the Bessel remainder. -/
 theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hα : 1 < α) (hαβ : α ≤ β) (hc : 0 < c) (hcxi : 1 ≤ c * xiEndpointPhase s α) :
-    |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+    |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
         - ∫ x in α..β, profileWeight s x|
       ≤ 2 * profileWeight s α / c
         + (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
@@ -362,7 +362,7 @@ theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s
     continuousOn_const.mul hphaseA
   -- continuity of the two integrands
   have hcontP : ContinuousOn
-      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
       (Set.uIcc α β) := by
     refine ContinuousOn.pow ?_ 2
     refine ContinuousOn.mul (continuousOn_const.mul ?_) ?_
@@ -376,7 +376,7 @@ theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s
     refine hcontW.mul ?_
     exact continuousOn_const.add (Real.continuous_sin.comp_continuousOn hphaseC)
   have hintP : IntervalIntegrable
-      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
       volume α β := hcontP.intervalIntegrable
   have hintW : IntervalIntegrable (profileWeight s) volume α β := hcontW.intervalIntegrable
   have hintS : IntervalIntegrable
@@ -435,14 +435,14 @@ theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s
       mul_le_mul_of_nonneg_left hampx (by positivity)
     linarith [hEx, this]
   have hdiff : |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-        * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+        * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
       - ∫ x in α..β, profileWeight s x * (1 + Real.sin (2 * (c * xiEndpointPhase s x)))|
       ≤ (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
           + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
         * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) * (β - α) := by
     rw [← intervalIntegral.integral_sub hintP hintS]
     have hbound : ∀ x ∈ Set.uIoc α β,
-        ‖(Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+        ‖(Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)
           - profileWeight s x * (1 + Real.sin (2 * (c * xiEndpointPhase s x)))‖
         ≤ (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
             + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
@@ -460,22 +460,22 @@ theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s
   have hosc := abs_integral_profileWeight_mul_sin_le hs0 hs1 hα hαβ hc
   rw [hsplit] at hdiff
   have htri : |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-        * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..β, profileWeight s x|
+        * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)) - ∫ x in α..β, profileWeight s x|
       ≤ |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-          * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+          * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
         - ((∫ x in α..β, profileWeight s x)
           + ∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x))|
         + |∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x)| := by
     have := abs_add_le
       ((∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-          * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+          * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
         - ((∫ x in α..β, profileWeight s x)
           + ∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x)))
       (∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x))
     calc |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-          * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..β, profileWeight s x|
+          * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)) - ∫ x in α..β, profileWeight s x|
         = |((∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-            * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+            * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
           - ((∫ x in α..β, profileWeight s x)
             + ∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x)))
           + (∫ x in α..β, profileWeight s x * Real.sin (2 * c * xiEndpointPhase s x))| := by
@@ -492,22 +492,22 @@ theorem abs_integral_profileSq_sub_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s
 `w_0`. -/
 
 theorem profileWeight_eq_ampFourth_sq {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    profileWeight s x = ampFourth s x ^ 2 / Real.pi := by
+    profileWeight s x = ampFourth s x ^ (2 : ℕ) / Real.pi := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [ampFourth_sq hs1 hx, profileWeight]
   field_simp
 
 /-- **The `s`-dependence of the density is linear.** -/
 theorem abs_profileWeight_sub_density_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    |profileWeight s x - profileDensity x| ≤ 3 * s * profileDensity x / (x ^ 2 - s) := by
+    |profileWeight s x - profileDensity x| ≤ 3 * s * profileDensity x / (x ^ (2 : ℕ) - s) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hq0 : 0 < ampFourth 0 x := ampFourth_pos (by norm_num) hx
   have hqs : 0 < ampFourth s x := ampFourth_pos hs1 hx
   have hdiff := abs_ampFourth_sub_le hs0 hs1 hx
-  have hsmall : s * ampFourth 0 x / (x ^ 2 - s) ≤ ampFourth 0 x := by
+  have hsmall : s * ampFourth 0 x / (x ^ (2 : ℕ) - s) ≤ ampFourth 0 x := by
     rw [div_le_iff₀ hn]
     nlinarith [hq0, hn, hs0, hs1, hx0, hd]
   have hqsle : ampFourth s x ≤ 2 * ampFourth 0 x := by
@@ -524,37 +524,37 @@ theorem abs_profileWeight_sub_density_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s �
     rw [abs_of_pos (by positivity)]
     linarith [hqsle]
   have hprod : |ampFourth s x - ampFourth 0 x| * |ampFourth s x + ampFourth 0 x|
-      ≤ (s * ampFourth 0 x / (x ^ 2 - s)) * (3 * ampFourth 0 x) :=
+      ≤ (s * ampFourth 0 x / (x ^ (2 : ℕ) - s)) * (3 * ampFourth 0 x) :=
     mul_le_mul hdiff hsum (abs_nonneg _) (by positivity)
-  have hval : (s * ampFourth 0 x / (x ^ 2 - s)) * (3 * ampFourth 0 x) / Real.pi
-      = 3 * s * profileDensity x / (x ^ 2 - s) := by
+  have hval : (s * ampFourth 0 x / (x ^ (2 : ℕ) - s)) * (3 * ampFourth 0 x) / Real.pi
+      = 3 * s * profileDensity x / (x ^ (2 : ℕ) - s) := by
     rw [← profileWeight_zero_eq hx, profileWeight_eq_ampFourth_sq (by norm_num) hx]
     field_simp
   calc |ampFourth s x - ampFourth 0 x| * |ampFourth s x + ampFourth 0 x| / Real.pi
-      ≤ (s * ampFourth 0 x / (x ^ 2 - s)) * (3 * ampFourth 0 x) / Real.pi :=
+      ≤ (s * ampFourth 0 x / (x ^ (2 : ℕ) - s)) * (3 * ampFourth 0 x) / Real.pi :=
         div_le_div_of_nonneg_right hprod hpi.le
-    _ = 3 * s * profileDensity x / (x ^ 2 - s) := hval
+    _ = 3 * s * profileDensity x / (x ^ (2 : ℕ) - s) := hval
 
 theorem profileDensity_le_of_le {α x : ℝ} (hα : 1 < α) (hαx : α ≤ x) :
     profileDensity x ≤ profileDensity α := by
   have hα0 : (0 : ℝ) < α := lt_trans zero_lt_one hα
   have hx : 1 < x := lt_of_lt_of_le hα hαx
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hdα : (0 : ℝ) < α ^ 2 - 1 := by nlinarith
-  have hdx : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hsα : (0 : ℝ) < Real.sqrt (α ^ 2 - 1) := Real.sqrt_pos.mpr hdα
-  have hsx : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hdx
+  have hdα : (0 : ℝ) < α ^ (2 : ℕ) - 1 := by nlinarith
+  have hdx : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hsα : (0 : ℝ) < Real.sqrt (α ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hdα
+  have hsx : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hdx
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hle : Real.sqrt (α ^ 2 - 1) ≤ Real.sqrt (x ^ 2 - 1) := by
+  have hle : Real.sqrt (α ^ (2 : ℕ) - 1) ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := by
     refine Real.sqrt_le_sqrt ?_
     nlinarith
   rw [profileDensity, profileDensity]
   refine div_le_div_of_nonneg_left (by norm_num) (by positivity) ?_
-  have h1 : Real.pi * α * Real.sqrt (α ^ 2 - 1) ≤ Real.pi * x * Real.sqrt (α ^ 2 - 1) := by
+  have h1 : Real.pi * α * Real.sqrt (α ^ (2 : ℕ) - 1) ≤ Real.pi * x * Real.sqrt (α ^ (2 : ℕ) - 1) := by
     nlinarith [mul_nonneg (mul_nonneg hpi.le (by linarith : (0 : ℝ) ≤ x - α)) hsα.le]
-  have h2 : Real.pi * x * Real.sqrt (α ^ 2 - 1) ≤ Real.pi * x * Real.sqrt (x ^ 2 - 1) := by
+  have h2 : Real.pi * x * Real.sqrt (α ^ (2 : ℕ) - 1) ≤ Real.pi * x * Real.sqrt (x ^ (2 : ℕ) - 1) := by
     nlinarith [mul_nonneg (mul_nonneg hpi.le hx0.le)
-      (by linarith : (0 : ℝ) ≤ Real.sqrt (x ^ 2 - 1) - Real.sqrt (α ^ 2 - 1))]
+      (by linarith : (0 : ℝ) ≤ Real.sqrt (x ^ (2 : ℕ) - 1) - Real.sqrt (α ^ (2 : ℕ) - 1))]
   linarith
 
 /-- **The squared-profile law against the limiting density.**  Equation `(10)` with the limiting density
@@ -562,13 +562,13 @@ theorem profileDensity_le_of_le {α x : ℝ} (hα : 1 < α) (hαx : α ≤ x) :
 separation law. -/
 theorem abs_integral_profileSq_sub_density_le {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hα : 1 < α) (hαβ : α ≤ β) (hc : 0 < c) (hcxi : 1 ≤ c * xiEndpointPhase s α) :
-    |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+    |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
         - ∫ x in α..β, profileDensity x|
       ≤ 2 * profileWeight s α / c
         + (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
             + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
           * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) * (β - α)
-        + 3 * s * profileDensity α / (α ^ 2 - s) * (β - α) := by
+        + 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) * (β - α) := by
   have hmem : ∀ x ∈ Set.uIcc α β, 1 < x ∧ α ≤ x := by
     intro x hx
     rw [Set.uIcc_of_le hαβ] at hx
@@ -586,34 +586,34 @@ theorem abs_integral_profileSq_sub_density_le {s c α β : ℝ} (hs0 : 0 ≤ s) 
   have hintW : IntervalIntegrable (profileWeight s) volume α β := hcontW.intervalIntegrable
   have hintD : IntervalIntegrable profileDensity volume α β := hcontD.intervalIntegrable
   have hcmp : |(∫ x in α..β, profileWeight s x) - ∫ x in α..β, profileDensity x|
-      ≤ 3 * s * profileDensity α / (α ^ 2 - s) * (β - α) := by
+      ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) * (β - α) := by
     rw [← intervalIntegral.integral_sub hintW hintD]
     have hbound : ∀ x ∈ Set.uIoc α β,
-        ‖profileWeight s x - profileDensity x‖ ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by
+        ‖profileWeight s x - profileDensity x‖ ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) := by
       intro x hx
       rw [Set.uIoc_of_le hαβ] at hx
       have hxmem : x ∈ Set.uIcc α β := by
         rw [Set.uIcc_of_le hαβ]
         exact ⟨hx.1.le, hx.2⟩
       obtain ⟨hx1, hαx⟩ := hmem x hxmem
-      have hnα : (0 : ℝ) < α ^ 2 - s := by nlinarith [hα]
-      have hnx : (0 : ℝ) < x ^ 2 - s := by nlinarith [hx1]
+      have hnα : (0 : ℝ) < α ^ (2 : ℕ) - s := by nlinarith [hα]
+      have hnx : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith [hx1]
       have hdens : profileDensity x ≤ profileDensity α := profileDensity_le_of_le hα hαx
       have hdens0 : 0 < profileDensity x := by
         have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx1
-        have hdx : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-        have hsx : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hdx
+        have hdx : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+        have hsx : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hdx
         have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
         rw [profileDensity]
         positivity
       rw [Real.norm_eq_abs]
       refine le_trans (abs_profileWeight_sub_density_le hs0 hs1 hx1) ?_
       have hnum : 3 * s * profileDensity x ≤ 3 * s * profileDensity α := by nlinarith [hdens, hs0]
-      have hstep1 : 3 * s * profileDensity x / (x ^ 2 - s)
-          ≤ 3 * s * profileDensity α / (x ^ 2 - s) :=
+      have hstep1 : 3 * s * profileDensity x / (x ^ (2 : ℕ) - s)
+          ≤ 3 * s * profileDensity α / (x ^ (2 : ℕ) - s) :=
         div_le_div_of_nonneg_right hnum hnx.le
-      have hstep2 : 3 * s * profileDensity α / (x ^ 2 - s)
-          ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by
+      have hstep2 : 3 * s * profileDensity α / (x ^ (2 : ℕ) - s)
+          ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) := by
         refine div_le_div_of_nonneg_left
           (mul_nonneg (by linarith : (0 : ℝ) ≤ 3 * s) (profileDensity_nonneg hα.le)) hnα ?_
         nlinarith [hαx, hα]
@@ -621,9 +621,9 @@ theorem abs_integral_profileSq_sub_density_le {s c α β : ℝ} (hs0 : 0 ≤ s) 
     have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
     rwa [Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ β - α)] at h
   have htri : |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-        * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..β, profileDensity x|
+        * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)) - ∫ x in α..β, profileDensity x|
       ≤ |(∫ x in α..β, (Real.sqrt c * xiAmplitude s x
-          * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..β, profileWeight s x|
+          * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)) - ∫ x in α..β, profileWeight s x|
         + |(∫ x in α..β, profileWeight s x) - ∫ x in α..β, profileDensity x| :=
     abs_sub_le _ _ _
   linarith [htri, hprev, hcmp]
@@ -638,7 +638,7 @@ approximation argument is needed, only the fundamental theorem. -/
 
 /-- The difference between the squared profile and the limiting density. -/
 def profileDiff (s c x : ℝ) : ℝ :=
-  (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2 - profileDensity x
+  (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ) - profileDensity x
 
 /-- The error of the interval form of `(10)`. -/
 def profileSqError (s c α β : ℝ) : ℝ :=
@@ -646,13 +646,13 @@ def profileSqError (s c α β : ℝ) : ℝ :=
     + (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
         + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
       * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) * (β - α)
-    + 3 * s * profileDensity α / (α ^ 2 - s) * (β - α)
+    + 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) * (β - α)
 
 theorem continuousOn_profileDiff {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     ContinuousOn (profileDiff s c) (Set.Ioi 1) := by
   have hxi : ContinuousOn (xiEndpointPhase s) (Set.Ioi 1) := continuousOn_xiEndpointPhase hs0
   have hP : ContinuousOn
-      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
       (Set.Ioi 1) := by
     refine ContinuousOn.pow ?_ 2
     refine ContinuousOn.mul (continuousOn_const.mul (continuousOn_xiAmplitude hs0 hs1)) ?_
@@ -664,7 +664,7 @@ theorem continuousOn_profileDiff {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     exact fun x hx =>
       ((hasDerivAt_profileWeight (by norm_num) hx).continuousAt).continuousWithinAt
   rw [show profileDiff s c = fun x : ℝ =>
-      (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+      (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)
         - profileDensity x from by
     funext x
     rw [profileDiff]]
@@ -675,7 +675,7 @@ theorem profileSqError_nonneg {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 /
   have hw : 0 < profileWeight s α := profileWeight_pos hs1 hα
   have hamp : 0 < ampFourth s α := ampFourth_pos hs1 hα
   have hpd : 0 ≤ profileDensity α := profileDensity_nonneg hα.le
-  have hn : (0 : ℝ) < α ^ 2 - s := by nlinarith
+  have hn : (0 : ℝ) < α ^ (2 : ℕ) - s := by nlinarith
   have hT : (0 : ℝ) < Real.sqrt (2 / Real.pi) := Real.sqrt_pos.mpr (by positivity)
   have hs : (0 : ℝ) ≤ Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)) := Real.sqrt_nonneg _
   have hβα : (0 : ℝ) ≤ β - α := by linarith
@@ -690,8 +690,8 @@ theorem profileSqError_nonneg {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 /
     have := mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * Real.sqrt (2 / Real.pi) * ampFourth s α
       + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) hA
     exact mul_nonneg this hβα
-  have h3 : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) * (β - α) := by
-    have : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by positivity
+  have h3 : 0 ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) * (β - α) := by
+    have : 0 ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) := by positivity
     exact mul_nonneg this hβα
   linarith
 
@@ -708,7 +708,7 @@ theorem abs_integral_profileDiff_le {s c α β t : ℝ} (hs0 : 0 ≤ s) (hs1 : s
   have hint : IntervalIntegrable (profileDiff s c) volume α t :=
     (hcontD.mono hsub).intervalIntegrable
   have hcontP : ContinuousOn
-      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ))
       (Set.uIcc α t) := by
     refine ContinuousOn.pow ?_ 2
     refine ContinuousOn.mul (continuousOn_const.mul
@@ -723,7 +723,7 @@ theorem abs_integral_profileDiff_le {s c α β t : ℝ} (hs0 : 0 ≤ s) (hs1 : s
       ((hasDerivAt_profileWeight (by norm_num) (hsub hx)).continuousAt).continuousWithinAt
   have hsplit : (∫ x in α..t, profileDiff s c x)
       = (∫ x in α..t, (Real.sqrt c * xiAmplitude s x
-          * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..t, profileDensity x := by
+          * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)) - ∫ x in α..t, profileDensity x := by
     rw [← intervalIntegral.integral_sub hcontP.intervalIntegrable hcontDens.intervalIntegrable]
     refine intervalIntegral.integral_congr ?_
     intro x _
@@ -734,7 +734,7 @@ theorem abs_integral_profileDiff_le {s c α β t : ℝ} (hs0 : 0 ≤ s) (hs1 : s
   rw [profileSqError]
   have hamp : 0 < ampFourth s α := ampFourth_pos hs1 hα
   have hpd : 0 ≤ profileDensity α := profileDensity_nonneg hα.le
-  have hn : (0 : ℝ) < α ^ 2 - s := by nlinarith
+  have hn : (0 : ℝ) < α ^ (2 : ℕ) - s := by nlinarith
   have hT : (0 : ℝ) < Real.sqrt (2 / Real.pi) := Real.sqrt_pos.mpr (by positivity)
   have hA : 0 ≤ 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)) := by
     positivity
@@ -744,7 +744,7 @@ theorem abs_integral_profileDiff_le {s c α β t : ℝ} (hs0 : 0 ≤ s) (hs1 : s
     refine mul_nonneg ?_ hA
     have : 0 ≤ 2 * Real.sqrt (2 / Real.pi) * ampFourth s α := by positivity
     linarith
-  have hdfac : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by positivity
+  have hdfac : 0 ≤ 3 * s * profileDensity α / (α ^ (2 : ℕ) - s) := by positivity
   have h1 : (t - α) ≤ (β - α) := by linarith
   nlinarith [mul_le_mul_of_nonneg_left h1 hfac, mul_le_mul_of_nonneg_left h1 hdfac]
 

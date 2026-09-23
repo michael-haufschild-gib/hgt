@@ -121,7 +121,7 @@ theorem integral_edgeDeriv_cexp_eq {c : ℂ} (hc : c ≠ 0) :
 /-- `κ(c) = (1/c²) ∫_0^{1/4} (edge)''(s) e^{−cs} ds`. -/
 theorem plateauKappa_eq₂ {c : ℂ} (hc : c ≠ 0) :
     plateauKappa c
-      = (1 / c ^ 2) * ∫ s in (0 : ℝ)..(1 / 4 : ℝ),
+      = (1 / c ^ (2 : ℕ)) * ∫ s in (0 : ℝ)..(1 / 4 : ℝ),
           ((deriv (deriv plateauEdge) s : ℝ) : ℂ) * Complex.exp (-(c * (s : ℂ))) := by
   rw [plateauKappa_eq hc, integral_edgeDeriv_cexp_neg_eq hc]
   field_simp
@@ -129,7 +129,7 @@ theorem plateauKappa_eq₂ {c : ℂ} (hc : c ≠ 0) :
 /-- `ρ(c) = (1/c²) ∫_0^{1/4} (edge)''(u) e^{cu} du`. -/
 theorem plateauRho_eq₂ {c : ℂ} (hc : c ≠ 0) :
     plateauRho c
-      = (1 / c ^ 2) * ∫ u in (0 : ℝ)..(1 / 4 : ℝ),
+      = (1 / c ^ (2 : ℕ)) * ∫ u in (0 : ℝ)..(1 / 4 : ℝ),
           ((deriv (deriv plateauEdge) u : ℝ) : ℂ) * Complex.exp (c * (u : ℂ)) := by
   rw [plateauRho_eq hc, integral_edgeDeriv_cexp_eq hc]
   field_simp
@@ -167,8 +167,8 @@ theorem norm_integral_edgeDerivDeriv_cexp_le {M₀ : ℝ}
 /-- **Second-order coefficient bounds.**  `‖κ(c)‖, ‖ρ(c)‖ ≤ M₂ e^{|Re c|/4} / ‖c‖²` for `c ≠ 0`. -/
 theorem exists_plateau_coeff_bound₂ :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ c : ℂ, c ≠ 0 →
-      ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2 := by
+      ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ) := by
   obtain ⟨M₀, hM₀, hM⟩ := exists_plateauEdge_deriv_deriv_bound
   refine ⟨M₀ / 4, by positivity, fun c hc => ?_⟩
   have hcpos : 0 < ‖c‖ := norm_pos_iff.mpr hc
@@ -183,18 +183,18 @@ theorem exists_plateau_coeff_bound₂ :
     rw [hcongr]
     have h := norm_integral_edgeDerivDeriv_cexp_le hM (-c)
     rw [Complex.neg_re, abs_neg] at h
-    calc 1 / ‖c‖ ^ 2 * ‖∫ s in (0 : ℝ)..(1 / 4 : ℝ),
+    calc 1 / ‖c‖ ^ (2 : ℕ) * ‖∫ s in (0 : ℝ)..(1 / 4 : ℝ),
           ((deriv (deriv plateauEdge) s : ℝ) : ℂ) * Complex.exp (-c * (s : ℂ))‖
-        ≤ 1 / ‖c‖ ^ 2 * (M₀ * Real.exp (|c.re| / 4) / 4) :=
+        ≤ 1 / ‖c‖ ^ (2 : ℕ) * (M₀ * Real.exp (|c.re| / 4) / 4) :=
           mul_le_mul_of_nonneg_left h (by positivity)
-      _ = M₀ / 4 * Real.exp (|c.re| / 4) / ‖c‖ ^ 2 := by ring
+      _ = M₀ / 4 * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ) := by ring
   · rw [plateauRho_eq₂ hc, norm_mul, norm_div, norm_one, norm_pow]
     have h := norm_integral_edgeDerivDeriv_cexp_le hM c
-    calc 1 / ‖c‖ ^ 2 * ‖∫ s in (0 : ℝ)..(1 / 4 : ℝ),
+    calc 1 / ‖c‖ ^ (2 : ℕ) * ‖∫ s in (0 : ℝ)..(1 / 4 : ℝ),
           ((deriv (deriv plateauEdge) s : ℝ) : ℂ) * Complex.exp (c * (s : ℂ))‖
-        ≤ 1 / ‖c‖ ^ 2 * (M₀ * Real.exp (|c.re| / 4) / 4) :=
+        ≤ 1 / ‖c‖ ^ (2 : ℕ) * (M₀ * Real.exp (|c.re| / 4) / 4) :=
           mul_le_mul_of_nonneg_left h (by positivity)
-      _ = M₀ / 4 * Real.exp (|c.re| / 4) / ‖c‖ ^ 2 := by ring
+      _ = M₀ / 4 * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ) := by ring
 
 /-! ## Global bound on the edge derivative -/
 

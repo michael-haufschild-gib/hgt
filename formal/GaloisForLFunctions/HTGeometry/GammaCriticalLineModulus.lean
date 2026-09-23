@@ -42,7 +42,7 @@ theorem sin_pi_mul_half_add_mul_I (t : ℝ) :
 
 /-- **The critical-line Gamma modulus.**  `|Γ(1/2+it)|² = π / cosh(π t)`. -/
 theorem normSq_Gamma_half_add_mul_I (t : ℝ) :
-    ‖Complex.Gamma ((1 : ℂ) / 2 + (t : ℂ) * I)‖ ^ 2 = Real.pi / Real.cosh (Real.pi * t) := by
+    ‖Complex.Gamma ((1 : ℂ) / 2 + (t : ℂ) * I)‖ ^ (2 : ℕ) = Real.pi / Real.cosh (Real.pi * t) := by
   set z : ℂ := (1 : ℂ) / 2 + (t : ℂ) * I with hz
   have hcoshpos : (0 : ℝ) < Real.cosh (Real.pi * t) := Real.cosh_pos _
   have hconj : Complex.Gamma (1 - z) = (starRingEnd ℂ) (Complex.Gamma z) := by
@@ -52,7 +52,7 @@ theorem normSq_Gamma_half_add_mul_I (t : ℝ) :
     rw [← hconj, Complex.Gamma_mul_Gamma_one_sub z, hz, sin_pi_mul_half_add_mul_I t]
     push_cast
     ring
-  have hcast : ((‖Complex.Gamma z‖ ^ 2 : ℝ) : ℂ)
+  have hcast : ((‖Complex.Gamma z‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ((Real.pi / Real.cosh (Real.pi * t) : ℝ) : ℂ) := by
     rw [← hmul, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   exact_mod_cast hcast
@@ -68,7 +68,7 @@ theorem exp_abs_div_two_le_cosh (x : ℝ) : Real.exp |x| / 2 ≤ Real.cosh x := 
 Möbius zero-expansion absolutely convergent where the unsmoothed one, carrying only polynomial
 decay, is not. -/
 theorem normSq_Gamma_half_add_mul_I_le (t : ℝ) :
-    ‖Complex.Gamma ((1 : ℂ) / 2 + (t : ℂ) * I)‖ ^ 2
+    ‖Complex.Gamma ((1 : ℂ) / 2 + (t : ℂ) * I)‖ ^ (2 : ℕ)
       ≤ 2 * Real.pi * Real.exp (-(Real.pi * |t|)) := by
   rw [normSq_Gamma_half_add_mul_I]
   have hcosh : Real.exp (Real.pi * |t|) / 2 ≤ Real.cosh (Real.pi * t) := by

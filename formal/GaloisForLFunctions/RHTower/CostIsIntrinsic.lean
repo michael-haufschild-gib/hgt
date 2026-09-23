@@ -66,12 +66,12 @@ theorem sum_k_log_k_lower {d : ℕ} (hd : 2 ≤ d) :
 /-- **The two shapes agree.**  Both the discriminant's logarithm and the threshold's logarithm are
 constant multiples of `d² log d`, so their ratio is bounded. -/
 theorem same_shape {d c₁ c₂ : ℝ} (hd : 0 < d) (h1 : 0 < c₁) (h2 : 0 < c₂) :
-    (c₁ * (d ^ 2 * Real.log d)) / (c₂ * (d ^ 2 * Real.log d))
+    (c₁ * (d ^ (2 : ℕ) * Real.log d)) / (c₂ * (d ^ (2 : ℕ) * Real.log d))
       = c₁ / c₂ ∨ Real.log d = 0 := by
   rcases eq_or_ne (Real.log d) 0 with h | h
   · exact Or.inr h
   · left
-    have hne : d ^ 2 * Real.log d ≠ 0 := by
+    have hne : d ^ (2 : ℕ) * Real.log d ≠ 0 := by
       apply mul_ne_zero (by positivity) h
     field_simp
 
@@ -84,7 +84,7 @@ theorem ratio_scale_invariant {e s lam : ℝ} (hs : s ≠ 0) (hlam : lam ≠ 0) 
 /-- **The exponent is unchanged.**  A constant factor in the exponent's coefficient does not alter the
 super-exponential shape: both `c₁ d² log d` and `c₂ d² log d` tend to infinity. -/
 theorem exponent_shape_unchanged {c : ℝ} (hc : 0 < c) :
-    Filter.Tendsto (fun d : ℝ => c * (d ^ 2 * Real.log d)) Filter.atTop Filter.atTop := by
+    Filter.Tendsto (fun d : ℝ => c * (d ^ (2 : ℕ) * Real.log d)) Filter.atTop Filter.atTop := by
   apply Filter.Tendsto.const_mul_atTop hc
   apply Filter.Tendsto.atTop_mul_atTop₀
   · exact Filter.tendsto_pow_atTop (by norm_num)

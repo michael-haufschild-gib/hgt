@@ -29,7 +29,7 @@ theorem exists_localProbesOn_hillDrivenChart
     (x₀ : EuclideanSpace ℝ (Fin d)) :
     ∃ region : Set (Fin (d + 1) → ℝ), IsOpen region ∧ kgChartEvent d x₀ ∈ region ∧
       LocalProbesOn (hillWaveOp d a.speed)
-        (fun y => hillDrivenChartPotential b y - a.mass ^ 2) region := by
+        (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) region := by
   have hdim : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) < (K + 2 : ℕ) := by
     push_cast
     linarith
@@ -57,9 +57,9 @@ theorem potential_eqOn_of_hillDrivenProbes
     ∃ region : Set (Fin (d + 1) → ℝ), IsOpen region ∧ kgChartEvent d x₀ ∈ region ∧
       ((∀ (u : (Fin (d + 1) → ℝ) → ℝ) (y : Fin (d + 1) → ℝ),
         SolvesPotentialWaveAt (hillWaveOp d a.speed)
-            (fun z => hillDrivenChartPotential b z - a.mass ^ 2) u y →
+            (fun z => hillDrivenChartPotential b z - a.mass ^ (2 : ℕ)) u y →
           SolvesPotentialWaveAt (hillWaveOp d a.speed) other u y) →
-        Set.EqOn other (fun y => hillDrivenChartPotential b y - a.mass ^ 2) region) := by
+        Set.EqOn other (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) region) := by
   obtain ⟨region, hopen, hmem, hprobes⟩ :=
     exists_localProbesOn_hillDrivenChart hK a b hreal x₀
   refine ⟨region, hopen, hmem, fun h => ?_⟩
@@ -87,7 +87,7 @@ theorem exists_localProbesOn_hillWaveOp_smooth
     ∃ region : Set (Fin (d + 1) → ℝ), IsOpen region ∧ kgChartEvent d x₀ ∈ region ∧
       LocalProbesOn (hillWaveOp d a.speed)
         (fun y : Fin (d + 1) → ℝ => P (y 0, kgSpatial d y)) region := by
-  have hP' : ContDiff ℝ ∞ fun p : ℝ × EuclideanSpace ℝ (Fin d) => P p + (a.mass ^ 2 - 1) :=
+  have hP' : ContDiff ℝ ∞ fun p : ℝ × EuclideanSpace ℝ (Fin d) => P p + (a.mass ^ (2 : ℕ) - 1) :=
     hP.add contDiff_const
   obtain ⟨B, W, hBreal, hWopen, hWmem, hWeq⟩ :=
     exists_locally_kgChartPotential_of_smooth_spacetime (N := K + 2) hP' (kgChartEvent d x₀)
@@ -95,7 +95,7 @@ theorem exists_localProbesOn_hillWaveOp_smooth
   refine ⟨W ∩ R, hWopen.inter hRopen, ⟨hWmem, hRmem⟩, fun y hy => ?_⟩
   obtain ⟨u, hu, hune⟩ := hRprobes y hy.2
   refine ⟨u, ?_, hune⟩
-  have hpot : hillDrivenChartPotential B y - a.mass ^ 2 = P (y 0, kgSpatial d y) := by
+  have hpot : hillDrivenChartPotential B y - a.mass ^ (2 : ℕ) = P (y 0, kgSpatial d y) := by
     have hval := hWeq hy.1
     rw [hillDrivenChartPotential_eq, ← hval]
     ring

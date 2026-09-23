@@ -167,10 +167,10 @@ theorem ccmFUSuzukiMultiplierWeightedWindow_eq_symmetricShiftMixture
     ccmGuinandWeilPrimePolarWeightedWindow b H
         (fun h => ccmGuinandWeilThirdGradeCesaroTriangularWeight H h *
           shiftedEulerLogConnectedThirdMultiplier ω h) =
-      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ 2 *
+      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ (2 : ℕ) *
         ccmFUSuzukiSymmetricMellinShiftedTriangularWindow b H (t * ω) := by
   let G : ℝ → ℝ → ℝ := fun t h =>
-    3 * (1 - t) ^ 2 *
+    3 * (1 - t) ^ (2 : ℕ) *
       (ccmGuinandWeilThirdGradeCesaroTriangularWeight H (max b h) *
         Real.cosh ((t * ω) * max b h))
   have hmax : Continuous (fun h : ℝ => max b h) :=
@@ -182,7 +182,7 @@ theorem ccmFUSuzukiMultiplierWeightedWindow_eq_symmetricShiftMixture
       ccmGuinandWeilThirdGradeCesaroTriangularWeight H (max b h)) := by
     rw [show (fun h : ℝ =>
         ccmGuinandWeilThirdGradeCesaroTriangularWeight H (max b h)) =
-      fun h : ℝ => (32 / (max b h) ^ 3) * (1 - max b h / H) by
+      fun h : ℝ => (32 / (max b h) ^ (3 : ℕ)) * (1 - max b h / H) by
         funext h
         rfl]
     exact (continuous_const.div (hmax.pow 3)
@@ -191,7 +191,7 @@ theorem ccmFUSuzukiMultiplierWeightedWindow_eq_symmetricShiftMixture
   have hG : Continuous (Function.uncurry G) := by
     dsimp only [G]
     have hdensity : Continuous (fun p : ℝ × ℝ =>
-        3 * (1 - p.1) ^ 2) := by fun_prop
+        3 * (1 - p.1) ^ (2 : ℕ)) := by fun_prop
     have hcosh : Continuous (fun p : ℝ × ℝ =>
         Real.cosh ((p.1 * ω) * max b p.2)) := by fun_prop
     exact hdensity.mul ((hweight.comp continuous_snd).mul hcosh)
@@ -228,18 +228,18 @@ theorem ccmFUSuzukiMultiplierWeightedWindow_eq_symmetricShiftMixture
     _ = ∫ t in (0 : ℝ)..1,
           ccmGuinandWeilPrimePolarWeightedWindow b H (G t) :=
       ccmGuinandWeilPrimePolarWeightedWindow_intervalMixture hbH hG
-    _ = ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ 2 *
+    _ = ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ (2 : ℕ) *
           ccmFUSuzukiSymmetricMellinShiftedTriangularWindow b H (t * ω) := by
       apply intervalIntegral.integral_congr
       intro t _
       change ccmGuinandWeilPrimePolarWeightedWindow b H
-          (fun h => 3 * (1 - t) ^ 2 *
+          (fun h => 3 * (1 - t) ^ (2 : ℕ) *
             (ccmGuinandWeilThirdGradeCesaroTriangularWeight H (max b h) *
               Real.cosh ((t * ω) * max b h))) =
-        3 * (1 - t) ^ 2 *
+        3 * (1 - t) ^ (2 : ℕ) *
           ccmFUSuzukiSymmetricMellinShiftedTriangularWindow b H (t * ω)
       rw [ccmGuinandWeilPrimePolarWeightedWindow_const_mul]
-      apply congrArg (fun x : ℝ => 3 * (1 - t) ^ 2 * x)
+      apply congrArg (fun x : ℝ => 3 * (1 - t) ^ (2 : ℕ) * x)
       apply ccmGuinandWeilPrimePolarWeightedWindow_congr_on hbH
       · intro k hk hbk
         rw [max_eq_right hbk.le]
@@ -250,7 +250,7 @@ theorem ccmFUSuzukiMultiplierWeightedWindow_eq_symmetricShiftMixture
 theorem ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox_eq_symmetricShiftMixture
     {ω b H : ℝ} (hω : ω ≠ 0) (hb : 0 < b) (hbH : b ≤ H) :
     ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω =
-      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ 2 *
+      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ (2 : ℕ) *
         ccmFUSuzukiSymmetricMellinShiftedTriangularWindow b H (t * ω) := by
   rw [ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox_eq_weightedWindow
     hω hb hbH]

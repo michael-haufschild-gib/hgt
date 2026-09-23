@@ -36,9 +36,9 @@ theorem kloostermanBilinear_eq
 /-- Sharp fixed-modulus bilinear square bound for the complete Kloosterman kernel. -/
 theorem norm_kloostermanBilinear_sq_le
     (q : ℕ) [NeZero q] (a b : ZMod q → ℂ) :
-    ‖kloostermanBilinear q a b‖ ^ 2 ≤
-      (q : ℝ) ^ 2 * (∑ m : ZMod q, ‖a m‖ ^ 2) *
-        ∑ n : ZMod q, ‖b n‖ ^ 2 := by
+    ‖kloostermanBilinear q a b‖ ^ (2 : ℕ) ≤
+      (q : ℝ) ^ (2 : ℕ) * (∑ m : ZMod q, ‖a m‖ ^ (2 : ℕ)) *
+        ∑ n : ZMod q, ‖b n‖ ^ (2 : ℕ) := by
   have htri : ‖kloostermanBilinear q a b‖ ≤
       ∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖ := by
     unfold kloostermanBilinear
@@ -48,23 +48,23 @@ theorem norm_kloostermanBilinear_sq_le
   have hnn : (0 : ℝ) ≤
       ∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖ :=
     Finset.sum_nonneg fun n _ => by positivity
-  have hsq : ‖kloostermanBilinear q a b‖ ^ 2 ≤
-      (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ 2 := by
+  have hsq : ‖kloostermanBilinear q a b‖ ^ (2 : ℕ) ≤
+      (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖kloostermanBilinear q a b‖ := norm_nonneg _
     nlinarith
   have hcs :
-      (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ 2 ≤
-        (∑ n : ZMod q, ‖b n‖ ^ 2) *
-          ∑ n : ZMod q, ‖kloostermanTransform q a n‖ ^ 2 :=
+      (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ (2 : ℕ) ≤
+        (∑ n : ZMod q, ‖b n‖ ^ (2 : ℕ)) *
+          ∑ n : ZMod q, ‖kloostermanTransform q a n‖ ^ (2 : ℕ) :=
     Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
       (fun n : ZMod q => ‖b n‖) (fun n => ‖kloostermanTransform q a n‖)
   have htransform := sum_norm_kloostermanTransform_sq_le q a
   calc
-    _ ≤ (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ 2 := hsq
-    _ ≤ (∑ n : ZMod q, ‖b n‖ ^ 2) *
-        ∑ n : ZMod q, ‖kloostermanTransform q a n‖ ^ 2 := hcs
-    _ ≤ (∑ n : ZMod q, ‖b n‖ ^ 2) *
-        ((q : ℝ) ^ 2 * ∑ m : ZMod q, ‖a m‖ ^ 2) :=
+    _ ≤ (∑ n : ZMod q, ‖b n‖ * ‖kloostermanTransform q a n‖) ^ (2 : ℕ) := hsq
+    _ ≤ (∑ n : ZMod q, ‖b n‖ ^ (2 : ℕ)) *
+        ∑ n : ZMod q, ‖kloostermanTransform q a n‖ ^ (2 : ℕ) := hcs
+    _ ≤ (∑ n : ZMod q, ‖b n‖ ^ (2 : ℕ)) *
+        ((q : ℝ) ^ (2 : ℕ) * ∑ m : ZMod q, ‖a m‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left htransform
         (Finset.sum_nonneg fun n _ => by positivity)
     _ = _ := by ring

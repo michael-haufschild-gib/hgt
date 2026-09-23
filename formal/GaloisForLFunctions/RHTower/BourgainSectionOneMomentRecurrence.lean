@@ -3,15 +3,15 @@
 
 For `d = 4`, the local decoupling contribution is
 
-`b(K)^12 K^2 Q`.
+`b(K)^(12 : ℕ) K^(2 : ℕ) Q`.
 
 The quadratic planar refinement contributes
 
-`C^12 N^(12δ) (N/K)^2 S`.
+`C^(12 : ℕ) N^(12δ) (N/K)^(2 : ℕ) S`.
 
 The `K` powers cancel exactly, leaving
 
-`(C b(K) N^δ)^12 N^2 S`.
+`(C b(K) N^δ)^(12 : ℕ) N^(2 : ℕ) S`.
 
 This module records that cancellation before the analytic cube and
 wave-packet estimates are assembled.

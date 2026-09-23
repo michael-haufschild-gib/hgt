@@ -727,7 +727,7 @@ theorem meromorphicTrailingCoeffAt_suzukiExteriorWeylQuotient_oddCarrier_of_XiC_
         (suzukiExteriorWeylQuotient
           (suzukiOddCarlemanPoleCarrier (suzukiShiftedXiMultiplier 0)
             W rightTriangle) W) z =
-      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
   let C : ℂ → ℂ :=
     suzukiOddCarlemanPoleCarrier (suzukiShiftedXiMultiplier 0) W rightTriangle
   let factor : ℂ → ℂ := fun w => -(W w)⁻¹
@@ -745,7 +745,7 @@ theorem meromorphicTrailingCoeffAt_suzukiExteriorWeylQuotient_oddCarrier_of_XiC_
     (eta := 0) (W := W) (intervalPart := suzukiReflectionOddPart rightTriangle)
     hz hW hW0 hOddT
   change meromorphicTrailingCoeffAt C z =
-      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ 2 at hCtrail
+      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ (2 : ℕ) at hCtrail
   have hfun :
       suzukiExteriorWeylQuotient C W = fun w => factor w * C w := by
     funext w
@@ -759,10 +759,10 @@ theorem meromorphicTrailingCoeffAt_suzukiExteriorWeylQuotient_oddCarrier_of_XiC_
   rw [div_eq_mul_inv, div_eq_mul_inv]
   calc
     -(W z)⁻¹ *
-        (((analyticOrderAt XiC z).toNat : ℂ) * W z * (z ^ 2)⁻¹) =
+        (((analyticOrderAt XiC z).toNat : ℂ) * W z * (z ^ (2 : ℕ))⁻¹) =
       -(((analyticOrderAt XiC z).toNat : ℂ) * ((W z)⁻¹ * W z)) *
-        (z ^ 2)⁻¹ := by ring
-    _ = -((analyticOrderAt XiC z).toNat : ℂ) * (z ^ 2)⁻¹ := by
+        (z ^ (2 : ℕ))⁻¹ := by ring
+    _ = -((analyticOrderAt XiC z).toNat : ℂ) * (z ^ (2 : ℕ))⁻¹ := by
       rw [inv_mul_cancel₀ hW0]
       ring
 
@@ -780,7 +780,7 @@ theorem meromorphicTrailingCoeffAt_suzukiAffineSewnExteriorWeylQuotient_of_XiC_z
     meromorphicTrailingCoeffAt
         (suzukiAffineSewnExteriorWeylQuotient alpha beta
           WAlpha WBeta rightAlpha rightBeta) z =
-      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
   have hP : AnalyticAt ℂ
       (suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta) z :=
     analyticAt_suzukiAffineSewnCharacteristic (hWAlpha z) (hWBeta z)
@@ -804,7 +804,7 @@ theorem meromorphicTrailingCoeffAt_suzukiPhaseOneExteriorWeylQuotient_of_XiC_zer
     (hT : ∀ w, AnalyticAt ℂ rightTriangle w) :
     meromorphicTrailingCoeffAt
         (suzukiPhaseOneExteriorWeylQuotient A E rightTriangle) z =
-      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
   let W : ℂ → ℂ := suzukiCharacteristicPencil A E 1
   let C : ℂ → ℂ :=
     suzukiEvenCarlemanPoleCarrier (suzukiShiftedXiMultiplier 0) W rightTriangle
@@ -824,7 +824,7 @@ theorem meromorphicTrailingCoeffAt_suzukiPhaseOneExteriorWeylQuotient_of_XiC_zer
     (eta := 0) (W := W) (intervalPart := suzukiReflectionEvenPart rightTriangle)
     hz hW hW0 hEvenT
   change meromorphicTrailingCoeffAt C z =
-      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ 2 at hCtrail
+      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ (2 : ℕ) at hCtrail
   have hfun : suzukiPhaseOneExteriorWeylQuotient A E rightTriangle =
       fun w => factor w * C w := by
     funext w
@@ -838,10 +838,10 @@ theorem meromorphicTrailingCoeffAt_suzukiPhaseOneExteriorWeylQuotient_of_XiC_zer
   rw [div_eq_mul_inv, div_eq_mul_inv]
   calc
     -(W z)⁻¹ *
-        (((analyticOrderAt XiC z).toNat : ℂ) * W z * (z ^ 2)⁻¹) =
+        (((analyticOrderAt XiC z).toNat : ℂ) * W z * (z ^ (2 : ℕ))⁻¹) =
       -(((analyticOrderAt XiC z).toNat : ℂ) * ((W z)⁻¹ * W z)) *
-        (z ^ 2)⁻¹ := by ring
-    _ = -((analyticOrderAt XiC z).toNat : ℂ) * (z ^ 2)⁻¹ := by
+        (z ^ (2 : ℕ))⁻¹ := by ring
+    _ = -((analyticOrderAt XiC z).toNat : ℂ) * (z ^ (2 : ℕ))⁻¹ := by
       rw [inv_mul_cancel₀ hW0]
       ring
 

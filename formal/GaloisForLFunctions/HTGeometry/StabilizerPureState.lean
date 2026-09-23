@@ -41,7 +41,7 @@ theorem mulVec_smul_vec (A : Matrix α α ℂ) (c : ℂ) (v : α → ℂ) :
 /-- **A Hermitian idempotent of trace one is a pure state.** -/
 theorem exists_pure_state_of_projector {ρ : Matrix α α ℂ} (hherm : ρ.IsHermitian)
     (hidem : ρ * ρ = ρ) (htrace : Matrix.trace ρ = 1) :
-    ∃ χ : α → ℂ, (∑ x, ‖χ x‖ ^ 2) = 1 ∧
+    ∃ χ : α → ℂ, (∑ x, ‖χ x‖ ^ (2 : ℕ)) = 1 ∧
       ∀ ψ : α → ℂ, matDiag ρ ψ = ((finitePureStateFidelity ψ χ : ℝ) : ℂ) := by
   classical
   set f : α → α → ℂ := hermitianEigenBasis ρ hherm with hf
@@ -271,7 +271,7 @@ theorem trace_stabProjector (hbasis : IsLagrBasis b) (ε : Fin n → ZMod 2) :
 
 /-- **A stabilizer state is a pure state.** -/
 theorem exists_stabilizer_pure_state (hbasis : IsLagrBasis b) (ε : Fin n → ZMod 2) :
-    ∃ χ : FiniteQubitConfiguration (Fin n) → ℂ, (∑ x, ‖χ x‖ ^ 2) = 1 ∧
+    ∃ χ : FiniteQubitConfiguration (Fin n) → ℂ, (∑ x, ‖χ x‖ ^ (2 : ℕ)) = 1 ∧
       ∀ ψ, matDiag (stabProjector b hbasis.1 ε) ψ =
         ((finitePureStateFidelity ψ χ : ℝ) : ℂ) :=
   exists_pure_state_of_projector (stabProjectorOn_isHermitian hbasis.1 ε Finset.univ)
@@ -287,12 +287,12 @@ variable {n : ℕ}
 collision of a stabilizer state averages to `2/(D+1)`. -/
 theorem exists_stabilizer_states_collision_eq
     (e : FiniteQubitConfiguration (Fin n) → FiniteQubitConfiguration (Fin n) → ℂ)
-    (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 1) :
+    (hunit : ∀ j, (∑ x, ‖e j x‖ ^ (2 : ℕ)) = 1) :
     ∃ χ : (Fin n → PauliSymp n) → (Fin n → ZMod 2) →
         (FiniteQubitConfiguration (Fin n) → ℂ),
-      (∀ b ∈ lagrBases n, ∀ ε, (∑ x, ‖χ b ε x‖ ^ 2) = 1) ∧
+      (∀ b ∈ lagrBases n, ∀ ε, (∑ x, ‖χ b ε x‖ ^ (2 : ℕ)) = 1) ∧
         ((2 : ℝ) ^ n + 1) * (∑ b ∈ lagrBases n, ∑ ε : Fin n → ZMod 2,
-            ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ 2) =
+            ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ (2 : ℕ)) =
           ((lagrBases n).card : ℝ) * 2 ^ (n + 1) := by
   classical
   choose! χ hunitχ hdiag using fun (b : Fin n → PauliSymp n) (hbasis : IsLagrBasis b)
@@ -300,9 +300,9 @@ theorem exists_stabilizer_states_collision_eq
   refine ⟨χ, fun b hb ε => hunitχ b (mem_lagrBases.mp hb) ε, ?_⟩
   have hcomplex := sum_lagrBases_sign_collision e hunit
   have hterm : ∀ b ∈ lagrBases n, (∑ ε : Fin n → ZMod 2,
-      ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ 2) =
+      ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ (2 : ℕ)) =
       ((∑ ε : Fin n → ZMod 2,
-        ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ 2 : ℝ) : ℂ) := by
+        ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro b hb
     have hbasis := mem_lagrBases.mp hb
     push_cast
@@ -311,7 +311,7 @@ theorem exists_stabilizer_states_collision_eq
   rw [Finset.sum_congr rfl hterm] at hcomplex
   have hcast : (((2 : ℝ) ^ n + 1 : ℝ) : ℂ) *
       ((∑ b ∈ lagrBases n, ∑ ε : Fin n → ZMod 2,
-        ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ 2 : ℝ) : ℂ) =
+        ∑ j, (finitePureStateFidelity (e j) (χ b ε)) ^ (2 : ℕ) : ℝ) : ℂ) =
       ((((lagrBases n).card : ℝ) * 2 ^ (n + 1) : ℝ) : ℂ) := by
     push_cast
     push_cast at hcomplex

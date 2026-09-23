@@ -49,14 +49,14 @@ def cyclicFaithfulSourceProjection (t b : ℝ) (z : ℂ) (j : Fin 3) :
     ((b:ℂ)*(z/(‖z‖:ℂ))) (conj ((b:ℂ)*(z/(‖z‖:ℂ)))) j
 
 theorem cyclicFaithfulSourceProjection_orthogonal (t b : ℝ)
-    (hnorm : t^2+b^2=1) {z : ℂ} (hz : z ≠ 0) (j : Fin 3) :
+    (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1) {z : ℂ} (hz : z ≠ 0) (j : Fin 3) :
     let P := cyclicFaithfulSourceProjection t b z j
     P*P=P ∧ P.conjTranspose=P := by
   apply cyclicAmplitudeGraph_projection_lift
-  have hncomplex : (t:ℂ)^2+(b:ℂ)^2=1 := by exact_mod_cast hnorm
+  have hncomplex : (t:ℂ)^(2 : ℕ)+(b:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hnorm
   have hphase := cyclicSource_phase_unit hz
   simp only [map_mul, Complex.conj_ofReal]
-  linear_combination hncomplex + (b:ℂ)^2*hphase
+  linear_combination hncomplex + (b:ℂ)^(2 : ℕ)*hphase
 
 private theorem cubicCirculant_smooth {f g h : ℝ → ℂ}
     (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (hh : ContDiff ℝ ∞ h)
@@ -77,9 +77,9 @@ theorem cyclicFaithfulSourceProjection_smooth (t b : ℝ) {f : ℝ → ℂ}
     exact contDiff_const.mul (hf.mul (hn.inv hne))
   have hv : ContDiff ℝ ∞ (fun x => conj ((b:ℂ)*(f x/(‖f x‖:ℂ)))) :=
     Complex.conjCLE.contDiff.comp hu
-  have hd (x : ℝ) : 1+(‖f x‖:ℂ)^2 ≠ 0 := by
-    exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+‖f x‖^2))
-  have hden : ContDiff ℝ ∞ (fun x => (1+(‖f x‖:ℂ)^2)⁻¹) :=
+  have hd (x : ℝ) : 1+(‖f x‖:ℂ)^(2 : ℕ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+‖f x‖^(2 : ℕ)))
+  have hden : ContDiff ℝ ∞ (fun x => (1+(‖f x‖:ℂ)^(2 : ℕ))⁻¹) :=
     (contDiff_const.add (hn.pow 2)).inv hd
   have hgraph (i k : Fin 2) :
       ContDiff ℝ ∞ (fun x => cyclicAmplitudeGraph ‖f x‖ i k) := by
@@ -119,33 +119,33 @@ theorem cyclicFaithfulSourceSymbol_admissible (t b : ℝ) (f : ℝ → ℂ) (c :
   cubicSmoothConstantSymbol_admissible _ _ _ _
 
 theorem cyclicFaithfulSourceProjection_sum (t b : ℝ)
-    (hnorm : t^2+b^2=1) {z : ℂ} (hz : z ≠ 0) :
+    (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1) {z : ℂ} (hz : z ≠ 0) :
     cyclicFaithfulSourceProjection t b z 0 + cyclicFaithfulSourceProjection t b z 1 +
       cyclicFaithfulSourceProjection t b z 2 = cyclicFaithfulSourceAggregate (t*b) z := by
   let u : ℂ := (b:ℂ)*(z/(‖z‖:ℂ))
-  have hncomplex : (t:ℂ)^2+(b:ℂ)^2=1 := by exact_mod_cast hnorm
-  have hu : (t:ℂ)^2+u*conj u=1 := by
+  have hncomplex : (t:ℂ)^(2 : ℕ)+(b:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hnorm
+  have hu : (t:ℂ)^(2 : ℕ)+u*conj u=1 := by
     dsimp [u]
     simp only [map_mul, Complex.conj_ofReal]
-    linear_combination hncomplex + (b:ℂ)^2*(cyclicSource_phase_unit hz)
+    linear_combination hncomplex + (b:ℂ)^(2 : ℕ)*(cyclicSource_phase_unit hz)
   have hs := congrArg (fun M => cyclicAmplitudeGraph ‖z‖ ⊗ₖ M)
     (cyclicFrameProjection_sum (t:ℂ) u (conj u) hu)
   simpa [cyclicFaithfulSourceProjection, Matrix.kronecker_add,
     cyclicFaithfulSourceAggregate, u, map_mul, mul_assoc] using hs
 
 theorem cyclicFaithfulSourceProjection_flat (t b : ℝ)
-    (hnorm : t^2+b^2=1) {z : ℂ} (hz : z ≠ 0) :
+    (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1) {z : ℂ} (hz : z ≠ 0) :
     let P := cyclicFaithfulSourceProjection t b z
     let S := P 0+P 1+P 2
     let K := (P 0*P 1-P 1*P 0)+(P 1*P 2-P 2*P 1)+(P 2*P 0-P 0*P 2)
     S*K=K*S := by
   let E := cyclicAmplitudeGraph ‖z‖
   let u : ℂ := (b:ℂ)*(z/(‖z‖:ℂ))
-  have hncomplex : (t:ℂ)^2+(b:ℂ)^2=1 := by exact_mod_cast hnorm
-  have hu : (t:ℂ)^2+u*conj u=1 := by
+  have hncomplex : (t:ℂ)^(2 : ℕ)+(b:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hnorm
+  have hu : (t:ℂ)^(2 : ℕ)+u*conj u=1 := by
     dsimp [u]
     simp only [map_mul, Complex.conj_ofReal]
-    linear_combination hncomplex + (b:ℂ)^2*(cyclicSource_phase_unit hz)
+    linear_combination hncomplex + (b:ℂ)^(2 : ℕ)*(cyclicSource_phase_unit hz)
   have hm (M N : Matrix (Fin 3) (Fin 3) ℂ) : (E⊗ₖM)*(E⊗ₖN)=E⊗ₖ(M*N) := by
     rw [← Matrix.mul_kronecker_mul, cyclicAmplitudeGraph_idempotent]
   have hs (M N : Matrix (Fin 3) (Fin 3) ℂ) : E⊗ₖ(M-N)=E⊗ₖM-E⊗ₖN := by
@@ -203,7 +203,7 @@ end SymbolEvaluation
 set_option maxHeartbeats 400000 in
 /-- The same literal source family has genuine Hardy admission; no independent admission field
 is postulated. Every coefficient is obtained by pointwise evaluation of the input function. -/
-theorem cyclicFaithfulSourceSymbol_orthogonal_flat (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem cyclicFaithfulSourceSymbol_orthogonal_flat (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) :
     let P := cyclicFaithfulSourceSymbol t b f c hf hz hc
@@ -236,7 +236,7 @@ theorem cyclicFaithfulSourceSymbol_orthogonal_flat (t b : ℝ) (hnorm : t^2+b^2=
       cubicFiniteSymbolValue_sub, heval]
     exact cyclicFaithfulSourceProjection_flat t b hnorm (hz x)
 
-theorem cyclicFaithfulSourceSymbol_recovery (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem cyclicFaithfulSourceSymbol_recovery (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     (hne : t*b ≠ 0) (f : ℝ → ℂ) (c : ℂ)
     (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) (x : ℝ) :
@@ -251,7 +251,7 @@ theorem cyclicFaithfulSourceSymbol_recovery (t b : ℝ) (hnorm : t^2+b^2=1)
   rw [cubicFiniteSymbolValue_add, cubicFiniteSymbolValue_add, heval, heval, heval,
     cyclicFaithfulSourceProjection_sum t b hnorm (hz x), cyclicFaithfulSourceRecover_eq _ hne]
 
-theorem exists_rounded_faithful_circulant_source (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem exists_rounded_faithful_circulant_source (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     (hne : t*b ≠ 0)
     (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) :

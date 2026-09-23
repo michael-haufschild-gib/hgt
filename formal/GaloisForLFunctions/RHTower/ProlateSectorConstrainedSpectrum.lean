@@ -74,7 +74,7 @@ theorem infiniteSecular_eq_zero_of_isSectorConstrainedEigen {a : ℝ} (ha : 0 < 
   set L : ℕ → ℝ := sectorCoord a σ with hLdef
   obtain ⟨x, hx⟩ := hg.expansion
   have hvon := orthonormal_sectorMode ha hσ
-  have hsumL : Summable fun j : ℕ => L j ^ 2 := summable_sectorCoord_sq a hσ
+  have hsumL : Summable fun j : ℕ => L j ^ (2 : ℕ) := summable_sectorCoord_sq a hσ
   -- coordinates of the leakage defect
   have hBg := hasSum_leakage_apply (evenProlateLeakage_apply_sectorMode a σ) hx
   have hcoordB : ∀ j : ℕ,

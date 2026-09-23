@@ -32,7 +32,7 @@ def pointedSpace (u x : E) : E :=
 
 /-- Lorentz quadratic form reconstructed from a pointed Euclidean direction. -/
 def pointedLorentzQuadratic (u x : E) : ℝ :=
-  pointedTime u x ^ 2 - inner ℝ (pointedSpace u x) (pointedSpace u x)
+  pointedTime u x ^ (2 : ℕ) - inner ℝ (pointedSpace u x) (pointedSpace u x)
 
 /-- The spatial component is orthogonal to a unit pointing direction. -/
 theorem inner_pointedSpace_eq_zero
@@ -89,7 +89,7 @@ theorem pointedLorentzQuadratic_smul_add_of_orthogonal
     (hu : inner ℝ u u = 1)
     (hX : inner ℝ u X = 0) :
     pointedLorentzQuadratic u (a • u + X) =
-      a ^ 2 - inner ℝ X X := by
+      a ^ (2 : ℕ) - inner ℝ X X := by
   simp [pointedLorentzQuadratic,
     pointedTime_smul_add_of_orthogonal u X a hu hX,
     pointedSpace_smul_add_of_orthogonal u X a hu hX]
@@ -97,7 +97,7 @@ theorem pointedLorentzQuadratic_smul_add_of_orthogonal
 /-- The distinguished axis is positive for the pointed Lorentz quadratic. -/
 theorem pointedLorentzQuadratic_smul_axis
     (u : E) (a : ℝ) (hu : inner ℝ u u = 1) :
-    pointedLorentzQuadratic u (a • u) = a ^ 2 := by
+    pointedLorentzQuadratic u (a • u) = a ^ (2 : ℕ) := by
   simpa using pointedLorentzQuadratic_smul_add_of_orthogonal
     u (0 : E) a hu (by simp)
 
@@ -107,7 +107,7 @@ theorem pointedLorentzQuadratic_spatial_nonpos
     (u X : E) (hX : inner ℝ u X = 0) :
     pointedLorentzQuadratic u X ≤ 0 := by
   change
-    (inner ℝ u X) ^ 2 -
+    (inner ℝ u X) ^ (2 : ℕ) -
       inner ℝ (X - inner ℝ u X • u) (X - inner ℝ u X • u) ≤ 0
   rw [hX]
   simp only [zero_smul, sub_zero, zero_pow (by norm_num : 2 ≠ 0), zero_sub]
@@ -128,7 +128,7 @@ def realSpinFactorOne : RealSpinFactor E :=
 
 /-- Determinant of a real spin factor. -/
 def realSpinFactorDet (x : RealSpinFactor E) : ℝ :=
-  x.1 ^ 2 - inner ℝ x.2 x.2
+  x.1 ^ (2 : ℕ) - inner ℝ x.2 x.2
 
 /-- The spin-factor product is commutative. -/
 theorem realSpinFactorMul_comm (x y : RealSpinFactor E) :

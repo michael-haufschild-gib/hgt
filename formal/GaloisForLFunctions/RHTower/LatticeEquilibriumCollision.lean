@@ -61,7 +61,7 @@ namespace RHTower
 
 /-- **The lattice is stationary.**  With the exact field `Δ = 2/d²` of an equally spaced
 configuration, the gap velocity `-4/d + 2dΔ` vanishes. -/
-theorem lattice_stationary {d : ℝ} (hd : d ≠ 0) : -4 / d + 2 * d * (2 / d ^ 2) = 0 := by
+theorem lattice_stationary {d : ℝ} (hd : d ≠ 0) : -4 / d + 2 * d * (2 / d ^ (2 : ℕ)) = 0 := by
   field_simp
   ring
 
@@ -80,23 +80,23 @@ theorem telescope_partial (n : ℕ) :
     ring
 
 /-- The shifted Basel sum: `Σ_{m≥0} 1/(m+1)² = π²/6`. -/
-theorem basel_shifted : HasSum (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ 2) (π ^ 2 / 6) := by
-  have h : HasSum (fun n : ℕ => (1 : ℝ) / ((n : ℝ)) ^ 2)
-      (π ^ 2 / 6 + ∑ i ∈ Finset.range 1, (1 : ℝ) / ((i : ℝ)) ^ 2) := by
+theorem basel_shifted : HasSum (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ)) (π ^ (2 : ℕ) / 6) := by
+  have h : HasSum (fun n : ℕ => (1 : ℝ) / ((n : ℝ)) ^ (2 : ℕ))
+      (π ^ (2 : ℕ) / 6 + ∑ i ∈ Finset.range 1, (1 : ℝ) / ((i : ℝ)) ^ (2 : ℕ)) := by
     simpa using hasSum_zeta_two
-  simpa [add_comm] using (hasSum_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / ((n : ℝ)) ^ 2) 1).mpr h
+  simpa [add_comm] using (hasSum_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / ((n : ℝ)) ^ (2 : ℕ)) 1).mpr h
 
 /-- The field majorant of a configuration whose gaps are all at least `γ`. -/
 theorem basel_scaled {gam : ℝ} (hgam : 0 < gam) :
-    HasSum (fun m : ℕ => 1 / ((((m : ℝ) + 1) * gam) ^ 2)) (π ^ 2 / (6 * gam ^ 2)) := by
-  have h := basel_shifted.mul_left (1 / gam ^ 2)
+    HasSum (fun m : ℕ => 1 / ((((m : ℝ) + 1) * gam) ^ (2 : ℕ))) (π ^ (2 : ℕ) / (6 * gam ^ (2 : ℕ))) := by
+  have h := basel_shifted.mul_left (1 / gam ^ (2 : ℕ))
   have hg : gam ≠ 0 := ne_of_gt hgam
-  have hfun : (fun m : ℕ => (1 / gam ^ 2) * ((1 : ℝ) / ((m : ℝ) + 1) ^ 2))
-      = fun m : ℕ => 1 / ((((m : ℝ) + 1) * gam) ^ 2) := by
+  have hfun : (fun m : ℕ => (1 / gam ^ (2 : ℕ)) * ((1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ)))
+      = fun m : ℕ => 1 / ((((m : ℝ) + 1) * gam) ^ (2 : ℕ)) := by
     funext m
     rw [mul_pow]
     field_simp
-  have hval : (1 / gam ^ 2) * (π ^ 2 / 6) = π ^ 2 / (6 * gam ^ 2) := by
+  have hval : (1 / gam ^ (2 : ℕ)) * (π ^ (2 : ℕ) / 6) = π ^ (2 : ℕ) / (6 * gam ^ (2 : ℕ)) := by
     field_simp
   rw [hfun, hval] at h
   exact h
@@ -104,22 +104,22 @@ theorem basel_scaled {gam : ℝ} (hgam : 0 < gam) :
 /-- **The Basel bound on the field.**  If every other gap is at least `γ > 0`, the `m`-th neighbour
 lies at distance at least `mγ`, so each side of the field sum is at most `π²/(6γ²)`. -/
 theorem field_bound {gam : ℝ} (hgam : 0 < gam) {f : ℕ → ℝ}
-    (hle : ∀ m, f m ≤ 1 / ((((m : ℝ) + 1) * gam) ^ 2))
-    (hsum : Summable f) : ∑' m, f m ≤ π ^ 2 / (6 * gam ^ 2) := by
+    (hle : ∀ m, f m ≤ 1 / ((((m : ℝ) + 1) * gam) ^ (2 : ℕ)))
+    (hsum : Summable f) : ∑' m, f m ≤ π ^ (2 : ℕ) / (6 * gam ^ (2 : ℕ)) := by
   have hmaj := basel_scaled hgam
-  calc ∑' m, f m ≤ ∑' m : ℕ, 1 / ((((m : ℝ) + 1) * gam) ^ 2) :=
+  calc ∑' m, f m ≤ ∑' m : ℕ, 1 / ((((m : ℝ) + 1) * gam) ^ (2 : ℕ)) :=
         Summable.tsum_mono hsum hmaj.summable hle
-    _ = π ^ 2 / (6 * gam ^ 2) := hmaj.tsum_eq
+    _ = π ^ (2 : ℕ) / (6 * gam ^ (2 : ℕ)) := hmaj.tsum_eq
 
 /-- **The collision condition.**  Two sides of the field give `Δ ≤ π²/(3γ²)`, and `δ²Δ < 2` follows
 from `δ/γ < √6/π`. -/
 theorem collision_condition {delta gam : ℝ} (hgam : 0 < gam) (_hd : 0 < delta)
-    (hratio : delta ^ 2 / gam ^ 2 < 6 / π ^ 2) :
-    delta ^ 2 * (π ^ 2 / (3 * gam ^ 2)) < 2 := by
-  have hpi : (0 : ℝ) < π ^ 2 := by positivity
-  have hg : (0 : ℝ) < gam ^ 2 := by positivity
+    (hratio : delta ^ (2 : ℕ) / gam ^ (2 : ℕ) < 6 / π ^ (2 : ℕ)) :
+    delta ^ (2 : ℕ) * (π ^ (2 : ℕ) / (3 * gam ^ (2 : ℕ))) < 2 := by
+  have hpi : (0 : ℝ) < π ^ (2 : ℕ) := by positivity
+  have hg : (0 : ℝ) < gam ^ (2 : ℕ) := by positivity
   rw [div_lt_div_iff₀ hg hpi] at hratio
-  rw [show delta ^ 2 * (π ^ 2 / (3 * gam ^ 2)) = (delta ^ 2 * π ^ 2) / (3 * gam ^ 2) by ring,
+  rw [show delta ^ (2 : ℕ) * (π ^ (2 : ℕ) / (3 * gam ^ (2 : ℕ))) = (delta ^ (2 : ℕ) * π ^ (2 : ℕ)) / (3 * gam ^ (2 : ℕ)) by ring,
     div_lt_iff₀ (by positivity)]
   linarith
 
@@ -133,8 +133,8 @@ theorem collision_time {u₀ D t : ℝ} (_hu : 0 < u₀) (hlt : 4 * D * u₀ < 8
 /-- **Sharpness.**  At the lattice ratio `δ = γ` the criterion fails: `δ²·π²/(3γ²) = π²/3 > 2`, and
 the exact lattice field gives `δ²Δ = 2`, a stationary gap.  So no criterion of this shape can reach
 uniformly spaced configurations. -/
-theorem lattice_not_collision : (2 : ℝ) ≤ 1 * (π ^ 2 / 3) := by
-  have h : (6 : ℝ) < π ^ 2 := by
+theorem lattice_not_collision : (2 : ℝ) ≤ 1 * (π ^ (2 : ℕ) / 3) := by
+  have h : (6 : ℝ) < π ^ (2 : ℕ) := by
     nlinarith [Real.pi_gt_three, Real.pi_pos]
   rw [one_mul, le_div_iff₀ (by norm_num)]
   linarith

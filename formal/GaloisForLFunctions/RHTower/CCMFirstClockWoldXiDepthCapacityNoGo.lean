@@ -96,14 +96,14 @@ theorem lowerSemicontinuous_twoHomogeneous_normalizedBudget_annihilates_limit
     (hnormalized :
       Tendsto (fun N => (scale N)⁻¹ • partialSum N) atTop (𝓝 L))
     (hqnonneg : ∀ v, 0 ≤ q v)
-    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ 2 * q v)
+    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ (2 : ℕ) * q v)
     (hlsc : LowerSemicontinuousAt q L)
     {M : ℝ} (hbudget : ∀ N, q (partialSum N) ≤ M) :
     q L = 0 := by
   have hinv : Tendsto (fun N => (scale N)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp hscale
   have hbound0 :
-      Tendsto (fun N => (scale N)⁻¹ ^ 2 * M)
+      Tendsto (fun N => (scale N)⁻¹ ^ (2 : ℕ) * M)
         atTop (𝓝 0) := by
     simpa using (hinv.pow 2).mul_const M
   have hqnormalized0 :
@@ -112,14 +112,14 @@ theorem lowerSemicontinuous_twoHomogeneous_normalizedBudget_annihilates_limit
         atTop (𝓝 0) := by
     refine squeeze_zero
       (f := fun N => q ((scale N)⁻¹ • partialSum N))
-      (g := fun N => (scale N)⁻¹ ^ 2 * M) ?_ ?_ hbound0
+      (g := fun N => (scale N)⁻¹ ^ (2 : ℕ) * M) ?_ ?_ hbound0
     · exact fun N => hqnonneg _
     · intro N
       calc
         q ((scale N)⁻¹ • partialSum N) =
-            (scale N)⁻¹ ^ 2 * q (partialSum N) :=
+            (scale N)⁻¹ ^ (2 : ℕ) * q (partialSum N) :=
           hqhom _ _
-        _ ≤ (scale N)⁻¹ ^ 2 * M :=
+        _ ≤ (scale N)⁻¹ ^ (2 : ℕ) * M :=
           mul_le_mul_of_nonneg_left (hbudget N) (sq_nonneg _)
   apply le_antisymm ?_ (hqnonneg L)
   by_contra hnot
@@ -235,26 +235,26 @@ summable.  This also gives the graph-null sequence behind nonclosability. -/
 theorem summable_woldDepthMoment_normSq :
     Summable
       (fun n : ℕ =>
-        ((n + 1 : ℕ) : ℝ) ^ 2 * shellSourceMass (n + 2)) := by
+        ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * shellSourceMass (n + 2)) := by
   have hmassShift :
       (fun n : ℕ => shellSourceMass (n + 2)) =O[atTop]
         (fun n : ℕ => ((2 : ℝ) ^ (n + 2))⁻¹) :=
     shellSourceMass_isBigO_inv_two_pow.comp_tendsto
       (tendsto_add_atTop_nat 2)
   have hpoly :
-      (fun n : ℕ => (((n + 1 : ℕ) : ℝ) ^ 2)) =O[atTop]
-        (fun n : ℕ => (((n + 1 : ℕ) : ℝ) ^ 2)) :=
+      (fun n : ℕ => (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =O[atTop]
+        (fun n : ℕ => (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))) :=
     isBigO_refl _ _
   apply summable_of_isBigO_nat
     (g := fun n : ℕ =>
-      ((n + 1 : ℕ) : ℝ) ^ 2 * ((2 : ℝ) ^ (n + 2))⁻¹)
+      ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((2 : ℝ) ^ (n + 2))⁻¹)
   · have hbase :
         Summable (fun n : ℕ =>
-          (n : ℝ) ^ 2 * (1 / 2 : ℝ) ^ n) :=
+          (n : ℝ) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ n) :=
       summable_pow_mul_geometric_of_norm_lt_one 2 (by norm_num)
     have hshift :
         Summable (fun n : ℕ =>
-          ((n + 1 : ℕ) : ℝ) ^ 2 * (1 / 2 : ℝ) ^ (n + 1)) :=
+          ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ (n + 1)) :=
       (summable_nat_add_iff 1).mpr hbase
     apply (hshift.mul_left (1 / 2 : ℝ)).congr
     intro n
@@ -277,7 +277,7 @@ theorem summable_woldVacuumShellMass :
     (shellSourceMass_pos (n := n + 2) (by omega)).le
   have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
     exact_mod_cast (Nat.succ_le_succ (Nat.zero_le n))
-  have hone : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) ^ 2 := by
+  have hone : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
     nlinarith
   nlinarith
 
@@ -306,7 +306,7 @@ theorem xiDepthVacuum_lowerSemicontinuous_capacity_budget_annihilates_connection
     {u : ℂ} (hu : xi u ≠ 0)
     (q : ℂ → ℝ)
     (hqnonneg : ∀ v, 0 ≤ q v)
-    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ 2 * q v)
+    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ (2 : ℕ) * q v)
     (hlsc : LowerSemicontinuousAt q (-u * logDeriv xi u))
     {M : ℝ}
     (hbudget : ∀ N, q (xiDepthVacuumPartialReporter u N) ≤ M) :
@@ -324,7 +324,7 @@ theorem xiDepthVacuum_detecting_capacity_not_uniformly_bounded
     {u : ℂ} (hu : xi u ≠ 0)
     (q : ℂ → ℝ)
     (hqnonneg : ∀ v, 0 ≤ q v)
-    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ 2 * q v)
+    (hqhom : ∀ (r : ℝ) v, q (r • v) = r ^ (2 : ℕ) * q v)
     (hlsc : LowerSemicontinuousAt q (-u * logDeriv xi u))
     (hdetect : 0 < q (-u * logDeriv xi u)) :
     ¬ ∃ M : ℝ,

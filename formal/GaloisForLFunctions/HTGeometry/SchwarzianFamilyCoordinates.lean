@@ -105,7 +105,7 @@ theorem familyJet_deriv1 (a : ι) :
 theorem familyJet_three_eq (a : ι) :
     familyJet C a 3 =
       familyJet C a 1 * familySchwarzian C a +
-        (3 / 2 : FreeFamilyJetField C ι) * familyJet C a 2 ^ 2 / familyJet C a 1 := by
+        (3 / 2 : FreeFamilyJetField C ι) * familyJet C a 2 ^ (2 : ℕ) / familyJet C a 1 := by
   have h1 : familyJet C a 1 ≠ (0 : FreeFamilyJetField C ι) := familyJet_ne_zero a 1
   rw [familySchwarzian, schwarzian, familyJet_deriv3, familyJet_deriv2, familyJet_deriv1]
   field_simp

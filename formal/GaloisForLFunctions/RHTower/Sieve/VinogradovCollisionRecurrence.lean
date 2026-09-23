@@ -90,7 +90,7 @@ theorem vinogradov_moment_collision_recurrence
           (vinogradovSplitPowerSignature
             (vinogradovMomentModulus N (k + b) k) N k b)
           (fun z => Function.Injective z.1) +
-        ((k * k - k) * N ^ (k - 1)) ^ 2 *
+        ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
           Fintype.card (VinogradovDiagonalSolution N b k)) := by
   let q := vinogradovMomentModulus N (k + b) k
   calc
@@ -111,7 +111,7 @@ theorem vinogradov_moment_collision_recurrence
     _ ≤ 2 * (finiteFiberEnergyWith
           (vinogradovSplitPowerSignature q N k b)
           (fun z => Function.Injective z.1) +
-        ((k * k - k) * N ^ (k - 1)) ^ 2 *
+        ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
           Fintype.card (VinogradovDiagonalSolution N b k)) := by
       gcongr
       exact card_vinogradovCollidingBlockCompletion_le_tailMoment hN

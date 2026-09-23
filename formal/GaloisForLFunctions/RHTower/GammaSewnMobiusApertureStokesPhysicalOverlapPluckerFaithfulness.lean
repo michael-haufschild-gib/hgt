@@ -203,7 +203,7 @@ theorem gammaSewnCriticalPhysicalPlucker_depthGaugeCoefficient_zero
     (gammaSewnCriticalAdjacentPrime_lower 0)
   have hW : 0 < W :=
     RHTower.gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) _
-  let d : ℝ := (‖c 0‖ * W) ^ 2
+  let d : ℝ := (‖c 0‖ * W) ^ (2 : ℕ)
   have hd : 0 < d := by
     dsimp [d]
     positivity
@@ -214,7 +214,7 @@ theorem gammaSewnCriticalPhysicalPlucker_depthGaugeCoefficient_zero
     rw [gammaSewnCriticalPhysicalPluckerRestriction_apply] at he
     simpa [gammaSewnCriticalAdjacentPrime_PluckerPhysicalLabel,
       hcconst e, gammaSewnCriticalAdjacentPrime_PluckerSpectralKernelVector_zero_eq_stokesGap] using he
-  have hlower (e : ℕ) : d ≤ ‖x (e, 0)‖ ^ 2 := by
+  have hlower (e : ℕ) : d ≤ ‖x (e, 0)‖ ^ (2 : ℕ) := by
     rw [hxcoord, norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (RHTower.gammaSewnMobiusApertureStokesGap_pos (by norm_num) _)]
     unfold RHTower.gammaSewnMobiusApertureStokesGap
@@ -240,7 +240,7 @@ theorem gammaSewnCriticalPhysicalPlucker_depthGaugeCoefficient_zero
     exact (sq_le_sq₀ hleft hright).2
       (mul_le_mul_of_nonneg_left
         hfactor (norm_nonneg _))
-  have hsum : Summable (fun e : ℕ => ‖x (e, 0)‖ ^ 2) := by
+  have hsum : Summable (fun e : ℕ => ‖x (e, 0)‖ ^ (2 : ℕ)) := by
     exact (HilbertSchmidt.summable_coe_sq x).comp_injective
       (fun _ _ h => congrArg Prod.fst h)
   have hconst : Summable (fun _ : ℕ => d) := by

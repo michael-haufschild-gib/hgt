@@ -58,7 +58,7 @@ theorem exp_neg_ofReal_memLp_two {a : ℝ} (ha : 0 < a) :
     rw [Complex.norm_exp]
     simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.ofReal_im,
       mul_zero, sub_zero]
-    rw [show Real.exp (-a * t) ^ 2 = Real.exp ((-2 * a) * t) by
+    rw [show Real.exp (-a * t) ^ (2 : ℕ) = Real.exp ((-2 * a) * t) by
       rw [sq, ← Real.exp_add]
       congr 1
       ring]
@@ -88,7 +88,7 @@ theorem ccmXiScrewAllExponentialMoments_of_memLp_two_suzukiPsi
 theorem mul_suzukiPsiLaplaceContinuation_ofReal_eq_xiResolventMoment
     {r : ℝ} (hr : 0 < r) :
     (r : ℂ) * suzukiPsiLaplaceContinuation (r : ℂ) =
-      xiResolventMoment 0 (r ^ 2) := by
+      xiResolventMoment 0 (r ^ (2 : ℕ)) := by
   rw [suzukiPsiLaplaceContinuation, xiResolventMoment, ← tsum_mul_left]
   apply tsum_congr
   intro q
@@ -98,7 +98,7 @@ theorem mul_suzukiPsiLaplaceContinuation_ofReal_eq_xiResolventMoment
   ring
 
 theorem tendsto_xiResolventMoment_zero_sq_at_zero :
-    Tendsto (fun r : ℝ => xiResolventMoment 0 (r ^ 2))
+    Tendsto (fun r : ℝ => xiResolventMoment 0 (r ^ (2 : ℕ)))
       (𝓝[>] 0) (𝓝 (xiResolventMoment 0 0)) := by
   rw [xiResolventMoment]
   apply tendsto_tsum_of_dominated_convergence
@@ -107,8 +107,8 @@ theorem tendsto_xiResolventMoment_zero_sq_at_zero :
     have hr0 : Tendsto (fun r : ℝ => r) (𝓝[>] 0) (𝓝 0) :=
       tendsto_id.mono_left nhdsWithin_le_nhds
     have hden : Tendsto (fun r : ℝ =>
-        xiSpectralPoint q ^ 2 + ((r ^ 2 : ℝ) : ℂ)) (𝓝[>] 0)
-        (𝓝 (xiSpectralPoint q ^ 2)) := by
+        xiSpectralPoint q ^ (2 : ℕ) + ((r ^ (2 : ℕ) : ℝ) : ℂ)) (𝓝[>] 0)
+        (𝓝 (xiSpectralPoint q ^ (2 : ℕ))) := by
       convert tendsto_const_nhds.add ((hr0.pow 2).ofReal) using 1
       all_goals simp
     have hinv := hden.inv₀ (pow_ne_zero 2 (xiSpectralPoint_ne_zero q))
@@ -225,8 +225,8 @@ theorem tendsto_mul_suzukiPsiLaplace_zero_of_integrableOn
       (abs_suzukiPsiRealLaplace_le_integral_abs hPsi hrpos) hrpos.le
 
 theorem integral_sq_exp_neg_mul_Ioi {r : ℝ} (hr : 0 < r) :
-    (∫ t : ℝ in Ioi 0, Real.exp (-r * t) ^ 2) = 1 / (2 * r) := by
-  have hfun : (fun t : ℝ => Real.exp (-r * t) ^ 2) =
+    (∫ t : ℝ in Ioi 0, Real.exp (-r * t) ^ (2 : ℕ)) = 1 / (2 * r) := by
+  have hfun : (fun t : ℝ => Real.exp (-r * t) ^ (2 : ℕ)) =
       fun t : ℝ => Real.exp ((-2 * r) * t) := by
     funext t
     rw [sq, ← Real.exp_add]
@@ -239,15 +239,15 @@ theorem integral_sq_exp_neg_mul_Ioi {r : ℝ} (hr : 0 < r) :
 theorem sq_suzukiPsiRealLaplace_le
     (hPsi : MemLp suzukiPsi 2 (volume.restrict (Ioi 0)))
     {r : ℝ} (hr : 0 < r) :
-    suzukiPsiRealLaplace r ^ 2 ≤
-      (∫ t : ℝ in Ioi 0, suzukiPsi t ^ 2) / (2 * r) := by
-  have hPsiSq : Integrable (fun t : ℝ => suzukiPsi t ^ 2)
+    suzukiPsiRealLaplace r ^ (2 : ℕ) ≤
+      (∫ t : ℝ in Ioi 0, suzukiPsi t ^ (2 : ℕ)) / (2 * r) := by
+  have hPsiSq : Integrable (fun t : ℝ => suzukiPsi t ^ (2 : ℕ))
       (volume.restrict (Ioi 0)) :=
     (memLp_two_iff_integrable_sq hPsi.1).mp hPsi
   have heMeas : AEStronglyMeasurable (fun t : ℝ => Real.exp (-r * t))
       (volume.restrict (Ioi 0)) :=
     (by fun_prop : Continuous (fun t : ℝ => Real.exp (-r * t))).aestronglyMeasurable
-  have heSq : Integrable (fun t : ℝ => Real.exp (-r * t) ^ 2)
+  have heSq : Integrable (fun t : ℝ => Real.exp (-r * t) ^ (2 : ℕ))
       (volume.restrict (Ioi 0)) := by
     have h := integrableOn_exp_mul_Ioi (a := -2 * r) (by linarith) 0
     apply h.congr
@@ -269,7 +269,7 @@ theorem tendsto_mul_suzukiPsiLaplace_zero_of_memLp_two
     (hPsi : MemLp suzukiPsi 2 (volume.restrict (Ioi 0))) :
     Tendsto (fun r : ℝ => (r : ℂ) * suzukiPsiLaplace (r : ℂ))
       (𝓝[>] 0) (𝓝 0) := by
-  let C : ℝ := ∫ t : ℝ in Ioi 0, suzukiPsi t ^ 2
+  let C : ℝ := ∫ t : ℝ in Ioi 0, suzukiPsi t ^ (2 : ℕ)
   have hC : 0 ≤ C := integral_nonneg fun _ => sq_nonneg _
   let N : ℝ → ℝ := fun r => ‖(r : ℂ) * suzukiPsiLaplace (r : ℂ)‖
   have hr0 : Tendsto (fun r : ℝ => r) (𝓝[>] 0) (𝓝 0) :=
@@ -277,7 +277,7 @@ theorem tendsto_mul_suzukiPsiLaplace_zero_of_memLp_two
   have hupper : Tendsto (fun r : ℝ => C * r / 2) (𝓝[>] 0) (𝓝 0) := by
     convert (hr0.const_mul C).div_const 2 using 1
     all_goals ring
-  have hsq : Tendsto (fun r => N r ^ 2) (𝓝[>] 0) (𝓝 0) := by
+  have hsq : Tendsto (fun r => N r ^ (2 : ℕ)) (𝓝[>] 0) (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hupper
     · filter_upwards with r
       exact sq_nonneg (N r)
@@ -290,17 +290,17 @@ theorem tendsto_mul_suzukiPsiLaplace_zero_of_memLp_two
       rw [abs_of_pos hrpos, mul_pow, sq_abs]
       dsimp only [C]
       calc
-        r ^ 2 * suzukiPsiRealLaplace r ^ 2 ≤
-            r ^ 2 * ((∫ t : ℝ in Ioi 0, suzukiPsi t ^ 2) / (2 * r)) := by
+        r ^ (2 : ℕ) * suzukiPsiRealLaplace r ^ (2 : ℕ) ≤
+            r ^ (2 : ℕ) * ((∫ t : ℝ in Ioi 0, suzukiPsi t ^ (2 : ℕ)) / (2 * r)) := by
           gcongr
-        _ = (∫ t : ℝ in Ioi 0, suzukiPsi t ^ 2) * r / 2 := by
+        _ = (∫ t : ℝ in Ioi 0, suzukiPsi t ^ (2 : ℕ)) * r / 2 := by
           field_simp [hrpos.ne']
   rw [tendsto_zero_iff_norm_tendsto_zero]
   change Tendsto N (𝓝[>] 0) (𝓝 0)
   have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
-  change Tendsto (fun r => Real.sqrt (N r ^ 2)) (𝓝[>] 0)
+  change Tendsto (fun r => Real.sqrt (N r ^ (2 : ℕ))) (𝓝[>] 0)
       (𝓝 (Real.sqrt 0)) at hsqrt
-  have hsqrt' : Tendsto (fun r => Real.sqrt (N r ^ 2)) (𝓝[>] 0) (𝓝 0) := by
+  have hsqrt' : Tendsto (fun r => Real.sqrt (N r ^ (2 : ℕ))) (𝓝[>] 0) (𝓝 0) := by
     simpa only [Real.sqrt_zero] using hsqrt
   have hN (r : ℝ) : 0 ≤ N r := by dsimp only [N]; exact norm_nonneg _
   simpa only [Real.sqrt_sq (hN _)] using hsqrt'

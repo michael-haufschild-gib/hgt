@@ -50,8 +50,8 @@ theorem egbFixedChargeAFourierCharacter_modes
     (fun k : Fin 5 => egbFixedChargeAFourierCharacter (n + 3) i j ^
       (egbFixedChargeAFiveFourierModes n k).val) =
       ![1, egbFixedChargeAFourierCharacter (n + 3) i j,
-        egbFixedChargeAFourierCharacter (n + 3) i j ^ 2,
-        star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ 2,
+        egbFixedChargeAFourierCharacter (n + 3) i j ^ (2 : ℕ),
+        star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ (2 : ℕ),
         star (egbFixedChargeAFourierCharacter (n + 3) i j)] := by
   have hb : 8 ≤ 2 ^ (n + 3) := by
     have hp : 0 < (2 : ℕ) ^ n := pow_pos (by omega) n
@@ -65,7 +65,7 @@ theorem egbFixedChargeAFourierCharacter_modes
   funext k
   fin_cases k <;> norm_num [egbFixedChargeAFiveFourierModes]
   · change egbFixedChargeAFourierCharacter (n + 3) i j ^ (2 ^ (n + 3) - 2) =
-      star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ 2
+      star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ (2 : ℕ)
     rw [pow_sub₀ _ hn (by omega), egbFixedChargeAFourierCharacter_period,
       one_mul, ← inv_pow, egbFixedChargeAFourierCharacter_star_inv]
   · change egbFixedChargeAFourierCharacter (n + 3) i j ^ (2 ^ (n + 3) - 1) =

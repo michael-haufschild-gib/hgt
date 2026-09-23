@@ -23,7 +23,7 @@ open scoped BigOperators
 /-- A scalarization of a symmetric two-channel Gram on aggregate good and bad masses. -/
 def twoChannelLinearCurrent
     (goodWeight mixedWeight badWeight good bad : ℝ) : ℝ :=
-  goodWeight * good ^ 2 + 2 * mixedWeight * good * bad + badWeight * bad ^ 2
+  goodWeight * good ^ (2 : ℕ) + 2 * mixedWeight * good * bad + badWeight * bad ^ (2 : ℕ)
 
 /-- Signed good-minus-bad source coordinate. -/
 def twoChannelSignedExcursion (good bad : ℝ) : ℝ := good - bad
@@ -31,13 +31,13 @@ def twoChannelSignedExcursion (good bad : ℝ) : ℝ := good - bad
 @[simp] theorem twoChannelLinearCurrent_pureGood
     (goodWeight mixedWeight badWeight good : ℝ) :
     twoChannelLinearCurrent goodWeight mixedWeight badWeight good 0 =
-      goodWeight * good ^ 2 := by
+      goodWeight * good ^ (2 : ℕ) := by
   simp [twoChannelLinearCurrent]
 
 @[simp] theorem twoChannelLinearCurrent_pureBad
     (goodWeight mixedWeight badWeight bad : ℝ) :
     twoChannelLinearCurrent goodWeight mixedWeight badWeight 0 bad =
-      badWeight * bad ^ 2 := by
+      badWeight * bad ^ (2 : ℕ) := by
   simp [twoChannelLinearCurrent]
 
 /-- Positivity plus cancellation of the pure-bad self-current also kills every mixed good/bad
@@ -54,10 +54,10 @@ theorem twoChannelLinearCurrent_mixedWeight_eq_zero_of_nonnegative_of_badWeight_
   have htest := hnonneg mixedWeight (-(goodWeight + 1))
   rw [hbad] at htest
   simp only [twoChannelLinearCurrent, zero_mul, add_zero] at htest
-  have hprod : (goodWeight + 2) * mixedWeight ^ 2 ≤ 0 := by
+  have hprod : (goodWeight + 2) * mixedWeight ^ (2 : ℕ) ≤ 0 := by
     nlinarith
   have hweight : 0 < goodWeight + 2 := by linarith
-  have hmixedSq : mixedWeight ^ 2 = 0 := by
+  have hmixedSq : mixedWeight ^ (2 : ℕ) = 0 := by
     nlinarith [mul_nonneg hweight.le (sq_nonneg mixedWeight)]
   nlinarith [sq_nonneg mixedWeight]
 
@@ -69,7 +69,7 @@ theorem twoChannelLinearCurrent_eq_goodDiagonal_of_nonnegative_of_badWeight_eq_z
       0 ≤ twoChannelLinearCurrent goodWeight mixedWeight badWeight good bad)
     (hbad : badWeight = 0) (good bad : ℝ) :
     twoChannelLinearCurrent goodWeight mixedWeight badWeight good bad =
-      goodWeight * good ^ 2 := by
+      goodWeight * good ^ (2 : ℕ) := by
   rw [hbad,
     twoChannelLinearCurrent_mixedWeight_eq_zero_of_nonnegative_of_badWeight_eq_zero
       hnonneg hbad]
@@ -92,7 +92,7 @@ theorem one_le_twoChannelLinearCurrent_badWeight_of_negativeExcursionDominance
     {goodWeight mixedWeight badWeight : ℝ}
     (hdominates : ∀ good bad : ℝ,
       twoChannelSignedExcursion good bad < 0 →
-        twoChannelSignedExcursion good bad ^ 2 ≤
+        twoChannelSignedExcursion good bad ^ (2 : ℕ) ≤
           twoChannelLinearCurrent goodWeight mixedWeight badWeight good bad) :
     1 ≤ badWeight := by
   have hneg : twoChannelSignedExcursion 0 1 < 0 := by
@@ -106,7 +106,7 @@ theorem not_negativeExcursionDominance_of_twoChannelLinearCurrent_badWeight_eq_z
     {goodWeight mixedWeight badWeight : ℝ} (hbad : badWeight = 0) :
     ¬ (∀ good bad : ℝ,
       twoChannelSignedExcursion good bad < 0 →
-        twoChannelSignedExcursion good bad ^ 2 ≤
+        twoChannelSignedExcursion good bad ^ (2 : ℕ) ≤
           twoChannelLinearCurrent goodWeight mixedWeight badWeight good bad) := by
   intro hdominates
   have hweight :=
@@ -184,12 +184,12 @@ the diagonal square mass. -/
 theorem finsetOffDiagonalKernelEnergy_one {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (mass : ι → ℝ) :
     finsetOffDiagonalKernelEnergy s (fun _ _ => 1) mass =
-      (∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2 := by
+      (∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ) := by
   classical
   rw [finsetOffDiagonalKernelEnergy]
   calc
     (∑ i ∈ s, ∑ j ∈ s, if i = j then 0 else mass i * 1 * mass j) =
-        ∑ i ∈ s, ((∑ j ∈ s, mass i * mass j) - mass i ^ 2) := by
+        ∑ i ∈ s, ((∑ j ∈ s, mass i * mass j) - mass i ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i hi
       calc
@@ -204,11 +204,11 @@ theorem finsetOffDiagonalKernelEnergy_one {ι : Type*} [DecidableEq ι]
         _ = (∑ j ∈ s, mass i * mass j) -
             ∑ j ∈ s, (if i = j then mass i * mass j else 0) := by
           rw [Finset.sum_sub_distrib]
-        _ = (∑ j ∈ s, mass i * mass j) - mass i ^ 2 := by
+        _ = (∑ j ∈ s, mass i * mass j) - mass i ^ (2 : ℕ) := by
           rw [Finset.sum_ite_eq]
           simp only [hi, if_true]
           ring
-    _ = (∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2 := by
+    _ = (∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ) := by
       rw [Finset.sum_sub_distrib, ← Finset.sum_mul_sum]
       ring
 
@@ -216,7 +216,7 @@ theorem finsetOffDiagonalKernelEnergy_one {ι : Type*} [DecidableEq ι]
 theorem finsetOffDiagonalKernelEnergy_const {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (kappa : ℝ) (mass : ι → ℝ) :
     finsetOffDiagonalKernelEnergy s (fun _ _ => kappa) mass =
-      kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) := by
+      kappa * ((∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ)) := by
   classical
   calc
     finsetOffDiagonalKernelEnergy s (fun _ _ => kappa) mass =
@@ -230,7 +230,7 @@ theorem finsetOffDiagonalKernelEnergy_const {ι : Type*} [DecidableEq ι]
       split_ifs
       · ring
       · ring
-    _ = kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) := by
+    _ = kappa * ((∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ)) := by
       rw [finsetOffDiagonalKernelEnergy_one]
 
 /-- A pointwise off-diagonal kernel floor controls the whole diagonal-null current by the exact
@@ -240,7 +240,7 @@ theorem kappa_mul_pairMass_le_finsetOffDiagonalKernelEnergy
     (kernel : ι → ι → ℝ) (mass : ι → ℝ) {kappa : ℝ}
     (hmass : ∀ i ∈ s, 0 ≤ mass i)
     (hkernel : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → kappa ≤ kernel i j) :
-    kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) ≤
+    kappa * ((∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ)) ≤
       finsetOffDiagonalKernelEnergy s kernel mass := by
   rw [← finsetOffDiagonalKernelEnergy_const]
   apply Finset.sum_le_sum
@@ -269,7 +269,7 @@ theorem finsetOffDiagonalKernelEnergy_nonneg
   simpa using
     (kappa_mul_pairMass_le_finsetOffDiagonalKernelEnergy
       s kernel mass hmass hkernel :
-        0 * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) ≤
+        0 * ((∑ i ∈ s, mass i) ^ (2 : ℕ) - ∑ i ∈ s, mass i ^ (2 : ℕ)) ≤
           finsetOffDiagonalKernelEnergy s kernel mass)
 
 /-- An antisymmetric exterior current has identically zero scalar quadratic energy.  It can retain
@@ -310,17 +310,17 @@ theorem finsetOffDiagonalKernelEnergy_eq_zero_of_antisymmetric
 
 /-- Squared correlation carried by one normalized-kernel anchor coefficient. -/
 def oneNodeAnchorSquare (anchorCoefficient mass : ℝ) : ℝ :=
-  mass ^ 2 * anchorCoefficient ^ 2
+  mass ^ (2 : ℕ) * anchorCoefficient ^ (2 : ℕ)
 
 /-- One-node energy left by the canonical anchored Schur complement of a normalized kernel. -/
 def oneNodeAnchoredSchurResidual (anchorCoefficient mass : ℝ) : ℝ :=
-  mass ^ 2 * (1 - anchorCoefficient ^ 2)
+  mass ^ (2 : ℕ) * (1 - anchorCoefficient ^ (2 : ℕ))
 
 /-- Anchor square and anchored Schur residual exactly partition the normalized one-node energy. -/
 theorem oneNodeAnchorSquare_add_anchoredSchurResidual
     (anchorCoefficient mass : ℝ) :
     oneNodeAnchorSquare anchorCoefficient mass +
-        oneNodeAnchoredSchurResidual anchorCoefficient mass = mass ^ 2 := by
+        oneNodeAnchoredSchurResidual anchorCoefficient mass = mass ^ (2 : ℕ) := by
   simp [oneNodeAnchorSquare, oneNodeAnchoredSchurResidual]
   ring
 
@@ -330,11 +330,11 @@ theorem oneNodeAnchorSquare_le_anchoredSchurResidual_iff
     {anchorCoefficient mass : ℝ} (hmass : mass ≠ 0) :
     oneNodeAnchorSquare anchorCoefficient mass ≤
         oneNodeAnchoredSchurResidual anchorCoefficient mass ↔
-      anchorCoefficient ^ 2 ≤ 1 / 2 := by
+      anchorCoefficient ^ (2 : ℕ) ≤ 1 / 2 := by
   simp only [oneNodeAnchorSquare, oneNodeAnchoredSchurResidual]
   constructor
   · intro h
-    have hmassSq : 0 < mass ^ 2 := sq_pos_of_ne_zero hmass
+    have hmassSq : 0 < mass ^ (2 : ℕ) := sq_pos_of_ne_zero hmass
     nlinarith
   · intro h
     nlinarith [sq_nonneg mass]
@@ -343,7 +343,7 @@ theorem oneNodeAnchorSquare_le_anchoredSchurResidual_iff
 correlation controlled by the canonical Schur residual. -/
 theorem not_oneNodeAnchorSquare_le_anchoredSchurResidual_of_half_lt_sq
     {anchorCoefficient mass : ℝ} (hmass : mass ≠ 0)
-    (hfaithful : 1 / 2 < anchorCoefficient ^ 2) :
+    (hfaithful : 1 / 2 < anchorCoefficient ^ (2 : ℕ)) :
     ¬ oneNodeAnchorSquare anchorCoefficient mass ≤
         oneNodeAnchoredSchurResidual anchorCoefficient mass := by
   rw [oneNodeAnchorSquare_le_anchoredSchurResidual_iff hmass]

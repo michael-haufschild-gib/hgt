@@ -24,14 +24,14 @@ def kapustinReciprocalGammaPhase (x : ℝ) : ℝ :=
 def kapustinToeplitzPhase (x : ℝ) : ℝ :=
   2 * kapustinReciprocalGammaPhase x - 8 * Real.arctan x
 
-/-- Smooth unimodular symbol `U₀ · conjugate(b₀)^4` from the universal sign proof. -/
+/-- Smooth unimodular symbol `U₀ · conjugate(b₀)^(4 : ℕ)` from the universal sign proof. -/
 def kapustinToeplitzSymbol (x : ℝ) : ℂ :=
   Complex.exp ((kapustinToeplitzPhase x : ℂ) * I)
 
 /-- Exact derivative of the reciprocal-Gamma Toeplitz phase. -/
 def kapustinToeplitzPhaseSlope (x : ℝ) : ℝ :=
   2 * ((Complex.digamma (((1 / 2 : ℝ) : ℂ) + (x : ℂ) * I)).re -
-    Real.log (2 * Real.pi)) - 8 / (1 + x ^ 2)
+    Real.log (2 * Real.pi)) - 8 / (1 + x ^ (2 : ℕ))
 
 theorem norm_kapustinToeplitzSymbol (x : ℝ) : ‖kapustinToeplitzSymbol x‖ = 1 := by
   simp [kapustinToeplitzSymbol]
@@ -68,7 +68,7 @@ theorem hasDerivAt_kapustinToeplitzPhase (x : ℝ) :
     @HasDerivAt ℝ _ ℝ Real.normedAddCommGroup.toAddCommGroup
       RCLike.toInnerProductSpaceReal.toModule _ _ kapustinToeplitzPhase
       (2 * ((Complex.digamma (((1 / 2 : ℝ) : ℂ) + (x : ℂ) * I)).re -
-        Real.log (2 * Real.pi)) - 8 / (1 + x ^ 2)) x := by
+        Real.log (2 * Real.pi)) - 8 / (1 + x ^ (2 : ℕ))) x := by
   let h := (hasDerivAt_kapustinReciprocalGammaPhase x).const_mul 2 |>.sub
     ((Real.hasDerivAt_arctan x).const_mul 8)
   convert h using 1
@@ -87,9 +87,9 @@ theorem tendsto_kapustinToeplitzPhaseSlope_sub_two_log :
       atTop (nhds (-2 * Real.log (2 * Real.pi))) := by
   have hpsi := re_digamma_vertical_sub_log_tendsto_zero (1 / 2)
     (by norm_num : (0 : ℝ) ≤ 1 / 2)
-  have hinv : Tendsto (fun x : ℝ => 8 / (1 + x ^ 2)) atTop (nhds 0) := by
-    have hsq : Tendsto (fun x : ℝ => 1 + x ^ 2) atTop atTop := by
-      have hx2 : Tendsto (fun x : ℝ => x ^ 2) atTop atTop := by
+  have hinv : Tendsto (fun x : ℝ => 8 / (1 + x ^ (2 : ℕ))) atTop (nhds 0) := by
+    have hsq : Tendsto (fun x : ℝ => 1 + x ^ (2 : ℕ)) atTop atTop := by
+      have hx2 : Tendsto (fun x : ℝ => x ^ (2 : ℕ)) atTop atTop := by
         simpa [pow_two] using Filter.Tendsto.atTop_mul_atTop₀ tendsto_id tendsto_id
       simpa [add_comm] using tendsto_atTop_add_const_right atTop 1 hx2
     exact hsq.const_div_atTop 8

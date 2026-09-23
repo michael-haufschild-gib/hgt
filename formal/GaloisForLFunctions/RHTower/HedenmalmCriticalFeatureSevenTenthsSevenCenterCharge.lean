@@ -42,23 +42,23 @@ theorem criticalFeatureDenominatorNormSq_le_sevenHundredTwentyFiveFourths
     criticalFeatureDenominatorNormSq t z ≤ 725 / 4 := by
   let u : ℝ := z.re - t
   let y : ℝ := z.im
-  have hu2 : u ^ 2 ≤ 49 / 4 := by
+  have hu2 : u ^ (2 : ℕ) ≤ 49 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg u) (by norm_num : (0 : ℝ) ≤ 7 / 2)).2
       (by simpa [u] using ht)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
-  have hy2 : y ^ 2 ≤ 1 / 4 := by
+  have hy2 : y ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg y) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2
       (by simpa [y] using hy)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
   have hmonoU :
-      0 ≤ (49 / 4 - u ^ 2) * (49 / 4 + u ^ 2 + 2 + 2 * y ^ 2) := by
+      0 ≤ (49 / 4 - u ^ (2 : ℕ)) * (49 / 4 + u ^ (2 : ℕ) + 2 + 2 * y ^ (2 : ℕ)) := by
     exact mul_nonneg (by linarith) (by nlinarith [sq_nonneg u, sq_nonneg y])
   have hmonoY :
-      0 ≤ (1 / 4 - y ^ 2) * (1 / 4 + y ^ 2 + 45 / 2) := by
+      0 ≤ (1 / 4 - y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ) + 45 / 2) := by
     exact mul_nonneg (by linarith) (by nlinarith [sq_nonneg y])
   rw [criticalFeatureDenominatorNormSq_eq]
   dsimp only [u, y] at hu2 hy2 hmonoU hmonoY ⊢
@@ -82,13 +82,13 @@ theorem shallowDirectSevenCenterCriticalFeatureHolomorphicCharge_lower
     {t : ℝ} {z : ℂ} (hy : |z.im| ≤ 1 / 5)
     (ht : |z.re - t| ≤ 1 / 2) :
     criticalFeatureShallowDirectSevenCenterCharge ≤
-      ((criticalFeatureCauchyKernelTest (t - 3) z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest (t - 1) z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest t z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest (t + 1) z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest (t + 2) z) ^ 2).re +
-      ((criticalFeatureCauchyKernelTest (t + 3) z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest (t - 3) z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest (t - 1) z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest (t + 1) z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest (t + 2) z) ^ (2 : ℕ)).re +
+      ((criticalFeatureCauchyKernelTest (t + 3) z) ^ (2 : ℕ)).re := by
   have hz : |z.im| < 1 / 2 := by linarith
   have hfive := shallowDirectFiveCenterCriticalFeatureHolomorphicCharge_lower hy ht
   have hmDist : |z.re - (t - 3)| ≤ 7 / 2 := by

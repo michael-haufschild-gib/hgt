@@ -28,9 +28,9 @@ theorem scalarResidualPeriod_eq_mellin (q : XiZeroCopy)
     rfl
   simp_rw [he]
   rw [integral_const_mul]
-  change (y^2)⁻¹ • ((y:ℂ)^P.s*residualStripMean q y) = _
+  change (y^(2 : ℕ))⁻¹ • ((y:ℂ)^P.s*residualStripMean q y) = _
   have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (show 0 < y from hy).ne'
-  have htwo : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+  have htwo : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [Complex.cpow_sub _ _ hn,htwo]
   simp only [Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_pow]
   ring

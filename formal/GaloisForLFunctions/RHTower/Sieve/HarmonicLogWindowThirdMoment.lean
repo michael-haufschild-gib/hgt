@@ -33,8 +33,8 @@ theorem antitoneOn_logPowDivId_three :
     rw [(RHTower.hasDerivAt_logPowDivId 3 (by linarith)).deriv]
     rw [RHTower.derivLogPowDivId]
     norm_num
-    have hnum : 3 * Real.log x ^ 2 - Real.log x ^ 3 ≤ 0 := by
-      have hsquare : 0 ≤ Real.log x ^ 2 := sq_nonneg _
+    have hnum : 3 * Real.log x ^ (2 : ℕ) - Real.log x ^ (3 : ℕ) ≤ 0 := by
+      have hsquare : 0 ≤ Real.log x ^ (2 : ℕ) := sq_nonneg _
       nlinarith [mul_nonneg hsquare (sub_nonneg.mpr hlog)]
     exact div_nonpos_of_nonpos_of_nonneg hnum (sq_nonneg x)
 
@@ -67,13 +67,13 @@ theorem abs_harmonicLogWindowMoment_three_sub_integral_le
 theorem abs_harmonicLogWindowMoment_three_sub_quartic_le
     {A B : ℕ} (hA : 64 ≤ A) (hAB : A ≤ B) :
     |harmonicLogWindowMoment 3 A B -
-        (Real.log (B + 1 : ℕ) ^ 4 / 4 - Real.log (A + 1 : ℕ) ^ 4 / 4)| ≤
+        (Real.log (B + 1 : ℕ) ^ (4 : ℕ) / 4 - Real.log (A + 1 : ℕ) ^ (4 : ℕ) / 4)| ≤
       RHTower.logPowDivId 3 (A + 1 : ℕ) -
         RHTower.logPowDivId 3 (B + 1 : ℕ) := by
   have hab : (((A + 1 : ℕ) : ℝ)) ≤ (((B + 1 : ℕ) : ℝ)) := by
     exact_mod_cast Nat.add_le_add_right hAB 1
   have hprim :
-      Real.log (B + 1 : ℕ) ^ 4 / 4 - Real.log (A + 1 : ℕ) ^ 4 / 4 =
+      Real.log (B + 1 : ℕ) ^ (4 : ℕ) / 4 - Real.log (A + 1 : ℕ) ^ (4 : ℕ) / 4 =
         harmonicLogMomentPrimitive 3 (B + 1 : ℕ) -
           harmonicLogMomentPrimitive 3 (A + 1 : ℕ) := by
     norm_num [harmonicLogMomentPrimitive]
@@ -85,9 +85,9 @@ theorem abs_harmonicLogWindowMoment_three_sub_quartic_le
 constant beyond the monotonicity threshold. -/
 theorem exists_abs_harmonicLogWindowMoment_three_zero_sub_quartic_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 64 ≤ N →
-      |harmonicLogWindowMoment 3 0 N - Real.log (N + 1 : ℕ) ^ 4 / 4| ≤ C := by
+      |harmonicLogWindowMoment 3 0 N - Real.log (N + 1 : ℕ) ^ (4 : ℕ) / 4| ≤ C := by
   let C : ℝ :=
-    |harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ 4 / 4| +
+    |harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4| +
       RHTower.logPowDivId 3 65
   refine ⟨C, by
     dsimp [C]
@@ -104,19 +104,19 @@ theorem exists_abs_harmonicLogWindowMoment_three_zero_sub_quartic_le :
     positivity
   have htail' :
       |harmonicLogWindowMoment 3 64 N -
-          (Real.log (N + 1 : ℕ) ^ 4 / 4 - Real.log (65 : ℕ) ^ 4 / 4)| ≤
+          (Real.log (N + 1 : ℕ) ^ (4 : ℕ) / 4 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4)| ≤
         RHTower.logPowDivId 3 65 :=
     htail.trans (sub_le_self _ hendNonneg)
   calc
-    |harmonicLogWindowMoment 3 0 N - Real.log (N + 1 : ℕ) ^ 4 / 4| =
-        |(harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ 4 / 4) +
+    |harmonicLogWindowMoment 3 0 N - Real.log (N + 1 : ℕ) ^ (4 : ℕ) / 4| =
+        |(harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4) +
           (harmonicLogWindowMoment 3 64 N -
-            (Real.log (N + 1 : ℕ) ^ 4 / 4 - Real.log (65 : ℕ) ^ 4 / 4))| := by
+            (Real.log (N + 1 : ℕ) ^ (4 : ℕ) / 4 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4))| := by
       rw [← hsplit]
       ring_nf
-    _ ≤ |harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ 4 / 4| +
+    _ ≤ |harmonicLogWindowMoment 3 0 64 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4| +
         |harmonicLogWindowMoment 3 64 N -
-          (Real.log (N + 1 : ℕ) ^ 4 / 4 - Real.log (65 : ℕ) ^ 4 / 4)| :=
+          (Real.log (N + 1 : ℕ) ^ (4 : ℕ) / 4 - Real.log (65 : ℕ) ^ (4 : ℕ) / 4)| :=
       abs_add_le _ _
     _ ≤ C := by
       dsimp [C]
@@ -126,19 +126,19 @@ theorem exists_abs_harmonicLogWindowMoment_three_zero_sub_quartic_le :
 theorem tendsto_harmonicLogWindowMoment_three_natDiv_div_log_fourth_quarter
     {c : ℕ} (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      harmonicLogWindowMoment 3 0 (N / c) / Real.log N ^ 4)
+      harmonicLogWindowMoment 3 0 (N / c) / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (1 / 4 : ℝ)) := by
   obtain ⟨C, hC, hbound⟩ :=
     exists_abs_harmonicLogWindowMoment_three_zero_sub_quartic_le
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ 4) atTop atTop :=
+  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ (4 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (n := 4) (by norm_num)).comp hlog
   have herr : Tendsto (fun N : ℕ =>
       (harmonicLogWindowMoment 3 0 (N / c) -
-        Real.log (N / c + 1 : ℕ) ^ 4 / 4) / Real.log N ^ 4)
+        Real.log (N / c + 1 : ℕ) ^ (4 : ℕ) / 4) / Real.log N ^ (4 : ℕ))
       atTop (𝓝 0) := by
-    have hmaj : Tendsto (fun N : ℕ => C / Real.log N ^ 4)
+    have hmaj : Tendsto (fun N : ℕ => C / Real.log N ^ (4 : ℕ))
         atTop (𝓝 0) := hscale.const_div_atTop C
     refine squeeze_zero_norm' ?_ hmaj
     filter_upwards [eventually_ge_atTop (64 * c), eventually_ge_atTop 2] with N hNc hN2
@@ -149,7 +149,7 @@ theorem tendsto_harmonicLogWindowMoment_three_natDiv_div_log_fourth_quarter
       (pow_nonneg hlogpos.le 4)
   have hratio := tendsto_log_natDiv_add_one_div_log_one hc
   have hmain : Tendsto (fun N : ℕ =>
-      (Real.log (N / c + 1 : ℕ) ^ 4 / 4) / Real.log N ^ 4)
+      (Real.log (N / c + 1 : ℕ) ^ (4 : ℕ) / 4) / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (1 / 4 : ℝ)) := by
     have h := (hratio.pow 4).const_mul (1 / 4 : ℝ)
     simpa only [one_pow, mul_one] using h.congr' (by

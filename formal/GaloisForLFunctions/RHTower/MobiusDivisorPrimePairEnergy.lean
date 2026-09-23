@@ -65,15 +65,15 @@ theorem sum_mobiusDivisorPrimePair {p : ℕ} (hp : p.Prime) (M : ℕ) :
 
 /-- Exact energy released by one prime pair, retaining its actual source overlap. -/
 theorem sum_mobiusDivisorPrimePair_sq_eq {p : ℕ} (hp : p.Prime) (M : ℕ) :
-    (∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d), (mobiusDivisorPrimePair M p d)^2) =
-      (∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^2)-
+    (∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d), (mobiusDivisorPrimePair M p d)^(2 : ℕ)) =
+      (∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^(2 : ℕ))-
         2*∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d),
-          (((ArithmeticFunction.moebius d:ℤ):ℝ)^2*
+          (((ArithmeticFunction.moebius d:ℤ):ℝ)^(2 : ℕ)*
             divisorUnsignedDilationChannel M d*divisorUnsignedDilationChannel M (p*d)) := by
-  have hz (d : ℕ) (hd : M<d) : (mobiusDivisorDilationChannel M d)^2=0 := by
+  have hz (d : ℕ) (hd : M<d) : (mobiusDivisorDilationChannel M d)^(2 : ℕ)=0 := by
     rw [mobiusDivisorDilationChannel_eq_moebius_unsigned,unsigned_channel_zero_above hd,mul_zero]
     norm_num
-  have hpp (d : ℕ) (hd : p∣d) : (mobiusDivisorDilationChannel M (p*d))^2=0 := by
+  have hpp (d : ℕ) (hd : p∣d) : (mobiusDivisorDilationChannel M (p*d))^(2 : ℕ)=0 := by
     rw [mobiusDivisorDilationChannel_eq_moebius_unsigned,Sieve.moebius_prime_mul hp,if_pos hd,zero_mul]
     norm_num
   rw [finite_prime_pair_sum _ M p hp.pos hz hpp,mul_sum,← sum_sub_distrib]
@@ -86,11 +86,11 @@ theorem sum_mobiusDivisorPrimePair_sq_eq {p : ℕ} (hp : p.Prime) (M : ℕ) :
 
 /-- Every prime gives unconditional first-pair contraction of the literal arithmetic diagonal. -/
 theorem sum_mobiusDivisorPrimePair_sq_le {p : ℕ} (hp : p.Prime) (M : ℕ) :
-    (∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d), (mobiusDivisorPrimePair M p d)^2) ≤
-      ∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^2 := by
+    (∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d), (mobiusDivisorPrimePair M p d)^(2 : ℕ)) ≤
+      ∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^(2 : ℕ) := by
   rw [sum_mobiusDivisorPrimePair_sq_eq hp]
   have h : 0 ≤ ∑ d ∈ (Icc 1 M).filter (fun d => ¬p∣d),
-      (((ArithmeticFunction.moebius d:ℤ):ℝ)^2*
+      (((ArithmeticFunction.moebius d:ℤ):ℝ)^(2 : ℕ)*
         divisorUnsignedDilationChannel M d*divisorUnsignedDilationChannel M (p*d)) :=
     sum_nonneg (fun d _ => mul_nonneg
       (mul_nonneg (sq_nonneg _) (divisorUnsignedDilationChannel_nonneg M d))

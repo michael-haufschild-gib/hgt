@@ -29,18 +29,18 @@ theorem momentFunctional_amplitude_sq
     {n : ℕ} (hn : n ≠ 0) :
     HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-        ((amplitude n) ^ 2) =
-      monicScale n ^ 2 / 2 := by
+        ((amplitude n) ^ (2 : ℕ)) =
+      monicScale n ^ (2 : ℕ) / 2 := by
   have hsq :
-      (amplitude n) ^ 2 =
-        monicScale n ^ 2 •
-          ((Polynomial.Chebyshev.T ℝ n) ^ 2).comp affine := by
+      (amplitude n) ^ (2 : ℕ) =
+        monicScale n ^ (2 : ℕ) •
+          ((Polynomial.Chebyshev.T ℝ n) ^ (2 : ℕ)).comp affine := by
     simp only [amplitude, Polynomial.smul_eq_C_mul, Polynomial.pow_comp]
     rw [Polynomial.C_pow]
     ring
   rw [hsq, HTGeometry.momentFunctional_smul]
-  change monicScale n ^ 2 * L ((Polynomial.Chebyshev.T ℝ n) ^ 2) = _
-  rw [show (Polynomial.Chebyshev.T ℝ n) ^ 2 =
+  change monicScale n ^ (2 : ℕ) * L ((Polynomial.Chebyshev.T ℝ n) ^ (2 : ℕ)) = _
+  rw [show (Polynomial.Chebyshev.T ℝ n) ^ (2 : ℕ) =
       Polynomial.Chebyshev.T ℝ n * Polynomial.Chebyshev.T ℝ n by ring,
     L_T_mul_self_of_ne_zero hn]
   ring
@@ -55,7 +55,7 @@ theorem momentFunctional_adaptiveShear_amplitude_eq_norm_mul_linear
       ((n : ℝ) + 3 / 8) *
         HTGeometry.momentFunctional
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-          ((amplitude n) ^ 2) := by
+          ((amplitude n) ^ (2 : ℕ)) := by
   by_cases hn1 : n = 1
   · subst n
     rw [momentFunctional_adaptiveShear_amplitude_one,
@@ -71,7 +71,7 @@ theorem momentFunctional_amplitude_sq_pos
     {n : ℕ} (hn : n ≠ 0) :
     0 < HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-        ((amplitude n) ^ 2) := by
+        ((amplitude n) ^ (2 : ℕ)) := by
   rw [momentFunctional_amplitude_sq hn]
   have hs : 0 < monicScale n := by
     unfold monicScale
@@ -84,7 +84,7 @@ theorem degree_mul_momentFunctional_amplitude_sq_lt_adaptiveShear
     (n : ℝ) *
         HTGeometry.momentFunctional
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-          ((amplitude n) ^ 2) <
+          ((amplitude n) ^ (2 : ℕ)) <
       HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
         (xiShiftedBoundaryAdaptiveShearPolynomial (amplitude n)) := by
@@ -99,7 +99,7 @@ namespace XiShiftedCanonicalAdmission
 /-- Normalized squared norm of the actual dimensionless inverse-Hankel admission. -/
 def normalizedAdmissionNorm (w : ℝ) (n : ℕ) : ℝ :=
   HTGeometry.momentFunctional (xiShiftedFarRightNormalizedMoment w)
-    ((dimensionlessAdmission w n) ^ 2)
+    ((dimensionlessAdmission w n) ^ (2 : ℕ))
 
 /-- Normalized adaptive source of the same admission, formed before any reporting map. -/
 def normalizedAdmissionSource (w : ℝ) (n : ℕ) : ℝ :=
@@ -111,7 +111,7 @@ theorem tendsto_sq_coeff
     {α : Type*} {l : Filter α} {F : α → Polynomial ℝ} {P : Polynomial ℝ}
     (hcoeff : ∀ k, Tendsto (fun x => (F x).coeff k) l (nhds (P.coeff k)))
     (k : ℕ) :
-    Tendsto (fun x => ((F x) ^ 2).coeff k) l (nhds ((P ^ 2).coeff k)) := by
+    Tendsto (fun x => ((F x) ^ (2 : ℕ)).coeff k) l (nhds ((P ^ (2 : ℕ)).coeff k)) := by
   simp only [pow_two, Polynomial.coeff_mul]
   apply tendsto_finsetSum
   intro ij _
@@ -123,24 +123,24 @@ theorem tendsto_normalizedAdmissionNorm
     Tendsto (fun w : ℝ => normalizedAdmissionNorm w n) atTop
       (nhds (HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-        ((Arc.amplitude n) ^ 2))) := by
+        ((Arc.amplitude n) ^ (2 : ℕ)))) := by
   let N := 2 * n
   have hterms : ∀ k ∈ Finset.range (N + 1),
       Tendsto
-        (fun w : ℝ => ((dimensionlessAdmission w n) ^ 2).coeff k *
+        (fun w : ℝ => ((dimensionlessAdmission w n) ^ (2 : ℕ)).coeff k *
           xiShiftedFarRightNormalizedMoment w k)
         atTop
-        (nhds (((Arc.amplitude n) ^ 2).coeff k *
+        (nhds (((Arc.amplitude n) ^ (2 : ℕ)).coeff k *
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom k)) := by
     intro k _
     exact (tendsto_sq_coeff
       (fun j => tendsto_dimensionlessAdmission_coeff hn j) k).mul
         (tendsto_scaled_re_xiShiftedReciprocalMoment_squareParam k)
   have hsum := tendsto_finsetSum (Finset.range (N + 1)) hterms
-  have hdegXi : ∀ w : ℝ, ((dimensionlessAdmission w n) ^ 2).natDegree ≤ N := by
+  have hdegXi : ∀ w : ℝ, ((dimensionlessAdmission w n) ^ (2 : ℕ)).natDegree ≤ N := by
     intro w
     rw [Polynomial.natDegree_pow, dimensionlessAdmission_natDegree]
-  have hdegArc : ((Arc.amplitude n) ^ 2).natDegree ≤ N := by
+  have hdegArc : ((Arc.amplitude n) ^ (2 : ℕ)).natDegree ≤ N := by
     rw [Polynomial.natDegree_pow, amplitude_natDegree hn]
   simpa only [normalizedAdmissionNorm,
       momentFunctional_eq_sum_range_of_natDegree_le
@@ -165,7 +165,7 @@ theorem tendsto_normalizedAdmissionSource_div_norm
           (xiShiftedBoundaryAdaptiveShearPolynomial (Arc.amplitude n)) /
         HTGeometry.momentFunctional
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-          ((Arc.amplitude n) ^ 2) =
+          ((Arc.amplitude n) ^ (2 : ℕ)) =
         (n : ℝ) + 3 / 8 := by
     rw [XiShiftedArcsineAdmission.momentFunctional_adaptiveShear_amplitude_eq_norm_mul_linear hn]
     field_simp [ne_of_gt hnormPos]
@@ -253,7 +253,7 @@ theorem relativeArithmeticSource_eq_adaptiveOrthoJacobiEnergy
   rw [relativeArithmeticSource_eq_normalizedAdmissionSource_div_norm hw n,
     normalizedAdmissionSource, normalizedAdmissionNorm, hP, hshear]
   rw [show HTGeometry.momentFunctional
-      (xiShiftedFarRightNormalizedMoment w) (P ^ 2) =
+      (xiShiftedFarRightNormalizedMoment w) (P ^ (2 : ℕ)) =
       HTGeometry.momentInner (xiShiftedFarRightNormalizedMoment w) P P by
     rw [HTGeometry.momentInner_def, pow_two]]
   change HTGeometry.momentFunctional s
@@ -441,15 +441,15 @@ theorem adaptiveShear_coordinateDilatedAmplitude_comp
 theorem momentFunctional_coordinateDilatedAmplitude_sq
     {r : ℝ} (hr : r ≠ 0) (n : ℕ) :
     HTGeometry.momentFunctional (coordinateDilatedMoment r)
-        ((coordinateDilatedAmplitude r n) ^ 2) =
+        ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)) =
       r ^ (2 * n) *
         HTGeometry.momentFunctional
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-          ((amplitude n) ^ 2) := by
+          ((amplitude n) ^ (2 : ℕ)) := by
   rw [momentFunctional_coordinateDilatedMoment hr]
   have hpoly :
-      ((coordinateDilatedAmplitude r n) ^ 2).comp (Polynomial.C r * X) =
-        r ^ (2 * n) • ((amplitude n) ^ 2) := by
+      ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)).comp (Polynomial.C r * X) =
+        r ^ (2 * n) • ((amplitude n) ^ (2 : ℕ)) := by
     rw [Polynomial.pow_comp, coordinateDilatedAmplitude_comp hr n]
     simp only [Polynomial.smul_eq_C_mul]
     rw [pow_mul, Polynomial.C_pow]
@@ -479,8 +479,8 @@ theorem coordinateDilated_adaptiveShear_div_norm
         (xiShiftedBoundaryAdaptiveShearPolynomial
           (coordinateDilatedAmplitude r n)) /
       HTGeometry.momentFunctional (coordinateDilatedMoment r)
-        ((coordinateDilatedAmplitude r n) ^ 2) =
-      r ^ 2 * ((n : ℝ) + 3 / 8) := by
+        ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)) =
+      r ^ (2 : ℕ) * ((n : ℝ) + 3 / 8) := by
   rw [momentFunctional_coordinateDilatedAmplitude_adaptiveShear hr n,
     momentFunctional_coordinateDilatedAmplitude_sq hr n,
     momentFunctional_adaptiveShear_amplitude_eq_norm_mul_linear hn]
@@ -497,8 +497,8 @@ theorem coordinateDilated_adaptiveShear_div_norm_gt_degree_iff
             (xiShiftedBoundaryAdaptiveShearPolynomial
               (coordinateDilatedAmplitude r n)) /
           HTGeometry.momentFunctional (coordinateDilatedMoment r)
-            ((coordinateDilatedAmplitude r n) ^ 2) ↔
-      8 * (n : ℝ) * (1 - r ^ 2) < 3 * r ^ 2 := by
+            ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)) ↔
+      8 * (n : ℝ) * (1 - r ^ (2 : ℕ)) < 3 * r ^ (2 : ℕ) := by
   rw [coordinateDilated_adaptiveShear_div_norm hr hn]
   constructor <;> intro h <;> nlinarith
 
@@ -506,12 +506,12 @@ theorem coordinateDilated_adaptiveShear_div_norm_gt_degree_iff
 contraction, even though every dilated moment form remains positive and every flag is canonical. -/
 theorem coordinateDilated_adaptiveShear_div_norm_lt_degree
     {r : ℝ} (hr : 0 < r) (_hrone : r < 1) {n : ℕ} (hn : n ≠ 0)
-    (hlarge : 3 * r ^ 2 < 8 * (n : ℝ) * (1 - r ^ 2)) :
+    (hlarge : 3 * r ^ (2 : ℕ) < 8 * (n : ℝ) * (1 - r ^ (2 : ℕ))) :
     HTGeometry.momentFunctional (coordinateDilatedMoment r)
         (xiShiftedBoundaryAdaptiveShearPolynomial
           (coordinateDilatedAmplitude r n)) /
       HTGeometry.momentFunctional (coordinateDilatedMoment r)
-        ((coordinateDilatedAmplitude r n) ^ 2) < (n : ℝ) := by
+        ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)) < (n : ℝ) := by
   rw [coordinateDilated_adaptiveShear_div_norm (ne_of_gt hr) hn]
   nlinarith
 
@@ -525,19 +525,19 @@ theorem coordinateDilated_adaptiveShear_div_norm_eventually_lt_degree
           (xiShiftedBoundaryAdaptiveShearPolynomial
             (coordinateDilatedAmplitude r n)) /
         HTGeometry.momentFunctional (coordinateDilatedMoment r)
-          ((coordinateDilatedAmplitude r n) ^ 2) < (n : ℝ) := by
-  have hrSq : r ^ 2 < 1 := by
+          ((coordinateDilatedAmplitude r n) ^ (2 : ℕ)) < (n : ℝ) := by
+  have hrSq : r ^ (2 : ℕ) < 1 := by
     have hprod : 0 < (1 - r) * (1 + r) :=
       mul_pos (sub_pos.mpr hrone) (add_pos zero_lt_one hr)
     nlinarith
-  have hden : 0 < 8 * (1 - r ^ 2) := by positivity
-  obtain ⟨N, hN⟩ := exists_nat_gt (3 * r ^ 2 / (8 * (1 - r ^ 2)))
+  have hden : 0 < 8 * (1 - r ^ (2 : ℕ)) := by positivity
+  obtain ⟨N, hN⟩ := exists_nat_gt (3 * r ^ (2 : ℕ) / (8 * (1 - r ^ (2 : ℕ))))
   filter_upwards [eventually_ge_atTop (max N 1)] with n hnmax
   have hnN : N ≤ n := le_trans (Nat.le_max_left _ _) hnmax
   have hn0 : n ≠ 0 := by omega
-  have hratio : 3 * r ^ 2 / (8 * (1 - r ^ 2)) < (n : ℝ) :=
+  have hratio : 3 * r ^ (2 : ℕ) / (8 * (1 - r ^ (2 : ℕ))) < (n : ℝ) :=
     lt_of_lt_of_le hN (by exact_mod_cast hnN)
-  have hlarge : 3 * r ^ 2 < 8 * (n : ℝ) * (1 - r ^ 2) := by
+  have hlarge : 3 * r ^ (2 : ℕ) < 8 * (n : ℝ) * (1 - r ^ (2 : ℕ)) := by
     have := (div_lt_iff₀ hden).mp hratio
     nlinarith
   exact coordinateDilated_adaptiveShear_div_norm_lt_degree hr hrone hn0 hlarge

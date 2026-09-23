@@ -58,7 +58,7 @@ noncomputable def chordFunctional (μ₁ μ₂ μ₃ : ℝ) : ℝ := 15 * μ₁ 
 
 /-- The cubic in raw even moments is the chord form scaled by the positive product `m₀m₁m₂`. -/
 theorem cubic_eq_chordFunctional (m₀ m₁ m₂ m₃ : ℝ) (h₀ : m₀ ≠ 0) (h₁ : m₁ ≠ 0) (h₂ : m₂ ≠ 0) :
-    3 * m₀ * m₁ * m₃ + 15 * m₁ ^ 2 * m₂ - 10 * m₀ * m₂ ^ 2 =
+    3 * m₀ * m₁ * m₃ + 15 * m₁ ^ (2 : ℕ) * m₂ - 10 * m₀ * m₂ ^ (2 : ℕ) =
       m₀ * m₁ * m₂ * chordFunctional (m₁ / m₀) (m₂ / m₁) (m₃ / m₂) := by
   unfold chordFunctional
   field_simp
@@ -162,37 +162,37 @@ theorem chordFunctional_gammaFamily (θ : ℝ) :
 `mⱼ = (2j)! + a(2j+1)!`, and the cubic evaluates to `11520 a²(a−1)`. -/
 theorem cubic_affineExponential (a : ℝ) :
     3 * (1 + a) * (2 + 6 * a) * (720 + 5040 * a) +
-        15 * (2 + 6 * a) ^ 2 * (24 + 120 * a) -
-        10 * (1 + a) * (24 + 120 * a) ^ 2 =
-      11520 * a ^ 2 * (a - 1) := by
+        15 * (2 + 6 * a) ^ (2 : ℕ) * (24 + 120 * a) -
+        10 * (1 + a) * (24 + 120 * a) ^ (2 : ℕ) =
+      11520 * a ^ (2 : ℕ) * (a - 1) := by
   ring
 
 /-- **An explicit continuum of log-concave counterexamples.**  On `0 < a < 1` the density
 `(1 + a x)e^{−x}` is log-concave and the cubic is strictly negative. -/
 theorem cubic_affineExponential_neg {a : ℝ} (h₀ : 0 < a) (h₁ : a < 1) :
     3 * (1 + a) * (2 + 6 * a) * (720 + 5040 * a) +
-        15 * (2 + 6 * a) ^ 2 * (24 + 120 * a) -
-        10 * (1 + a) * (24 + 120 * a) ^ 2 < 0 := by
+        15 * (2 + 6 * a) ^ (2 : ℕ) * (24 + 120 * a) -
+        10 * (1 + a) * (24 + 120 * a) ^ (2 : ℕ) < 0 := by
   rw [cubic_affineExponential]
-  have : 0 < a ^ 2 := by positivity
+  have : 0 < a ^ (2 : ℕ) := by positivity
   nlinarith
 
 /-- On the affine-exponential family the cubic vanishes exactly at `a = 1`, where the density has a
 horizontal tangent at the origin: `φ'(0) = a − 1`. -/
 theorem cubic_affineExponential_zero_at_one :
     3 * (1 + (1 : ℝ)) * (2 + 6 * 1) * (720 + 5040 * 1) +
-        15 * (2 + 6 * (1 : ℝ)) ^ 2 * (24 + 120 * 1) -
-        10 * (1 + (1 : ℝ)) * (24 + 120 * 1) ^ 2 = 0 := by
+        15 * (2 + 6 * (1 : ℝ)) ^ (2 : ℕ) * (24 + 120 * 1) -
+        10 * (1 + (1 : ℝ)) * (24 + 120 * 1) ^ (2 : ℕ) = 0 := by
   norm_num
 
 /-- Strict positivity past the horizontal-tangent member. -/
 theorem cubic_affineExponential_pos {a : ℝ} (h : 1 < a) :
     0 < 3 * (1 + a) * (2 + 6 * a) * (720 + 5040 * a) +
-        15 * (2 + 6 * a) ^ 2 * (24 + 120 * a) -
-        10 * (1 + a) * (24 + 120 * a) ^ 2 := by
+        15 * (2 + 6 * a) ^ (2 : ℕ) * (24 + 120 * a) -
+        10 * (1 + a) * (24 + 120 * a) ^ (2 : ℕ) := by
   rw [cubic_affineExponential]
   have ha : 0 < a := lt_trans zero_lt_one h
-  have : 0 < a ^ 2 := by positivity
+  have : 0 < a ^ (2 : ℕ) := by positivity
   nlinarith
 
 /-! ### The half-Gaussian is a regular zero

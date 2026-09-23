@@ -57,7 +57,7 @@ def quantumTangentBPSCharge (mass overlap speedSq : ℝ) : ℝ :=
 
 /-- Scalar-phase square measuring distance from the canonical connection. -/
 def quantumTangentBPSDefect (mass overlap c : ℝ) : ℝ :=
-  (mass * c - overlap) ^ 2
+  (mass * c - overlap) ^ (2 : ℕ)
 
 /-- Exact quotient-free quantum-Fisher BPS decomposition. -/
 theorem quantumTangentBPSEnergy_eq_charge_add_defect

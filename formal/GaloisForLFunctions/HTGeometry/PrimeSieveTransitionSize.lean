@@ -30,13 +30,13 @@ section Bound
 /-- The universal regular transition constant on the closed subdisk of radius
 `r`. -/
 noncomputable def sieveRegularConstant (r : ℝ) : ℝ :=
-  2 * sieveTraceBound / (1 - r ^ 2) * r ^ 3
+  2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * r ^ (3 : ℕ)
 
 theorem sieveRegularConstant_nonneg {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) :
     0 ≤ sieveRegularConstant r := by
-  have hden : (0 : ℝ) < 1 - r ^ 2 := by nlinarith
+  have hden : (0 : ℝ) < 1 - r ^ (2 : ℕ) := by nlinarith
   rw [sieveRegularConstant]
-  have : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ 2) :=
+  have : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) :=
     div_nonneg (by linarith [sieveTraceBound_nonneg]) hden.le
   positivity
 
@@ -45,23 +45,23 @@ the cube of the prime. -/
 theorem abs_sieveLogPhi_div_le (P : Finset Nat.Primes) {r t : ℝ} (hr0 : 0 ≤ r)
     (hr : r < 1) (ht : |t| ≤ r) (p : Nat.Primes) :
     |sieveLogPhi P (t / ((p : ℕ) : ℝ))|
-      ≤ sieveRegularConstant r / ((p : ℕ) : ℝ) ^ 3 := by
+      ≤ sieveRegularConstant r / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
   have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
   have hppos : (0 : ℝ) < ((p : ℕ) : ℝ) := by linarith
   have htp : |t / ((p : ℕ) : ℝ)| ≤ r := by
     rw [abs_div, abs_of_nonneg hppos.le, div_le_iff₀ hppos]
     nlinarith [abs_nonneg t]
   refine (abs_sieveLogPhi_le P hr0 hr htp).trans ?_
-  have hcube : |t / ((p : ℕ) : ℝ)| ^ 3 ≤ r ^ 3 / ((p : ℕ) : ℝ) ^ 3 := by
+  have hcube : |t / ((p : ℕ) : ℝ)| ^ (3 : ℕ) ≤ r ^ (3 : ℕ) / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
     rw [abs_div, abs_of_nonneg hppos.le, div_pow]
     gcongr
-  have hden : (0 : ℝ) < 1 - r ^ 2 := by nlinarith
-  have hcoef : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ 2) :=
+  have hden : (0 : ℝ) < 1 - r ^ (2 : ℕ) := by nlinarith
+  have hcoef : (0 : ℝ) ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) :=
     div_nonneg (by linarith [sieveTraceBound_nonneg]) hden.le
-  calc 2 * sieveTraceBound / (1 - r ^ 2) * |t / ((p : ℕ) : ℝ)| ^ 3
-      ≤ 2 * sieveTraceBound / (1 - r ^ 2) * (r ^ 3 / ((p : ℕ) : ℝ) ^ 3) :=
+  calc 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * |t / ((p : ℕ) : ℝ)| ^ (3 : ℕ)
+      ≤ 2 * sieveTraceBound / (1 - r ^ (2 : ℕ)) * (r ^ (3 : ℕ) / ((p : ℕ) : ℝ) ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left hcube hcoef
-    _ = sieveRegularConstant r / ((p : ℕ) : ℝ) ^ 3 := by
+    _ = sieveRegularConstant r / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
         rw [sieveRegularConstant]; ring
 
 end Bound
@@ -85,7 +85,7 @@ theorem sSup_abs_sieveLogPhi_nonneg (r : ℝ) (P : Finset Nat.Primes)
 theorem sSup_abs_sieveLogPhi_le {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1)
     (P : Finset Nat.Primes) (p : Nat.Primes) :
     sSup ((fun t : ℝ => |sieveLogPhi P (t / ((p : ℕ) : ℝ))|) '' Set.Icc (-r) r)
-      ≤ sieveRegularConstant r / ((p : ℕ) : ℝ) ^ 3 := by
+      ≤ sieveRegularConstant r / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
   have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
   have hppos : (0 : ℝ) < ((p : ℕ) : ℝ) := by linarith
   refine Real.sSup_le ?_ (by
@@ -107,7 +107,7 @@ theorem sieveTransitionSize_le {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1)
     (P : Finset Nat.Primes) (p : Nat.Primes) :
     sieveTransitionSize r P p
       ≤ sieveDensity P / ((p : ℕ) : ℝ)
-        + sieveRegularConstant r / ((p : ℕ) : ℝ) ^ 3 := by
+        + sieveRegularConstant r / ((p : ℕ) : ℝ) ^ (3 : ℕ) := by
   rw [sieveTransitionSize]
   linarith [sSup_abs_sieveLogPhi_le hr0 hr P p]
 
@@ -129,8 +129,8 @@ theorem tendsto_primeIndex_atTop :
 
 /-- The inverse cubes of the primes are summable. -/
 theorem summable_primeIndex_cube_inv :
-    Summable fun n : ℕ => (((e n : ℕ) : ℝ) ^ 3)⁻¹ := by
-  have hbase : Summable fun m : ℕ => (((m : ℕ) : ℝ) ^ 3)⁻¹ :=
+    Summable fun n : ℕ => (((e n : ℕ) : ℝ) ^ (3 : ℕ))⁻¹ := by
+  have hbase : Summable fun m : ℕ => (((m : ℕ) : ℝ) ^ (3 : ℕ))⁻¹ :=
     summable_natPow_inv (by norm_num)
   exact hbase.comp_injective (injective_primeIndex e)
 
@@ -142,7 +142,7 @@ theorem summable_sieveTransitionSize {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) :
       sieveDensity (sievePrefix e n) / ((e n : ℕ) : ℝ) :=
     (hasSum_sieveDensity_div_prime e).summable
   have hreg : Summable fun n : ℕ =>
-      sieveRegularConstant r / (((e n : ℕ) : ℝ)) ^ 3 := by
+      sieveRegularConstant r / (((e n : ℕ) : ℝ)) ^ (3 : ℕ) := by
     refine ((summable_primeIndex_cube_inv e).mul_left (sieveRegularConstant r)).congr
       fun n => ?_
     rw [div_eq_mul_inv]
@@ -182,7 +182,7 @@ theorem tendsto_naiveRegularDefect (e : ℕ ≃ Nat.Primes) {r t : ℝ} (hr0 : 0
         sieveLogPhi ∅ t - sieveLogPhi ∅ (t / ((e n : ℕ) : ℝ))) atTop
       (𝓝 (sieveLogPhi ∅ t)) := by
   have hcube : Tendsto (fun n : ℕ =>
-      sieveRegularConstant r / (((e n : ℕ) : ℝ)) ^ 3) atTop (𝓝 0) := by
+      sieveRegularConstant r / (((e n : ℕ) : ℝ)) ^ (3 : ℕ)) atTop (𝓝 0) := by
     have h := (summable_primeIndex_cube_inv e).tendsto_atTop_zero
     have h2 := h.const_mul (sieveRegularConstant r)
     rw [mul_zero] at h2

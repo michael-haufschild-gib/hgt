@@ -40,13 +40,13 @@ theorem conj_expChar (a u : ℝ) : conj (expChar a u) = expChar (-a) u := by
 
 /-- The Fejér kernel is a nonnegative real. -/
 theorem fejerKernel_eq_ofReal (β : ℝ) (N : ℕ) (u : ℝ) :
-    fejerKernel β N u = (((‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) : ℝ)) : ℂ) := by
+    fejerKernel β N u = (((‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) : ℝ)) : ℂ) := by
   rw [fejerKernel, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   push_cast
   field_simp
 
 theorem fejerKernel_nonneg (β : ℝ) (N : ℕ) (u : ℝ) :
-    0 ≤ (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) := by
+    0 ≤ (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) := by
   positivity
 
 /-- The Fejér kernel expanded as a trigonometric polynomial with frequencies in `βℤ`. -/

@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.XiCenteredOrderTwentyThreeSourceBudgetClosure
 The disk-only Bernstein estimate loses the narrow sector forced by source-side exclusion.
 The unconditional order-23 residual-annulus theorem implies, after endpoint normalization,
 
-`im u ^ 2 < (1 / 215) * re u ^ 2`.
+`im u ^ (2 : ℕ) < (1 / 215) * re u ^ (2 : ℕ)`.
 
 Together with the exact source-calibrated radius
 
@@ -16,7 +16,7 @@ Together with the exact source-calibrated radius
 
 this gives the complete-Bernstein amplitude base
 
-`R + sqrt (1 - 2 sqrt (215 / 216) R + R^2)`.
+`R + sqrt (1 - 2 sqrt (215 / 216) R + R^(2 : ℕ))`.
 
 Earlier `1/84`, rational, and radical bounds remain available as stable downstream APIs.  Failure
 of RH can therefore occupy only the correspondingly narrower near-critical exponential window
@@ -55,7 +55,7 @@ def xiSectorRadicalBernsteinAmplitudeBase : ℝ :=
 
 /-- Exact disk ellipse ceiling associated with radius `R` and lower cosine bound `c`. -/
 def diskCosineBernsteinAmplitudeBase (R c : ℝ) : ℝ :=
-  R + Real.sqrt (1 - 2 * c * R + R ^ 2)
+  R + Real.sqrt (1 - 2 * c * R + R ^ (2 : ℕ))
 
 /-- Exact quarter-disk ellipse ceiling associated with a lower cosine bound `c`. -/
 def quarterDiskCosineBernsteinAmplitudeBase (c : ℝ) : ℝ :=
@@ -84,7 +84,7 @@ theorem one_lt_xiSectorRadicalBernsteinAmplitudeBase :
   have hc0 : 0 ≤ c := by
     dsimp only [c]
     exact Real.sqrt_nonneg _
-  have hcSq : c ^ 2 = 84 / 85 := by
+  have hcSq : c ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
@@ -92,14 +92,14 @@ theorem one_lt_xiSectorRadicalBernsteinAmplitudeBase :
     nlinarith [sq_nonneg (c + 1)]
   have hrad : 0 ≤ 17 / 16 - c / 2 := by
     nlinarith
-  have hgSq : g ^ 2 = 17 / 16 - c / 2 := by
+  have hgSq : g ^ (2 : ℕ) = 17 / 16 - c / 2 := by
     dsimp only [g]
     rw [Real.sq_sqrt hrad]
   have hg0 : 0 ≤ g := by
     dsimp only [g]
     exact Real.sqrt_nonneg _
   have hthree : 3 / 4 < g := by
-    have hsq : (3 / 4 : ℝ) ^ 2 < g ^ 2 := by
+    have hsq : (3 / 4 : ℝ) ^ (2 : ℕ) < g ^ (2 : ℕ) := by
       rw [hgSq]
       nlinarith
     nlinarith [sq_nonneg (g + (3 / 4 : ℝ))]
@@ -110,33 +110,33 @@ theorem xiSectorRadicalBernsteinAmplitudeBase_lt_refined :
     xiSectorRadicalBernsteinAmplitudeBase < xiSectorRefinedBernsteinAmplitudeBase := by
   let c : ℝ := Real.sqrt (84 / 85 : ℝ)
   let R : ℝ := 1 / 4
-  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
+  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ (2 : ℕ))
   let B : ℝ := R + g
   have hc0 : 0 ≤ c := by
     dsimp only [c]
     exact Real.sqrt_nonneg _
-  have hcSq : c ^ 2 = 84 / 85 := by
+  have hcSq : c ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
   have hcLower : 9941 / 10000 < c := by
-    have hsq : (9941 / 10000 : ℝ) ^ 2 < c ^ 2 := by
+    have hsq : (9941 / 10000 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ) := by
       rw [hcSq]
       norm_num
     nlinarith [sq_nonneg (c + (9941 / 10000 : ℝ))]
-  have hrad : 0 ≤ 1 - 2 * c * R + R ^ 2 := by
+  have hrad : 0 ≤ 1 - 2 * c * R + R ^ (2 : ℕ) := by
     have hcOne : c ≤ 1 := by
       nlinarith [sq_nonneg (c + 1)]
     dsimp only [R]
     nlinarith
-  have hgSq : g ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+  have hgSq : g ^ (2 : ℕ) = 1 - 2 * c * R + R ^ (2 : ℕ) := by
     dsimp only [g]
     rw [Real.sq_sqrt hrad]
   have hg0 : 0 ≤ g := by
     dsimp only [g]
     exact Real.sqrt_nonneg _
   have hgLess : g < 75197 / 100000 := by
-    have hsq : g ^ 2 < (75197 / 100000 : ℝ) ^ 2 := by
+    have hsq : g ^ (2 : ℕ) < (75197 / 100000 : ℝ) ^ (2 : ℕ) := by
       rw [hgSq]
       dsimp only [R]
       nlinarith
@@ -154,19 +154,19 @@ theorem one_lt_xiOrderTwentyThreeSectorBernsteinAmplitudeBase :
   let c : ℝ := Real.sqrt (215 / 216 : ℝ)
   let g : ℝ := Real.sqrt (17 / 16 - c / 2)
   have hc0 : 0 ≤ c := by dsimp only [c]; positivity
-  have hcSq : c ^ 2 = 215 / 216 := by
+  have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
   have hcOne : c < 1 := by
     nlinarith [sq_nonneg (c + 1)]
-  have hgSq : g ^ 2 = 17 / 16 - c / 2 := by
+  have hgSq : g ^ (2 : ℕ) = 17 / 16 - c / 2 := by
     dsimp only [g]
     rw [Real.sq_sqrt]
     nlinarith
   have hg0 : 0 ≤ g := by dsimp only [g]; positivity
   have hthree : 3 / 4 < g := by
-    have hsq : (3 / 4 : ℝ) ^ 2 < g ^ 2 := by
+    have hsq : (3 / 4 : ℝ) ^ (2 : ℕ) < g ^ (2 : ℕ) := by
       rw [hgSq]
       nlinarith
     nlinarith [sq_nonneg (g + (3 / 4 : ℝ))]
@@ -177,30 +177,30 @@ theorem one_lt_xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase :
     1 < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase := by
   let R : ℝ := xiOffLineNormalizedBernsteinRadius
   let c : ℝ := Real.sqrt (215 / 216 : ℝ)
-  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
+  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ (2 : ℕ))
   have hR0 : 0 < R := by
     simpa only [R] using xiOffLineNormalizedBernsteinRadius_pos
   have hRQ : R < 1 / 4 := by
     simpa only [R] using xiOffLineNormalizedBernsteinRadius_lt_one_fourth
   have hc0 : 0 ≤ c := by dsimp only [c]; positivity
-  have hcSq : c ^ 2 = 215 / 216 := by
+  have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
   have hcQ : 1 / 4 < c := by
-    have hs : (1 / 4 : ℝ) ^ 2 < c ^ 2 := by rw [hcSq]; norm_num
+    have hs : (1 / 4 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ) := by rw [hcSq]; norm_num
     nlinarith [sq_nonneg (c + (1 / 4 : ℝ))]
   have hcOne : c < 1 := by
     nlinarith [sq_nonneg (c + 1)]
-  have hrad : 0 ≤ 1 - 2 * c * R + R ^ 2 := by
+  have hrad : 0 ≤ 1 - 2 * c * R + R ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (R - c), sq_nonneg (c + 1)]
-  have hgSq : g ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+  have hgSq : g ^ (2 : ℕ) = 1 - 2 * c * R + R ^ (2 : ℕ) := by
     dsimp only [g]
     rw [Real.sq_sqrt hrad]
   have hg0 : 0 ≤ g := by dsimp only [g]; positivity
   have hOneR : 0 < 1 - R := by linarith
   have hg : 1 - R < g := by
-    have hs : (1 - R) ^ 2 < g ^ 2 := by
+    have hs : (1 - R) ^ (2 : ℕ) < g ^ (2 : ℕ) := by
       rw [hgSq]
       nlinarith
     nlinarith [sq_nonneg (g + (1 - R))]
@@ -214,19 +214,19 @@ theorem xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase_lt_sector :
   let R : ℝ := xiOffLineNormalizedBernsteinRadius
   let Q : ℝ := 1 / 4
   let c : ℝ := Real.sqrt (215 / 216 : ℝ)
-  let gR : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
-  let gQ : ℝ := Real.sqrt (1 - 2 * c * Q + Q ^ 2)
+  let gR : ℝ := Real.sqrt (1 - 2 * c * R + R ^ (2 : ℕ))
+  let gQ : ℝ := Real.sqrt (1 - 2 * c * Q + Q ^ (2 : ℕ))
   have hR0 : 0 ≤ R := by
     simpa only [R] using xiOffLineNormalizedBernsteinRadius_pos.le
   have hRQ : R < Q := by
     simpa only [R, Q] using xiOffLineNormalizedBernsteinRadius_lt_one_fourth
   have hc0 : 0 ≤ c := by dsimp only [c]; positivity
-  have hcSq : c ^ 2 = 215 / 216 := by
+  have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
   have hcQ : Q < c := by
-    have hs : Q ^ 2 < c ^ 2 := by
+    have hs : Q ^ (2 : ℕ) < c ^ (2 : ℕ) := by
       rw [hcSq]
       dsimp only [Q]
       norm_num
@@ -234,21 +234,21 @@ theorem xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase_lt_sector :
     nlinarith [sq_nonneg (c + (1 / 4 : ℝ))]
   have hcOne : c < 1 := by
     nlinarith [sq_nonneg (c + 1)]
-  have hradR : 0 ≤ 1 - 2 * c * R + R ^ 2 := by
+  have hradR : 0 ≤ 1 - 2 * c * R + R ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (R - c), sq_nonneg (c + 1)]
-  have hradQ : 0 ≤ 1 - 2 * c * Q + Q ^ 2 := by
+  have hradQ : 0 ≤ 1 - 2 * c * Q + Q ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (Q - c), sq_nonneg (c + 1)]
-  have hgRSq : gR ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+  have hgRSq : gR ^ (2 : ℕ) = 1 - 2 * c * R + R ^ (2 : ℕ) := by
     dsimp only [gR]
     rw [Real.sq_sqrt hradR]
-  have hgQSq : gQ ^ 2 = 1 - 2 * c * Q + Q ^ 2 := by
+  have hgQSq : gQ ^ (2 : ℕ) = 1 - 2 * c * Q + Q ^ (2 : ℕ) := by
     dsimp only [gQ]
     rw [Real.sq_sqrt hradQ]
   have hgR0 : 0 ≤ gR := by dsimp only [gR]; positivity
   have hgQ0 : 0 ≤ gQ := by dsimp only [gQ]; positivity
   have hcgQ : c - Q < gQ := by
     have hpos : 0 ≤ c - Q := by linarith
-    have hs : (c - Q) ^ 2 < gQ ^ 2 := by
+    have hs : (c - Q) ^ (2 : ℕ) < gQ ^ (2 : ℕ) := by
       rw [hgQSq]
       nlinarith
     nlinarith [sq_nonneg (gQ + (c - Q))]
@@ -256,10 +256,10 @@ theorem xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase_lt_sector :
     by_contra hnot
     have hle : gQ + (Q - R) ≤ gR := by linarith
     have hleft0 : 0 ≤ gQ + (Q - R) := by linarith
-    have hsq : (gQ + (Q - R)) ^ 2 ≤ gR ^ 2 :=
+    have hsq : (gQ + (Q - R)) ^ (2 : ℕ) ≤ gR ^ (2 : ℕ) :=
       (sq_le_sq₀ hleft0 hgR0).2 hle
     nlinarith
-  have hradEq : 1 - 2 * c * Q + Q ^ 2 = 17 / 16 - c / 2 := by
+  have hradEq : 1 - 2 * c * Q + Q ^ (2 : ℕ) = 17 / 16 - c / 2 := by
     dsimp only [Q]
     ring
   dsimp only [gQ] at hbase
@@ -280,31 +280,31 @@ theorem xiOrderTwentyThreeSectorBernsteinAmplitudeBase_lt_radical :
   let gOld : ℝ := Real.sqrt (17 / 16 - cOld / 2)
   have hcNew0 : 0 ≤ cNew := by dsimp only [cNew]; positivity
   have hcOld0 : 0 ≤ cOld := by dsimp only [cOld]; positivity
-  have hcNewSq : cNew ^ 2 = 215 / 216 := by
+  have hcNewSq : cNew ^ (2 : ℕ) = 215 / 216 := by
     dsimp only [cNew]
     rw [Real.sq_sqrt]
     norm_num
-  have hcOldSq : cOld ^ 2 = 84 / 85 := by
+  have hcOldSq : cOld ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [cOld]
     rw [Real.sq_sqrt]
     norm_num
   have hc : cOld < cNew := by
-    have hs : cOld ^ 2 < cNew ^ 2 := by
+    have hs : cOld ^ (2 : ℕ) < cNew ^ (2 : ℕ) := by
       rw [hcOldSq, hcNewSq]
       norm_num
     nlinarith [sq_nonneg (cOld + cNew)]
-  have hgNewSq : gNew ^ 2 = 17 / 16 - cNew / 2 := by
+  have hgNewSq : gNew ^ (2 : ℕ) = 17 / 16 - cNew / 2 := by
     dsimp only [gNew]
     rw [Real.sq_sqrt]
     nlinarith
-  have hgOldSq : gOld ^ 2 = 17 / 16 - cOld / 2 := by
+  have hgOldSq : gOld ^ (2 : ℕ) = 17 / 16 - cOld / 2 := by
     dsimp only [gOld]
     rw [Real.sq_sqrt]
     nlinarith
   have hgNew0 : 0 ≤ gNew := by dsimp only [gNew]; positivity
   have hgOld0 : 0 ≤ gOld := by dsimp only [gOld]; positivity
   have hg : gNew < gOld := by
-    have hs : gNew ^ 2 < gOld ^ 2 := by
+    have hs : gNew ^ (2 : ℕ) < gOld ^ (2 : ℕ) := by
       rw [hgNewSq, hgOldSq]
       linarith
     nlinarith [sq_nonneg (gNew + gOld)]
@@ -316,19 +316,19 @@ theorem xiSectorRefinedBernsteinAmplitudeBase_lt_sectorConfined :
   norm_num [xiSectorRefinedBernsteinAmplitudeBase, xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_eq :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 := by
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) = 251001 / 250000 := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_twoHundredOne_over_twoHundred :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 201 / 200 := by
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < 201 / 200 := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneThousandSeven_over_oneThousand :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 1007 / 1000 := by
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < 1007 / 1000 := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 theorem xiSectorConfinedBernsteinAmplitudeBase_sq_lt_oneHundredOne_over_oneHundred :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 101 / 100 := by
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < 101 / 100 := by
   norm_num [xiSectorConfinedBernsteinAmplitudeBase]
 
 /-- Pure geometry: the `1/84` sector inside the strict quarter disk lies in the Bernstein ellipse
@@ -336,7 +336,7 @@ with major-axis sum `501/500`. -/
 theorem norm_add_norm_one_sub_lt_sectorConfinedBase
     {u : ℂ} (hr : ‖u‖ < 1 / 4)
     (hx : 0 ≤ u.re)
-    (hy : u.im ^ 2 ≤ (1 / 84 : ℝ) * u.re ^ 2) :
+    (hy : u.im ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * u.re ^ (2 : ℕ)) :
     ‖u‖ + ‖1 - u‖ < xiSectorConfinedBernsteinAmplitudeBase := by
   let r : ℝ := ‖u‖
   let s : ℝ := ‖1 - u‖
@@ -344,22 +344,22 @@ theorem norm_add_norm_one_sub_lt_sectorConfinedBase
   have hr0 : 0 ≤ r := norm_nonneg u
   have hs0 : 0 ≤ s := norm_nonneg (1 - u)
   have hx0 : 0 ≤ x := hx
-  have hrSq : r ^ 2 = x ^ 2 + u.im ^ 2 := by
+  have hrSq : r ^ (2 : ℕ) = x ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
     dsimp only [r, x]
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hrx : r ^ 2 ≤ (85 / 84 : ℝ) * x ^ 2 := by
+  have hrx : r ^ (2 : ℕ) ≤ (85 / 84 : ℝ) * x ^ (2 : ℕ) := by
     rw [hrSq]
     dsimp only [x] at hy ⊢
     nlinarith
-  have hcxSq : ((497 / 500 : ℝ) * r) ^ 2 ≤ x ^ 2 := by
-    have hconst : (497 / 500 : ℝ) ^ 2 * (85 / 84 : ℝ) < 1 := by
+  have hcxSq : ((497 / 500 : ℝ) * r) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
+    have hconst : (497 / 500 : ℝ) ^ (2 : ℕ) * (85 / 84 : ℝ) < 1 := by
       norm_num
     nlinarith [sq_nonneg x]
   have hcx0 : 0 ≤ (497 / 500 : ℝ) * r := by positivity
   have hcx : (497 / 500 : ℝ) * r ≤ x := by
     nlinarith [sq_nonneg (x + (497 / 500 : ℝ) * r)]
-  have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
+  have hsSq : s ^ (2 : ℕ) = 1 - 2 * x + r ^ (2 : ℕ) := by
     dsimp only [s, x, r]
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
       Complex.normSq_apply]
@@ -371,16 +371,16 @@ theorem norm_add_norm_one_sub_lt_sectorConfinedBase
     linarith
   have hlinear :
       2 * (xiSectorConfinedBernsteinAmplitudeBase - 497 / 500) * r <
-        xiSectorConfinedBernsteinAmplitudeBase ^ 2 - 1 := by
+        xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) - 1 := by
     have hcoeff :
         0 < xiSectorConfinedBernsteinAmplitudeBase - 497 / 500 := by
       norm_num [xiSectorConfinedBernsteinAmplitudeBase]
     have hconst :
         2 * (xiSectorConfinedBernsteinAmplitudeBase - 497 / 500) * (1 / 4 : ℝ) <
-          xiSectorConfinedBernsteinAmplitudeBase ^ 2 - 1 := by
+          xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) - 1 := by
       norm_num [xiSectorConfinedBernsteinAmplitudeBase]
     nlinarith
-  have hsLt : s ^ 2 < (xiSectorConfinedBernsteinAmplitudeBase - r) ^ 2 := by
+  have hsLt : s ^ (2 : ℕ) < (xiSectorConfinedBernsteinAmplitudeBase - r) ^ (2 : ℕ) := by
     nlinarith
   have hs : s < xiSectorConfinedBernsteinAmplitudeBase - r := by
     nlinarith [sq_nonneg (s + (xiSectorConfinedBernsteinAmplitudeBase - r))]
@@ -392,7 +392,7 @@ quarter disk, nonnegative real part, and the exact `1/84` orientation sector. -/
 theorem norm_add_norm_one_sub_lt_refinedSectorConfinedBase
     {u : ℂ} (hr : ‖u‖ < 1 / 4)
     (hx : 0 ≤ u.re)
-    (hy : u.im ^ 2 ≤ (1 / 84 : ℝ) * u.re ^ 2) :
+    (hy : u.im ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * u.re ^ (2 : ℕ)) :
     ‖u‖ + ‖1 - u‖ < xiSectorRefinedBernsteinAmplitudeBase := by
   let r : ℝ := ‖u‖
   let s : ℝ := ‖1 - u‖
@@ -400,22 +400,22 @@ theorem norm_add_norm_one_sub_lt_refinedSectorConfinedBase
   have hr0 : 0 ≤ r := norm_nonneg u
   have hs0 : 0 ≤ s := norm_nonneg (1 - u)
   have hx0 : 0 ≤ x := hx
-  have hrSq : r ^ 2 = x ^ 2 + u.im ^ 2 := by
+  have hrSq : r ^ (2 : ℕ) = x ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
     dsimp only [r, x]
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hrx : r ^ 2 ≤ (85 / 84 : ℝ) * x ^ 2 := by
+  have hrx : r ^ (2 : ℕ) ≤ (85 / 84 : ℝ) * x ^ (2 : ℕ) := by
     rw [hrSq]
     dsimp only [x] at hy ⊢
     nlinarith
-  have hcxSq : ((9941 / 10000 : ℝ) * r) ^ 2 ≤ x ^ 2 := by
-    have hconst : (9941 / 10000 : ℝ) ^ 2 * (85 / 84 : ℝ) < 1 := by
+  have hcxSq : ((9941 / 10000 : ℝ) * r) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
+    have hconst : (9941 / 10000 : ℝ) ^ (2 : ℕ) * (85 / 84 : ℝ) < 1 := by
       norm_num
     nlinarith [sq_nonneg x]
   have hcx0 : 0 ≤ (9941 / 10000 : ℝ) * r := by positivity
   have hcx : (9941 / 10000 : ℝ) * r ≤ x := by
     nlinarith [sq_nonneg (x + (9941 / 10000 : ℝ) * r)]
-  have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
+  have hsSq : s ^ (2 : ℕ) = 1 - 2 * x + r ^ (2 : ℕ) := by
     dsimp only [s, x, r]
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
       Complex.normSq_apply]
@@ -427,15 +427,15 @@ theorem norm_add_norm_one_sub_lt_refinedSectorConfinedBase
     linarith
   have hlinear :
       2 * (xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000) * r <
-        xiSectorRefinedBernsteinAmplitudeBase ^ 2 - 1 := by
+        xiSectorRefinedBernsteinAmplitudeBase ^ (2 : ℕ) - 1 := by
     have hcoeff : 0 < xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000 := by
       norm_num [xiSectorRefinedBernsteinAmplitudeBase]
     have hconst :
         2 * (xiSectorRefinedBernsteinAmplitudeBase - 9941 / 10000) * (1 / 4 : ℝ) <
-          xiSectorRefinedBernsteinAmplitudeBase ^ 2 - 1 := by
+          xiSectorRefinedBernsteinAmplitudeBase ^ (2 : ℕ) - 1 := by
       norm_num [xiSectorRefinedBernsteinAmplitudeBase]
     nlinarith
-  have hsLt : s ^ 2 < (xiSectorRefinedBernsteinAmplitudeBase - r) ^ 2 := by
+  have hsLt : s ^ (2 : ℕ) < (xiSectorRefinedBernsteinAmplitudeBase - r) ^ (2 : ℕ) := by
     nlinarith
   have hs : s < xiSectorRefinedBernsteinAmplitudeBase - r := by
     nlinarith [sq_nonneg (s + (xiSectorRefinedBernsteinAmplitudeBase - r))]
@@ -451,49 +451,49 @@ theorem norm_add_norm_one_sub_lt_diskCosineBase
   let r : ℝ := ‖u‖
   let s : ℝ := ‖1 - u‖
   let x : ℝ := u.re
-  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ 2)
+  let g : ℝ := Real.sqrt (1 - 2 * c * R + R ^ (2 : ℕ))
   let B : ℝ := R + g
   have hr0 : 0 ≤ r := norm_nonneg u
   have hs0 : 0 ≤ s := norm_nonneg (1 - u)
   have hc0 : 0 ≤ c := by linarith
   have hcx : c * r ≤ x := by simpa only [r, x] using hcos
-  have hrad : 0 ≤ 1 - 2 * c * R + R ^ 2 := by
+  have hrad : 0 ≤ 1 - 2 * c * R + R ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (R - c), sq_nonneg (c + 1)]
-  have hgSq : g ^ 2 = 1 - 2 * c * R + R ^ 2 := by
+  have hgSq : g ^ (2 : ℕ) = 1 - 2 * c * R + R ^ (2 : ℕ) := by
     dsimp only [g]
     rw [Real.sq_sqrt hrad]
   have hg0 : 0 ≤ g := by
     dsimp only [g]
     exact Real.sqrt_nonneg _
-  have hcSq : c ^ 2 < 1 := by
+  have hcSq : c ^ (2 : ℕ) < 1 := by
     nlinarith [sq_nonneg (c + 1)]
   have hcg : c - R < g := by
     have hpos : 0 ≤ c - R := by linarith
-    have hsq : (c - R) ^ 2 < g ^ 2 := by
+    have hsq : (c - R) ^ (2 : ℕ) < g ^ (2 : ℕ) := by
       rw [hgSq]
       nlinarith
     nlinarith [sq_nonneg (g + (c - R))]
   have hBc : 0 < B - c := by
     dsimp only [B]
     linarith
-  have hBsq : B ^ 2 - 1 = 2 * (B - c) * R := by
+  have hBsq : B ^ (2 : ℕ) - 1 = 2 * (B - c) * R := by
     dsimp only [B]
     nlinarith [hgSq]
-  have hlinear : 2 * (B - c) * r ≤ B ^ 2 - 1 := by
+  have hlinear : 2 * (B - c) * r ≤ B ^ (2 : ℕ) - 1 := by
     rw [hBsq]
     nlinarith
   have hBr : 0 < B - r := by
     dsimp only [B, r] at hr ⊢
     linarith
-  have hsSq : s ^ 2 = 1 - 2 * x + r ^ 2 := by
+  have hsSq : s ^ (2 : ℕ) = 1 - 2 * x + r ^ (2 : ℕ) := by
     dsimp only [s, x, r]
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
       Complex.normSq_apply]
     simp only [sub_re, one_re, sub_im, one_im]
     ring
-  have hsLt : s ^ 2 < (B - r) ^ 2 := by
+  have hsLt : s ^ (2 : ℕ) < (B - r) ^ (2 : ℕ) := by
     rcases hstrict with hradStrict | hcosStrict
-    · have hlinearStrict : 2 * (B - c) * r < B ^ 2 - 1 := by
+    · have hlinearStrict : 2 * (B - c) * r < B ^ (2 : ℕ) - 1 := by
         rw [hBsq]
         nlinarith
       nlinarith
@@ -526,7 +526,7 @@ certificate; generic ellipse geometry is delegated to `norm_add_norm_one_sub_lt_
 theorem norm_add_norm_one_sub_lt_radicalSectorConfinedBase
     {u : ℂ} (hr : ‖u‖ < 1 / 4)
     (hx : 0 ≤ u.re)
-    (hy : u.im ^ 2 ≤ (1 / 84 : ℝ) * u.re ^ 2) :
+    (hy : u.im ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * u.re ^ (2 : ℕ)) :
     ‖u‖ + ‖1 - u‖ < xiSectorRadicalBernsteinAmplitudeBase := by
   let r : ℝ := ‖u‖
   let x : ℝ := u.re
@@ -535,26 +535,26 @@ theorem norm_add_norm_one_sub_lt_radicalSectorConfinedBase
   have hc0 : 0 ≤ c := by
     dsimp only [c]
     exact Real.sqrt_nonneg _
-  have hcSq : c ^ 2 = 84 / 85 := by
+  have hcSq : c ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
   have hcR : 1 / 4 < c := by
-    have hsquare : (1 / 4 : ℝ) ^ 2 < c ^ 2 := by
+    have hsquare : (1 / 4 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ) := by
       rw [hcSq]
       norm_num
     nlinarith [sq_nonneg (c + (1 / 4 : ℝ))]
   have hcOne : c < 1 := by
     nlinarith [sq_nonneg (c + 1)]
-  have hrSq : r ^ 2 = x ^ 2 + u.im ^ 2 := by
+  have hrSq : r ^ (2 : ℕ) = x ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
     dsimp only [r, x]
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hrx : r ^ 2 ≤ (85 / 84 : ℝ) * x ^ 2 := by
+  have hrx : r ^ (2 : ℕ) ≤ (85 / 84 : ℝ) * x ^ (2 : ℕ) := by
     rw [hrSq]
     dsimp only [x] at hy ⊢
     nlinarith
-  have hcxSq : (c * r) ^ 2 ≤ x ^ 2 := by
+  have hcxSq : (c * r) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
     rw [mul_pow, hcSq]
     nlinarith
   have hcx0 : 0 ≤ c * r := mul_nonneg hc0 hr0
@@ -570,25 +570,25 @@ theorem norm_radicalSectorBoundaryPoint (t : ℝ) (ht : 0 ≤ t) :
     ‖radicalSectorBoundaryPoint t‖ = t := by
   let a : ℝ := Real.sqrt (84 / 85 : ℝ)
   let b : ℝ := Real.sqrt (1 / 85 : ℝ)
-  have haSq : a ^ 2 = 84 / 85 := by
+  have haSq : a ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [a]
     rw [Real.sq_sqrt]
     norm_num
-  have hbSq : b ^ 2 = 1 / 85 := by
+  have hbSq : b ^ (2 : ℕ) = 1 / 85 := by
     dsimp only [b]
     rw [Real.sq_sqrt]
     norm_num
-  have hab : a ^ 2 + b ^ 2 = 1 := by
+  have hab : a ^ (2 : ℕ) + b ^ (2 : ℕ) = 1 := by
     rw [haSq, hbSq]
     norm_num
   dsimp only [a, b] at hab
-  have hsq : ‖radicalSectorBoundaryPoint t‖ ^ 2 = t ^ 2 := by
+  have hsq : ‖radicalSectorBoundaryPoint t‖ ^ (2 : ℕ) = t ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [radicalSectorBoundaryPoint, Complex.add_re, Complex.add_im,
       Complex.ofReal_re, Complex.ofReal_im, Complex.mul_re, Complex.mul_im,
       Complex.I_re, Complex.I_im, mul_zero, sub_zero, zero_mul, zero_sub,
       add_zero, zero_add, mul_one]
-    change (t * a) * (t * a) + (t * b) * (t * b) = t ^ 2
+    change (t * a) * (t * a) + (t * b) * (t * b) = t ^ (2 : ℕ)
     nlinarith [hab]
   have hn : 0 ≤ ‖radicalSectorBoundaryPoint t‖ := norm_nonneg _
   nlinarith [sq_nonneg (‖radicalSectorBoundaryPoint t‖ + t)]
@@ -596,18 +596,18 @@ theorem norm_radicalSectorBoundaryPoint (t : ℝ) (ht : 0 ≤ t) :
 /-- The second focus distance on the boundary ray has the exact radical form. -/
 theorem norm_one_sub_radicalSectorBoundaryPoint (t : ℝ) :
     ‖1 - radicalSectorBoundaryPoint t‖ =
-      Real.sqrt (1 - 2 * Real.sqrt (84 / 85 : ℝ) * t + t ^ 2) := by
+      Real.sqrt (1 - 2 * Real.sqrt (84 / 85 : ℝ) * t + t ^ (2 : ℕ)) := by
   let a : ℝ := Real.sqrt (84 / 85 : ℝ)
   let b : ℝ := Real.sqrt (1 / 85 : ℝ)
-  have haSq : a ^ 2 = 84 / 85 := by
+  have haSq : a ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [a]
     rw [Real.sq_sqrt]
     norm_num
-  have hbSq : b ^ 2 = 1 / 85 := by
+  have hbSq : b ^ (2 : ℕ) = 1 / 85 := by
     dsimp only [b]
     rw [Real.sq_sqrt]
     norm_num
-  have hab : a ^ 2 + b ^ 2 = 1 := by
+  have hab : a ^ (2 : ℕ) + b ^ (2 : ℕ) = 1 := by
     rw [haSq, hbSq]
     norm_num
   dsimp only [a, b] at hab
@@ -619,7 +619,7 @@ theorem norm_one_sub_radicalSectorBoundaryPoint (t : ℝ) :
     Complex.ofReal_im, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
     mul_zero, sub_zero, zero_mul, zero_sub, add_zero, zero_add, mul_one]
   change (1 - t * a) * (1 - t * a) + (-(t * b)) * (-(t * b)) =
-    1 - 2 * a * t + t ^ 2
+    1 - 2 * a * t + t ^ (2 : ℕ)
   nlinarith [hab]
 
 /-- Every nonnegative parameter strictly below the quarter-disk radius is admissible for the
@@ -627,22 +627,22 @@ abstract sector geometry. -/
 theorem radicalSectorBoundaryPoint_admissible {t : ℝ} (ht0 : 0 ≤ t) (htR : t < 1 / 4) :
     ‖radicalSectorBoundaryPoint t‖ < 1 / 4 ∧
       0 ≤ (radicalSectorBoundaryPoint t).re ∧
-      (radicalSectorBoundaryPoint t).im ^ 2 ≤
-        (1 / 84 : ℝ) * (radicalSectorBoundaryPoint t).re ^ 2 := by
+      (radicalSectorBoundaryPoint t).im ^ (2 : ℕ) ≤
+        (1 / 84 : ℝ) * (radicalSectorBoundaryPoint t).re ^ (2 : ℕ) := by
   let a : ℝ := Real.sqrt (84 / 85 : ℝ)
   let b : ℝ := Real.sqrt (1 / 85 : ℝ)
   have ha0 : 0 ≤ a := by
     dsimp only [a]
     exact Real.sqrt_nonneg _
-  have haSq : a ^ 2 = 84 / 85 := by
+  have haSq : a ^ (2 : ℕ) = 84 / 85 := by
     dsimp only [a]
     rw [Real.sq_sqrt]
     norm_num
-  have hbSq : b ^ 2 = 1 / 85 := by
+  have hbSq : b ^ (2 : ℕ) = 1 / 85 := by
     dsimp only [b]
     rw [Real.sq_sqrt]
     norm_num
-  have hratio : b ^ 2 = (1 / 84 : ℝ) * a ^ 2 := by
+  have hratio : b ^ (2 : ℕ) = (1 / 84 : ℝ) * a ^ (2 : ℕ) := by
     rw [haSq, hbSq]
     norm_num
   refine ⟨(norm_radicalSectorBoundaryPoint t ht0).trans_lt htR, ?_, ?_⟩
@@ -656,11 +656,11 @@ theorem radicalSectorBoundaryPoint_admissible {t : ℝ} (ht0 : 0 ≤ t) (htR : t
       Complex.ofReal_re, Complex.ofReal_im, Complex.mul_re, Complex.mul_im,
       Complex.I_re, Complex.I_im, mul_zero, sub_zero, zero_mul, zero_sub,
       add_zero, zero_add, mul_one]
-    change (t * b) ^ 2 ≤ (1 / 84 : ℝ) * (t * a) ^ 2
+    change (t * b) ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * (t * a) ^ (2 : ℕ)
     calc
-      (t * b) ^ 2 = t ^ 2 * b ^ 2 := by ring
-      _ = t ^ 2 * ((1 / 84 : ℝ) * a ^ 2) := by rw [hratio]
-      _ ≤ (1 / 84 : ℝ) * (t * a) ^ 2 := le_of_eq (by ring)
+      (t * b) ^ (2 : ℕ) = t ^ (2 : ℕ) * b ^ (2 : ℕ) := by ring
+      _ = t ^ (2 : ℕ) * ((1 / 84 : ℝ) * a ^ (2 : ℕ)) := by rw [hratio]
+      _ ≤ (1 / 84 : ℝ) * (t * a) ^ (2 : ℕ) := le_of_eq (by ring)
 
 /-- The abstract boundary ray varies continuously. -/
 theorem continuous_radicalSectorBoundaryPoint : Continuous radicalSectorBoundaryPoint := by
@@ -692,8 +692,8 @@ theorem radicalSectorBoundaryPoint_tendsto_amplitude :
 /-- Endpoint normalization preserves the exact atomwise orientation ratio. -/
 theorem xiEndpointNormalizedReciprocalSquare_orientation_sq_le
     (q : XiZeroCopy) :
-    (xiEndpointNormalizedReciprocalSquare q).im ^ 2 ≤
-      (1 / 84 : ℝ) * (xiEndpointNormalizedReciprocalSquare q).re ^ 2 := by
+    (xiEndpointNormalizedReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (1 / 84 : ℝ) * (xiEndpointNormalizedReciprocalSquare q).re ^ (2 : ℕ) := by
   have hR : 0 < primeArchEndpointHausdorffRadius :=
     primeArchEndpointHausdorffRadius_pos
   have h := xiThermalOrientationTerm_le_one_over_eightyFour_node_sq q
@@ -709,8 +709,8 @@ theorem xiEndpointNormalizedReciprocalSquare_orientation_sq_le
 /-- Order-23 source-budget closure removes every possible failure of the `215` sector ratio. -/
 theorem xiZeroCopy_orderTwentyThree_global_sector_ratio
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    215 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    215 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   by_contra hnot
   have hfail := not_lt.mp hnot
   exact xiCenteredOrderTwentyThreeResidualAnnulusEmpty
@@ -719,11 +719,11 @@ theorem xiZeroCopy_orderTwentyThree_global_sector_ratio
 /-- The global order-23 sector ratio transfers through the common reciprocal-square denominator. -/
 theorem xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 <
-      (1 / 215 : ℝ) * (xiZeroCopyReciprocalSquare q).re ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let D : ℝ := (u + v) ^ 2
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) <
+      (1 / 215 : ℝ) * (xiZeroCopyReciprocalSquare q).re ^ (2 : ℕ) := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+  let D : ℝ := (u + v) ^ (2 : ℕ)
   have hu0 : 0 ≤ u := by dsimp only [u]; positivity
   have hv : 85 < v := by
     simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
@@ -731,25 +731,25 @@ theorem xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt
   have hD : 0 < D := by dsimp only [D]; positivity
   have hsector := xiZeroCopy_orderTwentyThree_global_sector_ratio q hoff
   have hprod :
-      (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 = 4 * u * v := by
+      (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) = 4 * u * v := by
     dsimp only [u, v]
     ring
-  have hsector' : 215 * (4 * u * v) < (v - u) ^ 2 := by
+  have hsector' : 215 * (4 * u * v) < (v - u) ^ (2 : ℕ) := by
     rw [← hprod]
     simpa only [u, v] using hsector
   rw [xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
   change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2 <
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) <
     (1 / 215 : ℝ) *
-      (((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2
-  rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-    show (q.1 : ℂ).im ^ 2 = v by rfl,
-    show (u + v) ^ 2 = D by rfl]
+      (((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)
+  rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+    show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+    show (u + v) ^ (2 : ℕ) = D by rfl]
   rw [div_pow, div_pow]
-  rw [show (1 / 215 : ℝ) * ((v - u) ^ 2 / D ^ 2) =
-      ((1 / 215 : ℝ) * (v - u) ^ 2) / D ^ 2 by ring]
+  rw [show (1 / 215 : ℝ) * ((v - u) ^ (2 : ℕ) / D ^ (2 : ℕ)) =
+      ((1 / 215 : ℝ) * (v - u) ^ (2 : ℕ)) / D ^ (2 : ℕ) by ring]
   apply (div_lt_div_iff_of_pos_right (sq_pos_of_pos hD)).2
   rw [hprod]
   nlinarith
@@ -757,8 +757,8 @@ theorem xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt
 /-- Positive endpoint normalization preserves the strict order-23 orientation sector. -/
 theorem xiEndpointNormalizedReciprocalSquare_orderTwentyThree_orientation_sq_lt
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    (xiEndpointNormalizedReciprocalSquare q).im ^ 2 <
-      (1 / 215 : ℝ) * (xiEndpointNormalizedReciprocalSquare q).re ^ 2 := by
+    (xiEndpointNormalizedReciprocalSquare q).im ^ (2 : ℕ) <
+      (1 / 215 : ℝ) * (xiEndpointNormalizedReciprocalSquare q).re ^ (2 : ℕ) := by
   have hR : 0 < primeArchEndpointHausdorffRadius :=
     primeArchEndpointHausdorffRadius_pos
   have h := xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt q hoff
@@ -786,21 +786,21 @@ theorem xiEndpointNormalizedReciprocalSquare_orderTwentyThree_cosine_lt
     simp only [Complex.div_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
       Complex.normSq_ofReal]
     positivity
-  have hy : z.im ^ 2 < (1 / 215 : ℝ) * z.re ^ 2 := by
+  have hy : z.im ^ (2 : ℕ) < (1 / 215 : ℝ) * z.re ^ (2 : ℕ) := by
     simpa only [z] using
       xiEndpointNormalizedReciprocalSquare_orderTwentyThree_orientation_sq_lt q hoff
   have hc0 : 0 ≤ c := by dsimp only [c]; positivity
-  have hcSq : c ^ 2 = 215 / 216 := by
+  have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
     dsimp only [c]
     rw [Real.sq_sqrt]
     norm_num
-  have hrSq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+  have hrSq : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hrx : ‖z‖ ^ 2 < (216 / 215 : ℝ) * z.re ^ 2 := by
+  have hrx : ‖z‖ ^ (2 : ℕ) < (216 / 215 : ℝ) * z.re ^ (2 : ℕ) := by
     rw [hrSq]
     nlinarith
-  have hcxSq : (c * ‖z‖) ^ 2 < z.re ^ 2 := by
+  have hcxSq : (c * ‖z‖) ^ (2 : ℕ) < z.re ^ (2 : ℕ) := by
     rw [mul_pow, hcSq]
     nlinarith
   have hcx0 : 0 ≤ c * ‖z‖ := mul_nonneg hc0 (norm_nonneg z)
@@ -894,13 +894,13 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_lt_orderTwentyThreeSectorConfined
     have hr : ‖z‖ < 1 / 4 :=
       (norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius q hoff).trans_lt
         xiOffLineNormalizedBernsteinRadius_lt_one_fourth
-    have hcSq : c ^ 2 = 215 / 216 := by
+    have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
       dsimp only [c]
       rw [Real.sq_sqrt]
       norm_num
     have hc0 : 0 ≤ c := by dsimp only [c]; positivity
     have hcR : 1 / 4 < c := by
-      have hs : (1 / 4 : ℝ) ^ 2 < c ^ 2 := by
+      have hs : (1 / 4 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ) := by
         rw [hcSq]
         norm_num
       nlinarith [sq_nonneg (c + (1 / 4 : ℝ))]
@@ -932,13 +932,13 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_lt_orderTwentyThreeCurvatureConfine
     have hr : ‖z‖ ≤ R := by
       simpa only [z, R] using
         norm_xiEndpointNormalizedReciprocalSquare_le_offLineRadius q hoff
-    have hcSq : c ^ 2 = 215 / 216 := by
+    have hcSq : c ^ (2 : ℕ) = 215 / 216 := by
       dsimp only [c]
       rw [Real.sq_sqrt]
       norm_num
     have hc0 : 0 ≤ c := by dsimp only [c]; positivity
     have hcQ : 1 / 4 < c := by
-      have hs : (1 / 4 : ℝ) ^ 2 < c ^ 2 := by rw [hcSq]; norm_num
+      have hs : (1 / 4 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ) := by rw [hcSq]; norm_num
       nlinarith [sq_nonneg (c + (1 / 4 : ℝ))]
     have hcOne : c < 1 := by
       nlinarith [sq_nonneg (c + 1)]
@@ -1099,7 +1099,7 @@ private theorem primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
         xiReciprocalSquareAbsoluteMass * B ^ n)
     (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
-      (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 :=
+      (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ) :=
   (bernsteinCoefficientPurity_le_l1_sq _ _).trans
     ((sq_le_sq₀
       (Finset.sum_nonneg fun _ _ => abs_nonneg _)
@@ -1111,7 +1111,7 @@ private theorem primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
 theorem primeArchEndpointBernsteinPurity_le_orderTwentyThreeCurvatureConfined (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
       (xiReciprocalSquareAbsoluteMass *
-        xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ n) ^ 2 :=
+        xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ n) ^ (2 : ℕ) :=
   primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
     (zero_le_one.trans one_lt_xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase.le)
     primeArchEndpointBernsteinTotalVariation_le_orderTwentyThreeCurvatureConfined n
@@ -1120,7 +1120,7 @@ theorem primeArchEndpointBernsteinPurity_le_orderTwentyThreeCurvatureConfined (n
 theorem primeArchEndpointBernsteinPurity_le_sectorConfined (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
       (xiReciprocalSquareAbsoluteMass *
-        xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2 :=
+        xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ (2 : ℕ) :=
   primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric
     (zero_le_one.trans one_lt_xiSectorConfinedBernsteinAmplitudeBase.le)
     primeArchEndpointBernsteinTotalVariation_le_sectorConfined n
@@ -1131,17 +1131,17 @@ private theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bo
     (hvariation : ∀ n : ℕ,
       primeArchEndpointBernsteinTotalVariation n ≤
         xiReciprocalSquareAbsoluteMass * B ^ n)
-    (hr : B ^ 2 < r) :
+    (hr : B ^ (2 : ℕ) < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) := by
   have hrpos : 0 < r := lt_trans (sq_pos_of_pos hB) hr
-  let q : ℝ := B ^ 2 / r
+  let q : ℝ := B ^ (2 : ℕ) / r
   have hq0 : 0 ≤ q := div_nonneg (sq_nonneg B) hrpos.le
   have hq1 : q < 1 := (div_lt_one hrpos).2 hr
   have hpow : Tendsto (fun n : ℕ => q ^ n) atTop (nhds 0) :=
     tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
   have hupper : Tendsto
-      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n)
+      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n)
       atTop (nhds 0) := by
     simpa using tendsto_const_nhds.mul hpow
   apply squeeze_zero
@@ -1150,11 +1150,11 @@ private theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bo
     (fun n => ?_) hupper
   calc
     primeArchEndpointBernsteinPurity n / r ^ n ≤
-        (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 / r ^ n :=
+        (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ) / r ^ n :=
       div_le_div_of_nonneg_right
         (primeArchEndpointBernsteinPurity_le_of_totalVariation_geometric hB.le hvariation n)
         (pow_nonneg hrpos.le n)
-    _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+    _ = xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n := by
       dsimp only [q]
       rw [div_pow]
       ring
@@ -1162,7 +1162,7 @@ private theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bo
 /-- Normalization above the squared source-calibrated order-23 base kills endpoint purity. -/
 theorem
     tendsto_primeArchEndpointBernsteinPurity_div_pow_of_orderTwentyThreeCurvatureBase_sq_lt
-    {r : ℝ} (hr : xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 < r) :
+    {r : ℝ} (hr : xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ (2 : ℕ) < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) :=
   tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bound
@@ -1172,7 +1172,7 @@ theorem
 /-- Normalization above the narrow-sector squared base kills the endpoint purity
 unconditionally. -/
 theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt
-    {r : ℝ} (hr : xiSectorConfinedBernsteinAmplitudeBase ^ 2 < r) :
+    {r : ℝ} (hr : xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) :=
   tendsto_primeArchEndpointBernsteinPurity_div_pow_of_geometric_bound
@@ -1182,12 +1182,12 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt
 /-- Shared contradiction argument locating a false-RH exponent below any geometric decay base. -/
 private theorem exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
     (B : ℝ)
-    (hdecay : ∀ {r : ℝ}, B ^ 2 < r →
+    (hdecay : ∀ {r : ℝ}, B ^ (2 : ℕ) < r →
       Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
         atTop (nhds 0))
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
-      1 < r ∧ r ≤ B ^ 2 ∧
+      1 < r ∧ r ≤ B ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) := by
   have hnsub :
@@ -1198,7 +1198,7 @@ private theorem exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geome
   simp only [SubexponentialSquareEnergyAtNatInfinity] at hnsub
   push Not at hnsub
   obtain ⟨r, hr, hnot⟩ := hnsub
-  have hrbase : r ≤ B ^ 2 := by
+  have hrbase : r ≤ B ^ (2 : ℕ) := by
     by_contra hle
     exact hnot (hdecay (lt_of_not_ge hle))
   exact ⟨r, hr, hrbase, hnot⟩
@@ -1209,7 +1209,7 @@ theorem
     exists_orderTwentyThreeCurvatureConfined_primeArchEndpointBernsteinPurity_phase_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
-      1 < r ∧ r ≤ xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 ∧
+      1 < r ∧ r ≤ xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) :=
   exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
@@ -1222,7 +1222,7 @@ at most the exact narrow-sector squared base. -/
 theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
-      1 < r ∧ r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      1 < r ∧ r ≤ xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) :=
   exists_primeArchEndpointBernsteinPurity_phase_of_not_rh_of_geometric_decay
@@ -1232,11 +1232,11 @@ theorem exists_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riem
 private theorem exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
     {B : ℝ}
     (hphase : ∃ r : ℝ,
-      1 < r ∧ r ≤ B ^ 2 ∧
+      1 < r ∧ r ≤ B ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0)) :
     ∃ s : ℝ,
-      1 < s ∧ s < B ^ 2 ∧
+      1 < s ∧ s < B ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
           atTop (nhds 0) := by
   obtain ⟨r, hr, hrbase, hnot⟩ := hphase
@@ -1245,7 +1245,7 @@ private theorem exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
   have hs0 : 0 < s := by dsimp only [s]; linarith
   have hones : 1 < s := by dsimp only [s]; linarith
   have hsr : s < r := by dsimp only [s]; linarith
-  have hsbase : s < B ^ 2 := hsr.trans_le hrbase
+  have hsbase : s < B ^ (2 : ℕ) := hsr.trans_le hrbase
   refine ⟨s, hones, hsbase, ?_⟩
   intro hs
   have hratio0 : 0 ≤ s / r := div_nonneg hs0.le hr0.le
@@ -1265,7 +1265,7 @@ theorem
     exists_strict_orderTwentyThreeCurvatureConfined_primeArchEndpointBernsteinPurity_phase_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ s : ℝ,
-      1 < s ∧ s < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ 2 ∧
+      1 < s ∧ s < xiOrderTwentyThreeCurvatureBernsteinAmplitudeBase ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
           atTop (nhds 0) :=
   exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
@@ -1275,7 +1275,7 @@ theorem
 theorem exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
     (hRH : ¬ RiemannHypothesis) :
     ∃ s : ℝ,
-      1 < s ∧ s < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+      1 < s ∧ s < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / s ^ n)
           atTop (nhds 0) :=
   exists_strict_primeArchEndpointBernsteinPurity_phase_of_phase_le
@@ -1314,21 +1314,21 @@ theorem exists_sevenPerMille_primeArchEndpointBernsteinPurity_phase_of_not_riema
 conserved polynomial floor and the exact `(501/500)^(2M)` energy ceiling.  RH is the bounded
 phase; false RH is forced into the remaining five-per-mille exponential chamber. -/
 theorem primeArchBernsteinSectorConfinedLoschmidtPhaseMaster :
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000 ∧
-    xiSectorConfinedBernsteinAmplitudeBase ^ 2 < 201 / 200 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) = 251001 / 250000 ∧
+    xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < 201 / 200 ∧
     (∀ n : ℕ,
-      normalizedPrimeArchMoment 0 ^ 2 ≤
+      normalizedPrimeArchMoment 0 ^ (2 : ℕ) ≤
           (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n ∧
         primeArchEndpointBernsteinPurity n ≤
           (xiReciprocalSquareAbsoluteMass *
-            xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2) ∧
+            xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ (2 : ℕ)) ∧
     (RiemannHypothesis ↔
       ∀ n : ℕ,
-        primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ 2) ∧
+        primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ (2 : ℕ)) ∧
     (RiemannHypothesis ↔ PrimeArchEndpointBernsteinPurityBounded) ∧
     (¬ RiemannHypothesis →
       ∃ r : ℝ,
-        1 < r ∧ r < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        1 < r ∧ r < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
           ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
             atTop (nhds 0)) := by
   exact ⟨

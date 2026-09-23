@@ -25,19 +25,19 @@ namespace RHTower
 holomorphic at `s = 3/2`.  Here `I_L(s) = A_L(s-1)²` and `α = 1 - e^{-L/2}`. -/
 theorem polar_cancellation (L : ℝ) :
     Tendsto (fun s => (s - 3 / 2) * (
-        (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2) * riemannZeta (s - 1 / 2)
-        - 2 * (rectangularWindowAmplitude L (s - 1)) ^ 2
+        (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ)) * riemannZeta (s - 1 / 2)
+        - 2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ)
             * (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2))))
       (𝓝[≠] (3 / 2)) (𝓝 0) := by
   have hshift : Tendsto (fun s : ℂ => ((s - 1 / 2) - 1) *
       (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2))) (𝓝[≠] (3 / 2)) (𝓝 1) :=
     neg_logDeriv_zeta_residue.comp shift_half_tendsto
   have hILc := (((tentMellinFactor_differentiable L).continuous.tendsto (3 / 2)).const_mul 2)
-  have h2 : (2 * (rectangularWindowAmplitude L ((3 / 2 : ℂ) - 1)) ^ 2)
-      = 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 := by
+  have h2 : (2 * (rectangularWindowAmplitude L ((3 / 2 : ℂ) - 1)) ^ (2 : ℕ))
+      = 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) := by
     rw [rectangularWindowAmplitude_at_half]; ring
-  have hIL : Tendsto (fun s => 2 * (rectangularWindowAmplitude L (s - 1)) ^ 2)
-      (𝓝[≠] (3 / 2)) (𝓝 (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2)) := by
+  have hIL : Tendsto (fun s => 2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ))
+      (𝓝[≠] (3 / 2)) (𝓝 (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ))) := by
     rw [← h2]; exact hILc.mono_left nhdsWithin_le_nhds
   have hsub := (polar_term_residue L).sub (hIL.mul hshift)
   rw [mul_one, sub_self] at hsub
@@ -62,10 +62,10 @@ theorem offcritical_residue (L : ℝ) (hL : 0 < L) {ρ : ℂ}
     (hρre : 1 / 2 < ρ.re) (hζρ : riemannZeta ρ = 0) :
     ∃ m : ℕ, 1 ≤ m ∧
       Tendsto (fun s => (s - (ρ + 1 / 2)) *
-          (-2 * (rectangularWindowAmplitude L (s - 1)) ^ 2
+          (-2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ)
             * (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2))))
-        (𝓝[≠] (ρ + 1 / 2)) (𝓝 (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2))
-      ∧ (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2 ≠ 0) := by
+        (𝓝[≠] (ρ + 1 / 2)) (𝓝 (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ)))
+      ∧ (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ) ≠ 0) := by
   obtain ⟨m, hm1, hzres⟩ := neg_logDeriv_zeta_zero_residue hζρ
   refine ⟨m, hm1, ?_, ?_⟩
   · have hshift : Tendsto (fun s : ℂ => s - 1 / 2) (𝓝[≠] (ρ + 1 / 2)) (𝓝[≠] ρ) := by
@@ -73,15 +73,15 @@ theorem offcritical_residue (L : ℝ) (hL : 0 < L) {ρ : ℂ}
       rwa [show ρ + 1 / 2 - 1 / 2 = ρ by ring] at this
     have hzshift := hzres.comp hshift
     have hILc := (((tentMellinFactor_differentiable L).continuous.tendsto (ρ + 1 / 2)).const_mul (-2))
-    have hIL : Tendsto (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2)
-        (𝓝[≠] (ρ + 1 / 2)) (𝓝 (-2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2)) := by
-      have h2 : (-2 * (rectangularWindowAmplitude L ((ρ + 1 / 2) - 1)) ^ 2)
-          = -2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2 := by
+    have hIL : Tendsto (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ))
+        (𝓝[≠] (ρ + 1 / 2)) (𝓝 (-2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ))) := by
+      have h2 : (-2 * (rectangularWindowAmplitude L ((ρ + 1 / 2) - 1)) ^ (2 : ℕ))
+          = -2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ) := by
         rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]
       rw [← h2]; exact hILc.mono_left nhdsWithin_le_nhds
     have hprod := hIL.mul hzshift
-    rw [show (-2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2) * (-(m : ℂ))
-        = 2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2 by ring] at hprod
+    rw [show (-2 * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ)) * (-(m : ℂ))
+        = 2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ (2 : ℕ) by ring] at hprod
     exact hprod.congr' (Filter.Eventually.of_forall
       (fun s => by simp only [Function.comp_apply]; ring))
   · refine mul_ne_zero (mul_ne_zero (by norm_num) ?_) ?_

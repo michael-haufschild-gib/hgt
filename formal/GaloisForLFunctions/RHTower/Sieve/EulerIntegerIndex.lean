@@ -77,7 +77,7 @@ theorem norm_sum_smooth_le_exp {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1)
     {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) :
     ‖∑ n ∈ P.powerset.image (fun T => ∏ p ∈ T, p), ((1 / (n : ℝ) : ℝ) : ℂ)
         * (f n * Complex.exp (((-(t * Real.log (n : ℝ)) : ℝ) : ℂ) * Complex.I))‖
-      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ 2) - mulDistSq f t P) := by
+      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ)) - mulDistSq f t P) := by
   classical
   have hinj : ∀ S ∈ P.powerset, ∀ T ∈ P.powerset,
       (∏ p ∈ S, p) = (∏ p ∈ T, p) → S = T := by

@@ -80,10 +80,10 @@ namespace Bottcher
 `f_c`-preimage of a point separated from `c` stays outside `closedBall 0 2`. -/
 theorem two_lt_norm_of_quadratic_eq {c z w : ℂ} (hzw : quadratic c z = w)
     (hsep : 4 < ‖w - c‖) : 2 < ‖z‖ := by
-  have hz2 : z ^ 2 = w - c := by
-    have : quadratic c z = z ^ 2 + c := by rw [quadratic_apply]
+  have hz2 : z ^ (2 : ℕ) = w - c := by
+    have : quadratic c z = z ^ (2 : ℕ) + c := by rw [quadratic_apply]
     rw [this] at hzw; linear_combination hzw
-  have hnz2 : ‖z‖ ^ 2 = ‖w - c‖ := by rw [← hz2, norm_pow]
+  have hnz2 : ‖z‖ ^ (2 : ℕ) = ‖w - c‖ := by rw [← hz2, norm_pow]
   nlinarith [norm_nonneg z, hnz2, hsep]
 
 /-- **Separation from a radial gap (outer side).**  `‖c‖ + 4 < ‖w‖ ⟹ 4 < ‖w − c‖` (reverse
@@ -109,25 +109,25 @@ So a norm-`≤ 2` tower point cannot reach the bounded section (radius `< e^{4·
 bound to the shallow `j ∈ {1,2}` pieces near the section. -/
 theorem norm_iterate_two_ge_of_norm_le_two {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖) (hz : ‖z‖ ≤ 2) :
     9000 ≤ ‖(quadratic c)^[2] z‖ := by
-  have hz2 : ‖z‖ ^ 2 ≤ 4 := by nlinarith [norm_nonneg z]
+  have hz2 : ‖z‖ ^ (2 : ℕ) ≤ 4 := by nlinarith [norm_nonneg z]
   have hw1 : ‖c‖ - 4 ≤ ‖quadratic c z‖ := by
-    have heq : quadratic c z = z ^ 2 + c := by rw [quadratic_apply]
-    have h1 : ‖c‖ ≤ ‖quadratic c z‖ + ‖z‖ ^ 2 := by
-      calc ‖c‖ = ‖(z ^ 2 + c) - z ^ 2‖ := by rw [show (z ^ 2 + c) - z ^ 2 = c by ring]
-        _ ≤ ‖z ^ 2 + c‖ + ‖z ^ 2‖ := norm_sub_le _ _
-        _ = ‖quadratic c z‖ + ‖z‖ ^ 2 := by rw [← heq, norm_pow]
+    have heq : quadratic c z = z ^ (2 : ℕ) + c := by rw [quadratic_apply]
+    have h1 : ‖c‖ ≤ ‖quadratic c z‖ + ‖z‖ ^ (2 : ℕ) := by
+      calc ‖c‖ = ‖(z ^ (2 : ℕ) + c) - z ^ (2 : ℕ)‖ := by rw [show (z ^ (2 : ℕ) + c) - z ^ (2 : ℕ) = c by ring]
+        _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+        _ = ‖quadratic c z‖ + ‖z‖ ^ (2 : ℕ) := by rw [← heq, norm_pow]
     nlinarith [h1, hz2]
   have hw1nn : (0:ℝ) ≤ ‖c‖ - 4 := by linarith
-  have hw1sq : (‖c‖ - 4) ^ 2 ≤ ‖quadratic c z‖ ^ 2 := by nlinarith [hw1, hw1nn]
+  have hw1sq : (‖c‖ - 4) ^ (2 : ℕ) ≤ ‖quadratic c z‖ ^ (2 : ℕ) := by nlinarith [hw1, hw1nn]
   have hiter : (quadratic c)^[2] z = quadratic c (quadratic c z) := by
     rw [show (2:ℕ) = 1 + 1 from rfl, Function.iterate_add_apply]; rfl
   rw [hiter]
-  have heq2 : quadratic c (quadratic c z) = (quadratic c z) ^ 2 + c := by rw [quadratic_apply]
-  have h2 : ‖quadratic c z‖ ^ 2 ≤ ‖quadratic c (quadratic c z)‖ + ‖c‖ := by
-    calc ‖quadratic c z‖ ^ 2 = ‖(quadratic c z) ^ 2‖ := (norm_pow _ _).symm
-      _ = ‖((quadratic c z) ^ 2 + c) - c‖ := by rw [show ((quadratic c z) ^ 2 + c) - c
-            = (quadratic c z) ^ 2 by ring]
-      _ ≤ ‖(quadratic c z) ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
+  have heq2 : quadratic c (quadratic c z) = (quadratic c z) ^ (2 : ℕ) + c := by rw [quadratic_apply]
+  have h2 : ‖quadratic c z‖ ^ (2 : ℕ) ≤ ‖quadratic c (quadratic c z)‖ + ‖c‖ := by
+    calc ‖quadratic c z‖ ^ (2 : ℕ) = ‖(quadratic c z) ^ (2 : ℕ)‖ := (norm_pow _ _).symm
+      _ = ‖((quadratic c z) ^ (2 : ℕ) + c) - c‖ := by rw [show ((quadratic c z) ^ (2 : ℕ) + c) - c
+            = (quadratic c z) ^ (2 : ℕ) by ring]
+      _ ≤ ‖(quadratic c z) ^ (2 : ℕ) + c‖ + ‖c‖ := norm_sub_le _ _
       _ = ‖quadratic c (quadratic c z)‖ + ‖c‖ := by rw [← heq2]
   nlinarith [h2, hw1sq, hc]
 
@@ -140,10 +140,10 @@ then `‖w'‖ ∈ (2, ‖c‖−4)`: `‖w'‖² = ‖w−c‖ ∈ (4, 2‖c‖
 `(2, ‖c‖−4)` is closed under `f_c`-preimages — no thin-annulus collapse.  Induction step of the
 `#131` mixed-tower norm bound. -/
 theorem norm_mem_Ioo_of_preimage {c w w' : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
-    (hhi : ‖w‖ < ‖c‖ - 4) (heq : w' ^ 2 = w - c) :
+    (hhi : ‖w‖ < ‖c‖ - 4) (heq : w' ^ (2 : ℕ) = w - c) :
     2 < ‖w'‖ ∧ ‖w'‖ < ‖c‖ - 4 := by
   have hsep : 4 < ‖w - c‖ := four_lt_norm_sub_of_lt (by linarith)
-  have hnw' : ‖w'‖ ^ 2 = ‖w - c‖ := by rw [← heq, norm_pow]
+  have hnw' : ‖w'‖ ^ (2 : ℕ) = ‖w - c‖ := by rw [← heq, norm_pow]
   have hub : ‖w - c‖ < 2 * ‖c‖ - 4 := by have := norm_sub_le w c; linarith
   exact ⟨by nlinarith [hnw', hsep, norm_nonneg w'],
     by nlinarith [hnw', hub, norm_nonneg w', hc]⟩
@@ -152,10 +152,10 @@ theorem norm_mem_Ioo_of_preimage {c w w' : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
 the far-field radius `R₀ < (‖c‖−4)²`) has its first `f_c`-preimage in the invariant band
 `(2, ‖c‖−4)`.  From here `norm_mem_Ioo_of_preimage` carries the whole scaffold/lobe chain `> 2`. -/
 theorem norm_mem_Ioo_of_preimage_of_far {c w w' : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
-    (hfar : ‖c‖ + 4 < ‖w‖) (hub : ‖w - c‖ < (‖c‖ - 4) ^ 2) (heq : w' ^ 2 = w - c) :
+    (hfar : ‖c‖ + 4 < ‖w‖) (hub : ‖w - c‖ < (‖c‖ - 4) ^ (2 : ℕ)) (heq : w' ^ (2 : ℕ) = w - c) :
     2 < ‖w'‖ ∧ ‖w'‖ < ‖c‖ - 4 := by
   have hsep : 4 < ‖w - c‖ := four_lt_norm_sub_of_gt hfar
-  have hnw' : ‖w'‖ ^ 2 = ‖w - c‖ := by rw [← heq, norm_pow]
+  have hnw' : ‖w'‖ ^ (2 : ℕ) = ‖w - c‖ := by rw [← heq, norm_pow]
   exact ⟨by nlinarith [hnw', hsep, norm_nonneg w'],
     by nlinarith [hnw', hub, norm_nonneg w', hc]⟩
 
@@ -169,8 +169,8 @@ generation `σ(j+1)` lies in `(2, ‖c‖−4)`.  Chains the `#131` base + step 
 `exists_matched_lobes`/`exists_scaffold_chain` families. -/
 theorem preimageChain_norm_band {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {A : Set ℂ} {σ : ℕ → ℂ → ℂ}
     (hfar : ∀ v ∈ A, ‖c‖ + 4 < ‖σ 0 v‖)
-    (hub : ∀ v ∈ A, ‖σ 0 v - c‖ < (‖c‖ - 4) ^ 2)
-    (hrec : ∀ j, ∀ v ∈ A, σ (j + 1) v ^ 2 = σ j v - c) :
+    (hub : ∀ v ∈ A, ‖σ 0 v - c‖ < (‖c‖ - 4) ^ (2 : ℕ))
+    (hrec : ∀ j, ∀ v ∈ A, σ (j + 1) v ^ (2 : ℕ) = σ j v - c) :
     ∀ j : ℕ, ∀ v ∈ A, 2 < ‖σ (j + 1) v‖ ∧ ‖σ (j + 1) v‖ < ‖c‖ - 4 := by
   intro j
   induction j with
@@ -180,8 +180,8 @@ theorem preimageChain_norm_band {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {A : Set 
 /-- **Every generation exceeds `2`.**  The far section and all its preimages avoid `closedBall 0 2`. -/
 theorem preimageChain_two_lt {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {A : Set ℂ} {σ : ℕ → ℂ → ℂ}
     (hfar : ∀ v ∈ A, ‖c‖ + 4 < ‖σ 0 v‖)
-    (hub : ∀ v ∈ A, ‖σ 0 v - c‖ < (‖c‖ - 4) ^ 2)
-    (hrec : ∀ j, ∀ v ∈ A, σ (j + 1) v ^ 2 = σ j v - c) :
+    (hub : ∀ v ∈ A, ‖σ 0 v - c‖ < (‖c‖ - 4) ^ (2 : ℕ))
+    (hrec : ∀ j, ∀ v ∈ A, σ (j + 1) v ^ (2 : ℕ) = σ j v - c) :
     ∀ j : ℕ, ∀ v ∈ A, 2 < ‖σ j v‖ := by
   intro j v hv
   cases j with
@@ -200,12 +200,12 @@ theorem le_norm_iterate_of_ge {c : ℂ} (hcU : ‖c‖ ≤ 9000) {w : ℂ} (hw :
   | zero => simpa using hw
   | succ n ih =>
     rw [Function.iterate_succ_apply']
-    have heq : quadratic c ((quadratic c)^[n] w) = ((quadratic c)^[n] w) ^ 2 + c := by
+    have heq : quadratic c ((quadratic c)^[n] w) = ((quadratic c)^[n] w) ^ (2 : ℕ) + c := by
       rw [quadratic_apply]
     rw [heq]
-    have h1 : ‖((quadratic c)^[n] w) ^ 2‖ ≤ ‖((quadratic c)^[n] w) ^ 2 + c‖ + ‖c‖ := by
-      have := norm_sub_le (((quadratic c)^[n] w) ^ 2 + c) c
-      rwa [show (((quadratic c)^[n] w) ^ 2 + c) - c = ((quadratic c)^[n] w) ^ 2 by ring] at this
+    have h1 : ‖((quadratic c)^[n] w) ^ (2 : ℕ)‖ ≤ ‖((quadratic c)^[n] w) ^ (2 : ℕ) + c‖ + ‖c‖ := by
+      have := norm_sub_le (((quadratic c)^[n] w) ^ (2 : ℕ) + c) c
+      rwa [show (((quadratic c)^[n] w) ^ (2 : ℕ) + c) - c = ((quadratic c)^[n] w) ^ (2 : ℕ) by ring] at this
     rw [norm_pow] at h1
     nlinarith [h1, ih, hcU]
 
@@ -233,7 +233,7 @@ theorem two_lt_norm_of_reach {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {rlo R₀ : 
     rw [hwT] at hlo; linarith
   · simp only [Function.iterate_succ_apply', Function.iterate_zero, id_eq] at hwT
     rw [hwT, quadratic_apply] at hlo
-    have h1 : ‖z ^ 2 + c‖ ≤ ‖z ^ 2‖ + ‖c‖ := norm_add_le _ _
+    have h1 : ‖z ^ (2 : ℕ) + c‖ ≤ ‖z ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
     rw [norm_pow] at h1
     nlinarith [h1, norm_nonneg z, hle, hlo]
   · have hf2 : (9000:ℝ) ≤ ‖(quadratic c)^[2] z‖ := norm_iterate_two_ge_of_norm_le_two hc hle
@@ -252,26 +252,26 @@ namespace Bottcher
 /-- **Sharp two-iterate escape.**  `‖c‖ ≥ 100 ∧ ‖z‖ ≤ 2 ⟹ (‖c‖−4)² − ‖c‖ ≤ ‖f²z‖` — the
 `‖c‖`-scaled escape floor (the fixed `9000` version is the `‖c‖ = 100` special case). -/
 theorem norm_iterate_two_ge_sharp {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖) (hz : ‖z‖ ≤ 2) :
-    (‖c‖ - 4) ^ 2 - ‖c‖ ≤ ‖(quadratic c)^[2] z‖ := by
-  have hz2 : ‖z‖ ^ 2 ≤ 4 := by nlinarith [norm_nonneg z]
+    (‖c‖ - 4) ^ (2 : ℕ) - ‖c‖ ≤ ‖(quadratic c)^[2] z‖ := by
+  have hz2 : ‖z‖ ^ (2 : ℕ) ≤ 4 := by nlinarith [norm_nonneg z]
   have hw1 : ‖c‖ - 4 ≤ ‖quadratic c z‖ := by
-    have heq : quadratic c z = z ^ 2 + c := by rw [quadratic_apply]
-    have h1 : ‖c‖ ≤ ‖quadratic c z‖ + ‖z‖ ^ 2 := by
-      calc ‖c‖ = ‖(z ^ 2 + c) - z ^ 2‖ := by rw [show (z ^ 2 + c) - z ^ 2 = c by ring]
-        _ ≤ ‖z ^ 2 + c‖ + ‖z ^ 2‖ := norm_sub_le _ _
-        _ = ‖quadratic c z‖ + ‖z‖ ^ 2 := by rw [← heq, norm_pow]
+    have heq : quadratic c z = z ^ (2 : ℕ) + c := by rw [quadratic_apply]
+    have h1 : ‖c‖ ≤ ‖quadratic c z‖ + ‖z‖ ^ (2 : ℕ) := by
+      calc ‖c‖ = ‖(z ^ (2 : ℕ) + c) - z ^ (2 : ℕ)‖ := by rw [show (z ^ (2 : ℕ) + c) - z ^ (2 : ℕ) = c by ring]
+        _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+        _ = ‖quadratic c z‖ + ‖z‖ ^ (2 : ℕ) := by rw [← heq, norm_pow]
     nlinarith [h1, hz2]
   have hw1nn : (0:ℝ) ≤ ‖c‖ - 4 := by linarith
-  have hw1sq : (‖c‖ - 4) ^ 2 ≤ ‖quadratic c z‖ ^ 2 := by nlinarith [hw1, hw1nn]
+  have hw1sq : (‖c‖ - 4) ^ (2 : ℕ) ≤ ‖quadratic c z‖ ^ (2 : ℕ) := by nlinarith [hw1, hw1nn]
   have hiter : (quadratic c)^[2] z = quadratic c (quadratic c z) := by
     rw [show (2:ℕ) = 1 + 1 from rfl, Function.iterate_add_apply]; rfl
   rw [hiter]
-  have heq2 : quadratic c (quadratic c z) = (quadratic c z) ^ 2 + c := by rw [quadratic_apply]
-  have h2 : ‖quadratic c z‖ ^ 2 ≤ ‖quadratic c (quadratic c z)‖ + ‖c‖ := by
-    calc ‖quadratic c z‖ ^ 2 = ‖(quadratic c z) ^ 2‖ := (norm_pow _ _).symm
-      _ = ‖((quadratic c z) ^ 2 + c) - c‖ := by rw [show ((quadratic c z) ^ 2 + c) - c
-            = (quadratic c z) ^ 2 by ring]
-      _ ≤ ‖(quadratic c z) ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
+  have heq2 : quadratic c (quadratic c z) = (quadratic c z) ^ (2 : ℕ) + c := by rw [quadratic_apply]
+  have h2 : ‖quadratic c z‖ ^ (2 : ℕ) ≤ ‖quadratic c (quadratic c z)‖ + ‖c‖ := by
+    calc ‖quadratic c z‖ ^ (2 : ℕ) = ‖(quadratic c z) ^ (2 : ℕ)‖ := (norm_pow _ _).symm
+      _ = ‖((quadratic c z) ^ (2 : ℕ) + c) - c‖ := by rw [show ((quadratic c z) ^ (2 : ℕ) + c) - c
+            = (quadratic c z) ^ (2 : ℕ) by ring]
+      _ ≤ ‖(quadratic c z) ^ (2 : ℕ) + c‖ + ‖c‖ := norm_sub_le _ _
       _ = ‖quadratic c (quadratic c z)‖ + ‖c‖ := by rw [← heq2]
   nlinarith [h2, hw1sq]
 
@@ -282,19 +282,19 @@ theorem le_norm_iterate_of_ge_thresh {c : ℂ} {T : ℝ} (hT : 2 ≤ T) (hcT : �
   | zero => simpa using hw
   | succ n ih =>
     rw [Function.iterate_succ_apply']
-    have heq : quadratic c ((quadratic c)^[n] w) = ((quadratic c)^[n] w) ^ 2 + c := by
+    have heq : quadratic c ((quadratic c)^[n] w) = ((quadratic c)^[n] w) ^ (2 : ℕ) + c := by
       rw [quadratic_apply]
     rw [heq]
-    have h1 : ‖((quadratic c)^[n] w) ^ 2‖ ≤ ‖((quadratic c)^[n] w) ^ 2 + c‖ + ‖c‖ := by
-      have := norm_sub_le (((quadratic c)^[n] w) ^ 2 + c) c
-      rwa [show (((quadratic c)^[n] w) ^ 2 + c) - c = ((quadratic c)^[n] w) ^ 2 by ring] at this
+    have h1 : ‖((quadratic c)^[n] w) ^ (2 : ℕ)‖ ≤ ‖((quadratic c)^[n] w) ^ (2 : ℕ) + c‖ + ‖c‖ := by
+      have := norm_sub_le (((quadratic c)^[n] w) ^ (2 : ℕ) + c) c
+      rwa [show (((quadratic c)^[n] w) ^ (2 : ℕ) + c) - c = ((quadratic c)^[n] w) ^ (2 : ℕ) by ring] at this
     rw [norm_pow] at h1
     nlinarith [h1, ih, hcT, hT]
 
 /-- **Mixed-tower norm bound from reach — threshold form, all `‖c‖ ≥ 100`.**  If the section image is
 confined to `(‖c‖+4, T)` with `‖c‖ ≤ T ≤ (‖c‖−4)² − ‖c‖`, a point reaching it has norm `> 2`. -/
 theorem two_lt_norm_of_reach_thresh {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {T : ℝ}
-    (hcT : ‖c‖ ≤ T) (hTle : T ≤ (‖c‖ - 4) ^ 2 - ‖c‖)
+    (hcT : ‖c‖ ≤ T) (hTle : T ≤ (‖c‖ - 4) ^ (2 : ℕ) - ‖c‖)
     {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     (hsec_lo : ∀ w ∈ annulusSet rlo R₀, ‖c‖ + 4 < ‖S.T w‖)
     (hsec_hi : ∀ w ∈ annulusSet rlo R₀, ‖S.T w‖ < T)
@@ -312,7 +312,7 @@ theorem two_lt_norm_of_reach_thresh {c : ℂ} (hc : (100:ℝ) ≤ ‖c‖) {T : 
     rw [hwT] at hlo; linarith
   · simp only [Function.iterate_succ_apply', Function.iterate_zero, id_eq] at hwT
     rw [hwT, quadratic_apply] at hlo
-    have h1 : ‖z ^ 2 + c‖ ≤ ‖z ^ 2‖ + ‖c‖ := norm_add_le _ _
+    have h1 : ‖z ^ (2 : ℕ) + c‖ ≤ ‖z ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
     rw [norm_pow] at h1
     nlinarith [h1, norm_nonneg z, hle, hlo]
   · have hf2 : T ≤ ‖(quadratic c)^[2] z‖ := le_trans hTle (norm_iterate_two_ge_sharp hc hle)

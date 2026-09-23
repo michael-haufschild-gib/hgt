@@ -36,23 +36,23 @@ open Finset
 /-- `cosh y ≤ 1 + (y/3)·sinh y + (y²/6)·cosh y` for `0 ≤ y`: the difference has derivative
 `(2/3)(u·cosh u − sinh u) + (u²/6)·sinh u ≥ 0` and vanishes at `0`. -/
 theorem cosh_le_one_add_cubic {y : ℝ} (hy : 0 ≤ y) :
-    Real.cosh y ≤ 1 + y / 3 * Real.sinh y + y ^ 2 / 6 * Real.cosh y := by
+    Real.cosh y ≤ 1 + y / 3 * Real.sinh y + y ^ (2 : ℕ) / 6 * Real.cosh y := by
   have hmono : MonotoneOn
-      (fun t => 1 + t / 3 * Real.sinh t + t ^ 2 / 6 * Real.cosh t - Real.cosh t)
+      (fun t => 1 + t / 3 * Real.sinh t + t ^ (2 : ℕ) / 6 * Real.cosh t - Real.cosh t)
       (Set.Icc 0 y) := by
     apply monotoneOn_of_deriv_nonneg (convex_Icc 0 y) (by fun_prop) (by fun_prop)
     intro u hu
     rw [interior_Icc, Set.mem_Ioo] at hu
     have hd : HasDerivAt
-        (fun t => 1 + t / 3 * Real.sinh t + t ^ 2 / 6 * Real.cosh t - Real.cosh t)
-        (2 * u / 3 * Real.cosh u + u ^ 2 / 6 * Real.sinh u - 2 / 3 * Real.sinh u) u := by
+        (fun t => 1 + t / 3 * Real.sinh t + t ^ (2 : ℕ) / 6 * Real.cosh t - Real.cosh t)
+        (2 * u / 3 * Real.cosh u + u ^ (2 : ℕ) / 6 * Real.sinh u - 2 / 3 * Real.sinh u) u := by
       have h1 : HasDerivAt (fun t : ℝ => t / 3 * Real.sinh t)
           (1 / 3 * Real.sinh u + u / 3 * Real.cosh u) u :=
         ((hasDerivAt_id u).div_const 3).mul (Real.hasDerivAt_sinh u)
-      have hp : HasDerivAt (fun t : ℝ => t ^ 2 / 6) (2 * u / 6) u := by
+      have hp : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 6) (2 * u / 6) u := by
         simpa using (hasDerivAt_pow 2 u).div_const 6
-      have h2 : HasDerivAt (fun t : ℝ => t ^ 2 / 6 * Real.cosh t)
-          (2 * u / 6 * Real.cosh u + u ^ 2 / 6 * Real.sinh u) u :=
+      have h2 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 6 * Real.cosh t)
+          (2 * u / 6 * Real.cosh u + u ^ (2 : ℕ) / 6 * Real.sinh u) u :=
         hp.mul (Real.hasDerivAt_cosh u)
       have h3 := ((h1.const_add 1).add h2).sub (Real.hasDerivAt_cosh u)
       apply h3.congr_deriv
@@ -62,7 +62,7 @@ theorem cosh_le_one_add_cubic {y : ℝ} (hy : 0 ≤ y) :
     have hsn : 0 ≤ Real.sinh u := Real.sinh_nonneg_iff.mpr hu.1.le
     have h23 : 2 / 3 * Real.sinh u ≤ 2 / 3 * (u * Real.cosh u) :=
       mul_le_mul_of_nonneg_left hsc (by norm_num)
-    have hq : 0 ≤ u ^ 2 / 6 * Real.sinh u :=
+    have hq : 0 ≤ u ^ (2 : ℕ) / 6 * Real.sinh u :=
       mul_nonneg (by positivity) hsn
     linarith [h23, hq]
   have key := hmono (Set.left_mem_Icc.mpr hy) (Set.right_mem_Icc.mpr hy) hy
@@ -73,18 +73,18 @@ theorem cosh_le_one_add_cubic {y : ℝ} (hy : 0 ≤ y) :
 is at most `(v²/6)·sinh v`. The difference vanishes to third order at `0` and its derivative
 is nonnegative by `cosh_le_one_add_cubic`. -/
 theorem sinh_mul_one_sub_le {v : ℝ} (hv : 0 ≤ v) :
-    Real.sinh v * (1 - v ^ 2 / 6) ≤ v := by
+    Real.sinh v * (1 - v ^ (2 : ℕ) / 6) ≤ v := by
   have hmono : MonotoneOn
-      (fun t => t + t ^ 2 / 6 * Real.sinh t - Real.sinh t) (Set.Icc 0 v) := by
+      (fun t => t + t ^ (2 : ℕ) / 6 * Real.sinh t - Real.sinh t) (Set.Icc 0 v) := by
     apply monotoneOn_of_deriv_nonneg (convex_Icc 0 v) (by fun_prop) (by fun_prop)
     intro u hu
     rw [interior_Icc, Set.mem_Ioo] at hu
-    have hd : HasDerivAt (fun t => t + t ^ 2 / 6 * Real.sinh t - Real.sinh t)
-        (1 + 2 * u / 6 * Real.sinh u + u ^ 2 / 6 * Real.cosh u - Real.cosh u) u := by
-      have hp : HasDerivAt (fun t : ℝ => t ^ 2 / 6) (2 * u / 6) u := by
+    have hd : HasDerivAt (fun t => t + t ^ (2 : ℕ) / 6 * Real.sinh t - Real.sinh t)
+        (1 + 2 * u / 6 * Real.sinh u + u ^ (2 : ℕ) / 6 * Real.cosh u - Real.cosh u) u := by
+      have hp : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 6) (2 * u / 6) u := by
         simpa using (hasDerivAt_pow 2 u).div_const 6
-      have h2 : HasDerivAt (fun t : ℝ => t ^ 2 / 6 * Real.sinh t)
-          (2 * u / 6 * Real.sinh u + u ^ 2 / 6 * Real.cosh u) u :=
+      have h2 : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) / 6 * Real.sinh t)
+          (2 * u / 6 * Real.sinh u + u ^ (2 : ℕ) / 6 * Real.cosh u) u :=
         hp.mul (Real.hasDerivAt_sinh u)
       have h3 := ((hasDerivAt_id u).add h2).sub (Real.hasDerivAt_sinh u)
       apply h3.congr_deriv
@@ -99,11 +99,11 @@ theorem sinh_mul_one_sub_le {v : ℝ} (hv : 0 ≤ v) :
 /-- **Lower `csch²` envelope**: `((1 − v²/6)/v)² ≤ csch²(v)` for `0 < v` with `v² ≤ 6`, from
 the cubic bound `sinh v · (1 − v²/6) ≤ v`. Rational in `v`: together with the upper envelope
 it reduces `csch²` box comparisons at rational distances to exact rational arithmetic. -/
-theorem rcsch_sq_ge_rat {v : ℝ} (hv : 0 < v) (hv6 : v ^ 2 ≤ 6) :
-    ((1 - v ^ 2 / 6) / v) ^ 2 ≤ (rcsch v) ^ 2 := by
+theorem rcsch_sq_ge_rat {v : ℝ} (hv : 0 < v) (hv6 : v ^ (2 : ℕ) ≤ 6) :
+    ((1 - v ^ (2 : ℕ) / 6) / v) ^ (2 : ℕ) ≤ (rcsch v) ^ (2 : ℕ) := by
   have hs : 0 < Real.sinh v := sinh_pos_of_pos hv
-  have hnum : 0 ≤ 1 - v ^ 2 / 6 := by linarith
-  have h1 : (1 - v ^ 2 / 6) / v ≤ rcsch v := by
+  have hnum : 0 ≤ 1 - v ^ (2 : ℕ) / 6 := by linarith
+  have h1 : (1 - v ^ (2 : ℕ) / 6) / v ≤ rcsch v := by
     rw [rcsch, div_le_div_iff₀ hv hs]
     nlinarith [sinh_mul_one_sub_le hv.le]
   exact pow_le_pow_left₀ (div_nonneg hnum hv.le) h1 2
@@ -142,10 +142,10 @@ summed regime — a fixed configuration, not a class statement. -/
 theorem harm_bulk_march :
     2 < legRankNew 12 10 harmNewB harmNewA (2 / 39) (harmT 13 - 2 / 39)
         - legRankOld 12 10 harmOldB harmOldA (2 / 39) (harmT 23 - harmT 12 + 2 / 39) := by
-  have hbox : ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (rcsch (harmNewA k / 2)) ^ 2
-      ≤ ∑ k ∈ range 10, ((harmOldB k - harmNewB k) / 2) * (rcsch (harmOldB k / 2)) ^ 2 := by
-    calc ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (rcsch (harmNewA k / 2)) ^ 2
-        ≤ ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (1 / (harmNewA k / 2) ^ 2) := by
+  have hbox : ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (rcsch (harmNewA k / 2)) ^ (2 : ℕ)
+      ≤ ∑ k ∈ range 10, ((harmOldB k - harmNewB k) / 2) * (rcsch (harmOldB k / 2)) ^ (2 : ℕ) := by
+    calc ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (rcsch (harmNewA k / 2)) ^ (2 : ℕ)
+        ≤ ∑ k ∈ range 10, ((harmOldA k - harmNewA k) / 2) * (1 / (harmNewA k / 2) ^ (2 : ℕ)) := by
           refine Finset.sum_le_sum (fun k hk => ?_)
           fin_cases hk <;>
             exact mul_le_mul_of_nonneg_left
@@ -156,10 +156,10 @@ theorem harm_bulk_march :
                 simp only [harmOldA, harmNewA, harmT]
                 norm_num [Finset.sum_range_succ, Finset.sum_range_zero])
       _ ≤ ∑ k ∈ range 10, ((harmOldB k - harmNewB k) / 2)
-            * ((1 - (harmOldB k / 2) ^ 2 / 6) / (harmOldB k / 2)) ^ 2 := by
+            * ((1 - (harmOldB k / 2) ^ (2 : ℕ) / 6) / (harmOldB k / 2)) ^ (2 : ℕ) := by
           simp only [harmOldA, harmNewA, harmOldB, harmNewB, harmT]
           norm_num [Finset.sum_range_succ, Finset.sum_range_zero]
-      _ ≤ ∑ k ∈ range 10, ((harmOldB k - harmNewB k) / 2) * (rcsch (harmOldB k / 2)) ^ 2 := by
+      _ ≤ ∑ k ∈ range 10, ((harmOldB k - harmNewB k) / 2) * (rcsch (harmOldB k / 2)) ^ (2 : ℕ) := by
           refine Finset.sum_le_sum (fun k hk => ?_)
           fin_cases hk <;>
             exact mul_le_mul_of_nonneg_left
@@ -230,14 +230,14 @@ theorem wide_bulk_march :
   · have hcush : (2 : ℝ) < rcoth (171 / 10 / 2) + rcoth (139 / 10 / 2) :=
       far_cushion_gt_two (by norm_num) (by norm_num)
     have hbd : (∑ k ∈ range 2, (rcoth (wideNewA k / 2) - rcoth (wideOldA k / 2)))
-        ≤ ∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ 2)) := by
+        ≤ ∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ (2 : ℕ))) := by
       refine Finset.sum_le_sum (fun k hk => ?_)
       fin_cases hk <;>
         · simp only [wideNewA, wideOldA]
           norm_num only
           refine le_trans (rcoth_pair_le' (by norm_num) (by norm_num)) ?_
           exact mul_le_mul_of_nonneg_left (rcsch_sq_le_inv_sq (by norm_num)) (by norm_num)
-    have henv : (∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ 2)))
+    have henv : (∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ (2 : ℕ))))
         < 2 := by
       simp only [wideOldA, wideNewA]
       norm_num [Finset.sum_range_succ, Finset.sum_range_zero]

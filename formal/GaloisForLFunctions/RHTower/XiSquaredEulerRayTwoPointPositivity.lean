@@ -26,15 +26,15 @@ noncomputable section
 
 /-- The real radial response of one conjugate pair of squared zeros. -/
 def squaredEulerOrbitResponse (t c u : ℝ) : ℝ :=
-  (t + u) / ((t + u) ^ 2 + c)
+  (t + u) / ((t + u) ^ (2 : ℕ) + c)
 
 /-- The chamber in which the squared-zero pair lies strictly to the left of its radial aperture. -/
 def SquaredEulerOrbitChamber (t c : ℝ) : Prop :=
-  0 < t ∧ 0 ≤ c ∧ c < t ^ 2
+  0 < t ∧ 0 ≤ c ∧ c < t ^ (2 : ℕ)
 
 lemma squaredEulerOrbitResponse_den_pos
     {t c u : ℝ} (hch : SquaredEulerOrbitChamber t c) (hu : 0 ≤ u) :
-    0 < (t + u) ^ 2 + c := by
+    0 < (t + u) ^ (2 : ℕ) + c := by
   have htu : 0 < t + u := by linarith [hch.1]
   nlinarith [sq_pos_of_pos htu, hch.2.1]
 
@@ -51,7 +51,7 @@ theorem squaredEulerOrbitResponse_sub_eq
     (hu : 0 ≤ u) (hv : 0 ≤ v) :
     squaredEulerOrbitResponse t c u - squaredEulerOrbitResponse t c v =
       (v - u) * ((t + u) * (t + v) - c) /
-        (((t + u) ^ 2 + c) * ((t + v) ^ 2 + c)) := by
+        (((t + u) ^ (2 : ℕ) + c) * ((t + v) ^ (2 : ℕ) + c)) := by
   have hdu := (squaredEulerOrbitResponse_den_pos hch hu).ne'
   have hdv := (squaredEulerOrbitResponse_den_pos hch hv).ne'
   rw [squaredEulerOrbitResponse, squaredEulerOrbitResponse]
@@ -66,7 +66,7 @@ theorem mul_squaredEulerOrbitResponse_sub_eq
         u * squaredEulerOrbitResponse t c u =
       (v - u) *
           (t * (t + u) * (t + v) + c * (t + u + v)) /
-        (((t + u) ^ 2 + c) * ((t + v) ^ 2 + c)) := by
+        (((t + u) ^ (2 : ℕ) + c) * ((t + v) ^ (2 : ℕ) + c)) := by
   have hdu := (squaredEulerOrbitResponse_den_pos hch hu).ne'
   have hdv := (squaredEulerOrbitResponse_den_pos hch hv).ne'
   rw [squaredEulerOrbitResponse, squaredEulerOrbitResponse]
@@ -82,13 +82,13 @@ theorem strictAntiOn_squaredEulerOrbitResponse
   have hv0 : 0 ≤ v := hv
   have htu : 0 < t + u := by linarith [hch.1]
   have htv : 0 < t + v := by linarith [hch.1]
-  have hprod : t ^ 2 < (t + u) * (t + v) := by
+  have hprod : t ^ (2 : ℕ) < (t + u) * (t + v) := by
     have huv0 : 0 < v := lt_of_le_of_lt hu0 huv
     nlinarith [mul_nonneg hch.1.le hu0, mul_pos hch.1 huv0]
   have hnum : 0 < (v - u) * ((t + u) * (t + v) - c) :=
     mul_pos (sub_pos.mpr huv) (sub_pos.mpr (hch.2.2.trans hprod))
   have hden : 0 <
-      ((t + u) ^ 2 + c) * ((t + v) ^ 2 + c) :=
+      ((t + u) ^ (2 : ℕ) + c) * ((t + v) ^ (2 : ℕ) + c) :=
     mul_pos (squaredEulerOrbitResponse_den_pos hch hu0)
       (squaredEulerOrbitResponse_den_pos hch hv0)
   rw [← sub_pos]
@@ -116,7 +116,7 @@ theorem strictMonoOn_mul_squaredEulerOrbitResponse
       (t * (t + u) * (t + v) + c * (t + u + v)) :=
     mul_pos (sub_pos.mpr huv) hcore
   have hden : 0 <
-      ((t + u) ^ 2 + c) * ((t + v) ^ 2 + c) :=
+      ((t + u) ^ (2 : ℕ) + c) * ((t + v) ^ (2 : ℕ) + c) :=
     mul_pos (squaredEulerOrbitResponse_den_pos hch hu0)
       (squaredEulerOrbitResponse_den_pos hch hv0)
   rw [← sub_pos]
@@ -127,19 +127,19 @@ theorem strictMonoOn_mul_squaredEulerOrbitResponse
 
 /-- Horizontal/vertical displacement difference for one actual Xi zero copy. -/
 def xiSquaredEulerOrbitT (q : XiZeroCopy) : ℝ :=
-  (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
+  (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
 
 /-- Transverse squared-zero charge for one actual Xi zero copy. -/
 def xiSquaredEulerOrbitCharge (q : XiZeroCopy) : ℝ :=
-  4 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (q.1 : ℂ).im ^ 2
+  4 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) * (q.1 : ℂ).im ^ (2 : ℕ)
 
 /-- The open critical strip and the source height gap place every Xi squared-zero orbit in the
 strict response chamber. -/
 theorem xiSquaredEulerOrbit_mem_chamber (q : XiZeroCopy) :
     SquaredEulerOrbitChamber
       (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   have hu0 : 0 ≤ u := by dsimp only [u]; positivity
   have hu : u < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
@@ -153,7 +153,7 @@ theorem xiSquaredEulerOrbit_mem_chamber (q : XiZeroCopy) :
     nlinarith [mul_lt_mul_of_pos_right hfour hv0]
   have htlarge : 20 < v - u := by linarith
   have hv_lt : v < (v - u) + 1 / 4 := by linarith
-  have hquarter_sq : (v - u) + 1 / 4 < (v - u) ^ 2 := by
+  have hquarter_sq : (v - u) + 1 / 4 < (v - u) ^ (2 : ℕ) := by
     nlinarith
   change SquaredEulerOrbitChamber (v - u) (4 * u * v)
   exact ⟨ht, hc0, hc_lt_v.trans (hv_lt.trans hquarter_sq)⟩
@@ -231,9 +231,9 @@ theorem eulerRayResponseKernel_twoPoint_det_factor
     (Q : ℝ → ℝ) {x y : ℝ}
     (hx : x ≠ 0) (hy : y ≠ 0) (hxy : x + y ≠ 0) :
     eulerRayResponseKernel Q x x * eulerRayResponseKernel Q y y -
-        eulerRayResponseKernel Q x y ^ 2 =
+        eulerRayResponseKernel Q x y ^ (2 : ℕ) =
       ((y * Q x - x * Q y) * (y * Q y - x * Q x)) /
-        (x * y * (x + y) ^ 2) := by
+        (x * y * (x + y) ^ (2 : ℕ)) := by
   rw [eulerRayResponseKernel, eulerRayResponseKernel,
     eulerRayResponseKernel]
   field_simp [hx, hy, hxy]
@@ -246,7 +246,7 @@ theorem eulerRayResponseKernel_twoPoint_det_pos
     (hdecrease : Q y / y < Q x / x)
     (hincrease : x * Q x < y * Q y) :
     0 < eulerRayResponseKernel Q x x * eulerRayResponseKernel Q y y -
-      eulerRayResponseKernel Q x y ^ 2 := by
+      eulerRayResponseKernel Q x y ^ (2 : ℕ) := by
   have hy : 0 < y := hx.trans hxy
   have hsum : 0 < x + y := by positivity
   have hfirst : 0 < y * Q x - x * Q y := by
@@ -260,7 +260,7 @@ theorem eulerRayResponseKernel_twoPoint_det_pos
 
 /-- Scalar logarithmic derivative contributed by one squared-zero orbit. -/
 def squaredEulerOrbitQ (t c x : ℝ) : ℝ :=
-  x * squaredEulerOrbitResponse t c (x ^ 2)
+  x * squaredEulerOrbitResponse t c (x ^ (2 : ℕ))
 
 /-- Euler response kernel contributed by one squared-zero orbit. -/
 def squaredEulerOrbitKernel (t c x y : ℝ) : ℝ :=
@@ -269,31 +269,31 @@ def squaredEulerOrbitKernel (t c x y : ℝ) : ℝ :=
 /-- Explicit determinant of a symmetric kernel on three nodes. -/
 def symmetricThreePointDet (K : ℝ → ℝ → ℝ) (x y z : ℝ) : ℝ :=
   K x x * K y y * K z z + 2 * K x y * K x z * K y z -
-    K x x * K y z ^ 2 - K y y * K x z ^ 2 - K z z * K x y ^ 2
+    K x x * K y z ^ (2 : ℕ) - K y y * K x z ^ (2 : ℕ) - K z z * K x y ^ (2 : ℕ)
 
 /-- Positive denominator attached to one radial node. -/
 def squaredEulerOrbitDen (t c x : ℝ) : ℝ :=
-  (t + x ^ 2) ^ 2 + c
+  (t + x ^ (2 : ℕ)) ^ (2 : ℕ) + c
 
 /-- Polynomial kernel obtained after clearing both orbit denominators. -/
 def squaredEulerOrbitClearedKernel (t c x y : ℝ) : ℝ :=
-  (x * y + t) * (x ^ 2 + t) * (y ^ 2 + t) +
-    c * (x ^ 2 - x * y + y ^ 2 + t)
+  (x * y + t) * (x ^ (2 : ℕ) + t) * (y ^ (2 : ℕ) + t) +
+    c * (x ^ (2 : ℕ) - x * y + y ^ (2 : ℕ) + t)
 
 /-- The scalar aperture controlling the third exterior power of one orbit response. -/
 def squaredEulerOrbitThreeAperture (t c x y z : ℝ) : ℝ :=
   let e1 := x + y + z
   let e2 := x * y + x * z + y * z
   let e3 := x * y * z
-  (t ^ 2 + c) *
-      (c - (e2 - t) ^ 2 - t * e1 ^ 2 + 2 * e1 * e3) -
-    t * e3 ^ 2
+  (t ^ (2 : ℕ) + c) *
+      (c - (e2 - t) ^ (2 : ℕ) - t * e1 ^ (2 : ℕ) + 2 * e1 * e3) -
+    t * e3 ^ (2 : ℕ)
 
 lemma squaredEulerOrbitDen_pos
     {t c x : ℝ} (hch : SquaredEulerOrbitChamber t c) :
     0 < squaredEulerOrbitDen t c x := by
   unfold squaredEulerOrbitDen
-  have hxt : 0 < x ^ 2 + t := by nlinarith [sq_nonneg x, hch.1]
+  have hxt : 0 < x ^ (2 : ℕ) + t := by nlinarith [sq_nonneg x, hch.1]
   nlinarith [sq_pos_of_pos hxt, hch.2.1]
 
 /-- Exact polynomial congruence for one conjugate squared-zero pair. -/
@@ -309,8 +309,8 @@ theorem squaredEulerOrbitKernel_cleared
   unfold squaredEulerOrbitKernel eulerRayResponseKernel squaredEulerOrbitQ
     squaredEulerOrbitResponse
   change squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-      ((x * ((t + x ^ 2) / squaredEulerOrbitDen t c x) +
-        y * ((t + y ^ 2) / squaredEulerOrbitDen t c y)) / (x + y)) =
+      ((x * ((t + x ^ (2 : ℕ)) / squaredEulerOrbitDen t c x) +
+        y * ((t + y ^ (2 : ℕ)) / squaredEulerOrbitDen t c y)) / (x + y)) =
         squaredEulerOrbitClearedKernel t c x y
   field_simp [hDx, hDy, hxy]
   unfold squaredEulerOrbitDen squaredEulerOrbitClearedKernel
@@ -320,7 +320,7 @@ theorem squaredEulerOrbitKernel_cleared
 theorem squaredEulerOrbitClearedKernel_threePointDet_eq
     (t c x y z : ℝ) :
     symmetricThreePointDet (squaredEulerOrbitClearedKernel t c) x y z =
-      c * ((y - x) * (z - x) * (z - y)) ^ 2 *
+      c * ((y - x) * (z - x) * (z - y)) ^ (2 : ℕ) *
         squaredEulerOrbitThreeAperture t c x y z := by
   unfold symmetricThreePointDet squaredEulerOrbitClearedKernel
     squaredEulerOrbitThreeAperture
@@ -332,7 +332,7 @@ theorem squaredEulerOrbitKernel_threePointDet_cleared
     (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     symmetricThreePointDet (squaredEulerOrbitClearedKernel t c) x y z =
       (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-          squaredEulerOrbitDen t c z) ^ 2 *
+          squaredEulerOrbitDen t c z) ^ (2 : ℕ) *
         symmetricThreePointDet (squaredEulerOrbitKernel t c) x y z := by
   have hxx := squaredEulerOrbitKernel_cleared hch hx hx
   have hxy := squaredEulerOrbitKernel_cleared hch hx hy
@@ -349,14 +349,14 @@ theorem squaredEulerOrbitKernel_threePointDet_eq
     {t c x y z : ℝ} (hch : SquaredEulerOrbitChamber t c)
     (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     symmetricThreePointDet (squaredEulerOrbitKernel t c) x y z =
-      c * ((y - x) * (z - x) * (z - y)) ^ 2 *
+      c * ((y - x) * (z - x) * (z - y)) ^ (2 : ℕ) *
           squaredEulerOrbitThreeAperture t c x y z /
         (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-          squaredEulerOrbitDen t c z) ^ 2 := by
+          squaredEulerOrbitDen t c z) ^ (2 : ℕ) := by
   have hscale := squaredEulerOrbitKernel_threePointDet_cleared hch hx hy hz
   have hfactor := squaredEulerOrbitClearedKernel_threePointDet_eq t c x y z
   have hden : (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-      squaredEulerOrbitDen t c z) ^ 2 ≠ 0 := by
+      squaredEulerOrbitDen t c z) ^ (2 : ℕ) ≠ 0 := by
     exact pow_ne_zero 2 (mul_ne_zero
       (mul_ne_zero (squaredEulerOrbitDen_pos (x := x) hch).ne'
         (squaredEulerOrbitDen_pos (x := y) hch).ne')
@@ -365,13 +365,13 @@ theorem squaredEulerOrbitKernel_threePointDet_eq
   calc
     symmetricThreePointDet (squaredEulerOrbitKernel t c) x y z *
         (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-          squaredEulerOrbitDen t c z) ^ 2 =
+          squaredEulerOrbitDen t c z) ^ (2 : ℕ) =
       (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-          squaredEulerOrbitDen t c z) ^ 2 *
+          squaredEulerOrbitDen t c z) ^ (2 : ℕ) *
         symmetricThreePointDet (squaredEulerOrbitKernel t c) x y z := by ring
     _ = symmetricThreePointDet (squaredEulerOrbitClearedKernel t c) x y z :=
       hscale.symm
-    _ = c * ((y - x) * (z - x) * (z - y)) ^ 2 *
+    _ = c * ((y - x) * (z - x) * (z - y)) ^ (2 : ℕ) *
         squaredEulerOrbitThreeAperture t c x y z := hfactor
 
 /-- The three-node aperture is strictly negative throughout the response chamber, independently
@@ -386,32 +386,32 @@ theorem squaredEulerOrbitThreeAperture_neg
   have he2pos : 0 < e2 := by
     dsimp only [e2]
     positivity
-  have he1sq : 3 * e2 ≤ e1 ^ 2 := by
+  have he1sq : 3 * e2 ≤ e1 ^ (2 : ℕ) := by
     have hsquares :
-        0 ≤ (x - y) ^ 2 + (x - z) ^ 2 + (y - z) ^ 2 := by positivity
+        0 ≤ (x - y) ^ (2 : ℕ) + (x - z) ^ (2 : ℕ) + (y - z) ^ (2 : ℕ) := by positivity
     dsimp only [e1, e2]
     nlinarith
-  have he2sq : 3 * e1 * e3 ≤ e2 ^ 2 := by
+  have he2sq : 3 * e1 * e3 ≤ e2 ^ (2 : ℕ) := by
     have hsquares : 0 ≤
-        (x * y - x * z) ^ 2 + (x * y - y * z) ^ 2 +
-          (x * z - y * z) ^ 2 := by positivity
+        (x * y - x * z) ^ (2 : ℕ) + (x * y - y * z) ^ (2 : ℕ) +
+          (x * z - y * z) ^ (2 : ℕ) := by positivity
     dsimp only [e1, e2, e3]
     nlinarith
-  have ht_e1 : 3 * t * e2 ≤ t * e1 ^ 2 := by
+  have ht_e1 : 3 * t * e2 ≤ t * e1 ^ (2 : ℕ) := by
     nlinarith [mul_le_mul_of_nonneg_left he1sq hch.1.le]
-  have hcross : 2 * e1 * e3 ≤ (2 / 3 : ℝ) * e2 ^ 2 := by
+  have hcross : 2 * e1 * e3 ≤ (2 / 3 : ℝ) * e2 ^ (2 : ℕ) := by
     nlinarith [he2sq]
   have hbracket :
-      c - (e2 - t) ^ 2 - t * e1 ^ 2 + 2 * e1 * e3 < 0 := by
+      c - (e2 - t) ^ (2 : ℕ) - t * e1 ^ (2 : ℕ) + 2 * e1 * e3 < 0 := by
     nlinarith [hch.2.2, ht_e1, hcross,
       mul_nonneg hch.1.le he2pos.le, sq_nonneg e2]
-  have hfactor : 0 < t ^ 2 + c := by
+  have hfactor : 0 < t ^ (2 : ℕ) + c := by
     nlinarith [sq_pos_of_pos hch.1, hch.2.1]
   have hmain := mul_neg_of_pos_of_neg hfactor hbracket
-  have hlast : 0 ≤ t * e3 ^ 2 := mul_nonneg hch.1.le (sq_nonneg e3)
-  change (t ^ 2 + c) *
-      (c - (e2 - t) ^ 2 - t * e1 ^ 2 + 2 * e1 * e3) -
-        t * e3 ^ 2 < 0
+  have hlast : 0 ≤ t * e3 ^ (2 : ℕ) := mul_nonneg hch.1.le (sq_nonneg e3)
+  change (t ^ (2 : ℕ) + c) *
+      (c - (e2 - t) ^ (2 : ℕ) - t * e1 ^ (2 : ℕ) + 2 * e1 * e3) -
+        t * e3 ^ (2 : ℕ) < 0
   linarith
 
 /-- **Sharp single-orbit detector law.**  Every transverse chamber orbit is invisible at two
@@ -427,13 +427,13 @@ theorem squaredEulerOrbitKernel_threePointDet_neg
     positivity
   have hA := squaredEulerOrbitThreeAperture_neg hch hx hy hz
   have hnum :
-      c * ((y - x) * (z - x) * (z - y)) ^ 2 *
+      c * ((y - x) * (z - x) * (z - y)) ^ (2 : ℕ) *
         squaredEulerOrbitThreeAperture t c x y z < 0 := by
     exact mul_neg_of_pos_of_neg (mul_pos hc (sq_pos_of_pos hDelta)) hA
   rw [squaredEulerOrbitKernel_threePointDet_eq hch hx hy hz]
   have hdenpos : 0 <
       (squaredEulerOrbitDen t c x * squaredEulerOrbitDen t c y *
-        squaredEulerOrbitDen t c z) ^ 2 := by
+        squaredEulerOrbitDen t c z) ^ (2 : ℕ) := by
     exact sq_pos_of_pos (mul_pos
       (mul_pos (squaredEulerOrbitDen_pos (x := x) hch)
         (squaredEulerOrbitDen_pos (x := y) hch))
@@ -449,9 +449,9 @@ def xiSquaredEulerOrbitKernel (q : XiZeroCopy) (x y : ℝ) : ℝ :=
 theorem xiSquaredEulerOrbitCharge_pos_of_ne_half
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
     0 < xiSquaredEulerOrbitCharge q := by
-  have hdelta : 0 < ((q.1 : ℂ).re - 1 / 2) ^ 2 :=
+  have hdelta : 0 < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
-  have him : 0 < (q.1 : ℂ).im ^ 2 := by
+  have him : 0 < (q.1 : ℂ).im ^ (2 : ℕ) := by
     linarith [xiZeroCopy_fortyOne_div_two_lt_im_sq q]
   unfold xiSquaredEulerOrbitCharge
   positivity
@@ -460,16 +460,16 @@ theorem xiSquaredEulerOrbitCharge_pos_of_ne_half
 
 /-- Zeroth reversed-Löwner jet moment of one squared orbit. -/
 def squaredEulerOrbitReversedLoewnerMoment0 (t c X : ℝ) : ℝ :=
-  ((t + X) ^ 2 - c) / (((t + X) ^ 2 + c) ^ 2)
+  ((t + X) ^ (2 : ℕ) - c) / (((t + X) ^ (2 : ℕ) + c) ^ (2 : ℕ))
 
 /-- First reversed-Löwner jet moment of one squared orbit. -/
 def squaredEulerOrbitReversedLoewnerMoment1 (t c X : ℝ) : ℝ :=
-  (t + X) * ((t + X) ^ 2 - 3 * c) / (((t + X) ^ 2 + c) ^ 3)
+  (t + X) * ((t + X) ^ (2 : ℕ) - 3 * c) / (((t + X) ^ (2 : ℕ) + c) ^ (3 : ℕ))
 
 /-- Second reversed-Löwner jet moment of one squared orbit. -/
 def squaredEulerOrbitReversedLoewnerMoment2 (t c X : ℝ) : ℝ :=
-  ((t + X) ^ 4 - 6 * (t + X) ^ 2 * c + c ^ 2) /
-    (((t + X) ^ 2 + c) ^ 4)
+  ((t + X) ^ (4 : ℕ) - 6 * (t + X) ^ (2 : ℕ) * c + c ^ (2 : ℕ)) /
+    (((t + X) ^ (2 : ℕ) + c) ^ (4 : ℕ))
 
 /-- **Exact confluent transverse-charge law.**  The first nonconstant `2 × 2` reversed-Löwner
 jet determinant of one orbit is precisely its negative transverse charge divided by the fourth
@@ -478,9 +478,9 @@ theorem squaredEulerOrbit_reversedLoewnerJet_det_eq
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
     squaredEulerOrbitReversedLoewnerMoment0 t c X *
         squaredEulerOrbitReversedLoewnerMoment2 t c X -
-      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2 =
-        -c / (((t + X) ^ 2 + c) ^ 4) := by
-  have hden : 0 < (t + X) ^ 2 + c := by
+      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ (2 : ℕ) =
+        -c / (((t + X) ^ (2 : ℕ) + c) ^ (4 : ℕ)) := by
+  have hden : 0 < (t + X) ^ (2 : ℕ) + c := by
     have htx : 0 < t + X := by linarith [hch.1]
     nlinarith [sq_pos_of_pos htx, hch.2.1]
   unfold squaredEulerOrbitReversedLoewnerMoment0
@@ -495,9 +495,9 @@ theorem squaredEulerOrbit_reversedLoewnerJet_det_neg
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hc : 0 < c) (hX : 0 ≤ X) :
     squaredEulerOrbitReversedLoewnerMoment0 t c X *
         squaredEulerOrbitReversedLoewnerMoment2 t c X -
-      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2 < 0 := by
+      squaredEulerOrbitReversedLoewnerMoment1 t c X ^ (2 : ℕ) < 0 := by
   rw [squaredEulerOrbit_reversedLoewnerJet_det_eq hch hX]
-  have hden : 0 < (t + X) ^ 2 + c := by
+  have hden : 0 < (t + X) ^ (2 : ℕ) + c := by
     have htx : 0 < t + X := by linarith [hch.1]
     nlinarith [sq_pos_of_pos htx, hch.2.1]
   exact div_neg_of_neg_of_pos (neg_neg_of_pos hc) (pow_pos hden 4)
@@ -512,7 +512,7 @@ theorem xiSquaredEulerOrbit_reversedLoewnerJet_det_neg
         squaredEulerOrbitReversedLoewnerMoment2
           (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X -
       squaredEulerOrbitReversedLoewnerMoment1
-          (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X ^ 2 < 0 :=
+          (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) X ^ (2 : ℕ) < 0 :=
   squaredEulerOrbit_reversedLoewnerJet_det_neg
     (xiSquaredEulerOrbit_mem_chamber q)
     (xiSquaredEulerOrbitCharge_pos_of_ne_half q hoff) hX
@@ -529,7 +529,7 @@ theorem xiSquaredEulerOrbitKernel_threePointDet_neg
 
 /-- Finite Xi-packet logarithmic derivative on the positive Euler ray. -/
 def xiSquaredEulerFiniteQ (S : Finset XiZeroCopy) (x : ℝ) : ℝ :=
-  x * xiSquaredEulerFiniteResponse S (x ^ 2)
+  x * xiSquaredEulerFiniteResponse S (x ^ (2 : ℕ))
 
 /-- Euler response kernel of a finite Xi squared-zero packet. -/
 def xiSquaredEulerFiniteKernel (S : Finset XiZeroCopy) (x y : ℝ) : ℝ :=
@@ -542,7 +542,7 @@ theorem xiSquaredEulerFiniteKernel_diag_pos
   have hprofile := xiSquaredEulerFiniteResponse_pos hS (sq_nonneg x)
   have hdiag :
       xiSquaredEulerFiniteKernel S x x =
-        xiSquaredEulerFiniteResponse S (x ^ 2) := by
+        xiSquaredEulerFiniteResponse S (x ^ (2 : ℕ)) := by
     rw [xiSquaredEulerFiniteKernel, eulerRayResponseKernel,
       xiSquaredEulerFiniteQ]
     field_simp [hx.ne']
@@ -556,17 +556,17 @@ theorem xiSquaredEulerFiniteKernel_twoPoint_det_pos
     {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
     0 < xiSquaredEulerFiniteKernel S x x *
         xiSquaredEulerFiniteKernel S y y -
-      xiSquaredEulerFiniteKernel S x y ^ 2 := by
+      xiSquaredEulerFiniteKernel S x y ^ (2 : ℕ) := by
   have hy : 0 < y := hx.trans hxy
-  have hsq : x ^ 2 < y ^ 2 := by nlinarith
+  have hsq : x ^ (2 : ℕ) < y ^ (2 : ℕ) := by nlinarith
   have hdecreaseProfile :
-      xiSquaredEulerFiniteResponse S (y ^ 2) <
-        xiSquaredEulerFiniteResponse S (x ^ 2) :=
+      xiSquaredEulerFiniteResponse S (y ^ (2 : ℕ)) <
+        xiSquaredEulerFiniteResponse S (x ^ (2 : ℕ)) :=
     strictAntiOn_xiSquaredEulerFiniteResponse hS
       (sq_nonneg x) (sq_nonneg y) hsq
   have hincreaseProfile :
-      x ^ 2 * xiSquaredEulerFiniteResponse S (x ^ 2) <
-        y ^ 2 * xiSquaredEulerFiniteResponse S (y ^ 2) :=
+      x ^ (2 : ℕ) * xiSquaredEulerFiniteResponse S (x ^ (2 : ℕ)) <
+        y ^ (2 : ℕ) * xiSquaredEulerFiniteResponse S (y ^ (2 : ℕ)) :=
     strictMonoOn_mul_xiSquaredEulerFiniteResponse hS
       (sq_nonneg x) (sq_nonneg y) hsq
   have hdecrease :
@@ -596,7 +596,7 @@ def squaredEulerPacketReversedLoewnerJetDet
     {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) : ℝ :=
   (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment0 (t i) (c i) X) *
       (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment2 (t i) (c i) X) -
-    (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ 2
+    (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ (2 : ℕ)
 
 /-- Ordered off-diagonal interference between distinct squared orbits.  Each unordered pair is
 counted twice, matching determinant polarization. -/
@@ -609,7 +609,7 @@ def squaredEulerPacketReversedLoewnerInterference
 /-- Total transverse-charge debt of a finite squared-orbit packet at one collision center. -/
 def squaredEulerPacketReversedLoewnerCharge
     {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) : ℝ :=
-  ∑ i ∈ S, c i / (((t i + X) ^ 2 + c i) ^ 4)
+  ∑ i ∈ S, c i / (((t i + X) ^ (2 : ℕ) + c i) ^ (4 : ℕ))
 
 /-- Determinant polarization: twice the packet determinant is the ordered sum of every self and
 cross interaction. -/
@@ -632,7 +632,7 @@ theorem two_mul_squaredEulerPacketReversedLoewnerJetDet_eq_cross_sum
     rw [Finset.sum_comm]
   unfold squaredEulerPacketReversedLoewnerJetDet
     squaredEulerOrbitReversedLoewnerCross
-  rw [show (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ 2 =
+  rw [show (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) ^ (2 : ℕ) =
       (∑ i ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t i) (c i) X) *
         (∑ j ∈ S, squaredEulerOrbitReversedLoewnerMoment1 (t j) (c j) X) by ring]
   simp_rw [Finset.sum_mul, Finset.mul_sum]
@@ -678,7 +678,7 @@ theorem squaredEulerPacketReversedLoewner_cross_sum_eq_self_add_interference
 theorem squaredEulerOrbitReversedLoewnerCross_self_eq
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
     squaredEulerOrbitReversedLoewnerCross t c t c X =
-      -2 * (c / (((t + X) ^ 2 + c) ^ 4)) := by
+      -2 * (c / (((t + X) ^ (2 : ℕ) + c) ^ (4 : ℕ))) := by
   unfold squaredEulerOrbitReversedLoewnerCross
   rw [show squaredEulerOrbitReversedLoewnerMoment0 t c X *
           squaredEulerOrbitReversedLoewnerMoment2 t c X +
@@ -688,7 +688,7 @@ theorem squaredEulerOrbitReversedLoewnerCross_self_eq
           squaredEulerOrbitReversedLoewnerMoment1 t c X =
       2 * (squaredEulerOrbitReversedLoewnerMoment0 t c X *
           squaredEulerOrbitReversedLoewnerMoment2 t c X -
-        squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2) by ring]
+        squaredEulerOrbitReversedLoewnerMoment1 t c X ^ (2 : ℕ)) by ring]
   rw [squaredEulerOrbit_reversedLoewnerJet_det_eq hch hX]
   ring
 

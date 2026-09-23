@@ -43,7 +43,7 @@ theorem finite_zeros_of_analyticOnNhd_complex {f : ℝ → ℂ} {U : Set ℝ}
     (hfx₀ : f x₀ ≠ 0) {K : Set ℝ} (hK : IsCompact K) (hKU : K ⊆ U) :
     (K ∩ f ⁻¹' {0}).Finite := by
   classical
-  set g : ℝ → ℝ := fun t => (f t).re ^ 2 + (f t).im ^ 2 with hg
+  set g : ℝ → ℝ := fun t => (f t).re ^ (2 : ℕ) + (f t).im ^ (2 : ℕ) with hg
   have hre : AnalyticOnNhd ℝ (fun t => (f t).re) U :=
     Complex.reCLM.comp_analyticOnNhd hf
   have him : AnalyticOnNhd ℝ (fun t => (f t).im) U :=
@@ -53,12 +53,12 @@ theorem finite_zeros_of_analyticOnNhd_complex {f : ℝ → ℂ} {U : Set ℝ}
     intro t
     constructor
     · intro h0
-      have h0' : (f t).re ^ 2 + (f t).im ^ 2 = 0 := h0
+      have h0' : (f t).re ^ (2 : ℕ) + (f t).im ^ (2 : ℕ) = 0 := h0
       have hre0 : (f t).re = 0 := by nlinarith [sq_nonneg (f t).re, sq_nonneg (f t).im]
       have him0 : (f t).im = 0 := by nlinarith [sq_nonneg (f t).re, sq_nonneg (f t).im]
       exact Complex.ext hre0 him0
     · intro h0
-      show (f t).re ^ 2 + (f t).im ^ 2 = 0
+      show (f t).re ^ (2 : ℕ) + (f t).im ^ (2 : ℕ) = 0
       rw [h0]
       simp
   have hgx₀ : g x₀ ≠ 0 := fun h0 => hfx₀ ((hzero x₀).mp h0)

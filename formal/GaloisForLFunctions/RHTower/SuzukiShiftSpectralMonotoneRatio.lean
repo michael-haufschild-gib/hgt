@@ -35,12 +35,12 @@ def suzukiShiftResolventKernel (node : α → ℝ) (lambda : ℝ) (x : α) : ℝ
 increment divided by a positive squared denominator. -/
 theorem suzukiShiftResolventKernel_sq_cross_eq
     {node : α → ℝ} {lambda : ℝ} {x y : α} :
-    suzukiShiftResolventKernel node lambda x ^ 2 *
+    suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) *
           suzukiShiftResolventKernel node lambda y -
-        suzukiShiftResolventKernel node lambda y ^ 2 *
+        suzukiShiftResolventKernel node lambda y ^ (2 : ℕ) *
           suzukiShiftResolventKernel node lambda x =
       (node y - node x) /
-        ((node x - lambda) ^ 2 * (node y - lambda) ^ 2) := by
+        ((node x - lambda) ^ (2 : ℕ) * (node y - lambda) ^ (2 : ℕ)) := by
   simp only [suzukiShiftResolventKernel]
   field_simp
   ring
@@ -53,18 +53,18 @@ negative sign required by Suzuki's shift-variable negative-Stieltjes conjecture.
 theorem suzukiShiftSpectralMonotoneRatio_crossWronskian_nonpos
     [SFinite μ] {node response : α → ℝ} {lambda : ℝ}
     (hres : Integrable (suzukiShiftResolventKernel node lambda) μ)
-    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lambda x ^ 2) μ)
+    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lambda x ^ (2 : ℕ)) μ)
     (hresponseRes : Integrable
       (fun x => response x * suzukiShiftResolventKernel node lambda x) μ)
     (hresponseResSq : Integrable
-      (fun x => response x * suzukiShiftResolventKernel node lambda x ^ 2) μ)
+      (fun x => response x * suzukiShiftResolventKernel node lambda x ^ (2 : ℕ)) μ)
     (hpair : ∀ᵐ z : α × α ∂μ.prod μ,
       lambda < node z.1 ∧ lambda < node z.2 ∧
         0 ≤ (response z.2 - response z.1) * (node z.2 - node z.1)) :
-    (∫ x, response x * suzukiShiftResolventKernel node lambda x ^ 2 ∂μ) *
+    (∫ x, response x * suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) ∂μ) *
         (∫ x, suzukiShiftResolventKernel node lambda x ∂μ) ≤
       (∫ x, response x * suzukiShiftResolventKernel node lambda x ∂μ) *
-        (∫ x, suzukiShiftResolventKernel node lambda x ^ 2 ∂μ) := by
+        (∫ x, suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) ∂μ) := by
   apply HTGeometry.integral_mul_integral_le_of_monotoneLikelihoodKernel
     hres hresSq hresponseRes hresponseResSq
   filter_upwards [hpair] with z hz
@@ -77,19 +77,19 @@ theorem suzukiShiftSpectralMonotoneRatio_crossWronskian_nonpos
 theorem suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos
     [SFinite μ] {node response : α → ℝ} {lambda : ℝ}
     (hres : Integrable (suzukiShiftResolventKernel node lambda) μ)
-    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lambda x ^ 2) μ)
+    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lambda x ^ (2 : ℕ)) μ)
     (hresponseRes : Integrable
       (fun x => response x * suzukiShiftResolventKernel node lambda x) μ)
     (hresponseResSq : Integrable
-      (fun x => response x * suzukiShiftResolventKernel node lambda x ^ 2) μ)
+      (fun x => response x * suzukiShiftResolventKernel node lambda x ^ (2 : ℕ)) μ)
     (hpair : ∀ᵐ z : α × α ∂μ.prod μ,
       lambda < node z.1 ∧ lambda < node z.2 ∧
         0 ≤ (response z.2 - response z.1) * (node z.2 - node z.1)) :
-    ((∫ x, response x * suzukiShiftResolventKernel node lambda x ^ 2 ∂μ) *
+    ((∫ x, response x * suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) ∂μ) *
           (∫ x, suzukiShiftResolventKernel node lambda x ∂μ) -
         (∫ x, response x * suzukiShiftResolventKernel node lambda x ∂μ) *
-          (∫ x, suzukiShiftResolventKernel node lambda x ^ 2 ∂μ)) /
-        (∫ x, suzukiShiftResolventKernel node lambda x ∂μ) ^ 2 ≤ 0 := by
+          (∫ x, suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) ∂μ)) /
+        (∫ x, suzukiShiftResolventKernel node lambda x ∂μ) ^ (2 : ℕ) ≤ 0 := by
   apply div_nonpos_of_nonpos_of_nonneg
   · exact sub_nonpos.mpr <|
       suzukiShiftSpectralMonotoneRatio_crossWronskian_nonpos
@@ -108,7 +108,7 @@ omit [MeasurableSpace α] in
 theorem hasDerivAt_suzukiShiftResolventKernel {node : α → ℝ} {lam : ℝ} {x : α}
     (h : node x - lam ≠ 0) :
     HasDerivAt (fun l => suzukiShiftResolventKernel node l x)
-      (suzukiShiftResolventKernel node lam x ^ 2) lam := by
+      (suzukiShiftResolventKernel node lam x ^ (2 : ℕ)) lam := by
   simpa [suzukiShiftResolventKernel, div_pow] using hasDerivAt_cauchyTermReal 1 (node x) lam h
 
 /-- **Differentiation under the integral.**  Under the standard domination hypotheses a weighted
@@ -120,13 +120,13 @@ theorem hasDerivAt_integral_weighted_suzukiShiftResolventKernel
       AEStronglyMeasurable (fun x => g x * suzukiShiftResolventKernel node l x) μ)
     (hF_int : Integrable (fun x => g x * suzukiShiftResolventKernel node lam x) μ)
     (hF'_meas : AEStronglyMeasurable
-      (fun x => g x * suzukiShiftResolventKernel node lam x ^ 2) μ)
+      (fun x => g x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ)) μ)
     (h_bound : ∀ᵐ x ∂μ, ∀ l ∈ s,
-      ‖g x * suzukiShiftResolventKernel node l x ^ 2‖ ≤ bound x)
+      ‖g x * suzukiShiftResolventKernel node l x ^ (2 : ℕ)‖ ≤ bound x)
     (bound_int : Integrable bound μ)
     (h_ne : ∀ᵐ x ∂μ, ∀ l ∈ s, node x - l ≠ 0) :
     HasDerivAt (fun l => ∫ x, g x * suzukiShiftResolventKernel node l x ∂μ)
-      (∫ x, g x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam :=
+      (∫ x, g x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) lam :=
   (hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound bound_int
     (h_ne.mono fun x hx l hl =>
       HasDerivAt.const_mul (g x) (hasDerivAt_suzukiShiftResolventKernel (hx l hl)))).2
@@ -135,17 +135,17 @@ theorem hasDerivAt_integral_weighted_suzukiShiftResolventKernel
 shift variable, the quotient rule produces exactly the expression the cross-Wronskian law signs. -/
 theorem hasDerivAt_suzukiShiftRatio {node response : α → ℝ} {lam : ℝ}
     (hD : HasDerivAt (fun l => ∫ x, suzukiShiftResolventKernel node l x ∂μ)
-      (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+      (∫ x, suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) lam)
     (hN : HasDerivAt (fun l => ∫ x, response x * suzukiShiftResolventKernel node l x ∂μ)
-      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) lam)
     (hD0 : (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ≠ 0) :
     HasDerivAt (fun l => (∫ x, response x * suzukiShiftResolventKernel node l x ∂μ) /
         (∫ x, suzukiShiftResolventKernel node l x ∂μ))
-      (((∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) *
+      (((∫ x, response x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) *
             (∫ x, suzukiShiftResolventKernel node lam x ∂μ) -
           (∫ x, response x * suzukiShiftResolventKernel node lam x ∂μ) *
-            (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ)) /
-        (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ^ 2) lam :=
+            (∫ x, suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ)) /
+        (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ^ (2 : ℕ)) lam :=
   hN.div hD hD0
 
 /-- **Theorem B.**  Monotone likelihood makes the source quotient nonincreasing in the shift
@@ -153,16 +153,16 @@ variable: its derivative is the cross-Wronskian expression, which the two-sample
 theorem deriv_suzukiShiftRatio_nonpos
     [SFinite μ] {node response : α → ℝ} {lam : ℝ}
     (hD : HasDerivAt (fun l => ∫ x, suzukiShiftResolventKernel node l x ∂μ)
-      (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+      (∫ x, suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) lam)
     (hN : HasDerivAt (fun l => ∫ x, response x * suzukiShiftResolventKernel node l x ∂μ)
-      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ) ∂μ) lam)
     (hD0 : (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ≠ 0)
     (hres : Integrable (suzukiShiftResolventKernel node lam) μ)
-    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lam x ^ 2) μ)
+    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lam x ^ (2 : ℕ)) μ)
     (hresponseRes : Integrable
       (fun x => response x * suzukiShiftResolventKernel node lam x) μ)
     (hresponseResSq : Integrable
-      (fun x => response x * suzukiShiftResolventKernel node lam x ^ 2) μ)
+      (fun x => response x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ)) μ)
     (hpair : ∀ᵐ z : α × α ∂μ.prod μ,
       lam < node z.1 ∧ lam < node z.2 ∧
         0 ≤ (response z.2 - response z.1) * (node z.2 - node z.1)) :

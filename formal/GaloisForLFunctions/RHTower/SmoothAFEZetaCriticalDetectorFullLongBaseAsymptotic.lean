@@ -21,7 +21,7 @@ theorem abs_levinsonCriticalDetectorFullLongBaseMoment_sub_diagonal_harmonic_le
     |levinsonCriticalDetectorFullLongBaseMoment L M -
         Sieve.barbanVehovSelbergDiagonal M *
           (∑ k ∈ Finset.Ioc L (L * M), 1 / (k : ℝ))| ≤
-      2 * ((M : ℝ) * Real.log M) ^ 2 / ((L + 1 : ℕ) : ℝ) := by
+      2 * ((M : ℝ) * Real.log M) ^ (2 : ℕ) / ((L + 1 : ℕ) : ℝ) := by
   have hLpos : 0 < L := lt_of_lt_of_le (Nat.zero_lt_of_lt hM) hML
   have hLmul : L < L * M := by
     nlinarith [Nat.mul_pos hLpos (Nat.zero_lt_of_lt hM)]
@@ -33,12 +33,12 @@ theorem abs_levinsonCriticalDetectorFullLongBaseMoment_sub_diagonal_mul_log_le
     {L M : ℕ} (hM : 1 < M) (hML : M ≤ L) :
     |levinsonCriticalDetectorFullLongBaseMoment L M -
         Sieve.barbanVehovSelbergDiagonal M * Real.log M| ≤
-      2 * ((M : ℝ) * Real.log M) ^ 2 / ((L + 1 : ℕ) : ℝ) +
+      2 * ((M : ℝ) * Real.log M) ^ (2 : ℕ) / ((L + 1 : ℕ) : ℝ) +
         |Sieve.barbanVehovSelbergDiagonal M| *
           (1 / ((L * M : ℕ) : ℝ) + 1 / (L : ℝ)) := by
   let H : ℝ := ∑ k ∈ Finset.Ioc L (L * M), 1 / (k : ℝ)
   let D : ℝ := Sieve.barbanVehovSelbergDiagonal M
-  let E : ℝ := 2 * ((M : ℝ) * Real.log M) ^ 2 / ((L + 1 : ℕ) : ℝ)
+  let E : ℝ := 2 * ((M : ℝ) * Real.log M) ^ (2 : ℕ) / ((L + 1 : ℕ) : ℝ)
   have hLpos : 0 < L := lt_of_lt_of_le (Nat.zero_lt_of_lt hM) hML
   have hLmul : L < L * M := by
     nlinarith [Nat.mul_pos hLpos (Nat.zero_lt_of_lt hM)]

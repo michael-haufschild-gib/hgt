@@ -66,7 +66,7 @@ theorem transverse_lower_bound_of_adjoint_bounded_below (T : E →L[𝕜] E) {c 
       simp
     have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr h0
     have hy : c * ‖y‖ ≤ ‖x‖ := hT y
-    have hnormsq : ‖x‖ ^ 2 = RCLike.re (⟪T x, y⟫_𝕜) := by
+    have hnormsq : ‖x‖ ^ (2 : ℕ) = RCLike.re (⟪T x, y⟫_𝕜) := by
       have hinner : ⟪x, x⟫_𝕜 = ⟪T x, y⟫_𝕜 := by
         rw [hx]
         exact ContinuousLinearMap.adjoint_inner_right T x y
@@ -75,9 +75,9 @@ theorem transverse_lower_bound_of_adjoint_bounded_below (T : E →L[𝕜] E) {c 
       simpa using h2
     have hcs : RCLike.re (⟪T x, y⟫_𝕜) ≤ ‖T x‖ * ‖y‖ :=
       le_trans (RCLike.re_le_norm _) (norm_inner_le_norm _ _)
-    have hkey : ‖x‖ ^ 2 ≤ ‖T x‖ * ‖y‖ := by rw [hnormsq]; exact hcs
+    have hkey : ‖x‖ ^ (2 : ℕ) ≤ ‖T x‖ * ‖y‖ := by rw [hnormsq]; exact hcs
     have hstep : (c * ‖x‖) * ‖x‖ ≤ ‖T x‖ * ‖x‖ := by
-      calc (c * ‖x‖) * ‖x‖ = c * ‖x‖ ^ 2 := by ring
+      calc (c * ‖x‖) * ‖x‖ = c * ‖x‖ ^ (2 : ℕ) := by ring
         _ ≤ c * (‖T x‖ * ‖y‖) := mul_le_mul_of_nonneg_left hkey hc.le
         _ = ‖T x‖ * (c * ‖y‖) := by ring
         _ ≤ ‖T x‖ * ‖x‖ := mul_le_mul_of_nonneg_left hy (norm_nonneg _)

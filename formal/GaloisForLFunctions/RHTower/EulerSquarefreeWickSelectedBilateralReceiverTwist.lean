@@ -28,7 +28,7 @@ def eulerWickSelectedBilateralTwistCoefficient (p : Nat.Primes) : ℂ :=
   GaloisForLFunctions.RHTower.quadraticResidueProductPrimeCoefficient p
 
 theorem eulerWickSelectedBilateralTwistCoefficient_sq (p : Nat.Primes) :
-    eulerWickSelectedBilateralTwistCoefficient p ^ 2 = 1 := by
+    eulerWickSelectedBilateralTwistCoefficient p ^ (2 : ℕ) = 1 := by
   exact GaloisForLFunctions.RHTower.quadraticResidueProductPrimeCoefficient_sq p
 
 theorem eulerWickSelectedBilateralTwistCoefficient_eq_one_or_neg_one
@@ -117,7 +117,7 @@ theorem eulerWickTwist_congr_twistedReceiver_eq_canonical
           eulerWickSelectedBilateralTwistCoefficient p *
           eulerWickSelectedBilateralTwistCoefficient p =
           deningerMeyerXiPrimeGammaCharacter rho p *
-            eulerWickSelectedBilateralTwistCoefficient p ^ 2 := by ring
+            eulerWickSelectedBilateralTwistCoefficient p ^ (2 : ℕ) := by ring
       _ = deningerMeyerXiPrimeGammaCharacter rho p := by rw [hc2, mul_one]
   · simp [deningerMeyerXiPrimeGammaEulerWickTwistedReceiver,
       eulerWickSelectedBilateralTwistGauge,
@@ -126,7 +126,7 @@ theorem eulerWickTwist_congr_twistedReceiver_eq_canonical
       eulerWickSelectedBilateralTwistCoefficient p *
           (eulerWickSelectedBilateralTwistCoefficient p *
             (deningerMeyerXiPrimeGammaCharacter rho p)⁻¹) =
-          eulerWickSelectedBilateralTwistCoefficient p ^ 2 *
+          eulerWickSelectedBilateralTwistCoefficient p ^ (2 : ℕ) *
             (deningerMeyerXiPrimeGammaCharacter rho p)⁻¹ := by ring
       _ = (deningerMeyerXiPrimeGammaCharacter rho p)⁻¹ := by rw [hc2, one_mul]
   · simp [deningerMeyerXiPrimeGammaEulerWickTwistedReceiver,
@@ -137,7 +137,7 @@ theorem eulerWickTwist_congr_twistedReceiver_eq_canonical
           (eulerWickSelectedBilateralTwistCoefficient p *
             eulerWickSelectedBilateralTwistCoefficient p) *
           eulerWickSelectedBilateralTwistCoefficient p =
-          (eulerWickSelectedBilateralTwistCoefficient p ^ 2) ^ 2 := by ring
+          (eulerWickSelectedBilateralTwistCoefficient p ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       _ = 1 := by rw [hc2, one_pow]
 
 /-- **Exact no-go.**  A quadratic EWQ sign twist preserves bilateral positivity but cannot create

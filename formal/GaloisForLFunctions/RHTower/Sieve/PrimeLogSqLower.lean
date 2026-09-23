@@ -101,7 +101,7 @@ theorem sum_nonprime_vonMangoldt_log_div_le (N : ℕ) :
   have hle : ∑ m ∈ A ∩ I, F m ≤ ∑ m ∈ I, F m :=
     Finset.sum_le_sum_of_subset_of_nonneg Finset.inter_subset_right fun m _ _ => hFnn m
   have himg : ∑ m ∈ I, F m
-      = ∑ x ∈ prod, (((x.2 : ℝ) + 2) * Real.log (x.1 : ℝ) ^ 2 / ((x.1 : ℝ) ^ (x.2 + 2))) := by
+      = ∑ x ∈ prod, (((x.2 : ℝ) + 2) * Real.log (x.1 : ℝ) ^ (2 : ℕ) / ((x.1 : ℝ) ^ (x.2 + 2))) := by
     rw [hIdef, Finset.sum_image primePowShift_injOn]
     refine Finset.sum_congr rfl fun x hx => ?_
     obtain ⟨hp, _⟩ := Finset.mem_product.1 hx
@@ -133,13 +133,13 @@ theorem filter_prime_Icc_eq_primesLE (N : ℕ) :
 
 /-- **An explicit lower bound for `∑_{p ≤ N} (log p)²/p`.** -/
 theorem sum_prime_log_sq_div_ge (N : ℕ) (hN : 1 ≤ N) :
-    Real.log N ^ 2 / 2 - 39 * Real.log N - 25
-      ≤ ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) := by
+    Real.log N ^ (2 : ℕ) / 2 - 39 * Real.log N - 25
+      ≤ ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) := by
   classical
   have hsplit := Finset.sum_filter_add_sum_filter_not (Finset.Icc 1 N) Nat.Prime
     (fun m => vonMangoldt m * Real.log m / m)
   have hval : ∑ p ∈ {m ∈ Finset.Icc 1 N | m.Prime}, vonMangoldt p * Real.log p / p
-      = ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) := by
+      = ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) := by
     rw [filter_prime_Icc_eq_primesLE]
     refine Finset.sum_congr rfl fun p hp => ?_
     rw [vonMangoldt_apply_prime (Nat.prime_of_mem_primesLE hp)]

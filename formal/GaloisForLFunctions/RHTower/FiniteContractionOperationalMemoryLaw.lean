@@ -63,8 +63,8 @@ theorem norm_finiteContraction_pow_apply_peripheralProjection
   rw [hbeforeSum] at hbefore
   rw [hafterSum] at hafter
   have hsquares :
-      ‖(T ^ n) ((finiteContractionPeripheralSubspace T).starProjection x)‖ ^ 2 =
-        ‖(finiteContractionPeripheralSubspace T).starProjection x‖ ^ 2 := by
+      ‖(T ^ n) ((finiteContractionPeripheralSubspace T).starProjection x)‖ ^ (2 : ℕ) =
+        ‖(finiteContractionPeripheralSubspace T).starProjection x‖ ^ (2 : ℕ) := by
     rw [hafter]
     rw [hbefore]
     apply Finset.sum_congr rfl

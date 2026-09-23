@@ -8,15 +8,15 @@ contraction is derived instead from an explicit conservative scattering dilation
 
 For one analytically tilted resonance shell, let
 
-`F = omega^2 XiC(omega + a i) / (4 sqrt(3) pi)`
+`F = omega^(2 : ℕ) XiC(omega + a i) / (4 sqrt(3) pi)`
 
 be the unsquared form factor obtained from the genuine theta-cusp moving-mirror Born tangent.
-At coupling `lambda`, put `j = lambda^2 |F|^2 / 4`.  The scalar entries
+At coupling `lambda`, put `j = lambda^(2 : ℕ) |F|^(2 : ℕ) / 4`.  The scalar entries
 
 `r = (1-j)/(1+j)`,  `t = lambda F/(1+j)`
 
 are the Cayley scattering completion of the self-adjoint two-port on-shell `K`-matrix whose
-off-diagonal Born tangent is `F`.  They satisfy `r^2 + |t|^2 = 1`, and therefore
+off-diagonal Born tangent is `F`.  They satisfy `r^(2 : ℕ) + |t|^(2 : ℕ) = 1`, and therefore
 
 `(x,h) |-> (r x - conj(t) h, t x + r h)`
 
@@ -28,7 +28,7 @@ Feed the horizon port with a fresh Gibbs mode at Hawking ratio
 `q = exp(-2 pi omega/kappa)`.  Tracing that mode after each collision sends the exterior excited
 population `p` to
 
-`r^2 p + |t|^2 p_H`,  where `p_H = q/(1+q)`.
+`r^(2 : ℕ) p + |t|^(2 : ℕ) p_H`,  where `p_H = q/(1+q)`.
 
 Thus the Gibbs population is fixed, KMS detailed balance is exact, and after `n` collisions the
 deviation is `r^(2n) (p-p_H)`.  At unit coupling this resonance sector mixes exactly when `F` is
@@ -53,7 +53,7 @@ namespace RHTower
 
 /-- Dimensionless Cayley load of one theta resonance shell. -/
 def thetaCuspHawkingCayleyLoad (lambda a omega : ℝ) : ℝ :=
-  lambda ^ 2 *
+  lambda ^ (2 : ℕ) *
     Complex.normSq (thetaCuspHawkingFriedrichsShellFormFactor a omega) / 4
 
 /-- Real retention amplitude of the two-port Cayley scattering block. -/
@@ -100,18 +100,18 @@ theorem thetaCuspHawkingCayleyTransition_sub_born
 /-- Lossless two-port law for the exact Cayley scattering amplitudes. -/
 theorem thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
     (lambda a omega : ℝ) :
-    thetaCuspHawkingCayleyRetention lambda a omega ^ 2 +
+    thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) +
         Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) = 1 := by
   let F : ℂ := thetaCuspHawkingFriedrichsShellFormFactor a omega
   let j : ℝ := thetaCuspHawkingCayleyLoad lambda a omega
-  have hj : j = lambda ^ 2 * Complex.normSq F / 4 := rfl
-  have hfour : lambda ^ 2 * Complex.normSq F = 4 * j := by
+  have hj : j = lambda ^ (2 : ℕ) * Complex.normSq F / 4 := rfl
+  have hfour : lambda ^ (2 : ℕ) * Complex.normSq F = 4 * j := by
     rw [hj]
     ring
   have hden : 1 + j ≠ 0 :=
     (thetaCuspHawkingCayley_denominator_pos lambda a omega).ne'
   rw [thetaCuspHawkingCayleyRetention, thetaCuspHawkingCayleyTransition]
-  change ((1 - j) / (1 + j)) ^ 2 +
+  change ((1 - j) / (1 + j)) ^ (2 : ℕ) +
       Complex.normSq (((lambda : ℂ) * F) / ((1 + j : ℝ) : ℂ)) = 1
   rw [Complex.normSq_div, Complex.normSq_mul, Complex.normSq_ofReal,
     Complex.normSq_ofReal]
@@ -212,7 +212,7 @@ theorem thetaCuspHawkingKMSExcitedPopulation_pos
 terms are the `10`, `01`, and `11` input fibres of the energy-preserving two-mode unitary. -/
 def thetaCuspHawkingCayleyReducedExcitedPopulation
     (lambda a omega p e : ℝ) : ℝ :=
-  p * (1 - e) * thetaCuspHawkingCayleyRetention lambda a omega ^ 2 +
+  p * (1 - e) * thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) +
     (1 - p) * e *
       Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) +
     p * e
@@ -221,13 +221,13 @@ def thetaCuspHawkingCayleyReducedExcitedPopulation
 theorem thetaCuspHawkingCayleyReducedExcitedPopulation_eq
     (lambda a omega p e : ℝ) :
     thetaCuspHawkingCayleyReducedExcitedPopulation lambda a omega p e =
-      thetaCuspHawkingCayleyRetention lambda a omega ^ 2 * p +
+      thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) * p +
         Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) * e := by
   have hunit := thetaCuspHawkingCayleyRetention_sq_add_transition_normSq
     lambda a omega
   have htransition :
       Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) =
-        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ 2 := by
+        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) := by
     linarith
   unfold thetaCuspHawkingCayleyReducedExcitedPopulation
   rw [htransition]
@@ -244,7 +244,7 @@ theorem thetaCuspHawkingKMSCayleyPopulationChannel_sub_gibbs
     (lambda kappa a omega p : ℝ) :
     thetaCuspHawkingKMSCayleyPopulationChannel lambda kappa a omega p -
         thetaCuspHawkingKMSExcitedPopulation kappa omega =
-      thetaCuspHawkingCayleyRetention lambda a omega ^ 2 *
+      thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) *
         (p - thetaCuspHawkingKMSExcitedPopulation kappa omega) := by
   rw [thetaCuspHawkingKMSCayleyPopulationChannel,
     thetaCuspHawkingCayleyReducedExcitedPopulation_eq]
@@ -252,7 +252,7 @@ theorem thetaCuspHawkingKMSCayleyPopulationChannel_sub_gibbs
     lambda a omega
   have htransition :
       Complex.normSq (thetaCuspHawkingCayleyTransition lambda a omega) =
-        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ 2 := by
+        1 - thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) := by
     linarith
   rw [htransition]
   ring
@@ -300,7 +300,7 @@ theorem thetaCuspHawkingKMSCayleyUpProbability_eq_ratio_mul_down
 def thetaCuspHawkingKMSCayleyPopulationAfter
     (lambda kappa a omega : ℝ) (n : ℕ) (p : ℝ) : ℝ :=
   thetaCuspHawkingKMSExcitedPopulation kappa omega +
-    (thetaCuspHawkingCayleyRetention lambda a omega ^ 2) ^ n *
+    (thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ)) ^ n *
       (p - thetaCuspHawkingKMSExcitedPopulation kappa omega)
 
 theorem thetaCuspHawkingKMSCayleyPopulationAfter_zero
@@ -320,7 +320,7 @@ theorem thetaCuspHawkingKMSCayleyPopulationAfter_succ
       thetaCuspHawkingKMSCayleyPopulationChannel lambda kappa a omega
           (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p) =
         thetaCuspHawkingKMSExcitedPopulation kappa omega +
-          thetaCuspHawkingCayleyRetention lambda a omega ^ 2 *
+          thetaCuspHawkingCayleyRetention lambda a omega ^ (2 : ℕ) *
             (thetaCuspHawkingKMSCayleyPopulationAfter lambda kappa a omega n p -
               thetaCuspHawkingKMSExcitedPopulation kappa omega) := by
     linarith
@@ -389,8 +389,8 @@ theorem thetaCuspHawkingKMSCayleySectorMixes_iff_formFactor_ne_zero
         (thetaCuspHawkingCayleyTransition 1 a omega) :=
       Complex.normSq_pos.mpr ht
     have hunit := thetaCuspHawkingCayleyRetention_sq_add_transition_normSq 1 a omega
-    have hr0 : 0 ≤ thetaCuspHawkingCayleyRetention 1 a omega ^ 2 := sq_nonneg _
-    have hr1 : thetaCuspHawkingCayleyRetention 1 a omega ^ 2 < 1 := by
+    have hr0 : 0 ≤ thetaCuspHawkingCayleyRetention 1 a omega ^ (2 : ℕ) := sq_nonneg _
+    have hr1 : thetaCuspHawkingCayleyRetention 1 a omega ^ (2 : ℕ) < 1 := by
       linarith
     have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1
     have hdev := hpow.mul_const
@@ -398,7 +398,7 @@ theorem thetaCuspHawkingKMSCayleySectorMixes_iff_formFactor_ne_zero
     have hsum :
         Tendsto
           (fun n : ℕ => thetaCuspHawkingKMSExcitedPopulation kappa omega +
-            (thetaCuspHawkingCayleyRetention 1 a omega ^ 2) ^ n *
+            (thetaCuspHawkingCayleyRetention 1 a omega ^ (2 : ℕ)) ^ n *
               (p - thetaCuspHawkingKMSExcitedPopulation kappa omega))
           atTop
           (𝓝 (thetaCuspHawkingKMSExcitedPopulation kappa omega + 0)) :=

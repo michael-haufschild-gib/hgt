@@ -132,7 +132,7 @@ theorem no_forward_pureChoiCircuitReturn_of_spectralOccupationBudget
               (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) *
                 ((n.factorial : ℝ) * (d : ℝ)⁻¹ ^ n) +
               min 1 (T * δ)⁻¹)) <
-        (1 - epsw ^ 2) ^ n *
+        (1 - epsw ^ (2 : ℕ)) ^ n *
           (2 * (epsw / staticChoiSpeed energy) +
             (epsw - epsn) / staticChoiSpeed energy)) :
     ¬ ∃ t ∈ Icc
@@ -140,7 +140,7 @@ theorem no_forward_pureChoiCircuitReturn_of_spectralOccupationBudget
           (epsw - epsn) / staticChoiSpeed energy) T,
       ∃ w, pureStateTraceDistance
         (staticSpectralChoiVector d t energy) (target w) ≤ epsn := by
-  let Q := (1 - epsw ^ 2) ^ n
+  let Q := (1 - epsw ^ (2 : ℕ)) ^ n
   let B := (Fintype.card gate : ℝ) ^ (s + 1) *
     ((n.factorial : ℝ) * (d : ℝ)⁻¹ ^ n +
       (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) *
@@ -172,7 +172,7 @@ theorem no_forward_pureChoiCircuitReturn_of_spectralOccupationBudget
           (2 * T) * (Q * (volume.real wide / (2 * T))) := by field_simp
       _ ≤ (2 * T) * B := mul_le_mul_of_nonneg_left hmain h2T.le
       _ = 2 * T * B := rfl
-  have hbase : 0 < 1 - epsw ^ 2 := by nlinarith [sq_nonneg epsw]
+  have hbase : 0 < 1 - epsw ^ (2 : ℕ) := by nlinarith [sq_nonneg epsw]
   have hQ : 0 < Q := pow_pos hbase n
   have hQwide : Q * volume.real wide < Q * width := hQM.trans_lt hbudget
   have hwide : volume.real wide < width := by nlinarith

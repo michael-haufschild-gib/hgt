@@ -40,10 +40,10 @@ theorem wronskian_pluecker (P P' S S' p p' r r' : R)
   linear_combination -h1
 
 /-- The same relation for an arbitrary common Wronskian value `c`: the bilinear combination is
-`c ^ 2`. -/
+`c ^ (2 : ℕ)`. -/
 theorem wronskian_pluecker_sq (P P' S S' p p' r r' c : R)
     (h1 : P' * S - P * S' = c) (h2 : p' * r - p * r' = c) :
-    (S' * r - S * r') * (P' * p - P * p') + (p' * S - p * S') * (P' * r - P * r') = c ^ 2 := by
+    (S' * r - S * r') * (P' * p - P * p') + (p' * S - p * S') * (P' * r - P * r') = c ^ (2 : ℕ) := by
   rw [wronskian_bilinear_factor, h2]
   linear_combination c * h1
 
@@ -58,7 +58,7 @@ The result is the exact relation between the four bilinear sums that makes `A D 
 variable {s : ℕ → ℝ}
 
 theorem nevanlinna_determinant_precursor (h : PositiveMomentForm s) (n : ℕ) (z : ℂ) :
-    ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ) * z ^ 2 *
+    ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ) * z ^ (2 : ℕ) *
       ((∑ k ∈ Finset.range (n + 1), secondKindC s k 0 * secondKindC s k z /
           ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) *
         (∑ k ∈ Finset.range (n + 1), monicOrthoC s k 0 * monicOrthoC s k z /
@@ -125,7 +125,7 @@ theorem nevanlinna_determinant_precursor (h : PositiveMomentForm s) (n : ℕ) (z
     field_simp [h0, hn]
     try ring
   rw [F1, F2, F3, F4] at hpl
-  -- cancel the common factor `hₙ ^ 2`
+  -- cancel the common factor `hₙ ^ (2 : ℕ)`
   have hX : (0 - z) * (∑ k ∈ Finset.range (n + 1), secondKindC s k 0 * secondKindC s k z /
         ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) *
       ((0 - z) * ∑ k ∈ Finset.range (n + 1), monicOrthoC s k 0 * monicOrthoC s k z /
@@ -136,7 +136,7 @@ theorem nevanlinna_determinant_precursor (h : PositiveMomentForm s) (n : ℕ) (z
         ((0 - z) * (∑ k ∈ Finset.range (n + 1), monicOrthoC s k 0 * secondKindC s k z /
             ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ))
           - 1 / ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ))
-      = (1 / ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ)) ^ 2 := by
+      = (1 / ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ)) ^ (2 : ℕ) := by
     refine mul_left_cancel₀ (pow_ne_zero 2 hn) ?_
     linear_combination hpl
   field_simp at hX
@@ -196,7 +196,7 @@ theorem sum_range_norm_weighted_le (h : PositiveMomentForm s) (n : ℕ) (f g : �
     Finset.sum_nonneg fun k _ =>
       div_nonneg (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (hpos k).le
   have hA : 0 ≤ ∑ k ∈ Finset.range (n + 1),
-      ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+      ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) :=
     Finset.sum_nonneg fun k _ => div_nonneg (sq_nonneg _) (hpos k).le
   rw [kernelRoot, kernelRoot, ← Real.sqrt_mul hA]
   have hsq := Real.sqrt_le_sqrt (weightedSum_sq_le h n f g)
@@ -306,9 +306,9 @@ The `range`-indexed bound of `ComplexSecondKind` suffices for the kernel roots, 
 estimates behind uniform convergence need an arbitrary `Finset` — in particular `Finset.Ico N M`. -/
 
 theorem weightedSum_sq_le_finset (h : PositiveMomentForm s) (t : Finset ℕ) (f g : ℕ → ℂ) :
-    (∑ j ∈ t, ‖f j‖ * ‖g j‖ / momentInner s (monicOrtho s j) (monicOrtho s j)) ^ 2
-      ≤ (∑ j ∈ t, ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j)) *
-        (∑ j ∈ t, ‖g j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j)) := by
+    (∑ j ∈ t, ‖f j‖ * ‖g j‖ / momentInner s (monicOrtho s j) (monicOrtho s j)) ^ (2 : ℕ)
+      ≤ (∑ j ∈ t, ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j)) *
+        (∑ j ∈ t, ‖g j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j)) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hmul : ∀ j, Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j)) *
@@ -317,9 +317,9 @@ theorem weightedSum_sq_le_finset (h : PositiveMomentForm s) (t : Finset ℕ) (f 
     fun j => Real.mul_self_sqrt (hpos j).le
   have hcs : (∑ j ∈ t,
         (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) *
-          (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j)))) ^ 2
-      ≤ (∑ j ∈ t, (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2) *
-        (∑ j ∈ t, (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2) :=
+          (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j)))) ^ (2 : ℕ)
+      ≤ (∑ j ∈ t, (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)) *
+        (∑ j ∈ t, (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)) :=
     Finset.sum_mul_sq_le_sq_mul_sq _ _ _
   have e1 : ∑ j ∈ t,
       (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) *
@@ -327,12 +327,12 @@ theorem weightedSum_sq_le_finset (h : PositiveMomentForm s) (t : Finset ℕ) (f 
       = ∑ j ∈ t, ‖f j‖ * ‖g j‖ / momentInner s (monicOrtho s j) (monicOrtho s j) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_mul_div_comm, hmul j]
-  have e2 : ∑ j ∈ t, (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2
-      = ∑ j ∈ t, ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) := by
+  have e2 : ∑ j ∈ t, (‖f j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)
+      = ∑ j ∈ t, ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_pow, Real.sq_sqrt (hpos j).le]
-  have e3 : ∑ j ∈ t, (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ 2
-      = ∑ j ∈ t, ‖g j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) := by
+  have e3 : ∑ j ∈ t, (‖g j‖ / Real.sqrt (momentInner s (monicOrtho s j) (monicOrtho s j))) ^ (2 : ℕ)
+      = ∑ j ∈ t, ‖g j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_pow, Real.sq_sqrt (hpos j).le]
   rw [e1, e2, e3] at hcs
@@ -343,8 +343,8 @@ root sums.  Applied to `Finset.Ico N M` this is the uniform Cauchy estimate. -/
 theorem norm_sum_weighted_le_finset (h : PositiveMomentForm s) (t : Finset ℕ) (f g : ℕ → ℂ) :
     ‖∑ j ∈ t, f j * g j /
         ((momentInner s (monicOrtho s j) (monicOrtho s j) : ℝ) : ℂ)‖
-      ≤ Real.sqrt (∑ j ∈ t, ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j)) *
-        Real.sqrt (∑ j ∈ t, ‖g j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j)) := by
+      ≤ Real.sqrt (∑ j ∈ t, ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j)) *
+        Real.sqrt (∑ j ∈ t, ‖g j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j)) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hterm : ∀ j, ‖f j * g j /
@@ -363,7 +363,7 @@ theorem norm_sum_weighted_le_finset (h : PositiveMomentForm s) (t : Finset ℕ) 
       momentInner s (monicOrtho s j) (monicOrtho s j) :=
     Finset.sum_nonneg fun j _ =>
       div_nonneg (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (hpos j).le
-  have hA : 0 ≤ ∑ j ∈ t, ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) :=
+  have hA : 0 ≤ ∑ j ∈ t, ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) :=
     Finset.sum_nonneg fun j _ => div_nonneg (sq_nonneg _) (hpos j).le
   refine le_trans hstep1 ?_
   rw [← Real.sqrt_mul hA]
@@ -378,7 +378,7 @@ by the kernel bound, which on a transfer disc is the *same constant* for every p
 theorem sqrt_sum_Ico_le (h : PositiveMomentForm s) (N M : ℕ) (g : ℕ → ℂ) {Kg : ℝ}
     (hg : ∀ n, kernelRoot s g n ≤ Kg) :
     Real.sqrt (∑ k ∈ Finset.Ico N M,
-      ‖g k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) ≤ Kg := by
+      ‖g k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) ≤ Kg := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hKg : 0 ≤ Kg := le_trans (kernelRoot_nonneg s g 0) (hg 0)
@@ -389,15 +389,15 @@ theorem sqrt_sum_Ico_le (h : PositiveMomentForm s) (N M : ℕ) (g : ℕ → ℂ)
         intro x hx
         exact Finset.mem_range.mpr (Finset.mem_Ico.mp hx).2
       have hle : ∑ k ∈ Finset.Ico N (m + 1),
-            ‖g k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
+            ‖g k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
           ≤ ∑ k ∈ Finset.range (m + 1),
-            ‖g k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) := by
+            ‖g k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) := by
         refine Finset.sum_le_sum_of_subset_of_nonneg hsub ?_
         intro j _ _
         exact div_nonneg (sq_nonneg _) (hpos j).le
       have hroot : ∑ k ∈ Finset.range (m + 1),
-          ‖g k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-          = kernelRoot s g m ^ 2 := (kernelRoot_sq h g m).symm
+          ‖g k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+          = kernelRoot s g m ^ (2 : ℕ) := (kernelRoot_sq h g m).symm
       rw [hroot] at hle
       have hstep := Real.sqrt_le_sqrt hle
       rw [Real.sqrt_sq (kernelRoot_nonneg s g m)] at hstep
@@ -412,7 +412,7 @@ theorem norm_sum_Ico_weighted_le (h : PositiveMomentForm s) (N M : ℕ) (f g : �
     ‖∑ k ∈ Finset.Ico N M, f k * g k /
         ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)‖
       ≤ Real.sqrt (∑ k ∈ Finset.Ico N M,
-          ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) * Kg := by
+          ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) * Kg := by
   refine le_trans (norm_sum_weighted_le_finset h (Finset.Ico N M) f g) ?_
   refine mul_le_mul_of_nonneg_left (sqrt_sum_Ico_le h N M g hg) (Real.sqrt_nonneg _)
 
@@ -422,32 +422,32 @@ Combining the uniform tail estimate with the fact that the tail of a convergent 
 The resulting bound depends on neither the upper index `M` nor the point of the disc. -/
 
 theorem sum_Ico_le_tsum_sub_range (h : PositiveMomentForm s) (f : ℕ → ℂ)
-    (hf : Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)))
+    (hf : Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)))
     (N M : ℕ) :
-    ∑ k ∈ Finset.Ico N M, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-      ≤ (∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-        - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) := by
+    ∑ k ∈ Finset.Ico N M, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+      ≤ (∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+        - ∑ k ∈ Finset.range N, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
-  have hnn : ∀ j, 0 ≤ ‖f j‖ ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) :=
+  have hnn : ∀ j, 0 ≤ ‖f j‖ ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => div_nonneg (sq_nonneg _) (hpos j).le
   rcases Nat.lt_or_ge M N with hMN | hNM
   · have hempty : Finset.Ico N M = ∅ := Finset.Ico_eq_empty_of_le hMN.le
     rw [hempty, Finset.sum_empty]
     have hNle : ∑ k ∈ Finset.range N,
-        ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-        ≤ ∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+        ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+        ≤ ∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) :=
       hf.sum_le_tsum _ (fun i _ => hnn i)
     linarith
   · have hsplit : (∑ k ∈ Finset.Ico 0 N,
-          ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-        + ∑ k ∈ Finset.Ico N M, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-        = ∑ k ∈ Finset.Ico 0 M, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+          ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+        + ∑ k ∈ Finset.Ico N M, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+        = ∑ k ∈ Finset.Ico 0 M, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) :=
       Finset.sum_Ico_consecutive _ (Nat.zero_le N) hNM
     rw [← Finset.range_eq_Ico, ← Finset.range_eq_Ico] at hsplit
     have hMle : ∑ k ∈ Finset.range M,
-        ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-        ≤ ∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+        ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+        ≤ ∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) :=
       hf.sum_le_tsum _ (fun i _ => hnn i)
     linarith [hsplit, hMle]
 
@@ -456,12 +456,12 @@ only on `N` — not on the upper index `M`, and not on the point through which `
 the single constant `Kg`. -/
 theorem norm_sum_Ico_weighted_le_tail (h : PositiveMomentForm s) (f g : ℕ → ℂ) {Kg : ℝ}
     (hg : ∀ n, kernelRoot s g n ≤ Kg)
-    (hf : Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)))
+    (hf : Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)))
     (N M : ℕ) :
     ‖∑ k ∈ Finset.Ico N M, f k * g k /
         ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)‖
-      ≤ Real.sqrt ((∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-          - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 /
+      ≤ Real.sqrt ((∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+          - ∑ k ∈ Finset.range N, ‖f k‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s k) (monicOrtho s k)) * Kg := by
   have hKg : 0 ≤ Kg := le_trans (kernelRoot_nonneg s g 0) (hg 0)
   refine le_trans (norm_sum_Ico_weighted_le h N M f g hg) ?_
@@ -470,22 +470,22 @@ theorem norm_sum_Ico_weighted_le_tail (h : PositiveMomentForm s) (f g : ℕ → 
 
 /-- The uniform Cauchy bound tends to zero. -/
 theorem tendsto_uniformCauchyBound_zero (f : ℕ → ℂ) {Kg : ℝ}
-    (hf : Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))) :
+    (hf : Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))) :
     Tendsto (fun N => Real.sqrt
-        ((∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-          - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 /
+        ((∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+          - ∑ k ∈ Finset.range N, ‖f k‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s k) (monicOrtho s k)) * Kg) atTop (nhds 0) := by
   have hpart := hf.hasSum.tendsto_sum_nat
   have htail : Tendsto (fun N =>
-      (∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-        - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 /
+      (∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+        - ∑ k ∈ Finset.range N, ‖f k‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k)) atTop (nhds 0) := by
     have := tendsto_const_nhds (x :=
-      ∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) (f := atTop (α := ℕ))
+      ∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) (f := atTop (α := ℕ))
     simpa using this.sub hpart
   have hsqrt : Tendsto (fun N => Real.sqrt
-      ((∑' k, ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k))
-        - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 /
+      ((∑' k, ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k))
+        - ∑ k ∈ Finset.range N, ‖f k‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k))) atTop (nhds 0) := by
     have := (Real.continuous_sqrt.tendsto 0).comp htail
     simpa using! this
@@ -496,7 +496,7 @@ theorem tendsto_uniformCauchyBound_zero (f : ℕ → ℂ) {Kg : ℝ}
 `kernelRoot_bounds_propagate` supplies that single `Kg` for all points at once, so this is uniform
 convergence of the bilinear series over the whole disc. -/
 theorem uniformCauchy_weighted (h : PositiveMomentForm s) (f : ℕ → ℂ)
-    (hf : Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)))
+    (hf : Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)))
     (Kg : ℝ) :
     ∀ ε > 0, ∃ N₀ : ℕ, ∀ N ≥ N₀, ∀ M : ℕ, ∀ g : ℕ → ℂ, (∀ n, kernelRoot s g n ≤ Kg) →
       ‖∑ k ∈ Finset.Ico N M, f k * g k /
@@ -524,7 +524,7 @@ noncomputable def bilinearPartialSum (s : ℕ → ℝ) (f : ℕ → ℂ) (G : �
     ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)
 
 theorem uniformCauchySeqOn_bilinearPartialSum (h : PositiveMomentForm s) (f : ℕ → ℂ)
-    (hf : Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)))
+    (hf : Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)))
     (Kg : ℝ) (G : ℂ → ℕ → ℂ) (U : Set ℂ)
     (hG : ∀ z ∈ U, ∀ n, kernelRoot s (G z) n ≤ Kg) :
     UniformCauchySeqOn (bilinearPartialSum s f G) atTop U := by
@@ -553,11 +553,11 @@ carrying a common kernel-root bound. -/
 
 theorem summable_normSq_of_kernelRoot_le (h : PositiveMomentForm s) (f : ℕ → ℂ) {Kf : ℝ}
     (hf : ∀ n, kernelRoot s f n ≤ Kf) :
-    Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) := by
+    Summable (fun k => ‖f k‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
   have hKf : 0 ≤ Kf := le_trans (kernelRoot_nonneg s f 0) (hf 0)
-  refine summable_of_sum_range_le (c := Kf ^ 2)
+  refine summable_of_sum_range_le (c := Kf ^ (2 : ℕ))
     (fun k => div_nonneg (sq_nonneg _) (hpos k).le) ?_
   intro n
   match n with
@@ -794,7 +794,7 @@ line with determinant one.  All three Christoffel--Darboux identities exist over
 transfers verbatim. -/
 
 theorem nevanlinna_determinant_precursor_real (h : PositiveMomentForm s) (n : ℕ) (x : ℝ) :
-    momentInner s (monicOrtho s 0) (monicOrtho s 0) * x ^ 2 *
+    momentInner s (monicOrtho s 0) (monicOrtho s 0) * x ^ (2 : ℕ) *
       ((∑ k ∈ Finset.range (n + 1), (secondKind s k).eval 0 * (secondKind s k).eval x /
           momentInner s (monicOrtho s k) (monicOrtho s k)) *
         (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
@@ -868,7 +868,7 @@ theorem nevanlinna_determinant_precursor_real (h : PositiveMomentForm s) (n : �
         ((0 - x) * (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 *
             (secondKind s k).eval x / momentInner s (monicOrtho s k) (monicOrtho s k))
           - 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0))
-      = (1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 := by
+      = (1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) := by
     refine mul_left_cancel₀ (pow_ne_zero 2 hn) ?_
     linear_combination hpl
   field_simp at hX

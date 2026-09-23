@@ -36,11 +36,11 @@ theorem sum_stepMass_eq {P : Finset ℕ} {Q η : ℝ} (hQ : 0 < Q) (hη : 0 ≤ 
 /-- **The harmonic split of the ladder of products, pointwise.** -/
 theorem normSq_ladderProductPoly_le {P : Finset ℕ} (A₀ B₀ : ℕ) (Q η : ℝ) {L : ℕ}
     (v : ℕ → ℝ) (hv : ∀ j ∈ Finset.range L, 0 < v j) (w : ℝ) :
-    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2
+    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)
       ≤ (∑ j ∈ Finset.range L, 1 / v j)
         * ∑ j ∈ Finset.range L, v j
-            * (‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2) := by
+            * (‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ)) := by
   rw [ladderProductPoly]
   exact normSq_sum_mul_le_weighted (Finset.range L) v hv
     (fun j => primeBlockPoly (geomBlock P Q (1 + η) j) w)
@@ -49,27 +49,27 @@ theorem normSq_ladderProductPoly_le {P : Finset ℕ} (A₀ B₀ : ℕ) (Q η : �
 /-- **The harmonic split of the ladder of products, in mean square.** -/
 theorem integral_normSq_ladderProductPoly_le {P : Finset ℕ} (A₀ B₀ : ℕ) (Q η : ℝ) {L : ℕ}
     (v : ℕ → ℝ) (hv : ∀ j ∈ Finset.range L, 0 < v j) (W : ℝ) :
-    (∫ w in Set.Icc (-W) W, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (∑ j ∈ Finset.range L, 1 / v j)
         * ∑ j ∈ Finset.range L, v j
             * ∫ w in Set.Icc (-W) W,
-                ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2 := by
+                ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ) := by
   classical
   set G : ℕ → ℝ → ℝ := fun j w =>
-    ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-      * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2 with hG
+    ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+      * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ) with hG
   have hcontG : ∀ j : ℕ, Continuous (G j) := by
     intro j
     exact (((continuous_primeBlockPoly _).norm).pow 2).mul
       (((continuous_logPoly _ _).norm).pow 2)
-  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     refine ((continuous_finsetSum _ fun j _ => ?_).norm).pow 2
     exact (continuous_primeBlockPoly _).mul (continuous_logPoly _ _)
   have hcontR : Continuous fun w : ℝ =>
       (∑ j ∈ Finset.range L, 1 / v j) * ∑ j ∈ Finset.range L, v j * G j w :=
     (continuous_finsetSum _ fun j _ => (hcontG j).const_mul _).const_mul _
-  have hintZ : IntegrableOn (fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
+  have hintZ : IntegrableOn (fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontZ.integrableOn_Icc
   have hintR : IntegrableOn (fun w : ℝ =>
       (∑ j ∈ Finset.range L, 1 / v j) * ∑ j ∈ Finset.range L, v j * G j w)

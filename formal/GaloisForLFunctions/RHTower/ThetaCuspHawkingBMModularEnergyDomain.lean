@@ -73,7 +73,7 @@ private theorem test_memLp (g : ℂ → ℂ) (hg : Continuous g) (hk : HasCompac
 
 def massTestFunction (g : InteriorTest) (z : ℂ) : ℂ := conj ((z.im : ℂ)*g.field z)
 def fluxTestFunction (g : InteriorTest) (v z : ℂ) : ℂ :=
-  conj ((z.im : ℂ)^2*fderiv ℝ g.field z v)
+  conj ((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field z v)
 
 private theorem massTest_continuous (g : InteriorTest) : Continuous (massTestFunction g) :=
   Complex.conjCLE.continuous.comp
@@ -114,7 +114,7 @@ theorem massTest_inner (g : InteriorTest) (u : Space) :
 
 theorem fluxTest_inner (g : InteriorTest) (v : ℂ) (u : Space) :
     inner ℂ (fluxTest g v) u =
-      ∫ z : UpperHalfPlane, ((z.im : ℂ)^2*fderiv ℝ g.field (z:ℂ) v)*u z ∂measure := by
+      ∫ z : UpperHalfPlane, ((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field (z:ℂ) v)*u z ∂measure := by
   rw [L2.inner_def]
   apply integral_congr_ae
   filter_upwards [(test_memLp _ (fluxTest_continuous g v) (fluxTest_compact g v)).coeFn_toLp] with z hz
@@ -145,8 +145,8 @@ private theorem testConstraint_frameGraph (g : InteriorTest) (i : Fin 2) (f : Co
     filter_upwards [(weightedDeriv_memLp (direction i) f.field f.smooth f.compact).coeFn_toLp] with z hz
     change (derivativeVector f (direction i)) z = weightedDeriv (direction i) f.field z at hz
     rw [hz,mul_comm]
-  have hR : (∫ z : UpperHalfPlane, ((z.im : ℂ)^2*fderiv ℝ g.field (z:ℂ) (direction i))*(fieldVector f) z ∂measure) =
-      ∫ z : UpperHalfPlane, f.field z*((z.im : ℂ)^2*fderiv ℝ g.field (z:ℂ) (direction i)) ∂measure := by
+  have hR : (∫ z : UpperHalfPlane, ((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field (z:ℂ) (direction i))*(fieldVector f) z ∂measure) =
+      ∫ z : UpperHalfPlane, f.field z*((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field (z:ℂ) (direction i)) ∂measure := by
     apply integral_congr_ae
     filter_upwards [(core_field_memLp f.field f.smooth f.compact).coeFn_toLp] with z hz
     change (fieldVector f) z = f.field z at hz

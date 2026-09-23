@@ -55,29 +55,29 @@ theorem softplusDeriv_monotone : Monotone softplusDeriv := by
 
 /-- The second derivative of softplus. -/
 theorem hasDerivAt_softplusDeriv (r : ℝ) :
-    HasDerivAt softplusDeriv (Real.exp r / (1 + Real.exp r) ^ 2) r := by
+    HasDerivAt softplusDeriv (Real.exp r / (1 + Real.exp r) ^ (2 : ℕ)) r := by
   have h1 : HasDerivAt Real.exp (Real.exp r) r := Real.hasDerivAt_exp r
   have h2 : HasDerivAt (fun x : ℝ => 1 + Real.exp x) (Real.exp r) r := by
     simpa using (Real.hasDerivAt_exp r).const_add 1
   have h := h1.div h2 (ne_of_gt (one_add_exp_pos r))
-  have hval : (Real.exp r * (1 + Real.exp r) - Real.exp r * Real.exp r) / (1 + Real.exp r) ^ 2
-      = Real.exp r / (1 + Real.exp r) ^ 2 := by
+  have hval : (Real.exp r * (1 + Real.exp r) - Real.exp r * Real.exp r) / (1 + Real.exp r) ^ (2 : ℕ)
+      = Real.exp r / (1 + Real.exp r) ^ (2 : ℕ) := by
     congr 1; ring
   rw [hval] at h
   exact h
 
 /-- The sharp bound `φ'' ≤ 1/4` for softplus. -/
-theorem softplusDeriv_deriv_le (r : ℝ) : Real.exp r / (1 + Real.exp r) ^ 2 ≤ 1 / 4 := by
-  have h : (0:ℝ) < (1 + Real.exp r) ^ 2 := by positivity
+theorem softplusDeriv_deriv_le (r : ℝ) : Real.exp r / (1 + Real.exp r) ^ (2 : ℕ) ≤ 1 / 4 := by
+  have h : (0:ℝ) < (1 + Real.exp r) ^ (2 : ℕ) := by positivity
   rw [div_le_div_iff₀ h (by norm_num)]
   nlinarith [sq_nonneg (1 - Real.exp r)]
 
 /-- `φ'` is globally `1/4`-Lipschitz for softplus. -/
 theorem softplusDeriv_lipschitz (u v : ℝ) : |softplusDeriv u - softplusDeriv v| ≤ 1 / 4 * |u - v| := by
   have hderiv : ∀ x ∈ (Set.univ : Set ℝ),
-      HasDerivWithinAt softplusDeriv (Real.exp x / (1 + Real.exp x) ^ 2) Set.univ x :=
+      HasDerivWithinAt softplusDeriv (Real.exp x / (1 + Real.exp x) ^ (2 : ℕ)) Set.univ x :=
     fun x _ => (hasDerivAt_softplusDeriv x).hasDerivWithinAt
-  have hbound : ∀ x ∈ (Set.univ : Set ℝ), ‖Real.exp x / (1 + Real.exp x) ^ 2‖ ≤ 1 / 4 := by
+  have hbound : ∀ x ∈ (Set.univ : Set ℝ), ‖Real.exp x / (1 + Real.exp x) ^ (2 : ℕ)‖ ≤ 1 / 4 := by
     intro x _
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     exact softplusDeriv_deriv_le x
@@ -91,7 +91,7 @@ theorem softplusDeriv_lipschitz (u v : ℝ) : |softplusDeriv u - softplusDeriv v
 noncomputable def relu (r : ℝ) : ℝ := max r 0
 
 /-- The squared-ReLU activation `φ(r) = ReLU(r)²/2`. -/
-noncomputable def squaredRelu (r : ℝ) : ℝ := relu r ^ 2 / 2
+noncomputable def squaredRelu (r : ℝ) : ℝ := relu r ^ (2 : ℕ) / 2
 
 @[simp] theorem relu_nonneg (r : ℝ) : 0 ≤ relu r := le_max_right _ _
 
@@ -115,7 +115,7 @@ theorem hasDerivAt_squaredRelu (r : ℝ) : HasDerivAt squaredRelu (relu r) r := 
     have hzero : squaredRelu (0:ℝ) = 0 := by simp [squaredRelu, relu]
     rw [hasDerivAt_iff_isLittleO, hrelu0]
     have hsimp : (fun x' : ℝ => squaredRelu x' - squaredRelu 0 - (x' - 0) • (0:ℝ))
-        = fun x' : ℝ => relu x' ^ 2 / 2 := by
+        = fun x' : ℝ => relu x' ^ (2 : ℕ) / 2 := by
       funext x'
       rw [hzero]
       simp [squaredRelu]
@@ -128,15 +128,15 @@ theorem hasDerivAt_squaredRelu (r : ℝ) : HasDerivAt squaredRelu (relu r) r := 
       · rw [relu, max_eq_right h]; exact abs_nonneg x
       · rw [relu, max_eq_left h, abs_of_nonneg h]
     have hnn : 0 ≤ relu x := relu_nonneg x
-    have hsq : relu x ^ 2 ≤ |x| * |x| := by nlinarith
+    have hsq : relu x ^ (2 : ℕ) ≤ |x| * |x| := by nlinarith
     rw [Real.norm_eq_abs, Real.norm_eq_abs,
-      abs_of_nonneg (by positivity : (0:ℝ) ≤ relu x ^ 2 / 2), sub_zero]
+      abs_of_nonneg (by positivity : (0:ℝ) ≤ relu x ^ (2 : ℕ) / 2), sub_zero]
     nlinarith [hsq, abs_nonneg x, hx']
-  · have heq : squaredRelu =ᶠ[𝓝 r] fun x => x ^ 2 / 2 := by
+  · have heq : squaredRelu =ᶠ[𝓝 r] fun x => x ^ (2 : ℕ) / 2 := by
       filter_upwards [Ioi_mem_nhds hr] with x hx
       have hx' : (0:ℝ) < x := hx
       simp [squaredRelu, relu, max_eq_left hx'.le]
-    have h0 : HasDerivAt (fun x : ℝ => x ^ 2 / 2) r r := by
+    have h0 : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) / 2) r r := by
       simpa using (hasDerivAt_pow 2 r).div_const 2
     have hz : relu r = r := by simp [relu, max_eq_left hr.le]
     rw [hz]
@@ -181,7 +181,7 @@ variable {X : Type*} [MetricSpace X] [NPCSpace X]
 
 /-- Softplus layers are 1-Lipschitz for `0 ≤ τ ≤ 8/λ²`, i.e. `τ λ² ≤ 8`. -/
 theorem softplus_layer_nonexpansive (F : BusemannFlow X) (τ lam β : ℝ) (hτ : 0 ≤ τ)
-    (hlam : 0 ≤ lam) (hstep : τ * lam ^ 2 ≤ 8) (x y : X) :
+    (hlam : 0 ≤ lam) (hstep : τ * lam ^ (2 : ℕ) ≤ 8) (x y : X) :
     dist (layer F (fun r => τ * lam * softplusDeriv (lam * r + β)) x)
          (layer F (fun r => τ * lam * softplusDeriv (lam * r + β)) y) ≤ dist x y := by
   refine activation_layer_nonexpansive F softplusDeriv τ lam β (1 / 4) hτ hlam
@@ -190,7 +190,7 @@ theorem softplus_layer_nonexpansive (F : BusemannFlow X) (τ lam β : ℝ) (hτ 
 
 /-- Squared-ReLU layers are 1-Lipschitz for `0 ≤ τ ≤ 2/λ²`, i.e. `τ λ² ≤ 2`. -/
 theorem squaredRelu_layer_nonexpansive (F : BusemannFlow X) (τ lam β : ℝ) (hτ : 0 ≤ τ)
-    (hlam : 0 ≤ lam) (hstep : τ * lam ^ 2 ≤ 2) (x y : X) :
+    (hlam : 0 ≤ lam) (hstep : τ * lam ^ (2 : ℕ) ≤ 2) (x y : X) :
     dist (layer F (fun r => τ * lam * relu (lam * r + β)) x)
          (layer F (fun r => τ * lam * relu (lam * r + β)) y) ≤ dist x y := by
   refine activation_layer_nonexpansive F relu τ lam β 1 hτ hlam

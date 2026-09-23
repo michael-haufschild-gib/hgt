@@ -32,8 +32,8 @@ noncomputable section
 
 theorem routePPrimitiveGammaJuliaLogCofinalTraceWeight_sq_le_geometric
     (pe : Nat.Primes × ℕ) :
-    routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ 2 ≤
-      (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ 2) * (1 / 4 : ℝ) ^ pe.2 := by
+    routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ (2 : ℕ) ≤
+      (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ (2 : ℕ)) * (1 / 4 : ℝ) ^ pe.2 := by
   have hp : (0 : ℝ) < (pe.1 : ℝ) := by exact_mod_cast pe.1.property.pos
   have hp2 : (2 : ℝ) ≤ (pe.1 : ℝ) := by exact_mod_cast pe.1.property.two_le
   have hpInv : (pe.1 : ℝ)⁻¹ ≤ (1 / 2 : ℝ) := by
@@ -43,51 +43,51 @@ theorem routePPrimitiveGammaJuliaLogCofinalTraceWeight_sq_le_geometric
     pow_le_pow_left₀ (inv_nonneg.mpr hp.le) hpInv pe.2
   have hkOne : (1 : ℝ) ≤ (pe.2 : ℝ) + 1 := by
     exact_mod_cast Nat.le_add_left 1 pe.2
-  have hkPow : (1 : ℝ) ≤ ((pe.2 : ℝ) + 1) ^ 3 := one_le_pow₀ hkOne
-  have hkInv : (((pe.2 : ℝ) + 1) ^ 3)⁻¹ ≤ (1 : ℝ) := by
+  have hkPow : (1 : ℝ) ≤ ((pe.2 : ℝ) + 1) ^ (3 : ℕ) := one_le_pow₀ hkOne
+  have hkInv : (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ ≤ (1 : ℝ) := by
     simpa using
-      (inv_le_inv₀ (by positivity : 0 < ((pe.2 : ℝ) + 1) ^ 3)
+      (inv_le_inv₀ (by positivity : 0 < ((pe.2 : ℝ) + 1) ^ (3 : ℕ))
         (by norm_num : (0 : ℝ) < 1)).2 hkPow
   rw [routePPrimitiveGammaJuliaLogCofinalTraceWeight_eq]
   have hbase : 0 ≤ (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) := by positivity
   have htail :
       (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) *
-          (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹) ≤
+          (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹) ≤
         (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) * (1 / 2 : ℝ) ^ pe.2 := by
     apply mul_le_mul_of_nonneg_left _ hbase
     calc
-      ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹ ≤
+      ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ ≤
           ((pe.1 : ℝ)⁻¹) ^ pe.2 * 1 := by
         gcongr
       _ ≤ (1 / 2 : ℝ) ^ pe.2 := by simpa using hpPow
   have hnonneg :
       0 ≤ (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) *
-        (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹) := by positivity
+        (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹) := by positivity
   have hnonneg' :
       0 ≤ (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) * (1 / 2 : ℝ) ^ pe.2 := by positivity
   calc
     ((1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) ^ (pe.2 + 1) *
-          (((pe.2 : ℝ) + 1) ^ 3)⁻¹) ^ 2 =
+          (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹) ^ (2 : ℕ) =
         ((1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) *
-          (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹)) ^ 2 := by
+          (((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹)) ^ (2 : ℕ) := by
       rw [pow_succ]
       ring
-    _ ≤ ((1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) * (1 / 2 : ℝ) ^ pe.2) ^ 2 :=
+    _ ≤ ((1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) * (1 / 2 : ℝ) ^ pe.2) ^ (2 : ℕ) :=
       (sq_le_sq₀ hnonneg hnonneg').2 htail
-    _ = (1 / 16 : ℝ) * ((pe.1 : ℝ)⁻¹) ^ 2 *
-          (((1 / 2 : ℝ) ^ 2) ^ pe.2) := by
+    _ = (1 / 16 : ℝ) * ((pe.1 : ℝ)⁻¹) ^ (2 : ℕ) *
+          (((1 / 2 : ℝ) ^ (2 : ℕ)) ^ pe.2) := by
       ring_nf
       rw [mul_comm pe.2 2, pow_mul]
       norm_num
-    _ = (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ 2) * (1 / 4 : ℝ) ^ pe.2 := by
+    _ = (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ (2 : ℕ)) * (1 / 4 : ℝ) ^ pe.2 := by
       simp only [one_div, inv_pow]
       norm_num
 
 theorem summable_routePPrimitiveGammaJuliaLogCofinalTraceWeight_sq :
     Summable (fun pe : Nat.Primes × ℕ =>
-      routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ 2) := by
+      routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ (2 : ℕ)) := by
   let major : Nat.Primes × ℕ → ℝ := fun pe =>
-    (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ 2) * (1 / 4 : ℝ) ^ pe.2
+    (1 / 16 : ℝ) * (1 / (pe.1 : ℝ) ^ (2 : ℕ)) * (1 / 4 : ℝ) ^ pe.2
   have hmajorNonneg : 0 ≤ major := by
     intro pe
     dsimp only [major]
@@ -97,7 +97,7 @@ theorem summable_routePPrimitiveGammaJuliaLogCofinalTraceWeight_sq :
     constructor
     · intro p
       exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left
-        ((1 / 16 : ℝ) * (1 / (p : ℝ) ^ 2))
+        ((1 / 16 : ℝ) * (1 / (p : ℝ) ^ (2 : ℕ)))
     · apply (burnolSummable_prime_one_div_sq.mul_left (1 / 12 : ℝ)).congr
       intro p
       dsimp only [major]
@@ -199,7 +199,7 @@ def routePPrimitiveGammaJuliaLogBalancedSpectralSign (i : Fin 2) : ℝ :=
   if i = 0 then 8 else -8
 
 theorem routePPrimitiveGammaJuliaLogBalancedSpectralSign_sq (i : Fin 2) :
-    routePPrimitiveGammaJuliaLogBalancedSpectralSign i ^ 2 = 64 := by
+    routePPrimitiveGammaJuliaLogBalancedSpectralSign i ^ (2 : ℕ) = 64 := by
   fin_cases i <;>
     simp [routePPrimitiveGammaJuliaLogBalancedSpectralSign] <;> norm_num
 
@@ -210,18 +210,18 @@ def routePPrimitiveGammaJuliaLogBalancedMultiplier
 
 theorem summable_norm_routePPrimitiveGammaJuliaLogBalancedMultiplier_sq :
     Summable (fun ip : Fin 2 × (Nat.Primes × ℕ) =>
-      ‖routePPrimitiveGammaJuliaLogBalancedMultiplier ip‖ ^ 2) := by
+      ‖routePPrimitiveGammaJuliaLogBalancedMultiplier ip‖ ^ (2 : ℕ)) := by
   rw [summable_prod_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · intro i
     have hw : Summable (fun pe : Nat.Primes × ℕ =>
-        ‖(routePPrimitiveGammaJuliaLogCofinalTraceWeight pe : ℂ)‖ ^ 2) :=
+        ‖(routePPrimitiveGammaJuliaLogCofinalTraceWeight pe : ℂ)‖ ^ (2 : ℕ)) :=
       summable_routePPrimitiveGammaJuliaLogCofinalTraceWeight_sq.congr
         (fun pe => by
           simp [Complex.norm_real, Real.norm_eq_abs,
             abs_of_nonneg (routePPrimitiveGammaJuliaLogCofinalTraceWeight_nonneg pe)])
     apply (hw.mul_left
-      (‖(routePPrimitiveGammaJuliaLogBalancedSpectralSign i : ℂ)‖ ^ 2)).congr
+      (‖(routePPrimitiveGammaJuliaLogBalancedSpectralSign i : ℂ)‖ ^ (2 : ℕ))).congr
     intro pe
     simp only [routePPrimitiveGammaJuliaLogBalancedMultiplier,
       norm_mul, mul_pow]
@@ -434,7 +434,7 @@ summable. Its forced balanced signed channel is self-adjoint Hilbert--Schmidt, n
 and its entire `det₂` has exactly explicit symmetric real reciprocal source zeros. -/
 theorem routePPrimitive_GammaJulia_logPrimeHarmonicGenusOne :
     Summable (fun pe : Nat.Primes × ℕ =>
-      routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ 2) ∧
+      routePPrimitiveGammaJuliaLogCofinalTraceWeight pe ^ (2 : ℕ)) ∧
     (¬ Summable routePPrimitiveGammaJuliaLogCofinalTraceWeight) ∧
     HilbertSchmidt.IsHS routePPrimitiveGammaJuliaLogBalancedKernel ∧
     IsSelfAdjoint routePPrimitiveGammaJuliaLogBalancedOperator ∧

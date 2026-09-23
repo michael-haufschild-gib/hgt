@@ -48,9 +48,9 @@ theorem qubitBetheGADCSquaringUniversality :
           qubitProjectiveSquare (qubitPowerProjectiveCoordinate q)) ∧
       experimentalQubitProjectiveMap (1, 1) = (2, 2) ∧
       experimentalQubitProjectiveMap (-1, 1) = (-2, 2) ∧
-      derivative ((2 : ℚ[X]) * X) * (1 + X ^ 2) -
-          ((2 : ℚ[X]) * X) * derivative (1 + X ^ 2) =
-        2 * (1 - X ^ 2) ∧
+      derivative ((2 : ℚ[X]) * X) * (1 + X ^ (2 : ℕ)) -
+          ((2 : ℚ[X]) * X) * derivative (1 + X ^ (2 : ℕ)) =
+        2 * (1 - X ^ (2 : ℕ)) ∧
       ∀ N : ℚ,
         (derivative
             (asymmetricBinaryTreeNumerator 2

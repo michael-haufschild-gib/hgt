@@ -190,8 +190,8 @@ theorem riemannSourceCayleyResidueMode_horizonConservation_shellTail
     let x := sourceCayleyObservationTime 1 rho tau
     x ^ r / r.factorial *
         ‖iteratedDeriv r
-          (cayleyPoleResidueMode m 1 rho) (x : ℂ)‖ ^ 2 =
-      ‖m‖ ^ 2 *
+          (cayleyPoleResidueMode m 1 rho) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖m‖ ^ (2 : ℕ) *
         Real.exp
           (-(Real.log ‖shellTransferCharacter rho‖ -
               Real.log ‖shellTransferCharacter (1 - star rho)‖) /
@@ -221,11 +221,11 @@ theorem twoPrimeSourceSpectrum_determines_xiAffineCharge
 the weighted square of reflected arithmetic source entropy. -/
 theorem xiZeroCopyThermalOrientationTerm_eq_sourceEntropyDensity
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 =
-      riemannReflectedSourceEntropy (q.1 : ℂ) ^ 2 *
-          (q.1 : ℂ).im ^ 2 /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 +
-          (q.1 : ℂ).im ^ 2) ^ 4 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) =
+      riemannReflectedSourceEntropy (q.1 : ℂ) ^ (2 : ℕ) *
+          (q.1 : ℂ).im ^ (2 : ℕ) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+          (q.1 : ℂ).im ^ (2 : ℕ)) ^ (4 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare_im_formula,
     riemannReflectedSourceEntropy_eq_neg_sourceCayleyRate]
   have hrate :
@@ -235,8 +235,8 @@ theorem xiZeroCopyThermalOrientationTerm_eq_sourceEntropyDensity
     ring
   rw [hrate]
   have hden :
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 +
-          (q.1 : ℂ).im ^ 2 ≠ 0 := by
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+          (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     have him : (q.1 : ℂ).im ≠ 0 :=
       xi_divisor_support_im_ne_zero q.1
     nlinarith [sq_pos_of_ne_zero him]
@@ -245,10 +245,10 @@ theorem xiZeroCopyThermalOrientationTerm_eq_sourceEntropyDensity
 /-- Global source-entropy orientation energy of the Xi divisor. -/
 def xiSourceEntropyOrientationEnergy : ℝ :=
   ∑' q : XiZeroCopy,
-    riemannReflectedSourceEntropy (q.1 : ℂ) ^ 2 *
-        (q.1 : ℂ).im ^ 2 /
-      (((q.1 : ℂ).re - 1 / 2) ^ 2 +
-        (q.1 : ℂ).im ^ 2) ^ 4
+    riemannReflectedSourceEntropy (q.1 : ℂ) ^ (2 : ℕ) *
+        (q.1 : ℂ).im ^ (2 : ℕ) /
+      (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+        (q.1 : ℂ).im ^ (2 : ℕ)) ^ (4 : ℕ)
 
 /-- The global reflected source-entropy energy is exactly the completed
 thermal orientation energy. -/

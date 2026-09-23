@@ -24,7 +24,7 @@ def rawCubicEndpointMatrix (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) : M
 /-- The actual determinant-one endpoint matrix has an exact cubic expansion. -/
 theorem rawAsymptoticMatrix_cubic_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
     rawAsymptoticMatrix q k left = 1+(k : ℂ) • rawFirstCoefficientMatrix q+
-      (k : ℂ)^2 • rawQuadraticEndpointMatrix q left+(k : ℂ)^3 • rawCubicEndpointMatrix q k left := by
+      (k : ℂ)^(2 : ℕ) • rawQuadraticEndpointMatrix q left+(k : ℂ)^(3 : ℕ) • rawCubicEndpointMatrix q k left := by
   have h1 := rawAsymptoticVector_third_factor q k (1,0) left
   have h2 := rawAsymptoticVector_third_factor q k (0,1) left
   ext i j
@@ -63,8 +63,8 @@ theorem rawFirstCoefficientMatrix_adjugate (q : SchwartzMap ℝ ℂ) :
 /-- The exact cubic inverse expansion uses only the already proved determinant-one law. -/
 theorem rawAsymptoticMatrix_inverse_cubic_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
     (rawAsymptoticMatrix q k left)⁻¹ = 1-(k : ℂ) • rawFirstCoefficientMatrix q+
-      (k : ℂ)^2 • (rawQuadraticEndpointMatrix q left).adjugate+
-      (k : ℂ)^3 • (rawCubicEndpointMatrix q k left).adjugate := by
+      (k : ℂ)^(2 : ℕ) • (rawQuadraticEndpointMatrix q left).adjugate+
+      (k : ℂ)^(3 : ℕ) • (rawCubicEndpointMatrix q k left).adjugate := by
   rw [Matrix.inv_def,rawAsymptoticMatrix_det]
   simp only [Ring.inverse_one,one_smul]
   rw [rawAsymptoticMatrix_cubic_factor]

@@ -20,17 +20,17 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- **The energy tends to zero.**  For a square-integrable solution past the turning point. -/
 theorem tendsto_oscillatorMonotoneEnergy_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
-    (ha : 0 < a) (hmu : mu < a ^ 2)
+    (ha : 0 < a) (hmu : mu < a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
-    (hint : IntegrableOn (fun x => v x ^ 2) (Ici a) volume) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
+    (hint : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici a) volume) :
     Tendsto (oscillatorMonotoneEnergy mu v v') atTop (𝓝 0) := by
   have hcv : Continuous v := Differentiable.continuous fun x => (hv x).differentiableAt
   have hcv' : Continuous v' := Differentiable.continuous fun x => (hv' x).differentiableAt
   have hnn := oscillatorMonotoneEnergy_nonneg_of_integrableOn ha hmu hv hv' hint
   have hanti := antitoneOn_oscillatorMonotoneEnergy (le_of_lt ha) hv hv'
   -- past `a` the turning-point factor is positive
-  have hturn : ∀ x ∈ Ici a, 0 < x ^ 2 - mu := by
+  have hturn : ∀ x ∈ Ici a, 0 < x ^ (2 : ℕ) - mu := by
     intro x hx
     have hax : a ≤ x := mem_Ici.1 hx
     nlinarith [ha, hmu, hax]
@@ -47,10 +47,10 @@ theorem tendsto_oscillatorMonotoneEnergy_zero {mu : ℝ} {v v' : ℝ → ℝ} {a
         rw [not_and, not_lt] at this
         exact this hx
       -- the derivative stays away from zero
-      have hbig : ∀ x ∈ Ici a, b ≤ v' x ^ 2 := by
+      have hbig : ∀ x ∈ Ici a, b ≤ v' x ^ (2 : ℕ) := by
         intro x hx
         have h1 := hall x (mem_Ici.1 hx)
-        have h2 : 0 ≤ (x ^ 2 - mu) * v x ^ 2 :=
+        have h2 : 0 ≤ (x ^ (2 : ℕ) - mu) * v x ^ (2 : ℕ) :=
           mul_nonneg (le_of_lt (hturn x hx)) (sq_nonneg _)
         rw [oscillatorMonotoneEnergy] at h1
         linarith
@@ -58,7 +58,7 @@ theorem tendsto_oscillatorMonotoneEnergy_zero {mu : ℝ} {v v' : ℝ → ℝ} {a
       have habs : ∀ x ∈ Ici a, Real.sqrt b ≤ |v' x| := by
         intro x hx
         have h1 := hbig x hx
-        rw [show |v' x| = Real.sqrt (v' x ^ 2) from (Real.sqrt_sq_eq_abs _).symm]
+        rw [show |v' x| = Real.sqrt (v' x ^ (2 : ℕ)) from (Real.sqrt_sq_eq_abs _).symm]
         exact Real.sqrt_le_sqrt h1
       have hnz : ∀ x ∈ Ici a, v' x ≠ 0 := by
         intro x hx hzero
@@ -103,7 +103,7 @@ theorem tendsto_oscillatorMonotoneEnergy_zero {mu : ℝ} {v v' : ℝ → ℝ} {a
           have : Real.sqrt b * (x - a) ≤ -(v x - v a) := by linarith
           exact le_trans this (neg_le_abs _)
       -- so the square is eventually above one, contradicting integrability
-      obtain ⟨R, hRa, hR⟩ : ∃ R, a ≤ R ∧ ∀ x ∈ Ici R, (1 : ℝ) ≤ v x ^ 2 := by
+      obtain ⟨R, hRa, hR⟩ : ∃ R, a ≤ R ∧ ∀ x ∈ Ici R, (1 : ℝ) ≤ v x ^ (2 : ℕ) := by
         refine ⟨a + (1 + |v a|) / Real.sqrt b,
           le_add_of_nonneg_right (by positivity), fun x hx => ?_⟩
         have hxR : a + (1 + |v a|) / Real.sqrt b ≤ x := mem_Ici.1 hx

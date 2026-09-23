@@ -21,12 +21,12 @@ theorem hasDerivAt_heatGauss_phase (x : ℝ) (n : ℤ) (theta : ℝ) :
       (-((theta - 2 * Real.pi * (n : ℝ)) / (2 * Real.pi * x)) *
         heatGauss x n theta) theta := by
   have hraw : HasDerivAt (heatGauss x n)
-      (Real.exp (-((theta - 2 * Real.pi * (n : ℝ)) ^ 2 /
+      (Real.exp (-((theta - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) /
           (4 * Real.pi * x))) *
         (-(2 * (theta - 2 * Real.pi * (n : ℝ)) ^ (2 - 1) * 1 /
           (4 * Real.pi * x)))) theta := by
     change HasDerivAt
-      (fun t : ℝ => Real.exp (-((t - 2 * Real.pi * (n : ℝ)) ^ 2 /
+      (fun t : ℝ => Real.exp (-((t - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) /
         (4 * Real.pi * x)))) _ theta
     have h := (((((hasDerivAt_id theta).sub_const
       (2 * Real.pi * (n : ℝ))).pow 2).div_const
@@ -44,7 +44,7 @@ theorem heatGauss_le_majorant_closed {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1)
       Real.exp (-(Real.pi / (4 * x))) * heatTailMajorant n := by
   rcases htheta0.eq_or_lt with rfl | htheta
   · have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-    have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by
+    have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
       have hnabs : (1 : ℝ) ≤ |(n : ℝ)| := by
         have : (1 : ℤ) ≤ |n| := Int.one_le_abs (by exact_mod_cast hn)
         calc
@@ -54,26 +54,26 @@ theorem heatGauss_le_majorant_closed {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1)
       nlinarith [sq_abs ((n : ℝ))]
     rw [heatGauss, heatTailMajorant, if_neg hn, ← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
-    have hsplit : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ 2 - 1) / 4
-        ≤ Real.pi * ((n : ℝ) ^ 2) / x := by
-      have hA : Real.pi * ((n : ℝ) ^ 2 - 1) / 4
-          ≤ Real.pi * ((n : ℝ) ^ 2 - 1) / (4 * x) := by
+    have hsplit : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4
+        ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ)) / x := by
+      have hA : Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4
+          ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / (4 * x) := by
         rw [div_le_div_iff₀ (by norm_num) (by positivity)]
         nlinarith [mul_nonneg (mul_nonneg hpi.le (sub_nonneg.mpr hn2))
           (sub_nonneg.mpr hx1)]
       have hB : Real.pi / (4 * x) +
-          Real.pi * ((n : ℝ) ^ 2 - 1) / (4 * x) =
-          Real.pi * ((n : ℝ) ^ 2) / (4 * x) := by
+          Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / (4 * x) =
+          Real.pi * ((n : ℝ) ^ (2 : ℕ)) / (4 * x) := by
         field_simp
         ring
       calc
-        _ ≤ Real.pi * ((n : ℝ) ^ 2) / (4 * x) := by linarith
-        _ ≤ Real.pi * ((n : ℝ) ^ 2) / x := by
+        _ ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ)) / (4 * x) := by linarith
+        _ ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ)) / x := by
           gcongr
           nlinarith [hx]
     have hzero :
-        -((0 - 2 * Real.pi * (n : ℝ)) ^ 2 / (4 * Real.pi * x)) =
-          -(Real.pi * (n : ℝ) ^ 2 / x) := by
+        -((0 - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) / (4 * Real.pi * x)) =
+          -(Real.pi * (n : ℝ) ^ (2 : ℕ) / x) := by
       field_simp
       ring
     rw [hzero]
@@ -91,8 +91,8 @@ theorem heatTailDerivativeMajorant_nonneg (n : ℤ) :
 theorem summable_heatTailDerivativeMajorant :
     Summable heatTailDerivativeMajorant := by
   let B : ℤ → ℝ := fun n => Real.exp (Real.pi / 4) *
-    ((1 + (n.natAbs : ℝ)) ^ 1 *
-      Real.exp (-(Real.pi / 4) * (n : ℝ) ^ 2))
+    ((1 + (n.natAbs : ℝ)) ^ (1 : ℕ) *
+      Real.exp (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ)))
   have hB : Summable B := by
     exact (GaloisForLFunctions.summable_one_add_natAbs_pow_mul_exp_neg_int_sq
       1 (by positivity : 0 < Real.pi / 4)).mul_left _
@@ -103,22 +103,22 @@ theorem summable_heatTailDerivativeMajorant :
   · rw [if_neg hn]
     have habs : |(n : ℝ)| = (n.natAbs : ℝ) := by
       rw [Nat.cast_natAbs, Int.cast_abs]
-    rw [habs, show -(Real.pi * ((n : ℝ) ^ 2 - 1) / 4) =
-      Real.pi / 4 + (-(Real.pi / 4) * (n : ℝ) ^ 2) by ring,
+    rw [habs, show -(Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4) =
+      Real.pi / 4 + (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ)) by ring,
       Real.exp_add]
     dsimp [B]
     have hnonneg : 0 ≤ Real.exp (Real.pi / 4) *
-        Real.exp (-(Real.pi / 4) * (n : ℝ) ^ 2) := by positivity
+        Real.exp (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ)) := by positivity
     calc
       (n.natAbs : ℝ) *
-          (Real.exp (Real.pi / 4) * Real.exp (-(Real.pi / 4) * (n : ℝ) ^ 2)) ≤
+          (Real.exp (Real.pi / 4) * Real.exp (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ))) ≤
           (1 + (n.natAbs : ℝ)) *
-            (Real.exp (Real.pi / 4) * Real.exp (-(Real.pi / 4) * (n : ℝ) ^ 2)) := by
+            (Real.exp (Real.pi / 4) * Real.exp (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ))) := by
               gcongr
               norm_num
       _ = Real.exp (Real.pi / 4) *
-          ((1 + (n.natAbs : ℝ)) ^ 1 *
-            Real.exp (-(Real.pi / 4) * (n : ℝ) ^ 2)) := by ring
+          ((1 + (n.natAbs : ℝ)) ^ (1 : ℕ) *
+            Real.exp (-(Real.pi / 4) * (n : ℝ) ^ (2 : ℕ))) := by ring
 
 /-- Total derivative majorant mass. -/
 noncomputable def heatTailDerivativeConst : ℝ :=

@@ -28,8 +28,8 @@ open HTGeometry
 theorem deriv_sturmFlux_prolate_eq {c χ : ℝ} {ψ : ℝ → ℝ}
     (hψ2 : Differentiable ℝ (deriv ψ))
     (heig : ∀ y, prolateSLAction c ψ y = χ * ψ y) (y : ℝ) :
-    deriv (sturmFlux (fun t : ℝ => 1 - t ^ 2) ψ) y =
-      (χ + c ^ 2 * y ^ 2) * ψ y := by
+    deriv (sturmFlux (fun t : ℝ => 1 - t ^ (2 : ℕ)) ψ) y =
+      (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) * ψ y := by
   unfold sturmFlux
   rw [(hasDerivAt_bandFlux (hψ2 y)).deriv]
   have h := heig y
@@ -39,7 +39,7 @@ theorem deriv_sturmFlux_prolate_eq {c χ : ℝ} {ψ : ℝ → ℝ}
 /-- The prolate Sturm flux is continuous for every twice differentiable mode. -/
 theorem continuous_sturmFlux_prolate {ψ : ℝ → ℝ}
     (hψ2 : Differentiable ℝ (deriv ψ)) :
-    Continuous (sturmFlux (fun t : ℝ => 1 - t ^ 2) ψ) := by
+    Continuous (sturmFlux (fun t : ℝ => 1 - t ^ (2 : ℕ)) ψ) := by
   unfold sturmFlux
   exact (continuous_const.sub (continuous_pow 2)).mul hψ2.continuous
 
@@ -49,10 +49,10 @@ theorem prolate_criticalSet_subsingleton_of_rhs_pos
     {a b c χ : ℝ} {ψ : ℝ → ℝ}
     (hψ2 : Differentiable ℝ (deriv ψ))
     (heig : ∀ y, prolateSLAction c ψ y = χ * ψ y)
-    (hpos : ∀ y ∈ Ioo a b, 0 < (χ + c ^ 2 * y ^ 2) * ψ y) :
+    (hpos : ∀ y ∈ Ioo a b, 0 < (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) * ψ y) :
     {y | y ∈ Icc a b ∧ deriv ψ y = 0}.Subsingleton := by
   apply criticalSet_subsingleton_of_sturm_rhs_pos
-    (fun t : ℝ => 1 - t ^ 2) (fun t => χ + c ^ 2 * t ^ 2) ψ
+    (fun t : ℝ => 1 - t ^ (2 : ℕ)) (fun t => χ + c ^ (2 : ℕ) * t ^ (2 : ℕ)) ψ
   · exact (continuous_sturmFlux_prolate hψ2).continuousOn
   · intro y hy
     exact deriv_sturmFlux_prolate_eq hψ2 heig y
@@ -64,10 +64,10 @@ theorem prolate_criticalSet_subsingleton_of_rhs_neg
     {a b c χ : ℝ} {ψ : ℝ → ℝ}
     (hψ2 : Differentiable ℝ (deriv ψ))
     (heig : ∀ y, prolateSLAction c ψ y = χ * ψ y)
-    (hneg : ∀ y ∈ Ioo a b, (χ + c ^ 2 * y ^ 2) * ψ y < 0) :
+    (hneg : ∀ y ∈ Ioo a b, (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) * ψ y < 0) :
     {y | y ∈ Icc a b ∧ deriv ψ y = 0}.Subsingleton := by
   apply criticalSet_subsingleton_of_sturm_rhs_neg
-    (fun t : ℝ => 1 - t ^ 2) (fun t => χ + c ^ 2 * t ^ 2) ψ
+    (fun t : ℝ => 1 - t ^ (2 : ℕ)) (fun t => χ + c ^ (2 : ℕ) * t ^ (2 : ℕ)) ψ
   · exact (continuous_sturmFlux_prolate hψ2).continuousOn
   · intro y hy
     exact deriv_sturmFlux_prolate_eq hψ2 heig y

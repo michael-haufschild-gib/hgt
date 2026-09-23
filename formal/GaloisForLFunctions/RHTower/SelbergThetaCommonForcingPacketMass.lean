@@ -9,7 +9,7 @@ Let `alpha q` denote `xiSpectralPoint q`. For native energies in the upper half-
 the exact source-pairing formula and the native Gram displacement identity give
 
 `gram q r = (1/pi) * integral density(t) /
-  (conj(t^2-alpha(q)^2) * (t^2-alpha(r)^2)) dt`.
+  (conj(t^(2 : ℕ)-alpha(q)^(2 : ℕ)) * (t^(2 : ℕ)-alpha(r)^(2 : ℕ))) dt`.
 
 The integral is absolutely admitted by the difference of the two admitted scalar
 Cauchy transforms. Consequently every finite native packet has squared norm equal
@@ -33,10 +33,10 @@ open SelbergThetaCommonForcing SelbergThetaCommonForcingGram
 open SelbergThetaHorizontalBoundary SelbergThetaNativeScalarBoundary
 
 /-- The complete nonnegative arithmetic boundary density. -/
-def density (t : ℝ) : ℝ := Xi t ^ 2 * boundaryWeight t
+def density (t : ℝ) : ℝ := Xi t ^ (2 : ℕ) * boundaryWeight t
 
 /-- The real-frequency denominator of an actual Xi response. -/
-def denominator (q : XiZeroCopy) (t : ℝ) : ℂ := (t:ℂ)^2 - (xiSpectralPoint q)^2
+def denominator (q : XiZeroCopy) (t : ℝ) : ℂ := (t:ℂ)^(2 : ℕ) - (xiSpectralPoint q)^(2 : ℕ)
 
 /-- The absolutely admitted native scalar Cauchy integrand. -/
 def cauchy (q : XiZeroCopy) (t : ℝ) : ℂ := (density t : ℂ) / denominator q t
@@ -49,17 +49,17 @@ theorem density_nonneg (t : ℝ) : 0 ≤ density t :=
   mul_nonneg (sq_nonneg _) (boundaryWeight_bounds t).1
 
 theorem denominator_ne_zero (q : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im) (t : ℝ) : denominator q t ≠ 0 := by
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im) (t : ℝ) : denominator q t ≠ 0 := by
   intro h
   have hi := congrArg Complex.im h
-  change ((t:ℂ)^2 - (xiSpectralPoint q)^2).im = 0 at hi
+  change ((t:ℂ)^(2 : ℕ) - (xiSpectralPoint q)^(2 : ℕ)).im = 0 at hi
   simp only [Complex.sub_im, ← Complex.ofReal_pow, Complex.ofReal_im] at hi
   linarith
 
 theorem gap_ne_zero (q r : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im)
-    (hr : 0 < ((xiSpectralPoint r)^2).im) :
-    (xiSpectralPoint r)^2 - conj ((xiSpectralPoint q)^2) ≠ 0 := by
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im)
+    (hr : 0 < ((xiSpectralPoint r)^(2 : ℕ)).im) :
+    (xiSpectralPoint r)^(2 : ℕ) - conj ((xiSpectralPoint q)^(2 : ℕ)) ≠ 0 := by
   intro h
   have hi := congrArg Complex.im h
   simp only [Complex.sub_im,Complex.conj_im,Complex.zero_im] at hi
@@ -80,10 +80,10 @@ theorem sourcePairing_cauchy (q : XiZeroCopy) :
     using SelbergThetaNativeMeanCancellation.sourcePairing_eq_cauchy q
 
 theorem cauchy_sub (q r : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im)
-    (hr : 0 < ((xiSpectralPoint r)^2).im) (t : ℝ) :
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im)
+    (hr : 0 < ((xiSpectralPoint r)^(2 : ℕ)).im) (t : ℝ) :
     cauchy r t - conj (cauchy q t) =
-      ((xiSpectralPoint r)^2-conj ((xiSpectralPoint q)^2))*kernel q r t := by
+      ((xiSpectralPoint r)^(2 : ℕ)-conj ((xiSpectralPoint q)^(2 : ℕ)))*kernel q r t := by
   have hq0 := denominator_ne_zero q hq t
   have hr0 := denominator_ne_zero r hr t
   have hc0 : conj (denominator q t) ≠ 0 := by simpa using hq0
@@ -93,24 +93,24 @@ theorem cauchy_sub (q r : XiZeroCopy)
   ring
 
 theorem kernel_integrable (q r : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im)
-    (hr : 0 < ((xiSpectralPoint r)^2).im) : Integrable (kernel q r) := by
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im)
+    (hr : 0 < ((xiSpectralPoint r)^(2 : ℕ)).im) : Integrable (kernel q r) := by
   have h := ((cauchy_integrable r).sub (conj_cauchy_integrable q)).div_const
-    ((xiSpectralPoint r)^2-conj ((xiSpectralPoint q)^2))
+    ((xiSpectralPoint r)^(2 : ℕ)-conj ((xiSpectralPoint q)^(2 : ℕ)))
   apply h.congr
   exact Eventually.of_forall fun t => by
     change (cauchy r t-conj (cauchy q t)) /
-      ((xiSpectralPoint r)^2-conj ((xiSpectralPoint q)^2)) = kernel q r t
+      ((xiSpectralPoint r)^(2 : ℕ)-conj ((xiSpectralPoint q)^(2 : ℕ))) = kernel q r t
     rw [cauchy_sub q r hq hr t]
     exact mul_div_cancel_left₀ _ (gap_ne_zero q r hq hr)
 
 /-- Exact native Gram entry in the upper spectral half-plane. -/
 theorem gram_eq_integral (q r : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im)
-    (hr : 0 < ((xiSpectralPoint r)^2).im) :
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im)
+    (hr : 0 < ((xiSpectralPoint r)^(2 : ℕ)).im) :
     gram q r = (1/(Real.pi:ℂ))*∫ t : ℝ, kernel q r t := by
   have hi : ∫ t : ℝ, cauchy r t-conj (cauchy q t) =
-      ((xiSpectralPoint r)^2-conj ((xiSpectralPoint q)^2))*∫ t : ℝ, kernel q r t := by
+      ((xiSpectralPoint r)^(2 : ℕ)-conj ((xiSpectralPoint q)^(2 : ℕ)))*∫ t : ℝ, kernel q r t := by
     simp_rw [cauchy_sub q r hq hr]
     exact integral_const_mul _ _
   rw [integral_sub (cauchy_integrable r) (conj_cauchy_integrable q),
@@ -119,7 +119,7 @@ theorem gram_eq_integral (q r : XiZeroCopy)
   rw [sourcePairing_cauchy,sourcePairing_cauchy] at hg
   simp only [map_mul,map_div₀,map_one,map_ofNat,Complex.conj_ofReal] at hg
   have he : energy r-conj (energy q) =
-      ((xiSpectralPoint r)^2-conj ((xiSpectralPoint q)^2))/4 := by
+      ((xiSpectralPoint r)^(2 : ℕ)-conj ((xiSpectralPoint q)^(2 : ℕ)))/4 := by
     simp only [energy,map_div₀,map_add,map_ofNat]
     ring
   rw [he] at hg
@@ -154,7 +154,7 @@ theorem packetDensity_eq_sum {ι : Type*} [Fintype ι]
 
 theorem packetDensity_integrable {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ)
-    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^2).im) : Integrable (packetDensity q c) := by
+    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^(2 : ℕ)).im) : Integrable (packetDensity q c) := by
   have hsum : Integrable (fun t : ℝ =>
       ∑ i, ∑ j, conj (c i)*c j*kernel (q i) (q j) t) := by
     apply integrable_finsetSum
@@ -172,8 +172,8 @@ theorem packetDensity_integrable {ι : Type*} [Fintype ι]
 /-- The original native packet norm is exactly its arithmetic density integral. -/
 theorem packet_norm_sq_eq_integral {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ)
-    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^2).im) :
-    ‖∑ i, c i • vector (q i)‖^2 = (1/Real.pi)*∫ t : ℝ, packetDensity q c t := by
+    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^(2 : ℕ)).im) :
+    ‖∑ i, c i • vector (q i)‖^(2 : ℕ) = (1/Real.pi)*∫ t : ℝ, packetDensity q c t := by
   have hrow (i : ι) : Integrable (fun t : ℝ =>
       ∑ j, conj (c i)*c j*kernel (q i) (q j) t) := by
     apply integrable_finsetSum
@@ -210,12 +210,12 @@ theorem packet_norm_sq_eq_integral {ι : Type*} [Fintype ι]
 open Polynomial in
 private def numeratorPoly {ι : Type*} [Fintype ι] [DecidableEq ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ) : ℂ[X] :=
-  ∑ i, C (c i)*∏ j ∈ Finset.univ.erase i, (X^2-C ((xiSpectralPoint (q j))^2))
+  ∑ i, C (c i)*∏ j ∈ Finset.univ.erase i, (X^(2 : ℕ)-C ((xiSpectralPoint (q j))^(2 : ℕ)))
 
 open Polynomial in
 private theorem numeratorPoly_eval {ι : Type*} [Fintype ι] [DecidableEq ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ) (t : ℝ)
-    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^2).im) :
+    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^(2 : ℕ)).im) :
     (numeratorPoly q c).eval (t:ℂ) = (∏ i, denominator (q i) t)*rationalPacket q c t := by
   simp only [numeratorPoly,eval_finsetSum,eval_mul,eval_C,eval_prod,eval_sub,eval_pow,eval_X,
     rationalPacket]
@@ -230,14 +230,14 @@ private theorem numeratorPoly_eval {ι : Type*} [Fintype ι] [DecidableEq ι]
 open Polynomial in
 private theorem numeratorPoly_ne_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ)
-    (hq : Function.Injective (fun i => (xiSpectralPoint (q i))^2))
+    (hq : Function.Injective (fun i => (xiSpectralPoint (q i))^(2 : ℕ)))
     (hc : c ≠ 0) : numeratorPoly q c ≠ 0 := by
   intro hzero
   apply hc
   funext m
   have he : (numeratorPoly q c).eval (xiSpectralPoint (q m)) =
       c m * ∏ j ∈ Finset.univ.erase m,
-        ((xiSpectralPoint (q m))^2-(xiSpectralPoint (q j))^2) := by
+        ((xiSpectralPoint (q m))^(2 : ℕ)-(xiSpectralPoint (q j))^(2 : ℕ)) := by
     simp only [numeratorPoly,eval_finsetSum,eval_mul,eval_C,eval_prod,eval_sub,eval_pow,eval_X]
     rw [Finset.sum_eq_single m]
     · intro i _ hi
@@ -247,7 +247,7 @@ private theorem numeratorPoly_ne_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
       exact (h (Finset.mem_univ m)).elim
   rw [hzero,eval_zero] at he
   have hp : (∏ j ∈ Finset.univ.erase m,
-      ((xiSpectralPoint (q m))^2-(xiSpectralPoint (q j))^2)) ≠ 0 := by
+      ((xiSpectralPoint (q m))^(2 : ℕ)-(xiSpectralPoint (q j))^(2 : ℕ))) ≠ 0 := by
     apply Finset.prod_ne_zero_iff.mpr
     intro j hj
     exact sub_ne_zero.mpr (fun h => (Finset.mem_erase.mp hj).1 (hq h).symm)
@@ -255,8 +255,8 @@ private theorem numeratorPoly_ne_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 private theorem rationalPacket_ae_ne_zero {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ)
-    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^2).im)
-    (hinj : Function.Injective (fun i => (xiSpectralPoint (q i))^2))
+    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^(2 : ℕ)).im)
+    (hinj : Function.Injective (fun i => (xiSpectralPoint (q i))^(2 : ℕ)))
     (hc : c ≠ 0) : ∀ᵐ t : ℝ, rationalPacket q c t ≠ 0 := by
   classical
   have hfinite : {t : ℝ | rationalPacket q c t = 0}.Finite := by
@@ -270,7 +270,7 @@ private theorem rationalPacket_ae_ne_zero {ι : Type*} [Fintype ι]
   simpa only [not_not] using hfinite.measure_zero volume
 
 private theorem density_not_ae_zero (q : XiZeroCopy)
-    (hq : 0 < ((xiSpectralPoint q)^2).im) : ¬ density =ᵐ[volume] 0 := by
+    (hq : 0 < ((xiSpectralPoint q)^(2 : ℕ)).im) : ¬ density =ᵐ[volume] 0 := by
   intro hd
   have hc : cauchy q =ᵐ[volume] 0 := by
     filter_upwards [hd] with t ht
@@ -279,7 +279,7 @@ private theorem density_not_ae_zero (q : XiZeroCopy)
     rw [sourcePairing_cauchy,integral_congr_ae hc]
     simp
   have he : 0 < (energy q).im := by
-    have heq : (energy q).im = ((xiSpectralPoint q)^2).im/4 := by
+    have heq : (energy q).im = ((xiSpectralPoint q)^(2 : ℕ)).im/4 := by
       simp [energy,Complex.div_ofNat_im]
     rw [heq]
     positivity
@@ -291,8 +291,8 @@ private theorem density_not_ae_zero (q : XiZeroCopy)
 nonzero finite combination, including combinations whose coefficients sum to zero. -/
 theorem packet_ne_zero {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ)
-    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^2).im)
-    (hinj : Function.Injective (fun i => (xiSpectralPoint (q i))^2))
+    (hq : ∀ i, 0 < ((xiSpectralPoint (q i))^(2 : ℕ)).im)
+    (hinj : Function.Injective (fun i => (xiSpectralPoint (q i))^(2 : ℕ)))
     (hc : c ≠ 0) : (∑ i, c i • vector (q i)) ≠ 0 := by
   intro hv
   have hn := packet_norm_sq_eq_integral q c hq

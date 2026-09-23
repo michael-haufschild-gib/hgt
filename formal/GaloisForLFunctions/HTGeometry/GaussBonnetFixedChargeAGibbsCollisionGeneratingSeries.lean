@@ -14,8 +14,8 @@ noncomputable section
 def egbFixedChargeAGibbsCollisionGeneratingValue (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) : ℝ :=
   egbFixedChargeAGibbsCollisionExcess n 0 β E +
-    (q ^ 2 * (4 / 9)) / (1 - q ^ 2 * (4 / 9)) * egbFixedChargeAGibbsSlowModeEnergy n β E +
-    (q ^ 2 * (1 / 36)) / (1 - q ^ 2 * (1 / 36)) * egbFixedChargeAGibbsFastModeEnergy n β E
+    (q ^ (2 : ℕ) * (4 / 9)) / (1 - q ^ (2 : ℕ) * (4 / 9)) * egbFixedChargeAGibbsSlowModeEnergy n β E +
+    (q ^ (2 : ℕ) * (1 / 36)) / (1 - q ^ (2 : ℕ) * (1 / 36)) * egbFixedChargeAGibbsFastModeEnergy n β E
 
 private theorem geometric_mode_hasSum (t a : ℝ) (ht : 0 ≤ t) (ha : a = 0 ∨ t < 1) :
     HasSum (fun m : ℕ => t ^ (m + 1) * a) (t / (1 - t) * a) := by
@@ -31,14 +31,14 @@ private theorem geometric_mode_hasSum (t a : ℝ) (ht : 0 ≤ t) (ha : a = 0 ∨
 
 private theorem generating_hasSum (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ)
-    (hq : q ^ 2 * egbFixedChargeAGibbsDominantCollisionRate n β E < 1) :
-    HasSum (fun m : ℕ => (q ^ 2) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E)
+    (hq : q ^ (2 : ℕ) * egbFixedChargeAGibbsDominantCollisionRate n β E < 1) :
+    HasSum (fun m : ℕ => (q ^ (2 : ℕ)) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E)
       (egbFixedChargeAGibbsCollisionGeneratingValue n β q E) := by
-  have hA : egbFixedChargeAGibbsSlowModeEnergy n β E = 0 ∨ q ^ 2 * (4 / 9 : ℝ) < 1 := by
+  have hA : egbFixedChargeAGibbsSlowModeEnergy n β E = 0 ∨ q ^ (2 : ℕ) * (4 / 9 : ℝ) < 1 := by
     by_cases ha : egbFixedChargeAGibbsSlowModeEnergy n β E = 0
     · exact Or.inl ha
     · exact Or.inr (by simpa [egbFixedChargeAGibbsDominantCollisionRate, ha] using hq)
-  have hB : egbFixedChargeAGibbsFastModeEnergy n β E = 0 ∨ q ^ 2 * (1 / 36 : ℝ) < 1 := by
+  have hB : egbFixedChargeAGibbsFastModeEnergy n β E = 0 ∨ q ^ (2 : ℕ) * (1 / 36 : ℝ) < 1 := by
     by_cases hb : egbFixedChargeAGibbsFastModeEnergy n β E = 0
     · exact Or.inl hb
     · right
@@ -47,24 +47,24 @@ private theorem generating_hasSum (n : ℕ) (β q : ℝ)
       · have hs := hA.resolve_left ha
         have hm := mul_le_mul_of_nonneg_left (show (1 / 36 : ℝ) ≤ 4 / 9 by norm_num) (sq_nonneg q)
         linarith
-  have hs := (geometric_mode_hasSum (q ^ 2 * (4 / 9))
+  have hs := (geometric_mode_hasSum (q ^ (2 : ℕ) * (4 / 9))
     (egbFixedChargeAGibbsSlowModeEnergy n β E) (by positivity) hA).add
-      (geometric_mode_hasSum (q ^ 2 * (1 / 36))
+      (geometric_mode_hasSum (q ^ (2 : ℕ) * (1 / 36))
         (egbFixedChargeAGibbsFastModeEnergy n β E) (by positivity) hB)
-  have he : (fun m : ℕ => (q ^ 2) ^ (m + 1) *
+  have he : (fun m : ℕ => (q ^ (2 : ℕ)) ^ (m + 1) *
       egbFixedChargeAGibbsCollisionExcess n (m + 1) β E) =
-    (fun m : ℕ => (q ^ 2 * (4 / 9 : ℝ)) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E +
-      (q ^ 2 * (1 / 36 : ℝ)) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) := by
+    (fun m : ℕ => (q ^ (2 : ℕ) * (4 / 9 : ℝ)) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E +
+      (q ^ (2 : ℕ) * (1 / 36 : ℝ)) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) := by
     funext m
     rw [egbFixedChargeAGibbsCollisionExcess_two_rate, mul_pow, mul_pow]
     ring
   rw [← he] at hs
   have ht := (hasSum_nat_add_iff
-    (f := fun m : ℕ => (q ^ 2) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E) 1).mp hs
+    (f := fun m : ℕ => (q ^ (2 : ℕ)) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E) 1).mp hs
   simp only [Finset.sum_range_one, pow_zero, one_mul] at ht
   have hv : egbFixedChargeAGibbsCollisionGeneratingValue n β q E =
-      (q ^ 2 * (4 / 9)) / (1 - q ^ 2 * (4 / 9)) * egbFixedChargeAGibbsSlowModeEnergy n β E +
-      (q ^ 2 * (1 / 36)) / (1 - q ^ 2 * (1 / 36)) * egbFixedChargeAGibbsFastModeEnergy n β E +
+      (q ^ (2 : ℕ) * (4 / 9)) / (1 - q ^ (2 : ℕ) * (4 / 9)) * egbFixedChargeAGibbsSlowModeEnergy n β E +
+      (q ^ (2 : ℕ) * (1 / 36)) / (1 - q ^ (2 : ℕ) * (1 / 36)) * egbFixedChargeAGibbsFastModeEnergy n β E +
       egbFixedChargeAGibbsCollisionExcess n 0 β E := by
     unfold egbFixedChargeAGibbsCollisionGeneratingValue
     ring
@@ -74,9 +74,9 @@ private theorem generating_hasSum (n : ℕ) (β q : ℝ)
 /-- The spectral rational expression is the actual sum exactly inside the input-selected convergence domain. -/
 theorem egbFixedChargeAGibbsCollisionExcess_generating_hasSum_iff (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    HasSum (fun m : ℕ => (q ^ 2) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E)
+    HasSum (fun m : ℕ => (q ^ (2 : ℕ)) ^ m * egbFixedChargeAGibbsCollisionExcess n m β E)
       (egbFixedChargeAGibbsCollisionGeneratingValue n β q E) ↔
-        q ^ 2 * egbFixedChargeAGibbsDominantCollisionRate n β E < 1 :=
+        q ^ (2 : ℕ) * egbFixedChargeAGibbsDominantCollisionRate n β E < 1 :=
   ⟨fun h => (egbFixedChargeAGibbsCollisionExcess_weighted_summable_iff n β q E).mp h.summable,
     generating_hasSum n β q E⟩
 

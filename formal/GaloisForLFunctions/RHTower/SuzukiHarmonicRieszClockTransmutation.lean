@@ -124,7 +124,7 @@ theorem completedPrimePolarGammaSquareRootFormationResponse_eq_rieszMoment
 private theorem sqrt_nat_le_half {n : ℕ} (hn : 4 ≤ n) :
     Real.sqrt n ≤ (n : ℝ) / 2 := by
   have hn0 : (0 : ℝ) ≤ n := by positivity
-  have hsquare : Real.sqrt n ^ 2 = (n : ℝ) := Real.sq_sqrt hn0
+  have hsquare : Real.sqrt n ^ (2 : ℕ) = (n : ℝ) := Real.sq_sqrt hn0
   have hsge : (2 : ℝ) ≤ Real.sqrt n := by
     have hs := Real.sqrt_le_sqrt (show (4 : ℝ) ≤ n by exact_mod_cast hn)
     norm_num at hs ⊢
@@ -142,12 +142,12 @@ theorem completedRieszHarmonicClockRatio_ge_index
   have ha : 0 < a := by dsimp only [a]; positivity
   have hb : 0 < b := by dsimp only [b]; positivity
   have hab : a < b := by dsimp only [a, b]; push_cast; linarith
-  have hsa : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
-  have hsb : Real.sqrt b ^ 2 = b := Real.sq_sqrt hb.le
+  have hsa : Real.sqrt a ^ (2 : ℕ) = a := Real.sq_sqrt ha.le
+  have hsb : Real.sqrt b ^ (2 : ℕ) = b := Real.sq_sqrt hb.le
   have hd0 : 0 ≤ d := sub_nonneg.mpr (Real.sqrt_le_sqrt hab.le)
   have hds : d * s = 1 := by
     calc
-      d * s = Real.sqrt b ^ 2 - Real.sqrt a ^ 2 := by
+      d * s = Real.sqrt b ^ (2 : ℕ) - Real.sqrt a ^ (2 : ℕ) := by
         dsimp only [d, s]
         ring
       _ = b - a := by rw [hsb, hsa]

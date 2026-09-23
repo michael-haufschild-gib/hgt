@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicFinalRangeSchedule
 
 Every structural side condition of
 `integral_Icc_normSq_menonFinalRangeShell_le_partition_mass_filter` is discharged at the paper's
-own ladder `Q = P(X)`, `η = exp(1/(log X)^10) − 1`, `L = ⌈H·log(⌊3X⌋/P(X))⌉`: the range coverage,
+own ladder `Q = P(X)`, `η = exp(1/(log X)^(10 : ℕ)) − 1`, `L = ⌈H·log(⌊3X⌋/P(X))⌉`: the range coverage,
 both cofactor endpoints, the block top, and the positivity of the base.  What is left is only the
 schedule's own choice of thresholds `V j`, base levels `V₀ j` and level counts `J j`, and a level
 count always exists.
@@ -44,7 +44,7 @@ theorem eventually_integral_Icc_normSq_menonFinalRangeShell_le_ladderSchedule
               (menonFinalRangeLadderBase x)
               (1 + menonFinalRangeLadderEta x) j) ≤ 2 ^ (J j) * V₀ j) →
         (∫ w in Set.Icc (-W) W,
-          ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+          ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
           ≤ 2 * (harmonicPrimeMass (menonFinalRangePrimes x) *
                   ∑ j ∈ menonHarmonicActiveBlocks (menonFinalRangePrimes x)
                       (menonFinalRangeLadderBase x) (menonFinalRangeLadderEta x)

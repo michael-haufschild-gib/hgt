@@ -91,9 +91,9 @@ theorem mirrorTrace_sq {μ : ℝ} {f : ℂ → ℂ} {ρ : ℂ} {r₀ r R : ℝ}
       f (lineReflection μ z) = (starRingEnd ℂ) (f z))
     {U : ℝ → ℂ}
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap ρ r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap ρ r θ)) :
     ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      mirrorTrace U θ ^ 2
+      mirrorTrace U θ ^ (2 : ℕ)
         = f (circleMap (lineReflection μ ρ) r θ) := by
   intro θ hθ
   have hθ' : Real.pi - θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2) := by
@@ -102,7 +102,7 @@ theorem mirrorTrace_sq {μ : ℝ} {f : ℂ → ℂ} {ρ : ℂ} {r₀ r R : ℝ}
       linarith
     · have := hθ.1
       linarith
-  show ((starRingEnd ℂ) (U (Real.pi - θ))) ^ 2 = _
+  show ((starRingEnd ℂ) (U (Real.pi - θ))) ^ (2 : ℕ) = _
   rw [← map_pow, hUsq _ hθ',
     ← hsym _ (circleMap_mem_annulus h0 hr₀ hrR (Real.pi - θ)),
     lineReflection_circleMap,
@@ -142,7 +142,7 @@ theorem carrier_mass_zero_mirror_of_odd_isolated_zero {μ : ℝ} {g F : ℂ → 
     ∃ W : ℝ → ℂ,
       ContinuousOn W (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
       (∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-        W θ ^ 2 = F (circleMap (lineReflection μ ρ) r θ)) ∧
+        W θ ^ (2 : ℕ) = F (circleMap (lineReflection μ ρ) r θ)) ∧
       W (3 * Real.pi / 2) = -W (-(Real.pi / 2)) ∧
       ∀ p : ℝ → ℂ,
         ContinuousOn p
@@ -183,7 +183,7 @@ theorem carrier_mass_zero_mirror_of_odd_xi_zero {N : ℕ} (hN : 1 ≤ N) {ρ : �
     ∃ W : ℝ → ℂ,
       ContinuousOn W (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
       (∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-        W θ ^ 2 = completedSEM N
+        W θ ^ (2 : ℕ) = completedSEM N
           (circleMap (lineReflection (1 / 2) ρ) r θ)) ∧
       W (3 * Real.pi / 2) = -W (-(Real.pi / 2)) ∧
       ∀ p : ℝ → ℂ,
@@ -271,12 +271,12 @@ theorem trace_holonomy_online_count {ι : Type*} (s : Finset ι)
     (hfact : ∀ z ∈ ball a R, f z = (∏ i ∈ s, (z - ρc i) ^ m i) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     U (3 * Real.pi / 2)
       = (-1) ^ (∑ i ∈ s.filter (fun i => (ρc i).re = μ), m i)
         * U (-(Real.pi / 2)) := by
@@ -302,12 +302,12 @@ theorem trace_closes_of_offline_mirror_pairs {ι : Type*} (s : Finset ι)
     (hfact : ∀ z ∈ ball a R, f z = (∏ i ∈ s, (z - ρc i) ^ m i) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     U (3 * Real.pi / 2) = U (-(Real.pi / 2)) := by
   classical
   have hkey := trace_holonomy_online_count s ρc m σf h0 hr₀ hrR hσmem hσρ

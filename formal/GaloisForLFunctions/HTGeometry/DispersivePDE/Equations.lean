@@ -85,11 +85,11 @@ def SolvesKdV (J : RealEvolutionJet3) : Prop :=
 
 /-- Potential KdV equation `φₜ + 3φₓ² + φₓₓₓ = 0`. -/
 def SolvesPotentialKdV (J : RealEvolutionJet3) : Prop :=
-  ∀ t x, J.ut t x + 3 * J.ux t x ^ 2 + J.uxxx t x = 0
+  ∀ t x, J.ut t x + 3 * J.ux t x ^ (2 : ℕ) + J.uxxx t x = 0
 
 /-- Modified KdV equation `uₜ - 6u²uₓ + uₓₓₓ = 0`. -/
 def SolvesModifiedKdV (J : RealEvolutionJet3) : Prop :=
-  ∀ t x, J.ut t x - 6 * J.u t x ^ 2 * J.ux t x + J.uxxx t x = 0
+  ∀ t x, J.ut t x - 6 * J.u t x ^ (2 : ℕ) * J.ux t x + J.uxxx t x = 0
 
 /-- Linear Airy equation, the linearized KdV flow. -/
 def SolvesAiry (J : RealEvolutionJet3) : Prop :=
@@ -105,7 +105,7 @@ def SolvesLinearKawahara (J : RealEvolutionJet5) : Prop :=
 
 /-- Expanded KP equation `(uₜ + 6uuₓ + uₓₓₓ)ₓ + 3σuᵧᵧ = 0`. -/
 def SolvesKP (σ : ℝ) (J : RealEvolutionJetKP) : Prop :=
-  ∀ t x y, J.utx t x y + 6 * J.ux t x y ^ 2
+  ∀ t x y, J.utx t x y + 6 * J.ux t x y ^ (2 : ℕ)
     + 6 * J.u t x y * J.uxx t x y + J.uxxxx t x y + 3 * σ * J.uyy t x y = 0
 
 /-- Truncated Shrira--Pesenson transverse-modulation equation.
@@ -120,12 +120,12 @@ def SolvesShriraPesenson (α β γ₁ γ₂ ε : ℝ) (J : ShriraPesensonJet) : 
 /-- Focusing cubic NLS `iψₜ + ψₓₓ + 2|ψ|²ψ = 0`. -/
 def SolvesFocusingNLS (J : ComplexEvolutionJet2) : Prop :=
   ∀ t x, Complex.I * J.ut t x + J.uxx t x
-    + ((2 * ‖J.u t x‖ ^ 2 : ℝ) : ℂ) * J.u t x = 0
+    + ((2 * ‖J.u t x‖ ^ (2 : ℕ) : ℝ) : ℂ) * J.u t x = 0
 
 /-- Defocusing cubic NLS `iψₜ + ψₓₓ - 2|ψ|²ψ = 0`. -/
 def SolvesDefocusingNLS (J : ComplexEvolutionJet2) : Prop :=
   ∀ t x, Complex.I * J.ut t x + J.uxx t x
-    - ((2 * ‖J.u t x‖ ^ 2 : ℝ) : ℂ) * J.u t x = 0
+    - ((2 * ‖J.u t x‖ ^ (2 : ℕ) : ℝ) : ℂ) * J.u t x = 0
 
 /-- A scalar field travels rigidly with speed `c`. -/
 def IsTravelingWave (c : ℝ) (u : ℝ → ℝ → ℝ) : Prop :=

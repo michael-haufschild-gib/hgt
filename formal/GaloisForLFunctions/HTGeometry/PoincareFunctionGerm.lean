@@ -64,9 +64,9 @@ theorem exists_poincare_of_linearizer {g κ : ℂ → ℂ} {μ : ℂ}
 
 /-- The Poincaré function attached to the Koenigs linearizer of an attracting germ. -/
 theorem exists_poincare_koenigs {g : ℂ → ℂ} {μ : ℂ} {K c r : ℝ}
-    (hμ : μ ≠ 0) (hK0 : 0 ≤ K) (hc0 : 0 ≤ c) (hc1 : c ≤ 1) (hq : c ^ 2 < ‖μ‖) (hr : 0 < r)
+    (hμ : μ ≠ 0) (hK0 : 0 ≤ K) (hc0 : 0 ≤ c) (hc1 : c ≤ 1) (hq : c ^ (2 : ℕ) < ‖μ‖) (hr : 0 < r)
     (hgd : DifferentiableOn ℂ g (Metric.ball (0 : ℂ) r))
-    (hquad : ∀ z : ℂ, ‖z‖ ≤ r → ‖g z - μ * z‖ ≤ K * ‖z‖ ^ 2)
+    (hquad : ∀ z : ℂ, ‖z‖ ≤ r → ‖g z - μ * z‖ ≤ K * ‖z‖ ^ (2 : ℕ))
     (hgc : ∀ z : ℂ, ‖z‖ ≤ r → ‖g z‖ ≤ c * ‖z‖)
     (hg0 : g 0 = 0) (hga : HasDerivAt g μ 0) :
     ∃ Φ : ℂ → ℂ, Φ 0 = 0 ∧ HasStrictDerivAt Φ 1 0 ∧

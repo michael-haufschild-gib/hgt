@@ -47,10 +47,10 @@ theorem suzukiBoundaryExcursionFourLabelLightKreinLift_pullback :
   have hminor : (suzukiBoundaryExcursionFourLabelMinor : ℂ) = 1 := by
     norm_cast
     exact suzukiBoundaryExcursionFourLabelMinor_eq_one
-  have hdefect : (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 = 63 / 64 := by
+  have hdefect : (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) = 63 / 64 := by
     calc
-      (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
-          ((RHTower.routeEPCubicFourthDepthJuliaDefect ^ 2 : ℝ) : ℂ) :=
+      (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
+          ((RHTower.routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) : ℝ) : ℂ) :=
         (Complex.ofReal_pow _ _).symm
       _ = ((63 / 64 : ℝ) : ℂ) := by
         have h := RHTower.routeEPCubicFourthDepthJulia_pythagoras
@@ -58,7 +58,7 @@ theorem suzukiBoundaryExcursionFourLabelLightKreinLift_pullback :
         congr 1
         nlinarith
       _ = 63 / 64 := Complex.ofReal_div _ _
-  have hsqrt : (Real.sqrt 63 : ℂ) ^ 2 = 63 := by
+  have hsqrt : (Real.sqrt 63 : ℂ) ^ (2 : ℕ) = 63 := by
     rw [← Complex.ofReal_pow]
     norm_num
   ext i j
@@ -79,8 +79,8 @@ theorem suzukiBoundaryExcursionFourLabelLightKreinLift_pullback :
       8 * (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) *
           (8 * (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ)) +
           (-1 + -((Real.sqrt 63 : ℂ) * (Real.sqrt 63 : ℂ))) =
-        (64 : ℂ) * (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 -
-          (Real.sqrt 63 : ℂ) ^ 2 - 1 := by
+        (64 : ℂ) * (RHTower.routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) -
+          (Real.sqrt 63 : ℂ) ^ (2 : ℕ) - 1 := by
         ring
     rw [hrewrite, hdefect, hsqrt]
     norm_num

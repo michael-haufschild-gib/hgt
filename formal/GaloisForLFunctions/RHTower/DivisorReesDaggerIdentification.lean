@@ -47,7 +47,7 @@ multiplicity. -/
 def xiGradedSymbol (rho : ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   divisorReesGram (gradedDivisorOverlap (analyticOrderAt xi rho).toNat t)
     (gradedDivisorFisherNumerator (analyticOrderAt xi rho).toNat t)
-    (((analyticOrderAt xi rho).toNat : ℝ) ^ 2)
+    (((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ))
 
 /-- **The reflected dagger acts trivially on the graded symbol.**  Reflecting the spectral point
 across the critical line leaves the graded Rees symbol unchanged, because the symbol sees the point

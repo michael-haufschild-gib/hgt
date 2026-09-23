@@ -26,7 +26,7 @@ theorem exp_pi_mul_I : Complex.exp ((Real.pi : ℂ) * Complex.I) = -1 := by
   rw [Complex.exp_mul_I]; simp
 
 /-- `iπ` is a nonzero complex number. -/
-theorem pi_mul_I_ne_zero : ((Real.pi : ℂ) * Complex.I) ≠ 0 :=
+theorem pi_mul_I_ne_zero_piTranscendenceSetup : ((Real.pi : ℂ) * Complex.I) ≠ 0 :=
   mul_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero) Complex.I_ne_zero
 
 /-- For every integer `n`, `e^{n·iπ} = (−1)^n`. -/
@@ -36,7 +36,7 @@ theorem exp_int_mul_pi_mul_I (n : ℤ) :
 
 /-- **`i` is algebraic over `ℚ`.**  It is a root of `X² + 1`. -/
 theorem isAlgebraic_I : IsAlgebraic ℚ Complex.I := by
-  refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
+  refine ⟨Polynomial.X ^ (2 : ℕ) + 1, ?_, ?_⟩
   · intro h
     have hc := congrArg (fun p : ℚ[X] => p.coeff 2) h
     simp [Polynomial.coeff_X_pow, Polynomial.coeff_one] at hc

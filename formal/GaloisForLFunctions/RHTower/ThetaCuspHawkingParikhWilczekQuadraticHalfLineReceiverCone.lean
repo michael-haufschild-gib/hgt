@@ -21,37 +21,37 @@ namespace RHTower
 
 noncomputable section
 
-/-- Four semialgebraic chambers for strict positivity of `a*x^2+b*x+c` on `x>1`. -/
+/-- Four semialgebraic chambers for strict positivity of `a*x^(2 : ℕ)+b*x+c` on `x>1`. -/
 def quadraticPositiveOnOneCondition (a b c : ℝ) : Prop :=
   (0 < a ∧
     ((-2 * a ≤ b ∧ 0 ≤ a + b + c) ∨
-      (b < -2 * a ∧ b ^ 2 < 4 * a * c))) ∨
+      (b < -2 * a ∧ b ^ (2 : ℕ) < 4 * a * c))) ∨
   (a = 0 ∧
     ((0 < b ∧ 0 ≤ b + c) ∨
       (b = 0 ∧ 0 < c)))
 
 /-- Half-line positivity forces the quadratic leading coefficient to be nonnegative. -/
 theorem quadratic_leading_nonneg_of_pos_on_one
-    {a b c : ℝ} (h : ∀ x : ℝ, 1 < x → 0 < a * x ^ 2 + b * x + c) :
+    {a b c : ℝ} (h : ∀ x : ℝ, 1 < x → 0 < a * x ^ (2 : ℕ) + b * x + c) :
     0 ≤ a := by
   have ht : Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1)) atTop (nhds 0) :=
     tendsto_one_div_add_atTop_nhds_zero_nat
   have hlim : Tendsto
       (fun n : ℕ => a + b * (1 / ((n : ℝ) + 1)) +
-        c * (1 / ((n : ℝ) + 1)) ^ 2) atTop (nhds a) := by
+        c * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) atTop (nhds a) := by
     simpa using (tendsto_const_nhds.add
       (tendsto_const_nhds.mul ht)).add
         (tendsto_const_nhds.mul (ht.pow 2))
   apply ge_of_tendsto hlim
   filter_upwards [eventually_atTop.2 ⟨1, fun n hn => hn⟩] with n hn
   have hx : (1 : ℝ) < (n : ℝ) + 1 := by exact_mod_cast Nat.lt_add_one_iff.mpr hn
-  have hden : 0 < ((n : ℝ) + 1) ^ 2 := sq_pos_of_pos (by positivity)
+  have hden : 0 < ((n : ℝ) + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
   have hq := (h ((n : ℝ) + 1) hx).le
-  have hdiv : 0 ≤ (a * ((n : ℝ) + 1) ^ 2 + b * ((n : ℝ) + 1) + c) /
-      ((n : ℝ) + 1) ^ 2 := div_nonneg hq hden.le
-  have heq : (a * ((n : ℝ) + 1) ^ 2 + b * ((n : ℝ) + 1) + c) /
-      ((n : ℝ) + 1) ^ 2 =
-      a + b * (1 / ((n : ℝ) + 1)) + c * (1 / ((n : ℝ) + 1)) ^ 2 := by
+  have hdiv : 0 ≤ (a * ((n : ℝ) + 1) ^ (2 : ℕ) + b * ((n : ℝ) + 1) + c) /
+      ((n : ℝ) + 1) ^ (2 : ℕ) := div_nonneg hq hden.le
+  have heq : (a * ((n : ℝ) + 1) ^ (2 : ℕ) + b * ((n : ℝ) + 1) + c) /
+      ((n : ℝ) + 1) ^ (2 : ℕ) =
+      a + b * (1 / ((n : ℝ) + 1)) + c * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by
     field_simp
   rw [← heq]
   exact hdiv
@@ -80,14 +80,14 @@ theorem quadratic_linear_nonneg_of_pos_on_one
 
 /-- Strict positivity immediately right of one forces nonnegative boundary value at one. -/
 theorem quadratic_boundary_nonneg_of_pos_on_one
-    {a b c : ℝ} (h : ∀ x : ℝ, 1 < x → 0 < a * x ^ 2 + b * x + c) :
+    {a b c : ℝ} (h : ∀ x : ℝ, 1 < x → 0 < a * x ^ (2 : ℕ) + b * x + c) :
     0 ≤ a + b + c := by
   have ht : Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1)) atTop (nhds 0) :=
     tendsto_one_div_add_atTop_nhds_zero_nat
   have hcont : ContinuousAt
-      (fun t : ℝ => a * (1 + t) ^ 2 + b * (1 + t) + c) 0 := by fun_prop
+      (fun t : ℝ => a * (1 + t) ^ (2 : ℕ) + b * (1 + t) + c) 0 := by fun_prop
   have hlim : Tendsto
-      (fun n : ℕ => a * (1 + 1 / ((n : ℝ) + 1)) ^ 2 +
+      (fun n : ℕ => a * (1 + 1 / ((n : ℝ) + 1)) ^ (2 : ℕ) +
         b * (1 + 1 / ((n : ℝ) + 1)) + c) atTop (nhds (a + b + c)) := by
     simpa [Function.comp_def] using hcont.tendsto.comp ht
   apply ge_of_tendsto hlim
@@ -98,7 +98,7 @@ theorem quadratic_boundary_nonneg_of_pos_on_one
 
 /-- Exact semialgebraic classification of strict quadratic positivity on `(1,∞)`. -/
 theorem quadratic_pos_on_one_iff (a b c : ℝ) :
-    (∀ x : ℝ, 1 < x → 0 < a * x ^ 2 + b * x + c) ↔
+    (∀ x : ℝ, 1 < x → 0 < a * x ^ (2 : ℕ) + b * x + c) ↔
       quadraticPositiveOnOneCondition a b c := by
   constructor
   · intro h
@@ -130,7 +130,7 @@ theorem quadratic_pos_on_one_iff (a b c : ℝ) :
           apply (lt_div_iff₀ (by positivity)).mpr
           linarith
         have hq := h v hv
-        have hid : 4 * a * (a * v ^ 2 + b * v + c) = 4 * a * c - b ^ 2 := by
+        have hid : 4 * a * (a * v ^ (2 : ℕ) + b * v + c) = 4 * a * c - b ^ (2 : ℕ) := by
           dsimp [v]
           field_simp
           ring
@@ -143,10 +143,10 @@ theorem quadratic_pos_on_one_iff (a b c : ℝ) :
           have : 2 < x + 1 := by linarith
           nlinarith
         nlinarith [hfactor]
-      · have hsquare : 0 ≤ (2 * a * x + b) ^ 2 := sq_nonneg _
+      · have hsquare : 0 ≤ (2 * a * x + b) ^ (2 : ℕ) := sq_nonneg _
         have ha4 : 0 < 4 * a := by positivity
-        have hid : 4 * a * (a * x ^ 2 + b * x + c) =
-            (2 * a * x + b) ^ 2 + (4 * a * c - b ^ 2) := by ring
+        have hid : 4 * a * (a * x ^ (2 : ℕ) + b * x + c) =
+            (2 * a * x + b) ^ (2 : ℕ) + (4 * a * c - b ^ (2 : ℕ)) := by ring
         nlinarith
     · rcases hcase with ⟨hb, hboundary⟩ | ⟨hb, hc⟩
       · rw [ha, zero_mul, zero_add]
@@ -168,7 +168,7 @@ theorem schwarzschildParikhWilczekSignedMatrixReceiverCone_iff
     {N : ℕ} (M : Fin N → Fin N → ℝ) :
     schwarzschildParikhWilczekSignedMatrixReceiverCone M ↔
       ∀ x : ℝ, 1 < x →
-        0 < schwarzschildParikhWilczekSignedMatrixMomentZero M * x ^ 2 +
+        0 < schwarzschildParikhWilczekSignedMatrixMomentZero M * x ^ (2 : ℕ) +
           schwarzschildParikhWilczekSignedMatrixMomentOne M * x +
           schwarzschildParikhWilczekSignedMatrixMomentTwo M := by
   exact (quadratic_pos_on_one_iff _ _ _).symm
@@ -180,7 +180,7 @@ theorem schwarzschildParikhWilczekBorelSpectralCoordinate_gt_one
   obtain ⟨hre0, hre1⟩ := xi_divisor_support_re_mem_open_unit rho
   have hreprod : 0 < (rho : ℂ).re * (1 - (rho : ℂ).re) :=
     mul_pos hre0 (sub_pos.mpr hre1)
-  have himsq : 0 < (rho : ℂ).im ^ 2 :=
+  have himsq : 0 < (rho : ℂ).im ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero rho)
   rw [schwarzschildParikhWilczekBorelSpectralCoordinate]
   linarith

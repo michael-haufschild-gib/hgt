@@ -42,7 +42,7 @@ theorem singleton_history_no_five_of_receiver_cap
     (hmem : history ∈ routeEComponentHistogramCell (fun _ : C => Bool) m k)
     (hone : ∀ i, k i true = 1) (ha : ∀ i, 2 ≤ a i) (hb : ∀ i, b i ≤ U)
     (hm : 10 * (Nat.log 2 U + 2) ≤ m)
-    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ 55 < L ^ 30)
+    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ (55 : ℕ) < L ^ (30 : ℕ))
     (hwindow : ∀ r, routeEComponentSlotReceiver (fun _ : C => Bool)
       (fun i z => if z then (b i : ℝ) else (a i : ℝ)) history r ∈ Set.Icc L (L + W))
     (e : Fin 5 → Fin m) :

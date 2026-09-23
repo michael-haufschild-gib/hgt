@@ -100,7 +100,7 @@ theorem norm_iteratedDeriv_windowCarrier_le (K : ℕ) {d : ℝ} (hd : 0 < d) (hd
 /-- The polynomial envelope of the carrier on the window support. -/
 theorem norm_chiCarrier_le_of_mem {d : ℝ} (hd : 0 < d) (hdq : d ≤ 1 / 4) {v p q η : ℝ}
     (hL : 4 ≤ p - η) (hv : 2 * |v| ≤ p - η) {t : ℝ} (ht : t ∈ Set.Icc (p - η) (q + η)) :
-    ‖chiCarrier d v t‖ ≤ Real.exp 8 * (1 + (q + η) + |v|) ^ 4 := by
+    ‖chiCarrier d v t‖ ≤ Real.exp 8 * (1 + (q + η) + |v|) ^ (4 : ℕ) := by
   have ht4 : (4 : ℝ) ≤ t := by linarith [ht.1]
   have hvt : 2 * |v| ≤ t := by linarith [ht.1]
   refine (norm_chiCarrier_le hd hdq ht4 hvt).trans ?_
@@ -115,13 +115,13 @@ theorem norm_chiCarrier_le_of_mem {d : ℝ} (hd : 0 < d) (hdq : d ≤ 1 / 4) {v 
     have := abs_add_le t v
     have := abs_of_pos (by linarith : (0 : ℝ) < t)
     linarith [ht.2]
-  have h1 : (1 + |t - v|) ^ 2 ≤ (1 + (q + η) + |v|) ^ 2 := pow_le_pow_left₀ (by positivity) hb1 2
-  have h2 : (1 + |t + v|) ^ 2 ≤ (1 + (q + η) + |v|) ^ 2 := pow_le_pow_left₀ (by positivity) hb2 2
-  calc Real.exp 8 * ((1 + |t - v|) ^ 2 * (1 + |t + v|) ^ 2)
-      ≤ Real.exp 8 * ((1 + (q + η) + |v|) ^ 2 * (1 + (q + η) + |v|) ^ 2) := by
+  have h1 : (1 + |t - v|) ^ (2 : ℕ) ≤ (1 + (q + η) + |v|) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hb1 2
+  have h2 : (1 + |t + v|) ^ (2 : ℕ) ≤ (1 + (q + η) + |v|) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hb2 2
+  calc Real.exp 8 * ((1 + |t - v|) ^ (2 : ℕ) * (1 + |t + v|) ^ (2 : ℕ))
+      ≤ Real.exp 8 * ((1 + (q + η) + |v|) ^ (2 : ℕ) * (1 + (q + η) + |v|) ^ (2 : ℕ)) := by
         apply mul_le_mul_of_nonneg_left _ (by positivity)
         exact mul_le_mul h1 h2 (by positivity) (by positivity)
-    _ = Real.exp 8 * (1 + (q + η) + |v|) ^ 4 := by ring
+    _ = Real.exp 8 * (1 + (q + η) + |v|) ^ (4 : ℕ) := by ring
 
 theorem integrable_iteratedDeriv_windowCarrier {d : ℝ} (hd : 0 < d) (hdq : d ≤ 1 / 4)
     {v p q η : ℝ} (hη : 0 < η) (n : ℕ) :
@@ -135,10 +135,10 @@ theorem integral_norm_iteratedDeriv_windowCarrier_le (K : ℕ) {d : ℝ} (hd : 0
     (hv : 2 * |v| ≤ p - η) :
     ∫ t, ‖iteratedDeriv K (windowCarrier d v p q η) t‖
       ≤ (q - p + 2 * η) * (windowCarrierJetConst K η (p - η) v
-          * (Real.exp 8 * (1 + (q + η) + |v|) ^ 4)) := by
+          * (Real.exp 8 * (1 + (q + η) + |v|) ^ (4 : ℕ))) := by
   have h := integral_norm_le_of_forall_mem_Icc (g := iteratedDeriv K (windowCarrier d v p q η))
     (a := p - η) (b := q + η)
-    (M := windowCarrierJetConst K η (p - η) v * (Real.exp 8 * (1 + (q + η) + |v|) ^ 4))
+    (M := windowCarrierJetConst K η (p - η) v * (Real.exp 8 * (1 + (q + η) + |v|) ^ (4 : ℕ)))
     (by linarith) (integrable_iteratedDeriv_windowCarrier hd hdq hη K)
     (fun t ht => iteratedDeriv_windowCarrier_eq_zero K hη ht)
     (fun t ht => by
@@ -154,7 +154,7 @@ theorem norm_integral_windowCarrier_mul_cexp_le (K : ℕ) {d : ℝ} (hd : 0 < d)
     (hξ : ξ ≠ 0) :
     ‖∫ t, windowCarrier d v p q η t * Complex.exp (-(ξ * t) * I)‖
       ≤ (q - p + 2 * η) * (windowCarrierJetConst K η (p - η) v
-          * (Real.exp 8 * (1 + (q + η) + |v|) ^ 4)) / |ξ| ^ K := by
+          * (Real.exp 8 * (1 + (q + η) + |v|) ^ (4 : ℕ))) / |ξ| ^ K := by
   refine (norm_integral_mul_cexp_le_of_iteratedDeriv K (contDiff_windowCarrier hd hdq v p q η K)
     (fun n _ => integrable_iteratedDeriv_windowCarrier hd hdq hη n) hξ).trans ?_
   exact div_le_div_of_nonneg_right

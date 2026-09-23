@@ -38,53 +38,53 @@ theorem stationary_c5_fluxLogCurvature_certificate
     {x y z : ℝ}
     (hstationary :
       39 + y - 17 * x + 5 * z - 3 * x * y =
-        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ 2)) :
-    let d := -(24 - 9 * x + 5 * x * y - 4 * x ^ 2)
-    125 * x ^ 2 * (z - y ^ 2 - y + 2) =
-      -20 * (x - 2) ^ 2 * (x ^ 2 + 36) -
-        5 * d * (5 * x ^ 2 - 24 * x + 48) - 5 * d ^ 2 := by
+        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ))) :
+    let d := -(24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ))
+    125 * x ^ (2 : ℕ) * (z - y ^ (2 : ℕ) - y + 2) =
+      -20 * (x - 2) ^ (2 : ℕ) * (x ^ (2 : ℕ) + 36) -
+        5 * d * (5 * x ^ (2 : ℕ) - 24 * x + 48) - 5 * d ^ (2 : ℕ) := by
   dsimp only
   have hz :
-      5 * z = 9 - x + 13 * x * y - 8 * x ^ 2 - y := by
+      5 * z = 9 - x + 13 * x * y - 8 * x ^ (2 : ℕ) - y := by
     linarith
-  linear_combination 25 * x ^ 2 * hz
+  linear_combination 25 * x ^ (2 : ℕ) * hz
 
 private theorem stationary_negative_c5_forces_flux_logCurvature_neg
     {x y z : ℝ}
     (hx : 0 < x) (hxle : x ≤ 2)
-    (hneg : 24 - 9 * x + 5 * x * y - 4 * x ^ 2 < 0)
+    (hneg : 24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ) < 0)
     (hstationary :
       39 + y - 17 * x + 5 * z - 3 * x * y =
-        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ 2)) :
-    z - y ^ 2 - y + 2 < 0 := by
-  let d := -(24 - 9 * x + 5 * x * y - 4 * x ^ 2)
+        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ))) :
+    z - y ^ (2 : ℕ) - y + 2 < 0 := by
+  let d := -(24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ))
   have hd : 0 < d := by
     dsimp only [d]
     linarith
-  have hc : 0 < 5 * x ^ 2 - 24 * x + 48 := by
+  have hc : 0 < 5 * x ^ (2 : ℕ) - 24 * x + 48 := by
     nlinarith [sq_nonneg (x - 2)]
   have hcertificate :
-      125 * x ^ 2 * (z - y ^ 2 - y + 2) =
-        -20 * (x - 2) ^ 2 * (x ^ 2 + 36) -
-          5 * d * (5 * x ^ 2 - 24 * x + 48) - 5 * d ^ 2 := by
+      125 * x ^ (2 : ℕ) * (z - y ^ (2 : ℕ) - y + 2) =
+        -20 * (x - 2) ^ (2 : ℕ) * (x ^ (2 : ℕ) + 36) -
+          5 * d * (5 * x ^ (2 : ℕ) - 24 * x + 48) - 5 * d ^ (2 : ℕ) := by
     simpa only [d] using stationary_c5_fluxLogCurvature_certificate hstationary
   have hright :
-      -20 * (x - 2) ^ 2 * (x ^ 2 + 36) -
-          5 * d * (5 * x ^ 2 - 24 * x + 48) - 5 * d ^ 2 < 0 := by
+      -20 * (x - 2) ^ (2 : ℕ) * (x ^ (2 : ℕ) + 36) -
+          5 * d * (5 * x ^ (2 : ℕ) - 24 * x + 48) - 5 * d ^ (2 : ℕ) < 0 := by
     have hfirst :
-        0 ≤ 20 * (x - 2) ^ 2 * (x ^ 2 + 36) := by positivity
+        0 ≤ 20 * (x - 2) ^ (2 : ℕ) * (x ^ (2 : ℕ) + 36) := by positivity
     have hmiddle :
-        0 < 5 * d * (5 * x ^ 2 - 24 * x + 48) := by positivity
-    have hlast : 0 ≤ 5 * d ^ 2 := by positivity
+        0 < 5 * d * (5 * x ^ (2 : ℕ) - 24 * x + 48) := by positivity
+    have hlast : 0 ≤ 5 * d ^ (2 : ℕ) := by positivity
     linarith
   have hleft :
-      125 * x ^ 2 * (z - y ^ 2 - y + 2) < 0 := by
+      125 * x ^ (2 : ℕ) * (z - y ^ (2 : ℕ) - y + 2) < 0 := by
     rw [hcertificate]
     exact hright
-  have hfactor : 0 < 125 * x ^ 2 := by positivity
+  have hfactor : 0 < 125 * x ^ (2 : ℕ) := by positivity
   by_contra hnot
-  have hnonneg : 0 ≤ z - y ^ 2 - y + 2 := le_of_not_gt hnot
-  have hprod : 0 ≤ 125 * x ^ 2 * (z - y ^ 2 - y + 2) :=
+  have hnonneg : 0 ≤ z - y ^ (2 : ℕ) - y + 2 := le_of_not_gt hnot
+  have hprod : 0 ≤ 125 * x ^ (2 : ℕ) * (z - y ^ (2 : ℕ) - y + 2) :=
     mul_nonneg hfactor.le hnonneg
   linarith
 
@@ -93,17 +93,17 @@ private theorem stationary_negative_c5_raw_forces_flux_logCurvature_neg
     (ht : 0 < t) (hA : 0 < A) (hD : 0 < D)
     (hprojective : t * D ≤ 2 * A)
     (hneg :
-      24 * A ^ 2 - 9 * t * A * D +
-          t ^ 2 * (5 * A * J - 4 * D ^ 2) < 0)
+      24 * A ^ (2 : ℕ) - 9 * t * A * D +
+          t ^ (2 : ℕ) * (5 * A * J - 4 * D ^ (2 : ℕ)) < 0)
     (hstationary :
-      (39 * A * D + t * A * J - 17 * t * D ^ 2 +
-          t ^ 2 * (5 * A * K - 3 * D * J)) * A =
-        2 * (24 * A ^ 2 - 9 * t * A * D +
-          t ^ 2 * (5 * A * J - 4 * D ^ 2)) * D) :
-    t ^ 2 * (D * K - J ^ 2) - t * D * J + 2 * D ^ 2 < 0 := by
+      (39 * A * D + t * A * J - 17 * t * D ^ (2 : ℕ) +
+          t ^ (2 : ℕ) * (5 * A * K - 3 * D * J)) * A =
+        2 * (24 * A ^ (2 : ℕ) - 9 * t * A * D +
+          t ^ (2 : ℕ) * (5 * A * J - 4 * D ^ (2 : ℕ))) * D) :
+    t ^ (2 : ℕ) * (D * K - J ^ (2 : ℕ)) - t * D * J + 2 * D ^ (2 : ℕ) < 0 := by
   let x := t * D / A
   let y := t * J / D
-  let z := t ^ 2 * K / D
+  let z := t ^ (2 : ℕ) * K / D
   have hx : 0 < x := by
     dsimp only [x]
     positivity
@@ -111,24 +111,24 @@ private theorem stationary_negative_c5_raw_forces_flux_logCurvature_neg
     dsimp only [x]
     exact (div_le_iff₀ hA).2 (by linarith)
   have hscaledNeg :
-      (24 * A ^ 2 - 9 * t * A * D +
-          t ^ 2 * (5 * A * J - 4 * D ^ 2)) / A ^ 2 < 0 :=
+      (24 * A ^ (2 : ℕ) - 9 * t * A * D +
+          t ^ (2 : ℕ) * (5 * A * J - 4 * D ^ (2 : ℕ))) / A ^ (2 : ℕ) < 0 :=
     div_neg_of_neg_of_pos hneg (sq_pos_of_pos hA)
-  have hdimNeg : 24 - 9 * x + 5 * x * y - 4 * x ^ 2 < 0 := by
+  have hdimNeg : 24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ) < 0 := by
     dsimp only [x, y]
     convert hscaledNeg using 1
     field_simp [hA.ne', hD.ne']
     ring
   have hdimStationary :
       39 + y - 17 * x + 5 * z - 3 * x * y =
-        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ 2) := by
+        2 * (24 - 9 * x + 5 * x * y - 4 * x ^ (2 : ℕ)) := by
     dsimp only [x, y, z]
     field_simp [hA.ne', hD.ne']
     nlinarith [hstationary]
   have hdim := stationary_negative_c5_forces_flux_logCurvature_neg
     hx hxle hdimNeg hdimStationary
   have hrawScaled :
-      D ^ 2 * (z - y ^ 2 - y + 2) < 0 :=
+      D ^ (2 : ℕ) * (z - y ^ (2 : ℕ) - y + 2) < 0 :=
     mul_neg_of_pos_of_neg (sq_pos_of_pos hD) hdim
   dsimp only [y, z] at hrawScaled
   convert hrawScaled using 1
@@ -141,14 +141,14 @@ def thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvatureNumerator
   let D := thetaCuspReflectedSourceDecayFlux u t
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let K := thetaCuspReflectedSourceDecayFluxThirdJet u t
-  t ^ 2 * (D * K - J ^ 2) - t * D * J + 2 * D ^ 2
+  t ^ (2 : ℕ) * (D * K - J ^ (2 : ℕ)) - t * D * J + 2 * D ^ (2 : ℕ)
 
 /-- First squared-coordinate derivative of normalized positive source flux. -/
 def thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope (u x : ℝ) : ℝ :=
   let t := Real.sqrt x
   let D := thetaCuspReflectedSourceDecayFlux u t
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
-  (t * J - D) / (2 * t ^ 3)
+  (t * J - D) / (2 * t ^ (3 : ℕ))
 
 /-- Second squared-coordinate derivative of normalized positive source flux. -/
 def thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature (u x : ℝ) : ℝ :=
@@ -156,7 +156,7 @@ def thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature (u x : ℝ) : �
   let D := thetaCuspReflectedSourceDecayFlux u t
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let K := thetaCuspReflectedSourceDecayFluxThirdJet u t
-  (t ^ 2 * K - 3 * t * J + 3 * D) / (4 * t ^ 5)
+  (t ^ (2 : ℕ) * K - 3 * t * J + 3 * D) / (4 * t ^ (5 : ℕ))
 
 theorem hasDerivAt_thetaCuspReflectedSourceSquaredNormalizedDecayFlux
     (u : ℝ) {x : ℝ} (hx : 0 < x) :
@@ -188,7 +188,7 @@ theorem hasDerivAt_thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope
     (hasDerivAt_thetaCuspReflectedSourceDecayFluxCurvature u (Real.sqrt x)).comp x hs
   have hnum := hs.mul hJ |>.sub hD
   have hden := (hs.pow 3).const_mul 2
-  have hraw := hnum.div hden (by positivity : 2 * s x ^ 3 ≠ 0)
+  have hraw := hnum.div hden (by positivity : 2 * s x ^ (3 : ℕ) ≠ 0)
   unfold thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope
     thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature
   dsimp only [s] at hraw
@@ -208,8 +208,8 @@ def thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature
     (u x : ℝ) : ℝ :=
   (thetaCuspReflectedSourceSquaredNormalizedDecayFlux u x *
         thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature u x -
-      thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope u x ^ 2) /
-    thetaCuspReflectedSourceSquaredNormalizedDecayFlux u x ^ 2
+      thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope u x ^ (2 : ℕ)) /
+    thetaCuspReflectedSourceSquaredNormalizedDecayFlux u x ^ (2 : ℕ)
 
 theorem hasDerivAt_log_thetaCuspReflectedSourceSquaredNormalizedDecayFlux
     (u : ℝ) {x : ℝ} (hx : 0 < x) :
@@ -243,11 +243,11 @@ theorem hasDerivAt_thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogSlope
 normalized flux in squared displacement. -/
 theorem thetaCuspReflectedSourceSquaredNormalizedDecayFlux_curvatureDeterminant_eq
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
-    thetaCuspReflectedSourceSquaredNormalizedDecayFlux u (t ^ 2) *
-          thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature u (t ^ 2) -
-        thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope u (t ^ 2) ^ 2 =
+    thetaCuspReflectedSourceSquaredNormalizedDecayFlux u (t ^ (2 : ℕ)) *
+          thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature u (t ^ (2 : ℕ)) -
+        thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope u (t ^ (2 : ℕ)) ^ (2 : ℕ) =
       thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvatureNumerator u t /
-        (4 * t ^ 6) := by
+        (4 * t ^ (6 : ℕ)) := by
   unfold thetaCuspReflectedSourceSquaredNormalizedDecayFlux
     thetaCuspReflectedSourceSquaredNormalizedDecayFluxSlope
     thetaCuspReflectedSourceSquaredNormalizedDecayFluxCurvature
@@ -259,9 +259,9 @@ theorem thetaCuspReflectedSourceSquaredNormalizedDecayFlux_curvatureDeterminant_
 /-- Exact logarithmic-curvature quotient at a positive displacement. -/
 theorem thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature_sq_eq
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
-    thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ 2) =
+    thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ (2 : ℕ)) =
       thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvatureNumerator u t /
-        (4 * t ^ 4 * thetaCuspReflectedSourceDecayFlux u t ^ 2) := by
+        (4 * t ^ (4 : ℕ) * thetaCuspReflectedSourceDecayFlux u t ^ (2 : ℕ)) := by
   unfold thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature
   rw [thetaCuspReflectedSourceSquaredNormalizedDecayFlux_curvatureDeterminant_eq u ht]
   unfold thetaCuspReflectedSourceSquaredNormalizedDecayFlux
@@ -305,10 +305,10 @@ theorem
     (hmin : IsLocalMin
       (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u) t)
     (hneg : thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u t < 0) :
-    thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ 2) < 0 := by
+    thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ (2 : ℕ)) < 0 := by
   rw [thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature_sq_eq u ht]
   have hden :
-      0 < 4 * t ^ 4 * thetaCuspReflectedSourceDecayFlux u t ^ 2 := by
+      0 < 4 * t ^ (4 : ℕ) * thetaCuspReflectedSourceDecayFlux u t ^ (2 : ℕ) := by
     exact mul_pos (mul_pos (by norm_num) (pow_pos ht 4))
       (sq_pos_of_pos (thetaCuspReflectedSourceDecayFlux_pos u ht))
   exact div_neg_of_neg_of_pos
@@ -326,7 +326,7 @@ theorem
       thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0 t < 0 ∧
       IsLocalMin
         (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0) t ∧
-      thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature 0 (t ^ 2) < 0 := by
+      thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature 0 (t ^ (2 : ℕ)) < 0 := by
   obtain ⟨t, ht, hneg, hmin, _⟩ :=
     thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_failure_forces_intrinsicBalance_localMin
       hfail
@@ -344,7 +344,7 @@ theorem
         IsLocalMin
           (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0) t →
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0 t < 0 →
-        0 ≤ thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature 0 (t ^ 2) := by
+        0 ≤ thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature 0 (t ^ (2 : ℕ)) := by
   constructor
   · intro hglobal t ht _ hneg
     have hNneg : thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 t < 0 :=
@@ -366,7 +366,7 @@ theorem
       IsLocalMin
         (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u) t ∧
       thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u t < 0 ∧
-      0 ≤ thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ 2) := by
+      0 ≤ thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature u (t ^ (2 : ℕ)) := by
   rintro ⟨t, ht, hmin, hneg, hnonneg⟩
   exact (not_lt_of_ge hnonneg)
     (thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature_neg_of_intrinsicBalance_localMin_neg

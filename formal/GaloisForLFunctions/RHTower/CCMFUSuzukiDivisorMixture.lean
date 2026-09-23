@@ -13,13 +13,13 @@ open _root_.RHTower
 def ccmFUXiScrewDivisorTermMixture (b H : ℝ) (q : XiZeroCopy) : ℂ :=
   (∫ t in b..H,
     (ccmThirdGradeCesaroRectangularMixDensity H t : ℂ) * xiScrewDivisorTerm t q) +
-    (32 / H ^ 4 : ℝ) * xiScrewDivisorTerm H q
+    (32 / H ^ (4 : ℕ) : ℝ) * xiScrewDivisorTerm H q
 
 /-- The same moving marked reporter applied before summing divisor modes. -/
 def ccmFUXiScrewDivisorMixture (b H : ℝ) : ℂ :=
   (∫ t in b..H,
     (ccmThirdGradeCesaroRectangularMixDensity H t : ℂ) * xiScrewDivisor t) +
-    (32 / H ^ 4 : ℝ) * xiScrewDivisor H
+    (32 / H ^ (4 : ℕ) : ℝ) * xiScrewDivisor H
 
 private theorem continuous_xiScrewDivisorTerm (q : XiZeroCopy) :
     Continuous (fun t : ℝ => xiScrewDivisorTerm t q) := by
@@ -59,19 +59,19 @@ private theorem summable_integral_norm_rectangular_density_mul_term
   have hsum0 := xiSpectralPoint_inv_sq_summable.mul_left
     (mass * (Real.exp (H / 2) + 1))
   have hsum : Summable (fun q : XiZeroCopy =>
-      mass * ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2))) :=
+      mass * ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))) :=
     by simpa only [mul_assoc] using hsum0
   refine Summable.of_nonneg_of_le (fun q => integral_nonneg fun _ => norm_nonneg _) (fun q => ?_)
     hsum
   have hweight : IntegrableOn (fun t : ℝ =>
       ccmThirdGradeCesaroRectangularMixDensity H t *
-        ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2))) (Ioc b H) :=
+        ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))) (Ioc b H) :=
     (hρ.mul continuousOn_const).integrableOn_Icc.mono_set Ioc_subset_Icc_self
   calc
     (∫ t in Ioc b H,
         ‖(ccmThirdGradeCesaroRectangularMixDensity H t : ℂ) * xiScrewDivisorTerm t q‖) ≤
         ∫ t in Ioc b H, ccmThirdGradeCesaroRectangularMixDensity H t *
-          ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2)) := by
+          ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
       refine setIntegral_mono_on
         (rectangular_density_mul_term_integrableOn hb hbH q).norm hweight measurableSet_Ioc ?_
       intro t ht
@@ -83,14 +83,14 @@ private theorem summable_integral_norm_rectangular_density_mul_term
       refine mul_le_mul_of_nonneg_left ?_ hρ0
       calc
         ‖xiScrewDivisorTerm t q‖ ≤
-            (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2 :=
+            (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
           norm_xiScrewDivisorTerm_le t q
-        _ ≤ (Real.exp (H / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+        _ ≤ (Real.exp (H / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
           gcongr
           rw [abs_of_nonneg ht0]
           linarith
-        _ = (Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
-    _ = mass * ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2)) := by
+        _ = (Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
+    _ = mass * ((Real.exp (H / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
       dsimp only [mass]
       rw [integral_mul_const]
 
@@ -115,14 +115,14 @@ theorem ccmFUXiScrewDivisorMixture_eq_tsum_termMixture
     ∫ t in Ioc b H,
       (ccmThirdGradeCesaroRectangularMixDensity H t : ℂ) * xiScrewDivisorTerm t q
   let G : XiZeroCopy → ℂ := fun q =>
-    ((32 / H ^ 4 : ℝ) : ℂ) * xiScrewDivisorTerm H q
+    ((32 / H ^ (4 : ℕ) : ℝ) : ℂ) * xiScrewDivisorTerm H q
   have hF : Summable F := by
     dsimp only [F]
     apply Summable.of_norm_bounded hnorm
     intro q
     exact norm_integral_le_integral_norm _
   have hG : Summable G := by
-    simpa only [G] using (xiScrewDivisorTerm_summable H).mul_left ((32 / H ^ 4 : ℝ) : ℂ)
+    simpa only [G] using (xiScrewDivisorTerm_summable H).mul_left ((32 / H ^ (4 : ℕ) : ℝ) : ℂ)
   let K : XiZeroCopy → ℂ := fun q =>
     (∫ t in b..H,
       (ccmThirdGradeCesaroRectangularMixDensity H t : ℂ) * xiScrewDivisorTerm t q) + G q
@@ -167,8 +167,8 @@ theorem ofReal_ccmFUCentralXiScrewPositiveMixture_eq_divisorMixture
         change (↑(ccmThirdGradeCesaroRectangularMixDensity H t * suzukiPsi t) : ℂ) = _
         rw [Complex.ofReal_mul, ofReal_suzukiPsi_eq_xiScrewDivisor_all]
   have hend :
-      (((32 / H ^ 4) * suzukiPsi H : ℝ) : ℂ) =
-        ((32 / H ^ 4 : ℝ) : ℂ) * xiScrewDivisor H := by
+      (((32 / H ^ (4 : ℕ)) * suzukiPsi H : ℝ) : ℂ) =
+        ((32 / H ^ (4 : ℕ) : ℝ) : ℂ) * xiScrewDivisor H := by
     rw [Complex.ofReal_mul, ofReal_suzukiPsi_eq_xiScrewDivisor_all]
   unfold ccmFUCentralXiScrewPositiveMixture ccmFUXiScrewDivisorMixture
   rw [Complex.ofReal_add, hbulk, hend]

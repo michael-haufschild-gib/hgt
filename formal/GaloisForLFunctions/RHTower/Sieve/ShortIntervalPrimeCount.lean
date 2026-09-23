@@ -95,7 +95,7 @@ theorem exists_card_windowPrimes_ge :
     have h3 : Real.sqrt (2 * y) = Real.sqrt 2 * Real.sqrt y := Real.sqrt_mul (by norm_num) y
     have h4 : Real.sqrt 2 ≤ 2 := by
       rw [show (2 : ℝ) = Real.sqrt 4 by
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
       exact Real.sqrt_le_sqrt (by norm_num)
     have h5 : (0 : ℝ) ≤ Real.sqrt y := Real.sqrt_nonneg y
     nlinarith [h2, h3, h4, h5]

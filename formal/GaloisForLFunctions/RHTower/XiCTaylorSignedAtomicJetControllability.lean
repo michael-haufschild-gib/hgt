@@ -59,10 +59,10 @@ theorem spectralTranslationPhase_nat_mul
 theorem spectralTranslationPhase_quarterTurn_two
     {T : ℝ} (hT : T ≠ 0) (y : ℝ) :
     spectralTranslationPhase (2 * T) (signedQuarterTurnPoint T y) =
-      ⟨-(Real.exp (-T * y) ^ 2), 0⟩ := by
+      ⟨-(Real.exp (-T * y) ^ (2 : ℕ)), 0⟩ := by
   calc
     spectralTranslationPhase (2 * T) (signedQuarterTurnPoint T y) =
-        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ 2 := by
+        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ (2 : ℕ) := by
       simpa using spectralTranslationPhase_nat_mul 2 T
         (signedQuarterTurnPoint T y)
     _ = _ := by
@@ -73,10 +73,10 @@ theorem spectralTranslationPhase_quarterTurn_two
 theorem spectralTranslationPhase_quarterTurn_three
     {T : ℝ} (hT : T ≠ 0) (y : ℝ) :
     spectralTranslationPhase (3 * T) (signedQuarterTurnPoint T y) =
-      ⟨0, -(Real.exp (-T * y) ^ 3)⟩ := by
+      ⟨0, -(Real.exp (-T * y) ^ (3 : ℕ))⟩ := by
   calc
     spectralTranslationPhase (3 * T) (signedQuarterTurnPoint T y) =
-        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ 3 := by
+        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ (3 : ℕ) := by
       simpa using spectralTranslationPhase_nat_mul 3 T
         (signedQuarterTurnPoint T y)
     _ = _ := by
@@ -87,10 +87,10 @@ theorem spectralTranslationPhase_quarterTurn_three
 theorem spectralTranslationPhase_quarterTurn_four
     {T : ℝ} (hT : T ≠ 0) (y : ℝ) :
     spectralTranslationPhase (4 * T) (signedQuarterTurnPoint T y) =
-      ⟨Real.exp (-T * y) ^ 4, 0⟩ := by
+      ⟨Real.exp (-T * y) ^ (4 : ℕ), 0⟩ := by
   calc
     spectralTranslationPhase (4 * T) (signedQuarterTurnPoint T y) =
-        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ 4 := by
+        spectralTranslationPhase T (signedQuarterTurnPoint T y) ^ (4 : ℕ) := by
       simpa using spectralTranslationPhase_nat_mul 4 T
         (signedQuarterTurnPoint T y)
     _ = _ := by
@@ -120,14 +120,14 @@ def signedFourAtomCompletionDerivative
 /-- Real-coordinate form of the completion at a quarter-turn point. -/
 def signedQuarterTurnCompletion
     (r a₁ a₂ a₃ a₄ : ℝ) : ℂ :=
-  ⟨a₁ + (1 + r ^ 2) * a₂ + a₃ + (1 - r ^ 4) * a₄,
-    -r * a₁ + r ^ 3 * a₃⟩
+  ⟨a₁ + (1 + r ^ (2 : ℕ)) * a₂ + a₃ + (1 - r ^ (4 : ℕ)) * a₄,
+    -r * a₁ + r ^ (3 : ℕ) * a₃⟩
 
 /-- Real-coordinate form of the derivative at a quarter-turn point. -/
 def signedQuarterTurnCompletionDerivative
     (T r a₁ a₂ a₃ a₄ : ℝ) : ℂ :=
-  ⟨T * r * a₁ - 3 * T * r ^ 3 * a₃,
-    2 * T * r ^ 2 * a₂ - 4 * T * r ^ 4 * a₄⟩
+  ⟨T * r * a₁ - 3 * T * r ^ (3 : ℕ) * a₃,
+    2 * T * r ^ (2 : ℕ) * a₂ - 4 * T * r ^ (4 : ℕ) * a₄⟩
 
 theorem signedFourAtomCompletion_quarterTurn_eq
     {T : ℝ} (hT : T ≠ 0) (y a₁ a₂ a₃ a₄ : ℝ) :
@@ -167,7 +167,7 @@ def signedQuarterTurnWeightOne
 /-- Second odd-block inverse coordinate. -/
 def signedQuarterTurnWeightThree
     (T r : ℝ) (G H : ℂ) : ℝ :=
-  -(T * G.im + H.re) / (2 * T * r ^ 3)
+  -(T * G.im + H.re) / (2 * T * r ^ (3 : ℕ))
 
 def signedQuarterTurnRealResidual
     (T r : ℝ) (G H : ℂ) : ℝ :=
@@ -179,14 +179,14 @@ def signedQuarterTurnRealResidual
 def signedQuarterTurnWeightFour
     (T r : ℝ) (G H : ℂ) : ℝ :=
   (signedQuarterTurnRealResidual T r G H -
-      (1 + r ^ 2) * H.im / (2 * T * r ^ 2)) /
-    (1 + r ^ 2) ^ 2
+      (1 + r ^ (2 : ℕ)) * H.im / (2 * T * r ^ (2 : ℕ))) /
+    (1 + r ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- First even-block inverse coordinate. -/
 def signedQuarterTurnWeightTwo
     (T r : ℝ) (G H : ℂ) : ℝ :=
-  H.im / (2 * T * r ^ 2) +
-    2 * r ^ 2 * signedQuarterTurnWeightFour T r G H
+  H.im / (2 * T * r ^ (2 : ℕ)) +
+    2 * r ^ (2 : ℕ) * signedQuarterTurnWeightFour T r G H
 
 /-- The four real quarter-turn weights control an arbitrary complex value and derivative. -/
 theorem signedQuarterTurnCompletionJet_surjective
@@ -201,7 +201,7 @@ theorem signedQuarterTurnCompletionJet_surjective
         (signedQuarterTurnWeightTwo T r G H)
         (signedQuarterTurnWeightThree T r G H)
         (signedQuarterTurnWeightFour T r G H) = H := by
-  have hsq : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hsq : 1 + r ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r]
   constructor <;>
     apply Complex.ext <;>
     simp [signedQuarterTurnCompletion,
@@ -490,15 +490,15 @@ theorem eventually_signedFourAtomCompletionExactScaledChargeAt_xiMesh
 value/derivative interpolation problem. -/
 def signedEvenQuarterTurnWeightFour
     (T r q : ℝ) : ℝ :=
-  (1 - (1 + r ^ 2) * q / (2 * T * r ^ 2)) /
-    (1 + r ^ 2) ^ 2
+  (1 - (1 + r ^ (2 : ℕ)) * q / (2 * T * r ^ (2 : ℕ))) /
+    (1 + r ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- Weight at the second quarter turn in the unique even-channel solution of the scalar
 value/derivative interpolation problem. -/
 def signedEvenQuarterTurnWeightTwo
     (T r q : ℝ) : ℝ :=
-  q / (2 * T * r ^ 2) +
-    2 * r ^ 2 * signedEvenQuarterTurnWeightFour T r q
+  q / (2 * T * r ^ (2 : ℕ)) +
+    2 * r ^ (2 : ℕ) * signedEvenQuarterTurnWeightFour T r q
 
 /-- Two even quarter-turn atoms realize every real derivative target while fixing the completion
 value at one. -/
@@ -510,7 +510,7 @@ theorem signedEvenQuarterTurnCompletionJet_eq
       signedQuarterTurnCompletionDerivative T r 0
         (signedEvenQuarterTurnWeightTwo T r q) 0
         (signedEvenQuarterTurnWeightFour T r q) = I * (q : ℂ) := by
-  have hsq : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hsq : 1 + r ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r]
   constructor <;>
     apply Complex.ext <;>
     simp [signedQuarterTurnCompletion,
@@ -529,7 +529,7 @@ theorem signedEvenQuarterTurnCompletionJet_unique
       I * (q : ℂ)) :
     a₂ = signedEvenQuarterTurnWeightTwo T r q ∧
       a₄ = signedEvenQuarterTurnWeightFour T r q := by
-  have hsq : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hsq : 1 + r ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r]
   have hGre := congrArg Complex.re hG
   have hHim := congrArg Complex.im hH
   simp only [signedQuarterTurnCompletion,
@@ -539,7 +539,7 @@ theorem signedEvenQuarterTurnCompletionJet_unique
     simp only [signedEvenQuarterTurnWeightFour]
     field_simp [hT, hr, hsq]
     linear_combination
-      (2 * T * r ^ 2) * hGre - (1 + r ^ 2) * hHim
+      (2 * T * r ^ (2 : ℕ)) * hGre - (1 + r ^ (2 : ℕ)) * hHim
   have ha₂ : a₂ = signedEvenQuarterTurnWeightTwo T r q := by
     rw [signedEvenQuarterTurnWeightTwo, ← ha₄]
     field_simp [hT, hr]
@@ -558,9 +558,9 @@ theorem signedQuarterTurnScalarJet_odd_weights_eq_zero
   have hHre := congrArg Complex.re hH
   simp [signedQuarterTurnCompletion,
     signedQuarterTurnCompletionDerivative] at hGim hHre
-  have ha₃prod : (-2 * T * r ^ 3) * a₃ = 0 := by
+  have ha₃prod : (-2 * T * r ^ (3 : ℕ)) * a₃ = 0 := by
     linear_combination hHre + T * hGim
-  have ha₃coeff : -2 * T * r ^ 3 ≠ 0 :=
+  have ha₃coeff : -2 * T * r ^ (3 : ℕ) ≠ 0 :=
     mul_ne_zero
       (mul_ne_zero (by norm_num) hT)
       (pow_ne_zero 3 hr)
@@ -669,8 +669,8 @@ weight pair.  Charge changes position along this line, but cannot change its dir
 theorem signedEvenQuarterTurnValueFingerprint
     {r a₂ a₄ : ℝ}
     (hG : signedQuarterTurnCompletion r 0 a₂ 0 a₄ = 1) :
-    a₂ + (1 - r ^ 2) * a₄ = 1 / (1 + r ^ 2) := by
-  have hden : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+    a₂ + (1 - r ^ (2 : ℕ)) * a₄ = 1 / (1 + r ^ (2 : ℕ)) := by
+  have hden : 1 + r ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r]
   have hGre := congrArg Complex.re hG
   simp [signedQuarterTurnCompletion] at hGre
   apply (eq_div_iff hden).2
@@ -681,14 +681,14 @@ ray at the exact rate `δ / (1+r²)`. -/
 theorem signedEvenQuarterTurnScaledValueFingerprint
     {δ r a₂ a₄ : ℝ}
     (hG : signedQuarterTurnCompletion r 0 a₂ 0 a₄ = 1) :
-    δ * a₂ + (1 - r ^ 2) * (δ * a₄) =
-      δ / (1 + r ^ 2) := by
+    δ * a₂ + (1 - r ^ (2 : ℕ)) * (δ * a₄) =
+      δ / (1 + r ^ (2 : ℕ)) := by
   have h := signedEvenQuarterTurnValueFingerprint hG
   calc
-    δ * a₂ + (1 - r ^ 2) * (δ * a₄) =
-        δ * (a₂ + (1 - r ^ 2) * a₄) := by ring
-    _ = δ * (1 / (1 + r ^ 2)) := by rw [h]
-    _ = δ / (1 + r ^ 2) := by
+    δ * a₂ + (1 - r ^ (2 : ℕ)) * (δ * a₄) =
+        δ * (a₂ + (1 - r ^ (2 : ℕ)) * a₄) := by ring
+    _ = δ * (1 / (1 + r ^ (2 : ℕ))) := by rw [h]
+    _ = δ / (1 + r ^ (2 : ℕ)) := by
       simp only [div_eq_mul_inv, one_mul]
 
 /-- Any nontrivial normalized limit of exact even-channel screens remembers the geometric radius:
@@ -703,29 +703,29 @@ theorem tendsto_signedEvenQuarterTurn_projectiveFingerprint
       Filter.atTop (nhds b₄))
     (hG : ∀ n : ℕ,
       signedQuarterTurnCompletion (r n) 0 (a₂ n) 0 (a₄ n) = 1) :
-    b₂ + (1 - r₀ ^ 2) * b₄ = 0 := by
+    b₂ + (1 - r₀ ^ (2 : ℕ)) * b₄ = 0 := by
   have hleft : Filter.Tendsto
       (fun n => δ n * a₂ n +
-        (1 - (r n) ^ 2) * (δ n * a₄ n))
-      Filter.atTop (nhds (b₂ + (1 - r₀ ^ 2) * b₄)) :=
+        (1 - (r n) ^ (2 : ℕ)) * (δ n * a₄ n))
+      Filter.atTop (nhds (b₂ + (1 - r₀ ^ (2 : ℕ)) * b₄)) :=
     hb₂.add ((tendsto_const_nhds.sub (hr.pow 2)).mul hb₄)
-  have hden : 1 + r₀ ^ 2 ≠ 0 := by nlinarith [sq_nonneg r₀]
+  have hden : 1 + r₀ ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r₀]
   have hright : Filter.Tendsto
-      (fun n => δ n / (1 + (r n) ^ 2))
+      (fun n => δ n / (1 + (r n) ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
     change Filter.Tendsto
-      (δ / (fun n => 1 + (r n) ^ 2)) Filter.atTop (nhds 0)
+      (δ / (fun n => 1 + (r n) ^ (2 : ℕ))) Filter.atTop (nhds 0)
     simpa only [zero_div] using
       hδ.div (tendsto_const_nhds.add (hr.pow 2)) hden
   have heq :
       (fun n => δ n * a₂ n +
-        (1 - (r n) ^ 2) * (δ n * a₄ n)) =
-      (fun n => δ n / (1 + (r n) ^ 2)) := by
+        (1 - (r n) ^ (2 : ℕ)) * (δ n * a₄ n)) =
+      (fun n => δ n / (1 + (r n) ^ (2 : ℕ))) := by
     funext n
     exact signedEvenQuarterTurnScaledValueFingerprint (hG n)
   have hleftZero : Filter.Tendsto
       (fun n => δ n * a₂ n +
-        (1 - (r n) ^ 2) * (δ n * a₄ n))
+        (1 - (r n) ^ (2 : ℕ)) * (δ n * a₄ n))
       Filter.atTop (nhds 0) := by
     rw [heq]
     exact hright
@@ -735,12 +735,12 @@ theorem tendsto_signedEvenQuarterTurn_projectiveFingerprint
 the cross-fibre rigidity missing from pointwise jet surjectivity. -/
 theorem common_signedEvenQuarterTurn_projectiveFingerprint_rigid
     {r s b₂ b₄ : ℝ} (hr : 0 < r) (hs : 0 < s) (hb₄ : b₄ ≠ 0)
-    (hray : b₂ + (1 - r ^ 2) * b₄ = 0)
-    (hsay : b₂ + (1 - s ^ 2) * b₄ = 0) :
+    (hray : b₂ + (1 - r ^ (2 : ℕ)) * b₄ = 0)
+    (hsay : b₂ + (1 - s ^ (2 : ℕ)) * b₄ = 0) :
     r = s := by
-  have hprod : (s ^ 2 - r ^ 2) * b₄ = 0 := by
+  have hprod : (s ^ (2 : ℕ) - r ^ (2 : ℕ)) * b₄ = 0 := by
     linear_combination hray - hsay
-  have hsquare : s ^ 2 - r ^ 2 = 0 :=
+  have hsquare : s ^ (2 : ℕ) - r ^ (2 : ℕ) = 0 :=
     (mul_eq_zero.mp hprod).resolve_right hb₄
   nlinarith
 
@@ -749,20 +749,20 @@ already rigid.  This absorbs different positive mesh normalizations at two fibre
 theorem proportional_signedEvenQuarterTurn_projectiveFingerprint_rigid
     {r s b₂ b₄ c₂ c₄ : ℝ} (hr : 0 < r) (hs : 0 < s)
     (hb₄ : b₄ ≠ 0) (hc₄ : c₄ ≠ 0)
-    (hray : b₂ + (1 - r ^ 2) * b₄ = 0)
-    (hsay : c₂ + (1 - s ^ 2) * c₄ = 0)
+    (hray : b₂ + (1 - r ^ (2 : ℕ)) * b₄ = 0)
+    (hsay : c₂ + (1 - s ^ (2 : ℕ)) * c₄ = 0)
     (hprojective : b₂ * c₄ = c₂ * b₄) :
     r = s := by
-  have hb₂ : b₂ = -(1 - r ^ 2) * b₄ := by linarith
-  have hc₂ : c₂ = -(1 - s ^ 2) * c₄ := by linarith
+  have hb₂ : b₂ = -(1 - r ^ (2 : ℕ)) * b₄ := by linarith
+  have hc₂ : c₂ = -(1 - s ^ (2 : ℕ)) * c₄ := by linarith
   rw [hb₂, hc₂] at hprojective
-  have hprod : (r ^ 2 - s ^ 2) * (b₄ * c₄) = 0 := by
+  have hprod : (r ^ (2 : ℕ) - s ^ (2 : ℕ)) * (b₄ * c₄) = 0 := by
     calc
-      (r ^ 2 - s ^ 2) * (b₄ * c₄) =
-          (-(1 - r ^ 2) * b₄) * c₄ -
-            (-(1 - s ^ 2) * c₄) * b₄ := by ring
+      (r ^ (2 : ℕ) - s ^ (2 : ℕ)) * (b₄ * c₄) =
+          (-(1 - r ^ (2 : ℕ)) * b₄) * c₄ -
+            (-(1 - s ^ (2 : ℕ)) * c₄) * b₄ := by ring
       _ = 0 := sub_eq_zero.mpr hprojective
-  have hsquare : r ^ 2 - s ^ 2 = 0 :=
+  have hsquare : r ^ (2 : ℕ) - s ^ (2 : ℕ) = 0 :=
     (mul_eq_zero.mp hprod).resolve_right (mul_ne_zero hb₄ hc₄)
   nlinarith
 
@@ -968,9 +968,9 @@ theorem signedEvenQuarterTurnWeightFour_scaledCharge_eq
     {δ T r : ℝ} (hδ : δ ≠ 0) (hT : T ≠ 0) (hr : r ≠ 0)
     (m c : ℝ) :
     δ * signedEvenQuarterTurnWeightFour T r (m / δ + c) =
-      δ / (1 + r ^ 2) ^ 2 -
-        (m + δ * c) / (2 * T * r ^ 2 * (1 + r ^ 2)) := by
-  have hsum : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+      δ / (1 + r ^ (2 : ℕ)) ^ (2 : ℕ) -
+        (m + δ * c) / (2 * T * r ^ (2 : ℕ) * (1 + r ^ (2 : ℕ))) := by
+  have hsum : 1 + r ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r]
   simp only [signedEvenQuarterTurnWeightFour]
   field_simp [hδ, hT, hr, hsum]
 
@@ -992,13 +992,13 @@ theorem tendsto_signedEvenQuarterTurnWeightFour_scaledCharge
         signedEvenQuarterTurnWeightFour (T n) (r n)
           (m / δ n + c n))
       Filter.atTop
-      (nhds (-(m / (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2))))) := by
-  have hsum : 1 + r₀ ^ 2 ≠ 0 := by nlinarith [sq_nonneg r₀]
+      (nhds (-(m / (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)))))) := by
+  have hsum : 1 + r₀ ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r₀]
   have hfirst : Filter.Tendsto
-      (fun n => δ n / (1 + (r n) ^ 2) ^ 2)
+      (fun n => δ n / (1 + (r n) ^ (2 : ℕ)) ^ (2 : ℕ))
       Filter.atTop (nhds 0) := by
     change Filter.Tendsto
-      (δ / (fun n => (1 + (r n) ^ 2) ^ 2))
+      (δ / (fun n => (1 + (r n) ^ (2 : ℕ)) ^ (2 : ℕ)))
       Filter.atTop (nhds 0)
     simpa only [zero_div] using
       hδ.div ((tendsto_const_nhds.add (hr.pow 2)).pow 2)
@@ -1009,43 +1009,43 @@ theorem tendsto_signedEvenQuarterTurnWeightFour_scaledCharge
     simpa only [zero_mul, add_zero] using
       tendsto_const_nhds.add (hδ.mul hc)
   have hden : Filter.Tendsto
-      (fun n => 2 * T n * (r n) ^ 2 * (1 + (r n) ^ 2))
+      (fun n => 2 * T n * (r n) ^ (2 : ℕ) * (1 + (r n) ^ (2 : ℕ)))
       Filter.atTop
-      (nhds (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2))) :=
+      (nhds (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)))) :=
     ((tendsto_const_nhds.mul hT).mul (hr.pow 2)).mul
       (tendsto_const_nhds.add (hr.pow 2))
-  have hdenNe : 2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2) ≠ 0 :=
+  have hdenNe : 2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero
       (mul_ne_zero (mul_ne_zero (by norm_num) hT₀)
         (pow_ne_zero 2 hr₀))
       hsum
   have hsecond : Filter.Tendsto
       (fun n => (m + δ n * c n) /
-        (2 * T n * (r n) ^ 2 * (1 + (r n) ^ 2)))
+        (2 * T n * (r n) ^ (2 : ℕ) * (1 + (r n) ^ (2 : ℕ))))
       Filter.atTop
-      (nhds (m / (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2)))) := by
+      (nhds (m / (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ))))) := by
     change Filter.Tendsto
       ((fun n => m + δ n * c n) /
-        (fun n => 2 * T n * (r n) ^ 2 * (1 + (r n) ^ 2)))
+        (fun n => 2 * T n * (r n) ^ (2 : ℕ) * (1 + (r n) ^ (2 : ℕ))))
       Filter.atTop
-      (nhds (m / (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2))))
+      (nhds (m / (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)))))
     exact hnum.div hden hdenNe
   have hright : Filter.Tendsto
       (fun n =>
-        δ n / (1 + (r n) ^ 2) ^ 2 -
+        δ n / (1 + (r n) ^ (2 : ℕ)) ^ (2 : ℕ) -
           (m + δ n * c n) /
-            (2 * T n * (r n) ^ 2 * (1 + (r n) ^ 2)))
+            (2 * T n * (r n) ^ (2 : ℕ) * (1 + (r n) ^ (2 : ℕ))))
       Filter.atTop
-      (nhds (-(m / (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2))))) := by
+      (nhds (-(m / (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)))))) := by
     simpa only [zero_sub] using hfirst.sub hsecond
   have heq :
       (fun n => δ n *
         signedEvenQuarterTurnWeightFour (T n) (r n)
           (m / δ n + c n)) =
       (fun n =>
-        δ n / (1 + (r n) ^ 2) ^ 2 -
+        δ n / (1 + (r n) ^ (2 : ℕ)) ^ (2 : ℕ) -
           (m + δ n * c n) /
-            (2 * T n * (r n) ^ 2 * (1 + (r n) ^ 2))) := by
+            (2 * T n * (r n) ^ (2 : ℕ) * (1 + (r n) ^ (2 : ℕ)))) := by
     funext n
     exact signedEvenQuarterTurnWeightFour_scaledCharge_eq
       (hδne n) (hTne n) (hrne n) m (c n)
@@ -1054,8 +1054,8 @@ theorem tendsto_signedEvenQuarterTurnWeightFour_scaledCharge
 
 theorem signedEvenQuarterTurnWeightFour_scaledCharge_limit_ne_zero
     {T₀ r₀ m : ℝ} (hT₀ : T₀ ≠ 0) (hr₀ : r₀ ≠ 0) (hm : m ≠ 0) :
-    -(m / (2 * T₀ * r₀ ^ 2 * (1 + r₀ ^ 2))) ≠ 0 := by
-  have hsum : 1 + r₀ ^ 2 ≠ 0 := by nlinarith [sq_nonneg r₀]
+    -(m / (2 * T₀ * r₀ ^ (2 : ℕ) * (1 + r₀ ^ (2 : ℕ)))) ≠ 0 := by
+  have hsum : 1 + r₀ ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg r₀]
   apply neg_ne_zero.mpr
   exact div_ne_zero hm
     (mul_ne_zero

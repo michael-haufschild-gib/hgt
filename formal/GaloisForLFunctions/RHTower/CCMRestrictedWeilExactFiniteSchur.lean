@@ -45,7 +45,7 @@ structure CCMRestrictedWeilFiniteSchurCertificate (a : SuzukiPositiveAperture) w
   inverse_exterior : ∀ m, exteriorInverse (exteriorBlock m) = m
   exterior_inverse : ∀ m, exteriorBlock (exteriorInverse m) = m
   exterior_coercive : ∀ m : exterior,
-    (1 / 2 : ℝ) * ‖m‖ ^ 2 ≤
+    (1 / 2 : ℝ) * ‖m‖ ^ (2 : ℕ) ≤
       (inner ℂ ((exteriorBlock m : exterior) : CCMArchimedeanFormDomain a) (m : CCMArchimedeanFormDomain a)).re
   schur_formula : ∀ f : exteriorᗮ,
     schurComplement f = exceptionalBlock f - coupling (exteriorInverse (reverseCoupling f))
@@ -92,8 +92,8 @@ theorem ccmFiniteSchurExteriorBlock_coercive
     (M : Submodule ℂ (CCMArchimedeanFormDomain a))
     [M.HasOrthogonalProjection]
     (hMcoercive : ∀ u ∈ M, u ≠ 0 →
-      (1 / 2 : ℝ) * ‖u‖ ^ 2 < (ccmRestrictedWeilForm a u u).re) :
-    ∀ m : M, (1 / 2 : ℝ) * ‖m‖ ^ 2 ≤
+      (1 / 2 : ℝ) * ‖u‖ ^ (2 : ℕ) < (ccmRestrictedWeilForm a u u).re) :
+    ∀ m : M, (1 / 2 : ℝ) * ‖m‖ ^ (2 : ℕ) ≤
       (inner ℂ
         ((ccmFiniteSchurExteriorBlock a M m : M) : CCMArchimedeanFormDomain a)
         (m : CCMArchimedeanFormDomain a)).re := by
@@ -231,11 +231,11 @@ theorem exists_ccmRestrictedWeil_exactFiniteSchurComplement
   let C : Mᗮ →L[ℂ] M := ccmFiniteSchurReverseCoupling a M
   let D : M →L[ℂ] M := ccmFiniteSchurExteriorBlock a M
   have hDcoercive : ∀ m : M,
-      (1 / 2 : ℝ) * ‖m‖ ^ 2 ≤
+      (1 / 2 : ℝ) * ‖m‖ ^ (2 : ℕ) ≤
         (inner ℂ ((D m : M) : CCMArchimedeanFormDomain a) (m : CCMArchimedeanFormDomain a)).re :=
     ccmFiniteSchurExteriorBlock_coercive a M hMcoercive
   have hDcoerciveSubtype : ∀ m : M,
-      (1 / 2 : ℝ) * ‖m‖ ^ 2 ≤ (inner ℂ (D m) m).re := by
+      (1 / 2 : ℝ) * ‖m‖ ^ (2 : ℕ) ≤ (inner ℂ (D m) m).re := by
     intro m
     rw [M.coe_inner]
     exact hDcoercive m

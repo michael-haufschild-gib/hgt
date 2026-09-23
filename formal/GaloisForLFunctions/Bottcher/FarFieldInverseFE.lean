@@ -11,9 +11,9 @@ Böttcher coordinate on the far field `{‖z‖ > R}` (as produced by `exists_an
 `‖z‖ > R`. Proof: `φ_c(z²+c) = φ_c(z)²` (`bottcherCoord_quadratic`); `z²+c` is again in the far field
 (a norm bound from `hR1`,`hR2`), so `ψ(φ_c(z²+c)) = z²+c`; combine with `ψ(φ_c z) = z`. -/
 theorem psi_functional_eq_of_inverts {c : ℂ} {R : ℝ} {ψ : ℂ → ℂ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ))
     (hψ : ∀ z, R < ‖z‖ → ψ (bottcherCoord c z) = z) (z : ℂ) (hz : R < ‖z‖) :
-    ψ ((bottcherCoord c z) ^ 2) = (ψ (bottcherCoord c z)) ^ 2 + c := by
+    ψ ((bottcherCoord c z) ^ (2 : ℕ)) = (ψ (bottcherCoord c z)) ^ (2 : ℕ) + c := by
   have hmax : max 2 ‖c‖ < R := by
     have : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left 2 ‖c‖)
     linarith
@@ -25,18 +25,18 @@ theorem psi_functional_eq_of_inverts {c : ℂ} {R : ℝ} {ψ : ℂ → ℂ}
   have hc_half : 2 * ‖c‖ < R := by
     have : ‖c‖ ≤ max 2 ‖c‖ := le_max_right 2 ‖c‖
     linarith
-  -- z^2 + c is again in the far field
+  -- z^(2 : ℕ) + c is again in the far field
   have hRpos : (0:ℝ) < R := by linarith
-  have hzsq : R ^ 2 < ‖z‖ ^ 2 := by nlinarith [hz, hRpos, norm_nonneg z]
+  have hzsq : R ^ (2 : ℕ) < ‖z‖ ^ (2 : ℕ) := by nlinarith [hz, hRpos, norm_nonneg z]
   have hfz_far : R < ‖quadratic c z‖ := by
-    have hge : ‖z‖ ^ 2 - ‖c‖ ≤ ‖z ^ 2 + c‖ := by
-      have h := norm_sub_norm_le (z ^ 2) (-c)
+    have hge : ‖z‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖z ^ (2 : ℕ) + c‖ := by
+      have h := norm_sub_norm_le (z ^ (2 : ℕ)) (-c)
       rw [sub_neg_eq_add, norm_neg, norm_pow] at h
       exact h
-    have : R < ‖z‖ ^ 2 - ‖c‖ := by nlinarith [hzsq, hc_half, hR4]
-    have hq : quadratic c z = z ^ 2 + c := rfl
+    have : R < ‖z‖ ^ (2 : ℕ) - ‖c‖ := by nlinarith [hzsq, hc_half, hR4]
+    have hq : quadratic c z = z ^ (2 : ℕ) + c := rfl
     rw [hq]; linarith [hge, this]
-  have hquad : bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ 2 :=
+  have hquad : bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ (2 : ℕ) :=
     bottcherCoord_quadratic hc_le hz2
   rw [← hquad, hψ (quadratic c z) hfz_far, hψ z hz]
   rfl
@@ -48,10 +48,10 @@ satisfies the model functional equation `h(t²)=h(t)²+c·t²` on the punctured 
 (`psi_functional_eq_of_inverts` and the `φ_c`-oddness lemma). -/
 theorem model_even_and_fe {c : ℂ} {R : ℝ} (hR : 0 < R) {ψ : ℂ → ℂ}
     (hodd : ∀ w, R < ‖w‖ → ψ (-w) = -ψ w)
-    (hfe  : ∀ w, R < ‖w‖ → ψ (w ^ 2) = (ψ w) ^ 2 + c)
+    (hfe  : ∀ w, R < ‖w‖ → ψ (w ^ (2 : ℕ)) = (ψ w) ^ (2 : ℕ) + c)
     (t : ℂ) (ht0 : t ≠ 0) (htR : ‖t‖ < R⁻¹) :
     (-t) * ψ (1 / -t) = t * ψ (1 / t) ∧
-    (t ^ 2) * ψ (1 / t ^ 2) = (t * ψ (1 / t)) ^ 2 + c * t ^ 2 := by
+    (t ^ (2 : ℕ)) * ψ (1 / t ^ (2 : ℕ)) = (t * ψ (1 / t)) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
   have htn : 0 < ‖t‖ := norm_pos_iff.mpr ht0
   have hinv : R < ‖(1 : ℂ) / t‖ := by
     rw [one_div, norm_inv]
@@ -59,7 +59,7 @@ theorem model_even_and_fe {c : ℂ} {R : ℝ} (hR : 0 < R) {ψ : ℂ → ℂ}
   refine ⟨?_, ?_⟩
   · have h1 : (1 : ℂ) / -t = -(1 / t) := by rw [one_div, one_div, inv_neg]
     rw [h1, hodd (1 / t) hinv]; ring
-  · have h2 : (1 : ℂ) / t ^ 2 = (1 / t) ^ 2 := by rw [div_pow, one_pow]
+  · have h2 : (1 : ℂ) / t ^ (2 : ℕ) = (1 / t) ^ (2 : ℕ) := by rw [div_pow, one_pow]
     rw [h2, hfe (1 / t) hinv]; ring
 
 /-- Each Böttcher log-term is even in `z`: `termₖ(-z) = termₖ(z)`. The term depends on `z` only
@@ -67,14 +67,14 @@ through `((quadratic c)^[k] z)²`, and `quadratic c` is even (`f(-z)=f(z)`), so 
 and for `k≥1` the iterate values already coincide. -/
 theorem bottcherLogTerm_neg (c z : ℂ) (k : ℕ) :
     bottcherLogTerm c (-z) k = bottcherLogTerm c z k := by
-  have hsq : ((quadratic c)^[k] (-z)) ^ 2 = ((quadratic c)^[k] z) ^ 2 := by
+  have hsq : ((quadratic c)^[k] (-z)) ^ (2 : ℕ) = ((quadratic c)^[k] z) ^ (2 : ℕ) := by
     cases k with
     | zero => rw [Function.iterate_zero_apply, Function.iterate_zero_apply, neg_sq]
     | succ n =>
       have hval : (quadratic c)^[n + 1] (-z) = (quadratic c)^[n + 1] z := by
         rw [Function.iterate_succ_apply, Function.iterate_succ_apply]
         congr 1
-        show (-z) ^ 2 + c = z ^ 2 + c
+        show (-z) ^ (2 : ℕ) + c = z ^ (2 : ℕ) + c
         rw [neg_sq]
       rw [hval]
   unfold bottcherLogTerm

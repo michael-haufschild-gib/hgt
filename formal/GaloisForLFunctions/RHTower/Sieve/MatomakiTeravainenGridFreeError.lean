@@ -41,7 +41,7 @@ theorem norm_sum_mtC1Coefficient_le_familyDivisorBounded
     {u : ℕ} (α : Fin u → ℕ → ℂ) {z D n : ℕ} (hn : 0 < n)
     {B : ℝ} (hB : 0 ≤ B) (hα : MTFiniteFamilyDivisorBounded α B) :
     ‖∑ k : Fin u, mtC1Coefficient (α k) z D n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 * siftTailDivisorCount z D n := by
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) * siftTailDivisorCount z D n := by
   rw [sum_mtC1Coefficient_eq]
   exact norm_mtC1Coefficient_le_divisorBounded
     (fun m => ∑ k : Fin u, α k m) hn hB hα.sum
@@ -68,7 +68,7 @@ theorem norm_sum_mtC2BoundaryCoefficient_le_familyDivisorBounded
     (hSP : ∀ k, S k ⊆ P) {B : ℝ} (hB : 0 ≤ B)
     (hα : MTFiniteFamilyDivisorBounded α B) :
     ‖∑ k : Fin u, mtC2BoundaryCoefficient (α k) (S k) (level k) n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount P n := by
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount P n := by
   have hlocal : ∀ {m : ℕ}, m ∣ n →
       ∑ k : Fin u, ‖α k m‖ ≤ B * (n.divisors.card : ℝ) := by
     intro m hmn
@@ -101,7 +101,7 @@ theorem norm_sum_mtC2BoundaryCoefficient_le_familyDivisorBounded
         (if q ∣ n then ∑ m ∈ (n / q).divisors,
           α k m * (rho ((n / q) / m) (level k q) : ℂ) else 0) else 0‖ :=
         norm_sum_le _ _
-    _ ≤ ∑ q ∈ P, if q ∣ n then B * (n.divisors.card : ℝ) ^ 2 else 0 := by
+    _ ≤ ∑ q ∈ P, if q ∣ n then B * (n.divisors.card : ℝ) ^ (2 : ℕ) else 0 := by
       apply Finset.sum_le_sum
       intro q hq
       by_cases hqn : q ∣ n
@@ -155,7 +155,7 @@ theorem norm_sum_mtC2BoundaryCoefficient_le_familyDivisorBounded
           _ = B * (n.divisors.card : ℝ) * ((n / q).divisors.card : ℝ) := by
             simp [Finset.sum_const, nsmul_eq_mul]
             ring
-          _ ≤ B * (n.divisors.card : ℝ) ^ 2 := by
+          _ ≤ B * (n.divisors.card : ℝ) ^ (2 : ℕ) := by
             have hNdiv : n / q ∣ n := ⟨q, (Nat.div_mul_cancel hqn).symm⟩
             have hcard : ((n / q).divisors.card : ℝ) ≤
                 (n.divisors.card : ℝ) := by
@@ -163,7 +163,7 @@ theorem norm_sum_mtC2BoundaryCoefficient_le_familyDivisorBounded
             nlinarith [mul_le_mul_of_nonneg_left hcard
               (mul_nonneg hB (Nat.cast_nonneg n.divisors.card))]
       · simp [hqn]
-    _ = B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount P n := by
+    _ = B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount P n := by
       unfold primeDivisorCount
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
@@ -292,7 +292,7 @@ theorem norm_sum_mtC2Coefficient_le_familyDivisorBounded
     {B : ℝ} (hB : 0 ≤ B) (hα : MTFiniteFamilyDivisorBounded α B) :
     ‖∑ k : Fin u,
         mtC2Coefficient (α k) (lowerSpill k) (upperSpill k) (level k) n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 *
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         (primeDivisorCount PLower n + primeDivisorCount PUpper n) := by
   have hlower := norm_sum_mtC2BoundaryCoefficient_le_familyDivisorBounded
     α lowerSpill level PLower hn hLower hB hα
@@ -306,8 +306,8 @@ theorem norm_sum_mtC2Coefficient_le_familyDivisorBounded
       ‖∑ k : Fin u, mtC2BoundaryCoefficient (α k) (upperSpill k) (level k) n‖ +
         ‖∑ k : Fin u, mtC2BoundaryCoefficient (α k) (lowerSpill k) (level k) n‖ :=
       norm_sub_le _ _
-    _ ≤ B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount PUpper n +
-        B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount PLower n :=
+    _ ≤ B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount PUpper n +
+        B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount PLower n :=
       add_le_add hupper hlower
     _ = _ := by ring
 
@@ -320,7 +320,7 @@ theorem norm_sum_mtC3Coefficient_le_familyDivisorBounded
     (hlower : ∀ q ∈ P, lower q ≤ q)
     {B : ℝ} (hB : 0 ≤ B) (hα : MTFiniteFamilyDivisorBounded α B) :
     ‖∑ k : Fin u, mtC3Coefficient (α k) (S k) lower n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 *
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         primePairDivisorCount P (fun q => primesIco (lower q) q) n := by
   have hlocal : ∀ {m : ℕ}, m ∣ n →
       ∑ k : Fin u, ‖α k m‖ ≤ B * (n.divisors.card : ℝ) := by
@@ -599,7 +599,7 @@ theorem divisor_mul_ternary_mul_norm_sum_mtLemma23Error_le_weighted
         weightedPrimeDivisorCount 5 PUpper n +
         weightedPrimePairDivisorCount 5 P
           (fun q => primesIco (lower q) q) n) := by
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hc1 := norm_sum_mtC1Coefficient_le_familyDivisorBounded
     α (z := z) (D := D) hn hB hα
@@ -614,8 +614,8 @@ theorem divisor_mul_ternary_mul_norm_sum_mtLemma23Error_le_weighted
         B * weightedSiftTailDivisorCount 5 z D n := by
     unfold weightedSiftTailDivisorCount
     calc
-      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-          (B * (n.divisors.card : ℝ) ^ 2 * siftTailDivisorCount z D n) := by
+      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+          (B * (n.divisors.card : ℝ) ^ (2 : ℕ) * siftTailDivisorCount z D n) := by
         gcongr
       _ = _ := by ring
   have hw2 :
@@ -632,8 +632,8 @@ theorem divisor_mul_ternary_mul_norm_sum_mtLemma23Error_le_weighted
       unfold primeDivisorCount
       positivity
     calc
-      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-          (B * (n.divisors.card : ℝ) ^ 2 *
+      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+          (B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
             (primeDivisorCount PLower n + primeDivisorCount PUpper n)) := by
         gcongr
       _ = _ := by ring
@@ -648,8 +648,8 @@ theorem divisor_mul_ternary_mul_norm_sum_mtLemma23Error_le_weighted
       unfold primePairDivisorCount
       positivity
     calc
-      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-          (B * (n.divisors.card : ℝ) ^ 2 *
+      _ ≤ (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+          (B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
             primePairDivisorCount P (fun q => primesIco (lower q) q) n) := by
         gcongr
       _ = _ := by ring
@@ -727,7 +727,7 @@ theorem sum_norm_sq_sum_mtLemma23Error_le_five_mul_divisor_weighted
     (hB : 0 ≤ B) (hα : MTFiniteFamilyDivisorBounded α B) :
     ∑ n ∈ Finset.Icc 1 Y,
         ‖∑ k : Fin u, mtLemma23Error (α k) z D
-          (lowerSpill k) (upperSpill k) (S k) lower n‖ ^ 2 ≤
+          (lowerSpill k) (upperSpill k) (S k) lower n‖ ^ (2 : ℕ) ≤
       5 * B * ∑ n ∈ Finset.Icc 1 Y,
         (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
           ‖∑ k : Fin u, mtLemma23Error (α k) z D
@@ -742,7 +742,7 @@ theorem sum_norm_sq_sum_mtLemma23Error_le_five_mul_divisor_weighted
     α z D lowerSpill upperSpill S (fun _ => lower) hn hB hα
   calc
     ‖∑ k : Fin u, mtLemma23Error (α k) z D
-        (lowerSpill k) (upperSpill k) (S k) lower n‖ ^ 2 =
+        (lowerSpill k) (upperSpill k) (S k) lower n‖ ^ (2 : ℕ) =
       ‖∑ k : Fin u, mtLemma23Error (α k) z D
         (lowerSpill k) (upperSpill k) (S k) lower n‖ *
       ‖∑ k : Fin u, mtLemma23Error (α k) z D

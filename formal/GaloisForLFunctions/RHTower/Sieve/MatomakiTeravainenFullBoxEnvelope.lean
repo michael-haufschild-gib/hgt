@@ -148,12 +148,12 @@ theorem sum_norm_mtSignedPairBoxFamily_le_zeta_pow_five
         (mtHarmanPairCellCoefficient
           (data.block idx.1.1.1.1) (data.block idx.1.1.1.2))
         data.block idx.1.1.2.2 z D δ idx.1.2 idx.2 n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℕ) : ℝ) := by
   have houter : ∀ m,
       ∑ cell ∈ mtHarmanActiveGoodPairCells (t := t) endpoint E,
         ‖mtCoefficientAF
           (mtHarmanPairCellCoefficient (data.block cell.1) (data.block cell.2)) m‖ ≤
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 2) m : ℕ) : ℝ) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (2 : ℕ)) m : ℕ) : ℝ) := by
     intro m
     simpa only [hblock] using
       sum_norm_mtHarmanPairCellFamilyCoefficientAF_le_zeta_sq hmono P E m
@@ -179,12 +179,12 @@ theorem sum_norm_mtSignedTripleBoxFamily_le_zeta_pow_six
           (data.block idx.1.1.1.1.1) (data.block idx.1.1.1.1.2)
           (data.block idx.1.1.1.2))
         data.block idx.1.1.2.2 z D δ idx.1.2 idx.2 n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℕ) : ℝ) := by
   have houter : ∀ m,
       ∑ cell ∈ mtHarmanActiveGoodTripleCells (t := t) endpoint E,
         ‖mtCoefficientAF (mtHarmanTripleCellCoefficient
           (data.block cell.1.1) (data.block cell.1.2) (data.block cell.2)) m‖ ≤
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 3) m : ℕ) : ℝ) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (3 : ℕ)) m : ℕ) : ℝ) := by
     intro m
     simpa only [hblock] using
       sum_norm_mtHarmanTripleCellFamilyCoefficientAF_le_zeta_cube hmono P E m
@@ -209,13 +209,13 @@ theorem sum_norm_mtSignedSeparatedPairBoxFamily_le_zeta_pow_five
           (mtHarmanSourceBlock endpoint P idx.1.1.1.1)
           (mtHarmanSourceBlock endpoint P idx.1.1.1.2))
         data.block idx.1.1.2.2 z D δ idx.1.2 idx.2 n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℕ) : ℝ) := by
   have houter : ∀ m,
       ∑ cell ∈ mtHarmanActiveGoodPairCells (t := u) endpoint E,
         ‖mtCoefficientAF (mtHarmanPairCellCoefficient
           (mtHarmanSourceBlock endpoint P cell.1)
           (mtHarmanSourceBlock endpoint P cell.2)) m‖ ≤
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 2) m : ℕ) : ℝ) :=
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (2 : ℕ)) m : ℕ) : ℝ) :=
     sum_norm_mtHarmanPairCellFamilyCoefficientAF_le_zeta_sq hmono P E
   simpa [mtSignedBlockChainAdicBoxAF, mtBlockChainAdicBoxAF] using
     sum_norm_outer_active_adic_boxFamily_le_zeta_pow
@@ -240,14 +240,14 @@ theorem sum_norm_mtSignedSeparatedTripleBoxFamily_le_zeta_pow_six
           (mtHarmanSourceBlock endpoint P idx.1.1.1.1.2)
           (mtHarmanSourceBlock endpoint P idx.1.1.1.2))
         data.block idx.1.1.2.2 z D δ idx.1.2 idx.2 n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℕ) : ℝ) := by
   have houter : ∀ m,
       ∑ cell ∈ mtHarmanActiveGoodTripleCells (t := u) endpoint E,
         ‖mtCoefficientAF (mtHarmanTripleCellCoefficient
           (mtHarmanSourceBlock endpoint P cell.1.1)
           (mtHarmanSourceBlock endpoint P cell.1.2)
           (mtHarmanSourceBlock endpoint P cell.2)) m‖ ≤
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 3) m : ℕ) : ℝ) :=
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (3 : ℕ)) m : ℕ) : ℝ) :=
     sum_norm_mtHarmanTripleCellFamilyCoefficientAF_le_zeta_cube hmono P E
   simpa [mtSignedBlockChainAdicBoxAF, mtBlockChainAdicBoxAF] using
     sum_norm_outer_active_adic_boxFamily_le_zeta_pow

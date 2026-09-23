@@ -25,7 +25,7 @@ theorem eventually_evenProlateSignedLeakage_le_exp_clock_loss
     (n : ℕ) {η : ℝ} (hη : 0 < η) :
     ∀ᶠ a : ℝ in atTop,
       evenProlateSignedLeakage a n ≤
-        Real.exp (-((4 * Real.pi - η) * a ^ 2)) := by
+        Real.exp (-((4 * Real.pi - η) * a ^ (2 : ℕ))) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hε : 0 < η / (2 * Real.pi) := by positivity
   have hkaiser := eventually_evenProlateSignedLeakage_le_kaiser
@@ -44,7 +44,7 @@ theorem tendsto_signedModeRadialData_s_zero_of_tunneling_lower
     (htunnel : ∀ ε : ℝ, 0 < ε →
       ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ a : ℝ in atTop,
         ε ≤ (signedModeRadialData a n).s →
-          Real.exp (-((4 * Real.pi - δ) * a ^ 2)) ≤
+          Real.exp (-((4 * Real.pi - δ) * a ^ (2 : ℕ))) ≤
             evenProlateSignedLeakage a n) :
     Tendsto (fun a : ℝ => (signedModeRadialData a n).s) atTop (nhds 0) := by
   apply tendsto_separation_zero_of_arbitrarily_sharp_gaussian_upper_of_tunneling_lower

@@ -85,11 +85,11 @@ private theorem poly_eval_isBigO_exp_atTop (p : Polynomial ℝ) :
 
 /-- A Gaussian beats an exponential with arbitrary real linear rate. -/
 private theorem gaussian_isLittleO_exp_linear_atTop (r : ℝ) :
-    (fun t : ℝ => Real.exp (-(π * t ^ 2))) =o[atTop]
+    (fun t : ℝ => Real.exp (-(π * t ^ (2 : ℕ)))) =o[atTop]
       fun t : ℝ => Real.exp (-r * t) := by
   rw [Real.isLittleO_exp_comp_exp_comp]
   let q : Polynomial ℝ :=
-    Polynomial.C π * Polynomial.X ^ 2 +
+    Polynomial.C π * Polynomial.X ^ (2 : ℕ) +
       Polynomial.C (-r) * Polynomial.X + Polynomial.C 0
   have hqdeg : q.degree = 2 := by
     exact Polynomial.degree_quadratic Real.pi_ne_zero
@@ -179,7 +179,7 @@ def deningerMeyerLogGaussianSource : DeningerMeyerStrongLogTarget :=
 /-- Exact entire Mellin transform of the log-Gaussian. -/
 theorem deningerMeyerLogGaussianSource_mellin (s : ℂ) :
     deningerMeyerStrongLogMellin deningerMeyerLogGaussianSource s =
-      Complex.exp (s ^ 2 / (4 * π)) := by
+      Complex.exp (s ^ (2 : ℕ) / (4 * π)) := by
   rw [deningerMeyerStrongLogMellin]
   simp only [deningerMeyerStrongLogMellinJet, pow_zero, one_mul,
     deningerMeyerLogGaussianSource, deningerMeyerLogGaussianProfile]
@@ -190,7 +190,7 @@ theorem deningerMeyerLogGaussianSource_mellin (s : ℂ) :
     s 0
   rw [show (fun t : ℝ => Complex.exp (s * (t : ℂ)) * (gaussReal t : ℂ)) =
       fun t : ℝ =>
-        Complex.exp (-(π : ℂ) * (t : ℂ) ^ 2 + s * (t : ℂ) + 0) by
+        Complex.exp (-(π : ℂ) * (t : ℂ) ^ (2 : ℕ) + s * (t : ℂ) + 0) by
     funext t
     rw [gaussReal, Complex.ofReal_exp, ← Complex.exp_add]
     congr 1
@@ -258,7 +258,7 @@ theorem deningerMeyerReflectedLogGaussianSource_apply (t : ℝ) :
 /-- Exact centered transform of the reflection-adapted Gaussian. -/
 theorem deningerMeyerReflectedLogGaussianSource_mellin (s : ℂ) :
     deningerMeyerStrongLogMellin deningerMeyerReflectedLogGaussianSource s =
-      Complex.exp ((s - 1 / 2) ^ 2 / (4 * π)) := by
+      Complex.exp ((s - 1 / 2) ^ (2 : ℕ) / (4 * π)) := by
   change (deningerMeyerStrongLogMellinLM s)
       (Complex.exp (1 / (16 * (π : ℂ))) •
         deningerMeyerStrongLogFlow (-(1 / (4 * π) : ℝ))

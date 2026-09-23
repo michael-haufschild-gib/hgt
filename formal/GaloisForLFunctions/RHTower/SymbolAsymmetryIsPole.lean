@@ -48,18 +48,18 @@ namespace RHTower
 
 /-- **The local supremum.**  At `c = 1` the local factor is `x/(1-x)`. -/
 theorem local_sup_value {x : ℝ} (hx : x ≠ 1) :
-    (x * 1 - x ^ 2) / (1 - 2 * x * 1 + x ^ 2) = x / (1 - x) := by
-  have hfac : 1 - 2 * x * 1 + x ^ 2 = (1 - x) ^ 2 := by ring
-  have hnum : x * 1 - x ^ 2 = x * (1 - x) := by ring
+    (x * 1 - x ^ (2 : ℕ)) / (1 - 2 * x * 1 + x ^ (2 : ℕ)) = x / (1 - x) := by
+  have hfac : 1 - 2 * x * 1 + x ^ (2 : ℕ) = (1 - x) ^ (2 : ℕ) := by ring
+  have hnum : x * 1 - x ^ (2 : ℕ) = x * (1 - x) := by ring
   rw [hfac, hnum]
   have hne : 1 - x ≠ 0 := sub_ne_zero.mpr (Ne.symm hx)
   field_simp
 
 /-- **The local infimum.**  At `c = -1` the local factor is `-x/(1+x)`. -/
 theorem local_inf_value {x : ℝ} (hx : x ≠ -1) :
-    (x * (-1) - x ^ 2) / (1 - 2 * x * (-1) + x ^ 2) = -(x / (1 + x)) := by
-  have hfac : 1 - 2 * x * (-1) + x ^ 2 = (1 + x) ^ 2 := by ring
-  have hnum : x * (-1) - x ^ 2 = -(x * (1 + x)) := by ring
+    (x * (-1) - x ^ (2 : ℕ)) / (1 - 2 * x * (-1) + x ^ (2 : ℕ)) = -(x / (1 + x)) := by
+  have hfac : 1 - 2 * x * (-1) + x ^ (2 : ℕ) = (1 + x) ^ (2 : ℕ) := by ring
+  have hnum : x * (-1) - x ^ (2 : ℕ) = -(x * (1 + x)) := by ring
   rw [hfac, hnum]
   have hne : 1 + x ≠ 0 := by
     intro h
@@ -68,10 +68,10 @@ theorem local_inf_value {x : ℝ} (hx : x ≠ -1) :
 
 /-- **The extremes are nearly opposite.**  Their sum is `2x²/(1-x²)`, quadratically small in `x`. -/
 theorem extremes_sum {x : ℝ} (h1 : x ≠ 1) (h2 : x ≠ -1) :
-    x / (1 - x) - x / (1 + x) = 2 * x ^ 2 / (1 - x ^ 2) := by
+    x / (1 - x) - x / (1 + x) = 2 * x ^ (2 : ℕ) / (1 - x ^ (2 : ℕ)) := by
   have hne1 : 1 - x ≠ 0 := sub_ne_zero.mpr (Ne.symm h1)
   have hne2 : 1 + x ≠ 0 := by intro h; exact h2 (by linarith)
-  have hne3 : 1 - x ^ 2 ≠ 0 := by
+  have hne3 : 1 - x ^ (2 : ℕ) ≠ 0 := by
     intro h
     have : (1 - x) * (1 + x) = 0 := by nlinarith [h]
     rcases mul_eq_zero.mp this with h' | h'

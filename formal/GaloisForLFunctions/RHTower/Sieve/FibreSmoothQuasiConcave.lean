@@ -46,9 +46,9 @@ theorem min_sub_max (B D A C : ℝ) :
 
 /-- The upper endpoint, with the shift cast out of the index. -/
 theorem fibreHigh_shift_eq (x h : ℝ) (i k : ℕ) :
-    fibreHigh x h (i + k)
+    fibreHigh_fibreKernelExact x h (i + k)
       = min ((x + h * Real.sqrt x) / ((i : ℝ) + (k : ℝ))) (2 * Real.sqrt x) := by
-  rw [fibreHigh]
+  rw [fibreHigh_fibreKernelExact]
   norm_cast
 
 /-- **The smooth model is quasi-concave in the inner variable.** -/
@@ -93,7 +93,7 @@ theorem quasiConcaveOn_fibreSmooth {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {k 
     quasiConcaveOn_min (quasiConcaveOn_min h1 h2) (quasiConcaveOn_min h3 h4)
   have hF1 := quasiConcaveOn_max_const (quasiConcaveOn_add_const hF 1) 0
   refine quasiConcaveOn_congr (fun j => ?_) hF1
-  rw [fibreSmooth, kernelSmooth, fibreLow, fibreHigh_shift_eq, ← min_sub_max]
+  rw [fibreSmooth, kernelSmooth, fibreLow_fibreKernelExact, fibreHigh_shift_eq, ← min_sub_max]
 
 /-- **The smooth model has variation at most `6h + 2`.** -/
 theorem fibreSmooth_variation_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {k : ℕ} (hk : 1 ≤ k)

@@ -146,7 +146,7 @@ theorem finiteProductTupleDiff_nondegenerate
     by_cases h : Eexp k = Eexp k'
     · rw [if_pos h, if_pos h.symm]
     · rw [if_neg h, if_neg (fun h' => h h'.symm)]
-  have hD2 : (∑ k, Ecoef k * C (Eexp k)) = ∑ v ∈ vals, (C v) ^ 2 := by
+  have hD2 : (∑ k, Ecoef k * C (Eexp k)) = ∑ v ∈ vals, (C v) ^ (2 : ℕ) := by
     rw [← Finset.sum_fiberwise_of_maps_to
       (fun k (_ : k ∈ (Finset.univ : Finset (J → ι))) =>
         Finset.mem_image_of_mem Eexp (Finset.mem_univ k))
@@ -158,10 +158,10 @@ theorem finiteProductTupleDiff_nondegenerate
       rw [(Finset.mem_filter.mp hk).2, mul_comm]
     rw [Finset.sum_congr rfl hstep, ← Finset.mul_sum]
     change C v * (∑ k ∈ (Finset.univ : Finset (J → ι)).filter
-      (fun k => Eexp k = v), Ecoef k) = C v ^ 2
+      (fun k => Eexp k = v), Ecoef k) = C v ^ (2 : ℕ)
     rw [show (∑ k ∈ (Finset.univ : Finset (J → ι)).filter
       (fun k => Eexp k = v), Ecoef k) = C v from rfl, sq]
-  have hpos : 0 < ∑ v ∈ vals, (C v) ^ 2 := by
+  have hpos : 0 < ∑ v ∈ vals, (C v) ^ (2 : ℕ) := by
     refine Finset.sum_pos' (fun v _ => sq_nonneg _) ⟨Eexp kstar, ?_, ?_⟩
     · exact Finset.mem_image_of_mem Eexp (Finset.mem_univ kstar)
     · rw [hCstar]

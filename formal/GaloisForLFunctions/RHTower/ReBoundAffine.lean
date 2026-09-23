@@ -122,7 +122,7 @@ theorem entire_reBound_imp_affine (g : ℂ → ℂ) (hg : Differentiable ℂ g) 
     -- Cauchy's estimate at centre `c` for every radius `R`.
     have hcauchy : ∀ R : ℝ, 0 < R →
         ‖iteratedDeriv 2 g c‖
-          ≤ 2 * (2 * B' * (3 + 2 * (‖c‖ + R)) * Real.log (4 + 2 * (‖c‖ + R)) + 3 * ‖g 0‖) / R ^ 2 := by
+          ≤ 2 * (2 * B' * (3 + 2 * (‖c‖ + R)) * Real.log (4 + 2 * (‖c‖ + R)) + 3 * ‖g 0‖) / R ^ (2 : ℕ) := by
       intro R hR
       have hsph : ∀ w ∈ sphere c R,
           ‖g w‖ ≤ 2 * B' * (3 + 2 * (‖c‖ + R)) * Real.log (4 + 2 * (‖c‖ + R)) + 3 * ‖g 0‖ := by
@@ -142,7 +142,7 @@ theorem entire_reBound_imp_affine (g : ℂ → ℂ) (hg : Differentiable ℂ g) 
     have htend :
         Tendsto
           (fun R : ℝ =>
-            2 * (2 * B' * (3 + 2 * (‖c‖ + R)) * Real.log (4 + 2 * (‖c‖ + R)) + 3 * ‖g 0‖) / R ^ 2)
+            2 * (2 * B' * (3 + 2 * (‖c‖ + R)) * Real.log (4 + 2 * (‖c‖ + R)) + 3 * ‖g 0‖) / R ^ (2 : ℕ))
           atTop (𝓝 0) := by
       have hL : Tendsto (fun R : ℝ => Real.log (4 + 2 * (‖c‖ + R)) / R) atTop (𝓝 0) := by
         have hbase : Tendsto (fun u : ℝ => Real.log u / (1 * u + (-(4 + 2 * ‖c‖)))) atTop (𝓝 0) :=
@@ -182,8 +182,8 @@ theorem entire_reBound_imp_affine (g : ℂ → ℂ) (hg : Differentiable ℂ g) 
             (fun R : ℝ => 4 * B' * ((3 + 2 * (‖c‖ + R)) / R * (Real.log (4 + 2 * (‖c‖ + R)) / R)))
             atTop (𝓝 0) := by
         have := hAL.const_mul (4 * B'); simpa using this
-      have hKt : Tendsto (fun R : ℝ => 6 * ‖g 0‖ / R ^ 2) atTop (𝓝 0) := by
-        have hinv : Tendsto (fun R : ℝ => (R ^ 2)⁻¹) atTop (𝓝 0) :=
+      have hKt : Tendsto (fun R : ℝ => 6 * ‖g 0‖ / R ^ (2 : ℕ)) atTop (𝓝 0) := by
+        have hinv : Tendsto (fun R : ℝ => (R ^ (2 : ℕ))⁻¹) atTop (𝓝 0) :=
           Filter.Tendsto.comp tendsto_inv_atTop_zero (tendsto_pow_atTop (by norm_num))
         have := hinv.const_mul (6 * ‖g 0‖)
         simp only [mul_zero] at this

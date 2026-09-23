@@ -19,17 +19,17 @@ namespace RHTower.Sieve
 /-- **The final collapse.** -/
 theorem cheb_final_collapse {Cr Cm Z s Wb E : ℝ}
     (hCr : 0 ≤ Cr) (hCm : 0 ≤ Cm) (hZ0 : 0 ≤ Z) (hs : 0 ≤ s)
-    (hlogZ : Real.log Z = s ^ 2)
+    (hlogZ : Real.log Z = s ^ (2 : ℕ))
     (hWbE : (1 + Wb) * E ≤ (3 + 27 * Cm) * Real.exp (-(s / 240000))) :
     250000 * (1 + Cr) * (1 + Wb) * (4 * Real.log Z) * (Z * E)
-      ≤ 250000 * (1 + Cr) * (3 + 27 * Cm) * (4 * (4 * 480000 ^ 2)) * Z
+      ≤ 250000 * (1 + Cr) * (3 + 27 * Cm) * (4 * (4 * 480000 ^ (2 : ℕ))) * Z
           * Real.exp (-(s / 480000)) := by
   rw [hlogZ]
-  have hA : (0 : ℝ) ≤ 250000 * (1 + Cr) * 4 * s ^ 2 * Z :=
+  have hA : (0 : ℝ) ≤ 250000 * (1 + Cr) * 4 * s ^ (2 : ℕ) * Z :=
     mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) (by linarith)) (by norm_num))
       (sq_nonneg s)) hZ0
-  have step1 : 250000 * (1 + Cr) * (1 + Wb) * (4 * s ^ 2) * (Z * E)
-      ≤ 250000 * (1 + Cr) * 4 * s ^ 2 * Z * ((3 + 27 * Cm) * Real.exp (-(s / 240000))) := by
+  have step1 : 250000 * (1 + Cr) * (1 + Wb) * (4 * s ^ (2 : ℕ)) * (Z * E)
+      ≤ 250000 * (1 + Cr) * 4 * s ^ (2 : ℕ) * Z * ((3 + 27 * Cm) * Real.exp (-(s / 240000))) := by
     have h := mul_le_mul_of_nonneg_left hWbE hA
     nlinarith [h]
   have hB : (0 : ℝ) ≤ 250000 * (1 + Cr) * (3 + 27 * Cm) * 4 * Z :=

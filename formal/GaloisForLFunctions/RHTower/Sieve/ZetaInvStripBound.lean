@@ -24,7 +24,7 @@ open Complex Metric
 /-- **`1/ζ` on a strip of width `log^{-2}` about the abscissa.** -/
 theorem exists_neg_log_zeta_upper_strip :
     ∃ C T : ℝ, 4 ≤ T ∧ ∀ σ γ : ℝ, T ≤ |γ| →
-      1 - 1 / Real.log |γ| ^ 2 ≤ σ → σ ≤ 1 + 1 / Real.log |γ| ^ 2 →
+      1 - 1 / Real.log |γ| ^ (2 : ℕ) ≤ σ → σ ≤ 1 + 1 / Real.log |γ| ^ (2 : ℕ) →
       -Real.log ‖riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
         ≤ 7 / 4 * Real.log (Real.log |γ|) + C := by
   obtain ⟨C₀, T₀, hT₀, hσ₁bound⟩ := exists_neg_log_zeta_upper
@@ -50,7 +50,7 @@ theorem exists_neg_log_zeta_upper_strip :
   have hLc : 5 / c ≤ L := le_trans (le_max_left _ _) (le_trans (le_max_right _ _) hLbig)
   have hLc' : 1 / c' ≤ L := le_trans (le_max_right _ _) (le_trans (le_max_right _ _) hLbig)
   have hL0 : (0 : ℝ) < L := by linarith
-  have hR0 : (0 : ℝ) < 3 / L ^ 2 := by positivity
+  have hR0 : (0 : ℝ) < 3 / L ^ (2 : ℕ) := by positivity
   -- the transport
   have htrans := abs_log_norm_sub_le (g := riemannZeta) hR0
     (thin_disc_analytic hL3 hγ5)
@@ -60,11 +60,11 @@ theorem exists_neg_log_zeta_upper_strip :
     (fun t ht => thin_seg_logDeriv hLD hγT₁ hLdef hL3 hc'0 hLc' hσlow hσhigh ht)
   -- the cost is a constant
   have hdist := thin_seg_dist (σ := σ) (γ := γ) (L := L) hσlow hσhigh
-  have hcost : C_D * L ^ 2 * ‖((σ : ℂ) + (γ : ℂ) * Complex.I)
-      - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ ≤ 2 * C_D := by
-    have hfac : (0 : ℝ) ≤ C_D * L ^ 2 := by positivity
+  have hcost : C_D * L ^ (2 : ℕ) * ‖((σ : ℂ) + (γ : ℂ) * Complex.I)
+      - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ ≤ 2 * C_D := by
+    have hfac : (0 : ℝ) ≤ C_D * L ^ (2 : ℕ) := by positivity
     have hstep := mul_le_mul_of_nonneg_left hdist hfac
-    have heq : C_D * L ^ 2 * (2 / L ^ 2) = 2 * C_D := by
+    have heq : C_D * L ^ (2 : ℕ) * (2 / L ^ (2 : ℕ)) = 2 * C_D := by
       field_simp
     linarith [hstep, heq]
   -- the source bound

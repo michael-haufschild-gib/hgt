@@ -12,10 +12,10 @@ center `v = 0`.  Writing `c = thetaCuspFullSource(0) > 0` and
 `d = thetaCuspFullSource''(0)`, its reflected difference is an exact rational function:
 
 `S_a(lambda) - S_{-a}(lambda)
-  = 2*lambda*A/(1-(lambda*a*c)^2)
-    + 6*lambda^3*a*c*B^2/(1-(lambda*a*c)^2)^2`,
+  = 2*lambda*A/(1-(lambda*a*c)^(2 : ℕ))
+    + 6*lambda^(3 : ℕ)*a*c*B^(2 : ℕ)/(1-(lambda*a*c)^(2 : ℕ))^(2 : ℕ)`,
 
-where `A = a^3*c + 3*a*d` and `B = a^2*c + d`.
+where `A = a^(3 : ℕ)*c + 3*a*d` and `B = a^(2 : ℕ)*c + d`.
 
 **[PAPER-PROVED] [LEAN-PROVED] [HAWKING-SPECIFIC]** Neutrality of this nonlinear conformal-anomaly
 output for every safe mirror coupling is equivalent to `a = 0`.  Two explicit safe couplings
@@ -55,7 +55,7 @@ lemma thetaCuspHawkingTiltedSourceJetOne_bifurcation (a : ℝ) :
   norm_num [Finset.sum_range_succ, hodd, thetaCuspHawkingBifurcationThetaValue]
 
 lemma thetaCuspHawkingTiltedSourceJetTwo_bifurcation (a : ℝ) :
-    iteratedDeriv 2 (thetaCuspTiltedSource a) 0 = a ^ 2 * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet := by
+    iteratedDeriv 2 (thetaCuspTiltedSource a) 0 = a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet := by
   rw [iteratedDeriv_thetaCuspTiltedSource]
   have hodd : iteratedDeriv 1 thetaCuspFullSource 0 = 0 :=
     iteratedDeriv_thetaCuspFullSource_zero_of_odd (by decide)
@@ -63,7 +63,7 @@ lemma thetaCuspHawkingTiltedSourceJetTwo_bifurcation (a : ℝ) :
   ring
 
 lemma thetaCuspHawkingTiltedSourceJetThree_bifurcation (a : ℝ) :
-    iteratedDeriv 3 (thetaCuspTiltedSource a) 0 = a ^ 3 * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet := by
+    iteratedDeriv 3 (thetaCuspTiltedSource a) 0 = a ^ (3 : ℕ) * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet := by
   rw [iteratedDeriv_thetaCuspTiltedSource]
   have hodd1 : iteratedDeriv 1 thetaCuspFullSource 0 = 0 :=
     iteratedDeriv_thetaCuspFullSource_zero_of_odd (by decide)
@@ -80,7 +80,7 @@ lemma thetaCuspHawkingRayJetOne_bifurcation (a lambda : ℝ) :
     thetaCuspHawkingTiltedSourceJetOne_bifurcation]
 
 lemma thetaCuspHawkingRayJetTwo_bifurcation (a lambda : ℝ) :
-    thetaCuspHawkingRayJetTwo a lambda 0 = lambda * (a ^ 2 * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet) := by
+    thetaCuspHawkingRayJetTwo a lambda 0 = lambda * (a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet) := by
   have hray : thetaCuspHawkingTiltedTimelikeRay a lambda =
       id + fun x : ℝ => lambda * thetaCuspTiltedSource a x := by
     funext x
@@ -108,7 +108,7 @@ lemma thetaCuspHawkingRayJetTwo_bifurcation (a lambda : ℝ) :
     _ = _ := by rw [iteratedDeriv_id, thetaCuspHawkingTiltedSourceJetTwo_bifurcation]; norm_num
 
 lemma thetaCuspHawkingRayJetThree_bifurcation (a lambda : ℝ) :
-    thetaCuspHawkingRayJetThree a lambda 0 = lambda * (a ^ 3 * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet) := by
+    thetaCuspHawkingRayJetThree a lambda 0 = lambda * (a ^ (3 : ℕ) * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet) := by
   have hray : thetaCuspHawkingTiltedTimelikeRay a lambda =
       id + fun x : ℝ => lambda * thetaCuspTiltedSource a x := by
     funext x
@@ -135,11 +135,11 @@ lemma thetaCuspHawkingRayJetThree_bifurcation (a lambda : ℝ) :
       rw [iteratedDeriv_const_mul lambda hsrc]
     _ = _ := by rw [iteratedDeriv_id, thetaCuspHawkingTiltedSourceJetThree_bifurcation]; norm_num
 
-def thetaCuspHawkingBifurcationCurvature (a : ℝ) : ℝ := a ^ 2 * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet
-def thetaCuspHawkingBifurcationJerk (a : ℝ) : ℝ := a ^ 3 * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet
+def thetaCuspHawkingBifurcationCurvature (a : ℝ) : ℝ := a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue + thetaCuspHawkingBifurcationThetaSecondJet
+def thetaCuspHawkingBifurcationJerk (a : ℝ) : ℝ := a ^ (3 : ℕ) * thetaCuspHawkingBifurcationThetaValue + 3 * a * thetaCuspHawkingBifurcationThetaSecondJet
 
 lemma thetaCuspHawkingBifurcationJerk_eq (a : ℝ) :
-    thetaCuspHawkingBifurcationJerk a = a * (a ^ 2 * thetaCuspHawkingBifurcationThetaValue + 3 * thetaCuspHawkingBifurcationThetaSecondJet) := by
+    thetaCuspHawkingBifurcationJerk a = a * (a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue + 3 * thetaCuspHawkingBifurcationThetaSecondJet) := by
   rw [thetaCuspHawkingBifurcationJerk]
   ring
 
@@ -147,7 +147,7 @@ lemma thetaCuspHawkingSchwarzian_bifurcation (a lambda : ℝ) :
     thetaCuspHawkingSchwarzian a lambda 0 =
       lambda * thetaCuspHawkingBifurcationJerk a / (1 + lambda * (a * thetaCuspHawkingBifurcationThetaValue)) -
         (3 / 2 : ℝ) *
-          (lambda * thetaCuspHawkingBifurcationCurvature a / (1 + lambda * (a * thetaCuspHawkingBifurcationThetaValue))) ^ 2 := by
+          (lambda * thetaCuspHawkingBifurcationCurvature a / (1 + lambda * (a * thetaCuspHawkingBifurcationThetaValue))) ^ (2 : ℕ) := by
   rw [thetaCuspHawkingSchwarzian, thetaCuspHawkingSchwarzianFromThreeJets,
     thetaCuspHawkingRayJetOne_bifurcation, thetaCuspHawkingRayJetTwo_bifurcation, thetaCuspHawkingRayJetThree_bifurcation]
   simp only [thetaCuspHawkingBifurcationCurvature, thetaCuspHawkingBifurcationJerk]
@@ -165,11 +165,11 @@ lemma thetaCuspHawkingBifurcationJerk_neg (a : ℝ) :
 
 private lemma bifurcation_reflected_schwarzian_algebra
     (X Y q : ℝ) (hp : 1 + q ≠ 0) (hm : 1 - q ≠ 0) :
-    (X / (1 + q) - (3 / 2 : ℝ) * (Y / (1 + q)) ^ 2) -
-        (-X / (1 - q) - (3 / 2 : ℝ) * (Y / (1 - q)) ^ 2) =
-      2 * X / (1 - q ^ 2) + 6 * q * Y ^ 2 / (1 - q ^ 2) ^ 2 := by
-  have hf : 1 - q ^ 2 ≠ 0 := by
-    rw [show 1 - q ^ 2 = (1 + q) * (1 - q) by ring]
+    (X / (1 + q) - (3 / 2 : ℝ) * (Y / (1 + q)) ^ (2 : ℕ)) -
+        (-X / (1 - q) - (3 / 2 : ℝ) * (Y / (1 - q)) ^ (2 : ℕ)) =
+      2 * X / (1 - q ^ (2 : ℕ)) + 6 * q * Y ^ (2 : ℕ) / (1 - q ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have hf : 1 - q ^ (2 : ℕ) ≠ 0 := by
+    rw [show 1 - q ^ (2 : ℕ) = (1 + q) * (1 - q) by ring]
     exact mul_ne_zero hp hm
   rw [div_pow, div_pow]
   field_simp [hp, hm, hf]
@@ -182,16 +182,16 @@ lemma thetaCuspHawkingSchwarzian_bifurcation_reflectionDifference
     thetaCuspHawkingSchwarzian a lambda 0 -
         thetaCuspHawkingSchwarzian (-a) lambda 0 =
       2 * lambda * thetaCuspHawkingBifurcationJerk a /
-          (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2) +
-        6 * lambda ^ 3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ 2 /
-          (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2) ^ 2 := by
+          (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ)) +
+        6 * lambda ^ (3 : ℕ) * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ) /
+          (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [thetaCuspHawkingSchwarzian_bifurcation,
     thetaCuspHawkingSchwarzian_bifurcation,
     thetaCuspHawkingBifurcationJerk_neg,
     thetaCuspHawkingBifurcationCurvature_neg]
-  have hfactor : 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2 ≠ 0 := by
+  have hfactor : 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ) ≠ 0 := by
     calc
-      1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2 =
+      1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ) =
           (1 + lambda * (a * thetaCuspHawkingBifurcationThetaValue)) * (1 - lambda * (a * thetaCuspHawkingBifurcationThetaValue)) := by ring
       _ ≠ 0 := mul_ne_zero hplus hminus
   have h := bifurcation_reflected_schwarzian_algebra
@@ -200,9 +200,9 @@ lemma thetaCuspHawkingSchwarzian_bifurcation_reflectionDifference
   convert h using 1 <;> ring
 
 def thetaCuspHawkingBifurcationReflectionPolynomial (a lambda : ℝ) : ℝ :=
-  thetaCuspHawkingBifurcationJerk a + lambda ^ 2 *
-    (-thetaCuspHawkingBifurcationJerk a * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2 +
-      3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ 2)
+  thetaCuspHawkingBifurcationJerk a + lambda ^ (2 : ℕ) *
+    (-thetaCuspHawkingBifurcationJerk a * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ) +
+      3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ))
 
 lemma thetaCuspHawkingSchwarzian_bifurcation_reflection_eq_iff_polynomial_zero
     (a lambda : ℝ) (hlambda : lambda ≠ 0)
@@ -211,30 +211,30 @@ lemma thetaCuspHawkingSchwarzian_bifurcation_reflection_eq_iff_polynomial_zero
     thetaCuspHawkingSchwarzian a lambda 0 =
         thetaCuspHawkingSchwarzian (-a) lambda 0 ↔
       thetaCuspHawkingBifurcationReflectionPolynomial a lambda = 0 := by
-  have hfactor : 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2 ≠ 0 := by
-    rw [show 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2 =
+  have hfactor : 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ) ≠ 0 := by
+    rw [show 1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ) =
       (1 + lambda * (a * thetaCuspHawkingBifurcationThetaValue)) * (1 - lambda * (a * thetaCuspHawkingBifurcationThetaValue)) by ring]
     exact mul_ne_zero hplus hminus
-  have hfactor' : 1 - lambda ^ 2 * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2 ≠ 0 := by
-    rw [show 1 - lambda ^ 2 * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2 =
-      1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2 by ring]
+  have hfactor' : 1 - lambda ^ (2 : ℕ) * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ) ≠ 0 := by
+    rw [show 1 - lambda ^ (2 : ℕ) * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ) =
+      1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ) by ring]
     exact hfactor
   rw [← sub_eq_zero, thetaCuspHawkingSchwarzian_bifurcation_reflectionDifference a lambda hplus hminus]
   have hcombine :
-      2 * lambda * thetaCuspHawkingBifurcationJerk a / (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2) +
-          6 * lambda ^ 3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ 2 /
-            (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ 2) ^ 2 =
+      2 * lambda * thetaCuspHawkingBifurcationJerk a / (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ)) +
+          6 * lambda ^ (3 : ℕ) * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ) /
+            (1 - (lambda * (a * thetaCuspHawkingBifurcationThetaValue)) ^ (2 : ℕ)) ^ (2 : ℕ) =
         lambda *
-          (2 * thetaCuspHawkingBifurcationJerk a * (1 - lambda ^ 2 * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2) +
-            lambda ^ 2 * a * thetaCuspHawkingBifurcationThetaValue * 6 * thetaCuspHawkingBifurcationCurvature a ^ 2) /
-          (1 - lambda ^ 2 * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2) ^ 2 := by
+          (2 * thetaCuspHawkingBifurcationJerk a * (1 - lambda ^ (2 : ℕ) * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ)) +
+            lambda ^ (2 : ℕ) * a * thetaCuspHawkingBifurcationThetaValue * 6 * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ)) /
+          (1 - lambda ^ (2 : ℕ) * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ)) ^ (2 : ℕ) := by
     field_simp [hfactor]
   rw [hcombine]
   unfold thetaCuspHawkingBifurcationReflectionPolynomial
   constructor <;> intro h
   · have hnum : lambda *
-        (2 * thetaCuspHawkingBifurcationJerk a * (1 - lambda ^ 2 * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2) +
-          lambda ^ 2 * a * thetaCuspHawkingBifurcationThetaValue * 6 * thetaCuspHawkingBifurcationCurvature a ^ 2) = 0 := by
+        (2 * thetaCuspHawkingBifurcationJerk a * (1 - lambda ^ (2 : ℕ) * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ)) +
+          lambda ^ (2 : ℕ) * a * thetaCuspHawkingBifurcationThetaValue * 6 * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ)) = 0 := by
       rcases (div_eq_zero_iff).mp h with hnum | hden
       · exact hnum
       · exact ((pow_ne_zero 2 hfactor') hden).elim
@@ -307,30 +307,30 @@ theorem thetaCuspHawkingBifurcationSchwarzianMirrorNeutral_iff_zero_tilt {a : �
         (div_ne_zero hr.ne' (by norm_num))
         (hden_plus (r / 2) hl2) (hden_minus (r / 2) hl2)).mp hEq2
     let K : ℝ :=
-      -thetaCuspHawkingBifurcationJerk a * a ^ 2 * thetaCuspHawkingBifurcationThetaValue ^ 2 +
-        3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ 2
-    change thetaCuspHawkingBifurcationJerk a + (r / 3) ^ 2 * K = 0 at hP1
-    change thetaCuspHawkingBifurcationJerk a + (r / 2) ^ 2 * K = 0 at hP2
+      -thetaCuspHawkingBifurcationJerk a * a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue ^ (2 : ℕ) +
+        3 * a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ)
+    change thetaCuspHawkingBifurcationJerk a + (r / 3) ^ (2 : ℕ) * K = 0 at hP1
+    change thetaCuspHawkingBifurcationJerk a + (r / 2) ^ (2 : ℕ) * K = 0 at hP2
     have hK : K = 0 := by
       nlinarith [sq_pos_of_pos hr]
     have hA : thetaCuspHawkingBifurcationJerk a = 0 := by
       nlinarith [hP1]
     by_contra ha0
-    have hAfac : a ^ 2 * thetaCuspHawkingBifurcationThetaValue + 3 * thetaCuspHawkingBifurcationThetaSecondJet = 0 := by
+    have hAfac : a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue + 3 * thetaCuspHawkingBifurcationThetaSecondJet = 0 := by
       rw [thetaCuspHawkingBifurcationJerk_eq] at hA
       exact (mul_eq_zero.mp hA).resolve_left ha0
     have hc : thetaCuspHawkingBifurcationThetaValue ≠ 0 := thetaCuspFullSource_pos_zero.ne'
-    have hprod : a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ 2 = 0 := by
+    have hprod : a * thetaCuspHawkingBifurcationThetaValue * thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ) = 0 := by
       dsimp only [K] at hK
       rw [hA] at hK
       nlinarith
-    have hBsq : thetaCuspHawkingBifurcationCurvature a ^ 2 = 0 :=
+    have hBsq : thetaCuspHawkingBifurcationCurvature a ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hprod).resolve_left (mul_ne_zero ha0 hc)
     have hB : thetaCuspHawkingBifurcationCurvature a = 0 := by
       exact (mul_self_eq_zero.mp (by simpa [pow_two] using hBsq))
     rw [thetaCuspHawkingBifurcationCurvature] at hB
     have hd : thetaCuspHawkingBifurcationThetaSecondJet = 0 := by linarith [hAfac, hB]
-    have hac : a ^ 2 * thetaCuspHawkingBifurcationThetaValue = 0 := by linarith [hB]
+    have hac : a ^ (2 : ℕ) * thetaCuspHawkingBifurcationThetaValue = 0 := by linarith [hB]
     exact (mul_ne_zero (pow_ne_zero 2 ha0) hc) hac
   · rintro rfl lambda hlambda
     simp only [neg_zero]

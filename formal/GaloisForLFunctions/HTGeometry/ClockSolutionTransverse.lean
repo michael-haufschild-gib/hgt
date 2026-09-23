@@ -24,7 +24,7 @@ theorem differentiableOn_clockSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T) :
     DifferentiableOn ℂ (clockSolution V ξ η) (imStrip ρ) := by
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
@@ -38,17 +38,17 @@ theorem differentiableOn_clockSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀
     obtain ⟨holo, _⟩ := clockIterate_regular hV m
     exact (holo ξ η).mono (imStrip_mono hσρ₀.le)
   have hbound : ∀ (m : ℕ), ∀ w ∈ imStrip σ, ‖clockIterate V m ξ η w‖
-      ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro m w hw
     have hbase := clockIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ ξ η hξT hηT w
       (le_of_lt (mem_imStrip.mp hw))
     rw [hrem] at hbase
     refine hbase.trans ?_
     gcongr
-  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hGhalf : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
-  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ 2 / 4) (G := (ρ₀ - ρ) / 2)
+  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := (ρ₀ - ρ) / 2)
     (T := T) hK0 hGhalf hT hsmall
   have hdef : clockSolution V ξ η = fun w => ∑' m : ℕ, clockIterate V m ξ η w := rfl
   rw [hdef]
@@ -63,16 +63,16 @@ theorem continuousOn_clockSolution_clamped {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < �
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
     ContinuousOn
       (fun r : (ℝ × ℝ) × ℂ => clockSolution V (boxClamp T r.1.1) (boxClamp T r.1.2) r.2)
       (univ ×ˢ imStrip ρ) := by
   have hsmall' := ovsyannikov_smallness_of_half hMv0 hρ hsmall
-  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
   have hopen : IsOpen ((univ : Set (ℝ × ℝ)) ×ˢ imStrip ρ) :=
     isOpen_univ.prod (isOpen_imStrip ρ)
-  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ 2 / 4) (G := ρ₀ - ρ)
+  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := ρ₀ - ρ)
     (T := T) hK0 hG hT hsmall'
   have hterm : ∀ m : ℕ, ContinuousOn
       (fun r : (ℝ × ℝ) × ℂ => clockIterate V m (boxClamp T r.1.1) (boxClamp T r.1.2) r.2)
@@ -96,8 +96,8 @@ theorem continuousOn_clockSolution_clamped {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < �
         (((boxClamp T r.1.1, boxClamp T r.1.2), r.2) : (ℝ × ℝ) × ℂ)) hmap).continuousWithinAt
   have hbnd : ∀ (m : ℕ) (r : (ℝ × ℝ) × ℂ), r ∈ univ ×ˢ imStrip ρ →
       ‖clockIterate V m (boxClamp T r.1.1) (boxClamp T r.1.2) r.2‖
-        ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-          / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
+        ≤ (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+          / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
     intro m r hr
     have hbase := clockIterate_norm_le hρ₀ hV hMv0 hMv m ρ hρ0 hρ
       (boxClamp T r.1.1) (boxClamp T r.1.2) (abs_boxClamp_le hT r.1.1) (abs_boxClamp_le hT r.1.2)
@@ -114,7 +114,7 @@ theorem continuousAt_clockSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {p : (ℝ × ℝ) × ℂ} (hp1 : |p.1.1| < T) (hp2 : |p.1.2| < T) (hp3 : p.2 ∈ imStrip ρ) :
     ContinuousAt (fun r : (ℝ × ℝ) × ℂ => clockSolution V r.1.1 r.1.2 r.2) p := by
   have hopen : IsOpen ((univ : Set (ℝ × ℝ)) ×ˢ imStrip ρ) :=
@@ -139,7 +139,7 @@ theorem eventually_clockSolution_ne_zero {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 < T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z₀ : ℂ} (hz₀ : z₀ ∈ imStrip ρ) :
     ∀ᶠ r : (ℝ × ℝ) × ℂ in nhds (((0, 0) : ℝ × ℝ), z₀),
       clockSolution V r.1.1 r.1.2 r.2 ≠ 0 := by

@@ -123,7 +123,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 /-- The reflection-even channel has Weil/Krein coefficient exactly its Hilbert norm square. -/
 theorem quadratic_evenPart_eq_normSq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
-    quadratic J (a + J a) = ‖a + J a‖ ^ 2 := by
+    quadratic J (a + J a) = ‖a + J a‖ ^ (2 : ℕ) := by
   have hfix : J (a + J a) = a + J a := by
     rw [map_add, hJ]
     abel
@@ -140,7 +140,7 @@ theorem quadratic_evenPart_nonneg
 /-- The reflection-odd channel has coefficient exactly the negative of its Hilbert norm square. -/
 theorem quadratic_oddPart_eq_neg_normSq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
-    quadratic J (a - J a) = -‖a - J a‖ ^ 2 := by
+    quadratic J (a - J a) = -‖a - J a‖ ^ (2 : ℕ) := by
   have hanti : J (a - J a) = -(a - J a) := by
     rw [map_sub, hJ]
     abel
@@ -157,7 +157,7 @@ theorem quadratic_oddPart_nonpos
 /-- Exact Krein energy balance: Weil coefficient is even energy minus odd energy. -/
 theorem four_mul_quadratic_eq_even_sub_odd
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
-    4 * quadratic J a = ‖a + J a‖ ^ 2 - ‖a - J a‖ ^ 2 := by
+    4 * quadratic J a = ‖a + J a‖ ^ (2 : ℕ) - ‖a - J a‖ ^ (2 : ℕ) := by
   have hplus := plus_channel_energy_eq J hJ a
   have hminus := minus_channel_energy_eq J hJ a
   nlinarith
@@ -201,7 +201,7 @@ theorem xiWeilCliffordPairing_evenPart_eq_normSq (v : XiWeilCarrier) :
     xiWeilCliffordPairing
         (v + xiWeilLineConjLinearIsometry v)
         (v + xiWeilLineConjLinearIsometry v) =
-      ((‖v + xiWeilLineConjLinearIsometry v‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖v + xiWeilLineConjLinearIsometry v‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold xiWeilCliffordPairing
   have hfix : xiWeilLineConjLinearIsometry
       (v + xiWeilLineConjLinearIsometry v) =
@@ -225,7 +225,7 @@ theorem xiWeilCliffordPairing_oddPart_eq_neg_normSq (v : XiWeilCarrier) :
     xiWeilCliffordPairing
         (v - xiWeilLineConjLinearIsometry v)
         (v - xiWeilLineConjLinearIsometry v) =
-      -((‖v - xiWeilLineConjLinearIsometry v‖ ^ 2 : ℝ) : ℂ) := by
+      -((‖v - xiWeilLineConjLinearIsometry v‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold xiWeilCliffordPairing
   have hanti : xiWeilLineConjLinearIsometry
       (v - xiWeilLineConjLinearIsometry v) =
@@ -242,7 +242,7 @@ theorem xiWeilPolarization_reflectionEvenTest_eq_normSq
     xiWeilPolarization (xiWeilReflectionEvenTest F)
         (xiWeilReflectionEvenTest F) =
       ((‖xiWeilEvaluationLp F hF +
-          xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ 2 : ℝ) : ℂ) := by
+          xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   let hEven := xiWeilReflectionEvenTest_squareSummable F hF
   rw [← xiWeilCliffordPairing_evaluation_eq_polarization
       (xiWeilReflectionEvenTest F) (xiWeilReflectionEvenTest F) hEven hEven,
@@ -264,9 +264,9 @@ theorem riemannHypothesis_iff_xiWeil_even_energy_dominates_odd :
     RiemannHypothesis ↔
       ∀ (F : ℂ → ℂ) (hF : XiWeilSquareSummable F),
         ‖xiWeilEvaluationLp F hF -
-            xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ 2 ≤
+            xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ (2 : ℕ) ≤
           ‖xiWeilEvaluationLp F hF +
-            xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ 2 := by
+            xiWeilLineConjLinearIsometry (xiWeilEvaluationLp F hF)‖ ^ (2 : ℕ) := by
   rw [riemannHypothesis_iff_xiWeilPolarization_nonneg]
   constructor
   · intro h F hF

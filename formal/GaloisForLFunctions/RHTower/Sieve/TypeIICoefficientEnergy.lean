@@ -17,7 +17,7 @@ noncomputable section
 /-- **The long-side coefficient energy.** -/
 theorem exists_sum_typeIILong_sq_le :
     ∃ C : ℝ, 0 < C ∧ ∀ (U L : ℕ), 1 ≤ L →
-      (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+      (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
         ≤ C * (L : ℝ) * Real.log (L : ℝ) := by
   obtain ⟨C, hC0, hC⟩ := exists_chebyshevPsiReal_le_linear
   refine ⟨C, hC0, ?_⟩
@@ -26,7 +26,7 @@ theorem exists_sum_typeIILong_sq_le :
   have hlogL : (0 : ℝ) ≤ Real.log (L : ℝ) := Real.log_nonneg hL1
   rw [Finset.Ico_add_one_right_eq_Icc]
   have hstep : ∀ d ∈ Finset.Icc 1 L,
-      ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2 ≤ Real.log (L : ℝ) * vonMangoldt d := by
+      ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ Real.log (L : ℝ) * vonMangoldt d := by
     intro d hd
     rw [Finset.mem_Icc] at hd
     have hnorm : ‖((typeIILong U d : ℝ) : ℂ)‖ = |typeIILong U d| := by
@@ -51,10 +51,10 @@ theorem exists_sum_typeIILong_sq_le :
 
 /-- **The short-side coefficient energy.** -/
 theorem sum_typeIIShort_sq_le (V L : ℕ) :
-    (∑ m ∈ Finset.Icc 1 L, ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ 2)
-      ≤ 2 * (L : ℝ) + 2 * ((L : ℝ) * invSum L ^ 3) := by
+    (∑ m ∈ Finset.Icc 1 L, ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      ≤ 2 * (L : ℝ) + 2 * ((L : ℝ) * invSum L ^ (3 : ℕ)) := by
   have hstep : ∀ m ∈ Finset.Icc 1 L,
-      ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ 2 ≤ 2 + 2 * ((m.divisors.card : ℕ) : ℝ) ^ 2 := by
+      ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ 2 + 2 * ((m.divisors.card : ℕ) : ℝ) ^ (2 : ℕ) := by
     intro m _
     have hnorm : ‖((typeIIShort V m : ℝ) : ℂ)‖ = |typeIIShort V m| := by
       rw [Complex.norm_real, Real.norm_eq_abs]

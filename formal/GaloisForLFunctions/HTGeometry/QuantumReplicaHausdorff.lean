@@ -1041,7 +1041,7 @@ theorem re_hsInner_sq_le_hsNormSq_mul
 
 /-- **Quantum replica log-convexity.**  Consecutive trace powers of every positive
 Hilbert--Schmidt master effect satisfy the homogeneous Hankel inequality
-`M_(k+1)^2 ≤ M_k M_(k+2)`.  Unlike a Hausdorff finite difference, this relation is invariant
+`M_(k+1)^(2 : ℕ) ≤ M_k M_(k+2)`.  Unlike a Hausdorff finite difference, this relation is invariant
 under rescaling the underlying channel. -/
 theorem quantumMasterEffectMoment_logConvex
     {C : E →L[ℂ] F} (hC : ContinuousLinearMap.IsHilbertSchmidt C) (k : ℕ) :

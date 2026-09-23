@@ -64,8 +64,8 @@ theorem chargedStep_slope_matching (a b : ℝ) :
   ring
 
 theorem chargedStep_amplitude_flux_identity (a b : ℝ) :
-    chargedStepMomentum a b * (chargedStepReflection a b ^ 2 - 1) =
-      Real.exp b * chargedStepTransmission a b ^ 2 := by
+    chargedStepMomentum a b * (chargedStepReflection a b ^ (2 : ℕ) - 1) =
+      Real.exp b * chargedStepTransmission a b ^ (2 : ℕ) := by
   unfold chargedStepMomentum chargedStepReflection chargedStepTransmission
   field_simp
   ring
@@ -137,20 +137,20 @@ theorem chargedStepWave_continuous (a b : ℝ) : Continuous (chargedStepWave a b
   (show Differentiable ℝ (chargedStepWave a b) from fun x => (chargedStepWave_derivative a b x).differentiableAt).continuous
 
 theorem chargedStepLeftWave_flux (a b x : ℝ) :
-    complexRadialFlux (chargedStepLeftWave a b) x = Real.exp b * chargedStepTransmission a b ^ 2 := by
+    complexRadialFlux (chargedStepLeftWave a b) x = Real.exp b * chargedStepTransmission a b ^ (2 : ℕ) := by
   rw [chargedStepLeftWave, chargedChannelWave_flux]
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, norm_zero, zero_pow (by norm_num : 2 ≠ 0), zero_sub]
   ring
 
 theorem chargedStepRightWave_flux (a b x : ℝ) :
-    complexRadialFlux (chargedStepRightWave a b) x = Real.exp b * chargedStepTransmission a b ^ 2 := by
+    complexRadialFlux (chargedStepRightWave a b) x = Real.exp b * chargedStepTransmission a b ^ (2 : ℕ) := by
   rw [chargedStepRightWave, chargedChannelWave_flux]
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, norm_one, one_pow]
   exact chargedStep_amplitude_flux_identity a b
 
 /-- The negative-frequency transmitted channel and amplified reflection have identical actual flux. -/
 theorem chargedStepWave_flux (a b x : ℝ) :
-    complexRadialFlux (chargedStepWave a b) x = Real.exp b * chargedStepTransmission a b ^ 2 := by
+    complexRadialFlux (chargedStepWave a b) x = Real.exp b * chargedStepTransmission a b ^ (2 : ℕ) := by
   rw [complexRadialFlux, (chargedStepWave_derivative a b x).deriv]
   by_cases hx : x ≤ 0
   · simp only [chargedStepWave, chargedStepWave1, if_pos hx]
@@ -174,7 +174,7 @@ theorem chargedStepWave_ne_zero (a b x : ℝ) : chargedStepWave a b x ≠ 0 := b
   simp only [complexRadialFlux, h, map_zero, zero_mul, Complex.zero_im] at hp
   exact lt_irrefl 0 hp
 
-theorem chargedStep_reflection_power_gt_one (a b : ℝ) : chargedStepReflection a b ^ 2 > 1 := by
+theorem chargedStep_reflection_power_gt_one (a b : ℝ) : chargedStepReflection a b ^ (2 : ℕ) > 1 := by
   have h := chargedStepReflection_gt_one a b
   nlinarith
 
@@ -190,7 +190,7 @@ theorem chargedStep_infinity_frequency (a b u : ℝ) :
 /-- Negative local frequency carries negative gauge-covariant charge density on the transmitted side. -/
 theorem chargedStep_transmitted_charge_neg (a b u : ℝ) :
     (chargedStepMomentum a b - chargedStepChemicalPotential a b (-Real.exp u)) *
-      ‖chargedStepWave a b (-Real.exp u)‖ ^ 2 < 0 := by
+      ‖chargedStepWave a b (-Real.exp u)‖ ^ (2 : ℕ) < 0 := by
   rw [chargedStep_horizon_frequency]
   exact mul_neg_of_neg_of_pos (neg_neg_of_pos (Real.exp_pos b))
     (sq_pos_of_pos (norm_pos_iff.mpr (chargedStepWave_ne_zero a b _)))
@@ -198,7 +198,7 @@ theorem chargedStep_transmitted_charge_neg (a b u : ℝ) :
 /-- Positive local frequency carries positive gauge-covariant density on the incident side. -/
 theorem chargedStep_incident_charge_pos (a b u : ℝ) :
     (chargedStepMomentum a b - chargedStepChemicalPotential a b (Real.exp u)) *
-      ‖chargedStepWave a b (Real.exp u)‖ ^ 2 > 0 := by
+      ‖chargedStepWave a b (Real.exp u)‖ ^ (2 : ℕ) > 0 := by
   rw [chargedStep_infinity_frequency]
   exact mul_pos (chargedStepMomentum_pos a b)
     (sq_pos_of_pos (norm_pos_iff.mpr (chargedStepWave_ne_zero a b _)))
@@ -228,7 +228,7 @@ theorem chargedStepWave_contDiff_one (a b : ℝ) : ContDiff ℝ 1 (chargedStepWa
 /-- The actual second derivative on every point of the transmitted half-line. -/
 theorem chargedStepWave_second_derivative_left (a b u : ℝ) :
     HasDerivAt (deriv (chargedStepWave a b))
-      (-((-Real.exp b : ℝ) : ℂ) ^ 2 * chargedStepWave a b (-Real.exp u)) (-Real.exp u) := by
+      (-((-Real.exp b : ℝ) : ℂ) ^ (2 : ℕ) * chargedStepWave a b (-Real.exp u)) (-Real.exp u) := by
   have hx : -Real.exp u < 0 := neg_neg_of_pos (Real.exp_pos u)
   have he : deriv (chargedStepWave a b) =ᶠ[𝓝 (-Real.exp u)]
       deriv (chargedStepLeftWave a b) := by
@@ -242,7 +242,7 @@ theorem chargedStepWave_second_derivative_left (a b u : ℝ) :
 /-- The actual second derivative on every point of the incident half-line. -/
 theorem chargedStepWave_second_derivative_right (a b u : ℝ) :
     HasDerivAt (deriv (chargedStepWave a b))
-      (-(chargedStepMomentum a b : ℂ) ^ 2 * chargedStepWave a b (Real.exp u)) (Real.exp u) := by
+      (-(chargedStepMomentum a b : ℂ) ^ (2 : ℕ) * chargedStepWave a b (Real.exp u)) (Real.exp u) := by
   have hx := Real.exp_pos u
   have he : deriv (chargedStepWave a b) =ᶠ[𝓝 (Real.exp u)]
       deriv (chargedStepRightWave a b) := by
@@ -255,14 +255,14 @@ theorem chargedStepWave_second_derivative_right (a b u : ℝ) :
 
 theorem chargedStepWave_equation_left (a b u : ℝ) :
     deriv (deriv (chargedStepWave a b)) (-Real.exp u) +
-      ((chargedStepMomentum a b - chargedStepChemicalPotential a b (-Real.exp u) : ℝ) : ℂ) ^ 2 *
+      ((chargedStepMomentum a b - chargedStepChemicalPotential a b (-Real.exp u) : ℝ) : ℂ) ^ (2 : ℕ) *
         chargedStepWave a b (-Real.exp u) = 0 := by
   rw [(chargedStepWave_second_derivative_left a b u).deriv, chargedStep_horizon_frequency]
   ring
 
 theorem chargedStepWave_equation_right (a b u : ℝ) :
     deriv (deriv (chargedStepWave a b)) (Real.exp u) +
-      ((chargedStepMomentum a b - chargedStepChemicalPotential a b (Real.exp u) : ℝ) : ℂ) ^ 2 *
+      ((chargedStepMomentum a b - chargedStepChemicalPotential a b (Real.exp u) : ℝ) : ℂ) ^ (2 : ℕ) *
         chargedStepWave a b (Real.exp u) = 0 := by
   rw [(chargedStepWave_second_derivative_right a b u).deriv, chargedStep_infinity_frequency]
   ring
@@ -270,7 +270,7 @@ theorem chargedStepWave_equation_right (a b u : ℝ) :
 
 /-- Integrated curvature of the transmitted analytic branch. -/
 theorem chargedStepLeftWave_integrated_equation (a b r : ℝ) :
-    (∫ x in r..0, -((-Real.exp b : ℝ) : ℂ) ^ 2 * chargedStepLeftWave a b x) =
+    (∫ x in r..0, -((-Real.exp b : ℝ) : ℂ) ^ (2 : ℕ) * chargedStepLeftWave a b x) =
       deriv (chargedStepLeftWave a b) 0 - deriv (chargedStepLeftWave a b) r := by
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
   · intro x _
@@ -281,7 +281,7 @@ theorem chargedStepLeftWave_integrated_equation (a b r : ℝ) :
 
 /-- Integrated curvature of the incident and reflected analytic branch. -/
 theorem chargedStepRightWave_integrated_equation (a b r : ℝ) :
-    (∫ x in 0..r, -(chargedStepMomentum a b : ℂ) ^ 2 * chargedStepRightWave a b x) =
+    (∫ x in 0..r, -(chargedStepMomentum a b : ℂ) ^ (2 : ℕ) * chargedStepRightWave a b x) =
       deriv (chargedStepRightWave a b) r - deriv (chargedStepRightWave a b) 0 := by
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
   · intro x _
@@ -292,8 +292,8 @@ theorem chargedStepRightWave_integrated_equation (a b r : ℝ) :
 
 /-- Exact integrated equation through the interface: no additional jump source is required. -/
 theorem chargedStepWave_interface_balance (a b u v : ℝ) :
-    (∫ x in (-Real.exp u)..0, -((-Real.exp b : ℝ) : ℂ) ^ 2 * chargedStepLeftWave a b x) +
-      (∫ x in 0..Real.exp v, -(chargedStepMomentum a b : ℂ) ^ 2 * chargedStepRightWave a b x) =
+    (∫ x in (-Real.exp u)..0, -((-Real.exp b : ℝ) : ℂ) ^ (2 : ℕ) * chargedStepLeftWave a b x) +
+      (∫ x in 0..Real.exp v, -(chargedStepMomentum a b : ℂ) ^ (2 : ℕ) * chargedStepRightWave a b x) =
         deriv (chargedStepWave a b) (Real.exp v) - deriv (chargedStepWave a b) (-Real.exp u) := by
   rw [chargedStepLeftWave_integrated_equation, chargedStepRightWave_integrated_equation,
     (chargedStepWave_derivative a b (Real.exp v)).deriv,
@@ -307,7 +307,7 @@ theorem chargedStepWave_not_twice_differentiable (a b : ℝ) :
     ¬ DifferentiableAt ℝ (deriv (chargedStepWave a b)) 0 := by
   intro hd
   have hl : HasDerivWithinAt (deriv (chargedStepWave a b))
-      (-((-Real.exp b : ℝ) : ℂ)^2 * chargedStepLeftWave a b 0) (Iic 0) 0 := by
+      (-((-Real.exp b : ℝ) : ℂ)^(2 : ℕ) * chargedStepLeftWave a b 0) (Iic 0) 0 := by
     apply (chargedChannelWave_second_derivative (chargedStepTransmission a b : ℂ) 0
       (-Real.exp b) 0).hasDerivWithinAt.congr
     · intro x hx
@@ -316,7 +316,7 @@ theorem chargedStepWave_not_twice_differentiable (a b : ℝ) :
     · rw [(chargedStepWave_derivative a b 0).deriv]
       simp only [chargedStepWave1, le_refl, if_true, chargedStepLeftWave]
   have hr : HasDerivWithinAt (deriv (chargedStepWave a b))
-      (-(chargedStepMomentum a b : ℂ)^2 * chargedStepRightWave a b 0) (Ici 0) 0 := by
+      (-(chargedStepMomentum a b : ℂ)^(2 : ℕ) * chargedStepRightWave a b 0) (Ici 0) 0 := by
     apply (chargedChannelWave_second_derivative 1 (chargedStepReflection a b : ℂ)
       (chargedStepMomentum a b) 0).hasDerivWithinAt.congr
     · intro x hx
@@ -332,7 +332,7 @@ theorem chargedStepWave_not_twice_differentiable (a b : ℝ) :
         chargedStep_interface_derivative a b
   have he := (uniqueDiffWithinAt_Iic (0 : ℝ)).eq_deriv _ hl hd.hasDerivAt.hasDerivWithinAt
   have he' := (uniqueDiffWithinAt_Ici (0 : ℝ)).eq_deriv _ hr hd.hasDerivAt.hasDerivWithinAt
-  have hcoeff : -((-Real.exp b : ℝ) : ℂ)^2 = -(chargedStepMomentum a b : ℂ)^2 := by
+  have hcoeff : -((-Real.exp b : ℝ) : ℂ)^(2 : ℕ) = -(chargedStepMomentum a b : ℂ)^(2 : ℕ) := by
     apply mul_right_cancel₀ (show chargedStepLeftWave a b 0 ≠ 0 by
       simpa only [chargedStepWave, le_refl, if_true] using chargedStepWave_ne_zero a b 0)
     rw [chargedStep_interface_value] at he ⊢

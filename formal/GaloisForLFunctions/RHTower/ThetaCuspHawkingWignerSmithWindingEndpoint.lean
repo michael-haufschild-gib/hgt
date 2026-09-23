@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.HalfPlanePoissonKernel
 The theta-cusp moving-mirror Born response has a literal causal all-pass factor at every
 upper-half-plane anomaly resonance.  Its physical Wigner--Smith clock is the Lorentzian
 
-`2 Im(alpha) / (Im(alpha)^2 + (x - Re(alpha))^2)`.
+`2 Im(alpha) / (Im(alpha)^(2 : ℕ) + (x - Re(alpha))^(2 : ℕ))`.
 
 This file integrates that clock over the full physical-frequency line.  Every such resonance
 contributes exactly `2*pi`, hence one normalized phase-winding unit, independently of its position.
@@ -59,7 +59,7 @@ theorem thetaCuspHawkingAllPassDelayArea_eq_two_pi
   rw [thetaCuspHawkingAllPassDelayArea]
   have hfun : thetaCuspHawkingCausalAllPassClock r =
       fun x : ℝ =>
-        2 * r.1.im * (r.1.im ^ 2 + (x - r.1.re) ^ 2)⁻¹ := by
+        2 * r.1.im * (r.1.im ^ (2 : ℕ) + (x - r.1.re) ^ (2 : ℕ))⁻¹ := by
     funext x
     rw [thetaCuspHawkingCausalAllPassClock_eq r hr]
     simp only [div_eq_mul_inv]

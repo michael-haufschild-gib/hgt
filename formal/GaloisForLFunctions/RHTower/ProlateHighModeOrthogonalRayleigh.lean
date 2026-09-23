@@ -137,7 +137,7 @@ theorem rayleigh_le_of_orthogonal_to_high_modes {c K : ℝ} (hc0 : 0 < c)
         inner_eq_inner_bandComponent c v _ hTmem
       -- the quadratic form on the eigenspace, via orthogonality to the high eigenvectors
       have hquad : (inner ℝ u (GaloisForLFunctions.RHTower.bandClass
-            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ 2 := by
+            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ (2 : ℕ) := by
         letI : FiniteDimensional ℝ (evenBandEigenspace c μ) :=
           finiteDimensional_evenBandEigenspace hμ
         set T := prolateOnEvenEigenspace hc0 hμ with hT
@@ -173,7 +173,7 @@ theorem rayleigh_le_of_orthogonal_to_high_modes {c K : ℝ} (hc0 : 0 < c)
             rw [← inner_eq_inner_bandComponent c v _ w.2.1]
             exact hvw
           exact huw
-      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ 2 := inner_self_bandComponent c v μ
+      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ (2 : ℕ) := inner_self_bandComponent c v μ
       rw [hmove, hproj, hselfinner]
       exact hquad
   have hsum1 : HasSum (fun μ : ℝ => (inner ℝ Lv (bandComponent c v μ) : ℝ))

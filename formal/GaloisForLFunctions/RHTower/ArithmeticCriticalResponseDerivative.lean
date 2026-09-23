@@ -55,7 +55,7 @@ theorem differentiableAt_normalizedMinimumZeta {s : ℂ} (hs : s ∈ minimumStri
 /-- Exact derivative of the complete analytic source, retaining both rational terms. -/
 theorem hasDerivAt_fullUnitHolomorphicSource {s : ℂ} (hs : s ∈ minimumStrip) :
     HasDerivAt fullUnitHolomorphicSource
-      ((1-2*s)/(2*(s*(1-s))^2)-deriv normalizedMinimumZeta s-1/(12*(s+1)^2)) s := by
+      ((1-2*s)/(2*(s*(1-s))^(2 : ℕ))-deriv normalizedMinimumZeta s-1/(12*(s+1)^(2 : ℕ))) s := by
   have hd := unitPhaseStrip_denominators hs
   have hmean := (hasDerivAt_const s (1:ℂ)).div
     (((hasDerivAt_id s).add_const (1:ℂ)).const_mul (12:ℂ))
@@ -69,7 +69,7 @@ theorem hasDerivAt_fullUnitHolomorphicSource {s : ℂ} (hs : s ∈ minimumStrip)
 /-- Cubic source control gives the actual symmetric quotient a quadratic error. -/
 theorem norm_criticalResponseQuotient_add_le (t : ℝ) {h : ℝ}
     (hh : |h|≤1/2) (hh0 : h≠0) :
-    ‖criticalResponseQuotient t h+criticalFullLogResponse t‖ ≤ h^2/12 := by
+    ‖criticalResponseQuotient t h+criticalFullLogResponse t‖ ≤ h^(2 : ℕ)/12 := by
   let s := criticalResponsePoint t+(h:ℂ)
   have hsre : s.re=1/2+h := by simp [s,criticalResponsePoint]
   have hsim : s.im=t := by simp [s,criticalResponsePoint]
@@ -87,10 +87,10 @@ theorem norm_criticalResponseQuotient_add_le (t : ℝ) {h : ℝ}
 /-- The actual source expansion fixes its punctured critical quotient limit. -/
 theorem tendsto_criticalResponseQuotient (t : ℝ) :
     Tendsto (criticalResponseQuotient t) (𝓝[≠] (0:ℝ)) (𝓝 (-criticalFullLogResponse t)) := by
-  have hb : Tendsto (fun h : ℝ => h^2/12) (𝓝[≠] (0:ℝ)) (𝓝 0) := by
+  have hb : Tendsto (fun h : ℝ => h^(2 : ℕ)/12) (𝓝[≠] (0:ℝ)) (𝓝 0) := by
     simpa using (((continuous_id.pow 2).div_const (12:ℝ)).tendsto' (0:ℝ) 0 (by norm_num)).mono_left
       nhdsWithin_le_nhds
-  have he : ∀ᶠ h : ℝ in 𝓝[≠] (0:ℝ), ‖criticalResponseQuotient t h+criticalFullLogResponse t‖ ≤ h^2/12 := by
+  have he : ∀ᶠ h : ℝ in 𝓝[≠] (0:ℝ), ‖criticalResponseQuotient t h+criticalFullLogResponse t‖ ≤ h^(2 : ℕ)/12 := by
     have hh : ∀ᶠ h : ℝ in 𝓝 (0:ℝ), |h|<1/2 :=
       (continuous_abs.tendsto 0).eventually (eventually_lt_nhds (by norm_num))
     filter_upwards [hh.filter_mono nhdsWithin_le_nhds,self_mem_nhdsWithin] with h hh hh0
@@ -101,10 +101,10 @@ theorem tendsto_criticalResponseQuotient (t : ℝ) :
 /-- The same source quotient has the derivative of its literal analytic expression as limit. -/
 theorem criticalFullLogResponse_eq_neg_star_source_derivative (t : ℝ) :
     criticalFullLogResponse t = -star
-      ((1-2*criticalResponsePoint t)/(2*(criticalResponsePoint t*(1-criticalResponsePoint t))^2)-
-        deriv normalizedMinimumZeta (criticalResponsePoint t)-1/(12*(criticalResponsePoint t+1)^2)) := by
+      ((1-2*criticalResponsePoint t)/(2*(criticalResponsePoint t*(1-criticalResponsePoint t))^(2 : ℕ))-
+        deriv normalizedMinimumZeta (criticalResponsePoint t)-1/(12*(criticalResponsePoint t+1)^(2 : ℕ))) := by
   let c := criticalResponsePoint t
-  let d := (1-2*c)/(2*(c*(1-c))^2)-deriv normalizedMinimumZeta c-1/(12*(c+1)^2)
+  let d := (1-2*c)/(2*(c*(1-c))^(2 : ℕ))-deriv normalizedMinimumZeta c-1/(12*(c+1)^(2 : ℕ))
   have hc : c ∈ minimumStrip := by norm_num [c,criticalResponsePoint,minimumStrip]
   have hf : HasDerivAt fullUnitHolomorphicSource d c := hasDerivAt_fullUnitHolomorphicSource hc
   have hp : HasDerivAt (fun h : ℝ => star (fullUnitHolomorphicSource (c+(h:ℂ)))) (star d) 0 := by
@@ -143,12 +143,12 @@ theorem criticalFullLogResponse_eq_neg_star_source_derivative (t : ℝ) :
 
 /-- The critical boundary product has an explicit real value. -/
 theorem criticalResponsePoint_product (t : ℝ) :
-    criticalResponsePoint t*(1-criticalResponsePoint t)=((t^2+1/4:ℝ):ℂ) := by
+    criticalResponsePoint t*(1-criticalResponsePoint t)=((t^(2 : ℕ)+1/4:ℝ):ℂ) := by
   apply Complex.ext <;> simp [criticalResponsePoint,Complex.mul_re,Complex.mul_im,pow_two] <;> ring
 
 /-- The reflected norm denominator on the critical line is explicit. -/
 theorem criticalResponsePoint_normSq (t : ℝ) :
-    Complex.normSq (star (criticalResponsePoint t)*(1-star (criticalResponsePoint t)))=(t^2+1/4)^2 := by
+    Complex.normSq (star (criticalResponsePoint t)*(1-star (criticalResponsePoint t)))=(t^(2 : ℕ)+1/4)^(2 : ℕ) := by
   have he := congrArg star (criticalResponsePoint_product t)
   simp only [star_mul,star_sub,star_one,Complex.star_def,Complex.conj_ofReal] at he
   rw [mul_comm] at he
@@ -158,30 +158,30 @@ theorem criticalResponsePoint_normSq (t : ℝ) :
 /-- At the critical point the exact zero target is the derivative of the rational source terms. -/
 theorem reflectionZeroTarget_critical_eq (t : ℝ) :
     reflectionZeroTarget (criticalResponsePoint t)=star
-      ((1-2*criticalResponsePoint t)/(2*(criticalResponsePoint t*(1-criticalResponsePoint t))^2)-
-        1/(12*(criticalResponsePoint t+1)^2)) := by
+      ((1-2*criticalResponsePoint t)/(2*(criticalResponsePoint t*(1-criticalResponsePoint t))^(2 : ℕ))-
+        1/(12*(criticalResponsePoint t+1)^(2 : ℕ))) := by
   let c := criticalResponsePoint t
   have hcim : c.im=t := by simp [c,criticalResponsePoint]
   have hmirror : 2-c=star c+1 := by
     apply Complex.ext
     · simp [c,criticalResponsePoint]; ring
     · simp [c,criticalResponsePoint]
-  have hB : star ((1-2*c)/(2*(c*(1-c))^2))=
+  have hB : star ((1-2*c)/(2*(c*(1-c))^(2 : ℕ)))=
       (((t/Complex.normSq (star c*(1-star c)):ℝ):ℂ)*Complex.I) := by
     have hp := criticalResponsePoint_product t
     have hn := criticalResponsePoint_normSq t
-    change c*(1-c)=((t^2+1/4:ℝ):ℂ) at hp
-    change Complex.normSq (star c*(1-star c))=(t^2+1/4)^2 at hn
+    change c*(1-c)=((t^(2 : ℕ)+1/4:ℝ):ℂ) at hp
+    change Complex.normSq (star c*(1-star c))=(t^(2 : ℕ)+1/4)^(2 : ℕ) at hn
     have hnum : 1-2*c= -2*(t:ℂ)*Complex.I := by
       dsimp [c,criticalResponsePoint]; ring
     rw [hp,hn,hnum]
     simp only [star_div₀,star_mul,star_pow,Complex.star_def,Complex.conj_ofReal,
       map_neg,map_ofNat,Complex.conj_I]
-    have ha : (((t^2+1/4:ℝ):ℂ))≠0 := by
-      exact_mod_cast (show t^2+(1/4:ℝ)≠0 by nlinarith [sq_nonneg t])
+    have ha : (((t^(2 : ℕ)+1/4:ℝ):ℂ))≠0 := by
+      exact_mod_cast (show t^(2 : ℕ)+(1/4:ℝ)≠0 by nlinarith [sq_nonneg t])
     push_cast at ha ⊢
     field_simp [ha]
-  have hM : star (1/(12*(c+1)^2))=1/(12*(star c+1)*(2-c)) := by
+  have hM : star (1/(12*(c+1)^(2 : ℕ)))=1/(12*(star c+1)*(2-c)) := by
     rw [hmirror]
     simp [pow_two]
     ring
@@ -230,32 +230,32 @@ theorem critical_zero_response_eq_zero_iff (t : ℝ)
 def reflectionTargetQuadraticCorrection (s : ℂ) : ℂ :=
   let c := criticalResponsePoint s.im
   let denominator := Complex.normSq (star s*(1-star s))*Complex.normSq (star c*(1-star c))
-  ((s.im*(2*s.im^2-1/2+(s.re-1/2)^2)/denominator:ℝ):ℂ)*Complex.I+
-    1/(12*(star c+1)^2*((star c+1)^2-(((s.re-1/2)^2:ℝ):ℂ)))
+  ((s.im*(2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ))/denominator:ℝ):ℂ)*Complex.I+
+    1/(12*(star c+1)^(2 : ℕ)*((star c+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)))
 
 /-- The norm denominator changes by an exact quadratic-in-displacement polynomial. -/
 theorem reflection_normSq_quadratic_difference (s : ℂ) :
     Complex.normSq (star s*(1-star s))-
       Complex.normSq (star (criticalResponsePoint s.im)*(1-star (criticalResponsePoint s.im)))=
-        (s.re-1/2)^2*(2*s.im^2-1/2+(s.re-1/2)^2) := by
+        (s.re-1/2)^(2 : ℕ)*(2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ)) := by
   rw [criticalResponsePoint_normSq]
   simp [Complex.normSq_apply,Complex.mul_re,Complex.mul_im]
   ring
 
 /-- The full reflected mean has the same exact even displacement variable. -/
 theorem reflection_mean_quadratic_difference (s : ℂ) :
-    (star (criticalResponsePoint s.im)+1)^2-(((s.re-1/2)^2:ℝ):ℂ)=(star s+1)*(2-s) := by
+    (star (criticalResponsePoint s.im)+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)=(star s+1)*(2-s) := by
   apply Complex.ext <;> simp [criticalResponsePoint,Complex.mul_re,Complex.mul_im,pow_two] <;> ring
 
 /-- The complete zero target transports by an exact quadratic displacement correction. -/
 theorem reflectionZeroTarget_sub_critical {s : ℂ} (hs : s∈minimumStrip) :
     reflectionZeroTarget s-reflectionZeroTarget (criticalResponsePoint s.im)=
-      -(((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s := by
+      -(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s := by
   let c := criticalResponsePoint s.im
   let C := Complex.normSq (star s*(1-star s))
   let C₀ := Complex.normSq (star c*(1-star c))
-  let d : ℝ := (s.re-1/2)^2
-  let q : ℂ := (star c+1)^2
+  let d : ℝ := (s.re-1/2)^(2 : ℕ)
+  let q : ℂ := (star c+1)^(2 : ℕ)
   have hcim : c.im=s.im := by simp [c,criticalResponsePoint]
   have hmirror : 2-c=star c+1 := by
     apply Complex.ext
@@ -278,11 +278,11 @@ theorem reflectionZeroTarget_sub_critical {s : ℂ} (hs : s∈minimumStrip) :
     norm_num [c,criticalResponsePoint] at hr
   have hq : q≠0 := pow_ne_zero 2 hac
   have hqd : q-(d:ℂ)≠0 := by
-    change (star (criticalResponsePoint s.im)+1)^2-(((s.re-1/2)^2:ℝ):ℂ)≠0
+    change (star (criticalResponsePoint s.im)+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)≠0
     rw [reflection_mean_quadratic_difference]
     exact mul_ne_zero ha hb
-  have hdC : C-C₀=d*(2*s.im^2-1/2+d) := reflection_normSq_quadratic_difference s
-  have hheight : s.im/C-s.im/C₀= -d*(s.im*(2*s.im^2-1/2+d)/(C*C₀)) := by
+  have hdC : C-C₀=d*(2*s.im^(2 : ℕ)-1/2+d) := reflection_normSq_quadratic_difference s
+  have hheight : s.im/C-s.im/C₀= -d*(s.im*(2*s.im^(2 : ℕ)-1/2+d)/(C*C₀)) := by
     field_simp [hC,hC₀]
     have hh := congrArg (fun x : ℝ => s.im*x) hdC
     nlinarith only [hh]
@@ -304,14 +304,14 @@ theorem reflectionZeroTarget_sub_critical {s : ℂ} (hs : s∈minimumStrip) :
   unfold reflectionTargetQuadraticCorrection
   change ((s.im/C:ℝ):ℂ)*Complex.I-1/(12*(q-(d:ℂ)))-
     (((s.im/C₀:ℝ):ℂ)*Complex.I-1/(12*q))=
-      -(d:ℂ)*(((s.im*(2*s.im^2-1/2+d)/(C*C₀):ℝ):ℂ)*Complex.I+1/(12*q*(q-(d:ℂ))))
+      -(d:ℂ)*(((s.im*(2*s.im^(2 : ℕ)-1/2+d)/(C*C₀):ℝ):ℂ)*Complex.I+1/(12*q*(q-(d:ℂ))))
   push_cast
   linear_combination hh-hmean
 
 /-- The actual off-line response consists of the critical derivative and its exact even correction. -/
 theorem reflectionDiskSource_eq_derivative_correction {s : ℂ} (hs : s∈minimumStrip) :
     reflectionDiskSource s=star (deriv normalizedMinimumZeta (criticalResponsePoint s.im))-
-      (((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s := by
+      (((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s := by
   have ht := reflectionZeroTarget_sub_critical hs
   have hd := criticalFullLogResponse_add_target_eq_derivative s.im
   change criticalFullLogResponse s.im+reflectionZeroTarget s=_
@@ -321,7 +321,7 @@ theorem reflectionDiskSource_eq_derivative_correction {s : ℂ} (hs : s∈minimu
 theorem normalized_derivative_constraint_at_offline_zero {s : ℂ} (hs : s∈minimumStrip)
     (hd : s.re≠1/2) (hz : riemannZeta s=0) :
     ‖star (deriv normalizedMinimumZeta (criticalResponsePoint s.im))-
-      (((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s‖ ≤ (s.re-1/2)^2/12 := by
+      (((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s‖ ≤ (s.re-1/2)^(2 : ℕ)/12 := by
   rw [←reflectionDiskSource_eq_derivative_correction hs]
   exact norm_criticalFullLogResponse_zero_constraint hs.1 hs.2 hd hz
 
@@ -329,23 +329,23 @@ theorem normalized_derivative_constraint_at_offline_zero {s : ℂ} (hs : s∈min
 theorem normalized_derivative_height_constraint_at_offline_zero {s : ℂ} (hs : s∈minimumStrip)
     (hd : s.re≠1/2) (ht : s.im≠0) (hz : riemannZeta s=0) :
     ‖star (deriv normalizedMinimumZeta (criticalResponsePoint s.im))-
-      (((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s‖ ≤
-        (s.re-1/2)^2*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
+      (((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s‖ ≤
+        (s.re-1/2)^(2 : ℕ)*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
   rw [←reflectionDiskSource_eq_derivative_correction hs]
   exact norm_criticalFullLogResponse_zero_constraint_height hs.1 hs.2 hd ht hz
 
 /-- The full compensated arithmetic current reconstructs the scaled critical derivative after exact target cancellation. -/
 theorem tendsto_criticalLogSecondCurrent_derivative (t : ℝ) :
     Tendsto (fun m : ℕ => criticalLogSecondCurrent t m+
-      ((t^2:ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t)-1/12) atTop
-        (𝓝 (((t^2:ℝ):ℂ)*star (deriv normalizedMinimumZeta (criticalResponsePoint t)))) := by
+      ((t^(2 : ℕ):ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t)-1/12) atTop
+        (𝓝 (((t^(2 : ℕ):ℝ):ℂ)*star (deriv normalizedMinimumZeta (criticalResponsePoint t)))) := by
   have h := ((tendsto_criticalLogSecondCurrent t).add_const
-    (((t^2:ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t))).sub_const (1/12:ℂ)
-  have hval : (1/12+((t^2:ℝ):ℂ)*criticalFullLogResponse t)+
-      ((t^2:ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t)-1/12=
-        ((t^2:ℝ):ℂ)*star (deriv normalizedMinimumZeta (criticalResponsePoint t)) := by
+    (((t^(2 : ℕ):ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t))).sub_const (1/12:ℂ)
+  have hval : (1/12+((t^(2 : ℕ):ℝ):ℂ)*criticalFullLogResponse t)+
+      ((t^(2 : ℕ):ℝ):ℂ)*reflectionZeroTarget (criticalResponsePoint t)-1/12=
+        ((t^(2 : ℕ):ℝ):ℂ)*star (deriv normalizedMinimumZeta (criticalResponsePoint t)) := by
     have he := criticalFullLogResponse_add_target_eq_derivative t
-    linear_combination ((t^2:ℝ):ℂ)*he
+    linear_combination ((t^(2 : ℕ):ℝ):ℂ)*he
   rw [hval] at h
   exact h
 

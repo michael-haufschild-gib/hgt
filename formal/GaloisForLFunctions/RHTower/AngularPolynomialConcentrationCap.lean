@@ -8,7 +8,7 @@ The Cayley half-density sends a fixed physical window to an angular arc whose le
 the inverse mass.  This file proves the exact analytic estimate needed to compare that shrinking
 arc with a root-sensitive Bernstein bound.
 
-If the full angular derivative energy of `Q(cos theta)` is at most `B^2` times its full mass, then
+If the full angular derivative energy of `Q(cos theta)` is at most `B^(2 : ℕ)` times its full mass, then
 an arc of radius `delta` carries at most
 
 `2 * delta * (1 / (2 * pi) + 2 * B)`
@@ -25,17 +25,17 @@ namespace RHTower
 
 noncomputable section
 
-/-- Full-period angular `L^2` mass of an algebraic polynomial. -/
+/-- Full-period angular `L^(2 : ℕ)` mass of an algebraic polynomial. -/
 def angularPolynomialMass (Q : Polynomial ℝ) : ℝ :=
-  ∫ theta in (-Real.pi)..Real.pi, angularPolynomialEval Q theta ^ 2
+  ∫ theta in (-Real.pi)..Real.pi, angularPolynomialEval Q theta ^ (2 : ℕ)
 
 /-- Full-period angular derivative energy of an algebraic polynomial. -/
 def angularPolynomialEnergy (Q : Polynomial ℝ) : ℝ :=
-  ∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ 2
+  ∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ (2 : ℕ)
 
 /-- Mass carried by the symmetric angular arc of radius `delta`. -/
 def angularPolynomialArcMass (Q : Polynomial ℝ) (delta : ℝ) : ℝ :=
-  ∫ theta in (-delta)..delta, angularPolynomialEval Q theta ^ 2
+  ∫ theta in (-delta)..delta, angularPolynomialEval Q theta ^ (2 : ℕ)
 
 /-- Full-period angular mass is nonnegative. -/
 theorem angularPolynomialMass_nonneg (Q : Polynomial ℝ) :
@@ -55,9 +55,9 @@ theorem angularPolynomialEnergy_nonneg (Q : Polynomial ℝ) :
 cosine-circle polynomial by the full mass with the square-root bandwidth scale `B`. -/
 theorem angularPolynomialEval_sq_le_of_energy
     (Q : Polynomial ℝ) {B : ℝ} (hB : 0 < B)
-    (henergy : angularPolynomialEnergy Q ≤ B ^ 2 * angularPolynomialMass Q)
+    (henergy : angularPolynomialEnergy Q ≤ B ^ (2 : ℕ) * angularPolynomialMass Q)
     {theta : ℝ} (htheta : theta ∈ Set.Icc (-Real.pi) Real.pi) :
-    angularPolynomialEval Q theta ^ 2 ≤
+    angularPolynomialEval Q theta ^ (2 : ℕ) ≤
       (1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q := by
   let f : ℝ → ℂ := fun t => (angularPolynomialEval Q t : ℂ)
   let f' : ℝ → ℂ := fun t => (angularPolynomialVelocity Q t : ℂ)
@@ -81,7 +81,7 @@ theorem angularPolynomialEval_sq_le_of_energy
       (Complex.continuous_re.comp
         ((Complex.continuous_ofReal.comp hvcont).mul
           ((Complex.continuous_ofReal.comp hqcont).star)))
-  have hmassInt : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume
+  have hmassInt : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume
       (-Real.pi) (-Real.pi + 2 * Real.pi) := by
     apply Continuous.intervalIntegrable
     exact (Complex.continuous_ofReal.comp hqcont).norm.pow 2
@@ -96,7 +96,7 @@ theorem angularPolynomialEval_sq_le_of_energy
     (δ := 2 * Real.pi) hperiod hf hinner hmassInt hcrossInt
     (t := theta) (by rwa [hright])
   have hmassEq :
-      (∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi), ‖f y‖ ^ 2) =
+      (∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi), ‖f y‖ ^ (2 : ℕ)) =
         angularPolynomialMass Q := by
     rw [hright]
     unfold angularPolynomialMass
@@ -104,7 +104,7 @@ theorem angularPolynomialEval_sq_le_of_energy
     intro y _
     simp [f, Complex.norm_real, sq_abs]
   have henergyEq :
-      (∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi), ‖f' y‖ ^ 2) =
+      (∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi), ‖f' y‖ ^ (2 : ℕ)) =
         angularPolynomialEnergy Q := by
     rw [hright]
     unfold angularPolynomialEnergy
@@ -113,17 +113,17 @@ theorem angularPolynomialEval_sq_le_of_energy
     simp [f', Complex.norm_real, sq_abs]
   have hcrossPoint : ∀ y : ℝ,
       2 * (‖f y‖ * ‖f' y‖) ≤
-        B * ‖f y‖ ^ 2 + (1 / B) * ‖f' y‖ ^ 2 := by
+        B * ‖f y‖ ^ (2 : ℕ) + (1 / B) * ‖f' y‖ ^ (2 : ℕ) := by
     intro y
     have hamgm := two_mul_le_div_add_mul
       (a := ‖f y‖) (b := ‖f' y‖) (η := 1 / B) (by positivity)
     have hBinv : B ≠ 0 := ne_of_gt hB
     calc
       2 * (‖f y‖ * ‖f' y‖)
-          ≤ ‖f y‖ ^ 2 / (1 / B) + (1 / B) * ‖f' y‖ ^ 2 := hamgm
-      _ = B * ‖f y‖ ^ 2 + (1 / B) * ‖f' y‖ ^ 2 := by
+          ≤ ‖f y‖ ^ (2 : ℕ) / (1 / B) + (1 / B) * ‖f' y‖ ^ (2 : ℕ) := hamgm
+      _ = B * ‖f y‖ ^ (2 : ℕ) + (1 / B) * ‖f' y‖ ^ (2 : ℕ) := by
         field_simp
-  have hvelocityInt : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume
+  have hvelocityInt : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume
       (-Real.pi) (-Real.pi + 2 * Real.pi) := by
     apply Continuous.intervalIntegrable
     exact (Complex.continuous_ofReal.comp hvcont).norm.pow 2
@@ -133,7 +133,7 @@ theorem angularPolynomialEval_sq_le_of_energy
     exact (Complex.continuous_ofReal.comp hqcont).norm.mul
       (Complex.continuous_ofReal.comp hvcont).norm
   have hmajorInt : IntervalIntegrable
-      (fun y => B * ‖f y‖ ^ 2 + (1 / B) * ‖f' y‖ ^ 2) volume
+      (fun y => B * ‖f y‖ ^ (2 : ℕ) + (1 / B) * ‖f' y‖ ^ (2 : ℕ)) volume
       (-Real.pi) (-Real.pi + 2 * Real.pi) := by
     exact (hmassInt.const_mul B).add (hvelocityInt.const_mul (1 / B))
   have hcrossLe :
@@ -150,7 +150,7 @@ theorem angularPolynomialEval_sq_le_of_energy
       rw [intervalIntegral.integral_const_mul]
     have hrightEq :
         (∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi),
-          B * ‖f y‖ ^ 2 + (1 / B) * ‖f' y‖ ^ 2) =
+          B * ‖f y‖ ^ (2 : ℕ) + (1 / B) * ‖f' y‖ ^ (2 : ℕ)) =
           B * angularPolynomialMass Q + (1 / B) * angularPolynomialEnergy Q := by
       rw [intervalIntegral.integral_add (hmassInt.const_mul B)
         (hvelocityInt.const_mul (1 / B)),
@@ -167,14 +167,14 @@ theorem angularPolynomialEval_sq_le_of_energy
     have hBinv : B ≠ 0 := ne_of_gt hB
     field_simp [hBinv] at hmul ⊢
     nlinarith [angularPolynomialMass_nonneg Q]
-  have hsobReal : angularPolynomialEval Q theta ^ 2 ≤
+  have hsobReal : angularPolynomialEval Q theta ^ (2 : ℕ) ≤
       (1 / (2 * Real.pi)) * angularPolynomialMass Q +
         ∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi),
           2 * (‖f y‖ * ‖f' y‖) := by
     rw [hmassEq] at hsob
     simpa [f, Complex.norm_real, sq_abs] using hsob
   calc
-    angularPolynomialEval Q theta ^ 2
+    angularPolynomialEval Q theta ^ (2 : ℕ)
         ≤ (1 / (2 * Real.pi)) * angularPolynomialMass Q +
           ∫ y in (-Real.pi)..(-Real.pi + 2 * Real.pi),
             2 * (‖f y‖ * ‖f' y‖) := hsobReal
@@ -185,23 +185,23 @@ theorem angularPolynomialEval_sq_le_of_energy
           2 * B * angularPolynomialMass Q := add_le_add (le_refl _) hcrossEnergy
     _ = (1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q := by ring
 
-/-- **Shrinking-arc mass cap.**  If full derivative energy is at most `B^2` times full mass, an
+/-- **Shrinking-arc mass cap.**  If full derivative energy is at most `B^(2 : ℕ)` times full mass, an
 arc of radius `delta` carries at most its length times the exact integral Sobolev cap. -/
 theorem angularPolynomialArcMass_le_of_energy
     (Q : Polynomial ℝ) {B delta : ℝ} (hB : 0 < B)
     (hdelta : 0 ≤ delta) (hdeltaPi : delta ≤ Real.pi)
-    (henergy : angularPolynomialEnergy Q ≤ B ^ 2 * angularPolynomialMass Q) :
+    (henergy : angularPolynomialEnergy Q ≤ B ^ (2 : ℕ) * angularPolynomialMass Q) :
     angularPolynomialArcMass Q delta ≤
       2 * delta * (1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q := by
   have hbounds : ∀ theta ∈ Set.Icc (-delta) delta,
-      angularPolynomialEval Q theta ^ 2 ≤
+      angularPolynomialEval Q theta ^ (2 : ℕ) ≤
         (1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q := by
     intro theta htheta
     exact angularPolynomialEval_sq_le_of_energy Q hB henergy
       ⟨by linarith [htheta.1], by linarith [htheta.2]⟩
   have hleft : -delta ≤ delta := by linarith
   have hfunInt : IntervalIntegrable
-      (fun theta => angularPolynomialEval Q theta ^ 2) volume (-delta) delta := by
+      (fun theta => angularPolynomialEval Q theta ^ (2 : ℕ)) volume (-delta) delta := by
     apply Continuous.intervalIntegrable
     unfold angularPolynomialEval
     fun_prop
@@ -213,7 +213,7 @@ theorem angularPolynomialArcMass_le_of_energy
   simp only [smul_eq_mul] at hmono
   unfold angularPolynomialArcMass
   calc
-    (∫ theta in (-delta)..delta, angularPolynomialEval Q theta ^ 2)
+    (∫ theta in (-delta)..delta, angularPolynomialEval Q theta ^ (2 : ℕ))
         ≤ (delta - -delta) *
           ((1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q) := hmono
     _ = 2 * delta * (1 / (2 * Real.pi) + 2 * B) *
@@ -226,20 +226,20 @@ def cayleyAngularCoordinate (a x : ℝ) : ℝ :=
   2 * Real.arctan (x / a)
 
 /-- Squared physical Cayley half-density packet.  This is exactly
-`a^2 / (a^2+x^2) * Q(cos(2 arctan(x/a)))^2`. -/
+`a^(2 : ℕ) / (a^(2 : ℕ)+x^(2 : ℕ)) * Q(cos(2 arctan(x/a)))^(2 : ℕ)`. -/
 def cayleyHalfDensityPolynomialSq (a : ℝ) (Q : Polynomial ℝ) (x : ℝ) : ℝ :=
-  a ^ 2 / (a ^ 2 + x ^ 2) *
-    angularPolynomialEval Q (cayleyAngularCoordinate a x) ^ 2
+  a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) *
+    angularPolynomialEval Q (cayleyAngularCoordinate a x) ^ (2 : ℕ)
 
 /-- Exact derivative of the physical-to-angular Cayley coordinate. -/
 theorem hasDerivAt_cayleyAngularCoordinate {a : ℝ} (ha : a ≠ 0) (x : ℝ) :
-    HasDerivAt (cayleyAngularCoordinate a) (2 * a / (a ^ 2 + x ^ 2)) x := by
+    HasDerivAt (cayleyAngularCoordinate a) (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) x := by
   have hinner : HasDerivAt (fun y : ℝ => y / a) (1 / a) x := by
     simpa only [id_eq, one_div] using (hasDerivAt_id x).div_const a
   have hcomp := (Real.hasDerivAt_arctan (x / a)).comp x hinner
   have hraw : HasDerivAt (fun y : ℝ => 2 * Real.arctan (y / a))
-      (2 * ((1 / (1 + (x / a) ^ 2)) * (1 / a))) x := hcomp.const_mul 2
-  have hden : a ^ 2 + x ^ 2 ≠ 0 := by
+      (2 * ((1 / (1 + (x / a) ^ (2 : ℕ))) * (1 / a))) x := hcomp.const_mul 2
+  have hden : a ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero ha, sq_nonneg x]
   convert hraw using 1
   · rfl
@@ -259,8 +259,8 @@ theorem integral_cayleyHalfDensityPolynomialSq_eq_arcMass
     (∫ x in (-R)..R, cayleyHalfDensityPolynomialSq a Q x) =
       (a / 2) * angularPolynomialArcMass Q (cayleyAngularCoordinate a R) := by
   let phi : ℝ → ℝ := cayleyAngularCoordinate a
-  let phi' : ℝ → ℝ := fun x => 2 * a / (a ^ 2 + x ^ 2)
-  let density : ℝ → ℝ := fun theta => angularPolynomialEval Q theta ^ 2
+  let phi' : ℝ → ℝ := fun x => 2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ))
+  let density : ℝ → ℝ := fun theta => angularPolynomialEval Q theta ^ (2 : ℕ)
   have hphi : ∀ x ∈ Set.uIcc (-R) R, HasDerivAt phi (phi' x) x := by
     intro x _
     exact hasDerivAt_cayleyAngularCoordinate ha.ne' x
@@ -284,7 +284,7 @@ theorem integral_cayleyHalfDensityPolynomialSq_eq_arcMass
     apply intervalIntegral.integral_congr
     intro x _
     dsimp [cayleyHalfDensityPolynomialSq, density, phi, phi']
-    have hden : a ^ 2 + x ^ 2 ≠ 0 := by
+    have hden : a ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by
       nlinarith [sq_pos_of_pos ha, sq_nonneg x]
     field_simp [hden]
   have hend : phi (-R) = -phi R := by
@@ -296,7 +296,7 @@ theorem integral_cayleyHalfDensityPolynomialSq_eq_arcMass
 finite physical-window mass bound with no unproved Jacobian or normalization step. -/
 theorem integral_cayleyHalfDensityPolynomialSq_le_of_energy
     (Q : Polynomial ℝ) {a R B : ℝ} (ha : 0 < a) (hR : 0 ≤ R) (hB : 0 < B)
-    (henergy : angularPolynomialEnergy Q ≤ B ^ 2 * angularPolynomialMass Q) :
+    (henergy : angularPolynomialEnergy Q ≤ B ^ (2 : ℕ) * angularPolynomialMass Q) :
     (∫ x in (-R)..R, cayleyHalfDensityPolynomialSq a Q x) ≤
       a * cayleyAngularCoordinate a R *
         (1 / (2 * Real.pi) + 2 * B) * angularPolynomialMass Q := by

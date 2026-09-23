@@ -31,7 +31,7 @@ variable {m K C cmin : ℝ} {c dc : ℝ → ℝ} {G₀ : E → ℂ}
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **The velocity density is continuous in the frequency**, at every time. -/
 theorem continuous_hillDensityDeriv_all (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀) (t : ℝ) :
     Continuous (hillDensityDeriv m c G₀ t) := by
   have hfibre : Continuous fun s : ℝ => hillFlow (massiveFreq m c s) (1, 0) t :=
     continuous_iff_continuousAt.mpr fun s₀ =>
@@ -43,10 +43,10 @@ theorem continuous_hillDensityDeriv_all (hm : 0 < m) (hc : Continuous c)
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **The velocity density is continuous in time.** -/
 theorem continuous_hillDensityDeriv_time (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (ξ : E) :
     Continuous fun t : ℝ => hillDensityDeriv m c G₀ t ξ := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hflow : Continuous (hillFlow (massiveFreq m c ‖ξ‖) (1, 0)) :=
     continuous_hillFlow (continuous_massiveFreq hc m ‖ξ‖) hM1 hMb (1, 0)
@@ -69,7 +69,7 @@ theorem abs_le_abs_add_one_of_dist_lt {t₀ r : ℝ} (h : dist r t₀ < 1) : |r|
 /-- **The synthesis of the velocity density is continuous in the event.** -/
 theorem continuous_hillSynthesisDeriv_event (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E)) :
     Continuous fun p : ℝ × E =>
       hillSynthesisDeriv m c G₀ (kgChar p.2) (volume : Measure E) p.1 := by
@@ -122,7 +122,7 @@ theorem continuous_hillSynthesisDeriv_event (hm : 0 < m) (hc : Continuous c)
 /-- **The synthesis of a derived density is continuous in the event.** -/
 theorem continuous_hillDirSynthesis_event (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀)
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖G₀ ξ‖) (volume : Measure E)) (v : E) :
     Continuous fun p : ℝ × E =>
@@ -196,7 +196,7 @@ variable {d : ℕ} {G : EuclideanSpace ℝ (Fin d) → ℂ}
 
 theorem continuous_hillChartTimePartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume)) :
     Continuous (hillChartTimePartial m c G) := by
@@ -213,7 +213,7 @@ theorem continuous_hillChartTimePartial (hm : 0 < m) (hc : Continuous c)
 
 theorem continuous_hillChartSpacePartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
     (h1 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ * ‖G ξ‖) (volume))
     (i : Fin d) :
     Continuous (hillChartSpacePartial m c G i) := by
@@ -232,7 +232,7 @@ theorem continuous_hillChartSpacePartial (hm : 0 < m) (hc : Continuous c)
 /-- **Every chart partial is continuous.** -/
 theorem continuous_hillChartPartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))
     (h1 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ * ‖G ξ‖) (volume))
@@ -250,7 +250,7 @@ theorem continuous_hillChartPartial (hm : 0 < m) (hc : Continuous c)
 /-- **The chart field has continuous partial derivatives everywhere.** -/
 theorem isC1OnPi_hillChartField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))
@@ -265,7 +265,7 @@ theorem isC1OnPi_hillChartField (hm : 0 < m) (hc : Continuous c)
 /-- **Hence the chart field is differentiable, with the expected differential.** -/
 theorem hasFDerivAt_hillChartField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))
@@ -279,7 +279,7 @@ theorem hasFDerivAt_hillChartField (hm : 0 < m) (hc : Continuous c)
 /-- **And its coordinate partials are the computed ones.** -/
 theorem coordPartial_hillChartField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G ξ‖) (volume))
     (hweight : Integrable
       (fun ξ : EuclideanSpace ℝ (Fin d) => (m + c 0 * ‖ξ‖) * ‖G ξ‖) (volume))

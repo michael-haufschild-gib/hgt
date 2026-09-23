@@ -183,9 +183,9 @@ theorem steinhausLargePrimeChannel_congr_of_eqOn_smallPrimes
 /-- Exact mean-square energy of one conditional large-prime channel. -/
 theorem integral_normSq_steinhausLargePrimeChannel
     (a : ℕ → ℂ) (X p : ℕ) :
-    ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ 2
+    ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ (2 : ℕ)
         ∂SteinhausModel.steinhausMeasure =
-      ∑ m ∈ Finset.Icc 1 (X / p), ‖a (p * m)‖ ^ 2 := by
+      ∑ m ∈ Finset.Icc 1 (X / p), ‖a (p * m)‖ ^ (2 : ℕ) := by
   unfold steinhausLargePrimeChannel
   exact SteinhausModel.integral_normSq_dpoly_complex
     (fun m => a (p * m)) (Finset.Icc 1 (X / p))
@@ -195,21 +195,21 @@ theorem integral_normSq_steinhausLargePrimeChannel
 large-prime channels are precisely the arbitrary coefficient mass in the non-smooth sector. -/
 theorem steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy
     (a : ℕ → ℂ) (X Y : ℕ) (hXY : X < Y * Y) :
-    ∑ n ∈ Finset.Icc 1 X, ‖a n‖ ^ 2 =
-      ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ 2 +
+    ∑ n ∈ Finset.Icc 1 X, ‖a n‖ ^ (2 : ℕ) =
+      ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ (2 : ℕ) +
         ∑ p ∈ largePrimes X Y,
-          ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ 2
+          ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ (2 : ℕ)
             ∂SteinhausModel.steinhausMeasure := by
   classical
   calc
-    ∑ n ∈ Finset.Icc 1 X, ‖a n‖ ^ 2 =
-        ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ 2 +
+    ∑ n ∈ Finset.Icc 1 X, ‖a n‖ ^ (2 : ℕ) =
+        ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ (2 : ℕ) +
           ∑ x ∈ (largePrimes X Y).sigma (fun p => Finset.Icc 1 (X / p)),
-            ‖a (x.1 * x.2)‖ ^ 2 :=
-      sum_Icc_eq_smooth_add_largePrimeSigma (fun n => ‖a n‖ ^ 2) X Y hXY
-    _ = ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ 2 +
+            ‖a (x.1 * x.2)‖ ^ (2 : ℕ) :=
+      sum_Icc_eq_smooth_add_largePrimeSigma (fun n => ‖a n‖ ^ (2 : ℕ)) X Y hXY
+    _ = ∑ n ∈ Sieve.smoothUpTo (Nat.primesLE Y) X, ‖a n‖ ^ (2 : ℕ) +
         ∑ p ∈ largePrimes X Y,
-          ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ 2
+          ∫ omega, ‖steinhausLargePrimeChannel a X p omega‖ ^ (2 : ℕ)
             ∂SteinhausModel.steinhausMeasure := by
       rw [Finset.sum_sigma]
       congr 1

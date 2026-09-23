@@ -39,7 +39,7 @@ theorem nativeCutoffUpperPair_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
     IntegrableOn (nativeCutoffUpperPair q s) modularStrip volume := by
   let P : D4BMEisensteinAbsoluteConvergenceParameter := ⟨s,by linarith⟩
   obtain ⟨C,hC,hb⟩ := nativeSquareCutoffHeight_quadratic_bound q
-  let M : ℝ → ℝ := fun y => (y^2)⁻¹*∫ x in Ico (0:ℝ) 1,
+  let M : ℝ → ℝ := fun y => (y^(2 : ℕ))⁻¹*∫ x in Ico (0:ℝ) 1,
     ‖nativeCutoffUpperPair q s (ofComplex (⟨x,y⟩:ℂ))‖
   have hm : Measurable M := (measurable_id.pow_const 2).inv.mul
     (cuspHorizontalNormMean_measurable _ (nativeCutoffUpperPair_measurable q P))
@@ -66,7 +66,7 @@ theorem nativeCutoffUpperPair_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
     have hM : 0 ≤ M y := mul_nonneg (by positivity) (integral_nonneg (fun _ => norm_nonneg _))
     rw [Real.norm_eq_abs,abs_of_nonneg hM]
     calc
-      M y ≤ (y^2)⁻¹*((C*y^2)*(cuspReflectionNorm s.re*y^(1-s.re))) :=
+      M y ≤ (y^(2 : ℕ))⁻¹*((C*y^(2 : ℕ))*(cuspReflectionNorm s.re*y^(1-s.re))) :=
         mul_le_mul_of_nonneg_left (hi.trans ha) (by positivity)
       _ = (C*cuspReflectionNorm s.re)*y^(1-s.re) := by field_simp
   apply modularStrip_integrable_of_norm_mean _ (nativeCutoffUpperPair_measurable q P)

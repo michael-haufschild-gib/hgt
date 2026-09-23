@@ -124,7 +124,7 @@ theorem logTwoInverseDiagonal_conjTranspose (n : ℕ) :
 
 theorem betaFactorialAllOrderFirstPrimeLimit_factorization (n : ℕ) :
     betaFactorialAllOrderFirstPrimeLimit n =
-      (((Real.log 2) ^ 2 : ℝ) : ℂ) •
+      (((Real.log 2) ^ (2 : ℕ) : ℝ) : ℂ) •
         (logTwoDiagonal n * complexH n * logTwoDiagonal n) := by
   ext i j
   simp only [betaFactorialAllOrderFirstPrimeLimit, Matrix.smul_apply,
@@ -146,7 +146,7 @@ theorem betaFactorialAllOrderNegativeFrame_compresses_limit (m : ℕ) :
         betaFactorialAllOrderFirstPrimeLimit (2 * m) *
           betaFactorialAllOrderNegativeFrame m =
       Matrix.diagonal (fun a : Fin m =>
-        ((((Real.log 2) ^ 2 * lastInvDiag
+        ((((Real.log 2) ^ (2 : ℕ) * lastInvDiag
           ((oddIndex m a : Fin (2 * m)) : ℕ) : ℝ)) : ℂ)) := by
   rw [betaFactorialAllOrderNegativeFrame,
     betaFactorialAllOrderFirstPrimeLimit_factorization]
@@ -186,7 +186,7 @@ def betaFactorialAllOrderCompressedScaledGram (m : ℕ) (x : ℝ) :
 def betaFactorialAllOrderCompressedLimit (m : ℕ) :
     Matrix (Fin m) (Fin m) ℂ :=
   Matrix.diagonal (fun a : Fin m =>
-    ((((Real.log 2) ^ 2 * lastInvDiag
+    ((((Real.log 2) ^ (2 : ℕ) * lastInvDiag
       ((oddIndex m a : Fin (2 * m)) : ℕ) : ℝ)) : ℂ))
 
 theorem betaFactorialAllOrderNegativeFrame_compresses_limit' (m : ℕ) :
@@ -237,7 +237,7 @@ theorem betaFactorialAllOrderCompressedScaledGram_eventually_negDef (m : ℕ) :
       (star z ⬝ᵥ
         (betaFactorialAllOrderCompressedScaledGram (m + 1) x).mulVec z).re < 0 := by
   let c : Fin (m + 1) → ℝ := fun a =>
-    (Real.log 2) ^ 2 * lastInvDiag
+    (Real.log 2) ^ (2 : ℕ) * lastInvDiag
       ((oddIndex (m + 1) a : Fin (2 * (m + 1))) : ℕ)
   have hell : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hc : ∀ a, c a < 0 := by

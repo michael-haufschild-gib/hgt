@@ -86,8 +86,8 @@ theorem exists_compressed_ground (T : E →ₗ[ℝ] E) (U : Submodule ℝ E)
 /-- **Simplicity of a compressed ground below the gap.**  If the ambient gap threshold `μ` is not
 reached on the compressed ground eigenspace, that eigenspace is at most a line. -/
 theorem finrank_le_one_of_compressed_rayleigh_lt (T : E →ₗ[ℝ] E) {ξ : E} {μ : ℝ}
-    (hgap : ∀ v : E, (inner ℝ ξ v : ℝ) = 0 → μ * ‖v‖ ^ 2 ≤ inner ℝ (T v) v)
-    {U : Submodule ℝ E} (hU : ∀ v ∈ U, v ≠ 0 → (inner ℝ (T v) v : ℝ) < μ * ‖v‖ ^ 2) :
+    (hgap : ∀ v : E, (inner ℝ ξ v : ℝ) = 0 → μ * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (T v) v)
+    {U : Submodule ℝ E} (hU : ∀ v ∈ U, v ≠ 0 → (inner ℝ (T v) v : ℝ) < μ * ‖v‖ ^ (2 : ℕ)) :
     Module.finrank ℝ U ≤ 1 :=
   finrank_le_one_of_rayleigh_lt T hgap hU
 

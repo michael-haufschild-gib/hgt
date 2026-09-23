@@ -28,7 +28,7 @@ theorem no_analyticOnNhd_thetaHeatNode_of_agrees_with_causalReader
     (hnodes : ∀ m : ℕ, 1 ≤ m → (thetaHeatNode m : ℂ) ∈ U)
     (hagrees : ∀ m : ℕ, (hm : 1 ≤ m) →
       F (thetaHeatNode m) =
-        causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+        causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
           (thetaHeatRateSourceReaderL2 n hn)) :
     False := by
   apply no_analyticOnNhd_thetaHeatNode_delta F hU hF h0 hnodes hn
@@ -47,7 +47,7 @@ theorem no_entire_thetaHeatNode_of_agrees_with_causalReader
     (F : ℂ → ℂ) (hF : Differentiable ℂ F)
     (hagrees : ∀ m : ℕ, (hm : 1 ≤ m) →
       F (thetaHeatNode m) =
-        causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+        causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
           (thetaHeatRateSourceReaderL2 n hn)) :
     False := by
   apply no_entire_thetaHeatNode_delta F hF hn
@@ -66,7 +66,7 @@ an entire realization of its complete sample data. -/
 theorem thetaCausalReaderAnalyticBoundaryFractureUniversality
     {n : ℕ} (hn : 1 ≤ n) :
     (∀ m : ℕ, (hm : 1 ≤ m) →
-      causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+      causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
           (thetaHeatRateSourceReaderL2 n hn) =
         if m = n then 1 else 0) ∧
       causalReaderReflectedThetaAction (thetaHeatRateSourceReaderL2 n hn) = 0 ∧
@@ -77,14 +77,14 @@ theorem thetaCausalReaderAnalyticBoundaryFractureUniversality
         (∀ m : ℕ, 1 ≤ m → (thetaHeatNode m : ℂ) ∈ U) →
         (∀ m : ℕ, (hm : 1 ≤ m) →
           F (thetaHeatNode m) =
-            causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+            causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
               (thetaHeatRateSourceReaderL2 n hn)) →
         False) ∧
       ∀ F : ℂ → ℂ,
         Differentiable ℂ F →
         (∀ m : ℕ, (hm : 1 ≤ m) →
           F (thetaHeatNode m) =
-            causalLaplacePairing ((m : ℝ) ^ 2) (sq_pos_of_pos (by positivity))
+            causalLaplacePairing ((m : ℝ) ^ (2 : ℕ)) (sq_pos_of_pos (by positivity))
               (thetaHeatRateSourceReaderL2 n hn)) →
         False := by
   refine ⟨(fun m hm ↦

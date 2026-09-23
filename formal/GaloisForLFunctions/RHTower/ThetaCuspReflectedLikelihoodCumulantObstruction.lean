@@ -103,7 +103,7 @@ def thetaCuspLikelihoodMean (B : ℝ) : ℝ :=
 def thetaCuspLikelihoodVariance (B : ℝ) : ℝ :=
   thetaCuspHigherLikelihoodSpectralMoment B 2 /
       thetaCuspLikelihoodPartition B -
-    thetaCuspLikelihoodMean B ^ 2
+    thetaCuspLikelihoodMean B ^ (2 : ℕ)
 
 /-- Third cumulant of the total likelihood state. -/
 def thetaCuspLikelihoodThirdCumulant (B : ℝ) : ℝ :=
@@ -112,7 +112,7 @@ def thetaCuspLikelihoodThirdCumulant (B : ℝ) : ℝ :=
     3 * thetaCuspLikelihoodMean B *
       (thetaCuspHigherLikelihoodSpectralMoment B 2 /
         thetaCuspLikelihoodPartition B) +
-    2 * thetaCuspLikelihoodMean B ^ 3
+    2 * thetaCuspLikelihoodMean B ^ (3 : ℕ)
 
 theorem hasDerivAt_thetaCuspLikelihoodPartition
     {B : ℝ} (hB : 0 < B) :
@@ -198,16 +198,16 @@ def thetaCuspLikelihoodSourceLogPartitionJetOne (x : ℝ) : ℝ :=
 
 /-- Second source-coordinate jet of the logarithmic likelihood partition. -/
 def thetaCuspLikelihoodSourceLogPartitionJetTwo (x : ℝ) : ℝ :=
-  4 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+  4 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
       thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x) -
     4 * thetaCuspSingleAtomReflectionScale 1 x *
       thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
 
 /-- Third source-coordinate jet of the logarithmic likelihood partition. -/
 def thetaCuspLikelihoodSourceLogPartitionJetThree (x : ℝ) : ℝ :=
-  -8 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 *
+  -8 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) *
       thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x) +
-    24 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    24 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
       thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x) -
     8 * thetaCuspSingleAtomReflectionScale 1 x *
       thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
@@ -219,7 +219,7 @@ theorem hasDerivAt_thetaCuspLikelihoodCoordinate (x : ℝ) :
   simp only [Nat.cast_one, one_pow]
   exact ((((Real.hasDerivAt_exp x).pow 2).const_mul Real.pi).sub_const
     (3 / 2)).congr_deriv (by
-      rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+      rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
         rw [show 2 * x = x + x by ring, Real.exp_add]
         ring]
       ring)
@@ -275,7 +275,7 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
   have hfirst := ((hscale.pow 2).mul hvariance).const_mul 4
   have hsecond := (hscale.mul hmean).const_mul 4
   have hfun : thetaCuspLikelihoodSourceLogPartitionJetTwo = fun y =>
-      4 * (thetaCuspSingleAtomReflectionScale 1 y ^ 2 *
+      4 * (thetaCuspSingleAtomReflectionScale 1 y ^ (2 : ℕ) *
           thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate y)) -
         4 * (thetaCuspSingleAtomReflectionScale 1 y *
           thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate y)) := by
@@ -388,7 +388,7 @@ theorem neg_log_thetaCuspFullSource_reflected_normalized_eq_completedCumulantAct
     {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     -Real.log
         (thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-          thetaCuspFullSource u ^ 2) =
+          thetaCuspFullSource u ^ (2 : ℕ)) =
       thetaCuspCompletedReflectedCumulantAction u t := by
   rw [thetaCuspFullSource_reflected_action_eq_singleAtom_add_interference ht htu,
     thetaCuspReflectedLikelihoodInterferenceAction_eq_cumulantAction ht htu]

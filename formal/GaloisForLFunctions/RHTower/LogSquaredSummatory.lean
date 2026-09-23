@@ -27,17 +27,17 @@ open Finset intervalIntegral
 
 /-- The antiderivative of `log²`. -/
 def logSqAntideriv (y : ℝ) : ℝ :=
-  y * Real.log y ^ 2 - 2 * y * Real.log y + 2 * y - 2
+  y * Real.log y ^ (2 : ℕ) - 2 * y * Real.log y + 2 * y - 2
 
 theorem hasDerivAt_logSqAntideriv {t : ℝ} (ht : 0 < t) :
     HasDerivAt
-      (fun u => u * Real.log u ^ 2 - 2 * (u * Real.log u) + 2 * u + -2)
-      (Real.log t ^ 2) t := by
+      (fun u => u * Real.log u ^ (2 : ℕ) - 2 * (u * Real.log u) + 2 * u + -2)
+      (Real.log t ^ (2 : ℕ)) t := by
   have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht.ne'
-  have hsq : HasDerivAt (fun u : ℝ => Real.log u ^ 2)
+  have hsq : HasDerivAt (fun u : ℝ => Real.log u ^ (2 : ℕ))
       (2 * Real.log t * t⁻¹) t := by
     have hraw := hlog.pow 2
-    have hfun : Real.log ^ 2 = (fun u : ℝ => Real.log u ^ 2) := by
+    have hfun : Real.log ^ (2 : ℕ) = (fun u : ℝ => Real.log u ^ (2 : ℕ)) := by
       funext u
       simp
     rw [hfun] at hraw
@@ -47,8 +47,8 @@ theorem hasDerivAt_logSqAntideriv {t : ℝ} (ht : 0 < t) :
   have h2 := ((hasDerivAt_id' t).mul hlog).const_mul (2:ℝ)
   have h3 := (hasDerivAt_id' t).const_mul (2:ℝ)
   have h := ((h1.sub h2).add h3).add_const (-2:ℝ)
-  have hval : 1 * Real.log t ^ 2 + t * (2 * Real.log t * t⁻¹)
-      - 2 * (1 * Real.log t + t * t⁻¹) + 2 * 1 = Real.log t ^ 2 := by
+  have hval : 1 * Real.log t ^ (2 : ℕ) + t * (2 * Real.log t * t⁻¹)
+      - 2 * (1 * Real.log t + t * t⁻¹) + 2 * 1 = Real.log t ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hval] at h
@@ -56,14 +56,14 @@ theorem hasDerivAt_logSqAntideriv {t : ℝ} (ht : 0 < t) :
 
 /-- `∫₁^y log²t dt = A(y)` for `y ≥ 1`. -/
 theorem integral_log_sq {y : ℝ} (hy : 1 ≤ y) :
-    ∫ t in (1:ℝ)..y, Real.log t ^ 2 = logSqAntideriv y := by
+    ∫ t in (1:ℝ)..y, Real.log t ^ (2 : ℕ) = logSqAntideriv y := by
   have hderiv : ∀ t ∈ Set.uIcc (1:ℝ) y,
-      HasDerivAt (fun u => u * Real.log u ^ 2 - 2 * (u * Real.log u)
-        + 2 * u + -2) (Real.log t ^ 2) t := by
+      HasDerivAt (fun u => u * Real.log u ^ (2 : ℕ) - 2 * (u * Real.log u)
+        + 2 * u + -2) (Real.log t ^ (2 : ℕ)) t := by
     intro t ht
     rw [Set.uIcc_of_le hy] at ht
     exact hasDerivAt_logSqAntideriv (lt_of_lt_of_le one_pos ht.1)
-  have hcont : IntervalIntegrable (fun t => Real.log t ^ 2)
+  have hcont : IntervalIntegrable (fun t => Real.log t ^ (2 : ℕ))
       MeasureTheory.volume 1 y := by
     apply ContinuousOn.intervalIntegrable
     apply ContinuousOn.pow
@@ -79,7 +79,7 @@ theorem integral_log_sq {y : ℝ} (hy : 1 ≤ y) :
 
 /-- Monotonicity of `log²` on `[1, ∞)`. -/
 theorem monotoneOn_log_sq {a b : ℝ} (ha : 1 ≤ a) :
-    MonotoneOn (fun t : ℝ => Real.log t ^ 2) (Set.Icc a b) := by
+    MonotoneOn (fun t : ℝ => Real.log t ^ (2 : ℕ)) (Set.Icc a b) := by
   intro s hs t ht hst
   have hs1 : (1:ℝ) ≤ s := le_trans ha hs.1
   have ht1 : (1:ℝ) ≤ t := le_trans ha ht.1
@@ -90,18 +90,18 @@ theorem monotoneOn_log_sq {a b : ℝ} (ha : 1 ≤ a) :
 
 /-- **Upper bound**: `T₂(N) ≤ A(N+1)`. -/
 theorem sum_log_sq_le (N : ℕ) (hN : 1 ≤ N) :
-    ∑ m ∈ Finset.Icc 1 N, Real.log m ^ 2
+    ∑ m ∈ Finset.Icc 1 N, Real.log m ^ (2 : ℕ)
       ≤ logSqAntideriv ((N:ℝ) + 1) := by
-  have hmono : MonotoneOn (fun t : ℝ => Real.log t ^ 2)
+  have hmono : MonotoneOn (fun t : ℝ => Real.log t ^ (2 : ℕ))
       (Set.Icc ((1:ℕ):ℝ) ((N + 1 : ℕ):ℝ)) := by
     apply monotoneOn_log_sq
     norm_num
   have h := MonotoneOn.sum_le_integral_Ico
     (a := 1) (b := N + 1) (by omega) hmono
-  have hsum : ∑ x ∈ Finset.Ico 1 (N + 1), Real.log x ^ 2
-      = ∑ m ∈ Finset.Icc 1 N, Real.log m ^ 2 := by
+  have hsum : ∑ x ∈ Finset.Ico 1 (N + 1), Real.log x ^ (2 : ℕ)
+      = ∑ m ∈ Finset.Icc 1 N, Real.log m ^ (2 : ℕ) := by
     rw [Finset.Ico_add_one_right_eq_Icc]
-  have hint : (∫ x in ((1:ℕ):ℝ)..((N + 1 : ℕ):ℝ), Real.log x ^ 2)
+  have hint : (∫ x in ((1:ℕ):ℝ)..((N + 1 : ℕ):ℝ), Real.log x ^ (2 : ℕ))
       = logSqAntideriv ((N:ℝ) + 1) := by
     have h1N : (1:ℝ) ≤ (N:ℝ) + 1 := by linarith [Nat.cast_nonneg (α := ℝ) N]
     have hval := integral_log_sq h1N
@@ -113,21 +113,21 @@ theorem sum_log_sq_le (N : ℕ) (hN : 1 ≤ N) :
 
 /-- **Lower bound**: `A(N) ≤ T₂(N)`. -/
 theorem le_sum_log_sq (N : ℕ) (hN : 1 ≤ N) :
-    logSqAntideriv (N:ℝ) ≤ ∑ m ∈ Finset.Icc 1 N, Real.log m ^ 2 := by
-  have hmono : MonotoneOn (fun t : ℝ => Real.log t ^ 2)
+    logSqAntideriv (N:ℝ) ≤ ∑ m ∈ Finset.Icc 1 N, Real.log m ^ (2 : ℕ) := by
+  have hmono : MonotoneOn (fun t : ℝ => Real.log t ^ (2 : ℕ))
       (Set.Icc ((1:ℕ):ℝ) ((N:ℕ):ℝ)) := by
     apply monotoneOn_log_sq
     norm_num
   have h := MonotoneOn.integral_le_sum_Ico
     (a := 1) (b := N) hN hmono
-  have hint : (∫ x in ((1:ℕ):ℝ)..((N:ℕ):ℝ), Real.log x ^ 2)
+  have hint : (∫ x in ((1:ℕ):ℝ)..((N:ℕ):ℝ), Real.log x ^ (2 : ℕ))
       = logSqAntideriv (N:ℝ) := by
     push_cast
     exact integral_log_sq (by exact_mod_cast hN)
   rw [hint] at h
   refine le_trans h ?_
-  calc (∑ i ∈ Finset.Ico 1 N, Real.log ((i + 1 : ℕ) : ℝ) ^ 2)
-      = ∑ m ∈ Finset.Icc 2 N, Real.log (m : ℝ) ^ 2 := by
+  calc (∑ i ∈ Finset.Ico 1 N, Real.log ((i + 1 : ℕ) : ℝ) ^ (2 : ℕ))
+      = ∑ m ∈ Finset.Icc 2 N, Real.log (m : ℝ) ^ (2 : ℕ) := by
         apply Finset.sum_nbij' (i := fun i => i + 1) (j := fun m => m - 1)
         · intro i hi
           rw [Finset.mem_Ico] at hi
@@ -144,7 +144,7 @@ theorem le_sum_log_sq (N : ℕ) (hN : 1 ≤ N) :
           omega
         · intro i _
           rfl
-    _ ≤ ∑ m ∈ Finset.Icc 1 N, Real.log (m : ℝ) ^ 2 :=
+    _ ≤ ∑ m ∈ Finset.Icc 1 N, Real.log (m : ℝ) ^ (2 : ℕ) :=
         Finset.sum_le_sum_of_subset_of_nonneg
           (Finset.Icc_subset_Icc (by omega) le_rfl)
           (fun m _ _ => sq_nonneg _)

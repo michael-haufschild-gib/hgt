@@ -126,18 +126,18 @@ private theorem source_psi_small : psiDefect 11≤(1:ℝ)/2 ∧ psiDefect 12≤0
     exact ⟨2,Nat.mem_primeFactors.mpr ⟨Nat.prime_two,by norm_num,by norm_num⟩,
       5,Nat.mem_primeFactors.mpr ⟨Nat.prime_five,by norm_num,by norm_num⟩,by norm_num⟩
   have v4 : ArithmeticFunction.vonMangoldt 4=Real.log 2 := by
-    rw [show (4:ℕ)=2^2 by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    rw [show (4:ℕ)=2^(2 : ℕ) by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
     norm_num
   have v8 : ArithmeticFunction.vonMangoldt 8=Real.log 2 := by
-    rw [show (8:ℕ)=2^3 by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    rw [show (8:ℕ)=2^(3 : ℕ) by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
     norm_num
   have v9 : ArithmeticFunction.vonMangoldt 9=Real.log 3 := by
-    rw [show (9:ℕ)=3^2 by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three]
+    rw [show (9:ℕ)=3^(2 : ℕ) by norm_num,ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three]
     norm_num
   have l7 : Real.log 7≤1.955 := by
     have h := Real.log_le_sub_one_of_pos (x := (7:ℝ)/8) (by norm_num)
     rw [Real.log_div (by norm_num) (by norm_num),show Real.log 8=3*Real.log 2 by
-      rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num] at h
+      rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num] at h
     linarith [Real.log_two_lt_d9]
   have l11 : Real.log 11≤2*Real.log 2+Real.log 3 := by
     have h := Real.log_le_log (by norm_num : (0:ℝ)<11) (by norm_num : (11:ℝ)≤4*3)
@@ -340,12 +340,12 @@ open Filter Topology
 /-- The three existing source windows have a common positive reserve before and after inserting two, stable under small clipping. -/
 theorem exists_mobiusDivisorCoupledTwo_clip_square_reserve :
     ∃ ε d : ℝ,0<ε ∧ 0<d ∧ ∀ K∈({2,7,14}:Finset ℕ),∀ u : ℝ,|u|≤ε →
-      d≤(mobiusDivisorCoupledTwoInterpolatedProfile K u).1^2+
-        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2^2 ∧
+      d≤(mobiusDivisorCoupledTwoInterpolatedProfile K u).1^(2 : ℕ)+
+        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2^(2 : ℕ) ∧
       d≤((mobiusDivisorCoupledTwoInterpolatedProfile K u).1+
-        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^2 := by
+        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^(2 : ℕ) := by
   let f := fun K u => ((mobiusDivisorCoupledTwoInterpolatedProfile K u).1+
-    (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^2
+    (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^(2 : ℕ)
   let F := fun u => min (f 2 u) (min (f 7 u) (f 14 u))
   have hf (K : ℕ) : ContinuousAt (f K) 0 := by
     dsimp [f,mobiusDivisorCoupledTwoInterpolatedProfile]; fun_prop

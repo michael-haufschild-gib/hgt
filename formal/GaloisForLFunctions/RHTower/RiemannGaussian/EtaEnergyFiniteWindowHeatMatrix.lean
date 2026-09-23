@@ -10,7 +10,7 @@ frontier without first taking a trace or norm.  The already proved finite
 Gaussian arithmetic quadratic is realized as the quadratic form of a literal
 kernel matrix.  Its positivity proves that
 
-`exp (-u * (lambda_i - lambda_j)^2)`
+`exp (-u * (lambda_i - lambda_j)^(2 : ℕ))`
 
 is positive semidefinite at every positive proper time `u`.  Schur
 multiplication by this kernel therefore gives a positivity-preserving finite
@@ -44,7 +44,7 @@ def finiteGaussianGramKernelMatrix {d : Type*}
   fun k j ↦
     (Real.sqrt (Real.pi / tau) : ℂ) *
       Complex.exp
-        (((-(frequency k - frequency j) ^ 2 / (4 * tau) : ℝ) : ℂ) +
+        (((-(frequency k - frequency j) ^ (2 : ℕ) / (4 * tau) : ℝ) : ℂ) +
           Complex.I * (x * (frequency k - frequency j)))
 
 /-- The quadratic form of the finite Gaussian kernel matrix is exactly the
@@ -101,7 +101,7 @@ family. -/
 def finiteGaussianProperTimeKernelMatrix {d : Type*}
     (frequency : d → ℝ) (heat : ℝ) : Matrix d d ℂ :=
   fun i j ↦
-    (Real.exp (-heat * (frequency i - frequency j) ^ 2) : ℂ)
+    (Real.exp (-heat * (frequency i - frequency j) ^ (2 : ℕ)) : ℂ)
 
 /-- The proper-time kernel is exactly a positive scalar rescaling of the
 existing Gaussian Gram kernel at precision `(4 * heat)⁻¹`. -/
@@ -143,7 +143,7 @@ theorem finiteGaussianProperTimeKernelMatrix_posSemidef
 def finiteGaussianProperTimeGeneratorMatrix {d : Type*}
     (frequency : d → ℝ) (heat : ℝ) : Matrix d d ℂ :=
   fun i j ↦
-    ((-(frequency i - frequency j) ^ 2 : ℝ) : ℂ) *
+    ((-(frequency i - frequency j) ^ (2 : ℕ) : ℝ) : ℂ) *
       finiteGaussianProperTimeKernelMatrix frequency heat i j
 
 /-- Every entry of the proper-time kernel has the explicit squared-gap
@@ -155,7 +155,7 @@ theorem hasDerivAt_finiteGaussianProperTimeKernelMatrix_apply
         finiteGaussianProperTimeKernelMatrix frequency u i j)
       (finiteGaussianProperTimeGeneratorMatrix frequency heat i j)
       heat := by
-  let q : ℝ := (frequency i - frequency j) ^ 2
+  let q : ℝ := (frequency i - frequency j) ^ (2 : ℕ)
   have hinner : HasDerivAt (fun u : ℝ ↦ -u * q) (-q) heat := by
     simpa using (hasDerivAt_id heat).neg.mul_const q
   have hreal : HasDerivAt (fun u : ℝ ↦ Real.exp (-(u * q)))

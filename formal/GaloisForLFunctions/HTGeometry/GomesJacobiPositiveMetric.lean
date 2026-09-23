@@ -26,20 +26,20 @@ theorem gomesJacobiMetric_transport (a b x : ℝ) :
     simp [gomesJacobiStep,gomesJacobiMetric,Matrix.mul_apply,Fin.sum_univ_two] <;> ring
 
 /-- The metric determinant is the exact elliptic discriminant divided by four. -/
-theorem gomesJacobiMetric_det (u b : ℝ) : (gomesJacobiMetric u b).det = b-u^2/4 := by
+theorem gomesJacobiMetric_det (u b : ℝ) : (gomesJacobiMetric u b).det = b-u^(2 : ℕ)/4 := by
   simp [gomesJacobiMetric,Matrix.det_fin_two]
   ring
 
 /-- Completing the square exposes the sharp positive direction and the boundary defect. -/
 theorem gomesJacobiMetric_quadratic (u b : ℝ) (v : Fin 2 → ℝ) :
     star v ⬝ᵥ (gomesJacobiMetric u b *ᵥ v) =
-      (v 0-u/2*v 1)^2+(b-u^2/4)*(v 1)^2 := by
+      (v 0-u/2*v 1)^(2 : ℕ)+(b-u^(2 : ℕ)/4)*(v 1)^(2 : ℕ) := by
   simp [gomesJacobiMetric,Matrix.mulVec,dotProduct,Fin.sum_univ_two]
   ring
 
 /-- The canonical fixed-step metric is positive precisely in the strict elliptic region. -/
 theorem gomesJacobiMetric_posDef_iff (u b : ℝ) :
-    (gomesJacobiMetric u b).PosDef ↔ u^2 < 4*b := by
+    (gomesJacobiMetric u b).PosDef ↔ u^(2 : ℕ) < 4*b := by
   constructor
   · intro h
     have hv : (![u/2,1] : Fin 2 → ℝ) ≠ 0 := by
@@ -56,7 +56,7 @@ theorem gomesJacobiMetric_posDef_iff (u b : ℝ) :
       fin_cases i <;> fin_cases j <;> simp [gomesJacobiMetric]
     · intro v hv
       rw [gomesJacobiMetric_quadratic]
-      have hdelta : 0 < b-u^2/4 := by linarith
+      have hdelta : 0 < b-u^(2 : ℕ)/4 := by linarith
       by_cases h1 : v 1 = 0
       · have h0 : v 0 ≠ 0 := by
           intro he
@@ -69,7 +69,7 @@ theorem gomesJacobiMetric_posDef_iff (u b : ℝ) :
 /-- Every positive fixed-step metric is a positive multiple of the canonical elliptic metric. -/
 theorem gomesJacobiStep_positive_metric_classification (a b x : ℝ) (B : Matrix (Fin 2) (Fin 2) ℝ) :
     (B.PosDef ∧ (gomesJacobiStep a b x)ᵀ*B*gomesJacobiStep a b x = b • B) ↔
-      ∃ c : ℝ, 0 < c ∧ (x-a)^2 < 4*b ∧ B = c • gomesJacobiMetric (x-a) b := by
+      ∃ c : ℝ, 0 < c ∧ (x-a)^(2 : ℕ) < 4*b ∧ B = c • gomesJacobiMetric (x-a) b := by
   constructor
   · rintro ⟨hB,h⟩
     have hp : 0 < B 0 0 := hB.diag_pos
@@ -114,7 +114,7 @@ theorem gomesJacobiStep_positive_metric_classification (a b x : ℝ) (B : Matrix
 /-- A fixed spectral step admits a positive metric exactly below the sharp discriminant boundary. -/
 theorem gomesJacobiStep_exists_positive_metric_iff (a b x : ℝ) :
     (∃ B : Matrix (Fin 2) (Fin 2) ℝ, B.PosDef ∧
-      (gomesJacobiStep a b x)ᵀ*B*gomesJacobiStep a b x = b • B) ↔ (x-a)^2 < 4*b := by
+      (gomesJacobiStep a b x)ᵀ*B*gomesJacobiStep a b x = b • B) ↔ (x-a)^(2 : ℕ) < 4*b := by
   constructor
   · rintro ⟨B,h⟩
     obtain ⟨c,hc,hd,he⟩ := (gomesJacobiStep_positive_metric_classification a b x B).mp h

@@ -55,7 +55,7 @@ theorem hasDerivAt_coppoJosephsonPotential (j k x : ℝ) :
 theorem coppoJosephsonPotential_twist_square (k theta x : ℝ) :
     coppoJosephsonPotential (4 * k * Real.cos theta) k x -
       coppoJosephsonPotential (4 * k * Real.cos theta) k theta =
-      2 * k * (Real.cos x - Real.cos theta) ^ 2 := by
+      2 * k * (Real.cos x - Real.cos theta) ^ (2 : ℕ) := by
   simp only [coppoJosephsonPotential, Real.cos_two_mul]
   ring
 
@@ -64,7 +64,7 @@ theorem coppoJosephsonPotential_twist_global_min (t theta x : ℝ) :
     coppoJosephsonPotential (4 * Real.exp t * Real.cos theta) (Real.exp t) theta ≤
       coppoJosephsonPotential (4 * Real.exp t * Real.cos theta) (Real.exp t) x := by
   have h := coppoJosephsonPotential_twist_square (Real.exp t) theta x
-  have hp : 0 ≤ 2 * Real.exp t * (Real.cos x - Real.cos theta) ^ 2 := by positivity
+  have hp : 0 ≤ 2 * Real.exp t * (Real.cos x - Real.cos theta) ^ (2 : ℕ) := by positivity
   linarith
 
 /-- The complete set of twist minima is the cosine fibre of the chosen angle. -/
@@ -80,7 +80,7 @@ theorem coppoJosephsonPotential_twist_min_iff (t theta x : ℝ) :
 theorem coppoJosephsonPotential_plasmonic_square (k d x : ℝ) :
     coppoJosephsonPotential (4 * k + d) k x -
       coppoJosephsonPotential (4 * k + d) k 0 =
-      2 * k * (1 - Real.cos x) ^ 2 + d * (1 - Real.cos x) := by
+      2 * k * (1 - Real.cos x) ^ (2 : ℕ) + d * (1 - Real.cos x) := by
   simp only [coppoJosephsonPotential, Real.cos_two_mul, Real.cos_zero, mul_zero]
   ring
 
@@ -90,15 +90,15 @@ theorem coppoJosephsonPotential_plasmonic_global_min (t s x : ℝ) :
       coppoJosephsonPotential (4 * Real.exp t + Real.exp s) (Real.exp t) x := by
   have h := coppoJosephsonPotential_plasmonic_square (Real.exp t) (Real.exp s) x
   have hc : 0 ≤ 1 - Real.cos x := sub_nonneg.mpr (Real.cos_le_one x)
-  have hp : 0 ≤ 2 * Real.exp t * (1 - Real.cos x) ^ 2 + Real.exp s * (1 - Real.cos x) := by positivity
+  have hp : 0 ≤ 2 * Real.exp t * (1 - Real.cos x) ^ (2 : ℕ) + Real.exp s * (1 - Real.cos x) := by positivity
   linarith
 
 /-- In the flux-biased chamber both contributions to the zero-well energy difference are positive. -/
 theorem coppoJosephsonPotential_flux_square (j k x : ℝ) :
     coppoJosephsonPotential j (-k) x - coppoJosephsonPotential j (-k) 0 =
-      j * (1 - Real.cos x) + 2 * k * Real.sin x ^ 2 := by
+      j * (1 - Real.cos x) + 2 * k * Real.sin x ^ (2 : ℕ) := by
   simp only [coppoJosephsonPotential, Real.cos_two_mul, Real.cos_zero, mul_zero]
-  rw [show Real.sin x ^ 2 = 1 - Real.cos x ^ 2 by nlinarith [Real.sin_sq_add_cos_sq x]]
+  rw [show Real.sin x ^ (2 : ℕ) = 1 - Real.cos x ^ (2 : ℕ) by nlinarith [Real.sin_sq_add_cos_sq x]]
   ring
 
 /-- Positive first-harmonic bias selects the zero well globally. -/
@@ -107,7 +107,7 @@ theorem coppoJosephsonPotential_flux_global_min (t s x : ℝ) :
       coppoJosephsonPotential (Real.exp t) (-Real.exp s) x := by
   have h := coppoJosephsonPotential_flux_square (Real.exp t) (Real.exp s) x
   have hc : 0 ≤ 1 - Real.cos x := sub_nonneg.mpr (Real.cos_le_one x)
-  have hp : 0 ≤ Real.exp t * (1 - Real.cos x) + 2 * Real.exp s * Real.sin x ^ 2 := by positivity
+  have hp : 0 ≤ Real.exp t * (1 - Real.cos x) + 2 * Real.exp s * Real.sin x ^ (2 : ℕ) := by positivity
   linarith
 
 /-- The circuit's sinusoidal Witten superpotential. -/
@@ -118,24 +118,24 @@ def coppoJosephsonGroundState (a x : ℝ) : ℝ := Real.exp (a * Real.cos x)
 
 /-- The lower Witten potential. -/
 def coppoSinePotentialMinus (a x : ℝ) : ℝ :=
-  (a * Real.sin x) ^ 2 - a * Real.cos x
+  (a * Real.sin x) ^ (2 : ℕ) - a * Real.cos x
 
 /-- The upper Witten potential. -/
 def coppoSinePotentialPlus (a x : ℝ) : ℝ :=
-  (a * Real.sin x) ^ 2 + a * Real.cos x
+  (a * Real.sin x) ^ (2 : ℕ) + a * Real.cos x
 
 /-- Exact circuit-to-Witten conversion, including the energy offset. -/
 theorem coppoSinePotentialMinus_eq_josephson (a x : ℝ) :
-    coppoSinePotentialMinus a x = coppoJosephsonPotential a (-a ^ 2 / 2) x + a ^ 2 / 2 := by
+    coppoSinePotentialMinus a x = coppoJosephsonPotential a (-a ^ (2 : ℕ) / 2) x + a ^ (2 : ℕ) / 2 := by
   simp only [coppoSinePotentialMinus, coppoJosephsonPotential, Real.cos_two_mul, mul_pow]
-  rw [show Real.sin x ^ 2 = 1 - Real.cos x ^ 2 by nlinarith [Real.sin_sq_add_cos_sq x]]
+  rw [show Real.sin x ^ (2 : ℕ) = 1 - Real.cos x ^ (2 : ℕ) by nlinarith [Real.sin_sq_add_cos_sq x]]
   ring
 
 /-- The partner is the circuit with opposite first-harmonic bias. -/
 theorem coppoSinePotentialPlus_eq_josephson (a x : ℝ) :
-    coppoSinePotentialPlus a x = coppoJosephsonPotential (-a) (-a ^ 2 / 2) x + a ^ 2 / 2 := by
+    coppoSinePotentialPlus a x = coppoJosephsonPotential (-a) (-a ^ (2 : ℕ) / 2) x + a ^ (2 : ℕ) / 2 := by
   simp only [coppoSinePotentialPlus, coppoJosephsonPotential, Real.cos_two_mul, mul_pow]
-  rw [show Real.sin x ^ 2 = 1 - Real.cos x ^ 2 by nlinarith [Real.sin_sq_add_cos_sq x]]
+  rw [show Real.sin x ^ (2 : ℕ) = 1 - Real.cos x ^ (2 : ℕ) by nlinarith [Real.sin_sq_add_cos_sq x]]
   ring
 
 /-- Half-period translation exchanges the two Witten partners. -/
@@ -188,15 +188,15 @@ theorem hasDerivAt_coppoJosephsonGroundState_deriv (a x : ℝ) :
 /-- Exact Josephson eigenfunction and eigenvalue at every supersymmetric coupling. -/
 theorem coppoJosephsonGroundState_schrodinger (a x : ℝ) :
     -deriv (deriv (coppoJosephsonGroundState a)) x +
-      coppoJosephsonPotential a (-a ^ 2 / 2) x * coppoJosephsonGroundState a x =
-      (-a ^ 2 / 2) * coppoJosephsonGroundState a x := by
+      coppoJosephsonPotential a (-a ^ (2 : ℕ) / 2) x * coppoJosephsonGroundState a x =
+      (-a ^ (2 : ℕ) / 2) * coppoJosephsonGroundState a x := by
   rw [(hasDerivAt_coppoJosephsonGroundState_deriv a x).deriv,
     coppoSinePotentialMinus_eq_josephson]
   ring
 
 /-- Ground-state densities have the same analytic family, with doubled coupling. -/
 theorem coppoJosephsonGroundState_sq (a x : ℝ) :
-    coppoJosephsonGroundState a x ^ 2 = coppoJosephsonGroundState (2 * a) x := by
+    coppoJosephsonGroundState a x ^ (2 : ℕ) = coppoJosephsonGroundState (2 * a) x := by
   rw [coppoJosephsonGroundState, pow_two, ← Real.exp_add, coppoJosephsonGroundState]
   congr 1; ring
 

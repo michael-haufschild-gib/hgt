@@ -10,7 +10,7 @@ The weights `(1 - x²)^k` on `[-1, 1]` are the coefficients of the Kaiser–Bess
 band concentration problem, and its finite-Fourier transform is assembled from the moments
 
 ```text
-M(j, k) = ∫_(-1)^1 x^(2j) (1 - x²)^k dx.
+M(j, k) = ∫_(-1)^(1 : ℕ) x^(2j) (1 - x²)^k dx.
 ```
 
 These moments have the closed form

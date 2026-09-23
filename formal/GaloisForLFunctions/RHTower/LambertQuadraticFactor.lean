@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- **The quadratic factors over the unit circle.** -/
 theorem lambertQuadratic_factor (α : ℝ) (u : ℂ) :
-    1 + 2 * u * (Real.cos α : ℂ) + u ^ 2
+    1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ)
       = (1 + u * Complex.exp ((α : ℝ) * Complex.I))
         * (1 + u * Complex.exp (-((α : ℝ) * Complex.I))) := by
   have hsum : Complex.exp ((α : ℝ) * Complex.I) + Complex.exp (-((α : ℝ) * Complex.I))
@@ -34,9 +34,9 @@ theorem lambertQuadratic_factor (α : ℝ) (u : ℂ) :
   have hprod : Complex.exp ((α : ℝ) * Complex.I) * Complex.exp (-((α : ℝ) * Complex.I)) = 1 := by
     rw [← Complex.exp_add]
     simp
-  calc 1 + 2 * u * (Real.cos α : ℂ) + u ^ 2
+  calc 1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ)
       = 1 + u * (Complex.exp ((α : ℝ) * Complex.I) + Complex.exp (-((α : ℝ) * Complex.I)))
-        + u ^ 2 * (Complex.exp ((α : ℝ) * Complex.I)
+        + u ^ (2 : ℕ) * (Complex.exp ((α : ℝ) * Complex.I)
           * Complex.exp (-((α : ℝ) * Complex.I))) := by
         rw [hsum, hprod]
         ring
@@ -45,7 +45,7 @@ theorem lambertQuadratic_factor (α : ℝ) (u : ℂ) :
 
 /-- **The zeros of the quadratic are the two points of the unit circle it factors through.** -/
 theorem lambertQuadratic_eq_zero_iff (α : ℝ) (u : ℂ) :
-    1 + 2 * u * (Real.cos α : ℂ) + u ^ 2 = 0 ↔
+    1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ) = 0 ↔
       u = -Complex.exp (-((α : ℝ) * Complex.I)) ∨ u = -Complex.exp ((α : ℝ) * Complex.I) := by
   rw [lambertQuadratic_factor, mul_eq_zero]
   constructor
@@ -76,7 +76,7 @@ theorem lambertQuadratic_eq_zero_iff (α : ℝ) (u : ℂ) :
 
 /-- **The quadratic is bounded below away from the unit circle.** -/
 theorem norm_lambertQuadratic_ge (α : ℝ) {u : ℂ} (hu : ‖u‖ ≤ 1) :
-    (1 - ‖u‖) ^ 2 ≤ ‖1 + 2 * u * (Real.cos α : ℂ) + u ^ 2‖ := by
+    (1 - ‖u‖) ^ (2 : ℕ) ≤ ‖1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ)‖ := by
   have hnn : (0 : ℝ) ≤ 1 - ‖u‖ := by linarith
   have hfac : ∀ w : ℂ, ‖w‖ = 1 → 1 - ‖u‖ ≤ ‖1 + u * w‖ := by
     intro w hw
@@ -94,7 +94,7 @@ theorem norm_lambertQuadratic_ge (α : ℝ) {u : ℂ} (hu : ‖u‖ ≤ 1) :
   rw [lambertQuadratic_factor, norm_mul]
   have hle1 := hfac _ h1
   have hle2 := hfac _ h2
-  calc (1 - ‖u‖) ^ 2 = (1 - ‖u‖) * (1 - ‖u‖) := by ring
+  calc (1 - ‖u‖) ^ (2 : ℕ) = (1 - ‖u‖) * (1 - ‖u‖) := by ring
     _ ≤ ‖1 + u * Complex.exp ((α : ℝ) * Complex.I)‖
         * ‖1 + u * Complex.exp (-((α : ℝ) * Complex.I))‖ :=
         mul_le_mul hle1 hle2 hnn (le_trans hnn hle1)
@@ -104,7 +104,7 @@ unit disc boundary with `u` complex: the sum splits into two geometric series wi
 `-u e^{±iα}`, and their difference is the quadratic factor. -/
 theorem tsum_alternating_sine_geometric_complex (α : ℝ) {u : ℂ} (hu : ‖u‖ < 1) :
     ∑' k : ℕ, ((-1 : ℂ) ^ k * (Real.sin ((k + 1) * α) : ℂ) * u ^ (k + 1))
-      = u * (Real.sin α : ℂ) / (1 + 2 * u * (Real.cos α : ℂ) + u ^ 2) := by
+      = u * (Real.sin α : ℂ) / (1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ)) := by
   set E : ℂ := Complex.exp ((α : ℝ) * Complex.I) with hEdef
   set F : ℂ := Complex.exp (-((α : ℝ) * Complex.I)) with hFdef
   have hE : ‖E‖ = 1 := Complex.norm_exp_ofReal_mul_I α
@@ -194,8 +194,8 @@ theorem tsum_alternating_sine_geometric_complex (α : ℝ) {u : ℂ} (hu : ‖u�
     rw [Complex.I_sq]
     ring
   have hrhs : -((1 - (-u * E))⁻¹ - 1) + ((1 - (-u * F))⁻¹ - 1)
-      = (u * (Real.sin α : ℂ) / (1 + 2 * u * (Real.cos α : ℂ) + u ^ 2)) * (2 * Complex.I) := by
-    have hquad : (1 : ℂ) + 2 * u * (Real.cos α : ℂ) + u ^ 2 = (1 + u * E) * (1 + u * F) :=
+      = (u * (Real.sin α : ℂ) / (1 + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ))) * (2 * Complex.I) := by
+    have hquad : (1 : ℂ) + 2 * u * (Real.cos α : ℂ) + u ^ (2 : ℕ) = (1 + u * E) * (1 + u * F) :=
       lambertQuadratic_factor α u
     rw [hquad]
     have hone : (1 : ℂ) - (-u * E) = 1 + u * E := by ring

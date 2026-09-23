@@ -13,10 +13,10 @@ namespace RHTower
 
 /-- Rational upper logarithm bound adapted to geometric harmonic centering. -/
 theorem log_le_geometric_cubic {x : ℝ} (hx : 1 ≤ x) :
-    Real.log x ≤ 2*(x-1)/(x+1)+(x-1)^3/(6*x*(x+1)) := by
-  let f : ℝ → ℝ := fun x => 2*(x-1)/(x+1)+(x-1)^3/(6*x*(x+1))-Real.log x
+    Real.log x ≤ 2*(x-1)/(x+1)+(x-1)^(3 : ℕ)/(6*x*(x+1)) := by
+  let f : ℝ → ℝ := fun x => 2*(x-1)/(x+1)+(x-1)^(3 : ℕ)/(6*x*(x+1))-Real.log x
   have hd (u : ℝ) (hu : 1 ≤ u) :
-      HasDerivAt f ((u-1)^4/(6*u^2*(u+1)^2)) u := by
+      HasDerivAt f ((u-1)^(4 : ℕ)/(6*u^(2 : ℕ)*(u+1)^(2 : ℕ))) u := by
     have hu0 : u ≠ 0 := by linarith
     have hu1 : u+1 ≠ 0 := by linarith
     have hq := (((hasDerivAt_id u).sub_const 1).const_mul 2).div
@@ -47,7 +47,7 @@ private theorem geometric_log_step {x : ℝ} (hx : 0 < x) :
   have hratio : 1 ≤ (x+2)/x := by rw [le_div_iff₀ hx]; linarith
   have hhi := log_le_geometric_cubic hratio
   rw [Real.log_div (by positivity) hx.ne'] at hhi
-  have hrat : 2*((x+2)/x-1)/((x+2)/x+1)+((x+2)/x-1)^3/(6*((x+2)/x)*((x+2)/x+1)) =
+  have hrat : 2*((x+2)/x-1)/((x+2)/x+1)+((x+2)/x-1)^(3 : ℕ)/(6*((x+2)/x)*((x+2)/x+1)) =
       2/(x+1)+2/(3*x*(x+1)*(x+2)) := by field_simp; ring
   rw [hrat] at hhi
   exact ⟨hlo,hhi⟩

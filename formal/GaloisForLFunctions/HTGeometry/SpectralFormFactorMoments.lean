@@ -26,7 +26,7 @@ section Combinatorics
 /-- The number of ordered pairs of length-`m` words over `D` letters with equal letter
 histogram. -/
 def replicaPairCount (D m : ℕ) : ℝ :=
-  ∑ p ∈ (Finset.univ : Finset (Fin D)).piAntidiag m, (Nat.multinomial Finset.univ p : ℝ) ^ 2
+  ∑ p ∈ (Finset.univ : Finset (Fin D)).piAntidiag m, (Nat.multinomial Finset.univ p : ℝ) ^ (2 : ℕ)
 
 /-- The exact long-time moment constant of the normalized spectral form factor. -/
 def sffMoment (D m : ℕ) : ℝ := replicaPairCount D m / (D : ℝ) ^ m
@@ -75,7 +75,7 @@ theorem multinomial_indicator {D : ℕ} (S : Finset (Fin D)) :
 
 /-- The squarefree multiplicity vectors alone contribute the falling factorial. -/
 theorem le_replicaPairCount (D m : ℕ) :
-    (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ 2 ≤ replicaPairCount D m := by
+    (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ (2 : ℕ) ≤ replicaPairCount D m := by
   classical
   set ind : Finset (Fin D) → (Fin D → ℕ) := fun S i => if i ∈ S then 1 else 0 with hind
   have hinj : ∀ S ∈ (Finset.univ : Finset (Fin D)).powersetCard m,
@@ -101,15 +101,15 @@ theorem le_replicaPairCount (D m : ℕ) :
     exact hmem S hS
   have hcount : ((Finset.univ : Finset (Fin D)).powersetCard m).card = D.choose m := by
     rw [Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin]
-  calc (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ 2
-      = ∑ _S ∈ (Finset.univ : Finset (Fin D)).powersetCard m, (Nat.factorial m : ℝ) ^ 2 := by
+  calc (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ (2 : ℕ)
+      = ∑ _S ∈ (Finset.univ : Finset (Fin D)).powersetCard m, (Nat.factorial m : ℝ) ^ (2 : ℕ) := by
         rw [Finset.sum_const, hcount, nsmul_eq_mul]
     _ = ∑ S ∈ (Finset.univ : Finset (Fin D)).powersetCard m,
-          (Nat.multinomial Finset.univ (ind S) : ℝ) ^ 2 := by
+          (Nat.multinomial Finset.univ (ind S) : ℝ) ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun S hS => ?_
         rw [hind, multinomial_indicator S, (Finset.mem_powersetCard.mp hS).2]
     _ = ∑ p ∈ ((Finset.univ : Finset (Fin D)).powersetCard m).image ind,
-          (Nat.multinomial Finset.univ p : ℝ) ^ 2 := by
+          (Nat.multinomial Finset.univ p : ℝ) ^ (2 : ℕ) := by
         rw [Finset.sum_image hinj]
     _ ≤ replicaPairCount D m :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity

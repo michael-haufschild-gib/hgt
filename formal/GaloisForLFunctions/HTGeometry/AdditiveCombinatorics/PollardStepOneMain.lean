@@ -32,7 +32,7 @@ theorem pollard_step1_largeProduct (A B A' B' : Finset G) (t : ℕ)
     (hl : defect A A' B B' + 1 ≤ t)
     (heq2 : A' * B' ⊆ repSet A B t)
     (hlarge : A'.card + B'.card ≤ (A' * B').card + 1) :
-    t * A.card + t * B.card ≤ repSum A B t + t ^ 2 := by
+    t * A.card + t * B.card ≤ repSum A B t + t ^ (2 : ℕ) := by
   have h1 : t * (A' * B').card ≤ repSum A B t :=
     le_trans (Nat.mul_le_mul_left t (Finset.card_le_card heq2)) (mul_card_repSet_le_repSum A B t)
   have hcardA := Finset.card_sdiff_add_card_eq_card hA'
@@ -46,7 +46,7 @@ theorem pollard_step1_largeProduct (A B A' B' : Finset G) (t : ℕ)
     ring
   have h5 : t * (defect A A' B B' + 1) ≤ t * t := Nat.mul_le_mul_left t hl
   have h6 : t * (defect A A' B B' + 1) = t * defect A A' B B' + t := by ring
-  have h7 : t * t = t ^ 2 := by ring
+  have h7 : t * t = t ^ (2 : ℕ) := by ring
   omega
 
 /-! ### Saturation -/
@@ -115,7 +115,7 @@ theorem pollard_step1 (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t)
     (hA' : A' ⊆ A) (hB' : B' ⊆ B) (hA'ne : A'.Nonempty) (hB'ne : B'.Nonempty)
     (hl : defect A A' B B' + 1 ≤ t)
     (heq1 : repSet A' B' t = A' * B') (heq2 : A' * B' = repSet A B t) :
-    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ 2) := by
+    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ (2 : ℕ)) := by
   classical
   set A'' := satur A A' B' with hA''def
   set B'' := satur B B' A' with hB''def

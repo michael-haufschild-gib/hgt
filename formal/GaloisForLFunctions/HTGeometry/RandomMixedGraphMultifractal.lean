@@ -16,7 +16,7 @@ structure FiniteEigenstate (ι : Type*) [Fintype ι] where
 
 def inverseParticipationRatioTwo {ι : Type*} [Fintype ι]
     (ψ : FiniteEigenstate ι) : ℝ :=
-  ∑ i, (ψ.mass i) ^ 2
+  ∑ i, (ψ.mass i) ^ (2 : ℕ)
 
 theorem eigenstate_mass_le_one {ι : Type*} [Fintype ι]
     (ψ : FiniteEigenstate ι) (i : ι) : ψ.mass i ≤ 1 := by
@@ -39,8 +39,8 @@ theorem one_div_card_le_inverseParticipationRatioTwo
     {ι : Type*} [Fintype ι] [Nonempty ι] (ψ : FiniteEigenstate ι) :
     1 / (Fintype.card ι : ℝ) ≤ inverseParticipationRatioTwo ψ := by
   have hcard : 0 < (Fintype.card ι : ℝ) := by positivity
-  have hcs : (∑ i, ψ.mass i) ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i, (ψ.mass i) ^ 2 := by
+  have hcs : (∑ i, ψ.mass i) ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i, (ψ.mass i) ^ (2 : ℕ) := by
     simpa using (sq_sum_le_card_mul_sum_sq (s := Finset.univ) (f := ψ.mass))
   rw [ψ.sum_mass] at hcs
   apply (div_le_iff₀ hcard).2
@@ -106,17 +106,17 @@ def coefficientEigenstate {ι : Type*} [Fintype ι]
 theorem inverseParticipationRatioTwo_coefficientEigenstate
     {ι : Type*} [Fintype ι] (h : NonzeroCoefficientVector ι) :
     inverseParticipationRatioTwo (coefficientEigenstate h) =
-      (∑ i, (h.coefficient i) ^ 2) / (finiteCoefficientL1Mass h.coefficient) ^ 2 := by
+      (∑ i, (h.coefficient i) ^ (2 : ℕ)) / (finiteCoefficientL1Mass h.coefficient) ^ (2 : ℕ) := by
   unfold inverseParticipationRatioTwo
-  change (∑ i, (|h.coefficient i| / finiteCoefficientL1Mass h.coefficient) ^ 2) = _
+  change (∑ i, (|h.coefficient i| / finiteCoefficientL1Mass h.coefficient) ^ (2 : ℕ)) = _
   calc
-    (∑ i, (|h.coefficient i| / finiteCoefficientL1Mass h.coefficient) ^ 2) =
-        ∑ i, (h.coefficient i) ^ 2 / (finiteCoefficientL1Mass h.coefficient) ^ 2 := by
+    (∑ i, (|h.coefficient i| / finiteCoefficientL1Mass h.coefficient) ^ (2 : ℕ)) =
+        ∑ i, (h.coefficient i) ^ (2 : ℕ) / (finiteCoefficientL1Mass h.coefficient) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro i _
       rw [div_pow, sq_abs]
-    _ = (∑ i, (h.coefficient i) ^ 2) /
-        (finiteCoefficientL1Mass h.coefficient) ^ 2 := by
+    _ = (∑ i, (h.coefficient i) ^ (2 : ℕ)) /
+        (finiteCoefficientL1Mass h.coefficient) ^ (2 : ℕ) := by
       rw [Finset.sum_div]
 
 structure FixedTransferCoordinate (σ ι : Type*)

@@ -22,7 +22,7 @@ open Module
 namespace RHTower
 
 /-- The even part of every nonzero Slepian band eigenspace is finite dimensional. -/
-theorem finiteDimensional_evenBandEigenspace {c lam : ℝ} (hlam : lam ≠ 0) :
+theorem finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum {c lam : ℝ} (hlam : lam ≠ 0) :
     FiniteDimensional ℝ (evenBandEigenspace c lam) := by
   letI : FiniteDimensional ℝ
       (GaloisForLFunctions.RHTower.bandEigenspace c lam) :=
@@ -42,7 +42,7 @@ noncomputable def evenBandSeparationValues
     {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
     Fin (finrank ℝ (evenBandEigenspace c lam)) → ℝ := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   exact (isSymmetric_prolateOnEvenEigenspace hc hlam).eigenvalues rfl
 
 /-- Canonical orthonormal joint-eigenvector basis inside one live even band eigenspace. -/
@@ -51,7 +51,7 @@ noncomputable def evenBandJointEigenbasis
     OrthonormalBasis (Fin (finrank ℝ (evenBandEigenspace c lam))) ℝ
       (evenBandEigenspace c lam) := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   exact (isSymmetric_prolateOnEvenEigenspace hc hlam).eigenvectorBasis rfl
 
 /-- Every vector of the canonical basis is an eigenvector of the restricted prolate action with
@@ -62,7 +62,7 @@ theorem prolateOnEvenEigenspace_evenBandJointEigenbasis
     prolateOnEvenEigenspace hc hlam (evenBandJointEigenbasis hc hlam i) =
       evenBandSeparationValues hc hlam i • evenBandJointEigenbasis hc hlam i := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   exact (isSymmetric_prolateOnEvenEigenspace hc hlam).apply_eigenvectorBasis rfl i
 
 /-- Regular-even ODE uniqueness makes the ordered separation list injective. -/
@@ -70,7 +70,7 @@ theorem evenBandSeparationValues_injective
     {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
     Function.Injective (evenBandSeparationValues hc hlam) := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   let A := prolateOnEvenEigenspace hc hlam
   let hA := isSymmetric_prolateOnEvenEigenspace hc hlam
   intro i j hij
@@ -91,7 +91,7 @@ theorem evenBandSeparationValues_strictAnti
     {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
     StrictAnti (evenBandSeparationValues hc hlam) := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   exact
     ((isSymmetric_prolateOnEvenEigenspace hc hlam).eigenvalues_antitone rfl).strictAnti_of_injective
       (evenBandSeparationValues_injective hc hlam)
@@ -117,7 +117,7 @@ theorem evenBandJointProfile_spec
       ∀ x : ℝ, prolateSLAction c (evenBandJointProfile hc hlam i) x =
         evenBandSeparationValues hc hlam i * evenBandJointProfile hc hlam i x := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   let v : evenBandEigenspace c lam := evenBandJointEigenbasis hc hlam i
   let f : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨v.1, v.2.1⟩
   let Phi : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam f

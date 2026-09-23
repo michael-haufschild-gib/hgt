@@ -31,20 +31,20 @@ theorem complex_star_eq_starRingEnd (z : ℂ) :
 theorem complex_posDef_coercive {n : ℕ}
     {M : Matrix (Fin n) (Fin n) ℂ} (hM : M.PosDef) :
     ∃ μ : ℝ, 0 < μ ∧ ∀ x : Fin n → ℂ,
-      μ * ‖x‖ ^ 2 ≤ (star x ⬝ᵥ M.mulVec x).re := by
+      μ * ‖x‖ ^ (2 : ℕ) ≤ (star x ⬝ᵥ M.mulVec x).re := by
   have hfc : Continuous
       (fun x : Fin n → ℂ => (star x ⬝ᵥ M.mulVec x).re) := by
     fun_prop
   have hhom : ∀ (c : ℝ) (x : Fin n → ℂ),
       (star (c • x) ⬝ᵥ M.mulVec (c • x)).re =
-        c ^ 2 * (star x ⬝ᵥ M.mulVec x).re := by
+        c ^ (2 : ℕ) * (star x ⬝ᵥ M.mulVec x).re := by
     intro c x
     rw [Matrix.mulVec_smul, star_smul, smul_dotProduct,
       dotProduct_smul]
     simp only [star_trivial, smul_smul]
     change (↑(c * c) *
       (star x ⬝ᵥ M.mulVec x)).re =
-        c ^ 2 * (star x ⬝ᵥ M.mulVec x).re
+        c ^ (2 : ℕ) * (star x ⬝ᵥ M.mulVec x).re
     simp
     ring_nf
     exact Or.inl trivial
@@ -92,7 +92,7 @@ theorem complex_posDef_coercive {n : ℕ}
     simp [y, smul_smul, hnorm.ne']
   have hQ :
       (star x ⬝ᵥ M.mulVec x).re =
-        ‖x‖ ^ 2 * (star y ⬝ᵥ M.mulVec y).re := by
+        ‖x‖ ^ (2 : ℕ) * (star y ⬝ᵥ M.mulVec y).re := by
     conv_lhs => rw [← hxy]
     exact hhom ‖x‖ y
   rw [hQ]
@@ -109,13 +109,13 @@ theorem eventually_quadForm_sub_matrix_le
     ∀ᶠ i in l, ∀ x : Fin n → ℂ,
       |(star x ⬝ᵥ (G i).mulVec x).re -
           (star x ⬝ᵥ G₀.mulVec x).re|
-        ≤ (δ / 2) * ‖x‖ ^ 2 := by
+        ≤ (δ / 2) * ‖x‖ ^ (2 : ℕ) := by
   classical
-  set ε : ℝ := δ / (2 * ((n : ℝ) ^ 2 + 1)) with hε
+  set ε : ℝ := δ / (2 * ((n : ℝ) ^ (2 : ℕ) + 1)) with hε
   have hεpos : 0 < ε := by
     rw [hε]
     positivity
-  have hεn : ε * (n : ℝ) ^ 2 ≤ δ / 2 := by
+  have hεn : ε * (n : ℝ) ^ (2 : ℕ) ≤ δ / 2 := by
     rw [hε, div_mul_eq_mul_div,
       div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [sq_nonneg ((n : ℝ)), hδ.le]
@@ -136,12 +136,12 @@ theorem eventually_quadForm_sub_matrix_le
       |(star x ⬝ᵥ (G i - G₀).mulVec x).re| ≤
         ‖star x ⬝ᵥ (G i - G₀).mulVec x‖ :=
     Complex.abs_re_le_norm _
-  have hnn : (0 : ℝ) ≤ ‖x‖ ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ ‖x‖ ^ (2 : ℕ) := by positivity
   calc
     |(star x ⬝ᵥ (G i - G₀).mulVec x).re| ≤
         ‖star x ⬝ᵥ (G i - G₀).mulVec x‖ := hre
-    _ ≤ ε * (n : ℝ) ^ 2 * ‖x‖ ^ 2 := hquad
-    _ ≤ δ / 2 * ‖x‖ ^ 2 :=
+    _ ≤ ε * (n : ℝ) ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := hquad
+    _ ≤ δ / 2 * ‖x‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hεn hnn
 
 theorem eventually_negDef_of_entrywise_tendsto

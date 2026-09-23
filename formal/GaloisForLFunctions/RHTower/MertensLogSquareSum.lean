@@ -22,10 +22,10 @@ noncomputable section
 
 /-- The prime log-square sum over the window `(2, Y]`. -/
 def primeLogSqSumIoc (Y : ℝ) : ℝ :=
-  ∑ k ∈ Finset.Ioc 2 ⌊Y⌋₊, (if k.Prime then Real.log k ^ 2 / (k : ℝ) else 0)
+  ∑ k ∈ Finset.Ioc 2 ⌊Y⌋₊, (if k.Prime then Real.log k ^ (2 : ℕ) / (k : ℝ) else 0)
 
 theorem hasDerivAt_logDivId {t : ℝ} (ht : t ≠ 0) :
-    HasDerivAt (fun s : ℝ => Real.log s / s) ((1 - Real.log t) / t ^ 2) t := by
+    HasDerivAt (fun s : ℝ => Real.log s / s) ((1 - Real.log t) / t ^ (2 : ℕ)) t := by
   have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht
   have h := hlog.div (hasDerivAt_id t) ht
   refine h.congr_deriv ?_
@@ -33,7 +33,7 @@ theorem hasDerivAt_logDivId {t : ℝ} (ht : t ≠ 0) :
   field_simp
 
 theorem continuousOn_logDivIdDeriv (Y : ℝ) :
-    ContinuousOn (fun t : ℝ => (1 - Real.log t) / t ^ 2) (Icc 2 Y) := by
+    ContinuousOn (fun t : ℝ => (1 - Real.log t) / t ^ (2 : ℕ)) (Icc 2 Y) := by
   intro t ht
   have ht2 : (2 : ℝ) ≤ t := ht.1
   have ht0 : t ≠ 0 := by
@@ -59,8 +59,8 @@ theorem integrableOn_logDivIdDeriv (Y : ℝ) :
 theorem primeLogSqSumIoc_eq {Y : ℝ} (hY : 2 ≤ Y) :
     primeLogSqSumIoc Y
       = Real.log Y / Y * Chebyshev.theta Y - Real.log 2 / 2 * Chebyshev.theta 2
-        - ∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ 2 * Chebyshev.theta t := by
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight
+        - ∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ (2 : ℕ) * Chebyshev.theta t := by
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation
     (f := fun s : ℝ => Real.log s / s) (a := (2 : ℝ)) (b := Y) (by norm_num) hY
     (fun t ht => (hasDerivAt_logDivId (by
       have h2 : (2 : ℝ) ≤ t := ht.1
@@ -71,7 +71,7 @@ theorem primeLogSqSumIoc_eq {Y : ℝ} (hY : 2 ≤ Y) :
   simp only [sum_primeLogWeight_eq_theta] at habel
   rw [show (⌊(2 : ℝ)⌋₊) = 2 from by norm_num] at habel
   have hint : (∫ t in Ioc (2 : ℝ) Y, deriv (fun s : ℝ => Real.log s / s) t * Chebyshev.theta t)
-      = ∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ 2 * Chebyshev.theta t := by
+      = ∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ (2 : ℕ) * Chebyshev.theta t := by
     rw [intervalIntegral.integral_of_le hY]
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc (fun t ht => ?_)
     have ht2 : (2 : ℝ) < t := ht.1
@@ -82,7 +82,7 @@ theorem primeLogSqSumIoc_eq {Y : ℝ} (hY : 2 ≤ Y) :
     rw [(hasDerivAt_logDivId ht0).deriv]
   rw [primeLogSqSumIoc, ← hint, ← habel]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [primeLogWeight]
+  rw [primeLogWeight_primeRpowAbelSummation]
   by_cases hp : k.Prime
   · rw [if_pos hp, if_pos hp]
     ring
@@ -112,9 +112,9 @@ theorem mertensLogSqConst_nonneg : 0 ≤ mertensLogSqConst := by
 
 theorem integral_one_sub_log_div_id {Y : ℝ} (hY : 2 ≤ Y) :
     (∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t)
-      = (Real.log Y - Real.log Y ^ 2 / 2) - (Real.log 2 - Real.log 2 ^ 2 / 2) := by
+      = (Real.log Y - Real.log Y ^ (2 : ℕ) / 2) - (Real.log 2 - Real.log 2 ^ (2 : ℕ) / 2) := by
   have hderiv : ∀ t ∈ uIcc (2 : ℝ) Y,
-      HasDerivAt (fun s : ℝ => Real.log s - Real.log s ^ 2 / 2) ((1 - Real.log t) / t) t := by
+      HasDerivAt (fun s : ℝ => Real.log s - Real.log s ^ (2 : ℕ) / 2) ((1 - Real.log t) / t) t := by
     intro t ht
     rw [uIcc_of_le hY] at ht
     have ht2 : (2 : ℝ) ≤ t := ht.1
@@ -123,7 +123,7 @@ theorem integral_one_sub_log_div_id {Y : ℝ} (hY : 2 ≤ Y) :
       rw [h] at ht2
       linarith
     have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht0
-    have hsq : HasDerivAt (fun s : ℝ => Real.log s ^ 2 / 2) (Real.log t * t⁻¹) t := by
+    have hsq : HasDerivAt (fun s : ℝ => Real.log s ^ (2 : ℕ) / 2) (Real.log t * t⁻¹) t := by
       have h := (hlog.pow 2).div_const 2
       refine h.congr_deriv ?_
       push_cast
@@ -158,7 +158,7 @@ theorem integral_abs_thetaError_div_le {Y : ℝ} (hY : 2 ≤ Y) :
 
 /-- **Mertens' second-moment law.**  `∑_{2 < p ≤ Y} (log p)²/p = (log Y)²/2 + O(log Y)`. -/
 theorem abs_primeLogSqSumIoc_sub_le {Y : ℝ} (hY : 2 ≤ Y) :
-    |primeLogSqSumIoc Y - Real.log Y ^ 2 / 2| ≤ mertensLogSqConst * (1 + Real.log Y) := by
+    |primeLogSqSumIoc Y - Real.log Y ^ (2 : ℕ) / 2| ≤ mertensLogSqConst * (1 + Real.log Y) := by
   have hY0 : (0 : ℝ) < Y := by linarith
   have hlogY : 0 < Real.log Y := Real.log_pos (by linarith)
   have habel := primeLogSqSumIoc_eq hY
@@ -167,10 +167,10 @@ theorem abs_primeLogSqSumIoc_sub_le {Y : ℝ} (hY : 2 ≤ Y) :
     rw [theta_eq_mul_thetaError hY0]
     field_simp
   -- the main integral
-  have hsplit : (∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ 2 * Chebyshev.theta t)
+  have hsplit : (∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t ^ (2 : ℕ) * Chebyshev.theta t)
       = (∫ t in (2 : ℝ)..Y, (1 - Real.log t) / t)
         + ∫ t in (2 : ℝ)..Y, (1 - Real.log t) * thetaError t / t := by
-    have hpt : ∀ t ∈ uIcc (2 : ℝ) Y, (1 - Real.log t) / t ^ 2 * Chebyshev.theta t
+    have hpt : ∀ t ∈ uIcc (2 : ℝ) Y, (1 - Real.log t) / t ^ (2 : ℕ) * Chebyshev.theta t
         = (1 - Real.log t) / t + (1 - Real.log t) * thetaError t / t := by
       intro t ht
       rw [uIcc_of_le hY] at ht

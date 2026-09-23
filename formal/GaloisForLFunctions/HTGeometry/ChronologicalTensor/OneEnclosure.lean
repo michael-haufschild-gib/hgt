@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry.ChronologicalTensor
 noncomputable section
 
 theorem cubic_rational_envelope (a b c d e : ℝ) :
-    |reversalResponse a b c d e| ≤ (8/7 : ℝ) * sixCost a b c d e ^ 3 := by
+    |reversalResponse a b c d e| ≤ (8/7 : ℝ) * sixCost a b c d e ^ (3 : ℕ) := by
   have h := weightedSix_majorant 27 (-1) a b c d e
   simp only [weightedSixResponse, neg_one_mul, ← sub_eq_add_neg,
     abs_neg, abs_one,
@@ -24,25 +24,25 @@ theorem cubic_rational_envelope (a b c d e : ℝ) :
   have hx : 0 ≤ x := by dsimp [x]; positivity
   have hy : 0 ≤ y := by dsimp [y]; positivity
   have he : x+y = sixCost a b c d e := by dsimp [x,y,sixCost]; ring
-  have hid : (8/7 : ℝ)*(x+y)^3 - (27/4*x*y^2+(x+y)*x^2) =
-      (3*x-2*y)^2*(x+21*y)/75 + (x-y/2)^2*(x+4*y)/81 +
-      149/14175*(x+y)^3 := by ring
-  have hn : 0 ≤ (3*x-2*y)^2*(x+21*y)/75 + (x-y/2)^2*(x+4*y)/81 +
-      (149/14175 : ℝ)*(x+y)^3 := by positivity
+  have hid : (8/7 : ℝ)*(x+y)^(3 : ℕ) - (27/4*x*y^(2 : ℕ)+(x+y)*x^(2 : ℕ)) =
+      (3*x-2*y)^(2 : ℕ)*(x+21*y)/75 + (x-y/2)^(2 : ℕ)*(x+4*y)/81 +
+      149/14175*(x+y)^(3 : ℕ) := by ring
+  have hn : 0 ≤ (3*x-2*y)^(2 : ℕ)*(x+21*y)/75 + (x-y/2)^(2 : ℕ)*(x+4*y)/81 +
+      (149/14175 : ℝ)*(x+y)^(3 : ℕ) := by positivity
   rw [← hid, he] at hn
   exact h.trans (by dsimp [x,y] at hn ⊢; linarith)
 
 theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
-    |(a+b+c+d+e)*reversalResponse a b c d e| ≤ sixCost a b c d e ^ 4 := by
+    |(a+b+c+d+e)*reversalResponse a b c d e| ≤ sixCost a b c d e ^ (4 : ℕ) := by
   have quartic : ∀ T z L : ℝ, 0 ≤ T → 0 ≤ z → z ≤ T → 7*T/8 ≤ z →
       0 ≤ L → 2*L ≤ T+z →
-      (27/4 : ℝ)*L*z*(T^2-z^2) - L^2*z*(27*T-29*z)/2 ≤ T^4 := by
+      (27/4 : ℝ)*L*z*(T^(2 : ℕ)-z^(2 : ℕ)) - L^(2 : ℕ)*z*(27*T-29*z)/2 ≤ T^(4 : ℕ) := by
     intro T z L hT hz hzT hhigh hL hLmax
     let H := (T+z)/2
     have hH : 0 ≤ H := by dsimp [H]; positivity
     have hLH : L ≤ H := by dsimp [H]; linarith
-    have hgap : 0 ≤ T^2-z^2 := by nlinarith
-    have hslope : 0 ≤ (27/4 : ℝ)*(T^2-z^2) - (27*T-29*z)*(H+L)/2 := by
+    have hgap : 0 ≤ T^(2 : ℕ)-z^(2 : ℕ) := by nlinarith
+    have hslope : 0 ≤ (27/4 : ℝ)*(T^(2 : ℕ)-z^(2 : ℕ)) - (27*T-29*z)*(H+L)/2 := by
       by_cases hc : 0 ≤ 27*T-29*z
       · have hprod := mul_le_mul_of_nonneg_left (show H+L ≤ T+z by dsimp [H] at *; linarith) hc
         have hpos := mul_nonneg (show 0 ≤ T+z by positivity) (show 0 ≤ 31*z-27*T by linarith)
@@ -50,17 +50,17 @@ theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
       · have hprod := mul_nonpos_of_nonpos_of_nonneg (le_of_not_ge hc) (show 0 ≤ H+L by positivity)
         nlinarith
     have hdiff := mul_nonneg (mul_nonneg (sub_nonneg.mpr hLH) hz) hslope
-    have hid : z^2*(T+z)^2/4 - ((27/4 : ℝ)*L*z*(T^2-z^2)-L^2*z*(27*T-29*z)/2) =
-        (H-L)*z*((27/4 : ℝ)*(T^2-z^2)-(27*T-29*z)*(H+L)/2) := by dsimp [H]; ring
+    have hid : z^(2 : ℕ)*(T+z)^(2 : ℕ)/4 - ((27/4 : ℝ)*L*z*(T^(2 : ℕ)-z^(2 : ℕ))-L^(2 : ℕ)*z*(27*T-29*z)/2) =
+        (H-L)*z*((27/4 : ℝ)*(T^(2 : ℕ)-z^(2 : ℕ))-(27*T-29*z)*(H+L)/2) := by dsimp [H]; ring
     rw [← hid] at hdiff
-    have hlast : z^2*(T+z)^2/4 ≤ T^4 := by
-      have h1 : z^2 ≤ T^2 := by nlinarith
-      have h2 : (T+z)^2 ≤ 4*T^2 := by nlinarith
+    have hlast : z^(2 : ℕ)*(T+z)^(2 : ℕ)/4 ≤ T^(4 : ℕ) := by
+      have h1 : z^(2 : ℕ) ≤ T^(2 : ℕ) := by nlinarith
+      have h2 : (T+z)^(2 : ℕ) ≤ 4*T^(2 : ℕ) := by nlinarith
       have hh := mul_le_mul h1 h2 (sq_nonneg (T+z)) (sq_nonneg T)
       nlinarith
     linarith
   have core : ∀ a b c d e : ℝ, 0 ≤ a+b+c+d+e →
-      |(a+b+c+d+e)*reversalResponse a b c d e| ≤ sixCost a b c d e ^ 4 := by
+      |(a+b+c+d+e)*reversalResponse a b c d e| ≤ sixCost a b c d e ^ (4 : ℕ) := by
     intro a b c d e hS0
     let S := a+b+c+d+e
     let M := b+c+d
@@ -85,44 +85,44 @@ theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
       dsimp [reversalResponse,separatedThree,rainbowThree,S,M]; ring
     have hD := normalized_separated_bound a b c d e
     have hR := rainbow_bound a b c d e
-    have hDr : |c*(27*a*e)| ≤ T^3 := by
+    have hDr : |c*(27*a*e)| ≤ T^(3 : ℕ) := by
       convert hD using 1
       dsimp [separatedThree,T]
       congr 1
       ring
-    have hRr : |c*(S*M)| ≤ T^3 := by
+    have hRr : |c*(S*M)| ≤ T^(3 : ℕ) := by
       convert hR using 1
       dsimp [rainbowThree,T,S,M]
       congr 1
       ring
-    change |S*reversalResponse a b c d e| ≤ T^4
+    change |S*reversalResponse a b c d e| ≤ T^(4 : ℕ)
     by_cases hlo : S ≤ 7*T/8
     · have hp := cubic_rational_envelope a b c d e
-      change |reversalResponse a b c d e| ≤ (8/7 : ℝ)*T^3 at hp
+      change |reversalResponse a b c d e| ≤ (8/7 : ℝ)*T^(3 : ℕ) at hp
       rw [abs_mul,abs_of_nonneg hS]
       calc
-        S * |reversalResponse a b c d e| ≤ (7*T/8)*((8/7 : ℝ)*T^3) :=
+        S * |reversalResponse a b c d e| ≤ (7*T/8)*((8/7 : ℝ)*T^(3 : ℕ)) :=
           mul_le_mul hlo hp (abs_nonneg _) (by positivity)
-        _ = T^4 := by ring
+        _ = T^(4 : ℕ) := by ring
     have hhigh : 7*T/8 ≤ S := le_of_not_ge hlo
     rw [hP, abs_mul, abs_of_nonneg hS, abs_mul]
     by_cases hae : 0 ≤ a*e
     · by_cases hm : 0 ≤ M
       · have hd0 : 0 ≤ 27*a*e := by nlinarith only [hae]
         have hr0 : 0 ≤ S*M := mul_nonneg hS hm
-        have hd : |c| *(27*a*e) ≤ T^3 := by simpa [abs_mul,abs_of_nonneg hd0] using hDr
-        have hr : |c| *(S*M) ≤ T^3 := by simpa [abs_mul,abs_of_nonneg hr0] using hRr
-        have hh : |c| * |27*a*e-S*M| ≤ T^3 := by
+        have hd : |c| *(27*a*e) ≤ T^(3 : ℕ) := by simpa [abs_mul,abs_of_nonneg hd0] using hDr
+        have hr : |c| *(S*M) ≤ T^(3 : ℕ) := by simpa [abs_mul,abs_of_nonneg hr0] using hRr
+        have hh : |c| * |27*a*e-S*M| ≤ T^(3 : ℕ) := by
           have heq : |c| * |27*a*e-S*M| = |(|c|)*(27*a*e-S*M)| := by rw [abs_mul,abs_abs]
           rw [heq]
           apply abs_le.mpr
           constructor <;> nlinarith only [hd, hr, mul_nonneg (abs_nonneg c) hd0, mul_nonneg (abs_nonneg c) hr0]
         calc
-          S*(|c| * |27*a*e-S*M|) ≤ T*T^3 := mul_le_mul hST hh (by positivity) hT
-          _ = T^4 := by ring
+          S*(|c| * |27*a*e-S*M|) ≤ T*T^(3 : ℕ) := mul_le_mul hST hh (by positivity) hT
+          _ = T^(4 : ℕ) := by ring
       · have hm0 : M ≤ 0 := le_of_not_ge hm
         have hu0 : 0 ≤ u := by linarith only [hSu,hS,hm0]
-        have haesq : w^2 = u^2 := by
+        have haesq : w^(2 : ℕ) = u^(2 : ℕ) := by
           dsimp [w,u]
           nlinarith only [sq_abs a,sq_abs e,show |a| *|e| = a*e by rw [← abs_mul,abs_of_nonneg hae]]
         have hwu : w = u := by nlinarith only [haesq,hw,hu0]
@@ -132,37 +132,37 @@ theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
           rw [hid,abs_of_nonpos hm0,abs_neg,abs_neg] at ht
           linarith only [ht]
         have hcS : 2*|c| ≤ T-S := by dsimp [L] at hTw; rw [hwu] at hTw; linarith only [hTw,hSu,htri]
-        have hSc : S*|c| ≤ T^2/8 := by
+        have hSc : S*|c| ≤ T^(2 : ℕ)/8 := by
           have hh := mul_le_mul_of_nonneg_left hcS hS
           nlinarith only [hh,sq_nonneg (S-T/2)]
-        have hAE : 4*(a*e) ≤ u^2 := by dsimp [u]; nlinarith only [sq_nonneg (a-e)]
+        have hAE : 4*(a*e) ≤ u^(2 : ℕ) := by dsimp [u]; nlinarith only [sq_nonneg (a-e)]
         have huT : u ≤ T := by linarith only [hwu,hTw,hL]
-        have huSq : u^2 ≤ T^2 := by nlinarith only [huT,hu0,hT]
-        have hSM : 4*(S*(-M)) ≤ u^2 := by
+        have huSq : u^(2 : ℕ) ≤ T^(2 : ℕ) := by nlinarith only [huT,hu0,hT]
+        have hSM : 4*(S*(-M)) ≤ u^(2 : ℕ) := by
           rw [show u = S-M by linarith only [hSu]]
           nlinarith only [sq_nonneg (S+M)]
         have hb0 : 0 ≤ 27*a*e-S*M := by nlinarith only [hae,mul_nonpos_of_nonneg_of_nonpos hS hm0]
-        have hb : 27*a*e-S*M ≤ 7*T^2 := by nlinarith only [hAE,huSq,hSM]
+        have hb : 27*a*e-S*M ≤ 7*T^(2 : ℕ) := by nlinarith only [hAE,huSq,hSM]
         rw [abs_of_nonneg hb0]
         calc
           S*(|c| *(27*a*e-S*M)) = (S*|c|)*(27*a*e-S*M) := by ring
-          _ ≤ (T^2/8)*(7*T^2) := mul_le_mul hSc hb hb0 (by positivity)
-          _ ≤ T^4 := by nlinarith only [sq_nonneg (T^2)]
+          _ ≤ (T^(2 : ℕ)/8)*(7*T^(2 : ℕ)) := mul_le_mul hSc hb hb0 (by positivity)
+          _ ≤ T^(4 : ℕ) := by nlinarith only [sq_nonneg (T^(2 : ℕ))]
     · have hae0 : a*e ≤ 0 := le_of_not_ge hae
       by_cases hm : M ≤ 0
       · have hd0 : 27*a*e ≤ 0 := by nlinarith only [hae0]
         have hr0 : S*M ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hS hm
-        have hd : -(|c| *(27*a*e)) ≤ T^3 := by simpa [abs_mul,abs_of_nonpos hd0] using hDr
-        have hr : -(|c| *(S*M)) ≤ T^3 := by simpa [abs_mul,abs_of_nonpos hr0] using hRr
-        have hh : |c| * |27*a*e-S*M| ≤ T^3 := by
+        have hd : -(|c| *(27*a*e)) ≤ T^(3 : ℕ) := by simpa [abs_mul,abs_of_nonpos hd0] using hDr
+        have hr : -(|c| *(S*M)) ≤ T^(3 : ℕ) := by simpa [abs_mul,abs_of_nonpos hr0] using hRr
+        have hh : |c| * |27*a*e-S*M| ≤ T^(3 : ℕ) := by
           have heq : |c| * |27*a*e-S*M| = |(|c|)*(27*a*e-S*M)| := by rw [abs_mul,abs_abs]
           rw [heq]
           apply abs_le.mpr
           constructor <;> nlinarith only [hd, hr, mul_nonpos_of_nonneg_of_nonpos (abs_nonneg c) hd0,
             mul_nonpos_of_nonneg_of_nonpos (abs_nonneg c) hr0]
         calc
-          S*(|c| * |27*a*e-S*M|) ≤ T*T^3 := mul_le_mul hST hh (by positivity) hT
-          _ = T^4 := by ring
+          S*(|c| * |27*a*e-S*M|) ≤ T*T^(3 : ℕ) := mul_le_mul hST hh (by positivity) hT
+          _ = T^(4 : ℕ) := by ring
       · have hm0 : 0 ≤ M := le_of_not_ge hm
         let z := u+L
         have hML : M ≤ L := (le_abs_self M).trans hM
@@ -170,7 +170,7 @@ theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
         have hz : 0 ≤ z := hS.trans hSz
         have hzT : z ≤ T := by dsimp [z]; linarith [(abs_le.mp hu).2]
         have hzm : 2*L ≤ T+z := by dsimp [z]; linarith [(abs_le.mp hu).1]
-        have haesq : w^2-u^2 = -4*(a*e) := by
+        have haesq : w^(2 : ℕ)-u^(2 : ℕ) = -4*(a*e) := by
           dsimp [w,u]
           nlinarith only [sq_abs a,sq_abs e,show |a| *|e| = -(a*e) by rw [← abs_mul,abs_of_nonpos hae0]]
         have hb0 : 0 ≤ -27*a*e+S*M := by nlinarith only [hae0,mul_nonneg hS hm0]
@@ -183,13 +183,13 @@ theorem one_enclosure_reversal_bound (a b c d e : ℝ) :
         calc
           S*(|c| *(-27*a*e+S*M)) = (S*|c|)*(-27*a*e+S*M) := by ring
           _ ≤ (z*L)*(-27*a*e+z*L) := hprod
-          _ = (27/4 : ℝ)*L*z*(T^2-z^2)-L^2*z*(27*T-29*z)/2 := by
+          _ = (27/4 : ℝ)*L*z*(T^(2 : ℕ)-z^(2 : ℕ))-L^(2 : ℕ)*z*(27*T-29*z)/2 := by
             have hid : (z*L)*(-27*a*e+z*L) =
-                (z*L)*((27/4 : ℝ)*(w^2-u^2)+z*L) := by rw [haesq]; ring
+                (z*L)*((27/4 : ℝ)*(w^(2 : ℕ)-u^(2 : ℕ))+z*L) := by rw [haesq]; ring
             rw [hid,hTw]
             dsimp [z]
             ring
-          _ ≤ T^4 := quartic T z L hT hz hzT (hhigh.trans hSz) hL hzm
+          _ ≤ T^(4 : ℕ) := quartic T z L hT hz hzT (hhigh.trans hSz) hL hzm
   by_cases h : 0 ≤ a+b+c+d+e
   · exact core a b c d e h
   · have hn := core (-a) (-b) (-c) (-d) (-e) (by linarith)

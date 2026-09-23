@@ -23,7 +23,7 @@ def currentCutoff (x : Fin 4 → ℝ) : ℂ := ((Real.smoothTransition (ingoingT
 def currentCutoffSlope (x : Fin 4 → ℝ) : ℂ := ((deriv Real.smoothTransition (ingoingTime x) : ℝ) : ℂ)
 
 private def timeDifferential (r : ℝ) : (Fin 4 → ℝ) →L[ℝ] ℝ :=
-  ContinuousLinearMap.proj 0+(r^2-1)⁻¹ • ContinuousLinearMap.proj 1
+  ContinuousLinearMap.proj 0+(r^(2 : ℕ)-1)⁻¹ • ContinuousLinearMap.proj 1
 
 private theorem time_derivative (p : D4BMBackground.ExteriorPoint) :
     HasFDerivAt ingoingTime (timeDifferential (p.val 1)) p.val := by
@@ -43,7 +43,7 @@ private theorem cutoff_derivative (p : D4BMBackground.ExteriorPoint) :
 radial factor fixed by the original tortoise coordinate derivative. -/
 theorem currentCutoff_derivatives (p : D4BMBackground.ExteriorPoint) :
     coordDeriv 0 currentCutoff p.val = currentCutoffSlope p.val ∧
-    coordDeriv 1 currentCutoff p.val = currentCutoffSlope p.val/((p.val 1 : ℂ)^2-1) := by
+    coordDeriv 1 currentCutoff p.val = currentCutoffSlope p.val/((p.val 1 : ℂ)^(2 : ℕ)-1) := by
   have h := (cutoff_derivative p).fderiv
   constructor <;> simp [coordDeriv,h,timeDifferential,currentCutoffSlope,div_eq_mul_inv,mul_comm]
 
@@ -60,7 +60,7 @@ theorem switchedOrbitCurrent_derivatives (q : XiZeroCopy) (branch : Bool) (a : �
     coordDeriv 1 (switchedOrbitCurrent q branch a z k) p.val =
       currentCutoff p.val*currentFirst (physicalRate q branch) (p.val 1)
         (envelope (physicalRate q branch) a p.val) (fullSquareCovector q k z) (fullGradientCovector q branch k z)+
-      currentCutoffSlope p.val/((p.val 1:ℂ)^2-1)*orbitCurrent q branch a z k p.val := by
+      currentCutoffSlope p.val/((p.val 1:ℂ)^(2 : ℕ)-1)*orbitCurrent q branch a z k p.val := by
   have hc := (cutoff_derivative p).differentiableAt
   have hC := (orbitCurrent_smooth q branch a z k p).differentiableAt (by norm_num)
   have h0 := (orbitCurrent_derivatives q branch a z k p).1
@@ -78,8 +78,8 @@ def switchedCurrentSource (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 
     Matrix (Fin 4) (Fin 4) ℂ :=
   let r := (x 1 : ℂ)
   let C := switchedOrbitCurrent q branch a (angularPoint x)
-  let T := fun k => (r^2-1)/r^2*coordDeriv 1 (C k) x
-  let R := fun k => 1/(r^2*(r^2-1))*coordDeriv 0 (C k) x
+  let T := fun k => (r^(2 : ℕ)-1)/r^(2 : ℕ)*coordDeriv 1 (C k) x
+  let R := fun k => 1/(r^(2 : ℕ)*(r^(2 : ℕ)-1))*coordDeriv 0 (C k) x
   !![0,0,T 0,T 1; 0,0,R 0,R 1; T 0,R 0,0,0; T 1,R 1,0,0]
 
 /-- The explicit onset tensor required in addition to a cutoff times the
@@ -88,8 +88,8 @@ def currentOnsetTensor (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 →
     Matrix (Fin 4) (Fin 4) ℂ :=
   let r := (x 1 : ℂ)
   let D := fun k => currentCutoffSlope x*orbitCurrent q branch a (angularPoint x) k x
-  let T := fun k => D k/r^2
-  let R := fun k => D k/(r^2*(r^2-1))
+  let T := fun k => D k/r^(2 : ℕ)
+  let R := fun k => D k/(r^(2 : ℕ)*(r^(2 : ℕ)-1))
   !![0,0,T 0,T 1; 0,0,R 0,R 1; T 0,R 0,0,0; T 1,R 1,0,0]
 
 /-- Exact original-source plus onset decomposition in every tensor component.
@@ -105,22 +105,22 @@ theorem switchedCurrentSource_eq (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   let B := envelope s a p.val
   let z := angularPoint p.val
   have hr : r ≠ 0 := by dsimp only [r]; exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  have hf : r^2-1 ≠ 0 := by dsimp only [r]; exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : r^(2 : ℕ)-1 ≠ 0 := by dsimp only [r]; exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   have ht (k : Fin 2) :
-      (r^2-1)/r^2*coordDeriv 1 (switchedOrbitCurrent q branch a z k) p.val =
-      currentCutoff p.val*(B^2*(timeSquare s r*fullSquareCovector q k z+timeGradient s r*fullGradientCovector q branch k z))+
-      currentCutoffSlope p.val*orbitCurrent q branch a z k p.val/r^2 := by
+      (r^(2 : ℕ)-1)/r^(2 : ℕ)*coordDeriv 1 (switchedOrbitCurrent q branch a z k) p.val =
+      currentCutoff p.val*(B^(2 : ℕ)*(timeSquare s r*fullSquareCovector q k z+timeGradient s r*fullGradientCovector q branch k z))+
+      currentCutoffSlope p.val*orbitCurrent q branch a z k p.val/r^(2 : ℕ) := by
     rw [(switchedOrbitCurrent_derivatives q branch a z k p).2]
     rw [← temporal_current s r B (fullSquareCovector q k z) (fullGradientCovector q branch k z) hr hf]
     dsimp only [s,r,B,z] at hr hf ⊢
     field_simp [hr,hf]
   have hv (k : Fin 2) :
-      1/(r^2*(r^2-1))*coordDeriv 0 (switchedOrbitCurrent q branch a z k) p.val =
-      currentCutoff p.val*(B^2*(radialSquare s r*fullSquareCovector q k z+radialGradient s r*fullGradientCovector q branch k z))+
-      currentCutoffSlope p.val*orbitCurrent q branch a z k p.val/(r^2*(r^2-1)) := by
+      1/(r^(2 : ℕ)*(r^(2 : ℕ)-1))*coordDeriv 0 (switchedOrbitCurrent q branch a z k) p.val =
+      currentCutoff p.val*(B^(2 : ℕ)*(radialSquare s r*fullSquareCovector q k z+radialGradient s r*fullGradientCovector q branch k z))+
+      currentCutoffSlope p.val*orbitCurrent q branch a z k p.val/(r^(2 : ℕ)*(r^(2 : ℕ)-1)) := by
     rw [(switchedOrbitCurrent_derivatives q branch a z k p).1]
     have h := radial_current s r B (fullSquareCovector q k z) (fullGradientCovector q branch k z) hr hf
-    change r^2*(r^2-1)*(B^2*(radialSquare s r*fullSquareCovector q k z+radialGradient s r*fullGradientCovector q branch k z)) =
+    change r^(2 : ℕ)*(r^(2 : ℕ)-1)*(B^(2 : ℕ)*(radialSquare s r*fullSquareCovector q k z+radialGradient s r*fullGradientCovector q branch k z)) =
       currentRate q branch*orbitCurrent q branch a z k p.val at h
     rw [← h]
     field_simp [hr,hf]

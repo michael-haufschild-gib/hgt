@@ -21,15 +21,15 @@ namespace GaloisForLFunctions.RHTower
 /-- The phase exceeds any prescribed level: an explicit exterior point is produced. -/
 theorem exists_lt_xiEndpointPhase {s y : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hy : 0 < y) :
     ∃ X, 1 ≤ X ∧ y < xiEndpointPhase s X := by
-  refine ⟨Real.sqrt (1 + (2 * y) ^ 2), ?_, ?_⟩
+  refine ⟨Real.sqrt (1 + (2 * y) ^ (2 : ℕ)), ?_, ?_⟩
   · exact Real.one_le_sqrt.mpr (by nlinarith)
-  · set X : ℝ := Real.sqrt (1 + (2 * y) ^ 2) with hXdef
+  · set X : ℝ := Real.sqrt (1 + (2 * y) ^ (2 : ℕ)) with hXdef
     have hX1 : (1 : ℝ) ≤ X := by
       rw [hXdef]
       exact Real.one_le_sqrt.mpr (by nlinarith)
-    have hXsq : X ^ 2 = 1 + (2 * y) ^ 2 := Real.sq_sqrt (by positivity)
-    have hsub : X ^ 2 - 1 = (2 * y) ^ 2 := by rw [hXsq]; ring
-    have hsq : Real.sqrt (X ^ 2 - 1) = 2 * y := by
+    have hXsq : X ^ (2 : ℕ) = 1 + (2 * y) ^ (2 : ℕ) := Real.sq_sqrt (by positivity)
+    have hsub : X ^ (2 : ℕ) - 1 = (2 * y) ^ (2 : ℕ) := by rw [hXsq]; ring
+    have hsq : Real.sqrt (X ^ (2 : ℕ) - 1) = 2 * y := by
       rw [hsub, Real.sqrt_sq (by positivity)]
     have hlow := (xiEndpointPhase_bounds hs0 (by linarith) hX1).1
     rw [hsq] at hlow

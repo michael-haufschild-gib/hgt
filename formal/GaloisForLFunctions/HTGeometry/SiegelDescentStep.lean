@@ -38,7 +38,7 @@ theorem isSiegel_two_of_terminal (J : JacobiData n)
   have hjs : (j : ℕ) = (i : ℕ) + 1 := hij.symm
   have hstep := hterm i j hjs
   rw [J.projNorm_succ hjs] at hstep
-  have hb : (J.U i j) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+  have hb : (J.U i j) ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
     have := hred i j (Fin.lt_def.2 (by omega))
     nlinarith [abs_nonneg (J.U i j), sq_abs (J.U i j)]
   nlinarith [hstep, hb, J.pos i]

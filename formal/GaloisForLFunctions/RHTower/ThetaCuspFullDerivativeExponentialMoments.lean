@@ -24,7 +24,7 @@ theorem exp_natSucc_mul_abs_thetaCuspFullDerivative_le
   let a : ℕ → ℝ := fun n ↦
     thetaCuspPolynomialAtom (thetaCuspLogDerivativePolynomial m) n x
   let g : ℕ → ℝ := fun n ↦
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   let C : ℝ := thetaCuspGaussianConstant
     (thetaCuspWeightedPolynomial (thetaCuspLogDerivativePolynomial m) q)
   have ha : Summable a := by

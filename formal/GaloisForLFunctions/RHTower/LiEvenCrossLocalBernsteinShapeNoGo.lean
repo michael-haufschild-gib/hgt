@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.LiReciprocalChebyshevKernel
 # Local Bernstein shape does not orient the Li tower
 
 The exact LI two-scale generating law reduces adjacent-current orientation to the radial atom
-`z b / (z+b)^2`. This module gives a finite conjugation-symmetric squared-node packet whose
+`z b / (z+b)^(2 : ℕ)`. This module gives a finite conjugation-symmetric squared-node packet whose
 real radial response is strictly Bernstein at every order on the full physical interval
 `0 ≤ v ≤ 1/4`, while its fourth completed-Abel even-cross mode is strictly negative.
 
@@ -22,25 +22,25 @@ namespace RHTower
 
 noncomputable section
 
-def liLocalRadialAtom (b z : ℂ) : ℂ := z * b / (z + b) ^ 2
+def liLocalRadialAtom (b z : ℂ) : ℂ := z * b / (z + b) ^ (2 : ℕ)
 
 theorem iteratedDeriv_invSq_add_const (b : ℂ) (m : ℕ) (z : ℂ) (hz : z + b ≠ 0) :
-    iteratedDeriv m (fun w : ℂ => ((w + b) ^ 2)⁻¹) z =
+    iteratedDeriv m (fun w : ℂ => ((w + b) ^ (2 : ℕ))⁻¹) z =
       (-1 : ℂ) ^ m * ((m + 1).factorial : ℂ) *
         ((z + b) ^ (m + 2))⁻¹ := by
   have hev : ∀ᶠ w in 𝓝 z, w + b ≠ 0 :=
     (continuousAt_id.add continuousAt_const).eventually_ne hz
   have hderiv : deriv (fun w : ℂ => (w + b)⁻¹) =ᶠ[𝓝 z]
-      fun w => -((w + b) ^ 2)⁻¹ := by
+      fun w => -((w + b) ^ (2 : ℕ))⁻¹ := by
     filter_upwards [hev] with w hw
     have h := ((hasDerivAt_id w).add_const b).inv hw
-    change deriv ((fun x : ℂ => x + b)⁻¹) w = -((w + b) ^ 2)⁻¹
+    change deriv ((fun x : ℂ => x + b)⁻¹) w = -((w + b) ^ (2 : ℕ))⁻¹
     simpa only [Pi.inv_apply, id_eq, one_div, neg_div, one_mul] using h.deriv
   have hs := GaloisForLFunctions.iteratedDeriv_inv_add_const b (m + 1) z hz
   rw [iteratedDeriv_succ'] at hs
   rw [hderiv.iteratedDeriv_eq m] at hs
-  rw [show (fun w : ℂ => -((w + b) ^ 2)⁻¹) =
-      -(fun w : ℂ => ((w + b) ^ 2)⁻¹) by rfl, iteratedDeriv_neg] at hs
+  rw [show (fun w : ℂ => -((w + b) ^ (2 : ℕ))⁻¹) =
+      -(fun w : ℂ => ((w + b) ^ (2 : ℕ))⁻¹) by rfl, iteratedDeriv_neg] at hs
   apply neg_injective
   rw [hs]
   rw [show m + 1 + 1 = m + 2 by omega, pow_succ]
@@ -53,7 +53,7 @@ theorem iteratedDeriv_liLocalRadialAtom (b : ℂ) (m : ℕ) (z : ℂ) (hz : z + 
   have hev : ∀ᶠ w in 𝓝 z, w + b ≠ 0 :=
     (continuousAt_id.add continuousAt_const).eventually_ne hz
   have hdecomp : liLocalRadialAtom b =ᶠ[𝓝 z]
-      fun w => b * (w + b)⁻¹ - b ^ 2 * ((w + b) ^ 2)⁻¹ := by
+      fun w => b * (w + b)⁻¹ - b ^ (2 : ℕ) * ((w + b) ^ (2 : ℕ))⁻¹ := by
     filter_upwards [hev] with w hw
     simp only [liLocalRadialAtom]
     field_simp
@@ -61,18 +61,18 @@ theorem iteratedDeriv_liLocalRadialAtom (b : ℂ) (m : ℕ) (z : ℂ) (hz : z + 
   rw [hdecomp.iteratedDeriv_eq (m + 1)]
   have hsimple : ContDiffAt ℂ (m + 1) (fun w : ℂ => (w + b)⁻¹) z := by
     exact (contDiffAt_id.add contDiffAt_const).inv hz
-  have hsq : ContDiffAt ℂ (m + 1) (fun w : ℂ => ((w + b) ^ 2)⁻¹) z := by
+  have hsq : ContDiffAt ℂ (m + 1) (fun w : ℂ => ((w + b) ^ (2 : ℕ))⁻¹) z := by
     exact ((contDiffAt_id.add contDiffAt_const).pow 2).inv (pow_ne_zero 2 hz)
   have hb : ContDiffAt ℂ (m + 1) (fun w : ℂ => b * (w + b)⁻¹) z :=
     contDiffAt_const.mul hsimple
-  have hb2 : ContDiffAt ℂ (m + 1) (fun w : ℂ => b ^ 2 * ((w + b) ^ 2)⁻¹) z :=
+  have hb2 : ContDiffAt ℂ (m + 1) (fun w : ℂ => b ^ (2 : ℕ) * ((w + b) ^ (2 : ℕ))⁻¹) z :=
     contDiffAt_const.mul hsq
   change iteratedDeriv (m + 1)
       ((fun w : ℂ => b * (w + b)⁻¹) -
-        (fun w : ℂ => b ^ 2 * ((w + b) ^ 2)⁻¹)) z = _
+        (fun w : ℂ => b ^ (2 : ℕ) * ((w + b) ^ (2 : ℕ))⁻¹)) z = _
   rw [iteratedDeriv_sub hb hb2]
   rw [iteratedDeriv_const_mul b hsimple]
-  rw [iteratedDeriv_const_mul (b ^ 2) hsq]
+  rw [iteratedDeriv_const_mul (b ^ (2 : ℕ)) hsq]
   rw [GaloisForLFunctions.iteratedDeriv_inv_add_const b (m + 1) z hz]
   rw [iteratedDeriv_invSq_add_const b (m + 1) z hz]
   simp only [pow_succ]
@@ -227,12 +227,12 @@ theorem liLocal_two_mul_offUpper_lt_seven_mul_baseLower (m : ℕ) :
           (3 * ((m + 1 : ℕ) : ℝ) / 2) / (5 / 4) ^ (m + 3)) <
       7 * (((m + 1).factorial : ℝ) * (((m + 1 : ℕ) : ℝ) / 8) /
         (3 / 4) ^ (m + 3)) := by
-  have hpow : (3 / 5 : ℝ) ^ (m + 3) ≤ (3 / 5 : ℝ) ^ 3 := by
+  have hpow : (3 / 5 : ℝ) ^ (m + 3) ≤ (3 / 5 : ℝ) ^ (3 : ℕ) := by
     apply pow_le_pow_of_le_one (by norm_num) (by norm_num)
     omega
   have hthirty : 30 * (3 / 5 : ℝ) ^ (m + 3) < 7 := by
     calc
-      30 * (3 / 5 : ℝ) ^ (m + 3) ≤ 30 * (3 / 5 : ℝ) ^ 3 := by gcongr
+      30 * (3 / 5 : ℝ) ^ (m + 3) ≤ 30 * (3 / 5 : ℝ) ^ (3 : ℕ) := by gcongr
       _ < 7 := by norm_num
   have hA : 0 < (3 / 4 : ℝ) ^ (m + 3) := by positivity
   have hB : 0 < (5 / 4 : ℝ) ^ (m + 3) := by positivity
@@ -545,40 +545,40 @@ theorem liLocalCayleyPhaseMinus_ne_zero : liLocalCayleyPhaseMinus ≠ 0 := by
   have hi := congrArg Complex.im h
   norm_num [liLocalCayleyPhaseMinus] at hi
 
-theorem liLocalCayleyPhasePlus_pow_eight : liLocalCayleyPhasePlus ^ 8 = 16 := by
-  have hsq : liLocalCayleyPhasePlus ^ 2 = 2 * I := by
+theorem liLocalCayleyPhasePlus_pow_eight : liLocalCayleyPhasePlus ^ (8 : ℕ) = 16 := by
+  have hsq : liLocalCayleyPhasePlus ^ (2 : ℕ) = 2 * I := by
     calc
-      liLocalCayleyPhasePlus ^ 2 = 1 + 2 * I + I ^ 2 := by
+      liLocalCayleyPhasePlus ^ (2 : ℕ) = 1 + 2 * I + I ^ (2 : ℕ) := by
         simp only [liLocalCayleyPhasePlus]
         ring
       _ = 2 * I := by linear_combination Complex.I_sq
-  have hfour : (2 * I : ℂ) ^ 4 = 16 := by
+  have hfour : (2 * I : ℂ) ^ (4 : ℕ) = 16 := by
     calc
-      (2 * I : ℂ) ^ 4 = ((2 * I : ℂ) ^ 2) ^ 2 := by ring
-      _ = (-4 : ℂ) ^ 2 := by
-        rw [show (2 * I : ℂ) ^ 2 = -4 by
+      (2 * I : ℂ) ^ (4 : ℕ) = ((2 * I : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (-4 : ℂ) ^ (2 : ℕ) := by
+        rw [show (2 * I : ℂ) ^ (2 : ℕ) = -4 by
           rw [pow_two]
           linear_combination 4 * Complex.I_sq]
       _ = 16 := by norm_num
-  rw [show liLocalCayleyPhasePlus ^ 8 = (liLocalCayleyPhasePlus ^ 2) ^ 4 by ring, hsq]
+  rw [show liLocalCayleyPhasePlus ^ (8 : ℕ) = (liLocalCayleyPhasePlus ^ (2 : ℕ)) ^ (4 : ℕ) by ring, hsq]
   exact hfour
 
-theorem liLocalCayleyPhaseMinus_pow_eight : liLocalCayleyPhaseMinus ^ 8 = 16 := by
-  have hsq : liLocalCayleyPhaseMinus ^ 2 = -(2 * I) := by
+theorem liLocalCayleyPhaseMinus_pow_eight : liLocalCayleyPhaseMinus ^ (8 : ℕ) = 16 := by
+  have hsq : liLocalCayleyPhaseMinus ^ (2 : ℕ) = -(2 * I) := by
     calc
-      liLocalCayleyPhaseMinus ^ 2 = 1 - 2 * I + I ^ 2 := by
+      liLocalCayleyPhaseMinus ^ (2 : ℕ) = 1 - 2 * I + I ^ (2 : ℕ) := by
         simp only [liLocalCayleyPhaseMinus]
         ring
       _ = -(2 * I) := by linear_combination Complex.I_sq
-  have hfour : (-(2 * I) : ℂ) ^ 4 = 16 := by
+  have hfour : (-(2 * I) : ℂ) ^ (4 : ℕ) = 16 := by
     calc
-      (-(2 * I) : ℂ) ^ 4 = ((-(2 * I) : ℂ) ^ 2) ^ 2 := by ring
-      _ = (-4 : ℂ) ^ 2 := by
-        rw [show (-(2 * I) : ℂ) ^ 2 = -4 by
+      (-(2 * I) : ℂ) ^ (4 : ℕ) = ((-(2 * I) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (-4 : ℂ) ^ (2 : ℕ) := by
+        rw [show (-(2 * I) : ℂ) ^ (2 : ℕ) = -4 by
           rw [pow_two]
           linear_combination 4 * Complex.I_sq]
       _ = 16 := by norm_num
-  rw [show liLocalCayleyPhaseMinus ^ 8 = (liLocalCayleyPhaseMinus ^ 2) ^ 4 by ring, hsq]
+  rw [show liLocalCayleyPhaseMinus ^ (8 : ℕ) = (liLocalCayleyPhaseMinus ^ (2 : ℕ)) ^ (4 : ℕ) by ring, hsq]
   exact hfour
 
 theorem liLocalOffLineNode_endpoint_coordinate :
@@ -604,7 +604,7 @@ theorem evalRealPolynomial_chebyshevT_eight_liLocalOffLineNode :
   rw [evalRealPolynomial_chebyshevT_eq, liLocalOffLineNode_endpoint_coordinate]
   have h := GaloisForLFunctions.two_mul_chebyshevT_eval_half_add_inv
     8 liLocalCayleyPhasePlus_ne_zero
-  have hinv : liLocalCayleyPhasePlus⁻¹ ^ 8 = 1 / 16 := by
+  have hinv : liLocalCayleyPhasePlus⁻¹ ^ (8 : ℕ) = 1 / 16 := by
     rw [inv_pow, liLocalCayleyPhasePlus_pow_eight]
     norm_num
   rw [liLocalCayleyPhasePlus_pow_eight, hinv] at h
@@ -618,7 +618,7 @@ theorem evalRealPolynomial_chebyshevT_eight_liLocalOffLineNodeConj :
   rw [evalRealPolynomial_chebyshevT_eq, liLocalOffLineNodeConj_endpoint_coordinate]
   have h := GaloisForLFunctions.two_mul_chebyshevT_eval_half_add_inv
     8 liLocalCayleyPhaseMinus_ne_zero
-  have hinv : liLocalCayleyPhaseMinus⁻¹ ^ 8 = 1 / 16 := by
+  have hinv : liLocalCayleyPhaseMinus⁻¹ ^ (8 : ℕ) = 1 / 16 := by
     rw [inv_pow, liLocalCayleyPhaseMinus_pow_eight]
     norm_num
   rw [liLocalCayleyPhaseMinus_pow_eight, hinv] at h

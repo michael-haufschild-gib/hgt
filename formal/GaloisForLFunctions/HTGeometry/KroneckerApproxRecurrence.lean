@@ -29,7 +29,7 @@ theorem kronecker_approx_atTop {ι : Type*} [Fintype ι] [DecidableEq ι] {lam :
   set S : ℝ := max T₀ 0 with hS
   have hS0 : (0 : ℝ) ≤ S := le_max_right _ _
   have hTS : T₀ ≤ S := le_max_left _ _
-  set q : ℝ := max 0 (1 - ε ^ 2 / 4) with hqdef
+  set q : ℝ := max 0 (1 - ε ^ (2 : ℕ) / 4) with hqdef
   have hq0 : 0 ≤ q := le_max_left _ _
   have hq1 : q < 1 := by
     refine max_lt one_pos ?_
@@ -41,14 +41,14 @@ theorem kronecker_approx_atTop {ι : Type*} [Fintype ι] [DecidableEq ι] {lam :
     obtain ⟨j₀, hj₀⟩ := hcon t htt
     have hcos : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ q := by
       have hsq := norm_expChar_sub_sq (lam j₀ * t) (θ j₀)
-      have hge : ε ^ 2 ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ ^ 2 := by
+      have hge : ε ^ (2 : ℕ) ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by
         have hnn : (0 : ℝ) ≤ ‖expChar (lam j₀) t - Complex.exp ((θ j₀ : ℝ) * Complex.I)‖ :=
           norm_nonneg _
         nlinarith [hj₀]
       have hexpeq : expChar (lam j₀) t = Complex.exp (((lam j₀ * t : ℝ) : ℝ) * Complex.I) := rfl
       rw [hexpeq, hsq] at hge
-      have : Real.cos (lam j₀ * t - θ j₀) ≤ 1 - ε ^ 2 / 2 := by linarith
-      have hle : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ 1 - ε ^ 2 / 4 := by linarith
+      have : Real.cos (lam j₀ * t - θ j₀) ≤ 1 - ε ^ (2 : ℕ) / 2 := by linarith
+      have hle : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ 1 - ε ^ (2 : ℕ) / 4 := by linarith
       exact hle.trans (le_max_right _ _)
     have hbad : cosKernel K (lam j₀ * t - θ j₀) ≤ q ^ K := cosKernel_le_pow hcos
     calc ∏ j : ι, cosKernel K (lam j * t - θ j)

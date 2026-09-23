@@ -226,10 +226,10 @@ def primeLogApertureBound (x : ℝ) : ℝ :=
 theorem tendsto_primeLogApertureBound_div_id :
     Tendsto (fun x : ℝ => primeLogApertureBound x / x) atTop atTop := by
   have hinner : Tendsto
-      (fun x : ℝ => -(1 / Real.log x ^ 2) + chebyshevPrimeLower x / Real.log x ^ 3)
+      (fun x : ℝ => -(1 / Real.log x ^ (2 : ℕ)) + chebyshevPrimeLower x / Real.log x ^ (3 : ℕ))
       atTop atTop := by
-    have hzero : Tendsto (fun x : ℝ => -(1 / Real.log x ^ 2)) atTop (nhds 0) := by
-      have hlog : Tendsto (fun x : ℝ => Real.log x ^ 2) atTop atTop :=
+    have hzero : Tendsto (fun x : ℝ => -(1 / Real.log x ^ (2 : ℕ))) atTop (nhds 0) := by
+      have hlog : Tendsto (fun x : ℝ => Real.log x ^ (2 : ℕ)) atTop atTop :=
         (tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop
       simpa using (hlog.inv_tendsto_atTop).neg
     exact hzero.add_atTop tendsto_chebyshevPrimeLower_div_log_cube_atTop

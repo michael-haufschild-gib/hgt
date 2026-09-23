@@ -135,8 +135,8 @@ theorem abs_log_shell_iff
 
 /-- Growing and decaying polar value paired with the moving rectangular prime tent. -/
 noncomputable def rectangularAdjacentPolarValue (L x : ℝ) : ℝ :=
-  4 * rectangularPolarAlpha L ^ 2 * Real.exp (x / 2) +
-    4 * rectangularPolarBeta L ^ 2 * Real.exp (-x / 2)
+  4 * rectangularPolarAlpha L ^ (2 : ℕ) * Real.exp (x / 2) +
+    4 * rectangularPolarBeta L ^ (2 : ℕ) * Real.exp (-x / 2)
 
 /-- Exact diagonal polar derivative. -/
 theorem hasDerivAt_rectangularAdjacentPolarValue_diagonal (L x : ℝ) :
@@ -183,11 +183,11 @@ theorem hasDerivAt_rectangularAdjacentPolarValue_diagonal (L x : ℝ) :
     ring
   · simp only [Pi.pow_apply, add_zero]
     ring_nf
-    rw [show Real.exp (L * (-1 / 2)) ^ 2 = Real.exp (-L) by
+    rw [show Real.exp (L * (-1 / 2)) ^ (2 : ℕ) = Real.exp (-L) by
         rw [pow_two, ← Real.exp_add]
         congr 1
         ring,
-      show Real.exp (L * (1 / 2)) ^ 2 = Real.exp L by
+      show Real.exp (L * (1 / 2)) ^ (2 : ℕ) = Real.exp L by
         rw [pow_two, ← Real.exp_add]
         congr 1
         ring]

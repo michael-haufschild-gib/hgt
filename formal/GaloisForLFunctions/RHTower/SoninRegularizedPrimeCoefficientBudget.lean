@@ -19,7 +19,7 @@ theorem norm_soninLogPrimePowerCoefficient_le_geometric (p : Nat.Primes) (k : �
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast p.prop.two_le
   let r : ℝ := (Real.sqrt (p : ℝ))⁻¹
   have hr0 : 0 ≤ r := by positivity
-  have hr2 : r ^ 2 = (p : ℝ)⁻¹ := by
+  have hr2 : r ^ (2 : ℕ) = (p : ℝ)⁻¹ := by
     dsimp [r]
     rw [inv_pow, Real.sq_sqrt hp.le]
   have hi : (p : ℝ)⁻¹ ≤ (1 / 2 : ℝ) := by
@@ -38,8 +38,8 @@ theorem norm_soninLogPrimePowerCoefficient_le_geometric (p : Nat.Primes) (k : �
     _ = _ := by ring
 
 theorem norm_soninLogPrimePowerCoefficient_sq_le_geometric (p : Nat.Primes) (k : ℕ) :
-    ‖soninLogPrimePowerCoefficient (p, k)‖ ^ 2 ≤
-      ((p : ℝ)⁻¹) ^ 2 * (1 / 2 : ℝ) ^ k := by
+    ‖soninLogPrimePowerCoefficient (p, k)‖ ^ (2 : ℕ) ≤
+      ((p : ℝ)⁻¹) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ k := by
   have hp : (0 : ℝ) < p := by exact_mod_cast p.prop.pos
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast p.prop.two_le
   have hi : (p : ℝ)⁻¹ ≤ (1 / 2 : ℝ) := by
@@ -116,17 +116,17 @@ theorem sum_norm_soninLogPrimePowerCoefficient_box_le_log (M : ℕ) :
     _ ≤ _ := mul_le_mul_of_nonneg_left (hp.trans hh) (by norm_num)
 
 theorem sonin_integer_inverseSquare_tail_le (M : ℕ) (hM : 0 < M) :
-    (∑' n : ℕ, if M < n then ((n : ℝ) ^ 2)⁻¹ else 0) ≤ (M : ℝ)⁻¹ := by
+    (∑' n : ℕ, if M < n then ((n : ℝ) ^ (2 : ℕ))⁻¹ else 0) ≤ (M : ℝ)⁻¹ := by
   apply Real.tsum_le_of_sum_le
   · intro n
-    change 0 ≤ if M < n then ((n : ℝ) ^ 2)⁻¹ else 0
+    change 0 ≤ if M < n then ((n : ℝ) ^ (2 : ℕ))⁻¹ else 0
     split_ifs <;> positivity
   · intro s
     let N := max M (s.sup id)
     have hMN : M ≤ N := le_max_left _ _
     calc
-      _ = ∑ n ∈ s.filter (M < ·), ((n : ℝ) ^ 2)⁻¹ := (Finset.sum_filter _ _).symm
-      _ ≤ ∑ n ∈ Finset.Ioc M N, ((n : ℝ) ^ 2)⁻¹ := by
+      _ = ∑ n ∈ s.filter (M < ·), ((n : ℝ) ^ (2 : ℕ))⁻¹ := (Finset.sum_filter _ _).symm
+      _ ≤ ∑ n ∈ Finset.Ioc M N, ((n : ℝ) ^ (2 : ℕ))⁻¹ := by
         apply Finset.sum_le_sum_of_subset_of_nonneg
         · intro n hn
           obtain ⟨hs, hm⟩ := Finset.mem_filter.mp hn
@@ -158,17 +158,17 @@ theorem sonin_geometricHalf_tail (M : ℕ) :
   rw [hasSum_geometric_two.tsum_eq]
 
 theorem summable_sonin_prime_inverseSquare :
-    Summable (fun p : Nat.Primes => ((p : ℝ) ^ 2)⁻¹) :=
+    Summable (fun p : Nat.Primes => ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
   (Real.summable_nat_pow_inv.mpr (by omega : 1 < 2)).comp_injective Subtype.val_injective
 
 set_option maxHeartbeats 1200000 in
 theorem sonin_prime_inverseSquare_tail_le (M : ℕ) (hM : 0 < M) :
-    (∑' p : Nat.Primes, if M < (p : ℕ) then ((p : ℝ) ^ 2)⁻¹ else 0) ≤
+    (∑' p : Nat.Primes, if M < (p : ℕ) then ((p : ℝ) ^ (2 : ℕ))⁻¹ else 0) ≤
       (M : ℝ)⁻¹ := by
-  have hn : Summable (fun n : ℕ => if M < n then ((n : ℝ) ^ 2)⁻¹ else 0) := by
+  have hn : Summable (fun n : ℕ => if M < n then ((n : ℝ) ^ (2 : ℕ))⁻¹ else 0) := by
     apply ((Real.summable_nat_pow_inv.mpr (by omega : 1 < 2)).indicator {n | M < n}).congr
     intro n
-    exact Set.indicator_apply {n : ℕ | M < n} (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) n
+    exact Set.indicator_apply {n : ℕ | M < n} (fun n : ℕ => ((n : ℝ) ^ (2 : ℕ))⁻¹) n
   have hp := hn.comp_injective (show Function.Injective (fun p : Nat.Primes => (p : ℕ))
     from Subtype.val_injective)
   exact (hp.tsum_le_tsum_of_inj (fun p : Nat.Primes => (p : ℕ))
@@ -176,7 +176,7 @@ theorem sonin_prime_inverseSquare_tail_le (M : ℕ) (hM : 0 < M) :
     (fun _ => le_rfl) hn).trans (sonin_integer_inverseSquare_tail_le M hM)
 
 theorem sonin_prime_inverseSquare_mass_le_one :
-    (∑' p : Nat.Primes, ((p : ℝ) ^ 2)⁻¹) ≤ 1 := by
+    (∑' p : Nat.Primes, ((p : ℝ) ^ (2 : ℕ))⁻¹) ≤ 1 := by
   have h := sonin_prime_inverseSquare_tail_le 1 (by omega)
   simpa only [show ∀ p : Nat.Primes, 1 < (p : ℕ) from fun p => p.prop.one_lt,
     ite_true, Nat.cast_one, inv_one] using h
@@ -185,9 +185,9 @@ set_option maxHeartbeats 800000 in
 theorem sum_sq_soninLogPrimePowerCoefficient_boxTail_le
     (M : ℕ) (hM : 0 < M) :
     (∑' pk : Nat.Primes × ℕ, if pk ∈ soninPrimeDepthBox M then 0 else
-      ‖soninLogPrimePowerCoefficient pk‖ ^ 2) ≤ 4 / (M : ℝ) := by
+      ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)) ≤ 4 / (M : ℝ) := by
   classical
-  let P : Nat.Primes → ℝ := fun p => ((p : ℝ) ^ 2)⁻¹
+  let P : Nat.Primes → ℝ := fun p => ((p : ℝ) ^ (2 : ℕ))⁻¹
   let Q : ℕ → ℝ := fun k => (1 / 2 : ℝ) ^ k
   let A : Nat.Primes × ℕ → ℝ := fun pk =>
     (if M < (pk.1 : ℕ) then P pk.1 else 0) * Q pk.2
@@ -213,8 +213,8 @@ theorem sum_sq_soninLogPrimePowerCoefficient_boxTail_le
       (fun k => by change 0 ≤ if M ≤ k then Q k else 0; split_ifs <;> positivity)
   have hpoint (pk : Nat.Primes × ℕ) :
       (if pk ∈ soninPrimeDepthBox M then 0 else
-        ‖soninLogPrimePowerCoefficient pk‖ ^ 2) ≤ A pk + B pk := by
-    have hcoef : ‖soninLogPrimePowerCoefficient pk‖ ^ 2 ≤ P pk.1 * Q pk.2 := by
+        ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)) ≤ A pk + B pk := by
+    have hcoef : ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) ≤ P pk.1 * Q pk.2 := by
       simpa [P, Q, inv_pow] using norm_soninLogPrimePowerCoefficient_sq_le_geometric pk.1 pk.2
     by_cases hp : (pk.1 : ℕ) ≤ M <;> by_cases hk : pk.2 < M
     · simp [mem_soninPrimeDepthBox, hp, hk, A, B, not_lt.mpr hp, not_le.mpr hk]
@@ -227,7 +227,7 @@ theorem sum_sq_soninLogPrimePowerCoefficient_boxTail_le
         Nat.lt_of_not_ge hp, Nat.le_of_not_gt hk, ite_true]
       linarith
   have htail : Summable (fun pk : Nat.Primes × ℕ =>
-      if pk ∈ soninPrimeDepthBox M then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ 2) :=
+      if pk ∈ soninPrimeDepthBox M then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)) :=
     (hA.add hB).of_nonneg_of_le (fun pk => by split_ifs <;> positivity) hpoint
   have hsumA : (∑' pk, A pk) ≤ 2 / (M : ℝ) := by
     rw [hA.tsum_prod]

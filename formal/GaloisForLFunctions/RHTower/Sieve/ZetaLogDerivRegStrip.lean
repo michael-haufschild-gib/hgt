@@ -18,8 +18,8 @@ open Complex RHTower
 
 /-- **`ζ` does not vanish on the strip.**  Immediate from the quartic lower bound. -/
 theorem riemannZeta_ne_zero_strip {σ t : ℝ} (ht : 9 ≤ |t|)
-    (hσl : 1 - zetaLowerA / Real.log |t| ^ 9 ≤ σ)
-    (hσu : σ ≤ 1 + zetaLowerA / Real.log |t| ^ 9) :
+    (hσl : 1 - zetaLowerA / Real.log |t| ^ (9 : ℕ) ≤ σ)
+    (hσu : σ ≤ 1 + zetaLowerA / Real.log |t| ^ (9 : ℕ)) :
     riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   have hexp2 := exp_two_lt_eight
@@ -30,19 +30,19 @@ theorem riemannZeta_ne_zero_strip {σ t : ℝ} (ht : 9 ≤ |t|)
   have hL0 : (0 : ℝ) < Real.log |t| := by linarith
   have hA0 : (0 : ℝ) < zetaLowerA := zetaLowerA_pos
   have hq := pow_four_norm_riemannZeta_ge_strip ht hσl hσu
-  have hq0 : (0 : ℝ) < zetaLowerA ^ 3 / (12096 * Real.log |t| ^ 28) := by positivity
+  have hq0 : (0 : ℝ) < zetaLowerA ^ (3 : ℕ) / (12096 * Real.log |t| ^ (28 : ℕ)) := by positivity
   intro h
   rw [h] at hq
   simp only [norm_zero] at hq
-  rw [show ((0 : ℝ)) ^ 4 = 0 by norm_num] at hq
+  rw [show ((0 : ℝ)) ^ (4 : ℕ) = 0 by norm_num] at hq
   linarith
 
 /-- **The regular part on the strip.** -/
 theorem norm_zetaLogDerivReg_strip_le {σ t : ℝ} (ht : 9 ≤ |t|)
-    (hσl : 1 - zetaLowerA / Real.log |t| ^ 9 ≤ σ)
-    (hσu : σ ≤ 1 + zetaLowerA / Real.log |t| ^ 9) :
+    (hσl : 1 - zetaLowerA / Real.log |t| ^ (9 : ℕ) ≤ σ)
+    (hσu : σ ≤ 1 + zetaLowerA / Real.log |t| ^ (9 : ℕ)) :
     ‖zetaLogDerivReg ((σ : ℂ) + (t : ℂ) * Complex.I)‖
-      ≤ 2240 / zetaLowerA * Real.log |t| ^ 9 + 1 / 9 := by
+      ≤ 2240 / zetaLowerA * Real.log |t| ^ (9 : ℕ) + 1 / 9 := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   have htne : t ≠ 0 := by
     intro h
@@ -59,7 +59,7 @@ theorem norm_zetaLogDerivReg_strip_le {σ t : ℝ} (ht : 9 ≤ |t|)
   have hlog := norm_deriv_div_riemannZeta_le ht hσl hσu
   have hprod : ‖deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖
       * ‖(riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I))⁻¹‖
-      ≤ 2240 / zetaLowerA * Real.log |t| ^ 9 := by
+      ≤ 2240 / zetaLowerA * Real.log |t| ^ (9 : ℕ) := by
     rw [← norm_mul, ← div_eq_mul_inv]
     exact hlog
   have hpole : ‖(((σ : ℂ) + (t : ℂ) * Complex.I) - 1)⁻¹‖ ≤ 1 / 9 := by

@@ -22,7 +22,7 @@ noncomputable section
 /-- CCM equation (51), as an actual rational number. -/
 def ccmFiniteSemilocalSigma (ell m : ℕ) : ℚ :=
   (Nat.centralBinom ell : ℚ) * (Nat.centralBinom m : ℚ) *
-    ccmFiniteSemilocalHarmonic ell m ^ 2
+    ccmFiniteSemilocalHarmonic ell m ^ (2 : ℕ)
 
 /-- The radicand occurring in CCM equation (53). -/
 def ccmLambertRadicand (ell i j : ℕ) : ℚ :=
@@ -38,7 +38,7 @@ theorem ccmFiniteSemilocalSigma_integral (ell m : ℕ) :
 integer.  This is the coefficient-wise integral gate needed before the
 cyclotomic localization in CCM Theorem 5.6(i). -/
 theorem ccmLambertRadical_isIntegral (ell i j : ℕ) (z : ℂ)
-    (hz : z ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hz : z ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     IsIntegral ℤ z := by
   obtain ⟨a, ha⟩ := ccmFiniteSemilocalSigma_integral ell i
   obtain ⟨b, hb⟩ := ccmFiniteSemilocalSigma_integral ell j

@@ -204,8 +204,8 @@ theorem pollardWeak_of_inter_coset (hK : IsSubgroupFinset K) {A B : Finset G} {b
       = t * (∑ u ∈ (A.image (fun a : G => a • K)).erase u₀, (A ∩ u).card)
         + (t * (A ∩ u₀).card + t * B.card + 1) := by ring
     _ ≤ (∑ u ∈ (A.image (fun a : G => a • K)).erase u₀, repSum (A ∩ u) B t)
-        + (repSum (A ∩ u₀) B t + 2 * t ^ 2) := Nat.add_le_add h1 h
+        + (repSum (A ∩ u₀) B t + 2 * t ^ (2 : ℕ)) := Nat.add_le_add h1 h
     _ = (∑ u ∈ (A.image (fun a : G => a • K)).erase u₀, repSum (A ∩ u) B t)
-        + repSum (A ∩ u₀) B t + 2 * t ^ 2 := by ring
+        + repSum (A ∩ u₀) B t + 2 * t ^ (2 : ℕ) := by ring
 
 end GaloisForLFunctions.HTGeometry.AddComb

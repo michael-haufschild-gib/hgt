@@ -142,11 +142,11 @@ open GaloisForLFunctions.RHTower
 /-- **Suzuki eq. (1.8).**  `(Dψ)(t) = i ψ'(t)`. -/
 def suzukiD (ψ : ℝ → ℂ) (t : ℝ) : ℂ := I * deriv ψ t
 
-theorem contDiff_conj_comp {ψ : ℝ → ℂ} (hψ : ContDiff ℝ 1 ψ) :
+theorem contDiff_conj_comp_suzukiWeilDifferentialPairing {ψ : ℝ → ℂ} (hψ : ContDiff ℝ 1 ψ) :
     ContDiff ℝ 1 (fun t : ℝ => (starRingEnd ℂ) (ψ t)) :=
   Complex.conjCLE.toContinuousLinearMap.contDiff.comp hψ
 
-theorem deriv_conj_comp {ψ : ℝ → ℂ} (hψ : ContDiff ℝ 1 ψ) (t : ℝ) :
+theorem deriv_conj_comp_suzukiWeilDifferentialPairing {ψ : ℝ → ℂ} (hψ : ContDiff ℝ 1 ψ) (t : ℝ) :
     deriv (fun s : ℝ => (starRingEnd ℂ) (ψ s)) t = (starRingEnd ℂ) (deriv ψ t) :=
   ((hψ.differentiable (by norm_num) t).hasDerivAt.star).deriv
 
@@ -157,7 +157,7 @@ theorem integral_expSlope_mul_conj_D {ψ : ℝ → ℂ} {T : ℝ} (hT : 0 ≤ T)
     (∫ t : ℝ, (Complex.exp (-(I * w * (t : ℂ))) - 1) * (starRingEnd ℂ) (suzukiD ψ t))
       = w * ∫ t : ℝ, Complex.exp (-(I * w * (t : ℂ))) * (starRingEnd ℂ) (ψ t) := by
   set η : ℝ → ℂ := fun t => (starRingEnd ℂ) (ψ t) with hη
-  have hηC : ContDiff ℝ 1 η := contDiff_conj_comp hψ
+  have hηC : ContDiff ℝ 1 η := contDiff_conj_comp_suzukiWeilDifferentialPairing hψ
   have hηsupp : ∀ t : ℝ, T < |t| → η t = 0 := by
     intro t ht
     simp only [hη]
@@ -165,7 +165,7 @@ theorem integral_expSlope_mul_conj_D {ψ : ℝ → ℂ} {T : ℝ} (hT : 0 ≤ T)
   have hpt : ∀ t : ℝ, (starRingEnd ℂ) (suzukiD ψ t) = -I * deriv η t := by
     intro t
     simp only [suzukiD, map_mul, Complex.conj_I, hη]
-    rw [deriv_conj_comp hψ t]
+    rw [deriv_conj_comp_suzukiWeilDifferentialPairing hψ t]
   have hrw : (∫ t : ℝ, (Complex.exp (-(I * w * (t : ℂ))) - 1) * (starRingEnd ℂ) (suzukiD ψ t))
       = -I * ∫ t : ℝ, (Complex.exp (-(I * w * (t : ℂ))) - 1) * deriv η t := by
     have hall : ∀ t : ℝ,

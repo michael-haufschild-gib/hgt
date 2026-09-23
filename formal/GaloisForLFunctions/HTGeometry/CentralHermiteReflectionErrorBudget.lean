@@ -19,7 +19,7 @@ def scaleEightReflectionErrorMajorant (k : Fin 7) : ℝ :=
   ∑ j ∈ Finset.range (k.val+1), ((2*k.val).choose (2*j) : ℝ)*
     ((3/2 : ℝ)*centralGaussianMomentCeiling j)*
     (2*(36 : ℝ)^(k.val-j)/(800000000 : ℝ)+
-      (144 : ℝ)^(k.val-j)/(800000000 : ℝ)^2)
+      (144 : ℝ)^(k.val-j)/(800000000 : ℝ)^(2 : ℕ))
 
 /-- Each finite convolution fits the entry ceiling exactly. -/
 theorem scaleEightReflectionErrorMajorant_le (k : Fin 7) :
@@ -37,7 +37,7 @@ theorem centralError_majorant_le (y : Fin 4 → ℝ) :
     (∑ i : Fin 4, ∑ j : Fin 4,
       centralErrorCeiling (i.val+j.val)*centralCoefficientMajorant y i*
         centralCoefficientMajorant y j) ≤
-      (1/8 : ℝ)*(y 0)^2+(1/8 : ℝ)*(y 1)^2+2*(y 2)^2+70*(y 3)^2 := by
+      (1/8 : ℝ)*(y 0)^(2 : ℕ)+(1/8 : ℝ)*(y 1)^(2 : ℕ)+2*(y 2)^(2 : ℕ)+70*(y 3)^(2 : ℕ) := by
   have h01 := sq_nonneg (|y 0|-|y 1|)
   have h02 := sq_nonneg (|y 0|-|y 2|)
   have h03 := sq_nonneg (|y 0|-|y 3|)
@@ -48,17 +48,17 @@ theorem centralError_majorant_le (y : Fin 4 → ℝ) :
   have h1 := sq_nonneg (y 1)
   have h2 := sq_nonneg (y 2)
   have h3 := sq_nonneg (y 3)
-  have ha0 : |y 0|^2 = (y 0)^2 := sq_abs _
-  have ha1 : |y 1|^2 = (y 1)^2 := sq_abs _
-  have ha2 : |y 2|^2 = (y 2)^2 := sq_abs _
-  have ha3 : |y 3|^2 = (y 3)^2 := sq_abs _
+  have ha0 : |y 0|^(2 : ℕ) = (y 0)^(2 : ℕ) := sq_abs _
+  have ha1 : |y 1|^(2 : ℕ) = (y 1)^(2 : ℕ) := sq_abs _
+  have ha2 : |y 2|^(2 : ℕ) = (y 2)^(2 : ℕ) := sq_abs _
+  have ha3 : |y 3|^(2 : ℕ) = (y 3)^(2 : ℕ) := sq_abs _
   norm_num [Fin.sum_univ_succ,centralErrorCeiling,centralCoefficientMajorant]
   nlinarith only [h01,h02,h03,h12,h13,h23,h0,h1,h2,h3,ha0,ha1,ha2,ha3]
 
 /-- Inverse central coordinates before division by their physical powers of eight q. -/
 def centralUnscaledCoefficients (v : ℝ) (y : Fin 4 → ℝ) : Fin 4 → ℝ :=
   ![y 0-y 1+3*y 2-15*y 3,
-    y 1+(v-6)*y 2+(4*v^2-15*v+45)*y 3,
+    y 1+(v-6)*y 2+(4*v^(2 : ℕ)-15*v+45)*y 3,
     y 2+(5*v-15)*y 3, y 3]
 
 /-- The physical central-coordinate map has the coefficient majorant used above. -/
@@ -67,7 +67,7 @@ theorem centralUnscaledCoefficients_abs_le {v : ℝ} (hv : 0 ≤ v) (hvU : v ≤
     |centralUnscaledCoefficients v y i| ≤ centralCoefficientMajorant y i := by
   have hv6 : |v-6| ≤ 6 := abs_le.mpr ⟨by linarith,by linarith⟩
   have hv15 : |5*v-15| ≤ 15 := abs_le.mpr ⟨by linarith,by linarith⟩
-  have hv45 : |4*v^2-15*v+45| ≤ 45 := by
+  have hv45 : |4*v^(2 : ℕ)-15*v+45| ≤ 45 := by
     apply abs_le.mpr
     constructor <;> nlinarith [sq_nonneg v,mul_nonneg hv (show 0 ≤ 1/8-v by linarith)]
   fin_cases i
@@ -77,10 +77,10 @@ theorem centralUnscaledCoefficients_abs_le {v : ℝ} (hv : 0 ≤ v) (hvU : v ≤
       _ ≤ (|y 0-y 1|+|3*y 2|)+|15*y 3| := by gcongr; exact abs_add_le _ _
       _ ≤ (|y 0|+|y 1|)+|3*y 2|+|15*y 3| := by gcongr; exact abs_sub _ _
       _ = _ := by norm_num [abs_mul]
-  · change |y 1+(v-6)*y 2+(4*v^2-15*v+45)*y 3| ≤ |y 1|+6*|y 2|+45*|y 3|
+  · change |y 1+(v-6)*y 2+(4*v^(2 : ℕ)-15*v+45)*y 3| ≤ |y 1|+6*|y 2|+45*|y 3|
     calc
-      _ ≤ |y 1+(v-6)*y 2|+|(4*v^2-15*v+45)*y 3| := abs_add_le _ _
-      _ ≤ |y 1|+|(v-6)*y 2|+|(4*v^2-15*v+45)*y 3| := by gcongr; exact abs_add_le _ _
+      _ ≤ |y 1+(v-6)*y 2|+|(4*v^(2 : ℕ)-15*v+45)*y 3| := abs_add_le _ _
+      _ ≤ |y 1|+|(v-6)*y 2|+|(4*v^(2 : ℕ)-15*v+45)*y 3| := by gcongr; exact abs_add_le _ _
       _ ≤ _ := by simp only [abs_mul]; gcongr
   · change |y 2+(5*v-15)*y 3| ≤ |y 2|+15*|y 3|
     exact (abs_add_le _ _).trans (by rw [abs_mul]; gcongr)
@@ -92,7 +92,7 @@ theorem centralError_quadratic_le {v : ℝ} (hv : 0 ≤ v) (hvU : v ≤ 1/8)
     (∑ i : Fin 4, ∑ j : Fin 4,
       centralErrorCeiling (i.val+j.val)*|centralUnscaledCoefficients v y i| *
         |centralUnscaledCoefficients v y j|) ≤
-      (1/8 : ℝ)*(y 0)^2+(1/8 : ℝ)*(y 1)^2+2*(y 2)^2+70*(y 3)^2 := by
+      (1/8 : ℝ)*(y 0)^(2 : ℕ)+(1/8 : ℝ)*(y 1)^(2 : ℕ)+2*(y 2)^(2 : ℕ)+70*(y 3)^(2 : ℕ) := by
   apply le_trans ?_ (centralError_majorant_le y)
   apply Finset.sum_le_sum
   intro i hi

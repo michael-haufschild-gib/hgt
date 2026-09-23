@@ -110,7 +110,7 @@ def fzzScreeningReplicaKernel (u δ : ℝ) (z : ℂ) : ℝ :=
 
 theorem fzzScreeningReplicaKernel_integrable_zero_iff (u δ : ℝ) :
     IntegrableOn (fzzScreeningReplicaKernel u δ) (ball 0 (1/2)) ↔
-      (fzzTwoMarkedPhysicalLevel u-2)^2/(2*fzzTwoMarkedPhysicalLevel u) < δ := by
+      (fzzTwoMarkedPhysicalLevel u-2)^(2 : ℕ)/(2*fzzTwoMarkedPhysicalLevel u) < δ := by
   unfold fzzScreeningReplicaKernel
   rw [fzzScreeningPlaneKernel_integrable_zero_iff]
   have hk := fzzTwoMarkedPhysicalLevel_gt_two u

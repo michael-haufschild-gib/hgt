@@ -62,7 +62,7 @@ theorem hsNormSq_sub_hsTruncation
     {T : H →L[ℂ] H} (hT : IsHilbertSchmidt T)
     (s : Finset (exists_hilbertBasis ℂ H).choose) :
     hsNormSq (T - hsTruncation (hsBasis ℂ H) T s) =
-      ∑' i : {i // i ∉ s}, ‖T (hsBasis ℂ H i)‖ ^ 2 := by
+      ∑' i : {i // i ∉ s}, ‖T (hsBasis ℂ H i)‖ ^ (2 : ℕ) := by
   classical
   let b := hsBasis ℂ H
   have htrunc : IsHilbertSchmidt (hsTruncation b T s) :=
@@ -71,12 +71,12 @@ theorem hsNormSq_sub_hsTruncation
     hT.sub htrunc
   rw [hsNormSq_eq hsub b]
   have htail :
-      (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) =
+      (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) =
         ∑' i, ({i | i ∉ s} : Set _).indicator
-          (fun j ↦ ‖T (b j)‖ ^ 2) i :=
-    tsum_subtype ({i | i ∉ s} : Set _) (fun j ↦ ‖T (b j)‖ ^ 2)
-  change (∑' i, ‖(T - hsTruncation b T s) (b i)‖ ^ 2) =
-    ∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2
+          (fun j ↦ ‖T (b j)‖ ^ (2 : ℕ)) i :=
+    tsum_subtype ({i | i ∉ s} : Set _) (fun j ↦ ‖T (b j)‖ ^ (2 : ℕ))
+  change (∑' i, ‖(T - hsTruncation b T s) (b i)‖ ^ (2 : ℕ)) =
+    ∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)
   rw [htail]
   apply tsum_congr
   intro i
@@ -100,7 +100,7 @@ theorem IsHilbertSchmidt.exists_hasRankLE_hsNorm_sub_lt
       RHTower.HasRankLE (hsTruncation (hsBasis ℂ H) T s) s.card ∧
       hsNorm (T - hsTruncation (hsBasis ℂ H) T s) < ε := by
   obtain ⟨s, hs⟩ := hT.exists_tail_lt (hsBasis ℂ H)
-    (show 0 < ε ^ 2 by positivity)
+    (show 0 < ε ^ (2 : ℕ) by positivity)
   refine ⟨s, RHTower.hasRankLE_hsTruncation (hsBasis ℂ H) T s, ?_⟩
   rw [hsNorm, hsNormSq_sub_hsTruncation hT s]
   exact (Real.sqrt_lt' hε).2 hs
@@ -116,18 +116,18 @@ theorem IsHilbertSchmidt.hsNorm_comp_left_le
   let b := hsBasis ℂ E
   have hcomp : IsHilbertSchmidt (A ∘L T) := hT.comp_left A
   have hpoint : ∀ i,
-      ‖(A ∘L T) (b i)‖ ^ 2 ≤ ‖A‖ ^ 2 * ‖T (b i)‖ ^ 2 := by
+      ‖(A ∘L T) (b i)‖ ^ (2 : ℕ) ≤ ‖A‖ ^ (2 : ℕ) * ‖T (b i)‖ ^ (2 : ℕ) := by
     intro i
     rw [comp_apply]
     have h := A.le_opNorm (T (b i))
     nlinarith [norm_nonneg (A (T (b i))), norm_nonneg A,
       norm_nonneg (T (b i))]
-  have hsum : hsNormSq (A ∘L T) ≤ ‖A‖ ^ 2 * hsNormSq T := by
+  have hsum : hsNormSq (A ∘L T) ≤ ‖A‖ ^ (2 : ℕ) * hsNormSq T := by
     rw [hsNormSq_eq hcomp b, hsNormSq_eq hT b, ← tsum_mul_left]
-    exact Summable.tsum_le_tsum hpoint hcomp (hT.mul_left (‖A‖ ^ 2))
+    exact Summable.tsum_le_tsum hpoint hcomp (hT.mul_left (‖A‖ ^ (2 : ℕ)))
   calc
     hsNorm (A ∘L T) = Real.sqrt (hsNormSq (A ∘L T)) := rfl
-    _ ≤ Real.sqrt (‖A‖ ^ 2 * hsNormSq T) := Real.sqrt_le_sqrt hsum
+    _ ≤ Real.sqrt (‖A‖ ^ (2 : ℕ) * hsNormSq T) := Real.sqrt_le_sqrt hsum
     _ = ‖A‖ * hsNorm T := by
       rw [Real.sqrt_mul (sq_nonneg ‖A‖), Real.sqrt_sq (norm_nonneg A)]
       rfl
@@ -168,10 +168,10 @@ theorem isHilbertSchmidt_and_hsNorm_le_of_tendsto
     IsHilbertSchmidt S ∧ hsNorm S ≤ B := by
   let b := hsBasis ℂ H
   have hfinite (s : Finset (exists_hilbertBasis ℂ H).choose) :
-      ∑ i ∈ s, ‖S (b i)‖ ^ 2 ≤ B ^ 2 := by
+      ∑ i ∈ s, ‖S (b i)‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by
     have hsumlim : Filter.Tendsto
-        (fun n ↦ ∑ i ∈ s, ‖T n (b i)‖ ^ 2) Filter.atTop
-        (nhds (∑ i ∈ s, ‖S (b i)‖ ^ 2)) := by
+        (fun n ↦ ∑ i ∈ s, ‖T n (b i)‖ ^ (2 : ℕ)) Filter.atTop
+        (nhds (∑ i ∈ s, ‖S (b i)‖ ^ (2 : ℕ))) := by
       apply tendsto_finset_sum
       intro i _
       have heval : Filter.Tendsto (fun n ↦ T n (b i)) Filter.atTop
@@ -183,11 +183,11 @@ theorem isHilbertSchmidt_and_hsNorm_le_of_tendsto
     have hpartial := (hT n).summable b |>.sum_le_tsum s
       (fun i _ ↦ sq_nonneg _)
     rw [← hsNormSq_eq (hT n) b] at hpartial
-    have hsq : hsNormSq (T n) = hsNorm (T n) ^ 2 := by
+    have hsq : hsNormSq (T n) = hsNorm (T n) ^ (2 : ℕ) := by
       rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg (T n))]
     rw [hsq] at hpartial
     exact hpartial.trans (by nlinarith [hsNorm_nonneg (T n), hbound n])
-  have hsum : Summable fun i ↦ ‖S (b i)‖ ^ 2 :=
+  have hsum : Summable fun i ↦ ‖S (b i)‖ ^ (2 : ℕ) :=
     summable_of_sum_le (fun i ↦ sq_nonneg _) hfinite
   have hS : IsHilbertSchmidt S := isHilbertSchmidt_of_summable b hsum
   refine ⟨hS, ?_⟩

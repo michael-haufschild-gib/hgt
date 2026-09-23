@@ -44,8 +44,8 @@ theorem norm_xiWardHalfPlaneCayleyFactor_lt_one
   rw [xiWardHalfPlaneCayleyFactor, norm_div,
     div_lt_one (norm_pos_iff.mpr hden)]
   have hsquare :
-      ‖w + lam - (alpha : ℂ)‖ ^ 2 <
-        ‖w + lam + (alpha : ℂ)‖ ^ 2 := by
+      ‖w + lam - (alpha : ℂ)‖ ^ (2 : ℕ) <
+        ‖w + lam + (alpha : ℂ)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm,
       Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re,

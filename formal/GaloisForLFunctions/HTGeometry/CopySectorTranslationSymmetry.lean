@@ -89,13 +89,13 @@ theorem isFeatureSymmetry_of_measureInvariant {pi : Measure X} {phi : iota → X
 /-- **`(8c)` over a probability measure.**  A constant kernel diagonal equals the number of
 centred modes. -/
 theorem featureKernel_diag_eq_card_of_const_measure {pi : Measure X} [IsProbabilityMeasure pi]
-    {phi : iota → X → ℝ} (hphi : ∀ j, ∫ x, phi j x ^ 2 ∂pi = 1)
-    (hint : ∀ j, Integrable (fun x => phi j x ^ 2) pi)
+    {phi : iota → X → ℝ} (hphi : ∀ j, ∫ x, phi j x ^ (2 : ℕ) ∂pi = 1)
+    (hint : ∀ j, Integrable (fun x => phi j x ^ (2 : ℕ)) pi)
     {c : ℝ} (hconst : ∀ x, featureKernel phi x x = c) :
     c = (Fintype.card iota : ℝ) := by
   classical
   have hkey : ∫ x, featureKernel phi x x ∂pi = (Fintype.card iota : ℝ) := by
-    have hrw : ∀ x : X, featureKernel phi x x = ∑ j, phi j x ^ 2 :=
+    have hrw : ∀ x : X, featureKernel phi x x = ∑ j, phi j x ^ (2 : ℕ) :=
       fun x => Finset.sum_congr rfl fun j _ => by ring
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hrw)]
     rw [MeasureTheory.integral_finsetSum _ (fun j _ => hint j)]
@@ -328,8 +328,8 @@ theorem integrable_augmented {pi : Measure X} [IsProbabilityMeasure pi]
   · exact hint i j
 
 /-- **The copy-sector dimension count.**  A centred orthonormal family inside the real
-matrix-coefficient sector of a representation with index type `n` has at most `2·card n ^ 2`
-members: the constant occupies one of the `2·card n ^ 2 + 1` available dimensions. -/
+matrix-coefficient sector of a representation with index type `n` has at most `2·card n ^ (2 : ℕ)`
+members: the constant occupies one of the `2·card n ^ (2 : ℕ) + 1` available dimensions. -/
 theorem card_le_of_centred_orthonormal_in_span {n : Type*} [Fintype n]
     {pi : Measure X} [IsProbabilityMeasure pi] {psi : kappa → X → ℝ}
     (hpsi : IsOrthonormalFamily pi psi) (hcent : ∀ j, ∫ x, psi j x ∂pi = 0)
@@ -337,7 +337,7 @@ theorem card_le_of_centred_orthonormal_in_span {n : Type*} [Fintype n]
     (hint1 : ∀ j, Integrable (psi j) pi)
     (rho : X → Matrix n n ℂ)
     (hmem : ∀ j, psi j ∈ Submodule.span ℝ (Set.range (coeffFamily rho))) :
-    Fintype.card kappa ≤ 2 * Fintype.card n ^ 2 := by
+    Fintype.card kappa ≤ 2 * Fintype.card n ^ (2 : ℕ) := by
   classical
   have hli : LinearIndependent ℝ (augmentedFamily psi) :=
     linearIndependent_of_orthonormalFamily (isOrthonormalFamily_augmented hpsi hcent)
@@ -355,11 +355,11 @@ theorem card_le_of_centred_orthonormal_in_span {n : Type*} [Fintype n]
   rw [finrank_span_eq_card hli] at hmono
   have hcount : Module.finrank ℝ (Submodule.span ℝ (Set.range (coeffFamily rho)))
       ≤ Fintype.card (Option (Bool × (n × n))) := finrank_range_le_card (coeffFamily rho)
-  have hcard : Fintype.card (Option (Bool × (n × n))) = 2 * Fintype.card n ^ 2 + 1 := by
+  have hcard : Fintype.card (Option (Bool × (n × n))) = 2 * Fintype.card n ^ (2 : ℕ) + 1 := by
     simp [Fintype.card_option, Fintype.card_prod]
     ring
   rw [hcard] at hcount
-  have : Fintype.card (Option kappa) ≤ 2 * Fintype.card n ^ 2 + 1 := le_trans hmono hcount
+  have : Fintype.card (Option kappa) ≤ 2 * Fintype.card n ^ (2 : ℕ) + 1 := le_trans hmono hcount
   rw [Fintype.card_option] at this
   omega
 
@@ -372,7 +372,7 @@ variable {kappa : Type*} [Fintype kappa] [DecidableEq kappa]
 
 /-- **`(8e)`.**  On a group carrying a left-invariant probability measure, a centred orthonormal
 family spanning a translation-invariant sector inside the real matrix coefficients of a
-representation has resolvent bound `2·card n ^ 2 / (1 - a)`.  For the copy representation
+representation has resolvent bound `2·card n ^ (2 : ℕ) / (1 - a)`.  For the copy representation
 `U ↦ U^{⊗k} ⊗ \bar U^{⊗k}` of a `D`-level register this is `2D^{4k}/(1-a)`. -/
 theorem abs_spectralResolventKernel_le_copySector
     {G : Type*} [Group G] [MeasurableSpace G] {pi : Measure G} [IsProbabilityMeasure pi]
@@ -387,7 +387,7 @@ theorem abs_spectralResolventKernel_le_copySector
     (hmem : ∀ j, psi j ∈ Submodule.span ℝ (Set.range (coeffFamily rho)))
     {lam : kappa → ℝ} (hlam : ∀ j, |lam j| ≤ 1) {a : ℝ} (ha : 0 ≤ a) (ha1 : a < 1)
     (x y : G) :
-    |spectralResolventKernel psi lam a x y| ≤ (2 * (Fintype.card n : ℝ) ^ 2) / (1 - a) := by
+    |spectralResolventKernel psi lam a x y| ≤ (2 * (Fintype.card n : ℝ) ^ (2 : ℕ)) / (1 - a) := by
   classical
   have hsym : ∀ u v : G, ∃ (g : G → G) (O : Matrix kappa kappa ℝ),
       IsIntegralInvariant pi g ∧ (∀ j z, psi j (g z) = ∑ i, O j i * psi i z) ∧ g u = v := by
@@ -404,9 +404,9 @@ theorem abs_spectralResolventKernel_le_copySector
   have hbound := abs_spectralResolventKernel_le (phi := psi) (lam := lam) ha ha1 hlam
     (fun z => le_of_eq (hdiag z)) x y
   refine le_trans hbound ?_
-  have hcard : (Fintype.card kappa : ℝ) ≤ 2 * (Fintype.card n : ℝ) ^ 2 := by
+  have hcard : (Fintype.card kappa : ℝ) ≤ 2 * (Fintype.card n : ℝ) ^ (2 : ℕ) := by
     have h := card_le_of_centred_orthonormal_in_span hpsi hcent hint hint1 rho hmem
-    have : ((Fintype.card kappa : ℕ) : ℝ) ≤ ((2 * Fintype.card n ^ 2 : ℕ) : ℝ) := by
+    have : ((Fintype.card kappa : ℕ) : ℝ) ≤ ((2 * Fintype.card n ^ (2 : ℕ) : ℕ) : ℝ) := by
       exact_mod_cast h
     push_cast at this
     exact this
@@ -431,7 +431,7 @@ theorem copyRep_unitaryGroup_mul (k : ℕ) (U V : Matrix.unitaryGroup (Fin D) �
 /-- **The copy-sector dimension.**  The `k`-fold copy representation of a `D`-level register has
 complex dimension `D^{2k}`, so its real matrix-coefficient sector has leverage at most `2D^{4k}`. -/
 theorem two_mul_card_copyIndex_sq (k D : ℕ) :
-    2 * (Fintype.card (copyIndex k D) : ℝ) ^ 2 = 2 * (D : ℝ) ^ (4 * k) := by
+    2 * (Fintype.card (copyIndex k D) : ℝ) ^ (2 : ℕ) = 2 * (D : ℝ) ^ (4 * k) := by
   rw [card_copyIndex]
   push_cast
   ring

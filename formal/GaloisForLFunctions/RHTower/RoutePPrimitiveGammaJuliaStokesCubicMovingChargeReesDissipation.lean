@@ -65,15 +65,15 @@ theorem routePPrimitiveGammaJuliaStokesCubicMovingLanding_rankTerminalBlock_bala
     (x₁ : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1)) :
     (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) +
-          (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ 2 =
+          (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ (2 : ℕ) =
         (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
           (∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x₁.1.1 a)) +
-          (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ 2 ∧
+          (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ (2 : ℕ) ∧
       0 < -globalRankCoefficient genus d ∧
       0 < ∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x₁.1.1 a) ∧
       ((∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) =
           ∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a) →
-        commonRankLinear d x₀.1 ^ 2 < commonRankLinear d x₁.1 ^ 2) := by
+        commonRankLinear d x₀.1 ^ (2 : ℕ) < commonRankLinear d x₁.1 ^ (2 : ℕ)) := by
   have hpositiveZero :
       globalReesPositiveForm d (fun _ _ => 0) x₀.1 =
         ∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a) := by
@@ -94,10 +94,10 @@ theorem routePPrimitiveGammaJuliaStokesCubicMovingLanding_rankTerminalBlock_bala
   rw [hpositiveOne] at hdecompOne
   have hbalance :
       (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) +
-            (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ 2 =
+            (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ (2 : ℕ) =
           (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
             (∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x₁.1.1 a)) +
-            (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ 2 := by
+            (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ (2 : ℕ) := by
     linarith [x₀.2, x₁.2]
   have hcoefficient : 0 < -globalRankCoefficient genus d :=
     neg_pos.mpr
@@ -118,7 +118,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding
       genus d (fun _ _ => 0))
     (x₁ : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1))
-    (hrank : commonRankLinear d x₀.1 ^ 2 = commonRankLinear d x₁.1 ^ 2) :
+    (hrank : commonRankLinear d x₀.1 ^ (2 : ℕ) = commonRankLinear d x₁.1 ^ (2 : ℕ)) :
     (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) =
         (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
           ∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x₁.1.1 a) ∧

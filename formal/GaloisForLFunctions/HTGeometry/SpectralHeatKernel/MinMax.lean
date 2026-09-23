@@ -27,10 +27,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 /-- **Parseval.**  The squared coefficients of a Hilbert basis sum to the squared norm. -/
 theorem tsum_norm_inner_sq (b : HilbertBasis ℕ ℂ E) (v : E) :
-    ∑' n, ‖(inner ℂ (b n) v : ℂ)‖ ^ 2 = ‖v‖ ^ 2 := by
+    ∑' n, ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by
   have hkey := HilbertBasis.tsum_inner_mul_inner b v v
   have hterm : ∀ n : ℕ, (inner ℂ v (b n) : ℂ) * (inner ℂ (b n) v : ℂ)
-      = ((‖(inner ℂ (b n) v : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro n
     have h1 : (inner ℂ v (b n) : ℂ) = (starRingEnd ℂ) (inner ℂ (b n) v : ℂ) :=
       (inner_conj_symm (𝕜 := ℂ) v (b n)).symm
@@ -43,7 +43,7 @@ theorem tsum_norm_inner_sq (b : HilbertBasis ℕ ℂ E) (v : E) :
 
 /-- The coefficient family of a Hilbert basis is square-summable. -/
 theorem summable_norm_inner_sq (b : HilbertBasis ℕ ℂ E) (v : E) :
-    Summable fun n => ‖(inner ℂ (b n) v : ℂ)‖ ^ 2 := by
+    Summable fun n => ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) := by
   by_cases hv : v = 0
   · subst hv
     simp
@@ -55,7 +55,7 @@ theorem summable_norm_inner_sq (b : HilbertBasis ℕ ℂ E) (v : E) :
 
 /-- The quadratic form attached to a spectral datum. -/
 noncomputable def spectralQuadratic (b : HilbertBasis ℕ ℂ E) (lam : ℕ → ℝ) (v : E) : ℝ :=
-  ∑' n, lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ 2
+  ∑' n, lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ)
 
 /-- **The min–max upper bound.**
 
@@ -64,26 +64,26 @@ A trial subspace of dimension exceeding `k` on which the spectral quadratic form
 theorem spectral_eigenvalue_le_of_trial
     (b : HilbertBasis ℕ ℂ E) {lam : ℕ → ℝ} (hmono : Monotone lam)
     {k : ℕ} {V : Submodule ℂ E} (hV : k < Module.finrank ℂ V) {M : ℝ}
-    (hsum : ∀ v ∈ V, Summable fun n => lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ 2)
-    (hQ : ∀ v ∈ V, spectralQuadratic b lam v ≤ M * ‖v‖ ^ 2) :
+    (hsum : ∀ v ∈ V, Summable fun n => lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ))
+    (hQ : ∀ v ∈ V, spectralQuadratic b lam v ≤ M * ‖v‖ ^ (2 : ℕ)) :
     lam k ≤ M := by
   obtain ⟨v, hvV, hv0, hvorth⟩ :=
     ContinuousLinearMap.exists_mem_ne_zero_orthogonal_of_finrank_lt V (fun m => b m) k hV
   have hpar := tsum_norm_inner_sq b v
-  have hsq : Summable fun n => ‖(inner ℂ (b n) v : ℂ)‖ ^ 2 := summable_norm_inner_sq b v
-  have hlow : ∀ n : ℕ, lam k * ‖(inner ℂ (b n) v : ℂ)‖ ^ 2
-      ≤ lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ 2 := by
+  have hsq : Summable fun n => ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) := summable_norm_inner_sq b v
+  have hlow : ∀ n : ℕ, lam k * ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ)
+      ≤ lam n * ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) := by
     intro n
     rcases lt_or_ge n k with hn | hn
     · have hzero : (inner ℂ (b n) v : ℂ) = 0 := hvorth n hn
       rw [hzero]
       simp
     · exact mul_le_mul_of_nonneg_right (hmono hn) (by positivity)
-  have hge : lam k * ‖v‖ ^ 2 ≤ spectralQuadratic b lam v := by
+  have hge : lam k * ‖v‖ ^ (2 : ℕ) ≤ spectralQuadratic b lam v := by
     rw [spectralQuadratic, ← hpar, ← tsum_mul_left]
     exact (hsq.mul_left (lam k)).tsum_le_tsum hlow (hsum v hvV)
   have hle := hQ v hvV
-  have hvpos : (0 : ℝ) < ‖v‖ ^ 2 := by
+  have hvpos : (0 : ℝ) < ‖v‖ ^ (2 : ℕ) := by
     have : (0 : ℝ) < ‖v‖ := norm_pos_iff.mpr hv0
     positivity
   nlinarith [hge, hle, hvpos]

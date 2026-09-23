@@ -21,12 +21,12 @@ theorem norm_inner_real_smul_right (r : ℝ) (u v : E) :
     ‖(inner ℂ u (r • v) : ℂ)‖ = |r| * ‖(inner ℂ u v : ℂ)‖ := by
   rw [← Complex.coe_smul, inner_smul_right, norm_mul, Complex.norm_real, Real.norm_eq_abs]
 
-theorem norm_inner_self_eq (u : E) : ‖(inner ℂ u u : ℂ)‖ = ‖u‖ ^ 2 := by
+theorem norm_inner_self_eq (u : E) : ‖(inner ℂ u u : ℂ)‖ = ‖u‖ ^ (2 : ℕ) := by
   rw [inner_self_eq_norm_sq_to_K, norm_pow]
   simp
 
 /-- The normalized squared overlap of a vector with a fixed direction. -/
-def groundOverlap (u v : E) : ℝ := ‖(inner ℂ u v : ℂ)‖ ^ 2 / (‖u‖ ^ 2 * ‖v‖ ^ 2)
+def groundOverlap (u v : E) : ℝ := ‖(inner ℂ u v : ℂ)‖ ^ (2 : ℕ) / (‖u‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ))
 
 theorem groundOverlap_real_smul {r : ℝ} (hr : r ≠ 0) (u v : E) :
     groundOverlap u (r • v) = groundOverlap u v := by

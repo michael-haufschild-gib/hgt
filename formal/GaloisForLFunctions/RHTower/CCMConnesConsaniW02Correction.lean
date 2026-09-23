@@ -153,14 +153,14 @@ theorem ccmW02CorrelationPairing_eq_moments
 
 def ccmExpCosPrimitive (a b x : ℝ) : ℝ :=
   Real.exp (a * x) * (a * Real.cos (b * x) + b * Real.sin (b * x)) /
-    (a ^ 2 + b ^ 2)
+    (a ^ (2 : ℕ) + b ^ (2 : ℕ))
 
 def ccmExpSinPrimitive (a b x : ℝ) : ℝ :=
   Real.exp (a * x) * (a * Real.sin (b * x) - b * Real.cos (b * x)) /
-    (a ^ 2 + b ^ 2)
+    (a ^ (2 : ℕ) + b ^ (2 : ℕ))
 
 theorem hasDerivAt_ccmExpCosPrimitive
-    {a b : ℝ} (hden : a ^ 2 + b ^ 2 ≠ 0) (x : ℝ) :
+    {a b : ℝ} (hden : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0) (x : ℝ) :
     HasDerivAt (ccmExpCosPrimitive a b)
       (Real.exp (a * x) * Real.cos (b * x)) x := by
   have hE : HasDerivAt (fun y : ℝ => Real.exp (a * y))
@@ -179,14 +179,14 @@ theorem hasDerivAt_ccmExpCosPrimitive
       ((hasDerivAt_id x).const_mul b) using 1
     all_goals ring
   convert! (hE.mul ((hcos.const_mul a).add (hsin.const_mul b))).div_const
-    (a ^ 2 + b ^ 2) using 1
+    (a ^ (2 : ℕ) + b ^ (2 : ℕ)) using 1
   field_simp [hden]
   simp only [Pi.add_apply]
   rw [show x * b = b * x by ring]
   ring
 
 theorem hasDerivAt_ccmExpSinPrimitive
-    {a b : ℝ} (hden : a ^ 2 + b ^ 2 ≠ 0) (x : ℝ) :
+    {a b : ℝ} (hden : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0) (x : ℝ) :
     HasDerivAt (ccmExpSinPrimitive a b)
       (Real.exp (a * x) * Real.sin (b * x)) x := by
   have hE : HasDerivAt (fun y : ℝ => Real.exp (a * y))
@@ -205,14 +205,14 @@ theorem hasDerivAt_ccmExpSinPrimitive
       ((hasDerivAt_id x).const_mul b) using 1
     all_goals ring
   convert! (hE.mul ((hsin.const_mul a).sub (hcos.const_mul b))).div_const
-    (a ^ 2 + b ^ 2) using 1
+    (a ^ (2 : ℕ) + b ^ (2 : ℕ)) using 1
   field_simp [hden]
   simp only [Pi.sub_apply]
   rw [show x * b = b * x by ring]
   ring
 
 theorem intervalIntegral_exp_mul_cos
-    {a b c d : ℝ} (hden : a ^ 2 + b ^ 2 ≠ 0) :
+    {a b c d : ℝ} (hden : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0) :
     (∫ x in c..d, Real.exp (a * x) * Real.cos (b * x)) =
       ccmExpCosPrimitive a b d - ccmExpCosPrimitive a b c := by
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -222,7 +222,7 @@ theorem intervalIntegral_exp_mul_cos
       Real.exp (a * x) * Real.cos (b * x))).intervalIntegrable c d
 
 theorem intervalIntegral_exp_mul_sin
-    {a b c d : ℝ} (hden : a ^ 2 + b ^ 2 ≠ 0) :
+    {a b c d : ℝ} (hden : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0) :
     (∫ x in c..d, Real.exp (a * x) * Real.sin (b * x)) =
       ccmExpSinPrimitive a b d - ccmExpSinPrimitive a b c := by
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -240,12 +240,12 @@ def ccmCenteredModeFrequency (L : CCMPositiveAperture) (n : ℕ) : ℝ :=
 /-- Full-period compact cosine integral.  Endpoint parity is retained explicitly. -/
 theorem intervalIntegral_exp_mul_cos_centeredMode
     (L : CCMPositiveAperture) (n : ℕ) (a : ℝ)
-    (hden : a ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0) :
+    (hden : a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0) :
     (∫ x in (-(L : ℝ) / 2)..((L : ℝ) / 2),
       Real.exp (a * x) * Real.cos (ccmCenteredModeFrequency L n * x)) =
       (-1 : ℝ) ^ n * a *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2) := by
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ)) := by
   rw [intervalIntegral_exp_mul_cos hden]
   have hpos : ccmCenteredModeFrequency L n * ((L : ℝ) / 2) =
       (n : ℝ) * Real.pi := by
@@ -264,12 +264,12 @@ theorem intervalIntegral_exp_mul_cos_centeredMode
 /-- Full-period compact sine integral for the paper's negative-index mode `ξ_{-n}`. -/
 theorem intervalIntegral_exp_mul_sin_centeredNegativeMode
     (L : CCMPositiveAperture) (n : ℕ) (a : ℝ)
-    (hden : a ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0) :
+    (hden : a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0) :
     (∫ x in (-(L : ℝ) / 2)..((L : ℝ) / 2),
       Real.exp (a * x) * Real.sin (-(ccmCenteredModeFrequency L n) * x)) =
       (-1 : ℝ) ^ n * ccmCenteredModeFrequency L n *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2) := by
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ)) := by
   rw [intervalIntegral_exp_mul_sin]
   · have hpos : -(ccmCenteredModeFrequency L n) * ((L : ℝ) / 2) =
         -((n : ℝ) * Real.pi) := by
@@ -333,11 +333,11 @@ theorem integrable_ccmCenteredNegativeSineMode_tilt
 /-- Exact exponential moment of the literal normalized positive cosine mode. -/
 theorem ccmRealExponentialMoment_centeredCosineMode
     (L : CCMPositiveAperture) (n : ℕ) (a : ℝ)
-    (hden : a ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0) :
+    (hden : a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0) :
     ccmRealExponentialMoment a (ccmCenteredCosineMode L n) =
       Real.sqrt (2 / (L : ℝ)) * a *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2) := by
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ)) := by
   rw [ccmRealExponentialMoment]
   have heq : ccmRealExponentialTilt a (ccmCenteredCosineMode L n) =
       (Icc (-(L : ℝ) / 2) ((L : ℝ) / 2)).indicator
@@ -359,20 +359,20 @@ theorem ccmRealExponentialMoment_centeredCosineMode
   rw [show (-1 : ℝ) ^ n * Real.sqrt (2 / (L : ℝ)) *
       ((-1 : ℝ) ^ n * a *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2)) =
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ))) =
       ((-1 : ℝ) ^ n * (-1 : ℝ) ^ n) *
         (Real.sqrt (2 / (L : ℝ)) * a *
           (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-            (a ^ 2 + ccmCenteredModeFrequency L n ^ 2)) by ring, hp, one_mul]
+            (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ))) by ring, hp, one_mul]
 
 /-- Exact exponential moment of the literal normalized negative-index sine mode. -/
 theorem ccmRealExponentialMoment_centeredNegativeSineMode
     (L : CCMPositiveAperture) (n : ℕ) (a : ℝ)
-    (hden : a ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0) :
+    (hden : a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0) :
     ccmRealExponentialMoment a (ccmCenteredNegativeSineMode L n) =
       Real.sqrt (2 / (L : ℝ)) * ccmCenteredModeFrequency L n *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2) := by
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ)) := by
   rw [ccmRealExponentialMoment]
   have heq : ccmRealExponentialTilt a (ccmCenteredNegativeSineMode L n) =
       (Icc (-(L : ℝ) / 2) ((L : ℝ) / 2)).indicator
@@ -395,66 +395,66 @@ theorem ccmRealExponentialMoment_centeredNegativeSineMode
   rw [show (-1 : ℝ) ^ n * Real.sqrt (2 / (L : ℝ)) *
       ((-1 : ℝ) ^ n * ccmCenteredModeFrequency L n *
         (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-          (a ^ 2 + ccmCenteredModeFrequency L n ^ 2)) =
+          (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ))) =
       ((-1 : ℝ) ^ n * (-1 : ℝ) ^ n) *
         (Real.sqrt (2 / (L : ℝ)) * ccmCenteredModeFrequency L n *
           (Real.exp (a * (L : ℝ) / 2) - Real.exp (-(a * (L : ℝ) / 2))) /
-            (a ^ 2 + ccmCenteredModeFrequency L n ^ 2)) by ring, hp, one_mul]
+            (a ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ))) by ring, hp, one_mul]
 
 /-! ## Exact `w02` blocks and the published factor-two defect -/
 
 /-- Common positive exponential factor in the paper's `w02` formulas. -/
 def ccmW02ApertureFactor (L : CCMPositiveAperture) : ℝ :=
-  Real.exp (-(L : ℝ) / 2) * (Real.exp ((L : ℝ) / 2) - 1) ^ 2
+  Real.exp (-(L : ℝ) / 2) * (Real.exp ((L : ℝ) / 2) - 1) ^ (2 : ℕ)
 
 theorem sq_exp_quarter_sub_eq_ccmW02ApertureFactor (L : CCMPositiveAperture) :
-    (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) ^ 2 =
+    (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) ^ (2 : ℕ) =
       ccmW02ApertureFactor L := by
   have hmul : Real.exp (-(L : ℝ) / 4) * Real.exp ((L : ℝ) / 2) =
       Real.exp ((L : ℝ) / 4) := by
     rw [← Real.exp_add]
     congr 1
     ring
-  have hsq : Real.exp (-(L : ℝ) / 4) ^ 2 =
+  have hsq : Real.exp (-(L : ℝ) / 4) ^ (2 : ℕ) =
       Real.exp (-(L : ℝ) / 2) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
   rw [ccmW02ApertureFactor]
   calc
-    (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) ^ 2 =
+    (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) ^ (2 : ℕ) =
         (Real.exp (-(L : ℝ) / 4) *
-          (Real.exp ((L : ℝ) / 2) - 1)) ^ 2 := by
+          (Real.exp ((L : ℝ) / 2) - 1)) ^ (2 : ℕ) := by
             rw [mul_sub, hmul, mul_one]
-    _ = Real.exp (-(L : ℝ) / 4) ^ 2 *
-        (Real.exp ((L : ℝ) / 2) - 1) ^ 2 := by ring
+    _ = Real.exp (-(L : ℝ) / 4) ^ (2 : ℕ) *
+        (Real.exp ((L : ℝ) / 2) - 1) ^ (2 : ℕ) := by ring
     _ = _ := by rw [hsq]
 
 /-- Denominator used by the published real Fourier blocks. -/
 def ccmW02ModeDenominator (L : CCMPositiveAperture) (n : ℕ) : ℝ :=
-  (L : ℝ) ^ 2 + 16 * Real.pi ^ 2 * (n : ℝ) ^ 2
+  (L : ℝ) ^ (2 : ℕ) + 16 * Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (2 : ℕ)
 
 private theorem ccmW02ModeDenominator_pos
     (L : CCMPositiveAperture) (n : ℕ) :
     0 < ccmW02ModeDenominator L n := by
   rw [ccmW02ModeDenominator]
-  have hLsq : 0 < (L : ℝ) ^ 2 := sq_pos_of_pos L.property
+  have hLsq : 0 < (L : ℝ) ^ (2 : ℕ) := sq_pos_of_pos L.property
   nlinarith [sq_nonneg (4 * Real.pi * (n : ℝ))]
 
 private theorem half_sq_add_ccmCenteredModeFrequency_sq_ne
     (L : CCMPositiveAperture) (n : ℕ) :
-    (1 / 2 : ℝ) ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0 := by
+    (1 / 2 : ℝ) ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0 := by
   positivity
 
 private theorem neg_half_sq_add_ccmCenteredModeFrequency_sq_ne
     (L : CCMPositiveAperture) (n : ℕ) :
-    (-(1 / 2 : ℝ)) ^ 2 + ccmCenteredModeFrequency L n ^ 2 ≠ 0 := by
+    (-(1 / 2 : ℝ)) ^ (2 : ℕ) + ccmCenteredModeFrequency L n ^ (2 : ℕ) ≠ 0 := by
   positivity
 
 private theorem ccmRealExponentialMoment_centeredCosineMode_half
     (L : CCMPositiveAperture) (n : ℕ) :
     ccmRealExponentialMoment (1 / 2) (ccmCenteredCosineMode L n) =
-      2 * Real.sqrt (2 / (L : ℝ)) * (L : ℝ) ^ 2 *
+      2 * Real.sqrt (2 / (L : ℝ)) * (L : ℝ) ^ (2 : ℕ) *
         (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) /
           ccmW02ModeDenominator L n := by
   rw [ccmRealExponentialMoment_centeredCosineMode L n (1 / 2)
@@ -467,7 +467,7 @@ private theorem ccmRealExponentialMoment_centeredCosineMode_half
 private theorem ccmRealExponentialMoment_centeredCosineMode_neg_half
     (L : CCMPositiveAperture) (n : ℕ) :
     ccmRealExponentialMoment (-(1 / 2)) (ccmCenteredCosineMode L n) =
-      2 * Real.sqrt (2 / (L : ℝ)) * (L : ℝ) ^ 2 *
+      2 * Real.sqrt (2 / (L : ℝ)) * (L : ℝ) ^ (2 : ℕ) *
         (Real.exp ((L : ℝ) / 4) - Real.exp (-(L : ℝ) / 4)) /
           ccmW02ModeDenominator L n := by
   rw [ccmRealExponentialMoment_centeredCosineMode L n (-(1 / 2))
@@ -506,20 +506,20 @@ private theorem ccmRealExponentialMoment_centeredNegativeSineMode_neg_half
 /-- The paper's displayed even right-hand side, with coefficient `8`. -/
 def ccmW02PublishedEvenValue
     (L : CCMPositiveAperture) (m n : ℕ) : ℝ :=
-  8 * ccmW02ApertureFactor L * (L : ℝ) ^ 3 /
+  8 * ccmW02ApertureFactor L * (L : ℝ) ^ (3 : ℕ) /
     (ccmW02ModeDenominator L m * ccmW02ModeDenominator L n)
 
 /-- The exact literal even source value; it has coefficient `16`. -/
 def ccmW02CorrectedEvenValue
     (L : CCMPositiveAperture) (m n : ℕ) : ℝ :=
-  16 * ccmW02ApertureFactor L * (L : ℝ) ^ 3 /
+  16 * ccmW02ApertureFactor L * (L : ℝ) ^ (3 : ℕ) /
     (ccmW02ModeDenominator L m * ccmW02ModeDenominator L n)
 
 /-- The odd formula printed in Lemma `w02`, indexed here by the positive magnitudes `m,n` of
 the paper's negative indices `-m,-n`. -/
 def ccmW02PublishedOddValue
     (L : CCMPositiveAperture) (m n : ℕ) : ℝ :=
-  -(256 * Real.pi ^ 2 * (L : ℝ) * ccmW02ApertureFactor L * (m : ℝ) * (n : ℝ)) /
+  -(256 * Real.pi ^ (2 : ℕ) * (L : ℝ) * ccmW02ApertureFactor L * (m : ℝ) * (n : ℝ)) /
     (ccmW02ModeDenominator L m * ccmW02ModeDenominator L n)
 
 /-- **Corrected even half of CCM Lemma `w02`.**  This starts from the literal normalized

@@ -82,7 +82,7 @@ theorem exists_mobiusDivisorEvenCore_prescribed_prime_energy_reserve (P : Finset
     ∃c T : ℝ,0<c ∧ ∀r : ℕ,r.Prime → T≤(r:ℝ) →
       ∃p : ℕ,p.Prime ∧ p<r ∧ p∉P ∧ r∉P ∧
         Even (insert p (insert r P)).card ∧ ∀ᶠM : ℕ in atTop,
-        c/(r:ℝ)*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M P-
+        c/(r:ℝ)*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M P-
           mobiusDivisorSelectionEnergy M (insert p (insert r P)) := by
   obtain ⟨c,T,hc,hpairs⟩ := exists_mobiusDivisorEvenCore_prescribed_prime_pair_reserve
     P hP hprime heven

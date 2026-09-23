@@ -211,7 +211,7 @@ theorem norm_thermodynamicPair_sub_mobileReference_le
     (hK : 8 ≤ K) (hsize : 4 * K ≤ N * 2 + 3)
     (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i) :
   ‖thermodynamicPairHamiltonian N p - thermodynamicPairMobileReference N K p‖ ≤
-      1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+      1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ)) := by
   unfold thermodynamicPairHamiltonian thermodynamicPairMobileReference
     thermodynamicPairPrefixHamiltonian thermodynamicPairTailCenterHamiltonian

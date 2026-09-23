@@ -10,7 +10,7 @@ Guinand--Weil rectangle uses the larger fixed strip `|Im z| <= 1`, equivalently
 uniform bound with an arbitrary nonnegative strip width and specializes it to the vertical edge.
 
 The result is the analytic decay input for eliminating the vertical contour edge: the sharp
-rectangular transform is `O(1/R)` and its square is `O(1/R^2)`, uniformly along the whole edge.
+rectangular transform is `O(1/R)` and its square is `O(1/R^(2 : ℕ))`, uniformly along the whole edge.
 -/
 
 open Complex Set
@@ -119,15 +119,15 @@ theorem norm_xiRectangularTwoEdgeTransform_vertical_le
 /-- The squared sharp Xi test has uniform `R^-2` decay along the complete vertical edge. -/
 theorem norm_xiRectangularTwoEdgeTransform_vertical_sq_le
     (L a R y : ℝ) (hR : 0 < |R|) (hy : |y| ≤ 1) :
-    ‖xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2‖ ≤
-      rectangularTransformStripBound L a 1 ^ 2 / R ^ 2 := by
+    ‖xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ)‖ ≤
+      rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ) := by
   rw [norm_pow]
   have h := norm_xiRectangularTwoEdgeTransform_vertical_le L a R y hR hy
   have hsquare := pow_le_pow_left₀ (norm_nonneg _) h 2
   calc
-    ‖xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I)‖ ^ 2 ≤
-        (rectangularTransformStripBound L a 1 / |R|) ^ 2 := hsquare
-    _ = rectangularTransformStripBound L a 1 ^ 2 / R ^ 2 := by
+    ‖xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I)‖ ^ (2 : ℕ) ≤
+        (rectangularTransformStripBound L a 1 / |R|) ^ (2 : ℕ) := hsquare
+    _ = rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ) := by
       rw [div_pow, sq_abs]
 
 /-- Cauchy's estimate upgrades the uniform value decay to uniform derivative decay.  The
@@ -135,11 +135,11 @@ radius-`1/2` circle about a point on the depth-one vertical edge stays in the de
 strip, while its real coordinate stays at least `|R|/2` from zero once `|R| >= 2`. -/
 theorem norm_deriv_xiRectangularTwoEdgeTransform_sq_vertical_le
     (L a R y : ℝ) (hR : 2 ≤ |R|) (hy : |y| ≤ 1) :
-    ‖deriv (fun z : ℂ => xiRectangularTwoEdgeTransform L a z ^ 2)
+    ‖deriv (fun z : ℂ => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ))
         ((R : ℂ) + y * I)‖ ≤
-      8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2 := by
+      8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ) := by
   let z : ℂ := (R : ℂ) + y * I
-  let g : ℂ → ℂ := fun w => xiRectangularTwoEdgeTransform L a w ^ 2
+  let g : ℂ → ℂ := fun w => xiRectangularTwoEdgeTransform L a w ^ (2 : ℕ)
   have hhalf : (0 : ℝ) < 1 / 2 := by norm_num
   have hgdiff : Differentiable ℂ g := by
     intro w
@@ -151,7 +151,7 @@ theorem norm_deriv_xiRectangularTwoEdgeTransform_sq_vertical_le
     exact hgdiff.continuous.continuousOn
   have hsphere : ∀ w ∈ Metric.sphere z (1 / 2),
       ‖g w‖ ≤
-        4 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2 := by
+        4 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ) := by
     intro w hw
     rw [Metric.mem_sphere, dist_eq_norm] at hw
     have hwim : |w.im| ≤ (3 / 2 : ℝ) := by
@@ -185,7 +185,7 @@ theorem norm_deriv_xiRectangularTwoEdgeTransform_sq_vertical_le
       linarith
     have hvalue := norm_rectangularTwoEdgeTransform_le_on_strip
       L a hw0 hwre
-    change ‖xiRectangularTwoEdgeTransform L a w ^ 2‖ ≤ _
+    change ‖xiRectangularTwoEdgeTransform L a w ^ (2 : ℕ)‖ ≤ _
     rw [norm_pow, xiRectangularTwoEdgeTransform]
     have hdiv : rectangularTransformStripBound L a (3 / 2) / ‖I * w‖ ≤
         2 * rectangularTransformStripBound L a (3 / 2) / |R| := by
@@ -200,9 +200,9 @@ theorem norm_deriv_xiRectangularTwoEdgeTransform_sq_vertical_le
           field_simp
     have hsquare := pow_le_pow_left₀ (norm_nonneg _) (hvalue.trans hdiv) 2
     calc
-      ‖rectangularTwoEdgeTransform L a (I * w)‖ ^ 2 ≤
-          (2 * rectangularTransformStripBound L a (3 / 2) / |R|) ^ 2 := hsquare
-      _ = 4 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2 := by
+      ‖rectangularTwoEdgeTransform L a (I * w)‖ ^ (2 : ℕ) ≤
+          (2 * rectangularTransformStripBound L a (3 / 2) / |R|) ^ (2 : ℕ) := hsquare
+      _ = 4 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ) := by
         rw [div_pow, sq_abs]
         ring
   have hcauchy := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le
@@ -210,8 +210,8 @@ theorem norm_deriv_xiRectangularTwoEdgeTransform_sq_vertical_le
   change ‖deriv g z‖ ≤ _
   calc
     ‖deriv g z‖ ≤
-        (4 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2) /
+        (4 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ)) /
           (1 / 2) := hcauchy
-    _ = 8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2 := by ring
+    _ = 8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ) := by ring
 
 end RHTower

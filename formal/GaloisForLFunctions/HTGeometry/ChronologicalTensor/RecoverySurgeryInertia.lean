@@ -20,7 +20,7 @@ def recoveryHankelForm (n d : ℕ) : QuadraticForm ℝ (Fin (d+1) → ℝ) :=
   (momentHankelMatrix (recoverySurgeryMoment n) (d+1)).toQuadraticForm'
 
 theorem recoveryHankelForm_value (n d : ℕ) (v : Fin (d+1) → ℝ) :
-    recoveryHankelForm n d v = momentFunctional (recoverySurgeryMoment n) ((ofFn (d+1) v)^2) := by
+    recoveryHankelForm n d v = momentFunctional (recoverySurgeryMoment n) ((ofFn (d+1) v)^(2 : ℕ)) := by
   rw [recoveryHankelForm, Matrix.toQuadraticForm', LinearMap.BilinMap.toQuadraticMap_apply,
     Matrix.toLinearMap₂'_apply', dotProduct_mulVec_momentHankelMatrix]
 

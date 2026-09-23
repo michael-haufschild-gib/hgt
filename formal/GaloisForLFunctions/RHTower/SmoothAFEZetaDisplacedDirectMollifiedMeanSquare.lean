@@ -42,19 +42,19 @@ theorem smoothAFEZetaDisplacedDirectMollified_meanValue_window
     |(∫ tau in T₁..T₂,
         ‖Sieve.dirPoly L
               (fun n => smoothAFEZetaDisplacedDirectDetectorCoeff lam d x n) (-tau) *
-            Sieve.levinsonLinearMollifier M tau‖ ^ 2) -
+            Sieve.levinsonLinearMollifier M tau‖ ^ (2 : ℕ)) -
         (T₂ - T₁) *
           ∑ r : Fin (L * M),
-            ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ 2|
+            ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ (2 : ℕ)|
       ≤ 8 * ((L * M : ℕ) : ℝ) * (1 + Real.log (L * M)) *
           ∑ r : Fin (L * M),
-            ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ 2 := by
+            ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ (2 : ℕ) := by
   have hpoint : ∀ tau : ℝ,
       ‖Sieve.dirPoly L
               (fun n => smoothAFEZetaDisplacedDirectDetectorCoeff lam d x n) (-tau) *
-            Sieve.levinsonLinearMollifier M tau‖ ^ 2 =
+            Sieve.levinsonLinearMollifier M tau‖ ^ (2 : ℕ) =
         ‖Sieve.dirPoly (L * M)
-            (smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M) (-tau)‖ ^ 2 := by
+            (smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M) (-tau)‖ ^ (2 : ℕ) := by
     intro tau
     rw [smoothAFEZetaDisplacedDirectHead_mul_levinsonLinearMollifier]
   rw [intervalIntegral.integral_congr (fun tau _ => hpoint tau)]

@@ -3,24 +3,24 @@ import GaloisForLFunctions.RHTower.XiSquaredCompleteMonotonicityFarRay
 /-!
 # Quartic shift rigidity of the deviation mass, and RH as an escape law at infinity
 
-The deviation mass `M X = sum_q (Im u_q)^2`, `u_q = (alpha_q^2 + X)^(-1)`, vanishes at one shift
+The deviation mass `M X = sum_q (Im u_q)^(2 : ℕ)`, `u_q = (alpha_q^(2 : ℕ) + X)^(-1)`, vanishes at one shift
 iff RH.  This file proves that `M` obeys a **self-improving differential law**: termwise
 differentiation in the shift gives
 
-`M' X = -4 * sum_q Re (u_q) * (Im u_q)^2`,
+`M' X = -4 * sum_q Re (u_q) * (Im u_q)^(2 : ℕ)`,
 
 and the critical strip and height gap force `Re u_q ≤ 1/(X+1)`, so `-4 M X / (X+1) ≤ M' X ≤ 0`.
-Integrated, the renormalized mass `(X+1)^4 * M X` is **monotone nondecreasing** on the positive
+Integrated, the renormalized mass `(X+1)^(4 : ℕ) * M X` is **monotone nondecreasing** on the positive
 shift ray.  Consequences:
 
-* **quartic floor**: `M X ≥ (X₀+1)^4 M X₀ / (X+1)^4` for every `X ≥ X₀ > 0` — an RH defect at one
+* **quartic floor**: `M X ≥ (X₀+1)^(4 : ℕ) M X₀ / (X+1)^(4 : ℕ)` for every `X ≥ X₀ > 0` — an RH defect at one
   shift persists at all larger shifts with at most quartic loss, and the exponent is exactly
-  critical: one off-critical zero quartet contributes `~ c/X^4`;
+  critical: one off-critical zero quartet contributes `~ c/X^(4 : ℕ)`;
 * **dichotomy**: either `M` vanishes identically (RH) or `M` is everywhere strictly positive with
   the explicit quartic floor, pinched against the quadratic ceiling
-  `M X ≤ 2H/(X+1)^2` into the corridor `c/(X+1)^4 ≤ M X ≤ 2H/(X+1)^2`;
-* **escape law**: `RH ↔ (X+1)^4 M X → 0 as X → ∞`, and one escape sequence suffices:
-  RH follows from `(X_n+1)^4 M X_n → 0` along any sequence `X_n → ∞`.
+  `M X ≤ 2H/(X+1)^(2 : ℕ)` into the corridor `c/(X+1)^(4 : ℕ) ≤ M X ≤ 2H/(X+1)^(2 : ℕ)`;
+* **escape law**: `RH ↔ (X+1)^(4 : ℕ) M X → 0 as X → ∞`, and one escape sequence suffices:
+  RH follows from `(X_n+1)^(4 : ℕ) M X_n → 0` along any sequence `X_n → ∞`.
 
 So the criterion moves from a value (`M X₀ = 0`) to a tail: RH holds exactly when the deviation
 mass decays faster than its own rigidity rate, and the entire content of RH is compressed into
@@ -99,7 +99,7 @@ theorem xiResolventDampedMass_mul_le {X : ℝ} (hX : 0 ≤ X) :
 
 /-! ## §2 The differential law of the deviation mass -/
 
-/-- Shift derivative of one deviation density: `d/dX (Im u)^2 = -4 Re u (Im u)^2`. -/
+/-- Shift derivative of one deviation density: `d/dX (Im u)^(2 : ℕ) = -4 Re u (Im u)^(2 : ℕ)`. -/
 theorem hasDerivAt_im_sq_xiResolventPoint {X : ℝ} (hX : 0 < X) (q : XiZeroCopy) :
     HasDerivAt (fun v : ℝ => (xiResolventPoint v q).im ^ 2)
       (-(4 * (xiResolventPoint X q).re * (xiResolventPoint X q).im ^ 2)) X := by
@@ -201,7 +201,7 @@ theorem hasDerivAt_xiResolventImSqMass {X : ℝ} (hX : 0 < X) :
 
 /-! ## §3 Quartic shift rigidity -/
 
-/-- **Quartic shift rigidity**: the renormalized deviation mass `(X+1)^4 M X` is monotone
+/-- **Quartic shift rigidity**: the renormalized deviation mass `(X+1)^(4 : ℕ) M X` is monotone
 nondecreasing on the positive shift ray. -/
 theorem monotoneOn_quartic_mul_xiResolventImSqMass :
     MonotoneOn (fun X : ℝ => (X + 1) ^ 4 * xiResolventImSqMass X) (Set.Ioi 0) := by

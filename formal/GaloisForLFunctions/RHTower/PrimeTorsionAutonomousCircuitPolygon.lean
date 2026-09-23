@@ -335,7 +335,7 @@ theorem maximallyProjective_exists_complete_circuitPolygon_of_replicaBudget
     (hbudget :
       (((p - 1) * Fintype.card Y : ℕ) : ℝ) * (n.factorial : ℝ) *
           (((d + 1 : ℕ) : ℝ)⁻¹) ^ n <
-        (Real.sqrt (1 - 4 * epsilon ^ 2)) ^ (2 * n)) :
+        (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) ^ (2 * n)) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ A : ℝ, ∃ tau ∈ Set.Icc A (A + L),
       (∀ a : ZMod p, a ≠ 0 → ∀ y : Y,
         epsilon < pureStateTraceDistance

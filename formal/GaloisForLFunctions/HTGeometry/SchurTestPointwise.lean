@@ -28,15 +28,15 @@ theorem sq_kernelIntegral_le {μ : Measure ℝ} {kr w f : ℝ → ℝ} {C c : �
     (hkw : AEStronglyMeasurable (fun t => kr t * w t) μ)
     (hgm : AEStronglyMeasurable (fun t => f t / w t) μ)
     (hint1 : Integrable (fun t => kr t * w t) μ)
-    (hint2 : Integrable (fun t => kr t * w t * (f t / w t) ^ 2) μ) :
-    (∫ t, kr t * f t ∂μ) ^ 2 ≤ (C * c) * ∫ t, kr t * f t ^ 2 / w t ∂μ := by
+    (hint2 : Integrable (fun t => kr t * w t * (f t / w t) ^ (2 : ℕ)) μ) :
+    (∫ t, kr t * f t ∂μ) ^ (2 : ℕ) ≤ (C * c) * ∫ t, kr t * f t ^ (2 : ℕ) / w t ∂μ := by
   have hsplit : (fun t => kr t * w t * (f t / w t)) = fun t => kr t * f t := by
     funext t
     have hne : w t ≠ 0 := (hw0 t).ne'
     rw [mul_assoc]
     congr 1
     field_simp
-  have hsq : (fun t => kr t * w t * (f t / w t) ^ 2) = fun t => kr t * f t ^ 2 / w t := by
+  have hsq : (fun t => kr t * w t * (f t / w t) ^ (2 : ℕ)) = fun t => kr t * f t ^ (2 : ℕ) / w t := by
     funext t
     have hne : w t ≠ 0 := (hw0 t).ne'
     rw [div_pow]
@@ -46,7 +46,7 @@ theorem sq_kernelIntegral_le {μ : Measure ℝ} {kr w f : ℝ → ℝ} {C c : �
     (fun t => mul_nonneg (hk0 t) (hw0 t).le) hkw hgm hint1 hint2
   rw [hsplit, hsq] at hcs
   refine le_trans hcs ?_
-  have hnn : 0 ≤ ∫ t, kr t * f t ^ 2 / w t ∂μ := by
+  have hnn : 0 ≤ ∫ t, kr t * f t ^ (2 : ℕ) / w t ∂μ := by
     rw [← hsq]
     exact integral_nonneg fun t => by
       have := hk0 t

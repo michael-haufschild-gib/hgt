@@ -48,7 +48,7 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticMaxGaussian_of_growth
     (P : ℝ[X]) {K r R : ℝ} (z : ℂ) {tau : ℝ}
     (hK : 1 ≤ K) (hR : 0 < R)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     (htau : 0 < tau) (hrR : r ≤ R)
     (hinner : realPolynomialRootCountInBall P 0 r =
       riemannXiSpectralRadialDivisorCount r)
@@ -56,8 +56,8 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticMaxGaussian_of_growth
       riemannXiSpectralRadialDivisorCount R) :
     finiteUpperHyperbolicHeatSum z
         (realPolynomialUpperRootMultisetInRadialAnnulus P r R) tau ≤
-      (K * (2 * (R + 1) + 1) ^ 2 / Real.log 2) *
-        (tau⁻¹ * Real.exp (-((max (r - ‖z‖) 0) ^ 2 * tau))) := by
+      (K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2) *
+        (tau⁻¹ * Real.exp (-((max (r - ‖z‖) 0) ^ (2 : ℕ) * tau))) := by
   let upper := realPolynomialUpperRootMultisetInRadialAnnulus P r R
   let d : ℝ := max (r - ‖z‖) 0
   have hd : 0 ≤ d := le_max_right _ _
@@ -80,25 +80,25 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticMaxGaussian_of_growth
   have hdivisor :
       ((riemannXiSpectralRadialDivisorCount R -
           riemannXiSpectralRadialDivisorCount r : ℕ) : ℝ) ≤
-        K * (2 * (R + 1) + 1) ^ 2 / Real.log 2 :=
+        K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2 :=
     hsub.trans
       (riemannXiSpectralRadialDivisorCount_cast_le_of_growth
         hK hR hbound)
   have hGaussian :
-      0 ≤ tau⁻¹ * Real.exp (-(d ^ 2 * tau)) := by positivity
+      0 ≤ tau⁻¹ * Real.exp (-(d ^ (2 : ℕ) * tau)) := by positivity
   calc
     finiteUpperHyperbolicHeatSum z upper tau ≤
         (upper.card : ℝ) *
-          (tau⁻¹ * Real.exp (-(d ^ 2 * tau))) := hheat
+          (tau⁻¹ * Real.exp (-(d ^ (2 : ℕ) * tau))) := hheat
     _ ≤ ((riemannXiSpectralRadialDivisorCount R -
           riemannXiSpectralRadialDivisorCount r : ℕ) : ℝ) *
-          (tau⁻¹ * Real.exp (-(d ^ 2 * tau))) :=
+          (tau⁻¹ * Real.exp (-(d ^ (2 : ℕ) * tau))) :=
       mul_le_mul_of_nonneg_right (by exact_mod_cast hcard) hGaussian
-    _ ≤ (K * (2 * (R + 1) + 1) ^ 2 / Real.log 2) *
-          (tau⁻¹ * Real.exp (-(d ^ 2 * tau))) :=
+    _ ≤ (K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2) *
+          (tau⁻¹ * Real.exp (-(d ^ (2 : ℕ) * tau))) :=
       mul_le_mul_of_nonneg_right hdivisor hGaussian
-    _ = (K * (2 * (R + 1) + 1) ^ 2 / Real.log 2) *
-          (tau⁻¹ * Real.exp (-((max (r - ‖z‖) 0) ^ 2 * tau))) := rfl
+    _ = (K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2) *
+          (tau⁻¹ * Real.exp (-((max (r - ‖z‖) 0) ^ (2 : ℕ) * tau))) := rfl
 
 /-- If stage `n` has the genuine divisor count on its own selected circle
 and on every earlier selected circle, then every shell `m < n` is bounded by
@@ -106,7 +106,7 @@ the fixed selected-shell majorant. -/
 theorem finiteUpperHeatInSelectedRadialAnnulus_le_majorant
     (P : ℝ[X]) {K : ℝ} (hK : 1 ≤ K)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     {m n : ℕ} (hmn : m < n)
     (hcurrent : realPolynomialRootCountInBall P 0
         (quantitativeSpectralRadialBoundary n) =
@@ -151,7 +151,7 @@ theorem summable_spectralRadialAnnularHeat_and_tendsto_polynomialShellSum
       riemannXiSpectral atTop Set.univ)
     {K : ℝ} (hK : 1 ≤ K)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     (hcurrent : ∀ n : ℕ,
       realPolynomialRootCountInBall (B n) 0
           (quantitativeSpectralRadialBoundary n) =
@@ -420,7 +420,7 @@ theorem tendsto_finiteUpperHeatInsideSelectedRadialBall
       riemannXiSpectral atTop Set.univ)
     {K : ℝ} (hK : 1 ≤ K)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     (hcurrent : ∀ n : ℕ,
       realPolynomialRootCountInBall (B n) 0
           (quantitativeSpectralRadialBoundary n) =
@@ -473,7 +473,7 @@ theorem tendsto_realPolynomialUpperHeatSum_of_radialCounts
       riemannXiSpectral atTop Set.univ)
     {K : ℝ} (hK : 1 ≤ K)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     (hcurrent : ∀ n : ℕ,
       realPolynomialRootCountInBall (B n) 0
           (quantitativeSpectralRadialBoundary n) =

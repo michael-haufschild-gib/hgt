@@ -14,7 +14,7 @@ is Hermitian and complex-linear in its first argument, with `Im H = E` exactly. 
 definite precisely when `E (i x, x) > 0` for `x` nonzero.
 
 Complex homogeneity is the only clause with content: it follows from real homogeneity together with
-the single computation `H (i x, y) = i H (x, y)`, which uses `i^2 = -1` and nothing else.
+the single computation `H (i x, y) = i H (x, y)`, which uses `i^(2 : ℕ) = -1` and nothing else.
 
 Combined with `cocycleCommutator_isAlternatingBiadditive`, this turns the integral alternating form
 of a factor of automorphy into the Hermitian form a quasi-Abelian facet certificate requires.

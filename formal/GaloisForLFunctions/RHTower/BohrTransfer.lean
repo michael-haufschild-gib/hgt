@@ -30,14 +30,14 @@ within `B/U` of the diagonal `∑ (a n)²`, where
 theorem abs_secondMoment_average_sub_diagonal_le
     (a : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ) (hU : 0 < U)
     (hs : ∀ n ∈ s, 1 ≤ n) :
-    |(∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2) / U - ∑ n ∈ s, (a n) ^ 2|
+    |(∫ t in T..(T + U), ‖dpoly a s t‖ ^ (2 : ℕ)) / U - ∑ n ∈ s, (a n) ^ (2 : ℕ)|
       ≤ (∑ m ∈ s, ∑ n ∈ s.erase m,
           2 * |a m * a n| / |Real.log n - Real.log m|) / U := by
   rw [secondMoment_meanValue]
-  have heq : (U * (∑ m ∈ s, (a m) ^ 2)
+  have heq : (U * (∑ m ∈ s, (a m) ^ (2 : ℕ))
         + ∑ m ∈ s, ∑ n ∈ s.erase m,
             a m * a n * cosInt (Real.log n - Real.log m) T U) / U
-        - ∑ n ∈ s, (a n) ^ 2
+        - ∑ n ∈ s, (a n) ^ (2 : ℕ)
       = (∑ m ∈ s, ∑ n ∈ s.erase m,
           a m * a n * cosInt (Real.log n - Real.log m) T U) / U := by
     field_simp
@@ -51,8 +51,8 @@ theorem abs_secondMoment_average_sub_diagonal_le
 `T`. -/
 theorem tendsto_secondMoment_average
     (a : ℕ → ℝ) (s : Finset ℕ) (T : ℝ) (hs : ∀ n ∈ s, 1 ≤ n) :
-    Tendsto (fun U => (∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2) / U) atTop
-      (nhds (∑ n ∈ s, (a n) ^ 2)) := by
+    Tendsto (fun U => (∫ t in T..(T + U), ‖dpoly a s t‖ ^ (2 : ℕ)) / U) atTop
+      (nhds (∑ n ∈ s, (a n) ^ (2 : ℕ))) := by
   rw [tendsto_iff_dist_tendsto_zero]
   have hlim : Tendsto (fun U : ℝ =>
       (∑ m ∈ s, ∑ n ∈ s.erase m,
@@ -71,8 +71,8 @@ The deterministic `t`-line and the random character model agree exactly at
 the second-moment observable. -/
 theorem tendsto_secondMoment_average_steinhaus
     (a : ℕ → ℝ) (s : Finset ℕ) (T : ℝ) (hs : ∀ n ∈ s, 1 ≤ n) :
-    Tendsto (fun U => (∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2) / U) atTop
-      (nhds (∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2 ∂steinhausMeasure)) := by
+    Tendsto (fun U => (∫ t in T..(T + U), ‖dpoly a s t‖ ^ (2 : ℕ)) / U) atTop
+      (nhds (∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 : ℕ) ∂steinhausMeasure)) := by
   rw [integral_normSq_dpoly a s (fun n hn => Nat.one_le_iff_ne_zero.mp (hs n hn))]
   exact tendsto_secondMoment_average a s T hs
 

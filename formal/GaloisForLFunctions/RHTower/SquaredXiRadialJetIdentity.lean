@@ -216,7 +216,7 @@ theorem radialOp_iterate_eq
     rw [show deriv (fun v => jetSum L (jetCoeff n) n v / ((2 : ℝ) ^ n * v ^ (2 * n + 1))) w
           = (deriv (fun v => jetSum L (jetCoeff n) n v) w * ((2 : ℝ) ^ n * w ^ (2 * n + 1))
               - jetSum L (jetCoeff n) n w * deriv (fun v => (2 : ℝ) ^ n * v ^ (2 * n + 1)) w)
-            / ((2 : ℝ) ^ n * w ^ (2 * n + 1)) ^ 2
+            / ((2 : ℝ) ^ n * w ^ (2 * n + 1)) ^ (2 : ℕ)
         from deriv_div hnum.differentiableAt hden.differentiableAt hdne,
       hden.deriv, show 2 * n + 1 - 1 = 2 * n from by omega, ← hrec, pow_succ (2 : ℝ) n,
       show 2 * (n + 1) + 1 = 2 * n + 1 + 2 from by ring, pow_add w (2 * n + 1) 2]

@@ -24,14 +24,14 @@ open MeasureTheory Set Finset
 
 /-- **The Lorentzian mean value theorem, Dirichlet form.** -/
 theorem integral_lorentz_normSq_dirPoly_le_count (a : ℕ → ℂ) (N : ℕ) :
-    (∫ t : ℝ, ‖dirPoly N (fun n : Fin N => a ((n : ℕ) + 1)) t‖ ^ 2 / (1 + t ^ 2))
-      ≤ 25 * Real.pi ^ 2
+    (∫ t : ℝ, ‖dirPoly N (fun n : Fin N => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)))
+      ≤ 25 * Real.pi ^ (2 : ℕ)
           * ∑ n ∈ Finset.Icc 1 N,
-              (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 := by
+              (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set c : Fin N → ℂ := fun n : Fin N => a ((n : ℕ) + 1) with hc
-  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ 2 / (1 + t ^ 2) with hg
-  set L : ℝ → ℝ := fun w => ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2 / (1 + w ^ 2) with hL
+  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)) with hg
+  set L : ℝ → ℝ := fun w => ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)) with hL
   have hLint : Integrable L := integrable_lorentz_normSq_logPoly a (Finset.Icc 1 N)
   -- the substitution `t = 2πw`
   have hsubst : (∫ t : ℝ, g t) = 2 * Real.pi * ∫ w : ℝ, g (2 * Real.pi * w) := by
@@ -44,15 +44,15 @@ theorem integral_lorentz_normSq_dirPoly_le_count (a : ℕ → ℂ) (N : ℕ) :
     intro w
     have hpoly : dirPoly N c (2 * Real.pi * w) = logPoly a (Finset.Icc 1 N) w :=
       (logPoly_eq_dirPoly a N w).symm
-    have hnum : (0 : ℝ) ≤ ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2 := by positivity
-    have hd1 : (0 : ℝ) < 1 + w ^ 2 := by positivity
-    have hd2 : (0 : ℝ) < 1 + (2 * Real.pi * w) ^ 2 := by positivity
-    have hcmp : 1 + w ^ 2 ≤ 1 + (2 * Real.pi * w) ^ 2 := by
+    have hnum : (0 : ℝ) ≤ ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ) := by positivity
+    have hd1 : (0 : ℝ) < 1 + w ^ (2 : ℕ) := by positivity
+    have hd2 : (0 : ℝ) < 1 + (2 * Real.pi * w) ^ (2 : ℕ) := by positivity
+    have hcmp : 1 + w ^ (2 : ℕ) ≤ 1 + (2 * Real.pi * w) ^ (2 : ℕ) := by
       have hpi3 : (3 : ℝ) ≤ 2 * Real.pi := by nlinarith [Real.pi_gt_three]
-      have hsq : (1 : ℝ) ≤ (2 * Real.pi) ^ 2 := by nlinarith [hpi3]
+      have hsq : (1 : ℝ) ≤ (2 * Real.pi) ^ (2 : ℕ) := by nlinarith [hpi3]
       have hmul := mul_le_mul_of_nonneg_right hsq (sq_nonneg w)
       rw [one_mul] at hmul
-      have hexp : (2 * Real.pi * w) ^ 2 = (2 * Real.pi) ^ 2 * w ^ 2 := by ring
+      have hexp : (2 * Real.pi * w) ^ (2 : ℕ) = (2 * Real.pi) ^ (2 : ℕ) * w ^ (2 : ℕ) := by ring
       rw [hexp]
       linarith [hmul]
     rw [hg, hL]
@@ -74,13 +74,13 @@ theorem integral_lorentz_normSq_dirPoly_le_count (a : ℕ → ℂ) (N : ℕ) :
     integral_mono hgint hLint hpoint
   have hmain := integral_lorentz_normSq_logPoly_le_count a (Finset.Icc 1 N)
   have hCnn : (0 : ℝ) ≤ ∑ n ∈ Finset.Icc 1 N,
-      (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 :=
+      (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun n _ => by positivity
   rw [hsubst]
   have hstep : 2 * Real.pi * ∫ w : ℝ, g (2 * Real.pi * w)
       ≤ 2 * Real.pi * ((25 * Real.pi / 2)
           * ∑ n ∈ Finset.Icc 1 N,
-              (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2) := by
+              (logNeighbourCount (Finset.Icc 1 N) (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ)) := by
     refine mul_le_mul_of_nonneg_left (hmono.trans ?_) (by positivity)
     exact hmain
   refine hstep.trans (le_of_eq ?_)

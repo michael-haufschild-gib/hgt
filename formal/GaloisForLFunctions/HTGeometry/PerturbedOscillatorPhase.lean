@@ -30,7 +30,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {w Dw DDw q φ Dφ : ℝ → ℝ}
 
 /-- The oscillator energy in a phase parameterization. -/
-def phaseEnergy (w Dw : ℝ → ℝ) (x : ℝ) : ℝ := w x ^ 2 + Dw x ^ 2
+def phaseEnergy (w Dw : ℝ → ℝ) (x : ℝ) : ℝ := w x ^ (2 : ℕ) + Dw x ^ (2 : ℕ)
 
 theorem phaseEnergy_nonneg (w Dw : ℝ → ℝ) (x : ℝ) : 0 ≤ phaseEnergy w Dw x := by
   rw [phaseEnergy]
@@ -42,13 +42,13 @@ theorem hasDerivAt_phaseEnergy {x : ℝ}
     (hw : HasDerivAt w (Dφ x * Dw x) x) (hDw : HasDerivAt Dw (Dφ x * DDw x) x)
     (hode : DDw x + (1 + q x) * w x = 0) :
     HasDerivAt (phaseEnergy w Dw) (-(2 * Dφ x * q x * (w x * Dw x))) x := by
-  have h1 : HasDerivAt (fun v : ℝ => w v ^ 2) (2 * w x * (Dφ x * Dw x)) x := by
+  have h1 : HasDerivAt (fun v : ℝ => w v ^ (2 : ℕ)) (2 * w x * (Dφ x * Dw x)) x := by
     have h := hw.pow 2
     have hv : ((2 : ℕ) : ℝ) * w x ^ (2 - 1) * (Dφ x * Dw x)
         = 2 * w x * (Dφ x * Dw x) := by norm_num
     rw [hv] at h
     exact h
-  have h2 : HasDerivAt (fun v : ℝ => Dw v ^ 2) (2 * Dw x * (Dφ x * DDw x)) x := by
+  have h2 : HasDerivAt (fun v : ℝ => Dw v ^ (2 : ℕ)) (2 * Dw x * (Dφ x * DDw x)) x := by
     have h := hDw.pow 2
     have hv : ((2 : ℕ) : ℝ) * Dw x ^ (2 - 1) * (Dφ x * DDw x)
         = 2 * Dw x * (Dφ x * DDw x) := by norm_num
@@ -65,21 +65,21 @@ theorem hasDerivAt_phaseEnergy {x : ℝ}
 
 /-- **The differential inequality**, by the arithmetic–geometric mean inequality. -/
 theorem abs_deriv_phaseEnergy_le {x κ : ℝ} (hDφ : 0 ≤ Dφ x)
-    (hq : |q x| ≤ κ / φ x ^ 2) :
-    |-(2 * Dφ x * q x * (w x * Dw x))| ≤ Dφ x * (κ / φ x ^ 2) * phaseEnergy w Dw x := by
-  have hamgm : 2 * |w x| * |Dw x| ≤ w x ^ 2 + Dw x ^ 2 := by
+    (hq : |q x| ≤ κ / φ x ^ (2 : ℕ)) :
+    |-(2 * Dφ x * q x * (w x * Dw x))| ≤ Dφ x * (κ / φ x ^ (2 : ℕ)) * phaseEnergy w Dw x := by
+  have hamgm : 2 * |w x| * |Dw x| ≤ w x ^ (2 : ℕ) + Dw x ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|w x| - |Dw x|), sq_abs (w x), sq_abs (Dw x)]
-  have hκ : (0 : ℝ) ≤ κ / φ x ^ 2 := le_trans (abs_nonneg _) hq
+  have hκ : (0 : ℝ) ≤ κ / φ x ^ (2 : ℕ) := le_trans (abs_nonneg _) hq
   rw [abs_neg, abs_mul, abs_mul, abs_mul, phaseEnergy, abs_mul (w x) (Dw x),
     abs_of_nonneg hDφ]
   have habs : |(2 : ℝ)| = 2 := by norm_num
   rw [habs]
   have hnn : (0 : ℝ) ≤ |w x| * |Dw x| := by positivity
   calc 2 * Dφ x * |q x| * (|w x| * |Dw x|)
-      ≤ 2 * Dφ x * (κ / φ x ^ 2) * (|w x| * |Dw x|) := by
+      ≤ 2 * Dφ x * (κ / φ x ^ (2 : ℕ)) * (|w x| * |Dw x|) := by
         have := mul_le_mul_of_nonneg_left hq (by positivity : (0 : ℝ) ≤ 2 * Dφ x)
         nlinarith [hnn]
-    _ ≤ Dφ x * (κ / φ x ^ 2) * (w x ^ 2 + Dw x ^ 2) := by
+    _ ≤ Dφ x * (κ / φ x ^ (2 : ℕ)) * (w x ^ (2 : ℕ) + Dw x ^ (2 : ℕ)) := by
         nlinarith [hamgm, mul_nonneg hDφ hκ]
 
 /-- The cosine coefficient against the unperturbed basis in the phase. -/
@@ -97,7 +97,7 @@ theorem phase_eq_coeff (w Dw φ : ℝ → ℝ) (x : ℝ) :
 
 /-- The coefficients carry exactly the energy. -/
 theorem phaseCoeff_sq_add (w Dw φ : ℝ → ℝ) (x : ℝ) :
-    phaseCosCoeff w Dw φ x ^ 2 + phaseSinCoeff w Dw φ x ^ 2 = phaseEnergy w Dw x := by
+    phaseCosCoeff w Dw φ x ^ (2 : ℕ) + phaseSinCoeff w Dw φ x ^ (2 : ℕ) = phaseEnergy w Dw x := by
   rw [phaseCosCoeff, phaseSinCoeff, phaseEnergy]
   nlinarith [Real.sin_sq_add_cos_sq (φ x)]
 
@@ -148,15 +148,15 @@ theorem phaseEnergy_le_exp {a b κ : ℝ} (hab : a ≤ b)
     (hw : ∀ x : ℝ, a ≤ x → HasDerivAt w (Dφ x * Dw x) x)
     (hDw : ∀ x : ℝ, a ≤ x → HasDerivAt Dw (Dφ x * DDw x) x)
     (hode : ∀ x : ℝ, a ≤ x → DDw x + (1 + q x) * w x = 0)
-    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ 2) :
+    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ (2 : ℕ)) :
     phaseEnergy w Dw b ≤ phaseEnergy w Dw a * Real.exp (κ / φ a - κ / φ b) := by
   set G : ℝ → ℝ := fun x : ℝ => phaseEnergy w Dw x * Real.exp (κ / φ x) with hGdef
   have hGd : ∀ x : ℝ, a ≤ x → HasDerivAt G
       (-(2 * Dφ x * q x * (w x * Dw x)) * Real.exp (κ / φ x)
-        + phaseEnergy w Dw x * (Real.exp (κ / φ x) * ((0 * φ x - κ * Dφ x) / φ x ^ 2))) x := by
+        + phaseEnergy w Dw x * (Real.exp (κ / φ x) * ((0 * φ x - κ * Dφ x) / φ x ^ (2 : ℕ)))) x := by
     intro x hx
     have hne : φ x ≠ 0 := ne_of_gt (hφpos x hx)
-    have hdiv : HasDerivAt (fun t : ℝ => κ / φ t) ((0 * φ x - κ * Dφ x) / φ x ^ 2) x :=
+    have hdiv : HasDerivAt (fun t : ℝ => κ / φ t) ((0 * φ x - κ * Dφ x) / φ x ^ (2 : ℕ)) x :=
       (hasDerivAt_const x κ).div (hφd x hx) hne
     exact (hasDerivAt_phaseEnergy (hw x hx) (hDw x hx) (hode x hx)).mul hdiv.exp
   have hnonpos : ∀ x ∈ Set.Ioo a b, deriv G x ≤ 0 := by
@@ -166,11 +166,11 @@ theorem phaseEnergy_le_exp {a b κ : ℝ} (hab : a ≤ b)
     have hφ0 : 0 < φ x := hφpos x hxa
     have hD0 : 0 ≤ Dφ x := hDφ x hxa
     have hbound := abs_deriv_phaseEnergy_le (w := w) (Dw := Dw) (q := q) (φ := φ) hD0 (hq x hxa)
-    have hle : -(2 * Dφ x * q x * (w x * Dw x)) ≤ Dφ x * (κ / φ x ^ 2) * phaseEnergy w Dw x :=
+    have hle : -(2 * Dφ x * q x * (w x * Dw x)) ≤ Dφ x * (κ / φ x ^ (2 : ℕ)) * phaseEnergy w Dw x :=
       le_trans (le_abs_self _) hbound
     have hexppos : 0 < Real.exp (κ / φ x) := Real.exp_pos _
     have hne : φ x ≠ 0 := ne_of_gt hφ0
-    have hval : (0 * φ x - κ * Dφ x) / φ x ^ 2 = -(Dφ x * (κ / φ x ^ 2)) := by
+    have hval : (0 * φ x - κ * Dφ x) / φ x ^ (2 : ℕ) = -(Dφ x * (κ / φ x ^ (2 : ℕ))) := by
       field_simp
       ring
     rw [(hGd x hxa).deriv, hval]
@@ -202,19 +202,19 @@ theorem abs_phase_le {a b κ : ℝ} (hab : a ≤ b) (hκ : 0 ≤ κ)
     (hw : ∀ x : ℝ, a ≤ x → HasDerivAt w (Dφ x * Dw x) x)
     (hDw : ∀ x : ℝ, a ≤ x → HasDerivAt Dw (Dφ x * DDw x) x)
     (hode : ∀ x : ℝ, a ≤ x → DDw x + (1 + q x) * w x = 0)
-    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ 2) :
+    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ (2 : ℕ)) :
     |w b| ≤ Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
   have hE := phaseEnergy_le_exp (w := w) (Dw := Dw) (DDw := DDw) (q := q) (φ := φ) (Dφ := Dφ)
     hab hφd hφpos hDφ hw hDw hode hq
   have hEa : 0 ≤ phaseEnergy w Dw a := phaseEnergy_nonneg w Dw a
-  have hsq : w b ^ 2 ≤ phaseEnergy w Dw b := by
+  have hsq : w b ^ (2 : ℕ) ≤ phaseEnergy w Dw b := by
     rw [phaseEnergy]
     nlinarith [sq_nonneg (Dw b)]
   have hexp1 : Real.exp (κ / φ a - κ / φ b) ≤ Real.exp (κ / φ a) := by
     refine Real.exp_le_exp.mpr ?_
     have : (0 : ℝ) ≤ κ / φ b := div_nonneg hκ (hφpos b hab).le
     linarith
-  have hchain : w b ^ 2 ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
+  have hchain : w b ^ (2 : ℕ) ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
     have hstep : phaseEnergy w Dw a * Real.exp (κ / φ a - κ / φ b)
         ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := mul_le_mul_of_nonneg_left hexp1 hEa
     linarith [hsq, hE, hstep]
@@ -229,7 +229,7 @@ theorem abs_phaseCoeff_le_base {a b κ : ℝ} (hab : a ≤ b) (hκ : 0 ≤ κ)
     (hw : ∀ x : ℝ, a ≤ x → HasDerivAt w (Dφ x * Dw x) x)
     (hDw : ∀ x : ℝ, a ≤ x → HasDerivAt Dw (Dφ x * DDw x) x)
     (hode : ∀ x : ℝ, a ≤ x → DDw x + (1 + q x) * w x = 0)
-    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ 2) :
+    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ (2 : ℕ)) :
     |phaseCosCoeff w Dw φ b| ≤ Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a))
       ∧ |phaseSinCoeff w Dw φ b| ≤ Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
   have hE := phaseEnergy_le_exp (w := w) (Dw := Dw) (DDw := DDw) (q := q) (φ := φ) (Dφ := Dφ)
@@ -245,11 +245,11 @@ theorem abs_phaseCoeff_le_base {a b κ : ℝ} (hab : a ≤ b) (hκ : 0 ≤ κ)
     linarith [hE, hstep]
   have hsum := phaseCoeff_sq_add w Dw φ b
   constructor
-  · have hle : phaseCosCoeff w Dw φ b ^ 2 ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
+  · have hle : phaseCosCoeff w Dw φ b ^ (2 : ℕ) ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
       nlinarith [sq_nonneg (phaseSinCoeff w Dw φ b), hsum, hbud]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
-  · have hle : phaseSinCoeff w Dw φ b ^ 2 ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
+  · have hle : phaseSinCoeff w Dw φ b ^ (2 : ℕ) ≤ phaseEnergy w Dw a * Real.exp (κ / φ a) := by
       nlinarith [sq_nonneg (phaseCosCoeff w Dw φ b), hsum, hbud]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
@@ -262,26 +262,26 @@ theorem abs_deriv_phaseCoeff_le_base {a b κ : ℝ} (hab : a ≤ b) (hκ : 0 ≤
     (hw : ∀ x : ℝ, a ≤ x → HasDerivAt w (Dφ x * Dw x) x)
     (hDw : ∀ x : ℝ, a ≤ x → HasDerivAt Dw (Dφ x * DDw x) x)
     (hode : ∀ x : ℝ, a ≤ x → DDw x + (1 + q x) * w x = 0)
-    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ 2) :
+    (hq : ∀ x : ℝ, a ≤ x → |q x| ≤ κ / φ x ^ (2 : ℕ)) :
     |Dφ b * q b * w b * Real.sin (φ b)|
-        ≤ Dφ b * (κ / φ b ^ 2) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a))
+        ≤ Dφ b * (κ / φ b ^ (2 : ℕ)) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a))
       ∧ |-(Dφ b * q b * w b * Real.cos (φ b))|
-        ≤ Dφ b * (κ / φ b ^ 2) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
+        ≤ Dφ b * (κ / φ b ^ (2 : ℕ)) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
   have hwb := abs_phase_le (w := w) (Dw := Dw) (DDw := DDw) (q := q) (φ := φ) (Dφ := Dφ)
     hab hκ hφd hφpos hDφ hw hDw hode hq
   have hqb := hq b hab
   have hD0 : 0 ≤ Dφ b := hDφ b hab
-  have hκb : (0 : ℝ) ≤ κ / φ b ^ 2 := le_trans (abs_nonneg _) hqb
+  have hκb : (0 : ℝ) ≤ κ / φ b ^ (2 : ℕ) := le_trans (abs_nonneg _) hqb
   have hM : (0 : ℝ) ≤ Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := Real.sqrt_nonneg _
   have hmain : ∀ T : ℝ, |T| ≤ 1 → |Dφ b * q b * w b * T|
-      ≤ Dφ b * (κ / φ b ^ 2) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
+      ≤ Dφ b * (κ / φ b ^ (2 : ℕ)) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by
     intro T hT
     rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg hD0]
     calc Dφ b * |q b| * |w b| * |T|
-        ≤ Dφ b * (κ / φ b ^ 2) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) * 1 := by
+        ≤ Dφ b * (κ / φ b ^ (2 : ℕ)) * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) * 1 := by
           refine mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hqb hD0) hwb
             (abs_nonneg _) (by positivity)) hT (abs_nonneg _) (by positivity)
-      _ = Dφ b * (κ / φ b ^ 2)
+      _ = Dφ b * (κ / φ b ^ (2 : ℕ))
           * Real.sqrt (phaseEnergy w Dw a * Real.exp (κ / φ a)) := by ring
   refine ⟨hmain _ (Real.abs_sin_le_one (φ b)), ?_⟩
   rw [abs_neg]

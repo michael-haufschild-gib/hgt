@@ -303,7 +303,7 @@ theorem sum_vinogradovCoordinateKernelWeight_le_rationalApprox
     {X Y b k q a : ℕ} (hX : X ≠ 0) (hq : 0 < q)
     (α : Fin k → ℝ) (j : Fin k)
     (hcop : Nat.Coprime a q)
-    (happrox : |α j - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2) :
+    (happrox : |α j - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ)) :
     (∑ g : Fin (vinogradovDifferenceBoxSize X b k),
       vinogradovCoordinateKernelWeight (Y := Y) α j g) ≤
       vinogradovRationalCoordinateCost X Y b q j := by

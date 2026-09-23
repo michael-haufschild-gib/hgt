@@ -32,19 +32,19 @@ def liReciprocalTaylorCoeff (n k : ℕ) : ℝ :=
 /-- First-derivative expression for the Li reciprocal kernel away from its rational pole. -/
 def liReciprocalKernelDerivFormula (n : ℕ) (y : ℝ) : ℝ :=
   -(2 * ((Polynomial.Chebyshev.T ℝ (n : ℤ)).derivative.eval (liReciprocalSeam y) *
-    (-8 / (4 + y) ^ 2)))
+    (-8 / (4 + y) ^ (2 : ℕ))))
 
 theorem hasDerivAt_liReciprocalSeam {y : ℝ} (hy : 4 + y ≠ 0) :
-    HasDerivAt liReciprocalSeam (-8 / (4 + y) ^ 2) y := by
+    HasDerivAt liReciprocalSeam (-8 / (4 + y) ^ (2 : ℕ)) y := by
   change HasDerivAt ((fun z : ℝ => 4 - z) / (fun z : ℝ => 4 + z))
-    (-8 / (4 + y) ^ 2) y
+    (-8 / (4 + y) ^ (2 : ℕ)) y
   have hnum := (hasDerivAt_const y (4 : ℝ)).sub (hasDerivAt_id y)
   have hden := (hasDerivAt_const y (4 : ℝ)).add (hasDerivAt_id y)
   have h := hnum.div hden hy
-  have hcalc : -8 / (4 + y) ^ 2 =
+  have hcalc : -8 / (4 + y) ^ (2 : ℕ) =
       ((0 - 1) * ((fun _ : ℝ => (4 : ℝ)) + (id : ℝ → ℝ)) y -
         ((fun _ : ℝ => (4 : ℝ)) - (id : ℝ → ℝ)) y * (0 + 1)) /
-        ((fun _ : ℝ => (4 : ℝ)) + (id : ℝ → ℝ)) y ^ 2 := by
+        ((fun _ : ℝ => (4 : ℝ)) + (id : ℝ → ℝ)) y ^ (2 : ℕ) := by
     simp only [Pi.add_apply, Pi.sub_apply, id_eq]
     field_simp [hy]
     ring
@@ -54,14 +54,14 @@ theorem hasDerivAt_liReciprocalSeam {y : ℝ} (hy : 4 + y ≠ 0) :
 theorem hasDerivAt_liReciprocalKernel {n : ℕ} {y : ℝ} (hy : 4 + y ≠ 0) :
     HasDerivAt (liReciprocalKernel n)
       (-2 * (Polynomial.Chebyshev.T ℝ (n : ℤ)).derivative.eval (liReciprocalSeam y) *
-        (-8 / (4 + y) ^ 2)) y := by
+        (-8 / (4 + y) ^ (2 : ℕ))) y := by
   let p : ℝ[X] := Polynomial.Chebyshev.T ℝ (n : ℤ)
   have hcomp := (p.hasDerivAt (liReciprocalSeam y)).comp y (hasDerivAt_liReciprocalSeam hy)
   have h := (hasDerivAt_const y (2 : ℝ)).sub (hcomp.const_mul 2)
   change HasDerivAt (fun z : ℝ => 2 - 2 * p.eval (liReciprocalSeam z)) _ y
   have hcalc :
-      -2 * p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ 2) =
-        0 - 2 * (p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ 2)) := by
+      -2 * p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ (2 : ℕ)) =
+        0 - 2 * (p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ (2 : ℕ))) := by
     ring
   rw [hcalc]
   exact h
@@ -74,7 +74,7 @@ theorem deriv_liReciprocalKernel (n : ℕ) {y : ℝ} (hy : 4 + y ≠ 0) :
 
 /-- The linear Taylor coefficient is exactly `n²`. -/
 theorem liReciprocalTaylorCoeff_one (n : ℕ) :
-    liReciprocalTaylorCoeff n 1 = (n : ℝ) ^ 2 := by
+    liReciprocalTaylorCoeff n 1 = (n : ℝ) ^ (2 : ℕ) := by
   rw [liReciprocalTaylorCoeff, iteratedDeriv_one]
   simp only [Nat.factorial_one, Nat.cast_one, div_one]
   rw [(hasDerivAt_liReciprocalKernel (n := n) (by norm_num : (4 : ℝ) + 0 ≠ 0)).deriv]
@@ -85,13 +85,13 @@ theorem liReciprocalTaylorCoeff_one (n : ℕ) :
   ring
 
 theorem hasDerivAt_liReciprocalSeamDeriv_zero :
-    HasDerivAt (fun y : ℝ => -8 / (4 + y) ^ 2) (1 / 4) 0 := by
+    HasDerivAt (fun y : ℝ => -8 / (4 + y) ^ (2 : ℕ)) (1 / 4) 0 := by
   have hnum := hasDerivAt_const (0 : ℝ) (-8 : ℝ)
   have hbase := (hasDerivAt_const (0 : ℝ) (4 : ℝ)).add (hasDerivAt_id 0)
   have hden := hbase.pow 2
-  have h := hnum.div hden (by norm_num : (fun y : ℝ => (4 + y) ^ 2) 0 ≠ 0)
+  have h := hnum.div hden (by norm_num : (fun y : ℝ => (4 + y) ^ (2 : ℕ)) 0 ≠ 0)
   change HasDerivAt ((fun _ : ℝ => (-8 : ℝ)) /
-    ((fun _ : ℝ => (4 : ℝ)) + (id : ℝ → ℝ)) ^ 2) (1 / 4) 0
+    ((fun _ : ℝ => (4 : ℝ)) + (id : ℝ → ℝ)) ^ (2 : ℕ)) (1 / 4) 0
   norm_num at h
   exact h
 
@@ -105,10 +105,10 @@ theorem hasDerivAt_liReciprocalKernelDerivFormula_zero (n : ℕ) :
   have hB := hasDerivAt_liReciprocalSeamDeriv_zero
   have h := (hA.mul hB).const_mul (-2 : ℝ)
   change HasDerivAt (fun y : ℝ => -(2 *
-    (p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ 2)))) _ 0
+    (p.derivative.eval (liReciprocalSeam y) * (-8 / (4 + y) ^ (2 : ℕ))))) _ 0
   norm_num [liReciprocalSeam] at h ⊢
   change HasDerivAt (fun y : ℝ => -(2 *
-    (p.derivative.eval ((4 - y) / (4 + y)) * (-8 / (4 + y) ^ 2))))
+    (p.derivative.eval ((4 - y) / (4 + y)) * (-8 / (4 + y) ^ (2 : ℕ)))))
     ((-p.derivative.eval 1 + -p.derivative.derivative.eval 1) / 2) 0
   have hcalc :
       (-p.derivative.eval 1 + -p.derivative.derivative.eval 1) / 2 =
@@ -121,7 +121,7 @@ theorem hasDerivAt_liReciprocalKernelDerivFormula_zero (n : ℕ) :
 /-- The second derivative of the first-kind Chebyshev polynomial at one. -/
 theorem chebyshev_secondDerivative_eval_one (n : ℕ) :
     (Polynomial.Chebyshev.T ℝ (n : ℤ)).derivative.derivative.eval 1 =
-      (n : ℝ) ^ 2 * ((n : ℝ) ^ 2 - 1) / 3 := by
+      (n : ℝ) ^ (2 : ℕ) * ((n : ℝ) ^ (2 : ℕ) - 1) / 3 := by
   have h := Polynomial.Chebyshev.iterate_derivative_T_eval_one_recurrence (R := ℝ) (n : ℤ) 1
   norm_num [Function.iterate_succ_apply, Function.iterate_one] at h
   rw [Polynomial.Chebyshev.derivative_T_eval_one] at h
@@ -132,10 +132,10 @@ theorem chebyshev_secondDerivative_eval_one (n : ℕ) :
 /-- The quadratic Taylor coefficient is exactly `-n² (n² + 2) / 12`. -/
 theorem liReciprocalTaylorCoeff_two (n : ℕ) :
     liReciprocalTaylorCoeff n 2 =
-      -(n : ℝ) ^ 2 * ((n : ℝ) ^ 2 + 2) / 12 := by
+      -(n : ℝ) ^ (2 : ℕ) * ((n : ℝ) ^ (2 : ℕ) + 2) / 12 := by
   rw [liReciprocalTaylorCoeff]
   change iteratedDeriv (1 + 1) (liReciprocalKernel n) 0 / 2 =
-    -(n : ℝ) ^ 2 * ((n : ℝ) ^ 2 + 2) / 12
+    -(n : ℝ) ^ (2 : ℕ) * ((n : ℝ) ^ (2 : ℕ) + 2) / 12
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hnear : ∀ᶠ y : ℝ in nhds 0, y ∈ Set.Ioo (-1) 1 :=
     Ioo_mem_nhds (by norm_num) (by norm_num)
@@ -164,7 +164,7 @@ theorem liReciprocalTaylorCoeff_two_neg {n : ℕ} (hn : 1 ≤ n) :
   rw [liReciprocalTaylorCoeff_two]
   have hn0 : (0 : ℝ) < n := by
     exact_mod_cast Nat.zero_lt_of_lt (lt_of_lt_of_le Nat.zero_lt_one hn)
-  have hsq : (0 : ℝ) < (n : ℝ) ^ 2 := sq_pos_of_pos hn0
+  have hsq : (0 : ℝ) < (n : ℝ) ^ (2 : ℕ) := sq_pos_of_pos hn0
   nlinarith
 
 /-- Every nontrivial Li reciprocal kernel fails coefficientwise nonnegativity. -/
@@ -191,8 +191,8 @@ theorem liReciprocalKernel_one_first_two_coefficients :
 /-- Closed certificate for the exact reciprocal-seam Li coefficient sign obstruction. -/
 theorem liReciprocalKernel_coefficient_sign_obstruction :
     ∀ n : ℕ, 1 ≤ n →
-      liReciprocalTaylorCoeff n 1 = (n : ℝ) ^ 2 ∧
-      liReciprocalTaylorCoeff n 2 = -(n : ℝ) ^ 2 * ((n : ℝ) ^ 2 + 2) / 12 ∧
+      liReciprocalTaylorCoeff n 1 = (n : ℝ) ^ (2 : ℕ) ∧
+      liReciprocalTaylorCoeff n 2 = -(n : ℝ) ^ (2 : ℕ) * ((n : ℝ) ^ (2 : ℕ) + 2) / 12 ∧
       0 < liReciprocalTaylorCoeff n 1 ∧
       liReciprocalTaylorCoeff n 2 < 0 ∧
       ¬ liReciprocalCoefficientwiseNonnegative n := by

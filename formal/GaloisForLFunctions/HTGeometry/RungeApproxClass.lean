@@ -114,7 +114,7 @@ theorem rungeDA_add (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω) (hΩne : Ω.No
     ∀ g₁ ∈ RungeDA Ω, ∀ g₂ ∈ RungeDA Ω, (fun z => g₁ z + g₂ z) ∈ RungeDA Ω := by
   rintro g₁ ⟨ha₁, hd₁⟩ g₂ ⟨ha₂, hd₂⟩
   exact ⟨fun z hz => (ha₁ z hz).add (ha₂ z hz),
-    differentiallyAlgebraicOn_add hΩo hΩc hΩne hΩinf ha₁ ha₂ hd₁ hd₂⟩
+    differentiallyAlgebraicOn_add_differentialAlgebraicOnSum hΩo hΩc hΩne hΩinf ha₁ ha₂ hd₁ hd₂⟩
 
 theorem rungeDA_smul (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω) (hΩne : Ω.Nonempty)
     (hΩinf : Ω.Infinite) :

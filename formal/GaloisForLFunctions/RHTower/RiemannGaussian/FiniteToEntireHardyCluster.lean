@@ -9,7 +9,7 @@ value at the fixed pinned upper root.  Since the closed ball in `ℂ` is
 compact, these values have a convergent subsequence.  The resulting scalar
 retains the explicit gap
 
-`‖s‖ ≤ eta / sqrt (eta^2 + z.im^2) < 1`.
+`‖s‖ ≤ eta / sqrt (eta^(2 : ℕ) + z.im^(2 : ℕ)) < 1`.
 
 The final theorem composes this compactness step with failure of RH and the
 zero-free theta convergence theorem.  This constructs a genuine limiting
@@ -38,9 +38,9 @@ theorem exists_pinnedHardyScalarCluster_of_canonicalFiniteHardyFrontier
         (fun n ↦ lowerRootInnerValue
           (finiteEPolynomial (B (phi n)) eta) z)
         atTop (𝓝 s) ∧
-      ‖s‖ ≤ eta / Real.sqrt (eta ^ 2 + z.im ^ 2) ∧
+      ‖s‖ ≤ eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ)) ∧
       ‖s‖ < 1 := by
-  let c := eta / Real.sqrt (eta ^ 2 + z.im ^ 2)
+  let c := eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ))
   let u : ℕ → ℂ := fun n ↦
     lowerRootInnerValue (finiteEPolynomial (B n) eta) z
   have hu : ∀ n, u n ∈ Metric.closedBall (0 : ℂ) c := by
@@ -79,7 +79,7 @@ theorem exists_hardyScalarCluster_theta_limit_of_not_rh
             (fun n ↦ lowerRootInnerValue
               (finiteEPolynomial (B (phi n)) eta) z)
             atTop (𝓝 s) ∧
-          ‖s‖ ≤ eta / Real.sqrt (eta ^ 2 + z.im ^ 2) ∧
+          ‖s‖ ≤ eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ)) ∧
           ‖s‖ < 1 := by
   obtain ⟨eta, heta, z, hz, B, hB, hfrontier, htheta⟩ :=
     exists_canonicalFiniteHardyFrontier_theta_limit_of_not_rh hRH

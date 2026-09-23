@@ -180,7 +180,7 @@ theorem XiC_ne_zero_of_norm_le_one {z : ℂ} (hz : ‖z‖ ≤ 1) :
     have h3 : Real.log (35 / 9 : ℝ) < Real.log 4 :=
       Real.log_lt_log (by norm_num) (by norm_num)
     have h4 : Real.log (4 : ℝ) = 2 * Real.log 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 from by norm_num, Real.log_pow]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) from by norm_num, Real.log_pow]
       norm_num
     have h5 : ((2 : ℝ) / 1) = 2 := by norm_num
     rw [h5, div_lt_iff₀ (Real.log_pos (by norm_num))]
@@ -269,7 +269,7 @@ theorem XiC_ne_zero_of_norm_le_one {z : ℂ} (hz : ‖z‖ ≤ 1) :
 has squared height above `3/4`: the certified central zero-free unit disc
 combined with critical-strip confinement `|Re λ| < ½`. -/
 theorem xiRightUpper_height_sq_gt (q : XiRightUpperZeroCopy) :
-    3 / 4 < ((xiRightCenteredZero q.1).im) ^ 2 := by
+    3 / 4 < ((xiRightCenteredZero q.1).im) ^ (2 : ℕ) := by
   have hlt := abs_xiRightCenteredZero_re_lt_half q.1
   have hzero : XiC (xiSpectralPoint q.1.1) = 0 :=
     (XiC_eq_zero_iff_exists_xiZeroCopy _).mpr ⟨q.1.1, rfl⟩
@@ -284,10 +284,10 @@ theorem xiRightUpper_height_sq_gt (q : XiRightUpperZeroCopy) :
       rw [← hpt]
       exact hle
     exact XiC_ne_zero_of_norm_le_one hnorm hzero
-  have h1 : 1 < ‖xiRightCenteredZero q.1‖ ^ 2 := by
+  have h1 : 1 < ‖xiRightCenteredZero q.1‖ ^ (2 : ℕ) := by
     nlinarith [hdisc, norm_nonneg (xiRightCenteredZero q.1)]
   have h2 : Complex.normSq (xiRightCenteredZero q.1) =
-      ‖xiRightCenteredZero q.1‖ ^ 2 := Complex.normSq_eq_norm_sq _
+      ‖xiRightCenteredZero q.1‖ ^ (2 : ℕ) := Complex.normSq_eq_norm_sq _
   rw [← h2, Complex.normSq_apply] at h1
   have habs := abs_lt.mp hlt
   nlinarith [habs.1, habs.2, h1]

@@ -17,7 +17,7 @@ open Complex Set intervalIntegral MeasureTheory Real
 namespace RHTower
 
 theorem norm_zetaChi_lt_one {σ t : ℝ} (hσ1 : 1/2 < σ) (hσ2 : σ < 1) (ht : 0 < t)
-    (hlarge : Real.log Real.pi + (1/(t/2)^2 + Real.pi/(2*(t/2))) < Real.log (t/2)) :
+    (hlarge : Real.log Real.pi + (1/(t/2)^(2 : ℕ) + Real.pi/(2*(t/2))) < Real.log (t/2)) :
     ‖zetaChi ((σ:ℂ) + (t:ℂ) * I)‖ < 1 := by
   set z : ℂ := (σ:ℂ) + (t:ℂ) * I with hzdef
   set a : ℝ := (1 - σ) / 2 with hadef
@@ -118,7 +118,7 @@ theorem norm_gN_ge_of_dirichlet_domination {N : ℕ} {z : ℂ} {ε : ℝ}
 theorem, so the certificate floor `ε < ‖gN N(σ+it)‖` holds as soon as the Dirichlet part dominates its
 reflection: `‖dirichletPoly N(1−z)‖ + ε < ‖dirichletPoly N z‖`. The χ-factor is no longer an assumption. -/
 theorem norm_gN_ge_offline {N : ℕ} {σ t ε : ℝ} (hσ1 : 1/2 < σ) (hσ2 : σ < 1) (ht : 0 < t)
-    (hlarge : Real.log Real.pi + (1/(t/2)^2 + Real.pi/(2*(t/2))) < Real.log (t/2))
+    (hlarge : Real.log Real.pi + (1/(t/2)^(2 : ℕ) + Real.pi/(2*(t/2))) < Real.log (t/2))
     (hD : ‖dirichletPoly N (1 - ((σ:ℂ) + (t:ℂ) * I))‖ + ε
         < ‖dirichletPoly N ((σ:ℂ) + (t:ℂ) * I)‖) :
     ε < ‖gN N ((σ:ℂ) + (t:ℂ) * I)‖ :=

@@ -15,27 +15,27 @@ namespace HTGeometry
 noncomputable section
 
 theorem rvQuadConst_pos {α : ℝ} (hα : α < 1 / 2) :
-    0 < (1 - α) ^ 2 / (4 * (1 - 2 * α)) := by
+    0 < (1 - α) ^ (2 : ℕ) / (4 * (1 - 2 * α)) := by
   have h0 : (0 : ℝ) < 1 - α := by linarith
-  have h1 : (0 : ℝ) < (1 - α) ^ 2 := pow_pos h0 2
+  have h1 : (0 : ℝ) < (1 - α) ^ (2 : ℕ) := pow_pos h0 2
   have h2 : (0 : ℝ) < 4 * (1 - 2 * α) := by linarith
   exact div_pos h1 h2
 
 theorem rvQuadConst_inv {α : ℝ} (hα : α < 1 / 2) :
-    1 / (4 * ((1 - α) ^ 2 / (4 * (1 - 2 * α)))) = (1 - 2 * α) / (1 - α) ^ 2 := by
+    1 / (4 * ((1 - α) ^ (2 : ℕ) / (4 * (1 - 2 * α)))) = (1 - 2 * α) / (1 - α) ^ (2 : ℕ) := by
   have h0 : (0 : ℝ) < 1 - α := by linarith
-  have h1 : ((1 : ℝ) - α) ^ 2 ≠ 0 := (pow_pos h0 2).ne'
+  have h1 : ((1 : ℝ) - α) ^ (2 : ℕ) ≠ 0 := (pow_pos h0 2).ne'
   have h2 : (1 : ℝ) - 2 * α ≠ 0 := by linarith
   field_simp
 
 /-- **The sub-critical regime of the rate function.** -/
 theorem tendsto_rvRate_div_sq {α : ℝ} (h0 : 0 ≤ α) (hα : α < 1 / 2) :
-    Tendsto (fun q : ℝ => rvRate α q / q ^ 2) (nhdsWithin 0 (Set.Ioi (0 : ℝ)))
-      (nhds ((1 - 2 * α) / (1 - α) ^ 2)) := by
+    Tendsto (fun q : ℝ => rvRate α q / q ^ (2 : ℕ)) (nhdsWithin 0 (Set.Ioi (0 : ℝ)))
+      (nhds ((1 - 2 * α) / (1 - α) ^ (2 : ℕ))) := by
   have hα1 : α < 1 := by linarith
-  set A : ℝ := (1 - α) ^ 2 / (4 * (1 - 2 * α)) with hA
+  set A : ℝ := (1 - α) ^ (2 : ℕ) / (4 * (1 - 2 * α)) with hA
   have hA0 : 0 < A := rvQuadConst_pos hα
-  have hinv : 1 / (4 * A) = (1 - 2 * α) / (1 - α) ^ 2 := rvQuadConst_inv hα
+  have hinv : 1 / (4 * A) = (1 - 2 * α) / (1 - α) ^ (2 : ℕ) := rvQuadConst_inv hα
   have hq1ev : ∀ᶠ q in nhdsWithin 0 (Set.Ioi (0 : ℝ)), q < 1 :=
     (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds
   rw [← hinv]
@@ -45,7 +45,7 @@ theorem tendsto_rvRate_div_sq {α : ℝ} (h0 : 0 ≤ α) (hα : α < 1 / 2) :
     · filter_upwards [hq1ev, self_mem_nhdsWithin] with q hq1 hqm
       have hq : 0 < q := hqm
       have hpos : 0 < rvRate α q := rvRate_pos h0 hα1 hq hq1
-      have : (0 : ℝ) < rvRate α q / q ^ 2 := by positivity
+      have : (0 : ℝ) < rvRate α q / q ^ (2 : ℕ) := by positivity
       linarith
     · obtain ⟨c', hcc', hc'⟩ := exists_between hc
       have hc'0 : 0 < c' := lt_trans hc0 hcc'
@@ -56,10 +56,10 @@ theorem tendsto_rvRate_div_sq {α : ℝ} (h0 : 0 ≤ α) (hα : α < 1 / 2) :
       have hev := eventually_le_rvRate_quad hα (A' := 1 / (4 * c')) (by rw [← hA]; exact hA')
       filter_upwards [hev, self_mem_nhdsWithin] with q hq hqm
       have hqpos : 0 < q := hqm
-      have hid : q ^ 2 / (4 * (1 / (4 * c'))) = c' * q ^ 2 := by field_simp
+      have hid : q ^ (2 : ℕ) / (4 * (1 / (4 * c'))) = c' * q ^ (2 : ℕ) := by field_simp
       rw [hid] at hq
       rw [lt_div_iff₀ (by positivity)]
-      have hstrict : c * q ^ 2 < c' * q ^ 2 :=
+      have hstrict : c * q ^ (2 : ℕ) < c' * q ^ (2 : ℕ) :=
         mul_lt_mul_of_pos_right hcc' (by positivity)
       linarith
   · intro c hc
@@ -74,10 +74,10 @@ theorem tendsto_rvRate_div_sq {α : ℝ} (h0 : 0 ≤ α) (hα : α < 1 / 2) :
       (by rw [← hA]; exact hA'')
     filter_upwards [hev, self_mem_nhdsWithin] with q hq hqm
     have hqpos : 0 < q := hqm
-    have hid : q ^ 2 / (4 * (1 / (4 * c'))) = c' * q ^ 2 := by field_simp
+    have hid : q ^ (2 : ℕ) / (4 * (1 / (4 * c'))) = c' * q ^ (2 : ℕ) := by field_simp
     rw [hid] at hq
     rw [div_lt_iff₀ (by positivity)]
-    have hstrict : c' * q ^ 2 < c * q ^ 2 :=
+    have hstrict : c' * q ^ (2 : ℕ) < c * q ^ (2 : ℕ) :=
       mul_lt_mul_of_pos_right hcc' (by positivity)
     linarith
 

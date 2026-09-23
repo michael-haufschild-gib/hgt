@@ -34,11 +34,11 @@ def CuspLogTest.shiftedTest (f : CuspLogTest) (lam : ℂ) : CuspLogTest where
 
 private theorem CuspLogTest.shifted_heightField (f : CuspLogTest) (lam : ℂ)
     (y : ℝ) (hy : 0 < y) :
-    (f.shiftedTest lam).heightField y = f.heightField y-(y:ℂ)^2*
+    (f.shiftedTest lam).heightField y = f.heightField y-(y:ℂ)^(2 : ℕ)*
       deriv (deriv f.heightField) y-lam*f.heightField y := by
   have he := f.heightTest.log_operator_identity (Real.log y)
   rw [f.logProfile_heightTest,Real.exp_log hy] at he
-  change cuspLogWeight (Real.log y)*(f.heightField y-(y:ℂ)^2*
+  change cuspLogWeight (Real.log y)*(f.heightField y-(y:ℂ)^(2 : ℕ)*
     deriv (deriv f.heightField) y) = (5/4:ℂ)*f.field (Real.log y)-
       deriv (deriv f.field) (Real.log y) at he
   have hinv : (Real.exp (Real.log y/2):ℂ)*cuspLogWeight (Real.log y) = 1 := by

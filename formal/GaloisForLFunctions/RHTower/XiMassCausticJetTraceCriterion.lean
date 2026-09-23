@@ -26,11 +26,11 @@ noncomputable section
 spectral variable and has no zero in the open right half plane. -/
 def xiMassCausticJetWeight {a : ℝ} (ha : 1 / 2 < a) (N : ℕ) : HTGeometry.SpectralWeight :=
   HTGeometry.SpectralWeight.ofPolyBound (fun z => xiMassCausticJet a N z)
-    ((1 + xiMassCausticFrequency a ^ 2) ^ (2 * N)) (4 * N)
+    ((1 + xiMassCausticFrequency a ^ (2 : ℕ)) ^ (2 * N)) (4 * N)
     (fun _ hz => xiMassCausticJet_ne_zero ha N hz)
     (by
       intro z hzim hzre
-      have hOm : (0 : ℝ) ≤ xiMassCausticFrequency a ^ 2 := sq_nonneg _
+      have hOm : (0 : ℝ) ≤ xiMassCausticFrequency a ^ (2 : ℕ) := sq_nonneg _
       have hz : ‖z‖ ≤ 1 + z.re := by
         have h1 : ‖z‖ ≤ |z.re| + |z.im| := Complex.norm_le_abs_re_add_abs_im z
         have h2 : |z.re| = z.re := abs_of_nonneg hzre
@@ -38,21 +38,21 @@ def xiMassCausticJetWeight {a : ℝ} (ha : 1 / 2 < a) (N : ℕ) : HTGeometry.Spe
         linarith
       have hznn : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
       have hrnn : (0 : ℝ) ≤ 1 + z.re := by linarith
-      have hbase : ‖z ^ 2 + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ 2‖
-          ≤ (1 + xiMassCausticFrequency a ^ 2) * (1 + z.re) ^ 2 := by
-        have hsplit : ‖z ^ 2 + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ 2‖
-            ≤ ‖z‖ ^ 2 + xiMassCausticFrequency a ^ 2 := by
+      have hbase : ‖z ^ (2 : ℕ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ (2 : ℕ)‖
+          ≤ (1 + xiMassCausticFrequency a ^ (2 : ℕ)) * (1 + z.re) ^ (2 : ℕ) := by
+        have hsplit : ‖z ^ (2 : ℕ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ (2 : ℕ)‖
+            ≤ ‖z‖ ^ (2 : ℕ) + xiMassCausticFrequency a ^ (2 : ℕ) := by
           refine le_trans (norm_add_le _ _) ?_
           rw [norm_pow, norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
         refine hsplit.trans ?_
-        have hsq : ‖z‖ ^ 2 ≤ (1 + z.re) ^ 2 := by nlinarith
-        have hge1 : (1 : ℝ) ≤ (1 + z.re) ^ 2 := by nlinarith
-        have hOmstep : xiMassCausticFrequency a ^ 2 * 1
-            ≤ xiMassCausticFrequency a ^ 2 * (1 + z.re) ^ 2 :=
+        have hsq : ‖z‖ ^ (2 : ℕ) ≤ (1 + z.re) ^ (2 : ℕ) := by nlinarith
+        have hge1 : (1 : ℝ) ≤ (1 + z.re) ^ (2 : ℕ) := by nlinarith
+        have hOmstep : xiMassCausticFrequency a ^ (2 : ℕ) * 1
+            ≤ xiMassCausticFrequency a ^ (2 : ℕ) * (1 + z.re) ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left hge1 hOm
         nlinarith [hsq, hOmstep]
-      have hstep : ‖z ^ 2 + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ 2‖ ^ (2 * N)
-          ≤ ((1 + xiMassCausticFrequency a ^ 2) * (1 + z.re) ^ 2) ^ (2 * N) :=
+      have hstep : ‖z ^ (2 : ℕ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ (2 : ℕ)‖ ^ (2 * N)
+          ≤ ((1 + xiMassCausticFrequency a ^ (2 : ℕ)) * (1 + z.re) ^ (2 : ℕ)) ^ (2 * N) :=
         pow_le_pow_left₀ (norm_nonneg _) hbase _
       rw [xiMassCausticJet, norm_pow]
       refine hstep.trans (le_of_eq ?_)

@@ -73,14 +73,14 @@ theorem indexedOscillatorProfile_even (n : ℕ) (a : ProlatePositiveAperture) :
 theorem signedModeRadialData_R_band
     {a : ℝ} (ha : 0 < a) (n : ℕ) : ∀ x : ℝ,
     bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a n).R x =
-      evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x := by
+      evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x := by
   have h := signedModeRadialData_isExact_of_pos ha n
   rw [h.2.2.2.2.1]
   exact bandTransform_endpointNormalize_eigen h.2.2.2.2.2.2.2.2.1
 
 theorem indexedOscillatorProfile_window_package
     (n : ℕ) (a : ProlatePositiveAperture) {K : ℝ} (hK : 0 < K)
-    (hcK : 2 * K ^ 2 ≤ indexedOscillatorBandwidth a) :
+    (hcK : 2 * K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a) :
     (∀ x ∈ Icc (0 : ℝ) K,
       indexedOscillatorProfileDeriv2 n a x =
         rescaledProlateP (indexedOscillatorBandwidth a) (indexedOscillatorSeparation n a) x *
@@ -117,7 +117,7 @@ theorem eventually_indexedOscillatorProfile_windowBound
     (hm : m ≤ M) (hc : Tendsto indexedOscillatorBandwidth L atTop)
     {K : ℝ} (hK : 0 < K) :
     ∀ᶠ a in L, 0 < indexedOscillatorBandwidth a ∧
-      2 * K ^ 2 ≤ indexedOscillatorBandwidth a ∧
+      2 * K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a ∧
       (∀ x ∈ Icc (0 : ℝ) K,
         indexedOscillatorProfileDeriv2 n a x =
           rescaledProlateP (indexedOscillatorBandwidth a)
@@ -131,13 +131,13 @@ theorem eventually_indexedOscillatorProfile_windowBound
   have hmUpper : m < M + 1 := by linarith
   have hmuUpper : ∀ᶠ a in L, indexedOscillatorSeparation n a < M + 1 :=
     hmu.eventually (Iio_mem_nhds hmUpper)
-  let A : ℝ := max (2 * K ^ 2)
-    (max (2 * (K ^ 2 * (K ^ 2 + 1))) (4 * K))
+  let A : ℝ := max (2 * K ^ (2 : ℕ))
+    (max (2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1))) (4 * K))
   have hcLarge : ∀ᶠ a in L, A ≤ indexedOscillatorBandwidth a :=
     hc.eventually (eventually_ge_atTop A)
   filter_upwards [hmuUpper, hcLarge] with a hmuA hcA
   have hcpos := indexedOscillatorBandwidth_pos a
-  have hcK : 2 * K ^ 2 ≤ indexedOscillatorBandwidth a :=
+  have hcK : 2 * K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a :=
     (le_max_left _ _).trans hcA
   obtain ⟨hode, hzero, hzero'⟩ := indexedOscillatorProfile_window_package n a hK hcK
   have hmuNonneg : 0 ≤ indexedOscillatorSeparation n a := by
@@ -146,13 +146,13 @@ theorem eventually_indexedOscillatorProfile_windowBound
   have habs : |indexedOscillatorSeparation n a - 1| ≤ M + 2 := by
     rw [abs_le]
     constructor <;> linarith
-  have hnum : 2 * (K ^ 2 * (K ^ 2 + 1)) ≤ indexedOscillatorBandwidth a :=
+  have hnum : 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1)) ≤ indexedOscillatorBandwidth a :=
     calc
-      2 * (K ^ 2 * (K ^ 2 + 1)) ≤
-          max (2 * (K ^ 2 * (K ^ 2 + 1))) (4 * K) := le_max_left _ _
+      2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1)) ≤
+          max (2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1))) (4 * K) := le_max_left _ _
       _ ≤ A := le_max_right _ _
       _ ≤ indexedOscillatorBandwidth a := hcA
-  have hfrac : 2 * (K ^ 2 * (K ^ 2 + 1)) / indexedOscillatorBandwidth a ≤ 1 := by
+  have hfrac : 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1)) / indexedOscillatorBandwidth a ≤ 1 := by
     rw [div_le_one hcpos]
     exact hnum
   have hepsP : prolateWindowEpsP (indexedOscillatorBandwidth a)
@@ -162,7 +162,7 @@ theorem eventually_indexedOscillatorProfile_windowBound
     linarith
   have hfour : 4 * K ≤ indexedOscillatorBandwidth a :=
     calc
-      4 * K ≤ max (2 * (K ^ 2 * (K ^ 2 + 1))) (4 * K) := le_max_right _ _
+      4 * K ≤ max (2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + 1))) (4 * K) := le_max_right _ _
       _ ≤ A := le_max_right _ _
       _ ≤ indexedOscillatorBandwidth a := hcA
   have hepsQ : prolateWindowEpsQ (indexedOscillatorBandwidth a) K ≤ 1 := by
@@ -192,15 +192,15 @@ theorem eventually_indexedOscillatorProfile_windowBound
 
 theorem normalizedProlate_total_mass_le_of_windowPhase
     {c mu chi K B : ℝ} {Phi : ℝ → ℝ}
-    (hc : 0 < c) (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hc : 0 < c) (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (heven : Function.Even Phi)
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
     (hmuval : mu = c * radialSeparationRatio c chi)
     (hB : ∀ x ∈ Icc (0 : ℝ) K,
       max |normalizedProlateProfile c Phi x| |normalizedProlateDeriv c Phi x| ≤ B) :
-    (∫ x in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi x) ^ 2) *
-        (1 - mu / K ^ 2) ≤ 2 * K * B ^ 2 := by
+    (∫ x in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi x) ^ (2 : ℕ)) *
+        (1 - mu / K ^ (2 : ℕ)) ≤ 2 * K * B ^ (2 : ℕ) := by
   have hprofileEven : Function.Even (normalizedProlateProfile c Phi) :=
     even_normalizedProlateProfile heven
   have hBfull : ∀ x ∈ Icc (-K) K, |normalizedProlateProfile c Phi x| ≤ B :=
@@ -208,12 +208,12 @@ theorem normalizedProlate_total_mass_le_of_windowPhase
       (fun x hx => le_trans (le_max_left _ _) (hB x hx))
   have hKS : K ≤ Real.sqrt c := by
     calc
-      K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+      K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt c := Real.sqrt_le_sqrt (by nlinarith [sq_nonneg K])
   have hmom : (∫ x in (-Real.sqrt c)..(Real.sqrt c),
-      x ^ 2 * (normalizedProlateProfile c Phi x) ^ 2) ≤
+      x ^ (2 : ℕ) * (normalizedProlateProfile c Phi x) ^ (2 : ℕ)) ≤
       mu * ∫ x in (-Real.sqrt c)..(Real.sqrt c),
-        (normalizedProlateProfile c Phi x) ^ 2 := by
+        (normalizedProlateProfile c Phi x) ^ (2 : ℕ) := by
     rw [hmuval]
     exact normalizedProlate_secondMoment_le hc hsm (fun x _ => heig x)
   exact total_mass_le_of_window_bound hK hKS
@@ -246,16 +246,16 @@ theorem integral_signedModeRadialData_R_mul_eq_zero_of_ne
       exact one_ne_zero hz)
     (signedModeRadialData_R_band ha n)
   have hfmEig : bandOperatorL2 (signedModeRadialBandwidth a) fm =
-      evenProlateSignedValue a m ^ 2 • fm :=
+      evenProlateSignedValue a m ^ (2 : ℕ) • fm :=
     bandOperatorL2_bandClass_eq_smul_of_global_band_eigen
       (signedModeRadialData_isExact_of_pos ha m).2.2.2.2.2.1.continuous
       (signedModeRadialData_R_band ha m)
   have hfnEig : bandOperatorL2 (signedModeRadialBandwidth a) fn =
-      evenProlateSignedValue a n ^ 2 • fn :=
+      evenProlateSignedValue a n ^ (2 : ℕ) • fn :=
     bandOperatorL2_bandClass_eq_smul_of_global_band_eigen
       (signedModeRadialData_isExact_of_pos ha n).2.2.2.2.2.1.continuous
       (signedModeRadialData_R_band ha n)
-  have hvalNe : evenProlateSignedValue a m ^ 2 ≠ evenProlateSignedValue a n ^ 2 :=
+  have hvalNe : evenProlateSignedValue a m ^ (2 : ℕ) ≠ evenProlateSignedValue a n ^ (2 : ℕ) :=
     fun h => hmn (evenProlateSignedValue_sq_injective ha h)
   have horth := inner_eq_zero_of_hasEigenvector_of_ne
     (_root_.RHTower.isSymmetric_bandOperatorL2 (signedModeRadialBandwidth a))
@@ -270,12 +270,12 @@ theorem integral_signedModeRadialData_R_mul_eq_zero_of_ne
 
 def indexedOscillatorTotalMass (n : ℕ) (a : ProlatePositiveAperture) : ℝ :=
   ∫ x in (-Real.sqrt (indexedOscillatorBandwidth a))..
-      (Real.sqrt (indexedOscillatorBandwidth a)), (indexedOscillatorProfile n a x) ^ 2
+      (Real.sqrt (indexedOscillatorBandwidth a)), (indexedOscillatorProfile n a x) ^ (2 : ℕ)
 
 def indexedOscillatorSecondMoment (n : ℕ) (a : ProlatePositiveAperture) : ℝ :=
   ∫ x in (-Real.sqrt (indexedOscillatorBandwidth a))..
       (Real.sqrt (indexedOscillatorBandwidth a)),
-    x ^ 2 * (indexedOscillatorProfile n a x) ^ 2
+    x ^ (2 : ℕ) * (indexedOscillatorProfile n a x) ^ (2 : ℕ)
 
 theorem indexedOscillatorTotalMass_nonneg (n : ℕ) (a : ProlatePositiveAperture) :
     0 ≤ indexedOscillatorTotalMass n a := by
@@ -313,14 +313,14 @@ theorem false_of_canonicalIndexedProlate_limits_below
   let B : ℝ → ℝ := indexedOscillatorWindowBound M
   let K₀ : ℝ := M + 2
   let B₀ : ℝ := B K₀
-  let N : ℝ := 4 * K₀ * B₀ ^ 2
+  let N : ℝ := 4 * K₀ * B₀ ^ (2 : ℕ)
   let C : ℝ := (M + 1) * N
   have hK₀ : 0 < K₀ := by dsimp [K₀]; linarith
   have hB : ∀ K, 0 < K → 0 ≤ B K := by
     intro K hK
     exact indexedOscillatorWindowBound_nonneg M K
   have hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ a in L,
-      0 < indexedOscillatorBandwidth a ∧ 2 * K ^ 2 ≤ indexedOscillatorBandwidth a ∧
+      0 < indexedOscillatorBandwidth a ∧ 2 * K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a ∧
       (∀ x ∈ Icc (0 : ℝ) K,
         indexedOscillatorProfileDeriv2 (k : ℕ) a x =
           rescaledProlateP (indexedOscillatorBandwidth a)
@@ -360,16 +360,16 @@ theorem false_of_canonicalIndexedProlate_limits_below
       hwa.2.2.2.1
     have hmuNonneg : 0 ≤ indexedOscillatorSeparation (k : ℕ) a := by
       exact mul_nonneg (indexedOscillatorBandwidth_pos a).le hD.2.2.2.2.2.2.2.2.2.2.2.1
-    have hratio : indexedOscillatorSeparation (k : ℕ) a / K₀ ^ 2 ≤ 1 / 2 := by
+    have hratio : indexedOscillatorSeparation (k : ℕ) a / K₀ ^ (2 : ℕ) ≤ 1 / 2 := by
       rw [div_le_iff₀ (sq_pos_of_pos hK₀)]
       dsimp [K₀]
       nlinarith [sq_nonneg M]
-    have hfactor : 1 / 2 ≤ 1 - indexedOscillatorSeparation (k : ℕ) a / K₀ ^ 2 := by
+    have hfactor : 1 / 2 ≤ 1 - indexedOscillatorSeparation (k : ℕ) a / K₀ ^ (2 : ℕ) := by
       linarith
     have hmassNonneg := indexedOscillatorTotalMass_nonneg (k : ℕ) a
     have hmassIneq' : indexedOscillatorTotalMass (k : ℕ) a *
-        (1 - indexedOscillatorSeparation (k : ℕ) a / K₀ ^ 2) ≤
-          2 * K₀ * B₀ ^ 2 := by
+        (1 - indexedOscillatorSeparation (k : ℕ) a / K₀ ^ (2 : ℕ)) ≤
+          2 * K₀ * B₀ ^ (2 : ℕ) := by
       simpa [indexedOscillatorTotalMass, indexedOscillatorProfile, B₀, B]
         using hmassIneq
     dsimp [N]
@@ -379,8 +379,8 @@ theorem false_of_canonicalIndexedProlate_limits_below
         indexedOscillatorProfile (k : ℕ) a x *
           indexedOscillatorProfile (k : ℕ) a x) ≤ N := by
     intro k K hK
-    have hcK : ∀ᶠ a in L, K ^ 2 ≤ indexedOscillatorBandwidth a :=
-      hc.eventually (eventually_ge_atTop (K ^ 2))
+    have hcK : ∀ᶠ a in L, K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a :=
+      hc.eventually (eventually_ge_atTop (K ^ (2 : ℕ)))
     filter_upwards [htotal k, hcK] with a htot hca
     have hKsqrt : K ≤ Real.sqrt (indexedOscillatorBandwidth a) := by
       rw [← Real.sqrt_sq hK.le]
@@ -394,10 +394,10 @@ theorem false_of_canonicalIndexedProlate_limits_below
   have hpair : ∀ k l : Fin (j + 1), k ≠ l → ∀ K : ℝ, 0 < K → ∀ᶠ a in L,
       |∫ x in (-K)..K,
         indexedOscillatorProfile (k : ℕ) a x * indexedOscillatorProfile (l : ℕ) a x| ≤
-          C / K ^ 2 := by
+          C / K ^ (2 : ℕ) := by
     intro k l hkl K hK
-    have hcK : ∀ᶠ a in L, K ^ 2 ≤ indexedOscillatorBandwidth a :=
-      hc.eventually (eventually_ge_atTop (K ^ 2))
+    have hcK : ∀ᶠ a in L, K ^ (2 : ℕ) ≤ indexedOscillatorBandwidth a :=
+      hc.eventually (eventually_ge_atTop (K ^ (2 : ℕ)))
     have hmkUpper : ∀ᶠ a in L, indexedOscillatorSeparation (k : ℕ) a ≤ M + 1 :=
       (hmu k).eventually (Iic_mem_nhds (by linarith [hmle k]))
     have hmlUpper : ∀ᶠ a in L, indexedOscillatorSeparation (l : ℕ) a ≤ M + 1 :=
@@ -436,21 +436,21 @@ theorem false_of_canonicalIndexedProlate_limits_below
     rw [horth, zero_sub, abs_neg] at htail
     have htail' : |∫ x in (-K)..K,
         indexedOscillatorProfile (k : ℕ) a x * indexedOscillatorProfile (l : ℕ) a x| ≤
-        (1 / (2 * K ^ 2)) *
+        (1 / (2 * K ^ (2 : ℕ))) *
           (indexedOscillatorSecondMoment (k : ℕ) a +
             indexedOscillatorSecondMoment (l : ℕ) a) := by
       simpa [indexedOscillatorSecondMoment, indexedOscillatorProfile] using htail
-    have hKsq : 0 < K ^ 2 := sq_pos_of_pos hK
+    have hKsq : 0 < K ^ (2 : ℕ) := sq_pos_of_pos hK
     calc
       |∫ x in (-K)..K,
           indexedOscillatorProfile (k : ℕ) a x * indexedOscillatorProfile (l : ℕ) a x|
-          ≤ (1 / (2 * K ^ 2)) *
+          ≤ (1 / (2 * K ^ (2 : ℕ))) *
             (indexedOscillatorSecondMoment (k : ℕ) a +
               indexedOscillatorSecondMoment (l : ℕ) a) := htail'
-      _ ≤ (1 / (2 * K ^ 2)) * (2 * ((M + 1) * N)) := by
+      _ ≤ (1 / (2 * K ^ (2 : ℕ))) * (2 * ((M + 1) * N)) := by
         gcongr
         linarith
-      _ = C / K ^ 2 := by
+      _ = C / K ^ (2 : ℕ) := by
         dsimp [C]
         field_simp
   exact false_of_orthogonal_prolateFamily_below_windowBound

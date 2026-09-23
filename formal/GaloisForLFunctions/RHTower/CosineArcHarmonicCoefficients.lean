@@ -51,7 +51,7 @@ theorem sin_two_mul_mul_sin (j θ : ℝ) :
 /-- **The sweep integral.** -/
 theorem integral_sin_harmonic_mul_sin {j : ℕ} (hj : 1 ≤ j) :
     ∫ θ in (0 : ℝ)..(π / 2), Real.sin (2 * (j : ℝ) * θ) * Real.sin θ =
-      (-1) ^ (j + 1) * (2 * (j : ℝ)) / (4 * (j : ℝ) ^ 2 - 1) := by
+      (-1) ^ (j + 1) * (2 * (j : ℝ)) / (4 * (j : ℝ) ^ (2 : ℕ) - 1) := by
   have hjR : (1 : ℝ) ≤ j := by exact_mod_cast hj
   have ha : (2 * (j : ℝ) - 1) ≠ 0 := by linarith
   have hb : (2 * (j : ℝ) + 1) ≠ 0 := by linarith
@@ -76,16 +76,16 @@ theorem integral_sin_harmonic_mul_sin {j : ℕ} (hj : 1 ≤ j) :
     have : (2 * (j : ℝ) + 1) * (π / 2) = (j : ℕ) * π + π / 2 := by ring
     rw [this, Real.sin_add_pi_div_two, Real.cos_nat_mul_pi]
   rw [h1, h2]
-  have hden : (4 * (j : ℝ) ^ 2 - 1) = (2 * (j : ℝ) - 1) * (2 * (j : ℝ) + 1) := by ring
+  have hden : (4 * (j : ℝ) ^ (2 : ℕ) - 1) = (2 * (j : ℝ) - 1) * (2 * (j : ℝ) + 1) := by ring
   rw [hden]
   field_simp
   ring
 
 /-- The sweep coefficient is never zero and has modulus at least `1/(2j)`. -/
 theorem abs_sweep_coefficient_ge {j : ℕ} (hj : 1 ≤ j) :
-    1 / (2 * (j : ℝ)) ≤ |(-1) ^ (j + 1) * (2 * (j : ℝ)) / (4 * (j : ℝ) ^ 2 - 1)| := by
+    1 / (2 * (j : ℝ)) ≤ |(-1) ^ (j + 1) * (2 * (j : ℝ)) / (4 * (j : ℝ) ^ (2 : ℕ) - 1)| := by
   have hjR : (1 : ℝ) ≤ j := by exact_mod_cast hj
-  have hpos : 0 < 4 * (j : ℝ) ^ 2 - 1 := by nlinarith
+  have hpos : 0 < 4 * (j : ℝ) ^ (2 : ℕ) - 1 := by nlinarith
   rw [abs_div, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul,
     abs_of_pos (by positivity : (0 : ℝ) < 2 * j), abs_of_pos hpos]
   rw [div_le_div_iff₀ (by positivity) hpos]

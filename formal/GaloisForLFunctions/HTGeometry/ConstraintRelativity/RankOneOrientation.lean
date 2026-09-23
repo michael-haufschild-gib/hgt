@@ -193,7 +193,7 @@ theorem inner_transverse_portAxis {M : V →ₗ[ℝ] ℝ} (hM : M ≠ 0) (x : V)
   ring
 
 /-- The perturbed quadratic form `Q(x) = ⟪x,x⟫ + Γ·M(x)²`. -/
-noncomputable def portForm (M : V →ₗ[ℝ] ℝ) (Γ : ℝ) (x : V) : ℝ := ⟪x, x⟫_ℝ + Γ * (M x) ^ 2
+noncomputable def portForm (M : V →ₗ[ℝ] ℝ) (Γ : ℝ) (x : V) : ℝ := ⟪x, x⟫_ℝ + Γ * (M x) ^ (2 : ℕ)
 
 /-- The coefficient of the port direction after diagonalization: `Ω = c⁻¹ + Γ`. -/
 noncomputable def portOmega (M : V →ₗ[ℝ] ℝ) (Γ : ℝ) : ℝ := (portScale M)⁻¹ + Γ
@@ -202,9 +202,9 @@ noncomputable def portOmega (M : V →ₗ[ℝ] ℝ) (Γ : ℝ) : ℝ := (portSca
 form is the positive transverse form plus `Ω·M(x)²`. -/
 theorem portForm_eq {M : V →ₗ[ℝ] ℝ} (hM : M ≠ 0) (Γ : ℝ) (x : V) :
     portForm M Γ x
-      = ⟪x - M x • portAxis M, x - M x • portAxis M⟫_ℝ + portOmega M Γ * (M x) ^ 2 := by
+      = ⟪x - M x • portAxis M, x - M x • portAxis M⟫_ℝ + portOmega M Γ * (M x) ^ (2 : ℕ) := by
   have hexp : ⟪x - M x • portAxis M, x - M x • portAxis M⟫_ℝ
-      = ⟪x, x⟫_ℝ - (portScale M)⁻¹ * (M x) ^ 2 := by
+      = ⟪x, x⟫_ℝ - (portScale M)⁻¹ * (M x) ^ (2 : ℕ) := by
     simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right,
       inner_portAxis_right, inner_portAxis_left, map_smul, smul_eq_mul, map_portAxis hM]
     ring
@@ -241,12 +241,12 @@ theorem portForm_pos_of_omega_pos {M : V →ₗ[ℝ] ℝ} (hM : M ≠ 0) {Γ : �
     rw [hz, h]
     simpa using real_inner_self_pos.2 hx
   · have h1 : 0 ≤ ⟪x - M x • portAxis M, x - M x • portAxis M⟫_ℝ := real_inner_self_nonneg
-    have hsq : 0 < (M x) ^ 2 := by
+    have hsq : 0 < (M x) ^ (2 : ℕ) := by
       rcases lt_trichotomy (M x) 0 with h' | h' | h'
       · nlinarith
       · exact absurd h' h
       · nlinarith
-    have h2 : 0 < portOmega M Γ * (M x) ^ 2 := mul_pos hΩ hsq
+    have h2 : 0 < portOmega M Γ * (M x) ^ (2 : ℕ) := mul_pos hΩ hsq
     linarith
 
 /-- Null phase `Ω = 0`: the radical of the perturbed form is exactly the port axis. -/
@@ -350,7 +350,7 @@ theorem eq_portReflect {M : V →ₗ[ℝ] ℝ} (hM : M ≠ 0) (S : V →ₗ[ℝ]
 /-- Every reader built from the transverse form, the squared port, or the perturbed form is
 reflection invariant, hence blind to the sign of the port. -/
 theorem sq_map_portReflect {M : V →ₗ[ℝ] ℝ} (hM : M ≠ 0) (x : V) :
-    (M (portReflect M x)) ^ 2 = (M x) ^ 2 := by
+    (M (portReflect M x)) ^ (2 : ℕ) = (M x) ^ (2 : ℕ) := by
   rw [map_portReflect hM]; ring
 
 /-- Positivity alone does not erase orientation: `exp ∘ M` is positive and separates `x` from its
@@ -368,14 +368,14 @@ end RankOneInertia
 section ReciprocalFlow
 
 /-- A general binary quadratic form. -/
-noncomputable def binQuad (A B D a b : ℝ) : ℝ := A * a ^ 2 + 2 * B * (a * b) + D * b ^ 2
+noncomputable def binQuad (A B D a b : ℝ) : ℝ := A * a ^ (2 : ℕ) + 2 * B * (a * b) + D * b ^ (2 : ℕ)
 
 /-- **The reciprocal invariance no-go, diagonal part.**  A quadratic form invariant under the
 reciprocal flow `(a,b) ↦ (e^{sμ}a, e^{−sμ}b)` has no diagonal terms. -/
 theorem binQuad_diag_eq_zero {μ A B D : ℝ} (hμ : μ ≠ 0)
     (h : ∀ s a b : ℝ, binQuad A B D (Real.exp (s * μ) * a) (Real.exp (-(s * μ)) * b)
       = binQuad A B D a b) : A = 0 ∧ D = 0 := by
-  have hexp : Real.exp (1 * μ) ^ 2 ≠ 1 := by
+  have hexp : Real.exp (1 * μ) ^ (2 : ℕ) ≠ 1 := by
     intro hcon
     have hpos : (0:ℝ) < Real.exp (1 * μ) := Real.exp_pos _
     have : Real.exp (1 * μ) = 1 := by
@@ -386,20 +386,20 @@ theorem binQuad_diag_eq_zero {μ A B D : ℝ} (hμ : μ ≠ 0)
   · have := h 1 1 0
     simp only [binQuad, mul_zero, mul_one, zero_pow, ne_eq, OfNat.ofNat_ne_zero,
       not_false_eq_true] at this
-    have h2 : A * (Real.exp (1 * μ) ^ 2 - 1) = 0 := by nlinarith [this]
+    have h2 : A * (Real.exp (1 * μ) ^ (2 : ℕ) - 1) = 0 := by nlinarith [this]
     rcases mul_eq_zero.1 h2 with h3 | h3
     · exact h3
-    · exact absurd (by linarith : Real.exp (1 * μ) ^ 2 = 1) hexp
+    · exact absurd (by linarith : Real.exp (1 * μ) ^ (2 : ℕ) = 1) hexp
   · have := h 1 0 1
     simp only [binQuad, mul_zero, mul_one, zero_mul, zero_pow, ne_eq, OfNat.ofNat_ne_zero,
       not_false_eq_true] at this
-    have hne : Real.exp (-(1 * μ)) ^ 2 - 1 ≠ 0 := by
+    have hne : Real.exp (-(1 * μ)) ^ (2 : ℕ) - 1 ≠ 0 := by
       intro hcon
       apply hexp
       have hmul : Real.exp (1 * μ) * Real.exp (-(1 * μ)) = 1 := by
         rw [← Real.exp_add]; simp
       nlinarith [hmul, hcon, Real.exp_pos (1 * μ), Real.exp_pos (-(1 * μ))]
-    have h2 : D * (Real.exp (-(1 * μ)) ^ 2 - 1) = 0 := by nlinarith [this]
+    have h2 : D * (Real.exp (-(1 * μ)) ^ (2 : ℕ) - 1) = 0 := by nlinarith [this]
     rcases mul_eq_zero.1 h2 with h3 | h3
     · exact h3
     · exact absurd h3 hne
@@ -428,13 +428,13 @@ section TwoPortCountermodel
 /-- With two independent ports the rank-one conclusion fails: `P − 2M₁² − 2M₂²` is negative
 definite on a two-dimensional space. -/
 theorem two_port_negative_definite (x : Fin 2 → ℝ) :
-    ((x 0) ^ 2 + (x 1) ^ 2) - 2 * (x 0) ^ 2 - 2 * (x 1) ^ 2 = -((x 0) ^ 2 + (x 1) ^ 2) := by
+    ((x 0) ^ (2 : ℕ) + (x 1) ^ (2 : ℕ)) - 2 * (x 0) ^ (2 : ℕ) - 2 * (x 1) ^ (2 : ℕ) = -((x 0) ^ (2 : ℕ) + (x 1) ^ (2 : ℕ)) := by
   ring
 
 /-- The nonpositive locus of the two-port form is all of a two-dimensional space, so the rank-one
 inertia bound is genuinely a one-port statement. -/
 theorem two_port_nonpos (x : Fin 2 → ℝ) :
-    ((x 0) ^ 2 + (x 1) ^ 2) - 2 * (x 0) ^ 2 - 2 * (x 1) ^ 2 ≤ 0 := by
+    ((x 0) ^ (2 : ℕ) + (x 1) ^ (2 : ℕ)) - 2 * (x 0) ^ (2 : ℕ) - 2 * (x 1) ^ (2 : ℕ) ≤ 0 := by
   rw [two_port_negative_definite]
   nlinarith [sq_nonneg (x 0), sq_nonneg (x 1)]
 

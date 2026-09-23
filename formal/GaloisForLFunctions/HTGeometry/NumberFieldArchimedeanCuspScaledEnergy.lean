@@ -19,10 +19,10 @@ theorem numberFieldArchimedeanEnergy_fieldScalarCoordinate
     numberFieldArchimedeanEnergy A
         (numberFieldVectorEmbedding (fun i => if i = j then s else 0)) =
       (∑ w : {w : InfinitePlace K // w.IsReal},
-        (w.1 s) ^ 2 *
+        (w.1 s) ^ (2 : ℕ) *
           (A.1.1 w : Matrix (Fin n) (Fin n) ℝ) j j) +
       ∑ w : {w : InfinitePlace K // w.IsComplex},
-        (w.1 s) ^ 2 *
+        (w.1 s) ^ (2 : ℕ) *
           ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ) j j).re := by
   unfold numberFieldArchimedeanEnergy
   congr 1
@@ -39,13 +39,13 @@ theorem numberFieldArchimedeanEnergy_fieldScalarCoordinate
     rw [hz]
     simp only [dotProduct, Matrix.mulVec_single]
     rw [Finset.sum_eq_single j]
-    · have hn : ‖w.1.embedding s‖ ^ 2 =
-          (w.1.embedding_of_isReal w.2 s) ^ 2 := by
+    · have hn : ‖w.1.embedding s‖ ^ (2 : ℕ) =
+          (w.1.embedding_of_isReal w.2 s) ^ (2 : ℕ) := by
         rw [Complex.sq_norm]
         rw [← w.1.embedding_of_isReal_apply w.2 s]
         change (w.1.embedding_of_isReal w.2 s) *
             (w.1.embedding_of_isReal w.2 s) + 0 * 0 =
-          (w.1.embedding_of_isReal w.2 s) ^ 2
+          (w.1.embedding_of_isReal w.2 s) ^ (2 : ℕ)
         ring
       rw [← w.1.norm_embedding_eq s, hn]
       simp
@@ -92,12 +92,12 @@ theorem numberFieldArchimedeanEnergy_fieldScalarCoordinate_eq_weight_sum
     numberFieldArchimedeanEnergy A
         (numberFieldVectorEmbedding (fun i => if i = j then s else 0)) =
       ∑ w : InfinitePlace K,
-        numberFieldArchimedeanJacobiWeight J j w * (w s) ^ 2 := by
+        numberFieldArchimedeanJacobiWeight J j w * (w s) ^ (2 : ℕ) := by
   rw [numberFieldArchimedeanEnergy_fieldScalarCoordinate]
   let g : {w : InfinitePlace K // w.IsReal} ⊕
       {w : InfinitePlace K // w.IsComplex} → ℝ
-    | Sum.inl w => J.realD w j * (w.1 s) ^ 2
-    | Sum.inr w => (J.complexD w j).re * (w.1 s) ^ 2
+    | Sum.inl w => J.realD w j * (w.1 s) ^ (2 : ℕ)
+    | Sum.inr w => (J.complexD w j).re * (w.1 s) ^ (2 : ℕ)
   have hreal (w : {w : InfinitePlace K // w.IsReal}) :
       (A.1.1 w : Matrix (Fin n) (Fin n) ℝ) j j = J.realD w j := by
     rw [← J.realJacobiData_form]
@@ -108,13 +108,13 @@ theorem numberFieldArchimedeanEnergy_fieldScalarCoordinate_eq_weight_sum
     rw [← J.complexJacobiData_form]
     exact (J.complexJacobiData w).form_diag_zero hj
   rw [show (∑ w : {w : InfinitePlace K // w.IsReal},
-        (w.1 s) ^ 2 * (A.1.1 w : Matrix (Fin n) (Fin n) ℝ) j j) =
+        (w.1 s) ^ (2 : ℕ) * (A.1.1 w : Matrix (Fin n) (Fin n) ℝ) j j) =
       ∑ w : {w : InfinitePlace K // w.IsReal}, g (Sum.inl w) by
         apply Finset.sum_congr rfl
         intro w hw
         simp [g, hreal w, mul_comm],
     show (∑ w : {w : InfinitePlace K // w.IsComplex},
-        (w.1 s) ^ 2 * ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ) j j).re) =
+        (w.1 s) ^ (2 : ℕ) * ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ) j j).re) =
       ∑ w : {w : InfinitePlace K // w.IsComplex}, g (Sum.inr w) by
         apply Finset.sum_congr rfl
         intro w hw
@@ -140,7 +140,7 @@ theorem numberFieldRankTwoCuspChart_scaled_energy_eq_weight_sum
     numberFieldArchimedeanEnergy B
         (numberFieldVectorEmbedding (fun i => s * v i)) =
       ∑ w : InfinitePlace K,
-        numberFieldArchimedeanJacobiWeight J (0 : Fin 2) w * (w s) ^ 2 := by
+        numberFieldArchimedeanJacobiWeight J (0 : Fin 2) w * (w s) ^ (2 : ℕ) := by
   let F := numberFieldRankTwoCuspFrame K v hv
   have hF : F.det = 1 := numberFieldRankTwoCuspFrame_det K v hv
   let b : Fin 2 → K := fun i => if i = 0 then s else 0

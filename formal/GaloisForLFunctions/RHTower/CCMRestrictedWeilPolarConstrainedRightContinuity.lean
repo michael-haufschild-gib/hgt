@@ -57,9 +57,9 @@ theorem IsPolarConstrained.smul {a : SuzukiPositiveAperture} {u : CCMArchimedean
 /-- **A constrained Rayleigh floor is antitone in the aperture.** -/
 theorem polarConstrained_floor_of_le {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) {m : ℝ}
     (hb : ∀ v : CCMArchimedeanFormDomain b, IsPolarConstrained b v →
-      m * ‖ccmArchimedeanFormToAperture b v‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic b v)
+      m * ‖ccmArchimedeanFormToAperture b v‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic b v)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u) :
-    m * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a u := by
+    m * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic a u := by
   obtain ⟨v, hvu⟩ := exists_ccmArchimedeanFormDomain_extension hab u
   have hv : IsPolarConstrained b v := (isPolarConstrained_iff_of_val_eq hab hvu).mpr hu
   have h := hb v hv
@@ -76,11 +76,11 @@ theorem ccmRestrictedWeilSourceQuadratic_zero (a : SuzukiPositiveAperture) :
 /-- **Right continuity of the constrained floor along the canonical right apertures.** -/
 theorem exists_polarConstrained_floor_suzukiRightAperture (a : SuzukiPositiveAperture) {m : ℝ}
     (hm : ∀ u : CCMArchimedeanFormDomain a, IsPolarConstrained a u →
-      m * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a u)
+      m * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic a u)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ k : ℕ, ∀ v : CCMArchimedeanFormDomain (suzukiRightAperture a k),
       IsPolarConstrained (suzukiRightAperture a k) v →
-        (m - ε) * ‖ccmArchimedeanFormToAperture (suzukiRightAperture a k) v‖ ^ 2 ≤
+        (m - ε) * ‖ccmArchimedeanFormToAperture (suzukiRightAperture a k) v‖ ^ (2 : ℕ) ≤
           ccmRestrictedWeilSourceQuadratic (suzukiRightAperture a k) v := by
   by_contra hnone
   push Not at hnone
@@ -119,7 +119,7 @@ theorem exists_polarConstrained_floor_suzukiRightAperture (a : SuzukiPositiveApe
     rw [ccmRestrictedWeilSourceQuadratic_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (hr k), inv_pow]
     have hk := hvQ k
-    have hrpos : 0 < ‖ccmArchimedeanFormToAperture (suzukiRightAperture a k) (v k)‖ ^ 2 :=
+    have hrpos : 0 < ‖ccmArchimedeanFormToAperture (suzukiRightAperture a k) (v k)‖ ^ (2 : ℕ) :=
       pow_pos (hr k) 2
     rw [inv_mul_lt_iff₀ hrpos]
     linarith
@@ -146,7 +146,7 @@ theorem exists_polarConstrained_floor_suzukiRightAperture (a : SuzukiPositiveApe
     have hb := ccmArchimedeanFormNorm_sq_le_source_add_remainder_norm_mass b (e k)
     rw [henorm k] at hb
     simp only [one_pow, mul_one] at hb
-    have hsq : ‖(e k).1‖ ^ 2 ≤ max 0 (m - ε + ‖ccmRestrictedWeilBoundedRemainder b‖) :=
+    have hsq : ‖(e k).1‖ ^ (2 : ℕ) ≤ max 0 (m - ε + ‖ccmRestrictedWeilBoundedRemainder b‖) :=
       hb.trans (le_max_of_le_right (by linarith [heQ k]))
     have hnonneg : 0 ≤ max 0 (m - ε + ‖ccmRestrictedWeilBoundedRemainder b‖) := le_max_left _ _
     have hsqrt : 0 ≤ radius := Real.sqrt_nonneg _
@@ -235,11 +235,11 @@ theorem exists_polarConstrained_floor_suzukiRightAperture (a : SuzukiPositiveApe
 /-- **Right continuity of the constrained floor on an aperture interval.** -/
 theorem exists_polarConstrained_floor_right (a : SuzukiPositiveAperture) {m : ℝ}
     (hm : ∀ u : CCMArchimedeanFormDomain a, IsPolarConstrained a u →
-      m * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a u)
+      m * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic a u)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ c : SuzukiPositiveAperture, c.1 ≤ a.1 + δ →
       ∀ v : CCMArchimedeanFormDomain c, IsPolarConstrained c v →
-        (m - ε) * ‖ccmArchimedeanFormToAperture c v‖ ^ 2 ≤
+        (m - ε) * ‖ccmArchimedeanFormToAperture c v‖ ^ (2 : ℕ) ≤
           ccmRestrictedWeilSourceQuadratic c v := by
   obtain ⟨k, hk⟩ := exists_polarConstrained_floor_suzukiRightAperture a hm hε
   refine ⟨1 / (k + 1 : ℝ), by positivity, fun c hc v hv => ?_⟩
@@ -253,10 +253,10 @@ coercive at `a`, it stays coercive on every aperture up to `a + δ`, the terms o
 prime powers included. -/
 theorem exists_polarConstrained_pos_floor_right (a : SuzukiPositiveAperture) {m : ℝ} (hm0 : 0 < m)
     (hm : ∀ u : CCMArchimedeanFormDomain a, IsPolarConstrained a u →
-      m * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a u) :
+      m * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic a u) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ c : SuzukiPositiveAperture, c.1 ≤ a.1 + δ →
       ∀ v : CCMArchimedeanFormDomain c, IsPolarConstrained c v →
-        (m / 2) * ‖ccmArchimedeanFormToAperture c v‖ ^ 2 ≤
+        (m / 2) * ‖ccmArchimedeanFormToAperture c v‖ ^ (2 : ℕ) ≤
           ccmRestrictedWeilSourceQuadratic c v := by
   obtain ⟨δ, hδ, h⟩ := exists_polarConstrained_floor_right a hm (half_pos hm0)
   refine ⟨δ, hδ, fun c hc v hv => ?_⟩

@@ -21,7 +21,7 @@ open RHTower.Sieve
 
 /-- Chern--Simons phase of a cyclic flat sector with quadratic linking action `q a² / p`. -/
 noncomputable def cyclicChernSimonsPhase (p q : ℕ) (a : Fin p) : ℂ :=
-  (rootOfUnity p) ^ (q * (a : ℕ) ^ 2)
+  (rootOfUnity p) ^ (q * (a : ℕ) ^ (2 : ℕ))
 
 /-- Finite flat-sector contribution of abelian Chern--Simons theory on cyclic linking data. -/
 noncomputable def cyclicChernSimonsPartition (p q : ℕ) (n : ℕ) : ℂ :=
@@ -48,13 +48,13 @@ theorem norm_cyclicChernSimonsPhase {p q : ℕ} (hp : 0 < p) (a : Fin p) :
 /-- Every cyclic flat-sector phase has torsion dividing the linking denominator. -/
 theorem cyclicChernSimonsPhase_pow_linkingOrder {p q : ℕ} (hp : 0 < p) (a : Fin p) :
     (cyclicChernSimonsPhase p q a) ^ p = 1 := by
-  change ((rootOfUnity p) ^ (q * (a : ℕ) ^ 2)) ^ p = 1
+  change ((rootOfUnity p) ^ (q * (a : ℕ) ^ (2 : ℕ))) ^ p = 1
   calc
-    ((rootOfUnity p) ^ (q * (a : ℕ) ^ 2)) ^ p =
-        (rootOfUnity p) ^ ((q * (a : ℕ) ^ 2) * p) :=
+    ((rootOfUnity p) ^ (q * (a : ℕ) ^ (2 : ℕ))) ^ p =
+        (rootOfUnity p) ^ ((q * (a : ℕ) ^ (2 : ℕ)) * p) :=
       (pow_mul _ _ _).symm
-    _ = (rootOfUnity p) ^ (p * (q * (a : ℕ) ^ 2)) := by rw [Nat.mul_comm]
-    _ = ((rootOfUnity p) ^ p) ^ (q * (a : ℕ) ^ 2) := pow_mul _ p _
+    _ = (rootOfUnity p) ^ (p * (q * (a : ℕ) ^ (2 : ℕ))) := by rw [Nat.mul_comm]
+    _ = ((rootOfUnity p) ^ p) ^ (q * (a : ℕ) ^ (2 : ℕ)) := pow_mul _ p _
     _ = 1 := by rw [(isPrimitiveRoot_rootOfUnity hp.ne').pow_eq_one, one_pow]
 
 /-- The finite abelian flat-sector partition function is exactly periodic in the level with

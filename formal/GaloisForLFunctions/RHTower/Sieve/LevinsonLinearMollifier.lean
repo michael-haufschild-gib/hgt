@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.TwistedDirichletMeanValue
 
 The linear choice `P(x) = x` has coefficient
 `mu(n) n^(-1/2) log(M/n)/log M`.  It is packaged in the positive-natural `cdpoly` convention,
-using the corpus's Barban--Vehov weight, with its exact formula and elementary `ell^1` bound.
+using the corpus's Barban--Vehov weight, with its exact formula and elementary `ell^(1 : ℕ)` bound.
 -/
 
 open Finset Complex ArithmeticFunction
@@ -55,7 +55,7 @@ theorem norm_levinsonLinearMollifierCoeff_le
   rw [abs_div, abs_of_pos hlog]
   exact mul_le_of_le_one_left (by positivity) hquot
 
-/-- `ell^1` mass of the length-`M` linear mollifier. -/
+/-- `ell^(1 : ℕ)` mass of the length-`M` linear mollifier. -/
 theorem sum_norm_levinsonLinearMollifierCoeff_le
     {M : ℕ} (hM : 1 < M) :
     ∑ n ∈ Finset.Icc 1 M, ‖levinsonLinearMollifierCoeff M n‖ ≤

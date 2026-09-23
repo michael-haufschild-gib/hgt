@@ -39,7 +39,7 @@ def deningerQ8RootNumberNegOneTopSInField : K3 :=
   41 + 6 * deningerQ8RootNumberNegOneTopY
 
 def deningerQ8RootNumberNegOneTopU : K3 :=
-  deningerQ8RootNumberNegOneTopRoot ^ 2
+  deningerQ8RootNumberNegOneTopRoot ^ (2 : ℕ)
 
 theorem deningerQ8RootNumberNegOne_second_five :
     AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial (5 : K1) =
@@ -90,19 +90,19 @@ theorem deningerQ8RootNumberNegOne_top_six :
     deningerQ8RootNumberNegOneThirdQuadraticPolynomial) 6).symm
 
 theorem deningerQ8RootNumberNegOne_topX_sq :
-    deningerQ8RootNumberNegOneTopX ^ 2 = 5 := by
+    deningerQ8RootNumberNegOneTopX ^ (2 : ℕ) = 5 := by
   unfold deningerQ8RootNumberNegOneTopX
   change (AdjoinRoot.of deningerQ8RootNumberNegOneThirdQuadraticPolynomial
       (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial
-        deningerQ8RootNumberNegOneFirstQuadraticRoot)) ^ 2 = 5
+        deningerQ8RootNumberNegOneFirstQuadraticRoot)) ^ (2 : ℕ) = 5
   rw [← map_pow, ← map_pow, deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
   rw [deningerQ8RootNumberNegOne_second_five, deningerQ8RootNumberNegOne_top_five]
 
 theorem deningerQ8RootNumberNegOne_topY_sq :
-    deningerQ8RootNumberNegOneTopY ^ 2 = 41 := by
+    deningerQ8RootNumberNegOneTopY ^ (2 : ℕ) = 41 := by
   unfold deningerQ8RootNumberNegOneTopY
   change (AdjoinRoot.of deningerQ8RootNumberNegOneThirdQuadraticPolynomial
-    deningerQ8RootNumberNegOneSecondQuadraticRoot) ^ 2 = 41
+    deningerQ8RootNumberNegOneSecondQuadraticRoot) ^ (2 : ℕ) = 41
   rw [← map_pow, deningerQ8RootNumberNegOneSecondQuadraticRoot_sq]
   rw [deningerQ8RootNumberNegOne_top_fortyOne]
 
@@ -129,57 +129,57 @@ theorem deningerQ8RootNumberNegOne_topU_eq_topR_mul_topS :
   rw [map_mul, hR, hS]
 
 theorem deningerQ8RootNumberNegOne_topRInField_quadratic_relation :
-    deningerQ8RootNumberNegOneTopRInField ^ 2 -
+    deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) -
       10 * deningerQ8RootNumberNegOneTopRInField + 20 = 0 := by
   calc
-    deningerQ8RootNumberNegOneTopRInField ^ 2 -
+    deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) -
         10 * deningerQ8RootNumberNegOneTopRInField + 20 =
-        deningerQ8RootNumberNegOneTopX ^ 2 - 5 := by
+        deningerQ8RootNumberNegOneTopX ^ (2 : ℕ) - 5 := by
       unfold deningerQ8RootNumberNegOneTopRInField
       ring
     _ = 0 := by rw [deningerQ8RootNumberNegOne_topX_sq]; norm_num
 
 theorem deningerQ8RootNumberNegOne_topSInField_quadratic_relation :
-    deningerQ8RootNumberNegOneTopSInField ^ 2 -
+    deningerQ8RootNumberNegOneTopSInField ^ (2 : ℕ) -
       82 * deningerQ8RootNumberNegOneTopSInField + 205 = 0 := by
   calc
-    deningerQ8RootNumberNegOneTopSInField ^ 2 -
+    deningerQ8RootNumberNegOneTopSInField ^ (2 : ℕ) -
         82 * deningerQ8RootNumberNegOneTopSInField + 205 =
-        36 * (deningerQ8RootNumberNegOneTopY ^ 2 - 41) := by
+        36 * (deningerQ8RootNumberNegOneTopY ^ (2 : ℕ) - 41) := by
       unfold deningerQ8RootNumberNegOneTopSInField
       ring
     _ = 0 := by rw [deningerQ8RootNumberNegOne_topY_sq]; ring
 
 theorem deningerQ8RootNumberNegOne_topU_quadratic_relation :
-    deningerQ8RootNumberNegOneTopU ^ 2 -
+    deningerQ8RootNumberNegOneTopU ^ (2 : ℕ) -
       82 * deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopU +
-        205 * deningerQ8RootNumberNegOneTopRInField ^ 2 = 0 := by
+        205 * deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) = 0 := by
   rw [deningerQ8RootNumberNegOne_topU_eq_topR_mul_topS]
   calc
-    (deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopSInField) ^ 2 -
+    (deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopSInField) ^ (2 : ℕ) -
         82 * deningerQ8RootNumberNegOneTopRInField *
           (deningerQ8RootNumberNegOneTopRInField *
             deningerQ8RootNumberNegOneTopSInField) +
-          205 * deningerQ8RootNumberNegOneTopRInField ^ 2 =
-        deningerQ8RootNumberNegOneTopRInField ^ 2 *
-          (deningerQ8RootNumberNegOneTopSInField ^ 2 -
+          205 * deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) =
+        deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) *
+          (deningerQ8RootNumberNegOneTopSInField ^ (2 : ℕ) -
             82 * deningerQ8RootNumberNegOneTopSInField + 205) := by
       ring
     _ = 0 := by
       rw [deningerQ8RootNumberNegOne_topSInField_quadratic_relation, mul_zero]
 
 theorem deningerQ8RootNumberNegOne_topU_linear_relation :
-    deningerQ8RootNumberNegOneTopU ^ 2 -
+    deningerQ8RootNumberNegOneTopU ^ (2 : ℕ) -
       82 * deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopU +
         2050 * deningerQ8RootNumberNegOneTopRInField - 4100 = 0 := by
   calc
-    deningerQ8RootNumberNegOneTopU ^ 2 -
+    deningerQ8RootNumberNegOneTopU ^ (2 : ℕ) -
         82 * deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopU +
           2050 * deningerQ8RootNumberNegOneTopRInField - 4100 =
-        (deningerQ8RootNumberNegOneTopU ^ 2 -
+        (deningerQ8RootNumberNegOneTopU ^ (2 : ℕ) -
           82 * deningerQ8RootNumberNegOneTopRInField * deningerQ8RootNumberNegOneTopU +
-          205 * deningerQ8RootNumberNegOneTopRInField ^ 2) -
-            205 * (deningerQ8RootNumberNegOneTopRInField ^ 2 -
+          205 * deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ)) -
+            205 * (deningerQ8RootNumberNegOneTopRInField ^ (2 : ℕ) -
               10 * deningerQ8RootNumberNegOneTopRInField + 20) := by
       ring
     _ = 0 := by
@@ -190,7 +190,7 @@ theorem deningerQ8RootNumberNegOne_topU_linear_relation :
 theorem deningerQ8RootNumberNegOne_topR_mul_recoveryDenominator :
     deningerQ8RootNumberNegOneTopRInField *
       (2050 - 82 * deningerQ8RootNumberNegOneTopU) =
-        4100 - deningerQ8RootNumberNegOneTopU ^ 2 := by
+        4100 - deningerQ8RootNumberNegOneTopU ^ (2 : ℕ) := by
   linear_combination deningerQ8RootNumberNegOne_topU_linear_relation
 
 theorem deningerQ8RootNumberNegOne_recoveryDenominator_ne_zero :
@@ -213,7 +213,7 @@ theorem deningerQ8RootNumberNegOne_recoveryDenominator_ne_zero :
 /-- First explicit recovery formula: `5 + √5` is rational in the top radical. -/
 theorem deningerQ8RootNumberNegOne_topR_recovery_formula :
     deningerQ8RootNumberNegOneTopRInField =
-      (4100 - deningerQ8RootNumberNegOneTopU ^ 2) /
+      (4100 - deningerQ8RootNumberNegOneTopU ^ (2 : ℕ)) /
         (2050 - 82 * deningerQ8RootNumberNegOneTopU) := by
   apply (eq_div_iff deningerQ8RootNumberNegOne_recoveryDenominator_ne_zero).2
   exact deningerQ8RootNumberNegOne_topR_mul_recoveryDenominator

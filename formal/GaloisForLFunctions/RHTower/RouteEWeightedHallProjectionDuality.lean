@@ -168,12 +168,12 @@ noncomputable def standardizedOutput
 noncomputable def rawChiSquare
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     (P : S → T → ℝ) : ℝ :=
-  ∑ t, (R.rawOutput D P t - D.targetLaw t) ^ 2 / D.targetLaw t
+  ∑ t, (R.rawOutput D P t - D.targetLaw t) ^ (2 : ℕ) / D.targetLaw t
 
 omit [DecidableEq T] in theorem standardizedOutput_norm_sq
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     (P : S → T → ℝ) :
-    ‖standardizedOutput D R P‖ ^ 2 = rawChiSquare D R P := by
+    ‖standardizedOutput D R P‖ ^ (2 : ℕ) = rawChiSquare D R P := by
   rw [EuclideanSpace.real_norm_sq_eq]
   unfold standardizedOutput rawChiSquare
   apply Finset.sum_congr rfl
@@ -285,7 +285,7 @@ theorem standardizedOutput_projectionKernel
 /-- Squared weighted distance from target law to the reachable marginal polytope. -/
 noncomputable def projectionDistanceSq
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) : ℝ :=
-  ‖projectionPoint D R‖ ^ 2
+  ‖projectionPoint D R‖ ^ (2 : ℕ)
 
 /-- The chosen projection realizes the exact minimum chi-square. -/
 theorem projectionDistanceSq_eq_rawChiSquare
@@ -466,7 +466,7 @@ theorem weightedHallDeficit_sq_div_le_projectionDistanceSq
     (U : Finset S)
     (hb0 : 0 < ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t)
     (hb1 : ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t < 1) :
-    (weightedHallDeficit D R U) ^ 2 /
+    (weightedHallDeficit D R U) ^ (2 : ℕ) /
         ((∑ t ∈ U.biUnion R.neighbors, D.targetLaw t) *
           (1 - ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t)) ≤
       projectionDistanceSq D R := by
@@ -500,7 +500,7 @@ theorem weightedHallDeficit_sq_div_le_projectionDistanceSq
         simpa [b, N] using sub_le_sub_right hsource b
       rw [hdeltaEq]
       exact hleD.trans (le_abs_self d)
-  have hdeltaSq : delta ^ 2 ≤ d ^ 2 := by
+  have hdeltaSq : delta ^ (2 : ℕ) ≤ d ^ (2 : ℕ) := by
     rw [← sq_abs d]
     exact (sq_le_sq₀ (weightedHallDeficit_nonneg D R U) (abs_nonneg d)).2 hdeltaAbs
   have hb0' : 0 < b := by simpa [b, N] using hb0
@@ -521,31 +521,31 @@ theorem weightedHallDeficit_sq_div_le_projectionDistanceSq
     have hsplit' : d + ∑ t ∈ Ncomp, residual t = 0 := by
       simpa [d, Ncomp] using hsplit.trans hresidualTotal
     linarith
-  have hcsN : d ^ 2 / b ≤ ∑ t ∈ N, residual t ^ 2 / D.targetLaw t := by
+  have hcsN : d ^ (2 : ℕ) / b ≤ ∑ t ∈ N, residual t ^ (2 : ℕ) / D.targetLaw t := by
     exact Finset.sq_sum_div_le_sum_sq_div N residual
       (fun t _ht => D.target_pos t)
-  have hcsComp : d ^ 2 / (1 - b) ≤
-      ∑ t ∈ Ncomp, residual t ^ 2 / D.targetLaw t := by
+  have hcsComp : d ^ (2 : ℕ) / (1 - b) ≤
+      ∑ t ∈ Ncomp, residual t ^ (2 : ℕ) / D.targetLaw t := by
     have hcs := Finset.sq_sum_div_le_sum_sq_div Ncomp residual
       (fun t _ht => D.target_pos t)
     rw [hbetaComp, hresidualComp, neg_sq] at hcs
     exact hcs
   have henergySplit : rawChiSquare D R P =
-      (∑ t ∈ N, residual t ^ 2 / D.targetLaw t) +
-        ∑ t ∈ Ncomp, residual t ^ 2 / D.targetLaw t := by
+      (∑ t ∈ N, residual t ^ (2 : ℕ) / D.targetLaw t) +
+        ∑ t ∈ Ncomp, residual t ^ (2 : ℕ) / D.targetLaw t := by
     unfold rawChiSquare
     have hsplit := Finset.sum_filter_add_sum_filter_not
       (Finset.univ : Finset T) (fun t => t ∈ N)
-      (fun t => (R.rawOutput D P t - D.targetLaw t) ^ 2 / D.targetLaw t)
+      (fun t => (R.rawOutput D P t - D.targetLaw t) ^ (2 : ℕ) / D.targetLaw t)
     simpa [residual, gamma, Ncomp] using hsplit.symm
-  have hdEnergy : d ^ 2 / b + d ^ 2 / (1 - b) ≤ rawChiSquare D R P := by
+  have hdEnergy : d ^ (2 : ℕ) / b + d ^ (2 : ℕ) / (1 - b) ≤ rawChiSquare D R P := by
     rw [henergySplit]
     exact add_le_add hcsN hcsComp
   have hdenom : 0 < b * (1 - b) := mul_pos hb0' (sub_pos.mpr hb1')
   calc
-    delta ^ 2 / (b * (1 - b)) ≤ d ^ 2 / (b * (1 - b)) :=
+    delta ^ (2 : ℕ) / (b * (1 - b)) ≤ d ^ (2 : ℕ) / (b * (1 - b)) :=
       div_le_div_of_nonneg_right hdeltaSq hdenom.le
-    _ = d ^ 2 / b + d ^ 2 / (1 - b) := by
+    _ = d ^ (2 : ℕ) / b + d ^ (2 : ℕ) / (1 - b) := by
       field_simp [ne_of_gt hb0', ne_of_gt (sub_pos.mpr hb1')]
       ring
     _ ≤ rawChiSquare D R P := hdEnergy
@@ -879,7 +879,7 @@ theorem projectionReporter_centered
 
 theorem projectionReporter_secondMoment
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    ∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2 =
+    ∑ t, D.targetLaw t * (projectionReporter D R t) ^ (2 : ℕ) =
       projectionDistanceSq D R := by
   unfold projectionDistanceSq projectionReporter
   rw [← standardizedOutput_projectionKernel D R,
@@ -932,7 +932,7 @@ theorem projectionReporter_gap_eq_projectionDistanceSq
   calc
     (∑ t, projectionReporter D R t *
         R.rawOutput D (projectionKernel D R) t) =
-        ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ 2 +
+        ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ (2 : ℕ) +
           D.targetLaw t * projectionReporter D R t) := by
       apply Finset.sum_congr rfl
       intro t _ht
@@ -940,7 +940,7 @@ theorem projectionReporter_gap_eq_projectionDistanceSq
       have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
       field_simp
       ring
-    _ = (∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2) +
+    _ = (∑ t, D.targetLaw t * (projectionReporter D R t) ^ (2 : ℕ)) +
         ∑ t, D.targetLaw t * projectionReporter D R t :=
       Finset.sum_add_distrib
     _ = projectionDistanceSq D R := by
@@ -983,7 +983,7 @@ theorem weightedHall_iff_projectionDistanceSq_eq_zero
 noncomputable def reporterObjective
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
   2 * (reporterLowerEnvelope D R f - ∑ t, D.targetLaw t * f t) -
-    ∑ t, D.targetLaw t * (f t) ^ 2
+    ∑ t, D.targetLaw t * (f t) ^ (2 : ℕ)
 
 /-- Exact projection duality: squared projection distance is greatest reporter objective value,
 and the canonical projection reporter attains it. -/
@@ -1001,11 +1001,11 @@ theorem projection_reporter_duality
           R.rawOutput D (projectionKernel D R) t) =
           projectionDistanceSq D R := by
       calc
-        _ = ∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2 +
+        _ = ∑ t, D.targetLaw t * (projectionReporter D R t) ^ (2 : ℕ) +
             ∑ t, D.targetLaw t * projectionReporter D R t := by
           apply Eq.symm
           calc
-            _ = ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ 2 +
+            _ = ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ (2 : ℕ) +
                 D.targetLaw t * projectionReporter D R t) := by
               rw [Finset.sum_add_distrib]
             _ = _ := by
@@ -1025,7 +1025,7 @@ theorem projection_reporter_duality
     have hsquare :
         2 * (∑ t, f t *
             (R.rawOutput D (projectionKernel D R) t - D.targetLaw t)) -
-            ∑ t, D.targetLaw t * (f t) ^ 2 ≤
+            ∑ t, D.targetLaw t * (f t) ^ (2 : ℕ) ≤
           projectionDistanceSq D R := by
       have hβsum :
           (∑ t, f t *
@@ -1039,14 +1039,14 @@ theorem projection_reporter_duality
       rw [hβsum, ← projectionReporter_secondMoment D R]
       calc
         2 * (∑ t, D.targetLaw t * f t * projectionReporter D R t) -
-            ∑ t, D.targetLaw t * f t ^ 2 =
+            ∑ t, D.targetLaw t * f t ^ (2 : ℕ) =
             ∑ t, (2 * D.targetLaw t * f t * projectionReporter D R t -
-              D.targetLaw t * f t ^ 2) := by
+              D.targetLaw t * f t ^ (2 : ℕ)) := by
           rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
           apply Finset.sum_congr rfl
           intro t _ht
           ring
-        _ ≤ ∑ t, D.targetLaw t * projectionReporter D R t ^ 2 := by
+        _ ≤ ∑ t, D.targetLaw t * projectionReporter D R t ^ (2 : ℕ) := by
           apply Finset.sum_le_sum
           intro t _ht
           have hβ := (D.target_pos t).le
@@ -1072,7 +1072,7 @@ def reporterMean (D : RouteEHallANOVAData S T) (f : T → ℝ) : ℝ :=
 
 /-- Target-law reporter variance. -/
 def reporterVariance (D : RouteEHallANOVAData S T) (f : T → ℝ) : ℝ :=
-  ∑ t, D.targetLaw t * (f t - reporterMean D f) ^ 2
+  ∑ t, D.targetLaw t * (f t - reporterMean D f) ^ (2 : ℕ)
 
 /-- Positive nonlinear reporter gap. -/
 noncomputable def reporterPositiveGap
@@ -1170,7 +1170,7 @@ theorem abs_projectionCovariance_le_sqrt_variance_mul_sqrt_distance
               |f t - reporterMean D f| * |projectionReporter D R t| := by rw [hsqrt]
         _ = Real.sqrt (D.targetLaw t) * |f t - reporterMean D f| *
               (Real.sqrt (D.targetLaw t) * |projectionReporter D R t|) := by ring
-    _ ≤ Real.sqrt (∑ t, a t ^ 2) * Real.sqrt (∑ t, b t ^ 2) :=
+    _ ≤ Real.sqrt (∑ t, a t ^ (2 : ℕ)) * Real.sqrt (∑ t, b t ^ (2 : ℕ)) :=
       Real.sum_mul_le_sqrt_mul_sqrt Finset.univ a b
     _ = Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) := by
       congr 1

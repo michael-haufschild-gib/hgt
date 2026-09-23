@@ -29,7 +29,7 @@ theorem isPathConnected_exterior {R : ℝ} (hR : 0 < R) :
 /-- The far-field image of the Böttcher coordinate is open: each image point `φ_c z₀` has the whole
 image as a neighborhood, because `ψ` (the far-field inverse) is a continuous right inverse there and
 maps a neighborhood back into the far field. -/
-theorem isOpen_far_image {c : ℂ} {R : ℝ} (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+theorem isOpen_far_image {c : ℂ} {R : ℝ} (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     IsOpen (bottcherCoord c '' {z | R < ‖z‖}) := by
   obtain ⟨ψ, hψleft, hψan, hψright⟩ := exists_analytic_inverse_far hR1 hR2
   rw [isOpen_iff_mem_nhds]
@@ -50,7 +50,7 @@ is `φ_c z` for some `z` with `‖z‖ > R`. The image is open (`isOpen_far_imag
 approximating preimage of a boundary `w` is confined to a compact annulus on which `φ_c` is a closed
 map. Open + closed + connected target (`isPathConnected_exterior`) gives the whole exterior. -/
 theorem exists_bottcher_far_preimage {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     ∃ R' : ℝ, ∀ w : ℂ, R' < ‖w‖ → ∃ z : ℂ, R < ‖z‖ ∧ bottcherCoord c z = w := by
   have hmaxlt : max 2 ‖c‖ < R := by
     have : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left 2 ‖c‖)
@@ -162,11 +162,11 @@ whole exterior `{‖w‖ > R'}` is analytic, is a right inverse of `φ_c`, and s
 Böttcher functional equation `ψ(w²)=ψ(w)²+c` and oddness `ψ(-w)=-ψ(w)`. This is the genuine
 inverse coordinate on which the even disk model `h(t)=t·ψ(1/t)` is built. -/
 theorem exists_far_inverse {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     ∃ (R' : ℝ) (ψ : ℂ → ℂ), 0 < R' ∧
       (∀ w, R' < ‖w‖ → AnalyticAt ℂ ψ w) ∧
       (∀ w, R' < ‖w‖ → bottcherCoord c (ψ w) = w) ∧
-      (∀ w, R' < ‖w‖ → ψ (w ^ 2) = (ψ w) ^ 2 + c) ∧
+      (∀ w, R' < ‖w‖ → ψ (w ^ (2 : ℕ)) = (ψ w) ^ (2 : ℕ) + c) ∧
       (∀ w, R' < ‖w‖ → ψ (-w) = -ψ w) := by
   have hRpos : (0:ℝ) < R := by
     have : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left 2 ‖c‖)
@@ -194,7 +194,7 @@ theorem exists_far_inverse {c : ℂ} {R : ℝ}
 `‖ψ w - w‖ = ‖φ_c z - z‖`, and the preimage is confined by `‖z‖ > ‖w‖-1` (compact-annulus bound), so
 `z → ∞` and `‖φ_c z - z‖ → 0`. -/
 theorem tendsto_psi_sub_id {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ))
     {ψ : ℂ → ℂ} (hψleft : ∀ z, R < ‖z‖ → ψ (bottcherCoord c z) = z) :
     Tendsto (fun w => ψ w - w) (cobounded ℂ) (𝓝 0) := by
   have hmaxlt : max 2 ‖c‖ < R := by
@@ -274,11 +274,11 @@ This packages `exists_far_inverse` (ψ on `{‖w‖>R'}`), `tendsto_psi_sub_id` 
 `h→1` at `0` via `model_tendsto_one`), `model_even_and_fe` (even + FE), and Riemann's removable
 singularity. It is the germ that seeds the outward FE-square-root continuation to the full basin. -/
 theorem exists_disk_model {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     ∃ (ρ : ℝ) (h : ℂ → ℂ), 0 < ρ ∧
       DifferentiableOn ℂ h (ball 0 ρ) ∧
       (∀ t ∈ ball (0:ℂ) ρ, h (-t) = h t) ∧
-      (∀ t ∈ ball (0:ℂ) ρ, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2) ∧
+      (∀ t ∈ ball (0:ℂ) ρ, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) ∧
       h 0 = 1 := by
   obtain ⟨ψ, hψleft, hψan, hψright⟩ := exists_analytic_inverse_far hR1 hR2
   obtain ⟨R', hRpre⟩ := exists_bottcher_far_preimage hR1 hR2
@@ -291,7 +291,7 @@ theorem exists_disk_model {c : ℂ} {R : ℝ}
     fun w hw => hRpre w (lt_of_le_of_lt (le_max_left R' 1) hw)
   have hψan'' : ∀ w, R'' < ‖w‖ → AnalyticAt ℂ ψ w := by
     intro w hw; obtain ⟨z, hz, hzw⟩ := hpreR'' w hw; exact hzw ▸ hψan z hz
-  have hψfe'' : ∀ w, R'' < ‖w‖ → ψ (w ^ 2) = (ψ w) ^ 2 + c := by
+  have hψfe'' : ∀ w, R'' < ‖w‖ → ψ (w ^ (2 : ℕ)) = (ψ w) ^ (2 : ℕ) + c := by
     intro w hw; obtain ⟨z, hz, hzw⟩ := hpreR'' w hw
     rw [← hzw]; exact psi_functional_eq_of_inverts hR1 hR2 hψleft z hz
   have hψodd'' : ∀ w, R'' < ‖w‖ → ψ (-w) = -ψ w := by
@@ -339,14 +339,14 @@ theorem exists_disk_model {c : ℂ} {R : ℝ}
       have e1 : h (-t) = (-t) * ψ (1 / -t) := Function.update_of_ne hneg0 _ _
       have e2 : h t = t * ψ (1 / t) := Function.update_of_ne ht0 _ _
       rw [e1, e2]; exact hmodel
-  have hfe : ∀ t ∈ ball (0:ℂ) ρ, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2 := by
+  have hfe : ∀ t ∈ ball (0:ℂ) ρ, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
     intro t ht
     rcases eq_or_ne t 0 with rfl | ht0
     · simp [hh0]
     · have htR : ‖t‖ < ρ := by rw [← mem_ball_zero_iff]; exact ht
       have hmodel := (model_even_and_fe hR''pos hψodd'' hψfe'' t ht0 htR).2
-      have hsq0 : t ^ 2 ≠ 0 := pow_ne_zero 2 ht0
-      have e1 : h (t ^ 2) = (t ^ 2) * ψ (1 / t ^ 2) := Function.update_of_ne hsq0 _ _
+      have hsq0 : t ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 ht0
+      have e1 : h (t ^ (2 : ℕ)) = (t ^ (2 : ℕ)) * ψ (1 / t ^ (2 : ℕ)) := Function.update_of_ne hsq0 _ _
       have e2 : h t = t * ψ (1 / t) := Function.update_of_ne ht0 _ _
       rw [e1, e2]; exact hmodel
   exact ⟨ρ, h, hρpos, hdisk, heven, hfe, hh0⟩

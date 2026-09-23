@@ -57,14 +57,14 @@ theorem integral_ball_continuous_eq_shell (g : ℂ → ℝ) (hg : Continuous g) 
 /-- Every holomorphic circle mean square dominates the value at its center. -/
 theorem circle_integral_normSq_ge_center
     (F : ℂ → ℂ) (hF : Differentiable ℂ F) {ρ : ℝ} (hρ : 0 ≤ ρ) :
-    2 * Real.pi * ‖F 0‖ ^ 2 ≤
-      ∫ θ in Set.Ioo (-Real.pi) Real.pi, ‖F (circleMap 0 ρ θ)‖ ^ 2 := by
+    2 * Real.pi * ‖F 0‖ ^ (2 : ℕ) ≤
+      ∫ θ in Set.Ioo (-Real.pi) Real.pi, ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ) := by
   let R : ℝ := ρ + 1
   have hρR : ρ < R := by dsimp [R]; linarith
   have hgz := hasSum_circleAverage_normSq_diskCoeffOn hF.differentiableOn hρ hρR
   have hsum := hgz.summable
-  have hfirst : ‖diskCoeff F 0‖ ^ 2 * ρ ^ (2 * 0) ≤
-      ∑' k, ‖diskCoeff F k‖ ^ 2 * ρ ^ (2 * k) := by
+  have hfirst : ‖diskCoeff F 0‖ ^ (2 : ℕ) * ρ ^ (2 * 0) ≤
+      ∑' k, ‖diskCoeff F k‖ ^ (2 : ℕ) * ρ ^ (2 * k) := by
     exact hsum.le_tsum 0 (by
       intro i hi
       rw [show 2 * i = i * 2 by omega, pow_mul]
@@ -74,35 +74,35 @@ theorem circle_integral_normSq_ge_center
   rw [hcenter] at hfirst
   norm_num at hfirst
   have hper : Function.Periodic
-      (fun θ : ℝ => ‖F (circleMap 0 ρ θ)‖ ^ 2) (2 * Real.pi) := by
+      (fun θ : ℝ => ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ)) (2 * Real.pi) := by
     intro θ
-    change ‖F (circleMap 0 ρ (θ + 2 * Real.pi))‖ ^ 2 =
-      ‖F (circleMap 0 ρ θ)‖ ^ 2
+    change ‖F (circleMap 0 ρ (θ + 2 * Real.pi))‖ ^ (2 : ℕ) =
+      ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ)
     rw [(periodic_circleMap 0 ρ θ)]
   rw [Bottcher.integral_Ioo_pi_eq_zero_two_pi hper]
   have htwopi : 0 < 2 * Real.pi := by positivity
   calc
-    2 * Real.pi * ‖F 0‖ ^ 2 ≤
+    2 * Real.pi * ‖F 0‖ ^ (2 : ℕ) ≤
         2 * Real.pi * (Real.pi⁻¹ * (1 / 2) *
-          ∫ θ in (0 : ℝ)..(2 * Real.pi), ‖F (circleMap 0 ρ θ)‖ ^ 2) :=
+          ∫ θ in (0 : ℝ)..(2 * Real.pi), ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hfirst htwopi.le
-    _ = ∫ θ in (0 : ℝ)..(2 * Real.pi), ‖F (circleMap 0 ρ θ)‖ ^ 2 := by
+    _ = ∫ θ in (0 : ℝ)..(2 * Real.pi), ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ) := by
       field_simp
 
 /-- Planar holomorphic mean-square inequality at the origin. -/
 theorem normSq_center_mul_area_le_integral_ball
     (F : ℂ → ℂ) (hF : Differentiable ℂ F) {R : ℝ} (hR : 0 < R) :
-    Real.pi * R ^ 2 * ‖F 0‖ ^ 2 ≤
-      ∫ z in Metric.ball (0 : ℂ) R, ‖F z‖ ^ 2 := by
-  rw [integral_ball_continuous_eq_shell (fun z => ‖F z‖ ^ 2)
+    Real.pi * R ^ (2 : ℕ) * ‖F 0‖ ^ (2 : ℕ) ≤
+      ∫ z in Metric.ball (0 : ℂ) R, ‖F z‖ ^ (2 : ℕ) := by
+  rw [integral_ball_continuous_eq_shell (fun z => ‖F z‖ ^ (2 : ℕ))
     (hF.continuous.norm.pow 2) R]
-  let lhs : ℝ → ℝ := fun ρ => ρ • (2 * Real.pi * ‖F 0‖ ^ 2)
+  let lhs : ℝ → ℝ := fun ρ => ρ • (2 * Real.pi * ‖F 0‖ ^ (2 : ℕ))
   let rhs : ℝ → ℝ := fun ρ => ρ • ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-    ‖F (circleMap 0 ρ θ)‖ ^ 2
+    ‖F (circleMap 0 ρ θ)‖ ^ (2 : ℕ)
   have hlhs : IntegrableOn lhs (Set.Ioo 0 R) := by
     apply ((continuous_id.smul continuous_const).continuousOn.integrableOn_compact
       (isCompact_Icc (a := (0 : ℝ)) (b := R))).mono_set Ioo_subset_Icc_self
-  let q : ℝ × ℝ → ℝ := fun p => p.1 • ‖F (circleMap 0 p.1 p.2)‖ ^ 2
+  let q : ℝ × ℝ → ℝ := fun p => p.1 • ‖F (circleMap 0 p.1 p.2)‖ ^ (2 : ℕ)
   have hcq : Continuous q := by
     have hcircle : Continuous (fun p : ℝ × ℝ => circleMap 0 p.1 p.2) := by
       rw [show (fun p : ℝ × ℝ => circleMap 0 p.1 p.2) =
@@ -141,7 +141,7 @@ theorem normSq_center_mul_area_le_integral_ball
     exact smul_le_smul_of_nonneg_left
       (circle_integral_normSq_ge_center F hF hρ.1.le) hρ.1.le
   have hlhs_eval : (∫ ρ in Set.Ioo 0 R, lhs ρ) =
-      Real.pi * R ^ 2 * ‖F 0‖ ^ 2 := by
+      Real.pi * R ^ (2 : ℕ) * ‖F 0‖ ^ (2 : ℕ) := by
     rw [show (∫ ρ in Set.Ioo 0 R, lhs ρ) = ∫ ρ in (0 : ℝ)..R, lhs ρ by
       rw [intervalIntegral.integral_of_le hR.le]
       exact setIntegral_congr_set Ioo_ae_eq_Ioc]
@@ -154,22 +154,22 @@ theorem normSq_center_mul_area_le_integral_ball
 /-- Planar holomorphic mean-square inequality at an arbitrary center. -/
 theorem normSq_value_mul_area_le_integral_ball
     (F : ℂ → ℂ) (hF : Differentiable ℂ F) (c : ℂ) {R : ℝ} (hR : 0 < R) :
-    Real.pi * R ^ 2 * ‖F c‖ ^ 2 ≤
-      ∫ z in Metric.ball c R, ‖F z‖ ^ 2 := by
+    Real.pi * R ^ (2 : ℕ) * ‖F c‖ ^ (2 : ℕ) ≤
+      ∫ z in Metric.ball c R, ‖F z‖ ^ (2 : ℕ) := by
   let Fc : ℂ → ℂ := fun z => F (z + c)
   have hFc : Differentiable ℂ Fc := by
     dsimp [Fc]
     fun_prop
   have hmean := normSq_center_mul_area_le_integral_ball Fc hFc hR
   have hshift :
-      (∫ z in Metric.ball (0 : ℂ) R, ‖Fc z‖ ^ 2) =
-        ∫ z in Metric.ball c R, ‖F z‖ ^ 2 := by
+      (∫ z in Metric.ball (0 : ℂ) R, ‖Fc z‖ ^ (2 : ℕ)) =
+        ∫ z in Metric.ball c R, ‖F z‖ ^ (2 : ℕ) := by
     have hball0 : MeasurableSet (Metric.ball (0 : ℂ) R) := measurableSet_ball
     have hballc : MeasurableSet (Metric.ball c R) := measurableSet_ball
     rw [← integral_indicator hball0, ← integral_indicator hballc]
     calc
-      (∫ z : ℂ, (Metric.ball (0 : ℂ) R).indicator (fun z => ‖Fc z‖ ^ 2) z) =
-          ∫ z : ℂ, (Metric.ball c R).indicator (fun z => ‖F z‖ ^ 2) (z + c) := by
+      (∫ z : ℂ, (Metric.ball (0 : ℂ) R).indicator (fun z => ‖Fc z‖ ^ (2 : ℕ)) z) =
+          ∫ z : ℂ, (Metric.ball c R).indicator (fun z => ‖F z‖ ^ (2 : ℕ)) (z + c) := by
         apply integral_congr_ae
         filter_upwards [] with z
         by_cases hz : z ∈ Metric.ball (0 : ℂ) R
@@ -183,7 +183,7 @@ theorem normSq_value_mul_area_le_integral_ball
             rw [Metric.mem_ball, dist_eq_norm] at h ⊢
             simpa [add_sub_cancel_right] using h
           rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem hzc]
-      _ = ∫ z : ℂ, (Metric.ball c R).indicator (fun z => ‖F z‖ ^ 2) z :=
+      _ = ∫ z : ℂ, (Metric.ball c R).indicator (fun z => ‖F z‖ ^ (2 : ℕ)) z :=
         MeasureTheory.integral_add_right_eq_self _ c
   simpa [Fc, hshift] using hmean
 

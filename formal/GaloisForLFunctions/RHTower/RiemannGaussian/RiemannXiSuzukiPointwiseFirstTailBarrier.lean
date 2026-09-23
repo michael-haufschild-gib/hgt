@@ -94,7 +94,7 @@ theorem eulerMascheroniConstant_lt_29_over_50 :
         norm_num
       have hlog : Real.log (200 : ℝ) =
           3 * Real.log 2 + 2 * Real.log 5 := by
-        rw [show (200 : ℝ) = 2 ^ 3 * 5 ^ 2 by norm_num,
+        rw [show (200 : ℝ) = 2 ^ (3 : ℕ) * 5 ^ (2 : ℕ) by norm_num,
           Real.log_mul (by positivity) (by positivity),
           Real.log_pow, Real.log_pow]
         norm_num
@@ -206,14 +206,14 @@ private theorem log_pi_lt_229_over_200 :
   exact (Real.log_lt_iff_lt_exp Real.pi_pos).2 hpiExp
 
 private theorem exp_logTwo_half_sq_barrier :
-    Real.exp (Real.log 2 / 2) ^ 2 = 2 := by
+    Real.exp (Real.log 2 / 2) ^ (2 : ℕ) = 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   rw [show (2 : ℝ) * (Real.log 2 / 2) = Real.log 2 by ring_nf,
     Real.exp_log (by norm_num : (0 : ℝ) < 2)]
 
 private theorem exp_neg_logTwo_half_sq_barrier :
-    Real.exp (-Real.log 2 / 2) ^ 2 = 1 / 2 := by
+    Real.exp (-Real.log 2 / 2) ^ (2 : ℕ) = 1 / 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   have hneg : Real.exp (-Real.log 2) = (1 / 2 : ℝ) := by
@@ -248,7 +248,7 @@ private theorem exp_neg_two_logTwo_barrier :
 
 private theorem lerchGapSummand_logTwo_strong_lower_bound (n : ℕ) :
     (1 - (884 / 1250 : ℝ) * (1 / 4 : ℝ) ^ n) /
-        ((n : ℝ) + 1 / 4) ^ 2 ≤
+        ((n : ℝ) + 1 / 4) ^ (2 : ℕ) ≤
       suzukiPointwiseLerchGapSummand (Real.log 2) n := by
   rw [suzukiPointwiseLerchGapSummand_eq,
     suzukiPointwiseLerchMode_eq_geometric,
@@ -275,16 +275,16 @@ private theorem lerchGapStrongTailFloor_le (k : ℕ) :
         (1 / ((k : ℝ) + 81 / 4) -
           1 / ((k : ℝ) + 81 / 4 + 1)) ≤
       (1 - (884 / 1250 : ℝ) * (1 / 4 : ℝ) ^ (k + 20)) /
-        (((k + 20 : ℕ) : ℝ) + 1 / 4) ^ 2 := by
+        (((k + 20 : ℕ) : ℝ) + 1 / 4) ^ (2 : ℕ) := by
   let x : ℝ := (k : ℝ) + 81 / 4
   have hx : 0 < x := by
     dsimp only [x]
     positivity
-  have hpow : (1 / 4 : ℝ) ^ (k + 20) ≤ (1 / 4 : ℝ) ^ 20 := by
+  have hpow : (1 / 4 : ℝ) ^ (k + 20) ≤ (1 / 4 : ℝ) ^ (20 : ℕ) := by
     rw [pow_add]
     have hk : (1 / 4 : ℝ) ^ k ≤ 1 :=
       pow_le_one₀ (by norm_num) (by norm_num)
-    have htwenty : 0 ≤ (1 / 4 : ℝ) ^ 20 := by positivity
+    have htwenty : 0 ≤ (1 / 4 : ℝ) ^ (20 : ℕ) := by positivity
     nlinarith
   have hnumerator : (999 / 1000 : ℝ) ≤
       1 - (884 / 1250 : ℝ) * (1 / 4 : ℝ) ^ (k + 20) := by
@@ -305,12 +305,12 @@ private theorem lerchGapStrongTailFloor_le (k : ℕ) :
   rw [htelescoping]
   calc
     (999 / 1000 : ℝ) / (x * (x + 1)) ≤
-        (999 / 1000 : ℝ) / x ^ 2 := by
+        (999 / 1000 : ℝ) / x ^ (2 : ℕ) := by
       apply div_le_div_of_nonneg_left (by norm_num)
       · positivity
       · nlinarith
     _ ≤ (1 - (884 / 1250 : ℝ) * (1 / 4 : ℝ) ^ (k + 20)) /
-        x ^ 2 :=
+        x ^ (2 : ℕ) :=
       div_le_div_of_nonneg_right hnumerator (sq_nonneg x)
 
 /-- The complete positive Lerch contribution at `log 2` exceeds `1.437`.
@@ -323,7 +323,7 @@ theorem quarter_mul_lerchGap_logTwo_gt_1437_over_1000 :
           suzukiPointwiseLerchGapSummand (Real.log 2) n) := by
   let lower : ℕ → ℝ := fun n =>
     (1 - (884 / 1250 : ℝ) * (1 / 4 : ℝ) ^ n) /
-      ((n : ℝ) + 1 / 4) ^ 2
+      ((n : ℝ) + 1 / 4) ^ (2 : ℕ)
   let tailFloor : ℕ → ℝ := fun k => (999 / 1000 : ℝ) *
     (1 / ((k : ℝ) + 81 / 4) -
       1 / ((k : ℝ) + 81 / 4 + 1))
@@ -468,7 +468,7 @@ private theorem suzukiPrimeWeight_zero_lt_491_over_1000 :
     Real.log 2 / Real.sqrt 2 < 491 / 1000 := by
   have hsqrtPos : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
   have hsqrtNonnegative : 0 ≤ Real.sqrt 2 := hsqrtPos.le
-  have hsqrtSquare : Real.sqrt 2 ^ 2 = 2 :=
+  have hsqrtSquare : Real.sqrt 2 ^ (2 : ℕ) = 2 :=
     Real.sq_sqrt (by norm_num)
   have hsqrtLower : (707 / 500 : ℝ) ≤ Real.sqrt 2 := by
     nlinarith
@@ -609,7 +609,7 @@ theorem suzukiFirstTailResetMassPoint_lt_one :
 
 private theorem exp_one_half_lt_five_thirds :
     Real.exp (1 / 2 : ℝ) < 5 / 3 := by
-  have hsquare : Real.exp (1 / 2 : ℝ) ^ 2 = Real.exp 1 := by
+  have hsquare : Real.exp (1 / 2 : ℝ) ^ (2 : ℕ) = Real.exp 1 := by
     rw [← Real.exp_nat_mul]
     norm_num
   have hpositive := Real.exp_pos (1 / 2 : ℝ)
@@ -687,7 +687,7 @@ theorem suzukiFirstTailSyntheticCellLoss_lt_seven_over_125 :
   have hupperIdentity :
       (∫ s in Real.log 2..r,
           (s - Real.log 2) * (5 / 3 : ℝ)) =
-        (5 / 6 : ℝ) * (r - Real.log 2) ^ 2 := by
+        (5 / 6 : ℝ) * (r - Real.log 2) ^ (2 : ℕ) := by
     have hfunction :
         (fun s : ℝ => (s - Real.log 2) * (5 / 3 : ℝ)) =
           fun s : ℝ => (5 / 3 : ℝ) * s -
@@ -720,7 +720,7 @@ theorem suzukiFirstTailSyntheticCellLoss_lt_seven_over_125 :
     exact suzukiFirstTailResetMassPoint_sub_logTwo_lt_nine_over_35
   have hdistanceNonnegative : 0 ≤ r - Real.log 2 := sub_nonneg.mpr hbasePoint
   have hdistanceSquare :
-      (r - Real.log 2) ^ 2 < (9 / 35 : ℝ) ^ 2 :=
+      (r - Real.log 2) ^ (2 : ℕ) < (9 / 35 : ℝ) ^ (2 : ℕ) :=
     (sq_lt_sq₀ hdistanceNonnegative (by norm_num)).2 hdistance
   exact hintegralUpper.trans_lt (by nlinarith)
 

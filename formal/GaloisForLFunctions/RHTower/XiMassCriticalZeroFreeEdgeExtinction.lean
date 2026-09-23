@@ -19,7 +19,7 @@ theorem xiMass_critical_phase_defect_zeroFree
     let M := ((xiMassFamily haHalf).pt q).re
     let K := ((xiMassFamily haHalf).pt q).im
     M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) -
+      -σ * ((A - R) ^ (2 : ℕ) + A) -
         4 * σ * A * R * xiWardZeroFreeMargin R := by
   dsimp only
   let haHalf : 1 / 2 ≤ a := by linarith
@@ -37,7 +37,7 @@ theorem xiMass_critical_phase_defect_zeroFree
         HTGeometry.AbstractSpectralFamily.mass_pt, HTGeometry.csqrt_re] using
         xiPoissonAbstract.re_lt_csqrtRe_massArg haHalf q
     linarith
-  have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only [xiPoissonAbstract_pt, xiMassFamily_pt_eq_mass_pt] using
       xiPoissonAbstract.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha q
@@ -85,11 +85,11 @@ theorem xiMass_critical_phase_defect_zeroFree
             exact mul_le_mul_of_nonneg_left hconeMul (by positivity)
       _ = 4 * σ * A * (R * (1 / 2 - xiWardZeroFreeMargin R)) := by ring
   have hphase : M * (-σ * M + u * K) ≤
-      -σ * M ^ 2 + 4 * σ * A *
+      -σ * M ^ (2 : ℕ) + 4 * σ * A *
         (R * (1 / 2 - xiWardZeroFreeMargin R)) := by
     nlinarith
   change M * (-σ * M + u * K) ≤
-    -σ * ((A - R) ^ 2 + A) -
+    -σ * ((A - R) ^ (2 : ℕ) + A) -
       4 * σ * A * R * xiWardZeroFreeMargin R
   nlinarith
 
@@ -150,11 +150,11 @@ theorem norm_xiMassFamily_term_le_critical_zeroFree
   have hphaseMul :
       M * (-σ * M + u * K) ≤
         M * (-(3 * σ / 5) * A * xiWardZeroFreeMargin (2 * A)) := by
-    have hbase : 0 ≤ σ * ((A - R) ^ 2 + A) := by positivity
+    have hbase : 0 ≤ σ * ((A - R) ^ (2 : ℕ) + A) := by positivity
     have hscaled := mul_le_mul_of_nonneg_left hratioMargin (show 0 ≤ 4 * σ by positivity)
     dsimp only at hdefect
     change M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) -
+      -σ * ((A - R) ^ (2 : ℕ) + A) -
         4 * σ * A * R * xiWardZeroFreeMargin R at hdefect
     nlinarith
   have hphase : -σ * M + u * K ≤
@@ -248,7 +248,7 @@ theorem tendsto_pow_log_two_mul_add_nine_div_id (n : ℕ) :
   congr 1
   ring
 
-/-- The critical edge scale `A / log(2A+9)^9` diverges. -/
+/-- The critical edge scale `A / log(2A+9)^(9 : ℕ)` diverges. -/
 theorem tendsto_xiCriticalZeroFreeScale :
     Tendsto (fun A : ℝ => A / Real.log (2 * A + 9) ^ (9 : ℕ))
       atTop atTop := by
@@ -410,11 +410,11 @@ theorem tendsto_xiMassCriticalZeroFreeEnvelope_zero
       dsimp only [L]
       linarith
     have hlogyx' : Real.log y ≤ x := hlogyx.trans hLx
-    have hP : P ≤ D * x ^ 2 := by
+    have hP : P ≤ D * x ^ (2 : ℕ) := by
       dsimp only [P]
       calc
         C * (2 * A + 3) * Real.log y ≤ D * x * x := by gcongr
-        _ = D * x ^ 2 := by ring
+        _ = D * x ^ (2 : ℕ) := by ring
     have hsmallMul :
         Real.log D * L ^ (9 : ℕ) + 2 * L ^ (10 : ℕ) ≤ c / 2 * A := by
       have hmul := mul_le_mul_of_nonneg_left hsmallA hA.le
@@ -433,7 +433,7 @@ theorem tendsto_xiMassCriticalZeroFreeEnvelope_zero
         (Real.log D + 2 * L) * L ^ (9 : ℕ) =
             Real.log D * L ^ (9 : ℕ) + 2 * L ^ (10 : ℕ) := by ring
         _ ≤ c / 2 * A := hsmallMul
-    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ 2 := by
+    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ (2 : ℕ) := by
       rw [Real.exp_add, Real.exp_log hD]
       have htwo : 2 * L = L + L := by ring
       rw [htwo, Real.exp_add]
@@ -442,7 +442,7 @@ theorem tendsto_xiMassCriticalZeroFreeEnvelope_zero
       ring
     have hPexp : P ≤ Real.exp (c / 2 * X) := by
       calc
-        P ≤ D * x ^ 2 := hP
+        P ≤ D * x ^ (2 : ℕ) := hP
         _ = Real.exp (Real.log D + 2 * L) := hexpEq.symm
         _ ≤ Real.exp (c / 2 * X) := Real.exp_le_exp.mpr hbudget
     have hcalc :

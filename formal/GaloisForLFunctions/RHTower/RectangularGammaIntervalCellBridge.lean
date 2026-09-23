@@ -53,7 +53,7 @@ theorem xiRectangularRightCoefficient_eq_gammaCoPoissonIntervalCell_sq
     (L : ℝ) (q : XiRightZeroCopy) :
     xiRectangularRightCoefficient L q =
       gammaCoPoissonIntervalCell (L : ℂ) (1 / 2)
-        (1 / 2 - xiRightCenteredZero q) ^ 2 := by
+        (1 / 2 - xiRightCenteredZero q) ^ (2 : ℕ) := by
   rw [xiRectangularRightCoefficient,
     rectangularWindowAmplitude_eq_gammaCoPoissonIntervalCell]
 
@@ -66,7 +66,7 @@ theorem
         (xiRightShiftedPole q) =
       2 * (xiRightMultiplicity q : ℂ) *
         gammaCoPoissonIntervalCell (L : ℂ) (1 / 2)
-          (1 / 2 - xiRightCenteredZero q) ^ 2 := by
+          (1 / 2 - xiRightCenteredZero q) ^ (2 : ℕ) := by
   rw [meromorphicTrailingCoeffAt_xiRectangularWeilFullContinuation hL,
     xiRectangularRightCoefficient_eq_gammaCoPoissonIntervalCell_sq]
 

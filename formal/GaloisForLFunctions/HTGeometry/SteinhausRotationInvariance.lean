@@ -56,12 +56,12 @@ theorem norm_exp_ofReal_mul_I_sub_one_le (s : ℝ) :
     push_cast
     ring
   rw [h1, Complex.norm_add_mul_I]
-  have hcos : Real.cos s = 1 - 2 * Real.sin (s / 2) ^ 2 := by
+  have hcos : Real.cos s = 1 - 2 * Real.sin (s / 2) ^ (2 : ℕ) := by
     have h := Real.sin_sq_eq_half_sub (s / 2)
     rw [show 2 * (s / 2) = s by ring] at h
     linarith
   have hpyth := Real.sin_sq_add_cos_sq s
-  have hid : (Real.cos s - 1) ^ 2 + Real.sin s ^ 2 = (2 * |Real.sin (s / 2)|) ^ 2 := by
+  have hid : (Real.cos s - 1) ^ (2 : ℕ) + Real.sin s ^ (2 : ℕ) = (2 * |Real.sin (s / 2)|) ^ (2 : ℕ) := by
     rw [mul_pow, sq_abs, hcos]
     nlinarith only [hpyth, hcos]
   rw [hid, Real.sqrt_sq (by positivity)]
@@ -152,7 +152,7 @@ theorem annulus_subset_iUnion_balls {z : ℂ} (hz : z ≠ 0) {r : ℝ} (hr : 0 <
     rw [hζdef, norm_div, norm_mul, norm_mul, RCLike.norm_conj]
     simp [hw0.ne', hz0.ne']
   have hζz : ζ * z = ((‖z‖ / ‖w‖ : ℝ) : ℂ) * w := by
-    have hzz : (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+    have hzz : (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.conj_mul']
       push_cast
       ring

@@ -719,7 +719,7 @@ theorem integral_truncatedLogKernel_preBrolinMeasure_le_logPotential_of_iterate_
       have hzw : z ≠ w := by
         intro h
         have hwroot : (quadraticPolyIterate c n).IsRoot w :=
-          (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp hw
+          (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp hw
         have hiter : (quadratic c)^[n] w = 0 := by
           simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hwroot
         exact hz (by rwa [h])

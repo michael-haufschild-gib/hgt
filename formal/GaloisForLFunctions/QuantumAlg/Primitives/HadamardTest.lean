@@ -170,7 +170,7 @@ theorem hadamardTest_probQubit0_zero {U : Gate (Qubits n)} (psi : PureState (Qub
   rw [hadamardTest_apply_ket0_tensor, StateVector.probQubit0_smul,
     probQubit0_ket0_tensor_add_ket1_tensor,
     norm_add_sq (𝕜 := ℂ), psi.norm_eq_one, (U.apply psi).norm_eq_one]
-  have h2 : ‖(2 : ℂ)⁻¹‖ ^ 2 = (4 : ℝ)⁻¹ := by
+  have h2 : ‖(2 : ℂ)⁻¹‖ ^ (2 : ℕ) = (4 : ℝ)⁻¹ := by
     rw [norm_inv, RCLike.norm_ofNat]
     norm_num
   rw [h2]
@@ -200,7 +200,7 @@ theorem hadamardTest_probQubit0_one {U : Gate (Qubits n)} (psi : PureState (Qubi
   rw [hadamardTest_apply_ket0_tensor, StateVector.probQubit0_smul,
     probQubit1_ket0_tensor_add_ket1_tensor,
     norm_sub_sq (𝕜 := ℂ), psi.norm_eq_one, (U.apply psi).norm_eq_one]
-  have h2 : ‖(2 : ℂ)⁻¹‖ ^ 2 = (4 : ℝ)⁻¹ := by
+  have h2 : ‖(2 : ℂ)⁻¹‖ ^ (2 : ℕ) = (4 : ℝ)⁻¹ := by
     rw [norm_inv, RCLike.norm_ofNat]
     norm_num
   rw [h2]

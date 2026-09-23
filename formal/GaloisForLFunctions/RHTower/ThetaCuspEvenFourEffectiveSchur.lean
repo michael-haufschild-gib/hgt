@@ -9,10 +9,10 @@ open GaloisForLFunctions.HTGeometry
 private theorem head_det_eq (x : ℝ) :
     (thetaCuspNativeEvenHead x).det =
       thetaCuspNativeReflectionJet 0 x*thetaCuspNativeReflectionJet 4 x*thetaCuspNativeReflectionJet 8 x-
-      thetaCuspNativeReflectionJet 0 x*(-thetaCuspNativeReflectionJet 6 x)^2-
-      (-thetaCuspNativeReflectionJet 2 x)^2*thetaCuspNativeReflectionJet 8 x+
+      thetaCuspNativeReflectionJet 0 x*(-thetaCuspNativeReflectionJet 6 x)^(2 : ℕ)-
+      (-thetaCuspNativeReflectionJet 2 x)^(2 : ℕ)*thetaCuspNativeReflectionJet 8 x+
       2*(-thetaCuspNativeReflectionJet 2 x)*thetaCuspNativeReflectionJet 4 x*(-thetaCuspNativeReflectionJet 6 x)-
-      thetaCuspNativeReflectionJet 4 x^3 := by
+      thetaCuspNativeReflectionJet 4 x^(3 : ℕ) := by
   norm_num [thetaCuspNativeEvenHead, finiteHankelMatrix, Matrix.det_fin_three]
   ring
 
@@ -20,9 +20,9 @@ private theorem head_det_eq (x : ℝ) :
 theorem thetaCuspNativeEvenTailBalancedDet_eq_reserved_ratio {x : ℝ} (hx : 0 < x) :
     thetaCuspNativeEvenTailBalancedDet x =
       (thetaCuspNativeEvenFourDet x-
-        100000000*thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6*
+        100000000*thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)*
           (thetaCuspNativeEvenHead x).det) /
-        ((32 : ℝ)^12*thetaCuspSourceTerm x 1^8*thetaCuspSingleAtomReflectionScale 1 x^12) := by
+        ((32 : ℝ)^(12 : ℕ)*thetaCuspSourceTerm x 1^(8 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(12 : ℕ)) := by
   have hf := (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))).ne'
   have hq : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     unfold thetaCuspSingleAtomReflectionScale
@@ -38,11 +38,11 @@ theorem thetaCuspNativeEvenTailBalancedDet_eq_reserved_ratio {x : ℝ} (hx : 0 <
 theorem thetaCuspNativeEvenFourSchur_effective_normalized_lower {x : ℝ}
     (hq : 30 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     100000000 < thetaCuspNativeEvenFourSchur x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   have hx : 0 < x := regimeOne_pos_of_six_le (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < (32 : ℝ)^12*thetaCuspSourceTerm x 1^8*thetaCuspSingleAtomReflectionScale 1 x^12 := by positivity
+  have hd : 0 < (32 : ℝ)^(12 : ℕ)*thetaCuspSourceTerm x 1^(8 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(12 : ℕ) := by positivity
   have hhead := (thetaCuspNativeEvenHead_posDef hx.le).det_pos
   have hr := thetaCuspNativeEvenTailBalancedDet_lower hq
   have hp : 0 < thetaCuspNativeEvenTailBalancedDet x := by linarith
@@ -51,11 +51,11 @@ theorem thetaCuspNativeEvenFourSchur_effective_normalized_lower {x : ℝ}
   simp only [zero_mul] at hn
   rw [thetaCuspNativeEvenFourDet_eq_head_mul_schur hx.le] at hn
   have hs : 0 < thetaCuspNativeEvenFourSchur x-
-      100000000*thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6 := by
+      100000000*thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ) := by
     apply (mul_pos_iff_of_pos_left hhead).mp
     nlinarith only [hn]
-  apply (lt_div_iff₀ (by positivity : 0 < thetaCuspSourceTerm x 1^2*
-    thetaCuspSingleAtomReflectionScale 1 x^6)).mpr
+  apply (lt_div_iff₀ (by positivity : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*
+    thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ))).mpr
   nlinarith only [hs]
 
 end

@@ -31,15 +31,15 @@ theorem thetaCuspSelfDualThetaMass_lt_one_point_zero_nine_one :
   have hqexp : Real.exp (-Real.pi) ≤ q := by
     simpa [q] using exp_neg_pi_rationalEnclosure_upper
   have hterm (n : ℕ) :
-      Real.exp (-Real.pi * (n + 1) ^ 2) ≤ q ^ (n + 1) := by
+      Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)) ≤ q ^ (n + 1) := by
     calc
-      Real.exp (-Real.pi * (n + 1) ^ 2) =
-          Real.exp (-Real.pi) ^ ((n + 1) ^ 2) := by
+      Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)) =
+          Real.exp (-Real.pi) ^ ((n + 1) ^ (2 : ℕ)) := by
             rw [← Real.exp_nat_mul]
             congr 1
             push_cast
             ring
-      _ ≤ q ^ ((n + 1) ^ 2) :=
+      _ ≤ q ^ ((n + 1) ^ (2 : ℕ)) :=
         pow_le_pow_left₀ (Real.exp_nonneg _) hqexp _
       _ ≤ q ^ (n + 1) :=
         pow_le_pow_of_le_one hq0 hq1.le (by
@@ -47,10 +47,10 @@ theorem thetaCuspSelfDualThetaMass_lt_one_point_zero_nine_one :
           nlinarith [sq_nonneg (n : ℝ)])
   have hs0 := hasSum_nat_cosKernel₀ 0 (by norm_num : (0 : ℝ) < 1)
   have hs : HasSum (fun n : ℕ =>
-      2 * Real.exp (-Real.pi * (n + 1) ^ 2))
+      2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)))
       (thetaCuspSelfDualThetaMass - 1) := by
     have hs' : HasSum (fun n : ℕ =>
-        2 * Real.exp (-Real.pi * (n + 1) ^ 2 * 1))
+        2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ) * 1))
         (cosKernel (0 : UnitAddCircle) 1 - 1) := by
       simpa using hs0
     rw [← congrFun evenKernel_eq_cosKernel_of_zero (1 : ℝ)] at hs'
@@ -76,7 +76,7 @@ theorem thetaCuspSelfDualThetaMass_lt_one_point_zero_nine_one :
 
 /-- The actual squared modular scale lies below `20`. -/
 theorem thetaCuspSelfDualModularScale_sq_lt_twenty :
-    thetaCuspSelfDualModularScale ^ 2 < (20 : ℝ) := by
+    thetaCuspSelfDualModularScale ^ (2 : ℕ) < (20 : ℝ) := by
   have hp : Real.pi < (22 / 7 : ℝ) := by
     have h := Real.pi_lt_d4
     norm_num at h ⊢
@@ -88,9 +88,9 @@ theorem thetaCuspSelfDualModularScale_sq_lt_twenty :
     linarith
   rw [thetaCuspSelfDualModularScale]
   calc
-    (Real.pi * thetaCuspSelfDualThetaMass ^ 4) ^ 2 =
-        Real.pi ^ 2 * thetaCuspSelfDualThetaMass ^ 8 := by ring
-    _ < (22 / 7 : ℝ) ^ 2 * (1091 / 1000 : ℝ) ^ 8 := by gcongr
+    (Real.pi * thetaCuspSelfDualThetaMass ^ (4 : ℕ)) ^ (2 : ℕ) =
+        Real.pi ^ (2 : ℕ) * thetaCuspSelfDualThetaMass ^ (8 : ℕ) := by ring
+    _ < (22 / 7 : ℝ) ^ (2 : ℕ) * (1091 / 1000 : ℝ) ^ (8 : ℕ) := by gcongr
     _ < (20 : ℝ) := by norm_num
 
 /-- The reflected degree-eight modular polynomial is positive on the theta chamber
@@ -102,43 +102,43 @@ theorem thetaCuspReflectedSixthSeamModularPolynomial_pos_of_chamber
   have hy0 : 0 ≤ y := by dsimp [y]; linarith
   have hy1 : y ≤ 1 := by dsimp [y]; linarith
   have hX : X = (191 / 10 : ℝ) + y := by dsimp [y]; ring
-  have hy6 : y ^ 6 ≤ 1 := by
+  have hy6 : y ^ (6 : ℕ) ≤ 1 := by
     calc
-      y ^ 6 ≤ (1 : ℝ) ^ 6 := pow_le_pow_left₀ hy0 hy1 6
+      y ^ (6 : ℕ) ≤ (1 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy0 hy1 6
       _ = 1 := by norm_num
-  have hy7 : y ^ 7 ≤ 1 := by
+  have hy7 : y ^ (7 : ℕ) ≤ 1 := by
     calc
-      y ^ 7 ≤ (1 : ℝ) ^ 7 := pow_le_pow_left₀ hy0 hy1 7
+      y ^ (7 : ℕ) ≤ (1 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy0 hy1 7
       _ = 1 := by norm_num
-  have hy8 : y ^ 8 ≤ 1 := by
+  have hy8 : y ^ (8 : ℕ) ≤ 1 := by
     calc
-      y ^ 8 ≤ (1 : ℝ) ^ 8 := pow_le_pow_left₀ hy0 hy1 8
+      y ^ (8 : ℕ) ≤ (1 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hy0 hy1 8
       _ = 1 := by norm_num
   rw [hX]
   rw [show thetaCuspReflectedSixthSeamModularPolynomial
       ((191 / 10 : ℝ) + y) =
       24080301935046283533 / 26843545600000 +
         y * (100396126421717439 / 335544320000) +
-        y ^ 2 * (2671351074244743 / 67108864000) +
-        y ^ 3 * (8843821683429 / 3355443200) +
-        y ^ 4 * (21967078659 / 268435456) +
-        y ^ 5 * (7860801 / 33554432) -
-        y ^ 6 * (1949685 / 33554432) -
-        y ^ 7 * (12525 / 8388608) -
-        y ^ 8 * (375 / 33554432) by
+        y ^ (2 : ℕ) * (2671351074244743 / 67108864000) +
+        y ^ (3 : ℕ) * (8843821683429 / 3355443200) +
+        y ^ (4 : ℕ) * (21967078659 / 268435456) +
+        y ^ (5 : ℕ) * (7860801 / 33554432) -
+        y ^ (6 : ℕ) * (1949685 / 33554432) -
+        y ^ (7 : ℕ) * (12525 / 8388608) -
+        y ^ (8 : ℕ) * (375 / 33554432) by
       unfold thetaCuspReflectedSixthSeamModularPolynomial
       ring]
   have hpos1 : 0 ≤ y * (100396126421717439 / 335544320000 : ℝ) := by positivity
-  have hpos2 : 0 ≤ y ^ 2 * (2671351074244743 / 67108864000 : ℝ) := by positivity
-  have hpos3 : 0 ≤ y ^ 3 * (8843821683429 / 3355443200 : ℝ) := by positivity
-  have hpos4 : 0 ≤ y ^ 4 * (21967078659 / 268435456 : ℝ) := by positivity
-  have hpos5 : 0 ≤ y ^ 5 * (7860801 / 33554432 : ℝ) := by positivity
+  have hpos2 : 0 ≤ y ^ (2 : ℕ) * (2671351074244743 / 67108864000 : ℝ) := by positivity
+  have hpos3 : 0 ≤ y ^ (3 : ℕ) * (8843821683429 / 3355443200 : ℝ) := by positivity
+  have hpos4 : 0 ≤ y ^ (4 : ℕ) * (21967078659 / 268435456 : ℝ) := by positivity
+  have hpos5 : 0 ≤ y ^ (5 : ℕ) * (7860801 / 33554432 : ℝ) := by positivity
   nlinarith
 
 /-- The actual self-dual theta scale occupies the positive reflected chamber. -/
 theorem thetaCuspReflectedSixthSeamModularPolynomial_source_pos :
     0 < thetaCuspReflectedSixthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2) :=
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ)) :=
   thetaCuspReflectedSixthSeamModularPolynomial_pos_of_chamber
     thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
     thetaCuspSelfDualModularScale_sq_lt_twenty.le
@@ -160,7 +160,7 @@ def thetaCuspFullSourceReflectionSecondSixthCurvature (x : ℝ) : ℝ :=
       HilbertMetric.reflectedProductSixthJet
         (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6) -
     HilbertMetric.reflectedProductFourthJet
-      (f 0) (f 1) (f 2) (f 3) (f 4) ^ 2
+      (f 0) (f 1) (f 2) (f 3) (f 4) ^ (2 : ℕ)
 
 /-- At the modular seam, raw reflected curvature is four times the modular invariant. -/
 theorem thetaCuspFullSourceReflectionSecondSixthCurvature_zero_eq :
@@ -187,15 +187,15 @@ theorem thetaCuspFullSourceReflectionSecondSixthCurvature_zero_eq :
         HilbertMetric.reflectedProductFourthJet
           (iteratedDeriv 0 thetaCuspFullSource 0) 0
           (iteratedDeriv 2 thetaCuspFullSource 0) 0
-          (iteratedDeriv 4 thetaCuspFullSource 0) ^ 2 =
-      4 * (iteratedDeriv 0 thetaCuspFullSource 0 ^ 2 *
+          (iteratedDeriv 4 thetaCuspFullSource 0) ^ (2 : ℕ) =
+      4 * (iteratedDeriv 0 thetaCuspFullSource 0 ^ (2 : ℕ) *
           (iteratedDeriv 2 thetaCuspFullSource 0 *
               iteratedDeriv 6 thetaCuspFullSource 0 -
-            iteratedDeriv 4 thetaCuspFullSource 0 ^ 2) +
+            iteratedDeriv 4 thetaCuspFullSource 0 ^ (2 : ℕ)) +
         9 * iteratedDeriv 0 thetaCuspFullSource 0 *
-          iteratedDeriv 2 thetaCuspFullSource 0 ^ 2 *
+          iteratedDeriv 2 thetaCuspFullSource 0 ^ (2 : ℕ) *
           iteratedDeriv 4 thetaCuspFullSource 0 -
-        9 * iteratedDeriv 2 thetaCuspFullSource 0 ^ 4) := by
+        9 * iteratedDeriv 2 thetaCuspFullSource 0 ^ (4 : ℕ)) := by
           unfold HilbertMetric.reflectedProductSecondJet
             HilbertMetric.reflectedProductFourthJet
             HilbertMetric.reflectedProductSixthJet

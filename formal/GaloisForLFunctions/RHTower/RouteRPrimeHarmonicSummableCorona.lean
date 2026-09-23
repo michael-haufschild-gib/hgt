@@ -63,7 +63,7 @@ def routeRPrimeHarmonicBoundedTraceSequence : RouteRBoundedTraceSequence :=
     routeRPrimeHarmonicBoundedTraceSequence n = routeRPrimeHarmonicTraceSequence n :=
   rfl
 
-/-- Universal first-wall harmonic class survives modulo `ell^1`. -/
+/-- Universal first-wall harmonic class survives modulo `ell^(1 : ℕ)`. -/
 theorem routeRPrimeHarmonicSummableHadamardClass_ne_zero :
     routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ≠ 0 := by
   intro hzero
@@ -77,11 +77,11 @@ theorem routeRPrimeHarmonicSummableHadamardClass_ne_zero :
 
 /-- Square of the universal harmonic representative is absolutely summable. -/
 theorem summable_norm_routeRPrimeHarmonicTraceSequence_sq :
-    Summable (fun n => ‖routeRPrimeHarmonicTraceSequence n ^ 2‖) := by
-  have hp : Summable (fun p : Nat.Primes => (((p : ℕ) : ℝ)⁻¹ ^ 2)) := by
+    Summable (fun n => ‖routeRPrimeHarmonicTraceSequence n ^ (2 : ℕ)‖) := by
+  have hp : Summable (fun p : Nat.Primes => (((p : ℕ) : ℝ)⁻¹ ^ (2 : ℕ))) := by
     have h := summable_primeSquareRecip.mul_left (1 / 2 : ℝ)
     simpa [mul_assoc] using h
-  have hn : Summable (fun n => (((nthPrimeEquiv n).1 : ℝ)⁻¹ ^ 2)) :=
+  have hn : Summable (fun n => (((nthPrimeEquiv n).1 : ℝ)⁻¹ ^ (2 : ℕ))) :=
     nthPrimeEquiv.summable_iff.mpr hp
   refine hn.congr fun n => ?_
   rw [routeRPrimeHarmonicTraceSequence, norm_pow, norm_inv, Complex.norm_real,
@@ -90,7 +90,7 @@ theorem summable_norm_routeRPrimeHarmonicTraceSequence_sq :
 /-- Universal off-line carrier is a literal nonzero square-zero element after quotienting by
 absolutely summable tails. -/
 theorem routeRPrimeHarmonicSummableHadamardClass_sq_zero :
-    routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ^ 2 = 0 := by
+    routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ^ (2 : ℕ) = 0 := by
   rw [pow_two]
   change Ideal.Quotient.mk routeRSummableBoundedTailIdeal
     (routeRPrimeHarmonicBoundedTraceSequence *
@@ -119,7 +119,7 @@ theorem routeRPrimeGammaCriticalWall_has_oriented_squareZeroCarrier
       routeRDiagonalTailRoosClass (routeRPrimeGammaCriticalWallSequence t) =
         -routeRDiagonalTailRoosClass routeRPrimeHarmonicTraceSequence) ∧
     routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ≠ 0 ∧
-    routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ^ 2 = 0 := by
+    routeRSummableHadamardClass routeRPrimeHarmonicBoundedTraceSequence ^ (2 : ℕ) = 0 := by
   constructor
   · rcases lt_or_gt_of_ne ht with htneg | htpos
     · exact Or.inl (routeRPrimeGammaCriticalWallTailRoosClass_eq_harmonic_of_neg htneg)

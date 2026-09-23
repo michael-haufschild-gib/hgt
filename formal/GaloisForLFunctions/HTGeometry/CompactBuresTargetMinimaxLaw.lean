@@ -578,7 +578,7 @@ theorem compactBuresProductValueSet_eq_sq_image_rootProductValueSet
     (hKne : K.Nonempty) (hKcompact : IsCompact K)
     (hKpsd : K ⊆ {M : Matrix (Fin n) (Fin n) ℂ | M.PosSemidef}) :
     compactBuresProductValueSet source K =
-      (fun r : ℝ => r ^ 2) '' compactBuresRootProductValueSet source K := by
+      (fun r : ℝ => r ^ (2 : ℕ)) '' compactBuresRootProductValueSet source K := by
   ext q
   constructor
   · rintro ⟨A, hA, rfl⟩
@@ -598,11 +598,11 @@ theorem compactBuresSInf_product_eq_sq_sInf_rootProduct
     (hKne : K.Nonempty) (hKcompact : IsCompact K)
     (hKpsd : K ⊆ {M : Matrix (Fin n) (Fin n) ℂ | M.PosSemidef}) :
     sInf (compactBuresProductValueSet source K) =
-      sInf (compactBuresRootProductValueSet source K) ^ 2 := by
+      sInf (compactBuresRootProductValueSet source K) ^ (2 : ℕ) := by
   let R := compactBuresRootProductValueSet source K
   have hRne : R.Nonempty := compactBuresRootProductValueSet_nonempty source K
   have hRb : BddBelow R := compactBuresRootProductValueSet_bddBelow source K
-  have hmono : MonotoneOn (fun r : ℝ => r ^ 2) R := by
+  have hmono : MonotoneOn (fun r : ℝ => r ^ (2 : ℕ)) R := by
     intro a ha b hb hab
     have ha0 : 0 ≤ a := by
       rcases ha with ⟨A, hA, rfl⟩
@@ -611,7 +611,7 @@ theorem compactBuresSInf_product_eq_sq_sInf_rootProduct
       rcases hb with ⟨A, hA, rfl⟩
       exact Real.sqrt_nonneg _
     exact (sq_le_sq₀ ha0 hb0).2 hab
-  have hmap : sInf R ^ 2 = sInf ((fun r : ℝ => r ^ 2) '' R) :=
+  have hmap : sInf R ^ (2 : ℕ) = sInf ((fun r : ℝ => r ^ (2 : ℕ)) '' R) :=
     MonotoneOn.map_csInf_of_continuousWithinAt
       ((continuous_pow 2).continuousAt.continuousWithinAt) hmono hRne hRb
   rw [compactBuresProductValueSet_eq_sq_image_rootProductValueSet
@@ -627,7 +627,7 @@ theorem compactBuresProductCapacity_eq_dualCapacity_sq
     (hKconvex : Convex ℝ K)
     (hKpsd : K ⊆ {M : Matrix (Fin n) (Fin n) ℂ | M.PosSemidef}) :
     compactBuresProductCapacity source K =
-      compactBuresDualCapacity source K ^ 2 := by
+      compactBuresDualCapacity source K ^ (2 : ℕ) := by
   unfold compactBuresProductCapacity
   rw [compactBuresSInf_product_eq_sq_sInf_rootProduct
     hsource hKne hKcompact hKpsd]
@@ -705,7 +705,7 @@ theorem compactBures_completeIncidence_minimax_bound
     threshold * mu.real
         (finitePositiveReporterCaptureEvent target state threshold) ≤
       compactBuresDualCapacity
-        (finitePositiveReporterSourceCovariance mu state) K ^ 2 := by
+        (finitePositiveReporterSourceCovariance mu state) K ^ (2 : ℕ) := by
   have hsource := finitePositiveReporterSourceCovariance_posSemidef
     mu state hprod
   calc
@@ -737,7 +737,7 @@ theorem compactBures_returnExcisedIncidence_minimax_bound
       mu.real returnSet +
         compactBuresDualCapacity
           (finitePositiveReporterSourceCovariance
-            (mu.restrict returnSetᶜ) state) K ^ 2 / threshold := by
+            (mu.restrict returnSetᶜ) state) K ^ (2 : ℕ) / threshold := by
   let nu : Measure X := mu.restrict returnSetᶜ
   let E : Set X := finitePositiveReporterCaptureEvent target state threshold
   have hscaled := compactBures_completeIncidence_minimax_bound
@@ -745,7 +745,7 @@ theorem compactBures_returnExcisedIncidence_minimax_bound
       htarget hprod
   have hresidual :
       nu.real E ≤ compactBuresDualCapacity
-        (finitePositiveReporterSourceCovariance nu state) K ^ 2 / threshold := by
+        (finitePositiveReporterSourceCovariance nu state) K ^ (2 : ℕ) / threshold := by
     apply (le_div_iff₀' hthreshold).2
     simpa [E, mul_comm] using hscaled
   have hcut := measureReal_le_return_add_restrict_compl

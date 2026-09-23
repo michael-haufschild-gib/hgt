@@ -22,16 +22,16 @@ noncomputable section
 
 /-- The timelike stationary dispersion `ω(x_α) = a/√(1−α²)`. -/
 def xiMassTimelikeSaddleDispersion (a alpha : ℝ) : ℝ :=
-  a / Real.sqrt (1 - alpha ^ 2)
+  a / Real.sqrt (1 - alpha ^ (2 : ℕ))
 
 theorem xiMassTimelikeSaddleDispersion_gt {a alpha : ℝ} (ha : 0 < a) (h0 : 0 < alpha)
     (h1 : alpha < 1) : a < xiMassTimelikeSaddleDispersion a alpha := by
-  have hlt : (0 : ℝ) < 1 - alpha ^ 2 := by nlinarith
-  have hle : 1 - alpha ^ 2 < 1 := by nlinarith
-  have hs : Real.sqrt (1 - alpha ^ 2) < 1 := by
+  have hlt : (0 : ℝ) < 1 - alpha ^ (2 : ℕ) := by nlinarith
+  have hle : 1 - alpha ^ (2 : ℕ) < 1 := by nlinarith
+  have hs : Real.sqrt (1 - alpha ^ (2 : ℕ)) < 1 := by
     have := Real.sqrt_lt_sqrt hlt.le hle
     rwa [Real.sqrt_one] at this
-  have hspos : (0 : ℝ) < Real.sqrt (1 - alpha ^ 2) := Real.sqrt_pos.2 hlt
+  have hspos : (0 : ℝ) < Real.sqrt (1 - alpha ^ (2 : ℕ)) := Real.sqrt_pos.2 hlt
   rw [xiMassTimelikeSaddleDispersion, lt_div_iff₀ hspos]
   nlinarith
 
@@ -41,24 +41,24 @@ theorem xiMassTimelikeSaddleDispersion_surjOn {a : ℝ} (ha : 0 < a) :
   intro w hw
   rw [Set.mem_Ioi] at hw
   have hwpos : (0 : ℝ) < w := lt_trans ha hw
-  have hratio : (0 : ℝ) < 1 - a ^ 2 / w ^ 2 := by
-    have hlt : a ^ 2 / w ^ 2 < 1 := by
+  have hratio : (0 : ℝ) < 1 - a ^ (2 : ℕ) / w ^ (2 : ℕ) := by
+    have hlt : a ^ (2 : ℕ) / w ^ (2 : ℕ) < 1 := by
       rw [div_lt_one (by positivity)]
       nlinarith
     linarith
-  refine ⟨Real.sqrt (1 - a ^ 2 / w ^ 2), ⟨Real.sqrt_pos.2 hratio, ?_⟩, ?_⟩
-  · have hlt : 1 - a ^ 2 / w ^ 2 < 1 := by
-      have : (0 : ℝ) < a ^ 2 / w ^ 2 := by positivity
+  refine ⟨Real.sqrt (1 - a ^ (2 : ℕ) / w ^ (2 : ℕ)), ⟨Real.sqrt_pos.2 hratio, ?_⟩, ?_⟩
+  · have hlt : 1 - a ^ (2 : ℕ) / w ^ (2 : ℕ) < 1 := by
+      have : (0 : ℝ) < a ^ (2 : ℕ) / w ^ (2 : ℕ) := by positivity
       linarith
     have := Real.sqrt_lt_sqrt hratio.le hlt
     rwa [Real.sqrt_one] at this
-  · have hsq : Real.sqrt (1 - a ^ 2 / w ^ 2) ^ 2 = 1 - a ^ 2 / w ^ 2 :=
+  · have hsq : Real.sqrt (1 - a ^ (2 : ℕ) / w ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - a ^ (2 : ℕ) / w ^ (2 : ℕ) :=
       Real.sq_sqrt hratio.le
-    have hval : 1 - Real.sqrt (1 - a ^ 2 / w ^ 2) ^ 2 = a ^ 2 / w ^ 2 := by
+    have hval : 1 - Real.sqrt (1 - a ^ (2 : ℕ) / w ^ (2 : ℕ)) ^ (2 : ℕ) = a ^ (2 : ℕ) / w ^ (2 : ℕ) := by
       rw [hsq]
       ring
-    have hroot : Real.sqrt (1 - Real.sqrt (1 - a ^ 2 / w ^ 2) ^ 2) = a / w := by
-      rw [hval, Real.sqrt_div (by positivity : (0 : ℝ) ≤ a ^ 2), Real.sqrt_sq ha.le,
+    have hroot : Real.sqrt (1 - Real.sqrt (1 - a ^ (2 : ℕ) / w ^ (2 : ℕ)) ^ (2 : ℕ)) = a / w := by
+      rw [hval, Real.sqrt_div (by positivity : (0 : ℝ) ≤ a ^ (2 : ℕ)), Real.sqrt_sq ha.le,
         Real.sqrt_sq hwpos.le]
     rw [xiMassTimelikeSaddleDispersion, hroot]
     field_simp
@@ -113,11 +113,11 @@ theorem eq_zero_of_vanishes_on_timelikeSaddles {a : ℝ} (ha : 0 < a) {P : ℂ �
 /-! ## The exterior saddle dispersion -/
 
 /-- The exterior stationary dispersion modulus `|ω(x_κ)| = a/√(κ²−1)`. -/
-def xiMassSpacelikeSaddleDispersion (a kappa : ℝ) : ℝ := a / Real.sqrt (kappa ^ 2 - 1)
+def xiMassSpacelikeSaddleDispersion (a kappa : ℝ) : ℝ := a / Real.sqrt (kappa ^ (2 : ℕ) - 1)
 
 theorem xiMassSpacelikeSaddleDispersion_pos {a kappa : ℝ} (ha : 0 < a) (hkappa : 1 < kappa) :
     0 < xiMassSpacelikeSaddleDispersion a kappa := by
-  have hk2 : (0 : ℝ) < kappa ^ 2 - 1 := by nlinarith
+  have hk2 : (0 : ℝ) < kappa ^ (2 : ℕ) - 1 := by nlinarith
   rw [xiMassSpacelikeSaddleDispersion]
   exact div_pos ha (Real.sqrt_pos.2 hk2)
 
@@ -126,13 +126,13 @@ theorem xiMassSpacelikeSaddleDispersion_pos {a kappa : ℝ} (ha : 0 < a) (hkappa
 improve the transport power. -/
 theorem xiMassSpacelikeSaddleDispersion_sharpSlope {a : ℝ} (ha : 1 / 2 < a) :
     xiMassSpacelikeSaddleDispersion a (xiMassSpacelikeSharpSlope a)
-      = 2 * a ^ 2 / xiMassSpacelikeSharpSlope a := by
+      = 2 * a ^ (2 : ℕ) / xiMassSpacelikeSharpSlope a := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hkB : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
-  have hk2 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ 2 - 1 := by nlinarith
-  have hq : (0 : ℝ) < Real.sqrt (xiMassSpacelikeSharpSlope a ^ 2 - 1) := Real.sqrt_pos.2 hk2
+  have hk2 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 := by nlinarith
+  have hq : (0 : ℝ) < Real.sqrt (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) := Real.sqrt_pos.2 hk2
   have hval := sharpSlope_eq_two_mul_sqrt ha
-  have hroot : Real.sqrt (xiMassSpacelikeSharpSlope a ^ 2 - 1)
+  have hroot : Real.sqrt (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1)
       = xiMassSpacelikeSharpSlope a / (2 * a) := by
     rw [eq_div_iff (by positivity : (2 : ℝ) * a ≠ 0)]
     linarith [hval]

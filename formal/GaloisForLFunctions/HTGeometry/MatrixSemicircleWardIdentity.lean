@@ -89,7 +89,7 @@ theorem matrixSemicircleDyson_ward
     ext i j
     simp only [H, matrixHermitianImaginaryPart, Matrix.smul_apply,
       Matrix.sub_apply, smul_eq_mul]
-    have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+    have hI : Complex.I ^ (2 : ℕ) = (-1 : ℂ) := by norm_num
     ring_nf
     rw [hI]
     ring

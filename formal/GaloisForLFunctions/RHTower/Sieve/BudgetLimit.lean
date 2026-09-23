@@ -22,8 +22,8 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
     (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β) (hγβ1 : γ * β < 1) :
     Tendsto (fun x : ℝ =>
         omegaBudget x (cardLength β x) (siftStart (γ * β) x) (ladderTop β γ x)
-          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-            * (cardLength β x) ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
+          / ((mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+            * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0) := by
   have hβ0' : (0 : ℝ) < β := by linarith
   obtain ⟨A, delta, Ctot, hdelta, hCtot, hbound⟩ :=
     exists_eventually_omegaBudget_le (β := β) (γ := γ) hβ0' hβ1 hγ0 hγ1 hγβ1
@@ -45,34 +45,34 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
         (ladderTop β γ x) := by
       rw [omegaBudget]
       have hint : (0 : ℝ) ≤ ∫ w : ℝ,
-          ‖logWindowKernel (fibreWidth x (cardLength β x)) w‖ ^ 2
+          ‖logWindowKernel (fibreWidth x (cardLength β x)) w‖ ^ (2 : ℕ)
             * ‖omegaWeightedMoebiusPoly (primesRange (siftStart (γ * β) x) (ladderTop β γ x))
-                (fibreIndex x (cardLength β x)) w‖ ^ 2 :=
+                (fibreIndex x (cardLength β x)) w‖ ^ (2 : ℕ) :=
         MeasureTheory.integral_nonneg fun w => by positivity
       have hm : (0 : ℝ) ≤ mertensS (ladderTop β γ x) := mertensS_nonneg' _
       have hsx0 : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
       have hpc : (0 : ℝ) ≤ ((Nat.primesLE (ladderTop β γ x)).card : ℝ) := Nat.cast_nonneg _
       have t1 : (0 : ℝ) ≤ 16 * Real.sqrt x * (∫ w : ℝ,
-          ‖logWindowKernel (fibreWidth x (cardLength β x)) w‖ ^ 2
+          ‖logWindowKernel (fibreWidth x (cardLength β x)) w‖ ^ (2 : ℕ)
             * ‖omegaWeightedMoebiusPoly (primesRange (siftStart (γ * β) x) (ladderTop β γ x))
-                (fibreIndex x (cardLength β x)) w‖ ^ 2) :=
+                (fibreIndex x (cardLength β x)) w‖ ^ (2 : ℕ)) :=
         mul_nonneg (by linarith) hint
       have t2 : (0 : ℝ) ≤ 204
-          * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ 2
+          * (((primesRange (siftStart (γ * β) x) (ladderTop β γ x)).card : ℝ) + 1) ^ (2 : ℕ)
           * (Real.sqrt x + 1) :=
         mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg _)) (by linarith)
       have t3 : (0 : ℝ) ≤ 2 * (cardLength β x + 1) * (2 * cardLength β x + 1)
           * (4 * (Real.sqrt x / 2 + cardLength β x + 1) * mertensS (ladderTop β γ x)
             + 4 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ)
-            + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ 2) := by
+            + 8 * ((Nat.primesLE (ladderTop β γ x)).card : ℝ) ^ (2 : ℕ)) := by
         refine mul_nonneg (mul_nonneg (by linarith) (by linarith)) ?_
         have a1 : (0 : ℝ) ≤ 4 * (Real.sqrt x / 2 + cardLength β x + 1)
             * mertensS (ladderTop β γ x) := mul_nonneg (by linarith) hm
         nlinarith [a1, hpc, sq_nonneg ((Nat.primesLE (ladderTop β γ x)).card : ℝ)]
       linarith [t1, t2, t3]
-    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-        * (cardLength β x) ^ 2 * Real.sqrt x := by
-      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+        * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x := by
+      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
         nlinarith [hW]
       exact mul_pos (mul_pos this (pow_pos hh0 2)) hsx
     exact div_nonneg hnum hden.le
@@ -89,17 +89,17 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
     have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
     have hBsx : Real.sqrt x ≤ ((budgetB β x : ℕ) : ℝ) := sqrt_le_budgetB (β := β) x hh1
     have hB0 : (0 : ℝ) < ((budgetB β x : ℕ) : ℝ) := by linarith
-    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-        * (cardLength β x) ^ 2 * Real.sqrt x := by
-      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2 := by
+    have hden : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+        * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x := by
+      have : (0 : ℝ) < (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ) := by
         nlinarith [hW]
       exact mul_pos (mul_pos this (pow_pos hh0 2)) hsx
     refine (div_le_div_of_nonneg_right hb hden.le).trans ?_
     -- rearrange the denominator into the split form
-    have hdenperm : (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (cardLength β x) ^ 2 * Real.sqrt x
-        = (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2
-          * (cardLength β x) ^ 2 * Real.sqrt x := rfl
+    have hdenperm : (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x
+        = (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ)
+          * (cardLength β x) ^ (2 : ℕ) * Real.sqrt x := rfl
     rw [hdenperm, budget_div_eq (sx := Real.sqrt x) (h := cardLength β x)
       (W := mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x))
       (G := gallagherCut β x) (T0 := budgetT β x) (δ := fibreWidth x (cardLength β x))
@@ -109,7 +109,7 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
         (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
         (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x))
       (Ec := ∑ n ∈ Finset.Icc 1 (budgetB β x),
-        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
       (B0 := ((budgetB β x : ℕ) : ℝ)) hsx (by nlinarith [hW]) hh0
       (by
         rw [show gallagherCut β x = ((budgetB β x : ℕ) : ℝ) / cardLength β x from rfl]
@@ -141,7 +141,7 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
         (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x)
         (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x))
       (Ec := ∑ n ∈ Finset.Icc 1 (budgetB β x),
-        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+        ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
       (B0 := ((budgetB β x : ℕ) : ℝ)) hsx hW hh1 hB0
       hδ0 hδle hGh hG0 rfl
       (by nlinarith [hB2, hB0, Real.sq_sqrt (by linarith : (0:ℝ) ≤ x)])
@@ -151,31 +151,31 @@ theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 
     have e1 : (136 : ℝ) * ladderAffineSlope (ladderSteps β γ x) (budgetB β x)
           ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 136 * (ladderAffineSlope (ladderSteps β γ x) (budgetB β x)
             ((siftStart (γ * β) x : ℕ) : ℝ) (ladderEta β γ x) (budgetRho A delta Ctot β γ x)
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     have e2 : (140 : ℝ) * (∑ n ∈ Finset.Icc 1 (budgetB β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 140 * ((∑ n ∈ Finset.Icc 1 (budgetB β x),
-            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ 2)
+            ‖omegaCoeff (primesRange (siftStart (γ * β) x) (ladderTop β γ x)) n‖ ^ (2 : ℕ))
           / (((budgetB β x : ℕ) : ℝ) * cardLength β x
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     have e3 : (131 : ℝ) * ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x)
           (ladderSteps β γ x) (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ)
           (ladderEta β γ x) (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetB β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)
+          / (((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))
         = 131 * (ladderAffineConst (siftStart (γ * β) x) (ladderTop β γ x)
             (ladderSteps β γ x) (budgetB β x) ((siftStart (γ * β) x : ℕ) : ℝ)
             (ladderEta β γ x) (budgetRho A delta Ctot β γ x) (budgetS β x) (annulusStart β x)
-          / (((budgetB β x : ℕ) : ℝ) ^ 2
-            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
+          / (((budgetB β x : ℕ) : ℝ) ^ (2 : ℕ)
+            * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ (2 : ℕ))) := by
       ring
     linarith [hspec, e1, e2, e3]
 

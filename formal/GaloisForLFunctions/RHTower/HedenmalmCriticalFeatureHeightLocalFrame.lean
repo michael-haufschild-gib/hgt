@@ -32,12 +32,12 @@ theorem normSq_criticalEvaluation_realCriticalFeature_eq
         (criticalEvaluation z hz
           (criticalFeature (t : ℂ) (by norm_num))) =
       4 /
-        ((1 + (z.re - t) ^ 2 - z.im ^ 2) ^ 2 +
-          (2 * (z.re - t) * z.im) ^ 2) := by
+        ((1 + (z.re - t) ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) +
+          (2 * (z.re - t) * z.im) ^ (2 : ℕ)) := by
   have hden :
-      Complex.normSq (1 + (z - (t : ℂ)) ^ 2) =
-        (1 + (z.re - t) ^ 2 - z.im ^ 2) ^ 2 +
-          (2 * (z.re - t) * z.im) ^ 2 := by
+      Complex.normSq (1 + (z - (t : ℂ)) ^ (2 : ℕ)) =
+        (1 + (z.re - t) ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) +
+          (2 * (z.re - t) * z.im) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     simp [pow_two, Complex.mul_re, Complex.mul_im]
     ring
@@ -61,8 +61,8 @@ theorem normSq_criticalEvaluation_realCriticalFeature_ge_of_abs_sub_le_half
   let x : ℝ := z.re - t
   let y : ℝ := z.im
   let D : ℝ :=
-    (1 + x ^ 2 - y ^ 2) ^ 2 + (2 * x * y) ^ 2
-  have hx2 : x ^ 2 ≤ 1 / 4 := by
+    (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * x * y) ^ (2 : ℕ)
+  have hx2 : x ^ (2 : ℕ) ≤ 1 / 4 := by
     dsimp only [x]
     have hsq := (sq_le_sq₀ (abs_nonneg (z.re - t))
       (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 ht
@@ -70,29 +70,29 @@ theorem normSq_criticalEvaluation_realCriticalFeature_ge_of_abs_sub_le_half
     norm_num at hsq ⊢
     exact hsq
   have hyabs : |y| < 1 / 2 := by simpa only [y] using hz
-  have hy2 : y ^ 2 < 1 / 4 := by
+  have hy2 : y ^ (2 : ℕ) < 1 / 4 := by
     have hsq := (sq_lt_sq₀ (abs_nonneg y)
       (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hyabs
     rw [sq_abs] at hsq
     norm_num at hsq ⊢
     exact hsq
-  have hDid : D = (1 + x ^ 2 + y ^ 2) ^ 2 - 4 * y ^ 2 := by
+  have hDid : D = (1 + x ^ (2 : ℕ) + y ^ (2 : ℕ)) ^ (2 : ℕ) - 4 * y ^ (2 : ℕ) := by
     dsimp only [D]
     ring
-  have hbracket : -2 + 2 * x ^ 2 + y ^ 2 ≤ 0 := by linarith
-  have hcorr : y ^ 2 * (-2 + 2 * x ^ 2 + y ^ 2) ≤ 0 :=
+  have hbracket : -2 + 2 * x ^ (2 : ℕ) + y ^ (2 : ℕ) ≤ 0 := by linarith
+  have hcorr : y ^ (2 : ℕ) * (-2 + 2 * x ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos (sq_nonneg y) hbracket
-  have hbase0 : 0 ≤ 1 + x ^ 2 := by positivity
-  have hbase : 1 + x ^ 2 ≤ 5 / 4 := by linarith
-  have hbasesq : (1 + x ^ 2) ^ 2 ≤ (5 / 4 : ℝ) ^ 2 :=
+  have hbase0 : 0 ≤ 1 + x ^ (2 : ℕ) := by positivity
+  have hbase : 1 + x ^ (2 : ℕ) ≤ 5 / 4 := by linarith
+  have hbasesq : (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (5 / 4 : ℝ) ^ (2 : ℕ) :=
     (sq_le_sq₀ hbase0 (by norm_num)).2 hbase
   have hDle : D ≤ 25 / 16 := by
     rw [hDid]
     nlinarith
   have hDpos : 0 < D := by
-    have hfirst : 0 < 1 + x ^ 2 - y ^ 2 := by
+    have hfirst : 0 < 1 + x ^ (2 : ℕ) - y ^ (2 : ℕ) := by
       nlinarith [sq_nonneg x]
-    have hfirstSq : 0 < (1 + x ^ 2 - y ^ 2) ^ 2 :=
+    have hfirstSq : 0 < (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) :=
       sq_pos_of_pos hfirst
     dsimp only [D]
     nlinarith [sq_nonneg (2 * x * y)]
@@ -121,7 +121,7 @@ The inverse-square factor is forced by quadratic coalescence at the critical bou
 def fiveShiftCriticalFeaturePairedRenormalizedCurrent
     (t : ℝ) (z : ℂ) (hz : |z.im| < 1 / 2) : ℝ :=
   let hzc : |((starRingEnd ℂ) z).im| < 1 / 2 := by simpa using hz
-  (-z.im)⁻¹ ^ 2 *
+  (-z.im)⁻¹ ^ (2 : ℕ) *
     (-(fiveShiftCriticalEvaluationEnergyCurrent 1 (by norm_num) z hz
           (criticalFeature (t : ℂ) (by norm_num)) +
         fiveShiftCriticalEvaluationEnergyCurrent 1 (by norm_num)

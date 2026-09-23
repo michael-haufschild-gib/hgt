@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.OrderOneEnvelope
 /-!
 # Sparse unbounded-multiplicity order-one canonical product
 
-The cubic nodes `((k+1)^3 + 3/2)` with multiplicity `k+1` have summable first reciprocal mass.
+The cubic nodes `((k+1)^(3 : ℕ) + 3/2)` with multiplicity `k+1` have summable first reciprocal mass.
 Their genus-one canonical product is therefore entire and lies in the order-one envelope, while
 its analytic order at the `k`-th node is exactly `k+1`.  This is the positive survivor exposed by
 the sparse-unbounded-jet FZZ no-go: unbounded local multiplicity is compatible with order-one
@@ -30,7 +30,7 @@ open GaloisForLFunctions.CountableDivisor
 abbrev SparseJetMultiplicityIndex := Σ k : ℕ, Fin (k + 1)
 
 /-- Cubic sparse physical response order. -/
-def sparseJetPhysicalNode (k : ℕ) : ℕ := (k + 1) ^ 3
+def sparseJetPhysicalNode (k : ℕ) : ℕ := (k + 1) ^ (3 : ℕ)
 
 /-- Positive centered canonical-product node corresponding to `sparseJetPhysicalNode k`. -/
 def sparseJetCenteredNode (k : ℕ) : ℝ :=
@@ -45,18 +45,18 @@ def sparseJetCanonicalProduct : ℂ → ℂ :=
   canonicalProductE1Indexed sparseJetDivisorPoint
 
 private theorem summable_one_div_nat_succ_sq :
-    Summable (fun k : ℕ => (1 : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2) := by
-  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+    Summable (fun k : ℕ => (1 : ℝ) / ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
+  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
   have hshift := (summable_nat_add_iff
-    (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) 1).mpr hbase
+    (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) 1).mpr hbase
   exact hshift.congr fun k => by
     push_cast
     ring
 
 theorem sparseJetDivisorPoint_norm (q : SparseJetMultiplicityIndex) :
     ‖sparseJetDivisorPoint q‖ =
-      (((q.1 + 1 : ℕ) : ℝ) ^ 3 + 3 / 2) := by
+      (((q.1 + 1 : ℕ) : ℝ) ^ (3 : ℕ) + 3 / 2) := by
   rw [sparseJetDivisorPoint, sparseJetCenteredNode, sparseJetPhysicalNode,
     Complex.norm_real, Real.norm_eq_abs, abs_of_pos]
   · push_cast
@@ -78,7 +78,7 @@ theorem sparseJetDivisorPoint_inv_summable :
   · refine Summable.of_nonneg_of_le (fun k => tsum_nonneg fun _ => by positivity)
       (fun k => ?_) summable_one_div_nat_succ_sq
     have hx : 0 < (((k + 1 : ℕ) : ℝ)) := by positivity
-    have hden : 0 < (((k + 1 : ℕ) : ℝ) ^ 3 + 3 / 2) := by positivity
+    have hden : 0 < (((k + 1 : ℕ) : ℝ) ^ (3 : ℕ) + 3 / 2) := by positivity
     rw [tsum_fintype]
     simp only [sparseJetDivisorPoint_norm, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul]
@@ -87,7 +87,7 @@ theorem sparseJetDivisorPoint_inv_summable :
     nlinarith [sq_nonneg (((k + 1 : ℕ) : ℝ))]
 
 theorem sparseJetDivisorPoint_inv_sq_summable :
-    Summable (fun q : SparseJetMultiplicityIndex => 1 / ‖sparseJetDivisorPoint q‖ ^ 2) := by
+    Summable (fun q : SparseJetMultiplicityIndex => 1 / ‖sparseJetDivisorPoint q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
     sparseJetDivisorPoint_inv_summable
   have hp : 0 < ‖sparseJetDivisorPoint q‖ :=
@@ -120,10 +120,10 @@ theorem sparseJetDivisorPoint_locallyFinite :
 
 theorem sparseJetCenteredNode_injective : Function.Injective sparseJetCenteredNode := by
   intro k l h
-  have hpowR : (((k + 1) ^ 3 : ℕ) : ℝ) = (((l + 1) ^ 3 : ℕ) : ℝ) := by
+  have hpowR : (((k + 1) ^ (3 : ℕ) : ℕ) : ℝ) = (((l + 1) ^ (3 : ℕ) : ℕ) : ℝ) := by
     dsimp [sparseJetCenteredNode, sparseJetPhysicalNode] at h
     linarith
-  have hpowN : (k + 1) ^ 3 = (l + 1) ^ 3 := by
+  have hpowN : (k + 1) ^ (3 : ℕ) = (l + 1) ^ (3 : ℕ) := by
     exact_mod_cast hpowR
   have hadd : k + 1 = l + 1 := Nat.pow_left_injective (by norm_num : 3 ≠ 0) hpowN
   omega

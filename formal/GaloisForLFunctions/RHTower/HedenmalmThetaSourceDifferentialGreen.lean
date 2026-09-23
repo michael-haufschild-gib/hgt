@@ -4,6 +4,8 @@ import GaloisForLFunctions.RHTower.HedenmalmThetaActualStageGreenBalance
 import GaloisForLFunctions.RHTower.HedenmalmThetaMetricCommutator
 import GaloisForLFunctions.RHTower.HedenmalmThetaMetricPencil
 import GaloisForLFunctions.RHTower.HedenmalmPinnedBoundaryTwoPort
+import GaloisForLFunctions.HTGeometry.ClosedGraphTransformAdjoint
+import GaloisForLFunctions.HTGeometry.GraphSaturationCore
 
 /-!
 # Green law for the closed source-faithful theta differential pencil
@@ -32,7 +34,7 @@ private local instance thetaSourceDifferentialGreenComplete : CompleteSpace thet
 
 section MetricRoot
 
-local instance : ContinuousFunctionalCalculus ℝ (H →L[ℂ] H) IsSelfAdjoint :=
+local instance hedenmalmThetaSourceDifferentialGreenInst1 : ContinuousFunctionalCalculus ℝ (H →L[ℂ] H) IsSelfAdjoint :=
   IsSelfAdjoint.instContinuousFunctionalCalculus
 
 /-- The positive square root of the literal singular theta metric.  This is the dense energy
@@ -78,7 +80,297 @@ theorem thetaMetricRoot_energy (f g : H) :
   change inner ℂ ((thetaMetricRoot * thetaMetricRoot) f) g = _
   rw [thetaMetricRoot_sq]
 
+
+/-- The reciprocal-speed cutoff on a compact quantile interval.  It is the exact test vector
+whose ordinary monopole and metric-root energy both recover the quantile increment. -/
+private def thetaQuantileSpeedIntervalSymbol (a b : ℝ) : ℝ → ℂ :=
+  (Ico a b).indicator fun t => (quantileSpeed thetaSource t : ℂ)
+
+private theorem measurable_thetaQuantileSpeedIntervalSymbol (a b : ℝ) :
+    Measurable (thetaQuantileSpeedIntervalSymbol a b) := by
+  unfold thetaQuantileSpeedIntervalSymbol
+  exact (Complex.measurable_ofReal.comp
+    (measurable_const.div
+      (thetaSource.continuous_k.measurable.comp thetaSource.measurable_quantileFun))).indicator
+        measurableSet_Ico
+
+private noncomputable def thetaQuantileSpeedIntervalCutoff (a b C : ℝ) (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C) : H :=
+  lpBoundedMulCLM (p := 2) (μ := unitIntervalMeasure)
+    (measurable_thetaQuantileSpeedIntervalSymbol a b) hC0 hC pinnedOne
+
+private theorem thetaQuantileSpeedIntervalCutoff_coeFn (a b C : ℝ) (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C) :
+    (thetaQuantileSpeedIntervalCutoff a b C hC0 hC : ℝ → ℂ) =ᵐ[unitIntervalMeasure]
+      thetaQuantileSpeedIntervalSymbol a b := by
+  unfold thetaQuantileSpeedIntervalCutoff
+  filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (measurable_thetaQuantileSpeedIntervalSymbol a b) hC0 hC pinnedOne,
+    pinnedOne_coeFn] with t ht h1
+  rw [ht, h1, mul_one]
+
+private theorem exists_thetaQuantileSpeedIntervalBound {a b : ℝ}
+    (ha : a ∈ Ioo (0 : ℝ) 1) (hb : b ∈ Ioo (0 : ℝ) 1) (hab : a ≤ b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C := by
+  have hcont : ContinuousOn (quantileSpeed thetaSource) (Icc a b) :=
+    (HedenmalmQuantile.continuousOn_quantileSpeed thetaSource).mono (by
+      intro t ht
+      exact ⟨lt_of_lt_of_le ha.1 ht.1, lt_of_le_of_lt ht.2 hb.2⟩)
+  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont
+  have hC0 : 0 ≤ C :=
+    le_trans (norm_nonneg (quantileSpeed thetaSource a)) (hC a ⟨le_rfl, hab⟩)
+  refine ⟨C, hC0, ?_⟩
+  intro t
+  by_cases ht : t ∈ Ico a b
+  · rw [thetaQuantileSpeedIntervalSymbol, Set.indicator_of_mem ht]
+    simpa [Real.norm_eq_abs, abs_of_pos (quantileSpeed_pos thetaSource t)] using
+      hC t ⟨ht.1, ht.2.le⟩
+  · rw [thetaQuantileSpeedIntervalSymbol, Set.indicator_of_notMem ht, norm_zero]
+    exact hC0
+
+/-- A compact reciprocal-speed cutoff has monopole exactly equal to the quantile increment. -/
+private theorem pinnedMean_thetaQuantileSpeedIntervalCutoff (a b C : ℝ) (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C)
+    (ha : a ∈ Ioo (0 : ℝ) 1) (hb : b ∈ Ioo (0 : ℝ) 1) (hab : a ≤ b) :
+    pinnedMean (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) =
+      (thetaSource.quantileFun b - thetaSource.quantileFun a : ℂ) := by
+  rw [← thetaPinnedMeanCLM_apply]
+  change inner ℂ pinnedOne (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) = _
+  rw [inner_lp_eq]
+  calc
+    (∫ t, (starRingEnd ℂ) ((pinnedOne : H) t) *
+        (thetaQuantileSpeedIntervalCutoff a b C hC0 hC : H) t ∂unitIntervalMeasure) =
+        ∫ t, (((Ico a b).indicator (fun t => quantileSpeed thetaSource t) t : ℝ) : ℂ)
+          ∂unitIntervalMeasure := by
+      apply integral_congr_ae
+      filter_upwards [pinnedOne_coeFn,
+        thetaQuantileSpeedIntervalCutoff_coeFn a b C hC0 hC] with t h1 h2
+      rw [h1, h2, map_one, one_mul, thetaQuantileSpeedIntervalSymbol]
+      by_cases ht : t ∈ Ico a b
+      · rw [Set.indicator_of_mem ht, Set.indicator_of_mem ht]
+      · rw [Set.indicator_of_notMem ht, Set.indicator_of_notMem ht]
+        norm_num
+    _ = ((∫ t, (Ico a b).indicator (fun t => quantileSpeed thetaSource t) t
+        ∂unitIntervalMeasure : ℝ) : ℂ) := by
+      rw [integral_complex_ofReal]
+    _ = thetaSource.quantileFun b - thetaSource.quantileFun a := by
+      exact_mod_cast integral_quantileSpeed_indicator_Ico thetaSource ha hb hab
+
+/-- The metric sends the reciprocal-speed cutoff to the ordinary interval indicator. -/
+private theorem thetaMetricOperator_thetaQuantileSpeedIntervalCutoff (a b C : ℝ)
+    (hC0 : 0 ≤ C) (hC : ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C)
+    (hfin : unitIntervalMeasure (Ico a b) ≠ ∞) :
+    thetaMetricOperator (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) =
+      indicatorConstLp 2 measurableSet_Ico hfin (1 : ℂ) := by
+  change metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le
+      (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) =
+    indicatorConstLp 2 measurableSet_Ico hfin (1 : ℂ)
+  apply Lp.ext
+  filter_upwards [metricOperator_coeFn thetaSource thetaMetricBound_nonneg
+      norm_metricSymbol_thetaSource_le (thetaQuantileSpeedIntervalCutoff a b C hC0 hC),
+    thetaQuantileSpeedIntervalCutoff_coeFn a b C hC0 hC,
+    indicatorConstLp_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (s := Ico a b) (hs := measurableSet_Ico) (hμs := hfin) (c := (1 : ℂ))]
+      with t hM hF hI
+  rw [hM, hF, hI, thetaQuantileSpeedIntervalSymbol]
+  by_cases ht : t ∈ Ico a b
+  · rw [Set.indicator_of_mem ht, Set.indicator_of_mem ht,
+      metricSymbol_eq_inv_quantileSpeed]
+    have hq : ((quantileSpeed thetaSource t : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast (quantileSpeed_pos thetaSource t).ne'
+    rw [Complex.ofReal_inv]
+    exact inv_mul_cancel₀ hq
+  · rw [Set.indicator_of_notMem ht, Set.indicator_of_notMem ht, mul_zero]
+
+/-- The metric-root energy of the reciprocal-speed cutoff is the same quantile increment as
+its monopole.  This is the analytic source of the free completed monopole coordinate. -/
+private theorem inner_thetaMetricRoot_thetaQuantileSpeedIntervalCutoff (a b C : ℝ)
+    (hC0 : 0 ≤ C) (hC : ∀ t, ‖thetaQuantileSpeedIntervalSymbol a b t‖ ≤ C)
+    (ha : a ∈ Ioo (0 : ℝ) 1) (hb : b ∈ Ioo (0 : ℝ) 1) (hab : a ≤ b)
+    (hfin : unitIntervalMeasure (Ico a b) ≠ ∞) :
+    inner ℂ (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC))
+      (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC)) =
+        (thetaSource.quantileFun b - thetaSource.quantileFun a : ℂ) := by
+  have hmetric := thetaMetricOperator_thetaQuantileSpeedIntervalCutoff a b C hC0 hC hfin
+  have hqint : ∫ t in Ico a b, quantileSpeed thetaSource t ∂unitIntervalMeasure =
+      thetaSource.quantileFun b - thetaSource.quantileFun a := by
+    rw [← MeasureTheory.integral_indicator measurableSet_Ico]
+    exact integral_quantileSpeed_indicator_Ico thetaSource ha hb hab
+  calc
+    inner ℂ (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC))
+        (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC)) =
+        inner ℂ (thetaMetricOperator (thetaQuantileSpeedIntervalCutoff a b C hC0 hC))
+          (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) :=
+      thetaMetricRoot_energy _ _
+    _ = inner ℂ (indicatorConstLp 2 measurableSet_Ico hfin (1 : ℂ))
+          (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) := by rw [hmetric]
+    _ = ∫ t in Ico a b, (thetaQuantileSpeedIntervalCutoff a b C hC0 hC : H) t
+          ∂unitIntervalMeasure :=
+      MeasureTheory.L2.inner_indicatorConstLp_one measurableSet_Ico hfin _
+    _ = ∫ t in Ico a b, (quantileSpeed thetaSource t : ℂ)
+          ∂unitIntervalMeasure := by
+      apply setIntegral_congr_ae measurableSet_Ico
+      filter_upwards [thetaQuantileSpeedIntervalCutoff_coeFn a b C hC0 hC] with t ht
+      intro hmem
+      rw [ht, thetaQuantileSpeedIntervalSymbol, Set.indicator_of_mem hmem]
+    _ = ((∫ t in Ico a b, quantileSpeed thetaSource t ∂unitIntervalMeasure : ℝ) : ℂ) := by
+      rw [integral_complex_ofReal]
+    _ = thetaSource.quantileFun b - thetaSource.quantileFun a := by
+      exact_mod_cast hqint
+
 end MetricRoot
+
+/-- The constant mode has no metric-root preimage.  Compact reciprocal-speed cutoffs have
+monopole and squared root energy both equal to an arbitrarily prescribed quantile increment,
+which contradicts Cauchy--Schwarz for a putative preimage. -/
+theorem thetaPinnedOne_not_mem_thetaMetricRoot_range :
+    pinnedOne ∉ thetaMetricRoot.range := by
+  rintro ⟨y, hy⟩
+  let R : ℝ := ‖y‖ ^ 2 + 1
+  have hRpos : 0 < R := by
+    dsimp [R]
+    positivity
+  let a : ℝ := thetaSource.cdfFun (-R)
+  let b : ℝ := thetaSource.cdfFun 0
+  have ha : a ∈ Ioo (0 : ℝ) 1 := by
+    dsimp [a]
+    exact thetaSource.cdfFun_mem_Ioo _
+  have hb : b ∈ Ioo (0 : ℝ) 1 := by
+    dsimp [b]
+    exact thetaSource.cdfFun_mem_Ioo _
+  have hab : a ≤ b := by
+    change thetaSource.cdfFun (-R) ≤ thetaSource.cdfFun 0
+    exact (thetaSource.strictMono_cdfFun (neg_lt_zero.mpr hRpos)).le
+  have hsub : Ico a b ⊆ Icc (0 : ℝ) 1 := by
+    rintro t ⟨hta, htb⟩
+    exact ⟨ha.1.le.trans hta, htb.le.trans hb.2.le⟩
+  have hfin : unitIntervalMeasure (Ico a b) ≠ ∞ := by
+    rw [unitIntervalMeasure, Measure.restrict_apply measurableSet_Ico,
+      Set.inter_eq_self_of_subset_left hsub, Real.volume_Ico]
+    exact ENNReal.ofReal_ne_top
+  obtain ⟨C, hC0, hC⟩ := exists_thetaQuantileSpeedIntervalBound ha hb hab
+  let f : H := thetaQuantileSpeedIntervalCutoff a b C hC0 hC
+  have hinc : thetaSource.quantileFun b - thetaSource.quantileFun a = R := by
+    dsimp [a, b]
+    rw [thetaSource.quantile_cdfFun, thetaSource.quantile_cdfFun]
+    ring
+  have hincC : (thetaSource.quantileFun b : ℂ) - thetaSource.quantileFun a = (R : ℂ) := by
+    exact_mod_cast hinc
+  have hmean0 := pinnedMean_thetaQuantileSpeedIntervalCutoff a b C hC0 hC ha hb hab
+  have henergy0 := inner_thetaMetricRoot_thetaQuantileSpeedIntervalCutoff
+    a b C hC0 hC ha hb hab hfin
+  have hmean : pinnedMean f = (R : ℂ) := by
+    change pinnedMean (thetaQuantileSpeedIntervalCutoff a b C hC0 hC) = (R : ℂ)
+    rw [hmean0, hincC]
+  have henergy : inner ℂ (thetaMetricRoot f) (thetaMetricRoot f) = (R : ℂ) := by
+    change inner ℂ (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC))
+      (thetaMetricRoot (thetaQuantileSpeedIntervalCutoff a b C hC0 hC)) = (R : ℂ)
+    rw [henergy0, hincC]
+  have hmean_inner : pinnedMean f = inner ℂ pinnedOne f := by
+    rw [← thetaPinnedMeanCLM_apply]
+    rfl
+  have hroot_transpose : inner ℂ (thetaMetricRoot y) f =
+      inner ℂ y (thetaMetricRoot f) := by
+    have h := ContinuousLinearMap.adjoint_inner_left thetaMetricRoot f y
+    rw [thetaMetricRoot_selfAdjoint] at h
+    exact h
+  have hpair : (R : ℂ) = inner ℂ y (thetaMetricRoot f) := by
+    calc
+      (R : ℂ) = pinnedMean f := hmean.symm
+      _ = inner ℂ pinnedOne f := hmean_inner
+      _ = inner ℂ (thetaMetricRoot y) f :=
+        congrArg (fun u : H => inner ℂ u f) hy.symm
+      _ = inner ℂ y (thetaMetricRoot f) := hroot_transpose
+  have hbound : R ≤ ‖y‖ * ‖thetaMetricRoot f‖ := by
+    calc
+      R = ‖(R : ℂ)‖ := by
+        rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hRpos]
+      _ = ‖inner ℂ y (thetaMetricRoot f)‖ := by rw [hpair]
+      _ ≤ ‖y‖ * ‖thetaMetricRoot f‖ := norm_inner_le_norm _ _
+  have henergyReal : ‖thetaMetricRoot f‖ ^ 2 = R := by
+    calc
+      ‖thetaMetricRoot f‖ ^ 2 =
+          (inner ℂ (thetaMetricRoot f) (thetaMetricRoot f)).re :=
+        InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) _
+      _ = ((R : ℂ)).re := congrArg Complex.re henergy
+      _ = R := Complex.ofReal_re _
+  have hboundSq : R ^ 2 ≤ (‖y‖ * ‖thetaMetricRoot f‖) ^ 2 :=
+    (sq_le_sq₀ hRpos.le (mul_nonneg (norm_nonneg _) (norm_nonneg _))).mpr hbound
+  rw [mul_pow, henergyReal] at hboundSq
+  dsimp [R] at hboundSq
+  nlinarith [sq_nonneg ‖y‖]
+
+/-- The exact graph that retains both the metric-root energy coordinate and the free monopole. -/
+def thetaMonopoleEnergyGraph : Submodule ℂ (WithLp 2 (H × ℂ)) :=
+  linearGraphSubmodule (thetaMetricRoot.comp thetaCenteredSourceInverse).toLinearMap
+    (thetaPinnedMeanCLM.comp thetaCenteredSourceInverse).toLinearMap
+
+/-- The free monopole removes every joint annihilator of the metric-root source graph. -/
+theorem thetaMonopoleEnergyGraph_jointAnnihilator
+    (x : H) (c : ℂ)
+    (h : ∀ k : thetaCentered,
+      inner ℂ (thetaMetricRoot (thetaCenteredSourceInverse k)) x +
+        inner ℂ (pinnedMean (thetaCenteredSourceInverse k)) c = 0) :
+    x = 0 ∧ c = 0 := by
+  have hrelation : thetaMetricRoot x + c • pinnedOne = 0 := by
+    apply thetaCenteredSourceInverse_dense_range.eq_zero_of_inner_right ℂ
+    rintro _ ⟨k, rfl⟩
+    have hk := h k
+    have hroot : inner ℂ (thetaMetricRoot (thetaCenteredSourceInverse k)) x =
+        inner ℂ (thetaCenteredSourceInverse k) (thetaMetricRoot x) := by
+      have ht := ContinuousLinearMap.adjoint_inner_left thetaMetricRoot x
+        (thetaCenteredSourceInverse k)
+      rw [thetaMetricRoot_selfAdjoint] at ht
+      exact ht
+    have hmean : inner ℂ (pinnedMean (thetaCenteredSourceInverse k)) c =
+        inner ℂ (thetaCenteredSourceInverse k) (c • pinnedOne) := by
+      calc
+        inner ℂ (pinnedMean (thetaCenteredSourceInverse k)) c =
+            inner ℂ (thetaPinnedMeanCLM (thetaCenteredSourceInverse k)) c := by
+          rw [thetaPinnedMeanCLM_apply]
+        _ = inner ℂ (inner ℂ pinnedOne (thetaCenteredSourceInverse k)) c := rfl
+        _ = inner ℂ (thetaCenteredSourceInverse k) (c • pinnedOne) := by
+          rw [RCLike.inner_apply', inner_smul_right,
+            inner_conj_symm (thetaCenteredSourceInverse k) pinnedOne]
+          ring
+    calc
+      inner ℂ (thetaCenteredSourceInverse k) (thetaMetricRoot x + c • pinnedOne) =
+          inner ℂ (thetaCenteredSourceInverse k) (thetaMetricRoot x) +
+            inner ℂ (thetaCenteredSourceInverse k) (c • pinnedOne) :=
+        inner_add_right _ _ _
+      _ = inner ℂ (thetaMetricRoot (thetaCenteredSourceInverse k)) x +
+            inner ℂ (pinnedMean (thetaCenteredSourceInverse k)) c := by
+        rw [← hroot, ← hmean]
+      _ = 0 := hk
+  have hc : c = 0 := by
+    by_contra hc
+    apply thetaPinnedOne_not_mem_thetaMetricRoot_range
+    refine ⟨-c⁻¹ • x, ?_⟩
+    have hrootx : thetaMetricRoot x = -(c • pinnedOne) :=
+      eq_neg_of_add_eq_zero_left hrelation
+    calc
+      thetaMetricRoot (-c⁻¹ • x) = -c⁻¹ • thetaMetricRoot x := by
+        rw [map_smul]
+      _ = -c⁻¹ • (-(c • pinnedOne)) := by rw [hrootx]
+      _ = pinnedOne := by simp [smul_smul, hc]
+  refine ⟨?_, hc⟩
+  apply thetaMetricRoot_injective
+  simpa [hc] using hrelation
+
+/-- Completion of the literal energy--monopole graph is the full Hilbert product. -/
+theorem thetaMonopoleEnergyGraph_closure_eq_top :
+    thetaMonopoleEnergyGraph.topologicalClosure = ⊤ := by
+  change (linearGraphSubmodule
+    (thetaMetricRoot.comp thetaCenteredSourceInverse).toLinearMap
+    (thetaPinnedMeanCLM.comp thetaCenteredSourceInverse).toLinearMap).topologicalClosure = ⊤
+  apply linearGraphSubmodule_closure_eq_top_of_annihilator
+  intro x c h
+  apply thetaMonopoleEnergyGraph_jointAnnihilator x c
+  intro k
+  have hk := h k
+  change inner ℂ (thetaMetricRoot (thetaCenteredSourceInverse k)) x +
+      inner ℂ (thetaPinnedMeanCLM (thetaCenteredSourceInverse k)) c = 0 at hk
+  simpa only [thetaPinnedMeanCLM_apply] using hk
 
 /-- On the centered coordinate hyperplane, the closed-pencil inverse coordinate is the literal
 theta source inverse. -/
@@ -647,6 +939,43 @@ theorem inner_pinnedOne_thetaMetric_thetaCenteredSourceInverse
   rw [hGB, inner_smul_right, hVleft, hdipole]
   ring
 
+/-- The centered dipole is already a Riesz functional of the square-root energy source leg.
+This exact rigidity determines one boundary coordinate inside the Hilbert energy completion. -/
+theorem thetaCenteredDipoleTrace_eq_thetaMetricRoot_energy
+    (k : thetaCentered) :
+    thetaCenteredDipoleTrace k =
+      Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (thetaCenteredSourceInverse k)) := by
+  have henergy :
+      inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (thetaCenteredSourceInverse k)) =
+        inner ℂ pinnedOne
+          (thetaMetricOperator (thetaCenteredSourceInverse k)) := by
+    calc
+      inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (thetaCenteredSourceInverse k)) =
+          inner ℂ (thetaMetricOperator pinnedOne)
+            (thetaCenteredSourceInverse k) :=
+        thetaMetricRoot_energy pinnedOne (thetaCenteredSourceInverse k)
+      _ = inner ℂ pinnedOne
+          (thetaMetricOperator (thetaCenteredSourceInverse k)) := by
+        calc
+          inner ℂ (thetaMetricOperator pinnedOne)
+              (thetaCenteredSourceInverse k) =
+              inner ℂ (thetaMetricOperator.adjoint pinnedOne)
+                (thetaCenteredSourceInverse k) := by
+            rw [adjoint_thetaMetricOperator]
+          _ = inner ℂ pinnedOne
+              (thetaMetricOperator (thetaCenteredSourceInverse k)) := by
+            rw [ContinuousLinearMap.adjoint_inner_left]
+  rw [henergy, inner_pinnedOne_thetaMetric_thetaCenteredSourceInverse]
+  calc
+    thetaCenteredDipoleTrace k = (1 : ℂ) * thetaCenteredDipoleTrace k := by ring
+    _ = -(Complex.I * Complex.I) * thetaCenteredDipoleTrace k := by
+      rw [Complex.I_mul_I]
+      ring
+    _ = Complex.I * (-Complex.I * thetaCenteredDipoleTrace k) := by ring
+
 /-- **One-channel hyperbolic Green factorization.** The bounded spectral weight in the literal
 source pencil has a metric skew defect only through the source mean and centered dipole.  Its
 Hermitian boundary form is one hyperbolic plane, hence carries exactly one negative direction
@@ -1093,158 +1422,1393 @@ theorem thetaSourceDifferentialBoundaryAugmented_green_conj
                 (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s)) := by ring
     _ = _ := by rw [hgreen, hboundary]; ring
 
-/-- The finite monopole--dipole correction is represented in an ordinary Hilbert product by
-the bounded channel exchange.  This is the fundamental symmetry which turns the exact Green
-law into a bounded adjoint equation. -/
-def thetaMonopoleDipoleFundamentalSymmetry :
+/-- The Hilbert completion of the finite monopole--dipole boundary plane.  Raw products carry
+the Banach product norm, so the `WithLp` carrier is required before taking Hilbert adjoints. -/
+private abbrev thetaMonopoleDipoleHilbert : Type := WithLp 2 (ℂ × ℂ)
+
+/-- The true Hilbert carrier for energy plus its complete finite source boundary. -/
+private abbrev thetaSourceDifferentialBoundaryAugmentedHilbert : Type :=
+  WithLp 2 (H × thetaMonopoleDipoleHilbert)
+
+/-- The channel exchange on the raw boundary coordinates. -/
+def thetaMonopoleDipoleFundamentalSymmetryRaw :
     (ℂ × ℂ) →L[ℂ] (ℂ × ℂ) :=
   (ContinuousLinearMap.snd ℂ ℂ ℂ).prod (ContinuousLinearMap.fst ℂ ℂ ℂ)
 
-theorem thetaMonopoleDipoleFundamentalSymmetry_apply (u : ℂ × ℂ) :
-    thetaMonopoleDipoleFundamentalSymmetry u = (u.2, u.1) := rfl
+/-- Isometric packing of the raw boundary pair into its Hilbert completion. -/
+noncomputable def thetaMonopoleDipoleHilbertPack :
+    (ℂ × ℂ) →L[ℂ] thetaMonopoleDipoleHilbert :=
+  (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).symm.toContinuousLinearMap
 
-/-- The hyperbolic Green form is the Hilbert inner product twisted by its fundamental
-symmetry. -/
-theorem thetaMonopoleDipoleHyperbolicForm_eq_inner_fundamentalSymmetry
-    (u v : ℂ × ℂ) :
-    thetaMonopoleDipoleHyperbolicForm u v =
-      inner ℂ (thetaMonopoleDipoleFundamentalSymmetry u) v := by
-  rw [thetaMonopoleDipoleFundamentalSymmetry_apply, WithLp.prod_inner_apply]
-  change (starRingEnd ℂ) u.1 * v.2 + v.1 * (starRingEnd ℂ) u.2 =
-    (starRingEnd ℂ) u.2 * v.1 + (starRingEnd ℂ) u.1 * v.2
-  ring
+@[simp] theorem thetaMonopoleDipoleHilbertPack_ofLp (u : ℂ × ℂ) :
+    (thetaMonopoleDipoleHilbertPack u).ofLp = u := rfl
 
-theorem thetaMonopoleDipoleFundamentalSymmetry_isSymmetric
-    (u v : ℂ × ℂ) :
-    inner ℂ (thetaMonopoleDipoleFundamentalSymmetry u) v =
-      inner ℂ u (thetaMonopoleDipoleFundamentalSymmetry v) := by
-  rw [thetaMonopoleDipoleFundamentalSymmetry_apply,
-    thetaMonopoleDipoleFundamentalSymmetry_apply,
-    WithLp.prod_inner_apply, WithLp.prod_inner_apply]
-  ring
+/-- Fundamental symmetry of the completed finite boundary carrier. -/
+noncomputable def thetaMonopoleDipoleFundamentalSymmetry :
+    thetaMonopoleDipoleHilbert →L[ℂ] thetaMonopoleDipoleHilbert :=
+  ((WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).symm.toContinuousLinearMap).comp
+    (thetaMonopoleDipoleFundamentalSymmetryRaw.comp
+      (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).toContinuousLinearMap)
 
-theorem thetaMonopoleDipoleFundamentalSymmetry_sq (u : ℂ × ℂ) :
-    thetaMonopoleDipoleFundamentalSymmetry
-      (thetaMonopoleDipoleFundamentalSymmetry u) = u := by
-  ext <;> rfl
+@[simp] theorem thetaMonopoleDipoleFundamentalSymmetry_ofLp
+    (u : thetaMonopoleDipoleHilbert) :
+    (thetaMonopoleDipoleFundamentalSymmetry u).ofLp =
+      (u.ofLp.2, u.ofLp.1) := rfl
 
-/-- The Hilbert fundamental symmetry on energy plus the complete finite source boundary. -/
-def thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry :
-    (H × (ℂ × ℂ)) →L[ℂ] (H × (ℂ × ℂ)) :=
-  (ContinuousLinearMap.fst ℂ H (ℂ × ℂ)).prod
-    (thetaMonopoleDipoleFundamentalSymmetry.comp
-      (ContinuousLinearMap.snd ℂ H (ℂ × ℂ)))
+/-- Pack energy and finite source boundary into the genuine orthogonal Hilbert sum. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedHilbertPack :
+    (H × (ℂ × ℂ)) →L[ℂ] thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).symm :
+    H × thetaMonopoleDipoleHilbert →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedHilbert).comp
+      ((ContinuousLinearMap.fst ℂ H (ℂ × ℂ)).prod
+        (thetaMonopoleDipoleHilbertPack.comp
+          (ContinuousLinearMap.snd ℂ H (ℂ × ℂ))))
 
-theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedHilbertPack_ofLp
     (x : H × (ℂ × ℂ)) :
-    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x =
-      (x.1, (x.2.2, x.2.1)) := rfl
+    (thetaSourceDifferentialBoundaryAugmentedHilbertPack x).ofLp =
+      (x.1, thetaMonopoleDipoleHilbertPack x.2) := rfl
 
-theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_isSymmetric
-    (x y : H × (ℂ × ℂ)) :
-    inner ℂ (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) y =
-      inner ℂ x (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry y) := by
-  rw [thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
-    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
-    WithLp.prod_inner_apply, WithLp.prod_inner_apply]
-  congr 1
-  exact thetaMonopoleDipoleFundamentalSymmetry_isSymmetric _ _
+/-- Fundamental symmetry on the completed energy--boundary Hilbert carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).symm :
+    H × thetaMonopoleDipoleHilbert →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedHilbert).comp
+      (((ContinuousLinearMap.fst ℂ H thetaMonopoleDipoleHilbert).prod
+        (thetaMonopoleDipoleFundamentalSymmetry.comp
+          (ContinuousLinearMap.snd ℂ H thetaMonopoleDipoleHilbert))).comp
+        ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert) :
+          thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+            H × thetaMonopoleDipoleHilbert))
 
-/-- The completed Green pairing is an ordinary Hilbert pairing after the finite fundamental
-symmetry. -/
-theorem thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry
-    (x y : H × (ℂ × ℂ)) :
-    thetaSourceDifferentialBoundaryAugmentedGreenPair x y =
-      inner ℂ (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) y := by
-  rw [thetaSourceDifferentialBoundaryAugmentedGreenPair,
-    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
-    WithLp.prod_inner_apply,
-    ← thetaMonopoleDipoleHyperbolicForm_eq_inner_fundamentalSymmetry]
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_ofLp
+    (x : thetaSourceDifferentialBoundaryAugmentedHilbert) :
+    (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x).ofLp =
+      (x.ofLp.1, thetaMonopoleDipoleFundamentalSymmetry x.ofLp.2) := rfl
 
-/-- Hermitian symmetry of the completed Green pairing. -/
-theorem thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm
-    (x y : H × (ℂ × ℂ)) :
-    thetaSourceDifferentialBoundaryAugmentedGreenPair x y =
-      (starRingEnd ℂ) (thetaSourceDifferentialBoundaryAugmentedGreenPair y x) := by
-  simp only [thetaSourceDifferentialBoundaryAugmentedGreenPair,
-    thetaMonopoleDipoleHyperbolicForm, map_add, map_mul,
-    starRingEnd_self_apply, inner_conj_symm]
-  ring
+/-- Energy coordinate on the completed source--boundary Hilbert carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedEnergyProjection :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] H :=
+  (ContinuousLinearMap.fst ℂ H thetaMonopoleDipoleHilbert).comp
+    ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert) :
+      thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+        H × thetaMonopoleDipoleHilbert)
 
-/-- Bounded source embedding of the completed Green carrier. -/
-def thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (z : ℂ) :
-    thetaSourceDifferentialBoundaryRelation z →L[ℂ] (H × (ℂ × ℂ)) :=
-  (thetaSourceDifferentialBoundaryEnergyEmbedding z).prod
-    (thetaSourceDifferentialBoundaryPort z)
+/-- Completed monopole projection. -/
+noncomputable def thetaMonopoleDipoleHilbertMonopoleProjection :
+    thetaMonopoleDipoleHilbert →L[ℂ] ℂ :=
+  (ContinuousLinearMap.fst ℂ ℂ ℂ).comp
+    ((WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ) :
+      thetaMonopoleDipoleHilbert →L[ℂ] ℂ × ℂ)
 
-theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply
-    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z) :
-    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r =
-      thetaSourceDifferentialBoundaryAugmentedEmbedding z r := by
-  rfl
+/-- Completed dipole projection. -/
+noncomputable def thetaMonopoleDipoleHilbertDipoleProjection :
+    thetaMonopoleDipoleHilbert →L[ℂ] ℂ :=
+  (ContinuousLinearMap.snd ℂ ℂ ℂ).comp
+    ((WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ) :
+      thetaMonopoleDipoleHilbert →L[ℂ] ℂ × ℂ)
 
-/-- Bounded source readout after the unique finite boundary flow. -/
-def thetaSourceDifferentialBoundaryAugmentedReadoutCLM (z : ℂ) :
-    thetaSourceDifferentialBoundaryRelation z →L[ℂ] (H × (ℂ × ℂ)) :=
-  (thetaSourceDifferentialBoundaryEnergyReadout z).prod
-    ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z)
+/-- Monopole coordinate on the completed source--boundary Hilbert carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedMonopoleProjection :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ :=
+  thetaMonopoleDipoleHilbertMonopoleProjection.comp
+    ((ContinuousLinearMap.snd ℂ H thetaMonopoleDipoleHilbert).comp
+      ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+          H × thetaMonopoleDipoleHilbert))
 
-theorem thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply
-    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z) :
-    thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r =
-      thetaSourceDifferentialBoundaryAugmentedReadout z r := by
-  rfl
+/-- Dipole coordinate on the completed source--boundary Hilbert carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleProjection :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ :=
+  thetaMonopoleDipoleHilbertDipoleProjection.comp
+    ((ContinuousLinearMap.snd ℂ H thetaMonopoleDipoleHilbert).comp
+      ((WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+          H × thetaMonopoleDipoleHilbert))
 
-/-- Exact bounded adjoint intertwining of the literal source embedding and differential
-readout.  The remaining maximality problem is now precisely whether this bounded intertwining
-extends to the closed unbounded graph, not a missing finite Green correction. -/
-theorem thetaSourceDifferentialBoundaryAugmented_adjoint_intertwining (z : ℂ) :
-    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z).adjoint.comp
-      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
-        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z))) =
-    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z).adjoint.comp
-      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
-        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z))) := by
-  apply ContinuousLinearMap.ext
-  intro s
-  apply ext_inner_right ℂ
-  intro r
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z).adjoint_inner_left,
-    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z).adjoint_inner_left]
-  have hgreen := thetaSourceDifferentialBoundaryAugmented_green_conj z r s
-  rw [← thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
-    ← thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply,
-    ← thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
-    ← thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply] at hgreen
-  calc
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedEnergyProjection_pack
+    (x : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedEnergyProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack x) = x.1 := rfl
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedMonopoleProjection_pack
+    (x : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedMonopoleProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack x) = x.2.1 := rfl
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjection_pack
+    (x : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack x) = x.2.2 := rfl
+
+/-- The closed constraint forced by the dipole Riesz law. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleConstraint :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleProjection -
+    Complex.I • ((innerSL ℂ (thetaMetricRoot pinnedOne)).comp
+      thetaSourceDifferentialBoundaryAugmentedEnergyProjection)
+
+/-- The closed source polarization: dipole equals its exact energy Riesz functional. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :
+    Submodule ℂ thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  LinearMap.ker thetaSourceDifferentialBoundaryAugmentedDipoleConstraint.toLinearMap
+
+/-- The swapped closed constraint on the monopole coordinate. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ :=
+  thetaSourceDifferentialBoundaryAugmentedMonopoleProjection -
+    Complex.I • ((innerSL ℂ (thetaMetricRoot pinnedOne)).comp
+      thetaSourceDifferentialBoundaryAugmentedEnergyProjection)
+
+/-- The Hodge-swapped source polarization. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :
+    Submodule ℂ thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  LinearMap.ker thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint.toLinearMap
+
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_isClosed :
+    IsClosed (thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :
+      Set thetaSourceDifferentialBoundaryAugmentedHilbert) :=
+  ContinuousLinearMap.isClosed_ker _
+
+theorem thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier_isClosed :
+    IsClosed (thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :
+      Set thetaSourceDifferentialBoundaryAugmentedHilbert) :=
+  ContinuousLinearMap.isClosed_ker _
+
+/-- The literal Green pairing is the ordinary Hilbert pairing after finite completion and the
+fundamental symmetry. -/
+theorem thetaSourceDifferentialBoundaryAugmented_inner_fundamentalSymmetry_pack
+    (u v : H × (ℂ × ℂ)) :
     inner ℂ
         (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
-          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s))
-        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r) =
-      thetaSourceDifferentialBoundaryAugmentedGreenPair
-        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s)
-        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r) := by
-          rw [thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry]
-    _ = (starRingEnd ℂ)
-        (thetaSourceDifferentialBoundaryAugmentedGreenPair
-          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r)
-          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s)) :=
-      (thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm _ _).symm
-    _ = (starRingEnd ℂ)
-        (thetaSourceDifferentialBoundaryAugmentedGreenPair
-          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r)
-          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s)) := by
-      rw [hgreen]
-    _ = thetaSourceDifferentialBoundaryAugmentedGreenPair
-        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s)
-        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r) :=
-      (thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm _ _)
+          (thetaSourceDifferentialBoundaryAugmentedHilbertPack u))
+        (thetaSourceDifferentialBoundaryAugmentedHilbertPack v) =
+      thetaSourceDifferentialBoundaryAugmentedGreenPair u v := by
+  rw [WithLp.prod_inner_apply,
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_ofLp,
+    thetaSourceDifferentialBoundaryAugmentedHilbertPack_ofLp,
+    thetaSourceDifferentialBoundaryAugmentedHilbertPack_ofLp,
+    WithLp.prod_inner_apply,
+    thetaMonopoleDipoleFundamentalSymmetry_ofLp,
+    thetaMonopoleDipoleHilbertPack_ofLp,
+    thetaMonopoleDipoleHilbertPack_ofLp,
+    thetaSourceDifferentialBoundaryAugmentedGreenPair,
+    thetaMonopoleDipoleHyperbolicForm]
+  simp only [RCLike.inner_apply']
+  ring
+
+/-- Complete monopole--dipole source port, before passing to the Hilbert boundary carrier. -/
+def thetaSourceDifferentialBoundaryPortSource : thetaCentered →L[ℂ] (ℂ × ℂ) :=
+  (thetaPinnedMeanCLM.comp thetaCenteredSourceInverse).prod thetaCenteredDipoleTrace
+
+/-- Bounded source embedding into the completed Hilbert Green carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (_z : ℂ) :
+    thetaCentered →L[ℂ] thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  thetaSourceDifferentialBoundaryAugmentedHilbertPack.comp
+    ((thetaMetricRoot.comp thetaCenteredSourceInverse).prod
+      thetaSourceDifferentialBoundaryPortSource)
+
+/-- Bounded differential readout into the completed Hilbert Green carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedReadoutCLM (z : ℂ) :
+    thetaCentered →L[ℂ] thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  thetaSourceDifferentialBoundaryAugmentedHilbertPack.comp
+    ((thetaMetricRoot.comp (thetaSourceDifferentialRangeMap z)).prod
+      ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPortSource))
+
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k =
+      thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaSourceDifferentialBoundaryAugmentedEmbedding z
+          (thetaSourceDifferentialBoundaryCoordinateElement z k)) := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · exact (thetaSourceDifferentialBoundaryEnergyEmbedding_apply z k).symm
+  · change thetaMonopoleDipoleHilbertPack
+      (thetaSourceDifferentialBoundaryPortSource k) =
+        thetaMonopoleDipoleHilbertPack
+          (thetaSourceDifferentialBoundaryPort z
+            (thetaSourceDifferentialBoundaryCoordinateElement z k))
+    apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    simpa [thetaSourceDifferentialBoundaryPortSource, thetaPinnedMeanCLM_apply] using
+      (thetaSourceDifferentialBoundaryPort_apply z k).symm
+
+theorem thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k =
+      thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaSourceDifferentialBoundaryAugmentedReadout z
+          (thetaSourceDifferentialBoundaryCoordinateElement z k)) := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · exact (thetaSourceDifferentialBoundaryEnergyReadout_apply z k).symm
+  · change thetaMonopoleDipoleHilbertPack
+      ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPortSource k) =
+        thetaMonopoleDipoleHilbertPack
+          ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z
+            (thetaSourceDifferentialBoundaryCoordinateElement z k))
+    apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    change (Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPortSource k =
+      (Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z
+        (thetaSourceDifferentialBoundaryCoordinateElement z k)
+    rw [thetaSourceDifferentialBoundaryPort_apply]
+    simp [thetaSourceDifferentialBoundaryPortSource, thetaPinnedMeanCLM_apply]
+
+/-- The completed Hilbert embedding retains every literal source fibre. -/
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z) := by
+  intro k l hkl
+  apply thetaCenteredSourceInverse_injective
+  apply thetaMetricRoot_injective
+  have hfst := congrArg
+    (fun x : thetaSourceDifferentialBoundaryAugmentedHilbert => x.ofLp.1) hkl
+  exact hfst
+
+/-- Every literal source vector lands in the exact dipole-constrained polarization. -/
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_mem_dipoleCarrier
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k ∈
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier := by
+  change thetaSourceDifferentialBoundaryAugmentedDipoleConstraint
+      (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k) = 0
+  change thetaCenteredDipoleTrace k -
+      Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (thetaCenteredSourceInverse k)) = 0
+  rw [thetaCenteredDipoleTrace_eq_thetaMetricRoot_energy]
+  ring
+
+/-- Bounded raw parametrization of the closed dipole carrier by energy and free monopole. -/
+noncomputable def thetaEnergyMonopoleToDipoleRaw :
+    (H × ℂ) →L[ℂ] (H × (ℂ × ℂ)) :=
+  (ContinuousLinearMap.fst ℂ H ℂ).prod
+    ((ContinuousLinearMap.snd ℂ H ℂ).prod
+      ((Complex.I • innerSL ℂ (thetaMetricRoot pinnedOne)).comp
+        (ContinuousLinearMap.fst ℂ H ℂ)))
+
+/-- The bounded graph of the dipole Riesz coordinate inside the exact carrier. -/
+noncomputable def thetaEnergyMonopoleToDipoleCarrier :
+    WithLp 2 (H × ℂ) →L[ℂ] thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  (thetaSourceDifferentialBoundaryAugmentedHilbertPack.comp
+    (thetaEnergyMonopoleToDipoleRaw.comp
+      (WithLp.prodContinuousLinearEquiv 2 ℂ H ℂ).toContinuousLinearMap)).codRestrict
+        thetaSourceDifferentialBoundaryAugmentedDipoleCarrier (by
+          intro u
+          change Complex.I * inner ℂ (thetaMetricRoot pinnedOne) u.ofLp.1 -
+            Complex.I * inner ℂ (thetaMetricRoot pinnedOne) u.ofLp.1 = 0
+          ring)
+
+/-- The graph map has exactly the prescribed energy, monopole, and dipole coordinates. -/
+theorem thetaEnergyMonopoleToDipoleCarrier_apply (u : WithLp 2 (H × ℂ)) :
+    ((thetaEnergyMonopoleToDipoleCarrier u :
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (u.ofLp.1, (u.ofLp.2,
+          Complex.I * inner ℂ (thetaMetricRoot pinnedOne) u.ofLp.1)) := by
+  rfl
+
+/-- Every dipole-carrier vector is recovered from its energy and monopole coordinates. -/
+theorem thetaEnergyMonopoleToDipoleCarrier_surjective :
+    Function.Surjective thetaEnergyMonopoleToDipoleCarrier := by
+  intro u
+  let v : WithLp 2 (H × ℂ) := WithLp.toLp 2
+    (thetaSourceDifferentialBoundaryAugmentedEnergyProjection (u :
+      thetaSourceDifferentialBoundaryAugmentedHilbert),
+      thetaSourceDifferentialBoundaryAugmentedMonopoleProjection (u :
+        thetaSourceDifferentialBoundaryAugmentedHilbert))
+  have hu : thetaSourceDifferentialBoundaryAugmentedDipoleProjection (u :
+      thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaSourceDifferentialBoundaryAugmentedEnergyProjection (u :
+          thetaSourceDifferentialBoundaryAugmentedHilbert)) := by
+    have hmem := u.property
+    change thetaSourceDifferentialBoundaryAugmentedDipoleConstraint
+      (u : thetaSourceDifferentialBoundaryAugmentedHilbert) = 0 at hmem
+    exact sub_eq_zero.mp hmem
+  refine ⟨v, ?_⟩
+  apply Subtype.ext
+  rw [thetaEnergyMonopoleToDipoleCarrier_apply]
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · change v.ofLp.1 = thetaSourceDifferentialBoundaryAugmentedEnergyProjection
+      (u : thetaSourceDifferentialBoundaryAugmentedHilbert)
+    rfl
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    apply Prod.ext
+    · change v.ofLp.2 = thetaSourceDifferentialBoundaryAugmentedMonopoleProjection
+        (u : thetaSourceDifferentialBoundaryAugmentedHilbert)
+      rfl
+    · change Complex.I * inner ℂ (thetaMetricRoot pinnedOne) v.ofLp.1 =
+        thetaSourceDifferentialBoundaryAugmentedDipoleProjection (u :
+          thetaSourceDifferentialBoundaryAugmentedHilbert)
+      rw [show v.ofLp.1 = thetaSourceDifferentialBoundaryAugmentedEnergyProjection
+        (u : thetaSourceDifferentialBoundaryAugmentedHilbert) by rfl]
+      exact hu.symm
+
+/-- Literal source admission into the dense energy--monopole graph completion. -/
+noncomputable def thetaMonopoleEnergyGraphAdmission : thetaCentered →L[ℂ] WithLp 2 (H × ℂ) :=
+  (WithLp.prodContinuousLinearEquiv 2 ℂ H ℂ).symm.toContinuousLinearMap.comp
+    ((thetaMetricRoot.comp thetaCenteredSourceInverse).prod
+      (thetaPinnedMeanCLM.comp thetaCenteredSourceInverse))
+
+@[simp] theorem thetaMonopoleEnergyGraphAdmission_ofLp (k : thetaCentered) :
+    (thetaMonopoleEnergyGraphAdmission k).ofLp =
+      (thetaMetricRoot (thetaCenteredSourceInverse k),
+        thetaPinnedMeanCLM (thetaCenteredSourceInverse k)) := rfl
+
+/-- The literal source is dense after adjoining its free monopole coordinate. -/
+theorem thetaMonopoleEnergyGraphAdmission_dense : DenseRange thetaMonopoleEnergyGraphAdmission := by
+  change Dense (thetaMonopoleEnergyGraph : Set (WithLp 2 (H × ℂ)))
+  exact Submodule.dense_iff_topologicalClosure_eq_top.mpr
+    thetaMonopoleEnergyGraph_closure_eq_top
+
+/-- The actual source embedding with codomain restricted to its exact dipole carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM (z : ℂ) :
+    thetaCentered →L[ℂ] thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z).codRestrict
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_mem_dipoleCarrier z)
+
+/-- The literal source embedding is exactly the bounded dipole graph over its energy--monopole
+admission. -/
+theorem thetaEnergyMonopoleToDipoleCarrier_comp_graphAdmission (z : ℂ) :
+    thetaEnergyMonopoleToDipoleCarrier.comp thetaMonopoleEnergyGraphAdmission =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z := by
+  apply ContinuousLinearMap.ext
+  intro k
+  apply Subtype.ext
+  change ((thetaEnergyMonopoleToDipoleCarrier
+    (thetaMonopoleEnergyGraphAdmission k) :
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k
+  rw [thetaEnergyMonopoleToDipoleCarrier_apply]
+  change thetaSourceDifferentialBoundaryAugmentedHilbertPack
+      (thetaMetricRoot (thetaCenteredSourceInverse k),
+        (thetaPinnedMeanCLM (thetaCenteredSourceInverse k),
+          Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+            (thetaMetricRoot (thetaCenteredSourceInverse k)))) =
+    thetaSourceDifferentialBoundaryAugmentedHilbertPack
+      (thetaMetricRoot (thetaCenteredSourceInverse k),
+        (thetaPinnedMeanCLM (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k))
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · rfl
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    apply Prod.ext
+    · rfl
+    · rw [thetaCenteredDipoleTrace_eq_thetaMetricRoot_energy]
+
+/-- The literal source is dense in its exact dipole-constrained Hilbert carrier. -/
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_dense (z : ℂ) :
+    DenseRange (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z) := by
+  have hcomp := (thetaEnergyMonopoleToDipoleCarrier_surjective.denseRange).comp
+    thetaMonopoleEnergyGraphAdmission_dense thetaEnergyMonopoleToDipoleCarrier.continuous
+  change DenseRange (fun k => thetaEnergyMonopoleToDipoleCarrier
+    (thetaMonopoleEnergyGraphAdmission k)) at hcomp
+  change DenseRange (fun k => thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k)
+  have heq : (fun k => thetaEnergyMonopoleToDipoleCarrier
+      (thetaMonopoleEnergyGraphAdmission k)) =
+      (fun k => thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) := by
+    funext k
+    exact congrArg (fun T : thetaCentered →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier => T k)
+      (thetaEnergyMonopoleToDipoleCarrier_comp_graphAdmission z)
+  rw [heq] at hcomp
+  exact hcomp
+
+/-- The fundamental symmetry exchanges the exact dipole and monopole constraints. -/
+theorem thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint_comp_fundamentalSymmetry :
+    thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint.comp
+      thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry =
+    thetaSourceDifferentialBoundaryAugmentedDipoleConstraint := by
+  apply ContinuousLinearMap.ext
+  intro x
+  change x.ofLp.2.ofLp.2 - Complex.I *
+      inner ℂ (thetaMetricRoot pinnedOne) x.ofLp.1 =
+    x.ofLp.2.ofLp.2 - Complex.I *
+      inner ℂ (thetaMetricRoot pinnedOne) x.ofLp.1
+  rfl
+
+/-- The finite fundamental symmetry carries the source polarization to its exact swapped
+polarization. -/
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_maps_dipoleCarrier :
+    Set.MapsTo thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier := by
+  intro x hx
+  change thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) = 0
+  change thetaSourceDifferentialBoundaryAugmentedDipoleConstraint x = 0 at hx
+  have hconstraint := congrArg
+    (fun T : thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ => T x)
+    thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint_comp_fundamentalSymmetry
+  exact hconstraint.trans hx
+
+/-- The finite symmetry is involutive on the completed energy--boundary Hilbert carrier. -/
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply_apply
+    (x : thetaSourceDifferentialBoundaryAugmentedHilbert) :
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) = x := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  change (x.ofLp.1,
+    thetaMonopoleDipoleFundamentalSymmetry
+      (thetaMonopoleDipoleFundamentalSymmetry x.ofLp.2)) =
+    (x.ofLp.1, x.ofLp.2)
+  apply Prod.ext
+  · rfl
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    change (x.ofLp.2.ofLp.1, x.ofLp.2.ofLp.2) =
+      (x.ofLp.2.ofLp.1, x.ofLp.2.ofLp.2)
+    rfl
+
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_sq :
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+      thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry = 1 := by
+  apply ContinuousLinearMap.ext
+  intro x
+  simpa using thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply_apply x
+
+/-- The symmetry also transports the swapped monopole constraint back to the dipole constraint. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleConstraint_comp_fundamentalSymmetry :
+    thetaSourceDifferentialBoundaryAugmentedDipoleConstraint.comp
+      thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry =
+    thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint := by
+  apply ContinuousLinearMap.ext
+  intro x
+  change x.ofLp.2.ofLp.1 - Complex.I *
+      inner ℂ (thetaMetricRoot pinnedOne) x.ofLp.1 =
+    x.ofLp.2.ofLp.1 - Complex.I *
+      inner ℂ (thetaMetricRoot pinnedOne) x.ofLp.1
+  rfl
+
+/-- The fundamental symmetry carries the swapped monopole polarization back to the dipole one. -/
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_maps_monopoleCarrier :
+    Set.MapsTo thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier := by
+  intro x hx
+  change thetaSourceDifferentialBoundaryAugmentedDipoleConstraint
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) = 0
+  change thetaSourceDifferentialBoundaryAugmentedMonopoleConstraint x = 0 at hx
+  have hconstraint := congrArg
+    (fun T : thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ] ℂ => T x)
+    thetaSourceDifferentialBoundaryAugmentedDipoleConstraint_comp_fundamentalSymmetry
+  exact hconstraint.trans hx
+
+/-- Restricted symmetry from dipole to swapped monopole carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.subtypeL).codRestrict
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier (by
+        intro x
+        exact thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_maps_dipoleCarrier
+          x.property)
+
+/-- Restricted symmetry from swapped monopole to dipole carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedMonopoleToDipole :
+    thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+    thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.subtypeL).codRestrict
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier (by
+        intro x
+        exact thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_maps_monopoleCarrier
+          x.property)
+
+/-- The restricted dipole--monopole symmetry is onto. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole_surjective :
+    Function.Surjective thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole := by
+  intro y
+  refine ⟨thetaSourceDifferentialBoundaryAugmentedMonopoleToDipole y, ?_⟩
+  apply Subtype.ext
+  exact thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply_apply y
+
+/-- The finite correction has become a literal Hilbert Green law on the source Hilbert space. -/
+theorem thetaSourceDifferentialBoundaryAugmentedHilbert_green_conj
+    (z : ℂ) (k l : thetaCentered) :
+    inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k))
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l) =
+      inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k))
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) l) := by
+  rw [thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
+    thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply,
+    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
+    thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply,
+    thetaSourceDifferentialBoundaryAugmented_inner_fundamentalSymmetry_pack,
+    thetaSourceDifferentialBoundaryAugmented_inner_fundamentalSymmetry_pack]
+  exact thetaSourceDifferentialBoundaryAugmented_green_conj z
+    (thetaSourceDifferentialBoundaryCoordinateElement z k)
+    (thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l)
+
+/-- Exact bounded adjoint transport forced by the literal finite Green completion.  The source
+embedding is now dense in its exact dipole carrier; maximal transport next requires the explicit
+closed-transform comparison between the dipole and symmetry-swapped monopole carriers. -/
+theorem thetaSourceDifferentialBoundaryAugmented_adjoint_intertwining (z : ℂ) :
+    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z)).adjoint.comp
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z)) =
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z)).adjoint.comp
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z)) := by
+  apply ContinuousLinearMap.ext
+  intro k
+  apply ext_inner_right ℂ
+  intro l
+  simp only [ContinuousLinearMap.comp_apply]
+  rw [
+    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z)).adjoint_inner_left,
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z)).adjoint_inner_left]
+  exact thetaSourceDifferentialBoundaryAugmentedHilbert_green_conj z k l
+
+/-! ### Exact two-carrier maximal-adjoint transport -/
+
+local instance thetaSourceDifferentialBoundaryAugmentedDipoleCarrierComplete :
+    CompleteSpace thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_isClosed.completeSpace_coe
+
+local instance thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierComplete :
+    CompleteSpace thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier_isClosed.completeSpace_coe
+
+local instance thetaSourceDifferentialBoundaryAugmentedDipoleCarrierHasProjection :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.HasOrthogonalProjection :=
+  Submodule.HasOrthogonalProjection.ofCompleteSpace _
+
+local instance thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierHasProjection :
+    thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.HasOrthogonalProjection :=
+  Submodule.HasOrthogonalProjection.ofCompleteSpace _
+
+/-- Orthogonal projection of a Green vector into the exact dipole polarization. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection.codRestrict
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier
+    (fun x => thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection_apply_mem x)
+
+/-- Orthogonal projection of a Green vector into the swapped monopole polarization. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierProjectCLM :
+    thetaSourceDifferentialBoundaryAugmentedHilbert →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.starProjection.codRestrict
+    thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier
+    (fun x => thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.starProjection_apply_mem x)
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM_coe
+    (x : thetaSourceDifferentialBoundaryAugmentedHilbert) :
+    ((thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM x :
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection x := rfl
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierProjectCLM_coe
+    (x : thetaSourceDifferentialBoundaryAugmentedHilbert) :
+    ((thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierProjectCLM x :
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.starProjection x := rfl
+
+/-- The unique finite-boundary normal forced by the dipole Riesz constraint.  Removing a
+multiple of this vector changes a metric-root lift only by the literal root of `pinnedOne`. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal :
+    thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  thetaSourceDifferentialBoundaryAugmentedHilbertPack
+    (Complex.I • thetaMetricRoot pinnedOne, (0, 1))
+
+/-- The finite-boundary normal is orthogonal to every exact dipole carrier vector. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal_mem_orthogonal :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal ∈
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrierᗮ := by
+  intro w hw
+  rw [inner_eq_zero_symm]
+  have hwconstraint :
+      thetaSourceDifferentialBoundaryAugmentedDipoleProjection w =
+        Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaSourceDifferentialBoundaryAugmentedEnergyProjection w) := by
+    change thetaSourceDifferentialBoundaryAugmentedDipoleConstraint w = 0 at hw
+    exact sub_eq_zero.mp hw
+  change w.ofLp.2.ofLp.2 =
+    Complex.I * inner ℂ (thetaMetricRoot pinnedOne) w.ofLp.1 at hwconstraint
+  change inner ℂ
+    (thetaSourceDifferentialBoundaryAugmentedHilbertPack
+      (Complex.I • thetaMetricRoot pinnedOne, (0, 1))) w = 0
+  rw [WithLp.prod_inner_apply,
+    thetaSourceDifferentialBoundaryAugmentedHilbertPack_ofLp,
+    WithLp.prod_inner_apply,
+    thetaMonopoleDipoleHilbertPack_ofLp,
+    inner_smul_left, RCLike.inner_apply', hwconstraint]
+  simp
+
+/-- Once a scalar multiple of the finite normal lands in the exact carrier, it is exactly the
+orthogonal correction.  This turns projection regularity into a scalar boundary equation. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_eq_sub_smul_normal
+    (x : thetaSourceDifferentialBoundaryAugmentedHilbert) (c : ℂ)
+    (hmem : x - c • thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal ∈
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection x =
+      x - c • thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal := by
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero hmem
+  intro w hw
+  have hnormal : inner ℂ thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal w = 0 :=
+    inner_eq_zero_symm.mp
+      (thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal_mem_orthogonal w hw)
+  have hsub : x - (x - c • thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal) =
+      c • thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal := by
+    module
+  rw [hsub, inner_smul_left, hnormal, mul_zero]
+
+/-- The exact dipole-carrier candidate obtained by a finite normal correction of a metric-root
+lift. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate
+    (q : H) (m c : ℂ) : thetaSourceDifferentialBoundaryAugmentedHilbert :=
+  thetaSourceDifferentialBoundaryAugmentedHilbertPack
+    (thetaMetricRoot (q - (c * Complex.I) • pinnedOne),
+      (m, Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (q - (c * Complex.I) • pinnedOne))))
+
+/-- The corrected candidate satisfies the exact dipole Riesz constraint. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate_mem
+    (q : H) (m c : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate q m c ∈
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier := by
+  change Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+      (thetaMetricRoot (q - (c * Complex.I) • pinnedOne)) -
+        Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (q - (c * Complex.I) • pinnedOne)) = 0
+  ring
+
+/-- The scalar boundary equation identifies the normal correction with the explicit
+metric-root candidate. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjection_input_sub_normal_eq_candidate
+    (q : H) (m d c : ℂ)
+    (hc : d =
+      Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (q - (c * Complex.I) • pinnedOne)) + c) :
+    thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaMetricRoot q, (m, d)) -
+      c • thetaSourceDifferentialBoundaryAugmentedDipoleCarrierNormal =
+        thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate q m c := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · change thetaMetricRoot q - c • (Complex.I • thetaMetricRoot pinnedOne) =
+      thetaMetricRoot (q - (c * Complex.I) • pinnedOne)
+    rw [map_sub, map_smul]
+    module
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    apply Prod.ext
+    · change m - c * 0 = m
+      ring
+    · change d - c * 1 =
+        Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (q - (c * Complex.I) • pinnedOne))
+      rw [hc]
+      ring
+
+/-- Orthogonal dipole projection of a metric-root lift is an explicit finite correction.  The
+only input is the scalar boundary equation, so all infinite-dimensional regularity remains in
+the corrected primitive. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot
+    (q : H) (m d c : ℂ)
+    (hc : d =
+      Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+        (thetaMetricRoot (q - (c * Complex.I) • pinnedOne)) + c) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaMetricRoot q, (m, d))) =
+      thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate q m c := by
+  rw [thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_eq_sub_smul_normal]
+  · exact thetaSourceDifferentialBoundaryAugmentedDipoleProjection_input_sub_normal_eq_candidate
+      q m d c hc
+  · rw [thetaSourceDifferentialBoundaryAugmentedDipoleProjection_input_sub_normal_eq_candidate
+      q m d c hc]
+    exact thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate_mem q m c
+
+/-- The scalar denominator of the finite normal correction is strictly nonzero. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjection_den_ne_zero :
+    (1 + inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne) : ℂ) ≠ 0 := by
+  rw [inner_self_eq_norm_sq_to_K]
+  simpa using (Complex.ofReal_ne_zero.mpr (ne_of_gt (by positivity :
+    0 < 1 + ‖thetaMetricRoot pinnedOne‖ ^ 2)))
+
+/-- The unique scalar that corrects a metric-root lift into the exact dipole carrier. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar
+    (q : H) (d : ℂ) : ℂ :=
+  (d - Complex.I * inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot q)) /
+    (1 + inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne))
+
+/-- Multiplying the correction scalar by its positive denominator recovers exactly the boundary
+defect of the uncorrected metric-root lift. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar_mul_den
+    (q : H) (d : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d *
+      (1 + inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne)) =
+        d - Complex.I * inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot q) := by
+  unfold thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar
+  exact div_mul_cancel₀ _ thetaSourceDifferentialBoundaryAugmentedDipoleProjection_den_ne_zero
+
+/-- The explicit normal scalar satisfies the exact boundary correction equation. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar_spec
+    (q : H) (d : ℂ) :
+    d = Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+      (thetaMetricRoot (q -
+        (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d * Complex.I) •
+          pinnedOne)) +
+        thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d := by
+  rw [map_sub, map_smul, inner_sub_right, inner_smul_right]
+  have hmul := thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar_mul_den q d
+  calc
+    d = Complex.I * inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot q) +
+        thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d *
+          (1 + inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne)) := by
+      rw [hmul]
+      ring
+    _ = Complex.I *
+        (inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot q) -
+          (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d * Complex.I) *
+            inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne)) +
+          thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d := by
+      ring_nf
+      simp only [Complex.I_sq]
+      ring
+
+/-- Every metric-root lift has an unconditional exact dipole projection formula.  Projection
+changes its primitive only by the explicit finite scalar multiple of `pinnedOne`. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot_explicit
+    (q : H) (m d : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaMetricRoot q, (m, d))) =
+      thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate q m
+        (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d) := by
+  exact thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot q m d
+    (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d)
+    (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar_spec q d)
+
+/-- A corrected metric-root candidate is a literal source embedding exactly when its primitive
+lift and monopole coordinate are supplied by one source vector.  Its dipole coordinate then
+follows automatically from the source Riesz law. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate_eq_embedding_of_lift
+    (z : ℂ) (q : H) (m c : ℂ) (k : thetaCentered)
+    (hsource : thetaCenteredSourceInverse k = q - (c * Complex.I) • pinnedOne)
+    (hmonopole : pinnedMean (thetaCenteredSourceInverse k) = m) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate q m c =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  apply Prod.ext
+  · change thetaMetricRoot (q - (c * Complex.I) • pinnedOne) =
+      thetaMetricRoot (thetaCenteredSourceInverse k)
+    rw [← hsource]
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    apply Prod.ext
+    · change m = thetaPinnedMeanCLM (thetaCenteredSourceInverse k)
+      rw [thetaPinnedMeanCLM_apply, hmonopole]
+    · change Complex.I * inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (q - (c * Complex.I) • pinnedOne)) =
+        thetaCenteredDipoleTrace k
+      rw [← hsource, thetaCenteredDipoleTrace_eq_thetaMetricRoot_energy]
+
+/-- Exact projected-source regularity reduces to two literal source equations for the explicit
+corrected primitive: source-inverse admission and its monopole value. -/
+theorem thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot_eq_embedding_of_lift
+    (z : ℂ) (q : H) (m d : ℂ) (k : thetaCentered)
+    (hsource : thetaCenteredSourceInverse k = q -
+      (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d * Complex.I) •
+        pinnedOne)
+    (hmonopole : pinnedMean (thetaCenteredSourceInverse k) = m) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection
+      (thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaMetricRoot q, (m, d))) =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  rw [thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot_explicit]
+  exact thetaSourceDifferentialBoundaryAugmentedDipoleProjectionCandidate_eq_embedding_of_lift
+    z q m (thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar q d) k hsource
+    hmonopole
+
+/-- Every repaired differential coordinate has zero pinned mean.  Thus a source lift of a
+finite-normal correction has only one remaining scalar compatibility condition. -/
+theorem pinnedMean_thetaSourceDifferentialRangeMap (z : ℂ) (k : thetaCentered) :
+    pinnedMean (thetaSourceDifferentialRangeMap z k) = 0 := by
+  rw [← thetaPinnedMeanCLM_apply, thetaSourceDifferentialRangeMap_apply,
+    map_add, map_smul, map_sub, map_smul]
+  simp only [thetaPinnedMeanCLM_apply, pinnedMean_pinnedOne]
+  rw [(mem_thetaCentered_iff _).mp k.property]
+  ring
+
+/-- If the uncorrected primitive has zero pinned mean, the monopole equation of a literal
+source lift is equivalent to one explicit finite scalar equation. -/
+theorem thetaSourceDifferentialBoundaryAugmentedProjectionLift_monopole_iff
+    (q : H) (m c : ℂ) (k : thetaCentered)
+    (hmeanq : pinnedMean q = 0)
+    (hsource : thetaCenteredSourceInverse k = q - (c * Complex.I) • pinnedOne) :
+    pinnedMean (thetaCenteredSourceInverse k) = m ↔ c = Complex.I * m := by
+  have hmean : pinnedMean (thetaCenteredSourceInverse k) = -(c * Complex.I) := by
+    have h := congrArg thetaPinnedMeanCLM hsource
+    rw [map_sub, map_smul, thetaPinnedMeanCLM_apply, thetaPinnedMeanCLM_apply,
+      thetaPinnedMeanCLM_apply, hmeanq, pinnedMean_pinnedOne, zero_sub] at h
+    simpa [smul_eq_mul] using h
+  constructor
+  · intro hmonopole
+    rw [hmonopole] at hmean
+    calc
+      c = -c * (Complex.I * Complex.I) := by rw [Complex.I_mul_I]; ring
+      _ = (-(c * Complex.I)) * Complex.I := by ring
+      _ = Complex.I * (-(c * Complex.I)) := by ring
+      _ = Complex.I * m := by rw [← hmean]
+  · intro hscalar
+    calc
+      pinnedMean (thetaCenteredSourceInverse k) = -(c * Complex.I) := hmean
+      _ = -((Complex.I * m) * Complex.I) := by rw [hscalar]
+      _ = -(m * (Complex.I * Complex.I)) := by ring
+      _ = m := by rw [Complex.I_mul_I]; ring
+
+/-- The fundamental symmetry preserves the differential energy coordinate and exchanges the two
+finite source ports of a Green readout. -/
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_readoutCLM_apply
+    (z : ℂ) (l : thetaCentered) :
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+      (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z l) =
+      thetaSourceDifferentialBoundaryAugmentedHilbertPack
+        (thetaMetricRoot (thetaSourceDifferentialRangeMap z l),
+          ((Complex.I / 2 * z) * thetaCenteredDipoleTrace l,
+            (Complex.I / 2 * z) * pinnedMean (thetaCenteredSourceInverse l))) := by
+  apply (WithLp.prodContinuousLinearEquiv 2 ℂ H thetaMonopoleDipoleHilbert).injective
+  change
+    (thetaMetricRoot (thetaSourceDifferentialRangeMap z l),
+      thetaMonopoleDipoleFundamentalSymmetry
+        (thetaMonopoleDipoleHilbertPack
+          ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPortSource l))) =
+      (thetaMetricRoot (thetaSourceDifferentialRangeMap z l),
+        thetaMonopoleDipoleHilbertPack
+          ((Complex.I / 2 * z) * thetaCenteredDipoleTrace l,
+            (Complex.I / 2 * z) * pinnedMean (thetaCenteredSourceInverse l)))
+  apply Prod.ext
+  · rfl
+  · apply (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ ℂ).injective
+    change
+      (thetaMonopoleDipoleFundamentalSymmetry
+        (thetaMonopoleDipoleHilbertPack
+          ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPortSource l))).ofLp =
+        (thetaMonopoleDipoleHilbertPack
+          ((Complex.I / 2 * z) * thetaCenteredDipoleTrace l,
+            (Complex.I / 2 * z) * pinnedMean (thetaCenteredSourceInverse l))).ofLp
+    rw [thetaMonopoleDipoleFundamentalSymmetry_ofLp,
+      thetaMonopoleDipoleHilbertPack_ofLp,
+      thetaMonopoleDipoleHilbertPack_ofLp]
+    simp [thetaSourceDifferentialBoundaryPortSource, thetaPinnedMeanCLM_apply]
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole_coe
+    (x : thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+    ((thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole x :
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry (x :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) := rfl
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_coe
+    (z : ℂ) (k : thetaCentered) :
+    ((thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k :
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier) :
+        thetaSourceDifferentialBoundaryAugmentedHilbert) =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := rfl
+
+/-- The projected Green readout has exactly the swapped monopole carrier as codomain. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedReadoutMonopoleCLM (z : ℂ) :
+  thetaCentered →L[ℂ] thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedMonopoleCarrierProjectCLM.comp
+    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z)
+
+/-- Bounded dipole input map used by the maximal Green transport. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenTransportEmbedding
+    (z : ℂ) : thetaCentered →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z
+
+/-- Bounded monopole output map used by the maximal Green transport. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenTransportReadout
+    (z : ℂ) : thetaCentered →L[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedReadoutMonopoleCLM z
+
+/-- The dense dipole source embedding remains injective after codomain restriction. -/
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z) := by
+  intro k l hkl
+  apply thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_injective z
+  exact congrArg Subtype.val hkl
+
+/-- Packaged dense source data for the two-carrier Green transport. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum
+    (z : ℂ) : ClosedGraphTransformBetweenDatum
+      (H₀ := H)
+      (H₁ := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+      (H₂ := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+      thetaCentered where
+  B := thetaSourceDifferentialBoundaryAugmentedGreenTransportEmbedding z
+  J := thetaSourceDifferentialBoundaryAugmentedGreenTransportReadout z
+  hB := thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_injective z
+  hDense := thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_dense z
+
+/-- Literal Green transport from the dipole carrier to the symmetry-swapped monopole carrier.
+Its domain is the dense source image; its adjoint is the maximal Hilbert adjoint. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenTransport (z : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedDipoleCarrier →ₗ.[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  closedGraphTransformBetweenOfDatum
+    (H₀ := H)
+    (H₁ := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+    (H₂ := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+    thetaCentered
+    (thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z)
+
+/-- Named maximal adjoint of the two-carrier Green transport. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenTransportAdjoint (z : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier →ₗ.[ℂ]
+      thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  closedGraphTransformBetweenAdjointOfDatum
+    (H₀ := H)
+    (H₁ := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+    (H₂ := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+    thetaCentered
+    (thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z)
+
+@[simp] theorem thetaSourceDifferentialBoundaryAugmentedGreenTransportAdjoint_eq
+    (z : ℂ) :
+    thetaSourceDifferentialBoundaryAugmentedGreenTransportAdjoint z =
+      closedGraphTransformBetweenAdjointOfDatum
+        (H₀ := H)
+        (H₁ := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+        (H₂ := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+        thetaCentered
+        (thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z) := rfl
+
+/-- The reflected Green kernel gives the bounded-source pairing for the two carrier transport. -/
+private theorem thetaSourceDifferentialBoundaryAugmentedGreenTransport_pairing
+    (z : ℂ) (l k : thetaCentered) :
+    inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM
+          (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+            (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)))
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) =
+      inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM (starRingEnd ℂ z) l))
+        (thetaSourceDifferentialBoundaryAugmentedReadoutMonopoleCLM z k) := by
+  calc
+    inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM
+          (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+            (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)))
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) =
+      inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l))
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) := by
+      change inner ℂ
+          (thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection
+            (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+              (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)))
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) = _
+      rw [Submodule.starProjection_apply]
+      calc
+        inner ℂ
+            ↑(thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.orthogonalProjectionOnto
+              (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+                (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)))
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k) =
+          inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.orthogonalProjectionOnto
+              (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+                (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)))
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) := rfl
+        _ = inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+              (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l))
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k) :=
+          Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right
+            (K := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) _
     _ = inner ℂ
         (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
-          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s))
-        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r) := by
-          rw [thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry]
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) l))
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k) := by
+      simpa only [thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM_coe,
+        starRingEnd_self_apply] using
+        (thetaSourceDifferentialBoundaryAugmentedHilbert_green_conj
+          (starRingEnd ℂ z) l k).symm
+    _ = inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM (starRingEnd ℂ z) l))
+        (thetaSourceDifferentialBoundaryAugmentedReadoutMonopoleCLM z k) := by
+      change inner ℂ
+          (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM
+              (starRingEnd ℂ z) l))
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k) =
+        inner ℂ
+          (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+            (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM
+              (starRingEnd ℂ z) l))
+          (thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.starProjection
+            (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k))
+      symm
+      rw [Submodule.starProjection_apply]
+      calc
+        inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+              (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM
+                (starRingEnd ℂ z) l))
+            ↑(thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.orthogonalProjectionOnto
+              (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k)) =
+          inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+              (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM
+                (starRingEnd ℂ z) l))
+            (thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier.orthogonalProjectionOnto
+              (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k)) := rfl
+        _ = inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+              (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM
+                (starRingEnd ℂ z) l) : thetaSourceDifferentialBoundaryAugmentedHilbert)
+            (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k) :=
+          Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left
+            (K := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+            (thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+              (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM
+                (starRingEnd ℂ z) l)) _
+        _ = inner ℂ
+            (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+              (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM
+                (starRingEnd ℂ z) l))
+            (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z k) := rfl
+
+/-- Reflected literal source vector in the monopole carrier for the Green adjoint graph. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput
+    (z : ℂ) (l : thetaCentered) : thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleToMonopole
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM (starRingEnd ℂ z) l)
+
+/-- Projected reflected Green readout in the dipole carrier for the Green adjoint graph. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput
+    (z : ℂ) (l : thetaCentered) : thetaSourceDifferentialBoundaryAugmentedDipoleCarrier :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleCarrierProjectCLM
+    (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+      (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l))
+
+/-- Explicit finite correction scalar for the reflected Green readout. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar
+    (z : ℂ) (l : thetaCentered) : ℂ :=
+  thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar
+    (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l)
+    ((Complex.I / 2 * (starRingEnd ℂ z)) *
+      pinnedMean (thetaCenteredSourceInverse l))
+
+/-- Literal primitive that must be admitted by the source inverse for projected reflected
+readout regularity. -/
+noncomputable def thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive
+    (z : ℂ) (l : thetaCentered) : H :=
+  thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l -
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l * Complex.I) •
+      pinnedOne
+
+/-- Monopole coordinate of the reflected Green readout after the fundamental port exchange. -/
+def thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole
+    (z : ℂ) (l : thetaCentered) : ℂ :=
+  (Complex.I / 2 * (starRingEnd ℂ z)) * thetaCenteredDipoleTrace l
+
+/-- The projected reflected Green output is a literal source embedding whenever its explicit
+corrected primitive is a literal source inverse with the exchanged monopole.  This is the exact
+source-regularity obligation left by the two-carrier adjoint transport. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_eq_embedding_of_lift
+    (z : ℂ) (l k : thetaCentered)
+    (hsource : thetaCenteredSourceInverse k =
+      thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive z l)
+    (hmonopole : pinnedMean (thetaCenteredSourceInverse k) =
+      thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l) :
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l).1 =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  change thetaSourceDifferentialBoundaryAugmentedDipoleCarrier.starProjection
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) l)) = _
+  rw [thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_readoutCLM_apply]
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive
+    thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar at hsource
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole at hmonopole
+  exact thetaSourceDifferentialBoundaryAugmentedDipoleCarrier_starProjection_metricRoot_eq_embedding_of_lift
+    z
+    (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l)
+    ((Complex.I / 2 * (starRingEnd ℂ z)) * thetaCenteredDipoleTrace l)
+    ((Complex.I / 2 * (starRingEnd ℂ z)) * pinnedMean (thetaCenteredSourceInverse l))
+    k hsource hmonopole
+
+/-- For a reflected Green readout, literal projected-source regularity is reduced to one
+source-inverse admission equation and one explicit finite scalar equation. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_eq_embedding_of_source_and_scalar
+    (z : ℂ) (l k : thetaCentered)
+    (hsource : thetaCenteredSourceInverse k =
+      thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive z l)
+    (hscalar : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l) :
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l).1 =
+      thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  apply thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_eq_embedding_of_lift
+    z l k hsource
+  refine (thetaSourceDifferentialBoundaryAugmentedProjectionLift_monopole_iff
+    (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l)
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l)
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l) k
+    (pinnedMean_thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l) ?_).mpr hscalar
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive
+    thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar at hsource
+  exact hsource
+
+/-- Scalar normal cancellation for one metric-root coordinate. -/
+private theorem thetaSourceDifferentialBoundaryAugmented_scalar_cancellation_iff
+    (a m p w : ℂ) (hp : 1 + p ≠ 0) :
+    (Complex.I / 2 * w * a - Complex.I * m) / (1 + p) = Complex.I * w * a ↔
+      m = -((1 / 2 : ℂ) + p) * w * a := by
+  constructor
+  · intro h
+    have hmul := (div_eq_iff hp).mp h
+    have hcancel : Complex.I * ((1 / 2 : ℂ) * w * a - m) =
+        Complex.I * (w * a * (1 + p)) := by
+      calc
+        Complex.I * ((1 / 2 : ℂ) * w * a - m) =
+            Complex.I / 2 * w * a - Complex.I * m := by ring
+        _ = (Complex.I * w * a) * (1 + p) := hmul
+        _ = Complex.I * (w * a * (1 + p)) := by ring
+    have hminus : (1 / 2 : ℂ) * w * a - m = w * a * (1 + p) :=
+      mul_left_cancel₀ Complex.I_ne_zero hcancel
+    calc
+      m = (1 / 2 : ℂ) * w * a - w * a * (1 + p) := by
+        linear_combination -hminus
+      _ = -((1 / 2 : ℂ) + p) * w * a := by ring
+  · intro h
+    apply (div_eq_iff hp).mpr
+    calc
+      Complex.I / 2 * w * a - Complex.I * m =
+          Complex.I * ((1 / 2 : ℂ) * w * a - m) := by ring
+      _ = Complex.I * (w * a * (1 + p)) := by rw [h]; ring
+      _ = (Complex.I * w * a) * (1 + p) := by ring
+
+/-- After constant-mode cancellation, the exchanged monopole law is exactly one first-moment
+residual equation. -/
+private theorem thetaSourceDifferentialBoundaryAugmented_scalar_monopole_iff_of_cancellation
+    (a b c w : ℂ) (hcancel : c = Complex.I * w * a) :
+    c = Complex.I * (Complex.I / 2 * w * b) ↔
+      w * (b + 2 * Complex.I * a) = 0 := by
+  have hright : Complex.I * (Complex.I / 2 * w * b) = -(1 / 2 : ℂ) * w * b := by
+    calc
+      Complex.I * (Complex.I / 2 * w * b) =
+          (Complex.I * Complex.I) * ((1 / 2 : ℂ) * w * b) := by ring
+      _ = -(1 / 2 : ℂ) * w * b := by
+        rw [Complex.I_mul_I]
+        ring
+  constructor
+  · intro hscalar
+    have hcoef : Complex.I * w * a = -(1 / 2 : ℂ) * w * b := by
+      calc
+        Complex.I * w * a = c := hcancel.symm
+        _ = Complex.I * (Complex.I / 2 * w * b) := hscalar
+        _ = -(1 / 2 : ℂ) * w * b := hright
+    linear_combination 2 * hcoef
+  · intro hresidual
+    have hcoef : Complex.I * w * a = -(1 / 2 : ℂ) * w * b := by
+      linear_combination hresidual / 2
+    calc
+      c = Complex.I * w * a := hcancel
+      _ = -(1 / 2 : ℂ) * w * b := hcoef
+      _ = Complex.I * (Complex.I / 2 * w * b) := hright.symm
+
+/-- On the literal `C_c^∞` derivative core, the only source-inverse obstruction in a
+corrected differential coordinate is its coefficient of `pinnedOne`.  Once that coefficient
+vanishes, the primitive is the quantile image of the actual smooth compact source
+`sourceD g + w • g`. -/
+theorem thetaSourceDifferentialRangeMap_sub_smul_pinnedOne_mem_range_of_core
+    (w c : ℂ) (l : thetaCentered)
+    (hl : l ∈ thetaDerivativeCoreOutput)
+    (hc : c = Complex.I * w * pinnedMean (thetaCenteredSourceInverse l)) :
+    thetaSourceDifferentialRangeMap w l - (c * Complex.I) • pinnedOne ∈
+      thetaCenteredSourceInverse.range := by
+  rcases hl with ⟨g, hg, hgs, hl⟩
+  let f : SourceSpace thetaSource := (memLp_sourceD hg hgs).toLp (sourceD g)
+  let u : SourceSpace thetaSource := (memLp_smooth hg hgs).toLp g
+  have hf : f ∈ thetaSmoothSource := by
+    refine ⟨sourceD g, (memLp_sourceD hg hgs).coeFn_toLp, ?_, ?_⟩
+    · exact hgs.deriv.mul_left
+    · change ContDiff ℝ (↑(⊤ : ℕ∞)) (fun x => -Complex.I * deriv g x)
+      exact contDiff_const.mul (contDiff_infty_iff_deriv.mp hg).2
+  have hu : u ∈ thetaSmoothSource :=
+    ⟨g, (memLp_smooth hg hgs).coeFn_toLp, hgs, hg⟩
+  have hfu : f + w • u ∈ thetaSmoothSource :=
+    thetaSmoothSourceSubmodule.add_mem hf
+      (thetaSmoothSourceSubmodule.smul_mem w hu)
+  have hB : thetaCenteredSourceInverse l = quantileUnitary thetaSource u := by
+    change thetaCompactSourceInverse (l : H) = quantileUnitary thetaSource u
+    rw [hl]
+    exact thetaCompactSourceInverse_quantile_sourceD hg hgs
+  have hc' : c = Complex.I * w * pinnedMean (quantileUnitary thetaSource u) := by
+    rw [hc, hB]
+  have hI :
+      (Complex.I * w * pinnedMean (quantileUnitary thetaSource u)) * Complex.I =
+        -(w * pinnedMean (quantileUnitary thetaSource u)) := by
+    calc
+      (Complex.I * w * pinnedMean (quantileUnitary thetaSource u)) * Complex.I =
+          w * pinnedMean (quantileUnitary thetaSource u) * (Complex.I * Complex.I) := by
+        ring
+      _ = -(w * pinnedMean (quantileUnitary thetaSource u)) := by
+        rw [Complex.I_mul_I]
+        ring
+  have hEq : thetaSourceDifferentialRangeMap w l - (c * Complex.I) • pinnedOne =
+      quantileUnitary thetaSource (f + w • u) := by
+    rw [thetaSourceDifferentialRangeMap_apply, hB, hl, hc', map_add, map_smul, hI]
+    module
+  rw [hEq]
+  exact quantile_thetaSmoothSource_mem_range (f + w • u) hfu
+
+/-- The reflected corrected primitive has an actual source lift on the literal core whenever
+its finite normal scalar cancels the sole noncompact constant mode. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive_mem_range_of_core
+    (z : ℂ) (l : thetaCentered)
+    (hl : l ∈ thetaDerivativeCoreOutput)
+    (hc : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l)) :
+    thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive z l ∈
+      thetaCenteredSourceInverse.range := by
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive
+  exact thetaSourceDifferentialRangeMap_sub_smul_pinnedOne_mem_range_of_core
+    (starRingEnd ℂ z)
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l)
+    l hl hc
+
+/-- On the literal core, cancellation of the finite constant mode and the finite monopole law
+together give the projected reflected Green output as a literal source embedding. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_exists_of_core
+    (z : ℂ) (l : thetaCentered)
+    (hl : l ∈ thetaDerivativeCoreOutput)
+    (hcancel : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l))
+    (hscalar : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l) :
+    ∃ k : thetaCentered,
+      (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l).1 =
+        thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  rcases thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectedPrimitive_mem_range_of_core
+      z l hl hcancel with ⟨k, hk⟩
+  refine ⟨k, thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_eq_embedding_of_source_and_scalar
+    z l k hk hscalar⟩
+
+/-- Constant-mode cancellation of the reflected finite correction is equivalent to one exact
+metric-boundary residual. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar_eq_cancellation_iff
+    (z : ℂ) (l : thetaCentered) :
+    thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+        Complex.I * (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l) ↔
+      inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l)) =
+        -((1 / 2 : ℂ) +
+          inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne)) *
+          (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l) := by
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjectionScalar
+  exact thetaSourceDifferentialBoundaryAugmented_scalar_cancellation_iff _ _ _ _
+    thetaSourceDifferentialBoundaryAugmentedDipoleProjection_den_ne_zero
+
+/-- Given constant-mode cancellation, the exchanged monopole equality is equivalent to the
+single source dipole--mean residual. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar_eq_monopole_iff_of_cancellation
+    (z : ℂ) (l : thetaCentered)
+    (hcancel : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l)) :
+    thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+        Complex.I * thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l ↔
+      (starRingEnd ℂ z) *
+        (thetaCenteredDipoleTrace l + 2 * Complex.I *
+          pinnedMean (thetaCenteredSourceInverse l)) = 0 := by
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole
+  exact thetaSourceDifferentialBoundaryAugmented_scalar_monopole_iff_of_cancellation _ _ _ _
+    hcancel
+
+/-- For a literal core input, the metric-boundary residual and the source dipole--mean residual
+are sufficient for a projected reflected Green output to be an actual source embedding. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_exists_of_core_of_residuals
+    (z : ℂ) (l : thetaCentered)
+    (hl : l ∈ thetaDerivativeCoreOutput)
+    (hmetric :
+      inner ℂ (thetaMetricRoot pinnedOne)
+          (thetaMetricRoot (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l)) =
+        -((1 / 2 : ℂ) +
+          inner ℂ (thetaMetricRoot pinnedOne) (thetaMetricRoot pinnedOne)) *
+          (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l))
+    (hmoment : (starRingEnd ℂ z) *
+        (thetaCenteredDipoleTrace l + 2 * Complex.I *
+          pinnedMean (thetaCenteredSourceInverse l)) = 0) :
+    ∃ k : thetaCentered,
+      (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l).1 =
+        thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z k := by
+  have hcancel : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * (starRingEnd ℂ z) * pinnedMean (thetaCenteredSourceInverse l) :=
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar_eq_cancellation_iff
+      z l).mpr hmetric
+  have hscalar : thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar z l =
+      Complex.I * thetaSourceDifferentialBoundaryAugmentedGreenAdjointMonopole z l :=
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointCorrectionScalar_eq_monopole_iff_of_cancellation
+      z l hcancel).mpr hmoment
+  exact thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput_exists_of_core
+    z l hl hcancel hscalar
+
+private theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_pairing
+    (z : ℂ) (l k : thetaCentered) :
+    inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l)
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingDipoleCLM z k) =
+      inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput z l)
+        (thetaSourceDifferentialBoundaryAugmentedReadoutMonopoleCLM z k) :=
+  thetaSourceDifferentialBoundaryAugmentedGreenTransport_pairing z l k
+
+private theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_transport_pairing
+    (z : ℂ) (l k : thetaCentered) :
+    inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l)
+        (thetaSourceDifferentialBoundaryAugmentedGreenTransportEmbedding z k) =
+      inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput z l)
+        (thetaSourceDifferentialBoundaryAugmentedGreenTransportReadout z k) :=
+  thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_pairing z l k
+
+private theorem thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_datum_pairing
+    (z : ℂ) (l k : thetaCentered) :
+    inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l)
+        ((thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z).B k) =
+      inner ℂ (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput z l)
+        ((thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z).J k) :=
+  thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_transport_pairing z l k
+
+set_option maxHeartbeats 400000 in
+/-- The exact Green law puts the reflected source pair in the maximal-adjoint graph.
+The first coordinate is the swapped literal source; the second is the dipole projection of the
+reflected readout. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenTransport_adjoint_source_graph
+    (z : ℂ) (l : thetaCentered) :
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput z l,
+      thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l) ∈
+        (thetaSourceDifferentialBoundaryAugmentedGreenTransportAdjoint z).graph := by
+  rw [thetaSourceDifferentialBoundaryAugmentedGreenTransportAdjoint_eq]
+  exact ClosedGraphTransformBetweenDatum.mem_adjoint_graph_of_pairing
+    (H₀ := H)
+    (H₁ := thetaSourceDifferentialBoundaryAugmentedDipoleCarrier)
+    (H₂ := thetaSourceDifferentialBoundaryAugmentedMonopoleCarrier)
+    thetaCentered
+    (thetaSourceDifferentialBoundaryAugmentedGreenTransportDatum z)
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceOutput z l)
+    (thetaSourceDifferentialBoundaryAugmentedGreenAdjointSourceInput z l)
+    (fun k => thetaSourceDifferentialBoundaryAugmentedGreenAdjointSource_datum_pairing z l k)
 
 /-! ## Literal conjugation and reflected source fibres -/
 

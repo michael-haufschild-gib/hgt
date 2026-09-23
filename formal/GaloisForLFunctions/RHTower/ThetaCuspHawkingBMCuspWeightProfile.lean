@@ -95,9 +95,9 @@ theorem cuspWeightLimit_height_le (y : ℝ) (hy : 0 < y) : y ≤ 3*cuspWeightLim
 theorem cuspWeightProfile_hasDerivAt (N y : ℝ) (hN : 0 < N) (hy : 0 < y) :
     HasDerivAt (cuspWeightProfile N)
       (deriv cuspWeightCutoff y*(N*y/(N+y))+
-        cuspWeightCutoff y*(N^2/(N+y)^2)) y := by
+        cuspWeightCutoff y*(N^(2 : ℕ)/(N+y)^(2 : ℕ))) y := by
   have hη := (cutoff_smooth.differentiable (by simp)).differentiableAt.hasDerivAt (x := y)
-  have hp : HasDerivAt (fun x : ℝ => N*x/(N+x)) (N^2/(N+y)^2) y := by
+  have hp : HasDerivAt (fun x : ℝ => N*x/(N+x)) (N^(2 : ℕ)/(N+y)^(2 : ℕ)) y := by
     apply (((hasDerivAt_id y).const_mul N).div
       ((hasDerivAt_id y).const_add N) (by positivity : N+y ≠ 0)).congr_deriv
     simp only [id_eq]
@@ -131,8 +131,8 @@ theorem cuspWeightProfile_gradient_bound (N y : ℝ) (hN : 0 < N) (hy : 0 < y) :
         exact hmid)
       simp only [hd,mul_zero,zero_mul,abs_zero]
       positivity
-  have hsecond : 0 ≤ cuspWeightCutoff y*(y*(N^2/(N+y)^2)) := by positivity
-  have hsecond_le : cuspWeightCutoff y*(y*(N^2/(N+y)^2)) ≤ cuspWeightCutoff y*p := by
+  have hsecond : 0 ≤ cuspWeightCutoff y*(y*(N^(2 : ℕ)/(N+y)^(2 : ℕ))) := by positivity
+  have hsecond_le : cuspWeightCutoff y*(y*(N^(2 : ℕ)/(N+y)^(2 : ℕ))) ≤ cuspWeightCutoff y*p := by
     apply mul_le_mul_of_nonneg_left _ he0
     have hr : N/(N+y) ≤ 1 := (div_le_one (by positivity)).mpr (by linarith)
     calc
@@ -142,13 +142,13 @@ theorem cuspWeightProfile_gradient_bound (N y : ℝ) (hN : 0 < N) (hy : 0 < y) :
       _ ≤ 1*p := mul_le_mul_of_nonneg_right hr hp0
       _ = _ := one_mul _
   rw [(cuspWeightProfile_hasDerivAt N y hN hy).deriv]
-  have habs : |y*(deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(N^2/(N+y)^2))| ≤
+  have habs : |y*(deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(N^(2 : ℕ)/(N+y)^(2 : ℕ)))| ≤
       9*cuspWeightSlopeBound+cuspWeightCutoff y*p := by
     calc
-      _ = |y*deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(y*(N^2/(N+y)^2))| := by congr 1; ring
-      _ ≤ |y*deriv cuspWeightCutoff y*p|+|cuspWeightCutoff y*(y*(N^2/(N+y)^2))| := abs_add_le _ _
+      _ = |y*deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(y*(N^(2 : ℕ)/(N+y)^(2 : ℕ)))| := by congr 1; ring
+      _ ≤ |y*deriv cuspWeightCutoff y*p|+|cuspWeightCutoff y*(y*(N^(2 : ℕ)/(N+y)^(2 : ℕ)))| := abs_add_le _ _
       _ ≤ _ := by rw [abs_of_nonneg hsecond]; exact add_le_add hfirst hsecond_le
-  change |y*(deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(N^2/(N+y)^2))| ≤ _
+  change |y*(deriv cuspWeightCutoff y*p+cuspWeightCutoff y*(N^(2 : ℕ)/(N+y)^(2 : ℕ)))| ≤ _
   apply habs.trans
   change 9*cuspWeightSlopeBound+cuspWeightCutoff y*p ≤
     (3/2:ℝ)*(18*cuspWeightSlopeBound+1+cuspWeightCutoff y*p)

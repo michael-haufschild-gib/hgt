@@ -225,8 +225,8 @@ theorem matrixDeriv_besselOrderCompanion {c : F} (hc : Differential.deriv c = 0)
   have hd : Differential.deriv (orderShiftCoeff c) = algebraMap F (RatFunc F) c := by
     change coordinateTotalDerivation (orderShiftCoeff c) = algebraMap F (RatFunc F) c
     rw [orderShiftCoeff, coordinateTotalDerivation_algebraMap, polyTotalDeriv_apply]
-    simp [Polynomial.derivative_mul, coeffDeriv_mul, coeffDeriv_add, coeffDeriv_X,
-      coeffDeriv_C, hc]
+    simp [Polynomial.derivative_mul, coeffDeriv_mul, coeffDeriv_add, coeffDeriv_X_ratFuncShiftDerivationCommute,
+      coeffDeriv_C_ratFuncShiftDerivationCommute, hc]
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [matrixDeriv, besselOrderCompanion, besselOrderCompanionDeriv, hd]

@@ -259,17 +259,17 @@ theorem sub_inv_isBigO_criticalFeaturePositiveShiftPoleGammaDensity_of_vertical_
 private theorem not_intervalIntegrable_sq_of_sub_inv_isBigO
     {y b : ℝ} {wall : ℝ → ℝ}
     (hbig : (fun v => (v - y)⁻¹) =O[𝓝[>] y] wall) (hb : y < b) :
-    ¬ IntervalIntegrable (fun v => wall v ^ 2) volume y b := by
+    ¬ IntervalIntegrable (fun v => wall v ^ (2 : ℕ)) volume y b := by
   let kernel : ℝ → ℝ := fun v => (v - y)⁻¹
   have hbig' : kernel =O[𝓝[>] y] wall := by
     simpa only [kernel] using hbig
   have hderiv : ∀ᶠ v in 𝓝[>] y,
-      HasDerivAt (-kernel) (kernel v ^ 2) v := by
+      HasDerivAt (-kernel) (kernel v ^ (2 : ℕ)) v := by
     filter_upwards [self_mem_nhdsWithin] with v hv
     change y < v at hv
     have hlinear : HasDerivAt (fun z : ℝ => z - y) 1 v := by
       simpa using (hasDerivAt_id v).sub_const y
-    have hbase : HasDerivAt kernel (-(kernel v ^ 2)) v := by
+    have hbase : HasDerivAt kernel (-(kernel v ^ (2 : ℕ))) v := by
       have hbase' := hlinear.inv (sub_ne_zero.mpr hv.ne')
       have hkernel : kernel = (fun z : ℝ => z - y)⁻¹ := by
         funext z
@@ -300,7 +300,7 @@ private theorem not_intervalIntegrable_sq_of_sub_inv_isBigO
     rw [Real.norm_eq_abs, abs_of_neg (neg_lt_zero.mpr hpos)]
     ring
   have hderivBig : deriv (-kernel) =O[𝓝[>] y]
-      (fun v => wall v ^ 2) :=
+      (fun v => wall v ^ (2 : ℕ)) :=
     (hbig'.pow 2).congr' (hderiv.mono fun v hv => hv.deriv.symm) EventuallyEq.rfl
   rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le]
   exact not_integrableOn_of_tendsto_norm_atTop_of_deriv_isBigO_filter
@@ -323,7 +323,7 @@ theorem not_intervalIntegrable_sq_criticalFeaturePositiveShiftPoleGammaDensity_o
     (hm : 0 < (analyticOrderAt XiC ((x0 : ℂ) + (eta0 : ℂ) * I)).toNat)
     (hb : eta0 < b) :
     ¬ IntervalIntegrable
-      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x0 ^ 2)
+      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x0 ^ (2 : ℕ))
       volume eta0 b := by
   apply not_intervalIntegrable_sq_of_sub_inv_isBigO _ hb
   exact sub_inv_isBigO_criticalFeaturePositiveShiftPoleGammaDensity_of_vertical_factor
@@ -337,7 +337,7 @@ theorem not_intervalIntegrable_sq_criticalFeaturePositiveShiftPoleGammaDensity_o
     (hzero : XiC ((x0 : ℂ) + (eta0 : ℂ) * I) = 0)
     (hb : eta0 < b) :
     ¬ IntervalIntegrable
-      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x0 ^ 2)
+      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x0 ^ (2 : ℕ))
       volume eta0 b := by
   obtain ⟨R, hR, g, hgan, hg0, hfact⟩ :=
     XiC_peel_ball ((x0 : ℂ) + (eta0 : ℂ) * I)

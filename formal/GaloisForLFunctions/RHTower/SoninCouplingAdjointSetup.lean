@@ -35,9 +35,9 @@ theorem adjoint_evenSoninApertureSuccessiveLayerTransition (a b c r : ℝ) (hr :
 /-- **`(19b)`.**  The dilation sum on an inverse dilate returns the original plus a doubly
 contracted copy. -/
 theorem evenDilationSum_evenDilationCLM_inv_apply
-    (r : ℝ) (hr : 1 < r) (hsq : 0 < (r ^ 2)⁻¹) (w : evenSubspace) :
+    (r : ℝ) (hr : 1 < r) (hsq : 0 < (r ^ (2 : ℕ))⁻¹) (w : evenSubspace) :
     evenDilationSum r hr (evenDilationCLM r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) w) =
-      w + evenDilationCLM ((r ^ 2)⁻¹) hsq w := by
+      w + evenDilationCLM ((r ^ (2 : ℕ))⁻¹) hsq w := by
   have hr0 : (0 : ℝ) < r := zero_lt_one.trans hr
   have hrinv : (0 : ℝ) < r⁻¹ := inv_pos.mpr hr0
   have hsplit := DFunLike.congr_fun (evenDilationSum_eq r hr)
@@ -53,9 +53,9 @@ theorem evenDilationSum_evenDilationCLM_inv_apply
         (1 : evenSubspace →L[ℂ] evenSubspace) := evenDilationCLM_one
     rw [hone]
     rfl
-  have hpow : r⁻¹ * r⁻¹ = (r ^ 2)⁻¹ := by rw [← mul_inv, ← sq]
+  have hpow : r⁻¹ * r⁻¹ = (r ^ (2 : ℕ))⁻¹ := by rw [← mul_inv, ← sq]
   have h2 : evenDilationCLM r⁻¹ hrinv (evenDilationCLM r⁻¹ hrinv w) =
-      evenDilationCLM ((r ^ 2)⁻¹) hsq w := by
+      evenDilationCLM ((r ^ (2 : ℕ))⁻¹) hsq w := by
     have h := DFunLike.congr_fun (evenDilationCLM_mul r⁻¹ r⁻¹ hrinv hrinv) w
     rw [mul_apply_eq_comp] at h
     rw [h]

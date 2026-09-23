@@ -14,21 +14,21 @@ For the positive theta source, write `m_j = thetaCuspRawEvenMoment j`.  The stat
 has moments `m_(k+n) / m_k`.  Its mean and susceptibility are
 
 `mu_k = m_(k+1) / m_k`,
-`chi_k = m_(k+2) / m_k - mu_k^2`.
+`chi_k = m_(k+2) / m_k - mu_k^(2 : ℕ)`.
 
 The existing raw inequalities become exactly
 
-`5 mu_1^2 <= 9 chi_1`,
-`16 chi_0 <= 29 mu_0^2`.
+`5 mu_1^(2 : ℕ) <= 9 chi_1`,
+`16 chi_0 <= 29 mu_0^(2 : ℕ)`.
 
 This exposes the remaining analytic problem as a two-sided coefficient-of-variation window and
 lets Poincare/Brascamp--Lieb, Ward, or linear-response estimates target the quantities consumed by
 the first nonconstant prime--Gamma Hankel block directly.
 
 Information-theoretically, the next size-biased state has likelihood ratio `X / mu_k` relative to
-the current state.  Its Pearson chi-square divergence is therefore `chi_k / mu_k^2`.  The two
+the current state.  Its Pearson chi-square divergence is therefore `chi_k / mu_k^(2 : ℕ)`.  The two
 source gates are equivalently the dimensionless window `5/9 <= D_1` and `D_0 <= 29/16`, and the
-same value is the pure-state quantum Fisher information divided by `4 * mu_k^2`.
+same value is the pure-state quantum Fisher information divided by `4 * mu_k^(2 : ℕ)`.
 
 Physics provenance: fluctuation--response relations originate with Callen--Welton, Physical
 Review 83 (1951), 34--40, DOI 10.1103/PhysRev.83.34, and Kubo, Journal of the Physical Society of
@@ -58,7 +58,7 @@ theorem thetaCuspSourceTerm_pos_of_pos_of_nat_pos
   have he : 1 < Real.exp x := by simpa using Real.exp_lt_exp.mpr hx
   have ht : 1 < (n : ℝ) * Real.exp x := by
     nlinarith [Real.exp_pos x]
-  have ht2 : 1 < ((n : ℝ) * Real.exp x) ^ 2 := by nlinarith
+  have ht2 : 1 < ((n : ℝ) * Real.exp x) ^ (2 : ℕ) := by nlinarith
   nlinarith [Real.pi_gt_three, Real.pi_pos,
     mul_pos (sub_pos.mpr ht2) (show 0 < 2 * Real.pi by positivity)]
 
@@ -233,11 +233,11 @@ theorem thetaCuspSizeBiasedSusceptibility_eq_within_add_between (k : ℕ) :
         (thetaCuspFirstAtomSizeBiasedSequence k 0 *
             thetaCuspHigherAtomSizeBiasedSequence k 0 /
           (thetaCuspFirstAtomSizeBiasedSequence k 0 +
-            thetaCuspHigherAtomSizeBiasedSequence k 0) ^ 2) *
+            thetaCuspHigherAtomSizeBiasedSequence k 0) ^ (2 : ℕ)) *
           (HTGeometry.momentNormalizedExpectation
               (thetaCuspFirstAtomSizeBiasedSequence k) X -
             HTGeometry.momentNormalizedExpectation
-              (thetaCuspHigherAtomSizeBiasedSequence k) X) ^ 2 := by
+              (thetaCuspHigherAtomSizeBiasedSequence k) X) ^ (2 : ℕ) := by
   rw [thetaCuspSizeBiasedSusceptibility,
     thetaCuspSizeBiasedSequence_eq_first_add_higher]
   exact HTGeometry.momentNormalizedVariance_sequenceSum
@@ -269,7 +269,7 @@ theorem thetaCuspSizeBiasedPowerExpectation_one_eq_mean (k : ℕ) :
 theorem thetaCuspSizeBiasedSusceptibility_eq_momentRatios (k : ℕ) :
     thetaCuspSizeBiasedSusceptibility k =
       thetaCuspRawEvenMoment (k + 2) / thetaCuspRawEvenMoment k -
-        (thetaCuspRawEvenMoment (k + 1) / thetaCuspRawEvenMoment k) ^ 2 := by
+        (thetaCuspRawEvenMoment (k + 1) / thetaCuspRawEvenMoment k) ^ (2 : ℕ) := by
   exact HTGeometry.momentNormalizedVariance_X_sizeBiased
     thetaCuspRawEvenMoment k
 
@@ -281,7 +281,7 @@ def thetaCuspSizeBiasPearsonChiSq (k : ℕ) : ℝ :=
 theorem thetaCuspSizeBiasPearsonChiSq_eq_susceptibility_div_mean_sq (k : ℕ) :
     thetaCuspSizeBiasPearsonChiSq k =
       thetaCuspSizeBiasedSusceptibility k /
-        thetaCuspSizeBiasedMean k ^ 2 := by
+        thetaCuspSizeBiasedMean k ^ (2 : ℕ) := by
   rfl
 
 theorem thetaCuspSizeBiasedMean_pos (k : ℕ) :
@@ -353,7 +353,7 @@ theorem thetaCuspSizeBiasPowerCovariance_eq_within_add_between (k n : ℕ) :
         (thetaCuspFirstAtomSizeBiasedSequence k 0 *
             thetaCuspHigherAtomSizeBiasedSequence k 0 /
           (thetaCuspFirstAtomSizeBiasedSequence k 0 +
-            thetaCuspHigherAtomSizeBiasedSequence k 0) ^ 2) *
+            thetaCuspHigherAtomSizeBiasedSequence k 0) ^ (2 : ℕ)) *
           (HTGeometry.momentNormalizedExpectation
               (thetaCuspFirstAtomSizeBiasedSequence k) X -
             HTGeometry.momentNormalizedExpectation
@@ -431,7 +431,7 @@ theorem thetaCuspSizeBiasedSusceptibility_eq_mean_mul_next_sub_mean (k : ℕ) :
 /-- The theta size-bias pair saturates the Hammersley--Chapman--Robbins chi-square bound for its
 energy coordinate. -/
 theorem thetaCuspSizeBiasPearsonChiSq_hcr_saturation (k : ℕ) :
-    (thetaCuspSizeBiasedMean (k + 1) - thetaCuspSizeBiasedMean k) ^ 2 =
+    (thetaCuspSizeBiasedMean (k + 1) - thetaCuspSizeBiasedMean k) ^ (2 : ℕ) =
       thetaCuspSizeBiasedSusceptibility k *
         thetaCuspSizeBiasPearsonChiSq k := by
   exact HTGeometry.momentSizeBiasPearsonChiSq_hcr_saturation
@@ -442,7 +442,7 @@ theorem thetaCuspSizeBiasPearsonChiSq_hcr_saturation (k : ℕ) :
 the once-size-biased theta state. -/
 theorem thetaCuspUpperAdjacentRatioSeparation_iff_susceptibility_lower :
     ThetaCuspUpperAdjacentRatioSeparation ↔
-      5 * thetaCuspSizeBiasedMean 1 ^ 2 ≤
+      5 * thetaCuspSizeBiasedMean 1 ^ (2 : ℕ) ≤
         9 * thetaCuspSizeBiasedSusceptibility 1 := by
   rw [ThetaCuspUpperAdjacentRatioSeparation,
     thetaCuspSizeBiasedMean_eq_momentRatio,
@@ -462,7 +462,7 @@ unbiased theta state. -/
 theorem thetaCuspRelaxedFourthMomentConcentration_iff_susceptibility_upper :
     ThetaCuspRelaxedFourthMomentConcentration ↔
       16 * thetaCuspSizeBiasedSusceptibility 0 ≤
-        29 * thetaCuspSizeBiasedMean 0 ^ 2 := by
+        29 * thetaCuspSizeBiasedMean 0 ^ (2 : ℕ) := by
   rw [ThetaCuspRelaxedFourthMomentConcentration,
     thetaCuspSizeBiasedMean_eq_momentRatio,
     thetaCuspSizeBiasedSusceptibility_eq_momentRatios]
@@ -478,10 +478,10 @@ theorem thetaCuspRelaxedFourthMomentConcentration_iff_susceptibility_upper :
 
 /-- The complete fluctuation-response window replacing the two raw theta moment ratios. -/
 def ThetaCuspSizeBiasedSusceptibilityWindow : Prop :=
-  5 * thetaCuspSizeBiasedMean 1 ^ 2 ≤
+  5 * thetaCuspSizeBiasedMean 1 ^ (2 : ℕ) ≤
       9 * thetaCuspSizeBiasedSusceptibility 1 ∧
     16 * thetaCuspSizeBiasedSusceptibility 0 ≤
-      29 * thetaCuspSizeBiasedMean 0 ^ 2
+      29 * thetaCuspSizeBiasedMean 0 ^ (2 : ℕ)
 
 theorem thetaCuspSizeBiasedSusceptibilityWindow_iff_ratioSplit :
     ThetaCuspSizeBiasedSusceptibilityWindow ↔
@@ -504,9 +504,9 @@ theorem thetaCuspSizeBiasPearsonWindow_iff_susceptibilityWindow :
     ThetaCuspSizeBiasedSusceptibilityWindow,
     thetaCuspSizeBiasPearsonChiSq_eq_susceptibility_div_mean_sq,
     thetaCuspSizeBiasPearsonChiSq_eq_susceptibility_div_mean_sq]
-  have hsq1 : 0 < thetaCuspSizeBiasedMean 1 ^ 2 :=
+  have hsq1 : 0 < thetaCuspSizeBiasedMean 1 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspSizeBiasedMean_pos 1)
-  have hsq0 : 0 < thetaCuspSizeBiasedMean 0 ^ 2 :=
+  have hsq0 : 0 < thetaCuspSizeBiasedMean 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspSizeBiasedMean_pos 0)
   constructor
   · rintro ⟨hlower, hupper⟩
@@ -597,10 +597,10 @@ susceptibility bound. -/
 theorem thetaCuspSizeBiasedSusceptibility_one_lower_of_firstRadial
     (hupper :
       14 * ((3005 / 2997 : ℝ) *
-          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ 2 ≤
+          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ (2 : ℕ) ≤
         9 * thetaCuspBornWittenRadialRawMoment 0 1 1 *
           thetaCuspBornWittenRadialRawMoment 2 1 1) :
-    5 * thetaCuspSizeBiasedMean 1 ^ 2 ≤
+    5 * thetaCuspSizeBiasedMean 1 ^ (2 : ℕ) ≤
       9 * thetaCuspSizeBiasedSusceptibility 1 := by
   apply thetaCuspUpperAdjacentRatioSeparation_iff_susceptibility_lower.mp
   apply thetaCuspUpperAdjacentRatioSeparation_of_first_atom
@@ -619,9 +619,9 @@ theorem thetaCuspSizeBiasedSusceptibility_zero_upper_of_firstRadial
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) :
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) :
     16 * thetaCuspSizeBiasedSusceptibility 0 ≤
-      29 * thetaCuspSizeBiasedMean 0 ^ 2 := by
+      29 * thetaCuspSizeBiasedMean 0 ^ (2 : ℕ) := by
   apply thetaCuspRelaxedFourthMomentConcentration_iff_susceptibility_upper.mp
   apply thetaCuspRelaxedFourthMomentConcentration_of_first_atom
   rw [thetaCuspAtomRawEvenMoment_eq_radialBornWittenRawMoment 0 0 1,
@@ -635,7 +635,7 @@ theorem thetaCuspSizeBiasedSusceptibility_zero_upper_of_firstRadial
 half of the full-source susceptibility window. -/
 theorem thetaCuspSizeBiasedSusceptibility_one_lower_of_twoChannelRayleighRitz
     (hcert : ThetaCuspFirstRadialTwoChannelRayleighRitzCertificate) :
-    5 * thetaCuspSizeBiasedMean 1 ^ 2 ≤
+    5 * thetaCuspSizeBiasedMean 1 ^ (2 : ℕ) ≤
       9 * thetaCuspSizeBiasedSusceptibility 1 :=
   thetaCuspSizeBiasedSusceptibility_one_lower_of_firstRadial
     (thetaCusp_firstRadial_upper_of_twoChannelRayleighRitzCertificate hcert)
@@ -649,7 +649,7 @@ theorem thetaCuspSizeBiasedSusceptibilityWindow_of_twoChannelRayleighRitz
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) :
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) :
     ThetaCuspSizeBiasedSusceptibilityWindow := by
   constructor
   · exact thetaCuspSizeBiasedSusceptibility_one_lower_of_twoChannelRayleighRitz hcert

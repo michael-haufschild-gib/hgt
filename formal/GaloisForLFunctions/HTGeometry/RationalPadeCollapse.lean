@@ -16,7 +16,7 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-theorem eval_aeval_X0 (P : Polynomial ℂ) (g : Fin 2 → ℂ) :
+theorem eval_aeval_X0_rationalPadeCollapse (P : Polynomial ℂ) (g : Fin 2 → ℂ) :
     MvPolynomial.eval g (Polynomial.aeval (MvPolynomial.X 0 : MvPolynomial (Fin 2) ℂ) P)
       = P.eval (g 0) := by
   induction P using Polynomial.induction_on with
@@ -34,7 +34,7 @@ theorem differentiallyAlgebraic_of_rational {f : ℂ → ℂ} (P Q : Polynomial 
     refine hQ (Polynomial.funext fun v => ?_)
     have h1 := congrArg (MvPolynomial.eval ![v, (1 : ℂ)]) h0
     have h2 := congrArg (MvPolynomial.eval ![v, (0 : ℂ)]) h0
-    rw [map_sub, map_mul, eval_aeval_X0, eval_aeval_X0, MvPolynomial.eval_X, map_zero] at h1 h2
+    rw [map_sub, map_mul, eval_aeval_X0_rationalPadeCollapse, eval_aeval_X0_rationalPadeCollapse, MvPolynomial.eval_X, map_zero] at h1 h2
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at h1 h2
     rw [Polynomial.eval_zero]
     linear_combination h1 - h2
@@ -44,7 +44,7 @@ theorem differentiallyAlgebraic_of_rational {f : ℂ → ℂ} (P Q : Polynomial 
     have h1 : (Fin.cons z (fun j : Fin 1 => iteratedDeriv (j : ℕ) f z) : Fin 2 → ℂ) 1 = f z := by
       rw [show (1 : Fin 2) = Fin.succ 0 from rfl, Fin.cons_succ]
       simp [iteratedDeriv_zero]
-    rw [map_sub, map_mul, eval_aeval_X0, eval_aeval_X0, MvPolynomial.eval_X, h0, h1, hrep z,
+    rw [map_sub, map_mul, eval_aeval_X0_rationalPadeCollapse, eval_aeval_X0_rationalPadeCollapse, MvPolynomial.eval_X, h0, h1, hrep z,
       sub_self]
 
 /-- An entire function all of whose jets vanish at the origin is identically zero. -/

@@ -35,14 +35,14 @@ theorem moebius_eq_sub_indicator (n : ℕ) :
 
 /-- `μ²` is the sum of the two sign indicators. -/
 theorem moebius_sq_eq_add_indicator (n : ℕ) :
-    ((moebius n : ℤ) : ℝ) ^ 2
+    ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
       = (if moebius n = 1 then 1 else 0) + (if moebius n = -1 then 1 else 0) := by
   rcases moebius_trichotomy n with h | h | h <;> rw [h] <;> norm_num
 
 /-- **The positive sign count.** -/
 theorem two_mul_card_moebius_eq_one (t L : ℕ) :
     2 * (((Finset.Ioc t (t + L)).filter (fun n => moebius n = 1)).card : ℝ)
-      = ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+      = ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         + ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) := by
   classical
   have h1 : ∑ n ∈ Finset.Ioc t (t + L), (if moebius n = 1 then (1 : ℝ) else 0)
@@ -59,7 +59,7 @@ theorem two_mul_card_moebius_eq_one (t L : ℕ) :
 /-- **The negative sign count.** -/
 theorem two_mul_card_moebius_eq_neg_one (t L : ℕ) :
     2 * (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ)
-      = ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+      = ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         - ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) := by
   classical
   have h1 : ∑ n ∈ Finset.Ioc t (t + L), (if moebius n = 1 then (1 : ℝ) else 0)

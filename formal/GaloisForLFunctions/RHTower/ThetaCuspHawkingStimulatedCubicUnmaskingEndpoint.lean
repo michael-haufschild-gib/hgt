@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiSquaredEulerDiagonalCorrelationUniversality
 # Stimulated Hawking cubic unmasking endpoint
 
 The modular gain used here is the literal reduced one-sector gain
-`cosh(r)^2` of the theta-source two-mode Hawking squeeze.  This module asks
+`cosh(r)^(2 : ℕ)` of the theta-source two-mode Hawking squeeze.  This module asks
 whether that genuine bosonic amplification can expose the first possible
 three-shell obstruction hidden by the complete Xi divisor.
 
@@ -15,7 +15,7 @@ Two sharply different laws result.
 
 * `[PROVED NO-GO]` A common modular boost multiplies every entry of the full
   response kernel by the same positive gain.  Its three-shell determinant is
-  multiplied by `cosh(r)^6`, so its sign never changes.  Common stimulated
+  multiplied by `cosh(r)^(6 : ℕ)`, so its sign never changes.  Common stimulated
   amplification cannot unmask a resonance hidden by the other Xi orbits.
 * `[PROVED SURVIVOR]` If the same physical gain is coupled selectively to one
   divisor orbit, the family begins at the unmodified full kernel at `r = 0`.
@@ -82,7 +82,7 @@ theorem symmetricThreePointDet_thetaCuspHawkingCommonModularGainKernel
     (r x y z : ℝ) :
     symmetricThreePointDet
         (thetaCuspHawkingCommonModularGainKernel r) x y z =
-      thetaCuspHawkingModularGain r ^ 3 *
+      thetaCuspHawkingModularGain r ^ (3 : ℕ) *
         symmetricThreePointDet xiSquaredEulerFullKernel x y z := by
   unfold thetaCuspHawkingCommonModularGainKernel symmetricThreePointDet
   ring

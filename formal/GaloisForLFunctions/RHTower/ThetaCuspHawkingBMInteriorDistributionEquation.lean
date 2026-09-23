@@ -169,12 +169,12 @@ theorem InteriorTest.integrable_scalar_pairing (g : InteriorTest) (u : Space) :
 
 private theorem fluxTest_coe (g : InteriorTest) (v : ℂ) :
     (fluxTest g v : UpperHalfPlane → ℂ) =ᵐ[measure]
-      (fun z : UpperHalfPlane => conj ((z.im : ℂ)^2*fderiv ℝ g.field z v)) := by
+      (fun z : UpperHalfPlane => conj ((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field z v)) := by
   unfold fluxTest
   exact MemLp.coeFn_toLp _
 
 private theorem integrable_flux_pairing (g : InteriorTest) (v : ℂ) (u : Space) :
-    Integrable (fun z : UpperHalfPlane => ((z.im : ℂ)^2*fderiv ℝ g.field z v)*u z) measure := by
+    Integrable (fun z : UpperHalfPlane => ((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field z v)*u z) measure := by
   apply (L2.integrable_inner (𝕜 := ℂ) (fluxTest g v) u).congr
   filter_upwards [fluxTest_coe g v] with z hz
   rw [hz]
@@ -187,7 +187,7 @@ def InteriorTest.planarLaplacian (g : InteriorTest) (z : ℂ) : ℂ :=
 /-- The dual Laplacian vector pairs as the native measure's height-squared differential expression. -/
 theorem InteriorTest.laplace_pairing (g : InteriorTest) (u : Space) :
     inner ℂ g.laplaceVector u =
-      ∫ z : UpperHalfPlane, (z.im : ℂ)^2*g.planarLaplacian z*u z ∂measure := by
+      ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*g.planarLaplacian z*u z ∂measure := by
   simp only [InteriorTest.laplaceVector,sum_inner,fluxTest_inner]
   rw [← integral_finsetSum _ (fun i _ => integrable_flux_pairing _ _ u)]
   congr 1
@@ -197,7 +197,7 @@ theorem InteriorTest.laplace_pairing (g : InteriorTest) (u : Space) :
 /-- Every actual Xi response obeys the literal second-order local distributional PDE. -/
 theorem full_response_integral_equation (q : XiZeroCopy) (minusBranch : Bool)
     (g : InteriorTest) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*g.planarLaplacian z*
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*g.planarLaplacian z*
       (embedding (weakResponse q minusBranch)) z ∂measure) -
       parameter q minusBranch*(∫ z : UpperHalfPlane, g.field z*
         (embedding (weakResponse q minusBranch)) z ∂measure) =

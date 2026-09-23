@@ -80,7 +80,7 @@ theorem connes_constOsc_integrable (G : ℝ → ℂ) (X : ℝ) :
     · rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu]
     · rw [Set.indicator_of_notMem hu, Set.indicator_of_notMem hu, zero_mul]
   rw [hfun, MeasureTheory.integrable_indicator_iff connes_unitBall_measurable]
-  refine Measure.integrableOn_of_bounded (M := ‖G 0‖ * (2 * Real.pi ^ 2 * X ^ 2)) ?_ ?_ ?_
+  refine Measure.integrableOn_of_bounded (M := ‖G 0‖ * (2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ))) ?_ ?_ ?_
   · rw [connes_unitBall_eq_Icc]
     exact measure_Icc_lt_top.ne
   · refine Measurable.aestronglyMeasurable ?_
@@ -90,13 +90,13 @@ theorem connes_constOsc_integrable (G : ℝ → ℂ) (X : ℝ) :
       (Real.measurable_cos.comp (measurable_const.mul measurable_id))).div measurable_id
   · filter_upwards [ae_restrict_mem connes_unitBall_measurable] with u hu
     have hu1 : |u| ≤ 1 := hu
-    have hM0 : (0 : ℝ) ≤ 2 * Real.pi ^ 2 * X ^ 2 := by positivity
+    have hM0 : (0 : ℝ) ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) := by positivity
     rw [norm_mul]
     refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
     calc ‖(((1 - Real.cos (2 * Real.pi * X * u)) / u : ℝ) : ℂ)‖
-        ≤ 2 * Real.pi ^ 2 * X ^ 2 * |u| := connes_oscQuotient_bound X u
-      _ ≤ 2 * Real.pi ^ 2 * X ^ 2 * 1 := mul_le_mul_of_nonneg_left hu1 hM0
-      _ = 2 * Real.pi ^ 2 * X ^ 2 := mul_one _
+        ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * |u| := connes_oscQuotient_bound X u
+      _ ≤ 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) * 1 := mul_le_mul_of_nonneg_left hu1 hM0
+      _ = 2 * Real.pi ^ (2 : ℕ) * X ^ (2 : ℕ) := mul_one _
 
 /-- **The constant piece integrates to zero.** -/
 theorem connes_constOsc_integral_zero (G : ℝ → ℂ) (X : ℝ) :

@@ -283,30 +283,30 @@ theorem exists_diagAlphabet_word {m : ℕ} (hm : 0 < m)
       ‖Complex.exp ((-(s * carrierEnergy v x) : ℝ) * Complex.I) * psi x
         - (w.map fun g => Complex.exp ((-(gridAngle m g.2
             * diagSignOf (pathPatchEquiv n (Sum.inl g.1)) x) : ℝ) * Complex.I)).prod
-          * psi x‖ ^ 2
-      ≤ (((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ 2 * ‖psi x‖ ^ 2 := by
+          * psi x‖ ^ (2 : ℕ)
+      ≤ (((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ (2 : ℕ) * ‖psi x‖ ^ (2 : ℕ) := by
     intro x
     rw [← sub_mul, norm_mul, mul_pow]
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
     have hnn : (0 : ℝ) ≤ ((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m) := by positivity
     exact pow_le_pow_left₀ (norm_nonneg _) (hphase x) 2
-  have hsumseed : ∑ x : FiniteQubitConfiguration (Fin (n + 2)), ‖psi x‖ ^ 2 = 1 := by
+  have hsumseed : ∑ x : FiniteQubitConfiguration (Fin (n + 2)), ‖psi x‖ ^ (2 : ℕ) = 1 := by
     have := norm_eucVec psi
     rw [hpsi] at this
     have hnn : (0 : ℝ) ≤ ∑ x : FiniteQubitConfiguration (Fin (n + 2)),
-        ‖psi x‖ ^ 2 := by positivity
+        ‖psi x‖ ^ (2 : ℕ) := by positivity
     nlinarith [Real.sq_sqrt hnn, this]
   have hfinal : ∑ x : FiniteQubitConfiguration (Fin (n + 2)),
       ‖Complex.exp ((-(s * carrierEnergy v x) : ℝ) * Complex.I) * psi x
         - (w.map fun g => Complex.exp ((-(gridAngle m g.2
             * diagSignOf (pathPatchEquiv n (Sum.inl g.1)) x) : ℝ) * Complex.I)).prod
-          * psi x‖ ^ 2
-      ≤ (((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ 2 := by
+          * psi x‖ ^ (2 : ℕ)
+      ≤ (((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ (2 : ℕ) := by
     refine le_trans (Finset.sum_le_sum fun x _ => hbound x) (le_of_eq ?_)
     rw [← Finset.mul_sum, hsumseed, mul_one]
   have hnn : (0 : ℝ) ≤ ((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m) := by positivity
   rw [show ((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)
-      = Real.sqrt ((((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ 2) from
+      = Real.sqrt ((((2 * n + 3 : ℕ) : ℝ) * (2 * Real.pi / m)) ^ (2 : ℕ)) from
     (Real.sqrt_sq hnn).symm]
   exact Real.sqrt_le_sqrt hfinal
 
@@ -372,7 +372,7 @@ theorem coupled_shortcut_tube_compiled
           spectralCollision ebasis (uniformSeed (k + 3))
             ≤ ((Real.sqrt (2 ^ (k + 3)))⁻¹
                 + 2 * (Real.sqrt (Fintype.card (PathLabel (k + 1))) * r)
-                  / (eps / (2 * Real.sqrt ((2 * (k + 1) + 3 : ℕ) : ℝ)))) ^ 2)
+                  / (eps / (2 * Real.sqrt ((2 * (k + 1) + 3 : ℕ) : ℝ)))) ^ (2 : ℕ))
       ∧ (∀ e : Fin (k + 2), (2 * Real.sqrt ((2 * (k + 1) + 3 : ℕ) : ℝ))⁻¹ - rho - r
           ≤ ‖edgePart (pathPatchIsometry (k + 1)
               (ω : PatchSpace (2 * (k + 1) + 3) (10 * (k + 1) + 12))) e‖) := by

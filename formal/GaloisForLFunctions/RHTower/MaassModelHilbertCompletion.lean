@@ -93,7 +93,7 @@ theorem modelToLp_norm (v : ComplementaryKFinite lam) :
   have h := modelToLp_norm_sq N lam f (ComplementaryKFinite.toModel lam v)
   have hv := @norm_sq_eq_re_inner ℂ (ComplementaryKFinite lam) _ _ _ v
   rw [complementaryKFinite_inner] at hv
-  change ‖v‖ ^ 2 = (sphericalComplementaryHermitianForm (2*lam.complementaryExponent)
+  change ‖v‖ ^ (2 : ℕ) = (sphericalComplementaryHermitianForm (2*lam.complementaryExponent)
     (ComplementaryKFinite.toModel lam v) (ComplementaryKFinite.toModel lam v)).re at hv
   rw [← hv] at h
   have hp := mul_nonneg (norm_nonneg (modelToLp N lam f (Finsupp.single 0 1))) (norm_nonneg v)

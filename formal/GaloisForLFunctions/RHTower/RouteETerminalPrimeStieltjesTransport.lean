@@ -222,9 +222,9 @@ theorem integrableOn_deriv_routeETerminalAbelWeight {r t u v : ℝ}
 
 theorem routeETerminalAbelWeight_mul_primeLogWeight {r t : ℝ} {k : ℕ}
     (hk : 1 < k) :
-    routeETerminalAbelWeight r t k * primeLogWeight k =
+    routeETerminalAbelWeight r t k * primeLogWeight_primeRpowAbelSummation k =
       if k.Prime then (k : ℝ) ^ (-r) * routeETerminalPhaseEnergy t k else 0 := by
-  rw [routeETerminalAbelWeight, primeLogWeight]
+  rw [routeETerminalAbelWeight, primeLogWeight_primeRpowAbelSummation]
   split_ifs with hp
   · have hlog : Real.log (k : ℝ) ≠ 0 :=
       ne_of_gt (Real.log_pos (by exact_mod_cast hk))
@@ -253,7 +253,7 @@ theorem routeETerminalPrimeFrame_eq_thetaAbel {r X t : ℝ}
   have hint : IntegrableOn (deriv (routeETerminalAbelWeight r t))
       (Icc (X / Real.exp 1) X) :=
     integrableOn_deriv_routeETerminalAbelWeight hX
-  have habel := sum_mul_eq_sub_sub_integral_mul (c := primeLogWeight)
+  have habel := sum_mul_eq_sub_sub_integral_mul (c := primeLogWeight_primeRpowAbelSummation)
     (f := routeETerminalAbelWeight r t) (a := X / Real.exp 1) (b := X)
     (le_trans (by norm_num) hX.le) hle hdiff hint
   simp only [sum_primeLogWeight_eq_theta] at habel
@@ -852,7 +852,7 @@ theorem tendsto_log_sq_mul_exp_neg_sqrt_log {d : ℝ} (hd : 0 < d) :
   nlinarith [hs]
 
 /-- On the absolute subexponential frequency window supplied by the PNT exponent, terminal-prime
-transport error is negligible at the sharp minimax normalization `log(X)^3 / X^(1-r)`. -/
+transport error is negligible at the sharp minimax normalization `log(X)^(3 : ℕ) / X^(1-r)`. -/
 theorem exists_routeETerminalPrimeFrame_normalizedError_uniform_subexp :
     ∃ κ > 0, ∀ ε > 0, ∀ᶠ X : ℝ in atTop,
       ∀ r ∈ Ioc (0 : ℝ) 1, ∀ t : ℝ,

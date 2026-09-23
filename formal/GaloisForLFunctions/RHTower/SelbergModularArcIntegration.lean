@@ -41,10 +41,10 @@ theorem fold_integral {B : ℝ → ℝ}
 /-- The circular height has its literal negative-slope derivative. -/
 theorem arcHeight_deriv {x : ℝ} (hx : x ∈ Ioo (0 : ℝ) (1 / 2)) :
     HasDerivAt arcHeight (-x / arcHeight x) x := by
-  have hpos : 0 < 1 - x ^ 2 := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
-  have hi : HasDerivAt (fun q : ℝ => 1 - q ^ 2) (-2 * x) x := by
+  have hpos : 0 < 1 - x ^ (2 : ℕ) := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
+  have hi : HasDerivAt (fun q : ℝ => 1 - q ^ (2 : ℕ)) (-2 * x) x := by
     have h := (hasDerivAt_const x (1 : ℝ)).sub ((hasDerivAt_id x).pow 2)
-    have hfun : ((fun _ : ℝ => 1) - id ^ 2) = (fun q : ℝ => 1 - q ^ 2) := rfl
+    have hfun : ((fun _ : ℝ => 1) - id ^ (2 : ℕ)) = (fun q : ℝ => 1 - q ^ (2 : ℕ)) := rfl
     rw [hfun] at h
     exact h.congr_deriv (by norm_num)
   have hs := hi.sqrt hpos.ne'

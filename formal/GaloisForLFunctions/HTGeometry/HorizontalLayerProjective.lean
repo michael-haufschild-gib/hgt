@@ -115,7 +115,7 @@ theorem horizontalLayerNormalizedProjective_coe {a ω : ℝ}
 theorem norm_horizontalLayerNormalizedProjective_sub_le {a ω : ℝ} (ha : 0 < a)
     (hω : ω ≠ 0) (hsmall : |ω| ≤ a / 2) :
     ‖horizontalLayerNormalizedProjective a ω -
-        horizontalLayerInfinitesimalProjective a‖ ≤ 48 * |ω| / a ^ 2 := by
+        horizontalLayerInfinitesimalProjective a‖ ≤ 48 * |ω| / a ^ (2 : ℕ) := by
   apply (ContinuousMap.norm_le _ (by positivity)).2
   intro t
   cases t with
@@ -150,7 +150,7 @@ theorem tendsto_horizontalLayerNormalizedProjective (a : ℝ) (ha : 0 < a) :
     · simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hω
     · exact hωsmall
   · simpa [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using
-      habs.const_mul (48 * (a ^ 2)⁻¹)
+      habs.const_mul (48 * (a ^ (2 : ℕ))⁻¹)
 
 theorem tendsto_horizontalLayerProjective (a : ℝ) (ha : 0 < a) :
     Tendsto (horizontalLayerProjective a) (𝓝[≠] 0) (𝓝 1) := by

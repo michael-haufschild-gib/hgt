@@ -138,7 +138,7 @@ theorem hasPolyGrowth_digamma {σ₀ : ℝ} (hσ₀ : 0 ≤ σ₀) :
       _ = (1 + Real.pi / 2) * t := by ring
   calc ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ 2 * ‖vertLog t‖ := hquot
     _ ≤ 2 * ((1 + Real.pi / 2) * t) := by linarith
-    _ = 2 * (1 + Real.pi / 2) * t ^ 1 := by ring
+    _ = 2 * (1 + Real.pi / 2) * t ^ (1 : ℕ) := by ring
 
 /-- Every positive-order digamma jet is bounded, hence of polynomial growth. -/
 theorem hasPolyGrowth_iteratedDeriv_succ_digamma {σ₀ : ℝ} (hσ₀ : 0 < σ₀) (j : ℕ) :

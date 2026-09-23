@@ -7,11 +7,11 @@ import GaloisForLFunctions.RHTower.XiMassLevinsonFiniteOrderPolynomialNoGo
 
 This module closes the fixed entire finite-exponential-type escape left by the finite-order
 polynomial obstruction. If an entire symbol `F` gives the true logarithmic prime coefficient on
-all sufficiently large literal T1 windows `N^49 < n ≤ N^100`, then `F - id` vanishes at all but
+all sufficiently large literal T1 windows `N^(49 : ℕ) < n ≤ N^(100 : ℕ)`, then `F - id` vanishes at all but
 finitely many prime logarithms. Corpus prime-log uniqueness forces `F = id`; an exterior prime
 square in a literal T1 window then contradicts true-prime support.
 
-The capstone permits an arbitrary scale-dependent normalized mollifier supported through `N^49`.
+The capstone permits an arbitrary scale-dependent normalized mollifier supported through `N^(49 : ℕ)`.
 Rough-tail divisor rigidity removes every mollifier coefficient except its unit coefficient, so
 the same obstruction applies. Thus viable T1 analytic symbols must vary in exponential type with
 scale, become non-entire/singular, subtract prime powers explicitly, or cease to factor through one
@@ -102,7 +102,7 @@ lies beyond an arbitrary prescribed threshold. -/
 theorem exists_t1AfeScale_ge_of_dyadic_cutoff_le
     (B : ℕ) {n : ℕ}
     (hn : 2 ^ (100 * (Nat.log 2 B + 1)) ≤ n) :
-    ∃ N : ℕ, B ≤ N ∧ N ^ 49 < n ∧ n ≤ N ^ 100 := by
+    ∃ N : ℕ, B ≤ N ∧ N ^ (49 : ℕ) < n ∧ n ≤ N ^ (100 : ℕ) := by
   let k : ℕ := Nat.log 2 n
   let q : ℕ := (k + 100) / 100
   let N : ℕ := 2 ^ q
@@ -134,16 +134,16 @@ theorem exists_t1AfeScale_ge_of_dyadic_cutoff_le
     omega
   have hpowlog : 2 ^ k ≤ n := by
     simpa only [k] using Nat.pow_log_le_self 2 hn0
-  have hbelow : N ^ 49 < n := by
+  have hbelow : N ^ (49 : ℕ) < n := by
     calc
-      N ^ 49 = 2 ^ (q * 49) := by simp only [N, pow_mul]
+      N ^ (49 : ℕ) = 2 ^ (q * 49) := by simp only [N, pow_mul]
       _ < 2 ^ k := Nat.pow_lt_pow_right (by omega) hlowerExp
       _ ≤ n := hpowlog
-  have habove : n ≤ N ^ 100 := by
+  have habove : n ≤ N ^ (100 : ℕ) := by
     calc
       n ≤ 2 ^ (k + 1) := Nat.le_of_lt (Nat.lt_pow_succ_log_self (by omega) n)
       _ ≤ 2 ^ (q * 100) := Nat.pow_le_pow_right (by omega) hupperExp
-      _ = N ^ 100 := by simp only [N, pow_mul]
+      _ = N ^ (100 : ℕ) := by simp only [N, pow_mul]
   exact ⟨N, hBN, hbelow, habove⟩
 
 /-- No fixed entire finite-exponential-type log-symbol is coefficient-faithful to true-prime
@@ -170,41 +170,41 @@ theorem no_fixedEntireFiniteExponentialType_truePrimeRoughTail (M : ℕ) :
     eq_id_of_exponentialType_of_cofinite_primeLog_eq hF hA hC hgrow E hprime
   obtain ⟨p, hpM, hp⟩ := Nat.exists_infinite_primes (M + 1)
   have hMp : M < p := by omega
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2rough : IsApertureRough M (p ^ 2) := prime_sq_isApertureRough hp hMp
-  have hp2not : ¬(p ^ 2).Prime := Nat.Prime.not_prime_pow (by norm_num)
-  have heq := hcorrect (p ^ 2) hp2pos hp2rough
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2rough : IsApertureRough M (p ^ (2 : ℕ)) := prime_sq_isApertureRough hp hMp
+  have hp2not : ¬(p ^ (2 : ℕ)).Prime := Nat.Prime.not_prime_pow (by norm_num)
+  have heq := hcorrect (p ^ (2 : ℕ)) hp2pos hp2rough
   rw [finiteTypeAnalyticCriticalHeadCoeff, hFid, id_eq,
     truePrimeLogHalfDensityCoeff, if_neg hp2not] at heq
-  have hlogpos : 0 < Real.log (((p ^ 2 : ℕ) : ℝ)) := by
-    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ 2 by nlinarith [hp.two_le]))
+  have hlogpos : 0 < Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) := by
+    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ (2 : ℕ) by nlinarith [hp.two_le]))
   exact (mul_ne_zero (by exact_mod_cast (ne_of_gt hlogpos))
     (one_div_sqrt_nat_cast_ne_zero hp2pos)) heq
 
 /-- Identity log-symbol necessarily detects a prime square, while true-prime density does not. -/
 theorem finiteTypeAnalyticCriticalHeadCoeff_id_ne_truePrime_at_prime_sq
     {p : ℕ} (hp : p.Prime) :
-    finiteTypeAnalyticCriticalHeadCoeff id (p ^ 2) ≠
-      truePrimeLogHalfDensityCoeff (p ^ 2) := by
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2not : ¬(p ^ 2).Prime := Nat.Prime.not_prime_pow (by norm_num)
+    finiteTypeAnalyticCriticalHeadCoeff id (p ^ (2 : ℕ)) ≠
+      truePrimeLogHalfDensityCoeff (p ^ (2 : ℕ)) := by
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2not : ¬(p ^ (2 : ℕ)).Prime := Nat.Prime.not_prime_pow (by norm_num)
   rw [finiteTypeAnalyticCriticalHeadCoeff, id_eq,
     truePrimeLogHalfDensityCoeff, if_neg hp2not]
-  have hp2gt : 1 < p ^ 2 := by nlinarith [hp.two_le]
-  have hlogpos : 0 < Real.log (((p ^ 2 : ℕ) : ℝ)) := by
+  have hp2gt : 1 < p ^ (2 : ℕ) := by nlinarith [hp.two_le]
+  have hlogpos : 0 < Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) := by
     exact Real.log_pos (by exact_mod_cast hp2gt)
   exact mul_ne_zero (by exact_mod_cast (ne_of_gt hlogpos))
     (one_div_sqrt_nat_cast_ne_zero hp2pos)
 
 /-- **T1 fixed finite-type analytic-symbol no-go at the actual AFE schedule.** Beyond every prescribed
 scale threshold, no fixed entire finite-exponential-type log-symbol is coefficient-faithful to
-true-prime half-density throughout the moving rough windows `N^49 < n ≤ N^100`. -/
+true-prime half-density throughout the moving rough windows `N^(49 : ℕ) < n ≤ N^(100 : ℕ)`. -/
 theorem no_fixedEntireFiniteExponentialType_truePrime_eventually_t1AfeWindows (N₀ : ℕ) :
     ¬ ∃ (F : ℂ → ℂ) (A C : ℝ),
       Differentiable ℂ F ∧ 0 ≤ A ∧ 1 ≤ C ∧
       (∀ z : ℂ, ‖F z‖ ≤ C * Real.exp (A * ‖z‖)) ∧
       (∀ N : ℕ, N₀ ≤ N → 2 ≤ N → ∀ n : ℕ, 0 < n →
-        IsApertureRough (N ^ 49) n → n ≤ N ^ 100 →
+        IsApertureRough (N ^ (49 : ℕ)) n → n ≤ N ^ (100 : ℕ) →
         finiteTypeAnalyticCriticalHeadCoeff F n = truePrimeLogHalfDensityCoeff n) := by
   rintro ⟨F, A, C, hF, hA, hC, hgrow, hcorrect⟩
   let B : ℕ := max N₀ 2
@@ -228,15 +228,15 @@ theorem no_fixedEntireFiniteExponentialType_truePrime_eventually_t1AfeWindows (N
     eq_id_of_exponentialType_of_cofinite_primeLog_eq hF hA hC hgrow E hprime
   let N : ℕ := max N₀ 4
   let i : Fin 1 := ⟨0, by omega⟩
-  let p : ℕ := vinogradovBertrandPrimeReservoir (N ^ 49) 1 i
+  let p : ℕ := vinogradovBertrandPrimeReservoir (N ^ (49 : ℕ)) 1 i
   have hp : p.Prime := by
-    simpa only [p, i] using vinogradovBertrandPrimeReservoir_prime (N ^ 49) 1 i
-  have hlow : N ^ 49 < p := by
-    simpa only [p, i] using lt_vinogradovBertrandPrimeReservoir (N ^ 49) 1 i
-  have hpR : p ≤ 2 ^ (0 + 1) * (N ^ 49 + 2) := by
-    have hreservoir := vinogradovBertrandPrimeReservoir_add_two_le (N ^ 49) 1 i
+    simpa only [p, i] using vinogradovBertrandPrimeReservoir_prime (N ^ (49 : ℕ)) 1 i
+  have hlow : N ^ (49 : ℕ) < p := by
+    simpa only [p, i] using lt_vinogradovBertrandPrimeReservoir (N ^ (49 : ℕ)) 1 i
+  have hpR : p ≤ 2 ^ (0 + 1) * (N ^ (49 : ℕ) + 2) := by
+    have hreservoir := vinogradovBertrandPrimeReservoir_add_two_le (N ^ (49 : ℕ)) 1 i
     exact (Nat.le_add_right p 2).trans (by simpa only [p, i] using hreservoir)
-  have hupp : p ^ 2 ≤ N ^ 100 :=
+  have hupp : p ^ (2 : ℕ) ≤ N ^ (100 : ℕ) :=
     (Nat.pow_le_pow_left hpR 2).trans
       (finiteOrderBertrandReservoir_square_le_t1AfeWindow
         (d := 0) (N := N) (by
@@ -245,15 +245,15 @@ theorem no_fixedEntireFiniteExponentialType_truePrime_eventually_t1AfeWindows (N
           simpa only [N] using le_max_right N₀ 4))
   have hN₀N : N₀ ≤ N := by simpa only [N] using le_max_left N₀ 4
   have hN2 : 2 ≤ N := (by omega : 2 ≤ 4).trans (by simpa only [N] using le_max_right N₀ 4)
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2rough : IsApertureRough (N ^ 49) (p ^ 2) :=
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2rough : IsApertureRough (N ^ (49 : ℕ)) (p ^ (2 : ℕ)) :=
     prime_sq_isApertureRough hp hlow
-  have heq := hcorrect N hN₀N hN2 (p ^ 2) hp2pos hp2rough hupp
+  have heq := hcorrect N hN₀N hN2 (p ^ (2 : ℕ)) hp2pos hp2rough hupp
   rw [hFid] at heq
   exact finiteTypeAnalyticCriticalHeadCoeff_id_ne_truePrime_at_prime_sq hp heq
 
 /-- **Detector-native T1 no-go.** Even an arbitrary scale-dependent normalized mollifier with
-the literal support cutoff `N^49` cannot make one fixed entire finite-exponential-type symbol
+the literal support cutoff `N^(49 : ℕ)` cannot make one fixed entire finite-exponential-type symbol
 coefficient-faithful on all sufficiently large T1 AFE windows. -/
 theorem no_fixedEntireFiniteExponentialType_normalizedMollified_truePrime_eventually_t1AfeWindows
     (N₀ : ℕ) :
@@ -261,9 +261,9 @@ theorem no_fixedEntireFiniteExponentialType_normalizedMollified_truePrime_eventu
       Differentiable ℂ F ∧ 0 ≤ A ∧ 1 ≤ C ∧
       (∀ z : ℂ, ‖F z‖ ≤ C * Real.exp (A * ‖z‖)) ∧
       (∀ N : ℕ, moll N 1 = 1) ∧
-      (∀ N q : ℕ, N ^ 49 < q → moll N q = 0) ∧
+      (∀ N q : ℕ, N ^ (49 : ℕ) < q → moll N q = 0) ∧
       (∀ N : ℕ, N₀ ≤ N → 2 ≤ N → ∀ n : ℕ, 0 < n →
-        IsApertureRough (N ^ 49) n → n ≤ N ^ 100 →
+        IsApertureRough (N ^ (49 : ℕ)) n → n ≤ N ^ (100 : ℕ) →
         finiteTypeAnalyticMollifiedCriticalDetectorCoeff F (moll N) n =
           truePrimeLogHalfDensityCoeff n) := by
   rintro ⟨F, A, C, moll, hF, hA, hC, hgrow, hmoll_one, hsupport, hcorrect⟩
@@ -272,7 +272,7 @@ theorem no_fixedEntireFiniteExponentialType_normalizedMollified_truePrime_eventu
   intro N hN₀ hN2 n hn hrough hnupper
   have hcollapse :=
     finiteTypeAnalyticMollifiedCriticalDetectorCoeff_eq_head_of_rough
-      (F := F) (moll := moll N) (M := N ^ 49) (n := n)
+      (F := F) (moll := moll N) (M := N ^ (49 : ℕ)) (n := n)
       (hmoll_one N) (hsupport N) hn hrough
   exact hcollapse.symm.trans (hcorrect N hN₀ hN2 n hn hrough hnupper)
 

@@ -39,7 +39,7 @@ theorem ccm_rat_exists_int_of_isIntegral_image
     (isIntegral_algebraMap_iff (R := ℤ) (algebraMap ℚ K).injective).mp hq
   exact IsIntegrallyClosedIn.isIntegral_iff.mp hq'
 
-private theorem ccm_sqrtTwoRat_no_root (r : ℚ) : r ^ 2 ≠ (2 : ℚ) + 0 * r := by
+private theorem ccm_sqrtTwoRat_no_root (r : ℚ) : r ^ (2 : ℕ) ≠ (2 : ℚ) + 0 * r := by
   intro h
   apply (irrational_sqrt_ratCast_iff_of_nonneg (q := (2 : ℚ)) (by norm_num)).mp
     irrational_sqrt_two
@@ -47,7 +47,7 @@ private theorem ccm_sqrtTwoRat_no_root (r : ℚ) : r ^ 2 ≠ (2 : ℚ) + 0 * r :
   simpa [pow_two] using h.symm
 
 private local instance ccm_sqrtTwoRat_not_square : Fact
-    (∀ r : ℚ, r ^ 2 ≠ (2 : ℚ) + 0 * r) := ⟨ccm_sqrtTwoRat_no_root⟩
+    (∀ r : ℚ, r ^ (2 : ℕ) ≠ (2 : ℚ) + 0 * r) := ⟨ccm_sqrtTwoRat_no_root⟩
 
 /-- The nontrivial quadratic automorphism of the literal carrier
 `ℚ(√2) = QuadraticAlgebra ℚ 2 0`, regarded over the integer base. -/
@@ -69,10 +69,10 @@ theorem ccm_sqrtTwoRat_trace_eq (x : SqrtTwoRat) :
   · simp
 
 /-- The norm of a literal `ℚ(√2)` element is its rational scalar
-`re^2 - 2 * im^2`. -/
+`re^(2 : ℕ) - 2 * im^(2 : ℕ)`. -/
 theorem ccm_sqrtTwoRat_norm_eq (x : SqrtTwoRat) :
     x * star x = algebraMap ℚ SqrtTwoRat
-      (x.re ^ 2 - (2 : ℚ) * x.im ^ 2) := by
+      (x.re ^ (2 : ℕ) - (2 : ℚ) * x.im ^ (2 : ℕ)) := by
   rw [← QuadraticAlgebra.algebraMap_norm_eq_mul_star]
   simp [QuadraticAlgebra.norm_def, pow_two]
   ring
@@ -88,7 +88,7 @@ theorem ccm_sqrtTwoRat_trace_exists_int {x : SqrtTwoRat} (hx : IsIntegral ℤ x)
 /-- An element integral over `ℤ` in the literal CCM quadratic carrier has
 integral rational norm. -/
 theorem ccm_sqrtTwoRat_norm_exists_int {x : SqrtTwoRat} (hx : IsIntegral ℤ x) :
-    ∃ z : ℤ, (z : ℚ) = x.re ^ 2 - (2 : ℚ) * x.im ^ 2 := by
+    ∃ z : ℤ, (z : ℚ) = x.re ^ (2 : ℕ) - (2 : ℚ) * x.im ^ (2 : ℕ) := by
   apply ccm_rat_exists_int_of_isIntegral_image (K := SqrtTwoRat)
   rw [← ccm_sqrtTwoRat_norm_eq]
   exact hx.mul (hx.map ccmSqrtTwoRatConj)
@@ -128,7 +128,7 @@ private theorem ccm_no_rat_sq_eq_int_div_eight_of_odd {b : ℚ} {r : ℤ}
 
 private theorem ccm_rat_coefficients_integral_of_trace_norm {a b : ℚ}
     (htrace : ∃ m : ℤ, (m : ℚ) = (2 : ℚ) * a)
-    (hnorm : ∃ q : ℤ, (q : ℚ) = a ^ 2 - (2 : ℚ) * b ^ 2) :
+    (hnorm : ∃ q : ℤ, (q : ℚ) = a ^ (2 : ℕ) - (2 : ℚ) * b ^ (2 : ℕ)) :
     ∃ u v : ℤ, (u : ℚ) = a ∧ (v : ℚ) = b := by
   rcases htrace with ⟨m, hm⟩
   rcases hnorm with ⟨q, hq⟩
@@ -137,20 +137,20 @@ private theorem ccm_rat_coefficients_integral_of_trace_norm {a b : ℚ}
     have ha : a = (n : ℚ) := by
       have hn' : (m : ℚ) = (n : ℚ) + n := by exact_mod_cast hn
       linarith [hm, hn']
-    have hb_sq : b * b = ((n ^ 2 - q : ℤ) : ℚ) / (2 : ℚ) := by
+    have hb_sq : b * b = ((n ^ (2 : ℕ) - q : ℤ) : ℚ) / (2 : ℚ) := by
       calc
-        b * b = ((n : ℚ) ^ 2 - (q : ℚ)) / (2 : ℚ) := by
+        b * b = ((n : ℚ) ^ (2 : ℕ) - (q : ℚ)) / (2 : ℚ) := by
           rw [ha] at hq
           linarith [hq]
-        _ = ((n ^ 2 - q : ℤ) : ℚ) / (2 : ℚ) := by
+        _ = ((n ^ (2 : ℕ) - q : ℤ) : ℚ) / (2 : ℚ) := by
           push_cast
           ring
     rcases ccm_rat_exists_int_of_sq_eq_int_div_two hb_sq with ⟨v, hv⟩
     exact ⟨n, v, ha.symm, hv⟩
-  · let r : ℤ := m ^ 2 - 4 * q
-    have hm_sq : (m : ℚ) ^ 2 = ((2 : ℚ) * a) ^ 2 :=
-      congrArg (fun x : ℚ => x ^ 2) hm
-    have hrel : (m : ℚ) ^ 2 - (4 : ℚ) * q = (8 : ℚ) * (b * b) := by
+  · let r : ℤ := m ^ (2 : ℕ) - 4 * q
+    have hm_sq : (m : ℚ) ^ (2 : ℕ) = ((2 : ℚ) * a) ^ (2 : ℕ) :=
+      congrArg (fun x : ℚ => x ^ (2 : ℕ)) hm
+    have hrel : (m : ℚ) ^ (2 : ℕ) - (4 : ℚ) * q = (8 : ℚ) * (b * b) := by
       nlinarith [hm_sq, hq]
     have hb_sq : b * b = (r : ℚ) / (8 : ℚ) := by
       dsimp [r]
@@ -172,8 +172,8 @@ theorem ccm_sqrtTwoRat_integral_has_integer_coefficients {x : SqrtTwoRat}
 
 private def ccmSqrtTwoRatGenerator : SqrtTwoRat := ⟨0, 1⟩
 
-private theorem ccmSqrtTwoRatGenerator_sq : ccmSqrtTwoRatGenerator ^ 2 = (2 : SqrtTwoRat) := by
-  change ({ re := (0 : ℚ), im := 1 } : SqrtTwoRat) ^ 2 = { re := (2 : ℚ), im := 0 }
+private theorem ccmSqrtTwoRatGenerator_sq : ccmSqrtTwoRatGenerator ^ (2 : ℕ) = (2 : SqrtTwoRat) := by
+  change ({ re := (0 : ℚ), im := 1 } : SqrtTwoRat) ^ (2 : ℕ) = { re := (2 : ℚ), im := 0 }
   apply QuadraticAlgebra.ext <;> norm_num [ccmSqrtTwoRatGenerator, pow_two,
     QuadraticAlgebra.re_mul, QuadraticAlgebra.im_mul]
 

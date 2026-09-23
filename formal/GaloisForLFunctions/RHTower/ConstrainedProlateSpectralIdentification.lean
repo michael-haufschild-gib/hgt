@@ -17,10 +17,10 @@ namespace RHTower
 /-- The actual concentration spectrum is the pointwise square of the actual signed spectrum. -/
 theorem evenProlateConcentrationValue_eq_signedValue_sq
     (a : ℝ) (ha : 0 < a) (n : ℕ) :
-    evenProlateConcentrationValue a n = evenProlateSignedValue a n ^ 2 := by
+    evenProlateConcentrationValue a n = evenProlateSignedValue a n ^ (2 : ℕ) := by
   change ContinuousLinearMap.svVal
       (ContinuousLinearMap.energyOp (evenTimeBandFourier a)) n =
-    ContinuousLinearMap.sgVal (evenTimeBandFourier a) n ^ 2
+    ContinuousLinearMap.sgVal (evenTimeBandFourier a) n ^ (2 : ℕ)
   rw [← ContinuousLinearMap.singVal_sq]
   have habs := abs_sgVal_eq_singVal
     (isCompactOperator_evenTimeBandFourier a ha)
@@ -31,7 +31,7 @@ theorem evenProlateConcentrationValue_eq_signedValue_sq
 /-- The concentration leakage and signed leakage therefore agree term by term. -/
 theorem evenProlateLeakageValue_eq_signedValue_leakage
     (a : ℝ) (ha : 0 < a) (n : ℕ) :
-    evenProlateLeakageValue a n = 1 - evenProlateSignedValue a n ^ 2 := by
+    evenProlateLeakageValue a n = 1 - evenProlateSignedValue a n ^ (2 : ℕ) := by
   rw [evenProlateLeakageValue, evenProlateConcentrationValue_eq_signedValue_sq a ha n]
 
 end RHTower

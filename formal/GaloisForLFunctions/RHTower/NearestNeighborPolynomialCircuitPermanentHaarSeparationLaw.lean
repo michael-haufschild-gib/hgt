@@ -78,7 +78,7 @@ theorem nearestNeighborPathSelfAdjointHamiltonian_ne_zero
 dimension. -/
 theorem eventually_pairQubit_twoLocalPauli_separator :
     ∀ᶠ L : ℕ in atTop,
-      Fintype.card (FiniteQLocalPauliLabel (PairQubit L) 2) * 3 ^ 2 <
+      Fintype.card (FiniteQLocalPauliLabel (PairQubit L) 2) * 3 ^ (2 : ℕ) <
         2 ^ Fintype.card (PairQubit L) + 1 := by
   have hbase := eventually_twoLocalPauli_separator
   rw [eventually_atTop] at hbase ⊢
@@ -106,7 +106,7 @@ theorem nearestNeighborPath_permanentLocalityHaarSeparation
     {p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ}
     (hp : p ∈ nearestNeighborPathLocalMaximalSet L)
     (hsep :
-      Fintype.card (FiniteQLocalPauliLabel (PairQubit L) 2) * 3 ^ 2 <
+      Fintype.card (FiniteQLocalPauliLabel (PairQubit L) 2) * 3 ^ (2 : ℕ) <
         2 ^ Fintype.card (PairQubit L) + 1) :
     NearestNeighborPathPermanentLocalityHaarSeparation L p := by
   intro t

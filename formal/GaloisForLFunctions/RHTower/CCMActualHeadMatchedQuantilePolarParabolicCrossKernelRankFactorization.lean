@@ -36,13 +36,13 @@ def ccmActualHeadMatchedQuantileParabolicCrossEnergy (K : ℕ) : Fin (K + 1) →
   fun m => criticalMellinAtomWeight (m.val + 2) *
     (ccmActualHeadMatchedQuantilePolarDisplacement (m.val + 2) *
         ccmActualHeadMatchedPolarCentroid (m.val + 2) +
-      ccmActualHeadMatchedQuantilePolarDisplacement (m.val + 2) ^ 2 / 2)
+      ccmActualHeadMatchedQuantilePolarDisplacement (m.val + 2) ^ (2 : ℕ) / 2)
 
 def ccmActualHeadMatchedQuantileParabolicCrossRightEnergy (K : ℕ) : Fin (K + 1) → ℝ :=
   fun n => -criticalMellinAtomWeight (n.val + 2) *
     (ccmActualHeadMatchedQuantilePolarDisplacement (n.val + 2) *
         ccmActualHeadMatchedPolarCentroid (n.val + 2) +
-      ccmActualHeadMatchedQuantilePolarDisplacement (n.val + 2) ^ 2 / 2)
+      ccmActualHeadMatchedQuantilePolarDisplacement (n.val + 2) ^ (2 : ℕ) / 2)
 
 def ccmActualHeadMatchedQuantileParabolicCrossRightDisplacement (K : ℕ) : Fin (K + 1) → ℝ :=
   fun n => criticalMellinAtomWeight (n.val + 2) *

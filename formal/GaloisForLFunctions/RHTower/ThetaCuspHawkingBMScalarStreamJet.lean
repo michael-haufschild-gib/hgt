@@ -22,7 +22,7 @@ private abbrev Jet := ScalarTwoJet (Fin 4) ℂ
 def orbitJet (w F F1 F2 : ℂ) : Jet where
   value := F
   first := ![w * F, F1, 0, 0]
-  second := !![w ^ 2 * F, w * F1, 0, 0; w * F1, F2, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0]
+  second := !![w ^ (2 : ℕ) * F, w * F1, 0, 0; w * F1, F2, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0]
 
 /-- Free angular two-jet. -/
 def angularJet (P Px Py Pxx Pxy Pyy : ℂ) : Jet where

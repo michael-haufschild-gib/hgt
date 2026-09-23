@@ -29,11 +29,11 @@ theorem ccmWeilPoleChamberDiagonal_eq_explicit (a : SuzukiPositiveAperture) (s :
 /-- The frozen cross entry retains the exact affine continuation of the prime tent. -/
 theorem ccmWeilPoleChamberCross_eq_explicit (a : SuzukiPositiveAperture) (s : ℝ) :
     ccmWeilPoleChamberCross a s =
-      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*s)+2*s^2+
-      (2*Real.sinh s)^2+ccmGammaPoleCrossBoundaryPrimitive s-
+      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*s)+2*s^(2 : ℕ)+
+      (2*Real.sinh s)^(2 : ℕ)+ccmGammaPoleCrossBoundaryPrimitive s-
       (ccmPolarPrimeTent a+2*(s-a.1)*ccmWeilPrimeChamberWeight a) := by
   change (2*(-Real.eulerMascheroniConstant-Real.log (2*Real.pi))-
-    2*ccmWeilPrimeChamberWeight a)*s+2*s^2+4*Real.sinh s^2+
+    2*ccmWeilPrimeChamberWeight a)*s+2*s^(2 : ℕ)+4*Real.sinh s^(2 : ℕ)+
     (2*a.1*ccmWeilPrimeChamberWeight a-ccmPolarPrimeTent a)+_ = _
   ring
 

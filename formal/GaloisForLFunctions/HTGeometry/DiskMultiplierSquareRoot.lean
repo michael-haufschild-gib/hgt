@@ -21,7 +21,7 @@ theorem DiskMultiplier.exists_squareRoot_of_zeroFree
     (phi : DiskMultiplier)
     (hne : ∀ z ∈ ball (0 : ℂ) 1, phi.fn z ≠ 0) :
     ∃ root : DiskMultiplier,
-      ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ 2 = phi.fn z := by
+      ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ (2 : ℕ) = phi.fn z := by
   obtain ⟨s, hsDiff, hsSq⟩ := exists_sqrt_of_ne_zero phi.diff hne
   let root : DiskMultiplier :=
     { fn := s
@@ -30,9 +30,9 @@ theorem DiskMultiplier.exists_squareRoot_of_zeroFree
       bd_nonneg := by linarith [phi.bd_nonneg]
       bd_le := by
         intro z hz
-        have hsq : ‖s z‖ ^ 2 = ‖phi.fn z‖ := by
+        have hsq : ‖s z‖ ^ (2 : ℕ) = ‖phi.fn z‖ := by
           rw [← norm_pow, hsSq z hz]
-        have hsqLe : ‖s z‖ ^ 2 ≤ phi.bd := by
+        have hsqLe : ‖s z‖ ^ (2 : ℕ) ≤ phi.bd := by
           rw [hsq]
           exact phi.bd_le z hz
         by_cases hsmall : ‖s z‖ ≤ 1
@@ -46,7 +46,7 @@ by the square is contained in the range of multiplication by the root. -/
 theorem IsOuterDiskMultiplier.of_square_eq
     {phi root : DiskMultiplier}
     (hphi : IsOuterDiskMultiplier phi)
-    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ 2 = phi.fn z) :
+    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ (2 : ℕ) = phi.fn z) :
     IsOuterDiskMultiplier root := by
   rw [isOuterDiskMultiplier_iff_denseRange] at hphi ⊢
   rw [denseRange_iff_closure_range] at hphi ⊢
@@ -65,8 +65,8 @@ theorem IsOuterDiskMultiplier.of_square_eq
 /-- Analytic square identities pass to the exact circle-boundary representatives. -/
 theorem diskMultiplierBoundaryFun_sq_ae_of_square_eq
     {phi root : DiskMultiplier}
-    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ 2 = phi.fn z) :
-    (fun z => diskMultiplierBoundaryFun root z ^ 2) =ᵐ[circleLebesgue]
+    (hsq : ∀ z ∈ ball (0 : ℂ) 1, root.fn z ^ (2 : ℕ) = phi.fn z) :
+    (fun z => diskMultiplierBoundaryFun root z ^ (2 : ℕ)) =ᵐ[circleLebesgue]
       diskMultiplierBoundaryFun phi := by
   have hhardy : hardyOf (root.mul root) = hardyOf phi := by
     apply hardyDisk_ext

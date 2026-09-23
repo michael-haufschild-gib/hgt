@@ -16,7 +16,7 @@ def weightFirst (p : Point3) (i : Fin 3) : ℂ :=
   ![(-radialUnit (p 0)/2:ℝ)*weight p,0,weight p/(2*(p 2:ℂ))] i
 
 def weightSecond (p : Point3) (i : Fin 3) : ℂ :=
-  ![(warp (p 0)^2/2+radialUnit (p 0)^2/4:ℝ)*weight p,0,-weight p/(4*(p 2:ℂ)^2)] i
+  ![(warp (p 0)^(2 : ℕ)/2+radialUnit (p 0)^(2 : ℕ)/4:ℝ)*weight p,0,-weight p/(4*(p 2:ℂ)^(2 : ℕ))] i
 
 theorem weight_ne_zero (p : Point3) (hp : 0 < p 2) : weight p ≠ 0 :=
   mul_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.sqrt_pos.mpr hp)))

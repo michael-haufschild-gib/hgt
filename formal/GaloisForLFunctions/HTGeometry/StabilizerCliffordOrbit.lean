@@ -85,12 +85,12 @@ theorem stabClifford_mulVec_one :
     mulVec_boolZeroState]
   funext b
   rw [Matrix.mul_apply, Fintype.sum_bool]
-  have hr : rt2inv ^ 2 = 1 / 2 := by
+  have hr : rt2inv ^ (2 : ℕ) = 1 / 2 := by
     rw [sq]
     exact rt2inv_mul_self
   cases b
   · simp [finiteQubitPauli_zero_apply, boolStabAmp, stabAmp]
-    linear_combination rt2inv ^ 2 * Complex.I_sq
+    linear_combination rt2inv ^ (2 : ℕ) * Complex.I_sq
   · simp [finiteQubitPauli_zero_apply, boolStabAmp, stabAmp]
     linear_combination (2 * Complex.I) * hr
 

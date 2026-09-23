@@ -88,7 +88,7 @@ theorem eval_zero_hermitePoly_two : (hermitePoly 2).eval 0 = -(1 / π) := by
   rw [show (2 : ℕ) = 0 + 2 from rfl, h]
   norm_num
 
-theorem eval_zero_hermitePoly_four : (hermitePoly 4).eval 0 = 3 / π ^ 2 := by
+theorem eval_zero_hermitePoly_four : (hermitePoly 4).eval 0 = 3 / π ^ (2 : ℕ) := by
   have h := eval_zero_hermitePoly_add_two 2
   rw [eval_zero_hermitePoly_two] at h
   have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
@@ -97,7 +97,7 @@ theorem eval_zero_hermitePoly_four : (hermitePoly 4).eval 0 = 3 / π ^ 2 := by
   field_simp
   ring
 
-theorem eval_zero_hermitePoly_six : (hermitePoly 6).eval 0 = -(15 / π ^ 3) := by
+theorem eval_zero_hermitePoly_six : (hermitePoly 6).eval 0 = -(15 / π ^ (3 : ℕ)) := by
   have h := eval_zero_hermitePoly_add_two 4
   rw [eval_zero_hermitePoly_four] at h
   have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
@@ -136,14 +136,14 @@ theorem schwartzPair_hermiteSchwartz_self_eq (n : ℕ) :
 
 /-- The squared `L²` norm of the `n`-th self-dual Hermite function. -/
 theorem norm_hermiteSchwartz_toLp_sq (n : ℕ) :
-    ‖(hermiteSchwartz n).toLp 2 volume‖ ^ 2
+    ‖(hermiteSchwartz n).toLp 2 volume‖ ^ (2 : ℕ)
       = (Nat.factorial n : ℝ) / ((π : ℝ) ^ n * Real.sqrt 2) := by
   have hinner : inner ℂ ((hermiteSchwartz n).toLp 2 volume) ((hermiteSchwartz n).toLp 2 volume)
-      = ((‖(hermiteSchwartz n).toLp 2 volume‖ : ℂ)) ^ 2 :=
+      = ((‖(hermiteSchwartz n).toLp 2 volume‖ : ℂ)) ^ (2 : ℕ) :=
     inner_self_eq_norm_sq_to_K _
   rw [inner_hermiteSchwartz_toLp, schwartzPair_hermiteSchwartz_self_eq] at hinner
   have : ((((Nat.factorial n : ℝ)) / ((π : ℝ) ^ n * Real.sqrt 2) : ℝ) : ℂ)
-      = ((‖(hermiteSchwartz n).toLp 2 volume‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖(hermiteSchwartz n).toLp 2 volume‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hinner]
     push_cast
     ring
@@ -161,31 +161,31 @@ def hermiteOriginValue (n : ℕ) : ℝ :=
 
 /-- The squared origin value, with every power of `π` still visible. -/
 theorem hermiteOriginValue_sq (n : ℕ) :
-    hermiteOriginValue n ^ 2
-      = ((hermitePoly n).eval 0) ^ 2 * ((π : ℝ) ^ n * Real.sqrt 2) / (Nat.factorial n : ℝ) := by
+    hermiteOriginValue n ^ (2 : ℕ)
+      = ((hermitePoly n).eval 0) ^ (2 : ℕ) * ((π : ℝ) ^ n * Real.sqrt 2) / (Nat.factorial n : ℝ) := by
   have hnorm := norm_hermiteSchwartz_toLp_sq n
   have hpos := norm_hermiteSchwartz_toLp_pos n
   have hfact : ((Nat.factorial n : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n)
   rw [hermiteOriginValue, div_pow, hnorm]
   field_simp
 
-theorem hermiteOriginValue_sq_zero : hermiteOriginValue 0 ^ 2 = Real.sqrt 2 := by
+theorem hermiteOriginValue_sq_zero : hermiteOriginValue 0 ^ (2 : ℕ) = Real.sqrt 2 := by
   rw [hermiteOriginValue_sq, eval_zero_hermitePoly_zero]
   norm_num
 
-theorem hermiteOriginValue_sq_two : hermiteOriginValue 2 ^ 2 = Real.sqrt 2 / 2 := by
+theorem hermiteOriginValue_sq_two : hermiteOriginValue 2 ^ (2 : ℕ) = Real.sqrt 2 / 2 := by
   have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
   rw [hermiteOriginValue_sq, eval_zero_hermitePoly_two]
   norm_num [Nat.factorial]
 
-theorem hermiteOriginValue_sq_four : hermiteOriginValue 4 ^ 2 = 3 * Real.sqrt 2 / 8 := by
+theorem hermiteOriginValue_sq_four : hermiteOriginValue 4 ^ (2 : ℕ) = 3 * Real.sqrt 2 / 8 := by
   have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
   rw [hermiteOriginValue_sq, eval_zero_hermitePoly_four]
   norm_num [Nat.factorial]
   field_simp
   ring
 
-theorem hermiteOriginValue_sq_six : hermiteOriginValue 6 ^ 2 = 5 * Real.sqrt 2 / 16 := by
+theorem hermiteOriginValue_sq_six : hermiteOriginValue 6 ^ (2 : ℕ) = 5 * Real.sqrt 2 / 16 := by
   have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
   rw [hermiteOriginValue_sq, eval_zero_hermitePoly_six]
   norm_num [Nat.factorial]

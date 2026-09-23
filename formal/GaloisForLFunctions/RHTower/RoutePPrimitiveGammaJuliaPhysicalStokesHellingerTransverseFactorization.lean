@@ -56,7 +56,7 @@ theorem routePPrimitiveGammaJuliaStokesChildEnergy_add_smul
         (x + (a : ℂ) • y) =
       routePPrimitiveGammaJuliaStokesChildEnergy d hd x +
         a * routePPrimitiveGammaJuliaStokesChildCross d hd x y +
-        a ^ 2 * routePPrimitiveGammaJuliaStokesChildEnergy d hd y := by
+        a ^ (2 : ℕ) * routePPrimitiveGammaJuliaStokesChildEnergy d hd y := by
   unfold routePPrimitiveGammaJuliaStokesChildEnergy
     routePPrimitiveGammaJuliaStokesChildCross
     routePPrimitiveGammaJuliaStokesChildOperator
@@ -73,10 +73,10 @@ theorem routePPrimitiveGammaJuliaStokesHellingerInterference_factor
       routePPrimitiveGammaJuliaStokesChildEnergy d hd
         (x + ((8 * Real.sqrt r * routeEPCubicFourthDepthJuliaDefect : ℝ) : ℂ) • y) -
       64 * r * routePPrimitiveGammaJuliaStokesChildEnergy d hd y := by
-  have hsqrt : Real.sqrt r ^ 2 = r := Real.sq_sqrt hr
-  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) :=
+  have hsqrt : Real.sqrt r ^ (2 : ℕ) = r := Real.sq_sqrt hr
+  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) :=
     routeEPCubicFourthDepthJuliaDefect_sq
-  have ha : (8 * Real.sqrt r * routeEPCubicFourthDepthJuliaDefect) ^ 2 =
+  have ha : (8 * Real.sqrt r * routeEPCubicFourthDepthJuliaDefect) ^ (2 : ℕ) =
       63 * r := by
     rw [mul_pow, mul_pow, hsqrt, hdefect]
     ring

@@ -52,15 +52,15 @@ theorem norm_tsum_ghs_smoothWeight_sub_sum_Icc_le (hbdd : ∀ n : ℕ, ‖f n‖
             * ((GaloisForLFunctions.HTGeometry.smoothWeight (N : ℝ) H (n : ℝ) : ℝ) : ℂ))
         - ∑ n ∈ Finset.Icc 1 N,
             (LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f N) f)) n‖
-      ≤ (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3) := by
+      ≤ (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ)) := by
   classical
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hfloor : ⌊(N : ℝ)⌋₊ = N := Nat.floor_natCast N
-  have hC0 : (0 : ℝ) ≤ (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3 := by
+  have hC0 : (0 : ℝ) ≤ (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ) := by
     positivity
   have hC : ∀ n : ℕ, ⌊(N : ℝ)⌋₊ < n → n ≤ ⌊(N : ℝ) + H⌋₊ →
       ‖(LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f N) f)) n‖
-        ≤ (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3 := by
+        ≤ (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ) := by
     intro n hn hnle
     rw [hfloor] at hn
     have hn1 : 1 ≤ n := by omega
@@ -73,7 +73,7 @@ theorem norm_tsum_ghs_smoothWeight_sub_sum_Icc_le (hbdd : ∀ n : ℕ, ‖f n‖
     exact div_le_div_of_nonneg_right (pow_le_pow_left₀ hlogn hle 4) (by positivity)
   have hmain := GaloisForLFunctions.HTGeometry.norm_tsum_mul_smoothWeight_sub_partialSum_le_width
     (a := LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f N) f))
-    (N := (N : ℝ)) (H := H) (C := (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+    (N := (N : ℝ)) (H := H) (C := (Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
     (Nat.cast_nonneg N) hH hC0 hC
   rw [hfloor, sum_range_convolution_eq_sum_Icc] at hmain
   exact hmain
@@ -92,7 +92,7 @@ theorem norm_sum_Icc_mul_log_le_of_kernelBound (hf1 : f 1 = 1)
     {C : ℝ} (hC0 : 0 ≤ C)
     (hCb : ∀ y : ℝ, ‖mellin (fun x : ℝ =>
         ((GaloisForLFunctions.HTGeometry.smoothWeight ((N : ℕ) : ℝ) H x : ℝ) : ℂ))
-          ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ≤ C * (1 + y ^ 2)⁻¹) :
+          ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹) :
       ‖∑ n ∈ Finset.Icc 1 N, f n‖ * Real.log (N : ℝ)
         ≤ ((9 + RHTower.Mertens.mertensTail) * (N : ℝ) + (N : ℝ) * Real.log 4
             + (9 + RHTower.Mertens.mertensTail)
@@ -100,13 +100,13 @@ theorem norm_sum_Icc_mul_log_le_of_kernelBound (hf1 : f 1 = 1)
                     * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                           / Real.log 2)
                         * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-          + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
           + (1 / (2 * Real.pi))
               * (((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
                   * (Real.sqrt
-                        (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
+                        (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
                       * Real.sqrt
-                          (25 * Real.pi ^ 2
+                          (25 * Real.pi ^ (2 : ℕ)
                             * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y))) := by
   classical
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
@@ -130,9 +130,9 @@ theorem norm_sum_Icc_mul_log_le_of_kernelBound (hf1 : f 1 = 1)
       ≤ (1 / (2 * Real.pi))
           * (((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
               * (Real.sqrt
-                    (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
+                    (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
                   * Real.sqrt
-                      (25 * Real.pi ^ 2 * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y))) := by
+                      (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y))) := by
     rw [one_div, inv_mul_eq_div, le_div_iff₀ hpi, mul_comm]
     exact hstep4
   -- assemble
@@ -150,7 +150,7 @@ theorem norm_sum_Icc_mul_log_le_of_kernelBound (hf1 : f 1 = 1)
     ((∑ n ∈ Finset.Icc 1 N, f n) * ((Real.log (N : ℝ) : ℝ) : ℂ) - Sconv) (Sconv - Tsm)
   have hrev : ‖Sconv - Tsm‖ = ‖Tsm - Sconv‖ := norm_sub_rev _ _
   have hsmooth' : ‖Sconv - Tsm‖
-      ≤ (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3) := by
+      ≤ (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ)) := by
     rw [hrev, hTsm, hSconv]
     exact hsmooth
   have hpaper' : ‖(∑ n ∈ Finset.Icc 1 N, f n) * ((Real.log (N : ℝ) : ℝ) : ℂ) - Sconv‖
@@ -178,13 +178,13 @@ theorem exists_norm_sum_Icc_mul_log_le (hf1 : f 1 = 1)
                     * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                           / Real.log 2)
                         * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-          + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
           + (1 / (2 * Real.pi))
               * (((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
                   * (Real.sqrt
-                        (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
+                        (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
                       * Real.sqrt
-                          (25 * Real.pi ^ 2
+                          (25 * Real.pi ^ (2 : ℕ)
                             * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y))) := by
   have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   obtain ⟨C, hC0, hCb⟩ := GaloisForLFunctions.HTGeometry.exists_bound_mellin_smoothWeight_line

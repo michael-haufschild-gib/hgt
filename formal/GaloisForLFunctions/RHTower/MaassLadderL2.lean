@@ -87,7 +87,7 @@ theorem firstLowered_continuous : Continuous (firstLowered N f) := by
 
 /-- The actual first ladder pair retains exactly twice the full hyperbolic gradient energy. -/
 theorem firstLadder_energy (z : ℍ) :
-    ‖firstRaised N f z‖ ^ 2 + ‖firstLowered N f z‖ ^ 2 = 2 * hyperbolicGradient N f z := by
+    ‖firstRaised N f z‖ ^ (2 : ℕ) + ‖firstLowered N f z‖ ^ (2 : ℕ) = 2 * hyperbolicGradient N f z := by
   have hn (u v : EuclideanSpace ℂ (Deck N)) : -u - v = -(u + v) := by abel
   rw [firstRaised_eq, firstLowered_eq, hn, norm_neg, add_comm,
     parallelogram_law_with_norm ℂ]
@@ -127,7 +127,7 @@ def firstLoweredLp : Lp (EuclideanSpace ℂ (Deck N)) 2 cellMeasure :=
   (firstLowered_memLp N lam f).toLp (firstLowered N f)
 
 private theorem norm_toLp_sq {v : ℍ → EuclideanSpace ℂ (Deck N)} (h : MemLp v 2 cellMeasure) :
-    ‖h.toLp v‖ ^ 2 = ∫ z in fd, ‖v z‖ ^ 2 ∂volume := by
+    ‖h.toLp v‖ ^ (2 : ℕ) = ∫ z in fd, ‖v z‖ ^ (2 : ℕ) ∂volume := by
   rw [@norm_sq_eq_re_inner ℂ, L2.inner_def,
     ← integral_re (L2.integrable_inner (h.toLp v) (h.toLp v))]
   apply integral_congr_ae
@@ -136,8 +136,8 @@ private theorem norm_toLp_sq {v : ℍ → EuclideanSpace ℂ (Deck N)} (h : MemL
 
 /-- Exact first-order Hilbert energy, with source norm and cusp boundary terms discharged. -/
 theorem firstLadderLp_energy :
-    ‖firstRaisedLp N lam f‖ ^ 2 + ‖firstLoweredLp N lam f‖ ^ 2 =
-      2 * lam.1 * ‖sourceLp N f‖ ^ 2 := by
+    ‖firstRaisedLp N lam f‖ ^ (2 : ℕ) + ‖firstLoweredLp N lam f‖ ^ (2 : ℕ) =
+      2 * lam.1 * ‖sourceLp N f‖ ^ (2 : ℕ) := by
   have hR := (memLp_two_iff_integrable_sq_norm
     (firstRaised_continuous N f).aestronglyMeasurable).mp (firstRaised_memLp N lam f)
   have hL := (memLp_two_iff_integrable_sq_norm

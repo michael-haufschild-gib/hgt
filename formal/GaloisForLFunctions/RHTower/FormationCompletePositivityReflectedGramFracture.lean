@@ -17,7 +17,7 @@ namespace RHTower
 noncomputable section
 
 def formationDiagonalEnergy {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) : ℝ :=
-  ∑ i, (Real.sqrt (w i) * x i) ^ 2
+  ∑ i, (Real.sqrt (w i) * x i) ^ (2 : ℕ)
 
 def formationCodiagonalResponse {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) : ℝ :=
   ∑ i, Real.sqrt (w i) * x i
@@ -31,13 +31,13 @@ def formationReflectedGramMinus {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ
 theorem reservoirWeightedForm_eq_formationGramDefect
     {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) :
     reservoirWeightedForm w x =
-      formationDiagonalEnergy w x - formationCodiagonalResponse w x ^ 2 := by
+      formationDiagonalEnergy w x - formationCodiagonalResponse w x ^ (2 : ℕ) := by
   rw [reservoirWeightedForm, QuadraticMap.comp_apply, reservoirBaseForm_apply]
   rfl
 
 theorem formationReflectedGramMinus_eq_sq
     {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) :
-    formationReflectedGramMinus w x = formationCodiagonalResponse w x ^ 2 := by
+    formationReflectedGramMinus w x = formationCodiagonalResponse w x ^ (2 : ℕ) := by
   rw [formationReflectedGramMinus, reservoirWeightedForm_eq_formationGramDefect]
   ring
 
@@ -50,7 +50,7 @@ theorem formationReflectedGramMinus_nonneg
 theorem formationReflectedGramPlus_eq
     {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) :
     formationReflectedGramPlus w x =
-      2 * formationDiagonalEnergy w x - formationCodiagonalResponse w x ^ 2 := by
+      2 * formationDiagonalEnergy w x - formationCodiagonalResponse w x ^ (2 : ℕ) := by
   rw [formationReflectedGramPlus, reservoirWeightedForm_eq_formationGramDefect]
   ring
 
@@ -72,7 +72,7 @@ theorem formationReflectedGramPlus_sub_minus
 
 theorem formationCodiagonalResponse_sq_le_card_mul_diagonalEnergy
     {m : ℕ} (w : Fin m → ℝ) (x : Fin m → ℝ) :
-    formationCodiagonalResponse w x ^ 2 ≤
+    formationCodiagonalResponse w x ^ (2 : ℕ) ≤
       (m : ℝ) * formationDiagonalEnergy w x := by
   simpa [formationCodiagonalResponse, formationDiagonalEnergy] using
     (sq_sum_le_card_mul_sum_sq

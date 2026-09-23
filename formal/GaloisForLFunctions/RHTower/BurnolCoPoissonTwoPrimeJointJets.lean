@@ -31,7 +31,7 @@ theorem burnolWindowCompletedTopJet_double {L : ℝ} (hL : 0 < L)
   rw [iteratedDeriv_burnolCoPoissonExpWindowCompletedEvaluation_eq (by positivity),
     iteratedDeriv_burnolCoPoissonExpWindowCompletedEvaluation_eq hL]
   have he : Complex.exp (((2 * L : ℝ) : ℂ) * (rho : ℂ)) =
-      Complex.exp ((L : ℂ) * (rho : ℂ)) ^ 2 := by
+      Complex.exp ((L : ℂ) * (rho : ℂ)) ^ (2 : ℕ) := by
     push_cast
     rw [show (2 : ℂ) * L * (rho : ℂ) = (L : ℂ) * (rho : ℂ) + L * (rho : ℂ) by ring,
       Complex.exp_add, pow_two]
@@ -47,7 +47,7 @@ theorem burnolWindowFourierCompletedTopJet_double {L : ℝ} (hL : 0 < L)
   rw [iteratedDeriv_burnolCoPoissonReciprocalWindowCompletedEvaluation (by positivity) rho le_rfl,
     iteratedDeriv_burnolCoPoissonReciprocalWindowCompletedEvaluation hL rho le_rfl]
   have he : Complex.exp (((2 * L : ℝ) : ℂ) * (1 - (rho : ℂ))) =
-      Complex.exp ((L : ℂ) * (1 - (rho : ℂ))) ^ 2 := by
+      Complex.exp ((L : ℂ) * (1 - (rho : ℂ))) ^ (2 : ℕ) := by
     push_cast
     rw [show (2 : ℂ) * L * (1 - (rho : ℂ)) =
       (L : ℂ) * (1 - (rho : ℂ)) + L * (1 - (rho : ℂ)) by ring,

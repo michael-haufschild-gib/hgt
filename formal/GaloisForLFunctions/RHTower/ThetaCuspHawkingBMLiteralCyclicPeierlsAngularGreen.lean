@@ -21,6 +21,9 @@ namespace RHTower.D4BMLiteralCyclicPeierlsAngularGreen
 open GaloisForLFunctions.HTGeometry
 open D4BMHorizon D4BMModularCore D4BMJointSource
 open D4BMFullAngularCircle D4BMOriginalOrbitCurrent
+open GaloisForLFunctions.RHTower
+open SelbergMaassMean SelbergModularDomainSlices
+open scoped ContDiff
 
 noncomputable section
 set_option autoImplicit false
@@ -58,9 +61,11 @@ private theorem fullAngularPhysicalField_smooth (q : XiZeroCopy) (branch : Bool)
   have hp := angularProjection_slice p R z
   change ContDiffAt ℝ ∞ (fullAngularField q branch ∘ angularProjection)
     (physicalSlice p R z)
-  rw [hp]
-  exact (fullAngularField_smooth q branch ![z.re, z.im] hz).comp _
-    (angularProjection_smooth _)
+  have hf : ContDiffAt ℝ ∞ (fullAngularField q branch)
+      (angularProjection (physicalSlice p R z)) := by
+    rw [hp]
+    exact fullAngularField_smooth q branch ![z.re, z.im] hz
+  exact hf.comp _ (angularProjection_smooth _)
 
 private theorem fullSquarePhysicalField_smooth (q : XiZeroCopy) (p R : ℝ)
     (z : ℂ) (hz : 0 < z.im) :
@@ -70,9 +75,11 @@ private theorem fullSquarePhysicalField_smooth (q : XiZeroCopy) (p R : ℝ)
   intro n
   change ContDiffAt ℝ n (fullSquarePotential q ∘ angularProjection)
     (physicalSlice p R z)
-  rw [hp]
-  exact (fullSquarePotential_smooth q ![z.re, z.im] hz n).comp _
-    (angularProjection_smooth _).of_le le_top
+  have hf : ContDiffAt ℝ n (fullSquarePotential q)
+      (angularProjection (physicalSlice p R z)) := by
+    rw [hp]
+    exact fullSquarePotential_smooth q ![z.re, z.im] hz n
+  exact hf.comp _ ((angularProjection_smooth _).of_le (by exact_mod_cast le_top))
 
 private theorem leftReaderPhysicalField_smooth (reader : XiZeroCopy) (p R : ℝ)
     (z : ℂ) (hz : 0 < z.im) :
@@ -83,9 +90,12 @@ private theorem leftReaderPhysicalField_smooth (reader : XiZeroCopy) (p R : ℝ)
   change ContDiffAt ℝ n
     (D4BMLiteralCusp.scalar (physicalAngularParameter reader) ∘ angularProjection)
       (physicalSlice p R z)
-  rw [hp]
-  exact (D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) n
-    ![z.re, z.im] hz).comp _ (angularProjection_smooth _).of_le le_top
+  have hf : ContDiffAt ℝ n (D4BMLiteralCusp.scalar (physicalAngularParameter reader))
+      (angularProjection (physicalSlice p R z)) := by
+    rw [hp]
+    exact D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) n
+      ![z.re, z.im] hz
+  exact hf.comp _ ((angularProjection_smooth _).of_le (by exact_mod_cast le_top))
 
 /-- Exact finite modular Green identity for the actual full angular response
 against the independent left reader. -/

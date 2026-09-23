@@ -43,7 +43,7 @@ theorem towerWeight_lt (w : ℕ → ℕ) (hw : ∀ j, 0 < w j) {a b : ℕ} (h : 
         have : (0 : ℤ) < (w (a + 1) : ℤ) := by exact_mod_cast hw (a + 1)
         omega
 
-theorem towerMonomial_ne_zero (k : ℕ) : towerMonomial k ≠ 0 := by
+theorem towerMonomial_ne_zero_towerWeightedDegree (k : ℕ) : towerMonomial k ≠ 0 := by
   rw [towerMonomial]
   exact Finset.prod_ne_zero_iff.mpr fun i _ => MvPolynomial.X_ne_zero i
 
@@ -65,7 +65,7 @@ theorem wdeg_towerSum (w : ℕ → ℕ) (hw : ∀ j, 0 < w j) (m : ℕ) :
   classical
   rw [towerSum]
   rw [(isDegree_wdeg w).map_sum_of_unique_max (Finset.self_mem_range_succ m)
-    (towerMonomial_ne_zero m) ?_]
+    (towerMonomial_ne_zero_towerWeightedDegree m) ?_]
   · exact wdeg_towerMonomial w m
   · intro k hk hkm
     have hlt : k < m := by

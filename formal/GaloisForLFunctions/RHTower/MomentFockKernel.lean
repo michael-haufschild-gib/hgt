@@ -78,7 +78,7 @@ theorem momentFockKernelValue_eq_tsum
   rw [map_div₀, map_pow, starRingEnd_self_apply]
   have hstar : (starRingEnd ℂ) (Real.sqrt (d.weight n) : ℂ) =
       (Real.sqrt (d.weight n) : ℂ) := by simp
-  have hsquare : (Real.sqrt (d.weight n) : ℂ) ^ 2 = (d.weight n : ℂ) := by
+  have hsquare : (Real.sqrt (d.weight n) : ℂ) ^ (2 : ℕ) = (d.weight n : ℂ) := by
     exact_mod_cast Real.sq_sqrt (d.weight_pos n).le
   have hweight : (d.weight n : ℂ) ≠ 0 := by
     exact_mod_cast (d.weight_pos n).ne'

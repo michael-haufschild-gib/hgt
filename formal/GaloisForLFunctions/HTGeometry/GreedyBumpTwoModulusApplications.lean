@@ -45,7 +45,7 @@ theorem greedyBumpTwoModulusFlux_localizationRadius
         (greedyBumpLocalizationCovariance Q
             (greedyBumpTwoModulusFluxMetric logB logQ logM logN x y) *
           (greedyBumpTwoModulusFluxMetric logB logQ logM logN x y).matrix) =
-      2 / (Q : ℝ) ^ 2 := by
+      2 / (Q : ℝ) ^ (2 : ℕ) := by
   exact greedyBumpLocalizationCovariance_trace_mul Q _
 
 /-- The two-modulus trials-factor logarithm has slope `2/Q`. -/

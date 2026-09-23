@@ -353,7 +353,7 @@ theorem routeUHardEdgeAntipodalPolynomial_oddChannel (P : Polynomial ℝ) :
 /-- Physical hard-edge inversion is the antipodal map in the Cayley chart. -/
 theorem xiHardEdgeCayleyCoordinate_inversion
     {a x : ℝ} (ha : a ≠ 0) (hx : x ≠ 0) :
-    xiHardEdgeCayleyCoordinate (a : ℂ) ((a ^ 2 / x : ℝ) : ℂ) =
+    xiHardEdgeCayleyCoordinate (a : ℂ) ((a ^ (2 : ℕ) / x : ℝ) : ℂ) =
       -xiHardEdgeCayleyCoordinate (a : ℂ) (x : ℂ) := by
   rw [xiHardEdgeCayleyCoordinate, xiHardEdgeCayleyCoordinate]
   push_cast
@@ -364,17 +364,17 @@ theorem xiHardEdgeCayleyCoordinate_inversion
 /-- Degree-free Cauchy density transforms with the exact inversion Jacobian. -/
 theorem routeUHardEdgeCauchyDensity_antipodal_inversion
     {a x : ℝ} (ha : a ≠ 0) (hx : x ≠ 0) (P : Polynomial ℝ) :
-    x ^ 2 * routeUHardEdgeCauchyDensity a
+    x ^ (2 : ℕ) * routeUHardEdgeCauchyDensity a
         (routeUHardEdgeAntipodalPolynomial P) x =
-      a ^ 2 * routeUHardEdgeCauchyDensity a P (a ^ 2 / x) := by
+      a ^ (2 : ℕ) * routeUHardEdgeCauchyDensity a P (a ^ (2 : ℕ) / x) := by
   rw [routeUHardEdgeCauchyDensity, routeUHardEdgeCauchyDensity,
     eval_routeUHardEdgeAntipodalPolynomial]
-  have hleft : a ^ 2 + x ^ 2 ≠ 0 := by positivity
-  have hinv : a ^ 2 + (a ^ 2 / x) ^ 2 ≠ 0 := by positivity
+  have hleft : a ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by positivity
+  have hinv : a ^ (2 : ℕ) + (a ^ (2 : ℕ) / x) ^ (2 : ℕ) ≠ 0 := by positivity
   have hcoord :
-      -((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2)) =
-        (a ^ 2 - (a ^ 2 / x) ^ 2) /
-          (a ^ 2 + (a ^ 2 / x) ^ 2) := by
+      -((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) =
+        (a ^ (2 : ℕ) - (a ^ (2 : ℕ) / x) ^ (2 : ℕ)) /
+          (a ^ (2 : ℕ) + (a ^ (2 : ℕ) / x) ^ (2 : ℕ)) := by
     field_simp [ha, hx]
     ring
   rw [hcoord]
@@ -431,9 +431,9 @@ theorem ofFn_routeUHardEdgeCommonAntipodalCoefficients
 
 theorem routeUHardEdgeCommonFullQuadratic_eq_trace_re
     (a : ℝ) (P Q : Polynomial ℝ) :
-    xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonFullCoefficients a P Q) =
-      (xiShiftedReciprocalTraceHankel (a ^ 2)
+      (xiShiftedReciprocalTraceHankel (a ^ (2 : ℕ))
         (xiHardEdgeReciprocalPolynomial a (P + Q))).re := by
   have htrace := xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
     (sq_nonneg a) 0 (routeUHardEdgeCommonLiftDegree a P Q + 1)
@@ -446,9 +446,9 @@ theorem routeUHardEdgeCommonFullQuadratic_eq_trace_re
 
 theorem routeUHardEdgeCommonAntipodalQuadratic_eq_trace_re
     (a : ℝ) (P Q : Polynomial ℝ) :
-    xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonAntipodalCoefficients a P Q) =
-      (xiShiftedReciprocalTraceHankel (a ^ 2)
+      (xiShiftedReciprocalTraceHankel (a ^ (2 : ℕ))
         (xiHardEdgeReciprocalPolynomial a (P - Q))).re := by
   have htrace := xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
     (sq_nonneg a) 0 (routeUHardEdgeCommonLiftDegree a P Q + 1)
@@ -461,9 +461,9 @@ theorem routeUHardEdgeCommonAntipodalQuadratic_eq_trace_re
 
 theorem routeUHardEdgeLiftQuadratic_eq_trace_re
     (a : ℝ) (P : Polynomial ℝ) :
-    xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (xiHardEdgeLiftCoefficients a P) =
-      (xiShiftedReciprocalTraceHankel (a ^ 2)
+      (xiShiftedReciprocalTraceHankel (a ^ (2 : ℕ))
         (xiHardEdgeReciprocalPolynomial a P)).re := by
   have htrace := xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
     (sq_nonneg a) 0 (xiHardEdgeLiftSize a P)
@@ -477,14 +477,14 @@ theorem routeUHardEdgeLiftQuadratic_eq_trace_re
 /-- Full common-filter source capital of two polynomial channels. -/
 def routeUHardEdgeCommonFullPrimeGammaCapital
     (a : RouteUPositiveHardEdgeMass) (P Q : Polynomial ℝ) : ℝ :=
-  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ 2)
+  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ (2 : ℕ))
     (routeUHardEdgeCommonLiftDegree a.1 P Q)
     (routeUHardEdgeCommonFullCoefficients a.1 P Q)
 
 /-- Polarized cross capital between two common-filter polynomial channels. -/
 def routeUHardEdgeCommonCrossPrimeGammaCapital
     (a : RouteUPositiveHardEdgeMass) (P Q : Polynomial ℝ) : ℝ :=
-  routeUShiftedFilteredCompletedSourceCrossCapital (a.1 ^ 2)
+  routeUShiftedFilteredCompletedSourceCrossCapital (a.1 ^ (2 : ℕ))
     (routeUHardEdgeCommonLiftDegree a.1 P Q)
     (routeUHardEdgeCommonLeftCoefficients a.1 P Q)
     (routeUHardEdgeCommonRightCoefficients a.1 P Q)
@@ -494,7 +494,7 @@ theorem routeUHardEdgeCommonFullPrimeGammaCapital_eq
     routeUHardEdgeCommonFullPrimeGammaCapital a P Q =
       Real.pi *
           ((2 * routeUHardEdgeCommonLiftDegree a.1 P Q).factorial : ℝ) *
-        xiShiftedReciprocalHankelQuadratic (a.1 ^ 2)
+        xiShiftedReciprocalHankelQuadratic (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonFullCoefficients a.1 P Q) := by
   exact routeUShiftedFilteredCompletedSourceCapital_eq_hankelQuadratic
     (sq_pos_of_pos a.2) _ _
@@ -504,7 +504,7 @@ theorem routeUHardEdgeCommonCrossPrimeGammaCapital_eq
     routeUHardEdgeCommonCrossPrimeGammaCapital a P Q =
       Real.pi *
           ((2 * routeUHardEdgeCommonLiftDegree a.1 P Q).factorial : ℝ) *
-        xiShiftedReciprocalHankelBilinear (a.1 ^ 2)
+        xiShiftedReciprocalHankelBilinear (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLeftCoefficients a.1 P Q)
           (routeUHardEdgeCommonRightCoefficients a.1 P Q) := by
   exact routeUShiftedFilteredCompletedSourceCrossCapital_eq
@@ -526,30 +526,30 @@ theorem exists_routeUHardEdgeCommonPolarizedPrimeGammaAnomaly_of_fullCapital_neg
     (hneg : routeUHardEdgeCommonFullPrimeGammaCapital a P Q < 0) :
     (routeUHardEdgeCommonLeftPrimeGammaCapital a P Q < 0 ∧
       ∃ t : {τ : ℝ // 0 < τ},
-        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 P Q)
           (routeUHardEdgeCommonLeftCoefficients a.1 P Q) t < 0) ∨
     (routeUHardEdgeCommonRightPrimeGammaCapital a P Q < 0 ∧
       ∃ t : {τ : ℝ // 0 < τ},
-        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 P Q)
           (routeUHardEdgeCommonRightCoefficients a.1 P Q) t < 0) ∨
     (routeUHardEdgeCommonCrossPrimeGammaCapital a P Q < 0 ∧
       ∃ t : {τ : ℝ // 0 < τ},
-        routeUShiftedCompletedPrimeGammaCrossBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaCrossBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 P Q)
           (routeUHardEdgeCommonLeftCoefficients a.1 P Q)
           (routeUHardEdgeCommonRightCoefficients a.1 P Q) t < 0) := by
   rcases routeUHardEdgeCommonFullCapital_neg_trichotomy a P Q hneg with hc | he | hce
   · exact Or.inl ⟨hc,
       exists_routeUShiftedCompletedPrimeGammaBalance_neg_of_capital_neg
-        (a.1 ^ 2) _ _ hc⟩
+        (a.1 ^ (2 : ℕ)) _ _ hc⟩
   · exact Or.inr (Or.inl ⟨he,
       exists_routeUShiftedCompletedPrimeGammaBalance_neg_of_capital_neg
-        (a.1 ^ 2) _ _ he⟩)
+        (a.1 ^ (2 : ℕ)) _ _ he⟩)
   · exact Or.inr (Or.inr ⟨hce,
       exists_routeUShiftedCompletedPrimeGammaCrossBalance_neg_of_crossCapital_neg
-        (a.1 ^ 2) _ _ _ hce⟩)
+        (a.1 ^ (2 : ℕ)) _ _ _ hce⟩)
 
 /-- Actual even source polynomial of the cofinal explicit Route-U packet. -/
 def routeUExplicitAntipodalEvenSourcePolynomial
@@ -581,7 +581,7 @@ theorem routeUExplicitAntipodalChannels_difference
 theorem routeUExplicitAntipodalFullQuadratic_eq_explicitQuadratic
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n k : ℕ) :
     xiShiftedReciprocalHankelQuadratic
-        (routeUHardEdgeMass (k : ℝ) ^ 2)
+        (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
         (routeUHardEdgeCommonFullCoefficients
           (routeUHardEdgeMass (k : ℝ))
           (routeUExplicitAntipodalEvenSourcePolynomial P t n k)
@@ -598,11 +598,11 @@ theorem routeUExplicitAntipodalFullQuadratic_eq_explicitQuadratic
     exact routeUExplicitAntipodalChannels_sum P t n k
   rw [hsum] at hfull
   change xiShiftedReciprocalHankelQuadratic
-      (routeUHardEdgeMass (k : ℝ) ^ 2)
+      (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       (routeUHardEdgeCommonFullCoefficients
         (routeUHardEdgeMass (k : ℝ)) evenPacket oddPacket) =
     xiShiftedReciprocalHankelQuadratic
-      (routeUHardEdgeMass (k : ℝ) ^ 2)
+      (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ)) packet)
   exact hfull.trans horiginal.symm
 
@@ -635,17 +635,17 @@ def RouteUExplicitAntipodalPrimeGammaAlternative
   let O := routeUExplicitAntipodalOddSourcePolynomial P t n k
   (routeUHardEdgeCommonLeftPrimeGammaCapital a E O < 0 ∧
       ∃ s : {σ : ℝ // 0 < σ},
-        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 E O)
           (routeUHardEdgeCommonLeftCoefficients a.1 E O) s < 0) ∨
     (routeUHardEdgeCommonRightPrimeGammaCapital a E O < 0 ∧
       ∃ s : {σ : ℝ // 0 < σ},
-        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 E O)
           (routeUHardEdgeCommonRightCoefficients a.1 E O) s < 0) ∨
     (routeUHardEdgeCommonCrossPrimeGammaCapital a E O < 0 ∧
       ∃ s : {σ : ℝ // 0 < σ},
-        routeUShiftedCompletedPrimeGammaCrossBalance (a.1 ^ 2)
+        routeUShiftedCompletedPrimeGammaCrossBalance (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLiftDegree a.1 E O)
           (routeUHardEdgeCommonLeftCoefficients a.1 E O)
           (routeUHardEdgeCommonRightCoefficients a.1 E O) s < 0)
@@ -665,10 +665,10 @@ def XiShiftedHardEdgeCofinalPrimeGammaPolarizationPhase : Prop :=
     ∀ k : ℕ, K ≤ k →
       routeUExplicitAntipodalFullPrimeGammaCapital P t n k < 0 ∧
       RouteUExplicitAntipodalPrimeGammaAlternative P t n k ∧
-      routeUHardEdgeMass (k : ℝ) ^ 2 <
+      routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) <
         routeUParabolicDegreeHorizon *
           (routeUExplicitFiniteHankelSize n k
-            (routeUXiHeatPhysicalReal P t) : ℝ) ^ 2 ∧
+            (routeUXiHeatPhysicalReal P t) : ℝ) ^ (2 : ℕ) ∧
       routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) ≤
         (n + 1) * (k + 1) + 2
 

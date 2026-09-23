@@ -41,7 +41,7 @@ theorem norm_suzukiHalfInner_ofReal_le_one (x : ℝ) : ‖suzukiHalfInner (x : �
 /-- **The boundary energy identity.**  On the real axis `|A/E|² = Re(A/E)`, the analytic form
 of `|Θ| = 1`. -/
 theorem norm_sq_suzukiHalfInner_ofReal (x : ℝ) :
-    ‖suzukiHalfInner (x : ℂ)‖ ^ 2 = (suzukiHalfInner (x : ℂ)).re := by
+    ‖suzukiHalfInner (x : ℂ)‖ ^ (2 : ℕ) = (suzukiHalfInner (x : ℂ)).re := by
   have hA : XiC (x : ℂ) = (((XiC (x : ℂ)).re : ℝ) : ℂ) := by
     apply Complex.ext <;> simp [XiC_ofReal_im]
   have hD : deriv XiC (x : ℂ) = (((deriv XiC (x : ℂ)).re : ℝ) : ℂ) := by

@@ -30,7 +30,7 @@ private theorem mass_continuousOn (N : ℕ) {lam : ℝ}
 
 private theorem hyperbolicMass_continuousOn (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) :
-    ContinuousOn (fun y => mass N f y / y ^ 2) (Ioi 0) :=
+    ContinuousOn (fun y => mass N f y / y ^ (2 : ℕ)) (Ioi 0) :=
   (mass_continuousOn N f).div (continuous_id.pow 2).continuousOn
     (fun _ hy => (sq_pos_of_pos hy).ne')
 
@@ -71,15 +71,15 @@ private theorem extend_integrable_tail {g : ℝ → ℝ} (hc : ContinuousOn g (I
 private theorem mass_cutoff_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ)) :
     IntegrableOn (mass N f) (Ioi (cutoff N)) := by
-  have hi := (flux_deriv_integrable N lam f).const_mul (2 / rate N ^ 2)
+  have hi := (flux_deriv_integrable N lam f).const_mul (2 / rate N ^ (2 : ℕ))
   apply hi.mono' (((mass_continuousOn N f).mono
     (Ioi_subset_Ioi (cutoff_pos N).le)).aestronglyMeasurable measurableSet_Ioi)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
   rw [Real.norm_eq_abs, abs_of_nonneg (mass_nonneg N f ((cutoff_pos N).trans hy))]
   calc
-    mass N f y = (2 / rate N ^ 2) * (rate N ^ 2 / 2 * mass N f y) := by
+    mass N f y = (2 / rate N ^ (2 : ℕ)) * (rate N ^ (2 : ℕ) / 2 * mass N f y) := by
       field_simp [(rate_pos N).ne']
-    _ ≤ (2 / rate N ^ 2) * deriv (flux N f) y :=
+    _ ≤ (2 / rate N ^ (2 : ℕ)) * deriv (flux N f) y :=
       mul_le_mul_of_nonneg_left (flux_deriv_lower N lam f hy.le) (by positivity)
 
 /-- Actual exceptional Maass mass is integrable above every positive height. -/
@@ -91,19 +91,19 @@ theorem mass_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 /-- Actual hyperbolic cusp mass is finite above every positive height. -/
 theorem hyperbolicMass_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
-    {Y : ℝ} (hY : 0 < Y) : IntegrableOn (fun y => mass N f y / y ^ 2) (Ioi Y) := by
-  have hi := (mass_tail_integrable N lam f hY).const_mul (1 / Y ^ 2)
+    {Y : ℝ} (hY : 0 < Y) : IntegrableOn (fun y => mass N f y / y ^ (2 : ℕ)) (Ioi Y) := by
+  have hi := (mass_tail_integrable N lam f hY).const_mul (1 / Y ^ (2 : ℕ))
   apply hi.mono' (((hyperbolicMass_continuousOn N f).mono
     (Ioi_subset_Ioi hY.le)).aestronglyMeasurable measurableSet_Ioi)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
   have hmass := mass_nonneg N f (hY.trans hy)
   rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg hmass (sq_nonneg _))]
   calc
-    mass N f y / y ^ 2 ≤ mass N f y / Y ^ 2 := by
+    mass N f y / y ^ (2 : ℕ) ≤ mass N f y / Y ^ (2 : ℕ) := by
       apply div_le_div_of_nonneg_left hmass (sq_pos_of_pos hY)
       have hYy : Y ≤ y := hy.le
       nlinarith [sq_nonneg (y - Y), mul_nonneg hY.le (sub_nonneg.mpr hYy)]
-    _ = (1 / Y ^ 2) * mass N f y := by ring
+    _ = (1 / Y ^ (2 : ℕ)) * mass N f y := by ring
 
 /-- The actual flux derivative is integrable above every positive height. -/
 theorem flux_deriv_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
@@ -140,7 +140,7 @@ theorem quarterSlice_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
       ((N + 1 : ℕ) : ℝ)).congr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
   have h := quarterSlice_eq_flux_deriv N f (hY.trans hy)
-  have he : deriv (flux N f) y + ((lam : ℝ) - 1 / 4) * (mass N f y / y ^ 2) =
+  have he : deriv (flux N f) y + ((lam : ℝ) - 1 / 4) * (mass N f y / y ^ (2 : ℕ)) =
       ((N + 1 : ℕ) : ℝ)⁻¹ * quarterSlice N f y := by
     rw [h]
     ring
@@ -154,9 +154,9 @@ theorem gradientEnergy_tail_identity (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {Y : ℝ} (hY : 0 < Y) :
     ∫ y in Ioi Y, gradientEnergy N f y =
-      -flux N f Y + (lam : ℝ) * ∫ y in Ioi Y, mass N f y / y ^ 2 := by
+      -flux N f Y + (lam : ℝ) * ∫ y in Ioi Y, mass N f y / y ^ (2 : ℕ) := by
   have he : ∀ᵐ y ∂volume.restrict (Ioi Y), gradientEnergy N f y =
-      deriv (flux N f) y + (lam : ℝ) * (mass N f y / y ^ 2) := by
+      deriv (flux N f) y + (lam : ℝ) * (mass N f y / y ^ (2 : ℕ)) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
     rw [(flux_hasDerivAt N f (hY.trans hy)).deriv]
     ring
@@ -169,10 +169,10 @@ theorem quarterSlice_tail_identity (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {Y : ℝ} (hY : 0 < Y) :
     ((N + 1 : ℕ) : ℝ)⁻¹ * ∫ y in Ioi Y, quarterSlice N f y =
-      -flux N f Y + ((lam : ℝ) - 1 / 4) * ∫ y in Ioi Y, mass N f y / y ^ 2 := by
+      -flux N f Y + ((lam : ℝ) - 1 / 4) * ∫ y in Ioi Y, mass N f y / y ^ (2 : ℕ) := by
   have he : ∀ᵐ y ∂volume.restrict (Ioi Y),
       ((N + 1 : ℕ) : ℝ)⁻¹ * quarterSlice N f y =
-      deriv (flux N f) y + ((lam : ℝ) - 1 / 4) * (mass N f y / y ^ 2) := by
+      deriv (flux N f) y + ((lam : ℝ) - 1 / 4) * (mass N f y / y ^ (2 : ℕ)) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
     rw [quarterSlice_eq_flux_deriv N f (hY.trans hy)]
     ring

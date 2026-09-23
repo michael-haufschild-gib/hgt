@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiGaussianHeatTuranDefect
 The polynomial-square Gaussian criterion and the Turán minor are the same object read at
 different orders.  Expanding a real polynomial in the monomial basis turns
 
-`T(P,t) = sum_q (P (w q))^2 exp (-t * w q)`,   `w q = xiSpectralPoint q ^ 2`,
+`T(P,t) = sum_q (P (w q))^(2 : ℕ) exp (-t * w q)`,   `w q = xiSpectralPoint q ^ (2 : ℕ)`,
 
 into the quadratic form of the Hankel matrix built from the Gaussian-damped moments
 `M n t = sum_q (w q)^n exp (-t * w q)`:
@@ -15,7 +15,7 @@ into the quadratic form of the Hankel matrix built from the Gaussian-damped mome
 
 Hence RH is exactly positive semidefiniteness of `(M (j+k) t)_(j,k)` — an explicit real symmetric
 matrix whose entries are, through the Weil explicit formula with the Hermite test functions
-`u^(2n) exp (-t u^2)`, absolutely convergent Gaussian-damped von Mangoldt sums plus archimedean
+`u^(2n) exp (-t u^(2 : ℕ))`, absolutely convergent Gaussian-damped von Mangoldt sums plus archimedean
 terms.  The leading minors give a ladder of source inequalities, each strictly weaker than RH:
 order one is the plain heat trace, order two is the Turán minor of
 `XiGaussianHeatTuranDefect`, and the conjunction over all orders is RH.
@@ -51,7 +51,7 @@ theorem xiPolynomialGaussianHeatTrace_rangeSum {t : ℝ} (ht : 0 < t) (N : ℕ) 
           (∑ j ∈ Finset.range N, Polynomial.C (a j) * Polynomial.X ^ j) t q =
         ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range N,
           ((a j : ℂ) * (a k : ℂ)) *
-            ((xiSpectralPoint q ^ 2) ^ (j + k) * xiGaussianHeatTerm t q) := by
+            ((xiSpectralPoint q ^ (2 : ℕ)) ^ (j + k) * xiGaussianHeatTerm t q) := by
     intro q
     rw [xiPolynomialGaussianHeatTerm, evalRealPolynomial_rangeSum, pow_two,
       Finset.sum_mul_sum, Finset.sum_mul]
@@ -148,7 +148,7 @@ theorem xiHeatTuranDefect_nonneg_of_forall_xiHeatHankelForm
     norm_num
   · have hkey := hquad (-M1) M0
     have hexpand : (-M1) * (-M1) * M0 + 2 * ((-M1) * M0) * M1 + M0 * M0 * M2 =
-        M0 * (M0 * M2 - M1 ^ 2) := by ring
+        M0 * (M0 * M2 - M1 ^ (2 : ℕ)) := by ring
     rw [hexpand] at hkey
     have := nonneg_of_mul_nonneg_right hkey hpos
     rw [xiHeatTuranDefect, ← hM0, ← hM1, ← hM2]

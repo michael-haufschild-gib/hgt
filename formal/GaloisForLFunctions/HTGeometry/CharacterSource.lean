@@ -69,7 +69,7 @@ theorem norm_characterSource_le {u : ℕ → ℂ} (hu : ∀ p : ℕ, Nat.Prime p
 /-- **Locality of the source.**  Changing the phases at primes whose square exceeds `y` changes the
 source only at those primes, as far as `y`. -/
 theorem characterSource_update {u c : ℕ → ℂ} {S : Finset ℕ} {y : ℝ}
-    (hS : ∀ q ∈ S, Nat.Prime q) (hSy : ∀ q ∈ S, y < (q : ℝ) ^ 2)
+    (hS : ∀ q ∈ S, Nat.Prime q) (hSy : ∀ q ∈ S, y < (q : ℝ) ^ (2 : ℕ))
     {n : ℕ} (hn : (n : ℝ) ≤ y) :
     characterSource (fun m => if m ∈ S then c m else u m) n
       = if n ∈ S then c n * ((Real.log n : ℝ) : ℂ) else characterSource u n := by
@@ -89,8 +89,8 @@ theorem characterSource_update {u c : ℕ → ℂ} {S : Finset ℕ} {y : ℝ}
         by_cases hprime : Nat.Prime n
         · rw [Nat.Prime.minFac_eq hprime] at hmf
           exact hmem hmf
-        · have hsq : n.minFac ^ 2 ≤ n := Nat.minFac_sq_le_self hnpos hprime
-          have hsqR : ((n.minFac : ℝ)) ^ 2 ≤ (n : ℝ) := by exact_mod_cast hsq
+        · have hsq : n.minFac ^ (2 : ℕ) ≤ n := Nat.minFac_sq_le_self hnpos hprime
+          have hsqR : ((n.minFac : ℝ)) ^ (2 : ℕ) ≤ (n : ℝ) := by exact_mod_cast hsq
           have := hSy _ hmf
           linarith
       rw [characterSource, characterSource, if_neg hminfac]

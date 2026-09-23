@@ -34,7 +34,7 @@ def separableCounterterms : Submodule ℚ (Polynomial ℚ) :=
   Submodule.span ℚ ({(1 : Polynomial ℚ), seamCutoff} : Set (Polynomial ℚ))
 
 /-- The first weld-visible quadratic term. -/
-def quadraticWeldTerm : Polynomial ℚ := seamCutoff ^ 2
+def quadraticWeldTerm : Polynomial ℚ := seamCutoff ^ (2 : ℕ)
 
 /-- Every separable counterterm has zero quadratic coefficient. -/
 lemma coeff_two_of_mem_separableCounterterms {P : Polynomial ℚ}

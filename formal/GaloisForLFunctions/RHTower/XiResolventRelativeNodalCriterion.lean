@@ -32,10 +32,10 @@ theorem xiPolyMoment_mul_eq_tsum_subtype_of_kill {X δ : ℝ}
     xiPolyMoment (p * P) k X =
       ∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
         xiResolventPoint X (q : XiZeroCopy) ^ (k + 1) *
-          evalRealPolynomial (p * P) (xiResolventPoint X (q : XiZeroCopy)) ^ 2 := by
+          evalRealPolynomial (p * P) (xiResolventPoint X (q : XiZeroCopy)) ^ (2 : ℕ) := by
   rw [show xiPolyMoment (p * P) k X = ∑' q : XiZeroCopy,
     xiResolventPoint X q ^ (k + 1) *
-      evalRealPolynomial (p * P) (xiResolventPoint X q) ^ 2 from rfl]
+      evalRealPolynomial (p * P) (xiResolventPoint X q) ^ (2 : ℕ) from rfl]
   refine (tsum_subtype_eq_of_support_subset ?_).symm
   intro q hq
   rw [Function.mem_support] at hq
@@ -76,7 +76,7 @@ theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX 
     (hdata : ∀ R : Finset ℝ, (∀ r ∈ R, 0 < r ∧ r ≤ 1) → ∀ m : ℕ,
       0 ≤ (xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 0 X *
         xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 2 X -
-        xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ 2).re) :
+        xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0 := by
   classical
   have hdescent : ∀ N : ℕ, ∀ q : XiZeroCopy,
@@ -144,20 +144,20 @@ theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX 
         intro z
         rw [hW, evalRealPolynomial_mul, evalRealPolynomial_nodalPolynomial]
       have hWbound : ∀ q' : XiZeroCopy,
-          ‖evalRealPolynomial W (xiResolventPoint X q') ^ 2‖ ≤
-            evalRealPolynomialNormBound W 1 ^ 2 := by
+          ‖evalRealPolynomial W (xiResolventPoint X q') ^ (2 : ℕ)‖ ≤
+            evalRealPolynomialNormBound W 1 ^ (2 : ℕ) := by
         intro q'
         rw [norm_pow]
         exact pow_le_pow_left₀ (norm_nonneg _)
           (norm_evalRealPolynomial_le W (norm_xiResolventPoint_le_one hX q')) 2
       have hvalW : ∀ q₁ q₂ : XiZeroCopy,
           xiResolventPoint X q₂ = (starRingEnd ℂ) (xiResolventPoint X q₁) →
-          evalRealPolynomial W (xiResolventPoint X q₂) ^ 2 =
-            (starRingEnd ℂ) (evalRealPolynomial W (xiResolventPoint X q₁) ^ 2) := by
+          evalRealPolynomial W (xiResolventPoint X q₂) ^ (2 : ℕ) =
+            (starRingEnd ℂ) (evalRealPolynomial W (xiResolventPoint X q₁) ^ (2 : ℕ)) := by
         intro q₁ q₂ h
         rw [h, evalRealPolynomial_conj, ← map_pow]
       have hkill : ∀ q', ‖xiResolventPoint X q‖ < ‖xiResolventPoint X q'‖ →
-          evalRealPolynomial W (xiResolventPoint X q') ^ 2 = 0 := by
+          evalRealPolynomial W (xiResolventPoint X q') ^ (2 : ℕ) = 0 := by
         intro q' hq'
         have hmemA : q' ∈ A := by
           rw [hA, Finset.mem_filter, Set.Finite.mem_toFinset]
@@ -172,7 +172,7 @@ theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX 
         rw [hWeval, hnodal]
         ring
       have hnz : ∀ q', ‖xiResolventPoint X q'‖ = ‖xiResolventPoint X q‖ →
-          evalRealPolynomial W (xiResolventPoint X q') ^ 2 ≠ 0 := by
+          evalRealPolynomial W (xiResolventPoint X q') ^ (2 : ℕ) ≠ 0 := by
         intro q' hq' hzero
         have hWzero : evalRealPolynomial W (xiResolventPoint X q') = 0 :=
           pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hzero
@@ -189,7 +189,7 @@ theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX 
         · exact hPnz q' (by rw [hq']; exact hqδ) hP
       have hminorW : ∀ n : ℕ,
           0 ≤ (xiPolyMoment W (2 * n) X * xiPolyMoment W (2 * n + 2) X -
-            xiPolyMoment W (2 * n + 1) X ^ 2).re := by
+            xiPolyMoment W (2 * n + 1) X ^ (2 : ℕ)).re := by
         intro n
         have h := hdata atoms hRconstraint n
         rw [xiPolyMoment_X_pow_mul, xiPolyMoment_X_pow_mul, xiPolyMoment_X_pow_mul] at h
@@ -216,13 +216,13 @@ theorem riemannHypothesis_of_partial_line_and_relative_nodal {X δ : ℝ} (hX : 
     (hdata : ∀ R : Finset ℝ, (∀ r ∈ R, 0 < r ∧ r ≤ 1) → ∀ m : ℕ,
       0 ≤ (xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 0 X *
         xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 2 X -
-        xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ 2).re) :
+        xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ (2 : ℕ)).re) :
     RiemannHypothesis := by
   have hall := forall_criticalLine_of_partial_line_and_relative_nodal hX hline P
     hPnz hdata
   by_contra hRH
   obtain ⟨q, hq⟩ := exists_spectralSq_im_pos_of_not_riemannHypothesis hRH
-  have h1 : (xiSpectralPoint q ^ 2).im = 0 := by
+  have h1 : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
     rw [sq, Complex.mul_im, hall q]
     ring
   rw [h1] at hq
@@ -247,7 +247,7 @@ theorem riemannHypothesis_iff_partial_line_and_relative_nodal {X δ : ℝ} (hX :
         ∀ R : Finset ℝ, (∀ r ∈ R, 0 < r ∧ r ≤ 1) → ∀ m : ℕ,
           0 ≤ (xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 0 X *
             xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 2 X -
-            xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ 2).re) := by
+            xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ (2 : ℕ)).re) := by
   constructor
   · intro hRH
     constructor

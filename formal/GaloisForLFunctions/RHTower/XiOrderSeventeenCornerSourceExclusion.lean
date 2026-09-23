@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiOrderSeventeenEdgeCorner
 
 The order-eighteen sector can fail only in
 
-`4/25 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 132`.
+`4/25 < (Re rho - 1/2)^(2 : ℕ) < 1/4`, `85 < (Im rho)^(2 : ℕ) < 132`.
 
 The seven-interval theta floor bounds the complete nonnegative fourth reciprocal trace below
 `1/5000`. Four FE--Schwarz copies of any zero in this corner would contribute more than
@@ -23,13 +23,13 @@ noncomputable section
 quarter of the global source threshold. -/
 theorem five_over_oneHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderSeventeen_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 132) :
-    (5 / 100000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 132) :
+    (5 / 100000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 529 / 4
   have hu0 : 0 < u := by
@@ -42,21 +42,21 @@ theorem five_over_oneHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderSeve
   have hwLower : 85 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 := by
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) := by
     exact (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsecond : 0 < 5 * (W ^ 2 + w ^ 2) - 100000 := by
-    have hsqLower : (85 : ℝ) ^ 2 < w ^ 2 :=
+  have hsecond : 0 < 5 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 100000 := by
+    have hsqLower : (85 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
       (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      100000 * w ^ 2 - 5 * w ^ 4 >
-        100000 * W ^ 2 - 5 * W ^ 4 := by
+      100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) >
+        100000 * W ^ (2 : ℕ) - 5 * W ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (100000 * w ^ 2 - 5 * w ^ 4) -
-            (100000 * W ^ 2 - 5 * W ^ 4) =
-          (W ^ 2 - w ^ 2) * (5 * (W ^ 2 + w ^ 2) - 100000) := by
+        (100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ)) -
+            (100000 * W ^ (2 : ℕ) - 5 * W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (5 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 100000) := by
       ring
     nlinarith
   have huv : u * v < 33 := by
@@ -67,33 +67,33 @@ theorem five_over_oneHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderSeve
         mul_lt_mul_of_pos_left (by simpa only [v] using hvUpper) (by norm_num)
       _ = 33 := by norm_num
   have hendpoint :
-      0 < (100000 * W ^ 2 - 5 * W ^ 4) - 800000 * 33 := by
+      0 < (100000 * W ^ (2 : ℕ) - 5 * W ^ (4 : ℕ)) - 800000 * 33 := by
     norm_num [W]
   have hG :
-      0 < 100000 * (v ^ 2 - 6 * u * v + u ^ 2) - 5 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 100000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 5 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     have hshapeShift :
-        100000 * W ^ 2 - 5 * W ^ 4 - 800000 * 33 <
-          100000 * w ^ 2 - 5 * w ^ 4 - 800000 * 33 := by
+        100000 * W ^ (2 : ℕ) - 5 * W ^ (4 : ℕ) - 800000 * 33 <
+          100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) - 800000 * 33 := by
       have h := add_lt_add_right hshape (-800000 * 33)
       convert h using 1 <;> ring
-    have hbase : 0 < 100000 * w ^ 2 - 5 * w ^ 4 - 800000 * 33 :=
+    have hbase : 0 < 100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) - 800000 * 33 :=
       hendpoint.trans hshapeShift
     have huvScaled : 800000 * (u * v) < 800000 * 33 :=
       mul_lt_mul_of_pos_left huv (by norm_num)
     have huvShift :
-        100000 * w ^ 2 - 5 * w ^ 4 - 800000 * 33 <
-          100000 * w ^ 2 - 5 * w ^ 4 - 800000 * (u * v) := by
+        100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) - 800000 * 33 <
+          100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) - 800000 * (u * v) := by
       exact sub_lt_sub_left huvScaled _
-    have htarget : 0 < 100000 * w ^ 2 - 5 * w ^ 4 - 800000 * (u * v) :=
+    have htarget : 0 < 100000 * w ^ (2 : ℕ) - 5 * w ^ (4 : ℕ) - 800000 * (u * v) :=
       hbase.trans huvShift
     rw [hN]
     convert htarget using 1 ; ring
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -104,15 +104,15 @@ theorem five_over_oneHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderSeve
 fourth reciprocal trace. -/
 theorem one_over_fiveThousand_lt_source_of_orderSeventeen_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 132) :
+    (huLower : (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 132) :
     (1 / 5000 : ℝ) < normalizedPrimeArchMoment 1 := by
   have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
     re_ne_half_of_pos_centered_sq (by linarith)
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (2 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
   have hle := four_mul_le_tsum_of_quartet_invariant
     xiFourthReciprocalTraceAtom_nonneg hsum
@@ -126,10 +126,10 @@ theorem one_over_fiveThousand_lt_source_of_orderSeventeen_edgeCorner
 /-- **Unconditional order-seventeen compact-corner exclusion.** -/
 theorem not_exists_xiZeroCopy_mem_orderSeventeen_edgeCorner :
     ¬ ∃ q : XiZeroCopy,
-      (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 132 := by
+      (4 / 25 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 132 := by
   rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
   have hlower := one_over_fiveThousand_lt_source_of_orderSeventeen_edgeCorner
     q huLower huUpper hvLower hvUpper
@@ -139,9 +139,9 @@ theorem not_exists_xiZeroCopy_mem_orderSeventeen_edgeCorner :
 /-- The order-seventeen squared-seam source has strict positive atomwise sign everywhere. -/
 theorem xiOrderEighteenReciprocalPower_re_pos
     (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
-    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let A : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 18).re :=
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (18 : ℕ)).re :=
   xiZeroCopy_reciprocalPower_re_pos_of_window_empty q hy
     (fun _ _ hA h => orderEighteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hnonpos => xiOrderEighteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy hnonpos)

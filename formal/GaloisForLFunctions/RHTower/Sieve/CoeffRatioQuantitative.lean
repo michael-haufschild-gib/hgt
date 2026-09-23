@@ -21,10 +21,10 @@ open Filter Topology
 /-- **The majorant at the chosen width, with a rate.** -/
 theorem eventually_coeffMajorant_ratio_le_exp {C C' M₀ a κ : ℝ} (hC : 0 ≤ C) (hC' : 0 ≤ C')
     (hM₀ : 0 ≤ M₀) (ha : 0 ≤ a) (hκ : 0 < κ) :
-    ∀ᶠ v : ℝ in atTop, ∀ t L : ℝ, 0 ≤ t → v ^ 2 ≤ t → t ≤ 2 * v ^ 2 →
+    ∀ᶠ v : ℝ in atTop, ∀ t L : ℝ, 0 ≤ t → v ^ (2 : ℕ) ≤ t → t ≤ 2 * v ^ (2 : ℕ) →
       L + 2 ≤ 3 * Real.exp v → 0 ≤ L + 2 →
-      coeffMajorant (C * (L + 2) ^ 2) (C' * (L + 2)) M₀ a t * Real.exp (-(κ * t))
-        ≤ Real.exp (-(κ * v ^ 2 / 2)) := by
+      coeffMajorant (C * (L + 2) ^ (2 : ℕ)) (C' * (L + 2)) M₀ a t * Real.exp (-(κ * t))
+        ≤ Real.exp (-(κ * v ^ (2 : ℕ) / 2)) := by
   have hpoly := eventually_poly_exp_two_sub_sq_le (a := 512 * a)
     (b := 8 * (9 * C) * Real.exp (22 / 4)
         + (8 * (3 * C') + 4 + 2 * (9 * C)) * (2 * Real.exp (22 / 4)) * (5 / 2)

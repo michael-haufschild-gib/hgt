@@ -18,7 +18,7 @@ theorem not_memLp_two_restrict_Iio_of_atBot_norm_ge_one
   intro hf
   have hwhole : MemLp ((Iio (0 : ℝ)).indicator f) 2 volume :=
     (memLp_indicator_iff_restrict measurableSet_Iio).mpr hf
-  have hint : Integrable (fun t : ℝ => ‖((Iio (0 : ℝ)).indicator f) t‖ ^ 2) volume :=
+  have hint : Integrable (fun t : ℝ => ‖((Iio (0 : ℝ)).indicator f) t‖ ^ (2 : ℕ)) volume :=
     (memLp_two_iff_integrable_sq_norm hwhole.aestronglyMeasurable).mp hwhole
   obtain ⟨L, hL⟩ := (eventually_atBot.1 h)
   let M : ℝ := min L (-1)

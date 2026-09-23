@@ -28,16 +28,16 @@ def upperToDiskCayley (z : ℂ) : ℂ := (z - I) / (z + I)
 /-- Exact norm defect of the upper-half-plane Cayley transform. -/
 theorem one_sub_norm_upperToDiskCayley_sq
     {z : ℂ} (hden : z + I ≠ 0) :
-    1 - ‖upperToDiskCayley z‖ ^ 2 = 4 * z.im / ‖z + I‖ ^ 2 := by
-  have hminus : ‖z - I‖ ^ 2 = z.re ^ 2 + (z.im - 1) ^ 2 := by
+    1 - ‖upperToDiskCayley z‖ ^ (2 : ℕ) = 4 * z.im / ‖z + I‖ ^ (2 : ℕ) := by
+  have hminus : ‖z - I‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + (z.im - 1) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [sub_re, sub_im, I_re, I_im]
     ring
-  have hplus : ‖z + I‖ ^ 2 = z.re ^ 2 + (z.im + 1) ^ 2 := by
+  have hplus : ‖z + I‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + (z.im + 1) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [add_re, add_im, I_re, I_im]
     ring
-  have hplusNe : z.re ^ 2 + (z.im + 1) ^ 2 ≠ 0 := by
+  have hplusNe : z.re ^ (2 : ℕ) + (z.im + 1) ^ (2 : ℕ) ≠ 0 := by
     rw [← hplus]
     exact pow_ne_zero _ (norm_ne_zero_iff.mpr hden)
   rw [upperToDiskCayley, norm_div, div_pow, hminus, hplus]
@@ -80,7 +80,7 @@ theorem upperHalfPlaneSchurKernel_eq_cayley_congruence
     nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   have hsqrtC : (Real.sqrt 2 : ℂ) * (Real.sqrt 2 : ℂ) = 2 := by
     exact_mod_cast hsqrtR
-  have hsqrtPow : (Real.sqrt 2 : ℂ) ^ 2 = 2 := by
+  have hsqrtPow : (Real.sqrt 2 : ℂ) ^ (2 : ℕ) = 2 := by
     simpa only [pow_two] using hsqrtC
   have hcayleyDen :
       1 - upperToDiskCayley z *

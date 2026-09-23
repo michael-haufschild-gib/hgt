@@ -17,7 +17,7 @@ noncomputable section
 /-- Explicit `eta`-dependent constant in Heath--Brown's Theorem 4(iii). -/
 def heathBrownTheoremFourCoefficient (eta : ℝ) : ℝ :=
   heathBrownTheoremFourUniversalCoefficient *
-    (divisorBoundConst (eta / 4) ^ 2 * (3 : ℝ) ^ eta)
+    (divisorBoundConst (eta / 4) ^ (2 : ℕ) * (3 : ℝ) ^ eta)
 
 /-- Heath--Brown's sparse mean-value estimate, Theorem 4(iii), with an explicit constant.
 
@@ -31,8 +31,8 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
     {N : ℕ} (hB : ∀ n ∈ B, (n : ℕ) ≤ N)
     {eta : ℝ} (heta : 0 < eta) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
-      95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
+      95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
           ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
             (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) * (T : ℝ) ^ (3 / 4 : ℝ)) := by
@@ -57,7 +57,7 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   let K : ℕ := heathBrownSecondScale (T : ℝ) (A.card : ℝ)
   let D : ℝ := heathBrownSquareDivisorScale K (eta / 4)
   let L : ℝ :=
-    (divisorBoundConst (eta / 4) ^ 2 * (3 : ℝ) ^ eta) *
+    (divisorBoundConst (eta / 4) ^ (2 : ℕ) * (3 : ℝ) ^ eta) *
       (((N : ℝ) * (T : ℝ)) ^ eta)
   have hN : 1 ≤ N := by omega
   have hR : 0 < (A.card : ℝ) := by
@@ -67,10 +67,10 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   have hK : 1 ≤ K := one_le_heathBrownSecondScale (by linarith)
   have hKpos : 0 < K := by omega
   have hdiv : K * K / K = K := Nat.mul_div_right K hKpos
-  have hheight : (T : ℝ) ≤ (K : ℝ) ^ 3 :=
+  have hheight : (T : ℝ) ≤ (K : ℝ) ^ (3 : ℕ) :=
     height_le_heathBrownSecondScale_cube T.property.le
   have hmixed :
-      (T : ℝ) * (A.card : ℝ) ^ 2 / (K : ℝ) ≤
+      (T : ℝ) * (A.card : ℝ) ^ (2 : ℕ) / (K : ℝ) ≤
         (A.card : ℝ) ^ (7 / 4 : ℝ) * (T : ℝ) ^ (3 / 4 : ℝ) :=
     heathBrown_height_mul_card_sq_div_secondScale_le_mixed (by linarith) hR
   have hcross :
@@ -78,12 +78,12 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
         3 * ((A.card : ℝ) * (T : ℝ) +
           (A.card : ℝ) ^ (7 / 4 : ℝ) * (T : ℝ) ^ (3 / 4 : ℝ)) :=
     heathBrownSecondScale_mul_card_sqrt_le (by linarith) hR
-  have hD2 : D ^ 2 ≤ L := by
+  have hD2 : D ^ (2 : ℕ) ≤ L := by
     exact heathBrownSquareDivisorScale_secondScale_sq_le
       (by linarith) (Nat.cast_nonneg _) hRT hN heta
   have hDone : 1 ≤ D := by
     exact one_le_heathBrownSquareDivisorScale hK (by positivity)
-  have hL : 1 ≤ L := le_trans (by nlinarith : (1 : ℝ) ≤ D ^ 2) hD2
+  have hL : 1 ≤ L := le_trans (by nlinarith : (1 : ℝ) ≤ D ^ (2 : ℕ)) hD2
   have hbase := integral_Icc_normSq_heathBrown_factors_le_selectedSecondScale
     A B eps q T hT hA hB (eta := eta / 4) (by positivity)
   dsimp only at hbase
@@ -93,20 +93,20 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   rw [hDdef] at hbase
   have hraw :
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-          ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
-        95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+          ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
+        95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           15 * Real.pi / 2 * (N : ℝ) *
-            ((T : ℝ) * (A.card : ℝ) ^ 2 / (K : ℝ)) +
+            ((T : ℝ) * (A.card : ℝ) ^ (2 : ℕ) / (K : ℝ)) +
           (25 * Real.pi / 2) * ((N : ℝ) / (K : ℝ)) *
             Real.sqrt
-              (heathBrownMeanSquareCoefficient * (T : ℝ) * (A.card : ℝ) * D ^ 2 *
+              (heathBrownMeanSquareCoefficient * (T : ℝ) * (A.card : ℝ) * D ^ (2 : ℕ) *
                 (2 *
-                    (75 * Real.pi / 2 * (K : ℝ) ^ 4 * (A.card : ℝ) ^ 2 +
+                    (75 * Real.pi / 2 * (K : ℝ) ^ (4 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
                       5 * Real.pi / 2 * (T : ℝ) * (2 * (K : ℝ) + 1) *
-                        (A.card : ℝ) ^ 2) +
-                  (25 * Real.pi / 4 * ((K : ℝ) + 1)) ^ 2 *
+                        (A.card : ℝ) ^ (2 : ℕ)) +
+                  (25 * Real.pi / 4 * ((K : ℝ) + 1)) ^ (2 : ℕ) *
                     (heathBrownMeanSquareCoefficient * (T : ℝ) *
-                      (A.card : ℝ) * D ^ 2))) := by
+                      (A.card : ℝ) * D ^ (2 : ℕ)))) := by
     calc
       _ ≤ _ := hbase
       _ = _ := by
@@ -121,8 +121,8 @@ theorem integral_Icc_normSq_heathBrown_factors_le_theoremFour
   dsimp only at hscalar
   calc
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
-      95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
+      95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         heathBrownTheoremFourUniversalCoefficient * L *
           ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
             (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *

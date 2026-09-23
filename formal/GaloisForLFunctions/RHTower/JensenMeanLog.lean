@@ -73,15 +73,15 @@ theorem integral_log_le_length_mul_log_mean {a b : ℝ} (hab : a < b) {g : ℝ �
 of `log‖f‖` on that segment. -/
 theorem two_mul_integral_log_norm_le {a b : ℝ} (hab : a < b) {f : ℝ → ℂ}
     (hpos : ∀ t, f t ≠ 0)
-    (hint : IntervalIntegrable (fun t => ‖f t‖ ^ 2) volume a b)
-    (hlogint : IntervalIntegrable (fun t => Real.log (‖f t‖ ^ 2)) volume a b) :
+    (hint : IntervalIntegrable (fun t => ‖f t‖ ^ (2 : ℕ)) volume a b)
+    (hlogint : IntervalIntegrable (fun t => Real.log (‖f t‖ ^ (2 : ℕ))) volume a b) :
     2 * (∫ t in a..b, Real.log ‖f t‖)
-      ≤ (b - a) * Real.log ((∫ t in a..b, ‖f t‖ ^ 2) / (b - a)) := by
-  have hgpos : ∀ t, 0 < ‖f t‖ ^ 2 := fun t => by
+      ≤ (b - a) * Real.log ((∫ t in a..b, ‖f t‖ ^ (2 : ℕ)) / (b - a)) := by
+  have hgpos : ∀ t, 0 < ‖f t‖ ^ (2 : ℕ) := fun t => by
     have : 0 < ‖f t‖ := norm_pos_iff.mpr (hpos t)
     positivity
   have hmain := integral_log_le_length_mul_log_mean hab hgpos hint hlogint
-  have hsplit : (∫ t in a..b, Real.log (‖f t‖ ^ 2))
+  have hsplit : (∫ t in a..b, Real.log (‖f t‖ ^ (2 : ℕ)))
       = 2 * ∫ t in a..b, Real.log ‖f t‖ := by
     rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun t _ => ?_

@@ -127,7 +127,7 @@ theorem tendsto_burnolCartierZeroWallTrace {p : ℕ} (hp : 2 ≤ p) (u : ℂ) :
 theorem tendsto_burnolAllPrimeCompletion_sidebandResidue {p : ℕ} (hp : 2 ≤ p) (k : ℤ) :
     Tendsto (fun s : ℂ => (s - burnolPrimeSideband p k) *
         burnolAllPrimeCompletionMultiplier p s) (𝓝[≠] (burnolPrimeSideband p k))
-      (𝓝 ((burnolPrimeSideband p k) ^ 2 * (burnolPrimeSideband p k - 1) /
+      (𝓝 ((burnolPrimeSideband p k) ^ (2 : ℕ) * (burnolPrimeSideband p k - 1) /
         (2 * ((Real.log (p : ℝ) : ℝ) : ℂ)))) := by
   set lam : ℂ := burnolPrimeSideband p k with hlam
   have hLne := burnolPrimeLogC_ne_zero hp
@@ -139,13 +139,13 @@ theorem tendsto_burnolAllPrimeCompletion_sidebandResidue {p : ℕ} (hp : 2 ≤ p
     have h := hasDerivAt_iff_tendsto_slope.mp hd
     refine h.congr (fun s => ?_)
     rw [slope_def_field, hone]
-  have hquot : Tendsto (fun s : ℂ => s ^ 2 * (s - 1) / 2 * (((p : ℂ) ^ s - 1) / (s - lam))⁻¹)
-      (𝓝[≠] lam) (𝓝 (lam ^ 2 * (lam - 1) / 2 * (((Real.log (p : ℝ) : ℝ) : ℂ))⁻¹)) := by
+  have hquot : Tendsto (fun s : ℂ => s ^ (2 : ℕ) * (s - 1) / 2 * (((p : ℂ) ^ s - 1) / (s - lam))⁻¹)
+      (𝓝[≠] lam) (𝓝 (lam ^ (2 : ℕ) * (lam - 1) / 2 * (((Real.log (p : ℝ) : ℝ) : ℂ))⁻¹)) := by
     refine Filter.Tendsto.mul ?_ (hslope.inv₀ hLne)
     exact (((continuous_pow 2).mul (continuous_id.sub continuous_const)).div_const
       2).continuousWithinAt.tendsto
-  have hval : lam ^ 2 * (lam - 1) / 2 * (((Real.log (p : ℝ) : ℝ) : ℂ))⁻¹ =
-      lam ^ 2 * (lam - 1) / (2 * ((Real.log (p : ℝ) : ℝ) : ℂ)) := by
+  have hval : lam ^ (2 : ℕ) * (lam - 1) / 2 * (((Real.log (p : ℝ) : ℝ) : ℂ))⁻¹ =
+      lam ^ (2 : ℕ) * (lam - 1) / (2 * ((Real.log (p : ℝ) : ℝ) : ℂ)) := by
     field_simp
   rw [hval] at hquot
   refine hquot.congr' ?_
@@ -174,16 +174,16 @@ theorem burnolPrimeSideband_sub_one_ne_zero (p : ℕ) (k : ℤ) :
 theorem tendsto_burnolCartierSidebandTrace {p : ℕ} (hp : 2 ≤ p) {k : ℤ}
     (hk : burnolPrimeSideband p k ≠ 0) (u : ℂ) :
     Tendsto (fun s : ℂ => 2 * ((Real.log (p : ℝ) : ℝ) : ℂ) /
-        ((burnolPrimeSideband p k) ^ 2 * (burnolPrimeSideband p k - 1)) *
+        ((burnolPrimeSideband p k) ^ (2 : ℕ) * (burnolPrimeSideband p k - 1)) *
         ((s - burnolPrimeSideband p k) * (burnolAllPrimeCompletionMultiplier p s * u)))
       (𝓝[≠] (burnolPrimeSideband p k)) (𝓝 u) := by
   set lam : ℂ := burnolPrimeSideband p k with hlam
   have hLne := burnolPrimeLogC_ne_zero hp
   have hlamOne : lam - 1 ≠ 0 := burnolPrimeSideband_sub_one_ne_zero p k
   have h := ((tendsto_burnolAllPrimeCompletion_sidebandResidue hp k).mul_const u).const_mul
-    (2 * ((Real.log (p : ℝ) : ℝ) : ℂ) / (lam ^ 2 * (lam - 1)))
-  have hval : 2 * ((Real.log (p : ℝ) : ℝ) : ℂ) / (lam ^ 2 * (lam - 1)) *
-      (lam ^ 2 * (lam - 1) / (2 * ((Real.log (p : ℝ) : ℝ) : ℂ)) * u) = u := by
+    (2 * ((Real.log (p : ℝ) : ℝ) : ℂ) / (lam ^ (2 : ℕ) * (lam - 1)))
+  have hval : 2 * ((Real.log (p : ℝ) : ℝ) : ℂ) / (lam ^ (2 : ℕ) * (lam - 1)) *
+      (lam ^ (2 : ℕ) * (lam - 1) / (2 * ((Real.log (p : ℝ) : ℝ) : ℂ)) * u) = u := by
     field_simp
   rw [hval] at h
   refine h.congr (fun s => ?_)

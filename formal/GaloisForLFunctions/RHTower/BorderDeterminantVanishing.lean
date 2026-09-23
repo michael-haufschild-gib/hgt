@@ -44,27 +44,27 @@ noncomputable section
 namespace RHTower
 
 /-- The open strip `½ < Re s < 1`, as the domain of the row functions. -/
-abbrev StripPoint := {s : ℂ // 1 / 2 < s.re ∧ s.re < 1}
+abbrev StripPoint_borderDeterminantVanishing := {s : ℂ // 1 / 2 < s.re ∧ s.re < 1}
 
 /-- The row functions of the bordered matrix: the `N` generator pairings, then the target pairing. -/
-def borderRowFun {N : ℕ} (θ : Fin N → ℝ) : Fin (N + 1) → (StripPoint → ℂ) :=
+def borderRowFun {N : ℕ} (θ : Fin N → ℝ) : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ) :=
   (Fin.snoc
-    (fun (i : Fin N) (s : StripPoint) =>
+    (fun (i : Fin N) (s : StripPoint_borderDeterminantVanishing) =>
       -(((θ i : ℝ) : ℂ) ^ (s : ℂ) - ((θ i : ℝ) : ℂ)) * (riemannZeta (s : ℂ) / (s : ℂ)))
-    (fun (s : StripPoint) => 1 / (s : ℂ)) : Fin (N + 1) → (StripPoint → ℂ))
+    (fun (s : StripPoint_borderDeterminantVanishing) => 1 / (s : ℂ)) : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ))
 
-theorem borderRowFun_castSucc {N : ℕ} (θ : Fin N → ℝ) (i : Fin N) (s : StripPoint) :
+theorem borderRowFun_castSucc {N : ℕ} (θ : Fin N → ℝ) (i : Fin N) (s : StripPoint_borderDeterminantVanishing) :
     borderRowFun θ i.castSucc s
       = -(((θ i : ℝ) : ℂ) ^ (s : ℂ) - ((θ i : ℝ) : ℂ)) * (riemannZeta (s : ℂ) / (s : ℂ)) := by
   simp [borderRowFun]
 
-theorem borderRowFun_last {N : ℕ} (θ : Fin N → ℝ) (s : StripPoint) :
+theorem borderRowFun_last {N : ℕ} (θ : Fin N → ℝ) (s : StripPoint_borderDeterminantVanishing) :
     borderRowFun θ (Fin.last N) s = 1 / (s : ℂ) := by
   simp [borderRowFun]
 
 /-- The evaluation matrix of the row functions is the bordered matrix of sampled pairings. -/
 theorem matrix_borderRowFun_eq_sampledBorderMatrix {N : ℕ} (θ : Fin N → ℝ)
-    (x : Fin (N + 1) → StripPoint) :
+    (x : Fin (N + 1) → StripPoint_borderDeterminantVanishing) :
     (Matrix.of fun i j => borderRowFun θ i (x j))
       = sampledBorderMatrix θ fun j => ((x j : ℂ)) := by
   refine Matrix.ext fun i j => ?_
@@ -136,12 +136,12 @@ pairing with the target at `1`, and the duality bound of `DetectorDuality` conve
 `1/‖w‖`.  A family other than Báez-Duarte's inherits the whole route by supplying this one hypothesis for its
 own pairing functions. -/
 theorem exists_detectorCombination_floor_of_linearIndependent_pairings {N : ℕ}
-    (G : Fin N → BDCarrier) (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
-    (hM : ∀ (i : Fin N) (s : StripPoint),
+    (G : Fin N → BDCarrier) (x : BDCarrier) (M : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint_borderDeterminantVanishing),
       inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
-    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hMx : ∀ s : StripPoint_borderDeterminantVanishing, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
     (hli : LinearIndependent ℂ M) :
-    ∃ (y : Fin (N + 1) → StripPoint) (a : Fin (N + 1) → ℂ),
+    ∃ (y : Fin (N + 1) → StripPoint_borderDeterminantVanishing) (a : Fin (N + 1) → ℂ),
       (∀ i, inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) (G i) = 0)
         ∧ inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) x = 1
         ∧ 1 / ‖detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a‖
@@ -203,10 +203,10 @@ theorem exists_detectorCombination_floor_of_linearIndependent_pairings {N : ℕ}
 
 /-- The floor in terms of the combination itself. -/
 theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier)
-    (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
-    (hM : ∀ (i : Fin N) (s : StripPoint),
+    (x : BDCarrier) (M : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint_borderDeterminantVanishing),
       inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
-    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hMx : ∀ s : StripPoint_borderDeterminantVanishing, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
     (hli : LinearIndependent ℂ M) :
     ∃ w : BDCarrier, (∀ i, inner ℂ w (G i) = 0) ∧ inner ℂ w x = 1 ∧
       1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
@@ -217,10 +217,10 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
 /-- **The abstract obstruction.**  Independence of the pairing functions puts the target at positive distance
 from the span. -/
 theorem infDist_pos_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier) (x : BDCarrier)
-    (M : Fin (N + 1) → (StripPoint → ℂ))
-    (hM : ∀ (i : Fin N) (s : StripPoint),
+    (M : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint_borderDeterminantVanishing),
       inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
-    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hMx : ∀ s : StripPoint_borderDeterminantVanishing, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
     (hli : LinearIndependent ℂ M) :
     0 < Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
   obtain ⟨w, -, hwx, hfloor⟩ :=

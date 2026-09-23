@@ -44,7 +44,7 @@ theorem mtHarmanPairCellCoefficient_eq_source_sum
 /-- Pair-cell coefficients have the unconditional divisor-square bound. -/
 theorem card_mtHarmanPairCellTuples_le_divisors_sq
     {S₁ S₂ : Finset ℕ} {m : ℕ} (hm : 0 < m) :
-    (mtHarmanPairCellTuples S₁ S₂ m).card ≤ m.divisors.card ^ 2 := by
+    (mtHarmanPairCellTuples S₁ S₂ m).card ≤ m.divisors.card ^ (2 : ℕ) := by
   have hsubset : mtHarmanPairCellTuples S₁ S₂ m ⊆ m.divisors.product m.divisors := by
     intro q hq
     have htuple := mem_mtHarmanPairCellTuples.mp hq
@@ -57,7 +57,7 @@ theorem card_mtHarmanPairCellTuples_le_divisors_sq
   calc
     (mtHarmanPairCellTuples S₁ S₂ m).card ≤
         (m.divisors.product m.divisors).card := Finset.card_le_card hsubset
-    _ = m.divisors.card ^ 2 := by simp [pow_two]
+    _ = m.divisors.card ^ (2 : ℕ) := by simp [pow_two]
 
 /-- A pair product has only one free divisor: the second factor is forced by the first. -/
 theorem card_mtHarmanPairCellTuples_le_divisors
@@ -88,7 +88,7 @@ theorem mtHarmanPairCellCoefficient_polynomialDivisorBounded
     (S₁ := S₁) (S₂ := S₂) hm
   simpa [mtHarmanPairCellCoefficient] using (show
     ((mtHarmanPairCellTuples S₁ S₂ m).card : ℝ) ≤
-      (m.divisors.card : ℝ) ^ 2 by exact_mod_cast hcard)
+      (m.divisors.card : ℝ) ^ (2 : ℕ) by exact_mod_cast hcard)
 
 /-- Two disjoint prime blocks give at most one ordered factorization of a fixed product. -/
 theorem card_mtHarmanPairCellTuples_le_one_of_disjoint
@@ -224,7 +224,7 @@ theorem mtHarmanTripleCellCoefficient_eq_source_sum
 /-- Triple-cell coefficients have the unconditional divisor-cube bound. -/
 theorem card_mtHarmanTripleCellTuples_le_divisors_cube
     {S₁ S₂ S₃ : Finset ℕ} {m : ℕ} (hm : 0 < m) :
-    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ m.divisors.card ^ 3 := by
+    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ m.divisors.card ^ (3 : ℕ) := by
   have hsubset : mtHarmanTripleCellTuples S₁ S₂ S₃ m ⊆
       (m.divisors.product m.divisors).product m.divisors := by
     intro q hq
@@ -248,12 +248,12 @@ theorem card_mtHarmanTripleCellTuples_le_divisors_cube
     (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤
         ((m.divisors.product m.divisors).product m.divisors).card :=
       Finset.card_le_card hsubset
-    _ = m.divisors.card ^ 3 := by simp [pow_succ]
+    _ = m.divisors.card ^ (3 : ℕ) := by simp [pow_succ]
 
 /-- A triple product has only two free divisors: the last factor is forced by the first pair. -/
 theorem card_mtHarmanTripleCellTuples_le_divisors_sq
     {S₁ S₂ S₃ : Finset ℕ} {m : ℕ} (hm : 0 < m) :
-    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ m.divisors.card ^ 2 := by
+    (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤ m.divisors.card ^ (2 : ℕ) := by
   calc
     (mtHarmanTripleCellTuples S₁ S₂ S₃ m).card ≤
         (m.divisors.product m.divisors).card := by
@@ -279,7 +279,7 @@ theorem card_mtHarmanTripleCellTuples_le_divisors_sq
             q.1.1 * q.1.2 * q.2 = m := hqTuple.2.2.2
             _ = r.1.1 * r.1.2 * r.2 := hrTuple.2.2.2.symm
             _ = q.1.1 * q.1.2 * r.2 := by rw [hpair])
-    _ = m.divisors.card ^ 2 := by simp [pow_two]
+    _ = m.divisors.card ^ (2 : ℕ) := by simp [pow_two]
 
 theorem mtHarmanTripleCellCoefficient_polynomialDivisorBounded
     (S₁ S₂ S₃ : Finset ℕ) :
@@ -290,7 +290,7 @@ theorem mtHarmanTripleCellCoefficient_polynomialDivisorBounded
     (S₁ := S₁) (S₂ := S₂) (S₃ := S₃) hm
   simpa [mtHarmanTripleCellCoefficient] using (show
     ((mtHarmanTripleCellTuples S₁ S₂ S₃ m).card : ℝ) ≤
-      (m.divisors.card : ℝ) ^ 3 by exact_mod_cast hcard)
+      (m.divisors.card : ℝ) ^ (3 : ℕ) by exact_mod_cast hcard)
 
 /-- Three pairwise-disjoint prime blocks give at most one ordered factorization of a fixed
 product. -/
@@ -446,7 +446,7 @@ theorem mtHarmanPairCellTuples_admissible
     {m q₁ q₂ : ℕ}
     (hq : (q₁, q₂) ∈ mtHarmanPairCellTuples
       (mtAdjacentPrimeBlock endpoint i₁) (mtAdjacentPrimeBlock endpoint i₂) m) :
-    q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E ∧ q₁ * q₂ = m := by
+    q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E ∧ q₁ * q₂ = m := by
   have htuple := mem_mtHarmanPairCellTuples.mp hq
   have hadm := mtHarmanGoodPairCell_order_geometry
     hendpoint hmono hcell htuple.1 htuple.2.1
@@ -462,7 +462,7 @@ theorem mtHarmanTripleCellTuples_admissible
     (hq : ((q₁, q₂), q₃) ∈ mtHarmanTripleCellTuples
       (mtAdjacentPrimeBlock endpoint i₁) (mtAdjacentPrimeBlock endpoint i₂)
       (mtAdjacentPrimeBlock endpoint i₃) m) :
-    q₃ < q₂ ∧ q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E ∧
+    q₃ < q₂ ∧ q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E ∧
       q₁ * q₂ * q₃ = m := by
   have htuple := mem_mtHarmanTripleCellTuples.mp hq
   have hadm := mtHarmanGoodTripleCell_orders_geometry

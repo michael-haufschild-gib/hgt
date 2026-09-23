@@ -34,7 +34,7 @@ section AffineMoment
 def momentHankel : Matrix (Fin 2) (Fin 2) ℝ := !![1, 10; 10, 100]
 
 theorem momentHankel_quadratic (x : Fin 2 → ℝ) :
-    x ⬝ᵥ (momentHankel *ᵥ x) = (x 0 + 10 * x 1) ^ 2 := by
+    x ⬝ᵥ (momentHankel *ᵥ x) = (x 0 + 10 * x 1) ^ (2 : ℕ) := by
   simp [momentHankel, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
   ring
 

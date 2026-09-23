@@ -29,20 +29,20 @@ theorem dyadicMeanSquare_le_dyadicHead (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     (hM : B + 1 + ℓ < M + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ I)
+      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ I)
     (hAffine : ∀ T : ℝ, W ≤ T →
       (∫ w in Set.Icc (-T) T,
-        ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ α * T + β) :
+        ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ α * T + β) :
     dyadicMeanSquare f ℓ A B
       ≤ ((A : ℝ) * (1 + ε) ^ K')
           * ((K' : ℝ) * blockCostG (ℓ : ℝ) ε
-              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * I
-                + (4 * α / (Real.pi ^ 2 * W)
-                  + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)))) := by
+              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+                + (4 * α / (Real.pi ^ (2 : ℕ) * W)
+                  + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
   have hℓ0 : (0 : ℝ) < (ℓ : ℝ) := by exact_mod_cast hℓ
-  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * I
-      + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) with hGdef
+  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+      + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) with hGdef
   have hG0 : 0 ≤ G := by
     rw [hGdef]
     positivity
@@ -57,9 +57,9 @@ theorem dyadicMeanSquare_le_dyadicHead (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
   have hwhole := gallagher_split_integral_dyadic_head a (Finset.Icc 1 M)
     hδ0 hW hHead hAffine
   have hset : (∫ u in E,
-        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ 2)
+        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ (2 : ℕ))
       ≤ ∫ u : ℝ,
-        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ 2 := by
+        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_le_integral
       (integrable_normSq_logWindowSum a (Finset.Icc 1 M) _)
       (Filter.Eventually.of_forall fun u : ℝ => by positivity)
@@ -69,8 +69,8 @@ theorem dyadicMeanSquare_le_dyadicHead (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     have : (ℓ : ℝ) / Y' ≤ (ℓ : ℝ) / (A : ℝ) := by
       exact div_le_div_of_nonneg_left hℓ0.le hA0 hY'
     linarith
-  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ 2
-      ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 :=
+  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ (2 : ℕ)
+      ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hδ0.le hmono 2
   rw [hGdef]
   nlinarith [hsq]
@@ -97,12 +97,12 @@ theorem menonFinalRangeTopNat_nat (A : ℕ) :
 /-- Plain coefficient energy of the zero-extended harmonic shell. -/
 theorem localizedHarmonic_plainEnergy_le (A : ℕ) :
     (∑ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
-      ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
+      ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
       ≤ 3 / ((A + 1 : ℕ) : ℝ) := by
   have hden : (0 : ℝ) < ((A + 1 : ℕ) : ℝ) := by positivity
   have hterm : ∀ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
-      ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2
-        ≤ (1 / (((A + 1 : ℕ) : ℝ))) ^ 2 := by
+      ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ)
+        ≤ (1 / (((A + 1 : ℕ) : ℝ))) ^ (2 : ℕ) := by
     intro m
     rw [Complex.norm_real, Real.norm_eq_abs]
     by_cases hm : A < (m : ℕ) + 1
@@ -116,27 +116,27 @@ theorem localizedHarmonic_plainEnergy_le (A : ℕ) :
       positivity
   calc
     (∑ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
-        ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
+        ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
       ≤ ∑ _m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
-          (1 / (((A + 1 : ℕ) : ℝ))) ^ 2 := Finset.sum_le_sum fun m _ => hterm m
+          (1 / (((A + 1 : ℕ) : ℝ))) ^ (2 : ℕ) := Finset.sum_le_sum fun m _ => hterm m
     _ = 3 / ((A + 1 : ℕ) : ℝ) := by
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
         menonFinalRangeTopNat_nat]
       rw [nsmul_eq_mul]
       norm_num only [Nat.cast_mul, Nat.cast_ofNat, Nat.cast_add, Nat.cast_one]
-      rw [show (1 / ((A : ℝ) + 1)) ^ 2 = 1 / (((A : ℝ) + 1) ^ 2) by field_simp]
+      rw [show (1 / ((A : ℝ) + 1)) ^ (2 : ℕ) = 1 / (((A : ℝ) + 1) ^ (2 : ℕ)) by field_simp]
       field_simp [show (A : ℝ) + 1 ≠ 0 by positivity]
 
 /-- Integer-weighted coefficient energy of the zero-extended harmonic shell. -/
 theorem localizedHarmonic_weightedEnergy_le (A : ℕ) :
     (∑ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
       (((m : ℕ) : ℝ) + 1) *
-        ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
+        ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
       ≤ 3 := by
   have hden : (0 : ℝ) < ((A + 1 : ℕ) : ℝ) := by positivity
   have hterm : ∀ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
       (((m : ℕ) : ℝ) + 1) *
-          ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2
+          ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ)
         ≤ 1 / (((A + 1 : ℕ) : ℝ)) := by
     intro m
     have hn0 : (0 : ℝ) < (((m : ℕ) + 1 : ℕ) : ℝ) := by positivity
@@ -144,10 +144,10 @@ theorem localizedHarmonic_weightedEnergy_le (A : ℕ) :
     by_cases hm : A < (m : ℕ) + 1
     · have habs := abs_localizedHarmonicMoebiusR_le_inv A ((m : ℕ) + 1) (by omega)
       have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
-      have hmul : (((m : ℕ) : ℝ) + 1) * |localizedHarmonicMoebiusR A ((m : ℕ) + 1)| ^ 2
-          ≤ (((m : ℕ) : ℝ) + 1) * (1 / ((((m : ℕ) + 1 : ℕ) : ℝ))) ^ 2 :=
+      have hmul : (((m : ℕ) : ℝ) + 1) * |localizedHarmonicMoebiusR A ((m : ℕ) + 1)| ^ (2 : ℕ)
+          ≤ (((m : ℕ) : ℝ) + 1) * (1 / ((((m : ℕ) + 1 : ℕ) : ℝ))) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq (by positivity)
-      have heq : (((m : ℕ) : ℝ) + 1) * (1 / ((((m : ℕ) + 1 : ℕ) : ℝ))) ^ 2
+      have heq : (((m : ℕ) : ℝ) + 1) * (1 / ((((m : ℕ) + 1 : ℕ) : ℝ))) ^ (2 : ℕ)
           = 1 / ((((m : ℕ) + 1 : ℕ) : ℝ)) := by
         norm_num only [Nat.cast_add, Nat.cast_one]
         field_simp [hn0.ne']
@@ -160,7 +160,7 @@ theorem localizedHarmonic_weightedEnergy_le (A : ℕ) :
   calc
     (∑ m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
         (((m : ℕ) : ℝ) + 1) *
-          ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
+          ‖((localizedHarmonicMoebiusR A ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
       ≤ ∑ _m : Fin (menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)),
           1 / (((A + 1 : ℕ) : ℝ)) := Finset.sum_le_sum fun m _ => hterm m
     _ = 3 := by
@@ -182,16 +182,16 @@ def menonHarmonicAffineConst (A : ℕ) : ℝ :=
 theorem integral_Icc_normSq_menonFinalRangeShell_le_affine
     (A : ℕ) {T : ℝ} (hT : 0 ≤ T) :
     (∫ w in Set.Icc (-T) T,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ))
       ≤ menonHarmonicAffineRate A * T + menonHarmonicAffineConst A := by
   let a : ℕ → ℂ := fun n => ((localizedHarmonicMoebiusR A n : ℝ) : ℂ)
   let M : ℕ := menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ)
   have hbase := integral_Icc_normSq_logPoly_le_affine_majorant a M hT
-  have hplain : (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ 2)
+  have hplain : (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
       ≤ 3 / ((A + 1 : ℕ) : ℝ) := by
     simpa [a, M] using localizedHarmonic_plainEnergy_le A
   have hweighted : (∑ m : Fin M,
-      (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2) ≤ 3 := by
+      (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)) ≤ 3 := by
     simpa [a, M] using localizedHarmonic_weightedEnergy_le A
   have hrate := mul_le_mul_of_nonneg_left hplain
     (show 0 ≤ (5 * Real.pi / 2) * T by positivity)
@@ -205,10 +205,10 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_affine
     exact logPoly_localizedHarmonic_eq_menonFinalRangeShell A w] at hbase
   refine le_trans hbase ?_
   calc
-    (5 * Real.pi / 2 * (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ 2)) * T
+    (5 * Real.pi / 2 * (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))) * T
           + (5 * Real.exp 1 / 2 *
-              (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-            + 5 / 4 * (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ 2))
+              (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+            + 5 / 4 * (∑ m : Fin M, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)))
       ≤ (5 * Real.pi / 2 * (3 / ((A + 1 : ℕ) : ℝ))) * T
           + (5 * Real.exp 1 / 2 * 3 + 5 / 4 * (3 / ((A + 1 : ℕ) : ℝ))) := by
         exact add_le_add
@@ -227,14 +227,14 @@ theorem dyadicMeanSquare_harmonic_le_menonFinalRange_dyadicHead
     (hM : B + 1 + l < menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ) + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2) ≤ I) :
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ)) ≤ I) :
     dyadicMeanSquare harmonicMoebiusR l A B ≤
       ((A : ℝ) * (1 + ε) ^ K') *
         ((K' : ℝ) * blockCostG (l : ℝ) ε
-          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ 2 * I
-            + (4 * menonHarmonicAffineRate A / (Real.pi ^ 2 * W)
+          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+            + (4 * menonHarmonicAffineRate A / (Real.pi ^ (2 : ℕ) * W)
               + 4 * menonHarmonicAffineConst A /
-                (3 * Real.pi ^ 2 * W ^ 2)))) := by
+                (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   rw [← dyadicMeanSquare_localizedHarmonic_eq A B l hl]
   refine dyadicMeanSquare_le_dyadicHead (localizedHarmonicMoebiusR A)
     (abs_localizedHarmonicMoebiusR_le_one A) hl hA hAB hε hW hI0

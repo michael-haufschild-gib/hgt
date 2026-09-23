@@ -22,7 +22,7 @@ namespace RHTower
 /-- Complete finite source energy with an affine logarithmic cofactor clock. -/
 def mobiusDivisorFiniteClockEnergy (c : ℝ) (M : ℕ) (P : Finset ℕ) : ℝ :=
   ∑ r ∈ fixedCoreSquarefreeIndices P M,
-    (c + Real.log r) * (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^2
+    (c + Real.log r) * (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)
 
 private lemma sample_vanish (P : Finset ℕ) {M r : ℕ} (hr : 0<r) (hMr : M≤r) :
     mobiusDivisorInterpolatedFibre M r P ∅=0 := by
@@ -117,10 +117,10 @@ the measure is the literal finite arithmetic counting measure. -/
 theorem mobiusDivisorFiniteClockEnergy_eq_clock_samples
     (P : Finset Nat.Primes) (M : ℕ) (c : ℝ) :
     let Q := P.image (fun p : Nat.Primes => (p : ℕ))
-    mobiusDivisorFiniteClockEnergy c (M+1) Q / (M+1 : ℕ)^2 =
+    mobiusDivisorFiniteClockEnergy c (M+1) Q / (M+1 : ℕ)^(2 : ℕ) =
       ∑ r ∈ fixedCoreSquarefreeIndices Q (M+1),
         ((c + Real.log (M+1 : ℕ) - Real.log ((M+1 : ℕ)/ (r : ℝ))) / r) *
-          (mobiusDivisorCriticalClockHead Q (Real.log ((M+1 : ℕ)/(r : ℝ))))^2 := by
+          (mobiusDivisorCriticalClockHead Q (Real.log ((M+1 : ℕ)/(r : ℝ))))^(2 : ℕ) := by
   dsimp only
   let Q := P.image (fun p : Nat.Primes => (p : ℕ))
   have hQ : ∀ p ∈ Q, p.Prime := by
@@ -147,15 +147,15 @@ private lemma weighted_insert (c : ℝ) (P : Finset ℕ) {p : ℕ}
         (c + Real.log r) * (r : ℝ) * mobiusDivisorInterpolatedFibre M r P ∅ *
           mobiusDivisorInterpolatedFibre M (p*r) P ∅ =
       -(p : ℝ) * Real.log p * ∑ r ∈ fixedCoreSquarefreeIndices (insert p P) M,
-        (r : ℝ) * (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2 := by
+        (r : ℝ) * (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ) := by
   unfold mobiusDivisorFiniteClockEnergy
   rw [source_split hp P hpP M]
   have he : (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/p),
       (c + Real.log (p*r : ℕ)) * ((p*r : ℕ) : ℝ) *
-        (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2) =
+        (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ)) =
       ∑ r ∈ fixedCoreSquarefreeIndices (insert p P) M,
         (c + Real.log (p*r : ℕ)) * ((p*r : ℕ) : ℝ) *
-          (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2 := by
+          (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ) := by
     apply sum_subset
     · intro r hr
       obtain ⟨hr, hs⟩ := mem_filter.mp hr
@@ -184,7 +184,7 @@ private lemma weighted_insert (c : ℝ) (P : Finset ℕ) {p : ℕ}
   have hsq := Real.sq_sqrt (Nat.cast_nonneg p)
   linear_combination
     ((c + Real.log r) * (r : ℝ) *
-      (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2) * hsq
+      (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ)) * hsq
 
 /-- The exact finite counting measure pays a positive logarithmic copied
 square. Both signed source factors and the full cutoff remain in the mixed
@@ -200,7 +200,7 @@ theorem mobiusDivisorFiniteClockEnergy_source_cancellation :
               mobiusDivisorInterpolatedFibre M ((p : ℕ)*r) Q ∅ =
         -(p : ℝ) * Real.log (p : ℝ) *
           ∑ r ∈ fixedCoreSquarefreeIndices (insert (p : ℕ) Q) M,
-            (r : ℝ) * (mobiusDivisorInterpolatedFibre M ((p : ℕ)*r) Q ∅)^2 := by
+            (r : ℝ) * (mobiusDivisorInterpolatedFibre M ((p : ℕ)*r) Q ∅)^(2 : ℕ) := by
   intro P p M c
   apply weighted_insert c _ p.property
   intro hp
@@ -245,12 +245,12 @@ theorem mobiusDivisorSelectionEnergy_le_finiteClock (M : ℕ) (P : Finset ℕ) :
 
 private lemma square_as_fibre (P : Finset ℕ) (M : ℕ) {r : ℕ}
     (hr : Squarefree r) (hd : Disjoint r.primeFactors P) :
-    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 =
-      (mobiusDivisorSelectionFibre M P r.primeFactors)^2 := by
+    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) =
+      (mobiusDivisorSelectionFibre M P r.primeFactors)^(2 : ℕ) := by
   have h := mobiusDivisorSelectionFibre_product_interpolation M P r.primeFactors
     (fun p hp => (Nat.mem_primeFactors.mp hp).1) hd
   rw [Nat.prod_primeFactors_of_squarefree hr] at h
-  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^2 = 1 := by
+  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ) = 1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hr
   rw [h, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg r), hm, mul_one]
 
@@ -286,9 +286,9 @@ theorem mobiusDivisorFiniteClockEnergy_triangular_complete (M : ℕ) :
 the original critical action squared, with its original normalization. -/
 theorem mobiusDivisorFiniteClockEnergy_complete_critical_wall (M : ℕ) :
     mobiusDivisorFiniteClockEnergy 1 (M+1) (mobiusDivisorSelectionPrimes (M+1)) /
-        (M+1 : ℕ)^2 =
+        (M+1 : ℕ)^(2 : ℕ) =
       (mobiusDivisorCriticalClockHead (mobiusDivisorSelectionPrimes (M+1))
-        (Real.log (M+1 : ℕ)))^2 := by
+        (Real.log (M+1 : ℕ)))^(2 : ℕ) := by
   rw [mobiusDivisorFiniteClockEnergy_complete, one_mul,
     mobiusDivisorSelectionEnergy_full, mobiusDivisorCriticalClockHead_complete_integer_wall,
     div_pow, mobiusDivisorSquareRootAbelMoment_eq_sum_dilationChannels]

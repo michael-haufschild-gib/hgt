@@ -18,21 +18,21 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Explicit drift of the quartic charge connection. -/
 theorem gomesQuarticDrift_apply (a : ℝ) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    dilatonDriftCLM (gomesQuarticLogWeight a) ψ x = -2 * (a : ℂ) * x ^ 3 * ψ x := by
+    dilatonDriftCLM (gomesQuarticLogWeight a) ψ x = -2 * (a : ℂ) * x ^ (3 : ℕ) * ψ x := by
   rw [dilatonDriftCLM_apply, gomesQuarticLogWeight_derivative_eval]
   push_cast
   ring
 
 /-- Explicit quartic covariant derivative on the existing Schwartz domain. -/
 theorem gomesQuarticSupercharge_apply (a : ℝ) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    dilatonSuperchargeCLM (gomesQuarticLogWeight a) ψ x = deriv ψ x + 2 * (a : ℂ) * x ^ 3 * ψ x := by
+    dilatonSuperchargeCLM (gomesQuarticLogWeight a) ψ x = deriv ψ x + 2 * (a : ℂ) * x ^ (3 : ℕ) * ψ x := by
   rw [dilatonSuperchargeCLM_apply, gomesQuarticLogWeight_derivative_eval]
   push_cast
   ring
 
 /-- The other factor retains the same cubic connection term. -/
 theorem gomesQuarticAdjointCharge_apply (a : ℝ) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    dilatonAdjointChargeCLM (gomesQuarticLogWeight a) ψ x = -deriv ψ x + 2 * (a : ℂ) * x ^ 3 * ψ x := by
+    dilatonAdjointChargeCLM (gomesQuarticLogWeight a) ψ x = -deriv ψ x + 2 * (a : ℂ) * x ^ (3 : ℕ) * ψ x := by
   rw [dilatonAdjointChargeCLM_apply, gomesQuarticLogWeight_derivative_eval]
   push_cast
   ring
@@ -48,7 +48,7 @@ theorem gomesQuarticDrift_charge (b : ℝ) (n : ℤ) :
 
 /-- The signed quartic profile produces a sextic potential with a quadratic charge term. -/
 theorem gomesQuarticPotential_formula (a x : ℝ) :
-    dilatonPotential (gomesQuarticLogWeight a) x = 4 * a ^ 2 * x ^ 6 - 6 * a * x ^ 2 := by
+    dilatonPotential (gomesQuarticLogWeight a) x = 4 * a ^ (2 : ℕ) * x ^ (6 : ℕ) - 6 * a * x ^ (2 : ℕ) := by
   rw [dilatonPotential, gomesQuarticLogWeight_derivative_eval,
     gomesQuarticLogWeight_second_derivative_eval]
   ring
@@ -56,14 +56,14 @@ theorem gomesQuarticPotential_formula (a x : ℝ) :
 /-- Duality has an exact quadratic spatial correction. -/
 theorem gomesQuarticPotential_dual (a x : ℝ) :
     dilatonPotential (gomesQuarticLogWeight (-a)) x =
-      dilatonPotential (gomesQuarticLogWeight a) x + 12 * a * x ^ 2 := by
+      dilatonPotential (gomesQuarticLogWeight a) x + 12 * a * x ^ (2 : ℕ) := by
   rw [gomesQuarticPotential_formula, gomesQuarticPotential_formula]
   ring
 
 /-- The quadratic correction holds on every actual Schwartz state. -/
 theorem gomesQuarticHamiltonian_dual_apply (a : ℝ) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
     dilatonHamiltonianCLM (gomesQuarticLogWeight (-a)) ψ x =
-      dilatonHamiltonianCLM (gomesQuarticLogWeight a) ψ x + 12 * (a : ℂ) * x ^ 2 * ψ x := by
+      dilatonHamiltonianCLM (gomesQuarticLogWeight a) ψ x + 12 * (a : ℂ) * x ^ (2 : ℕ) * ψ x := by
   rw [gomesQuarticLogWeight_neg, gomesDilatonDual_hamiltonian_apply,
     gomesQuarticLogWeight_second_derivative_eval]
   push_cast
@@ -111,7 +111,7 @@ theorem gomesQuarticHamiltonian_constant_shift_iff (a c : ℝ) :
       dilatonHamiltonianCLM (gomesQuarticLogWeight a) ψ + (c : ℂ) • ψ) ↔ a = 0 ∧ c = 0 := by
   constructor
   · intro h
-    have hcoef (x : ℝ) : 12 * a * x ^ 2 = c := by
+    have hcoef (x : ℝ) : 12 * a * x ^ (2 : ℕ) = c := by
       have hx := congrArg (fun ψ : 𝓢(ℝ, ℂ) => ψ x) (h gaussianSchwartz)
       change dilatonHamiltonianCLM (gomesQuarticLogWeight (-a)) gaussianSchwartz x =
         dilatonHamiltonianCLM (gomesQuarticLogWeight a) gaussianSchwartz x +

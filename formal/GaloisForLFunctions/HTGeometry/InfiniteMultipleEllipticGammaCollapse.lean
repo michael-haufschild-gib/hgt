@@ -277,7 +277,7 @@ theorem sq_eq_one_of_tendsto_rawSection {ι : Type*} [Infinite ι] (g : ℕ) (p 
     (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) {x : ℂ}
     (hG : infiniteMultipleEllipticGamma g p x ≠ 0) {L : ℂ}
     (hL : Tendsto (fun S : Finset ι => rawSection g p S x) atTop (𝓝 L)) :
-    infiniteMultipleEllipticGamma g p x ^ 2 = 1 := by
+    infiniteMultipleEllipticGamma g p x ^ (2 : ℕ) = 1 := by
   have hLe : Tendsto (fun S : Finset ι => rawSection g p S x)
       (atTop ⊓ 𝓟 {S : Finset ι | Even S.card}) (𝓝 L) := hL.mono_left inf_le_left
   have hLo : Tendsto (fun S : Finset ι => rawSection g p S x)
@@ -298,7 +298,7 @@ theorem exists_point_of_half {ι : Type*} (g : ℕ) (p : ι → ℂ)
     (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
     (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) :
     ∃ x : ℂ, infiniteMultipleEllipticGamma g p x ≠ 0 ∧
-      infiniteMultipleEllipticGamma g p x ^ 2 ≠ 1 := by
+      infiniteMultipleEllipticGamma g p x ^ (2 : ℕ) ≠ 1 := by
   have hcont : Continuous (infiniteMultipleEllipticGamma g p) := by
     have h := infiniteMultipleEllipticGamma_analytic g p hp_ne hp_lt hsum
     rw [← continuousOn_univ]

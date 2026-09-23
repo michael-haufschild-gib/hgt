@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.MobiusThetaComplexSourceToXiLanding
 
 This module gives the literal theta action on the finite core of the critical prime-log
 Laplace graph.  A prime coordinate is sent to the corresponding logarithmic translate of
-the actual theta-cusp source, with its fixed `2 log(p)^2 / sqrt(p)` coefficient.  The
+the actual theta-cusp source, with its fixed `2 log(p)^(2 : ℕ) / sqrt(p)` coefficient.  The
 Fourier--Laplace transform factors before any zero or quotient specialization.
 
 At `w = -I t`, for `0 < t < 1`, the exact product identity is

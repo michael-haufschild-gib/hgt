@@ -59,8 +59,8 @@ theorem coeff_deriv_mul_coeff_eq {F : (PowerSeries S)[X]} {y : PowerSeries S}
   have hcoeff := congrArg (PowerSeries.coeff (n + r)) hB.symm
   rw [map_zero, map_add, map_add] at hcoeff
   -- the quadratic remainder is invisible
-  have hquad : PowerSeries.coeff (n + r) ((y - truncPS n y) ^ 2 * B) = 0 := by
-    have hdvd : (PowerSeries.X : PowerSeries S) ^ (n + n) ∣ (y - truncPS n y) ^ 2 * B := by
+  have hquad : PowerSeries.coeff (n + r) ((y - truncPS n y) ^ (2 : ℕ) * B) = 0 := by
+    have hdvd : (PowerSeries.X : PowerSeries S) ^ (n + n) ∣ (y - truncPS n y) ^ (2 : ℕ) * B := by
       refine Dvd.dvd.mul_right ?_ B
       rw [pow_add, sq]
       exact mul_dvd_mul hηdvd hηdvd

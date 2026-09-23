@@ -30,7 +30,7 @@ def routeRFoldedCenteredParameter (rho : ℂ) : ℂ := rho - 1 / 2
 
 @[simp]
 theorem routeRFoldedCenteredParameter_sq (rho : ℂ) :
-    routeRFoldedCenteredParameter rho ^ 2 = primeFoldMu rho := rfl
+    routeRFoldedCenteredParameter rho ^ (2 : ℕ) = primeFoldMu rho := rfl
 
 /-- The even and odd monodromy modes are linearly independent whenever multiplicity is nonzero.
 The proof reads their independent Dirichlet and Neumann source data. -/
@@ -223,7 +223,7 @@ theorem routeRFoldedHalfLaplacePort_evenMode
     {lam : ℂ} (hlam : |lam.re| < 1 / 2) (m : ℕ) :
     routeRFoldedHalfLaplacePort (primeFoldEvenMode lam m) =
       primeFoldMonodromyCoefficient m * (1 / 2 : ℂ) /
-        ((1 / 2 : ℂ) ^ 2 - lam ^ 2) := by
+        ((1 / 2 : ℂ) ^ (2 : ℕ) - lam ^ (2 : ℕ)) := by
   have hp := integrableOn_routeRFoldedHalfLaplaceIntegrand_add_lightCone hlam m
   have hm := integrableOn_routeRFoldedHalfLaplaceIntegrand_sub_lightCone hlam m
   have hsum :
@@ -262,7 +262,7 @@ theorem routeRFoldedHalfLaplacePort_evenMode
     apply (eq_div_iff (by norm_num : (2 : ℂ) ≠ 0)).2
     simpa [mul_comm] using hsum.symm
   rw [hport]
-  have hden : (1 / 2 : ℂ) ^ 2 - lam ^ 2 ≠ 0 := by
+  have hden : (1 / 2 : ℂ) ^ (2 : ℕ) - lam ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hplus hminus
   have hminusN : 1 - 2 * lam ≠ 0 := by
@@ -273,7 +273,7 @@ theorem routeRFoldedHalfLaplacePort_evenMode
     intro h
     apply hplus
     linear_combination h / 2
-  have hdenN : 1 - 2 ^ 2 * lam ^ 2 ≠ 0 := by
+  have hdenN : 1 - 2 ^ (2 : ℕ) * lam ^ (2 : ℕ) ≠ 0 := by
     intro h
     apply hden
     linear_combination h / 4
@@ -284,7 +284,7 @@ theorem routeRFoldedHalfLaplacePort_evenMode
 /-- Laplace reading of the removable odd mode at the centered parameter `0`. -/
 theorem routeRFoldedHalfLaplacePort_oddMode_zero (m : ℕ) :
     routeRFoldedHalfLaplacePort (primeFoldOddMode 0 m) =
-      primeFoldMonodromyCoefficient m / (1 / 2 : ℂ) ^ 2 := by
+      primeFoldMonodromyCoefficient m / (1 / 2 : ℂ) ^ (2 : ℕ) := by
   have hgamma := Complex.integral_cpow_mul_exp_neg_mul_Ioi
     (a := (2 : ℂ)) (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
   have hlinear :
@@ -322,7 +322,7 @@ theorem routeRFoldedHalfLaplacePort_oddMode
     {lam : ℂ} (hlam : |lam.re| < 1 / 2) (m : ℕ) :
     routeRFoldedHalfLaplacePort (primeFoldOddMode lam m) =
       primeFoldMonodromyCoefficient m /
-        ((1 / 2 : ℂ) ^ 2 - lam ^ 2) := by
+        ((1 / 2 : ℂ) ^ (2 : ℕ) - lam ^ (2 : ℕ)) := by
   rcases eq_or_ne lam 0 with rfl | hne
   · simpa using routeRFoldedHalfLaplacePort_oddMode_zero m
   · have hp := integrableOn_routeRFoldedHalfLaplaceIntegrand_add_lightCone hlam m
@@ -364,7 +364,7 @@ theorem routeRFoldedHalfLaplacePort_oddMode
       apply (eq_div_iff (mul_ne_zero (by norm_num) hne)).2
       simpa [mul_comm] using hdiff.symm
     rw [hport]
-    have hden : (1 / 2 : ℂ) ^ 2 - lam ^ 2 ≠ 0 := by
+    have hden : (1 / 2 : ℂ) ^ (2 : ℕ) - lam ^ (2 : ℕ) ≠ 0 := by
       rw [sq_sub_sq]
       exact mul_ne_zero hplus hminus
     have hminusN : 1 - 2 * lam ≠ 0 := by
@@ -375,7 +375,7 @@ theorem routeRFoldedHalfLaplacePort_oddMode
       intro h
       apply hplus
       linear_combination h / 2
-    have hdenN : 1 - 2 ^ 2 * lam ^ 2 ≠ 0 := by
+    have hdenN : 1 - 2 ^ (2 : ℕ) * lam ^ (2 : ℕ) ≠ 0 := by
       intro h
       apply hden
       linear_combination h / 4
@@ -434,7 +434,7 @@ theorem routeRFoldedHalfLaplacePort_evenMode_at
     routeRFoldedHalfLaplacePort
         (primeFoldEvenMode (routeRFoldedCenteredParameter rho) m) =
       primeFoldMonodromyCoefficient m * (1 / 2 : ℂ) /
-        ((1 / 2 : ℂ) ^ 2 - primeFoldMu rho) := by
+        ((1 / 2 : ℂ) ^ (2 : ℕ) - primeFoldMu rho) := by
   simpa using routeRFoldedHalfLaplacePort_evenMode
     (abs_re_routeRFoldedCenteredParameter_lt_half hzero hone) m
 
@@ -444,25 +444,25 @@ theorem routeRFoldedHalfLaplacePort_oddMode_at
     routeRFoldedHalfLaplacePort
         (primeFoldOddMode (routeRFoldedCenteredParameter rho) m) =
       primeFoldMonodromyCoefficient m /
-        ((1 / 2 : ℂ) ^ 2 - primeFoldMu rho) := by
+        ((1 / 2 : ℂ) ^ (2 : ℕ) - primeFoldMu rho) := by
   simpa using routeRFoldedHalfLaplacePort_oddMode
     (abs_re_routeRFoldedCenteredParameter_lt_half hzero hone) m
 
 /-- Scaled exact identification of the Burnol current with the folded source Laplace port. -/
 theorem norm_primeFoldMonodromyCoefficient_sq_mul_burnolFlux_eq_laplacePort
     {rho : ℂ} (hzero : 0 < rho.re) (hone : rho.re < 1) (m : ℕ) :
-    ‖primeFoldMonodromyCoefficient m‖ ^ 2 * burnolCartierDividedShiftHeadFlux rho =
+    ‖primeFoldMonodromyCoefficient m‖ ^ (2 : ℕ) * burnolCartierDividedShiftHeadFlux rho =
       ‖routeRFoldedHalfLaplacePort
           (fun L =>
             primeFoldEvenMode (routeRFoldedCenteredParameter rho) m L +
               routeRFoldedCenteredParameter rho *
-                primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ 2 -
-        (Real.log 2) ^ 2 *
+                primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ (2 : ℕ) -
+        (Real.log 2) ^ (2 : ℕ) *
           ‖routeRFoldedHalfLaplacePort
             (fun L =>
               primeFoldEvenMode (routeRFoldedCenteredParameter rho) m L -
                 routeRFoldedCenteredParameter rho *
-                  primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ 2 := by
+                  primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ (2 : ℕ) := by
   rw [routeRFoldedHalfLaplacePort_forwardHead hzero hone m,
     routeRFoldedHalfLaplacePort_reflectedHead hzero hone m]
   unfold burnolCartierDividedShiftHeadFlux
@@ -474,18 +474,18 @@ theorem burnolCartierDividedShiftHeadFlux_eq_foldedLaplacePort
     {rho : ℂ} (hzero : 0 < rho.re) (hone : rho.re < 1)
     {m : ℕ} (hm : m ≠ 0) :
     burnolCartierDividedShiftHeadFlux rho =
-      ‖primeFoldMonodromyCoefficient m‖⁻¹ ^ 2 *
+      ‖primeFoldMonodromyCoefficient m‖⁻¹ ^ (2 : ℕ) *
         (‖routeRFoldedHalfLaplacePort
             (fun L =>
               primeFoldEvenMode (routeRFoldedCenteredParameter rho) m L +
                 routeRFoldedCenteredParameter rho *
-                  primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ 2 -
-          (Real.log 2) ^ 2 *
+                  primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ (2 : ℕ) -
+          (Real.log 2) ^ (2 : ℕ) *
             ‖routeRFoldedHalfLaplacePort
               (fun L =>
                 primeFoldEvenMode (routeRFoldedCenteredParameter rho) m L -
                   routeRFoldedCenteredParameter rho *
-                    primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ 2) := by
+                    primeFoldOddMode (routeRFoldedCenteredParameter rho) m L)‖ ^ (2 : ℕ)) := by
   rw [← norm_primeFoldMonodromyCoefficient_sq_mul_burnolFlux_eq_laplacePort
     hzero hone m]
   have hq : ‖primeFoldMonodromyCoefficient m‖ ≠ 0 :=

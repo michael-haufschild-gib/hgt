@@ -19,13 +19,13 @@ variable {ι : Type*} [Fintype ι]
 
 /-- Third centered source cumulant in a finite packet. -/
 def packetThirdCumulant (w x : ι → ℝ) : ℝ :=
-  ∑ i, w i * x i ^ 3
+  ∑ i, w i * x i ^ (3 : ℕ)
 
 /-- Mixed cubic current produced by independent pair formation followed by reciprocal Hadamard
 mixing. -/
 def hadamardMixedThird (w x : ι → ℝ) (a : ℝ) : ℝ :=
   ∑ i, ∑ j, (w i * w j) *
-    (a * (x i + x j)) * (a * (x i - x j)) ^ 2
+    (a * (x i + x j)) * (a * (x i - x j)) ^ (2 : ℕ)
 
 private lemma sum_sum_scaled_product (c : ℝ) (f g : ι → ℝ) :
     (∑ i, ∑ j, c * f i * g j) = c * (∑ i, f i) * (∑ j, g j) := by
@@ -42,24 +42,24 @@ private lemma sum_sum_scaled_product (c : ℝ) (f g : ι → ℝ) :
 /-- Exact fusion identity before normalization or centering. -/
 theorem hadamardMixedThird_general (w x : ι → ℝ) (a : ℝ) :
     hadamardMixedThird w x a =
-      2 * a ^ 3 *
+      2 * a ^ (3 : ℕ) *
         ((∑ i, w i) * packetThirdCumulant w x -
-          (∑ i, w i * x i) * (∑ i, w i * x i ^ 2)) := by
+          (∑ i, w i * x i) * (∑ i, w i * x i ^ (2 : ℕ))) := by
   classical
   unfold hadamardMixedThird packetThirdCumulant
   simp_rw [show ∀ i j, (w i * w j) * (a * (x i + x j)) *
-      (a * (x i - x j)) ^ 2 =
-      a ^ 3 * (w i * x i ^ 3) * w j +
-      a ^ 3 * w i * (w j * x j ^ 3) -
-      a ^ 3 * (w i * x i ^ 2) * (w j * x j) -
-      a ^ 3 * (w i * x i) * (w j * x j ^ 2) by
+      (a * (x i - x j)) ^ (2 : ℕ) =
+      a ^ (3 : ℕ) * (w i * x i ^ (3 : ℕ)) * w j +
+      a ^ (3 : ℕ) * w i * (w j * x j ^ (3 : ℕ)) -
+      a ^ (3 : ℕ) * (w i * x i ^ (2 : ℕ)) * (w j * x j) -
+      a ^ (3 : ℕ) * (w i * x i) * (w j * x j ^ (2 : ℕ)) by
     intro i j
     ring]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  rw [sum_sum_scaled_product (a ^ 3) (fun i => w i * x i ^ 3) w,
-    sum_sum_scaled_product (a ^ 3) w (fun j => w j * x j ^ 3),
-    sum_sum_scaled_product (a ^ 3) (fun i => w i * x i ^ 2) (fun j => w j * x j),
-    sum_sum_scaled_product (a ^ 3) (fun i => w i * x i) (fun j => w j * x j ^ 2)]
+  rw [sum_sum_scaled_product (a ^ (3 : ℕ)) (fun i => w i * x i ^ (3 : ℕ)) w,
+    sum_sum_scaled_product (a ^ (3 : ℕ)) w (fun j => w j * x j ^ (3 : ℕ)),
+    sum_sum_scaled_product (a ^ (3 : ℕ)) (fun i => w i * x i ^ (2 : ℕ)) (fun j => w j * x j),
+    sum_sum_scaled_product (a ^ (3 : ℕ)) (fun i => w i * x i) (fun j => w j * x j ^ (2 : ℕ))]
   ring
 
 /-- For a normalized centered packet, bi-formation interference is exactly twice the scaled third
@@ -68,7 +68,7 @@ theorem hadamardMixedThird_eq
     (w x : ι → ℝ) (a : ℝ)
     (hmass : ∑ i, w i = 1)
     (hcenter : ∑ i, w i * x i = 0) :
-    hadamardMixedThird w x a = 2 * a ^ 3 * packetThirdCumulant w x := by
+    hadamardMixedThird w x a = 2 * a ^ (3 : ℕ) * packetThirdCumulant w x := by
   rw [hadamardMixedThird_general, hmass, hcenter]
   ring
 
@@ -80,7 +80,7 @@ theorem hadamardMixedThird_neg (w x : ι → ℝ) (a : ℝ) :
 
 /-- Positive scalarization is phase-blind: the squared current is reflection invariant. -/
 theorem hadamardMixedThird_sq_neg (w x : ι → ℝ) (a : ℝ) :
-    hadamardMixedThird w x (-a) ^ 2 = hadamardMixedThird w x a ^ 2 := by
+    hadamardMixedThird w x (-a) ^ (2 : ℕ) = hadamardMixedThird w x a ^ (2 : ℕ) := by
   rw [hadamardMixedThird_neg]
   ring
 
@@ -95,7 +95,7 @@ theorem hadamardMixedThird_eq_zero_iff
   constructor
   · intro h
     rcases mul_eq_zero.mp h with hleft | hright
-    · have ha3 : a ^ 3 = 0 := (mul_eq_zero.mp hleft).resolve_left (by norm_num)
+    · have ha3 : a ^ (3 : ℕ) = 0 := (mul_eq_zero.mp hleft).resolve_left (by norm_num)
       exact eq_zero_of_pow_eq_zero ha3
     · exact False.elim (hkappa hright)
   · rintro rfl
@@ -149,9 +149,9 @@ theorem biFormationInterference_capstone
     (hmass : ∑ i, w i = 1)
     (hcenter : ∑ i, w i * x i = 0)
     (hkappa : packetThirdCumulant w x ≠ 0) :
-    hadamardMixedThird w x a = 2 * a ^ 3 * packetThirdCumulant w x ∧
+    hadamardMixedThird w x a = 2 * a ^ (3 : ℕ) * packetThirdCumulant w x ∧
       hadamardMixedThird w x (-a) = -hadamardMixedThird w x a ∧
-      hadamardMixedThird w x (-a) ^ 2 = hadamardMixedThird w x a ^ 2 ∧
+      hadamardMixedThird w x (-a) ^ (2 : ℕ) = hadamardMixedThird w x a ^ (2 : ℕ) ∧
       (hadamardMixedThird w x a = 0 ↔ a = 0) ∧
       ((∃ C : ℝ, ∀ m : ℕ, |hadamardDepthCurrent w x a m| ≤ C) ↔ a = 0) := by
   exact ⟨hadamardMixedThird_eq w x a hmass hcenter,

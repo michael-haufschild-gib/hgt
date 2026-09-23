@@ -25,13 +25,13 @@ theorem egbFixedChargeAMeanRadiusCorrection_pos (w φ : ℝ) : 0 < egbFixedCharg
 theorem egbFixedChargeAMeanRadius_difference_cross (w φ τ : ℝ) :
     (egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) *
       (egbFixedChargeAMeanRadius w φ τ + egbFixedChargeACriticalRadius w φ) * egbFixedChargeACriticalWeight φ =
-    -(egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) * egbFixedChargeAMeanRadius w φ τ ^ 2 := by
+    -(egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) * egbFixedChargeAMeanRadius w φ τ ^ (2 : ℕ) := by
   linear_combination egbFixedChargeA_mean_effective_scale w φ τ - egbFixedChargeACritical_effective_scale w φ
 
 theorem egbFixedChargeAMeanRadius_normalized_difference (w φ τ : ℝ) :
-    (egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ 2 =
-      -((egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2) *
-        egbFixedChargeAMeanRadius w φ τ ^ 2 /
+    (egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+      -((egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
+        egbFixedChargeAMeanRadius w φ τ ^ (2 : ℕ) /
         ((egbFixedChargeAMeanRadius w φ τ + egbFixedChargeACriticalRadius w φ) * egbFixedChargeACriticalWeight φ) := by
   have hm := egbFixedChargeAMeanRadius_pos w φ τ
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -40,11 +40,11 @@ theorem egbFixedChargeAMeanRadius_normalized_difference (w φ τ : ℝ) :
   calc
     _ = ((egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) *
       (egbFixedChargeAMeanRadius w φ τ + egbFixedChargeACriticalRadius w φ) * egbFixedChargeACriticalWeight φ) /
-      egbCoexistenceASymmetricRatio τ ^ 2 := by ring
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by ring
     _ = _ := by rw [egbFixedChargeAMeanRadius_difference_cross]; ring
 
 theorem egbFixedChargeAMeanRadius_quadratic_critical_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanRadiusCorrection w φ)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hs := egbFixedChargeACriticalWeight_pos φ

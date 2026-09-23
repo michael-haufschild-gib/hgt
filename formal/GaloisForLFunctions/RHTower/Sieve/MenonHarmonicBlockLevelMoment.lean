@@ -63,17 +63,17 @@ theorem setIntegral_normSq_harmonicBlockProduct_levelSplit_moment
     (hJ : harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ J * V₀) :
     (∫ w in E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w
-        * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2)
-      ≤ V₀ ^ 2 * ((2 * Real.pi)⁻¹ *
+        * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
             (hmMassRecip N (2 * Real.pi * W) (2 * Real.pi * volume.real E)
-              * ((1 / (L' : ℝ)) ^ 2 * (D.card : ℝ))))
+              * ((1 / (L' : ℝ)) ^ (2 : ℕ) * (D.card : ℝ))))
         + ∑ i ∈ Finset.range J,
-            (2 ^ (i + 1) * V₀) ^ 2 * ((2 * Real.pi)⁻¹ *
+            (2 ^ (i + 1) * V₀) ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
               (hmMassRecip N (2 * Real.pi * W)
                   (2 * Real.pi *
                     (menonHarmonicLocalBlockMomentCost k Q eta W j
                       / (2 ^ i * V₀) ^ (2 * k)))
-                * ((1 / (L' : ℝ)) ^ 2 * (D.card : ℝ)))) := by
+                * ((1 / (L' : ℝ)) ^ (2 : ℕ) * (D.card : ℝ)))) := by
   classical
   have hT : (1 : ℝ) ≤ 2 * Real.pi * W := by nlinarith [Real.pi_gt_three]
   have hbase := setIntegral_normSq_harmonicBlockProduct_levelSplit_HM

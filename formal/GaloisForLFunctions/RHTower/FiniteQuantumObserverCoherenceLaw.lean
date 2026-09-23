@@ -44,7 +44,7 @@ def finiteQuantumObserverPhaseEnergy
     (lam : J → ℝ) (z : Fin d → ℂ)
     (block : J → Fin d → Fin d → ℂ) : ℝ :=
   ∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
-    ‖finiteQuantumObserverPhase z i j - 1‖ ^ 2
+    ‖finiteQuantumObserverPhase z i j - 1‖ ^ (2 : ℕ)
 
 /-- The observer-union weight is nonnegative when all observation weights
 are nonnegative. -/
@@ -150,7 +150,7 @@ private theorem phase_eq_of_positive_weight
     z i = z j := by
   let f : Fin d → Fin d → ℝ := fun u v =>
     finiteObserverUnionWeight lam block u v *
-      ‖finiteQuantumObserverPhase z u v - 1‖ ^ 2
+      ‖finiteQuantumObserverPhase z u v - 1‖ ^ (2 : ℕ)
   have hf : ∀ u v, 0 ≤ f u v := by
     intro u v
     exact mul_nonneg
@@ -160,7 +160,7 @@ private theorem phase_eq_of_positive_weight
     simpa only [f, finiteQuantumObserverPhaseEnergy] using hzero
   have hterm := nested_sum_term_eq_zero f hf hsum i j
   have hsq :
-      ‖finiteQuantumObserverPhase z i j - 1‖ ^ 2 = 0 :=
+      ‖finiteQuantumObserverPhase z i j - 1‖ ^ (2 : ℕ) = 0 :=
     (mul_eq_zero.mp hterm).resolve_left hpos.ne'
   have hnorm :
       ‖finiteQuantumObserverPhase z i j - 1‖ = 0 :=

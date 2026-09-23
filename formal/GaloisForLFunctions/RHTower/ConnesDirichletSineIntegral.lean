@@ -27,9 +27,9 @@ noncomputable section
 /-- The primitive of `e^{-ts} sin t` in `t`. -/
 theorem connes_hasDerivAt_dampedSine (s t : ℝ) :
     HasDerivAt (fun t : ℝ =>
-        -Real.exp (-(t * s)) * (Real.cos t + s * Real.sin t) / (1 + s ^ 2))
+        -Real.exp (-(t * s)) * (Real.cos t + s * Real.sin t) / (1 + s ^ (2 : ℕ)))
       (Real.exp (-(t * s)) * Real.sin t) t := by
-  have hA : (1 : ℝ) + s ^ 2 ≠ 0 := by positivity
+  have hA : (1 : ℝ) + s ^ (2 : ℕ) ≠ 0 := by positivity
   have h1 : HasDerivAt (fun t : ℝ => -(t * s)) (-s) t := by
     have h := (hasDerivAt_id t).mul_const s
     rw [one_mul] at h
@@ -42,18 +42,18 @@ theorem connes_hasDerivAt_dampedSine (s t : ℝ) :
   have h4 : HasDerivAt (fun t : ℝ => -Real.exp (-(t * s)) * (Real.cos t + s * Real.sin t))
       (-(Real.exp (-(t * s)) * (-s)) * (Real.cos t + s * Real.sin t)
         + -Real.exp (-(t * s)) * (-Real.sin t + s * Real.cos t)) t := h2.neg.mul h3
-  have h5 := h4.div_const (1 + s ^ 2)
+  have h5 := h4.div_const (1 + s ^ (2 : ℕ))
   refine h5.congr_deriv ?_
   rw [div_eq_iff hA]
   ring
 
 theorem connes_intervalIntegral_sin_mul_exp (s R : ℝ) :
     (∫ t in (0 : ℝ)..R, Real.exp (-(t * s)) * Real.sin t)
-      = (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ 2) := by
-  have hA : (1 : ℝ) + s ^ 2 ≠ 0 := by positivity
+      = (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ (2 : ℕ)) := by
+  have hA : (1 : ℝ) + s ^ (2 : ℕ) ≠ 0 := by positivity
   have hderiv : ∀ t ∈ Set.uIcc (0 : ℝ) R,
       HasDerivAt (fun t : ℝ =>
-        -Real.exp (-(t * s)) * (Real.cos t + s * Real.sin t) / (1 + s ^ 2))
+        -Real.exp (-(t * s)) * (Real.cos t + s * Real.sin t) / (1 + s ^ (2 : ℕ)))
         (Real.exp (-(t * s)) * Real.sin t) t := fun t _ => connes_hasDerivAt_dampedSine s t
   have hint : IntervalIntegrable (fun t : ℝ => Real.exp (-(t * s)) * Real.sin t)
       volume 0 R := by
@@ -67,16 +67,16 @@ theorem connes_intervalIntegral_sin_mul_exp (s R : ℝ) :
 
 /-- `∫_0^∞ ds/(1+s²) = π/2`. -/
 theorem connes_integral_inv_one_add_sq_Ioi :
-    (∫ s in Ioi (0 : ℝ), (1 + s ^ 2)⁻¹) = Real.pi / 2 := by
-  have hderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt Real.arctan (1 + x ^ 2)⁻¹ x := by
+    (∫ s in Ioi (0 : ℝ), (1 + s ^ (2 : ℕ))⁻¹) = Real.pi / 2 := by
+  have hderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt Real.arctan (1 + x ^ (2 : ℕ))⁻¹ x := by
     intro x _
     simpa using Real.hasDerivAt_arctan x
-  have hint : IntegrableOn (fun x : ℝ => (1 + x ^ 2)⁻¹) (Ioi (0 : ℝ)) :=
+  have hint : IntegrableOn (fun x : ℝ => (1 + x ^ (2 : ℕ))⁻¹) (Ioi (0 : ℝ)) :=
     (integrable_inv_one_add_sq).integrableOn
   have htend : Tendsto Real.arctan atTop (𝓝 (Real.pi / 2)) :=
     Real.tendsto_arctan_atTop.mono_right nhdsWithin_le_nhds
   have h := MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto
-    (f := Real.arctan) (f' := fun x : ℝ => (1 + x ^ 2)⁻¹) (a := (0 : ℝ))
+    (f := Real.arctan) (f' := fun x : ℝ => (1 + x ^ (2 : ℕ))⁻¹) (a := (0 : ℝ))
     (Real.continuous_arctan.continuousWithinAt) hderiv hint htend
   simpa using h
 
@@ -143,7 +143,7 @@ theorem connes_laplaceKernel_integrable (R : ℝ) :
 theorem connes_sinDiv_fubini {R : ℝ} (hR : 0 < R) :
     (∫ t in Ioc (0 : ℝ) R, Real.sin t / t)
       = ∫ s in Ioi (0 : ℝ),
-          (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ 2) := by
+          (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ (2 : ℕ)) := by
   have h1 : (∫ t in Ioc (0 : ℝ) R, Real.sin t / t)
       = ∫ t in Ioc (0 : ℝ) R, ∫ s in Ioi (0 : ℝ), Real.sin t * Real.exp (-(t * s)) :=
     MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
@@ -158,8 +158,8 @@ theorem connes_sinDiv_fubini {R : ℝ} (hR : 0 < R) :
 
 /-- The elementary bound on the error density. -/
 theorem connes_dirichlet_error_density_le {s R : ℝ} (hs : 0 ≤ s) :
-    |(Real.cos R + s * Real.sin R) / (1 + s ^ 2)| ≤ 3 / 2 := by
-  have hA : (0 : ℝ) < 1 + s ^ 2 := by positivity
+    |(Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))| ≤ 3 / 2 := by
+  have hA : (0 : ℝ) < 1 + s ^ (2 : ℕ) := by positivity
   have h1 : |Real.cos R + s * Real.sin R| ≤ 1 + s := by
     have hc := Real.abs_cos_le_one R
     have hsn := Real.abs_sin_le_one R
@@ -174,7 +174,7 @@ theorem connes_dirichlet_error_density_le {s R : ℝ} (hs : 0 ≤ s) :
 
 theorem connes_dirichlet_error_integrable {R : ℝ} (hR : 0 < R) :
     IntegrableOn (fun s : ℝ =>
-      Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)) (Ioi (0 : ℝ)) := by
+      Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))) (Ioi (0 : ℝ)) := by
   have hmaj : IntegrableOn (fun s : ℝ => (3 / 2 : ℝ) * Real.exp (-(R * s))) (Ioi (0 : ℝ)) := by
     have hbase := (exp_neg_integrableOn_Ioi (0 : ℝ) hR).const_mul (3 / 2 : ℝ)
     have hfun : (fun s : ℝ => (3 / 2 : ℝ) * Real.exp (-R * s))
@@ -186,24 +186,24 @@ theorem connes_dirichlet_error_integrable {R : ℝ} (hR : 0 < R) :
   refine Integrable.mono' hmaj ?_ ?_
   · refine AEStronglyMeasurable.restrict ?_
     refine Continuous.aestronglyMeasurable ?_
-    have hden : Continuous fun s : ℝ => (1 : ℝ) + s ^ 2 := by fun_prop
+    have hden : Continuous fun s : ℝ => (1 : ℝ) + s ^ (2 : ℕ) := by fun_prop
     have hnum : Continuous fun s : ℝ =>
         Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) := by fun_prop
     exact hnum.div hden (fun s => by positivity)
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
     have hs0 : (0 : ℝ) ≤ s := le_of_lt hs
-    have heq : Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)
-        = Real.exp (-(R * s)) * ((Real.cos R + s * Real.sin R) / (1 + s ^ 2)) := by ring
+    have heq : Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))
+        = Real.exp (-(R * s)) * ((Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))) := by ring
     rw [heq, Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
     have h := mul_le_mul_of_nonneg_left (connes_dirichlet_error_density_le (R := R) hs0)
       (le_of_lt (Real.exp_pos (-(R * s))))
-    calc Real.exp (-(R * s)) * |(Real.cos R + s * Real.sin R) / (1 + s ^ 2)|
+    calc Real.exp (-(R * s)) * |(Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))|
         ≤ Real.exp (-(R * s)) * (3 / 2) := h
       _ = (3 / 2 : ℝ) * Real.exp (-(R * s)) := by ring
 
 theorem connes_dirichlet_error_bound {R : ℝ} (hR : 0 < R) :
     ‖∫ s in Ioi (0 : ℝ),
-        Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)‖ ≤ (3 / 2) / R := by
+        Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))‖ ≤ (3 / 2) / R := by
   have hmaj : IntegrableOn (fun s : ℝ => (3 / 2 : ℝ) * Real.exp (-(R * s))) (Ioi (0 : ℝ)) := by
     have hbase := (exp_neg_integrableOn_Ioi (0 : ℝ) hR).const_mul (3 / 2 : ℝ)
     have hfun : (fun s : ℝ => (3 / 2 : ℝ) * Real.exp (-R * s))
@@ -213,23 +213,23 @@ theorem connes_dirichlet_error_bound {R : ℝ} (hR : 0 < R) :
     rw [hfun] at hbase
     exact hbase
   have hle : ∀ s ∈ Ioi (0 : ℝ),
-      ‖Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)‖
+      ‖Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))‖
         ≤ (3 / 2 : ℝ) * Real.exp (-(R * s)) := by
     intro s hs
     have hs0 : (0 : ℝ) ≤ s := le_of_lt hs
-    have heq : Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)
-        = Real.exp (-(R * s)) * ((Real.cos R + s * Real.sin R) / (1 + s ^ 2)) := by ring
+    have heq : Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))
+        = Real.exp (-(R * s)) * ((Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))) := by ring
     rw [heq, Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
     have h := mul_le_mul_of_nonneg_left (connes_dirichlet_error_density_le (R := R) hs0)
       (le_of_lt (Real.exp_pos (-(R * s))))
-    calc Real.exp (-(R * s)) * |(Real.cos R + s * Real.sin R) / (1 + s ^ 2)|
+    calc Real.exp (-(R * s)) * |(Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))|
         ≤ Real.exp (-(R * s)) * (3 / 2) := h
       _ = (3 / 2 : ℝ) * Real.exp (-(R * s)) := by ring
   have hFint := connes_dirichlet_error_integrable hR
   calc ‖∫ s in Ioi (0 : ℝ),
-        Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)‖
+        Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))‖
       ≤ ∫ s in Ioi (0 : ℝ),
-          ‖Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2)‖ :=
+          ‖Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ))‖ :=
         norm_integral_le_integral_norm _
     _ ≤ ∫ s in Ioi (0 : ℝ), (3 / 2 : ℝ) * Real.exp (-(R * s)) :=
         MeasureTheory.setIntegral_mono_on hFint.norm hmaj measurableSet_Ioi hle
@@ -242,14 +242,14 @@ theorem connes_dirichlet_truncated {R : ℝ} (hR : 0 < R) :
     (∫ t in (0 : ℝ)..R, Real.sin t / t)
       = Real.pi / 2
         - ∫ s in Ioi (0 : ℝ),
-            Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2) := by
+            Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ)) := by
   rw [intervalIntegral.integral_of_le hR.le, connes_sinDiv_fubini hR]
   have hsplit : ∀ s ∈ Ioi (0 : ℝ),
-      (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ 2)
-        = (1 + s ^ 2)⁻¹
-          - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2) := by
+      (1 - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R)) / (1 + s ^ (2 : ℕ))
+        = (1 + s ^ (2 : ℕ))⁻¹
+          - Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ)) := by
     intro s _
-    have h : (1 : ℝ) + s ^ 2 ≠ 0 := by positivity
+    have h : (1 : ℝ) + s ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hsplit,
     MeasureTheory.integral_sub (integrable_inv_one_add_sq).integrableOn
@@ -262,13 +262,13 @@ theorem connes_dirichlet_integral :
   have hbound : Tendsto (fun R : ℝ => (3 / 2 : ℝ) / R) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_id
   have hE : Tendsto (fun R : ℝ =>
-      ∫ s in Ioi (0 : ℝ), Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2))
+      ∫ s in Ioi (0 : ℝ), Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ)))
       atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ hbound
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with R hR
     exact connes_dirichlet_error_bound hR
   have hmain : Tendsto (fun R : ℝ => Real.pi / 2 -
-      ∫ s in Ioi (0 : ℝ), Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ 2))
+      ∫ s in Ioi (0 : ℝ), Real.exp (-(R * s)) * (Real.cos R + s * Real.sin R) / (1 + s ^ (2 : ℕ)))
       atTop (𝓝 (Real.pi / 2)) := by
     simpa using (tendsto_const_nhds (x := Real.pi / 2) (α := ℝ) (f := atTop)).sub hE
   refine hmain.congr' ?_

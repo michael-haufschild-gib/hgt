@@ -42,10 +42,10 @@ theorem barbanVehovSelbergDiagonal_eq_lcmQuadratic (X : ℕ) :
   calc
     barbanVehovSelbergDiagonal X =
         ∑ e ∈ S.biUnion Nat.divisors, (Nat.totient e : ℝ) *
-          (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ 2 := by
+          (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ) := by
       rw [barbanVehovSelbergDiagonal]
       change (∑ e ∈ S, (Nat.totient e : ℝ) *
-        (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ 2) = _
+        (∑ m ∈ S.filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)) = _
       rw [hbi]
     _ = ∑ p ∈ S ×ˢ S,
         barbanVehovWeight X p.1 * barbanVehovWeight X p.2 /
@@ -55,9 +55,9 @@ theorem barbanVehovSelbergDiagonal_eq_lcmQuadratic (X : ℕ) :
 /-- Uniform sharp floor-removal estimate for the Barban--Vehov square sum. -/
 theorem abs_sum_sq_barbanVehovCoeff_sub_mul_diagonal_le
     {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) :
-    |(∑ k ∈ Finset.Icc 1 N, barbanVehovCoeff X k ^ 2) -
+    |(∑ k ∈ Finset.Icc 1 N, barbanVehovCoeff X k ^ (2 : ℕ)) -
         (N : ℝ) * barbanVehovSelbergDiagonal X| ≤
-      ((X : ℝ) * Real.log X) ^ 2 := by
+      ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
   let SX := Finset.Icc 1 X
   let SN := Finset.Icc 1 N
   have hsub : SX ⊆ SN := by
@@ -103,25 +103,25 @@ theorem abs_sum_sq_barbanVehovCoeff_sub_mul_diagonal_le
     intro p hp
     ring
   have hcoeff : ∀ k ∈ SN,
-      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ 2 =
-        barbanVehovCoeff X k ^ 2 := by
+      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ (2 : ℕ) =
+        barbanVehovCoeff X k ^ (2 : ℕ) := by
     intro k hk
     rw [barbanVehovCoeff]
   have herr :
       (∑ p ∈ SN ×ˢ SN,
         |barbanVehovWeight X p.1| * |barbanVehovWeight X p.2|) =
-        (∑ m ∈ SN, |barbanVehovWeight X m|) ^ 2 := by
+        (∑ m ∈ SN, |barbanVehovWeight X m|) ^ (2 : ℕ) := by
     rw [sq, Finset.sum_mul_sum, Finset.sum_product]
   have hfloor := abs_sum_sq_divisorSum_sub_lcm_main_le N (barbanVehovWeight X)
-  change |(∑ k ∈ SN, (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ 2) - _| ≤ _ at hfloor
+  change |(∑ k ∈ SN, (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ (2 : ℕ)) - _| ≤ _ at hfloor
   rw [Finset.sum_congr rfl hcoeff, hmain, herr] at hfloor
   have hl1 := sum_abs_barbanVehovWeight_le hX hXN
   have hl1nonneg : 0 ≤ ∑ m ∈ SN, |barbanVehovWeight X m| :=
     Finset.sum_nonneg fun m hm => abs_nonneg _
   have hXR : (1 : ℝ) ≤ (X : ℝ) := by exact_mod_cast hX
   have hlogX : 0 ≤ Real.log (X : ℝ) := Real.log_nonneg hXR
-  have hsquare : (∑ m ∈ SN, |barbanVehovWeight X m|) ^ 2 ≤
-      ((X : ℝ) * Real.log X) ^ 2 := by
+  have hsquare : (∑ m ∈ SN, |barbanVehovWeight X m|) ^ (2 : ℕ) ≤
+      ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
     nlinarith
   exact hfloor.trans hsquare
 
@@ -142,24 +142,24 @@ private theorem sum_Ioc_eq_sum_Icc_sub (f : ℕ → ℝ) {L U : ℕ} (hLU : L �
 /-- Harmonic window version of the sharp summatory estimate. -/
 theorem abs_sum_Ioc_barbanVehovCoeff_sq_div_sub_diagonal_le
     {X L U : ℕ} (hX : 1 ≤ X) (hXL : X ≤ L) (hLU : L < U) :
-    |(∑ k ∈ Finset.Ioc L U, barbanVehovCoeff X k ^ 2 / (k : ℝ)) -
+    |(∑ k ∈ Finset.Ioc L U, barbanVehovCoeff X k ^ (2 : ℕ) / (k : ℝ)) -
         barbanVehovSelbergDiagonal X *
           (∑ k ∈ Finset.Ioc L U, 1 / (k : ℝ))| ≤
-      2 * ((X : ℝ) * Real.log X) ^ 2 / ((L + 1 : ℕ) : ℝ) := by
+      2 * ((X : ℝ) * Real.log X) ^ (2 : ℕ) / ((L + 1 : ℕ) : ℝ) := by
   let D : ℝ := barbanVehovSelbergDiagonal X
-  let E : ℝ := ((X : ℝ) * Real.log X) ^ 2
+  let E : ℝ := ((X : ℝ) * Real.log X) ^ (2 : ℕ)
   have hE : 0 ≤ E := sq_nonneg _
   have hprefix : ∀ n ∈ Finset.Ioc L U,
-      |∑ k ∈ Finset.Ioc L n, (barbanVehovCoeff X k ^ 2 - D)| ≤ 2 * E := by
+      |∑ k ∈ Finset.Ioc L n, (barbanVehovCoeff X k ^ (2 : ℕ) - D)| ≤ 2 * E := by
     intro n hn
     have hLn : L ≤ n := (Finset.mem_Ioc.mp hn).1.le
     have hXn : X ≤ n := hXL.trans hLn
     have hnerr := abs_sum_sq_barbanVehovCoeff_sub_mul_diagonal_le hX hXn
     have hLerr := abs_sum_sq_barbanVehovCoeff_sub_mul_diagonal_le hX hXL
     have hidentity :
-        (∑ k ∈ Finset.Ioc L n, (barbanVehovCoeff X k ^ 2 - D)) =
-          ((∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ 2) - (n : ℝ) * D) -
-            ((∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ 2) - (L : ℝ) * D) := by
+        (∑ k ∈ Finset.Ioc L n, (barbanVehovCoeff X k ^ (2 : ℕ) - D)) =
+          ((∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ (2 : ℕ)) - (n : ℝ) * D) -
+            ((∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ (2 : ℕ)) - (L : ℝ) * D) := by
       rw [sum_Ioc_eq_sum_Icc_sub _ hLn]
       rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib]
       simp only [Finset.sum_const, nsmul_eq_mul, Nat.card_Icc]
@@ -167,15 +167,15 @@ theorem abs_sum_Ioc_barbanVehovCoeff_sq_div_sub_diagonal_le
       ring
     rw [hidentity]
     calc
-      |((∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ 2) - (n : ℝ) * D) -
-          ((∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ 2) - (L : ℝ) * D)|
-          ≤ |(∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ 2) - (n : ℝ) * D| +
-            |(∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ 2) - (L : ℝ) * D| :=
+      |((∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ (2 : ℕ)) - (n : ℝ) * D) -
+          ((∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ (2 : ℕ)) - (L : ℝ) * D)|
+          ≤ |(∑ k ∈ Finset.Icc 1 n, barbanVehovCoeff X k ^ (2 : ℕ)) - (n : ℝ) * D| +
+            |(∑ k ∈ Finset.Icc 1 L, barbanVehovCoeff X k ^ (2 : ℕ)) - (L : ℝ) * D| :=
         abs_sub _ _
       _ ≤ E + E := add_le_add hnerr hLerr
       _ = 2 * E := by ring
   have habel := RHTower.norm_sum_Ioc_weight_mul_le
-    (fun k : ℕ => (((barbanVehovCoeff X k ^ 2 - D : ℝ) : ℝ) : ℂ))
+    (fun k : ℕ => (((barbanVehovCoeff X k ^ (2 : ℕ) - D : ℝ) : ℝ) : ℂ))
     (fun k : ℕ => 1 / (k : ℝ)) hLU
     (fun k => by positivity)
     (fun k hk => by
@@ -191,10 +191,10 @@ theorem abs_sum_Ioc_barbanVehovCoeff_sq_div_sub_diagonal_le
       simpa only [← Complex.ofReal_sum, Complex.norm_real, Real.norm_eq_abs]
         using hprefix n hn)
   have hrewrite :
-      (∑ k ∈ Finset.Ioc L U, barbanVehovCoeff X k ^ 2 / (k : ℝ)) -
+      (∑ k ∈ Finset.Ioc L U, barbanVehovCoeff X k ^ (2 : ℕ) / (k : ℝ)) -
           D * (∑ k ∈ Finset.Ioc L U, 1 / (k : ℝ)) =
         ∑ k ∈ Finset.Ioc L U, (1 / (k : ℝ)) *
-          (barbanVehovCoeff X k ^ 2 - D) := by
+          (barbanVehovCoeff X k ^ (2 : ℕ) - D) := by
     rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro k hk
@@ -202,14 +202,14 @@ theorem abs_sum_Ioc_barbanVehovCoeff_sq_div_sub_diagonal_le
   rw [hrewrite]
   have hleft :
       ‖∑ k ∈ Finset.Ioc L U, ((1 / (k : ℝ) : ℝ) : ℂ) *
-          (((barbanVehovCoeff X k ^ 2 - D : ℝ) : ℝ) : ℂ)‖ =
+          (((barbanVehovCoeff X k ^ (2 : ℕ) - D : ℝ) : ℝ) : ℂ)‖ =
         |∑ k ∈ Finset.Ioc L U, (1 / (k : ℝ)) *
-          (barbanVehovCoeff X k ^ 2 - D)| := by
+          (barbanVehovCoeff X k ^ (2 : ℕ) - D)| := by
     have hcast :
         (∑ k ∈ Finset.Ioc L U, ((1 / (k : ℝ) : ℝ) : ℂ) *
-            (((barbanVehovCoeff X k ^ 2 - D : ℝ) : ℝ) : ℂ)) =
+            (((barbanVehovCoeff X k ^ (2 : ℕ) - D : ℝ) : ℝ) : ℂ)) =
           (((∑ k ∈ Finset.Ioc L U, (1 / (k : ℝ)) *
-            (barbanVehovCoeff X k ^ 2 - D)) : ℝ) : ℂ) := by
+            (barbanVehovCoeff X k ^ (2 : ℕ) - D)) : ℝ) : ℂ) := by
       norm_cast
     rw [hcast, Complex.norm_real, Real.norm_eq_abs]
   rw [hleft] at habel

@@ -46,11 +46,11 @@ private theorem separated_second (a b : ℝ → ℂ) (ha : ContDiff ℝ ∞ a)
 /-- The actual planar generator's full hyperbolic Laplacian, with its
 horizontal window derivative explicitly retained before periodization. -/
 theorem CuspHeightTest.laplaceTest_field (h : CuspHeightTest) (z : ℂ) :
-    h.planarTest.laplaceTest.field z = (z.im:ℂ)^2*
+    h.planarTest.laplaceTest.field z = (z.im:ℂ)^(2 : ℕ)*
       (deriv (deriv complexCuspWindow) z.re*h.field z.im+
         (cuspWindow z.re:ℂ)*deriv (deriv h.field) z.im) := by
   rw [PlanarChartTest.laplaceTest_field]
-  change (z.im:ℂ)^2*(∑ i : Fin 2, fderiv ℝ
+  change (z.im:ℂ)^(2 : ℕ)*(∑ i : Fin 2, fderiv ℝ
     (fun w => fderiv ℝ (fun q : ℂ => complexCuspWindow q.re*h.field q.im) w
       (direction i)) z (direction i)) = _
   rw [separated_second _ _ complexCuspWindow_smooth h.smooth]
@@ -63,7 +63,7 @@ private theorem CuspHeightTest.laplaceTest_low (h : CuspHeightTest)
       (h.support (tsupport_deriv_subset (tsupport_deriv_subset hm))))
   change h.planarTest.laplaceTest.field (z:ℂ) = 0
   rw [h.laplaceTest_field]
-  change (z.im:ℂ)^2*(_*h.field z.im+_*deriv (deriv h.field) z.im) = 0
+  change (z.im:ℂ)^(2 : ℕ)*(_*h.field z.im+_*deriv (deriv h.field) z.im) = 0
   rw [h.zero_low hz,hdd]
   ring
 
@@ -72,15 +72,15 @@ leaves exactly the original height Laplacian on the closed cell. -/
 theorem CuspHeightTest.periodize_laplaceTest (h : CuspHeightTest)
     (z : UpperHalfPlane) (hz : z ∈ fd) :
     periodize h.planarTest.laplaceTest.toChartTest.field z =
-      (z.im:ℂ)^2*deriv (deriv h.field) z.im := by
+      (z.im:ℂ)^(2 : ℕ)*deriv (deriv h.field) z.im := by
   classical
   rw [periodize_high_cusp _ h.laplaceTest_low z hz]
   have ht (n : ℤ) : h.planarTest.laplaceTest.toChartTest.field (T^n • z) =
-      (z.im:ℂ)^2*(deriv (deriv complexCuspWindow) (z.re+n)*h.field z.im+
+      (z.im:ℂ)^(2 : ℕ)*(deriv (deriv complexCuspWindow) (z.re+n)*h.field z.im+
         complexCuspWindow (z.re+n)*deriv (deriv h.field) z.im) := by
     change h.planarTest.laplaceTest.field ((T^n • z : UpperHalfPlane):ℂ) = _
     rw [h.laplaceTest_field]
-    change ((T^n • z).im:ℂ)^2*(deriv (deriv complexCuspWindow) (T^n • z).re*
+    change ((T^n • z).im:ℂ)^(2 : ℕ)*(deriv (deriv complexCuspWindow) (T^n • z).re*
       h.field (T^n • z).im+complexCuspWindow (T^n • z).re*
         deriv (deriv h.field) (T^n • z).im) = _
     rw [ModularGroup.re_T_zpow_smul,ModularGroup.im_T_zpow_smul]
@@ -92,7 +92,7 @@ theorem CuspHeightTest.periodize_laplaceTest (h : CuspHeightTest)
     have ha := complexCuspWindow_triple z.re (hz.2.trans (by norm_num))
     have hd := complexCuspWindow_second_triple z.re hz.2
     calc
-      _ = (z.im:ℂ)^2*((deriv (deriv complexCuspWindow) (z.re-1)+
+      _ = (z.im:ℂ)^(2 : ℕ)*((deriv (deriv complexCuspWindow) (z.re-1)+
           deriv (deriv complexCuspWindow) z.re+deriv (deriv complexCuspWindow) (z.re+1))*
             h.field z.im+(complexCuspWindow (z.re-1)+complexCuspWindow z.re+
               complexCuspWindow (z.re+1))*deriv (deriv h.field) z.im) := by ring
@@ -125,10 +125,10 @@ theorem CuspHeightTest.periodize_laplaceTest (h : CuspHeightTest)
     ring
 
 /-- The original unbounded modular operator acts on the admitted cusp field
-by the exact native differential expression `h-y^2*h''`. -/
+by the exact native differential expression `h-y^(2 : ℕ)*h''`. -/
 theorem CuspHeightTest.energyOperator_coe (h : CuspHeightTest) :
     (energyOperator h.operatorVector : UpperHalfPlane → ℂ) =ᵐ[measure]
-      (fun z => h.field z.im-(z.im:ℂ)^2*deriv (deriv h.field) z.im) := by
+      (fun z => h.field z.im-(z.im:ℂ)^(2 : ℕ)*deriv (deriv h.field) z.im) := by
   have he : energyOperator h.operatorVector =
       embedding h.planarTest.toChartTest.energyTest-h.planarTest.laplaceVector :=
     h.planarTest.energyOperator_apply

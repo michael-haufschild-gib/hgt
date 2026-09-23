@@ -30,7 +30,7 @@ private theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2
     ((R : ℝ) + 1) * V ^ (2 * ℓ)
       ≤ (T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)))
           * (1 / δ + 2 * Real.log ((N ^ ℓ : ℕ) : ℝ))
-          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ) := by
+          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ) := by
   have hNl : 2 ≤ N ^ ℓ := le_trans hN (Nat.le_self_pow hℓ N)
   have hVl : (0 : ℝ) < V ^ ℓ := by positivity
   have hbigl : ∀ r ∈ Finset.range (R + 1),
@@ -40,7 +40,7 @@ private theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2
     exact pow_le_pow_left₀ hV.le (hbig r hr) ℓ
   have hbase := card_largeValues_le (N ^ ℓ) hNl (convPow N ℓ a) hδ hT hVl
     hgap hlow R hhigh hbigl
-  have hpow : (V ^ ℓ) ^ 2 = V ^ (2 * ℓ) := by
+  have hpow : (V ^ ℓ) ^ (2 : ℕ) = V ^ (2 * ℓ) := by
     rw [← pow_mul, mul_comm]
   rw [hpow] at hbase
   have hlogNl : (0 : ℝ) ≤ Real.log ((N ^ ℓ : ℕ) : ℝ) := by
@@ -56,10 +56,10 @@ private theorem card_largeValues_pow_le (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (hN : 2
   calc ((R : ℝ) + 1) * V ^ (2 * ℓ)
       ≤ (T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)))
           * (1 / δ + 2 * Real.log ((N ^ ℓ : ℕ) : ℝ))
-          * ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2 := hbase
+          * ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ (2 : ℕ) := hbase
     _ ≤ (T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)))
           * (1 / δ + 2 * Real.log ((N ^ ℓ : ℕ) : ℝ))
-          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ) := by
+          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ) := by
         rw [mul_assoc, mul_assoc] at hstep ⊢
         exact hstep
 

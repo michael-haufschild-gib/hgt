@@ -37,30 +37,30 @@ theorem integral_normSq_ladderStep_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0
     (hQ : 0 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) (hV : 0 ≤ V) (j : ℕ)
     (hbound : ∀ w ∈ Set.Icc (-W) W, ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V) :
     (∫ w in Set.Icc (-W) W,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2)
-      ≤ V ^ 2 * ((5 * Real.pi / 2 * W
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
             + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
           * ((geomCofactorBlockAt A₀ B₀ Q η j).card : ℝ)) := by
   classical
   set D : Finset ℕ := geomCofactorBlockAt A₀ B₀ Q η j with hD
   set N : ℕ := ⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ with hN
-  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 :=
+  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) :=
     ((continuous_primeBlockPoly _).norm).pow 2
-  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ 2 :=
+  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   have hint1 : IntegrableOn (fun w : ℝ =>
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2)
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := (hcontR.mul hcontS).integrableOn_Icc
-  have hint2 : IntegrableOn (fun w : ℝ => V ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2)
+  have hint2 : IntegrableOn (fun w : ℝ => V ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := (hcontS.const_mul _).integrableOn_Icc
   have hpt : ∀ w ∈ Set.Icc (-W) W,
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2
-        ≤ V ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2 := by
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ)
+        ≤ V ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) := by
     intro w hw
     have hb := hbound w hw
     have h0 : (0 : ℝ) ≤ ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ := norm_nonneg _
-    have hsq : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 ≤ V ^ 2 := by nlinarith [hb, h0]
+    have hsq : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) ≤ V ^ (2 : ℕ) := by nlinarith [hb, h0]
     exact mul_le_mul_of_nonneg_right hsq (by positivity)
   have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc hpt
   rw [MeasureTheory.integral_const_mul] at hmono

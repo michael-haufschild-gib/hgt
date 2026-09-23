@@ -178,7 +178,7 @@ theorem ccmThirdGradeCesaroRectangularMix_hinge_eq_triangularWeight
     {b h H : ℝ} (hb : 0 < b) (hbh : b ≤ h) (hhH : h ≤ H) :
     (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         max 0 (t - h)) +
-      (32 / H ^ 4) * max 0 (H - h) =
+      (32 / H ^ (4 : ℕ)) * max 0 (H - h) =
         ccmGuinandWeilThirdGradeCesaroTriangularWeight H h := by
   have hh : 0 < h := hb.trans_le hbh
   have hH : 0 < H := hh.trans_le hhH
@@ -228,7 +228,7 @@ theorem ccmThirdGradeCesaroRectangularMix_step_eq_errorKernel
     {b h H : ℝ} (hb : 0 < b) (hbh : b ≤ h) (hhH : h ≤ H) :
     (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         (if h ≤ t then (1 : ℝ) else 0)) +
-      (32 / H ^ 4) * (if h ≤ H then (1 : ℝ) else 0) =
+      (32 / H ^ (4 : ℕ)) * (if h ≤ H then (1 : ℝ) else 0) =
         ccmGuinandWeilThirdGradeCesaroErrorKernel H h := by
   have hh : 0 < h := hb.trans_le hbh
   have hH : 0 < H := hh.trans_le hhH
@@ -298,7 +298,7 @@ theorem ccmThirdGradeCesaroRectangularMix_step_eq_errorKernel
 def suzukiCheckpointBaseAffineMixture (H : ℝ) : ℝ :=
   (∫ t in (1 : ℝ)..H, ccmThirdGradeCesaroRectangularMixDensity H t *
       suzukiCheckpointBaseAffineCurrent t) +
-    (32 / H ^ 4) * suzukiCheckpointBaseAffineCurrent H
+    (32 / H ^ (4 : ℕ)) * suzukiCheckpointBaseAffineCurrent H
 
 /-- The finite signed-curvature transform seen by the third-grade reporter. -/
 def suzukiCheckpointTriangularCurvatureTransform (H : ℝ) : ℝ :=
@@ -402,7 +402,7 @@ theorem suzukiCheckpointSignedCurvatureHingeMixture_eq_triangularTransform
     {H : ℝ} (hH : 2 ≤ H) :
     (∫ t in (1 : ℝ)..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         suzukiCheckpointSignedCurvatureHingeCurrent t) +
-      (32 / H ^ 4) * suzukiCheckpointSignedCurvatureHingeCurrent H =
+      (32 / H ^ (4 : ℕ)) * suzukiCheckpointSignedCurvatureHingeCurrent H =
         suzukiCheckpointTriangularCurvatureTransform H := by
   have h1H : (1 : ℝ) ≤ H := one_le_two.trans hH
   have hH0 : 0 < H := zero_lt_one.trans_le h1H
@@ -474,7 +474,7 @@ theorem suzukiCheckpointResetPrefixMixture_eq_errorTransform
     {H : ℝ} (hH : 2 ≤ H) :
     (∫ t in (1 : ℝ)..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         suzukiCheckpointResetPrefixCurrent t) +
-      (32 / H ^ 4) * suzukiCheckpointResetPrefixCurrent H =
+      (32 / H ^ (4 : ℕ)) * suzukiCheckpointResetPrefixCurrent H =
         suzukiCheckpointResetErrorTransform H := by
   have h1H : (1 : ℝ) ≤ H := one_le_two.trans hH
   have hH0 : 0 < H := zero_lt_one.trans_le h1H
@@ -794,11 +794,11 @@ theorem exists_nonnegative_uniform_bound_suzukiCheckpointResetErrorTransform :
     have hk := ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds
       (zero_lt_one.trans hjbounds.1) hjbounds.2
         (show h ∈ Set.Icc h H from ⟨le_rfl, hjbounds.2⟩)
-    have hhpow : 1 ≤ h ^ 4 := by
+    have hhpow : 1 ≤ h ^ (4 : ℕ) := by
       have hh1 : 1 ≤ h := hjbounds.1.le
-      nlinarith [sq_nonneg (h ^ 2 - 1)]
-    have hhpow0 : 0 < h ^ 4 := by positivity
-    have hfrac : 96 / h ^ 4 ≤ (96 : ℝ) := by
+      nlinarith [sq_nonneg (h ^ (2 : ℕ) - 1)]
+    have hhpow0 : 0 < h ^ (4 : ℕ) := by positivity
+    have hfrac : 96 / h ^ (4 : ℕ) ≤ (96 : ℝ) := by
       apply (div_le_iff₀ hhpow0).2
       nlinarith
     exact ⟨hkpos.le, hk.2.trans hfrac⟩

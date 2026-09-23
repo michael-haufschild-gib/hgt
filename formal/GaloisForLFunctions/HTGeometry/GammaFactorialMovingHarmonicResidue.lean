@@ -261,7 +261,7 @@ theorem tendsto_reciprocalGammaFactorialBlowUp_first_harmonic (x : ℂ) :
       (reciprocalGammaEntire
           (-(n : ℂ) + reciprocalGammaFactorialScale n * x) + x) /
         gammaHarmonicMicroscopeScale n)
-      atTop (𝓝 (x ^ 2)) := by
+      atTop (𝓝 (x ^ (2 : ℕ))) := by
   have hAq := tendsto_reciprocalGammaNormalizedProduct_first_harmonic x
   have hTq := tendsto_reciprocalGammaTangent_sub_one_div_harmonicScale x
   have hA_sub : Tendsto (fun n : ℕ => reciprocalGammaNormalizedProduct n x - 1)
@@ -555,7 +555,7 @@ theorem gammaFactorialFirstJetDefect_eq_scaledDigamma
       -(n : ℂ) + reciprocalGammaFactorialScale n * x ≠ -(k : ℂ)) :
     gammaFactorialFirstJetDefect n x =
       (gammaFactorialScaledDigamma n x * reciprocalGammaFactorialZoom n x - 1) /
-        reciprocalGammaFactorialZoom n x ^ 2 := by
+        reciprocalGammaFactorialZoom n x ^ (2 : ℕ) := by
   let w : ℂ := -(n : ℂ) + reciprocalGammaFactorialScale n * x
   have hGamma : Complex.Gamma w ≠ 0 := Complex.Gamma_ne_zero hpole
   have hderiv : deriv Complex.Gamma w =
@@ -565,11 +565,11 @@ theorem gammaFactorialFirstJetDefect_eq_scaledDigamma
   simp only [pow_one]
   simp only [iteratedDeriv_one, factorialBlowUpZoom]
   change reciprocalGammaFactorialScale n * deriv Complex.Gamma w -
-      Complex.Gamma w ^ 2 = _
+      Complex.Gamma w ^ (2 : ℕ) = _
   rw [hderiv]
   change _ =
     (reciprocalGammaFactorialScale n * Complex.digamma w *
-        (Complex.Gamma w)⁻¹ - 1) / ((Complex.Gamma w)⁻¹) ^ 2
+        (Complex.Gamma w)⁻¹ - 1) / ((Complex.Gamma w)⁻¹) ^ (2 : ℕ)
   field_simp [hGamma]
 
 /-- **Moving harmonic transverse residue.**  At every nonzero microscope point, the Riccati defect
@@ -636,7 +636,7 @@ theorem tendsto_gammaFactorialFirstJetDefect_div_harmonicScale
   have heq : ∀ᶠ n : ℕ in atTop,
       gammaFactorialFirstJetDefect n x / gammaHarmonicMicroscopeScale n =
         ((gammaFactorialScaledDigamma n x * reciprocalGammaFactorialZoom n x - 1) /
-          gammaHarmonicMicroscopeScale n) / reciprocalGammaFactorialZoom n x ^ 2 := by
+          gammaHarmonicMicroscopeScale n) / reciprocalGammaFactorialZoom n x ^ (2 : ℕ) := by
     filter_upwards [hregular, hscale_ne] with n hn hscale
     have hGamma := Complex.Gamma_ne_zero (hn : ∀ k : ℕ,
       -(n : ℂ) + reciprocalGammaFactorialScale n * x ≠ -(k : ℂ))

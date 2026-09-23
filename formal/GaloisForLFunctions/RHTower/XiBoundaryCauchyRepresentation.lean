@@ -125,24 +125,24 @@ theorem boundaryCauchyKernel_split {a : ℝ} {w v : ℂ} (hw : a < w.re) (hv : a
 /-! ### The dominating bound -/
 
 theorem norm_inv_sub_I_sq (A : ℂ) (t : ℝ) :
-    ‖(A - Complex.I * (t : ℂ))⁻¹‖ ^ 2 = (A.re ^ 2 + (t - A.im) ^ 2)⁻¹ := by
+    ‖(A - Complex.I * (t : ℂ))⁻¹‖ ^ (2 : ℕ) = (A.re ^ (2 : ℕ) + (t - A.im) ^ (2 : ℕ))⁻¹ := by
   rw [norm_inv, inv_pow, ← Complex.normSq_eq_norm_sq, normSq_sub_I_mul_real]
 
 theorem normSq_add_I_mul_real (B : ℂ) (t : ℝ) :
-    Complex.normSq (B + Complex.I * (t : ℂ)) = B.re ^ 2 + (t + B.im) ^ 2 := by
+    Complex.normSq (B + Complex.I * (t : ℂ)) = B.re ^ (2 : ℕ) + (t + B.im) ^ (2 : ℕ) := by
   have hre : (B + Complex.I * (t : ℂ)).re = B.re := by simp
   have him : (B + Complex.I * (t : ℂ)).im = B.im + t := by simp
   rw [Complex.normSq_apply, hre, him]
   ring
 
 theorem norm_inv_add_I_sq (B : ℂ) (t : ℝ) :
-    ‖(B + Complex.I * (t : ℂ))⁻¹‖ ^ 2 = (B.re ^ 2 + (t + B.im) ^ 2)⁻¹ := by
+    ‖(B + Complex.I * (t : ℂ))⁻¹‖ ^ (2 : ℕ) = (B.re ^ (2 : ℕ) + (t + B.im) ^ (2 : ℕ))⁻¹ := by
   rw [norm_inv, inv_pow, ← Complex.normSq_eq_norm_sq, normSq_add_I_mul_real]
 
 theorem norm_boundaryCauchyKernel_le {a : ℝ} (w v : ℂ) (t : ℝ) :
     ‖boundaryCauchyKernel a w v t‖
-      ≤ (1 / 2) * (((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
-        + ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
+      ≤ (1 / 2) * (((w.re - a) ^ (2 : ℕ) + (t - w.im) ^ (2 : ℕ))⁻¹
+        + ((v.re - a) ^ (2 : ℕ) + (t - v.im) ^ (2 : ℕ))⁻¹) := by
   have hAeq : w - (a : ℂ) - Complex.I * (t : ℂ) = (w - (a : ℂ)) - Complex.I * (t : ℂ) := by ring
   have hBeq : conj v - (a : ℂ) + Complex.I * (t : ℂ)
       = (conj v - (a : ℂ)) + Complex.I * (t : ℂ) := by ring
@@ -163,9 +163,9 @@ theorem norm_boundaryCauchyKernel_le {a : ℝ} (w v : ℂ) (t : ℝ) :
       - ‖((conj v - (a : ℂ)) + Complex.I * (t : ℂ))⁻¹‖)]
 
 theorem inv_sq_add_sq_eq_poisson {p : ℝ} (hp : 0 < p) (x : ℝ) :
-    (p ^ 2 + x ^ 2)⁻¹ = (Real.pi / p) * halfPlanePoisson p x := by
+    (p ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ = (Real.pi / p) * halfPlanePoisson p x := by
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
-  have hden : (0 : ℝ) < p ^ 2 + x ^ 2 := by positivity
+  have hden : (0 : ℝ) < p ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
   rw [halfPlanePoisson]
   field_simp
 
@@ -461,7 +461,7 @@ theorem integrable_boundaryPoissonTerm_mul_poisson {a p : ℝ} (ha : 1 / 2 < a) 
 
 theorem integrable_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (hp : 0 < p)
     (m : ℝ) (q : XiZeroCopy) :
-    Integrable fun t : ℝ => boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹ := by
+    Integrable fun t : ℝ => boundaryPoissonTerm a t q * (p ^ (2 : ℕ) + (t - m) ^ (2 : ℕ))⁻¹ := by
   refine ((integrable_boundaryPoissonTerm_mul_poisson ha hp m q).const_mul
     (Real.pi / p)).congr (Filter.Eventually.of_forall fun t => ?_)
   dsimp only
@@ -470,9 +470,9 @@ theorem integrable_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (h
 
 theorem integral_boundaryPoissonTerm_mul_invSq {a p : ℝ} (ha : 1 / 2 < a) (hp : 0 < p)
     (m : ℝ) (q : XiZeroCopy) :
-    (∫ t : ℝ, boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹)
+    (∫ t : ℝ, boundaryPoissonTerm a t q * (p ^ (2 : ℕ) + (t - m) ^ (2 : ℕ))⁻¹)
       = (Real.pi / p) * boundaryPoissonTerm (a + p) m q := by
-  have hc : ∀ t : ℝ, boundaryPoissonTerm a t q * (p ^ 2 + (t - m) ^ 2)⁻¹
+  have hc : ∀ t : ℝ, boundaryPoissonTerm a t q * (p ^ (2 : ℕ) + (t - m) ^ (2 : ℕ))⁻¹
       = (Real.pi / p) * (boundaryPoissonTerm a t q * halfPlanePoisson p (t - m)) := by
     intro t
     rw [inv_sq_add_sq_eq_poisson hp]
@@ -489,15 +489,15 @@ theorem integral_norm_boundaryTerm_cauchy_le {a : ℝ} (ha : 1 / 2 < a) {w v : �
   have hwa : (0 : ℝ) < w.re - a := by linarith
   have hva : (0 : ℝ) < v.re - a := by linarith
   have hmaj : Integrable fun t : ℝ => (1 / 2) *
-      (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
-        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
+      (boundaryPoissonTerm a t q * ((w.re - a) ^ (2 : ℕ) + (t - w.im) ^ (2 : ℕ))⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ (2 : ℕ) + (t - v.im) ^ (2 : ℕ))⁻¹) := by
     refine (((integrable_boundaryPoissonTerm_mul_invSq ha hwa w.im q).add
       (integrable_boundaryPoissonTerm_mul_invSq ha hva v.im q)).const_mul (1 / 2)).congr
       (Filter.Eventually.of_forall fun t => ?_)
     simp only [Pi.add_apply]
   have hle : ∀ t : ℝ, ‖((boundaryPoissonTerm a t q : ℝ) : ℂ) * boundaryCauchyKernel a w v t‖
-      ≤ (1 / 2) * (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
-        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹) := by
+      ≤ (1 / 2) * (boundaryPoissonTerm a t q * ((w.re - a) ^ (2 : ℕ) + (t - w.im) ^ (2 : ℕ))⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ (2 : ℕ) + (t - v.im) ^ (2 : ℕ))⁻¹) := by
     intro t
     have hT : 0 < boundaryPoissonTerm a t q := by
       rw [boundaryPoissonTerm]
@@ -508,8 +508,8 @@ theorem integral_norm_boundaryTerm_cauchy_le {a : ℝ} (ha : 1 / 2 < a) {w v : �
   refine le_trans (MeasureTheory.integral_mono
     (integrable_boundaryTerm_cauchy ha hw hv q).norm hmaj hle) ?_
   have hcalc : (∫ t : ℝ, (1 / 2) *
-      (boundaryPoissonTerm a t q * ((w.re - a) ^ 2 + (t - w.im) ^ 2)⁻¹
-        + boundaryPoissonTerm a t q * ((v.re - a) ^ 2 + (t - v.im) ^ 2)⁻¹))
+      (boundaryPoissonTerm a t q * ((w.re - a) ^ (2 : ℕ) + (t - w.im) ^ (2 : ℕ))⁻¹
+        + boundaryPoissonTerm a t q * ((v.re - a) ^ (2 : ℕ) + (t - v.im) ^ (2 : ℕ))⁻¹))
       = (1 / 2) * ((Real.pi / (w.re - a)) * boundaryPoissonTerm (a + (w.re - a)) w.im q
         + (Real.pi / (v.re - a)) * boundaryPoissonTerm (a + (v.re - a)) v.im q) := by
     rw [MeasureTheory.integral_const_mul,

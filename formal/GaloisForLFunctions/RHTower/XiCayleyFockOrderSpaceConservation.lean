@@ -102,7 +102,7 @@ def xiCayleyWardCoherentJet
 /-- Exact source-weighted Poisson packet in derivative-order space. -/
 theorem xiCayleyWardCoherentJet_poisson_conservation
     (q : XiRightUpperZeroCopy) (x : ℝ) (r : ℕ) :
-    x ^ r / r.factorial * ‖xiCayleyWardCoherentJet q x r‖ ^ 2 =
+    x ^ r / r.factorial * ‖xiCayleyWardCoherentJet q x r‖ ^ (2 : ℕ) =
       xiEndpointWardPairWeight q *
         Real.exp (xiCayleyFockExponent q * x) *
           HTGeometry.poissonOrderWeight (xiCayleyFockDrift q * x) r := by
@@ -126,7 +126,7 @@ packet and fixes its sign. -/
 theorem neg_re_xiCayleyWardExteriorPacket_poisson_conservation
     (q : XiRightUpperZeroCopy) (x : ℝ) (r : ℕ) :
     x ^ r / r.factorial * (-(xiCayleyWardExteriorPacket q x r).re) =
-      4 * xiEndpointWardPairWeight q * (xiCayleyFockShift q).im ^ 2 *
+      4 * xiEndpointWardPairWeight q * (xiCayleyFockShift q).im ^ (2 : ℕ) *
         Real.exp (xiCayleyFockExponent q * x) *
           HTGeometry.poissonOrderWeight (xiCayleyFockDrift q * x) r := by
   rw [xiCayleyWardExteriorPacket, xiCayleyFockExponent, xiCayleyFockDrift,
@@ -140,7 +140,7 @@ theorem tsum_xiCayleyWardExteriorPacket
         xiCayleyWardExteriorPacket q x r =
       ((xiEndpointWardPairWeight q : ℝ) : ℂ) *
         (xiCayleyFockShift q -
-          (starRingEnd ℂ) (xiCayleyFockShift q)) ^ 2 *
+          (starRingEnd ℂ) (xiCayleyFockShift q)) ^ (2 : ℕ) *
         Complex.exp ((xiCayleyFockExponent q * x : ℝ) : ℂ) := by
   simp_rw [xiCayleyWardExteriorPacket]
   rw [xiCayleyFockExponent,
@@ -154,8 +154,8 @@ theorem xiCayleyWardExteriorPacket_re_neg
   rw [xiCayleyWardExteriorPacket,
     HTGeometry.twoModeCoherentExterior_conj_eq]
   rw [show (xiCayleyFockShift q -
-      (starRingEnd ℂ) (xiCayleyFockShift q)) ^ 2 =
-      (((-4 * (xiCayleyFockShift q).im ^ 2 : ℝ) : ℂ)) by
+      (starRingEnd ℂ) (xiCayleyFockShift q)) ^ (2 : ℕ) =
+      (((-4 * (xiCayleyFockShift q).im ^ (2 : ℕ) : ℝ) : ℂ)) by
     rw [Complex.sub_conj, mul_pow, Complex.I_sq]
     push_cast
     ring]
@@ -170,7 +170,7 @@ theorem xiCayleyWardExteriorPacket_re_neg
     · exact ne_of_gt
         (Complex.normSq_pos.mpr
           (sub_ne_zero.mpr (xiCayleyFock_rho_ne_one q)))
-  have hweight : 0 < Real.sqrt (xiEndpointWardPairWeight q) ^ 2 := by
+  have hweight : 0 < Real.sqrt (xiEndpointWardPairWeight q) ^ (2 : ℕ) := by
     rw [Real.sq_sqrt (xiEndpointWardPairWeight_pos q).le]
     exact xiEndpointWardPairWeight_pos q
   have hnorm : 0 < ‖xiCayleyFockShift q‖ ^ (2 * r) := by

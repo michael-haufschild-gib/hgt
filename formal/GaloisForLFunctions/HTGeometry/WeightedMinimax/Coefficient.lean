@@ -121,7 +121,7 @@ theorem coeff_mul_wsup_le (hw : IsWeight v a b)
     intro i hi
     rw [hdeval, hdeval]
     refine sub_mul_sub_neg ?_ (habs i (by omega)) (habs (i + 1) (by omega))
-    have hRj2 : 0 < (R.coeff j) ^ 2 := by positivity
+    have hRj2 : 0 < (R.coeff j) ^ (2 : ℕ) := by positivity
     have h2 := halt i hi
     nlinarith [mul_pos hRj2 (neg_pos.mpr h2)]
   obtain ⟨s, hcard, hspos, hroots, _⟩ := roots_finset_of_alternating hz hz0 hstrict

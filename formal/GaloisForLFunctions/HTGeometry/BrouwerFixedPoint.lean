@@ -35,7 +35,7 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
   set d : E → E := fun x => x - f x with hddef
   set u : E → E := fun x => ‖d x‖⁻¹ • d x with hudef
   set a : E → ℝ := fun x => inner ℝ x (u x) with hadef
-  set D : E → ℝ := fun x => (a x) ^ 2 + 1 - ‖x‖ ^ 2 with hDdef
+  set D : E → ℝ := fun x => (a x) ^ (2 : ℕ) + 1 - ‖x‖ ^ (2 : ℕ) with hDdef
   set τ : E → ℝ := fun x => -(a x) + Real.sqrt (D x) with hτdef
   set ρ : E → E := fun x => x + (τ x) • (u x) with hρdef
   -- on the ball the difference is nonzero
@@ -54,12 +54,12 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
   have hDpos : ∀ x ∈ closedBall (0 : E) 1, 0 < D x := by
     intro x hx
     rcases lt_or_eq_of_le (mem_closedBall_zero_iff.mp hx) with hlt | heq
-    · have h1 : ‖x‖ ^ 2 < 1 := by nlinarith [norm_nonneg x]
-      have h2 : 0 ≤ (a x) ^ 2 := sq_nonneg _
+    · have h1 : ‖x‖ ^ (2 : ℕ) < 1 := by nlinarith [norm_nonneg x]
+      have h2 : 0 ≤ (a x) ^ (2 : ℕ) := sq_nonneg _
       rw [hDdef]
       simp only
       linarith
-    · -- ‖x‖ = 1 : the discriminant is a x ^ 2 and a x ≠ 0
+    · -- ‖x‖ = 1 : the discriminant is a x ^ (2 : ℕ) and a x ≠ 0
       have hane : a x ≠ 0 := by
         intro h0
         have hdx : d x ≠ 0 := hdne x hx
@@ -74,7 +74,7 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
           have hnormne : ‖d x‖⁻¹ ≠ 0 := by
             simp [norm_ne_zero_iff.mpr hdx]
           exact (mul_eq_zero.mp h0).resolve_left hnormne
-        -- ⟪x, x - f x⟫ = 0 forces ‖x - f x‖ ^ 2 ≤ 0
+        -- ⟪x, x - f x⟫ = 0 forces ‖x - f x‖ ^ (2 : ℕ) ≤ 0
         have hfx : ‖f x‖ ≤ 1 := mem_closedBall_zero_iff.mp (hmaps x hx)
         have hxfx : (inner ℝ x (f x) : ℝ) = 1 := by
           have hexp : (inner ℝ x (d x) : ℝ) = inner ℝ x x - inner ℝ x (f x) := by
@@ -84,7 +84,7 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
           rw [hinner0, real_inner_self_eq_norm_sq, heq] at hexp
           norm_num at hexp
           linarith
-        have hsq : ‖d x‖ ^ 2 = ‖x‖ ^ 2 - 2 * inner ℝ x (f x) + ‖f x‖ ^ 2 := by
+        have hsq : ‖d x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) - 2 * inner ℝ x (f x) + ‖f x‖ ^ (2 : ℕ) := by
           rw [hddef]
           simp only
           rw [← real_inner_self_eq_norm_sq, inner_sub_sub_self]
@@ -92,12 +92,12 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
             real_inner_comm (f x) x]
           ring
         rw [hxfx, heq] at hsq
-        have : ‖d x‖ ^ 2 ≤ 0 := by nlinarith [norm_nonneg (f x)]
+        have : ‖d x‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [norm_nonneg (f x)]
         have : ‖d x‖ = 0 := by nlinarith [norm_nonneg (d x)]
         exact hdne x hx (norm_eq_zero.mp this)
       rw [hDdef]
       simp only [heq]
-      have : (0:ℝ) < (a x) ^ 2 := by positivity
+      have : (0:ℝ) < (a x) ^ (2 : ℕ) := by positivity
       norm_num
       linarith
   -- the open set where the retraction formula is smooth
@@ -143,16 +143,16 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
     have hdx : d x ≠ 0 := hdne x hx
     have hu1 : ‖u x‖ = 1 := hunorm x hdx
     have hD : 0 ≤ D x := (hDpos x hx).le
-    have hsqrt : Real.sqrt (D x) ^ 2 = D x := Real.sq_sqrt hD
-    have hexp : ‖ρ x‖ ^ 2 = ‖x‖ ^ 2 + 2 * (τ x * a x) + (τ x) ^ 2 := by
+    have hsqrt : Real.sqrt (D x) ^ (2 : ℕ) = D x := Real.sq_sqrt hD
+    have hexp : ‖ρ x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) + 2 * (τ x * a x) + (τ x) ^ (2 : ℕ) := by
       rw [hρdef]
       simp only
       rw [norm_add_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, hu1, mul_one,
         sq_abs]
-    have hval : ‖ρ x‖ ^ 2 = 1 := by
+    have hval : ‖ρ x‖ ^ (2 : ℕ) = 1 := by
       rw [hexp, hτdef]
       simp only
-      have hDeq : D x = (a x) ^ 2 + 1 - ‖x‖ ^ 2 := by rw [hDdef]
+      have hDeq : D x = (a x) ^ (2 : ℕ) + 1 - ‖x‖ ^ (2 : ℕ) := by rw [hDdef]
       nlinarith [hsqrt, hDeq]
     nlinarith [norm_nonneg (ρ x), hval]
   -- and it fixes the boundary sphere
@@ -162,7 +162,7 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
     have hdx : d x ≠ 0 := hdne x hxB
     have hfx : ‖f x‖ ≤ 1 := mem_closedBall_zero_iff.mp (hmaps x hxB)
     have hage : 0 ≤ a x := by
-      have hinner : (inner ℝ x (d x) : ℝ) = ‖x‖ ^ 2 - inner ℝ x (f x) := by
+      have hinner : (inner ℝ x (d x) : ℝ) = ‖x‖ ^ (2 : ℕ) - inner ℝ x (f x) := by
         rw [hddef]
         simp only
         rw [inner_sub_right, real_inner_self_eq_norm_sq]
@@ -178,7 +178,7 @@ theorem exists_fixedPoint_of_contDiffOn {f : E → E} {U : Set E} (hU : IsOpen U
       have : (0:ℝ) ≤ ‖d x‖⁻¹ := by positivity
       exact mul_nonneg this hnn
     have hτ0 : τ x = 0 := by
-      have hDeq : D x = (a x) ^ 2 := by
+      have hDeq : D x = (a x) ^ (2 : ℕ) := by
         rw [hDdef]
         simp only [hx1]
         norm_num

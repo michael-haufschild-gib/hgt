@@ -33,13 +33,13 @@ namespace RHTower
 
 /-- The exact algebraic identity behind the minimization of the buffer bracket. -/
 theorem buffer_bracket_identity (d η s : ℝ) :
-    (s + d) * (η - s + d) * η ^ 2 - (η + 2 * d) ^ 2 * (s * (η - s))
-      = d * (η + d) * (η - 2 * s) ^ 2 := by
+    (s + d) * (η - s + d) * η ^ (2 : ℕ) - (η + 2 * d) ^ (2 : ℕ) * (s * (η - s))
+      = d * (η + d) * (η - 2 * s) ^ (2 : ℕ) := by
   ring
 
 /-- **The buffer product is at least the squared aspect ratio.** -/
 theorem buffer_product_ge {d η s : ℝ} (hd : 0 < d) (hη : 0 < η) (hs0 : 0 < s) (hsη : s < η) :
-    (1 + 2 * d / η) ^ 2 ≤ (1 + d / s) * (1 + d / (η - s)) := by
+    (1 + 2 * d / η) ^ (2 : ℕ) ≤ (1 + d / s) * (1 + d / (η - s)) := by
   have hs' : (0 : ℝ) < η - s := by linarith
   have hu : (0 : ℝ) < s * (η - s) := by positivity
   have h1 : 1 + d / s = (s + d) / s := by field_simp
@@ -57,7 +57,7 @@ theorem log_buffer_bracket_ge {d η s : ℝ} (hd : 0 < d) (hη : 0 < η) (hs0 : 
   have hA : (0 : ℝ) < 1 + d / s := by positivity
   have hB : (0 : ℝ) < 1 + d / (η - s) := by positivity
   have hC : (0 : ℝ) < 1 + 2 * d / η := by positivity
-  have hsq : Real.log ((1 + 2 * d / η) ^ 2) ≤ Real.log ((1 + d / s) * (1 + d / (η - s))) :=
+  have hsq : Real.log ((1 + 2 * d / η) ^ (2 : ℕ)) ≤ Real.log ((1 + d / s) * (1 + d / (η - s))) :=
     Real.log_le_log (by positivity) (buffer_product_ge hd hη hs0 hsη)
   rw [Real.log_pow, Real.log_mul hA.ne' hB.ne'] at hsq
   simpa using hsq
@@ -111,7 +111,7 @@ theorem neg_reflection_quadForm_symmetrize_nonpos {R : H →ₗ[ℝ] H} (hinv : 
     {w : ℝ} (hw : 0 ≤ w) (u : H) :
     -w * (inner ℝ (R (u + R u)) (u + R u) : ℝ) ≤ 0 := by
   rw [reflection_symmetrize hinv, real_inner_self_eq_norm_sq]
-  have : (0 : ℝ) ≤ w * ‖u + R u‖ ^ 2 := by positivity
+  have : (0 : ℝ) ≤ w * ‖u + R u‖ ^ (2 : ℕ) := by positivity
   linarith
 
 /-- **`(267)`, odd half: the same multiple is nonnegative on the antisymmetrized direction.** -/
@@ -119,7 +119,7 @@ theorem neg_reflection_quadForm_antisymmetrize_nonneg {R : H →ₗ[ℝ] H} (hin
     {w : ℝ} (hw : 0 ≤ w) (u : H) :
     0 ≤ -w * (inner ℝ (R (u - R u)) (u - R u) : ℝ) := by
   rw [reflection_antisymmetrize hinv, inner_neg_left, real_inner_self_eq_norm_sq]
-  have : (0 : ℝ) ≤ w * ‖u - R u‖ ^ 2 := by positivity
+  have : (0 : ℝ) ≤ w * ‖u - R u‖ ^ (2 : ℕ) := by positivity
   linarith
 
 end RHTower

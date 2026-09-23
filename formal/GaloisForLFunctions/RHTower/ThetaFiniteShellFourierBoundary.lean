@@ -10,9 +10,9 @@ import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
 Write `C_f(b) = integral_{x>0} f(x) cos(b*x) dx`. For every nonempty canonical
 prefix `P_N` of the actual theta density, this module proves
 
-* `b^2 C_(P_N)(b) -> -P_N'(0) < 0`;
-* `b^2 C_(Phi)(b) -> 0`;
-* `b^2 C_(Phi-P_N)(b) -> P_N'(0) > 0`.
+* `b^(2 : ℕ) C_(P_N)(b) -> -P_N'(0) < 0`;
+* `b^(2 : ℕ) C_(Phi)(b) -> 0`;
+* `b^(2 : ℕ) C_(Phi-P_N)(b) -> P_N'(0) > 0`.
 
 Thus the omitted arithmetic tail contributes the full opposite leading Fourier
 term at every fixed cutoff. The proof uses exact source derivatives, Gaussian
@@ -79,7 +79,7 @@ private theorem halfLineCosine_secondIntegrationByParts
     (hD : ∀ k x, HasDerivAt (J k) (J (k+1) x) x)
     (hI : ∀ k, IntegrableOn (J k) (Ioi 0))
     (hT : ∀ k, Tendsto (J k) atTop (𝓝 0)) (b : ℝ) :
-    b ^ 2 * (∫ x : ℝ in Ioi 0,
+    b ^ (2 : ℕ) * (∫ x : ℝ in Ioi 0,
       (J 0) x * Real.cos (b * x)) =
       -(J 1) 0 -
         ∫ x : ℝ in Ioi 0,
@@ -92,7 +92,7 @@ private theorem halfLineCosine_secondIntegrationByParts
     all_goals try rfl
     ring
   have hsin (x : ℝ) : HasDerivAt (fun y : ℝ => -b * Real.sin (b * y))
-      (-b ^ 2 * Real.cos (b * x)) x := by
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) x := by
     have h := ((Real.hasDerivAt_sin (b * x)).comp x
       ((hasDerivAt_id x).const_mul b)).const_mul (-b)
     convert h using 1
@@ -169,12 +169,12 @@ private theorem halfLineCosine_secondIntegrationByParts
       rw [Real.norm_eq_abs, abs_mul, abs_neg]
       exact mul_le_of_le_one_right (abs_nonneg b) (abs_sin_le_one _)
   have hcosAmp : IntegrableOn (fun x : ℝ =>
-      (-b ^ 2 * Real.cos (b * x)) * (J 0) x) (Ioi 0) := by
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) * (J 0) x) (Ioi 0) := by
     apply Integrable.bdd_mul (hI 0)
-    · exact (by fun_prop : Continuous (fun x : ℝ => -b ^ 2 * Real.cos (b * x))).aestronglyMeasurable.restrict
+    · exact (by fun_prop : Continuous (fun x : ℝ => -b ^ (2 : ℕ) * Real.cos (b * x))).aestronglyMeasurable.restrict
     · filter_upwards with x
       rw [Real.norm_eq_abs, abs_mul, abs_neg]
-      exact mul_le_of_le_one_right (abs_nonneg (b ^ 2)) (abs_cos_le_one _)
+      exact mul_le_of_le_one_right (abs_nonneg (b ^ (2 : ℕ))) (abs_cos_le_one _)
   have hfirst := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := fun x => Real.cos (b * x))
     (u' := fun x => -b * Real.sin (b * x))
@@ -184,7 +184,7 @@ private theorem halfLineCosine_secondIntegrationByParts
     hcosCurv hsinSlope hcosSlopeZero hcosSlopeInf
   have hsecond := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := fun x => -b * Real.sin (b * x))
-    (u' := fun x => -b ^ 2 * Real.cos (b * x))
+    (u' := fun x => -b ^ (2 : ℕ) * Real.cos (b * x))
     (v := (J 0))
     (v' := (J 1))
     (fun x _ => hsin x) (fun x _ => (hD 0) x)
@@ -211,8 +211,8 @@ private theorem halfLineCosine_secondIntegrationByParts
       filter_upwards with x
       ring] at hsecond
   rw [show (∫ x : ℝ in Ioi 0,
-      (-b ^ 2 * Real.cos (b * x)) * (J 0) x) =
-      -b ^ 2 * ∫ x : ℝ in Ioi 0,
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) * (J 0) x) =
+      -b ^ (2 : ℕ) * ∫ x : ℝ in Ioi 0,
         (J 0) x * Real.cos (b * x) by
       rw [← integral_const_mul]
       apply integral_congr_ae
@@ -221,7 +221,7 @@ private theorem halfLineCosine_secondIntegrationByParts
   linarith
 
 theorem thetaFiniteShellCosine_secondIntegrationByParts (N : ℕ) (b : ℝ) :
-    b^2 * (∫ x : ℝ in Ioi 0, thetaFiniteShellJet N 0 x * Real.cos (b*x)) =
+    b^(2 : ℕ) * (∫ x : ℝ in Ioi 0, thetaFiniteShellJet N 0 x * Real.cos (b*x)) =
       -thetaFiniteShellJet N 1 0 -
         ∫ x : ℝ in Ioi 0, thetaFiniteShellJet N 2 x * Real.cos (b*x) :=
   halfLineCosine_secondIntegrationByParts (thetaFiniteShellJet N)
@@ -229,13 +229,13 @@ theorem thetaFiniteShellCosine_secondIntegrationByParts (N : ℕ) (b : ℝ) :
     (thetaFiniteShellJet_tendsto_atTop_zero N) b
 
 theorem tendsto_thetaFiniteShellCosine_mul_sq (N : ℕ) :
-    Tendsto (fun b : ℝ => b^2 * ∫ x : ℝ in Ioi 0,
+    Tendsto (fun b : ℝ => b^(2 : ℕ) * ∫ x : ℝ in Ioi 0,
       thetaCuspFiniteShellPrefix N x * Real.cos (b*x)) atTop
       (𝓝 (-thetaFiniteShellJet N 1 0)) := by
   have hr := HTGeometry.tendsto_setIntegral_mul_cos_atTop
     (integrableOn_thetaFiniteShellJet N 2)
   have heq (b : ℝ) :
-      b^2 * (∫ x : ℝ in Ioi 0, thetaCuspFiniteShellPrefix N x * Real.cos (b*x)) =
+      b^(2 : ℕ) * (∫ x : ℝ in Ioi 0, thetaCuspFiniteShellPrefix N x * Real.cos (b*x)) =
       -thetaFiniteShellJet N 1 0 -
         ∫ x : ℝ in Ioi 0, Real.cos (x*b) * thetaFiniteShellJet N 2 x := by
     rw [← thetaFiniteShellJet_zero_eq, thetaFiniteShellCosine_secondIntegrationByParts]
@@ -283,7 +283,7 @@ private theorem fullJet_tendsto_zero (k : ℕ) :
 /-- Reflection cancels the quadratic-frequency boundary anomaly in the exact
 completed theta source. -/
 theorem tendsto_thetaFullCosine_mul_sq_zero :
-    Tendsto (fun b : ℝ => b^2 * ∫ x : ℝ in Ioi 0,
+    Tendsto (fun b : ℝ => b^(2 : ℕ) * ∫ x : ℝ in Ioi 0,
       thetaCuspFullSource x * Real.cos (b*x)) atTop (𝓝 0) := by
   have hzero : thetaCuspFullDerivative 0 = thetaCuspFullSource := by
     rw [← iteratedDeriv_thetaCuspFullSource]
@@ -292,7 +292,7 @@ theorem tendsto_thetaFullCosine_mul_sq_zero :
     tsum_iteratedDeriv_one_thetaCuspSourceTerm_zero_eq_zero
   have hr := HTGeometry.tendsto_setIntegral_mul_cos_atTop (fullJet_integrable 2)
   have heq (b : ℝ) :
-      b^2 * (∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (b*x)) =
+      b^(2 : ℕ) * (∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (b*x)) =
       -(∫ x : ℝ in Ioi 0, Real.cos (x*b) * thetaCuspFullDerivative 2 x) := by
     rw [← hzero, halfLineCosine_secondIntegrationByParts thetaCuspFullDerivative
       hasDerivAt_thetaCuspFullDerivative fullJet_integrable fullJet_tendsto_zero,
@@ -306,7 +306,7 @@ theorem tendsto_thetaFullCosine_mul_sq_zero :
 /-- The omitted infinite arithmetic tail restores exactly the leading Fourier
 boundary term lost by every finite shell prefix. -/
 theorem tendsto_thetaShellRemainderCosine_mul_sq (N : ℕ) :
-    Tendsto (fun b : ℝ => b^2 * ∫ x : ℝ in Ioi 0,
+    Tendsto (fun b : ℝ => b^(2 : ℕ) * ∫ x : ℝ in Ioi 0,
       (thetaCuspFullSource x - thetaCuspFiniteShellPrefix N x) * Real.cos (b*x))
       atTop (𝓝 (thetaFiniteShellJet N 1 0)) := by
   have h := tendsto_thetaFullCosine_mul_sq_zero.sub (tendsto_thetaFiniteShellCosine_mul_sq N)
@@ -324,10 +324,10 @@ theorem tendsto_thetaShellRemainderCosine_mul_sq (N : ℕ) :
         simpa only [Real.norm_eq_abs] using abs_cos_le_one (b*x)))
     exact hmul.congr (ae_of_all _ fun x => mul_comm _ _)
   have heq (b : ℝ) :
-      b^2 * (∫ x : ℝ in Ioi 0,
+      b^(2 : ℕ) * (∫ x : ℝ in Ioi 0,
         (thetaCuspFullSource x - thetaCuspFiniteShellPrefix N x) * Real.cos (b*x)) =
-      b^2 * (∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (b*x)) -
-      b^2 * (∫ x : ℝ in Ioi 0, thetaCuspFiniteShellPrefix N x * Real.cos (b*x)) := by
+      b^(2 : ℕ) * (∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (b*x)) -
+      b^(2 : ℕ) * (∫ x : ℝ in Ioi 0, thetaCuspFiniteShellPrefix N x * Real.cos (b*x)) := by
     simp_rw [sub_mul]
     rw [integral_sub (hc _ hi b) (hc _ hj b), mul_sub]
   simpa only [heq, sub_neg_eq_add, zero_add] using h

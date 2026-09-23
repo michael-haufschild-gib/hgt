@@ -27,9 +27,9 @@ open GaloisForLFunctions GaloisForLFunctions.HTGeometry
 `16(n+1)` times its mass.  This deliberately uses a rational constant; the sharper oscillator
 constant is unnecessary for the Route-U concentration law. -/
 theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
-    ‖(derivSCLM (polyGaussSchwartz P)).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
+    ‖(derivSCLM (polyGaussSchwartz P)).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
       16 * (P.natDegree + 1) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   let f : 𝓢(ℝ, ℂ) := polyGaussSchwartz P
   let B : 𝓢(ℝ, ℂ) := annihilationCLM f
   let A : 𝓢(ℝ, ℂ) := creationCLM f
@@ -37,18 +37,18 @@ theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
   change ‖(numberCLM f).toLp 2 (volume : Measure ℝ)‖ ≤
     4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖ at hN
   have hB0 := norm_toLp_annihilationCLM_sq_le f
-  have hB : ‖B.toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-      4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
-    change ‖(annihilationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤ _
+  have hB : ‖B.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+      4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
+    change ‖(annihilationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤ _
     calc
-      ‖(annihilationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ 2
+      ‖(annihilationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
           ≤ ‖f.toLp 2 (volume : Measure ℝ)‖ *
               ‖(numberCLM f).toLp 2 (volume : Measure ℝ)‖ := hB0
       _ ≤ ‖f.toLp 2 (volume : Measure ℝ)‖ *
             (4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖) :=
         mul_le_mul_of_nonneg_left hN (norm_nonneg _)
       _ = 4 * Real.pi * P.natDegree *
-            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by ring
+            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by ring
   have htoLpK :
       (numberCLM f + (4 * (Real.pi : ℂ)) • f).toLp 2 (volume : Measure ℝ) =
         (numberCLM f).toLp 2 (volume : Measure ℝ) +
@@ -78,11 +78,11 @@ theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
       _ = 4 * Real.pi * (P.natDegree + 1) *
             ‖f.toLp 2 (volume : Measure ℝ)‖ := by ring
   have hA0 := norm_toLp_creationCLM_sq_le f
-  have hA : ‖A.toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-      4 * Real.pi * (P.natDegree + 1) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
-    change ‖(creationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤ _
+  have hA : ‖A.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+      4 * Real.pi * (P.natDegree + 1) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
+    change ‖(creationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤ _
     calc
-      ‖(creationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ 2
+      ‖(creationCLM f).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
           ≤ ‖f.toLp 2 (volume : Measure ℝ)‖ *
               ‖(numberCLM f + (4 * (Real.pi : ℂ)) • f).toLp 2
                 (volume : Measure ℝ)‖ := hA0
@@ -91,7 +91,7 @@ theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
               ‖f.toLp 2 (volume : Measure ℝ)‖) :=
         mul_le_mul_of_nonneg_left hK (norm_nonneg _)
       _ = 4 * Real.pi * (P.natDegree + 1) *
-            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by ring
+            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by ring
   have hsub :
       ‖(B - A).toLp 2 (volume : Measure ℝ)‖ ≤
         ‖B.toLp 2 (volume : Measure ℝ)‖ + ‖A.toLp 2 (volume : Measure ℝ)‖ := by
@@ -102,8 +102,8 @@ theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
   rw [toLp_smul, norm_smul]
   have hinv : ‖((2 : ℂ)⁻¹)‖ = (1 / 2 : ℝ) := by norm_num
   rw [hinv]
-  have hsubsq : ‖(B - A).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-      (‖B.toLp 2 (volume : Measure ℝ)‖ + ‖A.toLp 2 (volume : Measure ℝ)‖) ^ 2 :=
+  have hsubsq : ‖(B - A).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+      (‖B.toLp 2 (volume : Measure ℝ)‖ + ‖A.toLp 2 (volume : Measure ℝ)‖) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hsub 2
   have hpi : 2 * Real.pi ≤ 8 := by linarith [Real.pi_lt_four]
   have hcoef : 2 * Real.pi * (2 * (P.natDegree : ℝ) + 1) ≤
@@ -115,34 +115,34 @@ theorem norm_deriv_polyGaussSchwartz_sq_le (P : Polynomial ℝ) :
       _ ≤ 16 * ((P.natDegree : ℝ) + 1) := by
         nlinarith [Nat.cast_nonneg (α := ℝ) P.natDegree]
   calc
-    (1 / 2 * ‖(B - A).toLp 2 (volume : Measure ℝ)‖) ^ 2
-        ≤ (1 / 2) ^ 2 *
-            (‖B.toLp 2 (volume : Measure ℝ)‖ + ‖A.toLp 2 (volume : Measure ℝ)‖) ^ 2 := by
+    (1 / 2 * ‖(B - A).toLp 2 (volume : Measure ℝ)‖) ^ (2 : ℕ)
+        ≤ (1 / 2) ^ (2 : ℕ) *
+            (‖B.toLp 2 (volume : Measure ℝ)‖ + ‖A.toLp 2 (volume : Measure ℝ)‖) ^ (2 : ℕ) := by
       rw [mul_pow]
       exact mul_le_mul_of_nonneg_left hsubsq (sq_nonneg _)
     _ ≤ (1 / 2 : ℝ) *
-          (‖B.toLp 2 (volume : Measure ℝ)‖ ^ 2 +
-            ‖A.toLp 2 (volume : Measure ℝ)‖ ^ 2) := by
+          (‖B.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) +
+            ‖A.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)) := by
       nlinarith [sq_nonneg
         (‖B.toLp 2 (volume : Measure ℝ)‖ - ‖A.toLp 2 (volume : Measure ℝ)‖)]
     _ ≤ (1 / 2 : ℝ) *
-          (4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 +
+          (4 * Real.pi * P.natDegree * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) +
             4 * Real.pi * (P.natDegree + 1) *
-              ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2) := by gcongr
+              ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)) := by gcongr
     _ = 2 * Real.pi * (2 * (P.natDegree : ℝ) + 1) *
-          ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by ring
+          ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by ring
     _ ≤ 16 * ((P.natDegree : ℝ) + 1) *
-          ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 :=
+          ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hcoef (sq_nonneg _)
     _ = 16 * (P.natDegree + 1) *
-          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
       simp only [f]
 
 /-- A unit interval contains no more squared Schwartz mass than the whole line. -/
 private theorem intervalIntegral_norm_sq_le_toLp_sq (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    (∫ u in x..x + 1, ‖f u‖ ^ 2) ≤
-      ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
-  have hint : Integrable (fun u : ℝ => ‖f u‖ ^ 2) (volume : Measure ℝ) :=
+    (∫ u in x..x + 1, ‖f u‖ ^ (2 : ℕ)) ≤
+      ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
+  have hint : Integrable (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (volume : Measure ℝ) :=
     (memLp_two_iff_integrable_sq_norm f.continuous.aestronglyMeasurable).mp
       (f.memLp 2 (volume : Measure ℝ))
   rw [intervalIntegral.integral_of_le (by linarith : x ≤ x + 1),
@@ -153,9 +153,9 @@ private theorem intervalIntegral_norm_sq_le_toLp_sq (f : 𝓢(ℝ, ℂ)) (x : �
 self-dual Gaussian has squared point value at most `9 sqrt(n+1)` times its total squared mass.
 This is the reproducing-kernel estimate needed by C43-Y, obtained without a Mehler expansion. -/
 theorem norm_polyGaussSchwartz_sq_le (P : Polynomial ℝ) (x : ℝ) :
-    ‖polyGaussSchwartz P x‖ ^ 2 ≤
+    ‖polyGaussSchwartz P x‖ ^ (2 : ℕ) ≤
       9 * Real.sqrt (P.natDegree + 1) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   let f : 𝓢(ℝ, ℂ) := polyGaussSchwartz P
   let D : 𝓢(ℝ, ℂ) := derivSCLM f
   let s : ℝ := Real.sqrt (P.natDegree + 1)
@@ -175,12 +175,12 @@ theorem norm_polyGaussSchwartz_sq_le (P : Polynomial ℝ) (x : ℝ) :
       2 * inner ℝ (f y) (D y)) volume x (x + (1 : ℕ) * (1 : ℝ)) :=
     (by fun_prop : Continuous (fun y : ℝ =>
       2 * inner ℝ (f y) (D y))).intervalIntegrable x _
-  have hgint : IntervalIntegrable (fun y : ℝ => ‖f y‖ ^ 2)
+  have hgint : IntervalIntegrable (fun y : ℝ => ‖f y‖ ^ (2 : ℕ))
       volume x (x + (1 : ℕ) * (1 : ℝ)) :=
-    (by fun_prop : Continuous (fun y : ℝ => ‖f y‖ ^ 2)).intervalIntegrable x _
-  have hDint : IntervalIntegrable (fun y : ℝ => ‖D y‖ ^ 2)
+    (by fun_prop : Continuous (fun y : ℝ => ‖f y‖ ^ (2 : ℕ))).intervalIntegrable x _
+  have hDint : IntervalIntegrable (fun y : ℝ => ‖D y‖ ^ (2 : ℕ))
       volume x (x + (1 : ℕ) * (1 : ℝ)) :=
-    (by fun_prop : Continuous (fun y : ℝ => ‖D y‖ ^ 2)).intervalIntegrable x _
+    (by fun_prop : Continuous (fun y : ℝ => ‖D y‖ ^ (2 : ℕ))).intervalIntegrable x _
   have hcrossint : IntervalIntegrable (fun y : ℝ => 2 * (‖f y‖ * ‖D y‖))
       volume x (x + (1 : ℕ) * (1 : ℝ)) :=
     (by fun_prop : Continuous (fun y : ℝ =>
@@ -193,17 +193,17 @@ theorem norm_polyGaussSchwartz_sq_le (P : Polynomial ℝ) (x : ℝ) :
       subst r
       simp)
   have hlarge' :
-      ‖f x‖ ^ 2 ≤
-        (1 + 1 / η) * (∫ u in x..x + 1, ‖f u‖ ^ 2) +
-          η * (∫ u in x..x + 1, ‖D u‖ ^ 2) := by
+      ‖f x‖ ^ (2 : ℕ) ≤
+        (1 + 1 / η) * (∫ u in x..x + 1, ‖f u‖ ^ (2 : ℕ)) +
+          η * (∫ u in x..x + 1, ‖D u‖ ^ (2 : ℕ)) := by
     simpa using hlarge
   have hfLocal := intervalIntegral_norm_sq_le_toLp_sq f x
   have hDLocal := intervalIntegral_norm_sq_le_toLp_sq D x
-  have henergy : ‖D.toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-      16 * (P.natDegree + 1) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+  have henergy : ‖D.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+      16 * (P.natDegree + 1) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
     simpa only [D, f] using norm_deriv_polyGaussSchwartz_sq_le P
-  have hs_sq : s ^ 2 = (P.natDegree : ℝ) + 1 := by
-    change Real.sqrt (P.natDegree + 1) ^ 2 = _
+  have hs_sq : s ^ (2 : ℕ) = (P.natDegree : ℝ) + 1 := by
+    change Real.sqrt (P.natDegree + 1) ^ (2 : ℕ) = _
     rw [Real.sq_sqrt]
     positivity
   have hη : η = 1 / (4 * s) := rfl
@@ -213,29 +213,29 @@ theorem norm_polyGaussSchwartz_sq_le (P : Polynomial ℝ) (x : ℝ) :
     have hn : (0 : ℝ) ≤ P.natDegree := by positivity
     linarith
   calc
-    ‖f x‖ ^ 2
-        ≤ (1 + 1 / η) * (∫ u in x..x + 1, ‖f u‖ ^ 2) +
-            η * (∫ u in x..x + 1, ‖D u‖ ^ 2) := hlarge'
-    _ ≤ (1 + 1 / η) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 +
-          η * ‖D.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by gcongr
-    _ ≤ (1 + 1 / η) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 +
+    ‖f x‖ ^ (2 : ℕ)
+        ≤ (1 + 1 / η) * (∫ u in x..x + 1, ‖f u‖ ^ (2 : ℕ)) +
+            η * (∫ u in x..x + 1, ‖D u‖ ^ (2 : ℕ)) := hlarge'
+    _ ≤ (1 + 1 / η) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) +
+          η * ‖D.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by gcongr
+    _ ≤ (1 + 1 / η) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) +
           η * (16 * (P.natDegree + 1) *
-            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2) := by gcongr
-    _ = (1 + 8 * s) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+            ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)) := by gcongr
+    _ = (1 + 8 * s) * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
       rw [hη]
       field_simp
       rw [← hs_sq]
       ring
-    _ ≤ 9 * s * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+    _ ≤ 9 * s * ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
       gcongr
       linarith
     _ = 9 * Real.sqrt (P.natDegree + 1) *
-          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
       simp only [s, f]
 
 theorem norm_polynomialGaussianEnergy_eq_norm_polyGauss_sq
     (P : Polynomial ℝ) (x : ℝ) :
-    ‖polynomialGaussianEnergy P x‖ = ‖polyGaussSchwartz P x‖ ^ 2 := by
+    ‖polynomialGaussianEnergy P x‖ = ‖polyGaussSchwartz P x‖ ^ (2 : ℕ) := by
   rw [polynomialGaussianEnergy_apply, polyGaussSchwartz_apply]
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos (gaussReal_pos x), gaussReal]
@@ -249,10 +249,10 @@ theorem integral_Icc_norm_polynomialGaussianEnergy_le
     (P : Polynomial ℝ) (R : {R : ℝ // 0 ≤ R}) :
     (∫ x in Icc (-(R : ℝ)) (R : ℝ), ‖polynomialGaussianEnergy P x‖) ≤
       18 * (R : ℝ) * Real.sqrt (P.natDegree + 1) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have hint : Integrable (fun x : ℝ => ‖polynomialGaussianEnergy P x‖)
       (volume : Measure ℝ) := by
-    have hsq : Integrable (fun x : ℝ => ‖polyGaussSchwartz P x‖ ^ 2)
+    have hsq : Integrable (fun x : ℝ => ‖polyGaussSchwartz P x‖ ^ (2 : ℕ))
         (volume : Measure ℝ) :=
       (memLp_two_iff_integrable_sq_norm
         (polyGaussSchwartz P).continuous.aestronglyMeasurable).mp
@@ -261,7 +261,7 @@ theorem integral_Icc_norm_polynomialGaussianEnergy_le
       (norm_polynomialGaussianEnergy_eq_norm_polyGauss_sq P x).symm)
   have hconst : IntegrableOn
       (fun _ : ℝ => 9 * Real.sqrt (P.natDegree + 1) *
-        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2)
+        ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ))
       (Icc (-(R : ℝ)) (R : ℝ)) :=
     integrableOn_const isCompact_Icc.measure_ne_top
   have hmono := setIntegral_mono_on hint.integrableOn hconst measurableSet_Icc
@@ -272,9 +272,9 @@ theorem integral_Icc_norm_polynomialGaussianEnergy_le
     (∫ x in Icc (-(R : ℝ)) (R : ℝ), ‖polynomialGaussianEnergy P x‖)
         ≤ ∫ _x in Icc (-(R : ℝ)) (R : ℝ),
             (9 * Real.sqrt (P.natDegree + 1) *
-              ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) := hmono
+              ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) := hmono
     _ = 18 * (R : ℝ) * Real.sqrt (P.natDegree + 1) *
-          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
       rw [MeasureTheory.setIntegral_const,
         Real.volume_real_Icc_of_le (by linarith [R.property])]
       simp only [smul_eq_mul]
@@ -292,10 +292,10 @@ theorem integral_Icc_norm_routeUPolynomialGaussianDensity_le
         routeUPolynomialGaussianMass Q t := by
   let δ : ℝ := Real.sqrt (2 * Real.pi / (t : ℝ))
   let P : Polynomial ℝ := routeURescaledEvenPolynomial Q t
-  let M : ℝ := ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2
+  let M : ℝ := ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
   have hδpos : 0 < δ := Real.sqrt_pos.2 (div_pos (by positivity) t.property)
-  have hδsq : δ ^ 2 = 2 * Real.pi / (t : ℝ) := by
-    change Real.sqrt (2 * Real.pi / (t : ℝ)) ^ 2 = _
+  have hδsq : δ ^ (2 : ℕ) = 2 * Real.pi / (t : ℝ) := by
+    change Real.sqrt (2 * Real.pi / (t : ℝ)) ^ (2 : ℕ) = _
     rw [Real.sq_sqrt]
     exact (div_pos (by positivity) t.property).le
   have hdegree : P.natDegree = 2 * Q.natDegree :=

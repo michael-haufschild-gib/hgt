@@ -400,12 +400,12 @@ theorem summable_primeGapCriticalEnergy_of_primeLogGap_exp_rate
   rw [Real.norm_eq_abs, abs_of_nonneg
     (xiHeatCassiniPrimeGapCriticalEnergy_nonneg N)]
   unfold xiHeatCassiniPrimeGapCriticalEnergy
-  change (xiHeatCassiniOrderedPrimeGap N / p) ^ 2 * Real.sqrt p ≤ _
+  change (xiHeatCassiniOrderedPrimeGap N / p) ^ (2 : ℕ) * Real.sqrt p ≤ _
   rw [hsqrt]
   calc
-    (xiHeatCassiniOrderedPrimeGap N / p) ^ 2 *
+    (xiHeatCassiniOrderedPrimeGap N / p) ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight N / 2) ≤
-        (2 * delta) ^ 2 *
+        (2 * delta) ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight N / 2) := by
       gcongr
     _ = 4 * delta * delta *

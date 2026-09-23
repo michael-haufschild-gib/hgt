@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
 /-!
 # Harmonic square asymptotic for the von Mangoldt weight
 
-The prime part supplies the lower bound, while `Lambda(k)^2 <= Lambda(k) log k` and the existing
+The prime part supplies the lower bound, while `Lambda(k)^(2 : ℕ) <= Lambda(k) log k` and the existing
 explicit harmonic `Lambda log` estimate supply the upper bound.  The result retains an explicit
 `O(log N)` remainder around the sharp `one-half log-squared N` main term.
 -/
@@ -18,7 +18,7 @@ namespace RHTower.Sieve
 theorem vonMangoldtHarmonicSquareSum_eq_Icc_one
     (N : ℕ) (hN : 1 ≤ N) :
     vonMangoldtHarmonicSquareSum N =
-      ∑ k ∈ Finset.Icc 1 N, (Λ k) ^ 2 / (k : ℝ) := by
+      ∑ k ∈ Finset.Icc 1 N, (Λ k) ^ (2 : ℕ) / (k : ℝ) := by
   rw [vonMangoldtHarmonicSquareSum]
   have hIcc : Finset.Icc 1 N = insert 1 (Finset.Icc 2 N) := by
     ext k
@@ -30,15 +30,15 @@ theorem vonMangoldtHarmonicSquareSum_eq_Icc_one
 /-- The prime part is a lower bound for the full von Mangoldt harmonic square moment. -/
 theorem sum_prime_log_sq_div_le_vonMangoldtHarmonicSquareSum
     (N : ℕ) (hN : 1 ≤ N) :
-    ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) ≤
+    ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) ≤
       vonMangoldtHarmonicSquareSum N := by
   rw [vonMangoldtHarmonicSquareSum_eq_Icc_one N hN]
   rw [← filter_prime_Icc_eq_primesLE N]
   have hprime :
       ∑ p ∈ {m ∈ Finset.Icc 1 N | m.Prime},
-          Real.log (p : ℝ) ^ 2 / (p : ℝ) =
+          Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) =
         ∑ p ∈ {m ∈ Finset.Icc 1 N | m.Prime},
-          (Λ p) ^ 2 / (p : ℝ) := by
+          (Λ p) ^ (2 : ℕ) / (p : ℝ) := by
     apply Finset.sum_congr rfl
     intro p hp
     rw [vonMangoldt_apply_prime (Finset.mem_filter.mp hp).2]
@@ -59,14 +59,14 @@ theorem vonMangoldtHarmonicSquareSum_le_sum_vonMangoldt_log_div
   have hΛ0 : 0 ≤ Λ k := vonMangoldt_nonneg
   have hΛlog : Λ k ≤ Real.log k := vonMangoldt_le_log
   have hkR : (0 : ℝ) < k := by exact_mod_cast hkpos
-  have hsq : (Λ k) ^ 2 ≤ Λ k * Real.log k := by
+  have hsq : (Λ k) ^ (2 : ℕ) ≤ Λ k * Real.log k := by
     simpa [pow_two] using mul_le_mul_of_nonneg_left hΛlog hΛ0
   exact div_le_div_of_nonneg_right hsq hkR.le
 
 /-- Explicit asymptotic remainder for the von Mangoldt harmonic square moment. -/
 theorem abs_vonMangoldtHarmonicSquareSum_sub_le
     (N : ℕ) (hN : 1 ≤ N) :
-    |vonMangoldtHarmonicSquareSum N - Real.log N ^ 2 / 2| ≤
+    |vonMangoldtHarmonicSquareSum N - Real.log N ^ (2 : ℕ) / 2| ≤
       39 * Real.log N + 25 := by
   rw [abs_le]
   constructor

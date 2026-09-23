@@ -42,7 +42,7 @@ theorem mobiusDivisorSelectionFibre_union_isolated_nonempty (M : ℕ) (P L R : F
 /-- Any specified prime-singleton square sum is part of the literal complete energy. -/
 theorem sum_mobiusDivisorSelectionSingleton_sq_le_energy (M : ℕ) (P U : Finset ℕ)
     (hU : U⊆mobiusDivisorSelectionPrimes M) :
-    (∑ p∈U,(mobiusDivisorSelectionFibre M P {p})^2)≤ mobiusDivisorSelectionEnergy M P := by
+    (∑ p∈U,(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ))≤ mobiusDivisorSelectionEnergy M P := by
   have hsub : U.image (fun p => ({p}:Finset ℕ))⊆(mobiusDivisorSelectionPrimes M).powerset := by
     intro R hR
     obtain ⟨p,hp,rfl⟩ := mem_image.mp hR
@@ -54,25 +54,25 @@ theorem sum_mobiusDivisorSelectionSingleton_sq_le_energy (M : ℕ) (P U : Finset
 
 private theorem middle_quotient_range {N p : ℕ} (hN : 1≤N)
     (hp : p∈GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N)) :
-    7*N≤(64*N^2)/p ∧ (64*N^2)/p+1≤8*N := by
+    7*N≤(64*N^(2 : ℕ))/p ∧ (64*N^(2 : ℕ))/p+1≤8*N := by
   obtain ⟨hprime,hlo,hhi⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
   constructor
   · exact (Nat.le_div_iff_mul_le hprime.pos).mpr (by nlinarith)
-  · have h := (Nat.div_lt_iff_lt_mul hprime.pos).mpr (show 64*N^2<8*N*p by nlinarith)
+  · have h := (Nat.div_lt_iff_lt_mul hprime.pos).mpr (show 64*N^(2 : ℕ)<8*N*p by nlinarith)
     omega
 
 /-- A macroscopic family of actual middle-prime singletons inherits the uniformly large child heads. -/
 theorem eventually_mobiusDivisorMiddlePrimeFibre_upper :
     ∀ᶠ N : ℕ in atTop,∀ p : ℕ,
       p∈GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N) →
-      mobiusDivisorSelectionFibre (64*N^2) (mobiusDivisorSelectionPrimes (4*N)) {p}≤
-        -(N:ℝ)^2/(80*Real.log (8*(N:ℝ))) := by
+      mobiusDivisorSelectionFibre (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)) {p}≤
+        -(N:ℝ)^(2 : ℕ)/(80*Real.log (8*(N:ℝ))) := by
   filter_upwards [eventually_mobiusDivisorMiddleChildHead_lower,eventually_ge_atTop (1:ℕ)] with N hhead hN
   intro p hp
   obtain ⟨hpp,hlo,hhi⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
   obtain ⟨hqlo,hqhi⟩ := middle_quotient_range hN hp
-  have h0 := hhead ((64*N^2)/p) hqlo (by omega)
-  have h1 := hhead ((64*N^2)/p+1) (by omega) hqhi
+  have h0 := hhead ((64*N^(2 : ℕ))/p) hqlo (by omega)
+  have h1 := hhead ((64*N^(2 : ℕ))/p+1) (by omega) hqhi
   let a := (N:ℝ)*Real.sqrt N/(160*Real.log (8*(N:ℝ)))
   have hl4 : 0<Real.log (4*(N:ℝ)) := Real.log_pos (by exact_mod_cast (show 1<4*N by omega))
   have hl8 : 0<Real.log (8*(N:ℝ)) := Real.log_pos (by exact_mod_cast (show 1<8*N by omega))
@@ -82,11 +82,11 @@ theorem eventually_mobiusDivisorMiddlePrimeFibre_upper :
     apply div_le_div_of_nonneg_left (by positivity) (by positivity)
     linarith only [hlog]
   have ha0 : 0≤a := by dsimp [a]; positivity
-  have hw0 := divisorPrimeClipWeight_nonneg (64*N^2) p hpp.pos
-  have hw1 := (divisorPrimeClipWeight_lt_one (64*N^2) p hpp.pos).le
-  have hm0 := mul_le_mul_of_nonneg_left (ha.trans h0) (by linarith only [hw1] : 0≤1-divisorPrimeClipWeight (64*N^2) p)
+  have hw0 := divisorPrimeClipWeight_nonneg (64*N^(2 : ℕ)) p hpp.pos
+  have hw1 := (divisorPrimeClipWeight_lt_one (64*N^(2 : ℕ)) p hpp.pos).le
+  have hm0 := mul_le_mul_of_nonneg_left (ha.trans h0) (by linarith only [hw1] : 0≤1-divisorPrimeClipWeight (64*N^(2 : ℕ)) p)
   have hm1 := mul_le_mul_of_nonneg_left (ha.trans h1) hw0
-  have hinterp : a≤ mobiusDivisorInterpolatedFibre (64*N^2) p (mobiusDivisorSelectionPrimes (4*N)) ∅ := by
+  have hinterp : a≤ mobiusDivisorInterpolatedFibre (64*N^(2 : ℕ)) p (mobiusDivisorSelectionPrimes (4*N)) ∅ := by
     unfold mobiusDivisorInterpolatedFibre
     nlinarith only [hm0,hm1]
   have hpP : p∉mobiusDivisorSelectionPrimes (4*N) := by
@@ -102,30 +102,30 @@ theorem eventually_mobiusDivisorMiddlePrimeFibre_upper :
     nlinarith [Real.sqrt_nonneg (N:ℝ),Real.sqrt_nonneg (p:ℝ)]
   have hm := mul_le_mul_of_nonneg_left hinterp (Real.sqrt_nonneg (p:ℝ))
   have hr := mul_le_mul_of_nonneg_right hroot ha0
-  have he : 2*Real.sqrt N*a=(N:ℝ)^2/(80*Real.log (8*(N:ℝ))) := by
+  have he : 2*Real.sqrt N*a=(N:ℝ)^(2 : ℕ)/(80*Real.log (8*(N:ℝ))) := by
     dsimp [a]
     have hn := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) N)
     calc
-      _ = (N:ℝ)*(Real.sqrt N)^2/(80*Real.log (8*(N:ℝ))) := by ring
+      _ = (N:ℝ)*(Real.sqrt N)^(2 : ℕ)/(80*Real.log (8*(N:ℝ))) := by ring
       _ = _ := by rw [hn]; ring
-  have hh : (N:ℝ)^2/(80*Real.log (8*(N:ℝ)))≤
-      Real.sqrt p*mobiusDivisorInterpolatedFibre (64*N^2) p
+  have hh : (N:ℝ)^(2 : ℕ)/(80*Real.log (8*(N:ℝ)))≤
+      Real.sqrt p*mobiusDivisorInterpolatedFibre (64*N^(2 : ℕ)) p
         (mobiusDivisorSelectionPrimes (4*N)) ∅ := by
     rw [← he]
     exact hr.trans hm
   simpa only [neg_mul,neg_div] using neg_le_neg hh
 
 private theorem middle_pool_persists {N : ℕ} (hN : 2≤N) (L : Finset ℕ)
-    (hL : ∀ q∈L,q.Prime ∧ q<64*N^2 ∧ 64*N^2<8*q)
+    (hL : ∀ q∈L,q.Prime ∧ q<64*N^(2 : ℕ) ∧ 64*N^(2 : ℕ)<8*q)
     {p : ℕ} (hp : p∈GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N)) :
-    mobiusDivisorSelectionFibre (64*N^2) (mobiusDivisorSelectionPrimes (4*N)∪L) {p}=
-      mobiusDivisorSelectionFibre (64*N^2) (mobiusDivisorSelectionPrimes (4*N)) {p} := by
+    mobiusDivisorSelectionFibre (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)∪L) {p}=
+      mobiusDivisorSelectionFibre (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)) {p} := by
   have hcore : mobiusDivisorSelectionPrimes 8⊆mobiusDivisorSelectionPrimes (4*N) := by
     intro q hq
     obtain ⟨hq,hprime⟩ := mem_filter.mp hq
     exact mem_filter.mpr ⟨mem_range.mpr (by have := mem_range.mp hq; omega),hprime⟩
-  have hL' : ∀ q∈L,q.Prime ∧ q<64*N^2 ∧ q∉mobiusDivisorSelectionPrimes (4*N) ∧
-      mobiusDivisorSelectionPrimes ((64*N^2)/q+1)⊆mobiusDivisorSelectionPrimes (4*N) := by
+  have hL' : ∀ q∈L,q.Prime ∧ q<64*N^(2 : ℕ) ∧ q∉mobiusDivisorSelectionPrimes (4*N) ∧
+      mobiusDivisorSelectionPrimes ((64*N^(2 : ℕ))/q+1)⊆mobiusDivisorSelectionPrimes (4*N) := by
     intro q hq
     obtain ⟨hprime,hqM,hlarge⟩ := hL q hq
     have hqP : q∉mobiusDivisorSelectionPrimes (4*N) := by
@@ -158,38 +158,38 @@ private theorem eventually_eight_nine_count :
 /-- The unchanged middle singleton sector alone forces a superquadratic lower bound, uniformly over every fixed scalar-reserve selection. -/
 theorem eventually_mobiusDivisorMiddleEnergy_lower :
     ∀ᶠ N : ℕ in atTop,∀ L : Finset ℕ,
-      (∀ q∈L,q.Prime ∧ q<64*N^2 ∧ 64*N^2<8*q) →
-      (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^3)≤
-        mobiusDivisorSelectionEnergy (64*N^2) (mobiusDivisorSelectionPrimes (4*N)∪L)/
-          ((64*N^2:ℕ):ℝ)^2 := by
+      (∀ q∈L,q.Prime ∧ q<64*N^(2 : ℕ) ∧ 64*N^(2 : ℕ)<8*q) →
+      (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^(3 : ℕ))≤
+        mobiusDivisorSelectionEnergy (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)∪L)/
+          ((64*N^(2 : ℕ):ℕ):ℝ)^(2 : ℕ) := by
   filter_upwards [eventually_mobiusDivisorMiddlePrimeFibre_upper,eventually_eight_nine_count,
     eventually_ge_atTop (2:ℕ)] with N hf hc hN
   intro L hL
   have hl : 0<Real.log (8*(N:ℝ)) := Real.log_pos (by exact_mod_cast (show 1<8*N by omega))
-  let a := (N:ℝ)^2/(80*Real.log (8*(N:ℝ)))
+  let a := (N:ℝ)^(2 : ℕ)/(80*Real.log (8*(N:ℝ)))
   have ha : 0≤a := by dsimp [a]; positivity
   have hsum := sum_le_sum (s := GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N))
-    (fun p hp => show a^2≤(mobiusDivisorSelectionFibre (64*N^2)
-      (mobiusDivisorSelectionPrimes (4*N)∪L) {p})^2 from by
+    (fun p hp => show a^(2 : ℕ)≤(mobiusDivisorSelectionFibre (64*N^(2 : ℕ))
+      (mobiusDivisorSelectionPrimes (4*N)∪L) {p})^(2 : ℕ) from by
       rw [middle_pool_persists hN L hL hp]
-      have hfp : mobiusDivisorSelectionFibre (64*N^2) (mobiusDivisorSelectionPrimes (4*N)) {p}≤-a := by
+      have hfp : mobiusDivisorSelectionFibre (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)) {p}≤-a := by
         simpa only [a,neg_div] using hf p hp
-      have hs := mul_nonneg (by linarith only [hfp] : 0≤ -mobiusDivisorSelectionFibre (64*N^2)
+      have hs := mul_nonneg (by linarith only [hfp] : 0≤ -mobiusDivisorSelectionFibre (64*N^(2 : ℕ))
         (mobiusDivisorSelectionPrimes (4*N)) {p}-a)
-        (by linarith only [hfp,ha] : 0≤ -mobiusDivisorSelectionFibre (64*N^2)
+        (by linarith only [hfp,ha] : 0≤ -mobiusDivisorSelectionFibre (64*N^(2 : ℕ))
           (mobiusDivisorSelectionPrimes (4*N)) {p}+a)
       nlinarith only [hs])
   simp only [sum_const,nsmul_eq_mul] at hsum
   have hm := mul_le_mul_of_nonneg_right hc (sq_nonneg a)
-  have hsub : GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N)⊆mobiusDivisorSelectionPrimes (64*N^2) := by
+  have hsub : GaloisForLFunctions.HTGeometry.primesInIoc (8*N) (9*N)⊆mobiusDivisorSelectionPrimes (64*N^(2 : ℕ)) := by
     intro p hp
     obtain ⟨hpp,hlo,hhi⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
     exact mem_filter.mpr ⟨mem_range.mpr (by nlinarith),hpp⟩
   have hraw := (hm.trans hsum).trans (sum_mobiusDivisorSelectionSingleton_sq_le_energy _ _ _ hsub)
-  have hd := div_le_div_of_nonneg_right hraw (sq_nonneg (((64*N^2:ℕ):ℝ)))
+  have hd := div_le_div_of_nonneg_right hraw (sq_nonneg (((64*N^(2 : ℕ):ℕ):ℝ)))
   have hNr : (0:ℝ)<N := by exact_mod_cast (show 0<N by omega)
-  have he : ((N:ℝ)/(2*Real.log (8*(N:ℝ)))*a^2)/((64*N^2:ℕ):ℝ)^2 =
-      (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^3) := by
+  have he : ((N:ℝ)/(2*Real.log (8*(N:ℝ)))*a^(2 : ℕ))/((64*N^(2 : ℕ):ℕ):ℝ)^(2 : ℕ) =
+      (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^(3 : ℕ)) := by
     dsimp [a]
     push_cast
     field_simp
@@ -197,16 +197,16 @@ theorem eventually_mobiusDivisorMiddleEnergy_lower :
   rwa [he] at hd
 
 private theorem middle_escape_rate :
-    Tendsto (fun N : ℕ => (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^3)) atTop atTop := by
-  have hzero : Tendsto (fun x : ℝ => Real.log x^3/x) atTop (𝓝 0) :=
+    Tendsto (fun N : ℕ => (N:ℝ)/(52428800*Real.log (8*(N:ℝ))^(3 : ℕ))) atTop atTop := by
+  have hzero : Tendsto (fun x : ℝ => Real.log x^(3 : ℕ)/x) atTop (𝓝 0) :=
     (Real.isLittleO_pow_log_id_atTop (n := 3)).tendsto_div_nhds_zero
-  have hwithin : Tendsto (fun x : ℝ => Real.log x^3/x) atTop (nhdsWithin 0 (Set.Ioi 0)) := by
+  have hwithin : Tendsto (fun x : ℝ => Real.log x^(3 : ℕ)/x) atTop (nhdsWithin 0 (Set.Ioi 0)) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hzero
     filter_upwards [eventually_gt_atTop (1:ℝ)] with x hx
     exact div_pos (pow_pos (Real.log_pos hx) 3) (by linarith)
-  have hr : Tendsto (fun x : ℝ => x/Real.log x^3) atTop atTop := by
+  have hr : Tendsto (fun x : ℝ => x/Real.log x^(3 : ℕ)) atTop atTop := by
     exact hwithin.inv_tendsto_nhdsGT_zero.congr (fun x => by
-      change (Real.log x^3/x)⁻¹=x/Real.log x^3
+      change (Real.log x^(3 : ℕ)/x)⁻¹=x/Real.log x^(3 : ℕ)
       rw [inv_div])
   have hcast : Tendsto (fun N : ℕ => 8*(N:ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop (by norm_num)
@@ -219,13 +219,13 @@ private theorem middle_escape_rate :
 /-- No fixed quadratic budget can contain increasing middle-prime processing, even after arbitrary interleavings of all scalar reserves above one eighth of the cutoff. -/
 theorem eventually_mobiusDivisorMiddleEnergy_escape (C : ℝ) :
     ∀ᶠ N : ℕ in atTop,∀ L : Finset ℕ,
-      (∀ q∈L,q.Prime ∧ q<64*N^2 ∧ 64*N^2<8*q) →
-      C*((64*N^2:ℕ):ℝ)^2<
-        mobiusDivisorSelectionEnergy (64*N^2) (mobiusDivisorSelectionPrimes (4*N)∪L) := by
+      (∀ q∈L,q.Prime ∧ q<64*N^(2 : ℕ) ∧ 64*N^(2 : ℕ)<8*q) →
+      C*((64*N^(2 : ℕ):ℕ):ℝ)^(2 : ℕ)<
+        mobiusDivisorSelectionEnergy (64*N^(2 : ℕ)) (mobiusDivisorSelectionPrimes (4*N)∪L) := by
   filter_upwards [middle_escape_rate.eventually_gt_atTop C,eventually_mobiusDivisorMiddleEnergy_lower,
     eventually_ge_atTop (1:ℕ)] with N hrate hlower hN
   intro L hL
   have h := hrate.trans_le (hlower L hL)
-  have hden : (0:ℝ)<((64*N^2:ℕ):ℝ)^2 := by positivity
+  have hden : (0:ℝ)<((64*N^(2 : ℕ):ℕ):ℝ)^(2 : ℕ) := by positivity
   exact (lt_div_iff₀ hden).mp h
 end RHTower

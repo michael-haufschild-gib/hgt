@@ -31,7 +31,7 @@ noncomputable section
 /-- Positive response of one Xi copy under the Poisson--Hilbert detector. -/
 def xiPoissonHilbertWeight (T : ℝ) (q : XiZeroCopy) : ℝ :=
   let y := |(q.1 : ℂ).im|
-  (2 * T * y ^ 2) / ((T ^ 2 + y ^ 2) * (1 / 4 + y ^ 2))
+  (2 * T * y ^ (2 : ℕ)) / ((T ^ (2 : ℕ) + y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ)))
 
 /-- Odd two-sided exponential detector. Its scale changes bandwidth without changing `L¹` norm. -/
 def xiPoissonHilbertKernel (T x : ℝ) : ℝ :=
@@ -54,7 +54,7 @@ theorem abs_xiPoissonHilbertKernel {T : ℝ} (hT : 0 < T) (x : ℝ) :
 theorem integrable_xiPoissonHilbertKernel {T : ℝ} (hT : 0 < T) :
     Integrable (xiPoissonHilbertKernel T) := by
   have hdom : Integrable (fun x : ℝ =>
-      (T / 2) * (|x| ^ 0 * Real.exp (-T * |x|))) :=
+      (T / 2) * (|x| ^ (0 : ℕ) * Real.exp (-T * |x|))) :=
     (HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hT).const_mul (T / 2)
   refine Integrable.mono' hdom ?_ ?_
   · unfold xiPoissonHilbertKernel
@@ -80,7 +80,7 @@ theorem integral_abs_xiPoissonHilbertKernel_eq_one {T : ℝ} (hT : 0 < T) :
 
 /-- Physical-frequency multiplier of the odd exponential detector. -/
 def xiPoissonHilbertMultiplier (T y : ℝ) : ℂ :=
-  -Complex.I * (T * y / (T ^ 2 + y ^ 2) : ℝ)
+  -Complex.I * (T * y / (T ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ)
 
 /-- Physical Fourier integral of the detector kernel. -/
 def xiPoissonHilbertKernelTransform (T y : ℝ) : ℂ :=
@@ -160,16 +160,16 @@ theorem xiPoissonHilbertKernelTransform_eq_multiplier {T : ℝ} (hT : 0 < T) (y 
     hsplit, hneg, hpos, xiPoissonHilbertMultiplier]
   have hcp0 : cp ≠ 0 := ne_zero_of_re_pos hcp
   have hcm0 : cm ≠ 0 := ne_zero_of_re_pos hcm
-  have hTy : T ^ 2 + y ^ 2 ≠ 0 := by positivity
-  have hTyC : (((T ^ 2 + y ^ 2 : ℝ) : ℂ)) ≠ 0 :=
+  have hTy : T ^ (2 : ℕ) + y ^ (2 : ℕ) ≠ 0 := by positivity
+  have hTyC : (((T ^ (2 : ℕ) + y ^ (2 : ℕ) : ℝ) : ℂ)) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr hTy
-  have hTyC' : (T : ℂ) ^ 2 + (y : ℂ) ^ 2 ≠ 0 := by
+  have hTyC' : (T : ℂ) ^ (2 : ℕ) + (y : ℂ) ^ (2 : ℕ) ≠ 0 := by
     exact_mod_cast hTy
   dsimp only [cp, cm] at hcp0 hcm0 ⊢
   push_cast
   field_simp [hcp0, hcm0, hTy, hTyC, hTyC']
   ring_nf
-  rw [show Complex.I ^ 3 = -Complex.I by
+  rw [show Complex.I ^ (3 : ℕ) = -Complex.I by
     rw [pow_succ, Complex.I_sq]
     ring]
   ring
@@ -180,9 +180,9 @@ theorem xiPoissonHilbertMultiplier_criticalPair {T y : ℝ}
     (hT : 0 < T) (hy : 0 < y) :
     -(1 / 2 + Complex.I * (y : ℂ))⁻¹ * xiPoissonHilbertMultiplier T y +
         -(1 / 2 - Complex.I * (y : ℂ))⁻¹ * xiPoissonHilbertMultiplier T (-y) =
-      ((2 * T * y ^ 2) /
-        ((T ^ 2 + y ^ 2) * (1 / 4 + y ^ 2)) : ℝ) := by
-  have hTy : T ^ 2 + y ^ 2 ≠ 0 := by positivity
+      ((2 * T * y ^ (2 : ℕ)) /
+        ((T ^ (2 : ℕ) + y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ))) : ℝ) := by
+  have hTy : T ^ (2 : ℕ) + y ^ (2 : ℕ) ≠ 0 := by positivity
   have hyc : (1 / 2 + Complex.I * (y : ℂ)) ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
@@ -193,34 +193,34 @@ theorem xiPoissonHilbertMultiplier_criticalPair {T y : ℝ}
     have him := congrArg Complex.im h
     norm_num at him
     nlinarith
-  have hdenY : 1 / 4 + y ^ 2 ≠ 0 := by positivity
+  have hdenY : 1 / 4 + y ^ (2 : ℕ) ≠ 0 := by positivity
   have hinvPlus :
       (1 / 2 + Complex.I * (y : ℂ))⁻¹ =
-        (1 / 2 - Complex.I * (y : ℂ)) / (1 / 4 + y ^ 2 : ℝ) := by
+        (1 / 2 - Complex.I * (y : ℂ)) / (1 / 4 + y ^ (2 : ℕ) : ℝ) := by
     apply inv_eq_of_mul_eq_one_right
     have hprod :
         (1 / 2 + Complex.I * (y : ℂ)) *
             (1 / 2 - Complex.I * (y : ℂ)) =
-          ((1 / 4 + y ^ 2 : ℝ) : ℂ) := by
+          ((1 / 4 + y ^ (2 : ℕ) : ℝ) : ℂ) := by
       ring_nf
       rw [Complex.I_sq]
       norm_num
     rw [← mul_div_assoc, hprod, div_self (Complex.ofReal_ne_zero.mpr hdenY)]
   have hinvMinus :
       (1 / 2 - Complex.I * (y : ℂ))⁻¹ =
-        (1 / 2 + Complex.I * (y : ℂ)) / (1 / 4 + y ^ 2 : ℝ) := by
+        (1 / 2 + Complex.I * (y : ℂ)) / (1 / 4 + y ^ (2 : ℕ) : ℝ) := by
     apply inv_eq_of_mul_eq_one_right
     have hprod :
         (1 / 2 - Complex.I * (y : ℂ)) *
             (1 / 2 + Complex.I * (y : ℂ)) =
-          ((1 / 4 + y ^ 2 : ℝ) : ℂ) := by
+          ((1 / 4 + y ^ (2 : ℕ) : ℝ) : ℂ) := by
       ring_nf
       rw [Complex.I_sq]
       norm_num
     rw [← mul_div_assoc, hprod, div_self (Complex.ofReal_ne_zero.mpr hdenY)]
   have hmultNeg :
       xiPoissonHilbertMultiplier T (-y) =
-        Complex.I * (T * y / (T ^ 2 + y ^ 2) : ℝ) := by
+        Complex.I * (T * y / (T ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) := by
     rw [xiPoissonHilbertMultiplier]
     push_cast
     field_simp [hTy]
@@ -243,13 +243,13 @@ theorem xiPoissonHilbertWeight_nonneg {T : ℝ} (hT : 0 ≤ T) (q : XiZeroCopy) 
 
 theorem xiPoissonHilbertWeight_le_inv_sq {T : ℝ} (hT : 0 < T) (q : XiZeroCopy) :
     xiPoissonHilbertWeight T q ≤
-      2 * T * (1 / |(q.1 : ℂ).im| ^ 2) := by
+      2 * T * (1 / |(q.1 : ℂ).im| ^ (2 : ℕ)) := by
   let y := |(q.1 : ℂ).im|
   have hy : 0 < y := abs_pos.mpr (xiSupport_im_ne_zero q.1)
-  have hden1 : 0 < T ^ 2 + y ^ 2 := by positivity
-  have hden2 : 0 < 1 / 4 + y ^ 2 := by positivity
-  change (2 * T * y ^ 2) / ((T ^ 2 + y ^ 2) * (1 / 4 + y ^ 2)) ≤
-    2 * T * (1 / y ^ 2)
+  have hden1 : 0 < T ^ (2 : ℕ) + y ^ (2 : ℕ) := by positivity
+  have hden2 : 0 < 1 / 4 + y ^ (2 : ℕ) := by positivity
+  change (2 * T * y ^ (2 : ℕ)) / ((T ^ (2 : ℕ) + y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ))) ≤
+    2 * T * (1 / y ^ (2 : ℕ))
   rw [div_le_iff₀ (mul_pos hden1 hden2)]
   field_simp [hy.ne']
   nlinarith [sq_nonneg T, sq_nonneg y]
@@ -297,24 +297,24 @@ theorem xiPoissonHilbertWeight_band_lower {T : ℝ} (hT : 0 < T)
   have hyT : T < y := hmem.1
   have hy2T : y ≤ 2 * T := hmem.2
   have hy : 0 < y := hT.trans hyT
-  have hy_sq_lower : T ^ 2 ≤ y ^ 2 := by nlinarith
-  have hy_sq_upper : y ^ 2 ≤ 4 * T ^ 2 := by nlinarith
+  have hy_sq_lower : T ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith
+  have hy_sq_upper : y ^ (2 : ℕ) ≤ 4 * T ^ (2 : ℕ) := by nlinarith
   have hy_one : 1 < y := xiZeroCopy_one_lt_abs_im q
-  have hfactor : 1 ≤ 2 * y ^ 2 / (1 / 4 + y ^ 2) := by
-    rw [le_div_iff₀ (by positivity : 0 < (1 / 4 : ℝ) + y ^ 2)]
+  have hfactor : 1 ≤ 2 * y ^ (2 : ℕ) / (1 / 4 + y ^ (2 : ℕ)) := by
+    rw [le_div_iff₀ (by positivity : 0 < (1 / 4 : ℝ) + y ^ (2 : ℕ))]
     nlinarith
-  have hpoisson : 1 / (5 * T) ≤ T / (T ^ 2 + y ^ 2) := by
+  have hpoisson : 1 / (5 * T) ≤ T / (T ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity : 0 < 5 * T)
-      (by positivity : 0 < T ^ 2 + y ^ 2)]
+      (by positivity : 0 < T ^ (2 : ℕ) + y ^ (2 : ℕ))]
     nlinarith
   rw [xiPoissonHilbertWeight]
   calc
-    1 / (5 * T) ≤ T / (T ^ 2 + y ^ 2) := hpoisson
-    _ ≤ (T / (T ^ 2 + y ^ 2)) *
-        (2 * y ^ 2 / (1 / 4 + y ^ 2)) := by
+    1 / (5 * T) ≤ T / (T ^ (2 : ℕ) + y ^ (2 : ℕ)) := hpoisson
+    _ ≤ (T / (T ^ (2 : ℕ) + y ^ (2 : ℕ))) *
+        (2 * y ^ (2 : ℕ) / (1 / 4 + y ^ (2 : ℕ))) := by
           exact le_mul_of_one_le_right (by positivity) hfactor
-    _ = (2 * T * y ^ 2) /
-        ((T ^ 2 + y ^ 2) * (1 / 4 + y ^ 2)) := by
+    _ = (2 * T * y ^ (2 : ℕ)) /
+        ((T ^ (2 : ℕ) + y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ))) := by
           field_simp
 
 /-- Coherent mass of the complete rational detector grows at least logarithmically. -/

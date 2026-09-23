@@ -53,7 +53,7 @@ theorem horizonGauss_uniform_cubic_bound (w chi : ℂ) (hw : w.im ≠ 0)
         ‖gaussFactor u chi false (z : ℂ) -
           ∑ n ∈ Finset.range 3,
             ordinaryHypergeometricCoefficient (gaussA u chi) (gaussB u chi) (gaussC u) n *
-              (z : ℂ) ^ n‖ ≤ C * z ^ 3 :=
+              (z : ℂ) ^ n‖ ≤ C * z ^ (3 : ℕ) :=
   horizonGauss_uniform_taylor_bound w chi hw hb hb1 3
 
 end

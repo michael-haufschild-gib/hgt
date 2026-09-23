@@ -29,8 +29,8 @@ namespace GaloisForLFunctions.RHTower
 
 /-- **Equation (5), exact expansion.** -/
 theorem polar_two_edge_expansion (a A B : ℝ) :
-    2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ 2
-      = 2 * Real.exp a * A ^ 2 + 4 * A * B + 2 * Real.exp (-a) * B ^ 2 := by
+    2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ (2 : ℕ)
+      = 2 * Real.exp a * A ^ (2 : ℕ) + 4 * A * B + 2 * Real.exp (-a) * B ^ (2 : ℕ) := by
   have h1 : Real.exp (a / 2) * Real.exp (a / 2) = Real.exp a := by
     rw [← Real.exp_add]
     ring_nf
@@ -40,33 +40,33 @@ theorem polar_two_edge_expansion (a A B : ℝ) :
   have h3 : Real.exp (-(a / 2)) * Real.exp (-(a / 2)) = Real.exp (-a) := by
     rw [← Real.exp_add]
     ring_nf
-  calc 2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ 2
-      = 2 * (Real.exp (a / 2) * Real.exp (a / 2)) * A ^ 2
+  calc 2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ (2 : ℕ)
+      = 2 * (Real.exp (a / 2) * Real.exp (a / 2)) * A ^ (2 : ℕ)
         + 4 * (Real.exp (a / 2) * Real.exp (-(a / 2))) * A * B
-        + 2 * (Real.exp (-(a / 2)) * Real.exp (-(a / 2))) * B ^ 2 := by ring
-    _ = 2 * Real.exp a * A ^ 2 + 4 * A * B + 2 * Real.exp (-a) * B ^ 2 := by
+        + 2 * (Real.exp (-(a / 2)) * Real.exp (-(a / 2))) * B ^ (2 : ℕ) := by ring
+    _ = 2 * Real.exp a * A ^ (2 : ℕ) + 4 * A * B + 2 * Real.exp (-a) * B ^ (2 : ℕ) := by
         rw [h1, h2, h3]
         ring
 
 /-- **Equation (5), remainder bound.**  The remainder is bounded uniformly in the aperture. -/
 theorem polar_two_edge_remainder_le {a : ℝ} (ha : 0 ≤ a) (A B : ℝ) :
-    |2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ 2 - 2 * Real.exp a * A ^ 2|
-      ≤ 4 * |A| * |B| + 2 * B ^ 2 := by
+    |2 * (Real.exp (a / 2) * A + Real.exp (-(a / 2)) * B) ^ (2 : ℕ) - 2 * Real.exp a * A ^ (2 : ℕ)|
+      ≤ 4 * |A| * |B| + 2 * B ^ (2 : ℕ) := by
   rw [polar_two_edge_expansion]
   have hexp : Real.exp (-a) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     linarith
   have hexppos : 0 < Real.exp (-a) := Real.exp_pos _
-  have hsimp : 2 * Real.exp a * A ^ 2 + 4 * A * B + 2 * Real.exp (-a) * B ^ 2
-      - 2 * Real.exp a * A ^ 2 = 4 * A * B + 2 * Real.exp (-a) * B ^ 2 := by ring
+  have hsimp : 2 * Real.exp a * A ^ (2 : ℕ) + 4 * A * B + 2 * Real.exp (-a) * B ^ (2 : ℕ)
+      - 2 * Real.exp a * A ^ (2 : ℕ) = 4 * A * B + 2 * Real.exp (-a) * B ^ (2 : ℕ) := by ring
   rw [hsimp]
-  have h1 : |4 * A * B + 2 * Real.exp (-a) * B ^ 2|
-      ≤ |4 * A * B| + |2 * Real.exp (-a) * B ^ 2| := by
-    simpa only [Real.norm_eq_abs] using norm_add_le (4 * A * B) (2 * Real.exp (-a) * B ^ 2)
+  have h1 : |4 * A * B + 2 * Real.exp (-a) * B ^ (2 : ℕ)|
+      ≤ |4 * A * B| + |2 * Real.exp (-a) * B ^ (2 : ℕ)| := by
+    simpa only [Real.norm_eq_abs] using norm_add_le (4 * A * B) (2 * Real.exp (-a) * B ^ (2 : ℕ))
   have h2 : |4 * A * B| = 4 * |A| * |B| := by
     rw [abs_mul, abs_mul]
     norm_num
-  have h3 : |2 * Real.exp (-a) * B ^ 2| ≤ 2 * B ^ 2 := by
+  have h3 : |2 * Real.exp (-a) * B ^ (2 : ℕ)| ≤ 2 * B ^ (2 : ℕ) := by
     rw [abs_of_nonneg (by positivity)]
     nlinarith [sq_nonneg B]
   linarith

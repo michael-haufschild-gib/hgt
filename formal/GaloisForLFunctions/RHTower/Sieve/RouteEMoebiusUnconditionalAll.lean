@@ -19,8 +19,8 @@ theorem route_e_sign_density_unconditional_all {beta : Real}
     (hbeta0 : 0 < beta) (hbeta1 : beta < 1) {s : Int}
     (hs : s = 1 ∨ s = -1) {epsilon : Real} (hepsilon : 0 < epsilon) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2
-          - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - epsilon
+      squarefreeDensity ^ (2 : ℕ) / 2
+          - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - epsilon
         ≤ coprimeSignClassCount x (cardLength beta x) s
           / (cardLength beta x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_moebius_averaged hs

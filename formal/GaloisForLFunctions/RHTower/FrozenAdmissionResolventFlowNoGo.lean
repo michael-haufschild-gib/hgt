@@ -60,12 +60,12 @@ theorem hasDerivAt_farNode_pow {d : ℝ} (hd : 0 < d) {t : ℝ} (ht : 0 < t) (n 
       (-((n : ℝ) + 1) * farNode d t ^ (n + 2)) t := by
   have hne : t + d ≠ 0 := by positivity
   have hbase : HasDerivAt (fun s : ℝ => s + d) 1 t := (hasDerivAt_id t).add_const d
-  have hinv : HasDerivAt (fun s : ℝ => (s + d)⁻¹) (-1 / (t + d) ^ 2) t := hbase.inv hne
+  have hinv : HasDerivAt (fun s : ℝ => (s + d)⁻¹) (-1 / (t + d) ^ (2 : ℕ)) t := hbase.inv hne
   have hpow := hinv.pow (n + 1)
-  have hval : ((n : ℕ) + 1 : ℝ) * (t + d)⁻¹ ^ (n + 1 - 1) * (-1 / (t + d) ^ 2)
+  have hval : ((n : ℕ) + 1 : ℝ) * (t + d)⁻¹ ^ (n + 1 - 1) * (-1 / (t + d) ^ (2 : ℕ))
       = -((n : ℝ) + 1) * ((t + d)⁻¹) ^ (n + 2) := by
     have hsimp : (n : ℕ) + 1 - 1 = n := by omega
-    have hpow2 : ((t + d)⁻¹) ^ (n + 2) = ((t + d)⁻¹) ^ n * (1 / (t + d) ^ 2) := by
+    have hpow2 : ((t + d)⁻¹) ^ (n + 2) = ((t + d)⁻¹) ^ n * (1 / (t + d) ^ (2 : ℕ)) := by
       rw [pow_add, one_div, ← inv_pow]
     rw [hsimp, hpow2]
     ring
@@ -109,7 +109,7 @@ vanish at the three distinct nodes. -/
 theorem farFunctional_sq_pos {d₁ d₂ d₃ ε t : ℝ} (hd₁ : 0 < t + d₁) (hd₂ : 0 < t + d₂)
     (hd₃ : 0 < t + d₃) (hε : 0 < ε) (h₁₂ : d₁ ≠ d₂) (h₁₃ : d₁ ≠ d₃) (h₂₃ : d₂ ≠ d₃)
     {c₀ c₁ c₂ : ℝ} (hc : ¬(c₀ = 0 ∧ c₁ = 0 ∧ c₂ = 0)) :
-    0 < farFunctional d₁ d₂ d₃ ε t (fun x => (c₀ + c₁ * x + c₂ * x ^ 2) ^ 2) := by
+    0 < farFunctional d₁ d₂ d₃ ε t (fun x => (c₀ + c₁ * x + c₂ * x ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   set x₁ := farNode d₁ t with hx₁
   set x₂ := farNode d₂ t with hx₂
   set x₃ := farNode d₃ t with hx₃
@@ -119,29 +119,29 @@ theorem farFunctional_sq_pos {d₁ d₂ d₃ ε t : ℝ} (hd₁ : 0 < t + d₁) 
   have hne₁₂ : x₁ ≠ x₂ := fun h => h₁₂ (farNode_injective h)
   have hne₁₃ : x₁ ≠ x₃ := fun h => h₁₃ (farNode_injective h)
   have hne₂₃ : x₂ ≠ x₃ := fun h => h₂₃ (farNode_injective h)
-  set q : ℝ → ℝ := fun x => c₀ + c₁ * x + c₂ * x ^ 2 with hq
-  have h1 : 0 ≤ x₁ * q x₁ ^ 2 := by positivity
-  have h2 : 0 ≤ x₂ * q x₂ ^ 2 := by positivity
-  have h3 : 0 ≤ x₃ * q x₃ ^ 2 := by positivity
-  have hnonneg : 0 ≤ farFunctional d₁ d₂ d₃ ε t (fun x => q x ^ 2) := by
+  set q : ℝ → ℝ := fun x => c₀ + c₁ * x + c₂ * x ^ (2 : ℕ) with hq
+  have h1 : 0 ≤ x₁ * q x₁ ^ (2 : ℕ) := by positivity
+  have h2 : 0 ≤ x₂ * q x₂ ^ (2 : ℕ) := by positivity
+  have h3 : 0 ≤ x₃ * q x₃ ^ (2 : ℕ) := by positivity
+  have hnonneg : 0 ≤ farFunctional d₁ d₂ d₃ ε t (fun x => q x ^ (2 : ℕ)) := by
     rw [farFunctional]
-    have hεpos : 0 ≤ ε * (x₂ * q x₂ ^ 2 + x₃ * q x₃ ^ 2) := by positivity
+    have hεpos : 0 ≤ ε * (x₂ * q x₂ ^ (2 : ℕ) + x₃ * q x₃ ^ (2 : ℕ)) := by positivity
     linarith
   rcases eq_or_lt_of_le hnonneg with hzero | hpos
   · exfalso
     -- all three values vanish, hence the quadratic is zero
     rw [farFunctional] at hzero
-    have hsum0 : x₁ * q x₁ ^ 2 + ε * (x₂ * q x₂ ^ 2 + x₃ * q x₃ ^ 2) = 0 := hzero.symm
-    have hεnn : 0 ≤ ε * (x₂ * q x₂ ^ 2 + x₃ * q x₃ ^ 2) := by positivity
+    have hsum0 : x₁ * q x₁ ^ (2 : ℕ) + ε * (x₂ * q x₂ ^ (2 : ℕ) + x₃ * q x₃ ^ (2 : ℕ)) = 0 := hzero.symm
+    have hεnn : 0 ≤ ε * (x₂ * q x₂ ^ (2 : ℕ) + x₃ * q x₃ ^ (2 : ℕ)) := by positivity
     have hsplit := (add_eq_zero_iff_of_nonneg h1 hεnn).mp hsum0
-    have hz1 : x₁ * q x₁ ^ 2 = 0 := hsplit.1
-    have htail : x₂ * q x₂ ^ 2 + x₃ * q x₃ ^ 2 = 0 := by
+    have hz1 : x₁ * q x₁ ^ (2 : ℕ) = 0 := hsplit.1
+    have htail : x₂ * q x₂ ^ (2 : ℕ) + x₃ * q x₃ ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.mp hsplit.2 with h | h
       · exact absurd h (ne_of_gt hε)
       · exact h
     have hsplit2 := (add_eq_zero_iff_of_nonneg h2 h3).mp htail
-    have hz2 : x₂ * q x₂ ^ 2 = 0 := hsplit2.1
-    have hz3 : x₃ * q x₃ ^ 2 = 0 := hsplit2.2
+    have hz2 : x₂ * q x₂ ^ (2 : ℕ) = 0 := hsplit2.1
+    have hz3 : x₃ * q x₃ ^ (2 : ℕ) = 0 := hsplit2.2
     have hq1 : q x₁ = 0 := by
       rcases mul_eq_zero.mp hz1 with h | h
       · exact absurd h (ne_of_gt hx₁0)
@@ -183,11 +183,11 @@ theorem farFunctional_sq_pos {d₁ d₂ d₃ ε t : ℝ} (hd₁ : 0 < t + d₁) 
 
 /-- The odd current `J_t(X - α) = L_t((X-α) X (X-α))`. -/
 def farOddCurrent (d₁ d₂ d₃ ε t α : ℝ) : ℝ :=
-  farFunctional d₁ d₂ d₃ ε t (fun x => x * (x - α) ^ 2)
+  farFunctional d₁ d₂ d₃ ε t (fun x => x * (x - α) ^ (2 : ℕ))
 
 /-- The adaptive completed source `Q_t(X-α) = 2 L_t((X(X-α)) X (X + (X-α)))`. -/
 def farSource (d₁ d₂ d₃ ε t α : ℝ) : ℝ :=
-  2 * farFunctional d₁ d₂ d₃ ε t (fun x => x ^ 2 * (x - α) * (2 * x - α))
+  2 * farFunctional d₁ d₂ d₃ ε t (fun x => x ^ (2 : ℕ) * (x - α) * (2 * x - α))
 
 /-- The canonical degree-one admission coefficient `α = s(1)/s(0)`. -/
 def farAlpha (d₁ d₂ d₃ ε t : ℝ) : ℝ :=
@@ -195,37 +195,37 @@ def farAlpha (d₁ d₂ d₃ ε t : ℝ) : ℝ :=
 
 /-- The admitted norm `h₁ = L_t((X-α)²)`. -/
 def farNorm (d₁ d₂ d₃ ε t α : ℝ) : ℝ :=
-  farFunctional d₁ d₂ d₃ ε t (fun x => (x - α) ^ 2)
+  farFunctional d₁ d₂ d₃ ε t (fun x => (x - α) ^ (2 : ℕ))
 
 theorem farSource_eq (d₁ d₂ d₃ ε t α : ℝ) :
     farSource d₁ d₂ d₃ ε t α
-      = 2 * (farNode d₁ t ^ 3 * (farNode d₁ t - α) * (2 * farNode d₁ t - α)
-        + ε * (farNode d₂ t ^ 3 * (farNode d₂ t - α) * (2 * farNode d₂ t - α)
-          + farNode d₃ t ^ 3 * (farNode d₃ t - α) * (2 * farNode d₃ t - α))) := by
+      = 2 * (farNode d₁ t ^ (3 : ℕ) * (farNode d₁ t - α) * (2 * farNode d₁ t - α)
+        + ε * (farNode d₂ t ^ (3 : ℕ) * (farNode d₂ t - α) * (2 * farNode d₂ t - α)
+          + farNode d₃ t ^ (3 : ℕ) * (farNode d₃ t - α) * (2 * farNode d₃ t - α))) := by
   rw [farSource, farFunctional]
   ring
 
 theorem farOddCurrent_eq (d₁ d₂ d₃ ε t α : ℝ) :
     farOddCurrent d₁ d₂ d₃ ε t α
-      = farNode d₁ t ^ 2 * (farNode d₁ t - α) ^ 2
-        + ε * (farNode d₂ t ^ 2 * (farNode d₂ t - α) ^ 2
-          + farNode d₃ t ^ 2 * (farNode d₃ t - α) ^ 2) := by
+      = farNode d₁ t ^ (2 : ℕ) * (farNode d₁ t - α) ^ (2 : ℕ)
+        + ε * (farNode d₂ t ^ (2 : ℕ) * (farNode d₂ t - α) ^ (2 : ℕ)
+          + farNode d₃ t ^ (2 : ℕ) * (farNode d₃ t - α) ^ (2 : ℕ)) := by
   rw [farOddCurrent, farFunctional]
   ring
 
 /-! ## The odd-current flow law -/
 
 theorem hasDerivAt_farNode {d : ℝ} (hd : 0 < d) {t : ℝ} (ht : 0 < t) :
-    HasDerivAt (fun s : ℝ => farNode d s) (-(farNode d t ^ 2)) t := by
+    HasDerivAt (fun s : ℝ => farNode d s) (-(farNode d t ^ (2 : ℕ))) t := by
   have hne : t + d ≠ 0 := by positivity
   have hbase : HasDerivAt (fun s : ℝ => s + d) 1 t := (hasDerivAt_id t).add_const d
-  have hinv : HasDerivAt (fun s : ℝ => (s + d)⁻¹) (-1 / (t + d) ^ 2) t := hbase.inv hne
+  have hinv : HasDerivAt (fun s : ℝ => (s + d)⁻¹) (-1 / (t + d) ^ (2 : ℕ)) t := hbase.inv hne
   refine hinv.congr_deriv ?_
   rw [farNode, inv_pow, neg_div, one_div]
 
 theorem hasDerivAt_farNodeCurrent {d : ℝ} (hd : 0 < d) {t : ℝ} (ht : 0 < t) (α : ℝ) :
-    HasDerivAt (fun s : ℝ => farNode d s ^ 2 * (farNode d s - α) ^ 2)
-      (-(2 * farNode d t ^ 3 * (farNode d t - α) * (2 * farNode d t - α))) t := by
+    HasDerivAt (fun s : ℝ => farNode d s ^ (2 : ℕ) * (farNode d s - α) ^ (2 : ℕ))
+      (-(2 * farNode d t ^ (3 : ℕ) * (farNode d t - α) * (2 * farNode d t - α))) t := by
   have hu := hasDerivAt_farNode hd ht
   have h1 := hu.pow 2
   have h2 := (hu.sub_const α).pow 2
@@ -244,9 +244,9 @@ theorem hasDerivAt_farOddCurrent {d₁ d₂ d₃ : ℝ} (hd₁ : 0 < d₁) (hd�
   have h₃ := hasDerivAt_farNodeCurrent hd₃ ht α
   have hsum := h₁.add ((h₂.add h₃).const_mul ε)
   have hfun : (fun s : ℝ => farOddCurrent d₁ d₂ d₃ ε s α)
-      = fun s : ℝ => farNode d₁ s ^ 2 * (farNode d₁ s - α) ^ 2
-          + ε * (farNode d₂ s ^ 2 * (farNode d₂ s - α) ^ 2
-            + farNode d₃ s ^ 2 * (farNode d₃ s - α) ^ 2) := by
+      = fun s : ℝ => farNode d₁ s ^ (2 : ℕ) * (farNode d₁ s - α) ^ (2 : ℕ)
+          + ε * (farNode d₂ s ^ (2 : ℕ) * (farNode d₂ s - α) ^ (2 : ℕ)
+            + farNode d₃ s ^ (2 : ℕ) * (farNode d₃ s - α) ^ (2 : ℕ)) := by
     funext s
     exact farOddCurrent_eq d₁ d₂ d₃ ε s α
   rw [hfun]
@@ -271,7 +271,7 @@ theorem farOddCurrent_sub_farOddCurrent_alpha (d₁ d₂ d₃ ε t α : ℝ)
     (hW : farMoment d₁ d₂ d₃ ε t 0 ≠ 0) :
     farOddCurrent d₁ d₂ d₃ ε t α - farOddCurrent d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t)
       = 2 * farNorm d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t) * (farAlpha d₁ d₂ d₃ ε t - α)
-        + (farAlpha d₁ d₂ d₃ ε t - α) ^ 2 * farMoment d₁ d₂ d₃ ε t 1 := by
+        + (farAlpha d₁ d₂ d₃ ε t - α) ^ (2 : ℕ) * farMoment d₁ d₂ d₃ ε t 1 := by
   simp only [farOddCurrent, farNorm, farAlpha, farMoment, farFunctional] at hW ⊢
   field_simp at hW ⊢
   ring
@@ -313,10 +313,10 @@ theorem farSource_frozen_neg_zero {d₁ d₂ d₃ a y : ℝ} (hd₁ : 0 < d₁) 
   simp only [zero_mul, add_zero]
   have hfac : farNode d₁ y - farNode d₁ a < 0 := by linarith
   have hfac2 : 0 < 2 * farNode d₁ y - farNode d₁ a := by linarith
-  have hcube : 0 < farNode d₁ y ^ 3 := by positivity
-  have hprod : farNode d₁ y ^ 3 * (farNode d₁ y - farNode d₁ a) < 0 :=
+  have hcube : 0 < farNode d₁ y ^ (3 : ℕ) := by positivity
+  have hprod : farNode d₁ y ^ (3 : ℕ) * (farNode d₁ y - farNode d₁ a) < 0 :=
     mul_neg_of_pos_of_neg hcube hfac
-  have hprod2 : farNode d₁ y ^ 3 * (farNode d₁ y - farNode d₁ a)
+  have hprod2 : farNode d₁ y ^ (3 : ℕ) * (farNode d₁ y - farNode d₁ a)
       * (2 * farNode d₁ y - farNode d₁ a) < 0 := mul_neg_of_neg_of_pos hprod hfac2
   linarith
 
@@ -337,37 +337,37 @@ theorem farSource_current_pos {d₁ d₂ d₃ ε y : ℝ} (hd₁ : 0 < d₁) (hd
   have hmom0 : farMoment d₁ d₂ d₃ ε y 0 = W := by
     rw [farMoment, farFunctional, hWdef]
     ring
-  have hmom1 : farMoment d₁ d₂ d₃ ε y 1 = x₁ ^ 2 + ε * (x₂ ^ 2 + x₃ ^ 2) := by
+  have hmom1 : farMoment d₁ d₂ d₃ ε y 1 = x₁ ^ (2 : ℕ) + ε * (x₂ ^ (2 : ℕ) + x₃ ^ (2 : ℕ)) := by
     rw [farMoment, farFunctional]
     ring
   set α : ℝ := farAlpha d₁ d₂ d₃ ε y with hα
-  have hαW : α * W = x₁ ^ 2 + ε * (x₂ ^ 2 + x₃ ^ 2) := by
+  have hαW : α * W = x₁ ^ (2 : ℕ) + ε * (x₂ ^ (2 : ℕ) + x₃ ^ (2 : ℕ)) := by
     rw [hα, farAlpha, hmom0, hmom1]
     field_simp
   -- split the source into the admitted square and the monotone pairing
   have hsplit : farSource d₁ d₂ d₃ ε y α
-      = 2 * (x₁ ^ 3 * (x₁ - α) ^ 2 + ε * (x₂ ^ 3 * (x₂ - α) ^ 2 + x₃ ^ 3 * (x₃ - α) ^ 2))
-        + 2 * (x₁ ^ 4 * (x₁ - α) + ε * (x₂ ^ 4 * (x₂ - α) + x₃ ^ 4 * (x₃ - α))) := by
+      = 2 * (x₁ ^ (3 : ℕ) * (x₁ - α) ^ (2 : ℕ) + ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ) + x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ)))
+        + 2 * (x₁ ^ (4 : ℕ) * (x₁ - α) + ε * (x₂ ^ (4 : ℕ) * (x₂ - α) + x₃ ^ (4 : ℕ) * (x₃ - α))) := by
     rw [farSource_eq]
     ring
   -- the monotone pairing is nonnegative
-  have hpair : (x₁ ^ 4 * (x₁ - α) + ε * (x₂ ^ 4 * (x₂ - α) + x₃ ^ 4 * (x₃ - α))) * W
-      = ε * (x₁ * x₂ * ((x₁ ^ 3 - x₂ ^ 3) * (x₁ - x₂)))
-        + ε * (x₁ * x₃ * ((x₁ ^ 3 - x₃ ^ 3) * (x₁ - x₃)))
-        + ε ^ 2 * (x₂ * x₃ * ((x₂ ^ 3 - x₃ ^ 3) * (x₂ - x₃))) := by
+  have hpair : (x₁ ^ (4 : ℕ) * (x₁ - α) + ε * (x₂ ^ (4 : ℕ) * (x₂ - α) + x₃ ^ (4 : ℕ) * (x₃ - α))) * W
+      = ε * (x₁ * x₂ * ((x₁ ^ (3 : ℕ) - x₂ ^ (3 : ℕ)) * (x₁ - x₂)))
+        + ε * (x₁ * x₃ * ((x₁ ^ (3 : ℕ) - x₃ ^ (3 : ℕ)) * (x₁ - x₃)))
+        + ε ^ (2 : ℕ) * (x₂ * x₃ * ((x₂ ^ (3 : ℕ) - x₃ ^ (3 : ℕ)) * (x₂ - x₃))) := by
     rw [hWdef]
-    linear_combination (-(x₁ ^ 4 + ε * (x₂ ^ 4 + x₃ ^ 4))) * hαW
-  have hmono : ∀ u v : ℝ, 0 < u → 0 < v → 0 ≤ (u ^ 3 - v ^ 3) * (u - v) := by
+    linear_combination (-(x₁ ^ (4 : ℕ) + ε * (x₂ ^ (4 : ℕ) + x₃ ^ (4 : ℕ)))) * hαW
+  have hmono : ∀ u v : ℝ, 0 < u → 0 < v → 0 ≤ (u ^ (3 : ℕ) - v ^ (3 : ℕ)) * (u - v) := by
     intro u v hu hv
     nlinarith [sq_nonneg (u - v), sq_nonneg (u + v), mul_pos hu hv]
-  have hpairnn : 0 ≤ x₁ ^ 4 * (x₁ - α) + ε * (x₂ ^ 4 * (x₂ - α) + x₃ ^ 4 * (x₃ - α)) := by
+  have hpairnn : 0 ≤ x₁ ^ (4 : ℕ) * (x₁ - α) + ε * (x₂ ^ (4 : ℕ) * (x₂ - α) + x₃ ^ (4 : ℕ) * (x₃ - α)) := by
     have h12 := hmono x₁ x₂ hx₁0 hx₂0
     have h13 := hmono x₁ x₃ hx₁0 hx₃0
     have h23 := hmono x₂ x₃ hx₂0 hx₃0
-    have t1 : 0 ≤ ε * (x₁ * x₂ * ((x₁ ^ 3 - x₂ ^ 3) * (x₁ - x₂))) := by positivity
-    have t2 : 0 ≤ ε * (x₁ * x₃ * ((x₁ ^ 3 - x₃ ^ 3) * (x₁ - x₃))) := by positivity
-    have t3 : 0 ≤ ε ^ 2 * (x₂ * x₃ * ((x₂ ^ 3 - x₃ ^ 3) * (x₂ - x₃))) := by positivity
-    have hmul : 0 ≤ (x₁ ^ 4 * (x₁ - α) + ε * (x₂ ^ 4 * (x₂ - α) + x₃ ^ 4 * (x₃ - α))) * W := by
+    have t1 : 0 ≤ ε * (x₁ * x₂ * ((x₁ ^ (3 : ℕ) - x₂ ^ (3 : ℕ)) * (x₁ - x₂))) := by positivity
+    have t2 : 0 ≤ ε * (x₁ * x₃ * ((x₁ ^ (3 : ℕ) - x₃ ^ (3 : ℕ)) * (x₁ - x₃))) := by positivity
+    have t3 : 0 ≤ ε ^ (2 : ℕ) * (x₂ * x₃ * ((x₂ ^ (3 : ℕ) - x₃ ^ (3 : ℕ)) * (x₂ - x₃))) := by positivity
+    have hmul : 0 ≤ (x₁ ^ (4 : ℕ) * (x₁ - α) + ε * (x₂ ^ (4 : ℕ) * (x₂ - α) + x₃ ^ (4 : ℕ) * (x₃ - α))) * W := by
       rw [hpair]
       linarith
     exact (mul_nonneg_iff_of_pos_right hW0).mp hmul
@@ -377,16 +377,16 @@ theorem farSource_current_pos {d₁ d₂ d₃ ε y : ℝ} (hd₁ : 0 < d₁) (hd
     · exact Or.inr fun h2 => hne₁₂ (by linarith [h1, h2])
     · exact Or.inl h1
   have hsqpos :
-      0 < x₁ ^ 3 * (x₁ - α) ^ 2 + ε * (x₂ ^ 3 * (x₂ - α) ^ 2 + x₃ ^ 3 * (x₃ - α) ^ 2) := by
+      0 < x₁ ^ (3 : ℕ) * (x₁ - α) ^ (2 : ℕ) + ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ) + x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ)) := by
     rcases hnotboth with h | h
-    · have hpos : 0 < x₁ ^ 3 * (x₁ - α) ^ 2 := by positivity
-      have h2 : 0 ≤ ε * (x₂ ^ 3 * (x₂ - α) ^ 2 + x₃ ^ 3 * (x₃ - α) ^ 2) := by positivity
+    · have hpos : 0 < x₁ ^ (3 : ℕ) * (x₁ - α) ^ (2 : ℕ) := by positivity
+      have h2 : 0 ≤ ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ) + x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ)) := by positivity
       linarith
-    · have hpos : 0 < ε * (x₂ ^ 3 * (x₂ - α) ^ 2) := by positivity
-      have h1 : 0 ≤ x₁ ^ 3 * (x₁ - α) ^ 2 := by positivity
-      have h3 : 0 ≤ ε * (x₃ ^ 3 * (x₃ - α) ^ 2) := by positivity
-      have hsum : ε * (x₂ ^ 3 * (x₂ - α) ^ 2 + x₃ ^ 3 * (x₃ - α) ^ 2)
-          = ε * (x₂ ^ 3 * (x₂ - α) ^ 2) + ε * (x₃ ^ 3 * (x₃ - α) ^ 2) := by ring
+    · have hpos : 0 < ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ)) := by positivity
+      have h1 : 0 ≤ x₁ ^ (3 : ℕ) * (x₁ - α) ^ (2 : ℕ) := by positivity
+      have h3 : 0 ≤ ε * (x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ)) := by positivity
+      have hsum : ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ) + x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ))
+          = ε * (x₂ ^ (3 : ℕ) * (x₂ - α) ^ (2 : ℕ)) + ε * (x₃ ^ (3 : ℕ) * (x₃ - α) ^ (2 : ℕ)) := by ring
       rw [hsum]
       linarith
   rw [hsplit]
@@ -418,17 +418,17 @@ theorem eventually_farSource_frozen_neg {d₁ d₂ d₃ a y : ℝ} (hd₁ : 0 < 
     exact farSource_frozen_neg_zero hd₁ ha hay hwindow
   have halpha := continuousAt_farAlpha (d₂ := d₂) (d₃ := d₃) hd₁ ha
   have hpoly : Continuous fun p : ℝ × ℝ =>
-      2 * (farNode d₁ y ^ 3 * (farNode d₁ y - p.2) * (2 * farNode d₁ y - p.2)
-        + p.1 * (farNode d₂ y ^ 3 * (farNode d₂ y - p.2) * (2 * farNode d₂ y - p.2)
-          + farNode d₃ y ^ 3 * (farNode d₃ y - p.2) * (2 * farNode d₃ y - p.2))) := by
+      2 * (farNode d₁ y ^ (3 : ℕ) * (farNode d₁ y - p.2) * (2 * farNode d₁ y - p.2)
+        + p.1 * (farNode d₂ y ^ (3 : ℕ) * (farNode d₂ y - p.2) * (2 * farNode d₂ y - p.2)
+          + farNode d₃ y ^ (3 : ℕ) * (farNode d₃ y - p.2) * (2 * farNode d₃ y - p.2))) := by
     fun_prop
   have heq : (fun ε : ℝ => farSource d₁ d₂ d₃ ε y (farAlpha d₁ d₂ d₃ ε a))
       = fun ε : ℝ =>
-        2 * (farNode d₁ y ^ 3 * (farNode d₁ y - farAlpha d₁ d₂ d₃ ε a)
+        2 * (farNode d₁ y ^ (3 : ℕ) * (farNode d₁ y - farAlpha d₁ d₂ d₃ ε a)
               * (2 * farNode d₁ y - farAlpha d₁ d₂ d₃ ε a)
-          + ε * (farNode d₂ y ^ 3 * (farNode d₂ y - farAlpha d₁ d₂ d₃ ε a)
+          + ε * (farNode d₂ y ^ (3 : ℕ) * (farNode d₂ y - farAlpha d₁ d₂ d₃ ε a)
                 * (2 * farNode d₂ y - farAlpha d₁ d₂ d₃ ε a)
-            + farNode d₃ y ^ 3 * (farNode d₃ y - farAlpha d₁ d₂ d₃ ε a)
+            + farNode d₃ y ^ (3 : ℕ) * (farNode d₃ y - farAlpha d₁ d₂ d₃ ε a)
                 * (2 * farNode d₃ y - farAlpha d₁ d₂ d₃ ε a))) := by
     funext ε
     exact farSource_eq d₁ d₂ d₃ ε y _
@@ -451,7 +451,7 @@ theorem exists_frozen_admission_source_sign_reversal {d₁ d₂ d₃ a y : ℝ}
     (ha : 0 < a) (hay : a < y) (hwindow : y + d₁ < 2 * (a + d₁)) :
     ∃ ε > 0,
       (∀ c₀ c₁ c₂ : ℝ, ¬(c₀ = 0 ∧ c₁ = 0 ∧ c₂ = 0) →
-          0 < farFunctional d₁ d₂ d₃ ε y (fun x => (c₀ + c₁ * x + c₂ * x ^ 2) ^ 2))
+          0 < farFunctional d₁ d₂ d₃ ε y (fun x => (c₀ + c₁ * x + c₂ * x ^ (2 : ℕ)) ^ (2 : ℕ)))
         ∧ 0 < farSource d₁ d₂ d₃ ε y (farAlpha d₁ d₂ d₃ ε y)
         ∧ farSource d₁ d₂ d₃ ε y (farAlpha d₁ d₂ d₃ ε a) < 0 := by
   have hy : 0 < y := lt_trans ha hay
@@ -480,9 +480,9 @@ theorem farMoment_pos {d₁ d₂ d₃ ε t : ℝ} (hd₁ : 0 < d₁) (hd₂ : 0 
 theorem hasDerivAt_farAlpha {d₁ d₂ d₃ : ℝ} (hd₁ : 0 < d₁) (hd₂ : 0 < d₂) (hd₃ : 0 < d₃)
     {ε : ℝ} (hε : 0 ≤ ε) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (fun s : ℝ => farAlpha d₁ d₂ d₃ ε s)
-      ((farMoment d₁ d₂ d₃ ε t 1 ^ 2
+      ((farMoment d₁ d₂ d₃ ε t 1 ^ (2 : ℕ)
           - 2 * farMoment d₁ d₂ d₃ ε t 2 * farMoment d₁ d₂ d₃ ε t 0)
-        / farMoment d₁ d₂ d₃ ε t 0 ^ 2) t := by
+        / farMoment d₁ d₂ d₃ ε t 0 ^ (2 : ℕ)) t := by
   have h0 := hasDerivAt_farMoment hd₁ hd₂ hd₃ ε ht 0
   have h1 := hasDerivAt_farMoment hd₁ hd₂ hd₃ ε ht 1
   have hden : farMoment d₁ d₂ d₃ ε t 0 ≠ 0 :=
@@ -503,9 +503,9 @@ theorem farFunctional_mul_sub_farAlpha {d₁ d₂ d₃ ε t : ℝ}
 
 theorem hasDerivAt_farNodeMovingCurrent {d : ℝ} (hd : 0 < d) {t : ℝ} (ht : 0 < t)
     {A : ℝ → ℝ} {A' : ℝ} (hA : HasDerivAt A A' t) :
-    HasDerivAt (fun s : ℝ => farNode d s ^ 2 * (farNode d s - A s) ^ 2)
-      (-(2 * farNode d t ^ 3 * (farNode d t - A t) * (2 * farNode d t - A t))
-        - 2 * A' * (farNode d t ^ 2 * (farNode d t - A t))) t := by
+    HasDerivAt (fun s : ℝ => farNode d s ^ (2 : ℕ) * (farNode d s - A s) ^ (2 : ℕ))
+      (-(2 * farNode d t ^ (3 : ℕ) * (farNode d t - A t) * (2 * farNode d t - A t))
+        - 2 * A' * (farNode d t ^ (2 : ℕ) * (farNode d t - A t))) t := by
   have hu := hasDerivAt_farNode hd ht
   have h1 := hu.pow 2
   have h2 := (hu.sub hA).pow 2
@@ -521,9 +521,9 @@ theorem hasDerivAt_farOddCurrent_moving {d₁ d₂ d₃ : ℝ} (hd₁ : 0 < d₁
     (hd₃ : 0 < d₃) {ε : ℝ} (hε : 0 ≤ ε) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (fun s : ℝ => farOddCurrent d₁ d₂ d₃ ε s (farAlpha d₁ d₂ d₃ ε s))
       (-farSource d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t)
-        - 2 * ((farMoment d₁ d₂ d₃ ε t 1 ^ 2
+        - 2 * ((farMoment d₁ d₂ d₃ ε t 1 ^ (2 : ℕ)
             - 2 * farMoment d₁ d₂ d₃ ε t 2 * farMoment d₁ d₂ d₃ ε t 0)
-          / farMoment d₁ d₂ d₃ ε t 0 ^ 2)
+          / farMoment d₁ d₂ d₃ ε t 0 ^ (2 : ℕ))
           * farNorm d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t)) t := by
   have hden : farMoment d₁ d₂ d₃ ε t 0 ≠ 0 :=
     ne_of_gt (farMoment_pos hd₁ hd₂ hd₃ hε ht 0)
@@ -533,9 +533,9 @@ theorem hasDerivAt_farOddCurrent_moving {d₁ d₂ d₃ : ℝ} (hd₁ : 0 < d₁
   have h₃ := hasDerivAt_farNodeMovingCurrent hd₃ ht hA
   have hsum := h₁.add ((h₂.add h₃).const_mul ε)
   have hfun : (fun s : ℝ => farOddCurrent d₁ d₂ d₃ ε s (farAlpha d₁ d₂ d₃ ε s))
-      = fun s : ℝ => farNode d₁ s ^ 2 * (farNode d₁ s - farAlpha d₁ d₂ d₃ ε s) ^ 2
-          + ε * (farNode d₂ s ^ 2 * (farNode d₂ s - farAlpha d₁ d₂ d₃ ε s) ^ 2
-            + farNode d₃ s ^ 2 * (farNode d₃ s - farAlpha d₁ d₂ d₃ ε s) ^ 2) := by
+      = fun s : ℝ => farNode d₁ s ^ (2 : ℕ) * (farNode d₁ s - farAlpha d₁ d₂ d₃ ε s) ^ (2 : ℕ)
+          + ε * (farNode d₂ s ^ (2 : ℕ) * (farNode d₂ s - farAlpha d₁ d₂ d₃ ε s) ^ (2 : ℕ)
+            + farNode d₃ s ^ (2 : ℕ) * (farNode d₃ s - farAlpha d₁ d₂ d₃ ε s) ^ (2 : ℕ)) := by
     funext s
     exact farOddCurrent_eq d₁ d₂ d₃ ε s _
   rw [hfun]
@@ -550,9 +550,9 @@ theorem hasDerivAt_farOddCurrent_displacement {d₁ d₂ d₃ : ℝ} (hd₁ : 0 
     HasDerivAt (fun s : ℝ =>
         farOddCurrent d₁ d₂ d₃ ε s α - farOddCurrent d₁ d₂ d₃ ε s (farAlpha d₁ d₂ d₃ ε s))
       (-(farSource d₁ d₂ d₃ ε t α - farSource d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t))
-        + 2 * ((farMoment d₁ d₂ d₃ ε t 1 ^ 2
+        + 2 * ((farMoment d₁ d₂ d₃ ε t 1 ^ (2 : ℕ)
             - 2 * farMoment d₁ d₂ d₃ ε t 2 * farMoment d₁ d₂ d₃ ε t 0)
-          / farMoment d₁ d₂ d₃ ε t 0 ^ 2)
+          / farMoment d₁ d₂ d₃ ε t 0 ^ (2 : ℕ))
           * farNorm d₁ d₂ d₃ ε t (farAlpha d₁ d₂ d₃ ε t)) t := by
   have hfrozen := hasDerivAt_farOddCurrent hd₁ hd₂ hd₃ ε ht α
   have hmoving := hasDerivAt_farOddCurrent_moving hd₁ hd₂ hd₃ hε ht

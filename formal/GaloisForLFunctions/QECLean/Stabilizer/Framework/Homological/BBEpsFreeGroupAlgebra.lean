@@ -45,11 +45,11 @@ open Polynomial BBDeckTower
 (no `CharP` instances). -/
 lemma add_pow_two_pow_of_two_eq_zero {A : Type*} [CommRing A]
     (h2 : (2 : A) = 0) (a b : A) (r : ℕ) :
-    (a + b) ^ 2 ^ r = a ^ 2 ^ r + b ^ 2 ^ r := by
+    (a + b) ^ (2 : ℕ) ^ r = a ^ (2 : ℕ) ^ r + b ^ (2 : ℕ) ^ r := by
   induction r with
   | zero => simp
   | succ r ih =>
-    have hsq : ∀ x y : A, (x + y) ^ 2 = x ^ 2 + y ^ 2 := by
+    have hsq : ∀ x y : A, (x + y) ^ (2 : ℕ) = x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
       intro x y
       rw [add_sq, h2, zero_mul, zero_mul, add_zero]
     rw [pow_succ 2 r, pow_mul, pow_mul, pow_mul, ih, hsq]
@@ -473,16 +473,16 @@ theorem bockstein_element_form_group_algebra
     {G : Type*} [AddCommGroup G] (σ : G) (hord : addOrderOf σ = 4)
     (A B : AddMonoidAlgebra k G)
     (z a b : AddMonoidAlgebra k G ⧸
-      Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ 2})
+      Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ (2 : ℕ)})
     (hAz : Ideal.Quotient.mk _ A * z
       = Ideal.Quotient.mk _ (1 + AddMonoidAlgebra.single σ (1 : k)) * a)
     (hBz : Ideal.Quotient.mk _ B * z
       = Ideal.Quotient.mk _ (1 + AddMonoidAlgebra.single σ (1 : k)) * b) :
     Ideal.Quotient.mk _ A * b + Ideal.Quotient.mk _ B * a ∈
       Ideal.span
-        {Ideal.Quotient.mk (Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ 2})
+        {Ideal.Quotient.mk (Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ (2 : ℕ)})
             (1 + AddMonoidAlgebra.single σ (1 : k)) * Ideal.Quotient.mk _ A,
-          Ideal.Quotient.mk (Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ 2})
+          Ideal.Quotient.mk (Ideal.span {(1 + AddMonoidAlgebra.single σ (1 : k)) ^ (2 : ℕ)})
             (1 + AddMonoidAlgebra.single σ (1 : k)) * Ideal.Quotient.mk _ B} := by
   have hchar : (2 : AddMonoidAlgebra k G) = 0 := by
     rw [← map_ofNat (algebraMap k (AddMonoidAlgebra k G)) 2, h2, map_zero]

@@ -25,8 +25,8 @@ namespace RHTower.WeilDeletion
 /-! ## The Fourier profile of the test -/
 
 theorem norm_sq_fourier_primeFreeTest (L : ℝ) (hL : 1 ≤ L) (ξ : ℝ) :
-    ‖𝓕 ((primeFreeTest L hL).toSchwartz : ℝ → ℂ) ξ‖ ^ 2 =
-      mSym ξ ^ 2 * (L ^ 2 * ‖𝓕 phiTwoC (L * ξ)‖ ^ 2) := by
+    ‖𝓕 ((primeFreeTest L hL).toSchwartz : ℝ → ℂ) ξ‖ ^ (2 : ℕ) =
+      mSym ξ ^ (2 : ℕ) * (L ^ (2 : ℕ) * ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ)) := by
   have hLpos : 0 < L := by linarith
   unfold primeFreeTest
   rw [fourier_polarTranslate, fourier_wideBumpSource, polarMultiplierSpectral_one_ofReal,
@@ -35,14 +35,14 @@ theorem norm_sq_fourier_primeFreeTest (L : ℝ) (hL : 1 ≤ L) (ξ : ℝ) :
   rw [mul_pow, mul_pow, sq_abs]
 
 /-- The test's Fourier profile. -/
-def testProfile (L : ℝ) (ξ : ℝ) : ℝ := mSym ξ ^ 2 * (L ^ 2 * ‖𝓕 phiTwoC (L * ξ)‖ ^ 2)
+def testProfile (L : ℝ) (ξ : ℝ) : ℝ := mSym ξ ^ (2 : ℕ) * (L ^ (2 : ℕ) * ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ))
 
 theorem testProfile_nonneg (L ξ : ℝ) : 0 ≤ testProfile L ξ := by
   unfold testProfile
   positivity
 
 /-- Constant of the spectral symbol lower bound. -/
-def cM : ℝ := 64 * (Real.cosh (1 / 2) - 1) ^ 2
+def cM : ℝ := 64 * (Real.cosh (1 / 2) - 1) ^ (2 : ℕ)
 
 theorem cM_pos : 0 < cM := by
   unfold cM
@@ -53,41 +53,41 @@ theorem cM_pos : 0 < cM := by
 /-- Upper constant of the spectral symbol. -/
 def mM : ℝ := 2 * (1 + Real.cosh (1 / 2))
 
-theorem mSym_sq_le (ξ : ℝ) : mSym ξ ^ 2 ≤ mM ^ 2 := by
+theorem mSym_sq_le (ξ : ℝ) : mSym ξ ^ (2 : ℕ) ≤ mM ^ (2 : ℕ) := by
   have h := abs_mSym_le ξ
   have h0 : 0 ≤ |mSym ξ| := abs_nonneg _
-  calc mSym ξ ^ 2 = |mSym ξ| ^ 2 := (sq_abs _).symm
-    _ ≤ mM ^ 2 := pow_le_pow_left₀ h0 h 2
+  calc mSym ξ ^ (2 : ℕ) = |mSym ξ| ^ (2 : ℕ) := (sq_abs _).symm
+    _ ≤ mM ^ (2 : ℕ) := pow_le_pow_left₀ h0 h 2
 
 theorem testProfile_ge {L ξ : ℝ} (hL : 0 < L) (hξ : |ξ| ≤ 1 / 2) (hLξ : |L * ξ| ≤ epsTwo) :
-    cM / 4 * L ^ 2 * ξ ^ 4 ≤ testProfile L ξ := by
+    cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ) ≤ testProfile L ξ := by
   unfold testProfile
-  have h1 : cM * ξ ^ 4 ≤ mSym ξ ^ 2 := by
+  have h1 : cM * ξ ^ (4 : ℕ) ≤ mSym ξ ^ (2 : ℕ) := by
     unfold cM
     exact mSym_sq_ge hξ
   have h2 := norm_fourier_phiTwoC_ge hLξ
-  have h2' : (1 / 2 : ℝ) ^ 2 ≤ ‖𝓕 phiTwoC (L * ξ)‖ ^ 2 := pow_le_pow_left₀ (by norm_num) h2 2
-  have hL2 : 0 ≤ L ^ 2 := sq_nonneg L
-  have hcM : 0 ≤ cM * ξ ^ 4 := by have := cM_pos; positivity
-  calc cM / 4 * L ^ 2 * ξ ^ 4 = (cM * ξ ^ 4) * (L ^ 2 * (1 / 2) ^ 2) := by ring
-    _ ≤ mSym ξ ^ 2 * (L ^ 2 * ‖𝓕 phiTwoC (L * ξ)‖ ^ 2) :=
+  have h2' : (1 / 2 : ℝ) ^ (2 : ℕ) ≤ ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) h2 2
+  have hL2 : 0 ≤ L ^ (2 : ℕ) := sq_nonneg L
+  have hcM : 0 ≤ cM * ξ ^ (4 : ℕ) := by have := cM_pos; positivity
+  calc cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ) = (cM * ξ ^ (4 : ℕ)) * (L ^ (2 : ℕ) * (1 / 2) ^ (2 : ℕ)) := by ring
+    _ ≤ mSym ξ ^ (2 : ℕ) * (L ^ (2 : ℕ) * ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ)) :=
         mul_le_mul h1 (mul_le_mul_of_nonneg_left h2' hL2) (by positivity) (by positivity)
 
 theorem testProfile_le {L ξ : ℝ} (hL : 0 < L) (hξ : ξ ≠ 0) :
-    testProfile L ξ ≤ mM ^ 2 * kappaTwo ^ 2 / L ^ 4 / |ξ| ^ 6 := by
+    testProfile L ξ ≤ mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) / L ^ (4 : ℕ) / |ξ| ^ (6 : ℕ) := by
   unfold testProfile
   have hLξ : L * ξ ≠ 0 := mul_ne_zero hL.ne' hξ
   have h2 := norm_fourier_phiTwoC_le hLξ
-  have h2' : ‖𝓕 phiTwoC (L * ξ)‖ ^ 2 ≤ (kappaTwo / |L * ξ| ^ 3) ^ 2 :=
+  have h2' : ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ) ≤ (kappaTwo / |L * ξ| ^ (3 : ℕ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) h2 2
   have hm := mSym_sq_le ξ
   have hξpos : 0 < |ξ| := abs_pos.mpr hξ
   have habs : |L * ξ| = L * |ξ| := by rw [abs_mul, abs_of_pos hL]
   rw [habs] at h2'
-  calc mSym ξ ^ 2 * (L ^ 2 * ‖𝓕 phiTwoC (L * ξ)‖ ^ 2)
-      ≤ mM ^ 2 * (L ^ 2 * (kappaTwo / (L * |ξ|) ^ 3) ^ 2) :=
+  calc mSym ξ ^ (2 : ℕ) * (L ^ (2 : ℕ) * ‖𝓕 phiTwoC (L * ξ)‖ ^ (2 : ℕ))
+      ≤ mM ^ (2 : ℕ) * (L ^ (2 : ℕ) * (kappaTwo / (L * |ξ|) ^ (3 : ℕ)) ^ (2 : ℕ)) :=
         mul_le_mul hm (mul_le_mul_of_nonneg_left h2' (sq_nonneg L)) (by positivity) (by positivity)
-    _ = mM ^ 2 * kappaTwo ^ 2 / L ^ 4 / |ξ| ^ 6 := by
+    _ = mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) / L ^ (4 : ℕ) / |ξ| ^ (6 : ℕ) := by
         field_simp
 
 /-! ## The archimedean part of the test as a Fourier integral -/
@@ -113,7 +113,7 @@ theorem integrable_archIntegrand (L : ℝ) (hL : 1 ≤ L) :
 
 /-- The negative constant of the inner estimate: the integrand is at most
 `γ(0)·(cM/4)·L²·ξ⁴` on `|ξ| ≤ ε₀/L`. -/
-def innerConst : ℝ := (-gammaHardyPhaseRate 0) * cM * epsTwo ^ 5 / 10
+def innerConst : ℝ := (-gammaHardyPhaseRate 0) * cM * epsTwo ^ (5 : ℕ) / 10
 
 theorem innerConst_pos : 0 < innerConst := by
   unfold innerConst
@@ -125,7 +125,7 @@ theorem innerConst_pos : 0 < innerConst := by
 
 /-- Outer constant for a given negativity radius `ξ₀`. -/
 def outerConst (ξ₀ : ℝ) : ℝ :=
-  2 * mM ^ 2 * kappaTwo ^ 2 * (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ 2) / ξ₀ ^ 3
+  2 * mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) * (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ (2 : ℕ)) / ξ₀ ^ (3 : ℕ)
 
 theorem outerConst_nonneg {ξ₀ : ℝ} (hξ₀ : 0 < ξ₀) : 0 ≤ outerConst ξ₀ := by
   unfold outerConst
@@ -134,54 +134,54 @@ theorem outerConst_nonneg {ξ₀ : ℝ} (hξ₀ : 0 < ξ₀) : 0 ≤ outerConst 
 
 /-- Outer pointwise bound: for `|ξ| ≥ ξ₀ > 0`, `(35 + 2π|ξ|)/|ξ|⁶ ≤ (35/ξ₀ + 2π)(1 + 1/ξ₀²)/ξ₀³ · (1 + ξ²)⁻¹`. -/
 theorem outer_pointwise {ξ₀ ξ : ℝ} (hξ₀ : 0 < ξ₀) (hξ : ξ₀ ≤ |ξ|) :
-    (35 + 2 * Real.pi * |ξ|) / |ξ| ^ 6 ≤
-      (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ 2) / ξ₀ ^ 3 * (1 + ξ ^ 2)⁻¹ := by
+    (35 + 2 * Real.pi * |ξ|) / |ξ| ^ (6 : ℕ) ≤
+      (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ (2 : ℕ)) / ξ₀ ^ (3 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹ := by
   have hξpos : 0 < |ξ| := lt_of_lt_of_le hξ₀ hξ
   have h1 : 35 + 2 * Real.pi * |ξ| ≤ (35 / ξ₀ + 2 * Real.pi) * |ξ| := by
     have : 35 ≤ 35 / ξ₀ * |ξ| := by
       rw [div_mul_eq_mul_div, le_div_iff₀ hξ₀]
       nlinarith
     nlinarith
-  have h2 : ξ₀ ^ 3 * ξ ^ 2 ≤ |ξ| ^ 5 := by
-    have hsq : ξ ^ 2 = |ξ| ^ 2 := (sq_abs ξ).symm
+  have h2 : ξ₀ ^ (3 : ℕ) * ξ ^ (2 : ℕ) ≤ |ξ| ^ (5 : ℕ) := by
+    have hsq : ξ ^ (2 : ℕ) = |ξ| ^ (2 : ℕ) := (sq_abs ξ).symm
     rw [hsq]
-    have h3 : ξ₀ ^ 3 ≤ |ξ| ^ 3 := pow_le_pow_left₀ hξ₀.le hξ 3
-    calc ξ₀ ^ 3 * |ξ| ^ 2 ≤ |ξ| ^ 3 * |ξ| ^ 2 := mul_le_mul_of_nonneg_right h3 (by positivity)
-      _ = |ξ| ^ 5 := by ring
+    have h3 : ξ₀ ^ (3 : ℕ) ≤ |ξ| ^ (3 : ℕ) := pow_le_pow_left₀ hξ₀.le hξ 3
+    calc ξ₀ ^ (3 : ℕ) * |ξ| ^ (2 : ℕ) ≤ |ξ| ^ (3 : ℕ) * |ξ| ^ (2 : ℕ) := mul_le_mul_of_nonneg_right h3 (by positivity)
+      _ = |ξ| ^ (5 : ℕ) := by ring
   have hξne : ξ ≠ 0 := by
     intro h0
     rw [h0, abs_zero] at hξ
     linarith
-  have h3 : (1 : ℝ) / ξ ^ 2 ≤ (1 + 1 / ξ₀ ^ 2) * (1 + ξ ^ 2)⁻¹ := by
-    have hξ2 : 0 < ξ ^ 2 := by positivity
-    have hξ₀2 : ξ₀ ^ 2 ≤ ξ ^ 2 := by
+  have h3 : (1 : ℝ) / ξ ^ (2 : ℕ) ≤ (1 + 1 / ξ₀ ^ (2 : ℕ)) * (1 + ξ ^ (2 : ℕ))⁻¹ := by
+    have hξ2 : 0 < ξ ^ (2 : ℕ) := by positivity
+    have hξ₀2 : ξ₀ ^ (2 : ℕ) ≤ ξ ^ (2 : ℕ) := by
       rw [← sq_abs ξ]
       exact pow_le_pow_left₀ hξ₀.le hξ 2
-    have hpos : 0 < 1 + ξ ^ 2 := by positivity
+    have hpos : 0 < 1 + ξ ^ (2 : ℕ) := by positivity
     rw [← div_eq_mul_inv, div_le_div_iff₀ hξ2 hpos, one_mul]
-    have hξ₀pos2 : 0 < ξ₀ ^ 2 := by positivity
-    have hq : 1 ≤ ξ ^ 2 / ξ₀ ^ 2 := by rw [le_div_iff₀ hξ₀pos2]; linarith
-    have hexp : (1 + 1 / ξ₀ ^ 2) * ξ ^ 2 = ξ ^ 2 + ξ ^ 2 / ξ₀ ^ 2 := by ring
+    have hξ₀pos2 : 0 < ξ₀ ^ (2 : ℕ) := by positivity
+    have hq : 1 ≤ ξ ^ (2 : ℕ) / ξ₀ ^ (2 : ℕ) := by rw [le_div_iff₀ hξ₀pos2]; linarith
+    have hexp : (1 + 1 / ξ₀ ^ (2 : ℕ)) * ξ ^ (2 : ℕ) = ξ ^ (2 : ℕ) + ξ ^ (2 : ℕ) / ξ₀ ^ (2 : ℕ) := by ring
     rw [hexp]
     linarith
   have hA : 0 ≤ (35 / ξ₀ + 2 * Real.pi) := by positivity
-  calc (35 + 2 * Real.pi * |ξ|) / |ξ| ^ 6 ≤ ((35 / ξ₀ + 2 * Real.pi) * |ξ|) / |ξ| ^ 6 := by
+  calc (35 + 2 * Real.pi * |ξ|) / |ξ| ^ (6 : ℕ) ≤ ((35 / ξ₀ + 2 * Real.pi) * |ξ|) / |ξ| ^ (6 : ℕ) := by
         gcongr
-    _ = (35 / ξ₀ + 2 * Real.pi) / |ξ| ^ 5 := by
+    _ = (35 / ξ₀ + 2 * Real.pi) / |ξ| ^ (5 : ℕ) := by
         rw [pow_succ, mul_div_mul_right _ _ hξpos.ne']
-    _ ≤ (35 / ξ₀ + 2 * Real.pi) / (ξ₀ ^ 3 * ξ ^ 2) :=
+    _ ≤ (35 / ξ₀ + 2 * Real.pi) / (ξ₀ ^ (3 : ℕ) * ξ ^ (2 : ℕ)) :=
         div_le_div_of_nonneg_left hA (by positivity) h2
-    _ = (35 / ξ₀ + 2 * Real.pi) / ξ₀ ^ 3 * (1 / ξ ^ 2) := by
+    _ = (35 / ξ₀ + 2 * Real.pi) / ξ₀ ^ (3 : ℕ) * (1 / ξ ^ (2 : ℕ)) := by
         rw [div_mul_div_comm, mul_one]
-    _ ≤ (35 / ξ₀ + 2 * Real.pi) / ξ₀ ^ 3 * ((1 + 1 / ξ₀ ^ 2) * (1 + ξ ^ 2)⁻¹) := by
+    _ ≤ (35 / ξ₀ + 2 * Real.pi) / ξ₀ ^ (3 : ℕ) * ((1 + 1 / ξ₀ ^ (2 : ℕ)) * (1 + ξ ^ (2 : ℕ))⁻¹) := by
         gcongr
-    _ = (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ 2) / ξ₀ ^ 3 * (1 + ξ ^ 2)⁻¹ := by ring
+    _ = (35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ (2 : ℕ)) / ξ₀ ^ (3 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹ := by ring
 
 /-- The two-piece majorant of the archimedean integrand. -/
 def majorant (L ξ₀ : ℝ) (ξ : ℝ) : ℝ :=
   (Icc (-(epsTwo / L)) (epsTwo / L)).indicator
-      (fun ξ => gammaHardyPhaseRate 0 * (cM / 4 * L ^ 2 * ξ ^ 4)) ξ +
-    outerConst ξ₀ / L ^ 4 * (1 + ξ ^ 2)⁻¹
+      (fun ξ => gammaHardyPhaseRate 0 * (cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ))) ξ +
+    outerConst ξ₀ / L ^ (4 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹
 
 theorem integrable_majorant (L ξ₀ : ℝ) : Integrable (majorant L ξ₀) := by
   unfold majorant
@@ -192,11 +192,11 @@ theorem integrable_majorant (L ξ₀ : ℝ) : Integrable (majorant L ξ₀) := b
 
 theorem integral_majorant (L ξ₀ : ℝ) (hL : 0 < L) :
     ∫ ξ, majorant L ξ₀ ξ =
-      gammaHardyPhaseRate 0 * (cM / 4 * L ^ 2 * (2 * (epsTwo / L) ^ 5 / 5)) +
-        outerConst ξ₀ / L ^ 4 * ∫ ξ : ℝ, (1 + ξ ^ 2)⁻¹ := by
+      gammaHardyPhaseRate 0 * (cM / 4 * L ^ (2 : ℕ) * (2 * (epsTwo / L) ^ (5 : ℕ) / 5)) +
+        outerConst ξ₀ / L ^ (4 : ℕ) * ∫ ξ : ℝ, (1 + ξ ^ (2 : ℕ))⁻¹ := by
   unfold majorant
   have hi : Integrable ((Icc (-(epsTwo / L)) (epsTwo / L)).indicator
-      (fun ξ : ℝ => gammaHardyPhaseRate 0 * (cM / 4 * L ^ 2 * ξ ^ 4))) := by
+      (fun ξ : ℝ => gammaHardyPhaseRate 0 * (cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ)))) := by
     refine IntegrableOn.integrable_indicator ?_ measurableSet_Icc
     exact Continuous.integrableOn_Icc (by fun_prop)
   rw [integral_add hi (integrable_inv_one_add_sq.const_mul _), integral_indicator measurableSet_Icc]
@@ -232,7 +232,7 @@ theorem archIntegrand_le_majorant {t₀ : ℝ} (ht₀ : 0 < t₀) (ht₀π : t�
     nlinarith [Real.pi_pos]
   have hg0 := gammaHardyPhaseRate_zero_neg
   have hF := testProfile_nonneg L ξ
-  have houter_nonneg : 0 ≤ outerConst ξ₀ / L ^ 4 * (1 + ξ ^ 2)⁻¹ := by
+  have houter_nonneg : 0 ≤ outerConst ξ₀ / L ^ (4 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹ := by
     have := outerConst_nonneg hξ₀pos
     positivity
   unfold majorant
@@ -253,13 +253,13 @@ theorem archIntegrand_le_majorant {t₀ : ℝ} (ht₀ : 0 < t₀) (ht₀π : t�
       rw [abs_mul, abs_of_pos hLpos]
       have := (le_div_iff₀ hLpos).mp hin
       linarith
-    have hFge : cM / 4 * L ^ 2 * ξ ^ 4 ≤ testProfile L ξ :=
+    have hFge : cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ) ≤ testProfile L ξ :=
       testProfile_ge hLpos (hin.trans hεhalf) hLξ
     have hstep1 : 2 * gammaHardyPhaseRate (2 * Real.pi * ξ) * testProfile L ξ ≤
         gammaHardyPhaseRate 0 * testProfile L ξ :=
       mul_le_mul_of_nonneg_right hγ hF
     have hstep2 : gammaHardyPhaseRate 0 * testProfile L ξ ≤
-        gammaHardyPhaseRate 0 * (cM / 4 * L ^ 2 * ξ ^ 4) :=
+        gammaHardyPhaseRate 0 * (cM / 4 * L ^ (2 : ℕ) * ξ ^ (4 : ℕ)) :=
       mul_le_mul_of_nonpos_left hFge hg0.le
     linarith
   · have hnotmem : ξ ∉ Icc (-(epsTwo / L)) (epsTwo / L) := by
@@ -297,16 +297,16 @@ theorem archIntegrand_le_majorant {t₀ : ℝ} (ht₀ : 0 < t₀) (ht₀π : t�
           ≤ 2 * (35 + 2 * Real.pi * |ξ|) * testProfile L ξ := by
             apply mul_le_mul_of_nonneg_right _ hF
             linarith
-        _ ≤ 2 * (35 + 2 * Real.pi * |ξ|) * (mM ^ 2 * kappaTwo ^ 2 / L ^ 4 / |ξ| ^ 6) :=
+        _ ≤ 2 * (35 + 2 * Real.pi * |ξ|) * (mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) / L ^ (4 : ℕ) / |ξ| ^ (6 : ℕ)) :=
             mul_le_mul_of_nonneg_left hFle (by positivity)
-        _ = 2 * mM ^ 2 * kappaTwo ^ 2 / L ^ 4 * ((35 + 2 * Real.pi * |ξ|) / |ξ| ^ 6) := by
+        _ = 2 * mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) / L ^ (4 : ℕ) * ((35 + 2 * Real.pi * |ξ|) / |ξ| ^ (6 : ℕ)) := by
             ring
-        _ ≤ 2 * mM ^ 2 * kappaTwo ^ 2 / L ^ 4 *
-              ((35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ 2) / ξ₀ ^ 3 * (1 + ξ ^ 2)⁻¹) := by
+        _ ≤ 2 * mM ^ (2 : ℕ) * kappaTwo ^ (2 : ℕ) / L ^ (4 : ℕ) *
+              ((35 / ξ₀ + 2 * Real.pi) * (1 + 1 / ξ₀ ^ (2 : ℕ)) / ξ₀ ^ (3 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹) := by
             apply mul_le_mul_of_nonneg_left hpt
             have := kappaTwo_pos
             positivity
-        _ = outerConst ξ₀ / L ^ 4 * (1 + ξ ^ 2)⁻¹ := by
+        _ = outerConst ξ₀ / L ^ (4 : ℕ) * (1 + ξ ^ (2 : ℕ))⁻¹ := by
             unfold outerConst
             ring
 
@@ -318,7 +318,7 @@ theorem exists_archPart_primeFreeTest_neg :
   obtain ⟨t₀, ht₀, ht₀π, hneg⟩ := exists_phaseRate_negative_radius
   set ξ₀ : ℝ := t₀ / (2 * Real.pi) with hξ₀
   have hξ₀pos : 0 < ξ₀ := by rw [hξ₀]; positivity
-  set Ipi : ℝ := ∫ ξ : ℝ, (1 + ξ ^ 2)⁻¹ with hIpi
+  set Ipi : ℝ := ∫ ξ : ℝ, (1 + ξ ^ (2 : ℕ))⁻¹ with hIpi
   have hIpi0 : 0 ≤ Ipi := integral_nonneg fun ξ => by positivity
   have hcin := innerConst_pos
   have hout := outerConst_nonneg hξ₀pos
@@ -339,13 +339,13 @@ theorem exists_archPart_primeFreeTest_neg :
   rw [integral_majorant L ξ₀ hLpos] at hmono
   refine lt_of_le_of_lt hmono ?_
   -- the closed form is `−innerConst / L³ + outerConst·Ipi / L⁴`
-  have hclosed : gammaHardyPhaseRate 0 * (cM / 4 * L ^ 2 * (2 * (epsTwo / L) ^ 5 / 5)) +
-      outerConst ξ₀ / L ^ 4 * Ipi = (-innerConst + outerConst ξ₀ * Ipi / L) / L ^ 3 := by
+  have hclosed : gammaHardyPhaseRate 0 * (cM / 4 * L ^ (2 : ℕ) * (2 * (epsTwo / L) ^ (5 : ℕ) / 5)) +
+      outerConst ξ₀ / L ^ (4 : ℕ) * Ipi = (-innerConst + outerConst ξ₀ * Ipi / L) / L ^ (3 : ℕ) := by
     unfold innerConst
     field_simp
     ring
   rw [hclosed]
-  have hL3 : 0 < L ^ 3 := by positivity
+  have hL3 : 0 < L ^ (3 : ℕ) := by positivity
   rw [div_lt_iff₀ hL3, zero_mul]
   have hratio : outerConst ξ₀ * Ipi / L < innerConst := by
     rw [div_lt_iff₀ hLpos]

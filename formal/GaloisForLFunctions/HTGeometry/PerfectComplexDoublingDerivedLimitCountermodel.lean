@@ -277,7 +277,7 @@ theorem dyadicPartialSum_towerDiff (x : ℕ → ℤ) (n : ℕ) :
       x 0 - (2 : ℤ) ^ (n + 1) * x (n + 1) := by
   induction n with
   | zero =>
-      change x 0 - 2 * x 1 = x 0 - 2 ^ 1 * x 1
+      change x 0 - 2 * x 1 = x 0 - 2 ^ (1 : ℕ) * x 1
       ring
   | succ n ih =>
       rw [dyadicPartialSum_succ, ih]

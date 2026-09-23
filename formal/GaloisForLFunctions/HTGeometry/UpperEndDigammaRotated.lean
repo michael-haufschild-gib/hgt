@@ -88,7 +88,7 @@ theorem analyticOnNhd_rotDigamma : AnalyticOnNhd ℂ rotDigammaFun (upperTail 0)
 theorem rotDigamma_recurrence {z : ℂ} (hz : z ∈ upperTail 0) :
     rotDigammaFun (z + Complex.I) = rotDigammaFun z + Complex.I / z := by
   have hrot : -Complex.I * (z + Complex.I) = -Complex.I * z + 1 := by
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     linear_combination -hI
   have hz0 : z ≠ 0 := ne_zero_of_mem_upperTail hz
   have hrec := digamma_recurrence (-Complex.I * z) (rot_ne_negNat hz)

@@ -37,29 +37,29 @@ theorem sum_maxWindowSq_succ_le_largeValues (f : ℕ → ℝ) (hf : ∀ n, |f n|
     (hM : B + 2 ^ J + 1 + 2 ^ J < M + 1)
     (hcov : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hI : (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ I)
-    (h₂ : ∀ w : ℝ, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ M₂) :
+      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ I)
+    (h₂ : ∀ w : ℝ, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ M₂) :
     ∑ y ∈ Finset.Icc (A + 1) (B + 1), maxWindowSq f H y
       ≤ ((J : ℝ) + 1) * ((J : ℝ) + 1) * (2 ^ J : ℝ)
         * ((((B : ℝ) + 1 + ((2 ^ J : ℕ) : ℝ)) * (1 + ε) ^ K')
             * ((K' : ℝ) * blockCostG ((2 ^ J : ℕ) : ℝ) ε
-                (2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ 2 * I
-                  + M₂ * (2 / (Real.pi ^ 2 * W))))) := by
+                (2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+                  + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W))))) := by
   classical
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
   have hone : (0 : ℝ) < 1 + ε := by linarith
   have hpowone : (1 : ℝ) ≤ (1 + ε) ^ K' := one_le_pow₀ (by linarith)
-  set Gmax : ℝ := 2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ 2 * I
-    + M₂ * (2 / (Real.pi ^ 2 * W)) with hGmax
+  set Gmax : ℝ := 2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+    + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) with hGmax
   have hlogJ : 0 ≤ Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) := by
     refine Real.log_nonneg ?_
     have : (0 : ℝ) ≤ ((2 ^ J : ℕ) : ℝ) / (A : ℝ) := by positivity
     linarith
   have hGmax0 : 0 ≤ Gmax := by
     rw [hGmax]
-    have h1 : (0 : ℝ) ≤ 2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ 2 * I :=
+    have h1 : (0 : ℝ) ≤ 2 * Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I :=
       mul_nonneg (by positivity) hI0
-    have h2 : (0 : ℝ) ≤ M₂ * (2 / (Real.pi ^ 2 * W)) := by positivity
+    have h2 : (0 : ℝ) ≤ M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) := by positivity
     linarith
   set C : ℝ := (((B : ℝ) + 1 + ((2 ^ J : ℕ) : ℝ)) * (1 + ε) ^ K')
       * ((K' : ℝ) * blockCostG ((2 ^ J : ℕ) : ℝ) ε Gmax) with hC
@@ -125,22 +125,22 @@ theorem sum_maxWindowSq_succ_le_largeValues (f : ℕ → ℝ) (hf : ∀ n, |f n|
     refine Real.log_nonneg ?_
     have : (0 : ℝ) ≤ ((2 ^ j : ℕ) : ℝ) / (A' : ℝ) := by positivity
     linarith
-  have hGle : 2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ 2 * I
-      + M₂ * (2 / (Real.pi ^ 2 * W)) ≤ Gmax := by
+  have hGle : 2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ (2 : ℕ) * I
+      + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) ≤ Gmax := by
     rw [hGmax]
-    have hsq : Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ 2
-        ≤ Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ 2 :=
+    have hsq : Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ (2 : ℕ)
+        ≤ Real.log (1 + ((2 ^ J : ℕ) : ℝ) / (A : ℝ)) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hlog0 hlogle 2
     have hmul := mul_le_mul_of_nonneg_right hsq hI0
     linarith
   have hcostle : blockCostG ((2 ^ j : ℕ) : ℝ) ε
-      (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ 2 * I
-        + M₂ * (2 / (Real.pi ^ 2 * W)))
+      (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ (2 : ℕ) * I
+        + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)))
       ≤ blockCostG ((2 ^ J : ℕ) : ℝ) ε Gmax := by
     rw [blockCostG, blockCostG]
     have hlvl : ((2 ^ j : ℕ) : ℝ) ≤ ((2 ^ J : ℕ) : ℝ) := by exact_mod_cast hlevel
     have hlogε : 0 ≤ Real.log (1 + ε) := Real.log_nonneg (by linarith)
-    have hpair : (ε * ((2 ^ j : ℕ) : ℝ) + 1) ^ 2 ≤ (ε * ((2 ^ J : ℕ) : ℝ) + 1) ^ 2 := by
+    have hpair : (ε * ((2 ^ j : ℕ) : ℝ) + 1) ^ (2 : ℕ) ≤ (ε * ((2 ^ J : ℕ) : ℝ) + 1) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ ε * ((2 ^ j : ℕ) : ℝ) + 1 := by positivity
       have h1 : ε * ((2 ^ j : ℕ) : ℝ) + 1 ≤ ε * ((2 ^ J : ℕ) : ℝ) + 1 := by
         have := mul_le_mul_of_nonneg_left hlvl hε
@@ -159,16 +159,16 @@ theorem sum_maxWindowSq_succ_le_largeValues (f : ℕ → ℝ) (hf : ∀ n, |f n|
   rw [hC]
   have hK0 : (0 : ℝ) ≤ (K' : ℝ) := Nat.cast_nonneg K'
   have hstep : (K' : ℝ) * blockCostG ((2 ^ j : ℕ) : ℝ) ε
-      (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ 2 * I
-        + M₂ * (2 / (Real.pi ^ 2 * W)))
+      (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ (2 : ℕ) * I
+        + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)))
       ≤ (K' : ℝ) * blockCostG ((2 ^ J : ℕ) : ℝ) ε Gmax :=
     mul_le_mul_of_nonneg_left hcostle hK0
   have hpos : (0 : ℝ) ≤ (A' : ℝ) * (1 + ε) ^ K' := by positivity
   have hstep0 : (0 : ℝ) ≤ (K' : ℝ) * blockCostG ((2 ^ J : ℕ) : ℝ) ε Gmax :=
     mul_nonneg hK0 hcost0
   calc (A' : ℝ) * (1 + ε) ^ K' * ((K' : ℝ) * blockCostG ((2 ^ j : ℕ) : ℝ) ε
-        (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ 2 * I
-          + M₂ * (2 / (Real.pi ^ 2 * W))))
+        (2 * Real.log (1 + ((2 ^ j : ℕ) : ℝ) / (A' : ℝ)) ^ (2 : ℕ) * I
+          + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W))))
       ≤ (A' : ℝ) * (1 + ε) ^ K' * ((K' : ℝ) * blockCostG ((2 ^ J : ℕ) : ℝ) ε Gmax) :=
         mul_le_mul_of_nonneg_left hstep hpos
     _ ≤ ((B : ℝ) + 1 + ((2 ^ J : ℕ) : ℝ)) * (1 + ε) ^ K'

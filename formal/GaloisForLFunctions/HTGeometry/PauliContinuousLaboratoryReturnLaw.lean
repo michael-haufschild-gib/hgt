@@ -33,13 +33,13 @@ theorem hsNorm_le_sqrt_card_mul_opNorm
     {d : Type*} [Fintype d] [DecidableEq d] [Nonempty d]
     (A : Matrix d d ℂ) :
     hsNorm A ≤ Real.sqrt (Fintype.card d) * ‖A‖ := by
-  have hsq : hsNorm A ^ 2 ≤ (Fintype.card d : ℝ) * ‖A‖ ^ 2 := by
+  have hsq : hsNorm A ^ (2 : ℕ) ≤ (Fintype.card d : ℝ) * ‖A‖ ^ (2 : ℕ) := by
     rw [← frobSq_eq_hsNorm_sq]
     exact frobSq_le_card_mul_opNorm_sq A
   calc
-    hsNorm A = Real.sqrt (hsNorm A ^ 2) :=
+    hsNorm A = Real.sqrt (hsNorm A ^ (2 : ℕ)) :=
       (Real.sqrt_sq (hsNorm_nonneg A)).symm
-    _ ≤ Real.sqrt ((Fintype.card d : ℝ) * ‖A‖ ^ 2) :=
+    _ ≤ Real.sqrt ((Fintype.card d : ℝ) * ‖A‖ ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt hsq
     _ = Real.sqrt (Fintype.card d) * ‖A‖ := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg A)]
@@ -76,7 +76,7 @@ smallest target-specific fixed-time tube. -/
 def twoLocalPauliUniformNarrowReturnEvent (n : ℕ) (t : ℝ) :
     Set (TwoLocalPauliCoefficientSpace n) :=
   ⋃ P : NonzeroPauliCharacter (Fin n),
-    {x | twoLocalPauliScaledReturnDistance x t P ^ 2 ≤
+    {x | twoLocalPauliScaledReturnDistance x t P ^ (2 : ℕ) ≤
       gaussianIntervalActivationMass * (2 : ℝ) ^ n * n}
 
 /-- Time variation of normalized return distance for one fixed draw and one
@@ -87,7 +87,7 @@ theorem twoLocalPauliScaledReturnDistance_time_le
     twoLocalPauliScaledReturnDistance x u P ≤
       twoLocalPauliScaledReturnDistance x t P +
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| := by
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| := by
   have hself := isSelfAdjoint_realActivePauliHamiltonian x
   have hdim : (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ) =
       (2 : ℝ) ^ n := by
@@ -124,7 +124,7 @@ theorem twoLocalPauliScaledReturnDistance_time_le
             (finitePauliUnitary P.1 : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)) +
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| := by
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| := by
       rw [abs_sub_comm]
       ring
 
@@ -185,7 +185,7 @@ distance by at most square-root Hilbert dimension. -/
 theorem twoLocalPauliScaledReturnDistance_increment_le_sqrtDimension
     {n : ℕ} (hn : 1 ≤ n) {x : TwoLocalPauliCoefficientSpace n}
     (hx : x ∈ twoLocalPauliCoefficientBox n) {t u : ℝ}
-    (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ 6))
+    (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ (6 : ℕ)))
     (P : NonzeroPauliCharacter (Fin n)) :
     twoLocalPauliScaledReturnDistance x u P ≤
       twoLocalPauliScaledReturnDistance x t P +
@@ -196,19 +196,19 @@ theorem twoLocalPauliScaledReturnDistance_increment_le_sqrtDimension
   refine hbase.trans ?_
   have hnR : (0 : ℝ) < n := by
     exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
-  have hnormsq : ‖realActivePauliHamiltonian x‖ ^ 2 ≤
-      (18 * (n : ℝ) ^ 3) ^ 2 :=
+  have hnormsq : ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) ≤
+      (18 * (n : ℝ) ^ (3 : ℕ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hcap 2
   have hdelta :
       2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| ≤
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| ≤
         Real.sqrt ((2 : ℝ) ^ n) := by
     calc
       2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| ≤
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| ≤
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          (18 * (n : ℝ) ^ 3) ^ 2 *
-            (1 / (648 * (n : ℝ) ^ 6)) := by
+          (18 * (n : ℝ) ^ (3 : ℕ)) ^ (2 : ℕ) *
+            (1 / (648 * (n : ℝ) ^ (6 : ℕ))) := by
         gcongr
       _ = Real.sqrt ((2 : ℝ) ^ n) := by
         field_simp
@@ -221,7 +221,7 @@ target-specific fixed-time return at every nearby grid point. -/
 theorem twoLocalPauli_uniformNarrowEvent_subset_wide
     {n : ℕ} (hn : 1 ≤ n)
     (hgn : 1 ≤ gaussianIntervalActivationMass * (n : ℝ))
-    {t u : ℝ} (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ 6)) :
+    {t u : ℝ} (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ (6 : ℕ))) :
     twoLocalPauliCoefficientBox n ∩
         twoLocalPauliUniformNarrowReturnEvent n t ⊆
       twoLocalPauliAllPauliReturnTubeEvent n u := by
@@ -244,7 +244,7 @@ theorem twoLocalPauli_uniformNarrowEvent_subset_wide
       Real.sqrt (gaussianIntervalActivationMass * (2 : ℝ) ^ n * n) := by
     calc
       twoLocalPauliScaledReturnDistance x t P =
-          Real.sqrt (twoLocalPauliScaledReturnDistance x t P ^ 2) :=
+          Real.sqrt (twoLocalPauliScaledReturnDistance x t P ^ (2 : ℕ)) :=
         (Real.sqrt_sq hdist0).symm
       _ ≤ Real.sqrt
           (gaussianIntervalActivationMass * (2 : ℝ) ^ n * n) :=
@@ -260,7 +260,7 @@ theorem twoLocalPauli_uniformNarrowEvent_subset_wide
       2 * Real.sqrt
         (gaussianIntervalActivationMass * (2 : ℝ) ^ n * n) := by
     linarith
-  have hwideSq : twoLocalPauliScaledReturnDistance x u P ^ 2 ≤
+  have hwideSq : twoLocalPauliScaledReturnDistance x u P ^ (2 : ℕ) ≤
       4 * gaussianIntervalActivationMass * (2 : ℝ) ^ n * n := by
     have hnonneg : 0 ≤ twoLocalPauliScaledReturnDistance x u P := by
       unfold twoLocalPauliScaledReturnDistance
@@ -276,7 +276,7 @@ theorem twoLocalPauli_uniformNarrowEvent_subset_wide
 /-- Polynomial grid times for a continuous window of length `n^k`. -/
 def twoLocalPauliContinuumGridTime
     (k n : ℕ) (A : ℝ) (j : Fin (649 * n ^ (k + 7))) : ℝ :=
-  A + (j : ℕ) * (1 / (648 * (n : ℝ) ^ 6))
+  A + (j : ℕ) * (1 / (648 * (n : ℝ) ^ (6 : ℕ)))
 
 /-- The explicit polynomial grid covers the entire continuous polynomial
 window. -/
@@ -285,8 +285,8 @@ theorem exists_twoLocalPauliContinuumGridTime_near
     (ht : t ∈ Set.Icc A (A + (n : ℝ) ^ k)) :
     ∃ j : Fin (649 * n ^ (k + 7)),
       |t - twoLocalPauliContinuumGridTime k n A j| ≤
-        1 / (648 * (n : ℝ) ^ 6) := by
-  let mesh : ℝ := 1 / (648 * (n : ℝ) ^ 6)
+        1 / (648 * (n : ℝ) ^ (6 : ℕ)) := by
+  let mesh : ℝ := 1 / (648 * (n : ℝ) ^ (6 : ℕ))
   have hnR : (0 : ℝ) < n := by
     exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
   have hmesh : 0 < mesh := by
@@ -354,7 +354,7 @@ theorem stdGaussian_twoLocalPauli_measure_polynomialWindowReturnEvent_le
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ((1 + 3 * Real.exp
-            (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1) := by
+            (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1) := by
   have hsub := twoLocalPauli_polynomialWindowReturnEvent_subset k hn hgn A
   calc
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
@@ -376,7 +376,7 @@ theorem stdGaussian_twoLocalPauli_measure_polynomialWindowReturnEvent_le
           (twoLocalPauliCoefficientBox n)ᶜ +
         (Fintype.card (Fin (649 * n ^ (k + 7))) : ℝ) *
           ((1 + 3 * Real.exp
-            (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1) := by
+            (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1) := by
       gcongr
       exact stdGaussian_twoLocalPauli_measure_iUnion_time_allPauliReturnTube_le
         (n := n) (twoLocalPauliContinuumGridTime k n A)
@@ -384,7 +384,7 @@ theorem stdGaussian_twoLocalPauli_measure_polynomialWindowReturnEvent_le
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ((1 + 3 * Real.exp
-            (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1) := by
+            (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1) := by
       simp [Nat.cast_mul, Nat.cast_pow]
 
 /-- **Continuous polynomial-horizon Pauli return law.**  For every fixed
@@ -403,10 +403,10 @@ theorem tendsto_stdGaussian_twoLocalPauli_polynomialWindowReturnProbability_atTo
       (fun n : ℕ =>
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ((1 + 3 * Real.exp
-            (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1))
+            (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1))
       atTop (nhds 0) := by
     have hbase := tendsto_pow_mul_pauliIncidenceCompensatedBinomial_atTop
-      (a := gaussianIntervalActivationMass ^ 2 / 2)
+      (a := gaussianIntervalActivationMass ^ (2 : ℕ) / 2)
       (by nlinarith [gaussianIntervalActivationMass_pos]) (k + 7)
     convert hbase.const_mul 649 using 1 <;> simp
     funext n
@@ -417,7 +417,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_polynomialWindowReturnProbability_atTo
             (twoLocalPauliCoefficientBox n)ᶜ +
           (649 : ℝ) * (n : ℝ) ^ (k + 7) *
             ((1 + 3 * Real.exp
-              (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1))
+              (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1))
       atTop (nhds 0) := by
     simpa using
       tendsto_stdGaussian_twoLocalPauli_coefficientBox_compl_atTop.add hgrid0
@@ -430,7 +430,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_polynomialWindowReturnProbability_atTo
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ((1 + 3 * Real.exp
-            (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1))
+            (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1))
     (Filter.Eventually.of_forall fun _n => measureReal_nonneg) ?_ hmajor0
   obtain ⟨N, hN⟩ := exists_nat_gt
     (1 / gaussianIntervalActivationMass)

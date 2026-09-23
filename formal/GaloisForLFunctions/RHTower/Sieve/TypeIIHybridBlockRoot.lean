@@ -27,16 +27,16 @@ theorem sqrt_add_le_add_sqrt {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
 
 def typeIIHybridBlockComponents (T r : ℝ) (A B P : ℕ) : ℝ :=
   (B : ℝ) * P
-    + 1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B / ((A : ℝ) * P)
-    + 20 * Real.pi * (B : ℝ) ^ 3 / (T * r) * invSum B
-    + (B : ℝ) ^ 2 / P
+    + 1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B / ((A : ℝ) * P)
+    + 20 * Real.pi * (B : ℝ) ^ (3 : ℕ) / (T * r) * invSum B
+    + (B : ℝ) ^ (2 : ℕ) / P
 
 def typeIIHybridBlockRootEnvelope (T r : ℝ) (A B P : ℕ) : ℝ :=
   Real.sqrt ((B : ℝ) * P)
-    + Real.sqrt (1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B /
+    + Real.sqrt (1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B /
         ((A : ℝ) * P))
-    + Real.sqrt (20 * Real.pi * (B : ℝ) ^ 3 / (T * r) * invSum B)
-    + Real.sqrt ((B : ℝ) ^ 2 / P)
+    + Real.sqrt (20 * Real.pi * (B : ℝ) ^ (3 : ℕ) / (T * r) * invSum B)
+    + Real.sqrt ((B : ℝ) ^ (2 : ℕ) / P)
 
 theorem typeIIHybridBlockComponents_nonneg {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (A B P : ℕ) : 0 ≤ typeIIHybridBlockComponents T r A B P := by
@@ -60,10 +60,10 @@ theorem sqrt_typeIIHybridBlockComponents_le_rootEnvelope {T r : ℝ}
     Real.sqrt (typeIIHybridBlockComponents T r A B P) ≤
       typeIIHybridBlockRootEnvelope T r A B P := by
   let x₁ : ℝ := (B : ℝ) * P
-  let x₂ : ℝ := 1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B /
+  let x₂ : ℝ := 1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B /
     ((A : ℝ) * P)
-  let x₃ : ℝ := 20 * Real.pi * (B : ℝ) ^ 3 / (T * r) * invSum B
-  let x₄ : ℝ := (B : ℝ) ^ 2 / P
+  let x₃ : ℝ := 20 * Real.pi * (B : ℝ) ^ (3 : ℕ) / (T * r) * invSum B
+  let x₄ : ℝ := (B : ℝ) ^ (2 : ℕ) / P
   have hx₁ : 0 ≤ x₁ := by dsimp [x₁]; positivity
   have hx₂ : 0 ≤ x₂ := by dsimp [x₂]; positivity
   have hx₃ : 0 ≤ x₃ := by

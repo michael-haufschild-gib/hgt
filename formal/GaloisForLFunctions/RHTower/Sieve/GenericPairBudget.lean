@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.SieveRemainderBound
 
 `Sieve/MultiPairBudget` fixes the sieve parameters in terms of one particular marker base.  The same
 choices — level the fourth root, sifting bound the `144`-th root — work for any base, and the level
-condition `h^18 ≤ √z` holds exactly because `18/144 = 1/8 = (1/4)/2`.
+condition `h^(18 : ℕ) ≤ √z` holds exactly because `18/144 = 1/8 = (1/4)/2`.
 -/
 
 namespace RHTower.Sieve

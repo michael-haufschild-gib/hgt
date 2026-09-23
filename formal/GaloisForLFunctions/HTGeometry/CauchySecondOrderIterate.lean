@@ -31,8 +31,8 @@ theorem norm_secondOrderIterate_le {Φ : ℕ → ℂ → ℂ} {c₀ c₁ : ℂ �
     (hc₀ : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖c₀ ζ‖ ≤ ε)
     (hc₁ : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖c₁ ζ‖ ≤ γ)
     (hbase : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖Φ 0 ζ‖ ≤ M) :
-    ‖Φ n z₀‖ ≤ M * (ε + γ / δ + 2 / δ ^ 2) ^ n := by
-  set K : ℝ := ε + γ / δ + 2 / δ ^ 2 with hK
+    ‖Φ n z₀‖ ≤ M * (ε + γ / δ + 2 / δ ^ (2 : ℕ)) ^ n := by
+  set K : ℝ := ε + γ / δ + 2 / δ ^ (2 : ℕ) with hK
   have hnδ : (0 : ℝ) ≤ (n : ℝ) * δ := by positivity
   have key : ∀ k : ℕ, k ≤ n → ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ ((n : ℝ) - (k : ℝ)) * δ →
       ‖Φ k ζ‖ ≤ M * K ^ k := by
@@ -87,11 +87,11 @@ theorem norm_secondOrderIterate_le {Φ : ℕ → ℂ → ℂ} {c₀ c₁ : ℂ �
           mul_le_mul_of_nonneg_right (hc₀ ζ hin) hMk
         have hb1 : ‖c₁ ζ‖ * (M * K ^ k / δ) ≤ γ * (M * K ^ k / δ) :=
           mul_le_mul_of_nonneg_right (hc₁ ζ hin) (by positivity)
-        have hfin : ε * (M * K ^ k) + γ * (M * K ^ k / δ) + 2 * (M * K ^ k) / δ ^ 2
+        have hfin : ε * (M * K ^ k) + γ * (M * K ^ k / δ) + 2 * (M * K ^ k) / δ ^ (2 : ℕ)
             = M * K ^ (k + 1) := by
           have hδne : δ ≠ 0 := ne_of_gt hδ
-          have h1 : ε * (M * K ^ k) + γ * (M * K ^ k / δ) + 2 * (M * K ^ k) / δ ^ 2
-              = (M * K ^ k) * (ε + γ / δ + 2 / δ ^ 2) := by
+          have h1 : ε * (M * K ^ k) + γ * (M * K ^ k / δ) + 2 * (M * K ^ k) / δ ^ (2 : ℕ)
+              = (M * K ^ k) * (ε + γ / δ + 2 / δ ^ (2 : ℕ)) := by
             field_simp
           rw [h1, ← hK, pow_succ]
           ring

@@ -48,12 +48,12 @@ theorem mobiusCriticalReporterDeterminantBlindSynchronizationUniversality
           (ell : InfiniteMobiusShiftChannel →L[ℂ] ℂ),
         (¬ Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
           l (nhds 0)) ∧
         (¬ Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalSoftHardDeterminantBoundarySignal (u a))
           l (nhds 0)) := by
   refine ⟨mobiusFisherQFIDeterminant_softHardBoundarySynchronization sigma u hsigma hu,
@@ -63,7 +63,7 @@ theorem mobiusCriticalReporterDeterminantBlindSynchronizationUniversality
       Tendsto (fun a => ell (mobiusCriticalShiftChannel (sigma a) f)) l (nhds 0) :=
     (mobiusCriticalShiftChannel_weakly_tendsto_zero f ell).comp hsigma
   have hsq :
-      Tendsto (fun a => (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2)
+      Tendsto (fun a => (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ))
         l (nhds 0) := by
     simpa using hweak.pow 2
   have hpointed :
@@ -86,7 +86,7 @@ theorem mobiusCriticalReporterDeterminantBlindSynchronizationUniversality
     have height :
         Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
           l (nhds (8 : ℂ)) := by
       simpa using hsq.sub hpointed
@@ -96,7 +96,7 @@ theorem mobiusCriticalReporterDeterminantBlindSynchronizationUniversality
     have height :
         Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalSoftHardDeterminantBoundarySignal (u a))
           l (nhds (8 : ℂ)) := by
       simpa using hsq.sub hsoftHard

@@ -9,7 +9,7 @@ used in the Hilbert-Polya/Berry-Keating reading:
 * `u(s) = s(1-s)` is invariant under the functional-equation involution
   `s ↦ 1-s`;
 * on the critical line `s = 1/2 + iγ`, it is exactly the real value
-  `1/4 + γ^2`, hence at least `1/4`;
+  `1/4 + γ^(2 : ℕ)`, hence at least `1/4`;
 * for a point with nonzero imaginary part away from the critical line, `u(s)`
   has nonzero imaginary part;
 * the Kapustin spectral coordinate `1/u(s)` is real exactly on the critical
@@ -32,7 +32,7 @@ def berryKeatingU (s : ℂ) : ℂ := s * (1 - s)
 /-- Centering the reflection coordinate turns `u = s(1-s)` into a square subtracted from
 `1/4`. -/
 theorem berryKeatingU_eq_centered (s : ℂ) :
-    berryKeatingU s = 1 / 4 - (s - 1 / 2) ^ 2 := by
+    berryKeatingU s = 1 / 4 - (s - 1 / 2) ^ (2 : ℕ) := by
   rw [berryKeatingU]
   ring
 
@@ -45,7 +45,7 @@ theorem berryKeatingU_sigma (s : ℂ) : berryKeatingU (sigma s) = berryKeatingU 
 /-- Real part of the Berry-Keating coordinate in rectangular coordinates. -/
 @[aesop safe]
 theorem berryKeatingU_re (s : ℂ) :
-    (berryKeatingU s).re = s.re * (1 - s.re) + s.im ^ 2 := by
+    (berryKeatingU s).re = s.re * (1 - s.re) + s.im ^ (2 : ℕ) := by
   simp [berryKeatingU, Complex.mul_re, Complex.sub_re, Complex.sub_im]
   ring
 
@@ -56,10 +56,10 @@ theorem berryKeatingU_im (s : ℂ) :
   simp [berryKeatingU, Complex.mul_im, Complex.sub_re, Complex.sub_im]
   ring
 
-/-- On the critical line, `u=s(1-s)` is real and equals `1/4 + Im(s)^2`. -/
+/-- On the critical line, `u=s(1-s)` is real and equals `1/4 + Im(s)^(2 : ℕ)`. -/
 @[aesop safe]
 theorem berryKeatingU_on_critical (s : ℂ) (hs : s.re = 1 / 2) :
-    (berryKeatingU s).im = 0 ∧ (berryKeatingU s).re = 1 / 4 + s.im ^ 2 := by
+    (berryKeatingU s).im = 0 ∧ (berryKeatingU s).re = 1 / 4 + s.im ^ (2 : ℕ) := by
   constructor
   · rw [berryKeatingU_im, hs]
     ring
@@ -73,10 +73,10 @@ theorem berryKeatingU_re_ge_quarter_on_critical (s : ℂ) (hs : s.re = 1 / 2) :
   rw [(berryKeatingU_on_critical s hs).2]
   nlinarith [sq_nonneg s.im]
 
-/-- Parametrized critical-line formula: `u(1/2+iγ)=1/4+γ^2`. -/
+/-- Parametrized critical-line formula: `u(1/2+iγ)=1/4+γ^(2 : ℕ)`. -/
 @[aesop safe]
 theorem berryKeatingU_critical_param (γ : ℝ) :
-    berryKeatingU ((1 / 2 : ℂ) + (γ : ℂ) * Complex.I) = (1 / 4 + γ ^ 2 : ℂ) := by
+    berryKeatingU ((1 / 2 : ℂ) + (γ : ℂ) * Complex.I) = (1 / 4 + γ ^ (2 : ℕ) : ℂ) := by
   apply Complex.ext
   · rw [berryKeatingU_re]
     simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]

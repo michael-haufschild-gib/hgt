@@ -41,16 +41,16 @@ theorem cubicCuspAlgebra_constant (p : Polynomial ℝ) :
   rw [cubicCuspAlgebra_mem]
   simp
 
-theorem cubicCuspAlgebra_square : (Polynomial.X^2 : Polynomial (Polynomial ℝ)) ∈ cubicCuspAlgebra := by
+theorem cubicCuspAlgebra_square : (Polynomial.X^(2 : ℕ) : Polynomial (Polynomial ℝ)) ∈ cubicCuspAlgebra := by
   rw [cubicCuspAlgebra_mem]
   simp [Polynomial.coeff_X_pow]
 
-theorem cubicCuspAlgebra_cube : (Polynomial.X^3 : Polynomial (Polynomial ℝ)) ∈ cubicCuspAlgebra := by
+theorem cubicCuspAlgebra_cube : (Polynomial.X^(3 : ℕ) : Polynomial (Polynomial ℝ)) ∈ cubicCuspAlgebra := by
   rw [cubicCuspAlgebra_mem]
   simp [Polynomial.coeff_X_pow]
 
 def cubicCuspGenerators : Set (Polynomial (Polynomial ℝ)) :=
-  {Polynomial.C Polynomial.X,Polynomial.X^2,Polynomial.X^3}
+  {Polynomial.C Polynomial.X,Polynomial.X^(2 : ℕ),Polynomial.X^(3 : ℕ)}
 
 theorem cubicCuspAlgebra_adjoin : Algebra.adjoin ℝ cubicCuspGenerators=cubicCuspAlgebra := by
   apply le_antisymm
@@ -62,8 +62,8 @@ theorem cubicCuspAlgebra_adjoin : Algebra.adjoin ℝ cubicCuspGenerators=cubicCu
     · exact cubicCuspAlgebra_cube
   · let S := Algebra.adjoin ℝ cubicCuspGenerators
     have hU : Polynomial.C Polynomial.X ∈ S := Algebra.subset_adjoin (by left; rfl)
-    have hV : (Polynomial.X^2 : Polynomial (Polynomial ℝ)) ∈ S := Algebra.subset_adjoin (by right; left; rfl)
-    have hW : (Polynomial.X^3 : Polynomial (Polynomial ℝ)) ∈ S := Algebra.subset_adjoin (by right; right; rfl)
+    have hV : (Polynomial.X^(2 : ℕ) : Polynomial (Polynomial ℝ)) ∈ S := Algebra.subset_adjoin (by right; left; rfl)
+    have hW : (Polynomial.X^(3 : ℕ) : Polynomial (Polynomial ℝ)) ∈ S := Algebra.subset_adjoin (by right; right; rfl)
     have hC : ∀ p : Polynomial ℝ, Polynomial.C p ∈ S := by
       intro p
       induction p using Polynomial.induction_on' with

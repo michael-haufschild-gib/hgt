@@ -8,7 +8,7 @@ hypertranscendence status.
 
 WARNING — this is NOT the Herglotz regularization bridge.  The (H0) regularization is a genuine
 RATIONAL gauge, not a constant shift: `regularizedHerglotzTransform_eq` shows the regularized
-transform equals `z * (total mass) + (1 + z ^ 2) * (Cauchy transform of the Nevanlinna-weighted
+transform equals `z * (total mass) + (1 + z ^ (2 : ℕ)) * (Cauchy transform of the Nevanlinna-weighted
 measure)`.  Splitting the regularized integral into a Cauchy integral minus a constant is invalid,
 because under (H0) the individual pieces need not converge — which is the reason the regularization
 exists.  The correct bridge is `hypertranscendentalOver_herglotzGauge_iff`, already in the tree.

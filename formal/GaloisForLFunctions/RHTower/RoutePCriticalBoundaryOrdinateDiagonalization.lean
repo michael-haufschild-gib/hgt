@@ -235,10 +235,10 @@ theorem tendsto_routePProjectiveOrdinateZetaOverlap
 theorem tsum_pnat_log_sq_div_cpow_eq_iteratedDeriv_riemannZeta
     {s : ℂ} (hs : 1 < s.re) :
     (∑' n : ℕ+,
-      (Real.log (n : ℕ) : ℂ) ^ 2 / ((n : ℕ) : ℂ) ^ s) =
+      (Real.log (n : ℕ) : ℂ) ^ (2 : ℕ) / ((n : ℕ) : ℂ) ^ s) =
       iteratedDeriv 2 riemannZeta s := by
   let f : ℕ → ℂ := fun n =>
-    (Real.log n : ℂ) ^ 2 / (n : ℂ) ^ s
+    (Real.log n : ℂ) ^ (2 : ℕ) / (n : ℂ) ^ s
   have hterm : ∀ n : ℕ,
       LSeries.term (⇑(GaloisForLFunctions.zetaJetA 2)) s n = f n := by
     intro n
@@ -256,7 +256,7 @@ theorem tsum_pnat_log_sq_div_cpow_eq_iteratedDeriv_riemannZeta
     simpa [f] using h
   calc
     (∑' n : ℕ+,
-        (Real.log (n : ℕ) : ℂ) ^ 2 / ((n : ℕ) : ℂ) ^ s) =
+        (Real.log (n : ℕ) : ℂ) ^ (2 : ℕ) / ((n : ℕ) : ℂ) ^ s) =
         ∑' n : ℕ, f (n + 1) := by
           simpa only [f] using
             (tsum_pnat_eq_tsum_succ (f := f))
@@ -289,7 +289,7 @@ theorem routePProjectiveOrdinatePairWeight_eq_cpow
       (starRingEnd ℂ) (eulerPositiveStateWeight sigma n) =
       (eulerPositiveProbability sigma n : ℂ) := by
     calc
-      _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ 2) :=
+      _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
         RCLike.mul_conj (eulerPositiveStateWeight sigma n)
       _ = _ := by
         rw [← Complex.ofReal_pow,
@@ -326,13 +326,13 @@ private theorem summable_norm_sq_routePProjectiveOrdinateLogStateWeight
     {sigma R a gamma : ℝ} (hsigma : 1 < sigma)
     (hR : 0 < R) (ha : 0 < a) :
     Summable (fun n : ℕ+ =>
-      ‖routePProjectiveOrdinateLogStateWeight sigma R a gamma n‖ ^ 2) := by
+      ‖routePProjectiveOrdinateLogStateWeight sigma R a gamma n‖ ^ (2 : ℕ)) := by
   have h := HilbertSchmidt.summable_coe_sq
     (routePProjectiveFullEulerLogStateLp sigma R a hsigma hR ha)
   exact h.congr fun n => by
     change
-      ‖routePProjectiveFullEulerLogStateWeight sigma R a n‖ ^ 2 =
-        ‖routePProjectiveOrdinateLogStateWeight sigma R a gamma n‖ ^ 2
+      ‖routePProjectiveFullEulerLogStateWeight sigma R a n‖ ^ (2 : ℕ) =
+        ‖routePProjectiveOrdinateLogStateWeight sigma R a gamma n‖ ^ (2 : ℕ)
     rw [routePProjectiveOrdinateLogStateWeight,
       routePProjectiveFullEulerLogStateWeight, norm_mul, norm_mul,
       norm_eulerPositiveCriticalComplexDampedStateWeight,
@@ -375,7 +375,7 @@ theorem inner_routePProjectiveOrdinateLogStateLp_eq_iteratedDeriv
             (routePProjectiveOrdinateLogStateWeight
               sigma R a gamma n)) =
       ∑' n : ℕ+,
-        ((Real.log (n : ℕ) : ℂ) ^ 2 /
+        ((Real.log (n : ℕ) : ℂ) ^ (2 : ℕ) /
           ((n : ℕ) : ℂ) ^ s) /
             (eulerPositiveTotal sigma : ℂ) by
     apply tsum_congr
@@ -391,7 +391,7 @@ theorem inner_routePProjectiveOrdinateLogStateLp_eq_iteratedDeriv
               (starRingEnd ℂ)
                 (eulerPositiveCriticalComplexDampedStateWeight sigma
                   (routePProjectiveOrdinateNode sigma R a gamma) n)) =
-          (Real.log (n : ℕ) : ℂ) ^ 2 *
+          (Real.log (n : ℕ) : ℂ) ^ (2 : ℕ) *
             (eulerPositiveCriticalComplexDampedStateWeight sigma
                 (routePProjectiveOrdinateNode sigma R b delta) n *
               (starRingEnd ℂ)
@@ -437,7 +437,7 @@ theorem iteratedDeriv_two_riemannZeta_ofReal_eq_total_mul_logMoment
 /-- One complex second-log-moment Gram term with physical ordinate phases. -/
 def routePProjectiveOrdinateLogMomentGramTerm
     (R a gamma b delta sigma : ℝ) : ℂ :=
-  ((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ) *
+  ((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ) *
     (iteratedDeriv 2 riemannZeta
         (routePProjectiveOrdinatePairParameter
           sigma R a gamma b delta) /
@@ -447,7 +447,7 @@ def routePProjectiveOrdinateLogMomentGramTerm
 theorem routePProjectiveOrdinateLogMomentGramTerm_eq_scaled_inner
     {sigma R a gamma b delta : ℝ} (hsigma : 1 < sigma)
     (hR : 0 < R) (ha : 0 < a) (hb : 0 < b) :
-    ((((Real.sqrt R * (R * (sigma - 1))) ^ 2 : ℝ) : ℂ) *
+    ((((Real.sqrt R * (R * (sigma - 1))) ^ (2 : ℕ) : ℝ) : ℂ) *
       inner ℂ
         (routePProjectiveOrdinateLogStateLp
           sigma R a gamma hsigma hR ha)
@@ -485,13 +485,13 @@ theorem routePProjectiveOrdinateLogMomentGramTerm_diagonal
       riemannZeta (tau : ℂ) :=
     ofReal_eulerPositiveTotal_eq_riemannZeta htau
   change
-    ((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ) *
+    ((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ) *
           (((eulerPositiveTotal tau *
               eulerPositiveLogMoment 2 tau : ℝ) : ℂ) /
             riemannZeta (sigma : ℂ)) =
       (R : ℂ) *
           (riemannZeta (tau : ℂ) / riemannZeta (sigma : ℂ)) *
-        (((R * (sigma - 1)) ^ 2 *
+        (((R * (sigma - 1)) ^ (2 : ℕ) *
           eulerPositiveLogMoment 2 tau : ℝ) : ℂ)
   rw [← htotal]
   push_cast
@@ -503,7 +503,7 @@ theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_diagonal
     Tendsto
       (routePProjectiveOrdinateLogMomentGramTerm R a gamma b gamma)
       (nhdsWithin 1 (Ioi 1))
-      (nhds (((2 / (a + b) ^ 3 : ℝ) : ℂ))) := by
+      (nhds (((2 / (a + b) ^ (3 : ℕ) : ℝ) : ℂ))) := by
   have hbase :=
     tendsto_routePProjectiveFullEulerLogMomentGramTerm hR ha hb
   apply hbase.congr'
@@ -555,18 +555,18 @@ theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_offDiagonal
       tendsto_routePRealParameter_nhdsNE_one
   have hscale : Tendsto
       (fun sigma : ℝ =>
-        ((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ))
+        ((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ))
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
     have hcont : ContinuousAt
         (fun sigma : ℝ =>
-          ((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ)) 1 := by
+          ((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ)) 1 := by
       fun_prop
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hproduct := hscale.mul (hjet.mul hinv)
   have hfun :
       routePProjectiveOrdinateLogMomentGramTerm R a gamma b delta =
         fun sigma : ℝ =>
-          ((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ) *
+          ((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ) *
             (iteratedDeriv 2 riemannZeta
                 (routePProjectiveOrdinatePairParameter
                   sigma R a gamma b delta) *

@@ -10,12 +10,12 @@ Plebanski exchange channels and invoke the Jacobi identity of the underlying kin
 The corpus's literal AdS4 plane-wave vertex gives an exact obstruction on the physical
 same-transverse-charge sector.  Curvature cancels there and each channel is
 
-`V(p,q;h) = h^2 (p-q)^2 / 2`.
+`V(p,q;h) = h^(2 : ℕ) (p-q)^(2 : ℕ) / 2`.
 
 Consequently the complete local cyclic vertex is the translation-invariant graph-Laplacian
 energy
 
-`h^2 ((p-q)^2 + (q-r)^2 + (r-p)^2) / 2`.
+`h^(2 : ℕ) ((p-q)^(2 : ℕ) + (q-r)^(2 : ℕ) + (r-p)^(2 : ℕ)) / 2`.
 
 For real physical affine momenta and nonzero charge this vanishes exactly on the diagonal
 `p=q=r`.  Double-copy squaring therefore converts the alternating kinematic Jacobi mechanism
@@ -39,7 +39,7 @@ noncomputable section
 /-- Real graph-Laplacian energy exposed by the cyclic same-charge Plebanski vertex. -/
 def d4HBSelfDualSameChargeCyclicVertexEnergy
     (p q r h : ℝ) : ℝ :=
-  (h ^ 2 / 2) * ((p - q) ^ 2 + (q - r) ^ 2 + (r - p) ^ 2)
+  (h ^ (2 : ℕ) / 2) * ((p - q) ^ (2 : ℕ) + (q - r) ^ (2 : ℕ) + (r - p) ^ (2 : ℕ))
 
 /-- Three local self-dual gravity channels on one physical transverse-charge fibre. -/
 def d4HBSelfDualSameChargeCyclicVertex
@@ -67,15 +67,15 @@ theorem d4HBSelfDualSameChargeCyclicVertexEnergy_eq_zero_iff
     (p q r h : ℝ) (hh : h ≠ 0) :
     d4HBSelfDualSameChargeCyclicVertexEnergy p q r h = 0 ↔
       p = q ∧ q = r := by
-  have hh2 : 0 < h ^ 2 := sq_pos_of_ne_zero hh
+  have hh2 : 0 < h ^ (2 : ℕ) := sq_pos_of_ne_zero hh
   constructor
   · intro hzero
-    have hsum : (p - q) ^ 2 + (q - r) ^ 2 + (r - p) ^ 2 = 0 := by
+    have hsum : (p - q) ^ (2 : ℕ) + (q - r) ^ (2 : ℕ) + (r - p) ^ (2 : ℕ) = 0 := by
       rw [d4HBSelfDualSameChargeCyclicVertexEnergy] at hzero
       nlinarith
-    have hpq : (p - q) ^ 2 = 0 := by
+    have hpq : (p - q) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (p - q), sq_nonneg (q - r), sq_nonneg (r - p)]
-    have hqr : (q - r) ^ 2 = 0 := by
+    have hqr : (q - r) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (p - q), sq_nonneg (q - r), sq_nonneg (r - p)]
     constructor <;> nlinarith
   · rintro ⟨rfl, rfl⟩

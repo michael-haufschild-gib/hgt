@@ -158,10 +158,10 @@ private theorem closedUpperMultiplier_feature_mem_hardy
         Complex.continuous_ofReal.continuousAt)
   have hmem : MemLp (fun x : ℝ => u (x : ℂ)) 2 volume := by
     apply RHTower.memLp_two_of_poisson_bound
-      (a := w.1.re) (b := w.1.im) (D := F.bound ^ 2) w.2
+      (a := w.1.re) (b := w.1.im) (D := F.bound ^ (2 : ℕ)) w.2
       hcont.aestronglyMeasurable
     intro x
-    change ‖F.fn (x : ℂ) / ((x : ℂ) - (starRingEnd ℂ) w.1)‖ ^ 2 ≤ _
+    change ‖F.fn (x : ℂ) / ((x : ℂ) - (starRingEnd ℂ) w.1)‖ ^ (2 : ℕ) ≤ _
     rw [norm_div, div_pow, RHTower.norm_sq_ofReal_sub_conj]
     gcongr
     exact F.norm_le (x : ℂ) (by simp)

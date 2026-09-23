@@ -160,7 +160,7 @@ theorem deningerRadiusFlow_isCompact_preimage [T2Space X] {K : Set (X × X)} (hK
 /-! ## The half-density circle refinement -/
 
 /-- The half-density line bundle `{(p, z) : |z|² = x(p)}`. -/
-def deningerHalfDensity : Set (X × ℂ) := {q | ‖q.2‖ ^ 2 = F.radius q.1}
+def deningerHalfDensity : Set (X × ℂ) := {q | ‖q.2‖ ^ (2 : ℕ) = F.radius q.1}
 
 /-- The fibre coordinate never vanishes, because the radius is positive. -/
 theorem deningerHalfDensity_ne_zero {q : X × ℂ} (hq : q ∈ deningerHalfDensity F) :
@@ -183,8 +183,8 @@ noncomputable def deningerHalfDensityRotate (theta : ℝ) (q : X × ℂ) : X × 
 theorem deningerHalfDensityFlow_mem (t : ℝ) {q : X × ℂ}
     (hq : q ∈ deningerHalfDensity F) :
     deningerHalfDensityFlow F t q ∈ deningerHalfDensity F := by
-  have hq' : ‖q.2‖ ^ 2 = F.radius q.1 := hq
-  show ‖(Real.exp (t / 2) : ℂ) * q.2‖ ^ 2 = F.radius (F.act t q.1)
+  have hq' : ‖q.2‖ ^ (2 : ℕ) = F.radius q.1 := hq
+  show ‖(Real.exp (t / 2) : ℂ) * q.2‖ ^ (2 : ℕ) = F.radius (F.act t q.1)
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.exp_nonneg _), mul_pow, F.radius_act, hq']
   congr 1
@@ -195,13 +195,13 @@ theorem deningerHalfDensityFlow_mem (t : ℝ) {q : X × ℂ}
 theorem deningerHalfDensityRotate_mem (theta : ℝ) {q : X × ℂ}
     (hq : q ∈ deningerHalfDensity F) :
     deningerHalfDensityRotate theta q ∈ deningerHalfDensity F := by
-  have hq' : ‖q.2‖ ^ 2 = F.radius q.1 := hq
+  have hq' : ‖q.2‖ ^ (2 : ℕ) = F.radius q.1 := hq
   have hnorm : ‖Complex.exp ((theta : ℂ) * Complex.I)‖ = 1 := by
     rw [Complex.norm_exp]
     have hre : ((theta : ℂ) * Complex.I).re = 0 := by
       simp [Complex.mul_re]
     rw [hre, Real.exp_zero]
-  show ‖Complex.exp ((theta : ℂ) * Complex.I) * q.2‖ ^ 2 = F.radius q.1
+  show ‖Complex.exp ((theta : ℂ) * Complex.I) * q.2‖ ^ (2 : ℕ) = F.radius q.1
   rw [norm_mul, hnorm, one_mul, hq']
 
 /-- **The two actions commute.** -/
@@ -221,30 +221,30 @@ noncomputable def deningerHalfDensityChart :
         deningerRadius_normalize_mem F _⟩,
       ⟨(q : X × ℂ).2, deningerHalfDensity_ne_zero F q.2⟩)
   invFun qz :=
-    ⟨(F.act (Real.log (‖(qz.2 : ℂ)‖ ^ 2)) (qz.1 : X), (qz.2 : ℂ)), by
-      have hz : ‖(qz.2 : ℂ)‖ ^ 2 > 0 := by
+    ⟨(F.act (Real.log (‖(qz.2 : ℂ)‖ ^ (2 : ℕ))) (qz.1 : X), (qz.2 : ℂ)), by
+      have hz : ‖(qz.2 : ℂ)‖ ^ (2 : ℕ) > 0 := by
         have := norm_pos_iff.mpr qz.2.2
         positivity
       have hq1 : F.radius (qz.1 : X) = 1 := qz.1.2
-      show ‖(qz.2 : ℂ)‖ ^ 2 = F.radius (F.act (Real.log (‖(qz.2 : ℂ)‖ ^ 2)) (qz.1 : X))
+      show ‖(qz.2 : ℂ)‖ ^ (2 : ℕ) = F.radius (F.act (Real.log (‖(qz.2 : ℂ)‖ ^ (2 : ℕ))) (qz.1 : X))
       rw [F.radius_act, hq1, mul_one, Real.exp_log hz]⟩
   left_inv q := by
     refine Subtype.ext (Prod.ext ?_ rfl)
-    have hmem : ‖(q : X × ℂ).2‖ ^ 2 = F.radius (q : X × ℂ).1 := q.2
-    show F.act (Real.log (‖(q : X × ℂ).2‖ ^ 2))
+    have hmem : ‖(q : X × ℂ).2‖ ^ (2 : ℕ) = F.radius (q : X × ℂ).1 := q.2
+    show F.act (Real.log (‖(q : X × ℂ).2‖ ^ (2 : ℕ)))
         (F.act (-(Real.log (F.radius (q : X × ℂ).1))) (q : X × ℂ).1) = (q : X × ℂ).1
     rw [hmem, ← F.act_add, add_neg_cancel, F.act_zero]
   right_inv qz := by
     obtain ⟨⟨q, hq⟩, ⟨z, hz⟩⟩ := qz
     have hq1 : F.radius q = 1 := hq
-    have hzpos : ‖z‖ ^ 2 > 0 := by
+    have hzpos : ‖z‖ ^ (2 : ℕ) > 0 := by
       have := norm_pos_iff.mpr hz
       positivity
-    have hrad : F.radius (F.act (Real.log (‖z‖ ^ 2)) q) = ‖z‖ ^ 2 := by
+    have hrad : F.radius (F.act (Real.log (‖z‖ ^ (2 : ℕ))) q) = ‖z‖ ^ (2 : ℕ) := by
       rw [F.radius_act, hq1, mul_one, Real.exp_log hzpos]
     refine Prod.ext (Subtype.ext ?_) (Subtype.ext rfl)
-    show F.act (-(Real.log (F.radius (F.act (Real.log (‖z‖ ^ 2)) q))))
-        (F.act (Real.log (‖z‖ ^ 2)) q) = q
+    show F.act (-(Real.log (F.radius (F.act (Real.log (‖z‖ ^ (2 : ℕ))) q))))
+        (F.act (Real.log (‖z‖ ^ (2 : ℕ))) q) = q
     rw [hrad, ← F.act_add, neg_add_cancel, F.act_zero]
 
 /-- **The flow becomes fibrewise scaling.** -/

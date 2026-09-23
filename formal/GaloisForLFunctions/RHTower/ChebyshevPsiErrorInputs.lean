@@ -60,7 +60,7 @@ theorem tendsto_psi_div_self : Tendsto (fun x : ℝ => Chebyshev.psi x / x) atTo
 /-- **The error weight of the Abel tail is summable.** -/
 theorem summable_psi_error_weight :
     Summable fun k : ℕ =>
-      |Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)| * (2 / ((k : ℝ) + 1) ^ 2) := by
+      |Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)| * (2 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
   obtain ⟨C, c, hc, hC, hbound⟩ := exists_psi_error_eventually
   obtain ⟨X, hX⟩ := eventually_atTop.1 hbound
   obtain ⟨N, hN⟩ := exists_nat_ge (max X 1)
@@ -94,12 +94,12 @@ theorem summable_psi_error_weight :
     push_cast
     ring
   have hshape : |Chebyshev.psi (((k + M : ℕ) : ℝ) + 1) - (((k + M : ℕ) : ℝ) + 1)|
-      * (2 / (((k + M : ℕ) : ℝ) + 1) ^ 2)
-      = |Chebyshev.psi x - x| * (2 / x ^ 2) := by
+      * (2 / (((k + M : ℕ) : ℝ) + 1) ^ (2 : ℕ))
+      = |Chebyshev.psi x - x| * (2 / x ^ (2 : ℕ)) := by
     rw [hxeq]
   rw [hshape]
-  have hstep : |Chebyshev.psi x - x| * (2 / x ^ 2)
-      ≤ (C * (x * Real.exp (-c * Real.sqrt (Real.log x)))) * (2 / x ^ 2) :=
+  have hstep : |Chebyshev.psi x - x| * (2 / x ^ (2 : ℕ))
+      ≤ (C * (x * Real.exp (-c * Real.sqrt (Real.log x)))) * (2 / x ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_right hb (by positivity)
   refine hstep.trans (le_of_eq ?_)
   rw [hg]

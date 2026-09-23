@@ -68,21 +68,21 @@ theorem sum_symClass_card_mul_prod_le (r : ℕ) (p : α → ℝ) (hp : ∀ a, 0 
 /-- **`(14)`--`(16)`.**  The completed-phase replica moment of a flat seed against a unit target is
 at most `r!/D^r`. -/
 theorem completedPhaseReplicaMoment_le (r : ℕ) [Nonempty α] (z : α → ℂ)
-    (hz : ∑ a, ‖z a‖ ^ 2 ≤ 1) :
+    (hz : ∑ a, ‖z a‖ ^ (2 : ℕ) ≤ 1) :
     (∑ x : Fin r → α, ((symClass r x).card : ℝ) *
-        ∏ i, (‖z (x i)‖ ^ 2 / (Fintype.card α : ℝ)))
+        ∏ i, (‖z (x i)‖ ^ (2 : ℕ) / (Fintype.card α : ℝ)))
       ≤ (r.factorial : ℝ) / (Fintype.card α : ℝ) ^ r := by
   classical
   have hDpos : (0 : ℝ) < (Fintype.card α : ℝ) := by
     have := Fintype.card_pos (α := α)
     exact_mod_cast this
-  set p : α → ℝ := fun a => ‖z a‖ ^ 2 / (Fintype.card α : ℝ) with hp
+  set p : α → ℝ := fun a => ‖z a‖ ^ (2 : ℕ) / (Fintype.card α : ℝ) with hp
   have hpnn : ∀ a, 0 ≤ p a := fun a => by
     rw [hp]
     positivity
   have hpsum : ∑ a, p a ≤ (Fintype.card α : ℝ)⁻¹ := by
     rw [hp, ← Finset.sum_div, div_le_iff₀ hDpos]
-    calc ∑ a, ‖z a‖ ^ 2 ≤ 1 := hz
+    calc ∑ a, ‖z a‖ ^ (2 : ℕ) ≤ 1 := hz
       _ = (Fintype.card α : ℝ)⁻¹ * (Fintype.card α : ℝ) := by
           rw [inv_mul_cancel₀ (ne_of_gt hDpos)]
   have hmain := sum_symClass_card_mul_prod_le r p hpnn

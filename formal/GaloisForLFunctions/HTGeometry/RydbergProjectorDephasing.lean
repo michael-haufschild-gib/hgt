@@ -231,13 +231,13 @@ theorem finiteLindbladDissipator_sub_real_smul_one
     hL, hc]
   have hgain :
       (L - (c : ℂ) • 1) * X * (L - (c : ℂ) • 1) =
-        L * X * L - (c : ℂ) • (L * X + X * L) + (c ^ 2 : ℂ) • X := by
+        L * X * L - (c : ℂ) • (L * X + X * L) + (c ^ (2 : ℕ) : ℂ) • X := by
     simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one,
       Matrix.smul_mul, Matrix.mul_smul]
     module
   have heffect :
       (L - (c : ℂ) • 1) * (L - (c : ℂ) • 1) =
-        L * L - (2 * c : ℂ) • L + (c ^ 2 : ℂ) • 1 := by
+        L * L - (2 * c : ℂ) • L + (c ^ (2 : ℕ) : ℂ) • 1 := by
     simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one,
       Matrix.smul_mul, Matrix.mul_smul]
     module

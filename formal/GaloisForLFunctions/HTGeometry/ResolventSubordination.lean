@@ -201,7 +201,7 @@ theorem integral_Ioi_cexp_neg {c : ℂ} (hc : 0 < c.re) :
 /-- **The resolvent symbol is the Fourier transform of the two-sided exponential kernel.** -/
 theorem fourierIntegral_exp_neg_mul_abs {μ : ℝ} (hμ : 0 < μ) (ξ : ℝ) :
     𝓕 (fun x : ℝ => (Real.exp (-(μ * |x|)) : ℂ)) ξ
-      = 2 * (μ:ℂ) / ((μ:ℂ) ^ 2 + 4 * (Real.pi : ℂ) ^ 2 * (ξ:ℂ) ^ 2) := by
+      = 2 * (μ:ℂ) / ((μ:ℂ) ^ (2 : ℕ) + 4 * (Real.pi : ℂ) ^ (2 : ℕ) * (ξ:ℂ) ^ (2 : ℕ)) := by
   set g : ℝ → ℂ := fun x => Complex.exp ((((-2 * Real.pi * x * ξ : ℝ)) : ℂ) * Complex.I)
       • (Real.exp (-(μ * |x|)) : ℂ) with hg
   have hnormg : ∀ x : ℝ, ‖g x‖ = Real.exp (-μ * |x|) := by
@@ -271,8 +271,8 @@ theorem fourierIntegral_exp_neg_mul_abs {μ : ℝ} (hμ : 0 < μ) (ξ : ℝ) :
     ring
   have hprod : ((μ:ℂ) - 2 * (Real.pi : ℂ) * Complex.I * (ξ:ℂ))
       * ((μ:ℂ) + 2 * (Real.pi : ℂ) * Complex.I * (ξ:ℂ))
-      = (μ:ℂ) ^ 2 + 4 * (Real.pi : ℂ) ^ 2 * (ξ:ℂ) ^ 2 := by
-    linear_combination (-4 * (Real.pi : ℂ) ^ 2 * (ξ:ℂ) ^ 2) * Complex.I_sq
+      = (μ:ℂ) ^ (2 : ℕ) + 4 * (Real.pi : ℂ) ^ (2 : ℕ) * (ξ:ℂ) ^ (2 : ℕ) := by
+    linear_combination (-4 * (Real.pi : ℂ) ^ (2 : ℕ) * (ξ:ℂ) ^ (2 : ℕ)) * Complex.I_sq
   rw [Real.fourier_real_eq_integral_exp_smul]
   have hcongr : (∫ v : ℝ, Complex.exp ((((-2 * Real.pi * v * ξ : ℝ)) : ℂ) * Complex.I)
       • (Real.exp (-(μ * |v|)) : ℂ)) = ∫ x : ℝ, g x := rfl

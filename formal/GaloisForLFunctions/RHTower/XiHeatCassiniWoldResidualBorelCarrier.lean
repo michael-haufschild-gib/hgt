@@ -69,19 +69,19 @@ theorem exists_global_xiHeatCassiniOrderedWoldResidualLogDiscrepancy_exp_sqrt_ra
 def xiHeatCassiniWoldResidualBorelAtom
     (x : ℝ) (xi : ℂ) (p : ℕ × ℕ) : ℂ :=
   xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom p.2 x p.1 * xi ^ p.2 /
-    ((p.2.factorial : ℂ) ^ 2)
+    ((p.2.factorial : ℂ) ^ (2 : ℕ))
 
 theorem norm_xiHeatCassiniWoldResidualBorelAtom
     (x : ℝ) (xi : ℂ) (N k : ℕ) :
     ‖xiHeatCassiniWoldResidualBorelAtom x xi (N, k)‖ =
       ‖xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k x N‖ *
-        ‖xi‖ ^ k / ((k.factorial : ℝ) ^ 2) := by
+        ‖xi‖ ^ k / ((k.factorial : ℝ) ^ (2 : ℕ)) := by
   simp [xiHeatCassiniWoldResidualBorelAtom, norm_pow]
 
 /-- Central-binomial control in the exact factorial form needed by the order-two Borel carrier. -/
 theorem factorial_two_mul_le_four_pow_mul_factorial_sq (k : ℕ) :
     ((2 * k).factorial : ℝ) ≤
-      (4 : ℝ) ^ k * ((k.factorial : ℝ) ^ 2) := by
+      (4 : ℝ) ^ k * ((k.factorial : ℝ) ^ (2 : ℕ)) := by
   have hid : (Nat.centralBinom k) * (k.factorial * k.factorial) =
       (2 * k).factorial := by
     rw [Nat.centralBinom_eq_two_mul_choose]
@@ -94,7 +94,7 @@ theorem factorial_two_mul_le_four_pow_mul_factorial_sq (k : ℕ) :
     calc
       (2 * k).choose k ≤ 2 ^ (2 * k) := Nat.choose_le_two_pow _ _
       _ = 4 ^ k := by
-        rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul]
+        rw [show (4 : ℕ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
   have hnat : (2 * k).factorial ≤ 4 ^ k * (k.factorial * k.factorial) := by
     rw [← hid]
     exact Nat.mul_le_mul_right _ hle
@@ -135,70 +135,70 @@ private theorem heightMoment_secondFactorial_le_geometric
     {c h H t : ℝ} (hc : 0 < c) (hh : 0 ≤ h) (hH : 0 ≤ H)
     (hHle : H ≤ 2 * h) (ht : 0 ≤ t) (k : ℕ) :
     Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k /
-        ((k.factorial : ℝ) ^ 2) ≤
-      (32 * t / c ^ 2) ^ k := by
+        ((k.factorial : ℝ) ^ (2 : ℕ)) ≤
+      (32 * t / c ^ (2 : ℕ)) ^ k := by
   have hHpow : H ^ k ≤ (2 : ℝ) ^ k * h ^ k := by
     calc
       H ^ k ≤ (2 * h) ^ k := pow_le_pow_left₀ hH hHle k
       _ = (2 : ℝ) ^ k * h ^ k := by rw [mul_pow]
   have hmom := pow_mul_exp_neg_sqrt_le_even_factorial hc hh k
   have hfac := factorial_two_mul_le_four_pow_mul_factorial_sq k
-  have hkfac : 0 < ((k.factorial : ℝ) ^ 2) := by positivity
+  have hkfac : 0 < ((k.factorial : ℝ) ^ (2 : ℕ)) := by positivity
   have hcpow : 0 < (c / 2) ^ (2 * k) := pow_pos (by positivity) _
   have hratio :
-      ((2 * k).factorial : ℝ) / ((k.factorial : ℝ) ^ 2) ≤ (4 : ℝ) ^ k := by
+      ((2 * k).factorial : ℝ) / ((k.factorial : ℝ) ^ (2 : ℕ)) ≤ (4 : ℝ) ^ k := by
     exact (div_le_iff₀ hkfac).2 (by simpa [mul_comm] using hfac)
   calc
     Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k /
-        ((k.factorial : ℝ) ^ 2) ≤
+        ((k.factorial : ℝ) ^ (2 : ℕ)) ≤
       Real.exp (-((c / 2) * Real.sqrt h)) *
           ((2 : ℝ) ^ k * h ^ k) * t ^ k /
-            ((k.factorial : ℝ) ^ 2) := by gcongr
+            ((k.factorial : ℝ) ^ (2 : ℕ)) := by gcongr
     _ = (2 : ℝ) ^ k * t ^ k *
           (h ^ k * Real.exp (-((c / 2) * Real.sqrt h))) /
-            ((k.factorial : ℝ) ^ 2) := by ring
+            ((k.factorial : ℝ) ^ (2 : ℕ)) := by ring
     _ ≤ (2 : ℝ) ^ k * t ^ k *
           (((2 * k).factorial : ℝ) / (c / 2) ^ (2 * k)) /
-            ((k.factorial : ℝ) ^ 2) := by gcongr
+            ((k.factorial : ℝ) ^ (2 : ℕ)) := by gcongr
     _ = ((2 : ℝ) ^ k * t ^ k / (c / 2) ^ (2 * k)) *
-          (((2 * k).factorial : ℝ) / ((k.factorial : ℝ) ^ 2)) := by ring
+          (((2 * k).factorial : ℝ) / ((k.factorial : ℝ) ^ (2 : ℕ))) := by ring
     _ ≤ ((2 : ℝ) ^ k * t ^ k / (c / 2) ^ (2 * k)) * (4 : ℝ) ^ k := by
       gcongr
-    _ = ((2 * t) ^ k / ((c / 2) ^ 2) ^ k) * (4 : ℝ) ^ k := by
-      rw [show (c / 2) ^ (2 * k) = ((c / 2) ^ 2) ^ k by rw [pow_mul], mul_pow]
-    _ = (((2 * t) / (c / 2) ^ 2) ^ k) * (4 : ℝ) ^ k := by
+    _ = ((2 * t) ^ k / ((c / 2) ^ (2 : ℕ)) ^ k) * (4 : ℝ) ^ k := by
+      rw [show (c / 2) ^ (2 * k) = ((c / 2) ^ (2 : ℕ)) ^ k by rw [pow_mul], mul_pow]
+    _ = (((2 * t) / (c / 2) ^ (2 : ℕ)) ^ k) * (4 : ℝ) ^ k := by
       congr 1
       exact (div_pow _ _ _).symm
-    _ = (((2 * t) / (c / 2) ^ 2) * 4) ^ k :=
+    _ = (((2 * t) / (c / 2) ^ (2 : ℕ)) * 4) ^ k :=
       (mul_pow _ _ _).symm
-    _ = (32 * t / c ^ 2) ^ k := by
+    _ = (32 * t / c ^ (2 : ℕ)) ^ k := by
       congr 1
       field_simp [hc.ne']
       ring
 
 private theorem succ_div_factorial_succ_sq_le_inv_factorial_sq (k : ℕ) :
-    ((k + 1 : ℕ) : ℝ) / ((((k + 1).factorial : ℕ) : ℝ) ^ 2) ≤
-      1 / ((k.factorial : ℝ) ^ 2) := by
+    ((k + 1 : ℕ) : ℝ) / ((((k + 1).factorial : ℕ) : ℝ) ^ (2 : ℕ)) ≤
+      1 / ((k.factorial : ℝ) ^ (2 : ℕ)) := by
   rw [Nat.factorial_succ]
   push_cast
   rw [div_le_div_iff₀ (by positivity :
-      0 < ((((k : ℝ) + 1) * (k.factorial : ℝ)) ^ 2))
-    (by positivity : 0 < ((k.factorial : ℝ) ^ 2))]
+      0 < ((((k : ℝ) + 1) * (k.factorial : ℝ)) ^ (2 : ℕ)))
+    (by positivity : 0 < ((k.factorial : ℝ) ^ (2 : ℕ)))]
   have hk : (1 : ℝ) ≤ (k : ℝ) + 1 := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le k)
   have hsq : (k : ℝ) + 1 ≤ ((k : ℝ) + 1) * ((k : ℝ) + 1) := by
     nlinarith [show 0 ≤ (k : ℝ) by positivity]
   calc
-    ((k : ℝ) + 1) * ((k.factorial : ℝ) ^ 2) ≤
-        ((k : ℝ) + 1) * ((k : ℝ) + 1) * ((k.factorial : ℝ) ^ 2) := by
+    ((k : ℝ) + 1) * ((k.factorial : ℝ) ^ (2 : ℕ)) ≤
+        ((k : ℝ) + 1) * ((k : ℝ) + 1) * ((k.factorial : ℝ) ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-    _ = 1 * ((((k : ℝ) + 1) * (k.factorial : ℝ)) ^ 2) := by ring
+    _ = 1 * ((((k : ℝ) + 1) * (k.factorial : ℝ)) ^ (2 : ℕ)) := by ring
 
 private theorem derivativeHeightMoment_secondFactorial_le_geometric
     {c h H t : ℝ} (hc : 0 < c) (hh : 0 ≤ h) (hH : 0 ≤ H)
     (hHle : H ≤ 2 * h) (ht : 0 ≤ t) (k : ℕ) :
     Real.exp (-((c / 2) * Real.sqrt h)) * ((k + 1 : ℕ) : ℝ) * H ^ k *
-        t ^ (k + 1) / ((((k + 1).factorial : ℕ) : ℝ) ^ 2) ≤
-      t * (32 * t / c ^ 2) ^ k := by
+        t ^ (k + 1) / ((((k + 1).factorial : ℕ) : ℝ) ^ (2 : ℕ)) ≤
+      t * (32 * t / c ^ (2 : ℕ)) ^ k := by
   have hnorm := succ_div_factorial_succ_sq_le_inv_factorial_sq k
   have hheight := heightMoment_secondFactorial_le_geometric
     hc hh hH hHle ht k
@@ -206,17 +206,17 @@ private theorem derivativeHeightMoment_secondFactorial_le_geometric
       Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k := by positivity
   calc
     Real.exp (-((c / 2) * Real.sqrt h)) * ((k + 1 : ℕ) : ℝ) * H ^ k *
-        t ^ (k + 1) / ((((k + 1).factorial : ℕ) : ℝ) ^ 2) =
+        t ^ (k + 1) / ((((k + 1).factorial : ℕ) : ℝ) ^ (2 : ℕ)) =
       (Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k) *
         (t * (((k + 1 : ℕ) : ℝ) /
-          ((((k + 1).factorial : ℕ) : ℝ) ^ 2))) := by
+          ((((k + 1).factorial : ℕ) : ℝ) ^ (2 : ℕ)))) := by
       rw [pow_succ]
       ring
     _ ≤ (Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k) *
-        (t * (1 / ((k.factorial : ℝ) ^ 2))) := by gcongr
+        (t * (1 / ((k.factorial : ℝ) ^ (2 : ℕ)))) := by gcongr
     _ = t * (Real.exp (-((c / 2) * Real.sqrt h)) * H ^ k * t ^ k /
-        ((k.factorial : ℝ) ^ 2)) := by ring
-    _ ≤ t * (32 * t / c ^ 2) ^ k :=
+        ((k.factorial : ℝ) ^ (2 : ℕ))) := by ring
+    _ ≤ t * (32 * t / c ^ (2 : ℕ)) ^ k :=
       mul_le_mul_of_nonneg_left hheight ht
 
 private theorem norm_xiHeatCassiniWoldResidualBorelAtom_le_majorant
@@ -229,13 +229,13 @@ private theorem norm_xiHeatCassiniWoldResidualBorelAtom_le_majorant
       C *
         (Real.exp (-(c / 2) * Real.sqrt (xiMassNthPrimeLogHeight N)) *
           xiHeatCassiniOrderedPrimeLogGap N) *
-        (|x| * (32 * ‖xi‖ / c ^ 2) ^ k +
-          ‖xi‖ * (32 * ‖xi‖ / c ^ 2) ^ (k - 1)) := by
+        (|x| * (32 * ‖xi‖ / c ^ (2 : ℕ)) ^ k +
+          ‖xi‖ * (32 * ‖xi‖ / c ^ (2 : ℕ)) ^ (k - 1)) := by
   let h : ℝ := xiMassNthPrimeLogHeight N
   let H : ℝ := xiMassNthPrimeLogHeight (N + 1)
   let d : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   let t : ℝ := ‖xi‖
-  let q : ℝ := 32 * t / c ^ 2
+  let q : ℝ := 32 * t / c ^ (2 : ℕ)
   have hh : 0 ≤ h := (xiMassNthPrimeLogHeight_pos N).le
   have hH : 0 ≤ H := (xiMassNthPrimeLogHeight_pos (N + 1)).le
   have hHle : H ≤ 2 * h := by
@@ -263,13 +263,13 @@ private theorem norm_xiHeatCassiniWoldResidualBorelAtom_le_majorant
     ring
   have hfirst :
       Real.exp (-(c / 2) * Real.sqrt h) * H ^ k * t ^ k /
-          ((k.factorial : ℝ) ^ 2) ≤ q ^ k := by
+          ((k.factorial : ℝ) ^ (2 : ℕ)) ≤ q ^ k := by
     dsimp only [q]
     convert heightMoment_secondFactorial_le_geometric hc hh hH hHle ht k using 1
     all_goals ring_nf
   have hsecond :
       Real.exp (-(c / 2) * Real.sqrt h) * (k : ℝ) * H ^ (k - 1) * t ^ k /
-          ((k.factorial : ℝ) ^ 2) ≤ t * q ^ (k - 1) := by
+          ((k.factorial : ℝ) ^ (2 : ℕ)) ≤ t * q ^ (k - 1) := by
     cases k with
     | zero => simpa using ht
     | succ j =>
@@ -279,26 +279,26 @@ private theorem norm_xiHeatCassiniWoldResidualBorelAtom_le_majorant
         all_goals ring_nf
   have hinner :
       |x| * (Real.exp (-(c / 2) * Real.sqrt h) * H ^ k * t ^ k /
-          ((k.factorial : ℝ) ^ 2)) +
+          ((k.factorial : ℝ) ^ (2 : ℕ))) +
         (Real.exp (-(c / 2) * Real.sqrt h) * (k : ℝ) * H ^ (k - 1) * t ^ k /
-          ((k.factorial : ℝ) ^ 2)) ≤
+          ((k.factorial : ℝ) ^ (2 : ℕ))) ≤
       |x| * q ^ k + t * q ^ (k - 1) :=
     add_le_add (mul_le_mul_of_nonneg_left hfirst (abs_nonneg x)) hsecond
   rw [norm_xiHeatCassiniWoldResidualBorelAtom]
   calc
     ‖xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k x N‖ * t ^ k /
-        ((k.factorial : ℝ) ^ 2) ≤
+        ((k.factorial : ℝ) ^ (2 : ℕ)) ≤
       (|xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| * d *
         (H ^ k * |x| + (k : ℝ) * H ^ (k - 1))) * t ^ k /
-          ((k.factorial : ℝ) ^ 2) := by gcongr
+          ((k.factorial : ℝ) ^ (2 : ℕ)) := by gcongr
     _ ≤ (C * Real.exp (-c * Real.sqrt h) * d *
         (H ^ k * |x| + (k : ℝ) * H ^ (k - 1))) * t ^ k /
-          ((k.factorial : ℝ) ^ 2) := by gcongr
+          ((k.factorial : ℝ) ^ (2 : ℕ)) := by gcongr
     _ = C * (Real.exp (-(c / 2) * Real.sqrt h) * d) *
         (|x| * (Real.exp (-(c / 2) * Real.sqrt h) * H ^ k * t ^ k /
-            ((k.factorial : ℝ) ^ 2)) +
+            ((k.factorial : ℝ) ^ (2 : ℕ))) +
           (Real.exp (-(c / 2) * Real.sqrt h) * (k : ℝ) * H ^ (k - 1) * t ^ k /
-            ((k.factorial : ℝ) ^ 2))) := by rw [hexpsplit]; ring
+            ((k.factorial : ℝ) ^ (2 : ℕ)))) := by rw [hexpsplit]; ring
     _ ≤ C * (Real.exp (-(c / 2) * Real.sqrt h) * d) *
         (|x| * q ^ k + t * q ^ (k - 1)) := by
       exact mul_le_mul_of_nonneg_left hinner
@@ -306,8 +306,8 @@ private theorem norm_xiHeatCassiniWoldResidualBorelAtom_le_majorant
     _ = C *
         (Real.exp (-(c / 2) * Real.sqrt (xiMassNthPrimeLogHeight N)) *
           xiHeatCassiniOrderedPrimeLogGap N) *
-        (|x| * (32 * ‖xi‖ / c ^ 2) ^ k +
-          ‖xi‖ * (32 * ‖xi‖ / c ^ 2) ^ (k - 1)) := by
+        (|x| * (32 * ‖xi‖ / c ^ (2 : ℕ)) ^ k +
+          ‖xi‖ * (32 * ‖xi‖ / c ^ (2 : ℕ)) ^ (k - 1)) := by
       rfl
 
 /-- The source-marked two-index Borel family is normally summable on one nontrivial disc whose
@@ -318,24 +318,24 @@ theorem exists_radius_summable_norm_xiHeatCassiniWoldResidualBorelAtom :
         ‖xiHeatCassiniWoldResidualBorelAtom x xi p‖) := by
   obtain ⟨C, c, hc, hC, hres⟩ :=
     exists_global_xiHeatCassiniOrderedWoldResidualLogDiscrepancy_exp_sqrt_rate
-  refine ⟨c ^ 2 / 64, by positivity, ?_⟩
+  refine ⟨c ^ (2 : ℕ) / 64, by positivity, ?_⟩
   intro x xi hxi
   let t : ℝ := ‖xi‖
-  let q : ℝ := 32 * t / c ^ 2
+  let q : ℝ := 32 * t / c ^ (2 : ℕ)
   let f : ℕ → ℝ := fun N =>
     C * (Real.exp (-(c / 2) * Real.sqrt (xiMassNthPrimeLogHeight N)) *
       xiHeatCassiniOrderedPrimeLogGap N)
   let g : ℕ → ℝ := fun k => |x| * q ^ k + t * q ^ (k - 1)
   have ht : 0 ≤ t := by dsimp only [t]; positivity
-  have hc2 : 0 < c ^ 2 := sq_pos_of_pos hc
+  have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_pos hc
   have hq : 0 ≤ q := by
     dsimp only [q]
     exact div_nonneg (mul_nonneg (by norm_num) ht) hc2.le
-  have ht64 : 64 * t < c ^ 2 := by
+  have ht64 : 64 * t < c ^ (2 : ℕ) := by
     have := (lt_div_iff₀ (by norm_num : (0 : ℝ) < 64)).mp (by simpa only [t] using hxi)
     nlinarith
   have hqOne : q < 1 := by
-    rw [show q = 32 * t / c ^ 2 by rfl, div_lt_iff₀ hc2]
+    rw [show q = 32 * t / c ^ (2 : ℕ) by rfl, div_lt_iff₀ hc2]
     nlinarith
   have hgeom : Summable (fun k : ℕ => q ^ k) := by
     apply summable_geometric_of_norm_lt_one
@@ -377,21 +377,21 @@ theorem tsum_xiHeatCassiniWoldResidualBorelAtom_fixedOrder
     (x : ℝ) (xi : ℂ) (k : ℕ) :
     (∑' N : ℕ, xiHeatCassiniWoldResidualBorelAtom x xi (N, k)) =
       xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel k x * xi ^ k /
-        ((k.factorial : ℂ) ^ 2) := by
+        ((k.factorial : ℂ) ^ (2 : ℕ)) := by
   calc
     (∑' N : ℕ, xiHeatCassiniWoldResidualBorelAtom x xi (N, k)) =
         ∑' N : ℕ,
           xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k x N *
-            (xi ^ k / ((k.factorial : ℂ) ^ 2)) := by
+            (xi ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) := by
       apply tsum_congr
       intro N
       simp only [xiHeatCassiniWoldResidualBorelAtom]
       ring
     _ = (∑' N : ℕ,
           xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k x N) *
-            (xi ^ k / ((k.factorial : ℂ) ^ 2)) := tsum_mul_right
+            (xi ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) := tsum_mul_right
     _ = xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel k x * xi ^ k /
-          ((k.factorial : ℂ) ^ 2) := by
+          ((k.factorial : ℂ) ^ (2 : ℕ)) := by
       rw [xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel]
       ring
 
@@ -402,7 +402,7 @@ theorem exists_radius_xiHeatCassiniWoldResidualBorelCarrier_eq_jetSeries :
       xiHeatCassiniWoldResidualBorelCarrier x xi =
         ∑' k : ℕ,
           xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel k x * xi ^ k /
-            ((k.factorial : ℂ) ^ 2) := by
+            ((k.factorial : ℂ) ^ (2 : ℕ)) := by
   obtain ⟨r, hr, hsum⟩ :=
     exists_radius_summable_xiHeatCassiniWoldResidualBorelAtom
   refine ⟨r, hr, fun x xi hxi => ?_⟩
@@ -420,7 +420,7 @@ theorem exists_radius_xiHeatCassiniWoldResidualBorelCarrier_eq_jetSeries :
       exact hs'.tsum_comm.symm
     _ = ∑' k : ℕ,
           xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel k x * xi ^ k /
-            ((k.factorial : ℂ) ^ 2) := by
+            ((k.factorial : ℂ) ^ (2 : ℕ)) := by
       apply tsum_congr
       exact tsum_xiHeatCassiniWoldResidualBorelAtom_fixedOrder x xi
 

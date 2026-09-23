@@ -194,7 +194,7 @@ share one physical-rank square; every remaining coefficient-generated channel is
 theorem globalWittForm_eq_positive_add_oneRank
     (genus : ℕ) (d : LocalData p n m K N) (x : compatibleCharges d) :
     globalWittForm genus d x = globalPositiveForm d x +
-      globalRankCoefficient genus d * commonRankLinear d x ^ 2 := by
+      globalRankCoefficient genus d * commonRankLinear d x ^ (2 : ℕ) := by
   rw [globalWittForm, QuadraticMap.add_apply, QuadraticMap.sum_apply,
     QuadraticMap.smul_apply, QuadraticMap.comp_apply, QuadraticMap.sq_apply,
     globalPositiveForm, QuadraticMap.sum_apply]
@@ -251,8 +251,8 @@ theorem globalWittForm_sigNeg_le_one (genus : ℕ)
   apply sigNeg_le_one_of_add_sq_nonneg (globalWittForm genus d) ell
   intro x
   rw [globalWittForm_eq_positive_add_oneRank]
-  change 0 ≤ globalPositiveForm d x + coeff * commonRankLinear d x ^ 2 +
-    (Real.sqrt (max 0 (-coeff)) * commonRankLinear d x) ^ 2
+  change 0 ≤ globalPositiveForm d x + coeff * commonRankLinear d x ^ (2 : ℕ) +
+    (Real.sqrt (max 0 (-coeff)) * commonRankLinear d x) ^ (2 : ℕ)
   rw [mul_pow, Real.sq_sqrt (le_max_left 0 (-coeff))]
   by_cases hcoeff : 0 ≤ coeff
   · rw [max_eq_left (neg_nonpos.mpr hcoeff)]
@@ -423,7 +423,7 @@ theorem globalReesWittForm_eq_positive_add_oneRank
     (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d)
     (x : compatibleCharges d) :
     globalReesWittForm genus d parameter x = globalReesPositiveForm d parameter x +
-      globalRankCoefficient genus d * commonRankLinear d x ^ 2 := by
+      globalRankCoefficient genus d * commonRankLinear d x ^ (2 : ℕ) := by
   rw [globalReesWittForm, QuadraticMap.add_apply, QuadraticMap.sum_apply,
     QuadraticMap.smul_apply, QuadraticMap.comp_apply, QuadraticMap.sq_apply,
     globalReesPositiveForm, QuadraticMap.sum_apply]
@@ -485,8 +485,8 @@ theorem globalReesWittForm_sigNeg_le_one
   apply sigNeg_le_one_of_add_sq_nonneg (globalReesWittForm genus d parameter) ell
   intro x
   rw [globalReesWittForm_eq_positive_add_oneRank]
-  change 0 ≤ globalReesPositiveForm d parameter x + coeff * commonRankLinear d x ^ 2 +
-    (Real.sqrt (max 0 (-coeff)) * commonRankLinear d x) ^ 2
+  change 0 ≤ globalReesPositiveForm d parameter x + coeff * commonRankLinear d x ^ (2 : ℕ) +
+    (Real.sqrt (max 0 (-coeff)) * commonRankLinear d x) ^ (2 : ℕ)
   rw [mul_pow, Real.sq_sqrt (le_max_left 0 (-coeff))]
   by_cases hcoeff : 0 ≤ coeff
   · rw [max_eq_left (neg_nonpos.mpr hcoeff)]

@@ -250,7 +250,7 @@ omit [CharZero K] in
 /-- Every quadratic detector generator is square-zero. -/
 theorem quadraticQuantumDetectorGenerator_sq
     (q : K) (i : Fin n) :
-    (quadraticQuantumDetectorGenerator (M := M) q i) ^ 2 = 0 := by
+    (quadraticQuantumDetectorGenerator (M := M) q i) ^ (2 : ℕ) = 0 := by
   apply LinearMap.ext
   intro f
   funext x

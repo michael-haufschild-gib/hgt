@@ -43,8 +43,8 @@ def lagGramForm (S : Finset ℝ) (c : ℝ → ℝ) : ℝ :=
 theorem lagGramForm_eq_of_riemannHypothesis (h : RiemannHypothesis) (S : Finset ℝ)
     (c : ℝ → ℝ) :
     lagGramForm S c = ∑' q : XiZeroCopy, cosWeight q *
-      ((∑ x ∈ S, c x * Real.cos (zeroOrdinate q * Real.log x)) ^ 2 +
-        (∑ x ∈ S, c x * Real.sin (zeroOrdinate q * Real.log x)) ^ 2) := by
+      ((∑ x ∈ S, c x * Real.cos (zeroOrdinate q * Real.log x)) ^ (2 : ℕ) +
+        (∑ x ∈ S, c x * Real.sin (zeroOrdinate q * Real.log x)) ^ (2 : ℕ)) := by
   classical
   unfold lagGramForm lagGramKernel
   have hw := summable_cosWeight h

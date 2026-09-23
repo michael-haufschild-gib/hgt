@@ -9,18 +9,18 @@ sector, exact Einstein--Lambda plane-wave vertex is a double copy of kinematic b
 affine horizon momenta `p,q` and common cusp charge `h`, curvature correction vanishes and
 vertex reduces to
 
-`V(p,q;h) = (1/2) h^2 (p-q)^2`.
+`V(p,q;h) = (1/2) h^(2 : ℕ) (p-q)^(2 : ℕ)`.
 
 Diagonal plane-wave vertex is zero. Ingoing Hawking dilation mode is instead a Mellin continuum
 of affine momenta. For Mellin exponent `a`, pair convolution gives exact variance moment
 
 `4 B(a+2,a) - 4 B(a+1,a) + B(a,a) = B(a,a)/(2a+1)`.
 
-After Gamma normalization, source coefficient is `a h^2`. Birmingham--Mokhtari's exact
+After Gamma normalization, source coefficient is `a h^(2 : ℕ)`. Birmingham--Mokhtari's exact
 fundamental ingoing exponent satisfies `a = -2 alpha = 1 + rho/2`; theta cusp charge is
 `h = rho/2`. Hence seed amplitude `A` produces coefficient
 
-`A^2 (1+rho/2) (rho/2)^2`,
+`A^(2 : ℕ) (1+rho/2) (rho/2)^(2 : ℕ)`,
 
 nonzero at every Xi divisor. Angular weight is `2h=rho`; every tilted divisor therefore has
 nonzero residual against a symmetric Birmingham--Mokhtari angular operator.
@@ -53,7 +53,7 @@ theorem ads4SelfDualPlaneWaveVertex_diagonal
 theorem ads4SelfDualPlaneWaveVertex_sameTransverseCharge
     (curvature p q h : ℂ) :
     ads4SelfDualPlaneWaveVertex curvature p h q h =
-      (1 / 2 : ℂ) * h ^ 2 * (p - q) ^ 2 := by
+      (1 / 2 : ℂ) * h ^ (2 : ℕ) * (p - q) ^ (2 : ℕ) := by
   unfold ads4SelfDualPlaneWaveVertex ads4SelfDualKinematicBracket
   ring
 
@@ -200,12 +200,12 @@ theorem ads4SelfDualMellinPolynomialMoment_ne_zero
   exact ads4SelfDualMellinVarianceMoment_ne_zero ha
 
 def ads4SelfDualNormalizedMellinSourceCoefficient (a h : ℂ) : ℂ :=
-  (h ^ 2 / 2) * ads4SelfDualMellinPolynomialMoment a *
-    Complex.Gamma (2 * a + 2) / Complex.Gamma a ^ 2
+  (h ^ (2 : ℕ) / 2) * ads4SelfDualMellinPolynomialMoment a *
+    Complex.Gamma (2 * a + 2) / Complex.Gamma a ^ (2 : ℕ)
 
 theorem ads4SelfDualNormalizedMellinSourceCoefficient_eq
     {a h : ℂ} (ha : 0 < a.re) :
-    ads4SelfDualNormalizedMellinSourceCoefficient a h = a * h ^ 2 := by
+    ads4SelfDualNormalizedMellinSourceCoefficient a h = a * h ^ (2 : ℕ) := by
   have ha0 : a ≠ 0 := by
     intro hzero
     have hre := congrArg Complex.re hzero
@@ -226,13 +226,13 @@ theorem ads4SelfDualNormalizedMellinSourceCoefficient_eq
     Complex.Gamma_add_one (2 * a + 1) htwoaplus0,
     Complex.Gamma_add_one (2 * a) htwoa0]
   field_simp [hgamma, htwoaplus0]
-  rw [show Complex.Gamma a ^ 2 =
+  rw [show Complex.Gamma a ^ (2 : ℕ) =
     Complex.Gamma a * Complex.Gamma a by ring, hbeta]
   ring
 
 def d4ThetaHawkingSelfDualQuadraticCarrierCoefficient
     (amplitude z : ℂ) : ℂ :=
-  amplitude ^ 2 * ads4SelfDualNormalizedMellinSourceCoefficient
+  amplitude ^ (2 : ℕ) * ads4SelfDualNormalizedMellinSourceCoefficient
     (d4ThetaHawkingSelfDualDilationExponent z)
     (d4ThetaTeukolskyLinearCuspWeight z)
 
@@ -285,8 +285,8 @@ theorem d4ThetaHawkingSelfDualQuadraticCarrierCoefficient_xi_eq
     (amplitude : ℂ) (q : XiZeroCopy) :
     d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude
         (xiSpectralPoint q) =
-      amplitude ^ 2 *
-        (1 + (q.1 : ℂ) / 2) * ((q.1 : ℂ) / 2) ^ 2 := by
+      amplitude ^ (2 : ℕ) *
+        (1 + (q.1 : ℂ) / 2) * ((q.1 : ℂ) / 2) ^ (2 : ℕ) := by
   rw [d4ThetaHawkingSelfDualQuadraticCarrierCoefficient,
     ads4SelfDualNormalizedMellinSourceCoefficient_eq
       (d4ThetaHawkingSelfDualDilationExponent_xi_re_pos q),

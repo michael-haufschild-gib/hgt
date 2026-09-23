@@ -14,7 +14,7 @@ This file proves bounds uniform in an arbitrary finite truncation.  The weighted
 has exponent `201/200`; splitting the plain mass at the smoothing scale leaves only a logarithmic
 head and an `X^(1/200)` tail.  The affine mean-square theorem then gives a carrier bound of order
 
-`X^(201/200) + T ((1+log X)^4 + X^(1/200))`.
+`X^(201/200) + T ((1+log X)^(4 : ℕ) + X^(1/200))`.
 
 At `X = T`, this has height exponent `201/200 = 1.005`, strictly inside Route T's certified
 fourth-moment budget `101/100 = 1.01`.  Unlike a finite conductor-length estimate, uniformity in the

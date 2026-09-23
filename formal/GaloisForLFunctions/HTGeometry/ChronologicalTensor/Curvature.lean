@@ -23,7 +23,7 @@ def weightedSixResponse (A B a b c d e : ℝ) : ℝ :=
 
 def arcA (s : ℝ) : ℝ := 8 * arcPosition s
 def arcB (s : ℝ) : ℝ := (3 * arcPosition s - 1) * (1 - arcPosition s)
-def arcCapacity (s : ℝ) : ℝ := (arcPosition s)^2 * (1 - (arcPosition s)^2)
+def arcCapacity (s : ℝ) : ℝ := (arcPosition s)^(2 : ℕ) * (1 - (arcPosition s)^(2 : ℕ))
 
 theorem arcEnd_bounds : (1/3 : ℝ) ≤ arcEnd ∧ arcEnd ≤ 5/12 := by
   have h := Real.sq_sqrt (show (0 : ℝ) ≤ 2 by positivity)
@@ -31,7 +31,7 @@ theorem arcEnd_bounds : (1/3 : ℝ) ≤ arcEnd ∧ arcEnd ≤ 5/12 := by
   unfold arcEnd
   constructor <;> nlinarith
 
-theorem arcEnd_relation : 1 - arcEnd^2 - 2 * arcEnd = 0 := by
+theorem arcEnd_relation : 1 - arcEnd^(2 : ℕ) - 2 * arcEnd = 0 := by
   have h := Real.sq_sqrt (show (0 : ℝ) ≤ 2 by positivity)
   unfold arcEnd
   nlinarith
@@ -41,7 +41,7 @@ theorem arcPosition_bounds (s : ℝ) :
   ⟨le_max_left _ _, max_le arcEnd_bounds.1 (min_le_right _ _)⟩
 
 theorem arcPosition_gap_nonneg (s : ℝ) :
-    0 ≤ 1 - (arcPosition s)^2 - 2 * arcPosition s := by
+    0 ≤ 1 - (arcPosition s)^(2 : ℕ) - 2 * arcPosition s := by
   have hb := arcPosition_bounds s
   have he := arcEnd_bounds
   have hr := arcEnd_relation
@@ -55,22 +55,22 @@ theorem arc_coefficients_nonneg (s : ℝ) :
   have hc : 0 ≤ arcPosition s := by linarith
   have h1 : 0 ≤ 1 - arcPosition s := by linarith
   have h3 : 0 ≤ 3 * arcPosition s - 1 := by linarith
-  have hsq : 0 ≤ 1 - (arcPosition s)^2 := by nlinarith
+  have hsq : 0 ≤ 1 - (arcPosition s)^(2 : ℕ) := by nlinarith
   exact ⟨mul_nonneg (by positivity) hc, mul_nonneg h3 h1, mul_nonneg (sq_nonneg _) hsq⟩
 
 theorem supporting_gap_identity (q x y : ℝ) :
-    q^2 * (1-q^2) * (x+y)^3 -
-        (2*q*x*y^2 + (3*q-1)*(1-q)*(x+y)*x^2) =
-      (x-q*(x+y))^2 * ((1-q^2)*(x+y)-2*q*x) := by ring
+    q^(2 : ℕ) * (1-q^(2 : ℕ)) * (x+y)^(3 : ℕ) -
+        (2*q*x*y^(2 : ℕ) + (3*q-1)*(1-q)*(x+y)*x^(2 : ℕ)) =
+      (x-q*(x+y))^(2 : ℕ) * ((1-q^(2 : ℕ))*(x+y)-2*q*x) := by ring
 
 theorem arc_cubic_bound (s x y : ℝ) :
-    arcA s / 4 * |x| * |y|^2 + arcB s * (|x|+|y|) * |x|^2 ≤
-      arcCapacity s * (|x|+|y|)^3 := by
+    arcA s / 4 * |x| * |y|^(2 : ℕ) + arcB s * (|x|+|y|) * |x|^(2 : ℕ) ≤
+      arcCapacity s * (|x|+|y|)^(3 : ℕ) := by
   have hq := arcPosition_gap_nonneg s
-  have hc : 0 ≤ 1 - (arcPosition s)^2 := by
+  have hc : 0 ≤ 1 - (arcPosition s)^(2 : ℕ) := by
     have hb := arcPosition_bounds s
     linarith
-  have hlast : 0 ≤ (1-(arcPosition s)^2)*(|x|+|y|)-2*arcPosition s* |x| := by
+  have hlast : 0 ≤ (1-(arcPosition s)^(2 : ℕ))*(|x|+|y|)-2*arcPosition s* |x| := by
     nlinarith [mul_nonneg hq (abs_nonneg x), mul_nonneg hc (abs_nonneg y)]
   have hh := mul_nonneg (sq_nonneg (|x|-arcPosition s*(|x|+|y|))) hlast
   rw [← supporting_gap_identity] at hh
@@ -79,8 +79,8 @@ theorem arc_cubic_bound (s x y : ℝ) :
 
 theorem weightedSix_majorant (A B a b c d e : ℝ) :
     |weightedSixResponse A B a b c d e| ≤
-      |A| / 4 * (|b|+|c|+|d|) * (|a|+|e|)^2 +
-        |B| * sixCost a b c d e * (|b|+|c|+|d|)^2 := by
+      |A| / 4 * (|b|+|c|+|d|) * (|a|+|e|)^(2 : ℕ) +
+        |B| * sixCost a b c d e * (|b|+|c|+|d|)^(2 : ℕ) := by
   let t := sixCost a b c d e
   let x := |b|+|c|+|d|
   let p := |a|+|e|
@@ -96,7 +96,7 @@ theorem weightedSix_majorant (A B a b c d e : ℝ) :
       _ ≤ ((|a+b| + |c|) + |d|) + |e| :=
         add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl
       _ ≤ _ := add_le_add (add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl) le_rfl
-  have hac : |a| * |e| ≤ p^2/4 := by
+  have hac : |a| * |e| ≤ p^(2 : ℕ)/4 := by
     dsimp [p]
     nlinarith [sq_nonneg (|a|-|e|)]
   have hcx : |c| ≤ x := by dsimp [x]; linarith [abs_nonneg b, abs_nonneg d]
@@ -108,17 +108,17 @@ theorem weightedSix_majorant (A B a b c d e : ℝ) :
           simp only [separatedThree, rainbowThree, abs_mul]
           ring
         _ ≤ _ := by gcongr
-    _ ≤ |A| / 4* |c| * p^2 + |B| * t*x* |c| := by
+    _ ≤ |A| / 4* |c| * p^(2 : ℕ) + |B| * t*x* |c| := by
       have hh := mul_le_mul_of_nonneg_left hac (mul_nonneg (abs_nonneg A) (abs_nonneg c))
       nlinarith
-    _ ≤ |A| / 4*x*p^2 + |B| * t*x^2 := by
-      have hfirst := mul_le_mul_of_nonneg_right hcx (show 0 ≤ |A| / 4*p^2 by positivity)
+    _ ≤ |A| / 4*x*p^(2 : ℕ) + |B| * t*x^(2 : ℕ) := by
+      have hfirst := mul_le_mul_of_nonneg_right hcx (show 0 ≤ |A| / 4*p^(2 : ℕ) by positivity)
       have hsecond := mul_le_mul_of_nonneg_left hcx (show 0 ≤ |B| * t*x by positivity)
       nlinarith
 
 theorem arc_sharp_bound (s a b c d e : ℝ) :
     |weightedSixResponse (arcA s) (arcB s) a b c d e| ≤
-      arcCapacity s * sixCost a b c d e ^ 3 := by
+      arcCapacity s * sixCost a b c d e ^ (3 : ℕ) := by
   have h := weightedSix_majorant (arcA s) (arcB s) a b c d e
   have hc := arc_coefficients_nonneg s
   rw [abs_of_nonneg hc.1, abs_of_nonneg hc.2.1] at h
@@ -147,11 +147,11 @@ theorem arc_attained (s : ℝ) :
       ring
     rw [hr, abs_of_nonneg (arc_coefficients_nonneg s).2.2]
 
-def responseX (t : ℝ) : ℝ := t*(1-t)^2/4
-def responseY (t : ℝ) : ℝ := t^2
+def responseX (t : ℝ) : ℝ := t*(1-t)^(2 : ℕ)/4
+def responseY (t : ℝ) : ℝ := t^(2 : ℕ)
 
 theorem responseX_hasDerivAt (t : ℝ) :
-    HasDerivAt responseX ((1-4*t+3*t^2)/4) t := by
+    HasDerivAt responseX ((1-4*t+3*t^(2 : ℕ))/4) t := by
   convert! ((hasDerivAt_id (𝕜 := ℝ) t).mul (((hasDerivAt_const t (1 : ℝ)).sub (hasDerivAt_id (𝕜 := ℝ) t)).pow 2)).div_const 4 using 1
   dsimp [responseX]
   ring
@@ -163,7 +163,7 @@ theorem responseY_hasDerivAt (t : ℝ) : HasDerivAt responseY (2*t) t := by
 
 theorem responseX_deriv_hasDerivAt (t : ℝ) :
     HasDerivAt (deriv responseX) ((-4+6*t)/4) t := by
-  have heq : deriv responseX = fun u => (1-4*u+3*u^2)/4 := by
+  have heq : deriv responseX = fun u => (1-4*u+3*u^(2 : ℕ))/4 := by
     funext u
     exact (responseX_hasDerivAt u).deriv
   rw [heq]
@@ -183,7 +183,7 @@ theorem responseY_deriv_hasDerivAt (t : ℝ) :
 
 theorem response_turning_determinant (t : ℝ) :
     deriv responseX t * deriv (deriv responseY) t -
-      deriv responseY t * deriv (deriv responseX) t = (1-3*t^2)/2 := by
+      deriv responseY t * deriv (deriv responseX) t = (1-3*t^(2 : ℕ))/2 := by
   rw [(responseX_hasDerivAt t).deriv, (responseY_hasDerivAt t).deriv,
     (responseX_deriv_hasDerivAt t).deriv, (responseY_deriv_hasDerivAt t).deriv]
   ring

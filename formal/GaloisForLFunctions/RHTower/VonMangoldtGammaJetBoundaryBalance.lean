@@ -10,12 +10,12 @@ constraint itself supplies the canonical order-growing replacement.
 At boundary radius `a`, order `k`, spectral character `w`, and Cauchy rate `lambda`, use the monic
 two-boundary divisor
 
-`P_{k,a}(w) = (w^2-a^2)^k = (w-a)^k (w+a)^k`.
+`P_{k,a}(w) = (w^(2 : ℕ)-a^(2 : ℕ))^k = (w-a)^k (w+a)^k`.
 
 Normalize it at the Cauchy pole `w=-lambda` and retain the original Cauchy denominator.  The
 resulting cell is
 
-`((w^2-a^2)/(lambda^2-a^2))^k / (w+lambda)`.
+`((w^(2 : ℕ)-a^(2 : ℕ))/(lambda^(2 : ℕ)-a^(2 : ℕ)))^k / (w+lambda)`.
 
 Thus the cell has multiplicity `k` at both boundary characters, its regularized pole coefficient
 is exactly one, order one is the affine balance, and every finite packet is a literal prefix of a
@@ -34,14 +34,14 @@ open Polynomial
 
 /-- Monic divisor encoding order-`k` vanishing at both boundary characters `+a` and `-a`. -/
 def twoBoundaryCauchyJetPolynomial (k : ℕ) (a : ℂ) : Polynomial ℂ :=
-  (X ^ 2 - C (a ^ 2)) ^ k
+  (X ^ (2 : ℕ) - C (a ^ (2 : ℕ))) ^ k
 
 /-- Exact factorization exhibiting multiplicity `k` at both boundary characters. -/
 theorem twoBoundaryCauchyJetPolynomial_factor (k : ℕ) (a : ℂ) :
     twoBoundaryCauchyJetPolynomial k a =
       (X - C a) ^ k * (X + C a) ^ k := by
   rw [twoBoundaryCauchyJetPolynomial]
-  have hquad : (X ^ 2 - C (a ^ 2) : Polynomial ℂ) =
+  have hquad : (X ^ (2 : ℕ) - C (a ^ (2 : ℕ)) : Polynomial ℂ) =
       (X - C a) * (X + C a) := by
     rw [map_pow]
     ring
@@ -49,7 +49,7 @@ theorem twoBoundaryCauchyJetPolynomial_factor (k : ℕ) (a : ℂ) :
 
 /-- Evaluation of the two-boundary divisor. -/
 theorem twoBoundaryCauchyJetPolynomial_eval (k : ℕ) (a w : ℂ) :
-    (twoBoundaryCauchyJetPolynomial k a).eval w = (w ^ 2 - a ^ 2) ^ k := by
+    (twoBoundaryCauchyJetPolynomial k a).eval w = (w ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ k := by
   simp [twoBoundaryCauchyJetPolynomial]
 
 theorem twoBoundaryCauchyJetPolynomial_monic (k : ℕ) (a : ℂ) :
@@ -100,7 +100,7 @@ theorem twoBoundaryCauchyJetPolynomial_unique
 /-- Boundary-divisor normalizer.  Its value at the Cauchy pole is one whenever the two boundary
 poles are absent. -/
 def twoBoundaryCauchyJetNormalizer (k : ℕ) (a w lambda : ℂ) : ℂ :=
-  ((w ^ 2 - a ^ 2) / (lambda ^ 2 - a ^ 2)) ^ k
+  ((w ^ (2 : ℕ) - a ^ (2 : ℕ)) / (lambda ^ (2 : ℕ) - a ^ (2 : ℕ))) ^ k
 
 /-- The normalizer is precisely evaluation of the boundary divisor divided by its evaluation at
 the Cauchy pole. -/
@@ -117,7 +117,7 @@ theorem twoBoundaryCauchyJetNormalizer_eq_polynomial_ratio
 /-- Source-pole normalization: after the Cauchy pole is regularized, its coefficient remains one.
 This rules out inserting an arbitrary scalar damping into the boundary cancellation. -/
 theorem twoBoundaryCauchyJetNormalizer_at_pole
-    (k : ℕ) {a lambda : ℂ} (hboundary : lambda ^ 2 - a ^ 2 ≠ 0) :
+    (k : ℕ) {a lambda : ℂ} (hboundary : lambda ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     twoBoundaryCauchyJetNormalizer k a (-lambda) lambda = 1 := by
   simp [twoBoundaryCauchyJetNormalizer, hboundary]
 
@@ -134,7 +134,7 @@ def twoBoundaryCauchyJetResidual (k : ℕ) (a w lambda : ℂ) : ℂ :=
 theorem twoBoundaryCauchyJetResidual_succ (k : ℕ) (a w lambda : ℂ) :
     twoBoundaryCauchyJetResidual (k + 1) a w lambda =
       twoBoundaryCauchyJetResidual k a w lambda *
-        ((w ^ 2 - a ^ 2) / (lambda ^ 2 - a ^ 2)) := by
+        ((w ^ (2 : ℕ) - a ^ (2 : ℕ)) / (lambda ^ (2 : ℕ) - a ^ (2 : ℕ))) := by
   simp only [twoBoundaryCauchyJetResidual, twoBoundaryCauchyJetNormalizer, pow_succ]
   ring
 
@@ -159,7 +159,7 @@ theorem twoBoundaryCauchyJetResidual_one_eq_affine
       twoBoundaryCauchyAffineResidual a w lambda := by
   rw [twoBoundaryCauchyAffineResidual_eq ha hw hp hm]
   simp [twoBoundaryCauchyJetResidual, twoBoundaryCauchyJetNormalizer]
-  have hfactor : lambda ^ 2 - a ^ 2 = (a + lambda) * (-a + lambda) := by ring
+  have hfactor : lambda ^ (2 : ℕ) - a ^ (2 : ℕ) = (a + lambda) * (-a + lambda) := by ring
   rw [hfactor]
   field_simp
 

@@ -27,7 +27,7 @@ def verticalDigammaIm (sigma t : ℝ) : ℝ :=
 theorem tendsto_verticalDigammaIm_partialSums {sigma t : ℝ} (ht : 0 < t) :
     Tendsto
       (fun N : ℕ =>
-        ∑ n ∈ Finset.range N, t / ((sigma + n) ^ 2 + t ^ 2))
+        ∑ n ∈ Finset.range N, t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
       atTop (nhds (verticalDigammaIm sigma t)) := by
   let z : ℂ := (sigma : ℂ) + (t : ℂ) * Complex.I
   have hz : ∀ m : ℕ, z ≠ -(m : ℂ) := by
@@ -39,11 +39,11 @@ theorem tendsto_verticalDigammaIm_partialSums {sigma t : ℝ} (ht : 0 < t) :
   have hsum : ∀ N : ℕ,
       (Complex.digamma z).im -
           (Complex.digamma (z + (N : ℂ))).im =
-        ∑ n ∈ Finset.range N, t / ((sigma + n) ^ 2 + t ^ 2) := by
+        ∑ n ∈ Finset.range N, t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     intro N
     rw [RHTower.digamma_apply_add_nat z hz N, Complex.add_im, Complex.im_sum]
     rw [show ∑ n ∈ Finset.range N, ((z + (n : ℂ))⁻¹).im =
-        ∑ n ∈ Finset.range N, -(t / ((sigma + n) ^ 2 + t ^ 2)) from
+        ∑ n ∈ Finset.range N, -(t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) from
       Finset.sum_congr rfl fun n _ => by
         dsimp [z]
         exact RHTower.im_inv_shift sigma t n]
@@ -67,44 +67,44 @@ theorem verticalDigammaIm_strictAnti {sigma tau t : ℝ}
   have hlim :=
     (tendsto_verticalDigammaIm_partialSums (sigma := tau) ht).sub
       (tendsto_verticalDigammaIm_partialSums (sigma := sigma) ht)
-  let C : ℝ := t / (tau ^ 2 + t ^ 2) - t / (sigma ^ 2 + t ^ 2)
+  let C : ℝ := t / (tau ^ (2 : ℕ) + t ^ (2 : ℕ)) - t / (sigma ^ (2 : ℕ) + t ^ (2 : ℕ))
   have hCneg : C < 0 := by
     dsimp [C]
-    have hsq : sigma ^ 2 < tau ^ 2 := by nlinarith
-    have hds : 0 < sigma ^ 2 + t ^ 2 := by positivity
-    have hdt : 0 < tau ^ 2 + t ^ 2 := by positivity
-    have hfrac : t / (tau ^ 2 + t ^ 2) < t / (sigma ^ 2 + t ^ 2) := by
+    have hsq : sigma ^ (2 : ℕ) < tau ^ (2 : ℕ) := by nlinarith
+    have hds : 0 < sigma ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
+    have hdt : 0 < tau ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
+    have hfrac : t / (tau ^ (2 : ℕ) + t ^ (2 : ℕ)) < t / (sigma ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
       rw [div_lt_div_iff₀ hdt hds]
       nlinarith
     linarith
   have hbound : ∀ᶠ N : ℕ in atTop,
-      (∑ n ∈ Finset.range N, t / ((tau + n) ^ 2 + t ^ 2)) -
-          (∑ n ∈ Finset.range N, t / ((sigma + n) ^ 2 + t ^ 2)) ≤ C := by
+      (∑ n ∈ Finset.range N, t / ((tau + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) -
+          (∑ n ∈ Finset.range N, t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) ≤ C := by
     filter_upwards [eventually_ge_atTop 1] with N hN
     obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
     rw [Finset.sum_range_succ', Finset.sum_range_succ']
     have htail :
         (∑ n ∈ Finset.range M,
-            t / ((tau + (n + 1)) ^ 2 + t ^ 2)) -
+            t / ((tau + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ))) -
           (∑ n ∈ Finset.range M,
-            t / ((sigma + (n + 1)) ^ 2 + t ^ 2)) ≤ 0 := by
+            t / ((sigma + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ))) ≤ 0 := by
       rw [← Finset.sum_sub_distrib]
       apply Finset.sum_nonpos
       intro n _
       have hspos : 0 < sigma + (n + 1) := by positivity
       have hlt : sigma + (n + 1) < tau + (n + 1) := by linarith
-      have hsqn : (sigma + (n + 1)) ^ 2 < (tau + (n + 1)) ^ 2 := by nlinarith
-      have hds : 0 < (sigma + (n + 1)) ^ 2 + t ^ 2 := by positivity
-      have hdt : 0 < (tau + (n + 1)) ^ 2 + t ^ 2 := by positivity
+      have hsqn : (sigma + (n + 1)) ^ (2 : ℕ) < (tau + (n + 1)) ^ (2 : ℕ) := by nlinarith
+      have hds : 0 < (sigma + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
+      have hdt : 0 < (tau + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
       have hfrac :
-          t / ((tau + (n + 1)) ^ 2 + t ^ 2) ≤
-            t / ((sigma + (n + 1)) ^ 2 + t ^ 2) := by
+          t / ((tau + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤
+            t / ((sigma + (n + 1)) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
         rw [div_le_div_iff₀ hdt hds]
         nlinarith
       linarith
     have hzero :
-        t / ((tau + (0 : ℕ)) ^ 2 + t ^ 2) -
-            t / ((sigma + (0 : ℕ)) ^ 2 + t ^ 2) = C := by
+        t / ((tau + (0 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) -
+            t / ((sigma + (0 : ℕ)) ^ (2 : ℕ) + t ^ (2 : ℕ)) = C := by
       simp [C]
     push_cast at htail hzero ⊢
     linarith

@@ -69,7 +69,7 @@ theorem blaschke_lift_norm_le_dist_div {g : ℂ → ℂ} {c z : ℂ} {R : ℝ}
 
 /-- The boundary-one Poisson kernel on the unit disk.  Under `cayleyInv`, this is exactly the
 upper-half-plane height. -/
-def diskPoissonOne (z : ℂ) : ℝ := (1 - ‖z‖ ^ 2) / ‖1 - z‖ ^ 2
+def diskPoissonOne (z : ℂ) : ℝ := (1 - ‖z‖ ^ (2 : ℕ)) / ‖1 - z‖ ^ (2 : ℕ)
 
 /-- The inverse Cayley transform has height equal to the boundary-one Poisson kernel. -/
 theorem cayleyInv_im_eq_diskPoissonOne {θ : ℂ} (hθ : θ ≠ 1) :
@@ -82,7 +82,7 @@ theorem cayleyInv_im_eq_diskPoissonOne {θ : ℂ} (hθ : θ ≠ 1) :
   simp only [Complex.add_re, Complex.one_re, Complex.sub_re, Complex.add_im, Complex.one_im,
     Complex.sub_im]
   rw [Complex.normSq_eq_norm_sq]
-  have hnormsq : ‖θ‖ ^ 2 = θ.re ^ 2 + θ.im ^ 2 := by
+  have hnormsq : ‖θ‖ ^ (2 : ℕ) = θ.re ^ (2 : ℕ) + θ.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
   rw [hnormsq]
@@ -99,18 +99,18 @@ theorem normsq_one_add_conj_mul_sub_normsq_add (a η : ℂ) :
 
 /-- Division form of `1 - ‖x/d‖²`. -/
 theorem one_sub_norm_sq_div {x d : ℂ} (hd : d ≠ 0) :
-    1 - ‖x / d‖ ^ 2 = (‖d‖ ^ 2 - ‖x‖ ^ 2) / ‖d‖ ^ 2 := by
-  have hd2 : ‖d‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hd)
+    1 - ‖x / d‖ ^ (2 : ℕ) = (‖d‖ ^ (2 : ℕ) - ‖x‖ ^ (2 : ℕ)) / ‖d‖ ^ (2 : ℕ) := by
+  have hd2 : ‖d‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hd)
   rw [norm_div]
   calc
-    1 - (‖x‖ / ‖d‖) ^ 2 = 1 - ‖x‖ ^ 2 / ‖d‖ ^ 2 := by ring
-    _ = (‖d‖ ^ 2 - ‖x‖ ^ 2) / ‖d‖ ^ 2 := by field_simp [hd2]
+    1 - (‖x‖ / ‖d‖) ^ (2 : ℕ) = 1 - ‖x‖ ^ (2 : ℕ) / ‖d‖ ^ (2 : ℕ) := by ring
+    _ = (‖d‖ ^ (2 : ℕ) - ‖x‖ ^ (2 : ℕ)) / ‖d‖ ^ (2 : ℕ) := by field_simp [hd2]
 
 /-- Exact numerator transform for `w = (a + η)/(1 + āη)`. -/
 theorem one_sub_norm_sq_mobius {a η : ℂ}
     (hden : 1 + (starRingEnd ℂ) a * η ≠ 0) :
-    1 - ‖(a + η) / (1 + (starRingEnd ℂ) a * η)‖ ^ 2 =
-      ((1 - ‖a‖ ^ 2) * (1 - ‖η‖ ^ 2)) / ‖1 + (starRingEnd ℂ) a * η‖ ^ 2 := by
+    1 - ‖(a + η) / (1 + (starRingEnd ℂ) a * η)‖ ^ (2 : ℕ) =
+      ((1 - ‖a‖ ^ (2 : ℕ)) * (1 - ‖η‖ ^ (2 : ℕ))) / ‖1 + (starRingEnd ℂ) a * η‖ ^ (2 : ℕ) := by
   let den : ℂ := 1 + (starRingEnd ℂ) a * η
   have hdiv := one_sub_norm_sq_div (x := a + η) (d := den) hden
   have hkey := normsq_one_add_conj_mul_sub_normsq_add a η
@@ -176,9 +176,9 @@ theorem diskPoissonOne_pos_of_norm_lt_one {z : ℂ} (hz : ‖z‖ < 1) :
     have hz1 : z = 1 := (sub_eq_zero.mp h).symm
     rw [hz1, norm_one] at hz
     linarith
-  have hnum : 0 < 1 - ‖z‖ ^ 2 := by
+  have hnum : 0 < 1 - ‖z‖ ^ (2 : ℕ) := by
     nlinarith [hz, norm_nonneg z]
-  have hden : 0 < ‖1 - z‖ ^ 2 := pow_pos (norm_pos_iff.mpr hne) 2
+  have hden : 0 < ‖1 - z‖ ^ (2 : ℕ) := pow_pos (norm_pos_iff.mpr hne) 2
   unfold diskPoissonOne
   exact div_pos hnum hden
 
@@ -192,8 +192,8 @@ theorem diskPoissonOne_mobius_lower_norm {a η : ℂ}
   let w : ℂ := (a + η) / den
   have hden : den ≠ 0 := one_add_conj_mul_ne_zero_of_norm_lt_one ha hη
   have hden_pos : 0 < ‖den‖ := norm_pos_iff.mpr hden
-  have hden_sq_pos : 0 < ‖den‖ ^ 2 := pow_pos hden_pos 2
-  have hden_sq_ne : ‖den‖ ^ 2 ≠ 0 := ne_of_gt hden_sq_pos
+  have hden_sq_pos : 0 < ‖den‖ ^ (2 : ℕ) := pow_pos hden_pos 2
+  have hden_sq_ne : ‖den‖ ^ (2 : ℕ) ≠ 0 := ne_of_gt hden_sq_pos
   have hη_factor_pos : 0 < 1 + ‖η‖ := by positivity
   have hη_factor_ne : 1 + ‖η‖ ≠ 0 := ne_of_gt hη_factor_pos
   have hB_pos : 0 < ‖1 - a‖ := by
@@ -202,40 +202,40 @@ theorem diskPoissonOne_mobius_lower_norm {a η : ℂ}
     have ha1 : a = 1 := (sub_eq_zero.mp h).symm
     rw [ha1, norm_one] at ha
     linarith
-  have hB_sq_pos : 0 < ‖1 - a‖ ^ 2 := pow_pos hB_pos 2
-  have hB_sq_ne : ‖1 - a‖ ^ 2 ≠ 0 := ne_of_gt hB_sq_pos
-  have hnum_eq : 1 - ‖w‖ ^ 2 =
-      ((1 - ‖a‖ ^ 2) * (1 - ‖η‖ ^ 2)) / ‖den‖ ^ 2 := by
+  have hB_sq_pos : 0 < ‖1 - a‖ ^ (2 : ℕ) := pow_pos hB_pos 2
+  have hB_sq_ne : ‖1 - a‖ ^ (2 : ℕ) ≠ 0 := ne_of_gt hB_sq_pos
+  have hnum_eq : 1 - ‖w‖ ^ (2 : ℕ) =
+      ((1 - ‖a‖ ^ (2 : ℕ)) * (1 - ‖η‖ ^ (2 : ℕ))) / ‖den‖ ^ (2 : ℕ) := by
     simpa [w, den] using one_sub_norm_sq_mobius (a := a) (η := η)
       (by simpa [den] using hden)
-  have hnum_pos : 0 < 1 - ‖w‖ ^ 2 := by
+  have hnum_pos : 0 < 1 - ‖w‖ ^ (2 : ℕ) := by
     rw [hnum_eq]
     apply div_pos
     · apply mul_pos <;> nlinarith [ha, hη, norm_nonneg a, norm_nonneg η]
     · exact hden_sq_pos
   have hw_norm_lt : ‖w‖ < 1 := by
     nlinarith [hnum_pos, norm_nonneg w]
-  have hdenom_pos : 0 < ‖1 - w‖ ^ 2 := by
+  have hdenom_pos : 0 < ‖1 - w‖ ^ (2 : ℕ) := by
     have hne : 1 - w ≠ 0 := by
       intro h
       have hw1 : w = 1 := (sub_eq_zero.mp h).symm
       rw [hw1, norm_one] at hw_norm_lt
       linarith
     exact pow_pos (norm_pos_iff.mpr hne) 2
-  have hdenom_le : ‖1 - w‖ ^ 2 ≤
-      (‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ 2 := by
+  have hdenom_le : ‖1 - w‖ ^ (2 : ℕ) ≤
+      (‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ (2 : ℕ) := by
     have hle : ‖1 - w‖ ≤ ‖1 - a‖ * (1 + ‖η‖) / ‖den‖ := by
       simpa [w, den] using one_sub_mobius_norm_le (a := a) (η := η)
         (by simpa [den] using hden)
     have hbound_nonneg : 0 ≤ ‖1 - a‖ * (1 + ‖η‖) / ‖den‖ := by positivity
     nlinarith [hle, norm_nonneg (1 - w), hbound_nonneg]
   have hleft_le :
-      (1 - ‖w‖ ^ 2) / ((‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ 2)
+      (1 - ‖w‖ ^ (2 : ℕ)) / ((‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ (2 : ℕ))
         ≤ diskPoissonOne w := by
     unfold diskPoissonOne
     exact div_le_div_of_nonneg_left (le_of_lt hnum_pos) hdenom_pos hdenom_le
   have hfactor_eq :
-      (1 - ‖w‖ ^ 2) / ((‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ 2)
+      (1 - ‖w‖ ^ (2 : ℕ)) / ((‖1 - a‖ * (1 + ‖η‖) / ‖den‖) ^ (2 : ℕ))
         = ((1 - ‖η‖) / (1 + ‖η‖)) * diskPoissonOne a := by
     rw [hnum_eq]
     unfold diskPoissonOne

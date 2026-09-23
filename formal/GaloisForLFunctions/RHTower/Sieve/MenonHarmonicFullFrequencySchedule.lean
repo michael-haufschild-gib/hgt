@@ -120,7 +120,7 @@ theorem eventually_menonHarmonicFullFrequency_height_bounds :
     linarith
   exact ⟨htau1, henv, hlogArg0, hlogArg⟩
 
-/-- The full-frequency Route-T height cost is eventually at most `(log x)^2`. -/
+/-- The full-frequency Route-T height cost is eventually at most `(log x)^(2 : ℕ)`. -/
 theorem eventually_menonHarmonicFullFrequency_heightCost_le_logSq {A b A₃ : ℝ}
     (hb : 0 < b) (hA₃ : 0 < A₃) :
     ∀ᶠ x : ℝ in atTop,

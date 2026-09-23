@@ -109,18 +109,18 @@ theorem rawScatteringFifthCoefficient_upper_eq_neg_lower (q : SchwartzMap ℝ �
   have hL := ((rawReflection_sub_cubic_quotient_tendsto q).comp he).neg
   have hU := (rawReverseReflection_sub_cubic_quotient_tendsto q).comp he
   change Tendsto (fun κ : ℝ => -((rawScatteringMatrix q (Real.exp κ) 1 0 -
-    (Real.exp κ : ℂ)^3*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^5)) atBot
+    (Real.exp κ : ℂ)^(3 : ℕ)*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^(5 : ℕ))) atBot
       (𝓝 (-rawScatteringFifthCoefficient q 1 0)) at hL
   change Tendsto (fun κ : ℝ => (rawScatteringMatrix q (Real.exp κ) 0 1 -
-    (Real.exp κ : ℂ)^3*(-2*compatibilityMoment q))/(Real.exp κ : ℂ)^5) atBot
+    (Real.exp κ : ℂ)^(3 : ℕ)*(-2*compatibilityMoment q))/(Real.exp κ : ℂ)^(5 : ℕ)) atBot
       (𝓝 (rawScatteringFifthCoefficient q 0 1)) at hU
   apply tendsto_nhds_unique hU
   apply hL.congr'
   apply Eventually.of_forall
   intro κ
   simp only [rawScatteringMatrix_exp_eq]
-  change -((reflectionAmplitude q κ - (Real.exp κ : ℂ)^3*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^5) =
-    (reverseReflectionAmplitude q κ - (Real.exp κ : ℂ)^3*(-2*compatibilityMoment q))/(Real.exp κ : ℂ)^5
+  change -((reflectionAmplitude q κ - (Real.exp κ : ℂ)^(3 : ℕ)*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^(5 : ℕ)) =
+    (reverseReflectionAmplitude q κ - (Real.exp κ : ℂ)^(3 : ℕ)*(-2*compatibilityMoment q))/(Real.exp κ : ℂ)^(5 : ℕ)
   rw [reverseReflectionAmplitude_eq_neg]
   ring
 

@@ -185,7 +185,7 @@ theorem upperEndTranslate_dirCoordMero_gen (a : ℂ) :
     rw [hconst, ← map_add]
     refine Germ.coe_eq.mpr (Filter.Eventually.of_forall fun z => ?_)
     show -Complex.I * (z + Complex.I * a) = -Complex.I * z + a
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     linear_combination (-a) * hI
   rw [dirCoordMero, upperEndTranslationMeroEquiv_algebraMap, hA, map_add]
   rfl

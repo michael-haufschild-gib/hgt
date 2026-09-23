@@ -134,7 +134,7 @@ theorem deSitterTypeIStaticBogoliubovPhase_mul_intensity
     (branchMass : ℂ) (ell : ℕ) :
     deSitterTypeIStaticBogoliubovPhaseMero branchMass ell *
         deSitterTypeIStaticBogoliubovIntensityMero branchMass ell =
-      (deSitterTypeIStaticBogoliubovGammaCarrierMero branchMass ell) ^ 2 := by
+      (deSitterTypeIStaticBogoliubovGammaCarrierMero branchMass ell) ^ (2 : ℕ) := by
   exact gammaOppositeShiftPhase_mul_intensity _ _
 
 /-- No DA multiplicative calibration turns the reflected-frequency carrier into the original

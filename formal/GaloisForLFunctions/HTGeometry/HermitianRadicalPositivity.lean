@@ -36,7 +36,7 @@ orthogonal to the whole space.  The proof avoids limits -- at `t = ±|S (u,v)|/(
 expansion is already contradictory. -/
 theorem symmBilin_eq_zero_of_self_eq_zero {X : Type*} {S : X → X → ℝ} {comb : ℝ → X → X → X}
     (hexp : ∀ (t : ℝ) (u v : X), S (comb t u v) (comb t u v)
-      = S u u + 2 * t * S u v + t ^ 2 * S v v)
+      = S u u + 2 * t * S u v + t ^ (2 : ℕ) * S v v)
     (hpsd : ∀ x : X, 0 ≤ S x x) {u : X} (hu : S u u = 0) (v : X) : S u v = 0 := by
   by_contra hne
   have hvv : 0 ≤ S v v := hpsd v
@@ -47,7 +47,7 @@ theorem symmBilin_eq_zero_of_self_eq_zero {X : Type*} {S : X → X → ℝ} {com
   have hfrac : s * S v v ≤ |S u v| := by
     rw [hs, div_mul_eq_mul_div, div_le_iff₀ hden]
     nlinarith [habs.le, hvv]
-  have hkey : s ^ 2 * S v v ≤ s * |S u v| := by
+  have hkey : s ^ (2 : ℕ) * S v v ≤ s * |S u v| := by
     have hmul := mul_le_mul_of_nonneg_left hfrac hspos.le
     nlinarith [hmul]
   rcases lt_or_gt_of_ne hne with hneg | hpos
@@ -94,7 +94,7 @@ theorem altSym_smul_right (r : ℝ) (u v : V) : altSym E u ((r : ℂ) • v) = r
 /-- The quadratic expansion of the symmetric form along a real direction. -/
 theorem altSym_expand (t : ℝ) (u v : V) :
     altSym E (u + (t : ℂ) • v) (u + (t : ℂ) • v)
-      = altSym E u u + 2 * t * altSym E u v + t ^ 2 * altSym E v v := by
+      = altSym E u u + 2 * t * altSym E u v + t ^ (2 : ℕ) * altSym E v v := by
   have h1 : altSym E (u + (t : ℂ) • v) (u + (t : ℂ) • v)
       = altSym E u (u + (t : ℂ) • v) + altSym E ((t : ℂ) • v) (u + (t : ℂ) • v) :=
     hE.altSym_add_left _ _ _

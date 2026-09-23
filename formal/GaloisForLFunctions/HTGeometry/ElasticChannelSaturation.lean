@@ -80,13 +80,13 @@ theorem norm_geometricCDDStep_ofReal_eq_one (q C theta : ℝ) (k : ℕ)
     rw [geometricCDDCrossingCoordinate_ofReal, hs]
     push_cast
     ring
-  have hnum : ‖1 - (-Complex.I * (s : ℂ))‖ = Real.sqrt (1 + s ^ 2) := by
+  have hnum : ‖1 - (-Complex.I * (s : ℂ))‖ = Real.sqrt (1 + s ^ (2 : ℕ)) := by
     have hre : (1 - (-Complex.I * (s : ℂ))).re = 1 := by simp
     have him : (1 - (-Complex.I * (s : ℂ))).im = s := by simp
     rw [Complex.norm_def, Complex.normSq_apply, hre, him]
     congr 1
     ring
-  have hden' : ‖1 + (-Complex.I * (s : ℂ))‖ = Real.sqrt (1 + s ^ 2) := by
+  have hden' : ‖1 + (-Complex.I * (s : ℂ))‖ = Real.sqrt (1 + s ^ (2 : ℕ)) := by
     have hre : (1 + (-Complex.I * (s : ℂ))).re = 1 := by simp
     have him : (1 + (-Complex.I * (s : ℂ))).im = -s := by simp
     rw [Complex.norm_def, Complex.normSq_apply, hre, him]
@@ -95,7 +95,7 @@ theorem norm_geometricCDDStep_ofReal_eq_one (q C theta : ℝ) (k : ℕ)
   have hdenne : (1 : ℂ) + (-Complex.I * (s : ℂ)) ≠ 0 := by
     rw [← hcoord]; exact hden
   rw [geometricCDDStep, hcoord, norm_pow, norm_div, hnum, hden']
-  have hpos : 0 < Real.sqrt (1 + s ^ 2) := by
+  have hpos : 0 < Real.sqrt (1 + s ^ (2 : ℕ)) := by
     apply Real.sqrt_pos.mpr
     positivity
   rw [div_self (ne_of_gt hpos), one_pow]

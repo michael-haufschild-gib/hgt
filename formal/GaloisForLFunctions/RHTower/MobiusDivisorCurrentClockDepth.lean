@@ -68,12 +68,12 @@ theorem exists_mobiusDivisorAdvancingClockDebt_log_depth
     ∃ r : ℕ, r.Prime ∧ B<r ∧ r∉P ∧ ∃ δ η : ℝ, 0<δ ∧ 0<η ∧
       ∀ᶠ M : ℕ in atTop, ∀ L : ℕ, M≤L →
         δ*(1+Real.log L) ≤
-          mobiusDivisorFiniteClockEnergy 1 L (insert r P)/(L:ℝ)^2-
-            mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 ∧
+          mobiusDivisorFiniteClockEnergy 1 L (insert r P)/(L:ℝ)^(2 : ℕ)-
+            mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) ∧
         ∀ (S : Finset ℕ) (K : ℕ),
           (∀q∈S,q.Prime ∧ L/q≤K) →
-          mobiusDivisorFiniteClockEnergy 1 L ((insert r P)∪S)/(L:ℝ)^2 ≤
-            mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 →
+          mobiusDivisorFiniteClockEnergy 1 L ((insert r P)∪S)/(L:ℝ)^(2 : ℕ) ≤
+            mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) →
           η*Real.log L ≤ (K:ℝ) := by
   obtain ⟨r,hr,hrB,hrP,hgap⟩ := current_clock_debt P hP hprime heven B
   let Q := insert r P
@@ -83,7 +83,7 @@ theorem exists_mobiusDivisorAdvancingClockDebt_log_depth
   have ha : 0≤a := tsum_nonneg (mobiusDivisorFixedCoreBlockMass_nonneg P hprime)
   have hg : 0<b-a := sub_pos.mpr hgap
   let δ := (b-a)/4
-  let C : ℝ := ((3/5:ℝ)*2^(Q.card-1))^2
+  let C : ℝ := ((3/5:ℝ)*2^(Q.card-1))^(2 : ℕ)
   have hδ : 0<δ := by dsimp [δ]; positivity
   have hC : 0<C := by dsimp [C]; positivity
   let η := δ/(2*C)
@@ -106,10 +106,10 @@ theorem exists_mobiusDivisorAdvancingClockDebt_log_depth
     exact_mod_cast (show 1≤L by have := hL.2.2.2; omega))
   have huM : 0<1+Real.log (M:ℝ) := by linarith
   have huL : 0<1+Real.log (L:ℝ) := by linarith
-  have hUP : mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 < (a+δ)*(1+Real.log M) := by
+  have hUP : mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) < (a+δ)*(1+Real.log M) := by
     apply (div_lt_iff₀ huM).mp
     simpa only [div_div] using hM.1
-  have hLO : (b-δ)*(1+Real.log L) < mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^2 := by
+  have hLO : (b-δ)*(1+Real.log L) < mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^(2 : ℕ) := by
     apply (lt_div_iff₀ huL).mp
     simpa only [div_div] using hL.2.1
   have hmono : (a+δ)*(1+Real.log M) ≤ (a+δ)*(1+Real.log L) :=
@@ -118,8 +118,8 @@ theorem exists_mobiusDivisorAdvancingClockDebt_log_depth
       (by linarith)
   have hcoeff : a+δ+δ ≤ b-δ := by dsimp [δ]; linarith only [hg]
   have hprod := mul_le_mul_of_nonneg_right hcoeff huL.le
-  have hd : δ*(1+Real.log L) ≤ mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^2-
-      mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 := by
+  have hd : δ*(1+Real.log L) ≤ mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^(2 : ℕ)-
+      mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) := by
     nlinarith only [hUP,hLO,hmono,hprod]
   refine ⟨hd,?_⟩
   intro S K hS hpaid
@@ -127,7 +127,7 @@ theorem exists_mobiusDivisorAdvancingClockDebt_log_depth
     (by have := hL.2.2.2; omega) S hS
   change _ ≤ C*L*(1+Real.log L)*(K:ℝ)*(1+Nat.primeCounting L) at hcap
   have hx : δ*(1+Real.log L) ≤
-      (mobiusDivisorFiniteClockEnergy 1 L Q-mobiusDivisorFiniteClockEnergy 1 L (Q∪S))/(L:ℝ)^2 := by
+      (mobiusDivisorFiniteClockEnergy 1 L Q-mobiusDivisorFiniteClockEnergy 1 L (Q∪S))/(L:ℝ)^(2 : ℕ) := by
     rw [sub_div]
     linarith only [hd,hpaid]
   have hfinite := (le_div_iff₀ (sq_pos_of_pos hLp)).mp hx
@@ -154,8 +154,8 @@ theorem exists_mobiusDivisorAdvancingClockDebt_requires_deep_prime
     ∃ r : ℕ, r.Prime ∧ B<r ∧ r∉P ∧ ∃ η : ℝ, 0<η ∧
       ∀ᶠ M : ℕ in atTop, ∀ L : ℕ, M≤L → ∀ S : Finset ℕ,
         (∀q∈S,q.Prime) →
-        mobiusDivisorFiniteClockEnergy 1 L ((insert r P)∪S)/(L:ℝ)^2 ≤
-          mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 →
+        mobiusDivisorFiniteClockEnergy 1 L ((insert r P)∪S)/(L:ℝ)^(2 : ℕ) ≤
+          mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) →
         ∃ q∈S, q∉insert r P ∧ η*Real.log L ≤ (L/q:ℕ) := by
   obtain ⟨r,hr,hrB,hrP,δ,η,hδ,hη,hall⟩ :=
     exists_mobiusDivisorAdvancingClockDebt_log_depth P hP hprime heven B

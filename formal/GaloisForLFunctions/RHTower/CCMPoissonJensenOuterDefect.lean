@@ -42,7 +42,7 @@ namespace GaloisForLFunctions.RHTower
 def halfPlaneBlaschke (b z : ℂ) : ℂ := (z - b) / (z + (starRingEnd ℂ) b)
 
 theorem normSq_ofReal_sub (x a γ : ℝ) :
-    Complex.normSq ((x : ℂ) - ((a : ℂ) + Complex.I * (γ : ℂ))) = (x - a) ^ 2 + γ ^ 2 := by
+    Complex.normSq ((x : ℂ) - ((a : ℂ) + Complex.I * (γ : ℂ))) = (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
     Complex.ofReal_im]
@@ -50,7 +50,7 @@ theorem normSq_ofReal_sub (x a γ : ℝ) :
 
 theorem normSq_ofReal_add_conj (x a γ : ℝ) :
     Complex.normSq ((x : ℂ) + (starRingEnd ℂ) ((a : ℂ) + Complex.I * (γ : ℂ)))
-      = (x + a) ^ 2 + γ ^ 2 := by
+      = (x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by
   simp only [map_add, map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.normSq_apply,
     Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
     Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im]
@@ -58,22 +58,22 @@ theorem normSq_ofReal_add_conj (x a γ : ℝ) :
 
 /-- The squared modulus of the Blaschke factor at a positive real point. -/
 theorem norm_sq_halfPlaneBlaschke (x a γ : ℝ) :
-    ‖halfPlaneBlaschke ((a : ℂ) + Complex.I * (γ : ℂ)) (x : ℂ)‖ ^ 2
-      = ((x - a) ^ 2 + γ ^ 2) / ((x + a) ^ 2 + γ ^ 2) := by
+    ‖halfPlaneBlaschke ((a : ℂ) + Complex.I * (γ : ℂ)) (x : ℂ)‖ ^ (2 : ℕ)
+      = ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) := by
   rw [halfPlaneBlaschke, norm_div, div_pow, ← Complex.normSq_eq_norm_sq,
     ← Complex.normSq_eq_norm_sq, normSq_ofReal_sub, normSq_ofReal_add_conj]
 
 /-- The outer-entropy defect contributed by a single right half-plane zero, `(11)`. -/
 def outerDefectTerm (x a γ : ℝ) : ℝ :=
-  (1 / 2) * Real.log (((x + a) ^ 2 + γ ^ 2) / ((x - a) ^ 2 + γ ^ 2))
+  (1 / 2) * Real.log (((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)))
 
 /-- **Equations (10)–(11).**  The negative logarithmic modulus of the elementary Blaschke factor is
 exactly the defect term. -/
 theorem neg_log_norm_halfPlaneBlaschke {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a) :
     -Real.log ‖halfPlaneBlaschke ((a : ℂ) + Complex.I * (γ : ℂ)) (x : ℂ)‖
       = outerDefectTerm x a γ := by
-  have hB : ((x + a) ^ 2 + γ ^ 2) ≠ 0 := by positivity
-  by_cases hA : ((x - a) ^ 2 + γ ^ 2) = 0
+  have hB : ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) ≠ 0 := by positivity
+  by_cases hA : ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) = 0
   · have hzero : ‖halfPlaneBlaschke ((a : ℂ) + Complex.I * (γ : ℂ)) (x : ℂ)‖ = 0 := by
       have hsq := norm_sq_halfPlaneBlaschke x a γ
       rw [hA, zero_div] at hsq
@@ -81,11 +81,11 @@ theorem neg_log_norm_halfPlaneBlaschke {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a) 
     rw [hzero, outerDefectTerm, hA, div_zero, Real.log_zero]
     norm_num
   · have hlogsq : 2 * Real.log ‖halfPlaneBlaschke ((a : ℂ) + Complex.I * (γ : ℂ)) (x : ℂ)‖
-        = Real.log (((x - a) ^ 2 + γ ^ 2) / ((x + a) ^ 2 + γ ^ 2)) := by
+        = Real.log (((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ))) := by
       rw [← norm_sq_halfPlaneBlaschke x a γ, Real.log_pow]
       norm_num
-    have hinv : ((x + a) ^ 2 + γ ^ 2) / ((x - a) ^ 2 + γ ^ 2)
-        = (((x - a) ^ 2 + γ ^ 2) / ((x + a) ^ 2 + γ ^ 2))⁻¹ := by
+    have hinv : ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ))
+        = (((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)))⁻¹ := by
       field_simp
     rw [outerDefectTerm, hinv, Real.log_inv]
     linarith
@@ -95,12 +95,12 @@ theorem neg_log_norm_halfPlaneBlaschke {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a) 
 /-- **Equation (12).**  Every defect term is nonnegative. -/
 theorem outerDefectTerm_nonneg {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a) :
     0 ≤ outerDefectTerm x a γ := by
-  by_cases hA : ((x - a) ^ 2 + γ ^ 2) = 0
+  by_cases hA : ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) = 0
   · rw [outerDefectTerm, hA, div_zero, Real.log_zero]
     norm_num
-  · have hApos : 0 < (x - a) ^ 2 + γ ^ 2 := lt_of_le_of_ne (by positivity) (Ne.symm hA)
-    have hle : (x - a) ^ 2 + γ ^ 2 ≤ (x + a) ^ 2 + γ ^ 2 := by nlinarith
-    have hratio : 1 ≤ ((x + a) ^ 2 + γ ^ 2) / ((x - a) ^ 2 + γ ^ 2) :=
+  · have hApos : 0 < (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := lt_of_le_of_ne (by positivity) (Ne.symm hA)
+    have hle : (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) ≤ (x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by nlinarith
+    have hratio : 1 ≤ ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) :=
       (one_le_div hApos).mpr hle
     have := Real.log_nonneg hratio
     rw [outerDefectTerm]
@@ -109,10 +109,10 @@ theorem outerDefectTerm_nonneg {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a) :
 /-- **Equation (12), strict form.**  Away from the degenerate point every defect term is strictly
 positive: each off-line zero contributes with its horizontal displacement. -/
 theorem outerDefectTerm_pos {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a)
-    (hA : (x - a) ^ 2 + γ ^ 2 ≠ 0) : 0 < outerDefectTerm x a γ := by
-  have hApos : 0 < (x - a) ^ 2 + γ ^ 2 := lt_of_le_of_ne (by positivity) (Ne.symm hA)
-  have hlt : (x - a) ^ 2 + γ ^ 2 < (x + a) ^ 2 + γ ^ 2 := by nlinarith
-  have hratio : 1 < ((x + a) ^ 2 + γ ^ 2) / ((x - a) ^ 2 + γ ^ 2) :=
+    (hA : (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) ≠ 0) : 0 < outerDefectTerm x a γ := by
+  have hApos : 0 < (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := lt_of_le_of_ne (by positivity) (Ne.symm hA)
+  have hlt : (x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ) < (x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by nlinarith
+  have hratio : 1 < ((x + a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / ((x - a) ^ (2 : ℕ) + γ ^ (2 : ℕ)) :=
     (one_lt_div hApos).mpr hlt
   have := Real.log_pos hratio
   rw [outerDefectTerm]
@@ -122,7 +122,7 @@ theorem outerDefectTerm_pos {x a γ : ℝ} (hx : 0 < x) (ha : 0 < a)
 divisor beyond the layer is empty. -/
 theorem sum_outerDefect_eq_zero_iff {ι : Type*} {S : Finset ι} {a γ m : ι → ℝ} {x : ℝ}
     (hx : 0 < x) (ha : ∀ i ∈ S, 0 < a i) (hm : ∀ i ∈ S, 0 < m i)
-    (hA : ∀ i ∈ S, (x - a i) ^ 2 + (γ i) ^ 2 ≠ 0) :
+    (hA : ∀ i ∈ S, (x - a i) ^ (2 : ℕ) + (γ i) ^ (2 : ℕ) ≠ 0) :
     (∑ i ∈ S, m i * outerDefectTerm x (a i) (γ i)) = 0 ↔ S = ∅ := by
   constructor
   · intro hsum

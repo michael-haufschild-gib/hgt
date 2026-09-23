@@ -303,7 +303,7 @@ theorem isHilbertSchmidt_of_sylvester {x y z d : E →L[ℂ] E} (hx : IsSelfAdjo
     · show ‖zn n e - z e‖ ≤ ‖zn n - z‖ * ‖e‖
       exact (zn n - z).le_opNorm e
     · simpa using htend0.mul_const ‖e‖
-  refine isHilbertSchmidt_of_tendsto hHS (C := K ^ 2) (fun n => ?_) hptw
+  refine isHilbertSchmidt_of_tendsto hHS (C := K ^ (2 : ℕ)) (fun n => ?_) hptw
   rw [← sq_hsNorm]
   exact pow_le_pow_left₀ (hsNorm_nonneg _) (hbound n) 2
 

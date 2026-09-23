@@ -42,7 +42,7 @@ theorem qCov_exact_shear {n : Type*} [Fintype n]
     (ψ : n → ℂ) (Y F : Matrix n n ℂ) (t : ℝ) :
     QuantumAlg.qCov ψ (Y + ((-t : ℝ) : ℂ) • F) (Y + ((-t : ℝ) : ℂ) • F) =
       QuantumAlg.qCov ψ Y Y - t * (QuantumAlg.qCov ψ Y F + QuantumAlg.qCov ψ F Y) +
-        t ^ 2 * QuantumAlg.qCov ψ F F := by
+        t ^ (2 : ℕ) * QuantumAlg.qCov ψ F F := by
   rw [QuantumAlg.qCov_add_left]
   simp_rw [QuantumAlg.qCov_add_right, QuantumAlg.qCov_ofReal_smul_left,
     QuantumAlg.qCov_ofReal_smul_right]

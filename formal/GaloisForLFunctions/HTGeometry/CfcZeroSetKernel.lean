@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.CfcKernelPreservation
 /-!
 # Continuous spectral zero sets determine vector kernels
 
-Dini convergence of g(x)^2/(1+n f(x)^2) transfers inclusion of continuous
+Dini convergence of g(x)^(2 : ℕ)/(1+n f(x)^(2 : ℕ)) transfers inclusion of continuous
 spectral zero sets to inclusion of actual Hilbert-space kernels. No quotient
 bound or spectral gap is needed. Equal zero sets give equal kernels, and a
 singleton spectral fibre recovers the original operator eigenspace exactly.
@@ -15,10 +15,10 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private def zeroSetRegularizer (f g : ℝ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  g x ^ 2 / (1+(n:ℝ)*f x ^ 2)
+  g x ^ (2 : ℕ) / (1+(n:ℝ)*f x ^ (2 : ℕ))
 
 private theorem zeroSetRegularizer_den_pos (f : ℝ → ℝ) (n : ℕ) (x : ℝ) :
-    0 < 1+(n:ℝ)*f x ^ 2 := by positivity
+    0 < 1+(n:ℝ)*f x ^ (2 : ℕ) := by positivity
 
 private theorem zeroSetRegularizer_continuousOn {K : Set ℝ} {f g : ℝ → ℝ}
     (hf : ContinuousOn f K) (hg : ContinuousOn g K) (n : ℕ) :
@@ -38,10 +38,10 @@ private theorem zeroSetRegularizer_tendsto {f g : ℝ → ℝ} {x : ℝ}
     Tendsto (fun n => zeroSetRegularizer f g n x) atTop (𝓝 0) := by
   by_cases hf : f x=0
   · simp [zeroSetRegularizer,hz hf]
-  · have hs : 0 < f x ^ 2 := sq_pos_of_ne_zero hf
-    have hn : Tendsto (fun n : ℕ => (n:ℝ)*f x ^ 2) atTop atTop :=
+  · have hs : 0 < f x ^ (2 : ℕ) := sq_pos_of_ne_zero hf
+    have hn : Tendsto (fun n : ℕ => (n:ℝ)*f x ^ (2 : ℕ)) atTop atTop :=
       Tendsto.atTop_mul_const hs tendsto_natCast_atTop_atTop
-    have hd : Tendsto (fun n : ℕ => 1+(n:ℝ)*f x ^ 2) atTop atTop :=
+    have hd : Tendsto (fun n : ℕ => 1+(n:ℝ)*f x ^ (2 : ℕ)) atTop atTop :=
       tendsto_atTop_add_const_left atTop (1:ℝ) hn
     exact Tendsto.div_atTop tendsto_const_nhds hd
 
@@ -71,29 +71,29 @@ theorem cfc_apply_eq_zero_of_zero_set_subset
         (zeroSetRegularizer_uniform (spectrum.isCompact B) hf hg hz)) ε hε
       filter_upwards [hu] with n hn x hx
       simpa only [dist_zero_left] using (hn x hx).le
-  have heq (n : ℕ) : ((cfc g B)^2) v = cfc (zeroSetRegularizer f g n) B v := by
-    let k : ℝ → ℝ := fun x => (n:ℝ)*g x ^ 2*f x / (1+(n:ℝ)*f x ^ 2)
+  have heq (n : ℕ) : ((cfc g B)^(2 : ℕ)) v = cfc (zeroSetRegularizer f g n) B v := by
+    let k : ℝ → ℝ := fun x => (n:ℝ)*g x ^ (2 : ℕ)*f x / (1+(n:ℝ)*f x ^ (2 : ℕ))
     have hk : ContinuousOn k (spectrum ℝ B) :=
       ((continuousOn_const.mul (hg.pow 2)).mul hf).div
         (continuousOn_const.add (continuousOn_const.mul (hf.pow 2)))
         (fun x _ => ne_of_gt (zeroSetRegularizer_den_pos f n x))
-    have hid : cfc (fun x => g x ^ 2-zeroSetRegularizer f g n x) B = cfc k B*cfc f B := by
+    have hid : cfc (fun x => g x ^ (2 : ℕ)-zeroSetRegularizer f g n x) B = cfc k B*cfc f B := by
       rw [← cfc_mul k f B hk hf]
       apply cfc_congr
       intro x _
       dsimp [k,zeroSetRegularizer]
       field_simp [ne_of_gt (zeroSetRegularizer_den_pos f n x)]
       ring
-    rw [cfc_sub (fun x => g x ^ 2) (zeroSetRegularizer f g n) B
+    rw [cfc_sub (fun x => g x ^ (2 : ℕ)) (zeroSetRegularizer f g n) B
       (hg.pow 2) (zeroSetRegularizer_continuousOn hf hg n),cfc_pow g 2 B hg hB] at hid
     have ha := congrArg (fun T : H →L[ℂ] H => T v) hid
     simp only [sub_apply,mul_apply_eq_comp,hv,map_zero] at ha
     exact sub_eq_zero.mp ha
-  have hlim : Tendsto (fun _ : ℕ => ‖((cfc g B)^2) v‖) atTop (𝓝 0) := by
+  have hlim : Tendsto (fun _ : ℕ => ‖((cfc g B)^(2 : ℕ)) v‖) atTop (𝓝 0) := by
     apply squeeze_zero (fun _ => norm_nonneg _) (fun n => ?_) (by simpa using hnorm.mul_const ‖v‖)
     rw [heq n]
     exact (cfc (zeroSetRegularizer f g n) B).le_opNorm v
-  have hs : ((cfc g B)^2) v=0 := norm_eq_zero.mp (tendsto_const_nhds_iff.mp hlim)
+  have hs : ((cfc g B)^(2 : ℕ)) v=0 := norm_eq_zero.mp (tendsto_const_nhds_iff.mp hlim)
   apply (inner_self_eq_zero (𝕜 := ℂ)).mp
   have hsym := ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
     (show IsSelfAdjoint (cfc g B) from IsSelfAdjoint.cfc)

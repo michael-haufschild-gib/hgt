@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.CCMSharpRectangularSewing
 # Completed third-grade Guinand--Weil connection
 
 The prime-entry cubic jet forces one logarithmic grade: an atom at wall location `h = log k`
-has rate `32 * criticalMellinAtomWeight k / h^3`.  This file applies that same forced weight to
+has rate `32 * criticalMellinAtomWeight k / h^(3 : ℕ)`.  This file applies that same forced weight to
 the literal continuous polar and Gamma channels.  No damping parameter is chosen.
 
 On every positive window `[b,H]`, finite Stieltjes integration by parts gives the exact
@@ -14,7 +14,7 @@ prime-minus-polar identity
 
 ```text
 Q_pp(b,H)
- = 32 E(b)/b^3 - 32 E(H)/H^3 - integral_b^H 96 E(h)/h^4 dh,
+ = 32 E(b)/b^(3 : ℕ) - 32 E(H)/H^(3 : ℕ) - integral_b^H 96 E(h)/h^(4 : ℕ) dh,
 ```
 
 where `E` is the already formalized completed critical-Mellin error.  Adding the literal Gamma
@@ -281,11 +281,11 @@ theorem ccmGuinandWeilPrimePolarWeightedWindow_eq_completedErrorFlux
 
 /-- Logarithmic reporter weight forced by the prime-entry cubic jet. -/
 def ccmGuinandWeilThirdGradeWeight (h : ℝ) : ℝ :=
-  32 / h ^ 3
+  32 / h ^ (3 : ℕ)
 
 /-- Derivative of the forced cubic logarithmic weight away from the singular origin. -/
 def ccmGuinandWeilThirdGradeWeightDeriv (h : ℝ) : ℝ :=
-  -96 / h ^ 4
+  -96 / h ^ (4 : ℕ)
 
 theorem hasDerivAt_ccmGuinandWeilThirdGradeWeight
     {h : ℝ} (hh : h ≠ 0) :
@@ -330,15 +330,15 @@ error kernel and no other cofinal term. -/
 theorem ccmGuinandWeilThirdGradePrimePolarWindow_eq_explicitCompletedErrorFlux
     {b H : ℝ} (hb0 : 0 < b) (hbH : b ≤ H) :
     ccmGuinandWeilPrimePolarWeightedWindow b H ccmGuinandWeilThirdGradeWeight =
-      32 * criticalMellinCompletedError b / b ^ 3 -
-        32 * criticalMellinCompletedError H / H ^ 3 -
+      32 * criticalMellinCompletedError b / b ^ (3 : ℕ) -
+        32 * criticalMellinCompletedError H / H ^ (3 : ℕ) -
           ∫ h in b..H,
-            96 * criticalMellinCompletedError h / h ^ 4 := by
+            96 * criticalMellinCompletedError h / h ^ (4 : ℕ) := by
   rw [ccmGuinandWeilThirdGradePrimePolarWindow_eq_completedErrorFlux hb0 hbH]
   unfold ccmGuinandWeilThirdGradeWeight ccmGuinandWeilThirdGradeWeightDeriv
   have hint :
-      (∫ h in b..H, criticalMellinCompletedError h * (-96 / h ^ 4)) =
-        -(∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ 4) := by
+      (∫ h in b..H, criticalMellinCompletedError h * (-96 / h ^ (4 : ℕ))) =
+        -(∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ (4 : ℕ)) := by
     rw [← intervalIntegral.integral_neg]
     apply intervalIntegral.integral_congr
     intro h hh
@@ -401,9 +401,9 @@ completed-error endpoint/flux reporter and the literal Gamma window remain. -/
 theorem ccmGuinandWeilCompletedThirdGradeRateWindow_eq_errorFlux_add_gamma
     {b H : ℝ} (hb0 : 0 < b) (hbH : b ≤ H) :
     ccmGuinandWeilCompletedThirdGradeRateWindow b H =
-      32 * criticalMellinCompletedError b / b ^ 3 -
-        32 * criticalMellinCompletedError H / H ^ 3 -
-          (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ 4) +
+      32 * criticalMellinCompletedError b / b ^ (3 : ℕ) -
+        32 * criticalMellinCompletedError H / H ^ (3 : ℕ) -
+          (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ (4 : ℕ)) +
             ccmGuinandWeilGammaThirdGradeRateWindow b H := by
   rw [ccmGuinandWeilCompletedThirdGradeRateWindow,
     ← ccmGuinandWeilPrimePolarWeightedWindow_thirdGrade_eq_prime_sub_polar,
@@ -419,7 +419,7 @@ theorem integrableOn_ccmGuinandWeilGammaThirdGradeTail
         ccmPublishedArchimedeanDensity h)
       (Set.Ioi b) := by
   let d : ℝ := 1 - Real.exp (-2 * b)
-  let C : ℝ := (32 / b ^ 3) / d
+  let C : ℝ := (32 / b ^ (3 : ℕ)) / d
   have hd : 0 < d := by
     dsimp only [d]
     exact sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
@@ -439,13 +439,13 @@ theorem integrableOn_ccmGuinandWeilGammaThirdGradeTail
     measurability
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
     have hh0 : 0 < h := hb.trans hh
-    have hb3 : 0 < b ^ 3 := pow_pos hb 3
-    have hh3 : 0 < h ^ 3 := pow_pos hh0 3
-    have hpow : b ^ 3 ≤ h ^ 3 := pow_le_pow_left₀ hb.le hh.le 3
+    have hb3 : 0 < b ^ (3 : ℕ) := pow_pos hb 3
+    have hh3 : 0 < h ^ (3 : ℕ) := pow_pos hh0 3
+    have hpow : b ^ (3 : ℕ) ≤ h ^ (3 : ℕ) := pow_le_pow_left₀ hb.le hh.le 3
     have hw : 0 ≤ ccmGuinandWeilThirdGradeWeight h := by
       unfold ccmGuinandWeilThirdGradeWeight
       positivity
-    have hwle : ccmGuinandWeilThirdGradeWeight h ≤ 32 / b ^ 3 := by
+    have hwle : ccmGuinandWeilThirdGradeWeight h ≤ 32 / b ^ (3 : ℕ) := by
       unfold ccmGuinandWeilThirdGradeWeight
       exact div_le_div_of_nonneg_left (by norm_num) hb3 hpow
     have hden : d ≤ 1 - Real.exp (-2 * h) := by
@@ -467,9 +467,9 @@ theorem integrableOn_ccmGuinandWeilGammaThirdGradeTail
         ccmGuinandWeilThirdGradeWeight h * ccmPublishedArchimedeanDensity h ≤
           C * Real.exp (-h / 2) := by
       calc
-        _ ≤ (32 / b ^ 3) * ccmPublishedArchimedeanDensity h :=
+        _ ≤ (32 / b ^ (3 : ℕ)) * ccmPublishedArchimedeanDensity h :=
           mul_le_mul_of_nonneg_right hwle hdensity0
-        _ ≤ (32 / b ^ 3) * (Real.exp (-h / 2) / d) :=
+        _ ≤ (32 / b ^ (3 : ℕ)) * (Real.exp (-h / 2) / d) :=
           mul_le_mul_of_nonneg_left hdensity
             (div_nonneg (by norm_num) hb3.le)
         _ = C * Real.exp (-h / 2) := by
@@ -493,15 +493,15 @@ theorem tendsto_ccmGuinandWeilGammaThirdGradeRateWindow
 /-- Variable completed-error part of the third-grade connection.  The lower endpoint contribution
 is deliberately omitted because it is one fixed constant. -/
 def ccmGuinandWeilCompletedErrorThirdGradeFlux (b H : ℝ) : ℝ :=
-  -32 * criticalMellinCompletedError H / H ^ 3 -
-    ∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ 4
+  -32 * criticalMellinCompletedError H / H ^ (3 : ℕ) -
+    ∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ (4 : ℕ)
 
 /-- The completed connection is a fixed base value, the completed-error flux, and the convergent
 Gamma window. -/
 theorem ccmGuinandWeilCompletedThirdGradeRateWindow_eq_base_add_errorFlux_add_gamma
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     ccmGuinandWeilCompletedThirdGradeRateWindow b H =
-      32 * criticalMellinCompletedError b / b ^ 3 +
+      32 * criticalMellinCompletedError b / b ^ (3 : ℕ) +
         ccmGuinandWeilCompletedErrorThirdGradeFlux b H +
           ccmGuinandWeilGammaThirdGradeRateWindow b H := by
   rw [ccmGuinandWeilCompletedThirdGradeRateWindow_eq_errorFlux_add_gamma hb hbH]
@@ -515,7 +515,7 @@ theorem ccmGuinandWeilCompletedThirdGradeRateWindow_converges_iff_errorFlux_conv
     {b : ℝ} (hb : 0 < b) :
     (∃ L : ℝ, Tendsto (ccmGuinandWeilCompletedThirdGradeRateWindow b) atTop (nhds L)) ↔
       ∃ L : ℝ, Tendsto (ccmGuinandWeilCompletedErrorThirdGradeFlux b) atTop (nhds L) := by
-  let B : ℝ := 32 * criticalMellinCompletedError b / b ^ 3
+  let B : ℝ := 32 * criticalMellinCompletedError b / b ^ (3 : ℕ)
   let G : ℝ := ∫ h in Set.Ioi b,
     ccmGuinandWeilThirdGradeWeight h * ccmPublishedArchimedeanDensity h
   have hgamma : Tendsto (ccmGuinandWeilGammaThirdGradeRateWindow b) atTop (nhds G) :=

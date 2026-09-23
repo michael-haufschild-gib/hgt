@@ -139,13 +139,13 @@ theorem sonin_tensor_calkin_lower (a : ℝ) (ha : 0 < a) (r : Fin n → ℝ)
     (hr : ∀ i, 1 < r i) (hinj : Function.Injective r) (dd : Fin n × Fin n → ℂ)
     (K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
       Completion (evenSubspace ⊗[ℂ] evenSubspace)) (hK : IsCompactOperator K) :
-    Real.sqrt (∑ α : Fin n × Fin n, ‖dd α‖ ^ 2) ≤
+    Real.sqrt (∑ α : Fin n × Fin n, ‖dd α‖ ^ (2 : ℕ)) ≤
       ‖(∑ α : Fin n × Fin n, TensorProduct.mapL
           (dd α • evenCentralSoninDilationCorner a (r α.1) (hr α.1))
           (evenCentralSoninDilationCorner a (r α.2) (hr α.2))).completion - K‖ := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
-    have hzero : (∑ α : Fin 0 × Fin 0, ‖dd α‖ ^ 2) = 0 := by simp
+    have hzero : (∑ α : Fin 0 × Fin 0, ‖dd α‖ ^ (2 : ℕ)) = 0 := by simp
     rw [hzero, Real.sqrt_zero]
     exact norm_nonneg _
   · haveI : Nonempty (Fin n) := Fin.pos_iff_nonempty.mp hn
@@ -161,7 +161,7 @@ theorem sonin_euler_tensor_calkin_lower (a : ℝ) (ha : 0 < a) (r : Fin n → �
     (hr : ∀ i, 1 < r i) (hinj : Function.Injective r) (b : Fin n × Fin n → ℂ)
     (K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
       Completion (evenSubspace ⊗[ℂ] evenSubspace)) (hK : IsCompactOperator K) :
-    Real.sqrt (∑ α : Fin n × Fin n, ‖b α‖ ^ 2 / (r α.1 * r α.2)) ≤
+    Real.sqrt (∑ α : Fin n × Fin n, ‖b α‖ ^ (2 : ℕ) / (r α.1 * r α.2)) ≤
       ‖(∑ α : Fin n × Fin n, TensorProduct.mapL
           ((b α * (-((Real.sqrt (r α.1) : ℂ))⁻¹)) •
             evenCentralSoninDilationCorner a (r α.1) (hr α.1))
@@ -181,7 +181,7 @@ theorem sonin_euler_tensor_calkin_lower (a : ℝ) (ha : 0 < a) (r : Fin n → �
           (evenCentralSoninDilationCorner a (r α.2) (hr α.2)) := by
     refine Finset.sum_congr rfl fun α _ => ?_
     rw [mapL_smul_smul, hdd]
-  have hnormsq : ∀ α : Fin n × Fin n, ‖dd α‖ ^ 2 = ‖b α‖ ^ 2 / (r α.1 * r α.2) := by
+  have hnormsq : ∀ α : Fin n × Fin n, ‖dd α‖ ^ (2 : ℕ) = ‖b α‖ ^ (2 : ℕ) / (r α.1 * r α.2) := by
     intro α
     rw [hdd]
     simp only [norm_mul, norm_neg, norm_inv, Complex.norm_real,
@@ -264,9 +264,9 @@ theorem sqrt_primePairDifferenceEnergy_le_norm_soninPrimePairSection_sub_compact
     refine Finset.sum_congr rfl fun α _ => ?_
     rw [evenPositiveEulerSoninCorner, evenPositiveEulerSoninCorner, smul_smul]
   have henergy : primePairDifferenceEnergy u s =
-      ∑ α : Fin s.card × Fin s.card, ‖b α‖ ^ 2 / (r α.1 * r α.2) := by
+      ∑ α : Fin s.card × Fin s.card, ‖b α‖ ^ (2 : ℕ) / (r α.1 * r α.2) := by
     rw [sum_fin_card_eq_sum_prime_pairs s
-      (fun p q => ‖u p - u q‖ ^ 2 / ((p : ℝ) * (q : ℝ)))]
+      (fun p q => ‖u p - u q‖ ^ (2 : ℕ) / ((p : ℝ) * (q : ℝ)))]
     rw [primePairDifferenceEnergy]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [primePairDifferenceRow, Finset.sum_div]
@@ -284,7 +284,7 @@ theorem primePairDifferenceEnergy_le_of_calkin_le (t : ℝ) (ht : 0 < t) (u : Na
     (K : Completion (evenSubspace ⊗[ℂ] evenSubspace) →L[ℂ]
       Completion (evenSubspace ⊗[ℂ] evenSubspace)) (hK : IsCompactOperator K)
     (hle : ‖soninPrimePairSection t u s - K‖ ≤ B) :
-    primePairDifferenceEnergy u s ≤ B ^ 2 := by
+    primePairDifferenceEnergy u s ≤ B ^ (2 : ℕ) := by
   have hkey :=
     sqrt_primePairDifferenceEnergy_le_norm_soninPrimePairSection_sub_compact t ht u s K hK
   have hE0 : 0 ≤ primePairDifferenceEnergy u s := primePairDifferenceEnergy_nonneg u s
@@ -302,7 +302,7 @@ theorem sonin_prime_pair_calkin_bounded_imp_constant (t : ℝ) (ht : 0 < t) (u :
         IsCompactOperator K ∧ ‖soninPrimePairSection t u s - K‖ ≤ B) :
     ∃ c : ℂ, ∀ p, u p = c := by
   obtain ⟨B, hB⟩ := hbdd
-  refine (primePairDifferenceEnergyBounded_iff_constant u).mp ⟨B ^ 2, fun s => ?_⟩
+  refine (primePairDifferenceEnergyBounded_iff_constant u).mp ⟨B ^ (2 : ℕ), fun s => ?_⟩
   obtain ⟨K, hK, hle⟩ := hB s
   exact primePairDifferenceEnergy_le_of_calkin_le t ht u B s K hK hle
 

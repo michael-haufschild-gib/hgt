@@ -35,16 +35,16 @@ def xiMobiusPrimeSchurDifferenceRectKernel : Nat.Primes × ℕ → ℂ :=
 /-- Each prime row has finite squared depth energy. -/
 theorem summable_normSq_xiMobiusPrimeSchurForwardDifference
     (p : Nat.Primes) :
-    Summable (fun e : ℕ => ‖(xiMobiusPrimeSchurForwardDifference p e : ℂ)‖ ^ 2) := by
+    Summable (fun e : ℕ => ‖(xiMobiusPrimeSchurForwardDifference p e : ℂ)‖ ^ (2 : ℕ)) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
   have hq0 : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
   have hq1 : q < 1 := xiTransversePrimeApertureDiskNode_lt_one (by norm_num) p
   have hplus : 1 + q ≠ 0 := by linarith
-  have hgeom : Summable (fun e : ℕ => (q ^ 2) ^ e) := by
+  have hgeom : Summable (fun e : ℕ => (q ^ (2 : ℕ)) ^ e) := by
     apply summable_geometric_of_norm_lt_one
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg q)]
     nlinarith
-  refine (hgeom.mul_left (q ^ 2 * (1 - q) ^ 2 / (1 + q) ^ 2)).congr (fun e => ?_)
+  refine (hgeom.mul_left (q ^ (2 : ℕ) * (1 - q) ^ (2 : ℕ) / (1 + q) ^ (2 : ℕ))).congr (fun e => ?_)
   rw [xiMobiusPrimeSchurForwardDifference_eq_geometric]
   dsimp only [q]
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
@@ -54,7 +54,7 @@ theorem summable_normSq_xiMobiusPrimeSchurForwardDifference
 /-- The squared depth energy of one row is its exact completed Schur diagonal. -/
 theorem tsum_normSq_xiMobiusPrimeSchurForwardDifference
     (p : Nat.Primes) :
-    (∑' e : ℕ, ‖(xiMobiusPrimeSchurForwardDifference p e : ℂ)‖ ^ 2) =
+    (∑' e : ℕ, ‖(xiMobiusPrimeSchurForwardDifference p e : ℂ)‖ ^ (2 : ℕ)) =
       xiMobiusPrimeSchurDifferenceKernel p p := by
   rw [← tsum_xiMobiusPrimeSchurForwardDifference_mul_eq_kernel p p]
   apply tsum_congr
@@ -72,7 +72,7 @@ theorem xiMobiusPrimeSchurDifferenceRectKernel_isHSRect :
     exact summable_normSq_xiMobiusPrimeSchurForwardDifference p
   · refine summable_xiMobiusPrimeSchurDifferenceKernel_self.congr (fun p => ?_)
     change xiMobiusPrimeSchurDifferenceKernel p p =
-      ∑' y : ℕ, ‖(xiMobiusPrimeSchurForwardDifference p y : ℂ)‖ ^ 2
+      ∑' y : ℕ, ‖(xiMobiusPrimeSchurForwardDifference p y : ℂ)‖ ^ (2 : ℕ)
     exact (tsum_normSq_xiMobiusPrimeSchurForwardDifference p).symm
 
 /-- Genuine prime-by-depth Möbius Schur synthesis operator. -/

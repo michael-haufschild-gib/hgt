@@ -11,7 +11,7 @@ the integral turns the multiplicative sum over the seed into a sum of dilates of
 
 Both exchanges are absolutely convergent.  The seed is integrable and supported above the aperture,
 so the reciprocal of the scale is bounded there, and the quadratic decay of a Schwartz function
-makes the dilated sum converge like `1/n^2` uniformly on the support.  The right-hand side is the
+makes the dilated sum converge like `1/n^(2 : ℕ)` uniformly on the support.  The right-hand side is the
 shape that Poisson summation acts on.
 -/
 
@@ -89,27 +89,27 @@ theorem integrableOn_coPoissonTerm {g : ℝ → ℂ} (hg : Integrable g)
   exact (hpt x).symm
 
 /-- **Uniform bound on the dilated pairing.**  A window seed is supported above the aperture, so the
-quadratic decay of the test function gives a bound decaying like `1/c^2`. -/
+quadratic decay of the test function gives a bound decaying like `1/c^(2 : ℕ)`. -/
 theorem integral_norm_seed_mul_schwartzDilate_le {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
     (hg : Integrable g) (hsupp : Function.support g ⊆ Icc b b⁻¹) (w : SchwartzMap ℝ ℂ)
-    {C : ℝ} (hC : ∀ x : ℝ, x ^ 2 * ‖w x‖ ≤ C) {c : ℝ} (hc : 0 < c) :
+    {C : ℝ} (hC : ∀ x : ℝ, x ^ (2 : ℕ) * ‖w x‖ ≤ C) {c : ℝ} (hc : 0 < c) :
     (∫ u in Ioi (0 : ℝ), ‖g u * w (c * u)‖) ≤
-      C / (c ^ 2 * b ^ 2) * ∫ u in Ioi (0 : ℝ), ‖g u‖ := by
+      C / (c ^ (2 : ℕ) * b ^ (2 : ℕ)) * ∫ u in Ioi (0 : ℝ), ‖g u‖ := by
   have hC0 : 0 ≤ C := by
     have h1 := hC 1
-    have h2 : (0 : ℝ) ≤ 1 ^ 2 * ‖w 1‖ := by positivity
+    have h2 : (0 : ℝ) ≤ 1 ^ (2 : ℕ) * ‖w 1‖ := by positivity
     linarith
-  have hpt : ∀ u ∈ Ioi (0 : ℝ), ‖g u * w (c * u)‖ ≤ C / (c ^ 2 * b ^ 2) * ‖g u‖ := by
+  have hpt : ∀ u ∈ Ioi (0 : ℝ), ‖g u * w (c * u)‖ ≤ C / (c ^ (2 : ℕ) * b ^ (2 : ℕ)) * ‖g u‖ := by
     intro u hu
     by_cases hz : g u = 0
     · simp [hz]
     · have hmem : u ∈ Icc b b⁻¹ := hsupp (Function.mem_support.mpr hz)
       have hub : b ≤ u := hmem.1
-      have hwb : ‖w (c * u)‖ ≤ C / (c ^ 2 * b ^ 2) := by
+      have hwb : ‖w (c * u)‖ ≤ C / (c ^ (2 : ℕ) * b ^ (2 : ℕ)) := by
         have h := hC (c * u)
-        have hden : (0 : ℝ) < c ^ 2 * b ^ 2 := by positivity
-        have hle : c ^ 2 * b ^ 2 * ‖w (c * u)‖ ≤ (c * u) ^ 2 * ‖w (c * u)‖ := by
-          have hsq : c ^ 2 * b ^ 2 ≤ (c * u) ^ 2 := by
+        have hden : (0 : ℝ) < c ^ (2 : ℕ) * b ^ (2 : ℕ) := by positivity
+        have hle : c ^ (2 : ℕ) * b ^ (2 : ℕ) * ‖w (c * u)‖ ≤ (c * u) ^ (2 : ℕ) * ‖w (c * u)‖ := by
+          have hsq : c ^ (2 : ℕ) * b ^ (2 : ℕ) ≤ (c * u) ^ (2 : ℕ) := by
             rw [mul_pow]
             exact mul_le_mul_of_nonneg_left (by nlinarith) (by positivity)
           exact mul_le_mul_of_nonneg_right hsq (norm_nonneg _)
@@ -119,7 +119,7 @@ theorem integral_norm_seed_mul_schwartzDilate_le {b : ℝ} (hb : 0 < b) {g : ℝ
       exact mul_le_mul_of_nonneg_left hwb (norm_nonneg _) |>.trans_eq (mul_comm _ _)
   have hint1 : IntegrableOn (fun u : ℝ => ‖g u * w (c * u)‖) (Ioi 0) :=
     (integrableOn_seed_mul_schwartzDilate hg w c).norm
-  have hint2 : IntegrableOn (fun u : ℝ => C / (c ^ 2 * b ^ 2) * ‖g u‖) (Ioi 0) :=
+  have hint2 : IntegrableOn (fun u : ℝ => C / (c ^ (2 : ℕ) * b ^ (2 : ℕ)) * ‖g u‖) (Ioi 0) :=
     ((hg.norm).restrict (s := Ioi 0)).const_mul _
   rw [← integral_const_mul]
   exact setIntegral_mono_on hint1 hint2 measurableSet_Ioi hpt
@@ -138,13 +138,13 @@ theorem summable_integral_norm_seed_mul_schwartzDilate {b : ℝ} (hb : 0 < b) {g
   refine Summable.of_nonneg_of_le (fun k => integral_nonneg fun u => norm_nonneg _)
     (fun k => ?_)
     (HTGeometry.summable_inv_natSucc_sq.mul_left
-      (C / b ^ 2 * ∫ u in Ioi (0 : ℝ), ‖g u‖))
+      (C / b ^ (2 : ℕ) * ∫ u in Ioi (0 : ℝ), ‖g u‖))
   have hcpos : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
   have hbound := integral_norm_seed_mul_schwartzDilate_le hb hg hsupp w hC hcpos
   refine hbound.trans_eq ?_
   have hcast : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by push_cast; ring
   rw [hcast]
-  have hne : ((k : ℝ) + 1) ^ 2 ≠ 0 := by positivity
+  have hne : ((k : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
 
 theorem hasSum_integral_coPoissonTerm {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}

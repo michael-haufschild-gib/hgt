@@ -145,7 +145,7 @@ theorem mobiusGammaContactPartialCharge_eq (N : ℕ) :
 /-- The first raw boundary layer has energy sixteen, so no stagewise four-unit contraction can
 use the naive jet truncation. -/
 theorem norm_sq_mobiusGammaContactPartialCharge_one :
-    ‖mobiusGammaContactPartialCharge 1‖ ^ 2 = 16 := by
+    ‖mobiusGammaContactPartialCharge 1‖ ^ (2 : ℕ) = 16 := by
   rw [mobiusGammaContactPartialCharge_one]
   norm_num
 
@@ -166,7 +166,7 @@ charge `-2`.  No asymptotic choice or fitted counterterm is used. -/
 /-- Every factorially renormalized finite boundary charge already has the terminal four-unit
 energy. -/
 theorem norm_sq_renormalizedMobiusGammaContactCharge (N : ℕ) :
-    ‖renormalizedMobiusGammaContactCharge N‖ ^ 2 = 4 := by
+    ‖renormalizedMobiusGammaContactCharge N‖ ^ (2 : ℕ) = 4 := by
   rw [renormalizedMobiusGammaContactCharge_eq]
   norm_num
 
@@ -267,7 +267,7 @@ theorem shifted_completedMobiusGammaContact_conormal_target_eq_jump (k : ℕ) :
 
 /-- Squared modulus of the oriented Gamma contact charge is exactly the four-unit Fisher budget. -/
 theorem norm_sq_mobiusGammaContactCharge :
-    ‖(-2 : ℂ)‖ ^ 2 = 4 := by
+    ‖(-2 : ℂ)‖ ^ (2 : ℕ) = 4 := by
   norm_num
 
 end

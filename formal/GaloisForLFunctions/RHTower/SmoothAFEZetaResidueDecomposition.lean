@@ -25,13 +25,13 @@ namespace RHTower
 open Complex Set
 
 def smoothAFEZetaPoleNumerator (s : ℂ) (x : ℝ) (w : ℂ) : ℂ :=
-  (x : ℂ) ^ w * Complex.exp (w ^ 2) * regularizedRiemannZeta (s + w)
+  (x : ℂ) ^ w * Complex.exp (w ^ (2 : ℕ)) * regularizedRiemannZeta (s + w)
 
 def smoothAFEZetaPoleRemainder (s : ℂ) (x : ℝ) : ℂ → ℂ :=
   dslope (dslope (smoothAFEZetaPoleNumerator s x) 0) (1 - s)
 
 def smoothAFEZetaShiftedPoleResidue (s : ℂ) (x : ℝ) : ℂ :=
-  (x : ℂ) ^ (1 - s) * Complex.exp ((1 - s) ^ 2) / (1 - s)
+  (x : ℂ) ^ (1 - s) * Complex.exp ((1 - s) ^ (2 : ℕ)) / (1 - s)
 
 theorem differentiable_smoothAFEZetaPoleNumerator
     {x : ℝ} (hx : 0 < x) (s : ℂ) :
@@ -66,7 +66,7 @@ theorem smoothAFEZetaPoleNumerator_zero
 theorem smoothAFEZetaPoleNumerator_shiftedPole
     (s : ℂ) (x : ℝ) :
     smoothAFEZetaPoleNumerator s x (1 - s) =
-      (x : ℂ) ^ (1 - s) * Complex.exp ((1 - s) ^ 2) := by
+      (x : ℂ) ^ (1 - s) * Complex.exp ((1 - s) ^ (2 : ℕ)) := by
   rw [smoothAFEZetaPoleNumerator, show s + (1 - s) = 1 by ring,
     regularizedRiemannZeta_one, mul_one]
 

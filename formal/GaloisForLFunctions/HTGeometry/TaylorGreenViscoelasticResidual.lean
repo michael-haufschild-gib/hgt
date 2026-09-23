@@ -36,9 +36,9 @@ def steadyViscoelasticResidualY (nu tau : ℝ) (J : SteadyNavierStokesJet2) (x y
 /-- The frozen Taylor--Green benchmark needs exactly viscous forcing, independently of memory time. -/
 theorem taylorGreen_steadyViscoelastic_forcing (nu tau k A dx dy x y : ℝ) :
     steadyViscoelasticResidualX nu tau (taylorGreenJet k A dx dy) x y =
-        2 * nu * k ^ 2 * (taylorGreenJet k A dx dy).u x y ∧
+        2 * nu * k ^ (2 : ℕ) * (taylorGreenJet k A dx dy).u x y ∧
     steadyViscoelasticResidualY nu tau (taylorGreenJet k A dx dy) x y =
-        2 * nu * k ^ 2 * (taylorGreenJet k A dx dy).v x y := by
+        2 * nu * k ^ (2 : ℕ) * (taylorGreenJet k A dx dy).v x y := by
   have hx : steadyEulerAccelerationX (taylorGreenJet k A dx dy) = fun _ _ => 0 := by
     funext x y
     exact taylorGreenJet_horizontal_euler k A dx dy x y
@@ -80,34 +80,34 @@ def unsteadyViscoelasticResidualX (nu tau : ℝ) (J : ℝ → SteadyNavierStokes
 
 theorem unsteadyEulerAccelerationX_taylorGreen (nu k dx dy t x y : ℝ) :
     unsteadyEulerAccelerationX (taylorGreenEvolution nu k dx dy) t x y =
-      -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).u x y := by
+      -2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).u x y := by
   unfold unsteadyEulerAccelerationX
   rw [(hasDerivAt_taylorGreenEvolution_u nu k dx dy t x y).deriv]
   have he := taylorGreenJet_horizontal_euler k
-    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+    (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy x y
   change steadyEulerAccelerationX (taylorGreenEvolution nu k dx dy t) x y = 0 at he
   rw [he, add_zero]
 
 /-- Exact memory forcing for the decaying Navier--Stokes solution. -/
 theorem taylorGreen_unsteadyViscoelastic_forcing (nu tau k dx dy t x y : ℝ) :
     unsteadyViscoelasticResidualX nu tau (taylorGreenEvolution nu k dx dy) t x y =
-      tau * (4 * nu ^ 2 * k ^ 4 * (taylorGreenEvolution nu k dx dy t).u x y +
-        2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).px x y) := by
+      tau * (4 * nu ^ (2 : ℕ) * k ^ (4 : ℕ) * (taylorGreenEvolution nu k dx dy t).u x y +
+        2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).px x y) := by
   have he : unsteadyEulerAccelerationX (taylorGreenEvolution nu k dx dy) =
-      fun t x y => -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).u x y := by
+      fun t x y => -2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).u x y := by
     funext t x y
     exact unsteadyEulerAccelerationX_taylorGreen nu k dx dy t x y
-  have ht := (hasDerivAt_taylorGreenEvolution_u nu k dx dy t x y).const_mul (-2 * nu * k ^ 2)
+  have ht := (hasDerivAt_taylorGreenEvolution_u nu k dx dy t x y).const_mul (-2 * nu * k ^ (2 : ℕ))
   have hx := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_u_x x y).const_mul
-    (-2 * nu * k ^ 2)
+    (-2 * nu * k ^ (2 : ℕ))
   have hy := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_u_y x y).const_mul
-    (-2 * nu * k ^ 2)
+    (-2 * nu * k ^ (2 : ℕ))
   unfold unsteadyViscoelasticResidualX fluidMaterialDerivative
   rw [he, ht.deriv, hx.deriv, hy.deriv]
   have hE := taylorGreenJet_horizontal_euler k
-    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+    (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy x y
   dsimp only [taylorGreenEvolution, taylorGreenJet] at hE ⊢
-  linear_combination (-2 * tau * nu * k ^ 2) * hE
+  linear_combination (-2 * tau * nu * k ^ (2 : ℕ)) * hE
 
 /-- An exact nonzero memory residual survives where ordinary Navier--Stokes is satisfied. -/
 theorem taylorGreen_evolving_memory_at_quarter (tau : ℝ) :
@@ -128,34 +128,34 @@ def unsteadyViscoelasticResidualY (nu tau : ℝ) (J : ℝ → SteadyNavierStokes
 
 theorem unsteadyEulerAccelerationY_taylorGreen (nu k dx dy t x y : ℝ) :
     unsteadyEulerAccelerationY (taylorGreenEvolution nu k dx dy) t x y =
-      -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).v x y := by
+      -2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).v x y := by
   unfold unsteadyEulerAccelerationY
   rw [(hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).deriv]
   have he := taylorGreenJet_vertical_euler k
-    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+    (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy x y
   change steadyEulerAccelerationY (taylorGreenEvolution nu k dx dy t) x y = 0 at he
   rw [he, add_zero]
 
 /-- The vertical material-memory forcing completes the exact vector GHD residual. -/
 theorem taylorGreen_unsteadyViscoelastic_forcing_y (nu tau k dx dy t x y : ℝ) :
     unsteadyViscoelasticResidualY nu tau (taylorGreenEvolution nu k dx dy) t x y =
-      tau * (4 * nu ^ 2 * k ^ 4 * (taylorGreenEvolution nu k dx dy t).v x y +
-        2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).py x y) := by
+      tau * (4 * nu ^ (2 : ℕ) * k ^ (4 : ℕ) * (taylorGreenEvolution nu k dx dy t).v x y +
+        2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).py x y) := by
   have he : unsteadyEulerAccelerationY (taylorGreenEvolution nu k dx dy) =
-      fun t x y => -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).v x y := by
+      fun t x y => -2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).v x y := by
     funext t x y
     exact unsteadyEulerAccelerationY_taylorGreen nu k dx dy t x y
-  have ht := (hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).const_mul (-2 * nu * k ^ 2)
+  have ht := (hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).const_mul (-2 * nu * k ^ (2 : ℕ))
   have hx := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_v_x x y).const_mul
-    (-2 * nu * k ^ 2)
+    (-2 * nu * k ^ (2 : ℕ))
   have hy := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_v_y x y).const_mul
-    (-2 * nu * k ^ 2)
+    (-2 * nu * k ^ (2 : ℕ))
   unfold unsteadyViscoelasticResidualY fluidMaterialDerivative
   rw [he, ht.deriv, hx.deriv, hy.deriv]
   have hE := taylorGreenJet_vertical_euler k
-    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+    (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy x y
   dsimp only [taylorGreenEvolution, taylorGreenJet] at hE ⊢
-  linear_combination (-2 * tau * nu * k ^ 2) * hE
+  linear_combination (-2 * tau * nu * k ^ (2 : ℕ)) * hE
 
 /-- A concrete decaying vortex solves unforced GHD everywhere exactly at zero memory time. -/
 theorem taylorGreen_unforced_memory_iff (tau : ℝ) :

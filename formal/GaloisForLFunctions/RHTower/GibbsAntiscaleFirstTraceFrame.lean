@@ -437,7 +437,7 @@ theorem sum_routeEGibbsBatchWeight_mul_signedValue_eq_current
   field_simp [hZ]
 
 /-- The abstract batch mean energy is exactly the enlarged Gibbs current
-energy `J^2 / Z`. -/
+energy `J^(2 : ℕ) / Z`. -/
 theorem routeEGibbsBatchMeanEnergy_eq_currentEnergy
     (S P : Finset ℕ) (hdisj : Disjoint S P) (x : ℝ) :
     routeEBatchMeanEnergy P.powerset

@@ -35,7 +35,7 @@ def deningerQ8RootNumberNegOneSecondConjugation :
     (algebraMap deningerQ8RootNumberNegOneFirstQuadraticField
       deningerQ8RootNumberNegOneSecondQuadraticField)
     (-deningerQ8RootNumberNegOneSecondQuadraticRoot) (by
-      change (X ^ 2 - C (41 : deningerQ8RootNumberNegOneFirstQuadraticField)).eval₂
+      change (X ^ (2 : ℕ) - C (41 : deningerQ8RootNumberNegOneFirstQuadraticField)).eval₂
         (algebraMap deningerQ8RootNumberNegOneFirstQuadraticField
           deningerQ8RootNumberNegOneSecondQuadraticField)
         (-deningerQ8RootNumberNegOneSecondQuadraticRoot) = 0
@@ -206,12 +206,12 @@ theorem deningerQ8RootNumberNegOne_topS_mul_conj :
       ((AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 41) -
         (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 6) *
           deningerQ8RootNumberNegOneSecondQuadraticRoot) =
-        (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 41) ^ 2 -
-          (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 6) ^ 2 *
-            deningerQ8RootNumberNegOneSecondQuadraticRoot ^ 2 := by
+        (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 41) ^ (2 : ℕ) -
+          (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 6) ^ (2 : ℕ) *
+            deningerQ8RootNumberNegOneSecondQuadraticRoot ^ (2 : ℕ) := by
       ring
-    _ = (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 41) ^ 2 -
-          (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 6) ^ 2 * 41 := by
+    _ = (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 41) ^ (2 : ℕ) -
+          (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial 6) ^ (2 : ℕ) * 41 := by
       rw [deningerQ8RootNumberNegOneSecondQuadraticRoot_sq]
     _ = 205 := by
       have h41 : AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial
@@ -248,7 +248,7 @@ theorem deningerQ8RootNumberNegOne_topRadicand_mul_conj :
           deningerQ8RootNumberNegOneTopRadicand =
       (205 : deningerQ8RootNumberNegOneSecondQuadraticField) *
         (deningerQ8RootNumberNegOneTopR :
-          deningerQ8RootNumberNegOneSecondQuadraticField) ^ 2 := by
+          deningerQ8RootNumberNegOneSecondQuadraticField) ^ (2 : ℕ) := by
   rw [deningerQ8RootNumberNegOne_secondConjugation_topRadicand]
   change (deningerQ8RootNumberNegOneTopR :
       deningerQ8RootNumberNegOneSecondQuadraticField) * deningerQ8RootNumberNegOneTopS *
@@ -256,7 +256,7 @@ theorem deningerQ8RootNumberNegOne_topRadicand_mul_conj :
         deningerQ8RootNumberNegOneSecondQuadraticField) *
           deningerQ8RootNumberNegOneTopSConj) =
     205 * (deningerQ8RootNumberNegOneTopR :
-      deningerQ8RootNumberNegOneSecondQuadraticField) ^ 2
+      deningerQ8RootNumberNegOneSecondQuadraticField) ^ (2 : ℕ)
   calc
     (deningerQ8RootNumberNegOneTopR :
         deningerQ8RootNumberNegOneSecondQuadraticField) * deningerQ8RootNumberNegOneTopS *
@@ -264,11 +264,11 @@ theorem deningerQ8RootNumberNegOne_topRadicand_mul_conj :
           deningerQ8RootNumberNegOneSecondQuadraticField) *
             deningerQ8RootNumberNegOneTopSConj) =
         (deningerQ8RootNumberNegOneTopR :
-          deningerQ8RootNumberNegOneSecondQuadraticField) ^ 2 *
+          deningerQ8RootNumberNegOneSecondQuadraticField) ^ (2 : ℕ) *
           (deningerQ8RootNumberNegOneTopS * deningerQ8RootNumberNegOneTopSConj) := by
       ring
     _ = 205 * (deningerQ8RootNumberNegOneTopR :
-        deningerQ8RootNumberNegOneSecondQuadraticField) ^ 2 := by
+        deningerQ8RootNumberNegOneSecondQuadraticField) ^ (2 : ℕ) := by
       rw [deningerQ8RootNumberNegOne_topS_mul_conj]
       ring
 
@@ -288,7 +288,7 @@ theorem deningerQ8RootNumberNegOne_topR_ne_zero :
 /-- The final radicand is not a square in `ℚ(√5,√41)`. -/
 theorem deningerQ8RootNumberNegOne_topRadicand_not_square
     (w : deningerQ8RootNumberNegOneSecondQuadraticField) :
-    w ^ 2 ≠ deningerQ8RootNumberNegOneTopRadicand := by
+    w ^ (2 : ℕ) ≠ deningerQ8RootNumberNegOneTopRadicand := by
   intro hw
   let r : deningerQ8RootNumberNegOneSecondQuadraticField :=
     deningerQ8RootNumberNegOneTopR
@@ -301,23 +301,23 @@ theorem deningerQ8RootNumberNegOne_topRadicand_not_square
     apply (algebraMap deningerQ8RootNumberNegOneFirstQuadraticField
       deningerQ8RootNumberNegOneSecondQuadraticField).injective
     simpa [r] using hr
-  have hn_sq : n ^ 2 = 205 * r ^ 2 := by
+  have hn_sq : n ^ (2 : ℕ) = 205 * r ^ (2 : ℕ) := by
     unfold n
     calc
-      (w * deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
-          w ^ 2 * (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 := by
+      (w * deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
+          w ^ (2 : ℕ) * (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) := by
         ring
       _ = deningerQ8RootNumberNegOneTopRadicand *
           deningerQ8RootNumberNegOneSecondConjugation
             deningerQ8RootNumberNegOneTopRadicand := by
-        have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
+        have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
             deningerQ8RootNumberNegOneSecondConjugation
               deningerQ8RootNumberNegOneTopRadicand := by
           rw [← map_pow, hw]
         rw [hw, hconj]
-      _ = 205 * r ^ 2 := by
+      _ = 205 * r ^ (2 : ℕ) := by
         simpa [r] using deningerQ8RootNumberNegOne_topRadicand_mul_conj
-  have hv_sq : v ^ 2 = 205 := by
+  have hv_sq : v ^ (2 : ℕ) = 205 := by
     unfold v
     rw [div_pow, hn_sq]
     field_simp
@@ -338,10 +338,10 @@ theorem deningerQ8RootNumberNegOne_topRadicand_not_square
     deningerQ8RootNumberNegOneSecondQuadraticField).injective
   calc
     algebraMap deningerQ8RootNumberNegOneFirstQuadraticField
-        deningerQ8RootNumberNegOneSecondQuadraticField (a ^ 2) =
-        (a : deningerQ8RootNumberNegOneSecondQuadraticField) ^ 2 := by
+        deningerQ8RootNumberNegOneSecondQuadraticField (a ^ (2 : ℕ)) =
+        (a : deningerQ8RootNumberNegOneSecondQuadraticField) ^ (2 : ℕ) := by
       exact map_pow _ a 2
-    _ = v ^ 2 := by rw [ha]
+    _ = v ^ (2 : ℕ) := by rw [ha]
     _ = 205 := hv_sq
     _ = algebraMap deningerQ8RootNumberNegOneFirstQuadraticField
         deningerQ8RootNumberNegOneSecondQuadraticField
@@ -357,7 +357,7 @@ theorem deningerQ8RootNumberNegOne_topRadicand_not_square
 /-- The final quadratic polynomial of the literal degree-eight radical field. -/
 def deningerQ8RootNumberNegOneThirdQuadraticPolynomial :
     deningerQ8RootNumberNegOneSecondQuadraticField[X] :=
-  X ^ 2 - C deningerQ8RootNumberNegOneTopRadicand
+  X ^ (2 : ℕ) - C deningerQ8RootNumberNegOneTopRadicand
 
 theorem deningerQ8RootNumberNegOne_thirdQuadratic_irreducible :
     Irreducible deningerQ8RootNumberNegOneThirdQuadraticPolynomial := by
@@ -377,7 +377,7 @@ def deningerQ8RootNumberNegOneTopRoot : deningerQ8RootNumberNegOneTopField :=
   AdjoinRoot.root deningerQ8RootNumberNegOneThirdQuadraticPolynomial
 
 theorem deningerQ8RootNumberNegOneTopRoot_sq :
-    deningerQ8RootNumberNegOneTopRoot ^ 2 = deningerQ8RootNumberNegOneTopRadicand := by
+    deningerQ8RootNumberNegOneTopRoot ^ (2 : ℕ) = deningerQ8RootNumberNegOneTopRadicand := by
   have h := AdjoinRoot.eval₂_root deningerQ8RootNumberNegOneThirdQuadraticPolynomial
   rw [deningerQ8RootNumberNegOneThirdQuadraticPolynomial, eval₂_sub, eval₂_pow,
     eval₂_X, eval₂_C] at h

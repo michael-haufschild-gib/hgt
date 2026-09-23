@@ -26,7 +26,7 @@ principal Hurwitz phase. -/
 theorem xiHurwitzOrientationDefect_eq_sin_sq_rightPrincipalPhase
     (q : XiRightZeroCopy) :
     xiHurwitzOrientationDefect q.1.1 =
-      Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ 2 := by
+      Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ (2 : ℕ) := by
   rw [xiHurwitzOrientationDefect_eq_sin_sq,
     xiHurwitzRightPrincipalPhase_eq_transverse,
     xiRightCenteredZero_eq_support_sub_half]
@@ -42,7 +42,7 @@ global orientation energy. -/
 theorem xiHurwitzRightPrincipalPhase_witness_le_orientationEnergy
     (q : XiRightZeroCopy) :
     xiHurwitzOrientationWeight q.1.1 *
-        Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ 2 ≤
+        Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ (2 : ℕ) ≤
       xiHurwitzOrientationEnergy := by
   rw [← xiHurwitzOrientationDefect_eq_sin_sq_rightPrincipalPhase,
     ← xiHurwitzOrientationEnergyTerm]
@@ -68,7 +68,7 @@ theorem sin_two_pi_xiHurwitzRightPrincipalPhase_pos (q : XiRightZeroCopy) :
 
 theorem xiHurwitzRightPrincipalPhase_energyWitness_pos (q : XiRightZeroCopy) :
     0 < xiHurwitzOrientationWeight q.1.1 *
-      Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ 2 := by
+      Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ (2 : ℕ) := by
   exact mul_pos (xiHurwitzOrientationWeight_pos q.1.1)
     (sq_pos_of_pos (sin_two_pi_xiHurwitzRightPrincipalPhase_pos q))
 
@@ -85,7 +85,7 @@ theorem exists_continuedCauchyCore_eventually_lt_neg_half_phaseWitness
       ∀ᶠ n in atTop,
         xiWeilHilbertQuadratic (V n) <
           -(xiHurwitzOrientationWeight q.1.1 *
-            Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ 2) / 2 := by
+            Real.sin (2 * Real.pi * xiHurwitzRightPrincipalPhase q) ^ (2 : ℕ)) / 2 := by
   obtain ⟨V, hVmem, hV, hQ⟩ :=
     xiHurwitzOrientationEnergy_continuedCauchy_reconstruction
   refine ⟨V, hVmem, hV, hQ, ?_⟩

@@ -37,7 +37,7 @@ theorem tendsto_prolateWindowDistEnvelope {ι : Type*} {L : Filter ι} {mu c : �
 normalized prolate profile differs from `e^{−x²/2}` by at most the Grönwall envelope. -/
 theorem prolateGround_windowDist_bound
     {c mu chi lam K : ℝ} {Phi : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hne : Phi ≠ 0) (heven : Function.Even Phi) (hlam : lam ≠ 0)
     (hband : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)

@@ -187,7 +187,7 @@ theorem finiteLabelFusion_reflectedLabelAction_snd {n : ℕ}
 
 /-- Diagonal label vectors are positive directions of the reciprocal form. -/
 theorem reciprocalLabelQuadratic_diag {n : ℕ} (x : Fin n → ℝ) :
-    reciprocalLabelQuadratic (x, x) = 2 * ∑ i, x i ^ 2 := by
+    reciprocalLabelQuadratic (x, x) = 2 * ∑ i, x i ^ (2 : ℕ) := by
   rw [reciprocalLabelQuadratic_eq]
   congr 2
   funext i
@@ -195,9 +195,9 @@ theorem reciprocalLabelQuadratic_diag {n : ℕ} (x : Fin n → ℝ) :
 
 /-- Anti-diagonal label vectors are negative directions of the reciprocal form. -/
 theorem reciprocalLabelQuadratic_antidiag {n : ℕ} (x : Fin n → ℝ) :
-    reciprocalLabelQuadratic (x, fun i => -x i) = -2 * ∑ i, x i ^ 2 := by
+    reciprocalLabelQuadratic (x, fun i => -x i) = -2 * ∑ i, x i ^ (2 : ℕ) := by
   rw [reciprocalLabelQuadratic_eq]
-  have hsum : ∑ i, x i * -x i = -(∑ i, x i ^ 2) := by
+  have hsum : ∑ i, x i * -x i = -(∑ i, x i ^ (2 : ℕ)) := by
     rw [← Finset.sum_neg_distrib]
     apply Finset.sum_congr rfl
     intro i _
@@ -207,7 +207,7 @@ theorem reciprocalLabelQuadratic_antidiag {n : ℕ} (x : Fin n → ℝ) :
 
 /-- A nonzero finite label vector has strictly positive squared mass. -/
 theorem finiteLabel_sum_sq_pos {n : ℕ} {x : Fin n → ℝ} (hx : x ≠ 0) :
-    0 < ∑ i, x i ^ 2 := by
+    0 < ∑ i, x i ^ (2 : ℕ) := by
   have hex : ∃ i, x i ≠ 0 := by
     by_contra h
     push Not at h

@@ -136,7 +136,7 @@ theorem squarefreePrimeZeroProductGram_re_eq_signedPacketNormSq
     (P : SquarefreePrimeFamily k) (ξ : ZMod P.product → H) :
     (squarefreePrimeZeroProductGram P ξ).re =
       ∑ S ∈ (Finset.univ : Finset (Fin k)).powerset,
-        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimeCoordinatePacket P ξ S‖ ^ 2 := by
+        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimeCoordinatePacket P ξ S‖ ^ (2 : ℕ) := by
   classical
   letI : NormedSpace ℝ H := NormedSpace.restrictScalars ℝ ℂ H
   letI : InnerProductSpace ℝ H := InnerProductSpace.rclikeToReal ℂ H
@@ -182,7 +182,7 @@ theorem squarefreePrimeZeroProductGram_eq_signedPacketNormSq
     (P : SquarefreePrimeFamily k) (ξ : ZMod P.product → H) :
     squarefreePrimeZeroProductGram P ξ =
       ((∑ S ∈ (Finset.univ : Finset (Fin k)).powerset,
-        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimeCoordinatePacket P ξ S‖ ^ 2 : ℝ) : ℂ) := by
+        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimeCoordinatePacket P ξ S‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hreal := Complex.conj_eq_iff_re.mp (star_squarefreePrimeZeroProductGram P ξ)
   rw [← hreal]
   exact congrArg (fun r : ℝ => (r : ℂ))
@@ -195,7 +195,7 @@ theorem squarefreePrimeZeroProductGram_eq_signedCoprimePacketNormSq
     (P : SquarefreePrimeFamily k) (ξ : ZMod P.product → H) :
     squarefreePrimeZeroProductGram P ξ =
       ((∑ S ∈ (Finset.univ : Finset (Fin k)).powerset,
-        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimePacket P ξ S‖ ^ 2 : ℝ) : ℂ) := by
+        (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimePacket P ξ S‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [squarefreePrimeZeroProductGram_eq_signedPacketNormSq]
   congr 1
   apply Finset.sum_congr rfl
@@ -208,9 +208,9 @@ theorem squarefreePrimeShearPacketForm_eq_signedCoprimePacketNormSq
     {k : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (P : SquarefreePrimeFamily k) (ξ : ZMod P.product → H) :
     squarefreePrimeShearPacketForm P ξ =
-      (P.product : ℂ) ^ 2 *
+      (P.product : ℂ) ^ (2 : ℕ) *
         ((∑ S ∈ (Finset.univ : Finset (Fin k)).powerset,
-          (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimePacket P ξ S‖ ^ 2 : ℝ) : ℂ) := by
+          (-1 : ℝ) ^ S.card * ‖squarefreePrimeCoprimePacket P ξ S‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [squarefreePrimeShearPacketForm_eq_zeroProductGram,
     squarefreePrimeZeroProductGram_eq_signedCoprimePacketNormSq]
 

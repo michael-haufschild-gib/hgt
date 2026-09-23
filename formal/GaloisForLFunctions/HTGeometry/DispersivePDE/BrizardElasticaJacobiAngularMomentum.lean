@@ -29,7 +29,7 @@ theorem physicalAngularOmega_pos (P : PhysicalRegionI) :
   exact Real.sqrt_pos.2 (physicalAngularOmegaSq_pos P)
 
 theorem physicalAngularOmega_sq (P : PhysicalRegionI) :
-    physicalAngularOmega P ^ 2 =
+    physicalAngularOmega P ^ (2 : ℕ) =
       angularOmegaSq (physicalRegionIAngularParameters P) := by
   rw [physicalAngularOmega,
     Real.sq_sqrt (physicalAngularOmegaSq_pos P).le]
@@ -46,9 +46,9 @@ noncomputable def jacobiAngularVelocity
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
   physicalAngularOmega P *
     (1 +
-      (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) /
-        (correctedJacobiAmplitude P J v ^ 2 -
-          physicalAngularOmega P ^ 2))
+      (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) /
+        (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
+          physicalAngularOmega P ^ (2 : ℕ)))
 
 /-- Radial-denominator form of the same angular equation. -/
 theorem jacobiAngularVelocity_eq_radial
@@ -56,11 +56,11 @@ theorem jacobiAngularVelocity_eq_radial
     jacobiAngularVelocity P J v =
       physicalAngularOmega P *
         (1 +
-          (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) /
-            jacobiRadialAmplitude P J v ^ 2) := by
+          (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) /
+            jacobiRadialAmplitude P J v ^ (2 : ℕ)) := by
   have hgap :
-      correctedJacobiAmplitude P J v ^ 2 - physicalAngularOmega P ^ 2 =
-        jacobiRadialAmplitude P J v ^ 2 := by
+      correctedJacobiAmplitude P J v ^ (2 : ℕ) - physicalAngularOmega P ^ (2 : ℕ) =
+        jacobiRadialAmplitude P J v ^ (2 : ℕ) := by
     rw [physicalAngularOmega_sq, jacobiRadialAmplitude_sq,
       correctedJacobiAmplitude_sq]
     ring
@@ -83,10 +83,10 @@ theorem jacobiAngularVelocity_pos
 noncomputable def jacobiAngularAcceleration
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
   -2 * physicalAngularOmega P *
-      (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) *
+      (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) *
       correctedJacobiAmplitude P J v * correctedJacobiAmplitudeVelocity P J v /
-    (correctedJacobiAmplitude P J v ^ 2 -
-      physicalAngularOmega P ^ 2) ^ 2
+    (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
+      physicalAngularOmega P ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem jacobiAngularVelocity_hasDerivAt
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
@@ -95,34 +95,34 @@ theorem jacobiAngularVelocity_hasDerivAt
   have hA := correctedJacobiAmplitude_hasDerivAt P J v
   have hsq := hA.fun_pow 2
   norm_num at hsq
-  have hgap := hsq.sub_const (physicalAngularOmega P ^ 2)
+  have hgap := hsq.sub_const (physicalAngularOmega P ^ (2 : ℕ))
   have hgap_ne :
-      correctedJacobiAmplitude P J v ^ 2 - physicalAngularOmega P ^ 2 ≠ 0 := by
+      correctedJacobiAmplitude P J v ^ (2 : ℕ) - physicalAngularOmega P ^ (2 : ℕ) ≠ 0 := by
     rw [physicalAngularOmega_sq]
     exact ne_of_gt
       (physicalRegionI_correctedAmplitude_sq_sub_angularOmegaSq_pos P J v)
   have hconst := hasDerivAt_const v
-    (physicalAngularOmega P ^ 2 + gammaSq P.val / 2)
+    (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2)
   have hdiv := hconst.div hgap hgap_ne
   have hadd := hdiv.const_add 1
   have h := HasDerivAt.const_mul (physicalAngularOmega P) hadd
   have hderiv :
       physicalAngularOmega P *
-          ((0 * (correctedJacobiAmplitude P J v ^ 2 -
-                physicalAngularOmega P ^ 2) -
-              (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) *
+          ((0 * (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
+                physicalAngularOmega P ^ (2 : ℕ)) -
+              (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) *
                 (2 * correctedJacobiAmplitude P J v *
                   correctedJacobiAmplitudeVelocity P J v)) /
-            (correctedJacobiAmplitude P J v ^ 2 -
-              physicalAngularOmega P ^ 2) ^ 2) =
+            (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
+              physicalAngularOmega P ^ (2 : ℕ)) ^ (2 : ℕ)) =
         jacobiAngularAcceleration P J v := by
     rw [jacobiAngularAcceleration]
     ring
   change HasDerivAt
     (fun y => physicalAngularOmega P *
-      (1 + (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) /
-        (correctedJacobiAmplitude P J y ^ 2 -
-          physicalAngularOmega P ^ 2)))
+      (1 + (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) /
+        (correctedJacobiAmplitude P J y ^ (2 : ℕ) -
+          physicalAngularOmega P ^ (2 : ℕ))))
     (jacobiAngularAcceleration P J v) v
   exact h.congr_deriv hderiv
 
@@ -134,7 +134,7 @@ theorem jacobiAngularAcceleration_zero
 
 noncomputable def jacobiCorotatingAngularMomentum
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
-  jacobiRadialAmplitude P J v ^ 2 *
+  jacobiRadialAmplitude P J v ^ (2 : ℕ) *
     (jacobiAngularVelocity P J v - physicalAngularOmega P)
 
 /-- The co-rotating angular momentum is independent of position. -/
@@ -142,7 +142,7 @@ theorem jacobiCorotatingAngularMomentum_eq
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
     jacobiCorotatingAngularMomentum P J v =
       physicalAngularOmega P *
-        (physicalAngularOmega P ^ 2 + gammaSq P.val / 2) := by
+        (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2) := by
   rw [jacobiCorotatingAngularMomentum, jacobiAngularVelocity_eq_radial]
   field_simp [ne_of_gt (jacobiRadialAmplitude_pos P J v)]
   ring
@@ -160,7 +160,7 @@ theorem jacobiCorotatingAngularMomentum_hasDerivAt_zero
     HasDerivAt (jacobiCorotatingAngularMomentum P J) 0 v := by
   have hconst := hasDerivAt_const v
     (physicalAngularOmega P *
-      (physicalAngularOmega P ^ 2 + gammaSq P.val / 2))
+      (physicalAngularOmega P ^ (2 : ℕ) + gammaSq P.val / 2))
   apply hconst.congr_of_eventuallyEq
   filter_upwards with y
   exact jacobiCorotatingAngularMomentum_eq P J y

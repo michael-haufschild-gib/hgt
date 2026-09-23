@@ -6,11 +6,11 @@ import GaloisForLFunctions.RHTower.IharaBlockSelector
 For two Ising spins with ferromagnetic coupling, normalization in the field fugacity gives the
 quadratic block
 
-`1 + 2 c z + z^2`,
+`1 + 2 c z + z^(2 : ℕ)`,
 
 where `c = exp(-2J)` lies in `[0,1]` when `J ≥ 0`.  This file identifies that polynomial with the
 already formalized reciprocal quadratic selector and proves that its zeros lie on the unit circle
-exactly when `c^2 ≤ 1`.
+exactly when `c^(2 : ℕ) ≤ 1`.
 
 The finite result is classical infrastructure, not an RH theorem.  It also supplies a sharp no-go:
 reciprocity remains true outside the ferromagnetic chamber and therefore cannot replace the
@@ -23,7 +23,7 @@ open GaloisForLFunctions
 
 /-- The normalized two-spin Ising fugacity block. -/
 def leeYangPairBlock (c : ℝ) (z : ℂ) : ℂ :=
-  1 + (2 * c : ℝ) * z + z ^ 2
+  1 + (2 * c : ℝ) * z + z ^ (2 : ℕ)
 
 /-- Both zeros of the pair block lie on the unit circle. -/
 def leeYangPairCircle (c : ℝ) : Prop :=
@@ -38,7 +38,7 @@ theorem leeYangPairBlock_eq_iharaBlock (c : ℝ) (z : ℂ) :
 
 /-- Exact two-spin Lee--Yang selector. -/
 theorem leeYangPairCircle_iff (c : ℝ) :
-    leeYangPairCircle c ↔ c ^ 2 ≤ 1 := by
+    leeYangPairCircle c ↔ c ^ (2 : ℕ) ≤ 1 := by
   constructor
   · intro hc
     have hcircle : zerosOnCriticalCircle 1 (-2 * c) := by
@@ -71,7 +71,7 @@ theorem leeYangPairCircle_of_ferromagneticCoefficient {c : ℝ}
 
 /-- Fugacity reciprocity is automatic, independently of the ferromagnetic inequality. -/
 theorem leeYangPairBlock_reciprocal (c : ℝ) {z : ℂ} (hz : z ≠ 0) :
-    z ^ 2 * leeYangPairBlock c z⁻¹ = leeYangPairBlock c z := by
+    z ^ (2 : ℕ) * leeYangPairBlock c z⁻¹ = leeYangPairBlock c z := by
   rw [leeYangPairBlock_eq_iharaBlock, leeYangPairBlock_eq_iharaBlock]
   simpa using iharaBlock_reciprocal_identity
     (q := (1 : ℝ)) (lambda := -2 * c) (by norm_num) hz
@@ -79,7 +79,7 @@ theorem leeYangPairBlock_reciprocal (c : ℝ) {z : ℂ} (hz : z ≠ 0) :
 /-- Positive no-go boundary: reciprocal symmetry survives at `c = 2`, but circle localization does
 not.  The missing datum is the coefficient chamber, not another functional equation. -/
 theorem leeYangPair_reciprocity_does_not_force_circle :
-    (∀ z : ℂ, z ≠ 0 → z ^ 2 * leeYangPairBlock 2 z⁻¹ = leeYangPairBlock 2 z) ∧
+    (∀ z : ℂ, z ≠ 0 → z ^ (2 : ℕ) * leeYangPairBlock 2 z⁻¹ = leeYangPairBlock 2 z) ∧
       ¬ leeYangPairCircle 2 := by
   refine ⟨fun z hz => leeYangPairBlock_reciprocal 2 hz, ?_⟩
   rw [leeYangPairCircle_iff]

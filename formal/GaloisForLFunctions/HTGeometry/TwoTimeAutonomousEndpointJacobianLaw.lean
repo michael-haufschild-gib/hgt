@@ -79,7 +79,7 @@ theorem hasFDerivAt_autonomousLinearGeneratorEndpoint_zero
     HasFDerivAt (𝕜 := ℝ) (autonomousLinearGeneratorEndpoint x G t)
       (autonomousLinearGeneratorEndpointJacobian x G t) 0 := by
   rw [hasFDerivAt_iff_isLittleO_nhds_zero]
-  refine (Asymptotics.IsBigO.of_bound (t ^ 2 * ‖G‖ ^ 2) ?_).trans_isLittleO
+  refine (Asymptotics.IsBigO.of_bound (t ^ (2 : ℕ) * ‖G‖ ^ (2 : ℕ)) ?_).trans_isLittleO
     (Asymptotics.isLittleO_norm_pow_id (n := 2) one_lt_two)
   filter_upwards
   intro v
@@ -102,11 +102,11 @@ theorem hasFDerivAt_autonomousLinearGeneratorEndpoint_zero
         autonomousPerturbedEndpoint x (G v) t 0 -
         (1 : ℝ) • (exp (t • x) *
           duhamelConjugationPrimitive x (G v) t)‖ ≤
-        t ^ 2 * ‖G v‖ ^ 2 := by simpa using h
-    _ ≤ t ^ 2 * (‖G‖ * ‖v‖) ^ 2 := by
+        t ^ (2 : ℕ) * ‖G v‖ ^ (2 : ℕ) := by simpa using h
+    _ ≤ t ^ (2 : ℕ) * (‖G‖ * ‖v‖) ^ (2 : ℕ) := by
       gcongr
       exact G.le_opNorm v
-    _ = (t ^ 2 * ‖G‖ ^ 2) * ‖‖v‖ ^ 2‖ := by
+    _ = (t ^ (2 : ℕ) * ‖G‖ ^ (2 : ℕ)) * ‖‖v‖ ^ (2 : ℕ)‖ := by
       rw [Real.norm_of_nonneg (sq_nonneg _)]
       ring
 

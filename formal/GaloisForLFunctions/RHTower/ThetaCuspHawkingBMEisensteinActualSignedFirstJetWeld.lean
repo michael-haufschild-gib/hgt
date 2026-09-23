@@ -29,7 +29,7 @@ noncomputable section
 
 /-- Uniform Bessel constant on every exterior-cusp differentiation neighborhood. -/
 def d4BMSignedWhittakerLocalBesselConstant (mu : ℂ) : ℝ :=
-  Real.exp (‖mu‖ ^ 2) * Real.sqrt (4 * Real.pi)
+  Real.exp (‖mu‖ ^ (2 : ℕ)) * Real.sqrt (4 * Real.pi)
 
 lemma d4BMSignedWhittakerLocalBesselConstant_nonneg (mu : ℂ) :
     0 ≤ d4BMSignedWhittakerLocalBesselConstant mu := by
@@ -65,12 +65,12 @@ theorem d4BM_norm_modifiedBesselKOrder_signed_local_le
     exact hnq.trans hscale
   have hsHalf : (1 / 2 : ℝ) ≤ (s : ℝ) :=
     (by nlinarith [hnOne] : (1 / 2 : ℝ) ≤ ((N : ℝ) + 1) / 2).trans hhalf_le_s
-  have horder : ‖mu‖ ^ 2 / (2 * (s : ℝ)) ≤ ‖mu‖ ^ 2 := by
+  have horder : ‖mu‖ ^ (2 : ℕ) / (2 * (s : ℝ)) ≤ ‖mu‖ ^ (2 : ℕ) := by
     have hden : (1 : ℝ) ≤ 2 * (s : ℝ) := by nlinarith
     calc
-      ‖mu‖ ^ 2 / (2 * (s : ℝ)) ≤ ‖mu‖ ^ 2 / 1 := by
+      ‖mu‖ ^ (2 : ℕ) / (2 * (s : ℝ)) ≤ ‖mu‖ ^ (2 : ℕ) / 1 := by
         exact div_le_div_of_nonneg_left (sq_nonneg ‖mu‖) (by positivity) hden
-      _ = ‖mu‖ ^ 2 := by ring
+      _ = ‖mu‖ ^ (2 : ℕ) := by ring
   have hsqrt : Real.sqrt (2 * Real.pi / (s : ℝ)) ≤
       Real.sqrt (4 * Real.pi) := by
     apply Real.sqrt_le_sqrt
@@ -84,11 +84,11 @@ theorem d4BM_norm_modifiedBesselKOrder_signed_local_le
     ‖GaloisForLFunctions.HTGeometry.modifiedBesselKOrder
         (2 * Real.pi * ((N : ℝ) + 1) * q) mu‖
         ≤ Real.exp (-(s : ℝ)) *
-            Real.exp (‖mu‖ ^ 2 / (2 * (s : ℝ))) *
+            Real.exp (‖mu‖ ^ (2 : ℕ) / (2 * (s : ℝ))) *
               Real.sqrt (2 * Real.pi / (s : ℝ)) := by
           simpa [s] using henv
     _ ≤ Real.exp (-(((N : ℝ) + 1) / 2)) *
-          Real.exp (‖mu‖ ^ 2) * Real.sqrt (4 * Real.pi) := by
+          Real.exp (‖mu‖ ^ (2 : ℕ)) * Real.sqrt (4 * Real.pi) := by
           gcongr
     _ = d4BMSignedWhittakerLocalBesselConstant mu *
           Real.exp (-(((N : ℝ) + 1) / 2)) := by
@@ -403,12 +403,12 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_vertical
   let M : ℕ → ℝ := fun N =>
     d4BMSignedWhittakerLocalFirstJetConstant Y nu *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 1‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (1 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   let M0 : ℕ → ℝ := fun N =>
     d4BMSignedWhittakerLocalValueConstant Y nu *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 0‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (0 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 1).mul_left
@@ -508,12 +508,12 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_horizontal
   let M : ℕ → ℝ := fun N =>
     (2 * Real.pi * C) *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 1‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (1 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   let M0 : ℕ → ℝ := fun N =>
     C *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 0‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (0 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 1).mul_left
@@ -608,7 +608,7 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerVerticalFirstJet
   let C := d4BMSignedWhittakerLocalFirstJetConstant Y nu
   let M : ℕ → ℝ := fun N =>
     C * (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-      ((N + 1 : ℕ) : ℂ) ^ 1‖ * Real.exp (-(((N : ℝ) + 1) / 2)))
+      ((N + 1 : ℕ) : ℂ) ^ (1 : ℕ)‖ * Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 1).mul_left C
   apply Summable.of_norm_bounded hM
@@ -644,7 +644,7 @@ theorem summable_d4BMCompletedEisensteinWeightedSignedWhittakerHorizontalFirstJe
   let M : ℕ → ℝ := fun N =>
     (2 * Real.pi * C) *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-        ((N + 1 : ℕ) : ℂ) ^ 1‖ * Real.exp (-(((N : ℝ) + 1) / 2)))
+        ((N + 1 : ℕ) : ℂ) ^ (1 : ℕ)‖ * Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 1).mul_left
       (2 * Real.pi * C)
@@ -702,7 +702,7 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerVerticalFirstJetTai
   let M : ℕ → ℝ := fun N =>
     (2 * Real.pi * C) *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 2‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (2 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 2).mul_left
@@ -778,13 +778,13 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetT
       u negative N nu q Y
   let C := d4BMSignedWhittakerLocalValueConstant Y nu
   let M : ℕ → ℝ := fun N =>
-    ((2 * Real.pi) ^ 2 * C) *
+    ((2 * Real.pi) ^ (2 : ℕ) * C) *
       (‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          ((N + 1 : ℕ) : ℂ) ^ 2‖ *
+          ((N + 1 : ℕ) : ℂ) ^ (2 : ℕ)‖ *
         Real.exp (-(((N : ℝ) + 1) / 2)))
   have hM : Summable M :=
     (summable_d4BMCompletedEisensteinCoefficientIndexExpHalf u 2).mul_left
-      ((2 * Real.pi) ^ 2 * C)
+      ((2 * Real.pi) ^ (2 : ℕ) * C)
   have hYmem : (Y : ℝ) ∈ Ioo (1 / 2 : ℝ) (2 * (Y : ℝ)) := by
     constructor <;> linarith [Y.2]
   have hvalue (N : ℕ) := norm_d4BMWhittakerP0_signed_local_le Y hYmem N nu
@@ -800,14 +800,14 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetT
     intro N q _hq
     rw [show g' N q =
         d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ *
-          (d4BMSignedFourierRate negative N ^ 2 *
+          (d4BMSignedFourierRate negative N ^ (2 : ℕ) *
             (d4BMCompletedEisensteinFourierPhase negative N q *
               d4BMWhittakerP0 (d4BMPositiveFourierScale N) nu Y)) by rfl,
       norm_mul, norm_mul, norm_pow, norm_mul, norm_d4BMSignedFourierRate,
       d4BM_norm_completedEisensteinFourierPhase, one_mul]
     calc
       _ ≤ ‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩‖ *
-          (2 * Real.pi * ((N : ℝ) + 1)) ^ 2 *
+          (2 * Real.pi * ((N : ℝ) + 1)) ^ (2 : ℕ) *
             (C * Real.exp (-(((N : ℝ) + 1) / 2))) := by
               have hvalue' :
                   ‖d4BMWhittakerP0 (d4BMPositiveFourierScale N) nu Y‖ ≤
@@ -816,7 +816,7 @@ theorem hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerHorizontalFirstJetT
               have hnonneg :
                   0 ≤ ‖d4BMCompletedEisensteinWhittakerCoefficient
                       u ⟨N + 1, by omega⟩‖ *
-                    (2 * Real.pi * ((N : ℝ) + 1)) ^ 2 := by positivity
+                    (2 * Real.pi * ((N : ℝ) + 1)) ^ (2 : ℕ) := by positivity
               simpa only [mul_assoc] using
                 mul_le_mul_of_nonneg_left hvalue' hnonneg
       _ = M N := by

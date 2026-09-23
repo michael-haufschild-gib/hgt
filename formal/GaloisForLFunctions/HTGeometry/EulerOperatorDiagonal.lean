@@ -32,7 +32,7 @@ theorem contDiff_iteratedDeriv {f : ℂ → ℂ} (h : ContDiff ℂ (⊤ : ℕ∞
     rw [iteratedDeriv_succ]
     exact ih.deriv'
 
-theorem differentiable_iteratedDeriv {f : ℂ → ℂ} (h : ContDiff ℂ (⊤ : ℕ∞) f) (n : ℕ) :
+theorem differentiable_iteratedDeriv_eulerOperatorDiagonal {f : ℂ → ℂ} (h : ContDiff ℂ (⊤ : ℕ∞) f) (n : ℕ) :
     Differentiable ℂ (iteratedDeriv n f) :=
   (contDiff_iteratedDeriv h n).differentiable (by simp)
 
@@ -53,8 +53,8 @@ private theorem iteratedDeriv_id_mul {g : ℂ → ℂ} (hg : ContDiff ℂ (⊤ :
     ring
   | succ n ih =>
     funext u
-    have hd1 : Differentiable ℂ (iteratedDeriv (n + 1) g) := differentiable_iteratedDeriv hg _
-    have hd0 : Differentiable ℂ (iteratedDeriv n g) := differentiable_iteratedDeriv hg _
+    have hd1 : Differentiable ℂ (iteratedDeriv (n + 1) g) := differentiable_iteratedDeriv_eulerOperatorDiagonal hg _
+    have hd0 : Differentiable ℂ (iteratedDeriv n g) := differentiable_iteratedDeriv_eulerOperatorDiagonal hg _
     have hA : HasDerivAt (fun y : ℂ => y * iteratedDeriv (n + 1) g y)
         (1 * iteratedDeriv (n + 1) g u + u * iteratedDeriv (n + 1 + 1) g u) u := by
       have hstep := (hasDerivAt_id u).mul (hd1 u).hasDerivAt

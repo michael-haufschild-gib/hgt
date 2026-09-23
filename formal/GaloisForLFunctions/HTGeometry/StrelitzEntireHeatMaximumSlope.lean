@@ -21,7 +21,7 @@ slope to be sublinear. -/
 theorem tendsto_strelitzMaximumSlope_div_id_zero_of_entireHeat
     {a : ℕ → ℂ} (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) :
     Tendsto (fun x : ℝ => strelitzMaximumSlope a x / x) atTop (nhds 0) := by
@@ -35,7 +35,7 @@ slope to diverge while remaining sublinear. -/
 theorem strelitzMaximumSlope_growth_of_entireHeat
     {a : ℕ → ℂ} (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) :
     Tendsto (strelitzMaximumSlope a) atTop atTop ∧

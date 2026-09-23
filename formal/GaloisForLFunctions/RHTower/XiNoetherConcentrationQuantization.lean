@@ -29,13 +29,13 @@ radius leaves the universal action `π lambda² / (1 - lambda²)`. -/
 theorem scaleNormalized_integral_sq_lineConjugateCauchyConcentrationProfile
     {b lambda : ℝ} (hb : 0 < b) (hlambda : 0 < lambda) (hlambda_one : lambda < 1) :
     b * (∫ t : ℝ,
-      lineConjugateCauchyConcentrationProfile b (lambda * b) t ^ 2) =
-      Real.pi * lambda ^ 2 / (1 - lambda ^ 2) := by
+      lineConjugateCauchyConcentrationProfile b (lambda * b) t ^ (2 : ℕ)) =
+      Real.pi * lambda ^ (2 : ℕ) / (1 - lambda ^ (2 : ℕ)) := by
   have hy : 0 < lambda * b := mul_pos hlambda hb
   have hyb : lambda * b < b := by nlinarith
   rw [integral_sq_lineConjugateCauchyConcentrationProfile hy hyb]
   have hbne : b ≠ 0 := ne_of_gt hb
-  have hlambda_sq : 1 - lambda ^ 2 ≠ 0 := by nlinarith
+  have hlambda_sq : 1 - lambda ^ (2 : ℕ) ≠ 0 := by nlinarith
   field_simp [hbne, hlambda_sq]
 
 /-- **Xi Noether--concentration quantization.**  For one off-line Xi divisor copy, absolute
@@ -50,8 +50,8 @@ theorem abs_routeRPrimeGammaXiNoetherOrientationCharge_mul_concentrationEnergy_e
     let m := (analyticOrderAt xi (rho : ℂ)).toNat
     |routeRPrimeGammaXiNoetherOrientationCharge rho| *
         (∫ t : ℝ,
-          lineConjugateCauchyConcentrationProfile b (lambda * b) t ^ 2) =
-      (m : ℝ) * Real.pi * lambda ^ 2 / (2 * (1 - lambda ^ 2)) := by
+          lineConjugateCauchyConcentrationProfile b (lambda * b) t ^ (2 : ℕ)) =
+      (m : ℝ) * Real.pi * lambda ^ (2 : ℕ) / (2 * (1 - lambda ^ (2 : ℕ))) := by
   dsimp only
   have hbne : routeRPrimeGammaXiResolutionCoreRadius rho ≠ 0 := by
     intro hb
@@ -66,7 +66,7 @@ theorem abs_routeRPrimeGammaXiNoetherOrientationCharge_mul_concentrationEnergy_e
   have hscale :=
     scaleNormalized_integral_sq_lineConjugateCauchyConcentrationProfile
       hb hlambda hlambda_one
-  have hlambda_sq : 1 - lambda ^ 2 ≠ 0 := by nlinarith
+  have hlambda_sq : 1 - lambda ^ (2 : ℕ) ≠ 0 := by nlinarith
   field_simp [hbne, hlambda_sq] at hscale ⊢
   nlinarith [hscale]
 

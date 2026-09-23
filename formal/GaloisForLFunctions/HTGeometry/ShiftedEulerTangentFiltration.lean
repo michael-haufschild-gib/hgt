@@ -336,10 +336,10 @@ theorem iteratedDeriv_reflectedQuotient_affine (c₀ c₁ s : ℂ) (k : ℕ) :
   simp
 
 /-- The prime-power second layer: for `n = p^a` the second transverse derivative is
-`4 (a-1) (log p)^2`. -/
+`4 (a-1) (log p)^(2 : ℕ)`. -/
 theorem iteratedDeriv_two_shiftedEulerCoeff_primePow {p a : ℕ} (hp : p.Prime) (ha : 1 ≤ a) :
     iteratedDeriv 2 (shiftedEulerCoeff (p ^ a)) 0
-      = 4 * ((a : ℂ) - 1) * (Real.log p : ℂ) ^ 2 := by
+      = 4 * ((a : ℂ) - 1) * (Real.log p : ℂ) ^ (2 : ℕ) := by
   have hfactors : (p ^ a).primeFactors = {p} := by
     rw [Nat.primeFactors_pow _ (by omega), hp.primeFactors]
   have hlog : (Real.log ((p ^ a : ℕ) : ℝ) : ℂ) = (a : ℂ) * (Real.log p : ℂ) := by

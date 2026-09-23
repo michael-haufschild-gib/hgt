@@ -19,7 +19,7 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionScale (n : ℕ) (x : ℝ) :
       (2*thetaCuspSingleAtomReflectionScale n x) x := by
   unfold thetaCuspSingleAtomReflectionScale
   exact ((((Real.hasDerivAt_exp (2*x)).comp x
-    ((hasDerivAt_id x).const_mul 2)).const_mul (Real.pi*(n : ℝ)^2))).congr_deriv (by ring)
+    ((hasDerivAt_id x).const_mul 2)).const_mul (Real.pi*(n : ℝ)^(2 : ℕ)))).congr_deriv (by ring)
 
 private def atomProfile (n : ℕ) (P : ℝ[X]) (x : ℝ) : ℝ :=
   Real.exp (x/2-thetaCuspSingleAtomReflectionScale n x)*P.eval (thetaCuspSingleAtomReflectionScale n x)
@@ -37,14 +37,14 @@ private theorem hasDerivAt_atomProfile (n : ℕ) (P : ℝ[X]) (x : ℝ) :
 private theorem sourceTerm_eq_atomProfile (n : ℕ) :
     (fun x : ℝ => thetaCuspSourceTerm x n) = atomProfile n (thetaCuspFirstAtomJetPolynomial 0) := by
   funext x
-  have he : Real.exp (2*x) = Real.exp x^2 := by
+  have he : Real.exp (2*x) = Real.exp x^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]; congr 1; ring
   simp only [thetaCuspSourceTerm, thetaCuspSeed, atomProfile, thetaCuspFirstAtomJetPolynomial,
     thetaCuspSingleAtomReflectionScale, eval_sub, eval_mul, eval_pow, eval_C, eval_X,
     he, Real.exp_sub, div_eq_mul_inv]
   rw [← Real.exp_neg]
   simp only [mul_pow]
-  rw [show -Real.pi*((n : ℝ)^2*Real.exp x^2) = -(Real.pi*(n : ℝ)^2*Real.exp x^2) by ring]
+  rw [show -Real.pi*((n : ℝ)^(2 : ℕ)*Real.exp x^(2 : ℕ)) = -(Real.pi*(n : ℝ)^(2 : ℕ)*Real.exp x^(2 : ℕ)) by ring]
   ring
 
 /-- One exact polynomial recurrence gives all derivatives of every literal source atom. -/
@@ -105,7 +105,7 @@ def thetaCuspTwoAtomScaleReflectionJet (n : ℕ) (q z : ℝ) : ℝ :=
 /-- The full retained reflection jet is its exact polynomial times the common Gaussian square. -/
 theorem thetaCuspTwoAtomReflectionJet_eq_scale (n : ℕ) (x : ℝ) :
     thetaCuspTwoAtomReflectionJet n x =
-      Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)^2*
+      Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)^(2 : ℕ)*
         thetaCuspTwoAtomScaleReflectionJet n (thetaCuspSingleAtomReflectionScale 1 x)
           (Real.exp (-3*thetaCuspSingleAtomReflectionScale 1 x)) := by
   rw [thetaCuspTwoAtomReflectionJet_eq]
@@ -120,7 +120,7 @@ theorem thetaCuspTwoAtomScaledEvenJet_eq_scale (k : ℕ) (x : ℝ) :
     thetaCuspTwoAtomScaledEvenJet k x =
       (-1 : ℝ)^k*thetaCuspTwoAtomScaleReflectionJet (2*k)
         (thetaCuspSingleAtomReflectionScale 1 x) (Real.exp (-3*thetaCuspSingleAtomReflectionScale 1 x))/
-      ((thetaCuspFirstAtomJetPolynomial 0).eval (thetaCuspSingleAtomReflectionScale 1 x)^2*
+      ((thetaCuspFirstAtomJetPolynomial 0).eval (thetaCuspSingleAtomReflectionScale 1 x)^(2 : ℕ)*
         thetaCuspSingleAtomReflectionScale 1 x^k) := by
   have hseed : thetaCuspSourceTerm x 1 =
       Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)*

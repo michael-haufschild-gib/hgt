@@ -36,7 +36,7 @@ theorem clearedPrincipalDifference_hasDerivAt (q : XiZeroCopy) (branch : Bool) (
     HasDerivAt (clearedPrincipalDifference q branch w a i)
       (clearedPrincipalDifferenceFirst q branch w a i t) t ∧
     HasDerivAt (clearedPrincipalDifferenceFirst q branch w a i)
-      (w^2*clearedPrincipalDifference q branch w a i t+
+      (w^(2 : ℕ)*clearedPrincipalDifference q branch w a i t+
         principalPotential q i t*clearedPrincipalDifference q branch w a i t-
         clearedPrincipalForcing q branch w a i t) t := by
   have hU : clearedPrincipalDifference q branch w a i =

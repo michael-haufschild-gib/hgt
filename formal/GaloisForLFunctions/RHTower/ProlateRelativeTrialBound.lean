@@ -176,11 +176,11 @@ theorem prolate_trial_le_of_orthogonal_high {c K : ℝ} (hc0 : 0 < c)
             exact hwv
           exact hgoal
       have hquad : (inner ℝ u (GaloisForLFunctions.RHTower.bandClass
-            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ 2 := by
+            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ (2 : ℕ) := by
         have hrel := prolate_form_le_of_orthogonal_high hc0 hμ horthE
         rw [hform, hnorm] at hrel
         exact hrel
-      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ 2 := inner_self_bandComponent c v μ
+      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ (2 : ℕ) := inner_self_bandComponent c v μ
       rw [hmove, hproj, hselfinner]
       exact hquad
   -- sum the estimate

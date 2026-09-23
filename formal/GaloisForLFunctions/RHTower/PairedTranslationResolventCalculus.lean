@@ -181,7 +181,7 @@ theorem hasDerivAt_resolventProfile {w : Fin n → ℂ} (r : Fin n → ℝ) {c :
 theorem bilSum_resolvent_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r : Fin n → ℝ) {c : ℝ}
     (hc : ∀ j, w j + (c : ℂ) ≠ 0) :
     2 * (∑ j, ∑ k, (r j : ℂ) * resolventCoeff w r c k / (w j + w k))
-      = (∑ j, resolventCoeff w r c j) ^ 2
+      = (∑ j, resolventCoeff w r c j) ^ (2 : ℕ)
         + 2 * (c : ℂ) * ∑ j, ∑ k,
             resolventCoeff w r c j * resolventCoeff w r c k / (w j + w k) := by
   classical
@@ -208,7 +208,7 @@ theorem hermSum_resolvent_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
     (hc : ∀ j, w j + (c : ℂ) ≠ 0) :
     2 * (∑ j, ∑ k, (starRingEnd ℂ) ((r j : ℂ)) * resolventCoeff w r c k
             / ((starRingEnd ℂ) (w j) + w k)).re
-      = ‖∑ j, resolventCoeff w r c j‖ ^ 2
+      = ‖∑ j, resolventCoeff w r c j‖ ^ (2 : ℕ)
         + 2 * c * (∑ j, ∑ k, (starRingEnd ℂ) (resolventCoeff w r c j) * resolventCoeff w r c k
             / ((starRingEnd ℂ) (w j) + w k)).re := by
   classical
@@ -251,7 +251,7 @@ theorem hermSum_resolvent_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
     rw [Finset.sum_congr rfl fun j _ => hinner j]
     exact (hermSum_swap w (fun j => (r j : ℂ)) s).symm
   rw [hswap] at hL
-  have hnorm : ((∑ j, (starRingEnd ℂ) (s j)) * ∑ k, s k).re = ‖∑ j, s j‖ ^ 2 := by
+  have hnorm : ((∑ j, (starRingEnd ℂ) (s j)) * ∑ k, s k).re = ‖∑ j, s j‖ ^ (2 : ℕ) := by
     rw [← map_sum, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.sq_norm,
       Complex.normSq_apply]
     ring
@@ -267,7 +267,7 @@ theorem hermSum_resolvent_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
 /-- **Equation `(6)`.**  The exact contact identity `Z_c² + 2 c B_c = 2 ⟨y, R_c y⟩`. -/
 theorem resolvent_contact_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r : Fin n → ℝ) {c : ℝ}
     (hc : ∀ j, w j + (c : ℂ) ≠ 0) :
-    (resolventValueIm w r c) ^ 2 + 2 * c * resolventEnergy w r c
+    (resolventValueIm w r c) ^ (2 : ℕ) + 2 * c * resolventEnergy w r c
       = 2 * packetResolventPairing w r c := by
   classical
   set s : Fin n → ℂ := resolventCoeff w r c with hsdef
@@ -280,19 +280,19 @@ theorem resolvent_contact_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
     (starRingEnd ℂ) (s j) * s k / ((starRingEnd ℂ) (w j) + w k) with hHss
   set P : ℝ := ∫ x in Ioi (0 : ℝ), (halfLineExpPacket w (fun j => (r j : ℂ)) x).im
     * (halfLineExpPacket w s x).im with hP
-  set E : ℝ := ∫ x in Ioi (0 : ℝ), (halfLineExpPacket w s x).im ^ 2 with hE
+  set E : ℝ := ∫ x in Ioi (0 : ℝ), (halfLineExpPacket w s x).im ^ (2 : ℕ) with hE
   have hcross : 2 * P = Hrs.re - Brs.re :=
     integral_im_mul_im_expPacket (w := w) (fun j => (r j : ℂ)) s hw
   have hsq : 2 * E = Hss.re - Bss.re := integral_im_sq_expPacket (w := w) (c := s) hw
-  have hherm : 2 * Hrs.re = ‖S‖ ^ 2 + 2 * c * Hss.re := hermSum_resolvent_law hw r hc
-  have hbil : 2 * Brs = S ^ 2 + 2 * (c : ℂ) * Bss := bilSum_resolvent_law hw r hc
-  have hbilre : 2 * Brs.re = (S ^ 2).re + 2 * c * Bss.re := by
+  have hherm : 2 * Hrs.re = ‖S‖ ^ (2 : ℕ) + 2 * c * Hss.re := hermSum_resolvent_law hw r hc
+  have hbil : 2 * Brs = S ^ (2 : ℕ) + 2 * (c : ℂ) * Bss := bilSum_resolvent_law hw r hc
+  have hbilre : 2 * Brs.re = (S ^ (2 : ℕ)).re + 2 * c * Bss.re := by
     have h := congrArg Complex.re hbil
     rw [show (2 : ℂ) * Brs = ((2 : ℝ) : ℂ) * Brs from by norm_num,
       show (2 : ℂ) * (c : ℂ) * Bss = ((2 * c : ℝ) : ℂ) * Bss from by push_cast; ring,
       Complex.add_re, ofReal_mul_re, ofReal_mul_re] at h
     exact h
-  have hZ : ‖S‖ ^ 2 - (S ^ 2).re = 2 * (resolventValueIm w r c) ^ 2 := by
+  have hZ : ‖S‖ ^ (2 : ℕ) - (S ^ (2 : ℕ)).re = 2 * (resolventValueIm w r c) ^ (2 : ℕ) := by
     rw [normSq_sub_re_sq]
     rfl
   have hPeq : packetResolventPairing w r c = P := rfl
@@ -360,7 +360,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- **The Cayley form of a contraction is accretive.**  Its real part is the norm defect. -/
 theorem re_inner_cayley_eq (T : H →L[ℂ] H) (v : H) :
-    (inner ℂ ((1 + T) v) ((1 - T) v) : ℂ).re = ‖v‖ ^ 2 - ‖T v‖ ^ 2 := by
+    (inner ℂ ((1 + T) v) ((1 - T) v) : ℂ).re = ‖v‖ ^ (2 : ℕ) - ‖T v‖ ^ (2 : ℕ) := by
   have hexp : (inner ℂ ((1 + T) v) ((1 - T) v) : ℂ)
       = (inner ℂ v v : ℂ) - (inner ℂ v (T v) : ℂ) + (inner ℂ (T v) v : ℂ)
         - (inner ℂ (T v) (T v) : ℂ) := by

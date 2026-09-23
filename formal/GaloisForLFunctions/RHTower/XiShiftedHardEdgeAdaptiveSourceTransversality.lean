@@ -9,7 +9,7 @@ Reciprocal clearing sends every nonzero admitted root `x` to its actual hard coo
 `u = x⁻¹ - y`.  The diagonal reverse-Euler landing of the adaptive mixed/completed arithmetic
 source vanishes there, but its derivative is not an orientation chosen after aggregation:
 
-`T'(u) = -2 * x⁻¹ * S'(u)^2`.
+`T'(u) = -2 * x⁻¹ * S'(u)^(2 : ℕ)`.
 
 Thus the admission-dependent normalization `-(x / 2) * T'(u)` is exactly the square of the
 cleared amplitude derivative.  It is a nonnegative source-transverse capacity, strictly positive
@@ -40,8 +40,8 @@ hard-coordinate factor times the square of `S'`.  The grade disappears completel
 theorem derivative_xiShiftedHardEdgeReverseEulerSource_sq_eval_root
     {S : Polynomial ℝ} {y u : ℝ} {d : ℕ}
     (hroot : S.eval u = 0) :
-    (xiShiftedHardEdgeReverseEulerSource y d (S ^ 2)).derivative.eval u =
-      -2 * (u + y) * (S.derivative.eval u) ^ 2 := by
+    (xiShiftedHardEdgeReverseEulerSource y d (S ^ (2 : ℕ))).derivative.eval u =
+      -2 * (u + y) * (S.derivative.eval u) ^ (2 : ℕ) := by
   simp only [xiShiftedHardEdgeReverseEulerSource, Polynomial.derivative_sub,
     Polynomial.derivative_smul, Polynomial.derivative_mul, Polynomial.derivative_add,
     Polynomial.derivative_X, Polynomial.derivative_C, add_zero, Polynomial.derivative_pow,
@@ -72,7 +72,7 @@ theorem derivative_xiShiftedHardEdgeAdaptiveBilinearSource_eval_centeredReciproc
     (hA : A.natDegree ≤ N) (hx : x ≠ 0) (hroot : A.eval x = 0) :
     let S := xiShiftedHardEdgeReciprocalClearing y N A
     (xiShiftedHardEdgeAdaptiveBilinearSource y N N A A).derivative.eval (x⁻¹ - y) =
-      -2 * x⁻¹ * (S.derivative.eval (x⁻¹ - y)) ^ 2 := by
+      -2 * x⁻¹ * (S.derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) := by
   dsimp only
   have hS := xiShiftedHardEdgeReciprocalClearing_eval_centeredReciprocal_eq_zero
     (P := A) (N := N) hA y hx hroot
@@ -80,7 +80,7 @@ theorem derivative_xiShiftedHardEdgeAdaptiveBilinearSource_eval_centeredReciproc
   rw [show N + N + 2 = 2 * N + 2 by omega]
   rw [show xiShiftedHardEdgeReciprocalClearing y N A *
       xiShiftedHardEdgeReciprocalClearing y N A =
-      (xiShiftedHardEdgeReciprocalClearing y N A) ^ 2 by ring]
+      (xiShiftedHardEdgeReciprocalClearing y N A) ^ (2 : ℕ) by ring]
   rw [derivative_xiShiftedHardEdgeReverseEulerSource_sq_eval_root hS]
   congr 2
   field_simp
@@ -99,7 +99,7 @@ theorem xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq_sq
     {A : Polynomial ℝ} {N : ℕ} (y : ℝ) {x : ℝ}
     (hA : A.natDegree ≤ N) (hx : x ≠ 0) (hroot : A.eval x = 0) :
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity y N A x =
-      ((xiShiftedHardEdgeReciprocalClearing y N A).derivative.eval (x⁻¹ - y)) ^ 2 := by
+      ((xiShiftedHardEdgeReciprocalClearing y N A).derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) := by
   rw [xiShiftedHardEdgeAdaptiveSourceTransverseCapacity,
     derivative_xiShiftedHardEdgeAdaptiveBilinearSource_eval_centeredReciprocal
       y hA hx hroot]
@@ -134,7 +134,7 @@ theorem derivative_xiShiftedHardEdgeAdaptiveBilinearSource_neg_at_centeredRecipr
     y hA hx.ne' hroot]
   have hinv : 0 < x⁻¹ := inv_pos.mpr hx
   have hsq : 0 <
-      ((xiShiftedHardEdgeReciprocalClearing y N A).derivative.eval (x⁻¹ - y)) ^ 2 :=
+      ((xiShiftedHardEdgeReciprocalClearing y N A).derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hsimple
   nlinarith
 
@@ -144,7 +144,7 @@ theorem pow_mul_derivative_xiShiftedHardEdgeReciprocalClearing_eval_centeredReci
     {P : Polynomial ℝ} {N : ℕ} (hP : P.natDegree ≤ N)
     (y : ℝ) {x : ℝ} (hx : x ≠ 0) (hroot : P.eval x = 0) :
     x ^ N * (xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval (x⁻¹ - y) =
-      -(x ^ 2 * P.derivative.eval x) := by
+      -(x ^ (2 : ℕ) * P.derivative.eval x) := by
   letI := invertibleOfNonzero hx
   have hreflect : (P.reflect N).eval x⁻¹ = 0 := by
     have hiff := Polynomial.eval₂_reflect_eq_zero_iff (RingHom.id ℝ) x N P hP
@@ -188,20 +188,20 @@ theorem pow_mul_xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq
     {P : Polynomial ℝ} {N : ℕ} (hP : P.natDegree ≤ N)
     (y : ℝ) {x : ℝ} (hx : x ≠ 0) (hroot : P.eval x = 0) :
     x ^ (2 * N) * xiShiftedHardEdgeAdaptiveSourceTransverseCapacity y N P x =
-      x ^ 4 * (P.derivative.eval x) ^ 2 := by
+      x ^ (4 : ℕ) * (P.derivative.eval x) ^ (2 : ℕ) := by
   rw [xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq_sq y hP hx hroot]
   have hderiv :=
     pow_mul_derivative_xiShiftedHardEdgeReciprocalClearing_eval_centeredReciprocal
       hP y hx hroot
   calc
     x ^ (2 * N) *
-          ((xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval (x⁻¹ - y)) ^ 2 =
+          ((xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) =
         (x ^ N *
-          (xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval (x⁻¹ - y)) ^ 2 := by
+          (xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval (x⁻¹ - y)) ^ (2 : ℕ) := by
             rw [show 2 * N = N + N by omega, pow_add]
             ring
-    _ = (-(x ^ 2 * P.derivative.eval x)) ^ 2 := by rw [hderiv]
-    _ = x ^ 4 * (P.derivative.eval x) ^ 2 := by ring
+    _ = (-(x ^ (2 : ℕ) * P.derivative.eval x)) ^ (2 : ℕ) := by rw [hderiv]
+    _ = x ^ (4 : ℕ) * (P.derivative.eval x) ^ (2 : ℕ) := by ring
 
 /-- Positive Gauss/Padé residue in absolute mass coordinates.  For an actual degree-`N` Gauss
 polynomial, `christoffel s (N-1) x` is the quadrature weight at `x`. -/
@@ -213,7 +213,7 @@ def xiShiftedHardEdgeGaussPadeResidue
 identifies its limit with divided-root completed-source mass. -/
 def xiShiftedHardEdgeGaussTerminalMass
     (y : ℝ) (s : ℕ → ℝ) (N : ℕ) (P : Polynomial ℝ) (x : ℝ) : ℝ :=
-  y * x ^ 4 * HTGeometry.christoffel s (N - 1) x * (P.derivative.eval x) ^ 2
+  y * x ^ (4 : ℕ) * HTGeometry.christoffel s (N - 1) x * (P.derivative.eval x) ^ (2 : ℕ)
 
 /-- Endogenous source capacity in the same normalization as the absolute Padé residue. -/
 def xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity
@@ -253,7 +253,7 @@ theorem tendsto_one_add_pow_of_nat_mul_abs_tendsto_zero
               (m k : ℝ) * b k| := by ring_nf
         _ ≤ |(1 + b k) ^ m k - 1 - (m k : ℝ) * b k| +
               |(m k : ℝ) * b k| := abs_add_le _ _
-        _ ≤ ((m k : ℝ) * |b k|) ^ 2 *
+        _ ≤ ((m k : ℝ) * |b k|) ^ (2 : ℕ) *
               Real.exp ((m k : ℝ) * |b k|) +
               (m k : ℝ) * |b k| := by
             gcongr
@@ -300,7 +300,7 @@ theorem xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity_eq_normalizedDerivative
     xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity y N P x =
       (y * x) ^ (2 * N + 1) *
         ((xiShiftedHardEdgeNormalizedReciprocalClearing y N P).derivative.eval
-          (x⁻¹ - y)) ^ 2 := by
+          (x⁻¹ - y)) ^ (2 : ℕ) := by
   rw [xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity,
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq_sq y hP hx hroot,
     derivative_xiShiftedHardEdgeNormalizedReciprocalClearing_eval]
@@ -328,9 +328,9 @@ theorem xiShiftedHardEdgeGaussPadeResidue_mul_sourceTransverseCapacity_eq_termin
           (x ^ (2 * N) *
             xiShiftedHardEdgeAdaptiveSourceTransverseCapacity y N P x) := by ring
     _ = HTGeometry.christoffel s (N - 1) x * y *
-          (x ^ 4 * (P.derivative.eval x) ^ 2) := by rw [hcapacity]
-    _ = HTGeometry.christoffel s (N - 1) x * x ^ 4 * y *
-          (P.derivative.eval x) ^ 2 := by ring
+          (x ^ (4 : ℕ) * (P.derivative.eval x) ^ (2 : ℕ)) := by rw [hcapacity]
+    _ = HTGeometry.christoffel s (N - 1) x * x ^ (4 : ℕ) * y *
+          (P.derivative.eval x) ^ (2 : ℕ) := by ring
 
 /-- Capacity-product form of the same law. -/
 theorem xiShiftedHardEdgeGaussPadeResidue_mul_effectiveSourceCapacity_eq_terminalMass
@@ -377,7 +377,7 @@ theorem neg_gaussPadeResidue_mul_sourceDerivative_div_two_eq_terminalMass
 def xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
   -(x / 2) *
-    (xiShiftedCanonicalAdmissionHardEdgeSource w n).derivative.eval (x⁻¹ - w ^ 2)
+    (xiShiftedCanonicalAdmissionHardEdgeSource w n).derivative.eval (x⁻¹ - w ^ (2 : ℕ))
 
 /-- Actual canonical Padé residue selected by the shifted-Xi moment admission. -/
 def xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue
@@ -387,19 +387,19 @@ def xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue
 /-- Actual canonical finite hard terminal mass. -/
 def xiShiftedCanonicalAdmissionHardEdgeGaussTerminalMass
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  xiShiftedHardEdgeGaussTerminalMass (w ^ 2) (xiShiftedRealMomentSequence w) n
+  xiShiftedHardEdgeGaussTerminalMass (w ^ (2 : ℕ)) (xiShiftedRealMomentSequence w) n
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n) x
 
 /-- Actual canonical effective source capacity paired with the absolute Padé residue. -/
 def xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  (w ^ 2) * x ^ (2 * n + 1) *
+  (w ^ (2 : ℕ)) * x ^ (2 * n + 1) *
     xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity w n x
 
 /-- Compact-normalized hard amplitude of the actual shifted-Xi inverse-Hankel admission. -/
 def xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
     (w : ℝ) (n : ℕ) : Polynomial ℝ :=
-  xiShiftedHardEdgeNormalizedReciprocalClearing (w ^ 2) n
+  xiShiftedHardEdgeNormalizedReciprocalClearing (w ^ (2 : ℕ)) n
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
 
 /-- Canonical source-transverse capacity is the square of the reciprocal-cleared admission
@@ -410,9 +410,9 @@ theorem xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity_eq_sq
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n).eval x = 0) :
     xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity w n x =
-      ((xiShiftedHardEdgeReciprocalClearing (w ^ 2) n
+      ((xiShiftedHardEdgeReciprocalClearing (w ^ (2 : ℕ)) n
         (HTGeometry.monicMomentAdmissionPolynomial
-          (xiShiftedRealMomentSequence w) n)).derivative.eval (x⁻¹ - w ^ 2)) ^ 2 := by
+          (xiShiftedRealMomentSequence w) n)).derivative.eval (x⁻¹ - w ^ (2 : ℕ))) ^ (2 : ℕ) := by
   let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
   have hP : P.natDegree ≤ n := by
     dsimp only [P]
@@ -421,8 +421,8 @@ theorem xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity_eq_sq
     xiShiftedCanonicalAdmissionHardEdgeSource,
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity, P] using
     (xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq_sq
-      (y := w ^ 2) hP hx hroot
-      : xiShiftedHardEdgeAdaptiveSourceTransverseCapacity (w ^ 2) n P x = _)
+      (y := w ^ (2 : ℕ)) hP hx hroot
+      : xiShiftedHardEdgeAdaptiveSourceTransverseCapacity (w ^ (2 : ℕ)) n P x = _)
 
 /-- **Literal shifted-Xi arithmetic source-capacity law.** The actual canonical Padé residue times
 the actual adaptive mixed/completed `P^sharp` transverse source capacity equals finite hard
@@ -433,7 +433,7 @@ theorem xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_sourceTransverse
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n).eval x = 0) :
     xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
-        (w ^ 2) * x ^ (2 * n + 1) *
+        (w ^ (2 : ℕ)) * x ^ (2 * n + 1) *
           xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity w n x =
       xiShiftedCanonicalAdmissionHardEdgeGaussTerminalMass w n x := by
   let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
@@ -446,10 +446,10 @@ theorem xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_sourceTransverse
     xiShiftedCanonicalAdmissionHardEdgeSource,
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity, P] using
     (xiShiftedHardEdgeGaussPadeResidue_mul_sourceTransverseCapacity_eq_terminalMass
-      (s := xiShiftedRealMomentSequence w) hP (w ^ 2) hx hroot :
+      (s := xiShiftedRealMomentSequence w) hP (w ^ (2 : ℕ)) hx hroot :
       xiShiftedHardEdgeGaussPadeResidue (xiShiftedRealMomentSequence w) n x *
-          (w ^ 2) * x ^ (2 * n + 1) *
-            xiShiftedHardEdgeAdaptiveSourceTransverseCapacity (w ^ 2) n P x = _)
+          (w ^ (2 : ℕ)) * x ^ (2 * n + 1) *
+            xiShiftedHardEdgeAdaptiveSourceTransverseCapacity (w ^ (2 : ℕ)) n P x = _)
 
 /-- Canonical capacity-product form of the literal arithmetic law. -/
 theorem xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_effectiveSourceCapacity_eq_terminalMass
@@ -473,14 +473,14 @@ theorem xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_eq_normalized
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n).eval x = 0) :
     xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity w n x =
-      (w ^ 2 * x) ^ (2 * n + 1) *
+      (w ^ (2 : ℕ) * x) ^ (2 * n + 1) *
         ((xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing w n).derivative.eval
-          (x⁻¹ - w ^ 2)) ^ 2 := by
+          (x⁻¹ - w ^ (2 : ℕ))) ^ (2 : ℕ) := by
   let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
   have hP : P.natDegree ≤ n := by
     dsimp only [P]
     rw [HTGeometry.monicMomentAdmissionPolynomial_natDegree]
-  have hw0 : w ^ 2 ≠ 0 := pow_ne_zero 2 (ne_of_gt (lt_trans (by norm_num) hw))
+  have hw0 : w ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (ne_of_gt (lt_trans (by norm_num) hw))
   simpa only [xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity,
     xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity,
     xiShiftedCanonicalAdmissionHardEdgeSource,
@@ -493,39 +493,39 @@ theorem xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_eq_normalized
 /-- **Compact-limit elimination of capacity escape.** Along actual canonical shifted-Xi
 admissions, if the hard node has coordinate `u`, the cofinal degree resolves that coordinate with
 vanishing total displacement, and normalized hard derivatives converge to `d`, then effective
-adaptive source capacity converges to `d^2`.  Thus at a simple compact hard root (`d ≠ 0`) Padé
+adaptive source capacity converges to `d^(2 : ℕ)`.  Thus at a simple compact hard root (`d ≠ 0`) Padé
 extinction cannot be caused by source-capacity blow-up or collapse. -/
 theorem tendsto_xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
     {w : ℕ → ℝ} {n : ℕ → ℕ} {x u : ℕ → ℝ} {d : ℝ}
     (hw : ∀ k, 1 / 2 < w k)
-    (hdenom : ∀ k, w k ^ 2 + u k ≠ 0)
-    (hx : ∀ k, x k = (w k ^ 2 + u k)⁻¹)
+    (hdenom : ∀ k, w k ^ (2 : ℕ) + u k ≠ 0)
+    (hx : ∀ k, x k = (w k ^ (2 : ℕ) + u k)⁻¹)
     (hroot : ∀ k,
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence (w k)) (n k)).eval (x k) = 0)
     (hsmall : Tendsto
       (fun k => ((2 * n k + 1 : ℕ) : ℝ) *
-        |u k / (w k ^ 2 + u k)|) atTop (nhds 0))
+        |u k / (w k ^ (2 : ℕ) + u k)|) atTop (nhds 0))
     (hderiv : Tendsto
       (fun k =>
         (xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
-          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ 2))
+          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ (2 : ℕ)))
       atTop (nhds d)) :
     Tendsto
       (fun k =>
         xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
           (w k) (n k) (x k))
-      atTop (nhds (d ^ 2)) := by
+      atTop (nhds (d ^ (2 : ℕ))) := by
   have hfactor : Tendsto
-      (fun k => (w k ^ 2 * x k) ^ (2 * n k + 1)) atTop (nhds 1) := by
+      (fun k => (w k ^ (2 : ℕ) * x k) ^ (2 * n k + 1)) atTop (nhds 1) := by
     have hfactor' := tendsto_hardEdgeNodeFactor_one
-      (y := fun k => w k ^ 2) (u := u) (N := n) hdenom hsmall
+      (y := fun k => w k ^ (2 : ℕ)) (u := u) (N := n) hdenom hsmall
     simpa only [hx] using hfactor'
   have hproduct := hfactor.mul (hderiv.pow 2)
   have heq :
-      (fun k => (w k ^ 2 * x k) ^ (2 * n k + 1) *
+      (fun k => (w k ^ (2 : ℕ) * x k) ^ (2 * n k + 1) *
         ((xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
-          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ 2)) ^ 2) =ᶠ[atTop]
+          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ (2 : ℕ))) ^ (2 : ℕ)) =ᶠ[atTop]
       (fun k => xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
         (w k) (n k) (x k)) := by
     filter_upwards with k
@@ -553,9 +553,9 @@ theorem xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_pos
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n).eval x = 0)
     (hsimple :
-      (xiShiftedHardEdgeReciprocalClearing (w ^ 2) n
+      (xiShiftedHardEdgeReciprocalClearing (w ^ (2 : ℕ)) n
         (HTGeometry.monicMomentAdmissionPolynomial
-          (xiShiftedRealMomentSequence w) n)).derivative.eval (x⁻¹ - w ^ 2) ≠ 0) :
+          (xiShiftedRealMomentSequence w) n)).derivative.eval (x⁻¹ - w ^ (2 : ℕ)) ≠ 0) :
     0 < xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity w n x := by
   rw [xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity]
   have hsource : 0 < xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity w n x := by

@@ -39,19 +39,19 @@ theorem thetaCuspModularTransverseShear_le_energyTangent {x : ℝ}
   have hw0 := w_nonneg ht.1
   have hw1 : w t ≤ 1 := by rw [heq]; linarith [ht.2]
   have hs := thetaCuspModularTransverseShear_deriv_lt_quadratic ht.1
-  have hw2 : w t^2 ≤ 1 := by nlinarith
+  have hw2 : w t^(2 : ℕ) ≤ 1 := by nlinarith
   linarith
 
 /-- A quadratic lower barrier for the complete modular gap, with its literal initial value. -/
 theorem thetaCuspModularGapAmplitude_energy_lower {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    thetaCuspSelfDualModularScale^2-228*x^2 ≤ a x := by
-  have hd (t : ℝ) : HasDerivAt (fun t => a t+228*t^2)
+    thetaCuspSelfDualModularScale^(2 : ℕ)-228*x^(2 : ℕ) ≤ a x := by
+  have hd (t : ℝ) : HasDerivAt (fun t => a t+228*t^(2 : ℕ))
       (-2*a t*w t+456*t) t := by
     convert (hasDerivAt_thetaCuspModularGapAmplitude t).add
       ((hasDerivAt_id t).pow 2 |>.const_mul 228) using 1 <;>
       first | rfl | (dsimp only [id_eq, a, w]; ring)
-  have hmono : MonotoneOn (fun t => a t+228*t^2) (Icc 0 (8/95)) := by
+  have hmono : MonotoneOn (fun t => a t+228*t^(2 : ℕ)) (Icc 0 (8/95)) := by
     apply monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc 0 (8/95))
       (fun t _ => (hd t).continuousAt.continuousWithinAt)
       (fun t _ => (hd t).hasDerivWithinAt)
@@ -81,14 +81,14 @@ theorem thetaCuspModularState_energy_box {x : ℝ}
   have ha := thetaCuspModularGapAmplitude_energy_lower hx
   have hinit := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
   have he := thetaCuspModularStrongEnergy_lt hx.1
-  have hx2 : x^2 ≤ (8/95 : ℝ)^2 := by nlinarith [hx.1, hx.2]
+  have hx2 : x^(2 : ℕ) ≤ (8/95 : ℝ)^(2 : ℕ) := by nlinarith [hx.1, hx.2]
   refine ⟨hu0, ?_, ?_, ?_, hw0, ?_⟩ <;> nlinarith [hx.2, sq_nonneg (u x)]
 
 /-- The same compact tube retains a positive lower linear drift. -/
 theorem thetaCuspModularMassDrift_energy_lower {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) : (39/4)*x ≤ u x := by
   have hd (t : ℝ) : HasDerivAt (fun t => u t-(39/4)*t)
-      (-3+u t^2/3+3*a t/4-39/4) t :=
+      (-3+u t^(2 : ℕ)/3+3*a t/4-39/4) t :=
     (hasDerivAt_thetaCuspModularMassDrift t).sub
       (by simpa using (hasDerivAt_id t).const_mul (39/4 : ℝ))
   have hmono : MonotoneOn (fun t => u t-(39/4)*t) (Icc 0 (8/95)) := by

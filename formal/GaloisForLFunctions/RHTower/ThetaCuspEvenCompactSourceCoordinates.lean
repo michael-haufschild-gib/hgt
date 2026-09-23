@@ -22,7 +22,7 @@ private theorem compactState_eq (x : ℝ) :
 private theorem reflected_eq_of_scalar (n : ℕ) (F : ℝ → ℝ → ℝ → ℝ)
     (hF : ∀ u a w : ℝ, MvPolynomial.eval (HTGeometry.oddCompactState u a w)
       (HTGeometry.oddCompactReflectedJetPolynomial n) = (F u a w : ℂ)) (x : ℝ) :
-    thetaCuspNativeReflectionJet n x = M x^2*F (u x) (a x) (w x) := by
+    thetaCuspNativeReflectionJet n x = M x^(2 : ℕ)*F (u x) (a x) (w x) := by
   have hc := thetaCuspNativeReflectionJet_eq_lyapunovPolynomial n x
   rw [thetaCuspModularODEState_H_eq_completedThetaProfile, compactState_eq, hF] at hc
   have hr := congrArg Complex.re hc
@@ -32,7 +32,7 @@ private theorem reflected_eq_of_scalar (n : ℕ) (F : ℝ → ℝ → ℝ → �
 /-- Every signed compact moment is the corresponding literal complete-source derivative. -/
 theorem thetaCuspNativeEvenJet_eq_compactScalar (k : Fin 7) (x : ℝ) :
     (-1 : ℝ)^k.val*thetaCuspNativeReflectionJet (2*k.val) x =
-      M x^2*HTGeometry.evenCompactSignedMoment k (u x) (a x) (w x) := by
+      M x^(2 : ℕ)*HTGeometry.evenCompactSignedMoment k (u x) (a x) (w x) := by
   fin_cases k
   · norm_num [HTGeometry.evenCompactSignedMoment, thetaCuspNativeReflectionJet_eq,
       thetaCuspFullSource_eq_compactSourceZero]
@@ -59,10 +59,10 @@ theorem thetaCuspNativeEvenJet_eq_compactScalar (k : Fin 7) (x : ℝ) :
 
 /-- Fixed balancing and coupled substitution keep the actual mass and every native moment. -/
 theorem thetaCuspNativeEvenJet_unit_eq {x t v : ℝ}
-    (ha : a x = HTGeometry.evenCompactUnitGap (u x^2) t)
+    (ha : a x = HTGeometry.evenCompactUnitGap (u x^(2 : ℕ)) t)
     (hw : w x = u x*(1+v/4)) (k : Fin 7) :
     (-1 : ℝ)^k.val*thetaCuspNativeReflectionJet (2*k.val) x =
-      M x^2*(100 : ℝ)^k.val*HTGeometry.evenCompactUnitMoment k (u x^2) t v := by
+      M x^(2 : ℕ)*(100 : ℝ)^k.val*HTGeometry.evenCompactUnitMoment k (u x^(2 : ℕ)) t v := by
   have h := HTGeometry.evenCompactSignedMoment_unit_eq k (u x) t v
   rw [← ha, ← hw] at h
   have hm := (div_eq_iff (by positivity : (100 : ℝ)^k.val ≠ 0)).mp h
@@ -72,21 +72,21 @@ theorem thetaCuspNativeEvenJet_unit_eq {x t v : ℝ}
 private theorem head_det_eq (x : ℝ) :
     (thetaCuspNativeEvenHead x).det =
       thetaCuspNativeReflectionJet 0 x*thetaCuspNativeReflectionJet 4 x*thetaCuspNativeReflectionJet 8 x-
-      thetaCuspNativeReflectionJet 0 x*(-thetaCuspNativeReflectionJet 6 x)^2-
-      (-thetaCuspNativeReflectionJet 2 x)^2*thetaCuspNativeReflectionJet 8 x+
+      thetaCuspNativeReflectionJet 0 x*(-thetaCuspNativeReflectionJet 6 x)^(2 : ℕ)-
+      (-thetaCuspNativeReflectionJet 2 x)^(2 : ℕ)*thetaCuspNativeReflectionJet 8 x+
       2*(-thetaCuspNativeReflectionJet 2 x)*thetaCuspNativeReflectionJet 4 x*(-thetaCuspNativeReflectionJet 6 x)-
-      thetaCuspNativeReflectionJet 4 x^3 := by
+      thetaCuspNativeReflectionJet 4 x^(3 : ℕ) := by
   norm_num [thetaCuspNativeEvenHead, finiteHankelMatrix, Matrix.det_fin_three]
   ring
 
 /-- The exact determinant normalization retains the complete-source head cofactor of the correction. -/
 theorem thetaCuspEvenCompactUnitDet_eq_source_ratio {x t v : ℝ}
-    (ha : a x = HTGeometry.evenCompactUnitGap (u x^2) t)
+    (ha : a x = HTGeometry.evenCompactUnitGap (u x^(2 : ℕ)) t)
     (hw : w x = u x*(1+v/4)) :
-    HTGeometry.evenCompactUnitDet (u x^2) t v =
+    HTGeometry.evenCompactUnitDet (u x^(2 : ℕ)) t v =
       (thetaCuspNativeEvenFourDet x+
-        1000000000000*M x^2*HTGeometry.evenCompactUnitCorrection (u x^2) t*
-          (thetaCuspNativeEvenHead x).det) / ((100 : ℝ)^12*M x^8) := by
+        1000000000000*M x^(2 : ℕ)*HTGeometry.evenCompactUnitCorrection (u x^(2 : ℕ)) t*
+          (thetaCuspNativeEvenHead x).det) / ((100 : ℝ)^(12 : ℕ)*M x^(8 : ℕ)) := by
   have h0 := thetaCuspNativeEvenJet_unit_eq ha hw 0
   have h1 := thetaCuspNativeEvenJet_unit_eq ha hw 1
   have h2 := thetaCuspNativeEvenJet_unit_eq ha hw 2

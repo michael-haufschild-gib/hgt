@@ -165,19 +165,19 @@ theorem preDivisorRiggedPrimeScaledRealBocksteinVector_neg
 
 theorem primeScaledBockstein_cubicMass_lower
     {a : ℝ} (ha : 0 ≤ a) (m : ℕ) :
-    ((m + 3).choose 3 : ℝ) * (a / 3) ^ 3 ≤
+    ((m + 3).choose 3 : ℝ) * (a / 3) ^ (3 : ℕ) ≤
       ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 3,
         -(∏ i ∈ s, preDivisorRiggedPrimeScaledRealBocksteinVector a m i) := by
   classical
   let C := (Finset.univ : Finset (Fin (m + 3))).powersetCard 3
-  have hlocal : ∀ s ∈ C, (a / 3) ^ 3 ≤
+  have hlocal : ∀ s ∈ C, (a / 3) ^ (3 : ℕ) ≤
       -(∏ i ∈ s, preDivisorRiggedPrimeScaledRealBocksteinVector a m i) := by
     intro s hs
     have hcard : s.card = 3 := (Finset.mem_powersetCard.mp hs).2
-    have hprod : (a / 3) ^ 3 ≤
+    have hprod : (a / 3) ^ (3 : ℕ) ≤
         ∏ i ∈ s, -preDivisorRiggedPrimeScaledRealBocksteinVector a m i := by
       calc
-        (a / 3) ^ 3 = ∏ _i ∈ s, (a / 3) := by
+        (a / 3) ^ (3 : ℕ) = ∏ _i ∈ s, (a / 3) := by
           simp [hcard]
           ring
         _ ≤ ∏ i ∈ s, -preDivisorRiggedPrimeScaledRealBocksteinVector a m i := by
@@ -191,7 +191,7 @@ theorem primeScaledBockstein_cubicMass_lower
             have hw := primeGammaBocksteinUnitWeight_ge_one_third (nthPrimePoint i)
             nlinarith
     calc
-      (a / 3) ^ 3 ≤
+      (a / 3) ^ (3 : ℕ) ≤
           ∏ i ∈ s, -preDivisorRiggedPrimeScaledRealBocksteinVector a m i := hprod
       _ = -(∏ i ∈ s, preDivisorRiggedPrimeScaledRealBocksteinVector a m i) := by
         have hneg := Finset.prod_neg (s := s)
@@ -205,7 +205,7 @@ theorem primeScaledBockstein_cubicMass_lower
 
 theorem primeScaledBockstein_cubicParityDefect_lower_of_nonneg
     {a : ℝ} (ha : 0 ≤ a) (m : ℕ) :
-    4 * ((m + 3).choose 3 : ℝ) * (a / 3) ^ 3 ≤
+    4 * ((m + 3).choose 3 : ℝ) * (a / 3) ^ (3 : ℕ) ≤
       unitizedRealReservoirDeterminant
           (preDivisorRiggedPrimeScaledRealBocksteinVector a m) -
         unitizedRealReservoirDeterminant
@@ -226,7 +226,7 @@ theorem primeScaledBockstein_cubicParityDefect_lower_of_nonneg
 
 theorem primeScaledBockstein_cubicParityDefect_abs_lower
     (a : ℝ) (m : ℕ) :
-    4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ 3 ≤
+    4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ (3 : ℕ) ≤
       |unitizedRealReservoirDeterminant
           (preDivisorRiggedPrimeScaledRealBocksteinVector a m) -
         unitizedRealReservoirDeterminant
@@ -238,7 +238,7 @@ theorem primeScaledBockstein_cubicParityDefect_abs_lower
             (preDivisorRiggedPrimeScaledRealBocksteinVector a m) -
           unitizedRealReservoirDeterminant
             (-preDivisorRiggedPrimeScaledRealBocksteinVector a m) := by
-      have hleft : 0 ≤ 4 * ((m + 3).choose 3 : ℝ) * (a / 3) ^ 3 := by
+      have hleft : 0 ≤ 4 * ((m + 3).choose 3 : ℝ) * (a / 3) ^ (3 : ℕ) := by
         positivity
       linarith
     rwa [abs_of_nonneg ha, abs_of_nonneg hnonneg]
@@ -261,7 +261,7 @@ theorem primeScaledBockstein_cubicParityDefect_abs_lower
 
 theorem dimensionCube_le_primeScaledBockstein_cubicParityDefect_abs
     (a : ℝ) (m : ℕ) :
-    (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ 3 ≤
+    (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ (3 : ℕ) ≤
       |unitizedRealReservoirDeterminant
           (preDivisorRiggedPrimeScaledRealBocksteinVector a m) -
         unitizedRealReservoirDeterminant
@@ -270,7 +270,7 @@ theorem dimensionCube_le_primeScaledBockstein_cubicParityDefect_abs
   have hchoose : (6 : ℝ) * ((m + 3).choose 3 : ℝ) =
       ((m + 3 : ℕ) : ℝ) * ((m + 2 : ℕ) : ℝ) * ((m + 1 : ℕ) : ℝ) := by
     exact_mod_cast six_mul_choose_three_add_three m
-  have hprod : (((m + 1 : ℕ) : ℝ) ^ 3) ≤
+  have hprod : (((m + 1 : ℕ) : ℝ) ^ (3 : ℕ)) ≤
       ((m + 3 : ℕ) : ℝ) * ((m + 2 : ℕ) : ℝ) * ((m + 1 : ℕ) : ℝ) := by
     have h1 : ((m + 1 : ℕ) : ℝ) ≤ ((m + 2 : ℕ) : ℝ) := by
       exact_mod_cast (by omega : m + 1 ≤ m + 2)
@@ -278,24 +278,24 @@ theorem dimensionCube_le_primeScaledBockstein_cubicParityDefect_abs
       exact_mod_cast (by omega : m + 1 ≤ m + 3)
     have h0 : 0 ≤ ((m + 1 : ℕ) : ℝ) := by positivity
     calc
-      (((m + 1 : ℕ) : ℝ) ^ 3) =
+      (((m + 1 : ℕ) : ℝ) ^ (3 : ℕ)) =
           ((m + 1 : ℕ) : ℝ) * ((m + 1 : ℕ) : ℝ) * ((m + 1 : ℕ) : ℝ) := by ring
       _ ≤ ((m + 3 : ℕ) : ℝ) * ((m + 2 : ℕ) : ℝ) * ((m + 1 : ℕ) : ℝ) := by
         gcongr
-  have ha3 : 0 ≤ |a| ^ 3 := by positivity
+  have ha3 : 0 ≤ |a| ^ (3 : ℕ) := by positivity
   have hscaled := mul_le_mul_of_nonneg_right hprod ha3
   have hsource :
-      (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ 3 ≤
-        4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ 3 := by
+      (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ (3 : ℕ) ≤
+        4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ (3 : ℕ) := by
     calc
-      (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ 3 =
-          (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) ^ 3 * |a| ^ 3) := by
+      (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) * |a|) ^ (3 : ℕ) =
+          (2 / 81 : ℝ) * (((m + 1 : ℕ) : ℝ) ^ (3 : ℕ) * |a| ^ (3 : ℕ)) := by
             rw [mul_pow]
       _ ≤ (2 / 81 : ℝ) *
           (((m + 3 : ℕ) : ℝ) * ((m + 2 : ℕ) : ℝ) *
-            ((m + 1 : ℕ) : ℝ) * |a| ^ 3) := by
+            ((m + 1 : ℕ) : ℝ) * |a| ^ (3 : ℕ)) := by
             gcongr
-      _ = 4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ 3 := by
+      _ = 4 * ((m + 3).choose 3 : ℝ) * (|a| / 3) ^ (3 : ℕ) := by
             rw [← hchoose]
             ring
   exact hsource.trans hlower
@@ -347,14 +347,14 @@ theorem tendsto_dimension_mul_abs_scale_zero_of_cubicParityDefect
       unitizedRealReservoirDeterminant
         (-preDivisorRiggedPrimeScaledRealBocksteinVector (a m) m)|
   have hx0 : ∀ m, 0 ≤ x m := fun m => by positivity
-  have hx3le : ∀ m, x m ^ 3 ≤ (81 / 2 : ℝ) * gap m := by
+  have hx3le : ∀ m, x m ^ (3 : ℕ) ≤ (81 / 2 : ℝ) * gap m := by
     intro m
     have h := dimensionCube_le_primeScaledBockstein_cubicParityDefect_abs (a m) m
     dsimp only [x, gap]
     nlinarith
   have hmajor : Tendsto (fun m => (81 / 2 : ℝ) * gap m) atTop (𝓝 0) := by
     simpa only [mul_zero] using hgap.const_mul (81 / 2 : ℝ)
-  have hx3 : Tendsto (fun m => x m ^ 3) atTop (𝓝 0) :=
+  have hx3 : Tendsto (fun m => x m ^ (3 : ℕ)) atTop (𝓝 0) :=
     squeeze_zero (fun m => pow_nonneg (hx0 m) 3) hx3le hmajor
   have hx : Tendsto x atTop (𝓝 0) := by
     refine tendsto_order.2 ⟨?_, ?_⟩
@@ -362,13 +362,13 @@ theorem tendsto_dimension_mul_abs_scale_zero_of_cubicParityDefect
       filter_upwards [] with m
       exact hb.trans_le (hx0 m)
     · intro b hb
-      have hb3 : 0 < b ^ 3 := pow_pos hb 3
-      have hevent : ∀ᶠ m : ℕ in atTop, x m ^ 3 < b ^ 3 :=
-        (tendsto_order.1 hx3).2 (b ^ 3) hb3
+      have hb3 : 0 < b ^ (3 : ℕ) := pow_pos hb 3
+      have hevent : ∀ᶠ m : ℕ in atTop, x m ^ (3 : ℕ) < b ^ (3 : ℕ) :=
+        (tendsto_order.1 hx3).2 (b ^ (3 : ℕ)) hb3
       filter_upwards [hevent] with m hm
       by_contra hnot
       have hbx : b ≤ x m := le_of_not_gt hnot
-      have hpow : b ^ 3 ≤ x m ^ 3 :=
+      have hpow : b ^ (3 : ℕ) ≤ x m ^ (3 : ℕ) :=
         pow_le_pow_left₀ hb.le hbx 3
       linarith
   have hbound : ∀ m : ℕ,
@@ -620,7 +620,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicScalarUnitizedDetermin
     (a : ℕ → ℝ) (m : ℕ) :
     iteratedDeriv 2
         (preDivisorRiggedPrimeHolomorphicScalarUnitizedDeterminant a m) 0 =
-      -(2 : ℂ) * (a m : ℂ) ^ 2 *
+      -(2 : ℂ) * (a m : ℂ) ^ (2 : ℕ) *
         ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
           ∏ i ∈ s, (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
   let f : Fin (m + 3) → ℂ → ℂ := fun i z =>
@@ -650,7 +650,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicScalarUnitizedDetermin
         iteratedDeriv 2
             (fun z => (1 - (s.card : ℂ)) * ∏ i ∈ s, f i z) 0 =
           if s.card = 2 then
-            -(2 : ℂ) * (a m : ℂ) ^ 2 *
+            -(2 : ℂ) * (a m : ℂ) ^ (2 : ℕ) *
               ∏ i ∈ s,
                 (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ)
           else 0 := by
@@ -660,7 +660,7 @@ theorem iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicScalarUnitizedDetermin
           iteratedDeriv_two_finset_prod_eq_of_card_eq_two f s hf hz htwo]
         have hprod :
             ∏ i ∈ s, iteratedDeriv 1 (f i) 0 =
-              (a m : ℂ) ^ 2 *
+              (a m : ℂ) ^ (2 : ℕ) *
                 ∏ i ∈ s,
                   (preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i) : ℂ) := by
           obtain ⟨i, j, hij, rfl⟩ := Finset.card_eq_two.mp htwo
@@ -693,7 +693,7 @@ theorem preDivisorHolomorphicPrimeNeutralJet_nonneg (p : Nat.Primes) :
     0 ≤ preDivisorHolomorphicPrimeNeutralJet p := by
   exact mul_nonneg
     (mul_nonneg (by norm_num) (primeActivationOccupancyFisherDensity_pos p).le)
-    (log_prime_pos p).le
+    (log_prime_pos_routeRReciprocalLogFisherEntranceWall p).le
 
 theorem tendsto_preDivisorHolomorphicPrimeNeutralJet_nthPrimePoint_zero :
     Tendsto (fun n => preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint n))
@@ -724,7 +724,7 @@ theorem norm_iteratedDeriv_two_scalarUnitizedDeterminant_le
     ‖iteratedDeriv 2
         (preDivisorRiggedPrimeHolomorphicScalarUnitizedDeterminant a m) 0‖ ≤
       (|a m| * ∑ i : Fin (m + 3),
-        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 2 := by
+        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (2 : ℕ) := by
   let q : Fin (m + 3) → ℝ := fun i =>
     preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)
   have hq : ∀ i, 0 ≤ q i := fun i =>
@@ -746,15 +746,15 @@ theorem norm_iteratedDeriv_two_scalarUnitizedDeterminant_le
     push_cast
     rfl
   rw [iteratedDeriv_two_preDivisorRiggedPrimeHolomorphicScalarUnitizedDeterminant]
-  change ‖-(2 : ℂ) * (a m : ℂ) ^ 2 *
+  change ‖-(2 : ℂ) * (a m : ℂ) ^ (2 : ℕ) *
       ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
         ∏ i ∈ s, (q i : ℂ)‖ ≤ _
   rw [hcast]
   calc
-    ‖-(2 : ℂ) * (a m : ℂ) ^ 2 *
+    ‖-(2 : ℂ) * (a m : ℂ) ^ (2 : ℕ) *
         ((∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
           ∏ i ∈ s, q i : ℝ) : ℂ)‖ =
-        |a m| ^ 2 *
+        |a m| ^ (2 : ℕ) *
           (2 * ∑ s ∈ (Finset.univ : Finset (Fin (m + 3))).powersetCard 2,
             ∏ i ∈ s, q i) := by
       have hnormPairs :
@@ -766,10 +766,10 @@ theorem norm_iteratedDeriv_two_scalarUnitizedDeterminant_le
       rw [norm_mul, norm_mul, norm_neg, norm_ofNat, norm_pow, hnormPairs,
         Complex.norm_real, Real.norm_eq_abs]
       ring
-    _ ≤ |a m| ^ 2 * (∑ i : Fin (m + 3), q i) ^ 2 := by
+    _ ≤ |a m| ^ (2 : ℕ) * (∑ i : Fin (m + 3), q i) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_left hpair (sq_nonneg _)
     _ = (|a m| * ∑ i : Fin (m + 3),
-        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ 2 := by
+        preDivisorHolomorphicPrimeNeutralJet (nthPrimePoint i)) ^ (2 : ℕ) := by
       ring
 
 theorem tendsto_abs_scale_mul_neutralJet_packetSum_zero

@@ -34,8 +34,8 @@ Gaussian Fuchs clock. -/
 theorem LadderEnvelope.ccm_tendsto_depth_raw_defect_div_zero
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j)))
     {m : ℕ} (hmk : m ≤ k) :
@@ -77,8 +77,8 @@ asymptotically invisible. -/
 theorem LadderEnvelope.ccm_depth_exactEigenpair_and_allRawDefects
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     (∀ᶠ lam in atTop,

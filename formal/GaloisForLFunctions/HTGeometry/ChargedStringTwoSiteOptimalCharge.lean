@@ -28,7 +28,7 @@ theorem stringTwoSiteOptimalCharge_halfGap (k m ell tau x : ℝ) :
 theorem stringTwoSiteOptimalCharge_fastest_mode (k m ell tau x : ℝ) :
     ∃ ω : ℂ, ∃ v : ℂ × ℂ, v ≠ 0 ∧
       stringTwoSitePencil k m (stringTwoSiteOptimalCharge k m ell tau x) ell tau x ω v = 0 ∧
-      0 < ω.im ∧ ω.im ^ 2 = (Real.exp k) ^ 2 / (4 * chargedTwoSiteBase k m) := by
+      0 < ω.im ∧ ω.im ^ (2 : ℕ) = (Real.exp k) ^ (2 : ℕ) / (4 * chargedTwoSiteBase k m) := by
   obtain ⟨ω, v, hv, hp, hy, hg⟩ := chargedTwoSite_fastest_mode_exists k m
     (stringTwoSiteCenter (stringTwoSiteOptimalCharge k m ell tau x) ell tau x)
   refine ⟨ω, v, hv, ?_, hy, hg⟩

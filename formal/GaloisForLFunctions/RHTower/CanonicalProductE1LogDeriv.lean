@@ -22,19 +22,19 @@ variable {ι : Type*}
 
 /-- A square-summable family of reciprocals leaves every disc cofinitely. -/
 theorem eventually_norm_ge_of_summable_inv_sq {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {S : ℝ} (hS : 0 < S) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) {S : ℝ} (hS : 0 < S) :
     ∀ᶠ i in cofinite, S ≤ ‖a i‖ := by
-  have htend : Tendsto (fun i => 1 / ‖a i‖ ^ 2) cofinite (𝓝 0) := hsum.tendsto_cofinite_zero
-  have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ 2 < 1 / S ^ 2 :=
+  have htend : Tendsto (fun i => 1 / ‖a i‖ ^ (2 : ℕ)) cofinite (𝓝 0) := hsum.tendsto_cofinite_zero
+  have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
     htend.eventually_lt_const (by positivity)
   filter_upwards [hlt] with i hi
   have hpos : 0 < ‖a i‖ := norm_pos_iff.mpr (hane i)
-  have hsq : S ^ 2 < ‖a i‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos hpos 2) hi
+  have hsq : S ^ (2 : ℕ) < ‖a i‖ ^ (2 : ℕ) := lt_of_one_div_lt_one_div (pow_pos hpos 2) hi
   exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
 
 /-- The Mittag-Leffler terms of the genus-one product are absolutely summable. -/
 theorem summable_canonicalProductE1LogDerivTerm {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {z : ℂ} (hz : ∀ i, z ≠ a i) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) {z : ℂ} (hz : ∀ i, z ≠ a i) :
     Summable (fun i : ι => (a i - z)⁻¹ - (a i)⁻¹) := by
   have hS : (0 : ℝ) < 2 * ‖z‖ + 1 := by positivity
   have hev := eventually_norm_ge_of_summable_inv_sq hane hsum hS
@@ -58,7 +58,7 @@ theorem summable_canonicalProductE1LogDerivTerm {a : ι → ℂ} (hane : ∀ i, 
 
 /-- Paired resolvent products are absolutely summable. -/
 theorem summable_resolvent_pair {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {z z' : ℂ}
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) {z z' : ℂ}
     (hz : ∀ i, z ≠ a i) (hz' : ∀ i, z' ≠ a i) :
     Summable (fun i : ι => (z - a i)⁻¹ * (starRingEnd ℂ) ((z' - a i)⁻¹)) := by
   have hS : (0 : ℝ) < 2 * ‖z‖ + 2 * ‖z'‖ + 1 := by positivity
@@ -83,7 +83,7 @@ theorem summable_resolvent_pair {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
   have hp1 : 0 < ‖z - a i‖ := norm_pos_iff.mpr h1
   have hp2 : 0 < ‖z' - a i‖ := norm_pos_iff.mpr h2
   rw [norm_mul, RCLike.norm_conj, norm_inv, norm_inv]
-  rw [show (4 : ℝ) * (1 / ‖a i‖ ^ 2) = 4 / ‖a i‖ ^ 2 by ring]
+  rw [show (4 : ℝ) * (1 / ‖a i‖ ^ (2 : ℕ)) = 4 / ‖a i‖ ^ (2 : ℕ) by ring]
   have hprod : (‖a i‖ / 2) * (‖a i‖ / 2) ≤ ‖z - a i‖ * ‖z' - a i‖ := by
     have hnn : (0 : ℝ) ≤ ‖a i‖ / 2 := by positivity
     exact mul_le_mul hd1 hd2 hnn (le_trans hnn hd1)
@@ -92,7 +92,7 @@ theorem summable_resolvent_pair {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
 
 /-- **The Mittag-Leffler logarithmic derivative.** -/
 theorem logDeriv_canonicalProductE1Indexed {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {z : ℂ} (hz : ∀ i, z ≠ a i) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) {z : ℂ} (hz : ∀ i, z ≠ a i) :
     logDeriv (canonicalProductE1Indexed a) z = ∑' i : ι, ((z - a i)⁻¹ + (a i)⁻¹) := by
   have hfac : ∀ i, weierstrassE1 (z / a i) ≠ 0 := by
     intro i

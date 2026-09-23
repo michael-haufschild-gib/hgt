@@ -20,16 +20,16 @@ noncomputable section
 def kloostermanRamanujanMainEnergy
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
-  ∑ q ∈ Q, ‖w q‖ ^ 2 * ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
+  ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
     ∑ m : ZMod (q + 1),
-      ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2
+      ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ)
 
 /-- Closed full-source budget for equal-modulus completion remainders. -/
 def kloostermanSameModulusRemainderBudget
     (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
   ∑ n ∈ B, ‖b n‖ * ∑ k ∈ B, ‖b k‖ *
-    ∑ q ∈ Q, ‖w q‖ ^ 2 *
+    ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
       (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1))
 
 /-- Closed full-source budget for terminal distinct-modulus carriers. -/
@@ -73,7 +73,7 @@ theorem norm_kloostermanSameModulusRemainderQuadratic_le_budget
       intro k hk
       rw [norm_mul]
     _ ≤ ∑ n ∈ B, ‖b n‖ * ∑ k ∈ B, ‖b k‖ *
-        ∑ q ∈ Q, ‖w q‖ ^ 2 *
+        ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
           (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1)) := by
       apply Finset.sum_le_sum
       intro n hn
@@ -128,7 +128,7 @@ theorem ofReal_sum_norm_kloostermanIntegerKernelTransform_sq_eq_mainEnergy_add_r
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ((∑ m ∈ Finset.Icc 1 M,
-      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) : ℂ) =
+      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       (kloostermanRamanujanMainEnergy M Q w B b : ℂ) +
         kloostermanSameModulusRemainderQuadratic M Q w B b +
           kloostermanDistinctModulusTerminalGramQuadratic M Q w B b := by
@@ -166,7 +166,7 @@ theorem sum_norm_kloostermanIntegerKernelTransform_sq_le_mainEnergy_add_budgets
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     (∑ m ∈ Finset.Icc 1 M,
-      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) ≤
+      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) ≤
       kloostermanRamanujanMainEnergy M Q w B b +
         kloostermanSameModulusRemainderBudget Q w B b +
           kloostermanDistinctModulusTerminalBudget M Q w B b := by
@@ -176,7 +176,7 @@ theorem sum_norm_kloostermanIntegerKernelTransform_sq_le_mainEnergy_add_budgets
   simp only [ofReal_re, add_re] at h
   calc
     (∑ m ∈ Finset.Icc 1 M,
-        ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) =
+        ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) =
         kloostermanRamanujanMainEnergy M Q w B b +
           (kloostermanSameModulusRemainderQuadratic M Q w B b).re +
             (kloostermanDistinctModulusTerminalGramQuadratic M Q w B b).re := h

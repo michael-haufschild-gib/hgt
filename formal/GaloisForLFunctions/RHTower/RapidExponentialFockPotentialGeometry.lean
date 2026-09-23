@@ -24,11 +24,11 @@ def rapidExponentialFockRadialSlope (a r : ℝ) : ℝ :=
 
 /-- Exact radial curvature of `exp (2 a r)`. -/
 def rapidExponentialFockRadialCurvature (a r : ℝ) : ℝ :=
-  4 * a ^ 2 * Real.exp (2 * a * r)
+  4 * a ^ (2 : ℕ) * Real.exp (2 * a * r)
 
 /-- Planar radial Laplacian density `phi''(r) + phi'(r) / r` on `r > 0`. -/
 def rapidExponentialFockLaplacianDensity (a r : ℝ) : ℝ :=
-  (4 * a ^ 2 + 2 * a / r) * Real.exp (2 * a * r)
+  (4 * a ^ (2 : ℕ) + 2 * a / r) * Real.exp (2 * a * r)
 
 /-- Exact reciprocal-square-root adapted radius on the exponential tail. -/
 def rapidExponentialFockAdaptedRadius (a r : ℝ) : ℝ :=
@@ -70,7 +70,7 @@ theorem rapidExponentialFockLaplacianDensity_pos
 /-- Lower tail comparison with the exact exponential density scale. -/
 theorem rapidExponentialFockLaplacianDensity_lower
     {a r : ℝ} (ha : 0 < a) (hr : 0 < r) :
-    4 * a ^ 2 * Real.exp (2 * a * r) ≤
+    4 * a ^ (2 : ℕ) * Real.exp (2 * a * r) ≤
       rapidExponentialFockLaplacianDensity a r := by
   unfold rapidExponentialFockLaplacianDensity
   have hnonneg : 0 ≤ 2 * a / r := by positivity
@@ -80,7 +80,7 @@ theorem rapidExponentialFockLaplacianDensity_lower
 theorem rapidExponentialFockLaplacianDensity_upper
     {a r : ℝ} (ha : 0 < a) (hr : 1 ≤ r) :
     rapidExponentialFockLaplacianDensity a r ≤
-      (4 * a ^ 2 + 2 * a) * Real.exp (2 * a * r) := by
+      (4 * a ^ (2 : ℕ) + 2 * a) * Real.exp (2 * a * r) := by
   unfold rapidExponentialFockLaplacianDensity
   have hr0 : 0 < r := zero_lt_one.trans_le hr
   have hdiv : 2 * a / r ≤ 2 * a := by
@@ -97,7 +97,7 @@ theorem rapidExponentialFockAdaptedRadius_pos
 
 private theorem sqrt_exp_two_mul (a r : ℝ) :
     Real.sqrt (Real.exp (2 * a * r)) = Real.exp (a * r) := by
-  have hsq : Real.exp (a * r) ^ 2 = Real.exp (2 * a * r) := by
+  have hsq : Real.exp (a * r) ^ (2 : ℕ) = Real.exp (2 * a * r) := by
     rw [sq, ← Real.exp_add]
     congr 1
     ring
@@ -109,18 +109,18 @@ theorem rapidExponentialFockAdaptedRadius_upper
     rapidExponentialFockAdaptedRadius a r ≤
       (2 * a)⁻¹ * Real.exp (-a * r) := by
   have hdensityPos := rapidExponentialFockLaplacianDensity_pos ha hr
-  have hlowerPos : 0 < 4 * a ^ 2 * Real.exp (2 * a * r) := by positivity
+  have hlowerPos : 0 < 4 * a ^ (2 : ℕ) * Real.exp (2 * a * r) := by positivity
   unfold rapidExponentialFockAdaptedRadius
   have hsqrtExact :
-      Real.sqrt (4 * a ^ 2 * Real.exp (2 * a * r)) =
+      Real.sqrt (4 * a ^ (2 : ℕ) * Real.exp (2 * a * r)) =
         2 * a * Real.exp (a * r) := by
-    rw [show 4 * a ^ 2 * Real.exp (2 * a * r) =
-        (2 * a) ^ 2 * Real.exp (2 * a * r) by ring,
+    rw [show 4 * a ^ (2 : ℕ) * Real.exp (2 * a * r) =
+        (2 * a) ^ (2 : ℕ) * Real.exp (2 * a * r) by ring,
       Real.sqrt_mul (sq_nonneg (2 * a)), Real.sqrt_sq_eq_abs,
       abs_of_pos (by positivity), sqrt_exp_two_mul]
   have hscale :
       (2 * a)⁻¹ * Real.exp (-a * r) =
-        (Real.sqrt (4 * a ^ 2 * Real.exp (2 * a * r)))⁻¹ := by
+        (Real.sqrt (4 * a ^ (2 : ℕ) * Real.exp (2 * a * r)))⁻¹ := by
     rw [hsqrtExact, show -a * r = -(a * r) by ring, Real.exp_neg]
     field_simp
   rw [hscale, inv_le_inv₀ (Real.sqrt_pos.2 hdensityPos) (Real.sqrt_pos.2 hlowerPos)]
@@ -129,20 +129,20 @@ theorem rapidExponentialFockAdaptedRadius_upper
 /-- Adapted radius is at least the corresponding uniform exponential lower scale from radius one. -/
 theorem rapidExponentialFockAdaptedRadius_lower
     {a r : ℝ} (ha : 0 < a) (hr : 1 ≤ r) :
-    (Real.sqrt (4 * a ^ 2 + 2 * a))⁻¹ * Real.exp (-a * r) ≤
+    (Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a))⁻¹ * Real.exp (-a * r) ≤
       rapidExponentialFockAdaptedRadius a r := by
   have hr0 : 0 < r := zero_lt_one.trans_le hr
   have hdensityPos := rapidExponentialFockLaplacianDensity_pos ha hr0
-  have hcoeffPos : 0 < 4 * a ^ 2 + 2 * a := by positivity
-  have hupperPos : 0 < (4 * a ^ 2 + 2 * a) * Real.exp (2 * a * r) := by positivity
+  have hcoeffPos : 0 < 4 * a ^ (2 : ℕ) + 2 * a := by positivity
+  have hupperPos : 0 < (4 * a ^ (2 : ℕ) + 2 * a) * Real.exp (2 * a * r) := by positivity
   unfold rapidExponentialFockAdaptedRadius
   have hsqrtExact :
-      Real.sqrt ((4 * a ^ 2 + 2 * a) * Real.exp (2 * a * r)) =
-        Real.sqrt (4 * a ^ 2 + 2 * a) * Real.exp (a * r) := by
+      Real.sqrt ((4 * a ^ (2 : ℕ) + 2 * a) * Real.exp (2 * a * r)) =
+        Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a) * Real.exp (a * r) := by
     rw [Real.sqrt_mul hcoeffPos.le, sqrt_exp_two_mul]
   have hscale :
-      (Real.sqrt (4 * a ^ 2 + 2 * a))⁻¹ * Real.exp (-a * r) =
-        (Real.sqrt ((4 * a ^ 2 + 2 * a) * Real.exp (2 * a * r)))⁻¹ := by
+      (Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a))⁻¹ * Real.exp (-a * r) =
+        (Real.sqrt ((4 * a ^ (2 : ℕ) + 2 * a) * Real.exp (2 * a * r)))⁻¹ := by
     rw [hsqrtExact, show -a * r = -(a * r) by ring, Real.exp_neg]
     field_simp
   rw [hscale, inv_le_inv₀ (Real.sqrt_pos.2 hupperPos) (Real.sqrt_pos.2 hdensityPos)]

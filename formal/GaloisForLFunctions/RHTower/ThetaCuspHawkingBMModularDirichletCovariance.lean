@@ -53,7 +53,7 @@ theorem chart_fderiv_modular_pullback (A : SL(2,ℤ)) (f : UpperHalfPlane → �
 actual reciprocal-square denominator, with no arbitrary frame normalization. -/
 theorem modular_chart_jacobian (A : SL(2,ℤ)) (z : UpperHalfPlane) (v : ℂ) :
     UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z:ℂ) v =
-      (1/(denom A z)^2)*v := by
+      (1/(denom A z)^(2 : ℕ))*v := by
   simp [UpperHalfPlane.smulFDeriv,UpperHalfPlane.σ,mul_comm]
 
 /-- The actual complex Dirichlet pairing of the two hyperbolic-frame derivatives. -/
@@ -61,7 +61,7 @@ def frameEnergy (f h : UpperHalfPlane → ℂ) (z : UpperHalfPlane) : ℂ :=
   ∑ i : Fin 2, conj (weightedDeriv (direction i) f z)*weightedDeriv (direction i) h z
 
 private theorem frameEnergy_chart (f h : UpperHalfPlane → ℂ) (z : UpperHalfPlane) :
-    frameEnergy f h z = (z.im:ℂ)^2 *
+    frameEnergy f h z = (z.im:ℂ)^(2 : ℕ) *
       (conj (fderiv ℝ (f ∘ ofComplex) (z:ℂ) 1)*fderiv ℝ (h ∘ ofComplex) (z:ℂ) 1+
        conj (fderiv ℝ (f ∘ ofComplex) (z:ℂ) Complex.I)*fderiv ℝ (h ∘ ofComplex) (z:ℂ) Complex.I) := by
   simp only [frameEnergy,Fin.sum_univ_two,direction,Matrix.cons_val_zero,Matrix.cons_val_one,

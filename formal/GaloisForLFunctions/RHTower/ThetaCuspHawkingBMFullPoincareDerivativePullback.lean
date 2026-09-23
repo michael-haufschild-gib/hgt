@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.TanhSubstitution
 The inverse-radius chart used previously leaves square roots and coordinate nonvanishing premises
 in the inverse Jacobian.  Introduce the global rapidity variable
 
-`rho = sech xi`, `sqrt(1-rho^2) = tanh xi`.
+`rho = sech xi`, `sqrt(1-rho^(2 : ℕ)) = tanh xi`.
 
 The Rindler--AdS/Poincare chart becomes
 
@@ -52,7 +52,7 @@ def d4BMRindlerRapidityToPoincareRadial (xi sigma : ℝ) : ℝ :=
 
 /-- Global Pythagorean identity for the rapidity chart. -/
 theorem d4BMRindlerRapidity_tanh_sq_add_sech_sq (xi : ℝ) :
-    Real.tanh xi ^ 2 + d4BMRindlerRapiditySech xi ^ 2 = 1 := by
+    Real.tanh xi ^ (2 : ℕ) + d4BMRindlerRapiditySech xi ^ (2 : ℕ) = 1 := by
   rw [d4BMRindlerRapiditySech, inv_pow]
   have h := HTGeometry.one_sub_tanh_sq xi
   rw [one_div] at h
@@ -70,20 +70,20 @@ structure D4BMFullFirstJet where
 def d4ScaledPoincareTimeDerivativeOnBMFirstJet
     (tau xi sigma : ℝ) (J : D4BMFullFirstJet) : ℂ :=
   (Real.cosh tau : ℂ) * J.tau -
-    (sigma * Real.tanh xi ^ 2 * Real.sinh tau : ℝ) * J.sigma -
+    (sigma * Real.tanh xi ^ (2 : ℕ) * Real.sinh tau : ℝ) * J.sigma -
     (Real.tanh xi * Real.sinh tau : ℝ) * J.xi
 
 /-- Denominator-cleared pullback of `partial_Y`, scaled by `sigma*tanh(xi)`. -/
 def d4ScaledPoincareHorizonYDerivativeOnBMFirstJet
     (tau xi sigma : ℝ) (J : D4BMFullFirstJet) : ℂ :=
   -(Real.sinh tau : ℂ) * J.tau +
-    (sigma * Real.tanh xi ^ 2 * Real.cosh tau : ℝ) * J.sigma +
+    (sigma * Real.tanh xi ^ (2 : ℕ) * Real.cosh tau : ℝ) * J.sigma +
     (Real.tanh xi * Real.cosh tau : ℝ) * J.xi
 
 /-- Denominator-cleared pullback of `partial_Z`, scaled by `sigma*sech(xi)`. -/
 def d4ScaledPoincareRadialDerivativeOnBMFullFirstJet
     (xi sigma : ℝ) (J : D4BMFullFirstJet) : ℂ :=
-  (sigma * d4BMRindlerRapiditySech xi ^ 2 : ℝ) * J.sigma -
+  (sigma * d4BMRindlerRapiditySech xi ^ (2 : ℕ) : ℝ) * J.sigma -
     (Real.tanh xi : ℂ) * J.xi
 
 /-- BM first jet of the chart coordinate `T`. -/
@@ -93,7 +93,7 @@ def d4BMRindlerRapidityPoincareTimeFirstJet
   tau := sigma * Real.tanh xi * Real.cosh tau
   horizonX := 0
   sigma := Real.tanh xi * Real.sinh tau
-  xi := sigma * d4BMRindlerRapiditySech xi ^ 2 * Real.sinh tau
+  xi := sigma * d4BMRindlerRapiditySech xi ^ (2 : ℕ) * Real.sinh tau
 
 /-- BM first jet of the chart coordinate `Y`. -/
 def d4BMRindlerRapidityPoincareHorizonYFirstJet
@@ -102,7 +102,7 @@ def d4BMRindlerRapidityPoincareHorizonYFirstJet
   tau := sigma * Real.tanh xi * Real.sinh tau
   horizonX := 0
   sigma := Real.tanh xi * Real.cosh tau
-  xi := sigma * d4BMRindlerRapiditySech xi ^ 2 * Real.cosh tau
+  xi := sigma * d4BMRindlerRapiditySech xi ^ (2 : ℕ) * Real.cosh tau
 
 /-- BM first jet of the chart coordinate `Z`. -/
 def d4BMRindlerRapidityPoincareRadialFirstJet
@@ -131,7 +131,7 @@ theorem d4ScaledPoincareTimeDerivative_is_coordinateVector
     norm_cast
     linear_combination
       (sigma * Real.tanh xi) * hlorentz -
-        (sigma * Real.tanh xi * Real.sinh tau ^ 2) * hpyth
+        (sigma * Real.tanh xi * Real.sinh tau ^ (2 : ℕ)) * hpyth
   constructor
   · simp only [d4ScaledPoincareTimeDerivativeOnBMFirstJet,
       d4BMRindlerRapidityPoincareHorizonYFirstJet]
@@ -167,7 +167,7 @@ theorem d4ScaledPoincareHorizonYDerivative_is_coordinateVector
     norm_cast
     linear_combination
       (sigma * Real.tanh xi) * hlorentz +
-        (sigma * Real.tanh xi * Real.cosh tau ^ 2) * hpyth
+        (sigma * Real.tanh xi * Real.cosh tau ^ (2 : ℕ)) * hpyth
   · simp only [d4ScaledPoincareHorizonYDerivativeOnBMFirstJet,
       d4BMRindlerRapidityPoincareRadialFirstJet]
     norm_cast

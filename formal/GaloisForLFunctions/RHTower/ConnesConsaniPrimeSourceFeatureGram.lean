@@ -27,26 +27,26 @@ noncomputable section
 /-- Squaring the prime-scale amplitude replaces `p` by `p²`. -/
 theorem gaussPrimeScaleCircle_sq (p : ℝ) (z : AddCircle (1 : ℝ)) :
     gaussPrimeScaleCircle p z * gaussPrimeScaleCircle p z =
-      gaussPrimeScaleCircle (p ^ 2) z := by
+      gaussPrimeScaleCircle (p ^ (2 : ℕ)) z := by
   let x := ((AddCircle.equivIoc (1 : ℝ) 0 z : Set.Ioc (0 : ℝ) (0 + 1)) : ℝ)
-  have hreal : gaussPrimeScale p x * gaussPrimeScale p x = gaussPrimeScale (p ^ 2) x := by
+  have hreal : gaussPrimeScale p x * gaussPrimeScale p x = gaussPrimeScale (p ^ (2 : ℕ)) x := by
     unfold gaussPrimeScale
     rw [Real.log_pow, ← Real.exp_add]
     congr 1
     ring
   change (((gaussPrimeScale p x : ℝ) : ℂ) * ((gaussPrimeScale p x : ℝ) : ℂ)) =
-    ((gaussPrimeScale (p ^ 2) x : ℝ) : ℂ)
+    ((gaussPrimeScale (p ^ (2 : ℕ)) x : ℝ) : ℂ)
   exact_mod_cast hreal
 
 /-- Applying `B_p` twice is exactly the single multiplier `B_(p²)`. -/
 theorem gaussPrimeScaleBlock_apply_self_eq_square {p : ℝ} (hp : 1 < p)
     (f : GaussCircleL2) :
     gaussPrimeScaleBlock hp (gaussPrimeScaleBlock hp f) =
-      gaussPrimeScaleBlock (show 1 < p ^ 2 by nlinarith) f := by
+      gaussPrimeScaleBlock (show 1 < p ^ (2 : ℕ) by nlinarith) f := by
   apply Lp.ext
   filter_upwards [gaussPrimeScaleBlock_coeFn hp (gaussPrimeScaleBlock hp f),
     gaussPrimeScaleBlock_coeFn hp f,
-    gaussPrimeScaleBlock_coeFn (show 1 < p ^ 2 by nlinarith) f] with z h1 h2 h3
+    gaussPrimeScaleBlock_coeFn (show 1 < p ^ (2 : ℕ) by nlinarith) f] with z h1 h2 h3
   rw [h1, h2, h3, ← mul_assoc, gaussPrimeScaleCircle_sq p]
 
 /-- Exact raw Gram matrix of the literal `B_p`-weighted Fourier source features. -/
@@ -63,9 +63,9 @@ theorem inner_gaussPrimeScaleBlock_fourierLp
     fourierCoeff_gaussPrimeScaleBlock_fourierLp,
     gaussPrimeScaleFourierCoefficient]
   have hp0 : 0 < p := zero_lt_one.trans hp
-  have hsqrt : Real.sqrt (p ^ 2) = p := by
+  have hsqrt : Real.sqrt (p ^ (2 : ℕ)) = p := by
     rw [Real.sqrt_sq_eq_abs, abs_of_pos hp0]
-  have hlog : Real.log (p ^ 2) / 2 = Real.log p := by
+  have hlog : Real.log (p ^ (2 : ℕ)) / 2 = Real.log p := by
     rw [Real.log_pow]
     ring
   rw [hsqrt, hlog]
@@ -91,7 +91,7 @@ theorem inner_connesConsaniNormalizedPrimeSourceFeature
     connesConsaniNormalizedPrimeSourceFeature, inner_smul_left, inner_smul_right,
     inner_gaussPrimeScaleBlock_fourierLp hp]
   simp only [Complex.conj_ofReal]
-  have hsqrtSq : Real.sqrt ((p : ℝ) - 1) ^ 2 = (p : ℝ) - 1 :=
+  have hsqrtSq : Real.sqrt ((p : ℝ) - 1) ^ (2 : ℕ) = (p : ℝ) - 1 :=
     Real.sq_sqrt hsub.le
   have hscalarReal :
       (Real.sqrt ((p : ℝ) - 1))⁻¹ * (Real.sqrt ((p : ℝ) - 1))⁻¹ *
@@ -100,7 +100,7 @@ theorem inner_connesConsaniNormalizedPrimeSourceFeature
       (Real.sqrt ((p : ℝ) - 1))⁻¹ * (Real.sqrt ((p : ℝ) - 1))⁻¹ *
           ((p : ℝ) - 1) =
         (Real.sqrt ((p : ℝ) - 1))⁻¹ * (Real.sqrt ((p : ℝ) - 1))⁻¹ *
-          (Real.sqrt ((p : ℝ) - 1) ^ 2) := by rw [hsqrtSq]
+          (Real.sqrt ((p : ℝ) - 1) ^ (2 : ℕ)) := by rw [hsqrtSq]
       _ = 1 := by field_simp
   have hscalar :
       ((((Real.sqrt ((p : ℝ) - 1))⁻¹ : ℝ) : ℂ) *

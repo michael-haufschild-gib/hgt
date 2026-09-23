@@ -161,7 +161,7 @@ theorem normSq_exponentialPeelingBogoliubovCoefficient_eq_planck
   have hx : outgoingFrequency / kappa ≠ 0 :=
     (div_pos houtgoing hkappa).ne'
   have hsqrt :
-      Real.sqrt (outgoingFrequency / incomingFrequency) ^ 2 =
+      Real.sqrt (outgoingFrequency / incomingFrequency) ^ (2 : ℕ) =
         outgoingFrequency / incomingFrequency := by
     rw [Real.sq_sqrt (div_nonneg houtgoing.le hincoming.le)]
   have hcarrier :
@@ -185,7 +185,7 @@ theorem normSq_exponentialPeelingBogoliubovCoefficient_eq_planck
             (2 * Real.pi * kappa) *
             Real.exp (-Real.pi * outgoingFrequency / (2 * kappa))) =
         (outgoingFrequency / incomingFrequency) /
-            (2 * Real.pi * kappa) ^ 2 *
+            (2 * Real.pi * kappa) ^ (2 : ℕ) *
           Real.exp (-Real.pi * outgoingFrequency / kappa) by
       rw [← pow_two, mul_pow, div_pow, hsqrt,
         pow_two (Real.exp _), ← Real.exp_add]

@@ -92,7 +92,7 @@ theorem excess_eq {x hx : ℝ} (hx0 : 0 < x) (hh : 0 < hx) :
   field_simp
 
 /-- The prime-reciprocal sum is nonnegative. -/
-theorem mertensS_nonneg (N : ℕ) : 0 ≤ mertensS N := by
+theorem mertensS_nonneg_sharedPrimeTailLimit (N : ℕ) : 0 ≤ mertensS N := by
   rw [mertensS]
   refine Finset.sum_nonneg ?_
   intro p _
@@ -199,13 +199,13 @@ theorem tendsto_shared_prime_excess {h : ℝ → ℝ}
       with x hx hh
     have hxpos : (0 : ℝ) < x := by linarith
     have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hxpos
-    have hM := mertensS_nonneg ⌊2 * Real.sqrt x⌋₊
+    have hM := mertensS_nonneg_sharedPrimeTailLimit ⌊2 * Real.sqrt x⌋₊
     positivity
   · filter_upwards [eventually_ge_atTop (1 : ℝ), hhtop.eventually_gt_atTop (0 : ℝ)]
       with x hx hh
     have hxpos : (0 : ℝ) < x := by linarith
     have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hxpos
-    have hM := mertensS_nonneg ⌊2 * Real.sqrt x⌋₊
+    have hM := mertensS_nonneg_sharedPrimeTailLimit ⌊2 * Real.sqrt x⌋₊
     have hMle := mertensS_sqrt_le hx
     rw [excess_eq hxpos hh]
     have hA : mertensS ⌊2 * Real.sqrt x⌋₊ / h x

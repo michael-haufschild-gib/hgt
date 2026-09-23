@@ -49,9 +49,9 @@ private theorem opTrace_routeKRVMTail_add_cube
     (hBHS : B.IsHilbertSchmidt)
     (hBdiag : ∀ p : Nat.Primes,
       inner ℂ (routeKPrimeBasis p) (B (routeKPrimeBasis p)) = 0) :
-    opTrace ((routeKRVMTailOperator s + B) ^ 3) =
-      opTrace (routeKRVMTailOperator s ^ 3) +
-        3 * opTrace (routeKRVMTailOperator s * B ^ 2) + opTrace (B ^ 3) := by
+    opTrace ((routeKRVMTailOperator s + B) ^ (3 : ℕ)) =
+      opTrace (routeKRVMTailOperator s ^ (3 : ℕ)) +
+        3 * opTrace (routeKRVMTailOperator s * B ^ (2 : ℕ)) + opTrace (B ^ (3 : ℕ)) := by
   let A := routeKRVMTailOperator s
   let T₀ := (A * A) * B + A * (B * B)
   let T₁ := (A * B) * A + (B * A) * B
@@ -102,7 +102,7 @@ private theorem opTrace_routeKRVMTail_add_cube
           _ = A * A := by
             change ContinuousLinearMap.adjoint A ∘SL ContinuousLinearMap.adjoint A = A ∘SL A
             rw [hAsa]
-      rw [hA2sa, show A * A = A ^ 2 by rfl,
+      rw [hA2sa, show A * A = A ^ (2 : ℕ) by rfl,
         routeKRVMTailOperator_pow_basis, inner_smul_left]
       simp [hBdiag]
     change opTrace ((A * A) ∘SL B) = 0
@@ -146,7 +146,7 @@ private theorem opTrace_routeKRVMTail_add_cube
     rw [show opTrace T₂ = opTrace ((B * A) * A) + opTrace ((B * B) * A) by
       exact opTrace_add_of_memSchattenClass_one hBAA hBBA,
       ← htraceAAB_BAA, hAABzero, zero_add, ← htraceABB_BBA]
-  have hcube : (A + B) ^ 3 = ((A * A) * A + (B * B) * B) + T₀ + T₁ + T₂ := by
+  have hcube : (A + B) ^ (3 : ℕ) = ((A * A) * A + (B * B) * B) + T₀ + T₁ + T₂ := by
     simp only [pow_succ]
     dsimp only [T₀, T₁, T₂]
     noncomm_ring
@@ -156,8 +156,8 @@ private theorem opTrace_routeKRVMTail_add_cube
     memSchattenClass_one_add' hbase hT₀
   have hbaseT₀T₁ : MemSchattenClass 1 ((((A * A) * A + (B * B) * B) + T₀) + T₁) :=
     memSchattenClass_one_add' hbaseT₀ hT₁
-  change opTrace ((A + B) ^ 3) = opTrace (A ^ 3) +
-    3 * opTrace (A * B ^ 2) + opTrace (B ^ 3)
+  change opTrace ((A + B) ^ (3 : ℕ)) = opTrace (A ^ (3 : ℕ)) +
+    3 * opTrace (A * B ^ (2 : ℕ)) + opTrace (B ^ (3 : ℕ))
   rw [hcube, opTrace_add_of_memSchattenClass_one hbaseT₀T₁ hT₂, htraceT₂,
     opTrace_add_of_memSchattenClass_one hbaseT₀ hT₁, htraceT₁,
     opTrace_add_of_memSchattenClass_one hbase hT₀, htraceT₀,
@@ -168,22 +168,22 @@ private theorem opTrace_routeKRVMTail_add_cube
 private theorem re_inner_routeKRVMTailOperator_cube_nonneg
     (s : Finset Nat.Primes) (p : Nat.Primes) :
     0 ≤ (inner ℂ (routeKPrimeBasis p)
-      ((routeKRVMTailOperator s ^ 3) (routeKPrimeBasis p))).re := by
+      ((routeKRVMTailOperator s ^ (3 : ℕ)) (routeKPrimeBasis p))).re := by
   rw [routeKRVMTailOperator_pow_basis]
   rw [inner_smul_right]
   have hunit : inner ℂ (routeKPrimeBasis p) (routeKPrimeBasis p) = 1 := by
     simp [routeKPrimeBasis]
   rw [hunit, mul_one]
-  change 0 ≤ ((routeKRVMTailWeight s p ^ 3 : ℂ).re)
+  change 0 ≤ ((routeKRVMTailWeight s p ^ (3 : ℕ) : ℂ).re)
   rw [← Complex.ofReal_pow, Complex.ofReal_re]
   exact pow_nonneg (routeKRVMTailWeight_nonneg s p) 3
 
 private theorem re_opTrace_routeKRVMTailOperator_cube_nonneg
     (s : Finset Nat.Primes) :
-    0 ≤ (opTrace (routeKRVMTailOperator s ^ 3)).re := by
+    0 ≤ (opTrace (routeKRVMTailOperator s ^ (3 : ℕ))).re := by
   have hA := routeKRVMTailOperator_isHilbertSchmidt s
   have hA2 := hA.comp_left (routeKRVMTailOperator s)
-  have hmem : MemSchattenClass 1 (routeKRVMTailOperator s ^ 3) := by
+  have hmem : MemSchattenClass 1 (routeKRVMTailOperator s ^ (3 : ℕ)) := by
     change MemSchattenClass 1
       ((routeKRVMTailOperator s * routeKRVMTailOperator s) * routeKRVMTailOperator s)
     exact memSchattenClass_one_mul_of_hilbertSchmidt hA2 hA
@@ -199,16 +199,16 @@ private theorem re_inner_routeKRVMTailOperator_mul_sq_nonneg
     (s : Finset Nat.Primes) (B : RouteKPrimeHilbert →L[ℂ] RouteKPrimeHilbert)
     (hB : IsSelfAdjoint B) (p : Nat.Primes) :
     0 ≤ (inner ℂ (routeKPrimeBasis p)
-      ((routeKRVMTailOperator s * B ^ 2) (routeKPrimeBasis p))).re := by
-  rw [show routeKRVMTailOperator s * B ^ 2 =
-      routeKRVMTailOperator s ∘L B ^ 2 by rfl,
+      ((routeKRVMTailOperator s * B ^ (2 : ℕ)) (routeKPrimeBasis p))).re := by
+  rw [show routeKRVMTailOperator s * B ^ (2 : ℕ) =
+      routeKRVMTailOperator s ∘L B ^ (2 : ℕ) by rfl,
     ContinuousLinearMap.inner_comp_apply]
   have hA : ContinuousLinearMap.adjoint (routeKRVMTailOperator s) =
       routeKRVMTailOperator s :=
     (routeKRVMTailOperator_isSelfAdjoint s).adjoint_eq
   have hBadj : ContinuousLinearMap.adjoint B = B := hB.adjoint_eq
   rw [hA, routeKRVMTailOperator_basis, inner_smul_left]
-  rw [show B ^ 2 = B ∘SL B by rfl, ContinuousLinearMap.inner_comp_apply, hBadj]
+  rw [show B ^ (2 : ℕ) = B ∘SL B by rfl, ContinuousLinearMap.inner_comp_apply, hBadj]
   simp
   norm_cast
   exact mul_nonneg (routeKRVMTailWeight_nonneg s p) (sq_nonneg _)
@@ -216,11 +216,11 @@ private theorem re_inner_routeKRVMTailOperator_mul_sq_nonneg
 private theorem re_opTrace_routeKRVMTailOperator_mul_sq_nonneg
     (s : Finset Nat.Primes) (B : RouteKPrimeHilbert →L[ℂ] RouteKPrimeHilbert)
     (hB : IsSelfAdjoint B) (hBHS : B.IsHilbertSchmidt) :
-    0 ≤ (opTrace (routeKRVMTailOperator s * B ^ 2)).re := by
-  have hB2 : (B ^ 2).IsHilbertSchmidt := by
+    0 ≤ (opTrace (routeKRVMTailOperator s * B ^ (2 : ℕ))).re := by
+  have hB2 : (B ^ (2 : ℕ)).IsHilbertSchmidt := by
     change (B * B).IsHilbertSchmidt
     exact hBHS.comp_left B
-  have hmem : MemSchattenClass 1 (routeKRVMTailOperator s * B ^ 2) := by
+  have hmem : MemSchattenClass 1 (routeKRVMTailOperator s * B ^ (2 : ℕ)) := by
     change MemSchattenClass 1 (routeKRVMTailOperator s * (B * B))
     exact memSchattenClass_one_mul_of_hilbertSchmidt
       (routeKRVMTailOperator_isHilbertSchmidt s) hB2
@@ -240,24 +240,24 @@ private theorem routeKQuarticCycleReserve_diagonal_zero (p : Nat.Primes) :
 
 /-- Scaling preserves the cofinal triangle's strictly positive cubic trace. -/
 theorem re_opTrace_routeKQuarticCycleReserve_cube_pos :
-    0 < (opTrace (routeKQuarticCycleReserve ^ 3)).re := by
+    0 < (opTrace (routeKQuarticCycleReserve ^ (3 : ℕ))).re := by
   rw [routeKQuarticCycleReserve]
   have h := re_opTrace_routeKCofinalTriangleNuclearCarrierFrom_cube_pos
     routeKQuarticReserveParameters.N
   have hcube :
-      routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ 3 =
+      routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ (3 : ℕ) =
         routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ∘L
           (routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ∘L
             routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N) := by
     ext x
     rfl
   rw [smul_pow, opTrace_smul]
-  change 0 < (((routeKQuarticReserveParameters.delta : ℂ) ^ 3) *
-    opTrace (routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ 3)).re
-  have hcubed : 0 < routeKQuarticReserveParameters.delta ^ 3 :=
+  change 0 < (((routeKQuarticReserveParameters.delta : ℂ) ^ (3 : ℕ)) *
+    opTrace (routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ (3 : ℕ))).re
+  have hcubed : 0 < routeKQuarticReserveParameters.delta ^ (3 : ℕ) :=
     pow_pos routeKQuarticReserveParameters.hdelta 3
   have h' : 0 < (opTrace
-      (routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ 3)).re := by
+      (routeKCofinalTriangleNuclearCarrierFrom routeKQuarticReserveParameters.N ^ (3 : ℕ))).re := by
     rw [hcube]
     exact h
   rw [← Complex.ofReal_pow, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
@@ -266,22 +266,22 @@ theorem re_opTrace_routeKQuarticCycleReserve_cube_pos :
 
 /-- The actual cofinite RVM-plus-cycle reserve has strictly positive cubic trace. -/
 theorem re_opTrace_routeKQuarticReserve_cube_pos :
-    0 < (opTrace (routeKQuarticReserve ^ 3)).re := by
+    0 < (opTrace (routeKQuarticReserve ^ (3 : ℕ))).re := by
   have hformula := opTrace_routeKRVMTail_add_cube
     (routeKInitialPrimeFinset routeKQuarticReserveParameters.N)
     routeKQuarticCycleReserve routeKQuarticCycleReserve_isHilbertSchmidt
     routeKQuarticCycleReserve_diagonal_zero
   change 0 < (opTrace
     ((routeKRVMTailOperator (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) +
-      routeKQuarticCycleReserve) ^ 3)).re
+      routeKQuarticCycleReserve) ^ (3 : ℕ))).re
   rw [hformula]
   have hdiag : 0 ≤ (opTrace
-      (routeKRVMTailOperator (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) ^ 3)).re :=
+      (routeKRVMTailOperator (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) ^ (3 : ℕ))).re :=
     re_opTrace_routeKRVMTailOperator_cube_nonneg
       (routeKInitialPrimeFinset routeKQuarticReserveParameters.N)
   have hcross : 0 ≤ (opTrace
       (routeKRVMTailOperator (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) *
-        routeKQuarticCycleReserve ^ 2)).re := by
+        routeKQuarticCycleReserve ^ (2 : ℕ))).re := by
     apply re_opTrace_routeKRVMTailOperator_mul_sq_nonneg
       (routeKInitialPrimeFinset routeKQuarticReserveParameters.N)
       routeKQuarticCycleReserve
@@ -311,23 +311,23 @@ private theorem routeKQuarticHead_pow_basis
 
 private theorem re_inner_routeKQuarticHead_cube_nonneg (p : Nat.Primes) :
     0 ≤ (inner ℂ (routeKPrimeBasis p)
-      ((routeKQuarticHead ^ 3) (routeKPrimeBasis p))).re := by
+      ((routeKQuarticHead ^ (3 : ℕ)) (routeKPrimeBasis p))).re := by
   rw [routeKQuarticHead_pow_basis]
   rw [inner_smul_right]
   have hunit : inner ℂ (routeKPrimeBasis p) (routeKPrimeBasis p) = 1 := by
     simp [routeKPrimeBasis]
   rw [hunit, mul_one]
   change 0 ≤ ((twoLevelPrimeWeight routeKQuarticResidualMass routeKQuarticResidualEnergy
-    routeKQuarticReserveParameters.N p ^ 3 : ℂ).re)
+    routeKQuarticReserveParameters.N p ^ (3 : ℕ) : ℂ).re)
   rw [← Complex.ofReal_pow, Complex.ofReal_re]
   exact pow_nonneg (Real.sqrt_nonneg _) 3
 
 /-- The finite two-level head has nonnegative cubic trace. -/
 theorem re_opTrace_routeKQuarticHead_cube_nonneg :
-    0 ≤ (opTrace (routeKQuarticHead ^ 3)).re := by
+    0 ≤ (opTrace (routeKQuarticHead ^ (3 : ℕ))).re := by
   have hHS := routeKQuarticHead_isHilbertSchmidt
   have hHSsq := hHS.comp_left routeKQuarticHead
-  have hmem : MemSchattenClass 1 (routeKQuarticHead ^ 3) := by
+  have hmem : MemSchattenClass 1 (routeKQuarticHead ^ (3 : ℕ)) := by
     change MemSchattenClass 1
       ((routeKQuarticHead * routeKQuarticHead) * routeKQuarticHead)
     exact memSchattenClass_one_mul_of_hilbertSchmidt hHSsq hHS
@@ -341,13 +341,13 @@ theorem re_opTrace_routeKQuarticHead_cube_nonneg :
 
 /-- The literal quartically admitted K-RVM carrier has strictly positive cubic ordinary trace. -/
 theorem re_opTrace_routeKQuarticallyAdmittedOperator_cube_pos :
-    0 < (opTrace (routeKQuarticallyAdmittedOperator ^ 3)).re := by
+    0 < (opTrace (routeKQuarticallyAdmittedOperator ^ (3 : ℕ))).re := by
   rw [routeKQuarticallyAdmittedOperator_cube]
-  have hHmem : MemSchattenClass 1 (routeKQuarticHead ^ 3) :=
+  have hHmem : MemSchattenClass 1 (routeKQuarticHead ^ (3 : ℕ)) :=
     memSchattenClass_one_mul_of_hilbertSchmidt
       (routeKQuarticHead_isHilbertSchmidt.comp_left routeKQuarticHead)
       routeKQuarticHead_isHilbertSchmidt
-  have hRmem : MemSchattenClass 1 (routeKQuarticReserve ^ 3) :=
+  have hRmem : MemSchattenClass 1 (routeKQuarticReserve ^ (3 : ℕ)) :=
     memSchattenClass_one_mul_of_hilbertSchmidt
       (routeKQuarticReserve_isHilbertSchmidt.comp_left routeKQuarticReserve)
       routeKQuarticReserve_isHilbertSchmidt
@@ -357,7 +357,7 @@ theorem re_opTrace_routeKQuarticallyAdmittedOperator_cube_pos :
 
 /-- The cubic trace of the literal quartically admitted K-RVM carrier cannot vanish. -/
 theorem opTrace_routeKQuarticallyAdmittedOperator_cube_ne_zero :
-    opTrace (routeKQuarticallyAdmittedOperator ^ 3) ≠ 0 := by
+    opTrace (routeKQuarticallyAdmittedOperator ^ (3 : ℕ)) ≠ 0 := by
   intro hzero
   have hpos := re_opTrace_routeKQuarticallyAdmittedOperator_cube_pos
   rw [hzero] at hpos

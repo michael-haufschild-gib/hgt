@@ -31,15 +31,15 @@ theorem inner_hardyKernel_hardyKernel {a b : ℂ} (ha : ‖a‖ < 1) (hb : ‖b�
   exact hardyFun_hardyKernel ha hb
 
 theorem norm_sq_hardyKernel {a : ℂ} (ha : ‖a‖ < 1) :
-    ‖hardyKernel ha‖ ^ 2 = (1 - ‖a‖ ^ 2)⁻¹ := by
+    ‖hardyKernel ha‖ ^ (2 : ℕ) = (1 - ‖a‖ ^ (2 : ℕ))⁻¹ := by
   rw [InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ),
     inner_hardyKernel_hardyKernel ha ha]
   rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  change ((1 - ((‖a‖ ^ 2 : ℝ) : ℂ))⁻¹).re = (1 - ‖a‖ ^ 2)⁻¹
+  change ((1 - ((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹).re = (1 - ‖a‖ ^ (2 : ℕ))⁻¹
   rw [Complex.inv_re]
   simp only [Complex.sub_re, one_re, ofReal_re, Complex.normSq_apply,
     Complex.sub_im, one_im, ofReal_im, sub_zero]
-  have hx : 1 - ‖a‖ ^ 2 ≠ 0 := by nlinarith [norm_nonneg a]
+  have hx : 1 - ‖a‖ ^ (2 : ℕ) ≠ 0 := by nlinarith [norm_nonneg a]
   field_simp
   ring
 
@@ -50,22 +50,22 @@ theorem tendsto_hardyKernel
     Tendsto (fun i => hardyKernel (hu i)) l (𝓝 (hardyKernel ha)) := by
   rw [tendsto_iff_norm_sub_tendsto_zero]
   have hsq : Tendsto
-      (fun i => ‖hardyKernel (hu i) - hardyKernel ha‖ ^ 2) l (𝓝 0) := by
+      (fun i => ‖hardyKernel (hu i) - hardyKernel ha‖ ^ (2 : ℕ)) l (𝓝 0) := by
     have hformula : ∀ i,
-        ‖hardyKernel (hu i) - hardyKernel ha‖ ^ 2 =
-          (1 - ‖u i‖ ^ 2)⁻¹ -
+        ‖hardyKernel (hu i) - hardyKernel ha‖ ^ (2 : ℕ) =
+          (1 - ‖u i‖ ^ (2 : ℕ))⁻¹ -
             2 * Complex.re ((1 - (starRingEnd ℂ) a * u i)⁻¹) +
-              (1 - ‖a‖ ^ 2)⁻¹ := by
+              (1 - ‖a‖ ^ (2 : ℕ))⁻¹ := by
       intro i
       rw [norm_sub_sq (𝕜 := ℂ), norm_sq_hardyKernel (hu i), norm_sq_hardyKernel ha,
         inner_hardyKernel_hardyKernel (hu i) ha]
       rfl
     have hcont : ContinuousAt (fun z : ℂ =>
-        (1 - ‖z‖ ^ 2)⁻¹ -
+        (1 - ‖z‖ ^ (2 : ℕ))⁻¹ -
           2 * Complex.re ((1 - (starRingEnd ℂ) a * z)⁻¹) +
-            (1 - ‖a‖ ^ 2)⁻¹) a := by
-      have hreal : ContinuousAt (fun z : ℂ => 1 - ‖z‖ ^ 2) a := by fun_prop
-      have hreal0 : 1 - ‖a‖ ^ 2 ≠ 0 := by nlinarith [norm_nonneg a]
+            (1 - ‖a‖ ^ (2 : ℕ))⁻¹) a := by
+      have hreal : ContinuousAt (fun z : ℂ => 1 - ‖z‖ ^ (2 : ℕ)) a := by fun_prop
+      have hreal0 : 1 - ‖a‖ ^ (2 : ℕ) ≠ 0 := by nlinarith [norm_nonneg a]
       have hcplx : ContinuousAt
           (fun z : ℂ => 1 - (starRingEnd ℂ) a * z) a := by fun_prop
       have hcplx0 : 1 - (starRingEnd ℂ) a * a ≠ 0 :=
@@ -78,12 +78,12 @@ theorem tendsto_hardyKernel
       exact ((hreal.inv₀ hreal0).sub (hre.const_mul 2)).add continuousAt_const
     have hlim := hcont.tendsto.comp h
     have hzero :
-        (1 - ‖a‖ ^ 2)⁻¹ -
+        (1 - ‖a‖ ^ (2 : ℕ))⁻¹ -
           2 * Complex.re ((1 - (starRingEnd ℂ) a * a)⁻¹) +
-            (1 - ‖a‖ ^ 2)⁻¹ = 0 := by
+            (1 - ‖a‖ ^ (2 : ℕ))⁻¹ = 0 := by
       rw [← inner_hardyKernel_hardyKernel ha ha]
       have hinner : Complex.re
-          (inner ℂ (hardyKernel ha) (hardyKernel ha)) = ‖hardyKernel ha‖ ^ 2 := by
+          (inner ℂ (hardyKernel ha) (hardyKernel ha)) = ‖hardyKernel ha‖ ^ (2 : ℕ) := by
         change RCLike.re (inner ℂ (hardyKernel ha) (hardyKernel ha)) = _
         exact (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) (hardyKernel ha)).symm
       rw [hinner, norm_sq_hardyKernel ha]
@@ -96,7 +96,7 @@ theorem tendsto_hardyKernel
 
 theorem modelSpace_starProjection_eq_rankOneTransport {a : ℂ} (ha : ‖a‖ < 1) :
     (modelSpace ha).starProjection =
-      ((((‖hardyKernel ha‖ ^ 2 : ℝ) : ℂ))⁻¹) •
+      ((((‖hardyKernel ha‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) •
         rankOneTransport (𝕜 := ℂ) (hardyKernel ha) (hardyKernel ha) := by
   apply ContinuousLinearMap.ext
   intro f
@@ -116,16 +116,16 @@ theorem tendsto_modelSpace_starProjection
   have hk : Tendsto (fun i => hardyKernel (hu i)) l (𝓝 (hardyKernel ha)) :=
     tendsto_hardyKernel u hu ha h
   have hc : Tendsto
-      (fun i => ((((‖hardyKernel (hu i)‖ ^ 2 : ℝ) : ℂ))⁻¹)) l
-      (𝓝 ((((‖hardyKernel ha‖ ^ 2 : ℝ) : ℂ))⁻¹)) := by
-    have hne : (((‖hardyKernel ha‖ ^ 2 : ℝ) : ℂ)) ≠ 0 := by
+      (fun i => ((((‖hardyKernel (hu i)‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹)) l
+      (𝓝 ((((‖hardyKernel ha‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹)) := by
+    have hne : (((‖hardyKernel ha‖ ^ (2 : ℕ) : ℝ) : ℂ)) ≠ 0 := by
       exact_mod_cast pow_ne_zero 2 (norm_ne_zero_iff.mpr (hardyKernel_ne_zero ha))
     have hnorm : Tendsto (fun i => ‖hardyKernel (hu i)‖) l
         (𝓝 ‖hardyKernel ha‖) := hk.norm
     have hpow := hnorm.pow 2
     have hcast : Tendsto
-        (fun i => (((‖hardyKernel (hu i)‖ ^ 2 : ℝ) : ℂ))) l
-        (𝓝 (((‖hardyKernel ha‖ ^ 2 : ℝ) : ℂ))) := by
+        (fun i => (((‖hardyKernel (hu i)‖ ^ (2 : ℕ) : ℝ) : ℂ))) l
+        (𝓝 (((‖hardyKernel ha‖ ^ (2 : ℕ) : ℝ) : ℂ))) := by
       exact Complex.continuous_ofReal.continuousAt.tendsto.comp hpow
     exact hcast.inv₀ hne
   have hrank : Tendsto

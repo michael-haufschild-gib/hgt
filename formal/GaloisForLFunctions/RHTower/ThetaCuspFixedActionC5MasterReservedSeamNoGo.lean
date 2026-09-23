@@ -68,7 +68,7 @@ theorem c5CompletedMasterReservedCompensationMargin_lt_adaptiveReserved
   have ha := c5CompletedActionJetOne_pos ht htu
   have hz := six_mul_neg_reflectedJetTwo_lt_c5LikelihoodAdaptiveMasterCurvature
     ht.le htu.le
-  have hc : 0 < 5 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t := by
+  have hc : 0 < 5 * t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t := by
     positivity
   have hmul := mul_lt_mul_of_pos_left hz hc
   unfold c5CompletedMasterReservedCompensationMargin
@@ -105,7 +105,7 @@ theorem not_forall_c5CompletedMasterReservedCompensationMargin_nonneg
 
 /-- Strict scale-gap surplus lost by replacing adaptive curvature with six master units. -/
 def c5CompletedMasterAdaptiveScaleGap (u t : ℝ) : ℝ :=
-  5 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+  5 * t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t *
     (c5LikelihoodAdaptiveMasterCurvature u t -
       6 * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t))
 

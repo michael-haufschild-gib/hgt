@@ -40,7 +40,7 @@ theorem summable_folded_xiShiftedReciprocalTraceHankelTerm
     Summable (fun q : XiZeroCopy =>
       complexConjugationFold (xiShiftedReciprocalSquare y q) *
         evalRealPolynomial p
-          (complexConjugationFold (xiShiftedReciprocalSquare y q)) ^ 2) := by
+          (complexConjugationFold (xiShiftedReciprocalSquare y q)) ^ (2 : ℕ)) := by
   apply Summable.of_norm
   exact (summable_xiShiftedReciprocalTraceHankelTerm hy p).norm.congr fun q => by
     let z := xiShiftedReciprocalSquare y q

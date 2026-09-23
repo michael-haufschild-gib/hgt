@@ -117,7 +117,7 @@ namespace RHTower
 noncomputable section
 
 theorem sq_im_xiPoissonPoint_eq (q : XiZeroCopy) :
-    (xiPoissonPoint q).im ^ 2 = (xiSpectralPoint q).im ^ 2 := by
+    (xiPoissonPoint q).im ^ (2 : ℕ) = (xiSpectralPoint q).im ^ (2 : ℕ) := by
   rw [xiPoissonPoint]
   split_ifs with hc
   · rfl
@@ -129,8 +129,8 @@ an upper bound `M` for the defect `xiPoissonTraceReal σ - Re (xiPoissonTraceC �
 `(π/σ) sqrt(M/2) exp(σ |Im ρ| / 2)`. -/
 theorem sq_im_xiSpectralPoint_le_of_defect_le {σ M : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi)
     (h : xiPoissonTraceReal σ - (xiPoissonTraceC (σ : ℂ)).re ≤ M) (q : XiZeroCopy) :
-    (xiSpectralPoint q).im ^ 2 ≤
-      Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * (xiPoissonPoint q).re) := by
+    (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+      Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M * Real.exp (σ * (xiPoissonPoint q).re) := by
   have hd : xiPoissonAbstract.defect σ ≤ M := by rw [xiPoissonAbstract_defect]; exact h
   have hb := xiPoissonAbstract.sq_im_le_of_defect_le hσ hσ' hd q
   rw [xiPoissonAbstract_pt, sq_im_xiPoissonPoint_eq] at hb
@@ -148,7 +148,7 @@ noncomputable section
 zeros from the critical line, weighted by `exp (-σ |Im ρ|)`. -/
 theorem xiPoissonAbstract_energy (σ : ℝ) :
     xiPoissonAbstract.energy σ = ∑' q : XiZeroCopy,
-      Real.exp (-(σ * (xiPoissonPoint q).re)) * (xiSpectralPoint q).im ^ 2 := by
+      Real.exp (-(σ * (xiPoissonPoint q).re)) * (xiSpectralPoint q).im ^ (2 : ℕ) := by
   rw [HTGeometry.AbstractSpectralFamily.energy]
   refine tsum_congr fun q => ?_
   rw [xiPoissonAbstract_pt, sq_im_xiPoissonPoint_eq]
@@ -196,7 +196,7 @@ elements. -/
 theorem card_le_of_xiPoissonEnergy_le {σ M T η : ℝ} (hσ : 0 < σ) (hη : 0 < η)
     (h : xiPoissonAbstract.energy σ ≤ M) (s : Finset XiZeroCopy)
     (hs : ∀ q ∈ s, (xiPoissonPoint q).re ≤ T ∧ η ≤ |(xiSpectralPoint q).im|) :
-    (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T))) ≤ M := by
+    (s.card : ℝ) * (η ^ (2 : ℕ) * Real.exp (-(σ * T))) ≤ M := by
   refine xiPoissonAbstract.card_le_of_energy_le hσ hη h s fun q hq => ?_
   obtain ⟨hT, hη'⟩ := hs q hq
   refine ⟨hT, ?_⟩
@@ -220,7 +220,7 @@ noncomputable section
 `Re (xiPoissonTraceC σ)` lies within a relative `σ²/8` of `xiPoissonTraceReal σ`; the Riemann
 Hypothesis is exactly the statement that the two are equal. -/
 theorem xiPoissonTraceReal_mul_le_re_xiPoissonTraceC {σ : ℝ} (hσ : 0 < σ) :
-    (1 - σ ^ 2 / 8) * xiPoissonTraceReal σ ≤ (xiPoissonTraceC (σ : ℂ)).re :=
+    (1 - σ ^ (2 : ℕ) / 8) * xiPoissonTraceReal σ ≤ (xiPoissonTraceC (σ : ℂ)).re :=
   xiPoissonAbstract.traceReal_mul_le_re_traceC hσ
 
 end

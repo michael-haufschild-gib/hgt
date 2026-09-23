@@ -171,8 +171,8 @@ theorem norm_twistedGaussian_collectiveReplicaMean_one_le
         (collectiveReplicaEnergy energy) twist 1 T‖ ≤
       (r.factorial : ℝ) *
           (1 + replicaActionCrowdingDegree energy r δ) *
-          ∑ α, weight α ^ 2 +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+          ∑ α, weight α ^ (2 : ℕ) +
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   have hbase := norm_twistedGaussianSpectralFidelityMean_one_le_spectralRowDegree
     (energy := collectiveReplicaEnergy energy) hweight hweightSum htwist hT hδ
   have hcollision :=
@@ -189,7 +189,7 @@ theorem norm_twistedGaussian_collectiveReplicaMean_one_le
         (collectiveReplicaEnergy energy : (Fin r → I) → ℝ) δ : ℝ) ≤
         (r.factorial : ℝ) * replicaActionCrowdingDegree energy r δ := by
     exact_mod_cast hnear
-  have hsq : 0 ≤ ∑ α, weight α ^ 2 :=
+  have hsq : 0 ≤ ∑ α, weight α ^ (2 : ℕ) :=
     Finset.sum_nonneg fun α hα => sq_nonneg _
   calc
     ‖twistedGaussianSpectralFidelityMean weight
@@ -198,17 +198,17 @@ theorem norm_twistedGaussian_collectiveReplicaMean_one_le
           (collectiveReplicaEnergy energy : (Fin r → I) → ℝ) : ℝ) +
         spectralNearActionRowDegree
           (collectiveReplicaEnergy energy : (Fin r → I) → ℝ) δ) *
-          ∑ α, weight α ^ 2 +
-        Real.exp (-((T * δ) ^ 2) / 2) := hbase
+          ∑ α, weight α ^ (2 : ℕ) +
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := hbase
     _ ≤ ((r.factorial : ℝ) +
           (r.factorial : ℝ) * replicaActionCrowdingDegree energy r δ) *
-          ∑ α, weight α ^ 2 +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+          ∑ α, weight α ^ (2 : ℕ) +
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
       gcongr
     _ = (r.factorial : ℝ) *
           (1 + replicaActionCrowdingDegree energy r δ) *
-          ∑ α, weight α ^ 2 +
-        Real.exp (-((T * δ) ^ 2) / 2) := by ring
+          ∑ α, weight α ^ (2 : ℕ) +
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by ring
 
 end
 

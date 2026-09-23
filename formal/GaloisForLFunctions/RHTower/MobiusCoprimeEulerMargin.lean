@@ -23,13 +23,13 @@ open Finset
 
 /-- A finite set of integers at least two has inverse-square sum at most one. -/
 theorem sum_inv_sq_ge_two_le_one (U : Finset ℕ) (hU : ∀ k ∈ U, 2 ≤ k) :
-    ∑ k ∈ U, (1 : ℝ) / (k : ℝ) ^ 2 ≤ 1 := by
+    ∑ k ∈ U, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 1 := by
   classical
   set N : ℕ := U.sup id with hN
   have hsub : U ⊆ Finset.Icc 2 N := by
     intro k hk
     exact Finset.mem_Icc.2 ⟨hU k hk, Finset.le_sup (f := id) hk⟩
-  have hmono : ∑ k ∈ U, (1 : ℝ) / (k : ℝ) ^ 2 ≤ ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ 2 :=
+  have hmono : ∑ k ∈ U, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg hsub (fun k _ _ => by positivity)
   refine le_trans hmono ?_
   have hIcc : Finset.Icc 2 N = Finset.Ico 2 (N + 1) := by
@@ -39,7 +39,7 @@ theorem sum_inv_sq_ge_two_le_one (U : Finset ℕ) (hU : ∀ k ∈ U, 2 ≤ k) :
   have hidx : N + 1 - 2 = N - 1 := by omega
   rw [hidx]
   have hcong : ∀ i ∈ Finset.range (N - 1),
-      (1 : ℝ) / ((2 + i : ℕ) : ℝ) ^ 2 = (1 : ℝ) / ((i : ℝ) + 1 + 1) ^ 2 := by
+      (1 : ℝ) / ((2 + i : ℕ) : ℝ) ^ (2 : ℕ) = (1 : ℝ) / ((i : ℝ) + 1 + 1) ^ (2 : ℕ) := by
     intro i _
     congr 2
     push_cast
@@ -51,7 +51,7 @@ theorem sum_inv_sq_ge_two_le_one (U : Finset ℕ) (hU : ∀ k ∈ U, 2 ≤ k) :
   linarith
 
 /-- The shared-prime weight of the coprimality sieve. -/
-noncomputable def primeSuccInvSq (p : ℕ) : ℝ := if p.Prime then (1 : ℝ) / ((p : ℝ) + 1) ^ 2 else 0
+noncomputable def primeSuccInvSq (p : ℕ) : ℝ := if p.Prime then (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) else 0
 
 theorem primeSuccInvSq_nonneg (p : ℕ) : 0 ≤ primeSuccInvSq p := by
   unfold primeSuccInvSq
@@ -64,17 +64,17 @@ theorem primeSuccInvSq_nonneg (p : ℕ) : 0 ≤ primeSuccInvSq p := by
 theorem sum_primeSuccInvSq_le (S : Finset ℕ) : ∑ p ∈ S, primeSuccInvSq p ≤ 13 / 36 := by
   classical
   set T : Finset ℕ := {p ∈ S | p.Prime} with hT
-  have hfilter : ∑ p ∈ S, primeSuccInvSq p = ∑ p ∈ T, (1 : ℝ) / ((p : ℝ) + 1) ^ 2 := by
+  have hfilter : ∑ p ∈ S, primeSuccInvSq p = ∑ p ∈ T, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) := by
     rw [hT, Finset.sum_filter]
     exact Finset.sum_congr rfl fun p _ => rfl
   rw [hfilter]
   set Todd : Finset ℕ := {p ∈ T | p ≠ 2} with hTodd
-  have hsplit : ∑ p ∈ T, (1 : ℝ) / ((p : ℝ) + 1) ^ 2
-      = ∑ p ∈ {p ∈ T | p = 2}, (1 : ℝ) / ((p : ℝ) + 1) ^ 2
-        + ∑ p ∈ Todd, (1 : ℝ) / ((p : ℝ) + 1) ^ 2 := by
+  have hsplit : ∑ p ∈ T, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ)
+      = ∑ p ∈ {p ∈ T | p = 2}, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ)
+        + ∑ p ∈ Todd, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) := by
     rw [hTodd]
     exact (Finset.sum_filter_add_sum_filter_not T (fun p => p = 2) _).symm
-  have htwo : ∑ p ∈ {p ∈ T | p = 2}, (1 : ℝ) / ((p : ℝ) + 1) ^ 2 ≤ 1 / 9 := by
+  have htwo : ∑ p ∈ {p ∈ T | p = 2}, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) ≤ 1 / 9 := by
     have hsub : {p ∈ T | p = 2} ⊆ ({2} : Finset ℕ) := by
       intro p hp
       exact Finset.mem_singleton.2 (Finset.mem_filter.1 hp).2
@@ -94,7 +94,7 @@ theorem sum_primeSuccInvSq_le (S : Finset ℕ) : ∑ p ∈ S, primeSuccInvSq p �
     have h2 := hoddprime q hq
     omega
   have hval : ∀ p ∈ Todd,
-      (1 : ℝ) / ((p : ℝ) + 1) ^ 2 = (1 / 4) * ((1 : ℝ) / (((p + 1) / 2 : ℕ) : ℝ) ^ 2) := by
+      (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) = (1 / 4) * ((1 : ℝ) / (((p + 1) / 2 : ℕ) : ℝ) ^ (2 : ℕ)) := by
     intro p hp
     have hmod := hoddprime p hp
     have hcast : ((p : ℝ) + 1) = 2 * ((((p + 1) / 2 : ℕ)) : ℝ) := by
@@ -108,11 +108,11 @@ theorem sum_primeSuccInvSq_le (S : Finset ℕ) : ∑ p ∈ S, primeSuccInvSq p �
       positivity
     field_simp
     ring
-  have hodd : ∑ p ∈ Todd, (1 : ℝ) / ((p : ℝ) + 1) ^ 2 ≤ 1 / 4 := by
+  have hodd : ∑ p ∈ Todd, (1 : ℝ) / ((p : ℝ) + 1) ^ (2 : ℕ) ≤ 1 / 4 := by
     rw [Finset.sum_congr rfl hval, ← Finset.mul_sum]
     set V : Finset ℕ := Todd.image (fun p => (p + 1) / 2) with hV
-    have himg : ∑ k ∈ V, (1 : ℝ) / (k : ℝ) ^ 2
-        = ∑ p ∈ Todd, (1 : ℝ) / (((p + 1) / 2 : ℕ) : ℝ) ^ 2 := by
+    have himg : ∑ k ∈ V, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ)
+        = ∑ p ∈ Todd, (1 : ℝ) / (((p + 1) / 2 : ℕ) : ℝ) ^ (2 : ℕ) := by
       rw [hV]
       exact Finset.sum_image hinj
     rw [← himg]
@@ -159,11 +159,11 @@ theorem coprimeMargin_pos : 0 < 1 / 2 - coprimeSharedPrimeDensity := by
 /-- **Card equation (8).**  Excluding one prime rescales the squarefree Euler density by
 `p/(p+1)`. -/
 theorem euler_exclusion_factor {p : ℝ} (hp : 2 ≤ p) :
-    (1 - 1 / p) / (1 - 1 / p ^ 2) = p / (p + 1) := by
+    (1 - 1 / p) / (1 - 1 / p ^ (2 : ℕ)) = p / (p + 1) := by
   have hp0 : p ≠ 0 := by intro h; rw [h] at hp; linarith
   have hp1 : p + 1 ≠ 0 := by intro h; linarith
   have hpm1 : p - 1 ≠ 0 := by intro h; linarith
-  have hden : 1 - 1 / p ^ 2 = (p - 1) * (p + 1) / p ^ 2 := by
+  have hden : 1 - 1 / p ^ (2 : ℕ) = (p - 1) * (p + 1) / p ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hden]
@@ -171,8 +171,8 @@ theorem euler_exclusion_factor {p : ℝ} (hp : 2 ≤ p) :
 
 /-- **Card equation (9).**  The shared-prime sector density in the original normalisation. -/
 theorem sharedPrimeSector_density {D p : ℝ} (hp : 2 ≤ p) :
-    (1 / p ^ 2) * (D * (p / (p + 1))) ^ 2 * ((p + 1) / p) ^ 2 * p ^ 2
-      = D ^ 2 := by
+    (1 / p ^ (2 : ℕ)) * (D * (p / (p + 1))) ^ (2 : ℕ) * ((p + 1) / p) ^ (2 : ℕ) * p ^ (2 : ℕ)
+      = D ^ (2 : ℕ) := by
   have hp0 : p ≠ 0 := by intro h; rw [h] at hp; linarith
   have hp1 : p + 1 ≠ 0 := by intro h; linarith
   field_simp

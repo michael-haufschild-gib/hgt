@@ -26,7 +26,7 @@ def centeredDivisorHyperbolaAbel (M : ℕ) : ℝ :=
 theorem sum_floorDivisor_eq_centeredHyperbola (N : ℕ) :
     (∑ d ∈ Icc 1 N, ((N / d : ℕ) : ℝ)) =
       (2 * (N : ℝ) + 1) * (∑ d ∈ Icc 1 (Nat.sqrt N), (1 : ℝ) / d) -
-        (Nat.sqrt N : ℝ)^2 - Nat.sqrt N - 2 * centeredDivisorHyperbola N := by
+        (Nat.sqrt N : ℝ)^(2 : ℕ) - Nat.sqrt N - 2 * centeredDivisorHyperbola N := by
   have hpoint (d : ℕ) (hd : d ∈ Icc 1 (Nat.sqrt N)) :
       2 * ((N / d : ℕ) : ℝ) =
         (2 * (N : ℝ) + 1) * (1 / d) - 1 - 2 * centeredModularRamp d N := by

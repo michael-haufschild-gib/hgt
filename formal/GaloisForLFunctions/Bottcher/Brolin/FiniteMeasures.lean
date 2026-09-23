@@ -130,19 +130,19 @@ theorem logKernel_aestronglyMeasurable (z : ℂ) (μ : Measure ℂ) :
   exact (((continuous_const.sub continuous_id).norm).measurable.log.neg).aestronglyMeasurable
 
 /-- The quadratic polynomial `z² + c`, as a polynomial, is monic. -/
-theorem quadraticPoly_monic (c : ℂ) : (quadraticPoly c).Monic := by
+theorem quadraticPoly_monic_finiteMeasures (c : ℂ) : (quadraticPoly c).Monic := by
   simpa [quadraticPoly] using
     (Polynomial.monic_X_pow_add_C (R := ℂ) c (n := 2) (by norm_num))
 
 /-- Every polynomial iterate of `z² + c` is monic. -/
-theorem quadraticPolyIterate_monic (c : ℂ) (n : ℕ) :
+theorem quadraticPolyIterate_monic_finiteMeasures (c : ℂ) (n : ℕ) :
     (quadraticPolyIterate c n).Monic := by
   induction n with
   | zero =>
       simp [quadraticPolyIterate]
   | succ n ih =>
       rw [quadraticPolyIterate]
-      exact (quadraticPoly_monic c).comp ih (by
+      exact (quadraticPoly_monic_finiteMeasures c).comp ih (by
         rw [quadraticPolyIterate_natDegree c n]
         positivity)
 
@@ -264,7 +264,7 @@ theorem neg_logPotential_preBrolinMeasure_eq_greenApprox {c z : ℂ} {n : ℕ}
   have hzeval : (quadraticPolyIterate c n).eval z ≠ 0 := by
     rwa [quadraticPolyIterate_eval]
   have hroots := rootLogSum_eq_log_eval_of_monic
-    (quadraticPolyIterate_monic c n) (z := z) hzeval
+    (quadraticPolyIterate_monic_finiteMeasures c n) (z := z) hzeval
   calc
     - logPotential (preBrolinMeasure c n) z
         = (2 ^ n : ℝ)⁻¹ *
@@ -487,7 +487,7 @@ theorem roots_nodup_quadraticPolyIterate_of_disconnected
   have hmult : 1 < (quadraticPolyIterate c n).rootMultiplicity r :=
     Nat.lt_of_not_ge hle
   have hp : quadraticPolyIterate c n ≠ 0 :=
-    (quadraticPolyIterate_monic c n).ne_zero
+    (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero
   rcases
     (Polynomial.one_lt_rootMultiplicity_iff_isRoot
       (p := quadraticPolyIterate c n) (t := r) hp).mp hmult with
@@ -530,11 +530,11 @@ theorem roots_filter_card_le_one_of_iterate_injOn
   rcases Multiset.mem_filter.mp hb' with ⟨hbroots, hbp⟩
   have haeval : (quadratic c)^[n] a = 0 := by
     have hroot : (quadraticPolyIterate c n).IsRoot a :=
-      (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp haroots
+      (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp haroots
     simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hroot
   have hbeval : (quadratic c)^[n] b = 0 := by
     have hroot : (quadraticPolyIterate c n).IsRoot b :=
-      (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp hbroots
+      (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp hbroots
     simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hroot
   exact hinj (hS a haroots hap) (hS b hbroots hbp) (by rw [haeval, hbeval])
 
@@ -598,12 +598,12 @@ theorem roots_filter_card_le_finset_card_of_iterate_injOn_cover
     rcases Multiset.mem_filter.mp hyRm with ⟨hyroot, _hyp⟩
     have hxeval : (quadratic c)^[n] x.1 = 0 := by
       have hroot : (quadraticPolyIterate c n).IsRoot x.1 :=
-        (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp
+        (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp
           hxroot
       simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hroot
     have hyeval : (quadratic c)^[n] y.1 = 0 := by
       have hroot : (quadraticPolyIterate c n).IsRoot y.1 :=
-        (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp
+        (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp
           hyroot
       simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hroot
     have hxS : x.1 ∈ S (chooseI x).1 := hchoose_mem x
@@ -644,7 +644,7 @@ theorem mem_escapeDisk_of_mem_roots_quadraticPolyIterate {c z : ℂ} {n : ℕ}
   have h2 : 2 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hle
   have hc : ‖c‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hle)
   have hzroot : (quadratic c)^[n] z = 0 := by
-    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic c n).ne_zero
+    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero
     have hisroot : (quadraticPolyIterate c n).IsRoot z := (Polynomial.mem_roots hp).mp hz
     rwa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] at hisroot
   exact (escape_regime_stable hc h2 n).2 hzroot
@@ -684,7 +684,7 @@ theorem not_mem_roots_quadraticPolyIterate_of_mem_filledJulia_of_disconnected
     (disconnected_iff_zero_not_mem c).mp hc
   have hrroot : (quadratic c)^[n] r = 0 := by
     have hp : quadraticPolyIterate c n ≠ 0 :=
-      (quadraticPolyIterate_monic c n).ne_zero
+      (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero
     have hisroot : (quadraticPolyIterate c n).IsRoot r :=
       (Polynomial.mem_roots hp).mp hr
     rwa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] at hisroot
@@ -757,10 +757,10 @@ theorem greenFunctionDyn_eq_scaled_critical_of_mem_roots_quadraticPolyIterate
     greenFunctionDyn c z =
       (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 := by
   have hzroot : (quadratic c)^[n] z = 0 := by
-    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic c n).ne_zero
+    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero
     have hisroot : (quadraticPolyIterate c n).IsRoot z := (Polynomial.mem_roots hp).mp hz
     rwa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] at hisroot
-  have hscale := greenFunctionDyn_iterate c z n
+  have hscale := greenFunctionDyn_iterate_basic c z n
   rw [hzroot] at hscale
   have hpow : (2 ^ n : ℝ) ≠ 0 := by positivity
   calc

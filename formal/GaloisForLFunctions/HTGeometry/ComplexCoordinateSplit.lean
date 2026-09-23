@@ -24,32 +24,32 @@ theorem abs_re_or_abs_im_ge {z : ℂ} {c : ℝ} (h : c ≤ ‖z‖) :
   have hsqrt : (0 : ℝ) < Real.sqrt 2 := by
     rw [Real.sqrt_pos]
     norm_num
-  have hsq2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hsq2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hcpos : 0 < c := by
     by_contra hc
     push Not at hc
     have : c / Real.sqrt 2 ≤ 0 := div_nonpos_of_nonpos_of_nonneg hc (le_of_lt hsqrt)
     exact absurd (le_trans this (abs_nonneg z.re)) (not_le.mpr hre)
-  have hnorm : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+  have hnorm : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
-  have hre2 : z.re ^ 2 < c ^ 2 / 2 := by
-    have habs : |z.re| ^ 2 < (c / Real.sqrt 2) ^ 2 := by
+  have hre2 : z.re ^ (2 : ℕ) < c ^ (2 : ℕ) / 2 := by
+    have habs : |z.re| ^ (2 : ℕ) < (c / Real.sqrt 2) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ |z.re| := abs_nonneg _
       nlinarith [hre, h0]
     rw [sq_abs] at habs
-    calc z.re ^ 2 < (c / Real.sqrt 2) ^ 2 := habs
-      _ = c ^ 2 / 2 := by
+    calc z.re ^ (2 : ℕ) < (c / Real.sqrt 2) ^ (2 : ℕ) := habs
+      _ = c ^ (2 : ℕ) / 2 := by
           rw [div_pow, hsq2]
-  have him2 : z.im ^ 2 < c ^ 2 / 2 := by
-    have habs : |z.im| ^ 2 < (c / Real.sqrt 2) ^ 2 := by
+  have him2 : z.im ^ (2 : ℕ) < c ^ (2 : ℕ) / 2 := by
+    have habs : |z.im| ^ (2 : ℕ) < (c / Real.sqrt 2) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ |z.im| := abs_nonneg _
       nlinarith [him, h0]
     rw [sq_abs] at habs
-    calc z.im ^ 2 < (c / Real.sqrt 2) ^ 2 := habs
-      _ = c ^ 2 / 2 := by
+    calc z.im ^ (2 : ℕ) < (c / Real.sqrt 2) ^ (2 : ℕ) := habs
+      _ = c ^ (2 : ℕ) / 2 := by
           rw [div_pow, hsq2]
-  have hlt : ‖z‖ ^ 2 < c ^ 2 := by
+  have hlt : ‖z‖ ^ (2 : ℕ) < c ^ (2 : ℕ) := by
     rw [hnorm]
     linarith
   nlinarith [h, hlt, norm_nonneg z, hcpos]

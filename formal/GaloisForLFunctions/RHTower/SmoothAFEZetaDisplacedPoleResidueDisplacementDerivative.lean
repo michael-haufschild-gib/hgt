@@ -17,10 +17,10 @@ def smoothAFEZetaDisplacedPoleResidueDisplacementDerivative
     (d x tau : ℝ) : ℂ :=
   let z := smoothAFEZetaDisplacedPoleCoordinate d tau
   let A := (x : ℂ) ^ z
-  let E := Complex.exp (z ^ 2)
+  let E := Complex.exp (z ^ (2 : ℕ))
   let Az := A * Complex.log (x : ℂ)
   let Ez := E * (2 * z)
-  ((Az * E + A * Ez) * z - A * E) / z ^ 2
+  ((Az * E + A * Ez) * z - A * E) / z ^ (2 : ℕ)
 
 theorem smoothAFEZetaDisplacedPoleResidueDisplacementDerivative_eq_I_mul_height
     (d x tau : ℝ) :
@@ -59,7 +59,7 @@ theorem hasDerivAt_smoothAFEZetaShiftedPoleResidue_displacement
       (fun u : ℝ =>
         smoothAFEZetaShiftedPoleResidue (displacedLinePt u tau) x) =
       (((fun y : ℂ => (x : ℂ) ^ y) ∘ z) *
-        (fun u : ℝ => Complex.exp ((z ^ 2) u))) / z := by
+        (fun u : ℝ => Complex.exp ((z ^ (2 : ℕ)) u))) / z := by
     funext u
     simp only [smoothAFEZetaShiftedPoleResidue, z,
       smoothAFEZetaDisplacedPoleCoordinate, Function.comp_apply, Pi.mul_apply,
@@ -67,13 +67,13 @@ theorem hasDerivAt_smoothAFEZetaShiftedPoleResidue_displacement
   have hcoeff :
       smoothAFEZetaDisplacedPoleResidueDisplacementDerivative d x tau =
         (((((x : ℂ) ^ z d * Complex.log (x : ℂ)) * 1) *
-              Complex.exp ((z ^ 2) d) +
+              Complex.exp ((z ^ (2 : ℕ)) d) +
             (((fun y : ℂ => (x : ℂ) ^ y) ∘ z) d) *
-              (Complex.exp ((z ^ 2) d) *
+              (Complex.exp ((z ^ (2 : ℕ)) d) *
                 ((2 : ℂ) * (z d) ^ (2 - 1) * 1))) * z d -
           ((((fun y : ℂ => (x : ℂ) ^ y) ∘ z) *
-            (fun u : ℝ => Complex.exp ((z ^ 2) u))) d) * 1) /
-            (z d) ^ 2 := by
+            (fun u : ℝ => Complex.exp ((z ^ (2 : ℕ)) u))) d) * 1) /
+            (z d) ^ (2 : ℕ) := by
     dsimp only [smoothAFEZetaDisplacedPoleResidueDisplacementDerivative, z,
       Function.comp_apply, Pi.mul_apply, Pi.pow_apply]
     norm_num

@@ -27,9 +27,9 @@ theorem halaszMontgomery_dyadic {N K : ℕ} (hN : 1 ≤ N) (a : EuclideanSpace �
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
     (hB : logDyadicSecondEnvelope N U T ≤ B) (hB1 : 1 ≤ B) :
-    ∑ r ∈ Finset.range K, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2
+    ∑ r ∈ Finset.range K, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ)
       ≤ ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
-            * ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) + (K : ℝ) * B) * ‖a‖ ^ 2 := by
+            * ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) + (K : ℝ) * B) * ‖a‖ ^ (2 : ℕ) := by
   have hB0 : (0 : ℝ) ≤ B := le_trans (by norm_num) hB1
   have hharm : (0 : ℝ) ≤ ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by positivity
   have hNR : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
@@ -53,16 +53,16 @@ theorem halaszMontgomery_dyadic_log {N K : ℕ} (hN : 1 ≤ N) (a : EuclideanSpa
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
     (hB : logDyadicSecondEnvelope N U T ≤ B) (hB1 : 1 ≤ B) :
-    ∑ r ∈ Finset.range K, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2
+    ∑ r ∈ Finset.range K, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ)
       ≤ ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log K)
-            + (K : ℝ) * B) * ‖a‖ ^ 2 := by
+            + (K : ℝ) * B) * ‖a‖ ^ (2 : ℕ) := by
   refine le_trans (halaszMontgomery_dyadic hN a hdelta hU hgap hdiam hnear hlamT hB hB1) ?_
   have hharm : ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) ≤ 1 + Real.log K := by
     rw [← sum_Icc_one_div_eq_sum_range]
     exact sum_Icc_one_div_le_one_add_log K
   have hcoef : (0 : ℝ) ≤ 12 * Real.pi * (N : ℝ) / delta := by positivity
   have hstep := mul_le_mul_of_nonneg_left hharm hcoef
-  have hnorm : (0 : ℝ) ≤ ‖a‖ ^ 2 := by positivity
+  have hnorm : (0 : ℝ) ≤ ‖a‖ ^ (2 : ℕ) := by positivity
   refine mul_le_mul_of_nonneg_right ?_ hnorm
   linarith
 

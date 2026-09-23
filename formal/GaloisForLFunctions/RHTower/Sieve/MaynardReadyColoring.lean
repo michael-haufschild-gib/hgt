@@ -88,16 +88,16 @@ theorem exists_canonical_sixty_eligibleSelection_coloring_of_ready_scale
     (hsigma : 0 ≤ sigma) (hV : 0 < V)
     (S : Finset ℕ) (lam : ℕ → ℝ)
     (hband : ∀ r ∈ S, T0 ≤ lam r ∧ lam r ≤ 2 * T0)
-    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       ∀ r ∈ S, V ≤ ‖heathBrownEligibleDyadicAggregate L X 60 T0 t
         ((sigma : ℂ) + (lam r : ℝ) * Complex.I)‖)
-    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       ∀ c : HeathBrownBoxChoice L X 60,
         IsHeathBrownBoxEligible L X 60 T0 t c →
           heathBrownEligibleBoxCost L X 60 *
             (groupedDyadicLower
               (heathBrownBoxFactorExponent c.a c.b c.q) : ℝ) ^ (1 - sigma) ≤ V) :
-    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ 60 ∧ (L : ℝ) ≤ T0 ^ (2 * t) ∧
+    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ (60 : ℕ) ∧ (L : ℝ) ≤ T0 ^ (2 * t) ∧
       ∃ color : ℕ → HeathBrownSelectionLabel L X 60,
         ∀ r ∈ S, IsHeathBrownEligibleSelection L X 60
           (T0 := T0) (t := t) (e := 1 - sigma)

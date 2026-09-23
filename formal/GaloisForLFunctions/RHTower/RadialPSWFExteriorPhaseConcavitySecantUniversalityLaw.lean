@@ -27,7 +27,7 @@ theorem deriv_radialPSWFExteriorPhase_eq (sigma : ℝ) {z : ℝ} (hz : 1 < z) :
 
 /-- The integrated exterior phase is concave because its exact derivative is the antitone
 exterior speed. -/
-theorem concaveOn_radialPSWFExteriorPhase {sigma : ℝ} (hsigma : sigma ^ 2 ≤ 1) :
+theorem concaveOn_radialPSWFExteriorPhase {sigma : ℝ} (hsigma : sigma ^ (2 : ℕ) ≤ 1) :
     ConcaveOn ℝ (Ioi 1) (radialPSWFExteriorPhase sigma) := by
   refine AntitoneOn.concaveOn_of_deriv (convex_Ioi 1)
     (continuousOn_radialPSWFExteriorPhase_Ioi sigma) ?_ ?_
@@ -42,7 +42,7 @@ theorem concaveOn_radialPSWFExteriorPhase {sigma : ℝ} (hsigma : sigma ^ 2 ≤ 
 
 /-- Below the boundary turning parameter, the exterior speed is strictly decreasing. -/
 theorem strictAntiOn_radialPSWFExteriorSpeed_of_sq_lt_one
-    {sigma : ℝ} (hsigma : sigma ^ 2 < 1) :
+    {sigma : ℝ} (hsigma : sigma ^ (2 : ℕ) < 1) :
     StrictAntiOn (radialPSWFExteriorSpeed sigma) (Ioi 1) := by
   refine strictAntiOn_of_deriv_neg (convex_Ioi 1) ?_ ?_
   · intro z hz
@@ -51,20 +51,20 @@ theorem strictAntiOn_radialPSWFExteriorSpeed_of_sq_lt_one
     intro z hz
     rw [(hasDerivAt_radialPSWFExteriorSpeed hsigma.le hz).deriv]
     have hz0 : 0 < z := zero_lt_one.trans hz
-    have hnum : z * (sigma ^ 2 - 1) < 0 := mul_neg_of_pos_of_neg hz0 (sub_neg.mpr hsigma)
+    have hnum : z * (sigma ^ (2 : ℕ) - 1) < 0 := mul_neg_of_pos_of_neg hz0 (sub_neg.mpr hsigma)
     have hden : 0 <
-        (z ^ 2 - 1) ^ 2 * radialPSWFExteriorSpeed sigma z := by
-      have hzden : 0 < z ^ 2 - 1 := by
+        (z ^ (2 : ℕ) - 1) ^ (2 : ℕ) * radialPSWFExteriorSpeed sigma z := by
+      have hzden : 0 < z ^ (2 : ℕ) - 1 := by
         calc
           0 < (z - 1) * (z + 1) := mul_pos (sub_pos.mpr hz) (by linarith)
-          _ = z ^ 2 - 1 := by ring
+          _ = z ^ (2 : ℕ) - 1 := by ring
       exact mul_pos (sq_pos_of_pos hzden)
         (radialPSWFExteriorSpeed_pos hsigma.le hz)
     exact div_neg_of_neg_of_pos hnum hden
 
 /-- Below the boundary turning parameter, the integrated exterior phase is strictly concave. -/
 theorem strictConcaveOn_radialPSWFExteriorPhase_of_sq_lt_one
-    {sigma : ℝ} (hsigma : sigma ^ 2 < 1) :
+    {sigma : ℝ} (hsigma : sigma ^ (2 : ℕ) < 1) :
     StrictConcaveOn ℝ (Ioi 1) (radialPSWFExteriorPhase sigma) := by
   refine StrictAntiOn.strictConcaveOn_of_deriv (convex_Ioi 1)
     (continuousOn_radialPSWFExteriorPhase_Ioi sigma) ?_
@@ -85,7 +85,7 @@ theorem radialPSWFExteriorPhase_concavitySecantUniversality
             (radialPSWFExteriorPhase sigma y - radialPSWFExteriorPhase sigma x) / (y - x) ∧
           (radialPSWFExteriorPhase sigma y - radialPSWFExteriorPhase sigma x) / (y - x) ≤
             radialPSWFExteriorSpeed sigma x := by
-  have hsigmaSq : sigma ^ 2 ≤ 1 := by nlinarith
+  have hsigmaSq : sigma ^ (2 : ℕ) ≤ 1 := by nlinarith
   have hconcave := concaveOn_radialPSWFExteriorPhase hsigmaSq
   refine ⟨hconcave, ?_⟩
   intro x y hx hxy
@@ -109,7 +109,7 @@ theorem radialPSWFExteriorPhase_strictConcavitySecantUniversality
             (radialPSWFExteriorPhase sigma y - radialPSWFExteriorPhase sigma x) / (y - x) ∧
           (radialPSWFExteriorPhase sigma y - radialPSWFExteriorPhase sigma x) / (y - x) <
             radialPSWFExteriorSpeed sigma x := by
-  have hsigmaSq : sigma ^ 2 < 1 := by nlinarith
+  have hsigmaSq : sigma ^ (2 : ℕ) < 1 := by nlinarith
   have hstrict := strictConcaveOn_radialPSWFExteriorPhase_of_sq_lt_one hsigmaSq
   refine ⟨hstrict, ?_⟩
   intro x y hx hxy

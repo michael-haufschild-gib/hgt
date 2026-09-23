@@ -32,7 +32,7 @@ theorem self_le_sqrt_iff {c : ℝ} (hc : 0 ≤ c) :
   constructor
   · intro h
     have hs := Real.sq_sqrt hc
-    have hsq : c ^ 2 ≤ c := by nlinarith [Real.sqrt_nonneg c]
+    have hsq : c ^ (2 : ℕ) ≤ c := by nlinarith [Real.sqrt_nonneg c]
     nlinarith
   · intro h
     have hs := Real.sq_sqrt hc
@@ -82,7 +82,7 @@ def quadraticScaleDistance (c : ℝ) {X : Type*} [PseudoMetricSpace X] (x y : X)
 /-- Quadratically scaled distance has the expected squared value. -/
 theorem quadraticScaleDistance_sq {c : ℝ} (hc : 0 ≤ c)
     {X : Type*} [PseudoMetricSpace X] (x y : X) :
-    quadraticScaleDistance c x y ^ 2 = c * dist x y ^ 2 := by
+    quadraticScaleDistance c x y ^ (2 : ℕ) = c * dist x y ^ (2 : ℕ) := by
   rw [quadraticScaleDistance, mul_pow, Real.sq_sqrt hc]
 
 /-- Quadratically scaled distance is nonnegative. -/

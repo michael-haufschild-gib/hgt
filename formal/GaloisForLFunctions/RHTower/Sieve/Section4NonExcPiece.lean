@@ -29,20 +29,20 @@ theorem nonexceptional_piece_le {NB stepM Pj0 B₀ B₁ T₀ K E CE CR WQ ηf : 
     (hK : 0 < K) (hηf : 0 ≤ ηf) (hPj0 : 0 < Pj0)
     (hNB : NB ≤ stepM * (Pj0 * (1 + ηf))) (hNB0 : 0 ≤ NB)
     (hB₁ : B₁ ≤ B₀ / Pj0) (hB₁0 : 0 ≤ B₁) (hB0 : 0 ≤ B₀) (hT₀ : 0 ≤ T₀)
-    (hE : E ≤ CE * B₁ * WQ ^ 2 + CR) (hE0 : 0 ≤ E) (hCE : 0 ≤ CE) (hCR : 0 ≤ CR) :
-    (NB / K) ^ 2 * ((5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * B₁) * E)
-      ≤ stepM ^ 2 * (1 + ηf) ^ 2 / K ^ 2
-        * ((5 * Real.pi / 2) * T₀ * CE * B₀ * WQ ^ 2 * Pj0
-          + (5 * Real.pi / 2) * T₀ * CR * Pj0 ^ 2
-          + (5 * Real.exp 1 / 2) * CE * B₀ ^ 2 * WQ ^ 2
+    (hE : E ≤ CE * B₁ * WQ ^ (2 : ℕ) + CR) (hE0 : 0 ≤ E) (hCE : 0 ≤ CE) (hCR : 0 ≤ CR) :
+    (NB / K) ^ (2 : ℕ) * ((5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * B₁) * E)
+      ≤ stepM ^ (2 : ℕ) * (1 + ηf) ^ (2 : ℕ) / K ^ (2 : ℕ)
+        * ((5 * Real.pi / 2) * T₀ * CE * B₀ * WQ ^ (2 : ℕ) * Pj0
+          + (5 * Real.pi / 2) * T₀ * CR * Pj0 ^ (2 : ℕ)
+          + (5 * Real.exp 1 / 2) * CE * B₀ ^ (2 : ℕ) * WQ ^ (2 : ℕ)
           + (5 * Real.exp 1 / 2) * CR * B₀ * Pj0) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have he : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
-  have hK2 : (0 : ℝ) < K ^ 2 := by positivity
-  have hWQ2 : (0 : ℝ) ≤ WQ ^ 2 := sq_nonneg _
+  have hK2 : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
+  have hWQ2 : (0 : ℝ) ≤ WQ ^ (2 : ℕ) := sq_nonneg _
   -- the first factor
-  have h1 : (NB / K) ^ 2 ≤ stepM ^ 2 * Pj0 ^ 2 * (1 + ηf) ^ 2 / K ^ 2 := by
-    have hsq : NB ^ 2 ≤ (stepM * (Pj0 * (1 + ηf))) ^ 2 := by nlinarith [hNB, hNB0]
+  have h1 : (NB / K) ^ (2 : ℕ) ≤ stepM ^ (2 : ℕ) * Pj0 ^ (2 : ℕ) * (1 + ηf) ^ (2 : ℕ) / K ^ (2 : ℕ) := by
+    have hsq : NB ^ (2 : ℕ) ≤ (stepM * (Pj0 * (1 + ηf))) ^ (2 : ℕ) := by nlinarith [hNB, hNB0]
     rw [div_pow, div_le_div_iff₀ hK2 hK2]
     nlinarith [hsq, hK2]
   -- the second factor
@@ -50,24 +50,24 @@ theorem nonexceptional_piece_le {NB stepM Pj0 B₀ B₁ T₀ K E CE CR WQ ηf : 
       ≤ 5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * (B₀ / Pj0) := by
     have := mul_le_mul_of_nonneg_left hB₁ (by positivity : (0:ℝ) ≤ 5 * Real.exp 1 / 2)
     linarith
-  have hEle : E ≤ CE * (B₀ / Pj0) * WQ ^ 2 + CR := by
+  have hEle : E ≤ CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) + CR := by
     have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hB₁ hCE) hWQ2
     linarith [hE, this]
   have hpre0 : (0 : ℝ) ≤ 5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * B₁ := by positivity
   have h2 : (5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * B₁) * E
       ≤ (5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * (B₀ / Pj0))
-        * (CE * (B₀ / Pj0) * WQ ^ 2 + CR) := by
-    have hEr0 : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ 2 + CR := by
-      have : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ 2 := by positivity
+        * (CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) + CR) := by
+    have hEr0 : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) + CR := by
+      have : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) := by positivity
       linarith
     exact mul_le_mul hpre hEle hE0 (by linarith [hpre0, hpre])
   -- combine
-  have hfirst0 : (0 : ℝ) ≤ (NB / K) ^ 2 := sq_nonneg _
-  have hmajf : (0 : ℝ) ≤ stepM ^ 2 * Pj0 ^ 2 * (1 + ηf) ^ 2 / K ^ 2 := by positivity
+  have hfirst0 : (0 : ℝ) ≤ (NB / K) ^ (2 : ℕ) := sq_nonneg _
+  have hmajf : (0 : ℝ) ≤ stepM ^ (2 : ℕ) * Pj0 ^ (2 : ℕ) * (1 + ηf) ^ (2 : ℕ) / K ^ (2 : ℕ) := by positivity
   have hmajs : (0 : ℝ) ≤ (5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * (B₀ / Pj0))
-      * (CE * (B₀ / Pj0) * WQ ^ 2 + CR) := by
+      * (CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) + CR) := by
     have ha : (0 : ℝ) ≤ 5 * Real.pi / 2 * T₀ + 5 * Real.exp 1 / 2 * (B₀ / Pj0) := by positivity
-    have hb : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ 2 + CR := by positivity
+    have hb : (0 : ℝ) ≤ CE * (B₀ / Pj0) * WQ ^ (2 : ℕ) + CR := by positivity
     exact mul_nonneg ha hb
   have hcomb := mul_le_mul h1 h2 (mul_nonneg hpre0 hE0) hmajf
   refine hcomb.trans (le_of_eq ?_)

@@ -55,7 +55,7 @@ theorem PcalObservable_no_limit_of_amplitude_ne (L : ℝ) (hL : 0 ≤ L) {ρ : �
     (hA : rectangularWindowAmplitude L (ρ - 1 / 2) ≠ 0) :
     ¬ ∃ M : ℂ, Tendsto (PcalObservable L) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
   have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
-  set W : ℂ → ℂ := fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2 with hWdef
+  set W : ℂ → ℂ := fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ) with hWdef
   have e2 : ((1 / 2 : ℂ)).re = 1 / 2 := by
     rw [show (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
   have hare : 1 / 2 < (ρ + 1 / 2).re := by rw [Complex.add_re, e2]; linarith
@@ -65,7 +65,7 @@ theorem PcalObservable_no_limit_of_amplitude_ne (L : ℝ) (hL : 0 ≤ L) {ρ : �
     have hζρd : DifferentiableAt ℂ riemannZeta (ρ + 1 / 2 - 1 / 2) := by
       rw [show ρ + 1 / 2 - 1 / 2 = ρ by ring]; exact differentiableAt_riemannZeta hρ1
     exact (hζρd.comp (ρ + 1 / 2) hsd).continuousAt
-  have hCcont : ContinuousAt (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+  have hCcont : ContinuousAt (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
       + PcalCorrection L s) (ρ + 1 / 2) :=
     (continuousAt_const.mul hζshift).add (PcalCorrection_continuousAt_gt_half L hL hare hane)
   have hWcont : Continuous W :=
@@ -78,7 +78,7 @@ theorem PcalObservable_no_limit_of_amplitude_ne (L : ℝ) (hL : 0 ≤ L) {ρ : �
   have hwin_no := windowObservable_no_limit W hζρ hWcont.continuousAt hWne
   intro hlim
   rw [show (PcalObservable L) = (fun s => windowObservable W s
-      + (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2) + PcalCorrection L s))
+      + (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2) + PcalCorrection L s))
       from funext (fun s => by simp only [PcalObservable, primeObservable, windowObservable, hWdef]; ring)]
     at hlim
   exact hwin_no ((exists_tendsto_add_continuousAt_iff hCcont).mp hlim)

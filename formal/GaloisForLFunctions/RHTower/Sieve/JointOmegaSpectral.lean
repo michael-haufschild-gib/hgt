@@ -74,13 +74,13 @@ theorem abs_jointOmegaWeight_le (P Q : Finset ℕ) (n : ℕ) :
 theorem sum_sq_fibreSum_moebius_le_jointSpectral {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h)
     (hhx : h ≤ Real.sqrt x) {P Q : Finset ℕ}
     (hP : ∀ p ∈ P, p.Prime) (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) :
-    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ 2
+    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ (2 : ℕ)
         * ∑ a ∈ outerBlock x h,
-            (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2
+            (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-                * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2)
-        + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ 2 * (Real.sqrt x + 1)
+            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+                * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ))
+        + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
                   * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))
@@ -100,9 +100,9 @@ theorem sum_sq_fibreSum_moebius_le_jointSpectral {x h : ℝ} (hx : 4 ≤ x) (hh0
   have hbridge := sum_fibreSum_sq_le_integral_scaled (f := jointOmegaWeight P Q) hB0
     (abs_jointOmegaWeight_le P Q) hx hh0 hhx
   have hplanch : (∫ u : ℝ, ‖logWindowSum (fun n => ((jointOmegaWeight P Q n : ℝ) : ℂ))
-        (fibreIndex x h) (fibreWidth x h) u‖ ^ 2)
-      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2 := by
+        (fibreIndex x h) (fibreWidth x h) u‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ) := by
     rw [integral_normSq_logWindowSum_eq _ _ (fibreWidth_nonneg hx hh0)]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
     simp only [logPoly_jointOmegaWeight_eq]
@@ -126,9 +126,9 @@ end Joint
 /-- The whole explicit cost of the jointly weighted arrangement at one scale. -/
 def jointOmegaBudget (x h : ℝ) (P Q : Finset ℕ) : ℝ :=
   16 * Real.sqrt x
-      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2)
-    + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ 2 * (Real.sqrt x + 1)
+      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ))
+    + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ (2 : ℕ) * (Real.sqrt x + 1)
     + 2 * (h + 1) * (2 * h + 1)
         * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) * (Joint.mass P * Joint.mass Q)
               * (Joint.mass P + Joint.mass Q + 1)
@@ -143,7 +143,7 @@ theorem averagedMeanSquare_moebius_of_jointOmegaBudget {hh : ℝ → ℝ} {Pf Qf
     (hPQ : ∀ᶠ x in atTop, Disjoint (Pf x) (Qf x))
     (hW : ∀ᶠ x in atTop, 0 < Joint.mass (Pf x) * Joint.mass (Qf x))
     (hlim : Tendsto (fun x => jointOmegaBudget x (hh x) (Pf x) (Qf x)
-        / ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x))
+        / ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x))
       atTop (𝓝 0)) :
     AveragedMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   rw [AveragedMeanSquare]
@@ -152,23 +152,23 @@ theorem averagedMeanSquare_moebius_of_jointOmegaBudget {hh : ℝ → ℝ} {Pf Qf
     with x hx1 hx2 hxP hxQ hxPQ hxW hx5
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
   have hden : (0 : ℝ)
-      < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x := by
-    have h1 : (0 : ℝ) < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 := by positivity
+      < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x := by
+    have h1 : (0 : ℝ) < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) := by positivity
     positivity
   have hnum0 : (0 : ℝ)
       ≤ ∑ a ∈ outerBlock x (hh x),
-          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2 :=
+          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun a _ => sq_nonneg _
   have hkey := sum_sq_fibreSum_moebius_le_jointSpectral hx5 hx2.le hx1 hxP hxQ hxPQ
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [div_le_div_iff₀ (by positivity) hden]
   have hval : (∑ a ∈ outerBlock x (hh x),
-        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-      * ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x)
-      = ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2
+        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+      * ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x)
+      = ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ)
           * ∑ a ∈ outerBlock x (hh x),
-            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-        * (hh x ^ 2 * Real.sqrt x) := by ring
+            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+        * (hh x ^ (2 : ℕ) * Real.sqrt x) := by ring
   rw [hval]
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)
   rw [jointOmegaBudget, Joint.mass, Joint.mass]

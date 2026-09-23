@@ -39,7 +39,7 @@ theorem galSumExponent_eq (C : ℝ) {L : ℝ} (hL : 0 < L) :
   unfold galSumExponent
   have h : Real.sqrt (L * Real.log L) = L * Real.sqrt (Real.log L / L) := by
     have h2 : L * Real.sqrt (Real.log L / L) =
-        Real.sqrt (L ^ 2) * Real.sqrt (Real.log L / L) := by
+        Real.sqrt (L ^ (2 : ℕ)) * Real.sqrt (Real.log L / L) := by
       rw [Real.sqrt_sq hL.le]
     rw [h2, ← Real.sqrt_mul (by positivity)]
     congr 1

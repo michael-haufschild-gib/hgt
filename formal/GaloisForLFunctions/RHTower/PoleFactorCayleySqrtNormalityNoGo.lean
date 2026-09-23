@@ -50,7 +50,7 @@ theorem not_poleFactorSqrtApproxLocallyBounded :
     exact tendsto_nhds_unique
       (hGlim.tendsto_at (farHalf_subset_rightHalf hs))
       (tendstoLocallyUniformlyOn_poleFactorSqrtApprox.tendsto_at hs)
-  let H : ℂ → ℂ := fun s => G s ^ 2 - (s - 1)
+  let H : ℂ → ℂ := fun s => G s ^ (2 : ℕ) - (s - 1)
   have hlinear : AnalyticOnNhd ℂ (fun s : ℂ => s - 1) rightHalf := by
     intro s hs
     fun_prop
@@ -64,10 +64,10 @@ theorem not_poleFactorSqrtApproxLocallyBounded :
     exact (Filter.Eventually.filter_mono nhdsWithin_le_nhds hzero).frequently
   have hHall := hHana.eqOn_zero_of_preconnected_of_frequently_eq_zero
     convex_rightHalf.isPreconnected (farHalf_subset_rightHalf two_mem_farHalf) hfreq
-  have hsq : ∀ s ∈ rightHalf, G s ^ 2 = s - 1 := by
+  have hsq : ∀ s ∈ rightHalf, G s ^ (2 : ℕ) = s - 1 := by
     intro s hs
     have hzero := hHall hs
-    change G s ^ 2 - (s - 1) = 0 at hzero
+    change G s ^ (2 : ℕ) - (s - 1) = 0 at hzero
     exact sub_eq_zero.mp hzero
   have hone : (1 : ℂ) ∈ rightHalf := by
     rw [mem_rightHalf]

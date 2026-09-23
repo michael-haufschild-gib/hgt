@@ -45,13 +45,13 @@ def q8BiquadU : K1 :=
 def q8BiquadV : K2 :=
   (1 + deningerQ8RootNumberNegOneSecondQuadraticRoot) / 2
 
-theorem q8BiquadU_sq : q8BiquadU ^ 2 = q8BiquadU + 1 := by
+theorem q8BiquadU_sq : q8BiquadU ^ (2 : ℕ) = q8BiquadU + 1 := by
   have hx := deningerQ8RootNumberNegOneFirstQuadraticRoot_sq
   unfold q8BiquadU
   field_simp
   linear_combination hx
 
-theorem q8BiquadV_sq : q8BiquadV ^ 2 = q8BiquadV + 10 := by
+theorem q8BiquadV_sq : q8BiquadV ^ (2 : ℕ) = q8BiquadV + 10 := by
   have hy := deningerQ8RootNumberNegOneSecondQuadraticRoot_sq
   have h2 : (2 : K2) ≠ 0 := by
     simpa using (algebraMap ℚ K2).injective.ne (by norm_num : (2 : ℚ) ≠ 0)
@@ -137,7 +137,7 @@ theorem q8BiquadVBasisFamily_linearIndependent :
     apply deningerQ8RootNumberNegOne_fortyOne_not_square_in_firstQuadratic w
     apply (algebraMap K1 K2).injective
     rw [map_pow]
-    change (w : K2) ^ 2 = ((41 : K1) : K2)
+    change (w : K2) ^ (2 : ℕ) = ((41 : K1) : K2)
     rw [hroot, deningerQ8RootNumberNegOneSecondQuadraticRoot_sq]
     exact (map_natCast (algebraMap K1 K2) 41).symm
   have hg0 : g 0 = 0 := by
@@ -243,11 +243,11 @@ theorem q8Biquad_trace_V : Algebra.trace K1 K2 q8BiquadV = 1 := by
     q8Biquad_trace_one_second]
   norm_num
 
-theorem q8Biquad_trace_U_sq : Algebra.trace ℚ K1 (q8BiquadU ^ 2) = 3 := by
+theorem q8Biquad_trace_U_sq : Algebra.trace ℚ K1 (q8BiquadU ^ (2 : ℕ)) = 3 := by
   rw [q8BiquadU_sq, map_add, q8Biquad_trace_U, q8Biquad_trace_one_first]
   norm_num
 
-theorem q8Biquad_trace_V_sq : Algebra.trace K1 K2 (q8BiquadV ^ 2) = 21 := by
+theorem q8Biquad_trace_V_sq : Algebra.trace K1 K2 (q8BiquadV ^ (2 : ℕ)) = 21 := by
   rw [q8BiquadV_sq, map_add, q8Biquad_trace_V]
   have hten : Algebra.trace K1 K2 (10 : K2) = 20 := by
     change Algebra.trace K1 K2 (algebraMap K1 K2 10) = 20
@@ -339,21 +339,21 @@ theorem q8BiquadIntegralBasis_discr :
     Matrix.det_fin_two]
 
 theorem q8BiquadU_isIntegral : IsIntegral ℤ q8BiquadU := by
-  let p : ℤ[X] := X ^ 2 - X - 1
+  let p : ℤ[X] := X ^ (2 : ℕ) - X - 1
   refine ⟨p, ?_, ?_⟩
   · dsimp [p]
     monicity <;> norm_num
-  · have h : (q8BiquadU ^ 2 - q8BiquadU - 1 : K1) = 0 := by
+  · have h : (q8BiquadU ^ (2 : ℕ) - q8BiquadU - 1 : K1) = 0 := by
       rw [q8BiquadU_sq]
       ring
     simpa [p] using h
 
 theorem q8BiquadV_isIntegral : IsIntegral ℤ q8BiquadV := by
-  let p : ℤ[X] := X ^ 2 - X - 10
+  let p : ℤ[X] := X ^ (2 : ℕ) - X - 10
   refine ⟨p, ?_, ?_⟩
   · dsimp [p]
     monicity <;> norm_num
-  · have h : (q8BiquadV ^ 2 - q8BiquadV - 10 : K2) = 0 := by
+  · have h : (q8BiquadV ^ (2 : ℕ) - q8BiquadV - 10 : K2) = 0 := by
       rw [q8BiquadV_sq]
       ring
     simpa [p] using h
@@ -405,7 +405,7 @@ theorem q8Biquad_prime_dvd_discr_eq_five_or_fortyOne
     dvd_trans hpd q8Biquad_discr_dvd_42025
   have hpNat : p ∣ 42025 := by
     exact_mod_cast hp42025
-  have hfactor : (42025 : ℕ) = 5 ^ 2 * 41 ^ 2 := by norm_num
+  have hfactor : (42025 : ℕ) = 5 ^ (2 : ℕ) * 41 ^ (2 : ℕ) := by norm_num
   rw [hfactor] at hpNat
   rcases (hp.dvd_mul).mp hpNat with h5 | h41
   · have hp5 : p ∣ 5 := hp.dvd_of_dvd_pow h5

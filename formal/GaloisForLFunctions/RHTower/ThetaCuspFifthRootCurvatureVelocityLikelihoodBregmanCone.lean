@@ -277,19 +277,19 @@ theorem hasDerivAt_thetaCuspCenterFirstAtomTangentSlope
 
 theorem nineteen_mul_sq_le_thetaCuspCenterFirstAtomTangentAction
     {t : ℝ} (ht : 0 ≤ t) :
-    19 * t ^ 2 ≤ thetaCuspCenterFirstAtomTangentAction t := by
+    19 * t ^ (2 : ℕ) ≤ thetaCuspCenterFirstAtomTangentAction t := by
   have hgap := deriv_lower_length
     (a := 0) (b := t) (lam := 0)
     (g' := fun x : ℝ =>
-      thetaCuspCenterFirstAtomTangentAction x - 19 * x ^ 2)
+      thetaCuspCenterFirstAtomTangentAction x - 19 * x ^ (2 : ℕ))
     (g'' := fun x : ℝ =>
       thetaCuspCenterFirstAtomTangentSlope x - 38 * x)
     (fun x hx => by
       rw [Set.uIcc_of_le ht] at hx
       have hA := hasDerivAt_thetaCuspCenterFirstAtomTangentAction hx.1
-      have hq : HasDerivAt (fun y : ℝ => 19 * y ^ 2) (38 * x) x := by
+      have hq : HasDerivAt (fun y : ℝ => 19 * y ^ (2 : ℕ)) (38 * x) x := by
         have hraw := ((hasDerivAt_id x).pow 2).const_mul 19
-        have hraw' : HasDerivAt (fun y : ℝ => 19 * y ^ 2)
+        have hraw' : HasDerivAt (fun y : ℝ => 19 * y ^ (2 : ℕ))
             (19 * (2 * x)) x := by
           simpa only [Pi.pow_apply, id_eq, Nat.cast_ofNat,
             Nat.reduceSubDiff, pow_one, mul_one] using hraw
@@ -321,14 +321,14 @@ theorem thirtyEight_mul_sub_one_lt_thetaCuspReflectedLogJetOne_zero
 strictly sublinear likelihood deficit. -/
 theorem nineteen_mul_sq_sub_self_lt_thetaCuspReflectedLogAction_zero
     {t : ℝ} (ht : 0 < t) :
-    19 * t ^ 2 - t < thetaCuspReflectedLogAction 0 t := by
+    19 * t ^ (2 : ℕ) - t < thetaCuspReflectedLogAction 0 t := by
   have hQ := nineteen_mul_sq_le_thetaCuspCenterFirstAtomTangentAction ht.le
   have hD := thetaCuspCenterLikelihoodBregmanAction_lt_self ht
   rw [thetaCuspReflectedLogAction_zero_eq_firstAtomTangent_sub_bregman ht.le]
   linarith
 
 theorem exists_c5VelocityActionCore_neg_of_positive_curvatureGap
-    {t q₁ q₂ q₃ : ℝ} (ht : 0 < t) (hq₁ : 0 < q₁) (hgap : q₁ ^ 2 < q₂) :
+    {t q₁ q₂ q₃ : ℝ} (ht : 0 < t) (hq₁ : 0 < q₁) (hgap : q₁ ^ (2 : ℕ) < q₂) :
     ∃ A : ℝ, 0 < A ∧ A < t * q₁ ∧
       thetaCuspReflectedActionFifthRootVelocityCore
         (Real.exp A - 1) t q₁ q₂ q₃ < 0 := by
@@ -338,8 +338,8 @@ theorem exists_c5VelocityActionCore_neg_of_positive_curvatureGap
   have hfcont : ContinuousAt f 0 := by
     unfold f thetaCuspReflectedActionFifthRootVelocityCore
     fun_prop
-  have hfirst : 0 < 17 * t * q₁ ^ 2 := by positivity
-  have hsecond : 0 < 3 * t ^ 2 * q₁ * (q₂ - q₁ ^ 2) := by positivity
+  have hfirst : 0 < 17 * t * q₁ ^ (2 : ℕ) := by positivity
+  have hsecond : 0 < 3 * t ^ (2 : ℕ) * q₁ * (q₂ - q₁ ^ (2 : ℕ)) := by positivity
   have hfzero : f 0 < 0 := by
     unfold f thetaCuspReflectedActionFifthRootVelocityCore
     rw [Real.exp_zero]
@@ -363,12 +363,12 @@ theorem exists_c5VelocityActionCore_neg_of_positive_curvatureGap
 
 /-- Coefficient multiplying the exponential action reserve in the C5 velocity core. -/
 def c5VelocityActionDrive (t q₁ q₂ q₃ : ℝ) : ℝ :=
-  39 * q₁ + t * (q₂ - q₁ ^ 2) +
-    5 * t ^ 2 * (q₃ - 3 * q₁ * q₂ + q₁ ^ 3)
+  39 * q₁ + t * (q₂ - q₁ ^ (2 : ℕ)) +
+    5 * t ^ (2 : ℕ) * (q₃ - 3 * q₁ * q₂ + q₁ ^ (3 : ℕ))
 
 /-- Action-independent slope tax in the C5 velocity core. -/
 def c5VelocitySlopeTax (t q₁ q₂ : ℝ) : ℝ :=
-  17 * t * q₁ ^ 2 + 3 * t ^ 2 * q₁ * (q₂ - q₁ ^ 2)
+  17 * t * q₁ ^ (2 : ℕ) + 3 * t ^ (2 : ℕ) * q₁ * (q₂ - q₁ ^ (2 : ℕ))
 
 theorem thetaCuspReflectedActionFifthRootVelocityCore_eq_drive_sub_tax
     (r t q₁ q₂ q₃ : ℝ) :
@@ -384,7 +384,7 @@ chamber, C5 velocity is nonnegative exactly when the drive is positive and the l
 action clears the displayed reserve threshold. -/
 theorem c5VelocityActionCore_nonneg_iff_drive_pos_and_reserve
     {A t q₁ q₂ q₃ : ℝ} (hA : 0 < A) (ht : 0 < t)
-    (hq₁ : 0 < q₁) (hgap : q₁ ^ 2 < q₂) :
+    (hq₁ : 0 < q₁) (hgap : q₁ ^ (2 : ℕ) < q₂) :
     0 ≤ thetaCuspReflectedActionFifthRootVelocityCore
         (Real.exp A - 1) t q₁ q₂ q₃ ↔
       0 < c5VelocityActionDrive t q₁ q₂ q₃ ∧
@@ -395,8 +395,8 @@ theorem c5VelocityActionCore_nonneg_iff_drive_pos_and_reserve
     exact Real.exp_lt_exp.mpr hA
   have htax : 0 < c5VelocitySlopeTax t q₁ q₂ := by
     unfold c5VelocitySlopeTax
-    have hfirst : 0 < 17 * t * q₁ ^ 2 := by positivity
-    have hsecond : 0 < 3 * t ^ 2 * q₁ * (q₂ - q₁ ^ 2) := by positivity
+    have hfirst : 0 < 17 * t * q₁ ^ (2 : ℕ) := by positivity
+    have hsecond : 0 < 3 * t ^ (2 : ℕ) * q₁ * (q₂ - q₁ ^ (2 : ℕ)) := by positivity
     linarith
   rw [thetaCuspReflectedActionFifthRootVelocityCore_eq_drive_sub_tax]
   constructor

@@ -43,7 +43,7 @@ private def deningerTwistHom (σ : MulAut A) (ν ν' : ℕ) : A →* A where
   map_mul' a b := by
     rw [map_mul, mul_pow, mul_pow, mul_inv, mul_mul_mul_comm]
 
-@[simp] theorem deningerTwistHom_apply (σ : MulAut A) (ν ν' : ℕ) (y : A) :
+@[simp] theorem deningerTwistHom_apply_deningerDynSysFrobeniusTwistQuotient (σ : MulAut A) (ν ν' : ℕ) (y : A) :
     deningerTwistHom σ ν ν' y = y ^ ν * ((σ y) ^ ν')⁻¹ := rfl
 
 section Telescope
@@ -94,7 +94,7 @@ theorem deningerTwistHom_telescope (z : A) (i : ℕ) :
     rw [← inv_div, htel, inv_div]
   have hg0 : g 0 = z ^ ν ^ i := by rw [hgval]; simp
   have hgi : g i = ((σ ^ i) z) ^ ν' ^ i := by rw [hgval]; simp
-  rw [deningerTwistHom_apply, hy, hσy, ← hg0, ← hgi, ← div_eq_mul_inv, ← div_eq_mul_inv]
+  rw [deningerTwistHom_apply_deningerDynSysFrobeniusTwistQuotient, hy, hσy, ← hg0, ← hgi, ← div_eq_mul_inv, ← div_eq_mul_inv]
   exact htel'
 
 end Telescope

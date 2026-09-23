@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.InghamRightEdgePowerSaving
 Above `Re s = 1`, the sharp Möbius convolution defect is an absolutely convergent Dirichlet series
 supported strictly beyond the cutoff. Its absolute tail tends to zero uniformly in the ordinate.
 Consequently `|zeta(s) M_X(s) - 1| < 1` on every fixed right edge for all large cutoffs, so the
-classical factor `1 - (zeta M_X - 1)^2` and the pole-regularized detector are pointwise nonzero on
+classical factor `1 - (zeta M_X - 1)^(2 : ℕ)` and the pole-regularized detector are pointwise nonzero on
 the whole edge. This supplies the right-boundary premise of Route T's weighted Littlewood identity.
 -/
 

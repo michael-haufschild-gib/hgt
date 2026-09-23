@@ -124,14 +124,14 @@ theorem deningerCylinderInner_self (lam : d → ℝ) {n : d → ℤ}
           * (starRingEnd ℂ) ((deningerCylinderMode lam n r η).1)
         + (deningerCylinderMode lam n r η).2
           * (starRingEnd ℂ) ((deningerCylinderMode lam n r η).2)))
-      = 2 * ((deningerModeProfile μ r ^ 2 : ℝ) : ℂ) := by
+      = 2 * ((deningerModeProfile μ r ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro r
     have hpt : ∀ η : UnitAddTorus d,
         ((deningerCylinderMode lam n r η).1
             * (starRingEnd ℂ) ((deningerCylinderMode lam n r η).1)
           + (deningerCylinderMode lam n r η).2
             * (starRingEnd ℂ) ((deningerCylinderMode lam n r η).2))
-          = (2 * ((deningerModeProfile μ r ^ 2 : ℝ) : ℂ)) * mFourier (0 : d → ℤ) η := by
+          = (2 * ((deningerModeProfile μ r ^ (2 : ℕ) : ℝ) : ℂ)) * mFourier (0 : d → ℤ) η := by
       intro η
       have hchar : mFourier n η * (starRingEnd ℂ) (mFourier n η) = mFourier (0 : d → ℤ) η := by
         rw [deningerCharacterInner, sub_self]
@@ -152,9 +152,9 @@ theorem deningerCylinderInner_self (lam : d → ℝ) {n : d → ℤ}
                   * (deningerModeProfile μ r : ℂ))) by ring, hchar]
       simp only [map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]
       push_cast
-      linear_combination ((mFourier (0 : d → ℤ) η) * (deningerModeProfile μ r : ℂ) ^ 2) * hsq
-        - ((mFourier (0 : d → ℤ) η) * (deningerFreqSign μ : ℂ) ^ 2
-            * (deningerModeProfile μ r : ℂ) ^ 2) * Complex.I_sq
+      linear_combination ((mFourier (0 : d → ℤ) η) * (deningerModeProfile μ r : ℂ) ^ (2 : ℕ)) * hsq
+        - ((mFourier (0 : d → ℤ) η) * (deningerFreqSign μ : ℂ) ^ (2 : ℕ)
+            * (deningerModeProfile μ r : ℂ) ^ (2 : ℕ)) * Complex.I_sq
     rw [funext hpt, integral_const_mul, deningerMFourier_integral_zero, mul_one]
   rw [deningerCylinderInner, funext hinner, integral_const_mul, integral_complex_ofReal,
     deningerModeProfile_integral hn]

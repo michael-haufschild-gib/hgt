@@ -64,7 +64,7 @@ theorem suzukiTransitionCoreCompletedSourceEnvironmentBlock_sourceCorner
     suzukiTransitionCoreCompletedSourceEnvironmentBlock
         N ij rho tau z w r 0 0 =
       (z - criticalMellinXiPole rho) * (w - criticalMellinXiPole tau) *
-        suzukiTransitionCoreStokesAmplitude N ij ^ 2 *
+        suzukiTransitionCoreStokesAmplitude N ij ^ (2 : ℕ) *
           frankensteinKreinCCMRoutePQuadraticSourceCurrent z w r := by
   change
     (suzukiTransitionCoreStokesAmplitude N ij *

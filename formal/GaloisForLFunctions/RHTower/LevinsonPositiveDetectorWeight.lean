@@ -31,18 +31,18 @@ theorem re_digamma_quarter_sub_log_pi_lt_log_add_one
     (by norm_num) (by linarith)
   have hupper :
       (Complex.digamma (((1 / 4 : ℝ) : ℂ) + ((τ / 2 : ℝ) : ℂ) * I)).re ≤
-        (1 / 2 : ℝ) * Real.log ((1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2) +
-          (1 / (τ / 2) ^ 2 + Real.pi / (2 * (τ / 2))) := by
+        (1 / 2 : ℝ) * Real.log ((1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ)) +
+          (1 / (τ / 2) ^ (2 : ℕ) + Real.pi / (2 * (τ / 2))) := by
     linarith [(abs_le.mp hb).2]
-  have harg : (0 : ℝ) < (1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2 := by positivity
-  have hargT : (1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2 ≤ T ^ 2 := by
+  have harg : (0 : ℝ) < (1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ) := by positivity
+  have hargT : (1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ) ≤ T ^ (2 : ℕ) := by
     nlinarith [hτ.2, hτ0, hT0]
-  have hlogarg : Real.log ((1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2) ≤ Real.log (T ^ 2) :=
+  have hlogarg : Real.log ((1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ)) ≤ Real.log (T ^ (2 : ℕ)) :=
     Real.log_le_log harg hargT
-  have hlogTsq : Real.log (T ^ 2) = 2 * Real.log T := by
+  have hlogTsq : Real.log (T ^ (2 : ℕ)) = 2 * Real.log T := by
     rw [Real.log_pow]
     norm_num
-  have herr1 : 1 / (τ / 2) ^ 2 ≤ 1 / 100 := by
+  have herr1 : 1 / (τ / 2) ^ (2 : ℕ) ≤ 1 / 100 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hτ.1]
   have herr2 : Real.pi / (2 * (τ / 2)) < 1 / 5 := by

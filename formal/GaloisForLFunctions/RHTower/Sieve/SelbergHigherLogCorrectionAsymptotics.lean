@@ -11,7 +11,7 @@ noncomputable section
 def selbergCorrectionScaledMixedTerm (N : ℕ) (mn : ℕ × ℕ) : ℝ :=
   if mn.1 ∈ Finset.Icc 1 N ∧ mn.2 ∈ Finset.Icc 1 N then
     selbergEulerCorrectionCoeff mn.1 mn.2 *
-      (selbergPrincipalScaledMixedModel mn.1 mn.2 N / Real.log N ^ 2)
+      (selbergPrincipalScaledMixedModel mn.1 mn.2 N / Real.log N ^ (2 : ℕ))
   else 0
 
 theorem tendsto_selbergCorrectionScaledMixedTerm (mn : ℕ × ℕ) :
@@ -107,11 +107,11 @@ theorem exists_eventually_norm_selbergCorrectionScaledMixedTerm_le :
           exact mul_le_mul_of_nonneg_left
             (RHTower.harmonic_cast_mono (Nat.div_le_self N (max a b))) (by positivity)
     rw [Real.norm_eq_abs, abs_mul, abs_div, abs_of_pos (pow_pos hlogpos 2)]
-    have hscaled : |selbergPrincipalScaledMixedModel a b N| / Real.log N ^ 2 ≤
+    have hscaled : |selbergPrincipalScaledMixedModel a b N| / Real.log N ^ (2 : ℕ) ≤
         2 * C * D := by
       calc
-        |selbergPrincipalScaledMixedModel a b N| / Real.log N ^ 2 ≤
-            (C * D * Real.log N * (harmonic N : ℝ)) / Real.log N ^ 2 :=
+        |selbergPrincipalScaledMixedModel a b N| / Real.log N ^ (2 : ℕ) ≤
+            (C * D * Real.log N * (harmonic N : ℝ)) / Real.log N ^ (2 : ℕ) :=
           div_le_div_of_nonneg_right hmodel (pow_pos hlogpos 2).le
         _ = C * D * ((harmonic N : ℝ) / Real.log N) := by
           field_simp [hlogpos.ne']
@@ -127,7 +127,7 @@ theorem tsum_selbergCorrectionScaledMixedTerm (N : ℕ) :
     (∑' mn : ℕ × ℕ, selbergCorrectionScaledMixedTerm N mn) =
       ∑ a ∈ Finset.Icc 1 N, ∑ b ∈ Finset.Icc 1 N,
         selbergEulerCorrectionCoeff a b *
-          (selbergPrincipalScaledMixedModel a b N / Real.log N ^ 2) := by
+          (selbergPrincipalScaledMixedModel a b N / Real.log N ^ (2 : ℕ)) := by
   rw [tsum_eq_sum (s := (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N))]
   · rw [Finset.sum_product]
     apply Finset.sum_congr rfl
@@ -160,7 +160,7 @@ theorem tendsto_tsum_selbergCorrectionScaledMixedTerm_one :
 def selbergCorrectionScaledQuadraticTerm (N : ℕ) (mn : ℕ × ℕ) : ℝ :=
   if mn.1 ∈ Finset.Icc 1 N ∧ mn.2 ∈ Finset.Icc 1 N then
     selbergEulerCorrectionCoeff mn.1 mn.2 *
-      (selbergPrincipalScaledQuadraticModel mn.1 mn.2 N / Real.log N ^ 3)
+      (selbergPrincipalScaledQuadraticModel mn.1 mn.2 N / Real.log N ^ (3 : ℕ))
   else 0
 
 theorem tendsto_selbergCorrectionScaledQuadraticTerm (mn : ℕ × ℕ) :
@@ -187,7 +187,7 @@ theorem exists_eventually_norm_selbergCorrectionScaledQuadraticTerm_le :
           M * |selbergEulerCorrectionCoeff mn.1 mn.2| := by
   obtain ⟨D, hD, hDbound⟩ :=
     exists_abs_moebiusDoubleLogKernelReal_le_const_mul_log
-  refine ⟨2 * D ^ 2, by positivity, ?_⟩
+  refine ⟨2 * D ^ (2 : ℕ), by positivity, ?_⟩
   have hratio := GaloisForLFunctions.tendsto_harmonic_div_log
   have hnear : ∀ᶠ N : ℕ in atTop,
       dist ((harmonic N : ℝ) / Real.log N) 1 < 1 :=
@@ -206,7 +206,7 @@ theorem exists_eventually_norm_selbergCorrectionScaledQuadraticTerm_le :
           |(harmonic N : ℝ) / Real.log N - 1| := le_abs_self _
       linarith
     have hmodel : |selbergPrincipalScaledQuadraticModel a b N| ≤
-        D ^ 2 * Real.log N ^ 2 * (harmonic N : ℝ) := by
+        D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) * (harmonic N : ℝ) := by
       rw [selbergPrincipalScaledQuadraticModel]
       calc
         |∑ d ∈ Finset.Icc 1 (N / max a b),
@@ -218,7 +218,7 @@ theorem exists_eventually_norm_selbergCorrectionScaledQuadraticTerm_le :
                 moebiusDoubleLogKernelReal ((N : ℝ) / ((b * d : ℕ) : ℝ)) /
                   (d : ℝ)| := Finset.abs_sum_le_sum_abs _ _
         _ ≤ ∑ d ∈ Finset.Icc 1 (N / max a b),
-            D ^ 2 * Real.log N ^ 2 * (1 / (d : ℝ)) := by
+            D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) := by
           apply Finset.sum_le_sum
           intro d hd
           have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
@@ -248,27 +248,27 @@ theorem exists_eventually_norm_selbergCorrectionScaledQuadraticTerm_le :
             (abs_nonneg (moebiusDoubleLogKernelReal YB)) (by positivity : 0 ≤ D * Real.log N)
           have hcore :
               |moebiusDoubleLogKernelReal YA| * |moebiusDoubleLogKernelReal YB| ≤
-                D ^ 2 * Real.log N ^ 2 := by
+                D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) := by
             calc
               _ ≤ (D * Real.log N) * (D * Real.log N) := hprod
-              _ = D ^ 2 * Real.log N ^ 2 := by ring
+              _ = D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) := by ring
           simpa [YA, YB, div_eq_mul_inv, mul_assoc] using
             mul_le_mul_of_nonneg_right hcore (by positivity : 0 ≤ 1 / (d : ℝ))
-        _ = D ^ 2 * Real.log N ^ 2 * (harmonic (N / max a b) : ℝ) := by
+        _ = D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) * (harmonic (N / max a b) : ℝ) := by
           rw [← Finset.mul_sum, sum_Icc_one_div_eq_harmonic]
-        _ ≤ D ^ 2 * Real.log N ^ 2 * (harmonic N : ℝ) := by
+        _ ≤ D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) * (harmonic N : ℝ) := by
           exact mul_le_mul_of_nonneg_left
             (RHTower.harmonic_cast_mono (Nat.div_le_self N (max a b))) (by positivity)
     rw [Real.norm_eq_abs, abs_mul, abs_div, abs_of_pos (pow_pos hlogpos 3)]
-    have hscaled : |selbergPrincipalScaledQuadraticModel a b N| / Real.log N ^ 3 ≤
-        2 * D ^ 2 := by
+    have hscaled : |selbergPrincipalScaledQuadraticModel a b N| / Real.log N ^ (3 : ℕ) ≤
+        2 * D ^ (2 : ℕ) := by
       calc
-        |selbergPrincipalScaledQuadraticModel a b N| / Real.log N ^ 3 ≤
-            (D ^ 2 * Real.log N ^ 2 * (harmonic N : ℝ)) / Real.log N ^ 3 :=
+        |selbergPrincipalScaledQuadraticModel a b N| / Real.log N ^ (3 : ℕ) ≤
+            (D ^ (2 : ℕ) * Real.log N ^ (2 : ℕ) * (harmonic N : ℝ)) / Real.log N ^ (3 : ℕ) :=
           div_le_div_of_nonneg_right hmodel (pow_pos hlogpos 3).le
-        _ = D ^ 2 * ((harmonic N : ℝ) / Real.log N) := by
+        _ = D ^ (2 : ℕ) * ((harmonic N : ℝ) / Real.log N) := by
           field_simp [hlogpos.ne']
-        _ ≤ 2 * D ^ 2 := by
+        _ ≤ 2 * D ^ (2 : ℕ) := by
           simpa [mul_assoc, mul_comm, mul_left_comm] using
             mul_le_mul_of_nonneg_left hratioTwo.le (sq_nonneg D)
     simpa [mul_assoc, mul_comm, mul_left_comm] using mul_le_mul_of_nonneg_left hscaled
@@ -280,7 +280,7 @@ theorem tsum_selbergCorrectionScaledQuadraticTerm (N : ℕ) :
     (∑' mn : ℕ × ℕ, selbergCorrectionScaledQuadraticTerm N mn) =
       ∑ a ∈ Finset.Icc 1 N, ∑ b ∈ Finset.Icc 1 N,
         selbergEulerCorrectionCoeff a b *
-          (selbergPrincipalScaledQuadraticModel a b N / Real.log N ^ 3) := by
+          (selbergPrincipalScaledQuadraticModel a b N / Real.log N ^ (3 : ℕ)) := by
   rw [tsum_eq_sum (s := (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N))]
   · rw [Finset.sum_product]
     apply Finset.sum_congr rfl

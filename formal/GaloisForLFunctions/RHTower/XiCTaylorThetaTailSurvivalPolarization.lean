@@ -25,12 +25,12 @@ theorem integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceDerivative
   unfold thetaCuspTailSurvival thetaCuspTailSecondCoreAtomSourceDerivative
     thetaCuspTailSecondSectionSourceDerivative
   rw [show (fun x : ℝ => ((-4 * thetaCuspTailDerivative 1 x : ℝ) : ℂ) *
-      (-(z ^ 2 + 1 / 4) *
+      (-(z ^ (2 : ℕ) + 1 / 4) *
         ∑ k ∈ Finset.range (d + 1),
           (-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ) *
             ((x : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial))) =
       (fun x : ℝ => ∑ k ∈ Finset.range (d + 1),
-        (-4 : ℂ) * (-(z ^ 2 + 1 / 4)) *
+        (-4 : ℂ) * (-(z ^ (2 : ℕ) + 1 / 4)) *
           ((-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ) /
             (((2 * k + 2).factorial : ℕ) : ℂ)) *
           (((x ^ (2 * k + 1) * thetaCuspTailDerivative 1 x : ℝ) : ℂ))) by
@@ -52,7 +52,7 @@ theorem thetaCuspTailSurvival_mul_coreAtom_tendsto_atTop_zero
       (thetaCuspTailSurvival x : ℂ) * thetaCuspTailSecondCoreAtom d z x) =
       (fun x : ℝ => (-4 : ℂ) * (thetaCuspTailDerivative 1 x : ℂ) +
         ∑ k ∈ Finset.range (d + 1),
-          (4 : ℂ) * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+          (4 : ℂ) * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
               (((2 * k + 2).factorial : ℕ) : ℂ) *
             (((x ^ (2 * k + 2) * thetaCuspTailDerivative 1 x : ℝ) : ℂ))) by
     funext x
@@ -73,7 +73,7 @@ theorem thetaCuspTailSurvival_mul_coreAtom_tendsto_atTop_zero
     simpa using hc.const_mul (-4 : ℂ)
   have hsum : Tendsto (fun x : ℝ =>
       ∑ k ∈ Finset.range (d + 1),
-        (4 : ℂ) * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+        (4 : ℂ) * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
             (((2 * k + 2).factorial : ℕ) : ℂ) *
           (((x ^ (2 * k + 2) * thetaCuspTailDerivative 1 x : ℝ) : ℂ)))
       atTop (nhds 0) := by
@@ -81,7 +81,7 @@ theorem thetaCuspTailSurvival_mul_coreAtom_tendsto_atTop_zero
       have hreal := pow_mul_thetaCuspTailDerivative_tendsto_atTop_zero (2 * k + 2) 1
       have hc := (Complex.ofRealCLM.continuous.tendsto 0).comp hreal
       simpa using hc.const_mul
-        ((4 : ℂ) * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+        ((4 : ℂ) * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
           (((2 * k + 2).factorial : ℕ) : ℂ)))
     simpa using hs
   simpa using hbase.add hsum

@@ -12,8 +12,8 @@ set_option backward.isDefEq.respectTransparency false
 /-- Re-expressing a principal equation at the physical target retains its exact eigenvalue difference. -/
 theorem continuedPrincipalDifference_physical_equation (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (i : Fin 3) (t : ℝ) (ht : t < 0) :
-    w^2*continuedPrincipalDifference q branch w a i t-continuedPrincipalDifferenceSecond q branch w a i t+
-      (horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency r^2)*continuedPrincipalDifference q branch w a i t =
+    w^(2 : ℕ)*continuedPrincipalDifference q branch w a i t-continuedPrincipalDifferenceSecond q branch w a i t+
+      (horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency r^(2 : ℕ))*continuedPrincipalDifference q branch w a i t =
         reducedCoefficient (physicalRate q branch) w a (continuedOnset (physicalRate q branch) w) t*principalAmplitude q i+
         physicalAngularGap q r i*(horizonCoordinate t:ℂ)*continuedPrincipalDifference q branch w a i t := by
   have he := continuedPrincipalDifference_equation q branch w a hwi (by linarith) i
@@ -25,8 +25,8 @@ theorem continuedPrincipalDifference_physical_equation (q r : XiZeroCopy) (branc
 /-- All four original source channels survive the finite resolvent identity, without a noncollision premise. -/
 theorem clearedPhysicalGreen_equation (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (t : ℝ) (ht : t < 0) :
-    w^2*clearedPhysicalGreen q r branch w a t-clearedPhysicalGreenSecond q r branch w a t+
-      (horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency r^2)*clearedPhysicalGreen q r branch w a t =
+    w^(2 : ℕ)*clearedPhysicalGreen q r branch w a t-clearedPhysicalGreenSecond q r branch w a t+
+      (horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency r^(2 : ℕ))*clearedPhysicalGreen q r branch w a t =
         physicalAngularGapProduct q r*continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t := by
   have hM (J : ℂ) := continuedReducedGreen_equation w (physicalRadialFrequency r) (physicalRate q branch) a J
     hwi (by linarith) (connection_ne_zero (physicalRadialFrequency_chamber r w (by linarith))) t ht

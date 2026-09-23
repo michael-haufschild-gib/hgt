@@ -24,7 +24,7 @@ noncomputable section
 theorem xiMassCriticalDiagonalCorona_card_le_quadratic
     {a : ℝ} (ha : 2 ≤ a) :
     ((xiMassCriticalDiagonalCorona a).card : ℝ) ≤
-      3 * ((2 * (a - 1 / 2)) ^ 2 + 1) / 50 := by
+      3 * ((2 * (a - 1 / 2)) ^ (2 : ℕ) + 1) / 50 := by
   apply card_le_of_height_le_certified (T := 2 * (a - 1 / 2))
   intro q hq
   have hmem := xiPoissonAbstract.mem_criticalDiagonalCorona.mp hq
@@ -43,7 +43,7 @@ theorem norm_xiMassBottomPrimeIntegral_critical_le_quadratic
     let a := xiObliqueComovingMass v u
     ‖xiMassBottomPrimeIntegral a 1 ((σ : ℂ) + u * I)‖ ≤
       ‖(Real.pi : ℂ) * I‖ *
-          (3 * ((2 * (a - 1 / 2)) ^ 2 + 1) / 50) +
+          (3 * ((2 * (a - 1 / 2)) ^ (2 : ℕ) + 1) / 50) +
         ‖(Real.pi : ℂ) * I‖ * xiPoissonTraceReal (σ / 12) +
         xiMassBottomArchUniformBound 2 (σ / 2) := by
   dsimp only

@@ -19,8 +19,8 @@ open Finset MeasureTheory
 
 /-- **Gallagher's bound at a point.** -/
 theorem gallagher_at_point (N : ℕ) (c : Fin N → ℂ) (a : ℝ) {δ : ℝ} (hδ : 0 < δ) :
-    ‖expSum N c a‖ ^ 2
-      ≤ (1 / δ) * (∫ t in (a - δ / 2)..(a + δ / 2), ‖expSum N c t‖ ^ 2)
+    ‖expSum N c a‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ t in (a - δ / 2)..(a + δ / 2), ‖expSum N c t‖ ^ (2 : ℕ))
         + (∫ t in (a - δ / 2)..(a + δ / 2),
             2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) := by
   have hh : (0 : ℝ) < δ / 2 := by linarith
@@ -32,15 +32,15 @@ theorem gallagher_at_point (N : ℕ) (c : Fin N → ℂ) (a : ℝ) {δ : ℝ} (h
     (Continuous.inner (𝕜 := ℝ) (continuous_expSum N c)
         (continuous_expSum N (derivCoeff N c))).add
       (Continuous.inner (𝕜 := ℝ) (continuous_expSum N (derivCoeff N c)) (continuous_expSum N c))
-  have hbase := gallagher_sobolev (f := fun s => ‖expSum N c s‖ ^ 2)
+  have hbase := gallagher_sobolev (f := fun s => ‖expSum N c s‖ ^ (2 : ℕ))
     (f' := fun s => (inner ℝ (expSum N c s) (expSum N (derivCoeff N c) s) : ℝ)
       + (inner ℝ (expSum N (derivCoeff N c) s) (expSum N c s) : ℝ))
     (a := a) (h := δ / 2) hh (fun x _ => hasDerivAt_normSq_expSum N c x) hcontg.continuousOn
   -- the squared modulus is its own absolute value
-  have habs1 : (∫ t in (a - δ / 2)..(a + δ / 2), |‖expSum N c t‖ ^ 2|)
-      = ∫ t in (a - δ / 2)..(a + δ / 2), ‖expSum N c t‖ ^ 2 :=
+  have habs1 : (∫ t in (a - δ / 2)..(a + δ / 2), |‖expSum N c t‖ ^ (2 : ℕ)|)
+      = ∫ t in (a - δ / 2)..(a + δ / 2), ‖expSum N c t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_congr (fun t _ => abs_of_nonneg (sq_nonneg _))
-  have habs0 : |‖expSum N c a‖ ^ 2| = ‖expSum N c a‖ ^ 2 := abs_of_nonneg (sq_nonneg _)
+  have habs0 : |‖expSum N c a‖ ^ (2 : ℕ)| = ‖expSum N c a‖ ^ (2 : ℕ) := abs_of_nonneg (sq_nonneg _)
   -- Cauchy–Schwarz on the derivative term
   have hderivbound : (∫ t in (a - δ / 2)..(a + δ / 2),
         |(inner ℝ (expSum N c t) (expSum N (derivCoeff N c) t) : ℝ)

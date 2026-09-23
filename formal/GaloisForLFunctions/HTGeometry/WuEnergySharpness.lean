@@ -23,7 +23,7 @@ theorem tendsto_mass (d : ℝ) : Tendsto (mass d) atTop (𝓝 (1 / (2 * Real.exp
 
 /-- The sharp uniform squared-energy constant, characterized without an assumed estimate. -/
 theorem uniform_energy_bound_iff (d C : ℝ) :
-    (∀ (f : BoundedContinuousFunction ℝ ℝ) (t : ℝ), energy d t f ≤ C * ‖f‖ ^ 2) ↔
+    (∀ (f : BoundedContinuousFunction ℝ ℝ) (t : ℝ), energy d t f ≤ C * ‖f‖ ^ (2 : ℕ)) ↔
       1 / (2 * Real.exp d) ≤ C := by
   constructor
   · intro h
@@ -33,19 +33,19 @@ theorem uniform_energy_bound_iff (d C : ℝ) :
     have hc := h (BoundedContinuousFunction.const ℝ (1 : ℝ)) t
     simpa [energy_const] using hc
   · intro h f t
-    calc energy d t f ≤ ‖f‖ ^ 2 / (2 * Real.exp d) := energy_le d t f
-      _ = (1 / (2 * Real.exp d)) * ‖f‖ ^ 2 := by ring
+    calc energy d t f ≤ ‖f‖ ^ (2 : ℕ) / (2 * Real.exp d) := energy_le d t f
+      _ = (1 / (2 * Real.exp d)) * ‖f‖ ^ (2 : ℕ) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_right h (sq_nonneg _)
 
 /-- Two directions have the square of the one-direction optimal energy constant. -/
 theorem uniform_rectangle_energy_bound_iff (d C : ℝ) :
     (∀ (f : BoundedContinuousFunction (ℝ × ℝ) ℝ) (u v : ℝ),
-      rectangleEnergy d u v f ≤ C * ‖f‖ ^ 2) ↔
-      1 / (2 * Real.exp d) ^ 2 ≤ C := by
+      rectangleEnergy d u v f ≤ C * ‖f‖ ^ (2 : ℕ)) ↔
+      1 / (2 * Real.exp d) ^ (2 : ℕ) ≤ C := by
   constructor
   · intro h
     have hm : Tendsto (fun t : ℝ => mass d t * mass d t) atTop
-        (𝓝 (1 / (2 * Real.exp d) ^ 2)) := by
+        (𝓝 (1 / (2 * Real.exp d) ^ (2 : ℕ))) := by
       convert! (tendsto_mass d).mul (tendsto_mass d) using 1
       congr 1
       ring
@@ -55,8 +55,8 @@ theorem uniform_rectangle_energy_bound_iff (d C : ℝ) :
     have hc := h (BoundedContinuousFunction.const (ℝ × ℝ) (1 : ℝ)) t t
     simpa [rectangleEnergy_const] using hc
   · intro h f u v
-    calc rectangleEnergy d u v f ≤ ‖f‖ ^ 2 / (2 * Real.exp d) ^ 2 := rectangleEnergy_le d u v f
-      _ = (1 / (2 * Real.exp d) ^ 2) * ‖f‖ ^ 2 := by ring
+    calc rectangleEnergy d u v f ≤ ‖f‖ ^ (2 : ℕ) / (2 * Real.exp d) ^ (2 : ℕ) := rectangleEnergy_le d u v f
+      _ = (1 / (2 * Real.exp d) ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_right h (sq_nonneg _)
 
 end

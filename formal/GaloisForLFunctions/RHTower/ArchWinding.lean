@@ -47,7 +47,7 @@ noncomputable def archWinding (u : ℝ) : ℂ :=
 /-- Derivative of the winding datum along the line. -/
 noncomputable def archWindingDeriv (u : ℝ) : ℂ :=
   Complex.I * (archFactorDeriv2 (linePt u) * archFactor (linePt u)
-    - archFactorDeriv (linePt u) ^ 2) / archFactor (linePt u) ^ 2
+    - archFactorDeriv (linePt u) ^ (2 : ℕ)) / archFactor (linePt u) ^ (2 : ℕ)
 
 theorem hasDerivAt_archWinding (u : ℝ) :
     HasDerivAt archWinding (archWindingDeriv u) u := by
@@ -55,7 +55,7 @@ theorem hasDerivAt_archWinding (u : ℝ) :
     (archFactor_linePt_ne_zero u)
   have hval : (archFactorDeriv2 (linePt u) * Complex.I * archFactor (linePt u)
       - archFactorDeriv (linePt u) * (archFactorDeriv (linePt u) * Complex.I))
-      / archFactor (linePt u) ^ 2 = archWindingDeriv u := by
+      / archFactor (linePt u) ^ (2 : ℕ) = archWindingDeriv u := by
     unfold archWindingDeriv
     ring
   unfold archWinding
@@ -142,7 +142,7 @@ theorem continuous_windingRateDeriv : Continuous windingRateDeriv := by
     (hasDerivAt_archFactor_line u).continuousAt
   have hinner : ContinuousAt (fun u : ℝ => Complex.I *
       (archFactorDeriv2 (linePt u) * archFactor (linePt u)
-        - archFactorDeriv (linePt u) ^ 2) / archFactor (linePt u) ^ 2) u :=
+        - archFactorDeriv (linePt u) ^ (2 : ℕ)) / archFactor (linePt u) ^ (2 : ℕ)) u :=
     (continuousAt_const.mul ((h2.mul h0).sub (h1.pow 2))).div (h0.pow 2)
       (pow_ne_zero 2 (archFactor_linePt_ne_zero u))
   exact Complex.continuous_re.continuousAt.comp hinner
@@ -158,7 +158,7 @@ theorem norm_integral_archFactor_line_le_of_winding_floor
     (hMim : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ * |(archWinding u).im| ≤ Mim)
     (hMp : ∀ u ∈ Set.Icc α β, |windingRateDeriv u| ≤ Mp) :
     ‖∫ u in α..β, archFactor (linePt u)‖ ≤
-      2 * (M₀ / m) + (β - α) * (Mim / m + M₀ * Mp / m ^ 2) := by
+      2 * (M₀ / m) + (β - α) * (Mim / m + M₀ * Mp / m ^ (2 : ℕ)) := by
   have hg : ∀ u ∈ Set.uIcc α β, HasDerivAt
       (fun u : ℝ => archFactor (linePt u) *
         Complex.exp (-(Complex.I * (windingPhase α u : ℂ))))

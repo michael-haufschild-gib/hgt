@@ -35,11 +35,11 @@ theorem hasLatticeExponentialGrowth_appellHumbert (hH : IsHermitianForm H)
     (f := fun y : Fin d → ℂ => (H y y).re) ((continuous_hermitian_self_re hH).continuousOn)
   set C₀ : ℝ := Real.sqrt (max CD 0) with hC₀def
   have hC₀ : 0 ≤ C₀ := Real.sqrt_nonneg _
-  have hC₀sq : CD ≤ C₀ ^ 2 := by
+  have hC₀sq : CD ≤ C₀ ^ (2 : ℕ) := by
     rw [hC₀def, Real.sq_sqrt (le_max_right CD 0)]
     exact le_max_left CD 0
-  refine ⟨Real.exp (Real.pi * C₀ ^ 2), 0, (Real.exp_nonneg _), le_refl 0, fun k x hx => ?_⟩
-  have hxsup : (H x x).re ≤ C₀ ^ 2 := by
+  refine ⟨Real.exp (Real.pi * C₀ ^ (2 : ℕ)), 0, (Real.exp_nonneg _), le_refl 0, fun k x hx => ?_⟩
+  have hxsup : (H x x).re ≤ C₀ ^ (2 : ℕ) := by
     refine le_trans (le_trans (le_abs_self _) ?_) hC₀sq
     simpa using hCD x hx
   have hbase := norm_inv_appellHumbertAutomorphicFactor_le hH hpos hχ hsemi hC₀ hxsup

@@ -22,11 +22,11 @@ def landauG (M : ℝ) (s : ℂ) : ℂ :=
     - ∑' q : XiZeroCopy, lagWeight q * (-logDeriv riemannZeta (s + 3 / 2 - (q.1 : ℂ)))
 
 /-- The term of the copy `q`. -/
-def landauTerm (q : XiZeroCopy) (s : ℂ) : ℂ :=
+def landauTerm_primeLagLandauContinuation (q : XiZeroCopy) (s : ℂ) : ℂ :=
   lagWeight q * (-logDeriv riemannZeta (s + 3 / 2 - (q.1 : ℂ)))
 
 theorem landauG_eq (M : ℝ) (s : ℂ) :
-    landauG M s = (M : ℂ) * (-logDeriv riemannZeta (1 + s)) - ∑' q, landauTerm q s := rfl
+    landauG M s = (M : ℂ) * (-logDeriv riemannZeta (1 + s)) - ∑' q, landauTerm_primeLagLandauContinuation q s := rfl
 
 /-- The box `θ − ½ − η < Re s < 3/4`, `|Im s − t₀| < r`. -/
 def landauBox (θ η t₀ r : ℝ) : Set ℂ :=
@@ -60,13 +60,13 @@ theorem riemannZeta_ne_zero_of_re_gt_bound {θ : ℝ} (hθ : ∀ q : XiZeroCopy,
 
 theorem differentiableAt_logDeriv_zeta {w : ℂ} (hw1 : w ≠ 1) (hw0 : riemannZeta w ≠ 0) :
     DifferentiableAt ℂ (logDeriv riemannZeta) w := by
-  have h := analyticAt_riemannZeta_of_ne_one hw1
+  have h := analyticAt_riemannZeta_of_ne_one_zetaLocalZeroCount hw1
   exact (h.deriv.differentiableAt).div h.differentiableAt hw0
 
 /-- Differentiability of the term of `q` on a set where its argument avoids `1` and the zeros. -/
 theorem differentiableOn_landauTerm {U : Set ℂ} (q : XiZeroCopy)
     (h : ∀ s ∈ U, s + 3 / 2 - (q.1 : ℂ) ≠ 1 ∧ riemannZeta (s + 3 / 2 - (q.1 : ℂ)) ≠ 0) :
-    DifferentiableOn ℂ (landauTerm q) U := by
+    DifferentiableOn ℂ (landauTerm_primeLagLandauContinuation q) U := by
   intro s hs
   have h1 : DifferentiableAt ℂ (fun s : ℂ => s + 3 / 2 - (q.1 : ℂ)) s :=
     (differentiableAt_id.add_const _).sub_const _
@@ -98,7 +98,7 @@ theorem shifted_zeta_ne_zero {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (q.
 theorem norm_landauTerm_le_far {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ θ)
     (hθ34 : θ ≤ 3 / 4) (hη : η ≤ 1 / 20) (hr1 : r ≤ 1) {s : ℂ} (hs : s ∈ landauBox θ η t₀ r)
     {q : XiZeroCopy} (hq : 5 ≤ |zeroOrdinate q - t₀|) :
-    ‖landauTerm q s‖
+    ‖landauTerm_primeLagLandauContinuation q s‖
       ≤ ‖lagWeight q‖ * (5 * logDerivZetaConstant * Real.log (2 + |zeroOrdinate q - t₀|)) := by
   obtain ⟨hb1, hb2, hb3⟩ := hs
   set w : ℂ := s + 3 / 2 - (q.1 : ℂ) with hw
@@ -137,7 +137,7 @@ theorem norm_landauTerm_le_far {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (
   have hlog : Real.log |w.im| ≤ Real.log (2 + |zeroOrdinate q - t₀|) :=
     Real.log_le_log (by linarith) himle
   have hlog0 : 0 ≤ Real.log |w.im| := Real.log_nonneg (by linarith)
-  unfold landauTerm
+  unfold landauTerm_primeLagLandauContinuation
   rw [norm_mul, norm_neg, ← hw]
   apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
   calc ‖logDeriv riemannZeta w‖ ≤ logDerivZetaConstant * Real.log |w.im| / (1 / 5) := hbound
@@ -174,10 +174,10 @@ theorem five_le_of_mem_compl_nearSet {t₀ : ℝ} {q : XiZeroCopy} (hq : q ∈ (
 /-- The copies with `|γ| ≤ T` form a finite set. -/
 theorem finite_copies_abs_im_le (T : ℝ) : {q : XiZeroCopy | |zeroOrdinate q| ≤ T}.Finite := by
   classical
-  have hZ : (xiZeroSet ∩ closedBall (0 : ℂ) (|T| + 1)).Finite :=
+  have hZ : (xiZeroSet_weilLagFunctionCriterion ∩ closedBall (0 : ℂ) (|T| + 1)).Finite :=
     finite_xiZeroSet_inter (isCompact_closedBall _ _)
   have hsub : {q : XiZeroCopy | |zeroOrdinate q| ≤ T} ⊆
-      ⋃ ρ ∈ xiZeroSet ∩ closedBall (0 : ℂ) (|T| + 1), {q : XiZeroCopy | (q.1 : ℂ) = ρ} := by
+      ⋃ ρ ∈ xiZeroSet_weilLagFunctionCriterion ∩ closedBall (0 : ℂ) (|T| + 1), {q : XiZeroCopy | (q.1 : ℂ) = ρ} := by
     intro q hq
     simp only [Set.mem_iUnion, Set.mem_setOf_eq, exists_prop]
     refine ⟨(q.1 : ℂ), ⟨xi_xiZeroCopy_eq_zero q, ?_⟩, rfl⟩
@@ -216,7 +216,7 @@ theorem finite_nearSet (t₀ : ℝ) : (nearSet t₀).Finite := by
 theorem differentiableOn_farTail {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ θ)
     (hθ34 : θ ≤ 3 / 4) (hη : η ≤ 1 / 20) (hr1 : r ≤ 1) :
     DifferentiableOn ℂ
-      (fun s => ∑' q : ↑(nearSet t₀)ᶜ, landauTerm q s)
+      (fun s => ∑' q : ↑(nearSet t₀)ᶜ, landauTerm_primeLagLandauContinuation q s)
       (landauBox θ η t₀ r) := by
   refine Complex.differentiableOn_tsum_of_summable_norm
     (u := fun q : ↑(nearSet t₀)ᶜ =>
@@ -254,25 +254,25 @@ theorem differentiableOn_farTail {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy,
 /-- The far tail is summable at every point of the box. -/
 theorem summable_farTail {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ θ)
     (hθ34 : θ ≤ 3 / 4) (hη : η ≤ 1 / 20) (hr1 : r ≤ 1) {s : ℂ} (hs : s ∈ landauBox θ η t₀ r) :
-    Summable fun q : ↑(nearSet t₀)ᶜ => landauTerm q s :=
+    Summable fun q : ↑(nearSet t₀)ᶜ => landauTerm_primeLagLandauContinuation q s :=
   Summable.of_norm_bounded ((summable_far_majorant t₀).subtype _)
     fun q => norm_landauTerm_le_far hθ hθ34 hη hr1 hs (five_le_of_mem_compl_nearSet q.2)
 
 /-- The full family is summable at every point of the box, and splits into near and far parts. -/
 theorem tsum_landauTerm_split {θ η t₀ r : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ θ)
     (hθ34 : θ ≤ 3 / 4) (hη : η ≤ 1 / 20) (hr1 : r ≤ 1) {s : ℂ} (hs : s ∈ landauBox θ η t₀ r) :
-    ∑' q, landauTerm q s
-      = ∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm q s
-        + ∑' q : ↑(nearSet t₀)ᶜ, landauTerm q s := by
+    ∑' q, landauTerm_primeLagLandauContinuation q s
+      = ∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm_primeLagLandauContinuation q s
+        + ∑' q : ↑(nearSet t₀)ᶜ, landauTerm_primeLagLandauContinuation q s := by
   have hfar := summable_farTail hθ hθ34 hη hr1 hs
-  have hnear : Summable fun q : nearSet t₀ => landauTerm q s := by
+  have hnear : Summable fun q : nearSet t₀ => landauTerm_primeLagLandauContinuation q s := by
     haveI : Finite (nearSet t₀) := (finite_nearSet t₀).to_subtype
     exact Summable.of_finite
-  have hsum : Summable fun q => landauTerm q s := summable_subtype_and_compl.mp ⟨hnear, hfar⟩
+  have hsum : Summable fun q => landauTerm_primeLagLandauContinuation q s := summable_subtype_and_compl.mp ⟨hnear, hfar⟩
   rw [← hsum.tsum_subtype_add_tsum_subtype_compl (nearSet t₀)]
   congr 1
-  rw [← tsum_congr_set_coe (fun q => landauTerm q s) (Set.Finite.coe_toFinset (finite_nearSet t₀))]
-  exact Finset.tsum_subtype' _ (fun q => landauTerm q s)
+  rw [← tsum_congr_set_coe (fun q => landauTerm_primeLagLandauContinuation q s) (Set.Finite.coe_toFinset (finite_nearSet t₀))]
+  exact Finset.tsum_subtype' _ (fun q => landauTerm_primeLagLandauContinuation q s)
 
 /-! ## Analyticity of the continuation on open sets avoiding the near poles -/
 
@@ -285,8 +285,8 @@ theorem differentiableOn_landauG {θ η t₀ r M : ℝ} (hθ : ∀ q : XiZeroCop
     DifferentiableOn ℂ (landauG M) U := by
   have hfun : ∀ s ∈ U, landauG M s
       = (M : ℂ) * (-logDeriv riemannZeta (1 + s))
-        - (∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm q s
-          + ∑' q : ↑(nearSet t₀)ᶜ, landauTerm q s) := by
+        - (∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm_primeLagLandauContinuation q s
+          + ∑' q : ↑(nearSet t₀)ᶜ, landauTerm_primeLagLandauContinuation q s) := by
     intro s hs
     rw [landauG_eq, tsum_landauTerm_split hθ hθ34 hη hr1 (hUbox hs)]
   refine DifferentiableOn.congr ?_ hfun
@@ -304,15 +304,15 @@ theorem differentiableOn_landauG {θ η t₀ r M : ℝ} (hθ : ∀ q : XiZeroCop
     exact (((differentiableAt_logDeriv_zeta h0 hζ).comp s h1).neg.const_mul _).differentiableWithinAt
   -- the near terms
   have hnearD : DifferentiableOn ℂ
-      (fun s => ∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm q s) U := by
+      (fun s => ∑ q ∈ (finite_nearSet t₀).toFinset, landauTerm_primeLagLandauContinuation q s) U := by
     have := DifferentiableOn.sum (𝕜 := ℂ) (s := U) (u := (finite_nearSet t₀).toFinset)
-      (A := fun q => landauTerm q) fun q hq => ?_
+      (A := fun q => landauTerm_primeLagLandauContinuation q) fun q hq => ?_
     · refine this.congr fun s _ => ?_
       simp [Finset.sum_apply]
     · have hqn : q ∈ nearSet t₀ := (Set.Finite.mem_toFinset _).mp hq
       refine differentiableOn_landauTerm q fun s hs => ⟨hnear q hqn s hs, ?_⟩
       exact shifted_zeta_ne_zero hθ hθ34 hη (hUbox hs) q (hnear q hqn s hs)
-  have hfarD : DifferentiableOn ℂ (fun s => ∑' q : ↑(nearSet t₀)ᶜ, landauTerm q s) U :=
+  have hfarD : DifferentiableOn ℂ (fun s => ∑' q : ↑(nearSet t₀)ᶜ, landauTerm_primeLagLandauContinuation q s) U :=
     (differentiableOn_farTail hθ hθ34 hη hr1).mono hUbox
   exact hM.sub (hnearD.add hfarD)
 

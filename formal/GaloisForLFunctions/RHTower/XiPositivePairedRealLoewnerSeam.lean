@@ -58,7 +58,7 @@ theorem ccmPositivePairedReducedKernel_ofReal {x y : ℝ}
     (hx : CCMContinuedCauchyDomain (x : ℂ)) (hy : CCMContinuedCauchyDomain (y : ℂ))
     (hxy : x ≠ y) (hsum : x + y ≠ 0) :
     ccmPositivePairedReducedKernel ((x : ℝ) : ℂ) ((y : ℝ) : ℂ) =
-      4 * (x * sourceRealTrace y - y * sourceRealTrace x) / (x ^ 2 - y ^ 2) := by
+      4 * (x * sourceRealTrace y - y * sourceRealTrace x) / (x ^ (2 : ℕ) - y ^ (2 : ℕ)) := by
   have hTx := continuedPrimeArchSourceRelativeTrace_ofReal hx
   have hTy := continuedPrimeArchSourceRelativeTrace_ofReal hy
   have hdiff : ((x : ℝ) : ℂ) - ((y : ℝ) : ℂ) ≠ 0 := by
@@ -67,7 +67,7 @@ theorem ccmPositivePairedReducedKernel_ofReal {x y : ℝ}
   have hplus : ((x : ℝ) : ℂ) + ((y : ℝ) : ℂ) ≠ 0 := by
     rw [← Complex.ofReal_add]
     exact_mod_cast hsum
-  have hsq : ((x : ℝ) : ℂ) ^ 2 - ((y : ℝ) : ℂ) ^ 2 ≠ 0 := by
+  have hsq : ((x : ℝ) : ℂ) ^ (2 : ℕ) - ((y : ℝ) : ℂ) ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hplus hdiff
   rw [ccmPositivePairedReducedKernel, Complex.conj_ofReal, hTx, hTy]
@@ -77,7 +77,7 @@ theorem ccmPositivePairedReducedKernel_ofReal {x y : ℝ}
         ((((sourceRealTrace y : ℝ) : ℂ)) + ((sourceRealTrace x : ℝ) : ℂ)) /
           (((x : ℝ) : ℂ) + ((y : ℝ) : ℂ))) =
         (((2 * (x * sourceRealTrace y - y * sourceRealTrace x) /
-          (x ^ 2 - y ^ 2) : ℝ)) : ℂ) := by
+          (x ^ (2 : ℕ) - y ^ (2 : ℕ)) : ℝ)) : ℂ) := by
     push_cast
     field_simp
     ring
@@ -92,7 +92,7 @@ theorem ccmPositivePairedReducedKernel_ofReal {x y : ℝ}
 /-- The real boundary value of the Xi logarithmic current. -/
 def xiBoundaryTrace (x : ℝ) : ℝ := (logDeriv XiC ((x : ℝ) : ℂ)).re
 
-theorem continuedPrimeArchSourceRelativeTrace_eq_logDeriv_XiC_of_domain
+theorem continuedPrimeArchSourceRelativeTrace_eq_logDeriv_XiC_of_domain_xiPositivePairedRealLoewnerSeam
     {z : ℂ} (hzdom : CCMContinuedCauchyDomain z) :
     continuedPrimeArchSourceRelativeTrace z = logDeriv XiC z := by
   rw [continuedPrimeArchSourceRelativeTrace_eq_xiRelativeResolventTrace
@@ -105,7 +105,7 @@ theorem xiBoundaryTrace_eq_sourceRealTrace {x : ℝ}
     (hx : CCMContinuedCauchyDomain (x : ℂ)) :
     xiBoundaryTrace x = sourceRealTrace x := by
   rw [xiBoundaryTrace, sourceRealTrace,
-    continuedPrimeArchSourceRelativeTrace_eq_logDeriv_XiC_of_domain hx]
+    continuedPrimeArchSourceRelativeTrace_eq_logDeriv_XiC_of_domain_xiPositivePairedRealLoewnerSeam hx]
 
 /-- The square-descended normalized germ, read through its square root:
 `xiBoundarySeamGerm x = G (x²) = -T(x)/x`. -/
@@ -114,7 +114,7 @@ def xiBoundarySeamGerm (x : ℝ) : ℝ := -xiBoundaryTrace x / x
 /-- The confluent Loewner entry of the seam-log germ in the squared coordinate. -/
 def xiBoundaryLoewner (x y : ℝ) : ℝ :=
   if x = y then deriv xiBoundarySeamGerm x / (2 * x)
-  else (xiBoundarySeamGerm x - xiBoundarySeamGerm y) / (x ^ 2 - y ^ 2)
+  else (xiBoundarySeamGerm x - xiBoundarySeamGerm y) / (x ^ (2 : ℕ) - y ^ (2 : ℕ))
 
 /-- The confluent real-boundary paired kernel: the positive diagonal congruence of the seam-log
 Loewner kernel. -/
@@ -137,7 +137,7 @@ theorem ccmPositivePairedReducedKernel_eq_confluent {x y : ℝ}
   rw [ccmPositivePairedReducedKernel_ofReal hx hy hxy hsum, xiConfluentPairedKernel,
     xiBoundaryLoewner, if_neg hxy, xiBoundarySeamGerm, xiBoundarySeamGerm,
     xiBoundaryTrace_eq_sourceRealTrace hx, xiBoundaryTrace_eq_sourceRealTrace hy]
-  have hsq : x ^ 2 - y ^ 2 ≠ 0 := by
+  have hsq : x ^ (2 : ℕ) - y ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hsum (sub_ne_zero.mpr hxy)
   field_simp
@@ -172,15 +172,15 @@ theorem deriv_xiBoundaryTrace {x : ℝ} (hx : XiC ((x : ℝ) : ℂ) ≠ 0) :
 theorem hasDerivAt_xiBoundarySeamGerm {x : ℝ} (hx0 : x ≠ 0)
     (hx : XiC ((x : ℝ) : ℂ) ≠ 0) :
     HasDerivAt xiBoundarySeamGerm
-      ((-(deriv xiBoundaryTrace x) * x + xiBoundaryTrace x) / x ^ 2) x := by
+      ((-(deriv xiBoundaryTrace x) * x + xiBoundaryTrace x) / x ^ (2 : ℕ)) x := by
   have hT := hasDerivAt_xiBoundaryTrace hx
   rw [← deriv_xiBoundaryTrace hx] at hT
   have hid : HasDerivAt (fun t : ℝ => t) 1 x := hasDerivAt_id x
   have hdiv := (hT.neg).div hid hx0
   have hform : xiBoundarySeamGerm = fun t : ℝ => -xiBoundaryTrace t / t := rfl
   rw [hform]
-  have hnum : (-(deriv xiBoundaryTrace x) * x + xiBoundaryTrace x) / x ^ 2 =
-      (-(deriv xiBoundaryTrace x) * x - (-xiBoundaryTrace x) * 1) / x ^ 2 := by ring
+  have hnum : (-(deriv xiBoundaryTrace x) * x + xiBoundaryTrace x) / x ^ (2 : ℕ) =
+      (-(deriv xiBoundaryTrace x) * x - (-xiBoundaryTrace x) * 1) / x ^ (2 : ℕ) := by ring
   rw [hnum]
   exact hdiv
 
@@ -204,11 +204,11 @@ theorem xiBoundaryLoewner_symm (x y : ℝ) :
   by_cases h : x = y
   · rw [if_pos h, if_pos h.symm, h]
   · rw [if_neg h, if_neg (Ne.symm h)]
-    rcases eq_or_ne (x ^ 2 - y ^ 2) 0 with h0 | h0
-    · have h0' : y ^ 2 - x ^ 2 = 0 := by linarith
+    rcases eq_or_ne (x ^ (2 : ℕ) - y ^ (2 : ℕ)) 0 with h0 | h0
+    · have h0' : y ^ (2 : ℕ) - x ^ (2 : ℕ) = 0 := by linarith
       rw [h0, h0']
       simp
-    · have h0' : y ^ 2 - x ^ 2 ≠ 0 := by
+    · have h0' : y ^ (2 : ℕ) - x ^ (2 : ℕ) ≠ 0 := by
         intro hcon
         exact h0 (by linarith)
       field_simp

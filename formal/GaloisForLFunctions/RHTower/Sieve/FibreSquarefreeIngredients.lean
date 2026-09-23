@@ -11,7 +11,7 @@ open Finset
 
 /-- The truncation tail of a window, as a real number. -/
 noncomputable def windowTail (t L R M : ℕ) : ℝ :=
-  ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
+  ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
 
 theorem windowTail_nonneg (t L R M : ℕ) : 0 ≤ windowTail t L R M :=
   Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
@@ -23,7 +23,7 @@ theorem windowTail_mono {t L L' R M : ℕ} (hL : L ≤ L') :
   refine Finset.sum_le_sum fun d _ => ?_
   have hsub : Finset.Ioc t (t + L) ⊆ Finset.Ioc t (t + L') :=
     Finset.Ioc_subset_Ioc_right (by omega)
-  have : #{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} ≤ #{n ∈ Finset.Ioc t (t + L') | d ^ 2 ∣ n} :=
+  have : #{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} ≤ #{n ∈ Finset.Ioc t (t + L') | d ^ (2 : ℕ) ∣ n} :=
     Finset.card_le_card (Finset.filter_subset_filter _ hsub)
   exact_mod_cast this
 

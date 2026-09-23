@@ -18,7 +18,7 @@ namespace RHTower
 noncomputable section
 
 /-- Fubini for a continuous integrand on a rectangle, in interval-integral form. -/
-theorem interval_integral_swap_of_continuous {f : ℝ → ℝ → ℝ}
+theorem interval_integral_swap_of_continuous_montgomerySingleBandWindow {f : ℝ → ℝ → ℝ}
     (hf : Continuous (Function.uncurry f)) {a b c d : ℝ} (hab : a ≤ b) (hcd : c ≤ d) :
     ∫ x in a..b, ∫ y in c..d, f x y = ∫ y in c..d, ∫ x in a..b, f x y := by
   rw [intervalIntegral.integral_of_le hab, intervalIntegral.integral_of_le hcd]
@@ -115,7 +115,7 @@ theorem montgomeryForm_window_ge_of_inner (A : Finset XiZeroCopy) {T a ℓ : ℝ
     · exact hcontF.intervalIntegrable _ _
     · intro α _; exact hstep1 α
   have hswap : (∫ α in a..b, ∫ ξ in (-1 : ℝ)..1, g α ξ) = ∫ ξ in (-1 : ℝ)..1, ∫ α in a..b, g α ξ :=
-    interval_integral_swap_of_continuous hgcont hab' (by norm_num)
+    interval_integral_swap_of_continuous_montgomerySingleBandWindow hgcont hab' (by norm_num)
   have hcontOuter : Continuous (fun ξ => ∫ α in a..b, g α ξ) := by
     have hsw : Continuous (Function.uncurry fun ξ α => g α ξ) := by
       have : (Function.uncurry fun ξ α => g α ξ) = (Function.uncurry g) ∘ Prod.swap := by

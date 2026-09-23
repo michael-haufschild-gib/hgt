@@ -35,10 +35,10 @@ def fourRatePluckerDispersionFeature
 theorem fourRatePluckerDispersionFeature_ofReal_norm_sq
     (weight : Fin 6 → ℝ) (hweight : ∀ s, 0 ≤ weight s)
     (x : Fin 4 → ℝ) (s t : Fin 6) :
-    ‖fourRatePluckerDispersionFeature weight (fun i => (x i : ℂ)) s t‖ ^ 2 =
+    ‖fourRatePluckerDispersionFeature weight (fun i => (x i : ℂ)) s t‖ ^ (2 : ℕ) =
       weight s * weight t / 2 *
         (RHTower.fourRateSelectedSum x s -
-          RHTower.fourRateSelectedSum x t) ^ 2 := by
+          RHTower.fourRateSelectedSum x t) ^ (2 : ℕ) := by
   have hprod : 0 ≤ weight s * weight t / 2 :=
     div_nonneg (mul_nonneg (hweight s) (hweight t)) (by norm_num)
   have hs : fourRateSelectedSumC (fun i => (x i : ℂ)) s =
@@ -55,7 +55,7 @@ theorem sum_fourRatePluckerDispersionFeature_ofReal_norm_sq_eq_covariance
     (weight : Fin 6 → ℝ) (hweight : ∀ s, 0 ≤ weight s)
     (hsum : ∑ s, weight s = 1) (x : Fin 4 → ℝ) :
     (∑ s, ∑ t,
-      ‖fourRatePluckerDispersionFeature weight (fun i => (x i : ℂ)) s t‖ ^ 2) =
+      ‖fourRatePluckerDispersionFeature weight (fun i => (x i : ℂ)) s t‖ ^ (2 : ℕ)) =
       fourRatePluckerCovariance weight x x := by
   simp_rw [fourRatePluckerDispersionFeature_ofReal_norm_sq weight hweight x]
   have hpair := HTGeometry.normalizedWeight_pairwiseSqGap_eq_two_mul_variance
@@ -64,10 +64,10 @@ theorem sum_fourRatePluckerDispersionFeature_ofReal_norm_sq_eq_covariance
   unfold RHTower.normalizedFiniteVariance
   rw [show (∑ s, ∑ t,
       weight s * weight t / 2 *
-        (RHTower.fourRateSelectedSum x s - RHTower.fourRateSelectedSum x t) ^ 2) =
+        (RHTower.fourRateSelectedSum x s - RHTower.fourRateSelectedSum x t) ^ (2 : ℕ)) =
       (1 / 2 : ℝ) * (∑ s, ∑ t,
         weight s * weight t *
-          (RHTower.fourRateSelectedSum x s - RHTower.fourRateSelectedSum x t) ^ 2) by
+          (RHTower.fourRateSelectedSum x s - RHTower.fourRateSelectedSum x t) ^ (2 : ℕ)) by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro s _
@@ -136,7 +136,7 @@ private theorem frankenstein_indexWeight_le_height (e n k : ℕ) (hnk : n ≤ k)
       (RHTower.nthPrimeSubtype_index_add_two_le k))
   have hp1 : (1 : ℝ) ≤ (RHTower.nthPrimeSubtype k : ℝ) := by
     exact_mod_cast (RHTower.nthPrimeSubtype k).2.one_le
-  have hpow : (RHTower.nthPrimeSubtype k : ℝ) ^ 1 ≤
+  have hpow : (RHTower.nthPrimeSubtype k : ℝ) ^ (1 : ℕ) ≤
       (RHTower.nthPrimeSubtype k : ℝ) ^ (e + 1) :=
     pow_le_pow_right₀ hp1 (by omega)
   exact hindex.trans (by simpa using hpow)
@@ -181,7 +181,7 @@ private theorem summable_frankenstein_indexWeight_axis
     (fun _ => mul_nonneg (by positivity) (norm_nonneg _))
     (fun z => by
       change (z.2 + 1 : ℝ) * ‖((a : RHTower.DeningerPrimeLattice → ℂ) (axis z))‖ ≤
-        RHTower.deningerHeight (axis z) ^ 1 *
+        RHTower.deningerHeight (axis z) ^ (1 : ℕ) *
           ‖((a : RHTower.DeningerPrimeLattice → ℂ) (axis z))‖
       simpa using mul_le_mul_of_nonneg_right (hheight z) (norm_nonneg _))
     hbase
@@ -292,7 +292,7 @@ theorem sum_frankensteinPluckerPacketFeature_ofReal_norm_sq_eq_spectralCovarianc
     (z : ℕ × ℕ) (x : Fin 4 → ℝ) :
     (∑ s, ∑ t, ‖fourRatePluckerDispersionFeature
       (frankensteinPluckerProbability z)
-      (frankensteinPluckerNodeWeight z (fun i => (x i : ℂ))) s t‖ ^ 2) =
+      (frankensteinPluckerNodeWeight z (fun i => (x i : ℂ))) s t‖ ^ (2 : ℕ)) =
       gammaSewnCriticalPrimeDepthPacket_PluckerCovariance z.1
         (gammaSewnCriticalAdjacentPrime_lower z.2)
         (gammaSewnCriticalAdjacentPrime_upper z.2)
@@ -510,7 +510,7 @@ theorem summable_norm_frankensteinPluckerCofinalCurrent
 
 theorem summable_sq_norm_frankensteinPluckerCofinalCurrent
     (a : RHTower.DeningerHeightKothe) (s t : Fin 6) :
-    Summable (fun e : ℕ => ‖frankensteinPluckerCofinalCurrent a e s t‖ ^ 2) := by
+    Summable (fun e : ℕ => ‖frankensteinPluckerCofinalCurrent a e s t‖ ^ (2 : ℕ)) := by
   let C : ℝ := ∑' e : ℕ, ‖frankensteinPluckerCofinalCurrent a e s t‖
   have hnorm := summable_norm_frankensteinPluckerCofinalCurrent a s t
   have hC : 0 ≤ C := tsum_nonneg fun _ => norm_nonneg _
@@ -525,12 +525,12 @@ theorem summable_sq_norm_frankensteinPluckerCofinalCurrent
 def frankensteinPluckerCofinalEnergy
     (a : RHTower.DeningerHeightKothe) : ℝ :=
   ∑' k : (Fin 6 × Fin 6) × ℕ,
-    ‖frankensteinPluckerCofinalCurrent a k.2 k.1.1 k.1.2‖ ^ 2
+    ‖frankensteinPluckerCofinalCurrent a k.2 k.1.1 k.1.2‖ ^ (2 : ℕ)
 
 theorem summable_frankensteinPluckerCofinalEnergy
     (a : RHTower.DeningerHeightKothe) :
     Summable (fun k : (Fin 6 × Fin 6) × ℕ =>
-      ‖frankensteinPluckerCofinalCurrent a k.2 k.1.1 k.1.2‖ ^ 2) := by
+      ‖frankensteinPluckerCofinalCurrent a k.2 k.1.1 k.1.2‖ ^ (2 : ℕ)) := by
   rw [summable_prod_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · intro st

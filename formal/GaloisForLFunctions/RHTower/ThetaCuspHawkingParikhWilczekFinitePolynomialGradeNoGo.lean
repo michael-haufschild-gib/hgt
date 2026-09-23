@@ -182,7 +182,7 @@ theorem schwarzschildParikhWilczekPolynomialGradeDarkMatrix_finiteQuadraticForm_
       v i * schwarzschildParikhWilczekPolynomialGradeDarkMatrix d (i : ℕ) (j : ℕ) * v j := by
   rw [show (∑ i : Fin N, ∑ j : Fin N,
       v i * schwarzschildParikhWilczekPolynomialGradeDarkMatrix d (i : ℕ) (j : ℕ) * v j) =
-      (∑ i, v i * schwarzschildParikhWilczekPolynomialGradeDarkWeight d (i : ℕ)) ^ 2 by
+      (∑ i, v i * schwarzschildParikhWilczekPolynomialGradeDarkWeight d (i : ℕ)) ^ (2 : ℕ) by
         simpa only [schwarzschildParikhWilczekPolynomialGradeDarkMatrix] using
           finite_rankOneQuadraticForm_eq_sq
             (fun i : Fin N =>
@@ -327,7 +327,7 @@ theorem schwarzschildParikhWilczekBorelHolonomyGradePolynomial_coeff_two
   unfold schwarzschildParikhWilczekBorelHolonomyGradePolynomial
   rw [Polynomial.coeff_C_mul]
   have hgrade : schwarzschildParikhWilczekBorelGradePolynomial =
-      C (4 : ℝ) * X ^ 2 + C 4 * X := by
+      C (4 : ℝ) * X ^ (2 : ℕ) + C 4 * X := by
     unfold schwarzschildParikhWilczekBorelGradePolynomial
     simp
     ring_nf

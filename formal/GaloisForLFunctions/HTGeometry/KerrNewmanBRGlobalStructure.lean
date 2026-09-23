@@ -23,46 +23,46 @@ open scoped ContDiff
 
 /-- Angular coefficient `P_y` in the reciprocal Schwarzschild--BR chart. -/
 def schwarzschildBRPolarFactor (mass magnetic polarX : ℝ) : ℝ :=
-  (1 - polarX ^ 2) * (1 + magnetic ^ 2 * mass ^ 2 * polarX ^ 2)
+  (1 - polarX ^ (2 : ℕ)) * (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX ^ (2 : ℕ))
 
 /-- Positive radial dressing factor `I` in the Schwarzschild--BR chart. -/
 def schwarzschildBRRadialWeight (mass magnetic radius : ℝ) : ℝ :=
-  (1 - magnetic ^ 2 * mass * radius) ^ 2 + magnetic ^ 2 * radius ^ 2
+  (1 - magnetic ^ (2 : ℕ) * mass * radius) ^ (2 : ℕ) + magnetic ^ (2 : ℕ) * radius ^ (2 : ℕ)
 
 /-- Denominator-cleared Schwarzschild--BR radial lapse numerator. -/
 def schwarzschildBRClearedLapse (mass magnetic radius : ℝ) : ℝ :=
   schwarzschildBRRadialWeight mass magnetic radius *
-    ((1 + magnetic ^ 2 * mass ^ 2) * radius - 2 * mass)
+    ((1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) * radius - 2 * mass)
 
 /-- Unique algebraic Schwarzschild--BR horizon radius. -/
 def schwarzschildBRHorizonRadius (mass magnetic : ℝ) : ℝ :=
-  2 * mass / (1 + magnetic ^ 2 * mass ^ 2)
+  2 * mass / (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ))
 
 /-- Reciprocal radial weight `I_y`. -/
 def schwarzschildBRReciprocalWeight (mass magnetic reciprocalRadius : ℝ) : ℝ :=
-  (reciprocalRadius - magnetic ^ 2 * mass) ^ 2 + magnetic ^ 2
+  (reciprocalRadius - magnetic ^ (2 : ℕ) * mass) ^ (2 : ℕ) + magnetic ^ (2 : ℕ)
 
 /-- Reciprocal radial lapse `Q_y`. -/
 def schwarzschildBRReciprocalLapse (mass magnetic reciprocalRadius : ℝ) : ℝ :=
   schwarzschildBRReciprocalWeight mass magnetic reciprocalRadius *
-    ((1 + magnetic ^ 2 * mass ^ 2) - 2 * mass * reciprocalRadius)
+    ((1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) - 2 * mass * reciprocalRadius)
 
-/-- Reciprocal conformal factor squared `Omega_y^2`. -/
+/-- Reciprocal conformal factor squared `Omega_y^(2 : ℕ)`. -/
 def schwarzschildBRReciprocalConformalSq
     (mass magnetic polarX reciprocalRadius : ℝ) : ℝ :=
   schwarzschildBRReciprocalWeight mass magnetic reciprocalRadius -
-    magnetic ^ 2 * ((1 + magnetic ^ 2 * mass ^ 2) - 2 * mass * reciprocalRadius) *
-      polarX ^ 2
+    magnetic ^ (2 : ℕ) * ((1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) - 2 * mass * reciprocalRadius) *
+      polarX ^ (2 : ℕ)
 
 /-- Denominator-cleared Weyl-flatness factor in reciprocal coordinates. -/
 def schwarzschildBRReciprocalWeylFactor
     (mass magnetic polarX reciprocalRadius : ℝ) : ℝ :=
-  reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX ^ 2)
+  reciprocalRadius - magnetic ^ (2 : ℕ) * mass * (1 - polarX ^ (2 : ℕ))
 
 theorem schwarzschildBRRadialWeight_eq_sum_sq
     (mass magnetic radius : ℝ) :
     schwarzschildBRRadialWeight mass magnetic radius =
-      (1 - magnetic ^ 2 * mass * radius) ^ 2 + (magnetic * radius) ^ 2 := by
+      (1 - magnetic ^ (2 : ℕ) * mass * radius) ^ (2 : ℕ) + (magnetic * radius) ^ (2 : ℕ) := by
   simp only [schwarzschildBRRadialWeight]
   ring
 
@@ -75,13 +75,13 @@ theorem schwarzschildBRRadialWeight_pos (mass magnetic radius : ℝ) :
   by_cases hr : radius = 0
   · simp [hr]
   have hBr : magnetic * radius ≠ 0 := mul_ne_zero hB hr
-  have hs : 0 < (magnetic * radius) ^ 2 := sq_pos_of_ne_zero hBr
-  nlinarith [sq_nonneg (1 - magnetic ^ 2 * mass * radius)]
+  have hs : 0 < (magnetic * radius) ^ (2 : ℕ) := sq_pos_of_ne_zero hBr
+  nlinarith [sq_nonneg (1 - magnetic ^ (2 : ℕ) * mass * radius)]
 
 /-- Zeros of the dressed lapse are exactly zeros of its linear horizon factor. -/
 theorem schwarzschildBRClearedLapse_eq_zero_iff (mass magnetic radius : ℝ) :
     schwarzschildBRClearedLapse mass magnetic radius = 0 ↔
-      (1 + magnetic ^ 2 * mass ^ 2) * radius - 2 * mass = 0 := by
+      (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) * radius - 2 * mass = 0 := by
   constructor
   · intro h
     rcases mul_eq_zero.mp h with hI | hlinear
@@ -91,7 +91,7 @@ theorem schwarzschildBRClearedLapse_eq_zero_iff (mass magnetic radius : ℝ) :
     simp [schwarzschildBRClearedLapse, h]
 
 theorem schwarzschildBRHorizonCoefficient_pos (mass magnetic : ℝ) :
-    0 < 1 + magnetic ^ 2 * mass ^ 2 := by
+    0 < 1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) := by
   nlinarith [mul_nonneg (sq_nonneg magnetic) (sq_nonneg mass)]
 
 /-- Exact horizon classification, valid also at zero mass and zero magnetic field. -/
@@ -99,7 +99,7 @@ theorem schwarzschildBRClearedLapse_eq_zero_iff_horizon (mass magnetic radius : 
     schwarzschildBRClearedLapse mass magnetic radius = 0 ↔
       radius = schwarzschildBRHorizonRadius mass magnetic := by
   rw [schwarzschildBRClearedLapse_eq_zero_iff]
-  have hne : 1 + magnetic ^ 2 * mass ^ 2 ≠ 0 :=
+  have hne : 1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) ≠ 0 :=
     ne_of_gt (schwarzschildBRHorizonCoefficient_pos mass magnetic)
   unfold schwarzschildBRHorizonRadius
   rw [eq_div_iff hne]
@@ -112,7 +112,7 @@ theorem schwarzschildBRHorizonRadius_zeroField (mass : ℝ) :
 /-- Reciprocal substitution clears the radial denominator exactly away from the chart seam. -/
 theorem schwarzschildBRRadialWeight_reciprocalClearing
     (mass magnetic : ℝ) (y : {z : ℝ // z ≠ 0}) :
-    y.1 ^ 2 * schwarzschildBRRadialWeight mass magnetic y.1⁻¹ =
+    y.1 ^ (2 : ℕ) * schwarzschildBRRadialWeight mass magnetic y.1⁻¹ =
       schwarzschildBRReciprocalWeight mass magnetic y.1 := by
   unfold schwarzschildBRRadialWeight schwarzschildBRReciprocalWeight
   field_simp [y.2]
@@ -124,10 +124,10 @@ theorem schwarzschildBRReciprocalWeight_eq_zero_iff
   unfold schwarzschildBRReciprocalWeight
   constructor
   · intro h
-    have hBsq : magnetic ^ 2 = 0 := by
-      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ 2 * mass), sq_nonneg magnetic]
-    have hfirst : (reciprocalRadius - magnetic ^ 2 * mass) ^ 2 = 0 := by
-      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ 2 * mass), sq_nonneg magnetic]
+    have hBsq : magnetic ^ (2 : ℕ) = 0 := by
+      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ (2 : ℕ) * mass), sq_nonneg magnetic]
+    have hfirst : (reciprocalRadius - magnetic ^ (2 : ℕ) * mass) ^ (2 : ℕ) = 0 := by
+      nlinarith [sq_nonneg (reciprocalRadius - magnetic ^ (2 : ℕ) * mass), sq_nonneg magnetic]
     have hB : magnetic = 0 := sq_eq_zero_iff.mp hBsq
     exact ⟨hB, by simpa [hB] using sq_eq_zero_iff.mp hfirst⟩
   · rintro ⟨hB, hy⟩
@@ -138,7 +138,7 @@ theorem schwarzschildBRReciprocalLapse_eq_zero_iff
     (mass magnetic reciprocalRadius : ℝ) :
     schwarzschildBRReciprocalLapse mass magnetic reciprocalRadius = 0 ↔
       (magnetic = 0 ∧ reciprocalRadius = 0) ∨
-        (1 + magnetic ^ 2 * mass ^ 2) - 2 * mass * reciprocalRadius = 0 := by
+        (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) - 2 * mass * reciprocalRadius = 0 := by
   unfold schwarzschildBRReciprocalLapse
   rw [mul_eq_zero, schwarzschildBRReciprocalWeight_eq_zero_iff]
 
@@ -146,9 +146,9 @@ theorem schwarzschildBRReciprocalLapse_eq_zero_iff
 theorem schwarzschildBRReciprocalConformalSq_completeSquare
     (mass magnetic polarX reciprocalRadius : ℝ) :
     schwarzschildBRReciprocalConformalSq mass magnetic polarX reciprocalRadius =
-      (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX ^ 2)) ^ 2 +
-        magnetic ^ 2 * (1 - polarX ^ 2) *
-          (1 + magnetic ^ 2 * mass ^ 2 * polarX ^ 2) := by
+      (reciprocalRadius - magnetic ^ (2 : ℕ) * mass * (1 - polarX ^ (2 : ℕ))) ^ (2 : ℕ) +
+        magnetic ^ (2 : ℕ) * (1 - polarX ^ (2 : ℕ)) *
+          (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX ^ (2 : ℕ)) := by
   simp only [schwarzschildBRReciprocalConformalSq, schwarzschildBRReciprocalWeight]
   ring
 
@@ -156,49 +156,49 @@ theorem schwarzschildBRReciprocalConformalSq_nonneg
     (mass magnetic reciprocalRadius : ℝ) (polarX : Set.Icc (-1 : ℝ) 1) :
     0 ≤ schwarzschildBRReciprocalConformalSq mass magnetic polarX.1 reciprocalRadius := by
   rw [schwarzschildBRReciprocalConformalSq_completeSquare]
-  have hx : 0 ≤ 1 - polarX.1 ^ 2 := by nlinarith [polarX.2.1, polarX.2.2]
-  have hlast : 0 ≤ 1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2 := by positivity
+  have hx : 0 ≤ 1 - polarX.1 ^ (2 : ℕ) := by nlinarith [polarX.2.1, polarX.2.2]
+  have hlast : 0 ≤ 1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX.1 ^ (2 : ℕ) := by positivity
   positivity
 
 /-- Exact conformal zero law before resolving the polar-axis factor. -/
 theorem schwarzschildBRReciprocalConformalSq_eq_zero_iff
     (mass magnetic reciprocalRadius : ℝ) (polarX : Set.Icc (-1 : ℝ) 1) :
     schwarzschildBRReciprocalConformalSq mass magnetic polarX.1 reciprocalRadius = 0 ↔
-      reciprocalRadius = magnetic ^ 2 * mass * (1 - polarX.1 ^ 2) ∧
-        magnetic ^ 2 * (1 - polarX.1 ^ 2) = 0 := by
+      reciprocalRadius = magnetic ^ (2 : ℕ) * mass * (1 - polarX.1 ^ (2 : ℕ)) ∧
+        magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ)) = 0 := by
   rw [schwarzschildBRReciprocalConformalSq_completeSquare]
-  have hx : 0 ≤ 1 - polarX.1 ^ 2 := by nlinarith [polarX.2.1, polarX.2.2]
-  have hv : 0 < 1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2 := by positivity
-  have hu : 0 ≤ magnetic ^ 2 * (1 - polarX.1 ^ 2) := mul_nonneg (sq_nonneg _) hx
+  have hx : 0 ≤ 1 - polarX.1 ^ (2 : ℕ) := by nlinarith [polarX.2.1, polarX.2.2]
+  have hv : 0 < 1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX.1 ^ (2 : ℕ) := by positivity
+  have hu : 0 ≤ magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ)) := mul_nonneg (sq_nonneg _) hx
   constructor
   · intro h
     have hsquare :
-        (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX.1 ^ 2)) ^ 2 = 0 := by
+        (reciprocalRadius - magnetic ^ (2 : ℕ) * mass * (1 - polarX.1 ^ (2 : ℕ))) ^ (2 : ℕ) = 0 := by
       nlinarith [mul_nonneg hu hv.le]
     have hproduct :
-        magnetic ^ 2 * (1 - polarX.1 ^ 2) *
-          (1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2) = 0 := by
+        magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ)) *
+          (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX.1 ^ (2 : ℕ)) = 0 := by
       nlinarith [sq_nonneg
-        (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX.1 ^ 2))]
-    have hbase : magnetic ^ 2 * (1 - polarX.1 ^ 2) = 0 := by
+        (reciprocalRadius - magnetic ^ (2 : ℕ) * mass * (1 - polarX.1 ^ (2 : ℕ)))]
+    have hbase : magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ)) = 0 := by
       rcases mul_eq_zero.mp hproduct with hzero | hfalse
       · exact hzero
       · exact False.elim ((ne_of_gt hv) hfalse)
-    have hy : reciprocalRadius = magnetic ^ 2 * mass * (1 - polarX.1 ^ 2) := by
+    have hy : reciprocalRadius = magnetic ^ (2 : ℕ) * mass * (1 - polarX.1 ^ (2 : ℕ)) := by
       nlinarith [hsquare]
     exact ⟨hy, hbase⟩
   · rintro ⟨hy, hbase⟩
     calc
-      (reciprocalRadius - magnetic ^ 2 * mass * (1 - polarX.1 ^ 2)) ^ 2 +
-          magnetic ^ 2 * (1 - polarX.1 ^ 2) *
-            (1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2) =
-        0 ^ 2 + (magnetic ^ 2 * (1 - polarX.1 ^ 2)) *
-          (1 + magnetic ^ 2 * mass ^ 2 * polarX.1 ^ 2) := by rw [hy]; ring
+      (reciprocalRadius - magnetic ^ (2 : ℕ) * mass * (1 - polarX.1 ^ (2 : ℕ))) ^ (2 : ℕ) +
+          magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ)) *
+            (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX.1 ^ (2 : ℕ)) =
+        0 ^ (2 : ℕ) + (magnetic ^ (2 : ℕ) * (1 - polarX.1 ^ (2 : ℕ))) *
+          (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX.1 ^ (2 : ℕ)) := by rw [hy]; ring
       _ = 0 := by rw [hbase]; ring
 
 theorem magneticSq_mul_one_sub_sq_eq_zero_iff
     (magnetic polarX : ℝ) :
-    magnetic ^ 2 * (1 - polarX ^ 2) = 0 ↔
+    magnetic ^ (2 : ℕ) * (1 - polarX ^ (2 : ℕ)) = 0 ↔
       magnetic = 0 ∨ polarX = -1 ∨ polarX = 1 := by
   constructor
   · intro h
@@ -215,8 +215,8 @@ theorem magneticSq_mul_one_sub_sq_eq_zero_iff
     · simp [hx]
 
 theorem one_sub_polarSq_eq_zero_iff (polarX : ℝ) :
-    1 - polarX ^ 2 = 0 ↔ polarX = -1 ∨ polarX = 1 := by
-  have hfactor : 1 - polarX ^ 2 = (1 - polarX) * (1 + polarX) := by ring
+    1 - polarX ^ (2 : ℕ) = 0 ↔ polarX = -1 ∨ polarX = 1 := by
+  have hfactor : 1 - polarX ^ (2 : ℕ) = (1 - polarX) * (1 + polarX) := by ring
   rw [hfactor, mul_eq_zero]
   constructor
   · rintro (h | h)
@@ -232,7 +232,7 @@ theorem schwarzschildBRPolarFactor_eq_zero_iff
     schwarzschildBRPolarFactor mass magnetic polarX = 0 ↔
       polarX = -1 ∨ polarX = 1 := by
   unfold schwarzschildBRPolarFactor
-  have hpos : 0 < 1 + magnetic ^ 2 * mass ^ 2 * polarX ^ 2 := by positivity
+  have hpos : 0 < 1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ) * polarX ^ (2 : ℕ) := by positivity
   rw [mul_eq_zero, one_sub_polarSq_eq_zero_iff]
   constructor
   · rintro (h | h)
@@ -263,15 +263,15 @@ theorem schwarzschildBRReciprocalConformalSq_zero_classification
 theorem schwarzschildBRReciprocalConformalSq_seam
     (mass magnetic polarX : ℝ) :
     schwarzschildBRReciprocalConformalSq mass magnetic polarX 0 =
-      magnetic ^ 2 * (1 - polarX ^ 2) *
-        (1 + magnetic ^ 2 * mass ^ 2) := by
+      magnetic ^ (2 : ℕ) * (1 - polarX ^ (2 : ℕ)) *
+        (1 + magnetic ^ (2 : ℕ) * mass ^ (2 : ℕ)) := by
   rw [schwarzschildBRReciprocalConformalSq_completeSquare]
   ring
 
 theorem schwarzschildBRReciprocalWeylFactor_eq_zero_iff
     (mass magnetic polarX reciprocalRadius : ℝ) :
     schwarzschildBRReciprocalWeylFactor mass magnetic polarX reciprocalRadius = 0 ↔
-      reciprocalRadius = magnetic ^ 2 * mass * (1 - polarX ^ 2) := by
+      reciprocalRadius = magnetic ^ (2 : ℕ) * mass * (1 - polarX ^ (2 : ℕ)) := by
   unfold schwarzschildBRReciprocalWeylFactor
   constructor <;> intro h <;> linarith
 
@@ -293,42 +293,42 @@ theorem contDiff_schwarzschildBRReciprocalPotentials (mass magnetic polarX : ℝ
 
 /-- Generic rotating radial dressing factor `I`. -/
 def kerrNewmanBRRadialWeight (twist magnetic radius : ℝ) : ℝ :=
-  (1 + twist * magnetic * radius) ^ 2 + magnetic ^ 2 * radius ^ 2
+  (1 + twist * magnetic * radius) ^ (2 : ℕ) + magnetic ^ (2 : ℕ) * radius ^ (2 : ℕ)
 
-/-- Coefficient of `r^2` in the paper's generalized radial polynomial. -/
+/-- Coefficient of `r^(2 : ℕ)` in the paper's generalized radial polynomial. -/
 def kerrNewmanBRRadialCoefficient (spin charge twist : ℝ) : ℝ :=
-  1 + twist ^ 2 - charge ^ 2 / spin ^ 2
+  1 + twist ^ (2 : ℕ) - charge ^ (2 : ℕ) / spin ^ (2 : ℕ)
 
 /-- Generalized Kerr--Newman--BR horizon polynomial `Delta`. -/
 def kerrNewmanBRDelta (mass spin charge twist radius : ℝ) : ℝ :=
-  (1 + twist ^ 2) * spin ^ 2 - 2 * mass * radius +
-    kerrNewmanBRRadialCoefficient spin charge twist * radius ^ 2
+  (1 + twist ^ (2 : ℕ)) * spin ^ (2 : ℕ) - 2 * mass * radius +
+    kerrNewmanBRRadialCoefficient spin charge twist * radius ^ (2 : ℕ)
 
 /-- Dressed radial function `Q = I Delta`. -/
 def kerrNewmanBRQ (mass spin charge twist magnetic radius : ℝ) : ℝ :=
   kerrNewmanBRRadialWeight twist magnetic radius *
     kerrNewmanBRDelta mass spin charge twist radius
 
-/-- Ring-singularity carrier `rho^2` in `x = cos(theta)` coordinates. -/
+/-- Ring-singularity carrier `rho^(2 : ℕ)` in `x = cos(theta)` coordinates. -/
 def kerrNewmanBRRhoSq (spin radius polarX : ℝ) : ℝ :=
-  radius ^ 2 + spin ^ 2 * polarX ^ 2
+  radius ^ (2 : ℕ) + spin ^ (2 : ℕ) * polarX ^ (2 : ℕ)
 
-/-- Reciprocal extension of `y^2 I(1/y)`. -/
+/-- Reciprocal extension of `y^(2 : ℕ) I(1/y)`. -/
 def kerrNewmanBRReciprocalWeight (twist magnetic reciprocalRadius : ℝ) : ℝ :=
-  (reciprocalRadius + twist * magnetic) ^ 2 + magnetic ^ 2
+  (reciprocalRadius + twist * magnetic) ^ (2 : ℕ) + magnetic ^ (2 : ℕ)
 
-/-- Reciprocal extension of `y^2 Delta(1/y)`. -/
+/-- Reciprocal extension of `y^(2 : ℕ) Delta(1/y)`. -/
 def kerrNewmanBRReciprocalDelta
     (mass spin charge twist reciprocalRadius : ℝ) : ℝ :=
-  (1 + twist ^ 2) * spin ^ 2 * reciprocalRadius ^ 2 -
+  (1 + twist ^ (2 : ℕ)) * spin ^ (2 : ℕ) * reciprocalRadius ^ (2 : ℕ) -
     2 * mass * reciprocalRadius + kerrNewmanBRRadialCoefficient spin charge twist
 
-/-- Reciprocal conformal potential `y^2 Omega^2(1/y)`. -/
+/-- Reciprocal conformal potential `y^(2 : ℕ) Omega^(2 : ℕ)(1/y)`. -/
 def kerrNewmanBRReciprocalConformalSq
     (mass spin charge twist magnetic polarX reciprocalRadius : ℝ) : ℝ :=
   kerrNewmanBRReciprocalWeight twist magnetic reciprocalRadius -
-    magnetic ^ 2 *
-      kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius * polarX ^ 2
+    magnetic ^ (2 : ℕ) *
+      kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius * polarX ^ (2 : ℕ)
 
 /-- Reciprocal extension of the dressed radial function. -/
 def kerrNewmanBRReciprocalQ
@@ -336,13 +336,13 @@ def kerrNewmanBRReciprocalQ
   kerrNewmanBRReciprocalWeight twist magnetic reciprocalRadius *
     kerrNewmanBRReciprocalDelta mass spin charge twist reciprocalRadius
 
-/-- Reciprocal ring carrier `y^2 rho^2(1/y)`. -/
+/-- Reciprocal ring carrier `y^(2 : ℕ) rho^(2 : ℕ)(1/y)`. -/
 def kerrNewmanBRReciprocalRhoSq (spin polarX reciprocalRadius : ℝ) : ℝ :=
-  1 + spin ^ 2 * polarX ^ 2 * reciprocalRadius ^ 2
+  1 + spin ^ (2 : ℕ) * polarX ^ (2 : ℕ) * reciprocalRadius ^ (2 : ℕ)
 
 theorem kerrNewmanBRRadialWeight_eq_sum_sq (twist magnetic radius : ℝ) :
     kerrNewmanBRRadialWeight twist magnetic radius =
-      (1 + twist * magnetic * radius) ^ 2 + (magnetic * radius) ^ 2 := by
+      (1 + twist * magnetic * radius) ^ (2 : ℕ) + (magnetic * radius) ^ (2 : ℕ) := by
   simp only [kerrNewmanBRRadialWeight]
   ring
 
@@ -355,7 +355,7 @@ theorem kerrNewmanBRRadialWeight_pos (twist magnetic radius : ℝ) :
   by_cases hr : radius = 0
   · simp [hr]
   have hBr : magnetic * radius ≠ 0 := mul_ne_zero hB hr
-  have hs : 0 < (magnetic * radius) ^ 2 := sq_pos_of_ne_zero hBr
+  have hs : 0 < (magnetic * radius) ^ (2 : ℕ) := sq_pos_of_ne_zero hBr
   nlinarith [sq_nonneg (1 + twist * magnetic * radius)]
 
 /-- The magnetic dressing changes no algebraic horizon: `Q=0` exactly when `Delta=0`. -/
@@ -375,9 +375,9 @@ theorem kerrNewmanBRDelta_completeSquare_cleared
     (mass spin charge twist radius : ℝ) :
     kerrNewmanBRRadialCoefficient spin charge twist *
         kerrNewmanBRDelta mass spin charge twist radius =
-      (kerrNewmanBRRadialCoefficient spin charge twist * radius - mass) ^ 2 -
-        (mass ^ 2 - kerrNewmanBRRadialCoefficient spin charge twist *
-          (1 + twist ^ 2) * spin ^ 2) := by
+      (kerrNewmanBRRadialCoefficient spin charge twist * radius - mass) ^ (2 : ℕ) -
+        (mass ^ (2 : ℕ) - kerrNewmanBRRadialCoefficient spin charge twist *
+          (1 + twist ^ (2 : ℕ)) * spin ^ (2 : ℕ)) := by
   simp only [kerrNewmanBRDelta]
   ring
 
@@ -385,21 +385,21 @@ theorem kerrNewmanBRDelta_cleared_eq_zero_iff
     (mass spin charge twist radius : ℝ) :
     kerrNewmanBRRadialCoefficient spin charge twist *
         kerrNewmanBRDelta mass spin charge twist radius = 0 ↔
-      (kerrNewmanBRRadialCoefficient spin charge twist * radius - mass) ^ 2 =
-        mass ^ 2 - kerrNewmanBRRadialCoefficient spin charge twist *
-          (1 + twist ^ 2) * spin ^ 2 := by
+      (kerrNewmanBRRadialCoefficient spin charge twist * radius - mass) ^ (2 : ℕ) =
+        mass ^ (2 : ℕ) - kerrNewmanBRRadialCoefficient spin charge twist *
+          (1 + twist ^ (2 : ℕ)) * spin ^ (2 : ℕ) := by
   rw [kerrNewmanBRDelta_completeSquare_cleared]
   exact sub_eq_zero
 
 theorem kerrNewmanBRRhoSq_eq_zero_iff (spin radius polarX : ℝ) :
     kerrNewmanBRRhoSq spin radius polarX = 0 ↔
       radius = 0 ∧ spin * polarX = 0 := by
-  rw [show kerrNewmanBRRhoSq spin radius polarX = radius ^ 2 + (spin * polarX) ^ 2 by
+  rw [show kerrNewmanBRRhoSq spin radius polarX = radius ^ (2 : ℕ) + (spin * polarX) ^ (2 : ℕ) by
     simp [kerrNewmanBRRhoSq]; ring]
   constructor
   · intro h
-    have hr : radius ^ 2 = 0 := by nlinarith [sq_nonneg radius, sq_nonneg (spin * polarX)]
-    have hx : (spin * polarX) ^ 2 = 0 := by
+    have hr : radius ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg radius, sq_nonneg (spin * polarX)]
+    have hx : (spin * polarX) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg radius, sq_nonneg (spin * polarX)]
     exact ⟨(sq_eq_zero_iff.mp hr), (sq_eq_zero_iff.mp hx)⟩
   · rintro ⟨hr, hx⟩
@@ -427,9 +427,9 @@ theorem kerrNewmanBRReciprocalWeight_eq_zero_iff
   unfold kerrNewmanBRReciprocalWeight
   constructor
   · intro h
-    have hBsq : magnetic ^ 2 = 0 := by
+    have hBsq : magnetic ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (reciprocalRadius + twist * magnetic), sq_nonneg magnetic]
-    have hfirst : (reciprocalRadius + twist * magnetic) ^ 2 = 0 := by
+    have hfirst : (reciprocalRadius + twist * magnetic) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (reciprocalRadius + twist * magnetic), sq_nonneg magnetic]
     have hB : magnetic = 0 := sq_eq_zero_iff.mp hBsq
     exact ⟨hB, by simpa [hB] using sq_eq_zero_iff.mp hfirst⟩
@@ -438,7 +438,7 @@ theorem kerrNewmanBRReciprocalWeight_eq_zero_iff
 
 theorem kerrNewmanBRReciprocalWeight_seam (twist magnetic : ℝ) :
     kerrNewmanBRReciprocalWeight twist magnetic 0 =
-      magnetic ^ 2 * (1 + twist ^ 2) := by
+      magnetic ^ (2 : ℕ) * (1 + twist ^ (2 : ℕ)) := by
   simp [kerrNewmanBRReciprocalWeight]
   ring
 
@@ -470,9 +470,9 @@ theorem kerrNewmanBRReciprocalConformalSq_seam
     (mass spin charge twist magnetic polarX : ℝ) :
     kerrNewmanBRReciprocalConformalSq
         mass spin charge twist magnetic polarX 0 =
-      magnetic ^ 2 *
-        ((1 + twist ^ 2) * (1 - polarX ^ 2) +
-          (charge ^ 2 / spin ^ 2) * polarX ^ 2) := by
+      magnetic ^ (2 : ℕ) *
+        ((1 + twist ^ (2 : ℕ)) * (1 - polarX ^ (2 : ℕ)) +
+          (charge ^ (2 : ℕ) / spin ^ (2 : ℕ)) * polarX ^ (2 : ℕ)) := by
   simp [kerrNewmanBRReciprocalConformalSq, kerrNewmanBRReciprocalWeight,
     kerrNewmanBRReciprocalDelta, kerrNewmanBRRadialCoefficient]
   ring
@@ -481,42 +481,42 @@ theorem kerrNewmanBRReciprocalConformalSq_polarSeam
     (mass spin charge twist magnetic : ℝ) :
     kerrNewmanBRReciprocalConformalSq
         mass spin charge twist magnetic 1 0 =
-      magnetic ^ 2 * (charge ^ 2 / spin ^ 2) := by
+      magnetic ^ (2 : ℕ) * (charge ^ (2 : ℕ) / spin ^ (2 : ℕ)) := by
   rw [kerrNewmanBRReciprocalConformalSq_seam]
   ring
 
 theorem kerrNewmanBRRadialWeight_reciprocalClearing
     (twist magnetic : ℝ) (y : {z : ℝ // z ≠ 0}) :
-    y.1 ^ 2 * kerrNewmanBRRadialWeight twist magnetic y.1⁻¹ =
+    y.1 ^ (2 : ℕ) * kerrNewmanBRRadialWeight twist magnetic y.1⁻¹ =
       kerrNewmanBRReciprocalWeight twist magnetic y.1 := by
   unfold kerrNewmanBRRadialWeight kerrNewmanBRReciprocalWeight
   field_simp [y.2]
 
 theorem kerrNewmanBRDelta_reciprocalClearing
     (mass spin charge twist : ℝ) (y : {z : ℝ // z ≠ 0}) :
-    y.1 ^ 2 * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ =
+    y.1 ^ (2 : ℕ) * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ =
       kerrNewmanBRReciprocalDelta mass spin charge twist y.1 := by
   unfold kerrNewmanBRDelta kerrNewmanBRReciprocalDelta
   field_simp [y.2]
 
 theorem kerrNewmanBRConformal_reciprocalClearing
     (mass spin charge twist magnetic polarX : ℝ) (y : {z : ℝ // z ≠ 0}) :
-    y.1 ^ 2 *
+    y.1 ^ (2 : ℕ) *
         (kerrNewmanBRRadialWeight twist magnetic y.1⁻¹ -
-          magnetic ^ 2 * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ * polarX ^ 2) =
+          magnetic ^ (2 : ℕ) * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ * polarX ^ (2 : ℕ)) =
       kerrNewmanBRReciprocalConformalSq
         mass spin charge twist magnetic polarX y.1 := by
   rw [mul_sub, kerrNewmanBRRadialWeight_reciprocalClearing]
-  rw [show y.1 ^ 2 *
-      (magnetic ^ 2 * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ * polarX ^ 2) =
-      magnetic ^ 2 *
-        (y.1 ^ 2 * kerrNewmanBRDelta mass spin charge twist y.1⁻¹) * polarX ^ 2 by ring]
+  rw [show y.1 ^ (2 : ℕ) *
+      (magnetic ^ (2 : ℕ) * kerrNewmanBRDelta mass spin charge twist y.1⁻¹ * polarX ^ (2 : ℕ)) =
+      magnetic ^ (2 : ℕ) *
+        (y.1 ^ (2 : ℕ) * kerrNewmanBRDelta mass spin charge twist y.1⁻¹) * polarX ^ (2 : ℕ) by ring]
   rw [kerrNewmanBRDelta_reciprocalClearing]
   rfl
 
 theorem kerrNewmanBRRhoSq_reciprocalClearing
     (spin polarX : ℝ) (y : {z : ℝ // z ≠ 0}) :
-    y.1 ^ 2 * kerrNewmanBRRhoSq spin y.1⁻¹ polarX =
+    y.1 ^ (2 : ℕ) * kerrNewmanBRRhoSq spin y.1⁻¹ polarX =
       kerrNewmanBRReciprocalRhoSq spin polarX y.1 := by
   unfold kerrNewmanBRRhoSq kerrNewmanBRReciprocalRhoSq
   field_simp [y.2]
@@ -562,7 +562,7 @@ theorem kerrNewmanBRQ_zeroField_untwistedUncharged_eq_kerrDelta
 theorem kerrNewmanBRDelta_untwistedUncharged_completeSquare
     (mass spin radius : ℝ) :
     kerrNewmanBRDelta mass spin 0 0 radius =
-      (radius - mass) ^ 2 - (mass ^ 2 - spin ^ 2) := by
+      (radius - mass) ^ (2 : ℕ) - (mass ^ (2 : ℕ) - spin ^ (2 : ℕ)) := by
   rw [kerrNewmanBRDelta_untwistedUncharged_eq_kerrDelta,
     kerrNewmanDelta_completeSquare]
   ring
@@ -625,8 +625,8 @@ theorem kerrNewmanBRKruskalV_add_U_pos
 /-- Hyperbolic product invariant of the Kruskal-like chart. -/
 theorem kerrNewmanBRKruskalV_sq_sub_U_sq
     (time tortoise horizonScale orientation : ℝ) :
-    kerrNewmanBRKruskalV time tortoise horizonScale orientation ^ 2 -
-      kerrNewmanBRKruskalU time tortoise horizonScale orientation ^ 2 =
+    kerrNewmanBRKruskalV time tortoise horizonScale orientation ^ (2 : ℕ) -
+      kerrNewmanBRKruskalU time tortoise horizonScale orientation ^ (2 : ℕ) =
         orientation * Real.exp (tortoise / horizonScale) := by
   rw [sq_sub_sq, kerrNewmanBRKruskalV_sub_U, kerrNewmanBRKruskalV_add_U]
   calc
@@ -644,8 +644,8 @@ theorem kerrNewmanBRKruskalV_sq_sub_U_sq
 
 theorem kerrNewmanBRKruskalV_sq_sub_U_sq_eq_zero_iff
     (time tortoise horizonScale orientation : ℝ) :
-    kerrNewmanBRKruskalV time tortoise horizonScale orientation ^ 2 -
-      kerrNewmanBRKruskalU time tortoise horizonScale orientation ^ 2 = 0 ↔
+    kerrNewmanBRKruskalV time tortoise horizonScale orientation ^ (2 : ℕ) -
+      kerrNewmanBRKruskalU time tortoise horizonScale orientation ^ (2 : ℕ) = 0 ↔
         orientation = 0 := by
   rw [kerrNewmanBRKruskalV_sq_sub_U_sq, mul_eq_zero]
   exact or_iff_left (Real.exp_ne_zero _)

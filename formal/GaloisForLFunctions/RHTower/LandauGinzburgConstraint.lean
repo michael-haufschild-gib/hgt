@@ -9,7 +9,7 @@ For a one-variable polynomial `F`, consider the two-field potential
 
 The multiplier coordinate turns the zero equation for `F` into one of the critical equations for
 `W_F`.  Above a simple zero `rho`, the other critical equation forces `u = 0`, and the Hessian has
-determinant `-(F'(rho))^2`.  Thus every simple zero becomes a nondegenerate critical point, while
+determinant `-(F'(rho))^(2 : ℕ)`.  Thus every simple zero becomes a nondegenerate critical point, while
 all such critical points have the same critical value zero.
 
 The results below isolate the algebraic core of this constraint construction.  They do not assert
@@ -75,7 +75,7 @@ def lagrangeHessianDet (F : Polynomial ℂ) (s u : ℂ) : ℂ :=
 
 /-- The Hessian determinant is the negative square of the derivative of `F`. -/
 theorem lagrangeHessianDet_eq (F : Polynomial ℂ) (s u : ℂ) :
-    lagrangeHessianDet F s u = -(F.derivative.eval s) ^ 2 := by
+    lagrangeHessianDet F s u = -(F.derivative.eval s) ^ (2 : ℕ) := by
   simp [lagrangeHessianDet, pow_two]
 
 /-- A simple zero of `F` gives a nondegenerate critical point of `W_F`. -/

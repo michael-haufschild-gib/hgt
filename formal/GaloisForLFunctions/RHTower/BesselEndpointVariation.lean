@@ -110,7 +110,7 @@ theorem integral_abs_deriv_besselModulated_le
     (hQ : ∀ x ∈ Icc a b, |A x| ≤ Q) (hQ' : ∀ x ∈ Icc a b, |A' x| ≤ Q')
     (hΘ0 : ∀ x ∈ Icc a b, 0 ≤ Θ x) (hΘ'0 : ∀ x ∈ Icc a b, 0 ≤ Θ' x) :
     (∫ x in a..b, |A' x * besselJ0 (c * Θ x) + A x * (besselJ0Deriv (c * Θ x) * (c * Θ' x))|)
-      ≤ Q' * (b - a) + Q * c ^ 2 * (Θ b ^ 2 - Θ a ^ 2) / Real.pi := by
+      ≤ Q' * (b - a) + Q * c ^ (2 : ℕ) * (Θ b ^ (2 : ℕ) - Θ a ^ (2 : ℕ)) / Real.pi := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have huIcc : uIcc a b = Icc a b := uIcc_of_le hab
   -- integrability of the two sides
@@ -124,7 +124,7 @@ theorem integral_abs_deriv_besselModulated_le
       (Icc a b) :=
     ((hA'c.mul (hbesselCont.comp_continuousOn hcΘ)).add
       (hAc.mul ((hbesselDCont.comp_continuousOn hcΘ).mul (continuousOn_const.mul hΘ'c)))).abs
-  have hR : ContinuousOn (fun x => Q' + Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x)) (Icc a b) :=
+  have hR : ContinuousOn (fun x => Q' + Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x)) (Icc a b) :=
     continuousOn_const.add (continuousOn_const.mul
       ((continuousOn_const.mul hΘc).mul hΘ'c))
   have hLint : IntervalIntegrable
@@ -133,13 +133,13 @@ theorem integral_abs_deriv_besselModulated_le
     refine ContinuousOn.intervalIntegrable ?_
     rw [huIcc]; exact hL
   have hRint : IntervalIntegrable
-      (fun x => Q' + Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x)) volume a b := by
+      (fun x => Q' + Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x)) volume a b := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [huIcc]; exact hR
   -- the pointwise estimate
   have hpt : ∀ x ∈ Icc a b,
       |A' x * besselJ0 (c * Θ x) + A x * (besselJ0Deriv (c * Θ x) * (c * Θ' x))|
-        ≤ Q' + Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x) := by
+        ≤ Q' + Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x) := by
     intro x hx
     have h1 : |A' x * besselJ0 (c * Θ x)| ≤ Q' := by
       rw [abs_mul]
@@ -149,7 +149,7 @@ theorem integral_abs_deriv_besselModulated_le
         _ ≤ Q' := hQ' x hx
     have hcΘ0 : 0 ≤ c * Θ x := mul_nonneg hc (hΘ0 x hx)
     have h2 : |A x * (besselJ0Deriv (c * Θ x) * (c * Θ' x))|
-        ≤ Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x) := by
+        ≤ Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x) := by
       have hb : |besselJ0Deriv (c * Θ x)| ≤ 2 * (c * Θ x) / Real.pi := by
         have h := abs_besselJ0Deriv_le_mul_abs (c * Θ x)
         rwa [abs_of_nonneg hcΘ0] at h
@@ -165,11 +165,11 @@ theorem integral_abs_deriv_besselModulated_le
     calc |A' x * besselJ0 (c * Θ x) + A x * (besselJ0Deriv (c * Θ x) * (c * Θ' x))|
         ≤ |A' x * besselJ0 (c * Θ x)| + |A x * (besselJ0Deriv (c * Θ x) * (c * Θ' x))| :=
           abs_add_le _ _
-      _ ≤ Q' + Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x) := add_le_add h1 h2
+      _ ≤ Q' + Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x) := add_le_add h1 h2
   have hmono := intervalIntegral.integral_mono_on hab hLint hRint hpt
   refine hmono.trans (le_of_eq ?_)
   -- the majorant integrates exactly
-  have hsq : ∀ x ∈ uIcc a b, HasDerivAt (fun y => Θ y ^ 2) (2 * Θ x * Θ' x) x := by
+  have hsq : ∀ x ∈ uIcc a b, HasDerivAt (fun y => Θ y ^ (2 : ℕ)) (2 * Θ x * Θ' x) x := by
     intro x hx
     rw [huIcc] at hx
     have h := (hΘ x hx).pow 2
@@ -179,11 +179,11 @@ theorem integral_abs_deriv_besselModulated_le
     refine ContinuousOn.intervalIntegrable ?_
     rw [huIcc]
     exact (continuousOn_const.mul hΘc).mul hΘ'c
-  have hFTC : (∫ x in a..b, 2 * Θ x * Θ' x) = Θ b ^ 2 - Θ a ^ 2 :=
+  have hFTC : (∫ x in a..b, 2 * Θ x * Θ' x) = Θ b ^ (2 : ℕ) - Θ a ^ (2 : ℕ) :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt hsq hsqInt
   have hconstInt : IntervalIntegrable (fun _ : ℝ => Q') volume a b := intervalIntegrable_const
-  have hsplit : (∫ x in a..b, (Q' + Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x)))
-      = (∫ _ in a..b, Q') + ∫ x in a..b, Q * c ^ 2 / Real.pi * (2 * Θ x * Θ' x) :=
+  have hsplit : (∫ x in a..b, (Q' + Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x)))
+      = (∫ _ in a..b, Q') + ∫ x in a..b, Q * c ^ (2 : ℕ) / Real.pi * (2 * Θ x * Θ' x) :=
     intervalIntegral.integral_add hconstInt (hsqInt.const_mul _)
   rw [hsplit, intervalIntegral.integral_const, intervalIntegral.integral_const_mul, hFTC]
   simp only [smul_eq_mul]

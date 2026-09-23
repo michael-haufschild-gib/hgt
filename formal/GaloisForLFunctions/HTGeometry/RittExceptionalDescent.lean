@@ -253,7 +253,7 @@ theorem excHom_descends (Fr : RittFrame K L) {τ : L} {q : K}
       · rw [show m - 2 = p - 1 by omega]
         exact mul_ne_zero (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (by omega))) hlam0
       · rw [hpm]; exact hconn
-    · have hsc : q / Fr.ρ ^ m / (q / Fr.ρ ^ p) ^ 2 = q⁻¹ * Fr.ρ ^ (p - 1) := by
+    · have hsc : q / Fr.ρ ^ m / (q / Fr.ρ ^ p) ^ (2 : ℕ) = q⁻¹ * Fr.ρ ^ (p - 1) := by
         obtain ⟨r, hr⟩ : ∃ r, p = r + 1 := ⟨p - 1, by omega⟩
         subst hr
         rw [show r + 1 - 1 = r by omega, hp]

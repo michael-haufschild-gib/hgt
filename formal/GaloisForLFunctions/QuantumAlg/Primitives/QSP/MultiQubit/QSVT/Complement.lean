@@ -97,7 +97,7 @@ noncomputable def scalarDilationOp (p : ℂ) : HilbertOperator (Qubits 1) :=
 
 /-- The scalar dilation is unitary under the contraction side condition. -/
 theorem scalarDilationOp_mem_unitaryGroup (p : ℂ) (hp : Complex.normSq p <= 1) :
-    scalarDilationOp p ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    scalarDilationOp p ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   have hs : Real.sqrt (1 - Complex.normSq p) * Real.sqrt (1 - Complex.normSq p) =
       1 - Complex.normSq p := by
@@ -133,7 +133,7 @@ theorem scalarDilation_block_entry (p : ℂ) (hp : Complex.normSq p <= 1) :
 
 /-- Block-diagonal direct sum of scalar dilations over a finite index set. -/
 noncomputable def diagonalScalarDilationOp {ι : Type*} [DecidableEq ι]
-    (p : ι → ℂ) : Matrix (Fin (2 ^ 1) × ι) (Fin (2 ^ 1) × ι) ℂ :=
+    (p : ι → ℂ) : Matrix (Fin (2 ^ (1 : ℕ)) × ι) (Fin (2 ^ (1 : ℕ)) × ι) ℂ :=
   Matrix.of fun r s =>
     if r.2 = s.2 then scalarDilationOp (p r.2) r.1 s.1 else 0
 
@@ -141,7 +141,7 @@ noncomputable def diagonalScalarDilationOp {ι : Type*} [DecidableEq ι]
 theorem diagonalScalarDilationOp_mem_unitaryGroup {ι : Type*}
     [Fintype ι] [DecidableEq ι]
     (p : ι → ℂ) (hp : ∀ i, Complex.normSq (p i) <= 1) :
-    diagonalScalarDilationOp p ∈ Matrix.unitaryGroup (Fin (2 ^ 1) × ι) ℂ := by
+    diagonalScalarDilationOp p ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ)) × ι) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext r s
   rw [Matrix.mul_apply]
@@ -153,10 +153,10 @@ theorem diagonalScalarDilationOp_mem_unitaryGroup {ι : Type*}
     rw [Matrix.mul_apply] at hentry
     rw [Fintype.sum_prod_type]
     have hcollapse :
-        (∑ x : Fin (2 ^ 1), ∑ y : ι,
+        (∑ x : Fin (2 ^ (1 : ℕ)), ∑ y : ι,
             diagonalScalarDilationOp p r (x, y) *
               star (diagonalScalarDilationOp p) (x, y) s) =
-          ∑ x : Fin (2 ^ 1),
+          ∑ x : Fin (2 ^ (1 : ℕ)),
             scalarDilationOp (p r.2) r.1 x *
               star (scalarDilationOp (p r.2)) x s.1 := by
       refine Finset.sum_congr rfl fun x _ => ?_
@@ -173,8 +173,8 @@ theorem diagonalScalarDilationOp_mem_unitaryGroup {ι : Type*}
       · intro hmissing
         exact False.elim (hmissing (Finset.mem_univ r.2))
     have hone :
-        (1 : Matrix (Fin (2 ^ 1) × ι) (Fin (2 ^ 1) × ι) ℂ) r s =
-          (1 : Matrix (Fin (2 ^ 1)) (Fin (2 ^ 1)) ℂ) r.1 s.1 := by
+        (1 : Matrix (Fin (2 ^ (1 : ℕ)) × ι) (Fin (2 ^ (1 : ℕ)) × ι) ℂ) r s =
+          (1 : Matrix (Fin (2 ^ (1 : ℕ))) (Fin (2 ^ (1 : ℕ))) ℂ) r.1 s.1 := by
       rw [Matrix.one_apply, Matrix.one_apply]
       by_cases h1 : r.1 = s.1
       · have hpairs : r = s := Prod.ext h1 hrs
@@ -704,7 +704,7 @@ star-dot-product.  This local bridge keeps the projected-singular-value proof
 in matrix notation while using the Hilbert-space norm supplied by Mathlib. -/
 theorem stateVector_norm_sq_eq_re_star_dot {N : Nat}
     (v : StateVector (Qubits N)) :
-    ‖v‖ ^ 2 = RCLike.re ((star v.ofLp) ⬝ᵥ v.ofLp) := by
+    ‖v‖ ^ (2 : ℕ) = RCLike.re ((star v.ofLp) ⬝ᵥ v.ofLp) := by
   rw [PiLp.norm_sq_eq_of_L2]
   rw [← Complex.ofReal_inj]
   simp [Complex.sq_norm, dotProduct, Complex.normSq_apply]
@@ -714,7 +714,7 @@ identity used to pass from the spectral theorem for `A^*A` to source singular
 values in `def:singDec` [GSLW19, BlockHam.tex:570-613]. -/
 theorem applyVec_norm_sq_eq_re_star_dot_gram {N : Nat}
     (A : HilbertOperator (Qubits N)) (v : StateVector (Qubits N)) :
-    ‖HilbertOperator.applyVec A v‖ ^ 2 =
+    ‖HilbertOperator.applyVec A v‖ ^ (2 : ℕ) =
       RCLike.re ((star v.ofLp) ⬝ᵥ
         (((A.conjTranspose * A) : HilbertOperator (Qubits N)).mulVec v.ofLp)) := by
   rw [stateVector_norm_sq_eq_re_star_dot (HilbertOperator.applyVec A v)]
@@ -829,9 +829,9 @@ theorem orthogonalProjector_inner_applyVec_complement {N : Nat}
 /-- Orthogonal projectors split norm squares into image and complement parts. -/
 theorem orthogonalProjector_norm_sq_decomposition {N : Nat}
     (P : OrthogonalProjector N) (psi : StateVector (Qubits N)) :
-    ‖psi‖ ^ 2 =
-      ‖HilbertOperator.applyVec P.op psi‖ ^ 2 +
-        ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ 2 := by
+    ‖psi‖ ^ (2 : ℕ) =
+      ‖HilbertOperator.applyVec P.op psi‖ ^ (2 : ℕ) +
+        ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ (2 : ℕ) := by
   have hsum : P.op + OrthogonalProjector.complement P = (1 : HilbertOperator (Qubits N)) := by
     simp [OrthogonalProjector.complement]
   have hpsi :
@@ -847,13 +847,13 @@ theorem orthogonalProjector_norm_sq_decomposition {N : Nat}
             HilbertOperator.applyVec (OrthogonalProjector.complement P) psi := by
         rw [HilbertOperator.add_applyVec]
   calc
-    ‖psi‖ ^ 2 =
+    ‖psi‖ ^ (2 : ℕ) =
         ‖HilbertOperator.applyVec P.op psi +
-          HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ 2 := by
-      exact congrArg (fun x : StateVector (Qubits N) => ‖x‖ ^ 2) hpsi
+          HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ (2 : ℕ) := by
+      exact congrArg (fun x : StateVector (Qubits N) => ‖x‖ ^ (2 : ℕ)) hpsi
     _ =
-        ‖HilbertOperator.applyVec P.op psi‖ ^ 2 +
-          ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ 2 := by
+        ‖HilbertOperator.applyVec P.op psi‖ ^ (2 : ℕ) +
+          ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ (2 : ℕ) := by
       simpa [pow_two] using
         norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
           (HilbertOperator.applyVec P.op psi)
@@ -870,7 +870,7 @@ theorem orthogonalProjector_applyVec_eq_self_of_norm_eq_one {N : Nat}
   have hdec := orthogonalProjector_norm_sq_decomposition P psi
   rw [hpsi, hproj] at hdec
   have hcomp_sq :
-      ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ 2 = 0 := by
+      ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ (2 : ℕ) = 0 := by
     nlinarith [sq_nonneg ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖]
   have hcomp_norm :
       ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ = 0 := by
@@ -896,7 +896,7 @@ theorem orthogonalProjector_applyVec_eq_self_of_norm_eq_one {N : Nat}
   exact hdecomp.symm
 
 /-- If a unit vector has projector component of norm `σ`, the complementary
-projector component has norm `sqrt (1 - σ^2)`.  This is the normalization
+projector component has norm `sqrt (1 - σ^(2 : ℕ))`.  This is the normalization
 identity used for the `0 < σ < 1` two-dimensional sectors in `lemma:singInvDec`
 [GSLW19, BlockHam.tex:655-716]. -/
 theorem orthogonalProjector_complement_norm_eq_sqrt {N : Nat}
@@ -904,14 +904,14 @@ theorem orthogonalProjector_complement_norm_eq_sqrt {N : Nat}
     (hpsi : ‖psi‖ = 1)
     (hproj : ‖HilbertOperator.applyVec P.op psi‖ = sigma) :
     ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ =
-      Real.sqrt (1 - sigma ^ 2) := by
+      Real.sqrt (1 - sigma ^ (2 : ℕ)) := by
   have hdec := orthogonalProjector_norm_sq_decomposition P psi
   have hsq :
-      ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ 2 =
-        1 - sigma ^ 2 := by
+      ‖HilbertOperator.applyVec (OrthogonalProjector.complement P) psi‖ ^ (2 : ℕ) =
+        1 - sigma ^ (2 : ℕ) := by
     rw [hpsi, hproj] at hdec
     nlinarith
-  have hnonneg : 0 ≤ 1 - sigma ^ 2 := by
+  have hnonneg : 0 ≤ 1 - sigma ^ (2 : ℕ) := by
     rw [← hsq]
     exact sq_nonneg _
   rw [← Real.sq_sqrt hnonneg] at hsq
@@ -1129,7 +1129,7 @@ theorem projectedUnitaryBlock_conjTranspose_applyVec_leftGramEigenbasis_norm_sq
     {N : Nat} (left right : OrthogonalProjector N) (U : Gate (Qubits N))
     (i : (Qubits N).Index) :
     ‖HilbertOperator.applyVec (projectedUnitaryBlock left right U).conjTranspose
-        (projectedUnitaryBlockLeftGramEigenbasis left right U i)‖ ^ 2 =
+        (projectedUnitaryBlockLeftGramEigenbasis left right U i)‖ ^ (2 : ℕ) =
       (projectedUnitaryBlockLeftGram_isHermitian left right U).eigenvalues i := by
   rw [applyVec_norm_sq_eq_re_star_dot_gram]
   have hgram := projectedUnitaryBlockLeftGram_mulVec_eigenbasis left right U i
@@ -1266,7 +1266,7 @@ theorem projectedUnitaryBlockSingularValue_nonneg {N : Nat}
 theorem projectedUnitaryBlockSingularValue_sq {N : Nat}
     (left right : OrthogonalProjector N) (U : Gate (Qubits N))
     (i : (Qubits N).Index) :
-    (projectedUnitaryBlockSingularValue left right U i) ^ 2 =
+    (projectedUnitaryBlockSingularValue left right U i) ^ (2 : ℕ) =
       (projectedUnitaryBlock_gram_isHermitian left right U).eigenvalues i := by
   rw [projectedUnitaryBlockSingularValue, Real.sq_sqrt]
   exact projectedUnitaryBlock_gram_eigenvalues_nonneg left right U i
@@ -1377,15 +1377,15 @@ theorem projectedUnitaryBlock_gram_applyVec_rightSingularVector {N : Nat}
     congrFun (projectedUnitaryBlock_gram_mulVec_eigenbasis left right U i) j
 
 /-- Applying the projected block to a right singular vector has squared norm
-`σ^2`.  This is the norm bridge used to turn the Gram eigenvector into the
+`σ^(2 : ℕ)`.  This is the norm bridge used to turn the Gram eigenvector into the
 source singular-pair normalization in `def:singDec` [GSLW19,
 BlockHam.tex:570-613]. -/
 theorem projectedUnitaryBlock_applyVec_rightSingularVector_norm_sq {N : Nat}
     (left right : OrthogonalProjector N) (U : Gate (Qubits N))
     (i : (Qubits N).Index) :
     ‖HilbertOperator.applyVec (projectedUnitaryBlock left right U)
-        (projectedUnitaryBlockRightSingularVector left right U i)‖ ^ 2 =
-      (projectedUnitaryBlockSingularValue left right U i) ^ 2 := by
+        (projectedUnitaryBlockRightSingularVector left right U i)‖ ^ (2 : ℕ) =
+      (projectedUnitaryBlockSingularValue left right U i) ^ (2 : ℕ) := by
   rw [applyVec_norm_sq_eq_re_star_dot_gram]
   have hgram := projectedUnitaryBlock_gram_applyVec_rightSingularVector left right U i
   have hgram_raw := congrArg WithLp.ofLp hgram
@@ -1404,11 +1404,11 @@ theorem projectedUnitaryBlock_applyVec_rightSingularVector_norm_sq {N : Nat}
     simpa [dotProduct_comm] using hinner
   change RCLike.re
       ((star (projectedUnitaryBlockRightSingularVector left right U i).ofLp) ⬝ᵥ
-        (((projectedUnitaryBlockSingularValue left right U i ^ 2 : ℝ) : ℂ) •
+        (((projectedUnitaryBlockSingularValue left right U i ^ (2 : ℕ) : ℝ) : ℂ) •
           (projectedUnitaryBlockRightSingularVector left right U i).ofLp)) =
-    projectedUnitaryBlockSingularValue left right U i ^ 2
+    projectedUnitaryBlockSingularValue left right U i ^ (2 : ℕ)
   rw [dotProduct_smul, hdot, smul_eq_mul, mul_one]
-  exact Complex.ofReal_re ((projectedUnitaryBlockSingularValue left right U i) ^ 2)
+  exact Complex.ofReal_re ((projectedUnitaryBlockSingularValue left right U i) ^ (2 : ℕ))
 
 /-- A zero Gram eigenvalue gives a right-kernel vector for the projected block.
 This is the entry point for the zero-singular-value part of
@@ -1423,7 +1423,7 @@ theorem projectedUnitaryBlock_applyVec_rightSingularVector_eq_zero_of_eigenvalue
   have hnorm_sq :=
     projectedUnitaryBlock_applyVec_rightSingularVector_norm_sq left right U i
   have hsigma_sq :
-      (projectedUnitaryBlockSingularValue left right U i) ^ 2 = 0 := by
+      (projectedUnitaryBlockSingularValue left right U i) ^ (2 : ℕ) = 0 := by
     rw [projectedUnitaryBlockSingularValue_sq, hlambda]
   rw [hsigma_sq] at hnorm_sq
   have hnorm :
@@ -1473,7 +1473,7 @@ theorem projectedUnitaryBlock_conjTranspose_applyVec_leftSingularVector {N : Nat
   rw [smul_smul]
   have hsq :
       (((projectedUnitaryBlock_gram_isHermitian left right U).eigenvalues i : ℝ) : ℂ) =
-        (projectedUnitaryBlockSingularValue left right U i : ℂ) ^ 2 := by
+        (projectedUnitaryBlockSingularValue left right U i : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast (projectedUnitaryBlockSingularValue_sq left right U i).symm
   have hscalar :
       (projectedUnitaryBlockSingularValue left right U i : ℂ)⁻¹ *
@@ -1590,7 +1590,7 @@ theorem sigma_eq_one_or_lt_one {N : Nat} {left right : OrthogonalProjector N}
 end SourceNonzeroSingularPair
 
 /-- The even-parity singular-value polynomial target from the source
-definition of `P^{(SV)}`: if `P(X) = R(X^2)`, the even transform acts on the
+definition of `P^{(SV)}`: if `P(X) = R(X^(2 : ℕ))`, the even transform acts on the
 input projector side.  The projector factors are essential: for `P = 1`, the
 target is the identity on `Π`, not on the whole ambient Hilbert space [GSLW19,
 BlockHam.tex:747-764]. -/
@@ -1600,7 +1600,7 @@ noncomputable def evenSingularValuePolynomial {N : Nat}
   input.op * polynomialOperator (evenSquareQuotient P) (A.conjTranspose * A) * input.op
 
 /-- The odd-parity singular-value polynomial target from the source definition
-of `P^{(SV)}`: if `P(X) = X R(X^2)`, the odd transform is
+of `P^{(SV)}`: if `P(X) = X R(X^(2 : ℕ))`, the odd transform is
 `A R(A^* A)` [GSLW19, BlockHam.tex:747-764]. -/
 noncomputable def oddSingularValuePolynomial {N : Nat} (P : Polynomial ℂ)
     (A : HilbertOperator (Qubits N)) : HilbertOperator (Qubits N) :=
@@ -1745,20 +1745,20 @@ theorem singularValuePolynomial_average_of_polynomial_average {N : Nat}
     singularValuePolynomial_smul]
 
 /-- On a nonzero singular pair, the Gram operator `A^* A` has eigenvalue
-`sigma^2` on the right singular vector.  This is the target-side scalar
+`sigma^(2 : ℕ)` on the right singular vector.  This is the target-side scalar
 calculation used in the local blocks of the singular-value transform
 [GSLW19, BlockHam.tex:747-849]. -/
 theorem singularPair_gram_applyVec_rightVec {N : Nat}
     {A : HilbertOperator (Qubits N)} {left right : OrthogonalProjector N}
     (pair : SourceNonzeroSingularPair A left right) :
     HilbertOperator.applyVec (A.conjTranspose * A) pair.rightVec =
-      ((pair.sigma : Complex) ^ 2) • pair.rightVec := by
+      ((pair.sigma : Complex) ^ (2 : ℕ)) • pair.rightVec := by
   rw [HilbertOperator.mul_applyVec, pair.A_right, HilbertOperator.applyVec_smul,
     pair.Astar_left, smul_smul]
   ring_nf
 
 /-- Even branch of `P^{(SV)}` on a right singular vector: the quotient
-polynomial evaluates at `sigma^2`, hence the full target scalar is `P(sigma)`
+polynomial evaluates at `sigma^(2 : ℕ)`, hence the full target scalar is `P(sigma)`
 [GSLW19, BlockHam.tex:747-764]. -/
 theorem evenSingularValuePolynomial_applyVec_rightVec {N L : Nat}
     {A : HilbertOperator (Qubits N)} {left right : OrthogonalProjector N}
@@ -1769,7 +1769,7 @@ theorem evenSingularValuePolynomial_applyVec_rightVec {N L : Nat}
   unfold evenSingularValuePolynomial
   rw [HilbertOperator.mul_applyVec, HilbertOperator.mul_applyVec, pair.right_support,
     polynomialOperator_applyVec_of_eigenvector (evenSquareQuotient P)
-      (A.conjTranspose * A) ((pair.sigma : Complex) ^ 2) pair.rightVec
+      (A.conjTranspose * A) ((pair.sigma : Complex) ^ (2 : ℕ)) pair.rightVec
       (singularPair_gram_applyVec_rightVec pair),
     evenSquareQuotient_eval_sq_of_hasParity hL hP,
     HilbertOperator.applyVec_smul, pair.right_support]
@@ -1786,7 +1786,7 @@ theorem oddSingularValuePolynomial_applyVec_rightVec {N L : Nat}
   unfold oddSingularValuePolynomial
   rw [HilbertOperator.mul_applyVec,
     polynomialOperator_applyVec_of_eigenvector (oddSquareQuotient P)
-      (A.conjTranspose * A) ((pair.sigma : Complex) ^ 2) pair.rightVec
+      (A.conjTranspose * A) ((pair.sigma : Complex) ^ (2 : ℕ)) pair.rightVec
       (singularPair_gram_applyVec_rightVec pair),
     HilbertOperator.applyVec_smul, pair.A_right, smul_smul]
   have hodd := oddSquareQuotient_eval_sq_of_hasParity hL hP (pair.sigma : Complex)
@@ -2019,7 +2019,7 @@ theorem evenHermitianSingularValuePolynomial_eq_polynomialOperator {n L : Nat}
   calc
     polynomialOperator (evenSquareQuotient P) (A * A) =
         Polynomial.aeval (A * A) (evenSquareQuotient P) := rfl
-    _ = Polynomial.aeval A ((evenSquareQuotient P).comp (Polynomial.X ^ 2)) := by
+    _ = Polynomial.aeval A ((evenSquareQuotient P).comp (Polynomial.X ^ (2 : ℕ))) := by
       rw [Polynomial.aeval_comp]
       simp [pow_two]
     _ = Polynomial.aeval A P := by
@@ -2038,7 +2038,7 @@ theorem oddHermitianSingularValuePolynomial_eq_polynomialOperator {n L : Nat}
   calc
     A * polynomialOperator (oddSquareQuotient P) (A * A) =
         Polynomial.aeval A
-          (Polynomial.X * (oddSquareQuotient P).comp (Polynomial.X ^ 2)) := by
+          (Polynomial.X * (oddSquareQuotient P).comp (Polynomial.X ^ (2 : ℕ))) := by
       rw [map_mul, Polynomial.aeval_comp]
       simp [polynomialOperator, pow_two]
     _ = Polynomial.aeval A P := by
@@ -2126,7 +2126,7 @@ plus an `N`-qubit signal space.  This is the linear-algebraic core of the
 noncomputable def phasePlusBlock {N : Nat} (V : Gate (Qubits (1 + N))) :
     HilbertOperator (Qubits N) :=
   fun i j =>
-    ∑ a : Fin (2 ^ 1), ∑ b : Fin (2 ^ 1),
+    ∑ a : Fin (2 ^ (1 : ℕ)), ∑ b : Fin (2 ^ (1 : ℕ)),
       starRingEnd ℂ ((PureState.ketPlus : StateVector (Qubits 1)) a) *
         (V : HilbertOperator (Qubits (1 + N))) (prodEquiv (a, i)) (prodEquiv (b, j)) *
           ((PureState.ketPlus : StateVector (Qubits 1)) b)
@@ -2140,27 +2140,27 @@ noncomputable def phaseHadamardWrapper {N : Nat} (V : Gate (Qubits (1 + N))) :
 
 /-- Ancilla-indexed block of a gate acting on one phase qubit plus an `N`-qubit
 signal space. -/
-noncomputable def ancillaBlock {N : Nat} (a b : Fin (2 ^ 1))
+noncomputable def ancillaBlock {N : Nat} (a b : Fin (2 ^ (1 : ℕ)))
     (V : Gate (Qubits (1 + N))) : HilbertOperator (Qubits N) :=
   fun i j => (V : HilbertOperator (Qubits (1 + N))) (prodEquiv (a, i)) (prodEquiv (b, j))
 
 /-- Ancilla-indexed blocks multiply as ordinary block matrices. -/
-theorem ancillaBlock_mul {N : Nat} (a c : Fin (2 ^ 1))
+theorem ancillaBlock_mul {N : Nat} (a c : Fin (2 ^ (1 : ℕ)))
     (V W : Gate (Qubits (1 + N))) :
     ancillaBlock a c (V * W) =
-      ∑ b : Fin (2 ^ 1), ancillaBlock a b V * ancillaBlock b c W := by
+      ∑ b : Fin (2 ^ (1 : ℕ)), ancillaBlock a b V * ancillaBlock b c W := by
   ext i j
   change
     (∑ z : Fin (2 ^ (1 + N)),
       V.op (prodEquiv (a, i)) z * W.op z (prodEquiv (c, j))) =
-    (∑ b : Fin (2 ^ 1), ∑ x : Fin (2 ^ N),
+    (∑ b : Fin (2 ^ (1 : ℕ)), ∑ x : Fin (2 ^ N),
       V.op (prodEquiv (a, i)) (prodEquiv (b, x)) *
         W.op (prodEquiv (b, x)) (prodEquiv (c, j)))
   rw [← Equiv.sum_comp (prodEquiv (m := 1) (n := N))]
   simp [Fintype.sum_prod_type]
 
 /-- Ancilla block of a tensor gate acting only on the phase qubit. -/
-theorem ancillaBlock_tensor_left {N : Nat} (A : Gate (Qubits 1)) (a b : Fin (2 ^ 1)) :
+theorem ancillaBlock_tensor_left {N : Nat} (A : Gate (Qubits 1)) (a b : Fin (2 ^ (1 : ℕ))) :
     ancillaBlock a b (Gate.tensor A (1 : Gate (Qubits N))) =
       A a b • (1 : HilbertOperator (Qubits N)) := by
   ext i j
@@ -2173,7 +2173,7 @@ BlockHam.tex:768-849]. -/
 theorem phasePlusBlock_eq_sum_ancillaBlock {N : Nat}
     (V : Gate (Qubits (1 + N))) :
     phasePlusBlock V =
-      ∑ a : Fin (2 ^ 1), ∑ b : Fin (2 ^ 1),
+      ∑ a : Fin (2 ^ (1 : ℕ)), ∑ b : Fin (2 ^ (1 : ℕ)),
         starRingEnd ℂ ((PureState.ketPlus : StateVector (Qubits 1)) a) •
           (((PureState.ketPlus : StateVector (Qubits 1)) b) •
             ancillaBlock a b V) := by
@@ -2211,7 +2211,7 @@ def phaseAncillaAssocEquiv (m n : Nat) :
 theorem phaseAncillaAssocEquiv_symm_zero {m n : Nat} (i : Fin (2 ^ n)) :
     (phaseAncillaAssocEquiv m n).symm
         (prodEquiv ((0 : Fin (2 ^ (1 + m))), i)) =
-      prodEquiv ((0 : Fin (2 ^ 1)), prodEquiv ((0 : Fin (2 ^ m)), i)) := by
+      prodEquiv ((0 : Fin (2 ^ (1 : ℕ))), prodEquiv ((0 : Fin (2 ^ m)), i)) := by
   apply Fin.ext
   simp [phaseAncillaAssocEquiv, prodEquiv, finProdFinEquiv, finCongr]
 
@@ -2233,8 +2233,8 @@ theorem reassociatePhaseAncillaGate_apply_zero {m n : Nat}
       (prodEquiv ((0 : Fin (2 ^ (1 + m))), i))
       (prodEquiv ((0 : Fin (2 ^ (1 + m))), j)) =
     (V : HilbertOperator (Qubits (1 + (m + n))))
-      (prodEquiv ((0 : Fin (2 ^ 1)), prodEquiv ((0 : Fin (2 ^ m)), i)))
-      (prodEquiv ((0 : Fin (2 ^ 1)), prodEquiv ((0 : Fin (2 ^ m)), j))) := by
+      (prodEquiv ((0 : Fin (2 ^ (1 : ℕ))), prodEquiv ((0 : Fin (2 ^ m)), i)))
+      (prodEquiv ((0 : Fin (2 ^ (1 : ℕ))), prodEquiv ((0 : Fin (2 ^ m)), j))) := by
   simp [reassociatePhaseAncillaGate, Matrix.reindex_apply]
 
 /-- Taking the top-left block after Hadamard-wrapping and reassociating

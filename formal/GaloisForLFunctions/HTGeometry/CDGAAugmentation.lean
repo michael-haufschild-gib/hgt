@@ -23,7 +23,7 @@ abbrev augIdealCarrier (ε : CDGAHom A (groundCDGA R)) (n : ℕ) : Type u :=
   LinearMap.ker (ε.mapₗ n)
 
 /-- The augmentation kills the differential of anything, because the ground algebra has none. -/
-theorem aug_d (ε : CDGAHom A (groundCDGA R)) (n : ℕ) (x : X n) :
+theorem aug_d_cDGAAugmentation (ε : CDGAHom A (groundCDGA R)) (n : ℕ) (x : X n) :
     ε.toFun (n + 1) (A.d n x) = 0 := by
   rw [ε.map_d n x]
   exact @Subsingleton.elim _ (groundCarrierSubsingleton R (by omega)) _ _
@@ -48,7 +48,7 @@ theorem augIdeal_mul_mem (ε : CDGAHom A (groundCDGA R)) {a b n : ℕ} (h : a + 
 def augIdealModule (ε : CDGAHom A (groundCDGA R)) :
     CDGAModuleStructure A (augIdealCarrier ε) where
   act h y x := ⟨A.mul h y (x : X _), augIdeal_mul_mem ε h y x⟩
-  d n x := ⟨A.d n (x : X n), LinearMap.mem_ker.mpr (aug_d ε n (x : X n))⟩
+  d n x := ⟨A.d n (x : X n), LinearMap.mem_ker.mpr (aug_d_cDGAAugmentation ε n (x : X n))⟩
   act_add_left h y y' _ := Subtype.ext (A.mul_add_left h y y' _)
   act_add_right h y _ _ := Subtype.ext (A.mul_add_right h y _ _)
   act_smul_left h c y _ := Subtype.ext (A.mul_smul_left h c y _)

@@ -28,13 +28,13 @@ namespace HTGeometry
 variable {s : ℕ → ℝ}
 
 /-- The monic real quadratic vanishing exactly at `z` and its conjugate. -/
-noncomputable def conjQuadratic (z : ℂ) : Polynomial ℝ := (X - C z.re) ^ 2 + C (z.im ^ 2)
+noncomputable def conjQuadratic (z : ℂ) : Polynomial ℝ := (X - C z.re) ^ (2 : ℕ) + C (z.im ^ (2 : ℕ))
 
-theorem degree_sq_X_sub_C (a : ℝ) : ((X - C a) ^ 2 : Polynomial ℝ).degree = 2 := by
+theorem degree_sq_X_sub_C (a : ℝ) : ((X - C a) ^ (2 : ℕ) : Polynomial ℝ).degree = 2 := by
   simp [degree_pow, degree_X_sub_C]
 
 theorem conjQuadratic_aux_lt (z : ℂ) :
-    (C (z.im ^ 2) : Polynomial ℝ).degree < ((X - C z.re) ^ 2 : Polynomial ℝ).degree := by
+    (C (z.im ^ (2 : ℕ)) : Polynomial ℝ).degree < ((X - C z.re) ^ (2 : ℕ) : Polynomial ℝ).degree := by
   rw [degree_sq_X_sub_C]
   exact lt_of_le_of_lt degree_C_le (by decide)
 
@@ -53,7 +53,7 @@ theorem conjQuadratic_natDegree (z : ℂ) : (conjQuadratic z).natDegree = 2 :=
 
 /-- The quadratic vanishes at `z`. -/
 theorem aeval_conjQuadratic (z : ℂ) : Polynomial.aeval z (conjQuadratic z) = 0 := by
-  have key : (z - (z.re : ℂ)) ^ 2 + ((z.im : ℝ) : ℂ) ^ 2 = 0 := by
+  have key : (z - (z.re : ℂ)) ^ (2 : ℕ) + ((z.im : ℝ) : ℂ) ^ (2 : ℕ) = 0 := by
     have hz : z - (z.re : ℂ) = (z.im : ℂ) * Complex.I := by
       apply Complex.ext <;> simp
     rw [hz, mul_pow, Complex.I_sq]
@@ -116,21 +116,21 @@ theorem monicOrtho_aeval_ne_zero (h : PositiveMomentForm s) (n : ℕ) {z : ℂ} 
   have hzero : momentInner s (monicOrtho s (n + 1)) g = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl g hgdeg
   have hpoly : conjQuadratic z * g * g
-      = ((X - C z.re) * g) * ((X - C z.re) * g) + (z.im ^ 2) • (g * g) := by
+      = ((X - C z.re) * g) * ((X - C z.re) * g) + (z.im ^ (2 : ℕ)) • (g * g) := by
     simp only [conjQuadratic, Polynomial.smul_eq_C_mul]
     ring
   have hexp : momentInner s (monicOrtho s (n + 1)) g
       = momentInner s ((X - C z.re) * g) ((X - C z.re) * g)
-        + z.im ^ 2 * momentInner s g g := by
+        + z.im ^ (2 : ℕ) * momentInner s g g := by
     rw [hQg, momentInner_def, hpoly, momentFunctional_add, momentFunctional_smul,
       momentInner_def, momentInner_def]
   have hpos : 0 < momentInner s ((X - C z.re) * g) ((X - C z.re) * g)
-      + z.im ^ 2 * momentInner s g g := by
+      + z.im ^ (2 : ℕ) * momentInner s g g := by
     have h1 : 0 ≤ momentInner s ((X - C z.re) * g) ((X - C z.re) * g) := h.nonneg _
     have h2 : 0 < momentInner s g g := h.pos_of_ne_zero g hgne
-    have h3 : 0 < z.im ^ 2 :=
+    have h3 : 0 < z.im ^ (2 : ℕ) :=
       lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hz))
-    have h4 : 0 < z.im ^ 2 * momentInner s g g := mul_pos h3 h2
+    have h4 : 0 < z.im ^ (2 : ℕ) * momentInner s g g := mul_pos h3 h2
     linarith
   rw [hexp] at hzero
   exact absurd hzero (ne_of_gt hpos)

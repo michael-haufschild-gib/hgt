@@ -19,28 +19,28 @@ noncomputable section
 theorem kloostermanDistinctModulusWeightPairEnergy_eq_sq_sub_diagonal
     (Q : Finset ℕ) (w : ℕ → ℂ) :
     kloostermanDistinctModulusWeightPairEnergy Q w =
-      (∑ q ∈ Q, ‖w q‖ ^ 2) ^ 2 - ∑ q ∈ Q, (‖w q‖ ^ 2) ^ 2 := by
+      (∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) - ∑ q ∈ Q, (‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   classical
   unfold kloostermanDistinctModulusWeightPairEnergy
   have hfull :
-      (∑ q ∈ Q, ‖w q‖ ^ 2) ^ 2 =
-        ∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ 2 * ‖w r‖ ^ 2 := by
+      (∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) =
+        ∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ) := by
     rw [pow_two, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro q hq
     rw [Finset.mul_sum]
   have hdecomp :
-      (∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ 2 * ‖w r‖ ^ 2) =
-        (∑ q ∈ Q, ∑ r ∈ Q.erase q, ‖w q‖ ^ 2 * ‖w r‖ ^ 2) +
-          ∑ q ∈ Q, (‖w q‖ ^ 2) ^ 2 := by
+      (∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ)) =
+        (∑ q ∈ Q, ∑ r ∈ Q.erase q, ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ)) +
+          ∑ q ∈ Q, (‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     calc
-      (∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ 2 * ‖w r‖ ^ 2) =
+      (∑ q ∈ Q, ∑ r ∈ Q, ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ)) =
           ∑ q ∈ Q,
-            ((∑ r ∈ Q.erase q, ‖w q‖ ^ 2 * ‖w r‖ ^ 2) +
-              ‖w q‖ ^ 2 * ‖w q‖ ^ 2) := by
+            ((∑ r ∈ Q.erase q, ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ)) +
+              ‖w q‖ ^ (2 : ℕ) * ‖w q‖ ^ (2 : ℕ)) := by
         apply Finset.sum_congr rfl
         intro q hq
-        rw [← Finset.sum_erase_add Q (fun r => ‖w q‖ ^ 2 * ‖w r‖ ^ 2) hq]
+        rw [← Finset.sum_erase_add Q (fun r => ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ)) hq]
       _ = _ := by
         rw [Finset.sum_add_distrib]
         congr 1
@@ -55,8 +55,8 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair_symmetric_exact
     (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     kloostermanGlobalFrequencyCollisionEnergy Q w B b ≤
-      ((∑ q ∈ Q, ‖w q‖ ^ 2) ^ 2 -
-          ∑ q ∈ Q, (‖w q‖ ^ 2) ^ 2) *
+      ((∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) -
+          ∑ q ∈ Q, (‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ)) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           kloostermanGlobalResponsePairElementaryBudget q r B b := by
   rw [← kloostermanDistinctModulusWeightPairEnergy_eq_sq_sub_diagonal]
@@ -66,8 +66,8 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair_symmetric_exact
 theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_weightPair_symmetric_exact
     (Q : Finset ℕ) (w : ℕ → ℂ) (N : ℕ) (b : ℕ → ℂ) :
     kloostermanGlobalFrequencyCollisionEnergy Q w (Finset.Icc 1 N) b ≤
-      ((∑ q ∈ Q, ‖w q‖ ^ 2) ^ 2 -
-          ∑ q ∈ Q, (‖w q‖ ^ 2) ^ 2) *
+      ((∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ) -
+          ∑ q ∈ Q, (‖w q‖ ^ (2 : ℕ)) ^ (2 : ℕ)) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           kloostermanGlobalIntervalResponsePairElementaryBudget q r N b := by
   rw [← kloostermanDistinctModulusWeightPairEnergy_eq_sq_sub_diagonal]

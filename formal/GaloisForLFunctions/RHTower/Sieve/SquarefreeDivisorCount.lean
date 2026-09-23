@@ -34,7 +34,7 @@ theorem divisors_eq_image_powerset {m : ℕ} (hm : Squarefree m) (hm0 : m ≠ 0)
       _ = m := Nat.prod_primeFactors_of_squarefree hm
 
 /-- **A squarefree integer has `2^ω` divisors.** -/
-theorem card_divisors_of_squarefree {m : ℕ} (hm : Squarefree m) (hm0 : m ≠ 0) :
+theorem card_divisors_of_squarefree_squarefreeDivisorCount {m : ℕ} (hm : Squarefree m) (hm0 : m ≠ 0) :
     m.divisors.card = 2 ^ m.primeFactors.card := by
   classical
   rw [divisors_eq_image_powerset hm hm0]

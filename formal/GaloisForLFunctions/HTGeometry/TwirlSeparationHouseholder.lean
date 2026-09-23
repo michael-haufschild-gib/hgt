@@ -116,19 +116,19 @@ variable {α : Type*} [Fintype α] [DecidableEq α]
 /-- **Transitivity on real unit vectors.**  A Householder reflection is a self-adjoint involution
 carrying a basis vector to any prescribed real unit vector. -/
 theorem exists_unitary_mulVec_basis (t : α → ℝ)
-    (hunit : ∑ a, t a ^ 2 = 1) (a0 : α) :
+    (hunit : ∑ a, t a ^ (2 : ℕ) = 1) (a0 : α) :
     ∃ A : Matrix α α ℂ, Aᴴ * A = 1 ∧
       A.mulVec (fun a => if a = a0 then (1 : ℂ) else 0) = fun a => (t a : ℂ) := by
   classical
   by_cases h1 : t a0 = 1
   · have hzero : ∀ a, a ≠ a0 → t a = 0 := by
       intro a hne
-      have hsplit : t a0 ^ 2 + ∑ b ∈ Finset.univ.erase a0, t b ^ 2 = 1 := by
+      have hsplit : t a0 ^ (2 : ℕ) + ∑ b ∈ Finset.univ.erase a0, t b ^ (2 : ℕ) = 1 := by
         rw [← Finset.sum_erase_add _ _ (Finset.mem_univ a0)] at hunit
         linarith [hunit]
-      have hnnsum : 0 ≤ ∑ b ∈ Finset.univ.erase a0, t b ^ 2 :=
+      have hnnsum : 0 ≤ ∑ b ∈ Finset.univ.erase a0, t b ^ (2 : ℕ) :=
         Finset.sum_nonneg fun b _ => sq_nonneg _
-      have hsum0 : ∑ b ∈ Finset.univ.erase a0, t b ^ 2 = 0 := by
+      have hsum0 : ∑ b ∈ Finset.univ.erase a0, t b ^ (2 : ℕ) = 0 := by
         rw [h1] at hsplit
         linarith
       have hmem : a ∈ Finset.univ.erase a0 := Finset.mem_erase.mpr ⟨hne, Finset.mem_univ a⟩
@@ -144,16 +144,16 @@ theorem exists_unitary_mulVec_basis (t : α → ℝ)
     · rw [if_neg ha, hzero a ha]
       norm_num
   · have hle : t a0 ≤ 1 := by
-      nlinarith [Finset.single_le_sum (f := fun a => t a ^ 2)
+      nlinarith [Finset.single_le_sum (f := fun a => t a ^ (2 : ℕ))
         (fun a _ => sq_nonneg (t a)) (Finset.mem_univ a0), hunit, sq_nonneg (t a0 - 1)]
     have hlt : t a0 < 1 := lt_of_le_of_ne hle h1
     set v : α → ℝ := fun a => (if a = a0 then (1 : ℝ) else 0) - t a with hv
     set n : ℝ := 2 - 2 * t a0 with hn
     have hnpos : 0 < n := by rw [hn]; linarith
-    have hvsq : ∑ a, v a ^ 2 = n := by
-      have hexp : ∀ a : α, v a ^ 2 =
+    have hvsq : ∑ a, v a ^ (2 : ℕ) = n := by
+      have hexp : ∀ a : α, v a ^ (2 : ℕ) =
           (if a = a0 then (1 : ℝ) else 0) - 2 * (if a = a0 then (1 : ℝ) else 0) * t a
-            + t a ^ 2 := by
+            + t a ^ (2 : ℕ) := by
         intro a
         have hva : v a = (if a = a0 then (1 : ℝ) else 0) - t a := rfl
         rw [hva]
@@ -200,8 +200,8 @@ theorem exists_unitary_mulVec_basis (t : α → ℝ)
       · rw [if_neg hxy, if_neg hxy]
         push_cast
         ring
-    have hsumv : (∑ a : α, (v a : ℂ) ^ 2) = ((n : ℝ) : ℂ) := by
-      have hcast : ((∑ a, v a ^ 2 : ℝ) : ℂ) = ((n : ℝ) : ℂ) := by rw [hvsq]
+    have hsumv : (∑ a : α, (v a : ℂ) ^ (2 : ℕ)) = ((n : ℝ) : ℂ) := by
+      have hcast : ((∑ a, v a ^ (2 : ℕ) : ℝ) : ℂ) = ((n : ℝ) : ℂ) := by rw [hvsq]
       rw [← hcast]
       push_cast
       ring
@@ -217,7 +217,7 @@ theorem exists_unitary_mulVec_basis (t : α → ℝ)
           = (if x = z then (1 : ℂ) else 0) * (if z = y then (1 : ℂ) else 0)
             - (if x = z then (1 : ℂ) else 0) * ((k : ℂ) * (v z : ℂ) * (v y : ℂ))
             - ((k : ℂ) * (v x : ℂ) * (v z : ℂ)) * (if z = y then (1 : ℂ) else 0)
-            + ((k : ℂ) * (k : ℂ) * (v x : ℂ) * (v y : ℂ)) * (v z : ℂ) ^ 2 := by
+            + ((k : ℂ) * (k : ℂ) * (v x : ℂ) * (v y : ℂ)) * (v z : ℂ) ^ (2 : ℕ) := by
         intro z
         rw [hHentry, hHentry]
         ring
@@ -248,7 +248,7 @@ theorem exists_unitary_mulVec_basis (t : α → ℝ)
         rw [Finset.sum_congr rfl fun z _ => hstep z,
           Finset.sum_ite_eq' Finset.univ y (fun z => (k : ℂ) * (v x : ℂ) * (v z : ℂ))]
         simp
-      have hs4 : (∑ z : α, ((k : ℂ) * (k : ℂ) * (v x : ℂ) * (v y : ℂ)) * (v z : ℂ) ^ 2)
+      have hs4 : (∑ z : α, ((k : ℂ) * (k : ℂ) * (v x : ℂ) * (v y : ℂ)) * (v z : ℂ) ^ (2 : ℕ))
           = ((k : ℂ) * (k : ℂ) * (v x : ℂ) * (v y : ℂ)) * ((n : ℝ) : ℂ) := by
         rw [← Finset.mul_sum, hsumv]
       rw [Finset.sum_congr rfl fun z _ => hterm z, Finset.sum_add_distrib,

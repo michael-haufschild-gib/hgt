@@ -129,10 +129,10 @@ theorem norm_suzukiTestRayCoefBar_le {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)
 theorem integral_screwKernel_test {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (t : ℝ) :
     (∫ u : ℝ, suzukiScrewKernel t u * (φ : ℝ → ℂ) u)
       = ∑' q : XiZeroCopy,
-        (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ 2
+        (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ (2 : ℕ)
           * suzukiTestRayCoef φ q := by
   have hsplit : ∀ (u : ℝ) (q : XiZeroCopy), suzukiScrewExpTerm t u q * (φ : ℝ → ℂ) u
-      = ((Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ 2)
+      = ((Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ (2 : ℕ))
         * ((Complex.exp (-(I * xiSpectralPoint q * (u : ℂ))) - 1) * (φ : ℝ → ℂ) u) := by
     intro u q
     rw [suzukiScrewExpTerm]
@@ -146,12 +146,12 @@ theorem integral_screwKernel_test {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (t
       Integrable (fun u : ℝ => suzukiScrewExpTerm t u q * (φ : ℝ → ℂ) u) := by
     intro q
     refine ((integrable_expSlope_test φ q).const_mul
-      ((Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ 2)).congr ?_
+      ((Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ (2 : ℕ))).congr ?_
     filter_upwards with u
     exact (hsplit u q).symm
   have hbound : ∀ q : XiZeroCopy,
       (∫ u : ℝ, ‖suzukiScrewExpTerm t u q * (φ : ℝ → ℂ) u‖)
-        ≤ ‖(Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ 2‖
+        ≤ ‖(Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) / xiSpectralPoint q ^ (2 : ℕ)‖
           * ((Real.exp (|a| / 2) + 1) * ∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) := by
     intro q
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall
@@ -182,7 +182,7 @@ theorem integral_screwKernel_test {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (t
       refine le_trans (norm_sub_le _ _) ?_
       rw [norm_one]
       linarith [norm_exp_I_xiSpectralPoint_mul_le t q]
-    have hden : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 :=
+    have hden : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       pow_pos (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)) 2
     rw [norm_div, norm_pow, mul_one_div]
     gcongr
@@ -196,13 +196,13 @@ theorem integral_screwKernel_test {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (t
 theorem suzukiScrewSmoothForm_eq_tsum {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
     suzukiScrewSmoothForm φ φ
       = ∑' q : XiZeroCopy,
-        suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2 := by
+        suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ) := by
   rw [suzukiScrewSmoothForm]
   have hinner : ∀ t : ℝ,
       (∫ u : ℝ, suzukiScrewKernel t u * (φ : ℝ → ℂ) u * (starRingEnd ℂ) ((φ : ℝ → ℂ) t))
         = ∑' q : XiZeroCopy,
           (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) * (starRingEnd ℂ) ((φ : ℝ → ℂ) t)
-            * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2) := by
+            * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ)) := by
     intro t
     rw [MeasureTheory.integral_mul_const, integral_screwKernel_test φ t, ← tsum_mul_right]
     refine tsum_congr fun q => ?_
@@ -210,11 +210,11 @@ theorem suzukiScrewSmoothForm_eq_tsum {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hinner)]
   have hint : ∀ q : XiZeroCopy, Integrable (fun t : ℝ =>
       (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) * (starRingEnd ℂ) ((φ : ℝ → ℂ) t)
-        * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2)) :=
+        * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ))) :=
     fun q => (integrable_expSlopeBar_test φ q).mul_const _
   have hsum : Summable fun q : XiZeroCopy => ∫ t : ℝ,
       ‖(Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) * (starRingEnd ℂ) ((φ : ℝ → ℂ) t)
-        * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2)‖ := by
+        * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ))‖ := by
     set Mφ : ℝ := (Real.exp (|a| / 2) + 1) * ∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖ with hM
     have hMnn : 0 ≤ Mφ := by
       refine mul_nonneg (by positivity) (MeasureTheory.integral_nonneg fun u => norm_nonneg _)
@@ -223,9 +223,9 @@ theorem suzukiScrewSmoothForm_eq_tsum {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a
       ((xiSpectralPoint_inv_sq_summable.mul_left (Mφ * Mφ)))
     have hbnd : ∀ t : ℝ,
         ‖(Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) * (starRingEnd ℂ) ((φ : ℝ → ℂ) t)
-          * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2)‖
+          * (suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ))‖
           ≤ ((Real.exp (|a| / 2) + 1) * ‖(φ : ℝ → ℂ) t‖)
-            * (Mφ * (1 / ‖xiSpectralPoint q‖ ^ 2)) := by
+            * (Mφ * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
       intro t
       rw [norm_mul, norm_div, norm_pow, mul_one_div]
       gcongr

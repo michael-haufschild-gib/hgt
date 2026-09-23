@@ -52,16 +52,16 @@ theorem euclideanNorm_le_card_sq_mul_top_of_antitone_sum_zero {r : ℕ}
     rw [hsum] at hsneg
     exact (lt_irrefl 0) hsneg
   rw [EuclideanSpace.norm_eq]
-  have hsquares : ∑ i : Fin (r + 1), ‖v i‖ ^ 2 ≤
-      (r + 1 : ℝ) * (((r + 1 : ℝ) * v 0) ^ 2) := by
+  have hsquares : ∑ i : Fin (r + 1), ‖v i‖ ^ (2 : ℕ) ≤
+      (r + 1 : ℝ) * (((r + 1 : ℝ) * v 0) ^ (2 : ℕ)) := by
     calc
-      ∑ i : Fin (r + 1), ‖v i‖ ^ 2 ≤
-          ∑ _i : Fin (r + 1), (((r + 1 : ℝ) * v 0) ^ 2) := by
+      ∑ i : Fin (r + 1), ‖v i‖ ^ (2 : ℕ) ≤
+          ∑ _i : Fin (r + 1), (((r + 1 : ℝ) * v 0) ^ (2 : ℕ)) := by
             apply Finset.sum_le_sum
             intro i _
             simp only [Real.norm_eq_abs]
             exact pow_le_pow_left₀ (abs_nonneg _) (antitone_sum_zero_abs_le_card_mul_top v hv hsum i) 2
-      _ = (r + 1 : ℝ) * (((r + 1 : ℝ) * v 0) ^ 2) := by
+      _ = (r + 1 : ℝ) * (((r + 1 : ℝ) * v 0) ^ (2 : ℕ)) := by
             simp [nsmul_eq_mul]
   have hroot := Real.sqrt_le_sqrt hsquares
   have hnonneg : 0 ≤ (r + 1 : ℝ) ^ (2 : ℕ) * v 0 := by positivity
@@ -71,7 +71,7 @@ theorem euclideanNorm_le_card_sq_mul_top_of_antitone_sum_zero {r : ℕ}
   · exact hnonneg
   · have hr : (1 : ℝ) ≤ r + 1 := by
       exact_mod_cast Nat.succ_le_succ (Nat.zero_le r)
-    have hdiff : 0 ≤ (r + 1 : ℝ) ^ (3 : ℕ) * ((r + 1 : ℝ) - 1) * (v 0) ^ 2 :=
+    have hdiff : 0 ≤ (r + 1 : ℝ) ^ (3 : ℕ) * ((r + 1 : ℝ) - 1) * (v 0) ^ (2 : ℕ) :=
       mul_nonneg (mul_nonneg (pow_nonneg (by positivity) 3) (sub_nonneg.mpr hr))
         (sq_nonneg (v 0))
     nlinarith

@@ -48,7 +48,7 @@ theorem measure_draws_with_boundedTarget_postRampReentry_le
           (fun x ↦ psi y (T * x)) threshold)))
     (q : ℝ)
     (hmomentJoint : ∀ c, ∫ p : Y × ℝ,
-      ‖finiteComplexInner (psi p.1 (T * p.2)) (target c)‖ ^ 2
+      ‖finiteComplexInner (psi p.1 (T * p.2)) (target c)‖ ^ (2 : ℕ)
         ∂(nu.prod ((gaussianReal 0 1).restrict
           (Icc (-(epsw / speed / T)) (epsw / speed / T))ᶜ)) ≤ q) :
     nu.real {y | ∃ t ∈ Icc

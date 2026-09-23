@@ -46,12 +46,12 @@ noncomputable section
 not an approximation, and it holds for every real `σ`. -/
 theorem radialPSWFExteriorSpeed_eq_free_mul (sigma : ℝ) {z : ℝ} (hz : 1 < z) :
     radialPSWFExteriorSpeed sigma z
-      = radialPSWFExteriorSpeed 0 z * Real.sqrt (1 - sigma ^ 2 / z ^ 2) := by
+      = radialPSWFExteriorSpeed 0 z * Real.sqrt (1 - sigma ^ (2 : ℕ) / z ^ (2 : ℕ)) := by
   have hz0 : (0 : ℝ) < z := zero_lt_one.trans hz
-  have hden : (0 : ℝ) < z ^ 2 - 1 := by nlinarith
-  have hz2 : (0 : ℝ) < z ^ 2 := by positivity
-  have harg : (0 : ℝ) ≤ z ^ 2 / (z ^ 2 - 1) := div_nonneg hz2.le hden.le
-  have hfree : radialPSWFExteriorSpeed 0 z = Real.sqrt (z ^ 2 / (z ^ 2 - 1)) := by
+  have hden : (0 : ℝ) < z ^ (2 : ℕ) - 1 := by nlinarith
+  have hz2 : (0 : ℝ) < z ^ (2 : ℕ) := by positivity
+  have harg : (0 : ℝ) ≤ z ^ (2 : ℕ) / (z ^ (2 : ℕ) - 1) := div_nonneg hz2.le hden.le
+  have hfree : radialPSWFExteriorSpeed 0 z = Real.sqrt (z ^ (2 : ℕ) / (z ^ (2 : ℕ) - 1)) := by
     simp [radialPSWFExteriorSpeed]
   rw [radialPSWFExteriorSpeed, hfree, ← Real.sqrt_mul harg]
   congr 1
@@ -59,10 +59,10 @@ theorem radialPSWFExteriorSpeed_eq_free_mul (sigma : ℝ) {z : ℝ} (hz : 1 < z)
 
 /-- The free exterior speed in closed form. -/
 theorem radialPSWFExteriorSpeed_zero_eq {z : ℝ} (hz : 1 < z) :
-    radialPSWFExteriorSpeed 0 z = z / Real.sqrt (z ^ 2 - 1) := by
+    radialPSWFExteriorSpeed 0 z = z / Real.sqrt (z ^ (2 : ℕ) - 1) := by
   have hz0 : (0 : ℝ) < z := zero_lt_one.trans hz
-  have hz2 : (0 : ℝ) ≤ z ^ 2 := sq_nonneg z
-  rw [radialPSWFExteriorSpeed, show ((0 : ℝ)) ^ 2 = 0 by norm_num, sub_zero,
+  have hz2 : (0 : ℝ) ≤ z ^ (2 : ℕ) := sq_nonneg z
+  rw [radialPSWFExteriorSpeed, show ((0 : ℝ)) ^ (2 : ℕ) = 0 by norm_num, sub_zero,
     Real.sqrt_div hz2, Real.sqrt_sq hz0.le]
 
 theorem radialPSWFExteriorSpeed_zero_nonneg (z : ℝ) : 0 ≤ radialPSWFExteriorSpeed 0 z :=
@@ -72,33 +72,33 @@ theorem radialPSWFExteriorSpeed_zero_nonneg (z : ℝ) : 0 ≤ radialPSWFExterior
 The lower bound is where the turning point would normally be lost: `σ²/z² ≤ σ²` precisely because
 `z ≥ 1`. -/
 theorem radialPSWFComparisonFactor_mem_Icc (sigma : ℝ) {z : ℝ} (hz : 1 < z) :
-    Real.sqrt (1 - sigma ^ 2) ≤ Real.sqrt (1 - sigma ^ 2 / z ^ 2)
-      ∧ Real.sqrt (1 - sigma ^ 2 / z ^ 2) ≤ 1 := by
-  have hz2 : (1 : ℝ) < z ^ 2 := by nlinarith
-  have hz2pos : (0 : ℝ) < z ^ 2 := by linarith
-  have hsigma0 : (0 : ℝ) ≤ sigma ^ 2 := sq_nonneg sigma
-  have hle : sigma ^ 2 / z ^ 2 ≤ sigma ^ 2 := by
+    Real.sqrt (1 - sigma ^ (2 : ℕ)) ≤ Real.sqrt (1 - sigma ^ (2 : ℕ) / z ^ (2 : ℕ))
+      ∧ Real.sqrt (1 - sigma ^ (2 : ℕ) / z ^ (2 : ℕ)) ≤ 1 := by
+  have hz2 : (1 : ℝ) < z ^ (2 : ℕ) := by nlinarith
+  have hz2pos : (0 : ℝ) < z ^ (2 : ℕ) := by linarith
+  have hsigma0 : (0 : ℝ) ≤ sigma ^ (2 : ℕ) := sq_nonneg sigma
+  have hle : sigma ^ (2 : ℕ) / z ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) := by
     rw [div_le_iff₀ hz2pos]
     nlinarith
-  have hnn : (0 : ℝ) ≤ sigma ^ 2 / z ^ 2 := div_nonneg hsigma0 hz2pos.le
+  have hnn : (0 : ℝ) ≤ sigma ^ (2 : ℕ) / z ^ (2 : ℕ) := div_nonneg hsigma0 hz2pos.le
   refine ⟨Real.sqrt_le_sqrt (by linarith), ?_⟩
-  have hone : Real.sqrt (1 - sigma ^ 2 / z ^ 2) ≤ Real.sqrt 1 :=
+  have hone : Real.sqrt (1 - sigma ^ (2 : ℕ) / z ^ (2 : ℕ)) ≤ Real.sqrt 1 :=
     Real.sqrt_le_sqrt (by linarith)
   simpa using hone
 
 /-- **Exact two-sided comparison of speeds.**  The perturbed exterior speed is trapped between a
 fixed multiple of the free speed and the free speed itself, with a ratio independent of `z`. -/
 theorem radialPSWFExteriorSpeed_two_sided (sigma : ℝ) {z : ℝ} (hz : 1 < z) :
-    Real.sqrt (1 - sigma ^ 2) * radialPSWFExteriorSpeed 0 z ≤ radialPSWFExteriorSpeed sigma z
+    Real.sqrt (1 - sigma ^ (2 : ℕ)) * radialPSWFExteriorSpeed 0 z ≤ radialPSWFExteriorSpeed sigma z
       ∧ radialPSWFExteriorSpeed sigma z ≤ radialPSWFExteriorSpeed 0 z := by
   obtain ⟨hlow, hhigh⟩ := radialPSWFComparisonFactor_mem_Icc sigma hz
   have hfree := radialPSWFExteriorSpeed_zero_nonneg z
   rw [radialPSWFExteriorSpeed_eq_free_mul sigma hz]
   constructor
-  · rw [mul_comm (Real.sqrt (1 - sigma ^ 2))]
+  · rw [mul_comm (Real.sqrt (1 - sigma ^ (2 : ℕ)))]
     exact mul_le_mul_of_nonneg_left hlow hfree
   · calc
-      radialPSWFExteriorSpeed 0 z * Real.sqrt (1 - sigma ^ 2 / z ^ 2)
+      radialPSWFExteriorSpeed 0 z * Real.sqrt (1 - sigma ^ (2 : ℕ) / z ^ (2 : ℕ))
           ≤ radialPSWFExteriorSpeed 0 z * 1 := mul_le_mul_of_nonneg_left hhigh hfree
       _ = radialPSWFExteriorSpeed 0 z := mul_one _
 
@@ -126,14 +126,14 @@ theorem radialPSWFExteriorPhase_sub_eq_integral
 
 /-- The free phase profile `ρ(x) = √(x² − 1)` has the free exterior speed as its derivative. -/
 theorem hasDerivAt_radialPSWFFreeProfile {x : ℝ} (hx : 1 < x) :
-    HasDerivAt (fun u : ℝ => Real.sqrt (u ^ 2 - 1)) (radialPSWFExteriorSpeed 0 x) x := by
+    HasDerivAt (fun u : ℝ => Real.sqrt (u ^ (2 : ℕ) - 1)) (radialPSWFExteriorSpeed 0 x) x := by
   have hx0 : (0 : ℝ) < x := zero_lt_one.trans hx
-  have hpos : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hne : x ^ 2 - 1 ≠ 0 := ne_of_gt hpos
-  have hbase : HasDerivAt (fun u : ℝ => u ^ 2 - 1) (2 * x) x := by
+  have hpos : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hne : x ^ (2 : ℕ) - 1 ≠ 0 := ne_of_gt hpos
+  have hbase : HasDerivAt (fun u : ℝ => u ^ (2 : ℕ) - 1) (2 * x) x := by
     simpa using ((hasDerivAt_pow 2 x).sub_const 1)
   have hd := hbase.sqrt hne
-  have hsq : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hpos
+  have hsq : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hpos
   convert hd using 1
   rw [radialPSWFExteriorSpeed_zero_eq hx]
   field_simp
@@ -141,11 +141,11 @@ theorem hasDerivAt_radialPSWFFreeProfile {x : ℝ} (hx : 1 < x) :
 /-- **The free phase increment in closed form:** `ξ₀(z) − ξ₀(a) = √(z²−1) − √(a²−1)`. -/
 theorem radialPSWFExteriorPhase_zero_sub_eq {a z : ℝ} (ha : 1 < a) (haz : a ≤ z) :
     radialPSWFExteriorPhase 0 z - radialPSWFExteriorPhase 0 a
-      = Real.sqrt (z ^ 2 - 1) - Real.sqrt (a ^ 2 - 1) := by
+      = Real.sqrt (z ^ (2 : ℕ) - 1) - Real.sqrt (a ^ (2 : ℕ) - 1) := by
   have hz : 1 < z := ha.trans_le haz
   rw [radialPSWFExteriorPhase_sub_eq_integral 0 ha hz]
   have hderiv : ∀ x ∈ uIcc a z,
-      HasDerivAt (fun u : ℝ => Real.sqrt (u ^ 2 - 1)) (radialPSWFExteriorSpeed 0 x) x := by
+      HasDerivAt (fun u : ℝ => Real.sqrt (u ^ (2 : ℕ) - 1)) (radialPSWFExteriorSpeed 0 x) x := by
     intro x hx
     rw [uIcc_of_le haz] at hx
     exact hasDerivAt_radialPSWFFreeProfile (ha.trans_le hx.1)
@@ -157,13 +157,13 @@ perturbed increment to the free increment lies in `[√(1 − σ²), 1]` no matt
 the turning point. -/
 theorem radialPSWFExteriorPhase_sub_two_sided
     (sigma : ℝ) {a z : ℝ} (ha : 1 < a) (haz : a ≤ z) :
-    Real.sqrt (1 - sigma ^ 2) * (Real.sqrt (z ^ 2 - 1) - Real.sqrt (a ^ 2 - 1))
+    Real.sqrt (1 - sigma ^ (2 : ℕ)) * (Real.sqrt (z ^ (2 : ℕ) - 1) - Real.sqrt (a ^ (2 : ℕ) - 1))
         ≤ radialPSWFExteriorPhase sigma z - radialPSWFExteriorPhase sigma a
       ∧ radialPSWFExteriorPhase sigma z - radialPSWFExteriorPhase sigma a
-        ≤ Real.sqrt (z ^ 2 - 1) - Real.sqrt (a ^ 2 - 1) := by
+        ≤ Real.sqrt (z ^ (2 : ℕ) - 1) - Real.sqrt (a ^ (2 : ℕ) - 1) := by
   have hz : 1 < z := ha.trans_le haz
   have hfreeInt : ∫ u in a..z, radialPSWFExteriorSpeed 0 u
-      = Real.sqrt (z ^ 2 - 1) - Real.sqrt (a ^ 2 - 1) := by
+      = Real.sqrt (z ^ (2 : ℕ) - 1) - Real.sqrt (a ^ (2 : ℕ) - 1) := by
     rw [← radialPSWFExteriorPhase_sub_eq_integral 0 ha hz]
     exact radialPSWFExteriorPhase_zero_sub_eq ha haz
   have hintS : IntervalIntegrable (radialPSWFExteriorSpeed sigma) volume a z :=
@@ -172,7 +172,7 @@ theorem radialPSWFExteriorPhase_sub_two_sided
     intervalIntegrable_radialPSWFExteriorSpeed 0 ha haz
   rw [radialPSWFExteriorPhase_sub_eq_integral sigma ha hz]
   constructor
-  · have hmono : ∫ u in a..z, Real.sqrt (1 - sigma ^ 2) * radialPSWFExteriorSpeed 0 u
+  · have hmono : ∫ u in a..z, Real.sqrt (1 - sigma ^ (2 : ℕ)) * radialPSWFExteriorSpeed 0 u
         ≤ ∫ u in a..z, radialPSWFExteriorSpeed sigma u := by
       refine intervalIntegral.integral_mono_on haz (hint0.const_mul _) hintS ?_
       intro x hx
@@ -202,47 +202,47 @@ of variable; the turning parameter survives only as a density with values in `[�
 /-- The radial Liouville phase anchored at the turning point, written in arclength coordinates.
 Nonsingular by construction. -/
 def radialPSWFTurningPhase (sigma z : ℝ) : ℝ :=
-  ∫ t in (0 : ℝ)..Real.sqrt (z ^ 2 - 1), Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2))
+  ∫ t in (0 : ℝ)..Real.sqrt (z ^ (2 : ℕ) - 1), Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)))
 
 theorem continuous_radialPSWFTurningDensity (sigma : ℝ) :
-    Continuous fun t : ℝ => Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2)) := by
-  have hden : Continuous fun t : ℝ => (1 : ℝ) + t ^ 2 :=
+    Continuous fun t : ℝ => Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ))) := by
+  have hden : Continuous fun t : ℝ => (1 : ℝ) + t ^ (2 : ℕ) :=
     continuous_const.add (continuous_id.pow 2)
-  have hne : ∀ t : ℝ, (1 : ℝ) + t ^ 2 ≠ 0 := fun t => by positivity
+  have hne : ∀ t : ℝ, (1 : ℝ) + t ^ (2 : ℕ) ≠ 0 := fun t => by positivity
   exact Real.continuous_sqrt.comp (continuous_const.sub (continuous_const.div hden hne))
 
 /-- The arclength density is squeezed between `√(1 − σ²)` and `1` at every point. -/
 theorem radialPSWFTurningDensity_mem_Icc (sigma t : ℝ) :
-    Real.sqrt (1 - sigma ^ 2) ≤ Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2))
-      ∧ Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2)) ≤ 1 := by
-  have hpos : (0 : ℝ) < 1 + t ^ 2 := by positivity
-  have hone : (1 : ℝ) ≤ 1 + t ^ 2 := by nlinarith [sq_nonneg t]
-  have hsig : (0 : ℝ) ≤ sigma ^ 2 := sq_nonneg sigma
-  have hle : sigma ^ 2 / (1 + t ^ 2) ≤ sigma ^ 2 := by
+    Real.sqrt (1 - sigma ^ (2 : ℕ)) ≤ Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)))
+      ∧ Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ))) ≤ 1 := by
+  have hpos : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
+  have hone : (1 : ℝ) ≤ 1 + t ^ (2 : ℕ) := by nlinarith [sq_nonneg t]
+  have hsig : (0 : ℝ) ≤ sigma ^ (2 : ℕ) := sq_nonneg sigma
+  have hle : sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)) ≤ sigma ^ (2 : ℕ) := by
     rw [div_le_iff₀ hpos]
     nlinarith
-  have hnn : (0 : ℝ) ≤ sigma ^ 2 / (1 + t ^ 2) := div_nonneg hsig hpos.le
+  have hnn : (0 : ℝ) ≤ sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)) := div_nonneg hsig hpos.le
   refine ⟨Real.sqrt_le_sqrt (by linarith), ?_⟩
-  have hub : Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2)) ≤ Real.sqrt 1 :=
+  have hub : Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ))) ≤ Real.sqrt 1 :=
     Real.sqrt_le_sqrt (by linarith)
   simpa using hub
 
 theorem radialPSWFTurningPhase_zero (z : ℝ) :
-    radialPSWFTurningPhase 0 z = Real.sqrt (z ^ 2 - 1) := by
+    radialPSWFTurningPhase 0 z = Real.sqrt (z ^ (2 : ℕ) - 1) := by
   simp [radialPSWFTurningPhase]
 
 /-- **The anchored phase obeys the exact two-sided multiplicative comparison**, on the whole closed
 ray including the turning point itself. -/
 theorem radialPSWFTurningPhase_mem_Icc (sigma z : ℝ) :
-    Real.sqrt (1 - sigma ^ 2) * Real.sqrt (z ^ 2 - 1) ≤ radialPSWFTurningPhase sigma z
-      ∧ radialPSWFTurningPhase sigma z ≤ Real.sqrt (z ^ 2 - 1) := by
-  have hL : (0 : ℝ) ≤ Real.sqrt (z ^ 2 - 1) := Real.sqrt_nonneg _
-  have hcont : IntervalIntegrable (fun t : ℝ => Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2)))
-      volume 0 (Real.sqrt (z ^ 2 - 1)) :=
+    Real.sqrt (1 - sigma ^ (2 : ℕ)) * Real.sqrt (z ^ (2 : ℕ) - 1) ≤ radialPSWFTurningPhase sigma z
+      ∧ radialPSWFTurningPhase sigma z ≤ Real.sqrt (z ^ (2 : ℕ) - 1) := by
+  have hL : (0 : ℝ) ≤ Real.sqrt (z ^ (2 : ℕ) - 1) := Real.sqrt_nonneg _
+  have hcont : IntervalIntegrable (fun t : ℝ => Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ))))
+      volume 0 (Real.sqrt (z ^ (2 : ℕ) - 1)) :=
     (continuous_radialPSWFTurningDensity sigma).intervalIntegrable _ _
   constructor
   · have hm := intervalIntegral.integral_mono_on hL
-      (intervalIntegrable_const (c := Real.sqrt (1 - sigma ^ 2))) hcont
+      (intervalIntegrable_const (c := Real.sqrt (1 - sigma ^ (2 : ℕ)))) hcont
       (fun t _ => (radialPSWFTurningDensity_mem_Icc sigma t).1)
     simpa [radialPSWFTurningPhase, mul_comm] using hm
   · have hm := intervalIntegral.integral_mono_on hL hcont
@@ -258,7 +258,7 @@ theorem radialPSWFTurningPhase_sub_eq (sigma : ℝ) {a z : ℝ} (ha : 1 < a) (ha
   have hz : 1 < z := ha.trans_le haz
   rw [radialPSWFExteriorPhase_sub_eq_integral sigma ha hz]
   have hderiv : ∀ u ∈ uIcc a z,
-      HasDerivAt (fun v : ℝ => Real.sqrt (v ^ 2 - 1)) (radialPSWFExteriorSpeed 0 u) u := by
+      HasDerivAt (fun v : ℝ => Real.sqrt (v ^ (2 : ℕ) - 1)) (radialPSWFExteriorSpeed 0 u) u := by
     intro u hu
     rw [uIcc_of_le haz] at hu
     exact hasDerivAt_radialPSWFFreeProfile (ha.trans_le hu.1)
@@ -268,8 +268,8 @@ theorem radialPSWFTurningPhase_sub_eq (sigma : ℝ) {a z : ℝ} (ha : 1 < a) (ha
   have hsub := intervalIntegral.integral_comp_mul_deriv hderiv hcont'
     (continuous_radialPSWFTurningDensity sigma)
   have hsplit : radialPSWFTurningPhase sigma z - radialPSWFTurningPhase sigma a
-      = ∫ t in Real.sqrt (a ^ 2 - 1)..Real.sqrt (z ^ 2 - 1),
-          Real.sqrt (1 - sigma ^ 2 / (1 + t ^ 2)) :=
+      = ∫ t in Real.sqrt (a ^ (2 : ℕ) - 1)..Real.sqrt (z ^ (2 : ℕ) - 1),
+          Real.sqrt (1 - sigma ^ (2 : ℕ) / (1 + t ^ (2 : ℕ))) :=
     intervalIntegral.integral_interval_sub_left
       ((continuous_radialPSWFTurningDensity sigma).intervalIntegrable _ _)
       ((continuous_radialPSWFTurningDensity sigma).intervalIntegrable _ _)
@@ -278,29 +278,29 @@ theorem radialPSWFTurningPhase_sub_eq (sigma : ℝ) {a z : ℝ} (ha : 1 < a) (ha
   intro u hu
   rw [uIcc_of_le haz] at hu
   have hu1 : 1 < u := ha.trans_le hu.1
-  have hpos : (0 : ℝ) ≤ u ^ 2 - 1 := by nlinarith
+  have hpos : (0 : ℝ) ≤ u ^ (2 : ℕ) - 1 := by nlinarith
   simp only [Function.comp_apply]
-  rw [Real.sq_sqrt hpos, show (1 : ℝ) + (u ^ 2 - 1) = u ^ 2 by ring, mul_comm,
+  rw [Real.sq_sqrt hpos, show (1 : ℝ) + (u ^ (2 : ℕ) - 1) = u ^ (2 : ℕ) by ring, mul_comm,
     ← radialPSWFExteriorSpeed_eq_free_mul sigma hu1]
 
 /-- The squared anchored phase, in the form the Liouville–Green amplitude consumes. -/
-theorem radialPSWFTurningPhase_sq_mem_Icc {sigma : ℝ} (hsigma : sigma ^ 2 ≤ 1) {z : ℝ}
+theorem radialPSWFTurningPhase_sq_mem_Icc {sigma : ℝ} (hsigma : sigma ^ (2 : ℕ) ≤ 1) {z : ℝ}
     (hz : 1 ≤ z) :
-    (1 - sigma ^ 2) * (z ^ 2 - 1) ≤ radialPSWFTurningPhase sigma z ^ 2
-      ∧ radialPSWFTurningPhase sigma z ^ 2 ≤ z ^ 2 - 1 := by
-  have hz1 : (0 : ℝ) ≤ z ^ 2 - 1 := by nlinarith
-  have he : (0 : ℝ) ≤ 1 - sigma ^ 2 := by linarith
+    (1 - sigma ^ (2 : ℕ)) * (z ^ (2 : ℕ) - 1) ≤ radialPSWFTurningPhase sigma z ^ (2 : ℕ)
+      ∧ radialPSWFTurningPhase sigma z ^ (2 : ℕ) ≤ z ^ (2 : ℕ) - 1 := by
+  have hz1 : (0 : ℝ) ≤ z ^ (2 : ℕ) - 1 := by nlinarith
+  have he : (0 : ℝ) ≤ 1 - sigma ^ (2 : ℕ) := by linarith
   obtain ⟨hlow, hhigh⟩ := radialPSWFTurningPhase_mem_Icc sigma z
-  have hnn : (0 : ℝ) ≤ Real.sqrt (1 - sigma ^ 2) * Real.sqrt (z ^ 2 - 1) :=
+  have hnn : (0 : ℝ) ≤ Real.sqrt (1 - sigma ^ (2 : ℕ)) * Real.sqrt (z ^ (2 : ℕ) - 1) :=
     mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   have hphase : (0 : ℝ) ≤ radialPSWFTurningPhase sigma z := hnn.trans hlow
   constructor
-  · have hsq : (Real.sqrt (1 - sigma ^ 2) * Real.sqrt (z ^ 2 - 1)) ^ 2
-        = (1 - sigma ^ 2) * (z ^ 2 - 1) := by
+  · have hsq : (Real.sqrt (1 - sigma ^ (2 : ℕ)) * Real.sqrt (z ^ (2 : ℕ) - 1)) ^ (2 : ℕ)
+        = (1 - sigma ^ (2 : ℕ)) * (z ^ (2 : ℕ) - 1) := by
       rw [mul_pow, Real.sq_sqrt he, Real.sq_sqrt hz1]
     rw [← hsq]
     exact pow_le_pow_left₀ hnn hlow 2
-  · have hsq : (Real.sqrt (z ^ 2 - 1)) ^ 2 = z ^ 2 - 1 := Real.sq_sqrt hz1
+  · have hsq : (Real.sqrt (z ^ (2 : ℕ) - 1)) ^ (2 : ℕ) = z ^ (2 : ℕ) - 1 := Real.sq_sqrt hz1
     rw [← hsq]
     exact pow_le_pow_left₀ hphase hhigh 2
 
@@ -309,14 +309,14 @@ theorem radialPSWFTurningPhase_sq_mem_Icc {sigma : ℝ} (hsigma : sigma ^ 2 ≤ 
 /-- The fourth power of the exterior Liouville–Green amplitude, as a function of the phase value
 `xi` reached at `x`.  At `σ = 0` and `xi = √(x²−1)` this is `x⁻²`. -/
 def radialPSWFAmplitudePow4 (sigma xi x : ℝ) : ℝ :=
-  xi ^ 2 / ((x ^ 2 - 1) * (x ^ 2 - sigma ^ 2))
+  xi ^ (2 : ℕ) / ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - sigma ^ (2 : ℕ)))
 
 theorem radialPSWFAmplitudePow4_zero {x : ℝ} (hx : 1 < x) :
-    radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ 2 - 1)) x = (x ^ 2)⁻¹ := by
+    radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ (2 : ℕ) - 1)) x = (x ^ (2 : ℕ))⁻¹ := by
   have hx0 : (0 : ℝ) < x := zero_lt_one.trans hx
-  have hpos : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hpos : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   rw [radialPSWFAmplitudePow4, Real.sq_sqrt hpos.le,
-    show ((0 : ℝ)) ^ 2 = 0 by norm_num, sub_zero]
+    show ((0 : ℝ)) ^ (2 : ℕ) = 0 by norm_num, sub_zero]
   field_simp
 
 /-- **Exact two-sided comparison of amplitudes.**  Whenever the phase obeys the multiplicative
@@ -328,22 +328,22 @@ transfer turns on: the `σ`-deformation of the numerator `ξ_σ²` and of the de
 `x² − σ²` push the ratio in opposite directions and cancel, so the singularities at `x = 1` never
 enter. -/
 theorem radialPSWFAmplitudePow4_ratio_mem_Icc
-    {sigma x xi : ℝ} (hsigma1 : sigma ^ 2 < 1) (hx : 1 < x)
-    (hlow : (1 - sigma ^ 2) * (x ^ 2 - 1) ≤ xi ^ 2) (hhigh : xi ^ 2 ≤ x ^ 2 - 1) :
-    1 - sigma ^ 2 ≤ radialPSWFAmplitudePow4 sigma xi x / radialPSWFAmplitudePow4 0
-        (Real.sqrt (x ^ 2 - 1)) x
+    {sigma x xi : ℝ} (hsigma1 : sigma ^ (2 : ℕ) < 1) (hx : 1 < x)
+    (hlow : (1 - sigma ^ (2 : ℕ)) * (x ^ (2 : ℕ) - 1) ≤ xi ^ (2 : ℕ)) (hhigh : xi ^ (2 : ℕ) ≤ x ^ (2 : ℕ) - 1) :
+    1 - sigma ^ (2 : ℕ) ≤ radialPSWFAmplitudePow4 sigma xi x / radialPSWFAmplitudePow4 0
+        (Real.sqrt (x ^ (2 : ℕ) - 1)) x
       ∧ radialPSWFAmplitudePow4 sigma xi x / radialPSWFAmplitudePow4 0
-        (Real.sqrt (x ^ 2 - 1)) x ≤ (1 - sigma ^ 2)⁻¹ := by
+        (Real.sqrt (x ^ (2 : ℕ) - 1)) x ≤ (1 - sigma ^ (2 : ℕ))⁻¹ := by
   have hx0 : (0 : ℝ) < x := zero_lt_one.trans hx
-  have hx2 : (1 : ℝ) < x ^ 2 := by nlinarith
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by linarith
-  have hsig0 : (0 : ℝ) ≤ sigma ^ 2 := sq_nonneg sigma
-  have hxe : (0 : ℝ) < x ^ 2 - sigma ^ 2 := by linarith
-  have hden : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - sigma ^ 2) := mul_pos h1 hxe
-  have he : (0 : ℝ) < 1 - sigma ^ 2 := by linarith
+  have hx2 : (1 : ℝ) < x ^ (2 : ℕ) := by nlinarith
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by linarith
+  have hsig0 : (0 : ℝ) ≤ sigma ^ (2 : ℕ) := sq_nonneg sigma
+  have hxe : (0 : ℝ) < x ^ (2 : ℕ) - sigma ^ (2 : ℕ) := by linarith
+  have hden : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - sigma ^ (2 : ℕ)) := mul_pos h1 hxe
+  have he : (0 : ℝ) < 1 - sigma ^ (2 : ℕ) := by linarith
   have hratio : radialPSWFAmplitudePow4 sigma xi x
-      / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ 2 - 1)) x
-      = x ^ 2 * xi ^ 2 / ((x ^ 2 - 1) * (x ^ 2 - sigma ^ 2)) := by
+      / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ (2 : ℕ) - 1)) x
+      = x ^ (2 : ℕ) * xi ^ (2 : ℕ) / ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - sigma ^ (2 : ℕ))) := by
     rw [radialPSWFAmplitudePow4_zero hx, radialPSWFAmplitudePow4]
     field_simp
   rw [hratio]
@@ -357,11 +357,11 @@ theorem radialPSWFAmplitudePow4_ratio_mem_Icc
 fourth power of the amplitude ratio is trapped in `[1 − σ², 1/(1 − σ²)]` at every point of the
 exterior ray.  At `σ = 0` both bounds are `1`, as they must be. -/
 theorem radialPSWFAmplitudePow4_turning_ratio_mem_Icc
-    {sigma x : ℝ} (hsigma : sigma ^ 2 < 1) (hx : 1 < x) :
-    1 - sigma ^ 2 ≤ radialPSWFAmplitudePow4 sigma (radialPSWFTurningPhase sigma x) x
-        / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ 2 - 1)) x
+    {sigma x : ℝ} (hsigma : sigma ^ (2 : ℕ) < 1) (hx : 1 < x) :
+    1 - sigma ^ (2 : ℕ) ≤ radialPSWFAmplitudePow4 sigma (radialPSWFTurningPhase sigma x) x
+        / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ (2 : ℕ) - 1)) x
       ∧ radialPSWFAmplitudePow4 sigma (radialPSWFTurningPhase sigma x) x
-        / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ 2 - 1)) x ≤ (1 - sigma ^ 2)⁻¹ := by
+        / radialPSWFAmplitudePow4 0 (Real.sqrt (x ^ (2 : ℕ) - 1)) x ≤ (1 - sigma ^ (2 : ℕ))⁻¹ := by
   obtain ⟨hlow, hhigh⟩ := radialPSWFTurningPhase_sq_mem_Icc hsigma.le hx.le
   exact radialPSWFAmplitudePow4_ratio_mem_Icc hsigma hx hlow hhigh
 

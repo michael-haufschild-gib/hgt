@@ -37,18 +37,18 @@ theorem re_xiShiftClearedUpperKernel_pole_diagonal_neg
     rw [hden, div_eq_mul_inv, mul_inv_rev, Complex.inv_I]
     rw [← Complex.ofReal_inv]
     ring_nf
-    rw [show I ^ 2 = (-1 : ℂ) by norm_num]
+    rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
     ring
   rw [hscale]
   rw [show suzukiCanonicalE omega (-p) *
       (starRingEnd ℂ) (suzukiCanonicalE omega (-p)) =
-      (‖suzukiCanonicalE omega (-p)‖ ^ 2 : ℝ) by
+      (‖suzukiCanonicalE omega (-p)‖ ^ (2 : ℕ) : ℝ) by
     rw [← Complex.normSq_eq_norm_sq, Complex.mul_conj]]
   norm_num
-  have hnorm : 0 < ‖suzukiCanonicalE omega (-p)‖ ^ 2 :=
+  have hnorm : 0 < ‖suzukiCanonicalE omega (-p)‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr huncancel)
   have hpos : 0 < p.im⁻¹ * (1 / 2 : ℝ) *
-      ‖suzukiCanonicalE omega (-p)‖ ^ 2 :=
+      ‖suzukiCanonicalE omega (-p)‖ ^ (2 : ℕ) :=
     mul_pos (mul_pos (inv_pos.mpr hp) (by norm_num)) hnorm
   exact_mod_cast hpos
 

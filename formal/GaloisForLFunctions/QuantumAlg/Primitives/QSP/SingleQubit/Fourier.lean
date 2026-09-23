@@ -620,7 +620,7 @@ private theorem exists_rotYZ_angles {v w : ℂ}
     have hnw : ‖w‖ = 1 := by
       have h1 := mul_conj_eq_norm_sq w
       rw [hw1'] at h1
-      have h2 : ‖w‖ ^ 2 = 1 := by exact_mod_cast h1.symm
+      have h2 : ‖w‖ ^ (2 : ℕ) = 1 := by exact_mod_cast h1.symm
       have h4 : (‖w‖ - 1) * (‖w‖ + 1) = 0 := by linear_combination h2
       rcases mul_eq_zero.mp h4 with h5 | h5
       · linarith
@@ -654,10 +654,10 @@ private theorem exists_rotYZ_angles {v w : ℂ}
             * Complex.exp (-((v.arg : ℂ) * Complex.I))) * hpolar
           - ((t : ℝ) : ℂ) * ((‖v‖ : ℝ) : ℂ) * exp_I_mul_exp_neg_I v.arg
           - hcast
-    have hww : w * starRingEnd ℂ w = ((t : ℝ) : ℂ) ^ 2 := by
+    have hww : w * starRingEnd ℂ w = ((t : ℝ) : ℂ) ^ (2 : ℕ) := by
       rw [hw', map_mul, Complex.conj_ofReal, conj_exp_neg_I]
       linear_combination ((t : ℂ) * (t : ℂ)) * exp_neg_I_mul_exp_I v.arg
-    have ht2 : ‖v‖ ^ 2 + t ^ 2 = 1 := by
+    have ht2 : ‖v‖ ^ (2 : ℕ) + t ^ (2 : ℕ) = 1 := by
       have h1 := hvw
       rw [mul_conj_eq_norm_sq, hww] at h1
       exact_mod_cast h1
@@ -667,7 +667,7 @@ private theorem exists_rotYZ_angles {v w : ℂ}
     refine ⟨2 * Real.arcsin t, 2 * v.arg, ?_, ?_⟩
     · rw [show (2 * Real.arcsin t) / 2 = Real.arcsin t by ring,
         show (2 * v.arg / 2 : ℝ) = v.arg by ring, Real.cos_arcsin,
-        show 1 - t ^ 2 = ‖v‖ ^ 2 by linarith,
+        show 1 - t ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) by linarith,
         Real.sqrt_sq (norm_nonneg v)]
       exact hpolar
     · rw [show (2 * Real.arcsin t) / 2 = Real.arcsin t by ring,
@@ -684,7 +684,7 @@ private theorem exists_rotYZ_base {a b : ℂ}
         * Complex.exp (-((((φ + φ₀) / 2 : ℝ) : ℂ) * Complex.I)) = a ∧
       (Real.sin (θ₀ / 2) : ℂ)
         * Complex.exp (-((((φ - φ₀) / 2 : ℝ) : ℂ) * Complex.I)) = b := by
-  have hab' : ‖a‖ ^ 2 + ‖b‖ ^ 2 = 1 := by
+  have hab' : ‖a‖ ^ (2 : ℕ) + ‖b‖ ^ (2 : ℕ) = 1 := by
     have h1 := hab
     rw [mul_conj_eq_norm_sq, mul_conj_eq_norm_sq] at h1
     exact_mod_cast h1
@@ -693,7 +693,7 @@ private theorem exists_rotYZ_base {a b : ℂ}
       sq_nonneg (‖b‖ - 1)]
   refine ⟨-(a.arg + b.arg), 2 * Real.arcsin ‖b‖, b.arg - a.arg, ?_, ?_⟩
   · rw [show (2 * Real.arcsin ‖b‖) / 2 = Real.arcsin ‖b‖ by ring,
-      Real.cos_arcsin, show 1 - ‖b‖ ^ 2 = ‖a‖ ^ 2 by linarith,
+      Real.cos_arcsin, show 1 - ‖b‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) by linarith,
       Real.sqrt_sq (norm_nonneg a),
       show ((-(a.arg + b.arg) + (b.arg - a.arg)) / 2 : ℝ) = -a.arg by ring,
       show -(((-a.arg : ℝ) : ℂ) * Complex.I)
@@ -866,7 +866,7 @@ private theorem IsYZYPair.conj_coeff_B {L : ℕ} {A B : ℂ[X]} (h : IsYZYPair L
 [YYLW22, neurips_2022.tex:702]. -/
 private theorem exists_unstep_vw_yzy {L : ℕ} {A B : ℂ[X]}
     (h : IsYZYPair (L + 1) A B) :
-    ∃ v w : ℝ, v ^ 2 + w ^ 2 = 1 ∧
+    ∃ v w : ℝ, v ^ (2 : ℕ) + w ^ (2 : ℕ) = 1 ∧
       (v : ℂ) * A.coeff (L + 1) + (w : ℂ) * B.coeff (L + 1) = 0 ∧
       (v : ℂ) * B.coeff 0 - (w : ℂ) * A.coeff 0 = 0 := by
   obtain ⟨a0, ha0⟩ : ∃ u : ℝ, A.coeff 0 = (u : ℂ) :=
@@ -884,7 +884,7 @@ private theorem exists_unstep_vw_yzy {L : ℕ} {A B : ℂ[X]}
   have hRr : a0 * aT + b0 * bT = 0 := by
     simp only [Complex.conj_ofReal] at hR
     exact_mod_cast hR
-  obtain ⟨v, w, hu, hc1, hc2⟩ : ∃ v w : ℝ, v ^ 2 + w ^ 2 = 1
+  obtain ⟨v, w, hu, hc1, hc2⟩ : ∃ v w : ℝ, v ^ (2 : ℕ) + w ^ (2 : ℕ) = 1
       ∧ v * aT + w * bT = 0 ∧ v * b0 - w * a0 = 0 := by
     rcases Classical.em (a0 = 0 ∧ b0 = 0) with h0 | h0
     · rcases Classical.em (aT = 0 ∧ bT = 0) with hT | hT
@@ -930,7 +930,7 @@ theorem qspYZY_converse :
         have hn := congrArg (fun p : ℂ[X] => p.coeff 0) h.norm
         simpa [Polynomial.mul_coeff_zero,
           coeff_reflect_of_le (Nat.le_refl 0)] using hn
-      have habr : a0 ^ 2 + b0 ^ 2 = 1 := by
+      have habr : a0 ^ (2 : ℕ) + b0 ^ (2 : ℕ) = 1 := by
         rw [ha0, hb0, Complex.conj_ofReal, Complex.conj_ofReal] at hab
         have h2 : a0 * a0 + b0 * b0 = 1 := by exact_mod_cast hab
         linear_combination h2
@@ -988,7 +988,7 @@ theorem qspYZY_converse :
 theorem qspYZZYZ_mem_unitaryGroup (φ θ₀ φ₀ : ℝ) (ps : List (ℝ × ℝ))
     (x : ℝ) :
     (qspYZZYZ φ θ₀ φ₀ ps x : HilbertOperator (Qubits 1)) ∈
-      Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+      Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   induction ps using List.reverseRecOn with
   | nil =>
       rw [qspYZZYZ_nil]
@@ -1001,7 +1001,7 @@ theorem qspYZZYZ_mem_unitaryGroup (φ θ₀ φ₀ : ℝ) (ps : List (ℝ × ℝ)
 
 theorem qspYZY_mem_unitaryGroup (θ₀ : ℝ) (θs : List ℝ) (x : ℝ) :
     (qspYZY θ₀ θs x : HilbertOperator (Qubits 1)) ∈
-      Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+      Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [qspYZY_eq_qspYZZYZ]
   exact qspYZZYZ_mem_unitaryGroup 0 θ₀ 0 _ x
 

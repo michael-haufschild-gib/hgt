@@ -8,7 +8,7 @@ For a transcendental `τ`, the translation vectors of the wedge `∂σ^r ∧ ∂
 `a₀ = (τ^s, τ^r)`,   `a_{xᵢ} = (0, τ^i)` (`i < r`),   `a_{yⱼ} = (τ^j, 0)` (`j < s`)
 
 are `ℚ`-linearly independent (`wedge_realization_linearIndependent`).  The first coordinate is a
-`ℚ`-combination of distinct powers `τ^0,…,τ^{s-1}, τ^s`, so transcendence kills the `a₀` and
+`ℚ`-combination of distinct powers `τ^(0 : ℕ),…,τ^{s-1}, τ^s`, so transcendence kills the `a₀` and
 `y`-coefficients; the second coordinate then kills the `x`-coefficients.  This realizes the
 periodic-pencil dimension of the wedge in dimension two.
 -/

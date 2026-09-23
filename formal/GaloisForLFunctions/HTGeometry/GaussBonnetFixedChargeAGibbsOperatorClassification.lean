@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAQuarticOperatorClas
 /-!
 # Sharp asymptotic odd differential operators of actual Gibbs energy
 
-For the actual aligned normalized Gibbs family, a*D^5+b*D^3+c*D
+For the actual aligned normalized Gibbs family, a*D^(5 : ℕ)+b*D^(3 : ℕ)+c*D
 converges to zero at every angle exactly when (b,c)=(20a,64a).
 The same coefficient condition is equivalent to uniform convergence
 to zero. Thus the critical operator ratios are necessary as well as
@@ -30,7 +30,7 @@ theorem egbFixedChargeAGibbsOddOperator_pointwise_classification (w φ l₁ l₂
     exact tendsto_nhds_unique hl (h ψ)
   · intro h
     have hc := (egbFixedChargeAQuarticProfile_odd_operator_classification a b c).mpr h
-    have hz : egbFixedChargeALinearJetObservable a b c 5 3 1 (fun x : ℝ => cos x ^ 4) = fun _ => 0 :=
+    have hz : egbFixedChargeALinearJetObservable a b c 5 3 1 (fun x : ℝ => cos x ^ (4 : ℕ)) = fun _ => 0 :=
       funext hc
     have hl := egbFixedChargeALinearJetObservable_uniform_limit w φ l₁ l₂ a b c 5 3 1
     rw [hz] at hl
@@ -46,7 +46,7 @@ theorem egbFixedChargeAGibbsOddOperator_uniform_classification (w φ l₁ l₂ a
       (fun ψ => h.tendsto_at ψ)
   · intro h
     have hc := (egbFixedChargeAQuarticProfile_odd_operator_classification a b c).mpr h
-    have hz : egbFixedChargeALinearJetObservable a b c 5 3 1 (fun x : ℝ => cos x ^ 4) = fun _ => 0 :=
+    have hz : egbFixedChargeALinearJetObservable a b c 5 3 1 (fun x : ℝ => cos x ^ (4 : ℕ)) = fun _ => 0 :=
       funext hc
     have hl := egbFixedChargeALinearJetObservable_uniform_limit w φ l₁ l₂ a b c 5 3 1
     rw [hz] at hl

@@ -75,7 +75,7 @@ theorem gammaPoleAffineSource_order_eq_neg_one_iff
           gammaPoleCovariantJetValue branch 0 x)
     ring
   have hnative : Tendsto
-      (fun x : ℂ => x ^ 1 * gammaPolyJetEval (n + 1)
+      (fun x : ℂ => x ^ (1 : ℕ) * gammaPolyJetEval (n + 1)
         (center + scale * x) P)
       (𝓝[≠] 0) (𝓝 (-(b.eval center))) := by
     apply hcov.congr'

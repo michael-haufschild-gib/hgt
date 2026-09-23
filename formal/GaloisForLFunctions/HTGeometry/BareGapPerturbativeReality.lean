@@ -27,11 +27,11 @@ namespace GaloisForLFunctions.HTGeometry
 /-- An addition/removal sector has one unpaired excitation, nonnegative pair costs,
 and nonnegative phonon or excess energies. -/
 def bareGapExcitationEnergy {k : ℕ} (gap : ℝ) (pairs : ℕ) (excess : Fin k → ℝ) : ℝ :=
-  (2 * (pairs : ℝ) + 1) * Real.exp gap + ∑ i, excess i ^ 2
+  (2 * (pairs : ℝ) + 1) * Real.exp gap + ∑ i, excess i ^ (2 : ℕ)
 
 theorem bareGapExcitationEnergy_ge_edge {k : ℕ} (gap : ℝ) (pairs : ℕ)
     (excess : Fin k → ℝ) : Real.exp gap ≤ bareGapExcitationEnergy gap pairs excess := by
-  have hs : 0 ≤ ∑ i, excess i ^ 2 := Finset.sum_nonneg (fun i _ => sq_nonneg _)
+  have hs : 0 ≤ ∑ i, excess i ^ (2 : ℕ) := Finset.sum_nonneg (fun i _ => sq_nonneg _)
   have hp : 0 ≤ (pairs : ℝ) := by positivity
   unfold bareGapExcitationEnergy
   nlinarith [Real.exp_pos gap]

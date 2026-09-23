@@ -24,7 +24,7 @@ theorem eventually_every_subunit_even_joint_prolate_is_canonical_zero :
           prolateSLAction (indexedOscillatorBandwidth a) Phi x = eta * Phi x) →
         indexedOscillatorBandwidth a *
             radialSeparationRatio (indexedOscillatorBandwidth a) eta < 1 →
-        evenProlateSignedValue (a : ℝ) 0 ^ 2 = lam ∧
+        evenProlateSignedValue (a : ℝ) 0 ^ (2 : ℕ) = lam ∧
           eta = (signedModeRadialData (a : ℝ) 0).chi ∧
           ∃ r : ℝ, ∀ x : ℝ,
             Phi x = r * (signedModeRadialData (a : ℝ) 0).R x := by

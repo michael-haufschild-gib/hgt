@@ -64,7 +64,7 @@ theorem adaptiveOrthoJacobiEnergy_normalizedCentralBinom_eq_arcsineVacuum
       xiShiftedBoundaryShiftedEuler, HTGeometry.adaptiveOrthoSourcePolynomial,
       C_1, one_mul]
   have hnormEq :
-      HTGeometry.momentFunctional s ((XiShiftedArcsineAdmission.amplitude n) ^ 2) =
+      HTGeometry.momentFunctional s ((XiShiftedArcsineAdmission.amplitude n) ^ (2 : ℕ)) =
         HTGeometry.monicOrthoNormSq s n := by
     rw [← hamp]
     unfold HTGeometry.monicOrthoNormSq
@@ -135,7 +135,7 @@ theorem coordinateDilated_arcsineCenteredScaleCompletedSource_eq_zero
             (XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n)) /
         HTGeometry.momentFunctional
           (XiShiftedArcsineAdmission.coordinateDilatedMoment r)
-          ((XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n) ^ 2)) /
+          ((XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n) ^ (2 : ℕ))) /
         XiShiftedArcsineAdmission.coordinateDilatedAdmissionChristoffelScaleSq r n -
       arcsineVacuumSourceCounterterm n = 0 := by
   rw [XiShiftedArcsineAdmission.coordinateDilated_scaleCompletedSource_eq hr hn]

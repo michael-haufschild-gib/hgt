@@ -8,7 +8,7 @@ private theorem triple_product_error {a b c A B C M δ : ℝ}
     (hM : 0 ≤ M) (hδ : 0 ≤ δ)
     (hb : |b| ≤ M) (hc : |c| ≤ M) (hA : |A| ≤ M) (hB : |B| ≤ M)
     (haA : |a-A| ≤ δ) (hbB : |b-B| ≤ δ) (hcC : |c-C| ≤ δ) :
-    |a*b*c-A*B*C| ≤ 3*M^2*δ := by
+    |a*b*c-A*B*C| ≤ 3*M^(2 : ℕ)*δ := by
   have h1 : |(a-A)*b*c| ≤ δ*M*M := by
     simp only [abs_mul]
     exact mul_le_mul (mul_le_mul haA hb (abs_nonneg _) hδ) hc (abs_nonneg _) (by positivity)
@@ -31,7 +31,7 @@ theorem signedEvenHankelThreeDet_error_le
     (hq : |A| ≤ M ∧ |B| ≤ M ∧ |C| ≤ M ∧ |D| ≤ M ∧ |E| ≤ M)
     (he : |a-A| ≤ δ ∧ |b-B| ≤ δ ∧ |c-C| ≤ δ ∧ |d-D| ≤ δ ∧ |e-E| ≤ δ) :
     |HilbertMetric.signedEvenHankelThreeDet a b c d e -
-      HilbertMetric.signedEvenHankelThreeDet A B C D E| ≤ 18*M^2*δ := by
+      HilbertMetric.signedEvenHankelThreeDet A B C D E| ≤ 18*M^(2 : ℕ)*δ := by
   rcases hp with ⟨ha, hb, hc, hd, he'⟩
   rcases hq with ⟨hA, hB, hC, hD, hE⟩
   rcases he with ⟨haA, hbB, hcC, hdD, heE⟩

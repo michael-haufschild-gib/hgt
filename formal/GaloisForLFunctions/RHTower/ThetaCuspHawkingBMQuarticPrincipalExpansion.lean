@@ -141,7 +141,7 @@ private theorem PowerRep.mul3 {q : XiZeroCopy} {a b : Fin 3 → ℂ} {f g : Fiel
         (z 1:ℂ)^(quarticPrincipalExponent q (pairIndex i j)) := by simp_rw [hp]
     _ = _ := convolution3_sum a b (fun j => (z 1:ℂ)^(quarticPrincipalExponent q j))
 private def contactCoefficient (q : XiZeroCopy) (i : Fin 3) : ℂ :=
-  let c := 7*((center q)^2-1/4)-2
+  let c := 7*((center q)^(2 : ℕ)-1/4)-2
   let r := nativePrincipalPowerExponent q i
   (c-2*r*(r-1))*nativePrincipalPowerCoefficient q i/8
 private def spinTwoCoefficient (q : XiZeroCopy) (i : Fin 3) : ℂ :=
@@ -150,7 +150,7 @@ private def spinTwoCoefficient (q : XiZeroCopy) (i : Fin 3) : ℂ :=
 
 /-- All coefficients of each actual quartic principal expression, retaining every ordered Weyl pair. -/
 def quarticPrincipalCoefficient (q : XiZeroCopy) (slot : Fin 6) : Fin 5 → ℂ :=
-  let c := 7*((center q)^2-1/4)-2
+  let c := 7*((center q)^(2 : ℕ)-1/4)-2
   let Q2 := convolution3 (nativePrincipalPowerCoefficient q) (nativePrincipalPowerCoefficient q)
   let J2 := convolution3 (contactCoefficient q) (contactCoefficient q)
   let LJ := fun i => nativePrincipalPowerExponent q i*(nativePrincipalPowerExponent q i-1)*contactCoefficient q i
@@ -162,7 +162,7 @@ def quarticPrincipalCoefficient (q : XiZeroCopy) (slot : Fin 6) : Fin 5 → ℂ 
 private def Qprincipal (q : XiZeroCopy) : Field :=
   fun z => (1/2:ℂ)*(principal (center q) z*principal (center q) z)
 private def Jprincipal (q : XiZeroCopy) : Field :=
-  fun z => (1/8:ℂ)*((7*((center q)^2-1/4)-2)*Qprincipal q z+
+  fun z => (1/8:ℂ)*((7*((center q)^(2 : ℕ)-1/4)-2)*Qprincipal q z+
     (-2)*hyperbolicLaplacian (Qprincipal q) z)
 private def Rprincipal (q : XiZeroCopy) : Field :=
   fun z => (-1)*hyperbolicLaplacian (hyperbolicLaplacian (Qprincipal q)) z+
@@ -176,12 +176,12 @@ private theorem Q_power_rep (q : XiZeroCopy) :
   change (1/2:ℂ)*(principal (center q) z*principal (center q) z)=
     ∑ i : Fin 3, nativePrincipalPowerCoefficient q i*(z 1:ℂ)^(nativePrincipalPowerExponent q i)
   rw [← he]
-  change (1/2:ℂ)*(principal (center q) z*principal (center q) z)=(principal (center q) z)^2/2
+  change (1/2:ℂ)*(principal (center q) z*principal (center q) z)=(principal (center q) z)^(2 : ℕ)/2
   ring
 private theorem J_power_rep (q : XiZeroCopy) :
     PowerRep (nativePrincipalPowerExponent q) (contactCoefficient q)
       (Jprincipal q) := by
-  have h := (((Q_power_rep q).scale (7*((center q)^2-1/4)-2)).add
+  have h := (((Q_power_rep q).scale (7*((center q)^(2 : ℕ)-1/4)-2)).add
     ((Q_power_rep q).lap.scale (-2))).scale (1/8)
   apply h.coeff
   intro i
@@ -205,7 +205,7 @@ private theorem quartic_principal_rep (q : XiZeroCopy) (slot : Fin 6) :
   have hJ2 := hJ.mul3 hJ
   have hG := (hJ2.lap.scale (1/2)).add ((hJ.mul3 hJ.lap).scale (-1))
   have hJR := hJ.mul3 hR
-  let c : ℂ := 7*((center q)^2-1/4)-2
+  let c : ℂ := 7*((center q)^(2 : ℕ)-1/4)-2
   have hH := (hJ2.scale 2).add (hQ2.scale (c*(c-4)/96))
   have hLH := hH.lap
   fin_cases slot

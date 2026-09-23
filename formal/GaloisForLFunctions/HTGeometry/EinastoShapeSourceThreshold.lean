@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- The finite core value, used only on the regular side of the classification. -/
 def einastoShapeSourceCoreValue (d l a σ : ℝ) : ℝ :=
   (if exp (-a) = 2 then -72 * exp d * exp (-2 * l) else 0) +
-    64 * Real.pi * (σ - 1) * exp d ^ 2
+    64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ)
 
 /-- Complete source limit without any assumed bound on the profile's shape. -/
 theorem einastoShapeSource_complete_limit (d l a σ : ℝ) :
@@ -49,7 +49,7 @@ theorem einastoShapeSource_complete_limit (d l a σ : ℝ) :
       simp_rw [hx]
       have h := (hF.const_mul (exp (-2 * l))).add hD
       have hc : exp (-2 * l) * (-2 * exp (-a) * exp d * (exp (-a) + 1) * (exp (-a) + 4)) +
-          64 * Real.pi * (σ - 1) * exp d ^ 2 = einastoShapeSourceCoreValue d l a σ := by
+          64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ) = einastoShapeSourceCoreValue d l a σ := by
         unfold einastoShapeSourceCoreValue
         rw [if_pos hq, hq]
         ring
@@ -155,7 +155,7 @@ theorem einastoShapeSource_superGaussian_regular (d l σ s : ℝ) :
 /-- Above the threshold, only the algebraic sign discrepancy contributes to the core source. -/
 theorem einastoShapeSource_superGaussian_limit (d l σ s : ℝ) :
     Tendsto (fun t => quadraticRadialSource σ (einastoMetric d l (-log (2 + exp s))) (exp t)) atBot
-      (𝓝 (64 * Real.pi * (σ - 1) * exp d ^ 2)) := by
+      (𝓝 (64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ))) := by
   apply (einastoShapeSource_finite_limit_iff d l (-log (2 + exp s)) σ _).mpr
   have hq : exp (-(-log (2 + exp s))) = 2 + exp s := by
     rw [neg_neg, exp_log (by positivity : 0 < 2 + exp s)]
@@ -170,7 +170,7 @@ theorem einastoShapeSource_superGaussian_limit (d l σ s : ℝ) :
 /-- At the exact Gaussian boundary, a nonzero derivative contribution remains. -/
 theorem einastoShapeSource_gaussian_limit (d l σ : ℝ) :
     Tendsto (fun t => quadraticRadialSource σ (einastoMetric d l (-log 2)) (exp t)) atBot
-      (𝓝 (-72 * exp d * exp (-2 * l) + 64 * Real.pi * (σ - 1) * exp d ^ 2)) := by
+      (𝓝 (-72 * exp d * exp (-2 * l) + 64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ))) := by
   apply (einastoShapeSource_finite_limit_iff d l (-log 2) σ _).mpr
   have hq : exp (-(-log 2)) = 2 := by
     rw [neg_neg, exp_log (by norm_num : (0 : ℝ) < 2)]

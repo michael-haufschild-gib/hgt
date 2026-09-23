@@ -94,7 +94,7 @@ theorem X_pow_dvd_formalEulerOp_iterate {k : ℕ} {H : PowerSeries ℂ} (j : ℕ
 theorem taylorDefect_mem_sq_X_pow {m k : ℕ} (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ))
     (Y H : PowerSeries ℂ) (hH : (PowerSeries.X : PowerSeries ℂ) ^ k ∣ H) :
     taylorDefect (eulerJetVector (m := m) Y) (eulerJetVector (m := m) H) P
-      ∈ (Ideal.span {(PowerSeries.X : PowerSeries ℂ) ^ k}) ^ 2 := by
+      ∈ (Ideal.span {(PowerSeries.X : PowerSeries ℂ) ^ k}) ^ (2 : ℕ) := by
   refine taylorDefect_mem_sq _ _ _ (fun j => ?_) P
   rw [Ideal.mem_span_singleton]
   exact X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH

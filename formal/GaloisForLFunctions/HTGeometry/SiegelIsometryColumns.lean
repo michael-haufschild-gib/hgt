@@ -34,7 +34,7 @@ theorem transpose_mul_diagonal_apply (M : Matrix (Fin n) (Fin n) ℝ) (d : Fin n
 /-- **The column identity of a weighted isometry.** -/
 theorem weightedIsometry_col_sq {M : Matrix (Fin n) (Fin n) ℝ} {d d' : Fin n → ℝ}
     (h : Mᵀ * Matrix.diagonal d * M = Matrix.diagonal d') (i : Fin n) :
-    (∑ k, d k * (M k i) ^ 2) = d' i := by
+    (∑ k, d k * (M k i) ^ (2 : ℕ)) = d' i := by
   classical
   have hii := congrFun (congrFun h i) i
   rw [Matrix.mul_apply, Matrix.diagonal_apply_eq] at hii
@@ -59,12 +59,12 @@ theorem weightedIsometry_support_sum_le {M : Matrix (Fin n) (Fin n) ℝ} {J J' :
   classical
   rw [← weightedIsometry_col_sq h i]
   calc (∑ k ∈ Finset.univ.filter (fun k : Fin n => M k i ≠ 0), J.d k)
-      ≤ ∑ k ∈ Finset.univ.filter (fun k : Fin n => M k i ≠ 0), J.d k * (M k i) ^ 2 := by
+      ≤ ∑ k ∈ Finset.univ.filter (fun k : Fin n => M k i ≠ 0), J.d k * (M k i) ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun k hk => ?_
         rw [Finset.mem_filter] at hk
-        have hsq : (1 : ℝ) ≤ (M k i) ^ 2 := one_le_sq_of_int_ne_zero (hg k i) hk.2
+        have hsq : (1 : ℝ) ≤ (M k i) ^ (2 : ℕ) := one_le_sq_of_int_ne_zero (hg k i) hk.2
         nlinarith [hsq, (J.pos k).le]
-    _ ≤ ∑ k, J.d k * (M k i) ^ 2 :=
+    _ ≤ ∑ k, J.d k * (M k i) ^ (2 : ℕ) :=
         Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
           (fun k _ _ => mul_nonneg (J.pos k).le (sq_nonneg _))
 

@@ -226,7 +226,7 @@ theorem thetaCuspCenterMixedDensity_fourthHankel_pos
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     0 < thetaCuspCenterMixedDensity a 0 *
         thetaCuspCenterMixedDensityFourthJet a 0 -
-      thetaCuspCenterMixedDensitySecondJet a 0 ^ 2 := by
+      thetaCuspCenterMixedDensitySecondJet a 0 ^ (2 : ℕ) := by
   have hI0 := integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand ha0.le ha
   have hI2 := integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha
   have hI4 := integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha
@@ -238,7 +238,7 @@ theorem thetaCuspCenterMixedDensity_fourthHankel_pos
       0 < thetaCuspCenterMixedReflectionJetZeroIntegrand a r ∧
         0 < thetaCuspCenterMixedReflectionJetZeroIntegrand a r *
             thetaCuspCenterMixedReflectionJetFourIntegrand a r -
-          thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ 2 := by
+          thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ (2 : ℕ) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 < r * Real.sinh (a * r) :=
       mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha0 hr))
@@ -253,11 +253,11 @@ theorem thetaCuspCenterMixedDensity_fourthHankel_pos
     · have hfactor :
           thetaCuspCenterMixedReflectionJetZeroIntegrand a r *
               thetaCuspCenterMixedReflectionJetFourIntegrand a r -
-            thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ 2 =
-          (r * Real.sinh (a * r)) ^ 2 *
+            thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ (2 : ℕ) =
+          (r * Real.sinh (a * r)) ^ (2 : ℕ) *
             (thetaCuspSourceReflectionJetZero (r / 2) *
                 thetaCuspSourceReflectionJetFour (r / 2) -
-              thetaCuspSourceReflectionJetTwo (r / 2) ^ 2) := by
+              thetaCuspSourceReflectionJetTwo (r / 2) ^ (2 : ℕ)) := by
         unfold thetaCuspCenterMixedReflectionJetZeroIntegrand
           thetaCuspCenterMixedReflectionJetTwoIntegrand
           thetaCuspCenterMixedReflectionJetFourIntegrand

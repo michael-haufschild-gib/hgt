@@ -13,10 +13,10 @@ theorem thetaCuspFirstAtomScaledEvenJet_1_eq_middleProfile {x : ℝ}
       HTGeometry.twoAtomOddProfile1 (thetaCuspSingleAtomReflectionScale 1 x) 0 := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by dsimp [q] at *; nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by dsimp [q] at *; nlinarith
   have hd : 0 < 2*q-3 := by dsimp [q]; linarith
-  have hden : 0 < 36-q*48+q^2*16 := by
-    have hp2 : 0 < (4*q-6)^2 := pow_pos (by dsimp [q]; linarith) _
+  have hden : 0 < 36-q*48+q^(2 : ℕ)*16 := by
+    have hp2 : 0 < (4*q-6)^(2 : ℕ) := pow_pos (by dsimp [q]; linarith) _
     nlinarith only [hp2]
   unfold thetaCuspFirstAtomScaledEvenJet
   norm_num only [Nat.reduceMul]
@@ -34,10 +34,10 @@ theorem thetaCuspFirstAtomScaledEvenJet_2_eq_middleProfile {x : ℝ}
       HTGeometry.twoAtomOddProfile2 (thetaCuspSingleAtomReflectionScale 1 x) 0 := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by dsimp [q] at *; nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by dsimp [q] at *; nlinarith
   have hd : 0 < 2*q-3 := by dsimp [q]; linarith
-  have hden : 0 < 36-q*48+q^2*16 := by
-    have hp2 : 0 < (4*q-6)^2 := pow_pos (by dsimp [q]; linarith) _
+  have hden : 0 < 36-q*48+q^(2 : ℕ)*16 := by
+    have hp2 : 0 < (4*q-6)^(2 : ℕ) := pow_pos (by dsimp [q]; linarith) _
     nlinarith only [hp2]
   unfold thetaCuspFirstAtomScaledEvenJet
   norm_num only [Nat.reduceMul]
@@ -55,10 +55,10 @@ theorem thetaCuspFirstAtomScaledEvenJet_3_eq_middleProfile {x : ℝ}
       HTGeometry.twoAtomOddProfile3 (thetaCuspSingleAtomReflectionScale 1 x) 0 := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by dsimp [q] at *; nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by dsimp [q] at *; nlinarith
   have hd : 0 < 2*q-3 := by dsimp [q]; linarith
-  have hden : 0 < 36-q*48+q^2*16 := by
-    have hp2 : 0 < (4*q-6)^2 := pow_pos (by dsimp [q]; linarith) _
+  have hden : 0 < 36-q*48+q^(2 : ℕ)*16 := by
+    have hp2 : 0 < (4*q-6)^(2 : ℕ) := pow_pos (by dsimp [q]; linarith) _
     nlinarith only [hp2]
   unfold thetaCuspFirstAtomScaledEvenJet
   norm_num only [Nat.reduceMul]
@@ -76,10 +76,10 @@ theorem thetaCuspFirstAtomScaledEvenJet_4_eq_middleProfile {x : ℝ}
       HTGeometry.twoAtomOddProfile4 (thetaCuspSingleAtomReflectionScale 1 x) 0 := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by dsimp [q] at *; nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by dsimp [q] at *; nlinarith
   have hd : 0 < 2*q-3 := by dsimp [q]; linarith
-  have hden : 0 < 36-q*48+q^2*16 := by
-    have hp2 : 0 < (4*q-6)^2 := pow_pos (by dsimp [q]; linarith) _
+  have hden : 0 < 36-q*48+q^(2 : ℕ)*16 := by
+    have hp2 : 0 < (4*q-6)^(2 : ℕ) := pow_pos (by dsimp [q]; linarith) _
     nlinarith only [hp2]
   unfold thetaCuspFirstAtomScaledEvenJet
   norm_num only [Nat.reduceMul]
@@ -97,10 +97,10 @@ theorem thetaCuspFirstAtomScaledEvenJet_5_eq_middleProfile {x : ℝ}
       HTGeometry.twoAtomOddProfile5 (thetaCuspSingleAtomReflectionScale 1 x) 0 := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by dsimp [q] at *; nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by dsimp [q] at *; nlinarith
   have hd : 0 < 2*q-3 := by dsimp [q]; linarith
-  have hden : 0 < 36-q*48+q^2*16 := by
-    have hp2 : 0 < (4*q-6)^2 := pow_pos (by dsimp [q]; linarith) _
+  have hden : 0 < 36-q*48+q^(2 : ℕ)*16 := by
+    have hp2 : 0 < (4*q-6)^(2 : ℕ) := pow_pos (by dsimp [q]; linarith) _
     nlinarith only [hp2]
   unfold thetaCuspFirstAtomScaledEvenJet
   norm_num only [Nat.reduceMul]

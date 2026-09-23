@@ -48,22 +48,22 @@ theorem compatiblePolymerPartition_le_cubic_freeEnergy {α : Type*} [DecidableEq
     (P : Finset α) (compatible : Finset α → Prop) [DecidablePred compatible]
     (w : α → ℝ) (n q x : ℝ)
     (hw : ∀ γ, 0 ≤ w γ)
-    (hactivity : (∑ γ ∈ P, w γ) ≤ n / q ^ 2 * (x ^ 3 / (9 * (1 - x)))) :
+    (hactivity : (∑ γ ∈ P, w γ) ≤ n / q ^ (2 : ℕ) * (x ^ (3 : ℕ) / (9 * (1 - x)))) :
     compatiblePolymerPartition P compatible w ≤
-      Real.exp (n / q ^ 2 * (x ^ 3 / (9 * (1 - x)))) := by
+      Real.exp (n / q ^ (2 : ℕ) * (x ^ (3 : ℕ) / (9 * (1 - x)))) := by
   exact (compatiblePolymerPartition_le_exp_sum P compatible w hw).trans
     (Real.exp_le_exp.mpr hactivity)
 
 /-- The activity series of polymers with at least three vertices has a cubic leading envelope. -/
 theorem eulerian_activity_series_le (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1) :
-    (∑' j : ℕ, x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ 2) ≤
-      x ^ 3 / (9 * (1 - x)) := by
-  let f : ℕ → ℝ := fun j => x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ 2
+    (∑' j : ℕ, x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ)) ≤
+      x ^ (3 : ℕ) / (9 * (1 - x)) := by
+  let f : ℕ → ℝ := fun j => x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ)
   let g : ℕ → ℝ := fun j => x ^ (j + 3) / 9
   have hfg : ∀ j, f j ≤ g j := by
     intro j
     dsimp [f, g]
-    have hden : (9 : ℝ) ≤ ((j + 3 : ℕ) : ℝ) ^ 2 := by
+    have hden : (9 : ℝ) ≤ ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ) := by
       have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       push_cast
       nlinarith
@@ -72,7 +72,7 @@ theorem eulerian_activity_series_le (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1) :
   have hgeom : Summable (fun j : ℕ => x ^ j) :=
     summable_geometric_of_lt_one hx0 hx1
   have hg : Summable g := by
-    have hrewrite : g = fun j : ℕ => (x ^ 3 / 9) * x ^ j := by
+    have hrewrite : g = fun j : ℕ => (x ^ (3 : ℕ) / 9) * x ^ j := by
       funext j
       dsimp [g]
       rw [pow_add]
@@ -82,10 +82,10 @@ theorem eulerian_activity_series_le (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1) :
   have hf : Summable f := Summable.of_nonneg_of_le
     (fun j => by dsimp [f]; positivity) hfg hg
   calc
-    (∑' j : ℕ, x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ 2) = ∑' j, f j := rfl
+    (∑' j : ℕ, x ^ (j + 3) / ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ)) = ∑' j, f j := rfl
     _ ≤ ∑' j, g j := Summable.tsum_le_tsum hfg hf hg
-    _ = x ^ 3 / (9 * (1 - x)) := by
-      rw [show g = fun j : ℕ => (x ^ 3 / 9) * x ^ j by
+    _ = x ^ (3 : ℕ) / (9 * (1 - x)) := by
+      rw [show g = fun j : ℕ => (x ^ (3 : ℕ) / 9) * x ^ j by
         funext j
         dsimp [g]
         rw [pow_add]
@@ -96,24 +96,24 @@ theorem eulerian_activity_series_le (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1) :
 /-- Cubic crossing free energy cannot erase a linear action gap at small density. -/
 theorem linear_action_gap_survives_cubic_polymer_tax
     (Z η κ C n k : ℝ)
-    (hZ : Z ≤ Real.exp (C * κ ^ 3 * n))
+    (hZ : Z ≤ Real.exp (C * κ ^ (3 : ℕ) * n))
     (hk : κ * n / 2 ≤ k)
     (hη : 0 ≤ η)
     (hκ : 0 ≤ κ)
     (hn : 0 ≤ n)
-    (hsmall : C * κ ^ 2 ≤ η / 4) :
+    (hsmall : C * κ ^ (2 : ℕ) ≤ η / 4) :
     Real.exp (-η * k) * Z ≤ Real.exp (-η * κ * n / 4) := by
   calc
     Real.exp (-η * k) * Z
-        ≤ Real.exp (-η * k) * Real.exp (C * κ ^ 3 * n) := by
+        ≤ Real.exp (-η * k) * Real.exp (C * κ ^ (3 : ℕ) * n) := by
           exact mul_le_mul_of_nonneg_left hZ (Real.exp_nonneg _)
-    _ = Real.exp (-η * k + C * κ ^ 3 * n) := by rw [← Real.exp_add]
+    _ = Real.exp (-η * k + C * κ ^ (3 : ℕ) * n) := by rw [← Real.exp_add]
     _ ≤ Real.exp (-η * κ * n / 4) := by
       rw [Real.exp_le_exp]
       have hκn : 0 ≤ κ * n := mul_nonneg hκ hn
-      have htax : C * κ ^ 3 * n ≤ (η / 4) * (κ * n) := by
+      have htax : C * κ ^ (3 : ℕ) * n ≤ (η / 4) * (κ * n) := by
         calc
-          C * κ ^ 3 * n = (C * κ ^ 2) * (κ * n) := by ring
+          C * κ ^ (3 : ℕ) * n = (C * κ ^ (2 : ℕ)) * (κ * n) := by ring
           _ ≤ (η / 4) * (κ * n) := mul_le_mul_of_nonneg_right hsmall hκn
       have hlinear : -η * k ≤ -η * (κ * n / 2) :=
         mul_le_mul_of_nonpos_left hk (neg_nonpos.mpr hη)

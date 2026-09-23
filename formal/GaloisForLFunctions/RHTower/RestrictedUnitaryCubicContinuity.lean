@@ -92,7 +92,7 @@ theorem norm_unitary_le_one
       _ = inner ℂ x x := by rw [hU]; simp
   have hre := congrArg Complex.re hinner
   simp only [inner_self_eq_norm_sq_to_K] at hre
-  have hsquare : ‖U x‖ ^ 2 = ‖x‖ ^ 2 := by exact_mod_cast hre
+  have hsquare : ‖U x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by exact_mod_cast hre
   nlinarith [norm_nonneg (U x), norm_nonneg x]
 
 /-- Quantitative mixed-topology bound for two restricted-unitary displacements. -/

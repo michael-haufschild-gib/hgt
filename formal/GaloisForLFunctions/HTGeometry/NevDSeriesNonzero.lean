@@ -30,11 +30,11 @@ theorem nevDinf_eq (s : ℕ → ℝ) (z : ℂ) :
 /-- At the origin the `D` series is the real Christoffel series. -/
 theorem nevDseries_zero_eq (s : ℕ → ℝ) :
     nevDseries s 0
-      = ((∑' k, ((monicOrtho s k).eval 0) ^ 2 /
+      = ((∑' k, ((monicOrtho s k).eval 0) ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ) := by
   have hterm : ∀ k : ℕ, monicOrthoC s k 0 * monicOrthoC s k 0 /
       ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)
-      = ((((monicOrtho s k).eval 0) ^ 2 /
+      = ((((monicOrtho s k).eval 0) ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ) := by
     intro k
     have hre : monicOrthoC s k (0 : ℂ) = ((((monicOrtho s k).eval (0:ℝ)) : ℝ) : ℂ) := by
@@ -51,22 +51,22 @@ term is `1/h₀ > 0`. -/
 theorem nevDseries_zero_ne_zero (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) :
     nevDseries s 0 ≠ 0 := by
   have hb : BoundedKernel s ((0:ℝ) : ℂ) := by simpa using h0b
-  have hsum : Summable (fun k => ((monicOrtho s k).eval 0) ^ 2 /
+  have hsum : Summable (fun k => ((monicOrtho s k).eval 0) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) := by
     have hsum0 := summable_of_boundedKernel h hb
     have hterm : (fun k => Complex.normSq (monicOrthoC s k ((0:ℝ) : ℂ)) /
         momentInner s (monicOrtho s k) (monicOrtho s k))
-        = fun k => ((monicOrtho s k).eval 0) ^ 2 /
+        = fun k => ((monicOrtho s k).eval 0) ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k) := by
       funext k
       rw [normSq_monicOrthoC_ofReal]
     rw [hterm] at hsum0
     exact hsum0
-  have hnn : ∀ k, 0 ≤ ((monicOrtho s k).eval 0) ^ 2 /
+  have hnn : ∀ k, 0 ≤ ((monicOrtho s k).eval 0) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k) :=
     fun k => div_nonneg (sq_nonneg _) (monicOrtho_inner_self_pos h k).le
   have heval : ((monicOrtho s 0).eval (0:ℝ)) = 1 := by simp
-  have hpos0 : 0 < ((monicOrtho s 0).eval 0) ^ 2 /
+  have hpos0 : 0 < ((monicOrtho s 0).eval 0) ^ (2 : ℕ) /
       momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
     div_pos (by rw [heval]; norm_num) (monicOrtho_inner_self_pos h 0)
   have hle := hsum.le_tsum 0 (fun k _ => hnn k)

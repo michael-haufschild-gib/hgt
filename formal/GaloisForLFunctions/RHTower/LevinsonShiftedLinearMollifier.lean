@@ -60,7 +60,7 @@ theorem norm_levinsonShiftedLinearMollifierCoeff_le_one
       congr 1
     _ ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hnR (by linarith)
 
-/-- Crude polynomial mass bound in exactly the gate's `n^4` norm. -/
+/-- Crude polynomial mass bound in exactly the gate's `n^(4 : ℕ)` norm. -/
 theorem sum_norm_levinsonShiftedLinearMollifierCoeff_mul_pow_four_le
     {M : ℕ} (hM : 1 < M) {sigma : ℝ}
     (hsigma : sigma ≤ 1 / 2) :

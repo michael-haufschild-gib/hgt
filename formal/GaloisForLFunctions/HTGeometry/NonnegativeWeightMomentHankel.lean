@@ -5,7 +5,7 @@ import Mathlib.Analysis.SpecificLimits.Normed
 
 If `w i >= 0` and every power moment `sum_i w i * (y i)^n` converges, then the Hankel array of
 those moments is positive semidefinite: testing it against a coefficient vector `a` collapses
-pointwise to `w i * (sum_j a j (y i)^j)^2`.
+pointwise to `w i * (sum_j a j (y i)^j)^(2 : ℕ)`.
 
 This is the moment side of Hamburger's positivity, in the only form a countable atomic measure
 needs, and it is the primitive that lets an arithmetic weight family — one with nonnegative
@@ -43,7 +43,7 @@ theorem weightMoment_hankel_nonneg {w y : ι → ℝ} (hw : ∀ i, 0 ≤ w i)
   refine tsum_nonneg fun i => ?_
   have hsq : ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range N,
       a j * a k * (w i * y i ^ (j + k)) =
-      w i * (∑ j ∈ Finset.range N, a j * y i ^ j) ^ 2 := by
+      w i * (∑ j ∈ Finset.range N, a j * y i ^ j) ^ (2 : ℕ) := by
     rw [pow_two, Finset.sum_mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.mul_sum]

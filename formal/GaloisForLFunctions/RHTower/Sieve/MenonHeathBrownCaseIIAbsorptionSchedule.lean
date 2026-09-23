@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHeathBrownCaseIIAbsorption
 /-!
 # Paper-scale Case-II scalar absorption
 
-On Menon's degree-three support, `X < (L+1)^3` and `L <= a^(1/3)` make every label cost a fixed
+On Menon's degree-three support, `X < (L+1)^(3 : ℕ)` and `L <= a^(1/3)` make every label cost a fixed
 seventh power of `log a`.  The order-sixteen Möbius saving therefore places the uniform absorption
 envelope below `(log a)^(-8)` for every sufficiently large `a`, uniformly in admissible `L,X`.
 -/
@@ -143,7 +143,7 @@ theorem eventually_menonHeathBrownCaseIIAbsorptionEnvelope_lt_logPow :
 
 /-- The same order-sixteen absorption is uniform when the Heath--Brown cutoff and ambient support
 are only polynomially bounded by the selected prime-block lower endpoint.  This is the actual
-final-range regime: `L ≤ X ≤ a^3`, with no false requirement `L ≤ a^(1/3)`. -/
+final-range regime: `L ≤ X ≤ a^(3 : ℕ)`, with no false requirement `L ≤ a^(1/3)`. -/
 theorem eventually_menonHeathBrownCaseIIAbsorptionEnvelope_lt_logPow_of_polynomial_support :
     ∀ᶠ a : ℕ in atTop, ∀ {L X : ℕ},
       1 ≤ L → 1 ≤ X → L ≤ X → (X : ℝ) ≤ (a : ℝ) ^ (3 : ℕ) →

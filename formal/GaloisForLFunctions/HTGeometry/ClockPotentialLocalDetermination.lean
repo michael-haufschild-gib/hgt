@@ -132,7 +132,7 @@ theorem exists_solvesOn_not_solves :
 
 /-- The one-dimensional oscillatory probes are local probes on every region. -/
 theorem localProbes_oscillatory (k : ℝ) (region : Set ℝ) :
-    LocalProbesOn secondDeriv (fun _ => k ^ 2) region :=
+    LocalProbesOn secondDeriv (fun _ => k ^ (2 : ℕ)) region :=
   localProbes_of_noCommonZero (noCommonZero_oscillatory k) region
 
 end GaloisForLFunctions.HTGeometry

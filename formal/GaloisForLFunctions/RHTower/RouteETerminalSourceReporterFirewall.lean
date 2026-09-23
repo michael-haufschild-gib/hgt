@@ -13,8 +13,8 @@ nonnegative phase histories; no terminal geometry is discarded.
 
 The reporter result is representation-independent.  An arbitrary bounded operator on an
 arbitrary complex Hilbert space can report at most its operator norm times Fisher energy.  Any
-reporter faithful to a half-density signal of order `sqrt X / log(X)^3` while its source vector
-has Fisher energy of order `1 / log(X)^3` must therefore have norm of order `sqrt X`.
+reporter faithful to a half-density signal of order `sqrt X / log(X)^(3 : ℕ)` while its source vector
+has Fisher energy of order `1 / log(X)^(3 : ℕ)` must therefore have norm of order `sqrt X`.
 -/
 
 namespace RHTower
@@ -198,7 +198,7 @@ theorem xiMobiusPrimeSchurValuationDamping_sq_eq_harmonic_factor
   convert Real.rpow_neg_one (p : ℝ) using 1 <;> ring
 
 /-- Recovery has the matching upper square-root scale, complementing the corpus lower bound
-`p ≤ recovery(p)^2`. -/
+`p ≤ recovery(p)^(2 : ℕ)`. -/
 theorem xiMobiusPrimeSchurValuationRecovery_sq_le_four_mul_prime
     (p : Nat.Primes) :
     xiMobiusPrimeSchurValuationRecovery p ^ 2 ≤ 4 * (p : ℝ) := by

@@ -55,9 +55,9 @@ theorem tendsto_sqrt_mul_soninRefTailSup_atTop :
       exact Real.sqrt_le_sqrt hu
     have hsle : Real.sqrt u ≤ u := by
       nlinarith [Real.sq_sqrt hu0.le, hs1]
-    calc Real.sqrt u * soninRefTailSup u ≤ Real.sqrt u * (C / u ^ 2) :=
+    calc Real.sqrt u * soninRefTailSup u ≤ Real.sqrt u * (C / u ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hbound (Real.sqrt_nonneg u)
-      _ ≤ u * (C / u ^ 2) := mul_le_mul_of_nonneg_right hsle (by positivity)
+      _ ≤ u * (C / u ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hsle (by positivity)
       _ = C / u := by
           rw [pow_two]
           field_simp

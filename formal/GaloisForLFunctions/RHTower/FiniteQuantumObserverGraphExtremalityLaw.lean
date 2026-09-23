@@ -451,7 +451,7 @@ theorem exists_observerPhaseEnergy_exact_zero_of_capacity_one
     have hsum := Equiv.sum_comp q
       (fun u : graphNonRoot G =>
         ‖z u.1 - z (graphComponentRoot G
-          (G.connectedComponentMk u.1))‖ ^ 2)
+          (G.connectedComponentMk u.1))‖ ^ (2 : ℕ))
     rw [Fin.sum_univ_one] at hsum
     simpa only [z, v, r, hz, sub_self, norm_zero, ne_eq,
       OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow] using hsum.symm

@@ -121,7 +121,7 @@ def realCombProbe (X : Type*) [Fintype X] (m D : ℕ) (Gp Kp : Fin D → Polynom
   jet ν := realCombJetCLM m D Gp Kp ν
   jet_eq ν c x := by
     funext k
-    rw [gaugeJetVec, iteratedDeriv_polynomial_eval]
+    rw [gaugeJetVec, iteratedDeriv_polynomial_eval_gaugeCarrierJets]
     exact realCombJetCLM_apply m D Gp Kp ν c x k
   poly_zero := realCombPoly_zero D Gp Kp
   polyJet_contDiff k := by
@@ -177,7 +177,7 @@ theorem surjective_windowProbe_jet [DecidableEq X] (m N : ℕ) {ν : X → ℂ}
   have hval := congrFun hc (e x, k)
   rw [windowJetMap_apply] at hval
   have hjet := congrFun ((windowProbe X m N (Fintype.card X * m)).jet_eq ν c x) k
-  rw [hjet, gaugeJetVec, iteratedDeriv_polynomial_eval, windowProbe_poly]
+  rw [hjet, gaugeJetVec, iteratedDeriv_polynomial_eval_gaugeCarrierJets, windowProbe_poly]
   have hnode : y (e x) = ν x := by rw [hy]; simp
   rw [← hnode, hval]
   simp
@@ -330,7 +330,7 @@ theorem contDiff_probeJet_node {m D : ℕ} (pd : GaugeProbe X m D) {nodes : H �
       = fun p : (Fin D → ℂ) × H =>
         (Polynomial.derivative^[(k : ℕ)] (pd.poly p.1)).eval (nodes p.2 x) := by
     funext p
-    rw [congrFun (pd.jet_eq (nodes p.2) p.1 x) k, gaugeJetVec, iteratedDeriv_polynomial_eval]
+    rw [congrFun (pd.jet_eq (nodes p.2) p.1 x) k, gaugeJetVec, iteratedDeriv_polynomial_eval_gaugeCarrierJets]
   rw [hfun]
   exact (pd.polyJet_contDiff (k : ℕ)).comp
     (contDiff_fst.prodMk (((contDiff_apply ℝ ℂ x).comp hnodes).comp contDiff_snd))

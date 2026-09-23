@@ -24,14 +24,14 @@ theorem exists_norm_scaledFlatSeed_lattice_damped {d : ℕ} {I : Type*} [Fintype
     (w : I → Fin d → ℂ) (hdistinct : PairwiseDistinctModulo (standardIntegerLattice d) w)
     (target : I) {m : ℕ} (hm : 0 < m) (σ : Fin d → ℝ) (hσ : ∀ i, 0 < σ i)
     {ρ σ₀ : ℝ} (hσ₀le : ∀ i, σ₀ ≤ σ i)
-    (hpos : 0 ≤ σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2))
+    (hpos : 0 ≤ σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ)))
     (P : MvPolynomial (Fin d) ℂ) {K : Set (Fin d → ℂ)} (hK : IsCompact K)
     (hKb : ∀ x ∈ K, ∀ i, |(x i).re - (w target i).re| ≤ ρ ∧ |(x i).im - (w target i).im| ≤ ρ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ B : ℝ, 1 ≤ B → ∀ k : Fin d → ℤ, k ≠ 0 → ∀ x ∈ K,
       ‖(multivariateEntireMul (flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump
           (multivariateEntireMul (gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping
             (mvPolynomialMultivariateEntire P))).1 (x + integerCastVector k)‖
-        ≤ C * Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2)) * B))
+        ≤ C * Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) * B))
           * polynomialGaussianLatticeWeight (Fin d) (fun i => P.degreeOf i)
               (fun i => σ i / 4) k := by
   classical
@@ -40,26 +40,26 @@ theorem exists_norm_scaledFlatSeed_lattice_damped {d : ℕ} {I : Type*} [Fintype
     (flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump_stripBounded R
   obtain ⟨Cp, hCp0, hCp⟩ := exists_norm_mvPolynomial_lattice_le P hK
   refine ⟨Cb * ((2 : ℝ) ^ m * Cp), by positivity, fun B hB k hk x hx => ?_⟩
-  set rate : ℝ := σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2) with hrate
+  set rate : ℝ := σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ)) with hrate
   set G : ℂ := (centeredComplexGaussian (fun i => B * σ i) (w target)).1
     (x + integerCastVector k) with hGdef
   have hB0 : (0 : ℝ) < B := by linarith
   have hGbound : ‖G‖ ≤ Real.exp (-(rate * B))
-      * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2) :=
+      * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)) :=
     norm_scaledGaussian_lattice_damped σ hσ (w target) hσ₀le hKb hB hk hx
   have hexp1 : Real.exp (-(rate * B)) ≤ 1 := by
     refine Real.exp_le_one_iff.mpr ?_
     have : 0 ≤ rate * B := mul_nonneg hpos hB0.le
     linarith
-  have hexp2 : Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2) ≤ 1 := by
+  have hexp2 : Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)) ≤ 1 := by
     refine Real.exp_le_one_iff.mpr ?_
-    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * ((k i : ℝ)) ^ 2 :=
+    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => mul_nonneg (by linarith [hσ i]) (sq_nonneg _)
     linarith
   have hGle1 : ‖G‖ ≤ 1 := by
     refine le_trans hGbound ?_
     nlinarith [hexp1, hexp2, (Real.exp_pos (-(rate * B))).le,
-      (Real.exp_pos (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)).le]
+      (Real.exp_pos (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))).le]
   -- the geometric factor of the damping is uniformly bounded
   have hgeom : ∑ r ∈ Finset.range m, (1 + ‖G‖) ^ r ≤ (2 : ℝ) ^ m := by
     have hle : ∀ r ∈ Finset.range m, (1 + ‖G‖) ^ r ≤ (2 : ℝ) ^ r := fun r _ =>
@@ -99,27 +99,27 @@ theorem exists_norm_scaledFlatSeed_lattice_damped {d : ℕ} {I : Type*} [Fintype
         (x + integerCastVector k)‖ * ‖MvPolynomial.eval (x + integerCastVector k) P‖
       ≤ ((2 : ℝ) ^ m * Cp) * (Real.exp (-(rate * B))
           * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2))) := by
+            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)))) := by
     have hd1 : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1
         (x + integerCastVector k)‖
         ≤ (2 : ℝ) ^ m * (Real.exp (-(rate * B))
-          * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)) := by
+          * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))) := by
       refine le_trans hdamp ?_
       nlinarith [hGbound, norm_nonneg G, pow_pos (by norm_num : (0:ℝ) < 2) m]
     have hd0 : (0 : ℝ) ≤ (2 : ℝ) ^ m * (Real.exp (-(rate * B))
-        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)) := by positivity
+        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))) := by positivity
     calc ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1
             (x + integerCastVector k)‖ * ‖MvPolynomial.eval (x + integerCastVector k) P‖
         ≤ ((2 : ℝ) ^ m * (Real.exp (-(rate * B))
-            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)))
+            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))))
           * (Cp * ∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i)) :=
           mul_le_mul hd1 h3 (norm_nonneg _) hd0
       _ = ((2 : ℝ) ^ m * Cp) * (Real.exp (-(rate * B))
           * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2))) := by ring
+            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)))) := by ring
   have hrhs : (0 : ℝ) ≤ ((2 : ℝ) ^ m * Cp) * (Real.exp (-(rate * B))
       * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2))) := by positivity
+        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)))) := by positivity
   calc ‖(flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump.1
           (x + integerCastVector k)‖
         * (‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1
@@ -127,11 +127,11 @@ theorem exists_norm_scaledFlatSeed_lattice_damped {d : ℕ} {I : Type*} [Fintype
           * ‖MvPolynomial.eval (x + integerCastVector k) P‖)
       ≤ Cb * (((2 : ℝ) ^ m * Cp) * (Real.exp (-(rate * B))
           * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)))) :=
+            * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))))) :=
         mul_le_mul h1 hstep (by positivity) hCb0
     _ = Cb * ((2 : ℝ) ^ m * Cp) * Real.exp (-(rate * B))
         * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2)) := by ring
+          * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ))) := by ring
 
 /-- **The rescaled flat seed is exponentially damped on every real translate carrying enough
 Gaussian mass.**  This is the form the general complement of a quasi-Abelian lattice needs, where
@@ -140,16 +140,16 @@ theorem exists_norm_scaledFlatSeed_realTranslate_damped {d : ℕ} {I : Type*} [F
     [DecidableEq I] (w : I → Fin d → ℂ)
     (hdistinct : PairwiseDistinctModulo (standardIntegerLattice d) w)
     (target : I) {m : ℕ} (hm : 0 < m) (σ : Fin d → ℝ) (hσ : ∀ i, 0 < σ i)
-    {ρ σ₀ : ℝ} (hpos : 0 ≤ σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2))
+    {ρ σ₀ : ℝ} (hpos : 0 ≤ σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ)))
     (P : MvPolynomial (Fin d) ℂ) {K : Set (Fin d → ℂ)} (hK : IsCompact K)
     (hKb : ∀ x ∈ K, ∀ i, |(x i).re - (w target i).re| ≤ ρ ∧ |(x i).im - (w target i).im| ≤ ρ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ B : ℝ, 1 ≤ B → ∀ v : Fin d → ℝ, σ₀ ≤ ∑ i, σ i * (v i) ^ 2 → ∀ x ∈ K,
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ B : ℝ, 1 ≤ B → ∀ v : Fin d → ℝ, σ₀ ≤ ∑ i, σ i * (v i) ^ (2 : ℕ) → ∀ x ∈ K,
       ‖(multivariateEntireMul (flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump
           (multivariateEntireMul (gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping
             (mvPolynomialMultivariateEntire P))).1 (x + fun i => ((v i : ℝ) : ℂ))‖
-        ≤ C * Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2)) * B))
+        ≤ C * Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) * B))
           * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by
   classical
   obtain ⟨R, hR0, hR⟩ := exists_coordinate_bound_of_isCompact hK
   obtain ⟨Cb, hCb0, hCb⟩ :=
@@ -157,23 +157,23 @@ theorem exists_norm_scaledFlatSeed_realTranslate_damped {d : ℕ} {I : Type*} [F
   obtain ⟨Cp, hCp0, hCp⟩ := exists_norm_mvPolynomial_eval_le P
   refine ⟨Cb * ((2 : ℝ) ^ m * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i))), by positivity,
     fun B hB v hv x hx => ?_⟩
-  set rate : ℝ := σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2) with hrate
+  set rate : ℝ := σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ)) with hrate
   set y : Fin d → ℂ := x + fun i => ((v i : ℝ) : ℂ) with hy
   set G : ℂ := (centeredComplexGaussian (fun i => B * σ i) (w target)).1 y with hGdef
   have hB0 : (0 : ℝ) < B := by linarith
-  have hGbound : ‖G‖ ≤ Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) :=
+  have hGbound : ‖G‖ ≤ Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) :=
     norm_scaledGaussian_realTranslate_damped σ hσ (w target) hKb hB hv hx
   have hexp1 : Real.exp (-(rate * B)) ≤ 1 :=
     Real.exp_le_one_iff.mpr (by nlinarith [mul_nonneg hpos hB0.le])
-  have hexp2 : Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) ≤ 1 := by
+  have hexp2 : Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) ≤ 1 := by
     refine Real.exp_le_one_iff.mpr ?_
-    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * (v i) ^ 2 :=
+    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * (v i) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => mul_nonneg (by linarith [hσ i]) (sq_nonneg _)
     linarith
   have hGle1 : ‖G‖ ≤ 1 := by
     refine le_trans hGbound ?_
     nlinarith [hexp1, hexp2, (Real.exp_pos (-(rate * B))).le,
-      (Real.exp_pos (-∑ i, σ i / 4 * (v i) ^ 2)).le]
+      (Real.exp_pos (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))).le]
   have hgeom : ∑ r ∈ Finset.range m, (1 + ‖G‖) ^ r ≤ (2 : ℝ) ^ m := by
     have hle : ∀ r ∈ Finset.range m, (1 + ‖G‖) ^ r ≤ (2 : ℝ) ^ r := fun r _ =>
       pow_le_pow_left₀ (by positivity) (by linarith) r
@@ -232,7 +232,7 @@ theorem exists_norm_scaledFlatSeed_realTranslate_damped {d : ℕ} {I : Type*} [F
           * MvPolynomial.eval y P) := rfl
   rw [hval, norm_mul, norm_mul]
   have hdampbound : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
-      ≤ (2 : ℝ) ^ m * (Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+      ≤ (2 : ℝ) ^ m * (Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by
     refine le_trans hdamp ?_
     nlinarith [hGbound, norm_nonneg G, pow_pos (by norm_num : (0:ℝ) < 2) m]
   have hprodv0 : (0 : ℝ) ≤ ∏ i, (1 + |v i|) ^ (P.degreeOf i) :=
@@ -242,28 +242,28 @@ theorem exists_norm_scaledFlatSeed_realTranslate_damped {d : ℕ} {I : Type*} [F
       ≤ ((2 : ℝ) ^ m * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
         * (Real.exp (-(rate * B))
           * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))) := by
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)))) := by
     calc ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
           * ‖MvPolynomial.eval y P‖
-        ≤ ((2 : ℝ) ^ m * (Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)))
+        ≤ ((2 : ℝ) ^ m * (Real.exp (-(rate * B)) * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))))
           * ((Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i)) :=
           mul_le_mul hdampbound h3 (norm_nonneg _) (by positivity)
       _ = ((2 : ℝ) ^ m * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
           * (Real.exp (-(rate * B))
             * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-              * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))) := by ring
+              * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)))) := by ring
   calc ‖(flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump.1 y‖
         * (‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
           * ‖MvPolynomial.eval y P‖)
       ≤ Cb * (((2 : ℝ) ^ m * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
           * (Real.exp (-(rate * B))
             * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-              * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)))) :=
+              * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))))) :=
         mul_le_mul h1 hstep (by positivity) hCb0
     _ = Cb * ((2 : ℝ) ^ m * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
         * Real.exp (-(rate * B))
         * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by ring
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by ring
 
 end
 

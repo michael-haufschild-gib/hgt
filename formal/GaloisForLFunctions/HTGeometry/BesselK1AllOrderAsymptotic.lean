@@ -28,16 +28,16 @@ theorem besselK1C_eq_gauss (hw : 0 < w.re) :
     _root_.HTGeometry.besselK1C w
       = 2 * Complex.exp (-w) * ∫ v in Ioi (0 : ℝ),
           ((_root_.HTGeometry.besselLaplaceProfile v : ℝ) : ℂ)
-            * Complex.exp (-w * (v : ℂ) ^ 2) := by
+            * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) := by
   rw [_root_.HTGeometry.besselK1C_eq_integral_laplaceKernel hw]
   have hpt : ∀ v : ℝ, _root_.HTGeometry.besselLaplaceKernel w v
       = (2 * Complex.exp (-w))
         * (((_root_.HTGeometry.besselLaplaceProfile v : ℝ) : ℂ)
-          * Complex.exp (-w * (v : ℂ) ^ 2)) := by
+          * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))) := by
     intro v
     rw [_root_.HTGeometry.besselLaplaceKernel]
-    have hexp : Complex.exp (-w * (1 + (v : ℂ) ^ 2))
-        = Complex.exp (-w) * Complex.exp (-w * (v : ℂ) ^ 2) := by
+    have hexp : Complex.exp (-w * (1 + (v : ℂ) ^ (2 : ℕ)))
+        = Complex.exp (-w) * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) := by
       rw [← Complex.exp_add]
       congr 1
       ring
@@ -58,7 +58,7 @@ theorem norm_besselK1C_sub_watson_le (hw : 0 < w.re) (m : ℕ) :
       * ∑ k ∈ Finset.range (m + 1), ((schlafliCoeff k : ℝ) : ℂ) * gaussianHalfMoment w k
       = (2 * Complex.exp (-w))
         * ((∫ v in Ioi (0 : ℝ), ((_root_.HTGeometry.besselLaplaceProfile v : ℝ) : ℂ)
-              * Complex.exp (-w * (v : ℂ) ^ 2))
+              * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)))
           - ∑ k ∈ Finset.range (m + 1), ((schlafliCoeff k : ℝ) : ℂ) * gaussianHalfMoment w k) := by
     rw [besselK1C_eq_gauss hw]
     ring

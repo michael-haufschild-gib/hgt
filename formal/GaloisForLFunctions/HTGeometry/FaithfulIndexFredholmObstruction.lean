@@ -40,7 +40,7 @@ def NegIndexAtMost (A : H →L[ℂ] H) (m : ℕ) : Prop :=
 def HasCoerciveComplement (A : H →L[ℂ] H) (ε : ℝ) (d : ℕ) : Prop :=
   0 < ε ∧ ∃ V U : Submodule ℂ H,
     FiniteDimensional ℂ U ∧ Module.finrank ℂ U ≤ d ∧ V ⊔ U = ⊤ ∧
-      ∀ x ∈ V, ε * ‖x‖ ^ 2 ≤ (inner ℂ x (A x) : ℂ).re
+      ∀ x ∈ V, ε * ‖x‖ ^ (2 : ℕ) ≤ (inner ℂ x (A x) : ℂ).re
 
 /-! ## A dimension bound across a finite-codimension subspace -/
 
@@ -81,7 +81,7 @@ theorem finrank_le_of_trivial_meet_of_sup_eq_top
 /-! ## Stability of the negative Morse index -/
 
 theorem abs_re_inner_sub_le {A B : H →L[ℂ] H} (x : H) :
-    |(inner ℂ x (B x) : ℂ).re - (inner ℂ x (A x) : ℂ).re| ≤ ‖B - A‖ * ‖x‖ ^ 2 := by
+    |(inner ℂ x (B x) : ℂ).re - (inner ℂ x (A x) : ℂ).re| ≤ ‖B - A‖ * ‖x‖ ^ (2 : ℕ) := by
   have hval : (inner ℂ x (B x) : ℂ) - (inner ℂ x (A x) : ℂ) = inner ℂ x ((B - A) x) := by
     rw [sub_apply, inner_sub_right]
   have h1 : |(inner ℂ x ((B - A) x) : ℂ).re| ≤ ‖(inner ℂ x ((B - A) x) : ℂ)‖ :=
@@ -96,7 +96,7 @@ theorem abs_re_inner_sub_le {A B : H →L[ℂ] H} (x : H) :
   calc |(inner ℂ x ((B - A) x) : ℂ).re| ≤ ‖x‖ * ‖(B - A) x‖ := le_trans h1 h2
     _ ≤ ‖x‖ * (‖B - A‖ * ‖x‖) := by
         exact mul_le_mul_of_nonneg_left h3 hx
-    _ = ‖B - A‖ * ‖x‖ ^ 2 := by ring
+    _ = ‖B - A‖ * ‖x‖ ^ (2 : ℕ) := by ring
 
 /-- **Index stability.**  If `A` is uniformly positive off a `d`-dimensional subspace with gap `ε`,
 then every operator within norm distance `ε` of `A` has negative Morse index at most `d`. -/
@@ -112,10 +112,10 @@ theorem negIndexAtMost_of_coerciveComplement
     have h1 := hWneg x hxW hx0
     have h2 := hcoer x hxV
     have h3 := abs_re_inner_sub_le (A := A) (B := B) x
-    have h4 : -(‖B - A‖ * ‖x‖ ^ 2)
+    have h4 : -(‖B - A‖ * ‖x‖ ^ (2 : ℕ))
         ≤ (inner ℂ x (B x) : ℂ).re - (inner ℂ x (A x) : ℂ).re := neg_le_of_abs_le h3
     have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx0
-    have hxsq : 0 < ‖x‖ ^ 2 := by positivity
+    have hxsq : 0 < ‖x‖ ^ (2 : ℕ) := by positivity
     nlinarith [h1, h2, h4, hxsq, hAB]
   exact le_trans (finrank_le_of_trivial_meet_of_sup_eq_top hUfin hsup hdisj) hUd
 

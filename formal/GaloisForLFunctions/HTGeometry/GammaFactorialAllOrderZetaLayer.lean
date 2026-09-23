@@ -51,13 +51,13 @@ theorem norm_shiftedInversePow_sub_inversePow_le {z : ℂ}
     linarith
   have hdiff0 := norm_shiftedInverse_sub_inverse_le hz j
   have hdiff : ‖u - v‖ ≤ 2 * ‖z‖ / k := by
-    have hk2 : 1 ≤ k ^ 2 := by nlinarith
+    have hk2 : 1 ≤ k ^ (2 : ℕ) := by nlinarith
     have hmul := mul_le_mul_of_nonneg_left hk2
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (norm_nonneg z))
-    have hcoarse : 2 * ‖z‖ / k ^ 2 ≤ 2 * ‖z‖ / k := by
+    have hcoarse : 2 * ‖z‖ / k ^ (2 : ℕ) ≤ 2 * ‖z‖ / k := by
       field_simp [hkpos.ne']
       nlinarith [hmul]
-    have hdiff1 : ‖u - v‖ ≤ 2 * ‖z‖ / k ^ 2 := by
+    have hdiff1 : ‖u - v‖ ≤ 2 * ‖z‖ / k ^ (2 : ℕ) := by
       simpa [u, v, c, k] using hdiff0
     exact hdiff1.trans hcoarse
   let S : ℂ := ∑ i ∈ Finset.range p, u ^ i * v ^ (p - 1 - i)

@@ -24,7 +24,7 @@ open scoped BigOperators Matrix.Norms.Operator
 namespace RHTower.DeletionJointSharpness
 open GaloisForLFunctions.HTGeometry.NoncommutativeAbel
 noncomputable section
-local instance : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
+local instance eulerDeletionJointFifthPhaseInst1 : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
 
 /-- Difference between the first source weight and its complete six-term block average. -/
 def strideCorrection (w : ℂ) (k : ℕ) : ℂ :=

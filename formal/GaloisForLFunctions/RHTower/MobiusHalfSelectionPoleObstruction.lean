@@ -15,7 +15,7 @@ L-series is the product of the two verified source factors.
 
 There is no holomorphic function on `Re s > 1/2` agreeing with this L-series
 on `Re s > 2`. Squaring and using the entire zeta pole unit would force
-`F(s)^2 Z(s)=(s-1)B(s)^2 R(s)`. At one, the left side has zero value and
+`F(s)^(2 : ℕ) Z(s)=(s-1)B(s)^(2 : ℕ) R(s)`. At one, the left side has zero value and
 zero derivative, whereas the right derivative is nonzero.
 
 This closes the analytic obstruction for the exact source. Transferring a
@@ -96,8 +96,8 @@ theorem not_exists_analytic_halfSelectionDivisor_extension :
       ∀ s : ℂ, 2<s.re → F s = LSeries halfSelectionDivisorConvolution s := by
   rintro ⟨F,hF,hFar⟩
   let U : Set ℂ := {s : ℂ | (1/2:ℝ)<s.re}
-  let H : ℂ → ℂ := fun s => F s^2*zetaPoleUnit s -
-    (s-1)*divisorSourceDirichlet s^2*halfSelectionEulerCorrection s
+  let H : ℂ → ℂ := fun s => F s^(2 : ℕ)*zetaPoleUnit s -
+    (s-1)*divisorSourceDirichlet s^(2 : ℕ)*halfSelectionEulerCorrection s
   have hH : AnalyticOnNhd ℂ H U := by
     intro s hs
     exact (((hF s hs).pow 2).mul (differentiable_zetaPoleUnit.analyticAt s)).sub
@@ -124,10 +124,10 @@ theorem not_exists_analytic_halfSelectionDivisor_extension :
   have hf1 : F 1=0 := by
     have h := hzero hone
     dsimp [H] at h
-    have hsq : F 1^2=0 := by simpa [zetaPoleUnit_one] using h
+    have hsq : F 1^(2 : ℕ)=0 := by simpa [zetaPoleUnit_one] using h
     exact (sq_eq_zero_iff).mp hsq
-  have heq : (fun s : ℂ => F s^2*zetaPoleUnit s) =ᶠ[𝓝 (1:ℂ)]
-      (fun s : ℂ => (s-1)*divisorSourceDirichlet s^2*halfSelectionEulerCorrection s) := by
+  have heq : (fun s : ℂ => F s^(2 : ℕ)*zetaPoleUnit s) =ᶠ[𝓝 (1:ℂ)]
+      (fun s : ℂ => (s-1)*divisorSourceDirichlet s^(2 : ℕ)*halfSelectionEulerCorrection s) := by
     filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
       (show (1/2:ℝ)<(1:ℂ).re by norm_num)] with s hs
     exact sub_eq_zero.mp (hzero hs)
@@ -137,7 +137,7 @@ theorem not_exists_analytic_halfSelectionDivisor_extension :
   have hleft := (hFd.pow 2).mul (differentiable_zetaPoleUnit 1).hasDerivAt
   have hright := (((hasDerivAt_id (1:ℂ)).sub_const 1).mul (hBd.pow 2)).mul hRd
   have hbad := hright.unique (hleft.congr_of_eventuallyEq heq.symm)
-  have hbad' : divisorSourceDirichlet 1^2*halfSelectionEulerCorrection 1 = 0 := by
+  have hbad' : divisorSourceDirichlet 1^(2 : ℕ)*halfSelectionEulerCorrection 1 = 0 := by
     simpa [Pi.pow_apply,Pi.mul_apply,hf1] using hbad
   exact (mul_ne_zero (pow_ne_zero 2 divisorSourceDirichlet_one_ne_zero)
     halfSelectionEulerCorrection_one_ne_zero) hbad'

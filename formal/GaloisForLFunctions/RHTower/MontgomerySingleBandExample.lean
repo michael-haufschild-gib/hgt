@@ -29,7 +29,7 @@ theorem sum_Ico_rpow_div_factorial_le {τ : ℝ} (hτ0 : 0 ≤ τ) (hτ1 : τ < 
     _ ≤ (τ ^ 2) ^ 1 / (1 - τ ^ 2) := geom_sum_Ico_le_of_lt_one hτ20 hτ2
     _ = τ ^ 2 / (1 - τ ^ 2) := by rw [pow_one]
 
-/-- The remainder factor `N ρ_{N+1}²` is at most `2 τ^2` for `τ ≤ 1/2`. -/
+/-- The remainder factor `N ρ_{N+1}²` is at most `2 τ^(2 : ℕ)` for `τ ≤ 1/2`. -/
 theorem card_mul_remainder_sq_le {τ : ℝ} (hτ0 : 0 ≤ τ) (hτ1 : τ ≤ 1 / 2) (N : ℕ) :
     (N : ℝ) * (τ ^ (N + 1) * (((N + 1).succ : ℝ) / (((N + 1).factorial : ℝ) * (N + 1)))) ^ 2
       ≤ τ ^ 2 := by

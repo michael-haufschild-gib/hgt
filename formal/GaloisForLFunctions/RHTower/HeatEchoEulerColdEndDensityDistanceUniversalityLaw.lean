@@ -17,14 +17,14 @@ open Filter Topology Set MeasureTheory
 noncomputable section
 
 /-- **Heat-depth Euler density-distance universality law.**  Along every integer heat-depth ray,
-the dyadically normalized local conformal density tends `(log 2)^2`, while the square-root
+the dyadically normalized local conformal density tends `(log 2)^(2 : ℕ)`, while the square-root
 normalized remaining radial distance from the same translated inverse temperature tends `2`. -/
 theorem tendsto_heatApertureEulerColdEnd_density_and_remainingDistance
     (sigma : ℝ) (q : ℕ) :
     Tendsto (fun k : ℕ =>
       (2 : ℝ) ^ (1 - sigma + (q : ℝ) + (k : ℝ)) *
         heatApertureEulerMixedMoment sigma q k 2)
-      atTop (𝓝 ((Real.log 2) ^ 2)) ∧
+      atTop (𝓝 ((Real.log 2) ^ (2 : ℕ))) ∧
     Tendsto (fun k : ℕ =>
       (2 : ℝ) ^ ((1 - sigma + (q : ℝ) + (k : ℝ)) / 2) *
         ∫ u in Ioi (1 - sigma + (q : ℝ) + (k : ℝ)),

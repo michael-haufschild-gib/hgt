@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.XiThermalSourceRelativeGapBound
 The scale-covariant Bernstein--Abel recession selects the supremum of
 `|lambda| - Re lambda` over the centered reciprocal-square Xi coordinates.  This file writes that
 defect exactly in horizontal/vertical zero coordinates and combines the open critical strip with
-the source-derived squared-height gap `41/2 < (Im rho)^2`.  The result is an unconditional uniform
+the source-derived squared-height gap `41/2 < (Im rho)^(2 : ℕ)`.  The result is an unconditional uniform
 bound on the exact Xi recession invariant; it does not assert that the invariant vanishes.
 -/
 
@@ -23,11 +23,11 @@ coordinates. -/
 theorem norm_xiZeroCopyReciprocalSquare_eq_horizontalVertical
     (q : XiZeroCopy) :
     ‖xiZeroCopyReciprocalSquare q‖ =
-      1 / (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) := by
+      1 / (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) := by
   rw [xiZeroCopyReciprocalSquare, norm_pow, norm_inv, norm_xiSpectralPoint,
     div_eq_mul_inv, one_mul]
-  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ 2 =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ (2 : ℕ) =
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     norm_num [Complex.sub_re, Complex.sub_im]
     ring
@@ -39,13 +39,13 @@ coordinate. -/
 theorem transverseDefect_xiZeroCopyReciprocalSquare_eq
     (q : XiZeroCopy) :
     HTGeometry.transverseDefect (xiZeroCopyReciprocalSquare q) =
-      2 * ((q.1 : ℂ).re - 1 / 2) ^ 2 /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2 := by
+      2 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [HTGeometry.transverseDefect,
     norm_xiZeroCopyReciprocalSquare_eq_horizontalVertical,
     xiZeroCopyReciprocalSquare_re_formula]
   have hden :
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   field_simp [hden]
   ring
@@ -57,22 +57,22 @@ theorem transverseDefect_xiZeroCopyReciprocalSquare_lt_two_over_1681
     (q : XiZeroCopy) :
     HTGeometry.transverseDefect (xiZeroCopyReciprocalSquare q) < 2 / 1681 := by
   rw [transverseDefect_xiZeroCopyReciprocalSquare_eq]
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let D : ℝ := (u + v) ^ 2
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+  let D : ℝ := (u + v) ^ (2 : ℕ)
   have hu0 : 0 ≤ u := by dsimp [u]; positivity
   have hu : u < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hv : 41 / 2 < v := by
     simpa only [v] using xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have huv : 41 / 2 < u + v := by linarith
-  have hD : (41 / 2 : ℝ) ^ 2 < D := by
+  have hD : (41 / 2 : ℝ) ^ (2 : ℕ) < D := by
     dsimp [D]
     nlinarith [sq_pos_of_pos (sub_pos.mpr huv)]
   have hDpos : 0 < D := (sq_pos_of_pos (by linarith : 0 < (41 / 2 : ℝ))).trans hD
-  rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-    show (q.1 : ℂ).im ^ 2 = v by rfl,
-    show (u + v) ^ 2 = D by rfl]
+  rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+    show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+    show (u + v) ^ (2 : ℕ) = D by rfl]
   rw [div_lt_iff₀ hDpos]
   have hleft : 2 * u < 1 / 2 := by linarith
   have hright : (1 / 2 : ℝ) < 2 / 1681 * D := by

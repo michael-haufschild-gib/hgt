@@ -10,7 +10,7 @@ noncomputable section
 
 /-- Residual transition after removing the uniform-refresh component from two Gibbs steps. -/
 def egbFixedChargeACriticalMarkovRefreshWeight (n : ℕ) (i j : Fin (2 ^ (n + 3))) : ℝ :=
-  (6 / 5) * (((egbFixedChargeACriticalMarkovMatrix n ^ 2) i j).re -
+  (6 / 5) * (((egbFixedChargeACriticalMarkovMatrix n ^ (2 : ℕ)) i j).re -
     1 / (6 * (2 : ℝ) ^ (n + 3)))
 
 /-- The sharp positive floor makes the residual weights nonnegative. -/
@@ -48,7 +48,7 @@ def egbFixedChargeACriticalMarkovRefreshKernel (n : ℕ) :
 /-- Exact two-step decomposition into uniform refresh and residual Markov transition. -/
 theorem egbFixedChargeACriticalMarkovRefresh_decomposition
     (n : ℕ) (i j : Fin (2 ^ (n + 3))) :
-    ((egbFixedChargeACriticalMarkovMatrix n ^ 2) i j).re =
+    ((egbFixedChargeACriticalMarkovMatrix n ^ (2 : ℕ)) i j).re =
       (1 / 6) * ((2 : ℝ) ^ (n + 3))⁻¹ +
         (5 / 6) * egbFixedChargeACriticalMarkovRefreshWeight n i j := by
   unfold egbFixedChargeACriticalMarkovRefreshWeight
@@ -61,7 +61,7 @@ theorem egbFixedChargeACriticalMarkovRefresh_action
       fun i => (1 / (6 * (2 : ℝ) ^ (n + 3))) * (∑ j, f j) +
         (5 / 6) * (egbFixedChargeACriticalMarkovRefreshKernel n).toFinitePositiveKernel.applyReal f i := by
   funext i
-  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ 2) i j).re * f j) = _
+  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ (2 : ℕ)) i j).re * f j) = _
   simp only [egbFixedChargeACriticalMarkovRefresh_decomposition, add_mul,
     Finset.sum_add_distrib]
   change (∑ j, (1 / 6 * ((2 : ℝ) ^ (n + 3))⁻¹) * f j) +

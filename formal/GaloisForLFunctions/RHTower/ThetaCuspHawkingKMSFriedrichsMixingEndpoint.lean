@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiRealAxisNonvanishing
 
 The tilted moving mirror supplies the coefficient-correct positive-frequency shell density
 
-`J_a(ω) = ω^4 |XiC(ω + a i)|^2 / (48 π^2)`.
+`J_a(ω) = ω^(4 : ℕ) |XiC(ω + a i)|^(2 : ℕ) / (48 π^(2 : ℕ))`.
 
 This file applies the minimal Araki--Woods thermal dilation at Hawking inverse temperature
 `β_H = 2π / κ`.  If `q = exp (-β_H ω)`, its positive- and negative-Liouville-frequency weights are
@@ -37,7 +37,7 @@ namespace RHTower
 
 /-- Unsquared shell form factor whose norm square is the exact tilted-mirror shell density. -/
 def thetaCuspHawkingFriedrichsShellFormFactor (a omega : ℝ) : ℂ :=
-  ((omega ^ 2 / (4 * Real.sqrt 3 * Real.pi) : ℝ) : ℂ) *
+  ((omega ^ (2 : ℕ) / (4 * Real.sqrt 3 * Real.pi) : ℝ) : ℂ) *
     XiC ((omega : ℂ) + (a : ℂ) * I)
 
 theorem normSq_thetaCuspHawkingFriedrichsShellFormFactor
@@ -47,7 +47,7 @@ theorem normSq_thetaCuspHawkingFriedrichsShellFormFactor
   rw [thetaCuspHawkingFriedrichsShellFormFactor,
     thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq]
   simp only [Complex.normSq_mul, Complex.normSq_ofReal]
-  have hsqrt : Real.sqrt 3 ^ 2 = 3 := by norm_num
+  have hsqrt : Real.sqrt 3 ^ (2 : ℕ) = 3 := by norm_num
   have hsqrt0 : Real.sqrt 3 ≠ 0 := by positivity
   field_simp [Real.pi_ne_zero, hsqrt0]
   rw [hsqrt]

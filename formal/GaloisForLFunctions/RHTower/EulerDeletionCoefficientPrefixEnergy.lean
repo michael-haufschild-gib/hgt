@@ -135,15 +135,15 @@ theorem abs_cell_le_mass (a : ℕ → ℝ) (N k : ℕ) : |cell a N k|  ≤  mass
 
 /-- The exact energy series includes all physical cells. -/
 theorem hasSum_source_energy (a : ℕ → ℝ) (N : ℕ) :
-    HasSum (fun j : ℕ => cell a N (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2)))
-      (‖source a N‖^2) := by
+    HasSum (fun j : ℕ => cell a N (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2)))
+      (‖source a N‖^(2 : ℕ)) := by
   have h := hasSum_sum (s := range N) (fun m hm =>
     hasSum_sum (s := range N) (fun n hn =>
       (hasSum_bdGram_discrete (by omega : 1 ≤ m+1) (by omega : 1 ≤ n+1)).mul_left
         (a (m+1)*a (n+1))))
   simp only [Nat.cast_add,Nat.cast_one] at h
   rw [bdGram_quadraticForm_eq_norm_sq] at h
-  change HasSum _ (‖source a N‖^2) at h
+  change HasSum _ (‖source a N‖^(2 : ℕ)) at h
   convert h using 1
   funext j
   simp only [cell,pow_two,sum_mul,mul_sum,sum_div]
@@ -172,12 +172,12 @@ private theorem tail_telescope (T L : ℕ) :
 /-- An explicit complete-energy bound; the complementary tail is not dropped. -/
 theorem source_energy_le (a : ℕ → ℝ) (N T : ℕ) {eps : ℝ}
     (heps : 0  ≤  eps) (hp : ∀ K  ≤  N, |partialSum a K|  ≤  eps*(K : ℝ)) :
-    ‖source a N‖^2  ≤  4*(T : ℝ)*(eps*harmonicMass N)^2+
-      mass a N^2/((T : ℝ)+1) := by
+    ‖source a N‖^(2 : ℕ)  ≤  4*(T : ℝ)*(eps*harmonicMass N)^(2 : ℕ)+
+      mass a N^(2 : ℕ)/((T : ℝ)+1) := by
   let A : ℝ := 2*eps*harmonicMass N
   let W : ℝ := mass a N
-  let f (j : ℕ) : ℝ := cell a N (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2))
-  have hhead (j : ℕ) : f j  ≤  A^2 := by
+  let f (j : ℕ) : ℝ := cell a N (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2))
+  have hhead (j : ℕ) : f j  ≤  A^(2 : ℕ) := by
     have h := abs_cell_le_prefix a N (j+1) heps hp
     change |cell a N (j+1)|  ≤  A*((j+1 : ℕ) : ℝ) at h
     have hs := pow_le_pow_left₀ (abs_nonneg _) h 2
@@ -186,33 +186,33 @@ theorem source_energy_le (a : ℕ → ℝ) (N T : ℕ) {eps : ℝ}
     rw [div_le_iff₀ (by positivity)]
     push_cast at hs
     nlinarith [sq_nonneg A,mul_nonneg (sq_nonneg A) (show 0 ≤ (j : ℝ)+1 by positivity)]
-  have htail (j : ℕ) : f j  ≤  W^2/(((j : ℝ)+1)*((j : ℝ)+2)) := by
+  have htail (j : ℕ) : f j  ≤  W^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2)) := by
     have hs := pow_le_pow_left₀ (abs_nonneg _) (abs_cell_le_mass a N (j+1)) 2
     rw [sq_abs] at hs
     exact div_le_div_of_nonneg_right hs (by positivity)
-  have hbound (K : ℕ) : (∑ j ∈ range K,f j)  ≤  (T : ℝ)*A^2+W^2/((T : ℝ)+1) := by
+  have hbound (K : ℕ) : (∑ j ∈ range K,f j)  ≤  (T : ℝ)*A^(2 : ℕ)+W^(2 : ℕ)/((T : ℝ)+1) := by
     by_cases hKT : K ≤ T
     · calc
-        _  ≤  ∑ j ∈ range K,A^2 := sum_le_sum (fun j _ => hhead j)
-        _ = (K : ℝ)*A^2 := by simp
-        _  ≤  (T : ℝ)*A^2 := mul_le_mul_of_nonneg_right (by exact_mod_cast hKT) (sq_nonneg _)
+        _  ≤  ∑ j ∈ range K,A^(2 : ℕ) := sum_le_sum (fun j _ => hhead j)
+        _ = (K : ℝ)*A^(2 : ℕ) := by simp
+        _  ≤  (T : ℝ)*A^(2 : ℕ) := mul_le_mul_of_nonneg_right (by exact_mod_cast hKT) (sq_nonneg _)
         _  ≤  _ := le_add_of_nonneg_right (by positivity)
     · obtain ⟨L,hL⟩ := Nat.exists_eq_add_of_le (by omega : T ≤ K)
       subst K
       rw [sum_range_add]
-      have hfirst : (∑ j ∈ range T,f j)  ≤  (T : ℝ)*A^2 := by
+      have hfirst : (∑ j ∈ range T,f j)  ≤  (T : ℝ)*A^(2 : ℕ) := by
         calc
-          _  ≤  ∑ _j ∈ range T,A^2 := sum_le_sum (fun j _ => hhead j)
+          _  ≤  ∑ _j ∈ range T,A^(2 : ℕ) := sum_le_sum (fun j _ => hhead j)
           _ = _ := by simp
-      have hlast : (∑ i ∈ range L,f (T+i))  ≤  W^2/((T : ℝ)+1) := by
+      have hlast : (∑ i ∈ range L,f (T+i))  ≤  W^(2 : ℕ)/((T : ℝ)+1) := by
         calc
-          _  ≤  ∑ i ∈ range L,W^2/((((i+T : ℕ) : ℝ)+1)*(((i+T : ℕ) : ℝ)+2)) := by
+          _  ≤  ∑ i ∈ range L,W^(2 : ℕ)/((((i+T : ℕ) : ℝ)+1)*(((i+T : ℕ) : ℝ)+2)) := by
             apply sum_le_sum
             intro i hi
             simpa only [Nat.add_comm T i] using htail (T+i)
-          _ = W^2*(1/((T : ℝ)+1)-1/(((L+T : ℕ) : ℝ)+1)) := by
+          _ = W^(2 : ℕ)*(1/((T : ℝ)+1)-1/(((L+T : ℕ) : ℝ)+1)) := by
             calc
-              _ = W^2*∑ i ∈ range L,1/((((i+T : ℕ) : ℝ)+1)*(((i+T : ℕ) : ℝ)+2)) := by
+              _ = W^(2 : ℕ)*∑ i ∈ range L,1/((((i+T : ℕ) : ℝ)+1)*(((i+T : ℕ) : ℝ)+2)) := by
                 rw [mul_sum]
                 apply sum_congr rfl
                 intro i hi
@@ -227,7 +227,7 @@ theorem source_energy_le (a : ℕ → ℝ) (N T : ℕ) {eps : ℝ}
   have h := le_of_tendsto (hasSum_source_energy a N).tendsto_sum_nat
     (Eventually.of_forall hbound)
   calc
-    _ ≤ (T : ℝ)*A^2+W^2/((T : ℝ)+1) := h
+    _ ≤ (T : ℝ)*A^(2 : ℕ)+W^(2 : ℕ)/((T : ℝ)+1) := h
     _ = _ := by dsimp [A,W]; ring
 
 
@@ -251,8 +251,8 @@ theorem abs_partialSum_le_envelope (a : ℕ → ℝ) {N K : ℕ} (hK : K ≤ N) 
 
 /-- Closed finite bound in terms of measured coefficient data; there is no assumed estimate. -/
 theorem source_energy_le_envelope (a : ℕ → ℝ) (N T : ℕ) :
-    ‖source a N‖^2 ≤ 4*(T : ℝ)*(prefixEnvelope a N*harmonicMass N)^2+
-      mass a N^2/((T : ℝ)+1) :=
+    ‖source a N‖^(2 : ℕ) ≤ 4*(T : ℝ)*(prefixEnvelope a N*harmonicMass N)^(2 : ℕ)+
+      mass a N^(2 : ℕ)/((T : ℝ)+1) :=
   source_energy_le a N T (prefixEnvelope_nonneg a N)
     (fun _K hK => abs_partialSum_le_envelope a hK)
 

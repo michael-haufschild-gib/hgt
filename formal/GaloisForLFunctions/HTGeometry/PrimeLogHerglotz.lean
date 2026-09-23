@@ -204,7 +204,7 @@ def primeLogHerglotzTransportMassOrder (m : ℕ) (b : ℝ) (p : Nat.Primes) : �
 
 /-- **Every finite prime-log cancellation order still crosses every positive transport wall.**
 For `b > 0` and every finite `m`, the transported energy with denominator
-`(1 + (log p)^2)^m` diverges.  Thus no finite order of cancellation at infinity repairs the
+`(1 + (log p)^(2 : ℕ))^m` diverges.  Thus no finite order of cancellation at infinity repairs the
 prime-log Cauchy features after positive exponential transport. -/
 theorem not_summable_primeLogHerglotzTransportMassOrder_of_pos
     (m : ℕ) {b : ℝ} (hb : 0 < b) :

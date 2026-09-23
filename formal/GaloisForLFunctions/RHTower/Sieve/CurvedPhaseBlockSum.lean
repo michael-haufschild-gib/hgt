@@ -21,7 +21,7 @@ open RHTower
 noncomputable section
 
 /-- The dyadic curvature scale of a phase with reciprocal-cube curvature. -/
-def curvedLambda (Y M : ℝ) : ℝ := Y / (36 * Real.pi * M ^ 3)
+def curvedLambda (Y M : ℝ) : ℝ := Y / (36 * Real.pi * M ^ (3 : ℕ))
 
 /-- A phase whose second derivative is pinned to `Y/M³` on every dyadic block above `M₀`. -/
 structure CurvedPhase (φ φ' φ'' : ℝ → ℝ) (Y M₀ : ℝ) : Prop where
@@ -41,7 +41,7 @@ theorem curvedLambda_anti {Y : ℝ} (hY : 0 < Y) {M M' : ℝ} (hM : 0 < M) (hMM 
     curvedLambda Y M' ≤ curvedLambda Y M := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hM' : (0 : ℝ) < M' := lt_of_lt_of_le hM hMM
-  have hcube : M ^ 3 ≤ M' ^ 3 := pow_le_pow_left₀ hM.le hMM 3
+  have hcube : M ^ (3 : ℕ) ≤ M' ^ (3 : ℕ) := pow_le_pow_left₀ hM.le hMM 3
   rw [curvedLambda, curvedLambda]
   gcongr
 
@@ -75,12 +75,12 @@ theorem norm_curvedBlock_le {φ φ' φ'' : ℝ → ℝ} {Y M₀ : ℝ} (h : Curv
 
 /-- The clean dyadic block bound. -/
 def curvedBlockBound (Y M : ℝ) : ℝ :=
-  720 * Real.sqrt (Y / (36 * Real.pi * M)) + 12 * Real.sqrt (36 * Real.pi * M ^ 3 / Y)
+  720 * Real.sqrt (Y / (36 * Real.pi * M)) + 12 * Real.sqrt (36 * Real.pi * M ^ (3 : ℕ) / Y)
 
 theorem mul_sqrt_curvedLambda {Y M : ℝ} (hM : 0 < M) :
     M * Real.sqrt (curvedLambda Y M) = Real.sqrt (Y / (36 * Real.pi * M)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have h : M * Real.sqrt (curvedLambda Y M) = Real.sqrt (M ^ 2 * curvedLambda Y M) := by
+  have h : M * Real.sqrt (curvedLambda Y M) = Real.sqrt (M ^ (2 : ℕ) * curvedLambda Y M) := by
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hM.le]
   rw [h]
   congr 1
@@ -88,7 +88,7 @@ theorem mul_sqrt_curvedLambda {Y M : ℝ} (hM : 0 < M) :
   field_simp
 
 theorem inv_sqrt_curvedLambda {Y M : ℝ} (hY : 0 < Y) (hM : 0 < M) :
-    1 / Real.sqrt (curvedLambda Y M) = Real.sqrt (36 * Real.pi * M ^ 3 / Y) := by
+    1 / Real.sqrt (curvedLambda Y M) = Real.sqrt (36 * Real.pi * M ^ (3 : ℕ) / Y) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [one_div, ← Real.sqrt_inv, curvedLambda]
   congr 1
@@ -108,7 +108,7 @@ theorem norm_curvedBlock_le_bound {φ φ' φ'' : ℝ → ℝ} {Y M₀ : ℝ} (h 
   have hs1 : s ≤ 1 := by
     rw [hsdef, show (1 : ℝ) = Real.sqrt 1 by simp]
     exact Real.sqrt_le_sqrt hlam1
-  have hssq : s ^ 2 = curvedLambda Y M := Real.sq_sqrt hlam0.le
+  have hssq : s ^ (2 : ℕ) = curvedLambda Y M := Real.sq_sqrt hlam0.le
   have hraw := norm_curvedBlock_le h hM hN hspan hlam1
   refine hraw.trans ?_
   have hgoal : (2 * (N : ℝ) * 90 * curvedLambda Y M + 3) * (3 / s + 1)
@@ -124,8 +124,8 @@ def curvedSum (φ : ℝ → ℝ) (A B : ℕ) : ℂ :=
   ∑ m ∈ Finset.Ico A B, Complex.exp (((2 * Real.pi * φ m : ℝ) : ℂ) * Complex.I)
 
 theorem sqrt_curved_block_split {Y M : ℝ} (hY : 0 < Y) (_hM : 0 ≤ M) :
-    Real.sqrt (36 * Real.pi * M ^ 3 / Y)
-      = Real.sqrt (36 * Real.pi / Y) * Real.sqrt (M ^ 3) := by
+    Real.sqrt (36 * Real.pi * M ^ (3 : ℕ) / Y)
+      = Real.sqrt (36 * Real.pi / Y) * Real.sqrt (M ^ (3 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [← Real.sqrt_mul (by positivity)]
   congr 1
@@ -225,15 +225,15 @@ theorem norm_curvedSum_le {φ φ' φ'' : ℝ → ℝ} {Y M₀ : ℝ} (h : Curved
       rw [curvedBlockBound, sqrt_curved_block_split h.Y_pos hA0.le, nearDiagonalTopSum_succ]
       have hs1 : 0 ≤ Real.sqrt (Y / (36 * Real.pi * A)) := Real.sqrt_nonneg _
       have hs2 : 0 ≤ Real.sqrt (36 * Real.pi / Y) := Real.sqrt_nonneg _
-      have hs3 : 0 ≤ Real.sqrt (((A : ℝ)) ^ 3) := Real.sqrt_nonneg _
+      have hs3 : 0 ≤ Real.sqrt (((A : ℝ)) ^ (3 : ℕ)) := Real.sqrt_nonneg _
       have hs4 := nearDiagonalTopSum_nonneg (2 * A) J
       have hconst := const_recursion
       have hkey : (720 + 2500 / Real.sqrt 2) * Real.sqrt (Y / (36 * Real.pi * A))
           ≤ 2500 * Real.sqrt (Y / (36 * Real.pi * A)) :=
         mul_le_mul_of_nonneg_right hconst hs1
       have hexpand : 12 * Real.sqrt (36 * Real.pi / Y)
-            * (Real.sqrt ((A : ℝ) ^ 3) + nearDiagonalTopSum (2 * A) J)
-          = 12 * (Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((A : ℝ) ^ 3))
+            * (Real.sqrt ((A : ℝ) ^ (3 : ℕ)) + nearDiagonalTopSum (2 * A) J)
+          = 12 * (Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((A : ℝ) ^ (3 : ℕ)))
             + 12 * Real.sqrt (36 * Real.pi / Y) * nearDiagonalTopSum (2 * A) J := by
         ring
       have hdiv : 2500 * Real.sqrt (Y / (36 * Real.pi * A)) / Real.sqrt 2
@@ -252,13 +252,13 @@ theorem norm_curvedSum_le_final {φ φ' φ'' : ℝ → ℝ} {Y M₀ : ℝ} (h : 
     (A B : ℕ) (hA : 1 ≤ A) (hMA : M₀ ≤ (A : ℝ)) (hlam : curvedLambda Y (A : ℝ) ≤ 1) :
     ‖curvedSum φ A B‖
       ≤ 2500 * Real.sqrt (Y / (36 * Real.pi * A))
-        + 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ 3) := by
+        + 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hs2 : 0 ≤ Real.sqrt (36 * Real.pi / Y) := Real.sqrt_nonneg _
   have hs1 : 0 ≤ Real.sqrt (Y / (36 * Real.pi * A)) := Real.sqrt_nonneg _
   by_cases hBA : B ≤ A
   · rw [curvedSum, Finset.Ico_eq_empty_of_le hBA, Finset.sum_empty, norm_zero]
-    have h3 : 0 ≤ Real.sqrt (((B : ℝ)) ^ 3) := Real.sqrt_nonneg _
+    have h3 : 0 ≤ Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := Real.sqrt_nonneg _
     nlinarith
   · have hAB : A < B := Nat.lt_of_not_le hBA
     set Jmin := Nat.find (exists_dyadic_cover_nat A B hA) with hJmin
@@ -282,30 +282,30 @@ theorem norm_curvedSum_le_final {φ φ' φ'' : ℝ → ℝ} {Y M₀ : ℝ} (h : 
     have hmain := norm_curvedSum_le h Jmin A B hA hMA hcover hlam
     refine hmain.trans ?_
     have hcol := nearDiagonalTopSum_le A Jmin
-    have hmono : Real.sqrt (((A : ℝ) * 2 ^ Jmin) ^ 3) ≤ Real.sqrt ((2 * (B : ℝ)) ^ 3) := by
+    have hmono : Real.sqrt (((A : ℝ) * 2 ^ Jmin) ^ (3 : ℕ)) ≤ Real.sqrt ((2 * (B : ℝ)) ^ (3 : ℕ)) := by
       refine Real.sqrt_le_sqrt ?_
       have hnn : (0 : ℝ) ≤ (A : ℝ) * 2 ^ Jmin := by positivity
       exact pow_le_pow_left₀ hnn htop 3
-    have hcube : Real.sqrt ((2 * (B : ℝ)) ^ 3) = 2 * Real.sqrt 2 * Real.sqrt (((B : ℝ)) ^ 3) := by
-      rw [show (2 * (B : ℝ)) ^ 3 = ((B : ℝ)) ^ 3 * 8 by ring, Real.sqrt_mul (by positivity)]
+    have hcube : Real.sqrt ((2 * (B : ℝ)) ^ (3 : ℕ)) = 2 * Real.sqrt 2 * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
+      rw [show (2 * (B : ℝ)) ^ (3 : ℕ) = ((B : ℝ)) ^ (3 : ℕ) * 8 by ring, Real.sqrt_mul (by positivity)]
       have h8 : Real.sqrt 8 = 2 * Real.sqrt 2 := by
-        rw [show (8 : ℝ) = 2 ^ 2 * 2 by norm_num, Real.sqrt_mul (by positivity),
+        rw [show (8 : ℝ) = 2 ^ (2 : ℕ) * 2 by norm_num, Real.sqrt_mul (by positivity),
           Real.sqrt_sq (by norm_num)]
       rw [h8]
       ring
     have hsq2 : Real.sqrt 2 ≤ 1.5 := by
-      rw [show (1.5 : ℝ) = Real.sqrt (1.5 ^ 2) by rw [Real.sqrt_sq (by norm_num)]]
+      rw [show (1.5 : ℝ) = Real.sqrt (1.5 ^ (2 : ℕ)) by rw [Real.sqrt_sq (by norm_num)]]
       exact Real.sqrt_le_sqrt (by norm_num)
-    have hfin : nearDiagonalTopSum A Jmin ≤ (9 / 5 : ℝ) * Real.sqrt (((B : ℝ)) ^ 3) := by
+    have hfin : nearDiagonalTopSum A Jmin ≤ (9 / 5 : ℝ) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
       refine hcol.trans ?_
       rw [hcube] at hmono
-      have hB3 : 0 ≤ Real.sqrt (((B : ℝ)) ^ 3) := Real.sqrt_nonneg _
+      have hB3 : 0 ≤ Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := Real.sqrt_nonneg _
       nlinarith [hmono, hB3]
     have hprod : 12 * Real.sqrt (36 * Real.pi / Y) * nearDiagonalTopSum A Jmin
-        ≤ 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ 3) := by
+        ≤ 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
       have h12 : (0 : ℝ) ≤ 12 * Real.sqrt (36 * Real.pi / Y) := by positivity
       have hmul := mul_le_mul_of_nonneg_left hfin h12
-      have hQB : (0 : ℝ) ≤ Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ 3) :=
+      have hQB : (0 : ℝ) ≤ Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) :=
         mul_nonneg hs2 (Real.sqrt_nonneg _)
       linarith [hmul, hQB]
     linarith [hmain, hprod]

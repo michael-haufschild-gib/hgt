@@ -43,7 +43,7 @@ def signedFibre (N q : ℕ) (r : ℝ) : ℝ :=
   ∑ p ∈ (pairs N).filter (fun p => p.1*p.2=q), signedTerm r p
 /-- Total variation after grouping by exact integer product. -/
 def variation (N : ℕ) (r : ℝ) : ℝ :=
-  ∑ q ∈ Icc 1 (N^2), |signedFibre N q r|
+  ∑ q ∈ Icc 1 (N^(2 : ℕ)), |signedFibre N q r|
 
 private theorem mu_sq (n : ℕ) : mu n ^ 2 = if Squarefree n then 1 else 0 := by
   by_cases hn : Squarefree n
@@ -65,9 +65,9 @@ private theorem sign_mul (m n : ℕ) : sign (m*n)=sign m*sign n := by
 
 /-- The product alone determines the sign of every nonzero Möbius pair. -/
 theorem pair_sign (m n : ℕ) :
-    mu m * mu n = sign (m*n)*(mu m^2*mu n^2) := by
+    mu m * mu n = sign (m*n)*(mu m^(2 : ℕ)*mu n^(2 : ℕ)) := by
   calc
-    mu m*mu n = (sign m*mu m^2)*(sign n*mu n^2) :=
+    mu m*mu n = (sign m*mu m^(2 : ℕ))*(sign n*mu n^(2 : ℕ)) :=
       congrArg₂ (· * ·) (mu_eq_sign_mul_sq m) (mu_eq_sign_mul_sq n)
     _ = _ := by rw [sign_mul]; ring
 
@@ -111,7 +111,7 @@ theorem abs_signedFibre_eq_unsigned (N q : ℕ) (r : ℝ) :
       abs_of_nonneg (unsignedFibre_nonneg N q r)]
 
 private theorem product_mem {N : ℕ} {p : ℕ × ℕ} (hp : p ∈ pairs N) :
-    p.1*p.2 ∈ Icc 1 (N^2) := by
+    p.1*p.2 ∈ Icc 1 (N^(2 : ℕ)) := by
   obtain ⟨h1,h2⟩ := mem_product.mp hp
   obtain ⟨ha,hb⟩ := mem_Icc.mp h1
   obtain ⟨hc,hd⟩ := mem_Icc.mp h2
@@ -141,8 +141,8 @@ private theorem sum_Icc_eq_shifted_range (f : ℕ → ℝ) (N : ℕ) :
 /-- Exact product regrouping of the original finite Gamma--Hankel energy. -/
 theorem energy_eq_signed_fibres (N : ℕ) (r : ℝ) :
     finiteMobiusGammaHankelEnergy N r =
-      Real.Gamma r * ∑ q ∈ Icc 1 (N^2), signedFibre N q r := by
-  have hf : (∑ q ∈ Icc 1 (N^2), signedFibre N q r) =
+      Real.Gamma r * ∑ q ∈ Icc 1 (N^(2 : ℕ)), signedFibre N q r := by
+  have hf : (∑ q ∈ Icc 1 (N^(2 : ℕ)), signedFibre N q r) =
       ∑ p ∈ pairs N, signedTerm r p :=
     sum_fiberwise_of_maps_to (fun p hp => product_mem hp) (signedTerm r)
   rw [hf, finiteMobiusGammaHankelEnergy, finiteGammaHankelEnergy, pairs, sum_product]
@@ -160,7 +160,7 @@ theorem energy_eq_signed_fibres (N : ℕ) (r : ℝ) :
 /-- The physical energy retains the Liouville sign of each complete product fibre. -/
 theorem energy_eq_liouville_weighted_fibres (N : ℕ) (r : ℝ) :
     finiteMobiusGammaHankelEnergy N r =
-      Real.Gamma r * ∑ q ∈ Icc 1 (N^2), sign q * unsignedFibre N q r := by
+      Real.Gamma r * ∑ q ∈ Icc 1 (N^(2 : ℕ)), sign q * unsignedFibre N q r := by
   simp only [energy_eq_signed_fibres, signedFibre_eq_sign_mul_unsigned]
 
 private theorem squarefree_mass_lower (N : ℕ) :
@@ -174,10 +174,10 @@ private theorem squarefree_mass_lower (N : ℕ) :
 
 /-- Squarefree lower density gives a lower bound for the full absolute variation. -/
 theorem variation_lower (N : ℕ) (hN : 1 ≤ N) {r : ℝ} (hr : 0 ≤ r) :
-    ((N:ℝ)/4)^2 / (2*(N:ℝ))^r ≤ variation N r := by
+    ((N:ℝ)/4)^(2 : ℕ) / (2*(N:ℝ))^r ≤ variation N r := by
   have hpN : (0:ℝ)<N := by exact_mod_cast (by omega : 0<N)
   have hterm (p : ℕ × ℕ) (hp : p ∈ pairs N) :
-      (mu p.1^2*mu p.2^2) / (2*(N:ℝ))^r ≤ unsignedTerm r p := by
+      (mu p.1^(2 : ℕ)*mu p.2^(2 : ℕ)) / (2*(N:ℝ))^r ≤ unsignedTerm r p := by
     obtain ⟨h1,h2⟩ := mem_product.mp hp
     obtain ⟨ha,hb⟩ := mem_Icc.mp h1
     obtain ⟨hc,hd⟩ := mem_Icc.mp h2
@@ -187,8 +187,8 @@ theorem variation_lower (N : ℕ) (hN : 1 ≤ N) {r : ℝ} (hr : 0 ≤ r) :
       exact_mod_cast he
     exact div_le_div_of_nonneg_left (mul_nonneg (sq_nonneg _) (sq_nonneg _))
       (Real.rpow_pos_of_pos hpos r) (Real.rpow_le_rpow hpos.le hle hr)
-  have he : (∑ p ∈ pairs N, (mu p.1^2*mu p.2^2) / (2*(N:ℝ))^r) =
-      (∑ n ∈ Icc 1 N, mu n^2)^2 / (2*(N:ℝ))^r := by
+  have he : (∑ p ∈ pairs N, (mu p.1^(2 : ℕ)*mu p.2^(2 : ℕ)) / (2*(N:ℝ))^r) =
+      (∑ n ∈ Icc 1 N, mu n^(2 : ℕ))^(2 : ℕ) / (2*(N:ℝ))^r := by
     rw [← sum_div, pairs, sum_product, pow_two, sum_mul]
     congr 1
     apply sum_congr rfl
@@ -196,8 +196,8 @@ theorem variation_lower (N : ℕ) (hN : 1 ≤ N) {r : ℝ} (hr : 0 ≤ r) :
     rw [mul_sum]
   have hm := squarefree_mass_lower N
   calc
-    ((N:ℝ)/4)^2 / (2*(N:ℝ))^r ≤
-        (∑ n ∈ Icc 1 N, mu n^2)^2 / (2*(N:ℝ))^r := by
+    ((N:ℝ)/4)^(2 : ℕ) / (2*(N:ℝ))^r ≤
+        (∑ n ∈ Icc 1 N, mu n^(2 : ℕ))^(2 : ℕ) / (2*(N:ℝ))^r := by
       apply div_le_div_of_nonneg_right _ (by positivity)
       nlinarith [sum_nonneg (fun n (_ : n ∈ Icc 1 N) => sq_nonneg (mu n))]
     _ ≤ variation N r := by rw [← he, variation_eq_unsigned_pair_sum]; exact sum_le_sum hterm
@@ -206,7 +206,7 @@ theorem variation_lower (N : ℕ) (hN : 1 ≤ N) {r : ℝ} (hr : 0 ≤ r) :
 theorem variation_power_lower (N : ℕ) (hN : 1 ≤ N) {r : ℝ} (hr : 0 ≤ r) :
     (2^(-r)/16) * (N:ℝ)^(2-r) ≤ variation N r := by
   have hpN : (0:ℝ)<N := by exact_mod_cast (by omega : 0<N)
-  have he : ((N:ℝ)/4)^2 / (2*(N:ℝ))^r = (2^(-r)/16) * (N:ℝ)^(2-r) := by
+  have he : ((N:ℝ)/4)^(2 : ℕ) / (2*(N:ℝ))^r = (2^(-r)/16) * (N:ℝ)^(2-r) := by
     rw [Real.mul_rpow (by norm_num : (0:ℝ)≤2) hpN.le,
       Real.rpow_sub hpN, Real.rpow_two, Real.rpow_neg (by norm_num : (0:ℝ)≤2)]
     ring
@@ -228,7 +228,7 @@ theorem squarefree_pair_isSquare_iff {m n : ℕ} (hm : Squarefree m) (hn : Squar
     IsSquare (m*n) ↔ m=n := by
   constructor
   · rintro ⟨k,hk⟩
-    have he : m*n=k^2 := by simpa [pow_two] using hk
+    have he : m*n=k^(2 : ℕ) := by simpa [pow_two] using hk
     have hmk : m ∣ k := (hm.dvd_pow_iff_dvd (by omega : 2 ≠ 0)).mp ⟨n,he.symm⟩
     have hnk : n ∣ k := (hn.dvd_pow_iff_dvd (by omega : 2 ≠ 0)).mp ⟨m,by nlinarith [he]⟩
     have hm0 : 0 < m := Nat.pos_of_ne_zero hm.ne_zero
@@ -243,10 +243,10 @@ theorem squarefree_pair_isSquare_iff {m n : ℕ} (hm : Squarefree m) (hn : Squar
     exact ⟨m,rfl⟩
 
 private theorem weighted_fibres (N : ℕ) (r : ℝ) (w : ℕ → ℝ) :
-    (∑ q ∈ Icc 1 (N^2), w q * unsignedFibre N q r) =
+    (∑ q ∈ Icc 1 (N^(2 : ℕ)), w q * unsignedFibre N q r) =
       ∑ p ∈ pairs N, w (p.1*p.2)*unsignedTerm r p := by
   calc
-    _ = ∑ q ∈ Icc 1 (N^2),
+    _ = ∑ q ∈ Icc 1 (N^(2 : ℕ)),
         ∑ p ∈ (pairs N).filter (fun p => p.1*p.2=q),
           w (p.1*p.2)*unsignedTerm r p := by
       simp only [unsignedFibre, mul_sum]
@@ -274,20 +274,20 @@ private theorem square_selector (r : ℝ) (p : ℕ × ℕ) :
 /-- Square-product fibres recover exactly the physical diagonal energy. -/
 theorem diagonal_eq_square_fibres (N : ℕ) (r : ℝ) :
     finiteMobiusGammaHankelDiagonalEnergy N r =
-      Real.Gamma r * ∑ q ∈ Icc 1 (N^2),
+      Real.Gamma r * ∑ q ∈ Icc 1 (N^(2 : ℕ)),
         (if IsSquare q then (1:ℝ) else 0)*unsignedFibre N q r := by
   rw [weighted_fibres]
   simp_rw [square_selector]
   rw [pairs,sum_product]
   have he : (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
       if m=n then unsignedTerm r (m,n) else 0) =
-      ∑ m ∈ Icc 1 N, mu m^2/((2*m:ℕ):ℝ)^r := by
+      ∑ m ∈ Icc 1 N, mu m^(2 : ℕ)/((2*m:ℕ):ℝ)^r := by
     apply sum_congr rfl
     intro m hm
     have hs : (∑ n ∈ Icc 1 N, if m=n then unsignedTerm r (m,n) else 0) =
         unsignedTerm r (m,m) := by simp [hm]
     rw [hs,unsignedTerm]
-    have hm2 : mu m^2*mu m^2=mu m^2 := by rw [mu_sq]; split_ifs <;> norm_num
+    have hm2 : mu m^(2 : ℕ)*mu m^(2 : ℕ)=mu m^(2 : ℕ) := by rw [mu_sq]; split_ifs <;> norm_num
     simp only [hm2]
     congr 3
     omega
@@ -299,13 +299,13 @@ private theorem sign_of_isSquare {q : ℕ} (hq : q ≠ 0) (hs : IsSquare q) : si
   have hm : m ≠ 0 := by intro hm; simp [hm] at hq
   rw [sign_mul]
   calc
-    sign m*sign m = |sign m|^2 := by rw [sq_abs]; ring
+    sign m*sign m = |sign m|^(2 : ℕ) := by rw [sq_abs]; ring
     _ = 1 := by rw [abs_sign hm]; norm_num
 
 /-- Nonsquare-product fibres recover exactly the physical signed covariance. -/
 theorem covariance_eq_nonsquare_fibres (N : ℕ) (r : ℝ) :
     finiteMobiusGammaHankelOffDiagonalCovariance N r =
-      Real.Gamma r * ∑ q ∈ Icc 1 (N^2),
+      Real.Gamma r * ∑ q ∈ Icc 1 (N^(2 : ℕ)),
         if IsSquare q then 0 else sign q * unsignedFibre N q r := by
   rw [finiteMobiusGammaHankelOffDiagonalCovariance, energy_eq_liouville_weighted_fibres,
     diagonal_eq_square_fibres, ← mul_sub, ← sum_sub_distrib]
@@ -320,12 +320,12 @@ theorem covariance_eq_nonsquare_fibres (N : ℕ) (r : ℝ) :
 
 /-- Total variation over nonsquare products, with the entire diagonal removed. -/
 def crossVariation (N : ℕ) (r : ℝ) : ℝ :=
-  ∑ q ∈ Icc 1 (N^2), if IsSquare q then 0 else |signedFibre N q r|
+  ∑ q ∈ Icc 1 (N^(2 : ℕ)), if IsSquare q then 0 else |signedFibre N q r|
 
 /-- The complete variation splits into diagonal mass and nonsquare variation. -/
 theorem variation_eq_square_add_cross (N : ℕ) (r : ℝ) :
     variation N r =
-      (∑ q ∈ Icc 1 (N^2), (if IsSquare q then (1:ℝ) else 0)*unsignedFibre N q r) +
+      (∑ q ∈ Icc 1 (N^(2 : ℕ)), (if IsSquare q then (1:ℝ) else 0)*unsignedFibre N q r) +
         crossVariation N r := by
   rw [variation,crossVariation,← sum_add_distrib]
   apply sum_congr rfl

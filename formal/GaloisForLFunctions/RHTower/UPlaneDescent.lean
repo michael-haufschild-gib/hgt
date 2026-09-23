@@ -35,7 +35,7 @@ noncomputable def uSqrt (w : ℂ) : ℂ := exp (((1 / 2 : ℝ) : ℂ) * log w)
 
 theorem uSqrt_ne_zero (w : ℂ) : uSqrt w ≠ 0 := exp_ne_zero _
 
-theorem uSqrt_sq {w : ℂ} (hw : w ≠ 0) : uSqrt w ^ 2 = w := by
+theorem uSqrt_sq {w : ℂ} (hw : w ≠ 0) : uSqrt w ^ (2 : ℕ) = w := by
   simp only [uSqrt]
   rw [← exp_nat_mul]
   have h : ((2 : ℕ) : ℂ) * (((1 / 2 : ℝ) : ℂ) * log w) = log w := by
@@ -244,16 +244,16 @@ theorem xiDescent_analyticOnNhd_univ : AnalyticOnNhd ℂ xiDescent Set.univ :=
 
 /-- **The global descent identity**: `ξ(s) = xiDescent((s − 1/2)²)`, with no branch
 bookkeeping — evenness absorbs the sign of the square root. -/
-theorem xi_eq_xiDescent (s : ℂ) : xi s = xiDescent ((s - 1 / 2) ^ 2) := by
+theorem xi_eq_xiDescent (s : ℂ) : xi s = xiDescent ((s - 1 / 2) ^ (2 : ℕ)) := by
   by_cases hv : s - 1 / 2 = 0
   · have hs : s = 1 / 2 := by
       have h := sub_eq_zero.mp hv
       simpa using h
-    rw [hs, show ((1 / 2 : ℂ) - 1 / 2) ^ 2 = 0 from by ring, xiDescent_zero]
-  · have hw : (s - 1 / 2) ^ 2 ≠ 0 := pow_ne_zero 2 hv
+    rw [hs, show ((1 / 2 : ℂ) - 1 / 2) ^ (2 : ℕ) = 0 from by ring, xiDescent_zero]
+  · have hw : (s - 1 / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hv
     rw [xiDescent_of_ne_zero hw]
-    have hfac : (uSqrt ((s - 1 / 2) ^ 2) - (s - 1 / 2)) *
-        (uSqrt ((s - 1 / 2) ^ 2) + (s - 1 / 2)) = 0 := by
+    have hfac : (uSqrt ((s - 1 / 2) ^ (2 : ℕ)) - (s - 1 / 2)) *
+        (uSqrt ((s - 1 / 2) ^ (2 : ℕ)) + (s - 1 / 2)) = 0 := by
       linear_combination uSqrt_sq hw
     rcases mul_eq_zero.mp hfac with h | h
     · rw [sub_eq_zero.mp h, show (1 / 2 : ℂ) + (s - 1 / 2) = s from by ring]
@@ -262,7 +262,7 @@ theorem xi_eq_xiDescent (s : ℂ) : xi s = xiDescent ((s - 1 / 2) ^ 2) := by
         xi_half_sub, show (1 / 2 : ℂ) + (s - 1 / 2) = s from by ring]
 
 /-- The square of a point with positive real part lies in the slit plane. -/
-theorem sq_mem_slitPlane_of_re_pos {v : ℂ} (hv : 0 < v.re) : v ^ 2 ∈ slitPlane := by
+theorem sq_mem_slitPlane_of_re_pos {v : ℂ} (hv : 0 < v.re) : v ^ (2 : ℕ) ∈ slitPlane := by
   by_contra hns
   rw [Complex.mem_slitPlane_iff, not_or] at hns
   obtain ⟨h1, h2⟩ := hns
@@ -308,12 +308,12 @@ namespace RHTower
 open Complex
 
 /-- Right-half zeros of ξ are exactly slit-plane zeros of the u-plane descent.  This is
-zero-set transport under the constraint map `w = (s - 1/2)^2`, not a new flow. -/
+zero-set transport under the constraint map `w = (s - 1/2)^(2 : ℕ)`, not a new flow. -/
 theorem exists_xi_zero_rightHalf_iff_exists_xiDescent_zero_slitPlane :
     (∃ s ∈ rightHalf, xi s = 0) ↔ ∃ w ∈ slitPlane, xiDescent w = 0 := by
   constructor
   · rintro ⟨s, hs, hs0⟩
-    refine ⟨(s - 1 / 2) ^ 2, ?_, ?_⟩
+    refine ⟨(s - 1 / 2) ^ (2 : ℕ), ?_, ?_⟩
     · refine sq_mem_slitPlane_of_re_pos ?_
       have hcast : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
       rw [Complex.sub_re, hcast, Complex.ofReal_re]
@@ -337,11 +337,11 @@ namespace RHTower
 open Complex Filter
 
 /-- The u-plane square descent preserves local zero order away from the critical line.  On
-`rightHalf`, the constraint map `s ↦ (s - 1/2)^2` has nonzero derivative, so the descended
+`rightHalf`, the constraint map `s ↦ (s - 1/2)^(2 : ℕ)` has nonzero derivative, so the descended
 zero at the slit-plane image has exactly the original ξ multiplicity. -/
 theorem analyticOrderAt_xiDescent_center_sq {s : ℂ} (hs : s ∈ rightHalf) :
-    analyticOrderAt xiDescent ((s - (1 / 2 : ℂ)) ^ 2) = analyticOrderAt xi s := by
-  let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ 2
+    analyticOrderAt xiDescent ((s - (1 / 2 : ℂ)) ^ (2 : ℕ)) = analyticOrderAt xi s := by
+  let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ (2 : ℕ)
   have hφ : AnalyticAt ℂ φ s := (analyticAt_id.sub analyticAt_const).pow 2
   have hsne : s - (1 / 2 : ℂ) ≠ 0 := by
     intro h
@@ -390,7 +390,7 @@ theorem rhLadder_iff_xiDescent_order_dvd_slitPlane (k : ℕ) :
       rw [← xiDescent_of_ne_zero (slitPlane_ne_zero hw)]
       exact hw0
     have hord : analyticOrderAt xiDescent w = analyticOrderAt xi s := by
-      have hsquare : (s - (1 / 2 : ℂ)) ^ 2 = w := by
+      have hsquare : (s - (1 / 2 : ℂ)) ^ (2 : ℕ) = w := by
         dsimp [s]
         rw [add_sub_cancel_left]
         exact uSqrt_sq (slitPlane_ne_zero hw)
@@ -399,13 +399,13 @@ theorem rhLadder_iff_xiDescent_order_dvd_slitPlane (k : ℕ) :
     rw [hord]
     exact hlad s hs hxi0
   · intro hdiv ρ hρ hρ0
-    have hw : (ρ - (1 / 2 : ℂ)) ^ 2 ∈ slitPlane := by
+    have hw : (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) ∈ slitPlane := by
       refine sq_mem_slitPlane_of_re_pos ?_
       rw [Complex.sub_re]
       have hcast : (1 / 2 : ℂ).re = (1 / 2 : ℝ) := by norm_num
       rw [hcast]
       linarith [mem_rightHalf.mp hρ]
-    have hw0 : xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2) = 0 := by
+    have hw0 : xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = 0 := by
       rw [← xi_eq_xiDescent ρ]
       exact hρ0
     have hord := analyticOrderAt_xiDescent_center_sq hρ

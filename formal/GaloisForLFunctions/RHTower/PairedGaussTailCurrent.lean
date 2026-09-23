@@ -27,7 +27,7 @@ theorem hasDerivAt_neg_exp_neg_mul {c : ℝ} (hc : c ≠ 0) (h : ℝ) :
   refine this.congr_deriv ?_
   field_simp
 
-theorem integral_Ioi_exp_neg_mul {c : ℝ} (hc : 0 < c) :
+theorem integral_Ioi_exp_neg_mul_pairedGaussTailCurrent {c : ℝ} (hc : 0 < c) :
     ∫ h in Ioi (0 : ℝ), Real.exp (-(c * h)) = 1 / c := by
   have hlim : Tendsto (fun t : ℝ => -Real.exp (-(c * t)) / c) atTop (𝓝 0) := by
     have := tendsto_expNegLinear hc (-(1 / c))
@@ -42,11 +42,11 @@ theorem integral_Ioi_exp_neg_mul {c : ℝ} (hc : 0 < c) :
   field_simp
 
 theorem hasDerivAt_neg_linear_exp_neg_mul {c : ℝ} (hc : c ≠ 0) (h : ℝ) :
-    HasDerivAt (fun t : ℝ => -(t / c + 1 / c ^ 2) * Real.exp (-(c * t)))
+    HasDerivAt (fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ)) * Real.exp (-(c * t)))
       (h * Real.exp (-(c * h))) h := by
-  have hin : HasDerivAt (fun t : ℝ => -(t / c + 1 / c ^ 2)) (-(1 / c)) h := by
-    have h1 : HasDerivAt (fun t : ℝ => t / c + 1 / c ^ 2) (1 / c) h := by
-      simpa using ((hasDerivAt_id h).div_const c).add_const (1 / c ^ 2)
+  have hin : HasDerivAt (fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ))) (-(1 / c)) h := by
+    have h1 : HasDerivAt (fun t : ℝ => t / c + 1 / c ^ (2 : ℕ)) (1 / c) h := by
+      simpa using ((hasDerivAt_id h).div_const c).add_const (1 / c ^ (2 : ℕ))
     simpa [Pi.neg_def] using h1.neg
   have hexp : HasDerivAt (fun t : ℝ => Real.exp (-(c * t)))
       (Real.exp (-(c * h)) * (-c)) h := by
@@ -58,8 +58,8 @@ theorem hasDerivAt_neg_linear_exp_neg_mul {c : ℝ} (hc : c ≠ 0) (h : ℝ) :
   ring
 
 theorem integral_Ioi_mul_exp_neg_mul {c : ℝ} (hc : 0 < c) :
-    ∫ h in Ioi (0 : ℝ), h * Real.exp (-(c * h)) = 1 / c ^ 2 := by
-  have hlim : Tendsto (fun t : ℝ => -(t / c + 1 / c ^ 2) * Real.exp (-(c * t))) atTop (𝓝 0) := by
+    ∫ h in Ioi (0 : ℝ), h * Real.exp (-(c * h)) = 1 / c ^ (2 : ℕ) := by
+  have hlim : Tendsto (fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ)) * Real.exp (-(c * t))) atTop (𝓝 0) := by
     have hpow : Tendsto (fun x : ℝ => x * Real.exp (-x)) atTop (𝓝 0) := by
       simpa using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1
     have hscale : Tendsto (fun t : ℝ => c * t) atTop atTop :=
@@ -68,20 +68,20 @@ theorem integral_Ioi_mul_exp_neg_mul {c : ℝ} (hc : 0 < c) :
       hpow.comp hscale
     have h2 : Tendsto (fun t : ℝ => Real.exp (-(c * t))) atTop (𝓝 0) := by
       simpa using tendsto_expNegLinear hc 1
-    have hcomb := (h1.const_mul (-(1 / c ^ 2))).add (h2.const_mul (-(1 / c ^ 2)))
-    rw [show (-(1 / c ^ 2) * (0 : ℝ) + -(1 / c ^ 2) * (0 : ℝ)) = 0 by ring] at hcomb
+    have hcomb := (h1.const_mul (-(1 / c ^ (2 : ℕ)))).add (h2.const_mul (-(1 / c ^ (2 : ℕ))))
+    rw [show (-(1 / c ^ (2 : ℕ)) * (0 : ℝ) + -(1 / c ^ (2 : ℕ)) * (0 : ℝ)) = 0 by ring] at hcomb
     refine hcomb.congr fun t => ?_
     field_simp
     ring
   have h := integral_Ioi_of_hasDerivAt_of_nonneg
-    (g := fun t : ℝ => -(t / c + 1 / c ^ 2) * Real.exp (-(c * t))) (a := (0 : ℝ))
+    (g := fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ)) * Real.exp (-(c * t))) (a := (0 : ℝ))
     ((hasDerivAt_neg_linear_exp_neg_mul (ne_of_gt hc) 0).continuousAt.continuousWithinAt)
     (fun x _ => hasDerivAt_neg_linear_exp_neg_mul (ne_of_gt hc) x)
     (fun x hx => mul_nonneg (le_of_lt hx) (le_of_lt (Real.exp_pos _))) hlim
   rw [h]
   simp
 
-theorem integrableOn_exp_neg_mul_Ioi {c : ℝ} (hc : 0 < c) :
+theorem integrableOn_exp_neg_mul_Ioi_pairedGaussTailCurrent {c : ℝ} (hc : 0 < c) :
     IntegrableOn (fun h : ℝ => Real.exp (-(c * h))) (Ioi 0) := by
   have hlim : Tendsto (fun t : ℝ => -Real.exp (-(c * t)) / c) atTop (𝓝 0) := by
     have := tendsto_expNegLinear hc (-(1 / c))
@@ -94,7 +94,7 @@ theorem integrableOn_exp_neg_mul_Ioi {c : ℝ} (hc : 0 < c) :
 
 theorem integrableOn_mul_exp_neg_mul_Ioi {c : ℝ} (hc : 0 < c) :
     IntegrableOn (fun h : ℝ => h * Real.exp (-(c * h))) (Ioi 0) := by
-  have hlim : Tendsto (fun t : ℝ => -(t / c + 1 / c ^ 2) * Real.exp (-(c * t))) atTop (𝓝 0) := by
+  have hlim : Tendsto (fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ)) * Real.exp (-(c * t))) atTop (𝓝 0) := by
     have hpow : Tendsto (fun x : ℝ => x * Real.exp (-x)) atTop (𝓝 0) := by
       simpa using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1
     have hscale : Tendsto (fun t : ℝ => c * t) atTop atTop :=
@@ -103,13 +103,13 @@ theorem integrableOn_mul_exp_neg_mul_Ioi {c : ℝ} (hc : 0 < c) :
       hpow.comp hscale
     have h2 : Tendsto (fun t : ℝ => Real.exp (-(c * t))) atTop (𝓝 0) := by
       simpa using tendsto_expNegLinear hc 1
-    have hcomb := (h1.const_mul (-(1 / c ^ 2))).add (h2.const_mul (-(1 / c ^ 2)))
-    rw [show (-(1 / c ^ 2) * (0 : ℝ) + -(1 / c ^ 2) * (0 : ℝ)) = 0 by ring] at hcomb
+    have hcomb := (h1.const_mul (-(1 / c ^ (2 : ℕ)))).add (h2.const_mul (-(1 / c ^ (2 : ℕ))))
+    rw [show (-(1 / c ^ (2 : ℕ)) * (0 : ℝ) + -(1 / c ^ (2 : ℕ)) * (0 : ℝ)) = 0 by ring] at hcomb
     refine hcomb.congr fun t => ?_
     field_simp
     ring
   exact integrableOn_Ioi_deriv_of_nonneg
-    (g := fun t : ℝ => -(t / c + 1 / c ^ 2) * Real.exp (-(c * t))) (l := 0)
+    (g := fun t : ℝ => -(t / c + 1 / c ^ (2 : ℕ)) * Real.exp (-(c * t))) (l := 0)
     ((hasDerivAt_neg_linear_exp_neg_mul (ne_of_gt hc) 0).continuousAt.continuousWithinAt)
     (fun x _ => hasDerivAt_neg_linear_exp_neg_mul (ne_of_gt hc) x)
     (fun x hx => mul_nonneg (le_of_lt hx) (le_of_lt (Real.exp_pos _))) hlim
@@ -121,7 +121,7 @@ theorem packetAutocorrelation_zero_eq (w : Fin n → ℂ) (r : Fin n → ℝ) :
   rw [packetAutocorrelation, packetEnergy]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   show (nodePacket w r x).im * (halfLineExpPacket w (lagCoeff w r 0) x).im
-    = (nodePacket w r x).im ^ 2
+    = (nodePacket w r x).im ^ (2 : ℕ)
   rw [expPacket_lagCoeff w r 0 x, add_zero]
   ring
 
@@ -160,7 +160,7 @@ theorem gaussTerm_eq_integral {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
       = ∫ h in Ioi (0 : ℝ), Real.exp (-(c * h)) *
           (Real.exp (-(3 * h / 2)) * packetEnergy w r) := by
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexpmul),
-      MeasureTheory.integral_const_mul, integral_Ioi_exp_neg_mul hshift]
+      MeasureTheory.integral_const_mul, integral_Ioi_exp_neg_mul_pairedGaussTailCurrent hshift]
     rw [hc]
     field_simp
     ring
@@ -169,7 +169,7 @@ theorem gaussTerm_eq_integral {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
     rw [packetResolventPairing_eq_autocorrLaplace hw r hwc, autocorrLaplace]
   have hbase : IntegrableOn
       (fun h : ℝ => packetEnergy w r * Real.exp (-((c + 3 / 2) * h))) (Ioi 0) :=
-    (integrableOn_exp_neg_mul_Ioi hshift).const_mul (packetEnergy w r)
+    (integrableOn_exp_neg_mul_Ioi_pairedGaussTailCurrent hshift).const_mul (packetEnergy w r)
   have hint1 : IntegrableOn (fun h : ℝ => Real.exp (-(c * h)) *
       (Real.exp (-(3 * h / 2)) * packetEnergy w r)) (Ioi 0) :=
     hbase.congr_fun (fun h _ => (hexpmul h).symm) measurableSet_Ioi
@@ -310,7 +310,7 @@ theorem integrableOn_gaussTermIntegrand {w : Fin n → ℂ} (hw : ∀ j, 0 < (w 
     (((by fun_prop : Continuous fun h : ℝ => Real.exp (-(c * h))).mul
       (continuous_gaussCompensatedBracket hw r)).aestronglyMeasurable)
   refine MeasureTheory.Integrable.mono'
-    ((integrableOn_exp_neg_mul_Ioi hc).const_mul (bracketBound w r)) hmeas ?_
+    ((integrableOn_exp_neg_mul_Ioi_pairedGaussTailCurrent hc).const_mul (bracketBound w r)) hmeas ?_
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with h hh
   have hh0 : (0 : ℝ) ≤ h := le_of_lt hh
   rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -320,7 +320,7 @@ theorem integrableOn_gaussTermIntegrand {w : Fin n → ℂ} (hw : ∀ j, 0 < (w 
 theorem integral_norm_gaussTermIntegrand_le {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re)
     (r : Fin n → ℝ) {α : ℝ} (hα : ∀ k, α ≤ (w k).re) (hα2 : 0 < α) {c : ℝ} (hc : 0 < c) :
     (∫ h in Ioi (0 : ℝ), ‖Real.exp (-(c * h)) * gaussCompensatedBracket w r h‖)
-      ≤ bracketDerivBound w r / c ^ 2 := by
+      ≤ bracketDerivBound w r / c ^ (2 : ℕ) := by
   have hmajint : IntegrableOn
       (fun h : ℝ => bracketDerivBound w r * (h * Real.exp (-(c * h)))) (Ioi 0) :=
     (integrableOn_mul_exp_neg_mul_Ioi hc).const_mul (bracketDerivBound w r)
@@ -343,29 +343,29 @@ theorem integral_norm_gaussTermIntegrand_le {w : Fin n → ℂ} (hw : ∀ j, 0 <
   exact le_refl _
 
 theorem summable_gaussTermBound (w : Fin n → ℂ) (r : Fin n → ℝ) :
-    Summable (fun m : ℕ => bracketDerivBound w r / (2 * (m : ℝ) + 1 / 2) ^ 2) := by
-  have hbase : Summable (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ 2) := by
+    Summable (fun m : ℕ => bracketDerivBound w r / (2 * (m : ℝ) + 1 / 2) ^ (2 : ℕ)) := by
+  have hbase : Summable (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := Real.summable_one_div_nat_pow.mpr one_lt_two
     have := (summable_nat_add_iff 1).mpr h
     simpa using this
   refine Summable.of_nonneg_of_le (fun m => ?_) (fun m => ?_)
     ((hbase.mul_left (4 * bracketDerivBound w r)))
   · have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    have : (0 : ℝ) < (2 * (m : ℝ) + 1 / 2) ^ 2 := by positivity
+    have : (0 : ℝ) < (2 * (m : ℝ) + 1 / 2) ^ (2 : ℕ) := by positivity
     exact div_nonneg (bracketDerivBound_nonneg w r) (le_of_lt this)
   · have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
     have hpos : (0 : ℝ) < (2 * (m : ℝ) + 1 / 2) := by linarith
     have hpos2 : (0 : ℝ) < ((m : ℝ) + 1) := by linarith
     have hcomp : ((m : ℝ) + 1) / 2 ≤ 2 * (m : ℝ) + 1 / 2 := by linarith
-    have hsq : (((m : ℝ) + 1) / 2) ^ 2 ≤ (2 * (m : ℝ) + 1 / 2) ^ 2 := by nlinarith
+    have hsq : (((m : ℝ) + 1) / 2) ^ (2 : ℕ) ≤ (2 * (m : ℝ) + 1 / 2) ^ (2 : ℕ) := by nlinarith
     have hM := bracketDerivBound_nonneg w r
-    rw [div_le_iff₀ (by positivity : (0 : ℝ) < (2 * (m : ℝ) + 1 / 2) ^ 2)]
-    have hkey : 4 * bracketDerivBound w r * (1 / ((m : ℝ) + 1) ^ 2)
-        * (((m : ℝ) + 1) / 2) ^ 2 = bracketDerivBound w r := by
+    rw [div_le_iff₀ (by positivity : (0 : ℝ) < (2 * (m : ℝ) + 1 / 2) ^ (2 : ℕ))]
+    have hkey : 4 * bracketDerivBound w r * (1 / ((m : ℝ) + 1) ^ (2 : ℕ))
+        * (((m : ℝ) + 1) / 2) ^ (2 : ℕ) = bracketDerivBound w r := by
       field_simp
       ring
     nlinarith [mul_le_mul_of_nonneg_left hsq
-      (by positivity : (0 : ℝ) ≤ 4 * bracketDerivBound w r * (1 / ((m : ℝ) + 1) ^ 2))]
+      (by positivity : (0 : ℝ) ≤ 4 * bracketDerivBound w r * (1 / ((m : ℝ) + 1) ^ (2 : ℕ)))]
 
 theorem tsum_exp_neg_gauss {h : ℝ} (hh : 0 < h) :
     ∑' m : ℕ, Real.exp (-((2 * (m : ℝ) + 1 / 2) * h)) = screwTailKernel h := by
@@ -526,9 +526,9 @@ theorem screwTailKernel_mul_oneSub_le {h : ℝ} (hh : 0 < h) :
   have h1 := exp_neg_half_lt_one hh
   rw [screwTailKernel, ← exp_neg_half_pow_four h]
   set u : ℝ := Real.exp (-(h / 2)) with hu
-  have hfac : 1 - u ^ 4 = (1 - u) * ((1 + u) * (1 + u ^ 2)) := by ring
+  have hfac : 1 - u ^ (4 : ℕ) = (1 - u) * ((1 + u) * (1 + u ^ (2 : ℕ))) := by ring
   have hne : (1 : ℝ) - u ≠ 0 := by linarith
-  have hkey : u / (1 - u ^ 4) * (1 - u) = u / ((1 + u) * (1 + u ^ 2)) := by
+  have hkey : u / (1 - u ^ (4 : ℕ)) * (1 - u) = u / ((1 + u) * (1 + u ^ (2 : ℕ))) := by
     rw [hfac]
     field_simp
   rw [hkey, div_le_iff₀ (by positivity)]
@@ -554,7 +554,7 @@ theorem integrableOn_screwTailKernel_mul_bracket {w : Fin n → ℂ} (hw : ∀ j
         measurableSet_Ioi
   have hα0 : 0 < α := lt_of_lt_of_le (by norm_num) hα2
   refine MeasureTheory.Integrable.mono'
-    ((integrableOn_exp_neg_mul_Ioi (by norm_num : (0:ℝ) < 1 / 2)).const_mul
+    ((integrableOn_exp_neg_mul_Ioi_pairedGaussTailCurrent (by norm_num : (0:ℝ) < 1 / 2)).const_mul
       (2 * bracketDerivBound w r)) hmeas ?_
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with h hh
   have hh0 : (0 : ℝ) < h := Set.mem_Ioi.mp hh
@@ -822,7 +822,7 @@ theorem screwContactConst_eq :
         + (3 / 2) * Real.log 2 + Real.pi / 4 := by
   rw [screwContactConst]
   have h8 : Real.log 8 = 3 * Real.log 2 := by
-    rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]
+    rw [show (8 : ℝ) = 2 ^ (3 : ℕ) by norm_num, Real.log_pow]
     norm_num
   rw [Real.log_mul (by norm_num) Real.pi_ne_zero, h8]
   ring

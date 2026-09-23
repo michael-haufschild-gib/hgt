@@ -36,8 +36,8 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_threshold_levelTrivial
     (J : ℕ → ℕ)
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ V ^ 2 * (2 * W)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * (2 * W)
         + harmonicPrimeMass P * ∑ j ∈ Finset.range L,
             menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W
                 (volume.real

@@ -7,9 +7,9 @@ import GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthLikelihoodGain
 Let `A = -(log Theta)''` be completed theta log curvature. This file proves the new strict
 projective inequality
 
-`2 * (A')^2 - A * A'' > 0`
+`2 * (A')^(2 : ℕ) - A * A'' > 0`
 
-throughout first-atom scale `>= 6`, then converts it into strict increase of `-A' / A^2`.
+throughout first-atom scale `>= 6`, then converts it into strict increase of `-A' / A^(2 : ℕ)`.
 The source inequality is an exact positive polynomial after clearing the sixth power of the
 Born--Witten coordinate. Completion preserves it without a likelihood-jet estimate: the third
 jet is shifted upward, while positive second and fourth likelihood jets shrink the adverse
@@ -44,11 +44,11 @@ private theorem nineHalves_le_thetaCuspBornWittenWeight_one_of_six_le_scale
   linarith
 
 /-- Exact first-atom inverse-curvature energy. The scale-six entrance becomes `q >= 9/2`,
-and clearing `q^6` leaves a polynomial positive after translating by `9/2`. -/
+and clearing `q^(6 : ℕ)` leaves a polynomial positive after translating by `9/2`. -/
 theorem thetaCuspBornWittenInverseCurvatureEnergy_pos_of_six_le_scale
     {x : ℝ} (hx : 0 ≤ x)
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    0 < 2 * thetaCuspBornWittenLogThirdDerivative 1 x ^ 2 -
+    0 < 2 * thetaCuspBornWittenLogThirdDerivative 1 x ^ (2 : ℕ) -
       thetaCuspBornWittenLogCurvature 1 x *
         thetaCuspBornWittenLogFourthDerivative 1 x := by
   let q := thetaCuspBornWittenWeight 1 x
@@ -61,15 +61,15 @@ theorem thetaCuspBornWittenInverseCurvatureEnergy_pos_of_six_le_scale
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hqeq : q = y + 9 / 2 := by dsimp only [y]; ring
   have hpoly : 0 <
-      16 * q ^ 6 - 144 * q ^ 4 - 504 * q ^ 3 - 288 * q ^ 2 + 108 * q + 162 := by
+      16 * q ^ (6 : ℕ) - 144 * q ^ (4 : ℕ) - 504 * q ^ (3 : ℕ) - 288 * q ^ (2 : ℕ) + 108 * q + 162 := by
     rw [hqeq]
     ring_nf
     positivity
   have hcurv : thetaCuspBornWittenLogCurvature 1 x =
-      (2 * q + 3) * (2 + 3 / q ^ 2) := by
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) := by
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile (by norm_num) hx]
-    change 4 * q + 6 + 6 / q + 9 / q ^ 2 =
-      (2 * q + 3) * (2 + 3 / q ^ 2)
+    change 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ) =
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))
     field_simp [hq.ne']
     ring
   have hqdef : thetaCuspBornWittenWeight 1 x = q := by rfl
@@ -77,16 +77,16 @@ theorem thetaCuspBornWittenInverseCurvatureEnergy_pos_of_six_le_scale
   dsimp only [thetaCuspBornWittenLogThirdDerivative,
     thetaCuspBornWittenLogFourthDerivative]
   rw [hqdef]
-  change 0 < 2 * ((2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3)) ^ 2 -
-    ((2 * q + 3) * (2 + 3 / q ^ 2)) *
-      ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4))
+  change 0 < 2 * ((2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ))) ^ (2 : ℕ) -
+    ((2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))) *
+      ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)))
   rw [show
-      2 * ((2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3)) ^ 2 -
-          ((2 * q + 3) * (2 + 3 / q ^ 2)) *
-            ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) =
-        (2 * q + 3) ^ 2 *
-          (16 * q ^ 6 - 144 * q ^ 4 - 504 * q ^ 3 - 288 * q ^ 2 +
-            108 * q + 162) / q ^ 6 by
+      2 * ((2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ))) ^ (2 : ℕ) -
+          ((2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))) *
+            ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) =
+        (2 * q + 3) ^ (2 : ℕ) *
+          (16 * q ^ (6 : ℕ) - 144 * q ^ (4 : ℕ) - 504 * q ^ (3 : ℕ) - 288 * q ^ (2 : ℕ) +
+            108 * q + 162) / q ^ (6 : ℕ) by
       field_simp [hq.ne']
       ring]
   exact div_pos (mul_pos (sq_pos_of_pos (by linarith)) hpoly) (pow_pos hq 6)
@@ -104,13 +104,13 @@ theorem thetaCuspBornWittenLogThirdDerivative_pos_of_six_le_scale
   let y := q - 9 / 2
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hqeq : q = y + 9 / 2 := by dsimp only [y]; ring
-  have hpoly : 0 < 4 * q ^ 3 - 6 * q - 18 := by
+  have hpoly : 0 < 4 * q ^ (3 : ℕ) - 6 * q - 18 := by
     rw [hqeq]
     ring_nf
     positivity
-  have hinner : 0 < 4 - 6 / q ^ 2 - 18 / q ^ 3 := by
-    rw [show 4 - 6 / q ^ 2 - 18 / q ^ 3 =
-        (4 * q ^ 3 - 6 * q - 18) / q ^ 3 by
+  have hinner : 0 < 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) := by
+    rw [show 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) =
+        (4 * q ^ (3 : ℕ) - 6 * q - 18) / q ^ (3 : ℕ) by
       field_simp [hq.ne']]
     exact div_pos hpoly (pow_pos hq 3)
   dsimp only [thetaCuspBornWittenLogThirdDerivative]
@@ -119,13 +119,13 @@ theorem thetaCuspBornWittenLogThirdDerivative_pos_of_six_le_scale
 
 /-- Completion-stability theorem. No fourth-jet likelihood bound is used. If completed fourth
 curvature is nonpositive the result is immediate; otherwise completion strictly shrinks both
-positive factors in `A * A''` and strictly enlarges `(A')^2`. -/
+positive factors in `A * A''` and strictly enlarges `(A')^(2 : ℕ)`. -/
 theorem thetaCuspCompletedInverseCurvatureEnergy_pos_of_six_le_scale
     {x : ℝ} (hx : 0 ≤ x)
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     0 <
       2 * (thetaCuspBornWittenLogThirdDerivative 1 x -
-          thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ 2 -
+          thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ (2 : ℕ) -
         thetaCuspFullReflectedLogCurvature x *
           thetaCuspFullReflectedLogFourthJet x := by
   let A0 := thetaCuspBornWittenLogCurvature 1 x
@@ -154,12 +154,12 @@ theorem thetaCuspCompletedInverseCurvatureEnergy_pos_of_six_le_scale
   have hp : 0 < p0 - F3 := by linarith
   have hA_lt : A0 - F2 < A0 := by linarith
   have hB_lt : B0 - F4 < B0 := by linarith
-  have hborn : 0 < 2 * p0 ^ 2 - A0 * B0 := by
+  have hborn : 0 < 2 * p0 ^ (2 : ℕ) - A0 * B0 := by
     simpa only [A0, p0, B0] using
       thetaCuspBornWittenInverseCurvatureEnergy_pos_of_six_le_scale hx hscale
   rw [show thetaCuspBornWittenLogThirdDerivative 1 x = p0 by rfl,
     show thetaCuspLikelihoodSourceLogPartitionJetThree x = F3 by rfl]
-  change 0 < 2 * (p0 - F3) ^ 2 - (A0 - F2) * (B0 - F4)
+  change 0 < 2 * (p0 - F3) ^ (2 : ℕ) - (A0 - F2) * (B0 - F4)
   by_cases hB : B0 - F4 ≤ 0
   · have hAB : (A0 - F2) * (B0 - F4) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hA.le hB
@@ -169,7 +169,7 @@ theorem thetaCuspCompletedInverseCurvatureEnergy_pos_of_six_le_scale
       mul_lt_mul_of_pos_right hA_lt hBpos
     have hright : A0 * (B0 - F4) < A0 * B0 :=
       mul_lt_mul_of_pos_left hB_lt hA0
-    have hsq : p0 ^ 2 < (p0 - F3) ^ 2 := by nlinarith
+    have hsq : p0 ^ (2 : ℕ) < (p0 - F3) ^ (2 : ℕ) := by nlinarith
     nlinarith
 
 private theorem thetaCuspLogCurvature_eq_fullReflected
@@ -203,7 +203,7 @@ private theorem thetaCuspLogCurvatureJetTwo_eq_fullReflected
 theorem thetaCuspIntrinsicCompletedInverseCurvatureEnergy_pos_of_six_le_scale
     {x : ℝ} (hx : 0 < x)
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    0 < 2 * thetaCuspLogCurvatureJet x ^ 2 -
+    0 < 2 * thetaCuspLogCurvatureJet x ^ (2 : ℕ) -
       thetaCuspLogCurvature x * thetaCuspLogCurvatureJetTwo x := by
   rw [thetaCuspLogCurvature_eq_fullReflected hx,
     thetaCuspLogCurvatureJet_eq_fullReflected hx,
@@ -212,19 +212,19 @@ theorem thetaCuspIntrinsicCompletedInverseCurvatureEnergy_pos_of_six_le_scale
 
 /-- Derivative of reciprocal completed curvature. -/
 def thetaCuspCompletedInverseCurvatureSlope (x : ℝ) : ℝ :=
-  -thetaCuspLogCurvatureJet x / thetaCuspLogCurvature x ^ 2
+  -thetaCuspLogCurvatureJet x / thetaCuspLogCurvature x ^ (2 : ℕ)
 
 theorem hasDerivAt_thetaCuspCompletedInverseCurvatureSlope (x : ℝ) :
     HasDerivAt thetaCuspCompletedInverseCurvatureSlope
-      ((2 * thetaCuspLogCurvatureJet x ^ 2 -
+      ((2 * thetaCuspLogCurvatureJet x ^ (2 : ℕ) -
           thetaCuspLogCurvature x * thetaCuspLogCurvatureJetTwo x) /
-        thetaCuspLogCurvature x ^ 3) x := by
+        thetaCuspLogCurvature x ^ (3 : ℕ)) x := by
   have hA := hasDerivAt_thetaCuspLogCurvature x
   have hp := hasDerivAt_thetaCuspLogCurvatureJet x
   have hApos := thetaCuspLogCurvature_pos x
   have hquot := hp.neg.div (hA.pow 2) (pow_ne_zero 2 hApos.ne')
   change HasDerivAt
-    (fun y => -thetaCuspLogCurvatureJet y / thetaCuspLogCurvature y ^ 2) _ x
+    (fun y => -thetaCuspLogCurvatureJet y / thetaCuspLogCurvature y ^ (2 : ℕ)) _ x
   refine hquot.congr_deriv ?_
   simp only [Pi.pow_apply, Pi.neg_apply]
   field_simp [hApos.ne']

@@ -58,7 +58,7 @@ theorem conjTranspose_mul_self (α φ : ℝ) :
       -Complex.ofReal_cos, -Complex.ofReal_sin]
   all_goals linear_combination (Real.sin α : ℂ) * (Real.sin α : ℂ) * hphase + hpyth
 
-@[simp] theorem det_gramLaw (α : ℝ) : (gramLaw α).det = ((Real.sin α : ℂ)) ^ 2 := by
+@[simp] theorem det_gramLaw (α : ℝ) : (gramLaw α).det = ((Real.sin α : ℂ)) ^ (2 : ℕ) := by
   rw [gramLaw, Matrix.det_fin_two_of]
   have hpyth : (Real.cos α : ℂ) * (Real.cos α : ℂ) + (Real.sin α : ℂ) * (Real.sin α : ℂ) = 1 := by
     have h : Real.cos α * Real.cos α + Real.sin α * Real.sin α = 1 := by
@@ -161,13 +161,13 @@ open Filter Topology
 
 /-- The squared Euclidean norm on `ℂ²`. -/
 theorem euclid2_norm_sq (x : EuclideanSpace ℂ (Fin 2)) :
-    ‖x‖ ^ 2 = ‖x 0‖ ^ 2 + ‖x 1‖ ^ 2 := by
+    ‖x‖ ^ (2 : ℕ) = ‖x 0‖ ^ (2 : ℕ) + ‖x 1‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fin.sum_univ_two]
 
 theorem norm_ofReal_of_nonneg {r : ℝ} (hr : 0 ≤ r) : ‖((r : ℝ) : ℂ)‖ = r := by
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr]
 
-theorem norm_ofReal_sq (r : ℝ) : ‖((r : ℝ) : ℂ)‖ ^ 2 = r ^ 2 := by
+theorem norm_ofReal_sq (r : ℝ) : ‖((r : ℝ) : ℂ)‖ ^ (2 : ℕ) = r ^ (2 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 /-- The aperture block as a bounded operator on `ℂ²`. -/
@@ -188,13 +188,13 @@ theorem apertureBlock_apply_one (α : ℝ) (x : EuclideanSpace ℂ (Fin 2)) :
   simp [metricPhaseLaw, -Complex.ofReal_cos, -Complex.ofReal_sin]
 
 theorem apertureBlock_norm_sq (α : ℝ) (x : EuclideanSpace ℂ (Fin 2)) :
-    ‖apertureBlock α x‖ ^ 2
-      = ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ 2 + ‖(Real.sin α : ℂ) * x 1‖ ^ 2 := by
+    ‖apertureBlock α x‖ ^ (2 : ℕ)
+      = ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ (2 : ℕ) + ‖(Real.sin α : ℂ) * x 1‖ ^ (2 : ℕ) := by
   rw [euclid2_norm_sq, apertureBlock_apply_zero, apertureBlock_apply_one]
 
 /-- **The block is uniformly bounded**: its squared stretch never exceeds twice the input. -/
 theorem apertureBlock_norm_sq_le (α : ℝ) (hc : 0 ≤ Real.cos α) (x : EuclideanSpace ℂ (Fin 2)) :
-    ‖apertureBlock α x‖ ^ 2 ≤ 2 * ‖x‖ ^ 2 := by
+    ‖apertureBlock α x‖ ^ (2 : ℕ) ≤ 2 * ‖x‖ ^ (2 : ℕ) := by
   have ha0 : (0 : ℝ) ≤ ‖x 0‖ := norm_nonneg _
   have hb0 : (0 : ℝ) ≤ ‖x 1‖ := norm_nonneg _
   have hc1 : Real.cos α ≤ 1 := Real.cos_le_one α
@@ -202,11 +202,11 @@ theorem apertureBlock_norm_sq_le (α : ℝ) (hc : 0 ≤ Real.cos α) (x : Euclid
     refine le_trans (norm_add_le _ _) ?_
     rw [norm_mul, norm_ofReal_of_nonneg hc]
   have hnn : (0 : ℝ) ≤ ‖x 0‖ + Real.cos α * ‖x 1‖ := add_nonneg ha0 (mul_nonneg hc hb0)
-  have hup2 : ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ 2 ≤ (‖x 0‖ + Real.cos α * ‖x 1‖) ^ 2 := by
+  have hup2 : ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ (2 : ℕ) ≤ (‖x 0‖ + Real.cos α * ‖x 1‖) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (x 0 + (Real.cos α : ℂ) * x 1)]
-  have hsin : ‖(Real.sin α : ℂ) * x 1‖ ^ 2 = Real.sin α ^ 2 * ‖x 1‖ ^ 2 := by
+  have hsin : ‖(Real.sin α : ℂ) * x 1‖ ^ (2 : ℕ) = Real.sin α ^ (2 : ℕ) * ‖x 1‖ ^ (2 : ℕ) := by
     rw [norm_mul, mul_pow, norm_ofReal_sq]
-  have hpyth : Real.sin α ^ 2 = 1 - Real.cos α ^ 2 := by
+  have hpyth : Real.sin α ^ (2 : ℕ) = 1 - Real.cos α ^ (2 : ℕ) := by
     have h := Real.sin_sq_add_cos_sq α
     linarith
   rw [apertureBlock_norm_sq, euclid2_norm_sq, hsin, hpyth]
@@ -216,26 +216,26 @@ theorem norm_apertureBlock_le (α : ℝ) (hc : 0 ≤ Real.cos α) :
     ‖apertureBlock α‖ ≤ Real.sqrt 2 := by
   refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg 2) fun x => ?_
   have hsq := apertureBlock_norm_sq_le α hc x
-  have h2 : (Real.sqrt 2 * ‖x‖) ^ 2 = 2 * ‖x‖ ^ 2 := by
+  have h2 : (Real.sqrt 2 * ‖x‖) ^ (2 : ℕ) = 2 * ‖x‖ ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt (by norm_num)]
   nlinarith [norm_nonneg (apertureBlock α x),
     mul_nonneg (Real.sqrt_nonneg 2) (norm_nonneg x)]
 
 /-- **The block is bounded below by its least squared singular value `1 − cos α`.** -/
 theorem apertureBlock_norm_sq_ge (α : ℝ) (hc : 0 ≤ Real.cos α) (x : EuclideanSpace ℂ (Fin 2)) :
-    (1 - Real.cos α) * ‖x‖ ^ 2 ≤ ‖apertureBlock α x‖ ^ 2 := by
+    (1 - Real.cos α) * ‖x‖ ^ (2 : ℕ) ≤ ‖apertureBlock α x‖ ^ (2 : ℕ) := by
   have ha0 : (0 : ℝ) ≤ ‖x 0‖ := norm_nonneg _
   have hb0 : (0 : ℝ) ≤ ‖x 1‖ := norm_nonneg _
   have habs : |‖x 0‖ - Real.cos α * ‖x 1‖| ≤ ‖x 0 + (Real.cos α : ℂ) * x 1‖ := by
     have h := abs_norm_sub_norm_le (x 0) (-((Real.cos α : ℂ) * x 1))
     rw [sub_neg_eq_add, norm_neg, norm_mul, norm_ofReal_of_nonneg hc] at h
     exact h
-  have hlow2 : (‖x 0‖ - Real.cos α * ‖x 1‖) ^ 2 ≤ ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ 2 := by
+  have hlow2 : (‖x 0‖ - Real.cos α * ‖x 1‖) ^ (2 : ℕ) ≤ ‖x 0 + (Real.cos α : ℂ) * x 1‖ ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ |‖x 0‖ - Real.cos α * ‖x 1‖| := abs_nonneg _
     nlinarith [sq_abs (‖x 0‖ - Real.cos α * ‖x 1‖)]
-  have hsin : ‖(Real.sin α : ℂ) * x 1‖ ^ 2 = Real.sin α ^ 2 * ‖x 1‖ ^ 2 := by
+  have hsin : ‖(Real.sin α : ℂ) * x 1‖ ^ (2 : ℕ) = Real.sin α ^ (2 : ℕ) * ‖x 1‖ ^ (2 : ℕ) := by
     rw [norm_mul, mul_pow, norm_ofReal_sq]
-  have hpyth : Real.sin α ^ 2 = 1 - Real.cos α ^ 2 := by
+  have hpyth : Real.sin α ^ (2 : ℕ) = 1 - Real.cos α ^ (2 : ℕ) := by
     have h := Real.sin_sq_add_cos_sq α
     linarith
   rw [apertureBlock_norm_sq, euclid2_norm_sq, hsin, hpyth]
@@ -247,7 +247,7 @@ theorem one_sub_cos_pos (α : ℝ) (hs : Real.sin α ≠ 0) : 0 < 1 - Real.cos �
   · exfalso
     have hsc := Real.sin_sq_add_cos_sq α
     rw [h] at hsc
-    have hz : Real.sin α ^ 2 = 0 := by nlinarith
+    have hz : Real.sin α ^ (2 : ℕ) = 0 := by nlinarith
     exact hs (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz)
 
 theorem apertureBlock_injective (α : ℝ) (hs : Real.sin α ≠ 0) (hc : 0 ≤ Real.cos α) :
@@ -260,8 +260,8 @@ theorem apertureBlock_injective (α : ℝ) (hs : Real.sin α ≠ 0) (hc : 0 ≤ 
   rw [hzero, norm_zero] at h
   norm_num at h
   have hnn : (0 : ℝ) ≤ ‖x - y‖ := norm_nonneg _
-  have hsq : ‖x - y‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖x - y‖, hpos]
-  have hz : ‖x - y‖ ^ 2 = 0 := le_antisymm hsq (sq_nonneg _)
+  have hsq : ‖x - y‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [sq_nonneg ‖x - y‖, hpos]
+  have hz : ‖x - y‖ ^ (2 : ℕ) = 0 := le_antisymm hsq (sq_nonneg _)
   have hzz : ‖x - y‖ = 0 := pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz
   exact sub_eq_zero.mp (norm_eq_zero.mp hzz)
 
@@ -287,7 +287,7 @@ theorem lowVector_apply_zero : (lowVector : EuclideanSpace ℂ (Fin 2)) 0 = 1 :=
 theorem lowVector_apply_one : (lowVector : EuclideanSpace ℂ (Fin 2)) 1 = -1 := by
   simp [lowVector]
 
-theorem norm_lowVector_sq : ‖(lowVector : EuclideanSpace ℂ (Fin 2))‖ ^ 2 = 2 := by
+theorem norm_lowVector_sq : ‖(lowVector : EuclideanSpace ℂ (Fin 2))‖ ^ (2 : ℕ) = 2 := by
   rw [euclid2_norm_sq, lowVector_apply_zero, lowVector_apply_one]
   norm_num
 
@@ -305,7 +305,7 @@ theorem norm_lowUnit : ‖(lowUnit : EuclideanSpace ℂ (Fin 2))‖ = 1 := by
   field_simp
 
 theorem apertureBlock_lowVector_norm_sq (a : ℝ) :
-    ‖apertureBlock a lowVector‖ ^ 2 = 2 * (1 - Real.cos a) := by
+    ‖apertureBlock a lowVector‖ ^ (2 : ℕ) = 2 * (1 - Real.cos a) := by
   rw [apertureBlock_norm_sq, lowVector_apply_zero, lowVector_apply_one]
   have h1 : (1 : ℂ) + (Real.cos a : ℂ) * (-1) = ((1 - Real.cos a : ℝ) : ℂ) := by
     rw [Complex.ofReal_sub, Complex.ofReal_one]
@@ -318,11 +318,11 @@ theorem apertureBlock_lowVector_norm_sq (a : ℝ) :
   nlinarith [hpyth]
 
 theorem apertureBlock_lowUnit_norm_sq (a : ℝ) :
-    ‖apertureBlock a lowUnit‖ ^ 2 = 1 - Real.cos a := by
+    ‖apertureBlock a lowUnit‖ ^ (2 : ℕ) = 1 - Real.cos a := by
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
   rw [lowUnit, map_smul, norm_smul, mul_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (le_of_lt (inv_pos.mpr h2)), apertureBlock_lowVector_norm_sq]
-  have hinv : ((Real.sqrt 2)⁻¹) ^ 2 = (2 : ℝ)⁻¹ := by
+  have hinv : ((Real.sqrt 2)⁻¹) ^ (2 : ℕ) = (2 : ℝ)⁻¹ := by
     rw [inv_pow, Real.sq_sqrt (by norm_num)]
   rw [hinv]
   ring
@@ -332,9 +332,9 @@ theorem apertureBlock_lowUnit_norm_sq (a : ℝ) :
 statement `sup_{‖y‖=1} inf_{Tx=y} ‖x‖² = ‖T⁻¹‖² = 1/(1 − cos α)`. -/
 theorem apertureBlock_filling_energy (a : ℝ) (hs : Real.sin a ≠ 0) (hc : 0 ≤ Real.cos a) :
     (∀ x y : EuclideanSpace ℂ (Fin 2), apertureBlock a x = y →
-        ‖x‖ ^ 2 ≤ (1 - Real.cos a)⁻¹ * ‖y‖ ^ 2) ∧
+        ‖x‖ ^ (2 : ℕ) ≤ (1 - Real.cos a)⁻¹ * ‖y‖ ^ (2 : ℕ)) ∧
       (∃ x y : EuclideanSpace ℂ (Fin 2), apertureBlock a x = y ∧ ‖y‖ ≠ 0 ∧
-        ‖x‖ ^ 2 = (1 - Real.cos a)⁻¹ * ‖y‖ ^ 2) := by
+        ‖x‖ ^ (2 : ℕ) = (1 - Real.cos a)⁻¹ * ‖y‖ ^ (2 : ℕ)) := by
   have hgap : 0 < 1 - Real.cos a := one_sub_cos_pos a hs
   constructor
   · rintro x y rfl
@@ -390,10 +390,10 @@ theorem cofinal_exactness_wall (α : ℕ → ℝ) (hpos : ∀ n, 0 < α n) (hle 
   have hnull : ∀ ε : ℝ, 0 < ε →
       ∃ (n : ℕ) (v : EuclideanSpace ℂ (Fin 2)), ‖v‖ = 1 ∧ ‖apertureBlock (α n) v‖ < ε := by
     intro ε hε
-    have hev := hgaplim.eventually (eventually_lt_nhds (show (0 : ℝ) < ε ^ 2 by positivity))
+    have hev := hgaplim.eventually (eventually_lt_nhds (show (0 : ℝ) < ε ^ (2 : ℕ) by positivity))
     obtain ⟨n, hn⟩ := hev.exists
     refine ⟨n, lowUnit, norm_lowUnit, ?_⟩
-    have hsq : ‖apertureBlock (α n) lowUnit‖ ^ 2 < ε ^ 2 := by
+    have hsq : ‖apertureBlock (α n) lowUnit‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) := by
       rw [apertureBlock_lowUnit_norm_sq]
       exact hn
     nlinarith [norm_nonneg (apertureBlock (α n) lowUnit), hε]

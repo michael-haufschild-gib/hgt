@@ -13,7 +13,7 @@ For transported diagonal weight `w_d(p)`, its exact Schur law is
 
 ```text
 ‖K_d(p,q)‖² = w_d(p) w_d(q)
-  * 64 log(p)^3 log(q)^3 / (log(p)+log(q))^6.
+  * 64 log(p)^(3 : ℕ) log(q)^(3 : ℕ) / (log(p)+log(q))^(6 : ℕ).
 ```
 
 The last factor is at most one.  Since `w_d` is summable for every `d>0`, the full double kernel is
@@ -55,7 +55,7 @@ theorem xiGammaEulerPrimitiveLogFrequency_prime_zero (p : Nat.Primes) :
   simp [xiGammaEulerPrimitiveLogFrequency, xiGammaEulerValuationNat]
 
 theorem finiteVonMangoldtDepthOneAmplitude_sq_prime_zero (p : Nat.Primes) :
-    finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat (p, 0)) ^ 2 =
+    finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat (p, 0)) ^ (2 : ℕ) =
       ((Real.log (p : ℝ) / (p : ℝ) : ℝ) : ℂ) := by
   have hn : xiGammaEulerValuationNat (p, 0) ≠ 0 := by
     simpa [xiGammaEulerValuationNat] using p.property.ne_zero
@@ -148,7 +148,7 @@ theorem routePPrimitiveGammaJuliaStokesTransportedPrimeWeight_nonneg
 /-- Sharp product-diagonal majorant retaining the complete off-diagonal kernel. -/
 theorem norm_sq_routePPrimitiveGammaJuliaStokesCofinalChildKernel_le
     {d : ℝ} (hd : 0 < d) (pq : Nat.Primes × Nat.Primes) :
-    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ 2 ≤
+    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ (2 : ℕ) ≤
       routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d pq.1 *
         routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d pq.2 := by
   rw [Complex.sq_norm,

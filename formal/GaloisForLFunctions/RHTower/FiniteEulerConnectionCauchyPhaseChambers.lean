@@ -48,11 +48,11 @@ theorem cos_lt_of_norm_exp_add_one_lt_one {theta : ℝ}
   have hnsq : Complex.normSq (Complex.exp ((theta : ℝ) * Complex.I)) = 1 := by
     rw [Complex.normSq_eq_norm_sq, hnorm]
     norm_num
-  have hsq : ‖Complex.exp ((theta : ℝ) * Complex.I) + 1‖ ^ 2 = 2 + 2 * Real.cos theta := by
+  have hsq : ‖Complex.exp ((theta : ℝ) * Complex.I) + 1‖ ^ (2 : ℕ) = 2 + 2 * Real.cos theta := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_add, Complex.normSq_one, hnsq,
       map_one, mul_one, hre]
     ring
-  have hlt : ‖Complex.exp ((theta : ℝ) * Complex.I) + 1‖ ^ 2 < 1 := by
+  have hlt : ‖Complex.exp ((theta : ℝ) * Complex.I) + 1‖ ^ (2 : ℕ) < 1 := by
     have h0 : (0 : ℝ) ≤ ‖Complex.exp ((theta : ℝ) * Complex.I) + 1‖ := norm_nonneg _
     nlinarith
   rw [hsq] at hlt

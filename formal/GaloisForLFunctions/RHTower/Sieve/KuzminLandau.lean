@@ -99,7 +99,7 @@ theorem klCoeff_mul {β : ℝ} (h0 : 0 < β) (h1 : β < 1) :
       = ((Real.cos (2 * Real.pi * β) : ℝ) : ℂ)
         + ((Real.sin (2 * Real.pi * β) : ℝ) : ℂ) * Complex.I := by
     rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-  have hc2 : Real.cos (2 * Real.pi * β) = 1 - 2 * Real.sin (Real.pi * β) ^ 2 := by
+  have hc2 : Real.cos (2 * Real.pi * β) = 1 - 2 * Real.sin (Real.pi * β) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul' (Real.pi * β)
     rw [show 2 * (Real.pi * β) = 2 * Real.pi * β by ring] at h
     linarith [Real.sin_sq_add_cos_sq (Real.pi * β)]
@@ -114,16 +114,16 @@ theorem klCoeff_mul {β : ℝ} (h0 : 0 < β) (h1 : β < 1) :
     simp only [Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_pow,
       Complex.ofReal_one, Complex.ofReal_ofNat, hSdef, hCdef]
     ring_nf
-  have hpy : S ^ 2 + C ^ 2 = 1 := by
+  have hpy : S ^ (2 : ℕ) + C ^ (2 : ℕ) = 1 := by
     rw [hSdef, hCdef]
     exact_mod_cast Real.sin_sq_add_cos_sq (Real.pi * β)
   rw [hklc, hfact]
   have hexpand : (-(1/2 : ℂ) - Complex.I / 2 * (C / S)) * (2 * S * (-S + C * Complex.I))
-      = S ^ 2 - Complex.I ^ 2 * C ^ 2 := by
+      = S ^ (2 : ℕ) - Complex.I ^ (2 : ℕ) * C ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hexpand]
-  linear_combination (-(C ^ 2)) * Complex.I_sq + hpy
+  linear_combination (-(C ^ (2 : ℕ))) * Complex.I_sq + hpy
 
 /-- The coefficient's norm is at most `1/(4δ)` on the band. -/
 theorem norm_klCoeff_le {β δ : ℝ} (hδ0 : 0 < δ)

@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIT3PowerSaving
 
 The three literal amplitude regimes are assembled without disjointness assumptions or hidden
 asymptotic premises. The Huxley replacement for the paper's sharper Jutila input leaves the
-explicit `T^(-eps^2/20)` middle-regime saving.
+explicit `T^(-eps^(2 : ℕ)/20)` middle-regime saving.
 -/
 
 namespace RHTower.Sieve

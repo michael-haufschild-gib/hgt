@@ -110,14 +110,14 @@ theorem exists_real_polynomial_iterateDerivative_eval_eq_degree_lt_modulus
 /-- Real value coefficient of a four-atom full-turn multiplier. -/
 def signedFourAtomFullTurnValueCoefficient
     (r a₁ a₂ a₃ a₄ : ℝ) : ℝ :=
-  a₁ * (1 - r) + a₂ * (1 - r ^ 2) +
-    a₃ * (1 - r ^ 3) + a₄ * (1 - r ^ 4)
+  a₁ * (1 - r) + a₂ * (1 - r ^ (2 : ℕ)) +
+    a₃ * (1 - r ^ (3 : ℕ)) + a₄ * (1 - r ^ (4 : ℕ))
 
 /-- Real derivative charge of a four-atom full-turn multiplier. -/
 def signedFourAtomFullTurnDerivativeCoefficient
     (T r a₁ a₂ a₃ a₄ : ℝ) : ℝ :=
-  -T * (r * a₁ + 2 * r ^ 2 * a₂ +
-    3 * r ^ 3 * a₃ + 4 * r ^ 4 * a₄)
+  -T * (r * a₁ + 2 * r ^ (2 : ℕ) * a₂ +
+    3 * r ^ (3 : ℕ) * a₃ + 4 * r ^ (4 : ℕ) * a₄)
 
 /-- Three-atom literal profiles cannot carry equal nonzero reflected charge off center. -/
 theorem signedThreeAtom_literalReflection_equalCharge_zero
@@ -146,31 +146,31 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
     · exact hr1 (sub_eq_zero.mp hminus)
     · nlinarith
   have hplus :
-      a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃ = 0 := by
+      a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃ = 0 := by
     have hfac :
         (1 - r) *
-          (a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃) = 0 := by
+          (a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃) = 0 := by
       have hre := congrArg Complex.re hvaluePlus
       simp only [signedThreeAtomFullTurnValue, signedThreeAtomFullTurnCoefficient,
         zero_re] at hre
       calc
-        _ = a₁ * (1 - r) + a₂ * (1 - r ^ 2) +
-            a₃ * (1 - r ^ 3) := by ring
+        _ = a₁ * (1 - r) + a₂ * (1 - r ^ (2 : ℕ)) +
+            a₃ * (1 - r ^ (3 : ℕ)) := by ring
         _ = 0 := by simpa only [pow_one] using hre
     exact (mul_eq_zero.mp hfac).resolve_left
       (sub_ne_zero.mpr hr1.symm)
   have hminus :
-      a₁ + (1 + r⁻¹) * a₂ + (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃ = 0 := by
+      a₁ + (1 + r⁻¹) * a₂ + (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃ = 0 := by
     have hfac :
         (1 - r⁻¹) *
           (a₁ + (1 + r⁻¹) * a₂ +
-            (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃) = 0 := by
+            (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃) = 0 := by
       have hre := congrArg Complex.re hvalueMinus
       simp only [signedThreeAtomFullTurnValue, signedThreeAtomFullTurnCoefficient,
         zero_re] at hre
       calc
-        _ = a₁ * (1 - r⁻¹) + a₂ * (1 - (r⁻¹) ^ 2) +
-            a₃ * (1 - (r⁻¹) ^ 3) := by ring
+        _ = a₁ * (1 - r⁻¹) + a₂ * (1 - (r⁻¹) ^ (2 : ℕ)) +
+            a₃ * (1 - (r⁻¹) ^ (3 : ℕ)) := by ring
         _ = 0 := by simpa only [pow_one] using hre
     exact (mul_eq_zero.mp hfac).resolve_left
       (sub_ne_zero.mpr hrInv1.symm)
@@ -178,9 +178,9 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
     have hfac :
         (r - r⁻¹) * (a₂ + (1 + r + r⁻¹) * a₃) = 0 := by
       calc
-        _ = (a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃) -
+        _ = (a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃) -
             (a₁ + (1 + r⁻¹) * a₂ +
-              (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃) := by
+              (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃) := by
               field_simp [hr0]
               all_goals ring
         _ = 0 := by rw [hplus, hminus, sub_zero]
@@ -193,7 +193,7 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
     nlinarith
   have hdplus :
       signedThreeAtomFullTurnDerivative T r a₁ a₂ a₃ =
-        ⟨0, -T * (1 - r) * (1 - r ^ 2) * a₃⟩ := by
+        ⟨0, -T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃⟩ := by
     rw [hb₁, hb₂]
     apply Complex.ext
     · simp [signedThreeAtomFullTurnDerivative]
@@ -202,7 +202,7 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
       all_goals ring
   have hdminus :
       signedThreeAtomFullTurnDerivative T r⁻¹ a₁ a₂ a₃ =
-        ⟨0, (-T * (1 - r) * (1 - r ^ 2) * a₃) / r ^ 3⟩ := by
+        ⟨0, (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) / r ^ (3 : ℕ)⟩ := by
     rw [hb₁, hb₂]
     apply Complex.ext
     · simp [signedThreeAtomFullTurnDerivative]
@@ -210,50 +210,50 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
       field_simp [hr0]
       all_goals ring
   have heq :
-      -T * (1 - r) * (1 - r ^ 2) * a₃ =
-        (-T * (1 - r) * (1 - r ^ 2) * a₃) / r ^ 3 := by
+      -T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃ =
+        (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) / r ^ (3 : ℕ) := by
     have hp := congrArg Complex.im hchargePlus
     have hm := congrArg Complex.im hchargeMinus
     rw [hdplus] at hp
     rw [hdminus] at hm
     norm_num [Complex.mul_im] at hp hm
     convert hp.trans hm.symm using 1 <;> ring
-  have hr3 : r ^ 3 ≠ 1 := by
+  have hr3 : r ^ (3 : ℕ) ≠ 1 := by
     intro h
-    have hfac : (r - 1) * (r ^ 2 + r + 1) = 0 := by
+    have hfac : (r - 1) * (r ^ (2 : ℕ) + r + 1) = 0 := by
       calc
-        _ = r ^ 3 - 1 := by ring
+        _ = r ^ (3 : ℕ) - 1 := by ring
         _ = 0 := by rw [h]; ring
-    have hpos : 0 < r ^ 2 + r + 1 := by positivity
+    have hpos : 0 < r ^ (2 : ℕ) + r + 1 := by positivity
     exact hr1 (sub_eq_zero.mp
       ((mul_eq_zero.mp hfac).resolve_right hpos.ne'))
-  have hzero : -T * (1 - r) * (1 - r ^ 2) * a₃ = 0 := by
+  have hzero : -T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃ = 0 := by
     have heq' :
-        (-T * (1 - r) * (1 - r ^ 2) * a₃) * r ^ 3 =
-          -T * (1 - r) * (1 - r ^ 2) * a₃ := by
+        (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) * r ^ (3 : ℕ) =
+          -T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃ := by
       calc
-        _ = ((-T * (1 - r) * (1 - r ^ 2) * a₃) / r ^ 3) *
-            r ^ 3 := congrArg (fun x : ℝ => x * r ^ 3) heq
+        _ = ((-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) / r ^ (3 : ℕ)) *
+            r ^ (3 : ℕ) := congrArg (fun x : ℝ => x * r ^ (3 : ℕ)) heq
         _ = _ := div_mul_cancel₀ _ (pow_ne_zero 3 hr0)
     have hfac :
-        (-T * (1 - r) * (1 - r ^ 2) * a₃) * (r ^ 3 - 1) = 0 := by
+        (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) * (r ^ (3 : ℕ) - 1) = 0 := by
       calc
-        _ = (-T * (1 - r) * (1 - r ^ 2) * a₃) * r ^ 3 -
-            (-T * (1 - r) * (1 - r ^ 2) * a₃) := by ring
+        _ = (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) * r ^ (3 : ℕ) -
+            (-T * (1 - r) * (1 - r ^ (2 : ℕ)) * a₃) := by ring
         _ = 0 := sub_eq_zero.mpr heq'
     exact (mul_eq_zero.mp hfac).resolve_right (sub_ne_zero.mpr hr3)
-  have hr2 : r ^ 2 ≠ 1 := by
+  have hr2 : r ^ (2 : ℕ) ≠ 1 := by
     intro h
     have hfac : (r - 1) * (r + 1) = 0 := by
       calc
-        _ = r ^ 2 - 1 := by ring
+        _ = r ^ (2 : ℕ) - 1 := by ring
         _ = 0 := by rw [h]; ring
     have hpos : 0 < r + 1 := by positivity
     exact hr1 (sub_eq_zero.mp
       ((mul_eq_zero.mp hfac).resolve_right hpos.ne'))
   have ha₃ : a₃ = 0 := by
     have hcoeff :
-        -T * (1 - r) * (1 - r ^ 2) ≠ 0 :=
+        -T * (1 - r) * (1 - r ^ (2 : ℕ)) ≠ 0 :=
       mul_ne_zero
         (mul_ne_zero (neg_ne_zero.mpr hT)
           (sub_ne_zero.mpr hr1.symm))
@@ -268,8 +268,8 @@ theorem signedThreeAtom_literalReflection_equalCharge_zero
 
 /-- Fourth root selected by equality of the two reciprocal derivative charges. -/
 def signedFourAtomLiteralAuxRoot (r : ℝ) : ℝ :=
-  (1 + r + r ^ 2 + r ^ 3 + r ^ 4) /
-    (r * (1 + r + r ^ 2))
+  (1 + r + r ^ (2 : ℕ) + r ^ (3 : ℕ) + r ^ (4 : ℕ)) /
+    (r * (1 + r + r ^ (2 : ℕ)))
 
 def signedFourAtomLiteralRootSum (r : ℝ) : ℝ :=
   1 + r + r⁻¹
@@ -290,12 +290,12 @@ def signedFourAtomLiteralRayFour (_r : ℝ) : ℝ :=
 
 /-- Common nonzero derivative charge of the literal four-atom ray. -/
 def signedFourAtomLiteralRayCharge (T r : ℝ) : ℝ :=
-  -T * (r - 1) ^ 2 * (r + 1) ^ 2 /
-    (r * (1 + r + r ^ 2))
+  -T * (r - 1) ^ (2 : ℕ) * (r + 1) ^ (2 : ℕ) /
+    (r * (1 + r + r ^ (2 : ℕ)))
 
 private theorem signedFourAtomLiteral_denominator_pos
     {r : ℝ} (hr : 0 < r) :
-    0 < r * (1 + r + r ^ 2) := by positivity
+    0 < r * (1 + r + r ^ (2 : ℕ)) := by positivity
 
 theorem signedFourAtomLiteralRay_value_plus
     {r : ℝ} (hr : 0 < r) :
@@ -484,9 +484,9 @@ private theorem polynomial_eq_coeffs_zero_to_four
     Q =
       C (Q.coeff 0) +
       C (Q.coeff 1) * X +
-      C (Q.coeff 2) * X ^ 2 +
-      C (Q.coeff 3) * X ^ 3 +
-      C (Q.coeff 4) * X ^ 4 := by
+      C (Q.coeff 2) * X ^ (2 : ℕ) +
+      C (Q.coeff 3) * X ^ (3 : ℕ) +
+      C (Q.coeff 4) * X ^ (4 : ℕ) := by
   simpa [Finset.sum_range_succ, add_assoc] using
     Q.as_sum_range_C_mul_X_pow' hdegree
 
@@ -695,9 +695,9 @@ theorem tendsto_signedFourAtomLiteralNormalizedWeights
 theorem signedFourAtomCompletion_of_fullTurnPhases
     {T r a₁ a₂ a₃ a₄ : ℝ} {z : ℂ}
     (h₁ : spectralTranslationPhase T z = (r : ℂ))
-    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ 2)
-    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ 3)
-    (h₄ : spectralTranslationPhase (4 * T) z = (r : ℂ) ^ 4) :
+    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ (2 : ℕ))
+    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ (3 : ℕ))
+    (h₄ : spectralTranslationPhase (4 * T) z = (r : ℂ) ^ (4 : ℕ)) :
     signedFourAtomCompletion T a₁ a₂ a₃ a₄ z =
       (signedFourAtomFullTurnValueCoefficient r a₁ a₂ a₃ a₄ : ℂ) := by
   rw [signedFourAtomCompletion, h₁, h₂, h₃, h₄]
@@ -710,9 +710,9 @@ theorem signedFourAtomCompletion_of_fullTurnPhases
 theorem signedFourAtomCompletionDerivative_of_fullTurnPhases
     {T r a₁ a₂ a₃ a₄ : ℝ} {z : ℂ}
     (h₁ : spectralTranslationPhase T z = (r : ℂ))
-    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ 2)
-    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ 3)
-    (h₄ : spectralTranslationPhase (4 * T) z = (r : ℂ) ^ 4) :
+    (h₂ : spectralTranslationPhase (2 * T) z = (r : ℂ) ^ (2 : ℕ))
+    (h₃ : spectralTranslationPhase (3 * T) z = (r : ℂ) ^ (3 : ℕ))
+    (h₄ : spectralTranslationPhase (4 * T) z = (r : ℂ) ^ (4 : ℕ)) :
     signedFourAtomCompletionDerivative T a₁ a₂ a₃ a₄ z =
       I * (signedFourAtomFullTurnDerivativeCoefficient
         T r a₁ a₂ a₃ a₄ : ℂ) := by
@@ -734,30 +734,30 @@ theorem signedFourAtomCompletion_fullTurn_eq
   have htwo :
       spectralTranslationPhase (2 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 2 := by
+        (Real.exp (-T * y) : ℂ) ^ (2 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 2 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (2 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 2 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hthree :
       spectralTranslationPhase (3 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 3 := by
+        (Real.exp (-T * y) : ℂ) ^ (3 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 3 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (3 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 3 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hfour :
       spectralTranslationPhase (4 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 4 := by
+        (Real.exp (-T * y) : ℂ) ^ (4 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 4 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (4 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 4 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
@@ -774,30 +774,30 @@ theorem signedFourAtomCompletionDerivative_fullTurn_eq
   have htwo :
       spectralTranslationPhase (2 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 2 := by
+        (Real.exp (-T * y) : ℂ) ^ (2 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 2 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (2 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 2 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hthree :
       spectralTranslationPhase (3 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 3 := by
+        (Real.exp (-T * y) : ℂ) ^ (3 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 3 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (3 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 3 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]
   have hfour :
       spectralTranslationPhase (4 * T)
           (signedThreeAtomFullTurnPoint T y) =
-        (Real.exp (-T * y) : ℂ) ^ 4 := by
+        (Real.exp (-T * y) : ℂ) ^ (4 : ℕ) := by
     calc
       _ = spectralTranslationPhase T
-          (signedThreeAtomFullTurnPoint T y) ^ 4 := by
+          (signedThreeAtomFullTurnPoint T y) ^ (4 : ℕ) := by
         simpa using spectralTranslationPhase_nat_mul 4 T
           (signedThreeAtomFullTurnPoint T y)
       _ = _ := by rw [hbase]

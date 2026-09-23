@@ -79,7 +79,7 @@ theorem norm_threePointDefectTerm_le_of_far (z₁ z₂ z₃ : ℂ) (q : XiZeroCo
     (h2 : 2 * ‖z₂‖ + 2 ≤ ‖xiSpectralPoint q‖)
     (h3 : 2 * ‖z₃‖ + 2 ≤ ‖xiSpectralPoint q‖) :
     ‖deningerDivisorThreePointDefectTerm z₁ z₂ z₃ q‖ ≤
-      16 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      16 * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   set μ := xiSpectralPoint q with hμ
   have hμpos : 0 < ‖μ‖ := by
     have : (0 : ℝ) < 2 * ‖z₁‖ + 2 := by positivity
@@ -96,7 +96,7 @@ theorem norm_threePointDefectTerm_le_of_far (z₁ z₂ z₃ : ℂ) (q : XiZeroCo
           (by positivity)
         apply mul_le_mul hb1 _ (by positivity) (by positivity)
         exact mul_le_mul hb2 hb3 (norm_nonneg _) (by positivity)
-    _ = 16 * (1 / ‖μ‖ ^ 2) := by
+    _ = 16 * (1 / ‖μ‖ ^ (2 : ℕ)) := by
         field_simp
         ring
 
@@ -199,12 +199,12 @@ theorem exists_threePointDefectTrace_ne_zero_of_offline
       _ ≤ ‖xiSpectralPoint q - z₃‖ := Complex.abs_im_le_norm _
   set R₀ : ℝ := 2 * ‖μ₀‖ + 4 with hR₀
   have hR₀pos : 0 < R₀ := by positivity
-  set C : ℝ := 16 + 2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g))) with hC
+  set C : ℝ := 16 + 2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g))) with hC
   have hCpos : 0 < C := by positivity
   have hCsum : Summable (fun q : XiZeroCopy =>
-      C * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+      C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left C
-  set M : ℝ := ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ 2) with hM
+  set M : ℝ := ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) with hM
   have hM0 : 0 ≤ M := tsum_nonneg (fun q =>
     mul_nonneg (le_of_lt hCpos) (by positivity))
   set t : ℝ := min (δ / 4) (min (1 / 2) (‖c‖ / (2 * (M + 1)))) with ht
@@ -273,7 +273,7 @@ theorem exists_threePointDefectTrace_ne_zero_of_offline
           mul_le_mul_of_nonneg_right (by exact_mod_cast hcardA) hnn
   have hbound : ∀ q : XiZeroCopy, xiSpectralPoint q ≠ μ₀ →
       ‖deningerDivisorThreePointDefectTerm z₁ z₂ z₃ q‖ ≤
-        C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     intro q hqne
     have hμq0 : 0 < ‖xiSpectralPoint q‖ :=
       norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
@@ -298,13 +298,13 @@ theorem exists_threePointDefectTrace_ne_zero_of_offline
         rw [hR₀] at hreg
         linarith
       calc ‖deningerDivisorThreePointDefectTerm z₁ z₂ z₃ q‖
-          ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+          ≤ 16 * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
             norm_threePointDefectTerm_le_of_far z₁ z₂ z₃ q
               (hfar z₁ hzn₁) (hfar z₂ hzn₂) (hfar z₃ hzn₃)
-        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
             apply mul_le_mul_of_nonneg_right _ (by positivity)
             rw [hC]
-            have h0 : 0 ≤ 2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g))) := by
+            have h0 : 0 ≤ 2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g))) := by
               positivity
             linarith
     · rw [not_le] at hreg
@@ -348,21 +348,21 @@ theorem exists_threePointDefectTrace_ne_zero_of_offline
                 _ ≤ 2 * R₀ := by linarith
             · apply mul_le_mul hinv₁ _ (by positivity) (by positivity)
               exact mul_le_mul hinv₂ hinv₃ (norm_nonneg _) (by positivity)
-        _ ≤ (2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g)))) *
-              (1 / ‖xiSpectralPoint q‖ ^ 2) := by
-            have hsq : ‖xiSpectralPoint q‖ ^ 2 ≤ R₀ ^ 2 :=
+        _ ≤ (2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g)))) *
+              (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
+            have hsq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ R₀ ^ (2 : ℕ) :=
               pow_le_pow_left₀ (le_of_lt hμq0) (le_of_lt hreg) 2
-            rw [show (2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g)))) *
-                (1 / ‖xiSpectralPoint q‖ ^ 2) =
-                (2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g)))) /
-                  ‖xiSpectralPoint q‖ ^ 2 from by ring,
-              le_div_iff₀ (by positivity : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2)]
+            rw [show (2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g)))) *
+                (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) =
+                (2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g)))) /
+                  ‖xiSpectralPoint q‖ ^ (2 : ℕ) from by ring,
+              le_div_iff₀ (by positivity : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ))]
             calc (2 * R₀) * ((2 / δ) * ((1 / g) * (1 / g))) *
-                  ‖xiSpectralPoint q‖ ^ 2
-                ≤ (2 * R₀) * ((2 / δ) * ((1 / g) * (1 / g))) * R₀ ^ 2 :=
+                  ‖xiSpectralPoint q‖ ^ (2 : ℕ)
+                ≤ (2 * R₀) * ((2 / δ) * ((1 / g) * (1 / g))) * R₀ ^ (2 : ℕ) :=
                   mul_le_mul_of_nonneg_left hsq (by positivity)
-              _ = 2 * R₀ ^ 3 * ((2 / δ) * ((1 / g) * (1 / g))) := by ring
-        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+              _ = 2 * R₀ ^ (3 : ℕ) * ((2 / δ) * ((1 / g) * (1 / g))) := by ring
+        _ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
             rw [hC]
             apply mul_le_mul_of_nonneg_right _ (by positivity)
             have h16 : (0 : ℝ) ≤ 16 := by norm_num
@@ -377,13 +377,13 @@ theorem exists_threePointDefectTrace_ne_zero_of_offline
         ≤ ∑' q : ↥Aᶜ,
             ‖deningerDivisorThreePointDefectTerm z₁ z₂ z₃ (q : XiZeroCopy)‖ :=
           norm_tsum_le_tsum_norm hsumnormAc
-      _ ≤ ∑' q : ↥Aᶜ, C * (1 / ‖xiSpectralPoint (q : XiZeroCopy)‖ ^ 2) := by
+      _ ≤ ∑' q : ↥Aᶜ, C * (1 / ‖xiSpectralPoint (q : XiZeroCopy)‖ ^ (2 : ℕ)) := by
           apply Summable.tsum_le_tsum _ hsumnormAc (hCsum.subtype Aᶜ)
           rintro ⟨q, hqc⟩
           exact hbound q hqc
       _ = ∑' q : XiZeroCopy, (Aᶜ).indicator
-            (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ 2)) q :=
-          tsum_subtype Aᶜ (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ 2))
+            (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) q :=
+          tsum_subtype Aᶜ (fun q => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
       _ ≤ M := by
           rw [hM]
           apply Summable.tsum_le_tsum _ (hCsum.indicator Aᶜ) hCsum

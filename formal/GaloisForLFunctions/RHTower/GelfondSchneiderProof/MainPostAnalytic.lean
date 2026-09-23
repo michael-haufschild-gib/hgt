@@ -98,7 +98,7 @@ lemma one_le_norm_algebraNorm_c1rho : 1 ≤ norm
   simp only [Real.norm_eq_abs] at *
   norm_cast at *
 
-def c₅ : ℝ := ((abs (h7.c₁) + 1) ^ (((↑(h7.h) * (1+4 * h7.m^2)))))
+def c₅ : ℝ := ((abs (h7.c₁) + 1) ^ (((↑(h7.h) * (1+4 * h7.m^(2 : ℕ))))))
 
 omit [DecidableEq (h7.K →+* ℂ)] in
 lemma c5nonneg : 0 < h7.c₅ := by
@@ -219,7 +219,7 @@ lemma norm_algebraNorm_rho_gt : h7.c₅ ^ (-(h7.r q hq0 h2mq) : ℝ) < norm (Alg
           rw [pow_mul]
           rw [pow_mul]
       rw [this]; clear this
-      calc _ ≤ abs (h7.c₁) ^ (h7.h * (h7.r q hq0 h2mq + 2 * h7.m * q^2)):= ?_
+      calc _ ≤ abs (h7.c₁) ^ (h7.h * (h7.r q hq0 h2mq + 2 * h7.m * q^(2 : ℕ))):= ?_
            _ ≤ abs (h7.c₁) ^ (h7.h * (h7.r q hq0 h2mq + 4 * h7.m ^ 2 * h7.n q)) := ?_
            _ ≤ abs (h7.c₁) ^( h7.h * (1 + 4 * h7.m ^ 2) * h7.r q hq0 h2mq) := ?_
            _ < (abs (h7.c₁) + 1) ^ (h7.h * (1 + 4 * h7.m ^ 2) * h7.r q hq0 h2mq) := ?_
@@ -231,7 +231,7 @@ lemma norm_algebraNorm_rho_gt : h7.c₅ ^ (-(h7.r q hq0 h2mq) : ℝ) < norm (Alg
             simp only [add_le_add_iff_left, Nat.ofNat_pos, mul_le_mul_iff_right₀]
             refine Nat.mul_le_mul (le_refl _) ?_
             · trans
-              · have : q ≤ q^2 := by
+              · have : q ≤ q^(2 : ℕ) := by
                  refine Nat.le_pow ?_
                  simp only [Nat.ofNat_pos]
                 apply this

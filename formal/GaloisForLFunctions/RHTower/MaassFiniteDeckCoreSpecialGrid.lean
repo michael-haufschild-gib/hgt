@@ -25,13 +25,13 @@ theorem exists_reciprocal_grid_core_error_le_gradNormSq {N M K : ℕ} (hM : 0 < 
           (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹)
           (toDeckL2 (F : ℍ → DeckSpace N) (formPreDomain.memLp F)) -
         deckGridStep (N := N) (M := M) (K := K)
-          (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹) C‖ ^ 2 ≤
-        ((Real.sqrt 3 / 2) ^ 2)⁻¹ *
-          (16 * ((M : ℝ)⁻¹) ^ 2 *
+          (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹) C‖ ^ (2 : ℕ) ≤
+        ((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ *
+          (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ) *
             (‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-                (formPreDomain.memLp_gradX F)‖ ^ 2 +
+                (formPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
               ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-                (formPreDomain.memLp_gradY F)‖ ^ 2)) := by
+                (formPreDomain.memLp_gradY F)‖ ^ (2 : ℕ))) := by
   have hM0 : (M : ℝ) ≠ 0 := by
     exact_mod_cast Nat.ne_of_gt hM
   have hMh : (M : ℝ) * (M : ℝ)⁻¹ = 1 := by
@@ -46,10 +46,10 @@ theorem exists_reciprocal_grid_core_error_le_gradNormSq {N M K : ℕ} (hM : 0 < 
     rw [abs_le]
     constructor <;> linarith [hx.1, hx.2]
   have hstripy : ∀ y ∈ Set.Ioc (Real.sqrt 3 / 2)
-      (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹), 3 ≤ 4 * y ^ 2 := by
+      (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹), 3 ≤ 4 * y ^ (2 : ℕ) := by
     intro y hy
     have hsqrt0 : 0 ≤ Real.sqrt 3 := Real.sqrt_nonneg _
-    have hsquare : (Real.sqrt 3) ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    have hsquare : (Real.sqrt 3) ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
     have hdiff : 0 ≤ 2 * y - Real.sqrt 3 := by linarith [hy.1]
     have hsum : 0 ≤ 2 * y + Real.sqrt 3 := by linarith [hy.1, hsqrt0]
     have hprod : 0 ≤ (2 * y - Real.sqrt 3) * (2 * y + Real.sqrt 3) :=

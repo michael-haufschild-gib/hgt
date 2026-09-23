@@ -23,7 +23,7 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem pwGammaMertens_log_invSq_summable :
-    Summable fun n : ℕ => |Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^2 := by
+    Summable fun n : ℕ => |Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^(2 : ℕ) := by
   obtain ⟨B, hB, hrate⟩ := Sieve.deningerMertensM_log_pow_four_rate
   obtain ⟨K, hK⟩ := eventually_atTop.mp hrate
   obtain ⟨L, hL⟩ := eventually_atTop.mp
@@ -44,11 +44,11 @@ theorem pwGammaMertens_log_invSq_summable :
   have hl : 0 < Real.log (n : ℝ) := Real.log_pos
     ((Real.one_lt_exp_iff.mpr zero_lt_one).trans_le hne)
   have hr := hK n ((le_max_left K L).trans hnM)
-  change ‖|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^2‖ ≤ _
+  change ‖|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^(2 : ℕ)‖ ≤ _
   rw [Real.norm_of_nonneg (by positivity)]
   calc
-    _ ≤ (B * (n : ℝ) / Real.log (n : ℝ)^4) * Real.log (n : ℝ) / (n : ℝ)^2 := by gcongr
-    _ = B / ((n : ℝ) * Real.log (n : ℝ)^3) := by field_simp
+    _ ≤ (B * (n : ℝ) / Real.log (n : ℝ)^(4 : ℕ)) * Real.log (n : ℝ) / (n : ℝ)^(2 : ℕ) := by gcongr
+    _ = B / ((n : ℝ) * Real.log (n : ℝ)^(3 : ℕ)) := by field_simp
     _ = _ := by
       have heq : (n : ℝ) = (M : ℝ) + ((i : ℝ) + 1) := by dsimp [n]; push_cast; ring
       rw [heq]
@@ -65,7 +65,7 @@ theorem pwGammaMertens_log_div_tendsto_zero :
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hi : Tendsto (fun n : ℕ => (Real.log (n : ℝ))⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp hlog
-  have hmaj : Tendsto (fun n : ℕ => B / Real.log (n : ℝ)^3) atTop (𝓝 0) := by
+  have hmaj : Tendsto (fun n : ℕ => B / Real.log (n : ℝ)^(3 : ℕ)) atTop (𝓝 0) := by
     simpa [div_eq_mul_inv] using (hi.pow 3).const_mul B
   refine squeeze_zero_norm' ?_ hmaj
   filter_upwards [hrate, eventually_gt_atTop 1] with n hn hn1
@@ -73,7 +73,7 @@ theorem pwGammaMertens_log_div_tendsto_zero :
   have hl : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast hn1)
   rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_pos hnr, abs_of_pos hl]
   calc
-    _ ≤ (B * (n : ℝ) / Real.log (n : ℝ)^4) * Real.log (n : ℝ) / (n : ℝ) := by gcongr
+    _ ≤ (B * (n : ℝ) / Real.log (n : ℝ)^(4 : ℕ)) * Real.log (n : ℝ) / (n : ℝ) := by gcongr
     _ = _ := by field_simp
 
 private theorem pwGammaLog_dilation_integrable {r : ℝ} (hr : 0 < r) :
@@ -111,8 +111,8 @@ theorem pwGammaMobiusLogAbelAtom_decomposition (n : ℕ) (x : ℝ) :
 theorem pwGammaMobiusLogAbelAtom_integral_norm_le (n : ℕ) :
     (∫ x in Ioi (0 : ℝ), ‖pwGammaMobiusLogAbelAtom n x‖) ≤
       (Real.Gamma (3/2) + Real.Gamma (5/2)) *
-        (|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^2) +
-      Real.Gamma (3/2) * (|Sieve.mertensM n| / (n : ℝ)^2) := by
+        (|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^(2 : ℕ)) +
+      Real.Gamma (3/2) * (|Sieve.mertensM n| / (n : ℝ)^(2 : ℕ)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pwGammaMobiusLogAbelAtom_zero]
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn
@@ -151,7 +151,7 @@ theorem pwGammaMobiusLogAbelAtom_integral_norm_le (n : ℕ) :
   calc
     _ ≤ _ := hb
     _ ≤ Real.log (n : ℝ) *
-        ((Real.Gamma (3/2)+Real.Gamma (5/2)) * (|Sieve.mertensM n| / (n : ℝ)^2)) +
+        ((Real.Gamma (3/2)+Real.Gamma (5/2)) * (|Sieve.mertensM n| / (n : ℝ)^(2 : ℕ))) +
         |Sieve.mertensM n| * (1/(n : ℝ)) * (Real.Gamma (3/2) / (n : ℝ)) := by
       gcongr
       · exact pwGammaMobiusAbelAtom_integral_norm_le n
@@ -199,7 +199,7 @@ theorem pwGammaMobiusLogAbel_boundary_tendsto_zero {x : ℝ} (hx : 0 < x) :
       (Sieve.mertensM n : ℂ)) atTop (𝓝 0) := by
   let C : ℝ := Real.exp ((5/2)*Real.log (5/2)-5/2)
   have hm := ((pwGammaMertens_log_div_tendsto_zero.norm).mul
-    (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))).const_mul (C / x^2)
+    (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))).const_mul (C / x^(2 : ℕ))
   simp only [norm_zero, mul_zero] at hm
   refine squeeze_zero_norm' ?_ hm
   filter_upwards [eventually_gt_atTop 0] with n hn
@@ -209,8 +209,8 @@ theorem pwGammaMobiusLogAbel_boundary_tendsto_zero {x : ℝ} (hx : 0 < x) :
   rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
     Real.norm_eq_abs, abs_of_nonneg hl]
   calc
-    _ ≤ Real.log (n : ℝ) * (C / ((n : ℝ)*x)^2) * |Sieve.mertensM n| := by gcongr
-    _ = (C / x^2) * (‖Sieve.mertensM n * Real.log (n : ℝ) / (n : ℝ)‖ * (1/(n : ℝ))) := by
+    _ ≤ Real.log (n : ℝ) * (C / ((n : ℝ)*x)^(2 : ℕ)) * |Sieve.mertensM n| := by gcongr
+    _ = (C / x^(2 : ℕ)) * (‖Sieve.mertensM n * Real.log (n : ℝ) / (n : ℝ)‖ * (1/(n : ℝ))) := by
       rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_nonneg hl, abs_of_pos hnr, mul_pow]
       ring
 
@@ -219,7 +219,7 @@ theorem pwGammaMobiusLogAbelAtom_summable {x : ℝ} (hx : 0 < x) :
   let C : ℝ := Real.exp ((5/2)*Real.log (5/2)-5/2)
   have hC : 0 ≤ C := (Real.exp_pos _).le
   have hm := ((pwGammaMertens_log_invSq_summable.mul_left 2).add
-    deningerMertensM_invSq_summable).mul_left (C/x^2)
+    deningerMertensM_invSq_summable).mul_left (C/x^(2 : ℕ))
   refine Summable.of_norm_bounded hm fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pwGammaMobiusLogAbelAtom_zero]
@@ -230,9 +230,9 @@ theorem pwGammaMobiusLogAbelAtom_summable {x : ℝ} (hx : 0 < x) :
   have hd := log_natCast_succ_sub_log_natCast_le_inv n hn
   have hi : 1/(n : ℝ) ≤ 1 := (div_le_one hnr).mpr hnr1
   have hlb : Real.log ((n : ℝ)+1) ≤ Real.log (n : ℝ)+1 := by linarith
-  have hq0 : ‖pwGammaRaySource ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^2 :=
+  have hq0 : ‖pwGammaRaySource ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) :=
     pwGammaRaySource_norm_le_inv_sq (mul_pos hnr hx)
-  have hq1 : ‖pwGammaRaySource (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^2 := by
+  have hq1 : ‖pwGammaRaySource (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) := by
     refine (pwGammaRaySource_norm_le_inv_sq (show 0 < ((n : ℝ)+1)*x by positivity)).trans ?_
     apply div_le_div_of_nonneg_left hC (sq_pos_of_pos (mul_pos hnr hx))
     gcongr
@@ -248,7 +248,7 @@ theorem pwGammaMobiusLogAbelAtom_summable {x : ℝ} (hx : 0 < x) :
           Real.log (n : ℝ)*‖pwGammaRaySource ((n : ℝ)*x)‖) := by
       simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hl, abs_of_nonneg hl1]
     _ ≤ |Sieve.mertensM n| *
-        ((Real.log (n : ℝ)+1)*(C/((n : ℝ)*x)^2) + Real.log (n : ℝ)*(C/((n : ℝ)*x)^2)) := by gcongr
+        ((Real.log (n : ℝ)+1)*(C/((n : ℝ)*x)^(2 : ℕ)) + Real.log (n : ℝ)*(C/((n : ℝ)*x)^(2 : ℕ))) := by gcongr
     _ = _ := by rw [mul_pow]; ring
 
 theorem pwGammaMobiusLogAbel_hasSum {x : ℝ} (hx : 0 < x) :

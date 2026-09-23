@@ -42,7 +42,7 @@ private theorem nullValue_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ 
 
 private theorem nullDensity_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ × ℝ => nullDensity nu s amp z.1 z.2) := by
   have hs := (odd_continuous s amp).comp (show Continuous (fun z : ℝ × ℝ => ((z.1+z.2)/2,(z.1-z.2)/2)) by fun_prop)
-  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)) := by
+  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))) := by
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
@@ -122,7 +122,7 @@ private def chart (x : P) : P :=
 
 private def chartDifferential (x : P) : P →L[ℝ] P :=
   ContinuousLinearMap.pi ![ContinuousLinearMap.proj 0,
-    ContinuousLinearMap.proj 0-(2/(x 1^2-1)) • ContinuousLinearMap.proj 1,
+    ContinuousLinearMap.proj 0-(2/(x 1^(2 : ℕ)-1)) • ContinuousLinearMap.proj 1,
     ContinuousLinearMap.proj 2,(x 3)⁻¹ • ContinuousLinearMap.proj 3]
 
 private theorem chart_hasFDerivAt (x : P) (hr : 1<x 1) (hy : 0<x 3) :
@@ -143,14 +143,14 @@ private theorem chart_hasFDerivAt (x : P) (hr : 1<x 1) (hy : 0<x 3) :
 
 private theorem chart_basis (x : P) (i : Fin 4) :
     chartDifferential x (Pi.single i 1) =
-      ![Pi.single 0 1+Pi.single 1 1,(-2/(x 1^2-1)) • Pi.single 1 1,
+      ![Pi.single 0 1+Pi.single 1 1,(-2/(x 1^(2 : ℕ)-1)) • Pi.single 1 1,
         Pi.single 2 1,(x 3)⁻¹ • Pi.single 3 1] i := by
   ext j
   fin_cases i <;> fin_cases j <;> simp [chartDifferential,neg_div]
 
 private def pullFirst (f : P → ℂ) (i : Fin 4) (x : P) : ℂ :=
   ![coordDeriv 0 f (chart x)+coordDeriv 1 f (chart x),
-    (-2/((x 1:ℂ)^2-1))*coordDeriv 1 f (chart x),
+    (-2/((x 1:ℂ)^(2 : ℕ)-1))*coordDeriv 1 f (chart x),
     coordDeriv 2 f (chart x),(x 3:ℂ)⁻¹*coordDeriv 3 f (chart x)] i
 
 private theorem chart_first {f : P → ℂ} {x : P} (hr : 1<x 1) (hy : 0<x 3)
@@ -246,7 +246,7 @@ theorem original_orbit_remainder (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) (j : Fin 2) :
     let v := x 0-2*tortoise (x 1)
     let E := fun p r => remainder q branch amp p r ![x 2,Real.log (x 3)]
-    let f : ℂ := (x 1:ℂ)^2-1
+    let f : ℂ := (x 1:ℂ)^(2 : ℕ)-1
     orbitDerivative (sourceScalar q branch amp) j x-orbitDerivative (principalStream q branch amp) j x =
       if j=0 then E (x 0) v-(2*(x 1:ℂ)/f)*deriv (E (x 0)) v
       else f*E (x 0) v+(x 1:ℂ)*(deriv (fun p => E p v) (x 0)-deriv (E (x 0)) v) := by
@@ -261,7 +261,7 @@ theorem original_orbit_remainder (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
   rw [null_first q branch amp (chart x) hp (chart_order x hr),
       null_second q branch amp (chart x) hp (chart_order x hr)] at h0
   rw [null_second q branch amp (chart x) hp (chart_order x hr)] at h1
-  have hf : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
+  have hf : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
   by_cases hj : j=0
   · simp only [orbitDerivative,if_pos hj]
     rw [h1]
@@ -292,7 +292,7 @@ theorem original_orbit_cusp_limit (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
   have hE := original_remainder_jet_tendsto_zero q branch amp ⟨p,hp.le⟩ ⟨v,hv.le⟩ [] X w
   simp only [D4BMSquareCuspJets.coordinateJet] at hE
   by_cases hj : j=0
-  · have ht := hE.sub (hN.2.const_mul (2*(R:ℂ)/((R:ℂ)^2-1)))
+  · have ht := hE.sub (hN.2.const_mul (2*(R:ℂ)/((R:ℂ)^(2 : ℕ)-1)))
     simp only [mul_zero,sub_zero] at ht
     apply ht.congr'
     filter_upwards [] with k
@@ -301,7 +301,7 @@ theorem original_orbit_cusp_limit (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     simp only [Matrix.cons_val,Real.log_exp,if_pos hj]
     dsimp only [v]
     ring
-  · have ht := (hE.const_mul ((R:ℂ)^2-1)).add ((hN.1.sub hN.2).const_mul (R:ℂ))
+  · have ht := (hE.const_mul ((R:ℂ)^(2 : ℕ)-1)).add ((hN.1.sub hN.2).const_mul (R:ℂ))
     simp only [mul_zero,sub_zero,add_zero] at ht
     apply ht.congr'
     filter_upwards [] with k
@@ -429,7 +429,7 @@ private theorem principal_radius (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (x
 def principalOrbitCoefficient (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (j : Fin 2) (p R : ℝ) (i : Fin 3) : ℂ :=
   if j=0 then deriv (fun r => principalCoefficient q branch amp p r i) R
-  else ((R:ℂ)^2-1)*deriv (fun r => principalCoefficient q branch amp p r i) R+
+  else ((R:ℂ)^(2 : ℕ)-1)*deriv (fun r => principalCoefficient q branch amp p r i) R+
     deriv (fun t => principalCoefficient q branch amp t R i) p
 
 /-- Both physical principal orbit derivatives retain the same three cusp powers. -/

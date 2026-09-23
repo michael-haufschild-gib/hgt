@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailMomentLogConvex
 
 The existing all-order cold irregular-RH law identifies the fourth Malgrange correction with
 
-`-3 * (normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ 4 / 8)`.
+`-3 * (normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ (4 : ℕ) / 8)`.
 
 This module determines that previously open datum without fitting a wall clock or selecting Xi
 zeros.  The order-seven theta/Xi recurrence first exposes the exact eighth-cumulant polynomial.
@@ -25,9 +25,9 @@ theorem normalizedPrimeArchMoment_three_eq_thetaCuspNormalizedEvenMoment :
     normalizedPrimeArchMoment 3 =
       -thetaCuspNormalizedEvenMoment 4 / 5040 +
         thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 3 / 180 +
-        thetaCuspNormalizedEvenMoment 2 ^ 2 / 144 -
-        thetaCuspNormalizedEvenMoment 1 ^ 2 * thetaCuspNormalizedEvenMoment 2 / 12 +
-        thetaCuspNormalizedEvenMoment 1 ^ 4 / 8 := by
+        thetaCuspNormalizedEvenMoment 2 ^ (2 : ℕ) / 144 -
+        thetaCuspNormalizedEvenMoment 1 ^ (2 : ℕ) * thetaCuspNormalizedEvenMoment 2 / 12 +
+        thetaCuspNormalizedEvenMoment 1 ^ (4 : ℕ) / 8 := by
   apply Complex.ofReal_injective
   push_cast
   have h := normalizedPrimeArchMoment_recursive 3
@@ -45,7 +45,7 @@ theorem normalizedPrimeArchMoment_three_eq_thetaCuspNormalizedEvenMoment :
 /-- The fourth cold residual after forced first-jet scaling is strictly negative before the
 Malgrange parity factor is applied. -/
 theorem normalizedPrimeArchMoment_three_sub_zero_pow_four_div_eight_neg :
-    normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ 4 / 8 < 0 := by
+    normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ (4 : ℕ) / 8 < 0 := by
   let A := thetaCuspNormalizedEvenMoment 1
   let B := thetaCuspNormalizedEvenMoment 2
   let C := thetaCuspNormalizedEvenMoment 3
@@ -55,17 +55,17 @@ theorem normalizedPrimeArchMoment_three_sub_zero_pow_four_div_eight_neg :
     dsimp only [B, thetaCuspNormalizedEvenMoment]
     exact div_pos (thetaCuspRawEvenMoment_pos 2) h0
   have hstrict := thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq
-  have hBA : B < 6 * A ^ 2 := by
+  have hBA : B < 6 * A ^ (2 : ℕ) := by
     dsimp only [A, B, thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith
   have hrawLog := thetaCuspRawEvenMoment_sq_le_adjacent 3 (by omega)
-  have hCD : C ^ 2 ≤ B * D := by
+  have hCD : C ^ (2 : ℕ) ≤ B * D := by
     dsimp only [B, C, D, thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith
-  let P := -D + 28 * A * C + 35 * B ^ 2 - 420 * A ^ 2 * B
-  have hscaled : 35 * B ^ 2 * B < 35 * B ^ 2 * (6 * A ^ 2) := by
+  let P := -D + 28 * A * C + 35 * B ^ (2 : ℕ) - 420 * A ^ (2 : ℕ) * B
+  have hscaled : 35 * B ^ (2 : ℕ) * B < 35 * B ^ (2 : ℕ) * (6 * A ^ (2 : ℕ)) := by
     exact mul_lt_mul_of_pos_left hBA (by positivity)
   have hmul : B * P < 0 := by
     dsimp only [P]
@@ -82,7 +82,7 @@ theorem normalizedPrimeArchMoment_three_sub_zero_pow_four_div_eight_neg :
 /-- Exact positive scalar orientation of the canonical cold fourth Malgrange target. -/
 theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallColdFourthMalgrangeTarget_pos :
     0 < -3 *
-      (normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ 4 / 8) := by
+      (normalizedPrimeArchMoment 3 - normalizedPrimeArchMoment 0 ^ (4 : ℕ) / 8) := by
   nlinarith [normalizedPrimeArchMoment_three_sub_zero_pow_four_div_eight_neg]
 
 end

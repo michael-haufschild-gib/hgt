@@ -99,16 +99,16 @@ theorem proximity_hypothesis_is_conclusion {G : ℂ → ℂ} {z : ℂ} {R m : �
 /-- **The drift term is unbounded.**  When two zeros share a real part, the drift contribution is
 `1/|y_j - y_k|`, which exceeds any prescribed bound. -/
 theorem drift_term_unbounded (M : ℝ) (hM : 0 < M) :
-    ∃ d : ℝ, 0 < d ∧ M < d / d ^ 2 := by
+    ∃ d : ℝ, 0 < d ∧ M < d / d ^ (2 : ℕ) := by
   refine ⟨1 / (M + 1), by positivity, ?_⟩
   have hpos : (0:ℝ) < M + 1 := by linarith
-  have hval : (1 / (M + 1)) / (1 / (M + 1)) ^ 2 = M + 1 := by
+  have hval : (1 / (M + 1)) / (1 / (M + 1)) ^ (2 : ℕ) = M + 1 := by
     field_simp
   rw [hval]
   linarith
 
 /-- The drift term in closed form when the real parts agree: `|y_j - y_k| / |y_j - y_k|² = 1/|y|`. -/
-theorem drift_term_eq {d : ℝ} (hd : d ≠ 0) : d / d ^ 2 = 1 / d := by
+theorem drift_term_eq {d : ℝ} (hd : d ≠ 0) : d / d ^ (2 : ℕ) = 1 / d := by
   field_simp
 
 end RHTower

@@ -99,7 +99,7 @@ theorem escapeCarrier_exact_negativeSquares
 
 /-! ## Lower semicontinuity of the negative-square index -/
 
-theorem continuous_quadForm (n : ℕ) (G : Matrix (Fin n) (Fin n) ℂ) :
+theorem continuous_quadForm_kreinIndexEscapeStratification (n : ℕ) (G : Matrix (Fin n) (Fin n) ℂ) :
     Continuous fun x : Fin n → ℂ => (star x ⬝ᵥ G.mulVec x).re := by
   have h : Continuous fun x : Fin n → ℂ => (star x ⬝ᵥ G.mulVec x) := by
     have hrw : (fun x : Fin n → ℂ => (star x ⬝ᵥ G.mulVec x))
@@ -112,11 +112,11 @@ theorem continuous_quadForm (n : ℕ) (G : Matrix (Fin n) (Fin n) ℂ) :
 
 theorem quadForm_smul_real {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (c : ℝ) (x : Fin n → ℂ) :
     (star ((c : ℂ) • x) ⬝ᵥ G.mulVec ((c : ℂ) • x)).re
-      = c ^ 2 * (star x ⬝ᵥ G.mulVec x).re := by
+      = c ^ (2 : ℕ) * (star x ⬝ᵥ G.mulVec x).re := by
   rw [Matrix.mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul,
     smul_eq_mul, RCLike.star_def, Complex.conj_ofReal]
   rw [← mul_assoc]
-  rw [show ((c : ℂ) * (c : ℂ)) = ((c ^ 2 : ℝ) : ℂ) by push_cast; ring]
+  rw [show ((c : ℂ) * (c : ℂ)) = ((c ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
   rw [Complex.re_ofReal_mul]
 
 /-- On a subspace where the quadratic form of `G₀` is strictly negative it is uniformly
@@ -124,10 +124,10 @@ coercive. -/
 theorem exists_coercive_bound_on_subspace
     {n : ℕ} (G₀ : Matrix (Fin n) (Fin n) ℂ) (W : Submodule ℂ (Fin n → ℂ))
     (hW : ∀ x ∈ W, x ≠ 0 → (star x ⬝ᵥ G₀.mulVec x).re < 0) :
-    ∃ δ > 0, ∀ x ∈ W, (star x ⬝ᵥ G₀.mulVec x).re ≤ -δ * ‖x‖ ^ 2 := by
+    ∃ δ > 0, ∀ x ∈ W, (star x ⬝ᵥ G₀.mulVec x).re ≤ -δ * ‖x‖ ^ (2 : ℕ) := by
   classical
   set q : (Fin n → ℂ) → ℝ := fun x => (star x ⬝ᵥ G₀.mulVec x).re with hq
-  have hqcont : Continuous q := continuous_quadForm n G₀
+  have hqcont : Continuous q := continuous_quadForm_kreinIndexEscapeStratification n G₀
   set S : Set (Fin n → ℂ) := (W : Set (Fin n → ℂ)) ∩ Metric.sphere 0 1 with hS
   have hWclosed : IsClosed (W : Set (Fin n → ℂ)) := W.closed_of_finiteDimensional
   have hScompact : IsCompact S := (isCompact_sphere (0 : Fin n → ℂ) 1).inter_left hWclosed
@@ -151,13 +151,13 @@ theorem exists_coercive_bound_on_subspace
         field_simp
       have huS : u ∈ S := ⟨huW, by simpa using hunorm⟩
       have hle : q u ≤ q x₀ := hx₀max huS
-      have hscale : q u = (‖x‖⁻¹) ^ 2 * q x := by
+      have hscale : q u = (‖x‖⁻¹) ^ (2 : ℕ) * q x := by
         rw [hu, hq]
         exact quadForm_smul_real G₀ (‖x‖⁻¹) x
-      have hxsq : (0 : ℝ) < ‖x‖ ^ 2 := by positivity
-      have : (‖x‖⁻¹) ^ 2 * q x ≤ q x₀ := by rw [← hscale]; exact hle
+      have hxsq : (0 : ℝ) < ‖x‖ ^ (2 : ℕ) := by positivity
+      have : (‖x‖⁻¹) ^ (2 : ℕ) * q x ≤ q x₀ := by rw [← hscale]; exact hle
       have hmul := mul_le_mul_of_nonneg_left this (le_of_lt hxsq)
-      have hid : ‖x‖ ^ 2 * ((‖x‖⁻¹) ^ 2 * q x) = q x := by
+      have hid : ‖x‖ ^ (2 : ℕ) * ((‖x‖⁻¹) ^ (2 : ℕ) * q x) = q x := by
         field_simp
       rw [hid] at hmul
       nlinarith [hmul]
@@ -195,7 +195,7 @@ theorem eventually_negOn_subspace_of_entrywise_tendsto
   filter_upwards [hmod] with i hi x hxW hx0
   have h1 := hi x
   have h2 := hcoer x hxW
-  have hxsq : (0 : ℝ) < ‖x‖ ^ 2 := by
+  have hxsq : (0 : ℝ) < ‖x‖ ^ (2 : ℕ) := by
     have : 0 < ‖x‖ := norm_pos_iff.mpr hx0
     positivity
   have habs := abs_le.mp h1

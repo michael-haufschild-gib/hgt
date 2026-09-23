@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.FokasLenellsRawOddFifthCovariance
 
 Equation (3.63) weights the two original reflection channels differently.
 The corpus's upper coefficient is the paper's r1; its lower coefficient
-is -r2. After division by z^2 only the upper channel carries the
+is -r2. After division by z^(2 : ℕ) only the upper channel carries the
 compatibility pole. The lower channel always has a finite right limit.
 -/
 
@@ -15,7 +15,7 @@ noncomputable section
 
 /-- The paper's second inverse-frequency weight on the actual regularized coefficients. -/
 def regularSecondInverseReflection (q : SchwartzMap ℝ ℂ) (reverse : Bool) (z : ℝ) : ℂ :=
-  (if reverse then regularReverseReflectionCoefficient q z else regularReflectionCoefficient q z)/(z : ℂ)^2
+  (if reverse then regularReverseReflectionCoefficient q z else regularReflectionCoefficient q z)/(z : ℂ)^(2 : ℕ)
 
 theorem regularSecondInverseReflection_measurable (q : SchwartzMap ℝ ℂ) (reverse : Bool) :
     Measurable (regularSecondInverseReflection q reverse) := by
@@ -27,15 +27,15 @@ theorem regularSecondInverseReflection_measurable (q : SchwartzMap ℝ ℂ) (rev
 
 /-- Exact gauge bridge to the already evaluated original weighted profile. -/
 theorem regularSecondInverseReflection_exp_factor (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    regularSecondInverseReflection q false ((Real.exp κ)^2) =
-      -2*((Real.exp κ : ℂ)^2*originWeightedReflection q ((Real.exp κ)^2))/
-        regularScatteringMatrix q ((Real.exp κ)^2) 0 0 ∧
-    regularSecondInverseReflection q true ((Real.exp κ)^2) =
-      originWeightedReflection q ((Real.exp κ)^2)/(2*regularScatteringMatrix q ((Real.exp κ)^2) 1 1) := by
+    regularSecondInverseReflection q false ((Real.exp κ)^(2 : ℕ)) =
+      -2*((Real.exp κ : ℂ)^(2 : ℕ)*originWeightedReflection q ((Real.exp κ)^(2 : ℕ)))/
+        regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) 0 0 ∧
+    regularSecondInverseReflection q true ((Real.exp κ)^(2 : ℕ)) =
+      originWeightedReflection q ((Real.exp κ)^(2 : ℕ))/(2*regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) 1 1) := by
   have hS := uniformizedScatteringMatrix_amplitudes q κ
-  change regularScatteringMatrix q ((Real.exp κ)^2) = _ at hS
-  have hd0 : regularScatteringMatrix q ((Real.exp κ)^2) 0 0 = transmission q κ := by rw [hS]; rfl
-  have hd1 : regularScatteringMatrix q ((Real.exp κ)^2) 1 1 = reverseTransmission q κ := by rw [hS]; rfl
+  change regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) = _ at hS
+  have hd0 : regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) 0 0 = transmission q κ := by rw [hS]; rfl
+  have hd1 : regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) 1 1 = reverseTransmission q κ := by rw [hS]; rfl
   have he : (Real.exp κ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.exp_pos κ))
   have h0 := (regularReflectionCoefficients_gauge q κ).1
   have h1 := (regularReflectionCoefficients_gauge q κ).2
@@ -56,10 +56,10 @@ private theorem regular_second_inverse_positive_factor (q : SchwartzMap ℝ ℂ)
     regularSecondInverseReflection q false z = -2*((z : ℂ)*originWeightedReflection q z)/regularScatteringMatrix q z 0 0 ∧
     regularSecondInverseReflection q true z = originWeightedReflection q z/(2*regularScatteringMatrix q z 1 1) := by
   have hh := regularSecondInverseReflection_exp_factor q (Real.log (Real.sqrt z))
-  have he : (Real.exp (Real.log (Real.sqrt z)))^2 = z := by
+  have he : (Real.exp (Real.log (Real.sqrt z)))^(2 : ℕ) = z := by
     rw [Real.exp_log (Real.sqrt_pos.mpr hz)]
     exact Real.sq_sqrt hz.le
-  have hec : (Real.exp (Real.log (Real.sqrt z)) : ℂ)^2 = (z : ℂ) := by exact_mod_cast he
+  have hec : (Real.exp (Real.log (Real.sqrt z)) : ℂ)^(2 : ℕ) = (z : ℂ) := by exact_mod_cast he
   simpa only [he,hec] using hh
 
 /-- Both actual regularized transmissions tend to one at the origin. -/

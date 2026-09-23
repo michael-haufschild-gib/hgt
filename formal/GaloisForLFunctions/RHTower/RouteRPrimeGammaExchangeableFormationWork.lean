@@ -62,7 +62,7 @@ square of the signed Route-R Gamma Bockstein, with universal factor `1 / 2`. -/
 theorem routeRPrimeGammaFormationDefect_eq_bockstein_sq
     (t : ℝ) (p : Nat.Primes) :
     routeRPrimeGammaFormationDefect t p =
-      primeGammaCofinalBocksteinCoefficient t p ^ 2 / 2 := by
+      primeGammaCofinalBocksteinCoefficient t p ^ (2 : ℕ) / 2 := by
   rw [primeGammaCofinalBocksteinCoefficient_eq_determinantTransgression]
   simp [routeRPrimeGammaFormationDefect, finiteExchangeDefect,
     threeSlotExchangeDefect_eq, routeRPrimeGammaForwardFormationLaw,
@@ -84,7 +84,7 @@ theorem routeRPrimeGammaFormationDefect_neg
 theorem routeRPrimeGammaFormationWork_eq_bockstein_sq
     (n : ℕ) (t : ℝ) (p : Nat.Primes) :
     routeRPrimeGammaFormationWork n t p =
-      (n : ℝ) * (primeGammaCofinalBocksteinCoefficient t p ^ 2 / 2) := by
+      (n : ℝ) * (primeGammaCofinalBocksteinCoefficient t p ^ (2 : ℕ) / 2) := by
   rw [routeRPrimeGammaFormationWork, finiteExchangeWork,
     ← routeRPrimeGammaFormationDefect,
     routeRPrimeGammaFormationDefect_eq_bockstein_sq]

@@ -22,7 +22,7 @@ structure Datum (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [CompleteSpace H] where
   op : H →L[ℂ] H
   selfAdjoint : IsSelfAdjoint op
-  coercive : ∀ x : H, ‖x‖ ^ 2 ≤ RCLike.re (inner ℂ (op x) x)
+  coercive : ∀ x : H, ‖x‖ ^ (2 : ℕ) ≤ RCLike.re (inner ℂ (op x) x)
 
 /-- Same vector space equipped with `⟪D.op x,y⟫`. -/
 def Carrier (_D : Datum H) := H
@@ -51,7 +51,7 @@ instance core : InnerProductSpace.Core ℂ (Carrier D) where
   definite x hx := by
     have hle := D.coercive (toOld D x)
     rw [hx] at hle
-    have hle0 : ‖toOld D x‖ ^ 2 ≤ 0 := by simpa using hle
+    have hle0 : ‖toOld D x‖ ^ (2 : ℕ) ≤ 0 := by simpa using hle
     apply (toOld D).injective
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp (le_antisymm hle0 (sq_nonneg _)))
 
@@ -66,39 +66,39 @@ theorem inner_def (x y : Carrier D) :
 
 /-- Renormed norm dominates the original norm. -/
 theorem old_norm_le (x : Carrier D) : ‖toOld D x‖ ≤ ‖x‖ := by
-  have hsq : ‖toOld D x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+  have hsq : ‖toOld D x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
     calc
-      ‖toOld D x‖ ^ 2 ≤
+      ‖toOld D x‖ ^ (2 : ℕ) ≤
           RCLike.re (inner ℂ (D.op (toOld D x)) (toOld D x)) := D.coercive _
       _ = RCLike.re (inner ℂ x x) := by rw [inner_def]
-      _ = ‖x‖ ^ 2 :=
+      _ = ‖x‖ ^ (2 : ℕ) :=
         (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) x).symm
   nlinarith [norm_nonneg (toOld D x), norm_nonneg x]
 
 /-- Original norm controls the renormed norm with an explicit bounded-operator constant. -/
 theorem norm_le (x : Carrier D) :
     ‖x‖ ≤ (‖D.op‖ + 1) * ‖toOld D x‖ := by
-  have hsq : ‖x‖ ^ 2 =
+  have hsq : ‖x‖ ^ (2 : ℕ) =
       RCLike.re (inner ℂ (D.op (toOld D x)) (toOld D x)) := by
     exact (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) x).trans
       (congrArg RCLike.re (inner_def D x x))
   have hre : RCLike.re (inner ℂ (D.op (toOld D x)) (toOld D x)) ≤
-      ‖D.op‖ * ‖toOld D x‖ ^ 2 := by
+      ‖D.op‖ * ‖toOld D x‖ ^ (2 : ℕ) := by
     calc
       _ ≤ ‖inner ℂ (D.op (toOld D x)) (toOld D x)‖ := RCLike.re_le_norm _
       _ ≤ ‖D.op (toOld D x)‖ * ‖toOld D x‖ := norm_inner_le_norm _ _
       _ ≤ (‖D.op‖ * ‖toOld D x‖) * ‖toOld D x‖ :=
         mul_le_mul_of_nonneg_right (D.op.le_opNorm _) (norm_nonneg _)
-      _ = ‖D.op‖ * ‖toOld D x‖ ^ 2 := by ring
-  have hsqbound : ‖x‖ ^ 2 ≤ ‖D.op‖ * ‖toOld D x‖ ^ 2 := hsq.le.trans hre
-  have hrle : ‖D.op‖ ≤ (‖D.op‖ + 1) ^ 2 := by
+      _ = ‖D.op‖ * ‖toOld D x‖ ^ (2 : ℕ) := by ring
+  have hsqbound : ‖x‖ ^ (2 : ℕ) ≤ ‖D.op‖ * ‖toOld D x‖ ^ (2 : ℕ) := hsq.le.trans hre
+  have hrle : ‖D.op‖ ≤ (‖D.op‖ + 1) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖D.op‖]
   have hmul := mul_le_mul_of_nonneg_right hrle (sq_nonneg ‖toOld D x‖)
-  have htargetSq : ‖x‖ ^ 2 ≤ ((‖D.op‖ + 1) * ‖toOld D x‖) ^ 2 := by
+  have htargetSq : ‖x‖ ^ (2 : ℕ) ≤ ((‖D.op‖ + 1) * ‖toOld D x‖) ^ (2 : ℕ) := by
     calc
-      ‖x‖ ^ 2 ≤ ‖D.op‖ * ‖toOld D x‖ ^ 2 := hsqbound
-      _ ≤ (‖D.op‖ + 1) ^ 2 * ‖toOld D x‖ ^ 2 := hmul
-      _ = ((‖D.op‖ + 1) * ‖toOld D x‖) ^ 2 := by ring
+      ‖x‖ ^ (2 : ℕ) ≤ ‖D.op‖ * ‖toOld D x‖ ^ (2 : ℕ) := hsqbound
+      _ ≤ (‖D.op‖ + 1) ^ (2 : ℕ) * ‖toOld D x‖ ^ (2 : ℕ) := hmul
+      _ = ((‖D.op‖ + 1) * ‖toOld D x‖) ^ (2 : ℕ) := by ring
   have hx0 : 0 ≤ ‖toOld D x‖ := norm_nonneg _
   have hnew0 : 0 ≤ ‖x‖ := norm_nonneg _
   have hright0 : 0 ≤ (‖D.op‖ + 1) * ‖toOld D x‖ := mul_nonneg (by positivity) hx0

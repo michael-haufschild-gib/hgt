@@ -58,15 +58,15 @@ theorem abs_re_trace_le (A B : Matrix n n ℂ) :
           Complex.abs_re_le_norm _
       _ = ‖A j i‖ * ‖B j i‖ := by rw [norm_mul, RCLike.norm_conj]
   refine le_trans hbound ?_
-  have hcs : (∑ i, ∑ j, ‖A j i‖ * ‖B j i‖) ^ 2 ≤ hsNormSq A * hsNormSq B := by
+  have hcs : (∑ i, ∑ j, ‖A j i‖ * ‖B j i‖) ^ (2 : ℕ) ≤ hsNormSq A * hsNormSq B := by
     have h := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (n × n))
       (fun p : n × n => ‖A p.2 p.1‖) (fun p : n × n => ‖B p.2 p.1‖)
     have hsum : (∑ i, ∑ j, ‖A j i‖ * ‖B j i‖)
         = ∑ p : n × n, ‖A p.2 p.1‖ * ‖B p.2 p.1‖ := by
       rw [Fintype.sum_prod_type]
-    have hA : (∑ p : n × n, ‖A p.2 p.1‖ ^ 2) = hsNormSq A := by
+    have hA : (∑ p : n × n, ‖A p.2 p.1‖ ^ (2 : ℕ)) = hsNormSq A := by
       rw [Fintype.sum_prod_type, hsNormSq]
-    have hB : (∑ p : n × n, ‖B p.2 p.1‖ ^ 2) = hsNormSq B := by
+    have hB : (∑ p : n × n, ‖B p.2 p.1‖ ^ (2 : ℕ)) = hsNormSq B := by
       rw [Fintype.sum_prod_type, hsNormSq]
     rw [hsum, ← hA, ← hB]
     exact h
@@ -76,7 +76,7 @@ theorem abs_re_trace_le (A B : Matrix n n ℂ) :
       = Real.sqrt (hsNormSq A * hsNormSq B) :=
     (Real.sqrt_mul (hsNormSq_nonneg A) _).symm
   rw [hsq, show (∑ i, ∑ j, ‖A j i‖ * ‖B j i‖)
-      = Real.sqrt ((∑ i, ∑ j, ‖A j i‖ * ‖B j i‖) ^ 2) from (Real.sqrt_sq hnn).symm]
+      = Real.sqrt ((∑ i, ∑ j, ‖A j i‖ * ‖B j i‖) ^ (2 : ℕ)) from (Real.sqrt_sq hnn).symm]
   exact Real.sqrt_le_sqrt hcs
 
 /-- **The purity bound.**  A Hermitian trace-one matrix supported on a projection of rank `q` has

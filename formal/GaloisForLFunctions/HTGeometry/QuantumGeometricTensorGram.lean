@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 /-- Determinant of the real quantum metric of two horizontal tangent channels. -/
 def quantumMetricAreaValue (u v : E) : ℝ :=
-  ‖u‖ ^ 2 * ‖v‖ ^ 2 - (inner ℂ u v).re ^ 2
+  ‖u‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) - (inner ℂ u v).re ^ (2 : ℕ)
 
 /-- Berry-curvature value in the convention `Omega = -2 Im Q`. -/
 def berryCurvatureValue (u v : E) : ℝ :=
@@ -57,7 +57,7 @@ theorem quantumMetricAreaValue_eq_projectiveGram_add_berry
     (u v : E) :
     quantumMetricAreaValue u v =
       projectiveGramTangentEnergy (𝕜 := ℂ) u v +
-        berryCurvatureValue u v ^ 2 / 4 := by
+        berryCurvatureValue u v ^ (2 : ℕ) / 4 := by
   unfold quantumMetricAreaValue projectiveGramTangentEnergy berryCurvatureValue
   rw [Complex.sq_norm, Complex.normSq_apply]
   ring
@@ -65,14 +65,14 @@ theorem quantumMetricAreaValue_eq_projectiveGram_add_berry
 /-- The pointwise quantum-geometric metric--curvature inequality. -/
 theorem berryCurvature_sq_div_four_le_quantumMetricAreaValue
     (u v : E) :
-    berryCurvatureValue u v ^ 2 / 4 ≤ quantumMetricAreaValue u v := by
+    berryCurvatureValue u v ^ (2 : ℕ) / 4 ≤ quantumMetricAreaValue u v := by
   rw [quantumMetricAreaValue_eq_projectiveGram_add_berry]
   exact le_add_of_nonneg_left (projectiveGramTangentEnergy_nonneg u v)
 
 /-- Strict metric excess over Berry curvature is exactly positive complex Gram energy. -/
 theorem quantumMetricArea_strict_iff_projectiveGram_pos
     (u v : E) :
-    berryCurvatureValue u v ^ 2 / 4 < quantumMetricAreaValue u v ↔
+    berryCurvatureValue u v ^ (2 : ℕ) / 4 < quantumMetricAreaValue u v ↔
       0 < projectiveGramTangentEnergy (𝕜 := ℂ) u v := by
   rw [quantumMetricAreaValue_eq_projectiveGram_add_berry]
   constructor <;> intro h <;> nlinarith
@@ -92,7 +92,7 @@ theorem det_gram_pair_eq_projectiveGramTangentEnergy
 /-- A strict quantum metric--Berry gap discharges complex two-channel linear independence. -/
 theorem linearIndependent_pair_of_quantumMetricArea_strict
     {u v : E}
-    (hstrict : berryCurvatureValue u v ^ 2 / 4 < quantumMetricAreaValue u v) :
+    (hstrict : berryCurvatureValue u v ^ (2 : ℕ) / 4 < quantumMetricAreaValue u v) :
     LinearIndependent ℂ ![u, v] := by
   apply Matrix.det_gram_ne_zero_iff_linearIndependent.mp
   rw [det_gram_pair_eq_projectiveGramTangentEnergy]
@@ -101,7 +101,7 @@ theorem linearIndependent_pair_of_quantumMetricArea_strict
 /-- The strict metric--curvature gap is equivalent to complex two-channel independence. -/
 theorem quantumMetricArea_strict_iff_linearIndependent_pair
     (u v : E) :
-    berryCurvatureValue u v ^ 2 / 4 < quantumMetricAreaValue u v ↔
+    berryCurvatureValue u v ^ (2 : ℕ) / 4 < quantumMetricAreaValue u v ↔
       LinearIndependent ℂ ![u, v] := by
   constructor
   · exact linearIndependent_pair_of_quantumMetricArea_strict
@@ -117,7 +117,7 @@ theorem quantumMetricArea_strict_iff_linearIndependent_pair
 /-- Equality in the metric--curvature bound is exactly complex two-channel dependence. -/
 theorem quantumMetricArea_eq_berry_iff_not_linearIndependent_pair
     (u v : E) :
-    quantumMetricAreaValue u v = berryCurvatureValue u v ^ 2 / 4 ↔
+    quantumMetricAreaValue u v = berryCurvatureValue u v ^ (2 : ℕ) / 4 ↔
       ¬ LinearIndependent ℂ ![u, v] := by
   constructor
   · intro heq hli
@@ -131,7 +131,7 @@ theorem quantumMetricArea_eq_berry_iff_not_linearIndependent_pair
 
 /-- A pure phase tangent can carry nonzero Berry curvature while staying in one complex line. -/
 theorem berryCurvatureValue_I_smul_left (v : E) :
-    berryCurvatureValue (Complex.I • v) v = 2 * ‖v‖ ^ 2 := by
+    berryCurvatureValue (Complex.I • v) v = 2 * ‖v‖ ^ (2 : ℕ) := by
   unfold berryCurvatureValue
   rw [inner_smul_left, inner_self_eq_norm_sq_to_K]
   norm_num [Complex.mul_im]
@@ -141,7 +141,7 @@ theorem berryCurvatureValue_I_smul_left (v : E) :
 /-- The pure phase tangent saturates the metric--curvature inequality. -/
 theorem quantumMetricAreaValue_I_smul_left (v : E) :
     quantumMetricAreaValue (Complex.I • v) v =
-      berryCurvatureValue (Complex.I • v) v ^ 2 / 4 := by
+      berryCurvatureValue (Complex.I • v) v ^ (2 : ℕ) / 4 := by
   rw [quantumMetricAreaValue_eq_projectiveGram_add_berry]
   have henergy :
       projectiveGramTangentEnergy (𝕜 := ℂ) (Complex.I • v) v = 0 := by
@@ -166,8 +166,8 @@ theorem quantumMetricArea_sub_berry_eq_firstKrylovDeterminant
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
     quantumMetricAreaValue (v 0) (v 1) -
-        berryCurvatureValue (v 0) (v 1) ^ 2 / 4 =
-      m 0 * m 2 - m 1 ^ 2 := by
+        berryCurvatureValue (v 0) (v 1) ^ (2 : ℕ) / 4 =
+      m 0 * m 2 - m 1 ^ (2 : ℕ) := by
   rw [quantumMetricAreaValue_eq_projectiveGram_add_berry]
   rw [add_sub_cancel_right]
   exact projectiveGramTangentEnergy_eq_firstKrylovDeterminant m v hgram
@@ -176,9 +176,9 @@ theorem quantumMetricArea_sub_berry_eq_firstKrylovDeterminant
 theorem quantumMetricArea_strict_iff_firstKrylovDeterminant_pos
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
-    berryCurvatureValue (v 0) (v 1) ^ 2 / 4 <
+    berryCurvatureValue (v 0) (v 1) ^ (2 : ℕ) / 4 <
         quantumMetricAreaValue (v 0) (v 1) ↔
-      0 < m 0 * m 2 - m 1 ^ 2 := by
+      0 < m 0 * m 2 - m 1 ^ (2 : ℕ) := by
   rw [quantumMetricArea_strict_iff_projectiveGram_pos]
   rw [projectiveGramTangentEnergy_eq_firstKrylovDeterminant m v hgram]
 

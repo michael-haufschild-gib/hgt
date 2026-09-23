@@ -8,15 +8,15 @@ namespace RHTower.D4BMLaplaceRadial
 noncomputable section
 
 /-- The original BM coordinate, as a holomorphic radial map. -/
-def radialCoordinate (r : ℂ) : ℂ := 1-r⁻¹^2
+def radialCoordinate (r : ℂ) : ℂ := 1-r⁻¹^(2 : ℕ)
 
 theorem radialCoordinate_original (x : Fin 4 → ℝ) :
     radialCoordinate (x 1) = D4BMMetricReconstruction.bmCoordinate x := rfl
 
 /-- The coordinate derivatives are derived before transporting the wave operator. -/
 theorem radialCoordinate_derivatives {r : ℂ} (hr : r ≠ 0) :
-    HasDerivAt radialCoordinate (2/r^3) r ∧
-    HasDerivAt (fun u : ℂ => 2/u^3) (-6/r^4) r := by
+    HasDerivAt radialCoordinate (2/r^(3 : ℕ)) r ∧
+    HasDerivAt (fun u : ℂ => 2/u^(3 : ℕ)) (-6/r^(4 : ℕ)) r := by
   constructor
   · convert! (((hasDerivAt_id r).inv hr).pow 2).const_sub 1 using 1
     dsimp
@@ -29,12 +29,12 @@ theorem radialCoordinate_derivatives {r : ℂ} (hr : r ≠ 0) :
 
 /-- The independent-frequency original wave expression in radial jets. -/
 def radialWave (w lambda r v d dd : ℂ) : ℂ :=
-  w^2*v-(r^2-1)^2*dd-2*r*(r^2-1)*d+(r^2-1)/r^2*lambda*v
+  w^(2 : ℕ)*v-(r^(2 : ℕ)-1)^(2 : ℕ)*dd-2*r*(r^(2 : ℕ)-1)*d+(r^(2 : ℕ)-1)/r^(2 : ℕ)*lambda*v
 
 /-- Exact coordinate transport to the physical BM master, retaining frequency,
 angular value, both coordinate derivatives and the source multiplier. -/
-theorem radialWave_physical (w chi r v d dd : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
-    radialWave w (1/4+chi^2) r v ((2/r^3)*d) ((2/r^3)^2*dd-(6/r^4)*d) =
+theorem radialWave_physical (w chi r v d dd : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    radialWave w (1/4+chi^(2 : ℕ)) r v ((2/r^(3 : ℕ))*d) ((2/r^(3 : ℕ))^(2 : ℕ)*dd-(6/r^(4 : ℕ))*d) =
       -4*radialCoordinate r*D4BMPhysicalMaster.radialJet (Complex.I*w) chi
         (radialCoordinate r) v d dd := by
   have hz : radialCoordinate r ≠ 0 := by
@@ -50,7 +50,7 @@ theorem radialWave_physical (w chi r v d dd : ℂ) (hr : r ≠ 0) (hf : r^2-1 �
 /-- The full forced wave's current is divided by the same original coordinate
 factor when entering the physical radial equation. -/
 theorem radial_source_normalization (r C : ℂ) (hr : r ≠ 0) :
-    -2*(r^2-1)/r^3*C = -4*radialCoordinate r*(C/(2*r)) := by
+    -2*(r^(2 : ℕ)-1)/r^(3 : ℕ)*C = -4*radialCoordinate r*(C/(2*r)) := by
   dsimp [radialCoordinate]
   field_simp
   ring

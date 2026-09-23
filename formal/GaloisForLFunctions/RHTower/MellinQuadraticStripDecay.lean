@@ -29,7 +29,7 @@ theorem iteratedDeriv_two_deningerMeyerWeightedLogProfile
     (g : DeningerMeyerStrongLogTarget) (sigma t : ℝ) :
     iteratedDeriv 2 (deningerMeyerWeightedLogProfile sigma g) t =
       (Real.exp (sigma * t) : ℂ) *
-        ((sigma : ℂ) ^ 2 * (g : ℝ → ℂ) t +
+        ((sigma : ℂ) ^ (2 : ℕ) * (g : ℝ → ℂ) t +
           2 * (sigma : ℂ) * deriv (g : ℝ → ℂ) t +
           iteratedDeriv 2 (g : ℝ → ℂ) t) := by
   rw [iteratedDeriv_deningerMeyerWeightedLogProfile g.property sigma 2]
@@ -56,7 +56,7 @@ def deningerMeyerQuadraticStripMajorant0
 def deningerMeyerQuadraticStripMajorant2
     (c : ℝ) (g : ℝ → ℂ) (t : ℝ) : ℝ :=
   Real.exp (c * |t|) *
-    (c ^ 2 * ‖g t‖ + 2 * c * ‖deriv g t‖ + ‖iteratedDeriv 2 g t‖)
+    (c ^ (2 : ℕ) * ‖g t‖ + 2 * c * ‖deriv g t‖ + ‖iteratedDeriv 2 g t‖)
 
 theorem integrable_deningerMeyerQuadraticStripMajorant0
     (g : DeningerMeyerStrongLogTarget) (c : ℝ) :
@@ -69,7 +69,7 @@ theorem integrable_deningerMeyerQuadraticStripMajorant2
     (g : DeningerMeyerStrongLogTarget) (c : ℝ) :
     Integrable (deningerMeyerQuadraticStripMajorant2 c g) := by
   have h0 :=
-    (integrable_deningerMeyerStrongLogAbsMoment g.property 0 c).const_mul (c ^ 2)
+    (integrable_deningerMeyerStrongLogAbsMoment g.property 0 c).const_mul (c ^ (2 : ℕ))
   have h1 :=
     (integrable_deningerMeyerStrongLogAbsMoment g.property.deriv 0 c).const_mul (2 * c)
   have h2base :=
@@ -97,29 +97,29 @@ theorem norm_iteratedDeriv_two_deningerMeyerWeightedLogProfile_le
       _ ≤ c * |t| := mul_le_mul_of_nonneg_right hsigmac (abs_nonneg t)
   have hexp : Real.exp (sigma * t) ≤ Real.exp (c * |t|) :=
     Real.exp_le_exp.mpr hst
-  have hs2 : sigma ^ 2 ≤ c ^ 2 := (sq_le_sq₀ hsigma0 hc).mpr hsigmac
+  have hs2 : sigma ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := (sq_le_sq₀ hsigma0 hc).mpr hsigmac
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _)]
   rw [deningerMeyerQuadraticStripMajorant2]
   calc
     Real.exp (sigma * t) *
-        ‖(sigma : ℂ) ^ 2 * (g : ℝ → ℂ) t +
+        ‖(sigma : ℂ) ^ (2 : ℕ) * (g : ℝ → ℂ) t +
           2 * (sigma : ℂ) * deriv (g : ℝ → ℂ) t +
           iteratedDeriv 2 (g : ℝ → ℂ) t‖ ≤
       Real.exp (sigma * t) *
-        (sigma ^ 2 * ‖(g : ℝ → ℂ) t‖ +
+        (sigma ^ (2 : ℕ) * ‖(g : ℝ → ℂ) t‖ +
           2 * sigma * ‖deriv (g : ℝ → ℂ) t‖ +
           ‖iteratedDeriv 2 (g : ℝ → ℂ) t‖) := by
         gcongr
         calc
-          ‖(sigma : ℂ) ^ 2 * (g : ℝ → ℂ) t +
+          ‖(sigma : ℂ) ^ (2 : ℕ) * (g : ℝ → ℂ) t +
               2 * (sigma : ℂ) * deriv (g : ℝ → ℂ) t +
               iteratedDeriv 2 (g : ℝ → ℂ) t‖ ≤
-            (‖(sigma : ℂ) ^ 2 * (g : ℝ → ℂ) t‖ +
+            (‖(sigma : ℂ) ^ (2 : ℕ) * (g : ℝ → ℂ) t‖ +
               ‖2 * (sigma : ℂ) * deriv (g : ℝ → ℂ) t‖ +
               ‖iteratedDeriv 2 (g : ℝ → ℂ) t‖) := by
                 calc
-                  _ ≤ ‖(sigma : ℂ) ^ 2 * (g : ℝ → ℂ) t +
+                  _ ≤ ‖(sigma : ℂ) ^ (2 : ℕ) * (g : ℝ → ℂ) t +
                         2 * (sigma : ℂ) * deriv (g : ℝ → ℂ) t‖ +
                       ‖iteratedDeriv 2 (g : ℝ → ℂ) t‖ := norm_add_le _ _
                   _ ≤ _ := by
@@ -129,7 +129,7 @@ theorem norm_iteratedDeriv_two_deningerMeyerWeightedLogProfile_le
             simp only [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
               abs_of_nonneg hsigma0, norm_ofNat]
     _ ≤ Real.exp (c * |t|) *
-        (c ^ 2 * ‖(g : ℝ → ℂ) t‖ +
+        (c ^ (2 : ℕ) * ‖(g : ℝ → ℂ) t‖ +
           2 * c * ‖deriv (g : ℝ → ℂ) t‖ +
           ‖iteratedDeriv 2 (g : ℝ → ℂ) t‖) := by
       apply mul_le_mul hexp
@@ -151,7 +151,7 @@ theorem norm_deningerMeyerStrongLogMellin_le_inv_one_add_sq
         ((sigma : ℂ) + (tau : ℂ) * Complex.I)‖ ≤
       ((∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
         ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t) *
-          (1 + tau ^ 2)⁻¹ := by
+          (1 + tau ^ (2 : ℕ))⁻¹ := by
   have h0 :=
     abs_im_pow_mul_norm_deningerMeyerStrongLogMellin_le g 0 sigma tau
   have h2 :=
@@ -182,24 +182,24 @@ theorem norm_deningerMeyerStrongLogMellin_le_inv_one_add_sq
     · exact
         norm_iteratedDeriv_two_deningerMeyerWeightedLogProfile_le
           g hc hsigma0 hsigmac
-  have hsum : (1 + tau ^ 2) *
+  have hsum : (1 + tau ^ (2 : ℕ)) *
       ‖deningerMeyerStrongLogMellin g
         ((sigma : ℂ) + (tau : ℂ) * Complex.I)‖ ≤
       (∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
         ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t := by
     calc
-      (1 + tau ^ 2) * ‖deningerMeyerStrongLogMellin g
+      (1 + tau ^ (2 : ℕ)) * ‖deningerMeyerStrongLogMellin g
           ((sigma : ℂ) + (tau : ℂ) * Complex.I)‖ =
         1 * ‖deningerMeyerStrongLogMellin g
           ((sigma : ℂ) + (tau : ℂ) * Complex.I)‖ +
-        |tau| ^ 2 * ‖deningerMeyerStrongLogMellin g
+        |tau| ^ (2 : ℕ) * ‖deningerMeyerStrongLogMellin g
           ((sigma : ℂ) + (tau : ℂ) * Complex.I)‖ := by
             rw [sq_abs]
             ring
       _ ≤ (∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
           ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t :=
         add_le_add (h0.trans hi0) (h2.trans hi2)
-  rw [le_mul_inv_iff₀ (by positivity : 0 < 1 + tau ^ 2)]
+  rw [le_mul_inv_iff₀ (by positivity : 0 < 1 + tau ^ (2 : ℕ))]
   simpa [mul_comm] using hsum
 
 end

@@ -8,10 +8,10 @@ here once and for all: for any conjugation-symmetric weight `Wf` on the divisor 
 above a level `ℓ` and is nonzero on it, nonnegativity of the Turán minors of the `Wf`-weighted
 moments `M k = sum_q u_q^(k+1) Wf q` forces **every** copy at level `ℓ` onto the critical line.
 
-The weighted pair expansion places the maximal pair points of the weighted system at `ℓ^2`;
-those equal to `ℓ^2` are the conjugate pairs, whose weights `Wf q * Wf q' = normSq (Wf q)` are
-nonnegative reals multiplying the exact negative core `-4 (Im u)^2`; an off-critical copy at the
-level contributes `-4 (Im u)^2 normSq (Wf q) N` after `N` Cesàro steps, the remaining unit pair
+The weighted pair expansion places the maximal pair points of the weighted system at `ℓ^(2 : ℕ)`;
+those equal to `ℓ^(2 : ℕ)` are the conjugate pairs, whose weights `Wf q * Wf q' = normSq (Wf q)` are
+nonnegative reals multiplying the exact negative core `-4 (Im u)^(2 : ℕ)`; an off-critical copy at the
+level contributes `-4 (Im u)^(2 : ℕ) normSq (Wf q) N` after `N` Cesàro steps, the remaining unit pair
 points contribute boundedly, and the sub-level tail is geometric.  Weight symmetry is demanded
 in value form — `u q' = conj (u q)` forces `Wf q' = conj (Wf q)` — which holds for every weight
 of the shape `g (u q)` with `g` real on the reals, in particular for squared real polynomials.
@@ -39,7 +39,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     (hnz : ∀ q, ‖xiResolventPoint X q‖ = ℓ → Wf q ≠ 0)
     (hminorW : ∀ n : ℕ, 0 ≤ (xiWeightedResolventMoment Wf n X *
       xiWeightedResolventMoment Wf (n + 2) X -
-      xiWeightedResolventMoment Wf (n + 1) X ^ 2).re) :
+      xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ → (xiSpectralPoint q).im = 0 := by
   classical
   intro qh hqhℓ
@@ -65,21 +65,21 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       ∑' q : XiZeroCopy, u q ^ (k + 1) * Wf q := fun k => rfl
   -- the weighted pair expansion
   have hpairsummable : ∀ n : ℕ, Summable (fun z : XiZeroCopy × XiZeroCopy =>
-      (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2) := by
+      (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ)) := by
     intro n
     have hsum := summable_mul_of_summable_norm (hatomnorm n) (hatomnorm n)
     have hpt : ∀ z : XiZeroCopy × XiZeroCopy,
-        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2 =
+        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ) =
         (u z.1 ^ (n + 1) * Wf z.1) * (u z.2 ^ (n + 1) * Wf z.2) *
-          (u z.1 - u z.2) ^ 2 := by
+          (u z.1 - u z.2) ^ (2 : ℕ) := by
       intro z
       ring
     rw [show (fun z : XiZeroCopy × XiZeroCopy =>
-        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2) = fun z =>
+        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ)) = fun z =>
         (u z.1 ^ (n + 1) * Wf z.1) * (u z.2 ^ (n + 1) * Wf z.2) *
-          (u z.1 - u z.2) ^ 2 from funext hpt]
+          (u z.1 - u z.2) ^ (2 : ℕ) from funext hpt]
     refine Summable.of_norm_bounded (g := fun z =>
-      ‖(u z.1 ^ (n + 1) * Wf z.1) * (u z.2 ^ (n + 1) * Wf z.2)‖ * (2 * 1) ^ 2)
+      ‖(u z.1 ^ (n + 1) * Wf z.1) * (u z.2 ^ (n + 1) * Wf z.2)‖ * (2 * 1) ^ (2 : ℕ))
       (hsum.norm.mul_right _) fun z => ?_
     rw [norm_mul]
     refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
@@ -91,9 +91,9 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       _ = 2 * 1 := by ring
   have hpair : ∀ n : ℕ, 2 * (xiWeightedResolventMoment Wf n X *
       xiWeightedResolventMoment Wf (n + 2) X -
-      xiWeightedResolventMoment Wf (n + 1) X ^ 2) =
+      xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ)) =
       ∑' z : XiZeroCopy × XiZeroCopy,
-        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2 := by
+        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ) := by
     intro n
     have hA := tsum_mul_tsum_of_summable_norm (hatomnorm n) (hatomnorm (n + 2))
     have hB := tsum_mul_tsum_of_summable_norm (hatomnorm (n + 1)) (hatomnorm (n + 1))
@@ -102,7 +102,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     have hsumB := summable_mul_of_summable_norm (hatomnorm (n + 1)) (hatomnorm (n + 1))
     have hsumC := summable_mul_of_summable_norm (hatomnorm (n + 2)) (hatomnorm n)
     have hpt : ∀ z : XiZeroCopy × XiZeroCopy,
-        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2 =
+        (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ) =
         (((u z.1 ^ (n + 1) * Wf z.1) * (u z.2 ^ (n + 2 + 1) * Wf z.2) -
           2 * ((u z.1 ^ (n + 1 + 1) * Wf z.1) * (u z.2 ^ (n + 1 + 1) * Wf z.2))) +
           (u z.1 ^ (n + 2 + 1) * Wf z.1) * (u z.2 ^ (n + 1) * Wf z.2)) := by
@@ -159,7 +159,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
           exact le_trans (hqdmax q hqD) (le_max_left _ _)
         · exact le_trans (not_le.mp hq3).le (le_max_right _ _)
   -- pair machinery
-  set V : XiZeroCopy × XiZeroCopy → ℂ := fun z => u z.1 * u z.2 / (((ℓ : ℝ)) : ℂ) ^ 2
+  set V : XiZeroCopy × XiZeroCopy → ℂ := fun z => u z.1 * u z.2 / (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)
     with hV
   set TT : Finset (XiZeroCopy × XiZeroCopy) := SF ×ˢ SF with hTT
   have hℓC : (((ℓ : ℝ)) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hℓpos.ne'
@@ -175,8 +175,8 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     tsum_nonneg fun z => mul_nonneg (norm_nonneg _) (norm_nonneg _)
   -- tail term bound
   have htailterm : ∀ n : ℕ, ∀ z : XiZeroCopy × XiZeroCopy, z ∉ TT →
-      ‖(u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2‖ ≤
-      (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) * (‖u z.1‖ * ‖u z.2‖)) := by
+      ‖(u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ)‖ ≤
+      (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) * (‖u z.1‖ * ‖u z.2‖)) := by
     intro n z hz
     have hcases : ¬ ‖u z.1‖ = ℓ ∨ ¬ ‖u z.2‖ = ℓ := by
       by_contra hcon2
@@ -191,7 +191,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       · exact Or.inr (hρ₂bound q h)
       · exact absurd h hq
       · exact Or.inl (hkill q h)
-    have hdiffb : ‖(u z.1 - u z.2) ^ 2‖ ≤ 4 := by
+    have hdiffb : ‖(u z.1 - u z.2) ^ (2 : ℕ)‖ ≤ 4 := by
       rw [norm_pow]
       have h4 : ‖u z.1 - u z.2‖ ≤ 2 := by
         calc ‖u z.1 - u z.2‖ ≤ ‖u z.1‖ + ‖u z.2‖ := norm_sub_le _ _
@@ -219,11 +219,11 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     · rw [hi]
       simp only [mul_zero, zero_mul, norm_zero]
       positivity
-    · have hWb : ‖Wf z.1 * Wf z.2‖ ≤ BW ^ 2 := by
+    · have hWb : ‖Wf z.1 * Wf z.2‖ ≤ BW ^ (2 : ℕ) := by
         rw [norm_mul]
         calc ‖Wf z.1‖ * ‖Wf z.2‖ ≤ BW * BW :=
               mul_le_mul (hWbound z.1) (hWbound z.2) (norm_nonneg _) hBW0
-          _ = BW ^ 2 := by ring
+          _ = BW ^ (2 : ℕ) := by ring
       have hpowb : ‖(u z.1 * u z.2) ^ (n + 1)‖ ≤ (ρ₂ * ℓ) ^ n * (‖u z.1‖ * ‖u z.2‖) := by
         rw [norm_pow, norm_mul, mul_pow]
         rcases hb with ⟨h1, h2⟩ | ⟨h1, h2⟩
@@ -263,14 +263,14 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
             _ = (ρ₂ * ℓ) ^ n * (‖u z.1‖ * ‖u z.2‖) := by
                 rw [mul_pow]
                 ring
-      calc ‖(u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ 2‖
+      calc ‖(u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) * (u z.1 - u z.2) ^ (2 : ℕ)‖
           = ‖(u z.1 * u z.2) ^ (n + 1)‖ * ‖Wf z.1 * Wf z.2‖ *
-              ‖(u z.1 - u z.2) ^ 2‖ := by
+              ‖(u z.1 - u z.2) ^ (2 : ℕ)‖ := by
             rw [norm_mul, norm_mul]
-        _ ≤ ((ρ₂ * ℓ) ^ n * (‖u z.1‖ * ‖u z.2‖)) * BW ^ 2 * 4 := by
+        _ ≤ ((ρ₂ * ℓ) ^ n * (‖u z.1‖ * ‖u z.2‖)) * BW ^ (2 : ℕ) * 4 := by
             refine mul_le_mul (mul_le_mul hpowb hWb (norm_nonneg _) (by positivity))
               hdiffb (norm_nonneg _) (by positivity)
-        _ = (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) * (‖u z.1‖ * ‖u z.2‖)) := by ring
+        _ = (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) * (‖u z.1‖ * ‖u z.2‖)) := by ring
   -- unit pair points at the level
   have hVnorm : ∀ z ∈ TT, ‖V z‖ = 1 := by
     intro z hz
@@ -280,17 +280,17 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       Complex.norm_real, Real.norm_eq_abs, abs_of_pos hℓpos, pow_two]
     exact div_self (by positivity)
   -- pair points at `1` are conjugate pairs with nonpositive real weight
-  have hP1w : ∀ z ∈ TT, V z = 1 → Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2 =
-      ((-(4 * ((u z.1).im ^ 2 * Complex.normSq (Wf z.1))) : ℝ) : ℂ) := by
+  have hP1w : ∀ z ∈ TT, V z = 1 → Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ) =
+      ((-(4 * ((u z.1).im ^ (2 : ℕ) * Complex.normSq (Wf z.1))) : ℝ) : ℂ) := by
     intro z hz hVz
     rw [hTT, Finset.mem_product] at hz
     have hz1ne : u z.1 ≠ 0 := xiResolventPoint_ne_zero hX z.1
-    have h1 : u z.1 * u z.2 = (((ℓ : ℝ)) : ℂ) ^ 2 := by
+    have h1 : u z.1 * u z.2 = (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) := by
       have h0 := hVz
       simp only [hV] at h0
       rw [div_eq_iff (pow_ne_zero 2 hℓC), one_mul] at h0
       exact h0
-    have h2 : u z.1 * (starRingEnd ℂ) (u z.1) = (((ℓ : ℝ)) : ℂ) ^ 2 := by
+    have h2 : u z.1 * (starRingEnd ℂ) (u z.1) = (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) := by
       rw [Complex.mul_conj, ← Complex.ofReal_pow]
       norm_cast
       rw [← Complex.sq_norm, (hmemSF z.1).mp hz.1]
@@ -299,7 +299,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     have hWconj : Wf z.2 = (starRingEnd ℂ) (Wf z.1) := hval z.1 z.2 hconj
     have hprod : Wf z.1 * Wf z.2 = ((Complex.normSq (Wf z.1) : ℝ) : ℂ) := by
       rw [hWconj, Complex.mul_conj]
-    have hdiff : (u z.1 - u z.2) ^ 2 = ((-(4 * (u z.1).im ^ 2) : ℝ) : ℂ) := by
+    have hdiff : (u z.1 - u z.2) ^ (2 : ℕ) = ((-(4 * (u z.1).im ^ (2 : ℕ)) : ℝ) : ℂ) := by
       rw [hconj, Complex.sub_conj, mul_pow, Complex.I_sq]
       push_cast
       ring
@@ -322,12 +322,12 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
     rw [show u (qh, xiZeroCopyLineConjEquiv qh).2 = (starRingEnd ℂ) (u qh) from hlineconj]
     rw [show u (qh, xiZeroCopyLineConjEquiv qh).1 = u qh from rfl]
     rw [Complex.mul_conj, ← Complex.ofReal_pow]
-    rw [show Complex.normSq (u qh) = ℓ ^ 2 by
+    rw [show Complex.normSq (u qh) = ℓ ^ (2 : ℕ) by
       rw [← Complex.sq_norm]
       rw [show ‖u qh‖ = ℓ from hqhℓ]]
     exact div_self (Complex.ofReal_ne_zero.mpr (by positivity))
   -- the strictly positive defect at the witness
-  set β : ℝ := (u qh).im ^ 2 * Complex.normSq (Wf qh) with hβdef
+  set β : ℝ := (u qh).im ^ (2 : ℕ) * Complex.normSq (Wf qh) with hβdef
   have hβ : 0 < β := by
     rw [hβdef]
     have him := xiResolventPoint_im_ne_zero_of_spectral hX hqhoff
@@ -345,16 +345,16 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       show ρ₂ / ℓ - 1 = -(1 - ρ₂ / ℓ) by ring, neg_div_neg_eq]
     rw [div_le_div_iff₀ h1κ h1κ]
     nlinarith [pow_nonneg hκ0' N]
-  set CT : ℝ := 4 * BW ^ 2 * P₀ / ℓ ^ 2 * (1 / (1 - ρ₂ / ℓ)) with hCT
+  set CT : ℝ := 4 * BW ^ (2 : ℕ) * P₀ / ℓ ^ (2 : ℕ) * (1 / (1 - ρ₂ / ℓ)) with hCT
   set CP2 : ℝ := ∑ z ∈ TT.filter (fun z => ¬ V z = 1),
-    ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2‖ * (2 / ‖V z - 1‖) with hCP2
+    ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)‖ * (2 / ‖V z - 1‖) with hCP2
   -- the tail bound at level n
   have htail : ∀ n : ℕ,
       ‖∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
         (u (↑zc : XiZeroCopy × XiZeroCopy).1 * u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
           (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 * Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
-          (u (↑zc : XiZeroCopy × XiZeroCopy).1 - u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2‖ ≤
-        (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) * P₀) := by
+          (u (↑zc : XiZeroCopy × XiZeroCopy).1 - u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ ≤
+        (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) * P₀) := by
     intro n
     have hsubpair := ((hpairsummable n).norm.subtype
       ((↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ))
@@ -365,85 +365,85 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
             (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
               Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
             (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-              u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2‖
+              u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖
         ≤ ∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             ‖(u (↑zc : XiZeroCopy × XiZeroCopy).1 *
               u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
               (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                 Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
               (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2‖ :=
+                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ :=
           norm_tsum_le_tsum_norm hsubpair
       _ ≤ ∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
-            (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) *
+            (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) *
               (‖u (↑zc : XiZeroCopy × XiZeroCopy).1‖ *
                 ‖u (↑zc : XiZeroCopy × XiZeroCopy).2‖)) := by
           refine Summable.tsum_le_tsum (fun zc => ?_) hsubpair
-            (((hsubprod.mul_left ((4 * BW ^ 2))).mul_left ((ρ₂ * ℓ) ^ n)))
+            (((hsubprod.mul_left ((4 * BW ^ (2 : ℕ)))).mul_left ((ρ₂ * ℓ) ^ n)))
           have hznot : (↑zc : XiZeroCopy × XiZeroCopy) ∉ TT := by
             have h := zc.2
             simp only [Set.mem_compl_iff, Finset.mem_coe] at h
             exact h
           exact htailterm n _ hznot
-      _ = (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) * P₀) := by
+      _ = (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) * P₀) := by
           rw [tsum_mul_left, tsum_mul_left, hP₀]
   -- the master estimate at every truncation
   have hmaster : ∀ N : ℕ, 0 ≤ -(4 * β) * N + CP2 + CT := by
     intro N
     have hlhs : 0 ≤ ∑ n ∈ Finset.range N,
         (2 * (xiWeightedResolventMoment Wf n X * xiWeightedResolventMoment Wf (n + 2) X -
-          xiWeightedResolventMoment Wf (n + 1) X ^ 2)).re / ℓ ^ (2 * (n + 1)) := by
+          xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ))).re / ℓ ^ (2 * (n + 1)) := by
       refine Finset.sum_nonneg fun n _ => ?_
       have h1 := hminorW n
       have h2 : (2 * (xiWeightedResolventMoment Wf n X *
           xiWeightedResolventMoment Wf (n + 2) X -
-          xiWeightedResolventMoment Wf (n + 1) X ^ 2)).re =
+          xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ))).re =
           2 * (xiWeightedResolventMoment Wf n X *
             xiWeightedResolventMoment Wf (n + 2) X -
-            xiWeightedResolventMoment Wf (n + 1) X ^ 2).re := by
+            xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ)).re := by
         simp [Complex.mul_re]
       rw [h2]
       have h3 : (0 : ℝ) < ℓ ^ (2 * (n + 1)) := pow_pos hℓpos _
       positivity
     have hn : ∀ n ∈ Finset.range N,
         (2 * (xiWeightedResolventMoment Wf n X * xiWeightedResolventMoment Wf (n + 2) X -
-          xiWeightedResolventMoment Wf (n + 1) X ^ 2)).re / ℓ ^ (2 * (n + 1)) =
-        (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) * V z ^ (n + 1)).re +
+          xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ))).re / ℓ ^ (2 * (n + 1)) =
+        (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) * V z ^ (n + 1)).re +
           (∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             (u (↑zc : XiZeroCopy × XiZeroCopy).1 *
               u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
               (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                 Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
               (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2).re /
+                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re /
             ℓ ^ (2 * (n + 1)) := by
       intro n _
       have hexp := hpair n
       have hsplit := (hpairsummable n).sum_add_tsum_compl (s := TT)
       have hEq : (2 : ℂ) * (xiWeightedResolventMoment Wf n X *
           xiWeightedResolventMoment Wf (n + 2) X -
-          xiWeightedResolventMoment Wf (n + 1) X ^ 2) =
+          xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ)) =
           (∑ z ∈ TT, (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) *
-            (u z.1 - u z.2) ^ 2) +
+            (u z.1 - u z.2) ^ (2 : ℕ)) +
             ∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
               (u (↑zc : XiZeroCopy × XiZeroCopy).1 *
                 u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
                 (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                   Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
                 (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                  u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2 := by
+                  u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ) := by
         rw [hexp]
         exact hsplit.symm
       have hre := congrArg Complex.re hEq
       rw [Complex.add_re] at hre
       rw [hre, add_div]
       congr 1
-      have hCfin : (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) * V z ^ (n + 1)) =
+      have hCfin : (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) * V z ^ (n + 1)) =
           (∑ z ∈ TT, (u z.1 * u z.2) ^ (n + 1) * (Wf z.1 * Wf z.2) *
-            (u z.1 - u z.2) ^ 2) / ((ℓ ^ (2 * (n + 1)) : ℝ) : ℂ) := by
+            (u z.1 - u z.2) ^ (2 : ℕ)) / ((ℓ ^ (2 * (n + 1)) : ℝ) : ℂ) := by
         rw [Finset.sum_div]
         refine Finset.sum_congr rfl fun z _ => ?_
-        have hden : ((((ℓ : ℝ)) : ℂ) ^ 2) ^ (n + 1) = ((ℓ ^ (2 * (n + 1)) : ℝ) : ℂ) := by
+        have hden : ((((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)) ^ (n + 1) = ((ℓ ^ (2 * (n + 1)) : ℝ) : ℂ) := by
           push_cast
           ring
         simp only [hV]
@@ -452,8 +452,8 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
       rw [hCfin, re_div_ofReal]
     have hdecomp : ∑ n ∈ Finset.range N,
         (2 * (xiWeightedResolventMoment Wf n X * xiWeightedResolventMoment Wf (n + 2) X -
-          xiWeightedResolventMoment Wf (n + 1) X ^ 2)).re / ℓ ^ (2 * (n + 1)) =
-        (∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+          xiWeightedResolventMoment Wf (n + 1) X ^ (2 : ℕ))).re / ℓ ^ (2 * (n + 1)) =
+        (∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
             ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) +
           ∑ n ∈ Finset.range N,
             (∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
@@ -462,32 +462,32 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
                 (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                   Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
                 (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                  u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2).re /
+                  u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re /
               ℓ ^ (2 * (n + 1)) := by
       rw [Finset.sum_congr rfl hn, Finset.sum_add_distrib]
       congr 1
       calc ∑ n ∈ Finset.range N,
-          (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) * V z ^ (n + 1)).re
+          (∑ z ∈ TT, (Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) * V z ^ (n + 1)).re
           = ∑ n ∈ Finset.range N, ∑ z ∈ TT,
-              ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) * V z ^ (n + 1)).re :=
+              ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) * V z ^ (n + 1)).re :=
             Finset.sum_congr rfl fun n _ => Complex.re_sum _ _
         _ = ∑ z ∈ TT, ∑ n ∈ Finset.range N,
-              ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) * V z ^ (n + 1)).re :=
+              ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) * V z ^ (n + 1)).re :=
             Finset.sum_comm
-        _ = ∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+        _ = ∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
               ∑ n ∈ Finset.range N, V z ^ (n + 1)).re := by
             refine Finset.sum_congr rfl fun z _ => ?_
             rw [Finset.mul_sum, Complex.re_sum]
-    have hedge : (∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+    have hedge : (∑ z ∈ TT, ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
         ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) ≤ -(4 * β) * N + CP2 := by
       rw [← Finset.sum_filter_add_sum_filter_not TT (fun z => V z = 1)]
       have hpart1 : (∑ z ∈ TT.filter (fun z => V z = 1),
-          ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+          ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
             ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) ≤ -(4 * β) * N := by
         have hterm : ∀ z ∈ TT.filter (fun z => V z = 1),
-            ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+            ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
               ∑ n ∈ Finset.range N, V z ^ (n + 1)).re =
-              -(4 * ((u z.1).im ^ 2 * Complex.normSq (Wf z.1))) * (N : ℝ) := by
+              -(4 * ((u z.1).im ^ (2 : ℕ) * Complex.normSq (Wf z.1))) * (N : ℝ) := by
           intro z hz
           rw [Finset.mem_filter] at hz
           rw [hP1w z hz.1 hz.2, hz.2]
@@ -497,33 +497,33 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
         have hzhfil : zh ∈ TT.filter (fun z => V z = 1) :=
           Finset.mem_filter.mpr ⟨hzhTT, hVzh⟩
         rw [← Finset.add_sum_erase _ _ hzhfil]
-        have h1 : -(4 * ((u zh.1).im ^ 2 * Complex.normSq (Wf zh.1))) * (N : ℝ) =
+        have h1 : -(4 * ((u zh.1).im ^ (2 : ℕ) * Complex.normSq (Wf zh.1))) * (N : ℝ) =
             -(4 * β) * N := by
           simp only [hzh, hβdef]
         have h2 : ∑ z ∈ (TT.filter (fun z => V z = 1)).erase zh,
-            -(4 * ((u z.1).im ^ 2 * Complex.normSq (Wf z.1))) * (N : ℝ) ≤ 0 := by
+            -(4 * ((u z.1).im ^ (2 : ℕ) * Complex.normSq (Wf z.1))) * (N : ℝ) ≤ 0 := by
           refine Finset.sum_nonpos fun z _ => ?_
-          have h3 : (0 : ℝ) ≤ 4 * ((u z.1).im ^ 2 * Complex.normSq (Wf z.1)) * N := by
+          have h3 : (0 : ℝ) ≤ 4 * ((u z.1).im ^ (2 : ℕ) * Complex.normSq (Wf z.1)) * N := by
             have := Complex.normSq_nonneg (Wf z.1)
             positivity
           linarith
         rw [h1]
         linarith
       have hpart2 : (∑ z ∈ TT.filter (fun z => ¬ V z = 1),
-          ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+          ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
             ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) ≤ CP2 := by
         rw [hCP2]
         refine Finset.sum_le_sum fun z hz => ?_
         rw [Finset.mem_filter] at hz
         have hb := GaloisForLFunctions.HTGeometry.norm_sum_pow_succ_le
           (le_of_eq (hVnorm z hz.1)) hz.2 N
-        calc ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+        calc ((Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
             ∑ n ∈ Finset.range N, V z ^ (n + 1)).re
-            ≤ ‖(Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2) *
+            ≤ ‖(Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)) *
                 ∑ n ∈ Finset.range N, V z ^ (n + 1)‖ := Complex.re_le_norm _
-          _ = ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2‖ *
+          _ = ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)‖ *
                 ‖∑ n ∈ Finset.range N, V z ^ (n + 1)‖ := norm_mul _ _
-          _ ≤ ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ 2‖ * (2 / ‖V z - 1‖) :=
+          _ ≤ ‖Wf z.1 * Wf z.2 * (u z.1 - u z.2) ^ (2 : ℕ)‖ * (2 / ‖V z - 1‖) :=
               mul_le_mul_of_nonneg_left hb (norm_nonneg _)
       linarith
     have htailN : ∑ n ∈ Finset.range N,
@@ -533,7 +533,7 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
             (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
               Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
             (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-              u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2).re /
+              u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re /
           ℓ ^ (2 * (n + 1)) ≤ CT := by
       rw [hCT]
       calc ∑ n ∈ Finset.range N,
@@ -543,9 +543,9 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
               (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                 Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
               (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2).re /
+                u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re /
             ℓ ^ (2 * (n + 1))
-          ≤ ∑ n ∈ Finset.range N, 4 * BW ^ 2 * P₀ / ℓ ^ 2 * (ρ₂ / ℓ) ^ n := by
+          ≤ ∑ n ∈ Finset.range N, 4 * BW ^ (2 : ℕ) * P₀ / ℓ ^ (2 : ℕ) * (ρ₂ / ℓ) ^ n := by
             refine Finset.sum_le_sum fun n _ => ?_
             have h1 := htail n
             have h2 := Complex.re_le_norm
@@ -555,18 +555,18 @@ theorem forall_level_criticalLine_of_weighted_turanMinors {X : ℝ} (hX : 0 ≤ 
                   (Wf (↑zc : XiZeroCopy × XiZeroCopy).1 *
                     Wf (↑zc : XiZeroCopy × XiZeroCopy).2) *
                   (u (↑zc : XiZeroCopy × XiZeroCopy).1 -
-                    u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ 2)
+                    u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ))
             have hd : (0 : ℝ) < ℓ ^ (2 * (n + 1)) := pow_pos hℓpos _
             rw [div_le_iff₀ hd]
-            have halg : (ρ₂ * ℓ) ^ n * ((4 * BW ^ 2) * P₀) =
-                4 * BW ^ 2 * P₀ / ℓ ^ 2 * (ρ₂ / ℓ) ^ n * ℓ ^ (2 * (n + 1)) := by
+            have halg : (ρ₂ * ℓ) ^ n * ((4 * BW ^ (2 : ℕ)) * P₀) =
+                4 * BW ^ (2 : ℕ) * P₀ / ℓ ^ (2 : ℕ) * (ρ₂ / ℓ) ^ n * ℓ ^ (2 * (n + 1)) := by
               rw [div_pow, mul_pow]
               field_simp
               ring
             linarith
-        _ = 4 * BW ^ 2 * P₀ / ℓ ^ 2 * ∑ n ∈ Finset.range N, (ρ₂ / ℓ) ^ n := by
+        _ = 4 * BW ^ (2 : ℕ) * P₀ / ℓ ^ (2 : ℕ) * ∑ n ∈ Finset.range N, (ρ₂ / ℓ) ^ n := by
             rw [Finset.mul_sum]
-        _ ≤ 4 * BW ^ 2 * P₀ / ℓ ^ 2 * (1 / (1 - ρ₂ / ℓ)) := by
+        _ ≤ 4 * BW ^ (2 : ℕ) * P₀ / ℓ ^ (2 : ℕ) * (1 / (1 - ρ₂ / ℓ)) := by
             refine mul_le_mul_of_nonneg_left (hgeo N) ?_
             positivity
     have hfinal := hlhs

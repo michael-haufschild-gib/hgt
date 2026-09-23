@@ -11,8 +11,8 @@ that ladder one must climb before the condition can say anything at all.
 
 Every shifted squared spectral point lies in a narrow sector about the positive axis: the strip
 gives `|Im (alpha)| < 1/2`, hence `|Im (w q)| = 2 |Re alpha| |Im alpha| < |Re alpha|`, while the
-computation-free height floor `32 < (Re alpha)^2` gives
-`Re (w q) + X >= (Re alpha)^2 - 1/4 >= 5 |Re alpha|`.  So
+computation-free height floor `32 < (Re alpha)^(2 : ℕ)` gives
+`Re (w q) + X >= (Re alpha)^(2 : ℕ) - 1/4 >= 5 |Re alpha|`.  So
 
 `|Im (w q + X)| <= Re (w q + X) / 5`
 
@@ -76,7 +76,7 @@ theorem re_xiResolventPoint_pow_nonneg {X : ℝ} (hX : 0 ≤ X) {n : ℕ} (hn : 
 
 /-- **The first seven rungs of the resolvent ladder hold unconditionally.**  Hence they carry no
 information about off-critical zeros: the criterion can only begin to detect at order eight, and
-the threshold rises as the height floor `32 < (Re alpha)^2` is improved. -/
+the threshold rises as the height floor `32 < (Re alpha)^(2 : ℕ)` is improved. -/
 theorem re_xiResolventMoment_nonneg {X : ℝ} (hX : 0 ≤ X) {n : ℕ} (hn : n ≤ 6) :
     0 ≤ (xiResolventMoment n X).re := by
   rw [xiResolventMoment, Complex.re_tsum (summable_xiResolventPoint_pow hX n)]

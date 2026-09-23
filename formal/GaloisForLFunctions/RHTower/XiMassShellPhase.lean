@@ -24,13 +24,13 @@ namespace RHTower
 noncomputable section
 
 /-- The shell rapidity `q = √(κ²−1)`. -/
-def shellQ (kappa : ℝ) : ℝ := Real.sqrt (kappa ^ 2 - 1)
+def shellQ (kappa : ℝ) : ℝ := Real.sqrt (kappa ^ (2 : ℕ) - 1)
 
 theorem shellQ_pos {kappa : ℝ} (hkappa : 1 < kappa) : 0 < shellQ kappa := by
   rw [shellQ]
   exact Real.sqrt_pos.2 (by nlinarith)
 
-theorem shellQ_sq {kappa : ℝ} (hkappa : 1 < kappa) : shellQ kappa ^ 2 = kappa ^ 2 - 1 := by
+theorem shellQ_sq {kappa : ℝ} (hkappa : 1 < kappa) : shellQ kappa ^ (2 : ℕ) = kappa ^ (2 : ℕ) - 1 := by
   rw [shellQ]
   exact Real.sq_sqrt (by nlinarith)
 

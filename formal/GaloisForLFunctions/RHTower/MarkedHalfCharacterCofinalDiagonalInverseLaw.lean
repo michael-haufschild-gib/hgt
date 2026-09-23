@@ -12,7 +12,7 @@ import Mathlib.LinearAlgebra.Basis.VectorSpace
 Exact sequence-space and quotient-map formalization of Theorem 7.1 in the Stage-2 card
 `marked-half-character-duality-soldering-and-cofinal-diagonal-inverse-obstruction-law.md`.
 The ambient space is the full complex prime sequence module and the distinguished submodule is
-exactly the summable (`ell^1`) sequences.  No quotient topology is asserted.
+exactly the summable (`ell^(1 : ℕ)`) sequences.  No quotient topology is asserted.
 -/
 
 open Filter Topology
@@ -26,7 +26,7 @@ noncomputable section
 /-- Full complex sequence module on ordinary primes. -/
 abbrev AllPrimeComplexSequence := Nat.Primes → ℂ
 
-/-- Algebraic `ell^1` submodule of all complex prime sequences. -/
+/-- Algebraic `ell^(1 : ℕ)` submodule of all complex prime sequences. -/
 def primeL1Submodule : Submodule ℂ AllPrimeComplexSequence where
   carrier f := Summable f
   zero_mem' := summable_zero
@@ -35,7 +35,7 @@ def primeL1Submodule : Submodule ℂ AllPrimeComplexSequence where
     change Summable (fun p => c * f p)
     exact hf.mul_left c
 
-/-- Fixed algebraic all-prime quotient `C^P / ell^1(P)`. -/
+/-- Fixed algebraic all-prime quotient `C^P / ell^(1 : ℕ)(P)`. -/
 abbrev AllPrimeL1Quotient := AllPrimeComplexSequence ⧸ primeL1Submodule
 
 /-- Pointwise diagonal multiplier on all prime sequences. -/
@@ -51,7 +51,7 @@ def primeDiagonalMultiplier (m : AllPrimeComplexSequence) :
     simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     ring
 
-/-- A diagonal multiplier preserves the fixed `ell^1` submodule. -/
+/-- A diagonal multiplier preserves the fixed `ell^(1 : ℕ)` submodule. -/
 def PrimeDiagonalPreservesL1 (m : AllPrimeComplexSequence) : Prop :=
   primeL1Submodule ≤ Submodule.comap (primeDiagonalMultiplier m) primeL1Submodule
 
@@ -130,7 +130,7 @@ theorem primeDiagonalPreservesL1_iff_isBounded (m : AllPrimeComplexSequence) :
   ⟨primeDiagonalPreservesL1_isBounded,
     primeDiagonalPreservesL1_of_isBounded⟩
 
-/-- Preservation of `ell^1` produces the canonical quotient multiplier. -/
+/-- Preservation of `ell^(1 : ℕ)` produces the canonical quotient multiplier. -/
 def primeDiagonalQuotientMap (m : AllPrimeComplexSequence)
     (hm : PrimeDiagonalPreservesL1 m) :
     AllPrimeL1Quotient →ₗ[ℂ] AllPrimeL1Quotient :=
@@ -146,7 +146,7 @@ theorem primeDiagonalQuotientMap_mk (m : AllPrimeComplexSequence)
     (primeDiagonalMultiplier m) f
 
 /-- Existence of a quotient map with the prescribed representative action is equivalent to
-preservation of `ell^1`. -/
+preservation of `ell^(1 : ℕ)`. -/
 theorem hasPrimeDiagonalQuotientMap_iff_preservesL1
     (m : AllPrimeComplexSequence) :
     HasPrimeDiagonalQuotientMap m ↔ PrimeDiagonalPreservesL1 m := by
@@ -163,7 +163,7 @@ theorem hasPrimeDiagonalQuotientMap_iff_preservesL1
       fun f => primeDiagonalQuotientMap_mk m hm f⟩
 
 /-- A pointwise nonzero diagonal multiplier induces a surjective quotient map whenever it
-preserves `ell^1`.  Division is performed in the full sequence space, not in `ell^1`. -/
+preserves `ell^(1 : ℕ)`.  Division is performed in the full sequence space, not in `ell^(1 : ℕ)`. -/
 theorem primeDiagonalQuotientMap_surjective
     (m : AllPrimeComplexSequence) (hm : PrimeDiagonalPreservesL1 m)
     (hm0 : ∀ p, m p ≠ 0) :
@@ -382,7 +382,7 @@ theorem xiPrimeRankReflectionEnergy
 def primeHarmonicComplexSequence : AllPrimeComplexSequence :=
   fun p => Complex.ofReal ((p : ℝ) ^ (-1 : ℝ))
 
-/-- Prime harmonic sequence is not in the fixed `ell^1` submodule. -/
+/-- Prime harmonic sequence is not in the fixed `ell^(1 : ℕ)` submodule. -/
 theorem not_summable_primeHarmonicComplexSequence :
     ¬ Summable primeHarmonicComplexSequence := by
   intro h
@@ -446,7 +446,7 @@ theorem reciprocal_weight_mul_kernelWitness
     exact_mod_cast (markedCofinalComparisonWeight_pos t p).ne'
   rw [← mul_assoc, inv_mul_cancel₀ hweight, one_mul]
 
-/-- Reciprocal comparison does not preserve the fixed all-prime `ell^1` submodule. -/
+/-- Reciprocal comparison does not preserve the fixed all-prime `ell^(1 : ℕ)` submodule. -/
 theorem reciprocal_markedCofinalComparisonWeight_not_preservesL1
     {t : ℝ} (ht : |t| < 1) :
     ¬ PrimeDiagonalPreservesL1
@@ -470,7 +470,7 @@ theorem reciprocal_markedCofinalComparisonWeight_not_isBounded
   exact reciprocal_markedCofinalComparisonWeight_not_preservesL1 ht
     (primeDiagonalPreservesL1_of_isBounded hbounded)
 
-/-- Bounded comparison multiplication preserves `ell^1`. -/
+/-- Bounded comparison multiplication preserves `ell^(1 : ℕ)`. -/
 theorem markedCofinalComparisonWeight_preservesL1
     {t : ℝ} (ht : |t| < 1) :
     PrimeDiagonalPreservesL1

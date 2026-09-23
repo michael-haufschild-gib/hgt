@@ -90,22 +90,22 @@ theorem abs_arctan_gap_add_pi_le {α T τ : ℝ} (hα : α < 0) (hτ : |τ| < T)
 the twisted pole; the residual logarithm is the relative asymmetry `4T|τ|` against the square of the
 effective height. -/
 theorem abs_log_gap_le {α T τ : ℝ} (hτ : |τ| < T) :
-    |(Real.log (α ^ 2 + (T + τ) ^ 2) - Real.log (α ^ 2 + (-T + τ) ^ 2)) / 2|
-      ≤ 2 * T * |τ| / (T - |τ|) ^ 2 := by
+    |(Real.log (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) - Real.log (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2|
+      ≤ 2 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := by
   have hT0 : (0 : ℝ) < T := lt_of_le_of_lt (abs_nonneg τ) hτ
   have hgap : (0 : ℝ) < T - |τ| := by linarith
-  have hsq : (0 : ℝ) < (T - |τ|) ^ 2 := by positivity
+  have hsq : (0 : ℝ) < (T - |τ|) ^ (2 : ℕ) := by positivity
   have hup : (T - |τ| : ℝ) ≤ T + τ := by linarith [neg_abs_le τ]
   have hdn : (T - |τ| : ℝ) ≤ -(-T + τ) := by linarith [le_abs_self τ]
-  have hpq : ((T - |τ|) ^ 2 : ℝ) ≤ α ^ 2 + (T + τ) ^ 2 := by nlinarith [sq_nonneg α]
-  have hqq : ((T - |τ|) ^ 2 : ℝ) ≤ α ^ 2 + (-T + τ) ^ 2 := by nlinarith [sq_nonneg α]
-  have hp0 : (0 : ℝ) < α ^ 2 + (T + τ) ^ 2 := lt_of_lt_of_le hsq hpq
-  have hq0 : (0 : ℝ) < α ^ 2 + (-T + τ) ^ 2 := lt_of_lt_of_le hsq hqq
-  have hdiff : (α ^ 2 + (T + τ) ^ 2) - (α ^ 2 + (-T + τ) ^ 2) = 4 * T * τ := by ring
+  have hpq : ((T - |τ|) ^ (2 : ℕ) : ℝ) ≤ α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ) := by nlinarith [sq_nonneg α]
+  have hqq : ((T - |τ|) ^ (2 : ℕ) : ℝ) ≤ α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ) := by nlinarith [sq_nonneg α]
+  have hp0 : (0 : ℝ) < α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ) := lt_of_lt_of_le hsq hpq
+  have hq0 : (0 : ℝ) < α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ) := lt_of_lt_of_le hsq hqq
+  have hdiff : (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) - (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ)) = 4 * T * τ := by ring
   have habs : |4 * T * τ| = 4 * T * |τ| := by
     rw [abs_mul, abs_mul, abs_of_pos hT0, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 4)]
-  have hbound : ∀ p q : ℝ, 0 < p → 0 < q → ((T - |τ|) ^ 2 : ℝ) ≤ q →
-      Real.log p - Real.log q ≤ |p - q| / (T - |τ|) ^ 2 := by
+  have hbound : ∀ p q : ℝ, 0 < p → 0 < q → ((T - |τ|) ^ (2 : ℕ) : ℝ) ≤ q →
+      Real.log p - Real.log q ≤ |p - q| / (T - |τ|) ^ (2 : ℕ) := by
     intro p q hp hq hqlow
     have h := Real.log_le_sub_one_of_pos (x := p / q) (by positivity)
     rw [Real.log_div hp.ne' hq.ne'] at h
@@ -113,17 +113,17 @@ theorem abs_log_gap_le {α T τ : ℝ} (hτ : |τ| < T) :
     rw [he] at h
     have h2 : (p - q) / q ≤ |p - q| / q :=
       div_le_div_of_nonneg_right (le_abs_self _) hq.le
-    have h3 : |p - q| / q ≤ |p - q| / (T - |τ|) ^ 2 :=
+    have h3 : |p - q| / q ≤ |p - q| / (T - |τ|) ^ (2 : ℕ) :=
       div_le_div_of_nonneg_left (abs_nonneg _) hsq hqlow
     linarith
-  have h1 := hbound (α ^ 2 + (T + τ) ^ 2) (α ^ 2 + (-T + τ) ^ 2) hp0 hq0 hqq
-  have h2 := hbound (α ^ 2 + (-T + τ) ^ 2) (α ^ 2 + (T + τ) ^ 2) hq0 hp0 hpq
+  have h1 := hbound (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ)) hp0 hq0 hqq
+  have h2 := hbound (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ)) (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) hq0 hp0 hpq
   rw [hdiff, habs] at h1
-  have hdiff' : (α ^ 2 + (-T + τ) ^ 2) - (α ^ 2 + (T + τ) ^ 2) = -(4 * T * τ) := by ring
+  have hdiff' : (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ)) - (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) = -(4 * T * τ) := by ring
   rw [hdiff', abs_neg, habs] at h2
-  have hkey : |Real.log (α ^ 2 + (T + τ) ^ 2) - Real.log (α ^ 2 + (-T + τ) ^ 2)|
-      ≤ 4 * T * |τ| / (T - |τ|) ^ 2 := abs_le.2 ⟨by linarith, by linarith⟩
-  have hhalf : (4 : ℝ) * T * |τ| / (T - |τ|) ^ 2 / 2 = 2 * T * |τ| / (T - |τ|) ^ 2 := by
+  have hkey : |Real.log (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ)) - Real.log (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))|
+      ≤ 4 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := abs_le.2 ⟨by linarith, by linarith⟩
+  have hhalf : (4 : ℝ) * T * |τ| / (T - |τ|) ^ (2 : ℕ) / 2 = 2 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := by
     ring
   rw [abs_div, abs_two, ← hhalf]
   exact div_le_div_of_nonneg_right hkey (by norm_num)
@@ -135,7 +135,7 @@ theorem norm_twistMainFactor_gap_sub_two_pi_le {c d T τ : ℝ} (hc : c < 1) (hd
     (hτ : |τ| < T) :
     ‖twistMainFactor d T τ - twistMainFactor c T τ - ((2 * Real.pi : ℝ) : ℂ)‖
       ≤ 2 * (d - 1) / (T - |τ|) + 2 * (1 - c) / (T - |τ|)
-        + 4 * T * |τ| / (T - |τ|) ^ 2 := by
+        + 4 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := by
   have hT0 : (0 : ℝ) < T := lt_of_le_of_lt (abs_nonneg τ) hτ
   have hgap : (0 : ℝ) < T - |τ| := by linarith
   have hre : (twistMainFactor d T τ - twistMainFactor c T τ
@@ -147,10 +147,10 @@ theorem norm_twistMainFactor_gap_sub_two_pi_le {c d T τ : ℝ} (hc : c < 1) (hd
     ring
   have him : (twistMainFactor d T τ - twistMainFactor c T τ
         - ((2 * Real.pi : ℝ) : ℂ)).im
-      = -((Real.log ((d - 1) ^ 2 + (T + τ) ^ 2)
-              - Real.log ((d - 1) ^ 2 + (-T + τ) ^ 2)) / 2)
-        + ((Real.log ((c - 1) ^ 2 + (T + τ) ^ 2)
-              - Real.log ((c - 1) ^ 2 + (-T + τ) ^ 2)) / 2) := by
+      = -((Real.log ((d - 1) ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+              - Real.log ((d - 1) ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2)
+        + ((Real.log ((c - 1) ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+              - Real.log ((c - 1) ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2) := by
     simp only [twistMainFactor, Complex.sub_im, Complex.mul_im, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring
@@ -167,12 +167,12 @@ theorem norm_twistMainFactor_gap_sub_two_pi_le {c d T τ : ℝ} (hc : c < 1) (hd
     rw [hre]
     exact le_trans (abs_sub _ _) (by linarith)
   have himb : |(twistMainFactor d T τ - twistMainFactor c T τ - ((2 * Real.pi : ℝ) : ℂ)).im|
-      ≤ 4 * T * |τ| / (T - |τ|) ^ 2 := by
+      ≤ 4 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := by
     rw [him]
     refine le_trans (abs_add_le _ _) ?_
     rw [abs_neg]
-    have : (4 : ℝ) * T * |τ| / (T - |τ|) ^ 2
-        = 2 * T * |τ| / (T - |τ|) ^ 2 + 2 * T * |τ| / (T - |τ|) ^ 2 := by ring
+    have : (4 : ℝ) * T * |τ| / (T - |τ|) ^ (2 : ℕ)
+        = 2 * T * |τ| / (T - |τ|) ^ (2 : ℕ) + 2 * T * |τ| / (T - |τ|) ^ (2 : ℕ) := by ring
     rw [this]
     linarith [hC, hD]
   exact le_trans (Complex.norm_le_abs_re_add_abs_im _) (by linarith)

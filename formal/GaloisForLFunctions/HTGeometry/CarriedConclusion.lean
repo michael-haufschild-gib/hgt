@@ -17,13 +17,13 @@ variable {s : ℕ → ℝ}
 
 /-- The region where the normalised square exceeds one is the complement of the interval. -/
 theorem sq_gt_one_iff_notMem_Icc {c r x : ℝ} (hr : 0 < r) :
-    1 < ((x - c) / r) ^ 2 ↔ x ∉ Set.Icc (c - r) (c + r) := by
+    1 < ((x - c) / r) ^ (2 : ℕ) ↔ x ∉ Set.Icc (c - r) (c + r) := by
   have hmem : x ∈ Set.Icc (c - r) (c + r) ↔ |x - c| ≤ r := by
     rw [Set.mem_Icc, abs_le]
     constructor
     · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
     · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
-  rw [hmem, not_le, div_pow, lt_div_iff₀ (by positivity : (0 : ℝ) < r ^ 2)]
+  rw [hmem, not_le, div_pow, lt_div_iff₀ (by positivity : (0 : ℝ) < r ^ (2 : ℕ))]
   constructor
   · intro hgt
     nlinarith [abs_nonneg (x - c), sq_abs (x - c)]
@@ -40,7 +40,7 @@ theorem measure_compl_Icc_eq_zero_of_moments_eq {mu nu : Measure ℝ}
     (hintnu : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) nu) :
     nu (Set.Icc (c - r) (c + r))ᶜ = 0 := by
   classical
-  set f : ℝ → ℝ := fun x => ((x - c) / r) ^ 2 with hfdef
+  set f : ℝ → ℝ := fun x => ((x - c) / r) ^ (2 : ℕ) with hfdef
   have hfmeas : Measurable f := by fun_prop
   have hfnn : ∀ x, 0 ≤ f x := fun x => sq_nonneg _
   have hSb : ∀ x ∈ Set.Icc (c - r) (c + r), f x ≤ 1 := by

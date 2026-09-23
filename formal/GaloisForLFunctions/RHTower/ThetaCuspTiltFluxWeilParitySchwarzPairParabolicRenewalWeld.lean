@@ -33,8 +33,8 @@ def xiSchwarzPairParabolicNormalRenewalSchedule (n : ℕ) : ℝ :=
 
 /-- Exact physical mass of the parabolic schedule. -/
 theorem xiSchwarzPairParabolicNormalRenewalSchedule_sq (n : ℕ) :
-    xiSchwarzPairParabolicNormalRenewalSchedule n ^ 2 =
-      routeUParabolicDegreeHorizon * (((n + 5 : ℕ) : ℝ) ^ 2) := by
+    xiSchwarzPairParabolicNormalRenewalSchedule n ^ (2 : ℕ) =
+      routeUParabolicDegreeHorizon * (((n + 5 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   rw [xiSchwarzPairParabolicNormalRenewalSchedule, mul_pow,
     Real.sq_sqrt routeUParabolicDegreeHorizon_pos.le]
 
@@ -43,13 +43,13 @@ theorem xiSchwarzPairParabolicNormalRenewalSchedule_posDef (n : ℕ) :
     (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (xiSchwarzPairParabolicNormalRenewalSchedule n))
       (n + 5)).PosDef := by
-  have hmass : routeUParabolicDegreeHorizon * (((n + 5 : ℕ) : ℝ) ^ 2) ≤
-      xiSchwarzPairParabolicNormalRenewalSchedule n ^ 2 := by
+  have hmass : routeUParabolicDegreeHorizon * (((n + 5 : ℕ) : ℝ) ^ (2 : ℕ)) ≤
+      xiSchwarzPairParabolicNormalRenewalSchedule n ^ (2 : ℕ) := by
     rw [xiSchwarzPairParabolicNormalRenewalSchedule_sq]
   have hA := xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon
     (n + 3) hmass
   have heq : xiShiftedMomentHankelMatrix
-      (xiSchwarzPairParabolicNormalRenewalSchedule n ^ 2) (n + 5) =
+      (xiSchwarzPairParabolicNormalRenewalSchedule n ^ (2 : ℕ)) (n + 5) =
       HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence (xiSchwarzPairParabolicNormalRenewalSchedule n))
         (n + 5) := by

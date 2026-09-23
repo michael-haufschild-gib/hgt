@@ -80,7 +80,7 @@ theorem cascadeDeg_fpderiv_towerUnitState_eq
     (hu : cascadeDeg w (u - 1) < (0 : WithBot ℤ)) :
     cascadeDeg w (fpderiv j (towerUnitState k u)) =
       (((towerWeight w k - (w j : ℤ) : ℤ)) : WithBot ℤ) := by
-  rw [towerUnitState, Derivation.leibniz, fpderiv_algebraMap]
+  rw [towerUnitState, Derivation.leibniz, fpderiv_algebraMap_cascadeFieldWeightedDegree]
   simp only [smul_eq_mul]
   have hu0 := cascadeDeg_eq_zero_of_sub_one_lt_zero w hu
   have hmain : cascadeDeg w
@@ -98,7 +98,7 @@ theorem cascadeDeg_fpderiv_towerUnitState_lt
     (hu : cascadeDeg w (u - 1) < (0 : WithBot ℤ)) :
     cascadeDeg w (fpderiv j (towerUnitState k u)) <
       (((towerWeight w k - (w j : ℤ) : ℤ)) : WithBot ℤ) := by
-  rw [towerUnitState, Derivation.leibniz, fpderiv_algebraMap,
+  rw [towerUnitState, Derivation.leibniz, fpderiv_algebraMap_cascadeFieldWeightedDegree,
     pderiv_towerMonomial_eq_zero hj, map_zero]
   simp only [smul_eq_mul, mul_zero, add_zero]
   exact cascadeDeg_towerMonomial_mul_fpderiv_lt w k j hu

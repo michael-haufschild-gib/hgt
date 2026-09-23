@@ -70,7 +70,7 @@ theorem tendsto_max_abs_log_div_atTop {A K : ℝ} (hK : 0 < K) :
 /-- A square root of a fixed quadratic in a sublinear quantity, plus a constant, is sublinear. -/
 theorem tendsto_sqrt_sq_mul_add_div_atTop {f : ℝ → ℝ} (hf0 : ∀ r, 0 ≤ f r)
     (hf : Tendsto (fun r : ℝ => f r / r) atTop (𝓝 0)) {W C : ℝ} (hW : 0 ≤ W) (hC : 0 ≤ C) :
-    Tendsto (fun r : ℝ => Real.sqrt (f r ^ 2 * W ^ 2 + C) / r) atTop (𝓝 0) := by
+    Tendsto (fun r : ℝ => Real.sqrt (f r ^ (2 : ℕ) * W ^ (2 : ℕ) + C) / r) atTop (𝓝 0) := by
   have hupper : Tendsto (fun r : ℝ => (f r * W + Real.sqrt C) / r) atTop (𝓝 0) := by
     have h1 : Tendsto (fun r : ℝ => f r / r * W) atTop (𝓝 0) := by
       simpa using hf.mul_const W
@@ -86,11 +86,11 @@ theorem tendsto_sqrt_sq_mul_add_div_atTop {f : ℝ → ℝ} (hf0 : ∀ r, 0 ≤ 
     have hnn : (0 : ℝ) ≤ f r * W + Real.sqrt C := by
       have := mul_nonneg (hf0 r) hW
       linarith [Real.sqrt_nonneg C]
-    have hkey : f r ^ 2 * W ^ 2 + C ≤ (f r * W + Real.sqrt C) ^ 2 := by
+    have hkey : f r ^ (2 : ℕ) * W ^ (2 : ℕ) + C ≤ (f r * W + Real.sqrt C) ^ (2 : ℕ) := by
       have hsq := Real.sq_sqrt hC
       nlinarith [Real.sqrt_nonneg C, mul_nonneg (hf0 r) hW]
-    have hsub : Real.sqrt (f r ^ 2 * W ^ 2 + C) ≤ f r * W + Real.sqrt C :=
-      calc Real.sqrt (f r ^ 2 * W ^ 2 + C) ≤ Real.sqrt ((f r * W + Real.sqrt C) ^ 2) :=
+    have hsub : Real.sqrt (f r ^ (2 : ℕ) * W ^ (2 : ℕ) + C) ≤ f r * W + Real.sqrt C :=
+      calc Real.sqrt (f r ^ (2 : ℕ) * W ^ (2 : ℕ) + C) ≤ Real.sqrt ((f r * W + Real.sqrt C) ^ (2 : ℕ)) :=
             Real.sqrt_le_sqrt hkey
         _ = f r * W + Real.sqrt C := Real.sqrt_sq hnn
     gcongr

@@ -12,7 +12,7 @@ def inverseRadiusPoint (x : Fin 4 → ℝ) : Fin 4 → ℝ := ![x 0,(x 1)⁻¹,x
 /-- Its complete real differential. -/
 def inverseRadiusDifferential (u : ℝ) : (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ) :=
   ContinuousLinearMap.pi ![ContinuousLinearMap.proj 0,
-    (-u⁻¹^2) • ContinuousLinearMap.proj 1,ContinuousLinearMap.proj 2,ContinuousLinearMap.proj 3]
+    (-u⁻¹^(2 : ℕ)) • ContinuousLinearMap.proj 1,ContinuousLinearMap.proj 2,ContinuousLinearMap.proj 3]
 
 /-- The inverse-radius differential follows from the actual coordinate map. -/
 theorem inverseRadiusPoint_hasFDerivAt (x : Fin 4 → ℝ) (hu : x 1 ≠ 0) :
@@ -31,7 +31,7 @@ theorem inverseRadiusPoint_hasFDerivAt (x : Fin 4 → ℝ) (hu : x 1 ≠ 0) :
 
 /-- Complexification of the full inverse-radius coordinate differential. -/
 def inverseRadiusJacobian (u : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  Matrix.diagonal ![1,-u⁻¹^2,1,1]
+  Matrix.diagonal ![1,-u⁻¹^(2 : ℕ),1,1]
 
 /-- Every displayed matrix entry is the actual differentiated coordinate entry. -/
 theorem inverseRadiusDifferential_matrix (u : ℝ) (i j : Fin 4) :

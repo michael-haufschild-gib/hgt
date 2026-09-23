@@ -123,17 +123,17 @@ polynomial `p(z) = ∑ cₖ zᵏ` is `∑ ‖cₖ‖² r^{2k}`.  Gutzmer's ident
 core of the `H²` Parseval used to bound the reciprocal outer function's Taylor coefficients. -/
 theorem circleAverage_normSq_poly (r : ℝ) (M : ℕ) (c : ℕ → ℂ) :
     (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π),
-        ‖∑ k ∈ Finset.range M, c k * (circleMap 0 r θ) ^ k‖ ^ 2
-      = ∑ k ∈ Finset.range M, ‖c k‖ ^ 2 * r ^ (2 * k) := by
+        ‖∑ k ∈ Finset.range M, c k * (circleMap 0 r θ) ^ k‖ ^ (2 : ℕ)
+      = ∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ) * r ^ (2 * k) := by
   have hπ : (0:ℝ) < 2 * π := by positivity
   set z : ℝ → ℂ := fun θ => circleMap 0 r θ with hz
   -- pointwise expansion of ↑‖S‖²
   have hpt : ∀ θ : ℝ,
-      ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ 2 : ℝ) : ℂ)
+      ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ k ∈ Finset.range M, ∑ j ∈ Finset.range M,
           c k * conj (c j) * ((z θ) ^ k * conj ((z θ) ^ j)) := by
     intro θ
-    have h1 : ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ 2 : ℝ) : ℂ)
+    have h1 : ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ)
         = (∑ k ∈ Finset.range M, c k * (z θ) ^ k)
             * conj (∑ k ∈ Finset.range M, c k * (z θ) ^ k) := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -148,7 +148,7 @@ theorem circleAverage_normSq_poly (r : ℝ) (M : ℕ) (c : ℕ → ℂ) :
     · exact (continuous_circleMap 0 r).pow k
     · exact Complex.continuous_conj.comp ((continuous_circleMap 0 r).pow j)
   have hInt : (∫ θ in (0:ℝ)..(2 * π),
-        ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ 2 : ℝ) : ℂ))
+        ((‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ))
       = ∑ k ∈ Finset.range M, ∑ j ∈ Finset.range M,
           c k * conj (c j) * (∫ θ in (0:ℝ)..(2 * π), (z θ) ^ k * conj ((z θ) ^ j)) := by
     rw [intervalIntegral.integral_congr (fun θ _ => hpt θ),
@@ -163,7 +163,7 @@ theorem circleAverage_normSq_poly (r : ℝ) (M : ℕ) (c : ℕ → ℂ) :
   have hdiag : ∀ k ∈ Finset.range M,
       (∑ j ∈ Finset.range M,
         c k * conj (c j) * (if k = j then (r : ℂ) ^ (2 * k) * (2 * π) else 0))
-      = ((‖c k‖ ^ 2 * r ^ (2 * k) * (2 * π) : ℝ) : ℂ) := by
+      = ((‖c k‖ ^ (2 : ℕ) * r ^ (2 * k) * (2 * π) : ℝ) : ℂ) := by
     intro k hk
     rw [Finset.sum_eq_single_of_mem k hk
       (fun j _ hjk => by rw [if_neg (fun h => hjk h.symm), mul_zero])]
@@ -171,8 +171,8 @@ theorem circleAverage_normSq_poly (r : ℝ) (M : ℕ) (c : ℕ → ℂ) :
   rw [Finset.sum_congr rfl hdiag, ← Complex.ofReal_sum,
     intervalIntegral.integral_ofReal] at hInt
   have hreal : (∫ θ in (0:ℝ)..(2 * π),
-        (‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ 2 : ℝ))
-      = ∑ k ∈ Finset.range M, ‖c k‖ ^ 2 * r ^ (2 * k) * (2 * π) :=
+        (‖∑ k ∈ Finset.range M, c k * (z θ) ^ k‖ ^ (2 : ℕ) : ℝ))
+      = ∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ) * r ^ (2 * k) * (2 * π) :=
     Complex.ofReal_injective hInt
   rw [hreal, ← Finset.sum_mul]
   have h2 : (2 * π) ≠ 0 := hπ.ne'
@@ -182,8 +182,8 @@ theorem circleAverage_normSq_poly (r : ℝ) (M : ℕ) (c : ℕ → ℂ) :
 series with coefficients `bₖ` is `∑_{k<N} ‖bₖ‖² r^{2k}`.  Bridges a power series to polynomial
 Parseval. -/
 theorem circleAverage_normSq_partialSum (p : FormalMultilinearSeries ℂ ℂ ℂ) (r : ℝ) (N : ℕ) :
-    (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2
-      = ∑ k ∈ Finset.range N, ‖p.coeff k‖ ^ 2 * r ^ (2 * k) := by
+    (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖p.partialSum N (circleMap 0 r θ)‖ ^ (2 : ℕ)
+      = ∑ k ∈ Finset.range N, ‖p.coeff k‖ ^ (2 : ℕ) * r ^ (2 * k) := by
   have h : ∀ θ : ℝ, p.partialSum N (circleMap 0 r θ)
       = ∑ k ∈ Finset.range N, p.coeff k * (circleMap 0 r θ) ^ k := by
     intro θ

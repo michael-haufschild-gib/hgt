@@ -26,19 +26,19 @@ noncomputable section
 /-- The per-block cost of the level-split/moment receiver. -/
 def menonHarmonicLevelMomentBlockCost
     (P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W volE : ℝ) (k j J : ℕ) (V₀ : ℝ) : ℝ :=
-  2 * (V₀ ^ 2 * ((2 * Real.pi)⁻¹ *
+  2 * (V₀ ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
           (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊ (2 * Real.pi * W)
               (2 * Real.pi * volE)
-            * ((1 / (⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2
+            * ((1 / (⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ)
               * ((harmonicGeomCofactorBlock A₀ B₀ Q eta j).card : ℝ))))
         + ∑ i ∈ Finset.range J,
-            (2 ^ (i + 1) * V₀) ^ 2 * ((2 * Real.pi)⁻¹ *
+            (2 ^ (i + 1) * V₀) ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
               (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊ (2 * Real.pi * W)
                   (2 * Real.pi * (menonHarmonicLocalBlockMomentCost k Q eta W j
                     / (2 ^ i * V₀) ^ (2 * k)))
-                * ((1 / (⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2
+                * ((1 / (⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ)
                   * ((harmonicGeomCofactorBlock A₀ B₀ Q eta j).card : ℝ)))))
-    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
         harmonicCofactorSupportError A₀ B₀ Q eta W j
 
 /-- **One geometric block against the level-split/moment cost.** -/
@@ -53,7 +53,7 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_levelMoment
     (hJ : harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ J * V₀) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ menonHarmonicLevelMomentBlockCost P A₀ B₀ Q eta W (volume.real E) k j J V₀ := by
   classical
   have hD : harmonicGeomCofactorBlock A₀ B₀ Q eta j ⊆
@@ -89,7 +89,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_levelMoment_mass
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
           menonHarmonicLevelMomentBlockCost P A₀ B₀ Q eta W (volume.real E) k j (J j) (V₀ j)
             / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by

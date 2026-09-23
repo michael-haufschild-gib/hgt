@@ -21,7 +21,7 @@ def angularJets (Y : (Fin 2 → ℝ) → ℂ) (z : Fin 2 → ℝ) : AngularJet :
     coordDeriv 1 (coordDeriv 1 Y) z]
 
 def columnMetric (s a : ℂ) (k : Fin 3) (Y : (Fin 2 → ℝ) → ℂ) :=
-  harmonicMetricField s (a^2) (radialColumn s k 0) (radialColumn s k 1)
+  harmonicMetricField s (a^(2 : ℕ)) (radialColumn s k 0) (radialColumn s k 1)
     (radialColumn s k 2) (radialColumn s k 3) Y
 
 /-- Each original column defines an actual twice differentiable metric field. -/
@@ -36,7 +36,7 @@ theorem columnMetric_smooth (s a : ℂ) (k : Fin 3) (Y : (Fin 2 → ℝ) → ℂ
     exact (contDiffAt_const.mul ((coordinate_contDiffAt 1 p.val).mul
       (coordinate_contDiffAt 1 p.val))).mul
       (((coordinate_contDiffAt 3 p.val).inv hy).mul ((coordinate_contDiffAt 3 p.val).inv hy))
-  have hb := (envelope_contDiffAt (2*s) (a^2) p 2).mul
+  have hb := (envelope_contDiffAt (2*s) (a^(2 : ℕ)) p 2).mul
     (hY.comp p.val angularPoint_contDiff.contDiffAt)
   have h0 := hb.mul (hrad 0)
   have h1 := hb.mul (hrad 1)
@@ -80,15 +80,15 @@ theorem columnMetric_equation (s a : ℂ) (k : Fin 3) (Y : (Fin 2 → ℝ) → �
     (p : D4BMBackground.ExteriorPoint) (hY : ContDiffAt ℝ 2 Y (angularPoint p.val)) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.actualJet p)
       (ofMetricField (columnMetric s a k Y) p.val) (-3) i j =
-      (envelope s a p.val)^2*operatorMatrix s (p.val 1) (p.val 3)
+      (envelope s a p.val)^(2 : ℕ)*operatorMatrix s (p.val 1) (p.val 3)
         (radialJets s (radialColumn s k) (p.val 1)) (angularJets Y (angularPoint p.val)) i j := by
   rw [D4BMBackground.actualJet_eq]
   unfold columnMetric
-  rw [harmonicMetricField_jet s (a^2) (radialColumn_smooth s k 0) (radialColumn_smooth s k 1)
+  rw [harmonicMetricField_jet s (a^(2 : ℕ)) (radialColumn_smooth s k 0) (radialColumn_smooth s k 1)
     (radialColumn_smooth s k 2) (radialColumn_smooth s k 3) Y p hY]
   change CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet (p.val 1) (p.val 3))
     (jetFor s (p.val 1) (p.val 3)
-      (fun j n => envelope (2*s) (a^2) p.val*radialJets s (radialColumn s k) (p.val 1) j n)
+      (fun j n => envelope (2*s) (a^(2 : ℕ)) p.val*radialJets s (radialColumn s k) (p.val 1) j n)
       (angularJets Y (angularPoint p.val))) (-3) i j = _
   obtain ⟨hr,hf⟩ := exterior_ne (p.val 1) p.property.1
   have hy : (p.val 3:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
@@ -169,7 +169,7 @@ private theorem angularJets_hessian (Y : (Fin 2 → ℝ) → ℂ) (z : Fin 2 →
 
 private theorem sourceMatrix_scale (s r y B F LF Fx Fy J0 J1 : ℂ) (i j : Fin 4) :
     sourceMatrix s r y B F LF Fx Fy J0 J1 i j =
-      B^2*sourceMatrix s r y 1 F LF Fx Fy J0 J1 i j := by
+      B^(2 : ℕ)*sourceMatrix s r y 1 F LF Fx Fy J0 J1 i j := by
   simp only [sourceMatrix,Matrix.smul_apply,smul_eq_mul,one_pow,one_mul]
 
 /-- The actual metric reconstructed from the complete source and its two constructed inverses. -/
@@ -191,7 +191,7 @@ private theorem literalMetric_action (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.actualJet p)
       (ofMetricField (literalMetric q branch a) p.val) (-3) i j =
-    (envelope (physicalRate q branch) a p.val)^2*
+    (envelope (physicalRate q branch) a p.val)^(2 : ℕ)*
       (operatorMatrix (physicalRate q branch) (p.val 1) (p.val 3)
         (radialJets (physicalRate q branch) (radialColumn (physicalRate q branch) 0) (p.val 1))
         (angularJets (literalProfile q branch 0) (angularPoint p.val)) i j+
@@ -233,7 +233,7 @@ theorem literalMetric_einstein (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   have hm := assembled_matrix s (p.val 1) (p.val 3) J (P 0) (P 1) (P 2)
     (fun i j => physical_rowCoefficients_zero q branch p.property.1 i j) hQ hR i j
   have hs : literalSourceTensor q branch (p.val 1) B z i j =
-      B^2*sourceMatrix s (p.val 1) (p.val 3) 1 (P 0 0) (lapJet (p.val 3) (P 0))
+      B^(2 : ℕ)*sourceMatrix s (p.val 1) (p.val 3) 1 (P 0 0) (lapJet (p.val 3) (P 0))
         (P 0 1) (P 0 2)
         (hessJet (p.val 3) (P 0) 0+(s+1)*(s+2)*hessJet (p.val 3) (P 1) 0)
         (hessJet (p.val 3) (P 0) 1+(s+1)*(s+2)*hessJet (p.val 3) (P 1) 1) i j := by
@@ -245,10 +245,10 @@ theorem literalMetric_einstein (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     rw [D4BMHorizon.scalarLaplacian_eq _ z p.property.2,eigenvalue_physicalRate,sourceMatrix_scale]
     rfl
   rw [literalMetric_action q branch a p i j,physical_scalar_source q branch a p,hs]
-  change B^2*(operatorMatrix s (p.val 1) (p.val 3) (J 0) (P 0) i j+
+  change B^(2 : ℕ)*(operatorMatrix s (p.val 1) (p.val 3) (J 0) (P 0) i j+
     operatorMatrix s (p.val 1) (p.val 3) (J 1) (P 1) i j+
     operatorMatrix s (p.val 1) (p.val 3) (J 2) (P 2) i j)+_ = 0
-  linear_combination B^2*hm
+  linear_combination B^(2 : ℕ)*hm
 
 end
 end RHTower.D4BMThreeFieldMetric

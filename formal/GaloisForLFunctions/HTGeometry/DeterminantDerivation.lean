@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {R : Type*} [CommRing R] [Differential R]
 
 /-- **Leibniz rule for a finite product.** -/
-theorem deriv_finsetProd {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι → R) :
+theorem deriv_finsetProd_determinantDerivation {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι → R) :
     (∏ i ∈ s, f i)′ = ∑ i ∈ s, (f i)′ * ∏ j ∈ s.erase i, f j := by
   classical
   induction s using Finset.induction_on with
@@ -37,7 +37,7 @@ theorem deriv_finsetProd {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι �
 
 /-- **Jacobi's formula.**  The derivative of a determinant is the sum over columns of the
 determinants obtained by differentiating that column. -/
-theorem deriv_det {N : ℕ} (M : Matrix (Fin N) (Fin N) R) :
+theorem deriv_det_determinantDerivation {N : ℕ} (M : Matrix (Fin N) (Fin N) R) :
     (M.det)′ = ∑ j, (M.updateCol j (fun r => (M r j)′)).det := by
   classical
   have hleft : (M.det)′
@@ -45,7 +45,7 @@ theorem deriv_det {N : ℕ} (M : Matrix (Fin N) (Fin N) R) :
           (Equiv.Perm.sign σ : ℤ) • ((M (σ j) j)′ * ∏ i ∈ Finset.univ.erase j, M (σ i) i) := by
     rw [Matrix.det_apply, map_sum]
     refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [Units.smul_def, map_zsmul, deriv_finsetProd, Finset.smul_sum]
+    rw [Units.smul_def, map_zsmul, deriv_finsetProd_determinantDerivation, Finset.smul_sum]
   have hright : ∀ j : Fin N, (M.updateCol j (fun r => (M r j)′)).det
       = ∑ σ : Equiv.Perm (Fin N),
           (Equiv.Perm.sign σ : ℤ) • ((M (σ j) j)′ * ∏ i ∈ Finset.univ.erase j, M (σ i) i) := by
@@ -68,7 +68,7 @@ theorem deriv_det_of_system {N : ℕ} (M A : Matrix (Fin N) (Fin N) R)
     (h : ∀ i j, (M i j)′ = (M * A) i j) :
     (M.det)′ = M.det * A.trace := by
   classical
-  rw [deriv_det]
+  rw [deriv_det_determinantDerivation]
   have hcol : ∀ j : Fin N, (M.updateCol j (fun r => (M r j)′)).det = A j j * M.det := by
     intro j
     have hfun : (fun r => (M r j)′) = fun r => ∑ i, (A i j) • M r i := by

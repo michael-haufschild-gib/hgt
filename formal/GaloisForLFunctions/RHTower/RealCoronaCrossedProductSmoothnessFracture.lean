@@ -46,9 +46,9 @@ theorem xiCompleteDivisorReflection_sq :
 
 theorem norm_xiCompleteDivisorReflection (a : XiDivisorL2) :
     ‖xiCompleteDivisorReflection a‖ = ‖a‖ := by
-  have hsq : ‖xiCompleteDivisorReflection a‖ ^ 2 = ‖a‖ ^ 2 := by
+  have hsq : ‖xiCompleteDivisorReflection a‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
-    exact xiZeroCopyReflectEquiv.tsum_eq (fun q => ‖a q‖ ^ 2)
+    exact xiZeroCopyReflectEquiv.tsum_eq (fun q => ‖a q‖ ^ (2 : ℕ))
   nlinarith [norm_nonneg (xiCompleteDivisorReflection a), norm_nonneg a]
 
 /-- Signed complete-divisor energy: canonical orbit orientation times absolute centered energy. -/
@@ -92,7 +92,7 @@ theorem xiCompleteDivisorReflection_mem_signedDomain
         (x : XiDivisorL2) (xiZeroCopyReflectEquiv q)) 2
   apply HilbertSchmidt.memℓp_of_sq
   have hx : Summable (fun q : XiZeroCopy =>
-      ‖(xiCompleteDivisorSignedEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ 2) := by
+      ‖(xiCompleteDivisorSignedEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ (2 : ℕ)) := by
     simpa using x.property.summable (by norm_num)
   exact (xiZeroCopyReflectEquiv.summable_iff.mpr hx).congr fun q => by
     simp only [Function.comp_apply, xiCompleteDivisorSignedEnergy_reflect]
@@ -186,7 +186,7 @@ theorem xiCompleteDivisorReflection_mem_absoluteDomain
       (x : XiDivisorL2) (xiZeroCopyReflectEquiv q)) 2
   apply HilbertSchmidt.memℓp_of_sq
   have hx : Summable (fun q : XiZeroCopy =>
-      ‖(xiCompleteDivisorEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ 2) := by
+      ‖(xiCompleteDivisorEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ (2 : ℕ)) := by
     simpa using x.property.summable (by norm_num)
   exact (xiZeroCopyReflectEquiv.summable_iff.mpr hx).congr fun q => by
     simp only [Function.comp_apply, xiCompleteDivisorEnergy,

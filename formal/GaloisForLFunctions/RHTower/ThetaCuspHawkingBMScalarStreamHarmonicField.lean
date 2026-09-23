@@ -86,11 +86,11 @@ theorem radialLift_jet (s : ℂ) {g : ℝ → ℂ} (hg : ContDiffOn ℝ ∞ g (I
           fun i j => if i = 1 ∧ j = 1 then deriv (deriv g) (p.val 1) else 0⟩ ∧
       twist s (twist s g) (p.val 1) =
         deriv (deriv g) (p.val 1) +
-          (-(2 * s * (3 * (p.val 1 : ℂ) ^ 2 - 1)) / ((p.val 1 : ℂ) ^ 2 * ((p.val 1 : ℂ) ^ 2 - 1) ^ 2)) *
+          (-(2 * s * (3 * (p.val 1 : ℂ) ^ (2 : ℕ) - 1)) / ((p.val 1 : ℂ) ^ (2 : ℕ) * ((p.val 1 : ℂ) ^ (2 : ℕ) - 1) ^ (2 : ℕ))) *
             g (p.val 1) +
-          2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ 2 - 1)) * deriv g (p.val 1) +
-          2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ 2 - 1)) *
-            (deriv g (p.val 1) + 2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ 2 - 1)) * g (p.val 1)) := by
+          2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ (2 : ℕ) - 1)) * deriv g (p.val 1) +
+          2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ (2 : ℕ) - 1)) *
+            (deriv g (p.val 1) + 2 * s / ((p.val 1 : ℂ) * ((p.val 1 : ℂ) ^ (2 : ℕ) - 1)) * g (p.val 1)) := by
   have hr1 : 1 < p.val 1 := p.property.1
   have hr := (exterior_ne _ hr1).1
   have hf := (exterior_ne _ hr1).2
@@ -378,8 +378,8 @@ theorem recHR_contDiffOn (s μ : ℂ) {y tTT tTR tRR tT tR tTF tL : ℝ → ℂ}
 def harmonicSourceTensor (μ B y τTT τTR τRR τT τR τTF τL P Px Py Pxx Pxy Pyy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   !![B * τTT * P, B * τTR * P, B * τT * Px, B * τT * Py;
     B * τTR * P, B * τRR * P, B * τR * Px, B * τR * Py;
-    B * τT * Px, B * τR * Px, B * (τL * P / y ^ 2 + τTF * (Pxx - Py / y - μ * P / (2 * y ^ 2))), B * (τTF * (Pxy + Px / y));
-    B * τT * Py, B * τR * Py, B * (τTF * (Pxy + Px / y)), B * (τL * P / y ^ 2 - τTF * (Pxx - Py / y - μ * P / (2 * y ^ 2)))]
+    B * τT * Px, B * τR * Px, B * (τL * P / y ^ (2 : ℕ) + τTF * (Pxx - Py / y - μ * P / (2 * y ^ (2 : ℕ)))), B * (τTF * (Pxy + Px / y));
+    B * τT * Py, B * τR * Py, B * (τTF * (Pxy + Px / y)), B * (τL * P / y ^ (2 : ℕ) - τTF * (Pxx - Py / y - μ * P / (2 * y ^ (2 : ℕ))))]
 
 /-- The reconstructed harmonic metric field solves the sourced linearized Einstein equation with the
 harmonic source tensor, in every component and at every exterior point. -/
@@ -390,7 +390,7 @@ theorem harmonicMetricField_einstein (s μ a : ℂ) (hs : s ≠ 0) (hμ : (2 : �
     (hTF : ContDiffOn ℝ ∞ tTF (Ioi 1)) (hL : ContDiffOn ℝ ∞ tL (Ioi 1))
     (Y : (Fin 2 → ℝ) → ℂ) (hY : ∀ z : Fin 2 → ℝ, 0 < z 1 → ContDiffAt ℝ 2 Y z)
     (hYeig : ∀ z : Fin 2 → ℝ, 0 < z 1 →
-      coordDeriv 1 (coordDeriv 1 Y) z = μ * Y z / (z 1 : ℂ) ^ 2 - coordDeriv 0 (coordDeriv 0 Y) z)
+      coordDeriv 1 (coordDeriv 1 Y) z = μ * Y z / (z 1 : ℂ) ^ (2 : ℕ) - coordDeriv 0 (coordDeriv 0 Y) z)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     Linearization.cosmological (D4BMBackground.jet (p.val 1) (p.val 3))
       (ofMetricField (harmonicMetricField s a (recF0R s μ y tTT tTR tRR tT tR tTF tL) (recF1R s μ y tTT tTR tRR tT tR tTF tL) (recF2R s μ y tTT tTR tRR tT tR tTF tL) (recHR s μ y tTT tTR tRR tT tR tTF tL) Y) p.val)
@@ -407,7 +407,7 @@ theorem harmonicMetricField_einstein (s μ a : ℂ) (hs : s ≠ 0) (hμ : (2 : �
   have hz : 0 < angularPoint p.val 1 := p.property.2
   have hYz := hY _ hz
   have hP : coordDeriv 1 (coordDeriv 1 Y) (angularPoint p.val) =
-      μ * Y (angularPoint p.val) / (p.val 3 : ℂ) ^ 2 - coordDeriv 0 (coordDeriv 0 Y) (angularPoint p.val) :=
+      μ * Y (angularPoint p.val) / (p.val 3 : ℂ) ^ (2 : ℕ) - coordDeriv 0 (coordDeriv 0 Y) (angularPoint p.val) :=
     hYeig _ hz
   rw [harmonicMetricField_jet s a (recF0R_contDiffOn s μ hy hTT hTR hRR hT hR hTF hL)
     (recF1R_contDiffOn s μ hy hTT hTR hRR hT hR hTF hL) (recF2R_contDiffOn s μ hy hTT hTR hRR hT hR hTF hL)
@@ -442,7 +442,7 @@ theorem harmonicMetricField_einstein (s μ a : ℂ) (hs : s ≠ 0) (hμ : (2 : �
   · rw [metricJet_cosmological_symm_2_1 hr hy hf, harmonic_1_2 (μ := μ) hr hy hf, harmonicR_smul]
     linear_combination (B * coordDeriv 0 Y z) * sourced_equation_R hs hμ h hr1
   · rw [harmonic_2_2 (μ := μ) hr hy hf hP, harmonicL_smul, harmonicTF_smul]
-    linear_combination (B * Y z / (y : ℂ) ^ 2) * sourced_equation_L hs hμ h hr1 + (B * (coordDeriv 0 (coordDeriv 0 Y) z - coordDeriv 1 Y z / y - μ * Y z / (2 * (y : ℂ) ^ 2))) * sourced_equation_TF hs hμ h hr1
+    linear_combination (B * Y z / (y : ℂ) ^ (2 : ℕ)) * sourced_equation_L hs hμ h hr1 + (B * (coordDeriv 0 (coordDeriv 0 Y) z - coordDeriv 1 Y z / y - μ * Y z / (2 * (y : ℂ) ^ (2 : ℕ)))) * sourced_equation_TF hs hμ h hr1
   · rw [harmonic_2_3 (μ := μ) hr hy hf, harmonicTF_smul]
     linear_combination (B * (coordDeriv 0 (coordDeriv 1 Y) z + coordDeriv 0 Y z / y)) * sourced_equation_TF hs hμ h hr1
   · rw [metricJet_cosmological_symm_3_0 hr hy hf, harmonic_0_3 (μ := μ) hr hy hf, harmonicT_smul]
@@ -452,7 +452,7 @@ theorem harmonicMetricField_einstein (s μ a : ℂ) (hs : s ≠ 0) (hμ : (2 : �
   · rw [metricJet_cosmological_symm_3_2 hr hy hf, harmonic_2_3 (μ := μ) hr hy hf, harmonicTF_smul]
     linear_combination (B * (coordDeriv 0 (coordDeriv 1 Y) z + coordDeriv 0 Y z / y)) * sourced_equation_TF hs hμ h hr1
   · rw [harmonic_3_3 (μ := μ) hr hy hf, harmonicL_smul, harmonicTF_smul]
-    linear_combination (B * Y z / (y : ℂ) ^ 2) * sourced_equation_L hs hμ h hr1 - (B * (coordDeriv 0 (coordDeriv 0 Y) z - coordDeriv 1 Y z / y - μ * Y z / (2 * (y : ℂ) ^ 2))) * sourced_equation_TF hs hμ h hr1
+    linear_combination (B * Y z / (y : ℂ) ^ (2 : ℕ)) * sourced_equation_L hs hμ h hr1 - (B * (coordDeriv 0 (coordDeriv 0 Y) z - coordDeriv 1 Y z / y - μ * Y z / (2 * (y : ℂ) ^ (2 : ℕ)))) * sourced_equation_TF hs hμ h hr1
 
 /-- The scalar–scalar `++` harmonic response built from the corpus Green function, as an actual
 metric field: it solves the sourced linearized Einstein equation with the scalar–scalar harmonic
@@ -462,7 +462,7 @@ theorem greenSS_metricField_einstein (n : ℕ) (chi : ℂ) (hchi : chi.re ≠ 0)
     (hμ : (2 : ℂ) - dictEigen chi ≠ 0) (amp : ℂ) (Y : (Fin 2 → ℝ) → ℂ)
     (hY : ∀ z : Fin 2 → ℝ, 0 < z 1 → ContDiffAt ℝ 2 Y z)
     (hYeig : ∀ z : Fin 2 → ℝ, 0 < z 1 →
-      coordDeriv 1 (coordDeriv 1 Y) z = dictEigen chi * Y z / (z 1 : ℂ) ^ 2 - coordDeriv 0 (coordDeriv 0 Y) z)
+      coordDeriv 1 (coordDeriv 1 Y) z = dictEigen chi * Y z / (z 1 : ℂ) ^ (2 : ℕ) - coordDeriv 0 (coordDeriv 0 Y) z)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     Linearization.cosmological (D4BMBackground.jet (p.val 1) (p.val 3))
       (ofMetricField (harmonicMetricField (dictRate n chi) amp (recF0R (dictRate n chi) (dictEigen chi) (greenSS n chi a b) (srcTT (dictRate n chi) (dictEigen chi)) (srcTR (dictRate n chi) (dictEigen chi)) (srcRR (dictRate n chi) (dictEigen chi)) (srcT (dictRate n chi) (dictEigen chi)) (srcR (dictRate n chi) (dictEigen chi)) (srcTF (dictRate n chi) (dictEigen chi)) (srcL (dictRate n chi) (dictEigen chi))) (recF1R (dictRate n chi) (dictEigen chi) (greenSS n chi a b) (srcTT (dictRate n chi) (dictEigen chi)) (srcTR (dictRate n chi) (dictEigen chi)) (srcRR (dictRate n chi) (dictEigen chi)) (srcT (dictRate n chi) (dictEigen chi)) (srcR (dictRate n chi) (dictEigen chi)) (srcTF (dictRate n chi) (dictEigen chi)) (srcL (dictRate n chi) (dictEigen chi))) (recF2R (dictRate n chi) (dictEigen chi) (greenSS n chi a b) (srcTT (dictRate n chi) (dictEigen chi)) (srcTR (dictRate n chi) (dictEigen chi)) (srcRR (dictRate n chi) (dictEigen chi)) (srcT (dictRate n chi) (dictEigen chi)) (srcR (dictRate n chi) (dictEigen chi)) (srcTF (dictRate n chi) (dictEigen chi)) (srcL (dictRate n chi) (dictEigen chi)))

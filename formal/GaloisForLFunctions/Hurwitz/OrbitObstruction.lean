@@ -54,8 +54,8 @@ are pairwise distinct, and `p` vanishes on the whole forward orbit `{q^m : m ∈
 is the "enough distinct points" branch of the monodromy obstruction (formalization-shape step 3),
 realized at the three smallest powers. -/
 theorem orbit_eq_zero_of_three_distinct {R : Type*} [CommRing R] [IsDomain R] {p : R[X]}
-    (hp : p.natDegree ≤ 2) {q : R} (h1q : (1 : R) ≠ q) (h1q2 : (1 : R) ≠ q ^ 2)
-    (hqq2 : q ≠ q ^ 2) (hroots : ∀ m : ℕ, p.eval (q ^ m) = 0) : p = 0 :=
+    (hp : p.natDegree ≤ 2) {q : R} (h1q : (1 : R) ≠ q) (h1q2 : (1 : R) ≠ q ^ (2 : ℕ))
+    (hqq2 : q ≠ q ^ (2 : ℕ)) (hroots : ∀ m : ℕ, p.eval (q ^ m) = 0) : p = 0 :=
   eq_zero_of_three_roots hp h1q h1q2 hqq2 (by simpa using hroots 0) (by simpa using hroots 1)
     (hroots 2)
 
@@ -66,13 +66,13 @@ polynomial vanishing at both `1` and `-1` has `2 · coeff 1 = 0`: subtracting `p
 see it) — it comes from the local exponent filtration in the next brick. -/
 theorem two_mul_coeff_one_of_pm_one {R : Type*} [CommRing R] {p : R[X]} (hp : p.natDegree ≤ 2)
     (e1 : p.eval 1 = 0) (em1 : p.eval (-1) = 0) : 2 * p.coeff 1 = 0 := by
-  have hsum : ∀ x : R, p.eval x = p.coeff 0 + p.coeff 1 * x + p.coeff 2 * x ^ 2 := by
+  have hsum : ∀ x : R, p.eval x = p.coeff 0 + p.coeff 1 * x + p.coeff 2 * x ^ (2 : ℕ) := by
     intro x
     rw [eval_eq_sum_range' (show p.natDegree < 3 from Nat.lt_succ_of_le hp)]
     simp only [Finset.sum_range_succ, Finset.sum_range_zero]
     ring
-  have h1 : p.coeff 0 + p.coeff 1 * 1 + p.coeff 2 * 1 ^ 2 = 0 := by rw [← hsum 1]; exact e1
-  have h2 : p.coeff 0 + p.coeff 1 * (-1) + p.coeff 2 * (-1) ^ 2 = 0 := by rw [← hsum (-1)]; exact em1
+  have h1 : p.coeff 0 + p.coeff 1 * 1 + p.coeff 2 * 1 ^ (2 : ℕ) = 0 := by rw [← hsum 1]; exact e1
+  have h2 : p.coeff 0 + p.coeff 1 * (-1) + p.coeff 2 * (-1) ^ (2 : ℕ) = 0 := by rw [← hsum (-1)]; exact em1
   linear_combination h1 - h2
 
 /-- **Order-two orbit over a characteristic-zero field: the odd coefficient is zero.** Specialization of

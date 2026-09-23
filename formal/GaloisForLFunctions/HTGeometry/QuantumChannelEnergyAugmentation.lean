@@ -35,25 +35,25 @@ theorem orthogonalInstrumentEnergy_le
     {κ : Type*} (A : κ → E →L[ℂ] F) (b : κ → ℝ)
     (hb : ∀ k, 0 ≤ b k)
     (hA : ∀ k, ‖A k‖ ≤ b k)
-    (hsum : Summable (fun k => b k ^ 2)) (x : E) :
-    ∑' k, ‖A k x‖ ^ 2 ≤ (∑' k, b k ^ 2) * ‖x‖ ^ 2 := by
-  have hpoint (k : κ) : ‖A k x‖ ^ 2 ≤ b k ^ 2 * ‖x‖ ^ 2 := by
+    (hsum : Summable (fun k => b k ^ (2 : ℕ))) (x : E) :
+    ∑' k, ‖A k x‖ ^ (2 : ℕ) ≤ (∑' k, b k ^ (2 : ℕ)) * ‖x‖ ^ (2 : ℕ) := by
+  have hpoint (k : κ) : ‖A k x‖ ^ (2 : ℕ) ≤ b k ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by
     have hnorm : ‖A k x‖ ≤ b k * ‖x‖ :=
       (A k).le_opNorm x |>.trans
         (mul_le_mul_of_nonneg_right (hA k) (norm_nonneg x))
-    have hsquare : ‖A k x‖ ^ 2 ≤ (b k * ‖x‖) ^ 2 :=
+    have hsquare : ‖A k x‖ ^ (2 : ℕ) ≤ (b k * ‖x‖) ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg (A k x))
         (mul_nonneg (hb k) (norm_nonneg x))).2 hnorm
     calc
-      ‖A k x‖ ^ 2 ≤ (b k * ‖x‖) ^ 2 := hsquare
-      _ = b k ^ 2 * ‖x‖ ^ 2 := by ring
-  have hleft : Summable (fun k => ‖A k x‖ ^ 2) :=
+      ‖A k x‖ ^ (2 : ℕ) ≤ (b k * ‖x‖) ^ (2 : ℕ) := hsquare
+      _ = b k ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by ring
+  have hleft : Summable (fun k => ‖A k x‖ ^ (2 : ℕ)) :=
     Summable.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint
-      (hsum.mul_right (‖x‖ ^ 2))
+      (hsum.mul_right (‖x‖ ^ (2 : ℕ)))
   calc
-    ∑' k, ‖A k x‖ ^ 2 ≤ ∑' k, b k ^ 2 * ‖x‖ ^ 2 :=
-      hleft.tsum_le_tsum hpoint (hsum.mul_right (‖x‖ ^ 2))
-    _ = (∑' k, b k ^ 2) * ‖x‖ ^ 2 := tsum_mul_right
+    ∑' k, ‖A k x‖ ^ (2 : ℕ) ≤ ∑' k, b k ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) :=
+      hleft.tsum_le_tsum hpoint (hsum.mul_right (‖x‖ ^ (2 : ℕ)))
+    _ = (∑' k, b k ^ (2 : ℕ)) * ‖x‖ ^ (2 : ℕ) := tsum_mul_right
 
 /-- The positive source effect of a Hilbert-space channel. -/
 def quantumChannelEffect (C : E →L[ℂ] F) : E →L[ℂ] E :=

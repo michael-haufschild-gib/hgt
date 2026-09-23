@@ -21,7 +21,7 @@ noncomputable section
 /-- Degree-lowered projective Möbius tangent with arbitrary scalar gauge. -/
 def xiShiftedProjectiveMobiusVelocity
     (n : ℕ) (a : ℝ) (p : Polynomial ℝ) : Polynomial ℝ :=
-  X ^ 2 * p.derivative - (n : ℝ) • (X * p) + a • p
+  X ^ (2 : ℕ) * p.derivative - (n : ℝ) • (X * p) + a • p
 
 /-- `p²`-weighted shifted-Xi moment at level `k`. -/
 def xiShiftedProjectiveNodalWeightedMoment
@@ -99,7 +99,7 @@ def xiShiftedProjectiveNodalTuranLanding
     (y : ℝ) (p : Polynomial ℝ) : ℝ :=
   xiShiftedProjectiveNodalWeightedMoment y p 0 *
       xiShiftedProjectiveNodalWeightedMoment y p 2 -
-    xiShiftedProjectiveNodalWeightedMoment y p 1 ^ 2
+    xiShiftedProjectiveNodalWeightedMoment y p 1 ^ (2 : ℕ)
 
 /-- Next mixed compound reached by the projective contact cascade. -/
 def xiShiftedProjectiveNodalHigherMixedLanding
@@ -165,7 +165,7 @@ theorem xiShiftedProjectiveNodalWeightedMoment_one_eq_current
     xiShiftedProjectiveNodalWeightedMoment y p 1 =
       xiShiftedPolynomialWeightedCurrent y p := by
   let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
-  change HTGeometry.momentFunctional s (X ^ 1 * (p * p)) =
+  change HTGeometry.momentFunctional s (X ^ (1 : ℕ) * (p * p)) =
     HTGeometry.momentFunctional s (p * (X * p))
   congr 1
   ring
@@ -176,7 +176,7 @@ theorem xiShiftedProjectiveNodalWeightedMoment_two_eq_second
     xiShiftedProjectiveNodalWeightedMoment y p 2 =
       xiShiftedPolynomialWeightedSecond y p := by
   let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
-  change HTGeometry.momentFunctional s (X ^ 2 * (p * p)) =
+  change HTGeometry.momentFunctional s (X ^ (2 : ℕ) * (p * p)) =
     HTGeometry.momentFunctional s ((X * p) * (X * p))
   congr 1
   ring
@@ -213,7 +213,7 @@ theorem xiShiftedProjectiveNodalHigherMixedLanding_eq_successorLanding
     xiShiftedProjectiveNodalWeightedMoment_one_eq_current y p
   have hpoly :
       p * (X * (X * Q)) =
-        M0 • (X ^ 3 * (p * p)) - M1 • (X ^ 2 * (p * p)) := by
+        M0 • (X ^ (3 : ℕ) * (p * p)) - M1 • (X ^ (2 : ℕ) * (p * p)) := by
     dsimp only [Q]
     rw [xiShiftedPolynomialWeightAdaptiveSuccessor, ← hM0, ← hM1]
     simp only [Polynomial.smul_eq_C_mul]
@@ -228,7 +228,7 @@ theorem xiShiftedProjectiveNodalHigherMixedLanding_eq_successorLanding
 selects `Q` first; arithmetic aggregation is performed only afterward on `(p,XQ)`. -/
 def xiShiftedProjectiveNodalNextCompletedArithmeticLanding
     (w : ℝ) (p : Polynomial ℝ) : ℝ :=
-  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
   let c := xiShiftedBilinearCrossingCoefficientPacket p (X * Q)
   xiShiftedBoundaryRationalGammaAggregate w 1 c -
     xiShiftedBoundaryVonMangoldtAggregate w 1 c
@@ -237,7 +237,7 @@ def xiShiftedProjectiveNodalNextCompletedArithmeticLanding
 formations. -/
 theorem xiShiftedProjectiveNodalNextCompletedArithmeticLanding_eq_commonKernel_sourceFormation
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
-    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
     let c := xiShiftedBilinearCrossingCoefficientPacket p (X * Q)
     xiShiftedProjectiveNodalNextCompletedArithmeticLanding w p =
       xiShiftedBoundaryArchimedeanAggregate w 1 c +
@@ -254,8 +254,8 @@ theorem xiShiftedProjectiveNodalNextCompletedArithmeticLanding_eq_commonKernel_s
 theorem xiShiftedProjectiveNodalNextCompletedArithmeticLanding_eq_higherMixed
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
     xiShiftedProjectiveNodalNextCompletedArithmeticLanding w p =
-      xiShiftedProjectiveNodalHigherMixedLanding (w ^ 2) p := by
-  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+      xiShiftedProjectiveNodalHigherMixedLanding (w ^ (2 : ℕ)) p := by
+  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
   let c := xiShiftedBilinearCrossingCoefficientPacket p (X * Q)
   rw [xiShiftedProjectiveNodalNextCompletedArithmeticLanding]
   change xiShiftedBoundaryRationalGammaAggregate w 1 c -
@@ -263,19 +263,19 @@ theorem xiShiftedProjectiveNodalNextCompletedArithmeticLanding_eq_higherMixed
   rw [← xiShiftedBoundaryCompletedAggregate_eq_rationalGamma_sub_vonMangoldt hw,
     ← xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate
       (by linarith : 0 < w)]
-  change xiShiftedCompletedMomentAggregate (w ^ 2) 1
+  change xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 1
       (xiShiftedBilinearCrossingCoefficientPacket p (X * Q)) = _
   rw [xiShiftedCompletedMomentAggregate_bilinearPacket_eq_momentInner]
   exact
     (xiShiftedProjectiveNodalHigherMixedLanding_eq_successorLanding
-      (w ^ 2) p).symm
+      (w ^ (2 : ℕ)) p).symm
 
 /-- **Arithmetic first-contact transmutation.**  At a flat nodal Turán face, projective coflow
 lands exactly on the negative next completed rational–Gamma-minus-von-Mangoldt packet. -/
 theorem xiShiftedProjectiveNodalTuranCovariantRate_eq_neg_nextArithmetic_of_contact
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} {a : ℝ} {p : Polynomial ℝ}
-    (hcontact : xiShiftedProjectiveNodalTuranLanding (w ^ 2) p = 0) :
-    xiShiftedProjectiveNodalTuranCovariantRate (w ^ 2) n a p =
+    (hcontact : xiShiftedProjectiveNodalTuranLanding (w ^ (2 : ℕ)) p = 0) :
+    xiShiftedProjectiveNodalTuranCovariantRate (w ^ (2 : ℕ)) n a p =
       -((2 * n + 3 : ℕ) : ℝ) *
         xiShiftedProjectiveNodalNextCompletedArithmeticLanding w p := by
   rw [xiShiftedProjectiveNodalTuranCovariantRate_eq_neg_higher_of_contact hcontact,
@@ -286,7 +286,7 @@ def xiShiftedProjectiveNodalGradedTuranLanding
     (y : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
   xiShiftedProjectiveNodalWeightedMoment y p k *
       xiShiftedProjectiveNodalWeightedMoment y p (k + 2) -
-    xiShiftedProjectiveNodalWeightedMoment y p (k + 1) ^ 2
+    xiShiftedProjectiveNodalWeightedMoment y p (k + 1) ^ (2 : ℕ)
 
 /-- Higher mixed Plücker coordinate reached from grade `k`. -/
 def xiShiftedProjectiveNodalGradedHigherMixedLanding
@@ -373,7 +373,7 @@ theorem xiShiftedProjectiveNodalGradedHigherMixedLanding_eq_successorLanding
 /-- Literal completed arithmetic packet at arbitrary contact grade. -/
 def xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding
     (w : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
-  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ (2 : ℕ)) p k
   let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
   xiShiftedBoundaryRationalGammaAggregate w 1 c -
     xiShiftedBoundaryVonMangoldtAggregate w 1 c
@@ -382,7 +382,7 @@ def xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding
 aggregation. -/
 theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_commonKernel_sourceFormation
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) (k : ℕ) :
-    let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+    let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ (2 : ℕ)) p k
     let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
     xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k =
       xiShiftedBoundaryArchimedeanAggregate w 1 c +
@@ -399,8 +399,8 @@ theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_commonKe
 theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_higherMixed
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) (k : ℕ) :
     xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k =
-      xiShiftedProjectiveNodalGradedHigherMixedLanding (w ^ 2) p k := by
-  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+      xiShiftedProjectiveNodalGradedHigherMixedLanding (w ^ (2 : ℕ)) p k := by
+  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ (2 : ℕ)) p k
   let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
   rw [xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding]
   change xiShiftedBoundaryRationalGammaAggregate w 1 c -
@@ -408,19 +408,19 @@ theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_higherMi
   rw [← xiShiftedBoundaryCompletedAggregate_eq_rationalGamma_sub_vonMangoldt hw,
     ← xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate
       (by linarith : 0 < w)]
-  change xiShiftedCompletedMomentAggregate (w ^ 2) 1
+  change xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 1
       (xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)) = _
   rw [xiShiftedCompletedMomentAggregate_bilinearPacket_eq_momentInner]
   exact
     (xiShiftedProjectiveNodalGradedHigherMixedLanding_eq_successorLanding
-      (w ^ 2) p k).symm
+      (w ^ (2 : ℕ)) p k).symm
 
 /-- **All-grade arithmetic contact transmutation.** Every flat grade lands on its own next
 admission-selected completed Gamma–prime packet. -/
 theorem xiShiftedProjectiveNodalGradedTuranCovariantRate_eq_neg_nextArithmetic_of_contact
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} {a : ℝ} {p : Polynomial ℝ} {k : ℕ}
-    (hcontact : xiShiftedProjectiveNodalGradedTuranLanding (w ^ 2) p k = 0) :
-    xiShiftedProjectiveNodalGradedTuranCovariantRate (w ^ 2) n a p k =
+    (hcontact : xiShiftedProjectiveNodalGradedTuranLanding (w ^ (2 : ℕ)) p k = 0) :
+    xiShiftedProjectiveNodalGradedTuranCovariantRate (w ^ (2 : ℕ)) n a p k =
       -((2 * n + k + 3 : ℕ) : ℝ) *
         xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k := by
   rw [xiShiftedProjectiveNodalGradedTuranCovariantRate_eq_neg_higher_of_contact hcontact,
@@ -439,8 +439,8 @@ theorem projectiveTuranCascadeTwoAtom_turan_factorization
     (A B r s : ℝ) (k : ℕ) :
     projectiveTuranCascadeTwoAtomMoment A B r s k *
         projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) -
-      projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ 2 =
-        A * B * (r * s) ^ k * (r - s) ^ 2 := by
+      projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ (2 : ℕ) =
+        A * B * (r * s) ^ k * (r - s) ^ (2 : ℕ) := by
   simp only [projectiveTuranCascadeTwoAtomMoment, pow_succ]
   ring
 
@@ -451,7 +451,7 @@ theorem projectiveTuranCascadeTwoAtom_higherMixed_factorization
         projectiveTuranCascadeTwoAtomMoment A B r s (k + 3) -
       projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) *
         projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) =
-      A * B * (r * s) ^ k * (r + s) * (r - s) ^ 2 := by
+      A * B * (r * s) ^ k * (r + s) * (r - s) ^ (2 : ℕ) := by
   simp only [projectiveTuranCascadeTwoAtomMoment, pow_succ]
   ring
 
@@ -461,7 +461,7 @@ theorem projectiveTuranCascadeTwoAtom_all_grades_pos
     (k : ℕ) :
     0 < projectiveTuranCascadeTwoAtomMoment A B r s k *
           projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) -
-        projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ 2 ∧
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ (2 : ℕ) ∧
       0 < projectiveTuranCascadeTwoAtomMoment A B r s k *
           projectiveTuranCascadeTwoAtomMoment A B r s (k + 3) -
         projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) *
@@ -498,7 +498,7 @@ theorem summable_projectiveTuranCascadeTwoAtom_weighted_higherMixed
     refine ((hgeo.mul_left c).add hlinear).congr ?_
     intro k
     ring
-  refine (hbase.mul_right (A * B * (r + s) * (r - s) ^ 2)).congr ?_
+  refine (hbase.mul_right (A * B * (r + s) * (r - s) ^ (2 : ℕ))).congr ?_
   intro k
   rw [projectiveTuranCascadeTwoAtom_higherMixed_factorization]
   ring

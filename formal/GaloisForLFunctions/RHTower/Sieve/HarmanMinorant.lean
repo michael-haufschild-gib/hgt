@@ -44,7 +44,7 @@ theorem buchstab_window {n w z : ℕ} (hn : 0 < n) (hwz : w ≤ z) :
 
 /-- Harman's admissible second prime: `q₂ < q₁` with `q₁q₂⁴ < E`. -/
 def harmanPairs (z E n q₁ : ℕ) : Finset ℕ :=
-  (primeWindow (n / q₁) z q₁).filter (fun q => q₁ * q ^ 4 < E)
+  (primeWindow (n / q₁) z q₁).filter (fun q => q₁ * q ^ (4 : ℕ) < E)
 
 /-- The one-prime correction. -/
 def harmanS1 (z Q n : ℕ) : ℕ := ∑ q ∈ primeWindow n z Q, rho (n / q) z
@@ -257,28 +257,28 @@ majorant `(2.4)`: since `n` has at most `log n / log z` prime factors above `z`,
 `rhoMinus` have at most `1`, `K`, `K²`, `K³` nonzero summands. -/
 theorem abs_rhoMinus_le {z Q D E n : ℕ} (hn : 0 < n) :
     |rhoMinus z Q D E n|
-      ≤ 1 + (largePrimeCount n z : ℤ) + (largePrimeCount n z : ℤ) ^ 2
-        + (largePrimeCount n z : ℤ) ^ 3 := by
+      ≤ 1 + (largePrimeCount n z : ℤ) + (largePrimeCount n z : ℤ) ^ (2 : ℕ)
+        + (largePrimeCount n z : ℤ) ^ (3 : ℕ) := by
   have h0 : (rho n z : ℤ) ≤ 1 := by exact_mod_cast rho_le_one n z
   have h0' : (0 : ℤ) ≤ (rho n z : ℤ) := Int.natCast_nonneg _
   have h1 : (harmanS1 z Q n : ℤ) ≤ (largePrimeCount n z : ℤ) := by
     exact_mod_cast harmanS1_le (z := z) (Q := Q) hn
   have h1' : (0 : ℤ) ≤ (harmanS1 z Q n : ℤ) := Int.natCast_nonneg _
-  have h2 : (harmanS2 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ 2 := by
+  have h2 : (harmanS2 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ (2 : ℕ) := by
     have := harmanS2_le (z := z) (D := D) (E := E) hn
     have hc : ((harmanS2 z D E n : ℕ) : ℤ)
         ≤ ((largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := by exact_mod_cast this
     calc (harmanS2 z D E n : ℤ) ≤ ((largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := hc
-      _ = (largePrimeCount n z : ℤ) ^ 2 := by push_cast; ring
+      _ = (largePrimeCount n z : ℤ) ^ (2 : ℕ) := by push_cast; ring
   have h2' : (0 : ℤ) ≤ (harmanS2 z D E n : ℤ) := Int.natCast_nonneg _
-  have h3 : (harmanS3 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ 3 := by
+  have h3 : (harmanS3 z D E n : ℤ) ≤ (largePrimeCount n z : ℤ) ^ (3 : ℕ) := by
     have := harmanS3_le (z := z) (D := D) (E := E) hn
     have hc : ((harmanS3 z D E n : ℕ) : ℤ)
         ≤ ((largePrimeCount n z * largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := by
       exact_mod_cast this
     calc (harmanS3 z D E n : ℤ)
         ≤ ((largePrimeCount n z * largePrimeCount n z * largePrimeCount n z : ℕ) : ℤ) := hc
-      _ = (largePrimeCount n z : ℤ) ^ 3 := by push_cast; ring
+      _ = (largePrimeCount n z : ℤ) ^ (3 : ℕ) := by push_cast; ring
   have h3' : (0 : ℤ) ≤ (harmanS3 z D E n : ℤ) := Int.natCast_nonneg _
   rw [abs_le, rhoMinus]
   constructor <;> linarith

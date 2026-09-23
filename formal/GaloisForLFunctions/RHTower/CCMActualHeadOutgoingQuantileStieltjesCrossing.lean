@@ -305,7 +305,7 @@ private theorem ccmOutgoingQuantileQuadraticAtomProfile_nonneg_of_le_floor_exp
   have hn1 : 1 ≤ n := by omega
   have hlog0 : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
   unfold ccmOutgoingQuantileQuadraticAtomProfile
-  exact mul_nonneg (criticalMellinAtomWeight_nonneg n) (by nlinarith)
+  exact mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n) (by nlinarith)
 
 private theorem ccmOutgoingQuantileQuadraticAtomProfile_nonpos_of_floor_exp_lt
     {H : ℝ} (hH : 0 ≤ H) {n : ℕ} (hn2 : 2 ≤ n)
@@ -321,7 +321,7 @@ private theorem ccmOutgoingQuantileQuadraticAtomProfile_nonpos_of_floor_exp_lt
   have hn1 : 1 ≤ n := by omega
   have hlog0 : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn1)
   unfold ccmOutgoingQuantileQuadraticAtomProfile
-  exact mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg n) (by nlinarith)
+  exact mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n) (by nlinarith)
 
 /-- Crossing from the literal mass clock to the literal time clock can only improve the
 quadratic moment balance: intruding time atoms are nonnegative and overshooting mass atoms are

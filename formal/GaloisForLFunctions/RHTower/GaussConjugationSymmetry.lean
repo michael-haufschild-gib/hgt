@@ -165,7 +165,7 @@ theorem inner_gaussQuasiInnerG_pow_neg (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
 
 /-! ## The sampled magnitude decays like `1/n` at every `m` -/
 
-theorem exists_norm_gaussSampleValue_pow_mul_succ_le (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
+theorem exists_norm_gaussSampleValue_pow_mul_succ_le_gaussConjugationSymmetry (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ,
       ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 * m) * ((n : ℝ) + 1) ≤ C := by
   obtain ⟨c, C, hc, hC, hb⟩ := exists_gaussComponentPrimeMagnitudeEnergy_bounds hm k p

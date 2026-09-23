@@ -41,14 +41,14 @@ def ratVecToC (v : (d → ℚ) × (d → ℚ)) : d → ℂ :=
 
 /-- The squared Euclidean distance of two rational register vectors. -/
 def ratSqDist (u v : (d → ℚ) × (d → ℚ)) : ℚ :=
-  ∑ i, ((u.1 i - v.1 i) ^ 2 + (u.2 i - v.2 i) ^ 2)
+  ∑ i, ((u.1 i - v.1 i) ^ (2 : ℕ) + (u.2 i - v.2 i) ^ (2 : ℕ))
 
 theorem ratSqDist_nonneg (u v : (d → ℚ) × (d → ℚ)) : 0 ≤ ratSqDist u v :=
   Finset.sum_nonneg fun _ _ => by positivity
 
 theorem ratSqDist_eq_dist_sq (u v : (d → ℚ) × (d → ℚ)) :
     ((ratSqDist u v : ℚ) : ℝ)
-      = dist (eucVec (ratVecToC u)) (eucVec (ratVecToC v)) ^ 2 := by
+      = dist (eucVec (ratVecToC u)) (eucVec (ratVecToC v)) ^ (2 : ℕ) := by
   rw [dist_eucVec, Real.sq_sqrt (by positivity), ratSqDist]
   push_cast
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -244,7 +244,7 @@ def HardCertificate (wq Jq : (Fin n → Option (Fin 3)) → ℚ) (τ : ℚ) (eps
     (Zapp : C → ℕ → (FiniteQubitConfiguration (Fin n) → ℚ) ×
       (FiniteQubitConfiguration (Fin n) → ℚ)) (N mm : ℕ) : Prop :=
   0 < τ ∧ 2 * certBound wq Jq τ ≤ (N : ℚ) + 1 ∧
-    ∀ κ, (eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1)) ^ 2
+    ∀ κ, (eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1)) ^ (2 : ℕ)
       < ratSqDist (certOrbit wq Jq τ N) (Zapp κ mm)
 
 instance decidableHardCertificate (wq Jq : (Fin n → Option (Fin 3)) → ℚ) (τ eps : ℚ)
@@ -341,9 +341,9 @@ theorem hardCircuitEvent_of_hardCertificate
     have h2 : (0 : ℚ) ≤ 1 / ((mm : ℚ) + 1) := by positivity
     have : (0 : ℚ) ≤ eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) := by linarith
     exact_mod_cast this
-  have hsqr : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ) ^ 2
+  have hsqr : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ) ^ (2 : ℕ)
       < dist (eucVec (ratVecToC (certOrbit wq Jq τ N)))
-          (eucVec (ratVecToC (Zapp κ mm))) ^ 2 := by
+          (eucVec (ratVecToC (Zapp κ mm))) ^ (2 : ℕ) := by
     rw [← ratSqDist_eq_dist_sq]
     exact_mod_cast hc
   have hlt : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ)
@@ -431,7 +431,7 @@ theorem exists_hardCertificate_of_hard [Nonempty C]
       < dist (eucVec (ratVecToC (certOrbit wq Jq τ N))) (eucVec (ratVecToC (Zapp κ mm))) := by
     rw [hremr]
     linarith [htri, hrem, happ, hbase, hmm, hN1]
-  have hsq : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ) ^ 2
+  have hsq : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ) ^ (2 : ℕ)
       < ((ratSqDist (certOrbit wq Jq τ N) (Zapp κ mm) : ℚ) : ℝ) := by
     rw [ratSqDist_eq_dist_sq]
     have hcast : ((eps + certRemainder wq Jq τ N + 1 / ((mm : ℚ) + 1) : ℚ) : ℝ)
@@ -507,7 +507,7 @@ theorem exists_certifiedIndex
       ((wq (((pauliTracelessLabelEquivFin n q).symm t).1) : ℝ)) ≠ 0)
     (hcard0 : 0 < Fintype.card (Fin n → Option (Fin 3)))
     {B : ℝ} (hB0 : 0 ≤ B)
-    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2)
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ (2 : ℕ))
     (Z : C → (FiniteQubitConfiguration (Fin n) → ℂ))
     (hZ : ∀ κ, finiteComplexInner (Z κ) (Z κ) = 1)
     (Zapp : C → ℕ → (FiniteQubitConfiguration (Fin n) → ℚ) ×
@@ -516,7 +516,7 @@ theorem exists_certifiedIndex
       ≤ 1 / ((mm : ℝ) + 1))
     {eps : ℚ} (heps0 : 0 ≤ eps) (heps1 : eps < 1)
     {r : ℕ} (hr : 1 ≤ r)
-    (hscale : 16 * (4 * (2 / 3 : ℝ) ^ n) / (1 - ((eps : ℚ) : ℝ) ^ 2) ^ 2 ≤ 1 / (2 * r))
+    (hscale : 16 * (4 * (2 / 3 : ℝ) ^ n) / (1 - ((eps : ℚ) : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) ≤ 1 / (2 * r))
     {M : ℝ} (hM : 1 < M) {s : ℕ} (hcard : (Fintype.card C : ℝ) ≤ M ^ (s + 1))
     (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2)
     (horizon : ℝ) :

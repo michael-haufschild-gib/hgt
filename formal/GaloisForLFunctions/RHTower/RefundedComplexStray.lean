@@ -62,7 +62,7 @@ theorem refundDensity_eq (a gam u : ℝ) :
 
 /-- `cosh(u/2) + 1 = 2cosh²(u/4)`. -/
 theorem cosh_half_add_one (u : ℝ) :
-    Real.cosh (u / 2) + 1 = 2 * Real.cosh (u / 4) ^ 2 := by
+    Real.cosh (u / 2) + 1 = 2 * Real.cosh (u / 4) ^ (2 : ℕ) := by
   have h := Real.cosh_two_mul (u / 4)
   have e : 2 * (u / 4) = u / 2 := by ring
   rw [e] at h
@@ -87,7 +87,7 @@ theorem refundDensity_nonneg {a gam u : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1 / 4) 
   have hq : (1 : ℝ) ≤ Real.cosh (u / 4) := Real.one_le_cosh _
   have hkey : 0 ≤ Real.cosh (u / 2) + Real.cos (gam * u) * (1 - 2 * Real.cosh (a * u)) := by
     have hstep : Real.cosh (u / 2) + 1 - 2 * Real.cosh (a * u)
-        ≥ 2 * Real.cosh (u / 4) ^ 2 - 2 * Real.cosh (u / 4) := by
+        ≥ 2 * Real.cosh (u / 4) ^ (2 : ℕ) - 2 * Real.cosh (u / 4) := by
       rw [cosh_half_add_one u]; linarith
     nlinarith [hflip, hstep, hq]
   rw [refundDensity_eq]
@@ -132,7 +132,7 @@ def refundQuartic (a gam : ℝ) (z : ℂ) : ℂ :=
     ((z - (1 / 2 + (a : ℂ) - (gam : ℂ) * I)) * (z - (1 / 2 - (a : ℂ) + (gam : ℂ) * I)))
 
 /-- The removed critical quadratic factor `(z - 1/2)² + γ²`. -/
-def refundCriticalFactor (gam : ℝ) (z : ℂ) : ℂ := (z - 1 / 2) ^ 2 + (gam : ℂ) ^ 2
+def refundCriticalFactor (gam : ℝ) (z : ℂ) : ℂ := (z - 1 / 2) ^ (2 : ℕ) + (gam : ℂ) ^ (2 : ℕ)
 
 theorem refundQuartic_reflect (a gam : ℝ) (z : ℂ) :
     refundQuartic a gam (1 - z) = refundQuartic a gam z := by
@@ -148,11 +148,11 @@ theorem refundCriticalFactor_eq_zero (gam : ℝ) :
     refundCriticalFactor gam (1 / 2 + (gam : ℂ) * I) = 0 ∧
       refundCriticalFactor gam (1 / 2 - (gam : ℂ) * I) = 0 := by
   constructor
-  · show ((1 / 2 + (gam : ℂ) * I) - 1 / 2) ^ 2 + (gam : ℂ) ^ 2 = 0
+  · show ((1 / 2 + (gam : ℂ) * I) - 1 / 2) ^ (2 : ℕ) + (gam : ℂ) ^ (2 : ℕ) = 0
     rw [show ((1 / 2 + (gam : ℂ) * I) - 1 / 2) = (gam : ℂ) * I from by ring, mul_pow,
       Complex.I_sq]
     ring
-  · show ((1 / 2 - (gam : ℂ) * I) - 1 / 2) ^ 2 + (gam : ℂ) ^ 2 = 0
+  · show ((1 / 2 - (gam : ℂ) * I) - 1 / 2) ^ (2 : ℕ) + (gam : ℂ) ^ (2 : ℕ) = 0
     rw [show ((1 / 2 - (gam : ℂ) * I) - 1 / 2) = -((gam : ℂ) * I) from by ring, neg_pow, mul_pow,
       Complex.I_sq]
     ring

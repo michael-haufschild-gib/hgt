@@ -28,7 +28,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- The one-dimensional rational density appearing after the tangent change
 of variables in the paper's cosine-squared cube density. -/
 def banaszczykRationalDensity (t : ℝ) : ℝ :=
-  2 / (Real.pi * (1 + t ^ 2) ^ 2)
+  2 / (Real.pi * (1 + t ^ (2 : ℕ)) ^ (2 : ℕ))
 
 @[simp]
 theorem banaszczykRationalDensity_neg (t : ℝ) :
@@ -56,23 +56,23 @@ theorem continuous_banaszczykRationalDensity :
 appears in `SchwartzWeightedHolder`; it is reproved here under a small import
 surface so this density module remains cheap to compile. -/
 theorem integrable_inv_one_add_sq_sq_banaszczyk :
-    Integrable (fun t : ℝ => ((1 + t ^ 2)⁻¹) ^ 2) := by
+    Integrable (fun t : ℝ => ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ)) := by
   refine Integrable.mono' integrable_inv_one_add_sq ?_ ?_
   · fun_prop
   · filter_upwards with t
-    have ht : (0 : ℝ) < 1 + t ^ 2 := by positivity
+    have ht : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-    have hi : (1 + t ^ 2)⁻¹ ≤ 1 := by
+    have hi : (1 + t ^ (2 : ℕ))⁻¹ ≤ 1 := by
       rw [inv_le_one₀ ht]
       exact le_add_of_nonneg_right (sq_nonneg t)
     nlinarith [inv_nonneg.mpr ht.le]
 
 private def cauchyPrimitive (t : ℝ) : ℝ :=
-  t / (1 + t ^ 2)
+  t / (1 + t ^ (2 : ℕ))
 
 private theorem hasDerivAt_cauchyPrimitive (t : ℝ) :
-    HasDerivAt cauchyPrimitive ((1 - t ^ 2) / (1 + t ^ 2) ^ 2) t := by
-  have ht : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+    HasDerivAt cauchyPrimitive ((1 - t ^ (2 : ℕ)) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)) t := by
+  have ht : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
   have hid : HasDerivAt (fun x : ℝ => x) 1 t := hasDerivAt_id' (𝕜 := ℝ) t
   have hone : HasDerivAt (fun _ : ℝ => (1 : ℝ)) (0 : ℝ) t :=
     hasDerivAt_const (𝕜 := ℝ) (c := (1 : ℝ)) (x := t)
@@ -87,50 +87,50 @@ private theorem hasDerivAt_cauchyPrimitive (t : ℝ) :
 private theorem tendsto_cauchyPrimitive_atTop :
     Tendsto cauchyPrimitive atTop (𝓝 0) := by
   have hinv : Tendsto (fun x : ℝ => x⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero
-  have hcont : Tendsto (fun y : ℝ => y / (1 + y ^ 2)) (𝓝 0) (𝓝 0) := by
-    have hc : Continuous (fun y : ℝ => y / (1 + y ^ 2)) :=
+  have hcont : Tendsto (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) (𝓝 0) (𝓝 0) := by
+    have hc : Continuous (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) :=
       continuous_id.div
         ((continuous_const : Continuous fun _ : ℝ => (1 : ℝ)).add (continuous_id.pow 2))
         (fun y : ℝ => by positivity)
     simpa [ContinuousAt] using
-      (hc.continuousAt : ContinuousAt (fun y : ℝ => y / (1 + y ^ 2)) 0)
+      (hc.continuousAt : ContinuousAt (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) 0)
   apply (hcont.comp hinv).congr'
   filter_upwards with x
   unfold cauchyPrimitive
-  change x⁻¹ / (1 + x⁻¹ ^ 2) = x / (1 + x ^ 2)
+  change x⁻¹ / (1 + x⁻¹ ^ (2 : ℕ)) = x / (1 + x ^ (2 : ℕ))
   by_cases hx : x = 0
   · simp [hx]
-  · field_simp [hx, show (1 + x ^ 2 : ℝ) ≠ 0 by positivity,
-      show (1 + x⁻¹ ^ 2 : ℝ) ≠ 0 by positivity]
+  · field_simp [hx, show (1 + x ^ (2 : ℕ) : ℝ) ≠ 0 by positivity,
+      show (1 + x⁻¹ ^ (2 : ℕ) : ℝ) ≠ 0 by positivity]
     ring
 
 private theorem tendsto_cauchyPrimitive_atBot :
     Tendsto cauchyPrimitive atBot (𝓝 0) := by
   have hinv : Tendsto (fun x : ℝ => x⁻¹) atBot (𝓝 0) := tendsto_inv_atBot_zero
-  have hcont : Tendsto (fun y : ℝ => y / (1 + y ^ 2)) (𝓝 0) (𝓝 0) := by
-    have hc : Continuous (fun y : ℝ => y / (1 + y ^ 2)) :=
+  have hcont : Tendsto (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) (𝓝 0) (𝓝 0) := by
+    have hc : Continuous (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) :=
       continuous_id.div
         ((continuous_const : Continuous fun _ : ℝ => (1 : ℝ)).add (continuous_id.pow 2))
         (fun y : ℝ => by positivity)
     simpa [ContinuousAt] using
-      (hc.continuousAt : ContinuousAt (fun y : ℝ => y / (1 + y ^ 2)) 0)
+      (hc.continuousAt : ContinuousAt (fun y : ℝ => y / (1 + y ^ (2 : ℕ))) 0)
   apply (hcont.comp hinv).congr'
   filter_upwards with x
   unfold cauchyPrimitive
-  change x⁻¹ / (1 + x⁻¹ ^ 2) = x / (1 + x ^ 2)
+  change x⁻¹ / (1 + x⁻¹ ^ (2 : ℕ)) = x / (1 + x ^ (2 : ℕ))
   by_cases hx : x = 0
   · simp [hx]
-  · field_simp [hx, show (1 + x ^ 2 : ℝ) ≠ 0 by positivity,
-      show (1 + x⁻¹ ^ 2 : ℝ) ≠ 0 by positivity]
+  · field_simp [hx, show (1 + x ^ (2 : ℕ) : ℝ) ≠ 0 by positivity,
+      show (1 + x⁻¹ ^ (2 : ℕ) : ℝ) ≠ 0 by positivity]
     ring
 
 private theorem integrable_cauchyPrimitive_deriv :
-    Integrable (fun t : ℝ => (1 - t ^ 2) / (1 + t ^ 2) ^ 2) := by
+    Integrable (fun t : ℝ => (1 - t ^ (2 : ℕ)) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have h := (integrable_inv_one_add_sq_sq_banaszczyk.const_mul 2).sub
     integrable_inv_one_add_sq
   apply h.congr
   filter_upwards with t
-  have ht : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+  have ht : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
   simp only [Pi.sub_apply]
   field_simp [ht]
   ring
@@ -138,15 +138,15 @@ private theorem integrable_cauchyPrimitive_deriv :
 /-- Exact squared Cauchy-kernel mass. -/
 @[simp]
 theorem integral_univ_inv_one_add_sq_sq :
-    (∫ t : ℝ, ((1 + t ^ 2)⁻¹) ^ 2) = Real.pi / 2 := by
-  have hzero : (∫ t : ℝ, (1 - t ^ 2) / (1 + t ^ 2) ^ 2) = 0 := by
+    (∫ t : ℝ, ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ)) = Real.pi / 2 := by
+  have hzero : (∫ t : ℝ, (1 - t ^ (2 : ℕ)) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)) = 0 := by
     simpa using integral_of_hasDerivAt_of_tendsto hasDerivAt_cauchyPrimitive
       integrable_cauchyPrimitive_deriv tendsto_cauchyPrimitive_atBot
       tendsto_cauchyPrimitive_atTop
-  have hrewrite : (fun t : ℝ => (1 - t ^ 2) / (1 + t ^ 2) ^ 2) =
-      fun t : ℝ => 2 * ((1 + t ^ 2)⁻¹) ^ 2 - (1 + t ^ 2)⁻¹ := by
+  have hrewrite : (fun t : ℝ => (1 - t ^ (2 : ℕ)) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)) =
+      fun t : ℝ => 2 * ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ) - (1 + t ^ (2 : ℕ))⁻¹ := by
     funext t
-    have ht : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+    have ht : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
     field_simp [ht]
     ring
   rw [hrewrite,
@@ -158,10 +158,10 @@ theorem integral_univ_inv_one_add_sq_sq :
 theorem integrable_banaszczykRationalDensity :
     Integrable banaszczykRationalDensity := by
   have hfun : banaszczykRationalDensity =
-      fun t : ℝ => (2 / Real.pi) * ((1 + t ^ 2)⁻¹) ^ 2 := by
+      fun t : ℝ => (2 / Real.pi) * ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ) := by
     funext t
     unfold banaszczykRationalDensity
-    field_simp [Real.pi_ne_zero, show (1 + t ^ 2 : ℝ) ≠ 0 by positivity]
+    field_simp [Real.pi_ne_zero, show (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 by positivity]
   rw [hfun]
   exact integrable_inv_one_add_sq_sq_banaszczyk.const_mul _
 
@@ -170,37 +170,37 @@ theorem integrable_banaszczykRationalDensity :
 theorem integral_banaszczykRationalDensity :
     ∫ t : ℝ, banaszczykRationalDensity t = 1 := by
   have hfun : banaszczykRationalDensity =
-      fun t : ℝ => (2 / Real.pi) * ((1 + t ^ 2)⁻¹) ^ 2 := by
+      fun t : ℝ => (2 / Real.pi) * ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ) := by
     funext t
     unfold banaszczykRationalDensity
-    field_simp [Real.pi_ne_zero, show (1 + t ^ 2 : ℝ) ≠ 0 by positivity]
+    field_simp [Real.pi_ne_zero, show (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 by positivity]
   rw [hfun, integral_const_mul, integral_univ_inv_one_add_sq_sq]
   field_simp [Real.pi_ne_zero]
 
 theorem integrable_sq_mul_banaszczykRationalDensity :
-    Integrable (fun t : ℝ => t ^ 2 * banaszczykRationalDensity t) := by
+    Integrable (fun t : ℝ => t ^ (2 : ℕ) * banaszczykRationalDensity t) := by
   have hbase : Integrable
-      (fun t : ℝ => (1 + t ^ 2)⁻¹ - ((1 + t ^ 2)⁻¹) ^ 2) :=
+      (fun t : ℝ => (1 + t ^ (2 : ℕ))⁻¹ - ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ)) :=
     integrable_inv_one_add_sq.sub integrable_inv_one_add_sq_sq_banaszczyk
   have hscaled := hbase.const_mul (2 / Real.pi)
   apply hscaled.congr
   filter_upwards with t
   unfold banaszczykRationalDensity
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
-  have ht : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+  have ht : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
   field_simp [hpi, ht]
   ring
 
 /-- The paper's rational random variable has variance one. -/
 @[simp]
 theorem integral_sq_mul_banaszczykRationalDensity :
-    ∫ t : ℝ, t ^ 2 * banaszczykRationalDensity t = 1 := by
-  have hrewrite : (fun t : ℝ => t ^ 2 * banaszczykRationalDensity t) =
+    ∫ t : ℝ, t ^ (2 : ℕ) * banaszczykRationalDensity t = 1 := by
+  have hrewrite : (fun t : ℝ => t ^ (2 : ℕ) * banaszczykRationalDensity t) =
       fun t : ℝ => (2 / Real.pi) *
-        ((1 + t ^ 2)⁻¹ - ((1 + t ^ 2)⁻¹) ^ 2) := by
+        ((1 + t ^ (2 : ℕ))⁻¹ - ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℕ)) := by
     funext t
     unfold banaszczykRationalDensity
-    have ht : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+    have ht : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
     field_simp [Real.pi_ne_zero, ht]
     ring
   rw [hrewrite, integral_const_mul,
@@ -218,10 +218,10 @@ theorem integrable_id_mul_banaszczykRationalDensity :
   · filter_upwards with t
     have hρ := banaszczykRationalDensity_nonneg t
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hρ]
-    have ht : |t| ≤ 1 + t ^ 2 := by
+    have ht : |t| ≤ 1 + t ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (|t| - 1), sq_abs t]
     change |t| * banaszczykRationalDensity t ≤
-      banaszczykRationalDensity t + t ^ 2 * banaszczykRationalDensity t
+      banaszczykRationalDensity t + t ^ (2 : ℕ) * banaszczykRationalDensity t
     nlinarith
 
 /-- Evenness centers the rational density exactly. -/

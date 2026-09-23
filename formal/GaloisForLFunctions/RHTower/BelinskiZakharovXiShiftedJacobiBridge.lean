@@ -41,7 +41,7 @@ theorem ShiftedJacobiFrame.xiShiftedJacobi_twoLevelVelocity_eq_belinskiZakharovR
       F.jacobiLevel 1 y * F.connectionLevel 1 y - F.connectionLevel 1 y * F.jacobiLevel 1 y
         - F.jacobiLevel 1 y * F.jacobiLevel 1 y
         - belinskiZakharovRankOneResidue
-            ![0, 2 * ((1 : ℝ) + 1) * F.a (1 + 1) y ^ 2] ![0, 1] := by
+            ![0, 2 * ((1 : ℝ) + 1) * F.a (1 + 1) y ^ (2 : ℕ)] ![0, 1] := by
   rw [F.jacobiVelocityLevel_eq]
   ext i j
   fin_cases i <;> fin_cases j <;>

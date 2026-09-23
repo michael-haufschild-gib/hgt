@@ -22,7 +22,7 @@ def schwarzschildParikhWilczekBorelPartnerRealImbalance (s : ℂ) (k : ℕ) : �
 
 /-- Positive conversion factor from Deninger displacement charge to PW Borel imbalance. -/
 def schwarzschildParikhWilczekDeningerWardMultiplier (k : ℕ) : ℝ :=
-  (2 * (2 * (k : ℝ) + 1)) / (k + 1 : ℝ) ^ 2
+  (2 * (2 * (k : ℝ) + 1)) / (k + 1 : ℝ) ^ (2 : ℕ)
 
 theorem schwarzschildParikhWilczekDeningerWardMultiplier_pos (k : ℕ) :
     0 < schwarzschildParikhWilczekDeningerWardMultiplier k := by

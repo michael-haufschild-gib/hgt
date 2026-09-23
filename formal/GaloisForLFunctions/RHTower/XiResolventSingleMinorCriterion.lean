@@ -5,15 +5,15 @@ import GaloisForLFunctions.RHTower.XiResolventEvenTuranMachine
 
 The moment-index quantifier of the polynomial Turán ladder is redundant: multiplying the weight
 polynomial by `X^m` shifts every moment index by `2m`, since
-`u^(k+1) * (u^m * p(u))^2 = u^(k+2m+1) * p(u)^2`.  The polynomial quantifier therefore
+`u^(k+1) * (u^m * p(u))^(2 : ℕ) = u^(k+2m+1) * p(u)^(2 : ℕ)`.  The polynomial quantifier therefore
 regenerates the whole even-index minor ladder from the single minor at index `0`, and the
 even ladder drives the spectral descent through the parity-robust level-cleansing machine.
 
 **Theorem**: at any one shift `X ≥ 0`,
 
-`RH  ↔  ∀ p : Polynomial ℝ, 0 ≤ Re (M_p 0 * M_p 2 - M_p 1 ^ 2)`
+`RH  ↔  ∀ p : Polynomial ℝ, 0 ≤ Re (M_p 0 * M_p 2 - M_p 1 ^ (2 : ℕ))`
 
-where `M_p k = sum_q u_q^(k+1) (p (u_q))^2` — one Cauchy–Schwarz inequality per real
+where `M_p k = sum_q u_q^(k+1) (p (u_q))^(2 : ℕ)` — one Cauchy–Schwarz inequality per real
 polynomial.  The criterion never demands positivity of any moment: a globally negated weight
 system satisfies every minor inequality, yet for the resolvent divisor the minors alone force
 every copy onto the critical line through oscillation, not through measure positivity.
@@ -34,10 +34,10 @@ theorem xiPolyMoment_X_pow_mul (m : ℕ) (p : Polynomial ℝ) (k : ℕ) (X : ℝ
     xiPolyMoment (Polynomial.X ^ m * p) k X = xiPolyMoment p (k + 2 * m) X := by
   rw [show xiPolyMoment (Polynomial.X ^ m * p) k X = ∑' q : XiZeroCopy,
       xiResolventPoint X q ^ (k + 1) *
-        evalRealPolynomial (Polynomial.X ^ m * p) (xiResolventPoint X q) ^ 2 from rfl,
+        evalRealPolynomial (Polynomial.X ^ m * p) (xiResolventPoint X q) ^ (2 : ℕ) from rfl,
     show xiPolyMoment p (k + 2 * m) X = ∑' q : XiZeroCopy,
       xiResolventPoint X q ^ (k + 2 * m + 1) *
-        evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl]
+        evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl]
   refine tsum_congr fun q => ?_
   rw [evalRealPolynomial_mul, evalRealPolynomial_pow, evalRealPolynomial_X]
   ring
@@ -46,7 +46,7 @@ theorem xiPolyMoment_X_pow_mul (m : ℕ) (p : Polynomial ℝ) (k : ℕ) (X : ℝ
 shift, place the entire divisor on the critical line. -/
 theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hpoly : ∀ p : Polynomial ℝ,
-      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ 2).re) :
+      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0 := by
   classical
   have hdescent : ∀ N : ℕ, ∀ q : XiZeroCopy,
@@ -105,20 +105,20 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (h
         refine Finset.prod_congr rfl fun r _ => ?_
         simp
       have hWbound : ∀ q' : XiZeroCopy,
-          ‖evalRealPolynomial P (xiResolventPoint X q') ^ 2‖ ≤
-            evalRealPolynomialNormBound P 1 ^ 2 := by
+          ‖evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ)‖ ≤
+            evalRealPolynomialNormBound P 1 ^ (2 : ℕ) := by
         intro q'
         rw [norm_pow]
         exact pow_le_pow_left₀ (norm_nonneg _)
           (norm_evalRealPolynomial_le P (norm_xiResolventPoint_le_one hX q')) 2
       have hvalW : ∀ q₁ q₂ : XiZeroCopy,
           xiResolventPoint X q₂ = (starRingEnd ℂ) (xiResolventPoint X q₁) →
-          evalRealPolynomial P (xiResolventPoint X q₂) ^ 2 =
-            (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q₁) ^ 2) := by
+          evalRealPolynomial P (xiResolventPoint X q₂) ^ (2 : ℕ) =
+            (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q₁) ^ (2 : ℕ)) := by
         intro q₁ q₂ h
         rw [h, evalRealPolynomial_conj, ← map_pow]
       have hkill : ∀ q', ‖xiResolventPoint X q‖ < ‖xiResolventPoint X q'‖ →
-          evalRealPolynomial P (xiResolventPoint X q') ^ 2 = 0 := by
+          evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ) = 0 := by
         intro q' hq'
         have hmemA : q' ∈ A := by
           rw [hA, Finset.mem_filter, Set.Finite.mem_toFinset]
@@ -134,7 +134,7 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (h
         rw [hPzero]
         ring
       have hnz : ∀ q', ‖xiResolventPoint X q'‖ = ‖xiResolventPoint X q‖ →
-          evalRealPolynomial P (xiResolventPoint X q') ^ 2 ≠ 0 := by
+          evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ) ≠ 0 := by
         intro q' hq' hzero
         have hPzero : evalRealPolynomial P (xiResolventPoint X q') = 0 :=
           pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hzero
@@ -148,7 +148,7 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (h
         have := hatomgt r hr
         linarith
       have hminorE : ∀ n : ℕ, 0 ≤ (xiPolyMoment P (2 * n) X *
-          xiPolyMoment P (2 * n + 2) X - xiPolyMoment P (2 * n + 1) X ^ 2).re := by
+          xiPolyMoment P (2 * n + 2) X - xiPolyMoment P (2 * n + 1) X ^ (2 : ℕ)).re := by
         intro n
         have h := hpoly (Polynomial.X ^ n * P)
         rw [xiPolyMoment_X_pow_mul, xiPolyMoment_X_pow_mul, xiPolyMoment_X_pow_mul] at h
@@ -166,12 +166,12 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (h
 /-- The index-`0` polynomial Turán data at one shift proves RH. -/
 theorem riemannHypothesis_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hpoly : ∀ p : Polynomial ℝ,
-      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ 2).re) :
+      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ (2 : ℕ)).re) :
     RiemannHypothesis := by
   have hall := forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg hX hpoly
   by_contra hRH
   obtain ⟨q, hq⟩ := exists_spectralSq_im_pos_of_not_riemannHypothesis hRH
-  have h1 : (xiSpectralPoint q ^ 2).im = 0 := by
+  have h1 : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
     rw [sq, Complex.mul_im, hall q]
     ring
   rw [h1] at hq
@@ -182,7 +182,7 @@ is equivalent to the index-`0` Turán (Cauchy–Schwarz) inequality of every pol
 reweighted resolvent moment sequence — one inequality per real polynomial. -/
 theorem riemannHypothesis_iff_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (hX : 0 ≤ X) :
     RiemannHypothesis ↔ ∀ p : Polynomial ℝ,
-      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ 2).re := by
+      0 ≤ (xiPolyMoment p 0 X * xiPolyMoment p 2 X - xiPolyMoment p 1 X ^ (2 : ℕ)).re := by
   constructor
   · intro hRH p
     have h := polyTuranMinor_re_nonneg_of_riemannHypothesis hRH hX p 0

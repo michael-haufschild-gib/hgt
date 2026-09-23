@@ -17,7 +17,7 @@ noncomputable section
 theorem norm_directResolventInverse_joint_sub_le_initial_generators
     (q : SchwartzMap ℝ ℂ) (t x s y : ℝ) :
     ‖((directResolventUnit q t x)⁻¹).val - ((directResolventUnit q s y)⁻¹).val‖ ≤
-      directInitialResolventBudget q ^ 2 *
+      directInitialResolventBudget q ^ (2 : ℕ) *
         (‖directJumpTimeOperator q 0 0‖ * ‖t-s‖ +
           ‖directJumpSpaceOperator q 0 0‖ * ‖x-y‖) := by
   have h := norm_directResolvent_difference_le_initial_budgets q q t x s y
@@ -29,7 +29,7 @@ theorem norm_directResolventInverse_joint_sub_le_initial_generators
 theorem norm_directResolventInverse_time_sub_le_initial_generator
     (q : SchwartzMap ℝ ℂ) (x t s : ℝ) :
     ‖((directResolventUnit q t x)⁻¹).val - ((directResolventUnit q s x)⁻¹).val‖ ≤
-      (directInitialResolventBudget q ^ 2 * ‖directJumpTimeOperator q 0 0‖) * ‖t-s‖ := by
+      (directInitialResolventBudget q ^ (2 : ℕ) * ‖directJumpTimeOperator q 0 0‖) * ‖t-s‖ := by
   simpa only [sub_self, norm_zero, mul_zero, add_zero, mul_assoc] using
     norm_directResolventInverse_joint_sub_le_initial_generators q t x s x
 
@@ -37,7 +37,7 @@ theorem norm_directResolventInverse_time_sub_le_initial_generator
 theorem norm_directResolventInverse_space_sub_le_initial_generator
     (q : SchwartzMap ℝ ℂ) (t x y : ℝ) :
     ‖((directResolventUnit q t x)⁻¹).val - ((directResolventUnit q t y)⁻¹).val‖ ≤
-      (directInitialResolventBudget q ^ 2 * ‖directJumpSpaceOperator q 0 0‖) * ‖x-y‖ := by
+      (directInitialResolventBudget q ^ (2 : ℕ) * ‖directJumpSpaceOperator q 0 0‖) * ‖x-y‖ := by
   simpa only [sub_self, norm_zero, mul_zero, zero_add, mul_assoc] using
     norm_directResolventInverse_joint_sub_le_initial_generators q t x t y
 
@@ -45,7 +45,7 @@ theorem norm_directResolventInverse_space_sub_le_initial_generator
 theorem directSolution_joint_sub_le_initial_generators
     (q : SchwartzMap ℝ ℂ) (t x s y : ℝ) (d : Boundary) :
     ‖directSolution q t x d - directSolution q s y d‖ ≤
-      (directInitialResolventBudget q ^ 2 *
+      (directInitialResolventBudget q ^ (2 : ℕ) *
         (‖directJumpTimeOperator q 0 0‖ * ‖t-s‖ +
           ‖directJumpSpaceOperator q 0 0‖ * ‖x-y‖)) * ‖d‖ := by
   have h := (((directResolventUnit q t x)⁻¹).val -
@@ -58,7 +58,7 @@ theorem directSolution_joint_forcing_sub_le_initial_generators
     (q : SchwartzMap ℝ ℂ) (t x s y : ℝ) (d e : Boundary) :
     ‖directSolution q t x d - directSolution q s y e‖ ≤
       directInitialResolventBudget q * ‖d-e‖ +
-      (directInitialResolventBudget q ^ 2 *
+      (directInitialResolventBudget q ^ (2 : ℕ) *
         (‖directJumpTimeOperator q 0 0‖ * ‖t-s‖ +
           ‖directJumpSpaceOperator q 0 0‖ * ‖x-y‖)) * ‖e‖ := by
   have hf : ‖directSolution q t x d - directSolution q t x e‖ ≤
@@ -70,13 +70,13 @@ theorem directSolution_joint_forcing_sub_le_initial_generators
 
 /-- The actual initial inverse budget never exceeds the old universal squared factor. -/
 theorem directInitialResolventBudget_sq_le (q : SchwartzMap ℝ ℂ) :
-    directInitialResolventBudget q ^ 2 ≤ (81/25 : ℝ) := by
+    directInitialResolventBudget q ^ (2 : ℕ) ≤ (81/25 : ℝ) := by
   have h := directInitialResolventBudget_bounds q
   nlinarith
 
 /-- The new time constant is bounded above by the previous uniform time constant. -/
 theorem directResolventInitialTimeBudget_le_uniform (q : SchwartzMap ℝ ℂ) :
-    directInitialResolventBudget q ^ 2 * ‖directJumpTimeOperator q 0 0‖ ≤
+    directInitialResolventBudget q ^ (2 : ℕ) * ‖directJumpTimeOperator q 0 0‖ ≤
       (81/50 : ℝ) * regularReflectionFrequencyBudget q := by
   have hj : ‖directJumpTimeOperator q 0 0‖ ≤ (1/2 : ℝ) * regularReflectionFrequencyBudget q := by
     apply ContinuousLinearMap.opNorm_le_bound _
@@ -89,7 +89,7 @@ theorem directResolventInitialTimeBudget_le_uniform (q : SchwartzMap ℝ ℂ) :
 
 /-- The new space constant is bounded above by the previous uniform space constant. -/
 theorem directResolventInitialSpaceBudget_le_uniform (q : SchwartzMap ℝ ℂ) :
-    directInitialResolventBudget q ^ 2 * ‖directJumpSpaceOperator q 0 0‖ ≤
+    directInitialResolventBudget q ^ (2 : ℕ) * ‖directJumpSpaceOperator q 0 0‖ ≤
       (81/25 : ℝ) * directSpaceOperatorBudget q := by
   have hj : ‖directJumpSpaceOperator q 0 0‖ ≤ directSpaceOperatorBudget q := by
     apply ContinuousLinearMap.opNorm_le_bound _ (directSpaceOperatorBudget_nonneg q)

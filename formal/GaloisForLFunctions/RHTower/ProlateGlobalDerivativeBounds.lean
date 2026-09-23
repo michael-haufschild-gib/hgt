@@ -54,20 +54,20 @@ theorem exists_global_bound_deriv_sincSmooth (c : ℝ) :
       linarith
     have habs : (0 : ℝ) < |u| := abs_pos.2 hu0
     have h := abs_deriv_sincSmooth_le (c := c) hu0
-    have hsq : |u| ≤ u ^ 2 := by
+    have hsq : |u| ≤ u ^ (2 : ℕ) := by
       have hmul : |u| * 1 ≤ |u| * |u| := by nlinarith
-      have hid : |u| * |u| = u ^ 2 := by rw [← sq_abs u]; ring
+      have hid : |u| * |u| = u ^ (2 : ℕ) := by rw [← sq_abs u]; ring
       calc |u| = |u| * 1 := by ring
         _ ≤ |u| * |u| := hmul
-        _ = u ^ 2 := hid
-    have hstep : (|c| * |u| + 1) / (Real.pi * u ^ 2) ≤ (|c| + 1) / Real.pi := by
+        _ = u ^ (2 : ℕ) := hid
+    have hstep : (|c| * |u| + 1) / (Real.pi * u ^ (2 : ℕ)) ≤ (|c| + 1) / Real.pi := by
       rw [div_le_div_iff₀ (by positivity) hpi]
-      have h1 : |c| * |u| * Real.pi + Real.pi ≤ (|c| + 1) * (Real.pi * u ^ 2) := by
+      have h1 : |c| * |u| * Real.pi + Real.pi ≤ (|c| + 1) * (Real.pi * u ^ (2 : ℕ)) := by
         have hc0 : (0 : ℝ) ≤ |c| := abs_nonneg c
-        have hu2 : (1 : ℝ) < u ^ 2 := lt_of_lt_of_le hu hsq
-        have e1 : |c| * Real.pi * |u| ≤ |c| * Real.pi * u ^ 2 :=
+        have hu2 : (1 : ℝ) < u ^ (2 : ℕ) := lt_of_lt_of_le hu hsq
+        have e1 : |c| * Real.pi * |u| ≤ |c| * Real.pi * u ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left hsq (by positivity)
-        have e2 : Real.pi * 1 ≤ Real.pi * u ^ 2 :=
+        have e2 : Real.pi * 1 ≤ Real.pi * u ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left hu2.le hpi.le
         nlinarith [e1, e2]
       linarith
@@ -75,21 +75,21 @@ theorem exists_global_bound_deriv_sincSmooth (c : ℝ) :
 
 /-- The twice-differentiated sinc kernel is globally bounded by `|c|³/(3π)`. -/
 theorem abs_deriv2_sincSmooth_le (c u : ℝ) :
-    |deriv (deriv (sincSmooth c)) u| ≤ |c| ^ 3 / (3 * Real.pi) := by
+    |deriv (deriv (sincSmooth c)) u| ≤ |c| ^ (3 : ℕ) / (3 * Real.pi) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [deriv2_sincSmooth_eq_sincSecondIntegralProfile, sincSecondIntegralProfile, abs_mul]
-  have hcoef : |(-(c ^ 3) / (2 * Real.pi))| = |c| ^ 3 / (2 * Real.pi) := by
+  have hcoef : |(-(c ^ (3 : ℕ)) / (2 * Real.pi))| = |c| ^ (3 : ℕ) / (2 * Real.pi) := by
     rw [abs_div, abs_neg, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi), abs_pow]
-  have hmoment : (∫ t in (-1 : ℝ)..1, t ^ 2) = 2 / 3 := by
+  have hmoment : (∫ t in (-1 : ℝ)..1, t ^ (2 : ℕ)) = 2 / 3 := by
     rw [integral_pow]
     norm_num
-  have hint1 : IntervalIntegrable (fun t : ℝ => t ^ 2 * Real.cos (c * u * t)) volume (-1) 1 :=
-    (by fun_prop : Continuous fun t : ℝ => t ^ 2 * Real.cos (c * u * t)).intervalIntegrable _ _
-  have hint2 : IntervalIntegrable (fun t : ℝ => t ^ 2) volume (-1) 1 :=
-    (by fun_prop : Continuous fun t : ℝ => t ^ 2).intervalIntegrable _ _
-  have hbound : |∫ t in (-1 : ℝ)..1, t ^ 2 * Real.cos (c * u * t)| ≤ 2 / 3 := by
+  have hint1 : IntervalIntegrable (fun t : ℝ => t ^ (2 : ℕ) * Real.cos (c * u * t)) volume (-1) 1 :=
+    (by fun_prop : Continuous fun t : ℝ => t ^ (2 : ℕ) * Real.cos (c * u * t)).intervalIntegrable _ _
+  have hint2 : IntervalIntegrable (fun t : ℝ => t ^ (2 : ℕ)) volume (-1) 1 :=
+    (by fun_prop : Continuous fun t : ℝ => t ^ (2 : ℕ)).intervalIntegrable _ _
+  have hbound : |∫ t in (-1 : ℝ)..1, t ^ (2 : ℕ) * Real.cos (c * u * t)| ≤ 2 / 3 := by
     have habs := intervalIntegral.abs_integral_le_integral_abs
-      (f := fun t : ℝ => t ^ 2 * Real.cos (c * u * t)) (μ := volume)
+      (f := fun t : ℝ => t ^ (2 : ℕ) * Real.cos (c * u * t)) (μ := volume)
       (by norm_num : (-1 : ℝ) ≤ 1)
     refine le_trans habs ?_
     rw [← hmoment]
@@ -97,10 +97,10 @@ theorem abs_deriv2_sincSmooth_le (c u : ℝ) :
     rw [abs_mul, abs_pow, sq_abs]
     exact mul_le_of_le_one_right (by positivity) (Real.abs_cos_le_one _)
   rw [hcoef]
-  calc |c| ^ 3 / (2 * Real.pi) * |∫ t in (-1 : ℝ)..1, t ^ 2 * Real.cos (c * u * t)|
-      ≤ |c| ^ 3 / (2 * Real.pi) * (2 / 3) :=
+  calc |c| ^ (3 : ℕ) / (2 * Real.pi) * |∫ t in (-1 : ℝ)..1, t ^ (2 : ℕ) * Real.cos (c * u * t)|
+      ≤ |c| ^ (3 : ℕ) / (2 * Real.pi) * (2 / 3) :=
         mul_le_mul_of_nonneg_left hbound (by positivity)
-    _ = |c| ^ 3 / (3 * Real.pi) := by field_simp
+    _ = |c| ^ (3 : ℕ) / (3 * Real.pi) := by field_simp
 
 
 /-! ## Global bounds on a band eigenfunction and its derivatives -/
@@ -173,7 +173,7 @@ theorem exists_bound_deriv2_of_bandTransform_eigen {c lam : ℝ} (hlam : lam ≠
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, |deriv (deriv Φ) x| ≤ C := by
   have hI0 : (0 : ℝ) ≤ ∫ y in (-1 : ℝ)..1, |Φ y| :=
     intervalIntegral.integral_nonneg (by norm_num) fun y _ => abs_nonneg _
-  refine ⟨|lam|⁻¹ * (|c| ^ 3 / (3 * Real.pi) * ∫ y in (-1 : ℝ)..1, |Φ y|),
+  refine ⟨|lam|⁻¹ * (|c| ^ (3 : ℕ) / (3 * Real.pi) * ∫ y in (-1 : ℝ)..1, |Φ y|),
     by positivity, fun x => ?_⟩
   rw [(hasDerivAt_deriv_of_bandTransform_eigen hlam hΦ hband x).deriv, abs_mul, abs_inv]
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)

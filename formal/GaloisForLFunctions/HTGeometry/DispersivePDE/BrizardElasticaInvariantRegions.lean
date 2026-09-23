@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 def g₃SignFactor (m : ℝ) : ℝ := (2 * m - 1) * (m + 1) * (m - 2)
 
 theorem g₃_factor' (P : Parameters) :
-    g₃ P = 4 * g₃SignFactor P.modulus / (27 * (P.q₀ : ℝ) ^ 3) := by
+    g₃ P = 4 * g₃SignFactor P.modulus / (27 * (P.q₀ : ℝ) ^ (3 : ℕ)) := by
   rw [g₃_factor, g₃SignFactor]
   ring
 
@@ -29,14 +29,14 @@ theorem g₃_pos_iff (P : Parameters) :
     constructor <;> intro h <;> nlinarith
   have hnumneg : 4 * g₃SignFactor P.modulus < 0 ↔ g₃SignFactor P.modulus < 0 := by
     constructor <;> intro h <;> nlinarith
-  have hpowpos : 0 < (P.q₀ : ℝ) ^ 3 ↔ 0 < (P.q₀ : ℝ) :=
+  have hpowpos : 0 < (P.q₀ : ℝ) ^ (3 : ℕ) ↔ 0 < (P.q₀ : ℝ) :=
     (show Odd 3 by decide).pow_pos_iff
-  have hpowneg : (P.q₀ : ℝ) ^ 3 < 0 ↔ (P.q₀ : ℝ) < 0 :=
+  have hpowneg : (P.q₀ : ℝ) ^ (3 : ℕ) < 0 ↔ (P.q₀ : ℝ) < 0 :=
     (show Odd 3 by decide).pow_neg_iff
-  have hdenpos : 0 < 27 * (P.q₀ : ℝ) ^ 3 ↔ 0 < (P.q₀ : ℝ) := by
+  have hdenpos : 0 < 27 * (P.q₀ : ℝ) ^ (3 : ℕ) ↔ 0 < (P.q₀ : ℝ) := by
     rw [mul_pos_iff]
     simp [hpowpos]
-  have hdenneg : 27 * (P.q₀ : ℝ) ^ 3 < 0 ↔ (P.q₀ : ℝ) < 0 := by
+  have hdenneg : 27 * (P.q₀ : ℝ) ^ (3 : ℕ) < 0 ↔ (P.q₀ : ℝ) < 0 := by
     rw [mul_neg_iff]
     simp [hpowneg]
   rw [hnumpos, hnumneg, hdenpos, hdenneg]
@@ -51,14 +51,14 @@ theorem g₃_neg_iff (P : Parameters) :
     constructor <;> intro h <;> nlinarith
   have hnumneg : 4 * g₃SignFactor P.modulus < 0 ↔ g₃SignFactor P.modulus < 0 := by
     constructor <;> intro h <;> nlinarith
-  have hpowpos : 0 < (P.q₀ : ℝ) ^ 3 ↔ 0 < (P.q₀ : ℝ) :=
+  have hpowpos : 0 < (P.q₀ : ℝ) ^ (3 : ℕ) ↔ 0 < (P.q₀ : ℝ) :=
     (show Odd 3 by decide).pow_pos_iff
-  have hpowneg : (P.q₀ : ℝ) ^ 3 < 0 ↔ (P.q₀ : ℝ) < 0 :=
+  have hpowneg : (P.q₀ : ℝ) ^ (3 : ℕ) < 0 ↔ (P.q₀ : ℝ) < 0 :=
     (show Odd 3 by decide).pow_neg_iff
-  have hdenpos : 0 < 27 * (P.q₀ : ℝ) ^ 3 ↔ 0 < (P.q₀ : ℝ) := by
+  have hdenpos : 0 < 27 * (P.q₀ : ℝ) ^ (3 : ℕ) ↔ 0 < (P.q₀ : ℝ) := by
     rw [mul_pos_iff]
     simp [hpowpos]
-  have hdenneg : 27 * (P.q₀ : ℝ) ^ 3 < 0 ↔ (P.q₀ : ℝ) < 0 := by
+  have hdenneg : 27 * (P.q₀ : ℝ) ^ (3 : ℕ) < 0 ↔ (P.q₀ : ℝ) < 0 := by
     rw [mul_neg_iff]
     simp [hpowneg]
   rw [hnumpos, hnumneg, hdenpos, hdenneg]

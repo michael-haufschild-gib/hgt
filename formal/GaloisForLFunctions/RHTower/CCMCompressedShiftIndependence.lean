@@ -44,17 +44,17 @@ open Filter Topology Set
 /-! ## The weighted shift and its compression -/
 
 /-- The weighted bilateral translation `S h f x = e^h * f (x - h)`. -/
-def weightedShift (h : ℝ) : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
+def weightedShift_cCMCompressedShiftIndependence (h : ℝ) : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
   toFun f := fun x => (Real.exp h : ℂ) * f (x - h)
   map_add' f g := by funext x; simp [mul_add]
   map_smul' c f := by funext x; simp [smul_eq_mul]; ring
 
 theorem weightedShift_apply (h : ℝ) (f : ℝ → ℂ) (x : ℝ) :
-    weightedShift h f x = (Real.exp h : ℂ) * f (x - h) := rfl
+    weightedShift_cCMCompressedShiftIndependence h f x = (Real.exp h : ℂ) * f (x - h) := rfl
 
 /-- **The semigroup law.** -/
 theorem weightedShift_comp (h k : ℝ) (f : ℝ → ℂ) :
-    weightedShift h (weightedShift k f) = weightedShift (h + k) f := by
+    weightedShift_cCMCompressedShiftIndependence h (weightedShift_cCMCompressedShiftIndependence k f) = weightedShift_cCMCompressedShiftIndependence (h + k) f := by
   funext x
   simp only [weightedShift_apply, Real.exp_add, Complex.ofReal_mul]
   rw [show x - h - k = x - (h + k) from by ring]
@@ -233,7 +233,7 @@ weighted translates by distinct shifts are already linearly independent.  At the
 nonzero coefficient, every other term has left the support. -/
 theorem linearIndependent_weightedShift_apply {r : ℕ} {h : Fin r → ℝ}
     (hinj : Function.Injective h) {f : ℝ → ℂ} (hf : f ≠ 0) (hcs : HasCompactSupport f) :
-    LinearIndependent ℂ (fun j : Fin r => weightedShift (h j) f) := by
+    LinearIndependent ℂ (fun j : Fin r => weightedShift_cCMCompressedShiftIndependence (h j) f) := by
   classical
   rw [Fintype.linearIndependent_iff]
   intro c hsum
@@ -286,10 +286,10 @@ theorem linearIndependent_weightedShift_apply {r : ℕ} {h : Fin r → ℝ}
   have hyle : y ≤ M := le_csSup hbdd hyS
   set x : ℝ := y + h j₀ with hx
   -- evaluate
-  have happ : ∑ j, c j * weightedShift (h j) f x = 0 := by
-    have h1 : (∑ j, c j • weightedShift (h j) f) x = 0 := by rw [hsum]; simp
+  have happ : ∑ j, c j * weightedShift_cCMCompressedShiftIndependence (h j) f x = 0 := by
+    have h1 : (∑ j, c j • weightedShift_cCMCompressedShiftIndependence (h j) f) x = 0 := by rw [hsum]; simp
     simpa [Finset.sum_apply, smul_eq_mul] using h1
-  have hother : ∀ j, j ≠ j₀ → c j * weightedShift (h j) f x = 0 := by
+  have hother : ∀ j, j ≠ j₀ → c j * weightedShift_cCMCompressedShiftIndependence (h j) f x = 0 := by
     intro j hj
     by_cases hjS : j ∈ S
     · have hgap : δ < h j₀ - h j := by
@@ -380,15 +380,15 @@ diagonal pairings.  This is the parallelogram identity underlying the indefinite
 completed finite-aperture form. -/
 theorem kreinBlock_identity {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     {ι : Type*} (s : Finset ι) (a : ι → ℝ) (T : ι → E) (v : E) (c : ℝ) :
-    (∑ n ∈ s, a n * ‖T n + (c : ℂ) • v‖ ^ 2) - (∑ n ∈ s, a n * ‖T n - (c : ℂ) • v‖ ^ 2)
+    (∑ n ∈ s, a n * ‖T n + (c : ℂ) • v‖ ^ (2 : ℕ)) - (∑ n ∈ s, a n * ‖T n - (c : ℂ) • v‖ ^ (2 : ℕ))
       = 4 * c * ∑ n ∈ s, a n * RCLike.re (inner ℂ (T n) v) := by
   rw [← Finset.sum_sub_distrib, Finset.mul_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
-  have hplus : ‖T n + (c : ℂ) • v‖ ^ 2
-      = ‖T n‖ ^ 2 + 2 * RCLike.re (inner ℂ (T n) ((c : ℂ) • v)) + ‖(c : ℂ) • v‖ ^ 2 :=
+  have hplus : ‖T n + (c : ℂ) • v‖ ^ (2 : ℕ)
+      = ‖T n‖ ^ (2 : ℕ) + 2 * RCLike.re (inner ℂ (T n) ((c : ℂ) • v)) + ‖(c : ℂ) • v‖ ^ (2 : ℕ) :=
     norm_add_sq _ _
-  have hminus : ‖T n - (c : ℂ) • v‖ ^ 2
-      = ‖T n‖ ^ 2 - 2 * RCLike.re (inner ℂ (T n) ((c : ℂ) • v)) + ‖(c : ℂ) • v‖ ^ 2 :=
+  have hminus : ‖T n - (c : ℂ) • v‖ ^ (2 : ℕ)
+      = ‖T n‖ ^ (2 : ℕ) - 2 * RCLike.re (inner ℂ (T n) ((c : ℂ) • v)) + ‖(c : ℂ) • v‖ ^ (2 : ℕ) :=
     norm_sub_sq _ _
   have hinner : RCLike.re (inner ℂ (T n) ((c : ℂ) • v)) = c * RCLike.re (inner ℂ (T n) v) := by
     rw [inner_smul_right]

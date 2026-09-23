@@ -29,7 +29,7 @@ def frankensteinCCMGammaWoldRegularizedJuliaOrbitFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) : ℝ :=
   4 * Complex.normSq c *
     (-(frankensteinCCMGammaSchwarzCenteredCubicFirstLanding q N v).re *
-      (1 / (4 * (xiRightCenteredZero q).re ^ 3)))
+      (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ))))
 
 /-- **Completed-source Wold--Julia descent.**  The second source residue lands exactly in the
 finite pivot-resistant regularized orbit response. -/
@@ -57,7 +57,7 @@ theorem tendsto_frankensteinCCMGammaWoldRegularizedJuliaOrbitFirstLanding
         ({criticalMellinXiPole (xiRightZeroCopyConjEquiv q).1.1}ᶜ))
       (nhds (-sourceZeroHorizontalWoldPrimeClockCubicResponse q.1 N)) := hre.neg
   have hreg := hneg.mul_const
-    (1 / (4 * (xiRightCenteredZero q).re ^ 3))
+    (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)))
   have horbit := hreg.const_mul (4 * Complex.normSq c)
   convert horbit using 1
   · funext v

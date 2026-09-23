@@ -16,23 +16,23 @@ theorem tendsto_levinsonLinearMollifiedCriticalDetector_nonunitEnergy (r : ℝ) 
     Tendsto (fun N : ℕ =>
       ∑ k ∈ Finset.Icc 2 N,
         ‖levinsonLinearMollifiedCriticalDetectorCoeff
-          (levinsonScaledDetectorParameter r N) N k‖ ^ 2)
-      atTop (nhds ((1 - r) ^ 2 / 2 + r ^ 2 / 12)) := by
-  have hA := (tendsto_const_nhds (x := (1 - r) ^ 2)).mul
+          (levinsonScaledDetectorParameter r N) N k‖ ^ (2 : ℕ))
+      atTop (nhds ((1 - r) ^ (2 : ℕ) / 2 + r ^ (2 : ℕ) / 12)) := by
+  have hA := (tendsto_const_nhds (x := (1 - r) ^ (2 : ℕ))).mul
     tendsto_vonMangoldtHarmonicSquareSum_div_logSquare
   have hB := (tendsto_const_nhds (x := 2 * (1 - r) * r)).mul
     tendsto_vonMangoldtSelfConvCrossHarmonicSum_div_logCube
-  have hC := (tendsto_const_nhds (x := r ^ 2)).mul
+  have hC := (tendsto_const_nhds (x := r ^ (2 : ℕ))).mul
     tendsto_vonMangoldtSelfConvHarmonicSquareSum_div_logFourth
   have hlimit := (hA.sub hB).add hC
   have hnormal : Tendsto (fun N : ℕ =>
-      (1 - r) ^ 2 *
-          (vonMangoldtHarmonicSquareSum N / Real.log N ^ 2) -
+      (1 - r) ^ (2 : ℕ) *
+          (vonMangoldtHarmonicSquareSum N / Real.log N ^ (2 : ℕ)) -
         (2 * (1 - r) * r) *
-          (vonMangoldtSelfConvCrossHarmonicSum N / Real.log N ^ 3) +
-        r ^ 2 *
-          (vonMangoldtSelfConvHarmonicSquareSum N / Real.log N ^ 4))
-      atTop (nhds ((1 - r) ^ 2 / 2 + r ^ 2 / 12)) := by
+          (vonMangoldtSelfConvCrossHarmonicSum N / Real.log N ^ (3 : ℕ)) +
+        r ^ (2 : ℕ) *
+          (vonMangoldtSelfConvHarmonicSquareSum N / Real.log N ^ (4 : ℕ)))
+      atTop (nhds ((1 - r) ^ (2 : ℕ) / 2 + r ^ (2 : ℕ) / 12)) := by
     convert hlimit using 1
     all_goals ring_nf
   refine hnormal.congr' ?_
@@ -49,15 +49,15 @@ theorem tendsto_levinsonLinearMollifiedCriticalDetector_energy (r : ℝ) :
     Tendsto (fun N : ℕ =>
       ∑ k ∈ Finset.Icc 1 N,
         ‖levinsonLinearMollifiedCriticalDetectorCoeff
-          (levinsonScaledDetectorParameter r N) N k‖ ^ 2)
-      atTop (nhds (1 + (1 - r) ^ 2 / 2 + r ^ 2 / 12)) := by
+          (levinsonScaledDetectorParameter r N) N k‖ ^ (2 : ℕ))
+      atTop (nhds (1 + (1 - r) ^ (2 : ℕ) / 2 + r ^ (2 : ℕ) / 12)) := by
   have hsum := (tendsto_const_nhds (x := (1 : ℝ))).add
     (tendsto_levinsonLinearMollifiedCriticalDetector_nonunitEnergy r)
   have hsum' : Tendsto (fun N : ℕ => 1 +
       ∑ k ∈ Finset.Icc 2 N,
         ‖levinsonLinearMollifiedCriticalDetectorCoeff
-          (levinsonScaledDetectorParameter r N) N k‖ ^ 2)
-      atTop (nhds (1 + (1 - r) ^ 2 / 2 + r ^ 2 / 12)) := by
+          (levinsonScaledDetectorParameter r N) N k‖ ^ (2 : ℕ))
+      atTop (nhds (1 + (1 - r) ^ (2 : ℕ) / 2 + r ^ (2 : ℕ) / 12)) := by
     convert hsum using 1
     all_goals ring_nf
   refine hsum'.congr' ?_

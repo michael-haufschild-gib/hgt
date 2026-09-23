@@ -23,19 +23,19 @@ namespace RHTower
 2iη·g(iη) at the pair point v = iη: the cofactor is the exact stiffness. -/
 theorem pair_hasDerivAt {g : ℂ → ℂ} (η : ℝ)
     (hg : DifferentiableAt ℂ g (Complex.I * (η : ℂ))) :
-    HasDerivAt (fun v : ℂ => (v ^ 2 + ((η : ℂ)) ^ 2) * g v)
+    HasDerivAt (fun v : ℂ => (v ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ)) * g v)
       (2 * Complex.I * (η : ℂ) * g (Complex.I * (η : ℂ)))
       (Complex.I * (η : ℂ)) := by
   set v₀ : ℂ := Complex.I * (η : ℂ) with hv₀
-  have hpoly : HasDerivAt (fun v : ℂ => v ^ 2 + ((η : ℂ)) ^ 2) (2 * v₀) v₀ := by
-    have := (hasDerivAt_pow 2 v₀).add_const (((η : ℂ)) ^ 2)
+  have hpoly : HasDerivAt (fun v : ℂ => v ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ)) (2 * v₀) v₀ := by
+    have := (hasDerivAt_pow 2 v₀).add_const (((η : ℂ)) ^ (2 : ℕ))
     simpa [pow_one] using this
   have hprod := hpoly.mul hg.hasDerivAt
-  have hzero : v₀ ^ 2 + ((η : ℂ)) ^ 2 = 0 := by
+  have hzero : v₀ ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ) = 0 := by
     simp only [hv₀]
     rw [mul_pow, Complex.I_sq]
     ring
-  have harith : 2 * v₀ * g v₀ + (v₀ ^ 2 + ((η : ℂ)) ^ 2) * deriv g v₀
+  have harith : 2 * v₀ * g v₀ + (v₀ ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ)) * deriv g v₀
       = 2 * Complex.I * (η : ℂ) * g v₀ := by
     rw [hzero]
     simp only [hv₀]

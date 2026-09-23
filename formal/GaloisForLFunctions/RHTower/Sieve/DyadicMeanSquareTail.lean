@@ -41,13 +41,13 @@ theorem dyadicMeanSquare_le_dyadicTail (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     (hM : B + 1 + ℓ < M + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hG : ∀ T : ℝ, W ≤ T →
-      (∫ w in Set.Icc (-T) T, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
+      (∫ w in Set.Icc (-T) T, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
         ≤ α * T + β) :
     dyadicMeanSquare f ℓ A B
       ≤ ((A : ℝ) * (1 + ε) ^ K')
           * ((K' : ℝ) * blockCostG (ℓ : ℝ) ε
-              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * (α * W + β)
-                + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)))) := by
+              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * (α * W + β)
+                + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   have hpi := Real.pi_pos
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
   have hℓ0 : (0 : ℝ) < (ℓ : ℝ) := by exact_mod_cast hℓ
@@ -56,14 +56,14 @@ theorem dyadicMeanSquare_le_dyadicTail (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     have : (0 : ℝ) ≤ (ℓ : ℝ) / (A : ℝ) := by positivity
     linarith
   have hmass : (0 : ℝ) ≤ α * W + β := by positivity
-  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * (α * W + β)
-      + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) with hGdef
+  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * (α * W + β)
+      + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) with hGdef
   have hG0 : 0 ≤ G := by
     rw [hGdef]
-    have h1 : (0 : ℝ) ≤ 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * (α * W + β) :=
+    have h1 : (0 : ℝ) ≤ 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * (α * W + β) :=
       mul_nonneg (by positivity) hmass
-    have h2 : (0 : ℝ) ≤ 4 * α / (Real.pi ^ 2 * W) := by positivity
-    have h3 : (0 : ℝ) ≤ 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by positivity
+    have h2 : (0 : ℝ) ≤ 4 * α / (Real.pi ^ (2 : ℕ) * W) := by positivity
+    have h3 : (0 : ℝ) ≤ 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) := by positivity
     linarith
   refine dyadicMeanSquare_le_gen f hf hℓ hA hAB hε hG0 hM hcover ?_
   intro Y' hY' E
@@ -77,7 +77,7 @@ theorem dyadicMeanSquare_le_dyadicTail (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     (Real.log (1 + (ℓ : ℝ) / Y'))
   have hnn : 0 ≤ᵐ[volume] fun u : ℝ =>
       ‖logWindowSum (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M)
-        (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ 2 :=
+        (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ (2 : ℕ) :=
     Filter.Eventually.of_forall fun u => by positivity
   refine le_trans (setIntegral_le_integral hint hnn) ?_
   refine le_trans (gallagher_split_integral_dyadic (fun n => ((f n : ℝ) : ℂ))
@@ -87,7 +87,7 @@ theorem dyadicMeanSquare_le_dyadicTail (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 
     refine Real.log_le_log (by positivity) ?_
     have : (ℓ : ℝ) / Y' ≤ (ℓ : ℝ) / (A : ℝ) := div_le_div_of_nonneg_left hℓ0.le hA0 hY'
     linarith
-  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ 2 ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 :=
+  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ (2 : ℕ) ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hδ0.le hmono 2
   rw [hGdef]
   have hmul := mul_le_mul_of_nonneg_right hsq hmass
@@ -104,12 +104,12 @@ theorem dyadicMeanSquare_le_meanValue (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 1
     dyadicMeanSquare f ℓ A B
       ≤ ((A : ℝ) * (1 + ε) ^ K')
           * ((K' : ℝ) * blockCostG (ℓ : ℝ) ε
-              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2
+              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ)
                     * ((5 * Real.pi / 2) * (M : ℝ) * W
-                        + ((5 * Real.exp 1 / 2) * (M : ℝ) ^ 2 + (5 / 4) * (M : ℝ)))
-                + (4 * ((5 * Real.pi / 2) * (M : ℝ)) / (Real.pi ^ 2 * W)
-                    + 4 * ((5 * Real.exp 1 / 2) * (M : ℝ) ^ 2 + (5 / 4) * (M : ℝ))
-                        / (3 * Real.pi ^ 2 * W ^ 2)))) := by
+                        + ((5 * Real.exp 1 / 2) * (M : ℝ) ^ (2 : ℕ) + (5 / 4) * (M : ℝ)))
+                + (4 * ((5 * Real.pi / 2) * (M : ℝ)) / (Real.pi ^ (2 : ℕ) * W)
+                    + 4 * ((5 * Real.exp 1 / 2) * (M : ℝ) ^ (2 : ℕ) + (5 / 4) * (M : ℝ))
+                        / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   have hpi := Real.pi_pos
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   refine dyadicMeanSquare_le_dyadicTail f hf hℓ hA hAB hε hW (by positivity) (by positivity)
@@ -119,18 +119,18 @@ theorem dyadicMeanSquare_le_meanValue (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 1
   refine le_trans (integral_Icc_normSq_logPoly_le_affine_majorant
     (fun n => ((f n : ℝ) : ℂ)) M hT0) ?_
   -- the two coefficient masses are at most `M` and `M²`
-  have hnorm : ∀ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2 ≤ 1 := by
+  have hnorm : ∀ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
     intro m
     rw [Complex.norm_real, Real.norm_eq_abs]
     nlinarith [hf ((m : ℕ) + 1), abs_nonneg (f ((m : ℕ) + 1))]
-  have hS : (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2) ≤ (M : ℝ) := by
+  have hS : (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ)) ≤ (M : ℝ) := by
     refine le_trans (Finset.sum_le_sum fun m _ => hnorm m) ?_
     simp
-  have hS0 : (0 : ℝ) ≤ ∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2 :=
+  have hS0 : (0 : ℝ) ≤ ∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => by positivity
-  have hS1 : (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
-      ≤ (M : ℝ) ^ 2 := by
-    have hterm : ∀ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2
+  have hS1 : (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      ≤ (M : ℝ) ^ (2 : ℕ) := by
+    have hterm : ∀ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ)
         ≤ (M : ℝ) := by
       intro m
       have hm : (((m : ℕ) : ℝ) + 1) ≤ (M : ℝ) := by
@@ -141,18 +141,18 @@ theorem dyadicMeanSquare_le_meanValue (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 1
     refine le_trans (Finset.sum_le_sum fun m _ => hterm m) ?_
     simp [Finset.sum_const, Finset.card_univ]
     nlinarith [hM0]
-  have hS10 : (0 : ℝ) ≤ ∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2 :=
+  have hS10 : (0 : ℝ) ≤ ∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => by positivity
   have he : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
-  have hstep1 : (5 * Real.pi / 2) * (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2) * T
+  have hstep1 : (5 * Real.pi / 2) * (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ)) * T
       ≤ (5 * Real.pi / 2) * (M : ℝ) * T := by
     have := mul_le_mul_of_nonneg_left hS (by positivity : (0:ℝ) ≤ 5 * Real.pi / 2)
     nlinarith [this, hT0]
   have hstep2 : (5 * Real.exp 1 / 2)
-      * (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
-      ≤ (5 * Real.exp 1 / 2) * (M : ℝ) ^ 2 :=
+      * (∑ m : Fin M, (((m : ℕ) : ℝ) + 1) * ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      ≤ (5 * Real.exp 1 / 2) * (M : ℝ) ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hS1 (by positivity)
-  have hstep3 : (5 / 4 : ℝ) * (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ 2)
+  have hstep3 : (5 / 4 : ℝ) * (∑ m : Fin M, ‖((f ((m : ℕ) + 1) : ℝ) : ℂ)‖ ^ (2 : ℕ))
       ≤ (5 / 4 : ℝ) * (M : ℝ) :=
     mul_le_mul_of_nonneg_left hS (by norm_num)
   linarith

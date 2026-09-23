@@ -52,7 +52,7 @@ theorem exists_xiHurwitzCriticalLineAnchor_of_sign_bracket
 /-- The existing Hardy moment-gap criterion produces an actual critical-line Xi-divisor anchor. -/
 theorem exists_xiHurwitzCriticalLineAnchor_of_hardy_moment_gap
     {α β S M_line : ℝ} (hαβ : α ≤ β) (hS : 0 < S)
-    (hsupply : S ≤ ∫ u in α..β, ((xi (linePt u)).re) ^ 2)
+    (hsupply : S ≤ ∫ u in α..β, ((xi (linePt u)).re) ^ (2 : ℕ))
     (hsup : ∀ u ∈ Set.Icc α β, |(xi (linePt u)).re| ≤ M_line)
     (hfm : M_line * |∫ u in α..β, (xi (linePt u)).re| < S) :
     ∃ τ : XiDivisorSupport, (τ : ℂ).re = 1 / 2 := by
@@ -88,7 +88,7 @@ theorem riemannHypothesis_of_xi_sign_bracket_and_allCriticalAnchorPairVandermond
 anchor; reality of all anchored two-node Hurwitz separators then proves RH. -/
 theorem riemannHypothesis_of_xi_hardy_moment_gap_and_allCriticalAnchorPairVandermondeReal
     {α β S M_line : ℝ} (hαβ : α ≤ β) (hS : 0 < S)
-    (hsupply : S ≤ ∫ u in α..β, ((xi (linePt u)).re) ^ 2)
+    (hsupply : S ≤ ∫ u in α..β, ((xi (linePt u)).re) ^ (2 : ℕ))
     (hsup : ∀ u ∈ Set.Icc α β, |(xi (linePt u)).re| ≤ M_line)
     (hfm : M_line * |∫ u in α..β, (xi (linePt u)).re| < S)
     (hreal : XiHurwitzEveryCriticalAnchorPairVandermondeReal) :

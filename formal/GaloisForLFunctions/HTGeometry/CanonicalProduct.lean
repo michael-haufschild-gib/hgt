@@ -40,7 +40,7 @@ locally-uniform product machinery: on each ball `B(0, S)` the tail factors are d
 summable series `S²·‖aₙ‖⁻²`, so the partial products converge locally uniformly to the product,
 which is therefore a locally-uniform limit of holomorphic functions and hence holomorphic. -/
 theorem canonicalProductE1_analytic (a : ℕ → ℂ) (ha : ∀ n, a n ≠ 0)
-    (hsum : Summable (fun n => 1 / ‖a n‖ ^ 2)) :
+    (hsum : Summable (fun n => 1 / ‖a n‖ ^ (2 : ℕ))) :
     AnalyticOnNhd ℂ (canonicalProductE1 a) Set.univ := by
   -- Analyticity on an arbitrary ball `B(0, S)` with `S > 0`.
   have hball : ∀ S : ℝ, 0 < S →
@@ -49,20 +49,20 @@ theorem canonicalProductE1_analytic (a : ℕ → ℂ) (ha : ∀ n, a n ≠ 0)
     -- The genus-one factor centred at `1`: `f n z = E₁(z / aₙ) - 1`.
     set f : ℕ → ℂ → ℂ := fun n z => weierstrassE1 (z / a n) - 1 with hf
     -- The dominating summable series `u n = S²·‖aₙ‖⁻²`.
-    have hu : Summable (fun n => S ^ 2 * (1 / ‖a n‖ ^ 2)) := hsum.mul_left _
+    have hu : Summable (fun n => S ^ (2 : ℕ) * (1 / ‖a n‖ ^ (2 : ℕ))) := hsum.mul_left _
     -- Square-summability forces `‖aₙ‖ → ∞`, so eventually `S ≤ ‖aₙ‖`.
     have hev : ∀ᶠ n in atTop, S ≤ ‖a n‖ := by
-      have htend : Tendsto (fun n => 1 / ‖a n‖ ^ 2) atTop (𝓝 0) := hsum.tendsto_atTop_zero
-      have hlt : ∀ᶠ n in atTop, 1 / ‖a n‖ ^ 2 < 1 / S ^ 2 :=
+      have htend : Tendsto (fun n => 1 / ‖a n‖ ^ (2 : ℕ)) atTop (𝓝 0) := hsum.tendsto_atTop_zero
+      have hlt : ∀ᶠ n in atTop, 1 / ‖a n‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
         htend.eventually_lt_const (by positivity)
       filter_upwards [hlt] with n hn
       have hanpos : 0 < ‖a n‖ :=
         (norm_nonneg _).lt_of_ne (Ne.symm (norm_ne_zero_iff.mpr (ha n)))
-      have hsq : S ^ 2 < ‖a n‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos hanpos 2) hn
+      have hsq : S ^ (2 : ℕ) < ‖a n‖ ^ (2 : ℕ) := lt_of_one_div_lt_one_div (pow_pos hanpos 2) hn
       exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
     -- The eventual local domination `‖f n z‖ ≤ S²·‖aₙ‖⁻²` on `B(0, S)`.
     have hbound : ∀ᶠ n in atTop, ∀ z ∈ Metric.ball (0 : ℂ) S,
-        ‖f n z‖ ≤ S ^ 2 * (1 / ‖a n‖ ^ 2) := by
+        ‖f n z‖ ≤ S ^ (2 : ℕ) * (1 / ‖a n‖ ^ (2 : ℕ)) := by
       filter_upwards [hev] with n hn z hz
       have hzS : ‖z‖ < S := mem_ball_zero_iff.mp hz
       have hanpos : 0 < ‖a n‖ := lt_of_lt_of_le hSpos hn
@@ -71,9 +71,9 @@ theorem canonicalProductE1_analytic (a : ℕ → ℂ) (ha : ∀ n, a n ≠ 0)
       have hle1 : ‖z / a n‖ ≤ 1 := by
         rw [hdiv]; exact le_of_lt ((div_lt_one hanpos).mpr hzlt)
       calc ‖f n z‖ = ‖weierstrassE1 (z / a n) - 1‖ := by simp only [hf]
-        _ ≤ ‖z / a n‖ ^ 2 := weierstrassE1_sub_one_norm_le hle1
-        _ = ‖z‖ ^ 2 * (1 / ‖a n‖ ^ 2) := by rw [hdiv, div_pow, div_eq_mul_one_div]
-        _ ≤ S ^ 2 * (1 / ‖a n‖ ^ 2) :=
+        _ ≤ ‖z / a n‖ ^ (2 : ℕ) := weierstrassE1_sub_one_norm_le hle1
+        _ = ‖z‖ ^ (2 : ℕ) * (1 / ‖a n‖ ^ (2 : ℕ)) := by rw [hdiv, div_pow, div_eq_mul_one_div]
+        _ ≤ S ^ (2 : ℕ) * (1 / ‖a n‖ ^ (2 : ℕ)) :=
             mul_le_mul_of_nonneg_right
               (pow_le_pow_left₀ (norm_nonneg z) (le_of_lt hzS) 2) (by positivity)
     -- Each centred factor is continuous (entire, even) on the ball.
@@ -120,7 +120,7 @@ noncomputable def canonicalProductE1Indexed {ι : Type*} (a : ι → ℂ) (z : �
 arbitrarily indexed genus-one product. -/
 theorem canonicalProductE1Indexed_hasProdLocallyUniformlyOn {ι : Type*}
     (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) :
     HasProdLocallyUniformlyOn (fun i z => weierstrassE1 (z / a i))
       (canonicalProductE1Indexed a) Set.univ := by
   have hball : ∀ S : ℝ, 0 < S →
@@ -128,19 +128,19 @@ theorem canonicalProductE1Indexed_hasProdLocallyUniformlyOn {ι : Type*}
         (canonicalProductE1Indexed a) (Metric.ball 0 S) := by
     intro S hSpos
     set f : ι → ℂ → ℂ := fun i z => weierstrassE1 (z / a i) - 1 with hf
-    have hu : Summable (fun i => S ^ 2 * (1 / ‖a i‖ ^ 2)) := hsum.mul_left _
+    have hu : Summable (fun i => S ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ))) := hsum.mul_left _
     have hev : ∀ᶠ i in cofinite, S ≤ ‖a i‖ := by
-      have htend : Tendsto (fun i => 1 / ‖a i‖ ^ 2) cofinite (𝓝 0) :=
+      have htend : Tendsto (fun i => 1 / ‖a i‖ ^ (2 : ℕ)) cofinite (𝓝 0) :=
         hsum.tendsto_cofinite_zero
-      have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ 2 < 1 / S ^ 2 :=
+      have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
         htend.eventually_lt_const (by positivity)
       filter_upwards [hlt] with i hi
       have haipos : 0 < ‖a i‖ :=
         (norm_nonneg _).lt_of_ne (Ne.symm (norm_ne_zero_iff.mpr (ha i)))
-      have hsq : S ^ 2 < ‖a i‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
+      have hsq : S ^ (2 : ℕ) < ‖a i‖ ^ (2 : ℕ) := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
       exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
     have hbound : ∀ᶠ i in cofinite, ∀ z ∈ Metric.ball (0 : ℂ) S,
-        ‖f i z‖ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) := by
+        ‖f i z‖ ≤ S ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ)) := by
       filter_upwards [hev] with i hi z hz
       have hzS : ‖z‖ < S := mem_ball_zero_iff.mp hz
       have haipos : 0 < ‖a i‖ := lt_of_lt_of_le hSpos hi
@@ -151,9 +151,9 @@ theorem canonicalProductE1Indexed_hasProdLocallyUniformlyOn {ι : Type*}
         exact le_of_lt ((div_lt_one haipos).mpr hzlt)
       calc
         ‖f i z‖ = ‖weierstrassE1 (z / a i) - 1‖ := by simp only [hf]
-        _ ≤ ‖z / a i‖ ^ 2 := weierstrassE1_sub_one_norm_le hle1
-        _ = ‖z‖ ^ 2 * (1 / ‖a i‖ ^ 2) := by rw [hdiv, div_pow, div_eq_mul_one_div]
-        _ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) :=
+        _ ≤ ‖z / a i‖ ^ (2 : ℕ) := weierstrassE1_sub_one_norm_le hle1
+        _ = ‖z‖ ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ)) := by rw [hdiv, div_pow, div_eq_mul_one_div]
+        _ ≤ S ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_right
             (pow_le_pow_left₀ (norm_nonneg z) (le_of_lt hzS) 2) (by positivity)
     have hcts : ∀ i, ContinuousOn (f i) (Metric.ball (0 : ℂ) S) := by
@@ -177,7 +177,7 @@ theorem canonicalProductE1Indexed_hasProdLocallyUniformlyOn {ι : Type*}
 entire. -/
 theorem canonicalProductE1Indexed_analytic {ι : Type*}
     (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) :
     AnalyticOnNhd ℂ (canonicalProductE1Indexed a) Set.univ := by
   have hpl := canonicalProductE1Indexed_hasProdLocallyUniformlyOn a ha hsum
   have hdiff : ∀ᶠ s : Finset ι in atTop,
@@ -194,20 +194,20 @@ theorem canonicalProductE1Indexed_analytic {ι : Type*}
 This rules out an infinite-product zero unless an individual factor vanishes. -/
 theorem canonicalProductE1Indexed_sub_one_norm_summable {ι : Type*}
     (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) (z : ℂ) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) (z : ℂ) :
     Summable (fun i => ‖weierstrassE1 (z / a i) - 1‖) := by
   let S : ℝ := ‖z‖ + 1
   have hSpos : 0 < S := by dsimp [S]; positivity
-  have hu : Summable (fun i => S ^ 2 * (1 / ‖a i‖ ^ 2)) := hsum.mul_left _
+  have hu : Summable (fun i => S ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ))) := hsum.mul_left _
   have hev : ∀ᶠ i in cofinite, S ≤ ‖a i‖ := by
-    have htend : Tendsto (fun i => 1 / ‖a i‖ ^ 2) cofinite (𝓝 0) :=
+    have htend : Tendsto (fun i => 1 / ‖a i‖ ^ (2 : ℕ)) cofinite (𝓝 0) :=
       hsum.tendsto_cofinite_zero
-    have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ 2 < 1 / S ^ 2 :=
+    have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
       htend.eventually_lt_const (by positivity)
     filter_upwards [hlt] with i hi
     have haipos : 0 < ‖a i‖ :=
       (norm_nonneg _).lt_of_ne (Ne.symm (norm_ne_zero_iff.mpr (ha i)))
-    have hsq : S ^ 2 < ‖a i‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
+    have hsq : S ^ (2 : ℕ) < ‖a i‖ ^ (2 : ℕ) := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
     exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
   refine hu.of_norm_bounded_eventually ?_
   filter_upwards [hev] with i hi
@@ -220,10 +220,10 @@ theorem canonicalProductE1Indexed_sub_one_norm_summable {ι : Type*}
     rw [hdiv]
     exact le_of_lt ((div_lt_one haipos).mpr hzlt)
   calc
-    ‖weierstrassE1 (z / a i) - 1‖ ≤ ‖z / a i‖ ^ 2 :=
+    ‖weierstrassE1 (z / a i) - 1‖ ≤ ‖z / a i‖ ^ (2 : ℕ) :=
       weierstrassE1_sub_one_norm_le hle1
-    _ = ‖z‖ ^ 2 * (1 / ‖a i‖ ^ 2) := by rw [hdiv, div_pow, div_eq_mul_one_div]
-    _ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) :=
+    _ = ‖z‖ ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ)) := by rw [hdiv, div_pow, div_eq_mul_one_div]
+    _ ≤ S ^ (2 : ℕ) * (1 / ‖a i‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_right
         (pow_le_pow_left₀ (norm_nonneg z) (le_of_lt hzS) 2) (by positivity)
 
@@ -231,7 +231,7 @@ theorem canonicalProductE1Indexed_sub_one_norm_summable {ι : Type*}
 prescribed zero `a i`, its value is nonzero. -/
 theorem canonicalProductE1Indexed_ne_zero {ι : Type*}
     (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {z : ℂ}
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) {z : ℂ}
     (hz : ∀ i, z ≠ a i) :
     canonicalProductE1Indexed a z ≠ 0 := by
   rw [canonicalProductE1Indexed]

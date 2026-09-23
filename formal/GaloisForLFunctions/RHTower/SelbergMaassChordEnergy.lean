@@ -138,7 +138,7 @@ private theorem ofComplex_point_self (z : ℍ) : ofComplex (point z.re z.im) = z
 
 /-- Literal sum of squared coordinate variations along the smooth augmented source. -/
 def pathVariationSq (y a b : ℝ) : ℝ :=
-  ∑ j : Option (Deck N), (∫ x in a..b, ‖dir 1 (unit N f e j) (point x y)‖) ^ 2
+  ∑ j : Option (Deck N), (∫ x in a..b, ‖dir 1 (unit N f e j) (point x y)‖) ^ (2 : ℕ)
 
 /-- Actual endpoint separation controls coordinate variation without introducing inverse-amplitude resistance. -/
 theorem chord_le_variation {y a b : ℝ} (hy : 0 < y) (hab : a ≤ b) :

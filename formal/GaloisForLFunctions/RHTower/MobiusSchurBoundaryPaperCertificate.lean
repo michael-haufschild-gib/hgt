@@ -12,23 +12,23 @@ Formal certificates for
 centered-boundary law
   (3)  G_omega(z) = c_omega (1/zeta(1+2omega+z) - 1/zeta(1+2omega))/z ,
   (4)  G_0(z)     = 1/(z zeta(1+z)) ,
-  (5)  G_omega -> G_0 in the boundary L^2 (Hardy) norm ,
+  (5)  G_omega -> G_0 in the boundary L^(2 : ℕ) (Hardy) norm ,
   (11) G_0(z)     = (1/z) sum_n mu(n) n^{-1-z} ,
   (13) m_0(t)     = sum_{n <= e^t} mu(n)/n ,
-  (14) m_0 in L^2(0,infinity)   [unconditional] ,
-  (15) int |G_0(i tau)|^2 dtau = 2 pi int |m_0|^2 ,
+  (14) m_0 in L^(2 : ℕ)(0,infinity)   [unconditional] ,
+  (15) int |G_0(i tau)|^(2 : ℕ) dtau = 2 pi int |m_0|^(2 : ℕ) ,
   (16) L m_omega = G_omega on the imaginary axis ,
-  (17) m_omega -> m_0 in L^2 .
+  (17) m_omega -> m_0 in L^(2 : ℕ) .
 
 causal-graph law
   (2)/(3) H_omega(z) = [zeta(1+z)/(1+omega+z) - c_omega/z]/zeta(1+2omega+z) ,
   (5)  M_omega = H_omega + G_omega ,
   (6)  H_0 = 1/(1+z) - G_0 ,
-  (7)  H_omega -> H_0 in the boundary L^2 norm ,
+  (7)  H_omega -> H_0 in the boundary L^(2 : ℕ) norm ,
   (13) G_omega -> G_0 ,
   (14) H_0 + G_0 = 1/(1+z) ,
-  (15) L F_omega -> 1/(1+z) in the boundary L^2 norm ,
-  (16) F_omega -> e^{-t} in L^2(0,infinity) for every causal realization.
+  (15) L F_omega -> 1/(1+z) in the boundary L^(2 : ℕ) norm ,
+  (16) F_omega -> e^{-t} in L^(2 : ℕ)(0,infinity) for every causal realization.
 ```
 
 Every statement is unconditional.  The RH-bearing gates of both cards (the pointed residue
@@ -50,7 +50,7 @@ theorem centeredPaper_limit (z : ℂ) : centeredSchurLimit z = 1 / (z * riemannZ
 /-- **Card `(5)`.** -/
 theorem centeredPaper_hardy_limit :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
   tendsto_boundary_centeredSchur_energy
 
@@ -71,8 +71,8 @@ theorem centeredPaper_memLp : MemLp criticalMertensVector 2 volume :=
 
 /-- **Card `(15)`.** -/
 theorem centeredPaper_energy :
-    (∫ τ : ℝ, ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
-      = 2 * Real.pi * ∫ t : ℝ, ‖criticalMertensVector t‖ ^ 2 :=
+    (∫ τ : ℝ, ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
+      = 2 * Real.pi * ∫ t : ℝ, ‖criticalMertensVector t‖ ^ (2 : ℕ) :=
   integral_norm_sq_criticalMertensVector
 
 /-- **Card `(16)`.** -/
@@ -83,7 +83,7 @@ theorem centeredPaper_transfer {ω : ℝ} (hω : 0 < ω) {y : ℝ} (hy : y ≠ 0
 
 /-- **Card `(17)`.** -/
 theorem centeredPaper_strong_limit :
-    Tendsto (fun ν : ℝ => ∫ t : ℝ, ‖criticalMertensVector t - centeredMertensVector ν t‖ ^ 2)
+    Tendsto (fun ν : ℝ => ∫ t : ℝ, ‖criticalMertensVector t - centeredMertensVector ν t‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
   tendsto_integral_norm_sq_criticalMertens_sub
 
@@ -102,14 +102,14 @@ theorem causalPaper_cancellation (z : ℂ) :
 /-- **Card `(7)` of the causal-graph law.** -/
 theorem causalPaper_floorRemainder_limit :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
   tendsto_boundary_floorRemainder_energy
 
 /-- **Card `(15)` of the causal-graph law.** -/
 theorem causalPaper_multiplier_limit :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2)
+        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
   tendsto_boundary_multiplier_energy
 
@@ -120,7 +120,7 @@ theorem causalPaper_time_domain_limit
     (hmem : ∀ ω : ℝ, 0 < ω → MemLp (F ω) 2 volume)
     (htrans : ∀ ω : ℝ, 0 < ω → ∀ y : ℝ, y ≠ 0 →
       laplaceBoundary (F ω) y = mobiusCausalMultiplier ω ((y : ℂ) * Complex.I)) :
-    Tendsto (fun ω : ℝ => ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ 2)
+    Tendsto (fun ω : ℝ => ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
   tendsto_integral_norm_sq_causalSource_sub F hint hmem htrans
 

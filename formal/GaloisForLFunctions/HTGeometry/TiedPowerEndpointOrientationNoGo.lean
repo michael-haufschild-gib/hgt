@@ -39,9 +39,9 @@ def tiedPowerEndpointNegativeNodes : Fin 4 → ℂ :=
 
 theorem tiedPowerEndpointPositiveNodes_geometry :
     ∀ i, 0 < (tiedPowerEndpointPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerEndpointPositiveNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointPositiveNodes i) < 4 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerEndpointPositiveNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointPositiveNodes i) < 4 := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerEndpointPositiveNodes, tiedPowerScaleNodes,
@@ -49,9 +49,9 @@ theorem tiedPowerEndpointPositiveNodes_geometry :
 
 theorem tiedPowerEndpointNegativeNodes_geometry :
     ∀ i, 0 < (tiedPowerEndpointNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerEndpointNegativeNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointNegativeNodes i) < 4 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerEndpointNegativeNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointNegativeNodes i) < 4 := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerEndpointNegativeNodes, tiedPowerScaleNodes,
@@ -179,20 +179,20 @@ theorem tiedPowerEndpointPositive_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C (5 / 128)) =
-      X ^ 3 - C (5 / 128) * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C (5 / 128)) =
+      X ^ (3 : ℕ) - C (5 / 128) * X ^ (2 : ℕ) := by ring
   calc
     momentFunctional (tiedPowerMoment tiedPowerEndpointPositiveNodes)
-        (X ^ 2 * (X - C (5 / 128))) =
+        (X ^ (2 : ℕ) * (X - C (5 / 128))) =
       momentFunctional (tiedPowerMoment tiedPowerEndpointPositiveNodes)
-        (X ^ 3 - C (5 / 128) * X ^ 2) := congrArg _ hpoly
+        (X ^ (3 : ℕ) - C (5 / 128) * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = 1 / 1073741824 := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C (5 / 128) * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C (5 / 128) * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C (5 / 128) * X ^ 2 : Polynomial ℝ) =
-          (5 / 128 : ℝ) • X ^ 2 by rw [Polynomial.smul_eq_C_mul],
+      rw [show (C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ) =
+          (5 / 128 : ℝ) • X ^ (2 : ℕ) by rw [Polynomial.smul_eq_C_mul],
         momentFunctional_smul, momentFunctional_X_pow]
       rw [tiedPowerEndpointPositiveMoment_three, tiedPowerEndpointPositiveMoment_two]
       norm_num
@@ -211,20 +211,20 @@ theorem tiedPowerEndpointNegative_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C (5 / 128)) =
-      X ^ 3 - C (5 / 128) * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C (5 / 128)) =
+      X ^ (3 : ℕ) - C (5 / 128) * X ^ (2 : ℕ) := by ring
   calc
     momentFunctional (tiedPowerMoment tiedPowerEndpointNegativeNodes)
-        (X ^ 2 * (X - C (5 / 128))) =
+        (X ^ (2 : ℕ) * (X - C (5 / 128))) =
       momentFunctional (tiedPowerMoment tiedPowerEndpointNegativeNodes)
-        (X ^ 3 - C (5 / 128) * X ^ 2) := congrArg _ hpoly
+        (X ^ (3 : ℕ) - C (5 / 128) * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = -(1 / 268435456) := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C (5 / 128) * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C (5 / 128) * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C (5 / 128) * X ^ 2 : Polynomial ℝ) =
-          (5 / 128 : ℝ) • X ^ 2 by rw [Polynomial.smul_eq_C_mul],
+      rw [show (C (5 / 128) * X ^ (2 : ℕ) : Polynomial ℝ) =
+          (5 / 128 : ℝ) • X ^ (2 : ℕ) by rw [Polynomial.smul_eq_C_mul],
         momentFunctional_smul, momentFunctional_X_pow]
       rw [tiedPowerEndpointNegativeMoment_three, tiedPowerEndpointNegativeMoment_two]
       norm_num
@@ -237,13 +237,13 @@ theorem tiedPowerEndpointOrientationNoGo :
     (∀ i, ∃ j, conj (tiedPowerEndpointPositiveNodes i) = tiedPowerEndpointPositiveNodes j) ∧
     (∀ i, ∃ j, conj (tiedPowerEndpointNegativeNodes i) = tiedPowerEndpointNegativeNodes j) ∧
     (∀ i, 0 < (tiedPowerEndpointPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerEndpointPositiveNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointPositiveNodes i) < 4) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerEndpointPositiveNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointPositiveNodes i) < 4) ∧
     (∀ i, 0 < (tiedPowerEndpointNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerEndpointNegativeNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerEndpointNegativeNodes i) < 4) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerEndpointNegativeNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerEndpointNegativeNodes i) < 4) ∧
     momentHankelMatrix (tiedPowerMoment tiedPowerEndpointPositiveNodes) 2 =
       momentHankelMatrix (tiedPowerMoment tiedPowerEndpointNegativeNodes) 2 ∧
     (momentHankelMatrix (tiedPowerMoment tiedPowerEndpointPositiveNodes) 1).PosDef ∧

@@ -27,7 +27,7 @@ variable {n : ℕ}
 
 /-- **The diagonal entries in Jacobi coordinates.** -/
 theorem JacobiData.form_diag (J : JacobiData n) (j : Fin n) :
-    J.form j j = ∑ m, J.d m * (J.U m j) ^ 2 := by
+    J.form j j = ∑ m, J.d m * (J.U m j) ^ (2 : ℕ) := by
   classical
   have hmul : ∀ a b : Fin n, (J.Uᵀ * Matrix.diagonal J.d) a b = J.U b a * J.d b := by
     intro a b
@@ -45,7 +45,7 @@ theorem JacobiData.form_diag (J : JacobiData n) (j : Fin n) :
 theorem JacobiData.d_le_form_diag (J : JacobiData n) (j : Fin n) : J.d j ≤ J.form j j := by
   classical
   rw [J.form_diag j]
-  refine Finset.single_le_sum (f := fun m => J.d m * (J.U m j) ^ 2)
+  refine Finset.single_le_sum (f := fun m => J.d m * (J.U m j) ^ (2 : ℕ))
     (fun m _ => mul_nonneg (J.pos m).le (sq_nonneg _)) (Finset.mem_univ j) |>.trans' ?_
   rw [J.unit j, one_pow, mul_one]
 
@@ -56,9 +56,9 @@ theorem JacobiData.form_diag_le (J : JacobiData n)
     J.form j j ≤ J.d j + (1 / 4) * ∑ m ∈ Finset.univ.filter (fun m : Fin n => m < j), J.d m := by
   classical
   rw [J.form_diag j]
-  have hsplit : (∑ m, J.d m * (J.U m j) ^ 2)
-      = J.d j * (J.U j j) ^ 2
-        + ∑ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ j), J.d m * (J.U m j) ^ 2 := by
+  have hsplit : (∑ m, J.d m * (J.U m j) ^ (2 : ℕ))
+      = J.d j * (J.U j j) ^ (2 : ℕ)
+        + ∑ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ j), J.d m * (J.U m j) ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun m : Fin n => m = j)]
     congr 1
     rw [Finset.filter_eq' Finset.univ j]
@@ -66,15 +66,15 @@ theorem JacobiData.form_diag_le (J : JacobiData n)
   rw [hsplit, J.unit j, one_pow, mul_one]
   refine add_le_add (le_refl (J.d j)) ?_
   have hbound : ∀ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ j),
-      J.d m * (J.U m j) ^ 2 ≤ (if m < j then (1 / 4 : ℝ) * J.d m else 0) := by
+      J.d m * (J.U m j) ^ (2 : ℕ) ≤ (if m < j then (1 / 4 : ℝ) * J.d m else 0) := by
     intro m hm
     rw [Finset.mem_filter] at hm
     rcases lt_trichotomy m j with hmj | hmj | hmj
     · rw [if_pos hmj]
-      have hb : (J.U m j) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+      have hb : (J.U m j) ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
         have := hred m j hmj
         nlinarith [abs_nonneg (J.U m j), sq_abs (J.U m j)]
-      calc J.d m * (J.U m j) ^ 2 ≤ J.d m * (1 / 2 : ℝ) ^ 2 :=
+      calc J.d m * (J.U m j) ^ (2 : ℕ) ≤ J.d m * (1 / 2 : ℝ) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left hb (J.pos m).le
         _ = 1 / 4 * J.d m := by ring
     · exact absurd hmj hm.2
@@ -94,8 +94,8 @@ theorem JacobiData.form_diag_le (J : JacobiData n)
 the squared distance of the next basis vector from the earlier ones, then `dₖ ≤ (4/3) dₖ₊₁`. -/
 theorem lovasz_of_le {J : JacobiData n} {k l : Fin n}
     (hred : ∀ i j : Fin n, i < j → |J.U i j| ≤ 1 / 2) (hkl : k < l)
-    (hmin : J.d k ≤ J.d l + (J.U k l) ^ 2 * J.d k) : J.d k ≤ (4 / 3) * J.d l := by
-  have hb : (J.U k l) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+    (hmin : J.d k ≤ J.d l + (J.U k l) ^ (2 : ℕ) * J.d k) : J.d k ≤ (4 / 3) * J.d l := by
+  have hb : (J.U k l) ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
     have := hred k l hkl
     nlinarith [abs_nonneg (J.U k l), sq_abs (J.U k l)]
   have hdk : (0 : ℝ) < J.d k := J.pos k
@@ -118,13 +118,13 @@ theorem JacobiData.form_diag_zero (J : JacobiData n) {i : Fin n} (hi : (i : ℕ)
 /-- **The diagonal entry at the successor index**, when the earlier coordinates vanish. -/
 theorem JacobiData.form_diag_succ (J : JacobiData n) {i j : Fin n} (hij : (j : ℕ) = (i : ℕ) + 1)
     (hpre : ∀ m : Fin n, m < i → J.U m j = 0) :
-    J.form j j = J.d i * (J.U i j) ^ 2 + J.d j := by
+    J.form j j = J.d i * (J.U i j) ^ (2 : ℕ) + J.d j := by
   classical
   rw [J.form_diag j]
   have hji : i < j := Fin.lt_def.2 (by omega)
-  have hsplit : (∑ m, J.d m * (J.U m j) ^ 2)
-      = J.d i * (J.U i j) ^ 2
-        + ∑ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ i), J.d m * (J.U m j) ^ 2 := by
+  have hsplit : (∑ m, J.d m * (J.U m j) ^ (2 : ℕ))
+      = J.d i * (J.U i j) ^ (2 : ℕ)
+        + ∑ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ i), J.d m * (J.U m j) ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun m : Fin n => m = i)]
     congr 1
     rw [Finset.filter_eq' Finset.univ i]

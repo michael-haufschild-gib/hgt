@@ -34,15 +34,15 @@ theorem eval_oddCompactDetPolynomial (v : ModularThetaLyapunovState → ℂ) :
       let c := -MvPolynomial.eval v (oddCompactReflectedJetPolynomial 6)
       let d := MvPolynomial.eval v (oddCompactReflectedJetPolynomial 8)
       let e := -MvPolynomial.eval v (oddCompactReflectedJetPolynomial 10)
-      a*c*e-a*d^2-b^2*e+2*b*c*d-c^3 := by
+      a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ) := by
   have hmap (p q r s t : ModularThetaLyapunovPolynomial) :
-      MvPolynomial.eval v ((-p)*(-r)*(-t)-(-p)*s^2-q^2*(-t)+
-        MvPolynomial.C 2*q*(-r)*s-(-r)^3) =
+      MvPolynomial.eval v ((-p)*(-r)*(-t)-(-p)*s^(2 : ℕ)-q^(2 : ℕ)*(-t)+
+        MvPolynomial.C 2*q*(-r)*s-(-r)^(3 : ℕ)) =
       (-MvPolynomial.eval v p)*(-MvPolynomial.eval v r)*(-MvPolynomial.eval v t)-
-      (-MvPolynomial.eval v p)*(MvPolynomial.eval v s)^2-
-      (MvPolynomial.eval v q)^2*(-MvPolynomial.eval v t)+
+      (-MvPolynomial.eval v p)*(MvPolynomial.eval v s)^(2 : ℕ)-
+      (MvPolynomial.eval v q)^(2 : ℕ)*(-MvPolynomial.eval v t)+
       2*MvPolynomial.eval v q*(-MvPolynomial.eval v r)*MvPolynomial.eval v s-
-      (-MvPolynomial.eval v r)^3 := by
+      (-MvPolynomial.eval v r)^(3 : ℕ) := by
     simp only [map_sub, map_add, map_mul, map_pow, map_neg, MvPolynomial.eval_C]
   exact hmap _ _ _ _ _
 
@@ -51,10 +51,10 @@ theorem eval_oddCompactHeadPolynomial (v : ModularThetaLyapunovState → ℂ) :
     MvPolynomial.eval v oddCompactHeadPolynomial =
       (-MvPolynomial.eval v (oddCompactReflectedJetPolynomial 2)) *
         (-MvPolynomial.eval v (oddCompactReflectedJetPolynomial 6)) -
-          MvPolynomial.eval v (oddCompactReflectedJetPolynomial 4)^2 := by
+          MvPolynomial.eval v (oddCompactReflectedJetPolynomial 4)^(2 : ℕ) := by
   have hmap (p q r : ModularThetaLyapunovPolynomial) :
-      MvPolynomial.eval v ((-p)*(-r)-q^2) =
-        (-MvPolynomial.eval v p)*(-MvPolynomial.eval v r)-(MvPolynomial.eval v q)^2 := by
+      MvPolynomial.eval v ((-p)*(-r)-q^(2 : ℕ)) =
+        (-MvPolynomial.eval v p)*(-MvPolynomial.eval v r)-(MvPolynomial.eval v q)^(2 : ℕ) := by
     simp only [map_sub, map_mul, map_pow, map_neg]
   exact hmap _ _ _
 

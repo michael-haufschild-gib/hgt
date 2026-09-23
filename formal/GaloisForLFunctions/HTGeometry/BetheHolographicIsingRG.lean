@@ -172,7 +172,7 @@ theorem betheHolographicIsing_criticalDisplacement_thirdDerivative_eval_zero
     (p : ℕ) (hp : 2 ≤ p) :
     (derivative (derivative (derivative
       (betheHolographicIsingDisplacementNumerator p ((p : ℚ)⁻¹))))).eval 0 =
-      -4 * (((p : ℚ) ^ 2 - 1) / (p : ℚ) ^ 2) := by
+      -4 * (((p : ℚ) ^ (2 : ℕ) - 1) / (p : ℚ) ^ (2 : ℕ)) := by
   simp [betheHolographicIsingDisplacementNumerator,
     betheHolographicIsingNumerator, betheHolographicIsingDenominator,
     derivative_pow]

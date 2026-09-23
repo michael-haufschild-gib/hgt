@@ -16,7 +16,7 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The index of a triple in `Fin (N³)`: the product of the three integers, shifted down by one. -/
-def cubeIdx {N : ℕ} (p : Fin N × Fin N × Fin N) : Fin (N ^ 3) :=
+def cubeIdx {N : ℕ} (p : Fin N × Fin N × Fin N) : Fin (N ^ (3 : ℕ)) :=
   ⟨((p.1 : ℕ) + 1) * ((p.2.1 : ℕ) + 1) * ((p.2.2 : ℕ) + 1) - 1, by
     have h1 : (p.1 : ℕ) + 1 ≤ N := p.1.isLt
     have h2 : (p.2.1 : ℕ) + 1 ≤ N := p.2.1.isLt
@@ -24,7 +24,7 @@ def cubeIdx {N : ℕ} (p : Fin N × Fin N × Fin N) : Fin (N ^ 3) :=
     have hle : ((p.1 : ℕ) + 1) * ((p.2.1 : ℕ) + 1) * ((p.2.2 : ℕ) + 1) ≤ N * N * N :=
       Nat.mul_le_mul (Nat.mul_le_mul h1 h2) h3
     have hpos : 0 < ((p.1 : ℕ) + 1) * ((p.2.1 : ℕ) + 1) * ((p.2.2 : ℕ) + 1) := by positivity
-    have hcube : N * N * N = N ^ 3 := by ring
+    have hcube : N * N * N = N ^ (3 : ℕ) := by ring
     omega⟩
 
 /-- The defining property of `cubeIdx`: it names the product. -/
@@ -36,7 +36,7 @@ theorem cubeIdx_val_add_one {N : ℕ} (p : Fin N × Fin N × Fin N) :
   omega
 
 /-- The threefold Dirichlet convolution of a coefficient vector, indexed by `Fin (N³)`. -/
-noncomputable def convCube (N : ℕ) (a : Fin N → ℂ) : Fin (N ^ 3) → ℂ := fun j =>
+noncomputable def convCube (N : ℕ) (a : Fin N → ℂ) : Fin (N ^ (3 : ℕ)) → ℂ := fun j =>
   ∑ p ∈ (Finset.univ : Finset (Fin N × Fin N × Fin N)).filter (fun p => cubeIdx p = j),
     a p.1 * a p.2.1 * a p.2.2
 
@@ -68,11 +68,11 @@ theorem exp_phase_cubeIdx {N : ℕ} (t : ℝ) (p : Fin N × Fin N × Fin N) :
 
 /-- **The cube of a Dirichlet polynomial is a Dirichlet polynomial.** -/
 theorem dirPoly_convCube (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
-    dirPoly (N ^ 3) (convCube N a) t = (dirPoly N a t) ^ 3 := by
+    dirPoly (N ^ (3 : ℕ)) (convCube N a) t = (dirPoly N a t) ^ (3 : ℕ) := by
   classical
   set E : Fin N → ℂ := fun n =>
     Complex.exp (((t * Real.log ((n : ℕ) + 1) : ℝ) : ℂ) * Complex.I) with hE
-  have hcube : (dirPoly N a t) ^ 3
+  have hcube : (dirPoly N a t) ^ (3 : ℕ)
       = ∑ p : Fin N × Fin N × Fin N, (a p.1 * a p.2.1 * a p.2.2)
           * (E p.1 * E p.2.1 * E p.2.2) := by
     have hpoly : dirPoly N a t = ∑ n : Fin N, a n * E n := rfl
@@ -94,13 +94,13 @@ theorem dirPoly_convCube (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
   simp only [hphase]
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := (Finset.univ : Finset (Fin N × Fin N × Fin N)))
-    (t := (Finset.univ : Finset (Fin (N ^ 3)))) (g := fun p => cubeIdx p)
+    (t := (Finset.univ : Finset (Fin (N ^ (3 : ℕ))))) (g := fun p => cubeIdx p)
     (f := fun p : Fin N × Fin N × Fin N => (a p.1 * a p.2.1 * a p.2.2)
       * Complex.exp (((t * Real.log ((cubeIdx p : ℕ) + 1) : ℝ) : ℂ) * Complex.I))
     (fun p _ => Finset.mem_univ _)
   rw [← hfib]
-  have hpoly : dirPoly (N ^ 3) (convCube N a) t
-      = ∑ j : Fin (N ^ 3), convCube N a j
+  have hpoly : dirPoly (N ^ (3 : ℕ)) (convCube N a) t
+      = ∑ j : Fin (N ^ (3 : ℕ)), convCube N a j
           * Complex.exp (((t * Real.log ((j : ℕ) + 1) : ℝ) : ℂ) * Complex.I) := rfl
   rw [hpoly]
   refine Finset.sum_congr rfl fun j _ => ?_

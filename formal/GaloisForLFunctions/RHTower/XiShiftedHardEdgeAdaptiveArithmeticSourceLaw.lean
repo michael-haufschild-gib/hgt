@@ -163,7 +163,7 @@ theorem xiShiftedHardEdgeReciprocalClearing_adaptiveBilinearShear_self
     xiShiftedHardEdgeReciprocalClearing y (2 * N + 2)
         (xiShiftedBoundaryAdaptiveBilinearShearPolynomial A A) =
       ((2 * N + 2 : ℕ) : ℝ) •
-          (xiShiftedHardEdgeReciprocalClearing y N A) ^ 2 -
+          (xiShiftedHardEdgeReciprocalClearing y N A) ^ (2 : ℕ) -
         2 • ((X + C y) * xiShiftedHardEdgeReciprocalClearing y N A *
           (xiShiftedHardEdgeReciprocalClearing y N A).derivative) := by
   rw [show 2 * N + 2 = N + N + 2 by omega,
@@ -180,10 +180,10 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_hardEdgeLanding
     (hA : A.natDegree ≤ M) (hB : B.natDegree ≤ N) :
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
-        (xiShiftedHardEdgeReciprocalUnclearing (w ^ 2) (M + N + 2)
-          (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) M N A B)) := by
+        (xiShiftedHardEdgeReciprocalUnclearing (w ^ (2 : ℕ)) (M + N + 2)
+          (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) M N A B)) := by
   rw [xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_shear hw]
-  rw [← xiShiftedHardEdgeReciprocalClearing_adaptiveBilinearShear hA hB (w ^ 2)]
+  rw [← xiShiftedHardEdgeReciprocalClearing_adaptiveBilinearShear hA hB (w ^ (2 : ℕ))]
   rw [xiShiftedHardEdgeReciprocalUnclearing_clearing]
   rfl
 
@@ -194,8 +194,8 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_eq_hardEdgeLanding
     (hA : A.natDegree ≤ N) :
     xiShiftedAdaptiveMixedCompletedArithmeticSource w A =
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
-        (xiShiftedHardEdgeReciprocalUnclearing (w ^ 2) (2 * N + 2)
-          (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) N N A A)) := by
+        (xiShiftedHardEdgeReciprocalUnclearing (w ^ (2 : ℕ)) (2 * N + 2)
+          (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) N N A A)) := by
   rw [← xiShiftedAdaptiveBilinearCompletedArithmeticSource_self_eq_mixed hw]
   simpa only [show N + N + 2 = 2 * N + 2 by omega] using
     xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_hardEdgeLanding
@@ -206,7 +206,7 @@ explicit interior point. -/
 theorem xiShiftedHardEdgeReverseEulerSource_affine_negative
     {y a : ℝ} (hy : 0 ≤ y) (ha : 0 < a) :
     (xiShiftedHardEdgeReverseEulerSource y 4
-      (((X : Polynomial ℝ) - C a) ^ 2)).eval ((3 * a + y) / 2) < 0 := by
+      (((X : Polynomial ℝ) - C a) ^ (2 : ℕ))).eval ((3 * a + y) / 2) < 0 := by
   simp only [xiShiftedHardEdgeReverseEulerSource, Polynomial.derivative_pow,
     Polynomial.derivative_sub, Polynomial.derivative_X, Polynomial.derivative_C,
     sub_zero, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
@@ -241,7 +241,7 @@ theorem xiShiftedHardEdgeAdaptiveBilinearSource_affine_negative
     dsimp only [xiShiftedHardEdgeReciprocalClearing, A]
     rw [Polynomial.reflect_sub, Polynomial.reflect_one]
     have hterm : (C (y + a) * X : Polynomial ℝ).reflect 1 = C (y + a) := by
-      rw [show (X : Polynomial ℝ) = X ^ 1 by simp,
+      rw [show (X : Polynomial ℝ) = X ^ (1 : ℕ) by simp,
         Polynomial.reflect_C_mul_X_pow]
       simp
     rw [hterm]

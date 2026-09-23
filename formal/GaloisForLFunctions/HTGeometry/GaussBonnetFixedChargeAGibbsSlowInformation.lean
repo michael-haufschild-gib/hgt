@@ -21,9 +21,9 @@ theorem egbFixedChargeAGibbsSlow_information_bounds (n m : ℕ) :
 theorem egbFixedChargeAGibbsSlow_hellinger_bounds (n m : ℕ) :
     (4 / 9 : ℝ) ^ m * (egbFixedChargeAGibbsCollisionExcess n 0 1 (egbFixedChargeAGibbsSlowEnergy n) / 4) ≤
       finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 ∧
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) ∧
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 ≤
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) ≤
       (4 / 9 : ℝ) ^ m * ((2 : ℝ) ^ (n + 3) *
         egbFixedChargeAGibbsCollisionExcess n 0 1 (egbFixedChargeAGibbsSlowEnergy n)) := by
   constructor
@@ -51,7 +51,7 @@ theorem egbFixedChargeAGibbsSlow_entropy_strict (n m : ℕ) :
 theorem egbFixedChargeAGibbsSlow_hellinger_sq_pos (n m : ℕ) :
     0 < finitePacketHellinger
       (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 := by
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) := by
   have h := egbFixedChargeAGibbsCollisionExcess_hellinger_lower n m 1 (egbFixedChargeAGibbsSlowEnergy n)
   linarith [egbFixedChargeAGibbsSlow_collision_pos n m]
 

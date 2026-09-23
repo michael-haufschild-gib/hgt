@@ -8,7 +8,7 @@ associator of any lift then lands in the coefficient kernel, satisfies the penta
 and is independent of the lift up to a ternary coboundary.  Its class vanishes exactly when a
 strict refined cocycle lift exists.
 
-The finite `((ZMod 2)^2, ZMod 4, ZMod 2)` cell proves this higher defect can be unavoidable.
+The finite `((ZMod 2)^(2 : ℕ), ZMod 4, ZMod 2)` cell proves this higher defect can be unavoidable.
 A two-term linear cell verifies the same lift law without central-extension multiplication.
 -/
 
@@ -199,7 +199,7 @@ theorem splitCoefficient_cocycle_lift
 def quotientModTwo : ZMod 4 →+ ZMod 2 :=
   (ZMod.castHom (⟨2, rfl⟩ : 2 ∣ 4) (ZMod 2)).toAddMonoidHom
 
-/-- The asymmetric coarse cross-parity cocycle on `(ZMod 2)^2`. -/
+/-- The asymmetric coarse cross-parity cocycle on `(ZMod 2)^(2 : ℕ)`. -/
 def crossParityCarry (x y : ZMod 2 × ZMod 2) : ZMod 2 := x.1 * y.2
 
 /-- Its binary-digit lift to `ZMod 4`. -/

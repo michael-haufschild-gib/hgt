@@ -20,7 +20,7 @@ noncomputable section
 /-- Certificate controlling the second derivative of `arccos (exp (-q))`. -/
 def riccatiCorrelationAngleCertificate
     (q q₁ q₂ : ℝ → ℝ) (t : ℝ) : ℝ :=
-  q₁ t ^ 2 - q₂ t * (1 - Real.exp (-2 * q t))
+  q₁ t ^ (2 : ℕ) - q₂ t * (1 - Real.exp (-2 * q t))
 
 /-- Correlation angle associated with a nonnegative logarithmic action. -/
 def riccatiCorrelationAngle (q : ℝ → ℝ) (t : ℝ) : ℝ :=
@@ -57,7 +57,7 @@ theorem hasDerivAt_riccatiCorrelationAngleCertificate
     (hq₂.mul ((hasDerivAt_const t 1).sub hexp))
   have hfun :
       riccatiCorrelationAngleCertificate q q₁ q₂ =
-        q₁ ^ 2 - q₂ * ((fun _ : ℝ => 1) -
+        q₁ ^ (2 : ℕ) - q₂ * ((fun _ : ℝ => 1) -
           fun s => Real.exp (-2 * q s)) := by
     funext s
     rfl
@@ -122,7 +122,7 @@ theorem hasDerivAt_riccatiCorrelationAngle
   have hrhoLt : Real.exp (-q t) < 1 :=
     Real.exp_lt_one_iff.mpr (by linarith)
   have hsq :
-      Real.exp (-q t) ^ 2 = Real.exp (-2 * q t) := by
+      Real.exp (-q t) ^ (2 : ℕ) = Real.exp (-2 * q t) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -183,7 +183,7 @@ theorem hasDerivAt_riccatiCorrelationAngleSlope
     exact hsqrt.congr_deriv (by dsimp [d]; ring)
   have hn :
       HasDerivAt (fun s => q₁ s * Real.exp (-q s))
-        ((q₂ t - q₁ t ^ 2) * e) t := by
+        ((q₂ t - q₁ t ^ (2 : ℕ)) * e) t := by
     have hraw := hq₁.mul he
     rw [show (fun s => q₁ s * Real.exp (-q s)) =
         q₁ * (fun s => Real.exp (-q s)) by
@@ -200,10 +200,10 @@ theorem hasDerivAt_riccatiCorrelationAngleSlope
   unfold riccatiCorrelationAngleCurvature
     riccatiCorrelationAngleCertificate
   change
-    (((q₂ t - q₁ t ^ 2) * e * d -
-        q₁ t * e * (q₁ t * e₂ / d)) / d ^ 2) =
-      -e * (q₁ t ^ 2 - q₂ t * w) / (w * d)
-  have hsq : d ^ 2 = w := by
+    (((q₂ t - q₁ t ^ (2 : ℕ)) * e * d -
+        q₁ t * e * (q₁ t * e₂ / d)) / d ^ (2 : ℕ)) =
+      -e * (q₁ t ^ (2 : ℕ) - q₂ t * w) / (w * d)
+  have hsq : d ^ (2 : ℕ) = w := by
     exact Real.sq_sqrt hwpos.le
   field_simp [hdpos.ne', hwpos.ne']
   rw [hsq]

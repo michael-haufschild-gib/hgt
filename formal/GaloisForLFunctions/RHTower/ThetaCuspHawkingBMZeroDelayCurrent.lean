@@ -22,7 +22,7 @@ def sourceWeight (s : ℂ) (u : ℝ) : ℂ := (u:ℂ)*profile s u
 def onsetCoefficient (s : ℂ) (u : ℝ) : ℂ :=
   2*kappa s*(u:ℂ)*(3+delta s*(u:ℂ))/(1+(u:ℂ))
 def onsetWeight (s : ℂ) (u : ℝ) : ℂ := sourceWeight s u*onsetCoefficient s u
-def onsetPrimitive (s : ℂ) (u : ℝ) : ℂ := 2*kappa s*(u:ℂ)^3*profile s u
+def onsetPrimitive (s : ℂ) (u : ℝ) : ℂ := 2*kappa s*(u:ℂ)^(3 : ℕ)*profile s u
 def sourceMoment (s : ℂ) (u : ℝ) : ℂ := ∫ x in (0:ℝ)..u, sourceWeight s x
 def onsetMoment (s : ℂ) (u : ℝ) : ℂ := ∫ x in (0:ℝ)..u, onsetWeight s x
 def firstOnsetMoment (s : ℂ) (u : ℝ) : ℂ := ∫ x in (0:ℝ)..u, (x:ℂ)*onsetWeight s x
@@ -30,7 +30,7 @@ def firstOnsetMoment (s : ℂ) (u : ℝ) : ℂ := ∫ x in (0:ℝ)..u, (x:ℂ)*o
 /-- The positive-base radial profile is the literal original source amplitude
 at zero transform frequency, with its independent amplitude restored. -/
 theorem physical_radial_amplitude (s a : ℂ) (x : ℝ) :
-    D4BMJointSource.sourceAmplitude s 0 a 1 x = a^2*profile s (D4BMJointSource.radialUnit x) := by
+    D4BMJointSource.sourceAmplitude s 0 a 1 x = a^(2 : ℕ)*profile s (D4BMJointSource.radialUnit x) := by
   have hp := D4BMJointSource.radialUnit_add_one_pos x
   have hn : ((1+D4BMJointSource.radialUnit x:ℝ):ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hp
   simp only [D4BMJointSource.sourceAmplitude,D4BMLaplaceRadial.power,
@@ -45,7 +45,7 @@ theorem physical_reduced_source (s a : ℂ) (tau x : ℝ) :
     D4BMJointSource.timeReducedCoefficient s a tau x =
       let u : ℂ := D4BMJointSource.radialUnit x
       D4BMJointSource.sourceAmplitude s 0 a 1 x*Complex.exp (2*s*((tau+x:ℝ):ℂ))*
-        (-u*(1-u^2)*(eta s*(Real.smoothTransition (tau+x):ℂ)-
+        (-u*(1-u^(2 : ℕ))*(eta s*(Real.smoothTransition (tau+x):ℂ)-
           onsetCoefficient s (D4BMJointSource.radialUnit x)*
             ((deriv Real.smoothTransition (tau+x):ℝ):ℂ))) := by
   rw [D4BMReducedOpticalTail.timeReducedCoefficient_closed]
@@ -303,7 +303,7 @@ private theorem inner_terminal (s t : ℂ) {u : ℝ} (hu : 0 ≤ u) :
   simpa [P,onsetMoment_zero] using he
 
 private theorem profile_product (s : ℂ) {u : ℝ} (hu : 0 ≤ u) :
-    profile s u*profile (partner s) u = 1/(1+(u:ℂ))^6 := by
+    profile s u*profile (partner s) u = 1/(1+(u:ℂ))^(6 : ℕ) := by
   have hp : 0 < 1+u := by linarith
   have he : Complex.exp (Real.log (1+u):ℂ) = 1+(u:ℂ) := by
     rw [← Complex.ofReal_exp, Real.exp_log hp]
@@ -313,19 +313,19 @@ private theorem profile_product (s : ℂ) {u : ℝ} (hu : 0 ≤ u) :
   have hh : 2*s*(Real.log (1+u):ℂ)+2*partner s*(Real.log (1+u):ℂ) =
       -(6*(Real.log (1+u):ℂ)) := by dsimp [partner]; ring
   rw [hh,Complex.exp_neg]
-  have hn : Complex.exp (6*(Real.log (1+u):ℂ)) = (1+(u:ℂ))^6 := by
-    simpa only [Nat.cast_ofNat] using (Complex.exp_nat_mul (Real.log (1+u):ℂ) 6).trans (congrArg (fun z : ℂ => z^6) he)
+  have hn : Complex.exp (6*(Real.log (1+u):ℂ)) = (1+(u:ℂ))^(6 : ℕ) := by
+    simpa only [Nat.cast_ofNat] using (Complex.exp_nat_mul (Real.log (1+u):ℂ) 6).trans (congrArg (fun z : ℂ => z^(6 : ℕ)) he)
   rw [hn,one_div]
 
 /-- The terminal contact has exactly the radial weight of the retained null-slice lift flux. -/
 theorem terminal_radial_density (s : ℂ) (u : Ici (0:ℝ)) :
     onsetWeight s u*onsetMoment (partner s) u-onsetWeight (partner s) u*onsetMoment s u =
-      8*delta s*kappa s*kappa (partner s)*(u:ℂ)^6/(1+(u:ℂ))^7 := by
+      8*delta s*kappa s*kappa (partner s)*(u:ℂ)^(6 : ℕ)/(1+(u:ℂ))^(7 : ℕ) := by
   rw [onsetMoment_eq s u,onsetMoment_eq (partner s) u]
   have hu : 0 ≤ (u:ℝ) := u.property
   have hn : 1+(u:ℂ) ≠ 0 := by exact_mod_cast (show (1:ℝ)+(u:ℝ) ≠ 0 by linarith)
   calc
-    _ = 8*delta s*kappa s*kappa (partner s)*(u:ℂ)^6/(1+(u:ℂ))*
+    _ = 8*delta s*kappa s*kappa (partner s)*(u:ℂ)^(6 : ℕ)/(1+(u:ℂ))*
         (profile s u*profile (partner s) u) := by
       dsimp [onsetWeight,sourceWeight,onsetCoefficient,onsetPrimitive,delta,partner]
       ring
@@ -337,7 +337,7 @@ theorem terminal_radial_density (s : ℂ) (u : Ici (0:ℝ)) :
 theorem terminal_integral (s : ℂ) :
     (∫ u in (0:ℝ)..1, ∫ w in (0:ℝ)..u, terminalDensity s (partner s) u w) =
       8*delta s*kappa s*kappa (partner s)*
-        (∫ u in (0:ℝ)..1, (u:ℂ)^6/(1+(u:ℂ))^7) := by
+        (∫ u in (0:ℝ)..1, (u:ℂ)^(6 : ℕ)/(1+(u:ℂ))^(7 : ℕ)) := by
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr
   intro u hu
@@ -371,12 +371,12 @@ theorem horizon_contact_coefficient (s : ℂ) :
       ring
 
 private def nullSlicePrimitive (u : ℝ) : ℂ :=
-  (Real.log (1+u):ℂ)+6*(1+(u:ℂ))⁻¹-(15/2:ℂ)*((1+(u:ℂ))⁻¹)^2+
-    (20/3:ℂ)*((1+(u:ℂ))⁻¹)^3-(15/4:ℂ)*((1+(u:ℂ))⁻¹)^4+
-    (6/5:ℂ)*((1+(u:ℂ))⁻¹)^5-(1/6:ℂ)*((1+(u:ℂ))⁻¹)^6
+  (Real.log (1+u):ℂ)+6*(1+(u:ℂ))⁻¹-(15/2:ℂ)*((1+(u:ℂ))⁻¹)^(2 : ℕ)+
+    (20/3:ℂ)*((1+(u:ℂ))⁻¹)^(3 : ℕ)-(15/4:ℂ)*((1+(u:ℂ))⁻¹)^(4 : ℕ)+
+    (6/5:ℂ)*((1+(u:ℂ))⁻¹)^(5 : ℕ)-(1/6:ℂ)*((1+(u:ℂ))⁻¹)^(6 : ℕ)
 
 private theorem nullSlicePrimitive_derivative {u : ℝ} (hu : 0 ≤ u) :
-    HasDerivAt nullSlicePrimitive ((u:ℂ)^6/(1+(u:ℂ))^7) u := by
+    HasDerivAt nullSlicePrimitive ((u:ℂ)^(6 : ℕ)/(1+(u:ℂ))^(7 : ℕ)) u := by
   have hr : (1:ℝ)+u ≠ 0 := by linarith
   have hn : 1+(u:ℂ) ≠ 0 := by exact_mod_cast hr
   have hl := ((Real.hasDerivAt_log hr).comp u ((hasDerivAt_id u).const_add 1)).ofReal_comp
@@ -392,8 +392,8 @@ private theorem nullSlicePrimitive_derivative {u : ℝ} (hu : 0 ≤ u) :
 /-- Exact integrated null-slice radial coefficient; the integral is finite and
 its logarithmic endpoint is retained. -/
 theorem nullSlice_integral :
-    (∫ u in (0:ℝ)..1, (u:ℂ)^6/(1+(u:ℂ))^7) = (Real.log 2:ℂ)-1327/1920 := by
-  have hc : ContinuousOn (fun u : ℝ => (u:ℂ)^6/(1+(u:ℂ))^7) (Icc (0:ℝ) 1) := by
+    (∫ u in (0:ℝ)..1, (u:ℂ)^(6 : ℕ)/(1+(u:ℂ))^(7 : ℕ)) = (Real.log 2:ℂ)-1327/1920 := by
+  have hc : ContinuousOn (fun u : ℝ => (u:ℂ)^(6 : ℕ)/(1+(u:ℂ))^(7 : ℕ)) (Icc (0:ℝ) 1) := by
     apply (Complex.continuous_ofReal.pow 6).continuousOn.div
       ((continuous_const.add Complex.continuous_ofReal).pow 7).continuousOn
     intro u hu

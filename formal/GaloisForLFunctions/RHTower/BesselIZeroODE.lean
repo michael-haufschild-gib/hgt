@@ -35,7 +35,7 @@ def besselI0Deriv (u : ℝ) : ℝ :=
 
 /-- Its second derivative, as an integral. -/
 def besselI0SecondDeriv (u : ℝ) : ℝ :=
-  (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ 2 * Real.cosh (u * Real.sin θ)
+  (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ)
 
 theorem continuous_cosh_mul_sin (u : ℝ) :
     Continuous fun θ : ℝ => Real.cosh (u * Real.sin θ) := by fun_prop
@@ -44,10 +44,10 @@ theorem continuous_sin_mul_sinh (u : ℝ) :
     Continuous fun θ : ℝ => Real.sin θ * Real.sinh (u * Real.sin θ) := by fun_prop
 
 theorem continuous_sin_sq_mul_cosh (u : ℝ) :
-    Continuous fun θ : ℝ => Real.sin θ ^ 2 * Real.cosh (u * Real.sin θ) := by fun_prop
+    Continuous fun θ : ℝ => Real.sin θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by fun_prop
 
 theorem continuous_cos_sq_mul_cosh (u : ℝ) :
-    Continuous fun θ : ℝ => Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ) := by fun_prop
+    Continuous fun θ : ℝ => Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by fun_prop
 
 /-! ## Elementary bounds -/
 
@@ -119,7 +119,7 @@ theorem hasDerivAt_besselI0Deriv (u : ℝ) :
     (μ := volume) (a := (0 : ℝ)) (b := Real.pi)
     (bound := fun _ : ℝ => Real.cosh (|u| + 1))
     (F := fun (x : ℝ) (θ : ℝ) => Real.sin θ * Real.sinh (x * Real.sin θ))
-    (F' := fun (x : ℝ) (θ : ℝ) => Real.sin θ ^ 2 * Real.cosh (x * Real.sin θ))
+    (F' := fun (x : ℝ) (θ : ℝ) => Real.sin θ ^ (2 : ℕ) * Real.cosh (x * Real.sin θ))
     (x₀ := u) (s := Metric.ball u 1) (Metric.ball_mem_nhds u one_pos)
     (Filter.Eventually.of_forall fun x =>
       ((continuous_sin_mul_sinh x).aestronglyMeasurable).restrict)
@@ -133,7 +133,7 @@ theorem hasDerivAt_besselI0Deriv (u : ℝ) :
         rcases abs_cases u with ⟨hu, _⟩ | ⟨hu, _⟩ <;>
           rcases abs_cases x with ⟨hx1, _⟩ | ⟨hx1, _⟩ <;> linarith
       rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg (Real.sin θ))]
-      have h1 : Real.sin θ ^ 2 ≤ 1 := by
+      have h1 : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
         nlinarith [Real.abs_sin_le_one θ, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
       have h2 : |Real.cosh (x * Real.sin θ)| ≤ Real.cosh (|u| + 1) := by
         rw [abs_of_nonneg ((Real.cosh_pos _).le)]
@@ -160,7 +160,7 @@ theorem hasDerivAt_besselI0Deriv (u : ℝ) :
 hyperbolic cosine integral. -/
 theorem integral_sin_mul_sinh_eq (u : ℝ) :
     (∫ θ in (0 : ℝ)..Real.pi, Real.sin θ * Real.sinh (u * Real.sin θ))
-      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ) := by
+      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by
   have hf : ∀ x ∈ Set.uIcc (0 : ℝ) Real.pi, HasDerivAt Real.cos (-Real.sin x) x :=
     fun x _ => Real.hasDerivAt_cos x
   have hg : ∀ x ∈ Set.uIcc (0 : ℝ) Real.pi,
@@ -185,7 +185,7 @@ theorem integral_sin_mul_sinh_eq (u : ℝ) :
   rw [hbdry] at hibp
   have hleft : (∫ x in (0 : ℝ)..Real.pi,
       Real.cos x * (u * Real.cos x * Real.cosh (u * Real.sin x)))
-      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ) := by
+      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by
     rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun θ _ => ?_
     ring
@@ -202,14 +202,14 @@ theorem integral_sin_mul_sinh_eq (u : ℝ) :
 theorem besselI0SecondDeriv_sub_besselI0 (u : ℝ) :
     besselI0SecondDeriv u - besselI0 u
       = -((1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi,
-          Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ)) := by
+          Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ)) := by
   have hsub : (∫ θ in (0 : ℝ)..Real.pi, Real.cosh (u * Real.sin θ))
-      - ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ 2 * Real.cosh (u * Real.sin θ)
-      = ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ) := by
+      - ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ)
+      = ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by
     rw [← intervalIntegral.integral_sub ((continuous_cosh_mul_sin u).intervalIntegrable _ _)
       ((continuous_sin_sq_mul_cosh u).intervalIntegrable _ _)]
     refine intervalIntegral.integral_congr fun θ _ => ?_
-    have hpy : Real.cos θ ^ 2 = 1 - Real.sin θ ^ 2 := by
+    have hpy : Real.cos θ ^ (2 : ℕ) = 1 - Real.sin θ ^ (2 : ℕ) := by
       have := Real.sin_sq_add_cos_sq θ
       linarith
     rw [hpy]
@@ -225,7 +225,7 @@ theorem besselI0_ode {u : ℝ} (hu : u ≠ 0) :
   have hkey := integral_sin_mul_sinh_eq u
   have hsum := besselI0SecondDeriv_sub_besselI0 u
   have hd : besselI0Deriv u / u
-      = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cosh (u * Real.sin θ) := by
+      = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cosh (u * Real.sin θ) := by
     rw [besselI0Deriv, hkey]
     field_simp
   rw [hd]

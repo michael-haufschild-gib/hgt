@@ -19,7 +19,7 @@ def sourceProfile (q : XiZeroCopy) (X k : ℝ) : ℂ :=
   fullSquarePotential q ![X,Real.exp k]
 
 def angularLaplacian (F : ℝ → ℝ → ℂ) (X k : ℝ) : ℂ :=
-  (Real.exp k:ℂ)^2*deriv (deriv (fun x => F x k)) X+
+  (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => F x k)) X+
     deriv (deriv (fun y => F X y)) k-deriv (fun y => F X y) k
 
 def nullLift (s a : ℂ) (p r : ℝ) : ℂ :=
@@ -118,9 +118,9 @@ private theorem angularLaplacian_const_mul (c : ℂ) (F : ℝ → ℝ → ℂ) (
   simp only [angularLaplacian,deriv_const_mul_field',deriv_const_mul_field]
   ring
 
-private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^2=1/(Real.cosh t:ℂ)^2 := by
+private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^(2 : ℕ)=1/(Real.cosh t:ℂ)^(2 : ℕ) := by
   have hn : (Real.cosh t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.cosh_pos t).ne'
-  have he : (Real.cosh t:ℂ)^2-(Real.sinh t:ℂ)^2=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
+  have he : (Real.cosh t:ℂ)^(2 : ℕ)-(Real.sinh t:ℂ)^(2 : ℕ)=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
   dsimp only [radialUnit]
   simp only [Complex.ofReal_div,Complex.ofReal_neg]
   field_simp [hn]
@@ -130,7 +130,7 @@ private theorem lift_original_source (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p r X k : ℝ) :
     4*nullLiftMixed (physicalRate q branch) a p r*sourceProfile q X k-
       nullLift (physicalRate q branch) a p r*angularLaplacian (sourceProfile q) X k/
-        (Real.cosh ((p-r)/2):ℂ)^2+
+        (Real.cosh ((p-r)/2):ℂ)^(2 : ℕ)+
       timeReducedCoefficient (physicalRate q branch) a ((p+r)/2) ((p-r)/2)*sourceProfile q X k=
         timeOriginalForcing q branch a ((p+r)/2) ((p-r)/2) ![X,Real.exp k] := by
   have h := timeOriginalForcing_gradient_absorption q branch a ((p+r)/2) ((p-r)/2)
@@ -181,7 +181,7 @@ on the physical negative radial ray. The fixed onset and gradient source are ret
 theorem originalPotential_wave (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     {p r : ℝ} (hp : 0 < p) (hpr : p ≤ r) (X k : ℝ) :
     4*deriv (fun b => deriv (fun u => originalPotential q branch a u b X k) p) r-
-      angularLaplacian (originalPotential q branch a p r) X k/(Real.cosh ((p-r)/2):ℂ)^2=
+      angularLaplacian (originalPotential q branch a p r) X k/(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ)=
         timeOriginalForcing q branch a ((p+r)/2) ((p-r)/2) ![X,Real.exp k] := by
   have hr := hp.trans_le hpr
   have hU := fullNullResponse_wave q (physicalRate q branch) a hp hr X k
@@ -203,7 +203,7 @@ theorem originalPotential_wave (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   rw [he]
   change _=(1/4:ℂ)*(sourceProfile q X k*_) +
     angularLaplacian (fullNullResponse q (physicalRate q branch) a p r) X k/
-      (4*(Real.cosh ((p-r)/2):ℂ)^2) at hU
+      (4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ)) at hU
   linear_combination 4*hU+hL
 
 /-- Restoring the original lift preserves the actual AdS Dirichlet value. -/

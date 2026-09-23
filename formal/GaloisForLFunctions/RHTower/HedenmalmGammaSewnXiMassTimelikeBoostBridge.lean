@@ -7,9 +7,9 @@ import GaloisForLFunctions.RHTower.XiMassAnalyticTest
 
 The Route T mass kernel has real oscillatory phase
 
-`Theta(x) = u * sqrt(x^2 + a^2) + h * x`.
+`Theta(x) = u * sqrt(x^(2 : ℕ) + a^(2 : ℕ)) + h * x`.
 
-For `0 <= h < u`, it has one stationary point. Writing `q = sqrt(u^2-h^2)`, the
+For `0 <= h < u`, it has one stationary point. Writing `q = sqrt(u^(2 : ℕ)-h^(2 : ℕ))`, the
 stationary point is `-a*h/q`, its mass root is `a*u/q`, and its phase is the proper-time
 value `a*q`. For `u <= h`, the derivative is strictly positive, so no stationary point exists.
 

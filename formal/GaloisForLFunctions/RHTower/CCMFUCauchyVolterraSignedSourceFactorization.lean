@@ -95,20 +95,20 @@ theorem cauchyVolterra_activeCodiagonal_eq_coupledMoments
     {y : ℝ} (hy : y ≠ 0) :
     (∑ i ∈ s, if ξ i ≤ y then a i * cauchyVolterraKernel (ξ i) y else 0) =
       cauchyVolterraActiveZerothMoment s a ξ y / y -
-        cauchyVolterraActiveFirstMoment s a ξ y / y ^ 2 := by
+        cauchyVolterraActiveFirstMoment s a ξ y / y ^ (2 : ℕ) := by
   unfold cauchyVolterraActiveZerothMoment cauchyVolterraActiveFirstMoment
     cauchyVolterraKernel
   calc
-    (∑ i ∈ s, if ξ i ≤ y then a i * (1 / y - ξ i / y ^ 2) else 0) =
+    (∑ i ∈ s, if ξ i ≤ y then a i * (1 / y - ξ i / y ^ (2 : ℕ)) else 0) =
         ∑ i ∈ s, ((if ξ i ≤ y then a i else 0) / y -
-          (if ξ i ≤ y then a i * ξ i else 0) / y ^ 2) := by
+          (if ξ i ≤ y then a i * ξ i else 0) / y ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro i hi
           split_ifs with h
           · field_simp [hy]
           · simp
     _ = (∑ i ∈ s, if ξ i ≤ y then a i else 0) / y -
-        (∑ i ∈ s, if ξ i ≤ y then a i * ξ i else 0) / y ^ 2 := by
+        (∑ i ∈ s, if ξ i ≤ y then a i * ξ i else 0) / y ^ (2 : ℕ) := by
           rw [Finset.sum_sub_distrib, ← Finset.sum_div, ← Finset.sum_div]
 
 /-- Every literal active square-root clock lies strictly above the logarithmic singularity and
@@ -189,7 +189,7 @@ theorem ccmFUSuzukiCriticalActiveCauchyCodiagonal_eq_coupledMoments
     {H y : ℝ} (hy : y ≠ 0) :
     ccmFUSuzukiCriticalActiveCauchyCodiagonal H y =
       ccmFUSuzukiCriticalActiveZerothMoment H y / y -
-        ccmFUSuzukiCriticalActiveFirstMoment H y / y ^ 2 := by
+        ccmFUSuzukiCriticalActiveFirstMoment H y / y ^ (2 : ℕ) := by
   exact cauchyVolterra_activeCodiagonal_eq_coupledMoments
     (Finset.range (suzukiCheckpointEventIndex H - 2))
     (fun j => ((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j)
@@ -307,7 +307,7 @@ theorem ccmFUSuzukiCriticalMertensDeviationVariationAction_eq_zeroClock_add_expl
     suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation H =
       suzukiCheckpointCriticalMertensDeviation 0 *
           suzukiCheckpointCriticalTriangularMultiplier H 0 +
-      (64 / (Real.exp (H / 2) * H ^ 4)) *
+      (64 / (Real.exp (H / 2) * H ^ (4 : ℕ))) *
         (∑ j ∈ Finset.range (suzukiCheckpointEventIndex H - 2),
           (((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j) *
             (1 - Real.sqrt ((j + 3 : ℕ) : ℝ) / Real.exp (H / 2))) +

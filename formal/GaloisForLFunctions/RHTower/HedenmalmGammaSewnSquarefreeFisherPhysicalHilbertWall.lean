@@ -19,7 +19,7 @@ For a fixed spectral point `rho` with `Re rho < 1`, its physical coordinate
 `u_sigma = (rho - sigma) / (sigma - 1)`
 
 satisfies `Re u_sigma < -1/2` for every `sigma > 1`.  Therefore the physical source column has no
-`ell^2` representative at any finite stage.  This kills ordinary-Hilbert singular-graph landing at
+`ell^(2 : ℕ)` representative at any finite stage.  This kills ordinary-Hilbert singular-graph landing at
 a strict-right Xi divisor.  The algebraic regular germ remains valid, but its continuation must use
 a rigged or distributional source completion.
 -/
@@ -161,7 +161,7 @@ theorem not_summable_mscPhysicalZeroSourceColumn
       hsigma
   exact le_of_lt (mscPhysicalZeroCoordinate_re_lt_negHalf hrho hsigma)
 
-/-- **MSC ordinary-Hilbert graph no-go.**  No `ell^2` source vector carries the exact physical
+/-- **MSC ordinary-Hilbert graph no-go.**  No `ell^(2 : ℕ)` source vector carries the exact physical
 coefficients of a fixed strip point with `Re rho < 1`. -/
 theorem not_exists_lp_mscPhysicalZeroSourceColumn
     {rho : ℂ} (hrho : rho.re < 1) {sigma : ℝ} (hsigma : 1 < sigma) :

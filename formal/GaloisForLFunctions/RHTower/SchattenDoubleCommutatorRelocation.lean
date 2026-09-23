@@ -94,7 +94,7 @@ theorem inner_schattenDoubleCommutator_eigenvector
     (hQ : ∀ i, Q (basis i) = (q i : ℂ) • basis i)
     (i j : ι) :
     inner ℂ (basis i) (schattenDoubleCommutator Q B (basis j)) =
-      (((q i - q j) ^ 2 : ℝ) : ℂ) * inner ℂ (basis i) (B (basis j)) := by
+      (((q i - q j) ^ (2 : ℕ) : ℝ) : ℂ) * inner ℂ (basis i) (B (basis j)) := by
   have hsym := hQadj.isSymmetric
   have hmove (x : H) :
       inner ℂ (basis i) (Q x) =
@@ -122,7 +122,7 @@ theorem schattenDoubleCommutator_triangleHolonomy
     inner ℂ (basis i) (schattenDoubleCommutator Q B (basis j)) *
         inner ℂ (basis j) (schattenDoubleCommutator Q B (basis k)) *
           inner ℂ (basis k) (schattenDoubleCommutator Q B (basis i)) =
-      (((q i - q j) ^ 2 * (q j - q k) ^ 2 * (q k - q i) ^ 2 : ℝ) : ℂ) *
+      (((q i - q j) ^ (2 : ℕ) * (q j - q k) ^ (2 : ℕ) * (q k - q i) ^ (2 : ℕ) : ℝ) : ℂ) *
         (inner ℂ (basis i) (B (basis j)) *
           inner ℂ (basis j) (B (basis k)) *
             inner ℂ (basis k) (B (basis i))) := by

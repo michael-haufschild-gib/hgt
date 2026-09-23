@@ -20,7 +20,7 @@ def radiationNumberMean (tau : ℝ) : ℝ := ∑' n : ℕ, (n : ℝ) * radiation
 
 /-- Actual centered second moment of the complete occupation distribution. -/
 def radiationNumberVariance (tau : ℝ) : ℝ :=
-  ∑' n : ℕ, radiationMass tau n * ((n : ℝ) - radiationNumberMean tau) ^ 2
+  ∑' n : ℕ, radiationMass tau n * ((n : ℝ) - radiationNumberMean tau) ^ (2 : ℕ)
 
 /-- Statistical score from the derivative of each actual logarithmic probability. -/
 def radiationLogScore (tau : ℝ) (n : ℕ) : ℝ :=
@@ -28,7 +28,7 @@ def radiationLogScore (tau : ℝ) (n : ℕ) : ℝ :=
 
 /-- Fisher information in the real inverse-scale parameter. -/
 def radiationNumberFisher (tau : ℝ) : ℝ :=
-  ∑' n : ℕ, radiationMass tau n * radiationLogScore tau n ^ 2
+  ∑' n : ℕ, radiationMass tau n * radiationLogScore tau n ^ (2 : ℕ)
 
 theorem radiationNumberMean_formula (tau : ℝ) :
     radiationNumberMean tau = thermalRatio tau / (1 - thermalRatio tau) :=
@@ -40,8 +40,8 @@ theorem radiationMass_eq_euler_valuation (tau : ℝ) :
 
 /-- The complete centered variance series converges, by the existing Euler valuation theorem. -/
 theorem radiationNumberVariance_hasSum (tau : ℝ) :
-    HasSum (fun n : ℕ => radiationMass tau n * ((n : ℝ) - radiationNumberMean tau)^2)
-      (thermalRatio tau / (1 - thermalRatio tau)^2) := by
+    HasSum (fun n : ℕ => radiationMass tau n * ((n : ℝ) - radiationNumberMean tau)^(2 : ℕ))
+      (thermalRatio tau / (1 - thermalRatio tau)^(2 : ℕ)) := by
   have h := RHTower.hasSum_diagonalActivationConditionalValuationMass_mul_score_sq
     (thermalRatio_pos tau).le (thermalRatio_lt_one tau)
   apply h.congr_fun
@@ -51,7 +51,7 @@ theorem radiationNumberVariance_hasSum (tau : ℝ) :
   ring
 
 theorem radiationNumberVariance_formula (tau : ℝ) :
-    radiationNumberVariance tau = thermalRatio tau / (1 - thermalRatio tau)^2 :=
+    radiationNumberVariance tau = thermalRatio tau / (1 - thermalRatio tau)^(2 : ℕ) :=
   (radiationNumberVariance_hasSum tau).tsum_eq
 
 theorem radiationNumberVariance_pos (tau : ℝ) : 0 < radiationNumberVariance tau := by
@@ -67,21 +67,21 @@ theorem radiationNumberVariance_bose (tau : ℝ) :
 
 /-- Reflection determines the centered thermal fluctuation exactly. -/
 theorem thermalStepReflection_variance (e tau : ℝ) :
-    thermalStepReflection e tau ^ 2 - thermalStepReflection e tau = radiationNumberVariance tau := by
+    thermalStepReflection e tau ^ (2 : ℕ) - thermalStepReflection e tau = radiationNumberVariance tau := by
   rw [thermalStepReflection_formula, radiationNumberVariance_formula]
   field_simp [(sub_pos.mpr (thermalRatio_lt_one tau)).ne']
   ring
 
 /-- Excess reflected power decomposes into the actual occupation variance and mean. -/
 theorem thermalStepReflection_gain_decomposition (e tau : ℝ) :
-    thermalStepReflection e tau ^ 2 - 1 = radiationNumberVariance tau + radiationNumberMean tau := by
+    thermalStepReflection e tau ^ (2 : ℕ) - 1 = radiationNumberVariance tau + radiationNumberMean tau := by
   rw [← thermalStepReflection_variance e tau]
   have h : thermalStepReflection e tau = 1 + radiationNumberMean tau := thermalStepReflection_occupation e tau
   linarith
 
 /-- Purity determines the same centered fluctuation without truncating the density matrix. -/
 theorem radiationNumberVariance_purity (tau : ℝ) :
-    (∑' n, radiationMass tau n ^ 2)^2 * (1 + 4 * radiationNumberVariance tau) = 1 := by
+    (∑' n, radiationMass tau n ^ (2 : ℕ))^(2 : ℕ) * (1 + 4 * radiationNumberVariance tau) = 1 := by
   rw [radiationMass_purity, radiationNumberVariance_formula]
   field_simp [(sub_pos.mpr (thermalRatio_lt_one tau)).ne',
     (show 1 + thermalRatio tau ≠ 0 by linarith [thermalRatio_pos tau])]
@@ -100,7 +100,7 @@ theorem thermalStepReflection_hasDerivAt (e tau : ℝ) :
     funext (thermalStepReflection_formula e), radiationNumberVariance_formula]
   have h : HasDerivAt (fun s => 1 / (1 - thermalRatio s))
       ((0 * (1 - thermalRatio tau) - 1 * (0 - -Real.exp tau * thermalRatio tau)) /
-        (1 - thermalRatio tau)^2) tau :=
+        (1 - thermalRatio tau)^(2 : ℕ)) tau :=
     (hasDerivAt_const tau (1 : ℝ)).div
       ((hasDerivAt_const tau (1 : ℝ)).sub (thermalRatio_hasDerivAt tau))
       (sub_pos.mpr (thermalRatio_lt_one tau)).ne'
@@ -115,7 +115,7 @@ theorem thermalStepReflection_strictAnti (e : ℝ) : StrictAnti (thermalStepRefl
 
 /-- Increasing inverse thermal scale strictly decreases reflected power as well. -/
 theorem thermalStepReflection_power_strictAnti (e : ℝ) :
-    StrictAnti (fun tau => thermalStepReflection e tau ^ 2) := by
+    StrictAnti (fun tau => thermalStepReflection e tau ^ (2 : ℕ)) := by
   intro s t hst
   have h := thermalStepReflection_strictAnti e hst
   have hs := chargedStepReflection_gt_one (thermalStepA e s) (thermalStepB e s)
@@ -165,16 +165,16 @@ theorem radiationLogScore_hasSum_zero (tau : ℝ) :
 
 /-- The infinite squared-score series converges to the scaled centered variance. -/
 theorem radiationNumberFisher_hasSum (tau : ℝ) :
-    HasSum (fun n : ℕ => radiationMass tau n * radiationLogScore tau n ^ 2)
-      (Real.exp tau ^ 2 * radiationNumberVariance tau) := by
+    HasSum (fun n : ℕ => radiationMass tau n * radiationLogScore tau n ^ (2 : ℕ))
+      (Real.exp tau ^ (2 : ℕ) * radiationNumberVariance tau) := by
   rw [radiationNumberVariance_formula]
-  apply ((radiationNumberVariance_hasSum tau).mul_left (Real.exp tau ^ 2)).congr_fun
+  apply ((radiationNumberVariance_hasSum tau).mul_left (Real.exp tau ^ (2 : ℕ))).congr_fun
   intro n
   rw [radiationLogScore_formula]
   ring
 
 theorem radiationNumberFisher_formula (tau : ℝ) :
-    radiationNumberFisher tau = Real.exp tau ^ 2 * radiationNumberVariance tau :=
+    radiationNumberFisher tau = Real.exp tau ^ (2 : ℕ) * radiationNumberVariance tau :=
   (radiationNumberFisher_hasSum tau).tsum_eq
 
 theorem radiationNumberFisher_pos (tau : ℝ) : 0 < radiationNumberFisher tau := by

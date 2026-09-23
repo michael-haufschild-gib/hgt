@@ -2,7 +2,7 @@
 Intended one-sided-far SPUR-R carrier protocol.
 
 Docs 26/35--37 recut the SPUR-R reader around the reversed carrier
-`S(y) = Σβ (y/(y - β))^2`, where the transported equilibria `y` march along the
+`S(y) = Σβ (y/(y - β))^(2 : ℕ)`, where the transported equilibria `y` march along the
 outer one-sided window.  The proved ledger stack supplies four ways to certify one
 adjacent positive S-step: deep/endpoint sum-tail regimes and deep/endpoint direct
 finite evaluations.  This module packages those per-carrier certificates into a
@@ -24,7 +24,7 @@ def reversedPoleWeight (y β : ℝ) : ℝ := y / (y - β)
 /-- The intended SPUR-R S-reading on the reversed one-sided carrier:
 `S(y) = Σβ (y/(y-β))²`. -/
 def reversedCarrierS (β : Multiset ℝ) (y : ℝ) : ℝ :=
-  (β.map fun b => (reversedPoleWeight y b) ^ 2).sum
+  (β.map fun b => (reversedPoleWeight y b) ^ (2 : ℕ)).sum
 
 /-- S-readings along an ordered list of transported equilibria on the reversed carrier. -/
 def reversedCarrierReadings (β : Multiset ℝ) (ys : List ℝ) : List ℝ :=
@@ -52,26 +52,26 @@ structure SumTailStepCore (S₀ S₁ : ℝ) where
   hextra : 2 ≤ extra
   hpaired : 0 ≤ paired
   hcard : (idx.card : ℝ) * delta ≤ 4
-  ha : ∀ x ∈ idx, a x ≤ 43 * C0 ^ 2 * delta
-  htail : tail ≤ 28 * C0 ^ 2
+  ha : ∀ x ∈ idx, a x ≤ 43 * C0 ^ (2 : ℕ) * delta
+  htail : tail ≤ 28 * C0 ^ (2 : ℕ)
   hdeltaG : deltaG = extra + paired - ((∑ x ∈ idx, a x) + tail)
   hWpos : 0 < W
-  hW : W ≤ 40 / delta ^ 2
+  hW : W ≤ 40 / delta ^ (2 : ℕ)
   hinc : inc = deltaG / (2 * W)
-  herror : error ≤ 16 / (M ^ 2 * delta ^ 2)
+  herror : error ≤ 16 / (M ^ (2 : ℕ) * delta ^ (2 : ℕ))
   hdeltaS : S₁ - S₀ = inc * response - error
 
 /-- Deep-band sum-tail certificate for one intended-carrier S-step. -/
 structure DeepSumTailCarrierStep (S₀ S₁ : ℝ) where
   core : SumTailStepCore S₀ S₁
-  hM : 36 ≤ core.M ^ 2 * core.delta
-  hresponse : ((189 : ℝ) / 5) / core.delta ^ 3 ≤ core.response
+  hM : 36 ≤ core.M ^ (2 : ℕ) * core.delta
+  hresponse : ((189 : ℝ) / 5) / core.delta ^ (3 : ℕ) ≤ core.response
 
 /-- Endpoint-band sum-tail certificate for one intended-carrier S-step. -/
 structure EndpointSumTailCarrierStep (S₀ S₁ : ℝ) where
   core : SumTailStepCore S₀ S₁
-  hM : 3136 ≤ core.M ^ 2 * core.delta ^ 2
-  hresponse : (5 : ℝ) / (12 * core.delta ^ 2) ≤ core.response
+  hM : 3136 ≤ core.M ^ (2 : ℕ) * core.delta ^ (2 : ℕ)
+  hresponse : (5 : ℝ) / (12 * core.delta ^ (2 : ℕ)) ≤ core.response
 
 /-- Common data for a direct finite-evaluation certified adjacent S-step. -/
 structure DirectEvalStepCore (S₀ S₁ : ℝ) where
@@ -91,9 +91,9 @@ structure DirectEvalStepCore (S₀ S₁ : ℝ) where
   heval : gamma ≤ extra + paired - reversal
   hdeltaG : deltaG = extra + paired - reversal
   hWpos : 0 < W
-  hW : W ≤ 40 / delta ^ 2
+  hW : W ≤ 40 / delta ^ (2 : ℕ)
   hinc : inc = deltaG / (2 * W)
-  herror : error ≤ 16 / (M ^ 2 * delta ^ 2)
+  herror : error ≤ 16 / (M ^ (2 : ℕ) * delta ^ (2 : ℕ))
   hdeltaS : S₁ - S₀ = inc * response - error
 
 /-- Common data for a doc-42 S″ certified adjacent S-step. -/
@@ -109,33 +109,33 @@ structure SDoubleStepCore (S₀ S₁ : ℝ) where
   hdelta : 0 < delta
   hdeltaG : 1 ≤ deltaG
   hWpos : 0 < W
-  hW : W ≤ 40 / delta ^ 2
+  hW : W ≤ 40 / delta ^ (2 : ℕ)
   hinc : inc = deltaG / (2 * W)
-  hband : 64 ≤ M ^ 2 * c8 * delta
-  hswap : c8 / (4 * delta) - 16 / (M ^ 2 * delta ^ 2) ≤ swap
+  hband : 64 ≤ M ^ (2 : ℕ) * c8 * delta
+  hswap : c8 / (4 * delta) - 16 / (M ^ (2 : ℕ) * delta ^ (2 : ℕ)) ≤ swap
   hdeltaS : S₁ - S₀ = inc * response + swap
 
 /-- Deep-band direct finite-evaluation certificate for one intended-carrier S-step. -/
 structure DeepDirectCarrierStep (S₀ S₁ : ℝ) where
   core : DirectEvalStepCore S₀ S₁
-  hM : 36 ≤ core.M ^ 2 * core.delta
-  hresponse : ((189 : ℝ) / 5) / core.delta ^ 3 ≤ core.response
+  hM : 36 ≤ core.M ^ (2 : ℕ) * core.delta
+  hresponse : ((189 : ℝ) / 5) / core.delta ^ (3 : ℕ) ≤ core.response
 
 /-- Endpoint-band direct finite-evaluation certificate for one intended-carrier S-step. -/
 structure EndpointDirectCarrierStep (S₀ S₁ : ℝ) where
   core : DirectEvalStepCore S₀ S₁
-  hM : 3136 ≤ core.M ^ 2 * core.delta ^ 2
-  hresponse : (5 : ℝ) / (12 * core.delta ^ 2) ≤ core.response
+  hM : 3136 ≤ core.M ^ (2 : ℕ) * core.delta ^ (2 : ℕ)
+  hresponse : (5 : ℝ) / (12 * core.delta ^ (2 : ℕ)) ≤ core.response
 
 /-- Deep-response S″ certificate for one intended-carrier S-step. -/
 structure DeepSDoubleCarrierStep (S₀ S₁ : ℝ) where
   core : SDoubleStepCore S₀ S₁
-  hresponse : ((189 : ℝ) / 5) / core.delta ^ 3 ≤ core.response
+  hresponse : ((189 : ℝ) / 5) / core.delta ^ (3 : ℕ) ≤ core.response
 
 /-- Endpoint-response S″ certificate for one intended-carrier S-step. -/
 structure EndpointSDoubleCarrierStep (S₀ S₁ : ℝ) where
   core : SDoubleStepCore S₀ S₁
-  hresponse : (5 : ℝ) / (12 * core.delta ^ 2) ≤ core.response
+  hresponse : (5 : ℝ) / (12 * core.delta ^ (2 : ℕ)) ≤ core.response
 
 /-- One adjacent step in the intended one-sided-far SPUR-R carrier protocol. -/
 inductive SpurROneSidedFarStep (S₀ S₁ : ℝ) : Type 2

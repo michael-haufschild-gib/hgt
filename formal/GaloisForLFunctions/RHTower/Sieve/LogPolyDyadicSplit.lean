@@ -42,21 +42,21 @@ theorem logPoly_Icc_eq_sum_dyadicBlocks (a : ℕ → ℂ) (M : ℕ) (w : ℝ) :
 
 /-- **The Cauchy–Schwarz cost of the dyadic split**, pointwise in the frequency. -/
 theorem normSq_logPoly_Icc_le_card_mul_sum_blocks (a : ℕ → ℂ) (M : ℕ) (w : ℝ) :
-    ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+    ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
       ≤ ((Nat.log 2 M + 1 : ℕ) : ℝ) *
-          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ 2 := by
+          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ (2 : ℕ) := by
   classical
   have htri : ‖logPoly a (Finset.Icc 1 M) w‖
       ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ := by
     rw [logPoly_Icc_eq_sum_dyadicBlocks a M w]
     exact norm_sum_le _ _
-  have hcs : (∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖) ^ 2
+  have hcs : (∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖) ^ (2 : ℕ)
       ≤ (((Finset.range (Nat.log 2 M + 1)).card : ℕ) : ℝ) *
-          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ 2 :=
+          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ (2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
   rw [Finset.card_range] at hcs
-  have hsq : ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
-      ≤ (∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖) ^ 2 := by
+  have hsq : ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
+      ≤ (∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖logPoly a (Finset.Icc 1 M) w‖ := norm_nonneg _
     nlinarith [htri, h0]
   exact hsq.trans hcs
@@ -65,14 +65,14 @@ theorem normSq_logPoly_Icc_le_card_mul_sum_blocks (a : ℕ → ℂ) (M : ℕ) (w
 per-block large-values estimate is applied: each dyadic block is a genuine dyadic Dirichlet
 polynomial, and the whole cost of the reduction is the factor `⌊log₂ M⌋ + 1`. -/
 theorem sum_normSq_logPoly_Icc_le_card_mul_sum_blocks (a : ℕ → ℂ) (M : ℕ) (P : Finset ℝ) :
-    ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+    ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
       ≤ ((Nat.log 2 M + 1 : ℕ) : ℝ) *
           ∑ j ∈ Finset.range (Nat.log 2 M + 1),
-            ∑ w ∈ P, ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ 2 := by
+            ∑ w ∈ P, ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ (2 : ℕ) := by
   classical
-  have hstep : ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+  have hstep : ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
       ≤ ∑ w ∈ P, ((Nat.log 2 M + 1 : ℕ) : ℝ) *
-          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ 2 :=
+          ∑ j ∈ Finset.range (Nat.log 2 M + 1), ‖logPoly a (dyadicSegmentBlock M j) w‖ ^ (2 : ℕ) :=
     Finset.sum_le_sum fun w _ => normSq_logPoly_Icc_le_card_mul_sum_blocks a M w
   refine hstep.trans (le_of_eq ?_)
   rw [← Finset.mul_sum]

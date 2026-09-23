@@ -27,7 +27,7 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet
             heathBrownWindowRelevantFixedPolylogBound L X k x 1 *
                 (130 * C *
                   ((lambda * 1) /
-                    (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ 2 /
+                    (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ (2 : ℕ) /
                   (K : ℝ)) ≤
               (((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) /
                 (J : ℝ)) / 2) →

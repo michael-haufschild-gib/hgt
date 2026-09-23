@@ -10,8 +10,8 @@ namespace RHTower
 theorem exists_integral_dyadic_normSq_smoothAFEZetaSquareDualFrozenSourceField_le_logFourth :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {N : ℕ}, 4 ≤ N →
       (∫ t in Set.Icc (N : ℝ) (2 * N : ℝ),
-        ‖smoothAFEZetaSquareDualSourceField (N : ℝ) (N : ℝ) t‖ ^ 2) ≤
-          K * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ 4 := by
+        ‖smoothAFEZetaSquareDualSourceField (N : ℝ) (N : ℝ) t‖ ^ (2 : ℕ)) ≤
+          K * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) := by
   obtain ⟨B, hB, hmv⟩ :=
     exists_integral_normSq_smoothAFEZetaSquareDualFrozenSourceField_le
   let K : ℝ := 5 * Real.pi * Real.exp 1 * B + (5 * Real.pi / 2) * B
@@ -32,8 +32,8 @@ theorem exists_integral_dyadic_normSq_smoothAFEZetaSquareDualFrozenSourceField_l
   have hlog : 1 ≤ 1 + Real.log (N : ℝ) := by
     have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast (show 1 ≤ N by omega)
     linarith [Real.log_nonneg hN1]
-  have h34 : (1 + Real.log (N : ℝ)) ^ 3 ≤
-      (1 + Real.log (N : ℝ)) ^ 4 := by
+  have h34 : (1 + Real.log (N : ℝ)) ^ (3 : ℕ) ≤
+      (1 + Real.log (N : ℝ)) ^ (4 : ℕ) := by
     rw [pow_succ]
     exact le_mul_of_one_le_right (by positivity) hlog
   have hHN : H ≤ (N : ℝ) := by
@@ -44,14 +44,14 @@ theorem exists_integral_dyadic_normSq_smoothAFEZetaSquareDualFrozenSourceField_l
     dsimp only [K]
     calc
       5 * Real.pi * Real.exp 1 *
-            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ 3) +
+            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ (3 : ℕ)) +
           (5 * Real.pi / 2) *
-            (B * (1 + Real.log (N : ℝ)) ^ 4) * H
+            (B * (1 + Real.log (N : ℝ)) ^ (4 : ℕ)) * H
         ≤ 5 * Real.pi * Real.exp 1 *
-            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ 4) +
+            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ (4 : ℕ)) +
           (5 * Real.pi / 2) *
-            (B * (1 + Real.log (N : ℝ)) ^ 4) * (N : ℝ) := by gcongr
+            (B * (1 + Real.log (N : ℝ)) ^ (4 : ℕ)) * (N : ℝ) := by gcongr
       _ = (5 * Real.pi * Real.exp 1 * B + 5 * Real.pi / 2 * B) *
-          (N : ℝ) * (1 + Real.log (N : ℝ)) ^ 4 := by ring)
+          (N : ℝ) * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) := by ring)
 
 end RHTower

@@ -14,7 +14,7 @@ theorem norm_stripFourier_xiMassAnalyticTest_vertical_le
       ∫ x : ℝ, Real.exp (-(σ * |x|)) := by
   unfold stripFourier
   apply norm_integral_le_of_norm_le
-  · exact integrable_exp_neg_mul_abs hσ
+  · exact integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ
   · refine Filter.Eventually.of_forall fun x => ?_
     have hmem : (x : ℂ) ∈ xiMassStrip a := by
       change |((x : ℂ)).im| < a

@@ -111,7 +111,7 @@ private theorem expSum_deriv (K c : Fin 3 → ℂ) :
   all_goals first | rfl | ring
 
 private theorem expSum_second (K c : Fin 3 → ℂ) :
-    deriv (deriv (expSum K c))=expSum K (fun i => c i*K i^2) := by
+    deriv (deriv (expSum K c))=expSum K (fun i => c i*K i^(2 : ℕ)) := by
   rw [expSum_deriv,expSum_deriv]
   congr 1
   funext i
@@ -130,7 +130,7 @@ private theorem three_modes_unique (K c : Fin 3 → ℂ) (hK : Function.Injectiv
         (K j+K l)*(Complex.exp (-K i*(k:ℂ))*deriv (expSum K c) k)+
         K j*K l*(Complex.exp (-K i*(k:ℂ))*expSum K c k)=c i*(K i-K j)*(K i-K l) := by
       rw [expSum_second,expSum_deriv]
-      have hs : expSum K (fun a => c a*K a^2) k-(K j+K l)*expSum K (fun a => c a*K a) k+
+      have hs : expSum K (fun a => c a*K a^(2 : ℕ)) k-(K j+K l)*expSum K (fun a => c a*K a) k+
           K j*K l*expSum K c k=c i*(K i-K j)*(K i-K l)*Complex.exp (K i*(k:ℂ)) := by
         unfold expSum
         rw [Finset.mul_sum,Finset.mul_sum,← Finset.sum_sub_distrib,← Finset.sum_add_distrib]
@@ -142,7 +142,7 @@ private theorem three_modes_unique (K c : Fin 3 → ℂ) (hK : Function.Injectiv
           all_goals ring
         · simp
       calc
-        _ = Complex.exp (-K i*(k:ℂ))*(expSum K (fun a => c a*K a^2) k-
+        _ = Complex.exp (-K i*(k:ℂ))*(expSum K (fun a => c a*K a^(2 : ℕ)) k-
           (K j+K l)*expSum K (fun a => c a*K a) k+K j*K l*expSum K c k) := by ring
         _ = Complex.exp (-K i*(k:ℂ))*(c i*(K i-K j)*(K i-K l)*Complex.exp (K i*(k:ℂ))) := by rw [hs]
         _ = c i*(K i-K j)*(K i-K l) := by

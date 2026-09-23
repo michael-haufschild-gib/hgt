@@ -84,9 +84,9 @@ sign is the closed-cycle holonomy `2 z₀ z₁ z₂`. -/
 theorem threeControlCycle_relation
     (z : Fin 3 → ℂ) (w : ℂ) :
     matrixCharpolyRelation (threeControlCycleMatrix z, w) =
-      w * ((w - 1) * (w - 2) - (z 1) ^ 2) -
-        (z 0) ^ 2 * (w - 2) -
-        (z 2) ^ 2 * (w - 1) -
+      w * ((w - 1) * (w - 2) - (z 1) ^ (2 : ℕ)) -
+        (z 0) ^ (2 : ℕ) * (w - 2) -
+        (z 2) ^ (2 : ℕ) * (w - 1) -
         2 * z 0 * z 1 * z 2 := by
   simp [matrixCharpolyRelation, threeControlCycleMatrix,
     affineMatrixFamily, threeControlCycleInteraction,
@@ -131,9 +131,9 @@ theorem threeControlCycleBranch_relation :
       threeControlCycleBranch z *
           ((threeControlCycleBranch z - 1) *
               (threeControlCycleBranch z - 2) -
-            (z 1) ^ 2) -
-        (z 0) ^ 2 * (threeControlCycleBranch z - 2) -
-        (z 2) ^ 2 * (threeControlCycleBranch z - 1) -
+            (z 1) ^ (2 : ℕ)) -
+        (z 0) ^ (2 : ℕ) * (threeControlCycleBranch z - 2) -
+        (z 2) ^ (2 : ℕ) * (threeControlCycleBranch z - 1) -
         2 * z 0 * z 1 * z 2 = 0 := by
   have ht := threeControlCycleMatrix_analyticAt.continuousAt
   change Tendsto threeControlCycleMatrix (𝓝 0)
@@ -228,8 +228,8 @@ theorem threeControlCycle_active_product_eq_zero
 
 theorem threeControlCycle_active_squares
     (active : Finset (Fin 3)) (t : ℂ) (i : Fin 3) :
-    (threeControlCycleNegativeActiveRay active t i) ^ 2 =
-      (threeControlCyclePositiveActiveRay active t i) ^ 2 := by
+    (threeControlCycleNegativeActiveRay active t i) ^ (2 : ℕ) =
+      (threeControlCyclePositiveActiveRay active t i) ^ (2 : ℕ) := by
   fin_cases i <;>
     simp [threeControlCycleNegativeActiveRay,
       threeControlCyclePositiveActiveRay,
@@ -381,11 +381,11 @@ theorem threeControlCycleBranch_full_sign_germ_ne :
     have hn0 : threeControlCycleNegativeRay t 0 = -t := rfl
     have hn1 : threeControlCycleNegativeRay t 1 = t := rfl
     have hn2 : threeControlCycleNegativeRay t 2 = t := rfl
-    have hfour : (4 : ℂ) * t ^ 3 = 0 := by
+    have hfour : (4 : ℂ) * t ^ (3 : ℕ) = 0 := by
       simp only [hp0, hp1, hp2] at hpos
       simp only [hn0, hn1, hn2, neg_sq] at hneg
       linear_combination hneg - hpos
-    have ht3 : t ^ 3 = 0 :=
+    have ht3 : t ^ (3 : ℕ) = 0 :=
       (mul_eq_zero.mp hfour).resolve_left (by norm_num)
     have hmul : t * t * t = 0 := by
       simpa [pow_succ] using ht3

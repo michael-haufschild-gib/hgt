@@ -103,9 +103,9 @@ additive and geometric deck charges vanish; the level-1 window certificate.  RH�
 rung: the single parity bit whose diverse readings coincide. -/
 theorem rh2_tfae : List.TFAE
     [ RHLadder 1,
-      ∀ ρ ∈ rightHalf, xi ρ = 0 → 2 ^ 1 ∣ (analyticOrderAt xi ρ).toNat,
+      ∀ ρ ∈ rightHalf, xi ρ = 0 → 2 ^ (1 : ℕ) ∣ (analyticOrderAt xi ρ).toNat,
       ∀ ρ ∈ rightHalf, xi ρ = 0 → Even (analyticOrderAt xi ρ).toNat,
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 = xi s,
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s,
       ∀ T : ℝ, ∀ ρ ∈ boxZeros T, Even (analyticOrderAt xi ρ).toNat,
       ∀ ρ ∈ rightHalf, xi ρ = 0 → ladderCharge 1 ρ = 0,
       ∀ ρ ∈ rightHalf, xi ρ = 0 → xiDeckCharge 1 ρ = 1,

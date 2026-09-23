@@ -49,22 +49,22 @@ second moment `⨍ g²`.  Applied on a zero-avoiding circle to `g = ‖ξ‖`, t
 circle average of `log‖ξ‖` into a mean square. -/
 theorem jensen_avg_log_sq [IsProbabilityMeasure μ] {g : α → ℝ} {a b : ℝ} (ha : 0 < a)
     (hmem : ∀ᵐ x ∂μ, g x ∈ Set.Icc a b)
-    (hsqi : Integrable (fun x => g x ^ 2) μ)
+    (hsqi : Integrable (fun x => g x ^ (2 : ℕ)) μ)
     (hlogi : Integrable (fun x => Real.log (g x)) μ) :
-    (⨍ x, Real.log (g x) ∂μ) ≤ (1 / 2) * Real.log (⨍ x, (g x) ^ 2 ∂μ) := by
+    (⨍ x, Real.log (g x) ∂μ) ≤ (1 / 2) * Real.log (⨍ x, (g x) ^ (2 : ℕ) ∂μ) := by
   -- `log g = ½ log (g²)` pointwise a.e. (g > 0), then Jensen on `g²`.
-  have hmemsq : ∀ᵐ x ∂μ, g x ^ 2 ∈ Set.Icc (a ^ 2) (b ^ 2) := by
+  have hmemsq : ∀ᵐ x ∂μ, g x ^ (2 : ℕ) ∈ Set.Icc (a ^ (2 : ℕ)) (b ^ (2 : ℕ)) := by
     filter_upwards [hmem] with x hx
     exact ⟨by nlinarith [hx.1, ha.le], by nlinarith [hx.1, hx.2, ha.le]⟩
-  have hlogsqi : Integrable (fun x => Real.log (g x ^ 2)) μ := by
-    have : (fun x => Real.log (g x ^ 2)) = (fun x => 2 * Real.log (g x)) := by
+  have hlogsqi : Integrable (fun x => Real.log (g x ^ (2 : ℕ))) μ := by
+    have : (fun x => Real.log (g x ^ (2 : ℕ))) = (fun x => 2 * Real.log (g x)) := by
       funext x; rw [Real.log_pow]; push_cast; ring
     rw [this]; exact hlogi.const_mul 2
-  have hjensen := jensen_avg_log (μ := μ) (g := fun x => g x ^ 2) (a := a ^ 2) (b := b ^ 2)
+  have hjensen := jensen_avg_log (μ := μ) (g := fun x => g x ^ (2 : ℕ)) (a := a ^ (2 : ℕ)) (b := b ^ (2 : ℕ))
     (by positivity) hmemsq hsqi hlogsqi
   -- rewrite `⨍ log (g²) = 2 ⨍ log g`
-  have hrw : (⨍ x, Real.log (g x ^ 2) ∂μ) = 2 * ⨍ x, Real.log (g x) ∂μ := by
-    have h2 : ∫ x, Real.log (g x ^ 2) ∂μ = ∫ x, 2 * Real.log (g x) ∂μ := by
+  have hrw : (⨍ x, Real.log (g x ^ (2 : ℕ)) ∂μ) = 2 * ⨍ x, Real.log (g x) ∂μ := by
+    have h2 : ∫ x, Real.log (g x ^ (2 : ℕ)) ∂μ = ∫ x, 2 * Real.log (g x) ∂μ := by
       apply integral_congr_ae
       filter_upwards with x
       rw [Real.log_pow]; push_cast; ring

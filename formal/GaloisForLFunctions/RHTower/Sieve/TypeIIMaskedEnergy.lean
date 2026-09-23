@@ -52,8 +52,8 @@ theorem sum_typeII_masked_eq {A B L : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (T r : 
 
 /-- **The masked type-II energy bound.** -/
 theorem norm_typeII_masked_sq_le (T r : ℝ) (A B P Q : ℕ) (Ms : Finset ℕ) (a b : ℕ → ℂ) :
-    ‖∑ d ∈ Finset.Ico P Q, a d * ∑ m ∈ Ms, b m * maskedNdExp T r A B d m‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico P Q, ‖a d‖ ^ 2)
+    ‖∑ d ∈ Finset.Ico P Q, a d * ∑ m ∈ Ms, b m * maskedNdExp T r A B d m‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico P Q, ‖a d‖ ^ (2 : ℕ))
         * ∑ m₁ ∈ Ms, ∑ m₂ ∈ Ms, ‖b m₁‖ * ‖b m₂‖
             * ‖∑ d ∈ Finset.Ico P Q,
                 maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖ := by

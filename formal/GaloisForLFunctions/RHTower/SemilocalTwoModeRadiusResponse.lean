@@ -133,7 +133,7 @@ theorem twoModePrevDeterminant_zero_left_ne (δ₁ δ₂ : ℝ) (n : ℕ) (ε₂
 noncomputable def twoModeSquaredRadius (δ₁ δ₂ : ℝ) (n : ℕ) (ε₁ ε₂ : ℝ) : ℝ :=
   archimedeanSquaredRadius n *
     (twoModePrevDeterminant δ₁ δ₂ n ε₁ ε₂ * twoModeDeterminant δ₁ δ₂ (n + 1) ε₁ ε₂ /
-      twoModeDeterminant δ₁ δ₂ n ε₁ ε₂ ^ 2)
+      twoModeDeterminant δ₁ δ₂ n ε₁ ε₂ ^ (2 : ℕ))
 
 theorem twoModeSquaredRadius_zero_left (δ₁ δ₂ : ℝ) (n : ℕ) (ε₂ : ℝ) :
     twoModeSquaredRadius δ₁ δ₂ n 0 ε₂ =

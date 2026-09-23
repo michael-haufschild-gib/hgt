@@ -216,7 +216,7 @@ theorem ccmRationalMoritaHilbertOperatorRealStructure_isHilbertSchmidt
   have hsum := hT.summable ccmRationalMoritaHilbertBasis
   have hneg :
       Summable (fun q : CCMRationalUnit =>
-        ‖T (ccmRationalMoritaHilbertBasis (-q))‖ ^ 2) := by
+        ‖T (ccmRationalMoritaHilbertBasis (-q))‖ ^ (2 : ℕ)) := by
     have ht :=
       (Equiv.neg CCMRationalUnit).summable_iff.mpr hsum
     exact ht.congr (fun q => by

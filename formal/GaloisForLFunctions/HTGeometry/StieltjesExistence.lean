@@ -58,10 +58,10 @@ theorem positiveMomentForm_perturb
 
 theorem shiftedMomentForm_nonnegative_perturb
     {r : ℕ → ℝ}
-    (hs : ∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (X * p ^ 2))
-    (hr : ∀ p : Polynomial ℝ, 0 ≤ momentFunctional r (X * p ^ 2))
+    (hs : ∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (X * p ^ (2 : ℕ)))
+    (hr : ∀ p : Polynomial ℝ, 0 ≤ momentFunctional r (X * p ^ (2 : ℕ)))
     {c : ℝ} (hc : 0 ≤ c) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (fun n => s n + c * r n) (X * p ^ 2) := by
+    0 ≤ momentFunctional (fun n => s n + c * r n) (X * p ^ (2 : ℕ)) := by
   rw [momentFunctional_perturb_sequence]
   exact add_nonneg (hs p) (mul_nonneg hc (hr p))
 
@@ -70,7 +70,7 @@ quadrature node onto the nonnegative half-line. -/
 theorem monicOrtho_root_nonneg_of_shifted
     (h : PositiveMomentForm s)
     (hshift : ∀ p : Polynomial ℝ,
-      0 ≤ momentFunctional s (X * p ^ 2))
+      0 ≤ momentFunctional s (X * p ^ (2 : ℕ)))
     (n : ℕ) {xi : ℝ}
     (hxi : (monicOrtho s (n + 1)).eval xi = 0) :
     0 ≤ xi := by
@@ -86,12 +86,12 @@ theorem monicOrtho_root_nonneg_of_shifted
     exact_mod_cast (by omega : G.natDegree < n + 1)
   have hzero : momentInner s (monicOrtho s (n + 1)) G = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl G hdeg
-  have hpoly : ((X - C xi) * G) * G = X * G ^ 2 - xi • G ^ 2 := by
+  have hpoly : ((X - C xi) * G) * G = X * G ^ (2 : ℕ) - xi • G ^ (2 : ℕ) := by
     simp only [Polynomial.smul_eq_C_mul]
     ring
   rw [momentInner_def, hG, hpoly, momentFunctional_sub,
     momentFunctional_smul] at hzero
-  have hden : 0 < momentFunctional s (G ^ 2) := by
+  have hden : 0 < momentFunctional s (G ^ (2 : ℕ)) := by
     rw [← momentInner_self]
     exact h.pos_of_ne_zero G hGne
   nlinarith [hshift G]
@@ -99,7 +99,7 @@ theorem monicOrtho_root_nonneg_of_shifted
 theorem gaussNodes_nonnegative_of_shifted
     (h : PositiveMomentForm s)
     (hshift : ∀ p : Polynomial ℝ,
-      0 ≤ momentFunctional s (X * p ^ 2))
+      0 ≤ momentFunctional s (X * p ^ (2 : ℕ)))
     (n : ℕ) {xi : ℝ} (hxi : xi ∈ gaussNodes s n) :
     0 ≤ xi := by
   exact monicOrtho_root_nonneg_of_shifted h hshift n
@@ -110,7 +110,7 @@ semidefinite has a representing probability measure supported on `[0,∞)`. -/
 theorem exists_probabilityMeasure_hasStieltjesMoments
     (h : PositiveMomentForm s)
     (hshift : ∀ p : Polynomial ℝ,
-      0 ≤ momentFunctional s (X * p ^ 2)) :
+      0 ≤ momentFunctional s (X * p ^ (2 : ℕ))) :
     ∃ μ : ProbabilityMeasure ℝ,
       (∀ k : ℕ,
         Integrable (fun x : ℝ => x ^ k) (μ : Measure ℝ) ∧

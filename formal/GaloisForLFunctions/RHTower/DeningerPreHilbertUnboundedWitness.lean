@@ -80,7 +80,7 @@ theorem innerF_smul_left (x y : Carrier) (r : ℂ) :
   ring
 
 theorem innerF_self_eq_sum (x : Carrier) :
-    innerF x x = ∑ p ∈ x.support, ((‖x p‖ : ℂ)) ^ 2 := by
+    innerF x x = ∑ p ∈ x.support, ((‖x p‖ : ℂ)) ^ (2 : ℕ) := by
   rw [innerF_eq_sum_of_subset (x := x) (y := x) (s := x.support) (Finset.Subset.refl _)]
   refine Finset.sum_congr rfl fun p _ => ?_
   exact RCLike.conj_mul (x p)
@@ -92,12 +92,12 @@ theorem innerF_self_re_nonneg (x : Carrier) : 0 ≤ (innerF x x).re := by
 
 theorem innerF_definite (x : Carrier) (h : innerF x x = 0) : x = 0 := by
   classical
-  have hre : (∑ p ∈ x.support, ((‖x p‖ : ℂ)) ^ 2).re = 0 := by
+  have hre : (∑ p ∈ x.support, ((‖x p‖ : ℂ)) ^ (2 : ℕ)).re = 0 := by
     rw [← innerF_self_eq_sum, h]
     simp
   rw [Complex.re_sum] at hre
-  have hsum : ∑ p ∈ x.support, ‖x p‖ ^ 2 = 0 := by simpa [← Complex.ofReal_pow] using hre
-  have hzero : ∀ p ∈ x.support, ‖x p‖ ^ 2 = 0 :=
+  have hsum : ∑ p ∈ x.support, ‖x p‖ ^ (2 : ℕ) = 0 := by simpa [← Complex.ofReal_pow] using hre
+  have hzero : ∀ p ∈ x.support, ‖x p‖ ^ (2 : ℕ) = 0 :=
     (Finset.sum_eq_zero_iff_of_nonneg fun p _ => by positivity).mp hsum
   ext p
   by_cases hp : p ∈ x.support

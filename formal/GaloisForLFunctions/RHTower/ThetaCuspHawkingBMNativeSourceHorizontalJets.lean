@@ -122,7 +122,8 @@ theorem cuspMeanRemainder_horizontal_hasDerivAt (q : XiZeroCopy) (d X k : ℝ) :
     HasDerivAt (fun x => cuspMeanRemainder q d x k)
       (sourceMeanHorizontalFirst q d X k) X := by
   unfold cuspMeanRemainder
-  exact (mean_horizontal_hasDerivAt q d X k).sub (hasDerivAt_const X _)
+  simpa using (mean_horizontal_hasDerivAt q d X k).fun_sub
+    (hasDerivAt_const X (transportedPrincipal q d k))
 
 /-- The ordered second native horizontal jet is likewise entirely residual:
 the transported cusp principal has zero horizontal first and second jet. -/
@@ -130,8 +131,9 @@ theorem cuspMeanRemainder_horizontal_second_hasDerivAt (q : XiZeroCopy) (d X k :
     HasDerivAt (fun x => deriv (fun y => cuspMeanRemainder q d y k) x)
       (sourceMeanHorizontalSecond q d X k) X := by
   have hfirst : (fun x => deriv (fun y => cuspMeanRemainder q d y k) x) =
-      fun x => sourceMeanHorizontalFirst q d x k :=
-    funext fun x => (cuspMeanRemainder_horizontal_hasDerivAt q d x k).deriv
+      fun x => deriv (fun y => mean q d y k) x :=
+    funext fun x => ((cuspMeanRemainder_horizontal_hasDerivAt q d x k).deriv).trans
+      ((mean_horizontal_hasDerivAt q d x k).deriv).symm
   rw [hfirst]
   exact mean_horizontal_second_hasDerivAt q d X k
 

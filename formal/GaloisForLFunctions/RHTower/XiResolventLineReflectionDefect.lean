@@ -24,7 +24,7 @@ noncomputable section
 
 /-- The resolvent test whose divisor evaluation is the mass-rigidity carrier. -/
 def xiResolventTest (X : ℝ) (z : ℂ) : ℂ :=
-  (z ^ 2 + (X : ℂ))⁻¹
+  (z ^ (2 : ℕ) + (X : ℂ))⁻¹
 
 theorem xiResolventTest_squareSummable {X : ℝ} (hX : 0 ≤ X) :
     XiWeilSquareSummable (xiResolventTest X) := by
@@ -32,7 +32,7 @@ theorem xiResolventTest_squareSummable {X : ℝ} (hX : 0 ≤ X) :
   apply Summable.of_nonneg_of_le (fun q => sq_nonneg _) ?_
     (summable_norm_xiResolventPoint hX)
   intro q
-  change ‖xiResolventPoint X q‖ ^ 2 ≤ ‖xiResolventPoint X q‖
+  change ‖xiResolventPoint X q‖ ^ (2 : ℕ) ≤ ‖xiResolventPoint X q‖
   have hle := norm_xiResolventPoint_le_one hX q
   nlinarith [norm_nonneg (xiResolventPoint X q)]
 
@@ -54,14 +54,14 @@ def xiResolventLp (X : ℝ) (hX : 0 ≤ X) :
 /-- Exact Frankenstein seam: resolvent imaginary mass is the line-reflection defect energy. -/
 theorem norm_sq_xiResolvent_reflectionDefect (X : ℝ) (hX : 0 ≤ X) :
     ‖xiResolventLp X hX -
-        xiWeilLineConjLinearIsometry (xiResolventLp X hX)‖ ^ 2 =
+        xiWeilLineConjLinearIsometry (xiResolventLp X hX)‖ ^ (2 : ℕ) =
       4 * xiResolventImSqMass X := by
   rw [HilbertSchmidt.lp_norm_sq_eq, xiResolventImSqMass, ← tsum_mul_left]
   apply tsum_congr
   intro q
   change ‖xiResolventPoint X q -
-      xiResolventPoint X (xiZeroCopyLineConjEquiv q)‖ ^ 2 =
-    4 * (xiResolventPoint X q).im ^ 2
+      xiResolventPoint X (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) =
+    4 * (xiResolventPoint X q).im ^ (2 : ℕ)
   rw [xiResolventPoint_lineConj, Complex.sq_norm]
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.conj_re,
     Complex.sub_im, Complex.conj_im]
@@ -71,7 +71,7 @@ theorem norm_sq_xiResolvent_reflectionDefect (X : ℝ) (hX : 0 ≤ X) :
 theorem two_mul_xiResolventImSqMass_eq_norm_sq_sub_quadratic
     (X : ℝ) (hX : 0 ≤ X) :
     2 * xiResolventImSqMass X =
-      ‖xiResolventLp X hX‖ ^ 2 -
+      ‖xiResolventLp X hX‖ ^ (2 : ℕ) -
         xiWeilHilbertQuadratic (xiResolventLp X hX) := by
   have hminus := CliffordWeil.minus_channel_energy_eq
     xiWeilLineConjLinearIsometry xiWeilLineConjLinearIsometry_involutive

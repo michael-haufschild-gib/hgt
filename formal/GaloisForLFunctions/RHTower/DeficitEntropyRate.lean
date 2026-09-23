@@ -78,7 +78,7 @@ theorem entropy_split_deficit {C Δ t : ℝ} (hC : 0 < C) (ht : 0 < t) :
 /-! ## The entropy-decayed shape tends to zero -/
 
 /-- An exponentially damped affine function tends to zero. -/
-theorem tendsto_exp_neg_mul_linear {c A K : ℝ} (hc : 0 < c) :
+theorem tendsto_exp_neg_mul_linear_deficitEntropyRate {c A K : ℝ} (hc : 0 < c) :
     Tendsto (fun u : ℝ => Real.exp (-(c * u)) * (A + K * u)) atTop (nhds 0) := by
   have hconst : Tendsto (fun u : ℝ => A * Real.exp (-(c * u))) atTop (nhds (A * 0)) := by
     refine Tendsto.const_mul A ?_
@@ -119,7 +119,7 @@ particular `Δ = log log log Y - O(1)` — makes `exp(-Δ/4)(1 + Δ)` vanish, so
 is `o(1)` even without a fixed power saving. -/
 theorem tendsto_entropy_decayed_shape {K : ℝ} :
     Tendsto (fun Δ : ℝ => Real.exp (-(Δ / 4)) * (K + Δ / 4)) atTop (nhds 0) := by
-  have h := tendsto_exp_neg_mul_linear (c := (1 : ℝ) / 4) (A := K) (K := (1 : ℝ) / 4)
+  have h := tendsto_exp_neg_mul_linear_deficitEntropyRate (c := (1 : ℝ) / 4) (A := K) (K := (1 : ℝ) / 4)
     (by norm_num)
   refine h.congr fun u => ?_
   congr 2 <;> ring
@@ -143,7 +143,7 @@ theorem tendsto_ordinary_cell_term {θ ε A : ℝ} (hε : 0 < (1 - θ) / 4 - ε)
     Tendsto (fun u : ℝ =>
         Real.exp (ε * u) * (Real.exp (-((1 - θ) * u / 4)) * (A + (1 - θ) * u / 4)))
       atTop (nhds 0) := by
-  have h := tendsto_exp_neg_mul_linear (c := (1 - θ) / 4 - ε) (A := A) (K := (1 - θ) / 4) hε
+  have h := tendsto_exp_neg_mul_linear_deficitEntropyRate (c := (1 - θ) / 4 - ε) (A := A) (K := (1 - θ) / 4) hε
   refine h.congr fun u => ?_
   rw [← mul_assoc, ← Real.exp_add]
   congr 1
@@ -154,7 +154,7 @@ theorem tendsto_ordinary_cell_term {θ ε A : ℝ} (hε : 0 < (1 - θ) / 4 - ε)
 theorem tendsto_antitwist_term {η ε A : ℝ} (hε : 0 < η - ε) :
     Tendsto (fun u : ℝ => Real.exp (ε * u) * (Real.exp (-(η * u)) * (A + η * u)))
       atTop (nhds 0) := by
-  have h := tendsto_exp_neg_mul_linear (c := η - ε) (A := A) (K := η) hε
+  have h := tendsto_exp_neg_mul_linear_deficitEntropyRate (c := η - ε) (A := A) (K := η) hε
   refine h.congr fun u => ?_
   rw [← mul_assoc, ← Real.exp_add]
   congr 2

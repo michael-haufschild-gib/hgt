@@ -85,7 +85,7 @@ theorem stretchedWeight_nonneg (n : ℕ) : 0 ≤ stretchedWeight n := (Real.exp_
 
 /-- The square-root exponent is dominated by a quarter of the argument plus one. -/
 theorem sqrt_le_quarter_add_one (x : ℝ) (hx : 0 ≤ x) : Real.sqrt x ≤ x / 4 + 1 := by
-  have hsq : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx
+  have hsq : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx
   have hnn : 0 ≤ Real.sqrt x := Real.sqrt_nonneg x
   nlinarith [sq_nonneg (Real.sqrt x - 2)]
 
@@ -192,18 +192,18 @@ theorem tendsto_constant_div_stretched_partialSum :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ range N, constantWeight n) / (∑ n ∈ range N, stretchedWeight n)) atTop (𝓝 0) := by
   have hsqrtAtTop : Tendsto Real.sqrt atTop atTop := by
-    refine tendsto_atTop_atTop.mpr fun b => ⟨(max b 0) ^ 2, fun a ha => ?_⟩
-    have h1 : Real.sqrt ((max b 0) ^ 2) ≤ Real.sqrt a := Real.sqrt_le_sqrt ha
+    refine tendsto_atTop_atTop.mpr fun b => ⟨(max b 0) ^ (2 : ℕ), fun a ha => ?_⟩
+    have h1 : Real.sqrt ((max b 0) ^ (2 : ℕ)) ≤ Real.sqrt a := Real.sqrt_le_sqrt ha
     rw [Real.sqrt_sq (le_max_right b 0)] at h1
     exact le_trans (le_max_left b 0) h1
   have hkey : Tendsto (fun N : ℕ => (N : ℝ) / Real.exp (Real.sqrt N)) atTop (𝓝 0) := by
     have hcomp : Tendsto (fun N : ℕ => Real.sqrt N) atTop atTop :=
       hsqrtAtTop.comp tendsto_natCast_atTop_atTop
-    have hbase : Tendsto (fun x : ℝ => x ^ 2 * Real.exp (-x)) atTop (𝓝 0) :=
+    have hbase : Tendsto (fun x : ℝ => x ^ (2 : ℕ) * Real.exp (-x)) atTop (𝓝 0) :=
       Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 2
     have := hbase.comp hcomp
     refine this.congr fun N => ?_
-    have hsq : Real.sqrt (N : ℝ) ^ 2 = (N : ℝ) := Real.sq_sqrt (Nat.cast_nonneg N)
+    have hsq : Real.sqrt (N : ℝ) ^ (2 : ℕ) = (N : ℝ) := Real.sq_sqrt (Nat.cast_nonneg N)
     simp only [Function.comp_apply, hsq, Real.exp_neg]
     ring
   refine squeeze_zero' ?_ ?_ hkey

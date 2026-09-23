@@ -22,7 +22,7 @@ theorem semilocalArchimedeanJacobiCoefficient_pos (n : ℕ) :
   positivity
 
 theorem semilocalArchimedeanJacobiCoefficient_sq (n : ℕ) :
-    semilocalArchimedeanJacobiCoefficient n ^ 2 =
+    semilocalArchimedeanJacobiCoefficient n ^ (2 : ℕ) =
       ((n : ℝ) + 1 / 2) * ((n : ℝ) + 1) := by
   unfold semilocalArchimedeanJacobiCoefficient
   rw [Real.sq_sqrt]
@@ -30,9 +30,9 @@ theorem semilocalArchimedeanJacobiCoefficient_sq (n : ℕ) :
 
 /-- Square of the closed factorial normalization `c_n`. -/
 theorem semilocalArchimedeanJacobiNormalization_sq (n : ℕ) :
-    semilocalArchimedeanJacobiNormalization n ^ 2 =
+    semilocalArchimedeanJacobiNormalization n ^ (2 : ℕ) =
       (Nat.factorial (2 * n) : ℝ) /
-        (((2 : ℝ) ^ n * (Nat.factorial n : ℝ)) ^ 2) := by
+        (((2 : ℝ) ^ n * (Nat.factorial n : ℝ)) ^ (2 : ℕ)) := by
   unfold semilocalArchimedeanJacobiNormalization
   rw [div_pow, Real.sq_sqrt]
   positivity
@@ -49,8 +49,8 @@ theorem semilocalArchimedeanJacobiNormalization_succ_mul_coefficient (n : ℕ) :
   have hright : 0 ≤ semilocalArchimedeanJacobiNormalization n * ((n : ℝ) + 1 / 2) := by
     exact mul_nonneg (semilocalArchimedeanJacobiNormalization_pos _).le (by positivity)
   suffices (semilocalArchimedeanJacobiNormalization (n + 1) *
-        semilocalArchimedeanJacobiCoefficient n) ^ 2 =
-      (semilocalArchimedeanJacobiNormalization n * ((n : ℝ) + 1 / 2)) ^ 2 by
+        semilocalArchimedeanJacobiCoefficient n) ^ (2 : ℕ) =
+      (semilocalArchimedeanJacobiNormalization n * ((n : ℝ) + 1 / 2)) ^ (2 : ℕ) by
     nlinarith
   rw [mul_pow, mul_pow,
     semilocalArchimedeanJacobiNormalization_sq,
@@ -79,9 +79,9 @@ theorem semilocalArchimedeanJacobi_succ_mul_normalization (n : ℕ) :
     mul_nonneg (semilocalArchimedeanJacobiCoefficient_pos n).le
       (semilocalArchimedeanJacobiNormalization_pos _).le
   suffices (((n : ℝ) + 1) *
-        semilocalArchimedeanJacobiNormalization (n + 1)) ^ 2 =
+        semilocalArchimedeanJacobiNormalization (n + 1)) ^ (2 : ℕ) =
       (semilocalArchimedeanJacobiCoefficient n *
-        semilocalArchimedeanJacobiNormalization n) ^ 2 by
+        semilocalArchimedeanJacobiNormalization n) ^ (2 : ℕ) by
     nlinarith
   rw [mul_pow, mul_pow,
     semilocalArchimedeanJacobiNormalization_sq,

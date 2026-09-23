@@ -20,10 +20,10 @@ noncomputable section
 /-- **Strict modular-seam fluctuation law.**  At the theta modular fixed coordinate, the exact
 first-atom boundary slope lies strictly inside the order-two likelihood moment cone. -/
 theorem thetaCuspLikelihoodModularSeam_strictFluctuation :
-    thetaCuspFirstAtomBoundaryLogSlope ^ 2 *
+    thetaCuspFirstAtomBoundaryLogSlope ^ (2 : ℕ) *
           (1 + thetaCuspHigherLikelihoodSpectralMoment
-            (thetaCuspLikelihoodCoordinate 0) 0) ^ 2 <
-      (2 * Real.pi) ^ 2 *
+            (thetaCuspLikelihoodCoordinate 0) 0) ^ (2 : ℕ) <
+      (2 * Real.pi) ^ (2 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment
           (thetaCuspLikelihoodCoordinate 0) 0 *
         thetaCuspHigherLikelihoodSpectralMoment
@@ -46,8 +46,8 @@ theorem thetaCuspLikelihoodModularSeam_strictFluctuation :
             (thetaCuspLikelihoodCoordinate 0) 1 := by
     simpa [HTGeometry.momentHankelMatrix, Matrix.det_fin_two] using hdet
   have hbary := thetaCuspHigherLikelihoodSpectralMoment_seam_barycenter
-  have hsq := congrArg (fun x : ℝ => x ^ 2) hbary
-  have hpi : 0 < (2 * Real.pi) ^ 2 := by positivity
+  have hsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hbary
+  have hpi : 0 < (2 * Real.pi) ^ (2 : ℕ) := by positivity
   have hscaled := mul_pos hpi hdet'
   nlinarith
 

@@ -18,7 +18,7 @@ noncomputable section
 original specialized height exponent; no spectral nonresonance is assumed. -/
 theorem coefficient_stokes_decomposition (u v : ℂ) (e1 e2 e3 : Bool) :
     constantCoefficient u v e1 e2 e3=
-      (v^2-1/4)/2*d4BMCanonicalFirstStokesConstantBoundaryCoefficient u v e1 e2 e3-
+      (v^(2 : ℕ)-1/4)/2*d4BMCanonicalFirstStokesConstantBoundaryCoefficient u v e1 e2 e3-
       (d4BMCompletedEisensteinCuspConstantCoefficient u e1*
         d4BMCompletedEisensteinCuspConstantCoefficient u e2*
         d4BMCompletedEisensteinCuspConstantCoefficient v e3*
@@ -40,14 +40,14 @@ This is specialization first and remains valid at every exponent collision. -/
 theorem specialized_constant_eq_first_stokes (u v : ℂ) :
     (Finsupp.mapDomain (d4BMSpecializeDiagonalCuspAffineExponent u v)
       (constantFamily u v)) 0=
-      (v^2-1/4)/2*(Finsupp.mapDomain (d4BMSpecializeDiagonalCuspAffineExponent u v)
+      (v^(2 : ℕ)-1/4)/2*(Finsupp.mapDomain (d4BMSpecializeDiagonalCuspAffineExponent u v)
         (d4BMCanonicalFirstStokesConstantBoundaryFamily u v)) 0 := by
   classical
   have ht (e1 e2 e3 : Bool) :
       (Finsupp.single (d4BMSpecializeDiagonalCuspAffineExponent u v
         (d4BMDiagonalEisensteinCuspBoundaryExponent e1 e2 e3))
         (constantCoefficient u v e1 e2 e3)) (0:ℂ)=
-      (v^2-1/4)/2*(Finsupp.single (d4BMSpecializeDiagonalCuspAffineExponent u v
+      (v^(2 : ℕ)-1/4)/2*(Finsupp.single (d4BMSpecializeDiagonalCuspAffineExponent u v
         (d4BMDiagonalEisensteinCuspBoundaryExponent e1 e2 e3))
         (d4BMCanonicalFirstStokesConstantBoundaryCoefficient u v e1 e2 e3)) (0:ℂ) := by
     by_cases he : d4BMSpecializeDiagonalCuspAffineExponent u v

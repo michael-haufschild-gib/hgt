@@ -25,7 +25,7 @@ variable (N : ℕ) {lam : ℝ}
 theorem diagonal_source_loss_sum_lower (z : ℍ) :
     (N : ℝ) * density N f z ≤
       ∑ r : ZMod (N + 1),
-        (‖sourceVector N f z‖ ^ 2 - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ 2) := by
+        (‖sourceVector N f z‖ ^ (2 : ℕ) - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ (2 : ℕ)) := by
   simpa only [sourceVector_norm_sq] using
     diagonal_transfer_loss_sum_lower N (sourceVector N f z)
 
@@ -33,12 +33,12 @@ theorem diagonal_source_loss_sum_lower (z : ℍ) :
 theorem exists_diagonal_source_loss_pos {z : ℍ}
     (hN : 0 < N) (hz : 0 < density N f z) :
     ∃ r : ZMod (N + 1),
-      0 < ‖sourceVector N f z‖ ^ 2 - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ 2 := by
+      0 < ‖sourceVector N f z‖ ^ (2 : ℕ) - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ (2 : ℕ) := by
   have hsum := diagonal_source_loss_sum_lower N f z
   have hprod : 0 < (N : ℝ) * density N f z :=
     mul_pos (by exact_mod_cast hN) hz
   have hpos : 0 < ∑ r : ZMod (N + 1),
-      (‖sourceVector N f z‖ ^ 2 - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ 2) :=
+      (‖sourceVector N f z‖ ^ (2 : ℕ) - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ (2 : ℕ)) :=
     lt_of_lt_of_le hprod hsum
   by_contra hn
   push Not at hn
@@ -47,7 +47,7 @@ theorem exists_diagonal_source_loss_pos {z : ℍ}
 /-- Every positive-level source has a point with a strictly lossy diagonal channel. -/
 theorem exists_source_diagonal_loss_pos (hN : 0 < N) :
     ∃ z : ℍ, ∃ r : ZMod (N + 1),
-      0 < ‖sourceVector N f z‖ ^ 2 - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ 2 := by
+      0 < ‖sourceVector N f z‖ ^ (2 : ℕ) - ‖inversionTransfer N r r (sourceVector N f z)‖ ^ (2 : ℕ) := by
   obtain ⟨z, hz⟩ := density_pos_somewhere N f
   exact ⟨z, exists_diagonal_source_loss_pos N f hN hz⟩
 

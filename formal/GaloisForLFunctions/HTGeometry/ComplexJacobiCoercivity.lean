@@ -23,7 +23,7 @@ theorem re_complex_jacobi_quadForm
     (v : Fin n → ℂ) :
     (star v ⬝ᵥ
       (U.conjTranspose * Matrix.diagonal (fun i => (d i : ℂ)) * U).mulVec v).re =
-      ∑ i, d i * ‖U.mulVec v i‖ ^ 2 := by
+      ∑ i, d i * ‖U.mulVec v i‖ ^ (2 : ℕ) := by
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
   rw [← star_mulVec_dotProduct]
   exact re_quadForm_diagonal d (U.mulVec v)
@@ -35,7 +35,7 @@ theorem exists_complexJacobi_coercivity (n : ℕ) (u : ℝ) :
       ∀ (δ : ℝ) (U : Matrix (Fin n) (Fin n) ℂ) (d : Fin n → ℝ),
         0 ≤ δ → U ∈ complexUnipotentBall n u → (∀ i, δ ≤ d i) →
         ∀ v : Fin n → ℂ,
-          q * δ * ∑ i, ‖v i‖ ^ 2 ≤
+          q * δ * ∑ i, ‖v i‖ ^ (2 : ℕ) ≤
             (star v ⬝ᵥ
               (U.conjTranspose * Matrix.diagonal (fun i => (d i : ℂ)) * U).mulVec v).re := by
   classical
@@ -44,7 +44,7 @@ theorem exists_complexJacobi_coercivity (n : ℕ) (u : ℝ) :
   have hCbound : ∀ U ∈ complexUnipotentBall n u,
       ∀ i j, ‖U⁻¹ i j‖ ≤ C :=
     fun U hU i j => le_trans (hC₀ U hU i j) (le_max_left _ _)
-  set M : ℝ := (n : ℝ) ^ 2 * C ^ 2 + 1 with hM
+  set M : ℝ := (n : ℝ) ^ (2 : ℕ) * C ^ (2 : ℕ) + 1 with hM
   have hM0 : 0 < M := by positivity
   refine ⟨1 / M, by positivity, ?_⟩
   intro δ U d hδ hU hd v
@@ -60,48 +60,48 @@ theorem exists_complexJacobi_coercivity (n : ℕ) (u : ℝ) :
     exact hi.symm
   have hinvb : ∀ i j, ‖U⁻¹ i j‖ ≤ C := hCbound U hU
   have hterm : ∀ i j : Fin n,
-      ‖U⁻¹ i j * w j‖ ^ 2 ≤ C ^ 2 * ‖w j‖ ^ 2 := by
+      ‖U⁻¹ i j * w j‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * ‖w j‖ ^ (2 : ℕ) := by
     intro i j
     rw [norm_mul, mul_pow]
-    have hs : ‖U⁻¹ i j‖ ^ 2 ≤ C ^ 2 := by
+    have hs : ‖U⁻¹ i j‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
       nlinarith [hinvb i j, norm_nonneg (U⁻¹ i j)]
     exact mul_le_mul_of_nonneg_right hs (sq_nonneg ‖w j‖)
   have hrow : ∀ i : Fin n,
-      ‖v i‖ ^ 2 ≤ (n : ℝ) * C ^ 2 * ∑ j, ‖w j‖ ^ 2 := by
+      ‖v i‖ ^ (2 : ℕ) ≤ (n : ℝ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ) := by
     intro i
     calc
-      ‖v i‖ ^ 2 = ‖∑ j, U⁻¹ i j * w j‖ ^ 2 := by rw [hvw i]
-      _ ≤ (n : ℝ) * ∑ j, ‖U⁻¹ i j * w j‖ ^ 2 := by
+      ‖v i‖ ^ (2 : ℕ) = ‖∑ j, U⁻¹ i j * w j‖ ^ (2 : ℕ) := by rw [hvw i]
+      _ ≤ (n : ℝ) * ∑ j, ‖U⁻¹ i j * w j‖ ^ (2 : ℕ) := by
         simpa using norm_sum_sq_le_card_mul (fun j : Fin n => U⁻¹ i j * w j)
-      _ ≤ (n : ℝ) * ∑ j, C ^ 2 * ‖w j‖ ^ 2 := by
+      _ ≤ (n : ℝ) * ∑ j, C ^ (2 : ℕ) * ‖w j‖ ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun j _ => hterm i j)
           (Nat.cast_nonneg n)
-      _ = (n : ℝ) * C ^ 2 * ∑ j, ‖w j‖ ^ 2 := by
+      _ = (n : ℝ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ) := by
         rw [← Finset.mul_sum]
         ring
-  have htotal : ∑ i, ‖v i‖ ^ 2 ≤
-      (n : ℝ) ^ 2 * C ^ 2 * ∑ j, ‖w j‖ ^ 2 := by
+  have htotal : ∑ i, ‖v i‖ ^ (2 : ℕ) ≤
+      (n : ℝ) ^ (2 : ℕ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ) := by
     calc
-      ∑ i, ‖v i‖ ^ 2 ≤
-          ∑ _i : Fin n, (n : ℝ) * C ^ 2 * ∑ j, ‖w j‖ ^ 2 :=
+      ∑ i, ‖v i‖ ^ (2 : ℕ) ≤
+          ∑ _i : Fin n, (n : ℝ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun i _ => hrow i
-      _ = (n : ℝ) * ((n : ℝ) * C ^ 2 * ∑ j, ‖w j‖ ^ 2) := by
+      _ = (n : ℝ) * ((n : ℝ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ)) := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      _ = (n : ℝ) ^ 2 * C ^ 2 * ∑ j, ‖w j‖ ^ 2 := by ring
-  have hW0 : 0 ≤ ∑ j, ‖w j‖ ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg _
-  have hbase : (1 / M) * ∑ i, ‖v i‖ ^ 2 ≤ ∑ j, ‖w j‖ ^ 2 := by
+      _ = (n : ℝ) ^ (2 : ℕ) * C ^ (2 : ℕ) * ∑ j, ‖w j‖ ^ (2 : ℕ) := by ring
+  have hW0 : 0 ≤ ∑ j, ‖w j‖ ^ (2 : ℕ) := Finset.sum_nonneg fun j _ => sq_nonneg _
+  have hbase : (1 / M) * ∑ i, ‖v i‖ ^ (2 : ℕ) ≤ ∑ j, ‖w j‖ ^ (2 : ℕ) := by
     rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ hM0]
     rw [hM]
     nlinarith
-  have hweighted : δ * ∑ j, ‖w j‖ ^ 2 ≤ ∑ j, d j * ‖w j‖ ^ 2 := by
+  have hweighted : δ * ∑ j, ‖w j‖ ^ (2 : ℕ) ≤ ∑ j, d j * ‖w j‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     exact Finset.sum_le_sum fun j _ =>
       mul_le_mul_of_nonneg_right (hd j) (sq_nonneg ‖w j‖)
   rw [re_complex_jacobi_quadForm, ← hw]
   calc
-    1 / M * δ * ∑ i, ‖v i‖ ^ 2 =
-        δ * ((1 / M) * ∑ i, ‖v i‖ ^ 2) := by ring
-    _ ≤ δ * ∑ j, ‖w j‖ ^ 2 := mul_le_mul_of_nonneg_left hbase hδ
-    _ ≤ ∑ j, d j * ‖w j‖ ^ 2 := hweighted
+    1 / M * δ * ∑ i, ‖v i‖ ^ (2 : ℕ) =
+        δ * ((1 / M) * ∑ i, ‖v i‖ ^ (2 : ℕ)) := by ring
+    _ ≤ δ * ∑ j, ‖w j‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hbase hδ
+    _ ≤ ∑ j, d j * ‖w j‖ ^ (2 : ℕ) := hweighted
 
 end GaloisForLFunctions.HTGeometry

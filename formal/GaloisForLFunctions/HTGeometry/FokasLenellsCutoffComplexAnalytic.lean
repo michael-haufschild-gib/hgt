@@ -21,7 +21,7 @@ private theorem complexSymbol_remainder_bound (a z : ℝ) (τ h : ℂ) (n : ℕ)
     ‖cutoffComplexSymbol a n (τ+h) z - cutoffComplexSymbol a n τ z -
       h * cutoffComplexSymbol a (n+1) τ z‖ ≤
       (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) *
-        cutoffPhaseBudget a ^ 2 * ‖h‖^2 := by
+        cutoffPhaseBudget a ^ 2 * ‖h‖^(2 : ℕ) := by
   let c : ℂ := -(cutoffPhaseFrequency a z : ℂ) * I
   have hc : ‖c‖ ≤ cutoffPhaseBudget a := by
     simpa [c] using abs_cutoffPhaseFrequency_le a z
@@ -38,10 +38,10 @@ private theorem complexSymbol_remainder_bound (a z : ℝ) (τ h : ℂ) (n : ℕ)
     ring
   rw [he,norm_mul]
   calc
-    _ ≤ (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) * ‖h*c‖^2 :=
+    _ ≤ (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) * ‖h*c‖^(2 : ℕ) :=
       mul_le_mul (cutoffComplexSymbol_bound a z τ n) (Complex.norm_exp_sub_one_sub_id_le hhc)
         (norm_nonneg _) (mul_nonneg (pow_nonneg (cutoffPhaseBudget_pos a).le n) (Real.exp_pos _).le)
-    _ ≤ (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) * (‖h‖ * cutoffPhaseBudget a)^2 := by
+    _ ≤ (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) * (‖h‖ * cutoffPhaseBudget a)^(2 : ℕ) := by
       apply mul_le_mul_of_nonneg_left ?_
         (mul_nonneg (pow_nonneg (cutoffPhaseBudget_pos a).le n) (Real.exp_pos _).le)
       apply pow_le_pow_left₀ (norm_nonneg _) ?_ 2
@@ -54,7 +54,7 @@ private theorem complexLinfty_remainder_bound (a : ℝ) (τ h : ℂ) (n : ℕ)
     ‖cutoffComplexLinfty a n (τ+h) - cutoffComplexLinfty a n τ -
       h • cutoffComplexLinfty a (n+1) τ‖ ≤
       (cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) *
-        cutoffPhaseBudget a ^ 2 * ‖h‖^2 := by
+        cutoffPhaseBudget a ^ 2 * ‖h‖^(2 : ℕ) := by
   rw [Lp.norm_def,eLpNorm_exponent_top]
   apply ENNReal.toReal_le_of_le_ofReal
     (mul_nonneg (mul_nonneg (mul_nonneg (pow_nonneg (cutoffPhaseBudget_pos a).le n) (Real.exp_pos _).le)
@@ -74,7 +74,7 @@ theorem cutoffComplexLinfty_hasDerivAt (a : ℝ) (n : ℕ) (τ : ℂ) :
     HasDerivAt (cutoffComplexLinfty a n) (cutoffComplexLinfty a (n+1) τ) τ := by
   apply hasDerivAt_iff_isLittleO_nhds_zero.mpr
   have ho : (fun h : ℂ => cutoffComplexLinfty a n (τ+h) - cutoffComplexLinfty a n τ -
-      h • cutoffComplexLinfty a (n+1) τ) =O[𝓝 0] fun h => ‖h‖^2 := by
+      h • cutoffComplexLinfty a (n+1) τ) =O[𝓝 0] fun h => ‖h‖^(2 : ℕ) := by
     apply IsBigO.of_bound ((cutoffPhaseBudget a ^ n * Real.exp (|τ.im| * cutoffPhaseBudget a)) * cutoffPhaseBudget a ^ 2)
     have hc : Tendsto (fun h : ℂ => ‖h‖ * cutoffPhaseBudget a) (𝓝 0) (𝓝 0) := by
       have hb : Tendsto (fun h : ℂ => ‖h‖) (𝓝 0) (𝓝 0) := tendsto_norm_zero

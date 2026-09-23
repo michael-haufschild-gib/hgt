@@ -25,10 +25,10 @@ def nodalResistance (e : ℝ) : ℝ := resistance (radius e) (-1) 1
 theorem reciprocal_radius_hasPrimitive {e : ℝ} (he : 0 < e) (x : ℝ) :
     HasDerivAt (fun t : ℝ => Real.arsinh (t / e)) (1 / radius e x) x := by
   have h := (Real.hasDerivAt_arsinh (x / e)).comp x ((hasDerivAt_id x).div_const e)
-  have hs : 1 + (x / e) ^ 2 = (x ^ 2 + e ^ 2) / e ^ 2 := by
+  have hs : 1 + (x / e) ^ (2 : ℕ) = (x ^ (2 : ℕ) + e ^ (2 : ℕ)) / e ^ (2 : ℕ) := by
     field_simp
     ring
-  have hc : (Real.sqrt (1 + (x / e) ^ 2))⁻¹ * (1 / e) = 1 / radius e x := by
+  have hc : (Real.sqrt (1 + (x / e) ^ (2 : ℕ)))⁻¹ * (1 / e) = 1 / radius e x := by
     rw [hs, Real.sqrt_div (add_nonneg (sq_nonneg x) (sq_nonneg e)),
       Real.sqrt_sq_eq_abs, abs_of_pos he]
     unfold radius
@@ -54,9 +54,9 @@ theorem nodalResistance_eq_arsinh {e : ℝ} (he : 0 < e) :
 
 /-- Exact logarithmic singularity and its finite positive correction. -/
 theorem nodalResistance_eq_log {e : ℝ} (he : 0 < e) :
-    nodalResistance e = 2 * Real.log (1 + Real.sqrt (1 + e ^ 2)) - 2 * Real.log e := by
+    nodalResistance e = 2 * Real.log (1 + Real.sqrt (1 + e ^ (2 : ℕ))) - 2 * Real.log e := by
   rw [nodalResistance_eq_arsinh he, Real.arsinh]
-  have hs : 1 + (1 / e) ^ 2 = (1 + e ^ 2) / e ^ 2 := by
+  have hs : 1 + (1 / e) ^ (2 : ℕ) = (1 + e ^ (2 : ℕ)) / e ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hs, Real.sqrt_div (by positivity), Real.sqrt_sq_eq_abs, abs_of_pos he,
@@ -66,12 +66,12 @@ theorem nodalResistance_eq_log {e : ℝ} (he : 0 < e) :
 /-- The finite part of the nodal resistance has its exact limiting value. -/
 theorem nodalResistance_renormalized_tendsto :
     Tendsto (fun e : ℝ => nodalResistance e + 2 * Real.log e) (𝓝[>] 0) (𝓝 (2 * Real.log 2)) := by
-  have hc : ContinuousAt (fun e : ℝ => 2 * Real.log (1 + Real.sqrt (1 + e ^ 2))) 0 := by
+  have hc : ContinuousAt (fun e : ℝ => 2 * Real.log (1 + Real.sqrt (1 + e ^ (2 : ℕ)))) 0 := by
     apply continuousAt_const.mul
     apply ContinuousAt.log
     · exact continuousAt_const.add ((continuous_const.add (continuous_id.pow 2)).sqrt.continuousAt)
     · norm_num
-  have hlim : Tendsto (fun e : ℝ => 2 * Real.log (1 + Real.sqrt (1 + e ^ 2))) (𝓝[>] 0) (𝓝 (2 * Real.log 2)) := by
+  have hlim : Tendsto (fun e : ℝ => 2 * Real.log (1 + Real.sqrt (1 + e ^ (2 : ℕ)))) (𝓝[>] 0) (𝓝 (2 * Real.log 2)) := by
     convert hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ))) using 1
     norm_num
   apply hlim.congr'
@@ -87,8 +87,8 @@ theorem nodalResistance_tendsto_atTop : Tendsto nodalResistance (𝓝[>] 0) atTo
   apply tendsto_atTop_mono' (𝓝[>] 0) ?_ hlim
   filter_upwards [self_mem_nhdsWithin] with e he
   rw [nodalResistance_eq_log he]
-  have hlog := Real.log_nonneg (show 1 ≤ 1 + Real.sqrt (1 + e ^ 2) by
-    linarith [Real.sqrt_nonneg (1 + e ^ 2)])
+  have hlog := Real.log_nonneg (show 1 ≤ 1 + Real.sqrt (1 + e ^ (2 : ℕ)) by
+    linarith [Real.sqrt_nonneg (1 + e ^ (2 : ℕ))])
   linarith
 
 /-- The capacity coefficient in the nodal endpoint lower bound tends to zero. -/

@@ -40,7 +40,7 @@ lemma integrable_thetaTailFirstMomentIntegrand (x t : ℝ) :
     unfold thetaTailFirstMomentIntegrand
     exact (continuous_id.mul (hk.comp (by fun_prop))).mul (hk.comp (by fun_prop))
   refine Integrable.mono'
-    ((integrable_abs_mul_exp_neg_mul_abs (c := 1) one_pos).const_mul (C ^ 2))
+    ((integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (c := 1) one_pos).const_mul (C ^ (2 : ℕ)))
     hmeas ?_
   filter_upwards with u
   change |u * thetaCuspFullSource ((u + x - t) / 2) *
@@ -65,11 +65,11 @@ lemma integrable_thetaTailFirstMomentIntegrand (x t : ℝ) :
       ≤ |u| * (C * Real.exp (-|(u + x - t) / 2|)) *
           (C * Real.exp (-|(u - x + t) / 2|)) := by
         gcongr
-    _ = C ^ 2 * (|u| *
+    _ = C ^ (2 : ℕ) * (|u| *
           (Real.exp (-|(u + x - t) / 2|) *
             Real.exp (-|(u - x + t) / 2|))) := by ring
-    _ ≤ C ^ 2 * (|u| * Real.exp (-|u|)) := by gcongr
-    _ = C ^ 2 * (|u| * Real.exp (-(1 * |u|))) := by ring
+    _ ≤ C ^ (2 : ℕ) * (|u| * Real.exp (-|u|)) := by gcongr
+    _ = C ^ (2 : ℕ) * (|u| * Real.exp (-(1 * |u|))) := by ring
 
 /-- The actual theta tail first-moment kernel from the paper card. -/
 def thetaTailFirstMomentKernel (x t : ℝ) : ℝ :=

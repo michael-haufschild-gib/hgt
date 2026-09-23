@@ -249,7 +249,7 @@ theorem moment_product (n m : ℕ) (r : ℝ) (P : PolyBelow n) (Q : PolyBelow m)
 theorem moment_square (n : ℕ) (r : ℝ) (P : PolyBelow n) :
     moment (n+n+1) r (mulBelow n n P P) =
       ∑ k ∈ Finset.range n, (k.factorial : ℚ)⁻¹ •
-        (r^k * moment n r (((difference n)^k) P)^2) := by
+        (r^k * moment n r (((difference n)^k) P)^(2 : ℕ)) := by
   simpa only [pow_two,mul_assoc] using moment_product n n r P P
 
 /-- The real coefficient carries the sign of the parameter power. -/
@@ -295,7 +295,7 @@ theorem pairSquare_eq_difference_squares {N : ℕ} (n m : ℕ) (p r : ℝ)
     pairSquare n m p r P Q =
       ∑ k ∈ Finset.range n, ∑ l ∈ Finset.range m, weight p k*weight r l*
         (∑ i, moment n p (((difference n)^k) (P i))*
-          moment m r (((difference m)^l) (Q i)))^2 := by
+          moment m r (((difference m)^l) (Q i)))^(2 : ℕ) := by
   unfold pairSquare
   simp_rw [moment_product_weight,Finset.sum_mul,Finset.mul_sum]
   rw [fourfold_shuffle]

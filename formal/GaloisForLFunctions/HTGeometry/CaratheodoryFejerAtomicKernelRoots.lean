@@ -49,20 +49,20 @@ annihilate each positively weighted atom. -/
 theorem atomic_kernel_evaluation_eq_zero_of_weighted_normSq_eq_zero
     {n : ℕ} (xi : Fin (n + 1) → ℂ) (z : Fin n → ℂ) (weight : Fin n → ℝ)
     (hweight : ∀ i, 0 < weight i)
-    (henergy : ∑ i, weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ 2 = 0)
+    (henergy : ∑ i, weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ (2 : ℕ) = 0)
     (i : Fin n) :
     (finiteToeplitzKernelPolynomial xi).eval (z i) = 0 := by
   have hnonneg : ∀ j : Fin n,
-      0 ≤ weight j * ‖(finiteToeplitzKernelPolynomial xi).eval (z j)‖ ^ 2 := by
+      0 ≤ weight j * ‖(finiteToeplitzKernelPolynomial xi).eval (z j)‖ ^ (2 : ℕ) := by
     intro j
     exact mul_nonneg (hweight j).le (sq_nonneg _)
-  have htermle : weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ 2 ≤
-      ∑ j, weight j * ‖(finiteToeplitzKernelPolynomial xi).eval (z j)‖ ^ 2 := by
+  have htermle : weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ (2 : ℕ) ≤
+      ∑ j, weight j * ‖(finiteToeplitzKernelPolynomial xi).eval (z j)‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum (fun j _ => hnonneg j) (Finset.mem_univ i)
   rw [henergy] at htermle
-  have hterm : weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ 2 = 0 :=
+  have hterm : weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ (2 : ℕ) = 0 :=
     le_antisymm htermle (hnonneg i)
-  have hnormsq : ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ 2 = 0 :=
+  have hnormsq : ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ (2 : ℕ) = 0 :=
     (mul_eq_zero.mp hterm).resolve_left (ne_of_gt (hweight i))
   exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnormsq)
 
@@ -107,7 +107,7 @@ theorem atomic_kernel_polynomial_roots_on_unitCircle_of_weighted_energy
     (hInjective : Function.Injective z)
     (hCircle : ∀ i, ‖z i‖ = 1)
     (hweight : ∀ i, 0 < weight i)
-    (henergy : ∑ i, weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ 2 = 0)
+    (henergy : ∑ i, weight i * ‖(finiteToeplitzKernelPolynomial xi).eval (z i)‖ ^ (2 : ℕ) = 0)
     (hxi : finiteToeplitzKernelPolynomial xi ≠ 0)
     {u : ℂ} (hu : u ∈ (finiteToeplitzKernelPolynomial xi).roots) :
     ‖u‖ = 1 := by

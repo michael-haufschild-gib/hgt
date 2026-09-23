@@ -129,7 +129,7 @@ theorem qParam_one_invQParam_one {q : ℂ} (hq0 : q ≠ 0) :
 def e2DiskChazyDefect (q : ℂ) : ℂ :=
   2 * eulerDeriv (eulerDeriv (eulerDeriv e2Disk)) q -
     2 * e2Disk q * eulerDeriv (eulerDeriv e2Disk) q +
-      3 * eulerDeriv e2Disk q ^ 2
+      3 * eulerDeriv e2Disk q ^ (2 : ℕ)
 
 theorem e2DiskChazyDefect_analyticOnNhd :
     AnalyticOnNhd ℂ e2DiskChazyDefect (ball 0 1) := by
@@ -182,7 +182,7 @@ theorem e2DiskChazyDefect_eq_zero : EqOn e2DiskChazyDefect 0 (ball 0 1) := by
 theorem eulerDeriv_two_eq {f : ℂ → ℂ} {U : Set ℂ}
     (hf : AnalyticOnNhd ℂ f U) {q : ℂ} (hq : q ∈ U) :
     eulerDeriv (eulerDeriv f) q =
-      q * iteratedDeriv 1 f q + q ^ 2 * iteratedDeriv 2 f q := by
+      q * iteratedDeriv 1 f q + q ^ (2 : ℕ) * iteratedDeriv 2 f q := by
   have h1 := hasDerivAt_iteratedDeriv_of_analyticOnNhd hf 1 hq
   have hfun : iteratedDeriv 1 f = deriv f := by
     simp [iteratedDeriv_succ, iteratedDeriv_zero]
@@ -201,10 +201,10 @@ theorem eulerDeriv_two_eq {f : ℂ → ℂ} {U : Set ℂ}
 theorem eulerDeriv_three_eq {f : ℂ → ℂ} {U : Set ℂ}
     (hf : AnalyticOnNhd ℂ f U) (hU : IsOpen U) {q : ℂ} (hq : q ∈ U) :
     eulerDeriv (eulerDeriv (eulerDeriv f)) q =
-      q * iteratedDeriv 1 f q + 3 * q ^ 2 * iteratedDeriv 2 f q +
-        q ^ 3 * iteratedDeriv 3 f q := by
+      q * iteratedDeriv 1 f q + 3 * q ^ (2 : ℕ) * iteratedDeriv 2 f q +
+        q ^ (3 : ℕ) * iteratedDeriv 3 f q := by
   let rhs : ℂ → ℂ := fun z =>
-    z * iteratedDeriv 1 f z + z ^ 2 * iteratedDeriv 2 f z
+    z * iteratedDeriv 1 f z + z ^ (2 : ℕ) * iteratedDeriv 2 f z
   have heq : eulerDeriv (eulerDeriv f) =ᶠ[𝓝 q] rhs := by
     filter_upwards [hU.mem_nhds hq] with z hz
     exact eulerDeriv_two_eq hf hz
@@ -213,12 +213,12 @@ theorem eulerDeriv_three_eq {f : ℂ → ℂ} {U : Set ℂ}
   have hrhs := ((hasDerivAt_id q).mul h1).add
     (((hasDerivAt_id q).pow 2).mul h2)
   have hrhs_eq : rhs =
-      id * iteratedDeriv 1 f + id ^ 2 * iteratedDeriv 2 f := by
+      id * iteratedDeriv 1 f + id ^ (2 : ℕ) * iteratedDeriv 2 f := by
     funext z
     simp [rhs]
   have hd : deriv (eulerDeriv (eulerDeriv f)) q =
       iteratedDeriv 1 f q + q * iteratedDeriv 2 f q +
-        (2 * q) * iteratedDeriv 2 f q + q ^ 2 * iteratedDeriv 3 f q := by
+        (2 * q) * iteratedDeriv 2 f q + q ^ (2 : ℕ) * iteratedDeriv 3 f q := by
     rw [heq.deriv_eq, hrhs_eq]
     have h := hrhs.deriv
     simp only [id_eq, one_mul, Nat.reduceAdd, Nat.cast_ofNat, Nat.reduceSub,
@@ -235,8 +235,8 @@ def e2ChazyJetPolynomial : MvPolynomial (Fin 5) ℂ :=
   let x2 := X (Fin.succ (Fin.succ (0 : Fin 3)))
   let x3 := X (Fin.succ (Fin.succ (Fin.succ (0 : Fin 2))))
   let x4 := X (Fin.succ (Fin.succ (Fin.succ (Fin.succ (0 : Fin 1)))))
-  2 * (x0 * x2 + 3 * x0 ^ 2 * x3 + x0 ^ 3 * x4) -
-    2 * x1 * (x0 * x2 + x0 ^ 2 * x3) + 3 * (x0 * x2) ^ 2
+  2 * (x0 * x2 + 3 * x0 ^ (2 : ℕ) * x3 + x0 ^ (3 : ℕ) * x4) -
+    2 * x1 * (x0 * x2 + x0 ^ (2 : ℕ) * x3) + 3 * (x0 * x2) ^ (2 : ℕ)
 
 theorem e2ChazyJetPolynomial_ne_zero : e2ChazyJetPolynomial ≠ 0 := by
   intro h
@@ -247,17 +247,17 @@ theorem e2ChazyJetPolynomial_eval (f : ℂ → ℂ) (q : ℂ) :
     MvPolynomial.eval
       (Fin.cons q (fun j : Fin 4 => iteratedDeriv (j : ℕ) f q))
         e2ChazyJetPolynomial =
-      2 * (q * iteratedDeriv 1 f q + 3 * q ^ 2 * iteratedDeriv 2 f q +
-        q ^ 3 * iteratedDeriv 3 f q) -
-      2 * f q * (q * iteratedDeriv 1 f q + q ^ 2 * iteratedDeriv 2 f q) +
-        3 * (q * iteratedDeriv 1 f q) ^ 2 := by
+      2 * (q * iteratedDeriv 1 f q + 3 * q ^ (2 : ℕ) * iteratedDeriv 2 f q +
+        q ^ (3 : ℕ) * iteratedDeriv 3 f q) -
+      2 * f q * (q * iteratedDeriv 1 f q + q ^ (2 : ℕ) * iteratedDeriv 2 f q) +
+        3 * (q * iteratedDeriv 1 f q) ^ (2 : ℕ) := by
   simp only [e2ChazyJetPolynomial, map_sub, map_add, map_mul, map_pow, map_ofNat,
     eval_X]
   change
-    2 * (q * iteratedDeriv 1 f q + 3 * q ^ 2 * iteratedDeriv 2 f q +
-      q ^ 3 * iteratedDeriv 3 f q) -
-        2 * f q * (q * iteratedDeriv 1 f q + q ^ 2 * iteratedDeriv 2 f q) +
-      3 * (q * iteratedDeriv 1 f q) ^ 2 = _
+    2 * (q * iteratedDeriv 1 f q + 3 * q ^ (2 : ℕ) * iteratedDeriv 2 f q +
+      q ^ (3 : ℕ) * iteratedDeriv 3 f q) -
+        2 * f q * (q * iteratedDeriv 1 f q + q ^ (2 : ℕ) * iteratedDeriv 2 f q) +
+      3 * (q * iteratedDeriv 1 f q) ^ (2 : ℕ) = _
   rfl
 
 /-- The unit-disk `q`-expansion of `E₂` satisfies an explicit nonzero order-three ADE. -/

@@ -28,7 +28,7 @@ def unitRieszCompletedSourceMultiplier (z : ℂ) : ℂ :=
 
 /-- Pole-filled zeta profile whose divided difference is the elementary unit-Riesz correction. -/
 def unitRieszPoleFilledZetaProfile (z : ℂ) : ℂ :=
-  RHTower.regularizedRiemannZeta (1 + z) / (1 + z) ^ 2
+  RHTower.regularizedRiemannZeta (1 + z) / (1 + z) ^ (2 : ℕ)
 
 /-- Holomorphic source-free correction after the critical-Mellin defect is removed. -/
 def unitRieszCompletedSourceCorrection (z : ℂ) : ℂ :=
@@ -121,7 +121,7 @@ theorem unitRieszPoleFilledCoefficient_eq_original
     {z : ℂ} (hz : 0 < z.re) :
     unitRieszPoleFilledCoefficient z =
       unitRieszCompletedSourceMultiplier z *
-        (riemannZeta (1 + z) / (1 + z) ^ 2 +
+        (riemannZeta (1 + z) / (1 + z) ^ (2 : ℕ) +
           deriv riemannZeta (1 + z) / riemannZeta (1 + z)) := by
   have hz0 : z ≠ 0 := by
     intro h

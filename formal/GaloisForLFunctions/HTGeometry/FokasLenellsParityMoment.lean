@@ -31,47 +31,47 @@ theorem initialParts_derivative_sum (q : SchwartzMap ℝ ℂ) (x : ℝ) :
   exact hd.deriv
 
 theorem initialParts_reflected_product (q : SchwartzMap ℝ ℂ) (x : ℝ) :
-    q x*q (-x) = (evenInitialPart q x)^2-(oddInitialPart q x)^2 := by
+    q x*q (-x) = (evenInitialPart q x)^(2 : ℕ)-(oddInitialPart q x)^(2 : ℕ) := by
   simp only [evenInitialPart_apply,oddInitialPart_apply]
   ring
 
 theorem schwartz_square_derivative_integrable (f g : SchwartzMap ℝ ℂ) :
-    Integrable (fun x : ℝ => (f x)^2*deriv (g : ℝ → ℂ) x) := by
+    Integrable (fun x : ℝ => (f x)^(2 : ℕ)*deriv (g : ℝ → ℂ) x) := by
   have hi : Integrable (fun x : ℝ => mulS (mulS f f) (SchwartzMap.derivCLM ℂ ℂ g) x) :=
     (mulS (mulS f f) (SchwartzMap.derivCLM ℂ ℂ g)).integrable
   simpa only [mulS_apply,SchwartzMap.derivCLM_apply,pow_two] using hi
 
 /-- The odd-square/even-derivative term is the parity-forbidden cubic contribution. -/
 theorem integral_oddInitialPart_sq_mul_even_deriv (q : SchwartzMap ℝ ℂ) :
-    ∫ x : ℝ, (oddInitialPart q x)^2*deriv (evenInitialPart q : ℝ → ℂ) x = 0 := by
-  have he : (fun x : ℝ => (oddInitialPart q (-x))^2*deriv (evenInitialPart q : ℝ → ℂ) (-x)) =
-      fun x => -((oddInitialPart q x)^2*deriv (evenInitialPart q : ℝ → ℂ) x) := by
+    ∫ x : ℝ, (oddInitialPart q x)^(2 : ℕ)*deriv (evenInitialPart q : ℝ → ℂ) x = 0 := by
+  have he : (fun x : ℝ => (oddInitialPart q (-x))^(2 : ℕ)*deriv (evenInitialPart q : ℝ → ℂ) (-x)) =
+      fun x => -((oddInitialPart q x)^(2 : ℕ)*deriv (evenInitialPart q : ℝ → ℂ) x) := by
     funext x
     rw [oddInitialPart_reflection,deriv_evenInitialPart_reflection]
     ring
   have hi := integral_neg_eq_self
-    (fun x : ℝ => (oddInitialPart q x)^2*deriv (evenInitialPart q : ℝ → ℂ) x) volume
+    (fun x : ℝ => (oddInitialPart q x)^(2 : ℕ)*deriv (evenInitialPart q : ℝ → ℂ) x) volume
   rw [he,integral_neg] at hi
   exact self_eq_neg.mp hi.symm
 
 /-- The surviving nonlinear invariant couples the even amplitude to the odd derivative. -/
 def parityCoupling (q : SchwartzMap ℝ ℂ) : ℂ :=
-  ∫ x : ℝ, (evenInitialPart q x)^2*deriv (oddInitialPart q : ℝ → ℂ) x
+  ∫ x : ℝ, (evenInitialPart q x)^(2 : ℕ)*deriv (oddInitialPart q : ℝ → ℂ) x
 
 theorem compatibilityCubic_eq_parityCoupling (q : SchwartzMap ℝ ℂ) :
     (∫ x : ℝ, q x*q (-x)*deriv (q : ℝ → ℂ) x) = parityCoupling q := by
   let e := evenInitialPart q
   let o := oddInitialPart q
   have he : (fun x : ℝ => q x*q (-x)*deriv (q : ℝ → ℂ) x) = fun x =>
-      ((e x)^2*deriv (e : ℝ → ℂ) x+(e x)^2*deriv (o : ℝ → ℂ) x)-
-        ((o x)^2*deriv (e : ℝ → ℂ) x+(o x)^2*deriv (o : ℝ → ℂ) x) := by
+      ((e x)^(2 : ℕ)*deriv (e : ℝ → ℂ) x+(e x)^(2 : ℕ)*deriv (o : ℝ → ℂ) x)-
+        ((o x)^(2 : ℕ)*deriv (e : ℝ → ℂ) x+(o x)^(2 : ℕ)*deriv (o : ℝ → ℂ) x) := by
     funext x
     rw [initialParts_reflected_product,initialParts_derivative_sum]
-    change (e x^2-o x^2)*(deriv (e : ℝ → ℂ) x+deriv (o : ℝ → ℂ) x) = _
+    change (e x^(2 : ℕ)-o x^(2 : ℕ))*(deriv (e : ℝ → ℂ) x+deriv (o : ℝ → ℂ) x) = _
     ring
-  have hl : Integrable (fun x : ℝ => (e x)^2*deriv (e : ℝ → ℂ) x+(e x)^2*deriv (o : ℝ → ℂ) x) :=
+  have hl : Integrable (fun x : ℝ => (e x)^(2 : ℕ)*deriv (e : ℝ → ℂ) x+(e x)^(2 : ℕ)*deriv (o : ℝ → ℂ) x) :=
     (schwartz_square_derivative_integrable e e).add (schwartz_square_derivative_integrable e o)
-  have hr : Integrable (fun x : ℝ => (o x)^2*deriv (e : ℝ → ℂ) x+(o x)^2*deriv (o : ℝ → ℂ) x) :=
+  have hr : Integrable (fun x : ℝ => (o x)^(2 : ℕ)*deriv (e : ℝ → ℂ) x+(o x)^(2 : ℕ)*deriv (o : ℝ → ℂ) x) :=
     (schwartz_square_derivative_integrable o e).add (schwartz_square_derivative_integrable o o)
   rw [he,integral_sub hl hr,
     integral_add (schwartz_square_derivative_integrable e e) (schwartz_square_derivative_integrable e o),
@@ -90,11 +90,11 @@ theorem compatibilityMoment_zero_iff_parity_balance (q : SchwartzMap ℝ ℂ) :
 
 /-- Explicit scaling exposes the linear and cubic orders of the missing initial compatibility condition. -/
 theorem compatibilityMoment_smul (q : SchwartzMap ℝ ℂ) (c : ℂ) :
-    compatibilityMoment (c • q) = c*(∫ x : ℝ, q x)-I*c^3*parityCoupling q := by
+    compatibilityMoment (c • q) = c*(∫ x : ℝ, q x)-I*c^(3 : ℕ)*parityCoupling q := by
   have hd (x : ℝ) : deriv ((c • q : SchwartzMap ℝ ℂ) : ℝ → ℂ) x = c*deriv (q : ℝ → ℂ) x :=
     ((q.hasDerivAt x).const_mul c).deriv
   have he : (fun x : ℝ => (c • q) x*(c • q) (-x)*deriv ((c • q : SchwartzMap ℝ ℂ) : ℝ → ℂ) x) =
-      fun x => c^3*(q x*q (-x)*deriv (q : ℝ → ℂ) x) := by
+      fun x => c^(3 : ℕ)*(q x*q (-x)*deriv (q : ℝ → ℂ) x) := by
     funext x
     rw [hd]
     simp only [_root_.smul_apply,smul_eq_mul]
@@ -152,7 +152,7 @@ theorem compatibilityMoment_both_zero_iff (q : SchwartzMap ℝ ℂ) :
 theorem compatibilityMoment_globalSmall (q : SchwartzMap ℝ ℂ) :
     compatibilityMoment (globalSmallScatteringPotential q) =
       (globalScatteringScale q : ℂ)*(∫ x : ℝ, q x)-
-        I*(globalScatteringScale q : ℂ)^3*parityCoupling q :=
+        I*(globalScatteringScale q : ℂ)^(3 : ℕ)*parityCoupling q :=
   compatibilityMoment_smul q _
 
 end

@@ -64,7 +64,7 @@ theorem norm_routeEStaticAbsoluteKernelTerm_pi_div_log_le
       routeETerminalLogBand Y eta q.1 ∧ routeETerminalLogBand Y eta q.2)
     (q : Nat.Primes × Nat.Primes) :
     ‖routeEStaticAbsoluteKernelTerm K q (Real.pi / Real.log Y)‖ ≤
-      (Real.pi * eta) ^ 2 * ‖K q‖ := by
+      (Real.pi * eta) ^ (2 : ℕ) * ‖K q‖ := by
   by_cases hq : K q = 0
   · simp [routeEStaticAbsoluteKernelTerm, hq]
   · obtain ⟨hq₁, hq₂⟩ := hsupport q hq
@@ -85,7 +85,7 @@ theorem norm_routeEStaticAbsoluteKernelTerm_pi_div_log_le
             ‖routeEAntiscaleSeam q.2 (Real.pi / Real.log Y)‖) := by ring
       _ ≤ ‖K q‖ * ((Real.pi * eta) * (Real.pi * eta)) :=
         mul_le_mul_of_nonneg_left hseamprod (norm_nonneg _)
-      _ = (Real.pi * eta) ^ 2 * ‖K q‖ := by ring
+      _ = (Real.pi * eta) ^ (2 : ℕ) * ‖K q‖ := by ring
 
 /-- **Moving terminal-kernel resonance.**  Complete cross-prime form at the explicit physical
 frequency is bounded by band-width squared times total entrywise kernel mass. -/
@@ -97,10 +97,10 @@ theorem norm_tsum_routeEStaticAbsoluteKernelTerm_pi_div_log_le
       routeETerminalLogBand Y eta q.1 ∧ routeETerminalLogBand Y eta q.2) :
     ‖∑' q : Nat.Primes × Nat.Primes,
         routeEStaticAbsoluteKernelTerm K q (Real.pi / Real.log Y)‖ ≤
-      (Real.pi * eta) ^ 2 * ∑' q : Nat.Primes × Nat.Primes, ‖K q‖ := by
+      (Real.pi * eta) ^ (2 : ℕ) * ∑' q : Nat.Primes × Nat.Primes, ‖K q‖ := by
   have hsummable :=
     summable_routeEStaticAbsoluteKernelTerm hK (Real.pi / Real.log Y)
-  have hcoefficient : 0 ≤ (Real.pi * eta) ^ 2 := sq_nonneg _
+  have hcoefficient : 0 ≤ (Real.pi * eta) ^ (2 : ℕ) := sq_nonneg _
   calc
     ‖∑' q : Nat.Primes × Nat.Primes,
         routeEStaticAbsoluteKernelTerm K q (Real.pi / Real.log Y)‖
@@ -108,12 +108,12 @@ theorem norm_tsum_routeEStaticAbsoluteKernelTerm_pi_div_log_le
             ‖routeEStaticAbsoluteKernelTerm K q (Real.pi / Real.log Y)‖ :=
           norm_tsum_le_tsum_norm hsummable.norm
     _ ≤ ∑' q : Nat.Primes × Nat.Primes,
-            (Real.pi * eta) ^ 2 * ‖K q‖ := by
+            (Real.pi * eta) ^ (2 : ℕ) * ‖K q‖ := by
           refine Summable.tsum_le_tsum (fun q => ?_) hsummable.norm
-            (hK.mul_left ((Real.pi * eta) ^ 2))
+            (hK.mul_left ((Real.pi * eta) ^ (2 : ℕ)))
           exact norm_routeEStaticAbsoluteKernelTerm_pi_div_log_le
             hY heta K hsupport q
-    _ = (Real.pi * eta) ^ 2 * ∑' q : Nat.Primes × Nat.Primes, ‖K q‖ :=
+    _ = (Real.pi * eta) ^ (2 : ℕ) * ∑' q : Nat.Primes × Nat.Primes, ‖K q‖ :=
       tsum_mul_left
 
 /-- Explicit smallness criterion at physical terminal resonance. -/
@@ -123,7 +123,7 @@ theorem norm_tsum_routeEStaticAbsoluteKernelTerm_pi_div_log_lt
     (hK : Summable (fun q : Nat.Primes × Nat.Primes => ‖K q‖))
     (hsupport : ∀ q, K q ≠ 0 →
       routeETerminalLogBand Y eta q.1 ∧ routeETerminalLogBand Y eta q.2)
-    (hsmall : (Real.pi * eta) ^ 2 *
+    (hsmall : (Real.pi * eta) ^ (2 : ℕ) *
       ∑' q : Nat.Primes × Nat.Primes, ‖K q‖ < delta) :
     ‖∑' q : Nat.Primes × Nat.Primes,
         routeEStaticAbsoluteKernelTerm K q (Real.pi / Real.log Y)‖ < delta :=

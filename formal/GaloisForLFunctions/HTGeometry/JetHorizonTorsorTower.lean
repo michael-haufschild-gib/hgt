@@ -49,7 +49,7 @@ theorem jetHorizon_succ_le (hC : ∀ c : C, (algebraMap C F c)′ = 0)
 
 omit [CharZero C] [CharZero F] in
 /-- A derivation-closed intermediate field contains every jet of each of its elements. -/
-theorem differentialJet_mem_of_derivationClosed {K : IntermediateField C F}
+theorem differentialJet_mem_of_derivationClosed_jetHorizonTorsorTower {K : IntermediateField C F}
     (hK : DerivationClosed K) : ∀ (m : ℕ) {x : F}, x ∈ K → differentialJet m x ∈ K := by
   intro m
   induction m with
@@ -79,7 +79,7 @@ theorem mem_differentialAdjoin_iff_mem_adjoin {ι : Type*} (w : ι → F)
       | zero => simpa using IntermediateField.subset_adjoin (↥K) (Set.range w) ⟨i, rfl⟩
       | succ m =>
           have hmem : differentialJet m ((w i)′) ∈ K :=
-            differentialJet_mem_of_derivationClosed hKclosed m (hδ i)
+            differentialJet_mem_of_derivationClosed_jetHorizonTorsorTower hKclosed m (hδ i)
           have := IntermediateField.algebraMap_mem
             (IntermediateField.adjoin (↥K) (Set.range w)) (⟨_, hmem⟩ : ↥K)
           rw [differentialJet_succ_apply]

@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 # Hilbert realization of the normalized CCM prime-pole vectors
 
 The exact scalar sequences from `CCMPrimePoleLaplaceBoundary` define honest
-unit vectors in `ell^2(N)`.  This module proves summability from the geometric
+unit vectors in `ell^(2 : ℕ)(N)`.  This module proves summability from the geometric
 pole model itself and then proves the Hilbert norm identity from the exact Gram
 law.
 -/
@@ -37,7 +37,7 @@ theorem summable_ccmNormalizedPrimePoleSequence_star_mul_self
 
 theorem summable_norm_sq_ccmNormalizedPrimePoleSequence
     {L : ℝ} (hL : 0 < L) (n : ℤ) :
-    Summable (fun k : ℕ => ‖ccmNormalizedPrimePoleSequence L n k‖ ^ 2) := by
+    Summable (fun k : ℕ => ‖ccmNormalizedPrimePoleSequence L n k‖ ^ (2 : ℕ)) := by
   have hs := (summable_ccmNormalizedPrimePoleSequence_star_mul_self hL n).norm
   simpa only [norm_mul, norm_star, pow_two] using hs
 
@@ -54,14 +54,14 @@ def ccmNormalizedPrimePoleVector (L : ℝ) (hL : 0 < L) (n : ℤ) :
 
 theorem norm_sq_ccmNormalizedPrimePoleVector
     {L : ℝ} (hL : 0 < L) (n : ℤ) :
-    ‖ccmNormalizedPrimePoleVector L hL n‖ ^ 2 = 1 := by
+    ‖ccmNormalizedPrimePoleVector L hL n‖ ^ (2 : ℕ) = 1 := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
-  change (∑' k : ℕ, ‖ccmNormalizedPrimePoleSequence L n k‖ ^ 2) = 1
+  change (∑' k : ℕ, ‖ccmNormalizedPrimePoleSequence L n k‖ ^ (2 : ℕ)) = 1
   apply Complex.ofReal_injective
   rw [Complex.ofReal_tsum]
   simp only [Complex.ofReal_one]
   calc
-    (∑' k : ℕ, ((‖ccmNormalizedPrimePoleSequence L n k‖ ^ 2 : ℝ) : ℂ)) =
+    (∑' k : ℕ, ((‖ccmNormalizedPrimePoleSequence L n k‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
         ∑' k : ℕ, star (ccmNormalizedPrimePoleSequence L n k) *
           ccmNormalizedPrimePoleSequence L n k := by
       apply tsum_congr
@@ -94,11 +94,11 @@ rational Cauchy defect of the two prime-clock frequencies. -/
 theorem norm_sub_sq_ccmNormalizedPrimePoleVector
     {Lp Lq : ℝ} (hp : 0 < Lp) (hq : 0 < Lq) (n r : ℤ) :
     ‖ccmNormalizedPrimePoleVector Lq hq r -
-        ccmNormalizedPrimePoleVector Lp hp n‖ ^ 2 =
-      2 * (2 * Real.pi * ((r : ℝ) / Lq - (n : ℝ) / Lp)) ^ 2 /
-        (1 + (2 * Real.pi * ((r : ℝ) / Lq - (n : ℝ) / Lp)) ^ 2) := by
+        ccmNormalizedPrimePoleVector Lp hp n‖ ^ (2 : ℕ) =
+      2 * (2 * Real.pi * ((r : ℝ) / Lq - (n : ℝ) / Lp)) ^ (2 : ℕ) /
+        (1 + (2 * Real.pi * ((r : ℝ) / Lq - (n : ℝ) / Lp)) ^ (2 : ℕ)) := by
   let a : ℝ := 2 * Real.pi * ((r : ℝ) / Lq - (n : ℝ) / Lp)
-  have hden : 0 < 1 + a ^ 2 := by positivity
+  have hden : 0 < 1 + a ^ (2 : ℕ) := by positivity
   rw [norm_sub_sq (𝕜 := ℂ),
     norm_ccmNormalizedPrimePoleVector hq r,
     norm_ccmNormalizedPrimePoleVector hp n,
@@ -110,8 +110,8 @@ theorem norm_sub_sq_ccmNormalizedPrimePoleVector
     push_cast
     ring
   rw [hkernel, one_div]
-  change 1 ^ 2 - 2 * Complex.re ((1 + Complex.I * a)⁻¹) + 1 ^ 2 =
-    2 * a ^ 2 / (1 + a ^ 2)
+  change 1 ^ (2 : ℕ) - 2 * Complex.re ((1 + Complex.I * a)⁻¹) + 1 ^ (2 : ℕ) =
+    2 * a ^ (2 : ℕ) / (1 + a ^ (2 : ℕ))
   rw [Complex.inv_re, Complex.normSq_apply]
   norm_num
   field_simp [hden.ne']

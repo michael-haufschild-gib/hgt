@@ -40,7 +40,7 @@ theorem egbFixedChargeAPeakAlignedGibbsGap_center (w φ τ l : ℝ) :
 
 theorem egbFixedChargeAPeakAlignedGibbsGap_uniform_first_zero_limit (w φ l₁ l₂ : ℝ) :
     TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
+      cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have h := (Metric.tendstoUniformly_iff.mp (egbFixedChargeAInteriorGibbsGap_uniform_aligned_first_zero_limit w φ l₁ l₂)) ε hε
@@ -51,7 +51,7 @@ theorem egbFixedChargeAPeakAlignedGibbsGap_uniform_first_zero_limit (w φ l₁ l
 
 theorem egbFixedChargeAPeakAlignedGibbsGap_uniform_profile_limit (w φ l₁ l₂ : ℝ) :
     TendstoUniformly (fun τ ψ => egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂)
-      (fun ψ => cos ψ ^ 4) atBot := by
+      (fun ψ => cos ψ ^ (4 : ℕ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have he := (Metric.tendstoUniformly_iff.mp (egbFixedChargeAPeakAlignedGibbsGap_uniform_first_zero_limit w φ l₁ l₂)) 1 (by norm_num)
@@ -67,13 +67,13 @@ theorem egbFixedChargeAPeakAlignedGibbsGap_uniform_profile_limit (w φ l₁ l₂
 
 theorem egbFixedChargeAPeakAlignedGibbsGap_moving_first_zero_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (ψ τ) / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos (ψ τ) ^ 4) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
+      cos (ψ τ) ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
   simpa only [egbFixedChargeAPeakAlignedGibbsGap, egbFixedChargeAPeakAlignedProfile_inverse] using
     egbFixedChargeAInteriorGibbsGap_moving_aligned_first_zero_limit w φ l₁ l₂ (fun τ => egbFixedChargeAPeakInverseAngle τ φ (ψ τ))
 
 theorem egbFixedChargeAPeakAlignedGibbsGap_moving_peak_zero_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (ψ τ) / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos (ψ τ) ^ 4) / egbFixedChargeAMiddleGapCoordinate τ φ) atBot (𝓝 (0 : ℝ)) := by
+      cos (ψ τ) ^ (4 : ℕ)) / egbFixedChargeAMiddleGapCoordinate τ φ) atBot (𝓝 (0 : ℝ)) := by
   simpa only [egbFixedChargeAPeakAlignedGibbsGap, egbFixedChargeAPeakAlignedProfile_inverse] using
     egbFixedChargeAInteriorGibbsGap_moving_aligned_peak_zero_limit w φ l₁ l₂ (fun τ => egbFixedChargeAPeakInverseAngle τ φ (ψ τ))
 

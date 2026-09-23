@@ -42,7 +42,7 @@ theorem egbFixedChargeAGibbsPerturbation_centered (n m : ℕ)
 theorem egbFixedChargeAGibbsPerturbation_collision_identity (n m : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionExcess n m 1 (egbFixedChargeAGibbsPerturbationEnergy n f) =
-      (egbFixedChargeAGibbsPerturbationScale n f / (2 : ℝ) ^ (n + 3)) ^ 2 *
+      (egbFixedChargeAGibbsPerturbationScale n f / (2 : ℝ) ^ (n + 3)) ^ (2 : ℕ) *
         egbFixedChargeACriticalCenteredEnergy n
           ((egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f) := by
   rw [← egbFixedChargeAGibbsPopulation_centered_energy]
@@ -53,7 +53,7 @@ theorem egbFixedChargeAGibbsPerturbation_collision_identity (n m : ℕ)
 theorem egbFixedChargeAGibbsPerturbation_collision_initial (n : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionExcess n 0 1 (egbFixedChargeAGibbsPerturbationEnergy n f) =
-      (egbFixedChargeAGibbsPerturbationScale n f / (2 : ℝ) ^ (n + 3)) ^ 2 *
+      (egbFixedChargeAGibbsPerturbationScale n f / (2 : ℝ) ^ (n + 3)) ^ (2 : ℕ) *
         egbFixedChargeACriticalCenteredEnergy n f := by
   rw [egbFixedChargeAGibbsPerturbation_collision_identity,
     egbFixedChargeACriticalMarkovIteratedKernel_zero]

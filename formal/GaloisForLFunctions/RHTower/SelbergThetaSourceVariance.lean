@@ -93,7 +93,7 @@ def tiltedSource (a x : ℝ) : ℝ := Real.exp (a*x) * thetaCuspFullSource x
 
 /-- Literal mode energy in the reciprocal theta density, with a real exponential tilt. -/
 def weightedEnergy (q : XiZeroCopy) (a x : ℝ) : ℝ :=
-  tiltedSource a x * ‖sourceRatio q x‖ ^ 2
+  tiltedSource a x * ‖sourceRatio q x‖ ^ (2 : ℕ)
 
 /-- The actual two-ended mode with the same exponential tilt. -/
 def weightedMode (q : XiZeroCopy) (a x : ℝ) : ℂ :=
@@ -144,13 +144,13 @@ private theorem weightedMode_tendsto (q : XiZeroCopy) {a : ℝ} (ha : |a| < 1) :
 private theorem weightedEnergy_tendsto (q : XiZeroCopy) {a : ℝ} (ha : |a| < 1) :
     Tendsto (weightedEnergy q a) (cocompact ℝ) (𝓝 0) := by
   obtain ⟨C, hCp, hC⟩ := sourceRatio_bounded q
-  apply squeeze_zero_norm (a := fun x => C^2 * ‖tiltedSource a x‖)
+  apply squeeze_zero_norm (a := fun x => C^(2 : ℕ) * ‖tiltedSource a x‖)
   · intro x
     rw [weightedEnergy, norm_mul, Real.norm_eq_abs, abs_of_pos (tiltedSource_pos a x),
       Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
     have hp := pow_le_pow_left₀ (norm_nonneg _) (hC x) 2
     nlinarith [tiltedSource_pos a x]
-  · simpa [tiltedSource, thetaCuspTiltedSource] using (thetaCuspTiltedSchwartzReal a ha).tendsto_cocompact.norm.const_mul (C^2)
+  · simpa [tiltedSource, thetaCuspTiltedSource] using (thetaCuspTiltedSchwartzReal a ha).tendsto_cocompact.norm.const_mul (C^(2 : ℕ))
 
 
 private def Q (x : ℝ) : ℝ := deriv thetaCuspLogSource x
@@ -182,8 +182,8 @@ private theorem hasDerivAt_tiltedSource (a x : ℝ) :
   simpa [tiltedSource] using! h.congr_deriv (by simp only [id_eq]; ring)
 
 private theorem hasDerivAt_ratio_norm (q : XiZeroCopy) (x : ℝ) :
-    HasDerivAt (fun t => ‖sourceRatio q t‖^2)
-      (2*((xiSpectralPoint q).im-Q x)*‖sourceRatio q x‖^2 - 2*(sourceRatio q x).im) x := by
+    HasDerivAt (fun t => ‖sourceRatio q t‖^(2 : ℕ))
+      (2*((xiSpectralPoint q).im-Q x)*‖sourceRatio q x‖^(2 : ℕ) - 2*(sourceRatio q x).im) x := by
   have h := (hasDerivAt_ratio q x).norm_sq
   refine h.congr_deriv ?_
   rw [real_inner_eq_re_inner (𝕜 := ℂ), RCLike.inner_apply]
@@ -191,7 +191,7 @@ private theorem hasDerivAt_ratio_norm (q : XiZeroCopy) (x : ℝ) :
   ring
 
 private def sourceMomentDensity (q : XiZeroCopy) (a x : ℝ) : ℝ :=
-  deriv (tiltedSource a) x * ‖sourceRatio q x‖^2
+  deriv (tiltedSource a) x * ‖sourceRatio q x‖^(2 : ℕ)
 
 private theorem sourceMoment_integrable (q : XiZeroCopy) {a : ℝ} (ha : |a| < 1) :
     Integrable (sourceMomentDensity q a) := by
@@ -296,13 +296,13 @@ private theorem integral_sourceMoment (q : XiZeroCopy) {a : ℝ} (ha : |a| < 1) 
 
 
 private def varianceDensity (q : XiZeroCopy) (a x : ℝ) : ℝ :=
-  tiltedSource a x * ‖sourceRatio q x + (shift q a)⁻¹‖^2
+  tiltedSource a x * ‖sourceRatio q x + (shift q a)⁻¹‖^(2 : ℕ)
 
 private theorem variance_integrable (q : XiZeroCopy) {a : ℝ} (ha : |a| < 1) :
     Integrable (varianceDensity q a) := by
   obtain ⟨C, hCp, hC⟩ := sourceRatio_bounded q
-  have hbound : ∀ x : ℝ, ‖‖sourceRatio q x + (shift q a)⁻¹‖^2‖ ≤
-      (C+‖(shift q a)⁻¹‖)^2 := by
+  have hbound : ∀ x : ℝ, ‖‖sourceRatio q x + (shift q a)⁻¹‖^(2 : ℕ)‖ ≤
+      (C+‖(shift q a)⁻¹‖)^(2 : ℕ) := by
     intro x
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
     have hs : ‖sourceRatio q x+(shift q a)⁻¹‖ ≤ C+‖(shift q a)⁻¹‖ :=
@@ -413,7 +413,7 @@ private theorem sourceMomentDensity_eq (q : XiZeroCopy) (a x : ℝ) :
 
 /-- The ratio definition retains the original mode and reciprocal source weight. -/
 theorem weightedEnergy_eq (q : XiZeroCopy) (a x : ℝ) :
-    weightedEnergy q a x = Real.exp (a*x)*‖mode q x‖^2/thetaCuspFullSource x := by
+    weightedEnergy q a x = Real.exp (a*x)*‖mode q x‖^(2 : ℕ)/thetaCuspFullSource x := by
   unfold weightedEnergy tiltedSource sourceRatio
   rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (thetaCuspFullSource_pos_all x)]
   field_simp [(thetaCuspFullSource_pos_all x).ne']
@@ -458,17 +458,17 @@ theorem tilted_source_current_eq_variance (q : XiZeroCopy) (a : Ioo (-1 : ℝ) 1
 /-- Actual energy splits into the explicit source-mass term and its positive variance. -/
 theorem tilted_energy_decomposition (q : XiZeroCopy) (a : Ioo (-1 : ℝ) 1) :
     (∫ x, weightedEnergy q a.val x) = sourceVariance q a.val +
-      (∫ x, tiltedSource a.val x)/‖xiSpectralPoint q+I*(a.val:ℂ)‖^2 := by
+      (∫ x, tiltedSource a.val x)/‖xiSpectralPoint q+I*(a.val:ℂ)‖^(2 : ℕ) := by
   have h := integral_variance q (tilt_mem a.property)
   rw [Complex.normSq_inv, Complex.normSq_eq_norm_sq] at h
   change sourceVariance q a.val = (∫ x, weightedEnergy q a.val x) -
-    (∫ x, tiltedSource a.val x)*(‖xiSpectralPoint q+I*(a.val:ℂ)‖^2)⁻¹ at h
+    (∫ x, tiltedSource a.val x)*(‖xiSpectralPoint q+I*(a.val:ℂ)‖^(2 : ℕ))⁻¹ at h
   rw [div_eq_mul_inv]
   linarith
 
 /-- The positive variance gives a strict source-mass lower bound on the actual energy. -/
 theorem tilted_energy_strict_floor (q : XiZeroCopy) (a : Ioo (-1 : ℝ) 1) :
-    (∫ x, tiltedSource a.val x)/‖xiSpectralPoint q+I*(a.val:ℂ)‖^2 <
+    (∫ x, tiltedSource a.val x)/‖xiSpectralPoint q+I*(a.val:ℂ)‖^(2 : ℕ) <
       ∫ x, weightedEnergy q a.val x := by
   rw [tilted_energy_decomposition]
   linarith [tilted_variance_pos q a]

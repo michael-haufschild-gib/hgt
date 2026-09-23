@@ -62,7 +62,7 @@ theorem conditionedQubitLayerTwo_symmetricPhaseAverage_wallCrossing
     Tendsto
       (fun g =>
         symmetricPhaseAverage
-          (τ / g ^ 2) (conditionedQubitLayerTwoDetuning g))
+          (τ / g ^ (2 : ℕ)) (conditionedQubitLayerTwoDetuning g))
       (𝓝[>] 0) (𝓝 (Real.sinc (τ * 3))) ∧
     (∀ r, 2 < r →
       Tendsto

@@ -26,11 +26,11 @@ namespace Homological
 namespace BB
 namespace Z3Z6
 
-private theorem leaf01_fast : ∀ m : Fin (2 ^ 18),
+private theorem leaf01_fast : ∀ m : Fin (2 ^ (18 : ℕ)),
     8 ≤ natWt 36 (seam01Mask ^^^ bndMask m.val) := by
   native_decide
 
-theorem leaf_floor_01_mask : ∀ m : Fin (2 ^ 18),
+theorem leaf_floor_01_mask : ∀ m : Fin (2 ^ (18 : ℕ)),
     8 ≤ (Finset.univ.filter fun j : G36 × Fin 2 =>
       (seam01 + bbBoundary2Fn a36 b36 (chainOf m.val)) j ≠ 0).card := by
   intro m

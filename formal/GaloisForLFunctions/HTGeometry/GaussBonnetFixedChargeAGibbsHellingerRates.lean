@@ -25,10 +25,10 @@ theorem egbFixedChargeAGibbsHellinger_two_step_distance
 theorem egbFixedChargeAGibbsHellinger_even_square_bound
     (n m : ℕ) (β γ : ℝ) (E F : Fin (2 ^ (n + 3)) → ℝ) :
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n (2 * m) β E)
-      (egbFixedChargeAGibbsMarkovPopulation n (2 * m) γ F) ^ 2 ≤
+      (egbFixedChargeAGibbsMarkovPopulation n (2 * m) γ F) ^ (2 : ℕ) ≤
         (5 / 6 : ℝ) ^ m * finitePacketHellinger
           (_root_.HTGeometry.finiteGibbsStateWeight β E)
-          (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ 2 := by
+          (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ (2 : ℕ) := by
   induction m with
   | zero =>
     simp only [mul_zero, egbFixedChargeAGibbsMarkovPopulation_zero, pow_zero, one_mul, le_refl]
@@ -37,11 +37,11 @@ theorem egbFixedChargeAGibbsHellinger_even_square_bound
     calc
       _ ≤ (5 / 6 : ℝ) * finitePacketHellinger
         (egbFixedChargeAGibbsMarkovPopulation n (2 * m) β E)
-        (egbFixedChargeAGibbsMarkovPopulation n (2 * m) γ F) ^ 2 :=
+        (egbFixedChargeAGibbsMarkovPopulation n (2 * m) γ F) ^ (2 : ℕ) :=
           egbFixedChargeAGibbsHellinger_two_step_square n (2 * m) β γ E F
       _ ≤ (5 / 6 : ℝ) * ((5 / 6 : ℝ) ^ m * finitePacketHellinger
         (_root_.HTGeometry.finiteGibbsStateWeight β E)
-        (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ 2) :=
+        (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left ih (by norm_num)
       _ = _ := by rw [pow_succ (5 / 6 : ℝ) m]; ring
 
@@ -49,10 +49,10 @@ theorem egbFixedChargeAGibbsHellinger_even_square_bound
 theorem egbFixedChargeAGibbsHellinger_odd_square_bound
     (n m : ℕ) (β γ : ℝ) (E F : Fin (2 ^ (n + 3)) → ℝ) :
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n (2 * m + 1) β E)
-      (egbFixedChargeAGibbsMarkovPopulation n (2 * m + 1) γ F) ^ 2 ≤
+      (egbFixedChargeAGibbsMarkovPopulation n (2 * m + 1) γ F) ^ (2 : ℕ) ≤
         (5 / 6 : ℝ) ^ m * finitePacketHellinger
           (_root_.HTGeometry.finiteGibbsStateWeight β E)
-          (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ 2 := by
+          (_root_.HTGeometry.finiteGibbsStateWeight γ F) ^ (2 : ℕ) := by
   have h := egbFixedChargeAGibbsHellinger_antitone n β γ E F (show 2 * m ≤ 2 * m + 1 by omega)
   have hs := (sq_le_sq₀ (finitePacketHellinger_nonneg _ _) (finitePacketHellinger_nonneg _ _)).mpr h
   exact hs.trans (egbFixedChargeAGibbsHellinger_even_square_bound n m β γ E F)

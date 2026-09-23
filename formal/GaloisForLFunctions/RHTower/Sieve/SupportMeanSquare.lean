@@ -28,8 +28,8 @@ open scoped ArithmeticFunction.Moebius
 /-- **The mean value theorem by coefficient energy.** -/
 theorem integral_Icc_normSq_logPoly_le_energy (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s)
     {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) {W : ℝ} (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (∑ n ∈ s, ‖a n‖ ^ 2) := by
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) := by
   classical
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
@@ -63,8 +63,8 @@ theorem integral_Icc_normSq_logPoly_le_energy (a : ℕ → ℂ) {s : Finset ℕ}
           mul_le_mul_of_nonneg_right hδe hnn
       _ ≤ Real.exp 1 * (2 * δ) := mul_le_mul_of_nonneg_left h1 (Real.exp_pos 1).le
       _ = 2 * δ * Real.exp 1 := by ring
-  have hterm : ∀ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ 2
-      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * ‖a n‖ ^ 2 := by
+  have hterm : ∀ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ (2 : ℕ)
+      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * ‖a n‖ ^ (2 : ℕ) := by
     intro n hn
     have hnM : (n : ℝ) ≤ (M : ℝ) := by exact_mod_cast hsM n hn
     have hinc : (0 : ℝ) ≤ Real.exp δ - Real.exp (-δ) := by
@@ -76,8 +76,8 @@ theorem integral_Icc_normSq_logPoly_le_energy (a : ℕ → ℂ) {s : Finset ℕ}
         _ ≤ (M : ℝ) * (2 * δ * Real.exp 1) :=
             mul_le_mul_of_nonneg_left hexp (Nat.cast_nonneg M)
     exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-  have hsum : ∑ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ 2
-      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * (∑ n ∈ s, ‖a n‖ ^ 2) := by
+  have hsum : ∑ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ (2 : ℕ)
+      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) := by
     rw [Finset.mul_sum]
     exact Finset.sum_le_sum hterm
   refine le_trans hbase ?_
@@ -96,7 +96,7 @@ theorem integral_Icc_normSq_logPoly_le_energy (a : ℕ → ℂ) {s : Finset ℕ}
 /-- **The mean value theorem by support size.** -/
 theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s)
     {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) (ha : ∀ n, ‖a n‖ ≤ 1) {W : ℝ} (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (s.card : ℝ) := by
   classical
   refine le_trans (integral_Icc_normSq_logPoly_le_energy a hs0 hsM hW) ?_
@@ -106,7 +106,7 @@ theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ
     have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
     positivity
   refine mul_le_mul_of_nonneg_left ?_ hcoef0
-  have hbound : ∑ n ∈ s, ‖a n‖ ^ 2 ≤ ∑ _n ∈ s, (1 : ℝ) := by
+  have hbound : ∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) ≤ ∑ _n ∈ s, (1 : ℝ) := by
     refine Finset.sum_le_sum fun n _ => ?_
     have := ha n
     nlinarith [norm_nonneg (a n)]
@@ -122,7 +122,7 @@ height-free part is `(5e/2)·M·#rough`: the factorisation can be afforded exact
 integers have density `o(1)`. -/
 theorem integral_Icc_normSq_roughPoly_le (P : Finset ℕ) (M : ℕ) {W : ℝ} (hW : 1 ≤ W) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * ((supportMeanSquareRoughSet P M).card : ℝ) := by
   classical
   refine integral_Icc_normSq_logPoly_le_support _ ?_ ?_ ?_ hW

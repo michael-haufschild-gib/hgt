@@ -64,7 +64,7 @@ theorem suzukiScaledRemainderQuadraticReal_abs_le
     (a : SuzukiPrimeFreeSmallAperture) (u : SuzukiRestrictedWeilCore 1) :
     |suzukiScaledRemainderQuadraticReal a u| ≤
       2 * suzukiOriginCurvatureUnitBound *
-        ∫ x in (-1 : ℝ)..1, u x ^ 2 := by
+        ∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ) := by
   have hk : Continuous (fun t : ℝ =>
       suzukiOriginRemainderCurvature (a.val * t)) :=
     continuous_suzukiOriginRemainderCurvature.comp (continuous_const.mul continuous_id)
@@ -86,7 +86,7 @@ theorem suzukiScaledRemainderQuadraticReal_abs_le
 def suzukiPrimeFreeScaledRealForm
     (a : SuzukiPrimeFreeSmallAperture) (u : SuzukiRestrictedWeilCore 1) : ℝ :=
   (-Real.log a.val - (2 * suzukiWeilArchimedeanConstant + 1)) *
-      (∫ x in (-1 : ℝ)..1, u x ^ 2) +
+      (∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)) +
     suzukiFinitePartEnergy 1 u -
     a.val * suzukiScaledRemainderQuadraticReal a u
 
@@ -98,9 +98,9 @@ def suzukiSmallScaleCoercivityCoefficient (a : ℝ) : ℝ :=
 theorem suzukiPrimeFreeScaledRealForm_coercive
     (a : SuzukiPrimeFreeSmallAperture) (u : SuzukiRestrictedWeilCore 1) :
     suzukiSmallScaleCoercivityCoefficient a.val *
-        (∫ x in (-1 : ℝ)..1, u x ^ 2) ≤
+        (∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)) ≤
       suzukiPrimeFreeScaledRealForm a u := by
-  let E : ℝ := ∫ x in (-1 : ℝ)..1, u x ^ 2
+  let E : ℝ := ∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)
   have hE : 0 ≤ E := intervalIntegral.integral_nonneg (by norm_num)
     (fun x _ => sq_nonneg _)
   have hL := suzukiLimitingLogForm_real_coercive u
@@ -135,7 +135,7 @@ theorem suzukiPrimeFreeScaledForm_coercive
   rw [suzukiRestrictedWeilComplexIntervalEnergy_eq]
   unfold suzukiPrimeFreeScaledForm
   change suzukiSmallScaleCoercivityCoefficient a.val *
-      ((∫ x in (-1 : ℝ)..1, ur x ^ 2) + ∫ x in (-1 : ℝ)..1, ui x ^ 2) ≤
+      ((∫ x in (-1 : ℝ)..1, ur x ^ (2 : ℕ)) + ∫ x in (-1 : ℝ)..1, ui x ^ (2 : ℕ)) ≤
     suzukiPrimeFreeScaledRealForm a ur + suzukiPrimeFreeScaledRealForm a ui
   linarith
 

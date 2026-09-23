@@ -16,7 +16,7 @@ noncomputable section
 /-- Every signed half-density has pointwise squared mass `p`. -/
 theorem booleanHalfDensity_sq {I : Type*} (p : I → ℝ) (epsilon : I → Bool)
     (hp : ∀ i, 0 ≤ p i) (i : I) :
-    booleanHalfDensity p epsilon i ^ 2 = p i := by
+    booleanHalfDensity p epsilon i ^ (2 : ℕ) = p i := by
   rw [booleanHalfDensity]
   cases epsilon i <;> simp [primeDirichletRealSign]
   all_goals nlinarith [Real.sq_sqrt (hp i)]
@@ -25,8 +25,8 @@ theorem booleanHalfDensity_sq {I : Type*} (p : I → ℝ) (epsilon : I → Bool)
 on mismatching signs. -/
 theorem booleanHalfDensity_sub_sq {I : Type*} (p : I → ℝ)
     (a b : I → Bool) (i : I) :
-    (booleanHalfDensity p a i - booleanHalfDensity p b i) ^ 2 =
-      if a i = b i then 0 else 4 * Real.sqrt (p i) ^ 2 := by
+    (booleanHalfDensity p a i - booleanHalfDensity p b i) ^ (2 : ℕ) =
+      if a i = b i then 0 else 4 * Real.sqrt (p i) ^ (2 : ℕ) := by
   rw [booleanHalfDensity, booleanHalfDensity]
   cases a i <;> cases b i <;>
     simp [primeDirichletRealSign] <;> ring
@@ -35,7 +35,7 @@ theorem booleanHalfDensity_sub_sq {I : Type*} (p : I → ℝ)
 theorem weightedOrientationDistanceSq_sqrt_eq_halfDensity_sub_sq
     {I : Type*} (p : I → ℝ) (a b : I → Bool) :
     weightedOrientationDistanceSq (fun i => Real.sqrt (p i)) a b =
-      ∑' i, (booleanHalfDensity p a i - booleanHalfDensity p b i) ^ 2 := by
+      ∑' i, (booleanHalfDensity p a i - booleanHalfDensity p b i) ^ (2 : ℕ) := by
   unfold weightedOrientationDistanceSq
   congr 1
   funext i
@@ -44,7 +44,7 @@ theorem weightedOrientationDistanceSq_sqrt_eq_halfDensity_sub_sq
 /-- Total squared mass of every sign lift equals the total diagonal mass. -/
 theorem tsum_booleanHalfDensity_sq
     {I : Type*} (p : I → ℝ) (epsilon : I → Bool) (hp : ∀ i, 0 ≤ p i) :
-    (∑' i, booleanHalfDensity p epsilon i ^ 2) = ∑' i, p i := by
+    (∑' i, booleanHalfDensity p epsilon i ^ (2 : ℕ)) = ∑' i, p i := by
   apply tsum_congr
   exact booleanHalfDensity_sq p epsilon hp
 
@@ -52,7 +52,7 @@ theorem tsum_booleanHalfDensity_sq
 theorem tsum_booleanHalfDensity_sq_eq_one
     {I : Type*} (p : I → ℝ) (epsilon : I → Bool) (hp : ∀ i, 0 ≤ p i)
     (hprob : (∑' i, p i) = 1) :
-    (∑' i, booleanHalfDensity p epsilon i ^ 2) = 1 := by
+    (∑' i, booleanHalfDensity p epsilon i ^ (2 : ℕ)) = 1 := by
   rw [tsum_booleanHalfDensity_sq p epsilon hp, hprob]
 
 /-- Pointwise overlap equals mass minus twice the mass on a sign mismatch. -/

@@ -11,7 +11,7 @@ positive-semidefinite Hermitian scalarization of those two channels.
 For an arbitrary complex `2 x 2` positive-semidefinite matrix `A`, the sum of its two literal
 source-boundary energies is exactly
 
-`(Re A_00 + Re A_11) * |d(t)|^2`.
+`(Re A_00 + Re A_11) * |d(t)|^(2 : ℕ)`.
 
 Off-diagonal channel mixing drops out because the two genuine source boundaries occupy opposite
 coordinate axes.  If `A` is nonzero, positivity makes its diagonal trace strictly positive, so the

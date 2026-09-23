@@ -9,8 +9,8 @@ Deninger, *Dynamical systems for arithmetic schemes* (arXiv:1807.06400v4), Corol
 inseparable element.
 
 The mechanism is the source's: writing `φ (r) = P (d_r · (r))`, the relation
-`φ (r) ^ 2 = (d_r ^ 2 / d_{r^2}) φ (r ^ 2)` holds, and `d_{r^2} ∣ d_r`, so for inseparable `r` the
-scalar `d_r ^ 2 / d_{r^2}` is a positive power of `p` and hence zero in `C`.  Thus `φ (r)` is
+`φ (r) ^ 2 = (d_r ^ 2 / d_{r^(2 : ℕ)}) φ (r ^ 2)` holds, and `d_{r^(2 : ℕ)} ∣ d_r`, so for inseparable `r` the
+scalar `d_r ^ 2 / d_{r^(2 : ℕ)}` is a positive power of `p` and hence zero in `C`.  Thus `φ (r)` is
 nilpotent, so zero in a reduced ring.
 -/
 

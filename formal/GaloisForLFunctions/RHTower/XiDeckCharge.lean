@@ -108,7 +108,7 @@ theorem xiDeckCharge_pow (k : ℕ) (ρ : ℂ) : xiDeckCharge k ρ ^ (2 ^ k) = 1 
 /-- **Dyadic coherence.**  Squaring the level-`k+1` charge gives the level-`k` charge:
 `w_{k+1}² = w_k`.  This is the tower structure of the deck classes. -/
 theorem xiDeckCharge_succ_sq (k : ℕ) (ρ : ℂ) :
-    xiDeckCharge (k + 1) ρ ^ 2 = xiDeckCharge k ρ := by
+    xiDeckCharge (k + 1) ρ ^ (2 : ℕ) = xiDeckCharge k ρ := by
   unfold xiDeckCharge
   rw [← exp_nat_mul]
   congr 1
@@ -118,7 +118,7 @@ theorem xiDeckCharge_succ_sq (k : ℕ) (ρ : ℂ) :
   rw [e]
   field_simp
 
-/-- **Rung 0 is invisible.**  The level-`1` (i.e. `2^0`) charge is always `1`. -/
+/-- **Rung 0 is invisible.**  The level-`1` (i.e. `2^(0 : ℕ)`) charge is always `1`. -/
 theorem xiDeckCharge_zero (ρ : ℂ) : xiDeckCharge 0 ρ = 1 := by
   have h := xiDeckCharge_pow 0 ρ
   simpa using h
@@ -167,7 +167,7 @@ it is `1` iff the order is even.  This is the μ₂ face of the μ_{2^k} tower. 
 theorem xiDeckCharge_one_eq_neg_one_pow (ρ : ℂ) :
     xiDeckCharge 1 ρ = (-1) ^ (analyticOrderAt xi ρ).toNat := by
   unfold xiDeckCharge
-  have harg : 2 * (Real.pi : ℂ) * I * (((analyticOrderAt xi ρ).toNat : ℕ) : ℂ) / ((2 ^ 1 : ℕ) : ℂ)
+  have harg : 2 * (Real.pi : ℂ) * I * (((analyticOrderAt xi ρ).toNat : ℕ) : ℂ) / ((2 ^ (1 : ℕ) : ℕ) : ℂ)
       = (((analyticOrderAt xi ρ).toNat : ℕ) : ℂ) * ((Real.pi : ℂ) * I) := by
     push_cast
     ring

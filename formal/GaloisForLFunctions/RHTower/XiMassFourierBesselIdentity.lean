@@ -79,7 +79,7 @@ theorem hasDerivAt_xiMassProfileC {a h : ℝ} {τ : ℂ} (ha : 0 < a) (hτ : 0 <
   set F' : ℂ → ℝ → ℂ := fun v t =>
     -((a * Real.cosh t : ℝ) : ℂ) * xiMassHyperbolicKernelC a v h t with hF'
   set bound : ℝ → ℝ := fun t =>
-    a ^ 2 * (Real.cosh t ^ 2 * Real.exp (-(τ.re / 2 * a * Real.cosh t))) with hbound
+    a ^ (2 : ℕ) * (Real.cosh t ^ (2 : ℕ) * Real.exp (-(τ.re / 2 * a * Real.cosh t))) with hbound
   have hcont : ∀ v : ℂ, Continuous (fun t : ℝ => xiMassHyperbolicKernelC a v h t) := by
     intro v
     unfold xiMassHyperbolicKernelC
@@ -123,7 +123,7 @@ theorem hasDerivAt_xiMassProfileC {a h : ℝ} {τ : ℂ} (ha : 0 < a) (hτ : 0 <
           ring
       _ ≤ (a * Real.cosh t * (a * Real.cosh t)) * Real.exp (-(τ.re / 2 * a * Real.cosh t)) :=
           mul_le_mul_of_nonneg_left hexp hnn
-      _ = a ^ 2 * (Real.cosh t ^ 2 * Real.exp (-(τ.re / 2 * a * Real.cosh t))) := by ring
+      _ = a ^ (2 : ℕ) * (Real.cosh t ^ (2 : ℕ) * Real.exp (-(τ.re / 2 * a * Real.cosh t))) := by ring
   have hboundint : Integrable bound volume := by
     rw [hbound]
     refine Integrable.const_mul ?_ _
@@ -184,12 +184,12 @@ theorem isOpen_xiMassBesselStrip (h : ℝ) : IsOpen (xiMassBesselStrip h) := by
       (isOpen_lt continuous_const Complex.continuous_im))
 
 theorem xiMassPropagation_re_pos {h : ℝ} {τ : ℂ} (hτ : τ ∈ xiMassBesselStrip h) :
-    0 < (τ ^ 2 + (h : ℂ) ^ 2).re := by
+    0 < (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)).re := by
   obtain ⟨hre, him⟩ := hτ
-  have hval : (τ ^ 2 + (h : ℂ) ^ 2).re = τ.re ^ 2 - τ.im ^ 2 + h ^ 2 := by
+  have hval : (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)).re = τ.re ^ (2 : ℕ) - τ.im ^ (2 : ℕ) + h ^ (2 : ℕ) := by
     simp [Complex.add_re, Complex.mul_re, pow_two]
   rw [hval]
-  have : τ.im ^ 2 < h ^ 2 := by
+  have : τ.im ^ (2 : ℕ) < h ^ (2 : ℕ) := by
     have := abs_lt.1 him
     nlinarith [abs_nonneg τ.im, sq_abs τ.im]
   nlinarith [sq_nonneg τ.re]
@@ -199,15 +199,15 @@ theorem xiMassPropagation_re_pos {h : ℝ} {τ : ℂ} (hτ : τ ∈ xiMassBessel
 
 /-- The Bessel side of the identity. -/
 def xiMassBesselSide (a h : ℝ) (τ : ℂ) : ℂ :=
-  2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2)
-    * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2))
+  2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))
+    * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)))
 
 theorem re_mul_csqrt_pos {a h : ℝ} {τ : ℂ} (ha : 0 < a) (hτ : τ ∈ xiMassBesselStrip h) :
-    0 < ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2)).re := by
-  have hgre : 0 < (τ ^ 2 + (h : ℂ) ^ 2).re := xiMassPropagation_re_pos hτ
-  have hcs : 0 < HTGeometry.csqrtRe (τ ^ 2 + (h : ℂ) ^ 2) := HTGeometry.csqrtRe_pos hgre
-  have hval : ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2)).re
-      = a * HTGeometry.csqrtRe (τ ^ 2 + (h : ℂ) ^ 2) := by
+    0 < ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))).re := by
+  have hgre : 0 < (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)).re := xiMassPropagation_re_pos hτ
+  have hcs : 0 < HTGeometry.csqrtRe (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) := HTGeometry.csqrtRe_pos hgre
+  have hval : ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))).re
+      = a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) := by
     rw [Complex.mul_re, HTGeometry.csqrt_re]
     simp
   rw [hval]
@@ -215,20 +215,20 @@ theorem re_mul_csqrt_pos {a h : ℝ} {τ : ℂ} (ha : 0 < a) (hτ : τ ∈ xiMas
 
 theorem differentiableAt_xiMassBesselSide {a h : ℝ} {τ : ℂ} (ha : 0 < a)
     (hτ : τ ∈ xiMassBesselStrip h) : DifferentiableAt ℂ (xiMassBesselSide a h) τ := by
-  have hgre : 0 < (τ ^ 2 + (h : ℂ) ^ 2).re := xiMassPropagation_re_pos hτ
-  have hg : DifferentiableAt ℂ (fun z : ℂ => z ^ 2 + (h : ℂ) ^ 2) τ := by fun_prop
-  have hcs : DifferentiableAt ℂ (fun z : ℂ => HTGeometry.csqrt (z ^ 2 + (h : ℂ) ^ 2)) τ := by
-    have h1 : DifferentiableAt ℂ (HTGeometry.csqrt ∘ fun z : ℂ => z ^ 2 + (h : ℂ) ^ 2) τ :=
+  have hgre : 0 < (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)).re := xiMassPropagation_re_pos hτ
+  have hg : DifferentiableAt ℂ (fun z : ℂ => z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) τ := by fun_prop
+  have hcs : DifferentiableAt ℂ (fun z : ℂ => HTGeometry.csqrt (z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))) τ := by
+    have h1 : DifferentiableAt ℂ (HTGeometry.csqrt ∘ fun z : ℂ => z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) τ :=
       (HTGeometry.differentiableAt_csqrt hgre).comp τ hg
     exact h1
-  have hne : HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2) ≠ 0 := HTGeometry.csqrt_ne_zero hgre
+  have hne : HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) ≠ 0 := HTGeometry.csqrt_ne_zero hgre
   have hnum : DifferentiableAt ℂ (fun z : ℂ => 2 * (a : ℂ) * z) τ := by fun_prop
   have hinner : DifferentiableAt ℂ
-      (fun z : ℂ => (a : ℂ) * HTGeometry.csqrt (z ^ 2 + (h : ℂ) ^ 2)) τ := hcs.const_mul _
+      (fun z : ℂ => (a : ℂ) * HTGeometry.csqrt (z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))) τ := hcs.const_mul _
   have hbes : DifferentiableAt ℂ
-      (fun z : ℂ => HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (z ^ 2 + (h : ℂ) ^ 2))) τ := by
+      (fun z : ℂ => HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)))) τ := by
     have h1 : DifferentiableAt ℂ
-        (HTGeometry.besselK1C ∘ fun z : ℂ => (a : ℂ) * HTGeometry.csqrt (z ^ 2 + (h : ℂ) ^ 2)) τ :=
+        (HTGeometry.besselK1C ∘ fun z : ℂ => (a : ℂ) * HTGeometry.csqrt (z ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))) τ :=
       (HTGeometry.differentiableAt_besselK1C (re_mul_csqrt_pos ha hτ)).comp τ hinner
     exact h1
   exact (hnum.div hcs hne).mul hbes
@@ -248,10 +248,10 @@ theorem xiMassProfileC_eq_besselSide_real {a h : ℝ} (ha : 0 < a) (hh : 0 ≤ h
     norm_num
   have hbase := stripFourier_xiMass_realTime_eq_bessel (a := a) (sigma := sigma) (h := h)
     ha hsigma hh
-  have hprop : ((sigma : ℝ) : ℂ) ^ 2 + (h : ℂ) ^ 2 = ((sigma ^ 2 + h ^ 2 : ℝ) : ℂ) := by
+  have hprop : ((sigma : ℝ) : ℂ) ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ) = ((sigma ^ (2 : ℕ) + h ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
-  have hpos : (0 : ℝ) < sigma ^ 2 + h ^ 2 := by positivity
+  have hpos : (0 : ℝ) < sigma ^ (2 : ℕ) + h ^ (2 : ℕ) := by positivity
   rw [hleft, hbase, xiMassBesselSide, hprop, HTGeometry.csqrt_ofReal_of_pos hpos]
   congr 2
   push_cast
@@ -313,8 +313,8 @@ theorem xiMassProfileC_eq_besselSide {a h : ℝ} (ha : 0 < a) (hh : 0 < h) :
 theorem stripFourier_xiMass_eq_bessel {a h : ℝ} {τ : ℂ} (ha : 0 < a) (hh : 0 < h)
     (hτ : τ ∈ xiMassBesselStrip h) :
     stripFourier (xiMassAnalyticTest a τ) (h : ℂ)
-      = 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2)
-        * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + (h : ℂ) ^ 2)) := by
+      = 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))
+        * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ))) := by
   rw [← xiMassProfileC_eq_stripFourier ha hτ.1]
   exact xiMassProfileC_eq_besselSide ha hh hτ
 

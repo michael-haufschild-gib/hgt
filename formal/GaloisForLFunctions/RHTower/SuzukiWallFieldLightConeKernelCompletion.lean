@@ -246,7 +246,7 @@ theorem suzukiCriticalWallReflectedCurrentKernel_eq_weldFEKreinQ
 theorem suzukiCriticalWallReflectedCurrentKernel_diagonal
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     suzukiCriticalWallReflectedCurrentKernel t t p e =
-      (((suzukiCriticalWallField t p e) ^ 2).im : ℂ) := by
+      (((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im : ℂ) := by
   rw [suzukiCriticalWallReflectedCurrentKernel_eq_weldFEKreinQ,
     weldFEKreinQ_apply]
   simp [suzukiCriticalWallPlaneVector, pow_two, Complex.mul_im]
@@ -256,7 +256,7 @@ theorem normSq_suzukiCriticalWallPositiveLightAmplitude_sub_negative
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     normSq (suzukiCriticalWallPositiveLightAmplitude t p e) -
         normSq (suzukiCriticalWallNegativeLightAmplitude t p e) =
-      ((suzukiCriticalWallField t p e) ^ 2).im := by
+      ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
   rw [suzukiCriticalWallPositiveLightAmplitude_eq_ray,
     suzukiCriticalWallNegativeLightAmplitude_eq_ray]
   simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im, pow_two]
@@ -290,7 +290,7 @@ theorem normSq_suzukiCriticalWallLightAmplitudes_eq_vonMangoldt_div_sqrt
 completes real far atom to the positive-light energy. -/
 theorem suzukiCriticalDelayedHingeJumpAtom_re_add_negativeLight_eq_positiveLight
     (t : ℝ) (p : Nat.Primes) (e : ℕ) (ht : t ≠ 0) :
-    t ^ 2 *
+    t ^ (2 : ℕ) *
           (suzukiCriticalDelayedHingeJumpAtom
             (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
               Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))
@@ -300,12 +300,12 @@ theorem suzukiCriticalDelayedHingeJumpAtom_re_add_negativeLight_eq_positiveLight
   have h := congrArg Complex.re
     (sq_mul_suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq t p e ht)
   have hre :
-      t ^ 2 *
+      t ^ (2 : ℕ) *
           (suzukiCriticalDelayedHingeJumpAtom
             (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
               Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))
             (Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) (t : ℂ)).re =
-        ((suzukiCriticalWallField t p e) ^ 2).im := by
+        ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im := by
     simpa [Complex.mul_re, pow_two] using h
   rw [hre]
   linarith [normSq_suzukiCriticalWallPositiveLightAmplitude_sub_negative t p e]
@@ -313,7 +313,7 @@ theorem suzukiCriticalDelayedHingeJumpAtom_re_add_negativeLight_eq_positiveLight
 /-- Completed real delayed-hinge atom is unconditionally nonnegative off center. -/
 theorem suzukiCriticalDelayedHingeJumpAtom_re_add_negativeLight_nonneg
     (t : ℝ) (p : Nat.Primes) (e : ℕ) (ht : t ≠ 0) :
-    0 ≤ t ^ 2 *
+    0 ≤ t ^ (2 : ℕ) *
           (suzukiCriticalDelayedHingeJumpAtom
             (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
               Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))

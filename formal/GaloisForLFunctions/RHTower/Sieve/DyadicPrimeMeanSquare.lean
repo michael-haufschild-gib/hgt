@@ -33,7 +33,7 @@ theorem sum_logNeighbourCount_sieve_le {R h K k P₁ : ℕ} {δ z : ℝ}
         (logNeighbourCount (bigPrimeSet R (2 * R)) δ n : ℝ)
       ≤ ((bigPrimeSet R (2 * R)).card : ℝ)
         + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ))
-                / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
               + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
                   (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) := by
   classical
@@ -53,18 +53,18 @@ theorem integral_normSq_dyadicPrimePoly_le {R h K k P₁ : ℕ} {δ W z : ℝ}
     (hlev : ((h : ℝ)) ^ (2 * k) ≤ z)
     (hk : Real.exp 1 * (∑ p ∈ rangePrimes P₁ h, 2 / ((p : ℝ) - 2)) + Real.log 2 ≤ (k : ℝ)) :
     (∫ w in Set.Icc (-W) W,
-        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ 2)
-      ≤ (5 / (4 * δ)) * (1 / (R : ℝ) ^ 2)
+        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ (2 : ℕ))
+      ≤ (5 / (4 * δ)) * (1 / (R : ℝ) ^ (2 : ℕ))
           * (((bigPrimeSet R (2 * R)).card : ℝ)
             + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ))
-                    / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                    / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                   + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
                       (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0))) := by
   classical
   set s : Finset ℕ := bigPrimeSet R (2 * R) with hs
   set a : ℕ → ℂ := fun n => ((1 : ℂ) / (n : ℂ)) with ha
   have hR0 : (0 : ℝ) < (R : ℝ) := by exact_mod_cast hR1
-  have hcoef : ∀ n ∈ s, ‖a n‖ ^ 2 ≤ 1 / (R : ℝ) ^ 2 := by
+  have hcoef : ∀ n ∈ s, ‖a n‖ ^ (2 : ℕ) ≤ 1 / (R : ℝ) ^ (2 : ℕ) := by
     intro n hn
     rw [hs, bigPrimeSet, Finset.mem_filter, Finset.mem_Icc] at hn
     have hnR : (R : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : R ≤ n)
@@ -75,8 +75,8 @@ theorem integral_normSq_dyadicPrimePoly_le {R h K k P₁ : ℕ} {δ W z : ℝ}
     rw [hnorm, div_pow, one_pow]
     exact one_div_le_one_div_of_le (by positivity) (by nlinarith [hnR, hR0])
   have hbase := integral_Icc_normSq_logPoly_le_count a s hδ0 hWδ
-  have hstep : ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2
-      ≤ (1 / (R : ℝ) ^ 2) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) := by
+  have hstep : ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ (2 : ℕ)
+      ≤ (1 / (R : ℝ) ^ (2 : ℕ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun n hn => ?_
     have hc0 : (0 : ℝ) ≤ (logNeighbourCount s δ n : ℝ) := Nat.cast_nonneg _
@@ -85,22 +85,22 @@ theorem integral_normSq_dyadicPrimePoly_le {R h K k P₁ : ℕ} {δ W z : ℝ}
   have hsieve := sum_logNeighbourCount_sieve_le (R := R) (h := h) (K := K) (k := k) (P₁ := P₁)
     (δ := δ) (z := z) hδ0 hδ1 hK hhR hP₁ hP₁h hh1 hz hlev hk
   have hpos : (0 : ℝ) ≤ 5 / (4 * δ) := by positivity
-  have hR2 : (0 : ℝ) ≤ 1 / (R : ℝ) ^ 2 := by positivity
-  calc (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 / (4 * δ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := hbase
-    _ ≤ (5 / (4 * δ)) * ((1 / (R : ℝ) ^ 2) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ)) :=
+  have hR2 : (0 : ℝ) ≤ 1 / (R : ℝ) ^ (2 : ℕ) := by positivity
+  calc (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 / (4 * δ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ (2 : ℕ) := hbase
+    _ ≤ (5 / (4 * δ)) * ((1 / (R : ℝ) ^ (2 : ℕ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ)) :=
         mul_le_mul_of_nonneg_left hstep hpos
-    _ ≤ (5 / (4 * δ)) * ((1 / (R : ℝ) ^ 2)
+    _ ≤ (5 / (4 * δ)) * ((1 / (R : ℝ) ^ (2 : ℕ))
           * (((bigPrimeSet R (2 * R)).card : ℝ)
             + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ))
-                    / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                    / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                   + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
                       (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)))) := by
         refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hsieve hR2) hpos
-    _ = (5 / (4 * δ)) * (1 / (R : ℝ) ^ 2)
+    _ = (5 / (4 * δ)) * (1 / (R : ℝ) ^ (2 : ℕ))
           * (((bigPrimeSet R (2 * R)).card : ℝ)
             + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ))
-                    / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                    / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                   + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
                       (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0))) := by
         ring

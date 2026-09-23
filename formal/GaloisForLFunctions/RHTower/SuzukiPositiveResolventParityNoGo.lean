@@ -41,12 +41,12 @@ def suzukiPairDot (u v : ℝ × ℝ) : ℝ :=
 def suzukiResolventBlockApply
     (energy tilt : ℝ) (v : ℝ × ℝ) : ℝ × ℝ :=
   (energy * v.1 + tilt * v.2,
-    tilt * v.1 + (tilt ^ 2 / energy + 1) * v.2)
+    tilt * v.1 + (tilt ^ (2 : ℕ) / energy + 1) * v.2)
 
 /-- Explicit inverse of `suzukiResolventBlockApply`.  Its determinant is `energy`. -/
 def suzukiSourceBlockApply
     (energy tilt : ℝ) (v : ℝ × ℝ) : ℝ × ℝ :=
-  (((tilt ^ 2 / energy + 1) / energy) * v.1 -
+  (((tilt ^ (2 : ℕ) / energy + 1) / energy) * v.1 -
       (tilt / energy) * v.2,
     -(tilt / energy) * v.1 + v.2)
 
@@ -54,7 +54,7 @@ def suzukiSourceBlockApply
 theorem suzukiPairDot_resolventBlock_eq
     {energy : ℝ} (henergy : energy ≠ 0) (tilt : ℝ) (v : ℝ × ℝ) :
     suzukiPairDot v (suzukiResolventBlockApply energy tilt v) =
-      (energy * v.1 + tilt * v.2) ^ 2 / energy + v.2 ^ 2 := by
+      (energy * v.1 + tilt * v.2) ^ (2 : ℕ) / energy + v.2 ^ (2 : ℕ) := by
   rw [suzukiPairDot, suzukiResolventBlockApply]
   field_simp [henergy]
   ring
@@ -63,7 +63,7 @@ theorem suzukiPairDot_resolventBlock_eq
 theorem suzukiPairDot_sourceBlock_eq
     {energy : ℝ} (henergy : energy ≠ 0) (tilt : ℝ) (v : ℝ × ℝ) :
     suzukiPairDot v (suzukiSourceBlockApply energy tilt v) =
-      (v.2 - tilt / energy * v.1) ^ 2 + v.1 ^ 2 / energy := by
+      (v.2 - tilt / energy * v.1) ^ (2 : ℕ) + v.1 ^ (2 : ℕ) / energy := by
   rw [suzukiPairDot, suzukiSourceBlockApply]
   field_simp [henergy]
   ring

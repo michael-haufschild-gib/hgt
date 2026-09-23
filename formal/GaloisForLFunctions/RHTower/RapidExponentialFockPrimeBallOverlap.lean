@@ -20,7 +20,7 @@ noncomputable section
 /-- Fixed aperture converting local radii at prime-log centers to the adapted radius at an
 observation point. -/
 def rapidExponentialFockOverlapFactor (a : ℝ) : ℝ :=
-  Real.exp (a / 8) * Real.sqrt (4 * a ^ 2 + 2 * a) / (8 * (a + 1))
+  Real.exp (a / 8) * Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a) / (8 * (a + 1))
 
 theorem rapidExponentialFockOverlapFactor_pos
     {a : ℝ} (ha : 0 < a) :
@@ -64,19 +64,19 @@ theorem abs_primeLog_sub_re_lt_rapidExponentialFockOverlapRadius
         rw [← Real.exp_add]
         congr 1
         ring
-  have hcoeff : 0 < Real.sqrt (4 * a ^ 2 + 2 * a) := by positivity
+  have hcoeff : 0 < Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a) := by positivity
   have hadapt := rapidExponentialFockAdaptedRadius_lower ha hzre
   have hscale : rapidExponentialFockLocalRadius a xp <
       rapidExponentialFockOverlapFactor a *
-        ((Real.sqrt (4 * a ^ 2 + 2 * a))⁻¹ * Real.exp (-a * z.re)) := by
+        ((Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a))⁻¹ * Real.exp (-a * z.re)) := by
     unfold rapidExponentialFockLocalRadius rapidExponentialFockOverlapFactor
     calc
       (8 * (a + 1))⁻¹ * Real.exp (-a * xp) <
           (8 * (a + 1))⁻¹ *
             (Real.exp (a / 8) * Real.exp (-a * z.re)) := by gcongr
-      _ = (Real.exp (a / 8) * Real.sqrt (4 * a ^ 2 + 2 * a) /
+      _ = (Real.exp (a / 8) * Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a) /
             (8 * (a + 1))) *
-          ((Real.sqrt (4 * a ^ 2 + 2 * a))⁻¹ *
+          ((Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a))⁻¹ *
             Real.exp (-a * z.re)) := by
         field_simp [hcoeff.ne']
   exact hlocal.trans (hscale.trans_le

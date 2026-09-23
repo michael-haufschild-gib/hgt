@@ -102,8 +102,8 @@ private theorem pwGammaFrullani_Q_dilation_norm_integral {r : ℝ} (hr : 0 < r) 
 
 theorem pwGammaMobiusFrullaniAbelAtom_integral_norm_le (n : ℕ) :
     (∫ p, ‖pwGammaMobiusFrullaniAbelAtom n p‖ ∂(μ₊.prod μ₊)) ≤
-      (Real.Gamma (3/2)+Real.Gamma (5/2))*(|Sieve.mertensM n| *Real.log (n : ℝ)/(n : ℝ)^2)+
-        Real.Gamma (3/2)*(|Sieve.mertensM n|/(n : ℝ)^2) := by
+      (Real.Gamma (3/2)+Real.Gamma (5/2))*(|Sieve.mertensM n| *Real.log (n : ℝ)/(n : ℝ)^(2 : ℕ))+
+        Real.Gamma (3/2)*(|Sieve.mertensM n|/(n : ℝ)^(2 : ℕ)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pwGammaFrullaniAbel_zero, Sieve.mertensM]
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn
@@ -135,7 +135,7 @@ theorem pwGammaMobiusFrullaniAbelAtom_integral_norm_le (n : ℕ) :
           (fun x : ℝ => ‖pwGammaRaySource (((n : ℝ)+1)*x)‖), integral_const_mul,
         pwGammaFrullaniKernel_norm_integral hn, pwGammaFrullaniIncrement_norm_integral hn,
         pwGammaFrullani_Q_dilation_norm_integral hn1]
-    _ ≤ Real.log (n : ℝ)*((Real.Gamma (3/2)+Real.Gamma (5/2))*(|Sieve.mertensM n|/(n : ℝ)^2))+
+    _ ≤ Real.log (n : ℝ)*((Real.Gamma (3/2)+Real.Gamma (5/2))*(|Sieve.mertensM n|/(n : ℝ)^(2 : ℕ)))+
         (|Sieve.mertensM n| *(1/(n : ℝ)))*(Real.Gamma (3/2)/(n : ℝ)) := by
       gcongr
       · exact pwGammaMobiusAbelAtom_integral_norm_le n
@@ -154,13 +154,13 @@ theorem pwGammaMobiusFrullaniAbelAtom_summable {h x : ℝ} (hh : 0 < h) (hx : 0 
   let H : ℝ := Real.exp (-h)/h
   have hC : 0 ≤ C := (Real.exp_pos _).le
   have hH : 0 ≤ H := by dsimp [H]; positivity
-  refine Summable.of_norm_bounded (deningerMertensM_invSq_summable.mul_left (2*H*C/x^2)) (fun n => ?_)
+  refine Summable.of_norm_bounded (deningerMertensM_invSq_summable.mul_left (2*H*C/x^(2 : ℕ))) (fun n => ?_)
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pwGammaFrullaniAbel_zero, Sieve.mertensM]
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn
   have hnx := mul_pos hnr hx
-  have hq0 : ‖pwGammaRaySource ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^2 := pwGammaRaySource_norm_le_inv_sq hnx
-  have hq1 : ‖pwGammaRaySource (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^2 := by
+  have hq0 : ‖pwGammaRaySource ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) := pwGammaRaySource_norm_le_inv_sq hnx
+  have hq1 : ‖pwGammaRaySource (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) := by
     refine (pwGammaRaySource_norm_le_inv_sq (by positivity : 0 < ((n : ℝ)+1)*x)).trans ?_
     apply div_le_div_of_nonneg_left hC (sq_pos_of_pos hnx)
     gcongr
@@ -172,7 +172,7 @@ theorem pwGammaMobiusFrullaniAbelAtom_summable {h x : ℝ} (hh : 0 < h) (hx : 0 
     _ ≤ |Sieve.mertensM n| * (‖pwGammaFrullaniKernel n h*pwGammaRaySource ((n : ℝ)*x)‖+
         ‖pwGammaFrullaniKernel (n+1) h*pwGammaRaySource (((n : ℝ)+1)*x)‖) :=
       mul_le_mul_of_nonneg_left (norm_sub_le _ _) (abs_nonneg _)
-    _ ≤ |Sieve.mertensM n| * (H*(C/((n : ℝ)*x)^2)+H*(C/((n : ℝ)*x)^2)) := by
+    _ ≤ |Sieve.mertensM n| * (H*(C/((n : ℝ)*x)^(2 : ℕ))+H*(C/((n : ℝ)*x)^(2 : ℕ))) := by
       simp only [norm_mul]
       gcongr
     _ = _ := by rw [mul_pow]; ring

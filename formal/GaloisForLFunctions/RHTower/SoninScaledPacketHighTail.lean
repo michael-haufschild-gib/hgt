@@ -32,7 +32,7 @@ theorem measurableSet_strictCentralTail (t : ℝ) : MeasurableSet {η : ℝ | t 
 /-- **The discarded energy is the spectral density outside the band.** -/
 theorem norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_eq_density
     (m δ κ : ℝ) (hδ : 0 < δ) (t : ℝ) :
-    ‖soninScaledPacketEven m δ κ hδ - evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ 2 =
+    ‖soninScaledPacketEven m δ κ hδ - evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ (2 : ℕ) =
       ∫ ξ : ℝ, {η : ℝ | t < |η|}.indicator (soninScaledPacketSpectralDensity m δ κ) ξ := by
   set g : SoninL2 := fourierUnitary (soninScaledPacketL2 m δ κ hδ) with hg
   have hcoe : ((soninScaledPacketEven m δ κ hδ -
@@ -83,7 +83,7 @@ reference majorant at half the scaled frequency. -/
 theorem soninScaledPacketSpectralDensity_le_tailSup (m δ w ξ : ℝ) (hδ : 0 < δ) (hw : 0 < w)
     (hmean : |soninScaledPacketMean m δ (2 * Real.pi * w)| ≤ 1) (hξ : 2 * w ≤ |ξ|) :
     soninScaledPacketSpectralDensity m δ (2 * Real.pi * w) ξ ≤
-      16 * δ ^ 2 * soninRefTailSup (δ * |ξ| / 2) ^ 2 := by
+      16 * δ ^ (2 : ℕ) * soninRefTailSup (δ * |ξ| / 2) ^ (2 : ℕ) := by
   set S : ℝ := soninRefTailSup (δ * |ξ| / 2) with hS
   have hSnn : 0 ≤ S := soninRefTailSup_nonneg _
   have habsw : |w| = w := abs_of_pos hw
@@ -114,8 +114,8 @@ theorem soninScaledPacketSpectralDensity_le_tailSup (m δ w ξ : ℝ) (hδ : 0 <
       4 * δ * S := by
     linarith [hmain, h₁, h₂, hmul]
   have hnn := norm_nonneg (𝓕 (fun x : ℝ => (soninScaledPacket m δ (2 * Real.pi * w) x : ℂ)) ξ)
-  show ‖𝓕 (fun x : ℝ => (soninScaledPacket m δ (2 * Real.pi * w) x : ℂ)) ξ‖ ^ 2 ≤
-    16 * δ ^ 2 * S ^ 2
+  show ‖𝓕 (fun x : ℝ => (soninScaledPacket m δ (2 * Real.pi * w) x : ℂ)) ξ‖ ^ (2 : ℕ) ≤
+    16 * δ ^ (2 : ℕ) * S ^ (2 : ℕ)
   nlinarith [hbound, hnn, hδ, hSnn]
 
 end RHTower

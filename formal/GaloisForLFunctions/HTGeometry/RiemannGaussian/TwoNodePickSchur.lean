@@ -134,7 +134,7 @@ theorem generalTwoNodePickMatrix_valueDiskQuadratic
     (hdet : 0 < twoHermitianDet A D C)
     (hbase : twoHermitianInvNorm A D C u₀ u₁ = h)
     (hpsd : (generalTwoNodePickMatrix A D C h u₀ u₁ v₀ v₁ s).PosSemidef) :
-    (h + twoHermitianInvNorm A D C v₀ v₁) * ‖s‖ ^ 2 ≤
+    (h + twoHermitianInvNorm A D C v₀ v₁) * ‖s‖ ^ (2 : ℕ) ≤
       -2 * (s * twoHermitianInvForm A D C v₀ v₁ u₀ u₁).re := by
   have hschur := generalTwoNodePickMatrix_schur_inequality hdet hpsd
   rw [twoHermitianInvNorm_cross_expansion u₀ u₁ v₀ v₁ s hdet.ne'] at hschur
@@ -151,15 +151,15 @@ theorem norm_le_two_mul_div_one_add_sq_of_generalTwoNodePickMatrix
     (hlinear :
       ‖twoHermitianInvForm A D C v₀ v₁ u₀ u₁‖ = h * b)
     (hpsd : (generalTwoNodePickMatrix A D C h u₀ u₁ v₀ v₁ s).PosSemidef) :
-    ‖s‖ ≤ 2 * b / (1 + b ^ 2) := by
+    ‖s‖ ≤ 2 * b / (1 + b ^ (2 : ℕ)) := by
   let M := twoHermitianInvNorm A D C v₀ v₁
   let d := twoHermitianInvForm A D C v₀ v₁ u₀ u₁
   have hcs := twoHermitianInvForm_cauchy_schwarz
     u₀ u₁ v₀ v₁ hdet
-  have hdSq : Complex.normSq d = h ^ 2 * b ^ 2 := by
+  have hdSq : Complex.normSq d = h ^ (2 : ℕ) * b ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq, hlinear]
     ring
-  have hM : h * b ^ 2 ≤ M := by
+  have hM : h * b ^ (2 : ℕ) ≤ M := by
     rw [hbase] at hcs
     change Complex.normSq d ≤ M * h at hcs
     rw [hdSq] at hcs

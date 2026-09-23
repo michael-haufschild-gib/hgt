@@ -33,50 +33,50 @@ lemma eulerLogPrimePower_nevanlinna_majorant (p : Nat.Primes) (k : ℕ) :
   have htime : Real.log (p : ℝ) ≤
       ((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ) := by
     exact le_mul_of_one_le_left hlog.le hk
-  have htimeSq : (Real.log (p : ℝ)) ^ 2 ≤
-      1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2 := by
+  have htimeSq : (Real.log (p : ℝ)) ^ (2 : ℕ) ≤
+      1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ) := by
     calc
-      (Real.log (p : ℝ)) ^ 2 ≤
-          (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2 :=
+      (Real.log (p : ℝ)) ^ (2 : ℕ) ≤
+          (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ) :=
         (sq_le_sq₀ hlog.le (mul_nonneg (zero_le_one.trans hk) hlog.le)).2 htime
-      _ ≤ 1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2 := by linarith
+      _ ≤ 1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ) := by linarith
   have hmain :
-      ((p : ℝ) * (Real.log (p : ℝ)) ^ 2) * (2 : ℝ) ^ k ≤
+      ((p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ)) * (2 : ℝ) ^ k ≤
         (((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1)) *
-          (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2) := by
-    have hleft : (p : ℝ) * (Real.log (p : ℝ)) ^ 2 * (2 : ℝ) ^ k ≤
-        (p : ℝ) * (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ k := by
+          (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ)) := by
+    have hleft : (p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ) * (2 : ℝ) ^ k ≤
+        (p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ) * (p : ℝ) ^ k := by
       gcongr
     calc
-      (p : ℝ) * (Real.log (p : ℝ)) ^ 2 * (2 : ℝ) ^ k ≤
-          (p : ℝ) * (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ k := hleft
-      _ = (p : ℝ) ^ (k + 1) * (Real.log (p : ℝ)) ^ 2 := by
+      (p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ) * (2 : ℝ) ^ k ≤
+          (p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ) * (p : ℝ) ^ k := hleft
+      _ = (p : ℝ) ^ (k + 1) * (Real.log (p : ℝ)) ^ (2 : ℕ) := by
         rw [pow_succ]
         ring
       _ ≤ ((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1) *
-          (Real.log (p : ℝ)) ^ 2 := by
+          (Real.log (p : ℝ)) ^ (2 : ℕ) := by
         have hmult : (p : ℝ) ^ (k + 1) ≤
             ((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1) :=
           le_mul_of_one_le_left (pow_nonneg hp0.le _) hk
         exact mul_le_mul_of_nonneg_right hmult (sq_nonneg _)
       _ ≤ ((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1) *
-          (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2) := by
+          (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ)) := by
         gcongr
   have hdenL : 0 <
       (((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1)) *
-        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2) := by positivity
-  have hdenR : 0 < ((p : ℝ) * (Real.log (p : ℝ)) ^ 2) * (2 : ℝ) ^ k := by positivity
+        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ)) := by positivity
+  have hdenR : 0 < ((p : ℝ) * (Real.log (p : ℝ)) ^ (2 : ℕ)) * (2 : ℝ) ^ k := by positivity
   unfold eulerLogPrimePowerWeight eulerLogPrimePowerTime nevanlinnaWeight
     RHTower.invNatLogSq
   calc
     (1 / (((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1))) *
-        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2)⁻¹ =
+        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ))⁻¹ =
       1 / ((((k + 1 : ℕ) : ℝ) * (p : ℝ) ^ (k + 1)) *
-        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ 2)) := by
+        (1 + (((k + 1 : ℕ) : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ))) := by
           field_simp
-    _ ≤ 1 / (((p : ℝ) * Real.log (p : ℝ) ^ 2) * (2 : ℝ) ^ k) :=
+    _ ≤ 1 / (((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) * (2 : ℝ) ^ k) :=
       one_div_le_one_div_of_le hdenR hmain
-    _ = (1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2)) * (1 / 2 : ℝ) ^ k := by
+    _ = (1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) * (1 / 2 : ℝ) ^ k := by
       field_simp
       rw [← mul_pow]
       norm_num
@@ -115,24 +115,24 @@ lemma summable_eulerLogPrimePower_nevanlinnaMass :
 lemma norm_regularizedHerglotzKernel_le_nevanlinna
     (z : ℂ) (hz : z.im ≠ 0) (t : ℝ) :
     ‖regularizedHerglotzKernel t z‖ ≤
-      (‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹) * nevanlinnaWeight t := by
+      (‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹) * nevanlinnaWeight t := by
   rw [regularizedHerglotzKernel_eq hz t, norm_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_pos (nevanlinnaWeight_pos t)]
-  have hinner : ‖z + (1 + z ^ 2) / ((t : ℂ) - z)‖ ≤
-      ‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹ := by
+  have hinner : ‖z + (1 + z ^ (2 : ℕ)) / ((t : ℂ) - z)‖ ≤
+      ‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹ := by
     calc
-      ‖z + (1 + z ^ 2) / ((t : ℂ) - z)‖ ≤
-          ‖z‖ + ‖(1 + z ^ 2) / ((t : ℂ) - z)‖ := norm_add_le _ _
-      _ = ‖z‖ + ‖1 + z ^ 2‖ * ‖((t : ℂ) - z)⁻¹‖ := by
+      ‖z + (1 + z ^ (2 : ℕ)) / ((t : ℂ) - z)‖ ≤
+          ‖z‖ + ‖(1 + z ^ (2 : ℕ)) / ((t : ℂ) - z)‖ := norm_add_le _ _
+      _ = ‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * ‖((t : ℂ) - z)⁻¹‖ := by
         rw [div_eq_mul_inv, norm_mul]
-      _ ≤ ‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹ := by
+      _ ≤ ‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹ := by
         gcongr
         exact norm_inv_real_sub_le hz t
   calc
-    nevanlinnaWeight t * ‖z + (1 + z ^ 2) / ((t : ℂ) - z)‖ ≤
-        nevanlinnaWeight t * (‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹) :=
+    nevanlinnaWeight t * ‖z + (1 + z ^ (2 : ℕ)) / ((t : ℂ) - z)‖ ≤
+        nevanlinnaWeight t * (‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹) :=
       mul_le_mul_of_nonneg_left hinner (nevanlinnaWeight_pos t).le
-    _ = (‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹) * nevanlinnaWeight t := mul_comm _ _
+    _ = (‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹) * nevanlinnaWeight t := mul_comm _ _
 
 /-- Exact normalized Euler-log Herglotz Cauchy carrier. -/
 def eulerLogPrimePowerHerglotz (z : ℂ) : ℂ :=
@@ -146,7 +146,7 @@ theorem summable_eulerLogPrimePowerHerglotzTerm
     Summable fun x : PrimePowerClockIndex =>
       (eulerLogPrimePowerWeight x.1 x.2 : ℂ) *
         regularizedHerglotzKernel (eulerLogPrimePowerTime x.1 x.2) z := by
-  let C : ℝ := ‖z‖ + ‖1 + z ^ 2‖ * |z.im|⁻¹
+  let C : ℝ := ‖z‖ + ‖1 + z ^ (2 : ℕ)‖ * |z.im|⁻¹
   have hmajor := summable_eulerLogPrimePower_nevanlinnaMass.mul_left C
   apply Summable.of_norm_bounded hmajor
   intro x
@@ -166,10 +166,10 @@ theorem summable_eulerLogPrimePowerHerglotzTerm
 /-- The regularizing subtraction is real, so it leaves the Cauchy imaginary part unchanged. -/
 lemma regularizedHerglotzKernel_im
     (t : ℝ) (z : ℂ) :
-    (regularizedHerglotzKernel t z).im = z.im / ‖(t : ℂ) - z‖ ^ 2 := by
+    (regularizedHerglotzKernel t z).im = z.im / ‖(t : ℂ) - z‖ ^ (2 : ℕ) := by
   rw [regularizedHerglotzKernel, Complex.sub_im]
-  have hreal : ((t : ℂ) / (1 + (t : ℂ) ^ 2)).im = 0 := by
-    have him : (1 + (t : ℂ) ^ 2).im = 0 := by
+  have hreal : ((t : ℂ) / (1 + (t : ℂ) ^ (2 : ℕ))).im = 0 := by
+    have him : (1 + (t : ℂ) ^ (2 : ℕ)).im = 0 := by
       rw [pow_two, Complex.add_im, Complex.mul_im]
       simp
     rw [Complex.div_im, him]
@@ -233,7 +233,7 @@ theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz :
   refine ⟨Metric.ball z r,
     mem_nhdsWithin_of_mem_nhds (Metric.ball_mem_nhds z hr), ?_⟩
   let B : ℝ := ‖z‖ + r
-  let C : ℝ := B + (1 + B ^ 2) * r⁻¹
+  let C : ℝ := B + (1 + B ^ (2 : ℕ)) * r⁻¹
   apply HasSumUniformlyOn.of_norm_le_summable
     (summable_eulerLogPrimePower_nevanlinnaMass.mul_left C)
   intro x w hw
@@ -260,14 +260,14 @@ theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz :
       _ ≤ ‖w - z‖ + ‖z‖ := norm_add_le _ _
       _ ≤ r + ‖z‖ := add_le_add_left hdist.le _
       _ = B := by dsimp [B]; ring
-  have hwone : ‖1 + w ^ 2‖ ≤ 1 + B ^ 2 := by
+  have hwone : ‖1 + w ^ (2 : ℕ)‖ ≤ 1 + B ^ (2 : ℕ) := by
     calc
-      ‖1 + w ^ 2‖ ≤ ‖(1 : ℂ)‖ + ‖w ^ 2‖ := norm_add_le _ _
-      _ = 1 + ‖w‖ ^ 2 := by rw [norm_one, norm_pow]
-      _ ≤ 1 + B ^ 2 := by gcongr
-  have hbound : ‖w‖ + ‖1 + w ^ 2‖ * |w.im|⁻¹ ≤ C := by
+      ‖1 + w ^ (2 : ℕ)‖ ≤ ‖(1 : ℂ)‖ + ‖w ^ (2 : ℕ)‖ := norm_add_le _ _
+      _ = 1 + ‖w‖ ^ (2 : ℕ) := by rw [norm_one, norm_pow]
+      _ ≤ 1 + B ^ (2 : ℕ) := by gcongr
+  have hbound : ‖w‖ + ‖1 + w ^ (2 : ℕ)‖ * |w.im|⁻¹ ≤ C := by
     calc
-      ‖w‖ + ‖1 + w ^ 2‖ * |w.im|⁻¹ ≤ B + (1 + B ^ 2) * r⁻¹ := by
+      ‖w‖ + ‖1 + w ^ (2 : ℕ)‖ * |w.im|⁻¹ ≤ B + (1 + B ^ (2 : ℕ)) * r⁻¹ := by
         gcongr
       _ = C := rfl
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
@@ -276,7 +276,7 @@ theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz :
     eulerLogPrimePowerWeight x.1 x.2 *
         ‖regularizedHerglotzKernel (eulerLogPrimePowerTime x.1 x.2) w‖ ≤
       eulerLogPrimePowerWeight x.1 x.2 *
-        ((‖w‖ + ‖1 + w ^ 2‖ * |w.im|⁻¹) *
+        ((‖w‖ + ‖1 + w ^ (2 : ℕ)‖ * |w.im|⁻¹) *
           nevanlinnaWeight (eulerLogPrimePowerTime x.1 x.2)) := by
         apply mul_le_mul_of_nonneg_left
           (norm_regularizedHerglotzKernel_le_nevanlinna w hwim0.ne' _)

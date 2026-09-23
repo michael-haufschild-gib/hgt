@@ -281,7 +281,7 @@ Hardy--Ramanujan window bound times the full reservoir Euler product. -/
 theorem exists_wholeAnchorTerminalUniverse_card_le :
     ∃ C : ℝ, 0 < C ∧ ∀ a b T W Z : ℕ, 1 ≤ T → T * T ≤ b → 16 ≤ b →
       ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
-        C * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+        C * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
           ∏ p ∈ wholeAnchorBandPrimes W Z, (1 + 1 / (p : ℝ)) := by
   obtain ⟨C₃, hC₃, h₃⟩ := exists_squarefreeOmegaCount_three_bound
   refine ⟨4 * C₃, by positivity, fun a b T W Z hT hsq hbig => ?_⟩
@@ -293,7 +293,7 @@ theorem exists_wholeAnchorTerminalUniverse_card_le :
   have hlabel : ∀ R ∈ ((wholeAnchorBandPrimes W Z).powerset).filter
       (fun R => (∏ p ∈ R, p) ≤ T),
       (squarefreeOmegaCount 3 (b / (∏ p ∈ R, p)) : ℝ) ≤
-        4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+        4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
           ∏ p ∈ R, (1 / (p : ℝ)) := by
     intro R hR
     rw [Finset.mem_filter, Finset.mem_powerset] at hR
@@ -318,7 +318,7 @@ theorem exists_wholeAnchorTerminalUniverse_card_le :
         squarefreeOmegaCount_three_eq_zero_of_le_one (by omega)
       rw [hzero]
       have hrhs : (0 : ℝ) ≤ 4 * C₃ *
-          ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+          ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
           ∏ p ∈ R, (1 / (p : ℝ)) := by
         apply mul_nonneg
         apply mul_nonneg (by positivity)
@@ -343,28 +343,28 @@ theorem exists_wholeAnchorTerminalUniverse_card_le :
       have hLdivpos : (0 : ℝ) ≤ logLog (b / t) + mertensUpperConst := by
         have := half_le_logLog_add_mertensUpperConst hdiv2
         linarith
-      have hpowmono : (logLog (b / t) + mertensUpperConst) ^ 2 ≤
-          (logLog b + mertensUpperConst) ^ 2 :=
+      have hpowmono : (logLog (b / t) + mertensUpperConst) ^ (2 : ℕ) ≤
+          (logLog b + mertensUpperConst) ^ (2 : ℕ) :=
         pow_le_pow_left₀ hLdivpos hLmono 2
       calc (squarefreeOmegaCount 3 (b / t) : ℝ) ≤
-          C₃ * (((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ 2 /
+          C₃ * (((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ (2 : ℕ) /
             Real.log ((b / t : ℕ) : ℝ)) := hb₃
-        _ ≤ C₃ * (((b : ℝ) / t) * (logLog b + mertensUpperConst) ^ 2 /
+        _ ≤ C₃ * (((b : ℝ) / t) * (logLog b + mertensUpperConst) ^ (2 : ℕ) /
             ((1 / 4 : ℝ) * Real.log b)) := by
             apply mul_le_mul_of_nonneg_left _ hC₃.le
-            calc ((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ 2 /
+            calc ((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ (2 : ℕ) /
                 Real.log ((b / t : ℕ) : ℝ) ≤
-                ((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ 2 /
+                ((b / t : ℕ) : ℝ) * (logLog (b / t) + mertensUpperConst) ^ (2 : ℕ) /
                   ((1 / 4 : ℝ) * Real.log b) :=
                   div_le_div_of_nonneg_left (by positivity) (by positivity) hloglow
-              _ ≤ ((b : ℝ) / t) * (logLog b + mertensUpperConst) ^ 2 /
+              _ ≤ ((b : ℝ) / t) * (logLog b + mertensUpperConst) ^ (2 : ℕ) /
                   ((1 / 4 : ℝ) * Real.log b) := by
                   gcongr
-        _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+        _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
             (1 / (t : ℝ)) := by
             have htne : ((t : ℝ)) ≠ 0 := by positivity
             field_simp
-        _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+        _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
             ∏ p ∈ R, (1 / (p : ℝ)) := by rw [hprodinv]
   -- assemble through the label sum and the full Euler product
   have hcount := wholeAnchorTerminalUniverse_card_le_sum a b T W Z
@@ -374,20 +374,20 @@ theorem exists_wholeAnchorTerminalUniverse_card_le :
         (squarefreeOmegaCount 3 (b / (∏ p ∈ R, p)) : ℝ) := by
     exact_mod_cast hcount
   have hfront : (0 : ℝ) ≤ 4 * C₃ *
-      ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) := by positivity
+      ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) := by positivity
   calc ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
       ∑ R ∈ ((wholeAnchorBandPrimes W Z).powerset).filter
           (fun R => (∏ p ∈ R, p) ≤ T),
         (squarefreeOmegaCount 3 (b / (∏ p ∈ R, p)) : ℝ) := hcountR
     _ ≤ ∑ R ∈ ((wholeAnchorBandPrimes W Z).powerset).filter
           (fun R => (∏ p ∈ R, p) ≤ T),
-        4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+        4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
           ∏ p ∈ R, (1 / (p : ℝ)) := Finset.sum_le_sum hlabel
-    _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+    _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         ∑ R ∈ ((wholeAnchorBandPrimes W Z).powerset).filter
           (fun R => (∏ p ∈ R, p) ≤ T),
           ∏ p ∈ R, (1 / (p : ℝ)) := by rw [Finset.mul_sum]
-    _ ≤ 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+    _ ≤ 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         ∑ R ∈ (wholeAnchorBandPrimes W Z).powerset,
           ∏ p ∈ R, (1 / (p : ℝ)) := by
         apply mul_le_mul_of_nonneg_left _ hfront
@@ -396,7 +396,7 @@ theorem exists_wholeAnchorTerminalUniverse_card_le :
         apply Finset.prod_nonneg
         intro p _
         positivity
-    _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+    _ = 4 * C₃ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         ∏ p ∈ wholeAnchorBandPrimes W Z, (1 + 1 / (p : ℝ)) := by
         rw [wholeAnchor_fullReservoirMass_eq_eulerProduct]
 
@@ -425,13 +425,13 @@ theorem exists_wholeAnchorTerminalUniverse_card_le_theta {A : ℝ} (hA : 0 < A) 
       Real.log Z / (A * (logLog b + mertensUpperConst)) :=
     div_le_div_of_nonneg_left hlogZ.le (by positivity) hfloor
   calc ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
-      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         ∏ p ∈ wholeAnchorBandPrimes W Z, (1 + 1 / (p : ℝ)) := hbound
-    _ ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+    _ ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         (mertensBandProductConst * (Real.log Z / Real.log W)) := by
         apply mul_le_mul_of_nonneg_left hprod
         positivity
-    _ ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+    _ ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         (mertensBandProductConst *
           (Real.log Z / (A * (logLog b + mertensUpperConst)))) := by
         apply mul_le_mul_of_nonneg_left _ (by positivity)

@@ -130,7 +130,7 @@ theorem summable_primeLogGap_sq_mul_criticalHalfDensity_of_twoSidedVariation
     (hright : Summable
       (xiHeatCassiniWoldResidualRightUpperVariationAtom (1 / 2))) :
     Summable (fun N : ℕ =>
-      xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+      xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
         Real.exp (xiMassNthPrimeLogHeight N / 2)) := by
   have hmajor :=
     summable_woldCoeff_mul_primeLogGap_mul_criticalHalfDensity.add
@@ -155,7 +155,7 @@ theorem summable_primeLogGap_sq_mul_criticalHalfDensity_of_twoSidedVariation
     have hscale : 0 ≤ delta * Real.exp (h / 2) :=
       mul_nonneg hdelta (Real.exp_nonneg _)
     calc
-      xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+      xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
             Real.exp (xiMassNthPrimeLogHeight N / 2) =
           delta * (delta * Real.exp (h / 2)) := by
             dsimp only [delta, h]
@@ -211,18 +211,18 @@ theorem summable_primeGapCriticalEnergy_of_half_twoSidedResidualUpperVariation
     congr 1
     exact Real.log_sqrt hp.le
   unfold xiHeatCassiniPrimeGapCriticalEnergy
-  change (xiHeatCassiniOrderedPrimeGap N / p) ^ 2 * Real.sqrt p ≤ _
+  change (xiHeatCassiniOrderedPrimeGap N / p) ^ (2 : ℕ) * Real.sqrt p ≤ _
   rw [hsqrt]
   calc
-    (xiHeatCassiniOrderedPrimeGap N / p) ^ 2 *
+    (xiHeatCassiniOrderedPrimeGap N / p) ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight N / 2) ≤
-        (2 * delta) ^ 2 *
+        (2 * delta) ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight N / 2) := by
       exact mul_le_mul_of_nonneg_right
         ((sq_le_sq₀ hnormalized0 (mul_nonneg (by norm_num) hdelta)).2
           hnormalized)
         (Real.exp_nonneg _)
-    _ = 4 * (xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+    _ = 4 * (xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight N / 2)) := by
       dsimp only [delta]
       ring

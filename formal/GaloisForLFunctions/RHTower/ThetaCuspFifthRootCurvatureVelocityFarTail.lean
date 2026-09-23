@@ -136,7 +136,7 @@ theorem tendsto_thetaCuspCenterFifthRootVelocityActionRadius_atTop :
       filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
       have h := nineteen_mul_sq_sub_self_lt_thetaCuspReflectedLogAction_zero
         (by linarith : 0 < x)
-      have hpoly : x ≤ 19 * x ^ 2 - x := by nlinarith
+      have hpoly : x ≤ 19 * x ^ (2 : ℕ) - x := by nlinarith
       exact hpoly.trans h.le
     exact tendsto_atTop_mono' atTop hbound tendsto_id
   have hexp := Real.tendsto_exp_atTop.comp haction
@@ -157,8 +157,8 @@ theorem tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized :
           (thetaCuspReflectedLogJetOne 0 x)
           (thetaCuspReflectedLogJetTwo 0 x)
           (thetaCuspReflectedLogJetThree 0 x) /
-        ((Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ 2 *
-          thetaCuspSingleAtomReflectionScale 1 x ^ 3))
+        ((Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ (2 : ℕ) *
+          thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ)))
       atTop (nhds 320) := by
   let A : ℝ → ℝ := fun x =>
     thetaCuspReflectedLogJetOne 0 x /
@@ -199,11 +199,11 @@ theorem tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized :
   have h9 := (hR.mul (hA.pow 3)).const_mul 3
   have hsum := ((((((((h1.add h2).add h3).add h4).add h5).add h6).add h7).add h8).add h9)
   have hnorm : Tendsto (fun x =>
-      39 * A x * X x ^ 2 * S x ^ 2 +
-      B x * X x * S x ^ 2 - A x ^ 2 * X x * S x +
-      5 * C x * S x ^ 2 - 15 * A x * B x * S x + 5 * A x ^ 3 -
-      17 * R x * X x * A x ^ 2 * S x -
-      3 * R x * A x * B x * S x + 3 * R x * A x ^ 3)
+      39 * A x * X x ^ (2 : ℕ) * S x ^ (2 : ℕ) +
+      B x * X x * S x ^ (2 : ℕ) - A x ^ (2 : ℕ) * X x * S x +
+      5 * C x * S x ^ (2 : ℕ) - 15 * A x * B x * S x + 5 * A x ^ (3 : ℕ) -
+      17 * R x * X x * A x ^ (2 : ℕ) * S x -
+      3 * R x * A x * B x * S x + 3 * R x * A x ^ (3 : ℕ))
       atTop (nhds 320) := by
     convert hsum using 1
     · funext x
@@ -233,8 +233,8 @@ theorem eventually_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos :
           (thetaCuspReflectedLogJetOne 0 x)
           (thetaCuspReflectedLogJetTwo 0 x)
           (thetaCuspReflectedLogJetThree 0 x) /
-        ((Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ 2 *
-          thetaCuspSingleAtomReflectionScale 1 x ^ 3) :=
+        ((Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ (2 : ℕ) *
+          thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ)) :=
     (tendsto_order.1
       tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized).1 0 (by norm_num)
   filter_upwards [hnormalized, eventually_ge_atTop (1 : ℝ)] with x hnorm hx
@@ -245,8 +245,8 @@ theorem eventually_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos :
   have hspos : 0 < thetaCuspSingleAtomReflectionScale 1 x := by
     unfold thetaCuspSingleAtomReflectionScale
     positivity
-  have hden : 0 < (Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ 2 *
-      thetaCuspSingleAtomReflectionScale 1 x ^ 3 := by positivity
+  have hden : 0 < (Real.exp (thetaCuspReflectedLogAction 0 x) - 1) * x ^ (2 : ℕ) *
+      thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) := by positivity
   have hcore := mul_pos hnorm hden
   rw [div_mul_cancel₀ _ hden.ne'] at hcore
   rw [thetaCuspReflectedSourceFifthRootCurvatureVelocity_pos_iff_actionCore]
@@ -287,7 +287,7 @@ theorem exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_pos_right
       hf heven hn
   have hHankel : 0 <
       iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-        iteratedDeriv 4 f 0 ^ 2 := by
+        iteratedDeriv 4 f 0 ^ (2 : ℕ) := by
     dsimp only [f]
     rw [thetaCuspReflectedSourceProduct_secondSixthHankel_zero]
     exact thetaCuspFullSourceReflectionSecondSixthCurvature_pos 0

@@ -42,10 +42,10 @@ theorem sum_sqrtInv_le (T : ℕ) :
 
 /-- **The square-root-weighted squarefree sum, from above.** -/
 theorem sum_sqrtInv_squarefree_le (T : ℕ) :
-    ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2 * (Real.sqrt n)⁻¹
+    ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) * (Real.sqrt n)⁻¹
       ≤ 2 * Real.sqrt T := by
   refine le_trans (Finset.sum_le_sum fun n _ => ?_) (sum_sqrtInv_le T)
-  have hmu : ((moebius n : ℤ) : ℝ) ^ 2 ≤ 1 := by
+  have hmu : ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) ≤ 1 := by
     have h := moebius_apply_of_squarefree (n := n)
     rcases eq_or_ne (moebius n) 0 with h0 | h0
     · rw [h0]
@@ -58,9 +58,9 @@ theorem sum_sqrtInv_squarefree_le (T : ℕ) :
   nlinarith [hmu, hinv]
 
 /-- **The square-root-weighted squarefree sum, from below.**  This is the card's `(7)` main term. -/
-theorem sum_sqrtInv_squarefree_ge {T R : ℕ} (hT : 1 ≤ T) (hR : 1 ≤ R) (hRT : T ≤ R ^ 2) :
+theorem sum_sqrtInv_squarefree_ge {T R : ℕ} (hT : 1 ≤ T) (hR : 1 ≤ R) (hRT : T ≤ R ^ (2 : ℕ)) :
     squarefreeDensity * Real.sqrt T - ((R : ℝ) + (T : ℝ) / (R : ℝ)) / Real.sqrt T
-      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2 * (Real.sqrt n)⁻¹ := by
+      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) * (Real.sqrt n)⁻¹ := by
   have hT0 : (0 : ℝ) < (T : ℝ) := by exact_mod_cast hT
   have hsT : (0 : ℝ) < Real.sqrt T := Real.sqrt_pos.2 hT0
   have hsqT : Real.sqrt T * Real.sqrt T = (T : ℝ) := Real.mul_self_sqrt hT0.le
@@ -74,13 +74,13 @@ theorem sum_sqrtInv_squarefree_ge {T R : ℕ} (hT : 1 ≤ T) (hR : 1 ≤ R) (hRT
     omega
   rw [hIoc] at hcount
   have hlow : (T : ℝ) * squarefreeDensity - ((R : ℝ) + (T : ℝ) / (R : ℝ))
-      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2 := by
+      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) := by
     have := (abs_le.mp hcount).1
     linarith
   -- each weight is at least its value at the top of the range
   have hterm : ∀ n ∈ Finset.Icc 1 T,
-      ((moebius n : ℤ) : ℝ) ^ 2 * (Real.sqrt T)⁻¹
-        ≤ ((moebius n : ℤ) : ℝ) ^ 2 * (Real.sqrt n)⁻¹ := by
+      ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) * (Real.sqrt T)⁻¹
+        ≤ ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) * (Real.sqrt n)⁻¹ := by
     intro n hn
     rw [Finset.mem_Icc] at hn
     have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn.1
@@ -89,12 +89,12 @@ theorem sum_sqrtInv_squarefree_ge {T R : ℕ} (hT : 1 ≤ T) (hR : 1 ≤ R) (hRT
     have hle : Real.sqrt n ≤ Real.sqrt T := Real.sqrt_le_sqrt hnT
     have hinv : (Real.sqrt T)⁻¹ ≤ (Real.sqrt n)⁻¹ := inv_anti₀ hsn hle
     exact mul_le_mul_of_nonneg_left hinv (by positivity)
-  have hsum : (∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2) * (Real.sqrt T)⁻¹
-      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2 * (Real.sqrt n)⁻¹ := by
+  have hsum : (∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) * (Real.sqrt T)⁻¹
+      ≤ ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) * (Real.sqrt n)⁻¹ := by
     rw [Finset.sum_mul]
     exact Finset.sum_le_sum hterm
   have hmul : ((T : ℝ) * squarefreeDensity - ((R : ℝ) + (T : ℝ) / (R : ℝ))) * (Real.sqrt T)⁻¹
-      ≤ (∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2) * (Real.sqrt T)⁻¹ :=
+      ≤ (∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) * (Real.sqrt T)⁻¹ :=
     mul_le_mul_of_nonneg_right hlow (by positivity)
   have hval : ((T : ℝ) * squarefreeDensity - ((R : ℝ) + (T : ℝ) / (R : ℝ))) * (Real.sqrt T)⁻¹
       = squarefreeDensity * Real.sqrt T - ((R : ℝ) + (T : ℝ) / (R : ℝ)) / Real.sqrt T := by
@@ -111,21 +111,21 @@ theorem sum_sqrtInv_squarefree_ge {T R : ℕ} (hT : 1 ≤ T) (hR : 1 ≤ R) (hRT
 /-! ## The logarithmic weight of `(9)` -/
 
 /-- **One dyadic block of the squarefree harmonic sum.** -/
-theorem sum_inv_squarefree_block_ge {j R : ℕ} (hR : 1 ≤ R) (hRj : 2 ^ j + 2 ^ j ≤ R ^ 2) :
+theorem sum_inv_squarefree_block_ge {j R : ℕ} (hR : 1 ≤ R) (hRj : 2 ^ j + 2 ^ j ≤ R ^ (2 : ℕ)) :
     (((2 : ℝ) ^ j * squarefreeDensity - ((R : ℝ) + ((2 : ℝ) ^ j) / (R : ℝ)))) / (2 : ℝ) ^ (j + 1)
-      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) := by
+      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) := by
   classical
   have hcount := abs_window_squarefree_sub_le (t := 2 ^ j) (L := 2 ^ j) hR hRj
   have hcast : ((2 ^ j : ℕ) : ℝ) = (2 : ℝ) ^ j := by push_cast; ring
   have hidx : (2 : ℕ) ^ j + 2 ^ j = 2 ^ (j + 1) := by ring
   rw [hidx, hcast] at hcount
   have hlow : (2 : ℝ) ^ j * squarefreeDensity - ((R : ℝ) + ((2 : ℝ) ^ j) / (R : ℝ))
-      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ 2 := by
+      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) := by
     have := (abs_le.mp hcount).1
     linarith
   have hp0 : (0 : ℝ) < (2 : ℝ) ^ (j + 1) := by positivity
   have hterm : ∀ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)),
-      ((moebius n : ℤ) : ℝ) ^ 2 / (2 : ℝ) ^ (j + 1) ≤ ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) := by
+      ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (2 : ℝ) ^ (j + 1) ≤ ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) := by
     intro n hn
     rw [Finset.mem_Ioc] at hn
     have hn0 : (0 : ℝ) < (n : ℝ) := by
@@ -139,20 +139,20 @@ theorem sum_inv_squarefree_block_ge {j R : ℕ} (hR : 1 ≤ R) (hRj : 2 ^ j + 2 
       have : ((n : ℕ) : ℝ) ≤ ((2 ^ (j + 1) : ℕ) : ℝ) := by exact_mod_cast this
       rwa [hc] at this
     exact div_le_div_of_nonneg_left (by positivity) hn0 hnle
-  have hsum : (∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ 2)
+  have hsum : (∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
         / (2 : ℝ) ^ (j + 1)
-      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) := by
+      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) := by
     rw [Finset.sum_div]
     exact Finset.sum_le_sum hterm
   exact le_trans (div_le_div_of_nonneg_right hlow hp0.le) hsum
 
-/-- **Every dyadic block above `2^8` carries a quarter of the squarefree density.** -/
+/-- **Every dyadic block above `2^(8 : ℕ)` carries a quarter of the squarefree density.** -/
 theorem sum_inv_squarefree_block_ge_const {j : ℕ} (hj : 8 ≤ j) :
     squarefreeDensity / 4
-      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) := by
+      ≤ ∑ n ∈ Finset.Ioc (2 ^ j) (2 ^ (j + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) := by
   set R : ℕ := 2 ^ (j / 2 + 1) with hRdef
   have hR1 : 1 ≤ R := Nat.one_le_two_pow
-  have hRj : 2 ^ j + 2 ^ j ≤ R ^ 2 := by
+  have hRj : 2 ^ j + 2 ^ j ≤ R ^ (2 : ℕ) := by
     rw [hRdef, ← pow_mul, show (2 : ℕ) ^ j + 2 ^ j = 2 ^ (j + 1) by ring]
     exact Nat.pow_le_pow_right (by norm_num) (by omega)
   have hbase := sum_inv_squarefree_block_ge hR1 hRj
@@ -200,28 +200,28 @@ theorem sum_inv_squarefree_block_ge_const {j : ℕ} (hj : 8 ≤ j) :
 /-- **The squarefree harmonic sum grows logarithmically.**  This is the card's `(9)` main term. -/
 theorem sum_inv_squarefree_ge (J : ℕ) :
     squarefreeDensity / 4 * ((J : ℝ) - 8)
-      ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ J), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) := by
+      ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ J), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) := by
   classical
   have hD : (0 : ℝ) < squarefreeDensity := squarefreeDensity_pos
   induction J with
   | zero =>
-      have hnn : (0 : ℝ) ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ 0), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) :=
+      have hnn : (0 : ℝ) ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ (0 : ℕ)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) :=
         Finset.sum_nonneg fun n _ => by positivity
       have : squarefreeDensity / 4 * ((0 : ℝ) - 8) ≤ 0 := by
         nlinarith [hD]
       simpa using le_trans this hnn
   | succ J ih =>
       by_cases hJ : 8 ≤ J
-      · have hsplit : (∑ n ∈ Finset.Ioc 0 (2 ^ J), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ))
-            + ∑ n ∈ Finset.Ioc (2 ^ J) (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ)
-            = ∑ n ∈ Finset.Ioc 0 (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) :=
+      · have hsplit : (∑ n ∈ Finset.Ioc 0 (2 ^ J), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ))
+            + ∑ n ∈ Finset.Ioc (2 ^ J) (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ)
+            = ∑ n ∈ Finset.Ioc 0 (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) :=
           Finset.sum_Ioc_consecutive _ (Nat.zero_le _)
             (Nat.pow_le_pow_right (by norm_num) (by omega))
         have hblock := sum_inv_squarefree_block_ge_const hJ
         push_cast
         linarith [ih, hblock, hsplit]
       · have hnn : (0 : ℝ)
-            ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) :=
+            ≤ ∑ n ∈ Finset.Ioc 0 (2 ^ (J + 1)), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) :=
           Finset.sum_nonneg fun n _ => by positivity
         have hJ8 : (J : ℝ) + 1 - 8 ≤ 0 := by
           have : (J : ℝ) ≤ 7 := by
@@ -234,11 +234,11 @@ theorem sum_inv_squarefree_ge (J : ℕ) :
 
 /-- **The squarefree harmonic sum, from above.** -/
 theorem sum_inv_squarefree_le (T : ℕ) :
-    ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ 2 / (n : ℝ) ≤ 1 + Real.log T := by
+    ∑ n ∈ Finset.Icc 1 T, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) / (n : ℝ) ≤ 1 + Real.log T := by
   refine le_trans (Finset.sum_le_sum fun n hn => ?_) (sum_Icc_one_div_le_one_add_log T)
   rw [Finset.mem_Icc] at hn
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn.1
-  have hmu : ((moebius n : ℤ) : ℝ) ^ 2 ≤ 1 := by
+  have hmu : ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) ≤ 1 := by
     rcases eq_or_ne (moebius n) 0 with h0 | h0
     · rw [h0]; norm_num
     · rcases ArithmeticFunction.moebius_ne_zero_iff_eq_or.mp h0 with h1 | h1 <;>
@@ -249,7 +249,7 @@ theorem sum_inv_squarefree_le (T : ℕ) :
 /-! ## Squarefree integers avoiding a finite set of primes -/
 
 /-- The multiples of `p` below `Y` number at most `Y/p`. -/
-theorem card_multiples_le (Y : ℕ) {p : ℕ} (hp : 1 ≤ p) :
+theorem card_multiples_le_routeECofactorSquarefreeHarmonic (Y : ℕ) {p : ℕ} (hp : 1 ≤ p) :
     ((((Finset.Icc 1 Y).filter (fun n => p ∣ n)).card : ℕ) : ℝ) ≤ (Y : ℝ) / (p : ℝ) := by
   classical
   have hIoc : Finset.Icc 1 Y = Finset.Ioc 0 Y := by
@@ -267,7 +267,7 @@ theorem card_multiples_le (Y : ℕ) {p : ℕ} (hp : 1 ≤ p) :
 /-- **Squarefree integers below `Y` avoiding a finite set of primes.**  The classical union bound:
 the squarefree count minus the multiples of each excluded prime. -/
 theorem card_squarefree_avoid_ge {Y : ℕ} (Q : Finset ℕ) (hQ : ∀ p ∈ Q, 1 ≤ p) {R : ℕ}
-    (hR : 1 ≤ R) (hRY : Y ≤ R ^ 2) :
+    (hR : 1 ≤ R) (hRY : Y ≤ R ^ (2 : ℕ)) :
     (Y : ℝ) * squarefreeDensity - ((R : ℝ) + (Y : ℝ) / (R : ℝ)) - ∑ p ∈ Q, (Y : ℝ) / (p : ℝ)
       ≤ ((((Finset.Icc 1 Y).filter
           (fun n => Squarefree n ∧ ∀ p ∈ Q, ¬ p ∣ n)).card : ℕ) : ℝ) := by
@@ -280,7 +280,7 @@ theorem card_squarefree_avoid_ge {Y : ℕ} (Q : Finset ℕ) (hQ : ∀ p ∈ Q, 1
     rw [Finset.mem_Ioc, Finset.mem_Icc]
     omega
   rw [hIoc] at hcount
-  have hsf : ∑ n ∈ Finset.Icc 1 Y, ((moebius n : ℤ) : ℝ) ^ 2
+  have hsf : ∑ n ∈ Finset.Icc 1 Y, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
       = (((Finset.Icc 1 Y).filter (fun n => Squarefree n)).card : ℝ) := by
     rw [Finset.card_filter]
     push_cast
@@ -326,14 +326,14 @@ theorem card_squarefree_avoid_ge {Y : ℕ} (Q : Finset ℕ) (hQ : ∀ p ∈ Q, 1
     exact this
   have hmult : ∑ p ∈ Q, ((((Finset.Icc 1 Y).filter (fun n => p ∣ n)).card : ℕ) : ℝ)
       ≤ ∑ p ∈ Q, (Y : ℝ) / (p : ℝ) :=
-    Finset.sum_le_sum fun p hp => card_multiples_le Y (hQ p hp)
+    Finset.sum_le_sum fun p hp => card_multiples_le_routeECofactorSquarefreeHarmonic Y (hQ p hp)
   linarith [hlow, hsplit, hmult]
 
 /-- **The union bound, against any set containing the surviving integers.**  Stated without a
 `Finset.filter` in the conclusion, so that a caller may substitute its own description of the
 surviving set. -/
 theorem card_squarefree_avoid_ge_of_subset {Y : ℕ} (Q : Finset ℕ) (hQ : ∀ p ∈ Q, 1 ≤ p) {R : ℕ}
-    (hR : 1 ≤ R) (hRY : Y ≤ R ^ 2) (S : Finset ℕ)
+    (hR : 1 ≤ R) (hRY : Y ≤ R ^ (2 : ℕ)) (S : Finset ℕ)
     (hS : ∀ n ∈ Finset.Icc 1 Y, Squarefree n → (∀ p ∈ Q, ¬ p ∣ n) → n ∈ S) :
     (Y : ℝ) * squarefreeDensity - ((R : ℝ) + (Y : ℝ) / (R : ℝ)) - ∑ p ∈ Q, (Y : ℝ) / (p : ℝ)
       ≤ ((S.card : ℕ) : ℝ) := by

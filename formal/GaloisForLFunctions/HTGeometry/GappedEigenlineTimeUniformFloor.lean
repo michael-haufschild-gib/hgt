@@ -74,7 +74,7 @@ theorem pureStateTraceDistance_apply_le_two_mul
 /-- The projective deficit bound reads as a trace-distance bound. -/
 theorem pureStateTraceDistance_le_sqrt_of_deficit
     (Φ ψ : EuclideanSpace ℂ ι) (r : ℝ)
-    (h : 1 - ‖(inner ℂ Φ ψ : ℂ)‖ ^ 2 ≤ r) :
+    (h : 1 - ‖(inner ℂ Φ ψ : ℂ)‖ ^ (2 : ℕ) ≤ r) :
     pureStateTraceDistance ψ Φ ≤ Real.sqrt r := by
   rw [pureStateTraceDistance]
   refine Real.sqrt_le_sqrt ?_
@@ -88,7 +88,7 @@ theorem pureStateTraceDistance_apply_le_of_gap
     (U : EuclideanSpace ℂ ι →ₗᵢ[ℂ] EuclideanSpace ℂ ι)
     (Φ ψ : EuclideanSpace ℂ ι) (hΦ : ‖Φ‖ = 1) (hψ : ‖ψ‖ = 1)
     (c : ℂ) (hc : ‖c‖ = 1) (hUψ : U ψ = c • ψ)
-    (Δ δ : ℝ) (hdef : 1 - ‖(inner ℂ Φ ψ : ℂ)‖ ^ 2 ≤ 2 * δ / Δ) :
+    (Δ δ : ℝ) (hdef : 1 - ‖(inner ℂ Φ ψ : ℂ)‖ ^ (2 : ℕ) ≤ 2 * δ / Δ) :
     pureStateTraceDistance (U Φ) Φ ≤ 2 * Real.sqrt (2 * δ / Δ) := by
   refine (pureStateTraceDistance_apply_le_two_mul U Φ ψ hΦ hψ c hc hUψ).trans ?_
   exact mul_le_mul_of_nonneg_left

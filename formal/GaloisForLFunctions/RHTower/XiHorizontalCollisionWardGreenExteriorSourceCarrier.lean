@@ -14,7 +14,7 @@ This module splices three independent corpus mechanisms:
   packet without identifying the two reflection orientations.
 
 The normalized pair of adjacent determinants carries a uniform off-line quantum
-`4 * (96 / 145)^2`.  Its coefficients are built from the critical-feature Cauchy tests whose full
+`4 * (96 / 145)^(2 : ℕ)`.  Its coefficients are built from the critical-feature Cauchy tests whose full
 polarizations have the explicit prime--Gamma source formula in
 `HedenmalmCriticalFeatureExteriorPrimeGammaSource`.
 
@@ -149,7 +149,7 @@ theorem xiWardGreenExteriorLocalEnergy_eq_zero_of_onLine
 /-- Every off-line support point carries a uniform two-orientation exterior quantum. -/
 theorem four_mul_transverseQuantum_le_xiWardGreenExteriorLocalEnergy_of_offLine
     (rho : XiDivisorSupport) (hoff : (rho : ℂ).re ≠ 1 / 2) :
-    4 * (96 / 145 : ℝ) ^ 2 ≤ xiWardGreenExteriorLocalEnergy rho := by
+    4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤ xiWardGreenExteriorLocalEnergy rho := by
   have hy : (xiSpectralPointSupport rho).im ≠ 0 := by
     exact fun h => hoff ((xiSpectralPointSupport_im_eq_zero_iff rho).1 h)
   have hquantum := orientedAdjacentCriticalFeatureTransverseEnergy_ge
@@ -161,30 +161,30 @@ theorem four_mul_transverseQuantum_le_xiWardGreenExteriorLocalEnergy_of_offLine
 
 /-- Multiplicity-square local energy of a finite divisor packet. -/
 def xiWardGreenExteriorPacketEnergy (S : Finset XiDivisorSupport) : ℝ :=
-  ∑ rho ∈ S, (xiSupportMultiplicity rho : ℝ) ^ 2 *
+  ∑ rho ∈ S, (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
     xiWardGreenExteriorLocalEnergy rho
 
 /-- Packet energy dominates the complete multiplicity-square off-line census. -/
 theorem four_mul_transverseQuantum_mul_offLineSquare_le_packetEnergy
     (S : Finset XiDivisorSupport) :
-    4 * (96 / 145 : ℝ) ^ 2 *
+    4 * (96 / 145 : ℝ) ^ (2 : ℕ) *
         (∑ rho ∈ S.filter (fun rho : XiDivisorSupport => (rho : ℂ).re ≠ 1 / 2),
-          (xiSupportMultiplicity rho : ℝ) ^ 2) ≤
+          (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ)) ≤
       xiWardGreenExteriorPacketEnergy S := by
   rw [xiWardGreenExteriorPacketEnergy]
   calc
-    4 * (96 / 145 : ℝ) ^ 2 *
+    4 * (96 / 145 : ℝ) ^ (2 : ℕ) *
           (∑ rho ∈ S.filter (fun rho : XiDivisorSupport => (rho : ℂ).re ≠ 1 / 2),
-            (xiSupportMultiplicity rho : ℝ) ^ 2) =
+            (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ)) =
         ∑ rho ∈ S.filter (fun rho : XiDivisorSupport => (rho : ℂ).re ≠ 1 / 2),
-          (xiSupportMultiplicity rho : ℝ) ^ 2 *
-            (4 * (96 / 145 : ℝ) ^ 2) := by
+          (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
+            (4 * (96 / 145 : ℝ) ^ (2 : ℕ)) := by
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro rho hrho
           ring
     _ ≤ ∑ rho ∈ S.filter (fun rho : XiDivisorSupport => (rho : ℂ).re ≠ 1 / 2),
-          (xiSupportMultiplicity rho : ℝ) ^ 2 *
+          (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
             xiWardGreenExteriorLocalEnergy rho := by
           apply Finset.sum_le_sum
           intro rho hrho
@@ -192,7 +192,7 @@ theorem four_mul_transverseQuantum_mul_offLineSquare_le_packetEnergy
             (four_mul_transverseQuantum_le_xiWardGreenExteriorLocalEnergy_of_offLine
               rho (Finset.mem_filter.mp hrho).2)
             (sq_nonneg _)
-    _ ≤ ∑ rho ∈ S, (xiSupportMultiplicity rho : ℝ) ^ 2 *
+    _ ≤ ∑ rho ∈ S, (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
           xiWardGreenExteriorLocalEnergy rho := by
           apply Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
           intro rho hrhoS hrhoNotFilter
@@ -221,7 +221,7 @@ theorem riemannHypothesis_iff_forall_xiWardGreenExteriorPacketEnergy_eq_zero :
       exact fun hline => hy ((xiSpectralPointSupport_im_eq_zero_iff rho).2 hline)
     have hquantum :=
       four_mul_transverseQuantum_le_xiWardGreenExteriorLocalEnergy_of_offLine rho hoff
-    have hmpos : 0 < (xiSupportMultiplicity rho : ℝ) ^ 2 := by
+    have hmpos : 0 < (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) := by
       positivity [xiSupportMultiplicity_pos rho]
     have hlocalZero : xiWardGreenExteriorLocalEnergy rho = 0 := by
       exact (mul_eq_zero.mp hzero).resolve_left (ne_of_gt hmpos)
@@ -248,7 +248,7 @@ def xiWardGreenExteriorFiberPencil (forward : Bool)
 def xiWardGreenExteriorResolvedEnergy (forward : Bool)
     (S : Finset XiDivisorSupport) (c : ℕ) : ℝ :=
   ∑ gamma ∈ S.image (fun rho : XiDivisorSupport => (rho : ℂ).im),
-    ‖xiWardGreenExteriorFiberPencil forward S gamma c‖ ^ 2
+    ‖xiWardGreenExteriorFiberPencil forward S gamma c‖ ^ (2 : ℕ)
 
 /-- Literal coefficient-faithful exterior source pencil.  Prime labels `2,3`, both factors of
 critical-line reflection, analytic multiplicity, adjacent determinant orientation, and Cayley
@@ -369,9 +369,9 @@ ordinate-fibre energy. -/
 theorem tendsto_xiWardGreenExteriorPrimeCayleySourcePencil_resolvedEnergy
     (forward : Bool) (S : Finset XiDivisorSupport) (c : ℕ) :
     Tendsto
-      (fun N : ℕ => ((N : ℝ)⁻¹ ^ 2) *
+      (fun N : ℕ => ((N : ℝ)⁻¹ ^ (2 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
-          ‖xiWardGreenExteriorPrimeCayleySourcePencil forward S a b c‖ ^ 2)
+          ‖xiWardGreenExteriorPrimeCayleySourcePencil forward S a b c‖ ^ (2 : ℕ))
       atTop (nhds (xiWardGreenExteriorResolvedEnergy forward S c)) := by
   let G := S.image (fun rho : XiDivisorSupport => (rho : ℂ).im)
   have hlim := tendsto_finiteTwoPhasePencil_cesaro_norm_sq G
@@ -396,7 +396,7 @@ def xiWardGreenExteriorOrientationPacketEnergy (forward : Bool)
     (S : Finset XiDivisorSupport) : ℝ :=
   ∑ rho ∈ S,
     ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-      xiWardGreenExteriorCoefficient forward rho‖ ^ 2
+      xiWardGreenExteriorCoefficient forward rho‖ ^ (2 : ℕ)
 
 /-- Cayley averaging separates every distinct support point inside one ordinate fibre. -/
 theorem tendsto_xiWardGreenExteriorFiberPencil_cesaro_norm_sq
@@ -404,12 +404,12 @@ theorem tendsto_xiWardGreenExteriorFiberPencil_cesaro_norm_sq
     (_hgamma : gamma ∈ S.image (fun rho : XiDivisorSupport => (rho : ℂ).im)) :
     Tendsto
       (fun M : ℕ => (M : ℝ)⁻¹ * ∑ c ∈ Finset.range M,
-        ‖xiWardGreenExteriorFiberPencil forward S gamma c‖ ^ 2)
+        ‖xiWardGreenExteriorFiberPencil forward S gamma c‖ ^ (2 : ℕ))
       atTop
       (nhds (∑ rho ∈ S.filter
         (fun rho : XiDivisorSupport => (rho : ℂ).im = gamma),
         ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-          xiWardGreenExteriorCoefficient forward rho‖ ^ 2)) := by
+          xiWardGreenExteriorCoefficient forward rho‖ ^ (2 : ℕ))) := by
   let F := S.filter
     (fun rho : XiDivisorSupport => (rho : ℂ).im = gamma)
   have hinj : Set.InjOn
@@ -452,14 +452,14 @@ theorem tendsto_xiWardGreenExteriorResolvedEnergy_cesaro
     change (∑ gamma ∈ G, ∑ rho ∈ S.filter
       (fun rho : XiDivisorSupport => (rho : ℂ).im = gamma),
         ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-          xiWardGreenExteriorCoefficient forward rho‖ ^ 2) =
+          xiWardGreenExteriorCoefficient forward rho‖ ^ (2 : ℕ)) =
       ∑ rho ∈ S,
         ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-          xiWardGreenExteriorCoefficient forward rho‖ ^ 2
+          xiWardGreenExteriorCoefficient forward rho‖ ^ (2 : ℕ)
     exact Finset.sum_fiberwise_of_maps_to
       (fun rho hrho => Finset.mem_image.mpr ⟨rho, hrho, rfl⟩)
       (fun rho => ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-        xiWardGreenExteriorCoefficient forward rho‖ ^ 2)
+        xiWardGreenExteriorCoefficient forward rho‖ ^ (2 : ℕ))
 
 /-- The sum of the two orientation energies is the local Ward--Green packet energy. -/
 theorem xiWardGreenExteriorOrientationPacketEnergy_add_eq_packetEnergy
@@ -505,7 +505,7 @@ theorem tendsto_xiWardGreenExteriorDephasedSourceEnergy
 /-- A strict sub-quantum bound for every finite dephased source packet proves RH. -/
 theorem riemannHypothesis_of_dephasedWardGreenExteriorSourceEnergy_lt_quantum
     (hsource : ∀ S : Finset XiDivisorSupport, ∃ C : ℝ,
-      C < 4 * (96 / 145 : ℝ) ^ 2 ∧
+      C < 4 * (96 / 145 : ℝ) ^ (2 : ℕ) ∧
         ∀ᶠ M : ℕ in atTop,
           xiWardGreenExteriorDephasedSourceEnergy S M ≤ C) :
     RiemannHypothesis := by
@@ -521,7 +521,7 @@ theorem riemannHypothesis_of_dephasedWardGreenExteriorSourceEnergy_lt_quantum
         ({rho} : Finset XiDivisorSupport)) hbound
   have hlocal :=
     four_mul_transverseQuantum_le_xiWardGreenExteriorLocalEnergy_of_offLine rho hoff
-  have hm : (1 : ℝ) ≤ (xiSupportMultiplicity rho : ℝ) ^ 2 := by
+  have hm : (1 : ℝ) ≤ (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) := by
     have hmpos : 0 < xiSupportMultiplicity rho := xiSupportMultiplicity_pos rho
     have hm1 : (1 : ℝ) ≤ (xiSupportMultiplicity rho : ℝ) := by
       exact_mod_cast Nat.one_le_iff_ne_zero.mpr hmpos.ne'
@@ -530,12 +530,12 @@ theorem riemannHypothesis_of_dephasedWardGreenExteriorSourceEnergy_lt_quantum
   have hnonneg : 0 ≤ xiWardGreenExteriorLocalEnergy rho := by
     rw [xiWardGreenExteriorLocalEnergy]
     positivity
-  have hlower : 4 * (96 / 145 : ℝ) ^ 2 ≤
-      (xiSupportMultiplicity rho : ℝ) ^ 2 *
+  have hlower : 4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤
+      (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
         xiWardGreenExteriorLocalEnergy rho := by
     calc
-      4 * (96 / 145 : ℝ) ^ 2 ≤ xiWardGreenExteriorLocalEnergy rho := hlocal
-      _ ≤ (xiSupportMultiplicity rho : ℝ) ^ 2 *
+      4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤ xiWardGreenExteriorLocalEnergy rho := hlocal
+      _ ≤ (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) *
           xiWardGreenExteriorLocalEnergy rho := by
         nlinarith
   linarith

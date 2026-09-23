@@ -39,12 +39,12 @@ theorem jointWaveResponse_scalar_bound (w : ℂ) (hw : 0 < w.re) (F : SpatialSpa
 theorem jointWaveSolution_gradient (w : ℂ) (F : SpatialSpace) (u : jointDomain) :
     JointWaveSolution w F u ↔ ∀ v : jointDomain,
       (∑ i : Fin 3, inner ℂ ((v : JointEnergySpace) i.succ) ((u : JointEnergySpace) i.succ)) +
-        w^2*inner ℂ (jointEmbedding v) (jointEmbedding u) = inner ℂ (jointEmbedding v) F := by
+        w^(2 : ℕ)*inner ℂ (jointEmbedding v) (jointEmbedding u) = inner ℂ (jointEmbedding v) F := by
   unfold JointWaveSolution WaveFormSolution
   apply forall_congr'
   intro v
   rw [joint_inner_decomposition]
-  have he (a b : ℂ) : a+b+(w^2-1)*a = b+w^2*a := by ring
+  have he (a b : ℂ) : a+b+(w^(2 : ℕ)-1)*a = b+w^(2 : ℕ)*a := by ring
   rw [he]
 
 theorem jointWaveSolution_unique (w : ℂ) (hw : 0 < w.re) (F : SpatialSpace)
@@ -56,17 +56,17 @@ shifted equation. This is a graph-domain statement, not only a formal weak ident
 theorem jointWaveResponse_operator (w : ℂ) (hw : 0 < w.re) (F : SpatialSpace) :
     ∃ hmem : jointEmbedding (jointWaveResponse w hw F) ∈ jointEnergyOperator.domain,
       jointEnergyOperator ⟨jointEmbedding (jointWaveResponse w hw F),hmem⟩ +
-        (w^2-1) • jointEmbedding (jointWaveResponse w hw F) = F := by
+        (w^(2 : ℕ)-1) • jointEmbedding (jointWaveResponse w hw F) = F := by
   let u := jointWaveResponse w hw F
-  let y := F + (1-w^2) • jointEmbedding u
+  let y := F + (1-w^(2 : ℕ)) • jointEmbedding u
   have hJ : jointEmbedding.adjoint y = u := by
     apply ext_inner_left ℂ
     intro v
     rw [jointEmbedding.adjoint_inner_right]
-    change inner ℂ (jointEmbedding v) (F+(1-w^2) • jointEmbedding u) = inner ℂ v u
+    change inner ℂ (jointEmbedding v) (F+(1-w^(2 : ℕ)) • jointEmbedding u) = inner ℂ v u
     rw [inner_add_right,inner_smul_right]
     have he := jointWaveResponse_spec w hw F v
-    change inner ℂ v u + (w^2-1)*inner ℂ (jointEmbedding v) (jointEmbedding u) =
+    change inner ℂ v u + (w^(2 : ℕ)-1)*inner ℂ (jointEmbedding v) (jointEmbedding u) =
       inner ℂ (jointEmbedding v) F at he
     linear_combination -he
   have hc : formEmbeddingCovariance jointEmbedding y = jointEmbedding u :=
@@ -79,11 +79,11 @@ theorem jointWaveResponse_operator (w : ℂ) (hw : 0 < w.re) (F : SpatialSpace) 
     have hx : (⟨jointEmbedding u,hm⟩ : jointEnergyOperator.domain) =
         ⟨formEmbeddingCovariance jointEmbedding y,happ.1⟩ := Subtype.ext hc.symm
     exact (congrArg jointEnergyOperator hx).trans happ.2
-  change jointEnergyOperator ⟨jointEmbedding u,hm⟩ + (w^2-1) • jointEmbedding u = F
+  change jointEnergyOperator ⟨jointEmbedding u,hm⟩ + (w^(2 : ℕ)-1) • jointEmbedding u = F
   rw [he]
   dsimp only [y]
   rw [add_assoc,← add_smul]
-  have hz : (1-w^2)+(w^2-1) = 0 := by ring
+  have hz : (1-w^(2 : ℕ))+(w^(2 : ℕ)-1) = 0 := by ring
   rw [hz,zero_smul,add_zero]
 
 end

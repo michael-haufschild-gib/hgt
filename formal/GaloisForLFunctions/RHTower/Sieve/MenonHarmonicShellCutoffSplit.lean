@@ -41,11 +41,11 @@ theorem ramareRough_primesLE_eq_menonShellRough (A B z : ℕ) :
 /-- **The shell split at a prime cutoff.** -/
 theorem integral_Icc_normSq_shell_le_bilinear_add_rough
     {A B z : ℕ} {T : ℝ} (_hT : 0 ≤ T) :
-    (∫ w in Set.Icc (-T) T, ‖logPoly harmonicMoebiusC (Finset.Icc A B) w‖ ^ 2)
+    (∫ w in Set.Icc (-T) T, ‖logPoly harmonicMoebiusC (Finset.Icc A B) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in Set.Icc (-T) T,
-            ‖harmonicRamareBilinear (Nat.primesLE z) (Finset.Icc A B) w‖ ^ 2)
+            ‖harmonicRamareBilinear (Nat.primesLE z) (Finset.Icc A B) w‖ ^ (2 : ℕ))
         + 2 * ∫ w in Set.Icc (-T) T,
-            ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonShellRough A B z) w‖ ^ (2 : ℕ) := by
   classical
   have hsplit := setIntegral_normSq_add_le
     (F := fun w => harmonicRamareBilinear (Nat.primesLE z) (Finset.Icc A B) w)
@@ -70,16 +70,16 @@ theorem integral_Icc_normSq_shell_le_bilinear_add_rough
 theorem integral_Icc_normSq_shell_le_bilinear_add_brun
     {A B z r : ℕ} (hA : 1 ≤ A) (hz : 2 ≤ z) (hAB : A - 1 ≤ B) (hr : Even r)
     {lam : ℝ} (hlam : 1 ≤ lam) {T : ℝ} (hT : 0 ≤ T) :
-    (∫ w in Set.Icc (-T) T, ‖logPoly harmonicMoebiusC (Finset.Icc A B) w‖ ^ 2)
+    (∫ w in Set.Icc (-T) T, ‖logPoly harmonicMoebiusC (Finset.Icc A B) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in Set.Icc (-T) T,
-            ‖harmonicRamareBilinear (Nat.primesLE z) (Finset.Icc A B) w‖ ^ 2)
+            ‖harmonicRamareBilinear (Nat.primesLE z) (Finset.Icc A B) w‖ ^ (2 : ℕ))
         + 2 * ((5 * Real.pi / 2) *
                 (((((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                       * (Real.exp mertensSecondLowerConst / Real.log z)
                     + ((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                         * (Real.exp (lam * mertensSecondUpperConst)
                             * (Real.log z) ^ lam / lam ^ r)
-                    + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ 2) * T
+                    + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ (2 : ℕ)) * T
             + ((5 * Real.exp 1 / 2) *
                   (((((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                         * (Real.exp mertensSecondLowerConst / Real.log z)
@@ -93,7 +93,7 @@ theorem integral_Icc_normSq_shell_le_bilinear_add_brun
                       + ((B : ℝ) - ((A - 1 : ℕ) : ℝ))
                           * (Real.exp (lam * mertensSecondUpperConst)
                               * (Real.log z) ^ lam / lam ^ r)
-                      + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ 2))) := by
+                      + ((truncDivisors (primorial z) r).card : ℝ))) / (A : ℝ) ^ (2 : ℕ)))) := by
   have hbase := integral_Icc_normSq_shell_le_bilinear_add_rough (A := A) (B := B) (z := z) hT
   have hrough := integral_Icc_normSq_menonShellRough_le_brun hA hz hAB hr hlam hT
   have htwice := mul_le_mul_of_nonneg_left hrough (show (0 : ℝ) ≤ 2 by norm_num)

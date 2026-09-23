@@ -165,7 +165,7 @@ theorem windowCutoff_eq_self {S : Set ℝ} (hS : MeasurableSet S) {f : Lp (α :=
 
 /-! ## The translation dictionary -/
 
-theorem translation_coeFn (b : ℝ) (f : Lp (α := ℝ) ℂ 2) :
+theorem translation_coeFn_massGaugeSuperluminalCompression (b : ℝ) (f : Lp (α := ℝ) ℂ 2) :
     (additiveTranslationUnitary b f : ℝ → ℂ) =ᵐ[volume] fun x => (f : ℝ → ℂ) (x + b) := by
   filter_upwards [Lp.coeFn_compMeasurePreserving f (realTranslation_measurePreserving b)]
     with x hx
@@ -192,8 +192,8 @@ theorem lpBoundedMulCLM_additiveTranslation {chi chi' : ℝ → ℂ} (hchi : Mea
   filter_upwards [
     lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure ℝ)) hchi hC0 hC
       (additiveTranslationUnitary b G),
-    translation_coeFn b G,
-    translation_coeFn b (lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hchi' hC0 hC' G),
+    translation_coeFn_massGaugeSuperluminalCompression b G,
+    translation_coeFn_massGaugeSuperluminalCompression b (lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hchi' hC0 hC' G),
     hinner] with x h1 h2 h3 h4
   rw [h1, h2, h3]
   have h4' : (lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hchi' hC0 hC' G : ℝ → ℂ)
@@ -291,7 +291,7 @@ theorem windowCutoff_translated {u H : ℝ} {S : Set ℝ} (hS : MeasurableSet S)
     simpa [Function.comp_def, realTranslationEquiv] using
       (realTranslation_measurePreserving u).quasiMeasurePreserving.ae
         (causalPacketMod_vanishing u H t)
-  filter_upwards [translation_coeFn u (causalPacketMod u H t), hshift] with h h1 h2 hnot
+  filter_upwards [translation_coeFn_massGaugeSuperluminalCompression u (causalPacketMod u H t), hshift] with h h1 h2 hnot
   rw [h1]
   refine h2 fun hmem => hnot (hout ?_)
   rw [Set.mem_Ioo] at hmem ⊢

@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.PrimitiveRecordPolaritySelector
 
 The retained/created source polarity `J = diag(1, -1)` and the source-selected paired record
 `S = [[0, 1], [1, 0]]` are involutions that anticommute. Their ordered product therefore squares
-to `-1`. A scalar paired transfer `b • S` has ordered square `-(b ^ 2) • 1`.
+to `-1`. A scalar paired transfer `b • S` has ordered square `-(b ^ (2 : ℕ)) • 1`.
 
 This is the standard graded real Clifford-algebra bridge `Cl(2,0) ≃ M₂(ℝ)`. The formal statements do not
 derive central complex scalars, a Hilbert space, positivity, quantum probability, time, spacetime,
@@ -75,7 +75,7 @@ theorem sourceOrderedScaledPair_sq (b : K) :
     (recordPolarityMatrix * (b • pairRecordMatrix) :
       Matrix (Fin 2) (Fin 2) K) *
         (recordPolarityMatrix * (b • pairRecordMatrix)) =
-      -(b ^ 2) • (1 : Matrix (Fin 2) (Fin 2) K) := by
+      -(b ^ (2 : ℕ)) • (1 : Matrix (Fin 2) (Fin 2) K) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [recordPolarityMatrix, pairRecordMatrix, Matrix.mul_apply,
@@ -89,7 +89,7 @@ theorem oddSymmetricRecord_ordered_sq
     (hsymm : qᵀ = q)
     (hodd : recordPolarityMatrixᵀ * q * recordPolarityMatrix = -q) :
     (recordPolarityMatrix * q) * (recordPolarityMatrix * q) =
-      -(q 0 1 ^ 2) • (1 : Matrix (Fin 2) (Fin 2) K) := by
+      -(q 0 1 ^ (2 : ℕ)) • (1 : Matrix (Fin 2) (Fin 2) K) := by
   rw [odd_symmetric_record_eq_smul_pair q hsymm hodd]
   simpa [pairRecordMatrix] using sourceOrderedScaledPair_sq (q 0 1)
 

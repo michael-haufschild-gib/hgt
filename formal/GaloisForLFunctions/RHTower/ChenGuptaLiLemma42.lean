@@ -37,9 +37,9 @@ noncomputable def cglLemma42Matrix (P : CGLLemma42Packet) :
 matrix is controlled by its centered cubic trace and Hilbert--Schmidt trace. -/
 theorem cglLemma42_source_bound (P : CGLLemma42Packet) :
     ‖cglLemma42Matrix P‖ ≤
-      2 * (((cglLemma42Matrix P * (cglLemma42Matrix P)ᴴ) ^ 3).trace.re -
-        ((cglLemma42Matrix P * (cglLemma42Matrix P)ᴴ).trace.re ^ 3) /
-          (P.rowTail + 1 : ℝ) ^ 2) ^ (1 / 6 : ℝ) +
+      2 * (((cglLemma42Matrix P * (cglLemma42Matrix P)ᴴ) ^ (3 : ℕ)).trace.re -
+        ((cglLemma42Matrix P * (cglLemma42Matrix P)ᴴ).trace.re ^ (3 : ℕ)) /
+          (P.rowTail + 1 : ℝ) ^ (2 : ℕ)) ^ (1 / 6 : ℝ) +
       2 * √((cglLemma42Matrix P * (cglLemma42Matrix P)ᴴ).trace.re /
         (P.rowTail + 1 : ℝ)) := by
   have h := cglCharacterDyadicWeighted_operatorNorm_le_centeredGramTrace

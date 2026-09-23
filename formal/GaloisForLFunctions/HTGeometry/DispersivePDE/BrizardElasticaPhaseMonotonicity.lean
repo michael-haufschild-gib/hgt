@@ -21,7 +21,7 @@ theorem physicalJacobiPhaseSlope_pos
   have hfirst : 0 < (k₀ : ℝ) * physicalGamma P / 2 :=
     div_pos (mul_pos k₀.property (physicalGamma_pos P)) (by norm_num)
   have hsecond : 0 < ((k₀ : ℝ) * physicalNu P / 2) /
-      correctedJacobiAmplitude P J (physicalJacobiArgument k₀ P s) ^ 2 :=
+      correctedJacobiAmplitude P J (physicalJacobiArgument k₀ P s) ^ (2 : ℕ) :=
     div_pos
       (div_pos (mul_pos k₀.property (physicalNu_pos P)) (by norm_num))
       (sq_pos_of_pos (correctedJacobiAmplitude_pos P J _))

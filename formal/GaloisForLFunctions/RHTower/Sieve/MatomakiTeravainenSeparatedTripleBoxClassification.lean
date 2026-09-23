@@ -80,7 +80,7 @@ theorem mtSeparatedTripleTypeI_II_FirstAF_scaleSupported
       (MTFiniteIterationSourceData.ofMinimalGeometricSchedule
         z0 D recStart delta recRoot hdelta hz0 hroot).block)
     (i2 i3 : Fin u) (chainLength eIndex : ℕ)
-    (hdilation : (1 + delta) ^ 3 ≤ 2) :
+    (hdilation : (1 + delta) ^ (3 : ℕ) ≤ 2) :
     MTRealScaleSupported
       (mtSeparatedTripleTypeI_II_FirstAF endpoint P data i2 i3 chainLength
         z0 D delta eIndex)
@@ -445,7 +445,7 @@ theorem mtSeparatedTripleBox_isProposition22Piece
     (hQ3Q2 : mtAdjacentBlockLowerScale endpoint i3.1 ≤
       mtAdjacentBlockLowerScale endpoint i2.1)
     (hgeometry : mtAdjacentBlockLowerScale endpoint i1.1 *
-        mtAdjacentBlockLowerScale endpoint i2.1 ^ 4 ≤ X ^ (1 - 2 * epsilon))
+        mtAdjacentBlockLowerScale endpoint i2.1 ^ (4 : ℕ) ≤ X ^ (1 - 2 * epsilon))
     (hz0RealPos : 0 < z0Real)
     (hz0RealLevel : z0Real ≤ mtGeometricLevel delta recStart 0)
     (hchainBound : 1 < z0Real ∨ chain.toFinset.card ≤
@@ -483,12 +483,12 @@ theorem mtSeparatedTripleBox_isProposition22Piece
     let F := mtSeparatedTripleTypeI_II_FirstAF endpoint P data i2 i3
       chain.length z0 D delta eIndex
     let G := mtSeparatedTripleTypeI_II_SecondAF endpoint P data i1 chain
-    have hsquare : M1 ^ 2 * M2 ≤ X ^ (1 - epsilon) := by
+    have hsquare : M1 ^ (2 : ℕ) * M2 ≤ X ^ (1 - epsilon) := by
       calc
-        M1 ^ 2 * M2 =
+        M1 ^ (2 : ℕ) * M2 =
             (mtUpperAdicScale delta eIndex *
               mtAdjacentBlockLowerScale endpoint i2.1 *
-              mtAdjacentBlockLowerScale endpoint i3.1) ^ 2 *
+              mtAdjacentBlockLowerScale endpoint i3.1) ^ (2 : ℕ) *
             (mtAdjacentBlockLowerScale endpoint i1.1 *
               ∏ i ∈ chain.toFinset, Q i) := by
           dsimp [M1, M2, mtSeparatedTripleTypeI_II_M1,

@@ -86,7 +86,7 @@ def ratMapWronskian (P Q : Polynomial C) (g : E) : E :=
 omit [Differential C] [DifferentialAlgebra C E] in
 /-- **The chain rule for a rational map.** -/
 theorem deriv_ratMapEval (hC : ∀ c : C, (algebraMap C E c)′ = 0) {P Q : Polynomial C} {g : E} :
-    (ratMapEval P Q g)′ = ratMapWronskian P Q g * (Polynomial.aeval g Q)⁻¹ ^ 2 * g′ := by
+    (ratMapEval P Q g)′ = ratMapWronskian P Q g * (Polynomial.aeval g Q)⁻¹ ^ (2 : ℕ) * g′ := by
   rw [ratMapEval, Derivation.leibniz_div]
   simp only [smul_eq_mul]
   rw [deriv_aeval hC, deriv_aeval hC, ratMapWronskian]
@@ -113,7 +113,7 @@ theorem derivationClosed_adjoin_of_ratMapEval (hC : ∀ c : C, (algebraMap C E c
   intro _
   have hubase : u′ ∈ B :=
     derivationClosed_differentialAdjoin C _ (subset_differentialAdjoin C _ rfl)
-  have hsolve : g′ = u′ * (ratMapWronskian P Q g)⁻¹ * Polynomial.aeval g Q ^ 2 := by
+  have hsolve : g′ = u′ * (ratMapWronskian P Q g)⁻¹ * Polynomial.aeval g Q ^ (2 : ℕ) := by
     rw [hu, deriv_ratMapEval hC]
     field_simp
   rw [hsolve]

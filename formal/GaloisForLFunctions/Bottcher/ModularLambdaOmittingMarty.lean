@@ -39,7 +39,7 @@ theorem cayleyInv_im_pos_of_norm_lt_one {θ : ℂ} (hθ : ‖θ‖ < 1) :
   apply div_pos _ hden
   simp only [Complex.add_re, Complex.one_re, Complex.sub_re, Complex.add_im, Complex.one_im,
     Complex.sub_im]
-  have hsq : ‖θ‖ ^ 2 < 1 := by nlinarith [hθ, norm_nonneg θ]
+  have hsq : ‖θ‖ ^ (2 : ℕ) < 1 := by nlinarith [hθ, norm_nonneg θ]
   nlinarith [Complex.sq_norm θ, Complex.normSq_apply θ, hsq]
 
 /-- The modular disk target `ζ ↦ λ(cayleyInv ζ)` is holomorphic on the open unit disk. -/

@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertranspor
 /-!
 # Rigidity of weighted global Xi evaluation
 
-Let `w` be any `ell^2` field on the multiplicity-exact Xi divisor.  Consider
+Let `w` be any `ell^(2 : ℕ)` field on the multiplicity-exact Xi divisor.  Consider
 the prescription
 
 `u ↦ (q ↦ E_q(u) w(q))`,
@@ -19,7 +19,7 @@ contractivity.  Necessity uses the uniformly capacity-bounded reflected
 Gaussian countertransport at one coordinate.  If `w(q) ≠ 0`, bounded global
 descent would bound that character orbit, forcing `Re rho_q = 1/2`.
 
-Consequently every coordinatewise nonzero `ell^2` weight gives such an
+Consequently every coordinatewise nonzero `ell^(2 : ℕ)` weight gives such an
 extension exactly under RH.  No rapidly decaying nonzero diagonal damping can
 repair off-line evaluation.  A weight can hide an off-line point only by
 vanishing there, which makes the repair target-selected and nonconservative.

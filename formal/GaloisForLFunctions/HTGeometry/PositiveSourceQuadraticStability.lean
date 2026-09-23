@@ -28,26 +28,26 @@ theorem firstMomentQuadraticCompletion_ne_zero_of_im_ne_zero
     (hkappa : 0 < kappa) (hM : 0 < M)
     (hsre : 0 < s.re) (hsim : s.im ≠ 0)
     (hcone : s.re * ‖b‖ ≤ ‖s‖ * b.re) :
-    ((kappa : ℂ) ^ 2 - s ^ 2) * b -
-        ((kappa : ℂ) ^ 2 * (M : ℂ)) * s ≠ 0 := by
+    ((kappa : ℂ) ^ (2 : ℕ) - s ^ (2 : ℕ)) * b -
+        ((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s ≠ 0 := by
   intro hzero
-  let D : ℂ := (kappa : ℂ) ^ 2 - s ^ 2
+  let D : ℂ := (kappa : ℂ) ^ (2 : ℕ) - s ^ (2 : ℕ)
   let x : ℝ := s.re
   let y : ℝ := s.im
-  let A : ℝ := kappa ^ 2 - x ^ 2 + y ^ 2
+  let A : ℝ := kappa ^ (2 : ℕ) - x ^ (2 : ℕ) + y ^ (2 : ℕ)
   let C : ℝ := -2 * x * y
   let N : ℝ := Complex.normSq D
   have hs0 : s ≠ 0 := by
     intro hs
     subst s
     simp at hsre
-  have htarget : D * b = ((kappa : ℂ) ^ 2 * (M : ℂ)) * s := by
+  have htarget : D * b = ((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s := by
     exact sub_eq_zero.mp hzero
   have hD0 : D ≠ 0 := by
     intro hD
     rw [hD, zero_mul] at htarget
     have hrhs :
-        ((kappa : ℂ) ^ 2 * (M : ℂ)) * s ≠ 0 := by
+        ((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s ≠ 0 := by
       exact mul_ne_zero
         (mul_ne_zero
           (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hkappa.ne'))
@@ -62,55 +62,55 @@ theorem firstMomentQuadraticCompletion_ne_zero_of_im_ne_zero
     dsimp [D, C, x, y]
     simp [pow_two, Complex.mul_im]
     ring
-  have hN : N = A ^ 2 + C ^ 2 := by
+  have hN : N = A ^ (2 : ℕ) + C ^ (2 : ℕ) := by
     dsimp only [N]
     rw [Complex.normSq_apply, hDre, hDim]
     ring
-  have hNnorm : N = ‖D‖ ^ 2 := by
+  have hNnorm : N = ‖D‖ ^ (2 : ℕ) := by
     dsimp only [N]
     rw [← Complex.sq_norm]
   have hDnormpos : 0 < ‖D‖ := norm_pos_iff.mpr hD0
   have hsNormpos : 0 < ‖s‖ := norm_pos_iff.mpr hs0
   have htargetNorm := congrArg norm htarget
   have hnormRelation :
-      ‖D‖ * ‖b‖ = kappa ^ 2 * M * ‖s‖ := by
+      ‖D‖ * ‖b‖ = kappa ^ (2 : ℕ) * M * ‖s‖ := by
     norm_num [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos hkappa, abs_of_pos hM] at htargetNorm
     nlinarith
   have hre := congrArg Complex.re htarget
   have him := congrArg Complex.im htarget
-  have hkpow : (kappa : ℂ) ^ 2 = ((kappa ^ 2 : ℝ) : ℂ) := by
+  have hkpow : (kappa : ℂ) ^ (2 : ℕ) = ((kappa ^ (2 : ℕ) : ℝ) : ℂ) := by
     norm_num
   have hcoef :
-      (kappa : ℂ) ^ 2 * (M : ℂ) =
-        ((kappa ^ 2 * M : ℝ) : ℂ) := by
+      (kappa : ℂ) ^ (2 : ℕ) * (M : ℂ) =
+        ((kappa ^ (2 : ℕ) * M : ℝ) : ℂ) := by
     rw [hkpow]
     norm_num
-  have hkRe : ((kappa : ℂ) ^ 2).re = kappa ^ 2 := by
+  have hkRe : ((kappa : ℂ) ^ (2 : ℕ)).re = kappa ^ (2 : ℕ) := by
     norm_num [pow_two, Complex.mul_re]
-  have hkIm : ((kappa : ℂ) ^ 2).im = 0 := by
+  have hkIm : ((kappa : ℂ) ^ (2 : ℕ)).im = 0 := by
     norm_num [pow_two, Complex.mul_im]
   have hrhsRe :
-      (((kappa : ℂ) ^ 2 * (M : ℂ)) * s).re =
-        kappa ^ 2 * M * x := by
+      (((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s).re =
+        kappa ^ (2 : ℕ) * M * x := by
     dsimp only [x]
     simp [Complex.mul_re, hkRe, hkIm]
   have hrhsIm :
-      (((kappa : ℂ) ^ 2 * (M : ℂ)) * s).im =
-        kappa ^ 2 * M * y := by
+      (((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s).im =
+        kappa ^ (2 : ℕ) * M * y := by
     dsimp only [y]
     simp [Complex.mul_im, hkRe, hkIm]
-  have hre' : A * b.re - C * b.im = kappa ^ 2 * M * x := by
+  have hre' : A * b.re - C * b.im = kappa ^ (2 : ℕ) * M * x := by
     simpa only [Complex.mul_re, hDre, hDim, hrhsRe] using hre
-  have him' : A * b.im + C * b.re = kappa ^ 2 * M * y := by
+  have him' : A * b.im + C * b.re = kappa ^ (2 : ℕ) * M * y := by
     simpa only [Complex.mul_im, hDre, hDim, hrhsIm] using him
   have hNbRe :
-      N * b.re = kappa ^ 2 * M * x *
-        (kappa ^ 2 - (x ^ 2 + y ^ 2)) := by
+      N * b.re = kappa ^ (2 : ℕ) * M * x *
+        (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
     rw [hN]
     dsimp only [A, C]
     linear_combination A * hre' + C * him'
-  have hsNormSq : ‖s‖ ^ 2 = x ^ 2 + y ^ 2 := by
+  have hsNormSq : ‖s‖ ^ (2 : ℕ) = x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     dsimp only [x, y]
     ring
@@ -123,47 +123,47 @@ theorem firstMomentQuadraticCompletion_ne_zero_of_im_ne_zero
     nlinarith only [hmul]
   have hleft :
       x * N * ‖b‖ =
-        x * ‖D‖ * (kappa ^ 2 * M * ‖s‖) := by
+        x * ‖D‖ * (kappa ^ (2 : ℕ) * M * ‖s‖) := by
     rw [hNnorm]
     calc
-      x * ‖D‖ ^ 2 * ‖b‖ =
+      x * ‖D‖ ^ (2 : ℕ) * ‖b‖ =
           x * ‖D‖ * (‖D‖ * ‖b‖) := by ring
-      _ = x * ‖D‖ * (kappa ^ 2 * M * ‖s‖) := by
+      _ = x * ‖D‖ * (kappa ^ (2 : ℕ) * M * ‖s‖) := by
         rw [hnormRelation]
   have hright :
       ‖s‖ * N * b.re =
-        ‖s‖ * (kappa ^ 2 * M * x *
-          (kappa ^ 2 - (x ^ 2 + y ^ 2))) := by
+        ‖s‖ * (kappa ^ (2 : ℕ) * M * x *
+          (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ)))) := by
     calc
       ‖s‖ * N * b.re = ‖s‖ * (N * b.re) := by ring
-      _ = ‖s‖ * (kappa ^ 2 * M * x *
-          (kappa ^ 2 - (x ^ 2 + y ^ 2))) := by rw [hNbRe]
+      _ = ‖s‖ * (kappa ^ (2 : ℕ) * M * x *
+          (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ)))) := by rw [hNbRe]
   rw [hleft, hright] at hscaledCone
-  have hpositive : 0 < x * (kappa ^ 2 * M * ‖s‖) := by
+  have hpositive : 0 < x * (kappa ^ (2 : ℕ) * M * ‖s‖) := by
     dsimp only [x]
     positivity
   have hDle :
-      ‖D‖ ≤ kappa ^ 2 - (x ^ 2 + y ^ 2) := by
+      ‖D‖ ≤ kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     have hcancel :
-        x * (kappa ^ 2 * M * ‖s‖) * ‖D‖ ≤
-          x * (kappa ^ 2 * M * ‖s‖) *
-            (kappa ^ 2 - (x ^ 2 + y ^ 2)) := by
+        x * (kappa ^ (2 : ℕ) * M * ‖s‖) * ‖D‖ ≤
+          x * (kappa ^ (2 : ℕ) * M * ‖s‖) *
+            (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
       nlinarith only [hscaledCone]
     exact le_of_mul_le_mul_left hcancel hpositive
   have hrightNonneg :
-      0 ≤ kappa ^ 2 - (x ^ 2 + y ^ 2) :=
+      0 ≤ kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ)) :=
     le_trans (norm_nonneg D) hDle
   have hsquare :
-      ‖D‖ ^ 2 ≤ (kappa ^ 2 - (x ^ 2 + y ^ 2)) ^ 2 :=
+      ‖D‖ ^ (2 : ℕ) ≤ (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg D) hrightNonneg).2 hDle
   have hidentity :
-      N - (kappa ^ 2 - (x ^ 2 + y ^ 2)) ^ 2 =
-        4 * kappa ^ 2 * y ^ 2 := by
+      N - (kappa ^ (2 : ℕ) - (x ^ (2 : ℕ) + y ^ (2 : ℕ))) ^ (2 : ℕ) =
+        4 * kappa ^ (2 : ℕ) * y ^ (2 : ℕ) := by
     rw [hN]
     dsimp only [A, C]
     ring
   rw [← hNnorm] at hsquare
-  have hySq : y ^ 2 ≤ 0 := by
+  have hySq : y ^ (2 : ℕ) ≤ 0 := by
     nlinarith only [hsquare, hidentity, sq_pos_of_pos hkappa]
   have hyzero : y = 0 :=
     sq_eq_zero_iff.mp (le_antisymm hySq (sq_nonneg y))
@@ -174,28 +174,28 @@ theorem firstMomentQuadraticCompletion_real_neg
     {kappa M r b : ℝ}
     (hkappa : 0 < kappa) (hM : 0 < M) (hr : 0 < r)
     (hb0 : 0 ≤ b) (hbM : b ≤ M * r) :
-    (kappa ^ 2 - r ^ 2) * b - kappa ^ 2 * M * r < 0 := by
+    (kappa ^ (2 : ℕ) - r ^ (2 : ℕ)) * b - kappa ^ (2 : ℕ) * M * r < 0 := by
   by_cases hrk : r < kappa
-  · have hcoef : 0 < kappa ^ 2 - r ^ 2 := by nlinarith
+  · have hcoef : 0 < kappa ^ (2 : ℕ) - r ^ (2 : ℕ) := by nlinarith
     have hmul :
-        (kappa ^ 2 - r ^ 2) * b ≤
-          (kappa ^ 2 - r ^ 2) * (M * r) :=
+        (kappa ^ (2 : ℕ) - r ^ (2 : ℕ)) * b ≤
+          (kappa ^ (2 : ℕ) - r ^ (2 : ℕ)) * (M * r) :=
       mul_le_mul_of_nonneg_left hbM hcoef.le
-    have hMr3 : 0 < M * r ^ 3 := mul_pos hM (pow_pos hr 3)
+    have hMr3 : 0 < M * r ^ (3 : ℕ) := mul_pos hM (pow_pos hr 3)
     nlinarith
-  · have hcoef : kappa ^ 2 - r ^ 2 ≤ 0 := by
+  · have hcoef : kappa ^ (2 : ℕ) - r ^ (2 : ℕ) ≤ 0 := by
       nlinarith
     have hfirst :
-        (kappa ^ 2 - r ^ 2) * b ≤ 0 :=
+        (kappa ^ (2 : ℕ) - r ^ (2 : ℕ)) * b ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hcoef hb0
-    have hpenalty : 0 < kappa ^ 2 * M * r := by positivity
+    have hpenalty : 0 < kappa ^ (2 : ℕ) * M * r := by positivity
     nlinarith
 
 /-- Quadratic completion selected by a channel and its positive first-moment scale. -/
 def firstMomentQuadraticCompletion
     (kappa M : ℝ) (B : ℂ → ℂ) (s : ℂ) : ℂ :=
-  ((kappa : ℂ) ^ 2 - s ^ 2) * B s -
-    ((kappa : ℂ) ^ 2 * (M : ℂ)) * s
+  ((kappa : ℂ) ^ (2 : ℕ) - s ^ (2 : ℕ)) * B s -
+    ((kappa : ℂ) ^ (2 : ℕ) * (M : ℂ)) * s
 
 /-- Universal first-moment quadratic stability law. No analyticity is needed: the sector cone
 excludes nonreal right-half-plane zeros and the moment cap excludes positive-real zeros. -/

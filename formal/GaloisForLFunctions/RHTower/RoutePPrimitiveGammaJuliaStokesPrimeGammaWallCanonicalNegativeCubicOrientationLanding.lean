@@ -61,7 +61,7 @@ theorem sourceHorizontalEulerGammaCubicNaturalRenormalizedLimit_neg :
 private theorem tendsto_sourceHorizontalEulerWoldNormalizedCubicDefect_zero :
     Tendsto (fun N : ℕ =>
       (-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) atTop (nhds 0) := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) atTop (nhds 0) := by
   have h :=
     tendsto_sourceHorizontalEulerGammaWoldCubicDefectMoment_normalized_zero.const_mul (-2)
   convert h using 1
@@ -74,12 +74,12 @@ land the nonzero wall--Xi cubic Malgrange residual. -/
 theorem not_tendsto_sourceHorizontalEulerWoldNormalizedCubicDefect_to_xiResidual :
     ¬ Tendsto (fun N : ℕ =>
       (-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) atTop
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) atTop
       (nhds (normalizedPrimeArchMoment 2 -
-        normalizedPrimeArchMoment 0 ^ 3 / 4)) := by
+        normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) := by
   intro hbad
   have heq : (0 : ℝ) = normalizedPrimeArchMoment 2 -
-      normalizedPrimeArchMoment 0 ^ 3 / 4 :=
+      normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 :=
     tendsto_nhds_unique tendsto_sourceHorizontalEulerWoldNormalizedCubicDefect_zero hbad
   have hneg := normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg
   linarith
@@ -93,9 +93,9 @@ theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallCanonicalNegativeCubicOrien
       -(∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n) < 0 ∧
       Tendsto sourceHorizontalEulerGammaCubicNaturalRenormalizedNegativeCurrent atTop
         (nhds (-∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n)) ∧
-      0 < (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) *
+      0 < (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) *
         sourceHorizontalEulerGammaCubicNaturalRenormalizedNegativeCurrent X ∧
-      0 < (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) *
+      0 < (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) *
         (-(∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n)) := by
   have hresidual := normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg
   have hfinite :=

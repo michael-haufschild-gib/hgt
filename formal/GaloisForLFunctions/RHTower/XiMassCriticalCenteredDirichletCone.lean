@@ -35,7 +35,7 @@ theorem integrable_xiMassAnalyticTest_mul_centeredCriticalAtom
           Complex.exp (-(I * (Real.log ((n : ℝ) + 2) : ℂ) * (x : ℂ))))) := by
   let C : ℝ := |ArithmeticFunction.vonMangoldt (n + 2) - 1| *
     Real.exp (-Real.log ((n : ℝ) + 2) / 2)
-  apply Integrable.mono' ((integrable_exp_neg_mul_abs hsigma).const_mul C)
+  apply Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hsigma).const_mul C)
   · have hg : Continuous (fun x : ℝ =>
         xiMassAnalyticTest a ((sigma : ℂ) + u * I) (x : ℂ)) := by
       rw [continuous_iff_continuousAt]

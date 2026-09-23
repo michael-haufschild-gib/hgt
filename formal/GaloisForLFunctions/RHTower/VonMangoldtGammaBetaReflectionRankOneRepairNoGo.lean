@@ -16,7 +16,7 @@ First-prime dominance gives the limit
 
 Two explicit columns compress `L` to
 
-`(log 2)^2 * diag(-1/12, -1/100800)`.
+`(log 2)^(2 : ℕ) * diag(-1/12, -1/100800)`.
 
 The corresponding complex two-plane is therefore negative definite for every sufficiently large
 source displacement.  The complex Krein--Langer rank bound then proves that adding any one positive
@@ -86,8 +86,8 @@ def betaFactorialNegativePlaneFrame : Matrix (Fin 4) (Fin 2) ℂ :=
   let ell : ℝ := Real.log 2
   !![((-1 / 2 : ℝ) : ℂ), ((-1 / 120 : ℝ) : ℂ);
      ((ell⁻¹ : ℝ) : ℂ), (((1 / 10 : ℝ) * ell⁻¹ : ℝ) : ℂ);
-     0, (((-1 / 2 : ℝ) * (ell ^ 2)⁻¹ : ℝ) : ℂ);
-     0, (((ell ^ 3)⁻¹ : ℝ) : ℂ)]
+     0, (((-1 / 2 : ℝ) * (ell ^ (2 : ℕ))⁻¹ : ℝ) : ℂ);
+     0, (((ell ^ (3 : ℕ))⁻¹ : ℝ) : ℂ)]
 
 /-- Compression of the scaled source matrix to the explicit two-column frame. -/
 def betaFactorialCompressedScaledGram (x : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -98,8 +98,8 @@ def betaFactorialCompressedScaledGram (x : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
 /-- Negative diagonal limit of the compressed source form. -/
 def betaFactorialCompressedLimit : Matrix (Fin 2) (Fin 2) ℂ :=
   Matrix.diagonal ![
-    ((-(Real.log 2) ^ 2 / 12 : ℝ) : ℂ),
-    ((-(Real.log 2) ^ 2 / 100800 : ℝ) : ℂ)]
+    ((-(Real.log 2) ^ (2 : ℕ) / 12 : ℝ) : ℂ),
+    ((-(Real.log 2) ^ (2 : ℕ) / 100800 : ℝ) : ℂ)]
 
 /-- Exact factorial chamber calculation: the two frame columns diagonalize the first-prime limit
 with two strictly negative pivots. -/
@@ -143,11 +143,11 @@ theorem betaFactorialCompressedScaledGram_eventually_negDef :
     ∀ᶠ x : ℝ in atTop, ∀ z : Fin 2 → ℂ, z ≠ 0 →
       (star z ⬝ᵥ (betaFactorialCompressedScaledGram x).mulVec z).re < 0 := by
   let ell : ℝ := Real.log 2
-  let c : Fin 2 → ℝ := ![-ell ^ 2 / 12, -ell ^ 2 / 100800]
+  let c : Fin 2 → ℝ := ![-ell ^ (2 : ℕ) / 12, -ell ^ (2 : ℕ) / 100800]
   have hell : 0 < ell := Real.log_pos (by norm_num)
   apply eventually_negDef_of_entrywise_tendsto_diagonal
     betaFactorialCompressedScaledGram c
-    (δ := ell ^ 2 / 100800)
+    (δ := ell ^ (2 : ℕ) / 100800)
   · positivity
   · intro j
     fin_cases j

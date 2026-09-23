@@ -86,14 +86,14 @@ theorem integral_Icc_comp_mul_left (g : ℝ → ℝ) {W : ℝ} (hW : 0 ≤ W) :
 variable.** -/
 theorem integral_Icc_normSq_mul_logPoly_eq (a b : ℕ → ℂ) {S D : Finset ℕ} {NA NB : ℕ}
     (hS : S ⊆ Finset.Icc 1 NA) (hD : D ⊆ Finset.Icc 1 NB) {W : ℝ} (hW : 0 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a S w‖ ^ 2 * ‖logPoly b D w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a S w‖ ^ (2 : ℕ) * ‖logPoly b D w‖ ^ (2 : ℕ))
       = (2 * Real.pi)⁻¹ * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-          ‖dirPoly NA (fun n : Fin NA => restrictCoeff S a ((n : ℕ) + 1)) t‖ ^ 2
-            * ‖dirPoly NB (fun n : Fin NB => restrictCoeff D b ((n : ℕ) + 1)) t‖ ^ 2 := by
+          ‖dirPoly NA (fun n : Fin NA => restrictCoeff S a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+            * ‖dirPoly NB (fun n : Fin NB => restrictCoeff D b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) := by
   set g : ℝ → ℝ := fun t =>
-    ‖dirPoly NA (fun n : Fin NA => restrictCoeff S a ((n : ℕ) + 1)) t‖ ^ 2
-      * ‖dirPoly NB (fun n : Fin NB => restrictCoeff D b ((n : ℕ) + 1)) t‖ ^ 2 with hg
-  have hpt : ∀ w : ℝ, ‖logPoly a S w‖ ^ 2 * ‖logPoly b D w‖ ^ 2 = g (2 * Real.pi * w) := by
+    ‖dirPoly NA (fun n : Fin NA => restrictCoeff S a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+      * ‖dirPoly NB (fun n : Fin NB => restrictCoeff D b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) with hg
+  have hpt : ∀ w : ℝ, ‖logPoly a S w‖ ^ (2 : ℕ) * ‖logPoly b D w‖ ^ (2 : ℕ) = g (2 * Real.pi * w) := by
     intro w
     rw [hg, logPoly_subset_eq_dirPoly a hS w, logPoly_subset_eq_dirPoly b hD w]
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hpt w]

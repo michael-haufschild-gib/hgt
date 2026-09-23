@@ -25,7 +25,7 @@ noncomputable section
 
 private theorem coefficientGenerated_physicalRank_sq_le_coverDegree_mul_branchCount_mul_blockEnergy
     {n m K N : ℕ} (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
-    d.toOrbitCoareaDatum.physicalRank x ^ 2 ≤
+    d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) ≤
       (N : ℝ) * (m : ℝ) * d.toOrbitCoareaDatum.blockEnergy x := by
   classical
   let pendant : Fin m → Fin d.edgeCount :=
@@ -39,9 +39,9 @@ private theorem coefficientGenerated_physicalRank_sq_le_coverDegree_mul_branchCo
   let edgeTerm : Fin d.edgeCount → ℝ := fun edge =>
     d.toOrbitCoareaDatum.cuts.length edge *
       (∑ a, d.toOrbitCoareaDatum.liftCharge x a *
-        d.toOrbitCoareaDatum.cuts.side edge a) ^ 2
+        d.toOrbitCoareaDatum.cuts.side edge a) ^ (2 : ℕ)
   have hpendant_term : ∀ i, edgeTerm (pendant i) =
-      (1 / (N : ℝ)) * d.toOrbitCoareaDatum.liftCharge x i ^ 2 := by
+      (1 / (N : ℝ)) * d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ) := by
     intro i
     have hcoordinate :=
       d.toOrbitCoareaDatum.cuts.toPositivePendantCutFamily.pendant_coordinate_sum
@@ -56,10 +56,10 @@ private theorem coefficientGenerated_physicalRank_sq_le_coverDegree_mul_branchCo
     rw [hcoordinate']
     rfl
   have hpendant_floor :
-      (1 / (N : ℝ)) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2 ≤
+      (1 / (N : ℝ)) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ) ≤
         d.toOrbitCoareaDatum.blockEnergy x := by
     calc
-      (1 / (N : ℝ)) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2 =
+      (1 / (N : ℝ)) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ) =
           ∑ i, edgeTerm (pendant i) := by
         simp [hpendant_term, Finset.mul_sum]
       _ = ∑ edge ∈ Finset.univ.image pendant, edgeTerm edge := by
@@ -75,24 +75,24 @@ private theorem coefficientGenerated_physicalRank_sq_le_coverDegree_mul_branchCo
   have hcoverDegree_pos : 0 < (N : ℝ) :=
     Nat.cast_pos.mpr d.branches.coverDegree_pos
   have hbranchSquare :
-      (∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2) ≤
+      (∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ)) ≤
         (N : ℝ) * d.toOrbitCoareaDatum.blockEnergy x := by
     calc
-      (∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2) =
+      (∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ)) =
           (N : ℝ) * ((1 / (N : ℝ)) *
-            ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2) := by
+            ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ)) := by
         field_simp
       _ ≤ (N : ℝ) * d.toOrbitCoareaDatum.blockEnergy x :=
         mul_le_mul_of_nonneg_left hpendant_floor hcoverDegree_pos.le
   have hcauchy :
-      d.toOrbitCoareaDatum.physicalRank x ^ 2 ≤
-        (m : ℝ) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2 := by
+      d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) ≤
+        (m : ℝ) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ) := by
     simpa [OrbitCoareaDatum.physicalRank] using
       (sq_sum_le_card_mul_sum_sq (s := Finset.univ)
         (f := fun i : Fin m => d.toOrbitCoareaDatum.liftCharge x i))
   calc
-    d.toOrbitCoareaDatum.physicalRank x ^ 2 ≤
-        (m : ℝ) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ 2 := hcauchy
+    d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) ≤
+        (m : ℝ) * ∑ i, d.toOrbitCoareaDatum.liftCharge x i ^ (2 : ℕ) := hcauchy
     _ ≤ (m : ℝ) * ((N : ℝ) * d.toOrbitCoareaDatum.blockEnergy x) :=
       mul_le_mul_of_nonneg_left hbranchSquare (Nat.cast_nonneg m)
     _ = (N : ℝ) * (m : ℝ) * d.toOrbitCoareaDatum.blockEnergy x := by
@@ -112,7 +112,7 @@ private theorem coefficientGenerated_branchCount_pos_of_physicalRank_ne_zero
 private theorem coefficientGenerated_physicalRank_sq_div_coverDegree_branchCount_le_blockEnergy
     {n m K N : ℕ} (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ)
     (hrank : d.toOrbitCoareaDatum.physicalRank x ≠ 0) :
-    d.toOrbitCoareaDatum.physicalRank x ^ 2 / ((N : ℝ) * (m : ℝ)) ≤
+    d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) / ((N : ℝ) * (m : ℝ)) ≤
       d.toOrbitCoareaDatum.blockEnergy x := by
   have hbranchCount_pos : 0 < (m : ℝ) := Nat.cast_pos.mpr
     (coefficientGenerated_branchCount_pos_of_physicalRank_ne_zero d x hrank)
@@ -120,7 +120,7 @@ private theorem coefficientGenerated_physicalRank_sq_div_coverDegree_branchCount
     Nat.cast_pos.mpr d.branches.coverDegree_pos
   apply (div_le_iff₀ (mul_pos hcoverDegree_pos hbranchCount_pos)).2
   calc
-    d.toOrbitCoareaDatum.physicalRank x ^ 2 ≤
+    d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) ≤
         (N : ℝ) * (m : ℝ) * d.toOrbitCoareaDatum.blockEnergy x :=
       coefficientGenerated_physicalRank_sq_le_coverDegree_mul_branchCount_mul_blockEnergy d x
     _ = d.toOrbitCoareaDatum.blockEnergy x * ((N : ℝ) * (m : ℝ)) := by
@@ -133,8 +133,8 @@ theorem routePPrimitiveGammaJuliaStokesCubicUnitLanding_cumulativeRankCoareaQuan
     {genus : ℕ} {d : LocalData p n m K N}
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1)) :
-    0 < (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x.1 ^ 2 ∧
-      (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x.1 ^ 2 ≤
+    0 < (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x.1 ^ (2 : ℕ) ∧
+      (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x.1 ^ (2 : ℕ) ≤
         ∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x.1.1 a) := by
   have hrank_ne : commonRankLinear d x.1 ≠ 0 :=
     routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_commonRank_ne_zero
@@ -183,9 +183,9 @@ theorem routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding
       genus d (fun _ _ => 0))
     (x₁ : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1))
-    (hrank : commonRankLinear d x₀.1 ^ 2 = commonRankLinear d x₁.1 ^ 2) :
-    0 < (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x₁.1 ^ 2 ∧
-      (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x₁.1 ^ 2 ≤
+    (hrank : commonRankLinear d x₀.1 ^ (2 : ℕ) = commonRankLinear d x₁.1 ^ (2 : ℕ)) :
+    0 < (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x₁.1 ^ (2 : ℕ) ∧
+      (∑ a, 1 / ((N a : ℝ) * (m a : ℝ))) * commonRankLinear d x₁.1 ^ (2 : ℕ) ≤
         (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) -
           ∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a) := by
   obtain ⟨hquantum_pos, hquantum_le⟩ :=

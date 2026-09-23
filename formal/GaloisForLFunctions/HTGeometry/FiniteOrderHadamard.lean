@@ -146,16 +146,16 @@ theorem FiniteOrderEnvelope.compAffine {f : ℂ → ℂ} (hf : FiniteOrderEnvelo
     _ = C * M ^ d * (1 + ‖z‖) ^ d := by rw [mul_pow]; ring
 
 /-- A square root of a finite-order function has a finite-order envelope. -/
-theorem FiniteOrderEnvelope.of_sq {g : ℂ → ℂ} (h : FiniteOrderEnvelope (fun z => g z ^ 2)) :
+theorem FiniteOrderEnvelope.of_sq {g : ℂ → ℂ} (h : FiniteOrderEnvelope (fun z => g z ^ (2 : ℕ))) :
     FiniteOrderEnvelope g := by
   obtain ⟨C, d, hC, hb⟩ := h
   refine ⟨C / 2, d, by linarith, fun z => ?_⟩
-  have hsq : ‖g z‖ ^ 2 ≤ Real.exp (C * (1 + ‖z‖) ^ d) := by
+  have hsq : ‖g z‖ ^ (2 : ℕ) ≤ Real.exp (C * (1 + ‖z‖) ^ d) := by
     simpa [norm_pow] using hb z
   have hhalf : Real.sqrt (Real.exp (C * (1 + ‖z‖) ^ d))
       = Real.exp (C / 2 * (1 + ‖z‖) ^ d) := by
     rw [show Real.exp (C * (1 + ‖z‖) ^ d)
-        = (Real.exp (C / 2 * (1 + ‖z‖) ^ d)) ^ 2 by rw [sq, ← Real.exp_add]; ring_nf]
+        = (Real.exp (C / 2 * (1 + ‖z‖) ^ d)) ^ (2 : ℕ) by rw [sq, ← Real.exp_add]; ring_nf]
     exact Real.sqrt_sq (Real.exp_nonneg _)
   have hstep := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq (norm_nonneg _), hhalf] at hstep
@@ -230,7 +230,7 @@ theorem exists_polynomial_exp_of_ne_zero_of_growth {f : ℂ → ℂ} (hf : Diffe
       rw [← mul_pow]
       refine pow_le_pow_left₀ (by linarith) (by linarith) d
     have hone' : (‖z‖ + 1) ≤ (‖z‖ + 1) ^ (d + 1) := by
-      calc (‖z‖ + 1) = (‖z‖ + 1) ^ 1 := (pow_one _).symm
+      calc (‖z‖ + 1) = (‖z‖ + 1) ^ (1 : ℕ) := (pow_one _).symm
         _ ≤ (‖z‖ + 1) ^ (d + 1) := pow_le_pow_right₀ (by linarith) (by omega)
     have hzle : ‖z‖ ≤ ‖z‖ + 1 := by linarith
     have hK : 1 - Real.log ‖f 0‖ ≤ |1 - Real.log ‖f 0‖| := le_abs_self _

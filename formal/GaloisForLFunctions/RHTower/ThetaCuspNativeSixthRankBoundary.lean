@@ -108,7 +108,7 @@ def thetaCuspNativeOddHankelThreeDet (x : ℝ) : ℝ :=
 theorem thetaCuspNativeOddHankelThree_head_pos (x : ℝ) :
     0 < -thetaCuspNativeReflectionJet 2 x ∧
       0 < (-thetaCuspNativeReflectionJet 2 x)*(-thetaCuspNativeReflectionJet 6 x)-
-        (thetaCuspNativeReflectionJet 4 x)^2 := by
+        (thetaCuspNativeReflectionJet 4 x)^(2 : ℕ) := by
   rw [thetaCuspNativeReflectionJet_two, thetaCuspNativeReflectionJet_four,
     thetaCuspNativeReflectionJet_six]
   refine ⟨neg_pos.mpr (thetaCuspSourceReflectionJetTwo_neg x), ?_⟩
@@ -122,8 +122,8 @@ theorem thetaCuspNativeOddHankelThree_head_pos (x : ℝ) :
 
 /-- Exact source realization of the twelfth-jet modular elimination. -/
 theorem thetaCuspNativeOddHankelThreeDet_zero_eq_modularClosure :
-    thetaCuspNativeOddHankelThreeDet 0 = thetaCuspSelfDualThetaMass^6 *
-      HTGeometry.modularThetaReflectedTenthSeamPolynomial (thetaCuspSelfDualModularScale^2) := by
+    thetaCuspNativeOddHankelThreeDet 0 = thetaCuspSelfDualThetaMass^(6 : ℕ) *
+      HTGeometry.modularThetaReflectedTenthSeamPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) := by
   have h := thetaCuspFullSource_oddHankelThreeSeam_eq_modularPolynomial
   dsimp only at h
   apply Complex.ofReal_injective
@@ -197,16 +197,16 @@ theorem thetaCuspNativeOddHankelThree_not_posSemidef {x : ℝ}
   let c := -thetaCuspNativeReflectionJet 6 x
   let d := thetaCuspNativeReflectionJet 8 x
   let e := -thetaCuspNativeReflectionJet 10 x
-  have hhead : 0 < a*c-b^2 := (thetaCuspNativeOddHankelThree_head_pos x).2
+  have hhead : 0 < a*c-b^(2 : ℕ) := (thetaCuspNativeOddHankelThree_head_pos x).2
   have hD : HilbertMetric.signedEvenHankelThreeDet a b c d e < 0 := hneg
-  have hQ : hankelThreeQuadratic a b c d e (b*d-c^2) (b*c-a*d) (a*c-b^2) < 0 := by
+  have hQ : hankelThreeQuadratic a b c d e (b*d-c^(2 : ℕ)) (b*c-a*d) (a*c-b^(2 : ℕ)) < 0 := by
     rw [hankelThreeQuadratic_cofactor]
     exact mul_neg_of_pos_of_neg hhead hD
   intro hps
-  have hp := hps.dotProduct_mulVec_nonneg ![b*d-c^2,b*c-a*d,a*c-b^2]
-  have heq : star ![b*d-c^2,b*c-a*d,a*c-b^2] ⬝ᵥ
-      (thetaCuspNativeOddHankelThree x *ᵥ ![b*d-c^2,b*c-a*d,a*c-b^2]) =
-      hankelThreeQuadratic a b c d e (b*d-c^2) (b*c-a*d) (a*c-b^2) := by
+  have hp := hps.dotProduct_mulVec_nonneg ![b*d-c^(2 : ℕ),b*c-a*d,a*c-b^(2 : ℕ)]
+  have heq : star ![b*d-c^(2 : ℕ),b*c-a*d,a*c-b^(2 : ℕ)] ⬝ᵥ
+      (thetaCuspNativeOddHankelThree x *ᵥ ![b*d-c^(2 : ℕ),b*c-a*d,a*c-b^(2 : ℕ)]) =
+      hankelThreeQuadratic a b c d e (b*d-c^(2 : ℕ)) (b*c-a*d) (a*c-b^(2 : ℕ)) := by
     simp [thetaCuspNativeOddHankelThree, dotProduct, mulVec, Fin.sum_univ_succ,
       hankelThreeQuadratic, a,b,c,d,e]
     ring
@@ -233,9 +233,9 @@ theorem thetaCuspNativeOddHankelThree_schur_split (r x y z : ℝ) :
     let d := thetaCuspNativeReflectionJet 8 r
     let e := -thetaCuspNativeReflectionJet 10 r
     hankelThreeQuadratic a b c d e
-      (x+(b*d-c^2)/(a*c-b^2)*z) (y+(b*c-a*d)/(a*c-b^2)*z) z =
+      (x+(b*d-c^(2 : ℕ))/(a*c-b^(2 : ℕ))*z) (y+(b*c-a*d)/(a*c-b^(2 : ℕ))*z) z =
       hankelThreeQuadratic a b c d e x y 0 +
-      thetaCuspNativeOddHankelThreeDet r/(a*c-b^2)*z^2 := by
+      thetaCuspNativeOddHankelThreeDet r/(a*c-b^(2 : ℕ))*z^(2 : ℕ) := by
   exact hankelThreeQuadratic_schur_split
     (thetaCuspNativeOddHankelThree_head_pos r).2.ne' x y z
 

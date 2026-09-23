@@ -69,7 +69,7 @@ def soninScaledPacketEven (m δ κ : ℝ) (hδ : 0 < δ) : evenSubspace :=
 
 /-- The squared norm is the integral of the square. -/
 theorem norm_sq_soninScaledPacketEven (m δ κ : ℝ) (hδ : 0 < δ) :
-    ‖soninScaledPacketEven m δ κ hδ‖ ^ 2 = ∫ x : ℝ, soninScaledPacket m δ κ x ^ 2 := by
+    ‖soninScaledPacketEven m δ κ hδ‖ ^ (2 : ℕ) = ∫ x : ℝ, soninScaledPacket m δ κ x ^ (2 : ℕ) := by
   rw [show ‖soninScaledPacketEven m δ κ hδ‖ = ‖soninScaledPacketL2 m δ κ hδ‖ from rfl,
     norm_sq_eq_integral]
   refine integral_congr_ae ?_
@@ -79,8 +79,8 @@ theorem norm_sq_soninScaledPacketEven (m δ κ : ℝ) (hδ : 0 < δ) :
 /-- **Energy of the family.**  The squared norm is the half-width times the reference energy at the
 rescaled frequency. -/
 theorem norm_sq_soninScaledPacketEven_scaling (m δ κ : ℝ) (hδ : 0 < δ) :
-    ‖soninScaledPacketEven m δ κ hδ‖ ^ 2 =
-      δ * ‖soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos‖ ^ 2 := by
+    ‖soninScaledPacketEven m δ κ hδ‖ ^ (2 : ℕ) =
+      δ * ‖soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos‖ ^ (2 : ℕ) := by
   rw [norm_sq_soninScaledPacketEven m δ κ hδ,
     norm_sq_soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos,
     integral_soninScaledPacket_sq_scaling m δ κ hδ]

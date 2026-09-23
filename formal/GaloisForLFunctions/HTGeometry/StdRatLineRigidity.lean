@@ -133,7 +133,7 @@ theorem isVertFlat_of_isLineBigO_all (hσ : 0 < σ) {W : ℕ} {g : ℂ → ℂ}
     have h2 : (0 : ℝ) ≤ (1 / t) ^ (W + (N + 1)) := by positivity
     nlinarith
   -- and conclude the flat limit on that line
-  have hlim : Tendsto (fun t : ℝ => (A + D) * (1 / t) ^ 1) atTop (nhds 0) := by
+  have hlim : Tendsto (fun t : ℝ => (A + D) * (1 / t) ^ (1 : ℕ)) atTop (nhds 0) := by
     have h := (tendsto_one_div_pow 1 (le_refl 1)).const_mul (A + D)
     rwa [mul_zero] at h
   refine squeeze_zero' ((eventually_ge_atTop (0 : ℝ)).mono
@@ -141,7 +141,7 @@ theorem isVertFlat_of_isLineBigO_all (hσ : 0 < σ) {W : ℕ} {g : ℂ → ℂ}
   filter_upwards [eventually_ge_atTop (2 : ℝ)] with t ht
   have htpos : (0 : ℝ) < t := by linarith
   have hb := hbound t ht
-  have hpow : t ^ N * ((1 / t) ^ (W + (N + 1))) ≤ (1 / t) ^ 1 := by
+  have hpow : t ^ N * ((1 / t) ^ (W + (N + 1))) ≤ (1 / t) ^ (1 : ℕ) := by
     have ht0 : t ≠ 0 := by linarith
     have hkey : t ^ N * ((1 / t) ^ (W + (N + 1))) = 1 / t ^ (W + 1) := by
       have h1 : (1 / t) ^ (W + (N + 1)) = 1 / t ^ (W + (N + 1)) := by
@@ -155,7 +155,7 @@ theorem isVertFlat_of_isLineBigO_all (hσ : 0 < σ) {W : ℕ} {g : ℂ → ℂ}
       ≤ t ^ N * ((A + D) * (1 / t) ^ (W + (N + 1))) := by
         refine mul_le_mul_of_nonneg_left hb (by positivity)
     _ = (A + D) * (t ^ N * (1 / t) ^ (W + (N + 1))) := by ring
-    _ ≤ (A + D) * (1 / t) ^ 1 := by
+    _ ≤ (A + D) * (1 / t) ^ (1 : ℕ) := by
         refine mul_le_mul_of_nonneg_left hpow (by linarith)
 
 end GaloisForLFunctions

@@ -46,13 +46,13 @@ theorem py_mul (hA : ContDiff ℝ ∞ A) (hB : ContDiff ℝ ∞ B) (u v : ℝ) :
 
 theorem px_div (hA : ContDiff ℝ ∞ A) (hB : ContDiff ℝ ∞ B) (hne : ∀ q, B q ≠ 0) (u v : ℝ) :
     px (fun q => A q / B q) (u, v)
-      = (px A (u, v) * B (u, v) - A (u, v) * px B (u, v)) / B (u, v) ^ 2 :=
+      = (px A (u, v) * B (u, v) - A (u, v) * px B (u, v)) / B (u, v) ^ (2 : ℕ) :=
   (hasDerivAt_px (hA.div hB hne) u v).unique
     ((hasDerivAt_px hA u v).div (hasDerivAt_px hB u v) (hne (u, v)))
 
 theorem py_div (hA : ContDiff ℝ ∞ A) (hB : ContDiff ℝ ∞ B) (hne : ∀ q, B q ≠ 0) (u v : ℝ) :
     py (fun q => A q / B q) (u, v)
-      = (py A (u, v) * B (u, v) - A (u, v) * py B (u, v)) / B (u, v) ^ 2 :=
+      = (py A (u, v) * B (u, v) - A (u, v) * py B (u, v)) / B (u, v) ^ (2 : ℕ) :=
   (hasDerivAt_py (hA.div hB hne) u v).unique
     ((hasDerivAt_py hA u v).div (hasDerivAt_py hB u v) (hne (u, v)))
 

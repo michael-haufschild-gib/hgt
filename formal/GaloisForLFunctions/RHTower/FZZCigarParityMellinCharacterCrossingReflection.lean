@@ -68,7 +68,7 @@ theorem fzzCigarParityMellinCharacterNormalizedCrossing_eq
   have hstar :
       star (fzzCigarParityDyadicMellinCharacter rho) *
           fzzCigarParityDyadicMellinCharacter rho =
-        ((‖fzzCigarParityDyadicMellinCharacter rho‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖fzzCigarParityDyadicMellinCharacter rho‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simpa using Complex.conj_mul' (fzzCigarParityDyadicMellinCharacter rho)
   rw [mul_assoc (fzzKreinRAt beta : ℂ), hstar]
   push_cast
@@ -109,7 +109,7 @@ theorem fzzCigarParityDyadicMellinCharacter_normalizedPhase_reflection
   have hn : (n : ℂ) ≠ 0 := by exact_mod_cast (norm_pos_iff.mpr hz).ne'
   have href : zr = (star z)⁻¹ := by
     exact fzzCigarParityDyadicMellinCharacter_reflection rho
-  have hstar : star z * z = ((n ^ 2 : ℝ) : ℂ) := by
+  have hstar : star z * z = ((n ^ (2 : ℕ) : ℝ) : ℂ) := by
     simpa [n] using Complex.conj_mul' z
   dsimp only [z, zr, n] at *
   rw [href]

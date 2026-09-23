@@ -54,7 +54,7 @@ def symmTwo {R : Type*} [CommRing R] (α β u : R) : Matrix (Fin 2) (Fin 2) R :=
 
 /-- **The block's characteristic polynomial.** -/
 theorem charpoly_symmTwo {R : Type*} [CommRing R] [Nontrivial R] (α β u : R) :
-    (symmTwo α β u).charpoly = X ^ 2 - C (α + β) * X + C (α * β - u * u) := by
+    (symmTwo α β u).charpoly = X ^ (2 : ℕ) - C (α + β) * X + C (α * β - u * u) := by
   rw [Matrix.charpoly_fin_two, trace_symmTwo, det_symmTwo]
 
 /-- **The block's discriminant** is `(α − β)² + 4u²`, which for a real symmetric block is a sum of

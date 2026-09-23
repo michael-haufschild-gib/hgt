@@ -174,9 +174,9 @@ theorem integral_finiteOfflineProfile_gram {n : ℕ}
 
 theorem integral_norm_sq_finiteOfflineProfile {n : ℕ}
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ) (ha : ∀ j, 0 < a j) :
-    ∫ t in Ioi (0 : ℝ), ‖finiteOfflineProfile a gamma m t‖ ^ 2 =
+    ∫ t in Ioi (0 : ℝ), ‖finiteOfflineProfile a gamma m t‖ ^ (2 : ℕ) =
       finiteOfflineCauchyEnergy a gamma m := by
-  have hpoint : (fun t : ℝ => ‖finiteOfflineProfile a gamma m t‖ ^ 2) =
+  have hpoint : (fun t : ℝ => ‖finiteOfflineProfile a gamma m t‖ ^ (2 : ℕ)) =
       fun t => ((starRingEnd ℂ) (finiteOfflineProfile a gamma m t) *
         finiteOfflineProfile a gamma m t).re := by
     funext t

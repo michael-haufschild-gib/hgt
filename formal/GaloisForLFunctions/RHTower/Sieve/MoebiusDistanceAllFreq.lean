@@ -27,7 +27,7 @@ theorem exists_mulDistSqPair_ge_allFreq :
           ≤ (Real.log (z : ℝ)) ^ (0.99 : ℝ) →
         routeTTruncHat (Real.log (z : ℝ)) * Real.log (z : ℝ)
             + Real.log (9 * C * (3 : ℝ) ^ routeTTruncHat (Real.log (z : ℝ))
-                * (2 + (Real.log (z : ℝ)) ^ 2 + (4 + 2 * Real.log (z : ℝ))
+                * (2 + (Real.log (z : ℝ)) ^ (2 : ℕ) + (4 + 2 * Real.log (z : ℝ))
                     * routeTBudgetHat A (Real.log (z : ℝ)))
                 * (9 * (2 + Real.log (z : ℝ))))
           ≤ (Real.log (z : ℝ)) ^ (0.6 : ℝ) →

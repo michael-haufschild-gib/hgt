@@ -25,7 +25,7 @@ theorem norm_le_of_complementaryFlux_coercive {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] {c a b : ℝ} {u y₁ y₂ w : E} (hsum : y₁ + y₂ = w)
     (h₁ : ‖y₁‖ ≤ a) (h₂ : ‖y₂‖ ≤ b) (hco : c * ‖u‖ ^ 2 ≤ inner ℝ u w) :
     c * ‖u‖ ≤ a + b := by
-  refine le_trans (norm_le_of_coercive hco) ?_
+  refine le_trans (norm_le_of_coercive_graphFluxStabilityEstimate hco) ?_
   rw [← hsum]
   exact le_trans (norm_add_le _ _) (add_le_add h₁ h₂)
 

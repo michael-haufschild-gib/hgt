@@ -302,7 +302,7 @@ theorem gaussChannelResidueCurrent_pos {m : ℕ} (hm : 1 ≤ m) (p : Nat.Primes)
 `(2/m²)·((p-1)/p)^{2m}·(p^m-1)²`. -/
 theorem gaussChannelResidueCurrent_mul_log {m : ℕ} (hm : 1 ≤ m) (p : Nat.Primes) :
     gaussChannelResidueCurrent m p * Real.log (p : ℝ)
-      = 2 / (m : ℝ) ^ 2 * gaussLocalFactorWeight m p * ((p : ℝ) ^ m - 1) ^ 2 := by
+      = 2 / (m : ℝ) ^ (2 : ℕ) * gaussLocalFactorWeight m p * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) := by
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.one_lt
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
   have hlog : Real.log (p : ℝ) ≠ 0 := (Real.log_pos hp).ne'

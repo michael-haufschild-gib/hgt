@@ -525,19 +525,19 @@ theorem abs_realPauliCoefficient_le_norm
       (FiniteQubitConfiguration (Fin n)) ℂ := H
   have hlower := le_opNorm_pauliCombination (pauliCoeff A)
   rw [sum_pauliCoeff_smul] at hlower
-  have hsingle : ‖pauliCoeff A P‖ ^ 2 ≤
-      ∑ Q, ‖pauliCoeff A Q‖ ^ 2 := by
+  have hsingle : ‖pauliCoeff A P‖ ^ (2 : ℕ) ≤
+      ∑ Q, ‖pauliCoeff A Q‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum (fun Q _ => sq_nonneg ‖pauliCoeff A Q‖)
       (Finset.mem_univ P)
   have hsqrt : ‖pauliCoeff A P‖ ≤
-      Real.sqrt (∑ Q, ‖pauliCoeff A Q‖ ^ 2) := by
+      Real.sqrt (∑ Q, ‖pauliCoeff A Q‖ ^ (2 : ℕ)) := by
     rw [← Real.sqrt_sq (norm_nonneg _)]
     exact Real.sqrt_le_sqrt hsingle
   calc
     |realPauliCoefficient H P| = ‖(realPauliCoefficient H P : ℂ)‖ := by simp
     _ = ‖pauliCoeff A P‖ := by
       rw [pauliCoeff_eq_realPauliCoefficient]
-    _ ≤ Real.sqrt (∑ Q, ‖pauliCoeff A Q‖ ^ 2) := hsqrt
+    _ ≤ Real.sqrt (∑ Q, ‖pauliCoeff A Q‖ ^ (2 : ℕ)) := hsqrt
     _ ≤ ‖A‖ := hlower
 
 def twoLocalSkewGeneratorList
@@ -907,7 +907,7 @@ theorem exists_twoLocal_projectiveTrotterCircuit
         (C.eval : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)‖ ≤
         3 * (twoLocalSkewGeneratorList H).length *
-          ((twoLocalSkewGeneratorList H).map norm).sum ^ 2 * |t| ^ 2 / r := by
+          ((twoLocalSkewGeneratorList H).map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r := by
   obtain ⟨c₀, hc₀, hfull⟩ :=
     unitaryEvolution_eq_phase_smul_exp_twoLocalSkewGeneratorList_sum
       H hlocal t
@@ -956,7 +956,7 @@ theorem exists_twoLocal_projectiveTrotterCircuit
           NormedSpace.exp (t • (twoLocalSkewGeneratorList H).sum)‖ := by
               rw [← hproduct, norm_sub_rev]
       _ ≤ 3 * (twoLocalSkewGeneratorList H).length *
-          ((twoLocalSkewGeneratorList H).map norm).sum ^ 2 * |t| ^ 2 / r :=
+          ((twoLocalSkewGeneratorList H).map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r :=
             happrox
 
 /-- Closed input-level form of the compiler bound: only register size,
@@ -976,9 +976,9 @@ theorem exists_twoLocal_projectiveTrotterCircuit_normBound
       ‖unitaryEvolution H t - c •
         (C.eval : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)‖ ≤
-        3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ 3 *
+        3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ (3 : ℕ) *
           ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 * |t| ^ 2 / r := by
+            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r := by
   have hsum := twoLocalSkewGeneratorList_norm_sum_le H
   have habs : 0 ≤ |t / (r : ℝ)| := abs_nonneg _
   have hsmall' : |t / (r : ℝ)| *
@@ -1000,23 +1000,23 @@ theorem exists_twoLocal_projectiveTrotterCircuit_normBound
   have hbound0 : 0 ≤ (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
       ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
         (FiniteQubitConfiguration (Fin n)) ℂ)‖ := by positivity
-  have hsumSq : ((twoLocalSkewGeneratorList H).map norm).sum ^ 2 ≤
+  have hsumSq : ((twoLocalSkewGeneratorList H).map norm).sum ^ (2 : ℕ) ≤
       ((Fintype.card (PauliTracelessLabel n 2) : ℝ) *
         ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
-          (FiniteQubitConfiguration (Fin n)) ℂ)‖) ^ 2 :=
+          (FiniteQubitConfiguration (Fin n)) ℂ)‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ hsum0 hbound0).2 hsum
   have hr0 : (0 : ℝ) ≤ r := by positivity
   calc
     3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
-          ((twoLocalSkewGeneratorList H).map norm).sum ^ 2 * |t| ^ 2 / r ≤
+          ((twoLocalSkewGeneratorList H).map norm).sum ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r ≤
         3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
           (((Fintype.card (PauliTracelessLabel n 2) : ℝ) *
             ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)‖) ^ 2) * |t| ^ 2 / r := by
+              (FiniteQubitConfiguration (Fin n)) ℂ)‖) ^ (2 : ℕ)) * |t| ^ (2 : ℕ) / r := by
             gcongr
-    _ = 3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ 3 *
+    _ = 3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ (3 : ℕ) *
           ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 * |t| ^ 2 / r := by ring
+            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) * |t| ^ (2 : ℕ) / r := by ring
 
 end
 

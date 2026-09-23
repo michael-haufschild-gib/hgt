@@ -173,9 +173,9 @@ theorem kgEnergy_kgMildSolution_le (t : ℝ) :
     kgEnergy (kgMildSolution hV hb0 hb w₀ t) ≤ kgEnergy w₀ * Real.exp (2 * b * |t|) := by
   have h := norm_kgMildSolution_le hV hb0 hb w₀ t
   have hpos : (0 : ℝ) ≤ ‖w₀‖ * Real.exp (b * |t|) := by positivity
-  have hsq : ‖kgMildSolution hV hb0 hb w₀ t‖ ^ 2 ≤ (‖w₀‖ * Real.exp (b * |t|)) ^ 2 := by
+  have hsq : ‖kgMildSolution hV hb0 hb w₀ t‖ ^ (2 : ℕ) ≤ (‖w₀‖ * Real.exp (b * |t|)) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (kgMildSolution hV hb0 hb w₀ t)]
-  have hexp : (Real.exp (b * |t|)) ^ 2 = Real.exp (2 * b * |t|) := by
+  have hexp : (Real.exp (b * |t|)) ^ (2 : ℕ) = Real.exp (2 * b * |t|) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring

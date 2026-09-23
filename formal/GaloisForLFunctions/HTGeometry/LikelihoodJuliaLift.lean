@@ -42,7 +42,7 @@ structure LikelihoodJuliaDatum (H : Type*) [NormedAddCommGroup H] [InnerProductS
   koopman_visibility : koopman ∘L visibility = visibility ∘L koopman
   koopman_contrast : koopman ∘L contrast = -(contrast ∘L koopman)
 
-theorem norm_eq_of_sq_eq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a ^ 2 = b ^ 2) : a = b := by
+theorem norm_eq_of_sq_eq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a ^ (2 : ℕ) = b ^ (2 : ℕ)) : a = b := by
   have h' := congrArg Real.sqrt h
   rwa [Real.sqrt_sq ha, Real.sqrt_sq hb] at h'
 

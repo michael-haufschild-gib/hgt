@@ -96,9 +96,9 @@ theorem integral_gpow (α : ℝ) (hα : α ≠ 0) {a b : ℝ} (ha : 0 < a) (hab 
   · exact intervalIntegrable_gpow α ha hab
 
 theorem gpow_diff_le (α : ℝ) {k x : ℝ} (hk : 1 ≤ k) (hx : x ∈ Set.Icc k (k+1)) :
-    ‖gpow α k - gpow α x‖ ≤ ‖(-1 + α * Complex.I)‖ / k ^ 2 := by
+    ‖gpow α k - gpow α x‖ ≤ ‖(-1 + α * Complex.I)‖ / k ^ (2 : ℕ) := by
   have hk0 : (0:ℝ) < k := by linarith
-  set C := ‖(-1 + α * Complex.I)‖ / k ^ 2 with hC
+  set C := ‖(-1 + α * Complex.I)‖ / k ^ (2 : ℕ) with hC
   have hconv : Convex ℝ (Set.Icc k (k+1)) := convex_Icc _ _
   have hderiv : ∀ y ∈ Set.Icc k (k+1), HasDerivWithinAt (gpow α)
       (gpow α y * (-1 + α * Complex.I) / y) (Set.Icc k (k+1)) y := by
@@ -109,7 +109,7 @@ theorem gpow_diff_le (α : ℝ) {k x : ℝ} (hk : 1 ≤ k) (hx : x ∈ Set.Icc k
     simp only [Set.mem_Icc] at hy
     have hy0 : (0:ℝ) < y := by linarith [hy.1]
     rw [norm_div, norm_mul, norm_gpow α hy0, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hy0, hC,
-      show y⁻¹ * ‖(-1 + α * Complex.I)‖ / y = ‖(-1 + α * Complex.I)‖ / y^2 from by field_simp]
+      show y⁻¹ * ‖(-1 + α * Complex.I)‖ / y = ‖(-1 + α * Complex.I)‖ / y^(2 : ℕ) from by field_simp]
     gcongr
     nlinarith [hy.1, hk0]
   have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound hconv
@@ -125,7 +125,7 @@ theorem gpow_diff_le (α : ℝ) {k x : ℝ} (hk : 1 ≤ k) (hx : x ∈ Set.Icc k
 /-- The one-step Euler--Maclaurin correction bound holds at every real frequency, including the
 zero-frequency harmonic kernel. -/
 theorem corr_bound (α : ℝ) {k : ℝ} (hk : 1 ≤ k) :
-    ‖gpow α k - ∫ x in k..(k+1), gpow α x‖ ≤ ‖(-1 + α * Complex.I)‖ / k ^ 2 := by
+    ‖gpow α k - ∫ x in k..(k+1), gpow α x‖ ≤ ‖(-1 + α * Complex.I)‖ / k ^ (2 : ℕ) := by
   have hk0 : (0:ℝ) < k := by linarith
   have hkk1 : k ≤ k + 1 := by linarith
   have hII : IntervalIntegrable (gpow α) volume k (k+1) := intervalIntegrable_gpow α hk0 hkk1
@@ -140,23 +140,23 @@ theorem corr_bound (α : ℝ) {k : ℝ} (hk : 1 ≤ k) :
   rw [hsub]
   refine le_trans (intervalIntegral.norm_integral_le_integral_norm hkk1) ?_
   calc ∫ x in k..(k+1), ‖gpow α k - gpow α x‖
-      ≤ ∫ _x in k..(k+1), (‖(-1 + α * Complex.I)‖ / k ^ 2) := by
+      ≤ ∫ _x in k..(k+1), (‖(-1 + α * Complex.I)‖ / k ^ (2 : ℕ)) := by
         apply intervalIntegral.integral_mono_on hkk1 hnormII intervalIntegrable_const
         intro x hx; exact gpow_diff_le α hk hx
-    _ = ‖(-1 + α * Complex.I)‖ / k ^ 2 := by rw [intervalIntegral.integral_const]; simp
+    _ = ‖(-1 + α * Complex.I)‖ / k ^ (2 : ℕ) := by rw [intervalIntegral.integral_const]; simp
 
 theorem dirichlet_line_partialSum_bounded (α : ℝ) (hα : α ≠ 0) :
     ∃ C : ℝ, ∀ N : ℕ, ‖∑ n ∈ Finset.range N, gpow α ((n:ℝ) + 1)‖ ≤ C := by
   set s := ‖(-1 + α * Complex.I)‖ with hsdef
-  have h2 : Summable (fun n : ℕ => (1:ℝ)/(n:ℝ)^2) :=
+  have h2 : Summable (fun n : ℕ => (1:ℝ)/(n:ℝ)^(2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hb : Summable (fun k : ℕ => (1:ℝ)/((k:ℝ)+1)^2) := by
+  have hb : Summable (fun k : ℕ => (1:ℝ)/((k:ℝ)+1)^(2 : ℕ)) := by
     simpa [Nat.cast_add, Nat.cast_one] using (summable_nat_add_iff 1).mpr h2
-  have hshift : Summable (fun k : ℕ => s / ((k:ℝ)+1)^2) := by
+  have hshift : Summable (fun k : ℕ => s / ((k:ℝ)+1)^(2 : ℕ)) := by
     have hh := hb.mul_left s
     simp only [mul_one_div] at hh
     exact hh
-  refine ⟨2 * |α|⁻¹ + ∑' k : ℕ, s / ((k:ℝ)+1)^2, fun N => ?_⟩
+  refine ⟨2 * |α|⁻¹ + ∑' k : ℕ, s / ((k:ℝ)+1)^(2 : ℕ), fun N => ?_⟩
   have hdecomp : ∀ n : ℕ, gpow α ((n:ℝ)+1)
       = (Gpow α ((n:ℝ)+1+1) - Gpow α ((n:ℝ)+1))
         + (gpow α ((n:ℝ)+1) - (Gpow α ((n:ℝ)+1+1) - Gpow α ((n:ℝ)+1))) := fun n => by ring
@@ -176,11 +176,11 @@ theorem dirichlet_line_partialSum_bounded (α : ℝ) (hα : α ≠ 0) :
     linarith
   have hcorr : ‖∑ n ∈ Finset.range N,
         (gpow α ((n:ℝ)+1) - (Gpow α ((n:ℝ)+1+1) - Gpow α ((n:ℝ)+1)))‖
-      ≤ ∑' k : ℕ, s / ((k:ℝ)+1)^2 := by
+      ≤ ∑' k : ℕ, s / ((k:ℝ)+1)^(2 : ℕ) := by
     refine le_trans (norm_sum_le _ _) ?_
     have hstep : ∑ n ∈ Finset.range N,
           ‖gpow α ((n:ℝ)+1) - (Gpow α ((n:ℝ)+1+1) - Gpow α ((n:ℝ)+1))‖
-        ≤ ∑ n ∈ Finset.range N, s / ((n:ℝ)+1)^2 := by
+        ≤ ∑ n ∈ Finset.range N, s / ((n:ℝ)+1)^(2 : ℕ) := by
       apply Finset.sum_le_sum
       intro n _
       have hk : (1:ℝ) ≤ (n:ℝ)+1 := le_add_of_nonneg_left (Nat.cast_nonneg n)

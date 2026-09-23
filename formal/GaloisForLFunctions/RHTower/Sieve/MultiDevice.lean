@@ -401,7 +401,7 @@ theorem tendsto_multiHarmConst : Filter.Tendsto multiHarmConst atTop atTop := by
   rw [multiHarmConst]
   ring
 
-theorem exists_multiHarmConst_ge (C : ℝ) : ∃ K₀ : ℕ, C ≤ multiHarmConst K₀ :=
+theorem exists_multiHarmConst_ge_multiDevice (C : ℝ) : ∃ K₀ : ℕ, C ≤ multiHarmConst K₀ :=
   (tendsto_multiHarmConst.eventually_ge_atTop C).exists
 
 /-- **For every constant there is a block count realising it.**  This is statement (3) of the
@@ -414,7 +414,7 @@ theorem exists_eventually_card_sign_window_ge {β : ℝ} (hβ0 : 0 < β) (hβ1 :
         ≤ ((((Finset.Ioc (multiPhys K₀ v) (multiPhys K₀ v + multiWindow β K₀ v)).filter
             (fun n => ArithmeticFunction.moebius n = σ)).card : ℕ) : ℝ) := by
   have hD : (0 : ℝ) < squarefreeDensity := squarefreeDensity_pos
-  obtain ⟨K₀, hK₀⟩ := exists_multiHarmConst_ge (max 1 (1024 * C / squarefreeDensity))
+  obtain ⟨K₀, hK₀⟩ := exists_multiHarmConst_ge_multiDevice (max 1 (1024 * C / squarefreeDensity))
   have hH : 0 < multiHarmConst K₀ := lt_of_lt_of_le zero_lt_one (le_trans (le_max_left _ _) hK₀)
   refine ⟨K₀, ?_⟩
   filter_upwards [eventually_card_sign_window_ge_const hβ0 hβ1 K₀ hH hσ,

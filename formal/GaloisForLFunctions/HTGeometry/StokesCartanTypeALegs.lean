@@ -19,22 +19,22 @@ namespace TypeALeg
 
 theorem path_completion (l : ℕ) (x : ℝ) (d : Fin (l + 1) → ℝ)
     (hsum : ∑ k, d k = x) :
-    (∑ k, d k ^ 2) =
-      (∑ k, (d k - x / (l + 1 : ℕ)) ^ 2) + x ^ 2 / (l + 1 : ℕ) := by
+    (∑ k, d k ^ (2 : ℕ)) =
+      (∑ k, (d k - x / (l + 1 : ℕ)) ^ (2 : ℕ)) + x ^ (2 : ℕ) / (l + 1 : ℕ) := by
   have hm : (l + 1 : ℝ) ≠ 0 := by positivity
   have hsquares :
-      (∑ k, (d k - x / (l + 1 : ℕ)) ^ 2) =
-        (∑ k, d k ^ 2) - 2 * (x / (l + 1 : ℕ)) * (∑ k, d k) +
-          (l + 1 : ℕ) * (x / (l + 1 : ℕ)) ^ 2 := by
+      (∑ k, (d k - x / (l + 1 : ℕ)) ^ (2 : ℕ)) =
+        (∑ k, d k ^ (2 : ℕ)) - 2 * (x / (l + 1 : ℕ)) * (∑ k, d k) +
+          (l + 1 : ℕ) * (x / (l + 1 : ℕ)) ^ (2 : ℕ) := by
     calc
-      (∑ k, (d k - x / (l + 1 : ℕ)) ^ 2) =
-          ∑ k, (d k ^ 2 - 2 * (x / (l + 1 : ℕ)) * d k +
-            (x / (l + 1 : ℕ)) ^ 2) := by
+      (∑ k, (d k - x / (l + 1 : ℕ)) ^ (2 : ℕ)) =
+          ∑ k, (d k ^ (2 : ℕ) - 2 * (x / (l + 1 : ℕ)) * d k +
+            (x / (l + 1 : ℕ)) ^ (2 : ℕ)) := by
         apply Finset.sum_congr rfl
         intro k _
         ring
-      _ = (∑ k, d k ^ 2) - 2 * (x / (l + 1 : ℕ)) * (∑ k, d k) +
-          (l + 1 : ℕ) * (x / (l + 1 : ℕ)) ^ 2 := by
+      _ = (∑ k, d k ^ (2 : ℕ)) - 2 * (x / (l + 1 : ℕ)) * (∑ k, d k) +
+          (l + 1 : ℕ) * (x / (l + 1 : ℕ)) ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
         simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
           nsmul_eq_mul, ← Finset.mul_sum]
@@ -45,9 +45,9 @@ theorem path_completion (l : ℕ) (x : ℝ) (d : Fin (l + 1) → ℝ)
 theorem family_completion {n : ℕ} (legLength : Fin n → ℕ) (x : Fin n → ℝ)
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ)
     (hsum : ∀ i, ∑ k, d i k = x i) :
-    (∑ i, ∑ k, d i k ^ 2) =
-      ∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ 2) +
-        x i ^ 2 / (legLength i + 1 : ℕ)) := by
+    (∑ i, ∑ k, d i k ^ (2 : ℕ)) =
+      ∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ (2 : ℕ)) +
+        x i ^ (2 : ℕ) / (legLength i + 1 : ℕ)) := by
   apply Finset.sum_congr rfl
   intro i _
   exact path_completion (legLength i) (x i) (d i) (hsum i)
@@ -59,25 +59,25 @@ namespace CertifiedFissionDatum
 noncomputable def fullPositiveQuadratic {n : ℕ} (datum : CertifiedFissionDatum n)
     (legLength : Fin n → ℕ) (x : Fin n → ℝ)
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ) : ℝ :=
-  (∑ i, ∑ k, d i k ^ 2) +
+  (∑ i, ∑ k, d i k ^ (2 : ℕ)) +
     ∑ e, datum.rooted.tree.canonicalCuts.length e *
-      (∑ i, x i * datum.cutVector e i) ^ 2
+      (∑ i, x i * datum.cutVector e i) ^ (2 : ℕ)
 
 noncomputable def fullCartanQuadratic {n : ℕ} (datum : CertifiedFissionDatum n)
     (legLength : Fin n → ℕ) (x : Fin n → ℝ)
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ) : ℝ :=
   datum.fullPositiveQuadratic legLength x d -
-    datum.rootDefect * datum.totalRamification x ^ 2
+    datum.rootDefect * datum.totalRamification x ^ (2 : ℕ)
 
 theorem fullPositiveQuadratic_eq_completed {n : ℕ} (datum : CertifiedFissionDatum n)
     (legLength : Fin n → ℕ) (x : Fin n → ℝ)
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ)
     (hsum : ∀ i, ∑ k, d i k = x i) :
     datum.fullPositiveQuadratic legLength x d =
-      (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ 2) +
-        x i ^ 2 / (legLength i + 1 : ℕ))) +
+      (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ (2 : ℕ)) +
+        x i ^ (2 : ℕ) / (legLength i + 1 : ℕ))) +
       ∑ e, datum.rooted.tree.canonicalCuts.length e *
-        (∑ i, x i * datum.cutVector e i) ^ 2 := by
+        (∑ i, x i * datum.cutVector e i) ^ (2 : ℕ) := by
   rw [fullPositiveQuadratic, TypeALeg.family_completion legLength x d hsum]
 
 theorem fullCartanQuadratic_eq_completed {n : ℕ} (datum : CertifiedFissionDatum n)
@@ -85,11 +85,11 @@ theorem fullCartanQuadratic_eq_completed {n : ℕ} (datum : CertifiedFissionDatu
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ)
     (hsum : ∀ i, ∑ k, d i k = x i) :
     datum.fullCartanQuadratic legLength x d =
-      (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ 2) +
-        x i ^ 2 / (legLength i + 1 : ℕ))) +
+      (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ (2 : ℕ)) +
+        x i ^ (2 : ℕ) / (legLength i + 1 : ℕ))) +
       ∑ e, datum.rooted.tree.canonicalCuts.length e *
-        (∑ i, x i * datum.cutVector e i) ^ 2 -
-      datum.rootDefect * datum.totalRamification x ^ 2 := by
+        (∑ i, x i * datum.cutVector e i) ^ (2 : ℕ) -
+      datum.rootDefect * datum.totalRamification x ^ (2 : ℕ) := by
   rw [fullCartanQuadratic, datum.fullPositiveQuadratic_eq_completed legLength x d hsum]
 
 theorem fullPositiveQuadratic_pos {n : ℕ} (datum : CertifiedFissionDatum n)
@@ -113,7 +113,7 @@ theorem fullPositiveQuadratic_pos {n : ℕ} (datum : CertifiedFissionDatum n)
     funext i k
     exact h i k
   obtain ⟨i, k, hik⟩ := hex
-  have hpaths : 0 < ∑ i, ∑ k, d i k ^ 2 := by
+  have hpaths : 0 < ∑ i, ∑ k, d i k ^ (2 : ℕ) := by
     apply Finset.sum_pos'
     · intro j _
       exact Finset.sum_nonneg fun k _ => sq_nonneg (d j k)
@@ -123,7 +123,7 @@ theorem fullPositiveQuadratic_pos {n : ℕ} (datum : CertifiedFissionDatum n)
         exact sq_nonneg (d i j)
       · exact ⟨k, Finset.mem_univ _, sq_pos_of_ne_zero hik⟩
   have hcuts : 0 ≤ ∑ e, datum.rooted.tree.canonicalCuts.length e *
-      (∑ i, x i * datum.cutVector e i) ^ 2 := by
+      (∑ i, x i * datum.cutVector e i) ^ (2 : ℕ) := by
     apply Finset.sum_nonneg
     intro e _
     exact mul_nonneg (datum.rooted.tree.canonicalCuts.length_pos e).le (sq_nonneg _)
@@ -153,11 +153,11 @@ theorem wildDimension_eq_conservation {n : ℕ} (datum : CertifiedFissionDatum n
     (d : (i : Fin n) → Fin (legLength i + 1) → ℝ)
     (hsum : ∀ i, ∑ k, d i k = x i) :
     datum.wildDimension legLength x d =
-      2 + datum.rootDefect * datum.totalRamification x ^ 2 -
-        (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ 2) +
-          x i ^ 2 / (legLength i + 1 : ℕ))) -
+      2 + datum.rootDefect * datum.totalRamification x ^ (2 : ℕ) -
+        (∑ i, ((∑ k, (d i k - x i / (legLength i + 1 : ℕ)) ^ (2 : ℕ)) +
+          x i ^ (2 : ℕ) / (legLength i + 1 : ℕ))) -
         ∑ e, datum.rooted.tree.canonicalCuts.length e *
-          (∑ i, x i * datum.cutVector e i) ^ 2 := by
+          (∑ i, x i * datum.cutVector e i) ^ (2 : ℕ) := by
   rw [wildDimension, datum.fullCartanQuadratic_eq_completed legLength x d hsum]
   ring
 

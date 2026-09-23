@@ -98,7 +98,7 @@ def normalizedGaussianSchwartz (ε : Set.Ioi (0 : ℝ)) : RealSchwartz :=
 @[simp]
 theorem normalizedGaussianSchwartz_apply (ε : Set.Ioi (0 : ℝ)) (x : ℝ) :
     normalizedGaussianSchwartz ε x =
-      (gaussianMass ε)⁻¹ * Real.exp (-ε.1 * x ^ 2) := by
+      (gaussianMass ε)⁻¹ * Real.exp (-ε.1 * x ^ (2 : ℕ)) := by
   simp [normalizedGaussianSchwartz]
 
 theorem normalizedGaussianSchwartz_pos (ε : Set.Ioi (0 : ℝ)) (x : ℝ) :

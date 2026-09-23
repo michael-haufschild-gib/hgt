@@ -319,14 +319,14 @@ theorem suzukiWeilInner_conj_symm (hRH : RiemannHypothesis) (ψ φ : SuzukiTest)
   exact HasSum.unique h2 (hasSum_suzukiWeilInner hRH ψ φ)
 
 theorem hasSum_normSq_suzukiTestFourier (hRH : RiemannHypothesis) (ψ : SuzukiTest) :
-    HasSum (fun q : XiZeroCopy => ‖suzukiTestFourier ψ q‖ ^ 2)
+    HasSum (fun q : XiZeroCopy => ‖suzukiTestFourier ψ q‖ ^ (2 : ℕ))
       ((suzukiWeilInner ψ ψ).re) := by
   have h := hasSum_suzukiWeilInner hRH ψ ψ
   have hre := Complex.hasSum_re h
   refine hre.congr_fun ?_
   intro q
   rw [show (starRingEnd ℂ) (suzukiTestFourier ψ q) * suzukiTestFourier ψ q
-      = ((‖suzukiTestFourier ψ q‖ ^ 2 : ℝ) : ℂ) by
+      = ((‖suzukiTestFourier ψ q‖ ^ (2 : ℕ) : ℝ) : ℂ) by
     rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]]
   exact (Complex.ofReal_re _).symm
 
@@ -341,7 +341,7 @@ theorem suzukiWeilInner_self_eq_zero (hRH : RiemannHypothesis) {ψ : SuzukiTest}
   simp only [Complex.zero_re] at hsum
   refine eq_zero_of_suzukiTestFourier_eq_zero ?_
   intro q
-  have h0 : ‖suzukiTestFourier ψ q‖ ^ 2 ≤ 0 :=
+  have h0 : ‖suzukiTestFourier ψ q‖ ^ (2 : ℕ) ≤ 0 :=
     le_hasSum hsum q (fun r _ => by positivity)
   have : ‖suzukiTestFourier ψ q‖ = 0 := by nlinarith [norm_nonneg (suzukiTestFourier ψ q)]
   exact norm_eq_zero.mp this

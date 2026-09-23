@@ -3,14 +3,14 @@ import GaloisForLFunctions.RHTower.SuzukiModelSpace
 /-!
 # The conjugate Hardy space and Suzuki eq. (2.7)
 
-`L^2(R)` splits orthogonally as `L^2(-infty,0) + L^2(0,infty)`, and the Fourier transform carries
-that split to `H^2` and its orthogonal complement.  Multiplication by `Theta_xi` is a *unitary*
+`L^(2 : ℕ)(R)` splits orthogonally as `L^(2 : ℕ)(-infty,0) + L^(2 : ℕ)(0,infty)`, and the Fourier transform carries
+that split to `H^(2 : ℕ)` and its orthogonal complement.  Multiplication by `Theta_xi` is a *unitary*
 (`thetaUnitary`), so it transports orthogonal complements, and the model space acquires its second
 description
 
-`K(Theta) = H^2 cap Theta (H^2)^perp`,
+`K(Theta) = H^(2 : ℕ) cap Theta (H^(2 : ℕ))^perp`,
 
-which is Suzuki eq. (2.7) with `(H^2)^perp = F(L^2(-infty,0))` the Hardy space of the lower
+which is Suzuki eq. (2.7) with `(H^(2 : ℕ))^perp = F(L^(2 : ℕ)(-infty,0))` the Hardy space of the lower
 half-plane.
 
 The only slightly delicate step is `halfLineL2^perp = lowerHalfLineL2`.  One inclusion is the

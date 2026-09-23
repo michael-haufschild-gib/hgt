@@ -109,8 +109,8 @@ theorem exists_pauliChain_spanWitness (k : ℕ) (κ : ℝ)
       Function.Injective energy₀ ∧
       (∀ j, matrixCharpolyRelation (H₀, energy₀ j) = 0) ∧
       ∀ σ : Equiv.Perm (Fin (2 ^ (k + 3))),
-        (∑ j, ((kvec (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ 2
-          - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ 2 ≠ 0 := by
+        (∑ j, ((kvec (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ (2 : ℕ)
+          - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0 := by
   classical
   obtain ⟨E, U, V, hEmax, hEsum, hUleft, hUright, hVherm, hVspan, hHspan, hVtrans⟩ :=
     exists_pauliChainSeed k
@@ -219,8 +219,8 @@ theorem exists_pauliChain_spanWitness (k : ℕ) (κ : ℝ)
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hcdef, henergydef]
     simp only [hσsymm i, Equiv.symm_apply_apply]
-  have hsum2 : (∑ i, (C.branch i (realSliceParameter q)) ^ 2) = ∑ j, energy₀ j ^ 2 := by
-    rw [← Equiv.sum_comp (seedLeafFin k) (fun j => energy₀ j ^ 2)]
+  have hsum2 : (∑ i, (C.branch i (realSliceParameter q)) ^ (2 : ℕ)) = ∑ j, energy₀ j ^ (2 : ℕ) := by
+    rw [← Equiv.sum_comp (seedLeafFin k) (fun j => energy₀ j ^ (2 : ℕ))]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [henergydef]
     simp only [Equiv.symm_apply_apply]

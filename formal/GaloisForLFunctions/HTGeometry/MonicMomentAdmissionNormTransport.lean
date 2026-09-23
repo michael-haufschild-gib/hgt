@@ -39,7 +39,7 @@ theorem momentInner_monicMomentAdmission_lower_eq_zero
 /-- Lower remainder after removing two visible top jets from `X²(P_n^sharp)'`. -/
 def monicMomentAdmissionNormRemainder (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
   let P := monicMomentAdmissionPolynomial s n
-  X ^ 2 * P.derivative - (n : ℝ) • (X * P) + P.coeff (n - 1) • P
+  X ^ (2 : ℕ) * P.derivative - (n : ℝ) • (X * P) + P.coeff (n - 1) • P
 
 /-- The top two coefficients cancel identically in the canonical norm remainder. -/
 theorem monicMomentAdmissionNormRemainder_degree_lt
@@ -67,7 +67,7 @@ theorem monicMomentAdmissionNormRemainder_degree_lt
       ring
     · have hn2 : 2 ≤ n := by omega
       rw [Polynomial.coeff_X_pow_mul', if_pos hn2, Polynomial.coeff_derivative]
-      rw [show X * P = X ^ 1 * P by simp,
+      rw [show X * P = X ^ (1 : ℕ) * P by simp,
         Polynomial.coeff_X_pow_mul', if_pos (by omega : 1 ≤ n)]
       have hidx : n - 2 + 1 = n - 1 := by omega
       rw [hidx, htop]
@@ -91,7 +91,7 @@ theorem monicMomentAdmissionNormRemainder_degree_lt
         Polynomial.coeff_sub, Polynomial.coeff_smul]
       rw [Polynomial.coeff_X_pow_mul', if_pos (by omega : 2 ≤ n + 1),
         Polynomial.coeff_derivative]
-      rw [show X * P = X ^ 1 * P by simp,
+      rw [show X * P = X ^ (1 : ℕ) * P by simp,
         Polynomial.coeff_X_pow_mul', if_pos (by omega : 1 ≤ n + 1)]
       have hidx : n + 1 - 2 + 1 = n := by omega
       have hidx' : n + 1 - 1 = n := by omega
@@ -115,7 +115,7 @@ theorem monicMomentAdmissionNormRemainder_degree_lt
       simp only [monicMomentAdmissionNormRemainder, Polynomial.coeff_add,
         Polynomial.coeff_sub, Polynomial.coeff_smul]
       rw [Polynomial.coeff_X_pow_mul', if_pos hk2, Polynomial.coeff_derivative]
-      rw [show X * P = X ^ 1 * P by simp,
+      rw [show X * P = X ^ (1 : ℕ) * P by simp,
         Polynomial.coeff_X_pow_mul', if_pos (by omega : 1 ≤ k)]
       have hidx : k - 2 + 1 = k - 1 := by omega
       rw [hidx, hprev, hcur]
@@ -127,7 +127,7 @@ theorem momentFunctional_X_shiftedEuler_one_sq_monicMomentAdmission
     {s : ℕ → ℝ} {n : ℕ} (hn : 0 < n)
     (hdet : (momentHankelMatrix s n).det ≠ 0) :
     let P := monicMomentAdmissionPolynomial s n
-    momentFunctional s (X * (X * (P ^ 2).derivative + P ^ 2)) =
+    momentFunctional s (X * (X * (P ^ (2 : ℕ)).derivative + P ^ (2 : ℕ))) =
       ((2 * n + 1 : ℕ) : ℝ) * momentInner s P (X * P) -
         2 * P.coeff (n - 1) * momentInner s P P := by
   dsimp only
@@ -142,7 +142,7 @@ theorem momentFunctional_X_shiftedEuler_one_sq_monicMomentAdmission
   have hRzero : momentInner s P R = 0 :=
     momentInner_monicMomentAdmission_lower_eq_zero hdet hRdeg
   have hpoly :
-      X * (X * (P ^ 2).derivative + P ^ 2) =
+      X * (X * (P ^ (2 : ℕ)).derivative + P ^ (2 : ℕ)) =
         (2 : ℝ) • (P * R) +
           (((2 * n + 1 : ℕ) : ℝ)) • (P * (X * P)) +
         (-(2 * P.coeff (n - 1))) • (P * P) := by

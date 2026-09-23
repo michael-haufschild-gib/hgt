@@ -46,7 +46,7 @@ theorem eval_jointLeading (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (k : 
 theorem eval_jointCriticality (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (k : Fin D → ℝ)
     (π : Equiv.Perm (Fin D)) (i : Fin N) (lam : Fin D → ℝ) (θ : Fin N → ℝ) :
     MvPolynomial.eval (Sum.elim lam θ) (jointCriticality M c k π i)
-      = (∑ a, (θ a) ^ 2)
+      = (∑ a, (θ a) ^ (2 : ℕ))
           * (∑ n ∈ Finset.range (M + 1),
               MvPolynomial.eval θ (MvPolynomial.pderiv i (c n)) * (∑ j, k j * lam (π j)) ^ n)
         + criticalityLeading (M + 1) c θ (∑ j, k j * lam (π j))
@@ -68,7 +68,7 @@ theorem eval_jointCriticality (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (
 spectral action. -/
 theorem eval_jointCriticality_of_unit (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (k : Fin D → ℝ)
     (π : Equiv.Perm (Fin D)) (i : Fin N) (lam : Fin D → ℝ) {θ : Fin N → ℝ}
-    (hθ : ∑ a, (θ a) ^ 2 = 1) :
+    (hθ : ∑ a, (θ a) ^ (2 : ℕ) = 1) :
     MvPolynomial.eval (Sum.elim lam θ) (jointCriticality M c k π i)
       = criticalityValue (M + 1) c θ (∑ j, k j * lam (π j)) i := by
   rw [eval_jointCriticality, hθ, one_mul, criticalityValue]

@@ -112,7 +112,7 @@ theorem ramanujanE4DefectH_eq_zero : ramanujanE4DefectH = 0 := by
 
 /-- Weight-eight defect whose vanishing is Ramanujan's `E₆` equation. -/
 def ramanujanE6DefectH : ℍ → ℂ := fun z =>
-  serre_D 6 (ModularForm.E₆ : ℍ → ℂ) z + (1 / 2 : ℂ) * ModularForm.E₄ z ^ 2
+  serre_D 6 (ModularForm.E₆ : ℍ → ℂ) z + (1 / 2 : ℂ) * ModularForm.E₄ z ^ (2 : ℕ)
 
 theorem ramanujanE6DefectH_mdiff : MDiff ramanujanE6DefectH := by
   exact (Derivative.serreDerivative_mdifferentiable 6 ModularForm.E₆.holo').add
@@ -156,7 +156,7 @@ theorem ramanujanE6DefectH_zeroAtImInfty : IsZeroAtImInfty ramanujanE6DefectH :=
   rw [IsZeroAtImInfty, Filter.ZeroAtFilter]
   change Tendsto (fun z : ℍ =>
     (D (ModularForm.E₆ : ℍ → ℂ) z - (6 / 12 : ℂ) * E₂ z * ModularForm.E₆ z) +
-      (1 / 2 : ℂ) * ModularForm.E₄ z ^ 2) atImInfty (nhds 0)
+      (1 / 2 : ℂ) * ModularForm.E₄ z ^ (2 : ℕ)) atImInfty (nhds 0)
   convert (hD.sub ((tendsto_const_nhds.mul hE2).mul hE6)).add
     (tendsto_const_nhds.mul (hE4.pow 2)) using 1 <;> norm_num
 
@@ -182,7 +182,7 @@ theorem ramanujanE6DefectH_eq_zero : ramanujanE6DefectH = 0 := by
 
 /-- First Ramanujan equation in normalized-derivative form. -/
 theorem normalizedDeriv_eisensteinSeries_E2 (z : ℍ) :
-    D E₂ z = (1 / 12 : ℂ) * (E₂ z ^ 2 - ModularForm.E₄ z) := by
+    D E₂ z = (1 / 12 : ℂ) * (E₂ z ^ (2 : ℕ) - ModularForm.E₄ z) := by
   have hzero : ramanujanE2DefectCusp = 0 :=
     rank_zero_iff_forall_zero.mp
       (CuspForm.rank_eq_zero_of_weight_lt_twelve (by norm_num)) ramanujanE2DefectCusp
@@ -205,26 +205,26 @@ theorem normalizedDeriv_eisensteinSeries_E4 (z : ℍ) :
 /-- Third Ramanujan equation in normalized-derivative form. -/
 theorem normalizedDeriv_eisensteinSeries_E6 (z : ℍ) :
     D (ModularForm.E₆ : ℍ → ℂ) z =
-      (1 / 2 : ℂ) * (E₂ z * ModularForm.E₆ z - ModularForm.E₄ z ^ 2) := by
+      (1 / 2 : ℂ) * (E₂ z * ModularForm.E₆ z - ModularForm.E₄ z ^ (2 : ℕ)) := by
   have h := congrFun ramanujanE6DefectH_eq_zero z
   change D (ModularForm.E₆ : ℍ → ℂ) z -
       (6 / 12 : ℂ) * E₂ z * ModularForm.E₆ z +
-      (1 / 2 : ℂ) * ModularForm.E₄ z ^ 2 = 0 at h
+      (1 / 2 : ℂ) * ModularForm.E₄ z ^ (2 : ℕ) = 0 at h
   linear_combination h
 
 theorem normalizedDeriv_two_eisensteinSeries_E2 (z : ℍ) :
     D (D E₂) z = (1 / 12 : ℂ) *
       (2 * E₂ z * D E₂ z - D (ModularForm.E₄ : ℍ → ℂ) z) := by
   have hfun : D E₂ = (1 / 12 : ℂ) •
-      ((E₂ : ℍ → ℂ) ^ 2 - (ModularForm.E₄ : ℍ → ℂ)) := by
+      ((E₂ : ℍ → ℂ) ^ (2 : ℕ) - (ModularForm.E₄ : ℍ → ℂ)) := by
     funext w
     simp only [Pi.smul_apply, Pi.sub_apply, Pi.pow_apply, smul_eq_mul]
     exact normalizedDeriv_eisensteinSeries_E2 w
   rw [hfun,
     Derivative.normalizedDerivOfComplex_smul (1 / 12 : ℂ)
-      ((E₂ : ℍ → ℂ) ^ 2 - (ModularForm.E₄ : ℍ → ℂ))
+      ((E₂ : ℍ → ℂ) ^ (2 : ℕ) - (ModularForm.E₄ : ℍ → ℂ))
       ((E2_mdifferentiable.pow 2).sub ModularForm.E₄.holo'),
-    Derivative.normalizedDerivOfComplex_sub ((E₂ : ℍ → ℂ) ^ 2)
+    Derivative.normalizedDerivOfComplex_sub ((E₂ : ℍ → ℂ) ^ (2 : ℕ))
       (ModularForm.E₄ : ℍ → ℂ)
       (E2_mdifferentiable.pow 2) ModularForm.E₄.holo',
     Derivative.normalizedDerivOfComplex_pow (E₂ : ℍ → ℂ) 2 E2_mdifferentiable,
@@ -256,7 +256,7 @@ theorem normalizedDeriv_two_eisensteinSeries_E4 (z : ℍ) :
 
 theorem normalizedDeriv_three_eisensteinSeries_E2 (z : ℍ) :
     D (D (D E₂)) z = (1 / 12 : ℂ) *
-      (2 * D E₂ z ^ 2 + 2 * E₂ z * D (D E₂) z -
+      (2 * D E₂ z ^ (2 : ℕ) + 2 * E₂ z * D (D E₂) z -
         D (D (ModularForm.E₄ : ℍ → ℂ)) z) := by
   have hfun : D (D E₂) = (1 / 12 : ℂ) •
       ((2 : ℂ) • ((E₂ : ℍ → ℂ) * D E₂) -
@@ -284,7 +284,7 @@ theorem normalizedDeriv_three_eisensteinSeries_E2 (z : ℍ) :
 
 /-- Chazy's equation for `E₂`, under `D = (2πi)⁻¹ d/dτ`. -/
 theorem chazy_eisensteinSeries_E2 (z : ℍ) :
-    2 * D (D (D E₂)) z - 2 * E₂ z * D (D E₂) z + 3 * D E₂ z ^ 2 = 0 := by
+    2 * D (D (D E₂)) z - 2 * E₂ z * D (D E₂) z + 3 * D E₂ z ^ (2 : ℕ) = 0 := by
   rw [normalizedDeriv_three_eisensteinSeries_E2,
     normalizedDeriv_two_eisensteinSeries_E2,
     normalizedDeriv_two_eisensteinSeries_E4,

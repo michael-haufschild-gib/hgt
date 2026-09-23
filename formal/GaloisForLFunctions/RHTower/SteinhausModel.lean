@@ -295,7 +295,7 @@ theorem integral_dpoly_mul_conj (a : ℕ → ℝ) (s : Finset ℕ)
     (hs : ∀ n ∈ s, n ≠ 0) :
     ∫ ω, (∑ n ∈ s, (a n : ℂ) * X n ω)
         * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω) ∂steinhausMeasure
-      = ((∑ n ∈ s, (a n) ^ 2 : ℝ) : ℂ) := by
+      = ((∑ n ∈ s, (a n) ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   have hexp : ∀ ω : Omega, (∑ n ∈ s, (a n : ℂ) * X n ω)
       * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω)
@@ -339,12 +339,12 @@ theorem integral_dpoly_mul_conj (a : ℕ → ℝ) (s : Finset ℕ)
 Steinhaus-model face of `SecondMoment.secondMoment_eq`'s diagonal. -/
 theorem integral_normSq_dpoly (a : ℕ → ℝ) (s : Finset ℕ)
     (hs : ∀ n ∈ s, n ≠ 0) :
-    ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2 ∂steinhausMeasure
-      = ∑ n ∈ s, (a n) ^ 2 := by
+    ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 : ℕ) ∂steinhausMeasure
+      = ∑ n ∈ s, (a n) ^ (2 : ℕ) := by
   have h := integral_dpoly_mul_conj a s hs
   have hpoint : ∀ ω : Omega, (∑ n ∈ s, (a n : ℂ) * X n ω)
       * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω)
-      = ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro ω
     rw [Complex.mul_conj']
     push_cast

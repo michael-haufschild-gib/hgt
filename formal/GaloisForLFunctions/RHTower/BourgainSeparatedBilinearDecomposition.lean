@@ -71,7 +71,7 @@ theorem separated_of_mem_colorBlock_filter_ne
 
 /-- **Separated pointwise linear-to-bilinear decomposition.**
 
-The three color classes contribute the harmless fixed factor `3^11`.
+The three color classes contribute the harmless fixed factor `3^(11 : ℕ)`.
 Within each class the diagonal coefficient is fixed and every bilinear pair
 is separated by `separated_of_mem_colorBlock_filter_ne`. -/
 theorem norm_finSum_pow_twelve_le_threeColor_bilinear

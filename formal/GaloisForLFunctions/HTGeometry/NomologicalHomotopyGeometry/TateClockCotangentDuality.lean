@@ -9,7 +9,7 @@ The algebraic dual of finitely supported `k`-valued coordinates is canonically t
 Ind/Pro Tate-clock pairing, and the dual of the Ind forward shift is the Pro backward shift.
 
 This identifies two independently developed corpus structures.  It also records a topology
-warning: the Pro half is the full algebraic dual, not the continuous dual of an `ell^2` completion.
+warning: the Pro half is the full algebraic dual, not the continuous dual of an `ell^(2 : ℕ)` completion.
 Full-support boundary defects can therefore survive here even when every continuous Hausdorff
 quotient killing the dense Ind core collapses.
 -/

@@ -47,30 +47,30 @@ coefficient sum. -/
 theorem integral_box_normSq_trigLift_le_mul {ι : Type*} (P : Finset ι) (ν : ι → (d → ℤ))
     (a : ι → ℂ) {N : ℝ}
     (hN : ∀ p ∈ P, (((P.filter fun q => ν p = ν q).card : ℕ) : ℝ) ≤ N) :
-    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2) ≤ N * ∑ p ∈ P, ‖a p‖ ^ 2 := by
+    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ)) ≤ N * ∑ p ∈ P, ‖a p‖ ^ (2 : ℕ) := by
   classical
-  have hnn : 0 ≤ ∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2 :=
+  have hnn : 0 ≤ ∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ) :=
     integral_nonneg fun x => sq_nonneg _
   have heq := ofReal_integral_box_normSq_trigLift P ν a
-  have hnorm : (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2) =
+  have hnorm : (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ)) =
       ‖∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then a p * (starRingEnd ℂ) (a q) else 0‖ := by
     rw [← heq, Complex.norm_real, Real.norm_of_nonneg hnn]
   have hstep : ‖∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then a p * (starRingEnd ℂ) (a q) else 0‖ ≤
-      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ 2 + ‖a q‖ ^ 2) / 2 else 0 := by
+      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ (2 : ℕ) + ‖a q‖ ^ (2 : ℕ)) / 2 else 0 := by
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun p _ => ?_)
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun q _ => ?_)
     by_cases h : ν p = ν q
     · rw [if_pos h, if_pos h, norm_mul, RCLike.norm_conj]
       nlinarith [sq_nonneg (‖a p‖ - ‖a q‖)]
     · rw [if_neg h, if_neg h, norm_zero]
-  have hsym : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a q‖ ^ 2 else 0) =
-      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ 2 else 0 := by
+  have hsym : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a q‖ ^ (2 : ℕ) else 0) =
+      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ (2 : ℕ) else 0 := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
     exact if_congr ⟨fun h => h.symm, fun h => h.symm⟩ rfl rfl
-  have hAB : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ 2 + ‖a q‖ ^ 2) / 2 else 0) * 2 =
-      (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ 2 else 0) +
-        ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a q‖ ^ 2 else 0 := by
+  have hAB : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ (2 : ℕ) + ‖a q‖ ^ (2 : ℕ)) / 2 else 0) * 2 =
+      (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ (2 : ℕ) else 0) +
+        ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a q‖ ^ (2 : ℕ) else 0 := by
     rw [Finset.sum_mul, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [Finset.sum_mul, ← Finset.sum_add_distrib]
@@ -81,18 +81,18 @@ theorem integral_box_normSq_trigLift_le_mul {ι : Type*} (P : Finset ι) (ν : �
     · rw [if_neg h, if_neg h, if_neg h]
       ring
   rw [hsym] at hAB
-  have hsplit : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ 2 + ‖a q‖ ^ 2) / 2 else 0) =
-      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ 2 else 0 := by linarith
-  have hrow : ∀ p ∈ P, (∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ 2 else 0) ≤ N * ‖a p‖ ^ 2 := by
+  have hsplit : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ (2 : ℕ) + ‖a q‖ ^ (2 : ℕ)) / 2 else 0) =
+      ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ (2 : ℕ) else 0 := by linarith
+  have hrow : ∀ p ∈ P, (∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ (2 : ℕ) else 0) ≤ N * ‖a p‖ ^ (2 : ℕ) := by
     intro p hp
     rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
     exact mul_le_mul_of_nonneg_right (hN p hp) (sq_nonneg _)
-  calc (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2)
+  calc (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ))
       = ‖∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then a p * (starRingEnd ℂ) (a q) else 0‖ := hnorm
-    _ ≤ ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ 2 + ‖a q‖ ^ 2) / 2 else 0 := hstep
-    _ = ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ 2 else 0 := hsplit
-    _ ≤ ∑ p ∈ P, N * ‖a p‖ ^ 2 := Finset.sum_le_sum hrow
-    _ = N * ∑ p ∈ P, ‖a p‖ ^ 2 := (Finset.mul_sum _ _ _).symm
+    _ ≤ ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then (‖a p‖ ^ (2 : ℕ) + ‖a q‖ ^ (2 : ℕ)) / 2 else 0 := hstep
+    _ = ∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then ‖a p‖ ^ (2 : ℕ) else 0 := hsplit
+    _ ≤ ∑ p ∈ P, N * ‖a p‖ ^ (2 : ℕ) := Finset.sum_le_sum hrow
+    _ = N * ∑ p ∈ P, ‖a p‖ ^ (2 : ℕ) := (Finset.mul_sum _ _ _).symm
 
 end Multiplicity
 
@@ -178,7 +178,7 @@ theorem norm_inner_phaseVec_le (e : α × β → ℂ) (θ : (α ⊕ β) → ℝ)
 /-- **The squared pairing is a character combination.**  Its frequency is the pair of factor index
 pairs. -/
 theorem sq_inner_phaseVec (e : α × β → ℂ) (θ : (α ⊕ β) → ℝ) :
-    finiteComplexInner e (phaseVec θ) ^ 2 =
+    finiteComplexInner e (phaseVec θ) ^ (2 : ℕ) =
       trigLift (Finset.univ : Finset ((α × β) × (α × β))) prodPairFreq
         (fun pq => (starRingEnd ℂ) (e pq.1) * (starRingEnd ℂ) (e pq.2)) θ := by
   classical
@@ -195,19 +195,19 @@ theorem sq_inner_phaseVec (e : α × β → ℂ) (θ : (α ⊕ β) → ℝ) :
 
 /-- **Fourth moment of the unnormalized product phase pairing.** -/
 theorem integral_box_inner_phaseVec_fourth_le (e : α × β → ℂ) :
-    (∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner e (phaseVec θ)‖ ^ 4) ≤
-      4 * (∑ p, ‖e p‖ ^ 2) ^ 2 := by
+    (∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner e (phaseVec θ)‖ ^ (4 : ℕ)) ≤
+      4 * (∑ p, ‖e p‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   classical
-  have hpt : ∀ θ : (α ⊕ β) → ℝ, ‖finiteComplexInner e (phaseVec θ)‖ ^ 4 =
+  have hpt : ∀ θ : (α ⊕ β) → ℝ, ‖finiteComplexInner e (phaseVec θ)‖ ^ (4 : ℕ) =
       ‖trigLift (Finset.univ : Finset ((α × β) × (α × β))) prodPairFreq
-        (fun pq => (starRingEnd ℂ) (e pq.1) * (starRingEnd ℂ) (e pq.2)) θ‖ ^ 2 := by
+        (fun pq => (starRingEnd ℂ) (e pq.1) * (starRingEnd ℂ) (e pq.2)) θ‖ ^ (2 : ℕ) := by
     intro θ
     rw [← sq_inner_phaseVec e θ, norm_pow, ← pow_mul]
   simp_rw [hpt]
   refine le_trans (integral_box_normSq_trigLift_le_mul (Finset.univ : Finset ((α × β) × (α × β)))
     prodPairFreq _ (N := 4) fun p _ => card_filter_prodPairFreq_le p) ?_
   have hcoeff : (∑ pq : (α × β) × (α × β),
-      ‖(starRingEnd ℂ) (e pq.1) * (starRingEnd ℂ) (e pq.2)‖ ^ 2) = (∑ p, ‖e p‖ ^ 2) ^ 2 := by
+      ‖(starRingEnd ℂ) (e pq.1) * (starRingEnd ℂ) (e pq.2)‖ ^ (2 : ℕ)) = (∑ p, ‖e p‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     rw [sq, Finset.sum_mul_sum, Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
     rw [norm_mul, RCLike.norm_conj, RCLike.norm_conj, mul_pow]
@@ -218,17 +218,17 @@ def prodPhaseSeed (θ : (α ⊕ β) → ℝ) : α × β → ℂ :=
   fun p => ((Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) : ℝ) : ℂ)⁻¹ * phaseVec θ p
 
 theorem sum_normSq_prodPhaseSeed [Nonempty α] [Nonempty β] (θ : (α ⊕ β) → ℝ) :
-    (∑ p, ‖prodPhaseSeed θ p‖ ^ 2) = 1 := by
+    (∑ p, ‖prodPhaseSeed θ p‖ ^ (2 : ℕ)) = 1 := by
   classical
   have hD : (0 : ℝ) < (Fintype.card α : ℝ) * Fintype.card β := by
     have hα : (0 : ℝ) < Fintype.card α := by exact_mod_cast Fintype.card_pos
     have hβ : (0 : ℝ) < Fintype.card β := by exact_mod_cast Fintype.card_pos
     exact mul_pos hα hβ
-  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 =
+  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) =
       (Fintype.card α : ℝ) * Fintype.card β := Real.sq_sqrt hD.le
   have hne : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ≠ 0 :=
     ne_of_gt (Real.sqrt_pos.mpr hD)
-  have hterm : ∀ p : α × β, ‖prodPhaseSeed θ p‖ ^ 2 =
+  have hterm : ∀ p : α × β, ‖prodPhaseSeed θ p‖ ^ (2 : ℕ) =
       ((Fintype.card α : ℝ) * Fintype.card β)⁻¹ := by
     intro p
     rw [prodPhaseSeed, norm_mul, norm_phaseVec, mul_one, norm_inv, Complex.norm_real,
@@ -241,11 +241,11 @@ theorem sum_normSq_prodPhaseSeed [Nonempty α] [Nonempty β] (θ : (α ⊕ β) �
 /-- **Equation `(9)` for one basis vector.**  A product phase seed pairs with any fixed unit vector
 of the bipartite space in fourth moment at most `4 / D²`. -/
 theorem integral_box_inner_prodPhaseSeed_fourth_le (e : α × β → ℂ) :
-    (∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner e (prodPhaseSeed θ)‖ ^ 4) ≤
-      4 * (∑ p, ‖e p‖ ^ 2) ^ 2 / ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 := by
+    (∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner e (prodPhaseSeed θ)‖ ^ (4 : ℕ)) ≤
+      4 * (∑ p, ‖e p‖ ^ (2 : ℕ)) ^ (2 : ℕ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) := by
   classical
   have hD : (0 : ℝ) ≤ (Fintype.card α : ℝ) * Fintype.card β := by positivity
-  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 =
+  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) =
       (Fintype.card α : ℝ) * Fintype.card β := Real.sq_sqrt hD
   have hlin : ∀ θ : (α ⊕ β) → ℝ, finiteComplexInner e (prodPhaseSeed θ) =
       ((Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) : ℝ) : ℂ)⁻¹ *
@@ -255,9 +255,9 @@ theorem integral_box_inner_prodPhaseSeed_fourth_le (e : α × β → ℂ) :
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [prodPhaseSeed]
     ring
-  have hpt : ∀ θ : (α ⊕ β) → ℝ, ‖finiteComplexInner e (prodPhaseSeed θ)‖ ^ 4 =
-      (((Fintype.card α : ℝ) * Fintype.card β) ^ 2)⁻¹ *
-        ‖finiteComplexInner e (phaseVec θ)‖ ^ 4 := by
+  have hpt : ∀ θ : (α ⊕ β) → ℝ, ‖finiteComplexInner e (prodPhaseSeed θ)‖ ^ (4 : ℕ) =
+      (((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ))⁻¹ *
+        ‖finiteComplexInner e (phaseVec θ)‖ ^ (4 : ℕ) := by
     intro θ
     rw [hlin θ, norm_mul, norm_inv, Complex.norm_real,
       Real.norm_of_nonneg (Real.sqrt_nonneg _), mul_pow, inv_pow]
@@ -271,34 +271,34 @@ theorem integral_box_inner_prodPhaseSeed_fourth_le (e : α × β → ℂ) :
 /-- **Equation `(9)`.**  Summed over an orthonormal family of the bipartite space, the fourth
 moment of the product phase seed is at most `4 |ι| / D²`; at `|ι| = D` this is `4 / D`. -/
 theorem integral_box_sum_inner_prodPhaseSeed_fourth_le {ι : Type*} [Fintype ι]
-    (e : ι → α × β → ℂ) (he : ∀ j, (∑ p, ‖e j p‖ ^ 2) = 1) :
-    (∫ θ in torusBox (α ⊕ β), ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4) ≤
-      4 * (Fintype.card ι : ℝ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 := by
+    (e : ι → α × β → ℂ) (he : ∀ j, (∑ p, ‖e j p‖ ^ (2 : ℕ)) = 1) :
+    (∫ θ in torusBox (α ⊕ β), ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ)) ≤
+      4 * (Fintype.card ι : ℝ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) := by
   classical
   have hint : ∀ j : ι, IntegrableOn
-      (fun θ : (α ⊕ β) → ℝ => ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4)
+      (fun θ : (α ⊕ β) → ℝ => ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ))
       (torusBox (α ⊕ β)) volume := by
     intro j
     have hcont : Continuous fun θ : (α ⊕ β) → ℝ =>
-        ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4 := by
+        ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ) := by
       have hc : Continuous fun θ : (α ⊕ β) → ℝ => finiteComplexInner (e j) (prodPhaseSeed θ) := by
         refine continuous_finsetSum (Finset.univ : Finset (α × β)) fun p _ => ?_
         exact continuous_const.mul (continuous_const.mul (continuous_phaseVec_apply p))
       exact (hc.norm).pow 4
     refine integrableOn_box_of_bounded_real hcont
-      (C := (∑ p, ‖e j p‖ * ‖((Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) : ℝ) : ℂ)⁻¹‖) ^ 4)
+      (C := (∑ p, ‖e j p‖ * ‖((Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) : ℝ) : ℂ)⁻¹‖) ^ (4 : ℕ))
       fun θ => ?_
     rw [Real.norm_of_nonneg (by positivity)]
     refine pow_le_pow_left₀ (norm_nonneg _) ?_ 4
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun p _ => ?_)
     rw [prodPhaseSeed, norm_mul, RCLike.norm_conj, norm_mul, norm_phaseVec, mul_one]
   rw [integral_finsetSum _ fun j _ => hint j]
-  calc (∑ j : ι, ∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4)
-      ≤ ∑ _j : ι, 4 * (1 : ℝ) ^ 2 / ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 := by
+  calc (∑ j : ι, ∫ θ in torusBox (α ⊕ β), ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ))
+      ≤ ∑ _j : ι, 4 * (1 : ℝ) ^ (2 : ℕ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun j _ => ?_
         have := integral_box_inner_prodPhaseSeed_fourth_le (e j)
         rwa [he j] at this
-    _ = 4 * (Fintype.card ι : ℝ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 := by
+    _ = 4 * (Fintype.card ι : ℝ) / ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
         ring
 

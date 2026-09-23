@@ -46,8 +46,8 @@ theorem mobiusDivisorSelectionEnergy_union_late_primes (M : ℕ) (P L : Finset �
     (hL : ∀ p ∈ L, p.Prime ∧ p<M ∧ M ≤ 2*p) (hfree : ∀ p ∈ L, p ∉ P) :
     mobiusDivisorSelectionEnergy M (P ∪ L) = mobiusDivisorSelectionEnergy M P+
       2*mobiusDivisorSelectionFibre M P ∅*(∑ p ∈ L,mobiusDivisorDilationChannel M p)+
-      (∑ p ∈ L,mobiusDivisorDilationChannel M p)^2-
-      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2 := by
+      (∑ p ∈ L,mobiusDivisorDilationChannel M p)^(2 : ℕ)-
+      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ) := by
   revert hL hfree
   induction L using Finset.induction_on with
   | empty => intro hL hfree; simp

@@ -35,7 +35,7 @@ theorem logTower_dichotomy (Fr : RittFrame K L) {u : L} {b : K}
       Fr.σ w = algebraMap K L ((Fr.ρ ^ (m + 1))⁻¹) * w
         - (N : L) * Fr.towerDefect u b m) ∨
     (∃ v Z : L, v ≠ 0 ∧ v ∈ Fr.jetPrefixField u m ∧ Z ∈ Fr.jetPrefixField u m ∧ α ≠ 0 ∧
-      Fr.σ v = algebraMap K L (c * (Fr.ρ ^ (m + 1)) ^ 2) * v ∧
+      Fr.σ v = algebraMap K L (c * (Fr.ρ ^ (m + 1)) ^ (2 : ℕ)) * v ∧
       Fr.σ Z = algebraMap K L ((Fr.ρ ^ (m + 1))⁻¹) * Z
         + algebraMap K L ((Fr.ρ ^ (m + 1))⁻¹ * α / c) / v - 2 * Fr.towerDefect u b m) ∨
     (∃ v p : L, v ≠ 0 ∧ v ∈ Fr.jetPrefixField u m ∧ p ∈ Fr.jetPrefixField u m ∧
@@ -107,10 +107,10 @@ theorem logTower_dichotomy (Fr : RittFrame K L) {u : L} {b : K}
     · have hcast := congrArg (fun z : ↥E => (z : L)) hveq
       simp only [hφ, haE, hcE] at hcast
       push_cast at hcast
-      have h2 : (algebraMap K L aK) ^ 2 * (algebraMap K L (Fr.ρ ^ (m + 1))) ^ 2 = 1 := by
+      have h2 : (algebraMap K L aK) ^ (2 : ℕ) * (algebraMap K L (Fr.ρ ^ (m + 1))) ^ (2 : ℕ) = 1 := by
         rw [← mul_pow, haKinv, one_pow]
       rw [map_mul, map_pow]
-      linear_combination (algebraMap K L (Fr.ρ ^ (m + 1))) ^ 2 * hcast - Fr.σ (v : L) * h2
+      linear_combination (algebraMap K L (Fr.ρ ^ (m + 1))) ^ (2 : ℕ) * hcast - Fr.σ (v : L) * h2
     · have hcast := congrArg (fun z : ↥E => (z : L)) hZ
       simp only [hφ, haE, hcE, hαE, hbE] at hcast
       push_cast at hcast

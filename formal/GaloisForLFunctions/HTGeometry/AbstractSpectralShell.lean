@@ -44,7 +44,7 @@ theorem vertLine_factor (σ u R Jq : ℝ) :
     norm_cast
   rw [hu, ← Complex.exp_add, ← Complex.exp_add]
   congr 1
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
   linear_combination (-(u : ℂ) * (Jq : ℂ)) * hI
 
 namespace AbstractSpectralFamily

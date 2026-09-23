@@ -27,7 +27,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The secular function of a diagonal operator constrained to a hyperplane. -/
 def secular (d ℓ : ℕ → ℝ) (N : ℕ) (μ : ℝ) : ℝ :=
-  ∑ j ∈ Finset.range (N + 1), (ℓ j) ^ 2 / (d j - μ)
+  ∑ j ∈ Finset.range (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ)
 
 variable {d ℓ : ℕ → ℝ} {N k : ℕ}
 
@@ -52,7 +52,7 @@ theorem secular_strictMonoOn (hd : StrictMono d) (hk : k + 1 ≤ N)
     StrictMonoOn (secular d ℓ N) (Ioo (d k) (d (k + 1))) := by
   intro x hx y hy hxy
   have hterm : ∀ j ∈ Finset.range (N + 1),
-      (ℓ j) ^ 2 / (d j - x) ≤ (ℓ j) ^ 2 / (d j - y) := by
+      (ℓ j) ^ (2 : ℕ) / (d j - x) ≤ (ℓ j) ^ (2 : ℕ) / (d j - y) := by
     intro j hj
     have hxne := secular_denom_ne hd hk hx hj
     have hyne := secular_denom_ne hd hk hy hj
@@ -76,23 +76,23 @@ theorem secular_strictMonoOn (hd : StrictMono d) (hk : k + 1 ≤ N)
       rw [h0] at hprod
       simp at hprod
     rw [← sub_nonneg]
-    have heq : (ℓ j) ^ 2 / (d j - y) - (ℓ j) ^ 2 / (d j - x)
-        = (ℓ j) ^ 2 * (y - x) / ((d j - x) * (d j - y)) := by
+    have heq : (ℓ j) ^ (2 : ℕ) / (d j - y) - (ℓ j) ^ (2 : ℕ) / (d j - x)
+        = (ℓ j) ^ (2 : ℕ) * (y - x) / ((d j - x) * (d j - y)) := by
       field_simp
       ring
     rw [heq]
     refine div_nonneg ?_ hprod.le
     nlinarith [sq_nonneg (ℓ j), hxy]
-  have hstrict : (ℓ k) ^ 2 / (d k - x) < (ℓ k) ^ 2 / (d k - y) := by
+  have hstrict : (ℓ k) ^ (2 : ℕ) / (d k - x) < (ℓ k) ^ (2 : ℕ) / (d k - y) := by
     have hx0 : d k - x < 0 := by linarith [hx.1]
     have hy0 : d k - y < 0 := by linarith [hy.1]
     have hprod : 0 < (d k - x) * (d k - y) := mul_pos_of_neg_of_neg hx0 hy0
-    have hpos : 0 < (ℓ k) ^ 2 := by positivity
+    have hpos : 0 < (ℓ k) ^ (2 : ℕ) := by positivity
     have hxne : d k - x ≠ 0 := ne_of_lt hx0
     have hyne : d k - y ≠ 0 := ne_of_lt hy0
     rw [← sub_pos]
-    have heq : (ℓ k) ^ 2 / (d k - y) - (ℓ k) ^ 2 / (d k - x)
-        = (ℓ k) ^ 2 * (y - x) / ((d k - x) * (d k - y)) := by
+    have heq : (ℓ k) ^ (2 : ℕ) / (d k - y) - (ℓ k) ^ (2 : ℕ) / (d k - x)
+        = (ℓ k) ^ (2 : ℕ) * (y - x) / ((d k - x) * (d k - y)) := by
       field_simp
       ring
     rw [heq]
@@ -113,8 +113,8 @@ theorem tendsto_secular_atBot (hd : StrictMono d) (hk : k + 1 ≤ N) (hℓ : ℓ
     Tendsto (secular d ℓ N) (𝓝[>] (d k)) atBot := by
   have hmem : k ∈ Finset.range (N + 1) := Finset.mem_range.2 (by omega)
   have hsplit : ∀ μ : ℝ, secular d ℓ N μ
-      = (∑ j ∈ (Finset.range (N + 1)).erase k, (ℓ j) ^ 2 / (d j - μ))
-        + (ℓ k) ^ 2 / (d k - μ) := by
+      = (∑ j ∈ (Finset.range (N + 1)).erase k, (ℓ j) ^ (2 : ℕ) / (d j - μ))
+        + (ℓ k) ^ (2 : ℕ) / (d k - μ) := by
     intro μ
     rw [secular, ← Finset.sum_erase_add _ _ hmem]
   -- the singular term
@@ -130,21 +130,21 @@ theorem tendsto_secular_atBot (hd : StrictMono d) (hk : k + 1 ≤ N) (hℓ : ℓ
       linarith
   have hinv : Tendsto (fun μ : ℝ => (d k - μ)⁻¹) (𝓝[>] (d k)) atBot :=
     tendsto_inv_nhdsLT_zero.comp hden
-  have hsing : Tendsto (fun μ : ℝ => (ℓ k) ^ 2 / (d k - μ)) (𝓝[>] (d k)) atBot := by
-    have hpos : (0 : ℝ) < (ℓ k) ^ 2 := by positivity
+  have hsing : Tendsto (fun μ : ℝ => (ℓ k) ^ (2 : ℕ) / (d k - μ)) (𝓝[>] (d k)) atBot := by
+    have hpos : (0 : ℝ) < (ℓ k) ^ (2 : ℕ) := by positivity
     have := (hinv.const_mul_atBot hpos)
     refine this.congr fun μ => ?_
     rw [div_eq_mul_inv]
   -- the regular part is continuous at the left end
   have hreg : Tendsto (fun μ : ℝ => ∑ j ∈ (Finset.range (N + 1)).erase k,
-      (ℓ j) ^ 2 / (d j - μ)) (𝓝[>] (d k))
-      (𝓝 (∑ j ∈ (Finset.range (N + 1)).erase k, (ℓ j) ^ 2 / (d j - d k))) := by
+      (ℓ j) ^ (2 : ℕ) / (d j - μ)) (𝓝[>] (d k))
+      (𝓝 (∑ j ∈ (Finset.range (N + 1)).erase k, (ℓ j) ^ (2 : ℕ) / (d j - d k))) := by
     refine tendsto_finsetSum _ fun j hj => ?_
     have hjk : j ≠ k := Finset.ne_of_mem_erase hj
     have hne : d j - d k ≠ 0 := by
       intro hcon
       exact hjk (hd.injective (by linarith))
-    have hcont : ContinuousAt (fun μ : ℝ => (ℓ j) ^ 2 / (d j - μ)) (d k) :=
+    have hcont : ContinuousAt (fun μ : ℝ => (ℓ j) ^ (2 : ℕ) / (d j - μ)) (d k) :=
       ContinuousAt.div continuousAt_const (by fun_prop) hne
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have := hreg.add_atBot hsing
@@ -156,8 +156,8 @@ theorem tendsto_secular_atTop (hd : StrictMono d) (hk : k + 1 ≤ N) (hℓ : ℓ
     Tendsto (secular d ℓ N) (𝓝[<] (d (k + 1))) atTop := by
   have hmem : k + 1 ∈ Finset.range (N + 1) := Finset.mem_range.2 (by omega)
   have hsplit : ∀ μ : ℝ, secular d ℓ N μ
-      = (∑ j ∈ (Finset.range (N + 1)).erase (k + 1), (ℓ j) ^ 2 / (d j - μ))
-        + (ℓ (k + 1)) ^ 2 / (d (k + 1) - μ) := by
+      = (∑ j ∈ (Finset.range (N + 1)).erase (k + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+        + (ℓ (k + 1)) ^ (2 : ℕ) / (d (k + 1) - μ) := by
     intro μ
     rw [secular, ← Finset.sum_erase_add _ _ hmem]
   have hden : Tendsto (fun μ : ℝ => d (k + 1) - μ) (𝓝[<] (d (k + 1))) (𝓝[>] 0) := by
@@ -172,21 +172,21 @@ theorem tendsto_secular_atTop (hd : StrictMono d) (hk : k + 1 ≤ N) (hℓ : ℓ
       linarith
   have hinv : Tendsto (fun μ : ℝ => (d (k + 1) - μ)⁻¹) (𝓝[<] (d (k + 1))) atTop :=
     tendsto_inv_nhdsGT_zero.comp hden
-  have hsing : Tendsto (fun μ : ℝ => (ℓ (k + 1)) ^ 2 / (d (k + 1) - μ))
+  have hsing : Tendsto (fun μ : ℝ => (ℓ (k + 1)) ^ (2 : ℕ) / (d (k + 1) - μ))
       (𝓝[<] (d (k + 1))) atTop := by
-    have hpos : (0 : ℝ) < (ℓ (k + 1)) ^ 2 := by positivity
+    have hpos : (0 : ℝ) < (ℓ (k + 1)) ^ (2 : ℕ) := by positivity
     have := hinv.const_mul_atTop hpos
     refine this.congr fun μ => ?_
     rw [div_eq_mul_inv]
   have hreg : Tendsto (fun μ : ℝ => ∑ j ∈ (Finset.range (N + 1)).erase (k + 1),
-      (ℓ j) ^ 2 / (d j - μ)) (𝓝[<] (d (k + 1)))
-      (𝓝 (∑ j ∈ (Finset.range (N + 1)).erase (k + 1), (ℓ j) ^ 2 / (d j - d (k + 1)))) := by
+      (ℓ j) ^ (2 : ℕ) / (d j - μ)) (𝓝[<] (d (k + 1)))
+      (𝓝 (∑ j ∈ (Finset.range (N + 1)).erase (k + 1), (ℓ j) ^ (2 : ℕ) / (d j - d (k + 1)))) := by
     refine tendsto_finsetSum _ fun j hj => ?_
     have hjk : j ≠ k + 1 := Finset.ne_of_mem_erase hj
     have hne : d j - d (k + 1) ≠ 0 := by
       intro hcon
       exact hjk (hd.injective (by linarith))
-    have hcont : ContinuousAt (fun μ : ℝ => (ℓ j) ^ 2 / (d j - μ)) (d (k + 1)) :=
+    have hcont : ContinuousAt (fun μ : ℝ => (ℓ j) ^ (2 : ℕ) / (d j - μ)) (d (k + 1)) :=
       ContinuousAt.div continuousAt_const (by fun_prop) hne
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have := hsing.atTop_add hreg
@@ -296,30 +296,30 @@ variable {d ℓ : ℕ → ℝ} {N k : ℕ} {μ ε M : ℝ}
 /-- The three-block decomposition of the secular sum around the gap. -/
 theorem secular_split (hk : k + 1 ≤ N) (μ : ℝ) :
     secular d ℓ N μ
-      = (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 / (d j - μ))
-        + (ℓ (k + 1)) ^ 2 / (d (k + 1) - μ)
-        + ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2 / (d j - μ) := by
-  have hsplit : (∑ j ∈ Finset.Ico 0 (N + 1), (ℓ j) ^ 2 / (d j - μ))
-      = (∑ j ∈ Finset.Ico 0 (k + 2), (ℓ j) ^ 2 / (d j - μ))
-        + ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2 / (d j - μ) :=
+      = (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+        + (ℓ (k + 1)) ^ (2 : ℕ) / (d (k + 1) - μ)
+        + ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ) := by
+  have hsplit : (∑ j ∈ Finset.Ico 0 (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+      = (∑ j ∈ Finset.Ico 0 (k + 2), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+        + ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ) :=
     (Finset.sum_Ico_consecutive _ (Nat.zero_le _) (by omega)).symm
   rw [secular, Finset.range_eq_Ico, hsplit, ← Finset.range_eq_Ico, Finset.sum_range_succ]
 
 /-- The lower block is at most `−S/μ`: each denominator is at least `−μ`. -/
 theorem secular_lower_block_le (hdnn : ∀ j, 0 ≤ d j) (_hμ0 : 0 < μ)
     (hlt : ∀ j, j ≤ k → d j < μ) :
-    (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 / (d j - μ))
-      ≤ -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) / μ) := by
+    (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+      ≤ -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ)) / μ) := by
   rw [neg_div', ← Finset.sum_neg_distrib, Finset.sum_div]
   refine Finset.sum_le_sum fun j hj => ?_
   have hjk : j ≤ k := by
     have := Finset.mem_range.1 hj
     omega
   have hpos : 0 < μ - d j := by linarith [hlt j hjk]
-  have hswap : (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) := by
+  have hswap : (ℓ j) ^ (2 : ℕ) / (d j - μ) = -((ℓ j) ^ (2 : ℕ) / (μ - d j)) := by
     rw [← div_neg, neg_sub]
-  rw [hswap, show -((ℓ j) ^ 2) / μ = -((ℓ j) ^ 2 / μ) by rw [neg_div]]
-  have hstep : (ℓ j) ^ 2 / μ ≤ (ℓ j) ^ 2 / (μ - d j) :=
+  rw [hswap, show -((ℓ j) ^ (2 : ℕ)) / μ = -((ℓ j) ^ (2 : ℕ) / μ) by rw [neg_div]]
+  have hstep : (ℓ j) ^ (2 : ℕ) / μ ≤ (ℓ j) ^ (2 : ℕ) / (μ - d j) :=
     div_le_div_of_nonneg_left (sq_nonneg _) hpos (by linarith [hdnn j])
   linarith
 
@@ -327,8 +327,8 @@ theorem secular_lower_block_le (hdnn : ∀ j, 0 ≤ d j) (_hμ0 : 0 < μ)
 theorem secular_lower_block_ge (_hd1 : 0 < d (k + 1)) (_hμ0 : 0 < μ)
     (_hε0 : 0 ≤ ε) (hεμ : ε * d (k + 1) < μ)
     (hlow : ∀ j, j ≤ k → d j ≤ ε * d (k + 1)) :
-    -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) / (μ - ε * d (k + 1)))
-      ≤ ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 / (d j - μ) := by
+    -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ)) / (μ - ε * d (k + 1)))
+      ≤ ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ) := by
   have hden : 0 < μ - ε * d (k + 1) := by linarith
   rw [neg_div', ← Finset.sum_neg_distrib, Finset.sum_div]
   refine Finset.sum_le_sum fun j hj => ?_
@@ -337,20 +337,20 @@ theorem secular_lower_block_ge (_hd1 : 0 < d (k + 1)) (_hμ0 : 0 < μ)
     omega
   have hdj : d j ≤ ε * d (k + 1) := hlow j hjk
   have hpos : 0 < μ - d j := by linarith
-  have hswap : (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) := by
+  have hswap : (ℓ j) ^ (2 : ℕ) / (d j - μ) = -((ℓ j) ^ (2 : ℕ) / (μ - d j)) := by
     rw [← div_neg, neg_sub]
-  rw [hswap, show -((ℓ j) ^ 2) / (μ - ε * d (k + 1))
-    = -((ℓ j) ^ 2 / (μ - ε * d (k + 1))) by rw [neg_div]]
-  have hstep : (ℓ j) ^ 2 / (μ - d j) ≤ (ℓ j) ^ 2 / (μ - ε * d (k + 1)) :=
+  rw [hswap, show -((ℓ j) ^ (2 : ℕ)) / (μ - ε * d (k + 1))
+    = -((ℓ j) ^ (2 : ℕ) / (μ - ε * d (k + 1))) by rw [neg_div]]
+  have hstep : (ℓ j) ^ (2 : ℕ) / (μ - d j) ≤ (ℓ j) ^ (2 : ℕ) / (μ - ε * d (k + 1)) :=
     div_le_div_of_nonneg_left (sq_nonneg _) hden (by linarith)
   linarith
 
 /-- The upper block of the secular sum, bounded on both sides. -/
 theorem secular_upper_block_bounds (hd1 : 0 < d (k + 1)) (hμ1 : μ < d (k + 1))
     (hM : 1 < M) (hhigh : ∀ j, k + 1 < j → j ≤ N → M * d (k + 1) ≤ d j) :
-    0 ≤ (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2 / (d j - μ)) ∧
-      (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2 / (d j - μ))
-        ≤ (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2) / ((M - 1) * d (k + 1)) := by
+    0 ≤ (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ)) ∧
+      (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ) / (d j - μ))
+        ≤ (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ)) / ((M - 1) * d (k + 1)) := by
   have hgap : 0 < (M - 1) * d (k + 1) := by
     have : (0 : ℝ) < M - 1 := by linarith
     positivity
@@ -376,14 +376,14 @@ theorem secular_root_le (hd1 : 0 < d (k + 1)) (hk : k + 1 ≤ N)
     (hε0 : 0 ≤ ε) (hεμ : ε * d (k + 1) < μ)
     (hlow : ∀ j, j ≤ k → d j ≤ ε * d (k + 1))
     (hM : 1 < M) (hhigh : ∀ j, k + 1 < j → j ≤ N → M * d (k + 1) ≤ d j)
-    (hSpos : 0 < ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) :
+    (hSpos : 0 < ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ)) :
     μ / d (k + 1)
-      ≤ (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2)
-          / (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ 2) + ε := by
-  set S := ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 with hSdef
-  set L := (ℓ (k + 1)) ^ 2 with hLdef
+      ≤ (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ))
+          / (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ (2 : ℕ)) + ε := by
+  set S := ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ) with hSdef
+  set L := (ℓ (k + 1)) ^ (2 : ℕ) with hLdef
   have hLnn : 0 ≤ L := by rw [hLdef]; positivity
-  have hS1 : (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ 2) = S + L := by
+  have hS1 : (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ (2 : ℕ)) = S + L := by
     rw [hSdef, hLdef, Finset.sum_range_succ]
   have hS1pos : 0 < S + L := by linarith
   have hsplit := secular_split (d := d) (ℓ := ℓ) hk μ
@@ -408,19 +408,19 @@ theorem le_secular_root (hdnn : ∀ j, 0 ≤ d j) (hd1 : 0 < d (k + 1)) (hk : k 
     (hμ0 : 0 < μ) (hμ1 : μ < d (k + 1)) (hlt : ∀ j, j ≤ k → d j < μ)
     (hzero : secular d ℓ N μ = 0)
     (hM : 1 < M) (hhigh : ∀ j, k + 1 < j → j ≤ N → M * d (k + 1) ≤ d j)
-    (hSpos : 0 < ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) :
-    (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2)
-        / ((∑ j ∈ Finset.range (k + 2), (ℓ j) ^ 2)
-          + (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2) / (M - 1))
+    (hSpos : 0 < ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ)) :
+    (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ))
+        / ((∑ j ∈ Finset.range (k + 2), (ℓ j) ^ (2 : ℕ))
+          + (∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ)) / (M - 1))
       ≤ μ / d (k + 1) := by
-  set S := ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 with hSdef
-  set L := (ℓ (k + 1)) ^ 2 with hLdef
-  set T := ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ 2 with hTdef
+  set S := ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ (2 : ℕ) with hSdef
+  set L := (ℓ (k + 1)) ^ (2 : ℕ) with hLdef
+  set T := ∑ j ∈ Finset.Ico (k + 2) (N + 1), (ℓ j) ^ (2 : ℕ) with hTdef
   have hLnn : 0 ≤ L := by rw [hLdef]; positivity
   have hTnn : 0 ≤ T := by
     rw [hTdef]
     exact Finset.sum_nonneg fun j _ => sq_nonneg _
-  have hS1 : (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ 2) = S + L := by
+  have hS1 : (∑ j ∈ Finset.range (k + 2), (ℓ j) ^ (2 : ℕ)) = S + L := by
     rw [hSdef, hLdef, Finset.sum_range_succ]
   have hS1pos : 0 < S + L := by linarith
   have hM1 : (0 : ℝ) < M - 1 := by linarith

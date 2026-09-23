@@ -55,7 +55,7 @@ def slopeShiftDefect (a : ℕ → ℂ) (α Λ : ℂ) (u j : ℕ) (M : ℕ) : ℂ
 theorem tendsto_slopeShiftDefect (hyp : FactorialSlope a α Λ Cc c) (u j : ℕ) :
     Tendsto (slopeShiftDefect a α Λ u j) atTop (𝓝 1) := by
   have h1 := tendsto_coeff_shift_ratio_split hyp u
-  have h2 := tendsto_descFactorial_div_pow u j
+  have h2 := tendsto_descFactorial_div_pow_endpointChirpGlue u j
   have := h1.mul h2
   rw [one_mul] at this
   refine this.congr fun M => ?_

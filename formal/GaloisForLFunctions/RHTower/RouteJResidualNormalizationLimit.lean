@@ -21,7 +21,7 @@ local notation "sr" => semilocalArchimedeanJacobiCoefficient
 
 /-- The unperturbed residual `R_k(0)`. -/
 noncomputable def residualZero (k : ℕ) : ℝ :=
-  sr (2 * k) * sr (2 * k + 1) - sr (2 * k + 1) ^ 2 - sr (2 * k + 2) ^ 2 + sr (2 * k + 2) * sr (2 * k + 3)
+  sr (2 * k) * sr (2 * k + 1) - sr (2 * k + 1) ^ (2 : ℕ) - sr (2 * k + 2) ^ (2 : ℕ) + sr (2 * k + 2) * sr (2 * k + 3)
 
 /-- `g(M) = √(M(M+½)) − M`. -/
 noncomputable def sqrtDefect (M : ℝ) : ℝ := Real.sqrt (M * (M + 1 / 2)) - M
@@ -31,15 +31,15 @@ theorem sqrtDefect_eq {M : ℝ} (hM : 0 < M) :
   unfold sqrtDefect
   set s := Real.sqrt (1 + 1 / (2 * M)) with hsdef
   have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = 1 + 1 / (2 * M) := Real.sq_sqrt (by positivity)
-  have hMs : M * (M + 1 / 2) = (M * s) ^ 2 := by
+  have hs2 : s ^ (2 : ℕ) = 1 + 1 / (2 * M) := Real.sq_sqrt (by positivity)
+  have hMs : M * (M + 1 / 2) = (M * s) ^ (2 : ℕ) := by
     rw [mul_pow, hs2]
     field_simp
     try ring
   rw [hMs, Real.sqrt_sq (by positivity)]
   have h1 : 0 < s + 1 := by positivity
   rw [eq_div_iff h1.ne']
-  have : (M * s - M) * (s + 1) = M * (s ^ 2 - 1) := by ring
+  have : (M * s - M) * (s + 1) = M * (s ^ (2 : ℕ) - 1) := by ring
   rw [this, hs2]
   field_simp
   try ring
@@ -62,8 +62,8 @@ theorem tendsto_sqrtDefect : Tendsto sqrtDefect atTop (𝓝 (1 / 4)) := by
   rw [sqrtDefect_eq hM]
 
 theorem residualZero_eq (k : ℕ) :
-    residualZero k = sqrtDefect (4 * (k : ℝ) ^ 2 + 5 * k + 1) +
-      sqrtDefect (4 * (k : ℝ) ^ 2 + 13 * k + 10) + 1 / 2 := by
+    residualZero k = sqrtDefect (4 * (k : ℝ) ^ (2 : ℕ) + 5 * k + 1) +
+      sqrtDefect (4 * (k : ℝ) ^ (2 : ℕ) + 13 * k + 10) + 1 / 2 := by
   unfold residualZero sqrtDefect
   have h0 := semilocalArchimedeanJacobiCoefficient_sq (2 * k)
   have h1 := semilocalArchimedeanJacobiCoefficient_sq (2 * k + 1)
@@ -71,13 +71,13 @@ theorem residualZero_eq (k : ℕ) :
   have h3 := semilocalArchimedeanJacobiCoefficient_sq (2 * k + 3)
   have hp : ∀ n, 0 < sr n := semilocalArchimedeanJacobiCoefficient_pos
   have hprod01 : sr (2 * k) * sr (2 * k + 1) =
-      Real.sqrt ((4 * (k : ℝ) ^ 2 + 5 * k + 1) * (4 * (k : ℝ) ^ 2 + 5 * k + 1 + 1 / 2)) := by
+      Real.sqrt ((4 * (k : ℝ) ^ (2 : ℕ) + 5 * k + 1) * (4 * (k : ℝ) ^ (2 : ℕ) + 5 * k + 1 + 1 / 2)) := by
     rw [← Real.sqrt_sq (mul_pos (hp _) (hp _)).le, mul_pow, h0, h1]
     congr 1
     push_cast
     ring
   have hprod23 : sr (2 * k + 2) * sr (2 * k + 3) =
-      Real.sqrt ((4 * (k : ℝ) ^ 2 + 13 * k + 10) * (4 * (k : ℝ) ^ 2 + 13 * k + 10 + 1 / 2)) := by
+      Real.sqrt ((4 * (k : ℝ) ^ (2 : ℕ) + 13 * k + 10) * (4 * (k : ℝ) ^ (2 : ℕ) + 13 * k + 10 + 1 / 2)) := by
     rw [← Real.sqrt_sq (mul_pos (hp _) (hp _)).le, mul_pow, h2, h3]
     congr 1
     push_cast
@@ -88,12 +88,12 @@ theorem residualZero_eq (k : ℕ) :
 
 /-- **The unperturbed residual tends to one.** -/
 theorem tendsto_residualZero : Tendsto residualZero atTop (𝓝 1) := by
-  have hM : Tendsto (fun k : ℕ => 4 * (k : ℝ) ^ 2 + 5 * k + 1) atTop atTop := by
+  have hM : Tendsto (fun k : ℕ => 4 * (k : ℝ) ^ (2 : ℕ) + 5 * k + 1) atTop atTop := by
     have h := tendsto_natCast_atTop_atTop (R := ℝ)
     have : Tendsto (fun k : ℕ => (k : ℝ)) atTop atTop := h
     refine tendsto_atTop_mono (fun k => ?_) this
     nlinarith [sq_nonneg (k : ℝ), (Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
-  have hM' : Tendsto (fun k : ℕ => 4 * (k : ℝ) ^ 2 + 13 * k + 10) atTop atTop := by
+  have hM' : Tendsto (fun k : ℕ => 4 * (k : ℝ) ^ (2 : ℕ) + 13 * k + 10) atTop atTop := by
     have : Tendsto (fun k : ℕ => (k : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
     refine tendsto_atTop_mono (fun k => ?_) this
     nlinarith [sq_nonneg (k : ℝ), (Nat.cast_nonneg k : (0 : ℝ) ≤ k)]

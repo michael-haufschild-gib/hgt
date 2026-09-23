@@ -62,7 +62,7 @@ theorem mobiusDivisorConsumedLateMass_le_headMass (M : ℕ) (P : Finset ℕ) :
 /-- An unprocessed late singleton contributes its entire absolute mass to coarea. -/
 theorem mobiusDivisorCoarea_activeLate_singleton {M p : ℕ}
     (hp : p ∈ mobiusDivisorActiveLatePrimes M) (P : Finset ℕ) (hpP : p ∉ P) :
-    (mobiusDivisorSelectionFibre M P {p})^2 / mobiusDivisorFibreAbsoluteMass M P {p} =
+    (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P {p} =
       |mobiusDivisorDilationChannel M p| := by
   have h := mem_mobiusDivisorActiveLatePrimes hp
   rw [mobiusDivisorSelectionFibre_late_prime h.1 h.2.1 h.2.2 P {p}
@@ -79,7 +79,7 @@ theorem mobiusDivisorCoarea_activeLate_singleton {M p : ℕ}
 theorem mobiusDivisorRemainingLateMass_le_nonemptyCoarea (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorRemainingLateMass M P ≤ mobiusDivisorNonemptyCoarea M P := by
   let L := mobiusDivisorActiveLatePrimes M \ P
-  let t := fun R => (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+  let t := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
   have hsub : L.image (fun p => ({p}:Finset ℕ)) ⊆
       (mobiusDivisorSelectionPrimes M).powerset.erase ∅ := by
     intro R hR

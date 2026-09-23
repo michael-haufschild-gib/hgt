@@ -26,18 +26,18 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 projective quantum tangent energy of the two generator channels. -/
 theorem twoChannelRobertsonGram_projectiveQuantumTangent
     (f g h : E) :
-    inner ℝ f g ^ 2 * inner ℝ h h -
+    inner ℝ f g ^ (2 : ℕ) * inner ℝ h h -
           2 * inner ℝ f g * inner ℝ f h * inner ℝ g h +
-          inner ℝ f h ^ 2 * inner ℝ g g ≤
-      ‖f‖ ^ 2 * projectiveGramTangentEnergy (𝕜 := ℝ) g h := by
+          inner ℝ f h ^ (2 : ℕ) * inner ℝ g g ≤
+      ‖f‖ ^ (2 : ℕ) * projectiveGramTangentEnergy (𝕜 := ℝ) g h := by
   calc
-    inner ℝ f g ^ 2 * inner ℝ h h -
+    inner ℝ f g ^ (2 : ℕ) * inner ℝ h h -
           2 * inner ℝ f g * inner ℝ f h * inner ℝ g h +
-          inner ℝ f h ^ 2 * inner ℝ g g ≤
+          inner ℝ f h ^ (2 : ℕ) * inner ℝ g g ≤
         inner ℝ f f *
-          (inner ℝ g g * inner ℝ h h - inner ℝ g h ^ 2) :=
+          (inner ℝ g g * inner ℝ h h - inner ℝ g h ^ (2 : ℕ)) :=
       twoChannelRobertsonGram f g h
-    _ = ‖f‖ ^ 2 * projectiveGramTangentEnergy g h := by
+    _ = ‖f‖ ^ (2 : ℕ) * projectiveGramTangentEnergy g h := by
       rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
         real_inner_self_eq_norm_sq]
       simp [projectiveGramTangentEnergy, Real.norm_eq_abs, sq_abs]
@@ -53,7 +53,7 @@ theorem thermalKrylovProjectiveTangentEnergy_eq_firstDeterminant
         (thermalKrylovVector intensity energy 1) =
       thermalEvenGapMoment intensity energy 0 *
           thermalEvenGapMoment intensity energy 2 -
-        thermalEvenGapMoment intensity energy 1 ^ 2 := by
+        thermalEvenGapMoment intensity energy 1 ^ (2 : ℕ) := by
   exact projectiveGramTangentEnergy_eq_firstKrylovDeterminant
     (thermalEvenGapMoment intensity energy)
     (thermalKrylovVector intensity energy)

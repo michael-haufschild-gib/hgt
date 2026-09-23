@@ -47,7 +47,7 @@ theorem false_of_Xi_eventually_nonneg {T : ℝ} (hT : 0 < T)
     nlinarith [h1]
   have hXi := hpos (4 * π * |w|) hbig
   rw [habs, hardyXiDensity]
-  have hden : (0:ℝ) < (4 * π * |w|) ^ 2 + 1 / 4 := by positivity
+  have hden : (0:ℝ) < (4 * π * |w|) ^ (2 : ℕ) + 1 / 4 := by positivity
   rw [neg_one_mul, neg_nonneg]
   exact div_nonpos_of_nonpos_of_nonneg (by nlinarith [hXi]) hden.le
 
@@ -68,7 +68,7 @@ theorem false_of_Xi_eventually_nonpos {T : ℝ} (hT : 0 < T)
     nlinarith [h1]
   have hXi := hneg (4 * π * |w|) hbig
   rw [habs, hardyXiDensity, one_mul]
-  have hden : (0:ℝ) < (4 * π * |w|) ^ 2 + 1 / 4 := by positivity
+  have hden : (0:ℝ) < (4 * π * |w|) ^ (2 : ℕ) + 1 / 4 := by positivity
   exact div_nonneg (by nlinarith [hXi]) hden.le
 
 /-- `Ξ` is strictly negative somewhere above every height. -/

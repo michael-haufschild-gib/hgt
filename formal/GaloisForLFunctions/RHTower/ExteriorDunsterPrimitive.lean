@@ -20,10 +20,10 @@ namespace GaloisForLFunctions.RHTower
 
 theorem continuousOn_xiAmplitudeDeriv {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     ContinuousOn (xiAmplitudeDeriv s) (Set.Ioi 1) := by
-  have hden : ∀ x ∈ Set.Ioi (1 : ℝ), 2 * (x ^ 2 - s) ≠ 0 := by
+  have hden : ∀ x ∈ Set.Ioi (1 : ℝ), 2 * (x ^ (2 : ℕ) - s) ≠ 0 := by
     intro x hx
     have hx1 : (1 : ℝ) < x := hx
-    have h : (0 : ℝ) < x ^ 2 - s := by nlinarith
+    have h : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
     exact ne_of_gt (by positivity)
   refine (continuousOn_xiAmplitude hs0 hs1).mul ?_
   refine ((continuousOn_phaseLogDefect hs0 hs1).div_const 2).sub ?_
@@ -64,7 +64,7 @@ theorem norm_integral_exterior_dunster_le {X c eps s : ℝ}
       exact abs_xiAmplitudeDeriv_le hs0 hs1 (hx2 x hx))
   have hmax : max (4 : ℝ) 1 = 4 := max_eq_left (by norm_num)
   rw [hmax] at hmain
-  have hval : 3 * (3 * (4 : ℝ) / 2 + (4 : ℝ) ^ 2 / 2) / (2 * c) = 21 / c := by
+  have hval : 3 * (3 * (4 : ℝ) / 2 + (4 : ℝ) ^ (2 : ℕ) / 2) / (2 * c) = 21 / c := by
     field_simp
     ring
   rwa [hval] at hmain

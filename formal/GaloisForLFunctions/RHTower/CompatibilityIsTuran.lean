@@ -43,7 +43,7 @@ noncomputable section
 namespace RHTower
 
 /-- **The counterexample.**  `(X+1) + X(X-1) = X² + 1`. -/
-theorem pascal_counterexample (X : ℝ) : (X + 1) + X * (X - 1) = X ^ 2 + 1 := by ring
+theorem pascal_counterexample (X : ℝ) : (X + 1) + X * (X - 1) = X ^ (2 : ℕ) + 1 := by ring
 
 /-- It has no real root, so interlacing of the two factors cannot suffice. -/
 theorem counterexample_no_root (X : ℝ) : (X + 1) + X * (X - 1) ≠ 0 := by
@@ -52,21 +52,21 @@ theorem counterexample_no_root (X : ℝ) : (X + 1) + X * (X - 1) ≠ 0 := by
 
 /-- **The second Jensen polynomial in closed form**, from the Pascal recurrence. -/
 theorem jensen_two (γ : ℕ → ℝ) (n : ℕ) (X : ℝ) :
-    jensenValue γ 2 n X = γ n + 2 * γ (n + 1) * X + γ (n + 2) * X ^ 2 := by
+    jensenValue γ 2 n X = γ n + 2 * γ (n + 1) * X + γ (n + 2) * X ^ (2 : ℕ) := by
   unfold jensenValue
   simp [Finset.sum_range_succ]
 
 /-- **Its discriminant is the Turán expression.** -/
 theorem jensen_two_discriminant (γ : ℕ → ℝ) (n : ℕ) :
-    (2 * γ (n + 1)) ^ 2 - 4 * γ (n + 2) * γ n
-      = 4 * (γ (n + 1) ^ 2 - γ n * γ (n + 2)) := by ring
+    (2 * γ (n + 1)) ^ (2 : ℕ) - 4 * γ (n + 2) * γ n
+      = 4 * (γ (n + 1) ^ (2 : ℕ) - γ n * γ (n + 2)) := by ring
 
 /-- **Real-rootedness at degree two forces the Turán inequality.** -/
 theorem turan_of_real_root {γ : ℕ → ℝ} {n : ℕ} {r : ℝ} (hlead : γ (n + 2) ≠ 0)
     (hroot : jensenValue γ 2 n r = 0) :
-    0 ≤ γ (n + 1) ^ 2 - γ n * γ (n + 2) := by
+    0 ≤ γ (n + 1) ^ (2 : ℕ) - γ n * γ (n + 2) := by
   rw [jensen_two] at hroot
-  have hq : γ (n + 2) * r ^ 2 + 2 * γ (n + 1) * r + γ n = 0 := by linarith
+  have hq : γ (n + 2) * r ^ (2 : ℕ) + 2 * γ (n + 1) * r + γ n = 0 := by linarith
   have hd := quadratic_discriminant_nonneg hlead hq
   nlinarith [hd]
 

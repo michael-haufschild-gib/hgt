@@ -150,7 +150,7 @@ theorem thetaCuspReflectedLogAction_eq_neg_log_normalized
     thetaCuspReflectedLogAction u t =
       -Real.log
         (thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-          thetaCuspFullSource u ^ 2) := by
+          thetaCuspFullSource u ^ (2 : ℕ)) := by
   have hp := (thetaCuspFullSource_pos_all (u + t)).ne'
   have hm := (thetaCuspFullSource_pos_all (u - t)).ne'
   have hu := (thetaCuspFullSource_pos_all u).ne'
@@ -163,10 +163,10 @@ theorem thetaCuspReflectedLogAction_eq_neg_log_normalized
 theorem exp_neg_thetaCuspReflectedLogAction (u t : ℝ) :
     Real.exp (-thetaCuspReflectedLogAction u t) =
       thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-        thetaCuspFullSource u ^ 2 := by
+        thetaCuspFullSource u ^ (2 : ℕ) := by
   let ratio :=
     thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-      thetaCuspFullSource u ^ 2
+      thetaCuspFullSource u ^ (2 : ℕ)
   have hratio : 0 < ratio := by
     exact div_pos
       (mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _))
@@ -179,17 +179,17 @@ theorem exp_neg_thetaCuspReflectedLogAction (u t : ℝ) :
 theorem thetaCuspReflectedLogAction_nonneg (u t : ℝ) :
     0 ≤ thetaCuspReflectedLogAction u t := by
   have hprod := thetaCuspFullSource_mul_reflect_le_sq u t
-  have hden : 0 < thetaCuspFullSource u ^ 2 :=
+  have hden : 0 < thetaCuspFullSource u ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspFullSource_pos_all u)
   have hratioPos :
       0 < thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-        thetaCuspFullSource u ^ 2 :=
+        thetaCuspFullSource u ^ (2 : ℕ) :=
     div_pos
       (mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _))
       hden
   have hratioLe :
       thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-          thetaCuspFullSource u ^ 2 ≤ 1 :=
+          thetaCuspFullSource u ^ (2 : ℕ) ≤ 1 :=
     (div_le_one hden).2 hprod
   rw [thetaCuspReflectedLogAction_eq_neg_log_normalized]
   exact neg_nonneg.mpr (Real.log_nonpos hratioPos.le hratioLe)
@@ -200,21 +200,21 @@ theorem thetaCuspReflectedLogAction_pos
     0 < thetaCuspReflectedLogAction u t := by
   have hprod :
       thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) <
-        thetaCuspFullSource u ^ 2 := by
+        thetaCuspFullSource u ^ (2 : ℕ) := by
     simpa only [add_zero, sub_zero, pow_two] using
       strictAntiOn_thetaCuspFullSource_mul_reflect u
         (by norm_num) ht.le ht
-  have hden : 0 < thetaCuspFullSource u ^ 2 :=
+  have hden : 0 < thetaCuspFullSource u ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspFullSource_pos_all u)
   have hratioPos :
       0 < thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-        thetaCuspFullSource u ^ 2 :=
+        thetaCuspFullSource u ^ (2 : ℕ) :=
     div_pos
       (mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _))
       hden
   have hratioLt :
       thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-          thetaCuspFullSource u ^ 2 < 1 :=
+          thetaCuspFullSource u ^ (2 : ℕ) < 1 :=
     (div_lt_one hden).2 hprod
   rw [thetaCuspReflectedLogAction_eq_neg_log_normalized]
   exact neg_pos.mpr (Real.log_neg hratioPos hratioLt)
@@ -386,7 +386,7 @@ def thetaCuspCenterLogRiccatiMargin (x : ℝ) : ℝ :=
 theorem hasDerivAt_thetaCuspCenterLogRiccatiMargin (x : ℝ) :
     HasDerivAt thetaCuspCenterLogRiccatiMargin
       (iteratedDeriv 4 thetaCuspLogSource x +
-        4 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
+        4 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
         4 * iteratedDeriv 1 thetaCuspLogSource x *
           iteratedDeriv 3 thetaCuspLogSource x) x := by
   have h1 := hasDerivAt_iteratedDeriv_thetaCuspLogSource 1 x
@@ -443,13 +443,13 @@ theorem thetaCuspCenterLogRiccati_adverse_bounds
   have hq2 : q < 2 := by
     by_contra hnot
     have hq2 : 2 ≤ q := le_of_not_gt hnot
-    have hpoly : 0 ≤ 4 * q ^ 3 - 6 * q - 18 := by
-      rw [show 4 * q ^ 3 - 6 * q - 18 =
-          (q - 2) * (4 * q ^ 2 + 8 * q + 10) + 2 by ring]
+    have hpoly : 0 ≤ 4 * q ^ (3 : ℕ) - 6 * q - 18 := by
+      rw [show 4 * q ^ (3 : ℕ) - 6 * q - 18 =
+          (q - 2) * (4 * q ^ (2 : ℕ) + 8 * q + 10) + 2 by ring]
       positivity
-    have hs : 0 ≤ 4 - 6 / q ^ 2 - 18 / q ^ 3 := by
-      rw [show 4 - 6 / q ^ 2 - 18 / q ^ 3 =
-          (4 * q ^ 3 - 6 * q - 18) / q ^ 3 by
+    have hs : 0 ≤ 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) := by
+      rw [show 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) =
+          (4 * q ^ (3 : ℕ) - 6 * q - 18) / q ^ (3 : ℕ) by
         field_simp [hq0.ne']]
       positivity
     dsimp [b₃, thetaCuspBornWittenLogThirdDerivative] at hb₃
@@ -457,19 +457,19 @@ theorem thetaCuspCenterLogRiccati_adverse_bounds
   have hb₃lower : -24 < b₃ := by
     have hfactor :
         0 < (2 * q - 3) *
-          (4 * q ^ 3 + 24 * q ^ 2 + 30 * q + 18) := by
+          (4 * q ^ (3 : ℕ) + 24 * q ^ (2 : ℕ) + 30 * q + 18) := by
       exact mul_pos (by linarith) (by positivity)
     change -24 <
-      (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3)
+      (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ))
     have hid :
-      (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) + 24 =
+      (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) + 24 =
           ((2 * q - 3) *
-            (4 * q ^ 3 + 24 * q ^ 2 + 30 * q + 18)) / q ^ 3 := by
+            (4 * q ^ (3 : ℕ) + 24 * q ^ (2 : ℕ) + 30 * q + 18)) / q ^ (3 : ℕ) := by
       field_simp [hq0.ne']
       ring
     have hquot :
         0 < ((2 * q - 3) *
-            (4 * q ^ 3 + 24 * q ^ 2 + 30 * q + 18)) / q ^ 3 :=
+            (4 * q ^ (3 : ℕ) + 24 * q ^ (2 : ℕ) + 30 * q + 18)) / q ^ (3 : ℕ) :=
       div_pos hfactor (pow_pos hq0 3)
     linarith
   have hd24 : -(-iteratedDeriv 3 thetaCuspLogSource x) < 24 := by
@@ -832,13 +832,13 @@ theorem thetaCuspFullSource_reflectedCorrelationAngle_subadditive_global
     Real.arccos
         (thetaCuspFullSource (u + (x + y)) *
             thetaCuspFullSource (u - (x + y)) /
-          thetaCuspFullSource u ^ 2) ≤
+          thetaCuspFullSource u ^ (2 : ℕ)) ≤
       Real.arccos
           (thetaCuspFullSource (u + x) * thetaCuspFullSource (u - x) /
-            thetaCuspFullSource u ^ 2) +
+            thetaCuspFullSource u ^ (2 : ℕ)) +
         Real.arccos
           (thetaCuspFullSource (u + y) * thetaCuspFullSource (u - y) /
-            thetaCuspFullSource u ^ 2) := by
+            thetaCuspFullSource u ^ (2 : ℕ)) := by
   let q : ℝ → ℝ := thetaCuspReflectedLogAction u
   let q₁ : ℝ → ℝ := thetaCuspReflectedLogJetOne u
   let q₂ : ℝ → ℝ := thetaCuspReflectedLogJetTwo u

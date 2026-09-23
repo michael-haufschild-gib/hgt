@@ -88,9 +88,9 @@ theorem mobiusDivisorSelectionFibre_eq_zero_of_not_active (M : ℕ) (P R : Finse
 /-- The full actual energy is carried by the born remaining coordinates, with no remainder. -/
 theorem mobiusDivisorSelectionEnergy_eq_sum_active (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorSelectionEnergy M P =
-      ∑ R ∈ mobiusDivisorActiveLabels M P, (mobiusDivisorSelectionFibre M P R)^2 := by
+      ∑ R ∈ mobiusDivisorActiveLabels M P, (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) := by
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2) = _
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) = _
   symm
   apply sum_subset
   · intro R hR

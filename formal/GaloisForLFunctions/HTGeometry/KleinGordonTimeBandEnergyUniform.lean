@@ -27,7 +27,7 @@ variable {W : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume 
 theorem kgFieldEnergyT_eq_norm_sq
     (W : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E)))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2 = ‖kgFieldStateT W g h t‖ ^ 2 := by
+    ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ) = ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) := by
   rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldStateT, kgPair_fst, kgPair_snd]
 
 /-- **The moving band states are bounded on the window by the data of the true problem.** -/
@@ -75,9 +75,9 @@ theorem tendstoUniformlyOn_kgFieldEnergyT_band (hb0 : 0 ≤ b) (hWb : ∀ r : �
     (g y : Lp ℂ 2 (volume : Measure E)) (T : ℝ) :
     TendstoUniformlyOn
       (fun R : ℝ => fun t : ℝ =>
-        ‖kgFieldGradT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2
-          + ‖kgFieldVelT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2)
-      (fun t : ℝ => ‖kgFieldGradT W g y t‖ ^ 2 + ‖kgFieldVelT W g y t‖ ^ 2)
+        ‖kgFieldGradT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)
+          + ‖kgFieldVelT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ))
+      (fun t : ℝ => ‖kgFieldGradT W g y t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g y t‖ ^ (2 : ℕ))
       atTop (Set.Icc 0 T) := by
   set M : ℝ := (‖g‖ + ‖y‖) * Real.exp (b * T) with hM
   have hM0 : (0 : ℝ) ≤ M := by rw [hM]; positivity
@@ -98,10 +98,10 @@ theorem tendstoUniformlyOn_kgFieldEnergyT_band (hb0 : 0 ≤ b) (hWb : ∀ r : �
   have hcb : c ≤ M := norm_kgFieldStateT_band_le hb0 hWb hWs g y R ht.1 ht.2
   have ha0 : (0 : ℝ) ≤ a := norm_nonneg _
   have hc0 : (0 : ℝ) ≤ c := norm_nonneg _
-  have hsq : |a ^ 2 - c ^ 2| = |a - c| * (a + c) := by
-    have hfac : a ^ 2 - c ^ 2 = (a - c) * (a + c) := by ring
+  have hsq : |a ^ (2 : ℕ) - c ^ (2 : ℕ)| = |a - c| * (a + c) := by
+    have hfac : a ^ (2 : ℕ) - c ^ (2 : ℕ) = (a - c) * (a + c) := by ring
     rw [hfac, abs_mul, abs_of_nonneg (by linarith : (0 : ℝ) ≤ a + c)]
-  have hle : |a ^ 2 - c ^ 2| ≤ |a - c| * (2 * M) := by
+  have hle : |a ^ (2 : ℕ) - c ^ (2 : ℕ)| ≤ |a - c| * (2 * M) := by
     rw [hsq]
     exact mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg _)
   have hfin : |a - c| * (2 * M) < ε := by

@@ -14,22 +14,22 @@ namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
 def rawCubicOperator (q : SchwartzMap ℝ ℂ) (k x : ℝ) : RawOperator :=
-  ((2*(x : ℂ)*reflectedDerivative q x*rawPhaseAverage (2*k^2) x) • ContinuousLinearMap.snd ℂ ℂ ℂ).prod
-    ((-2*(x : ℂ)*SchwartzMap.derivCLM ℂ ℂ q x*rawPhaseAverage (-(2*k^2)) x) • ContinuousLinearMap.fst ℂ ℂ ℂ)
+  ((2*(x : ℂ)*reflectedDerivative q x*rawPhaseAverage (2*k^(2 : ℕ)) x) • ContinuousLinearMap.snd ℂ ℂ ℂ).prod
+    ((-2*(x : ℂ)*SchwartzMap.derivCLM ℂ ℂ q x*rawPhaseAverage (-(2*k^(2 : ℕ))) x) • ContinuousLinearMap.fst ℂ ℂ ℂ)
 
 theorem rawCubicOperator_apply (q : SchwartzMap ℝ ℂ) (k x : ℝ) (v : SpectralVector) :
     rawCubicOperator q k x v =
-      (2*(x : ℂ)*reflectedDerivative q x*rawPhaseAverage (2*k^2) x*v.2,
-       -2*(x : ℂ)*SchwartzMap.derivCLM ℂ ℂ q x*rawPhaseAverage (-(2*k^2)) x*v.1) := rfl
+      (2*(x : ℂ)*reflectedDerivative q x*rawPhaseAverage (2*k^(2 : ℕ)) x*v.2,
+       -2*(x : ℂ)*SchwartzMap.derivCLM ℂ ℂ q x*rawPhaseAverage (-(2*k^(2 : ℕ))) x*v.1) := rfl
 
 theorem continuous_rawCubicOperator_parameters (q : SchwartzMap ℝ ℂ) :
     Continuous (fun p : ℝ × ℝ => rawCubicOperator q p.1 p.2) := by
   let U : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (2*(p.2 : ℂ)*reflectedDerivative q p.2*rawPhaseAverage (2*p.1^2) p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
+    (2*(p.2 : ℂ)*reflectedDerivative q p.2*rawPhaseAverage (2*p.1^(2 : ℕ)) p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
   let V : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (-2*(p.2 : ℂ)*SchwartzMap.derivCLM ℂ ℂ q p.2*rawPhaseAverage (-(2*p.1^2)) p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
-  have hpu : Continuous (fun p : ℝ × ℝ => (2*p.1^2,p.2)) := by fun_prop
-  have hpv : Continuous (fun p : ℝ × ℝ => (-(2*p.1^2),p.2)) := by fun_prop
+    (-2*(p.2 : ℂ)*SchwartzMap.derivCLM ℂ ℂ q p.2*rawPhaseAverage (-(2*p.1^(2 : ℕ))) p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
+  have hpu : Continuous (fun p : ℝ × ℝ => (2*p.1^(2 : ℕ),p.2)) := by fun_prop
+  have hpv : Continuous (fun p : ℝ × ℝ => (-(2*p.1^(2 : ℕ)),p.2)) := by fun_prop
   have hu := continuous_rawPhaseAverage_parameters.comp hpu
   have hv := continuous_rawPhaseAverage_parameters.comp hpv
   have hU : Continuous U := by unfold U; fun_prop
@@ -72,11 +72,11 @@ theorem rawCubicOperator_bound (q : SchwartzMap ℝ ℂ) (k x : ℝ) :
   rw [ContinuousLinearMap.opNorm_prod,Prod.norm_def]
   simp only [norm_smul,ContinuousLinearMap.norm_snd,ContinuousLinearMap.norm_fst,mul_one]
   apply max_le
-  · exact (cubicScalar_bound (reflectedDerivative q x) (2*k^2) x).trans
+  · exact (cubicScalar_bound (reflectedDerivative q x) (2*k^(2 : ℕ)) x).trans
       (mul_le_mul_of_nonneg_left (le_add_of_nonneg_left (norm_nonneg _))
         (mul_nonneg (by positivity) (abs_nonneg x)))
   · rw [neg_mul,neg_mul,neg_mul,norm_neg]
-    exact (cubicScalar_bound (SchwartzMap.derivCLM ℂ ℂ q x) (-(2*k^2)) x).trans
+    exact (cubicScalar_bound (SchwartzMap.derivCLM ℂ ℂ q x) (-(2*k^(2 : ℕ))) x).trans
       (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right (norm_nonneg _))
         (mul_nonneg (by positivity) (abs_nonneg x)))
 
@@ -97,32 +97,32 @@ theorem rawCubicOperator_zero_apply (q : SchwartzMap ℝ ℂ) (x : ℝ) (v : Spe
 
 /-- The exact expansion of the actual divided original Lax coefficient, at every real k. -/
 theorem rawDividedOperator_cubic_factor (q : SchwartzMap ℝ ℂ) (k x : ℝ) :
-    rawDividedOperator q k x = rawDividedOperator q 0 x+(k : ℂ)^2 • rawCubicOperator q k x := by
+    rawDividedOperator q k x = rawDividedOperator q 0 x+(k : ℂ)^(2 : ℕ) • rawCubicOperator q k x := by
   apply ContinuousLinearMap.ext
   intro v
   have hu := staggerPhase_square_sub_one_factor k x
   have hv := staggerPhase_neg_square_sub_one_factor k x
   rw [rawDividedOperator_apply]
-  change _ = rawDividedOperator q 0 x v+(k : ℂ)^2 • rawCubicOperator q k x v
+  change _ = rawDividedOperator q 0 x v+(k : ℂ)^(2 : ℕ) • rawCubicOperator q k x v
   rw [rawDividedOperator_apply,rawCubicOperator_apply]
   simp only [zero_pow (by omega : 2 ≠ 0),mul_zero,neg_zero,FDNLS.staggerPhase,
     Complex.ofReal_zero,zero_mul,Complex.exp_zero,mul_one] at hu hv ⊢
   apply Prod.ext
   · simp only [Prod.fst_add,Prod.smul_fst,smul_eq_mul]
     calc
-      _ = I*(Complex.exp (-(I*((2*k^2 : ℝ) : ℂ))*(x : ℂ))-1)*reflectedDerivative q x*v.2+
+      _ = I*(Complex.exp (-(I*((2*k^(2 : ℕ) : ℝ) : ℂ))*(x : ℂ))-1)*reflectedDerivative q x*v.2+
           I*reflectedDerivative q x*v.2 := by ring
       _ = _ := by rw [hu]; ring_nf; simp only [I_sq]; ring
   · simp only [Prod.snd_add,Prod.smul_snd,smul_eq_mul]
     calc
-      _ = I*(Complex.exp (-(I*((-(2*k^2) : ℝ) : ℂ))*(x : ℂ))-1)*SchwartzMap.derivCLM ℂ ℂ q x*v.1+
+      _ = I*(Complex.exp (-(I*((-(2*k^(2 : ℕ)) : ℝ) : ℂ))*(x : ℂ))-1)*SchwartzMap.derivCLM ℂ ℂ q x*v.1+
           I*SchwartzMap.derivCLM ℂ ℂ q x*v.1 := by ring
       _ = _ := by rw [hv]; ring_nf; simp only [I_sq]; ring
 
 /-- The original, un-divided coefficient has exactly a linear term and a cubic remainder. -/
 theorem rawInteractionOperator_cubic_factor (q : SchwartzMap ℝ ℂ) (k x : ℝ) :
     rawInteractionOperator q k x =
-      (k : ℂ) • rawDividedOperator q 0 x+(k : ℂ)^3 • rawCubicOperator q k x := by
+      (k : ℂ) • rawDividedOperator q 0 x+(k : ℂ)^(3 : ℕ) • rawCubicOperator q k x := by
   rw [rawInteractionOperator_factor,rawDividedOperator_cubic_factor,smul_add,smul_smul]
   congr 1
   congr 1

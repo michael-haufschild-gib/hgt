@@ -23,8 +23,8 @@ private theorem sqrt_add_sub_le_mul_div
   have hXs : 0 ≤ X + s := by linarith
   have hA : 0 ≤ Real.sqrt X := Real.sqrt_nonneg _
   have hB : 0 ≤ Real.sqrt (X + s) := Real.sqrt_nonneg _
-  have hA2 : Real.sqrt X ^ 2 = X := Real.sq_sqrt hX.le
-  have hB2 : Real.sqrt (X + s) ^ 2 = X + s := Real.sq_sqrt hXs
+  have hA2 : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hX.le
+  have hB2 : Real.sqrt (X + s) ^ (2 : ℕ) = X + s := Real.sq_sqrt hXs
   have hdiff : 0 ≤ Real.sqrt (X + s) - Real.sqrt X :=
     sub_nonneg.mpr (Real.sqrt_le_sqrt (by linarith))
   have hid :
@@ -53,8 +53,8 @@ private theorem sqrt_sub_gap_le_mul_div
   have hXs : 0 ≤ X - s := by linarith
   have hA : 0 ≤ Real.sqrt X := Real.sqrt_nonneg _
   have hC : 0 ≤ Real.sqrt (X - s) := Real.sqrt_nonneg _
-  have hA2 : Real.sqrt X ^ 2 = X := Real.sq_sqrt hX.le
-  have hC2 : Real.sqrt (X - s) ^ 2 = X - s := Real.sq_sqrt hXs
+  have hA2 : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hX.le
+  have hC2 : Real.sqrt (X - s) ^ (2 : ℕ) = X - s := Real.sq_sqrt hXs
   have hdiff : 0 ≤ Real.sqrt X - Real.sqrt (X - s) :=
     sub_nonneg.mpr (Real.sqrt_le_sqrt (by linarith))
   have hid :
@@ -85,8 +85,8 @@ private theorem sqrt_le_two_mul_sqrt_sub
   have hXs : 0 ≤ X - s := by linarith
   have hA : 0 ≤ Real.sqrt X := Real.sqrt_nonneg _
   have hC : 0 ≤ Real.sqrt (X - s) := Real.sqrt_nonneg _
-  have hA2 : Real.sqrt X ^ 2 = X := Real.sq_sqrt hX.le
-  have hC2 : Real.sqrt (X - s) ^ 2 = X - s := Real.sq_sqrt hXs
+  have hA2 : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hX.le
+  have hC2 : Real.sqrt (X - s) ^ (2 : ℕ) = X - s := Real.sq_sqrt hXs
   nlinarith [sq_nonneg (Real.sqrt X - 2 * Real.sqrt (X - s))]
 
 theorem le_of_weighted_le_forward_signed

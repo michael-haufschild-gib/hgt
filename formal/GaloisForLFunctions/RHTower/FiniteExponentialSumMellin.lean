@@ -49,7 +49,7 @@ theorem mellinConvergent_exp_neg_mul {m : ℝ} (hm : 0 < m) {σ : ℂ} (hσ : 0 
     rw [smul_eq_mul, mul_comm]
   exact (MellinConvergent.comp_mul_left hm).2 hbase
 
-theorem mellin_exp_neg_mul {m : ℝ} (hm : 0 < m) {σ : ℂ} (hσ : 0 < σ.re) :
+theorem mellin_exp_neg_mul_finiteExponentialSumMellin {m : ℝ} (hm : 0 < m) {σ : ℂ} (hσ : 0 < σ.re) :
     mellin (fun x : ℝ => ((Real.exp (-(m * x)) : ℝ) : ℂ)) σ
       = (m : ℂ) ^ (-σ) * Complex.Gamma σ := by
   have hbase : mellin (fun x : ℝ => ((Real.exp (-x) : ℝ) : ℂ)) σ = Complex.Gamma σ := by
@@ -85,7 +85,7 @@ theorem mellin_expDecaySum {ι : Type*} (s : Finset ι) (c m : ι → ℝ)
   rw [setIntegral_congr_fun measurableSet_Ioi (fun x _ => hpoint x),
     MeasureTheory.integral_finsetSum s hint, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i hi => ?_
-  rw [MeasureTheory.integral_smul, hmellin i, mellin_exp_neg_mul (hm i hi) hσ, smul_eq_mul]
+  rw [MeasureTheory.integral_smul, hmellin i, mellin_exp_neg_mul_finiteExponentialSumMellin (hm i hi) hσ, smul_eq_mul]
   ring
 
 /-- Exponentially dominated continuous fields are Mellin convergent on every positive line. -/

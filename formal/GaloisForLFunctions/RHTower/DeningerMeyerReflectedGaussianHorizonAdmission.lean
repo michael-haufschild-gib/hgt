@@ -59,10 +59,10 @@ theorem reflectedGaussianHorizonGrade_eq_heat (q : XiZeroCopy) :
   rw [reflectedGaussianHorizonGrade,
     deningerMeyerReflectedLogGaussianSource_mellin]
   unfold xiGaussianHeatTerm
-  have hspectral : xiSpectralPoint q ^ 2 =
-      -(((q.1 : ℂ) - 1 / 2) ^ 2) := by
+  have hspectral : xiSpectralPoint q ^ (2 : ℕ) =
+      -(((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ)) := by
     rw [xiSpectralPoint, mul_pow]
-    have hI : (-Complex.I) ^ 2 = (-1 : ℂ) := by
+    have hI : (-Complex.I) ^ (2 : ℕ) = (-1 : ℂ) := by
       rw [pow_two]
       simp
     rw [hI]
@@ -99,7 +99,7 @@ theorem reflectedGaussianHorizonGrade_lineConj (q : XiZeroCopy) :
 
 /-- The single fixed reflected Gaussian supplies the missing square-summable horizon grade. -/
 theorem summable_norm_sq_reflectedGaussianHorizonGrade :
-    Summable (fun q : XiZeroCopy => ‖reflectedGaussianHorizonGrade q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖reflectedGaussianHorizonGrade q‖ ^ (2 : ℕ)) := by
   have htime : 0 < 2 * reflectedGaussianHorizonTime := by
     positivity [reflectedGaussianHorizonTime_pos]
   have hsum : Summable (fun q : XiZeroCopy =>
@@ -146,7 +146,7 @@ theorem reflectedGaussianHorizonAdmissionWeight_mul_packet (q : XiZeroCopy) :
 theorem summable_reflectedGaussianHorizonAdmissionPacket :
     Summable (fun q : XiZeroCopy =>
       ‖reflectedGaussianHorizonAdmissionWeight q *
-        xiGaussianGammaResiduePacket q‖ ^ 2) := by
+        xiGaussianGammaResiduePacket q‖ ^ (2 : ℕ)) := by
   unfold reflectedGaussianHorizonAdmissionWeight
   exact (summable_weighted_packet_iff_horizonGrade
     reflectedGaussianHorizonGrade).2

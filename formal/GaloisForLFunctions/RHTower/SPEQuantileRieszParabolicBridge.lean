@@ -63,7 +63,7 @@ theorem speQuantileRieszIntervalIntegral_eq_massAntiderivative
     dsimp only [P, G, speQuantileRieszProfile]
     rw [show h * 3 / 2 = h + h / 2 by ring, Real.exp_add] at hraw
     apply HasDerivAt.congr_deriv hraw
-    have hsquareexp : Real.exp (h / 2) ^ 2 = Real.exp h := by
+    have hsquareexp : Real.exp (h / 2) ^ (2 : ℕ) = Real.exp h := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring
@@ -73,7 +73,7 @@ theorem speQuantileRieszIntervalIntegral_eq_massAntiderivative
             (Real.exp h * Real.exp (h / 2))) =
           2 * Real.sqrt (M : ℝ) * Real.exp h -
             2 * Real.exp h * Real.exp (h / 2) := by ring
-      _ = 2 * Real.sqrt (M : ℝ) * Real.exp (h / 2) ^ 2 -
+      _ = 2 * Real.sqrt (M : ℝ) * Real.exp (h / 2) ^ (2 : ℕ) -
             2 * Real.exp h * Real.exp (h / 2) := by rw [hsquareexp]
       _ = Real.exp (h / 2) *
           (2 * (Real.sqrt (M : ℝ) * Real.exp (h / 2) - Real.exp h)) := by ring
@@ -89,11 +89,11 @@ theorem speQuantileRieszIntervalIntegral_eq_massAntiderivative
   have hP (h : ℝ) :
       P h = speQuantileRieszMassAntiderivative M (ccmActualHeadPolarMassCoordinate h) := by
     dsimp only [P, speQuantileRieszMassAntiderivative, ccmActualHeadPolarMassCoordinate]
-    have hsq : Real.exp (h / 2) ^ 2 = Real.exp h := by
+    have hsq : Real.exp (h / 2) ^ (2 : ℕ) = Real.exp h := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring
-    have hcub : Real.exp (h / 2) ^ 3 = Real.exp (h * 3 / 2) := by
+    have hcub : Real.exp (h / 2) ^ (3 : ℕ) = Real.exp (h * 3 / 2) := by
       rw [pow_three, ← Real.exp_add, ← Real.exp_add]
       congr 1
       ring

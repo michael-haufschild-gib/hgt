@@ -41,7 +41,7 @@ private theorem ccmActualHeadMatchedPolarCentroid_two_le_three :
   have hweight : criticalMellinAtomWeight 2 ≤ 2 :=
     criticalMellinAtomWeight_le_two_of_pos (by omega)
   have hweight0 : 0 ≤ criticalMellinAtomWeight 2 :=
-    criticalMellinAtomWeight_nonneg _
+    criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   nlinarith [sq_nonneg (criticalMellinAtomWeight 2)]
 
 private theorem sqrt_le_ccmActualHeadMatchedPolarCentroid_sub_two
@@ -117,14 +117,14 @@ theorem criticalMellinAtomWeight_two_mul_log_le_ccmActualHeadMatchedQuantilePara
     criticalMellinAtomWeight 2 * Real.log (p : ℝ) ≤
       ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel ((p : ℕ) - 2) 0 := by
   have hp2 : 2 ≤ (p : ℕ) := p.2.two_le
-  have hw2 : 0 ≤ criticalMellinAtomWeight 2 := criticalMellinAtomWeight_nonneg _
+  have hw2 : 0 ≤ criticalMellinAtomWeight 2 := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   have hgap := sqrt_le_ccmActualHeadMatchedPolarCentroid_sub_two hp9
   have hterms : ∀ i ∈ Finset.range ((p : ℕ) - 2 + 1),
       0 ≤ criticalMellinAtomWeight (i + 2) *
         (ccmActualHeadMatchedPolarCentroid (i + 2) -
           ccmActualHeadMatchedPolarCentroid 2) := by
     intro i hi
-    apply mul_nonneg (criticalMellinAtomWeight_nonneg _)
+    apply mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
     by_cases hi0 : i = 0
     · subst i
       simp
@@ -155,7 +155,7 @@ theorem criticalMellinAtomWeight_two_mul_log_le_ccmActualHeadMatchedQuantilePara
           (ccmActualHeadMatchedPolarCentroid (p : ℕ) -
             ccmActualHeadMatchedPolarCentroid 2)) := by
           exact mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left hgap (criticalMellinAtomWeight_nonneg _)) hw2
+            (mul_le_mul_of_nonneg_left hgap (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)) hw2
     _ ≤ _ := mul_le_mul_of_nonneg_left hterm hw2
 
 /-- **First-coefficient growth no-go.** The first literal global Abel coefficient diverges along

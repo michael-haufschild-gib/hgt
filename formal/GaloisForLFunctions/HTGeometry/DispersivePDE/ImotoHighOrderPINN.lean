@@ -21,9 +21,9 @@ def SolvesSeventhOrderHierarchy (nu b d g : ℝ) (J : RealEvolutionJet7) : Prop 
     d * J.uxxxxx t x + g * J.uxxxxxxx t x = 0
 
 def SolvesLaxSeventh (J : RealEvolutionJet7) : Prop :=
-  ∀ t x, J.ut t x + 140 * J.u t x ^ 3 * J.ux t x +
+  ∀ t x, J.ut t x + 140 * J.u t x ^ (3 : ℕ) * J.ux t x +
     280 * J.u t x * J.ux t x * J.uxx t x +
-    70 * J.u t x ^ 2 * J.uxxx t x + 70 * J.ux t x ^ 3 +
+    70 * J.u t x ^ (2 : ℕ) * J.uxxx t x + 70 * J.ux t x ^ (3 : ℕ) +
     42 * J.ux t x * J.uxxxx t x + 14 * J.u t x * J.uxxxxx t x +
     70 * J.uxx t x * J.uxxx t x + J.uxxxxxxx t x = 0
 
@@ -57,8 +57,8 @@ def profileTravelingWaveJet7 (P : RealProfileJet7) (A k c : ℝ) :
       u := profileTravelingWave P A k c
       ut := fun t x => -A * k * c * P.f1 (k * (x - c * t))
       ux := fun t x => A * k * P.f1 (k * (x - c * t))
-      uxx := fun t x => A * k ^ 2 * P.f2 (k * (x - c * t))
-      uxxx := fun t x => A * k ^ 3 * P.f3 (k * (x - c * t))
+      uxx := fun t x => A * k ^ (2 : ℕ) * P.f2 (k * (x - c * t))
+      uxxx := fun t x => A * k ^ (3 : ℕ) * P.f3 (k * (x - c * t))
       hasDerivAt_time := by
         intro t x
         have hz : HasDerivAt (fun s : ℝ => k * (x - c * s)) (k * (0 - c * 1)) t := by
@@ -91,18 +91,18 @@ def profileTravelingWaveJet7 (P : RealProfileJet7) (A k c : ℝ) :
         have hz : HasDerivAt (fun y : ℝ => k * (y - c * t)) k x := by
           simpa only [id_eq, mul_one] using
             ((hasDerivAt_id x).sub_const (c * t)).const_mul k
-        have h := ((P.hasDerivAt_two (k * (x - c * t))).comp x hz).const_mul (A * k ^ 2)
+        have h := ((P.hasDerivAt_two (k * (x - c * t))).comp x hz).const_mul (A * k ^ (2 : ℕ))
         apply h.congr_deriv
         ring
     }
-    uxxxx := fun t x => A * k ^ 4 * P.f4 (k * (x - c * t))
-    uxxxxx := fun t x => A * k ^ 5 * P.f5 (k * (x - c * t))
+    uxxxx := fun t x => A * k ^ (4 : ℕ) * P.f4 (k * (x - c * t))
+    uxxxxx := fun t x => A * k ^ (5 : ℕ) * P.f5 (k * (x - c * t))
     hasDerivAt_space_three := by
       intro t x
       have hz : HasDerivAt (fun y : ℝ => k * (y - c * t)) k x := by
         simpa only [id_eq, mul_one] using
           ((hasDerivAt_id x).sub_const (c * t)).const_mul k
-      have h := ((P.hasDerivAt_three (k * (x - c * t))).comp x hz).const_mul (A * k ^ 3)
+      have h := ((P.hasDerivAt_three (k * (x - c * t))).comp x hz).const_mul (A * k ^ (3 : ℕ))
       apply h.congr_deriv
       ring
     hasDerivAt_space_four := by
@@ -110,18 +110,18 @@ def profileTravelingWaveJet7 (P : RealProfileJet7) (A k c : ℝ) :
       have hz : HasDerivAt (fun y : ℝ => k * (y - c * t)) k x := by
         simpa only [id_eq, mul_one] using
           ((hasDerivAt_id x).sub_const (c * t)).const_mul k
-      have h := ((P.hasDerivAt_four (k * (x - c * t))).comp x hz).const_mul (A * k ^ 4)
+      have h := ((P.hasDerivAt_four (k * (x - c * t))).comp x hz).const_mul (A * k ^ (4 : ℕ))
       apply h.congr_deriv
       ring
   }
-  uxxxxxx := fun t x => A * k ^ 6 * P.f6 (k * (x - c * t))
-  uxxxxxxx := fun t x => A * k ^ 7 * P.f7 (k * (x - c * t))
+  uxxxxxx := fun t x => A * k ^ (6 : ℕ) * P.f6 (k * (x - c * t))
+  uxxxxxxx := fun t x => A * k ^ (7 : ℕ) * P.f7 (k * (x - c * t))
   hasDerivAt_space_five := by
     intro t x
     have hz : HasDerivAt (fun y : ℝ => k * (y - c * t)) k x := by
       simpa only [id_eq, mul_one] using
         ((hasDerivAt_id x).sub_const (c * t)).const_mul k
-    have h := ((P.hasDerivAt_five (k * (x - c * t))).comp x hz).const_mul (A * k ^ 5)
+    have h := ((P.hasDerivAt_five (k * (x - c * t))).comp x hz).const_mul (A * k ^ (5 : ℕ))
     apply h.congr_deriv
     ring
   hasDerivAt_space_six := by
@@ -129,18 +129,18 @@ def profileTravelingWaveJet7 (P : RealProfileJet7) (A k c : ℝ) :
     have hz : HasDerivAt (fun y : ℝ => k * (y - c * t)) k x := by
       simpa only [id_eq, mul_one] using
         ((hasDerivAt_id x).sub_const (c * t)).const_mul k
-    have h := ((P.hasDerivAt_six (k * (x - c * t))).comp x hz).const_mul (A * k ^ 6)
+    have h := ((P.hasDerivAt_six (k * (x - c * t))).comp x hz).const_mul (A * k ^ (6 : ℕ))
     apply h.congr_deriv
     ring
 
-def solitonS (x : ℝ) : ℝ := solitonQ x ^ 3
-def solitonS1 (x : ℝ) : ℝ := -6 * solitonT x * solitonQ x ^ 3
-def solitonS2 (x : ℝ) : ℝ := 36 * solitonQ x ^ 3 - 42 * solitonQ x ^ 4
-def solitonS3 (x : ℝ) : ℝ := -216 * solitonT x * solitonQ x ^ 3 + 336 * solitonT x * solitonQ x ^ 4
-def solitonS4 (x : ℝ) : ℝ := 1296 * solitonQ x ^ 3 - 4200 * solitonQ x ^ 4 + 3024 * solitonQ x ^ 5
-def solitonS5 (x : ℝ) : ℝ := -7776 * solitonT x * solitonQ x ^ 3 + 33600 * solitonT x * solitonQ x ^ 4 - 30240 * solitonT x * solitonQ x ^ 5
-def solitonS6 (x : ℝ) : ℝ := 46656 * solitonQ x ^ 3 - 323232 * solitonQ x ^ 4 + 604800 * solitonQ x ^ 5 - 332640 * solitonQ x ^ 6
-def solitonS7 (x : ℝ) : ℝ := -279936 * solitonT x * solitonQ x ^ 3 + 2585856 * solitonT x * solitonQ x ^ 4 - 6048000 * solitonT x * solitonQ x ^ 5 + 3991680 * solitonT x * solitonQ x ^ 6
+def solitonS (x : ℝ) : ℝ := solitonQ x ^ (3 : ℕ)
+def solitonS1 (x : ℝ) : ℝ := -6 * solitonT x * solitonQ x ^ (3 : ℕ)
+def solitonS2 (x : ℝ) : ℝ := 36 * solitonQ x ^ (3 : ℕ) - 42 * solitonQ x ^ (4 : ℕ)
+def solitonS3 (x : ℝ) : ℝ := -216 * solitonT x * solitonQ x ^ (3 : ℕ) + 336 * solitonT x * solitonQ x ^ (4 : ℕ)
+def solitonS4 (x : ℝ) : ℝ := 1296 * solitonQ x ^ (3 : ℕ) - 4200 * solitonQ x ^ (4 : ℕ) + 3024 * solitonQ x ^ (5 : ℕ)
+def solitonS5 (x : ℝ) : ℝ := -7776 * solitonT x * solitonQ x ^ (3 : ℕ) + 33600 * solitonT x * solitonQ x ^ (4 : ℕ) - 30240 * solitonT x * solitonQ x ^ (5 : ℕ)
+def solitonS6 (x : ℝ) : ℝ := 46656 * solitonQ x ^ (3 : ℕ) - 323232 * solitonQ x ^ (4 : ℕ) + 604800 * solitonQ x ^ (5 : ℕ) - 332640 * solitonQ x ^ (6 : ℕ)
+def solitonS7 (x : ℝ) : ℝ := -279936 * solitonT x * solitonQ x ^ (3 : ℕ) + 2585856 * solitonT x * solitonQ x ^ (4 : ℕ) - 6048000 * solitonT x * solitonQ x ^ (5 : ℕ) + 3991680 * solitonT x * solitonQ x ^ (6 : ℕ)
 
 theorem hasDerivAt_solitonS (x : ℝ) : HasDerivAt solitonS (solitonS1 x) x := by
   have h := (hasDerivAt_solitonQ x).pow 3
@@ -228,10 +228,10 @@ def solitonSProfileJet7 : RealProfileJet7 where
   hasDerivAt_six := hasDerivAt_solitonS6
 
 def imotoSeventhOrderSolitonJet (k : ℝ) : RealEvolutionJet7 :=
-  profileTravelingWaveJet7 solitonSProfileJet7 1 k (230400 * k ^ 6)
+  profileTravelingWaveJet7 solitonSProfileJet7 1 k (230400 * k ^ (6 : ℕ))
 
 theorem imotoSeventhOrderSoliton_solves (k : ℝ) :
-    SolvesSeventhOrderHierarchy (665280 * k ^ 6) (12304 * k ^ 4) (-200 * k ^ 2) 1
+    SolvesSeventhOrderHierarchy (665280 * k ^ (6 : ℕ)) (12304 * k ^ (4 : ℕ)) (-200 * k ^ (2 : ℕ)) 1
       (imotoSeventhOrderSolitonJet k) := by
   intro t x
   simp only [imotoSeventhOrderSolitonJet, profileTravelingWaveJet7, profileTravelingWave,
@@ -240,10 +240,10 @@ theorem imotoSeventhOrderSoliton_solves (k : ℝ) :
   ring
 
 def solitonQ6 (x : ℝ) : ℝ :=
-  64 * solitonQ x - 2016 * solitonQ x ^ 2 + 6720 * solitonQ x ^ 3 - 5040 * solitonQ x ^ 4
+  64 * solitonQ x - 2016 * solitonQ x ^ (2 : ℕ) + 6720 * solitonQ x ^ (3 : ℕ) - 5040 * solitonQ x ^ (4 : ℕ)
 def solitonQ7 (x : ℝ) : ℝ :=
-  -128 * solitonT x * solitonQ x + 8064 * solitonT x * solitonQ x ^ 2 -
-    40320 * solitonT x * solitonQ x ^ 3 + 40320 * solitonT x * solitonQ x ^ 4
+  -128 * solitonT x * solitonQ x + 8064 * solitonT x * solitonQ x ^ (2 : ℕ) -
+    40320 * solitonT x * solitonQ x ^ (3 : ℕ) + 40320 * solitonT x * solitonQ x ^ (4 : ℕ)
 
 theorem hasDerivAt_solitonQ5 (x : ℝ) : HasDerivAt solitonQ5 (solitonQ6 x) x := by
   have h := ((((hasDerivAt_solitonT x).mul (hasDerivAt_solitonQ x)).const_mul (-32 : ℝ)).add
@@ -313,7 +313,7 @@ def coshProfileJet7 : RealProfileJet7 where
   hasDerivAt_six := Real.hasDerivAt_cosh
 
 def linearSeventhCoshJet (mu : ℝ) : RealEvolutionJet7 :=
-  profileTravelingWaveJet7 coshProfileJet7 1 mu (mu ^ 6)
+  profileTravelingWaveJet7 coshProfileJet7 1 mu (mu ^ (6 : ℕ))
 
 theorem linearSeventhCosh_solves (mu : ℝ) :
     SolvesLinearSeventh (linearSeventhCoshJet mu) := by

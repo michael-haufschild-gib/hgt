@@ -33,7 +33,7 @@ theorem ghs_block_shape_le {N k : ℕ} (hN : 1 ≤ N)
     (hk : (2 : ℝ) ^ (k + 1) * (4 * Real.log 2) ≤ Real.log N)
     (hDk : 2 * ghsScale N k ≤ N) :
     ((Real.log (ghsBlockRight N k) - Real.log (ghsBlockLeft N k) + mertensBlockGapConst)
-        / (Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ 2)
+        / (Real.log ((N / ghsBlockRight N k : ℕ) : ℝ)) ^ (2 : ℕ))
       * (Real.log ((N / ghsBlockLeft N k : ℕ) : ℝ) + Real.log 4)
       ≤ (2 + mertensBlockGapConst) * (3 + Real.log 4) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)

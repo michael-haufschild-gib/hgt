@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ModulusSlopeBudget
 
 The functional-equation pairing of the centered Xi relative resolvent gives
 
-`-T(z) / z = sum_q lambda_q / (1 - z^2 lambda_q)`,
+`-T(z) / z = sum_q lambda_q / (1 - z^(2 : ℕ) lambda_q)`,
 
 where `lambda_q` is the centered reciprocal-square coordinate.  If all Xi zeros lie on the
 critical line, the `lambda_q` are positive real numbers, so this is a Stieltjes-type transform:
@@ -78,16 +78,16 @@ theorem xiReciprocalSquareResolventTerm_sector_nonnegative_of_riemannHypothesis
     rw [xiZeroCopyReciprocalSquare_eq]
     exact hcoord
   rw [xiReciprocalSquareResolventTerm, hcopy, Complex.div_im]
-  have hden : 0 ≤ normSq (1 - z ^ 2 * (x : ℂ)) := normSq_nonneg _
-  have him : (1 - z ^ 2 * (x : ℂ)).im = -2 * z.re * z.im * x := by
+  have hden : 0 ≤ normSq (1 - z ^ (2 : ℕ) * (x : ℂ)) := normSq_nonneg _
+  have him : (1 - z ^ (2 : ℕ) * (x : ℂ)).im = -2 * z.re * z.im * x := by
     simp only [sub_im, one_im, mul_im, ofReal_re, ofReal_im, mul_zero, pow_two]
     ring
   rw [him]
   simp only [ofReal_im, ofReal_re, zero_mul]
-  rw [show z.re * (0 / normSq (1 - z ^ 2 * (x : ℂ)) -
-      x * (-2 * z.re * z.im * x) / normSq (1 - z ^ 2 * (x : ℂ))) =
-      (2 * x ^ 2 * z.re ^ 2 * z.im) /
-        normSq (1 - z ^ 2 * (x : ℂ)) by ring]
+  rw [show z.re * (0 / normSq (1 - z ^ (2 : ℕ) * (x : ℂ)) -
+      x * (-2 * z.re * z.im * x) / normSq (1 - z ^ (2 : ℕ) * (x : ℂ))) =
+      (2 * x ^ (2 : ℕ) * z.re ^ (2 : ℕ) * z.im) /
+        normSq (1 - z ^ (2 : ℕ) * (x : ℂ)) by ring]
   exact div_nonneg (by positivity) hden
 
 /-- RH supplies the source reciprocal-square sector sign term by term. -/

@@ -72,7 +72,7 @@ theorem exists_good_radii_error_negligible {f : ℂ → ℂ} (hf : Differentiabl
   have hCjex : ∀ j : Fin q, ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 1 ≤ r → U (r + (U r)⁻¹) < 2 * U r →
       (2 * π)⁻¹ * ∫ θ in (0 : ℝ)..(2 * π),
         Real.posLog ‖logDeriv (fun w => f w - A j) ((r : ℂ) * Complex.exp (θ * Complex.I))‖
-        ≤ 2 * Real.log (1 + C * (r + 1) ^ 4 * (U r + 1) ^ 4) :=
+        ≤ 2 * Real.log (1 + C * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)) :=
     fun j => exists_logDeriv_poly_bound (hf.sub_const (A j)) (hfa j) U hUmono hU1 (hUdoma j)
   choose Cj hCj0 hbndj using hCjex
   set Cmax : ℝ := C₀ + ∑ j, Cj j with hCmax
@@ -100,8 +100,8 @@ theorem exists_good_radii_error_negligible {f : ℂ → ℂ} (hf : Differentiabl
     nlinarith [h1, hKs0, h2]
   have hSbound : ∀ n : ℕ, 1 ≤ rn n →
       S (rn n) ≤ 2 * ((q : ℝ) + 1)
-        * Real.log (1 + Cmax * (Kshift + 2) ^ 4 * (rn n + 1) ^ 4
-          * (charMajorant f (rn n) + 1) ^ 4) := by
+        * Real.log (1 + Cmax * (Kshift + 2) ^ (4 : ℕ) * (rn n + 1) ^ (4 : ℕ)
+          * (charMajorant f (rn n) + 1) ^ (4 : ℕ)) := by
     intro n hrn1
     have hgoodn := (hrn n).2
     set r : ℝ := rn n with hrdef
@@ -110,37 +110,37 @@ theorem exists_good_radii_error_negligible {f : ℂ → ℂ} (hf : Differentiabl
     have hr1' : (1 : ℝ) ≤ r + 1 := by linarith
     -- the common right-hand side
     have hstep : ∀ C : ℝ, 0 ≤ C → C ≤ Cmax →
-        2 * Real.log (1 + C * (r + 1) ^ 4 * (U r + 1) ^ 4)
-          ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ 4 * (r + 1) ^ 4
-            * (charMajorant f r + 1) ^ 4) := by
+        2 * Real.log (1 + C * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ))
+          ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ (4 : ℕ) * (r + 1) ^ (4 : ℕ)
+            * (charMajorant f r + 1) ^ (4 : ℕ)) := by
       intro C hC0 hCle
       refine mul_le_mul_of_nonneg_left (Real.log_le_log (by positivity) ?_) (by norm_num)
-      have hpow : (U r + 1) ^ 4 ≤ (Kshift + 2) ^ 4 * (charMajorant f r + 1) ^ 4 := by
+      have hpow : (U r + 1) ^ (4 : ℕ) ≤ (Kshift + 2) ^ (4 : ℕ) * (charMajorant f r + 1) ^ (4 : ℕ) := by
         have h1 := hUplus r
         have h2 : (0 : ℝ) ≤ U r + 1 := by linarith
-        calc (U r + 1) ^ 4 ≤ ((Kshift + 2) * (charMajorant f r + 1)) ^ 4 :=
+        calc (U r + 1) ^ (4 : ℕ) ≤ ((Kshift + 2) * (charMajorant f r + 1)) ^ (4 : ℕ) :=
               pow_le_pow_left₀ h2 h1 4
-          _ = (Kshift + 2) ^ 4 * (charMajorant f r + 1) ^ 4 := by ring
-      have hposr : (0 : ℝ) ≤ (r + 1) ^ 4 := by positivity
-      have hstep1 : C * (r + 1) ^ 4 * (U r + 1) ^ 4
-          ≤ Cmax * (r + 1) ^ 4 * ((Kshift + 2) ^ 4 * (charMajorant f r + 1) ^ 4) := by
+          _ = (Kshift + 2) ^ (4 : ℕ) * (charMajorant f r + 1) ^ (4 : ℕ) := by ring
+      have hposr : (0 : ℝ) ≤ (r + 1) ^ (4 : ℕ) := by positivity
+      have hstep1 : C * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)
+          ≤ Cmax * (r + 1) ^ (4 : ℕ) * ((Kshift + 2) ^ (4 : ℕ) * (charMajorant f r + 1) ^ (4 : ℕ)) := by
         refine mul_le_mul ?_ hpow (by positivity) (by positivity)
         exact mul_le_mul_of_nonneg_right hCle hposr
       linarith only [hstep1]
     have hj : ∀ j : Fin q, proximity (fun z => deriv f z / (f z - A j)) ⊤ r
-        ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ 4 * (r + 1) ^ 4
-          * (charMajorant f r + 1) ^ 4) := by
+        ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ (4 : ℕ) * (r + 1) ^ (4 : ℕ)
+          * (charMajorant f r + 1) ^ (4 : ℕ)) := by
       intro j
       rw [proximity_logDeriv_sub_const_eq hf (A j)]
       exact le_trans (hbndj j r hrn1 hgoodn) (hstep (Cj j) (hCj0 j) (hCjle j))
     have hzero : proximity (fun z => deriv f z / f z) ⊤ r
-        ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ 4 * (r + 1) ^ 4
-          * (charMajorant f r + 1) ^ 4) := by
+        ≤ 2 * Real.log (1 + Cmax * (Kshift + 2) ^ (4 : ℕ) * (r + 1) ^ (4 : ℕ)
+          * (charMajorant f r + 1) ^ (4 : ℕ)) := by
       rw [proximity_logDeriv_eq]
       exact le_trans (hbnd₀ r hrn1 hgoodn) (hstep C₀ hC₀0 hC₀le)
     have hsum : (∑ j, proximity (fun z => deriv f z / (f z - A j)) ⊤ r)
-        ≤ (q : ℝ) * (2 * Real.log (1 + Cmax * (Kshift + 2) ^ 4 * (r + 1) ^ 4
-          * (charMajorant f r + 1) ^ 4)) := by
+        ≤ (q : ℝ) * (2 * Real.log (1 + Cmax * (Kshift + 2) ^ (4 : ℕ) * (r + 1) ^ (4 : ℕ)
+          * (charMajorant f r + 1) ^ (4 : ℕ))) := by
       have h := Finset.sum_le_sum (fun j (_ : j ∈ (Finset.univ : Finset (Fin q))) => hj j)
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h
       exact h
@@ -150,7 +150,7 @@ theorem exists_good_radii_error_negligible {f : ℂ → ℂ} (hf : Differentiabl
   have hneg : ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop, S (rn n) ≤ ε * charMajorant f (rn n) := by
     intro ε hε
     refine eventually_le_of_log_poly_bound_filter (ρ := fun n => rn n)
-      (C := Cmax * (Kshift + 2) ^ 4) (k := 4)
+      (C := Cmax * (Kshift + 2) ^ (4 : ℕ)) (k := 4)
       (c := 2 * ((q : ℝ) + 1)) (by positivity) (by omega) (by positivity) ?_ ?_ ?_ ?_ ?_ hε
     · filter_upwards [hrntop.eventually_ge_atTop (1 : ℝ)] with n hn
       exact hSbound n hn

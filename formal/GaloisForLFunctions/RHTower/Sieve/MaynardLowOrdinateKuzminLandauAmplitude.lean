@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardKuzminLandauAmplitude
 
 Maynard's Perron integral starts at ordinate `x^(1/8)`, whereas the selected-cell count was
 previously normalized only in the shorter range `x ≤ T^(19/9)`.  The first-derivative estimate is
-stronger at lower ordinate.  On the full band `x ≤ T^8`, its `T^(-9/10)` saving is still the fixed
+stronger at lower ordinate.  On the full band `x ≤ T^(8 : ℕ)`, its `T^(-9/10)` saving is still the fixed
 length saving `N^(-9/80)`.  Thus every over-height zeta or logarithmic atom has local amplitude at
 most `1 - 9/80`, uniformly down to the Perron cutoff.
 -/
@@ -17,7 +17,7 @@ open Finset ArithmeticFunction
 open scoped zeta
 
 /-- The literal logarithmic envelope remains `O(log T)` on the full low-ordinate scale
-`X ≤ T^8`. -/
+`X ≤ T^(8 : ℕ)`. -/
 theorem maynardLongPolylogEnvelope_le_twelve_log_of_mu_le_eight
     {X : ℕ} (hX : 1 ≤ X) {T mu : ℝ}
     (hT : 0 < T) (hlogT : 1 ≤ Real.log T) (hmu : mu ≤ 8)
@@ -45,7 +45,7 @@ theorem maynardLongPolylogEnvelope_le_twelve_log_of_mu_le_eight
   linarith
 
 /-- Every literal zeta/log coefficient cost is absorbed by `T^(1/10)` uniformly on
-`X ≤ T^8`. -/
+`X ≤ T^(8 : ℕ)`. -/
 theorem eventually_maynardLowOrdinateKuzminLandau_polylog_absorbed :
     ∀ᶠ T : ℝ in Filter.atTop,
       1 < T ∧
@@ -88,7 +88,7 @@ theorem eventually_maynardLowOrdinateKuzminLandau_polylog_absorbed :
     _ ≤ (1 / 2 : ℝ) * T ^ (1 / 10 : ℝ) := hhalf
     _ ≤ T ^ (1 / 10 : ℝ) := by nlinarith
 
-/-- On `N ≤ T^8`, a `T^(-9/10)` saving is exactly at least the length saving
+/-- On `N ≤ T^(8 : ℕ)`, a `T^(-9/10)` saving is exactly at least the length saving
 `N^(-9/80)`. -/
 theorem kuzminLandau_height_saving_to_length_saving_eight
     {T N C c V : ℝ} (hT : 1 < T) (hTN : T ≤ N)

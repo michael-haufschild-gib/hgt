@@ -47,14 +47,14 @@ theorem smul_right (l : ℂ) (x y : V) : H x (l • y) = star l * H x y := by
 
 theorem re_smul_add (l : ℂ) (x y : V) :
     (H (x + l • y) (x + l • y)).re
-      = (H x x).re + 2 * (star l * H x y).re + ‖l‖ ^ 2 * (H y y).re := by
-  have hsq : H (l • y) (l • y) = ((‖l‖ ^ 2 : ℝ) : ℂ) * H y y := by
+      = (H x x).re + 2 * (star l * H x y).re + ‖l‖ ^ (2 : ℕ) * (H y y).re := by
+  have hsq : H (l • y) (l • y) = ((‖l‖ ^ (2 : ℕ) : ℝ) : ℂ) * H y y := by
     rw [hH.smul_left l y (l • y), hH.smul_right l y y, ← mul_assoc, Complex.star_def,
       Complex.mul_conj']
     push_cast
     ring
   have hA : H (x + l • y) (x + l • y)
-      = H x x + star l * H x y + (l * H y x + ((‖l‖ ^ 2 : ℝ) : ℂ) * H y y) := by
+      = H x x + star l * H x y + (l * H y x + ((‖l‖ ^ (2 : ℕ) : ℝ) : ℂ) * H y y) := by
     rw [hH.add_left x (l • y) (x + l • y), hH.add_right x x (l • y),
       hH.add_right (l • y) x (l • y), hsq, hH.smul_right l x y, hH.smul_left l y x]
   rw [hA]
@@ -63,61 +63,61 @@ theorem re_smul_add (l : ℂ) (x y : V) :
     have hstar : l * H y x = star (star l * H x y) := by
       rw [star_mul', star_star, hH.symm x y]
     rw [hstar, Complex.star_def, Complex.conj_re]
-  have hsq' : (((‖l‖ ^ 2 : ℝ) : ℂ) * H y y).re = ‖l‖ ^ 2 * (H y y).re :=
+  have hsq' : (((‖l‖ ^ (2 : ℕ) : ℝ) : ℂ) * H y y).re = ‖l‖ ^ (2 : ℕ) * (H y y).re :=
     Complex.re_ofReal_mul _ _
   rw [hlr, hsq']
   ring
 
 /-- **Cauchy--Schwarz for a positive semidefinite Hermitian form.** -/
 theorem norm_sq_le (hpos : ∀ v : V, 0 ≤ (H v v).re) (x y : V) :
-    ‖H x y‖ ^ 2 ≤ (H x x).re * (H y y).re := by
+    ‖H x y‖ ^ (2 : ℕ) ≤ (H x x).re * (H y y).re := by
   set a : ℝ := (H x x).re with ha
   set b : ℝ := (H y y).re with hb
   set w : ℂ := H x y with hw
-  have key : ∀ s : ℝ, 0 ≤ a - 2 * s * ‖w‖ ^ 2 + s ^ 2 * ‖w‖ ^ 2 * b := by
+  have key : ∀ s : ℝ, 0 ≤ a - 2 * s * ‖w‖ ^ (2 : ℕ) + s ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) * b := by
     intro s
     have h := hpos (x + (-(s : ℂ) * w) • y)
     rw [hH.re_smul_add] at h
-    have h1 : (star (-(s : ℂ) * w) * w).re = -s * ‖w‖ ^ 2 := by
-      have hs : star (-(s : ℂ) * w) * w = -(s : ℂ) * ((‖w‖ : ℂ) ^ 2) := by
+    have h1 : (star (-(s : ℂ) * w) * w).re = -s * ‖w‖ ^ (2 : ℕ) := by
+      have hs : star (-(s : ℂ) * w) * w = -(s : ℂ) * ((‖w‖ : ℂ) ^ (2 : ℕ)) := by
         rw [star_mul', ← Complex.mul_conj']
         simp
         ring
       rw [hs]
-      rw [show (-(s : ℂ) * ((‖w‖ : ℂ) ^ 2)) = ((-s * ‖w‖ ^ 2 : ℝ) : ℂ) by push_cast; ring]
+      rw [show (-(s : ℂ) * ((‖w‖ : ℂ) ^ (2 : ℕ))) = ((-s * ‖w‖ ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
       exact Complex.ofReal_re _
-    have h2 : ‖(-(s : ℂ) * w)‖ ^ 2 = s ^ 2 * ‖w‖ ^ 2 := by
+    have h2 : ‖(-(s : ℂ) * w)‖ ^ (2 : ℕ) = s ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by
       rw [norm_mul, norm_neg, Complex.norm_real, mul_pow, Real.norm_eq_abs, sq_abs]
     rw [h1, h2] at h
     linarith
   rcases eq_or_ne ‖w‖ 0 with hw0 | hw0
   · rw [hw0]
     simpa using mul_nonneg (hpos x) (hpos y)
-  · have hw2 : 0 < ‖w‖ ^ 2 := by positivity
+  · have hw2 : 0 < ‖w‖ ^ (2 : ℕ) := by positivity
     rcases eq_or_lt_of_le (hpos y) with hb0 | hbpos
     · exfalso
       have hbz : b = 0 := hb.trans hb0.symm
-      have h := key ((a + 1) / (2 * ‖w‖ ^ 2))
+      have h := key ((a + 1) / (2 * ‖w‖ ^ (2 : ℕ)))
       rw [hbz] at h
-      have hrw2 : 2 * ((a + 1) / (2 * ‖w‖ ^ 2)) * ‖w‖ ^ 2 = a + 1 := by
+      have hrw2 : 2 * ((a + 1) / (2 * ‖w‖ ^ (2 : ℕ))) * ‖w‖ ^ (2 : ℕ) = a + 1 := by
         field_simp
       rw [hrw2] at h
       simp only [mul_zero, add_zero] at h
       linarith
     · have hbne : b ≠ 0 := ne_of_gt hbpos
       have h := key (1 / b)
-      have e1 : 2 * (1 / b) * ‖w‖ ^ 2 = 2 * (‖w‖ ^ 2 / b) := by field_simp
-      have e2 : (1 / b) ^ 2 * ‖w‖ ^ 2 * b = ‖w‖ ^ 2 / b := by
+      have e1 : 2 * (1 / b) * ‖w‖ ^ (2 : ℕ) = 2 * (‖w‖ ^ (2 : ℕ) / b) := by field_simp
+      have e2 : (1 / b) ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) * b = ‖w‖ ^ (2 : ℕ) / b := by
         field_simp
       rw [e1, e2] at h
-      have hle : ‖w‖ ^ 2 / b ≤ a := by linarith
+      have hle : ‖w‖ ^ (2 : ℕ) / b ≤ a := by linarith
       rwa [div_le_iff₀ hbpos] at hle
 
 /-- The square-root form of Cauchy--Schwarz. -/
 theorem norm_le_sqrt (hpos : ∀ v : V, 0 ≤ (H v v).re) (x y : V) :
     ‖H x y‖ ≤ Real.sqrt ((H x x).re * (H y y).re) := by
   have h := hH.norm_sq_le hpos x y
-  have hsq : Real.sqrt (‖H x y‖ ^ 2) ≤ Real.sqrt ((H x x).re * (H y y).re) :=
+  have hsq : Real.sqrt (‖H x y‖ ^ (2 : ℕ)) ≤ Real.sqrt ((H x x).re * (H y y).re) :=
     Real.sqrt_le_sqrt h
   rwa [Real.sqrt_sq (norm_nonneg _)] at hsq
 
@@ -128,30 +128,30 @@ form-size the inverse factor decays like `exp(−(π/4)·H(γ,γ))`, with a cons
 the bound. -/
 theorem norm_inv_appellHumbertFactor_le {H : V → V → ℂ} (hH : IsHermitianForm H)
     (hpos : ∀ v : V, 0 ≤ (H v v).re) {χ : V → ℂ} (hχ : ∀ γ, ‖χ γ‖ = 1)
-    {C : ℝ} (hC : 0 ≤ C) {z : V} (hz : (H z z).re ≤ C ^ 2) (γ : V) :
+    {C : ℝ} (hC : 0 ≤ C) {z : V} (hz : (H z z).re ≤ C ^ (2 : ℕ)) (γ : V) :
     ‖(appellHumbertFactor H χ γ z)⁻¹‖
-      ≤ Real.exp (Real.pi * C ^ 2) * Real.exp (-(Real.pi / 4) * (H γ γ).re) := by
+      ≤ Real.exp (Real.pi * C ^ (2 : ℕ)) * Real.exp (-(Real.pi / 4) * (H γ γ).re) := by
   have hpi : 0 < Real.pi := Real.pi_pos
   set t : ℝ := (H γ γ).re with ht
   have ht0 : 0 ≤ t := hpos γ
   have hcs : ‖H z γ‖ ≤ Real.sqrt ((H z z).re * t) := hH.norm_le_sqrt hpos z γ
   have hbound : ‖H z γ‖ ≤ C * Real.sqrt t := by
     refine le_trans hcs ?_
-    have h1 : (H z z).re * t ≤ C ^ 2 * t := mul_le_mul_of_nonneg_right hz ht0
+    have h1 : (H z z).re * t ≤ C ^ (2 : ℕ) * t := mul_le_mul_of_nonneg_right hz ht0
     refine le_trans (Real.sqrt_le_sqrt h1) (le_of_eq ?_)
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hC]
   have hre : -(H z γ).re ≤ C * Real.sqrt t := by
     refine le_trans ?_ hbound
     refine le_trans (neg_le_abs _) ?_
     exact Complex.abs_re_le_norm _
-  have hsqrt : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht0
-  have hkey : C * Real.sqrt t ≤ C ^ 2 + t / 4 := by
+  have hsqrt : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht0
+  have hkey : C * Real.sqrt t ≤ C ^ (2 : ℕ) + t / 4 := by
     nlinarith [sq_nonneg (C - Real.sqrt t / 2), Real.sqrt_nonneg t]
   have hexp : -(Real.pi * (H z γ).re + Real.pi / 2 * t)
-      ≤ Real.pi * C ^ 2 + -(Real.pi / 4) * t := by
+      ≤ Real.pi * C ^ (2 : ℕ) + -(Real.pi / 4) * t := by
     have h1 : Real.pi * (-(H z γ).re) ≤ Real.pi * (C * Real.sqrt t) :=
       mul_le_mul_of_nonneg_left hre (le_of_lt hpi)
-    have h2 : Real.pi * (C * Real.sqrt t) ≤ Real.pi * (C ^ 2 + t / 4) :=
+    have h2 : Real.pi * (C * Real.sqrt t) ≤ Real.pi * (C ^ (2 : ℕ) + t / 4) :=
       mul_le_mul_of_nonneg_left hkey (le_of_lt hpi)
     nlinarith
   rw [norm_inv, norm_appellHumbertFactor hH hχ, ← Real.exp_neg, ← Real.exp_add]

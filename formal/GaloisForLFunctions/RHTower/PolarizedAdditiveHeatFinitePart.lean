@@ -21,7 +21,7 @@ feature sum. -/
 theorem finite_complex_rankOne_gram
     {ι : Type*} (S : Finset ι) (c z : ι → ℂ) :
     (∑ i ∈ S, ∑ j ∈ S, star (c i) * c j * z j * star (z i)) =
-      ((‖∑ i ∈ S, c i * z i‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖∑ i ∈ S, c i * z i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   calc
     ∑ i ∈ S, ∑ j ∈ S, star (c i) * c j * z j * star (z i) =
         ∑ i ∈ S, star (c i * z i) * ∑ j ∈ S, c j * z j := by
@@ -38,7 +38,7 @@ theorem finite_complex_rankOne_gram
           change (∑ i ∈ S, (starRingEnd ℂ) (c i * z i)) * ∑ j ∈ S, c j * z j =
             (starRingEnd ℂ) (∑ i ∈ S, c i * z i) * ∑ j ∈ S, c j * z j
           rw [← map_sum]
-    _ = ((‖∑ i ∈ S, c i * z i‖ ^ 2 : ℝ) : ℂ) := by
+    _ = ((‖∑ i ∈ S, c i * z i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
           rw [mul_comm]
           change (∑ i ∈ S, c i * z i) *
             (starRingEnd ℂ) (∑ i ∈ S, c i * z i) = _
@@ -50,7 +50,7 @@ theorem finite_riemannZeta_value_rankOne_gram
     {ι : Type*} (S : Finset ι) (c s : ι → ℂ) :
     (∑ i ∈ S, ∑ j ∈ S,
       star (c i) * c j * riemannZeta (s j) * star (riemannZeta (s i))) =
-      ((‖∑ i ∈ S, c i * riemannZeta (s i)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖∑ i ∈ S, c i * riemannZeta (s i)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simpa using finite_complex_rankOne_gram S c (fun i => riemannZeta (s i))
 
 /-- The real part of every finite zeta-value outer-product Gram is nonnegative. -/

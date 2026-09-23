@@ -61,7 +61,7 @@ theorem d_antipode (a : A) : d R A (HopfAlgebra.antipode R a) = - d R A a := by
 
 /-- `S x ≡ -x mod I²` for `x` in the augmentation ideal. -/
 theorem antipode_add_mem_augIdeal_sq {x : A} (hx : x ∈ augIdeal R A) :
-    HopfAlgebra.antipode R x + x ∈ (augIdeal R A) ^ 2 := by
+    HopfAlgebra.antipode R x + x ∈ (augIdeal R A) ^ (2 : ℕ) := by
   have hS : (counit (HopfAlgebra.antipode R x) : R) = 0 := by
     rw [HopfAlgebra.counit_antipode]; exact mem_augIdeal.mp hx
   have hzero : d R A (HopfAlgebra.antipode R x + x) = 0 := by

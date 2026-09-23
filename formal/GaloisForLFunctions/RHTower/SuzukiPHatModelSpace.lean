@@ -162,7 +162,7 @@ theorem exists_suzukiPHat_lp (hRH : RiemannHypothesis) {a : ℝ}
       (S : ℝ → ℂ) =ᵐ[volume]
         fun x : ℝ => suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ) := by
   have hsa : Summable fun ρ : XiDivisorSupport =>
-      ‖suzukiPHatEnergyCoef φ ρ‖ ^ 2 * suzukiCauchyWeight ρ := by
+      ‖suzukiPHatEnergyCoef φ ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ := by
     refine (summable_weighted_suzukiPHatSupportCoef hRH φ).congr fun ρ => ?_
     rw [norm_suzukiPHatEnergyCoef]
   have hg : ∀ᵐ x ∂(volume : Measure ℝ),

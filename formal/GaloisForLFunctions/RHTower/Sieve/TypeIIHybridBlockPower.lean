@@ -11,7 +11,7 @@ noncomputable section
 /-- The explicit power envelope for the hybrid Type II gap sum. -/
 def typeIIHybridGapPowerEnvelope (T r : ℝ) (A B P : ℕ) : ℝ :=
   1000 * Real.sqrt (T * r) * (B : ℝ) * Real.sqrt B / ((A : ℝ) * P)
-    + 20 * Real.pi * (B : ℝ) ^ 2 / (T * r) * invSum B
+    + 20 * Real.pi * (B : ℝ) ^ (2 : ℕ) / (T * r) * invSum B
     + (B : ℝ) / P
 
 /-- A power-explicit square envelope for one hybrid Type II dyadic block. -/
@@ -42,7 +42,7 @@ theorem exists_norm_maskedBlockSum_sq_le_hybrid_power :
       0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
       Q ≤ 2 * P → Q ≤ L + 1 → 8 * r ≤ (A : ℝ) →
       ‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-          (fun m => typeIIShort V m)‖ ^ 2
+          (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
         ≤ typeIIHybridBlockSqEnvelope C T r A B L P := by
   obtain ⟨C, hC0, hmain⟩ := exists_norm_maskedBlockSum_sq_le_hybrid_explicit
   refine ⟨C, hC0, ?_⟩

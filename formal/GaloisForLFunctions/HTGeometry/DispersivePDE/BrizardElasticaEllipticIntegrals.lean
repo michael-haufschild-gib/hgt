@@ -17,11 +17,11 @@ open scoped Interval
 
 /-- Paper equation (A1), with parameter (not modulus) convention. -/
 noncomputable def completeEllipticK (m : ℝ) : ℝ :=
-  ∫ θ in (0 : ℝ)..Real.pi / 2, (Real.sqrt (1 - m * Real.sin θ ^ 2))⁻¹
+  ∫ θ in (0 : ℝ)..Real.pi / 2, (Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ)))⁻¹
 
 /-- Paper equation (A5), with parameter (not modulus) convention. -/
 noncomputable def completeEllipticE (m : ℝ) : ℝ :=
-  ∫ θ in (0 : ℝ)..Real.pi / 2, Real.sqrt (1 - m * Real.sin θ ^ 2)
+  ∫ θ in (0 : ℝ)..Real.pi / 2, Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ))
 
 theorem completeEllipticK_zero : completeEllipticK 0 = Real.pi / 2 := by
   simp [completeEllipticK]
@@ -33,32 +33,32 @@ theorem completeEllipticE_zero : completeEllipticE 0 = Real.pi / 2 := by
 theorem completeEllipticK_reflection (m : ℝ) :
     completeEllipticK m =
       ∫ θ in (0 : ℝ)..Real.pi / 2,
-        (Real.sqrt (1 - m * Real.cos θ ^ 2))⁻¹ := by
+        (Real.sqrt (1 - m * Real.cos θ ^ (2 : ℕ)))⁻¹ := by
   rw [completeEllipticK]
   simpa only [sub_self, sub_zero, Real.sin_pi_div_two_sub] using
     (intervalIntegral.integral_comp_sub_left
       (a := (0 : ℝ)) (b := Real.pi / 2)
-      (fun θ : ℝ => (Real.sqrt (1 - m * Real.sin θ ^ 2))⁻¹)
+      (fun θ : ℝ => (Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ)))⁻¹)
       (Real.pi / 2)).symm
 
 /-- Reflection `φ=π/2-θ` for the second-kind integral. -/
 theorem completeEllipticE_reflection (m : ℝ) :
     completeEllipticE m =
       ∫ θ in (0 : ℝ)..Real.pi / 2,
-        Real.sqrt (1 - m * Real.cos θ ^ 2) := by
+        Real.sqrt (1 - m * Real.cos θ ^ (2 : ℕ)) := by
   rw [completeEllipticE]
   simpa only [sub_self, sub_zero, Real.sin_pi_div_two_sub] using
     (intervalIntegral.integral_comp_sub_left
       (a := (0 : ℝ)) (b := Real.pi / 2)
-      (fun θ : ℝ => Real.sqrt (1 - m * Real.sin θ ^ 2))
+      (fun θ : ℝ => Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ)))
       (Real.pi / 2)).symm
 
 theorem negativeModulus_factorization (m : NegativeModulus) (θ : ℝ) :
-    1 - (m : ℝ) * Real.cos θ ^ 2 =
+    1 - (m : ℝ) * Real.cos θ ^ (2 : ℕ) =
       (1 - (m : ℝ)) *
-        (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2) := by
+        (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)) := by
   have hm0 : (m : ℝ) < 0 := m.property
-  have hcos : Real.cos θ ^ 2 = 1 - Real.sin θ ^ 2 := by
+  have hcos : Real.cos θ ^ (2 : ℕ) = 1 - Real.sin θ ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq θ]
   rw [hcos]
   rw [extendedToClassical]
@@ -67,20 +67,20 @@ theorem negativeModulus_factorization (m : NegativeModulus) (θ : ℝ) :
   ring
 
 theorem transformedKRadicand_pos (m : NegativeModulus) (θ : ℝ) :
-    0 < 1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2 := by
+    0 < 1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ) := by
   have hn0 := (extendedToClassical m).property.1
   have hn1 := (extendedToClassical m).property.2
-  have hs : 0 ≤ Real.sin θ ^ 2 := sq_nonneg _
-  have hs1 : Real.sin θ ^ 2 ≤ 1 := by
+  have hs : 0 ≤ Real.sin θ ^ (2 : ℕ) := sq_nonneg _
+  have hs1 : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.sin_sq_add_cos_sq θ, sq_nonneg (Real.cos θ)]
   nlinarith
 
 /-- Pointwise first-kind transformation behind paper equation (A2). -/
 theorem negativeKIntegrand_transform (m : NegativeModulus) (θ : ℝ) :
-    (Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ 2))⁻¹ =
+    (Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ (2 : ℕ)))⁻¹ =
       (Real.sqrt (1 - (m : ℝ)))⁻¹ *
         (Real.sqrt
-          (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2))⁻¹ := by
+          (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)))⁻¹ := by
   have hm0 : (m : ℝ) < 0 := m.property
   rw [negativeModulus_factorization]
   rw [Real.sqrt_mul (by linarith [hm0])]
@@ -88,9 +88,9 @@ theorem negativeKIntegrand_transform (m : NegativeModulus) (θ : ℝ) :
 
 /-- Pointwise second-kind transformation behind paper equation (A6). -/
 theorem negativeEIntegrand_transform (m : NegativeModulus) (θ : ℝ) :
-    Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ 2) =
+    Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ (2 : ℕ)) =
       Real.sqrt (1 - (m : ℝ)) *
-        Real.sqrt (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2) := by
+        Real.sqrt (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)) := by
   have hm0 : (m : ℝ) < 0 := m.property
   rw [negativeModulus_factorization]
   exact Real.sqrt_mul (by linarith [hm0]) _
@@ -102,18 +102,18 @@ theorem completeEllipticK_negative_transform_raw (m : NegativeModulus) :
   rw [completeEllipticK_reflection]
   calc
     (∫ θ in (0 : ℝ)..Real.pi / 2,
-        (Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ 2))⁻¹) =
+        (Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ (2 : ℕ)))⁻¹) =
         ∫ θ in (0 : ℝ)..Real.pi / 2,
           (Real.sqrt (1 - (m : ℝ)))⁻¹ *
             (Real.sqrt
-              (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2))⁻¹ := by
+              (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)))⁻¹ := by
           apply intervalIntegral.integral_congr
           intro θ _
           exact negativeKIntegrand_transform m θ
     _ = (Real.sqrt (1 - (m : ℝ)))⁻¹ *
         (∫ θ in (0 : ℝ)..Real.pi / 2,
           (Real.sqrt
-            (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2))⁻¹) := by
+            (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)))⁻¹) := by
           rw [intervalIntegral.integral_const_mul]
     _ = _ := rfl
 
@@ -132,18 +132,18 @@ theorem completeEllipticE_negative_transform_raw (m : NegativeModulus) :
   rw [completeEllipticE_reflection]
   calc
     (∫ θ in (0 : ℝ)..Real.pi / 2,
-        Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ 2)) =
+        Real.sqrt (1 - (m : ℝ) * Real.cos θ ^ (2 : ℕ))) =
         ∫ θ in (0 : ℝ)..Real.pi / 2,
           Real.sqrt (1 - (m : ℝ)) *
             Real.sqrt
-              (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2) := by
+              (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ)) := by
           apply intervalIntegral.integral_congr
           intro θ _
           exact negativeEIntegrand_transform m θ
     _ = Real.sqrt (1 - (m : ℝ)) *
         (∫ θ in (0 : ℝ)..Real.pi / 2,
           Real.sqrt
-            (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ 2)) := by
+            (1 - (extendedToClassical m : ℝ) * Real.sin θ ^ (2 : ℕ))) := by
           rw [intervalIntegral.integral_const_mul]
     _ = _ := rfl
 

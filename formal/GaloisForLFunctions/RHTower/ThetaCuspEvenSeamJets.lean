@@ -11,7 +11,7 @@ open GaloisForLFunctions.HTGeometry
 theorem thetaCuspFullSource_even_seamJet_eq_polynomial (k : Fin 7) :
     iteratedDeriv (2*k.val) thetaCuspFullSource 0 =
       thetaCuspSelfDualThetaMass * HTGeometry.modularThetaEvenSeamSourcePolynomial k
-        (thetaCuspSelfDualModularScale^2) := by
+        (thetaCuspSelfDualModularScale^(2 : ℕ)) := by
   have h := thetaCuspFullSource_seamJet_eq_formalJet (2*k.val)
   rw [HTGeometry.eval_modularThetaODESourceJet_even_seam] at h
   apply Complex.ofReal_injective
@@ -23,8 +23,8 @@ theorem thetaCuspFullSource_even_seamJet_eq_polynomial (k : Fin 7) :
 /-- All seven reflected signed seam moments retain the literal infinite source. -/
 theorem thetaCuspNativeEvenMoment_zero_eq_polynomial (k : Fin 7) :
     (-1 : ℝ)^k.val*thetaCuspNativeReflectionJet (2*k.val) 0 =
-      thetaCuspSelfDualThetaMass^2 * HTGeometry.modularThetaEvenSeamMomentPolynomial k
-        (thetaCuspSelfDualModularScale^2) := by
+      thetaCuspSelfDualThetaMass^(2 : ℕ) * HTGeometry.modularThetaEvenSeamMomentPolynomial k
+        (thetaCuspSelfDualModularScale^(2 : ℕ)) := by
   have h0 := thetaCuspFullSource_even_seamJet_eq_polynomial (0 : Fin 7)
   have h2 := thetaCuspFullSource_even_seamJet_eq_polynomial (1 : Fin 7)
   have h4 := thetaCuspFullSource_even_seamJet_eq_polynomial (2 : Fin 7)

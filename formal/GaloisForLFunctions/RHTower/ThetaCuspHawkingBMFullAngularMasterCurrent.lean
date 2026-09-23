@@ -37,12 +37,12 @@ def fullGradientCovector (q : XiZeroCopy) (branch : Bool) (k : Fin 2) (z : Fin 2
 
 /-- The two complete radial master factors minus the original mixed current. -/
 def mixedMasterResidual (s r B J K A D : ℂ) : ℂ :=
-  D4BMVectorStream.master (2*s) r (B^2) (B^2*(2*s)/(r*(r^2-1)))
-    (B^2*((2*s)^2-(2*s)*(3*r^2-1))/(r^2*(r^2-1)^2)) A D -
-  (s*(s-1)/4)*D4BMVectorStream.master (2*s) r (B^2/r^2)
-    (B^2*(-2/r^3+(2*s)/(r^3*(r^2-1))))
-    (B^2*(6/r^4-4*(2*s)/(r^4*(r^2-1))+
-      ((2*s)^2-(2*s)*(3*r^2-1))/(r^4*(r^2-1)^2))) J
+  D4BMVectorStream.master (2*s) r (B^(2 : ℕ)) (B^(2 : ℕ)*(2*s)/(r*(r^(2 : ℕ)-1)))
+    (B^(2 : ℕ)*((2*s)^(2 : ℕ)-(2*s)*(3*r^(2 : ℕ)-1))/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ))) A D -
+  (s*(s-1)/4)*D4BMVectorStream.master (2*s) r (B^(2 : ℕ)/r^(2 : ℕ))
+    (B^(2 : ℕ)*(-2/r^(3 : ℕ)+(2*s)/(r^(3 : ℕ)*(r^(2 : ℕ)-1))))
+    (B^(2 : ℕ)*(6/r^(4 : ℕ)-4*(2*s)/(r^(4 : ℕ)*(r^(2 : ℕ)-1))+
+      ((2*s)^(2 : ℕ)-(2*s)*(3*r^(2 : ℕ)-1))/(r^(4 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ)))) J
     (2*(s+1)*(s+2)*J+2*K) - 2*current s r B J K
 
 /-- The constructed covector cancels the actual mixed-current resolvent defect at every
@@ -56,8 +56,8 @@ theorem fullAngular_master_current (q : XiZeroCopy) (branch : Bool)
       (roughLaplacian (fullAngularCovector q branch) k (coordinates z) +
         fullAngularCovector q branch k (coordinates z)) = 0 := by
   have hr : (r.1 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [r.2])
-  have hf : (r.1 : ℂ)^2-1 ≠ 0 := by
-    have h : r.1^2-1 ≠ 0 := by nlinarith [r.2]
+  have hf : (r.1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : r.1^(2 : ℕ)-1 ≠ 0 := by nlinarith [r.2]
     exact_mod_cast h
   rw [mixedMasterResidual,master_resolvent_defect _ _ _ _ _ _ _ hr hf,
     fullAngularCovector_rough_equation q branch (coordinates z) z.im_pos k,

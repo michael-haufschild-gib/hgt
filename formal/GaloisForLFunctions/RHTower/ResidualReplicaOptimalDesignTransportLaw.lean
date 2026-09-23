@@ -35,8 +35,8 @@ theorem exists_replicaTarget_optimalDesign_pointwise_of_finrank_pos
   have key : ∀ (m : ℕ) (T : C → Fin m → ℂ), 0 < m →
       Submodule.span ℂ (Set.range T) = ⊤ →
       ∃ w ∈ stdSimplex ℝ C, ∀ (u : Fin m → ℂ) (c : C),
-        ‖finiteComplexInner u (T c)‖ ^ 2 ≤
-          (m : ℝ) * ∑ j, w j * ‖finiteComplexInner u (T j)‖ ^ 2 := by
+        ‖finiteComplexInner u (T c)‖ ^ (2 : ℕ) ≤
+          (m : ℝ) * ∑ j, w j * ‖finiteComplexInner u (T j)‖ ^ (2 : ℕ) := by
     rintro (_ | m) T hm hspanT
     · exact absurd hm (lt_irrefl 0)
     · simpa using exists_finiteOptimalDesign_pointwise T hspanT

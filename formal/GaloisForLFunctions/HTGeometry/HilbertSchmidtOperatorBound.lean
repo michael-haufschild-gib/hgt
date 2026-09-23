@@ -33,13 +33,13 @@ omit [DecidableEq d] in
 theorem hsNorm_nonneg (X : Matrix d d ℂ) : 0 ≤ hsNorm X := norm_nonneg _
 
 omit [DecidableEq d] in
-theorem hsNorm_sq (X : Matrix d d ℂ) : hsNorm X ^ 2 = ∑ i, ∑ j, ‖X i j‖ ^ 2 := by
+theorem hsNorm_sq (X : Matrix d d ℂ) : hsNorm X ^ (2 : ℕ) = ∑ i, ∑ j, ‖X i j‖ ^ (2 : ℕ) := by
   rw [hsNorm, matVec, norm_sq_euclideanOfFun, Fintype.sum_prod_type]
 
 omit [DecidableEq d] in
 /-- The Hilbert–Schmidt norm, computed column by column. -/
 theorem hsNorm_sq_eq_sum_col (X : Matrix d d ℂ) :
-    hsNorm X ^ 2 = ∑ j, ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖ ^ 2 := by
+    hsNorm X ^ (2 : ℕ) = ∑ j, ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖ ^ (2 : ℕ) := by
   rw [hsNorm_sq, Finset.sum_comm]
   exact Finset.sum_congr rfl fun j _ => (norm_sq_euclideanOfFun _).symm
 
@@ -58,22 +58,22 @@ theorem hsNorm_mul_le (A X : Matrix d d ℂ) : hsNorm (A * X) ≤ ‖A‖ * hsNo
       = (EuclideanSpace.equiv d ℂ).symm (A *ᵥ fun i => X i j) := by
     intro j
     rfl
-  have hbound : hsNorm (A * X) ^ 2 ≤ (‖A‖ * hsNorm X) ^ 2 := by
+  have hbound : hsNorm (A * X) ^ (2 : ℕ) ≤ (‖A‖ * hsNorm X) ^ (2 : ℕ) := by
     rw [hsNorm_sq_eq_sum_col, mul_pow, hsNorm_sq_eq_sum_col, Finset.mul_sum]
     refine Finset.sum_le_sum fun j _ => ?_
     rw [hcol j]
     have hstep := Matrix.l2_opNorm_mulVec A ((EuclideanSpace.equiv d ℂ).symm fun i => X i j)
-    calc ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ fun i => X i j)‖ ^ 2
-        ≤ (‖A‖ * ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖) ^ 2 :=
+    calc ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ fun i => X i j)‖ ^ (2 : ℕ)
+        ≤ (‖A‖ * ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖) ^ (2 : ℕ) :=
           pow_le_pow_left₀ (norm_nonneg _) hstep 2
-      _ = ‖A‖ ^ 2 * ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖ ^ 2 := by ring
+      _ = ‖A‖ ^ (2 : ℕ) * ‖(EuclideanSpace.equiv d ℂ).symm fun i => X i j‖ ^ (2 : ℕ) := by ring
   have hsqrt := Real.sqrt_le_sqrt hbound
   rwa [Real.sqrt_sq (hsNorm_nonneg _),
     Real.sqrt_sq (mul_nonneg (norm_nonneg A) (hsNorm_nonneg X))] at hsqrt
 
 omit [DecidableEq d] in
 theorem hsNorm_conjTranspose (X : Matrix d d ℂ) : hsNorm Xᴴ = hsNorm X := by
-  have hsq : hsNorm Xᴴ ^ 2 = hsNorm X ^ 2 := by
+  have hsq : hsNorm Xᴴ ^ (2 : ℕ) = hsNorm X ^ (2 : ℕ) := by
     rw [hsNorm_sq, hsNorm_sq, Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [Matrix.conjTranspose_apply, norm_star]

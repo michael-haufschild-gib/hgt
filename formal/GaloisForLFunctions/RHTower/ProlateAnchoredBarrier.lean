@@ -45,22 +45,22 @@ def prolateAnchoredBarrier (c χ : ℝ) (y : ℝ) : ℝ :=
 
 /-- Its derivative. -/
 def prolateAnchoredBarrierDeriv (c χ : ℝ) (y : ℝ) : ℝ :=
-  (2 * c ^ 2 * y * (1 - y ^ 2) + 2 * y * (χ + c ^ 2 * y ^ 2)) / (1 - y ^ 2) ^ 2
+  (2 * c ^ (2 : ℕ) * y * (1 - y ^ (2 : ℕ)) + 2 * y * (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ))) / (1 - y ^ (2 : ℕ)) ^ (2 : ℕ)
       / (2 * prolateWKB c χ y)
-    + (-(1 / y ^ 2) + 1 / (1 - y) ^ 2)
+    + (-(1 / y ^ (2 : ℕ)) + 1 / (1 - y) ^ (2 : ℕ))
 
 theorem hasDerivAt_prolateAnchoredBarrier {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y < 1)
-    (hR : 0 < (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) :
+    (hR : 0 < (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ))) :
     HasDerivAt (prolateAnchoredBarrier c χ) (prolateAnchoredBarrierDeriv c χ y) y := by
-  have hw : (1 : ℝ) - y ^ 2 ≠ 0 := by nlinarith
+  have hw : (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by nlinarith
   have h1 := hasDerivAt_prolateWKB (c := c) (χ := χ) hw hR
-  have h2 : HasDerivAt (fun t : ℝ => 1 / t) (-(1 / y ^ 2)) y := by
+  have h2 : HasDerivAt (fun t : ℝ => 1 / t) (-(1 / y ^ (2 : ℕ))) y := by
     have h := (hasDerivAt_const y (1 : ℝ)).div (hasDerivAt_id y) hy0.ne'
     refine h.congr_deriv ?_
     simp only [id_eq]
     field_simp
     ring
-  have h3 : HasDerivAt (fun t : ℝ => 1 / (1 - t)) (1 / (1 - y) ^ 2) y := by
+  have h3 : HasDerivAt (fun t : ℝ => 1 / (1 - t)) (1 / (1 - y) ^ (2 : ℕ)) y := by
     have hb : HasDerivAt (fun t : ℝ => 1 - t) (-1) y := by
       simpa using (hasDerivAt_id y).const_sub (1 : ℝ)
     have hne : (1 : ℝ) - y ≠ 0 := by linarith
@@ -77,19 +77,19 @@ theorem hasDerivAt_prolateAnchoredBarrier {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y 
 bound on `c s` is needed: the condition is `0 ≤ χ(2 - y²) + c²y²`, which for `χ = -s c²` reads
 `y²(1+s) ≥ 2s`. -/
 theorem prolateAnchoredBarrier_subsolution {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y < 1)
-    (hQ : 0 < χ + c ^ 2 * y ^ 2) (hcond : 0 ≤ χ * (2 - y ^ 2) + c ^ 2 * y ^ 2) :
+    (hQ : 0 < χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) (hcond : 0 ≤ χ * (2 - y ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ)) :
     prolateAnchoredBarrierDeriv c χ y
-      ≤ prolateAnchoredBarrier c χ y ^ 2
-        + (2 * y / (1 - y ^ 2)) * prolateAnchoredBarrier c χ y
-        - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := by
-  have hp : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+      ≤ prolateAnchoredBarrier c χ y ^ (2 : ℕ)
+        + (2 * y / (1 - y ^ (2 : ℕ))) * prolateAnchoredBarrier c χ y
+        - (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)) := by
+  have hp : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
   have h1y : (0 : ℝ) < 1 - y := by linarith
-  have hR : 0 < (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := div_pos hQ hp
+  have hR : 0 < (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)) := div_pos hQ hp
   set W : ℝ := prolateWKB c χ y with hWdef
   have hW : 0 < W := by
     rw [hWdef, prolateWKB]
     exact Real.sqrt_pos.2 hR
-  have hWsq : W ^ 2 = (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := by
+  have hWsq : W ^ (2 : ℕ) = (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)) := by
     rw [hWdef, prolateWKB]
     exact Real.sq_sqrt hR.le
   set w : ℝ := 1 / y + 1 / (1 - y) with hwdef
@@ -97,33 +97,33 @@ theorem prolateAnchoredBarrier_subsolution {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y
     rw [hwdef]
     positivity
   -- the added terms are self-dominating
-  have hwsq : -(1 / y ^ 2) + 1 / (1 - y) ^ 2 ≤ w ^ 2 := by
-    have hval : w ^ 2 = 1 / y ^ 2 + 2 / (y * (1 - y)) + 1 / (1 - y) ^ 2 := by
+  have hwsq : -(1 / y ^ (2 : ℕ)) + 1 / (1 - y) ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := by
+    have hval : w ^ (2 : ℕ) = 1 / y ^ (2 : ℕ) + 2 / (y * (1 - y)) + 1 / (1 - y) ^ (2 : ℕ) := by
       rw [hwdef]
       field_simp
       ring
     have hcross : (0 : ℝ) < 2 / (y * (1 - y)) := by positivity
-    have hy2 : (0 : ℝ) < 1 / y ^ 2 := by positivity
+    have hy2 : (0 : ℝ) < 1 / y ^ (2 : ℕ) := by positivity
     rw [hval]
     linarith
   -- the profile part
-  have hnum : (2 * c ^ 2 * y * (1 - y ^ 2) + 2 * y * (χ + c ^ 2 * y ^ 2)) * y
-      ≤ 4 * (χ + c ^ 2 * y ^ 2) := by nlinarith [hcond]
-  have hkey : (2 * c ^ 2 * y * (1 - y ^ 2) + 2 * y * (χ + c ^ 2 * y ^ 2)) / (1 - y ^ 2) ^ 2
+  have hnum : (2 * c ^ (2 : ℕ) * y * (1 - y ^ (2 : ℕ)) + 2 * y * (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ))) * y
+      ≤ 4 * (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) := by nlinarith [hcond]
+  have hkey : (2 * c ^ (2 : ℕ) * y * (1 - y ^ (2 : ℕ)) + 2 * y * (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ))) / (1 - y ^ (2 : ℕ)) ^ (2 : ℕ)
       / (2 * W)
-      ≤ 2 * W / y + (2 * y / (1 - y ^ 2)) * W := by
-    rw [div_div, div_le_iff₀ (by positivity : (0 : ℝ) < (1 - y ^ 2) ^ 2 * (2 * W))]
-    have hexp : (2 * W / y + (2 * y / (1 - y ^ 2)) * W) * ((1 - y ^ 2) ^ 2 * (2 * W))
-        = 4 * W ^ 2 * (1 - y ^ 2) ^ 2 * (1 / y + y / (1 - y ^ 2)) := by ring
+      ≤ 2 * W / y + (2 * y / (1 - y ^ (2 : ℕ))) * W := by
+    rw [div_div, div_le_iff₀ (by positivity : (0 : ℝ) < (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) * (2 * W))]
+    have hexp : (2 * W / y + (2 * y / (1 - y ^ (2 : ℕ))) * W) * ((1 - y ^ (2 : ℕ)) ^ (2 : ℕ) * (2 * W))
+        = 4 * W ^ (2 : ℕ) * (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) * (1 / y + y / (1 - y ^ (2 : ℕ))) := by ring
     rw [hexp, hWsq]
-    have hval : 4 * ((χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) * (1 - y ^ 2) ^ 2
-        * (1 / y + y / (1 - y ^ 2)) = 4 * (χ + c ^ 2 * y ^ 2) / y := by
+    have hval : 4 * ((χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ))) * (1 - y ^ (2 : ℕ)) ^ (2 : ℕ)
+        * (1 / y + y / (1 - y ^ (2 : ℕ))) = 4 * (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / y := by
       field_simp
       ring
     rw [hval, le_div_iff₀ hy0]
     linarith [hnum]
   -- assemble
-  have hbw : (0 : ℝ) ≤ (2 * y / (1 - y ^ 2)) * w := by positivity
+  have hbw : (0 : ℝ) ≤ (2 * y / (1 - y ^ (2 : ℕ))) * w := by positivity
   have hWw : 2 * W / y ≤ 2 * W * w := by
     have h1 : 1 / y ≤ w := by
       rw [hwdef]
@@ -132,10 +132,10 @@ theorem prolateAnchoredBarrier_subsolution {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y
     have h2 : 2 * W / y = 2 * W * (1 / y) := by ring
     rw [h2]
     exact mul_le_mul_of_nonneg_left h1 (by positivity)
-  have hexpand : prolateAnchoredBarrier c χ y ^ 2
-      + (2 * y / (1 - y ^ 2)) * prolateAnchoredBarrier c χ y
-      - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)
-      = 2 * W * w + w ^ 2 + (2 * y / (1 - y ^ 2)) * W + (2 * y / (1 - y ^ 2)) * w := by
+  have hexpand : prolateAnchoredBarrier c χ y ^ (2 : ℕ)
+      + (2 * y / (1 - y ^ (2 : ℕ))) * prolateAnchoredBarrier c χ y
+      - (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ))
+      = 2 * W * w + w ^ (2 : ℕ) + (2 * y / (1 - y ^ (2 : ℕ))) * W + (2 * y / (1 - y ^ (2 : ℕ))) * w := by
     rw [prolateAnchoredBarrier, ← hWsq, hwdef]
     ring
   rw [hexpand, prolateAnchoredBarrierDeriv, ← hWdef]
@@ -143,7 +143,7 @@ theorem prolateAnchoredBarrier_subsolution {c χ y : ℝ} (hy0 : 0 < y) (hy1 : y
 
 
 theorem continuousOn_prolateAnchoredBarrier {c χ a b : ℝ}
-    (hpne : ∀ y ∈ Icc a b, (1 : ℝ) - y ^ 2 ≠ 0)
+    (hpne : ∀ y ∈ Icc a b, (1 : ℝ) - y ^ (2 : ℕ) ≠ 0)
     (hyne : ∀ y ∈ Icc a b, y ≠ 0) (hy1ne : ∀ y ∈ Icc a b, (1 : ℝ) - y ≠ 0) :
     ContinuousOn (prolateAnchoredBarrier c χ) (Icc a b) := by
   have h1 : ContinuousOn (fun y : ℝ => 1 / y) (Icc a b) :=
@@ -158,21 +158,21 @@ theorem prolateLogDeriv_le_anchoredBarrier {c χ a b : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
     (hab : a ≤ b) (ha : 0 < a) (hb : b < 1)
-    (hQ : ∀ y ∈ Icc a b, 0 < χ + c ^ 2 * y ^ 2)
-    (hcond : ∀ y ∈ Icc a b, 0 ≤ χ * (2 - y ^ 2) + c ^ 2 * y ^ 2)
+    (hQ : ∀ y ∈ Icc a b, 0 < χ + c ^ (2 : ℕ) * y ^ (2 : ℕ))
+    (hcond : ∀ y ∈ Icc a b, 0 ≤ χ * (2 - y ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ))
     (hpos : ∀ y ∈ Icc a b, 0 < Φ y)
     (hinit : prolateLogDeriv Φ b ≤ prolateAnchoredBarrier c χ b) :
     ∀ y ∈ Icc a b, prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c χ y := by
-  have hp : ∀ y ∈ Icc a b, (0 : ℝ) < 1 - y ^ 2 := by
+  have hp : ∀ y ∈ Icc a b, (0 : ℝ) < 1 - y ^ (2 : ℕ) := by
     intro y hy
     nlinarith [ha, hy.1, hy.2, hb]
   refine HTGeometry.riccati_le_of_le_of_subsolution
     (u := prolateLogDeriv Φ) (U := prolateAnchoredBarrier c χ)
-    (u' := fun y => prolateLogDeriv Φ y ^ 2
-      + (2 * y / (1 - y ^ 2)) * prolateLogDeriv Φ y - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2))
+    (u' := fun y => prolateLogDeriv Φ y ^ (2 : ℕ)
+      + (2 * y / (1 - y ^ (2 : ℕ))) * prolateLogDeriv Φ y - (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)))
     (U' := prolateAnchoredBarrierDeriv c χ)
-    (bcoef := fun y => 2 * y / (1 - y ^ 2))
-    (q := fun y => (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2))
+    (bcoef := fun y => 2 * y / (1 - y ^ (2 : ℕ)))
+    (q := fun y => (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)))
     hab (continuousOn_prolateLogDeriv hsm fun y hy => ne_of_gt (hpos y hy))
     (continuousOn_prolateAnchoredBarrier (fun y hy => (hp y hy).ne')
       (fun y hy => by have := hy.1; linarith)
@@ -188,7 +188,7 @@ theorem prolateLogDeriv_le_anchoredBarrier {c χ a b : ℝ} {Φ : ℝ → ℝ}
     have hy1 : y < 1 := lt_trans hy.2 hb
     exact hasDerivAt_prolateAnchoredBarrier hy0 hy1 (div_pos (hQ y hymem) (hp y hymem))
   · have hnum : ContinuousOn (fun y : ℝ => 2 * y) (Icc a b) := by fun_prop
-    have hden : ContinuousOn (fun y : ℝ => 1 - y ^ 2) (Icc a b) := by fun_prop
+    have hden : ContinuousOn (fun y : ℝ => 1 - y ^ (2 : ℕ)) (Icc a b) := by fun_prop
     exact hnum.div hden fun y hy => ne_of_gt (hp y hy)
   · intro _ _
     rfl
@@ -205,7 +205,7 @@ theorem eventually_prolateLogDeriv_le_anchoredBarrier_at_one {c s : ℝ} {Φ : �
     (hc : 0 < c) (hs : s < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ) (hΦ1 : Φ 1 = 1) :
     ∀ᶠ b : ℝ in nhdsWithin 1 (Iio 1),
-      prolateLogDeriv Φ b ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) b := by
+      prolateLogDeriv Φ b ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) b := by
   have hbase := eventually_prolateLogDeriv_le_prolateWKB_radial_at_one hc hs hsm hΦ1
   have h0 : ∀ᶠ b : ℝ in nhdsWithin 1 (Iio 1), (0 : ℝ) < b :=
     Filter.Eventually.filter_mono nhdsWithin_le_nhds (eventually_gt_nhds (by norm_num))

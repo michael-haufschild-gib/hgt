@@ -35,7 +35,7 @@ theorem horizonCoordinate_strictMonoOn : StrictMonoOn horizonCoordinate (Iio 0) 
   rw [(horizonCoordinate_hasDerivAt t).deriv]
   exact coordinateFirst_pos t ht
 
-theorem tortoiseOf_continuousAt {z : ℝ} (hz : z ∈ Ioo (0:ℝ) 1) : ContinuousAt tortoiseOf z := by
+theorem tortoiseOf_continuousAt_thetaCuspHawkingBMTemporalCurrentRadialCutoff {z : ℝ} (hz : z ∈ Ioo (0:ℝ) 1) : ContinuousAt tortoiseOf z := by
   unfold tortoiseOf
   have hpos : 0 < Real.sqrt z / (1 + Real.sqrt (1 - z)) :=
     div_pos (Real.sqrt_pos.mpr hz.1) (by positivity)
@@ -68,7 +68,7 @@ theorem clearedDensityProfile_continuousOn (q : XiZeroCopy) (branch : Bool) (a :
     have h1 : ContinuousAt (fun z : ℝ => clearedTemporalDensity q branch a zang u (tortoiseOf z)) z :=
       (((clearedTemporalDensity_continuousOn q branch a zang u hu hur) (tortoiseOf z)
         (tortoiseOf_neg hz)).continuousAt (Iio_mem_nhds (tortoiseOf_neg hz))).comp
-        (tortoiseOf_continuousAt hz)
+        (tortoiseOf_continuousAt_thetaCuspHawkingBMTemporalCurrentRadialCutoff hz)
     have h2 : ContinuousAt (fun z : ℝ => (z:ℂ) ^ u) z :=
       Complex.continuousAt_ofReal_cpow_const z u (Or.inr hz.1.ne')
     have h3 : (z:ℂ) ^ u ≠ 0 :=
@@ -201,7 +201,7 @@ theorem cutoff_integral_split (q : XiZeroCopy) (branch : Bool) (a : ℂ) (zang :
     (hs : u - 2 * physicalRate q branch ≠ 0) (hc : connection u (physicalRadialFrequency q) ≠ 0)
     {CB : ℝ} (hbd : ∀ t ∈ Ico (tortoiseOf b) (0:ℝ), ‖clearedTemporalDensity q branch a zang u t‖ ≤ CB)
     {L : ℝ} (hL : L < tortoiseOf b) :
-    (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ 2 - 1) * continuedPhysicalTimeAction q branch u a false t zang) =
+    (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) * continuedPhysicalTimeAction q branch u a false t zang) =
       ((∫ z in Ioc (horizonCoordinate L) b, (z:ℂ) ^ (u - 1) * patchedProfile q branch a zang c₀ b u z) +
         compactPart q branch a zang b u) /
         reducedGreenClearingFactor u (physicalRadialFrequency q) (physicalRate q branch) := by
@@ -211,7 +211,7 @@ theorem cutoff_integral_split (q : XiZeroCopy) (branch : Bool) (a : ℂ) (zang :
     unfold reducedGreenClearingFactor
     exact mul_ne_zero (neg_ne_zero.mpr hs) hc
   have hcont := clearedTemporalDensity_continuousOn q branch a zang u hu hur
-  have h1 : (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ 2 - 1) *
+  have h1 : (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) *
       continuedPhysicalTimeAction q branch u a false t zang) =
       (∫ t in L..0, clearedTemporalDensity q branch a zang u t) /
         reducedGreenClearingFactor u (physicalRadialFrequency q) (physicalRate q branch) := by

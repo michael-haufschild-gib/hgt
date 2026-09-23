@@ -96,7 +96,7 @@ theorem sum_choose_triple {n i : ℕ} (hi : i ≤ n) :
     ∑ k ∈ Finset.range (n + 1),
       (if k ≤ i ∧ i + k ≤ n then
         n.choose (2*k) * ((2*k).choose k * (n - 2*k).choose (i - k)) else 0)
-      = (n.choose i)^2 := by
+      = (n.choose i)^(2 : ℕ) := by
   have h1 : ∀ k ∈ Finset.range (n+1),
       (if k ≤ i ∧ i + k ≤ n then
         n.choose (2*k) * ((2*k).choose k * (n - 2*k).choose (i - k)) else 0)
@@ -118,7 +118,7 @@ theorem legendre_row_identity {R : Type*} [CommRing R] (P Q : R) (n : ℕ) :
     ∑ k ∈ Finset.range (n + 1),
         (if 2 * k ≤ n then ((n.choose (2*k) * (2*k).choose k : ℕ) : R)
           * (P + Q) ^ (n - 2*k) * (P * Q) ^ k else 0)
-      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ 2 : ℕ) : R) * P ^ i * Q ^ (n - i) := by
+      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ (2 : ℕ) : ℕ) : R) * P ^ i * Q ^ (n - i) := by
   classical
   set F : ℕ → ℕ → R := fun i k =>
     if k ≤ i ∧ i + k ≤ n then
@@ -126,7 +126,7 @@ theorem legendre_row_identity {R : Type*} [CommRing R] (P Q : R) (n : ℕ) :
         * P ^ i * Q ^ (n - i)
     else 0 with hFdef
   have hA : ∑ i ∈ Finset.range (n + 1), ∑ k ∈ Finset.range (n + 1), F i k
-      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ 2 : ℕ) : R) * P ^ i * Q ^ (n - i) := by
+      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ (2 : ℕ) : ℕ) : R) * P ^ i * Q ^ (n - i) := by
     refine Finset.sum_congr rfl fun i hi => ?_
     have hi' : i ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
     have hterm : ∀ k ∈ Finset.range (n + 1), F i k
@@ -276,7 +276,7 @@ theorem map_bernsteinPolynomial (n i : ℕ) :
 
 theorem bernsteinRowKernel_eq_sum (n : ℕ) :
     bernsteinRowKernel n
-      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ 2 : ℕ) : Polynomial (Polynomial ℝ))
+      = ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ (2 : ℕ) : ℕ) : Polynomial (Polynomial ℝ))
           * (xVar * yVar) ^ i * ((1 - xVar) * (1 - yVar)) ^ (n - i) := by
   rw [bernsteinRowKernel]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -350,7 +350,7 @@ def legendreKernelCoeffOf (n : ℕ) (x y : R) : R :=
 
 /-- The Bernstein row kernel as a value. -/
 def bernsteinRowKernelOf (n : ℕ) (x y : R) : R :=
-  ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ 2 : ℕ) : R)
+  ∑ i ∈ Finset.range (n + 1), ((n.choose i ^ (2 : ℕ) : ℕ) : R)
     * (x * y) ^ i * ((1 - x) * (1 - y)) ^ (n - i)
 
 /-- **(6)** at the level of values. -/
@@ -372,7 +372,7 @@ theorem bernsteinRowKernelOf_eq (n : ℕ) (x y : R) :
 
 /-- **(7)** `A² - 4bc = D²`. -/
 theorem kernelA_sq_sub (x y : R) :
-    (kernelAOf x y) ^ 2 - 4 * kernelBCOf x y = (kernelDOf x y) ^ 2 := by
+    (kernelAOf x y) ^ (2 : ℕ) - 4 * kernelBCOf x y = (kernelDOf x y) ^ (2 : ℕ) := by
   rw [kernelAOf, kernelBCOf, kernelDOf]; ring
 
 /-- **(8)** The kernel is symmetric in its two sources. -/
@@ -399,12 +399,12 @@ theorem kernelDOf_compl (x y : R) : kernelDOf (1 - x) (1 - y) = -(kernelDOf x y)
 /-! ### The conjugate reflected specialization -/
 
 theorem kernelAOf_conj (u : ℂ) :
-    kernelAOf u ((starRingEnd ℂ) u) = ((‖u‖ ^ 2 + ‖1 - u‖ ^ 2 : ℝ) : ℂ) := by
+    kernelAOf u ((starRingEnd ℂ) u) = ((‖u‖ ^ (2 : ℕ) + ‖1 - u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have h1 : u * (starRingEnd ℂ) u = ((Complex.normSq u : ℝ) : ℂ) := Complex.mul_conj u
   have h2 : u + (starRingEnd ℂ) u = ((2 * u.re : ℝ) : ℂ) := by
     rw [Complex.add_conj]
-  have h3 : ‖u‖ ^ 2 = Complex.normSq u := Complex.sq_norm u
-  have h4 : ‖1 - u‖ ^ 2 = Complex.normSq (1 - u) := Complex.sq_norm (1 - u)
+  have h3 : ‖u‖ ^ (2 : ℕ) = Complex.normSq u := Complex.sq_norm u
+  have h4 : ‖1 - u‖ ^ (2 : ℕ) = Complex.normSq (1 - u) := Complex.sq_norm (1 - u)
   have h5 : Complex.normSq (1 - u) = 1 - 2 * u.re + Complex.normSq u := by
     simp [Complex.normSq_apply]
     ring
@@ -416,11 +416,11 @@ theorem kernelAOf_conj (u : ℂ) :
   ring
 
 theorem kernelDOf_conj_sq (u : ℂ) :
-    (kernelDOf u ((starRingEnd ℂ) u)) ^ 2 = (((‖u‖ ^ 2 - ‖1 - u‖ ^ 2) ^ 2 : ℝ) : ℂ) := by
+    (kernelDOf u ((starRingEnd ℂ) u)) ^ (2 : ℕ) = (((‖u‖ ^ (2 : ℕ) - ‖1 - u‖ ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   have h2 : u + (starRingEnd ℂ) u = ((2 * u.re : ℝ) : ℂ) := by
     rw [Complex.add_conj]
-  have h3 : ‖u‖ ^ 2 = Complex.normSq u := Complex.sq_norm u
-  have h4 : ‖1 - u‖ ^ 2 = Complex.normSq (1 - u) := Complex.sq_norm (1 - u)
+  have h3 : ‖u‖ ^ (2 : ℕ) = Complex.normSq u := Complex.sq_norm u
+  have h4 : ‖1 - u‖ ^ (2 : ℕ) = Complex.normSq (1 - u) := Complex.sq_norm (1 - u)
   have h5 : Complex.normSq (1 - u) = 1 - 2 * u.re + Complex.normSq u := by
     simp [Complex.normSq_apply]
     ring
@@ -437,37 +437,37 @@ def reflectedAmplitudeMinus (u : ℂ) : ℝ := ‖u‖ - ‖1 - u‖
 
 /-- **(9)** The exact conjugate-reflected factorization of the quadratic under the radical. -/
 theorem reflected_quadratic_factorization (u : ℂ) (t : ℝ) :
-    1 - 2 * t * (‖u‖ ^ 2 + ‖1 - u‖ ^ 2) + t ^ 2 * ((‖u‖ ^ 2 - ‖1 - u‖ ^ 2) ^ 2)
-      = (1 - reflectedAmplitudePlus u ^ 2 * t) * (1 - reflectedAmplitudeMinus u ^ 2 * t) := by
+    1 - 2 * t * (‖u‖ ^ (2 : ℕ) + ‖1 - u‖ ^ (2 : ℕ)) + t ^ (2 : ℕ) * ((‖u‖ ^ (2 : ℕ) - ‖1 - u‖ ^ (2 : ℕ)) ^ (2 : ℕ))
+      = (1 - reflectedAmplitudePlus u ^ (2 : ℕ) * t) * (1 - reflectedAmplitudeMinus u ^ (2 : ℕ) * t) := by
   rw [reflectedAmplitudePlus, reflectedAmplitudeMinus]
   ring
 
 /-- **(10)** The first positive branch point of the reflected atom kernel is `B₊(u)^{-2}`. -/
 theorem reflected_quadratic_pos_of_lt (u : ℂ) (hB : 0 < reflectedAmplitudePlus u) {t : ℝ}
-    (ht0 : 0 ≤ t) (htB : t < 1 / reflectedAmplitudePlus u ^ 2) :
-    0 < 1 - 2 * t * (‖u‖ ^ 2 + ‖1 - u‖ ^ 2) + t ^ 2 * ((‖u‖ ^ 2 - ‖1 - u‖ ^ 2) ^ 2) := by
+    (ht0 : 0 ≤ t) (htB : t < 1 / reflectedAmplitudePlus u ^ (2 : ℕ)) :
+    0 < 1 - 2 * t * (‖u‖ ^ (2 : ℕ) + ‖1 - u‖ ^ (2 : ℕ)) + t ^ (2 : ℕ) * ((‖u‖ ^ (2 : ℕ) - ‖1 - u‖ ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   rw [reflected_quadratic_factorization]
-  have hBsq : 0 < reflectedAmplitudePlus u ^ 2 := by positivity
-  have h1 : reflectedAmplitudePlus u ^ 2 * t < 1 := by
+  have hBsq : 0 < reflectedAmplitudePlus u ^ (2 : ℕ) := by positivity
+  have h1 : reflectedAmplitudePlus u ^ (2 : ℕ) * t < 1 := by
     have := (lt_div_iff₀ hBsq).mp htB
     linarith [this]
-  have hmono : reflectedAmplitudeMinus u ^ 2 ≤ reflectedAmplitudePlus u ^ 2 := by
+  have hmono : reflectedAmplitudeMinus u ^ (2 : ℕ) ≤ reflectedAmplitudePlus u ^ (2 : ℕ) := by
     rw [reflectedAmplitudePlus, reflectedAmplitudeMinus]
     nlinarith [norm_nonneg u, norm_nonneg (1 - u)]
-  have h2 : reflectedAmplitudeMinus u ^ 2 * t < 1 := by
+  have h2 : reflectedAmplitudeMinus u ^ (2 : ℕ) * t < 1 := by
     have := mul_le_mul_of_nonneg_right hmono ht0
     linarith
-  have hp1 : 0 < 1 - reflectedAmplitudePlus u ^ 2 * t := by linarith
-  have hp2 : 0 < 1 - reflectedAmplitudeMinus u ^ 2 * t := by linarith
+  have hp1 : 0 < 1 - reflectedAmplitudePlus u ^ (2 : ℕ) * t := by linarith
+  have hp2 : 0 < 1 - reflectedAmplitudeMinus u ^ (2 : ℕ) * t := by linarith
   positivity
 
 /-- **(10)** and the branch point is attained. -/
 theorem reflected_quadratic_eq_zero (u : ℂ) (hB : 0 < reflectedAmplitudePlus u) :
-    1 - 2 * (1 / reflectedAmplitudePlus u ^ 2) * (‖u‖ ^ 2 + ‖1 - u‖ ^ 2)
-        + (1 / reflectedAmplitudePlus u ^ 2) ^ 2 * ((‖u‖ ^ 2 - ‖1 - u‖ ^ 2) ^ 2) = 0 := by
+    1 - 2 * (1 / reflectedAmplitudePlus u ^ (2 : ℕ)) * (‖u‖ ^ (2 : ℕ) + ‖1 - u‖ ^ (2 : ℕ))
+        + (1 / reflectedAmplitudePlus u ^ (2 : ℕ)) ^ (2 : ℕ) * ((‖u‖ ^ (2 : ℕ) - ‖1 - u‖ ^ (2 : ℕ)) ^ (2 : ℕ)) = 0 := by
   rw [reflected_quadratic_factorization]
-  have hBsq : (reflectedAmplitudePlus u : ℝ) ^ 2 ≠ 0 := by positivity
-  rw [show reflectedAmplitudePlus u ^ 2 * (1 / reflectedAmplitudePlus u ^ 2) = 1 by
+  have hBsq : (reflectedAmplitudePlus u : ℝ) ^ (2 : ℕ) ≠ 0 := by positivity
+  rw [show reflectedAmplitudePlus u ^ (2 : ℕ) * (1 / reflectedAmplitudePlus u ^ (2 : ℕ)) = 1 by
     field_simp]
   ring
 
@@ -493,13 +493,13 @@ theorem abelCriticalRadius_eq_reflectedPinch_of_not_rh (hRH : ¬ RiemannHypothes
       xiEndpointBernsteinAtomAmplitudeBase q = B ∧
       reflectedAmplitudePlus (xiEndpointNormalizedReciprocalSquare q) = B ∧
       PrimeArchEndpointBernsteinAttainedExactThreshold B ∧
-      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) ∧
-      (1 - 2 * (1 / B ^ 2)
-          * (‖xiEndpointNormalizedReciprocalSquare q‖ ^ 2
-            + ‖1 - xiEndpointNormalizedReciprocalSquare q‖ ^ 2)
-        + (1 / B ^ 2) ^ 2
-          * ((‖xiEndpointNormalizedReciprocalSquare q‖ ^ 2
-            - ‖1 - xiEndpointNormalizedReciprocalSquare q‖ ^ 2) ^ 2) = 0) := by
+      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) ∧
+      (1 - 2 * (1 / B ^ (2 : ℕ))
+          * (‖xiEndpointNormalizedReciprocalSquare q‖ ^ (2 : ℕ)
+            + ‖1 - xiEndpointNormalizedReciprocalSquare q‖ ^ (2 : ℕ))
+        + (1 / B ^ (2 : ℕ)) ^ (2 : ℕ)
+          * ((‖xiEndpointNormalizedReciprocalSquare q‖ ^ (2 : ℕ)
+            - ‖1 - xiEndpointNormalizedReciprocalSquare q‖ ^ (2 : ℕ)) ^ (2 : ℕ)) = 0) := by
   obtain ⟨B, hthr, hrad⟩ :=
     exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
   obtain ⟨hB1, hB2, ⟨q, hq⟩, hB4, hB5⟩ := id hthr

@@ -31,7 +31,7 @@ open GaloisForLFunctions
 
 /-- **The closed form of the squared Hermite centre values at even index.** -/
 theorem hermiteOriginValue_sq_two_mul (m : ℕ) :
-    hermiteOriginValue (2 * m) ^ 2 = Real.sqrt 2 * (Nat.centralBinom m : ℝ) / 4 ^ m := by
+    hermiteOriginValue (2 * m) ^ (2 : ℕ) = Real.sqrt 2 * (Nat.centralBinom m : ℝ) / 4 ^ m := by
   induction m with
   | zero =>
       rw [Nat.mul_zero, hermiteOriginValue_sq_zero]
@@ -52,8 +52,8 @@ theorem hermiteOriginValue_sq_two_mul (m : ℕ) :
           = 2 * (2 * (k : ℝ) + 1) * (Nat.centralBinom k : ℝ) := by
         exact_mod_cast congrArg (fun t : ℕ => (t : ℝ)) hcb
       -- the two squared origin values
-      have hval : hermiteOriginValue (2 * k + 2) ^ 2
-          = ((2 * (k : ℝ) + 1) / (2 * (k : ℝ) + 2)) * hermiteOriginValue (2 * k) ^ 2 := by
+      have hval : hermiteOriginValue (2 * k + 2) ^ (2 : ℕ)
+          = ((2 * (k : ℝ) + 1) / (2 * (k : ℝ) + 2)) * hermiteOriginValue (2 * k) ^ (2 : ℕ) := by
         rw [hermiteOriginValue_sq, hermiteOriginValue_sq, hrec, hfact]
         push_cast
         field_simp
@@ -76,8 +76,8 @@ theorem hermiteOriginValue_sq_two_mul (m : ℕ) :
 /-- **The card's `(4)`**: the squared centre values along the ladder `n = 4j` are
 `a_0² · binom(4j, 2j) / 16^j`. -/
 theorem hermiteOriginValue_sq_four_mul (j : ℕ) :
-    hermiteOriginValue (4 * j) ^ 2
-      = hermiteOriginValue 0 ^ 2 * (Nat.choose (4 * j) (2 * j) : ℝ) / 16 ^ j := by
+    hermiteOriginValue (4 * j) ^ (2 : ℕ)
+      = hermiteOriginValue 0 ^ (2 : ℕ) * (Nat.choose (4 * j) (2 * j) : ℝ) / 16 ^ j := by
   have hidx : 4 * j = 2 * (2 * j) := by ring
   have hcb : Nat.centralBinom (2 * j) = Nat.choose (4 * j) (2 * j) := by
     rw [Nat.centralBinom, hidx]

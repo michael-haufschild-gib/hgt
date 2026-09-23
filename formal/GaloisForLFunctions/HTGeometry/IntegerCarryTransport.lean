@@ -112,10 +112,10 @@ theorem untwisted_leibniz_iff_integer (x : ℝ) :
     simp [carry_integer]
 
 /-- The quadratic lift retains both the transported argument and the square weight. -/
-noncomputable def second (n : ℕ) (x : ℝ) : ℝ := (carry n x : ℝ) ^ 2 / 2
+noncomputable def second (n : ℕ) (x : ℝ) : ℝ := (carry n x : ℝ) ^ (2 : ℕ) / 2
 
 theorem second_mul (m n : ℕ) (x : ℝ) :
-    second (m * n) x = second m ((n : ℝ) * x) + (m : ℝ) ^ 2 * second n x +
+    second (m * n) x = second m ((n : ℝ) * x) + (m : ℝ) ^ (2 : ℕ) * second n x +
       (m : ℝ) * (carry m ((n : ℝ) * x) : ℝ) * (carry n x : ℝ) := by
   simp only [second, carry_mul, Int.cast_add, Int.cast_mul, Int.cast_natCast]
   ring

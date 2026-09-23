@@ -20,7 +20,7 @@ open Finset ArithmeticFunction
 
 /-- `‖μ(n)‖²` is the squarefree indicator. -/
 theorem normSq_moebiusC_eq_indicator (n : ℕ) :
-    ‖moebiusC n‖ ^ 2 = if Squarefree n then 1 else 0 := by
+    ‖moebiusC n‖ ^ (2 : ℕ) = if Squarefree n then 1 else 0 := by
   classical
   by_cases hsf : Squarefree n
   · rw [if_pos hsf]
@@ -37,7 +37,7 @@ theorem normSq_moebiusC_eq_indicator (n : ℕ) :
 
 /-- The squared mass of μ over a range is the squarefree count. -/
 theorem sum_normSq_moebiusC_eq_card (R : ℕ) :
-    ∑ n ∈ Finset.range R, ‖moebiusC n‖ ^ 2
+    ∑ n ∈ Finset.range R, ‖moebiusC n‖ ^ (2 : ℕ)
       = (((Finset.range R).filter (fun n => Squarefree n)).card : ℝ) := by
   classical
   rw [Finset.sum_congr rfl fun n _ => normSq_moebiusC_eq_indicator n, ← Finset.sum_filter,
@@ -45,8 +45,8 @@ theorem sum_normSq_moebiusC_eq_card (R : ℕ) :
 
 /-- **The short-interval variance of μ is carried by the squarefree numbers.** -/
 theorem sum_normSq_window_moebius_le (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ 2
-      ≤ (L : ℝ) ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) ^ (2 : ℕ)
         * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ) := by
   have h := sum_normSq_window_le moebiusC X L
   rwa [sum_normSq_moebiusC_eq_card] at h

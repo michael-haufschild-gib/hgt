@@ -88,7 +88,7 @@ theorem finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy
 Boltzmann multiplicity. -/
 theorem sum_sq_diag_finiteKMSWightmanWeight_zero_eq_exp_neg_entropy
     {I : Type*} [Fintype I] [Nonempty I] (energy : I → ℝ) :
-    ∑ i, HTGeometry.finiteKMSWightmanWeight 0 energy i i ^ 2 =
+    ∑ i, HTGeometry.finiteKMSWightmanWeight 0 energy i i ^ (2 : ℕ) =
       Real.exp (-finiteMicrocanonicalEntropy I) := by
   rw [HTGeometry.sum_sq_diag_finiteKMSWightmanWeight_eq_purity,
     finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
@@ -98,7 +98,7 @@ inverse Boltzmann multiplicity. -/
 theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_zero_eq_one_sub_exp_neg_entropy
     {I : Type*} [Fintype I] [Nonempty I] [DecidableEq I] (energy : I → ℝ) :
     (∑ i, ∑ j ∈ Finset.univ.erase i,
-        HTGeometry.finiteKMSWightmanWeight 0 energy i j ^ 2) =
+        HTGeometry.finiteKMSWightmanWeight 0 energy i j ^ (2 : ℕ)) =
       1 - Real.exp (-finiteMicrocanonicalEntropy I) := by
   rw [HTGeometry.sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity,
     finiteGibbsPurity_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
@@ -166,8 +166,8 @@ normalization. -/
 theorem finiteGibbsEnergyVariance_zero_eq_entropy_weighted
     {I : Type*} [Fintype I] [Nonempty I] (energy : I → ℝ) :
     HTGeometry.finiteGibbsEnergyVariance 0 energy =
-      Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i ^ 2 -
-        (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i) ^ 2 := by
+      Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i ^ (2 : ℕ) -
+        (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i) ^ (2 : ℕ) := by
   unfold HTGeometry.finiteGibbsEnergyVariance HTGeometry.finiteGibbsEnergyMean
   simp_rw [finiteGibbsStateWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy]
   rw [Finset.mul_sum, Finset.mul_sum]
@@ -206,7 +206,7 @@ theorem finiteKMSWightmanTransitionIntensity_zero_eq_exp_neg_entropy_mul_normSq
 /-- Squared zero-inverse-temperature Wightman weights have the squared inverse multiplicity. -/
 theorem finiteKMSWightmanWeight_sq_zero_eq_exp_neg_two_entropy
     {I : Type*} [Fintype I] (energy : I → ℝ) (i j : I) :
-    HTGeometry.finiteKMSWightmanWeight 0 energy i j ^ 2 =
+    HTGeometry.finiteKMSWightmanWeight 0 energy i j ^ (2 : ℕ) =
       Real.exp (-2 * finiteMicrocanonicalEntropy I) := by
   rw [finiteKMSWightmanWeight_zero_eq_exp_neg_finiteMicrocanonicalEntropy,
     pow_two, ← Real.exp_add]
@@ -218,8 +218,8 @@ Boltzmann-normalized energy variance. -/
 theorem thermalGapMoment_finiteGibbsProduct_two_zero_eq_entropy_weighted
     {I : Type*} [Fintype I] [Nonempty I] (energy : I → ℝ) :
     HTGeometry.thermalGapMoment (HTGeometry.finiteGibbsProductGapIntensity 0 energy) energy 2 =
-      2 * (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i ^ 2 -
-        (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i) ^ 2) := by
+      2 * (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i ^ (2 : ℕ) -
+        (Real.exp (-finiteMicrocanonicalEntropy I) * ∑ i, energy i) ^ (2 : ℕ)) := by
   rw [HTGeometry.thermalGapMoment_finiteGibbsProduct_two_eq_two_mul_energyVariance,
     finiteGibbsEnergyVariance_zero_eq_entropy_weighted]
 

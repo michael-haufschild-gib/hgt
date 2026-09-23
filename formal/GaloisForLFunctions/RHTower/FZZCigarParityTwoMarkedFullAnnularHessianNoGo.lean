@@ -22,7 +22,7 @@ def fzzTwoMarkedAnnularTiltMean (a : ℝ) : ℝ :=
 
 /-- Connected logarithmic-radius fluctuation in the unit annulus tilted by rate `a`. -/
 def fzzTwoMarkedAnnularTiltVariance (a : ℝ) : ℝ :=
-  1 / a ^ 2 - Real.exp a / (Real.exp a - 1) ^ 2
+  1 / a ^ (2 : ℕ) - Real.exp a / (Real.exp a - 1) ^ (2 : ℕ)
 
 /-- Actual mixed logarithmic response of the compact opposite-winding pair. -/
 def fzzTwoMarkedAnnularFullMixedResponse (u L : ℝ) : ℝ :=
@@ -201,7 +201,7 @@ theorem fzzTwoMarkedAnnularIntegral_fullMixedLogDeriv (u L : ℝ) :
       Real.log (fzzTwoMarkedAnnularIntegral u L d e)) 0) 0 =
       fzzTwoMarkedContact (fzzTwoMarkedPhysicalLevel u) (-1) *
           (L + fzzTwoMarkedAnnularTiltMean (-Real.exp u)) +
-        fzzTwoMarkedPhysicalLevel u ^ 2 *
+        fzzTwoMarkedPhysicalLevel u ^ (2 : ℕ) *
           fzzTwoMarkedAnnularTiltVariance (-Real.exp u) := by
   let A : ℝ → ℝ := fun e => fzzTwoMarkedAnnularRate u 0 e
   have hA0 : A 0 = -Real.exp u := fzzTwoMarkedAnnularRate_zero_zero u
@@ -245,7 +245,7 @@ theorem fzzTwoMarkedAnnularFullMixedResponse_eq (u L : ℝ) :
     fzzTwoMarkedAnnularFullMixedResponse u L =
       fzzTwoMarkedContact (fzzTwoMarkedPhysicalLevel u) (-1) *
           (L + fzzTwoMarkedAnnularTiltMean (-Real.exp u)) +
-        fzzTwoMarkedPhysicalLevel u ^ 2 *
+        fzzTwoMarkedPhysicalLevel u ^ (2 : ℕ) *
           fzzTwoMarkedAnnularTiltVariance (-Real.exp u) := by
   exact fzzTwoMarkedAnnularIntegral_fullMixedLogDeriv u L
 
@@ -287,7 +287,7 @@ theorem fzzTwoMarkedAnnularFullMixedResponse_surjective (u target : ℝ) :
     ∃ L : ℝ, fzzTwoMarkedAnnularFullMixedResponse u L = target := by
   let C := fzzTwoMarkedContact (fzzTwoMarkedPhysicalLevel u) (-1)
   let M := fzzTwoMarkedAnnularTiltMean (-Real.exp u)
-  let V := fzzTwoMarkedPhysicalLevel u ^ 2 *
+  let V := fzzTwoMarkedPhysicalLevel u ^ (2 : ℕ) *
     fzzTwoMarkedAnnularTiltVariance (-Real.exp u)
   have hC : C ≠ 0 := ne_of_lt (fzzTwoMarkedAnnularContact_neg u)
   refine ⟨(target - C * M - V) / C, ?_⟩

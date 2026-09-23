@@ -27,26 +27,26 @@ open scoped ArithmeticFunction.Moebius
 
 /-- The Möbius series against inverse squares converges absolutely. -/
 theorem summable_moebius_div_sq :
-    Summable (fun d : ℕ => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2) := by
-  refine Summable.of_norm_bounded (g := fun d : ℕ => (1 : ℝ) / (d : ℝ) ^ 2)
+    Summable (fun d : ℕ => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ)) := by
+  refine Summable.of_norm_bounded (g := fun d : ℕ => (1 : ℝ) / (d : ℝ) ^ (2 : ℕ))
     (Real.summable_one_div_nat_pow.2 (by norm_num)) ?_
   intro d
   have hmu : |((μ d : ℤ) : ℝ)| ≤ 1 := by
     have h := ArithmeticFunction.abs_moebius_le_one (n := d)
     have hc : ((|μ d| : ℤ) : ℝ) ≤ 1 := by exact_mod_cast h
     rwa [Int.cast_abs] at hc
-  have hsq : (0 : ℝ) ≤ (d : ℝ) ^ 2 := by positivity
+  have hsq : (0 : ℝ) ≤ (d : ℝ) ^ (2 : ℕ) := by positivity
   rw [Real.norm_eq_abs, abs_div, abs_of_nonneg hsq]
   exact div_le_div_of_nonneg_right hmu hsq
 
 /-- The squarefree density `∑_{d ≥ 1} μ(d)/d²`. -/
-noncomputable def squarefreeDensity : ℝ := ∑' d : ℕ, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2
+noncomputable def squarefreeDensity : ℝ := ∑' d : ℕ, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ)
 
 /-- **Truncation error of the density.** -/
 theorem abs_sum_Icc_moebius_div_sq_sub_le {R : ℕ} (hR : 1 ≤ R) :
-    |∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2 - squarefreeDensity| ≤ 1 / (R : ℝ) := by
+    |∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ) - squarefreeDensity| ≤ 1 / (R : ℝ) := by
   classical
-  set f : ℕ → ℝ := fun d => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2 with hf
+  set f : ℕ → ℝ := fun d => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ) with hf
   have hsum := summable_moebius_div_sq
   have hsplit : ∑ i ∈ Finset.range (R + 1), f i + ∑' n : ℕ, f (n + (R + 1)) = ∑' d : ℕ, f d :=
     hsum.sum_add_tsum_nat_add (R + 1)
@@ -58,14 +58,14 @@ theorem abs_sum_Icc_moebius_div_sq_sub_le {R : ℕ} (hR : 1 ≤ R) :
   have hfin : ∑ i ∈ Finset.range (R + 1), f i = ∑ d ∈ Finset.Icc 1 R, f d := by
     rw [hins, Finset.sum_insert (by simp), h0, zero_add]
   have htail : |∑' n : ℕ, f (n + (R + 1))| ≤ 1 / (R : ℝ) := by
-    have hbound : ∀ n : ℕ, ‖f (n + (R + 1))‖ ≤ (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2 := by
+    have hbound : ∀ n : ℕ, ‖f (n + (R + 1))‖ ≤ (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ) := by
       intro n
       have hmu : |((μ (n + (R + 1)) : ℤ) : ℝ)| ≤ 1 := by
         have h := ArithmeticFunction.abs_moebius_le_one (n := n + (R + 1))
         have hc : ((|μ (n + (R + 1))| : ℤ) : ℝ) ≤ 1 := by exact_mod_cast h
         rwa [Int.cast_abs] at hc
       have hcast : ((n + (R + 1) : ℕ) : ℝ) = (n : ℝ) + R + 1 := by push_cast; ring
-      have hsq : (0 : ℝ) < ((n : ℝ) + R + 1) ^ 2 := by positivity
+      have hsq : (0 : ℝ) < ((n : ℝ) + R + 1) ^ (2 : ℕ) := by positivity
       rw [hf]
       simp only
       rw [hcast, Real.norm_eq_abs, abs_div, abs_of_nonneg hsq.le]
@@ -86,13 +86,13 @@ theorem abs_sum_Icc_moebius_div_sq_sub_le {R : ℕ} (hR : 1 ≤ R) :
 
 /-- Exchanging the truncated divisor sum with the interval sum. -/
 theorem sum_truncated_moebius_eq (t L R : ℕ) :
-    ∑ n ∈ Finset.Ioc t (t + L), ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ 2 ∣ n}, ((μ d : ℤ) : ℝ)
+    ∑ n ∈ Finset.Ioc t (t + L), ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ (2 : ℕ) ∣ n}, ((μ d : ℤ) : ℝ)
       = ∑ d ∈ Finset.Icc 1 R,
-          ((μ d : ℤ) : ℝ) * ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ) := by
+          ((μ d : ℤ) : ℝ) * ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ) := by
   classical
   have hinner : ∀ n ∈ Finset.Ioc t (t + L),
-      ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ 2 ∣ n}, ((μ d : ℤ) : ℝ)
-        = ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n then ((μ d : ℤ) : ℝ) else 0) := by
+      ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ (2 : ℕ) ∣ n}, ((μ d : ℤ) : ℝ)
+        = ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n then ((μ d : ℤ) : ℝ) else 0) := by
     intro n _
     rw [Finset.sum_filter]
   rw [Finset.sum_congr rfl hinner, Finset.sum_comm]
@@ -102,7 +102,7 @@ theorem sum_truncated_moebius_eq (t L R : ℕ) :
 
 /-- **Short-interval squarefree count, truncated form.**  Uniform in the starting point `t`. -/
 theorem abs_truncated_squarefree_sub_le (t L R : ℕ) (hR : 1 ≤ R) :
-    |∑ n ∈ Finset.Ioc t (t + L), ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ 2 ∣ n}, ((μ d : ℤ) : ℝ)
+    |∑ n ∈ Finset.Ioc t (t + L), ∑ d ∈ {d ∈ Finset.Icc 1 R | d ^ (2 : ℕ) ∣ n}, ((μ d : ℤ) : ℝ)
         - (L : ℝ) * squarefreeDensity|
       ≤ (R : ℝ) + (L : ℝ) / (R : ℝ) := by
   classical
@@ -111,12 +111,12 @@ theorem abs_truncated_squarefree_sub_le (t L R : ℕ) (hR : 1 ≤ R) :
     have : (1 : ℝ) ≤ (R : ℝ) := by exact_mod_cast hR
     linarith
   set A : ℝ := ∑ d ∈ Finset.Icc 1 R,
-      ((μ d : ℤ) : ℝ) * ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ) with hA
-  set B : ℝ := (L : ℝ) * ∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2 with hB
+      ((μ d : ℤ) : ℝ) * ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ) with hA
+  set B : ℝ := (L : ℝ) * ∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ) with hB
   have hAB : |A - B| ≤ (R : ℝ) := by
     have hdiff : A - B
         = ∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ)
-            * (((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ) - (L : ℝ) / (d : ℝ) ^ 2) := by
+            * (((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ) - (L : ℝ) / (d : ℝ) ^ (2 : ℕ)) := by
       rw [hA, hB, Finset.mul_sum, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl ?_
       intro d _
@@ -124,22 +124,22 @@ theorem abs_truncated_squarefree_sub_le (t L R : ℕ) (hR : 1 ≤ R) :
     rw [hdiff]
     refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
     have hterm : ∀ d ∈ Finset.Icc 1 R,
-        |((μ d : ℤ) : ℝ) * (((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
-          - (L : ℝ) / (d : ℝ) ^ 2)| ≤ 1 := by
+        |((μ d : ℤ) : ℝ) * (((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
+          - (L : ℝ) / (d : ℝ) ^ (2 : ℕ))| ≤ 1 := by
       intro d hd
       obtain ⟨hd1, -⟩ := Finset.mem_Icc.1 hd
-      have hdsq : 0 < d ^ 2 := by positivity
-      have hcount := abs_card_filter_dvd_Ioc_sub_lt (d ^ 2) t (t + L) hdsq (by omega)
+      have hdsq : 0 < d ^ (2 : ℕ) := by positivity
+      have hcount := abs_card_filter_dvd_Ioc_sub_lt (d ^ (2 : ℕ)) t (t + L) hdsq (by omega)
       have hcast : (((t + L : ℕ)) : ℝ) - (t : ℝ) = (L : ℝ) := by push_cast; ring
-      have hcast2 : (((d ^ 2 : ℕ)) : ℝ) = (d : ℝ) ^ 2 := by push_cast; ring
+      have hcast2 : (((d ^ (2 : ℕ) : ℕ)) : ℝ) = (d : ℝ) ^ (2 : ℕ) := by push_cast; ring
       rw [hcast, hcast2] at hcount
       have hmu : |((μ d : ℤ) : ℝ)| ≤ 1 := by
         have h := ArithmeticFunction.abs_moebius_le_one (n := d)
         have hc : ((|μ d| : ℤ) : ℝ) ≤ 1 := by exact_mod_cast h
         rwa [Int.cast_abs] at hc
       rw [abs_mul]
-      calc |((μ d : ℤ) : ℝ)| * |((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
-              - (L : ℝ) / (d : ℝ) ^ 2|
+      calc |((μ d : ℤ) : ℝ)| * |((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
+              - (L : ℝ) / (d : ℝ) ^ (2 : ℕ)|
           ≤ 1 * 1 := by
             refine mul_le_mul hmu hcount.le (abs_nonneg _) (by norm_num)
         _ = 1 := by norm_num
@@ -149,10 +149,10 @@ theorem abs_truncated_squarefree_sub_le (t L R : ℕ) (hR : 1 ≤ R) :
   have hBC : |B - (L : ℝ) * squarefreeDensity| ≤ (L : ℝ) / (R : ℝ) := by
     have hdens := abs_sum_Icc_moebius_div_sq_sub_le hR
     have hrw : B - (L : ℝ) * squarefreeDensity
-        = (L : ℝ) * ((∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2) - squarefreeDensity) := by
+        = (L : ℝ) * ((∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ)) - squarefreeDensity) := by
       rw [hB]; ring
     rw [hrw, abs_mul, abs_of_nonneg hLnn]
-    calc (L : ℝ) * |(∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2) - squarefreeDensity|
+    calc (L : ℝ) * |(∑ d ∈ Finset.Icc 1 R, ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ)) - squarefreeDensity|
         ≤ (L : ℝ) * (1 / (R : ℝ)) := mul_le_mul_of_nonneg_left hdens hLnn
       _ = (L : ℝ) / (R : ℝ) := by ring
   rw [sum_truncated_moebius_eq t L R, ← hA]
@@ -163,12 +163,12 @@ theorem abs_truncated_squarefree_sub_le (t L R : ℕ) (hR : 1 ≤ R) :
 /-- The Möbius/inverse-square series is the `L`-series of `μ` at `s = 2`. -/
 theorem lseries_moebius_two_eq :
     LSeries (fun n : ℕ => ((μ n : ℤ) : ℂ)) 2 = (squarefreeDensity : ℂ) := by
-  have hreal : HasSum (fun d : ℕ => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2) squarefreeDensity :=
+  have hreal : HasSum (fun d : ℕ => ((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ)) squarefreeDensity :=
     summable_moebius_div_sq.hasSum
-  have hcomplex : HasSum (fun d : ℕ => ((((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2 : ℝ) : ℂ))
+  have hcomplex : HasSum (fun d : ℕ => ((((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ) : ℝ) : ℂ))
       ((squarefreeDensity : ℝ) : ℂ) := Complex.hasSum_ofReal.2 hreal
   have hterm : ∀ d : ℕ, LSeries.term (fun n : ℕ => ((μ n : ℤ) : ℂ)) 2 d
-      = ((((μ d : ℤ) : ℝ) / (d : ℝ) ^ 2 : ℝ) : ℂ) := by
+      = ((((μ d : ℤ) : ℝ) / (d : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro d
     rcases Nat.eq_zero_or_pos d with rfl | hd
     · simp [LSeries.term]
@@ -182,13 +182,13 @@ theorem lseries_moebius_two_eq :
   rw [LSeries, tsum_congr hterm, this]
 
 /-- **The squarefree density is `6/π²`.** -/
-theorem squarefreeDensity_eq : squarefreeDensity = 6 / Real.pi ^ 2 := by
+theorem squarefreeDensity_eq : squarefreeDensity = 6 / Real.pi ^ (2 : ℕ) := by
   have hz : (1 : ℝ) < (2 : ℂ).re := by norm_num
   have h := RHTower.LSeries_moebius_eq_inv_riemannZeta hz
   rw [lseries_moebius_two_eq, riemannZeta_two] at h
   have hpi : (Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast Real.pi_ne_zero
-  have hval : (((Real.pi : ℂ)) ^ 2 / 6)⁻¹ = ((6 / Real.pi ^ 2 : ℝ) : ℂ) := by
+  have hval : (((Real.pi : ℂ)) ^ (2 : ℕ) / 6)⁻¹ = ((6 / Real.pi ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     field_simp
   rw [hval] at h

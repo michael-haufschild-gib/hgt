@@ -23,15 +23,15 @@ noncomputable section
 private def realWeightedSymmetricPairTerm
     {n α : Type*} [Fintype n] (w : α → ℝ) (v : α → n → ℂ)
     (a b : α) : ℝ :=
-  (((w a * w b : ℝ) : ℂ) * (star (v b) ⬝ᵥ v a) ^ 2).re
+  (((w a * w b : ℝ) : ℂ) * (star (v b) ⬝ᵥ v a) ^ (2 : ℕ)).re
 
 private theorem realWeightedSymmetricPairTerm_self
     {n α : Type*} [Fintype n] (w : α → ℝ) (v : α → n → ℂ)
     (a : α) :
     realWeightedSymmetricPairTerm w v a a =
-      w a ^ 2 * (∑ j, ‖v a j‖ ^ 2) ^ 2 := by
+      w a ^ (2 : ℕ) * (∑ j, ‖v a j‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hdot :
-      star (v a) ⬝ᵥ v a = ((∑ j, ‖v a j‖ ^ 2 : ℝ) : ℂ) := by
+      star (v a) ⬝ᵥ v a = ((∑ j, ‖v a j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold dotProduct
     push_cast
     apply Finset.sum_congr rfl
@@ -47,7 +47,7 @@ private theorem sum_realWeightedSymmetricPairTerm_eq_diagonal_add_offDiagonal
     {n α : Type*} [Fintype n] [DecidableEq α] (s : Finset α)
     (w : α → ℝ) (v : α → n → ℂ) :
     (∑ a ∈ s, ∑ b ∈ s, realWeightedSymmetricPairTerm w v a b) =
-      (∑ a ∈ s, w a ^ 2 * (∑ j, ‖v a j‖ ^ 2) ^ 2) +
+      (∑ a ∈ s, w a ^ (2 : ℕ) * (∑ j, ‖v a j‖ ^ (2 : ℕ)) ^ (2 : ℕ)) +
         ∑ a ∈ s, ∑ b ∈ s.erase a,
           realWeightedSymmetricPairTerm w v a b := by
   rw [← Finset.sum_add_distrib]
@@ -61,8 +61,8 @@ window. -/
 def pairedEtaTopPrefixFiniteZeroWindowDiagonalPairCorrelationMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ) (T : ℝ) : ℝ :=
   ∑ rho ∈ spectralZetaZeroWindow T,
-    (analyticZetaZeroMultiplicity rho : ℝ) ^ 2 *
-      (∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ 2) ^ 2
+    (analyticZetaZeroMultiplicity rho : ℝ) ^ (2 : ℕ) *
+      (∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- The signed off-diagonal interference mass over distinct ordered pairs in
 a finite eta zero window. -/
@@ -73,7 +73,7 @@ def pairedEtaTopPrefixFiniteZeroWindowOffDiagonalPairCorrelationMass
       ((((analyticZetaZeroMultiplicity rho : ℝ) *
           (analyticZetaZeroMultiplicity sigma : ℝ) : ℝ) : ℂ) *
         (star (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff sigma) ⬝ᵥ
-          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) ^ 2).re
+          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) ^ (2 : ℕ)).re
 
 /-- The exact eta zero-pair mass is its positive diagonal mass plus its
 phase-preserving signed off-diagonal mass. -/

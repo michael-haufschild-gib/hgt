@@ -202,7 +202,7 @@ theorem compQ_mul_gaussPrimElem :
 theorem gaussElem_eq_mul : gaussElem = gaussPrimElem * (logQ - gaussElem) := by
   linear_combination -logQ_mul_gaussPrimElem
 
-theorem compQ_eq : compQ = -((logQ - gaussElem) ^ 2) := by
+theorem compQ_eq : compQ = -((logQ - gaussElem) ^ (2 : ℕ)) := by
   refine mul_right_cancel₀ gaussPrimElem_ne_zero ?_
   linear_combination compQ_mul_gaussPrimElem + (-(logQ - gaussElem)) * gaussElem_eq_mul
 
@@ -213,27 +213,27 @@ theorem logQ_ne_zero : logQ ≠ 0 := by
   exact mul_ne_zero gaussElem_ne_zero one_add_gaussPrimElem_ne_zero hprod.symm
 
 theorem compQ_mul_one_add_sq :
-    compQ * (1 + gaussPrimElem) ^ 2 = -(logQ ^ 2) := by
+    compQ * (1 + gaussPrimElem) ^ (2 : ℕ) = -(logQ ^ (2 : ℕ)) := by
   have hfac : (logQ - gaussElem) * (1 + gaussPrimElem) = logQ := by
     linear_combination logQ_mul_gaussPrimElem
-  calc compQ * (1 + gaussPrimElem) ^ 2
-      = -(((logQ - gaussElem) * (1 + gaussPrimElem)) ^ 2) := by rw [compQ_eq]; ring
-    _ = -(logQ ^ 2) := by rw [hfac]
+  calc compQ * (1 + gaussPrimElem) ^ (2 : ℕ)
+      = -(((logQ - gaussElem) * (1 + gaussPrimElem)) ^ (2 : ℕ)) := by rw [compQ_eq]; ring
+    _ = -(logQ ^ (2 : ℕ)) := by rw [hfac]
 
 theorem compQ_ne_zero : compQ ≠ 0 := by
   intro h
   have hkey := compQ_mul_one_add_sq
   rw [h, zero_mul] at hkey
-  have hq2 : logQ ^ 2 = 0 := by linear_combination hkey
+  have hq2 : logQ ^ (2 : ℕ) = 0 := by linear_combination hkey
   exact logQ_ne_zero (pow_eq_zero_iff (two_ne_zero) |>.mp hq2)
 
 theorem compQ_add_sq_mul :
-    (compQ + logQ ^ 2) * gaussPrimElem
-      = gaussElem ^ 2 * ((2 : meroField (Set.univ : Set ℂ)) + gaussPrimElem) := by
+    (compQ + logQ ^ (2 : ℕ)) * gaussPrimElem
+      = gaussElem ^ (2 : ℕ) * ((2 : meroField (Set.univ : Set ℂ)) + gaussPrimElem) := by
   linear_combination compQ_mul_gaussPrimElem
     + (logQ + gaussElem) * logQ_mul_gaussPrimElem
 
-theorem compQ_add_sq_ne_zero : compQ + logQ ^ 2 ≠ 0 := by
+theorem compQ_add_sq_ne_zero : compQ + logQ ^ (2 : ℕ) ≠ 0 := by
   intro h
   have hkey := compQ_add_sq_mul
   rw [h, zero_mul] at hkey
@@ -245,11 +245,11 @@ theorem compQ_add_sq_ne_zero : compQ + logQ ^ 2 ≠ 0 := by
 witnesses algebraicity. -/
 theorem isAlgebraic_of_quadratic_mem {J : IntermediateField ℂ (meroField (Set.univ : Set ℂ))}
     {x a b c : meroField (Set.univ : Set ℂ)} (ha : a ∈ J) (hb : b ∈ J) (hc : c ∈ J)
-    (ha0 : a ≠ 0) (h : a * x ^ 2 + b * x + c = 0) : IsAlgebraic ↥J x := by
-  refine ⟨Polynomial.C (⟨a, ha⟩ : ↥J) * Polynomial.X ^ 2
+    (ha0 : a ≠ 0) (h : a * x ^ (2 : ℕ) + b * x + c = 0) : IsAlgebraic ↥J x := by
+  refine ⟨Polynomial.C (⟨a, ha⟩ : ↥J) * Polynomial.X ^ (2 : ℕ)
     + Polynomial.C (⟨b, hb⟩ : ↥J) * Polynomial.X + Polynomial.C (⟨c, hc⟩ : ↥J), ?_, ?_⟩
   · intro hzero
-    have hcoeff : (Polynomial.C (⟨a, ha⟩ : ↥J) * Polynomial.X ^ 2
+    have hcoeff : (Polynomial.C (⟨a, ha⟩ : ↥J) * Polynomial.X ^ (2 : ℕ)
         + Polynomial.C (⟨b, hb⟩ : ↥J) * Polynomial.X
         + Polynomial.C (⟨c, hc⟩ : ↥J)).coeff 2 = (⟨a, ha⟩ : ↥J) := by
       simp
@@ -259,19 +259,19 @@ theorem isAlgebraic_of_quadratic_mem {J : IntermediateField ℂ (meroField (Set.
     exact h
 
 theorem quadratic_gaussPrimElem :
-    compQ * gaussPrimElem ^ 2 + 2 * compQ * gaussPrimElem + (compQ + logQ ^ 2) = 0 := by
+    compQ * gaussPrimElem ^ (2 : ℕ) + 2 * compQ * gaussPrimElem + (compQ + logQ ^ (2 : ℕ)) = 0 := by
   linear_combination compQ_mul_one_add_sq
 
 theorem quadratic_gaussElem :
-    1 * gaussElem ^ 2 + -(2 * logQ) * gaussElem + (logQ ^ 2 + compQ) = 0 := by
+    1 * gaussElem ^ (2 : ℕ) + -(2 * logQ) * gaussElem + (logQ ^ (2 : ℕ) + compQ) = 0 := by
   linear_combination compQ_eq
 
 theorem quadratic_gaussExpElem :
-    (compQ + logQ ^ 2) * gaussExpElem ^ 2
+    (compQ + logQ ^ (2 : ℕ)) * gaussExpElem ^ (2 : ℕ)
       + 2 * compQ * jetElem differentiable_prodQ 0 * gaussExpElem
-      + compQ * jetElem differentiable_prodQ 0 ^ 2 = 0 := by
+      + compQ * jetElem differentiable_prodQ 0 ^ (2 : ℕ) = 0 := by
   rw [jetElem_prodQ_zero]
-  linear_combination (gaussExpElem ^ 2) * compQ_mul_one_add_sq
+  linear_combination (gaussExpElem ^ (2 : ℕ)) * compQ_mul_one_add_sq
 
 theorem isAlgebraic_gaussPrimElem_prodQField : IsAlgebraic ↥prodQField gaussPrimElem :=
   isAlgebraic_of_quadratic_mem compQ_mem_prodQField

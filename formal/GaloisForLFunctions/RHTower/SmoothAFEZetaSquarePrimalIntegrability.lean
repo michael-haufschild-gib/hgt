@@ -20,7 +20,7 @@ theorem measurable_smoothAFEZetaSquarePrimalSourceField (N : ℕ) :
 
 theorem integrableOn_normSq_smoothAFEZetaSquarePrimalSourceField
     {N : ℕ} (hN : 4 ≤ N) :
-    IntegrableOn (fun t : ℝ => ‖smoothAFEZetaSquarePrimalSourceField N t‖ ^ 2)
+    IntegrableOn (fun t : ℝ => ‖smoothAFEZetaSquarePrimalSourceField N t‖ ^ (2 : ℕ))
       (Set.Icc (N : ℝ) (2 * N : ℝ)) := by
   let a : ℕ → ℂ := smoothAFEZetaSquarePrimalNatCoefficient N 0
   have habs : Summable (fun k : ℕ => ‖a k‖) :=
@@ -53,7 +53,7 @@ theorem integrableOn_normSq_smoothAFEZetaSquarePrimalSourceField
         · simp [hk, s]
       _ = M := rfl
   refine MeasureTheory.Measure.integrableOn_of_bounded
-    (M := M ^ 2) isCompact_Icc.measure_lt_top.ne
+    (M := M ^ (2 : ℕ)) isCompact_Icc.measure_lt_top.ne
     ((measurable_smoothAFEZetaSquarePrimalSourceField N).norm.pow_const 2).aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]

@@ -432,7 +432,7 @@ theorem tsum_diagonalActivationConditionalValuationMass_mul_score
   (hasSum_diagonalActivationConditionalValuationMass_mul_score hq hq1).tsum_eq
 
 /-- The conditional geometric valuation score has variance
-`q / (1 - q)^2`. -/
+`q / (1 - q)^(2 : ℕ)`. -/
 theorem hasSum_diagonalActivationConditionalValuationMass_mul_score_sq
     {q : ℝ} (hq : 0 ≤ q) (hq1 : q < 1) :
     HasSum (fun e : ℕ ↦ diagonalActivationConditionalValuationMass q e *

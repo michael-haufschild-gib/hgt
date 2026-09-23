@@ -18,7 +18,7 @@ attribute [-instance] NormedSpace.complexToReal
 attribute [-instance] RCLike.innerProductSpace
 
 private def kernelFlux (nu : ℂ) (z : ℝ) : ℝ :=
-  (((z:ℂ)^2-1)*star (legendreKernel nu z)*legendreKernelFirst nu z).im
+  (((z:ℂ)^(2 : ℕ)-1)*star (legendreKernel nu z)*legendreKernelFirst nu z).im
 
 private theorem kernelFlux_derivative (nu : ℂ) {z : ℝ} (hz : 0 < z) :
     HasDerivAt (kernelFlux nu) ((nu*(nu+1)).im*Complex.normSq (legendreKernel nu z)) z := by
@@ -28,8 +28,8 @@ private theorem kernelFlux_derivative (nu : ℂ) {z : ℝ} (hz : 0 < z) :
   apply h.congr_deriv
   norm_num only [Complex.imCLM_apply, Pi.mul_apply, Pi.pow_apply, id_eq]
   simp only [pow_one, Complex.ofReal_one, mul_one]
-  change ((2*(z:ℂ)*star (legendreKernel nu z)+((z:ℂ)^2-1)*star (legendreKernelFirst nu z))*legendreKernelFirst nu z
-    +((z:ℂ)^2-1)*star (legendreKernel nu z)*legendreKernelSecond nu z).im =
+  change ((2*(z:ℂ)*star (legendreKernel nu z)+((z:ℂ)^(2 : ℕ)-1)*star (legendreKernelFirst nu z))*legendreKernelFirst nu z
+    +((z:ℂ)^(2 : ℕ)-1)*star (legendreKernel nu z)*legendreKernelSecond nu z).im =
     (nu*(nu+1)).im*Complex.normSq (legendreKernel nu z)
   have he := congrArg (fun w : ℂ => (star (legendreKernel nu z)*w).im)
     (legendreKernel_equation nu hz)
@@ -104,7 +104,7 @@ integrable; no unknown full angular response occurs in this definition. -/
 def sourceDensity (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) : ℂ :=
   (parameter q branch*∫ a in (0:ℝ)..d,
     (Real.sinh a:ℂ)*radialLegendre q branch a*D4BMNativeCircle.mean q a x k)/
-      ((Real.sinh d:ℂ)*radialLegendre q branch d^2)
+      ((Real.sinh d:ℂ)*radialLegendre q branch d^(2 : ℕ))
 
 private theorem quotient_smooth (q : XiZeroCopy) (branch : Bool) (x k : ℝ) :
     ContDiff ℝ ∞ (fun d => angularMean q branch d x k/radialLegendre q branch d) := by
@@ -124,11 +124,11 @@ private theorem quotient_hasDerivAt (q : XiZeroCopy) (branch : Bool) (x k d : �
   dsimp only [greenCurrent] at hw
   apply (hm.fun_div hp hpn).congr_deriv
   change (deriv (fun r => angularMean q branch r x k) d*radialLegendre q branch d-
-      angularMean q branch d x k*deriv (radialLegendre q branch) d)/radialLegendre q branch d^2=_
+      angularMean q branch d x k*deriv (radialLegendre q branch) d)/radialLegendre q branch d^(2 : ℕ)=_
   calc
     _ = ((Real.sinh d:ℂ)*(radialLegendre q branch d*deriv (fun r => angularMean q branch r x k) d-
         deriv (radialLegendre q branch) d*angularMean q branch d x k))/
-        ((Real.sinh d:ℂ)*radialLegendre q branch d^2) := by field_simp [hs,hpn]
+        ((Real.sinh d:ℂ)*radialLegendre q branch d^(2 : ℕ)) := by field_simp [hs,hpn]
     _ = sourceDensity q branch d x k := by rw [hw]; rfl
 
 /-- The source-only density is admitted by the actual integral, including the origin. -/

@@ -39,18 +39,18 @@ lemma norm_canonicalFactor_le_of_inner_of_separated
   have hiNorm : ‖i‖ < R := by
     simpa [mem_ball, dist_zero_right] using hi
   have hzNorm : ‖z‖ < R := hz.trans_lt (by linarith)
-  have hnum : ‖(R : ℂ) ^ 2 - starRingEnd ℂ i * z‖ ≤ 2 * R ^ 2 := by
+  have hnum : ‖(R : ℂ) ^ (2 : ℕ) - starRingEnd ℂ i * z‖ ≤ 2 * R ^ (2 : ℕ) := by
     calc
-      ‖(R : ℂ) ^ 2 - starRingEnd ℂ i * z‖ ≤
-          ‖(R : ℂ) ^ 2‖ + ‖starRingEnd ℂ i * z‖ := norm_sub_le _ _
-      _ = R ^ 2 + ‖i‖ * ‖z‖ := by simp [abs_of_pos hR]
-      _ ≤ 2 * R ^ 2 := by nlinarith [norm_nonneg i, norm_nonneg z]
+      ‖(R : ℂ) ^ (2 : ℕ) - starRingEnd ℂ i * z‖ ≤
+          ‖(R : ℂ) ^ (2 : ℕ)‖ + ‖starRingEnd ℂ i * z‖ := norm_sub_le _ _
+      _ = R ^ (2 : ℕ) + ‖i‖ * ‖z‖ := by simp [abs_of_pos hR]
+      _ ≤ 2 * R ^ (2 : ℕ) := by nlinarith [norm_nonneg i, norm_nonneg z]
   rw [Complex.canonicalFactor_apply, norm_div, norm_mul]
   simp only [norm_real]
   calc
-    ‖(R : ℂ) ^ 2 - starRingEnd ℂ i * z‖ /
+    ‖(R : ℂ) ^ (2 : ℕ) - starRingEnd ℂ i * z‖ /
           (|R| * ‖z - i‖) ≤
-        (2 * R ^ 2) / (R * delta) := by
+        (2 * R ^ (2 : ℕ)) / (R * delta) := by
       rw [abs_of_pos hR]
       exact div_le_div₀ (by positivity) hnum (mul_pos hR hdelta)
         (mul_le_mul_of_nonneg_left hsep hR.le)
@@ -103,7 +103,7 @@ inner point separated from every zero in the enclosing divisor. -/
 theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) {z : ℂ} {delta : ℝ} (hdelta : 0 < delta)
     (hz : ‖z‖ ≤ xiCanonicalRadius n / 4)
     (hxi : riemannXi z ≠ 0)
@@ -111,8 +111,8 @@ theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
       divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 →
         delta ≤ ‖z - i‖) :
     Real.exp (- (
-        2 * A * (xiCanonicalRadius n + 1) ^ 2 +
-        (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) *
+        2 * A * (xiCanonicalRadius n + 1) ^ (2 : ℕ) +
+        (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) *
           Real.log (1 + 2 * xiCanonicalRadius n / delta))) ≤
       ‖riemannXi z‖ := by
   let R : ℝ := xiCanonicalRadius n
@@ -120,8 +120,8 @@ theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
   let L : ℂ → ℂ := riemannXiCanonicalLog n
   let d : ℂ → ℤ := fun i ↦ divisor riemannXi (ball 0 R) i
   let C : ℝ := Real.log (1 + 2 * R / delta)
-  let M : ℝ := 2 * A * (R + 1) ^ 2
-  let N : ℝ := (A * (2 * R + 1) ^ 2 / Real.log 2) * C
+  let M : ℝ := 2 * A * (R + 1) ^ (2 : ℕ)
+  let N : ℝ := (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) * C
   have hR : 0 < R := by simpa [R] using xiCanonicalRadius_pos n
   have hzball : z ∈ ball 0 R := by
     rw [mem_ball, dist_zero_right]
@@ -138,11 +138,11 @@ theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
     linarith
   have hL : ‖L z‖ ≤ M := by
     calc
-      ‖L z‖ ≤ 2 * (A * (R + 1) ^ 2) * ‖z‖ /
+      ‖L z‖ ≤ 2 * (A * (R + 1) ^ (2 : ℕ)) * ‖z‖ /
           (R - ‖z‖) := by simpa [L, R] using hLraw
-      _ = (2 * A * (R + 1) ^ 2) *
+      _ = (2 * A * (R + 1) ^ (2 : ℕ)) *
           (‖z‖ / (R - ‖z‖)) := by ring
-      _ ≤ (2 * A * (R + 1) ^ 2) * 1 := by
+      _ ≤ (2 * A * (R + 1) ^ (2 : ℕ)) * 1 := by
         exact mul_le_mul_of_nonneg_left hratio (by positivity)
       _ = M := by simp [M]
   have hnormResidual := congrArg norm
@@ -208,7 +208,7 @@ theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
       (∑ᶠ i, ((d i : ℤ) : ℝ) *
           Real.log ‖Complex.canonicalFactor R i z‖) ≤
         ((∑ᶠ i, d i : ℤ) : ℝ) * C := hcanonicalRaw
-      _ ≤ (A * (2 * R + 1) ^ 2 / Real.log 2) * C := by
+      _ ≤ (A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2) * C := by
         apply mul_le_mul_of_nonneg_right
         · simpa [d, R] using hcount
         · exact hC
@@ -251,8 +251,8 @@ theorem exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi
 spectral boundary. -/
 noncomputable def xiQuantitativeBoundaryLowerExponent
     (A : ℝ) (n : ℕ) : ℝ :=
-  2 * A * (xiCanonicalRadius n + 1) ^ 2 +
-    (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) *
+  2 * A * (xiCanonicalRadius n + 1) ^ (2 : ℕ) +
+    (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) *
       Real.log
         (1 + 2 * xiCanonicalRadius n / spectralBoundarySeparation n)
 
@@ -261,7 +261,7 @@ selected right vertical boundary. -/
 theorem exp_neg_xiQuantitativeBoundaryLowerExponent_le_norm_riemannXiSpectral
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) {y : ℝ} (hylo : -1 ≤ y) (hyhi : y ≤ 1) :
     Real.exp (-xiQuantitativeBoundaryLowerExponent A n) ≤
       ‖riemannXiSpectral
@@ -290,7 +290,7 @@ majorant along the quantitative boundaries. -/
 theorem xiQuantitativeBoundaryLowerExponent_le_exponential
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (A * (‖w‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
     xiQuantitativeBoundaryLowerExponent A n ≤
       26 * (392 * A + 729 * (A / Real.log 2) *
@@ -299,8 +299,8 @@ theorem xiQuantitativeBoundaryLowerExponent_le_exponential
   let R : ℝ := xiCanonicalRadius n
   let delta : ℝ := spectralBoundarySeparation n
   let T : ℝ := quantitativeSpectralBoundaryTruncation n
-  let count : ℝ := A * (2 * R + 1) ^ 2 / Real.log 2
-  let residual : ℝ := (2 * (A * (R + 1) ^ 2)) / (R / 4)
+  let count : ℝ := A * (2 * R + 1) ^ (2 : ℕ) / Real.log 2
+  let residual : ℝ := (2 * (A * (R + 1) ^ (2 : ℕ))) / (R / 4)
   let canonical : ℝ := count * (2 / R + 1 / delta)
   let Q : ℝ := 392 * A + 729 * (A / Real.log 2) *
     (13 + 75 * (A / Real.log 2))
@@ -325,10 +325,10 @@ theorem xiQuantitativeBoundaryLowerExponent_le_exponential
     have harg : 0 < 1 + 2 * R / delta := by positivity
     simpa using Real.log_le_sub_one_of_pos harg
   have hresidualScale :
-      2 * A * (R + 1) ^ 2 ≤ 2 * R * residual := by
-    have hterm : 0 ≤ 2 * A * (R + 1) ^ 2 := by positivity
+      2 * A * (R + 1) ^ (2 : ℕ) ≤ 2 * R * residual := by
+    have hterm : 0 ≤ 2 * A * (R + 1) ^ (2 : ℕ) := by positivity
     calc
-      2 * A * (R + 1) ^ 2 ≤ 8 * (2 * A * (R + 1) ^ 2) := by
+      2 * A * (R + 1) ^ (2 : ℕ) ≤ 8 * (2 * A * (R + 1) ^ (2 : ℕ)) := by
         nlinarith
       _ = 2 * R * residual := by
         dsimp only [residual]
@@ -356,7 +356,7 @@ theorem xiQuantitativeBoundaryLowerExponent_le_exponential
         2 * R * (residual + canonical) := by
     calc
       xiQuantitativeBoundaryLowerExponent A n =
-          2 * A * (R + 1) ^ 2 +
+          2 * A * (R + 1) ^ (2 : ℕ) +
             count * Real.log (1 + 2 * R / delta) := by
         rfl
       _ ≤ 2 * R * residual + 2 * R * canonical :=
@@ -526,7 +526,7 @@ horizontal sides of the quantitative rectangle. -/
 theorem exp_neg_xiQuantitativeBoundaryLowerExponent_le_norm_riemannXiSpectral_horizontal
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ u : ℂ,
-      ‖riemannXi u‖ ≤ Real.exp (A * (‖u‖ + 1) ^ 2))
+      ‖riemannXi u‖ ≤ Real.exp (A * (‖u‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) {x y : ℝ}
     (hx : |x| ≤ quantitativeSpectralBoundaryTruncation n)
     (hy : |y| = 1) :

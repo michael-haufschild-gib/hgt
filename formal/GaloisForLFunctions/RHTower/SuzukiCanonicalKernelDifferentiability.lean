@@ -180,7 +180,7 @@ def suzukiSourceGSmoothFormula (omega x : ℝ) : ℂ :=
         suzukiBetaTail omega x)
 
 /-- Exact derivative field of Suzuki's printed `g_omega` on `(0,1)`.  The factor
-`(1 - x^2)^(omega - 2)` is the only potentially unbounded term at the support endpoint.  Its
+`(1 - x^(2 : ℕ))^(omega - 2)` is the only potentially unbounded term at the support endpoint.  Its
 exponent is greater than `-1` exactly in Suzuki's range `omega > 1`, which is the local `L¹`
 mechanism used in `lem_ad1`. -/
 def suzukiSourceGDerivative (omega x : ℝ) : ℂ :=

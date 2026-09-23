@@ -30,7 +30,7 @@ theorem continuedCutoffRadialCoefficient_band_memLp (q : XiZeroCopy) (branch : B
   · let s := physicalRate q branch
     let T := continuedOnset s w
     let J := principalAmplitude q i
-    let P : ℝ → ℂ := fun u => (s*(s-1)/4)*(u:ℂ)^3*J
+    let P : ℝ → ℂ := fun u => (s*(s-1)/4)*(u:ℂ)^(3 : ℕ)*J
     obtain ⟨C,hC,hb⟩ := sourceAmplitude_profile_norm_le_exp s w a T P (by dsimp [P]; fun_prop)
     have hU (t : ℝ) : continuedPrincipalDifference q branch w a i t =
         sourceAmplitude s w a T t*P (radialUnit t) := by

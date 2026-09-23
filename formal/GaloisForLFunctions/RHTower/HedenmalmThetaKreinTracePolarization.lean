@@ -81,7 +81,7 @@ theorem thetaSourceKreinDouble_metricAdjoint (k : ℕ) :
 theorem thetaSourceEscapingKreinPolarization_absSq (k : ℕ) :
     (thetaSourceEscapingKreinPolarization k)ᴴ *
         thetaSourceEscapingKreinPolarization k =
-      ((((k : ℝ) + 1) ^ 2 : ℝ) : ℂ) • 1 :=
+      ((((k : ℝ) + 1) ^ (2 : ℕ) : ℝ) : ℂ) • 1 :=
   sourceEscapingKreinMetric_absSq k
 
 /-- All signed holomorphic source traces survive, at every degree. -/
@@ -153,7 +153,7 @@ theorem thetaSourceSignedReflectedOrdinaryDet_tendstoLocallyUniformly_XiC :
 /-- Full Krein determinants converge compact-open to the Schwarz square of normalized Xi. -/
 theorem thetaSourceKreinDoubleDet_tendstoLocallyUniformly_XiC_sq :
     TendstoLocallyUniformly thetaSourceKreinDoubleDet
-      (fun z => (XiC z / XiC 0) ^ 2) atTop := by
+      (fun z => (XiC z / XiC 0) ^ (2 : ℕ)) atTop := by
   have hmul := tendstoLocallyUniformly_mul
     thetaSourceSignedOrdinaryDet_tendstoLocallyUniformly_XiC
     thetaSourceSignedReflectedOrdinaryDet_tendstoLocallyUniformly_XiC
@@ -225,14 +225,14 @@ theorem thetaSourceKreinTracePolarization_certificate :
       (thetaSourceKreinDouble k)ᴴ * thetaSourceEscapingKreinPolarization k) ∧
     (∀ k, (thetaSourceEscapingKreinPolarization k)ᴴ *
         thetaSourceEscapingKreinPolarization k =
-      ((((k : ℝ) + 1) ^ 2 : ℝ) : ℂ) • 1) ∧
+      ((((k : ℝ) + 1) ^ (2 : ℕ) : ℝ) : ℂ) • 1) ∧
     (∀ k m, (thetaSourceKreinChiralWeight k *
         (thetaSourceKreinDouble k) ^ m).trace =
       ((thetaSourceKreinFiniteMatrix k) ^ m).trace) ∧
     (∀ k z, thetaSourceKreinDoubleDet k z =
       thetaSourceSignedOrdinaryDet k z * thetaSourceSignedReflectedOrdinaryDet k z) ∧
     TendstoLocallyUniformly thetaSourceKreinDoubleDet
-      (fun z => (XiC z / XiC 0) ^ 2) atTop ∧
+      (fun z => (XiC z / XiC 0) ^ (2 : ℕ)) atTop ∧
     TendstoLocallyUniformly thetaSourceKreinChiralXiCandidate XiC atTop ∧
     (RiemannHypothesis ∨
       ∃ k : ℕ, ∃ z : ℂ,

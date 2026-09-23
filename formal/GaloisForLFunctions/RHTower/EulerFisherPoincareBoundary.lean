@@ -14,9 +14,9 @@ are the derivatives of the real Euler logarithm `F(beta) = log zeta(beta)`: term
 differentiation gives `M_j' = -M_{j+1}`, so the second, third and fourth derivatives of `F` are
 `M_2`, `-M_3` and `M_4`.
 
-The temperature-clock superspace carries the conformal metric `M_2(beta) (dbeta^2 + dtau^2)`.  Its
+The temperature-clock superspace carries the conformal metric `M_2(beta) (dbeta^(2 : ℕ) + dtau^(2 : ℕ))`.  Its
 Liouville scalar curvature `-Laplacian(log M_2)/M_2` is exactly the moment expression
-`-(M_2 M_4 - M_3^2)/M_2^3` whose strict negativity is proved in `EulerFisherCurvature`.
+`-(M_2 M_4 - M_3^(2 : ℕ))/M_2^(3 : ℕ)` whose strict negativity is proved in `EulerFisherCurvature`.
 
 At the pole the analytic unit `u(s) = (s-1) zeta(s)` has `u(1) = 1`, so
 `F(beta) = -log(beta-1) + log u(beta)` with an analytic remainder.  Differentiating four times
@@ -568,8 +568,8 @@ theorem deriv_deriv_eulerLogMoment {β : ℝ} (hβ : 1 < β) :
 
 /-- **The zeta Fisher superspace has globally negative curvature and a Poincare critical
 boundary.**  On `1 < beta` the Liouville scalar curvature of the conformal temperature-clock
-metric `M_2(beta) (dbeta^2 + dtau^2)` equals the Euler moment expression
-`-(M_2 M_4 - M_3^2)/M_2^3`, which is strictly negative everywhere and converges to `-2` at the
+metric `M_2(beta) (dbeta^(2 : ℕ) + dtau^(2 : ℕ))` equals the Euler moment expression
+`-(M_2 M_4 - M_3^(2 : ℕ))/M_2^(3 : ℕ)`, which is strictly negative everywhere and converges to `-2` at the
 critical wall `beta = 1`. -/
 theorem zeta_fisher_superspace_negative_curvature_poincare_boundary :
     (∀ β : ℝ, 1 < β →

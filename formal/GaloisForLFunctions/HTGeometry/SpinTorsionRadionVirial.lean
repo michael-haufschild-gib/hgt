@@ -19,12 +19,12 @@ def twoModulusLogCurvaturePotential (A x y : ℝ) : ℝ :=
 
 /-- Quantized-flux part of the logarithmic two-modulus potential. -/
 def twoModulusLogFluxPotential (B q m n x y : ℝ) : ℝ :=
-  logMonomial (B * m ^ 2 / 2) 6 4 x y +
-    logMonomial (B * q * n ^ 2) 2 8 x y
+  logMonomial (B * m ^ (2 : ℕ) / 2) 6 4 x y +
+    logMonomial (B * q * n ^ (2 : ℕ)) 2 8 x y
 
 /-- Spin-torsion binding part of the logarithmic two-modulus potential. -/
 def twoModulusLogTorsionPotential (C family x y : ℝ) : ℝ :=
-  logMonomial (-C * family ^ 2) 2 4 x y
+  logMonomial (-C * family ^ (2 : ℕ)) 2 4 x y
 
 /-- Exact curvature-flux-torsion decomposition. -/
 theorem twoModulusLogPotential_decomposition (A B C q m n family x y : ℝ) :
@@ -95,7 +95,7 @@ theorem twoModulusRadialVirialEnergy_exp_neg
   have hTorsion : twoModulusLogTorsionPotential (Real.exp logC)
       (Real.exp logFamily) x y < 0 := by
     unfold twoModulusLogTorsionPotential logMonomial
-    have h : 0 < Real.exp logC * Real.exp logFamily ^ 2 *
+    have h : 0 < Real.exp logC * Real.exp logFamily ^ (2 : ℕ) *
         Real.exp (-2 * x - 4 * y) := by positivity
     nlinarith
   linarith
@@ -105,9 +105,9 @@ theorem twoModulusLogForce_anisotropy (A B C q m n family x y : ℝ) :
     twoModulusLogForceX A B C q m n family x y -
         twoModulusLogForceY A B C q m n family x y =
       4 * logMonomial (-24 * A) 2 6 x y -
-      2 * logMonomial (B * m ^ 2 / 2) 6 4 x y +
-      6 * logMonomial (B * q * n ^ 2) 2 8 x y +
-      2 * logMonomial (-C * family ^ 2) 2 4 x y := by
+      2 * logMonomial (B * m ^ (2 : ℕ) / 2) 6 4 x y +
+      6 * logMonomial (B * q * n ^ (2 : ℕ)) 2 8 x y +
+      2 * logMonomial (-C * family ^ (2 : ℕ)) 2 4 x y := by
   unfold twoModulusLogForceX twoModulusLogForceY logMonomialDx logMonomialDy
   ring
 

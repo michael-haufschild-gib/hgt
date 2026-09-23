@@ -114,8 +114,8 @@ theorem varCost_ket0_Z (θ : ℝ) : varCost ket0 Z θ = Real.cos θ := by
         smul_eq_mul, HilbertOperator.applyVec]
   have htrig : Real.cos (θ / 2) * Real.cos (θ / 2) - Real.sin (θ / 2) * Real.sin (θ / 2)
       = Real.cos θ := by
-    have hsc : Real.sin (θ / 2) ^ 2 + Real.cos (θ / 2) ^ 2 = 1 := Real.sin_sq_add_cos_sq (θ / 2)
-    have h2 : Real.cos θ = 2 * Real.cos (θ / 2) ^ 2 - 1 := by
+    have hsc : Real.sin (θ / 2) ^ (2 : ℕ) + Real.cos (θ / 2) ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq (θ / 2)
+    have h2 : Real.cos θ = 2 * Real.cos (θ / 2) ^ (2 : ℕ) - 1 := by
       conv_lhs => rw [show θ = 2 * (θ / 2) from by ring]
       rw [Real.cos_two_mul]
     rw [h2]; nlinarith [hsc]

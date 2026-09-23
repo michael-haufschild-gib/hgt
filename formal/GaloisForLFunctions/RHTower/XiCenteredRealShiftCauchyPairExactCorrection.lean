@@ -100,7 +100,7 @@ theorem totalMass_sq_sub_centeredReciprocalShiftDiagonalCovariance_eq_pairCovari
     (s : Finset ι) (z m : ι → ℂ) (eps : ℝ)
     (hminus : ∀ i ∈ s, ∀ j ∈ s, z i - z j - (eps : ℂ) ≠ 0)
     (hplus : ∀ i ∈ s, ∀ j ∈ s, z i - z j + (eps : ℂ) ≠ 0) :
-    (∑ i ∈ s, m i) ^ 2 -
+    (∑ i ∈ s, m i) ^ (2 : ℕ) -
         finiteCenteredReciprocalShiftDiagonalCovariance s z m eps =
       finiteRationalCauchyPairCovarianceAtScale s z m eps := by
   let M : ℂ := ∑ i ∈ s, m i
@@ -112,7 +112,7 @@ theorem totalMass_sq_sub_centeredReciprocalShiftDiagonalCovariance_eq_pairCovari
       s z m eps (z w) (fun i hi => hminus i hi w hw)
         (fun i hi => hplus i hi w hw)
   calc
-    (∑ i ∈ s, m i) ^ 2 -
+    (∑ i ∈ s, m i) ^ (2 : ℕ) -
         finiteCenteredReciprocalShiftDiagonalCovariance s z m eps =
         ∑ w ∈ s, m w *
           (M - finiteCenteredReciprocalShiftDiagonalRow s z m eps (z w)) := by
@@ -215,7 +215,7 @@ theorem rectIntegral_meromorphicCauchyPairKernel_mul_of_analyticOnNhd
       (analyticOnNhd_const.mul hdq)
   have hdecomp : ∀ z : ℂ, z ≠ p → z ≠ q →
       meromorphicCauchyPairKernel eps z w * g z =
-        (0 : ℂ) * (z - q)⁻¹ ^ 2 +
+        (0 : ℂ) * (z - q)⁻¹ ^ (2 : ℕ) +
           ((eps / 2 : ℂ) * g p * (z - p)⁻¹ +
             ((-(eps / 2 : ℂ) * g q) * (z - q)⁻¹ + R z)) := by
     intro z hzp hzq

@@ -68,9 +68,9 @@ theorem eventually_sum_normSq_mtHarmanPairNonrectangularError_actualSource_le
       let P := primesIco (mtLowerCutoffNat X) D
       ∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanPairNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) E z n‖ ^ 2 ≤
-        (4 : ℝ) ^ 2 * (Y : ℝ) *
-          (1 + Real.log (Y : ℝ)) ^ (2 ^ 2 - 1) *
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) E z n‖ ^ (2 : ℕ) ≤
+        (4 : ℝ) ^ (2 : ℕ) * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ (2 : ℕ) - 1) *
             (66 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
   filter_upwards [
     eventually_sum_normSq_mtHarmanPairNonrectangularError_sourceSubset_paperAligned_le A]
@@ -89,9 +89,9 @@ theorem eventually_sum_normSq_mtHarmanTripleNonrectangularError_actualSource_le
       let P := primesIco (mtLowerCutoffNat X) D
       ∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanTripleNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) E z n‖ ^ 2 ≤
-        (4 : ℝ) ^ 4 * (Y : ℝ) *
-          (1 + Real.log (Y : ℝ)) ^ (2 ^ 4 - 1) *
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) E z n‖ ^ (2 : ℕ) ≤
+        (4 : ℝ) ^ (4 : ℕ) * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ (4 : ℕ) - 1) *
             (68 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ) := by
   filter_upwards [
     eventually_sum_normSq_mtHarmanTripleNonrectangularError_sourceSubset_paperAligned_le A]
@@ -102,14 +102,14 @@ theorem eventually_sum_normSq_mtHarmanTripleNonrectangularError_actualSource_le
 
 def mtHarmanPairRectangularizationBudget
     (A : ℕ) (X : ℝ) (Y : ℕ) (P : Finset ℕ) : ℝ :=
-  (4 : ℝ) ^ 2 * (Y : ℝ) *
-    (1 + Real.log (Y : ℝ)) ^ (2 ^ 2 - 1) *
+  (4 : ℝ) ^ (2 : ℕ) * (Y : ℝ) *
+    (1 + Real.log (Y : ℝ)) ^ (2 ^ (2 : ℕ) - 1) *
       (66 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ)
 
 def mtHarmanTripleRectangularizationBudget
     (A : ℕ) (X : ℝ) (Y : ℕ) (P : Finset ℕ) : ℝ :=
-  (4 : ℝ) ^ 4 * (Y : ℝ) *
-    (1 + Real.log (Y : ℝ)) ^ (2 ^ 4 - 1) *
+  (4 : ℝ) ^ (4 : ℕ) * (Y : ℝ) *
+    (1 + Real.log (Y : ℝ)) ^ (2 ^ (4 : ℕ) - 1) *
       (68 * mtPaperWidth A X) * ∑ q ∈ P, 1 / (q : ℝ)
 
 /-- The two literal bad-cell errors combine with only the sharp two-term Hilbert cost. -/
@@ -122,7 +122,7 @@ theorem eventually_sum_normSq_mtHarmanRectangularMinorantError_actualSource_le
       let P := primesIco (mtLowerCutoffNat X) D
       ∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanRectangularMinorantError
-            (t := D - mtLowerCutoffNat X) endpoint z D E n‖ ^ 2 ≤
+            (t := D - mtLowerCutoffNat X) endpoint z D E n‖ ^ (2 : ℕ) ≤
         2 * mtHarmanPairRectangularizationBudget A X Y P +
           2 * mtHarmanTripleRectangularizationBudget A X Y P := by
   filter_upwards [
@@ -139,12 +139,12 @@ theorem eventually_sum_normSq_mtHarmanRectangularMinorantError_actualSource_le
   calc
     ∑ n ∈ Finset.Icc 1 Y,
         ‖mtHarmanRectangularMinorantError
-          (t := D - mtLowerCutoffNat X) endpoint z D E n‖ ^ 2 ≤
+          (t := D - mtLowerCutoffNat X) endpoint z D E n‖ ^ (2 : ℕ) ≤
       ∑ n ∈ Finset.Icc 1 Y,
         (2 * ‖mtHarmanPairNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ 2 +
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ (2 : ℕ) +
           2 * ‖mtHarmanTripleNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ 2) := by
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro n hn
       unfold mtHarmanRectangularMinorantError
@@ -155,10 +155,10 @@ theorem eventually_sum_normSq_mtHarmanRectangularMinorantError_actualSource_le
           (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n)
     _ = 2 * (∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanPairNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ 2) +
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ (2 : ℕ)) +
         2 * (∑ n ∈ Finset.Icc 1 Y,
           ‖mtHarmanTripleNonrectangularError
-            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ 2) := by
+            (t := D - mtLowerCutoffNat X) endpoint (primesIco z D) (E : ℝ) z n‖ ^ (2 : ℕ)) := by
       simp only [Finset.sum_add_distrib, Finset.mul_sum]
     _ ≤ 2 * mtHarmanPairRectangularizationBudget A X Y P +
         2 * mtHarmanTripleRectangularizationBudget A X Y P := by

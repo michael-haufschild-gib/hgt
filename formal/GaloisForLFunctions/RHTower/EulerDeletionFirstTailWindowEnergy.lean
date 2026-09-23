@@ -30,7 +30,7 @@ private theorem mertens_increment_eq_window (N L : ℕ) :
 theorem incrementEnergy_eq_weighted_window_energy (N : ℕ) :
     incrementEnergy N =
       ∑ n ∈ Finset.Ioc N (2 * N),
-        ‖∑ m ∈ Finset.Ioc N n, Sieve.moebiusC m‖ ^ 2 /
+        ‖∑ m ∈ Finset.Ioc N n, Sieve.moebiusC m‖ ^ (2 : ℕ) /
           ((n : ℝ) * ((n : ℝ) + 1)) := by
   unfold incrementEnergy
   refine Finset.sum_congr rfl fun n hn => ?_

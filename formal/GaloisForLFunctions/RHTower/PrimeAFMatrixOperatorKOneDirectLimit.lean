@@ -31,7 +31,7 @@ noncomputable local instance {G : Type*} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] : CommGroup (FundamentalGroup G 1) :=
   fundamentalGroupCommGroup
 
-noncomputable local instance : CommGroup (FundamentalGroup (Units ℂ) 1) :=
+noncomputable local instance primeAFMatrixOperatorKOneDirectLimitInst1 : CommGroup (FundamentalGroup (Units ℂ) 1) :=
   fundamentalGroupCommGroup
 
 theorem fundamentalGroupMap_eq_basedMapPath

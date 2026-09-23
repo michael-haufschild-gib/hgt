@@ -85,14 +85,14 @@ theorem hasDerivAt_hyperbolicSolution {κ R : ℝ} (hκ : κ ≠ 0) {φ : ℝ �
 theorem hasDerivAt_hyperbolicSolutionDeriv {κ R : ℝ} (hκ : κ ≠ 0) {φ : ℝ → ℝ}
     (hφ : Continuous φ) (t : ℝ) :
     HasDerivAt (hyperbolicSolutionDeriv κ R φ)
-      (κ ^ 2 * hyperbolicSolution κ R φ t - φ t) t := by
+      (κ ^ (2 : ℕ) * hyperbolicSolution κ R φ t - φ t) t := by
   have hA := hasDerivAt_hyperbolicCosMoment (κ := κ) (R := R) hφ t
   have hB := hasDerivAt_hyperbolicSinMoment (κ := κ) (R := R) hφ t
   have h := (((hasDerivAt_cosh_mul κ t).mul hA).sub ((hasDerivAt_sinh_mul κ t).mul hB)).neg
   refine h.congr_deriv ?_
-  have hpyth : Real.cosh (κ * t) ^ 2 - Real.sinh (κ * t) ^ 2 = 1 :=
+  have hpyth : Real.cosh (κ * t) ^ (2 : ℕ) - Real.sinh (κ * t) ^ (2 : ℕ) = 1 :=
     Real.cosh_sq_sub_sinh_sq (κ * t)
-  have hexp : κ ^ 2 * hyperbolicSolution κ R φ t
+  have hexp : κ ^ (2 : ℕ) * hyperbolicSolution κ R φ t
       = -(κ * (Real.sinh (κ * t) * hyperbolicCosMoment κ R φ t
           - Real.cosh (κ * t) * hyperbolicSinMoment κ R φ t)) := by
     simp only [hyperbolicSolution]
@@ -223,12 +223,12 @@ theorem hasDerivAt_hyperbolicEvenSolution {κ R : ℝ} (hκ : κ ≠ 0) {φ : �
 theorem hasDerivAt_hyperbolicEvenSolutionDeriv {κ R : ℝ} (hκ : κ ≠ 0) {φ : ℝ → ℝ}
     (hφ : Continuous φ) (heven : ∀ t, φ (-t) = φ t) (t : ℝ) :
     HasDerivAt (hyperbolicEvenSolutionDeriv κ R φ)
-      (κ ^ 2 * hyperbolicEvenSolution κ R φ t - φ t) t := by
+      (κ ^ (2 : ℕ) * hyperbolicEvenSolution κ R φ t - φ t) t := by
   have h1 := hasDerivAt_hyperbolicSolutionDeriv (R := R) hκ hφ t
   have hneg : HasDerivAt (fun z : ℝ => hyperbolicSolutionDeriv κ R φ (-z))
-      (-(κ ^ 2 * hyperbolicSolution κ R φ (-t) - φ (-t))) t := by
+      (-(κ ^ (2 : ℕ) * hyperbolicSolution κ R φ (-t) - φ (-t))) t := by
     have hcomp : HasDerivAt (fun z : ℝ => hyperbolicSolutionDeriv κ R φ (-z))
-        ((κ ^ 2 * hyperbolicSolution κ R φ (-t) - φ (-t)) * -1) t :=
+        ((κ ^ (2 : ℕ) * hyperbolicSolution κ R φ (-t) - φ (-t)) * -1) t :=
       (hasDerivAt_hyperbolicSolutionDeriv (R := R) hκ hφ (-t)).comp t (hasDerivAt_neg' t)
     exact hcomp.congr_deriv (by ring)
   refine (h1.sub hneg).div_const 2 |>.congr_deriv ?_
@@ -260,7 +260,7 @@ theorem exists_hyperbolic_preimage {κ R : ℝ} (hκ : κ ≠ 0) (hR : 0 ≤ R) 
     (hmom : (∫ s in (-R)..R, Real.cosh (κ * s) * φ s) = 0) :
     ∃ ψ ψ' : ℝ → ℝ,
       (∀ t, ψ (-t) = ψ t) ∧ (∀ u, R ≤ |u| → ψ u = 0) ∧
-      (∀ t, HasDerivAt ψ (ψ' t) t) ∧ (∀ t, HasDerivAt ψ' (κ ^ 2 * ψ t - φ t) t) := by
+      (∀ t, HasDerivAt ψ (ψ' t) t) ∧ (∀ t, HasDerivAt ψ' (κ ^ (2 : ℕ) * ψ t - φ t) t) := by
   have hS : hyperbolicSinMoment κ R φ R = 0 := hyperbolicSinMoment_eq_zero_of_even heven
   refine ⟨hyperbolicEvenSolution κ R φ, hyperbolicEvenSolutionDeriv κ R φ,
     hyperbolicEvenSolution_even κ R φ,
@@ -278,7 +278,7 @@ theorem exists_const_hyperbolic_representation {κ R : ℝ} (hκ : κ ≠ 0) (hR
     (w : (ℝ → ℝ) → ℝ)
     (hlin : ∀ (a : ℝ) (φ ψ : ℝ → ℝ), w (fun t => φ t - a * ψ t) = w φ - a * w ψ)
     (hann : ∀ ψ ψ' φ : ℝ → ℝ, (∀ t, ψ (-t) = ψ t) → (∀ u, R ≤ |u| → ψ u = 0) →
-      (∀ t, HasDerivAt ψ (ψ' t)  t) → (∀ t, HasDerivAt ψ' (κ ^ 2 * ψ t - φ t) t) → w φ = 0) :
+      (∀ t, HasDerivAt ψ (ψ' t)  t) → (∀ t, HasDerivAt ψ' (κ ^ (2 : ℕ) * ψ t - φ t) t) → w φ = 0) :
     ∃ c : ℝ, ∀ φ : ℝ → ℝ, Continuous φ → (∀ t, φ (-t) = φ t) → (∀ u, R ≤ |u| → φ u = 0) →
       w φ = c * ∫ s in (-R)..R, Real.cosh (κ * s) * φ s := by
   classical
@@ -336,7 +336,7 @@ theorem hyperbolic_source_equation {κ R : ℝ} (hκ : κ ≠ 0) (hR : 0 ≤ R)
     (w : (ℝ → ℝ) → ℝ) (η : ℝ → ℝ)
     (hlin : ∀ (a : ℝ) (φ ψ : ℝ → ℝ), w (fun t => φ t - a * ψ t) = w φ - a * w ψ)
     (hann : ∀ ψ ψ' φ : ℝ → ℝ, (∀ t, ψ (-t) = ψ t) → (∀ u, R ≤ |u| → ψ u = 0) →
-      (∀ t, HasDerivAt ψ (ψ' t) t) → (∀ t, HasDerivAt ψ' (κ ^ 2 * ψ t - φ t) t) → w φ = 0)
+      (∀ t, HasDerivAt ψ (ψ' t) t) → (∀ t, HasDerivAt ψ' (κ ^ (2 : ℕ) * ψ t - φ t) t) → w φ = 0)
     (hcη : Continuous η) (heη : ∀ t, η (-t) = η t) (hsη : ∀ u, R ≤ |u| → η u = 0)
     (hpair : (∫ s in (-R)..R, Real.cosh (κ * s) * η s) ≠ 0)
     (φ : ℝ → ℝ) (hc : Continuous φ) (he : ∀ t, φ (-t) = φ t) (hs : ∀ u, R ≤ |u| → φ u = 0) :

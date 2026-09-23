@@ -19,7 +19,7 @@ then feed the infinite affine Montgomery--Vaughan theorem. The result is a liter
 `O(T)` second moment for `zeta(beta+it) * M_X(beta+it) - 1`.
 
 The threshold `beta > 1` is structural: the weighted mass becomes
-`sum d(n)^2 n^(-2(beta-1/2))`, convergent exactly in this divisor-bound argument when
+`sum d(n)^(2 : ℕ) n^(-2(beta-1/2))`, convergent exactly in this divisor-bound argument when
 `beta - 1/2 > 1/2`.
 -/
 

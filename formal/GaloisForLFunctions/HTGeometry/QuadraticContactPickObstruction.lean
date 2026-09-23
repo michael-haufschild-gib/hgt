@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Normalized diagonal of a scalar de Branges--Rovnyak defect. -/
 def pickDiagonalDefect (c q : ℝ) : ℝ :=
-  (1 - c ^ 2) / (1 - q ^ 2)
+  (1 - c ^ (2 : ℕ)) / (1 - q ^ (2 : ℕ))
 
 /-- Normalized cross entry of a scalar de Branges--Rovnyak defect. -/
 def pickCrossDefect (c₀ q₀ c q : ℝ) : ℝ :=
@@ -30,7 +30,7 @@ def pickCrossDefect (c₀ q₀ c q : ℝ) : ℝ :=
 /-- Determinant of the normalized two-point scalar Pick defect. -/
 def pickTwoPointDeterminant (c₀ q₀ c q : ℝ) : ℝ :=
   pickDiagonalDefect c₀ q₀ * pickDiagonalDefect c q -
-    pickCrossDefect c₀ q₀ c q ^ 2
+    pickCrossDefect c₀ q₀ c q ^ (2 : ℕ)
 
 /-- **Quadratic-contact determinant law.**  If source and multiplier nodes both approach the
 lossless boundary and the normalized moving diagonal defect vanishes, then every fixed-interior
@@ -42,7 +42,7 @@ theorem tendsto_pickTwoPointDeterminant_of_boundaryContact
     (hdiag : Tendsto (fun a => pickDiagonalDefect (c a) (q a)) l (𝓝 0))
     (hq₀ : q₀ ≠ 1) :
     Tendsto (fun a => pickTwoPointDeterminant c₀ q₀ (c a) (q a)) l
-      (𝓝 (-((1 - c₀) / (1 - q₀)) ^ 2)) := by
+      (𝓝 (-((1 - c₀) / (1 - q₀)) ^ (2 : ℕ))) := by
   have hcmul : Tendsto (fun a => c₀ * c a) l (𝓝 (c₀ * 1)) :=
     tendsto_const_nhds.mul hc
   have hqmul : Tendsto (fun a => q₀ * q a) l (𝓝 (q₀ * 1)) :=

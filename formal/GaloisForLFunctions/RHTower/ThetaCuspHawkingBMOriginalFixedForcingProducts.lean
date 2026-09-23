@@ -29,8 +29,8 @@ def sourceRemainder (q : XiZeroCopy) (br gradient : Bool) (z : Point) : ℂ :=
   sourceField q gradient z-sourcePrincipal q br gradient z
 
 private theorem principal_gradient (q : XiZeroCopy) (br : Bool) (z : Point) (hz : 0 < z 1) :
-    (z 1:ℂ)^2*((coordDeriv 0 (principal (center q)) z)^2+
-      (coordDeriv 1 (principal (center q)) z)^2)/2=
+    (z 1:ℂ)^(2 : ℕ)*((coordDeriv 0 (principal (center q)) z)^(2 : ℕ)+
+      (coordDeriv 1 (principal (center q)) z)^(2 : ℕ))/2=
       ∑ i : Fin 3,principalGradient q br i*(z 1:ℂ)^(principalExponent q i) := by
   rw [principal_gradient_expansion q z hz]
   apply Finset.sum_congr rfl
@@ -43,14 +43,14 @@ private theorem principal_gradient (q : XiZeroCopy) (br : Bool) (z : Point) (hz 
 private theorem remainder_square (q : XiZeroCopy) (br : Bool) (z : Point) (hz : 0 < z 1) :
     sourceRemainder q br false z=(1/2:ℂ)*squareRemainder (center q) z := by
   have hp := principalSquare_expansion q z hz
-  change (principal (center q) z)^2/2=∑ i : Fin 3,principalAmplitude q i*(z 1:ℂ)^(principalExponent q i) at hp
+  change (principal (center q) z)^(2 : ℕ)/2=∑ i : Fin 3,principalAmplitude q i*(z 1:ℂ)^(principalExponent q i) at hp
   change fullSquarePotential q z-(∑ i : Fin 3,principalAmplitude q i*(z 1:ℂ)^(principalExponent q i))=_
   rw [← hp]
   unfold fullSquarePotential squareRemainder
   ring
 
 private theorem remainder_gradient (q : XiZeroCopy) (br : Bool) (z : Point) (hz : 0 < z 1) :
-    sourceRemainder q br true z=(1/2:ℂ)*(z 1:ℂ)^2*
+    sourceRemainder q br true z=(1/2:ℂ)*(z 1:ℂ)^(2 : ℕ)*
       (gradientProductRemainder (center q) 0 0 z+gradientProductRemainder (center q) 1 1 z) := by
   change fullGradientEnergy q z/2-(∑ i : Fin 3,principalGradient q br i*(z 1:ℂ)^(principalExponent q i))=_
   rw [← principal_gradient q br z hz]
@@ -71,9 +71,9 @@ theorem source_remainder_weighted (q : XiZeroCopy) (br gradient : Bool) (w : ℂ
     refine ⟨‖(1/2:ℂ)‖*(A+B),by positivity,?_⟩
     intro z hz
     have hn : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith)
-    have he : (z 1:ℂ)^(w+2)=(z 1:ℂ)^w*(z 1:ℂ)^2 := by rw [Complex.cpow_add _ _ hn,Complex.cpow_two]
+    have he : (z 1:ℂ)^(w+2)=(z 1:ℂ)^w*(z 1:ℂ)^(2 : ℕ) := by rw [Complex.cpow_add _ _ hn,Complex.cpow_two]
     rw [remainder_gradient q br z (by linarith)]
-    rw [show (z 1:ℂ)^w*((1/2:ℂ)*(z 1:ℂ)^2*
+    rw [show (z 1:ℂ)^w*((1/2:ℂ)*(z 1:ℂ)^(2 : ℕ)*
       (gradientProductRemainder (center q) 0 0 z+gradientProductRemainder (center q) 1 1 z))=
       (1/2:ℂ)*((z 1:ℂ)^(w+2)*gradientProductRemainder (center q) 0 0 z+
         (z 1:ℂ)^(w+2)*gradientProductRemainder (center q) 1 1 z) by rw [he];ring,norm_mul]

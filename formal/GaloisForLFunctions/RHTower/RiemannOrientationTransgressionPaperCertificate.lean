@@ -35,7 +35,7 @@ theorem riemannOrientationTransgressionPaperCore
     (hregular :
       ∀ v, F (deningerCalderonWittGlobalOrientedBoundary v) = 0)
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle :
       deningerCalderonWittAlgebraicGlobalExteriorCup w = 0)
     (p q : Nat.Primes) (hpq : p ≠ q)

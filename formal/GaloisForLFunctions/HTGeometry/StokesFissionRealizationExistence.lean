@@ -189,7 +189,7 @@ theorem exists_certifiedFissionDatum_master_law {n : ℕ} (hn : 1 < n) :
         (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) ∧
       (∀ i j,
         (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
-          datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+          datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) =
             datum.core.energy i j) := by
   obtain ⟨datum⟩ := nonempty_certifiedFissionDatum hn
   exact ⟨datum, datum.universal_contact_master_law⟩
@@ -208,7 +208,7 @@ theorem ContactMatrix.energy_tree_law {n : ℕ} (κ : ContactMatrix n) (hn : 1 <
         (∀ x : Fin n → ℝ, ∑ i, x i = 0 → x ≠ 0 →
           (∑ i, ∑ j, x i * x j * t.energy i j) < 0) ∧
         (∀ i j, (∑ e, (t.canonicalCuts.toPositivePendantCutFamily.feature i e -
-          t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j) :=
+          t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) = t.energy i j) :=
   ⟨κ.realization hn, κ.realization_energy hn,
     fun _ _ hij => RootedContactTree.energy_pos_of_ne _ hij,
     fun i j => RootedContactTree.energy_eq_zero_iff _ i j,
@@ -262,7 +262,7 @@ theorem ContactMatrix.stokes_tomography_law {n : ℕ} (κ : ContactMatrix n) (hn
             (∀ x : Fin n → ℝ, ∑ i, x i = 0 → x ≠ 0 →
               (∑ i, ∑ j, x i * x j * t.energy i j) < 0) ∧
             (∀ i j, (∑ e, (t.canonicalCuts.toPositivePendantCutFamily.feature i e -
-              t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j) :=
+              t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) = t.energy i j) :=
   ⟨fun i j k => κ.rootedTriple_iff hn i j k, fun s t hs ht => κ.hierarchy_unique s t hs ht,
     κ.energy_tree_law hn⟩
 

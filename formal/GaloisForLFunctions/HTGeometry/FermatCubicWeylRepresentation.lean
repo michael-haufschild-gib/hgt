@@ -20,7 +20,7 @@ variable {K : Type u} [Field K]
 
 /-- The order-three clock operator. -/
 def fermatCubicClock (ω : K) : Module.End K (Fin 3 → K) where
-  toFun f i := ![1, ω, ω ^ 2] i * f i
+  toFun f i := ![1, ω, ω ^ (2 : ℕ)] i * f i
   map_add' f g := by
     funext i
     simp [mul_add]
@@ -40,7 +40,7 @@ def fermatCubicShift : Module.End K (Fin 3 → K) where
 
 /-- The third Weyl generator `clock²·shift`, written coordinatewise. -/
 def fermatCubicThird (ω : K) : Module.End K (Fin 3 → K) where
-  toFun f := ![f 2, ω ^ 2 * f 0, ω * f 1]
+  toFun f := ![f 2, ω ^ (2 : ℕ) * f 0, ω * f 1]
   map_add' f g := by
     funext i
     fin_cases i <;> simp [mul_add]
@@ -50,50 +50,50 @@ def fermatCubicThird (ω : K) : Module.End K (Fin 3 → K) where
 
 /-- The cubic cyclotomic relation implies `ω³=1`. -/
 theorem cube_eq_one_of_sq_add_self_add_one_eq_zero
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
-    ω ^ 3 = 1 := by
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
+    ω ^ (3 : ℕ) = 1 := by
   calc
-    ω ^ 3 = (ω - 1) * (ω ^ 2 + ω + 1) + 1 := by ring
+    ω ^ (3 : ℕ) = (ω - 1) * (ω ^ (2 : ℕ) + ω + 1) + 1 := by ring
     _ = 1 := by rw [hω]; ring
 
 theorem cube_nested_mul_eq
-    (ω x : K) (hω3 : ω ^ 3 = 1) :
+    (ω x : K) (hω3 : ω ^ (3 : ℕ) = 1) :
     ω * (ω * (ω * x)) = x := by
   calc
-    ω * (ω * (ω * x)) = ω ^ 3 * x := by ring
+    ω * (ω * (ω * x)) = ω ^ (3 : ℕ) * x := by ring
     _ = x := by rw [hω3, one_mul]
 
 theorem sixth_nested_mul_eq
-    (ω x : K) (hω3 : ω ^ 3 = 1) :
+    (ω x : K) (hω3 : ω ^ (3 : ℕ) = 1) :
     ω * (ω * (ω * (ω * (ω * (ω * x))))) = x := by
   calc
-    ω * (ω * (ω * (ω * (ω * (ω * x))))) = (ω ^ 3) ^ 2 * x := by ring
+    ω * (ω * (ω * (ω * (ω * (ω * x))))) = (ω ^ (3 : ℕ)) ^ (2 : ℕ) * x := by ring
     _ = x := by rw [hω3, one_pow, one_mul]
 
 theorem cube_square_nested_mul_eq
-    (ω x : K) (hω3 : ω ^ 3 = 1) :
-    ω ^ 2 * (ω ^ 2 * (ω ^ 2 * x)) = x := by
+    (ω x : K) (hω3 : ω ^ (3 : ℕ) = 1) :
+    ω ^ (2 : ℕ) * (ω ^ (2 : ℕ) * (ω ^ (2 : ℕ) * x)) = x := by
   calc
-    ω ^ 2 * (ω ^ 2 * (ω ^ 2 * x)) = (ω ^ 3) ^ 2 * x := by ring
+    ω ^ (2 : ℕ) * (ω ^ (2 : ℕ) * (ω ^ (2 : ℕ) * x)) = (ω ^ (3 : ℕ)) ^ (2 : ℕ) * x := by ring
     _ = x := by rw [hω3, one_pow, one_mul]
 
 theorem omega_mul_square_mul_eq
-    (ω x : K) (hω3 : ω ^ 3 = 1) :
-    ω * (ω ^ 2 * x) = x := by
+    (ω x : K) (hω3 : ω ^ (3 : ℕ) = 1) :
+    ω * (ω ^ (2 : ℕ) * x) = x := by
   calc
-    ω * (ω ^ 2 * x) = ω ^ 3 * x := by ring
+    ω * (ω ^ (2 : ℕ) * x) = ω ^ (3 : ℕ) * x := by ring
     _ = x := by rw [hω3, one_mul]
 
 theorem square_mul_omega_mul_eq
-    (ω x : K) (hω3 : ω ^ 3 = 1) :
-    ω ^ 2 * (ω * x) = x := by
+    (ω x : K) (hω3 : ω ^ (3 : ℕ) = 1) :
+    ω ^ (2 : ℕ) * (ω * x) = x := by
   calc
-    ω ^ 2 * (ω * x) = ω ^ 3 * x := by ring
+    ω ^ (2 : ℕ) * (ω * x) = ω ^ (3 : ℕ) * x := by ring
     _ = x := by rw [hω3, one_mul]
 
 theorem fermatCubicClock_cube
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
-    fermatCubicClock ω ^ 3 = 1 := by
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
+    fermatCubicClock ω ^ (3 : ℕ) = 1 := by
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
   apply LinearMap.ext
   intro f
@@ -104,7 +104,7 @@ theorem fermatCubicClock_cube
       cube_square_nested_mul_eq ω _ hω3]
 
 theorem fermatCubicShift_cube :
-    (fermatCubicShift (K := K)) ^ 3 = 1 := by
+    (fermatCubicShift (K := K)) ^ (3 : ℕ) = 1 := by
   apply LinearMap.ext
   intro f
   funext i
@@ -112,8 +112,8 @@ theorem fermatCubicShift_cube :
     simp [fermatCubicShift, Module.End.pow_apply, Function.iterate_succ_apply']
 
 theorem fermatCubicThird_cube
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
-    fermatCubicThird ω ^ 3 = 1 := by
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
+    fermatCubicThird ω ^ (3 : ℕ) = 1 := by
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
   apply LinearMap.ext
   intro f
@@ -124,7 +124,7 @@ theorem fermatCubicThird_cube
       square_mul_omega_mul_eq ω _ hω3]
 
 theorem fermatCubicClock_mul_shift
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicClock ω * fermatCubicShift =
       ω • (fermatCubicShift * fermatCubicClock ω) := by
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
@@ -136,7 +136,7 @@ theorem fermatCubicClock_mul_shift
       cube_nested_mul_eq ω _ hω3, pow_two, mul_assoc]
 
 theorem fermatCubicClock_mul_third
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicClock ω * fermatCubicThird ω =
       ω • (fermatCubicThird ω * fermatCubicClock ω) := by
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
@@ -148,7 +148,7 @@ theorem fermatCubicClock_mul_third
       cube_nested_mul_eq ω _ hω3, pow_two, mul_assoc]
 
 theorem fermatCubicShift_mul_third
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicShift * fermatCubicThird ω =
       ω • (fermatCubicThird ω * fermatCubicShift) := by
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
@@ -171,7 +171,7 @@ theorem fermatCubicWeylRoot_ne_zero :
 /-- **Explicit Fermat cubic differential-field horizon.**  The three-state Weyl packet has
 complete differential dependence exactly on `c₀³+c₁³+c₂³=0`. -/
 theorem fermatCubicWeylField_dependenceHorizon_eq
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     {c : Fin 3 → K | ¬ AlgebraicIndependent K
       (generalizedCliffordShiftFieldJet
         (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift
@@ -192,7 +192,7 @@ theorem fermatCubicWeylField_dependenceHorizon_eq
 /-- The explicit Weyl model also gives a genuine linear law space of rational-field derivations
 with the Fermat cubic as its exact dependence horizon. -/
 theorem fermatCubicWeylLinearDependenceHorizon_eq
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     linearDerivationDependenceHorizon
         (generalizedCliffordShiftFieldDerivationLaw
           (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift
@@ -225,16 +225,16 @@ theorem fermatCubicEndomorphismCoefficient_apply
 
 /-- A canonical coordinate bivector of the ternary law space. -/
 def fermatCubicBasisWedge (i j : Fin 3) :
-    ⋀[K]^2 (Fin 3 → K) :=
+    ⋀[K]^(2 : ℕ) (Fin 3 → K) :=
   exteriorPower.ιMulti K 2
     ![Pi.basisFun K (Fin 3) i, Pi.basisFun K (Fin 3) j]
 
 /-- A left-inverse candidate for the internal Weyl commutator symbol.  Its three coefficient
 readouts were chosen to separate the three Weyl monomials `[X,Y]`, `[X,Z]`, and `[Y,Z]`. -/
 def fermatCubicWeylCommutatorDecoder (ω : K) :
-    Module.End K (Fin 3 → K) →ₗ[K] ⋀[K]^2 (Fin 3 → K) :=
+    Module.End K (Fin 3 → K) →ₗ[K] ⋀[K]^(2 : ℕ) (Fin 3 → K) :=
   LinearMap.smulRight
-      (((ω - 1) ^ 2)⁻¹ •
+      (((ω - 1) ^ (2 : ℕ))⁻¹ •
         (fermatCubicEndomorphismCoefficient (K := K) 2 1 -
           fermatCubicEndomorphismCoefficient (K := K) 1 0))
       (fermatCubicBasisWedge (K := K) 0 1) +
@@ -244,30 +244,30 @@ def fermatCubicWeylCommutatorDecoder (ω : K) :
           ω • fermatCubicEndomorphismCoefficient (K := K) 1 0))
       (fermatCubicBasisWedge (K := K) 0 2) +
     LinearMap.smulRight
-      ((ω ^ 2 - ω)⁻¹ • fermatCubicEndomorphismCoefficient (K := K) 2 0)
+      ((ω ^ (2 : ℕ) - ω)⁻¹ • fermatCubicEndomorphismCoefficient (K := K) 2 0)
       (fermatCubicBasisWedge (K := K) 1 2)
 
 theorem omega_ne_one_of_sq_add_self_add_one_eq_zero
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     ω ≠ 1 := by
   intro h
   rw [h] at hω
   norm_num at hω
 
 theorem omega_sq_ne_one_of_sq_add_self_add_one_eq_zero
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
-    ω ^ 2 ≠ 1 := by
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
+    ω ^ (2 : ℕ) ≠ 1 := by
   intro hω2
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
   exact hω1 (by
     calc
-      ω = ω ^ 2 * ω := by rw [hω2, one_mul]
-      _ = ω ^ 3 := by ring
+      ω = ω ^ (2 : ℕ) * ω := by rw [hω2, one_mul]
+      _ = ω ^ (3 : ℕ) := by ring
       _ = 1 := hω3)
 
 theorem omega_ne_zero_of_sq_add_self_add_one_eq_zero
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     ω ≠ 0 := by
   intro h
   rw [h] at hω
@@ -275,15 +275,15 @@ theorem omega_ne_zero_of_sq_add_self_add_one_eq_zero
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_clock_shift
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicClock ω, fermatCubicShift⁆ =
       fermatCubicBasisWedge (K := K) 0 1 := by
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
-  have hA : (ω - 1) ^ 2 ≠ 0 := by
+  have hA : (ω - 1) ^ (2 : ℕ) ≠ 0 := by
     exact pow_ne_zero 2 (sub_ne_zero.mpr hω1)
-  have hAexp : 1 - ω * 2 + ω ^ 2 ≠ 0 := by
-    rw [show 1 - ω * 2 + ω ^ 2 = (ω - 1) ^ 2 by ring]
+  have hAexp : 1 - ω * 2 + ω ^ (2 : ℕ) ≠ 0 := by
+    rw [show 1 - ω * 2 + ω ^ (2 : ℕ) = (ω - 1) ^ (2 : ℕ) by ring]
     exact hA
   have hsub : -1 + ω ≠ 0 := by
     simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
@@ -298,17 +298,17 @@ theorem fermatCubicWeylCommutatorDecoder_clock_shift
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_clock_third
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicClock ω, fermatCubicThird ω⁆ =
       fermatCubicBasisWedge (K := K) 0 2 := by
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
-  have hA : (ω - 1) ^ 2 ≠ 0 :=
+  have hA : (ω - 1) ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (sub_ne_zero.mpr hω1)
   have hsub : -1 + ω ≠ 0 := by
     simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
   have hω3 := cube_eq_one_of_sq_add_self_add_one_eq_zero ω hω
-  have hω4 : ω ^ 4 = ω := by rw [pow_succ, hω3, one_mul]
+  have hω4 : ω ^ (4 : ℕ) = ω := by rw [pow_succ, hω3, one_mul]
   have hthree : (3 : K) ≠ 0 := by norm_num
   simp [fermatCubicWeylCommutatorDecoder, fermatCubicEndomorphismCoefficient,
     fermatCubicClock, fermatCubicThird, LieRing.of_associative_ring_bracket,
@@ -322,16 +322,16 @@ theorem fermatCubicWeylCommutatorDecoder_clock_third
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_shift_third
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicShift (K := K), fermatCubicThird ω⁆ =
       fermatCubicBasisWedge (K := K) 1 2 := by
   have hω1 := omega_ne_one_of_sq_add_self_add_one_eq_zero ω hω
   have hω0 := omega_ne_zero_of_sq_add_self_add_one_eq_zero ω hω
-  have hC : -ω + ω ^ 2 ≠ 0 := by
-    rw [show -ω + ω ^ 2 = ω * (ω - 1) by ring]
+  have hC : -ω + ω ^ (2 : ℕ) ≠ 0 := by
+    rw [show -ω + ω ^ (2 : ℕ) = ω * (ω - 1) by ring]
     exact mul_ne_zero hω0 (sub_ne_zero.mpr hω1)
-  have hA : (ω - 1) ^ 2 ≠ 0 :=
+  have hA : (ω - 1) ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (sub_ne_zero.mpr hω1)
   have hsub : -1 + ω ≠ 0 := by
     simpa [sub_eq_add_neg, add_comm] using (sub_ne_zero.mpr hω1 : ω - 1 ≠ 0)
@@ -361,7 +361,7 @@ theorem fermatCubicWeylCommutatorDecoder_swap
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_shift_clock
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicShift (K := K), fermatCubicClock ω⁆ =
       fermatCubicBasisWedge (K := K) 1 0 := by
@@ -372,7 +372,7 @@ theorem fermatCubicWeylCommutatorDecoder_shift_clock
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_third_clock
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicThird ω, fermatCubicClock ω⁆ =
       fermatCubicBasisWedge (K := K) 2 0 := by
@@ -383,7 +383,7 @@ theorem fermatCubicWeylCommutatorDecoder_third_clock
 
 @[simp]
 theorem fermatCubicWeylCommutatorDecoder_third_shift
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     fermatCubicWeylCommutatorDecoder ω
         ⁅fermatCubicThird ω, fermatCubicShift (K := K)⁆ =
       fermatCubicBasisWedge (K := K) 2 1 := by
@@ -394,7 +394,7 @@ theorem fermatCubicWeylCommutatorDecoder_third_shift
 
 /-- The explicit three-state decoder is a left inverse to the full internal commutator symbol. -/
 theorem fermatCubicWeylCommutatorDecoder_comp_eq_id
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     (fermatCubicWeylCommutatorDecoder ω).comp
         (endomorphismCommutatorMap
           (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift
@@ -437,7 +437,7 @@ theorem fermatCubicWeylCommutatorDecoder_comp_eq_id
 
 /-- The Fermat cubic Weyl principal symbol has maximal possible bivector rank. -/
 theorem fermatCubicWeyl_endomorphismCommutatorMap_injective
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     Function.Injective
       (endomorphismCommutatorMap
         (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift
@@ -461,7 +461,7 @@ theorem fermatCubicWeyl_endomorphismCommutatorMap_injective
 cubic as its exact scalar dependence horizon and preserves every nonzero bivector as a nonzero
 differential-field commutator. -/
 theorem fermatCubicWeyl_maximalHorizon
-    [CharZero K] (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    [CharZero K] (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     linearDerivationDependenceHorizon
         (generalizedCliffordShiftFieldDerivationLaw
           (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift

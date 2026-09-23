@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 theorem g₃_factor (P : Parameters) :
     g₃ P =
       4 * (2 * P.modulus - 1) * (P.modulus + 1) * (P.modulus - 2) /
-        (27 * (P.q₀ : ℝ) ^ 3) := by
+        (27 * (P.q₀ : ℝ) ^ (3 : ℕ)) := by
   rw [g₃]
   congr 1
   ring
@@ -28,7 +28,7 @@ theorem g₃_eq_zero_iff (P : Parameters) :
     g₃ P = 0 ↔
       P.modulus = -1 ∨ P.modulus = 1 / 2 ∨ P.modulus = 2 := by
   rw [g₃_factor, div_eq_zero_iff]
-  have hden : 27 * (P.q₀ : ℝ) ^ 3 ≠ 0 :=
+  have hden : 27 * (P.q₀ : ℝ) ^ (3 : ℕ) ≠ 0 :=
     mul_ne_zero (by norm_num) (pow_ne_zero 3 P.q₀.ne_zero)
   simp only [hden, or_false]
   constructor
@@ -89,14 +89,14 @@ theorem parameterJ_eq_1728_iff (P : NonsingularParameters) :
   · intro h
     rw [parameterJ, g₂_cubed_sub_g₃_sq] at h
     field_simp [hΔ] at h
-    have hg₃sq : g₃ P ^ 2 = 0 := by
+    have hg₃sq : g₃ P ^ (2 : ℕ) = 0 := by
       have hrel := g₂_cubed_sub_g₃_sq P
       nlinarith
     exact (g₃_eq_zero_iff P).mp (sq_eq_zero_iff.mp hg₃sq)
   · intro h
     have hg₃ : g₃ P = 0 := (g₃_eq_zero_iff P).mpr h
     rw [parameterJ, hg₃]
-    have hg₂ : g₂ P ^ 3 ≠ 0 := pow_ne_zero 3 (ne_of_gt (g₂_pos P))
+    have hg₂ : g₂ P ^ (3 : ℕ) ≠ 0 := pow_ne_zero 3 (ne_of_gt (g₂_pos P))
     field_simp [hg₂]
     ring
 

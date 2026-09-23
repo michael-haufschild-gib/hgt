@@ -56,8 +56,8 @@ theorem exists_uniform_soninScaledPacket_band_escape :
     ∃ u₀ ρ : ℝ, 0 < u₀ ∧ 0 < ρ ∧
       ∀ (m δ w t : ℝ) (hδ : 0 < δ), δ < m → 0 ≤ t → t < w →
         u₀ ≤ δ * |w| → t * δ ≤ ρ →
-        ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ 2 ≤
-          2⁻¹ * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by
+        ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ (2 : ℕ) ≤
+          2⁻¹ * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by
   set J₀ : ℝ := ∫ y : ℝ, soninUnitBumpData y with hJ₀def
   set I : ℝ := ∫ y : ℝ, soninUnitBumpSq y with hIdef
   set J : ℝ := ∫ y : ℝ, ‖soninUnitBumpC y‖ with hJdef
@@ -70,7 +70,7 @@ theorem exists_uniform_soninScaledPacket_band_escape :
   obtain ⟨U₂, hU₂⟩ := eventually_atTop.mp
     (tendsto_soninRefSqTailSup_atTop.eventually
       (gt_mem_nhds (show (0 : ℝ) < I / 20 by positivity)))
-  refine ⟨max (max U₁ U₂) 1, I / (128 * (J ^ 2 + 1)),
+  refine ⟨max (max U₁ U₂) 1, I / (128 * (J ^ (2 : ℕ) + 1)),
     lt_of_lt_of_le zero_lt_one (le_max_right _ _), by positivity, ?_⟩
   intro m δ w t hδ hm ht htw hcarrier hshort
   set μ : ℝ := soninScaledPacketMean m δ (2 * Real.pi * w) with hμdef
@@ -87,7 +87,7 @@ theorem exists_uniform_soninScaledPacket_band_escape :
     nlinarith [h, hS, hJ₀]
   have hmeannn : 0 ≤ |μ| := abs_nonneg μ
   -- the energy floor
-  have hfloor : δ * I / 2 ≤ ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by
+  have hfloor : δ * I / 2 ≤ ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by
     refine le_trans ?_ (norm_sq_soninScaledPacketEven_ge m δ w hδ hm)
     have h4 : 0 ≤ 4 * δ * soninRefSqTailSup (δ * |w|) :=
       mul_nonneg (mul_nonneg (by norm_num) hδ.le) hSqnn
@@ -121,19 +121,19 @@ theorem exists_uniform_soninScaledPacket_band_escape :
     rw [hMdef]
     linarith
   have hband := norm_sq_evenFourierCutoff_soninScaledPacketEven_le_uniform m δ w t hδ ht htw
-  have hsq : M ^ 2 ≤ (4 * δ * J) ^ 2 := by
+  have hsq : M ^ (2 : ℕ) ≤ (4 * δ * J) ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self hMnn hMle
   have hY : 0 ≤ t * δ := mul_nonneg ht hδ.le
-  have hshort' : t * δ * (128 * (J ^ 2 + 1)) ≤ I :=
+  have hshort' : t * δ * (128 * (J ^ (2 : ℕ) + 1)) ≤ I :=
     (le_div_iff₀ (by positivity)).mp hshort
-  have hX : 32 * (t * δ * J ^ 2) ≤ I / 4 := by nlinarith [hshort', hY]
-  have hchain : 2 * t * M ^ 2 ≤ 32 * δ * (t * δ * J ^ 2) := by nlinarith [hsq, ht]
-  have hkey : 2 * t * M ^ 2 ≤ δ * I / 4 := by nlinarith [hchain, hX, hδ]
-  calc ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ 2
-      ≤ 2 * t * M ^ 2 := hband
+  have hX : 32 * (t * δ * J ^ (2 : ℕ)) ≤ I / 4 := by nlinarith [hshort', hY]
+  have hchain : 2 * t * M ^ (2 : ℕ) ≤ 32 * δ * (t * δ * J ^ (2 : ℕ)) := by nlinarith [hsq, ht]
+  have hkey : 2 * t * M ^ (2 : ℕ) ≤ δ * I / 4 := by nlinarith [hchain, hX, hδ]
+  calc ‖evenFourierCutoff t (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ^ (2 : ℕ)
+      ≤ 2 * t * M ^ (2 : ℕ) := hband
     _ ≤ δ * I / 4 := hkey
     _ = 2⁻¹ * (δ * I / 2) := by ring
-    _ ≤ 2⁻¹ * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 := by linarith [hfloor]
+    _ ≤ 2⁻¹ * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) := by linarith [hfloor]
 
 end RHTower

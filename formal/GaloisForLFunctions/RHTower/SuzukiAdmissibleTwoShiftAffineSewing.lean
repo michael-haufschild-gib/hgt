@@ -26,7 +26,7 @@ Then, pointwise and without divisor hypotheses,
 After projective normalization, changing either admissible source pair changes only an off-real
 analytic interval-quotient correction.  Hence the complete nonreal Xi-pole germ is independent of
 the source shifts, their gauges, and the chosen target.  At a hypothetical nonreal Xi zero its
-order is `-1` and its normalized trailing coefficient is `ord(XiC)/z^2`.
+order is `-1` and its normalized trailing coefficient is `ord(XiC)/z^(2 : ℕ)`.
 
 All statements are unconditional.  No positivity of the Suzuki floor, aperture limit, estimate,
 RH assumption, or numerical computation is used.
@@ -554,7 +554,7 @@ theorem meromorphicTrailingCoeffAt_suzukiAffineSewnExterior
         (suzukiAffineSewnExterior alpha beta gamma
           WAlpha WBeta intervalAlpha intervalBeta) z =
       ((analyticOrderAt XiC z).toNat : ℂ) *
-        suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z / z ^ 2 := by
+        suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z / z ^ (2 : ℕ) := by
   have hP := analyticAt_suzukiAffineSewnCharacteristic
     (alpha := alpha) (beta := beta) hWAlpha hWBeta
   have hP0 : suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z ≠ 0 :=
@@ -632,7 +632,7 @@ theorem meromorphicTrailingCoeffAt_suzukiAffineSewnNormalizedExterior
     meromorphicTrailingCoeffAt
         (suzukiAffineSewnNormalizedExterior alpha beta gamma
           WAlpha WBeta intervalAlpha intervalBeta) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
   let C := suzukiAffineSewnExterior alpha beta gamma
     WAlpha WBeta intervalAlpha intervalBeta
   let P := suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta
@@ -655,7 +655,7 @@ theorem meromorphicTrailingCoeffAt_suzukiAffineSewnNormalizedExterior
     exact (meromorphicAt_suzukiShiftedXiMultiplier gamma z).mul hP.meromorphicAt |>.sub
       hJ.meromorphicAt
   have hCtrail : meromorphicTrailingCoeffAt C z =
-      ((analyticOrderAt XiC z).toNat : ℂ) * P z / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) * P z / z ^ (2 : ℕ) := by
     dsimp only [C, P]
     exact meromorphicTrailingCoeffAt_suzukiAffineSewnExterior
       hab hz hWAlpha hWAlpha0 hWBeta hWBeta0 hIAlpha hIBeta
@@ -664,7 +664,7 @@ theorem meromorphicTrailingCoeffAt_suzukiAffineSewnNormalizedExterior
     subst z
     exact XiC_zero_ne hz
   have htrailDiv : meromorphicTrailingCoeffAt (C / P) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
     rw [div_eq_mul_inv,
       hC.meromorphicTrailingCoeffAt_mul hP.meromorphicAt.inv,
       meromorphicTrailingCoeffAt_inv, hCtrail,

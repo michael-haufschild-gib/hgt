@@ -18,7 +18,7 @@ noncomputable section
 /-- One reciprocal-square summand of the centered Xi screw profile. -/
 def xiScrewDivisorTerm (t : ℝ) (q : XiZeroCopy) : ℂ :=
   (Complex.cosh ((t : ℂ) * (I * xiSpectralPoint q)) - 1) /
-    (I * xiSpectralPoint q) ^ 2
+    (I * xiSpectralPoint q) ^ (2 : ℕ)
 
 /-- Complex `cosh` is controlled by the exponential of the absolute real
 part.  This is the bound that is uniform on the centered Xi strip. -/
@@ -34,7 +34,7 @@ theorem norm_cosh_le_exp_abs_re (z : ℂ) :
 /-- Uniform reciprocal-square domination of one screw summand. -/
 theorem norm_xiScrewDivisorTerm_le (t : ℝ) (q : XiZeroCopy) :
     ‖xiScrewDivisorTerm t q‖ ≤
-      (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+      (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   let w : ℂ := I * xiSpectralPoint q
   have hw : w ≠ 0 := mul_ne_zero I_ne_zero (xiSpectralPoint_ne_zero q)
   have hwstrip : |w.re| ≤ (1 / 2 : ℝ) := by
@@ -50,12 +50,12 @@ theorem norm_xiScrewDivisorTerm_le (t : ℝ) (q : XiZeroCopy) :
     (norm_cosh_le_exp_abs_re _).trans (Real.exp_le_exp.mpr htre)
   rw [xiScrewDivisorTerm, norm_div, norm_pow, norm_mul, norm_I, one_mul]
   calc
-    ‖Complex.cosh ((t : ℂ) * w) - 1‖ / ‖xiSpectralPoint q‖ ^ 2 ≤
+    ‖Complex.cosh ((t : ℂ) * w) - 1‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤
         (‖Complex.cosh ((t : ℂ) * w)‖ + 1) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
       simpa using norm_sub_le (Complex.cosh ((t : ℂ) * w)) 1
-    _ ≤ (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+    _ ≤ (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
 
 /-- The centered Xi screw profile is absolutely summable for every real
@@ -68,10 +68,10 @@ theorem xiScrewDivisorTerm_summable (t : ℝ) :
   intro q
   calc
     ‖xiScrewDivisorTerm t q‖ ≤
-        (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2 :=
+        (Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       norm_xiScrewDivisorTerm_le t q
     _ = (Real.exp (|t| / 2) + 1) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 /-- The unconditional multiplicity-exact Xi screw profile. -/
 def xiScrewDivisor (t : ℝ) : ℂ :=
@@ -134,7 +134,7 @@ private theorem rectangularTwoEdgeTransform_eq_sinhDifference
   ring
 
 private theorem sinhDifference_sq_identity (x y : ℂ) :
-    (2 * (Complex.sinh x - Complex.sinh y)) ^ 2 =
+    (2 * (Complex.sinh x - Complex.sinh y)) ^ (2 : ℕ) =
       2 * ((Complex.cosh (2 * x) - 1) +
         (Complex.cosh (2 * y) - 1) -
         2 * (Complex.cosh (x + y) - 1) +
@@ -148,18 +148,18 @@ private theorem sinhDifference_sq_identity (x y : ℂ) :
 /-- Pointwise hyperbolic identity behind the rectangular curvature law. -/
 theorem rectangularTwoEdgeTransform_sq_eq_screwTerms
     {L a : ℝ} {w : ℂ} (hw : w ≠ 0) :
-    rectangularTwoEdgeTransform L a w ^ 2 =
-      2 * (((Complex.cosh ((2 * a : ℝ) * w) - 1) / w ^ 2) +
-        ((Complex.cosh ((2 * a - 2 * L : ℝ) * w) - 1) / w ^ 2) -
-        2 * ((Complex.cosh ((2 * a - L : ℝ) * w) - 1) / w ^ 2) +
-        2 * ((Complex.cosh ((L : ℂ) * w) - 1) / w ^ 2)) := by
+    rectangularTwoEdgeTransform L a w ^ (2 : ℕ) =
+      2 * (((Complex.cosh ((2 * a : ℝ) * w) - 1) / w ^ (2 : ℕ)) +
+        ((Complex.cosh ((2 * a - 2 * L : ℝ) * w) - 1) / w ^ (2 : ℕ)) -
+        2 * ((Complex.cosh ((2 * a - L : ℝ) * w) - 1) / w ^ (2 : ℕ)) +
+        2 * ((Complex.cosh ((L : ℂ) * w) - 1) / w ^ (2 : ℕ))) := by
   rw [rectangularTwoEdgeTransform_eq_sinhDifference hw]
   rw [div_pow]
   have hid := sinhDifference_sq_identity
     ((a : ℂ) * w) ((a - L : ℂ) * w)
   have hid' :
       (2 * (Complex.sinh ((a : ℂ) * w) -
-        Complex.sinh ((a - L : ℂ) * w))) ^ 2 =
+        Complex.sinh ((a - L : ℂ) * w))) ^ (2 : ℕ) =
         2 * ((Complex.cosh ((2 * a : ℝ) * w) - 1) +
           (Complex.cosh ((2 * a - 2 * L : ℝ) * w) - 1) -
           2 * (Complex.cosh ((2 * a - L : ℝ) * w) - 1) +
@@ -206,7 +206,7 @@ theorem xiWeilPolarization_rectangular_eq_screwCurvature (L a : ℝ) :
     (h3.mul_left 2).sub (h4.mul_left 2)
   calc
     ∑' q : XiZeroCopy,
-        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 =
+        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) =
       ∑' q : XiZeroCopy,
         2 * (f1 q + f2 q - 2 * f3 q + 2 * f4 q) := by
           apply tsum_congr

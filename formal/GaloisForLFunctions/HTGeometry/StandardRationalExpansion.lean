@@ -314,7 +314,7 @@ theorem IsStdRat.pow {f : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (n : ℕ) :
   induction n with
   | zero =>
     refine ⟨1, 0, by simp, fun x _ => ?_⟩
-    show f x ^ 0 = Polynomial.eval x 1 / shiftProd 0 x
+    show f x ^ (0 : ℕ) = Polynomial.eval x 1 / shiftProd 0 x
     simp [shiftProd]
   | succ n ih =>
     have hmul := ih.mul hf

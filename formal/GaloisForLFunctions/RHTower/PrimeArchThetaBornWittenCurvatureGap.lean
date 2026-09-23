@@ -8,7 +8,7 @@ The observable that turns the first Morse state into the theta source does more 
 strict log-concavity.  After writing its positive readout weight as `q`, the exact log-density
 curvature is
 
-`4 * q + 6 + 6 / q + 9 / q ^ 2`.
+`4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)`.
 
 This profile is uniformly at least `19`.  For the dominant first theta atom this improves the
 generic scale floor `4 * pi`; for the supersymmetric partner it improves `2 * pi` to `19 / 2`.
@@ -25,11 +25,11 @@ noncomputable section
 /-- Algebraic core of the source-specific curvature gap. -/
 lemma nineteen_mul_sq_le_thetaBornCurvatureNumerator
     {q : ℝ} (hq : 0 < q) :
-    19 * q ^ 2 ≤ 4 * q ^ 3 + 6 * q ^ 2 + 6 * q + 9 := by
+    19 * q ^ (2 : ℕ) ≤ 4 * q ^ (3 : ℕ) + 6 * q ^ (2 : ℕ) + 6 * q + 9 := by
   have hq0 : 0 ≤ q := hq.le
-  have hq3 : 0 ≤ q ^ 3 := pow_nonneg hq0 3
+  have hq3 : 0 ≤ q ^ (3 : ℕ) := pow_nonneg hq0 3
   by_cases hq1 : q ≤ 1
-  · have hq2_le_q : q ^ 2 ≤ q := by nlinarith [sq_nonneg (q - 1)]
+  · have hq2_le_q : q ^ (2 : ℕ) ≤ q := by nlinarith [sq_nonneg (q - 1)]
     nlinarith
   · have hq1lt : 1 < q := lt_of_not_ge hq1
     by_cases hq2 : q ≤ 2
@@ -37,31 +37,31 @@ lemma nineteen_mul_sq_le_thetaBornCurvatureNumerator
       have hzLower : -(1 / 2 : ℝ) < z := by dsimp [z]; linarith
       have hzUpper : z ≤ 1 / 2 := by dsimp [z]; linarith
       have hpoly :
-          4 * q ^ 3 - 13 * q ^ 2 + 6 * q + 9 =
-            4 * z ^ 3 + 5 * z ^ 2 - 6 * z + 9 / 4 := by
+          4 * q ^ (3 : ℕ) - 13 * q ^ (2 : ℕ) + 6 * q + 9 =
+            4 * z ^ (3 : ℕ) + 5 * z ^ (2 : ℕ) - 6 * z + 9 / 4 := by
         dsimp [z]
         ring
       by_cases hz : z ≤ 0
-      · have hzSq : z ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg (z + 1 / 2)]
-        have hfactor : 4 * z ^ 2 - 1 ≤ 0 := by nlinarith
-        have hcubic : 0 ≤ z * (4 * z ^ 2 - 1) :=
+      · have hzSq : z ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg (z + 1 / 2)]
+        have hfactor : 4 * z ^ (2 : ℕ) - 1 ≤ 0 := by nlinarith
+        have hcubic : 0 ≤ z * (4 * z ^ (2 : ℕ) - 1) :=
           mul_nonneg_of_nonpos_of_nonpos hz hfactor
-        have hpos : 0 ≤ 4 * z ^ 3 + 5 * z ^ 2 - 6 * z + 9 / 4 := by
+        have hpos : 0 ≤ 4 * z ^ (3 : ℕ) + 5 * z ^ (2 : ℕ) - 6 * z + 9 / 4 := by
           nlinarith [sq_nonneg z]
         nlinarith [hpoly]
       · have hz0 : 0 < z := lt_of_not_ge hz
-        have hcubic : 0 ≤ z ^ 3 := pow_nonneg hz0.le 3
-        have hquad : 0 < 5 * z ^ 2 - 6 * z + 9 / 4 := by
+        have hcubic : 0 ≤ z ^ (3 : ℕ) := pow_nonneg hz0.le 3
+        have hquad : 0 < 5 * z ^ (2 : ℕ) - 6 * z + 9 / 4 := by
           nlinarith [sq_nonneg (z - 3 / 5)]
         nlinarith [hpoly]
     · have hq2lt : 2 < q := lt_of_not_ge hq2
       let y : ℝ := q - 2
       have hy : 0 < y := by dsimp [y]; linarith
-      have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-      have hy3 : 0 ≤ y ^ 3 := pow_nonneg hy.le 3
+      have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+      have hy3 : 0 ≤ y ^ (3 : ℕ) := pow_nonneg hy.le 3
       have hpoly :
-          4 * q ^ 3 - 13 * q ^ 2 + 6 * q + 9 =
-            4 * y ^ 3 + 11 * y ^ 2 + 2 * y + 1 := by
+          4 * q ^ (3 : ℕ) - 13 * q ^ (2 : ℕ) + 6 * q + 9 =
+            4 * y ^ (3 : ℕ) + 11 * y ^ (2 : ℕ) + 2 * y + 1 := by
         dsimp [y]
         ring
       nlinarith
@@ -72,7 +72,7 @@ theorem thetaCuspBornWittenLogCurvature_eq_readoutProfile
     thetaCuspBornWittenLogCurvature n x =
       4 * thetaCuspBornWittenWeight n x + 6 +
         6 / thetaCuspBornWittenWeight n x +
-        9 / thetaCuspBornWittenWeight n x ^ 2 := by
+        9 / thetaCuspBornWittenWeight n x ^ (2 : ℕ) := by
   have hq := thetaCuspBornWittenWeight_pos hn hx
   have ht : thetaCuspMorseScale n x =
       thetaCuspBornWittenWeight n x + 3 / 2 := by
@@ -88,19 +88,19 @@ theorem nineteen_le_thetaCuspBornWittenLogCurvature
     (19 : ℝ) ≤ thetaCuspBornWittenLogCurvature n x := by
   let q := thetaCuspBornWittenWeight n x
   have hq : 0 < q := thetaCuspBornWittenWeight_pos hn hx
-  have hq2 : 0 < q ^ 2 := sq_pos_of_pos hq
+  have hq2 : 0 < q ^ (2 : ℕ) := sq_pos_of_pos hq
   have hnum := nineteen_mul_sq_le_thetaBornCurvatureNumerator hq
   rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
-  change (19 : ℝ) ≤ 4 * q + 6 + 6 / q + 9 / q ^ 2
-  rw [show 4 * q + 6 + 6 / q + 9 / q ^ 2 =
-      (4 * q ^ 3 + 6 * q ^ 2 + 6 * q + 9) / q ^ 2 by
+  change (19 : ℝ) ≤ 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)
+  rw [show 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ) =
+      (4 * q ^ (3 : ℕ) + 6 * q ^ (2 : ℕ) + 6 * q + 9) / q ^ (2 : ℕ) by
     field_simp [hq.ne']]
   exact (le_div_iff₀ hq2).2 hnum
 
 /-- The source-specific and scale-sensitive curvature floors are simultaneously available. -/
 theorem max_nineteen_four_pi_sq_le_thetaCuspBornWittenLogCurvature
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    max (19 : ℝ) (4 * Real.pi * (n : ℝ) ^ 2) ≤
+    max (19 : ℝ) (4 * Real.pi * (n : ℝ) ^ (2 : ℕ)) ≤
       thetaCuspBornWittenLogCurvature n x := by
   exact max_le (nineteen_le_thetaCuspBornWittenLogCurvature hn hx)
     (thetaCuspBornWittenLogCurvature_floor hn hx)
@@ -121,14 +121,14 @@ theorem nineteen_halves_le_thetaCuspBornWittenPotentialPlus
 /-- Radial dressing preserves the absolute gap and adds its exact centrifugal curvature. -/
 theorem nineteen_add_centrifugal_le_thetaCuspBornWittenRadialLogCurvature
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
-    (19 : ℝ) + 2 * (k : ℝ) / x ^ 2 ≤
+    (19 : ℝ) + 2 * (k : ℝ) / x ^ (2 : ℕ) ≤
       thetaCuspBornWittenRadialLogCurvature k n x := by
   have hbase := nineteen_le_thetaCuspBornWittenLogCurvature hn hx.le
   calc
-    (19 : ℝ) + 2 * (k : ℝ) / x ^ 2 ≤
-        thetaCuspBornWittenLogCurvature n x + 2 * (k : ℝ) / x ^ 2 :=
+    (19 : ℝ) + 2 * (k : ℝ) / x ^ (2 : ℕ) ≤
+        thetaCuspBornWittenLogCurvature n x + 2 * (k : ℝ) / x ^ (2 : ℕ) :=
       by simpa only [add_comm] using
-        add_le_add_right hbase (2 * (k : ℝ) / x ^ 2)
+        add_le_add_right hbase (2 * (k : ℝ) / x ^ (2 : ℕ))
     _ = thetaCuspBornWittenRadialLogCurvature k n x := by
       simp only [thetaCuspBornWittenRadialLogCurvature,
         thetaCuspBornWittenRadialCurvature,
@@ -190,12 +190,12 @@ theorem thetaCuspFirstBornWittenSuperpotential_affine_lower
 square, leaving a `75/8` quadratic coercivity coefficient. -/
 theorem thetaCuspFirstBornWitten_localization_integrand
     {x : ℝ} (hx : 0 ≤ x) :
-    ((75 / 8 : ℝ) * x ^ 2 - 1 / 128) *
-        thetaCuspBornWittenAmplitude 1 x ^ 2 ≤
+    ((75 / 8 : ℝ) * x ^ (2 : ℕ) - 1 / 128) *
+        thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ) ≤
       x * thetaCuspBornWittenSuperpotential 1 x *
-        thetaCuspBornWittenAmplitude 1 x ^ 2 := by
+        thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ) := by
   have hW := thetaCuspFirstBornWittenSuperpotential_affine_lower hx
-  have hxW : (75 / 8 : ℝ) * x ^ 2 - 1 / 128 ≤
+  have hxW : (75 / 8 : ℝ) * x ^ (2 : ℕ) - 1 / 128 ≤
       x * thetaCuspBornWittenSuperpotential 1 x := by
     have hmul := mul_le_mul_of_nonneg_left hW hx
     nlinarith [sq_nonneg (4 * x - 1)]
@@ -208,22 +208,22 @@ theorem thetaCuspFirstMorseBornMoment_zero_pos :
   rw [thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq]
   simp only [Nat.mul_zero, pow_zero, one_mul]
   have hint : IntegrableOn
-      (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ 2) (Ioi 0) := by
+      (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) (Ioi 0) := by
     simpa using integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq
       0 (n := 1) (by norm_num)
   have hnonneg : 0 ≤ᵐ[volume.restrict (Ioi 0)]
-      fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ 2 := by
+      fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ) := by
     filter_upwards [] with x
     exact sq_nonneg _
   apply (setIntegral_pos_iff_support_of_nonneg_ae hnonneg hint).2
   have hcontinuous : Continuous
-      (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ 2) := by
+      (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) := by
     unfold thetaCuspBornWittenAmplitude thetaCuspBornWittenWeight
       thetaCuspMorseSuperpotential thetaCuspMorseGroundState
       thetaCuspMorseZeroMode thetaCuspMorseScale
     fun_prop
   have hopen : IsOpen
-      (Function.support (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ 2) ∩ Ioi 0) :=
+      (Function.support (fun x : ℝ => thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) ∩ Ioi 0) :=
     hcontinuous.isOpen_support.inter isOpen_Ioi
   apply hopen.measure_pos (volume : Measure ℝ)
   refine ⟨1, ?_, by norm_num⟩
@@ -231,12 +231,12 @@ theorem thetaCuspFirstMorseBornMoment_zero_pos :
     (thetaCuspBornWittenAmplitude_pos (n := 1) (by norm_num) (by norm_num))).ne'
 
 /-- **Dominant-clock localization law.**  The Ward identity and source-specific curvature gap
-give an unconditional normalized second-position bound `E[X^2] ≤ 13/240`. -/
+give an unconditional normalized second-position bound `E[X^(2 : ℕ)] ≤ 13/240`. -/
 theorem two_hundred_forty_mul_firstMorseBornMoment_one_le_thirteen_mass :
     240 * thetaCuspMorseBornMoment 1 1 ≤
       13 * thetaCuspMorseBornMoment 0 1 := by
-  let rho : ℝ → ℝ := fun x => thetaCuspBornWittenAmplitude 1 x ^ 2
-  let lower : ℝ → ℝ := fun x => ((75 / 8 : ℝ) * x ^ 2 - 1 / 128) * rho x
+  let rho : ℝ → ℝ := fun x => thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)
+  let lower : ℝ → ℝ := fun x => ((75 / 8 : ℝ) * x ^ (2 : ℕ) - 1 / 128) * rho x
   let ward : ℝ → ℝ := fun x => x * thetaCuspBornWittenSuperpotential 1 x * rho x
   have h0 := integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq 0
     (n := 1) (by norm_num)
@@ -261,8 +261,8 @@ theorem two_hundred_forty_mul_firstMorseBornMoment_one_le_thirteen_mass :
       (75 / 8 : ℝ) * thetaCuspMorseBornMoment 1 1 -
         (1 / 128 : ℝ) * thetaCuspMorseBornMoment 0 1 := by
     rw [show lower = fun x : ℝ =>
-        (75 / 8 : ℝ) * (x ^ 2 * rho x) -
-          (1 / 128 : ℝ) * (x ^ 0 * rho x) by
+        (75 / 8 : ℝ) * (x ^ (2 : ℕ) * rho x) -
+          (1 / 128 : ℝ) * (x ^ (0 : ℕ) * rho x) by
       funext x
       dsimp only [lower]
       simp only [pow_zero, one_mul]
@@ -292,8 +292,8 @@ theorem two_hundred_forty_mul_firstAtomMoment_one_le_thirteen_mass :
 uniform-curvature Brascamp--Lieb estimate with the relaxed fourth-moment gate is false for the
 actual first theta atom. -/
 theorem not_thetaCuspFirstAtom_uniformCurvature_meanFloor :
-    ¬ 64 * (3005 / 2997 : ℝ) ^ 2 * thetaCuspAtomRawEvenMoment 0 1 ≤
-      19 * (45 - 16 * (3005 / 2997 : ℝ) ^ 2) *
+    ¬ 64 * (3005 / 2997 : ℝ) ^ (2 : ℕ) * thetaCuspAtomRawEvenMoment 0 1 ≤
+      19 * (45 - 16 * (3005 / 2997 : ℝ) ^ (2 : ℕ)) *
         thetaCuspAtomRawEvenMoment 1 1 := by
   intro hfloor
   have hmean := two_hundred_forty_mul_firstAtomMoment_one_le_thirteen_mass

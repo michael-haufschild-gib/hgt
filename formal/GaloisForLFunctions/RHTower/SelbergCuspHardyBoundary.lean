@@ -10,7 +10,7 @@ For a compact `C¹` profile supported in the positive half-line, retain the
 lower boundary value when completing the square with logarithmic derivative
 `k-1/(2*y)`. The exact cusp energy above height `Y` is the completed square,
 a nonnegative `k/y` potential when `k` is nonnegative, and the boundary term
-`(k-1/(2*Y))*f(Y)^2`.
+`(k-1/(2*Y))*f(Y)^(2 : ℕ)`.
 
 Consequently the isolated cusp tail satisfies the quarter-energy inequality
 when `k*Y >= 1/2`, even with a nonzero trace at the lower boundary. The frequency
@@ -49,11 +49,11 @@ private theorem compact_div (u v : ℝ → ℝ) (hu : HasCompactSupport u) :
   simpa only [div_eq_mul_inv] using compact_mul u (fun y => (v y)⁻¹) hu
 
 private theorem compact_sq (u : ℝ → ℝ) (hu : HasCompactSupport u) :
-    HasCompactSupport (fun y => u y ^ 2) := by
+    HasCompactSupport (fun y => u y ^ (2 : ℕ)) := by
   simpa only [pow_two] using compact_mul u u hu
 
 private theorem compact_square_integrable (u : ℝ → ℝ)
-    (hc : Continuous u) (hs : HasCompactSupport u) : Integrable (fun y => u y ^ 2) :=
+    (hc : Continuous u) (hs : HasCompactSupport u) : Integrable (fun y => u y ^ (2 : ℕ)) :=
   (hc.pow 2).integrable_of_hasCompactSupport (compact_sq u hs)
 
 /-- Division by height preserves the actual `C¹` regularity of these profiles. -/
@@ -79,7 +79,7 @@ theorem divided_compact (f : Profile) : HasCompactSupport (divided f) :=
 
 /-- The exact boundary flux in the cusp square completion. -/
 def flux (f : Profile) (k : ℝ) (y : ℝ) : ℝ :=
-  k * f y ^ 2 - f y * divided f y / 2
+  k * f y ^ (2 : ℕ) - f y * divided f y / 2
 
 /-- The boundary flux is a `C¹` function on the whole real line. -/
 theorem flux_contDiff (f : Profile) (k : ℝ) : ContDiff ℝ 1 (flux f k) := by
@@ -88,17 +88,17 @@ theorem flux_contDiff (f : Profile) (k : ℝ) : ContDiff ℝ 1 (flux f k) := by
 
 /-- The flux has compact support, so its upper endpoint vanishes. -/
 theorem flux_compact (f : Profile) (k : ℝ) : HasCompactSupport (flux f k) := by
-  have h₁ : HasCompactSupport (fun y => k * f y ^ 2) := by
-    exact compact_mul_left (fun _ => k) (fun y => f y ^ 2) (compact_sq f f.hasCompactSupport)
+  have h₁ : HasCompactSupport (fun y => k * f y ^ (2 : ℕ)) := by
+    exact compact_mul_left (fun _ => k) (fun y => f y ^ (2 : ℕ)) (compact_sq f f.hasCompactSupport)
   have h₂ : HasCompactSupport (fun y => f y * divided f y / 2) :=
     compact_div _ (fun _ => 2) (compact_mul f (divided f) f.hasCompactSupport)
   exact h₁.sub h₂
 
 private theorem flux_hasDerivAt (f : Profile) (k : ℝ) {y : ℝ} (hy : y ≠ 0) :
     HasDerivAt (flux f k)
-      (2 * k * f y * deriv f y - deriv f y * divided f y + divided f y ^ 2 / 2) y := by
+      (2 * k * f y * deriv f y - deriv f y * divided f y + divided f y ^ (2 : ℕ) / 2) y := by
   have hf := (f.contDiff.differentiable one_ne_zero y).hasDerivAt
-  have hg : HasDerivAt (divided f) ((deriv f y * y - f y) / y ^ 2) y := by
+  have hg : HasDerivAt (divided f) ((deriv f y * y - f y) / y ^ (2 : ℕ)) y := by
     convert hf.div (hasDerivAt_id y) hy using 1 <;> first | rfl | simp
   have h := ((hf.pow 2).const_mul k).sub ((hf.mul hg).div_const 2)
   convert h using 1 <;> try rfl
@@ -108,11 +108,11 @@ private theorem flux_hasDerivAt (f : Profile) (k : ℝ) {y : ℝ} (hy : y ≠ 0)
 
 /-- Squared first derivative after the frequency and Hardy corrections. -/
 def squareField (f : Profile) (k : ℝ) (y : ℝ) : ℝ :=
-  (deriv f y + k * f y - divided f y / 2) ^ 2
+  (deriv f y + k * f y - divided f y / 2) ^ (2 : ℕ)
 
 /-- Vertical plus horizontal energy density minus one quarter of hyperbolic mass. -/
 def excessField (f : Profile) (k : ℝ) (y : ℝ) : ℝ :=
-  deriv f y ^ 2 + k ^ 2 * f y ^ 2 - divided f y ^ 2 / 4
+  deriv f y ^ (2 : ℕ) + k ^ (2 : ℕ) * f y ^ (2 : ℕ) - divided f y ^ (2 : ℕ) / 4
 
 private theorem field_decomposition (f : Profile) (k : ℝ) {y : ℝ} (hy : y ≠ 0) :
     excessField f k y = squareField f k y + k * f y * divided f y - deriv (flux f k) y := by
@@ -141,11 +141,11 @@ theorem cross_integrable (f : Profile) (k : ℝ) :
 
 /-- The quarter-energy excess is actually integrable. -/
 theorem excessField_integrable (f : Profile) (k : ℝ) : Integrable (excessField f k) := by
-  have h₁ : Integrable (fun y => deriv f y ^ 2) :=
+  have h₁ : Integrable (fun y => deriv f y ^ (2 : ℕ)) :=
     compact_square_integrable (deriv f) (f.contDiff.continuous_deriv le_rfl) f.hasCompactSupport.deriv
-  have h₂ : Integrable (fun y => k ^ 2 * f y ^ 2) :=
-    (compact_square_integrable f f.continuous f.hasCompactSupport).const_mul (k ^ 2)
-  have h₃ : Integrable (fun y => divided f y ^ 2 / 4) :=
+  have h₂ : Integrable (fun y => k ^ (2 : ℕ) * f y ^ (2 : ℕ)) :=
+    (compact_square_integrable f f.continuous f.hasCompactSupport).const_mul (k ^ (2 : ℕ))
+  have h₃ : Integrable (fun y => divided f y ^ (2 : ℕ) / 4) :=
     (compact_square_integrable (divided f) (divided_contDiff f).continuous (divided_compact f)).div_const 4
   exact (h₁.add h₂).sub h₃
 
@@ -154,7 +154,7 @@ theorem cusp_hardy_identity (f : Profile) (k h : ℝ) :
     (∫ y in Ioi (Real.exp h), excessField f k y) =
       (∫ y in Ioi (Real.exp h), squareField f k y) +
         (∫ y in Ioi (Real.exp h), k * f y * divided f y) +
-          (k - 1 / (2 * Real.exp h)) * f (Real.exp h) ^ 2 := by
+          (k - 1 / (2 * Real.exp h)) * f (Real.exp h) ^ (2 : ℕ) := by
   have hflux : Integrable (deriv (flux f k)) :=
     ((flux_contDiff f k).continuous_deriv le_rfl).integrable_of_hasCompactSupport
       (flux_compact f k).deriv
@@ -175,7 +175,7 @@ theorem cusp_hardy_identity (f : Profile) (k h : ℝ) :
   ring
 
 /-- Frequencies with a nonnegative lower boundary coefficient at height `exp h`. -/
-def tailFrequency (h u : ℝ) : ℝ := (1 / 2 + u ^ 2) / Real.exp h
+def tailFrequency (h u : ℝ) : ℝ := (1 / 2 + u ^ (2 : ℕ)) / Real.exp h
 
 /-- Every frequency in this parameterization is strictly positive. -/
 theorem tailFrequency_pos (h u : ℝ) : 0 < tailFrequency h u := by
@@ -184,7 +184,7 @@ theorem tailFrequency_pos (h u : ℝ) : 0 < tailFrequency h u := by
 
 /-- The lower seam coefficient is exactly a nonnegative square divided by height. -/
 theorem tailFrequency_boundary (h u : ℝ) :
-    tailFrequency h u - 1 / (2 * Real.exp h) = u ^ 2 / Real.exp h := by
+    tailFrequency h u - 1 / (2 * Real.exp h) = u ^ (2 : ℕ) / Real.exp h := by
   unfold tailFrequency
   ring
 
@@ -219,23 +219,23 @@ theorem cusp_hardy_nonneg (f : Profile) (h u : ℝ) :
     apply setIntegral_nonneg measurableSet_Ioi
     intro y hy
     have hypos := (Real.exp_pos h).trans hy
-    have he : tailFrequency h u * f y * divided f y = tailFrequency h u * f y ^ 2 / y := by
+    have he : tailFrequency h u * f y * divided f y = tailFrequency h u * f y ^ (2 : ℕ) / y := by
       unfold divided
       ring
     rw [he]
     exact div_nonneg (mul_nonneg (tailFrequency_pos h u).le (sq_nonneg _)) hypos.le
-  have hb : 0 ≤ (tailFrequency h u - 1 / (2 * Real.exp h)) * f (Real.exp h) ^ 2 := by
+  have hb : 0 ≤ (tailFrequency h u - 1 / (2 * Real.exp h)) * f (Real.exp h) ^ (2 : ℕ) := by
     rw [tailFrequency_boundary]
     positivity
   exact add_nonneg (add_nonneg hsq hc) hb
 
 /-- The isolated cusp tail obeys the quarter-energy bound with its boundary value unrestricted. -/
 theorem cusp_tail_quarter (f : Profile) (h u : ℝ) :
-    (1 / 4 : ℝ) * (∫ y in Ioi (Real.exp h), divided f y ^ 2) ≤
-      ∫ y in Ioi (Real.exp h), deriv f y ^ 2 + tailFrequency h u ^ 2 * f y ^ 2 := by
+    (1 / 4 : ℝ) * (∫ y in Ioi (Real.exp h), divided f y ^ (2 : ℕ)) ≤
+      ∫ y in Ioi (Real.exp h), deriv f y ^ (2 : ℕ) + tailFrequency h u ^ (2 : ℕ) * f y ^ (2 : ℕ) := by
   have h₁ := compact_square_integrable (deriv f) (f.contDiff.continuous_deriv le_rfl)
     f.hasCompactSupport.deriv
-  have h₂ := (compact_square_integrable f f.continuous f.hasCompactSupport).const_mul (tailFrequency h u ^ 2)
+  have h₂ := (compact_square_integrable f f.continuous f.hasCompactSupport).const_mul (tailFrequency h u ^ (2 : ℕ))
   have h₃ := compact_square_integrable (divided f) (divided_contDiff f).continuous (divided_compact f)
   have hs := integral_sub ((h₁.add h₂).integrableOn (s := Ioi (Real.exp h)))
     ((h₃.div_const 4).integrableOn (s := Ioi (Real.exp h)))
@@ -247,9 +247,9 @@ theorem cusp_tail_quarter (f : Profile) (h u : ℝ) :
 
 /-- At zero frequency the exact negative lower Hardy boundary defect remains. -/
 theorem pure_hardy_boundary_identity (f : Profile) (h : ℝ) :
-    (∫ y in Ioi (Real.exp h), deriv f y ^ 2 - divided f y ^ 2 / 4) =
-      (∫ y in Ioi (Real.exp h), (deriv f y - divided f y / 2) ^ 2) -
-        f (Real.exp h) ^ 2 / (2 * Real.exp h) := by
+    (∫ y in Ioi (Real.exp h), deriv f y ^ (2 : ℕ) - divided f y ^ (2 : ℕ) / 4) =
+      (∫ y in Ioi (Real.exp h), (deriv f y - divided f y / 2) ^ (2 : ℕ)) -
+        f (Real.exp h) ^ (2 : ℕ) / (2 * Real.exp h) := by
   have hzero := cusp_hardy_identity f 0 h
   simp only [excessField, squareField, zero_mul, zero_pow (by simp : (2 : ℕ) ≠ 0),
     add_zero, zero_sub, integral_zero] at hzero

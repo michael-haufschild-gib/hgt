@@ -2322,7 +2322,7 @@ theorem closedAtlas : ClosedAtlas where
   root₂ := e₂_root
   root₃ := e₃_root
   invariant₂ := g₂_eq_root_sum
-  invariant₃ := g₃_eq_root_product
+  invariant₃ := g₃_eq_root
   curveDiscriminant := weierstrassCurve_discriminant
   discriminantClassification := discriminant_eq_zero_iff
   root₁OnCurve := e₁_on_weierstrassCurve

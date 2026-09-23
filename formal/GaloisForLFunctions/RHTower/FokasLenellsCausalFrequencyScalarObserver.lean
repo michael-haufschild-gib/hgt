@@ -119,7 +119,7 @@ theorem norm_causalFrequencyScalarObserver (b η : ℝ) :
 detects every nonzero vector in the actual completed frequency space. -/
 theorem causalFrequencyScalarObserver_mean_zero_iff (b η : ℝ) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖causalFrequencyScalarObserver b η (((causalFrequencyShift b) ^ n) u)‖ ^ 2)
+      ‖causalFrequencyScalarObserver b η (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ))
       atTop (𝓝 0) ↔ u = 0 :=
   ((causalFrequencyShift_completed_hilbert_observable_iff b (causalFrequencyScalarObserver b η)).2
     (causalFrequencyScalarObserver_mode_ne_zero b η)) u

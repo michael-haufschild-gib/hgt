@@ -26,11 +26,11 @@ log-curvature determinant of the cubic transport `v H`, including the affine-vel
 theorem boseShiftedTransport_hankelDet_eq
     (d : C5LikelihoodAffineData) (l : ℝ) :
     d.boseShiftedTransportZero l * d.boseShiftedTransportTwo l -
-        d.boseShiftedTransportOne l ^ 2 =
-      (d.t * d.jetOne l) ^ 2 *
+        d.boseShiftedTransportOne l ^ (2 : ℕ) =
+      (d.t * d.jetOne l) ^ (2 : ℕ) *
           (d.velocityCenter l * d.velocityCenterTwo -
-            d.velocityCenterOne l ^ 2) -
-        (d.t * d.da) ^ 2 * d.velocityCenter l ^ 2 := by
+            d.velocityCenterOne l ^ (2 : ℕ)) -
+        (d.t * d.da) ^ (2 : ℕ) * d.velocityCenter l ^ (2 : ℕ) := by
   simp only [boseShiftedTransportZero, boseShiftedTransportOne,
     boseShiftedTransportTwo]
   ring
@@ -43,18 +43,18 @@ theorem boseShiftedTransport_hankelDet_neg
     (hH : d.velocityCenter l < 0)
     (hHtwo : 0 < d.velocityCenterTwo) :
     d.boseShiftedTransportZero l * d.boseShiftedTransportTwo l -
-        d.boseShiftedTransportOne l ^ 2 < 0 := by
+        d.boseShiftedTransportOne l ^ (2 : ℕ) < 0 := by
   rw [boseShiftedTransport_hankelDet_eq]
   have hcore : d.velocityCenter l * d.velocityCenterTwo -
-      d.velocityCenterOne l ^ 2 < 0 := by
+      d.velocityCenterOne l ^ (2 : ℕ) < 0 := by
     have hprod : d.velocityCenter l * d.velocityCenterTwo < 0 :=
       mul_neg_of_neg_of_pos hH hHtwo
     nlinarith [sq_nonneg (d.velocityCenterOne l)]
-  have hmain : (d.t * d.jetOne l) ^ 2 *
+  have hmain : (d.t * d.jetOne l) ^ (2 : ℕ) *
       (d.velocityCenter l * d.velocityCenterTwo -
-        d.velocityCenterOne l ^ 2) < 0 :=
+        d.velocityCenterOne l ^ (2 : ℕ)) < 0 :=
     mul_neg_of_pos_of_neg (sq_pos_of_pos hv) hcore
-  have htax : 0 ≤ (d.t * d.da) ^ 2 * d.velocityCenter l ^ 2 :=
+  have htax : 0 ≤ (d.t * d.da) ^ (2 : ℕ) * d.velocityCenter l ^ (2 : ℕ) :=
     mul_nonneg (sq_nonneg _) (sq_nonneg _)
   linarith
 
@@ -77,7 +77,7 @@ theorem thetaCuspC5LikelihoodHomotopy_boseShiftedTransport_hankelDet_zero_neg
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 (u - t)) :
     let d := thetaCuspC5LikelihoodHomotopyData u t
     d.boseShiftedTransportZero 0 * d.boseShiftedTransportTwo 0 -
-        d.boseShiftedTransportOne 0 ^ 2 < 0 := by
+        d.boseShiftedTransportOne 0 ^ (2 : ℕ) < 0 := by
   let d := thetaCuspC5LikelihoodHomotopyData u t
   have hv : 0 < d.t * d.jetOne 0 := by
     simpa only [d, thetaCuspC5LikelihoodHomotopyData,

@@ -21,9 +21,9 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 section Lift
 
 /-- Reduction of coefficients modulo two. -/
-def redEight : ZMod 8 →+* ZMod 2 := ZMod.castHom (by norm_num) (ZMod 2)
+def redEight_multilinearEvaluationUniformity : ZMod 8 →+* ZMod 2 := ZMod.castHom (by norm_num) (ZMod 2)
 
-theorem redEight_eq_zero_imp : ∀ z : ZMod 8, redEight z = 0 → ∃ t : ZMod 8, z = 2 * t := by
+theorem redEight_eq_zero_imp : ∀ z : ZMod 8, redEight_multilinearEvaluationUniformity z = 0 → ∃ t : ZMod 8, z = 2 * t := by
   decide
 
 /-- Lift a modulo-two coefficient vector to a modulo-eight coefficient vector. -/
@@ -31,33 +31,33 @@ def liftEight {m : ℕ} (c : MonLe ι m → ZMod 2) : MonLe ι m → ZMod 8 :=
   fun S => ((c S).val : ZMod 8)
 
 theorem redEight_liftEight {m : ℕ} (c : MonLe ι m → ZMod 2) (S : MonLe ι m) :
-    redEight (liftEight c S) = c S := by
-  rw [liftEight, redEight, map_natCast]
+    redEight_multilinearEvaluationUniformity (liftEight c S) = c S := by
+  rw [liftEight, redEight_multilinearEvaluationUniformity, map_natCast]
   exact ZMod.natCast_rightInverse (c S)
 
 theorem redEight_evalMatrix {k m : ℕ} (x : Fin k → (ι → Bool)) (j : Fin k) (S : MonLe ι m) :
-    redEight (reedMullerEvalMatrix (ZMod 8) m x j S) = reedMullerEvalMatrix (ZMod 2) m x j S := by
-  rw [reedMullerEvalMatrix, reedMullerEvalMatrix, apply_ite redEight, map_one, map_zero]
+    redEight_multilinearEvaluationUniformity (reedMullerEvalMatrix (ZMod 8) m x j S) = reedMullerEvalMatrix (ZMod 2) m x j S := by
+  rw [reedMullerEvalMatrix, reedMullerEvalMatrix, apply_ite redEight_multilinearEvaluationUniformity, map_one, map_zero]
 
 theorem redEight_mulVec_liftEight {k m : ℕ} (x : Fin k → (ι → Bool))
     (c : MonLe ι m → ZMod 2) (j : Fin k) :
-    redEight ((reedMullerEvalMatrix (ZMod 8) m x *ᵥ liftEight c) j) =
+    redEight_multilinearEvaluationUniformity ((reedMullerEvalMatrix (ZMod 8) m x *ᵥ liftEight c) j) =
       (reedMullerEvalMatrix (ZMod 2) m x *ᵥ c) j := by
-  show redEight (∑ S, reedMullerEvalMatrix (ZMod 8) m x j S * liftEight c S) =
+  show redEight_multilinearEvaluationUniformity (∑ S, reedMullerEvalMatrix (ZMod 8) m x j S * liftEight c S) =
     ∑ S, reedMullerEvalMatrix (ZMod 2) m x j S * c S
   rw [map_sum]
   refine Finset.sum_congr rfl fun S _ => ?_
   rw [map_mul, redEight_evalMatrix, redEight_liftEight]
 
 /-- One correction step: every value vector agrees with an evaluation vector modulo two. -/
-theorem exists_mulVec_add_two_smul {k m : ℕ} (hk : k < 2 ^ (m + 1))
+theorem exists_mulVec_add_two_smul_multilinearEvaluationUniformity {k m : ℕ} (hk : k < 2 ^ (m + 1))
     (x : Fin k → (ι → Bool)) (hx : Function.Injective x) (w : Fin k → ZMod 8) :
     ∃ (c : MonLe ι m → ZMod 8) (v : Fin k → ZMod 8),
       w = reedMullerEvalMatrix (ZMod 8) m x *ᵥ c + (2 : ZMod 8) • v := by
   classical
-  obtain ⟨cbar, hcbar⟩ := surjective_mulVec_evalMatrix hk x hx (fun j => redEight (w j))
-  have hcbar' : ∀ j, (reedMullerEvalMatrix (ZMod 2) m x *ᵥ cbar) j = redEight (w j) := congrFun hcbar
-  have hred : ∀ j, redEight (w j - (reedMullerEvalMatrix (ZMod 8) m x *ᵥ liftEight cbar) j) = 0 := by
+  obtain ⟨cbar, hcbar⟩ := surjective_mulVec_evalMatrix hk x hx (fun j => redEight_multilinearEvaluationUniformity (w j))
+  have hcbar' : ∀ j, (reedMullerEvalMatrix (ZMod 2) m x *ᵥ cbar) j = redEight_multilinearEvaluationUniformity (w j) := congrFun hcbar
+  have hred : ∀ j, redEight_multilinearEvaluationUniformity (w j - (reedMullerEvalMatrix (ZMod 8) m x *ᵥ liftEight cbar) j) = 0 := by
     intro j
     rw [map_sub, redEight_mulVec_liftEight, hcbar' j, sub_self]
   choose v hv using fun j => redEight_eq_zero_imp _ (hred j)
@@ -72,9 +72,9 @@ theorem surjective_mulVec_evalMatrix_eight {k m : ℕ} (hk : k < 2 ^ (m + 1))
     Function.Surjective fun c : MonLe ι m → ZMod 8 => (reedMullerEvalMatrix (ZMod 8) m x) *ᵥ c := by
   classical
   intro w
-  obtain ⟨c₁, v₁, h₁⟩ := exists_mulVec_add_two_smul hk x hx w
-  obtain ⟨c₂, v₂, h₂⟩ := exists_mulVec_add_two_smul hk x hx v₁
-  obtain ⟨c₃, v₃, h₃⟩ := exists_mulVec_add_two_smul hk x hx v₂
+  obtain ⟨c₁, v₁, h₁⟩ := exists_mulVec_add_two_smul_multilinearEvaluationUniformity hk x hx w
+  obtain ⟨c₂, v₂, h₂⟩ := exists_mulVec_add_two_smul_multilinearEvaluationUniformity hk x hx v₁
+  obtain ⟨c₃, v₃, h₃⟩ := exists_mulVec_add_two_smul_multilinearEvaluationUniformity hk x hx v₂
   refine ⟨c₁ + (2 : ZMod 8) • c₂ + (4 : ZMod 8) • c₃, funext fun j => ?_⟩
   have e₁ := congrFun h₁ j
   have e₂ := congrFun h₂ j

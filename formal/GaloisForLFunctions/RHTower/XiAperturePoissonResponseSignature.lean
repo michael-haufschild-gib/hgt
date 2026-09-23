@@ -33,8 +33,8 @@ def poissonScaleIncrement (a b x : ℝ) : ℝ :=
 theorem poissonScaleIncrement_eq
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (x : ℝ) :
     poissonScaleIncrement a b x =
-      x ^ 2 * (b ^ 2 - a ^ 2) /
-        ((b ^ 2 + x ^ 2) * (a ^ 2 + x ^ 2)) := by
+      x ^ (2 : ℕ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) /
+        ((b ^ (2 : ℕ) + x ^ (2 : ℕ)) * (a ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
   have hda := lorentz_denom_pos ha.ne' x
   have hdb := lorentz_denom_pos hb.ne' x
   unfold poissonScaleIncrement lorentz
@@ -61,15 +61,15 @@ theorem poissonScaleIncrement_pos
 /-- The two-node signed quadratic carried by one Poisson scale increment. -/
 def poissonScaleIncrementTwoPointQuadratic
     (a b x u v : ℝ) : ℝ :=
-  poissonScaleIncrement a b 0 * u ^ 2 +
+  poissonScaleIncrement a b 0 * u ^ (2 : ℕ) +
     2 * poissonScaleIncrement a b x * u * v +
-    poissonScaleIncrement a b 0 * v ^ 2
+    poissonScaleIncrement a b 0 * v ^ (2 : ℕ)
 
 /-- The mirror-even channel is the positive scale channel. -/
 theorem poissonScaleIncrementTwoPointQuadratic_even
     {a b x m : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     poissonScaleIncrementTwoPointQuadratic a b x m m =
-      2 * poissonScaleIncrement a b x * m ^ 2 := by
+      2 * poissonScaleIncrement a b x * m ^ (2 : ℕ) := by
   rw [poissonScaleIncrementTwoPointQuadratic,
     poissonScaleIncrement_zero ha hb]
   ring
@@ -78,7 +78,7 @@ theorem poissonScaleIncrementTwoPointQuadratic_even
 theorem poissonScaleIncrementTwoPointQuadratic_odd
     {a b x m : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     poissonScaleIncrementTwoPointQuadratic a b x m (-m) =
-      -(2 * poissonScaleIncrement a b x * m ^ 2) := by
+      -(2 * poissonScaleIncrement a b x * m ^ (2 : ℕ)) := by
   rw [poissonScaleIncrementTwoPointQuadratic,
     poissonScaleIncrement_zero ha hb]
   ring
@@ -104,8 +104,8 @@ theorem poissonScaleIncrementTwoPointQuadratic_odd_neg
 theorem poissonScaleIncrement_twoPointDet
     {a b x : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     poissonScaleIncrement a b 0 * poissonScaleIncrement a b 0 -
-        poissonScaleIncrement a b x ^ 2 =
-      -(poissonScaleIncrement a b x) ^ 2 := by
+        poissonScaleIncrement a b x ^ (2 : ℕ) =
+      -(poissonScaleIncrement a b x) ^ (2 : ℕ) := by
   rw [poissonScaleIncrement_zero ha hb]
   ring
 
@@ -146,7 +146,7 @@ theorem poissonScaleRefinementTwoPointQuadratic_odd_pos
     0 < poissonScaleRefinementTwoPointQuadratic a b x m (-m) := by
   rw [poissonScaleRefinementTwoPointQuadratic,
     poissonScaleIncrementTwoPointQuadratic_odd ha.ne' (ha.trans hab).ne']
-  have hpos : 0 < 2 * poissonScaleIncrement a b x * m ^ 2 :=
+  have hpos : 0 < 2 * poissonScaleIncrement a b x * m ^ (2 : ℕ) :=
     mul_pos (mul_pos (by norm_num) (poissonScaleIncrement_pos ha hab hx))
       (sq_pos_of_ne_zero hm)
   simpa only [neg_neg] using hpos

@@ -9,7 +9,7 @@ This module records the unconditional rational and polynomial algebra carried by
 zero-field Ising decimation on the two-branch, two-bond diamond hierarchical lattice.  In the
 physical transmissivity `t = tanh K`, the RG step is
 
-`R(t) = 2 t^2 / (1 + t^4)`.
+`R(t) = 2 t^(2 : ℕ) / (1 + t^(4 : ℕ))`.
 
 The external analytic Poincare theorem and Ritt differential-transcendence theorem are deliberately
 not represented by hypotheses here.  The formal content is the exact rational map together with
@@ -24,25 +24,25 @@ noncomputable section
 
 /-- The exact diamond-Ising RG self-map of the rational function field. -/
 def diamondIsingRG : RatFunc ℚ :=
-  2 * RatFunc.X ^ 2 / (1 + RatFunc.X ^ 4)
+  2 * RatFunc.X ^ (2 : ℕ) / (1 + RatFunc.X ^ (4 : ℕ))
 
 /-- Numerator of the physical transmissivity map before fraction reduction. -/
 def diamondIsingRGNumerator : ℚ[X] :=
-  2 * X ^ 2
+  2 * X ^ (2 : ℕ)
 
 /-- Denominator of the physical transmissivity map before fraction reduction. -/
 def diamondIsingRGDenominator : ℚ[X] :=
-  1 + X ^ 4
+  1 + X ^ (4 : ℕ)
 
-/-- Numerator of `R(X) - X` before division by `1 + X^4`. -/
+/-- Numerator of `R(X) - X` before division by `1 + X^(4 : ℕ)`. -/
 def diamondIsingRGFixedPointNumerator : ℚ[X] :=
   diamondIsingRGNumerator - X * diamondIsingRGDenominator
 
 /-- **Exact fixed-point factorization.**  Besides the phase anchors `0` and `1`, the
-nontrivial thermal fixed point is selected by `X^3 + X^2 + X - 1`. -/
+nontrivial thermal fixed point is selected by `X^(3 : ℕ) + X^(2 : ℕ) + X - 1`. -/
 theorem diamondIsingRGFixedPointNumerator_factorization :
     diamondIsingRGFixedPointNumerator =
-      -X * (X - 1) * (X ^ 3 + X ^ 2 + X - 1) := by
+      -X * (X - 1) * (X ^ (3 : ℕ) + X ^ (2 : ℕ) + X - 1) := by
   simp [diamondIsingRGFixedPointNumerator, diamondIsingRGNumerator,
     diamondIsingRGDenominator]
   ring
@@ -53,9 +53,9 @@ def diamondIsingRGDerivativeNumerator : ℚ[X] :=
     diamondIsingRGNumerator * derivative diamondIsingRGDenominator
 
 /-- **Exact derivative numerator.**  Formally, this is the numerator of
-`R'(X) = 4X(1-X^4)/(1+X^4)^2`. -/
+`R'(X) = 4X(1-X^(4 : ℕ))/(1+X^(4 : ℕ))^(2 : ℕ)`. -/
 theorem diamondIsingRGDerivativeNumerator_eq :
-    diamondIsingRGDerivativeNumerator = 4 * X * (1 - X ^ 4) := by
+    diamondIsingRGDerivativeNumerator = 4 * X * (1 - X ^ (4 : ℕ)) := by
   simp [diamondIsingRGDerivativeNumerator, diamondIsingRGNumerator,
     diamondIsingRGDenominator]
   rw [show (C (3 : ℚ) + 1 : ℚ[X]) = 4 by
@@ -67,7 +67,7 @@ theorem diamondIsingRGDerivativeNumerator_eq :
 /-- Complete rational critical-numerator factorization over `ℚ`. -/
 theorem diamondIsingRGDerivativeNumerator_factorization :
     diamondIsingRGDerivativeNumerator =
-      -4 * X * (X - 1) * (X + 1) * (X ^ 2 + 1) := by
+      -4 * X * (X - 1) * (X + 1) * (X ^ (2 : ℕ) + 1) := by
   rw [diamondIsingRGDerivativeNumerator_eq]
   ring
 

@@ -10,10 +10,10 @@ noncomputable section
 /-- The recovered source generates a phase with exactly the reconstructed relative shell mass. -/
 theorem egbFixedChargeAGibbsTunable_normalized_CDD_phase (t θ : ℝ) :
     hausdorffCDDPhase (egbFixedChargeAGibbsTunableNormalizedSource t) θ =
-      cddPhaseKernel (4 / 9) θ + t ^ 2 * cddPhaseKernel (1 / 36) θ := by
+      cddPhaseKernel (4 / 9) θ + t ^ (2 : ℕ) * cddPhaseKernel (1 / 36) θ := by
   rw [egbFixedChargeAGibbsTunableNormalizedSource, hausdorffCDDPhase_add,
     hausdorffCDDPhase_atom, hausdorffCDDPhase_atom]
-  change (1 : ℝ) * cddPhaseKernel (4 / 9) θ + t ^ 2 * cddPhaseKernel (1 / 36) θ = _
+  change (1 : ℝ) * cddPhaseKernel (4 / 9) θ + t ^ (2 : ℕ) * cddPhaseKernel (1 / 36) θ = _
   ring
 
 /-- Normalizing the actual Gibbs phase by its positive slow source mass recovers the literal survivor phase. -/
@@ -30,7 +30,7 @@ theorem egbFixedChargeAGibbsTunable_CDD_phase_normalization (n k m : ℕ) (t θ 
   have hx := egbFixedChargeAGibbsTunable_slow_mass_pos n k m t
   change 0 < (egbFixedChargeAGibbsTunableSourceMass n k m t : ℝ) at hx
   change ((egbFixedChargeAGibbsTunableSourceMass n k m t : ℝ) * _ +
-    ((egbFixedChargeAGibbsTunableSourceMass n k m t : ℝ) * t ^ 2) * _) / _ = _
+    ((egbFixedChargeAGibbsTunableSourceMass n k m t : ℝ) * t ^ (2 : ℕ)) * _) / _ = _
   generalize (egbFixedChargeAGibbsTunableSourceMass n k m t : ℝ) = x at hx ⊢
   field_simp
   <;> ring

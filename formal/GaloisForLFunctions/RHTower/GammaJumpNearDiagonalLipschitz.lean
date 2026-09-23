@@ -52,7 +52,7 @@ theorem exists_bound_gammaJump_nearDiagonal :
     have hθpos : (1 + |η|) / 2 ≤ 1 + |θ| := one_add_abs_ge_of_mem_uIcc hθ hnear
     have hθ0 : (0 : ℝ) < 1 + |θ| := by positivity
     have hd : deriv gammaJumpMultiplier θ
-        = 2 * ∑' n : ℕ, 2 * θ * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + θ ^ 2) ^ 2) :=
+        = 2 * ∑' n : ℕ, 2 * θ * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ (2 : ℕ) + θ ^ (2 : ℕ)) ^ (2 : ℕ)) :=
       (hasDerivAt_gammaJumpMultiplier θ).deriv
     rw [Real.norm_eq_abs, hd]
     refine (hbound θ).trans ?_
@@ -92,7 +92,7 @@ is at most a fixed multiple of the square of the separation — a factor any Sch
 absorbs. -/
 theorem abs_gammaJump_farRegion_le {ξ η : ℝ} (hfar : (1 + |η|) / 2 < |ξ - η|) :
     (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
-      ≤ 15 * gammaJumpConst * |ξ - η| ^ 2 := by
+      ≤ 15 * gammaJumpConst * |ξ - η| ^ (2 : ℕ) := by
   obtain ⟨hη, hξ⟩ := one_add_abs_le_of_far hfar
   have hS : (0 : ℝ) ≤ gammaJumpConst := gammaJumpConst_nonneg
   have hbξ : |gammaJumpMultiplier ξ| ≤ gammaJumpConst * (1 + |ξ|) := abs_gammaJumpMultiplier_le ξ
@@ -105,14 +105,14 @@ theorem abs_gammaJump_farRegion_le {ξ η : ℝ} (hfar : (1 + |η|) / 2 < |ξ - 
   calc (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
       ≤ (3 * |ξ - η|) * (5 * gammaJumpConst * |ξ - η|) := by
         refine mul_le_mul hξ hdiff (abs_nonneg _) (by positivity)
-    _ = 15 * gammaJumpConst * |ξ - η| ^ 2 := by ring
+    _ = 15 * gammaJumpConst * |ξ - η| ^ (2 : ℕ) := by ring
 
 /-- **The global weighted-difference bound.**  Combining the two regions, the weighted symbol
 difference is controlled by the separation alone, at first and second order. -/
 theorem exists_bound_gammaJump_global :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ ξ η : ℝ,
       (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
-        ≤ C * (|ξ - η| + |ξ - η| ^ 2) := by
+        ≤ C * (|ξ - η| + |ξ - η| ^ (2 : ℕ)) := by
   obtain ⟨C₁, hC₁, hnear⟩ := exists_bound_gammaJump_nearDiagonal
   refine ⟨C₁ + 15 * gammaJumpConst, by linarith [gammaJumpConst_nonneg], fun ξ η => ?_⟩
   have hS : (0 : ℝ) ≤ gammaJumpConst := gammaJumpConst_nonneg

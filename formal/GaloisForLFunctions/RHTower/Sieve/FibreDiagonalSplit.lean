@@ -33,7 +33,7 @@ theorem fibre_diag_kernel_eq_zero {x h : ℝ} (hx : 0 < x) {m : ℕ}
 
 /-- **The bilinear form, split into diagonal and off-diagonal.** -/
 theorem sum_fibreSq_diag_split (f : ℕ → ℝ) (x h : ℝ) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       = (∑ m ∈ Finset.Icc 1 ⌊x + h * Real.sqrt x⌋₊,
             f m * f m
               * (((outerBlock x h).filter

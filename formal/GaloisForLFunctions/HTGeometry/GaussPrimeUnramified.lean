@@ -35,7 +35,7 @@ open Polynomial
 does not raise its order: a base element outside the square stays outside the square upstairs,
 because membership in an extended ideal is coefficientwise. -/
 theorem ramificationIdx'_map_C_eq_one {R : Type*} [CommRing R] {q : Ideal R}
-    {π : R} (hπ : π ∈ q) (hπ2 : π ∉ q ^ 2) :
+    {π : R} (hπ : π ∈ q) (hπ2 : π ∉ q ^ (2 : ℕ)) :
     Ideal.ramificationIdx' q (q.map (C : R →+* Polynomial R)) = 1 := by
   refine Ideal.ramificationIdx'_spec ?_ ?_
   · rw [pow_one]
@@ -43,7 +43,7 @@ theorem ramificationIdx'_map_C_eq_one {R : Type*} [CommRing R] {q : Ideal R}
   · intro hle
     have hmem : (C π : Polynomial R) ∈ q.map (C : R →+* Polynomial R) :=
       Ideal.mem_map_of_mem _ hπ
-    have h2 : (C π : Polynomial R) ∈ (q.map (C : R →+* Polynomial R)) ^ 2 := hle hmem
+    have h2 : (C π : Polynomial R) ∈ (q.map (C : R →+* Polynomial R)) ^ (2 : ℕ) := hle hmem
     rw [← Ideal.map_pow, Ideal.mem_map_C_iff] at h2
     exact hπ2 (by simpa using h2 0)
 

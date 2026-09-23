@@ -90,10 +90,10 @@ theorem memLp_expDecay {σ : ℝ} (hσ : 0 < σ) :
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
   have hint : IntegrableOn (fun t : ℝ => Real.exp (-σ * t)) (Ioi (0 : ℝ)) volume :=
     exp_neg_integrableOn_Ioi 0 hσ
-  have hscaled : IntegrableOn (fun t : ℝ => ((2 / σ) ^ 2) * Real.exp (-σ * t))
+  have hscaled : IntegrableOn (fun t : ℝ => ((2 / σ) ^ (2 : ℕ)) * Real.exp (-σ * t))
       (Ioi (0 : ℝ)) volume := hint.const_mul _
   refine hscaled.congr_fun (fun t _ => ?_) measurableSet_Ioi
-  have hexp2 : Real.exp (-(σ / 2) * t) ^ 2 = Real.exp (-σ * t) := by
+  have hexp2 : Real.exp (-(σ / 2) * t) ^ (2 : ℕ) = Real.exp (-σ * t) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring

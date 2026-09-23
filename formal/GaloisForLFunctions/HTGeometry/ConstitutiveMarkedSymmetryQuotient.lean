@@ -259,7 +259,7 @@ theorem mem_halfTurnSubgroup_iff (z : Circle) : z ∈ halfTurnSubgroup ↔ z = 1
   simp only [halfTurnSubgroup, MonoidHom.mem_ker, powMonoidHom_apply]
   constructor
   · intro h
-    have hz : (z : ℂ) ^ 2 = 1 := by
+    have hz : (z : ℂ) ^ (2 : ℕ) = 1 := by
       have := congrArg (Subtype.val) h
       simpa using this
     have h2 : ((z : ℂ) - 1) * ((z : ℂ) + 1) = 0 := by linear_combination hz
@@ -326,7 +326,7 @@ noncomputable def responseQuotientEquiv : Circle ⧸ halfTurnSubgroup ≃* Circl
   QuotientGroup.quotientKerEquivOfSurjective _ sq_surjective_circle
 
 @[simp] theorem responseQuotientEquiv_mk (z : Circle) :
-    responseQuotientEquiv (QuotientGroup.mk z) = z ^ 2 := rfl
+    responseQuotientEquiv (QuotientGroup.mk z) = z ^ (2 : ℕ) := rfl
 
 /-- The half-turn intervention path: it starts at the identity and ends inside the stabilizer. -/
 noncomputable def halfTurnPath : C(I, Circle) :=
@@ -368,8 +368,8 @@ theorem responseLoop_zero_eq (n : ℤ) : responseLoop n 0 = Circle.exp 0 := by
 
 /-- The projection of the half-turn path is the once-around response loop: the quotient map
 `H → H/K ≅ S¹` is squaring. -/
-theorem responseLoop_eq_sq (t : I) : responseLoop 1 t = halfTurnPath t ^ 2 := by
-  show Circle.exp (2 * Real.pi * ((1 : ℤ) : ℝ) * t) = Circle.exp (Real.pi * t) ^ 2
+theorem responseLoop_eq_sq (t : I) : responseLoop 1 t = halfTurnPath t ^ (2 : ℕ) := by
+  show Circle.exp (2 * Real.pi * ((1 : ℤ) : ℝ) * t) = Circle.exp (Real.pi * t) ^ (2 : ℕ)
   rw [pow_two, ← Circle.exp_add]
   congr 1
   push_cast

@@ -36,20 +36,20 @@ noncomputable section
 namespace RHTower
 
 /-- The sampled pairings of the dilate family, bordered by the target pairing. -/
-def dilateRowFun {N : ℕ} (θ : Fin N → ℝ) : Fin (N + 1) → (StripPoint → ℂ) :=
+def dilateRowFun {N : ℕ} (θ : Fin N → ℝ) : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ) :=
   (Fin.snoc
-    (fun (i : Fin N) (s : StripPoint) =>
+    (fun (i : Fin N) (s : StripPoint_borderDeterminantVanishing) =>
       ((θ i : ℝ) : ℂ) ^ (s : ℂ) * (-(riemannZeta (s : ℂ) / (s : ℂ)))
         - ((θ i : ℝ) : ℂ) * (1 / (1 - (s : ℂ))))
-    (fun (s : StripPoint) => 1 / (s : ℂ)) : Fin (N + 1) → (StripPoint → ℂ))
+    (fun (s : StripPoint_borderDeterminantVanishing) => 1 / (s : ℂ)) : Fin (N + 1) → (StripPoint_borderDeterminantVanishing → ℂ))
 
-theorem dilateRowFun_castSucc {N : ℕ} (θ : Fin N → ℝ) (i : Fin N) (s : StripPoint) :
+theorem dilateRowFun_castSucc {N : ℕ} (θ : Fin N → ℝ) (i : Fin N) (s : StripPoint_borderDeterminantVanishing) :
     dilateRowFun θ i.castSucc s
       = ((θ i : ℝ) : ℂ) ^ (s : ℂ) * (-(riemannZeta (s : ℂ) / (s : ℂ)))
         - ((θ i : ℝ) : ℂ) * (1 / (1 - (s : ℂ))) := by
   simp [dilateRowFun]
 
-theorem dilateRowFun_last {N : ℕ} (θ : Fin N → ℝ) (s : StripPoint) :
+theorem dilateRowFun_last {N : ℕ} (θ : Fin N → ℝ) (s : StripPoint_borderDeterminantVanishing) :
     dilateRowFun θ (Fin.last N) s = 1 / (s : ℂ) := by
   simp [dilateRowFun]
 

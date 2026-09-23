@@ -28,13 +28,13 @@ theorem re_mul_conj_comm (u v : ℂ) :
   rw [h, Complex.conj_re]
 
 /-- The diagonal weight is the squared norm. -/
-theorem re_mul_conj_self (u : ℂ) : (u * (starRingEnd ℂ) u).re = ‖u‖ ^ 2 := by
+theorem re_mul_conj_self (u : ℂ) : (u * (starRingEnd ℂ) u).re = ‖u‖ ^ (2 : ℕ) := by
   rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
 
 /-- **The variance equals the weighted correlations.** -/
 theorem sum_normSq_window_eq_autocorrelation (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      = ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      = ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ (2 : ℕ)
         + 2 * ∑ h ∈ Finset.Ico 1 (X + L + 1), ∑ n ∈ Finset.range (X + L + 1 - h),
             ((windowOverlap X L n (n + h) : ℕ) : ℝ)
               * (a n * (starRingEnd ℂ) (a (n + h))).re := by
@@ -49,7 +49,7 @@ theorem sum_normSq_window_eq_autocorrelation (a : ℕ → ℂ) (X L : ℕ) :
     rw [windowOverlap_comm, re_mul_conj_comm]
   have hsplit := sum_pair_eq_diag_add_two_upper R W hsymm
   have hdiag : ∑ n ∈ Finset.range R, W n n
-      = ∑ n ∈ Finset.range R, ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ 2 := by
+      = ∑ n ∈ Finset.range R, ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [hW]
     simp only

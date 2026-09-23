@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.RoutePPrimitiveCollisionCapacityTerminal
 P-G180 reconstructs the undifferenced primitive Laplace column from the collision feature by a
 dyadic Calderon telescope.  This module transports the exact trace-capacity audit to that simpler
 base carrier.  Its Cauchy-cube matrix is a principal compression of the doubled Schur cube and is
-therefore positive semidefinite.  Its diagonal is `1 / (4 a^3)`, so the full primitive source
+therefore positive semidefinite.  Its diagonal is `1 / (4 a^(3 : ℕ))`, so the full primitive source
 budget is exactly `216 / 115` times the collision budget and remains strictly below `2`.
 
 Every strict-right Xi zero has `0 < a <= 1/2` and therefore costs at least `2` in the base carrier.
@@ -25,7 +25,7 @@ noncomputable section
 
 /-- Undifferenced Cauchy-cube kernel underlying the Route P collision defect. -/
 def routePBaseCauchyCubicKernel (R a b kappa : ℝ) : ℂ :=
-  2 * (R : ℂ) ^ 3 / routePCollisionPairFrequency R a b kappa ^ 3
+  2 * (R : ℂ) ^ (3 : ℕ) / routePCollisionPairFrequency R a b kappa ^ (3 : ℕ)
 
 /-- Finite base Cauchy-cube packet. -/
 def routePBaseCauchyCubicKernelMatrix {N : ℕ}
@@ -54,7 +54,7 @@ theorem routePBaseCauchyCubicKernelMatrix_posSemidef
 theorem routePBaseCauchyCubicKernel_diagonal
     {R a : ℝ} (hR : 0 < R) (ha : 0 < a) :
     routePBaseCauchyCubicKernel R a a 0 =
-      (((1 : ℝ) / (4 * a ^ 3) : ℝ) : ℂ) := by
+      (((1 : ℝ) / (4 * a ^ (3 : ℕ)) : ℝ) : ℂ) := by
   simp only [routePBaseCauchyCubicKernel, routePCollisionPairFrequency]
   push_cast
   field_simp [hR.ne', ha.ne']
@@ -65,7 +65,7 @@ theorem trace_routePBaseCauchyCubicKernelMatrix
     {N : ℕ} {R : ℝ} {a kappa : Fin N → ℝ}
     (hR : 0 < R) (ha : ∀ i, 0 < a i) :
     (routePBaseCauchyCubicKernelMatrix R a kappa).trace =
-      ∑ i : Fin N, ((((1 : ℝ) / (4 * (a i) ^ 3) : ℝ) : ℂ)) := by
+      ∑ i : Fin N, ((((1 : ℝ) / (4 * (a i) ^ (3 : ℕ)) : ℝ) : ℂ)) := by
   apply Finset.sum_congr rfl
   intro i _hi
   change routePBaseCauchyCubicKernel R (a i) (a i) (kappa i - kappa i) = _
@@ -199,7 +199,7 @@ theorem routePStrictRightZeroBaseCauchyCubicKernelMatrix_posSemidef
 theorem re_trace_routePStrictRightZeroBaseCauchyCubicKernelMatrix
     {N : ℕ} (q : Fin N → XiRightZeroCopy) :
     (routePStrictRightZeroBaseCauchyCubicKernelMatrix q).trace.re =
-      ∑ i : Fin N, 1 / (4 * (xiRightCenteredZero (q i)).re ^ 3) := by
+      ∑ i : Fin N, 1 / (4 * (xiRightCenteredZero (q i)).re ^ (3 : ℕ)) := by
   have h := trace_routePBaseCauchyCubicKernelMatrix
     (N := N) (R := 1)
     (a := fun i => (xiRightCenteredZero (q i)).re)
@@ -208,7 +208,7 @@ theorem re_trace_routePStrictRightZeroBaseCauchyCubicKernelMatrix
   change (routePStrictRightZeroBaseCauchyCubicKernelMatrix q).trace = _ at h
   rw [h]
   change Complex.reCLM (∑ i : Fin N,
-      (((1 / (4 * (xiRightCenteredZero (q i)).re ^ 3)) : ℝ) : ℂ)) = _
+      (((1 / (4 * (xiRightCenteredZero (q i)).re ^ (3 : ℕ))) : ℝ) : ℂ)) = _
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -216,7 +216,7 @@ theorem re_trace_routePStrictRightZeroBaseCauchyCubicKernelMatrix
 
 /-- One strict-right zero costs at least two units in the reconstructed base carrier. -/
 theorem routePStrictRightZeroBaseCauchyCubicCharge_ge_two (q : XiRightZeroCopy) :
-    2 ≤ 1 / (4 * (xiRightCenteredZero q).re ^ 3) := by
+    2 ≤ 1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)) := by
   have ha : 0 < (xiRightCenteredZero q).re := xiRightCenteredZero_re_pos q
   have hhalf : (xiRightCenteredZero q).re ≤ 1 / 2 :=
     le_of_lt (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q)).2

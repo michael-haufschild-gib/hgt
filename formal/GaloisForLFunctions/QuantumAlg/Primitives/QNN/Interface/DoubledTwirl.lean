@@ -118,7 +118,7 @@ theorem twirl2_smul (u : G → Matrix (Fin N) (Fin N) ℂ)
 omit [Group G] [Fintype G] in
 /-- The Hilbert--Schmidt pairing of doubled pure tensor inputs is the squared trace pairing. -/
 theorem hsInner_kronecker_trace_sq (ρ A : Matrix (Fin N) (Fin N) ℂ) (hρ : ρᴴ = ρ) :
-    hsInner (ρ ⊗ₖ ρ) (A ⊗ₖ A) = ((ρ * A).trace) ^ 2 := by
+    hsInner (ρ ⊗ₖ ρ) (A ⊗ₖ A) = ((ρ * A).trace) ^ (2 : ℕ) := by
   simp only [hsInner, Matrix.conjTranspose_kronecker, hρ]
   rw [← Matrix.mul_kronecker_mul, Matrix.trace_kronecker]
   ring
@@ -130,7 +130,7 @@ theorem twirl2_hsInner_eq_loss_secondMoment (u : G → Matrix (Fin N) (Fin N) �
     (ρ O : Matrix (Fin N) (Fin N) ℂ) (hρ : ρᴴ = ρ) :
     hsInner (ρ ⊗ₖ ρ) (twirl2 u (O ⊗ₖ O)) =
       (Fintype.card G : ℂ)⁻¹ *
-        ∑ g : G, ((ρ * (u g * O * (u g)ᴴ)).trace) ^ 2 := by
+        ∑ g : G, ((ρ * (u g * O * (u g)ᴴ)).trace) ^ (2 : ℕ) := by
   unfold twirl2 repTwirl doubledRep
   rw [hsInner_smul_right, hsInner_sum_right]
   congr 1

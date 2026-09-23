@@ -189,8 +189,8 @@ def metricFrequencyDensity (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ) (R :
   let mu := D4BMLeftModeRadialEquation.eigenvalue q;
   let x := tortoise R;
   let g := D4BMOriginalReaderEquation.modeProfile q w outer x;
-  -mu * ((-2 * w * (mu - 2) * scalarFrequency q br amp w x * g / ((R:ℂ)^2 - 1)) -
-    (w * (R:ℂ)^2 * g * forcingFrequency q br amp w x / ((R:ℂ)^2 - 1)^2))
+  -mu * ((-2 * w * (mu - 2) * scalarFrequency q br amp w x * g / ((R:ℂ)^(2 : ℕ) - 1)) -
+    (w * (R:ℂ)^(2 : ℕ) * g * forcingFrequency q br amp w x / ((R:ℂ)^(2 : ℕ) - 1)^(2 : ℕ)))
 
 /-- Independent onset and terminal-time removal in the angular-restored original metric.
 The resulting density retains the complete forcing and scalar onset lift. -/
@@ -231,19 +231,19 @@ theorem original_metric_time_limit (q : XiZeroCopy) (br outer : Bool) (amp w : �
   have hlim : sourcePrefactor q R*(K*0-K*0+2*w*(K*(Complex.exp (-w*(x:ℂ))*scalarFrequency q br amp w x)))+
       forcingPrefactor q w R*(J*onsetTransform (2*physicalRate q br) w)=metricFrequencyDensity q br outer amp w R := by
     have hR0 : (R:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-    have hf0 : (R:ℂ)^2-1≠0 := by exact_mod_cast (show R^2-1≠0 by nlinarith)
+    have hf0 : (R:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show R^(2 : ℕ)-1≠0 by nlinarith)
     have he : Complex.exp (w*(x:ℂ))*Complex.exp (-w*(x:ℂ))=1 := by
       rw [← Complex.exp_add]
       ring_nf
       exact Complex.exp_zero
-    have hK : K*Complex.exp (-w*(x:ℂ))=(R:ℂ)^2*D4BMOriginalReaderEquation.modeProfile q w outer x := by
+    have hK : K*Complex.exp (-w*(x:ℂ))=(R:ℂ)^(2 : ℕ)*D4BMOriginalReaderEquation.modeProfile q w outer x := by
       unfold K readerCoefficient D4BMPhysicalModeAction.radiusLift
       calc
-        _ = (R:ℂ)^2*D4BMOriginalReaderEquation.modeProfile q w outer x*
+        _ = (R:ℂ)^(2 : ℕ)*D4BMOriginalReaderEquation.modeProfile q w outer x*
             (Complex.exp (w*(x:ℂ))*Complex.exp (-w*(x:ℂ))) := by ring
         _ = _ := by rw [he,mul_one]
     rw [show K*(Complex.exp (-w*(x:ℂ))*scalarFrequency q br amp w x)=
-      ((R:ℂ)^2*D4BMOriginalReaderEquation.modeProfile q w outer x)*scalarFrequency q br amp w x by rw [← mul_assoc,hK]]
+      ((R:ℂ)^(2 : ℕ)*D4BMOriginalReaderEquation.modeProfile q w outer x)*scalarFrequency q br amp w x by rw [← mul_assoc,hK]]
     simp only [J,readerCoefficient,sourcePrefactor,forcingPrefactor,metricFrequencyDensity,
       forcingFrequency,D4BMPhysicalModeAction.radiusLift,mul_zero,sub_self,zero_add]
     dsimp only [x]

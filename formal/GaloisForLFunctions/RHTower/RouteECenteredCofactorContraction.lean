@@ -46,10 +46,10 @@ omit [DecidableEq Ω] in
 /-- A normalized nonnegative physical mass law gives a unit square-root source. -/
 theorem routeEFiniteCodiagonalSource_norm_sq
     (w : Ω → ℝ) (hw : ∑ s, w s = 1) (hw0 : ∀ s, 0 ≤ w s) :
-    ‖routeEFiniteCodiagonalSource w‖ ^ 2 = 1 := by
+    ‖routeEFiniteCodiagonalSource w‖ ^ (2 : ℕ) = 1 := by
   rw [routeEFiniteCodiagonalSource, PiLp.norm_sq_eq_of_L2]
   calc
-    (∑ i, ‖((Real.sqrt (w i) : ℂ))‖ ^ 2) = ∑ i, w i := by
+    (∑ i, ‖((Real.sqrt (w i) : ℂ))‖ ^ (2 : ℕ)) = ∑ i, w i := by
       apply Finset.sum_congr rfl
       intro i _hi
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),

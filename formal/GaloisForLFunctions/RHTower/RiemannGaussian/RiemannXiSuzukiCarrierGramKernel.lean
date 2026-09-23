@@ -8,7 +8,7 @@ same xi carrier.  This file keeps that common factor intact instead of
 discarding it through a pointwise norm estimate.  For genuine xi nodes
 `alpha_rho` and `alpha_sigma`, the exact boundary Gram entry is
 
-`N_rho N_sigma * integral |carrier(x)|^2 /
+`N_rho N_sigma * integral |carrier(x)|^(2 : ℕ) /
   ((x - conj alpha_rho) (x - alpha_sigma)) dx`.
 
 The displayed quotient is Lean's totalized quotient.  Its apparent

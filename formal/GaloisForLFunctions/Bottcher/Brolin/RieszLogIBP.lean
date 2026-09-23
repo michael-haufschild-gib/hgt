@@ -207,15 +207,15 @@ theorem layerCake_integrable (φ : ℂ → ℝ) (hcΔ : Continuous (Δ φ)) {R M
       have hcInt : IntegrableOn (fun _ : ℂ => M) (Metric.ball (0:ℂ) r) :=
         (continuous_const.continuousOn.integrableOn_compact (isCompact_closedBall 0 r)).mono_set
           Metric.ball_subset_closedBall
-      have hvol : volume.real (Metric.ball (0:ℂ) r) = π * r^2 := by
+      have hvol : volume.real (Metric.ball (0:ℂ) r) = π * r^(2 : ℕ) := by
         rw [Measure.real, Complex.volume_ball, ENNReal.toReal_mul, ENNReal.coe_toReal,
           NNReal.coe_real_pi, ← ENNReal.ofReal_pow (le_of_lt hr.1),
           ENNReal.toReal_ofReal (by positivity)]; ring
-      have hballmass : (∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖) ≤ M * (π * r^2) := by
+      have hballmass : (∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖) ≤ M * (π * r^(2 : ℕ)) := by
         calc (∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖)
             ≤ ∫ _ in Metric.ball (0:ℂ) r, M :=
               setIntegral_mono_on hΔint.norm hcInt measurableSet_ball (fun z _ => hM z)
-          _ = M * (π * r^2) := by rw [setIntegral_const, hvol, smul_eq_mul, mul_comm]
+          _ = M * (π * r^(2 : ℕ)) := by rw [setIntegral_const, hvol, smul_eq_mul, mul_comm]
       have hstep : (∫ z, ‖f r z‖) = r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖ := by
         have hpt : ∀ z, ‖f r z‖ = r⁻¹ * (Metric.ball (0:ℂ) r).indicator (fun z => ‖Δ φ z‖) z := by
           intro z
@@ -226,7 +226,7 @@ theorem layerCake_integrable (φ : ℂ → ℝ) (hcΔ : Continuous (Δ φ)) {R M
         rw [integral_const_mul, integral_indicator measurableSet_ball]
       rw [hstep]
       calc r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖
-          ≤ r⁻¹ * (M * (π * r^2)) :=
+          ≤ r⁻¹ * (M * (π * r^(2 : ℕ))) :=
             mul_le_mul_of_nonneg_left hballmass (le_of_lt (inv_pos.mpr hr.1))
         _ = M * π * r := by field_simp
     apply Integrable.mono' (g := fun r => M * π * r)

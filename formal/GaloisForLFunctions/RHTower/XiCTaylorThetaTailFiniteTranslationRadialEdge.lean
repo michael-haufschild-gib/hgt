@@ -14,7 +14,7 @@ open Complex Polynomial
 namespace RHTower
 noncomputable section
 
-lemma normSq_pow (z : ℂ) (m : ℕ) :
+lemma normSq_pow_xiCTaylorThetaTailFiniteTranslationRadialEdge (z : ℂ) (m : ℕ) :
     Complex.normSq (z ^ m) = Complex.normSq z ^ m := by
   induction m with
   | zero => simp
@@ -32,7 +32,7 @@ lemma orientedPolynomialCurrent_X_pow_succ (m : ℕ) (z : ℂ) :
   | zero => simpa using orientedPolynomialCurrent_X z
   | succ m ih =>
       rw [show m + 1 + 1 = (m + 1) + 1 by omega, pow_succ,
-        orientedPolynomialCurrent_mul, ih, eval_pow, eval_X, normSq_pow,
+        orientedPolynomialCurrent_mul, ih, eval_pow, eval_X, normSq_pow_xiCTaylorThetaTailFiniteTranslationRadialEdge,
         orientedPolynomialCurrent_X]
       push_cast
       rw [pow_succ]
@@ -53,7 +53,7 @@ theorem orientedPolynomialCurrent_X_pow_mul
         (m : ℝ) * z.im * Complex.normSq z ^ (m - 1) *
           Complex.normSq (P.eval z) := by
   rw [orientedPolynomialCurrent_mul, orientedPolynomialCurrent_X_pow,
-    eval_pow, eval_X, normSq_pow]
+    eval_pow, eval_X, normSq_pow_xiCTaylorThetaTailFiniteTranslationRadialEdge]
   ring
 
 /-- The full common-cutoff loss has a zero of order at least `2*d+2` at the spectral origin. -/

@@ -19,7 +19,7 @@ open scoped BigOperators
 theorem filonBesselKernel_series (b u : ℝ) :
     ((GaloisForLFunctions.RHTower.besselJ0 (b * u) : ℝ) : ℂ) =
       ∑' k : ℕ, (-1 : ℂ) ^ k * ((b * u : ℝ) : ℂ) ^ (2 * k) /
-        ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ 2)) :=
+        ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ (2 : ℕ))) :=
   RHTower.ofReal_besselJ0_eq_secondFactorial_series (b * u)
 
 /-- Pointwise integrand expansion underlying equation (19): multiplying by a local monomial shifts
@@ -27,7 +27,7 @@ every Bessel-series power from `2k` to `r + 2k`. -/
 theorem filonBesselMomentIntegrand_series (b u : ℝ) (r : ℕ) :
     (((u ^ r * GaloisForLFunctions.RHTower.besselJ0 (b * u) : ℝ)) : ℂ) =
       ∑' k : ℕ, (-1 : ℂ) ^ k * (b : ℂ) ^ (2 * k) * (u : ℂ) ^ (r + 2 * k) /
-        ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ 2)) := by
+        ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ (2 : ℕ))) := by
   have hcast : (((u ^ r * GaloisForLFunctions.RHTower.besselJ0 (b * u) : ℝ)) : ℂ) =
       (u : ℂ) ^ r *
         ((GaloisForLFunctions.RHTower.besselJ0 (b * u) : ℝ) : ℂ) := by

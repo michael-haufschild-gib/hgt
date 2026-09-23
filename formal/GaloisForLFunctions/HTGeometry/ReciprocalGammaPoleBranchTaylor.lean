@@ -105,7 +105,7 @@ theorem iteratedDeriv_two_reciprocalGammaEntire_neg_nat (n : ℕ) :
 theorem ReciprocalGammaPoleBranch.iteratedDeriv_two_zero
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
     iteratedDeriv 2 zn 0 =
-      2 * Complex.digamma ((n : ℂ) + 1) / (n.factorial : ℂ) ^ 2 := by
+      2 * Complex.digamma ((n : ℂ) + 1) / (n.factorial : ℂ) ^ (2 : ℕ) := by
   have hEq : (fun x : ℂ => reciprocalGammaEntire (zn x)) =ᶠ[nhds 0]
       (fun x : ℂ => -x) := by
     simpa [reciprocalGammaEntire] using zn.right_inverse
@@ -118,14 +118,14 @@ theorem ReciprocalGammaPoleBranch.iteratedDeriv_two_zero
   have hzn2 : ContDiffAt ℂ 2 zn 0 :=
     zn.analyticAt_zero.contDiffAt.of_le le_top
   have hcomp : iteratedDeriv 2 (reciprocalGammaEntire ∘ zn) 0 =
-      iteratedDeriv 2 reciprocalGammaEntire (zn 0) * deriv zn 0 ^ 2 +
+      iteratedDeriv 2 reciprocalGammaEntire (zn 0) * deriv zn 0 ^ (2 : ℕ) +
         deriv reciprocalGammaEntire (zn 0) * iteratedDeriv 2 zn 0 := by
     exact iteratedDeriv_comp_two hH2 hzn2
   have hcompeq : (reciprocalGammaEntire ∘ zn) =
       fun x : ℂ => reciprocalGammaEntire (zn x) := rfl
   have hmaster :
       iteratedDeriv 2 reciprocalGammaEntire (-(n : ℂ)) *
-          (-((-1 : ℂ) ^ n / (n.factorial : ℂ))) ^ 2 +
+          (-((-1 : ℂ) ^ n / (n.factorial : ℂ))) ^ (2 : ℕ) +
         ((-1 : ℂ) ^ n * (n.factorial : ℂ)) * iteratedDeriv 2 zn 0 = 0 := by
     have hderH : deriv reciprocalGammaEntire (-(n : ℂ)) =
         (-1 : ℂ) ^ n * (n.factorial : ℂ) := by
@@ -140,13 +140,13 @@ theorem ReciprocalGammaPoleBranch.iteratedDeriv_two_zero
     exact_mod_cast Nat.factorial_ne_zero n
   have hsign : (-1 : ℂ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
   field_simp [hfac] at hmaster ⊢
-  have hsignsq : ((-1 : ℂ) ^ n) ^ 2 = 1 := by
+  have hsignsq : ((-1 : ℂ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     simp
   rw [hsignsq] at hmaster
   simp only [mul_zero] at hmaster
   have hcore : -(2 * Complex.digamma ((n : ℂ) + 1)) +
-      (n.factorial : ℂ) ^ 2 * iteratedDeriv 2 zn 0 = 0 := by
+      (n.factorial : ℂ) ^ (2 : ℕ) * iteratedDeriv 2 zn 0 = 0 := by
     simpa using (mul_eq_zero.mp hmaster).resolve_left hsign
   linear_combination hcore
 
@@ -158,7 +158,7 @@ noncomputable def reciprocalGammaBranchLinearCoeff (n : ℕ) : ℂ :=
 /-- The quadratic coefficient `A_n` in
 `z_n(x) = -n - r_n x + A_n x² + O(x³)`. -/
 noncomputable def reciprocalGammaBranchQuadraticCoeff (n : ℕ) : ℂ :=
-  Complex.digamma ((n : ℂ) + 1) / (n.factorial : ℂ) ^ 2
+  Complex.digamma ((n : ℂ) + 1) / (n.factorial : ℂ) ^ (2 : ℕ)
 
 theorem ReciprocalGammaPoleBranch.deriv_zero_eq_neg_linearCoeff
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
@@ -189,8 +189,8 @@ theorem reciprocalGammaBranchLinearCoeff_succ (n : ℕ) :
 `A_n = (n+1)² A_{n+1} - (n+1) r_{n+1}²`, equivalently the digamma recurrence. -/
 theorem reciprocalGammaBranchQuadraticCoeff_succ (n : ℕ) :
     reciprocalGammaBranchQuadraticCoeff n =
-      ((n : ℂ) + 1) ^ 2 * reciprocalGammaBranchQuadraticCoeff (n + 1) -
-        ((n : ℂ) + 1) * reciprocalGammaBranchLinearCoeff (n + 1) ^ 2 := by
+      ((n : ℂ) + 1) ^ (2 : ℕ) * reciprocalGammaBranchQuadraticCoeff (n + 1) -
+        ((n : ℂ) + 1) * reciprocalGammaBranchLinearCoeff (n + 1) ^ (2 : ℕ) := by
   have hpoles : ∀ m : ℕ, ((n : ℂ) + 1) ≠ -(m : ℂ) := by
     intro m h
     have hre := congrArg Complex.re h
@@ -206,7 +206,7 @@ theorem reciprocalGammaBranchQuadraticCoeff_succ (n : ℕ) :
     exact_mod_cast Nat.factorial_ne_zero n
   have hn1 : (n : ℂ) + 1 ≠ 0 := by
     exact_mod_cast Nat.succ_ne_zero n
-  have hsignsq : ((-1 : ℂ) ^ n) ^ 2 = 1 := by
+  have hsignsq : ((-1 : ℂ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     norm_num
   field_simp [hfac, hn1]
@@ -220,7 +220,7 @@ theorem ReciprocalGammaPoleBranch.taylor_two_with_cubic_remainder
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
       (fun x : ℂ => zn x) =ᶠ[nhds 0]
         (fun x => -(n : ℂ) - reciprocalGammaBranchLinearCoeff n * x +
-          reciprocalGammaBranchQuadraticCoeff n * x ^ 2 + x ^ 3 * R x) := by
+          reciprocalGammaBranchQuadraticCoeff n * x ^ (2 : ℕ) + x ^ (3 : ℕ) * R x) := by
   obtain ⟨R, hRan, hR⟩ := zn.analyticAt_zero.exists_eventuallyEq_sum_add_pow_mul 3
   refine ⟨R, hRan, ?_⟩
   filter_upwards [hR] with x hx

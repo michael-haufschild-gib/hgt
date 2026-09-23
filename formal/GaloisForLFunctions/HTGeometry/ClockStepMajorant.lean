@@ -17,9 +17,9 @@ open Set Complex Metric
 
 /-- The majorant of the step applied to the `m`-th iterate on a rectangle of side `T`. -/
 noncomputable def stepMajorant (Mv ρ₀ ρ T : ℝ) (m : ℕ) : ℝ :=
-  (16 / (ρ₀ - ρ) ^ 2 + Mv / 4)
-    * ((4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-      / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)))
+  (16 / (ρ₀ - ρ) ^ (2 : ℕ) + Mv / 4)
+    * ((4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+      / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)))
 
 /-- **The step applied to an iterate is dominated by the majorant.** -/
 theorem norm_clockStripStep_clockIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ → ℝ → ℂ → ℂ}
@@ -44,8 +44,8 @@ theorem norm_clockStripStep_clockIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < 
     fun w hw => hMv s t hsT htT w (imStrip_mono hσρ₀.le hw)
   -- the iterate bound at the intermediate radius, uniform over the rectangle
   have hMw : ∀ w ∈ imStrip σ, ‖clockIterate V m s t w‖
-      ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro w hw
     have hbase := clockIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ s t hsT htT w
       (le_of_lt (mem_imStrip.mp hw))
@@ -54,7 +54,7 @@ theorem norm_clockStripStep_clockIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < 
     gcongr
   have hstep := norm_clockStripStep_le hρσ hMv0 hwσ hMw hMvσ hz
   rw [hgap] at hstep
-  have hrw : 4 / ((ρ₀ - ρ) / 2) ^ 2 = 16 / (ρ₀ - ρ) ^ 2 := by
+  have hrw : 4 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) = 16 / (ρ₀ - ρ) ^ (2 : ℕ) := by
     rw [div_pow]
     field_simp
     norm_num
@@ -63,15 +63,15 @@ theorem norm_clockStripStep_clockIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < 
 
 /-- The smallness condition at the half gap implies the one at the full gap. -/
 theorem ovsyannikov_smallness_of_half {ρ₀ Mv ρ T : ℝ} (hMv0 : 0 ≤ Mv) (hρ : ρ < ρ₀)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
-    (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / (ρ₀ - ρ) ^ 2 < 1 :=
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
+    (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / (ρ₀ - ρ) ^ (2 : ℕ) < 1 :=
   ovsyannikov_smallness_of_half_const (by positivity) (by linarith) hsmall
 
 /-- **The majorant is summable when the rectangle is small.** -/
 theorem summable_stepMajorant {ρ₀ Mv ρ T : ℝ} (hMv0 : 0 ≤ Mv) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
     Summable (stepMajorant Mv ρ₀ ρ T) := by
-  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
   exact (summable_ovsyannikov_bound hK0 hG hT hsmall).mul_left _
 

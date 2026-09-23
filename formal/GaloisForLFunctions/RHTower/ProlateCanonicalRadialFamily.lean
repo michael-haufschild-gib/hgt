@@ -21,13 +21,13 @@ open Filter MeasureTheory Set
 namespace RHTower
 
 /-- Exact bandwidth associated with physical aperture `a`. -/
-def signedModeRadialBandwidth (a : ℝ) : ℝ := 2 * Real.pi * a ^ 2
+def signedModeRadialBandwidth (a : ℝ) : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
 
 theorem tendsto_signedModeRadialBandwidth_atTop :
     Tendsto signedModeRadialBandwidth atTop atTop := by
-  have hsq : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
+  have hsq : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) atTop atTop :=
     Filter.tendsto_pow_atTop (by norm_num)
-  change Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2) atTop atTop
+  change Tendsto (fun a : ℝ => 2 * Real.pi * a ^ (2 : ℕ)) atTop atTop
   exact hsq.const_mul_atTop (by positivity : 0 < 2 * Real.pi)
 
 /-- Data selected from the endpoint-normalized radial existence theorem. -/
@@ -43,14 +43,14 @@ def SignedModeRadialData.IsExact (a : ℝ) (n : ℕ) (D : SignedModeRadialData) 
     D.Phi 1 ≠ 0 ∧ D.R = prolateEndpointNormalize D.Phi ∧
     ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) D.R ∧ Function.Even D.R ∧ D.R 1 = 1 ∧
     (∀ x : ℝ, bandTransform (signedModeRadialBandwidth a) D.Phi x =
-      evenProlateSignedValue a n ^ 2 * D.Phi x) ∧
+      evenProlateSignedValue a n ^ (2 : ℕ) * D.Phi x) ∧
     (∀ x : ℝ, prolateSLAction (signedModeRadialBandwidth a) D.R x = D.chi * D.R x) ∧
     D.s = radialSeparationRatio (signedModeRadialBandwidth a) D.chi ∧ 0 ≤ D.s ∧
-    2 * deriv D.R 1 = D.s * signedModeRadialBandwidth a ^ 2 -
-      signedModeRadialBandwidth a ^ 2 ∧
-    (∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv D.R) x + 2 * x * deriv D.R x -
-      (D.s * signedModeRadialBandwidth a ^ 2 -
-        signedModeRadialBandwidth a ^ 2 * x ^ 2) * D.R x = 0)
+    2 * deriv D.R 1 = D.s * signedModeRadialBandwidth a ^ (2 : ℕ) -
+      signedModeRadialBandwidth a ^ (2 : ℕ) ∧
+    (∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv D.R) x + 2 * x * deriv D.R x -
+      (D.s * signedModeRadialBandwidth a ^ (2 : ℕ) -
+        signedModeRadialBandwidth a ^ (2 : ℕ) * x ^ (2 : ℕ)) * D.R x = 0)
 
 theorem exists_signedModeRadialData_isExact
     {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
@@ -120,10 +120,10 @@ theorem eventually_signedModeRadialData_hasSecondDerivAt (n : ℕ) :
 
 theorem eventually_signedModeRadialData_ode (n : ℕ) :
     ∀ᶠ a : ℝ in atTop, ∀ t,
-      (t ^ 2 - 1) * deriv (deriv (signedModeRadialData a n).R) t +
+      (t ^ (2 : ℕ) - 1) * deriv (deriv (signedModeRadialData a n).R) t +
           2 * t * deriv (signedModeRadialData a n).R t -
-        ((signedModeRadialData a n).s * signedModeRadialBandwidth a ^ 2 -
-          signedModeRadialBandwidth a ^ 2 * t ^ 2) *
+        ((signedModeRadialData a n).s * signedModeRadialBandwidth a ^ (2 : ℕ) -
+          signedModeRadialBandwidth a ^ (2 : ℕ) * t ^ (2 : ℕ)) *
           (signedModeRadialData a n).R t = 0 := by
   filter_upwards [eventually_signedModeRadialData_isExact n] with a h
   rcases h with ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, hode⟩

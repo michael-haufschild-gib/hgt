@@ -180,15 +180,15 @@ theorem finiteCosinePolynomial_add_eq_trunc_product
       PowerSeries.trunc (2 * d + 1)
           (((c • P : Polynomial ℂ) : PowerSeries ℂ) *
             ((c • Q : Polynomial ℂ) : PowerSeries ℂ)) =
-        c ^ 2 • PowerSeries.trunc (2 * d + 1) ((P * Q : Polynomial ℂ) : PowerSeries ℂ) := by
+        c ^ (2 : ℕ) • PowerSeries.trunc (2 * d + 1) ((P * Q : Polynomial ℂ) : PowerSeries ℂ) := by
     rw [Polynomial.coe_smul, Polynomial.coe_smul,
       smul_mul_smul_comm, map_smul, ← Polynomial.coe_mul]
     rw [pow_two]
   rw [hscale, hscale] at h
-  have htwoSq : (2 : ℂ) ^ 2 = 4 := by norm_num
-  have htwoISq : (2 * I : ℂ) ^ 2 = -4 := by
+  have htwoSq : (2 : ℂ) ^ (2 : ℕ) = 4 := by norm_num
+  have htwoISq : (2 * I : ℂ) ^ (2 : ℕ) = -4 := by
     calc
-      (2 * I : ℂ) ^ 2 = 4 * I ^ 2 := by ring
+      (2 * I : ℂ) ^ (2 : ℕ) = 4 * I ^ (2 : ℕ) := by ring
       _ = -4 := by rw [Complex.I_sq]; ring
   rw [htwoSq, htwoISq] at h
   have hleft : (2 : Polynomial ℂ) * ((2 : ℂ) • finiteCosinePolynomial d (x + a)) =
@@ -409,8 +409,8 @@ theorem truncatedCosineSection_add
 constant seam is untouched; all translation loss is confined to the explicit top edge. -/
 theorem sq_mul_thetaCuspTailSecondCoreAtom_add_eq_cosine_sine_sub_topEdge
     (d : ℕ) (z : ℂ) (x a : ℝ) :
-    z ^ 2 * thetaCuspTailSecondCoreAtom d z (x + a) =
-      (z ^ 2 + 1 / 4) *
+    z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtom d z (x + a) =
+      (z ^ (2 : ℕ) + 1 / 4) *
           (truncatedCosineSection (d + 1) z x * truncatedCosineSection (d + 1) z a -
             truncatedSineCompanion (d + 1) z x * truncatedSineCompanion (d + 1) z a -
               finiteCosineTranslationTopEdgeSection (d + 1) z x a) -
@@ -690,7 +690,7 @@ theorem finitePositivePhasePolynomial_add_eq_mul_sub_topEdge
   unfold finitePositivePhasePolynomial finitePositivePhaseTranslationTopEdge
   rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
     finiteSinePolynomial_add_eq_product_sub_topEdge]
-  have hI : (C I : Polynomial ℂ) ^ 2 = -1 := by
+  have hI : (C I : Polynomial ℂ) ^ (2 : ℕ) = -1 := by
     rw [sq, ← C_mul, I_mul_I]
     norm_num
   ring_nf
@@ -706,7 +706,7 @@ theorem finiteNegativePhasePolynomial_add_eq_mul_sub_topEdge
   unfold finiteNegativePhasePolynomial finiteNegativePhaseTranslationTopEdge
   rw [finiteCosinePolynomial_add_eq_product_sub_topEdge,
     finiteSinePolynomial_add_eq_product_sub_topEdge]
-  have hI : (C I : Polynomial ℂ) ^ 2 = -1 := by
+  have hI : (C I : Polynomial ℂ) ^ (2 : ℕ) = -1 := by
     rw [sq, ← C_mul, I_mul_I]
     norm_num
   ring_nf

@@ -75,7 +75,7 @@ theorem xiWeilHilbertQuadratic_fourLegOrientationDefectJet
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) :
     xiWeilHilbertQuadratic
         (routePDeningerFourLegOrientationDefectJet A w) =
-      -‖routePDeningerFourLegOrientationDefectJet A w‖ ^ 2 := by
+      -‖routePDeningerFourLegOrientationDefectJet A w‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic,
     xiWeilLineConj_fourLegOrientationDefectJet,
     inner_neg_left, inner_self_eq_norm_sq_to_K]
@@ -178,7 +178,7 @@ theorem tendsto_xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet
       (fun n => xiWeilHilbertQuadratic
         (routePDeningerFiniteFourLegOrientationDefectJet A w n))
       atTop
-      (nhds (-‖routePDeningerFourLegOrientationDefectJet A w‖ ^ 2)) := by
+      (nhds (-‖routePDeningerFourLegOrientationDefectJet A w‖ ^ (2 : ℕ))) := by
   have h := continuous_xiWeilHilbertQuadratic.continuousAt.tendsto.comp
     (tendsto_routePDeningerFiniteFourLegOrientationDefectJet A w)
   rwa [xiWeilHilbertQuadratic_fourLegOrientationDefectJet] at h
@@ -212,7 +212,7 @@ theorem exists_negative_limit_finiteFourLegOrientationDefectJet_iff_not_riemannH
   · rintro ⟨E, hE, hEtend⟩
     have hcanonical :=
       tendsto_xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet A w
-    have hEq : E = -‖routePDeningerFourLegOrientationDefectJet A w‖ ^ 2 :=
+    have hEq : E = -‖routePDeningerFourLegOrientationDefectJet A w‖ ^ (2 : ℕ) :=
       tendsto_nhds_unique hEtend hcanonical
     apply
       (xiWeilHilbertQuadratic_fourLegOrientationDefectJet_neg_iff_not_riemannHypothesis
@@ -220,7 +220,7 @@ theorem exists_negative_limit_finiteFourLegOrientationDefectJet_iff_not_riemannH
     rw [xiWeilHilbertQuadratic_fourLegOrientationDefectJet, ← hEq]
     exact hE
   · intro hnot
-    refine ⟨-‖routePDeningerFourLegOrientationDefectJet A w‖ ^ 2, ?_, ?_⟩
+    refine ⟨-‖routePDeningerFourLegOrientationDefectJet A w‖ ^ (2 : ℕ), ?_, ?_⟩
     · rw [← xiWeilHilbertQuadratic_fourLegOrientationDefectJet]
       exact
         (xiWeilHilbertQuadratic_fourLegOrientationDefectJet_neg_iff_not_riemannHypothesis

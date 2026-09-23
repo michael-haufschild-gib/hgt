@@ -20,12 +20,12 @@ noncomputable section
 def kloostermanGlobalResponsePairElementaryBudget
     (q r : ℕ) (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
   min
-    (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+    (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
       (∑ z : ZMod (q + 1),
         Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
       ∑ z : ZMod (r + 1),
         Complex.normSq (kloostermanSourceResidue (r + 1) B b z))
-    (((r + 1 : ℕ) : ℝ) ^ 2 * ((q + 1 : ℕ) : ℝ) *
+    (((r + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) *
       (∑ z : ZMod (r + 1),
         Complex.normSq (kloostermanSourceResidue (r + 1) B b z)) *
       ∑ z : ZMod (q + 1),
@@ -171,12 +171,12 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair_symmetric
 def kloostermanGlobalIntervalResponsePairElementaryBudget
     (q r N : ℕ) (b : ℕ → ℂ) : ℝ :=
   min
-    (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+    (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
       ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
         ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
       ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
         ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)))
-    (((r + 1 : ℕ) : ℝ) ^ 2 * ((q + 1 : ℕ) : ℝ) *
+    (((r + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) *
       ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
         ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
       ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
@@ -220,21 +220,21 @@ theorem kloostermanGlobalResponsePairElementaryBudget_Icc_le_interval
     nlinarith
   apply min_le_min
   · calc
-      (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+      (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
           (∑ z : ZMod (q + 1),
             Complex.normSq
               (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
           ∑ z : ZMod (r + 1),
             Complex.normSq
               (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) =
-        (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ)) *
+        (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ)) *
           ((∑ z : ZMod (q + 1),
               Complex.normSq
                 (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
             ∑ z : ZMod (r + 1),
               Complex.normSq
                 (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) := by ring
-      _ ≤ (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ)) *
+      _ ≤ (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ)) *
           (((kloostermanIntervalResidueMultiplicity q N : ℝ) *
               ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
             ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -243,21 +243,21 @@ theorem kloostermanGlobalResponsePairElementaryBudget_Icc_le_interval
           (mul_nonneg (sq_nonneg _) (Nat.cast_nonneg _))
       _ = _ := by ring
   · calc
-      (((r + 1 : ℕ) : ℝ) ^ 2 * ((q + 1 : ℕ) : ℝ) *
+      (((r + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) *
           (∑ z : ZMod (r + 1),
             Complex.normSq
               (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) *
           ∑ z : ZMod (q + 1),
             Complex.normSq
               (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) =
-        (((r + 1 : ℕ) : ℝ) ^ 2 * ((q + 1 : ℕ) : ℝ)) *
+        (((r + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ)) *
           ((∑ z : ZMod (r + 1),
               Complex.normSq
                 (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) *
             ∑ z : ZMod (q + 1),
               Complex.normSq
                 (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) := by ring
-      _ ≤ (((r + 1 : ℕ) : ℝ) ^ 2 * ((q + 1 : ℕ) : ℝ)) *
+      _ ≤ (((r + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ)) *
           (((kloostermanIntervalResidueMultiplicity r N : ℝ) *
               ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
             ((kloostermanIntervalResidueMultiplicity q N : ℝ) *

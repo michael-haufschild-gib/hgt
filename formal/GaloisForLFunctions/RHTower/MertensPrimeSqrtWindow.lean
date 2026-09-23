@@ -41,7 +41,7 @@ value at the lower endpoint. -/
 theorem primeLogMass_rpow_lower_mertensPrimeSqrtWindow {δ : ℝ} (hδ : 0 ≤ δ)
     (N : ℕ) (hN : 4 ≤ N) :
     (Real.sqrt (N : ℝ)) ^ δ * mertensPrimeSqrtWindow N ≤
-      primeLogMass (fun n => (n : ℝ) ^ δ) N := by
+      primeLogMass_weightedEulerCoefficientSpaces (fun n => (n : ℝ) ^ δ) N := by
   set Q : ℕ := ⌊Real.sqrt (N : ℝ)⌋₊ with hQ
   have hN1 : 1 ≤ N := by omega
   have hsqrtle : Real.sqrt (N : ℝ) ≤ N := by
@@ -56,11 +56,11 @@ theorem primeLogMass_rpow_lower_mertensPrimeSqrtWindow {δ : ℝ} (hδ : 0 ≤ �
       exact le_trans (Nat.floor_le (Real.sqrt_nonneg _)) hsqrtle
     exact_mod_cast hQNreal
   have hwindow :
-      mertensPrimeSqrtWindow N = primeLogMass (primeCoefficientTail (fun _ => (1 : ℝ)) Q) N := by
+      mertensPrimeSqrtWindow N = primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail (fun _ => (1 : ℝ)) Q) N := by
     change mertensPrimeWeightSum N - mertensPrimeWeightSum Q = _
     rw [primeLogMass_tail_eq_sub _ hQN, primeLogMass_unit N, primeLogMass_unit Q,
       ← mertensPrimeWeightSum_eq N, ← mertensPrimeWeightSum_eq Q]
-  rw [hwindow, primeLogMass_tail, primeLogMass, Finset.mul_sum]
+  rw [hwindow, primeLogMass_tail, primeLogMass_weightedEulerCoefficientSpaces, Finset.mul_sum]
   calc
     ∑ n ∈ Finset.Icc 1 N with (n.Prime ∧ Q < n),
         (Real.sqrt (N : ℝ)) ^ δ * (Real.log n / n * |(1 : ℝ)|)
@@ -162,7 +162,7 @@ theorem tendsto_marcinkiewiczLogQuotient_rpow_atTop {δ : ℝ} (hδ : 0 < δ) :
           mul_le_mul_of_nonneg_left hwindow
             (Real.rpow_nonneg (Real.sqrt_nonneg _) _)
     _ = ((Real.sqrt (N : ℝ)) ^ δ * mertensPrimeSqrtWindow N) / Real.log N := by ring
-    _ ≤ primeLogMass (fun n => (n : ℝ) ^ δ) N / Real.log N :=
+    _ ≤ primeLogMass_weightedEulerCoefficientSpaces (fun n => (n : ℝ) ^ δ) N / Real.log N :=
       div_le_div_of_nonneg_right hmass hlog.le
 
 end RHTower

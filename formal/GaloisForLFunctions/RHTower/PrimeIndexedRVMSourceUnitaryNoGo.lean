@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.WoldThermofieldStandardForm
 import GaloisForLFunctions.HTGeometry.SourceLinearClosedRelationSplitting
 import GaloisForLFunctions.RHTower.XiPrimeMarkedCofinalTriangleNuclearCarrier
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence
+import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence
 import GaloisForLFunctions.RHTower.SoninApertureAreaRigidity
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtRankOne
 import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
@@ -1357,6 +1358,91 @@ theorem not_exists_unitaryPush_routeKRVMTail_eq_add_cofinalTriangle
   exact routeKCofinalTriangleNuclearCarrierFrom_ne_zero K
     ((ContinuousLinearMap.hsNormSq_eq_zero_iff
       (routeKCofinalTriangleNuclearCarrierFrom_isHilbertSchmidt K)).mp hnormzero)
+
+/-- The literal quartic reserve cannot be a unitary recovery of its cofinite RVM diagonal.
+The retained source cycle is Hilbert--Schmidt orthogonal to that diagonal, while unitary
+recovery would require their real cross energy to be negative.  Thus an exact K-RVM
+resolvent bridge must be genuinely nonunitary. -/
+theorem not_exists_unitaryPush_routeKQuarticRVMReserve_eq_quarticReserve :
+    ¬ ∃ u : RouteKPrimeHilbert ≃ₗᵢ[ℂ] RouteKPrimeHilbert,
+      unitaryPush u routeKQuarticRVMReserve = routeKQuarticReserve := by
+  rintro ⟨u, hu⟩
+  have htransport : unitaryPush u routeKQuarticRVMReserve =
+      routeKQuarticRVMReserve + routeKQuarticCycleReserve := by
+    simpa [routeKQuarticReserve] using hu
+  have hcross := routeK_re_hsInner_eq_neg_half_hsNormSq_of_unitaryPush_add_eq
+    routeKQuarticRVMReserve routeKQuarticCycleReserve
+    routeKQuarticRVMReserve_isHilbertSchmidt
+    routeKQuarticCycleReserve_isHilbertSchmidt u htransport
+  have horth := hsInner_routeKDiagonal_zeroDiagonal_eq_zero
+    routeKQuarticRVMReserve routeKQuarticCycleReserve
+    routeKQuarticRVMReserve_isHilbertSchmidt
+    routeKQuarticCycleReserve_isHilbertSchmidt
+    (fun p => (routeKRVMTailWeight
+      (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) p : ℂ))
+    (by
+      intro p
+      exact routeKRVMTailOperator_basis
+        (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) p)
+    (by
+      intro p
+      rw [routeKQuarticCycleReserve, smul_apply, inner_smul_right,
+        routeKCofinalTriangleNuclearCarrierFrom_diagonal_zero, mul_zero])
+  rw [horth, Complex.zero_re] at hcross
+  have hnormzero : ContinuousLinearMap.hsNormSq routeKQuarticCycleReserve = 0 := by
+    linarith
+  have hcycle : routeKQuarticCycleReserve ≠ 0 := by
+    unfold routeKQuarticCycleReserve
+    exact smul_ne_zero
+      (Complex.ofReal_ne_zero.mpr routeKQuarticReserveParameters.hdelta.ne')
+      (routeKCofinalTriangleNuclearCarrierFrom_ne_zero _)
+  exact hcycle
+    ((ContinuousLinearMap.hsNormSq_eq_zero_iff
+      routeKQuarticCycleReserve_isHilbertSchmidt).mp hnormzero)
+
+/-- The full quartically admitted carrier cannot be a unitary image of the diagonal carrier with
+the same finite moment head and cofinite RVM tail.  The retained cycle therefore cannot be
+absorbed by an isospectral change of prime coordinates. -/
+theorem not_exists_unitaryPush_routeKQuarticDiagonal_eq_admitted :
+    ¬ ∃ u : RouteKPrimeHilbert ≃ₗᵢ[ℂ] RouteKPrimeHilbert,
+      unitaryPush u (routeKQuarticHead + routeKQuarticRVMReserve) =
+        routeKQuarticallyAdmittedOperator := by
+  rintro ⟨u, hu⟩
+  have htransport : unitaryPush u (routeKQuarticHead + routeKQuarticRVMReserve) =
+      (routeKQuarticHead + routeKQuarticRVMReserve) + routeKQuarticCycleReserve := by
+    simpa [routeKQuarticallyAdmittedOperator, routeKQuarticReserve, add_assoc] using hu
+  have hD : (routeKQuarticHead + routeKQuarticRVMReserve).IsHilbertSchmidt :=
+    routeKQuarticHead_isHilbertSchmidt.add routeKQuarticRVMReserve_isHilbertSchmidt
+  have hcross := routeK_re_hsInner_eq_neg_half_hsNormSq_of_unitaryPush_add_eq
+    (routeKQuarticHead + routeKQuarticRVMReserve) routeKQuarticCycleReserve
+    hD routeKQuarticCycleReserve_isHilbertSchmidt u htransport
+  have horth := hsInner_routeKDiagonal_zeroDiagonal_eq_zero
+    (routeKQuarticHead + routeKQuarticRVMReserve) routeKQuarticCycleReserve
+    hD routeKQuarticCycleReserve_isHilbertSchmidt
+    (fun p =>
+      (twoLevelPrimeWeight routeKQuarticResidualMass routeKQuarticResidualEnergy
+        routeKQuarticReserveParameters.N p : ℂ) +
+      (routeKRVMTailWeight
+        (routeKInitialPrimeFinset routeKQuarticReserveParameters.N) p : ℂ))
+    (by
+      intro p
+      rw [add_apply, routeKQuarticHead_basis, routeKQuarticRVMReserve,
+        routeKRVMTailOperator_basis, ← add_smul])
+    (by
+      intro p
+      rw [routeKQuarticCycleReserve, smul_apply, inner_smul_right,
+        routeKCofinalTriangleNuclearCarrierFrom_diagonal_zero, mul_zero])
+  rw [horth, Complex.zero_re] at hcross
+  have hnormzero : ContinuousLinearMap.hsNormSq routeKQuarticCycleReserve = 0 := by
+    linarith
+  have hcycle : routeKQuarticCycleReserve ≠ 0 := by
+    unfold routeKQuarticCycleReserve
+    exact smul_ne_zero
+      (Complex.ofReal_ne_zero.mpr routeKQuarticReserveParameters.hdelta.ne')
+      (routeKCofinalTriangleNuclearCarrierFrom_ne_zero _)
+  exact hcycle
+    ((ContinuousLinearMap.hsNormSq_eq_zero_iff
+      routeKQuarticCycleReserve_isHilbertSchmidt).mp hnormzero)
 
 /-- The literal completed-endpoint double commutator is nonzero and Hilbert--Schmidt orthogonal
 to the RVM skeleton, so no unitary source transport can recover the corrected operator from the

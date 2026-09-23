@@ -93,7 +93,7 @@ theorem hasDerivAt_resolventPowerTransform
       HasDerivAt (fun w : ℂ => resolvent w x ^ r)
         ((r : ℂ) * resolvent w x ^ (r + 1)) w := by
     filter_upwards [support_mem_ae] with x hx w hw
-    have hbase : HasDerivAt (fun w : ℂ => resolvent w x) (resolvent w x ^ 2) w := by
+    have hbase : HasDerivAt (fun w : ℂ => resolvent w x) (resolvent w x ^ (2 : ℕ)) w := by
       apply hasDerivAt_resolvent_const_right
       replace hw := hs_μ hw
       contrapose! hw
@@ -102,15 +102,15 @@ theorem hasDerivAt_resolventPowerTransform
       simpa [resolventSet, sub_eq_zero] using hw
     have halg :
         (r : ℂ) * resolvent w x ^ (r + 1) =
-          (r : ℂ) * resolvent w x ^ (r - 1) * resolvent w x ^ 2 := by
+          (r : ℂ) * resolvent w x ^ (r - 1) * resolvent w x ^ (2 : ℕ) := by
       calc
         (r : ℂ) * resolvent w x ^ (r + 1) =
-            (r : ℂ) * (resolvent w x ^ (r - 1) * resolvent w x ^ 2) := by
+            (r : ℂ) * (resolvent w x ^ (r - 1) * resolvent w x ^ (2 : ℕ)) := by
           congr 1
           rw [← pow_add]
           congr 1
           omega
-        _ = (r : ℂ) * resolvent w x ^ (r - 1) * resolvent w x ^ 2 := by ring
+        _ = (r : ℂ) * resolvent w x ^ (r - 1) * resolvent w x ^ (2 : ℕ) := by ring
     rw [halg]
     exact hbase.pow r
   have hraw := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs_a hmeas

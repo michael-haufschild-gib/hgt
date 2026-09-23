@@ -28,7 +28,7 @@ noncomputable section
 /-- The on-line probe profile: the budget mass a critical-line copy of height `γ` deposits at
 probe `x`. -/
 def xiOnLineProbeProfile (γ x : ℝ) : ℝ :=
-  2 * x / (γ ^ 2 + x ^ 2)
+  2 * x / (γ ^ (2 : ℕ) + x ^ (2 : ℕ))
 
 /-- **The smearing law**: every copy's budget mass is the average of the on-line profile at
 the two displaced probes `c ∓ b`.  Off-line copies are probe-displaced on-line copies. -/
@@ -114,7 +114,7 @@ theorem riemannHypothesis_iff_forall_probeCoordinate_circle (c : ℝ) :
     by_contra hRH
     obtain ⟨q, hq⟩ := exists_spectralSq_im_pos_of_not_riemannHypothesis hRH
     have hb : (xiSpectralPoint q).im = 0 := (xiProbeCoordinate_circle_iff c q).mp (h q)
-    have h1 : (xiSpectralPoint q ^ 2).im = 0 := by
+    have h1 : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
       rw [sq, Complex.mul_im, hb]
       ring
     rw [h1] at hq

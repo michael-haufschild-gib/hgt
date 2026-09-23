@@ -109,8 +109,8 @@ theorem eval_monomial_firstJetBoundaryExponent
     MvPolynomial.eval (fun i => i.elim (fun _ => z) r)
         (MvPolynomial.monomial (firstJetBoundaryExponent a) c) =
       MvPolynomial.eval (fun i => Fin.cases
-        (Fin.cases (z ^ 2) (fun _ => z) i.2)
-        (fun j => Fin.cases (z ^ 2 * r (j, 0))
+        (Fin.cases (z ^ (2 : ℕ)) (fun _ => z) i.2)
+        (fun j => Fin.cases (z ^ (2 : ℕ) * r (j, 0))
           (fun _ => r (j, 1)) i.2) i.1)
         (MvPolynomial.monomial a c) := by
   rw [MvPolynomial.eval_monomial, MvPolynomial.eval_monomial]
@@ -123,10 +123,10 @@ theorem eval_monomial_firstJetBoundaryExponent
       Finsupp.coe_equivFunOnFinite_symm,
       Sum.elim_inl, Sum.elim_inr, Fin.cases_zero,
       Fin.cases_succ]
-    have hzprod : (∏ x : Fin k, (z ^ 2) ^ a (x.succ, 0)) =
-        (z ^ 2) ^ ∑ x : Fin k, a (x.succ, 0) := by
+    have hzprod : (∏ x : Fin k, (z ^ (2 : ℕ)) ^ a (x.succ, 0)) =
+        (z ^ (2 : ℕ)) ^ ∑ x : Fin k, a (x.succ, 0) := by
       simpa using Finset.prod_pow_eq_pow_sum Finset.univ
-        (fun x : Fin k => a (x.succ, 0)) (z ^ 2)
+        (fun x : Fin k => a (x.succ, 0)) (z ^ (2 : ℕ))
     rw [hzprod, ← pow_mul, ← pow_mul]
     rw [mul_add, pow_add]
     simp
@@ -142,8 +142,8 @@ theorem eval_firstJetHomogeneousBoundaryForm
     MvPolynomial.eval (fun i => i.elim (fun _ => z) r)
         (firstJetHomogeneousBoundaryForm P) =
       MvPolynomial.eval (fun i => Fin.cases
-        (Fin.cases (z ^ 2) (fun _ => z) i.2)
-        (fun j => Fin.cases (z ^ 2 * r (j, 0))
+        (Fin.cases (z ^ (2 : ℕ)) (fun _ => z) i.2)
+        (fun j => Fin.cases (z ^ (2 : ℕ) * r (j, 0))
           (fun _ => r (j, 1)) i.2) i.1) P := by
   classical
   rw [firstJetHomogeneousBoundaryForm, map_sum]

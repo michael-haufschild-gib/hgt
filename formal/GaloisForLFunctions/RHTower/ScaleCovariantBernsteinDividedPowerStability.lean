@@ -180,7 +180,7 @@ def bernsteinDividedPowerRoot (m : ℕ → ℝ) (N : ℕ) : Polynomial ℝ :=
 theorem bernsteinScalePurityPolynomial_coeff_dividedPower_square (m : ℕ → ℝ) (N r : ℕ) :
     (bernsteinScalePurityPolynomial m N).coeff r =
       (-1 : ℝ) ^ r * (r.factorial : ℝ) *
-        ((bernsteinDividedPowerRoot m N) ^ 2).coeff r := by
+        ((bernsteinDividedPowerRoot m N) ^ (2 : ℕ)).coeff r := by
   rw [coeff_bernsteinScalePurityPolynomial_closed, pow_two, Polynomial.coeff_mul]
   rw [Finset.mul_sum]
   rw [Finset.mul_sum]
@@ -215,8 +215,8 @@ theorem bernsteinScalePurityPolynomial_coeff_dividedPower_square (m : ℕ → �
 theorem moment_prefix_eq_of_bernsteinDividedPowerRoot_sq_eq
     {m m' : ℕ → ℝ} {N : ℕ}
     (hm0 : 0 < m 0) (hm0' : 0 < m' 0)
-    (hsq : (bernsteinDividedPowerRoot m N) ^ 2 =
-      (bernsteinDividedPowerRoot m' N) ^ 2) :
+    (hsq : (bernsteinDividedPowerRoot m N) ^ (2 : ℕ) =
+      (bernsteinDividedPowerRoot m' N) ^ (2 : ℕ)) :
     ∀ r ≤ N, m r = m' r := by
   have hprod :
       (bernsteinDividedPowerRoot m N - bernsteinDividedPowerRoot m' N) *
@@ -224,8 +224,8 @@ theorem moment_prefix_eq_of_bernsteinDividedPowerRoot_sq_eq
     calc
       (bernsteinDividedPowerRoot m N - bernsteinDividedPowerRoot m' N) *
           (bernsteinDividedPowerRoot m N + bernsteinDividedPowerRoot m' N) =
-          (bernsteinDividedPowerRoot m N) ^ 2 -
-            (bernsteinDividedPowerRoot m' N) ^ 2 := by ring
+          (bernsteinDividedPowerRoot m N) ^ (2 : ℕ) -
+            (bernsteinDividedPowerRoot m' N) ^ (2 : ℕ) := by ring
       _ = 0 := sub_eq_zero.mpr hsq
   have hroot : bernsteinDividedPowerRoot m N = bernsteinDividedPowerRoot m' N := by
     rcases mul_eq_zero.mp hprod with hminus | hplus
@@ -315,7 +315,7 @@ theorem positive_squareRoot_chamber_stability
     (hmu : 0 < mu) (htheta1 : theta < 1)
     (hm0 : mu ≤ m0) (hm0' : mu ≤ m0')
     (hF : |F - m0| ≤ theta * mu) (hG : |G - m0'| ≤ theta * mu) :
-    |F - G| ≤ |F ^ 2 - G ^ 2| / (2 * (1 - theta) * mu) := by
+    |F - G| ≤ |F ^ (2 : ℕ) - G ^ (2 : ℕ)| / (2 * (1 - theta) * mu) := by
   have hF_lower : (1 - theta) * mu ≤ F := by
     have h := neg_abs_le (F - m0)
     nlinarith
@@ -327,7 +327,7 @@ theorem positive_squareRoot_chamber_stability
     rw [abs_of_pos]
     · nlinarith
     · nlinarith
-  rw [show F ^ 2 - G ^ 2 = (F - G) * (F + G) by ring, abs_mul]
+  rw [show F ^ (2 : ℕ) - G ^ (2 : ℕ) = (F - G) * (F + G) by ring, abs_mul]
   rw [le_div_iff₀ hden]
   exact mul_le_mul_of_nonneg_left hsum (abs_nonneg (F - G))
 
@@ -340,8 +340,8 @@ theorem bernsteinDividedPowerChart_stability
     (hmTail : bernsteinDividedPowerTailNorm m N tau ≤ theta * mu)
     (hm'Tail : bernsteinDividedPowerTailNorm m' N tau ≤ theta * mu) :
     |bernsteinDividedPowerChart m N T - bernsteinDividedPowerChart m' N T| ≤
-      |(bernsteinDividedPowerChart m N T) ^ 2 -
-        (bernsteinDividedPowerChart m' N T) ^ 2| / (2 * (1 - theta) * mu) := by
+      |(bernsteinDividedPowerChart m N T) ^ (2 : ℕ) -
+        (bernsteinDividedPowerChart m' N T) ^ (2 : ℕ)| / (2 * (1 - theta) * mu) := by
   apply positive_squareRoot_chamber_stability hmu htheta1 hm0 hm0'
   · exact (bernsteinDividedPowerChart_sub_mass_le_tailNorm m N hT).trans hmTail
   · exact (bernsteinDividedPowerChart_sub_mass_le_tailNorm m' N hT).trans hm'Tail

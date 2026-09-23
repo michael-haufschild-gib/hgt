@@ -42,7 +42,7 @@ private theorem amplitude_smooth (s amp : ℂ) : ContDiff ℝ ∞ (sourceAmplitu
   have hp := power_comp_smooth (2*s) (contDiff_const.add radialUnit_smooth) radialUnit_add_one_pos
   unfold sourceAmplitude
   simp only [zero_mul,Complex.exp_zero,one_mul,mul_one]
-  exact hp.mul (contDiff_const (c := amp^2))
+  exact hp.mul (contDiff_const (c := amp^(2 : ℕ)))
 
 private theorem onset_smooth (s : ℂ) : ContDiff ℝ ∞ (timeOnset s) := by
   exact (Complex.ofRealCLM.contDiff.comp Real.smoothTransition.contDiff).mul
@@ -103,8 +103,8 @@ private def extendedIntegrand (image : Bool) (q : XiZeroCopy) (branch : Bool) (a
     (z : (Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) : ℂ :=
   let p := Real.exp (z.1 0)
   let r := p+Real.exp (z.1 1)
-  let alpha := Real.sin z.2.1^2
-  let beta := Real.sin z.2.2.1^2
+  let alpha := Real.sin z.2.1^(2 : ℕ)
+  let beta := Real.sin z.2.2.1^(2 : ℕ)
   let A := p*alpha
   let B := sourceB image p r alpha beta
   ((p*(if image then p-A else r-A):ℝ):ℂ)*
@@ -123,15 +123,15 @@ private theorem extendedIntegrand_smooth (image : Bool) (q : XiZeroCopy) (branch
     ContDiff ℝ ∞ (extendedIntegrand image q branch amp) := by
   let p : ((Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) → ℝ := fun z => Real.exp (z.1 0)
   let r : ((Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) → ℝ := fun z => p z+Real.exp (z.1 1)
-  let A : ((Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) → ℝ := fun z => p z*Real.sin z.2.1^2
+  let A : ((Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) → ℝ := fun z => p z*Real.sin z.2.1^(2 : ℕ)
   let B : ((Fin 4 → ℝ) × (ℝ × ℝ × ℝ)) → ℝ := fun z =>
-    sourceB image (p z) (r z) (Real.sin z.2.1^2) (Real.sin z.2.2.1^2)
+    sourceB image (p z) (r z) (Real.sin z.2.1^(2 : ℕ)) (Real.sin z.2.2.1^(2 : ℕ))
   have hp : ContDiff ℝ ∞ p := by dsimp [p]; fun_prop
   have hr : ContDiff ℝ ∞ r := by dsimp [r,p]; fun_prop
   have hA : ContDiff ℝ ∞ A := hp.mul (by fun_prop)
   have hB : ContDiff ℝ ∞ B := (sourceB_smooth image).comp
     (show ContDiff ℝ ∞ (fun z : (Fin 4 → ℝ) × (ℝ × ℝ × ℝ) =>
-      ![p z,r z,Real.sin z.2.1^2,Real.sin z.2.2.1^2]) by
+      ![p z,r z,Real.sin z.2.1^(2 : ℕ),Real.sin z.2.2.1^(2 : ℕ)]) by
       apply contDiff_pi.mpr
       intro i
       fin_cases i <;> dsimp <;> first | exact hp | exact hr | fun_prop)
@@ -244,15 +244,15 @@ private theorem extendedIntegrand_original (image : Bool) (q : XiZeroCopy) (bran
         timeOriginalForcing q branch amp ((p*alpha+sourceB image p r alpha beta)/2)
           ((p*alpha-sourceB image p r alpha beta)/2)
           (logCircle (Real.arcosh (max 1 (triangleInvariant image p r alpha beta))) (2*Real.pi*theta) X k)/4 := by
-  change ((Real.exp (Real.log p)*(if image then Real.exp (Real.log p)-Real.exp (Real.log p)*Real.sin (angleMap alpha)^2
-    else Real.exp (Real.log p)+Real.exp (Real.log (r-p))-Real.exp (Real.log p)*Real.sin (angleMap alpha)^2):ℝ):ℂ)*
+  change ((Real.exp (Real.log p)*(if image then Real.exp (Real.log p)-Real.exp (Real.log p)*Real.sin (angleMap alpha)^(2 : ℕ)
+    else Real.exp (Real.log p)+Real.exp (Real.log (r-p))-Real.exp (Real.log p)*Real.sin (angleMap alpha)^(2 : ℕ)):ℝ):ℂ)*
     timeOriginalForcing q branch amp
-      ((Real.exp (Real.log p)*Real.sin (angleMap alpha)^2+
+      ((Real.exp (Real.log p)*Real.sin (angleMap alpha)^(2 : ℕ)+
         sourceB image (Real.exp (Real.log p)) (Real.exp (Real.log p)+Real.exp (Real.log (r-p)))
-          (Real.sin (angleMap alpha)^2) (Real.sin (angleMap beta)^2))/2)
-      ((Real.exp (Real.log p)*Real.sin (angleMap alpha)^2-
+          (Real.sin (angleMap alpha)^(2 : ℕ)) (Real.sin (angleMap beta)^(2 : ℕ)))/2)
+      ((Real.exp (Real.log p)*Real.sin (angleMap alpha)^(2 : ℕ)-
         sourceB image (Real.exp (Real.log p)) (Real.exp (Real.log p)+Real.exp (Real.log (r-p)))
-          (Real.sin (angleMap alpha)^2) (Real.sin (angleMap beta)^2))/2)
+          (Real.sin (angleMap alpha)^(2 : ℕ)) (Real.sin (angleMap beta)^(2 : ℕ)))/2)
       (logCircle (logarithmicRadius image ![Real.log p,Real.log (r-p),angleMap alpha,angleMap beta])
         (2*Real.pi*theta) X k)/4=_
   rw [logarithmicRadius_eq image hp hpr ha hb]

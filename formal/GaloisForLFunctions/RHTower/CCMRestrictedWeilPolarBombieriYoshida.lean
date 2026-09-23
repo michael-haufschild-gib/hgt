@@ -86,7 +86,7 @@ theorem riemannHypothesis_of_polarGroundEnergy_nonneg
     RiemannHypothesis := by
   have hh : (0 : ℝ) < 1 := one_pos
   exact riemannHypothesis_of_weighted_positive (polarSpectralWeight 1)
-    (C := polarSymbolBound 1 ^ 2) (by positivity) (norm_polarSpectralWeight_le hh.le)
+    (C := polarSymbolBound 1 ^ (2 : ℕ)) (by positivity) (norm_polarSpectralWeight_le hh.le)
     (fun q q' hq => polarSpectralWeight_of_eq 1 hq)
     (fun q q' hq => polarSpectralWeight_of_neg 1 hq)
     (fun q him => polarSpectralWeight_ne_zero hh q him)

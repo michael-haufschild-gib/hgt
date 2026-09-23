@@ -50,10 +50,10 @@ theorem required_decay {r e : ℕ → ℝ} (h : ∀ d, e d < r d) (d : ℕ) : e 
 /-- **The radius vanishes.**  With `log(1/r(d)) ≍ d² log d` the radius tends to zero, so the decay
 demanded of the error is super-exponential. -/
 theorem radius_vanishes {c : ℝ} (hc : 0 < c) :
-    Tendsto (fun d : ℝ => Real.exp (-(c * (d ^ 2 * Real.log d)))) atTop (nhds 0) := by
-  have hgrow : Tendsto (fun d : ℝ => c * (d ^ 2 * Real.log d)) atTop atTop :=
+    Tendsto (fun d : ℝ => Real.exp (-(c * (d ^ (2 : ℕ) * Real.log d)))) atTop (nhds 0) := by
+  have hgrow : Tendsto (fun d : ℝ => c * (d ^ (2 : ℕ) * Real.log d)) atTop atTop :=
     exponent_shape_unchanged hc
-  have hneg : Tendsto (fun d : ℝ => -(c * (d ^ 2 * Real.log d))) atTop atBot :=
+  have hneg : Tendsto (fun d : ℝ => -(c * (d ^ (2 : ℕ) * Real.log d))) atTop atBot :=
     Filter.tendsto_neg_atTop_atBot.comp hgrow
   exact Real.tendsto_exp_atBot.comp hneg
 

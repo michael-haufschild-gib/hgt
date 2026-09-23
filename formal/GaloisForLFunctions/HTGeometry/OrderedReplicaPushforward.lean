@@ -196,7 +196,7 @@ theorem sum_orderedReplicaPair_offDiagonal {weight : I → ℝ} (hw : ∑ i, wei
         if orderedReplicaMultiplicity α ≠ orderedReplicaMultiplicity β then
           orderedReplicaWeight weight α * orderedReplicaWeight weight β else 0)
       = 1 - ∑ p ∈ Finset.univ.piAntidiag r,
-          fidelityReplicaMultiplicityAmplitude weight p ^ 2 := by
+          fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ) := by
   classical
   have hrewrite : ∀ α β : Fin r → I,
       (if orderedReplicaMultiplicity α ≠ orderedReplicaMultiplicity β then
@@ -238,7 +238,7 @@ theorem sum_orderedReplicaPair_offDiagonal {weight : I → ℝ} (hw : ∑ i, wei
       fidelityReplicaMultiplicityAmplitude weight p *
           (1 - fidelityReplicaMultiplicityAmplitude weight p) =
         fidelityReplicaMultiplicityAmplitude weight p -
-          fidelityReplicaMultiplicityAmplitude weight p ^ 2 := fun p _ => by ring
+          fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ) := fun p _ => by ring
   rw [Finset.sum_congr rfl hexp, Finset.sum_sub_distrib, replicaAmplitude_total_mass hw r]
 
 

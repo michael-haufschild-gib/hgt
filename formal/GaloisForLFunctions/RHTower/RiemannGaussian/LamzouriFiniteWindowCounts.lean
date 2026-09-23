@@ -9,7 +9,7 @@ zeros and assigns each point its genuine analytic multiplicity.  Applying the
 finite multiplicity inequalities to that support gives unconditional finite
 versions of Montgomery's simple-zero bound and Lamzouri's distinct-point
 bound.  No pair-correlation asymptotic is used here: the energy is exactly the
-diagonal collision term `sum m(rho)^2`.
+diagonal collision term `sum m(rho)^(2 : ℕ)`.
 -/
 
 open Finset
@@ -26,7 +26,7 @@ def zetaWindowMultiplicityMass (T : ℝ) : ℝ :=
   finiteMultiplicityMass
     (spectralZetaZeroWindow T) analyticZetaZeroMultiplicity
 
-/-- Diagonal collision energy `sum m(rho)^2` in the finite zeta-zero window. -/
+/-- Diagonal collision energy `sum m(rho)^(2 : ℕ)` in the finite zeta-zero window. -/
 def zetaWindowDiagonalCollisionMass (T : ℝ) : ℝ :=
   finiteMultiplicityCollisionMass
     (spectralZetaZeroWindow T) analyticZetaZeroMultiplicity

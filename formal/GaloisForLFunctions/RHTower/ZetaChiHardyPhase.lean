@@ -27,12 +27,12 @@ theorem one_sub_linePt (τ : ℝ) : 1 - linePt τ = (starRingEnd ℂ) (linePt τ
 
 /-- **The functional-equation factor on the critical line is the square of the Hardy phase.** -/
 theorem zetaChi_line_eq_gammaHardyPhase_sq (τ : ℝ) :
-    zetaChi (linePt τ) = gammaHardyPhase τ ^ 2 := by
+    zetaChi (linePt τ) = gammaHardyPhase τ ^ (2 : ℕ) := by
   have hG : Gammaℝ (linePt τ) ≠ 0 := Gammaℝ_ne_zero_of_re_pos (linePt_re_pos τ)
   have hn : (‖Gammaℝ (linePt τ)‖ : ℂ) ≠ 0 := by
     exact_mod_cast (norm_ne_zero_iff.mpr hG)
   have hmul : Gammaℝ (linePt τ) * (starRingEnd ℂ) (Gammaℝ (linePt τ))
-      = (‖Gammaℝ (linePt τ)‖ : ℂ) ^ 2 := Complex.mul_conj' _
+      = (‖Gammaℝ (linePt τ)‖ : ℂ) ^ (2 : ℕ) := Complex.mul_conj' _
   have hcG : (starRingEnd ℂ) (Gammaℝ (linePt τ)) ≠ 0 := by
     simpa using hG
   rw [zetaChi, one_sub_linePt, Gammaℝ_conj, gammaHardyPhase, div_pow, ← hmul]

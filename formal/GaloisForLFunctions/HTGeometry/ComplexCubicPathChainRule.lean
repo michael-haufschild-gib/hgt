@@ -15,10 +15,10 @@ noncomputable section
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 /-- A cubic field path with independent first, second and third coefficient vectors. -/
-def path (q h k l : E) (t : ℂ) : E := q+t • h+t^2 • k+t^3 • l
+def path (q h k l : E) (t : ℂ) : E := q+t • h+t^(2 : ℕ) • k+t^(3 : ℕ) • l
 
 /-- Actual first derivative of the cubic path. -/
-def velocity (h k l : E) (t : ℂ) : E := h+(2*t) • k+(3*t^2) • l
+def velocity (h k l : E) (t : ℂ) : E := h+(2*t) • k+(3*t^(2 : ℕ)) • l
 
 /-- Actual second derivative of the cubic path. -/
 def acceleration (k l : E) (t : ℂ) : E := (2 : ℂ) • k+(6*t) • l

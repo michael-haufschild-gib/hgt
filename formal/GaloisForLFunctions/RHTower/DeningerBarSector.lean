@@ -187,36 +187,36 @@ private theorem deningerBarChar_height_le (w : DeningerBarWord) :
   deningerHeight_barChar_le w
 
 theorem deningerBarTotalGenerator_bound (w : DeningerBarWord) :
-    ‖((deningerFreq (deningerBarChar w) : ℝ) : ℂ)‖ ≤ deningerBarHeight w ^ 1 := by
+    ‖((deningerFreq (deningerBarChar w) : ℝ) : ℂ)‖ ≤ deningerBarHeight w ^ (1 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs, pow_one]
   exact le_trans (abs_deningerFreq_le_height _) (deningerBarChar_height_le w)
 
 theorem deningerBarTotalGreen_bound (w : DeningerBarWord) :
-    ‖(((|deningerFreq (deningerBarChar w)|)⁻¹ : ℝ) : ℂ)‖ ≤ deningerBarHeight w ^ 1 := by
+    ‖(((|deningerFreq (deningerBarChar w)|)⁻¹ : ℝ) : ℂ)‖ ≤ deningerBarHeight w ^ (1 : ℕ) := by
   have h := deningerModulusGreen_multiplier_bound (deningerBarChar w)
   rw [Complex.norm_real, Real.norm_eq_abs, pow_one] at h ⊢
   exact le_trans h (deningerBarChar_height_le w)
 
 theorem deningerBarTotalHodge_bound (w : DeningerBarWord) :
     ‖Complex.I * ((deningerSign (deningerBarChar w) : ℝ) : ℂ)‖
-      ≤ deningerBarHeight w ^ 0 := by
+      ≤ deningerBarHeight w ^ (0 : ℕ) := by
   rw [pow_zero, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
   exact abs_deningerSign_le_one _
 
 theorem deningerBarHardyPlus_bound (w : DeningerBarWord) :
     ‖(if 0 < deningerFreq (deningerBarChar w) then (1 : ℂ) else 0)‖
-      ≤ deningerBarHeight w ^ 0 := by
+      ≤ deningerBarHeight w ^ (0 : ℕ) := by
   rw [pow_zero]
   by_cases h : 0 < deningerFreq (deningerBarChar w) <;> simp [h]
 
 theorem deningerBarHardyMinus_bound (w : DeningerBarWord) :
     ‖(if deningerFreq (deningerBarChar w) < 0 then (1 : ℂ) else 0)‖
-      ≤ deningerBarHeight w ^ 0 := by
+      ≤ deningerBarHeight w ^ (0 : ℕ) := by
   rw [pow_zero]
   by_cases h : deningerFreq (deningerBarChar w) < 0 <;> simp [h]
 
 theorem deningerBarSector_bound (γ : DeningerPrimeLattice) (w : DeningerBarWord) :
-    ‖(if deningerBarChar w = γ then (1 : ℂ) else 0)‖ ≤ deningerBarHeight w ^ 0 := by
+    ‖(if deningerBarChar w = γ then (1 : ℂ) else 0)‖ ≤ deningerBarHeight w ^ (0 : ℕ) := by
   rw [pow_zero]
   by_cases h : deningerBarChar w = γ <;> simp [h]
 

@@ -10,8 +10,8 @@ imaginary parts turns the anti-Pick sign into a monotone-likelihood kernel condi
 measure, whose integrated form is the cross-multiplied expectation order.
 
 The split is what makes this work with no complex integration theory.  Writing
-`1/(t - z) = u + i v` with `u = (t - Re z)/|t - z|^2` and `v = Im z/|t - z|^2`, the two-sample kernel
-`v(x) u(y) - v(y) u(x)` collapses to `Im z (t y - t x)/(|t x - z|^2 |t y - z|^2)`: the shift `Re z`
+`1/(t - z) = u + i v` with `u = (t - Re z)/|t - z|^(2 : ℕ)` and `v = Im z/|t - z|^(2 : ℕ)`, the two-sample kernel
+`v(x) u(y) - v(y) u(x)` collapses to `Im z (t y - t x)/(|t x - z|^(2 : ℕ) |t y - z|^(2 : ℕ))`: the shift `Re z`
 cancels, leaving exactly the node increment that monotone likelihood signs.
 -/
 

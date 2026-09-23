@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.TruncatedBlockMeanSquare
 /-!
 # The affine mean square with a sieve level per dyadic block
 
-A single global sieve level is capped by the sieve's own error: `selbergFibreError z Y = Y²e^{4c}(log z)^4`
+A single global sieve level is capped by the sieve's own error: `selbergFibreError z Y = Y²e^{4c}(log z)^(4 : ℕ)`
 must stay under the count it estimates, and that count is `O(1)` per prime pair, so a *global* level buys
 nothing — `log Y = O(1)`.  Block by block the constraint is different: the primes of the `j`-th dyadic
 block live in a multiplicative window carrying `≍ 2^j` integers, so the admissible level there grows with
@@ -51,7 +51,7 @@ theorem sqrt_integral_Icc_normSq_LSeries_le_block_affine {a : ℕ → ℂ} {M : 
     (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) (Z Yl : ℕ → ℕ)
     (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
     (hlog : ∀ j, 0 < Real.log (Yl j)) {U : ℝ} (hU : 1 ≤ U) :
-    Real.sqrt (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+    Real.sqrt (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
       ≤ blockMeanSquareConst a M σ Yl + blockMeanSquareRate a M σ Z Yl * Real.sqrt U := by
   have hs0 : (0 : ℕ) ∉ Finset.Icc 1 M := by simp
   refine le_trans (sqrt_integral_Icc_normSq_LSeries_le_sum_blocks hsupp σ U) ?_
@@ -66,7 +66,7 @@ theorem sqrt_integral_Icc_normSq_LSeries_le_block_affine {a : ℕ → ℂ} {M : 
     sieveMeanSquareConst_nonneg b (Finset.Icc 1 M) σ (hlog j)
   have hκ0 : (0 : ℝ) ≤ sieveMeanSquareRate b (Finset.Icc 1 M) σ (Z j) (Yl j) :=
     sieveMeanSquareRate_nonneg b (Finset.Icc 1 M) σ (hz j) (hlog j)
-  calc Real.sqrt (∫ y in Set.Icc (-U) U, ‖LSeries b ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+  calc Real.sqrt (∫ y in Set.Icc (-U) U, ‖LSeries b ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
       ≤ Real.sqrt (sieveMeanSquareConst b (Finset.Icc 1 M) σ (Yl j)
           + sieveMeanSquareRate b (Finset.Icc 1 M) σ (Z j) (Yl j) * U) := Real.sqrt_le_sqrt haff
     _ ≤ Real.sqrt (sieveMeanSquareConst b (Finset.Icc 1 M) σ (Yl j))
@@ -84,13 +84,13 @@ theorem integral_Icc_normSq_LSeries_le_block_affine {a : ℕ → ℂ} {M : ℕ}
     (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) (Z Yl : ℕ → ℕ)
     (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
     (hlog : ∀ j, 0 < Real.log (Yl j)) {U : ℝ} (hU : 1 ≤ U) :
-    (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
-      ≤ ((blockMeanSquareConst a M σ Yl) ^ 2
+    (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
+      ≤ ((blockMeanSquareConst a M σ Yl) ^ (2 : ℕ)
             + blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl)
           + (blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl
-              + (blockMeanSquareRate a M σ Z Yl) ^ 2) * U := by
+              + (blockMeanSquareRate a M σ Z Yl) ^ (2 : ℕ)) * U := by
   have hs0 : (0 : ℕ) ∉ Finset.Icc 1 M := by simp
-  have hMS0 : (0 : ℝ) ≤ ∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 := by
+  have hMS0 : (0 : ℝ) ≤ ∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_nonneg measurableSet_Icc fun y _ => by positivity
   exact le_affine_of_sqrt_le (blockMeanSquareConst_nonneg a M σ Yl)
     (blockMeanSquareRate_nonneg a M σ Z Yl) hMS0 (by linarith)
@@ -98,13 +98,13 @@ theorem integral_Icc_normSq_LSeries_le_block_affine {a : ℕ → ℂ} {M : ℕ}
 
 /-- The height-independent coefficient of the block-sieve mean square in affine form. -/
 def blockAffineConst (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) : ℝ :=
-  (blockMeanSquareConst a M σ Yl) ^ 2
+  (blockMeanSquareConst a M σ Yl) ^ (2 : ℕ)
     + blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl
 
 /-- The height-linear coefficient of the block-sieve mean square in affine form. -/
 def blockAffineRate (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) : ℝ :=
   blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl
-    + (blockMeanSquareRate a M σ Z Yl) ^ 2
+    + (blockMeanSquareRate a M σ Z Yl) ^ (2 : ℕ)
 
 theorem blockAffineConst_nonneg (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) :
     0 ≤ blockAffineConst a M σ Z Yl := by
@@ -127,7 +127,7 @@ theorem integral_Icc_normSq_LSeries_le_blockAffine {a : ℕ → ℂ} {M : ℕ}
     (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) (Z Yl : ℕ → ℕ)
     (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
     (hlog : ∀ j, 0 < Real.log (Yl j)) {U : ℝ} (hU : 1 ≤ U) :
-    (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+    (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ))
       ≤ blockAffineConst a M σ Z Yl + blockAffineRate a M σ Z Yl * U :=
   integral_Icc_normSq_LSeries_le_block_affine hsupp hprime σ Z Yl hY hYz hz hlog hU
 

@@ -70,7 +70,7 @@ def groskinArchTailPlusFeature {ι : Type*}
 
 /-- Scalar density multiplying the two Cauchy rank-one Grams. -/
 def groskinArchTailWeight (L ρ T : ℝ) : ℝ :=
-  groskinArchimedeanDensity T * Real.sin (L * T / 2) ^ 2 / (Real.pi ^ 2 * ρ)
+  groskinArchimedeanDensity T * Real.sin (L * T / 2) ^ (2 : ℕ) / (Real.pi ^ (2 : ℕ) * ρ)
 
 /-- Exact rank-two Cauchy--Stieltjes matrix density from Groskin Theorem 3.2. -/
 def groskinArchTailKernel {ι : Type*}
@@ -204,9 +204,9 @@ theorem groskinArchTailKernel_quadraticForm {ι : Type*} [Fintype ι]
     (L ρ : ℝ) (x : ι → ℝ) (T : ℝ) (c : ι → ℝ) :
     (∑ i, ∑ j, c i * groskinArchTailKernel L ρ x T i j * c j)
       = groskinArchTailWeight L ρ T *
-        ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-          + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2) := by
-  have hsq : ∀ f : ι → ℝ, (∑ i, c i * f i) ^ 2 = ∑ i, ∑ j, (c i * f i) * (c j * f j) := by
+        ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+          + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ)) := by
+  have hsq : ∀ f : ι → ℝ, (∑ i, c i * f i) ^ (2 : ℕ) = ∑ i, ∑ j, (c i * f i) * (c j * f j) := by
     intro f
     rw [sq, Finset.sum_mul_sum]
   rw [hsq, hsq, ← Finset.sum_add_distrib, Finset.mul_sum]
@@ -378,11 +378,11 @@ theorem linearIndependent_groskinArchTailFeatures {ι : Type*} [Fintype ι]
 theorem groskinArchTailWeight_ne_zero {L ρ T : ℝ} (hρ : 0 < ρ)
     (hT : groskinArchimedeanPositivityThreshold ≤ T) (hsin : Real.sin (L * T / 2) ≠ 0) :
     groskinArchTailWeight L ρ T ≠ 0 := by
-  have hs2 : 0 < Real.sin (L * T / 2) ^ 2 :=
+  have hs2 : 0 < Real.sin (L * T / 2) ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hsin))
-  have hpos : 0 < groskinArchimedeanDensity T * Real.sin (L * T / 2) ^ 2 :=
+  have hpos : 0 < groskinArchimedeanDensity T * Real.sin (L * T / 2) ^ (2 : ℕ) :=
     mul_pos (groskinArchimedeanDensity_pos_of_threshold hT) hs2
-  have hden : 0 < Real.pi ^ 2 * ρ := by positivity
+  have hden : 0 < Real.pi ^ (2 : ℕ) * ρ := by positivity
   exact ne_of_gt (div_pos hpos hden)
 
 /-- **The exact tail density has rank exactly two.**  Past the analytic threshold and away from the
@@ -468,8 +468,8 @@ theorem groskinArchTailIncrement_quadraticForm {ι : Type*} [Fintype ι]
     {L ρ T₁ T₂ : ℝ} (x : ι → ℝ) (hρ : 0 < ρ) (hnode : ∀ i, ρ * |x i| < T₁) (c : ι → ℝ) :
     dotProduct (star c) ((groskinArchTailIncrement L ρ T₁ T₂ x).mulVec c)
       = ∫ T in Set.Icc T₁ T₂, groskinArchTailWeight L ρ T *
-          ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-            + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2) := by
+          ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+            + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ)) := by
   have hquad : ∀ A : Matrix ι ι ℝ,
       dotProduct (star c) (A.mulVec c) = ∑ i, ∑ j, c i * A i j * c j := by
     intro A
@@ -483,8 +483,8 @@ theorem groskinArchTailIncrement_quadraticForm {ι : Type*} [Fintype ι]
       HTGeometry.integralMatrixKernelQuadratic (groskinArchTailWindowKernel L ρ T₁ T₂ x) c T
         = Set.indicator (Set.Icc T₁ T₂)
             (fun T => groskinArchTailWeight L ρ T *
-              ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-                + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2)) T := by
+              ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+                + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ))) T := by
     intro T
     rw [HTGeometry.integralMatrixKernelQuadratic, hquad, groskinArchTailWindowKernel]
     by_cases hT : T ∈ Set.Icc T₁ T₂
@@ -499,8 +499,8 @@ theorem groskinArchTailIncrement_quadraticForm {ι : Type*} [Fintype ι]
 def groskinArchTailScalarGram {ι : Type*} [Fintype ι]
     (L ρ : ℝ) (x : ι → ℝ) (c : ι → ℝ) (T : ℝ) : ℝ :=
   groskinArchTailWeight L ρ T *
-    ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-      + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2)
+    ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+      + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ))
 
 theorem groskinArchTailScalarGram_nonneg {ι : Type*} [Fintype ι]
     {L ρ T : ℝ} (x : ι → ℝ) (hρ : 0 < ρ)
@@ -542,8 +542,8 @@ theorem groskinArchTailIncrement_quadraticForm_eq_zero_iff {ι : Type*} [Fintype
     exact groskinArchTailScalarGram_nonneg x hρ (hthreshold.trans hT.1) c
   have hform := groskinArchTailIncrement_quadraticForm (L := L) (T₂ := T₂) x hρ hnode c
   rw [show (∫ T in Set.Icc T₁ T₂, groskinArchTailWeight L ρ T *
-        ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-          + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2))
+        ((∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+          + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ)))
       = ∫ T in Set.Icc T₁ T₂, groskinArchTailScalarGram L ρ x c T from rfl] at hform
   rw [hform]
   exact MeasureTheory.integral_eq_zero_iff_of_nonneg_ae hnonneg
@@ -568,17 +568,17 @@ theorem groskinArchTailIncrement_quadraticForm_eq_zero_annihilates {ι : Type*} 
     groskinArchTailWeight_ne_zero hρ (hthreshold.trans hmem.1) hsin
   have hz : groskinArchTailScalarGram L ρ x c T = 0 := hT hmem
   rw [groskinArchTailScalarGram] at hz
-  have hsum : (∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2
-      + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2 = 0 := by
+  have hsum : (∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ)
+      + (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ) = 0 := by
     rcases mul_eq_zero.mp hz with h | h
     · exact absurd h hw
     · exact h
   constructor
-  · have hA : (∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ 2 = 0 := by
+  · have hA : (∑ i, c i * groskinArchTailMinusFeature ρ x T i) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (∑ i, c i * groskinArchTailMinusFeature ρ x T i),
         sq_nonneg (∑ i, c i * groskinArchTailPlusFeature ρ x T i)]
     exact pow_eq_zero_iff (two_ne_zero) |>.mp hA
-  · have hB : (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ 2 = 0 := by
+  · have hB : (∑ i, c i * groskinArchTailPlusFeature ρ x T i) ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (∑ i, c i * groskinArchTailMinusFeature ρ x T i),
         sq_nonneg (∑ i, c i * groskinArchTailPlusFeature ρ x T i)]
     exact pow_eq_zero_iff (two_ne_zero) |>.mp hB

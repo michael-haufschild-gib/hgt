@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCompletedQuantileTran
 /-!
 # Source-adaptive Suzuki landing on the CCM-FU hard currents
 
-The explicit variation-adaptive positive Suzuki producer differs by at most `exp 1 / (2 * H^2)`
+The explicit variation-adaptive positive Suzuki producer differs by at most `exp 1 / (2 * H^(2 : ℕ))`
 from each of the two exact source-level frontier coordinates already isolated in the corpus: the
 matched-coverage decomposition and the completed quantile-transport decomposition.  At lower wall
 one, uniform boundedness of the finite Suzuki producer is equivalent to uniform boundedness of
@@ -28,7 +28,7 @@ theorem abs_sourceAdaptivePositiveLogChord_sub_matchedCoverageCore_le
         (ccmThirdGradeCesaroPhysicalMatchedQuadratureBlock b H +
           ccmThirdGradeCesaroMatchedCoverageSeam b H -
             ccmThirdGradeCesaroIncomingPolarTail b H)| ≤
-      Real.exp 1 / (2 * H ^ 2) := by
+      Real.exp 1 / (2 * H ^ (2 : ℕ)) := by
   rw [← ccmGuinandWeilPrimePolarTriangularWindow_eq_matchedBlock_add_coverageSeam_sub_incoming
     hb hbH]
   exact abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le hb hbH hH1
@@ -42,7 +42,7 @@ theorem abs_sourceAdaptivePositiveLogChord_sub_completedQuantileCore_le
         (ccmThirdGradeCesaroCompletedQuantileTransport b H -
           ccmThirdGradeCesaroLowerOutgoingCorrection b H -
             ccmThirdGradeCesaroIncomingPolarTail b H)| ≤
-      Real.exp 1 / (2 * H ^ 2) := by
+      Real.exp 1 / (2 * H ^ (2 : ℕ)) := by
   rw [← GaloisForLFunctions.RHTower.ccmGuinandWeilPrimePolarTriangularWindow_eq_completedQuantileTransport
     hb hbH]
   exact abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le hb hbH hH1

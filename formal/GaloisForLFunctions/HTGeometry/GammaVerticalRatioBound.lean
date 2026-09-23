@@ -33,20 +33,20 @@ namespace HTGeometry
 
 /-- Termwise comparison of the shifted moduli. -/
 private theorem mul_sqrt_le {u v : ℝ} (hu : 0 < u) (huv : u ≤ v) (τ : ℝ) :
-    u * Real.sqrt (v ^ 2 + τ ^ 2) ≤ Real.sqrt (u ^ 2 + τ ^ 2) * v := by
+    u * Real.sqrt (v ^ (2 : ℕ) + τ ^ (2 : ℕ)) ≤ Real.sqrt (u ^ (2 : ℕ) + τ ^ (2 : ℕ)) * v := by
   have hv : 0 < v := lt_of_lt_of_le hu huv
-  have hleft : u * Real.sqrt (v ^ 2 + τ ^ 2) = Real.sqrt (u ^ 2 * (v ^ 2 + τ ^ 2)) := by
+  have hleft : u * Real.sqrt (v ^ (2 : ℕ) + τ ^ (2 : ℕ)) = Real.sqrt (u ^ (2 : ℕ) * (v ^ (2 : ℕ) + τ ^ (2 : ℕ))) := by
     rw [Real.sqrt_mul (sq_nonneg u), Real.sqrt_sq hu.le]
-  have hright : Real.sqrt (u ^ 2 + τ ^ 2) * v = Real.sqrt ((u ^ 2 + τ ^ 2) * v ^ 2) := by
+  have hright : Real.sqrt (u ^ (2 : ℕ) + τ ^ (2 : ℕ)) * v = Real.sqrt ((u ^ (2 : ℕ) + τ ^ (2 : ℕ)) * v ^ (2 : ℕ)) := by
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hv.le]
   rw [hleft, hright]
   refine Real.sqrt_le_sqrt ?_
-  have huv2 : u ^ 2 ≤ v ^ 2 := by nlinarith
+  have huv2 : u ^ (2 : ℕ) ≤ v ^ (2 : ℕ) := by nlinarith
   nlinarith [mul_le_mul_of_nonneg_left huv2 (sq_nonneg τ)]
 
 /-- The modulus of a complex number in real/imaginary coordinates. -/
 theorem norm_ofReal_add_mul_I (u τ : ℝ) :
-    ‖(u : ℂ) + (τ : ℂ) * I‖ = Real.sqrt (u ^ 2 + τ ^ 2) := by
+    ‖(u : ℂ) + (τ : ℂ) * I‖ = Real.sqrt (u ^ (2 : ℕ) + τ ^ (2 : ℕ)) := by
   rw [Complex.norm_def, Complex.normSq_apply]
   simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]
@@ -55,7 +55,7 @@ theorem norm_ofReal_add_mul_I (u τ : ℝ) :
 private theorem norm_GammaSeq_ofReal_add_mul_I (x τ : ℝ) {n : ℕ} (hn : 0 < n) :
     ‖Complex.GammaSeq ((x : ℂ) + (τ : ℂ) * I) n‖
       = (n : ℝ) ^ x * (n.factorial : ℝ)
-        / ∏ j ∈ Finset.range (n + 1), Real.sqrt ((x + j) ^ 2 + τ ^ 2) := by
+        / ∏ j ∈ Finset.range (n + 1), Real.sqrt ((x + j) ^ (2 : ℕ) + τ ^ (2 : ℕ)) := by
   rw [Complex.GammaSeq, norm_div, norm_mul, Complex.norm_natCast_cpow_of_pos hn,
     Complex.norm_natCast]
   congr 1
@@ -83,14 +83,14 @@ private theorem norm_GammaSeq_mul_le {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (�
     Finset.prod_pos fun j _ => by positivity
   have hPb : (0 : ℝ) < ∏ j ∈ Finset.range (n + 1), (b + j) :=
     Finset.prod_pos fun j _ => by positivity
-  have hQa : (0 : ℝ) < ∏ j ∈ Finset.range (n + 1), Real.sqrt ((a + j) ^ 2 + τ ^ 2) :=
+  have hQa : (0 : ℝ) < ∏ j ∈ Finset.range (n + 1), Real.sqrt ((a + j) ^ (2 : ℕ) + τ ^ (2 : ℕ)) :=
     Finset.prod_pos fun j _ => Real.sqrt_pos.mpr (by positivity)
-  have hQb : (0 : ℝ) < ∏ j ∈ Finset.range (n + 1), Real.sqrt ((b + j) ^ 2 + τ ^ 2) :=
+  have hQb : (0 : ℝ) < ∏ j ∈ Finset.range (n + 1), Real.sqrt ((b + j) ^ (2 : ℕ) + τ ^ (2 : ℕ)) :=
     Finset.prod_pos fun j _ => Real.sqrt_pos.mpr (by positivity)
   -- the denominators compare termwise
   have hdenom : (∏ j ∈ Finset.range (n + 1), (a + j))
-        * ∏ j ∈ Finset.range (n + 1), Real.sqrt ((b + j) ^ 2 + τ ^ 2)
-      ≤ (∏ j ∈ Finset.range (n + 1), Real.sqrt ((a + j) ^ 2 + τ ^ 2))
+        * ∏ j ∈ Finset.range (n + 1), Real.sqrt ((b + j) ^ (2 : ℕ) + τ ^ (2 : ℕ))
+      ≤ (∏ j ∈ Finset.range (n + 1), Real.sqrt ((a + j) ^ (2 : ℕ) + τ ^ (2 : ℕ)))
         * ∏ j ∈ Finset.range (n + 1), (b + j) := by
     rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
     refine Finset.prod_le_prod (fun j _ => by positivity) fun j _ => ?_

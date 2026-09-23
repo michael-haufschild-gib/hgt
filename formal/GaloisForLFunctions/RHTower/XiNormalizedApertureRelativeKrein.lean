@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ThetaWignerCenterMix
 
 The positive tilted theta-cusp source gives a canonical unit-diagonal correlation
 
-`C_a(t) = |xi(1/2 + a + i t)|^2 / xi(1/2 + a)^2`.
+`C_a(t) = |xi(1/2 + a + i t)|^(2 : ℕ) / xi(1/2 + a)^(2 : ℕ)`.
 
 This module constructs `C_a` from the actual Hedenmalm theta/Xi orbit.  It proves the source
 Fourier bound `0 <= C_a(t) <= 1`, constructs its squared Hilbert correlation distance, and
@@ -22,7 +22,7 @@ than a post-hoc positive Gram factorization.
 
 The final section performs the hostile Hadamard-factor audit.  One on-critical-line zero pair has
 a normalized factor whose aperture derivative changes sign on the sharp circle
-`a^2 + t^2 = 3 * gamma^2`.  Thus a global normalized-aperture contraction cannot be proved by
+`a^(2 : ℕ) + t^(2 : ℕ) = 3 * gamma^(2 : ℕ)`.  Thus a global normalized-aperture contraction cannot be proved by
 factorwise positivity; any such theorem must use collective infinite theta-source structure.
 -/
 
@@ -200,7 +200,7 @@ theorem hasDerivAt_xiApertureModulusSq (a t : ℝ) :
 theorem hasDerivAt_xiNormalizedApertureCorrelation (a t : ℝ) :
     HasDerivAt (fun u : ℝ => xiNormalizedApertureCorrelation u t)
       (xiNormalizedApertureRelativeKreinNumerator a t /
-        xiApertureModulusSq a 0 ^ 2) a := by
+        xiApertureModulusSq a 0 ^ (2 : ℕ)) a := by
   have hfun :
       (fun u : ℝ => xiNormalizedApertureCorrelation u t) =
         (fun u : ℝ => xiApertureModulusSq u t) /
@@ -227,10 +227,10 @@ theorem xiNormalizedApertureRefinement_neg (a b t : ℝ) :
 
 theorem xiNormalizedApertureRefinement_twoPoint_det
     (a b x y : ℝ) :
-    xiNormalizedApertureRefinement a b 0 ^ 2 -
+    xiNormalizedApertureRefinement a b 0 ^ (2 : ℕ) -
         xiNormalizedApertureRefinement a b (x - y) *
           xiNormalizedApertureRefinement a b (y - x) =
-      -(xiNormalizedApertureRefinement a b (x - y)) ^ 2 := by
+      -(xiNormalizedApertureRefinement a b (x - y)) ^ (2 : ℕ) := by
   rw [xiNormalizedApertureRefinement_zero]
   have hneg : y - x = -(x - y) := by ring
   rw [hneg, xiNormalizedApertureRefinement_neg]
@@ -257,57 +257,57 @@ theorem xiNormalizedApertureRefinement_threePoint_det
   ring
 
 def xiOnLineZeroNormalizedFactor (gamma a t : ℝ) : ℝ :=
-  (((gamma ^ 2 + a ^ 2 - t ^ 2) ^ 2 + 4 * a ^ 2 * t ^ 2) /
-    (gamma ^ 2 + a ^ 2) ^ 2)
+  (((gamma ^ (2 : ℕ) + a ^ (2 : ℕ) - t ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * a ^ (2 : ℕ) * t ^ (2 : ℕ)) /
+    (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (2 : ℕ))
 
 theorem hasDerivAt_xiOnLineZeroNormalizedFactor
     {gamma : ℝ} (hgamma : gamma ≠ 0) (a t : ℝ) :
     HasDerivAt (fun u : ℝ => xiOnLineZeroNormalizedFactor gamma u t)
-      (4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
-        (gamma ^ 2 + a ^ 2) ^ 3) a := by
-  have hden : gamma ^ 2 + a ^ 2 ≠ 0 := by positivity
-  have hbase : HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2) (2 * a) a := by
-    simpa using! (hasDerivAt_pow 2 a).const_add (gamma ^ 2)
+      (4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) /
+        (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ)) a := by
+  have hden : gamma ^ (2 : ℕ) + a ^ (2 : ℕ) ≠ 0 := by positivity
+  have hbase : HasDerivAt (fun u : ℝ => gamma ^ (2 : ℕ) + u ^ (2 : ℕ)) (2 * a) a := by
+    simpa using! (hasDerivAt_pow 2 a).const_add (gamma ^ (2 : ℕ))
   have hshift :
-      HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2 - t ^ 2) (2 * a) a := by
-    simpa using! hbase.sub_const (t ^ 2)
+      HasDerivAt (fun u : ℝ => gamma ^ (2 : ℕ) + u ^ (2 : ℕ) - t ^ (2 : ℕ)) (2 * a) a := by
+    simpa using! hbase.sub_const (t ^ (2 : ℕ))
   have hquadratic : HasDerivAt
-      (fun u : ℝ => 4 * u ^ 2 * t ^ 2) ((4 * t ^ 2) * (2 * a)) a := by
+      (fun u : ℝ => 4 * u ^ (2 : ℕ) * t ^ (2 : ℕ)) ((4 * t ^ (2 : ℕ)) * (2 * a)) a := by
     have hraw :=
-      ((hasDerivAt_pow 2 a).const_mul (4 : ℝ)).mul_const (t ^ 2)
+      ((hasDerivAt_pow 2 a).const_mul (4 : ℝ)).mul_const (t ^ (2 : ℕ))
     have hraw' := hraw.congr_deriv
-      (g' := (4 * t ^ 2) * (2 * a)) (by
+      (g' := (4 * t ^ (2 : ℕ)) * (2 * a)) (by
         norm_num
         ring)
     simpa only [Pi.mul_apply, Pi.pow_apply, id_eq] using! hraw'
   have hnum : HasDerivAt
       (fun u : ℝ =>
-        (gamma ^ 2 + u ^ 2 - t ^ 2) ^ 2 + 4 * u ^ 2 * t ^ 2)
-      (2 * (gamma ^ 2 + a ^ 2 - t ^ 2) * (2 * a) +
-        (4 * t ^ 2) * (2 * a)) a := by
+        (gamma ^ (2 : ℕ) + u ^ (2 : ℕ) - t ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * u ^ (2 : ℕ) * t ^ (2 : ℕ))
+      (2 * (gamma ^ (2 : ℕ) + a ^ (2 : ℕ) - t ^ (2 : ℕ)) * (2 * a) +
+        (4 * t ^ (2 : ℕ)) * (2 * a)) a := by
     have hraw := (hshift.pow 2).add hquadratic
     have hraw' := hraw.congr_deriv
-      (g' := 2 * (gamma ^ 2 + a ^ 2 - t ^ 2) * (2 * a) +
-        (4 * t ^ 2) * (2 * a)) (by norm_num)
+      (g' := 2 * (gamma ^ (2 : ℕ) + a ^ (2 : ℕ) - t ^ (2 : ℕ)) * (2 * a) +
+        (4 * t ^ (2 : ℕ)) * (2 * a)) (by norm_num)
     simpa only [Pi.add_apply, Pi.pow_apply] using! hraw'
   have hdenDeriv : HasDerivAt
-      (fun u : ℝ => (gamma ^ 2 + u ^ 2) ^ 2)
-      (2 * (gamma ^ 2 + a ^ 2) * (2 * a)) a := by
+      (fun u : ℝ => (gamma ^ (2 : ℕ) + u ^ (2 : ℕ)) ^ (2 : ℕ))
+      (2 * (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) * (2 * a)) a := by
     have hraw := hbase.pow 2
     have hraw' := hraw.congr_deriv
-      (g' := 2 * (gamma ^ 2 + a ^ 2) * (2 * a)) (by norm_num)
+      (g' := 2 * (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) * (2 * a)) (by norm_num)
     simpa only [Pi.pow_apply] using! hraw'
   have hquot := hnum.div hdenDeriv (pow_ne_zero 2 hden)
   have hquot' := hquot.congr_deriv
-    (g' := 4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
-      (gamma ^ 2 + a ^ 2) ^ 3) (by
+    (g' := 4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) /
+      (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ)) (by
         field_simp [hden]
         ring)
   have hfun :
       (fun u : ℝ => xiOnLineZeroNormalizedFactor gamma u t) =
         (fun u : ℝ =>
-          (gamma ^ 2 + u ^ 2 - t ^ 2) ^ 2 + 4 * u ^ 2 * t ^ 2) /
-          fun u : ℝ => (gamma ^ 2 + u ^ 2) ^ 2 := by
+          (gamma ^ (2 : ℕ) + u ^ (2 : ℕ) - t ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * u ^ (2 : ℕ) * t ^ (2 : ℕ)) /
+          fun u : ℝ => (gamma ^ (2 : ℕ) + u ^ (2 : ℕ)) ^ (2 : ℕ) := by
     funext u
     rfl
   rw [hfun]
@@ -315,13 +315,13 @@ theorem hasDerivAt_xiOnLineZeroNormalizedFactor
 
 theorem xiOnLineZeroNormalizedFactor_deriv_pos_iff
     {gamma a t : ℝ} (ha : 0 < a) (ht : t ≠ 0) :
-    0 < 4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
-        (gamma ^ 2 + a ^ 2) ^ 3 ↔
-      a ^ 2 + t ^ 2 < 3 * gamma ^ 2 := by
-  have ht2 : 0 < t ^ 2 := sq_pos_of_ne_zero ht
-  have hden : 0 < (gamma ^ 2 + a ^ 2) ^ 3 := by positivity
+    0 < 4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) /
+        (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) ↔
+      a ^ (2 : ℕ) + t ^ (2 : ℕ) < 3 * gamma ^ (2 : ℕ) := by
+  have ht2 : 0 < t ^ (2 : ℕ) := sq_pos_of_ne_zero ht
+  have hden : 0 < (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) := by positivity
   rw [div_pos_iff_of_pos_right hden]
-  have hcoef : 0 < 4 * a * t ^ 2 := by positivity
+  have hcoef : 0 < 4 * a * t ^ (2 : ℕ) := by positivity
   rw [mul_pos_iff]
   constructor
   · intro h
@@ -334,39 +334,39 @@ theorem xiOnLineZeroNormalizedFactor_deriv_pos_iff
 
 theorem xiOnLineZeroNormalizedFactor_deriv_neg_iff
     {gamma a t : ℝ} (ha : 0 < a) (ht : t ≠ 0) :
-    4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
-        (gamma ^ 2 + a ^ 2) ^ 3 < 0 ↔
-      3 * gamma ^ 2 < a ^ 2 + t ^ 2 := by
-  have ht2 : 0 < t ^ 2 := sq_pos_of_ne_zero ht
-  have hden : 0 < (gamma ^ 2 + a ^ 2) ^ 3 := by positivity
+    4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) /
+        (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) < 0 ↔
+      3 * gamma ^ (2 : ℕ) < a ^ (2 : ℕ) + t ^ (2 : ℕ) := by
+  have ht2 : 0 < t ^ (2 : ℕ) := sq_pos_of_ne_zero ht
+  have hden : 0 < (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) := by positivity
   rw [div_lt_iff₀ hden]
   simp only [zero_mul]
-  have hcoef : 0 < 4 * a * t ^ 2 := by positivity
+  have hcoef : 0 < 4 * a * t ^ (2 : ℕ) := by positivity
   constructor
   · intro hprod
     have hscaled :
-        (4 * a * t ^ 2) * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) <
-          (4 * a * t ^ 2) * 0 := by simpa using hprod
-    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 < 0 :=
+        (4 * a * t ^ (2 : ℕ)) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) <
+          (4 * a * t ^ (2 : ℕ)) * 0 := by simpa using hprod
+    have hlast : 3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ) < 0 :=
       (mul_lt_mul_iff_of_pos_left hcoef).mp hscaled
     nlinarith
   · intro h
-    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 < 0 := by nlinarith
+    have hlast : 3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ) < 0 := by nlinarith
     exact mul_neg_of_pos_of_neg hcoef hlast
 
 theorem xiOnLineZeroNormalizedFactor_deriv_eq_zero_iff
     {gamma a t : ℝ} (ha : 0 < a) (ht : t ≠ 0) :
-    4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
-        (gamma ^ 2 + a ^ 2) ^ 3 = 0 ↔
-      a ^ 2 + t ^ 2 = 3 * gamma ^ 2 := by
-  have hden : (gamma ^ 2 + a ^ 2) ^ 3 ≠ 0 := by positivity
-  have hcoef : 4 * a * t ^ 2 ≠ 0 := by positivity
+    4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) /
+        (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) = 0 ↔
+      a ^ (2 : ℕ) + t ^ (2 : ℕ) = 3 * gamma ^ (2 : ℕ) := by
+  have hden : (gamma ^ (2 : ℕ) + a ^ (2 : ℕ)) ^ (3 : ℕ) ≠ 0 := by positivity
+  have hcoef : 4 * a * t ^ (2 : ℕ) ≠ 0 := by positivity
   constructor
   · intro hquot
     have hnum :
-        4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) = 0 :=
+        4 * a * t ^ (2 : ℕ) * (3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ)) = 0 :=
       (div_eq_zero_iff.mp hquot).resolve_right hden
-    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 = 0 :=
+    have hlast : 3 * gamma ^ (2 : ℕ) - a ^ (2 : ℕ) - t ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hnum).resolve_left hcoef
     nlinarith
   · intro hcircle

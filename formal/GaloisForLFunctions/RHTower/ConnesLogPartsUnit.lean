@@ -11,7 +11,7 @@ Step 2 of the route to the last §V identification of
 On `(0, 1]` the primitive of `G'(u) log u + (G(u) − G(0))/u` is `(G(u) − G(0)) log u`, which
 vanishes at `1` (`log 1 = 0`) and at `0` (`ConnesSchwartzLogDecay`).  Hence
 
-  `∫_0^1 (G'(u) log u + (G(u) − G(0))/u) du = 0`.
+  `∫_0^(1 : ℕ) (G'(u) log u + (G(u) − G(0))/u) du = 0`.
 
 Subtracting `G(0)` is what makes the primitive continuous at the origin; this is the step that
 removes the Euler–Mascheroni constant from the final identification.
@@ -102,7 +102,7 @@ theorem connes_unit_integrand_intervalIntegrable (G : 𝓢(ℝ, ℂ)) :
         rw [h2] at h1
         exact h1
 
-/-- **Step 2, the unit interval.**  `∫_0^1 (G'(u) log u + (G(u) − G(0))/u) du = 0`. -/
+/-- **Step 2, the unit interval.**  `∫_0^(1 : ℕ) (G'(u) log u + (G(u) − G(0))/u) du = 0`. -/
 theorem connes_log_ftc_unit (G : 𝓢(ℝ, ℂ)) :
     (∫ u in (0 : ℝ)..1, (deriv ((G : 𝓢(ℝ, ℂ)) : ℝ → ℂ) u * ((Real.log u : ℝ) : ℂ)
       + ((G : ℝ → ℂ) u - (G : ℝ → ℂ) 0) * ((u⁻¹ : ℝ) : ℂ))) = 0 := by

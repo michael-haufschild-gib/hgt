@@ -23,7 +23,7 @@ noncomputable section
 def zeroOrdinate (q : XiZeroCopy) : ℝ := (q.1 : ℂ).im
 
 /-- The positive weight `1/(¼ + γ²)`. -/
-def cosWeight (q : XiZeroCopy) : ℝ := 1 / (1 / 4 + zeroOrdinate q ^ 2)
+def cosWeight (q : XiZeroCopy) : ℝ := 1 / (1 / 4 + zeroOrdinate q ^ (2 : ℕ))
 
 theorem cosWeight_pos (q : XiZeroCopy) : 0 < cosWeight q := by
   unfold cosWeight; positivity
@@ -36,7 +36,7 @@ theorem xiZeroCopy_eq_of_riemannHypothesis (h : RiemannHypothesis) (q : XiZeroCo
 
 theorem half_add_mul_I_mul_one_sub (γ : ℝ) :
     (1 / 2 + (γ : ℂ) * Complex.I) * (1 - (1 / 2 + (γ : ℂ) * Complex.I))
-      = ((1 / 4 + γ ^ 2 : ℝ) : ℂ) := by
+      = ((1 / 4 + γ ^ (2 : ℕ) : ℝ) : ℂ) := by
   push_cast
   ring_nf
   rw [Complex.I_sq]
@@ -96,22 +96,22 @@ theorem exists_pow_integerLag_gt_of_riemannHypothesis (h : RiemannHypothesis) (b
     Filter.eventually_atTop.mp (htail.eventually_lt_const (by linarith : (0:ℝ) < ε / 4))
   have hFtail : ∑' q : {x // x ∉ F}, cosWeight q < ε / 4 := hF F le_rfl
   -- the resolution of the simultaneous approximation
-  set Q : ℕ := ⌈8 * π ^ 2 * poleSharpConstant / ε⌉₊ + 1 with hQdef
+  set Q : ℕ := ⌈8 * π ^ (2 : ℕ) * poleSharpConstant / ε⌉₊ + 1 with hQdef
   have hQ0 : 0 < Q := by omega
   have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast hQ0
   have hQpos : (0:ℝ) < Q := by linarith
-  have hQge : 8 * π ^ 2 * poleSharpConstant / ε ≤ Q := by
-    have := Nat.le_ceil (8 * π ^ 2 * poleSharpConstant / ε)
+  have hQge : 8 * π ^ (2 : ℕ) * poleSharpConstant / ε ≤ Q := by
+    have := Nat.le_ceil (8 * π ^ (2 : ℕ) * poleSharpConstant / ε)
     rw [hQdef]; push_cast; linarith
-  have hδ : (2 * π / Q) ^ 2 / 2 * poleSharpConstant ≤ ε / 4 := by
-    have h1 : (2 * π / Q) ^ 2 / 2 * poleSharpConstant
-        = 2 * π ^ 2 * poleSharpConstant / ((Q : ℝ) ^ 2) := by
+  have hδ : (2 * π / Q) ^ (2 : ℕ) / 2 * poleSharpConstant ≤ ε / 4 := by
+    have h1 : (2 * π / Q) ^ (2 : ℕ) / 2 * poleSharpConstant
+        = 2 * π ^ (2 : ℕ) * poleSharpConstant / ((Q : ℝ) ^ (2 : ℕ)) := by
       field_simp
-    have h2 : 2 * π ^ 2 * poleSharpConstant / ((Q : ℝ) ^ 2)
-        ≤ 2 * π ^ 2 * poleSharpConstant / Q := by
+    have h2 : 2 * π ^ (2 : ℕ) * poleSharpConstant / ((Q : ℝ) ^ (2 : ℕ))
+        ≤ 2 * π ^ (2 : ℕ) * poleSharpConstant / Q := by
       apply div_le_div_of_nonneg_left (by positivity) hQpos
       nlinarith
-    have h3 : 2 * π ^ 2 * poleSharpConstant / (Q : ℝ) ≤ ε / 4 := by
+    have h3 : 2 * π ^ (2 : ℕ) * poleSharpConstant / (Q : ℝ) ≤ ε / 4 := by
       rw [div_le_iff₀ hQpos]
       have := (div_le_iff₀ hε).mp hQge
       linarith
@@ -127,7 +127,7 @@ theorem exists_pow_integerLag_gt_of_riemannHypothesis (h : RiemannHypothesis) (b
     rw [weilLagFunctionReal_eq_cos_series h, Nat.cast_pow, Real.log_pow]
   -- the cosine lower bound on `F`
   have hcos : ∀ q ∈ F,
-      1 - (2 * π / Q) ^ 2 / 2 ≤ Real.cos (zeroOrdinate q * (m * Real.log b)) := by
+      1 - (2 * π / Q) ^ (2 : ℕ) / 2 ≤ Real.cos (zeroOrdinate q * (m * Real.log b)) := by
     intro q hq
     obtain ⟨p, hp⟩ := hclose (e ⟨q, hq⟩)
     have hβ : β (e ⟨q, hq⟩) = zeroOrdinate q * Real.log b / (2 * π) := by
@@ -144,8 +144,8 @@ theorem exists_pow_integerLag_gt_of_riemannHypothesis (h : RiemannHypothesis) (b
       calc 2 * π * |(m : ℝ) * (zeroOrdinate q * Real.log b / (2 * π)) - p| ≤ 2 * π * (1 / Q) :=
             mul_le_mul_of_nonneg_left hp.le (by positivity)
         _ = 2 * π / Q := by ring
-    have hsq : (2 * π * ((m : ℝ) * (zeroOrdinate q * Real.log b / (2 * π)) - p)) ^ 2
-        ≤ (2 * π / Q) ^ 2 := by
+    have hsq : (2 * π * ((m : ℝ) * (zeroOrdinate q * Real.log b / (2 * π)) - p)) ^ (2 : ℕ)
+        ≤ (2 * π / Q) ^ (2 : ℕ) := by
       rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) habs 2
     linarith
   -- split the series at `F`
@@ -174,16 +174,16 @@ theorem exists_pow_integerLag_gt_of_riemannHypothesis (h : RiemannHypothesis) (b
   have hFle : ∑ q ∈ F, cosWeight q ≤ poleSharpConstant := by
     rw [← htot]; exact hw.sum_le_tsum F (fun q _ => hw0 q)
   have hfin : ∑ q ∈ F, cosWeight q - ε / 4 ≤ ∑ q ∈ F, f q := by
-    have h1 : ∑ q ∈ F, cosWeight q * (1 - (2 * π / Q) ^ 2 / 2) ≤ ∑ q ∈ F, f q := by
+    have h1 : ∑ q ∈ F, cosWeight q * (1 - (2 * π / Q) ^ (2 : ℕ) / 2) ≤ ∑ q ∈ F, f q := by
       refine Finset.sum_le_sum fun q hq => ?_
       rw [hf]
       exact mul_le_mul_of_nonneg_left (hcos q hq) (hw0 q)
     rw [← Finset.sum_mul] at h1
-    have h3 : (∑ q ∈ F, cosWeight q) * ((2 * π / Q) ^ 2 / 2)
-        ≤ poleSharpConstant * ((2 * π / Q) ^ 2 / 2) :=
+    have h3 : (∑ q ∈ F, cosWeight q) * ((2 * π / Q) ^ (2 : ℕ) / 2)
+        ≤ poleSharpConstant * ((2 * π / Q) ^ (2 : ℕ) / 2) :=
       mul_le_mul_of_nonneg_right hFle (by positivity)
-    have h4 : (∑ q ∈ F, cosWeight q) * (1 - (2 * π / Q) ^ 2 / 2)
-        = ∑ q ∈ F, cosWeight q - (∑ q ∈ F, cosWeight q) * ((2 * π / Q) ^ 2 / 2) := by ring
+    have h4 : (∑ q ∈ F, cosWeight q) * (1 - (2 * π / Q) ^ (2 : ℕ) / 2)
+        = ∑ q ∈ F, cosWeight q - (∑ q ∈ F, cosWeight q) * ((2 * π / Q) ^ (2 : ℕ) / 2) := by ring
     linarith
   rw [hval, ← hsplit]
   have := neg_abs_le (∑' q : ↑(↑F : Set XiZeroCopy)ᶜ, f q)
@@ -202,7 +202,7 @@ theorem isLUB_integerLag_of_riemannHypothesis (h : RiemannHypothesis) :
     obtain ⟨m, hm1, hgt⟩ :=
       exists_pow_integerLag_gt_of_riemannHypothesis h 2 (by linarith : 0 < poleSharpConstant - M)
     have h2 : 2 ≤ 2 ^ m := by
-      calc 2 = 2 ^ 1 := by norm_num
+      calc 2 = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ m := Nat.pow_le_pow_right (by norm_num) hm1
     have := hM ⟨⟨2 ^ m, h2⟩, rfl⟩
     simp only at this

@@ -32,7 +32,7 @@ def pairedEtaTopPrefixFiniteZeroWindowOnLineTraceMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ) (T : ℝ) : ℝ :=
   ∑ rho ∈ spectralCriticalZetaZeroWindow T,
     (analyticZetaZeroMultiplicity rho : ℝ) *
-      ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ 2
+      ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ (2 : ℕ)
 
 /-- The signed off-line trace mass: twice the real-coordinate mass minus
 twice the imaginary-coordinate mass over representatives of reflected
@@ -42,11 +42,11 @@ def pairedEtaTopPrefixFiniteZeroWindowOffLineTraceMass
   (∑ rho ∈ spectralUpperZetaZeroWindow T,
     (2 * analyticZetaZeroMultiplicity rho : ℝ) *
       ∑ j, ‖complexVectorReal
-        (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2) -
+        (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ)) -
   ∑ rho ∈ spectralUpperZetaZeroWindow T,
     (2 * analyticZetaZeroMultiplicity rho : ℝ) *
       ∑ j, ‖complexVectorImag
-        (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2
+        (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ)
 
 /-- The coherent squared Frobenius mass of the complete eta zero window,
 written entrywise as a finite spectral sum. -/
@@ -55,7 +55,7 @@ def pairedEtaTopPrefixFiniteZeroWindowCoherentFrobeniusMass
   ∑ i, ∑ j, ‖∑ rho ∈ spectralZetaZeroWindow T,
     (analyticZetaZeroMultiplicity rho : ℂ) *
       pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j *
-      pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho i‖ ^ 2
+      pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho i‖ ^ (2 : ℕ)
 
 /-- The rank--trace inequality specialized to the literal finite eta
 zero-window decomposition.  The count penalties are the genuine distinct
@@ -65,11 +65,11 @@ theorem pairedEtaTopPrefixFiniteZeroWindowBlock_rankTrace_ineq
     (hT : 0 ≤ T) (hc : 0 < c) :
     c * HermitianInertia.rtrace
         (pairedEtaTopPrefixFiniteZeroWindowOnLineBlock cutoff T) -
-      c ^ 2 / 4 * (spectralCriticalZetaZeroWindow T).card +
+      c ^ (2 : ℕ) / 4 * (spectralCriticalZetaZeroWindow T).card +
       2 * c * HermitianInertia.rtrace
         (pairedEtaTopPrefixFiniteZeroWindowOffLineRealBlock cutoff T -
           pairedEtaTopPrefixFiniteZeroWindowOffLineImagBlock cutoff T) -
-      c ^ 2 * (spectralUpperZetaZeroWindow T).card ≤
+      c ^ (2 : ℕ) * (spectralUpperZetaZeroWindow T).card ≤
         HermitianInertia.frobSq
           (pairedEtaTopPrefixFiniteZeroWindowBlock cutoff T) := by
   classical
@@ -149,9 +149,9 @@ theorem pairedEtaTopPrefixFiniteZeroWindow_rankTrace_ledger
     {d : Type*} [Fintype d] (cutoff : d → ℕ) {T c : ℝ}
     (hT : 0 ≤ T) (hc : 0 < c) :
     c * pairedEtaTopPrefixFiniteZeroWindowOnLineTraceMass cutoff T -
-      c ^ 2 / 4 * (spectralCriticalZetaZeroWindow T).card +
+      c ^ (2 : ℕ) / 4 * (spectralCriticalZetaZeroWindow T).card +
       2 * c * pairedEtaTopPrefixFiniteZeroWindowOffLineTraceMass cutoff T -
-      c ^ 2 * (spectralUpperZetaZeroWindow T).card ≤
+      c ^ (2 : ℕ) * (spectralUpperZetaZeroWindow T).card ≤
         pairedEtaTopPrefixFiniteZeroWindowCoherentFrobeniusMass cutoff T := by
   simpa only [
       pairedEtaTopPrefixFiniteZeroWindowOnLineBlock_rtrace_eq_mass,

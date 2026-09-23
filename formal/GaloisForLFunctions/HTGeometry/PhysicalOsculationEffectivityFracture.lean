@@ -17,7 +17,7 @@ noncomputable section
 /-- A quadratic constraint on the conic rank-three source which is transverse at source height
 two. -/
 def rankThreeTransversePhysicalPullback (α : ℂ) : ℂ → ℂ :=
-  quadraticBinomialPhysicalPullback 1 α (α ^ 2) 1
+  quadraticBinomialPhysicalPullback 1 α (α ^ (2 : ℕ)) 1
 
 theorem analyticOrderAt_rankThreeTransversePhysicalPullback_eq_two
     (α : ℂ) (hlin : LinearIndependent ℚ (conicRankThreeSource α)) :
@@ -30,10 +30,10 @@ theorem analyticOrderAt_rankThreeTransversePhysicalPullback_eq_two
     intro hα1
     have h01 : (0 : Fin 3) = 1 := hlin.injective (by simp [conicRankThreeSource, hα1])
     norm_num at h01
-  have hfix : α ^ 2 = α := by simpa [mul_comm] using hprod.symm
+  have hfix : α ^ (2 : ℕ) = α := by simpa [mul_comm] using hprod.symm
   have hfactor : α * (α - 1) = 0 := by
     calc
-      α * (α - 1) = α ^ 2 - α := by ring
+      α * (α - 1) = α ^ (2 : ℕ) - α := by ring
       _ = 0 := by rw [hfix, sub_self]
   rcases mul_eq_zero.mp hfactor with hzero | hone
   · exact hα0 hzero

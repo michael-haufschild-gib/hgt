@@ -41,7 +41,7 @@ private theorem three_le_log_of_twentySeven_le {p : ℕ} (hp : 27 ≤ p) :
   have hlog3 : (1 : ℝ) < Real.log 3 := by
     exact (Real.lt_log_iff_exp_lt (by norm_num)).2 Real.exp_one_lt_three
   have hlog27 : (3 : ℝ) < Real.log 27 := by
-    rw [show (27 : ℝ) = 3 ^ 3 by norm_num, Real.log_pow]
+    rw [show (27 : ℝ) = 3 ^ (3 : ℕ) by norm_num, Real.log_pow]
     norm_num
     linarith
   exact (le_of_lt hlog27).trans

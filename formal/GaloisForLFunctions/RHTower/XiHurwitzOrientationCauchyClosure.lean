@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
 # Cauchy-source closure of the Xi--Hurwitz orientation vector
 
 Every multiplicity-fiber indicator is a norm limit of normalized regular Cauchy vectors.  The
-canonical `ell^2` coordinate expansion of the Xi--Hurwitz orientation vector can be regrouped over
+canonical `ell^(2 : ℕ)` coordinate expansion of the Xi--Hurwitz orientation vector can be regrouped over
 these finite multiplicity fibers.  Closedness then puts the complete orientation vector in the
 regular-Cauchy Hilbert core without an RH assumption.
 -/

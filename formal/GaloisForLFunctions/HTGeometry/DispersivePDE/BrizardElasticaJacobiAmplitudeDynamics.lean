@@ -44,8 +44,8 @@ noncomputable def correctedJacobiAmplitudeAcceleration
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
   jacobiSquaredCurvatureAcceleration P.val J v /
       (2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v) -
-    jacobiSquaredCurvatureVelocity P.val J v ^ 2 /
-      (4 * (P.val.q₀ : ℝ) ^ 2 * correctedJacobiAmplitude P J v ^ 3)
+    jacobiSquaredCurvatureVelocity P.val J v ^ (2 : ℕ) /
+      (4 * (P.val.q₀ : ℝ) ^ (2 : ℕ) * correctedJacobiAmplitude P J v ^ (3 : ℕ))
 
 theorem correctedJacobiAmplitudeVelocity_hasDerivAt
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
@@ -64,7 +64,7 @@ theorem correctedJacobiAmplitudeVelocity_hasDerivAt
             (2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v) -
           jacobiSquaredCurvatureVelocity P.val J v *
             ((2 * (P.val.q₀ : ℝ)) * correctedJacobiAmplitudeVelocity P J v)) /
-          (2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v) ^ 2 =
+          (2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v) ^ (2 : ℕ) =
         correctedJacobiAmplitudeAcceleration P J v := by
     rw [correctedJacobiAmplitudeAcceleration, correctedJacobiAmplitudeVelocity]
     field_simp [P.val.q₀.ne_zero,
@@ -81,7 +81,7 @@ theorem correctedJacobiAmplitudeVelocity_hasDerivAt
 theorem correctedJacobiAmplitude_curvature
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
     jacobiSquaredCurvature P.val J v =
-      (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ 2 := by
+      (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ (2 : ℕ) := by
   rw [jacobiSquaredCurvature, correctedJacobiAmplitude_sq]
   field_simp [P.val.q₀.ne_zero]
 
@@ -89,10 +89,10 @@ theorem correctedJacobiAmplitude_curvature
 theorem correctedJacobiAmplitude_secondOrderEquation
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
     correctedJacobiAmplitudeAcceleration P J v =
-      -2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ 3 -
+      -2 * (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ (3 : ℕ) -
         (P.val.q₀ : ℝ) * gammaSq P.val * correctedJacobiAmplitude P J v +
         (P.val.q₀ : ℝ) * nuSq P.val /
-          correctedJacobiAmplitude P J v ^ 3 := by
+          correctedJacobiAmplitude P J v ^ (3 : ℕ) := by
   rw [correctedJacobiAmplitudeAcceleration,
     jacobiSquaredCurvature_secondOrderEquation,
     jacobiSquaredCurvature_equation,

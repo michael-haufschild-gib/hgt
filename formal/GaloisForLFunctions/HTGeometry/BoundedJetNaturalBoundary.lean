@@ -156,7 +156,7 @@ theorem exists_bound_lipschitz_companionVec (n : ℕ) (N S : MvPolynomial (Fin (
   obtain ⟨MS, hMS0, hMS⟩ := exists_bound_mvPolynomial_eval S (0 : Fin (n + 2) → ℂ) R
   obtain ⟨LN, hLN0, hLN⟩ := exists_lipschitz_mvPolynomial_eval N (0 : Fin (n + 2) → ℂ) R
   obtain ⟨LS, hLS0, hLS⟩ := exists_lipschitz_mvPolynomial_eval S (0 : Fin (n + 2) → ℂ) R
-  refine ⟨max (max 1 R) (MN / ε), max 1 ((LN * MS + MN * LS) / ε ^ 2), ?_, ?_, ?_, ?_⟩
+  refine ⟨max (max 1 R) (MN / ε), max 1 ((LN * MS + MN * LS) / ε ^ (2 : ℕ)), ?_, ?_, ?_, ?_⟩
   · exact le_trans (le_trans zero_le_one (le_max_left 1 R)) (le_max_left _ _)
   · exact le_trans zero_le_one (le_max_left _ _)
   · intro v hv hSv
@@ -192,7 +192,7 @@ theorem exists_bound_lipschitz_companionVec (n : ℕ) (N S : MvPolynomial (Fin (
       rw [mem_closedBall_zero_iff]; exact hv
     have hwmem : w ∈ closedBall (0 : Fin (n + 2) → ℂ) R := by
       rw [mem_closedBall_zero_iff]; exact hw
-    have hLnn : (0 : ℝ) ≤ max 1 ((LN * MS + MN * LS) / ε ^ 2) :=
+    have hLnn : (0 : ℝ) ≤ max 1 ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) :=
       le_trans zero_le_one (le_max_left _ _)
     refine (pi_norm_le_iff_of_nonneg (by positivity)).mpr fun i => ?_
     by_cases h0 : (i : ℕ) = 0
@@ -209,7 +209,7 @@ theorem exists_bound_lipschitz_companionVec (n : ℕ) (N S : MvPolynomial (Fin (
           have := norm_le_pi_norm (v - w) (⟨(i : ℕ) + 1, by omega⟩ : Fin (n + 2))
           simpa using this
         refine le_trans hle ?_
-        nlinarith [norm_nonneg (v - w), le_max_left (1 : ℝ) ((LN * MS + MN * LS) / ε ^ 2)]
+        nlinarith [norm_nonneg (v - w), le_max_left (1 : ℝ) ((LN * MS + MN * LS) / ε ^ (2 : ℕ))]
       · have hval : (companionVec n N S v - companionVec n N S w) i
             = MvPolynomial.eval v N / MvPolynomial.eval v S
               - MvPolynomial.eval w N / MvPolynomial.eval w S := by
@@ -247,26 +247,26 @@ theorem exists_bound_lipschitz_companionVec (n : ℕ) (N S : MvPolynomial (Fin (
               ‖MvPolynomial.eval v S - MvPolynomial.eval w S‖ ≤ MN * (LS * ‖v - w‖) := by
             refine mul_le_mul hMNw hbS (norm_nonneg _) hMN0
           nlinarith [h1', h2']
-        have hden : ε ^ 2 ≤ ‖MvPolynomial.eval v S‖ * ‖MvPolynomial.eval w S‖ := by
+        have hden : ε ^ (2 : ℕ) ≤ ‖MvPolynomial.eval v S‖ * ‖MvPolynomial.eval w S‖ := by
           nlinarith [hε, hSv, hSw]
         have hdenpos : (0 : ℝ) < ‖MvPolynomial.eval v S‖ * ‖MvPolynomial.eval w S‖ := by
           nlinarith [hε, hSv, hSw]
         rw [div_le_iff₀ hdenpos]
         have hnn : (0 : ℝ) ≤ ‖v - w‖ := norm_nonneg _
-        have hcoef : (LN * MS + MN * LS) / ε ^ 2 ≤ max 1 ((LN * MS + MN * LS) / ε ^ 2) :=
+        have hcoef : (LN * MS + MN * LS) / ε ^ (2 : ℕ) ≤ max 1 ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) :=
           le_max_right _ _
         have hLMnn : (0 : ℝ) ≤ LN * MS + MN * LS := by positivity
-        have hε2 : (0 : ℝ) < ε ^ 2 := by positivity
+        have hε2 : (0 : ℝ) < ε ^ (2 : ℕ) := by positivity
         calc ‖(MvPolynomial.eval v N - MvPolynomial.eval w N) * MvPolynomial.eval w S
               - MvPolynomial.eval w N * (MvPolynomial.eval v S - MvPolynomial.eval w S)‖
             ≤ (LN * MS + MN * LS) * ‖v - w‖ := hnum
-          _ = ((LN * MS + MN * LS) / ε ^ 2) * ‖v - w‖ * ε ^ 2 := by field_simp
-          _ ≤ max 1 ((LN * MS + MN * LS) / ε ^ 2) * ‖v - w‖ *
+          _ = ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) * ‖v - w‖ * ε ^ (2 : ℕ) := by field_simp
+          _ ≤ max 1 ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) * ‖v - w‖ *
               (‖MvPolynomial.eval v S‖ * ‖MvPolynomial.eval w S‖) := by
-              have hA : ((LN * MS + MN * LS) / ε ^ 2) * ‖v - w‖
-                  ≤ max 1 ((LN * MS + MN * LS) / ε ^ 2) * ‖v - w‖ :=
+              have hA : ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) * ‖v - w‖
+                  ≤ max 1 ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) * ‖v - w‖ :=
                 mul_le_mul_of_nonneg_right hcoef hnn
-              have hB : (0 : ℝ) ≤ ((LN * MS + MN * LS) / ε ^ 2) * ‖v - w‖ := by positivity
+              have hB : (0 : ℝ) ≤ ((LN * MS + MN * LS) / ε ^ (2 : ℕ)) * ‖v - w‖ := by positivity
               nlinarith [hA, hB, hden, hε2]
 
 /-! ## Selecting a good interior point by the maximum modulus principle -/

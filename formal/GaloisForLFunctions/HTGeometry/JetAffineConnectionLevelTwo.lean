@@ -52,7 +52,7 @@ theorem jetDerivation_of_order_zero {v : JetField C Unit}
 affine action on the second coordinate with remainder `R''(y₀)·y₁²`. -/
 theorem substitutionShift_two (R : RatFunc C) :
     substitutionShift R 2
-      = JetField.pd ((), 0) (substitutionDeriv R) * JetField.jet ((), 1) ^ 2 := by
+      = JetField.pd ((), 0) (substitutionDeriv R) * JetField.jet ((), 1) ^ (2 : ℕ) := by
   have hjet : substitutionJet R 2 = JetField.jetDerivation (substitutionJet R 1) := by
     rw [substitutionJet, substitutionJet,
       show (2 : ℕ) = 1 + 1 from rfl, differentialJet_succ, JetField.deriv_eq]
@@ -91,7 +91,7 @@ theorem exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
     (h : HasNormalizingShift R hR (show (1 : ℕ) ≤ 2 by norm_num)) :
     ∃ a : RatFunc C,
       ratFuncSubstitutionAlgHom R (not_isConst_of_substitutionDeriv_ne_zero hR) a
-          * ratFuncDeriv R ^ 2
+          * ratFuncDeriv R ^ (2 : ℕ)
         = ratFuncDeriv R * a - ratFuncDeriv (ratFuncDeriv R) := by
   classical
   obtain ⟨t, ht⟩ := h
@@ -146,7 +146,7 @@ theorem exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
     rw [← hxeval, ratFuncEval_eq_div]
   -- the shift term
   have hσ : substitutionShift R 2
-      = Polynomial.aeval x (Polynomial.C ddF * Polynomial.X ^ 2) := by
+      = Polynomial.aeval x (Polynomial.C ddF * Polynomial.X ^ (2 : ℕ)) := by
     rw [map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X, substitutionShift_two, hddval]
   -- the cross identity
   have hΦQ0 : twistComp Φ T Q ≠ 0 := twistComp_ne_zero Φ hT hQ0
@@ -159,7 +159,7 @@ theorem exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
   rw [hLHS, htdiv, hσ, ← hρval] at htJ
   have hcrossJ : Polynomial.aeval x (twistComp Φ T P * Q)
       = Polynomial.aeval x (twistComp Φ T Q
-          * (Polynomial.C ρF * P - Polynomial.C ddF * Polynomial.X ^ 2 * Q)) := by
+          * (Polynomial.C ρF * P - Polynomial.C ddF * Polynomial.X ^ (2 : ℕ) * Q)) := by
     simp only [map_mul, map_sub, map_pow, Polynomial.aeval_C, Polynomial.aeval_X] at htJ ⊢
     field_simp at htJ
     linear_combination htJ
@@ -180,7 +180,7 @@ theorem exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
     conv_rhs => rw [he']
     rw [hedef, ← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ he'0, map_one, one_mul]
   have hPeq : twistComp Φ T P = Polynomial.C e * (Polynomial.C ρF * P
-      - Polynomial.C ddF * Polynomial.X ^ 2 * Q) := by
+      - Polynomial.C ddF * Polynomial.X ^ (2 : ℕ) * Q) := by
     refine mul_right_cancel₀ hQ0 ?_
     rw [hcross, hdQ]
     ring
@@ -199,26 +199,26 @@ theorem exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
       rw [hTdef]; exact coeff_twistComp_scale Φ ρF P (n + 2)
     have hR' : (twistComp Φ T P).coeff (n + 2)
         = (Polynomial.C e * (Polynomial.C ρF * P
-            - Polynomial.C ddF * Polynomial.X ^ 2 * Q)).coeff (n + 2) := by rw [hPeq]
+            - Polynomial.C ddF * Polynomial.X ^ (2 : ℕ) * Q)).coeff (n + 2) := by rw [hPeq]
     rw [hL] at hR'
     simp only [Polynomial.coeff_C_mul, Polynomial.coeff_sub, mul_assoc] at hR'
-    rw [show Polynomial.X ^ 2 * Q = Q * Polynomial.X ^ 2 from by ring] at hR'
-    have hXQ : (Q * Polynomial.X ^ 2).coeff (n + 2) = q := by
+    rw [show Polynomial.X ^ (2 : ℕ) * Q = Q * Polynomial.X ^ (2 : ℕ) from by ring] at hR'
+    have hXQ : (Q * Polynomial.X ^ (2 : ℕ)).coeff (n + 2) = q := by
       rw [hqdef]
       simp [Polynomial.coeff_mul_X_pow']
     rw [hR', hXQ]
   -- eliminate the scalar
-  have hkey : Φ p * ρF ^ 2 * q = Φ q * (ρF * p - ddF * q) := by
+  have hkey : Φ p * ρF ^ (2 : ℕ) * q = Φ q * (ρF * p - ddF * q) := by
     have h3 : Φ p * ρF ^ (n + 2) * q = Φ q * ρF ^ n * (ρF * p - ddF * q) := by
       calc Φ p * ρF ^ (n + 2) * q = (e * (ρF * p - ddF * q)) * q := by rw [h1]
         _ = (e * q) * (ρF * p - ddF * q) := by ring
         _ = (Φ q * ρF ^ n) * (ρF * p - ddF * q) := by rw [h2]
-    have hpow : ρF ^ (n + 2) = ρF ^ n * ρF ^ 2 := by rw [← pow_add]
+    have hpow : ρF ^ (n + 2) = ρF ^ n * ρF ^ (2 : ℕ) := by rw [← pow_add]
     rw [hpow] at h3
     refine mul_left_cancel₀ (pow_ne_zero n hρF) ?_
     linear_combination h3
   have hΦq0 : Φ q ≠ 0 := fun hh => hq0 ((map_eq_zero_iff Φ Φ.injective).mp hh)
-  have hfinal : Φ (p / q) * ρF ^ 2 = ρF * (p / q) - ddF := by
+  have hfinal : Φ (p / q) * ρF ^ (2 : ℕ) = ρF * (p / q) - ddF := by
     rw [map_div₀]
     field_simp
     linear_combination hkey
@@ -253,7 +253,7 @@ theorem exists_isAffineConnection_of_hasNormalizingShift_two {P : Polynomial C}
   obtain ⟨a, ha⟩ := exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two _ hP h
   rw [ratFuncDeriv_algebraMap, ratFuncDeriv_algebraMap] at ha
   refine ⟨a, ?_⟩
-  show algebraMap (Polynomial C) (RatFunc C) (Polynomial.derivative P ^ 2)
+  show algebraMap (Polynomial C) (RatFunc C) (Polynomial.derivative P ^ (2 : ℕ))
       * ratFuncSubstitutionAlgHom (algebraMap (Polynomial C) (RatFunc C) P)
           (not_isConst_of_substitutionDeriv_ne_zero hP) a = _
   rw [map_pow, mul_comm]

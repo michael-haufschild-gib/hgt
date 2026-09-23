@@ -28,16 +28,16 @@ noncomputable section
 
 theorem three_term_expansion_eq_zero {a b c : ℂ} {K R : ℝ}
     (h : ∀ t : ℝ, R ≤ t → 1 ≤ t →
-      ‖a + b * ((Real.log t : ℝ) : ℂ) + c / ((t : ℝ) : ℂ)‖ ≤ K / t ^ 2) :
+      ‖a + b * ((Real.log t : ℝ) : ℂ) + c / ((t : ℝ) : ℂ)‖ ≤ K / t ^ (2 : ℕ)) :
     a = 0 ∧ b = 0 ∧ c = 0 := by
   -- the constant is forced to be nonnegative
   have hK0 : 0 ≤ K := by
     set t0 : ℝ := max R 1 with ht0def
     have ht01 : (1 : ℝ) ≤ t0 := le_max_right _ _
-    have hpos : (0 : ℝ) < t0 ^ 2 := by positivity
+    have hpos : (0 : ℝ) < t0 ^ (2 : ℕ) := by positivity
     have hb := h t0 (le_max_left _ _) ht01
     have hnn := norm_nonneg (a + b * ((Real.log t0 : ℝ) : ℂ) + c / ((t0 : ℝ) : ℂ))
-    have : (0 : ℝ) ≤ K / t0 ^ 2 := le_trans hnn hb
+    have : (0 : ℝ) ≤ K / t0 ^ (2 : ℕ) := le_trans hnn hb
     rw [le_div_iff₀ hpos] at this
     linarith
   set M : ℝ := K + ‖a‖ + ‖c‖ with hMdef
@@ -62,10 +62,10 @@ theorem three_term_expansion_eq_zero {a b c : ℂ} {K R : ℝ}
         ≤ ‖a + b * ((Real.log t : ℝ) : ℂ) + c / ((t : ℝ) : ℂ)‖ + ‖a‖ :=
       norm_sub_le (a + b * ((Real.log t : ℝ) : ℂ) + c / ((t : ℝ) : ℂ)) a
     have hmain := h t hR ht1
-    have ht2 : (1 : ℝ) ≤ t ^ 2 := by nlinarith [ht1]
-    have hK : K / t ^ 2 ≤ K := by
+    have ht2 : (1 : ℝ) ≤ t ^ (2 : ℕ) := by nlinarith [ht1]
+    have hK : K / t ^ (2 : ℕ) ≤ K := by
       rw [div_le_iff₀ (by positivity)]
-      nlinarith [mul_nonneg hK0 (by linarith : (0 : ℝ) ≤ t ^ 2 - 1)]
+      nlinarith [mul_nonneg hK0 (by linarith : (0 : ℝ) ≤ t ^ (2 : ℕ) - 1)]
     have hc : ‖c‖ / t ≤ ‖c‖ := by
       rw [div_le_iff₀ ht0]
       nlinarith [norm_nonneg c, ht1]
@@ -106,7 +106,7 @@ theorem three_term_expansion_eq_zero {a b c : ℂ} {K R : ℝ}
         ≤ ‖a + c / ((T : ℝ) : ℂ)‖ + ‖c / ((T : ℝ) : ℂ)‖ :=
       norm_sub_le (a + c / ((T : ℝ) : ℂ)) (c / ((T : ℝ) : ℂ))
     rw [hct] at hstep1
-    have hKT : K / T ^ 2 ≤ K / T := by
+    have hKT : K / T ^ (2 : ℕ) ≤ K / T := by
       rw [div_le_div_iff₀ (by positivity) hT0]
       nlinarith [mul_nonneg (mul_nonneg hK0 hT0.le) (by nlinarith [hT1] : (0 : ℝ) ≤ T - 1)]
     have hfinal : ‖a‖ ≤ (K + ‖c‖) / T := by

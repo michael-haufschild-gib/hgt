@@ -28,7 +28,7 @@ private theorem spike_slow_mass_pos (n m : ℕ) :
 
 private theorem fisher_shape_scale (x q : ℝ) (hx : 0 < x) (hq : 0 < q) :
     egbFixedChargeAGibbsCollisionFisherShape x (x * q) =
-      (25 / 36 : ℝ) * q / (1 + q) ^ 2 := by
+      (25 / 36 : ℝ) * q / (1 + q) ^ (2 : ℕ) := by
   have hsum : x + x * q ≠ 0 := (show 0 < x + x * q by positivity).ne'
   have hq1 : 1 + q ≠ 0 := (show 0 < 1 + q by positivity).ne'
   unfold egbFixedChargeAGibbsCollisionFisherShape
@@ -38,7 +38,7 @@ private theorem fisher_shape_scale (x q : ℝ) (hx : 0 < x) (hq : 0 < q) :
 /-- Every grid has exactly the same normalized collision Fisher curve. -/
 theorem egbFixedChargeAGibbsSpike_fisher_formula (n m : ℕ) :
     egbFixedChargeAGibbsCollisionFisherValue n m 1 (egbFixedChargeAGibbsSpikeEnergy n) =
-      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2 := by
+      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsCollisionFisherValue_two_mass, spike_mass_ratio]
   exact fisher_shape_scale _ _ (spike_slow_mass_pos n m) (pow_pos (by norm_num) _)
 

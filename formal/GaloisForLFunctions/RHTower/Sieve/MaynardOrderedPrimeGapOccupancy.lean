@@ -174,7 +174,7 @@ theorem volume_routeTPrimeGapDyadicBlockOccupancy (k j : ℕ) :
 reserved target width times literal prime-free base occupancy. -/
 theorem sum_primeGapSquare_le_eight_mul_volume_occupancy (k j : ℕ) :
     (∑ n ∈ routeTPrimeGapDyadicBlockShell k j,
-        xiHeatCassiniOrderedPrimeGap n ^ 2) ≤
+        xiHeatCassiniOrderedPrimeGap n ^ (2 : ℕ)) ≤
       8 * routeTPrimeGapDyadicScale j *
         volume.real (routeTPrimeGapDyadicBlockOccupancy k j) := by
   rw [volume_routeTPrimeGapDyadicBlockOccupancy]
@@ -190,7 +190,7 @@ theorem sum_primeGapSquare_le_eight_mul_volume_occupancy (k j : ℕ) :
 physical dyadic block. -/
 theorem sum_primeGapSquare_le_eight_mul_primeFree_block_measure (k j : ℕ) :
     (∑ n ∈ routeTPrimeGapDyadicBlockShell k j,
-        xiHeatCassiniOrderedPrimeGap n ^ 2) ≤
+        xiHeatCassiniOrderedPrimeGap n ^ (2 : ℕ)) ≤
       8 * routeTPrimeGapDyadicScale j *
         (volume.restrict
           (Set.Icc (routeTPrimeGapDyadicBase k)

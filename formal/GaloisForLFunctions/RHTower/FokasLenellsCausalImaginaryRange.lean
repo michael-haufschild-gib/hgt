@@ -8,8 +8,8 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
+local instance fokasLenellsCausalImaginaryRangeInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalImaginaryRangeInst2 : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
 
 /-- Every rational Cauchy eigenvector lies in every actual imaginary-axis shift range. -/
 theorem causalComplexGeneratorShift_imaginary_range_cauchyEigenvector (ω : ℝ)

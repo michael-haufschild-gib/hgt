@@ -147,7 +147,7 @@ theorem d4HBReducedTeukolskyHermitianDilation_det_eq_iff_re_eq_half
 quadratic determinant jet. -/
 theorem d4HBReducedTeukolskyHermitianDilation_quadraticJetGap
     (amplitude mixed anti : ℂ) (q : XiZeroCopy) :
-    ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q‖ ^ 2 / 2 ≤
+    ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q‖ ^ (2 : ℕ) / 2 ≤
       ‖taylorCoeff
           (entireDet2 (sourceHermitianDilationKernel
             (d4HBReducedTeukolskyHermitianDilationSourceKernel amplitude mixed anti q))) 2 -
@@ -201,7 +201,7 @@ def D4HBReducedTeukolskyHermitianDilationFidelityRouteKilled : Prop :=
           entireDet2
             (d4HBReducedTeukolskyHermitianDilationSourceKernel amplitude mixed anti q) ↔
         (q.1 : ℂ).re = 1 / 2) ∧
-      ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q‖ ^ 2 / 2 ≤
+      ‖d4HBReducedTeukolskyHermitianDilationSourceCoefficient amplitude mixed anti q‖ ^ (2 : ℕ) / 2 ≤
         ‖taylorCoeff
             (entireDet2 (sourceHermitianDilationKernel
               (d4HBReducedTeukolskyHermitianDilationSourceKernel amplitude mixed anti q))) 2 -

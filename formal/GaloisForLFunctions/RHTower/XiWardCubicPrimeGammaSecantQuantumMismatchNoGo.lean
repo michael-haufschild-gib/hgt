@@ -128,7 +128,7 @@ theorem xiWardCubicPhaseMatchedPrimitiveLowerSecant_sub_star
     rw [mul_inv, mul_inv, Complex.inv_I]
     push_cast
     ring_nf
-    rw [show (I : ℂ) ^ 2 = -1 by norm_num]
+    rw [show (I : ℂ) ^ (2 : ℕ) = -1 by norm_num]
     ring
   have hma : 0 < xiGammaEulerPrimitiveLogFrequency pe - a := by linarith
   have hcma : 0 < xiGammaEulerPrimitiveLogFrequency pe + c - a := by linarith
@@ -162,7 +162,7 @@ theorem normSq_xiWardCubicPhaseMatchedPrimitiveLowerSecant_sub_star
         xiWardCubicPhaseMatchedPrimitiveLowerSecant pe gamma c hc.le
           (star ((gamma : ℂ) - I * (a : ℂ)))) =
       xiWardCubicPrimitiveLowerSecantReflectionDefect
-        (xiGammaEulerPrimitiveLogFrequency pe) c a ^ 2 := by
+        (xiGammaEulerPrimitiveLogFrequency pe) c a ^ (2 : ℕ) := by
   rw [xiWardCubicPhaseMatchedPrimitiveLowerSecant_sub_star pe gamma hc ha0 ha]
   rw [Complex.normSq_ofReal]
   simp only [pow_two]
@@ -177,7 +177,7 @@ theorem normSq_pairDif_xiWardCubicPhaseMatchedPrimitiveLowerSecant
           (xiRightCenteredZero q).im c hc.le) q.1) =
       xiWardCubicPrimitiveLowerSecantReflectionDefect
           (xiGammaEulerPrimitiveLogFrequency pe) c
-          (xiRightCenteredZero q).re ^ 2 := by
+          (xiRightCenteredZero q).re ^ (2 : ℕ) := by
   have ha0 := (xiRightCenteredZero_re_pos q).le
   have ha : (xiRightCenteredZero q).re < 1 / 2 :=
     (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q)).2
@@ -214,21 +214,21 @@ theorem not_exists_uniform_cubicHellinger_domination_by_primitiveLowerSecantDefe
     {lambda c : ℝ} (hlambda : 1 / 2 < lambda) (hc : 0 < c) :
     ¬ ∃ C : ℝ, ∀ a : ℝ, 0 < a → a < 1 / 2 →
       cubicLogMomentHellingerHorizontalKernel a a ≤
-        C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ 2 := by
+        C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ (2 : ℕ) := by
   rintro ⟨C, hC⟩
   have hdef := tendsto_xiWardCubicPrimitiveLowerSecantReflectionDefect
     (lt_trans (by norm_num) hlambda) hc
   have ht : Tendsto (fun a : ℝ =>
-      C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ 2)
+      C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ (2 : ℕ))
       (nhds 0) (nhds 0) := by
     convert tendsto_const_nhds.mul (hdef.pow 2) using 1 <;> norm_num
   have htWithin : Tendsto
       (fun a : ℝ =>
-        C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ 2)
+        C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) :=
     ht.mono_left inf_le_left
   have hsmall : ∀ᶠ a : ℝ in nhdsWithin 0 (Set.Ioi 0),
-      C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ 2 <
+      C * xiWardCubicPrimitiveLowerSecantReflectionDefect lambda c a ^ (2 : ℕ) <
         115 / 108 :=
     (tendsto_order.1 htWithin).2 _ (by norm_num)
   have hpos : ∀ᶠ a : ℝ in nhdsWithin 0 (Set.Ioi 0), 0 < a :=

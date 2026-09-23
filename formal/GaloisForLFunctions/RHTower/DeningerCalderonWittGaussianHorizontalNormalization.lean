@@ -62,8 +62,7 @@ private theorem crossPrimeIndexOfPrime_injective :
     (fun i : DeningerCalderonWittCrossPrimePacketIndex => i.1.1) h
   simpa [crossPrimeIndexOfPrime_first] using hval
 
-noncomputable local instance :
-    Infinite DeningerCalderonWittCrossPrimePacketIndex :=
+noncomputable local instance deningerCalderonWittGaussianHorizontalNormalizationInst1 : Infinite DeningerCalderonWittCrossPrimePacketIndex :=
   Infinite.of_injective crossPrimeIndexOfPrime
     crossPrimeIndexOfPrime_injective
 

@@ -185,7 +185,7 @@ theorem log_gradeNorm {P : ι → ℝ} (hP : ∀ i, 0 < P i) (g : PrimeGrades ι
   · exact fun ℓ _ => (zpow_pos (hP ℓ) _).ne'
 
 omit [DecidableEq ι] in
-theorem smul_single (g : PrimeGrades ι) (c a : ℂ) :
+theorem smul_single_primeValuationCoframe (g : PrimeGrades ι) (c a : ℂ) :
     c • (AddMonoidAlgebra.single g a : PrimeAlgebra ι) = AddMonoidAlgebra.single g (c * a) := by
   have h : ((c • (AddMonoidAlgebra.single g a : PrimeAlgebra ι)).coeff)
       = (AddMonoidAlgebra.single g (c * a) : PrimeAlgebra ι).coeff := by
@@ -217,7 +217,7 @@ theorem logDeriv_eq_sum_valuationDeriv {P : ι → ℝ} (hP : ∀ i, 0 < P i) (g
         ((∑ ℓ ∈ g.support, ((Real.log (P ℓ) : ℝ) : ℂ) * ((g ℓ : ℤ) : ℂ)) * c) := by
     rw [Finset.sum_mul, single_finset_sum]
     refine Finset.sum_congr rfl fun ℓ _ => ?_
-    rw [valuationDeriv_single, smul_single]
+    rw [valuationDeriv_single, smul_single_primeValuationCoframe]
     congr 1
     ring
   rw [hsum, log_gradeNorm hP g]

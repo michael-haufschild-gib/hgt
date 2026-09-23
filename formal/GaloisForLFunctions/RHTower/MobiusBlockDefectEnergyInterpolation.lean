@@ -21,9 +21,9 @@ namespace RHTower
 the squared interpolation error. -/
 theorem sq_le_two_sq_add_two_error_sq
     {a b H : ℝ} (hH : 0 ≤ H) (hab : |a - b| ≤ H) :
-    a ^ 2 ≤ 2 * b ^ 2 + 2 * H ^ 2 := by
+    a ^ (2 : ℕ) ≤ 2 * b ^ (2 : ℕ) + 2 * H ^ (2 : ℕ) := by
   have hab0 : 0 ≤ |a - b| := abs_nonneg _
-  have habsq : |a - b| ^ 2 ≤ H ^ 2 := by
+  have habsq : |a - b| ^ (2 : ℕ) ≤ H ^ (2 : ℕ) := by
     nlinarith
   rw [sq_abs] at habsq
   nlinarith [sq_nonneg (a - 2 * b)]
@@ -34,20 +34,20 @@ theorem sum_regularGrid_sq_le_sampleEnergy_add_blockError
     (v : ℕ → ℝ) (N h : ℕ)
     (hlocal : ∀ j ∈ Finset.range N, ∀ k ∈ Finset.range h,
       |v (j * h + k) - v (j * h)| ≤ (h : ℝ)) :
-    ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range h, v (j * h + k) ^ 2 ≤
-      2 * (h : ℝ) * (∑ j ∈ Finset.range N, v (j * h) ^ 2) +
-        2 * (N : ℝ) * (h : ℝ) ^ 3 := by
+    ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range h, v (j * h + k) ^ (2 : ℕ) ≤
+      2 * (h : ℝ) * (∑ j ∈ Finset.range N, v (j * h) ^ (2 : ℕ)) +
+        2 * (N : ℝ) * (h : ℝ) ^ (3 : ℕ) := by
   calc
-    ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range h, v (j * h + k) ^ 2
+    ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range h, v (j * h + k) ^ (2 : ℕ)
         ≤ ∑ j ∈ Finset.range N, ∑ _k ∈ Finset.range h,
-            (2 * v (j * h) ^ 2 + 2 * (h : ℝ) ^ 2) := by
+            (2 * v (j * h) ^ (2 : ℕ) + 2 * (h : ℝ) ^ (2 : ℕ)) := by
           apply Finset.sum_le_sum
           intro j hj
           apply Finset.sum_le_sum
           intro k hk
           exact sq_le_two_sq_add_two_error_sq (Nat.cast_nonneg h) (hlocal j hj k hk)
-    _ = 2 * (h : ℝ) * (∑ j ∈ Finset.range N, v (j * h) ^ 2) +
-        2 * (N : ℝ) * (h : ℝ) ^ 3 := by
+    _ = 2 * (h : ℝ) * (∑ j ∈ Finset.range N, v (j * h) ^ (2 : ℕ)) +
+        2 * (N : ℝ) * (h : ℝ) ^ (3 : ℕ) := by
       simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       simp_rw [mul_add]
       rw [Finset.sum_add_distrib, Finset.mul_sum]
@@ -78,9 +78,9 @@ theorem oneSided_plateauEnergy_lower
     (v : ℕ → ℝ) (m : ℕ) {L : ℝ} (hL : 0 ≤ L)
     (hstep : ∀ k < m, |v (k + 1) - v k| ≤ L)
     (hplateau : 2 * (m : ℝ) * L ≤ |v 0|) :
-    (m : ℝ) * (|v 0| / 2) ^ 2 ≤
-      ∑ k ∈ Finset.range m, v k ^ 2 := by
-  have hpoint : ∀ k ∈ Finset.range m, (|v 0| / 2) ^ 2 ≤ v k ^ 2 := by
+    (m : ℝ) * (|v 0| / 2) ^ (2 : ℕ) ≤
+      ∑ k ∈ Finset.range m, v k ^ (2 : ℕ) := by
+  have hpoint : ∀ k ∈ Finset.range m, (|v 0| / 2) ^ (2 : ℕ) ≤ v k ^ (2 : ℕ) := by
     intro k hk
     have hkm : k < m := Finset.mem_range.mp hk
     have hdist := abs_sub_zero_le_nat_mul_of_step v m hstep k (Nat.le_of_lt hkm)
@@ -93,12 +93,12 @@ theorem oneSided_plateauEnergy_lower
         _ ≤ |v k| + |v k - v 0| := abs_sub _ _
     have hlower : |v 0| / 2 ≤ |v k| := by linarith
     calc
-      (|v 0| / 2) ^ 2 ≤ |v k| ^ 2 :=
+      (|v 0| / 2) ^ (2 : ℕ) ≤ |v k| ^ (2 : ℕ) :=
         (sq_le_sq₀ (by positivity) (abs_nonneg _)).2 hlower
-      _ = v k ^ 2 := sq_abs _
+      _ = v k ^ (2 : ℕ) := sq_abs _
   calc
-    (m : ℝ) * (|v 0| / 2) ^ 2 =
-        ∑ _k ∈ Finset.range m, (|v 0| / 2) ^ 2 := by simp
-    _ ≤ ∑ k ∈ Finset.range m, v k ^ 2 := Finset.sum_le_sum hpoint
+    (m : ℝ) * (|v 0| / 2) ^ (2 : ℕ) =
+        ∑ _k ∈ Finset.range m, (|v 0| / 2) ^ (2 : ℕ) := by simp
+    _ ≤ ∑ k ∈ Finset.range m, v k ^ (2 : ℕ) := Finset.sum_le_sum hpoint
 
 end RHTower

@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.EulerDeletionRemainderFirstCoefficient
 # An exact nonnegative quartic correction of the ordinary arithmetic remainder
 
 The centered Bernoulli kernel has a cubic periodic primitive. Its next primitive is
-`fract(x)^2 * (1-fract(x))^2 / 24`, nonnegative and bounded by `1/384`.
+`fract(x)^(2 : ℕ) * (1-fract(x))^(2 : ℕ) / 24`, nonnegative and bounded by `1/384`.
 Right-derivative integration identifies both primitives, and the continuous integral
 representation supplies the full derivative at every integer join.
 
@@ -21,20 +21,20 @@ private def bernoulliCubic (x : ℝ) : ℝ :=
   Int.fract x ^ 3 / 6 - Int.fract x ^ 2 / 4 + Int.fract x / 12
 
 private theorem cubic_continuous : Continuous bernoulliCubic := by
-  have hc : Continuous (fun x : ℝ => x^3/6-x^2/4+x/12) := by fun_prop
+  have hc : Continuous (fun x : ℝ => x^(3 : ℕ)/6-x^(2 : ℕ)/4+x/12) := by fun_prop
   exact hc.continuousOn.comp_fract'' (by norm_num)
 
 private theorem cubic_right (x : ℝ) :
     HasDerivWithinAt bernoulliCubic (RHTower.bernoulliPeriodic x+1/12) (Ioi x) x := by
   have hf := tendsto_pure.mp (tendsto_floor_right_pure_floor x)
   have he : bernoulliCubic =ᶠ[𝓝[≥] x]
-      (fun y : ℝ => (y-(Int.floor x:ℝ))^3/6-(y-(Int.floor x:ℝ))^2/4+
+      (fun y : ℝ => (y-(Int.floor x:ℝ))^(3 : ℕ)/6-(y-(Int.floor x:ℝ))^(2 : ℕ)/4+
         (y-(Int.floor x:ℝ))/12) := by
     filter_upwards [hf] with y hy
     simp only [bernoulliCubic,Int.fract,hy]
   have hi := (hasDerivAt_id x).sub_const (Int.floor x:ℝ)
   have hd : HasDerivAt
-      (fun y : ℝ => (y-(Int.floor x:ℝ))^3/6-(y-(Int.floor x:ℝ))^2/4+
+      (fun y : ℝ => (y-(Int.floor x:ℝ))^(3 : ℕ)/6-(y-(Int.floor x:ℝ))^(2 : ℕ)/4+
         (y-(Int.floor x:ℝ))/12) (RHTower.bernoulliPeriodic x+1/12) x := by
     convert! (((hi.pow 3).div_const 6).sub ((hi.pow 2).div_const 4)).add (hi.div_const 12) using 1
     simp only [Int.fract,RHTower.bernoulliPeriodic]
@@ -47,7 +47,7 @@ theorem bernoulliCenteredPrimitive_eq_cubic (x : ℝ) :
     bernoulliCenteredPrimitive x =
       Int.fract x ^ 3 / 6 - Int.fract x ^ 2 / 4 + Int.fract x / 12 := by
   have hb : Continuous RHTower.bernoulliPeriodic := by
-    have hc : Continuous (fun x : ℝ => (x^2-x)/2) := by fun_prop
+    have hc : Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) := by fun_prop
     exact hc.continuousOn.comp_fract'' (by norm_num)
   have h := intervalIntegral.integral_eq_sub_of_hasDeriv_right
     (a:=0) (b:=x) cubic_continuous.continuousOn (fun y _ => cubic_right y)
@@ -57,22 +57,22 @@ theorem bernoulliCenteredPrimitive_eq_cubic (x : ℝ) :
 
 /-- A nonnegative periodic quartic primitive with zero integer endpoints. -/
 def bernoulliQuarticPrimitive (x : ℝ) : ℝ :=
-  Int.fract x ^ 2 * (1-Int.fract x)^2 / 24
+  Int.fract x ^ 2 * (1-Int.fract x)^(2 : ℕ) / 24
 
 private theorem quartic_continuous : Continuous bernoulliQuarticPrimitive := by
-  have hc : Continuous (fun x : ℝ => x^2*(1-x)^2/24) := by fun_prop
+  have hc : Continuous (fun x : ℝ => x^(2 : ℕ)*(1-x)^(2 : ℕ)/24) := by fun_prop
   exact hc.continuousOn.comp_fract'' (by norm_num)
 
 private theorem quartic_right (x : ℝ) :
     HasDerivWithinAt bernoulliQuarticPrimitive (bernoulliCubic x) (Ioi x) x := by
   have hf := tendsto_pure.mp (tendsto_floor_right_pure_floor x)
   have he : bernoulliQuarticPrimitive =ᶠ[𝓝[≥] x]
-      (fun y : ℝ => (y-(Int.floor x:ℝ))^2*(1-(y-(Int.floor x:ℝ)))^2/24) := by
+      (fun y : ℝ => (y-(Int.floor x:ℝ))^(2 : ℕ)*(1-(y-(Int.floor x:ℝ)))^(2 : ℕ)/24) := by
     filter_upwards [hf] with y hy
     simp only [bernoulliQuarticPrimitive,Int.fract,hy]
   have hi := (hasDerivAt_id x).sub_const (Int.floor x:ℝ)
   have hd : HasDerivAt
-      (fun y : ℝ => (y-(Int.floor x:ℝ))^2*(1-(y-(Int.floor x:ℝ)))^2/24)
+      (fun y : ℝ => (y-(Int.floor x:ℝ))^(2 : ℕ)*(1-(y-(Int.floor x:ℝ)))^(2 : ℕ)/24)
       (bernoulliCubic x) x := by
     convert! ((hi.pow 2).mul ((hi.const_sub 1).pow 2)).div_const 24 using 1
     simp only [bernoulliCubic,Int.fract]

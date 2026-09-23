@@ -131,11 +131,11 @@ theorem tensor_zero (ψ : StateVector (Qubits m)) :
 theorem norm_tensor (ψ : StateVector (Qubits m)) (φ : StateVector (Qubits n)) :
     ‖tensor ψ φ‖ = ‖ψ‖ * ‖φ‖ := by
   rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq,
-    ← Real.sqrt_mul (show (0 : ℝ) ≤ ∑ i, ‖ψ i‖ ^ 2 from
+    ← Real.sqrt_mul (show (0 : ℝ) ≤ ∑ i, ‖ψ i‖ ^ (2 : ℕ) from
       Finset.sum_nonneg fun i _ => sq_nonneg ‖ψ i‖)]
   congr 1
   rw [← Equiv.sum_comp (prodEquiv (m := m) (n := n))
-      (fun i => ‖tensor ψ φ i‖ ^ 2),
+      (fun i => ‖tensor ψ φ i‖ ^ (2 : ℕ)),
     Fintype.sum_prod_type, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
   rw [tensor_apply, Equiv.symm_apply_apply, norm_mul, mul_pow]

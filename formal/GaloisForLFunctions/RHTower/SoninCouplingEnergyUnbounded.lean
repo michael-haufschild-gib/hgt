@@ -38,7 +38,7 @@ theorem exists_hsNormSq_soninApertureCoupling_ge (N₀ : ℕ) (hN₀ : 1 ≤ N�
   -- the discount is the aperture's own constant
   have hsum : ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b
       (soninShellCutScale b c N κ)⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) k) /
-      ((1 : ℝ) / 2 / 6) ^ 2 = Dis / ((1 : ℝ) / 2 / 6) ^ 2 := by
+      ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) = Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) := by
     rw [← Finset.sum_div, hDis,
       sum_hsNormSq_soninCouplingIdealErrors a b (soninShellCutScale b c N κ)⁻¹ ha hb hinv]
   rw [hsum] at hbound
@@ -46,7 +46,7 @@ theorem exists_hsNormSq_soninApertureCoupling_ge (N₀ : ℕ) (hN₀ : 1 ≤ N�
   have hceil : 4 * B + 144 * Dis ≤ (⌈4 * B + 144 * Dis⌉₊ : ℝ) := Nat.le_ceil _
   have hNge : ((⌈4 * B + 144 * Dis⌉₊ : ℕ) : ℝ) ≤ (N : ℝ) := by exact_mod_cast hMN
   have hNlarge : 4 * B + 144 * Dis ≤ (N : ℝ) := le_trans hceil hNge
-  have harith : ((N : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ 2) * (1 - (1 : ℝ) / 2) ^ 2 =
+  have harith : ((N : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ)) * (1 - (1 : ℝ) / 2) ^ (2 : ℕ) =
       ((N : ℝ) - 144 * Dis) / 4 := by
     norm_num
     ring

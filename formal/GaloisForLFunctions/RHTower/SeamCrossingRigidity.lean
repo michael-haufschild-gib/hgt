@@ -58,7 +58,7 @@ contrapositive of the one-zero segment-length law: a crossing-free segment would
 short. -/
 theorem seam_edge_forced_online_zero_one_zero (N : ℕ)
     {τc a b R Md : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -69,7 +69,7 @@ theorem seam_edge_forced_online_zero_one_zero (N : ℕ)
     (hlong :
       (Real.pi + (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) < b - a) :
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) < b - a) :
     ∃ τ ∈ Set.Icc a b, (completedGN N (linePt τ)).re = 0 := by
   by_contra hcon
   push Not at hcon
@@ -81,7 +81,7 @@ theorem seam_edge_forced_online_zero_one_zero (N : ℕ)
 long crossing-free-impossible segment carries an actual on-line zero of the finite carrier. -/
 theorem seam_edge_forced_crossing_one_zero (N : ℕ)
     {τc a b R Md : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -92,7 +92,7 @@ theorem seam_edge_forced_crossing_one_zero (N : ℕ)
     (hlong :
       (Real.pi + (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) < b - a) :
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) < b - a) :
     ∃ τ ∈ Set.Icc a b, gN N (linePt τ) = 0 := by
   obtain ⟨τ, hτ, hzero⟩ := seam_edge_forced_online_zero_one_zero N hR0 ha hflr hd_an hd_ne
     hfact hMd hltd hab hseg hlong
@@ -103,7 +103,7 @@ crossing: a long segment carries an on-line zero of the completed truncation its
 on-seam zero the seam ledger charges. -/
 theorem seam_edge_forced_completedGN_zero_one_zero (N : ℕ)
     {τc a b R Md : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -114,7 +114,7 @@ theorem seam_edge_forced_completedGN_zero_one_zero (N : ℕ)
     (hlong :
       (Real.pi + (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) < b - a) :
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) < b - a) :
     ∃ τ ∈ Set.Icc a b, completedGN N (linePt τ) = 0 := by
   obtain ⟨τ, hτ, hzero⟩ := seam_edge_forced_online_zero_one_zero N hR0 ha hflr hd_an hd_ne
     hfact hMd hltd hab hseg hlong
@@ -137,7 +137,7 @@ short: its length is at most the zero-free segment-length bound
 here — there is nothing to cross — so the bound holds unconditionally on such a segment. -/
 theorem zerofree_seam_edge_length_le (N : ℕ)
     {τc a b R M : ℝ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hball : ∀ z ∈ ball (linePt τc) R, z.re < 1)
     (hzf : ∀ z ∈ ball (linePt τc) R, gN N z ≠ 0)
     (hM : ∀ z ∈ ball (linePt τc) R, ‖gN N z‖ ≤ M)
@@ -147,7 +147,7 @@ theorem zerofree_seam_edge_length_le (N : ℕ)
     b - a ≤
       (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log M - Real.log ‖gN N (linePt τc)‖) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) :=
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) :=
   sign_constant_segment_length_le N hR0 ha hflr hball hzf hM hlt hab hseg
     (fun τ hτ => online_re_ne_zero_of_zero_free hzf (hseg τ hτ))
 
@@ -179,7 +179,7 @@ is monotone in the height (hence `≥ windingFloor(a)`), so the per-sub-stretch 
 uniform `Λ`. -/
 theorem seam_no_long_sign_constant_stretch_one_zero (N : ℕ)
     {τc a b R Md ρmax : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -190,7 +190,7 @@ theorem seam_no_long_sign_constant_stretch_one_zero (N : ℕ)
     ∀ c d, a ≤ c → c ≤ d → d ≤ b →
       (Real.pi + 4 * ρmax / (R - ρmax) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) < d - c →
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) < d - c →
       ∃ τ ∈ Set.Icc c d, (completedGN N (linePt τ)).re = 0 := by
   intro c d hac hcd hdb hlongcd
   set L : ℝ := Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖ with hL_def
@@ -198,7 +198,7 @@ theorem seam_no_long_sign_constant_stretch_one_zero (N : ℕ)
     norm_pos_iff.mpr (hd_ne _ (mem_ball_self hR0))
   have hL0 : 0 ≤ L := by rw [hL_def]; linarith [Real.log_le_log hd0 hltd.le]
   have hc0 : 0 < c := lt_of_lt_of_le ha hac
-  have hflrc : 0 < (Real.log (c / (2 * Real.pi)) - (4 / c ^ 2 + Real.pi / c)) / 2 :=
+  have hflrc : 0 < (Real.log (c / (2 * Real.pi)) - (4 / c ^ (2 : ℕ) + Real.pi / c)) / 2 :=
     lt_of_lt_of_le hflr (winding_floor_expr_mono ha hac)
   have hcρ : |c - τc| ≤ ρmax :=
     abs_sub_le_of_mem_Icc_endpoints hρa hρb ⟨hac, le_trans hcd hdb⟩
@@ -221,14 +221,14 @@ theorem seam_no_long_sign_constant_stretch_one_zero (N : ℕ)
       Real.pi + (2 * |c - τc| / (R - |c - τc|) + 2 * |d - τc| / (R - |d - τc|)) * L ≤
       Real.pi + 4 * ρmax / (R - ρmax) * L :=
     by nlinarith [mul_le_mul_of_nonneg_right hpref hL0]
-  have hden : (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 ≤
-      (Real.log (c / (2 * Real.pi)) - (4 / c ^ 2 + Real.pi / c)) / 2 :=
+  have hden : (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2 ≤
+      (Real.log (c / (2 * Real.pi)) - (4 / c ^ (2 : ℕ) + Real.pi / c)) / 2 :=
     winding_floor_expr_mono ha hac
   have hRHSle :
       (Real.pi + (2 * |c - τc| / (R - |c - τc|) + 2 * |d - τc| / (R - |d - τc|)) * L) /
-        ((Real.log (c / (2 * Real.pi)) - (4 / c ^ 2 + Real.pi / c)) / 2) ≤
+        ((Real.log (c / (2 * Real.pi)) - (4 / c ^ (2 : ℕ) + Real.pi / c)) / 2) ≤
       (Real.pi + 4 * ρmax / (R - ρmax) * L) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) := by
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) := by
     rw [div_le_div_iff₀ hflrc hflr]
     have hp1 := mul_le_mul_of_nonneg_right hnum hflr.le
     have hp2 := mul_le_mul_of_nonneg_left hden hnum2nn
@@ -236,7 +236,7 @@ theorem seam_no_long_sign_constant_stretch_one_zero (N : ℕ)
   have hlongcd' :
       (Real.pi + (2 * |c - τc| / (R - |c - τc|) + 2 * |d - τc| / (R - |d - τc|)) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (c / (2 * Real.pi)) - (4 / c ^ 2 + Real.pi / c)) / 2) < d - c := by
+        ((Real.log (c / (2 * Real.pi)) - (4 / c ^ (2 : ℕ) + Real.pi / c)) / 2) < d - c := by
     rw [← hL_def]; linarith [hRHSle, hlongcd]
   exact seam_edge_forced_online_zero_one_zero N hR0 hc0 hflrc hd_an hd_ne hfact hMd hltd
     hcd hsegcd hlongcd'
@@ -309,7 +309,7 @@ def SeamNoQuietStretch (N : ℕ) (A B Λ : ℝ) : Prop :=
 `Λ = (π + (4ρmax/(R − ρmax))·(log Md − log‖dslope center‖))/windingFloor(a)`. -/
 theorem seamNoQuietStretch_of_disc_one_zero (N : ℕ)
     {τc a b R Md ρmax : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -320,7 +320,7 @@ theorem seamNoQuietStretch_of_disc_one_zero (N : ℕ)
     SeamNoQuietStretch N a b
       ((Real.pi + 4 * ρmax / (R - ρmax) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)) :=
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)) :=
   seam_no_long_sign_constant_stretch_one_zero N hR0 ha hflr hd_an hd_ne hfact hMd hltd
     hρa hρb hρR hseg
 
@@ -346,7 +346,7 @@ Borel--Carathéodory/winding scale.  The conclusion consumes only the concrete a
 data; the intermediate `SeamNoQuietStretch` predicate is constructed internally. -/
 theorem seam_crossing_count_of_disc_one_zero (N : ℕ)
     {τc a b R Md ρmax : ℝ} {ρ' : ℂ} {n : ℕ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -357,13 +357,13 @@ theorem seam_crossing_count_of_disc_one_zero (N : ℕ)
     (hΛ : 0 <
       (Real.pi + 4 * ρmax / (R - ρmax) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2))
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2))
     (hn : 0 < n)
     (hlong :
       (n : ℝ) *
           ((Real.pi + 4 * ρmax / (R - ρmax) *
               (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-            ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)) <
+            ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)) <
         b - a) :
     ∃ z : Fin n → ℝ, StrictMono z ∧ (∀ i, z i ∈ Set.Icc a b) ∧
       (∀ i, gN N (linePt (z i)) = 0) :=

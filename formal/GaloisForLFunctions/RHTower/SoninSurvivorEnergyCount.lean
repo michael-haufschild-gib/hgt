@@ -34,7 +34,7 @@ theorem card_sub_le_hsNormSq_of_ideal_errors
     (β ε η : ℝ) (hε : 0 < ε) (hη : η ≤ 1)
     (hcomb : (Fintype.card κ : ℝ) * ε + β ≤ η)
     (hest : ∀ i, ‖Z (e i) - u i‖ ≤ (∑ k : κ, ‖T k (e i)‖) + β) :
-    ((Fintype.card ι : ℝ) - ∑ k : κ, hsNormSq (T k) / ε ^ 2) * (1 - η) ^ 2 ≤ hsNormSq Z := by
+    ((Fintype.card ι : ℝ) - ∑ k : κ, hsNormSq (T k) / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤ hsNormSq Z := by
   classical
   set S : Finset ι := Finset.univ.filter fun i : ι => ∀ k, ‖T k (e i)‖ < ε with hSdef
   have hcount := card_le_card_filter_forall_lt_of_isSoninPrincipalRelativeIdeal T hT he ε hε
@@ -47,8 +47,8 @@ theorem card_sub_le_hsNormSq_of_ideal_errors
             rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     linarith [hest i, hsum, hcomb]
   have hS := card_mul_sq_le_hsNormSq_of_near_unit hZ he S u (fun i _ => hu i) η hη hnear
-  have hsq : (0 : ℝ) ≤ (1 - η) ^ 2 := sq_nonneg _
-  have hcard : (Fintype.card ι : ℝ) - ∑ k : κ, hsNormSq (T k) / ε ^ 2 ≤ (S.card : ℝ) := by
+  have hsq : (0 : ℝ) ≤ (1 - η) ^ (2 : ℕ) := sq_nonneg _
+  have hcard : (Fintype.card ι : ℝ) - ∑ k : κ, hsNormSq (T k) / ε ^ (2 : ℕ) ≤ (S.card : ℝ) := by
     linarith [hcount]
   exact le_trans (mul_le_mul_of_nonneg_right hcard hsq) hS
 
@@ -60,7 +60,7 @@ theorem card_sub_le_hsNormSq_of_one_ideal_error
     (u : ι → evenSubspace) (hu : ∀ i, ‖u i‖ = 1)
     (β ε η : ℝ) (hε : 0 < ε) (hη : η ≤ 1) (hcomb : ε + β ≤ η)
     (hest : ∀ i, ‖Z (e i) - u i‖ ≤ ‖T (e i)‖ + β) :
-    ((Fintype.card ι : ℝ) - hsNormSq T / ε ^ 2) * (1 - η) ^ 2 ≤ hsNormSq Z := by
+    ((Fintype.card ι : ℝ) - hsNormSq T / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤ hsNormSq Z := by
   classical
   have hmain := card_sub_le_hsNormSq_of_ideal_errors hZ (κ := Unit) (fun _ => T) (fun _ => hT)
     he u hu β ε η hε hη (by simpa using hcomb) (by simpa using hest)

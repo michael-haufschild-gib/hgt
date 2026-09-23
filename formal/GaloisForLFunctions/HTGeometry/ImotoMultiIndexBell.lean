@@ -345,7 +345,7 @@ theorem pderiv_fullProduct
 
 theorem pderiv_half_residual_sq
     {r : Type*} (i : r) (R : MvPolynomial r ℚ) :
-    MvPolynomial.pderiv i (C (1 / 2 : ℚ) * R ^ 2) =
+    MvPolynomial.pderiv i (C (1 / 2 : ℚ) * R ^ (2 : ℕ)) =
       R * MvPolynomial.pderiv i R := by
   rw [MvPolynomial.pderiv_C_mul, MvPolynomial.pderiv_pow]
   norm_num

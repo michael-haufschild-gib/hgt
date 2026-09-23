@@ -41,7 +41,7 @@ omit [DecidableEq κ] in
 theorem matQuadForm_eq_sum (M : Matrix κ κ ℂ) (x : κ → ℂ) :
     matQuadForm M x = ∑ i, star (x i) * (M *ᵥ x) i := rfl
 
-theorem star_mul_self_complex (z : ℂ) : star z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+theorem star_mul_self_complex (z : ℂ) : star z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [show star z * z = ((starRingEnd ℂ) z) * z from rfl, RCLike.conj_mul]
   norm_cast
 
@@ -52,13 +52,13 @@ theorem matQuadForm_congr (M A : Matrix κ κ ℂ) (x : κ → ℂ) :
     Matrix.dotProduct_mulVec, ← Matrix.star_mulVec]
 
 theorem matQuadForm_one_re (x : κ → ℂ) :
-    (matQuadForm (1 : Matrix κ κ ℂ) x).re = ∑ i, ‖x i‖ ^ 2 := by
+    (matQuadForm (1 : Matrix κ κ ℂ) x).re = ∑ i, ‖x i‖ ^ (2 : ℕ) := by
   rw [matQuadForm_eq_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Matrix.one_mulVec, star_mul_self_complex, Complex.ofReal_re]
 
 theorem matQuadForm_rdiag_re (d : κ → ℝ) (x : κ → ℂ) :
-    (matQuadForm (rdiag d) x).re = ∑ i, d i * ‖x i‖ ^ 2 := by
+    (matQuadForm (rdiag d) x).re = ∑ i, d i * ‖x i‖ ^ (2 : ℕ) := by
   rw [matQuadForm_eq_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [rdiag, Matrix.mulVec_diagonal,

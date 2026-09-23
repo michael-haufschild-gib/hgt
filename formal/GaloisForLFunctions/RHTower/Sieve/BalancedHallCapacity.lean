@@ -27,7 +27,7 @@ theorem exists_hall_injection_balanced {X H y : ℕ} (hy : 1 ≤ y) (S : Finset 
     (sources : Finset ℕ)
     (hswin : ∀ n ∈ sources, X < n ∧ n ≤ X + H)
     (hcap : ((sources.card : ℕ) : ℝ)
-      ≤ ((S.card : ℕ) : ℝ) ^ 2 / (((X + H : ℕ) : ℝ) * balancedMomentConst y)) :
+      ≤ ((S.card : ℕ) : ℝ) ^ (2 : ℕ) / (((X + H : ℕ) : ℝ) * balancedMomentConst y)) :
     ∃ f : ℕ → ℕ, Set.InjOn f ↑sources
       ∧ (∀ n ∈ sources, f n ∈ S.image (fun q => q.1 * q.2))
       ∧ (∀ n ∈ sources, moebius (f n) = ε)

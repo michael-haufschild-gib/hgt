@@ -9,10 +9,10 @@ two marked channels.  Retaining their canonical indefinite difference exposes th
 current.  Prime by prime, this Route N Krein charge becomes the exact Route R critical-wall Gamma
 Bockstein after multiplication by one grade-independent Fisher gauge
 
-`g(p) = p * d(p) = p^2 / (p + 1)^2`.
+`g(p) = p * d(p) = p^(2 : ℕ) / (p + 1)^(2 : ℕ)`.
 
 The gauge lies uniformly in `[1/4, 1]`; its reciprocal is uniformly bounded.  Hence it induces a
-canonical automorphism of the fixed all-prime quotient by `ell^1`, and the Route N Krein class and
+canonical automorphism of the fixed all-prime quotient by `ell^(1 : ℕ)`, and the Route N Krein class and
 Route R wall class are exactly gauge-conjugate there.  No Xi value, zero, or RH hypothesis occurs.
 -/
 

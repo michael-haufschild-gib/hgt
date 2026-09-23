@@ -284,7 +284,7 @@ square root. Thus the Euler boundary itself creates no local branch obstruction.
 theorem exists_local_analytic_sqrt_poleClearedFirstTraceCayleyField_of_norm_le_one
     {w : ℂ} (hw : w ∈ poleFactorCayleyRightDomain) (hnorm : ‖w‖ ≤ 1) :
     ∃ g : ℂ → ℂ, AnalyticAt ℂ g w ∧ g w ≠ 0 ∧
-      ∀ᶠ z in 𝓝 w, g z ^ 2 = poleClearedFirstTraceCayleyField z := by
+      ∀ᶠ z in 𝓝 w, g z ^ (2 : ℕ) = poleClearedFirstTraceCayleyField z := by
   exact Bottcher.exists_analyticAt_sq_eq
     (analyticOnNhd_poleClearedFirstTraceCayleyField w hw)
     (poleClearedFirstTraceCayleyField_ne_zero_of_norm_le_one hw hnorm)
@@ -293,11 +293,11 @@ theorem exists_local_analytic_sqrt_poleClearedFirstTraceCayleyField_of_norm_le_o
 theorem exists_rightHalf_sqrt_poleClearedFirstTrace_iff_cayleySeam :
     (∃ e : ℂ → ℂ,
       AnalyticOnNhd ℂ e rightHalf ∧
-        ∀ s ∈ rightHalf, e s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ↔
+        ∀ s ∈ rightHalf, e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ↔
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g poleFactorCayleyRightDomain ∧
         ∀ w ∈ poleFactorCayleyRightDomain,
-          g w ^ 2 = poleClearedFirstTraceCayleyField w := by
+          g w ^ (2 : ℕ) = poleClearedFirstTraceCayleyField w := by
   constructor
   · rintro ⟨e, he, hesq⟩
     refine ⟨fun w => e (poleFactorCayleyInv w), ?_, ?_⟩
@@ -322,7 +322,7 @@ theorem rhLadder_one_iff_poleClearedFirstTrace_cayleySeam :
       ∃ g : ℂ → ℂ,
         AnalyticOnNhd ℂ g poleFactorCayleyRightDomain ∧
           ∀ w ∈ poleFactorCayleyRightDomain,
-            g w ^ 2 = poleClearedFirstTraceCayleyField w := by
+            g w ^ (2 : ℕ) = poleClearedFirstTraceCayleyField w := by
   rw [rhLadder_one_iff_poleClearedFirstTrace_sqrt,
     exists_rightHalf_sqrt_poleClearedFirstTrace_iff_cayleySeam]
 
@@ -333,7 +333,7 @@ theorem rhLadder_one_iff_poleClearedPrimeZetaHalfEuler_cayleySeam_extends :
       ∃ g : ℂ → ℂ,
         AnalyticOnNhd ℂ g poleFactorCayleyRightDomain ∧
           (∀ w ∈ poleFactorCayleyRightDomain,
-            g w ^ 2 = poleClearedFirstTraceCayleyField w) ∧
+            g w ^ (2 : ℕ) = poleClearedFirstTraceCayleyField w) ∧
           EqOn g poleClearedPrimeZetaHalfEulerCayleyGerm (ball (0 : ℂ) 1) := by
   rw [rhLadder_one_iff_poleClearedPrimeZetaHalfEulerGerm_extends]
   constructor

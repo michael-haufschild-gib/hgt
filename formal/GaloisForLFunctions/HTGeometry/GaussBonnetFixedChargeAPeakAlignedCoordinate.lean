@@ -87,11 +87,11 @@ theorem egbFixedChargeAPeakAlignedCoordinate_critical_limit (φ ψ : ℝ) :
 
 theorem egbFixedChargeAPeakAlignedCoordinate_linear_formula (τ φ ψ : ℝ) :
     (egbFixedChargeAPeakAlignedCoordinate τ φ ψ - sin ψ) / egbCoexistenceASymmetricRatio τ =
-      -(egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ) * cos ψ ^ 2 /
+      -(egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ) * cos ψ ^ (2 : ℕ) /
         (1 - egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) := by
   have hd := egbFixedChargeAPeakAlignedCoordinate_denominator_pos τ φ ψ
   have hz := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hs : cos ψ ^ 2 = 1 - sin ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : cos ψ ^ (2 : ℕ) = 1 - sin ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
   unfold egbFixedChargeAPeakAlignedCoordinate
   rw [hs]
   have hd' : 1 - sin ψ * egbFixedChargeAMiddleGapCoordinate τ φ ≠ 0 := by simpa only [mul_comm] using hd.ne'
@@ -99,12 +99,12 @@ theorem egbFixedChargeAPeakAlignedCoordinate_linear_formula (τ φ ψ : ℝ) :
 
 theorem egbFixedChargeAPeakAlignedCoordinate_linear_limit (φ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAPeakAlignedCoordinate τ φ ψ - sin ψ) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (-egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ 2)) := by
+      atBot (𝓝 (-egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ (2 : ℕ))) := by
   have hc := egbFixedChargeAMiddleGapCoordinate_critical_limit φ
   have hden := (tendsto_const_nhds (x := (1 : ℝ))).sub (hc.mul (tendsto_const_nhds (x := sin ψ)))
   simp only [zero_mul, sub_zero] at hden
   have h := (((egbFixedChargeAMiddleGapCoordinate_linear_limit φ).neg).mul
-    (tendsto_const_nhds (x := cos ψ ^ 2))).div hden one_ne_zero
+    (tendsto_const_nhds (x := cos ψ ^ (2 : ℕ)))).div hden one_ne_zero
   simpa only [egbFixedChargeAPeakAlignedCoordinate_linear_formula, Pi.div_def, div_one] using h
 
 end GaloisForLFunctions.HTGeometry

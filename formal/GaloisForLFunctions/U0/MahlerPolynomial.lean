@@ -62,9 +62,9 @@ theorem rootMultiplicity_comp {p g : ℂ[X]} (hp : p ≠ 0) (z : ℂ)
 `z = 0` (the critical point, ramified) and `1` otherwise. -/
 @[aesop safe]
 theorem rootMultiplicity_quadratic_factor (c z : ℂ) :
-    rootMultiplicity z ((X ^ 2 + C c) - C (((X ^ 2 + C c).eval z))) = if z = 0 then 2 else 1 := by
-  have heval : (X ^ 2 + C c).eval z = z ^ 2 + c := by simp
-  have hfact : (X ^ 2 + C c) - C (z ^ 2 + c) = (X - C z) * (X + C z) := by
+    rootMultiplicity z ((X ^ (2 : ℕ) + C c) - C (((X ^ (2 : ℕ) + C c).eval z))) = if z = 0 then 2 else 1 := by
+  have heval : (X ^ (2 : ℕ) + C c).eval z = z ^ (2 : ℕ) + c := by simp
+  have hfact : (X ^ (2 : ℕ) + C c) - C (z ^ (2 : ℕ) + c) = (X - C z) * (X + C z) := by
     simp only [map_add, map_pow]; ring
   rw [heval, hfact]
   have h2ne : (X + C z) ≠ 0 := by
@@ -89,18 +89,18 @@ the right is `mult_z` of the composition `r ∘ (X²+c)` via `rootMultiplicity_c
 factor. -/
 @[aesop safe]
 theorem mahler_mult_identity {c lam : ℂ} {r : ℂ[X]} (hr0 : r ≠ 0) (hlam : lam ≠ 0)
-    (hr : r.comp (X ^ 2 + C c) = C lam * r ^ 2) (z : ℂ) :
-    2 * rootMultiplicity z r = rootMultiplicity (z ^ 2 + c) r * (if z = 0 then 2 else 1) := by
-  have heval : (X ^ 2 + C c).eval z = z ^ 2 + c := by simp
-  have hquad_ne : (X ^ 2 + C c) - C (((X ^ 2 + C c).eval z)) ≠ 0 := by
-    rw [heval, show (X ^ 2 + C c) - C (z ^ 2 + c) = (X - C z) * (X + C z) by
+    (hr : r.comp (X ^ (2 : ℕ) + C c) = C lam * r ^ (2 : ℕ)) (z : ℂ) :
+    2 * rootMultiplicity z r = rootMultiplicity (z ^ (2 : ℕ) + c) r * (if z = 0 then 2 else 1) := by
+  have heval : (X ^ (2 : ℕ) + C c).eval z = z ^ (2 : ℕ) + c := by simp
+  have hquad_ne : (X ^ (2 : ℕ) + C c) - C (((X ^ (2 : ℕ) + C c).eval z)) ≠ 0 := by
+    rw [heval, show (X ^ (2 : ℕ) + C c) - C (z ^ (2 : ℕ) + c) = (X - C z) * (X + C z) by
       simp only [map_add, map_pow]; ring]
     exact mul_ne_zero (X_sub_C_ne_zero z)
       (by rw [show (X + C z) = X - C (-z) by rw [map_neg, sub_neg_eq_add]]; exact X_sub_C_ne_zero _)
-  have e1 : rootMultiplicity z (r.comp (X ^ 2 + C c))
-      = rootMultiplicity (z ^ 2 + c) r * (if z = 0 then 2 else 1) := by
+  have e1 : rootMultiplicity z (r.comp (X ^ (2 : ℕ) + C c))
+      = rootMultiplicity (z ^ (2 : ℕ) + c) r * (if z = 0 then 2 else 1) := by
     rw [rootMultiplicity_comp hr0 z hquad_ne, rootMultiplicity_quadratic_factor, heval]
-  have e2 : rootMultiplicity z (r.comp (X ^ 2 + C c)) = 2 * rootMultiplicity z r := by
+  have e2 : rootMultiplicity z (r.comp (X ^ (2 : ℕ) + C c)) = 2 * rootMultiplicity z r := by
     rw [hr, rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hlam) (pow_ne_zero 2 hr0)),
         rootMultiplicity_C, zero_add, rootMultiplicity_pow hr0]
   exact e2.symm.trans e1
@@ -113,14 +113,14 @@ to `c` gives `2m ≤ m`. Either way, contradiction. This is the `n = 1` case of 
 not a rational function. -/
 @[aesop safe]
 theorem no_nonconstant_mahler_poly {c lam : ℂ} (hc : c ≠ 0) {r : ℂ[X]}
-    (hnc : 0 < r.natDegree) (hr : r.comp (X ^ 2 + C c) = C lam * r ^ 2) : False := by
+    (hnc : 0 < r.natDegree) (hr : r.comp (X ^ (2 : ℕ) + C c) = C lam * r ^ (2 : ℕ)) : False := by
   have hr0 : r ≠ 0 := fun h => by simp [h] at hnc
   have hlam : lam ≠ 0 := by
     intro h
     rw [h, map_zero, zero_mul, comp_eq_zero_iff] at hr
     rcases hr with h1 | ⟨_, h2⟩
     · exact hr0 h1
-    · have hdeg : (X ^ 2 + C c).natDegree = 2 := by compute_degree!
+    · have hdeg : (X ^ (2 : ℕ) + C c).natDegree = 2 := by compute_degree!
       rw [h2, natDegree_C] at hdeg; exact absurd hdeg (by norm_num)
   have key := mahler_mult_identity hr0 hlam hr
   set S := r.roots.toFinset with hS
@@ -136,13 +136,13 @@ theorem no_nonconstant_mahler_poly {c lam : ℂ} (hc : c ≠ 0) {r : ℂ[X]}
     intro w hw0 hwm
     have hk := key w
     rw [if_neg hw0, mul_one] at hk
-    have hpos : 0 < rootMultiplicity (w ^ 2 + c) r := by omega
-    have hroot : r.IsRoot (w ^ 2 + c) := (rootMultiplicity_pos hr0).mp hpos
-    have hle := hmax (w ^ 2 + c) hroot
+    have hpos : 0 < rootMultiplicity (w ^ (2 : ℕ) + c) r := by omega
+    have hroot : r.IsRoot (w ^ (2 : ℕ) + c) := (rootMultiplicity_pos hr0).mp hpos
+    have hle := hmax (w ^ (2 : ℕ) + c) hroot
     omega
   by_cases hz0 : z₀ = 0
   · have hk := key z₀
-    rw [if_pos hz0, hz0, show (0 : ℂ) ^ 2 + c = c by ring] at hk
+    rw [if_pos hz0, hz0, show (0 : ℂ) ^ (2 : ℕ) + c = c by ring] at hk
     have hcle : rootMultiplicity z₀ r ≤ rootMultiplicity c r := by rw [hz0]; omega
     exact step c hc hcle
   · exact step z₀ hz0 (le_refl _)
@@ -155,9 +155,9 @@ for a constant `λ`. Proof: from the equation `p² ∣ p(σz)·q²`, and `IsCopr
 bridge from a rational `φ_c = p/q` to the Mahler obstruction `no_nonconstant_mahler_poly`. -/
 @[aesop safe]
 theorem comp_eq_const_mul_sq {c : ℂ} {p q : ℂ[X]} (hp : p ≠ 0) (hpq : IsCoprime p q)
-    (heq : p.comp (X ^ 2 + C c) * q ^ 2 = p ^ 2 * q.comp (X ^ 2 + C c)) :
-    ∃ lam : ℂ, p.comp (X ^ 2 + C c) = C lam * p ^ 2 := by
-  set g := X ^ 2 + C c with hg
+    (heq : p.comp (X ^ (2 : ℕ) + C c) * q ^ (2 : ℕ) = p ^ (2 : ℕ) * q.comp (X ^ (2 : ℕ) + C c)) :
+    ∃ lam : ℂ, p.comp (X ^ (2 : ℕ) + C c) = C lam * p ^ (2 : ℕ) := by
+  set g := X ^ (2 : ℕ) + C c with hg
   have hgdeg : g.natDegree = 2 := by rw [hg]; compute_degree!
   have hpcomp_ne : p.comp g ≠ 0 := by
     intro h
@@ -165,13 +165,13 @@ theorem comp_eq_const_mul_sq {c : ℂ} {p q : ℂ[X]} (hp : p ≠ 0) (hpq : IsCo
     rcases h with h1 | ⟨_, h2⟩
     · exact hp h1
     · have hgd := hgdeg; rw [h2, natDegree_C] at hgd; exact absurd hgd (by norm_num)
-  have hp2 : p ^ 2 ≠ 0 := pow_ne_zero 2 hp
-  have hdvd1 : p ^ 2 ∣ p.comp g := by
-    have h : p ^ 2 ∣ p.comp g * q ^ 2 := by rw [heq]; exact dvd_mul_right _ _
+  have hp2 : p ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hp
+  have hdvd1 : p ^ (2 : ℕ) ∣ p.comp g := by
+    have h : p ^ (2 : ℕ) ∣ p.comp g * q ^ (2 : ℕ) := by rw [heq]; exact dvd_mul_right _ _
     exact (hpq.pow).dvd_of_dvd_mul_right h
   obtain ⟨t, ht⟩ := hdvd1
   have ht0 : t ≠ 0 := by intro h; rw [h, mul_zero] at ht; exact hpcomp_ne ht
-  have hdeg : (p.comp g).natDegree = (p ^ 2).natDegree := by
+  have hdeg : (p.comp g).natDegree = (p ^ (2 : ℕ)).natDegree := by
     rw [natDegree_comp, hgdeg, natDegree_pow]; ring
   have htdeg : t.natDegree = 0 := by
     rw [ht, natDegree_mul hp2 ht0] at hdeg; omega
@@ -187,13 +187,13 @@ analytic bridge expressing the escape-region identity `φ_c = p/q` as this polyn
 @[aesop safe]
 theorem no_coprime_mahler_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
     (hpq : IsCoprime p q) (hp : p ≠ 0) (hq : q ≠ 0)
-    (heq : p.comp (X ^ 2 + C c) * q ^ 2 = p ^ 2 * q.comp (X ^ 2 + C c))
+    (heq : p.comp (X ^ (2 : ℕ) + C c) * q ^ (2 : ℕ) = p ^ (2 : ℕ) * q.comp (X ^ (2 : ℕ) + C c))
     (hnc : 0 < p.natDegree ∨ 0 < q.natDegree) : False := by
   rcases hnc with h | h
   · obtain ⟨lam, hlam⟩ := comp_eq_const_mul_sq hp hpq heq
     exact no_nonconstant_mahler_poly hc h hlam
   · obtain ⟨mu, hmu⟩ := comp_eq_const_mul_sq hq hpq.symm
-      (by rw [mul_comm (q.comp (X ^ 2 + C c)) (p ^ 2), mul_comm (q ^ 2) (p.comp (X ^ 2 + C c))];
+      (by rw [mul_comm (q.comp (X ^ (2 : ℕ) + C c)) (p ^ (2 : ℕ)), mul_comm (q ^ (2 : ℕ)) (p.comp (X ^ (2 : ℕ) + C c))];
           exact heq.symm)
     exact no_nonconstant_mahler_poly hc h hmu
 

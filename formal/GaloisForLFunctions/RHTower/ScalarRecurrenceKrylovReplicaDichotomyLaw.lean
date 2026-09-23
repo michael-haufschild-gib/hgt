@@ -62,18 +62,18 @@ theorem scalarRemovedKrylovReplicaLoad_ge_of_capture
     (hreturn : ‖inner ℂ (staticSpectralChoiVector d t energy)
       (staticSpectralChoiVector d 0 energy)‖ < rho)
     {w : W} (hcapture : t ∈ staticChoiTargetCaptureSet energy (target w) epsilon)
-    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ 2) - rho -
+    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
       B ^ (K + 1) * |t| ^ (K + 1) / (K + 1).factorial) :
-    (Real.sqrt (1 - epsilon ^ 2) - rho -
+    (Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
       B ^ (K + 1) * |t| ^ (K + 1) / (K + 1).factorial) ^ (2 * r) ≤
         scalarRemovedStaticChoiKrylovReplicaLoad target energy K r := by
   have htotal := staticChoiTargetCapture_implies_directCoherence
     hd (htarget w) hepsilon hepsilonOne hcapture
   rw [← inner_staticSpectralChoiVector_target_eq_directTwistedAmplitude] at htotal
   have hsplit := staticChoiTarget_capture_scalar_or_traceless_budget
-    hd t energy (htarget w) (theta := Real.sqrt (1 - epsilon ^ 2))
+    hd t energy (htarget w) (theta := Real.sqrt (1 - epsilon ^ (2 : ℕ)))
       (eta := rho) htotal
-  have hresidual : Real.sqrt (1 - epsilon ^ 2) - rho ≤
+  have hresidual : Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho ≤
       ‖inner ℂ (staticSpectralChoiVector d t energy)
         (staticChoiTracelessResidual energy (target w))‖ := by
     rcases hsplit with hbad | hgood
@@ -94,10 +94,10 @@ theorem no_staticChoiTargetCapture_off_scalarReturn_of_krylovReplicaLoad
     (hepsilon : 0 ≤ epsilon) (hepsilonOne : epsilon ≤ 1)
     (hreturn : ‖inner ℂ (staticSpectralChoiVector d t energy)
       (staticSpectralChoiVector d 0 energy)‖ < rho)
-    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ 2) - rho -
+    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
       B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial)
     (hbudget : scalarRemovedStaticChoiKrylovReplicaLoad target energy K r <
-      (Real.sqrt (1 - epsilon ^ 2) - rho -
+      (Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
         B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial) ^ (2 * r)) :
     ∀ w, t ∉ staticChoiTargetCaptureSet energy (target w) epsilon := by
   intro w hcapture
@@ -113,15 +113,15 @@ theorem no_staticChoiTargetCapture_off_scalarReturn_of_krylovReplicaLoad
       _ ≤ (B ^ (K + 1) / (K + 1).factorial) * T ^ (K + 1) :=
         mul_le_mul_of_nonneg_left hpow hcoef
       _ = _ := by ring
-  have hpointThreshold : 0 ≤ Real.sqrt (1 - epsilon ^ 2) - rho -
+  have hpointThreshold : 0 ≤ Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
       B ^ (K + 1) * |t| ^ (K + 1) / (K + 1).factorial := by
     linarith
   have hlower := scalarRemovedKrylovReplicaLoad_ge_of_capture
     (K := K) (r := r) hd htarget htBound hB henergy hepsilon hepsilonOne
       hreturn hcapture hpointThreshold
-  have hbase : Real.sqrt (1 - epsilon ^ 2) - rho -
+  have hbase : Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
       B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial ≤
-        Real.sqrt (1 - epsilon ^ 2) - rho -
+        Real.sqrt (1 - epsilon ^ (2 : ℕ)) - rho -
           B ^ (K + 1) * |t| ^ (K + 1) / (K + 1).factorial := by
     linarith
   have hpower := pow_le_pow_left₀ hthreshold hbase (2 * r)

@@ -149,15 +149,15 @@ theorem tendsto_finiteExponentialPencil_cesaro_norm_sq
     (hinj : Set.InjOn z (s : Set ι)) :
     Tendsto
       (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖finiteExponentialPencil s c z n‖ ^ 2)
-      atTop (nhds (∑ i ∈ s, ‖c i‖ ^ 2)) := by
+        ‖finiteExponentialPencil s c z n‖ ^ (2 : ℕ))
+      atTop (nhds (∑ i ∈ s, ‖c i‖ ^ (2 : ℕ))) := by
   have h := tendsto_finiteExponentialPencil_cesaro_star_mul s c z hz hinj
   have hre := (Complex.continuous_re.tendsto
     (∑ i ∈ s, star (c i) * c i)).comp h
   convert hre using 1
   · funext N
     change (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖finiteExponentialPencil s c z n‖ ^ 2 =
+        ‖finiteExponentialPencil s c z n‖ ^ (2 : ℕ) =
       ((((N : ℝ)⁻¹ : ℂ) * ∑ n ∈ Finset.range N,
         star (finiteExponentialPencil s c z n) *
           finiteExponentialPencil s c z n)).re
@@ -171,7 +171,7 @@ theorem tendsto_finiteExponentialPencil_cesaro_norm_sq
     intro n hn
     rw [show star (finiteExponentialPencil s c z n) *
         finiteExponentialPencil s c z n =
-        (‖finiteExponentialPencil s c z n‖ ^ 2 : ℂ) by
+        (‖finiteExponentialPencil s c z n‖ ^ (2 : ℕ) : ℂ) by
       simpa using Complex.conj_mul' (finiteExponentialPencil s c z n)]
     rw [Complex.reCLM_apply]
     rw [← Complex.ofReal_pow]
@@ -180,7 +180,7 @@ theorem tendsto_finiteExponentialPencil_cesaro_norm_sq
     rw [← Complex.reCLM_apply, map_sum]
     apply Finset.sum_congr rfl
     intro i hi
-    rw [show star (c i) * c i = (‖c i‖ ^ 2 : ℂ) by
+    rw [show star (c i) * c i = (‖c i‖ ^ (2 : ℕ) : ℂ) by
       simpa using Complex.conj_mul' (c i)]
     rw [Complex.reCLM_apply]
     rw [← Complex.ofReal_pow]
@@ -196,13 +196,13 @@ theorem not_tendsto_finiteExponentialPencil_zero
     (hc : ∃ i ∈ s, c i ≠ 0) :
     ¬ Tendsto (finiteExponentialPencil s c z) atTop (nhds 0) := by
   intro hzero
-  have hnorm : Tendsto (fun n => ‖finiteExponentialPencil s c z n‖ ^ 2)
+  have hnorm : Tendsto (fun n => ‖finiteExponentialPencil s c z n‖ ^ (2 : ℕ))
       atTop (nhds 0) := by
     simpa using hzero.norm.pow 2
   have hcesaro := hnorm.cesaro
   have henergy := tendsto_finiteExponentialPencil_cesaro_norm_sq s c z hz hinj
   have heq := tendsto_nhds_unique henergy hcesaro
-  have hpos : 0 < ∑ i ∈ s, ‖c i‖ ^ 2 := by
+  have hpos : 0 < ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
     apply Finset.sum_pos' (fun i hi => sq_nonneg _)
     obtain ⟨i, hi, hci⟩ := hc
     exact ⟨i, hi, sq_pos_of_pos (norm_pos_iff.mpr hci)⟩
@@ -290,7 +290,7 @@ theorem norm_add_mul_complexAlignmentUnit {x y : ℂ} (hx : x ≠ 0) (hy : y ≠
     ‖x + y * complexAlignmentUnit x y‖ = ‖x‖ + ‖y‖ := by
   have hnx0 : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
   have hny0 : ‖y‖ ≠ 0 := norm_ne_zero_iff.mpr hy
-  have hyy : y * star y = (‖y‖ ^ 2 : ℂ) := by
+  have hyy : y * star y = (‖y‖ ^ (2 : ℕ) : ℂ) := by
     simpa using Complex.mul_conj' y
   have halign : x + y * complexAlignmentUnit x y =
       (((‖x‖ + ‖y‖) / ‖x‖ : ℝ) : ℂ) * x := by

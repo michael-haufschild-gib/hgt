@@ -52,7 +52,7 @@ theorem dense_hedenmalmBorelCyclicSet (x : ℝ) :
     hv.aestronglyMeasurable.stronglyMeasurable_mk.measurable
   have hfae : (v : ℝ → ℂ) =ᵐ[μ] f := hv.aestronglyMeasurable.ae_eq_mk
   have hfLp : MemLp f 2 μ := hv.ae_eq hfae
-  have hfsq : Integrable (fun t => ‖f t‖ ^ 2) μ :=
+  have hfsq : Integrable (fun t => ‖f t‖ ^ (2 : ℕ)) μ :=
     (memLp_two_iff_integrable_sq_norm hfLp.aestronglyMeasurable).mp hfLp
   -- the truncation sets
   set A : ℕ → Set ℝ := fun n => {t : ℝ | (n : ℝ) < ‖f t / g t‖} with hA
@@ -80,8 +80,8 @@ theorem dense_hedenmalmBorelCyclicSet (x : ℝ) :
         exact hedenmalmBorelVectorFun_ne_zero (by have := mem_Ioi.mp htmem; linarith)
       · rw [Set.indicator_of_notMem hmemA, Set.indicator_of_notMem hmemA, zero_mul]
   -- the approximation error is the tail mass of the truncation
-  have herr : ∀ n, ‖v - (hwLp n).toLp ((A n)ᶜ.indicator f)‖ ^ 2 =
-      ∫ t, (A n).indicator (fun s => ‖f s‖ ^ 2) t ∂μ := by
+  have herr : ∀ n, ‖v - (hwLp n).toLp ((A n)ᶜ.indicator f)‖ ^ (2 : ℕ) =
+      ∫ t, (A n).indicator (fun s => ‖f s‖ ^ (2 : ℕ)) t ∂μ := by
     intro n
     set u : Lp ℂ 2 μ := v - (hwLp n).toLp ((A n)ᶜ.indicator f) with hu
     have hcoe : ((u : Lp ℂ 2 μ) : ℝ → ℂ) =ᵐ[μ] (A n).indicator f := by
@@ -97,7 +97,7 @@ theorem dense_hedenmalmBorelCyclicSet (x : ℝ) :
     have key := inner_self_eq_norm_sq (𝕜 := ℂ) u
     rw [MeasureTheory.L2.inner_def] at key
     have hint : (∫ t, inner ℂ ((u : ℝ → ℂ) t) ((u : ℝ → ℂ) t) ∂μ) =
-        ((∫ t, (A n).indicator (fun s => ‖f s‖ ^ 2) t ∂μ : ℝ) : ℂ) := by
+        ((∫ t, (A n).indicator (fun s => ‖f s‖ ^ (2 : ℕ)) t ∂μ : ℝ) : ℂ) := by
       rw [← integral_complex_ofReal]
       refine integral_congr_ae ?_
       filter_upwards [hcoe] with t ht
@@ -110,11 +110,11 @@ theorem dense_hedenmalmBorelCyclicSet (x : ℝ) :
     rw [hint] at key
     simpa using key.symm
   -- the truncation tail vanishes
-  have hlim : Tendsto (fun n : ℕ => ∫ t, (A n).indicator (fun s => ‖f s‖ ^ 2) t ∂μ)
+  have hlim : Tendsto (fun n : ℕ => ∫ t, (A n).indicator (fun s => ‖f s‖ ^ (2 : ℕ)) t ∂μ)
       atTop (𝓝 0) := by
     have hzero : ∫ _t : ℝ, (0 : ℝ) ∂μ = 0 := integral_zero _ _
     rw [← hzero]
-    refine tendsto_integral_of_dominated_convergence (fun t => ‖f t‖ ^ 2) ?_ hfsq ?_ ?_
+    refine tendsto_integral_of_dominated_convergence (fun t => ‖f t‖ ^ (2 : ℕ)) ?_ hfsq ?_ ?_
     · intro n
       exact (((hfmeas.norm.pow_const 2).indicator (hAmeas n)).aestronglyMeasurable)
     · intro n
@@ -132,7 +132,7 @@ theorem dense_hedenmalmBorelCyclicSet (x : ℝ) :
         exact le_trans hN.le (by exact_mod_cast hn)
       rw [Set.indicator_of_notMem hnot]
   -- extract one sufficiently good truncation
-  have hsq : Tendsto (fun n : ℕ => ‖v - (hwLp n).toLp ((A n)ᶜ.indicator f)‖ ^ 2) atTop (𝓝 0) := by
+  have hsq : Tendsto (fun n : ℕ => ‖v - (hwLp n).toLp ((A n)ᶜ.indicator f)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     exact hlim.congr fun n => (herr n).symm
   have hnorm : Tendsto (fun n : ℕ => ‖v - (hwLp n).toLp ((A n)ᶜ.indicator f)‖) atTop (𝓝 0) := by
     have := (Filter.Tendsto.sqrt hsq)

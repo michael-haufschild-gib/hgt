@@ -149,7 +149,7 @@ theorem exists_entire_poincare {f Φ₀ : ℂ → ℂ} {lam : ℂ} {ρ : ℝ}
       ring
     rw [poincareApprox, poincareApprox, harg, Function.iterate_succ_apply']
   · intro w hw
-    have h0 : ‖w‖ < ρ * ‖lam‖ ^ 0 := by simpa using hw
+    have h0 : ‖w‖ < ρ * ‖lam‖ ^ (0 : ℕ) := by simpa using hw
     rw [hΦeq w 0 h0, poincareApprox]
     simp
 

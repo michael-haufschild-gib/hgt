@@ -77,7 +77,7 @@ theorem labelledPairReturnRecord_eq_cos
 /-- Equality of all cosine times forces equality of squared frequencies. -/
 theorem cos_mul_eq_cos_mul_all_imp_sq_eq
     {a b : ℝ} (h : ∀ t : ℝ, Real.cos (t * a) = Real.cos (t * b)) :
-    a ^ 2 = b ^ 2 := by
+    a ^ (2 : ℕ) = b ^ (2 : ℕ) := by
   have hf :
       (fun t : ℝ => Real.cos (t * a)) =
         (fun t : ℝ => Real.cos (t * b)) := funext h
@@ -93,7 +93,7 @@ theorem cos_mul_eq_cos_mul_all_imp_sq_eq
     simpa only [Function.comp_apply, id_eq, one_mul] using! hc.deriv
   have hsecond (c : ℝ) :
       deriv (deriv (fun t : ℝ => Real.cos (t * c))) 0 =
-        -c ^ 2 := by
+        -c ^ (2 : ℕ) := by
     rw [hfirst c]
     have hs :=
       (Real.hasDerivAt_sin (0 * c)).comp 0
@@ -116,8 +116,8 @@ theorem pairReturn_eq_all_imp_gap_sq_eq
       ∀ i j t,
         labelledPairReturnRecord left i j t =
           labelledPairReturnRecord right i j t) :
-    ∀ i j, (left i - left j) ^ 2 =
-      (right i - right j) ^ 2 := by
+    ∀ i j, (left i - left j) ^ (2 : ℕ) =
+      (right i - right j) ^ (2 : ℕ) := by
   intro i j
   apply cos_mul_eq_cos_mul_all_imp_sq_eq
   intro t
@@ -134,8 +134,8 @@ theorem pairwise_sq_gap_rigidity
     {I : Type*} [Nonempty I]
     (left right : I → ℝ)
     (hgap :
-      ∀ i j, (left i - left j) ^ 2 =
-        (right i - right j) ^ 2) :
+      ∀ i j, (left i - left j) ^ (2 : ℕ) =
+        (right i - right j) ^ (2 : ℕ)) :
     ∃ sign : ℝ, (sign = 1 ∨ sign = -1) ∧
       ∃ shift : ℝ, ∀ i, right i = sign * left i + shift := by
   classical
@@ -145,7 +145,7 @@ theorem pairwise_sq_gap_rigidity
     intro i
     have hleft : left i = left base := hconst i base
     have hrightSq :
-        (right i - right base) ^ 2 = 0 := by
+        (right i - right base) ^ (2 : ℕ) = 0 := by
       rw [← hgap i base, hleft, sub_self, zero_pow (by omega)]
     have hright : right i = right base := by
       have hz : right i - right base = 0 :=
@@ -158,7 +158,7 @@ theorem pairwise_sq_gap_rigidity
     let a := left anchor - left base
     let b := right anchor - right base
     have ha : a ≠ 0 := sub_ne_zero.mpr hanchor.symm
-    have hab : a ^ 2 = b ^ 2 := by
+    have hab : a ^ (2 : ℕ) = b ^ (2 : ℕ) := by
       dsimp [a, b]
       exact hgap anchor base
     have hfactor : (b - a) * (b + a) = 0 := by
@@ -170,8 +170,8 @@ theorem pairwise_sq_gap_rigidity
       have hi0 := hgap i base
       have hi1 := hgap i anchor
       have hi1' :
-          ((left i - left base) - a) ^ 2 =
-            ((right i - right base) - b) ^ 2 := by
+          ((left i - left base) - a) ^ (2 : ℕ) =
+            ((right i - right base) - b) ^ (2 : ℕ) := by
         dsimp [a, b]
         convert hi1 using 1 <;> ring
       rw [hbi] at hi1'
@@ -193,8 +193,8 @@ theorem pairwise_sq_gap_rigidity
       have hi0 := hgap i base
       have hi1 := hgap i anchor
       have hi1' :
-          ((left i - left base) - a) ^ 2 =
-            ((right i - right base) - b) ^ 2 := by
+          ((left i - left base) - a) ^ (2 : ℕ) =
+            ((right i - right base) - b) ^ (2 : ℕ) := by
         dsimp [a, b]
         convert hi1 using 1 <;> ring
       rw [hbi] at hi1'

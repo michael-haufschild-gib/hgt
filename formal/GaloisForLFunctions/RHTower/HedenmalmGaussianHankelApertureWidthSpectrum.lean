@@ -46,15 +46,15 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonneg_of_halfPlaneBound
   have hAlphaMinus : 0 ≤ alpha - |lam.im| := sub_nonneg.mpr hlamAbs
   have hAlphaPlus : 0 ≤ alpha + |lam.im| :=
     add_nonneg halpha (abs_nonneg _)
-  have hlamSq : lam.im ^ 2 ≤ alpha ^ 2 := by
+  have hlamSq : lam.im ^ (2 : ℕ) ≤ alpha ^ (2 : ℕ) := by
     have hprod := mul_nonneg hAlphaMinus hAlphaPlus
     nlinarith [sq_abs lam.im]
   have hzMinus : 0 < -z.im - alpha := by linarith
   have hzPlus : 0 < -z.im + alpha := by linarith
-  have hzSq : alpha ^ 2 < z.im ^ 2 := by
+  have hzSq : alpha ^ (2 : ℕ) < z.im ^ (2 : ℕ) := by
     have hprod := mul_pos hzMinus hzPlus
     nlinarith
-  have hcore : 0 < (z.re - lam.re) ^ 2 + z.im ^ 2 - lam.im ^ 2 := by
+  have hcore : 0 < (z.re - lam.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - lam.im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (z.re - lam.re)]
   have hzlam : z ≠ lam := by
     intro h
@@ -66,12 +66,12 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonneg_of_halfPlaneBound
     simp only [Complex.conj_im] at him
     linarith
   have hdenOne :
-      0 < (z.re - lam.re) ^ 2 + (z.im - lam.im) ^ 2 := by
+      0 < (z.re - lam.re) ^ (2 : ℕ) + (z.im - lam.im) ^ (2 : ℕ) := by
     have h : z - lam ≠ 0 := sub_ne_zero.mpr hzlam
     simpa only [Complex.normSq_apply, sub_re, sub_im, pow_two] using
       Complex.normSq_pos.mpr h
   have hdenTwo :
-      0 < (z.re - lam.re) ^ 2 + (z.im + lam.im) ^ 2 := by
+      0 < (z.re - lam.re) ^ (2 : ℕ) + (z.im + lam.im) ^ (2 : ℕ) := by
     have h : z - (starRingEnd ℂ) lam ≠ 0 := sub_ne_zero.mpr hzlamc
     simpa only [Complex.normSq_apply, Complex.conj_re, Complex.conj_im,
       sub_re, sub_im, sub_neg_eq_add, pow_two] using Complex.normSq_pos.mpr h

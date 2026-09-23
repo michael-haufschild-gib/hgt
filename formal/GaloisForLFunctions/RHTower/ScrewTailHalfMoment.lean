@@ -16,7 +16,7 @@ def screwHalfMomentPrimitive (h : ℝ) : ℝ :=
   -2 * Real.exp (-(h / 2)) * Real.arctan (Real.exp (-(h / 2)))
     - (Real.exp (-(h / 2)) + 1) * Real.log (1 + Real.exp (-(h / 2)))
     + (Real.exp (-(h / 2)) - 1) * Real.log (1 - Real.exp (-(h / 2)))
-    + Real.log (1 + (Real.exp (-(h / 2))) ^ 2)
+    + Real.log (1 + (Real.exp (-(h / 2))) ^ (2 : ℕ))
 
 theorem hasDerivAt_screwHalfMomentPrimitive {h : ℝ} (hh : 0 < h) :
     HasDerivAt screwHalfMomentPrimitive
@@ -26,10 +26,10 @@ theorem hasDerivAt_screwHalfMomentPrimitive {h : ℝ} (hh : 0 < h) :
   set u : ℝ := Real.exp (-(h / 2)) with hu
   have hup : HasDerivAt (fun t : ℝ => Real.exp (-(t / 2))) (-(u / 2)) h :=
     hasDerivAt_expNegHalf h
-  have hu2 : HasDerivAt (fun t : ℝ => (Real.exp (-(t / 2))) ^ 2)
-      ((2 : ℕ) * u ^ 1 * (-(u / 2))) h := hup.pow 2
+  have hu2 : HasDerivAt (fun t : ℝ => (Real.exp (-(t / 2))) ^ (2 : ℕ))
+      ((2 : ℕ) * u ^ (1 : ℕ) * (-(u / 2))) h := hup.pow 2
   have harc : HasDerivAt (fun t : ℝ => Real.arctan (Real.exp (-(t / 2))))
-      ((1 / (1 + u ^ 2)) * (-(u / 2))) h := by
+      ((1 / (1 + u ^ (2 : ℕ))) * (-(u / 2))) h := by
     have hcomp := (Real.hasDerivAt_arctan u).comp h hup
     simpa [Function.comp_def] using hcomp
   have hlogp : HasDerivAt (fun t : ℝ => Real.log (1 + Real.exp (-(t / 2))))
@@ -40,8 +40,8 @@ theorem hasDerivAt_screwHalfMomentPrimitive {h : ℝ} (hh : 0 < h) :
       ((u / 2) / (1 - u)) h := by
     have := (hup.const_sub 1).log (by linarith)
     simpa using this
-  have hlogq : HasDerivAt (fun t : ℝ => Real.log (1 + (Real.exp (-(t / 2))) ^ 2))
-      (((2 : ℕ) * u ^ 1 * (-(u / 2))) / (1 + u ^ 2)) h := by
+  have hlogq : HasDerivAt (fun t : ℝ => Real.log (1 + (Real.exp (-(t / 2))) ^ (2 : ℕ)))
+      (((2 : ℕ) * u ^ (1 : ℕ) * (-(u / 2))) / (1 + u ^ (2 : ℕ))) h := by
     have := (hu2.const_add 1).log (by positivity)
     simpa using this
   have hT1 := ((hup.const_mul (-2 : ℝ))).mul harc
@@ -52,7 +52,7 @@ theorem hasDerivAt_screwHalfMomentPrimitive {h : ℝ} (hh : 0 < h) :
   rw [screwTailPrimitive, ← hu]
   have hne1 : (1 : ℝ) + u ≠ 0 := by linarith
   have hne2 : (1 : ℝ) - u ≠ 0 := by linarith
-  have hne3 : (1 : ℝ) + u ^ 2 ≠ 0 := by positivity
+  have hne3 : (1 : ℝ) + u ^ (2 : ℕ) ≠ 0 := by positivity
   push_cast
   field_simp
   ring
@@ -78,7 +78,7 @@ theorem continuous_screwHalfMomentPrimitive : Continuous screwHalfMomentPrimitiv
       ring
     rw [hrw]
     exact (Real.continuous_mul_log.comp (continuous_const.sub hexp)).neg
-  have hT4 : Continuous fun h : ℝ => Real.log (1 + (Real.exp (-(h / 2))) ^ 2) := by
+  have hT4 : Continuous fun h : ℝ => Real.log (1 + (Real.exp (-(h / 2))) ^ (2 : ℕ)) := by
     refine Real.continuousOn_log.comp_continuous (continuous_const.add (hexp.pow 2)) fun h => ?_
     simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
     intro hcon
@@ -88,7 +88,7 @@ theorem continuous_screwHalfMomentPrimitive : Continuous screwHalfMomentPrimitiv
 theorem screwHalfMomentPrimitive_tendsto_zero :
     Tendsto screwHalfMomentPrimitive atTop (𝓝 0) := by
   have hu := tendsto_exp_neg_half_atTop
-  have hu2 : Tendsto (fun h : ℝ => (Real.exp (-(h / 2))) ^ 2) atTop (𝓝 0) := by
+  have hu2 : Tendsto (fun h : ℝ => (Real.exp (-(h / 2))) ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa using hu.pow 2
   have hlogp : Tendsto (fun h : ℝ => Real.log (1 + Real.exp (-(h / 2)))) atTop (𝓝 0) := by
     have hc : ContinuousAt Real.log (1 : ℝ) := Real.continuousAt_log one_ne_zero
@@ -100,9 +100,9 @@ theorem screwHalfMomentPrimitive_tendsto_zero :
     have h2 : Tendsto (fun h : ℝ => 1 - Real.exp (-(h / 2))) atTop (𝓝 1) := by
       simpa using tendsto_const_nhds.sub hu
     simpa [Function.comp_def] using hc.tendsto.comp h2
-  have hlogq : Tendsto (fun h : ℝ => Real.log (1 + (Real.exp (-(h / 2))) ^ 2)) atTop (𝓝 0) := by
+  have hlogq : Tendsto (fun h : ℝ => Real.log (1 + (Real.exp (-(h / 2))) ^ (2 : ℕ))) atTop (𝓝 0) := by
     have hc : ContinuousAt Real.log (1 : ℝ) := Real.continuousAt_log one_ne_zero
-    have h2 : Tendsto (fun h : ℝ => 1 + (Real.exp (-(h / 2))) ^ 2) atTop (𝓝 1) := by
+    have h2 : Tendsto (fun h : ℝ => 1 + (Real.exp (-(h / 2))) ^ (2 : ℕ)) atTop (𝓝 1) := by
       simpa using tendsto_const_nhds.add hu2
     simpa [Function.comp_def] using hc.tendsto.comp h2
   have harc : Tendsto (fun h : ℝ => Real.arctan (Real.exp (-(h / 2)))) atTop (𝓝 0) := by
@@ -111,7 +111,7 @@ theorem screwHalfMomentPrimitive_tendsto_zero :
       -2 * Real.exp (-(h / 2)) * Real.arctan (Real.exp (-(h / 2)))
         - (Real.exp (-(h / 2)) + 1) * Real.log (1 + Real.exp (-(h / 2)))
         + (Real.exp (-(h / 2)) - 1) * Real.log (1 - Real.exp (-(h / 2)))
-        + Real.log (1 + (Real.exp (-(h / 2))) ^ 2) := rfl
+        + Real.log (1 + (Real.exp (-(h / 2))) ^ (2 : ℕ)) := rfl
   rw [hfun]
   have t1 : Tendsto (fun h : ℝ =>
       -2 * Real.exp (-(h / 2)) * Real.arctan (Real.exp (-(h / 2)))) atTop (𝓝 0) := by

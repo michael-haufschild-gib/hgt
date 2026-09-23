@@ -11,7 +11,7 @@ For a product alphabet the histogram-collision event factorizes over components,
 moment of the spectral form factor becomes the product of the component collision coefficients
 
 ```text
-a_{d,m} = d^{-m} ∑_{|k| = m} multinomial(k)^2.
+a_{d,m} = d^{-m} ∑_{|k| = m} multinomial(k)^(2 : ℕ).
 ```
 -/
 
@@ -72,7 +72,7 @@ theorem sum_pair_multinomial_piAntidiag_eq_sum_tuple (m : ℕ) (Ψ : (X → ℕ)
 /-- The number of ordered pairs of length-`m` tuples with equal histograms, which is the sum of
 squared multinomial coefficients of `(9)`. -/
 def histogramCollisionCount (X : Type*) [Fintype X] [DecidableEq X] (m : ℕ) : ℝ :=
-  ∑ k ∈ (Finset.univ : Finset X).piAntidiag m, (Nat.multinomial Finset.univ k : ℝ) ^ 2
+  ∑ k ∈ (Finset.univ : Finset X).piAntidiag m, (Nat.multinomial Finset.univ k : ℝ) ^ (2 : ℕ)
 
 theorem histogramCollisionCount_eq_sum_tuple (m : ℕ) :
     histogramCollisionCount X m

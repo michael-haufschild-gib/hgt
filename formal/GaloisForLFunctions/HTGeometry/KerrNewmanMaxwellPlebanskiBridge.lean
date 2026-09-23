@@ -66,9 +66,9 @@ the canonical Maxwell stress magnitude. -/
 theorem kerrNewmanCanonicalMaxwell_invariant_quadrature
     (electric magnetic : ℝ) :
     kerrNewmanTwoFormQuadraticInvariant
-        (kerrNewmanCanonicalMaxwellTwoForm electric magnetic) ^ 2 +
-      4 * (2 * electric * magnetic) ^ 2 =
-        16 * kerrNewmanCanonicalMaxwellStressMagnitude electric magnetic ^ 2 := by
+        (kerrNewmanCanonicalMaxwellTwoForm electric magnetic) ^ (2 : ℕ) +
+      4 * (2 * electric * magnetic) ^ (2 : ℕ) =
+        16 * kerrNewmanCanonicalMaxwellStressMagnitude electric magnetic ^ (2 : ℕ) := by
   rw [kerrNewmanCanonicalMaxwellTwoForm_invariant]
   simp [kerrNewmanCanonicalMaxwellStressMagnitude]
   ring
@@ -111,11 +111,11 @@ theorem kerrNewmanCanonicalMaxwell_both_invariants_zero_iff
     rcases kerrNewmanCanonicalMaxwellPlebanskiForm_sq_eq_zero_iff electric magnetic |>.mp
       hwedge with helectric | hmagnetic
     · subst electric
-      have hmagneticSq : magnetic ^ 2 = 0 := by
+      have hmagneticSq : magnetic ^ (2 : ℕ) = 0 := by
         nlinarith
       exact ⟨rfl, (sq_eq_zero_iff).mp hmagneticSq⟩
     · subst magnetic
-      have helectricSq : electric ^ 2 = 0 := by
+      have helectricSq : electric ^ (2 : ℕ) = 0 := by
         nlinarith
       exact ⟨(sq_eq_zero_iff).mp helectricSq, rfl⟩
   · rintro ⟨rfl, rfl⟩

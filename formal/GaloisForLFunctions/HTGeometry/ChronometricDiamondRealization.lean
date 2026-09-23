@@ -143,7 +143,7 @@ theorem squaredInterval_eq_of_properTimeRate_eq {g h : SmoothPseudoMetric d} {x 
   have hgpos : 0 < g.properTimeRate x v := Real.sqrt_pos.mpr hg
   have hhpos : 0 < h.properTimeRate x v := by rw [← hrate]; exact hgpos
   have hh : 0 < -(h.squaredInterval x v) := Real.sqrt_pos.mp hhpos
-  have hsq : g.properTimeRate x v ^ 2 = h.properTimeRate x v ^ 2 := by rw [hrate]
+  have hsq : g.properTimeRate x v ^ (2 : ℕ) = h.properTimeRate x v ^ (2 : ℕ) := by rw [hrate]
   rw [properTimeRate, properTimeRate, Real.sq_sqrt hg.le, Real.sq_sqrt hh.le] at hsq
   linarith
 

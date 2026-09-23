@@ -40,23 +40,23 @@ theorem hasDerivAt_prolateLogDeriv {c χ : ℝ} {Φ : ℝ → ℝ}
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
     {y : ℝ} (hy : y ∈ Ioo (-1 : ℝ) 1) (hΦ : Φ y ≠ 0) :
     HasDerivAt (prolateLogDeriv Φ)
-      ((prolateLogDeriv Φ y) ^ 2 + (2 * y / (1 - y ^ 2)) * prolateLogDeriv Φ y
-        - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) y := by
+      ((prolateLogDeriv Φ y) ^ (2 : ℕ) + (2 * y / (1 - y ^ (2 : ℕ))) * prolateLogDeriv Φ y
+        - (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ))) y := by
   have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hd2 : Differentiable ℝ (deriv Φ) :=
     (contDiff_infty_iff_deriv.mp ((contDiff_infty_iff_deriv.mp hsm).2)).1
   have hymem : y ∈ Icc (-1 : ℝ) 1 := ⟨le_of_lt hy.1, le_of_lt hy.2⟩
-  have hw : (1 : ℝ) - y ^ 2 ≠ 0 := by
+  have hw : (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by
     have h1 : -1 < y := hy.1
     have h2 : y < 1 := hy.2
     nlinarith
   have h := heig y hymem
   rw [prolateSLAction] at h
   have hquot : HasDerivAt (fun t => deriv Φ t / Φ t)
-      ((deriv (deriv Φ) y * Φ y - deriv Φ y * deriv Φ y) / (Φ y) ^ 2) y :=
+      ((deriv (deriv Φ) y * Φ y - deriv Φ y * deriv Φ y) / (Φ y) ^ (2 : ℕ)) y :=
     (hd2 y).hasDerivAt.div (hd1 y).hasDerivAt hΦ
   have hsecond : deriv (deriv Φ) y
-      = (χ * Φ y + 2 * y * deriv Φ y + c ^ 2 * y ^ 2 * Φ y) / (1 - y ^ 2) := by
+      = (χ * Φ y + 2 * y * deriv Φ y + c ^ (2 : ℕ) * y ^ (2 : ℕ) * Φ y) / (1 - y ^ (2 : ℕ)) := by
     field_simp
     linear_combination h
   have hv := hquot.neg

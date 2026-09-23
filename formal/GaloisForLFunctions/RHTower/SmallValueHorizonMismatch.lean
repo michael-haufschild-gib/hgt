@@ -49,7 +49,7 @@ theorem smallValueWindowDemand (h eps : ℝ) :
 
 theorem tendsto_exp_div_id_atTop {c : ℝ} (hc : 0 < c) :
     Tendsto (fun h : ℝ => Real.exp (c * h) / h) atTop atTop := by
-  have hbase : Tendsto (fun t : ℝ => Real.exp t / t ^ 1) atTop atTop :=
+  have hbase : Tendsto (fun t : ℝ => Real.exp t / t ^ (1 : ℕ)) atTop atTop :=
     Real.tendsto_exp_div_pow_atTop 1
   have hscale : Tendsto (fun h : ℝ => c * h) atTop atTop :=
     Filter.Tendsto.const_mul_atTop hc Filter.tendsto_id

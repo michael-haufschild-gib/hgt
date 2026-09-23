@@ -110,7 +110,7 @@ theorem iteratedDeriv_quadraticBinomialPhysicalPullback_three_of_product_eq
       3 * (a * b) * (a + b - c - d) := by
   rw [iteratedDeriv_quadraticBinomialPhysicalPullback]
   calc
-    (a + b) ^ 3 - a ^ 3 - b ^ 3 - (c + d) ^ 3 + c ^ 3 + d ^ 3 =
+    (a + b) ^ (3 : ℕ) - a ^ (3 : ℕ) - b ^ (3 : ℕ) - (c + d) ^ (3 : ℕ) + c ^ (3 : ℕ) + d ^ (3 : ℕ) =
         3 * (a * b) * (a + b) - 3 * (c * d) * (c + d) := by ring
     _ = 3 * (a * b) * (a + b - c - d) := by rw [← hprod]; ring
 
@@ -148,7 +148,7 @@ theorem analyticOrderAt_quadraticBinomialPhysicalPullback_eq_three
 def conicPhysicalCoefficients : Fin 5 → ℂ := ![1, -2, -1, 1, 1]
 
 def conicPhysicalFrequencies (α : ℂ) : Fin 5 → ℂ :=
-  ![2 * α, α, 1 + α ^ 2, 1, α ^ 2]
+  ![2 * α, α, 1 + α ^ (2 : ℕ), 1, α ^ (2 : ℕ)]
 
 /-- The physical pullback of the Hankel conic relation `x₁² - x₀x₂`. -/
 def conicPhysicalPullback (α z : ℂ) : ℂ :=
@@ -157,16 +157,16 @@ def conicPhysicalPullback (α z : ℂ) : ℂ :=
 
 theorem conicPhysicalPullback_eq_hankelRelation (α z : ℂ) :
     conicPhysicalPullback α z =
-      (Complex.exp (α * z) - 1) ^ 2 -
-        (Complex.exp z - 1) * (Complex.exp (α ^ 2 * z) - 1) := by
+      (Complex.exp (α * z) - 1) ^ (2 : ℕ) -
+        (Complex.exp z - 1) * (Complex.exp (α ^ (2 : ℕ) * z) - 1) := by
   simp [conicPhysicalPullback, conicPhysicalCoefficients, conicPhysicalFrequencies,
     Fin.sum_univ_succ]
-  rw [show Complex.exp ((2 * α) * z) = Complex.exp (α * z) ^ 2 by
+  rw [show Complex.exp ((2 * α) * z) = Complex.exp (α * z) ^ (2 : ℕ) by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     ring]
-  rw [show Complex.exp ((1 + α ^ 2) * z) =
-      Complex.exp z * Complex.exp (α ^ 2 * z) by
+  rw [show Complex.exp ((1 + α ^ (2 : ℕ)) * z) =
+      Complex.exp z * Complex.exp (α ^ (2 : ℕ) * z) by
     rw [← Complex.exp_add]
     congr 1
     ring]
@@ -174,7 +174,7 @@ theorem conicPhysicalPullback_eq_hankelRelation (α z : ℂ) :
 
 theorem iteratedDeriv_conicPhysicalPullback (α : ℂ) (n : ℕ) :
     iteratedDeriv n (conicPhysicalPullback α) 0 =
-      (2 * α) ^ n - 2 * α ^ n - (1 + α ^ 2) ^ n + 1 + (α ^ 2) ^ n := by
+      (2 * α) ^ n - 2 * α ^ n - (1 + α ^ (2 : ℕ)) ^ n + 1 + (α ^ (2 : ℕ)) ^ n := by
   rw [show conicPhysicalPullback α = fun z =>
       ∑ i ∈ Finset.univ, conicPhysicalCoefficients i *
         Complex.exp (conicPhysicalFrequencies α i * z) by
@@ -200,7 +200,7 @@ theorem iteratedDeriv_conicPhysicalPullback (α : ℂ) (n : ℕ) :
   ring
 
 theorem iteratedDeriv_conicPhysicalPullback_three (α : ℂ) :
-    iteratedDeriv 3 (conicPhysicalPullback α) 0 = -3 * α ^ 2 * (α - 1) ^ 2 := by
+    iteratedDeriv 3 (conicPhysicalPullback α) 0 = -3 * α ^ (2 : ℕ) * (α - 1) ^ (2 : ℕ) := by
   rw [iteratedDeriv_conicPhysicalPullback]
   ring
 
@@ -221,7 +221,7 @@ theorem analyticOrderAt_conicPhysicalPullback_eq_three
     exact mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero 2 hα0))
       (pow_ne_zero 2 (sub_ne_zero.mpr hα1))
 
-def conicRankThreeSource (α : ℂ) : Fin 3 → ℂ := ![1, α, α ^ 2]
+def conicRankThreeSource (α : ℂ) : Fin 3 → ℂ := ![1, α, α ^ (2 : ℕ)]
 
 /-- A rank-three arithmetically independent source can simultaneously lie on the complex Hankel
 conic and have physical tangency excess one. -/

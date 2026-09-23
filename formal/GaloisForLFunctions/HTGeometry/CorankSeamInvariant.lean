@@ -154,7 +154,7 @@ theorem exists_linearIndependent_not_algebraicIndependent :
     have h2 : Real.sqrt 2 ≠ 0 := by positivity
     exact h2 hcon
   · intro hind
-    have hp : (MvPolynomial.X (0 : Fin 1) ^ 2 - MvPolynomial.C (2 : ℚ)) ≠ 0 := by
+    have hp : (MvPolynomial.X (0 : Fin 1) ^ (2 : ℕ) - MvPolynomial.C (2 : ℚ)) ≠ 0 := by
       intro hcon
       have hcoeff := congrArg (MvPolynomial.coeff (Finsupp.single (0 : Fin 1) 2)) hcon
       have hne : (Finsupp.single (0 : Fin 1) 2) ≠ 0 := by

@@ -27,15 +27,15 @@ theorem cubicRecoveryPhysical_mode (g : cubicProbeSection) :
     have hsum := g.property.2.1
     linarith [g.property.1 1,g.property.1 3]
   have hc1 := (cubicRecoveryPhysical_middle g).2
-  have hsq : (g.val 0-g.val 4)^2 ≤ (1-g.val 2)^2 := by
-    have h1 : (g.val 0-g.val 4)^2 ≤ (g.val 0+g.val 4)^2 := by nlinarith [mul_nonneg ha he]
-    have h2 : (g.val 0+g.val 4)^2 ≤ (1-g.val 2)^2 := by nlinarith
+  have hsq : (g.val 0-g.val 4)^(2 : ℕ) ≤ (1-g.val 2)^(2 : ℕ) := by
+    have h1 : (g.val 0-g.val 4)^(2 : ℕ) ≤ (g.val 0+g.val 4)^(2 : ℕ) := by nlinarith [mul_nonneg ha he]
+    have h2 : (g.val 0+g.val 4)^(2 : ℕ) ≤ (1-g.val 2)^(2 : ℕ) := by nlinarith
     exact h1.trans h2
-  change cubicRecoveryLower (g.val 2) ≤ g.val 2*(1-(g.val 0-g.val 4)^2)/4 ∧ _
+  change cubicRecoveryLower (g.val 2) ≤ g.val 2*(1-(g.val 0-g.val 4)^(2 : ℕ))/4 ∧ _
   constructor
   · unfold cubicRecoveryLower
     nlinarith [mul_nonneg hc (sub_nonneg.mpr hsq)]
-  · change g.val 2*(1-(g.val 0-g.val 4)^2)/4 ≤ g.val 2/4
+  · change g.val 2*(1-(g.val 0-g.val 4)^(2 : ℕ))/4 ≤ g.val 2/4
     nlinarith [mul_nonneg hc (sq_nonneg (g.val 0-g.val 4))]
 
 def cubicRecoveryEdge (c : Icc (0:ℝ) 1) : cubicProbeSection :=

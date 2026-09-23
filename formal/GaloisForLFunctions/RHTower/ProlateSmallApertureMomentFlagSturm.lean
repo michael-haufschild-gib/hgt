@@ -11,16 +11,16 @@ open GaloisForLFunctions.HTGeometry
 open _root_.RHTower
 
 def complexProlateSLAction (c : ℝ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
-  (((1 - x ^ 2 : ℝ) : ℂ) * deriv (deriv f) x) -
+  (((1 - x ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) x) -
     (((2 * x : ℝ) : ℂ) * deriv f x) -
-      (((c ^ 2 * x ^ 2 : ℝ) : ℂ) * f x)
+      (((c ^ (2 : ℕ) * x ^ (2 : ℕ) : ℝ) : ℂ) * f x)
 
 theorem hasDerivAt_complexBandFlux {f : ℝ → ℂ} {t : ℝ}
     (hf2 : DifferentiableAt ℝ (deriv f) t) :
-    HasDerivAt (fun y => ((1 - y ^ 2 : ℝ) : ℂ) * deriv f y)
+    HasDerivAt (fun y => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv f y)
       (((-(2 * t) : ℝ) : ℂ) * deriv f t +
-        (((1 - t ^ 2 : ℝ) : ℂ) * deriv (deriv f) t)) t := by
-  have hpoly : HasDerivAt (fun y : ℝ => ((1 - y ^ 2 : ℝ) : ℂ))
+        (((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) t)) t := by
+  have hpoly : HasDerivAt (fun y : ℝ => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ))
       (((-(2 * t) : ℝ) : ℂ)) t := by
     simpa using ((hasDerivAt_pow 2 t).const_sub 1).ofReal_comp
   exact hpoly.mul hf2.hasDerivAt
@@ -30,23 +30,23 @@ theorem complex_band_flux_integral_by_parts {f g : ℝ → ℂ}
     (hg1 : Differentiable ℝ g) (hg'c : Continuous (deriv g)) :
     ∫ y in (-1 : ℝ)..1, g y *
         ((((-(2 * y) : ℝ) : ℂ) * deriv f y) +
-          (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv f) y))
+          (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) y))
       = -∫ y in (-1 : ℝ)..1,
-          deriv g y * (((1 - y ^ 2 : ℝ) : ℂ) * deriv f y) := by
+          deriv g y * (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv f y) := by
   have hu : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt g (deriv g y) y :=
     fun y _ => (hg1 y).hasDerivAt
   have hv : ∀ y ∈ Set.uIcc (-1 : ℝ) 1,
-      HasDerivAt (fun t => ((1 - t ^ 2 : ℝ) : ℂ) * deriv f t)
+      HasDerivAt (fun t => ((1 - t ^ (2 : ℕ) : ℝ) : ℂ) * deriv f t)
         ((((-(2 * y) : ℝ) : ℂ) * deriv f y) +
-          (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv f) y)) y :=
+          (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) y)) y :=
     fun y _ => hasDerivAt_complexBandFlux (hf2 y)
   have hu' : IntervalIntegrable (deriv g) volume (-1) 1 := hg'c.intervalIntegrable _ _
   have hv' : IntervalIntegrable
       (fun y => (((-(2 * y) : ℝ) : ℂ) * deriv f y) +
-        (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv f) y)) volume (-1) 1 := by
+        (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     have hcoef1 : Continuous (fun y : ℝ => (((-(2 * y) : ℝ) : ℂ))) := by fun_prop
-    have hcoef2 : Continuous (fun y : ℝ => (((1 - y ^ 2 : ℝ) : ℂ))) := by fun_prop
+    have hcoef2 : Continuous (fun y : ℝ => (((1 - y ^ (2 : ℕ) : ℝ) : ℂ))) := by fun_prop
     exact (hcoef1.mul hf2.continuous).add (hcoef2.mul hf2c)
   have h := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
   rw [h]
@@ -65,26 +65,26 @@ theorem complexProlateSLAction_band_bilinear_symmetric {f g : ℝ → ℂ}
   have hg'c : Continuous (deriv g) := hg2.continuous
   have hAf : IntervalIntegrable
       (fun y => g y * ((((-(2 * y) : ℝ) : ℂ) * deriv f y) +
-        (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv f) y))) volume (-1) 1 := by
+        (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) y))) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hBf : IntervalIntegrable
-      (fun y => g y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * f y)) volume (-1) 1 := by
+      (fun y => g y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * f y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hAg : IntervalIntegrable
       (fun y => f y * ((((-(2 * y) : ℝ) : ℂ) * deriv g y) +
-        (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv g) y))) volume (-1) 1 := by
+        (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv g) y))) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hBg : IntervalIntegrable
-      (fun y => f y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * g y)) volume (-1) 1 := by
+      (fun y => f y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * g y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hsplitf : ∫ y in (-1 : ℝ)..1, g y * complexProlateSLAction c f y =
       (∫ y in (-1 : ℝ)..1, g y * ((((-(2 * y) : ℝ) : ℂ) * deriv f y) +
-        (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv f) y))) -
-      ∫ y in (-1 : ℝ)..1, g y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * f y) := by
+        (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv f) y))) -
+      ∫ y in (-1 : ℝ)..1, g y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * f y) := by
     rw [← intervalIntegral.integral_sub hAf hBf]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [complexProlateSLAction]
@@ -92,8 +92,8 @@ theorem complexProlateSLAction_band_bilinear_symmetric {f g : ℝ → ℂ}
       ring
   have hsplitg : ∫ y in (-1 : ℝ)..1, f y * complexProlateSLAction c g y =
       (∫ y in (-1 : ℝ)..1, f y * ((((-(2 * y) : ℝ) : ℂ) * deriv g y) +
-        (((1 - y ^ 2 : ℝ) : ℂ) * deriv (deriv g) y))) -
-      ∫ y in (-1 : ℝ)..1, f y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * g y) := by
+        (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv (deriv g) y))) -
+      ∫ y in (-1 : ℝ)..1, f y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * g y) := by
     rw [← intervalIntegral.integral_sub hAg hBg]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [complexProlateSLAction]
@@ -102,19 +102,19 @@ theorem complexProlateSLAction_band_bilinear_symmetric {f g : ℝ → ℂ}
   have hibpf := complex_band_flux_integral_by_parts hf2 hf2c hg1 hg'c
   have hibpg := complex_band_flux_integral_by_parts hg2 hg2c hf1 hf'c
   have hcross : ∫ y in (-1 : ℝ)..1,
-      deriv g y * (((1 - y ^ 2 : ℝ) : ℂ) * deriv f y) =
+      deriv g y * (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv f y) =
       ∫ y in (-1 : ℝ)..1,
-      deriv f y * (((1 - y ^ 2 : ℝ) : ℂ) * deriv g y) :=
+      deriv f y * (((1 - y ^ (2 : ℕ) : ℝ) : ℂ) * deriv g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
   have hmul : ∫ y in (-1 : ℝ)..1,
-      g y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * f y) =
+      g y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * f y) =
       ∫ y in (-1 : ℝ)..1,
-      f y * (((c ^ 2 * y ^ 2 : ℝ) : ℂ) * g y) :=
+      f y * (((c ^ (2 : ℕ) * y ^ (2 : ℕ) : ℝ) : ℂ) * g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
   rw [hsplitf, hibpf, hcross, hmul, ← hibpg, ← hsplitg]
 
 def zeroBandPolynomialAction (p : Polynomial ℂ) : Polynomial ℂ :=
-  (1 - Polynomial.X ^ 2) * p.derivative.derivative -
+  (1 - Polynomial.X ^ (2 : ℕ)) * p.derivative.derivative -
     2 * Polynomial.X * p.derivative
 
 theorem zeroBandPolynomialAction_eval (p : Polynomial ℂ) (x : ℝ) :

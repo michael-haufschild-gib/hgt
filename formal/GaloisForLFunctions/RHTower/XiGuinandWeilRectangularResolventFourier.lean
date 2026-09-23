@@ -21,7 +21,7 @@ theorem integral_rectangularEulerFourierKernel_mul_verticalResolvent
     {L c : ℝ} (hL : 0 ≤ L) (hc : 0 < c) (a : ℝ) :
     (∫ ξ : ℝ,
         rectangularTwoEdgeTransform L a
-            (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+            (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
           (((c : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹) =
       ∫ t : ℝ in Ioi 0,
         Complex.exp (-(c : ℂ) * (t : ℂ)) *
@@ -29,7 +29,7 @@ theorem integral_rectangularEulerFourierKernel_mul_verticalResolvent
             Complex.exp (t / 2)) := by
   let F : ℝ → ℂ := fun ξ =>
     rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2
+      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ)
   let e : ℝ → ℂ := (Ioi (0 : ℝ)).indicator
     (fun t : ℝ => Complex.exp (-(c : ℂ) * (t : ℂ)))
   let K : ℝ × ℝ → ℂ := fun p =>
@@ -84,7 +84,7 @@ theorem integral_rectangularEulerFourierKernel_mul_verticalResolvent
     field_simp
   rw [show (fun ξ : ℝ =>
       rectangularTwoEdgeTransform L a
-          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
         (((c : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹) =
       fun ξ : ℝ => F ξ *
         ∫ t : ℝ in Ioi 0,
@@ -144,11 +144,11 @@ theorem integrable_rectangularEulerFourierKernel_mul_verticalResolvent
     {c : ℝ} (hc : 0 < c) (L a : ℝ) :
     Integrable (fun ξ : ℝ =>
       rectangularTwoEdgeTransform L a
-          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
         (((c : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹) := by
   let F : ℝ → ℂ := fun ξ =>
     rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2
+      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ)
   let d : ℝ → ℂ := fun ξ =>
     ((c : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I)⁻¹
   have hF : Integrable F := by
@@ -179,12 +179,12 @@ theorem integrable_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm
     (L a : ℝ) (n : ℕ) :
     Integrable (fun ξ : ℝ =>
       rectangularTwoEdgeTransform L a
-          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
         gaussDigammaSeriesTerm
           (((3 / 4 : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I) n) := by
   let F : ℝ → ℂ := fun ξ =>
     rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2
+      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ)
   let c : ℝ := (n : ℝ) + 3 / 4
   have hc : 0 < c := by dsimp only [c]; positivity
   have hF : Integrable F := by
@@ -207,7 +207,7 @@ theorem integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm
     {L : ℝ} (hL : 0 ≤ L) (a : ℝ) (n : ℕ) :
     (∫ ξ : ℝ,
         rectangularTwoEdgeTransform L a
-            (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+            (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
           gaussDigammaSeriesTerm
             (((3 / 4 : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I) n) =
       (rectangularTwoEdgeAutocorrelation L a 0 : ℂ) / ((n : ℂ) + 1) -
@@ -217,7 +217,7 @@ theorem integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm
               Complex.exp (t / 2)) := by
   let F : ℝ → ℂ := fun ξ =>
     rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2
+      (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ)
   let c : ℝ := (n : ℝ) + 3 / 4
   have hc : 0 < c := by
     dsimp only [c]
@@ -237,7 +237,7 @@ theorem integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm
       mul_one, zero_div] using hzero
   rw [show (fun ξ : ℝ =>
       rectangularTwoEdgeTransform L a
-          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ 2 *
+          (1 - ((2 * Real.pi * ξ : ℝ) : ℂ) * I) ^ (2 : ℕ) *
         gaussDigammaSeriesTerm
           (((3 / 4 : ℝ) : ℂ) - ((Real.pi * ξ : ℝ) : ℂ) * I) n) =
       fun ξ : ℝ => F ξ * (1 / ((n : ℂ) + 1)) -

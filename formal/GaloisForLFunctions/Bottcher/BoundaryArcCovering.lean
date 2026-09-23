@@ -66,7 +66,7 @@ then it extends holomorphically to a strictly larger disk. The doubling-covering
 theorem holo_extend_of_continuesAcross_arc {h : ℂ → ℂ} {c : ℂ} {ζ₀ : ℂ} {r : ℝ}
     (hζ₀ : ‖ζ₀‖ = 1) (hr : 0 < r)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (harc : ∀ ζ : ℂ, ‖ζ‖ = 1 → ζ ∈ Metric.ball ζ₀ r → ContinuesAcross h ζ) :
     ∃ ρ : ℝ, 1 < ρ ∧ ∃ H : ℂ → ℂ, DifferentiableOn ℂ H (ball 0 ρ) ∧ EqOn H h (ball 0 1) := by
   refine holo_extend_of_continuesAcross_generating (A := {ζ : ℂ | ‖ζ‖ = 1 ∧ ζ ∈ Metric.ball ζ₀ r})
@@ -86,7 +86,7 @@ theorem natural_boundary_of_even_fe {h : ℂ → ℂ} {c : ℂ} {ζ₀ : ℂ} {r
     (hc0 : c ≠ 0) (hc2 : c ≠ -2) (hζ₀ : ‖ζ₀‖ = 1) (hr : 0 < r)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
     (hhe : ∀ z ∈ ball (0 : ℂ) 1, h (-z) = h z)
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1) :
     ¬ (∀ ζ : ℂ, ‖ζ‖ = 1 → ζ ∈ Metric.ball ζ₀ r → ContinuesAcross h ζ) := by
   intro harc
@@ -107,9 +107,9 @@ theorem natural_boundary_of_even_fe {h : ℂ → ℂ} {c : ℂ} {ζ₀ : ℂ} {r
     exact hA1.eqOn_of_preconnected_of_eventuallyEq hA2 (convex_ball 0 ρ).isPreconnected
       (mem_ball_self (by linarith)) hev
   -- `H` satisfies the functional equation on `ball 1`
-  have hHfe : ∀ t ∈ ball (0 : ℂ) 1, H (t ^ 2) = (H t) ^ 2 + c * t ^ 2 := by
+  have hHfe : ∀ t ∈ ball (0 : ℂ) 1, H (t ^ (2 : ℕ)) = (H t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
     intro t ht
-    have ht2 : t ^ 2 ∈ ball (0 : ℂ) 1 := by
+    have ht2 : t ^ (2 : ℕ) ∈ ball (0 : ℂ) 1 := by
       rw [mem_ball_zero_iff] at ht ⊢; rw [norm_pow]; nlinarith [norm_nonneg t, ht]
     rw [hHh ht2, hHh ht, hfe t ht]
   have hH0 : H 0 = 1 := by rw [hHh (mem_ball_self one_pos), hh0]

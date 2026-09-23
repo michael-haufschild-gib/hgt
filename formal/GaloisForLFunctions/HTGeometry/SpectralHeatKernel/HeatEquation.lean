@@ -35,8 +35,8 @@ noncomputable def spectralHeatKernelLaplacian (lam : ℕ → ℝ) (φ : ℕ → 
 theorem norm_spectralHeatKernelLaplacian_le (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) {t : ℝ} {x y : X}
     (ht : 0 < t) (hlam : ∀ n, 0 ≤ lam n)
     (hprod : Summable fun n => lam n * Real.exp (-(t * lam n)) * (‖φ n x‖ * ‖φ n y‖))
-    (hx : Summable fun n => Real.exp (-(t / 2 * lam n)) * ‖φ n x‖ ^ 2)
-    (hy : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n y‖ ^ 2) :
+    (hx : Summable fun n => Real.exp (-(t / 2 * lam n)) * ‖φ n x‖ ^ (2 : ℕ))
+    (hy : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n y‖ ^ (2 : ℕ)) :
     ‖spectralHeatKernelLaplacian lam φ t x y‖
       ≤ (4 * Real.exp (-1)) / t
           * (Real.sqrt (spectralHeatDiag lam φ (t / 2) x)

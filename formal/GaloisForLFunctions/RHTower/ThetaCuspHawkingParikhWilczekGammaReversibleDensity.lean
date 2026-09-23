@@ -22,7 +22,7 @@ def pwGammaForwardJumpRate (x y : ℝ) : ℝ := Real.exp (-(y-x))/(y-x)
 def pwGammaBackwardJumpRate (y x : ℝ) : ℝ :=
   (y/x)*Real.exp (-(x⁻¹-y⁻¹))/(y-x)
 def pwGammaReversibleDensity (x : ℝ) : ℝ := Real.exp (-x-x⁻¹)/x
-def pwGammaReversibleSourceDensity (x : ℝ) : ℝ := Real.exp (x-x⁻¹)/x^2
+def pwGammaReversibleSourceDensity (x : ℝ) : ℝ := Real.exp (x-x⁻¹)/x^(2 : ℕ)
 
 theorem pwGammaReversibleDensity_pos {x : ℝ} (hx : 0<x) :
     0 < pwGammaReversibleDensity x := div_pos (Real.exp_pos _) hx
@@ -56,22 +56,22 @@ theorem pwGammaReversibleDensity_detailedBalance {x y : ℝ} (hy : y≠0) :
   rw [pwGammaReversibleDensity_forward, pwGammaReversibleDensity_backward hy]
 
 theorem pwGammaReversibleDensity_inv {x : ℝ} (hx : x≠0) :
-    pwGammaReversibleDensity x⁻¹ / x^2 = pwGammaReversibleDensity x := by
+    pwGammaReversibleDensity x⁻¹ / x^(2 : ℕ) = pwGammaReversibleDensity x := by
   unfold pwGammaReversibleDensity
   rw [inv_inv, show -x⁻¹-x = -x-x⁻¹ by ring]
   field_simp
 
 theorem pwGammaReversibleSourceDensity_source {x : ℝ} (hx : 0<x) :
-    pwGammaReversibleSourceDensity x * ‖pwGammaRaySource x‖^2 =
+    pwGammaReversibleSourceDensity x * ‖pwGammaRaySource x‖^(2 : ℕ) =
       pwGammaReversibleDensity x := by
   rw [pwGammaRaySource_eq hx, Complex.norm_real, Real.norm_of_nonneg (by positivity),
     mul_pow, Real.sq_sqrt hx.le, pwGammaReversibleSourceDensity, pwGammaReversibleDensity]
-  have he : Real.exp (x-x⁻¹)*Real.exp (-x)^2 = Real.exp (-x-x⁻¹) := by
+  have he : Real.exp (x-x⁻¹)*Real.exp (-x)^(2 : ℕ) = Real.exp (-x-x⁻¹) := by
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   calc
-    _ = (Real.exp (x-x⁻¹)*Real.exp (-x)^2)/x := by field_simp
+    _ = (Real.exp (x-x⁻¹)*Real.exp (-x)^(2 : ℕ))/x := by field_simp
     _ = _ := by rw [he]
 
 theorem pwGammaReversibleSourceDensity_log (t : ℝ) :
@@ -142,12 +142,12 @@ theorem pwGammaReversibleDensity_unique {rho : ℝ → ℝ}
 
 /-- Actual reciprocal displacement derivative, before applying change of variables. -/
 theorem pwGammaBackwardJump_displacement_hasDerivAt {x : ℝ} (hx : x≠0) (y : ℝ) :
-    HasDerivAt (fun u : ℝ => u⁻¹-y⁻¹) (-(x^2)⁻¹) x :=
+    HasDerivAt (fun u : ℝ => u⁻¹-y⁻¹) (-(x^(2 : ℕ))⁻¹) x :=
   (hasDerivAt_inv hx).sub_const _
 
 /-- The backward rate retains the reciprocal displacement's Jacobian. -/
 theorem pwGammaBackwardJumpRate_changeOfVariables {x y : ℝ} (hx : 0<x) (hxy : x<y) :
-    Real.exp (-(x⁻¹-y⁻¹))/(x⁻¹-y⁻¹)*(x^2)⁻¹ = pwGammaBackwardJumpRate y x := by
+    Real.exp (-(x⁻¹-y⁻¹))/(x⁻¹-y⁻¹)*(x^(2 : ℕ))⁻¹ = pwGammaBackwardJumpRate y x := by
   have hy := hx.trans hxy
   have hd : x⁻¹-y⁻¹≠0 := sub_ne_zero.mpr (inv_injective.ne hxy.ne)
   unfold pwGammaBackwardJumpRate

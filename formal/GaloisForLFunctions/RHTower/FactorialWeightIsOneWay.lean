@@ -39,24 +39,24 @@ noncomputable section
 namespace RHTower
 
 /-- **The unweighted polynomial has no real root**: it is a square plus a positive constant. -/
-theorem unweighted_pos (x : ℝ) : 0 < 1 + x + x ^ 2 := by
+theorem unweighted_pos (x : ℝ) : 0 < 1 + x + x ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (x + 1 / 2)]
 
 /-- Consequently it is not hyperbolic. -/
-theorem unweighted_no_root : ∀ x : ℝ, 1 + x + x ^ 2 ≠ 0 := fun x =>
+theorem unweighted_no_root : ∀ x : ℝ, 1 + x + x ^ (2 : ℕ) ≠ 0 := fun x =>
   ne_of_gt (unweighted_pos x)
 
 /-- **The weighted polynomial has a real root.**  Weighting the coefficients by `1/(2j)!` turns
 `1 + X + X²` into `1 + X/2 + X²/24`, which vanishes at `-6 + 2√3`. -/
 theorem weighted_root_one :
-    1 + (-6 + 2 * Real.sqrt 3) / 2 + (-6 + 2 * Real.sqrt 3) ^ 2 / 24 = 0 := by
-  have h3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    1 + (-6 + 2 * Real.sqrt 3) / 2 + (-6 + 2 * Real.sqrt 3) ^ (2 : ℕ) / 24 = 0 := by
+  have h3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   nlinarith [h3]
 
 /-- And at the conjugate point. -/
 theorem weighted_root_two :
-    1 + (-6 - 2 * Real.sqrt 3) / 2 + (-6 - 2 * Real.sqrt 3) ^ 2 / 24 = 0 := by
-  have h3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    1 + (-6 - 2 * Real.sqrt 3) / 2 + (-6 - 2 * Real.sqrt 3) ^ (2 : ℕ) / 24 = 0 := by
+  have h3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   nlinarith [h3]
 
 /-- The two roots are distinct, so the weighted polynomial is genuinely hyperbolic. -/
@@ -69,9 +69,9 @@ theorem weighted_roots_distinct :
 /-- **The weight creates hyperbolicity.**  One polynomial has no real root; its coefficientwise
 reweighting has two. -/
 theorem weight_creates_hyperbolicity :
-    (∀ x : ℝ, 1 + x + x ^ 2 ≠ 0) ∧
-      (1 + (-6 + 2 * Real.sqrt 3) / 2 + (-6 + 2 * Real.sqrt 3) ^ 2 / 24 = 0 ∧
-        1 + (-6 - 2 * Real.sqrt 3) / 2 + (-6 - 2 * Real.sqrt 3) ^ 2 / 24 = 0) :=
+    (∀ x : ℝ, 1 + x + x ^ (2 : ℕ) ≠ 0) ∧
+      (1 + (-6 + 2 * Real.sqrt 3) / 2 + (-6 + 2 * Real.sqrt 3) ^ (2 : ℕ) / 24 = 0 ∧
+        1 + (-6 - 2 * Real.sqrt 3) / 2 + (-6 - 2 * Real.sqrt 3) ^ (2 : ℕ) / 24 = 0) :=
   ⟨unweighted_no_root, weighted_root_one, weighted_root_two⟩
 
 /-- **The inverse weight is not entire.**  The series `Σ wʲ` with all coefficients one fails to

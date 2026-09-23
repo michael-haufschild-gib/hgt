@@ -113,15 +113,15 @@ theorem observerDist_le_of_norm_le {P Q : E →ₗ[ℂ] E} (hP : P.IsSymmetric)
       exact Real.log_le_log (inv_pos.2 (hαpos i)) hle'
   -- assemble
   rw [observerDist, distId_eq_sqrt, ← hα]
-  have hsum : ∑ i, Real.log (α i) ^ 2 ≤ (n : ℝ) * Real.log C ^ 2 := by
-    calc ∑ i, Real.log (α i) ^ 2 ≤ ∑ _i : Fin n, Real.log C ^ 2 := by
+  have hsum : ∑ i, Real.log (α i) ^ (2 : ℕ) ≤ (n : ℝ) * Real.log C ^ (2 : ℕ) := by
+    calc ∑ i, Real.log (α i) ^ (2 : ℕ) ≤ ∑ _i : Fin n, Real.log C ^ (2 : ℕ) := by
           refine Finset.sum_le_sum fun i _ => ?_
           rw [← sq_abs (Real.log (α i))]
           exact pow_le_pow_left₀ (abs_nonneg _) (hbound i) 2
-      _ = (n : ℝ) * Real.log C ^ 2 := by
+      _ = (n : ℝ) * Real.log C ^ (2 : ℕ) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  calc Real.sqrt (∑ i, Real.log (α i) ^ 2)
-      ≤ Real.sqrt ((n : ℝ) * Real.log C ^ 2) := Real.sqrt_le_sqrt hsum
+  calc Real.sqrt (∑ i, Real.log (α i) ^ (2 : ℕ))
+      ≤ Real.sqrt ((n : ℝ) * Real.log C ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsum
     _ = Real.sqrt n * Real.log C := by
         rw [Real.sqrt_mul (Nat.cast_nonneg n), Real.sqrt_sq hlogC]
 

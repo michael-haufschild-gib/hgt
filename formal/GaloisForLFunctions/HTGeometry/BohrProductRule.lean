@@ -45,7 +45,7 @@ theorem bohrCoefficient_mul_eq_zero {f g : ℝ →ᵇ ℂ} (hf : UniformContinuo
     positivity
   set r : ℝ := d / (2 * N) with hr
   have hrpos : 0 < r := by positivity
-  set δ : ℝ := r ^ 2 with hδ'
+  set δ : ℝ := r ^ (2 : ℕ) with hδ'
   have hδ : 0 < δ := by positivity
   obtain ⟨S, hS⟩ := exists_spectral_mean_square_approx hf htbf hδ
   obtain ⟨T, hT⟩ := exists_spectral_mean_square_approx hg htbg hδ
@@ -100,14 +100,14 @@ theorem bohrCoefficient_mul_eq_zero {f g : ℝ →ᵇ ℂ} (hf : UniformContinuo
     rw [hpq', sub_zero] at hsum
     exact hsum
   -- the two error coefficients are small
-  have hbound1 : ‖bohrCoefficient (fun t => ((fun x => f x) t - p t) * (fun x => g x) t) lam‖ ^ 2
-      ≤ δ * ‖g‖ ^ 2 := by
+  have hbound1 : ‖bohrCoefficient (fun t => ((fun x => f x) t - p t) * (fun x => g x) t) lam‖ ^ (2 : ℕ)
+      ≤ δ * ‖g‖ ^ (2 : ℕ) := by
     refine le_trans (norm_bohrCoefficient_mul_sq_le (hcf.sub hpc)
       (isBohrAlmostPeriodic_sub hcf hapf hpc hpa) hcg hapg lam) ?_
     exact mul_le_mul hS (bohrMean_mul_conj_re_le_norm_sq hapg)
       (bohrMean_mul_conj_re_nonneg hcg hapg) hδ.le
-  have hbound2 : ‖bohrCoefficient (fun t => p t * ((fun x => g x) t - q t)) lam‖ ^ 2
-      ≤ ‖f‖ ^ 2 * δ := by
+  have hbound2 : ‖bohrCoefficient (fun t => p t * ((fun x => g x) t - q t)) lam‖ ^ (2 : ℕ)
+      ≤ ‖f‖ ^ (2 : ℕ) * δ := by
     refine le_trans (norm_bohrCoefficient_mul_sq_le hpc hpa (hcg.sub hqc)
       (isBohrAlmostPeriodic_sub hcg hapg hqc hqa) lam) ?_
     refine mul_le_mul ?_ hT (bohrMean_mul_conj_re_nonneg (hcg.sub hqc)
@@ -129,13 +129,13 @@ theorem bohrCoefficient_mul_eq_zero {f g : ℝ →ᵇ ℂ} (hf : UniformContinuo
   have hx1 : x ≤ r * ‖g‖ := by
     have h := Real.sqrt_le_sqrt hbound1
     rw [Real.sqrt_sq hx] at h
-    have hsq : Real.sqrt (δ * ‖g‖ ^ 2) = r * ‖g‖ := by
+    have hsq : Real.sqrt (δ * ‖g‖ ^ (2 : ℕ)) = r * ‖g‖ := by
       rw [hδ', ← mul_pow, Real.sqrt_sq (by positivity)]
     rwa [hsq] at h
   have hy1 : y ≤ ‖f‖ * r := by
     have h := Real.sqrt_le_sqrt hbound2
     rw [Real.sqrt_sq hy] at h
-    have hsq : Real.sqrt (‖f‖ ^ 2 * δ) = ‖f‖ * r := by
+    have hsq : Real.sqrt (‖f‖ ^ (2 : ℕ) * δ) = ‖f‖ * r := by
       rw [hδ', ← mul_pow, Real.sqrt_sq (by positivity)]
     rwa [hsq] at h
   have hrN : r * (‖f‖ + ‖g‖) < d := by

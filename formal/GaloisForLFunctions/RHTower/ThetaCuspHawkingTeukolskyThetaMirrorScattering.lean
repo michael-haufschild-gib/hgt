@@ -364,7 +364,7 @@ theorem d4BMXiThetaMirrorRadialNode_product
         (thetaCuspHawkingHypergeometricRadialB
           (d4BMFunctionalReflectionMediatorFrequency n n + w)
           (d4BMXiReflectedRealPairMediatorSpectralPoint q) + (2 * n + 1 : ℕ)) =
-      -(1 / 4 : ℂ) * (w ^ 2 + d4BMXiThetaMirrorTilt q ^ 2) := by
+      -(1 / 4 : ℂ) * (w ^ (2 : ℕ) + d4BMXiThetaMirrorTilt q ^ (2 : ℕ)) := by
   rw [d4BMXiThetaMirrorRadialA_node, d4BMXiThetaMirrorRadialB_node]
   ring_nf
   norm_num [Complex.I_sq]

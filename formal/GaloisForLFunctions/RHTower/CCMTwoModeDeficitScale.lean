@@ -7,18 +7,18 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 A two-mode concentration source is normalised so that its total integral vanishes:
 
 ```text
-g = (l1 e0 - l0 e1) / sqrt (l0^2 + l1^2),   l_j = c_j e_j(0),
+g = (l1 e0 - l0 e1) / sqrt (l0^(2 : ℕ) + l1^(2 : ℕ)),   l_j = c_j e_j(0),
 ```
 
 where `c_j` are the concentration eigenvalues and `l_j` the total integrals of the modes.  Two facts
 about its value at the origin are proved here.
 
 * `twoModeSource_eq_of_eigen` — an exact algebraic identity: the eigen-relation `l_j = c_j e_j(0)`
-  turns the value at the origin into `l0 l1 (c1 - c0) / (c0 c1 sqrt(l0^2 + l1^2))`.  The **difference**
+  turns the value at the origin into `l0 l1 (c1 - c0) / (c0 c1 sqrt(l0^(2 : ℕ) + l1^(2 : ℕ)))`.  The **difference**
   of the eigenvalues appears; that is the first-order cancellation created by the zero-integral
   combination.
 * `tendsto_twoModeSource_div_deficit` — consequently, with the fixed-mode asymptotics as hypotheses,
-  the value is of concentration-deficit order `d1 = 1 - c1^2`, not of square-root-leakage order
+  the value is of concentration-deficit order `d1 = 1 - c1^(2 : ℕ)`, not of square-root-leakage order
   `sqrt d1`, and the limiting ratio is the explicit constant `-2^{-3/4} sqrt(3/11)`.
 
 The asymptotics themselves are inputs, stated as `Tendsto` hypotheses; everything derived from them is

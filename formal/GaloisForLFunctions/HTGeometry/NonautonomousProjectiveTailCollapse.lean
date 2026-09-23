@@ -34,7 +34,7 @@ theorem affineConnection_shiftedResidue_transport {K : Type*} [CommRing K]
 
 /-- The exponent discriminant of a pulled-back projective connection is multiplied by the square
 of the local ramification index.  Here `c` is the target double-pole coefficient and
-`e^2 * c + (1 - e^2)` is the source coefficient after adding the Schwarzian ramification term. -/
+`e^(2 : ℕ) * c + (1 - e^(2 : ℕ))` is the source coefficient after adding the Schwarzian ramification term. -/
 theorem projectiveConnection_exponentDiscriminant_transport
     {K : Type*} [CommRing K] (e c : K) :
     1 - (e ^ 2 * c + (1 - e ^ 2)) = e ^ 2 * (1 - c) := by

@@ -68,7 +68,7 @@ theorem exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy_of_transverse_neutr
     exact finitePacketL1_atomicBernsteinPacket_le hc hamp n
   have hhalf' : Tendsto
       (fun n : ℕ => Real.sqrt n *
-        finitePacketRpowEnergy (atomicBernsteinPacket c u) 2 n / (B ^ 2) ^ n)
+        finitePacketRpowEnergy (atomicBernsteinPacket c u) 2 n / (B ^ (2 : ℕ)) ^ n)
       atTop (nhds L) := by
     simpa only [finitePacketRpowEnergy_two_eq_squareEnergy,
       atomicBernsteinPacketSquareEnergy, u] using hhalf

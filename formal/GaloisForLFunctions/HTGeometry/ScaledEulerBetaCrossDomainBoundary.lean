@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 At unit slopes, the two-slope Euler beta carrier is exactly the reciprocal binary symmetric
 Dirichlet normalizer:
 
-`B(z,z) = Gamma(z)^2 / Gamma(2*z) = D_2(z)^(-1)`.
+`B(z,z) = Gamma(z)^(2 : ℕ) / Gamma(2*z) = D_2(z)^(-1)`.
 
 Together with the one-channel Jacobi/MANOVA identity, this is one meromorphic value shared by a
 quantum-transport observation law, a Veneziano/open-string beta amplitude, and a binary

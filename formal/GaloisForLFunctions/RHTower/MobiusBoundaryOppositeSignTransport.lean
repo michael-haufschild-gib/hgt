@@ -130,8 +130,8 @@ private theorem replacementToken_mul_le_pow_mul_dist
 
 /-- Exact friable macroscopic-gap obstruction for the Route E `{1 ↔ 2, 1 ↔ 4}` replacement
 graph.  If every prime factor of the distinguished endpoint `n` is at most `y < z`, every
-replacement neighbor lies at integer distance at least `n / y^4`, expressed division-free as
-`n ≤ y^4 * dist n m`. -/
+replacement neighbor lies at integer distance at least `n / y^(4 : ℕ)`, expressed division-free as
+`n ≤ y^(4 : ℕ) * dist n m`. -/
 theorem le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le
     {z y n m : ℕ}
     (hyz : y < z)
@@ -256,7 +256,7 @@ theorem mobiusBoundaryFactorReplacementWindowAdjacent_symm
     MobiusBoundaryFactorReplacementWindowAdjacent z H n m := by
   exact ⟨mobiusBoundaryFactorReplacementAdjacent_symm h.1, h.2.2, h.2.1⟩
 
-/-- A `y`-friable endpoint above `y^4 * H` is isolated in the displacement-`H` replacement
+/-- A `y`-friable endpoint above `y^(4 : ℕ) * H` is isolated in the displacement-`H` replacement
 graph.  This is the finite combinatorial core of the Route E sublinear-window obstruction. -/
 theorem not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt
     {z y H n m : ℕ}
@@ -856,7 +856,7 @@ theorem abs_sum_sign_weight_le_degreeNormalizedReplacementDefect
     · exact le_rfl
   · exact weight_eq_isolatedResidual_add_sum_degreeNormalizedWeight adj weight
 
-/-- Concrete Route E consumer on the literal Möbius vertices through `z^2`.  Its right side is the
+/-- Concrete Route E consumer on the literal Möbius vertices through `z^(2 : ℕ)`.  Its right side is the
 canonical positive defect of the two explicit bounded-prime factor-replacement edge families; no
 arithmetic expansion estimate is assumed in the theorem. -/
 theorem abs_truncatedMobiusLaplace_le_degreeNormalizedFactorReplacementDefect

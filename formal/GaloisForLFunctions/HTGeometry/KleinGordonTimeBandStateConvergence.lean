@@ -258,9 +258,9 @@ theorem tendsto_kgFieldEnergyT_band (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r�
     (hWs : ∀ z : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r z)
     (g y : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     Tendsto (fun R : ℝ =>
-        ‖kgFieldGradT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2
-          + ‖kgFieldVelT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2) atTop
-      (𝓝 (‖kgFieldGradT W g y t‖ ^ 2 + ‖kgFieldVelT W g y t‖ ^ 2)) :=
+        ‖kgFieldGradT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)
+          + ‖kgFieldVelT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)) atTop
+      (𝓝 (‖kgFieldGradT W g y t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g y t‖ ^ (2 : ℕ))) :=
   (((tendsto_kgFieldGradT_band hb0 hWb hWs g y t).norm).pow 2).add
     (((tendsto_kgFieldVelT_band hb0 hWb hWs g y t).norm).pow 2)
 

@@ -27,7 +27,7 @@ def finiteMultiplicityMass {ι : Type*} (s : Finset ι) (m : ι → ℕ) : ℝ :
 /-- Diagonal collision energy of a finite multiplicity packet. -/
 def finiteMultiplicityCollisionMass {ι : Type*} (s : Finset ι)
     (m : ι → ℕ) : ℝ :=
-  ∑ i ∈ s, (m i : ℝ) ^ 2
+  ∑ i ∈ s, (m i : ℝ) ^ (2 : ℕ)
 
 /-- Points occurring exactly once in a finite multiplicity packet. -/
 def finiteSimpleMultiplicitySupport {ι : Type*} [DecidableEq ι]
@@ -112,15 +112,15 @@ theorem finiteSimpleMultiplicitySupport_add_mass_lower
 /-- Tangent-line lower bound for a square, used with the free parameter in
 the simple-or-real estimate. -/
 theorem lamzouriQuadratic_affineMinorant (a t : ℝ) :
-    2 * a * t - t ^ 2 ≤ a ^ 2 := by
+    2 * a * t - t ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (a - t)]
 
 /-- The `t = 2` scalar inequality used on the first Hilbert range. -/
-theorem lamzouriQuadratic_twoMinorant (a : ℝ) : 4 * a - 4 ≤ a ^ 2 := by
+theorem lamzouriQuadratic_twoMinorant (a : ℝ) : 4 * a - 4 ≤ a ^ (2 : ℕ) := by
   nlinarith [lamzouriQuadratic_affineMinorant a 2]
 
 /-- The `t = 1` scalar inequality used on the middle Hilbert range. -/
-theorem lamzouriQuadratic_oneMinorant (a : ℝ) : 2 * a - 1 ≤ a ^ 2 := by
+theorem lamzouriQuadratic_oneMinorant (a : ℝ) : 2 * a - 1 ≤ a ^ (2 : ℕ) := by
   nlinarith [lamzouriQuadratic_affineMinorant a 1]
 
 end

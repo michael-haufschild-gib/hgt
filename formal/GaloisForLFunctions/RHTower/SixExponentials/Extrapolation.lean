@@ -24,7 +24,7 @@ variable (A : AlgData)
 noncomputable def samples (M : ℕ) : Finset ℂ :=
   Finset.univ.image (fun m : Fin 3 → Fin M => A.toData.pt m)
 
-theorem card_samples (M : ℕ) : (A.samples M).card = M ^ 3 := by
+theorem card_samples (M : ℕ) : (A.samples M).card = M ^ (3 : ℕ) := by
   unfold samples
   rw [Finset.card_image_of_injective _ (A.toData.pt_injective M), Finset.card_univ]
   simp
@@ -40,14 +40,14 @@ theorem norm_F_le_of_vanishing {L M : ℕ} (ξ : Fin L × Fin L → 𝓞 A.K) {B
     (hB : ∀ l, house (algebraMap (𝓞 A.K) A.K (ξ l)) ≤ B) (hB0 : 0 ≤ B)
     (hvan : ∀ m : Fin 3 → Fin M, A.F ξ (A.toData.pt m) = 0)
     {z : ℂ} (hz : ‖z‖ ≤ (M + 1) * A.toData.Y) :
-    ‖A.F ξ z‖ ≤ (2 / 3 : ℝ) ^ (M ^ 3)
+    ‖A.F ξ z‖ ≤ (2 / 3 : ℝ) ^ (M ^ (3 : ℕ))
       * ((L * L) * (B * Real.exp (L * A.toData.X * (4 * (M + 1) * A.toData.Y)))) := by
   have hY := A.toData.Y_pos
   have hM1 : (0 : ℝ) < M + 1 := by positivity
   set R : ℝ := 4 * (M + 1) * A.toData.Y with hR
   have hRpos : 0 < R := by positivity
   set Mb : ℝ := (L * L) * (B * Real.exp (L * A.toData.X * R)) with hMb
-  set Db : ℝ := (3 * (M + 1) * A.toData.Y) ^ (M ^ 3) with hDb
+  set Db : ℝ := (3 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) with hDb
   have hDpos : 0 < Db := by positivity
   have horder : ∀ c ∈ A.samples M, ((1 : ℕ) : ℕ∞) ≤ analyticOrderAt (A.F ξ) c := by
     intro c hc
@@ -65,14 +65,14 @@ theorem norm_F_le_of_vanishing {L M : ℕ} (ξ : Fin L × Fin L → 𝓞 A.K) {B
     have := A.norm_F_le ξ hB w
     rw [hw] at this
     exact this
-  have hbfac : ∀ w ∈ Metric.sphere (0 : ℂ) R, Db ≤ ‖∏ c ∈ A.samples M, (w - c) ^ 1‖ := by
+  have hbfac : ∀ w ∈ Metric.sphere (0 : ℂ) R, Db ≤ ‖∏ c ∈ A.samples M, (w - c) ^ (1 : ℕ)‖ := by
     intro w hw
     rw [mem_sphere_zero_iff_norm] at hw
     rw [norm_prod]
     have hcard := A.card_samples M
     calc Db = ∏ _c ∈ A.samples M, (3 * (M + 1) * A.toData.Y) := by
           rw [Finset.prod_const, hcard]
-      _ ≤ ∏ c ∈ A.samples M, ‖(w - c) ^ 1‖ := by
+      _ ≤ ∏ c ∈ A.samples M, ‖(w - c) ^ (1 : ℕ)‖ := by
           apply Finset.prod_le_prod
           · intro c _; positivity
           · intro c hc
@@ -87,10 +87,10 @@ theorem norm_F_le_of_vanishing {L M : ℕ} (ξ : Fin L × Fin L → 𝓞 A.K) {B
     nlinarith
   have hmain := BakerProof.multipoint_schwarz_bound (A.F ξ) (A.analyticAt_F ξ) (A.samples M) 1
     horder hRpos hDpos hbf hbfac hzball
-  have hprodz : ‖∏ c ∈ A.samples M, (z - c) ^ 1‖ ≤ (2 * (M + 1) * A.toData.Y) ^ (M ^ 3) := by
+  have hprodz : ‖∏ c ∈ A.samples M, (z - c) ^ (1 : ℕ)‖ ≤ (2 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) := by
     rw [norm_prod]
     have hcard := A.card_samples M
-    calc ∏ c ∈ A.samples M, ‖(z - c) ^ 1‖ ≤ ∏ _c ∈ A.samples M, (2 * (M + 1) * A.toData.Y) := by
+    calc ∏ c ∈ A.samples M, ‖(z - c) ^ (1 : ℕ)‖ ≤ ∏ _c ∈ A.samples M, (2 * (M + 1) * A.toData.Y) := by
           apply Finset.prod_le_prod
           · intro c _; positivity
           · intro c hc
@@ -99,19 +99,19 @@ theorem norm_F_le_of_vanishing {L M : ℕ} (ξ : Fin L × Fin L → 𝓞 A.K) {B
             have h2 : ‖z - c‖ ≤ ‖z‖ + ‖c‖ := norm_sub_le _ _
             have h3 : (M : ℝ) * A.toData.Y ≤ (M + 1) * A.toData.Y := by nlinarith
             linarith
-      _ = (2 * (M + 1) * A.toData.Y) ^ (M ^ 3) := by rw [Finset.prod_const, hcard]
-  have hratio : (2 * (M + 1) * A.toData.Y) ^ (M ^ 3) / Db = (2 / 3 : ℝ) ^ (M ^ 3) := by
+      _ = (2 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) := by rw [Finset.prod_const, hcard]
+  have hratio : (2 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) / Db = (2 / 3 : ℝ) ^ (M ^ (3 : ℕ)) := by
     rw [hDb, ← div_pow]
     congr 1
     field_simp
   have hMb0 : 0 ≤ Mb := by
     rw [hMb]
     positivity
-  calc ‖A.F ξ z‖ ≤ ‖∏ c ∈ A.samples M, (z - c) ^ 1‖ * (Mb / Db) := hmain
-    _ ≤ (2 * (M + 1) * A.toData.Y) ^ (M ^ 3) * (Mb / Db) :=
+  calc ‖A.F ξ z‖ ≤ ‖∏ c ∈ A.samples M, (z - c) ^ (1 : ℕ)‖ * (Mb / Db) := hmain
+    _ ≤ (2 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) * (Mb / Db) :=
         mul_le_mul_of_nonneg_right hprodz (div_nonneg hMb0 hDpos.le)
-    _ = ((2 * (M + 1) * A.toData.Y) ^ (M ^ 3) / Db) * Mb := by ring
-    _ = (2 / 3 : ℝ) ^ (M ^ 3) * Mb := by rw [hratio]
+    _ = ((2 * (M + 1) * A.toData.Y) ^ (M ^ (3 : ℕ)) / Db) * Mb := by ring
+    _ = (2 / 3 : ℝ) ^ (M ^ (3 : ℕ)) * Mb := by rw [hratio]
 
 /-- **Liouville step.**  A nonzero value at a sample point of level `M` is bounded below. -/
 theorem one_le_of_F_ne_zero {L M : ℕ} (ξ : Fin L × Fin L → 𝓞 A.K) {B : ℝ}

@@ -75,11 +75,11 @@ theorem kgShiftedCosOp_lowPass_add (hv : Measurable v) (hb0 : 0 ≤ b) (hb1 : b 
   have hgss : Measurable fun ξ : E => kgShiftedFreqSqLow v R ξ
       * (kgShiftedSinOverFreq v t ξ * (kgShiftedSinOverFreq v s ξ * kgLowPass R ξ)) :=
     (measurable_kgShiftedFreqSqLow hv R).mul htss
-  have hgssb0 : (0 : ℝ) ≤ (1 + R ^ 2 + b) * (|t| * |s|) :=
+  have hgssb0 : (0 : ℝ) ≤ (1 + R ^ (2 : ℕ) + b) * (|t| * |s|) :=
     mul_nonneg hband (mul_nonneg (abs_nonneg t) (abs_nonneg s))
   have hgssb : ∀ ξ : E, ‖kgShiftedFreqSqLow v R ξ
       * (kgShiftedSinOverFreq v t ξ * (kgShiftedSinOverFreq v s ξ * kgLowPass R ξ))‖
-        ≤ (1 + R ^ 2 + b) * (|t| * |s|) := by
+        ≤ (1 + R ^ (2 : ℕ) + b) * (|t| * |s|) := by
     intro ξ
     rw [norm_mul]
     exact mul_le_mul (norm_kgShiftedFreqSqLow_le hb0 hb1 hvb R ξ) (htssb ξ) (norm_nonneg _) hband
@@ -155,14 +155,14 @@ theorem hasDerivAt_kgShiftedCosOp_lowPass (hv : Measurable v) (hb0 : 0 ≤ b) (h
       (-(kgShiftedFreqSqLowOp hv hb0 hb1 hvb R
         (kgShiftedSinFreqOp hv t (kgLowPassOp R x)))) t := by
   have hband := band_bound_nonneg (b := b) hb0 R
-  have hK0 : (0 : ℝ) ≤ ((1 + R ^ 2 + b) / 2
-      + (1 + R ^ 2 + b) * |t| * (1 + R ^ 2 + b) / 6) * ‖x‖ := by
-    have h1 : (0 : ℝ) ≤ (1 + R ^ 2 + b) / 2 := div_nonneg hband (by norm_num)
-    have h2 : (0 : ℝ) ≤ (1 + R ^ 2 + b) * |t| * (1 + R ^ 2 + b) / 6 :=
+  have hK0 : (0 : ℝ) ≤ ((1 + R ^ (2 : ℕ) + b) / 2
+      + (1 + R ^ (2 : ℕ) + b) * |t| * (1 + R ^ (2 : ℕ) + b) / 6) * ‖x‖ := by
+    have h1 : (0 : ℝ) ≤ (1 + R ^ (2 : ℕ) + b) / 2 := div_nonneg hband (by norm_num)
+    have h2 : (0 : ℝ) ≤ (1 + R ^ (2 : ℕ) + b) * |t| * (1 + R ^ (2 : ℕ) + b) / 6 :=
       div_nonneg (mul_nonneg (mul_nonneg hband (abs_nonneg t)) hband) (by norm_num)
     exact mul_nonneg (by linarith) (norm_nonneg x)
-  set K : ℝ := ((1 + R ^ 2 + b) / 2
-    + (1 + R ^ 2 + b) * |t| * (1 + R ^ 2 + b) / 6) * ‖x‖ with hKdef
+  set K : ℝ := ((1 + R ^ (2 : ℕ) + b) / 2
+    + (1 + R ^ (2 : ℕ) + b) * |t| * (1 + R ^ (2 : ℕ) + b) / 6) * ‖x‖ with hKdef
   rw [hasDerivAt_iff_isLittleO, isLittleO_iff]
   intro c hc
   rw [Metric.eventually_nhds_iff]
@@ -204,50 +204,50 @@ theorem hasDerivAt_kgShiftedCosOp_lowPass (hv : Measurable v) (hb0 : 0 ≤ b) (h
   have hB2 : ‖kgShiftedFreqSqLowOp hv hb0 hb1 hvb R (kgShiftedSinFreqOp hv t
         (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
           - ((s - t : ℝ) : ℂ) • kgLowPassOp R x))‖
-      ≤ (1 + R ^ 2 + b) * ‖kgShiftedSinFreqOp hv t
+      ≤ (1 + R ^ (2 : ℕ) + b) * ‖kgShiftedSinFreqOp hv t
           (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
             - ((s - t : ℝ) : ℂ) • kgLowPassOp R x)‖ :=
     ContinuousLinearMap.le_of_opNorm_le _ (norm_kgShiftedFreqSqLowOp_le hv hb0 hb1 hvb R) _
-  have hsq : (s - t) ^ 2 = |s - t| ^ 2 := (sq_abs _).symm
-  have hcube : |s - t| ^ 3 ≤ |s - t| ^ 2 :=
+  have hsq : (s - t) ^ (2 : ℕ) = |s - t| ^ (2 : ℕ) := (sq_abs _).symm
+  have hcube : |s - t| ^ (3 : ℕ) ≤ |s - t| ^ (2 : ℕ) :=
     pow_le_pow_of_le_one hd0 hd1 (by norm_num : (2 : ℕ) ≤ 3)
   have hx0 : (0 : ℝ) ≤ ‖x‖ := norm_nonneg x
   have htotal : ‖kgShiftedCosOp hv s (kgLowPassOp R x) - kgShiftedCosOp hv t (kgLowPassOp R x)
         - (s - t) • (-(kgShiftedFreqSqLowOp hv hb0 hb1 hvb R
           (kgShiftedSinFreqOp hv t (kgLowPassOp R x))))‖
-      ≤ |s - t| ^ 2 * K := by
+      ≤ |s - t| ^ (2 : ℕ) * K := by
     rw [hkey]
     refine le_trans (norm_sub_le _ _) ?_
     have hAle : ‖kgShiftedCosOp hv t
         (kgShiftedCosOp hv (s - t) (kgLowPassOp R x) - kgLowPassOp R x)‖
-        ≤ (s - t) ^ 2 * (1 + R ^ 2 + b) / 2 * ‖x‖ := by
+        ≤ (s - t) ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 * ‖x‖ := by
       have := hA
       linarith
     have hBle : ‖kgShiftedFreqSqLowOp hv hb0 hb1 hvb R (kgShiftedSinFreqOp hv t
           (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
             - ((s - t : ℝ) : ℂ) • kgLowPassOp R x))‖
-        ≤ (1 + R ^ 2 + b) * |t| * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖) := by
+        ≤ (1 + R ^ (2 : ℕ) + b) * |t| * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) := by
       have hstep1 : |t| * ‖kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
             - ((s - t : ℝ) : ℂ) • kgLowPassOp R x‖
-          ≤ |t| * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖) :=
+          ≤ |t| * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) :=
         mul_le_mul_of_nonneg_left hsin (abs_nonneg t)
       have hstep2 := le_trans hB1 hstep1
       have hstep3 := mul_le_mul_of_nonneg_left hstep2 hband
       calc ‖kgShiftedFreqSqLowOp hv hb0 hb1 hvb R (kgShiftedSinFreqOp hv t
               (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
                 - ((s - t : ℝ) : ℂ) • kgLowPassOp R x))‖
-          ≤ (1 + R ^ 2 + b) * ‖kgShiftedSinFreqOp hv t
+          ≤ (1 + R ^ (2 : ℕ) + b) * ‖kgShiftedSinFreqOp hv t
               (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
                 - ((s - t : ℝ) : ℂ) • kgLowPassOp R x)‖ := hB2
-        _ ≤ (1 + R ^ 2 + b) * (|t| * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖)) := hstep3
-        _ = (1 + R ^ 2 + b) * |t| * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖) := by ring
+        _ ≤ (1 + R ^ (2 : ℕ) + b) * (|t| * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖)) := hstep3
+        _ = (1 + R ^ (2 : ℕ) + b) * |t| * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) := by ring
     rw [hsq] at hAle
-    have hcubed : (1 + R ^ 2 + b) * |t| * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖)
-        ≤ (1 + R ^ 2 + b) * |t| * (|s - t| ^ 2 * (1 + R ^ 2 + b) / 6 * ‖x‖) := by
-      have hmul : |s - t| ^ 3 * (1 + R ^ 2 + b) ≤ |s - t| ^ 2 * (1 + R ^ 2 + b) :=
+    have hcubed : (1 + R ^ (2 : ℕ) + b) * |t| * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖)
+        ≤ (1 + R ^ (2 : ℕ) + b) * |t| * (|s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) := by
+      have hmul : |s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) ≤ |s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) :=
         mul_le_mul_of_nonneg_right hcube hband
-      have hdiv : |s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖
-          ≤ |s - t| ^ 2 * (1 + R ^ 2 + b) / 6 * ‖x‖ :=
+      have hdiv : |s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖
+          ≤ |s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖ :=
         mul_le_mul_of_nonneg_right (by linarith) hx0
       exact mul_le_mul_of_nonneg_left hdiv
         (mul_nonneg hband (abs_nonneg t))

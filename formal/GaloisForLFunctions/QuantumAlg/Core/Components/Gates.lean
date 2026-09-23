@@ -36,7 +36,7 @@ def HOp : HilbertOperator (Qubits 1) :=
   invSqrt2 • !![(1 : ℂ), 1; 1, -1]
 
 theorem HOp_mem_unitaryGroup :
-    HOp ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    HOp ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff, HOp, star_smul, smul_mul_smul_comm,
     star_invSqrt2, invSqrt2_mul_self]
   have hstar : star (!![(1 : ℂ), 1; 1, -1] : HilbertOperator (Qubits 1))
@@ -61,7 +61,7 @@ def X : Gate (Qubits 1) := ofPerm (Equiv.swap 0 1)
 def YOp : HilbertOperator (Qubits 1) := !![(0 : ℂ), -Complex.I; Complex.I, 0]
 
 theorem YOp_mem_unitaryGroup :
-    YOp ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    YOp ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -74,7 +74,7 @@ def Y : Gate (Qubits 1) := ofUnitary YOp YOp_mem_unitaryGroup
 def ZOp : HilbertOperator (Qubits 1) := !![(1 : ℂ), 0; 0, -1]
 
 theorem ZOp_mem_unitaryGroup :
-    ZOp ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    ZOp ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -87,23 +87,23 @@ def Z : Gate (Qubits 1) := ofUnitary ZOp ZOp_mem_unitaryGroup
 def CNOT : Gate (Qubits 2) := ofPerm (Equiv.swap 2 3)
 
 theorem X_mem_unitaryGroup : (X : HilbertOperator (Qubits 1))
-    ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   X.unitary
 
 theorem CNOT_mem_unitaryGroup : (CNOT : HilbertOperator (Qubits 2))
-    ∈ Matrix.unitaryGroup (Fin (2 ^ 2)) ℂ :=
+    ∈ Matrix.unitaryGroup (Fin (2 ^ (2 : ℕ))) ℂ :=
   CNOT.unitary
 
 theorem Y_mem_unitaryGroup : (Y : HilbertOperator (Qubits 1))
-    ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   Y.unitary
 
 theorem Z_mem_unitaryGroup : (Z : HilbertOperator (Qubits 1))
-    ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   Z.unitary
 
 theorem H_mem_unitaryGroup : (H : HilbertOperator (Qubits 1))
-    ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   H.unitary
 
 /-- `H |0> = |+>`. -/
@@ -131,9 +131,9 @@ theorem H_applyVec_ket1 :
   congrArg (fun psi : PureState (Qubits 1) => (psi : StateVector (Qubits 1))) H_apply_ket1
 
 /-- `CNOT` permutes the basis by swapping `|10> ↔ |11>` (indices 2 ↔ 3). -/
-theorem CNOT_apply_ket (x : Fin (2 ^ 2)) :
+theorem CNOT_apply_ket (x : Fin (2 ^ (2 : ℕ))) :
     CNOT.apply (ket x) =
-      ket (Equiv.swap (2 : Fin (2 ^ 2)) (3 : Fin (2 ^ 2)) x) := by
+      ket (Equiv.swap (2 : Fin (2 ^ (2 : ℕ))) (3 : Fin (2 ^ (2 : ℕ))) x) := by
   rw [CNOT, ofPerm_apply_ket, Equiv.swap_inv]
 
 /-- `X |0> = |1>`. -/
@@ -213,7 +213,7 @@ theorem CNOT_apply_ket0_tensor_ket0 :
   rw [ket0, PureState.tensor_ket]
   change CNOT.apply (PureState.ket (R := Qubits 2) 0) =
     PureState.ket (R := Qubits 2) 0
-  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ 2)) 3 0 = 0 from by decide]
+  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ (2 : ℕ))) 3 0 = 0 from by decide]
 
 /-- `CNOT |01> = |01>`. -/
 @[simp]
@@ -222,7 +222,7 @@ theorem CNOT_apply_ket0_tensor_ket1 :
   rw [ket0, ket1, PureState.tensor_ket]
   change CNOT.apply (PureState.ket (R := Qubits 2) 1) =
     PureState.ket (R := Qubits 2) 1
-  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ 2)) 3 1 = 1 from by decide]
+  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ (2 : ℕ))) 3 1 = 1 from by decide]
 
 /-- `CNOT |10> = |11>`. -/
 @[simp]
@@ -231,7 +231,7 @@ theorem CNOT_apply_ket1_tensor_ket0 :
   rw [ket0, ket1, PureState.tensor_ket, PureState.tensor_ket]
   change CNOT.apply (PureState.ket (R := Qubits 2) 2) =
     PureState.ket (R := Qubits 2) 3
-  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ 2)) 3 2 = 3 from by decide]
+  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ (2 : ℕ))) 3 2 = 3 from by decide]
 
 /-- `CNOT |11> = |10>`. -/
 @[simp]
@@ -240,7 +240,7 @@ theorem CNOT_apply_ket1_tensor_ket1 :
   rw [ket0, ket1, PureState.tensor_ket, PureState.tensor_ket]
   change CNOT.apply (PureState.ket (R := Qubits 2) 3) =
     PureState.ket (R := Qubits 2) 2
-  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ 2)) 3 3 = 2 from by decide]
+  rw [CNOT_apply_ket, show Equiv.swap (2 : Fin (2 ^ (2 : ℕ))) 3 3 = 2 from by decide]
 
 @[simp]
 theorem CNOT_applyVec_ket0_tensor_ket0 :
@@ -295,7 +295,7 @@ def rotZOp (phi : ℝ) : HilbertOperator (Qubits 1) :=
   !![Complex.exp (phi * Complex.I), 0; 0, Complex.exp (-(phi * Complex.I))]
 
 theorem rotZOp_mem_unitaryGroup (phi : ℝ) :
-    rotZOp phi ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    rotZOp phi ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -320,7 +320,7 @@ theorem rotZ_zero : rotZ 0 = 1 := by
   fin_cases i <;> fin_cases j <;> simp [rotZOp]
 
 theorem rotZ_mem_unitaryGroup (phi : ℝ) :
-    (rotZ phi : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    (rotZ phi : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   (rotZ phi).unitary
 
 theorem rotZ_comm (a b : ℝ) : rotZ a * rotZ b = rotZ b * rotZ a := by
@@ -338,9 +338,9 @@ def rotYOp (theta : ℝ) : HilbertOperator (Qubits 1) :=
      (Real.sin (theta / 2) : ℂ), (Real.cos (theta / 2) : ℂ)]
 
 theorem rotYOp_mem_unitaryGroup (theta : ℝ) :
-    rotYOp theta ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
-  have hcs' : (Real.sin (theta / 2) : ℂ) ^ 2
-      + (Real.cos (theta / 2) : ℂ) ^ 2 = 1 := by
+    rotYOp theta ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
+  have hcs' : (Real.sin (theta / 2) : ℂ) ^ (2 : ℕ)
+      + (Real.cos (theta / 2) : ℂ) ^ (2 : ℕ) = 1 := by
     have := Real.sin_sq_add_cos_sq (theta / 2)
     exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) this
   rw [Matrix.mem_unitaryGroup_iff]
@@ -365,11 +365,11 @@ theorem rotZStd_zero : rotZStd 0 = 1 := by
   rw [rotZStd, show -(0 / 2 : ℝ) = 0 by norm_num, rotZ_zero]
 
 theorem rotY_mem_unitaryGroup (theta : ℝ) :
-    (rotY theta : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    (rotY theta : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   (rotY theta).unitary
 
 theorem rotZStd_mem_unitaryGroup (phi : ℝ) :
-    (rotZStd phi : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ :=
+    (rotZStd phi : HilbertOperator (Qubits 1)) ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ :=
   (rotZStd phi).unitary
 
 /-! ## Phase gates -/
@@ -392,7 +392,7 @@ def phaseGateOp (θ : ℝ) : HilbertOperator (Qubits 1) :=
   !![1, 0; 0, Complex.exp ((θ : ℝ) * Complex.I)]
 
 theorem phaseGateOp_mem_unitaryGroup (θ : ℝ) :
-    phaseGateOp θ ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    phaseGateOp θ ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -408,7 +408,7 @@ def phaseGateOnZeroOp (θ : ℝ) : HilbertOperator (Qubits 1) :=
   !![Complex.exp ((θ : ℝ) * Complex.I), 0; 0, 1]
 
 theorem phaseGateOnZeroOp_mem_unitaryGroup (θ : ℝ) :
-    phaseGateOnZeroOp θ ∈ Matrix.unitaryGroup (Fin (2 ^ 1)) ℂ := by
+    phaseGateOnZeroOp θ ∈ Matrix.unitaryGroup (Fin (2 ^ (1 : ℕ))) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
   ext i j
   fin_cases i <;> fin_cases j <;>

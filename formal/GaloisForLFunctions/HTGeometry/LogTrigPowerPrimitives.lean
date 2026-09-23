@@ -11,14 +11,14 @@ For `x > 0` the two elementary oscillatory power integrands
 
 have closed-form primitives
 
-`x^c (c cos(b log x) + b sin(b log x)) / (c^2 + b^2)`,
-`x^c (c sin(b log x) - b cos(b log x)) / (c^2 + b^2)`,
+`x^c (c cos(b log x) + b sin(b log x)) / (c^(2 : ℕ) + b^(2 : ℕ))`,
+`x^c (c sin(b log x) - b cos(b log x)) / (c^(2 : ℕ) + b^(2 : ℕ))`,
 
-valid whenever `c^2 + b^2 ≠ 0`.  Iterating once more raises the exponent by one and produces the
+valid whenever `c^(2 : ℕ) + b^(2 : ℕ) ≠ 0`.  Iterating once more raises the exponent by one and produces the
 second primitives
 
-`x^(c+1) ((c^2 + c - b^2) cos + (2c+1) b sin) / ((c^2+b^2)((c+1)^2+b^2))`,
-`x^(c+1) ((c^2 + c - b^2) sin - (2c+1) b cos) / ((c^2+b^2)((c+1)^2+b^2))`.
+`x^(c+1) ((c^(2 : ℕ) + c - b^(2 : ℕ)) cos + (2c+1) b sin) / ((c^(2 : ℕ)+b^(2 : ℕ))((c+1)^(2 : ℕ)+b^(2 : ℕ)))`,
+`x^(c+1) ((c^(2 : ℕ) + c - b^(2 : ℕ)) sin - (2c+1) b cos) / ((c^(2 : ℕ)+b^(2 : ℕ))((c+1)^(2 : ℕ)+b^(2 : ℕ)))`.
 
 Both levels are recorded as `HasDerivAt` statements and as evaluated interval integrals on
 segments of the positive ray.

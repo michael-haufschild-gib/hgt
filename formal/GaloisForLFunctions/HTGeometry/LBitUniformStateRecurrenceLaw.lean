@@ -66,7 +66,7 @@ def lbitUniformProductState
 Hilbert space. -/
 theorem sum_normSq_lbitUniformProductState_eq_one
     {I : Type*} [Fintype I] :
-    (∑ x : I → Bool, ‖lbitUniformProductState x‖ ^ 2) = 1 := by
+    (∑ x : I → Bool, ‖lbitUniformProductState x‖ ^ (2 : ℕ)) = 1 := by
   rw [← sum_lbitUniformSpectralWeight_eq_one (I := I)]
   apply Finset.sum_congr rfl
   intro x hx

@@ -51,7 +51,7 @@ theorem not_isSquare_ratFunc_prod_X_sub_C {ι : Type*} [Fintype ι] [Nonempty ι
 
 /-- `(X + c)² + w²` splits over a field containing `√(-1)`. -/
 theorem sq_add_sq_eq_prod_linear {I : K} (hI : I * I = -1) (c w : K) :
-    (X + C c) ^ 2 + C (w * w) = (X - C (-c + I * w)) * (X - C (-c - I * w)) := by
+    (X + C c) ^ (2 : ℕ) + C (w * w) = (X - C (-c + I * w)) * (X - C (-c - I * w)) := by
   have hIC : (C I : K[X]) * C I = -1 := by
     rw [← map_mul, hI, map_neg, map_one]
   simp only [map_add, map_sub, map_neg, map_mul]
@@ -64,7 +64,7 @@ theorem not_isSquare_prod_sq_add_sq {ι : Type*} [Fintype ι] [Nonempty ι] {I :
     (hI : I * I = -1) {c : ι → K} (hc : Function.Injective c) {w : K}
     (hsep : ∀ z z' : ι, c z - c z' ≠ 2 * (I * w)) :
     ¬ IsSquare (algebraMap K[X] (RatFunc K)
-      (∏ z, ((X + C (c z)) ^ 2 + C (w * w)))) := by
+      (∏ z, ((X + C (c z)) ^ (2 : ℕ) + C (w * w)))) := by
   classical
   set root : ι × Bool → K :=
     fun p => if p.2 then -c p.1 + I * w else -c p.1 - I * w with hroot
@@ -79,7 +79,7 @@ theorem not_isSquare_prod_sq_add_sq {ι : Type*} [Fintype ι] [Nonempty ι] {I :
     · exact absurd (by linear_combination -h : c z - c z' = 2 * (I * w)) (hsep z z')
     · have hcc : c z = c z' := by linear_combination -h
       rw [hc hcc]
-  have hprod : (∏ z, ((X + C (c z)) ^ 2 + C (w * w)))
+  have hprod : (∏ z, ((X + C (c z)) ^ (2 : ℕ) + C (w * w)))
       = ∏ p : ι × Bool, (X - C (root p)) := by
     rw [Fintype.prod_prod_type]
     refine Finset.prod_congr rfl fun z _ => ?_

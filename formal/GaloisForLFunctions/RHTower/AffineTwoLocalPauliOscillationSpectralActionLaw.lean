@@ -31,7 +31,7 @@ theorem stdGaussian_measure_optimalDesignScaledAffineTwoLocalOscillationNearActi
               ((twoLocalPauliGaussianHermitianPencil n).scaledAffineSpectralEnergy
                 hH₀ scale x)
               ((Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                (scale ^ 2 *
+                (scale ^ (2 : ℕ) *
                   (twoLocalPauliGaussianHermitianPencil n).commutatorActivation
                     (U c))) ^ r) + κ ≤
           ∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
@@ -44,7 +44,7 @@ theorem stdGaussian_measure_optimalDesignScaledAffineTwoLocalOscillationNearActi
               ((twoLocalPauliGaussianHermitianPencil n).scaledAffineSpectralEnergy
                 hH₀ scale x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * n - 4 : ℕ) : ℝ) * unitaryProjectiveTraceDeficit (U c)))) / κ := by
   have hbase :=
     FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignScaledAffineOscillationNearAction_gap_le

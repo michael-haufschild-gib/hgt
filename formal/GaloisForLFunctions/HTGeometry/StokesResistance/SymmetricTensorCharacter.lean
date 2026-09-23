@@ -12,7 +12,7 @@ arXiv:2608.23907v1, equation (44).
 The factor-swap involution on `V ⊗ V` commutes with `M ⊗ M`. Hence `(I + swap) / 2` is the
 symmetric-tensor projector. Its trace after `M ⊗ M` is
 
-`(trace(M)^2 + trace(M^2)) / 2`.
+`(trace(M)^(2 : ℕ) + trace(M^(2 : ℕ))) / 2`.
 
 Unlike the coordinate formula in `SymmetricSquareMatrix`, this construction works in every finite
 dimension. It can therefore count symmetry-compatible quadratic response tensors on all finite
@@ -101,7 +101,7 @@ theorem trace_tensorSwap :
 /-- Dimension formula `dim Sym²(V) = dim(V)(dim(V)+1)/2`, expressed as projector trace. -/
 theorem trace_symmetricTensorProjection :
     Matrix.trace (symmetricTensorProjection (ι := ι)) =
-      ((Fintype.card ι : ℂ) ^ 2 + Fintype.card ι) / 2 := by
+      ((Fintype.card ι : ℂ) ^ (2 : ℕ) + Fintype.card ι) / 2 := by
   rw [symmetricTensorProjection, Matrix.trace_smul, Matrix.trace_add,
     Matrix.trace_one, trace_tensorSwap]
   simp [Fintype.card_prod]
@@ -123,7 +123,7 @@ theorem trace_tensorSwap_mul_kronecker_self (M : Matrix ι ι ℂ) :
 theorem trace_symmetricTensorProjection_mul_kronecker_self
     (M : Matrix ι ι ℂ) :
     Matrix.trace (symmetricTensorProjection * (M ⊗ₖ M)) =
-      (Matrix.trace M ^ 2 + Matrix.trace (M * M)) / 2 := by
+      (Matrix.trace M ^ (2 : ℕ) + Matrix.trace (M * M)) / 2 := by
   rw [symmetricTensorProjection, Matrix.smul_mul, Matrix.add_mul,
     Matrix.one_mul, Matrix.trace_smul, Matrix.trace_add,
     Matrix.trace_kronecker, trace_tensorSwap_mul_kronecker_self]

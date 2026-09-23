@@ -18,7 +18,7 @@ def slopeDefect (x : ℝ) : ℝ := J x-u x/3
 
 private theorem dSlope {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt slopeDefect
-      (t x*(k x^2-k x-4/9)+2*u x*(k x+2/3)*slopeDefect x) x := by
+      (t x*(k x^(2 : ℕ)-k x-4/9)+2*u x*(k x+2/3)*slopeDefect x) x := by
   have hk : k x ≠ 0 := ne_of_gt (lt_trans (by norm_num) (k_gt hx))
   convert (dJ hx).sub ((du hx).div_const 3) using 1
   all_goals first | rfl | (dsimp [slopeDefect, D, t]; field_simp [hk]; ring)
@@ -52,7 +52,7 @@ private theorem fourThirds_le_of_slope_pos {b : ℝ} (hb : 0 < b)
     have hzS : z ∈ S := ⟨⟨ha0.trans (hy.1.le.trans hz.1), hz.2⟩, hz0⟩
     have hza := hmax hzS
     linarith only [hz.1, hy.1, hza]
-  have hdFa : 0 ≤ t a*(k a^2-k a-4/9)+2*u a*(k a+2/3)*slopeDefect a := by
+  have hdFa : 0 ≤ t a*(k a^(2 : ℕ)-k a-4/9)+2*u a*(k a+2/3)*slopeDefect a := by
     apply ge_of_tendsto ((dSlope ha0).tendsto_slope.mono_left (nhdsGT_le_nhdsNE a))
     have hlt : ∀ᶠ y in 𝓝[>] a, y < b :=
       (eventually_lt_nhds hab).filter_mono nhdsWithin_le_nhds
@@ -61,7 +61,7 @@ private theorem fourThirds_le_of_slope_pos {b : ℝ} (hb : 0 < b)
     rw [slope_def_field, haz, sub_zero]
     exact div_nonneg hjy.le (sub_pos.mpr hy).le
   rw [haz, mul_zero, add_zero] at hdFa
-  have hp : 0 ≤ k a^2-k a-4/9 := (mul_nonneg_iff_of_pos_left (t_pos ha0)).mp hdFa
+  have hp : 0 ≤ k a^(2 : ℕ)-k a-4/9 := (mul_nonneg_iff_of_pos_left (t_pos ha0)).mp hdFa
   have hka : 4/3 ≤ k a := by
     by_contra hn
     have hneg := mul_neg_of_neg_of_pos
@@ -91,7 +91,7 @@ theorem J_le_third_drift {b : ℝ} (hb : 0 ≤ b) : J b ≤ u b/3 := by
     have huy := u_mono hb hy0 hy
     have huy0 : 0 ≤ u y := hub.le.trans huy
     have hky0 : 0 ≤ k y+2/3 := by linarith only [hky, hkb]
-    have hp : 0 ≤ k y^2-k y-4/9 := by
+    have hp : 0 ≤ k y^(2 : ℕ)-k y-4/9 := by
       have hh := mul_nonneg (show 0 ≤ k y-4/3 by linarith only [hky, hkb])
         (show 0 ≤ k y+1/3 by linarith only [hky, hkb])
       nlinarith only [hh]
@@ -139,11 +139,11 @@ theorem J_le_third_drift {b : ℝ} (hb : 0 ≤ b) : J b ≤ u b/3 := by
   nlinarith only [hinc, he, hJ, hu, hFb]
 
 /-- The gap factor weighted by the square of the modular ratio. -/
-def kineticGap (x : ℝ) : ℝ := k x^2*t x
+def kineticGap (x : ℝ) : ℝ := k x^(2 : ℕ)*t x
 
 theorem kineticGap_deriv_nonpos {x : ℝ} (hx : 0 ≤ x) : deriv kineticGap x ≤ 0 := by
   have hd : HasDerivAt kineticGap
-      (4*k x*(k x+1/3)*J x*t x-2*u x*k x^3*t x) x := by
+      (4*k x*(k x+1/3)*J x*t x-2*u x*k x^(3 : ℕ)*t x) x := by
     convert ((dk hx).pow 2).mul (dt hx) using 1
     all_goals first | rfl | (simp only [Pi.pow_apply]; ring)
   have hk := k_gt_fiveFourths hx
@@ -152,7 +152,7 @@ theorem kineticGap_deriv_nonpos {x : ℝ} (hx : 0 ≤ x) : deriv kineticGap x �
   have hj := J_le_third_drift hx
   have hm := mul_le_mul_of_nonneg_left hj
     (show 0 ≤ 4*k x*(k x+1/3)*t x by positivity)
-  have hq : 0 ≤ k x^2-2*k x/3-2/9 := by
+  have hq : 0 ≤ k x^(2 : ℕ)-2*k x/3-2/9 := by
     have hp := mul_nonneg (show 0 ≤ k x-5/4 by linarith only [hk])
       (show 0 ≤ k x+7/12 by linarith only [hk])
     nlinarith only [hp]
@@ -170,8 +170,8 @@ theorem kineticGap_antitone : AntitoneOn kineticGap (Ici 0) := by
   exact kineticGap_deriv_nonpos (show 0 ≤ x from (show 0 < x by simpa [interior_Ici] using hx).le)
 
 /-- Uniform rational bound inherited from the self-dual source value. -/
-theorem kineticGap_lt {x : ℝ} (hx : 0 ≤ x) : k x^2*t x < 361/25 := by
-  have h0 : k 0 = thetaCuspSelfDualModularScale^2/12-1/3 := by
+theorem kineticGap_lt {x : ℝ} (hx : 0 ≤ x) : k x^(2 : ℕ)*t x < 361/25 := by
+  have h0 : k 0 = thetaCuspSelfDualModularScale^(2 : ℕ)/12-1/3 := by
     simp [k, t, u, A, thetaCuspModularGapAmplitude_zero]
     ring
   have hs := thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths

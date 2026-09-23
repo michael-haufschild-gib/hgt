@@ -18,9 +18,9 @@ variable {s : ℕ → ℝ}
 
 /-- The Gronwall weight at step `n`, built from the data at the centre. -/
 noncomputable def gronwallWeight (s : ℕ → ℝ) (z : ℂ) (D : ℝ) (n : ℕ) : ℝ :=
-  4 * D ^ 2 *
-    ((‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-      + ‖secondKindC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) n ^ 2) /
+  4 * D ^ (2 : ℕ) *
+    ((‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+      + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)) /
       momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
 
 theorem gronwallWeight_nonneg (h : PositiveMomentForm s) (z : ℂ) (D : ℝ) (n : ℕ) :
@@ -36,47 +36,47 @@ theorem monicOrthoC_zero_eq_one (s : ℕ → ℝ) (w : ℂ) : monicOrthoC s 0 w 
 /-- **The Gronwall recursion for the partial kernel roots.** -/
 theorem kernelRoot_sq_recursion (h : PositiveMomentForm s) (z w : ℂ) {S : ℝ}
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S) (N : ℕ) :
-    kernelRoot s (fun j => monicOrthoC s j w) N ^ 2
-      ≤ (2 * S ^ 2 + 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0))
+    kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)
+      ≤ (2 * S ^ (2 : ℕ) + 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0))
         + ∑ n ∈ Finset.range N,
             gronwallWeight s z (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) n *
-              kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 := by
+              kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) := by
   have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
     fun j => monicOrtho_inner_self_pos h j
-  have hsplit : kernelRoot s (fun j => monicOrthoC s j w) N ^ 2
+  have hsplit : kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)
       = ∑ n ∈ Finset.range N,
-          ‖monicOrthoC s (n + 1) w‖ ^ 2 /
+          ‖monicOrthoC s (n + 1) w‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))
-        + ‖monicOrthoC s 0 w‖ ^ 2 / momentInner s (monicOrtho s 0) (monicOrtho s 0) := by
+        + ‖monicOrthoC s 0 w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s 0) (monicOrtho s 0) := by
     rw [kernelRoot_sq h, Finset.sum_range_succ']
-  have hzero : ‖monicOrthoC s 0 w‖ ^ 2 / momentInner s (monicOrtho s 0) (monicOrtho s 0)
+  have hzero : ‖monicOrthoC s 0 w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s 0) (monicOrtho s 0)
       = 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0) := by
     rw [monicOrthoC_zero_eq_one]
     simp
   have hterm : ∀ n ∈ Finset.range N,
-      ‖monicOrthoC s (n + 1) w‖ ^ 2 /
+      ‖monicOrthoC s (n + 1) w‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))
-        ≤ 2 * (‖monicOrthoC s (n + 1) z‖ ^ 2 /
+        ≤ 2 * (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) /
               momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
           + gronwallWeight s z (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) n *
-              kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 := by
+              kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) := by
     intro n _
     refine le_trans (normSq_duhamel_strict_div_le h n z w) (le_of_eq ?_)
     rw [gronwallWeight]
     ring
   have hcentre : ∑ n ∈ Finset.range N,
-      2 * (‖monicOrthoC s (n + 1) z‖ ^ 2 /
-        momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) ≤ 2 * S ^ 2 := by
+      2 * (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) /
+        momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) ≤ 2 * S ^ (2 : ℕ) := by
     have hle : ∑ n ∈ Finset.range N,
-        (‖monicOrthoC s (n + 1) z‖ ^ 2 /
+        (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
-        ≤ kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 := by
+        ≤ kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) := by
       rw [kernelRoot_sq h, Finset.sum_range_succ']
-      have : (0:ℝ) ≤ ‖monicOrthoC s 0 z‖ ^ 2 /
+      have : (0:ℝ) ≤ ‖monicOrthoC s 0 z‖ ^ (2 : ℕ) /
           momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
         div_nonneg (sq_nonneg _) (hpos 0).le
       linarith
-    have hKS : kernelRoot s (fun j => monicOrthoC s j z) N ^ 2 ≤ S ^ 2 :=
+    have hKS : kernelRoot s (fun j => monicOrthoC s j z) N ^ (2 : ℕ) ≤ S ^ (2 : ℕ) :=
       pow_le_pow_left₀ (kernelRoot_nonneg _ _ _) (hS N) 2
     rw [← Finset.mul_sum]
     linarith

@@ -22,14 +22,14 @@ def mtHarmanGoodPairCells {t : ℕ} (endpoint : ℕ → ℕ) (E : ℝ) :
   Finset.univ.filter fun cell =>
     cell.2.1 < cell.1.1 ∧
       mtAdjacentBlockUpperScale endpoint cell.1 *
-        mtAdjacentBlockUpperScale endpoint cell.2 ^ 4 < E
+        mtAdjacentBlockUpperScale endpoint cell.2 ^ (4 : ℕ) < E
 
 theorem mem_mtHarmanGoodPairCells {t : ℕ} {endpoint : ℕ → ℕ} {E : ℝ}
     {i₁ i₂ : Fin t} :
     (i₁, i₂) ∈ mtHarmanGoodPairCells endpoint E ↔
       i₂.1 < i₁.1 ∧
         mtAdjacentBlockUpperScale endpoint i₁ *
-          mtAdjacentBlockUpperScale endpoint i₂ ^ 4 < E := by
+          mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) < E := by
   simp [mtHarmanGoodPairCells]
 
 /-- Ordered triple cells on which `q₃<q₂<q₁` and `q₁q₂⁴<E` hold uniformly. -/
@@ -38,14 +38,14 @@ def mtHarmanGoodTripleCells {t : ℕ} (endpoint : ℕ → ℕ) (E : ℝ) :
   Finset.univ.filter fun cell =>
     cell.2.1 < cell.1.2.1 ∧ cell.1.2.1 < cell.1.1.1 ∧
       mtAdjacentBlockUpperScale endpoint cell.1.1 *
-        mtAdjacentBlockUpperScale endpoint cell.1.2 ^ 4 < E
+        mtAdjacentBlockUpperScale endpoint cell.1.2 ^ (4 : ℕ) < E
 
 theorem mem_mtHarmanGoodTripleCells {t : ℕ} {endpoint : ℕ → ℕ} {E : ℝ}
     {i₁ i₂ i₃ : Fin t} :
     ((i₁, i₂), i₃) ∈ mtHarmanGoodTripleCells endpoint E ↔
       i₃.1 < i₂.1 ∧ i₂.1 < i₁.1 ∧
         mtAdjacentBlockUpperScale endpoint i₁ *
-          mtAdjacentBlockUpperScale endpoint i₂ ^ 4 < E := by
+          mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) < E := by
   simp [mtHarmanGoodTripleCells]
 
 /-- Every prime pair chosen from one good cell satisfies both coupled source predicates. -/
@@ -57,7 +57,7 @@ theorem mtHarmanGoodPairCell_order_geometry
     {q₁ q₂ : ℕ}
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
-    q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E := by
+    q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E := by
   have hcell' := mem_mtHarmanGoodPairCells.mp hcell
   exact ⟨prime_lt_of_adjacentBlock_index_lt hmono hcell'.1 hq₁ hq₂,
     (adjacentBlock_product_le_upper hendpoint hq₁ hq₂).trans_lt hcell'.2⟩
@@ -73,7 +73,7 @@ theorem mtHarmanGoodTripleCell_orders_geometry
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
     (hq₃ : q₃ ∈ mtAdjacentPrimeBlock endpoint i₃) :
-    q₃ < q₂ ∧ q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E := by
+    q₃ < q₂ ∧ q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E := by
   have hcell' := mem_mtHarmanGoodTripleCells.mp hcell
   exact ⟨prime_lt_of_adjacentBlock_index_lt hmono hcell'.1 hq₂ hq₃,
     prime_lt_of_adjacentBlock_index_lt hmono hcell'.2.1 hq₁ hq₂,
@@ -117,7 +117,7 @@ theorem mem_mtHarmanActiveGoodTripleCells
 theorem card_mtHarmanActiveGoodPairCells_le {t : ℕ}
     (endpoint : ℕ → ℕ) (E : ℝ) :
     (mtHarmanActiveGoodPairCells (t := t) endpoint E).card ≤
-      (mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)).card ^ 2 := by
+      (mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)).card ^ (2 : ℕ) := by
   have hsubset : mtHarmanActiveGoodPairCells (t := t) endpoint E ⊆
       (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).product
         (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)) := by
@@ -131,20 +131,20 @@ theorem card_mtHarmanActiveGoodPairCells_le {t : ℕ}
         ((mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).product
           (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint))).card :=
       Finset.card_le_card hsubset
-    _ = (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).card ^ 2 := by
+    _ = (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).card ^ (2 : ℕ) := by
       let active : Finset (Fin t) :=
         mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)
-      change (active.product active).card = active.card ^ 2
+      change (active.product active).card = active.card ^ (2 : ℕ)
       calc
         (active.product active).card = active.card * active.card := by
           exact Finset.card_product active active
-        _ = active.card ^ 2 := (pow_two active.card).symm
+        _ = active.card ^ (2 : ℕ) := (pow_two active.card).symm
 
 /-- Active good triple-cell count is at most the cube of the active block count. -/
 theorem card_mtHarmanActiveGoodTripleCells_le {t : ℕ}
     (endpoint : ℕ → ℕ) (E : ℝ) :
     (mtHarmanActiveGoodTripleCells (t := t) endpoint E).card ≤
-      (mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)).card ^ 3 := by
+      (mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)).card ^ (3 : ℕ) := by
   have hsubset : mtHarmanActiveGoodTripleCells (t := t) endpoint E ⊆
       ((mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).product
         (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint))).product
@@ -161,10 +161,10 @@ theorem card_mtHarmanActiveGoodTripleCells_le {t : ℕ}
           (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint))).product
             (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint))).card :=
       Finset.card_le_card hsubset
-    _ = (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).card ^ 3 := by
+    _ = (mtActiveBlockIndices (mtAdjacentPrimeBlock endpoint)).card ^ (3 : ℕ) := by
       let active : Finset (Fin t) :=
         mtActiveBlockIndices (mtAdjacentPrimeBlock (t := t) endpoint)
-      change ((active.product active).product active).card = active.card ^ 3
+      change ((active.product active).product active).card = active.card ^ (3 : ℕ)
       calc
         ((active.product active).product active).card =
             (active.product active).card * active.card := by
@@ -172,7 +172,7 @@ theorem card_mtHarmanActiveGoodTripleCells_le {t : ℕ}
         _ = (active.card * active.card) * active.card := by
           rw [show (active.product active).card = active.card * active.card by
             exact Finset.card_product active active]
-        _ = active.card ^ 3 := by ring
+        _ = active.card ^ (3 : ℕ) := by ring
 
 /-- Every prime in the complete adjacent source interval belongs to one schedule block. -/
 theorem exists_mem_mtAdjacentPrimeBlock_of_mem_primesIco
@@ -217,7 +217,7 @@ theorem matomakiTeravainen_admissiblePair_cellClassification
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
     (horder : q₂ < q₁)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E) :
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E) :
     (i₁, i₂) ∈ mtHarmanGoodPairCells endpoint E ∨
       i₂ = i₁ ∨
         q₁ ∈ mtHarmanThresholdBoundaryFibre S δ E q₂ := by
@@ -244,7 +244,7 @@ theorem matomakiTeravainen_admissibleTriple_cellClassification
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
     (hq₃ : q₃ ∈ mtAdjacentPrimeBlock endpoint i₃)
     (horder₂₁ : q₂ < q₁) (horder₃₂ : q₃ < q₂)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E) :
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E) :
     ((i₁, i₂), i₃) ∈ mtHarmanGoodTripleCells endpoint E ∨
       i₂ = i₁ ∨ i₃ = i₂ ∨
         q₁ ∈ mtHarmanThresholdBoundaryFibre S δ E q₂ := by
@@ -273,7 +273,7 @@ theorem matomakiTeravainen_admissiblePair_activeCellClassification
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
     (horder : q₂ < q₁)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E) :
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E) :
     (i₁, i₂) ∈ mtHarmanActiveGoodPairCells endpoint E ∨
       i₂ = i₁ ∨
         q₁ ∈ mtHarmanThresholdBoundaryFibre S δ E q₂ := by
@@ -298,7 +298,7 @@ theorem matomakiTeravainen_admissibleTriple_activeCellClassification
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
     (hq₃ : q₃ ∈ mtAdjacentPrimeBlock endpoint i₃)
     (horder₂₁ : q₂ < q₁) (horder₃₂ : q₃ < q₂)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E) :
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E) :
     ((i₁, i₂), i₃) ∈ mtHarmanActiveGoodTripleCells endpoint E ∨
       i₂ = i₁ ∨ i₃ = i₂ ∨
         q₁ ∈ mtHarmanThresholdBoundaryFibre S δ E q₂ := by
@@ -322,7 +322,7 @@ theorem matomakiTeravainen_admissiblePair_not_rectangular
     (hq₁ : q₁ ∈ primesIco (endpoint 0) (endpoint t))
     (hq₂ : q₂ ∈ primesIco (endpoint 0) (endpoint t))
     (horder : q₂ < q₁)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E)
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E)
     (hnot : ¬MTHarmanPairRectangular t endpoint E q₁ q₂) :
     (∃ i : Fin t,
       q₁ ∈ mtAdjacentPrimeBlock endpoint i ∧
@@ -355,7 +355,7 @@ theorem matomakiTeravainen_admissibleTriple_not_rectangular
     (hq₂ : q₂ ∈ primesIco (endpoint 0) (endpoint t))
     (hq₃ : q₃ ∈ primesIco (endpoint 0) (endpoint t))
     (horder₂₁ : q₂ < q₁) (horder₃₂ : q₃ < q₂)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E)
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E)
     (hnot : ¬MTHarmanTripleRectangular t endpoint E q₁ q₂ q₃) :
     (∃ i : Fin t,
       q₁ ∈ mtAdjacentPrimeBlock endpoint i ∧

@@ -49,12 +49,12 @@ theorem log_chebHeightLl (c x : ℝ) :
 
 /-- The height's logarithm squared is four times the saving squared. -/
 theorem sq_log_chebHeightLl (c x : ℝ) :
-    Real.log (chebHeightLl c x) ^ 2 = 4 * chebSavingLl c x ^ 2 := by
+    Real.log (chebHeightLl c x) ^ (2 : ℕ) = 4 * chebSavingLl c x ^ (2 : ℕ) := by
   rw [log_chebHeightLl]; ring
 
 /-- The saving, squared. -/
 theorem sq_chebSavingLl {c x : ℝ} (hQ : 0 ≤ chebQuadLl c x) :
-    chebSavingLl c x ^ 2 = chebQuadLl c x / 4 := by
+    chebSavingLl c x ^ (2 : ℕ) = chebQuadLl c x / 4 := by
   rw [chebSavingLl, div_pow, Real.sq_sqrt hQ]
   norm_num
 
@@ -64,7 +64,7 @@ theorem sixteen_le_log_chebHeightLl {c x : ℝ} (hQ : 256 ≤ chebQuadLl c x) :
   rw [chebHeightLl, Real.log_exp]
   have h : Real.sqrt 256 ≤ Real.sqrt (chebQuadLl c x) := Real.sqrt_le_sqrt hQ
   have h256 : Real.sqrt 256 = 16 := by
-    rw [show (256 : ℝ) = 16 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+    rw [show (256 : ℝ) = 16 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
   linarith [h, h256]
 
 theorem eight_le_chebSavingLl {c x : ℝ} (hQ : 256 ≤ chebQuadLl c x) :
@@ -96,7 +96,7 @@ theorem chebSavingLl_le_left_saving {c x : ℝ} (hc0 : 0 < c) (hlogx : 0 < Real.
   have hLg0 : (0 : ℝ) < Real.log (chebHeightLl c x) := by rw [hLg]; linarith
   have hhalf := half_logLog_le_logLog_chebHeightLl hlogx hcx
   -- `c·log x·log log x = 4·saving²`
-  have hsq : chebSavingLl c x ^ 2 = chebQuadLl c x / 4 := sq_chebSavingLl hQ0.le
+  have hsq : chebSavingLl c x ^ (2 : ℕ) = chebQuadLl c x / 4 := sq_chebSavingLl hQ0.le
   have hQeq : chebQuadLl c x = c * (Real.log x * Real.log (Real.log x)) := rfl
   rw [div_mul_eq_mul_div, le_div_iff₀ hLg0]
   have hstep : c * (Real.log (Real.log x) / 2) * Real.log x
@@ -104,9 +104,9 @@ theorem chebSavingLl_le_left_saving {c x : ℝ} (hc0 : 0 < c) (hlogx : 0 < Real.
     have h1 : c * (Real.log (Real.log x) / 2) ≤ c * Real.log (Real.log (chebHeightLl c x)) :=
       mul_le_mul_of_nonneg_left hhalf hc0.le
     exact mul_le_mul_of_nonneg_right h1 hlogx.le
-  have hval : c * (Real.log (Real.log x) / 2) * Real.log x = 2 * chebSavingLl c x ^ 2 := by
+  have hval : c * (Real.log (Real.log x) / 2) * Real.log x = 2 * chebSavingLl c x ^ (2 : ℕ) := by
     rw [hsq, hQeq]; ring
-  have hgoal : chebSavingLl c x * Real.log (chebHeightLl c x) = 2 * chebSavingLl c x ^ 2 := by
+  have hgoal : chebSavingLl c x * Real.log (chebHeightLl c x) = 2 * chebSavingLl c x ^ (2 : ℕ) := by
     rw [hLg]; ring
   linarith [hstep, hval, hgoal]
 
@@ -117,7 +117,7 @@ theorem right_cost_le_chebSavingLl {c x : ℝ}
   have hs8 : (8 : ℝ) ≤ chebSavingLl c x := eight_le_chebSavingLl hQ
   have hLg : Real.log (chebHeightLl c x) = 2 * chebSavingLl c x := log_chebHeightLl c x
   have hLg0 : (0 : ℝ) < Real.log (chebHeightLl c x) := by rw [hLg]; linarith
-  have hsq : chebSavingLl c x ^ 2 = chebQuadLl c x / 4 := sq_chebSavingLl (by linarith)
+  have hsq : chebSavingLl c x ^ (2 : ℕ) = chebQuadLl c x / 4 := sq_chebSavingLl (by linarith)
   rw [one_div, inv_mul_eq_div, div_le_iff₀ hLg0, hLg]
   nlinarith [hsq, h2, hs8]
 

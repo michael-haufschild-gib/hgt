@@ -80,18 +80,18 @@ theorem gap_mul_one_sub_le_rayleighExcess {ι : Type*} [DecidableEq ι] {w eps :
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 theorem norm_sub_smul_sq_eq (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖xi‖ = 1) {c : ℂ} (hc : ‖c‖ = 1) :
-    ‖g - c • xi‖ ^ 2 = 2 - 2 * RCLike.re (c * inner ℂ g xi) := by
+    ‖g - c • xi‖ ^ (2 : ℕ) = 2 - 2 * RCLike.re (c * inner ℂ g xi) := by
   have hnorm : ‖c • xi‖ = 1 := by rw [norm_smul, hc, hxi, one_mul]
   have hinner : inner ℂ g (c • xi) = c * inner ℂ g xi := inner_smul_right _ _ _
-  have hsq : ‖g - c • xi‖ ^ 2
-      = ‖g‖ ^ 2 - 2 * RCLike.re (inner ℂ g (c • xi)) + ‖c • xi‖ ^ 2 := norm_sub_sq _ _
+  have hsq : ‖g - c • xi‖ ^ (2 : ℕ)
+      = ‖g‖ ^ (2 : ℕ) - 2 * RCLike.re (inner ℂ g (c • xi)) + ‖c • xi‖ ^ (2 : ℕ) := norm_sub_sq _ _
   rw [hsq, hg, hnorm, hinner]
   ring
 
 /-- **The projective distance is at least `2 (1 - |⟪g, ξ⟫|)`** for every unit phase. -/
 theorem two_sub_two_mul_norm_le_norm_sub_smul_sq (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖xi‖ = 1)
     {c : ℂ} (hc : ‖c‖ = 1) :
-    2 - 2 * ‖(inner ℂ g xi : ℂ)‖ ≤ ‖g - c • xi‖ ^ 2 := by
+    2 - 2 * ‖(inner ℂ g xi : ℂ)‖ ≤ ‖g - c • xi‖ ^ (2 : ℕ) := by
   rw [norm_sub_smul_sq_eq g xi hg hxi hc]
   have hre : RCLike.re (c * inner ℂ g xi) ≤ ‖c * (inner ℂ g xi : ℂ)‖ := by
     simpa using Complex.re_le_norm (c * inner ℂ g xi)
@@ -100,7 +100,7 @@ theorem two_sub_two_mul_norm_le_norm_sub_smul_sq (g xi : E) (hg : ‖g‖ = 1) (
 
 /-- **The projective distance `2 (1 - |⟪g, ξ⟫|)` is attained.** -/
 theorem exists_unit_norm_sub_smul_sq_eq (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖xi‖ = 1) :
-    ∃ c : ℂ, ‖c‖ = 1 ∧ ‖g - c • xi‖ ^ 2 = 2 - 2 * ‖(inner ℂ g xi : ℂ)‖ := by
+    ∃ c : ℂ, ‖c‖ = 1 ∧ ‖g - c • xi‖ ^ (2 : ℕ) = 2 - 2 * ‖(inner ℂ g xi : ℂ)‖ := by
   classical
   set z : ℂ := inner ℂ g xi with hz
   by_cases hz0 : z = 0
@@ -114,13 +114,13 @@ theorem exists_unit_norm_sub_smul_sq_eq (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖
         rw [norm_div, RCLike.norm_conj, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (norm_nonneg z), div_self (norm_ne_zero_iff.mpr hz0)])]
       have hmul : (starRingEnd ℂ) z / (‖z‖ : ℂ) * z = (‖z‖ : ℂ) := by
-        have hzz : (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+        have hzz : (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
           rw [mul_comm]
           simpa [Complex.normSq_eq_norm_sq] using Complex.mul_conj z
         have hne : ((‖z‖ : ℝ) : ℂ) ≠ 0 := by
           simpa using (norm_ne_zero_iff.mpr hz0)
         rw [div_mul_eq_mul_div, hzz,
-          show ((‖z‖ ^ 2 : ℝ) : ℂ) = (‖z‖ : ℂ) * (‖z‖ : ℂ) from by push_cast; ring,
+          show ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = (‖z‖ : ℂ) * (‖z‖ : ℂ) from by push_cast; ring,
           mul_div_assoc, div_self hne, mul_one]
       rw [← hz, hmul]
       simp
@@ -131,25 +131,25 @@ theorem exists_unit_norm_sub_smul_sq_eq (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖
 at most `δ / Gap` is within projective squared distance `2 δ / Gap` of the ground vector. -/
 theorem projectiveDistSq_le_two_mul_excess_div_gap (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖xi‖ = 1)
     {Gap delta : ℝ} (hGap : 0 < Gap)
-    (hexcess : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ 2) ≤ delta) :
-    ∃ c : ℂ, ‖c‖ = 1 ∧ ‖g - c • xi‖ ^ 2 ≤ 2 * delta / Gap := by
+    (hexcess : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ (2 : ℕ)) ≤ delta) :
+    ∃ c : ℂ, ‖c‖ = 1 ∧ ‖g - c • xi‖ ^ (2 : ℕ) ≤ 2 * delta / Gap := by
   obtain ⟨c, hc, hval⟩ := exists_unit_norm_sub_smul_sq_eq g xi hg hxi
   refine ⟨c, hc, ?_⟩
   rw [hval]
-  -- the overlap is at most one, so `1 - t ≤ 1 - t ^ 2` for `t = |⟪g, ξ⟫|`
+  -- the overlap is at most one, so `1 - t ≤ 1 - t ^ (2 : ℕ)` for `t = |⟪g, ξ⟫|`
   have ht0 : 0 ≤ ‖(inner ℂ g xi : ℂ)‖ := norm_nonneg _
   have ht1 : ‖(inner ℂ g xi : ℂ)‖ ≤ 1 := by
     have := norm_inner_le_norm (𝕜 := ℂ) g xi
     rw [hg, hxi, one_mul] at this
     exact this
-  have hstep : 1 - ‖(inner ℂ g xi : ℂ)‖ ≤ 1 - ‖(inner ℂ g xi : ℂ)‖ ^ 2 := by nlinarith
+  have hstep : 1 - ‖(inner ℂ g xi : ℂ)‖ ≤ 1 - ‖(inner ℂ g xi : ℂ)‖ ^ (2 : ℕ) := by nlinarith
   rw [le_div_iff₀ hGap]
   nlinarith
 
 /-- **The square-root rate transfer.**  If the excess-to-gap ratio scaled by `lambda ^ (2a)` tends to
 zero, then the projective distance scaled by `lambda ^ a` tends to zero. -/
 theorem tendsto_sqrt_of_tendsto_zero {α : Type*} {l : Filter α} {u d : α → ℝ}
-    (hd : ∀ x, 0 ≤ d x) (hu : ∀ x, u x ^ 2 ≤ 2 * d x)
+    (hd : ∀ x, 0 ≤ d x) (hu : ∀ x, u x ^ (2 : ℕ) ≤ 2 * d x)
     (hlim : Tendsto (fun x => 2 * d x) l (nhds 0)) (hun : ∀ x, 0 ≤ u x) :
     Tendsto u l (nhds 0) := by
   have hsq : Tendsto (fun x => Real.sqrt (2 * d x)) l (nhds 0) := by
@@ -158,7 +158,7 @@ theorem tendsto_sqrt_of_tendsto_zero {α : Type*} {l : Filter α} {u d : α → 
     exact h
   refine squeeze_zero' (Filter.Eventually.of_forall hun) (Filter.Eventually.of_forall ?_) hsq
   intro x
-  have h1 : u x ^ 2 ≤ 2 * d x := hu x
+  have h1 : u x ^ (2 : ℕ) ≤ 2 * d x := hu x
   nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 * d x by linarith [hd x]),
     Real.sqrt_nonneg (2 * d x), hun x]
 

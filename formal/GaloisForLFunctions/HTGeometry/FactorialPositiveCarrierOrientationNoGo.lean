@@ -149,11 +149,11 @@ theorem factorialPositiveCarrier_monicRemainder :
   rw [finiteHankelBoundaryMonicRemainder,
     factorialCarrierNoGo_monicNullPolynomial]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C 1) = X ^ 3 - X ^ 2 := by
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C 1) = X ^ (3 : ℕ) - X ^ (2 : ℕ) := by
     simp
     ring
   rw [hpoly, sub_eq_add_neg, momentFunctional_add]
-  rw [show -((X : Polynomial ℝ) ^ 2) = (-1 : ℝ) • X ^ 2 by rw [neg_one_smul],
+  rw [show -((X : Polynomial ℝ) ^ (2 : ℕ)) = (-1 : ℝ) • X ^ (2 : ℕ) by rw [neg_one_smul],
     momentFunctional_smul, momentFunctional_X_pow, momentFunctional_X_pow,
     factorialPositiveCarrierMoment_three,
     factorialPositiveCarrierMoment_two]
@@ -166,11 +166,11 @@ theorem factorialNegativeCarrier_monicRemainder :
   rw [finiteHankelBoundaryMonicRemainder,
     factorialCarrierNoGo_monicNullPolynomial]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C 1) = X ^ 3 - X ^ 2 := by
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C 1) = X ^ (3 : ℕ) - X ^ (2 : ℕ) := by
     simp
     ring
   rw [hpoly, sub_eq_add_neg, momentFunctional_add]
-  rw [show -((X : Polynomial ℝ) ^ 2) = (-1 : ℝ) • X ^ 2 by rw [neg_one_smul],
+  rw [show -((X : Polynomial ℝ) ^ (2 : ℕ)) = (-1 : ℝ) • X ^ (2 : ℕ) by rw [neg_one_smul],
     momentFunctional_smul, momentFunctional_X_pow, momentFunctional_X_pow,
     factorialNegativeCarrierMoment_three,
     factorialNegativeCarrierMoment_two]

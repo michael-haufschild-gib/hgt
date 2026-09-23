@@ -118,12 +118,12 @@ theorem selberg_weight_fiber_transfer {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
           * |psiRemainder (N / m)|
       ≤ (N : ℝ) * ((a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * ρ
             / (8 * Real.log ((2 * Q : ℕ) : ℝ)))
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)
-        + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
+        + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
         + 840 * Real.log N + 3780) := by
   have hx₁0 : 0 < x₁ := by omega
   have hN0 : 0 < N := by
@@ -242,7 +242,7 @@ theorem selberg_weight_fiber_transfer {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
   -- head: crude ratio 8 on `m ≤ x₁`
   have hhead : ∑ m ∈ Finset.Icc 1 x₁,
       (2 * Real.log m + 2) * |psiRemainder (N / m)|
-      ≤ (N : ℝ) * (8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66) := by
+      ≤ (N : ℝ) * (8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66) := by
     have hpt : ∀ m ∈ Finset.Icc 1 x₁,
         (2 * Real.log m + 2) * |psiRemainder (N / m)|
           ≤ 8 * (N : ℝ) * ((2 * Real.log m + 2) / m) := by
@@ -283,11 +283,11 @@ theorem selberg_weight_fiber_transfer {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
             + 2 * ∑ m ∈ Finset.Icc 1 x₁, 1 / (m : ℝ)) := by
           rw [Finset.sum_congr rfl hterms, Finset.sum_add_distrib,
             ← Finset.mul_sum, ← Finset.mul_sum]
-      _ ≤ 8 * (N : ℝ) * (2 * (Real.log x₁ ^ 2 / 2 + 1)
+      _ ≤ 8 * (N : ℝ) * (2 * (Real.log x₁ ^ (2 : ℕ) / 2 + 1)
             + 2 * (Real.log x₁ + 2)) := by
           apply mul_le_mul_of_nonneg_left _ (by positivity)
           linarith [hlogdiv, hinv]
-      _ ≤ (N : ℝ) * (8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66) := by
+      _ ≤ (N : ℝ) * (8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66) := by
           nlinarith [hNR]
   -- window: the contracted m-window on `(x₁, N]`
   have hwin := m_window_contraction_of_ratio ha hδ hρ0 hρ1 hκ hQ1 hQ hx₁8
@@ -313,21 +313,21 @@ theorem selberg_weight_fiber_transfer {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
   -- assemble
   have hfinal : (N : ℝ) * ((a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ))
         * ρ / (8 * Real.log ((2 * Q : ℕ) : ℝ)))
-        * ((Real.log N ^ 2 + 2 * Real.log N)
-          - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+        * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+          - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
       + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
       + 8 * ((2 * Real.log N + 8) / x₁)
       + 8 * Real.log c * (2 * Real.log N + 2))
-      + (N : ℝ) * (8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66)
+      + (N : ℝ) * (8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66)
       + 420 * (2 * N * Real.log N + 9 * N)
       = (N : ℝ) * ((a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ))
           * ρ / (8 * Real.log ((2 * Q : ℕ) : ℝ)))
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)
-        + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
+        + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
         + 840 * Real.log N + 3780) := by
     ring
   rw [hAbel]

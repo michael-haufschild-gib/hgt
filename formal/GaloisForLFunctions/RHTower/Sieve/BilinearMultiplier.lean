@@ -26,9 +26,9 @@ theorem abs_sum_kernel_bilinear_le {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPr
     ‖∑ m : Fin Q, ∑ n : Fin Q, (x m * (starRingEnd ℂ) (x n))
         * ∑ j : Fin Q, (c j : ℂ)
             * ((starRingEnd ℂ) ((ζ ^ (j : ℕ)) ^ (m : ℕ)) * (ζ ^ (j : ℕ)) ^ (n : ℕ))‖
-      ≤ C * ((Q : ℝ) * ‖x‖ ^ 2) := by
+      ≤ C * ((Q : ℝ) * ‖x‖ ^ (2 : ℕ)) := by
   rw [← sum_symbol_mul_normSq_eq Q ζ c x]
-  set r : ℝ := ∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 with hr
+  set r : ℝ := ∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) with hr
   have hnorm : ‖((r : ℝ) : ℂ)‖ = |r| := by simp
   rw [hnorm, hr]
   exact abs_sum_symbol_mul_norm_inner_le hQ hζ hc x

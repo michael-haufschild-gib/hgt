@@ -784,7 +784,7 @@ theorem routeKQuadraticallyAdmittedEntireDet_zero_im {z : ℂ}
 theorem routeKQuadraticallyAdmittedKernel_square_trace :
     (∑' p : Nat.Primes,
       HilbertSchmidt.hsPow routeKQuadraticallyAdmittedKernel 1 (p, p)) =
-      ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2) := by
+      ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ (2 : ℕ)) := by
   rw [show HilbertSchmidt.hsPow routeKQuadraticallyAdmittedKernel 1 =
       HilbertSchmidt.hsComp routeKQuadraticallyAdmittedKernel
         routeKQuadraticallyAdmittedKernel by rfl]
@@ -804,8 +804,8 @@ theorem four_mul_taylorCoeff_routeKQuadraticallyAdmittedEntireDet_two :
     routeKQuadraticallyAdmittedKernel_square_trace]
   have hsource := two_mul_opTrace_sq_routeKQuadraticallyAdmittedOperator
   calc
-    4 * (-ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2) / 2) =
-        -(2 * ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2)) := by ring
+    4 * (-ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ (2 : ℕ)) / 2) =
+        -(2 * ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ (2 : ℕ))) := by ring
     _ = -(routeKSourceZerothMoment : ℂ) := congrArg Neg.neg hsource
 
 /-- The K-RVM determinant and centered Xi have the same normalized second Taylor coefficient. -/
@@ -826,7 +826,7 @@ theorem four_mul_taylorCoeff_routeKQuadraticallyAdmittedEntireDet_two_eq_Xi :
 /-- The first two completed prime--archimedean source moments fix Xi's normalized fourth jet. -/
 theorem normalized_XiC_fourth_jet_eq_source_moments :
     iteratedDeriv 4 XiC 0 / XiC 0 / 24 =
-      (normalizedPrimeArchMoment 0 : ℂ) ^ 2 / 8 -
+      (normalizedPrimeArchMoment 0 : ℂ) ^ (2 : ℕ) / 8 -
         (normalizedPrimeArchMoment 1 : ℂ) / 4 := by
   have h := normalizedPrimeArchMoment_recursive 1
   norm_num [Finset.sum_range_succ, thetaCuspXiJet,
@@ -863,7 +863,7 @@ theorem routeKQuarticallyAdmittedKernel_toOperator :
 theorem routeKQuarticallyAdmittedKernel_square_trace :
     (∑' p : Nat.Primes,
       HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1 (p, p)) =
-      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 2) := by
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) := by
   rw [show HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1 =
       HilbertSchmidt.hsComp routeKQuarticallyAdmittedKernel
         routeKQuarticallyAdmittedKernel by rfl]
@@ -875,7 +875,7 @@ theorem routeKQuarticallyAdmittedKernel_square_trace :
 theorem routeKQuarticallyAdmittedKernel_fourth_trace :
     (∑' p : Nat.Primes,
       HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 3 (p, p)) =
-      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 4) := by
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (4 : ℕ)) := by
   rw [← HilbertSchmidt.hsComp_hsPow
     routeKQuarticallyAdmittedKernel_isHS 1 1]
   rw [← HilbertSchmidt.opTrace_toOperator_comp
@@ -889,7 +889,7 @@ theorem routeKQuarticallyAdmittedKernel_fourth_trace :
 theorem routeKQuarticallyAdmittedKernel_cube_trace :
     (∑' p : Nat.Primes,
       HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 2 (p, p)) =
-      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3) := by
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (3 : ℕ)) := by
   rw [show HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 2 =
       HilbertSchmidt.hsComp routeKQuarticallyAdmittedKernel
         (HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1) by rfl]
@@ -908,7 +908,7 @@ noncomputable def routeKQuarticallyAdmittedEntireDet : ℂ → ℂ :=
 theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_four :
     GaloisForLFunctions.HTGeometry.taylorCoeff
       routeKQuarticallyAdmittedEntireDet 4 =
-      (routeKSourceZerothMoment : ℂ) ^ 2 / 32 -
+      (routeKSourceZerothMoment : ℂ) ^ (2 : ℕ) / 32 -
         (routeKSourceFirstMoment : ℂ) / 8 := by
   rw [routeKQuarticallyAdmittedEntireDet,
     GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_four
@@ -917,10 +917,10 @@ theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_four :
     routeKQuarticallyAdmittedKernel_fourth_trace]
   have h2 := two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator
   have h4 := two_mul_opTrace_four_routeKQuarticallyAdmittedOperator
-  have h2' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 2) =
+  have h2' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (2 : ℕ)) =
       (routeKSourceZerothMoment : ℂ) / 2 := by
     linear_combination h2 / 2
-  have h4' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 4) =
+  have h4' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (4 : ℕ)) =
       (routeKSourceFirstMoment : ℂ) / 2 := by
     linear_combination h4 / 2
   rw [h2', h4']
@@ -966,7 +966,7 @@ theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_two :
 theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_three :
     GaloisForLFunctions.HTGeometry.taylorCoeff
       routeKQuarticallyAdmittedEntireDet 3 =
-      -ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3) / 3 := by
+      -ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (3 : ℕ)) / 3 := by
   rw [routeKQuarticallyAdmittedEntireDet,
     GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_three
       routeKQuarticallyAdmittedKernel_isHS,
@@ -975,7 +975,7 @@ theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_three :
 /-- The determinant is squared because the certified source carrier has two paired channels.
 Squaring retains its zero set and gives the source-normalized local multiplicity. -/
 noncomputable def routeKQuarticallyAdmittedSquaredEntireDet : ℂ → ℂ :=
-  fun z => routeKQuarticallyAdmittedEntireDet z ^ 2
+  fun z => routeKQuarticallyAdmittedEntireDet z ^ (2 : ℕ)
 
 /-- The paired determinant has the normalized quadratic source coefficient. -/
 theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two :
@@ -983,7 +983,7 @@ theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two :
       routeKQuarticallyAdmittedSquaredEntireDet 2 =
       -(routeKSourceZerothMoment : ℂ) / 2 := by
   change GaloisForLFunctions.HTGeometry.taylorCoeff
-    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 2 = _
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ (2 : ℕ)) 2 = _
   rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_two_of_value_one_of_linear_zero
     routeKQuarticallyAdmittedEntireDet_differentiable
     routeKQuarticallyAdmittedEntireDet_zero
@@ -995,9 +995,9 @@ theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two :
 theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three :
     GaloisForLFunctions.HTGeometry.taylorCoeff
       routeKQuarticallyAdmittedSquaredEntireDet 3 =
-      -(2 * ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3)) / 3 := by
+      -(2 * ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ (3 : ℕ))) / 3 := by
   change GaloisForLFunctions.HTGeometry.taylorCoeff
-    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 3 = _
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ (2 : ℕ)) 3 = _
   rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_three_of_value_one_of_linear_zero
     routeKQuarticallyAdmittedEntireDet_differentiable
     routeKQuarticallyAdmittedEntireDet_zero
@@ -1047,10 +1047,10 @@ theorem routeKQuarticallyAdmittedSquaredEntireDet_ne_normalized_XiC :
 theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_four :
     GaloisForLFunctions.HTGeometry.taylorCoeff
       routeKQuarticallyAdmittedSquaredEntireDet 4 =
-      (routeKSourceZerothMoment : ℂ) ^ 2 / 8 -
+      (routeKSourceZerothMoment : ℂ) ^ (2 : ℕ) / 8 -
         (routeKSourceFirstMoment : ℂ) / 4 := by
   change GaloisForLFunctions.HTGeometry.taylorCoeff
-    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 4 = _
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ (2 : ℕ)) 4 = _
   rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_four_of_value_one_of_linear_zero
     routeKQuarticallyAdmittedEntireDet_differentiable
     routeKQuarticallyAdmittedEntireDet_zero

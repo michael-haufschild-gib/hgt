@@ -13,7 +13,7 @@ square-root distance is exactly the source-derived prime-valuation Hellinger gap
 `-|t|`.  Consequently the positive Kakutani sector detector is the canonical nonlinear
 polarization of the signed Route N Krein wall:
 
-`H_t(p) = p Q_t(p)^2 / (1 + p^(-|t|))^2`.
+`H_t(p) = p Q_t(p)^(2 : ℕ) / (1 + p^(-|t|))^(2 : ℕ)`.
 
 This identifies the apparently external product-measure sector with the literal two-channel
 Gamma-sewn Route N source.  It also explains the singular factor `p`: it is division by the

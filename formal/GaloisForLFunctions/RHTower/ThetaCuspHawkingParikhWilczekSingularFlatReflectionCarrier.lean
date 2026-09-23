@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.PeriodIncidenceFlatIntersection
 
 Exact critical-line Gamma reflection forces the positive-ray PW grade multiplier
 
-`A(x^2) = x⁻¹ exp(x - 1/x)`.
+`A(x^(2 : ℕ)) = x⁻¹ exp(x - 1/x)`.
 
 The literal first finite-energy endpoint winding at backreaction scale `epsilon=x/4` is
 `exp(-1/x)`, so the physical source constructs this forced multiplier exactly.  The multiplier
@@ -67,7 +67,7 @@ theorem schwarzschildParikhWilczekSingularFlatMultiplier_le_sqrt
     change t⁻¹ * Real.exp (t - t⁻¹) ≤ 2 * t * Real.exp t
     calc
       t⁻¹ * Real.exp (t - t⁻¹) =
-          (t * Real.exp t) * (Real.exp (-t⁻¹) * (t⁻¹) ^ 2) := by
+          (t * Real.exp t) * (Real.exp (-t⁻¹) * (t⁻¹) ^ (2 : ℕ)) := by
         rw [sub_eq_add_neg, Real.exp_add]
         field_simp [ht.ne']
       _ ≤ (t * Real.exp t) * 2 :=
@@ -116,30 +116,30 @@ theorem schwarzschildParikhWilczekSingularFlatMultiplier_div_pow_le
         Real.exp (Real.sqrt y) := by
   let t := Real.sqrt y
   have ht : 0 < t := Real.sqrt_pos.mpr hy
-  have hy_sq : y = t ^ 2 := by
+  have hy_sq : y = t ^ (2 : ℕ) := by
     symm
     exact Real.sq_sqrt hy.le
   have hflat := GaloisForLFunctions.exp_neg_inv_mul_inv_pow_le_factorial
     t ht (2 * N + 2)
   rw [schwarzschildParikhWilczekSingularFlatMultiplier, hy_sq]
   rw [Real.sqrt_sq_eq_abs, abs_of_pos ht]
-  change t⁻¹ * Real.exp (t - t⁻¹) / (t ^ 2) ^ N ≤
+  change t⁻¹ * Real.exp (t - t⁻¹) / (t ^ (2 : ℕ)) ^ N ≤
     ((2 * N + 2).factorial : ℝ) * t * Real.exp t
   have hpower :
-      t⁻¹ / (t ^ 2) ^ N = t * (t⁻¹) ^ (2 * N + 2) := by
-    have hpow : (t ^ 2) ^ N ≠ 0 := pow_ne_zero N (pow_ne_zero 2 ht.ne')
+      t⁻¹ / (t ^ (2 : ℕ)) ^ N = t * (t⁻¹) ^ (2 * N + 2) := by
+    have hpow : (t ^ (2 : ℕ)) ^ N ≠ 0 := pow_ne_zero N (pow_ne_zero 2 ht.ne')
     rw [show 2 * N + 2 = 2 * N + 2 by omega, pow_add, pow_mul]
     field_simp [ht.ne', hpow]
     rw [← mul_pow]
     field_simp [ht.ne']
     simp
   calc
-    t⁻¹ * Real.exp (t - t⁻¹) / (t ^ 2) ^ N =
+    t⁻¹ * Real.exp (t - t⁻¹) / (t ^ (2 : ℕ)) ^ N =
         (t * Real.exp t) *
           (Real.exp (-t⁻¹) * (t⁻¹) ^ (2 * N + 2)) := by
       rw [sub_eq_add_neg, Real.exp_add]
-      rw [show t⁻¹ * (Real.exp t * Real.exp (-t⁻¹)) / (t ^ 2) ^ N =
-        Real.exp t * Real.exp (-t⁻¹) * (t⁻¹ / (t ^ 2) ^ N) by ring]
+      rw [show t⁻¹ * (Real.exp t * Real.exp (-t⁻¹)) / (t ^ (2 : ℕ)) ^ N =
+        Real.exp t * Real.exp (-t⁻¹) * (t⁻¹ / (t ^ (2 : ℕ)) ^ N) by ring]
       rw [hpower]
       ring
     _ ≤ (t * Real.exp t) * ((2 * N + 2).factorial : ℝ) :=
@@ -203,7 +203,7 @@ theorem continuous_schwarzschildParikhWilczekSingularFlatMultiplier :
 
 theorem schwarzschildParikhWilczekSingularFlatMultiplier_of_sq
     {x : ℝ} (hx : 0 < x) :
-    schwarzschildParikhWilczekSingularFlatMultiplier (x ^ 2) =
+    schwarzschildParikhWilczekSingularFlatMultiplier (x ^ (2 : ℕ)) =
       x⁻¹ * Real.exp (x - x⁻¹) := by
   rw [schwarzschildParikhWilczekSingularFlatMultiplier,
     Real.sqrt_sq_eq_abs, abs_of_pos hx]
@@ -220,7 +220,7 @@ theorem schwarzschildParikhWilczekFirstEndpointWinding_scaled
 
 theorem schwarzschildParikhWilczekSingularFlatMultiplier_eq_source
     {x : ℝ} (hx : 0 < x) :
-    schwarzschildParikhWilczekSingularFlatMultiplier (x ^ 2) =
+    schwarzschildParikhWilczekSingularFlatMultiplier (x ^ (2 : ℕ)) =
       x⁻¹ * Real.exp x *
         schwarzschildParikhWilczekWindingTerm 0 (x / 4)
           (schwarzschildParikhWilczekDimensionlessEnergyEndpoint (x / 4)) := by
@@ -242,7 +242,7 @@ theorem schwarzschildParikhWilczekSingularFlatLogProfile_eq
     schwarzschildParikhWilczekSingularFlatLogProfile u =
       schwarzschildParikhWilczekReflectedGammaLogProfile u := by
   have hx : 0 < Real.exp u := Real.exp_pos _
-  have hsq : Real.exp (2 * u) = Real.exp u ^ 2 := by
+  have hsq : Real.exp (2 * u) = Real.exp u ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring

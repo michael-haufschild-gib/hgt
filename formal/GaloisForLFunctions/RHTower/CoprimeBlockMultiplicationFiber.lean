@@ -73,11 +73,11 @@ def coprimeDeletionProductFiberTotalCancellation : ℕ :=
 
 /-- Squared integer mass before multiplication fibres are identified. -/
 def coprimeDeletionGridSquareMass : ℤ :=
-  ∑ x : Fin 2 × Fin 3, coprimeDeletionGridWeight x ^ 2
+  ∑ x : Fin 2 × Fin 3, coprimeDeletionGridWeight x ^ (2 : ℕ)
 
 /-- Squared integer mass after equal products are identified and signed weights are added. -/
 def coprimeDeletionProductFiberSquareMass : ℤ :=
-  ∑ k : Fin 7, coprimeDeletionProductFiberCoefficient k ^ 2
+  ∑ k : Fin 7, coprimeDeletionProductFiberCoefficient k ^ (2 : ℕ)
 
 /-- Square-mass removed by signed cancellation inside multiplication fibres. -/
 def coprimeDeletionMultiplicationCollisionDefect : ℤ :=

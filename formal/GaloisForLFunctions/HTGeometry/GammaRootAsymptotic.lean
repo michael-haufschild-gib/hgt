@@ -119,7 +119,7 @@ theorem abs_log_Gamma_sub_stirling_le {a : ℝ} (ha : 0 < a) :
 
 variable {c b : ℝ}
 
-theorem tendsto_log_div_atTop : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) :=
+theorem tendsto_log_div_atTop_gammaRootAsymptotic : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) :=
   Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero
 
 theorem tendsto_log_linear_div (hc : 0 < c) (b : ℝ) :
@@ -127,7 +127,7 @@ theorem tendsto_log_linear_div (hc : 0 < c) (b : ℝ) :
   have hshift : Tendsto (fun x : ℝ => c * x + b) atTop atTop := by
     exact Filter.tendsto_atTop_add_const_right _ b ((tendsto_id.const_mul_atTop hc))
   have h1 : Tendsto (fun x : ℝ => Real.log (c * x + b) / (c * x + b)) atTop (𝓝 0) :=
-    tendsto_log_div_atTop.comp hshift
+    tendsto_log_div_atTop_gammaRootAsymptotic.comp hshift
   have h2 : Tendsto (fun x : ℝ => (c * x + b) / x) atTop (𝓝 c) := by
     have hbx : Tendsto (fun x : ℝ => b / x) atTop (𝓝 0) :=
       Filter.Tendsto.const_div_atTop tendsto_id b

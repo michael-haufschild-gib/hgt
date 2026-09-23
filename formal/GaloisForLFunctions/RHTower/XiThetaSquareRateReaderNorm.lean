@@ -26,7 +26,7 @@ noncomputable section
 /-! ## The physical heat rates -/
 
 /-- The physical heat rates `λ_k = π (k+1)²`. -/
-def heatRateSeq (k : ℕ) : ℝ := Real.pi * ((k : ℝ) + 1) ^ 2
+def heatRateSeq (k : ℕ) : ℝ := Real.pi * ((k : ℝ) + 1) ^ (2 : ℕ)
 
 theorem heatRateSeq_pos (k : ℕ) : 0 < heatRateSeq k := by
   rw [heatRateSeq]
@@ -36,7 +36,7 @@ theorem heatRateSeq_injective : Function.Injective heatRateSeq := by
   intro a b hab
   rw [heatRateSeq, heatRateSeq] at hab
   have hpi : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero
-  have h2 : ((a : ℝ) + 1) ^ 2 = ((b : ℝ) + 1) ^ 2 := by
+  have h2 : ((a : ℝ) + 1) ^ (2 : ℕ) = ((b : ℝ) + 1) ^ (2 : ℕ) := by
     field_simp at hab
     exact hab
   have hpa : (0 : ℝ) < (a : ℝ) + 1 := by positivity
@@ -53,14 +53,14 @@ theorem heatRateSeq_injective : Function.Injective heatRateSeq := by
 /-- **The real co-distance law.** -/
 theorem normSq_gramSchmidt_coSystem {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k)
     (hinj : Function.Injective lam) {n N : ℕ} (hn : n ≤ N) :
-    ‖gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N‖ ^ 2 *
-        ((∏ m ∈ (Finset.range (N + 1)).erase n, (lam m + lam n)) ^ 2 * (lam n + lam n))
-      = (∏ m ∈ (Finset.range (N + 1)).erase n, (lam m - lam n)) ^ 2 := by
+    ‖gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N‖ ^ (2 : ℕ) *
+        ((∏ m ∈ (Finset.range (N + 1)).erase n, (lam m + lam n)) ^ (2 : ℕ) * (lam n + lam n))
+      = (∏ m ∈ (Finset.range (N + 1)).erase n, (lam m - lam n)) ^ (2 : ℕ) := by
   have hc := inner_gramSchmidt_coSystem hpos hinj hn
   have hself : inner ℂ
       (gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N)
       (gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N) =
-      ((‖gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N‖ : ℂ)) ^ 2 :=
+      ((‖gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N‖ : ℂ)) ^ (2 : ℕ) :=
     inner_self_eq_norm_sq_to_K _
   refine Complex.ofReal_inj.mp ?_
   push_cast
@@ -71,24 +71,24 @@ theorem normSq_gramSchmidt_coSystem {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k
 
 theorem heatRate_blaschke_factor (n k : ℕ) :
     (heatRateSeq k - heatRateSeq n) / (heatRateSeq k + heatRateSeq n) =
-      (1 - (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) /
-        (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) := by
-  have hk : ((k : ℝ) + 1) ^ 2 ≠ 0 := by positivity
+      (1 - (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) /
+        (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
+  have hk : ((k : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
   have hpi : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero
   rw [heatRateSeq, heatRateSeq]
-  have hden1 : Real.pi * ((k : ℝ) + 1) ^ 2 + Real.pi * ((n : ℝ) + 1) ^ 2 ≠ 0 := by positivity
-  have hden2 : (1 : ℝ) + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2 ≠ 0 := by positivity
+  have hden1 : Real.pi * ((k : ℝ) + 1) ^ (2 : ℕ) + Real.pi * ((n : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
+  have hden2 : (1 : ℝ) + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
 
 /-! ## The finite co-distance in Blaschke form, and its limit -/
 
 theorem normSq_gramSchmidt_heatRate {n N : ℕ} (hn : n ≤ N) :
     ‖gramSchmidt ℂ
-        (expSystem (fun k => heatRateSeq (coIdx n N k)) (fun _ => heatRateSeq_pos _)) N‖ ^ 2 *
+        (expSystem (fun k => heatRateSeq (coIdx n N k)) (fun _ => heatRateSeq_pos _)) N‖ ^ (2 : ℕ) *
         (2 * heatRateSeq n)
       = (∏ k ∈ (Finset.range (N + 1)).erase n,
-          ((1 - (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) /
-            (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2))) ^ 2 := by
+          ((1 - (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) /
+            (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)))) ^ (2 : ℕ) := by
   have hkey := normSq_gramSchmidt_coSystem heatRateSeq_pos heatRateSeq_injective hn
   have hplus : (∏ m ∈ (Finset.range (N + 1)).erase n,
       (heatRateSeq m + heatRateSeq n)) ≠ 0 := by
@@ -97,8 +97,8 @@ theorem normSq_gramSchmidt_heatRate {n N : ℕ} (hn : n ≤ N) :
     have := heatRateSeq_pos n
     positivity
   have hb : (∏ k ∈ (Finset.range (N + 1)).erase n,
-        ((1 - (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) /
-          (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2))) =
+        ((1 - (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) /
+          (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)))) =
       (∏ m ∈ (Finset.range (N + 1)).erase n, (heatRateSeq m - heatRateSeq n)) /
         (∏ m ∈ (Finset.range (N + 1)).erase n, (heatRateSeq m + heatRateSeq n)) := by
     rw [← Finset.prod_div_distrib]
@@ -110,9 +110,9 @@ theorem normSq_gramSchmidt_heatRate {n N : ℕ} (hn : n ≤ N) :
 theorem tendsto_normSq_gramSchmidt_heatRate (n : ℕ) :
     Filter.Tendsto
       (fun N : ℕ => ‖gramSchmidt ℂ
-        (expSystem (fun k => heatRateSeq (coIdx n N k)) (fun _ => heatRateSeq_pos _)) N‖ ^ 2)
+        (expSystem (fun k => heatRateSeq (coIdx n N k)) (fun _ => heatRateSeq_pos _)) N‖ ^ (2 : ℕ))
       Filter.atTop
-      (nhds (Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ 2))) := by
+      (nhds (Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ (2 : ℕ)))) := by
   have hsinhpos : 0 < Real.sinh (Real.pi * ((n : ℝ) + 1)) := by
     have hx : (0 : ℝ) < Real.pi * ((n : ℝ) + 1) := by positivity
     have h0 : Real.sinh 0 < Real.sinh (Real.pi * ((n : ℝ) + 1)) :=
@@ -124,13 +124,13 @@ theorem tendsto_normSq_gramSchmidt_heatRate (n : ℕ) :
   have hsq := (tendsto_blaschke_square_rate n).pow 2
   have hdiv := hsq.div_const (2 * heatRateSeq n)
   have hval : ((-1 : ℝ) ^ n * (Real.pi * ((n : ℝ) + 1)) /
-        Real.sinh (Real.pi * ((n : ℝ) + 1))) ^ 2 / (2 * heatRateSeq n) =
-      Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ 2) := by
+        Real.sinh (Real.pi * ((n : ℝ) + 1))) ^ (2 : ℕ) / (2 * heatRateSeq n) =
+      Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ (2 : ℕ)) := by
     rw [heatRateSeq]
     have hpi : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero
     have hn1 : ((n : ℝ) + 1) ≠ 0 := by positivity
     have hsne : Real.sinh (Real.pi * ((n : ℝ) + 1)) ≠ 0 := ne_of_gt hsinhpos
-    have hone : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+    have hone : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
       rw [← pow_mul, mul_comm, pow_mul, neg_one_sq, one_pow]
     rw [div_pow, mul_pow, mul_pow, hone]
     field_simp

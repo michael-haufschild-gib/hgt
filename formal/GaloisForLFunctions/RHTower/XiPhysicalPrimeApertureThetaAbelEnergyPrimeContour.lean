@@ -133,16 +133,16 @@ theorem rectIntegral_physicalThetaAbelEnergy_source_eq_prime_add_arch
     (hleft : ∀ y ∈ uIcc z₁.im z₂.im,
       XiExplicitAdmissible ((z₁.re : ℂ) + y * I)) :
     rectIntegral (fun z =>
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =
       rectIntegral (fun z =>
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           (-I * infinitePrimeFlux (1 / 2 + z * I))) z₁ z₂ +
       rectIntegral (fun z =>
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           (I * logDeriv archFactor (1 / 2 + z * I))) z₁ z₂ := by
   let g : ℂ → ℂ := fun z =>
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ)
   let p : ℂ → ℂ := fun z =>
     g z * (-I * infinitePrimeFlux (1 / 2 + z * I))
   let r : ℂ → ℂ := fun z =>
@@ -173,7 +173,7 @@ contour. -/
 def xiPhysicalThetaAbelEnergyNormalizedPrimeSourceContour
     (L A c a : ℝ) (z₁ z₂ : ℂ) : ℂ :=
   (2 * Real.pi * I)⁻¹ * rectIntegral (fun z =>
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
       (-I * infinitePrimeFlux (1 / 2 + z * I))) z₁ z₂
 
 /-- Exact normalized source split on every admissible rectangle. -/
@@ -202,7 +202,7 @@ residue restored. -/
 def xiPhysicalThetaAbelEnergyCorrectedPrimeSourceContour
     (L A c a : ℝ) (z₁ z₂ : ℂ) : ℂ :=
   xiPhysicalThetaAbelEnergyNormalizedPrimeSourceContour L A c a z₁ z₂ +
-    ((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2
+    ((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ)
 
 /-- On an admissible rectangle crossing the unique centered archimedean pole,
 the full source contour is exactly the direct prime contour plus one explicit

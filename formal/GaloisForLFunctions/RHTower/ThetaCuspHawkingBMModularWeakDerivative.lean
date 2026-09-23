@@ -12,7 +12,7 @@ namespace RHTower.D4BMModularCore
 noncomputable section
 
 /-- The original invariant volume density in the complex coordinate. -/
-def chartDensity (z : ℂ) : ℝ≥0 := (1/‖z.im‖₊)^2
+def chartDensity (z : ℂ) : ℝ≥0 := (1/‖z.im‖₊)^(2 : ℕ)
 
 /-- The closed modular cell in the original complex coordinate. -/
 def cellChart : Set ℂ := UpperHalfPlane.coe '' ModularGroup.fd
@@ -49,9 +49,9 @@ theorem integral_measure_chart (F : ℂ → ℂ) :
 
 /-- Squared height cancels exactly the native hyperbolic measure density on the cell. -/
 theorem integral_height_sq_chart (F : ℂ → ℂ) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*F z ∂measure) = ∫ z in cellChart, F z := by
-  have hi := integral_measure_chart (fun z => (z.im : ℂ)^2*F z)
-  change (∫ z : UpperHalfPlane, ((z:ℂ).im : ℂ)^2*F z ∂measure) = _
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*F z ∂measure) = ∫ z in cellChart, F z := by
+  have hi := integral_measure_chart (fun z => (z.im : ℂ)^(2 : ℕ)*F z)
+  change (∫ z : UpperHalfPlane, ((z:ℂ).im : ℂ)^(2 : ℕ)*F z ∂measure) = _
   rw [hi]
   apply setIntegral_congr_fun
     (UpperHalfPlane.measurableEmbedding_coe.measurableSet_image.mpr ModularGroup.isClosed_fd.measurableSet)
@@ -105,7 +105,7 @@ theorem weightedDeriv_test_identity (f : UpperHalfPlane → ℂ) (hf : ChartSmoo
     (g : ℂ → ℂ) (hg : ContDiff ℝ ∞ g) (hk : HasCompactSupport g)
     (hs : tsupport g ⊆ interiorChart) (v : ℂ) :
     (∫ z : UpperHalfPlane, weightedDeriv v f z*((z.im : ℂ)*g z) ∂measure) =
-      -(∫ z : UpperHalfPlane, f z*((z.im : ℂ)^2*fderiv ℝ g (z:ℂ) v) ∂measure) := by
+      -(∫ z : UpperHalfPlane, f z*((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g (z:ℂ) v) ∂measure) := by
   let F : ℂ → ℂ := f ∘ UpperHalfPlane.ofComplex
   let D : ℂ → ℂ := fun z => fderiv ℝ g z v
   have hD : Continuous D :=
@@ -123,7 +123,7 @@ theorem weightedDeriv_test_identity (f : UpperHalfPlane → ℂ) (hf : ChartSmoo
   have hL : (∫ z : UpperHalfPlane, weightedDeriv v f z*((z.im : ℂ)*g z) ∂measure) =
       ∫ z : ℂ, fderiv ℝ F z v*g z := by
     calc
-      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^2*(fderiv ℝ F (z:ℂ) v*g z) ∂measure := by
+      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*(fderiv ℝ F (z:ℂ) v*g z) ∂measure := by
         apply integral_congr_ae
         exact Filter.Eventually.of_forall (fun z => by unfold weightedDeriv F; ring)
       _ = ∫ z in cellChart, fderiv ℝ F z v*g z :=
@@ -131,10 +131,10 @@ theorem weightedDeriv_test_identity (f : UpperHalfPlane → ℂ) (hf : ChartSmoo
       _ = _ := setIntegral_eq_integral_of_forall_compl_eq_zero (fun z hz => by
         have hn : z ∉ tsupport g := fun hg => hz (interiorChart_subset_cellChart (hs hg))
         rw [image_eq_zero_of_notMem_tsupport hn,mul_zero])
-  have hR : (∫ z : UpperHalfPlane, f z*((z.im : ℂ)^2*fderiv ℝ g (z:ℂ) v) ∂measure) =
+  have hR : (∫ z : UpperHalfPlane, f z*((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g (z:ℂ) v) ∂measure) =
       ∫ z : ℂ, F z*fderiv ℝ g z v := by
     calc
-      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^2*(F z*fderiv ℝ g (z:ℂ) v) ∂measure := by
+      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*(F z*fderiv ℝ g (z:ℂ) v) ∂measure := by
         apply integral_congr_ae
         filter_upwards [] with z
         simp only [F,Function.comp_apply,UpperHalfPlane.ofComplex_apply]

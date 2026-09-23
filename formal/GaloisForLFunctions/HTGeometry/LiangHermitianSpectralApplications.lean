@@ -21,10 +21,10 @@ namespace GaloisForLFunctions.HTGeometry.Liang
 variable {ι : Type*} [Fintype ι]
 
 def curvatureCommutator (κ : ι → ℝ) : ℝ :=
-  sigmaOne κ * (∑ i, κ i ^ 3) - (∑ i, κ i ^ 2) ^ 2
+  sigmaOne κ * (∑ i, κ i ^ (3 : ℕ)) - (∑ i, κ i ^ (2 : ℕ)) ^ (2 : ℕ)
 
 def pairDifferenceEnergy (κ : ι → ℝ) : ℝ :=
-  (1 / 2 : ℝ) * ∑ i, ∑ j, κ i * κ j * (κ i - κ j) ^ 2
+  (1 / 2 : ℝ) * ∑ i, ∑ j, κ i * κ j * (κ i - κ j) ^ (2 : ℕ)
 
 theorem double_sum_mul (f g : ι → ℝ) :
     (∑ i, ∑ j, f i * g j) = (∑ i, f i) * ∑ j, g j := by
@@ -36,23 +36,23 @@ theorem double_sum_mul (f g : ι → ℝ) :
 theorem curvatureCommutator_eq_pairDifferenceEnergy (κ : ι → ℝ) :
     curvatureCommutator κ = pairDifferenceEnergy κ := by
   have hexpand :
-      (∑ i, ∑ j, κ i * κ j * (κ i - κ j) ^ 2) =
+      (∑ i, ∑ j, κ i * κ j * (κ i - κ j) ^ (2 : ℕ)) =
         ∑ i, ∑ j,
-          ((κ i ^ 3) * κ j + κ i * (κ j ^ 3) - (2 * κ i ^ 2) * κ j ^ 2) := by
+          ((κ i ^ (3 : ℕ)) * κ j + κ i * (κ j ^ (3 : ℕ)) - (2 * κ i ^ (2 : ℕ)) * κ j ^ (2 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro i hi
     apply Finset.sum_congr rfl
     intro j hj
     ring
-  have hfirst : (∑ i, ∑ j, (κ i ^ 3) * κ j) =
-      (∑ i, κ i ^ 3) * sigmaOne κ := by
-    simpa [sigmaOne] using double_sum_mul (fun i => κ i ^ 3) κ
-  have hsecond : (∑ i, ∑ j, κ i * (κ j ^ 3)) =
-      sigmaOne κ * ∑ j, κ j ^ 3 := by
-    simpa [sigmaOne] using double_sum_mul κ (fun j => κ j ^ 3)
-  have hthird : (∑ i, ∑ j, (2 * κ i ^ 2) * κ j ^ 2) =
-      2 * (∑ i, κ i ^ 2) * ∑ j, κ j ^ 2 := by
-    have h := double_sum_mul (fun i => 2 * κ i ^ 2) (fun j => κ j ^ 2)
+  have hfirst : (∑ i, ∑ j, (κ i ^ (3 : ℕ)) * κ j) =
+      (∑ i, κ i ^ (3 : ℕ)) * sigmaOne κ := by
+    simpa [sigmaOne] using double_sum_mul (fun i => κ i ^ (3 : ℕ)) κ
+  have hsecond : (∑ i, ∑ j, κ i * (κ j ^ (3 : ℕ))) =
+      sigmaOne κ * ∑ j, κ j ^ (3 : ℕ) := by
+    simpa [sigmaOne] using double_sum_mul κ (fun j => κ j ^ (3 : ℕ))
+  have hthird : (∑ i, ∑ j, (2 * κ i ^ (2 : ℕ)) * κ j ^ (2 : ℕ)) =
+      2 * (∑ i, κ i ^ (2 : ℕ)) * ∑ j, κ j ^ (2 : ℕ) := by
+    have h := double_sum_mul (fun i => 2 * κ i ^ (2 : ℕ)) (fun j => κ j ^ (2 : ℕ))
     rw [← Finset.mul_sum] at h
     simpa [mul_assoc] using h
   rw [curvatureCommutator, pairDifferenceEnergy, hexpand]
@@ -80,7 +80,7 @@ def IsSymmetric3 (T : ι → ι → ι → ℝ) : Prop :=
 omit [Fintype ι] in
 theorem symmetric3_repeated_index_orbit
     {T : ι → ι → ι → ℝ} (hT : IsSymmetric3 T) (i k : ι) :
-    T i i k ^ 2 + T i k i ^ 2 + T k i i ^ 2 = 3 * T i i k ^ 2 := by
+    T i i k ^ (2 : ℕ) + T i k i ^ (2 : ℕ) + T k i i ^ (2 : ℕ) = 3 * T i i k ^ (2 : ℕ) := by
   have h₁ : T i k i = T i i k := (hT.2 i i k).symm
   have h₂ : T k i i = T i i k := by
     rw [hT.1 k i i, h₁]
@@ -89,8 +89,8 @@ theorem symmetric3_repeated_index_orbit
 
 theorem symmetric3_repeated_index_multiplicity
     {T : ι → ι → ι → ℝ} (hT : IsSymmetric3 T) :
-    (∑ i, ∑ k, (T i i k ^ 2 + T i k i ^ 2 + T k i i ^ 2)) =
-      3 * ∑ i, ∑ k, T i i k ^ 2 := by
+    (∑ i, ∑ k, (T i i k ^ (2 : ℕ) + T i k i ^ (2 : ℕ) + T k i i ^ (2 : ℕ))) =
+      3 * ∑ i, ∑ k, T i i k ^ (2 : ℕ) := by
   simp_rw [symmetric3_repeated_index_orbit hT]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -98,7 +98,7 @@ theorem symmetric3_repeated_index_multiplicity
   rw [Finset.mul_sum]
 
 def tensorEnergy (T : ι → ι → ι → ℝ) : ℝ :=
-  ∑ i, ∑ j, ∑ k, T i j k ^ 2
+  ∑ i, ∑ j, ∑ k, T i j k ^ (2 : ℕ)
 
 section TensorInequality
 
@@ -106,11 +106,11 @@ variable [DecidableEq ι]
 
 def selectedTensorEnergy (T : ι → ι → ι → ℝ) : ℝ :=
   ∑ i, ∑ j, ∑ k,
-    if i = j ∨ i = k ∨ j = k then T i j k ^ 2 else 0
+    if i = j ∨ i = k ∨ j = k then T i j k ^ (2 : ℕ) else 0
 
 def repeatedTensorLowerEnergy (T : ι → ι → ι → ℝ) : ℝ :=
-  (∑ i, T i i i ^ 2) +
-    3 * ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ 2
+  (∑ i, T i i i ^ (2 : ℕ)) +
+    3 * ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ)
 
 theorem selectedTensorEnergy_le_tensorEnergy (T : ι → ι → ι → ℝ) :
     selectedTensorEnergy T ≤ tensorEnergy T := by
@@ -127,11 +127,11 @@ theorem selectedTensorEnergy_le_tensorEnergy (T : ι → ι → ι → ℝ) :
 omit [Fintype ι] in
 theorem selected_term_inclusion_exclusion
     (T : ι → ι → ι → ℝ) (i j k : ι) :
-    (if i = j ∨ i = k ∨ j = k then T i j k ^ 2 else 0) =
-      (if i = j then T i j k ^ 2 else 0) +
-      (if i = k then T i j k ^ 2 else 0) +
-      (if j = k then T i j k ^ 2 else 0) -
-      2 * (if i = j ∧ j = k then T i j k ^ 2 else 0) := by
+    (if i = j ∨ i = k ∨ j = k then T i j k ^ (2 : ℕ) else 0) =
+      (if i = j then T i j k ^ (2 : ℕ) else 0) +
+      (if i = k then T i j k ^ (2 : ℕ) else 0) +
+      (if j = k then T i j k ^ (2 : ℕ) else 0) -
+      2 * (if i = j ∧ j = k then T i j k ^ (2 : ℕ) else 0) := by
   by_cases hij : i = j
   · subst j
     by_cases hik : i = k
@@ -149,47 +149,47 @@ theorem selected_term_inclusion_exclusion
       · simp [hij, hik, hjk]
 
 theorem sum_eq12_slice (T : ι → ι → ι → ℝ) :
-    (∑ i, ∑ j, ∑ k, if i = j then T i j k ^ 2 else 0) =
-      ∑ i, ∑ k, T i i k ^ 2 := by
+    (∑ i, ∑ j, ∑ k, if i = j then T i j k ^ (2 : ℕ) else 0) =
+      ∑ i, ∑ k, T i i k ^ (2 : ℕ) := by
   simp
 
 theorem sum_eq13_slice (T : ι → ι → ι → ℝ) :
-    (∑ i, ∑ j, ∑ k, if i = k then T i j k ^ 2 else 0) =
-      ∑ i, ∑ j, T i j i ^ 2 := by
+    (∑ i, ∑ j, ∑ k, if i = k then T i j k ^ (2 : ℕ) else 0) =
+      ∑ i, ∑ j, T i j i ^ (2 : ℕ) := by
   simp
 
 theorem sum_eq23_slice (T : ι → ι → ι → ℝ) :
-    (∑ i, ∑ j, ∑ k, if j = k then T i j k ^ 2 else 0) =
-      ∑ i, ∑ j, T i j j ^ 2 := by
+    (∑ i, ∑ j, ∑ k, if j = k then T i j k ^ (2 : ℕ) else 0) =
+      ∑ i, ∑ j, T i j j ^ (2 : ℕ) := by
   simp
 
 theorem sum_allEqual_slice (T : ι → ι → ι → ℝ) :
-    (∑ i, ∑ j, ∑ k, if i = j ∧ j = k then T i j k ^ 2 else 0) =
-      ∑ i, T i i i ^ 2 := by
+    (∑ i, ∑ j, ∑ k, if i = j ∧ j = k then T i j k ^ (2 : ℕ) else 0) =
+      ∑ i, T i i i ^ (2 : ℕ) := by
   apply Finset.sum_congr rfl
   intro i hi
   calc
-    (∑ j, ∑ k, if i = j ∧ j = k then T i j k ^ 2 else 0) =
-        ∑ j, if i = j then T i j j ^ 2 else 0 := by
+    (∑ j, ∑ k, if i = j ∧ j = k then T i j k ^ (2 : ℕ) else 0) =
+        ∑ j, if i = j then T i j j ^ (2 : ℕ) else 0 := by
       apply Finset.sum_congr rfl
       intro j hj
       by_cases hij : i = j
       · subst j
         simp
       · simp [hij]
-    _ = T i i i ^ 2 := by simp
+    _ = T i i i ^ (2 : ℕ) := by simp
 
 theorem repeated_all_eq_diag_add_off
     (T : ι → ι → ι → ℝ) :
-    (∑ i, ∑ k, T i i k ^ 2) =
-      (∑ i, T i i i ^ 2) +
-        ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ 2 := by
+    (∑ i, ∑ k, T i i k ^ (2 : ℕ)) =
+      (∑ i, T i i i ^ (2 : ℕ)) +
+        ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ) := by
   calc
-    (∑ i, ∑ k, T i i k ^ 2) =
-        ∑ i, ((∑ k ∈ Finset.univ.erase i, T i i k ^ 2) + T i i i ^ 2) := by
+    (∑ i, ∑ k, T i i k ^ (2 : ℕ)) =
+        ∑ i, ((∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ)) + T i i i ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i hi
-      exact Finset.sum_erase_add Finset.univ (fun k => T i i k ^ 2)
+      exact Finset.sum_erase_add Finset.univ (fun k => T i i k ^ (2 : ℕ))
         (Finset.mem_univ i) |>.symm
     _ = _ := by
       rw [Finset.sum_add_distrib]
@@ -198,29 +198,29 @@ theorem repeated_all_eq_diag_add_off
 theorem selectedTensorEnergy_eq_repeatedTensorLowerEnergy
     {T : ι → ι → ι → ℝ} (hT : IsSymmetric3 T) :
     selectedTensorEnergy T = repeatedTensorLowerEnergy T := by
-  have h13 : (∑ i, ∑ j, T i j i ^ 2) = ∑ i, ∑ k, T i i k ^ 2 := by
+  have h13 : (∑ i, ∑ j, T i j i ^ (2 : ℕ)) = ∑ i, ∑ k, T i i k ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i hi
     apply Finset.sum_congr rfl
     intro j hj
     rw [hT.2 i i j]
-  have h23 : (∑ i, ∑ j, T i j j ^ 2) = ∑ i, ∑ k, T i i k ^ 2 := by
+  have h23 : (∑ i, ∑ j, T i j j ^ (2 : ℕ)) = ∑ i, ∑ k, T i i k ^ (2 : ℕ) := by
     calc
-      (∑ i, ∑ j, T i j j ^ 2) = ∑ i, ∑ j, T j j i ^ 2 := by
+      (∑ i, ∑ j, T i j j ^ (2 : ℕ)) = ∑ i, ∑ j, T j j i ^ (2 : ℕ) := by
         apply Finset.sum_congr rfl
         intro i hi
         apply Finset.sum_congr rfl
         intro j hj
         rw [hT.1 i j j, ← hT.2 j j i]
-      _ = ∑ i, ∑ k, T i i k ^ 2 := Finset.sum_comm
+      _ = ∑ i, ∑ k, T i i k ^ (2 : ℕ) := Finset.sum_comm
   rw [selectedTensorEnergy]
   simp_rw [selected_term_inclusion_exclusion T]
   simp_rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   have hfactor :
       (∑ x, ∑ y, ∑ z, 2 *
-        (if x = y ∧ y = z then T x y z ^ 2 else 0)) =
+        (if x = y ∧ y = z then T x y z ^ (2 : ℕ) else 0)) =
         2 * ∑ x, ∑ y, ∑ z,
-          (if x = y ∧ y = z then T x y z ^ 2 else 0) := by
+          (if x = y ∧ y = z then T x y z ^ (2 : ℕ) else 0) := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i hi
@@ -246,30 +246,30 @@ theorem sum_dQuadratic_diagonalSlice_eq_repeatedTensorLowerEnergy
     (T : ι → ι → ι → ℝ) :
     (∑ k, dQuadratic k (diagonalSlice T k)) = repeatedTensorLowerEnergy T := by
   have hoff :
-      (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ 2) =
-        ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ 2 := by
+      (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ (2 : ℕ)) =
+        ∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ) := by
     have hleft :
-        (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ 2) =
-          (∑ k, ∑ i, T i i k ^ 2) - ∑ k, T k k k ^ 2 := by
+        (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ (2 : ℕ)) =
+          (∑ k, ∑ i, T i i k ^ (2 : ℕ)) - ∑ k, T k k k ^ (2 : ℕ) := by
       calc
-        (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ 2) =
-            ∑ k, ((∑ i, T i i k ^ 2) - T k k k ^ 2) := by
+        (∑ k, ∑ i ∈ Finset.univ.erase k, T i i k ^ (2 : ℕ)) =
+            ∑ k, ((∑ i, T i i k ^ (2 : ℕ)) - T k k k ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro k hk
           have hsplit := Finset.sum_erase_add Finset.univ
-            (fun i => T i i k ^ 2) (Finset.mem_univ k)
+            (fun i => T i i k ^ (2 : ℕ)) (Finset.mem_univ k)
           linarith
         _ = _ := by simp only [Finset.sum_sub_distrib]
     have hright :
-        (∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ 2) =
-          (∑ i, ∑ k, T i i k ^ 2) - ∑ i, T i i i ^ 2 := by
+        (∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ)) =
+          (∑ i, ∑ k, T i i k ^ (2 : ℕ)) - ∑ i, T i i i ^ (2 : ℕ) := by
       calc
-        (∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ 2) =
-            ∑ i, ((∑ k, T i i k ^ 2) - T i i i ^ 2) := by
+        (∑ i, ∑ k ∈ Finset.univ.erase i, T i i k ^ (2 : ℕ)) =
+            ∑ i, ((∑ k, T i i k ^ (2 : ℕ)) - T i i i ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro i hi
           have hsplit := Finset.sum_erase_add Finset.univ
-            (fun k => T i i k ^ 2) (Finset.mem_univ i)
+            (fun k => T i i k ^ (2 : ℕ)) (Finset.mem_univ i)
           linarith
         _ = _ := by simp only [Finset.sum_sub_distrib]
     rw [hleft, hright, Finset.sum_comm]
@@ -280,8 +280,8 @@ theorem sum_dQuadratic_diagonalSlice_eq_repeatedTensorLowerEnergy
 /-- Pure tensor-reduction step in Liang's tensor proposition. -/
 theorem symmetric3_sum_slice_defect_le_tensor_defect
     {T : ι → ι → ι → ℝ} (hT : IsSymmetric3 T) :
-    (∑ k, (dQuadratic k (diagonalSlice T k) - sigmaOne (diagonalSlice T k) ^ 2)) ≤
-      tensorEnergy T - ∑ k, sigmaOne (diagonalSlice T k) ^ 2 := by
+    (∑ k, (dQuadratic k (diagonalSlice T k) - sigmaOne (diagonalSlice T k) ^ (2 : ℕ))) ≤
+      tensorEnergy T - ∑ k, sigmaOne (diagonalSlice T k) ^ (2 : ℕ) := by
   rw [Finset.sum_sub_distrib,
     sum_dQuadratic_diagonalSlice_eq_repeatedTensorLowerEnergy]
   exact sub_le_sub_right (symmetric3_repeated_index_energy_le hT) _
@@ -291,17 +291,17 @@ theorem symmetric3_tensor_bound_of_slice_bounds
     {T : ι → ι → ι → ℝ} (hT : IsSymmetric3 T)
     (ell : ι → ℝ) (a : ι → ℝ) (C : ℝ)
     (hslice : ∀ k,
-      a k * sigmaOne (diagonalSlice T k) ^ 2 -
-          C * dot ell (diagonalSlice T k) ^ 2 ≤
-        dQuadratic k (diagonalSlice T k) - sigmaOne (diagonalSlice T k) ^ 2) :
-    (∑ k, a k * sigmaOne (diagonalSlice T k) ^ 2) -
-        C * ∑ k, dot ell (diagonalSlice T k) ^ 2 ≤
-      tensorEnergy T - ∑ k, sigmaOne (diagonalSlice T k) ^ 2 := by
+      a k * sigmaOne (diagonalSlice T k) ^ (2 : ℕ) -
+          C * dot ell (diagonalSlice T k) ^ (2 : ℕ) ≤
+        dQuadratic k (diagonalSlice T k) - sigmaOne (diagonalSlice T k) ^ (2 : ℕ)) :
+    (∑ k, a k * sigmaOne (diagonalSlice T k) ^ (2 : ℕ)) -
+        C * ∑ k, dot ell (diagonalSlice T k) ^ (2 : ℕ) ≤
+      tensorEnergy T - ∑ k, sigmaOne (diagonalSlice T k) ^ (2 : ℕ) := by
   have hsum :
-      (∑ k, (a k * sigmaOne (diagonalSlice T k) ^ 2 -
-        C * dot ell (diagonalSlice T k) ^ 2)) ≤
+      (∑ k, (a k * sigmaOne (diagonalSlice T k) ^ (2 : ℕ) -
+        C * dot ell (diagonalSlice T k) ^ (2 : ℕ))) ≤
         ∑ k, (dQuadratic k (diagonalSlice T k) -
-          sigmaOne (diagonalSlice T k) ^ 2) :=
+          sigmaOne (diagonalSlice T k) ^ (2 : ℕ)) :=
     Finset.sum_le_sum fun k hk => hslice k
   refine le_trans ?_ (symmetric3_sum_slice_defect_le_tensor_defect hT)
   rw [Finset.mul_sum]
@@ -315,14 +315,14 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 
 theorem hermitian_curvatureCommutator_trace_identity
     {A : Matrix n n ℂ} (hA : A.IsHermitian) :
-    (A.trace.re * (A ^ 3).trace.re - (A ^ 2).trace.re ^ 2) =
+    (A.trace.re * (A ^ (3 : ℕ)).trace.re - (A ^ (2 : ℕ)).trace.re ^ (2 : ℕ)) =
       pairDifferenceEnergy hA.eigenvalues := by
   have h₁ := sum_pow_eigenvalues_eq_trace_pow_re' hA 1
   have h₂ := sum_pow_eigenvalues_eq_trace_pow_re' hA 2
   have h₃ := sum_pow_eigenvalues_eq_trace_pow_re' hA 3
   have h₁' : ∑ i, hA.eigenvalues i = A.trace.re := by simpa using h₁
-  have h₂' : ∑ i, hA.eigenvalues i ^ 2 = (A ^ 2).trace.re := h₂
-  have h₃' : ∑ i, hA.eigenvalues i ^ 3 = (A ^ 3).trace.re := h₃
+  have h₂' : ∑ i, hA.eigenvalues i ^ (2 : ℕ) = (A ^ (2 : ℕ)).trace.re := h₂
+  have h₃' : ∑ i, hA.eigenvalues i ^ (3 : ℕ) = (A ^ (3 : ℕ)).trace.re := h₃
   rw [← curvatureCommutator_eq_pairDifferenceEnergy]
   simp only [curvatureCommutator]
   rw [← h₁', ← h₂', ← h₃']
@@ -330,7 +330,7 @@ theorem hermitian_curvatureCommutator_trace_identity
 
 theorem posSemidef_trace_cubic_commutator_nonneg
     {A : Matrix n n ℂ} (hA : A.PosSemidef) :
-    0 ≤ A.trace.re * (A ^ 3).trace.re - (A ^ 2).trace.re ^ 2 := by
+    0 ≤ A.trace.re * (A ^ (3 : ℕ)).trace.re - (A ^ (2 : ℕ)).trace.re ^ (2 : ℕ) := by
   rw [hermitian_curvatureCommutator_trace_identity hA.isHermitian]
   exact pairDifferenceEnergy_nonneg hA.isHermitian.eigenvalues hA.eigenvalues_nonneg
 
@@ -338,21 +338,21 @@ theorem posSemidef_trace_cubic_commutator_nonneg
 Hermitian matrix, trace-square energy is bounded by the square of the trace. -/
 theorem posSemidef_trace_sq_le_sq_trace
     {A : Matrix n n ℂ} (hA : A.PosSemidef) :
-    (A ^ 2).trace.re ≤ A.trace.re ^ 2 := by
+    (A ^ (2 : ℕ)).trace.re ≤ A.trace.re ^ (2 : ℕ) := by
   have h₁ := sum_pow_eigenvalues_eq_trace_pow_re' hA.isHermitian 1
   have hsum : sigmaOne hA.isHermitian.eigenvalues = A.trace.re := by
     simpa [sigmaOne] using h₁
   calc
-    (A ^ 2).trace.re = ∑ i, hA.isHermitian.eigenvalues i ^ 2 :=
+    (A ^ (2 : ℕ)).trace.re = ∑ i, hA.isHermitian.eigenvalues i ^ (2 : ℕ) :=
       (sum_sq_eigenvalues_eq_trace_sq_re hA.isHermitian).symm
-    _ ≤ sigmaOne hA.isHermitian.eigenvalues ^ 2 :=
+    _ ≤ sigmaOne hA.isHermitian.eigenvalues ^ (2 : ℕ) :=
       sum_sq_le_sigmaOne_sq_of_nonneg _ hA.eigenvalues_nonneg
-    _ = A.trace.re ^ 2 := by rw [hsum]
+    _ = A.trace.re ^ (2 : ℕ) := by rw [hsum]
 
 /-- Square-root form of `posSemidef_trace_sq_le_sq_trace`, directly mirroring `|A| ≤ H`. -/
 theorem posSemidef_sqrt_trace_sq_le_trace
     {A : Matrix n n ℂ} (hA : A.PosSemidef) :
-    Real.sqrt (A ^ 2).trace.re ≤ A.trace.re := by
+    Real.sqrt (A ^ (2 : ℕ)).trace.re ≤ A.trace.re := by
   have h₁ := sum_pow_eigenvalues_eq_trace_pow_re' hA.isHermitian 1
   have hsum : sigmaOne hA.isHermitian.eigenvalues = A.trace.re := by
     simpa [sigmaOne] using h₁
@@ -360,7 +360,7 @@ theorem posSemidef_sqrt_trace_sq_le_trace
     rw [← hsum]
     exact Finset.sum_nonneg fun i hi => hA.eigenvalues_nonneg i
   calc
-    Real.sqrt (A ^ 2).trace.re ≤ Real.sqrt (A.trace.re ^ 2) :=
+    Real.sqrt (A ^ (2 : ℕ)).trace.re ≤ Real.sqrt (A.trace.re ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (posSemidef_trace_sq_le_sq_trace hA)
     _ = |A.trace.re| := Real.sqrt_sq_eq_abs _
     _ = A.trace.re := abs_of_nonneg htrace
@@ -378,8 +378,8 @@ theorem spectralEnsemble_curvatureCommutator_trace_identity
     {N D : ℕ} (P : Fin N → Matrix (Fin D) (Fin D) ℂ)
     (hP : ∀ a, (P a).IsHermitian) (θ : Fin N → ℝ) :
     ((spectralEnsembleMatrix P θ).trace.re *
-        ((spectralEnsembleMatrix P θ) ^ 3).trace.re -
-      ((spectralEnsembleMatrix P θ) ^ 2).trace.re ^ 2) =
+        ((spectralEnsembleMatrix P θ) ^ (3 : ℕ)).trace.re -
+      ((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace.re ^ (2 : ℕ)) =
       pairDifferenceEnergy (isHermitian_spectralEnsembleMatrix hP θ).eigenvalues :=
   hermitian_curvatureCommutator_trace_identity
     (isHermitian_spectralEnsembleMatrix hP θ)
@@ -395,16 +395,16 @@ theorem posSemidef_spectralEnsembleMatrix
 theorem nonnegative_spectralEnsemble_trace_sq_le_sq_trace
     {N D : ℕ} {P : Fin N → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).PosSemidef) {θ : Fin N → ℝ} (hθ : ∀ a, 0 ≤ θ a) :
-    ((spectralEnsembleMatrix P θ) ^ 2).trace.re ≤
-      (spectralEnsembleMatrix P θ).trace.re ^ 2 :=
+    ((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace.re ≤
+      (spectralEnsembleMatrix P θ).trace.re ^ (2 : ℕ) :=
   posSemidef_trace_sq_le_sq_trace (posSemidef_spectralEnsembleMatrix hP hθ)
 
 theorem nonnegative_spectralEnsemble_cubic_commutator_nonneg
     {N D : ℕ} {P : Fin N → Matrix (Fin D) (Fin D) ℂ}
     (hP : ∀ a, (P a).PosSemidef) {θ : Fin N → ℝ} (hθ : ∀ a, 0 ≤ θ a) :
     0 ≤ (spectralEnsembleMatrix P θ).trace.re *
-        ((spectralEnsembleMatrix P θ) ^ 3).trace.re -
-      ((spectralEnsembleMatrix P θ) ^ 2).trace.re ^ 2 :=
+        ((spectralEnsembleMatrix P θ) ^ (3 : ℕ)).trace.re -
+      ((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace.re ^ (2 : ℕ) :=
   posSemidef_trace_cubic_commutator_nonneg
     (posSemidef_spectralEnsembleMatrix hP hθ)
 

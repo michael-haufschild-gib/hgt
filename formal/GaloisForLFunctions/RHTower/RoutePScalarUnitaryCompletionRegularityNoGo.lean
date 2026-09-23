@@ -30,8 +30,8 @@ theorem tendsto_norm_sq_div_aperture_scalarXiPhase_unitaryDefect
       Complex.normSq
           (xiRightWardBoundarySourcePhaseCrossRatio
             (I * (1 / 2 : ℂ)) (a : ℂ)) +
-        ‖c a‖ ^ 2 = 1) :
-    Tendsto (fun a : ℝ => ‖c a‖ ^ 2 / a)
+        ‖c a‖ ^ (2 : ℕ) = 1) :
+    Tendsto (fun a : ℝ => ‖c a‖ ^ (2 : ℕ) / a)
       (nhdsWithin 0 (Set.Ioi 0))
       (nhds (2 *
         (continuedXiAntiCausalWardResponse (1 / 2 : ℂ)).re)) := by
@@ -40,7 +40,7 @@ theorem tendsto_norm_sq_div_aperture_scalarXiPhase_unitaryDefect
     rw [xiWardBoundaryPhaseDefect_eq_transport hhalf]
     norm_num [mobiusGammaXiAntiCausalWardTransportV_zero hhalf]
   have hdefect : ∀ a : ℝ,
-      xiWardBoundaryPhaseDefect (1 / 2 : ℂ) a = ‖c a‖ ^ 2 := by
+      xiWardBoundaryPhaseDefect (1 / 2 : ℂ) a = ‖c a‖ ^ (2 : ℕ) := by
     intro a
     rw [xiWardBoundaryPhaseDefect]
     linarith [hunit a]
@@ -62,14 +62,14 @@ theorem riemannHypothesis_of_differentiable_scalarXiPhase_unitaryCompletion
       Complex.normSq
           (xiRightWardBoundarySourcePhaseCrossRatio
             (I * (1 / 2 : ℂ)) (a : ℂ)) +
-        ‖c a‖ ^ 2 = 1) :
+        ‖c a‖ ^ (2 : ℕ) = 1) :
     RiemannHypothesis := by
   have hdefect : xiWardBoundaryPhaseDefect (1 / 2 : ℂ) =
-      fun a : ℝ => ‖c a‖ ^ 2 := by
+      fun a : ℝ => ‖c a‖ ^ (2 : ℕ) := by
     funext a
     rw [xiWardBoundaryPhaseDefect]
     linarith [hunit a]
-  have hcNorm : HasDerivAt (fun a : ℝ => ‖c a‖ ^ 2) 0 0 := by
+  have hcNorm : HasDerivAt (fun a : ℝ => ‖c a‖ ^ (2 : ℕ)) 0 0 := by
     have h := hc.norm_sq
     rw [hc0, inner_zero_left, mul_zero] at h
     exact h
@@ -95,7 +95,7 @@ theorem no_hasDerivAt_scalarXiPhase_unitaryDefect_of_not_rh
       Complex.normSq
           (xiRightWardBoundarySourcePhaseCrossRatio
             (I * (1 / 2 : ℂ)) (a : ℂ)) +
-        ‖c a‖ ^ 2 = 1) :
+        ‖c a‖ ^ (2 : ℕ) = 1) :
     ∀ c' : F, ¬ HasDerivAt c c' 0 := by
   intro c' hc
   exact hRH

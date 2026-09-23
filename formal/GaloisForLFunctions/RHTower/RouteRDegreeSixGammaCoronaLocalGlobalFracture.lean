@@ -27,8 +27,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
-    DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
+noncomputable local instance routeRDegreeSixGammaCoronaLocalGlobalFractureInst1 : DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 
 /-! ## Exact degree-six / Gamma value comparison -/

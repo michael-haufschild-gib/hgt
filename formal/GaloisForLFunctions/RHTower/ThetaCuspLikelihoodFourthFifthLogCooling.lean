@@ -29,9 +29,9 @@ noncomputable section
 open MeasureTheory Set
 
 def thetaCuspLikelihoodFourthFifthDominantReservePolynomial (A : ℝ) : ℝ :=
-  27648 * A ^ 9 - 266976 * A ^ 8 + 1120128 * A ^ 7 -
-    2666128 * A ^ 6 + 3891600 * A ^ 5 - 3546654 * A ^ 4 +
-    1938420 * A ^ 3 - 573156 * A ^ 2 + 68850 * A - 1215
+  27648 * A ^ (9 : ℕ) - 266976 * A ^ (8 : ℕ) + 1120128 * A ^ (7 : ℕ) -
+    2666128 * A ^ (6 : ℕ) + 3891600 * A ^ (5 : ℕ) - 3546654 * A ^ (4 : ℕ) +
+    1938420 * A ^ (3 : ℕ) - 573156 * A ^ (2 : ℕ) + 68850 * A - 1215
 
 theorem thetaCuspLikelihoodFourthFifthDominantReservePolynomial_pos
     {A : ℝ} (hA : 6 ≤ A) :
@@ -49,27 +49,27 @@ def thetaCuspLikelihoodDominantOrdinaryCoolingReserve (A : ℝ) : ℝ :=
   let M := fun q : ℕ =>
     (∫ t : ℝ, t ^ q * Real.exp (-(B * t))
       ∂thetaCuspAtomLikelihoodSpectralMeasure 2)
-  (-A ^ 5 * M 5 + (3 * A ^ 5 + 10 * A ^ 4) * M 4 -
-    (18 * A ^ 4 + 25 * A ^ 3) * M 3 +
-    (21 * A ^ 3 + 15 * A ^ 2) * M 2 -
-    (3 * A ^ 2 + A) * M 1)
+  (-A ^ (5 : ℕ) * M 5 + (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * M 4 -
+    (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * M 3 +
+    (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * M 2 -
+    (3 * A ^ (2 : ℕ) + A) * M 1)
 
 theorem thetaCuspLikelihoodDominantOrdinaryCoolingReserve_eq
     {A : ℝ} (hA : 6 ≤ A) :
     thetaCuspLikelihoodDominantOrdinaryCoolingReserve A =
       Real.exp (-3 * A) *
         (12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A /
-          (2 * A - 3) ^ 6) := by
+          (2 * A - 3) ^ (6 : ℕ)) := by
   have hB : 0 < A - 3 / 2 := by linarith
   have hBne : A - 3 / 2 ≠ 0 := ne_of_gt hB
   have hden : 2 * A - 3 ≠ 0 := by linarith
-  have hdenpow : (2 * A - 3) ^ 6 ≠ 0 := pow_ne_zero 6 hden
+  have hdenpow : (2 * A - 3) ^ (6 : ℕ) ≠ 0 := pow_ne_zero 6 hden
   rw [show Real.exp (-3 * A) *
       (12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A /
-        (2 * A - 3) ^ 6) =
+        (2 * A - 3) ^ (6 : ℕ)) =
       (Real.exp (-3 * A) *
         (12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A)) /
-          (2 * A - 3) ^ 6 by ring]
+          (2 * A - 3) ^ (6 : ℕ) by ring]
   apply (eq_div_iff hdenpow).2
   unfold thetaCuspLikelihoodDominantOrdinaryCoolingReserve
   dsimp only
@@ -106,15 +106,15 @@ theorem thetaCuspLikelihoodDominantOrdinaryCoolingReserve_pos
   rw [thetaCuspLikelihoodDominantOrdinaryCoolingReserve_eq hA]
   have hpoly := thetaCuspLikelihoodFourthFifthDominantReservePolynomial_pos hA
   have hA0 : 0 < A := by linarith
-  have hden : 0 < (2 * A - 3) ^ 6 := pow_pos (by linarith) 6
+  have hden : 0 < (2 * A - 3) ^ (6 : ℕ) := pow_pos (by linarith) 6
   positivity
 
 theorem threeThousandTwentyFour_mul_pow_four_lt_dominantCoolingCore
     {A : ℝ} (hA : 6 ≤ A) :
-    3024 * A ^ 4 <
+    3024 * A ^ (4 : ℕ) <
       12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A /
-        (2 * A - 3) ^ 6 := by
-  have hden : 0 < (2 * A - 3) ^ 6 := pow_pos (by linarith) 6
+        (2 * A - 3) ^ (6 : ℕ) := by
+  have hden : 0 < (2 * A - 3) ^ (6 : ℕ) := pow_pos (by linarith) 6
   apply (lt_div_iff₀ hden).2
   let y := A - 6
   have hy : 0 ≤ y := by dsimp only [y]; linarith
@@ -126,10 +126,10 @@ theorem threeThousandTwentyFour_mul_pow_four_lt_dominantCoolingCore
 
 theorem fourThousandThirtyTwo_mul_pow_four_lt_dominantCoolingCore
     {A : ℝ} (hA : 6 ≤ A) :
-    4032 * A ^ 4 <
+    4032 * A ^ (4 : ℕ) <
       12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A /
-        (2 * A - 3) ^ 6 := by
-  have hden : 0 < (2 * A - 3) ^ 6 := pow_pos (by linarith) 6
+        (2 * A - 3) ^ (6 : ℕ) := by
+  have hden : 0 < (2 * A - 3) ^ (6 : ℕ) := pow_pos (by linarith) 6
   apply (lt_div_iff₀ hden).2
   let y := A - 6
   have hy : 0 ≤ y := by dsimp only [y]; linarith
@@ -141,13 +141,13 @@ theorem fourThousandThirtyTwo_mul_pow_four_lt_dominantCoolingCore
 
 theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
     {A : ℝ} (hA : 6 ≤ A) :
-    A ^ 4 * thetaCuspLikelihoodStableShiftedEighthTail A < 756 := by
+    A ^ (4 : ℕ) * thetaCuspLikelihoodStableShiftedEighthTail A < 756 := by
   have hApi : Real.pi ≤ A := by nlinarith [Real.pi_lt_four]
   have hdelta : 0 ≤ A - Real.pi := sub_nonneg.mpr hApi
   have hexpTen : Real.exp (-10) < (1 / 1000 : ℝ) := by
     have he1 : (2 : ℝ) < Real.exp 1 := by nlinarith [Real.exp_one_gt_d9]
     have hten : (1000 : ℝ) < Real.exp 10 := by
-      have hp : (2 : ℝ) ^ 10 < Real.exp 1 ^ 10 :=
+      have hp : (2 : ℝ) ^ (10 : ℕ) < Real.exp 1 ^ (10 : ℕ) :=
         pow_lt_pow_left₀ he1 (by norm_num) (by norm_num)
       rw [← Real.exp_nat_mul] at hp
       norm_num at hp
@@ -165,15 +165,15 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
     simpa only [add_comm] using Real.add_one_le_exp (s / 6)
   have hone0 : 0 ≤ 1 + s / 6 := by positivity
   have hpow := pow_le_pow_left₀ hone0 hone 4
-  have hexppow : Real.exp (s / 6) ^ 4 = Real.exp (2 * s / 3) := by
-    rw [show Real.exp (s / 6) ^ 4 =
+  have hexppow : Real.exp (s / 6) ^ (4 : ℕ) = Real.exp (2 * s / 3) := by
+    rw [show Real.exp (s / 6) ^ (4 : ℕ) =
         Real.exp (s / 6) * Real.exp (s / 6) *
           Real.exp (s / 6) * Real.exp (s / 6) by ring,
       ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   rw [hexppow] at hpow
-  have hscale : A ^ 4 * Real.exp (-5 * (A - 6)) ≤ 6 ^ 4 := by
+  have hscale : A ^ (4 : ℕ) * Real.exp (-5 * (A - 6)) ≤ 6 ^ (4 : ℕ) := by
     have hAeq : A = 6 * (1 + s / 6) := by dsimp only [s]; ring
     have hcombine : Real.exp (2 * s / 3) * Real.exp (-5 * s) =
         Real.exp (-13 * s / 3) := by
@@ -186,27 +186,27 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
     rw [hAeq, mul_pow,
       show -5 * (6 * (1 + s / 6) - 6) = -5 * s by ring]
     calc
-      (6 : ℝ) ^ 4 * (1 + s / 6) ^ 4 * Real.exp (-5 * s) ≤
-          6 ^ 4 * Real.exp (2 * s / 3) * Real.exp (-5 * s) := by gcongr
-      _ = 6 ^ 4 * (Real.exp (2 * s / 3) * Real.exp (-5 * s)) := by ring
-      _ = 6 ^ 4 * Real.exp (-13 * s / 3) := by rw [hcombine]
-      _ ≤ 6 ^ 4 := by nlinarith [show (0 : ℝ) ≤ 6 ^ 4 by positivity]
+      (6 : ℝ) ^ (4 : ℕ) * (1 + s / 6) ^ (4 : ℕ) * Real.exp (-5 * s) ≤
+          6 ^ (4 : ℕ) * Real.exp (2 * s / 3) * Real.exp (-5 * s) := by gcongr
+      _ = 6 ^ (4 : ℕ) * (Real.exp (2 * s / 3) * Real.exp (-5 * s)) := by ring
+      _ = 6 ^ (4 : ℕ) * Real.exp (-13 * s / 3) := by rw [hcombine]
+      _ ≤ 6 ^ (4 : ℕ) := by nlinarith [show (0 : ℝ) ≤ 6 ^ (4 : ℕ) by positivity]
   have hfactor :
-      A ^ 4 * Real.exp (-5 * (A - Real.pi)) < (1296 / 1000 : ℝ) := by
+      A ^ (4 : ℕ) * Real.exp (-5 * (A - Real.pi)) < (1296 / 1000 : ℝ) := by
     have hsplit : Real.exp (-5 * (A - Real.pi)) =
         Real.exp (-5 * (A - 6)) * Real.exp (-5 * (6 - Real.pi)) := by
       rw [← Real.exp_add]
       congr 1
       ring
     rw [hsplit]
-    have hpositive : 0 < A ^ 4 * Real.exp (-5 * (A - 6)) := by positivity
+    have hpositive : 0 < A ^ (4 : ℕ) * Real.exp (-5 * (A - 6)) := by positivity
     have hmul := mul_lt_mul_of_pos_left hedge hpositive
     nlinarith
   have hterm : ∀ k : ℕ,
-      ((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
           Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3))) ≤
         Real.exp (-5 * (A - Real.pi)) *
-          (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
             Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) := by
     intro k
     let g := thetaCuspLikelihoodGap (k + 3) - 3
@@ -225,10 +225,10 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
     dsimp only [g] at hsplit ⊢
     rw [hsplit]
     calc
-      _ = (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      _ = (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
           Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) *
             Real.exp (-(A - Real.pi) * (thetaCuspLikelihoodGap (k + 3) - 3)) := by ring
-      _ ≤ (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      _ ≤ (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
           Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) *
             Real.exp (-5 * (A - Real.pi)) :=
         mul_le_mul_of_nonneg_left hexp (by positivity)
@@ -237,7 +237,7 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
   have hsPi := summable_thetaCuspLikelihoodStableShiftedEighthTail (le_refl Real.pi)
   have hsMajor := hsPi.mul_left (Real.exp (-5 * (A - Real.pi)))
   have hsMajor' : Summable (fun k : ℕ => Real.exp (-5 * (A - Real.pi)) *
-      (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
         Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)))) := by
     simpa only [neg_mul] using hsMajor
   have htail : thetaCuspLikelihoodStableShiftedEighthTail A ≤
@@ -246,7 +246,7 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
     unfold thetaCuspLikelihoodStableShiftedEighthTail
     calc
       _ ≤ ∑' k : ℕ, Real.exp (-5 * (A - Real.pi)) *
-          (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
             Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) :=
         Summable.tsum_le_tsum hterm hsA hsMajor'
       _ = _ := by
@@ -257,28 +257,28 @@ theorem pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt
         congr 1
         ring
   have htailPi := thetaCuspLikelihoodStableShiftedEighthTail_le (le_refl Real.pi)
-  have hbound : A ^ 4 * thetaCuspLikelihoodStableShiftedEighthTail A ≤
-      (A ^ 4 * Real.exp (-5 * (A - Real.pi))) * 583 := by
-    have hfirst := mul_le_mul_of_nonneg_left htail (by positivity : 0 ≤ A ^ 4)
+  have hbound : A ^ (4 : ℕ) * thetaCuspLikelihoodStableShiftedEighthTail A ≤
+      (A ^ (4 : ℕ) * Real.exp (-5 * (A - Real.pi))) * 583 := by
+    have hfirst := mul_le_mul_of_nonneg_left htail (by positivity : 0 ≤ A ^ (4 : ℕ))
     have hsecond := mul_le_mul_of_nonneg_left htailPi
-      (by positivity : 0 ≤ A ^ 4 * Real.exp (-5 * (A - Real.pi)))
+      (by positivity : 0 ≤ A ^ (4 : ℕ) * Real.exp (-5 * (A - Real.pi)))
     calc
-      _ ≤ A ^ 4 * (Real.exp (-5 * (A - Real.pi)) *
+      _ ≤ A ^ (4 : ℕ) * (Real.exp (-5 * (A - Real.pi)) *
           thetaCuspLikelihoodStableShiftedEighthTail Real.pi) := hfirst
-      _ = (A ^ 4 * Real.exp (-5 * (A - Real.pi))) *
+      _ = (A ^ (4 : ℕ) * Real.exp (-5 * (A - Real.pi))) *
           thetaCuspLikelihoodStableShiftedEighthTail Real.pi := by ring
-      _ ≤ (A ^ 4 * Real.exp (-5 * (A - Real.pi))) * 583 := hsecond
+      _ ≤ (A ^ (4 : ℕ) * Real.exp (-5 * (A - Real.pi))) * 583 := hsecond
   have hfinal := mul_lt_mul_of_pos_right hfactor (by norm_num : (0 : ℝ) < 583)
   nlinarith
 
 /-- One-particle score for the derivative of `exp (3A) F₄`. -/
 def thetaCuspLikelihoodFourthFifthCoolingScore (A t : ℝ) : ℝ :=
-  -A ^ 5 * t ^ 5 + (3 * A ^ 5 + 10 * A ^ 4) * t ^ 4 -
-    (18 * A ^ 4 + 25 * A ^ 3) * t ^ 3 +
-    (21 * A ^ 3 + 15 * A ^ 2) * t ^ 2 - (3 * A ^ 2 + A) * t
+  -A ^ (5 : ℕ) * t ^ (5 : ℕ) + (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * t ^ (4 : ℕ) -
+    (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * t ^ (3 : ℕ) +
+    (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * t ^ (2 : ℕ) - (3 * A ^ (2 : ℕ) + A) * t
 
 private theorem cooling_negative_envelope {z : ℝ} (hz : 48 ≤ z) :
-    z ^ 5 + (18 * z + 25) * z ^ 3 + (3 * z + 1) * z ≤ z ^ 8 := by
+    z ^ (5 : ℕ) + (18 * z + 25) * z ^ (3 : ℕ) + (3 * z + 1) * z ≤ z ^ (8 : ℕ) := by
   let y := z - 48
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   apply sub_nonneg.mp
@@ -288,7 +288,7 @@ private theorem cooling_negative_envelope {z : ℝ} (hz : 48 ≤ z) :
 
 theorem neg_pow_eight_le_thetaCuspLikelihoodFourthFifthCoolingScore
     {A t : ℝ} (hA : 6 ≤ A) (ht : 8 ≤ t) :
-    -(A * t) ^ 8 ≤ thetaCuspLikelihoodFourthFifthCoolingScore A t := by
+    -(A * t) ^ (8 : ℕ) ≤ thetaCuspLikelihoodFourthFifthCoolingScore A t := by
   let z := A * t
   have hA0 : 0 ≤ A := by linarith
   have ht1 : 1 ≤ t := by linarith
@@ -297,23 +297,23 @@ theorem neg_pow_eight_le_thetaCuspLikelihoodFourthFifthCoolingScore
   have hAz : A ≤ z := by
     dsimp only [z]
     nlinarith [mul_le_mul_of_nonneg_left ht1 hA0]
-  have h3 : (18 * A + 25) * z ^ 3 ≤ (18 * z + 25) * z ^ 3 := by gcongr
+  have h3 : (18 * A + 25) * z ^ (3 : ℕ) ≤ (18 * z + 25) * z ^ (3 : ℕ) := by gcongr
   have h1 : (3 * A + 1) * z ≤ (3 * z + 1) * z := by gcongr
   have henv := cooling_negative_envelope hz
   have hdrop :
-      -z ^ 5 - (18 * A + 25) * z ^ 3 - (3 * A + 1) * z ≤
+      -z ^ (5 : ℕ) - (18 * A + 25) * z ^ (3 : ℕ) - (3 * A + 1) * z ≤
         thetaCuspLikelihoodFourthFifthCoolingScore A t := by
     dsimp only [thetaCuspLikelihoodFourthFifthCoolingScore, z]
-    have hp4 : 0 ≤ (3 * A + 10) * (A * t) ^ 4 := by positivity
-    have hp2 : 0 ≤ (21 * A + 15) * (A * t) ^ 2 := by positivity
+    have hp4 : 0 ≤ (3 * A + 10) * (A * t) ^ (4 : ℕ) := by positivity
+    have hp2 : 0 ≤ (21 * A + 15) * (A * t) ^ (2 : ℕ) := by positivity
     nlinarith [show
-      -A ^ 5 * t ^ 5 + (3 * A ^ 5 + 10 * A ^ 4) * t ^ 4 -
-          (18 * A ^ 4 + 25 * A ^ 3) * t ^ 3 +
-          (21 * A ^ 3 + 15 * A ^ 2) * t ^ 2 - (3 * A ^ 2 + A) * t =
-        -(A * t) ^ 5 + (3 * A + 10) * (A * t) ^ 4 -
-          (18 * A + 25) * (A * t) ^ 3 +
-          (21 * A + 15) * (A * t) ^ 2 - (3 * A + 1) * (A * t) by ring]
-  have hneg : -z ^ 8 ≤ -z ^ 5 - (18 * A + 25) * z ^ 3 - (3 * A + 1) * z := by
+      -A ^ (5 : ℕ) * t ^ (5 : ℕ) + (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * t ^ (4 : ℕ) -
+          (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * t ^ (3 : ℕ) +
+          (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * t ^ (2 : ℕ) - (3 * A ^ (2 : ℕ) + A) * t =
+        -(A * t) ^ (5 : ℕ) + (3 * A + 10) * (A * t) ^ (4 : ℕ) -
+          (18 * A + 25) * (A * t) ^ (3 : ℕ) +
+          (21 * A + 15) * (A * t) ^ (2 : ℕ) - (3 * A + 1) * (A * t) by ring]
+  have hneg : -z ^ (8 : ℕ) ≤ -z ^ (5 : ℕ) - (18 * A + 25) * z ^ (3 : ℕ) - (3 * A + 1) * z := by
     nlinarith
   simpa only [z] using hneg.trans hdrop
 
@@ -334,15 +334,15 @@ private theorem integrable_thetaCuspLikelihoodFourthFifthCoolingScore_mul_exp
     Integrable (fun t : ℝ =>
       thetaCuspLikelihoodFourthFifthCoolingScore A t * Real.exp (-(B * t)))
       thetaCuspHigherLikelihoodSpectralMeasure := by
-  have h5 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 5 hB).const_mul (-A ^ 5)
+  have h5 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 5 hB).const_mul (-A ^ (5 : ℕ))
   have h4 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul
-    (3 * A ^ 5 + 10 * A ^ 4)
+    (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ))
   have h3 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).const_mul
-    (18 * A ^ 4 + 25 * A ^ 3)
+    (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ))
   have h2 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).const_mul
-    (21 * A ^ 3 + 15 * A ^ 2)
+    (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).const_mul
-    (3 * A ^ 2 + A)
+    (3 * A ^ (2 : ℕ) + A)
   convert (((h5.add h4).sub h3).add h2).sub h1 using 1
   funext t
   simp only [Pi.add_apply, Pi.sub_apply]
@@ -375,9 +375,9 @@ theorem neg_atomEighthMonomialMass_le_atomFourthFifthCoolingMass
   have hae := ae_gap_le_thetaCuspAtomLikelihoodSpectralMeasure (show 2 ≤ n by omega)
   have hcool := integrable_atom_fourthFifthCooling (show 2 ≤ n by omega) A hB
   have heighth : Integrable (fun t : ℝ =>
-      (A * t) ^ 8 * Real.exp (-(B * t)))
+      (A * t) ^ (8 : ℕ) * Real.exp (-(B * t)))
       (thetaCuspAtomLikelihoodSpectralMeasure n) := by
-    have hfull := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 8 hB).const_mul (A ^ 8)
+    have hfull := (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 8 hB).const_mul (A ^ (8 : ℕ))
     have hnEq : n - 2 + 2 = n := by omega
     rw [← hnEq]
     convert hfull.mono_measure (Measure.le_sum _ (n - 2)) using 1
@@ -390,8 +390,8 @@ theorem neg_atomEighthMonomialMass_le_atomFourthFifthCoolingMass
   have hscore := neg_pow_eight_le_thetaCuspLikelihoodFourthFifthCoolingScore hA (hd.trans ht)
   simp only [Pi.neg_apply]
   calc
-    -((A * t) ^ 8 * Real.exp (-(B * t))) =
-        (-(A * t) ^ 8) * Real.exp (-(B * t)) := by ring
+    -((A * t) ^ (8 : ℕ) * Real.exp (-(B * t))) =
+        (-(A * t) ^ (8 : ℕ)) * Real.exp (-(B * t)) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_right hscore (Real.exp_pos (-(B * t))).le
 
 theorem thetaCuspLikelihoodAtomFourthFifthCoolingMass_two_eq_dominantReserve
@@ -405,26 +405,26 @@ theorem thetaCuspLikelihoodAtomFourthFifthCoolingMass_two_eq_dominantReserve
     simpa only [Nat.zero_add, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure q hB).mono_measure
         (Measure.le_sum (fun k : ℕ => thetaCuspAtomLikelihoodSpectralMeasure (k + 2)) 0)
-  let f5 : ℝ → ℝ := fun t => (-A ^ 5) *
-    (t ^ 5 * Real.exp (-((A - 3 / 2) * t)))
-  let f4 : ℝ → ℝ := fun t => (3 * A ^ 5 + 10 * A ^ 4) *
-    (t ^ 4 * Real.exp (-((A - 3 / 2) * t)))
-  let f3 : ℝ → ℝ := fun t => (18 * A ^ 4 + 25 * A ^ 3) *
-    (t ^ 3 * Real.exp (-((A - 3 / 2) * t)))
-  let f2 : ℝ → ℝ := fun t => (21 * A ^ 3 + 15 * A ^ 2) *
-    (t ^ 2 * Real.exp (-((A - 3 / 2) * t)))
-  let f1 : ℝ → ℝ := fun t => (3 * A ^ 2 + A) *
-    (t ^ 1 * Real.exp (-((A - 3 / 2) * t)))
+  let f5 : ℝ → ℝ := fun t => (-A ^ (5 : ℕ)) *
+    (t ^ (5 : ℕ) * Real.exp (-((A - 3 / 2) * t)))
+  let f4 : ℝ → ℝ := fun t => (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) *
+    (t ^ (4 : ℕ) * Real.exp (-((A - 3 / 2) * t)))
+  let f3 : ℝ → ℝ := fun t => (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) *
+    (t ^ (3 : ℕ) * Real.exp (-((A - 3 / 2) * t)))
+  let f2 : ℝ → ℝ := fun t => (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) *
+    (t ^ (2 : ℕ) * Real.exp (-((A - 3 / 2) * t)))
+  let f1 : ℝ → ℝ := fun t => (3 * A ^ (2 : ℕ) + A) *
+    (t ^ (1 : ℕ) * Real.exp (-((A - 3 / 2) * t)))
   have h5 : Integrable f5 (thetaCuspAtomLikelihoodSpectralMeasure 2) :=
-    (hq 5).const_mul (-A ^ 5)
+    (hq 5).const_mul (-A ^ (5 : ℕ))
   have h4 : Integrable f4 (thetaCuspAtomLikelihoodSpectralMeasure 2) :=
-    (hq 4).const_mul (3 * A ^ 5 + 10 * A ^ 4)
+    (hq 4).const_mul (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ))
   have h3 : Integrable f3 (thetaCuspAtomLikelihoodSpectralMeasure 2) :=
-    (hq 3).const_mul (18 * A ^ 4 + 25 * A ^ 3)
+    (hq 3).const_mul (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ))
   have h2 : Integrable f2 (thetaCuspAtomLikelihoodSpectralMeasure 2) :=
-    (hq 2).const_mul (21 * A ^ 3 + 15 * A ^ 2)
+    (hq 2).const_mul (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ))
   have h1 : Integrable f1 (thetaCuspAtomLikelihoodSpectralMeasure 2) :=
-    (hq 1).const_mul (3 * A ^ 2 + A)
+    (hq 1).const_mul (3 * A ^ (2 : ℕ) + A)
   unfold thetaCuspLikelihoodAtomFourthFifthCoolingMass
     thetaCuspLikelihoodDominantOrdinaryCoolingReserve
   dsimp only
@@ -443,7 +443,7 @@ theorem thetaCuspLikelihoodAtomFourthFifthCoolingMass_two_eq_dominantReserve
 theorem thetaCuspLikelihoodStableEighthMonomialMassTail_lt_coolingFloor
     {A B : ℝ} (hA : 6 ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodStableEighthMonomialMassTail A B <
-      3024 * A ^ 4 * Real.exp (-(3 * A)) := by
+      3024 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) := by
   have hApi : Real.pi ≤ A := by nlinarith [Real.pi_lt_four]
   have hB : 0 < B := by rw [hBA]; linarith
   have hsAll := summable_thetaCuspLikelihoodAtomEighthMonomialMass A hB
@@ -451,11 +451,11 @@ theorem thetaCuspLikelihoodStableEighthMonomialMassTail_lt_coolingFloor
       thetaCuspLikelihoodAtomEighthMonomialMass (k + 3) A B) := by
     simpa only [Nat.add_assoc] using (summable_nat_add_iff 1).2 hsAll
   have hshift := summable_thetaCuspLikelihoodStableShiftedEighthTail hApi
-  have hmajor := hshift.mul_left (4 * A ^ 8 * Real.exp (-(3 * A)))
+  have hmajor := hshift.mul_left (4 * A ^ (8 : ℕ) * Real.exp (-(3 * A)))
   have hpoint : ∀ k : ℕ,
       thetaCuspLikelihoodAtomEighthMonomialMass (k + 3) A B ≤
-        4 * A ^ 8 * Real.exp (-(3 * A)) *
-          (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+        4 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
             Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))) := by
     intro k
     have hm := thetaCuspLikelihoodStableAtomEighthMonomialMass_le
@@ -469,25 +469,25 @@ theorem thetaCuspLikelihoodStableEighthMonomialMassTail_lt_coolingFloor
     rw [hexp] at hm
     nlinarith
   have hsum : thetaCuspLikelihoodStableEighthMonomialMassTail A B ≤
-      (4 * A ^ 8 * Real.exp (-(3 * A))) *
+      (4 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) *
         thetaCuspLikelihoodStableShiftedEighthTail A := by
     unfold thetaCuspLikelihoodStableEighthMonomialMassTail
     calc
-      _ ≤ ∑' k : ℕ, 4 * A ^ 8 * Real.exp (-(3 * A)) *
-          (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      _ ≤ ∑' k : ℕ, 4 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
             Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))) :=
         Summable.tsum_le_tsum hpoint hs hmajor
       _ = _ := by
         unfold thetaCuspLikelihoodStableShiftedEighthTail
         rw [tsum_mul_left]
   have hrefined := pow_four_mul_thetaCuspLikelihoodStableShiftedEighthTail_lt hA
-  have hpos : 0 < 4 * A ^ 4 * Real.exp (-(3 * A)) := by positivity
+  have hpos : 0 < 4 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) := by positivity
   have hscaled := mul_lt_mul_of_pos_left hrefined hpos
   nlinarith [show
-    (4 * A ^ 8 * Real.exp (-(3 * A))) *
+    (4 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) *
         thetaCuspLikelihoodStableShiftedEighthTail A =
-      (4 * A ^ 4 * Real.exp (-(3 * A))) *
-        (A ^ 4 * thetaCuspLikelihoodStableShiftedEighthTail A) by ring]
+      (4 * A ^ (4 : ℕ) * Real.exp (-(3 * A))) *
+        (A ^ (4 : ℕ) * thetaCuspLikelihoodStableShiftedEighthTail A) by ring]
 
 theorem summable_thetaCuspLikelihoodAtomFourthFifthCoolingMass
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
@@ -514,7 +514,7 @@ theorem integral_thetaCuspLikelihoodFourthFifthCoolingScore_eq_tsum
 
 theorem oneThousandEight_mul_pow_four_mul_exp_lt_integral_coolingScore
     {A B : ℝ} (hA : 6 ≤ A) (hBA : B = A - 3 / 2) :
-    1008 * A ^ 4 * Real.exp (-(3 * A)) <
+    1008 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) <
       ∫ t : ℝ, thetaCuspLikelihoodFourthFifthCoolingScore A t *
       Real.exp (-(B * t)) ∂thetaCuspHigherLikelihoodSpectralMeasure := by
   have hB : 0 < B := by rw [hBA]; linarith
@@ -537,20 +537,20 @@ theorem oneThousandEight_mul_pow_four_mul_exp_lt_integral_coolingScore
   have heighth := thetaCuspLikelihoodStableEighthMonomialMassTail_lt_coolingFloor hA hBA
   have hcore := fourThousandThirtyTwo_mul_pow_four_lt_dominantCoolingCore hA
   have hcoreScaled := mul_lt_mul_of_pos_left hcore (Real.exp_pos (-3 * A))
-  have hdom : 4032 * A ^ 4 * Real.exp (-(3 * A)) <
+  have hdom : 4032 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) <
       thetaCuspLikelihoodAtomFourthFifthCoolingMass 2 A B := by
     rw [hBA,
       thetaCuspLikelihoodAtomFourthFifthCoolingMass_two_eq_dominantReserve hA,
       thetaCuspLikelihoodDominantOrdinaryCoolingReserve_eq hA]
     calc
-      4032 * A ^ 4 * Real.exp (-(3 * A)) =
-          Real.exp (-3 * A) * (4032 * A ^ 4) := by ring
+      4032 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) =
+          Real.exp (-3 * A) * (4032 * A ^ (4 : ℕ)) := by ring
       _ < Real.exp (-3 * A) *
           (12 * A * thetaCuspLikelihoodFourthFifthDominantReservePolynomial A /
-            (2 * A - 3) ^ 6) := hcoreScaled
+            (2 * A - 3) ^ (6 : ℕ)) := hcoreScaled
   rw [integral_thetaCuspLikelihoodFourthFifthCoolingScore_eq_tsum A hB,
     hs.tsum_eq_zero_add]
-  change 1008 * A ^ 4 * Real.exp (-(3 * A)) <
+  change 1008 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) <
     thetaCuspLikelihoodAtomFourthFifthCoolingMass 2 A B +
     ∑' k : ℕ, thetaCuspLikelihoodAtomFourthFifthCoolingMass (k + 3) A B
   change -thetaCuspLikelihoodStableEighthMonomialMassTail A B ≤
@@ -562,7 +562,7 @@ theorem integral_thetaCuspLikelihoodFourthFifthCoolingScore_pos
     0 < ∫ t : ℝ, thetaCuspLikelihoodFourthFifthCoolingScore A t *
       Real.exp (-(B * t)) ∂thetaCuspHigherLikelihoodSpectralMeasure := by
   have h := oneThousandEight_mul_pow_four_mul_exp_lt_integral_coolingScore hA hBA
-  have hfloor : 0 < 1008 * A ^ 4 * Real.exp (-(3 * A)) := by
+  have hfloor : 0 < 1008 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) := by
     have hA0 : 0 < A := by linarith
     positivity
   linarith
@@ -571,40 +571,40 @@ private theorem integral_thetaCuspLikelihoodFourthFifthCoolingScore_eq_moments
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaCuspLikelihoodFourthFifthCoolingScore A t * Real.exp (-(B * t))
       ∂thetaCuspHigherLikelihoodSpectralMeasure) =
-      -A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-        (3 * A ^ 5 + 10 * A ^ 4) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        (18 * A ^ 4 + 25 * A ^ 3) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        (21 * A ^ 3 + 15 * A ^ 2) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
-        (3 * A ^ 2 + A) * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  let f5 : ℝ → ℝ := fun t => (-A ^ 5) * (t ^ 5 * Real.exp (-(B * t)))
-  let f4 : ℝ → ℝ := fun t => (3 * A ^ 5 + 10 * A ^ 4) *
-    (t ^ 4 * Real.exp (-(B * t)))
-  let f3 : ℝ → ℝ := fun t => (18 * A ^ 4 + 25 * A ^ 3) *
-    (t ^ 3 * Real.exp (-(B * t)))
-  let f2 : ℝ → ℝ := fun t => (21 * A ^ 3 + 15 * A ^ 2) *
-    (t ^ 2 * Real.exp (-(B * t)))
-  let f1 : ℝ → ℝ := fun t => (3 * A ^ 2 + A) *
-    (t ^ 1 * Real.exp (-(B * t)))
+      -A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+        (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+        (3 * A ^ (2 : ℕ) + A) * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
+  let f5 : ℝ → ℝ := fun t => (-A ^ (5 : ℕ)) * (t ^ (5 : ℕ) * Real.exp (-(B * t)))
+  let f4 : ℝ → ℝ := fun t => (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) *
+    (t ^ (4 : ℕ) * Real.exp (-(B * t)))
+  let f3 : ℝ → ℝ := fun t => (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) *
+    (t ^ (3 : ℕ) * Real.exp (-(B * t)))
+  let f2 : ℝ → ℝ := fun t => (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) *
+    (t ^ (2 : ℕ) * Real.exp (-(B * t)))
+  let f1 : ℝ → ℝ := fun t => (3 * A ^ (2 : ℕ) + A) *
+    (t ^ (1 : ℕ) * Real.exp (-(B * t)))
   have h5 : Integrable f5 thetaCuspHigherLikelihoodSpectralMeasure := by
     simpa only [f5, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 5 hB).const_mul
-        (-A ^ 5)
+        (-A ^ (5 : ℕ))
   have h4 : Integrable f4 thetaCuspHigherLikelihoodSpectralMeasure := by
     simpa only [f4, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul
-        (3 * A ^ 5 + 10 * A ^ 4)
+        (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ))
   have h3 : Integrable f3 thetaCuspHigherLikelihoodSpectralMeasure := by
     simpa only [f3, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).const_mul
-        (18 * A ^ 4 + 25 * A ^ 3)
+        (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ))
   have h2 : Integrable f2 thetaCuspHigherLikelihoodSpectralMeasure := by
     simpa only [f2, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).const_mul
-        (21 * A ^ 3 + 15 * A ^ 2)
+        (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ))
   have h1 : Integrable f1 thetaCuspHigherLikelihoodSpectralMeasure := by
     simpa only [f1, neg_mul] using
       (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).const_mul
-        (3 * A ^ 2 + A)
+        (3 * A ^ (2 : ℕ) + A)
   rw [show (fun t : ℝ => thetaCuspLikelihoodFourthFifthCoolingScore A t *
       Real.exp (-(B * t))) = (((f5 + f4) - f3) + f2) - f1 by
     funext t
@@ -622,19 +622,19 @@ private theorem integral_thetaCuspLikelihoodFourthFifthCoolingScore_eq_moments
 private theorem fourthFifthCooling_normalization
     (A P M1 M2 M3 M4 M5 : ℝ) :
     (32 / P) *
-        (-A ^ 5 * M5 +
-          (3 * A ^ 5 + 10 * A ^ 4) * M4 -
-          (18 * A ^ 4 + 25 * A ^ 3) * M3 +
-          (21 * A ^ 3 + 15 * A ^ 2) * M2 -
-          (3 * A ^ 2 + A) * M1) =
-      -32 * (A ^ 5 * (M5 / P) -
-        10 * A ^ 4 * (M4 / P) +
-        25 * A ^ 3 * (M3 / P) -
-        15 * A ^ 2 * (M2 / P) +
+        (-A ^ (5 : ℕ) * M5 +
+          (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * M4 -
+          (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * M3 +
+          (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * M2 -
+          (3 * A ^ (2 : ℕ) + A) * M1) =
+      -32 * (A ^ (5 : ℕ) * (M5 / P) -
+        10 * A ^ (4 : ℕ) * (M4 / P) +
+        25 * A ^ (3 : ℕ) * (M3 / P) -
+        15 * A ^ (2 : ℕ) * (M2 / P) +
         A * (M1 / P)) +
-      6 * A * (16 * (A ^ 4 * (M4 / P) -
-        6 * A ^ 3 * (M3 / P) +
-        7 * A ^ 2 * (M2 / P) -
+      6 * A * (16 * (A ^ (4 : ℕ) * (M4 / P) -
+        6 * A ^ (3 : ℕ) * (M3 / P) +
+        7 * A ^ (2 : ℕ) * (M2 / P) -
         A * (M1 / P))) := by
   ring
 
@@ -661,30 +661,30 @@ theorem thetaCuspLikelihoodEighthBellJetFive_lt_six_mul_scale_mul_ordinaryJetFou
   unfold thetaCuspLikelihoodNormalizedMoment thetaCuspLikelihoodMean
   have hscaled := mul_pos (div_pos (by norm_num : (0 : ℝ) < 32) hP) hint
   change
-    32 * (A ^ 5 * (thetaCuspHigherLikelihoodSpectralMoment B 5 / P) -
-        10 * A ^ 4 * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) +
-        25 * A ^ 3 * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) -
-        15 * A ^ 2 * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) +
+    32 * (A ^ (5 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 5 / P) -
+        10 * A ^ (4 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) +
+        25 * A ^ (3 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) -
+        15 * A ^ (2 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) +
         A * (thetaCuspHigherLikelihoodSpectralMoment B 1 / P)) <
-      6 * A * (16 * (A ^ 4 * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) -
-        6 * A ^ 3 * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) +
-        7 * A ^ 2 * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) -
+      6 * A * (16 * (A ^ (4 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) -
+        6 * A ^ (3 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) +
+        7 * A ^ (2 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) -
         A * (thetaCuspHigherLikelihoodSpectralMoment B 1 / P)))
   have hid :
     (32 / P) *
-        (-A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-          (3 * A ^ 5 + 10 * A ^ 4) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-          (18 * A ^ 4 + 25 * A ^ 3) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-          (21 * A ^ 3 + 15 * A ^ 2) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
-          (3 * A ^ 2 + A) * thetaCuspHigherLikelihoodSpectralMoment B 1) =
-      -32 * (A ^ 5 * (thetaCuspHigherLikelihoodSpectralMoment B 5 / P) -
-        10 * A ^ 4 * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) +
-        25 * A ^ 3 * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) -
-        15 * A ^ 2 * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) +
+        (-A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+          (3 * A ^ (5 : ℕ) + 10 * A ^ (4 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+          (18 * A ^ (4 : ℕ) + 25 * A ^ (3 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+          (21 * A ^ (3 : ℕ) + 15 * A ^ (2 : ℕ)) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+          (3 * A ^ (2 : ℕ) + A) * thetaCuspHigherLikelihoodSpectralMoment B 1) =
+      -32 * (A ^ (5 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 5 / P) -
+        10 * A ^ (4 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) +
+        25 * A ^ (3 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) -
+        15 * A ^ (2 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) +
         A * (thetaCuspHigherLikelihoodSpectralMoment B 1 / P)) +
-      6 * A * (16 * (A ^ 4 * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) -
-        6 * A ^ 3 * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) +
-        7 * A ^ 2 * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) -
+      6 * A * (16 * (A ^ (4 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 4 / P) -
+        6 * A ^ (3 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 3 / P) +
+        7 * A ^ (2 : ℕ) * (thetaCuspHigherLikelihoodSpectralMoment B 2 / P) -
         A * (thetaCuspHigherLikelihoodSpectralMoment B 1 / P))) :=
     fourthFifthCooling_normalization A P
       (thetaCuspHigherLikelihoodSpectralMoment B 1)
@@ -699,7 +699,7 @@ theorem thetaCuspLikelihoodEighthBellJetFive_lt_six_mul_scale_mul_ordinaryJetFou
 theorem sixteenThousandOneHundredTwentyEight_mul_scale_pow_four_mul_exp_lt_ordinaryReserve
     {x : ℝ} (hx : 0 ≤ x)
     (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    16128 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    16128 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) <
       6 * thetaCuspSingleAtomReflectionScale 1 x *
           thetaCuspLikelihoodSourceOrdinaryJetFour x -
@@ -729,7 +729,7 @@ theorem sixteenThousandOneHundredTwentyEight_mul_scale_pow_four_mul_exp_lt_ordin
   dsimp only [A] at hint
   have hscaled := mul_lt_mul_of_pos_left hint
     (show (0 : ℝ) < 32 / P by positivity)
-  have hfloorPos : 0 < 1008 * A ^ 4 * Real.exp (-(3 * A)) := by
+  have hfloorPos : 0 < 1008 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) := by
     have hA0 : 0 < A := by dsimp only [A] at hA ⊢; linarith
     positivity
   have hleft := mul_lt_mul_of_pos_right hcoeff hfloorPos
@@ -831,7 +831,7 @@ theorem thetaCuspLikelihoodTailProbability_lt_thirtyFive_mul_exp_neg_three_scale
 theorem scale_sq_mul_thetaCuspLikelihoodSourceOrdinaryJetFour_lt_threeThousand
     {x : ℝ} (hx : 0 ≤ x)
     (hA6 : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceOrdinaryJetFour x < 3000 := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
@@ -883,7 +883,7 @@ theorem scale_sq_mul_thetaCuspLikelihoodSourceOrdinaryJetFour_lt_threeThousand
     simpa only [e4, e6] using (show
       9 * thetaCuspLikelihoodNormalizedMoment B 4 ≤
         thetaCuspLikelihoodNormalizedMoment B 6 by nlinarith)
-  have hb4Upper : b4 ≤ 16 * A ^ 4 * e4 := by
+  have hb4Upper : b4 ≤ 16 * A ^ (4 : ℕ) * e4 := by
     have he2pos := thetaCuspLikelihoodNormalizedMoment_two_pos hB
     have he23 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 2
     have hseven :
@@ -895,20 +895,20 @@ theorem scale_sq_mul_thetaCuspLikelihoodSourceOrdinaryJetFour_lt_threeThousand
     dsimp only [b4, A, B, e4, thetaCuspLikelihoodSourceOrdinaryJetFour]
     have hm := thetaCuspLikelihoodMean_pos hB
     nlinarith
-  have hb6Lower : (64 / 30 : ℝ) * A ^ 6 * e6 ≤ b6 := by
+  have hb6Lower : (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6 ≤ b6 := by
     have h := one_thirtieth_mul_likelihoodSourceLinearSix_le hx
     dsimp only [A, B, e6, b6, thetaCuspLikelihoodSourceOrdinaryJetSix] at h ⊢
     nlinarith
   have h4scaled := mul_le_mul_of_nonneg_left hb4Upper (sq_nonneg A)
   have h46scaled := mul_le_mul_of_nonneg_left he46
-    (by positivity : 0 ≤ (32 / 3 : ℝ) * A ^ 6)
+    (by positivity : 0 ≤ (32 / 3 : ℝ) * A ^ (6 : ℕ))
   have h6scaled := mul_le_mul_of_nonneg_left hb6Lower (by norm_num : (0 : ℝ) ≤ 5)
   dsimp only [A, b4, b6] at hb6Upper ⊢
   nlinarith [show
-    A ^ 2 * (16 * A ^ 4 * e4) = 16 * A ^ 6 * e4 by ring,
-    show (32 / 3 : ℝ) * A ^ 6 * (9 * e4) = 96 * A ^ 6 * e4 by ring,
-    show (32 / 3 : ℝ) * A ^ 6 * e6 =
-      5 * ((64 / 30 : ℝ) * A ^ 6 * e6) by ring]
+    A ^ (2 : ℕ) * (16 * A ^ (4 : ℕ) * e4) = 16 * A ^ (6 : ℕ) * e4 by ring,
+    show (32 / 3 : ℝ) * A ^ (6 : ℕ) * (9 * e4) = 96 * A ^ (6 : ℕ) * e4 by ring,
+    show (32 / 3 : ℝ) * A ^ (6 : ℕ) * e6 =
+      5 * ((64 / 30 : ℝ) * A ^ (6 : ℕ) * e6) by ring]
 
 /-- All fourth-jet Bell loss is quadratically colder than the ordinary cooling reserve. -/
 theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
@@ -926,8 +926,8 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
   let e3 := thetaCuspLikelihoodNormalizedMoment B 3
   let e4 := thetaCuspLikelihoodNormalizedMoment B 4
   let b1 := 2 * A * e1
-  let b2 := 4 * (A ^ 2 * e2 - A * e1)
-  let b3 := 8 * (A ^ 3 * e3 - 3 * A ^ 2 * e2 + A * e1)
+  let b2 := 4 * (A ^ (2 : ℕ) * e2 - A * e1)
+  let b3 := 8 * (A ^ (3 : ℕ) * e3 - 3 * A ^ (2 : ℕ) * e2 + A * e1)
   let b4 := thetaCuspLikelihoodSourceOrdinaryJetFour x
   let loss := b4 - thetaCuspLikelihoodSourceLogPartitionJetFour x
   have hA0 : 0 < A := by dsimp only [A] at hA6 ⊢; linarith
@@ -953,10 +953,10 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
         hx hscale
   have hp : 0 < p := by
     have h22 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
-    have h22' : e2 ^ 2 ≤ p * e4 := by
+    have h22' : e2 ^ (2 : ℕ) ≤ p * e4 := by
       simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h22
     nlinarith [sq_pos_of_pos he2]
-  have h11 : e1 ^ 2 ≤ p * e2 := by
+  have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 = 2 by norm_num, pow_two] using h
@@ -964,7 +964,7 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 3
     simpa only [B, p, e1, e3, e4, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 3 = 4 by norm_num] using h
-  have h22 : e2 ^ 2 ≤ p * e4 := by
+  have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
@@ -975,7 +975,7 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
     nlinarith
-  have hb2Upper : b2 ≤ 4 * A ^ 2 * e2 := by
+  have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
     nlinarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
@@ -985,76 +985,76 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
     nlinarith [mul_pos hA0 he1]
-  have hb3Upper : b3 ≤ 8 * A ^ 3 * e3 := by
+  have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
-    have hcross : A * e1 ≤ 3 * A ^ 2 * e2 := by
+    have hcross : A * e1 ≤ 3 * A ^ (2 : ℕ) * e2 := by
       have hleft : A * e1 ≤ A * (e2 / 3) := by
         exact mul_le_mul_of_nonneg_left (by linarith) hA0.le
-      have hright : A * (e2 / 3) ≤ 3 * A ^ 2 * e2 := by
+      have hright : A * (e2 / 3) ≤ 3 * A ^ (2 : ℕ) * e2 := by
         nlinarith [mul_pos hA0 he2]
       exact hleft.trans hright
     nlinarith
-  have hb4Lower : (32 / 5 : ℝ) * A ^ 4 * e4 ≤ b4 := by
+  have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
-  have hb1b3Core : b1 * b3 ≤ 16 * A ^ 4 * (e1 * e3) := by
+  have hb1b3Core : b1 * b3 ≤ 16 * A ^ (4 : ℕ) * (e1 * e3) := by
     calc
-      b1 * b3 ≤ (2 * A * e1) * (8 * A ^ 3 * e3) := by
+      b1 * b3 ≤ (2 * A * e1) * (8 * A ^ (3 : ℕ) * e3) := by
         dsimp only [b1]
         gcongr
-      _ = 16 * A ^ 4 * (e1 * e3) := by ring
-  have hb1b3Moment : 16 * A ^ 4 * (e1 * e3) ≤ 16 * A ^ 4 * (p * e4) := by
+      _ = 16 * A ^ (4 : ℕ) * (e1 * e3) := by ring
+  have hb1b3Moment : 16 * A ^ (4 : ℕ) * (e1 * e3) ≤ 16 * A ^ (4 : ℕ) * (p * e4) := by
     gcongr
   have hb1b3 : 4 * b1 * b3 ≤ 10 * p * b4 := by
     have hcore := hb1b3Core.trans hb1b3Moment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ 10 * p)
     nlinarith
-  have hb2sqCore : b2 ^ 2 ≤ 16 * A ^ 4 * e2 ^ 2 := by
+  have hb2sqCore : b2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by
     have hpow := pow_le_pow_left₀ hb2.le hb2Upper 2
     calc
-      b2 ^ 2 ≤ (4 * A ^ 2 * e2) ^ 2 := hpow
-      _ = 16 * A ^ 4 * e2 ^ 2 := by ring
-  have hb2sqMoment : 16 * A ^ 4 * e2 ^ 2 ≤ 16 * A ^ 4 * (p * e4) := by
+      b2 ^ (2 : ℕ) ≤ (4 * A ^ (2 : ℕ) * e2) ^ (2 : ℕ) := hpow
+      _ = 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by ring
+  have hb2sqMoment : 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * (p * e4) := by
     gcongr
-  have hb2sq : 3 * b2 ^ 2 ≤ (15 / 2 : ℝ) * p * b4 := by
+  have hb2sq : 3 * b2 ^ (2 : ℕ) ≤ (15 / 2 : ℝ) * p * b4 := by
     have hcore := hb2sqCore.trans hb2sqMoment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ (15 / 2 : ℝ) * p)
     nlinarith
-  have he1four : e1 ^ 4 ≤ p ^ 3 * e4 := by
+  have he1four : e1 ^ (4 : ℕ) ≤ p ^ (3 : ℕ) * e4 := by
     have h11sq := pow_le_pow_left₀ (sq_nonneg e1) h11 2
-    have hstep : (p * e2) ^ 2 ≤ p ^ 2 * (p * e4) := by
+    have hstep : (p * e2) ^ (2 : ℕ) ≤ p ^ (2 : ℕ) * (p * e4) := by
       rw [mul_pow]
       gcongr
     calc
-      e1 ^ 4 = (e1 ^ 2) ^ 2 := by ring
-      _ ≤ (p * e2) ^ 2 := h11sq
-      _ ≤ p ^ 2 * (p * e4) := hstep
-      _ = p ^ 3 * e4 := by ring
-  have hb1four : 6 * b1 ^ 4 ≤ 15 * p ^ 3 * b4 := by
-    have hcore : 6 * b1 ^ 4 ≤ 96 * A ^ 4 * (p ^ 3 * e4) := by
+      e1 ^ (4 : ℕ) = (e1 ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ ≤ (p * e2) ^ (2 : ℕ) := h11sq
+      _ ≤ p ^ (2 : ℕ) * (p * e4) := hstep
+      _ = p ^ (3 : ℕ) * e4 := by ring
+  have hb1four : 6 * b1 ^ (4 : ℕ) ≤ 15 * p ^ (3 : ℕ) * b4 := by
+    have hcore : 6 * b1 ^ (4 : ℕ) ≤ 96 * A ^ (4 : ℕ) * (p ^ (3 : ℕ) * e4) := by
       dsimp only [b1]
       have hscaled := mul_le_mul_of_nonneg_left he1four
-        (by positivity : 0 ≤ 96 * A ^ 4)
+        (by positivity : 0 ≤ 96 * A ^ (4 : ℕ))
       nlinarith
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
-      (by positivity : 0 ≤ 15 * p ^ 3)
+      (by positivity : 0 ≤ 15 * p ^ (3 : ℕ))
     nlinarith
-  have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ 3 < 18 * p := by
+  have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 18 * p := by
     have hpUpper : p < (1 / 1995 : ℝ) := by linarith
-    have hpSq : p ^ 2 < (1 / 1995 : ℝ) ^ 2 :=
+    have hpSq : p ^ (2 : ℕ) < (1 / 1995 : ℝ) ^ (2 : ℕ) :=
       pow_lt_pow_left₀ hpUpper hp.le (by norm_num)
-    have hpSqScaled : 15 * p ^ 2 < (1 / 2 : ℝ) :=
+    have hpSqScaled : 15 * p ^ (2 : ℕ) < (1 / 2 : ℝ) :=
       (mul_lt_mul_of_pos_left hpSq (by norm_num)).trans (by norm_num)
-    have hbracket : 0 < (1 / 2 : ℝ) - 15 * p ^ 2 := by
+    have hbracket : 0 < (1 / 2 : ℝ) - 15 * p ^ (2 : ℕ) := by
       linarith only [hpSqScaled]
     apply sub_pos.mp
-    rw [show 18 * p - ((35 / 2 : ℝ) * p + 15 * p ^ 3) =
-      p * ((1 / 2 : ℝ) - 15 * p ^ 2) by ring]
+    rw [show 18 * p - ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ)) =
+      p * ((1 / 2 : ℝ) - 15 * p ^ (2 : ℕ)) by ring]
     exact mul_pos hp hbracket
   have hdecomp : loss =
-      4 * b1 * b3 + 3 * b2 ^ 2 - 12 * b1 ^ 2 * b2 + 6 * b1 ^ 4 := by
+      4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) - 12 * b1 ^ (2 : ℕ) * b2 + 6 * b1 ^ (4 : ℕ) := by
     dsimp only [loss, b1, b2, b3, b4, A, B, e1, e2, e3, e4]
     unfold thetaCuspLikelihoodSourceOrdinaryJetFour
       thetaCuspLikelihoodSourceLogPartitionJetFour thetaCuspLikelihoodFourthCumulant
@@ -1064,37 +1064,37 @@ theorem six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale
     ring
   have hloss : loss < 18 * p * b4 := by
     rw [hdecomp]
-    have hnegative : 0 < 12 * b1 ^ 2 * b2 := by positivity
+    have hnegative : 0 < 12 * b1 ^ (2 : ℕ) * b2 := by positivity
     have hsum := add_le_add (add_le_add hb1b3 hb2sq) hb1four
     have hcoeffScaled := mul_lt_mul_of_pos_right hcoeff hb4
     calc
-      4 * b1 * b3 + 3 * b2 ^ 2 - 12 * b1 ^ 2 * b2 + 6 * b1 ^ 4 =
-          (4 * b1 * b3 + 3 * b2 ^ 2 + 6 * b1 ^ 4) - 12 * b1 ^ 2 * b2 := by ring
-      _ < 4 * b1 * b3 + 3 * b2 ^ 2 + 6 * b1 ^ 4 := sub_lt_self _ hnegative
-      _ ≤ 10 * p * b4 + (15 / 2 : ℝ) * p * b4 + 15 * p ^ 3 * b4 := by
+      4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) - 12 * b1 ^ (2 : ℕ) * b2 + 6 * b1 ^ (4 : ℕ) =
+          (4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) + 6 * b1 ^ (4 : ℕ)) - 12 * b1 ^ (2 : ℕ) * b2 := by ring
+      _ < 4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) + 6 * b1 ^ (4 : ℕ) := sub_lt_self _ hnegative
+      _ ≤ 10 * p * b4 + (15 / 2 : ℝ) * p * b4 + 15 * p ^ (3 : ℕ) * b4 := by
         simpa only [add_assoc] using hsum
-      _ = ((35 / 2 : ℝ) * p + 15 * p ^ 3) * b4 := by ring
+      _ = ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ)) * b4 := by ring
       _ < 18 * p * b4 := hcoeffScaled
   have hpExp : p < 35 * Real.exp (-(3 * A)) := by
     simpa only [A, B, p] using
       thetaCuspLikelihoodTailProbability_lt_thirtyFive_mul_exp_neg_three_scale hx hA6
-  have hb4Scaled : A ^ 2 * b4 < 3000 := by
+  have hb4Scaled : A ^ (2 : ℕ) * b4 < 3000 := by
     simpa only [A, b4] using
       scale_sq_mul_thetaCuspLikelihoodSourceOrdinaryJetFour_lt_threeThousand hx hA6
   have hExp : 0 < Real.exp (-(3 * A)) := Real.exp_pos _
   by_cases hloss0 : 0 ≤ loss
   · have hlossScaled := mul_lt_mul_of_pos_left hloss (sq_pos_of_pos hA0)
-    have hproduct : A ^ 2 * (18 * p * b4) <
+    have hproduct : A ^ (2 : ℕ) * (18 * p * b4) <
         1890000 * Real.exp (-(3 * A)) := by
       calc
-        A ^ 2 * (18 * p * b4) = 18 * p * (A ^ 2 * b4) := by ring
+        A ^ (2 : ℕ) * (18 * p * b4) = 18 * p * (A ^ (2 : ℕ) * b4) := by ring
         _ < 18 * p * 3000 := mul_lt_mul_of_pos_left hb4Scaled (by positivity)
         _ < 18 * (35 * Real.exp (-(3 * A))) * 3000 := by gcongr
         _ = 1890000 * Real.exp (-(3 * A)) := by ring
-    have hscale : 6 * A ≤ A ^ 2 := by
+    have hscale : 6 * A ≤ A ^ (2 : ℕ) := by
       calc
         6 * A ≤ A * A := mul_le_mul_of_nonneg_right hA6 hA0.le
-        _ = A ^ 2 := by ring
+        _ = A ^ (2 : ℕ) := by ring
     have hscaleLoss := mul_le_mul_of_nonneg_right hscale hloss0
     have hlossFinal := hlossScaled.trans hproduct
     have hconstant : 1890000 * Real.exp (-(3 * A)) <
@@ -1150,13 +1150,13 @@ theorem neg_thetaCuspLikelihoodSourceLogPartitionJetFive_lt_bellJetFive
     have hg := mul_le_mul_of_nonneg_left he34 (by positivity : 0 ≤ 5 * A)
     nlinarith
   have hgroup1 : 0 <
-      5 * A ^ 5 * m * e4 - 20 * A ^ 5 * m ^ 2 * e3 -
-        40 * A ^ 4 * m * e3 := by
+      5 * A ^ (5 : ℕ) * m * e4 - 20 * A ^ (5 : ℕ) * m ^ (2 : ℕ) * e3 -
+        40 * A ^ (4 : ℕ) * m * e3 := by
     have hp := mul_pos (mul_pos (pow_pos hA0 4) hm) hcore1
     nlinarith [show
-      A ^ 4 * m * (5 * A * e4 - 20 * A * m * e3 - 40 * e3) =
-        5 * A ^ 5 * m * e4 - 20 * A ^ 5 * m ^ 2 * e3 -
-          40 * A ^ 4 * m * e3 by ring]
+      A ^ (4 : ℕ) * m * (5 * A * e4 - 20 * A * m * e3 - 40 * e3) =
+        5 * A ^ (5 : ℕ) * m * e4 - 20 * A ^ (5 : ℕ) * m ^ (2 : ℕ) * e3 -
+          40 * A ^ (4 : ℕ) * m * e3 by ring]
   have hcoef2 : 3 * A * m + 3 < 3 * A := by
     have hgap : 0 < A * (1 - m) - 1 := by
       have hprod : 5 < A * (1 - m) := by
@@ -1170,60 +1170,60 @@ theorem neg_thetaCuspLikelihoodSourceLogPartitionJetFive_lt_bellJetFive
     have hg := mul_le_mul_of_nonneg_left he23 hA0.le
     nlinarith
   have hgroup2 : 0 <
-      10 * A ^ 5 * e2 * e3 - 30 * A ^ 5 * m * e2 ^ 2 -
-        30 * A ^ 4 * e2 ^ 2 := by
-    have hp := mul_pos (mul_pos (by positivity : 0 < 10 * A ^ 4) he2) hcore2
+      10 * A ^ (5 : ℕ) * e2 * e3 - 30 * A ^ (5 : ℕ) * m * e2 ^ (2 : ℕ) -
+        30 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by
+    have hp := mul_pos (mul_pos (by positivity : 0 < 10 * A ^ (4 : ℕ)) he2) hcore2
     nlinarith [show
-      10 * A ^ 4 * e2 * (A * e3 - 3 * A * m * e2 - 3 * e2) =
-        10 * A ^ 5 * e2 * e3 - 30 * A ^ 5 * m * e2 ^ 2 -
-          30 * A ^ 4 * e2 ^ 2 by ring]
-  have hcore31 : 0 < 5 * e2 - 2 * m ^ 2 := by
-    have hmSq : m ^ 2 < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
+      10 * A ^ (4 : ℕ) * e2 * (A * e3 - 3 * A * m * e2 - 3 * e2) =
+        10 * A ^ (5 : ℕ) * e2 * e3 - 30 * A ^ (5 : ℕ) * m * e2 ^ (2 : ℕ) -
+          30 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) by ring]
+  have hcore31 : 0 < 5 * e2 - 2 * m ^ (2 : ℕ) := by
+    have hmSq : m ^ (2 : ℕ) < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
     nlinarith
-  have hgroup31 : 0 < 60 * A ^ 5 * m ^ 3 * e2 - 24 * A ^ 5 * m ^ 5 := by
-    have hp := mul_pos (by positivity : 0 < 12 * A ^ 5 * m ^ 3) hcore31
+  have hgroup31 : 0 < 60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 - 24 * A ^ (5 : ℕ) * m ^ (5 : ℕ) := by
+    have hp := mul_pos (by positivity : 0 < 12 * A ^ (5 : ℕ) * m ^ (3 : ℕ)) hcore31
     nlinarith [show
-      12 * A ^ 5 * m ^ 3 * (5 * e2 - 2 * m ^ 2) =
-        60 * A ^ 5 * m ^ 3 * e2 - 24 * A ^ 5 * m ^ 5 by ring]
-  have hcore32 : 0 < 2 * e2 - m ^ 2 := by
-    have hmSq : m ^ 2 < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
+      12 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * (5 * e2 - 2 * m ^ (2 : ℕ)) =
+        60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 - 24 * A ^ (5 : ℕ) * m ^ (5 : ℕ) by ring]
+  have hcore32 : 0 < 2 * e2 - m ^ (2 : ℕ) := by
+    have hmSq : m ^ (2 : ℕ) < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
     nlinarith
-  have hgroup32 : 0 < 120 * A ^ 4 * m ^ 2 * e2 - 60 * A ^ 4 * m ^ 4 := by
-    have hp := mul_pos (by positivity : 0 < 60 * A ^ 4 * m ^ 2) hcore32
+  have hgroup32 : 0 < 120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 - 60 * A ^ (4 : ℕ) * m ^ (4 : ℕ) := by
+    have hp := mul_pos (by positivity : 0 < 60 * A ^ (4 : ℕ) * m ^ (2 : ℕ)) hcore32
     nlinarith [show
-      60 * A ^ 4 * m ^ 2 * (2 * e2 - m ^ 2) =
-        120 * A ^ 4 * m ^ 2 * e2 - 60 * A ^ 4 * m ^ 4 by ring]
-  have hcore33 : 0 < 15 * A * e2 - 10 * A * m ^ 2 - 3 * m := by
-    have hmSq : m ^ 2 < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
+      60 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * (2 * e2 - m ^ (2 : ℕ)) =
+        120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 - 60 * A ^ (4 : ℕ) * m ^ (4 : ℕ) by ring]
+  have hcore33 : 0 < 15 * A * e2 - 10 * A * m ^ (2 : ℕ) - 3 * m := by
+    have hmSq : m ^ (2 : ℕ) < m := by nlinarith [mul_pos hm (sub_pos.mpr hmOne)]
     nlinarith
   have hgroup33 : 0 <
-      75 * A ^ 3 * m * e2 - 50 * A ^ 3 * m ^ 3 - 15 * A ^ 2 * m ^ 2 := by
-    have hp := mul_pos (by positivity : 0 < 5 * A ^ 2 * m) hcore33
+      75 * A ^ (3 : ℕ) * m * e2 - 50 * A ^ (3 : ℕ) * m ^ (3 : ℕ) - 15 * A ^ (2 : ℕ) * m ^ (2 : ℕ) := by
+    have hp := mul_pos (by positivity : 0 < 5 * A ^ (2 : ℕ) * m) hcore33
     nlinarith [show
-      5 * A ^ 2 * m * (15 * A * e2 - 10 * A * m ^ 2 - 3 * m) =
-        75 * A ^ 3 * m * e2 - 50 * A ^ 3 * m ^ 3 -
-          15 * A ^ 2 * m ^ 2 by ring]
+      5 * A ^ (2 : ℕ) * m * (15 * A * e2 - 10 * A * m ^ (2 : ℕ) - 3 * m) =
+        75 * A ^ (3 : ℕ) * m * e2 - 50 * A ^ (3 : ℕ) * m ^ (3 : ℕ) -
+          15 * A ^ (2 : ℕ) * m ^ (2 : ℕ) by ring]
   have hsum : 0 <
-      (5 * A ^ 5 * m * e4 - 20 * A ^ 5 * m ^ 2 * e3 -
-          40 * A ^ 4 * m * e3) +
-        (10 * A ^ 5 * e2 * e3 - 30 * A ^ 5 * m * e2 ^ 2 -
-          30 * A ^ 4 * e2 ^ 2) +
-        (60 * A ^ 5 * m ^ 3 * e2 - 24 * A ^ 5 * m ^ 5) +
-        (120 * A ^ 4 * m ^ 2 * e2 - 60 * A ^ 4 * m ^ 4) +
-        (75 * A ^ 3 * m * e2 - 50 * A ^ 3 * m ^ 3 -
-          15 * A ^ 2 * m ^ 2) :=
+      (5 * A ^ (5 : ℕ) * m * e4 - 20 * A ^ (5 : ℕ) * m ^ (2 : ℕ) * e3 -
+          40 * A ^ (4 : ℕ) * m * e3) +
+        (10 * A ^ (5 : ℕ) * e2 * e3 - 30 * A ^ (5 : ℕ) * m * e2 ^ (2 : ℕ) -
+          30 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ)) +
+        (60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 - 24 * A ^ (5 : ℕ) * m ^ (5 : ℕ)) +
+        (120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 - 60 * A ^ (4 : ℕ) * m ^ (4 : ℕ)) +
+        (75 * A ^ (3 : ℕ) * m * e2 - 50 * A ^ (3 : ℕ) * m ^ (3 : ℕ) -
+          15 * A ^ (2 : ℕ) * m ^ (2 : ℕ)) :=
     add_pos (add_pos (add_pos (add_pos hgroup1 hgroup2) hgroup31) hgroup32) hgroup33
   have hid :
       thetaCuspLikelihoodEighthBellJetFive x +
           thetaCuspLikelihoodSourceLogPartitionJetFive x =
-        32 * ((5 * A ^ 5 * m * e4 - 20 * A ^ 5 * m ^ 2 * e3 -
-            40 * A ^ 4 * m * e3) +
-          (10 * A ^ 5 * e2 * e3 - 30 * A ^ 5 * m * e2 ^ 2 -
-            30 * A ^ 4 * e2 ^ 2) +
-          (60 * A ^ 5 * m ^ 3 * e2 - 24 * A ^ 5 * m ^ 5) +
-          (120 * A ^ 4 * m ^ 2 * e2 - 60 * A ^ 4 * m ^ 4) +
-          (75 * A ^ 3 * m * e2 - 50 * A ^ 3 * m ^ 3 -
-            15 * A ^ 2 * m ^ 2)) := by
+        32 * ((5 * A ^ (5 : ℕ) * m * e4 - 20 * A ^ (5 : ℕ) * m ^ (2 : ℕ) * e3 -
+            40 * A ^ (4 : ℕ) * m * e3) +
+          (10 * A ^ (5 : ℕ) * e2 * e3 - 30 * A ^ (5 : ℕ) * m * e2 ^ (2 : ℕ) -
+            30 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ)) +
+          (60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 - 24 * A ^ (5 : ℕ) * m ^ (5 : ℕ)) +
+          (120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 - 60 * A ^ (4 : ℕ) * m ^ (4 : ℕ)) +
+          (75 * A ^ (3 : ℕ) * m * e2 - 50 * A ^ (3 : ℕ) * m ^ (3 : ℕ) -
+            15 * A ^ (2 : ℕ) * m ^ (2 : ℕ))) := by
     unfold thetaCuspLikelihoodSourceLogPartitionJetFive
       thetaCuspLikelihoodEighthBellJetFive thetaCuspLikelihoodFifthCumulant
       thetaCuspLikelihoodFourthCumulant thetaCuspLikelihoodThirdCumulant
@@ -1256,17 +1256,17 @@ theorem neg_thetaCuspLikelihoodSourceLogPartitionJetFive_lt_six_mul_scale_mul_je
     simpa only [j5, b5] using
       neg_thetaCuspLikelihoodSourceLogPartitionJetFive_lt_bellJetFive hx hA6
   have hReserve :
-      16128 * A ^ 4 * Real.exp (-(3 * A)) < 6 * A * b4 - b5 := by
+      16128 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) < 6 * A * b4 - b5 := by
     simpa only [A, b4, b5] using
       sixteenThousandOneHundredTwentyEight_mul_scale_pow_four_mul_exp_lt_ordinaryReserve
         hx hA6
   have hLoss : 6 * A * loss < 2000000 * Real.exp (-(3 * A)) := by
     simpa only [A, b4, j4, loss] using
       six_mul_scale_mul_fourthBellLoss_lt_twoMillion_mul_exp_neg_three_scale hx hA6
-  have hA4 : (6 : ℝ) ^ 4 ≤ A ^ 4 :=
+  have hA4 : (6 : ℝ) ^ (4 : ℕ) ≤ A ^ (4 : ℕ) :=
     pow_le_pow_left₀ (by norm_num) hA 4
   have hconstant : 2000000 * Real.exp (-(3 * A)) <
-      16128 * A ^ 4 * Real.exp (-(3 * A)) := by
+      16128 * A ^ (4 : ℕ) * Real.exp (-(3 * A)) := by
     apply mul_lt_mul_of_pos_right _ hExp
     nlinarith
   have hLossReserve : 6 * A * loss < 6 * A * b4 - b5 :=

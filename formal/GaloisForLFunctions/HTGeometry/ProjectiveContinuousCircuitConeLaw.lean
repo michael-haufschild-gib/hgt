@@ -187,9 +187,9 @@ theorem twoLocal_projectiveCircuitHard_backwardInterval
         ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)‖ ≤ 1)
     (hcompiler : ∀ τ ∈ Set.Icc (0 : ℝ) W,
-      3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ 3 *
+      3 * (Fintype.card (PauliTracelessLabel n 2) : ℝ) ^ (3 : ℕ) *
         ‖(H : Matrix (FiniteQubitConfiguration (Fin n))
-          (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 * |τ| ^ 2 / r ≤
+          (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) * |τ| ^ (2 : ℕ) / r ≤
         εincrement)
     (hlate : ProjectiveCircuitSeparated n εlate P
       (unitaryEvolution H T))

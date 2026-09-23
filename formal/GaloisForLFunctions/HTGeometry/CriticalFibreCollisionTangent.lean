@@ -73,7 +73,7 @@ theorem exists_maximal_C_pow_dvd_pair {π : W} (hπ : Irreducible π) {D E : W[X
     · obtain ⟨j, hj⟩ := exists_not_C_pow_dvd hπ hE
       exact ⟨j, fun hc => hj hc.2⟩
   have hspec := Nat.find_spec hex
-  have hzero : (C (π ^ 0) ∣ D ∧ C (π ^ 0) ∣ E) := by simp
+  have hzero : (C (π ^ (0 : ℕ)) ∣ D ∧ C (π ^ (0 : ℕ)) ∣ E) := by simp
   have hpos : 0 < Nat.find hex := by
     rcases Nat.eq_zero_or_pos (Nat.find hex) with hz | hp
     · exact absurd (hz ▸ hspec) (not_not.mpr hzero)

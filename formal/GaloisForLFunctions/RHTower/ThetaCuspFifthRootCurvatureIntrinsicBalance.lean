@@ -11,7 +11,7 @@ noncomputable section
 def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance
     (u t : ℝ) : ℝ :=
   thetaCuspReflectedSourceFifthRootCurvatureNumerator u t /
-    thetaCuspReflectedSourceFirstDrop u t ^ 2
+    thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ)
 
 theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance_eq_four_cumulative
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
@@ -26,11 +26,11 @@ theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u)
       ((thetaCuspReflectedSourceFifthRootCurvatureVelocity u t *
-            thetaCuspReflectedSourceFirstDrop u t ^ 2 -
+            thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) -
           thetaCuspReflectedSourceFifthRootCurvatureNumerator u t *
             (2 * thetaCuspReflectedSourceFirstDrop u t *
               thetaCuspReflectedSourceDecayFlux u t)) /
-        (thetaCuspReflectedSourceFirstDrop u t ^ 2) ^ 2) t := by
+        (thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ)) ^ (2 : ℕ)) t := by
   have hN := hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureNumerator u t
   have hA := hasDerivAt_thetaCuspReflectedSourceFirstDrop u t
   have hraw := hN.div (hA.pow 2)
@@ -38,7 +38,7 @@ theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance
   unfold thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance
   change HasDerivAt
     (thetaCuspReflectedSourceFifthRootCurvatureNumerator u /
-      thetaCuspReflectedSourceFirstDrop u ^ 2) _ t
+      thetaCuspReflectedSourceFirstDrop u ^ (2 : ℕ)) _ t
   simpa only [Pi.pow_apply, Pi.div_apply, Nat.cast_ofNat, Nat.reduceSub, pow_one]
     using hraw
 
@@ -73,7 +73,7 @@ theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance_isLocalMin_ve
     (hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance u ht)
   have hA := thetaCuspReflectedSourceFirstDrop_pos u ht
   have hden :
-      (thetaCuspReflectedSourceFirstDrop u t ^ 2) ^ 2 ≠ 0 := by
+      (thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0 := by
     exact pow_ne_zero 2 (pow_ne_zero 2 hA.ne')
   simp only [div_eq_zero_iff, hden, or_false] at hzero
   have hfactor :
@@ -84,7 +84,7 @@ theorem thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance_isLocalMin_ve
               thetaCuspReflectedSourceDecayFlux u t) = 0 := by
     calc
       _ = thetaCuspReflectedSourceFifthRootCurvatureVelocity u t *
-              thetaCuspReflectedSourceFirstDrop u t ^ 2 -
+              thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) -
             thetaCuspReflectedSourceFifthRootCurvatureNumerator u t *
               (2 * thetaCuspReflectedSourceFirstDrop u t *
                 thetaCuspReflectedSourceDecayFlux u t) := by ring
@@ -151,8 +151,8 @@ theorem
         2 * thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 t *
           thetaCuspReflectedSourceDecayFlux 0 t ∧
       thetaCuspReflectedSourceFifthRootCurvatureVelocity 0 t < 0 ∧
-      thetaCuspReflectedLogJetFour 0 t + 320 <
-        2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 ∧
+      thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+        2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) ∧
       thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero t <
         thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t := by
   rcases hfail with ⟨t0, ht0, hneg0⟩

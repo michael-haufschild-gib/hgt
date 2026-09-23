@@ -157,8 +157,8 @@ theorem summable_interaction_diagonal {p q : ℕ} (hp : 0 < p) (hq : 0 < q)
   intro n
   rw [interactionJump, norm_mul, norm_star, norm_mul, Complex.normSq_eq_norm_sq]
   calc
-    _ = ‖eulerDeletionDirichletCoefficient p n‖ * ‖eulerDeletionWeightedJump q s n‖^2 := by ring
-    _ ≤ (p : ℝ) * ‖eulerDeletionWeightedJump q s n‖^2 :=
+    _ = ‖eulerDeletionDirichletCoefficient p n‖ * ‖eulerDeletionWeightedJump q s n‖^(2 : ℕ) := by ring
+    _ ≤ (p : ℝ) * ‖eulerDeletionWeightedJump q s n‖^(2 : ℕ) :=
       mul_le_mul_of_nonneg_right (norm_eulerDeletionDirichletCoefficient_le hp n) (sq_nonneg _)
 
 /-- Exact singleton/interaction collision charge, including the natural-index shift. -/

@@ -41,7 +41,7 @@ theorem dependentHigherCoordinateContrast_eq_zero_of_local_miss
     {support : Set V} {f : (∀ v, A v) → R}
     (hf : DependentCoordinateLocalOn support f)
     (x alternative : ∀ v, A v) {sites : Finset V} {i : V}
-    (hi_sites : i ∈ sites) (hi_support : i ∉ support) :
+    (hi_sites : i ∈ sites) (hi : i ∉ support) :
     dependentHigherCoordinateContrast x alternative sites f = 0 := by
   have hinvariant :
       ∀ active,
@@ -52,7 +52,7 @@ theorem dependentHigherCoordinateContrast_eq_zero_of_local_miss
     intro v hv
     have hvi : v ≠ i := by
       intro h
-      exact hi_support (h ▸ hv)
+      exact hi (h ▸ hv)
     simp [dependentUpdateOnFinset, hvi]
   unfold dependentHigherCoordinateContrast
   exact finsetMobiusResponse_eq_zero_of_insert_invariant
@@ -136,7 +136,7 @@ theorem higherCoordinateContrast_packetEigenvalueJet_eq_zero_of_miss
       Fin n → ({e : E // e ∈ packet} → ℂ))
     (x alternative : ∀ v, A v) {sites : Finset V} {i : V}
     (hi_sites : i ∈ sites)
-    (hi_support : i ∉ L.packetSiteSupport packet) :
+    (hi : i ∉ L.packetSiteSupport packet) :
     dependentHigherCoordinateContrast x alternative sites
       (fun config =>
         iteratedFDeriv ℂ n
@@ -147,7 +147,7 @@ theorem higherCoordinateContrast_packetEigenvalueJet_eq_zero_of_miss
   apply dependentHigherCoordinateContrast_eq_zero_of_local_miss
     (L.packetEigenvalueJet_coordinateLocal onsite hinj packet hn directions)
     x alternative hi_sites
-  simpa using hi_support
+  simpa using hi
 
 end FiniteLocalInteractionFamily
 end GaloisForLFunctions.HTGeometry

@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.TrigammaVertical
 # The leading asymptotic of the trigamma function on a vertical line
 
 The trigamma series `ψ′(s) = Σ (s+n)^{-2}` differs from the telescoping series
-`Σ [(s+n)^{-1} − (s+n+1)^{-1}] = s^{-1}` term by term by `((s+n)^2 (s+n+1))^{-1}`.  On a vertical
+`Σ [(s+n)^{-1} − (s+n+1)^{-1}] = s^{-1}` term by term by `((s+n)^(2 : ℕ) (s+n+1))^{-1}`.  On a vertical
 line the modulus of `s+n` is bounded below both by the height and by the real part, so those terms
 are dominated by a fixed summable sequence once multiplied by `s`, and each of them tends to zero.
 
@@ -90,7 +90,7 @@ theorem vertical_add_nat_ne_zero (hσ : 0 < σ) (t : ℝ) (n : ℕ) :
 /-- **The trigamma tail.**  On a vertical line the trigamma series minus the telescoping series for
 `s⁻¹` sums to `Σ ((s+n)²(s+n+1))⁻¹`. -/
 theorem hasSum_trigamma_tail (hσ : 0 < σ) (t : ℝ) :
-    HasSum (fun n : ℕ => (((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ 2
+    HasSum (fun n : ℕ => (((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (2 : ℕ)
         * ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1))⁻¹)
       (deriv Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
         - ((σ : ℂ) + (t : ℂ) * Complex.I)⁻¹) := by
@@ -110,17 +110,17 @@ theorem hasSum_trigamma_tail (hσ : 0 < σ) (t : ℝ) :
     rw [← h]
     ring
   -- the trigamma series
-  have hbound1 : ∀ n : ℕ, ‖((s + (n : ℂ)) ^ 2)⁻¹‖ ≤ (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by
+  have hbound1 : ∀ n : ℕ, ‖((s + (n : ℂ)) ^ (2 : ℕ))⁻¹‖ ≤ (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by
     intro n
     have h1 : (0 : ℝ) < σ + n := hpos n
     have hge : σ + n ≤ ‖s + (n : ℂ)‖ := norm_vertical_add_nat_ge_re t n
-    have hnorm : ‖((s + (n : ℂ)) ^ 2)⁻¹‖ = 1 / ‖s + (n : ℂ)‖ ^ 2 := by
+    have hnorm : ‖((s + (n : ℂ)) ^ (2 : ℕ))⁻¹‖ = 1 / ‖s + (n : ℂ)‖ ^ (2 : ℕ) := by
       rw [norm_inv, norm_pow, one_div]
     rw [hnorm]
-    have hle : 1 / ‖s + (n : ℂ)‖ ^ 2 ≤ 1 / (σ + n) ^ 2 := by
-      have hsq : (σ + n) ^ 2 ≤ ‖s + (n : ℂ)‖ ^ 2 := by nlinarith
+    have hle : 1 / ‖s + (n : ℂ)‖ ^ (2 : ℕ) ≤ 1 / (σ + n) ^ (2 : ℕ) := by
+      have hsq : (σ + n) ^ (2 : ℕ) ≤ ‖s + (n : ℂ)‖ ^ (2 : ℕ) := by nlinarith
       exact one_div_le_one_div_of_le (by positivity) hsq
-    have hstep : 1 / ((σ + n) ^ 2) = (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n)) := by
+    have hstep : 1 / ((σ + n) ^ (2 : ℕ)) = (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n)) := by
       field_simp
     have hfrac : (σ + n + 1) / (σ + n) ≤ 1 + 1 / σ := by
       rw [div_le_iff₀ h1]
@@ -132,15 +132,15 @@ theorem hasSum_trigamma_tail (hσ : 0 < σ) (t : ℝ) :
         rw [one_div, inv_mul_cancel₀ hσ.ne'] at hmul
         rwa [one_div]
       nlinarith
-    calc 1 / ‖s + (n : ℂ)‖ ^ 2 ≤ 1 / (σ + n) ^ 2 := hle
+    calc 1 / ‖s + (n : ℂ)‖ ^ (2 : ℕ) ≤ 1 / (σ + n) ^ (2 : ℕ) := hle
       _ = (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n)) := hstep
       _ ≤ (1 / ((σ + n) * (σ + n + 1))) * (1 + 1 / σ) := by
           have hnn : (0 : ℝ) ≤ 1 / ((σ + n) * (σ + n + 1)) := by positivity
           exact mul_le_mul_of_nonneg_left hfrac hnn
       _ = (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by ring
-  have hsum1 : Summable (fun n : ℕ => ((s + (n : ℂ)) ^ 2)⁻¹) :=
+  have hsum1 : Summable (fun n : ℕ => ((s + (n : ℂ)) ^ (2 : ℕ))⁻¹) :=
     Summable.of_norm_bounded hmaj hbound1
-  have h1 : HasSum (fun n : ℕ => ((s + (n : ℂ)) ^ 2)⁻¹) (deriv Complex.digamma s) :=
+  have h1 : HasSum (fun n : ℕ => ((s + (n : ℂ)) ^ (2 : ℕ))⁻¹) (deriv Complex.digamma s) :=
     (hsum1.hasSum_iff_tendsto_nat).mpr (RHTower.deriv_digamma_partialSum_tendsto hre)
   -- the telescoping series
   have hbound2 : ∀ n : ℕ, ‖((s + (n : ℂ)) * (s + (n : ℂ) + 1))⁻¹‖
@@ -204,8 +204,8 @@ theorem hasSum_trigamma_tail (hσ : 0 < σ) (t : ℝ) :
     exact this.congr (fun N => (hpartial2 N).symm)
   -- the difference is the tail series
   have hdiff := h1.sub h2
-  have hfun : (fun n : ℕ => ((s + (n : ℂ)) ^ 2)⁻¹ - ((s + (n : ℂ)) * (s + (n : ℂ) + 1))⁻¹)
-      = fun n : ℕ => ((s + (n : ℂ)) ^ 2 * (s + (n : ℂ) + 1))⁻¹ := by
+  have hfun : (fun n : ℕ => ((s + (n : ℂ)) ^ (2 : ℕ))⁻¹ - ((s + (n : ℂ)) * (s + (n : ℂ) + 1))⁻¹)
+      = fun n : ℕ => ((s + (n : ℂ)) ^ (2 : ℕ) * (s + (n : ℂ) + 1))⁻¹ := by
     funext n
     have h1' := hne n
     have h2' := hne' n
@@ -221,7 +221,7 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
   have hpos : ∀ n : ℕ, (0 : ℝ) < σ + n := fun n => by positivity
   set F : ℝ → ℕ → ℂ := fun t n =>
     ((σ : ℂ) + (t : ℂ) * Complex.I)
-      * ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ 2
+      * ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (2 : ℕ)
         * ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1))⁻¹) with hF
   -- a uniform bound on the terms
   have hnormle : ∀ t : ℝ, 0 ≤ t → ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ σ + t := by
@@ -247,19 +247,19 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
       rw [hcast] at h
       push_cast at h
       linarith
-    have hsq : t * (σ + n) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 := by
+    have hsq : t * (σ + n) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) := by
       have h1 := hgeIm
       have h2 := hgeRe
       have hnn : (0 : ℝ) ≤ σ + n := (hpos n).le
       nlinarith
     have hnormF : ‖F t n‖ = ‖(σ : ℂ) + (t : ℂ) * Complex.I‖
-        / (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+        / (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
           * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖) := by
       rw [hF]
       simp only [norm_mul, norm_inv, norm_pow]
       rw [div_eq_mul_inv]
     rw [hnormF]
-    have hden : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+    have hden : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
         * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ := by
       have h1 : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ :=
         lt_of_lt_of_le (hpos n) hgeRe
@@ -270,7 +270,7 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
     rw [div_le_iff₀ hden]
     have hnum : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ σ + t := hnormle t ht0
     have hprod : t * (σ + n) * (σ + n + 1)
-        ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+        ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
           * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ := by
       have hnn : (0 : ℝ) ≤ σ + n + 1 := by linarith [hpos n]
       have hsq0 : (0 : ℝ) ≤ t * (σ + n) := by positivity
@@ -284,7 +284,7 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
       linarith
     have hmono : 2 * (1 / ((σ + n) * (σ + n + 1))) * (t * (σ + n) * (σ + n + 1))
         ≤ 2 * (1 / ((σ + n) * (σ + n + 1)))
-          * (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+          * (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
             * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖) := by
       have hnn : (0 : ℝ) ≤ 2 * (1 / ((σ + n) * (σ + n + 1))) := by
         have := hpos n
@@ -314,17 +314,17 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
           = (σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1 := by push_cast; ring
       rw [hcast] at h
       exact h
-    have hsq : t * (σ + n) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 := by
+    have hsq : t * (σ + n) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ σ + n := (hpos n).le
       nlinarith
     have hnormF : ‖F t n‖ = ‖(σ : ℂ) + (t : ℂ) * Complex.I‖
-        / (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+        / (‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
           * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖) := by
       rw [hF]
       simp only [norm_mul, norm_inv, norm_pow]
       rw [div_eq_mul_inv]
     rw [hnormF]
-    have hden : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+    have hden : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
         * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ := by
       have h1 : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ :=
         lt_of_lt_of_le (hpos n) hgeRe
@@ -334,7 +334,7 @@ theorem tendsto_mul_deriv_digamma_vertical (hσ : 0 < σ) :
     rw [div_le_iff₀ hden]
     have hnum : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ σ + t := hnormle t ht0.le
     have hprod : (t * (σ + n)) * t
-        ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
+        ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
           * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ := by
       have hsq0 : (0 : ℝ) ≤ t * (σ + n) := by positivity
       exact mul_le_mul hsq hge'Im ht0.le (le_trans hsq0 hsq)

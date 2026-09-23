@@ -24,7 +24,7 @@ instance : Coe StagHuntSubunitNoise ℝ := ⟨StagHuntSubunitNoise.val⟩
 def phaseDampedNeutralSinSq (p : StagHuntSubunitNoise) : ℝ :=
   1 / (6 - 5 * (p : ℝ))
 
-/-- Closed phase/depolarizing coexistence line `sin(Γ)^2 = 1/(6-5p)`. -/
+/-- Closed phase/depolarizing coexistence line `sin(Γ)^(2 : ℕ) = 1/(6-5p)`. -/
 theorem phaseDampedNeutralSinSq_field_zero (p : StagHuntSubunitNoise) :
     phaseDampedStagHuntField (p : ℝ) (phaseDampedNeutralSinSq p) = 0 := by
   have hd : 6 - 5 * (p : ℝ) ≠ 0 := by
@@ -36,10 +36,10 @@ theorem phaseDampedNeutralSinSq_field_zero (p : StagHuntSubunitNoise) :
 
 /-- Resource-amplitude-damping coexistence equation in `c = cos(Γ)`. -/
 def resourceDampedNeutralEquation (p c : ℝ) : ℝ :=
-  (1 - p) * (5 - 6 * c ^ 2) - p * c
+  (1 - p) * (5 - 6 * c ^ (2 : ℕ)) - p * c
 
 def resourceDampedNeutralCos (p : StagHuntSubunitNoise) : ℝ :=
-  (-(p : ℝ) + Real.sqrt ((p : ℝ) ^ 2 + 120 * (1 - (p : ℝ)) ^ 2)) /
+  (-(p : ℝ) + Real.sqrt ((p : ℝ) ^ (2 : ℕ) + 120 * (1 - (p : ℝ)) ^ (2 : ℕ))) /
     (12 * (1 - (p : ℝ)))
 
 /-- Half-angle payoff field equals the paper's cosine-coordinate equation. -/
@@ -53,7 +53,7 @@ theorem resourceDampedStagHuntField_cosCoordinate (p c : ℝ) :
 theorem resourceDampedNeutralCos_equation (p : StagHuntSubunitNoise) :
     resourceDampedNeutralEquation (p : ℝ) (resourceDampedNeutralCos p) = 0 := by
   have hb : 1 - (p : ℝ) ≠ 0 := by linarith [p.lt_one]
-  have hrad : 0 ≤ (p : ℝ) ^ 2 + 120 * (1 - (p : ℝ)) ^ 2 := by positivity
+  have hrad : 0 ≤ (p : ℝ) ^ (2 : ℕ) + 120 * (1 - (p : ℝ)) ^ (2 : ℕ) := by positivity
   have hs := Real.sq_sqrt hrad
   unfold resourceDampedNeutralEquation resourceDampedNeutralCos
   field_simp
@@ -66,7 +66,7 @@ theorem resourceDampedNeutralCos_field_zero (p : StagHuntSubunitNoise) :
   norm_num
 
 /-- Post-circuit amplitude-damping coexistence equation in `c = cos(Γ)`. -/
-def postDampedNeutralEquation (p c : ℝ) : ℝ := 5 - 6 * c ^ 2 + 3 * p * c
+def postDampedNeutralEquation (p c : ℝ) : ℝ := 5 - 6 * c ^ (2 : ℕ) + 3 * p * c
 
 theorem postDampedStagHuntField_cosCoordinate (p c : ℝ) :
     postDampedStagHuntField p ((1 - c) / 2) =
@@ -112,7 +112,7 @@ theorem amplitudeDampedNegativity_zero_iff (p a c : ℝ) :
 /-- Depolarizing entanglement dies exactly when the unclipped expression is nonpositive. -/
 theorem depolarizedNegativity_zero_iff (p a : ℝ) :
     depolarizedNegativity p a = 0 ↔
-      (1 - p) ^ 2 * a / 2 - p * (2 - p) / 4 ≤ 0 := by
+      (1 - p) ^ (2 : ℕ) * a / 2 - p * (2 - p) / 4 ≤ 0 := by
   simp [depolarizedNegativity]
 
 end

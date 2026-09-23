@@ -68,7 +68,7 @@ variable [DecidableEq σ]
 
 /-- **The symmetrised action-value product is a polynomial in the elementary symmetric functions of
 the spectrum, evaluated at that spectrum.** -/
-theorem exists_eval₂_esymm_repr_actionValueProduct (Q : Polynomial R) (k : σ → R) :
+theorem exists_eval₂_esymm_repr (Q : Polynomial R) (k : σ → R) :
     ∃ P : MvPolynomial (Fin (Fintype.card σ)) R, ∀ (f : R →+* S) (μ : σ → S),
       (∏ π : Equiv.Perm σ, Polynomial.eval₂ f (∑ j, f (k j) * μ (π j)) Q)
         = MvPolynomial.eval₂ f

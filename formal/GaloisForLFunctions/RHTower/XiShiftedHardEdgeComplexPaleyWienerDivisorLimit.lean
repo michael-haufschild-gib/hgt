@@ -103,10 +103,10 @@ theorem routeUXiHardEdgeResolventWeight_eq_one_sub
     (r : ℝ) (q : XiZeroCopy) :
     routeUXiHardEdgeResolventWeight r q =
       1 - xiSquaredNode q *
-        xiShiftedReciprocalSquare (routeUHardEdgeMass r ^ 2) q := by
+        xiShiftedReciprocalSquare (routeUHardEdgeMass r ^ (2 : ℕ)) q := by
   rw [routeUXiHardEdgeResolventWeight,
     xiShiftedReciprocalSquare_eq_inv (sq_nonneg (routeUHardEdgeMass r))]
-  have hden : (((routeUHardEdgeMass r ^ 2 : ℝ) : ℂ) + xiSquaredNode q) ≠ 0 :=
+  have hden : (((routeUHardEdgeMass r ^ (2 : ℕ) : ℝ) : ℂ) + xiSquaredNode q) ≠ 0 :=
     ofReal_add_xiSquaredNode_ne_zero (sq_nonneg (routeUHardEdgeMass r)) q
   field_simp [hden]
   ring
@@ -118,16 +118,16 @@ theorem tendsto_routeUXiHardEdgeResolventWeight_natCast_one (q : XiZeroCopy) :
   have hmass : Tendsto (fun k : ℕ => routeUHardEdgeMass (k : ℝ)) atTop atTop := by
     simpa [routeUHardEdgeMass, abs_of_nonneg, add_comm] using
       (tendsto_atTop_add_const_right atTop (1 : ℝ) tendsto_natCast_atTop_atTop)
-  have hmassSq : Tendsto (fun k : ℕ => routeUHardEdgeMass (k : ℝ) ^ 2)
+  have hmassSq : Tendsto (fun k : ℕ => routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       atTop atTop := by
     exact (tendsto_pow_atTop (n := 2) (by norm_num)).comp hmass
   have hshift : Tendsto
       (fun k : ℕ => xiShiftedReciprocalSquare
-        (routeUHardEdgeMass (k : ℝ) ^ 2) q) atTop (nhds 0) :=
+        (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) q) atTop (nhds 0) :=
     (tendsto_xiShiftedReciprocalSquare_atTop_zero q).comp hmassSq
   have hlim : Tendsto
       (fun k : ℕ => (1 : ℂ) - xiSquaredNode q *
-        xiShiftedReciprocalSquare (routeUHardEdgeMass (k : ℝ) ^ 2) q)
+        xiShiftedReciprocalSquare (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) q)
       atTop (nhds ((1 : ℂ) - xiSquaredNode q * 0)) :=
     (tendsto_const_nhds (x := (1 : ℂ))).sub
       ((tendsto_const_nhds (x := xiSquaredNode q)).mul hshift)
@@ -141,7 +141,7 @@ theorem norm_routeUXiHardEdgeResolventWeight_le_eightyFive_div_eightyFour
     (r : ℝ) (q : XiZeroCopy) :
     ‖routeUXiHardEdgeResolventWeight r q‖ ≤ (85 / 84 : ℝ) := by
   let a : ℝ := routeUHardEdgeMass r
-  let y : ℝ := a ^ 2
+  let y : ℝ := a ^ (2 : ℕ)
   let z : ℂ := xiZeroCopyReciprocalSquare q
   have hy : 0 ≤ y := sq_nonneg a
   have hzre : 0 < z.re := by
@@ -173,15 +173,15 @@ theorem norm_routeUXiHardEdgeResolventWeight_le_eightyFive_div_eightyFour
 
 /-- Reciprocal-square norm in the spectral coordinate. -/
 theorem norm_xiZeroCopyReciprocalSquare_eq_inv_norm_sq (q : XiZeroCopy) :
-    ‖xiZeroCopyReciprocalSquare q‖ = 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+    ‖xiZeroCopyReciprocalSquare q‖ = 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare, norm_pow, norm_inv]
   ring
 
 /-- Xi strip geometry and the unconditional height gap make real spectral height strong enough to
 dominate the full spectral norm. -/
 theorem norm_xiSpectralPoint_sq_le_abs_re_pow_four (q : XiZeroCopy) :
-    ‖xiSpectralPoint q‖ ^ 2 ≤ |(xiSpectralPoint q).re| ^ 4 := by
-  have hreSq : 2 < (xiSpectralPoint q).re ^ 2 := by
+    ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ |(xiSpectralPoint q).re| ^ (4 : ℕ) := by
+  have hreSq : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have h := xiZeroCopy_two_lt_im_sq q
     simpa [xiSpectralPoint, Complex.mul_re] using h
   have hsupport := xi_divisor_support_re_mem_open_unit q.1
@@ -192,11 +192,11 @@ theorem norm_xiSpectralPoint_sq_le_abs_re_pow_four (q : XiZeroCopy) :
   have himAbs : |(xiSpectralPoint q).im| < 1 / 2 := by
     rw [him, abs_lt]
     constructor <;> linarith
-  have himSq : (xiSpectralPoint q).im ^ 2 < 1 / 4 := by
+  have himSq : (xiSpectralPoint q).im ^ (2 : ℕ) < 1 / 4 := by
     nlinarith [sq_abs (xiSpectralPoint q).im, abs_nonneg (xiSpectralPoint q).im]
-  have hrePos : 0 < (xiSpectralPoint q).re ^ 2 := by positivity
+  have hrePos : 0 < (xiSpectralPoint q).re ^ (2 : ℕ) := by positivity
   have hgrowth :
-      0 < ((xiSpectralPoint q).re ^ 2 - 2) * (xiSpectralPoint q).re ^ 2 :=
+      0 < ((xiSpectralPoint q).re ^ (2 : ℕ) - 2) * (xiSpectralPoint q).re ^ (2 : ℕ) :=
     mul_pos (sub_pos.mpr hreSq) hrePos
   rw [Complex.sq_norm, Complex.normSq_apply]
   nlinarith [sq_abs (xiSpectralPoint q).re]
@@ -204,7 +204,7 @@ theorem norm_xiSpectralPoint_sq_le_abs_re_pow_four (q : XiZeroCopy) :
 /-- Uniform Fourier-decay constant used by the central divisor majorant. -/
 def routeUXiComplexHardEdgeCentralDecayConstant
     (n : ℕ) (f : SchwartzMap ℝ ℂ) : ℝ :=
-  routeUComplexTiltUniformDecay n f 1 * (8 * Real.pi) ^ 2
+  routeUComplexTiltUniformDecay n f 1 * (8 * Real.pi) ^ (2 : ℕ)
 
 theorem routeUXiComplexHardEdgeCentralDecayConstant_nonneg
     (n : ℕ) (f : SchwartzMap ℝ ℂ) :
@@ -217,12 +217,12 @@ theorem norm_routeUXiComplexHardEdgeCentral_le_min_height_mass_sq
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) :
     ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤
       routeUXiComplexHardEdgeCentralDecayConstant n f /
-        min |(xiSpectralPoint q).re| (routeUHardEdgeMass r) ^ 2 := by
+        min |(xiSpectralPoint q).re| (routeUHardEdgeMass r) ^ (2 : ℕ) := by
   let m : ℝ := min |(xiSpectralPoint q).re| (routeUHardEdgeMass r)
   let x : ℝ := -(routeUComplexHardEdgePhase r (xiSpectralPoint q)).re /
     (2 * Real.pi)
   let C : ℝ := routeUComplexTiltUniformDecay n f 1
-  have hreSq : 2 < (xiSpectralPoint q).re ^ 2 := by
+  have hreSq : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have h := xiZeroCopy_two_lt_im_sq q
     simpa [xiSpectralPoint, Complex.mul_re] using h
   have hreAbs : 0 < |(xiSpectralPoint q).re| := by
@@ -250,35 +250,35 @@ theorem norm_routeUXiComplexHardEdgeCentral_le_min_height_mass_sq
   have hkgLower : m / (8 * Real.pi) ≤ kgFreq x :=
     hlower.trans (abs_le_kgFreq_real x)
   have hdecay :
-      kgFreq x ^ 2 * ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C := by
+      kgFreq x ^ (2 : ℕ) * ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C := by
     simpa only [routeUXiComplexHardEdgeCentral, x, C] using
       routeUComplexPositiveFourierExtension_uniform_decay n f
         (abs_routeUComplexHardEdgePhase_xiSpectralPoint_im_lt_one r q).le 1
   have hC : 0 ≤ C := routeUComplexTiltUniformDecay_nonneg n f 1
   have hnorm :
-      ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C / kgFreq x ^ 2 := by
+      ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C / kgFreq x ^ (2 : ℕ) := by
     apply (le_div_iff₀ (pow_pos (kgFreq_pos x) 2)).2
     simpa only [mul_comm] using hdecay
   calc
-    ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C / kgFreq x ^ 2 := hnorm
-    _ ≤ C / (m / (8 * Real.pi)) ^ 2 := by
+    ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ C / kgFreq x ^ (2 : ℕ) := hnorm
+    _ ≤ C / (m / (8 * Real.pi)) ^ (2 : ℕ) := by
       exact div_le_div_of_nonneg_left hC (pow_pos (by positivity) 2)
         (pow_le_pow_left₀ (by positivity) hkgLower 2)
-    _ = routeUXiComplexHardEdgeCentralDecayConstant n f / m ^ 2 := by
+    _ = routeUXiComplexHardEdgeCentralDecayConstant n f / m ^ (2 : ℕ) := by
       rw [routeUXiComplexHardEdgeCentralDecayConstant]
-      change C / (m / (8 * Real.pi)) ^ 2 = C * (8 * Real.pi) ^ 2 / m ^ 2
+      change C / (m / (8 * Real.pi)) ^ (2 : ℕ) = C * (8 * Real.pi) ^ (2 : ℕ) / m ^ (2 : ℕ)
       field_simp [hm.ne', Real.pi_ne_zero]
 
 /-- Central mass-normalized Xi-divisor packet. -/
 def routeUXiComplexHardEdgeCentralDivisorTerm
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) : ℂ :=
   routeUXiHardEdgeResolventWeight r q *
-    routeUXiComplexHardEdgeCentral n f r q ^ 2
+    routeUXiComplexHardEdgeCentral n f r q ^ (2 : ℕ)
 
 /-- Divisor-independent coefficient in the central reciprocal-square majorant. -/
 def routeUXiComplexHardEdgeCentralDivisorMajorantConstant
     (n : ℕ) (f : SchwartzMap ℝ ℂ) : ℝ :=
-  (85 / 84 : ℝ) * routeUXiComplexHardEdgeCentralDecayConstant n f ^ 2
+  (85 / 84 : ℝ) * routeUXiComplexHardEdgeCentralDecayConstant n f ^ (2 : ℕ)
 
 theorem routeUXiComplexHardEdgeCentralDivisorMajorantConstant_nonneg
     (n : ℕ) (f : SchwartzMap ℝ ℂ) :
@@ -303,62 +303,62 @@ theorem norm_routeUXiComplexHardEdgeCentralDivisorTerm_le
   have hA : 0 ≤ A := by
     simpa only [A] using routeUXiComplexHardEdgeCentralDecayConstant_nonneg n f
   have hc : 1 ≤ c := by norm_num [c]
-  have hreSq : 2 < (xiSpectralPoint q).re ^ 2 := by
+  have hreSq : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have hz := xiZeroCopy_two_lt_im_sq q
     simpa [xiSpectralPoint, Complex.mul_re] using hz
   have hh : 0 < h := by
     dsimp only [h]
     rw [abs_pos]
     nlinarith
-  have hnormPos : 0 < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hnormPos : 0 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     have hz : xiSpectralPoint q ≠ 0 := by
       intro hz
       rw [hz] at hreSq
       norm_num at hreSq
     exact sq_pos_of_pos (norm_pos_iff.mpr hz)
-  have hnormSq : ‖xiSpectralPoint q‖ ^ 2 ≤ h ^ 4 := by
+  have hnormSq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ h ^ (4 : ℕ) := by
     simpa only [h] using norm_xiSpectralPoint_sq_le_abs_re_pow_four q
   rw [routeUXiComplexHardEdgeCentralDivisorTerm, norm_mul, norm_pow]
   rcases le_total h a with hlow | hhigh
-  · have hcentral : ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ A / h ^ 2 := by
+  · have hcentral : ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ A / h ^ (2 : ℕ) := by
       simpa only [A, h, a, min_eq_left hlow] using
         norm_routeUXiComplexHardEdgeCentral_le_min_height_mass_sq n f r q
-    have hinv : 1 / h ^ 4 ≤ ‖xiZeroCopyReciprocalSquare q‖ := by
+    have hinv : 1 / h ^ (4 : ℕ) ≤ ‖xiZeroCopyReciprocalSquare q‖ := by
       rw [norm_xiZeroCopyReciprocalSquare_eq_inv_norm_sq]
       exact (div_le_div_iff₀ (pow_pos hh 4) hnormPos).2 (by simpa using hnormSq)
     calc
       ‖routeUXiHardEdgeResolventWeight r q‖ *
-          ‖routeUXiComplexHardEdgeCentral n f r q‖ ^ 2 ≤
-        c * (A / h ^ 2) ^ 2 := by
+          ‖routeUXiComplexHardEdgeCentral n f r q‖ ^ (2 : ℕ) ≤
+        c * (A / h ^ (2 : ℕ)) ^ (2 : ℕ) := by
           exact mul_le_mul
             (by simpa only [c] using
               norm_routeUXiHardEdgeResolventWeight_le_eightyFive_div_eightyFour r q)
             (pow_le_pow_left₀ (norm_nonneg _) hcentral 2)
             (by positivity) (by positivity)
-      _ = c * A ^ 2 * (1 / h ^ 4) := by ring
-      _ ≤ c * A ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by gcongr
+      _ = c * A ^ (2 : ℕ) * (1 / h ^ (4 : ℕ)) := by ring
+      _ ≤ c * A ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by gcongr
       _ = routeUXiComplexHardEdgeCentralDivisorMajorantConstant n f *
           ‖xiZeroCopyReciprocalSquare q‖ := by
         rw [routeUXiComplexHardEdgeCentralDivisorMajorantConstant]
-  · have hcentral : ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ A / a ^ 2 := by
+  · have hcentral : ‖routeUXiComplexHardEdgeCentral n f r q‖ ≤ A / a ^ (2 : ℕ) := by
       simpa only [A, h, a, min_eq_right hhigh] using
         norm_routeUXiComplexHardEdgeCentral_le_min_height_mass_sq n f r q
     have hweight := norm_routeUXiHardEdgeResolventWeight_le r q
-    have haSq : 1 ≤ a ^ 2 := one_le_pow₀ ha
+    have haSq : 1 ≤ a ^ (2 : ℕ) := one_le_pow₀ ha
     calc
       ‖routeUXiHardEdgeResolventWeight r q‖ *
-          ‖routeUXiComplexHardEdgeCentral n f r q‖ ^ 2 ≤
-        (a ^ 2 * ‖xiZeroCopyReciprocalSquare q‖) * (A / a ^ 2) ^ 2 := by
+          ‖routeUXiComplexHardEdgeCentral n f r q‖ ^ (2 : ℕ) ≤
+        (a ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖) * (A / a ^ (2 : ℕ)) ^ (2 : ℕ) := by
           exact mul_le_mul
             (by simpa only [a] using hweight)
             (pow_le_pow_left₀ (norm_nonneg _) hcentral 2)
             (by positivity) (by positivity)
-      _ = (A ^ 2 / a ^ 2) * ‖xiZeroCopyReciprocalSquare q‖ := by
+      _ = (A ^ (2 : ℕ) / a ^ (2 : ℕ)) * ‖xiZeroCopyReciprocalSquare q‖ := by
         field_simp [hapos.ne']
-      _ ≤ A ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by
+      _ ≤ A ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by
         gcongr
         exact div_le_self (sq_nonneg A) haSq
-      _ ≤ (c * A ^ 2) * ‖xiZeroCopyReciprocalSquare q‖ := by
+      _ ≤ (c * A ^ (2 : ℕ)) * ‖xiZeroCopyReciprocalSquare q‖ := by
         gcongr
         exact le_mul_of_one_le_left (sq_nonneg A) hc
       _ = routeUXiComplexHardEdgeCentralDivisorMajorantConstant n f *
@@ -392,7 +392,7 @@ theorem tendsto_routeUXiComplexHardEdgeCentralDivisorTerm_natCast
     Tendsto (fun k : ℕ =>
         routeUXiComplexHardEdgeCentralDivisorTerm n f (k : ℝ) q)
       atTop
-      (nhds (routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ 2)) := by
+      (nhds (routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ (2 : ℕ))) := by
   have hweight := tendsto_routeUXiHardEdgeResolventWeight_natCast_one q
   have hcentral := tendsto_routeUXiComplexHardEdgeCentral_natCast n f q
   have hlim := hweight.mul (hcentral.pow 2)
@@ -406,7 +406,7 @@ theorem tendsto_tsum_routeUXiComplexHardEdgeCentralDivisorTerm_natCast
         routeUXiComplexHardEdgeCentralDivisorTerm n f (k : ℝ) q)
       atTop
       (nhds (∑' q : XiZeroCopy,
-        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ 2)) := by
+        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ (2 : ℕ))) := by
   apply tendsto_tsum_of_dominated_convergence
     ((summable_xiZeroCopyReciprocalSquare_pow 0).norm.mul_left
       (routeUXiComplexHardEdgeCentralDivisorMajorantConstant n f))
@@ -419,7 +419,7 @@ theorem tendsto_tsum_routeUXiComplexHardEdgeCentralDivisorTerm_natCast
 def routeUXiComplexHardEdgeSampleDivisorTerm
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) : ℂ :=
   routeUXiHardEdgeResolventWeight r q *
-    routeUXiComplexHardEdgeSample n f r q ^ 2
+    routeUXiComplexHardEdgeSample n f r q ^ (2 : ℕ)
 
 theorem routeUXiComplexHardEdgeSampleDivisorTerm_eq_central_add_error
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) :
@@ -466,7 +466,7 @@ theorem tendsto_tsum_routeUXiComplexHardEdgeSampleDivisorTerm_natCast
         routeUXiComplexHardEdgeSampleDivisorTerm n f (k : ℝ) q)
       atTop
       (nhds (∑' q : XiZeroCopy,
-        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ 2)) := by
+        routeUComplexPositiveFourierExtension n f (xiSpectralPoint q) ^ (2 : ℕ))) := by
   have hcentral :=
     tendsto_tsum_routeUXiComplexHardEdgeCentralDivisorTerm_natCast n f
   have halias :=

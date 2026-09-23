@@ -51,7 +51,7 @@ private theorem one_sub_sum_le_prod_one_sub_real
 private theorem sum_sq_le_sq_sum_of_nonneg
     {α : Type*} [DecidableEq α] (s : Finset α) (a : α → ℝ)
     (ha : ∀ i ∈ s, 0 ≤ a i) :
-    ∑ i ∈ s, a i ^ 2 ≤ (∑ i ∈ s, a i) ^ 2 := by
+    ∑ i ∈ s, a i ^ (2 : ℕ) ≤ (∑ i ∈ s, a i) ^ (2 : ℕ) := by
   induction s using Finset.induction_on with
   | empty => simp
   | @insert i s hi ih =>
@@ -106,22 +106,22 @@ theorem gammaSewnMobiusValuationQuadraticDefectGain_le_three
   have hq0 : 0 < q := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
   have hc0 : 0 < c := gammaSewnMobiusValuationContractionMultiplier_pos x p
-  have hq2 : q ^ 2 ≤ 1 := by nlinarith [sq_nonneg q, mul_self_le_mul_self hq0.le hq1.le]
-  have hnum : 7 * q ^ 2 + 10 * q + 7 ≤ 24 := by nlinarith
-  have hden : 0 < 8 * (1 + q ^ 4) * (1 + c) * (1 + c ^ 2) := by positivity
-  have hden8 : 8 ≤ 8 * (1 + q ^ 4) * (1 + c) * (1 + c ^ 2) := by
-    have hq4 : 0 ≤ q ^ 4 := by positivity
-    have hc2 : 0 ≤ c ^ 2 := sq_nonneg c
+  have hq2 : q ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg q, mul_self_le_mul_self hq0.le hq1.le]
+  have hnum : 7 * q ^ (2 : ℕ) + 10 * q + 7 ≤ 24 := by nlinarith
+  have hden : 0 < 8 * (1 + q ^ (4 : ℕ)) * (1 + c) * (1 + c ^ (2 : ℕ)) := by positivity
+  have hden8 : 8 ≤ 8 * (1 + q ^ (4 : ℕ)) * (1 + c) * (1 + c ^ (2 : ℕ)) := by
+    have hq4 : 0 ≤ q ^ (4 : ℕ) := by positivity
+    have hc2 : 0 ≤ c ^ (2 : ℕ) := sq_nonneg c
     nlinarith [mul_nonneg hq4 hc0.le, mul_nonneg hc0.le hc2]
-  change (7 * q ^ 2 + 10 * q + 7) /
-      (8 * (1 + q ^ 4) * (1 + c) * (1 + c ^ 2)) ≤ 3
+  change (7 * q ^ (2 : ℕ) + 10 * q + 7) /
+      (8 * (1 + q ^ (4 : ℕ)) * (1 + c) * (1 + c ^ (2 : ℕ))) ≤ 3
   rw [div_le_iff₀ hden]
   linarith
 
 theorem one_sub_gammaSewnMobiusValuationContractionMultiplier_le_three_mul_sq
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
     1 - gammaSewnMobiusValuationContractionMultiplier x p ≤
-      3 * (x * Real.log (p : ℝ)) ^ 2 := by
+      3 * (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
   let y : ℝ := x * Real.log (p : ℝ)
   have hlog : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.2.one_lt)
@@ -136,19 +136,19 @@ theorem one_sub_gammaSewnMobiusValuationContractionMultiplier_le_three_mul_sq
     linarith
   rw [one_sub_gammaSewnMobiusValuationContractionMultiplier_eq_sq_mul_gain]
   calc
-    (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 *
+    (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) *
           gammaSewnMobiusValuationQuadraticDefectGain x p ≤
-        (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 * 3 :=
+        (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) * 3 :=
       mul_le_mul_of_nonneg_left
         (gammaSewnMobiusValuationQuadraticDefectGain_le_three hx p) (sq_nonneg _)
-    _ ≤ 3 * y ^ 2 := by nlinarith
-    _ = 3 * (x * Real.log (p : ℝ)) ^ 2 := rfl
+    _ ≤ 3 * y ^ (2 : ℕ) := by nlinarith
+    _ = 3 * (x * Real.log (p : ℝ)) ^ (2 : ℕ) := rfl
 
 theorem one_sub_gammaSewnLocalChord_le_totalPhase_add_three_mul_sq
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
     1 - gammaSewnMobiusValuationContractionMultiplier x p *
         exponentialChordFactor (x * Real.log (p : ℝ)) ≤
-      x * Real.log (p : ℝ) + 3 * (x * Real.log (p : ℝ)) ^ 2 := by
+      x * Real.log (p : ℝ) + 3 * (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
   let y : ℝ := x * Real.log (p : ℝ)
   let c : ℝ := gammaSewnMobiusValuationContractionMultiplier x p
   let f : ℝ := exponentialChordFactor y
@@ -160,11 +160,11 @@ theorem one_sub_gammaSewnLocalChord_le_totalPhase_add_three_mul_sq
   have hf1 : f ≤ 1 := exponentialChordFactor_le_one hy
   have hcf : c * (1 - f) ≤ 1 - f := by
     exact mul_le_of_le_one_left (sub_nonneg.mpr hf1) hc1
-  have hcLoss : 1 - c ≤ 3 * y ^ 2 := by
+  have hcLoss : 1 - c ≤ 3 * y ^ (2 : ℕ) := by
     simpa only [c, y] using
       one_sub_gammaSewnMobiusValuationContractionMultiplier_le_three_mul_sq hx p
   have hfLoss : 1 - f ≤ y := one_sub_exponentialChordFactor_le hy
-  change 1 - c * f ≤ y + 3 * y ^ 2
+  change 1 - c * f ≤ y + 3 * y ^ (2 : ℕ)
   rw [show 1 - c * f = (1 - c) + c * (1 - f) by ring]
   linarith
 
@@ -172,7 +172,7 @@ theorem gammaSewnSynchronizedRecoveryRatio_uniformLower_totalPrimePhase
     (nu : Nat.Primes → ℝ) (hnu : ∀ p, 0 < nu p)
     {x : ℝ} (hx : 0 < x) (P : Finset Nat.Primes) :
     let X := x * ∑ p ∈ P, Real.log (p : ℝ)
-    1 - X - 3 * X ^ 2 ≤ gammaSewnSynchronizedRecoveryRatio nu x P := by
+    1 - X - 3 * X ^ (2 : ℕ) ≤ gammaSewnSynchronizedRecoveryRatio nu x P := by
   classical
   by_cases hP0 : P = ∅
   · subst P
@@ -209,27 +209,27 @@ theorem gammaSewnSynchronizedRecoveryRatio_uniformLower_totalPrimePhase
     intro p hp
     dsimp only [deficit]
     ring
-  have hdefBound (p : Nat.Primes) : deficit p ≤ y p + 3 * (y p) ^ 2 := by
+  have hdefBound (p : Nat.Primes) : deficit p ≤ y p + 3 * (y p) ^ (2 : ℕ) := by
     simpa only [deficit, localChord, y] using
       one_sub_gammaSewnLocalChord_le_totalPhase_add_three_mul_sq hx p
-  have hsumDef : ∑ p ∈ P, deficit p ≤ X + 3 * X ^ 2 := by
+  have hsumDef : ∑ p ∈ P, deficit p ≤ X + 3 * X ^ (2 : ℕ) := by
     have hsum : (∑ p ∈ P, deficit p) ≤
-        ∑ p ∈ P, (y p + 3 * (y p) ^ 2) :=
+        ∑ p ∈ P, (y p + 3 * (y p) ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun p hp => hdefBound p
     have hsumY : (∑ p ∈ P, y p) = X := by
       dsimp only [y, X, L]
       rw [← Finset.mul_sum]
-    have hsumY2 : (∑ p ∈ P, (y p) ^ 2) ≤ X ^ 2 := by
+    have hsumY2 : (∑ p ∈ P, (y p) ^ (2 : ℕ)) ≤ X ^ (2 : ℕ) := by
       calc
-        (∑ p ∈ P, (y p) ^ 2) ≤ (∑ p ∈ P, y p) ^ 2 :=
+        (∑ p ∈ P, (y p) ^ (2 : ℕ)) ≤ (∑ p ∈ P, y p) ^ (2 : ℕ) :=
           sum_sq_le_sq_sum_of_nonneg P y (fun p hp => hy0 p)
-        _ = X ^ 2 := by rw [hsumY]
-    have hsumScaled : (∑ p ∈ P, 3 * (y p) ^ 2) =
-        3 * ∑ p ∈ P, (y p) ^ 2 := by
+        _ = X ^ (2 : ℕ) := by rw [hsumY]
+    have hsumScaled : (∑ p ∈ P, 3 * (y p) ^ (2 : ℕ)) =
+        3 * ∑ p ∈ P, (y p) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
     rw [Finset.sum_add_distrib, hsumScaled, hsumY] at hsum
     linarith
-  have hnumLower : 1 - X - 3 * X ^ 2 ≤ ∏ p ∈ P, localChord p := by
+  have hnumLower : 1 - X - 3 * X ^ (2 : ℕ) ≤ ∏ p ∈ P, localChord p := by
     linarith
   have hL : 0 < L := by
     dsimp only [L]
@@ -253,7 +253,7 @@ theorem gammaSewnSynchronizedRecoveryRatio_mem_totalPrimePhaseBounds
     (nu : Nat.Primes → ℝ) (hnu : ∀ p, 0 < nu p)
     {x : ℝ} (hx : 0 < x) (P : Finset Nat.Primes) :
     let X := x * ∑ p ∈ P, Real.log (p : ℝ)
-    1 - X - 3 * X ^ 2 ≤ gammaSewnSynchronizedRecoveryRatio nu x P ∧
+    1 - X - 3 * X ^ (2 : ℕ) ≤ gammaSewnSynchronizedRecoveryRatio nu x P ∧
       gammaSewnSynchronizedRecoveryRatio nu x P ≤ 1 := by
   exact ⟨gammaSewnSynchronizedRecoveryRatio_uniformLower_totalPrimePhase
       nu hnu hx P,
@@ -270,7 +270,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_movingSupport_of_totalPrimePh
       (fun N => gammaSewnSynchronizedRecoveryRatio nu (aperture N) (P N))
       atTop (𝓝 1) := by
   let X : ℕ → ℝ := fun N => aperture N * ∑ p ∈ P N, Real.log (p : ℝ)
-  have hlower : ∀ N, 1 - X N - 3 * (X N) ^ 2 ≤
+  have hlower : ∀ N, 1 - X N - 3 * (X N) ^ (2 : ℕ) ≤
       gammaSewnSynchronizedRecoveryRatio nu (aperture N) (P N) := by
     intro N
     exact gammaSewnSynchronizedRecoveryRatio_uniformLower_totalPrimePhase
@@ -281,7 +281,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_movingSupport_of_totalPrimePh
     exact (gammaSewnSynchronizedRecoveryRatio_pos_le_one
       nu hnu (hpos N) (P N)).2
   have hX : Tendsto X atTop (𝓝 0) := by simpa only [X] using hphase
-  have hlow : Tendsto (fun N => 1 - X N - 3 * (X N) ^ 2) atTop (𝓝 1) := by
+  have hlow : Tendsto (fun N => 1 - X N - 3 * (X N) ^ (2 : ℕ)) atTop (𝓝 1) := by
     convert (tendsto_const_nhds.sub hX).sub
       (tendsto_const_nhds.mul (hX.pow 2)) using 1
     all_goals ring

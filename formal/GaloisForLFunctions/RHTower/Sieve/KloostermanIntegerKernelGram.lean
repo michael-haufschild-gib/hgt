@@ -46,7 +46,7 @@ def kloostermanIntegerKernelGramQuadratic
 /-- Exact Gram identity for transform output square energy. -/
 theorem ofReal_sum_norm_kloostermanIntegerKernelTransform_sq_eq_gramQuadratic
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ) (b : ℕ → ℂ) :
-    ((∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) : ℂ) =
+    ((∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       kloostermanIntegerKernelGramQuadratic Q w A B b := by
   rw [Complex.ofReal_sum]
   simp_rw [← conj_mul_self]
@@ -103,7 +103,7 @@ theorem kloostermanIntegerKernelGram_diagonal
     (Q : Finset ℕ) (w : ℕ → ℂ) (A : Finset ℕ) (n : ℕ) :
     kloostermanIntegerKernelGram Q w A n n =
       ((∑ m ∈ A,
-        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 : ℝ) : ℂ) := by
+        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold kloostermanIntegerKernelGram
   rw [Complex.ofReal_sum]
   apply Finset.sum_congr rfl
@@ -114,9 +114,9 @@ theorem kloostermanIntegerKernelGram_diagonal
 theorem kloostermanIntegerKernelGramDiagonal_eq
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ) (b : ℕ → ℂ) :
     kloostermanIntegerKernelGramDiagonal Q w A B b =
-      ((∑ n ∈ B, ‖b n‖ ^ 2 *
+      ((∑ n ∈ B, ‖b n‖ ^ (2 : ℕ) *
         ∑ m ∈ A,
-          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 : ℝ) : ℂ) := by
+          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold kloostermanIntegerKernelGramDiagonal
   rw [Complex.ofReal_sum]
   apply Finset.sum_congr rfl
@@ -124,13 +124,13 @@ theorem kloostermanIntegerKernelGramDiagonal_eq
   rw [kloostermanIntegerKernelGram_diagonal,
     show star (b n) * (b n *
       ((∑ m ∈ A,
-        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 : ℝ) : ℂ)) =
+        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
       (star (b n) * b n) *
         ((∑ m ∈ A,
-          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 : ℝ) : ℂ) by ring]
+          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) : ℝ) : ℂ) by ring]
   change (starRingEnd ℂ) (b n) * b n *
       ((∑ m ∈ A,
-        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 : ℝ) : ℂ) = _
+        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) : ℝ) : ℂ) = _
   rw [conj_mul_self]
   push_cast
   ring

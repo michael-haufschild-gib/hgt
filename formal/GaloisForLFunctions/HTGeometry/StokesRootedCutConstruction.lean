@@ -222,7 +222,7 @@ theorem energy_eq_canonicalCut_absSum (t : RootedContactTree n) (i j : Fin n) :
 embedding; no separate cut certificate is assumed. -/
 theorem energy_has_canonical_sqEmbedding (t : RootedContactTree n) (i j : Fin n) :
     (∑ e, (t.canonicalCuts.toPositivePendantCutFamily.feature i e -
-      t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j := by
+      t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) = t.energy i j := by
   rw [← t.canonicalCuts_energy_eq]
   exact t.canonicalCuts.energy_has_explicit_sqEmbedding i j
 
@@ -233,7 +233,7 @@ theorem energy_qform_eq_neg_cut_squares (t : RootedContactTree n) {x : Fin n →
     (hsum : ∑ i, x i = 0) :
     (∑ i, ∑ j, x i * x j * t.energy i j)
       = -2 * ∑ e, t.canonicalCuts.length e *
-        (∑ i, x i * t.canonicalCuts.side e i) ^ 2 := by
+        (∑ i, x i * t.canonicalCuts.side e i) ^ (2 : ℕ) := by
   have hrewrite : (∑ i, ∑ j, x i * x j * t.energy i j)
       = t.canonicalCuts.toPositivePendantCutFamily.qform x := by
     simp only [PositivePendantCutFamily.qform, CutFamily.qform]

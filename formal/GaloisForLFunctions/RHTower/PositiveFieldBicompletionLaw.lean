@@ -56,8 +56,8 @@ theorem positiveField_bicompletion_analytic_stability
     (hmTail : bernsteinDividedPowerTailNorm m N tau ≤ theta * mu)
     (hm'Tail : bernsteinDividedPowerTailNorm m' N tau ≤ theta * mu) :
     |bernsteinDividedPowerChart m N T - bernsteinDividedPowerChart m' N T| ≤
-      |(bernsteinDividedPowerChart m N T) ^ 2 -
-        (bernsteinDividedPowerChart m' N T) ^ 2| / (2 * (1 - theta) * mu) :=
+      |(bernsteinDividedPowerChart m N T) ^ (2 : ℕ) -
+        (bernsteinDividedPowerChart m' N T) ^ (2 : ℕ)| / (2 * (1 - theta) * mu) :=
   bernsteinDividedPowerChart_stability m m' N hmu htheta1 hm0 hm0' hT hmTail hm'Tail
 
 /-- The geometric factor is maximal: adjoining any point of the canonical hull preserves the

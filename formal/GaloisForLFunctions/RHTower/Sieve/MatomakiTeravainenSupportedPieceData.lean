@@ -55,7 +55,7 @@ def mtTypeI_II_PieceDataOfSupported
     (_hGsupport : MTRealScaleSupported G M2 (2 * M2))
     (hFbounded : MTPolynomialDivisorBounded (fun n => F n))
     (hGbounded : MTPolynomialDivisorBounded (fun n => G n))
-    (hsquare : M1 ^ 2 * M2 ≤ X ^ (1 - epsilon))
+    (hsquare : M1 ^ (2 : ℕ) * M2 ≤ X ^ (1 - epsilon))
     (hM2le : M2 ≤ X ^ (1 / 4 - epsilon))
     (hproduct : Y / 2 < M1 * M2 * M3 ∧ M1 * M2 * M3 ≤ 4 * Y) :
     MTTypeI_II_PieceData X Y delta epsilon where
@@ -81,7 +81,7 @@ theorem mtTypeI_II_PieceDataOfSupported_pieceAF_eq
     (hGsupport : MTRealScaleSupported G M2 (2 * M2))
     (hFbounded : MTPolynomialDivisorBounded (fun n => F n))
     (hGbounded : MTPolynomialDivisorBounded (fun n => G n))
-    (hsquare : M1 ^ 2 * M2 ≤ X ^ (1 - epsilon))
+    (hsquare : M1 ^ (2 : ℕ) * M2 ≤ X ^ (1 - epsilon))
     (hM2le : M2 ≤ X ^ (1 / 4 - epsilon))
     (hproduct : Y / 2 < M1 * M2 * M3 ∧ M1 * M2 * M3 ≤ 4 * Y) :
     (mtTypeI_II_PieceDataOfSupported (delta := delta)

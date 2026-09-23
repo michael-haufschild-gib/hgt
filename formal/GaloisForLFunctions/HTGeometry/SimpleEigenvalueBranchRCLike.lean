@@ -199,7 +199,7 @@ theorem exists_differentiable_normalized_simple_eigen_branchRC [CompleteSpace E]
     rw [h, inner_zero_left] at hnorm
     exact zero_ne_one hnorm
   have hnψ₀ : ‖ψ₀‖ = 1 := by
-    have h2 : RCLike.re (⟪ψ₀, ψ₀⟫_𝕜) = ‖ψ₀‖ ^ 2 := inner_self_eq_norm_sq ψ₀
+    have h2 : RCLike.re (⟪ψ₀, ψ₀⟫_𝕜) = ‖ψ₀‖ ^ (2 : ℕ) := inner_self_eq_norm_sq ψ₀
     rw [hnorm] at h2
     simp at h2
     nlinarith [norm_nonneg ψ₀]

@@ -181,10 +181,10 @@ theorem sum_inv_lcm_dyadicWindow_le_stadlmannLemmaTen (Y : PositiveWindowStart) 
     exact_mod_cast hpairNat
   have hyPos : (0 : ℝ) < (Y.1 : ℝ) := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one Y.2)
   calc
-    _ ≤ (1 / (Y.1 : ℝ) ^ 2) *
+    _ ≤ (1 / (Y.1 : ℝ) ^ (2 : ℕ)) *
         ∑ p ∈ (Finset.Icc Y.1 (2 * Y.1)) ×ˢ (Finset.Icc Y.1 (2 * Y.1)),
           (Nat.gcd p.1 p.2 : ℝ) := sum_inv_lcm_le_gcd_sum Y.2
-    _ ≤ (1 / (Y.1 : ℝ) ^ 2) *
+    _ ≤ (1 / (Y.1 : ℝ) ^ (2 : ℕ)) *
         ((2 * (Y.1 : ℝ)) *
           ∑ a ∈ Finset.Icc Y.1 (2 * Y.1), (a.divisors.card : ℝ)) := by
       exact mul_le_mul_of_nonneg_left hpairReal (by positivity)
@@ -224,12 +224,12 @@ theorem quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod P.modulus, Complex.normSq (quadraticIntervalShiftSum P M b x) ≤
       ((M : ℝ) * (P.modulus.divisors.card : ℝ) + 2 * (P.modulus : ℝ)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
-  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
     _ ≤ (∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       quadratic_intervalShiftSum_normSq_le_divisor P M b
     _ ≤ _ := mul_le_mul_of_nonneg_right
       (RHTower.stadlmannDivisorTotientCoefficient_le
@@ -242,12 +242,12 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
         Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
       ((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
         2 * (fourOddModulus P : ℝ)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
-  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
     _ ≤ (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       fourOdd_quadratic_intervalShiftSum_normSq_le_divisor P M b
     _ ≤ _ := mul_le_mul_of_nonneg_right
       (RHTower.stadlmannDivisorTotientCoefficient_le
@@ -260,19 +260,19 @@ theorem eightOdd_quadratic_intervalShiftSum_normSq_stadlmannLemmaTen
         Complex.normSq (eightOddQuadraticIntervalShiftSum κ P M b x) ≤
       ((M : ℝ) * ((eightOddModulus P).divisors.card : ℝ) +
         2 * (eightOddModulus P : ℝ)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hmodpos : 0 < eightOddModulus P :=
     Nat.pos_of_ne_zero (eightOddModulus_neZero P).out
   have hmod : eightOddModulus P - 1 + 1 = eightOddModulus P :=
     Nat.sub_add_cancel hmodpos
-  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+  have henergy : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
     _ ≤ gcdKernelMoment (eightOddModulus P - 1) M b :=
       eightOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel κ P M b
     _ ≤ (∑ e ∈ (eightOddModulus P - 1 + 1).divisors,
         (Nat.totient e : ℝ) * ((M : ℝ) / (e : ℝ) + 1)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       gcdKernelMoment_le (eightOddModulus P - 1) M b
     _ ≤ _ := by
       rw [hmod]

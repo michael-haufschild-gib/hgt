@@ -16,10 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Arbitrary affine terms do not affect the exact negative-coefficient criterion for a quadratic. -/
 theorem gomesDilatonMeasure_quadratic_finite_iff (a b c : ℝ) :
-    IsFiniteMeasure (gomesDilatonMeasure (C a * X ^ 2 + C b * X + C c)) ↔ a < 0 := by
-  have ht := gomesPolynomialAffineTilt_finite_iff (C a * X ^ 2) b c
-  have hshape : gomesPolynomialAffineTilt (C a * X ^ 2) b c =
-      C a * X ^ 2 + C b * X + C c := by
+    IsFiniteMeasure (gomesDilatonMeasure (C a * X ^ (2 : ℕ) + C b * X + C c)) ↔ a < 0 := by
+  have ht := gomesPolynomialAffineTilt_finite_iff (C a * X ^ (2 : ℕ)) b c
+  have hshape : gomesPolynomialAffineTilt (C a * X ^ (2 : ℕ)) b c =
+      C a * X ^ (2 : ℕ) + C b * X + C c := by
     unfold gomesPolynomialAffineTilt
     ring
   rw [hshape] at ht
@@ -33,14 +33,14 @@ theorem gomesDilatonMeasure_quadratic_finite_iff (a b c : ℝ) :
 
 /-- Curvature parametrization gives the exact sign of a finite quadratic density. -/
 theorem gomesDilatonMeasure_curvature_quadratic_finite_iff (k a b : ℝ) :
-    IsFiniteMeasure (gomesDilatonMeasure (C (k / 2) * X ^ 2 + C a * X + C b)) ↔ k < 0 := by
+    IsFiniteMeasure (gomesDilatonMeasure (C (k / 2) * X ^ (2 : ℕ) + C a * X + C b)) ↔ k < 0 := by
   rw [gomesDilatonMeasure_quadratic_finite_iff]
   constructor <;> intro h <;> linarith
 
 /-- Finite mass and a prescribed constant curvature have an explicit negative quadratic classification. -/
 theorem gomesDilatonMeasure_constant_curvature_iff (H : ℝ[X]) (k : ℝ) :
     (IsFiniteMeasure (gomesDilatonMeasure H) ∧ H.derivative.derivative = C k) ↔
-      k < 0 ∧ ∃ a b : ℝ, H = C (k / 2) * X ^ 2 + C a * X + C b := by
+      k < 0 ∧ ∃ a b : ℝ, H = C (k / 2) * X ^ (2 : ℕ) + C a * X + C b := by
   constructor
   · rintro ⟨hf, hd⟩
     obtain ⟨a, b, hab⟩ := (gomesDilaton_secondDerivative_constant_iff H k).mp hd

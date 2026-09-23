@@ -8,21 +8,21 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst8 : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
-local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
+local instance fokasLenellsCausalBoundedSquareSharpGrowthInst9 : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
   have he := congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => ‖A‖)
     causalBoundedChainExponential_zero
   exact he.symm.trans (norm_causalBoundedChainExponential_real (0 : ℝ≥0))⟩
@@ -42,7 +42,7 @@ private theorem square_aligned_character (z : ℂ) (hz : z ≠ 0) :
   have hn := norm_ne_zero_iff.mpr hz
   calc
     _ = (z*conj z).re / ‖z‖ := by rw [← mul_div_assoc, Complex.div_ofReal_re]
-    _ = ‖z‖^2 / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
+    _ = ‖z‖^(2 : ℕ) / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
     _ = ‖z‖ * (‖z‖/‖z‖) := by rw [pow_two, mul_div_assoc]
     _ = ‖z‖ := by rw [div_self hn, mul_one]
 
@@ -52,14 +52,14 @@ theorem norm_causalBoundedSquareExponential (z : ℂ) :
   apply le_antisymm (norm_causalBoundedSquareExponential_le z)
   by_cases hz : z = 0
   · simp only [hz, norm_zero, Real.exp_zero, causalBoundedSquareExponential_zero, norm_one, le_refl]
-  · have hr : conj z / (‖z‖ : ℂ) ∈ spectrum ℂ (causalBoundedChainShift^2) :=
+  · have hr : conj z / (‖z‖ : ℂ) ∈ spectrum ℂ (causalBoundedChainShift^(2 : ℕ)) :=
       (causalBoundedChainShift_square_mem_spectrum_iff _).mpr (square_aligned_rate_norm z hz).le
-    have hs : z*(conj z / (‖z‖ : ℂ)) ∈ spectrum ℂ (z • causalBoundedChainShift^2) := by
+    have hs : z*(conj z / (‖z‖ : ℂ)) ∈ spectrum ℂ (z • causalBoundedChainShift^(2 : ℕ)) := by
       simpa only [Units.smul_def, Units.val_mk0, smul_eq_mul] using!
-        (spectrum.smul_mem_smul_iff (r := Units.mk0 z hz) (a := causalBoundedChainShift^2)).mpr hr
+        (spectrum.smul_mem_smul_iff (r := Units.mk0 z hz) (a := causalBoundedChainShift^(2 : ℕ))).mpr hr
     have hm : Complex.exp (z*(conj z / (‖z‖ : ℂ))) ∈ spectrum ℂ (causalBoundedSquareExponential z) := by
       simpa only [← Complex.exp_eq_exp_ℂ] using!
-        spectrum.exp_mem_exp (z • causalBoundedChainShift^2) hs
+        spectrum.exp_mem_exp (z • causalBoundedChainShift^(2 : ℕ)) hs
     have hn : ‖Complex.exp (z*(conj z / (‖z‖ : ℂ)))‖ = Real.exp ‖z‖ :=
       (Complex.norm_exp _).trans (congrArg Real.exp (square_aligned_character z hz))
     exact hn.symm.trans_le (spectrum.norm_le_norm_of_mem hm)
@@ -78,10 +78,10 @@ theorem norm_causalBoundedSquareExponential_imaginary (r : ℝ) :
 /-- The actual second-derivative exponential obeys the complex additive group law. -/
 theorem causalBoundedSquareExponential_add (z w : ℂ) :
     causalBoundedSquareExponential (z+w) = causalBoundedSquareExponential z * causalBoundedSquareExponential w := by
-  have he : (z+w) • causalBoundedChainShift^2 =
-      z • causalBoundedChainShift^2 + w • causalBoundedChainShift^2 := add_smul z w _
+  have he : (z+w) • causalBoundedChainShift^(2 : ℕ) =
+      z • causalBoundedChainShift^(2 : ℕ) + w • causalBoundedChainShift^(2 : ℕ) := add_smul z w _
   exact (congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => NormedSpace.exp A) he).trans
-    (NormedSpace.exp_add_of_commute (((Commute.refl (causalBoundedChainShift^2)).smul_left z).smul_right w))
+    (NormedSpace.exp_add_of_commute (((Commute.refl (causalBoundedChainShift^(2 : ℕ))).smul_left z).smul_right w))
 
 /-- Negative complex time recovers every genuine chain from its second-derivative evolution. -/
 theorem causalBoundedSquareExponential_neg_apply (z : ℂ) (u : causalBoundedChain) :

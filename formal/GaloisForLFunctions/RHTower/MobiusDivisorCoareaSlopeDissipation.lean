@@ -36,7 +36,7 @@ private lemma mass_zero (M : ℕ) (P R : Finset ℕ)
 
 private lemma conditional_pair_le (x y a b : ℝ) (ha : 0≤a) (hb : 0≤b)
     (hxa : a=0 → x=0) (hyb : b=0 → y=0) :
-    (x+y)^2/(a+b) ≤ x^2/a+y^2/b := by
+    (x+y)^(2 : ℕ)/(a+b) ≤ x^(2 : ℕ)/a+y^(2 : ℕ)/b := by
   by_cases haz : a=0
   · simp [haz,hxa haz]
   by_cases hbz : b=0
@@ -44,10 +44,10 @@ private lemma conditional_pair_le (x y a b : ℝ) (ha : 0≤a) (hb : 0≤b)
   have hap : 0<a := lt_of_le_of_ne ha (Ne.symm haz)
   have hbp : 0<b := lt_of_le_of_ne hb (Ne.symm hbz)
   have hab : a+b≠0 := ne_of_gt (add_pos hap hbp)
-  have he : x^2/a+y^2/b-(x+y)^2/(a+b) = (b*x-a*y)^2/(a*b*(a+b)) := by
+  have he : x^(2 : ℕ)/a+y^(2 : ℕ)/b-(x+y)^(2 : ℕ)/(a+b) = (b*x-a*y)^(2 : ℕ)/(a*b*(a+b)) := by
     field_simp
     ring
-  have hn : 0 ≤ (b*x-a*y)^2/(a*b*(a+b)) := by positivity
+  have hn : 0 ≤ (b*x-a*y)^(2 : ℕ)/(a*b*(a+b)) := by positivity
   linarith only [he,hn]
 
 private lemma nonempty_pairs (U : Finset ℕ) {p : ℕ} (hp : p ∈ U)
@@ -73,9 +73,9 @@ private lemma nonempty_pairs (U : Finset ℕ) {p : ℕ} (hp : p ∈ U)
 theorem mobiusDivisorNonemptyCoarea_insert_le (M : ℕ) (P : Finset ℕ)
     {p : ℕ} (hp : p.Prime) (hpM : p<M) :
     mobiusDivisorNonemptyCoarea M (insert p P) ≤ mobiusDivisorNonemptyCoarea M P -
-      (mobiusDivisorSelectionFibre M P {p})^2 / mobiusDivisorFibreAbsoluteMass M P {p} := by
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P {p} := by
   have hpU : p ∈ mobiusDivisorSelectionPrimes M := mem_filter.mpr ⟨mem_range.mpr hpM,hp⟩
-  let f := fun P R => (mobiusDivisorSelectionFibre M P R)^2/mobiusDivisorFibreAbsoluteMass M P R
+  let f := fun P R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)/mobiusDivisorFibreAbsoluteMass M P R
   have hz (R : Finset ℕ) : f (insert p P) (insert p R)=0 := by
     simp [f,mobiusDivisorSelectionFibre_insert,mobiusDivisorFibreAbsoluteMass_insert]
   have hafter : mobiusDivisorNonemptyCoarea M (insert p P) =
@@ -111,13 +111,13 @@ theorem mobiusDivisorNonemptyCoarea_insert_le (M : ℕ) (P : Finset ℕ)
 mass divided by its absolute mass. -/
 theorem mobiusDivisorCoareaHeadSlope_insert_loss_ge (M : ℕ) (P : Finset ℕ)
     {p : ℕ} (hp : p.Prime) (hpM : p<M) :
-    (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^2 /
+    (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^(2 : ℕ) /
         mobiusDivisorFibreAbsoluteMass M P {p} ≤
       mobiusDivisorCoareaHeadSlope M P-mobiusDivisorCoareaHeadSlope M (insert p P) := by
   have hK := mobiusDivisorNonemptyCoarea_insert_le M P hp hpM
-  have hid : (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^2 /
+  have hid : (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^(2 : ℕ) /
       mobiusDivisorFibreAbsoluteMass M P {p} =
-      (mobiusDivisorSelectionFibre M P {p})^2/mobiusDivisorFibreAbsoluteMass M P {p}+
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ)/mobiusDivisorFibreAbsoluteMass M P {p}+
         mobiusDivisorFibreAbsoluteMass M P {p}+2*mobiusDivisorSelectionFibre M P {p} := by
     by_cases hz : mobiusDivisorFibreAbsoluteMass M P {p}=0
     · simp [hz,mass_zero M P {p} hz]
@@ -134,7 +134,7 @@ theorem mobiusDivisorCoareaHeadSlope_insert_le (M : ℕ) (P : Finset ℕ)
     {p : ℕ} (hp : p.Prime) (hpM : p<M) :
     mobiusDivisorCoareaHeadSlope M (insert p P) ≤ mobiusDivisorCoareaHeadSlope M P := by
   have h := mobiusDivisorCoareaHeadSlope_insert_loss_ge M P hp hpM
-  have hn : 0 ≤ (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^2 /
+  have hn : 0 ≤ (mobiusDivisorSelectionFibre M P {p}+mobiusDivisorFibreAbsoluteMass M P {p})^(2 : ℕ) /
       mobiusDivisorFibreAbsoluteMass M P {p} :=
     div_nonneg (sq_nonneg _) (mobiusDivisorFibreAbsoluteMass_nonneg M P {p})
   linarith only [h,hn]

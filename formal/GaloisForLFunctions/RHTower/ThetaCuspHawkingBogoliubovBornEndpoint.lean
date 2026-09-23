@@ -289,8 +289,8 @@ oriented Green flux. This is the source-side analogue of the signed norm law for
 Bogoliubov transformation. -/
 theorem thetaCuspHawkingPortIntensityDifference_eq_flux
     (d : ThetaCuspHawkingDarkFrequency) :
-    (‖thetaCuspHawkingInPortAmplitude d‖ : ℂ) ^ 2 -
-        (‖thetaCuspHawkingOutPortAmplitude d‖ : ℂ) ^ 2 =
+    (‖thetaCuspHawkingInPortAmplitude d‖ : ℂ) ^ (2 : ℕ) -
+        (‖thetaCuspHawkingOutPortAmplitude d‖ : ℂ) ^ (2 : ℕ) =
       Complex.ofReal (thetaCuspHawkingKreinFlux d) := by
   rw [thetaCuspHawkingInPortAmplitude, thetaCuspHawkingOutPortAmplitude,
     ← inner_pinnedBoundaryCLM_eq_amplitudes]

@@ -25,19 +25,19 @@ theorem egbFixedChargeAMiddleMeanCorrection_neg (φ : ℝ) : egbFixedChargeAMidd
   exact div_neg_of_neg_of_pos (neg_neg_of_pos h5) (by positivity)
 
 theorem egbFixedChargeAMiddleMeanRatio_normalized_difference (τ φ : ℝ) :
-    (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ 2 =
+    (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
       -((egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ + egbFixedChargeAMiddleMeanConstant τ φ) /
-        egbCoexistenceASymmetricRatio τ ^ 2) /
+        egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) /
       (egbFixedChargeAMeanPressureNumerator τ φ * (egbFixedChargeAMiddleMeanRatio τ φ + 1) + egbFixedChargeAMiddleMeanLinear τ φ) := by
   apply (eq_div_iff (egbFixedChargeAMiddleMeanSecant_pos τ φ).ne').2
   calc
     _ = ((egbFixedChargeAMiddleMeanRatio τ φ - 1) *
       (egbFixedChargeAMeanPressureNumerator τ φ * (egbFixedChargeAMiddleMeanRatio τ φ + 1) + egbFixedChargeAMiddleMeanLinear τ φ)) /
-        egbCoexistenceASymmetricRatio τ ^ 2 := by ring
+        egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by ring
     _ = _ := by rw [egbFixedChargeAMiddleMeanRatio_difference_cross]; ring
 
 theorem egbFixedChargeAMiddleMeanRatio_quadratic_limit (φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMiddleMeanCorrection φ)) := by
   have hb := egbFixedChargeACriticalCouplingWeight_lt_sixth φ
   have h2 : 0 < 1 - 2 * egbFixedChargeACriticalCouplingWeight φ := by linarith
@@ -60,7 +60,7 @@ theorem egbFixedChargeAMiddleMeanRatio_linear_limit (φ : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMiddleRadius_mean_quadratic_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeAMeanRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeAMeanRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalRadius w φ * egbFixedChargeAMiddleMeanCorrection φ)) := by
   have h := (egbFixedChargeAMeanRadius_critical_limit w φ).mul (egbFixedChargeAMiddleMeanRatio_quadratic_limit φ)
   convert h using 1
@@ -79,7 +79,7 @@ theorem egbFixedChargeAMiddleRadius_mean_linear_limit (w φ : ℝ) :
   ring
 
 theorem egbFixedChargeAMiddleRadius_critical_quadratic_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanRadiusCorrection w φ + egbFixedChargeACriticalRadius w φ * egbFixedChargeAMiddleMeanCorrection φ)) := by
   have h := (egbFixedChargeAMeanRadius_quadratic_critical_limit w φ).add (egbFixedChargeAMiddleRadius_mean_quadratic_limit w φ)
   convert h using 1
@@ -104,7 +104,7 @@ theorem egbFixedChargeAMiddleRadius_eventually_below_mean (w φ : ℝ) :
   have h := (egbFixedChargeAMiddleRadius_mean_quadratic_limit w φ).eventually_lt_const hneg
   filter_upwards [h] with τ hτ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd2 : 0 < egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hd2 : 0 < egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   have hcross := (div_lt_iff₀ hd2).1 hτ
   linarith
 

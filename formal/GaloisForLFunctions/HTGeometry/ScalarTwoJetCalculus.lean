@@ -33,8 +33,8 @@ def neg (a : ScalarTwoJet (Fin d) ℂ) : ScalarTwoJet (Fin d) ℂ :=
 /-- Reciprocal jet, with the complete second-order chain rule. -/
 def inv (a : ScalarTwoJet (Fin d) ℂ) : ScalarTwoJet (Fin d) ℂ where
   value := a.value⁻¹
-  first i := -(a.value⁻¹ ^ 2) * a.first i
-  second i j := 2 * a.value⁻¹ ^ 3 * a.first i * a.first j - a.value⁻¹ ^ 2 * a.second i j
+  first i := -(a.value⁻¹ ^ (2 : ℕ)) * a.first i
+  second i j := 2 * a.value⁻¹ ^ (3 : ℕ) * a.first i * a.first j - a.value⁻¹ ^ (2 : ℕ) * a.second i j
 
 /-- Coordinate coordDeriv of a complex-valued field on real coordinates. -/
 abbrev coordDeriv (i : Fin d) (f : (Fin d → ℝ) → ℂ) (x : Fin d → ℝ) : ℂ :=
@@ -135,13 +135,13 @@ theorem ofField_mul {f g : (Fin d → ℝ) → ℂ} {x : Fin d → ℝ}
 
 private theorem field_inv_hasFDerivAt {f : (Fin d → ℝ) → ℂ} {x : Fin d → ℝ}
     (hf : DifferentiableAt ℝ f x) (hx : f x ≠ 0) :
-    HasFDerivAt (fun y => (f y)⁻¹) (-(f x)⁻¹ ^ 2 • fderiv ℝ f x) x := by
+    HasFDerivAt (fun y => (f y)⁻¹) (-(f x)⁻¹ ^ (2 : ℕ) • fderiv ℝ f x) x := by
   simpa only [Function.comp_def, inv_pow] using
     (hasDerivAt_inv hx).comp_hasFDerivAt x hf.hasFDerivAt
 
 private theorem partial_inv {f : (Fin d → ℝ) → ℂ} {x : Fin d → ℝ}
     (hf : DifferentiableAt ℝ f x) (hx : f x ≠ 0) (i : Fin d) :
-    coordDeriv i (fun y => (f y)⁻¹) x = -(f x)⁻¹ ^ 2 * coordDeriv i f x := by
+    coordDeriv i (fun y => (f y)⁻¹) x = -(f x)⁻¹ ^ (2 : ℕ) * coordDeriv i f x := by
   simp only [coordDeriv, (field_inv_hasFDerivAt hf hx).fderiv, smul_apply, smul_eq_mul]
 
 /-- Reciprocal jets agree with actual local derivatives wherever the scalar value is nonzero. -/

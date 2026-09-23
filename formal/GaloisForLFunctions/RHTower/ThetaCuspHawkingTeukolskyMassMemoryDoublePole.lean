@@ -8,17 +8,17 @@ fundamental resonance it has a simple zero with nonzero derivative `d`. A statio
 insertion occurs between two copies of the retarded Green function. Its cross-helicity component
 therefore has local form
 
-`-B / J₀(omega)^2`,
+`-B / J₀(omega)^(2 : ℕ)`,
 
 where `B` is the nonzero scalar-minus-vector mass-variation projection derived in
 `ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer`. Consequently its normalized leading
-coefficient is exactly `-B / d^2`.
+coefficient is exactly `-B / d^(2 : ℕ)`.
 
 A direct, transient, or continuum return with one resonant Green factor has form
 
 `N(omega) / J₀(omega)`
 
-with `N` continuous at the resonance. Multiplication by `(omega-omega₀)^2` sends every such term
+with `N` continuous at the resonance. Multiplication by `(omega-omega₀)^(2 : ℕ)` sends every such term
 to zero, so no sum of one-Green terms can cancel the horizon-memory coefficient. This is a
 pole-order statement, not positivity or a QNM-completeness assumption.
 
@@ -83,7 +83,7 @@ theorem d4FundamentalQNMNormalizedPlusGreen_tendsto_residue (n : ℕ) (z : ℂ) 
 def d4ThetaTeukolskyChiralMassMemoryDoublePoleCoefficient
     (amplitude z : ℂ) : ℂ :=
   -d4FundamentalQNMNonlinearChiralSource amplitude z *
-    (teukolskyNormalizedJostOmegaDerivative 0)⁻¹ ^ 2
+    (teukolskyNormalizedJostOmegaDerivative 0)⁻¹ ^ (2 : ℕ)
 
 /-- Horizon-memory double-pole coefficient is theta-shadow even. -/
 theorem d4ThetaTeukolskyChiralMassMemoryDoublePoleCoefficient_shadow
@@ -116,7 +116,7 @@ theorem d4ThetaTeukolskyChiralMassMemoryDoublePoleCoefficient_xi_ne_zero_iff
 def d4ThetaTeukolskyChiralMassMemoryGreenInsertion
     (amplitude z omega : ℂ) : ℂ :=
   -d4FundamentalQNMNonlinearChiralSource amplitude z *
-    d4FundamentalQNMNormalizedPlusGreen z omega ^ 2
+    d4FundamentalQNMNormalizedPlusGreen z omega ^ (2 : ℕ)
 
 /-- Mass-memory insertion plus an arbitrary one-Green source return. -/
 def d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion
@@ -133,7 +133,7 @@ theorem d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion_tendsto_doublePoleCoe
     Tendsto
       (fun omega : ℂ =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMPlus 0
-            (xiSpectralPoint q)) ^ 2 *
+            (xiSpectralPoint q)) ^ (2 : ℕ) *
           d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion
             amplitude (xiSpectralPoint q) directNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMPlus 0 (xiSpectralPoint q)))
@@ -157,7 +157,7 @@ theorem d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion_tendsto_doublePoleCoe
       (𝓝 (directNumerator sigma)) :=
     hN.tendsto.mono_left nhdsWithin_le_nhds
   have hmemory : Tendsto
-      (fun omega => x omega ^ 2 *
+      (fun omega => x omega ^ (2 : ℕ) *
         d4ThetaTeukolskyChiralMassMemoryGreenInsertion
           amplitude (xiSpectralPoint q) omega)
       (𝓝[≠] sigma)
@@ -171,7 +171,7 @@ theorem d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion_tendsto_doublePoleCoe
       ring
     · simp [d4ThetaTeukolskyChiralMassMemoryDoublePoleCoefficient]
   have honeGreen : Tendsto
-      (fun omega => x omega ^ 2 * (directNumerator omega * G omega))
+      (fun omega => x omega ^ (2 : ℕ) * (directNumerator omega * G omega))
       (𝓝[≠] sigma) (𝓝 0) := by
     have h := hx.mul (hG.mul hNr)
     convert h using 1
@@ -194,7 +194,7 @@ theorem d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion_cannot_cancel
     ¬ Tendsto
       (fun omega : ℂ =>
         (omega - thetaCuspHawkingTopologicalBlackHoleQNMPlus 0
-            (xiSpectralPoint q)) ^ 2 *
+            (xiSpectralPoint q)) ^ (2 : ℕ) *
           d4ThetaTeukolskyChiralMassMemoryOneGreenCompletion
             amplitude (xiSpectralPoint q) directNumerator omega)
       (𝓝[≠] (thetaCuspHawkingTopologicalBlackHoleQNMPlus 0 (xiSpectralPoint q)))
@@ -230,7 +230,7 @@ def d4ThetaTeukolskyHermitianHorizonMemoryCuspWeight (z : ℂ) : ℂ :=
   d4ThetaTeukolskyLinearCuspWeight z +
     star (d4ThetaTeukolskyLinearCuspWeight z)
 
-/-- Cusp weight of the cubic returned field `A * |A|^2`. -/
+/-- Cusp weight of the cubic returned field `A * |A|^(2 : ℕ)`. -/
 def d4ThetaTeukolskyCubicHorizonMemoryReturnCuspWeight (z : ℂ) : ℂ :=
   d4ThetaTeukolskyLinearCuspWeight z +
     d4ThetaTeukolskyHermitianHorizonMemoryCuspWeight z

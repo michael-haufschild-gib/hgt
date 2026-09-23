@@ -5,11 +5,11 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 # The inverse two-sided weight is a bounded multiplier
 
 The logarithmic derivative `v = K\sinh(Kt)/\cosh(Kt)` of the two-sided weight satisfies the closed
-equation `v' = K^2 - v^2`, so every derivative of `v` is a polynomial in `v`; since `|v| \le |K|`,
+equation `v' = K^(2 : ℕ) - v^(2 : ℕ)`, so every derivative of `v` is a polynomial in `v`; since `|v| \le |K|`,
 all of them are bounded.  The weight itself satisfies `u' = -vu`, so the Leibniz rule bounds every
 derivative of `u` by strong induction.
 
-* `deningerSechLog` : `v = K\sinh(Kt)/\cosh(Kt)`, with `v' = K^2 - v^2`.
+* `deningerSechLog` : `v = K\sinh(Kt)/\cosh(Kt)`, with `v' = K^(2 : ℕ) - v^(2 : ℕ)`.
 * `deningerSechWeight` : `u = 1/(2\cosh(Kt))`, with `u' = -vu`.
 * `deningerSechMultiplier` : **`u` as a bounded multiplier of the source.**
 -/
@@ -31,7 +31,7 @@ theorem deningerCosh_ne_zero (K t : ℝ) : Real.cosh (K * t) ≠ 0 :=
 
 /-- **The logarithmic derivative satisfies the closed equation `v' = K² - v²`.** -/
 theorem deningerSechLog_hasDerivAt (K t : ℝ) :
-    HasDerivAt (deningerSechLog K) (K ^ 2 - (deningerSechLog K t) ^ 2) t := by
+    HasDerivAt (deningerSechLog K) (K ^ (2 : ℕ) - (deningerSechLog K t) ^ (2 : ℕ)) t := by
   have hc : HasDerivAt (fun s : ℝ => Real.cosh (K * s)) (Real.sinh (K * t) * K) t :=
     (Real.hasDerivAt_cosh (K * t)).comp t ((hasDerivAt_id t).const_mul K |>.congr_deriv (by ring))
   have hs : HasDerivAt (fun s : ℝ => K * Real.sinh (K * s)) (K * (Real.cosh (K * t) * K)) t :=
@@ -54,7 +54,7 @@ theorem deningerSechLog_abs_le (K t : ℝ) : |deningerSechLog K t| ≤ |K| := by
   have hpos := Real.cosh_pos (K * t)
   have hpy := Real.cosh_sq_sub_sinh_sq (K * t)
   have hsin : |Real.sinh (K * t)| ≤ Real.cosh (K * t) := by
-    have hsq : Real.sinh (K * t) ^ 2 ≤ Real.cosh (K * t) ^ 2 := by nlinarith [hpy]
+    have hsq : Real.sinh (K * t) ^ (2 : ℕ) ≤ Real.cosh (K * t) ^ (2 : ℕ) := by nlinarith [hpy]
     nlinarith [sq_abs (Real.sinh (K * t)), abs_nonneg (Real.sinh (K * t)), hpos, hsq]
   rw [deningerSechLog, abs_div, abs_mul, abs_of_pos hpos, div_le_iff₀ hpos]
   nlinarith [abs_nonneg K, hsin, hpos]
@@ -67,11 +67,11 @@ theorem deningerSechLog_iteratedDeriv_poly (K : ℝ) (j : ℕ) :
   | zero => exact ⟨Polynomial.X, by funext t; simp [iteratedDeriv_zero]⟩
   | succ j ih =>
     obtain ⟨P, hP⟩ := ih
-    refine ⟨P.derivative * (Polynomial.C (K ^ 2) - Polynomial.X ^ 2), ?_⟩
+    refine ⟨P.derivative * (Polynomial.C (K ^ (2 : ℕ)) - Polynomial.X ^ (2 : ℕ)), ?_⟩
     rw [iteratedDeriv_succ, hP]
     funext t
     have hd : HasDerivAt (fun s : ℝ => P.eval (deningerSechLog K s))
-        (P.derivative.eval (deningerSechLog K t) * (K ^ 2 - (deningerSechLog K t) ^ 2)) t :=
+        (P.derivative.eval (deningerSechLog K t) * (K ^ (2 : ℕ) - (deningerSechLog K t) ^ (2 : ℕ))) t :=
       (P.hasDerivAt (deningerSechLog K t)).comp t (deningerSechLog_hasDerivAt K t)
     rw [hd.deriv]
     simp

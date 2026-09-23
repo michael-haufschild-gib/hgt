@@ -25,7 +25,7 @@ prolate eigenvalue above `-K`. -/
 theorem exists_joint_even_prolate_eigen_gt
     {c lam K : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
     {u : evenBandEigenspace c lam}
-    (hu : -K * ‖u‖ ^ 2 < (inner ℝ (prolateOnEvenEigenspace hc hlam u) u : ℝ)) :
+    (hu : -K * ‖u‖ ^ (2 : ℕ) < (inner ℝ (prolateOnEvenEigenspace hc hlam u) u : ℝ)) :
     ∃ (eta : ℝ) (Phi : ℝ → ℝ), -K < eta ∧
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi ∧ Phi ≠ 0 ∧ Function.Even Phi ∧
       (∀ x : ℝ, bandTransform c Phi x = lam * Phi x) ∧
@@ -41,7 +41,7 @@ theorem exists_joint_even_prolate_eigen_gt
   have hexists : ∃ j : Fin m, -K < ev j := by
     by_contra hall
     push Not at hall
-    have hquad : (inner ℝ (T u) u : ℝ) = ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ 2 := by
+    have hquad : (inner ℝ (T u) u : ℝ) = ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) := by
       have h1 := b.sum_inner_mul_inner (T u) u
       rw [← h1]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -51,13 +51,13 @@ theorem exists_joint_even_prolate_eigen_gt
         norm_cast
       rw [h2]
       ring
-    have hnorm : ‖u‖ ^ 2 = ∑ j : Fin m, (inner ℝ (b j) u : ℝ) ^ 2 := by
+    have hnorm : ‖u‖ ^ (2 : ℕ) = ∑ j : Fin m, (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) := by
       have h := b.sum_sq_norm_inner_right u
       rw [← h]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Real.norm_eq_abs, sq_abs]
-    have hle : ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ 2
-        ≤ ∑ j : Fin m, (-K) * (inner ℝ (b j) u : ℝ) ^ 2 :=
+    have hle : ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ)
+        ≤ ∑ j : Fin m, (-K) * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) :=
       Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hall i) (sq_nonneg _)
     rw [← Finset.mul_sum, ← hnorm] at hle
     linarith [hquad, hle]

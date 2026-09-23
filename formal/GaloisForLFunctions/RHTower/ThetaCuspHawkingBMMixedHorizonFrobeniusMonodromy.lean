@@ -34,7 +34,7 @@ collides with the regular exponent-`N+1` branch. -/
 def d4HypergeometricResonantTruncationTopCoefficient
     (N : ℕ) (a b : ℂ) : ℂ :=
   (-1 : ℂ) ^ N * (ascPochhammer ℂ N).eval a * (ascPochhammer ℂ N).eval b /
-    ((N.factorial : ℂ) ^ 2)
+    ((N.factorial : ℂ) ^ (2 : ℕ))
 
 /-- Coefficient of the regular exponent-`N+1` solution times `log z` at `c = -N`. -/
 def d4HypergeometricResonantFrobeniusLogCoefficient

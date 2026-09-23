@@ -18,7 +18,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalLaplaceIntegralInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- The actual completed vector orbit with strictly positive exponential damping. -/
 def causalLaplaceOrbit (a : ℝ) (u : hardyL2ᗮ) (r : ℝ) : hardyL2ᗮ :=

@@ -202,7 +202,7 @@ theorem memSchattenClass_one_of_isPositive_of_summable_diagonal
         rw [← ContinuousLinearMap.comp_apply, hR2]
       _ = inner ℂ (R (b i)) (R (b i)) :=
         (hRself.isSymmetric (b i) (R (b i))).symm
-      _ = ((‖R (b i)‖ ^ 2 : ℝ) : ℂ) := by
+      _ = ((‖R (b i)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
         rw [inner_self_eq_norm_sq_to_K]
         push_cast
         rfl

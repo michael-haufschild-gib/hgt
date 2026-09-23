@@ -8,7 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 The normalized complex-rate Gamma-half kernel is integrable in the positive-rate
 half-plane. Convolution with a causal exponential supplies an explicit pole-clearing
-filter, whose Laplace transform has square `(s+w)/(s+3)^2`.
+filter, whose Laplace transform has square `(s+w)/(s+3)^(2 : ℕ)`.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -197,7 +197,7 @@ theorem causalComplexLaplace_filteredGammaHalf {s w : ℂ}
 
 theorem causalComplexLaplace_filteredGammaHalf_sq {s w : ℂ}
     (hs : 0 ≤ s.re) (hw : 0 < w.re) :
-    causalComplexLaplace s (filteredGammaHalf w) ^ 2 = (s+w)/(s+3)^2 := by
+    causalComplexLaplace s (filteredGammaHalf w) ^ 2 = (s+w)/(s+3)^(2 : ℕ) := by
   have hw0 : s+w ≠ 0 := by
     intro h
     have hr := congrArg Complex.re h

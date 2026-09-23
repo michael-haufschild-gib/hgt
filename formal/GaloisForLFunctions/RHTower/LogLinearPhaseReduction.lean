@@ -77,10 +77,10 @@ theorem logLinearPhase_le_exp (B : ℝ) {v : ℝ} (hv : -1 < v) :
 /-- **Two-sided quadratic control of the phase drop.**  On `|v| ≤ 1` the phase falls off from its
 stationary value like `t₀ v²`, with absolute constants. -/
 theorem logLinearPhase_drop_bounds (B : ℝ) {v : ℝ} (hv : -1 < v) (hv1 : v ≤ 1) :
-    Real.exp B * (v ^ 2 / 4)
+    Real.exp B * (v ^ (2 : ℕ) / 4)
         ≤ logLinearPhase B (Real.exp B) - logLinearPhase B (Real.exp B * (1 + v)) ∧
       logLinearPhase B (Real.exp B) - logLinearPhase B (Real.exp B * (1 + v))
-        ≤ Real.exp B * v ^ 2 := by
+        ≤ Real.exp B * v ^ (2 : ℕ) := by
   have h := logLinearPhase_sub_eq B hv
   have hE : (0 : ℝ) < Real.exp B := Real.exp_pos B
   constructor

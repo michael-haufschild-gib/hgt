@@ -42,7 +42,7 @@ theorem correlationDistance_compactBuresDualCorrelation {n : ℕ}
 
 theorem correlationDistance_compactBuresDualCorrelation_sq {n : ℕ}
     (data : CompactBuresCorrelationData n) :
-    correlationDistance (compactBuresDualCorrelation data) ^ 2 =
+    correlationDistance (compactBuresDualCorrelation data) ^ (2 : ℕ) =
       2 * (1 - compactBuresDualCapacity data.source data.targets) := by
   exact correlationDistance_sq (compactBuresDualCorrelation data)
 

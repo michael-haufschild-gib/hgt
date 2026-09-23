@@ -69,14 +69,14 @@ theorem matrixDysonInfinityPolynomial_vanishes_zero_iff
 theorem matrixDysonInfinityPolynomial_rescaled_vanishes_iff
     (A : K → Matrix I I ℂ) (z : ℂ) (hz : z ≠ 0) (G : Matrix I I ℂ) :
     (∀ i j, MvPolynomial.eval
-        (matrixDysonInfinityPoint (z⁻¹ ^ 2) (z • G))
+        (matrixDysonInfinityPoint (z⁻¹ ^ (2 : ℕ)) (z • G))
         (matrixDysonInfinityPolynomial A i j) = 0) ↔
       ∀ i j, MvPolynomial.eval (matrixDysonPoint z G)
         (matrixDysonPolynomial A i j) = 0 := by
   rw [matrixDysonInfinityPolynomial_vanishes_iff,
     matrixDysonPolynomial_vanishes_iff, matrixSemicircleCovariance_smul]
   simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul]
-  have hzscale : z⁻¹ ^ 2 * (z * z) = 1 := by field_simp
+  have hzscale : z⁻¹ ^ (2 : ℕ) * (z * z) = 1 := by field_simp
   rw [hzscale, one_smul]
 
 /-- Formal entry Jacobian of the infinity system at its distinguished fiber point. -/

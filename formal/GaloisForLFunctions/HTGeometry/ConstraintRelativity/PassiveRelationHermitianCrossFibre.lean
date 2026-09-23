@@ -9,7 +9,7 @@ Exact real-form completion of the passive relation card's joint-system theorems:
 * `Herm₀(A ⊗ B) = L ⊕⊥ C` for Hilbert--Schmidt pairing;
 * `C = ker (Tr_B / dim B, Tr_A / dim A)`;
 * `C = Herm₀(A) ⊗ℝ Herm₀(B)` under Kronecker realization;
-* `dimℝ C = (dim(A)^2 - 1)(dim(B)^2 - 1)`;
+* `dimℝ C = (dim(A)^(2 : ℕ) - 1)(dim(B)^(2 : ℕ) - 1)`;
 * first-order Hermitian locality iff the Hamiltonian is local plus a real scalar.
 -/
 

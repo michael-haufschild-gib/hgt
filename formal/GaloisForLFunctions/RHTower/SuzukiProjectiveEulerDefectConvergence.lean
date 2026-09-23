@@ -8,7 +8,7 @@ The compactified Donoghue transform has a nonzero common endpoint value,
 which is exactly the linear Nevanlinna escape mode.  The Euler defect replaces
 its kernel by
 
-`((t : ℂ) * (z^2 - 1) + 2z) / ((t : ℂ) - z)^2`.
+`((t : ℂ) * (z^(2 : ℕ) - 1) + 2z) / ((t : ℂ) - z)^(2 : ℕ)`.
 
 This kernel vanishes at both projective endpoints.  It therefore extends by
 zero to the compact projective interval and weak convergence of compactified

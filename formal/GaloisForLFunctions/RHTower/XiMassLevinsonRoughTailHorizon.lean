@@ -159,7 +159,7 @@ theorem prime_isApertureRough {M p : ℕ} (hp : p.Prime) (hMp : M < p) :
   omega
 
 theorem prime_sq_isApertureRough {M p : ℕ} (hp : p.Prime) (hMp : M < p) :
-    IsApertureRough M (p ^ 2) := by
+    IsApertureRough M (p ^ (2 : ℕ)) := by
   intro q hq hqp
   have hqdp : q ∣ p := hq.dvd_of_dvd_pow hqp
   have hqp' : q = p := (Nat.prime_dvd_prime_iff_eq hq hp).mp hqdp
@@ -261,21 +261,21 @@ theorem not_forall_levinsonReciprocalDetectorCombinationCoeff_eq_truePrime_of_ro
       hall p hp.pos (prime_isApertureRough hp hMp)
   obtain ⟨p, hpM, hp⟩ := Nat.exists_infinite_primes (M + 1)
   have hMp : M < p := by omega
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2rough : IsApertureRough M (p ^ 2) :=
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2rough : IsApertureRough M (p ^ (2 : ℕ)) :=
     prime_sq_isApertureRough hp hMp
-  have hp2not : ¬(p ^ 2).Prime := Nat.Prime.not_prime_pow (by norm_num)
+  have hp2not : ¬(p ^ (2 : ℕ)).Prime := Nat.Prime.not_prime_pow (by norm_num)
   have hclass :=
     levinsonReciprocalDetectorCombinationCoeff_eq_log_of_primeCorrectOnRoughTail
       hlegal hbound hcorrect hp2pos hp2rough
-  have hzero : levinsonReciprocalDetectorCombinationCoeff S alpha (p ^ 2) = 0 := by
+  have hzero : levinsonReciprocalDetectorCombinationCoeff S alpha (p ^ (2 : ℕ)) = 0 := by
     simpa only [truePrimeLogHalfDensityCoeff, if_neg hp2not] using
-      hall (p ^ 2) hp2pos hp2rough
-  have hlogpos : 0 < Real.log (((p ^ 2 : ℕ) : ℝ)) := by
-    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ 2 by nlinarith [hp.two_le]))
+      hall (p ^ (2 : ℕ)) hp2pos hp2rough
+  have hlogpos : 0 < Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) := by
+    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ (2 : ℕ) by nlinarith [hp.two_le]))
   have hnonzero :
-      (Real.log (((p ^ 2 : ℕ) : ℝ)) : ℂ) *
-          (((1 / Real.sqrt (((p ^ 2 : ℕ) : ℝ)) : ℝ)) : ℂ) ≠ 0 :=
+      (Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) : ℂ) *
+          (((1 / Real.sqrt (((p ^ (2 : ℕ) : ℕ) : ℝ)) : ℝ)) : ℂ) ≠ 0 :=
     mul_ne_zero (by exact_mod_cast (ne_of_gt hlogpos))
       (one_div_sqrt_nat_cast_ne_zero hp2pos)
   apply hnonzero
@@ -342,23 +342,23 @@ theorem exists_primeSquare_rough_levinsonReciprocalSecant_ne_truePrime
           truePrimeLogHalfDensityCoeff n := by
   obtain ⟨p, hpM, hp⟩ := Nat.exists_infinite_primes (M₂ + 1)
   have hM₂p : M₂ < p := by omega
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2not : ¬(p ^ 2).Prime := Nat.Prime.not_prime_pow (by norm_num)
-  have hp2rough : IsApertureRough M₂ (p ^ 2) :=
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2not : ¬(p ^ (2 : ℕ)).Prime := Nat.Prime.not_prime_pow (by norm_num)
+  have hp2rough : IsApertureRough M₂ (p ^ (2 : ℕ)) :=
     prime_sq_isApertureRough hp hM₂p
-  have hsquare : M₂ * M₂ < p ^ 2 := by
+  have hsquare : M₂ * M₂ < p ^ (2 : ℕ) := by
     calc
       M₂ * M₂ < p * M₂ := (Nat.mul_lt_mul_right (by omega)).2 hM₂p
       _ < p * p := (Nat.mul_lt_mul_left hp.pos).2 hM₂p
-      _ = p ^ 2 := by ring
-  refine ⟨p ^ 2, hsquare, hp2rough, hp2not, ?_⟩
+      _ = p ^ (2 : ℕ) := by ring
+  refine ⟨p ^ (2 : ℕ), hsquare, hp2rough, hp2not, ?_⟩
   rw [levinsonReciprocalMollifiedCriticalDetectorCoeff_secant_eq_log_of_rough
     hM₁ hM₁M₂ hp2pos hp2rough,
     truePrimeLogHalfDensityCoeff, if_neg hp2not, mul_zero]
   have hslope : levinsonReciprocalApertureSlope M₁ M₂ ≠ 0 :=
     levinsonReciprocalApertureSlope_ne_zero hM₁ hM₁M₂
-  have hlogpos : 0 < Real.log (((p ^ 2 : ℕ) : ℝ)) :=
-    Real.log_pos (by exact_mod_cast (show 1 < p ^ 2 by nlinarith [hp.two_le]))
+  have hlogpos : 0 < Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) :=
+    Real.log_pos (by exact_mod_cast (show 1 < p ^ (2 : ℕ) by nlinarith [hp.two_le]))
   exact_mod_cast div_ne_zero (mul_ne_zero hslope (ne_of_gt hlogpos))
     (ne_of_gt (Real.sqrt_pos.2 (by exact_mod_cast hp2pos)))
 

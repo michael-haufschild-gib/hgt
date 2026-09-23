@@ -190,41 +190,41 @@ Montgomery--Vaughan Theorem 24.7.  The zero-distance branch is absorbed by
 the trivial term; away from it one gains the reciprocal square. -/
 theorem fejerScale_finitePhaseProgression_le
     {H : ℕ} (hH : H ≠ 0) (x : ℝ) :
-    (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ 2 ≤
+    (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤
       if unitPhaseDistance x = 0 then
         2 * (H : ℝ)
       else
         min (2 * (H : ℝ))
-          (1 / (2 * (H : ℝ) * unitPhaseDistance x ^ 2)) := by
+          (1 / (2 * (H : ℝ) * unitPhaseDistance x ^ (2 : ℕ))) := by
   have hHr : (0 : ℝ) < H := by exact_mod_cast Nat.pos_of_ne_zero hH
   split_ifs with hx
   · have hlength := norm_finitePhaseProgression_le_length H x
-    have hsquare : ‖finitePhaseProgression H x‖ ^ 2 ≤ (H : ℝ) ^ 2 :=
+    have hsquare : ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤ (H : ℝ) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hlength 2
     calc
-      (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ 2 ≤
-          (2 / (H : ℝ)) * (H : ℝ) ^ 2 := by gcongr
+      (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤
+          (2 / (H : ℝ)) * (H : ℝ) ^ (2 : ℕ) := by gcongr
       _ = 2 * (H : ℝ) := by field_simp
   · have hlength := norm_finitePhaseProgression_le_length H x
     have hinv := norm_finitePhaseProgression_le_inv_distance H hx
     have hdist : 0 < unitPhaseDistance x :=
       lt_of_le_of_ne (norm_nonneg _) (Ne.symm hx)
     apply le_min
-    · have hsquare : ‖finitePhaseProgression H x‖ ^ 2 ≤ (H : ℝ) ^ 2 :=
+    · have hsquare : ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤ (H : ℝ) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hlength 2
       calc
-        (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ 2 ≤
-            (2 / (H : ℝ)) * (H : ℝ) ^ 2 := by gcongr
+        (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤
+            (2 / (H : ℝ)) * (H : ℝ) ^ (2 : ℕ) := by gcongr
         _ = 2 * (H : ℝ) := by field_simp
     · have hsquare :
-          ‖finitePhaseProgression H x‖ ^ 2 ≤
-            (1 / (2 * unitPhaseDistance x)) ^ 2 := by
+          ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤
+            (1 / (2 * unitPhaseDistance x)) ^ (2 : ℕ) := by
         exact pow_le_pow_left₀ (norm_nonneg _) hinv 2
       calc
-        (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ 2 ≤
-            (2 / (H : ℝ)) * (1 / (2 * unitPhaseDistance x)) ^ 2 := by
+        (2 / (H : ℝ)) * ‖finitePhaseProgression H x‖ ^ (2 : ℕ) ≤
+            (2 / (H : ℝ)) * (1 / (2 * unitPhaseDistance x)) ^ (2 : ℕ) := by
           gcongr
-        _ = 1 / (2 * (H : ℝ) * unitPhaseDistance x ^ 2) := by
+        _ = 1 / (2 * (H : ℝ) * unitPhaseDistance x ^ (2 : ℕ)) := by
           field_simp
 
 theorem finiteFejerKernel_le
@@ -234,7 +234,7 @@ theorem finiteFejerKernel_le
         2 * (H : ℝ)
       else
         min (2 * (H : ℝ))
-          (1 / (2 * (H : ℝ) * unitPhaseDistance x ^ 2)) := by
+          (1 / (2 * (H : ℝ) * unitPhaseDistance x ^ (2 : ℕ))) := by
   simpa [finiteFejerKernel, Complex.normSq_eq_norm_sq] using
     fejerScale_finitePhaseProgression_le hH x
 

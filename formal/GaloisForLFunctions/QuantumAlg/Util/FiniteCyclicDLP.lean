@@ -670,7 +670,7 @@ end RecoverableGoodOutput
 
 /-- Aggregate source certificate for Shor good outputs over a full sampling
 experiment. The fields keep Shor's constants visible: per-good-state
-probability `1/(20q^2)`, at least `q/12` good `(c,d)` pairs, and single-run
+probability `1/(20q^(2 : ℕ))`, at least `q/12` good `(c,d)` pairs, and single-run
 good-output probability at least `1/480` [Sho95, source.tex:1875-1905]. The
 `successNumerator/successDenominator` fields represent the repeated-sampling
 and CRT post-processing bound used by the final finite-cyclic DLP endpoint

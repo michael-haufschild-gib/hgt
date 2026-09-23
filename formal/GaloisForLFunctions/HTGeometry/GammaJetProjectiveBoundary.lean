@@ -119,7 +119,7 @@ theorem bellVal_div_pow_tendsto_one (n : ℕ) {σ : ℝ} (hσ : 0 < σ) :
   induction n with
   | zero =>
       have h : (fun t : ℝ => bellVal 0 ((σ : ℂ) + (t : ℂ) * Complex.I) /
-          (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ 0) = fun _ => 1 := by
+          (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (0 : ℕ)) = fun _ => 1 := by
         funext t; simp [bellVal, gammaBell]
       rw [h]; exact tendsto_const_nhds
   | succ n ih =>

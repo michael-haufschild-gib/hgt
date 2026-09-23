@@ -23,8 +23,8 @@ noncomputable def suzukiCoreAutocorrelation {a : ℝ}
   screwCrossCorr u u
 
 private theorem core_square_integrable' {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
-    Integrable (fun x : ℝ => u x ^ 2) := by
-  have hsupp : Function.support (fun x : ℝ => u x ^ 2) ⊆
+    Integrable (fun x : ℝ => u x ^ (2 : ℕ)) := by
+  have hsupp : Function.support (fun x : ℝ => u x ^ (2 : ℕ)) ⊆
       Icc (-u.supportRadius) u.supportRadius := by
     intro x hx
     exact u.support_subset (fun hzero => hx (by simp [hzero]))
@@ -39,7 +39,7 @@ private theorem core_cross_integrable' {a : ℝ} (u : SuzukiRestrictedWeilCore a
     |>.integrable_of_hasCompactSupport hsupp
 
 theorem suzukiCoreAutocorrelation_zero {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
-    suzukiCoreAutocorrelation u 0 = ∫ x : ℝ, u x ^ 2 := by
+    suzukiCoreAutocorrelation u 0 = ∫ x : ℝ, u x ^ (2 : ℕ) := by
   unfold suzukiCoreAutocorrelation screwCrossCorr
   refine integral_congr_ae (ae_of_all _ fun x => ?_)
   simp only [zero_add]
@@ -70,23 +70,23 @@ theorem suzukiRealTranslationDifferenceEnergy_eq_autocorrelation
     suzukiRealTranslationDifferenceEnergy u h =
       2 * (suzukiCoreAutocorrelation u 0 - suzukiCoreAutocorrelation u h) := by
   have hu2 := core_square_integrable' u
-  have hushift : Integrable (fun x : ℝ => u (x + h) ^ 2) := hu2.comp_add_right h
+  have hushift : Integrable (fun x : ℝ => u (x + h) ^ (2 : ℕ)) := hu2.comp_add_right h
   have hcross := core_cross_integrable' u h
-  have hshift : (∫ x : ℝ, u (x + h) ^ 2) = ∫ x : ℝ, u x ^ 2 := by
-    simpa using integral_add_right_eq_self (μ := volume) (fun x : ℝ => u x ^ 2) h
+  have hshift : (∫ x : ℝ, u (x + h) ^ (2 : ℕ)) = ∫ x : ℝ, u x ^ (2 : ℕ) := by
+    simpa using integral_add_right_eq_self (μ := volume) (fun x : ℝ => u x ^ (2 : ℕ)) h
   have hexpand :
-      (∫ x : ℝ, (u x - u (x + h)) ^ 2) =
-        (∫ x : ℝ, u x ^ 2) + (∫ x : ℝ, u (x + h) ^ 2) -
+      (∫ x : ℝ, (u x - u (x + h)) ^ (2 : ℕ)) =
+        (∫ x : ℝ, u x ^ (2 : ℕ)) + (∫ x : ℝ, u (x + h) ^ (2 : ℕ)) -
           2 * ∫ x : ℝ, u x * u (x + h) := by
     calc
-      (∫ x : ℝ, (u x - u (x + h)) ^ 2) =
-          ∫ x : ℝ, (u x ^ 2 + u (x + h) ^ 2) - 2 * (u x * u (x + h)) := by
+      (∫ x : ℝ, (u x - u (x + h)) ^ (2 : ℕ)) =
+          ∫ x : ℝ, (u x ^ (2 : ℕ) + u (x + h) ^ (2 : ℕ)) - 2 * (u x * u (x + h)) := by
             refine integral_congr_ae (ae_of_all _ fun x => ?_)
             ring
-      _ = (∫ x : ℝ, u x ^ 2 + u (x + h) ^ 2) -
+      _ = (∫ x : ℝ, u x ^ (2 : ℕ) + u (x + h) ^ (2 : ℕ)) -
           ∫ x : ℝ, 2 * (u x * u (x + h)) :=
         integral_sub (hu2.add hushift) (hcross.const_mul 2)
-      _ = (∫ x : ℝ, u x ^ 2) + (∫ x : ℝ, u (x + h) ^ 2) -
+      _ = (∫ x : ℝ, u x ^ (2 : ℕ)) + (∫ x : ℝ, u (x + h) ^ (2 : ℕ)) -
           2 * ∫ x : ℝ, u x * u (x + h) := by
         rw [MeasureTheory.integral_add hu2 hushift,
           MeasureTheory.integral_const_mul]
@@ -154,7 +154,7 @@ theorem centeredCauchyFinitePart_suzukiCoreAutocorrelation
     rw [← hneg]
     rw [intervalIntegral_congr_Ioo' hR.le hleftPoint,
       ← intervalIntegral.integral_const_mul]
-  have hc0 : c 0 = ∫ x : ℝ, u x ^ 2 := by
+  have hc0 : c 0 = ∫ x : ℝ, u x ^ (2 : ℕ) := by
     exact suzukiCoreAutocorrelation_zero u
   have henergy := suzukiFinitePartEnergy_eq_translationDifference A u
   dsimp only [R, c, D] at hright hleft hc0 ⊢
@@ -342,7 +342,7 @@ theorem suzuki_equation_two_four_correlation
     (u : SuzukiRestrictedWeilCore A.1) :
     (∫ t in (-(2 * A.1))..(2 * A.1),
       |t| * Real.log |t| * screwCrossCorr (deriv u) (deriv u) t) =
-      2 * suzukiFinitePartEnergy A.1 u - 2 * ∫ x : ℝ, u x ^ 2 := by
+      2 * suzukiFinitePartEnergy A.1 u - 2 * ∫ x : ℝ, u x ^ (2 : ℕ) := by
   let R : ℝ := 2 * A.1
   let c : ℝ → ℝ := suzukiCoreAutocorrelation u
   let c' : ℝ → ℝ := fun t => screwCrossCorr u (deriv u) t
@@ -526,7 +526,7 @@ theorem suzuki_equation_two_four
     (u : SuzukiRestrictedWeilCore A.1) :
     (∫ x in (-A.1)..A.1, ∫ y in (-A.1)..A.1,
       |x - y| * Real.log |x - y| * deriv u y * deriv u x) =
-      2 * suzukiFinitePartEnergy A.1 u - 2 * ∫ x : ℝ, u x ^ 2 := by
+      2 * suzukiFinitePartEnergy A.1 u - 2 * ∫ x : ℝ, u x ^ (2 : ℕ) := by
   rw [suzukiLogDerivativeDoubleInterval_eq_diffBilinForm A u,
     diffBilinForm_eq_correlation_pairing
       (fun t : ℝ => |t| * Real.log |t|) (deriv u) (deriv u)

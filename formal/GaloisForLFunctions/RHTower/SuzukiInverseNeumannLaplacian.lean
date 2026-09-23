@@ -6,7 +6,7 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 # The inverse Neumann Laplacian on a symmetric interval
 
 On `(-a,a)` the differentiation operator `D = i d/dx` with Dirichlet boundary conditions maps
-`H_0^1(-a,a)` bijectively onto the mean-zero space `L_0^2(-a,a)`, and for `u = Dv` the `L²` mass of
+`H_0^(1 : ℕ)(-a,a)` bijectively onto the mean-zero space `L_0^(2 : ℕ)(-a,a)`, and for `u = Dv` the `L²` mass of
 the primitive `v` is the quadratic form of a compact positive integral operator.  Two kernels
 represent that form:
 
@@ -29,7 +29,7 @@ condition.  Its range lies again in the mean-zero space, because every `N(x,·)`
 integral.
 
 Only interval integrability of the datum is assumed; every `L²` function on a bounded interval is
-interval integrable, so the statements below apply verbatim to `L_0^2(-a,a)`.
+interval integrable, so the statements below apply verbatim to `L_0^(2 : ℕ)(-a,a)`.
 -/
 
 open MeasureTheory Set intervalIntegral
@@ -64,14 +64,14 @@ theorem intervalIntegral_conj {f : ℝ → ℂ} (a b : ℝ) :
 /-- The Neumann Green kernel `N(x,y) = (x² + y²)/(4a) - |x - y|/2 + a/6` of `(-Δ_N)^{-1}` on
 `(-a,a)`. -/
 def suzukiNeumannGreenKernel (a x y : ℝ) : ℝ :=
-  (x ^ 2 + y ^ 2) / (4 * a) - |x - y| / 2 + a / 6
+  (x ^ (2 : ℕ) + y ^ (2 : ℕ)) / (4 * a) - |x - y| / 2 + a / 6
 
 /-- The prefix Gram kernel `a - max(x,y)`: the Gram kernel of the map sending `u` to its prefix
 integral. -/
 def suzukiPrefixGramKernel (a x y : ℝ) : ℝ := a - max x y
 
 /-- The separable profile by which the two kernels differ. -/
-def suzukiNeumannSplitProfile (a t : ℝ) : ℝ := t ^ 2 / (4 * a) + t / 2 - 5 * a / 12
+def suzukiNeumannSplitProfile (a t : ℝ) : ℝ := t ^ (2 : ℕ) / (4 * a) + t / 2 - 5 * a / 12
 
 theorem suzukiNeumannGreenKernel_symm (a x y : ℝ) :
     suzukiNeumannGreenKernel a x y = suzukiNeumannGreenKernel a y x := by
@@ -111,7 +111,7 @@ theorem suzukiNeumannGreenKernel_sub_prefixGramKernel (a x y : ℝ) :
 /-! ## The prefix primitive -/
 
 /-- The prefix primitive `v(x) = ∫_{-a}^x u(t) dt`, i.e. the inverse of `d/dx` on
-`H_0^1(-a,a)`. -/
+`H_0^(1 : ℕ)(-a,a)`. -/
 def suzukiPrefixPrimitive (a : ℝ) (u : ℝ → ℂ) (x : ℝ) : ℂ := ∫ t in (-a)..x, u t
 
 @[simp]
@@ -264,7 +264,7 @@ theorem continuousOn_prefixGram_operator {a : ℝ} (ha : 0 ≤ a) {u : ℝ → �
   exact intervalIntegral_prefixGramKernel_mul ha hu hx
 
 /-- **The prefix Gram form is the `L²` mass of the primitive.**  For `u = Dv` with
-`v ∈ H_0^1(-a,a)`, `‖v‖_{L²}² = ⟨K̃_a u, u⟩` with `K̃_a` the integral operator of kernel
+`v ∈ H_0^(1 : ℕ)(-a,a)`, `‖v‖_{L²}² = ⟨K̃_a u, u⟩` with `K̃_a` the integral operator of kernel
 `a - max(x,y)`. -/
 theorem intervalIntegral_prefixGram_form_eq_primitive_energy {a : ℝ} (ha : 0 ≤ a) {u : ℝ → ℂ}
     (hu : IntervalIntegrable u volume (-a) a) :
@@ -340,7 +340,7 @@ theorem intervalIntegral_neumannGreenKernel_mul_eq {a : ℝ} {u : ℝ → ℂ}
   simp [suzukiNeumannSplitConstant]
 
 /-- **Equality of the two quadratic forms on mean-zero data.**  The Neumann Green kernel and the
-prefix Gram kernel induce the same quadratic form on `L_0^2(-a,a)`. -/
+prefix Gram kernel induce the same quadratic form on `L_0^(2 : ℕ)(-a,a)`. -/
 theorem intervalIntegral_neumannGreen_form_eq_prefixGram_form {a : ℝ} (ha : 0 ≤ a) {u : ℝ → ℂ}
     (hu : IntervalIntegrable u volume (-a) a)
     (hmean : (∫ y in (-a)..a, u y) = 0) :
@@ -386,7 +386,7 @@ theorem suzuki_neumannGreen_form_eq_ofReal {a : ℝ} (ha : 0 ≤ a) {u : ℝ →
     (hmean : (∫ y in (-a)..a, u y) = 0) :
     (∫ x in (-a)..a,
         (∫ y in (-a)..a, ((suzukiNeumannGreenKernel a x y : ℝ) : ℂ) * u y) * conj (u x))
-      = ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [← suzuki_equation_802 ha hu hmean, ← intervalIntegral.integral_ofReal]
   refine intervalIntegral.integral_congr ?_
   intro t _
@@ -407,9 +407,9 @@ theorem suzuki_neumannGreen_form_nonneg {a : ℝ} (ha : 0 ≤ a) {u : ℝ → �
 /-! ## Every slice of the Neumann Green kernel has vanishing mean -/
 
 theorem intervalIntegral_abs_sub {a x : ℝ} (hx : x ∈ Icc (-a) a) :
-    (∫ y in (-a)..a, |x - y|) = ((x + a) ^ 2 + (a - x) ^ 2) / 2 := by
+    (∫ y in (-a)..a, |x - y|) = ((x + a) ^ (2 : ℕ) + (a - x) ^ (2 : ℕ)) / 2 := by
   obtain ⟨hx1, hx2⟩ := hx
-  have hlow : (∫ y in (-a)..x, |x - y|) = (x + a) ^ 2 / 2 := by
+  have hlow : (∫ y in (-a)..x, |x - y|) = (x + a) ^ (2 : ℕ) / 2 := by
     rw [show (∫ y in (-a)..x, |x - y|) = ∫ y in (-a)..x, (x - y) from
       intervalIntegral.integral_congr (fun y hy => by
         rw [uIcc_of_le hx1] at hy
@@ -418,7 +418,7 @@ theorem intervalIntegral_abs_sub {a x : ℝ} (hx : x ∈ Icc (-a) a) :
       (intervalIntegral.intervalIntegrable_id), intervalIntegral.integral_const,
       _root_.integral_id, smul_eq_mul]
     ring
-  have hup : (∫ y in x..a, |x - y|) = (a - x) ^ 2 / 2 := by
+  have hup : (∫ y in x..a, |x - y|) = (a - x) ^ (2 : ℕ) / 2 := by
     rw [show (∫ y in x..a, |x - y|) = ∫ y in x..a, (y - x) from
       intervalIntegral.integral_congr (fun y hy => by
         rw [uIcc_of_le hx2] at hy
@@ -437,24 +437,24 @@ theorem intervalIntegral_abs_sub {a x : ℝ} (hx : x ∈ Icc (-a) a) :
 
 /-- **Each slice of the Neumann Green kernel has vanishing mean.**  The constant `a/6` is
 exactly what makes `∫_{-a}^a N(x,y) dy = 0`, so the operator annihilates constants and, by
-symmetry of `N`, maps `L^2(-a,a)` into the mean-zero subspace. -/
+symmetry of `N`, maps `L^(2 : ℕ)(-a,a)` into the mean-zero subspace. -/
 theorem intervalIntegral_suzukiNeumannGreenKernel_right {a : ℝ} (ha : 0 < a) {x : ℝ}
     (hx : x ∈ Icc (-a) a) :
     (∫ y in (-a)..a, suzukiNeumannGreenKernel a x y) = 0 := by
   have ha0 : a ≠ 0 := ne_of_gt ha
   have hne : (4 : ℝ) * a ≠ 0 := by positivity
-  have hsq : IntervalIntegrable (fun y : ℝ => y ^ 2) volume (-a) a :=
+  have hsq : IntervalIntegrable (fun y : ℝ => y ^ (2 : ℕ)) volume (-a) a :=
     (Continuous.intervalIntegrable (by fun_prop) _ _)
   have habs : IntervalIntegrable (fun y : ℝ => |x - y|) volume (-a) a :=
     (Continuous.intervalIntegrable (by fun_prop) _ _)
   have hsplit : ∀ y : ℝ,
       suzukiNeumannGreenKernel a x y
-        = (x ^ 2 / (4 * a) + a / 6) + (y ^ 2 / (4 * a) - |x - y| / 2) := by
+        = (x ^ (2 : ℕ) / (4 * a) + a / 6) + (y ^ (2 : ℕ) / (4 * a) - |x - y| / 2) := by
     intro y
     unfold suzukiNeumannGreenKernel
     field_simp
     ring
-  have hsqval : (∫ y in (-a)..a, y ^ 2) = 2 * a ^ 3 / 3 := by
+  have hsqval : (∫ y in (-a)..a, y ^ (2 : ℕ)) = 2 * a ^ (3 : ℕ) / 3 := by
     rw [integral_pow]
     norm_num
     ring
@@ -584,7 +584,7 @@ theorem hasDerivAt_deriv_suzukiNeumannGreenOperator {a : ℝ} (ha : 0 < a) {u : 
 /-! ## The inverse Neumann Laplacian preserves the mean-zero subspace -/
 
 /-- The quadratic profile obtained by integrating `t ↦ t + a` from `s` to `a`. -/
-def suzukiNeumannTailProfile (a s : ℝ) : ℝ := (3 * a ^ 2 - 2 * a * s - s ^ 2) / 2
+def suzukiNeumannTailProfile (a s : ℝ) : ℝ := (3 * a ^ (2 : ℕ) - 2 * a * s - s ^ (2 : ℕ)) / 2
 
 theorem intervalIntegral_linear_tail (a s : ℝ) :
     (∫ t in s..a, ((t + a : ℝ) : ℂ)) = ((suzukiNeumannTailProfile a s : ℝ) : ℂ) := by
@@ -596,12 +596,12 @@ theorem intervalIntegral_linear_tail (a s : ℝ) :
   ring
 
 theorem suzukiNeumannSplitProfile_tail_identity {a : ℝ} (ha : a ≠ 0) (y : ℝ) :
-    2 * a * suzukiNeumannSplitProfile a y + suzukiNeumannTailProfile a y = 2 * a ^ 2 / 3 := by
+    2 * a * suzukiNeumannSplitProfile a y + suzukiNeumannTailProfile a y = 2 * a ^ (2 : ℕ) / 3 := by
   unfold suzukiNeumannSplitProfile suzukiNeumannTailProfile
   field_simp
   ring
 
-/-- **The inverse Neumann Laplacian maps `L_0^2(-a,a)` into itself.** -/
+/-- **The inverse Neumann Laplacian maps `L_0^(2 : ℕ)(-a,a)` into itself.** -/
 theorem intervalIntegral_suzukiNeumannGreenOperator_eq_zero {a : ℝ} (ha : 0 < a) {u : ℝ → ℂ}
     (hu : IntervalIntegrable u volume (-a) a) (hmean : (∫ y in (-a)..a, u y) = 0) :
     (∫ x in (-a)..a, suzukiNeumannGreenOperator a u x) = 0 := by
@@ -663,13 +663,13 @@ theorem intervalIntegral_suzukiNeumannGreenOperator_eq_zero {a : ℝ} (ha : 0 < 
   rw [show (∫ y in (-a)..a,
       (((2 * a * suzukiNeumannSplitProfile a y : ℝ) : ℂ) * u y
         + ((suzukiNeumannTailProfile a y : ℝ) : ℂ) * u y))
-      = ∫ y in (-a)..a, ((2 * a ^ 2 / 3 : ℝ) : ℂ) * u y from by
+      = ∫ y in (-a)..a, ((2 * a ^ (2 : ℕ) / 3 : ℝ) : ℂ) * u y from by
     refine intervalIntegral.integral_congr (fun y _ => ?_)
     rw [← add_mul, ← Complex.ofReal_add, suzukiNeumannSplitProfile_tail_identity ha0 y]]
   rw [intervalIntegral.integral_const_mul, hmean, mul_zero]
 
 
-/-! ## `D : H_0^1(-a,a) → L_0^2(-a,a)` is a bijection -/
+/-! ## `D : H_0^(1 : ℕ)(-a,a) → L_0^(2 : ℕ)(-a,a)` is a bijection -/
 
 /-- **Surjectivity.**  Every mean-zero datum is the derivative of a function vanishing at both
 endpoints, namely its own prefix primitive. -/
@@ -710,7 +710,7 @@ theorem suzukiNeumannGreenForm_eq_primitive_energy {a : ℝ} (ha : 0 ≤ a) {u :
     (hu : IntervalIntegrable u volume (-a) a)
     (hmean : (∫ y in (-a)..a, u y) = 0) :
     suzukiNeumannGreenForm a u
-      = ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ 2 : ℝ) : ℂ) :=
+      = ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
   suzuki_neumannGreen_form_eq_ofReal ha hu hmean
 
 /-- **Suzuki, equation (8.4).**  For `u = Dv` mean-zero, the Rayleigh quotient of any localized
@@ -721,7 +721,7 @@ generalized eigenvalue problem `G_a u = λ K_a u`. -/
 theorem suzuki_equation_804 {a : ℝ} (ha : 0 ≤ a) {u : ℝ → ℂ}
     (hu : IntervalIntegrable u volume (-a) a)
     (hmean : (∫ y in (-a)..a, u y) = 0) (Q : ℂ) :
-    Q / ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ 2 : ℝ) : ℂ)
+    Q / ((∫ t in (-a)..a, ‖suzukiPrefixPrimitive a u t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = Q / suzukiNeumannGreenForm a u := by
   rw [suzukiNeumannGreenForm_eq_primitive_energy ha hu hmean]
 

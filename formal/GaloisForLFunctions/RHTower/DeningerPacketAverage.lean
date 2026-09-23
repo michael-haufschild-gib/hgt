@@ -109,31 +109,31 @@ theorem deningerPacketAv_abs_le (f : C(X, ℝ)) :
 /-- **The average is bounded by the quadratic mean.**  This is the variance inequality: the mean of
 the square of the deviation is nonnegative. -/
 theorem deningerPacketAv_sq_le (f : C(X, ℝ)) :
-    (deningerPacketAv μ f) ^ 2 ≤ ∫ x, (f x) ^ 2 ∂μ := by
+    (deningerPacketAv μ f) ^ (2 : ℕ) ≤ ∫ x, (f x) ^ (2 : ℕ) ∂μ := by
   set c : ℝ := ∫ x, f x ∂μ with hc
   have hf := deningerPacketIntegrable μ f
-  have hsq : Integrable (fun x => (f x) ^ 2) μ :=
+  have hsq : Integrable (fun x => (f x) ^ (2 : ℕ)) μ :=
     (f.continuous.pow 2).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  have hexp : ∀ x : X, (f x - c) ^ 2 = (f x) ^ 2 - 2 * c * f x + c ^ 2 := by
+  have hexp : ∀ x : X, (f x - c) ^ (2 : ℕ) = (f x) ^ (2 : ℕ) - 2 * c * f x + c ^ (2 : ℕ) := by
     intro x
     ring
-  have hint : (∫ x, (f x - c) ^ 2 ∂μ) = (∫ x, (f x) ^ 2 ∂μ) - c ^ 2 := by
-    have h1 : (∫ x, (f x ^ 2 - 2 * c * f x + c ^ 2) ∂μ)
-        = (∫ x, (f x ^ 2 - 2 * c * f x) ∂μ) + ∫ _x : X, c ^ 2 ∂μ :=
+  have hint : (∫ x, (f x - c) ^ (2 : ℕ) ∂μ) = (∫ x, (f x) ^ (2 : ℕ) ∂μ) - c ^ (2 : ℕ) := by
+    have h1 : (∫ x, (f x ^ (2 : ℕ) - 2 * c * f x + c ^ (2 : ℕ)) ∂μ)
+        = (∫ x, (f x ^ (2 : ℕ) - 2 * c * f x) ∂μ) + ∫ _x : X, c ^ (2 : ℕ) ∂μ :=
       integral_add (hsq.sub (hf.const_mul (2 * c))) (integrable_const _)
-    have h2 : (∫ x, (f x ^ 2 - 2 * c * f x) ∂μ)
-        = (∫ x, f x ^ 2 ∂μ) - ∫ x, 2 * c * f x ∂μ :=
+    have h2 : (∫ x, (f x ^ (2 : ℕ) - 2 * c * f x) ∂μ)
+        = (∫ x, f x ^ (2 : ℕ) ∂μ) - ∫ x, 2 * c * f x ∂μ :=
       integral_sub hsq (hf.const_mul (2 * c))
     have h3 : (∫ x, 2 * c * f x ∂μ) = 2 * c * c := by
       rw [integral_const_mul, ← hc]
-    have h4 : (∫ _x : X, c ^ 2 ∂μ) = c ^ 2 := by
+    have h4 : (∫ _x : X, c ^ (2 : ℕ) ∂μ) = c ^ (2 : ℕ) := by
       rw [integral_const, probReal_univ, one_smul]
     rw [integral_congr_ae (Filter.Eventually.of_forall hexp), h1, h2, h3, h4]
     ring
-  have hnonneg : 0 ≤ ∫ x, (f x - c) ^ 2 ∂μ :=
+  have hnonneg : 0 ≤ ∫ x, (f x - c) ^ (2 : ℕ) ∂μ :=
     integral_nonneg fun x => sq_nonneg _
   rw [hint] at hnonneg
-  show c ^ 2 ≤ ∫ x, (f x) ^ 2 ∂μ
+  show c ^ (2 : ℕ) ≤ ∫ x, (f x) ^ (2 : ℕ) ∂μ
   linarith
 
 end PacketAverage

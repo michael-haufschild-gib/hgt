@@ -62,7 +62,7 @@ theorem squareCutoffStripMean_eq_original_above_half (q : XiZeroCopy) (y : ℝ) 
 /-- The actual residual Fourier mean has no omitted orbit correction above the proved threshold. -/
 theorem residualStripMean_eq_original_fourier_above_half (q : XiZeroCopy) (y : ℝ) (hy : 1/2 ≤ y) :
     residualStripMean q y = (1-cutoff ![0,y])*principalSquare q ![0,y]+
-      4*(∑' N, amplitude (center q) y N^2) := by
+      4*(∑' N, amplitude (center q) y N^(2 : ℕ)) := by
   rw [residualStripMean_eq_fourier q (by linarith),squareCutoffStripMean_eq_original_above_half q y hy]
   unfold nativeSquareCutoffHeight principalSquare
   ring

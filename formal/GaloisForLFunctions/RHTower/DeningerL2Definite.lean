@@ -24,8 +24,8 @@ variable {K : Type*} [Field K] [NumberField K]
 theorem deningerL2NormSq_eq_zero_places {x : K} (hx : x ≠ 0) (h : deningerL2NormSq x = 0) :
     (∀ v : InfinitePlace K, v x = 1) ∧ ∀ w : FinitePlace K, w x = 1 := by
   classical
-  set A : ℝ := ∑ v : InfinitePlace K, (v.mult : ℝ) * (Real.log (v x)) ^ 2 with hA
-  set B : ℝ := ∑ᶠ w : FinitePlace K, (Real.log (w x)) ^ 2 / (deningerPlaceDegree w : ℝ) with hB
+  set A : ℝ := ∑ v : InfinitePlace K, (v.mult : ℝ) * (Real.log (v x)) ^ (2 : ℕ) with hA
+  set B : ℝ := ∑ᶠ w : FinitePlace K, (Real.log (w x)) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ) with hB
   have hAnn : 0 ≤ A := Finset.sum_nonneg fun v _ => by positivity
   have hBnn : 0 ≤ B := finsum_nonneg fun w => by positivity
   have hsum : A + B = 0 := h
@@ -37,7 +37,7 @@ theorem deningerL2NormSq_eq_zero_places {x : K} (hx : x ≠ 0) (h : deningerL2No
       (Finset.mem_univ v)
     have hmult : ((v.mult : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr InfinitePlace.mult_ne_zero
     have hlog : Real.log (v x) = 0 := by
-      have hsq : (Real.log (v x)) ^ 2 = 0 := by
+      have hsq : (Real.log (v x)) ^ (2 : ℕ) = 0 := by
         rcases mul_eq_zero.mp hterm with hc | hc
         · exact absurd hc hmult
         · exact hc
@@ -51,11 +51,11 @@ theorem deningerL2NormSq_eq_zero_places {x : K} (hx : x ≠ 0) (h : deningerL2No
       simp [hS, Function.mulSupport]
     by_cases hw : w ∈ S
     · have hsub : Function.support (fun u : FinitePlace K =>
-          (Real.log (u x)) ^ 2 / (deningerPlaceDegree u : ℝ)) ⊆ (S : Set (FinitePlace K)) := by
+          (Real.log (u x)) ^ (2 : ℕ) / (deningerPlaceDegree u : ℝ)) ⊆ (S : Set (FinitePlace K)) := by
         intro u hu
         by_contra huS
         refine hu ?_
-        show (Real.log (u x)) ^ 2 / (deningerPlaceDegree u : ℝ) = 0
+        show (Real.log (u x)) ^ (2 : ℕ) / (deningerPlaceDegree u : ℝ) = 0
         have hone : u x = 1 := by
           by_contra hne
           exact huS (Finset.mem_coe.mpr ((hmemS u).mpr hne))
@@ -66,7 +66,7 @@ theorem deningerL2NormSq_eq_zero_places {x : K} (hx : x ≠ 0) (h : deningerL2No
       have hd : ((deningerPlaceDegree w : ℝ)) ≠ 0 := by
         have := deningerPlaceDegree_pos w
         positivity
-      have hsq : (Real.log (w x)) ^ 2 = 0 := by
+      have hsq : (Real.log (w x)) ^ (2 : ℕ) = 0 := by
         rcases div_eq_zero_iff.mp hterm with hc | hc
         · exact hc
         · exact absurd hc hd

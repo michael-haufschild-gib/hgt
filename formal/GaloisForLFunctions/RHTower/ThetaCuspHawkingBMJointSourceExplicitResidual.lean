@@ -30,9 +30,9 @@ theorem cutoffPower_wave (q : XiZeroCopy) (branch : Bool) (w a T : ℂ)
   have he := principalDifference_equation q branch w a T hw i t ht
   unfold separatedScalarWave
   rw [scalarLaplacian_eq _ z hz]
-  change (w^2*principalDifference q branch w a T i t-
+  change (w^(2 : ℕ)*principalDifference q branch w a T i t-
     deriv (deriv (principalDifference q branch w a T i)) t)*cutoffPower (principalExponent q i) z-
-    (1-(radialUnit t:ℂ)^2)*principalDifference q branch w a T i t*
+    (1-(radialUnit t:ℂ)^(2 : ℕ))*principalDifference q branch w a T i t*
       hyperbolicLaplacian (cutoffPower (principalExponent q i)) z = _
   dsimp only [cutoffPower,cutoffRadialCoefficient,cutoffCommutator]
   dsimp only [horizonCoordinate] at he ⊢

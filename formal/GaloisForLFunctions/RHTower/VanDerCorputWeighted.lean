@@ -50,7 +50,7 @@ theorem norm_integral_weight_cexp_le
   set V' : ℝ → ℂ := fun t => Complex.exp ((g t : ℂ) * I) * ((g' t : ℂ) * I) with hV'def
   set U : ℝ → ℂ := fun t => (w t : ℂ) * ((g' t : ℂ) * I)⁻¹ with hUdef
   set U' : ℝ → ℂ := fun t => (w' t : ℂ) * ((g' t : ℂ) * I)⁻¹
-      + (w t : ℂ) * (-(((g'' t : ℂ) * I) / ((g' t : ℂ) * I) ^ 2)) with hU'def
+      + (w t : ℂ) * (-(((g'' t : ℂ) * I) / ((g' t : ℂ) * I) ^ (2 : ℕ))) with hU'def
   have hVderiv : ∀ x ∈ Set.uIcc a b, HasDerivAt V (V' x) x := fun x hx =>
     (((hg x hx).ofReal_comp).mul_const I).cexp
   have hUderiv : ∀ x ∈ Set.uIcc a b, HasDerivAt U (U' x) x := by
@@ -58,7 +58,7 @@ theorem norm_integral_weight_cexp_le
     have hden : HasDerivAt (fun t => (g' t : ℂ) * I) ((g'' x : ℂ) * I) x :=
       ((hg' x hx).ofReal_comp).mul_const I
     have hinv : HasDerivAt (fun t => ((g' t : ℂ) * I)⁻¹)
-        (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2)) x := by
+        (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ (2 : ℕ))) x := by
       have h2 := (hasDerivAt_inv (hg'ne x hx)).comp x hden
       (convert! h2 using 1; field_simp)
     exact ((hw x hx).ofReal_comp).mul hinv
@@ -122,7 +122,7 @@ theorem norm_integral_weight_cexp_le
             div_le_div_of_nonneg_left (hwnn a haU) hlam (hg'lb a haU)
           linarith
   -- pointwise ‖U'‖ bound
-  have hU'norm : ∀ x ∈ Set.uIcc a b, ‖U' x‖ ≤ -(w' x) / g' x + w x * g'' x / g' x ^ 2 := by
+  have hU'norm : ∀ x ∈ Set.uIcc a b, ‖U' x‖ ≤ -(w' x) / g' x + w x * g'' x / g' x ^ (2 : ℕ) := by
     intro x hx
     rw [hU'def]
     refine le_trans (norm_add_le _ _) ?_
@@ -130,15 +130,15 @@ theorem norm_integral_weight_cexp_le
       rw [norm_mul, norm_inv, norm_mul]
       simp only [Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
       rw [abs_of_nonpos (hwanti x hx), abs_of_pos (hg'pos x hx), div_eq_mul_inv]
-    have e2 : ‖(w x : ℂ) * (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2))‖
-        = w x * g'' x / g' x ^ 2 := by
+    have e2 : ‖(w x : ℂ) * (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ (2 : ℕ)))‖
+        = w x * g'' x / g' x ^ (2 : ℕ) := by
       rw [norm_mul, norm_neg, norm_div, norm_pow]
       simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
       rw [abs_of_nonneg (hwnn x hx), abs_of_nonneg (hg''nn x hx), abs_of_pos (hg'pos x hx),
         mul_div_assoc]
     rw [e1, e2]
   -- interior bound
-  have hmajInt : IntervalIntegrable (fun x => -(w' x) / g' x + w x * g'' x / g' x ^ 2) volume a b := by
+  have hmajInt : IntervalIntegrable (fun x => -(w' x) / g' x + w x * g'' x / g' x ^ (2 : ℕ)) volume a b := by
     apply ContinuousOn.intervalIntegrable
     exact (hw'c.neg.div hg'c (fun x hx => (hg'pos x hx).ne')).add
       ((hwc.mul hg''c).div (hg'c.pow 2) (fun x hx => pow_ne_zero _ (hg'pos x hx).ne'))
@@ -146,18 +146,18 @@ theorem norm_integral_weight_cexp_le
     apply intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun x hx => hw x (by rw [Set.uIcc_of_le hab] at hx ⊢; exact hx))
     exact (hw'c).intervalIntegrable
-  have hderivInv : ∀ x ∈ Set.uIcc a b, HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / g' x ^ 2) x := by
+  have hderivInv : ∀ x ∈ Set.uIcc a b, HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / g' x ^ (2 : ℕ)) x := by
     intro x hx
     have hi := ((hg' x hx).inv (hg'pos x hx).ne').neg
     simpa only [neg_div, neg_neg] using! hi
-  have hFTCg : (∫ x in a..b, g'' x / g' x ^ 2) = (g' a)⁻¹ - (g' b)⁻¹ := by
-    have hint : IntervalIntegrable (fun x => g'' x / g' x ^ 2) volume a b :=
+  have hFTCg : (∫ x in a..b, g'' x / g' x ^ (2 : ℕ)) = (g' a)⁻¹ - (g' b)⁻¹ := by
+    have hint : IntervalIntegrable (fun x => g'' x / g' x ^ (2 : ℕ)) volume a b :=
       (hg''c.div (hg'c.pow 2) (fun x hx => pow_ne_zero _ (hg'pos x hx).ne')).intervalIntegrable
     have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hderivInv hint
     linarith [h]
   have hintUV : ‖∫ x in a..b, U' x * V x‖ ≤ (w a - w b) / lam + w a / lam := by
     have hstep1 : ‖∫ x in a..b, U' x * V x‖
-        ≤ ∫ x in a..b, (-(w' x) / g' x + w x * g'' x / g' x ^ 2) := by
+        ≤ ∫ x in a..b, (-(w' x) / g' x + w x * g'' x / g' x ^ (2 : ℕ)) := by
       refine le_trans (intervalIntegral.norm_integral_le_integral_norm hab) ?_
       apply intervalIntegral.integral_mono_on hab (hUVint.norm) hmajInt
       intro x hx
@@ -165,8 +165,8 @@ theorem norm_integral_weight_cexp_le
       rw [norm_mul, hVnorm, mul_one]
       exact hU'norm x hxU
     -- split the majorant integral and bound each piece
-    have hsplitmaj : (∫ x in a..b, (-(w' x) / g' x + w x * g'' x / g' x ^ 2))
-        = (∫ x in a..b, -(w' x) / g' x) + ∫ x in a..b, w x * g'' x / g' x ^ 2 := by
+    have hsplitmaj : (∫ x in a..b, (-(w' x) / g' x + w x * g'' x / g' x ^ (2 : ℕ)))
+        = (∫ x in a..b, -(w' x) / g' x) + ∫ x in a..b, w x * g'' x / g' x ^ (2 : ℕ) := by
       apply intervalIntegral.integral_add
       · exact (hw'c.neg.div hg'c (fun x hx => (hg'pos x hx).ne')).intervalIntegrable
       · exact ((hwc.mul hg''c).div (hg'c.pow 2)
@@ -184,8 +184,8 @@ theorem norm_integral_weight_cexp_le
         rw [intervalIntegral.integral_div, intervalIntegral.integral_neg, hFTCw]
         ring
       linarith [hmono, hval]
-    have hb2 : (∫ x in a..b, w x * g'' x / g' x ^ 2) ≤ w a / lam := by
-      have hmono : (∫ x in a..b, w x * g'' x / g' x ^ 2) ≤ ∫ x in a..b, w a * (g'' x / g' x ^ 2) := by
+    have hb2 : (∫ x in a..b, w x * g'' x / g' x ^ (2 : ℕ)) ≤ w a / lam := by
+      have hmono : (∫ x in a..b, w x * g'' x / g' x ^ (2 : ℕ)) ≤ ∫ x in a..b, w a * (g'' x / g' x ^ (2 : ℕ)) := by
         apply intervalIntegral.integral_mono_on hab
           (((hwc.mul hg''c).div (hg'c.pow 2)
             (fun x hx => pow_ne_zero _ (hg'pos x hx).ne')).intervalIntegrable)
@@ -194,10 +194,10 @@ theorem norm_integral_weight_cexp_le
         intro x hx
         have hxU : x ∈ Set.uIcc a b := by rw [Set.uIcc_of_le hab]; exact hx
         have hwle : w x ≤ w a := hwmono x hxU
-        have hgnn : 0 ≤ g'' x / g' x ^ 2 := div_nonneg (hg''nn x hxU) (sq_nonneg _)
+        have hgnn : 0 ≤ g'' x / g' x ^ (2 : ℕ) := div_nonneg (hg''nn x hxU) (sq_nonneg _)
         rw [mul_div_assoc]
         exact mul_le_mul_of_nonneg_right hwle hgnn
-      have hval : (∫ x in a..b, w a * (g'' x / g' x ^ 2)) = w a * ((g' a)⁻¹ - (g' b)⁻¹) := by
+      have hval : (∫ x in a..b, w a * (g'' x / g' x ^ (2 : ℕ))) = w a * ((g' a)⁻¹ - (g' b)⁻¹) := by
         rw [intervalIntegral.integral_const_mul, hFTCg]
       have hle2 : w a * ((g' a)⁻¹ - (g' b)⁻¹) ≤ w a / lam := by
         have hga : (g' a)⁻¹ ≤ lam⁻¹ := by

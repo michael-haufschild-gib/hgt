@@ -21,11 +21,11 @@ noncomputable section
 
 /-- `r²(v'' + r⁻¹v' - r⁻²v)` without division by `r`. -/
 def azimuthalViscousDensity (v : ℝ → ℝ) (r : ℝ) : ℝ :=
-  r ^ 2 * deriv (deriv v) r + r * deriv v r - v r
+  r ^ (2 : ℕ) * deriv (deriv v) r + r * deriv v r - v r
 
 /-- Boundary flux whose derivative is the weighted azimuthal viscous density. -/
 def azimuthalViscousFlux (v : ℝ → ℝ) (r : ℝ) : ℝ :=
-  r ^ 2 * deriv v r - r * v r
+  r ^ (2 : ℕ) * deriv v r - r * v r
 
 /-- `r(v'' + r⁻¹v')` without division by `r`. -/
 def axialViscousDensity (v : ℝ → ℝ) (r : ℝ) : ℝ :=
@@ -37,19 +37,19 @@ def axialViscousFlux (v : ℝ → ℝ) (r : ℝ) : ℝ :=
 
 /-- Density in the pressure-moment integration by parts in Proposition 8.4. -/
 def pressureMomentDensity (p : ℝ → ℝ) (r : ℝ) : ℝ :=
-  2 * r * p r + r ^ 2 * deriv p r
+  2 * r * p r + r ^ (2 : ℕ) * deriv p r
 
 def pressureMomentFlux (p : ℝ → ℝ) (r : ℝ) : ℝ :=
-  r ^ 2 * p r
+  r ^ (2 : ℕ) * p r
 
 /-- Pointwise azimuthal flux factorization used in Proposition 8.4. -/
 theorem azimuthalViscousFlux_hasDerivAt {v : ℝ → ℝ} {r : ℝ}
     (hv : DifferentiableAt ℝ v r) (hv' : DifferentiableAt ℝ (deriv v) r) :
     HasDerivAt (azimuthalViscousFlux v) (azimuthalViscousDensity v r) r := by
-  have hsq : HasDerivAt (fun s : ℝ => s ^ 2) (2 * r) r := by
+  have hsq : HasDerivAt (fun s : ℝ => s ^ (2 : ℕ)) (2 * r) r := by
     simpa using hasDerivAt_pow 2 r
   have h := (hsq.mul hv'.hasDerivAt).sub ((hasDerivAt_id r).mul hv.hasDerivAt)
-  have hfun : (fun s : ℝ => s ^ 2) * deriv v - id * v = azimuthalViscousFlux v := by
+  have hfun : (fun s : ℝ => s ^ (2 : ℕ)) * deriv v - id * v = azimuthalViscousFlux v := by
     funext s
     simp [azimuthalViscousFlux]
   rw [← hfun]
@@ -74,10 +74,10 @@ theorem axialViscousFlux_hasDerivAt {v : ℝ → ℝ} {r : ℝ}
 theorem pressureMomentFlux_hasDerivAt {p : ℝ → ℝ} {r : ℝ}
     (hp : DifferentiableAt ℝ p r) :
     HasDerivAt (pressureMomentFlux p) (pressureMomentDensity p r) r := by
-  have hsq : HasDerivAt (fun s : ℝ => s ^ 2) (2 * r) r := by
+  have hsq : HasDerivAt (fun s : ℝ => s ^ (2 : ℕ)) (2 * r) r := by
     simpa using hasDerivAt_pow 2 r
   have h := hsq.mul hp.hasDerivAt
-  have hfun : (fun s : ℝ => s ^ 2) * p = pressureMomentFlux p := by
+  have hfun : (fun s : ℝ => s ^ (2 : ℕ)) * p = pressureMomentFlux p := by
     funext s
     simp [pressureMomentFlux]
   rw [← hfun]
@@ -140,21 +140,21 @@ theorem integral_pressureMomentDensity_eq_boundary {p : ℝ → ℝ} (a b : ℝ)
 /-- Integrated pressure-moment identity appearing in the proof of Proposition 8.4. -/
 theorem pressureMoment_integral_identity {p : ℝ → ℝ} (a b : ℝ)
     (hp : Differentiable ℝ p) (hp' : Continuous (deriv p)) :
-    2 * (∫ r in a..b, r * p r) + (∫ r in a..b, r ^ 2 * deriv p r) =
+    2 * (∫ r in a..b, r * p r) + (∫ r in a..b, r ^ (2 : ℕ) * deriv p r) =
       pressureMomentFlux p b - pressureMomentFlux p a := by
   have h := integral_pressureMomentDensity_eq_boundary a b hp hp'
   have hdensity : pressureMomentDensity p =
-      fun r => 2 * (r * p r) + r ^ 2 * deriv p r := by
+      fun r => 2 * (r * p r) + r ^ (2 : ℕ) * deriv p r := by
     funext r
     simp [pressureMomentDensity, mul_assoc]
   rw [hdensity] at h
-  change (∫ r in a..b, 2 * (r * p r) + r ^ 2 * deriv p r) = _ at h
+  change (∫ r in a..b, 2 * (r * p r) + r ^ (2 : ℕ) * deriv p r) = _ at h
   have hfirst : IntervalIntegrable (fun r : ℝ => 2 * (r * p r)) volume a b :=
     (continuous_const.mul (continuous_id.mul hp.continuous)).intervalIntegrable a b
-  have hsecond : IntervalIntegrable (fun r : ℝ => r ^ 2 * deriv p r) volume a b :=
+  have hsecond : IntervalIntegrable (fun r : ℝ => r ^ (2 : ℕ) * deriv p r) volume a b :=
     ((continuous_pow 2).mul hp').intervalIntegrable a b
   have hsplit := intervalIntegral.integral_add (f := fun r => 2 * (r * p r))
-    (g := fun r => r ^ 2 * deriv p r) hfirst hsecond
+    (g := fun r => r ^ (2 : ℕ) * deriv p r) hfirst hsecond
   rw [hsplit, intervalIntegral.integral_const_mul] at h
   exact h
 
@@ -163,7 +163,7 @@ theorem pressureMoment_integral_eq_neg_half {p : ℝ → ℝ} (a b : ℝ)
     (hp : Differentiable ℝ p) (hp' : Continuous (deriv p))
     (hpa : p a = 0) (hpb : p b = 0) :
     (∫ r in a..b, r * p r) =
-      -(1 / 2 : ℝ) * ∫ r in a..b, r ^ 2 * deriv p r := by
+      -(1 / 2 : ℝ) * ∫ r in a..b, r ^ (2 : ℕ) * deriv p r := by
   have h := pressureMoment_integral_identity a b hp hp'
   simp [pressureMomentFlux, hpa, hpb] at h
   linarith
@@ -199,14 +199,14 @@ theorem pressure_firstMoment_integral_identity {p : ℝ → ℝ} (a b : ℝ)
 /-- Pressure integration identity in the proof of Lemma 4.3. -/
 theorem pressure_cumulativeMoment_identity {p E : ℝ → ℝ} (X : ℝ)
     (hp : Differentiable ℝ p) (hp' : Continuous (deriv p))
-    (hcentrifugal : ∀ r, r * deriv p r = E r ^ 2 / 2) :
+    (hcentrifugal : ∀ r, r * deriv p r = E r ^ (2 : ℕ) / 2) :
     (∫ r in (0 : ℝ)..X, p r) =
-      X * p X - ∫ r in (0 : ℝ)..X, E r ^ 2 / 2 := by
+      X * p X - ∫ r in (0 : ℝ)..X, E r ^ (2 : ℕ) / 2 := by
   have h := pressure_firstMoment_integral_identity 0 X hp hp'
   simp only [linearPressureFlux, zero_mul, sub_zero] at h
   have hreplace :
       (∫ r in (0 : ℝ)..X, r * deriv p r) =
-        ∫ r in (0 : ℝ)..X, E r ^ 2 / 2 := by
+        ∫ r in (0 : ℝ)..X, E r ^ (2 : ℕ) / 2 := by
     apply intervalIntegral.integral_congr
     intro r _
     exact hcentrifugal r

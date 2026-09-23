@@ -39,7 +39,7 @@ def turanHeatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) : ℂ
 
 /-- **(24.140)** The adjacent determinant of the three filtered moments. -/
 def heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) : ℂ :=
-  turanHeatMoment s c w 0 t * turanHeatMoment s c w 2 t - turanHeatMoment s c w 1 t ^ 2
+  turanHeatMoment s c w 0 t * turanHeatMoment s c w 2 t - turanHeatMoment s c w 1 t ^ (2 : ℕ)
 
 /-- **(24.140)** Each filtered moment is the negative time derivative of the previous one. -/
 theorem hasDerivAt_turanHeatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) :
@@ -72,7 +72,7 @@ theorem hasDerivAt_turanHeatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) 
 /-- **The exact two-replica form of the heat Turán defect.** -/
 theorem two_mul_heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) :
     2 * heatTuranDefect s c w t
-      = ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ 2
+      = ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ (2 : ℕ)
           * (c q * Complex.exp (-(t : ℂ) * w q)) * (c r * Complex.exp (-(t : ℂ) * w r)) := by
   classical
   set u : ι → ℂ := fun q => c q * Complex.exp (-(t : ℂ) * w q) with hu
@@ -82,18 +82,18 @@ theorem two_mul_heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) :
   have hM1 : turanHeatMoment s c w 1 t = ∑ q ∈ s, w q * u q := by
     rw [turanHeatMoment]
     exact Finset.sum_congr rfl fun q _ => by rw [hu]; ring
-  have hM2 : turanHeatMoment s c w 2 t = ∑ q ∈ s, w q ^ 2 * u q := by
+  have hM2 : turanHeatMoment s c w 2 t = ∑ q ∈ s, w q ^ (2 : ℕ) * u q := by
     rw [turanHeatMoment]
     exact Finset.sum_congr rfl fun q _ => by rw [hu]; ring
   have hexpand : ∀ q ∈ s, ∀ r ∈ s,
-      (w q - w r) ^ 2 * u q * u r
-        = (w q ^ 2 * u q) * u r - 2 * (w q * u q) * (w r * u r) + u q * (w r ^ 2 * u r) := by
+      (w q - w r) ^ (2 : ℕ) * u q * u r
+        = (w q ^ (2 : ℕ) * u q) * u r - 2 * (w q * u q) * (w r * u r) + u q * (w r ^ (2 : ℕ) * u r) := by
     intro q _ r _
     ring
-  have hsum : ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ 2 * u q * u r
-      = (∑ q ∈ s, w q ^ 2 * u q) * (∑ r ∈ s, u r)
+  have hsum : ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ (2 : ℕ) * u q * u r
+      = (∑ q ∈ s, w q ^ (2 : ℕ) * u q) * (∑ r ∈ s, u r)
         - 2 * ((∑ q ∈ s, w q * u q) * (∑ r ∈ s, w r * u r))
-        + (∑ q ∈ s, u q) * (∑ r ∈ s, w r ^ 2 * u r) := by
+        + (∑ q ∈ s, u q) * (∑ r ∈ s, w r ^ (2 : ℕ) * u r) := by
     rw [Finset.sum_mul, Finset.sum_mul, Finset.sum_mul, Finset.mul_sum, ← Finset.sum_sub_distrib,
       ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun q hq => ?_
@@ -101,9 +101,9 @@ theorem two_mul_heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) :
     simp only [← Finset.mul_sum]
     ring
   rw [heatTuranDefect, hM0, hM1, hM2]
-  rw [show (∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ 2 * (c q * Complex.exp (-(t : ℂ) * w q))
+  rw [show (∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ (2 : ℕ) * (c q * Complex.exp (-(t : ℂ) * w q))
         * (c r * Complex.exp (-(t : ℂ) * w r)))
-      = ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ 2 * u q * u r from rfl, hsum]
+      = ∑ q ∈ s, ∑ r ∈ s, (w q - w r) ^ (2 : ℕ) * u q * u r from rfl, hsum]
   ring
 
 /-! ## The real shell: Cauchy--Schwarz positivity -/
@@ -112,11 +112,11 @@ theorem two_mul_heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) :
 heat Turán defect: it is the variance determinant of a positive measure. -/
 theorem heatTuranDefect_real_nonneg (s : Finset ι) (c w : ι → ℝ) (hc : ∀ q ∈ s, 0 ≤ c q)
     (t : ℝ) :
-    (∑ q ∈ s, c q * w q * Real.exp (-(t * w q))) ^ 2
+    (∑ q ∈ s, c q * w q * Real.exp (-(t * w q))) ^ (2 : ℕ)
       ≤ (∑ q ∈ s, c q * Real.exp (-(t * w q)))
-        * ∑ q ∈ s, c q * w q ^ 2 * Real.exp (-(t * w q)) := by
+        * ∑ q ∈ s, c q * w q ^ (2 : ℕ) * Real.exp (-(t * w q)) := by
   classical
-  have hsq : ∀ q ∈ s, Real.sqrt (c q * Real.exp (-(t * w q))) ^ 2
+  have hsq : ∀ q ∈ s, Real.sqrt (c q * Real.exp (-(t * w q))) ^ (2 : ℕ)
       = c q * Real.exp (-(t * w q)) :=
     fun q hq => Real.sq_sqrt (mul_nonneg (hc q hq) (Real.exp_nonneg _))
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq s
@@ -128,12 +128,12 @@ theorem heatTuranDefect_real_nonneg (s : Finset ι) (c w : ι → ℝ) (hc : ∀
     refine Finset.sum_congr rfl fun q hq => ?_
     rw [show Real.sqrt (c q * Real.exp (-(t * w q)))
           * (w q * Real.sqrt (c q * Real.exp (-(t * w q))))
-        = w q * Real.sqrt (c q * Real.exp (-(t * w q))) ^ 2 from by ring, hsq q hq]
+        = w q * Real.sqrt (c q * Real.exp (-(t * w q))) ^ (2 : ℕ) from by ring, hsq q hq]
     ring
-  have h2 : ∑ q ∈ s, Real.sqrt (c q * Real.exp (-(t * w q))) ^ 2
+  have h2 : ∑ q ∈ s, Real.sqrt (c q * Real.exp (-(t * w q))) ^ (2 : ℕ)
       = ∑ q ∈ s, c q * Real.exp (-(t * w q)) := Finset.sum_congr rfl hsq
-  have h3 : ∑ q ∈ s, (w q * Real.sqrt (c q * Real.exp (-(t * w q)))) ^ 2
-      = ∑ q ∈ s, c q * w q ^ 2 * Real.exp (-(t * w q)) := by
+  have h3 : ∑ q ∈ s, (w q * Real.sqrt (c q * Real.exp (-(t * w q)))) ^ (2 : ℕ)
+      = ∑ q ∈ s, c q * w q ^ (2 : ℕ) * Real.exp (-(t * w q)) := by
     refine Finset.sum_congr rfl fun q hq => ?_
     rw [mul_pow, hsq q hq]
     ring
@@ -147,17 +147,17 @@ the negative of a squared-transverse phase sum. -/
 theorem two_mul_heatTuranDefect_shell (s : Finset ι) (A : ℝ) (B : ι → ℝ) (t : ℝ) :
     2 * Complex.exp (2 * (t : ℂ) * (A : ℂ))
         * heatTuranDefect s (fun _ => 1) (fun q => (A : ℂ) + Complex.I * (B q : ℂ)) t
-      = -∑ q ∈ s, ∑ r ∈ s, ((B q - B r : ℝ) : ℂ) ^ 2
+      = -∑ q ∈ s, ∑ r ∈ s, ((B q - B r : ℝ) : ℂ) ^ (2 : ℕ)
           * Complex.exp (-Complex.I * (t : ℂ) * ((B q : ℂ) + (B r : ℂ))) := by
   classical
   have hbase := two_mul_heatTuranDefect s (fun _ => 1)
     (fun q => (A : ℂ) + Complex.I * (B q : ℂ)) t
   have hterm : ∀ q ∈ s, ∀ r ∈ s,
       Complex.exp (2 * (t : ℂ) * (A : ℂ)) *
-          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ 2
+          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ (2 : ℕ)
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B q : ℂ))))
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B r : ℂ))))
-        = -(((B q - B r : ℝ) : ℂ) ^ 2
+        = -(((B q - B r : ℝ) : ℂ) ^ (2 : ℕ)
             * Complex.exp (-Complex.I * (t : ℂ) * ((B q : ℂ) + (B r : ℂ)))) := by
     intro q _ r _
     have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
@@ -168,22 +168,22 @@ theorem two_mul_heatTuranDefect_shell (s : Finset ι) (A : ℝ) (B : ι → ℝ)
       rw [← Complex.exp_add, ← Complex.exp_add]
       congr 1
       ring
-    have hsq : (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ 2
-        = -((B q - B r : ℝ) : ℂ) ^ 2 := by
+    have hsq : (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ (2 : ℕ)
+        = -((B q - B r : ℝ) : ℂ) ^ (2 : ℕ) := by
       push_cast
-      linear_combination ((B q : ℂ) - (B r : ℂ)) ^ 2 * hI
+      linear_combination ((B q : ℂ) - (B r : ℂ)) ^ (2 : ℕ) * hI
     calc Complex.exp (2 * (t : ℂ) * (A : ℂ)) *
-          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ 2
+          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ (2 : ℕ)
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B q : ℂ))))
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B r : ℂ))))
-        = (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ 2
+        = (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ (2 : ℕ)
             * (Complex.exp (2 * (t : ℂ) * (A : ℂ))
               * (Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B q : ℂ)))
                 * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B r : ℂ))))) := by ring
-      _ = -((B q - B r : ℝ) : ℂ) ^ 2
+      _ = -((B q - B r : ℝ) : ℂ) ^ (2 : ℕ)
             * Complex.exp (-Complex.I * (t : ℂ) * ((B q : ℂ) + (B r : ℂ))) := by
           rw [hexp, hsq]
-      _ = -(((B q - B r : ℝ) : ℂ) ^ 2
+      _ = -(((B q - B r : ℝ) : ℂ) ^ (2 : ℕ)
             * Complex.exp (-Complex.I * (t : ℂ) * ((B q : ℂ) + (B r : ℂ)))) := by ring
   calc 2 * Complex.exp (2 * (t : ℂ) * (A : ℂ))
         * heatTuranDefect s (fun _ => 1) (fun q => (A : ℂ) + Complex.I * (B q : ℂ)) t
@@ -191,7 +191,7 @@ theorem two_mul_heatTuranDefect_shell (s : Finset ι) (A : ℝ) (B : ι → ℝ)
           (2 * heatTuranDefect s (fun _ => 1) (fun q => (A : ℂ) + Complex.I * (B q : ℂ)) t) := by
         ring
     _ = ∑ q ∈ s, ∑ r ∈ s, Complex.exp (2 * (t : ℂ) * (A : ℂ)) *
-          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ 2
+          (((A : ℂ) + Complex.I * (B q : ℂ)) - ((A : ℂ) + Complex.I * (B r : ℂ))) ^ (2 : ℕ)
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B q : ℂ))))
             * ((1 : ℂ) * Complex.exp (-(t : ℂ) * ((A : ℂ) + Complex.I * (B r : ℂ)))) := by
         rw [hbase, Finset.mul_sum]
@@ -199,7 +199,7 @@ theorem two_mul_heatTuranDefect_shell (s : Finset ι) (A : ℝ) (B : ι → ℝ)
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun r _ => ?_
         ring
-    _ = -∑ q ∈ s, ∑ r ∈ s, ((B q - B r : ℝ) : ℂ) ^ 2
+    _ = -∑ q ∈ s, ∑ r ∈ s, ((B q - B r : ℝ) : ℂ) ^ (2 : ℕ)
           * Complex.exp (-Complex.I * (t : ℂ) * ((B q : ℂ) + (B r : ℂ))) := by
         rw [← Finset.sum_neg_distrib]
         refine Finset.sum_congr rfl fun q hq => ?_
@@ -210,13 +210,13 @@ theorem two_mul_heatTuranDefect_shell (s : Finset ι) (A : ℝ) (B : ι → ℝ)
 
 /-- The squared-difference sum of a finite family. -/
 theorem sum_sq_diff_eq (s : Finset ι) (B : ι → ℝ) :
-    ∑ q ∈ s, ∑ r ∈ s, (B q - B r) ^ 2
-      = 2 * (s.card : ℝ) * (∑ q ∈ s, B q ^ 2) - 2 * (∑ q ∈ s, B q) ^ 2 := by
+    ∑ q ∈ s, ∑ r ∈ s, (B q - B r) ^ (2 : ℕ)
+      = 2 * (s.card : ℝ) * (∑ q ∈ s, B q ^ (2 : ℕ)) - 2 * (∑ q ∈ s, B q) ^ (2 : ℕ) := by
   classical
-  have hexpand : ∀ q ∈ s, ∑ r ∈ s, (B q - B r) ^ 2
-      = (s.card : ℝ) * B q ^ 2 - 2 * B q * (∑ r ∈ s, B r) + ∑ r ∈ s, B r ^ 2 := by
+  have hexpand : ∀ q ∈ s, ∑ r ∈ s, (B q - B r) ^ (2 : ℕ)
+      = (s.card : ℝ) * B q ^ (2 : ℕ) - 2 * B q * (∑ r ∈ s, B r) + ∑ r ∈ s, B r ^ (2 : ℕ) := by
     intro q _
-    have hterm : ∀ r ∈ s, (B q - B r) ^ 2 = B q ^ 2 - 2 * B q * B r + B r ^ 2 := by
+    have hterm : ∀ r ∈ s, (B q - B r) ^ (2 : ℕ) = B q ^ (2 : ℕ) - 2 * B q * B r + B r ^ (2 : ℕ) := by
       intro r _
       ring
     rw [Finset.sum_congr rfl hterm, Finset.sum_add_distrib, Finset.sum_sub_distrib,
@@ -230,12 +230,12 @@ squared-difference sum is strictly positive, so the recurrence value of the defe
 negative. -/
 theorem sum_sq_diff_pos_of_balanced (s : Finset ι) (B : ι → ℝ) (hbal : ∑ q ∈ s, B q = 0)
     {q₀ : ι} (hq₀ : q₀ ∈ s) (hne : B q₀ ≠ 0) :
-    0 < ∑ q ∈ s, ∑ r ∈ s, (B q - B r) ^ 2 := by
+    0 < ∑ q ∈ s, ∑ r ∈ s, (B q - B r) ^ (2 : ℕ) := by
   classical
   have hcard : (1 : ℝ) ≤ (s.card : ℝ) := by
     have h : 1 ≤ s.card := Finset.card_pos.2 ⟨q₀, hq₀⟩
     exact_mod_cast h
-  have hsq : 0 < ∑ q ∈ s, B q ^ 2 := by
+  have hsq : 0 < ∑ q ∈ s, B q ^ (2 : ℕ) := by
     refine Finset.sum_pos' (fun q _ => sq_nonneg _) ⟨q₀, hq₀, ?_⟩
     exact pow_pos (abs_pos.2 hne) 2 |>.trans_le (le_of_eq (sq_abs _))
   rw [sum_sq_diff_eq, hbal]

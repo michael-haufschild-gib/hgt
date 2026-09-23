@@ -21,13 +21,13 @@ def egbCriticalLogGibbs (x theta u : ℝ) : ℝ :=
 
 /-- Candidate logarithmic-radius derivative of order n. -/
 def egbCriticalGibbsJet (x : ℝ) (n : ℕ) (u : ℝ) : ℝ :=
-  Real.exp u / 2 + (-1 : ℝ)^n * Real.exp x ^ 2 / (12 * Real.exp u) +
-    (3 : ℝ)^n * Real.exp u ^ 3 / (12 * Real.exp x ^ 2) -
-      (2 : ℝ)^n * Real.exp u ^ 2 / (3 * Real.exp x)
+  Real.exp u / 2 + (-1 : ℝ)^n * Real.exp x ^ (2 : ℕ) / (12 * Real.exp u) +
+    (3 : ℝ)^n * Real.exp u ^ (3 : ℕ) / (12 * Real.exp x ^ (2 : ℕ)) -
+      (2 : ℝ)^n * Real.exp u ^ (2 : ℕ) / (3 * Real.exp x)
 
 theorem egbCriticalLogGibbs_formula (x theta u : ℝ) :
-    egbCriticalLogGibbs x theta u = Real.exp u / 2 + Real.exp x ^ 2 / (12 * Real.exp u) +
-      Real.exp u ^ 3 / (12 * Real.exp x ^ 2) - Real.exp u ^ 2 / (3 * Real.exp x) := by
+    egbCriticalLogGibbs x theta u = Real.exp u / 2 + Real.exp x ^ (2 : ℕ) / (12 * Real.exp u) +
+      Real.exp u ^ (3 : ℕ) / (12 * Real.exp x ^ (2 : ℕ)) - Real.exp u ^ (2 : ℕ) / (3 * Real.exp x) := by
   unfold egbCriticalLogGibbs egbOffShellGibbs egbMass egbEntropyB
   rw [egbCritical_effective_charge]
   unfold egbCriticalPressure egbCriticalTemperature
@@ -37,7 +37,7 @@ theorem egbCriticalLogGibbs_formula (x theta u : ℝ) :
 /-- An exact quartic minimum, not merely a truncated local expansion. -/
 theorem egbCriticalLogGibbs_gap (x theta u : ℝ) :
     egbCriticalLogGibbs x theta u - Real.exp x / 3 =
-      (Real.exp u - Real.exp x)^4 / (12 * Real.exp u * Real.exp x ^ 2) := by
+      (Real.exp u - Real.exp x)^(4 : ℕ) / (12 * Real.exp u * Real.exp x ^ (2 : ℕ)) := by
   rw [egbCriticalLogGibbs_formula]
   field_simp
   ring
@@ -50,14 +50,14 @@ theorem egbCriticalLogGibbs_value (x theta : ℝ) : egbCriticalLogGibbs x theta 
 theorem egbCriticalLogGibbs_lower_bound (x theta u : ℝ) :
     Real.exp x / 3 ≤ egbCriticalLogGibbs x theta u := by
   have h := egbCriticalLogGibbs_gap x theta u
-  have hp : 0 ≤ (Real.exp u - Real.exp x)^4 / (12 * Real.exp u * Real.exp x ^ 2) := by positivity
+  have hp : 0 ≤ (Real.exp u - Real.exp x)^(4 : ℕ) / (12 * Real.exp u * Real.exp x ^ (2 : ℕ)) := by positivity
   linarith
 
 /-- The critical point has exactly one global minimum in the entire positive-radius domain. -/
 theorem egbCriticalLogGibbs_unique_minimum (x theta u : ℝ) :
     egbCriticalLogGibbs x theta u = Real.exp x / 3 ↔ u = x := by
   rw [← sub_eq_zero, egbCriticalLogGibbs_gap]
-  have hd : 12 * Real.exp u * Real.exp x ^ 2 ≠ 0 := by positivity
+  have hd : 12 * Real.exp u * Real.exp x ^ (2 : ℕ) ≠ 0 := by positivity
   simp only [div_eq_zero_iff, hd, or_false, pow_eq_zero_iff (by norm_num : 4 ≠ 0),
     sub_eq_zero]
   exact Real.exp_injective.eq_iff
@@ -82,7 +82,7 @@ theorem egbCriticalLogGibbs_angle_independent (x theta phi u : ℝ) :
 /-- The full critical gap has a universal dimensionless shape at every scale. -/
 theorem egbCriticalLogGibbs_universal_gap (x theta v : ℝ) :
     (egbCriticalLogGibbs x theta (x + v) - Real.exp x / 3) / Real.exp x =
-      (Real.exp v - 1)^4 / (12 * Real.exp v) := by
+      (Real.exp v - 1)^(4 : ℕ) / (12 * Real.exp v) := by
   rw [egbCriticalLogGibbs_gap, Real.exp_add]
   field_simp
 
@@ -90,17 +90,17 @@ theorem egbCriticalLogGibbs_universal_gap (x theta v : ℝ) :
 theorem egbCriticalGibbsJet_hasDerivAt (x u : ℝ) (n : ℕ) :
     HasDerivAt (egbCriticalGibbsJet x n) (egbCriticalGibbsJet x (n + 1) u) u := by
   have he := Real.hasDerivAt_exp u
-  have hq : HasDerivAt (fun v => (-1 : ℝ)^n * Real.exp x ^ 2 / (12 * Real.exp v))
-      ((0 * (12 * Real.exp u) - ((-1 : ℝ)^n * Real.exp x ^ 2) * (12 * Real.exp u)) /
-        (12 * Real.exp u)^2) u :=
-    (hasDerivAt_const u ((-1 : ℝ)^n * Real.exp x ^ 2)).div (he.const_mul 12) (by positivity)
+  have hq : HasDerivAt (fun v => (-1 : ℝ)^n * Real.exp x ^ (2 : ℕ) / (12 * Real.exp v))
+      ((0 * (12 * Real.exp u) - ((-1 : ℝ)^n * Real.exp x ^ (2 : ℕ)) * (12 * Real.exp u)) /
+        (12 * Real.exp u)^(2 : ℕ)) u :=
+    (hasDerivAt_const u ((-1 : ℝ)^n * Real.exp x ^ (2 : ℕ))).div (he.const_mul 12) (by positivity)
   have h : HasDerivAt (egbCriticalGibbsJet x n)
       (Real.exp u / 2 +
-        (0 * (12 * Real.exp u) - ((-1 : ℝ)^n * Real.exp x ^ 2) * (12 * Real.exp u)) /
-          (12 * Real.exp u)^2 +
-        (3 : ℝ)^n * (3 * Real.exp u ^ 2 * Real.exp u) / (12 * Real.exp x ^ 2) -
-          (2 : ℝ)^n * (2 * Real.exp u ^ 1 * Real.exp u) / (3 * Real.exp x)) u :=
-    (((he.div_const 2).add hq).add (((he.pow 3).const_mul ((3 : ℝ)^n)).div_const (12 * Real.exp x ^ 2))).sub
+        (0 * (12 * Real.exp u) - ((-1 : ℝ)^n * Real.exp x ^ (2 : ℕ)) * (12 * Real.exp u)) /
+          (12 * Real.exp u)^(2 : ℕ) +
+        (3 : ℝ)^n * (3 * Real.exp u ^ (2 : ℕ) * Real.exp u) / (12 * Real.exp x ^ (2 : ℕ)) -
+          (2 : ℝ)^n * (2 * Real.exp u ^ (1 : ℕ) * Real.exp u) / (3 * Real.exp x)) u :=
+    (((he.div_const 2).add hq).add (((he.pow 3).const_mul ((3 : ℝ)^n)).div_const (12 * Real.exp x ^ (2 : ℕ)))).sub
       (((he.pow 2).const_mul ((2 : ℝ)^n)).div_const (3 * Real.exp x))
   apply h.congr_deriv
   unfold egbCriticalGibbsJet

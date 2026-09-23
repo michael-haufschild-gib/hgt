@@ -17,11 +17,11 @@ namespace RHTower.SelbergScatteringPolynomialReality
 noncomputable section
 
 /-- Native modular scattering Casimir on the centered critical-line parameter. -/
-def criticalCasimir (z : ℂ) : ℂ := 3 / 16 + z ^ 2 / 4 + I * z / 4
+def criticalCasimir (z : ℂ) : ℂ := 3 / 16 + z ^ (2 : ℕ) / 4 + I * z / 4
 
 /-- The polynomial whose evaluation is the native critical scattering Casimir. -/
 def casimirPolynomial : Polynomial ℂ :=
-  C (1 / 4) * X ^ 2 + C (I / 4) * X + C (3 / 16)
+  C (1 / 4) * X ^ (2 : ℕ) + C (I / 4) * X + C (3 / 16)
 
 @[simp] theorem eval_casimirPolynomial (z : ℂ) :
     casimirPolynomial.eval z = criticalCasimir z := by

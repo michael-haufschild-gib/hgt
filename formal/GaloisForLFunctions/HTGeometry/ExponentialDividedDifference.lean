@@ -4,7 +4,7 @@ import Mathlib.Topology.MetricSpace.Lipschitz
 /-!
 # The first two exponential divided differences
 
-`expDivOne x = (exp x - 1)/x` and `expDivTwo x = (exp x - 1 - x)/x^2`, both defined by the
+`expDivOne x = (exp x - 1)/x` and `expDivTwo x = (exp x - 1 - x)/x^(2 : ℕ)`, both defined by the
 parameter integrals `∫₀¹ exp (t x) dt` and `∫₀¹ (1-t) exp (t x) dt`, which remove the apparent
 poles at `x = 0`.  On the closed negative half line both are Lipschitz with explicit constants
 and are trapped between `exp x` and `1` (resp. `exp x / 2` and `1/2`).
@@ -19,7 +19,7 @@ noncomputable section
 /-- `∫₀¹ exp (t x) dt`, the pole-free form of `(exp x - 1)/x`. -/
 def expDivOne (x : ℝ) : ℝ := ∫ t in (0:ℝ)..1, Real.exp (t * x)
 
-/-- `∫₀¹ (1-t) exp (t x) dt`, the pole-free form of `(exp x - 1 - x)/x^2`. -/
+/-- `∫₀¹ (1-t) exp (t x) dt`, the pole-free form of `(exp x - 1 - x)/x^(2 : ℕ)`. -/
 def expDivTwo (x : ℝ) : ℝ := ∫ t in (0:ℝ)..1, (1 - t) * Real.exp (t * x)
 
 /-- `exp` is `exp M`-Lipschitz on the half line `Iic M`, by the tangent line inequality. -/
@@ -90,9 +90,9 @@ theorem expDivOne_zero : expDivOne 0 = 1 := by
 
 /-- Closed form of `expDivTwo` away from the origin. -/
 theorem expDivTwo_eq_of_ne {x : ℝ} (hx : x ≠ 0) :
-    expDivTwo x = (Real.exp x - 1 - x) / x ^ 2 := by
+    expDivTwo x = (Real.exp x - 1 - x) / x ^ (2 : ℕ) := by
   have hderiv : ∀ t ∈ uIcc (0:ℝ) 1,
-      HasDerivAt (fun t : ℝ => (1 - t) * Real.exp (t * x) / x + Real.exp (t * x) / x ^ 2)
+      HasDerivAt (fun t : ℝ => (1 - t) * Real.exp (t * x) / x + Real.exp (t * x) / x ^ (2 : ℕ))
         ((1 - t) * Real.exp (t * x)) t := by
     intro t _
     have h1 : HasDerivAt (fun t : ℝ => t * x) x t := by
@@ -102,9 +102,9 @@ theorem expDivTwo_eq_of_ne {x : ℝ} (hx : x ≠ 0) :
       simpa using (hasDerivAt_id t).const_sub (1:ℝ)
     have h4 : HasDerivAt (fun t : ℝ => (1 - t) * Real.exp (t * x))
         (-1 * Real.exp (t * x) + (1 - t) * (Real.exp (t * x) * x)) t := h3.mul h2
-    have h5 : HasDerivAt (fun t : ℝ => (1 - t) * Real.exp (t * x) / x + Real.exp (t * x) / x ^ 2)
+    have h5 : HasDerivAt (fun t : ℝ => (1 - t) * Real.exp (t * x) / x + Real.exp (t * x) / x ^ (2 : ℕ))
         ((-1 * Real.exp (t * x) + (1 - t) * (Real.exp (t * x) * x)) / x
-          + Real.exp (t * x) * x / x ^ 2) t := (h4.div_const x).add (h2.div_const (x ^ 2))
+          + Real.exp (t * x) * x / x ^ (2 : ℕ)) t := (h4.div_const x).add (h2.div_const (x ^ (2 : ℕ)))
     convert h5 using 1
     field_simp
     ring

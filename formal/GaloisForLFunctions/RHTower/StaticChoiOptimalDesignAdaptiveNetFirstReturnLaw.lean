@@ -42,10 +42,10 @@ theorem no_forward_adaptivePureChoiCircuitReturn_of_gaussianReplicaCrowdingNet
         ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
           (replicaActionCrowdingDegree energy r δ : ℝ) *
             ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r) +
-          Real.exp (-((T * δ) ^ 2) / 2)) <
+          Real.exp (-((T * δ) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           ((epsw - (epsn + eta)) / staticChoiSpeed energy / (2 * T)) *
-          (1 - epsw ^ 2) ^ r) :
+          (1 - epsw ^ (2 : ℕ)) ^ r) :
     ¬ ∃ t ∈ Icc
         (epsw / staticChoiSpeed energy +
           (epsw - (epsn + eta)) / staticChoiSpeed energy) T,

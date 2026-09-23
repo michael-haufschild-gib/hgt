@@ -45,24 +45,24 @@ theorem norm_monicOrthoC_duhamel_lt_le (h : PositiveMomentForm s) (n : ℕ) (z w
 /-- **The squared, divided form of the strict estimate.**  The kernel root on the right is still at
 index `n`, so this is a summand of a recursion rather than of an absorption. -/
 theorem normSq_duhamel_strict_div_le (h : PositiveMomentForm s) (n : ℕ) (z w : ℂ) :
-    ‖monicOrthoC s (n + 1) w‖ ^ 2 /
+    ‖monicOrthoC s (n + 1) w‖ ^ (2 : ℕ) /
         momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))
-      ≤ 2 * (‖monicOrthoC s (n + 1) z‖ ^ 2 /
+      ≤ 2 * (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
-        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-            kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 *
-            ((‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-              + ‖secondKindC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) n ^ 2) /
+        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+            kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) *
+            ((‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+              + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)) /
               momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) := by
   have hpos : 0 < momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) :=
     monicOrtho_inner_self_pos h (n + 1)
   have hle := norm_monicOrthoC_duhamel_lt_le h n z w
-  have hsq : ‖monicOrthoC s (n + 1) w‖ ^ 2
+  have hsq : ‖monicOrthoC s (n + 1) w‖ ^ (2 : ℕ)
       ≤ (‖monicOrthoC s (n + 1) z‖
           + ‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
             (kernelRoot s (fun j => monicOrthoC s j w) n *
               (‖monicOrthoC s (n + 1) z‖ * kernelRoot s (fun j => secondKindC s j z) n
-                + ‖secondKindC s (n + 1) z‖ * kernelRoot s (fun j => monicOrthoC s j z) n))) ^ 2 :=
+                + ‖secondKindC s (n + 1) z‖ * kernelRoot s (fun j => monicOrthoC s j z) n))) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hle 2
   have hexp := sq_add_le_two (‖monicOrthoC s (n + 1) z‖)
     (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
@@ -73,11 +73,11 @@ theorem normSq_duhamel_strict_div_le (h : PositiveMomentForm s) (n : ℕ) (z w :
       (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0) *
         (kernelRoot s (fun j => monicOrthoC s j w) n *
           (‖monicOrthoC s (n + 1) z‖ * kernelRoot s (fun j => secondKindC s j z) n
-            + ‖secondKindC s (n + 1) z‖ * kernelRoot s (fun j => monicOrthoC s j z) n))) ^ 2
-      ≤ 2 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-          kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 *
-          (‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-            + ‖secondKindC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) n ^ 2) := by
+            + ‖secondKindC s (n + 1) z‖ * kernelRoot s (fun j => monicOrthoC s j z) n))) ^ (2 : ℕ)
+      ≤ 2 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+          kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) *
+          (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+            + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)) := by
     have hab := sq_add_le_two
       (‖monicOrthoC s (n + 1) z‖ * kernelRoot s (fun j => secondKindC s j z) n)
       (‖secondKindC s (n + 1) z‖ * kernelRoot s (fun j => monicOrthoC s j z) n)
@@ -85,28 +85,28 @@ theorem normSq_duhamel_strict_div_le (h : PositiveMomentForm s) (n : ℕ) (z w :
       kernelRoot s (fun j => monicOrthoC s j w) n),
       sq_nonneg (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)),
       sq_nonneg (kernelRoot s (fun j => monicOrthoC s j w) n)]
-  have hnum : ‖monicOrthoC s (n + 1) w‖ ^ 2
-      ≤ 2 * ‖monicOrthoC s (n + 1) z‖ ^ 2
-        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-            kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 *
-            (‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-              + ‖secondKindC s (n + 1) z‖ ^ 2 *
-                kernelRoot s (fun j => monicOrthoC s j z) n ^ 2) := by
+  have hnum : ‖monicOrthoC s (n + 1) w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ)
+        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+            kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) *
+            (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+              + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) *
+                kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)) := by
     linarith [hsq, hexp, hinner]
   have hcollect :
-      2 * (‖monicOrthoC s (n + 1) z‖ ^ 2 /
+      2 * (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) /
             momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
-        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-            kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 *
-            ((‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-              + ‖secondKindC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => monicOrthoC s j z) n ^ 2) /
+        + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+            kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) *
+            ((‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+              + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)) /
               momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)))
-      = (2 * ‖monicOrthoC s (n + 1) z‖ ^ 2
-          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 *
-              kernelRoot s (fun j => monicOrthoC s j w) n ^ 2 *
-              (‖monicOrthoC s (n + 1) z‖ ^ 2 * kernelRoot s (fun j => secondKindC s j z) n ^ 2
-                + ‖secondKindC s (n + 1) z‖ ^ 2 *
-                  kernelRoot s (fun j => monicOrthoC s j z) n ^ 2))
+      = (2 * ‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ)
+          + 4 * (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) *
+              kernelRoot s (fun j => monicOrthoC s j w) n ^ (2 : ℕ) *
+              (‖monicOrthoC s (n + 1) z‖ ^ (2 : ℕ) * kernelRoot s (fun j => secondKindC s j z) n ^ (2 : ℕ)
+                + ‖secondKindC s (n + 1) z‖ ^ (2 : ℕ) *
+                  kernelRoot s (fun j => monicOrthoC s j z) n ^ (2 : ℕ)))
         / momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) := by
     field_simp
   rw [hcollect]

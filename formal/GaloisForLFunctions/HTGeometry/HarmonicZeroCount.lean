@@ -26,7 +26,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- A finite subset of `[a,b]` whose points are pairwise at distance at least `d` has at most
 `(b-a)/d + 1` elements. -/
-theorem card_le_of_separated {a b d : ℝ} (hd : 0 < d) (hab : a ≤ b) (Z : Finset ℝ)
+theorem card_le_of_separated_harmonicZeroCount {a b d : ℝ} (hd : 0 < d) (hab : a ≤ b) (Z : Finset ℝ)
     (hmem : ∀ x ∈ Z, x ∈ Icc a b)
     (hsep : ∀ x ∈ Z, ∀ y ∈ Z, x < y → d ≤ y - x) :
     (Z.card : ℝ) ≤ (b - a) / d + 1 := by
@@ -108,7 +108,7 @@ theorem card_zeros_harmonic {γ A B a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hzero : ∀ x ∈ Z, A * cos (γ * x) + B * sin (γ * x) = 0) :
     (Z.card : ℝ) ≤ (b - a) * γ / π + 1 := by
   have hd : (0 : ℝ) < π / γ := by positivity
-  have hcount := card_le_of_separated hd hab Z hmem
+  have hcount := card_le_of_separated_harmonicZeroCount hd hab Z hmem
     (fun x hx y hy hxy => harmonic_gap hγ hAB (hzero x hx) (hzero y hy) hxy)
   have hrw : (b - a) / (π / γ) = (b - a) * γ / π := by
     field_simp

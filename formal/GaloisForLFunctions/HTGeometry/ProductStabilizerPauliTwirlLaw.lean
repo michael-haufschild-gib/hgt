@@ -113,7 +113,7 @@ theorem productStabilizer_coefficient_twirl
         productStabilizerPauliTwirl (label j) (label k)) =
       ∑ i, ∑ j,
         ((1 : ℝ) / 3) ^ finitePauliWeight (label j) *
-          (C j i) ^ 2 := by
+          (C j i) ^ (2 : ℕ) := by
   classical
   apply Finset.sum_congr rfl
   intro i _hi

@@ -67,14 +67,14 @@ theorem sum_card_filter_dvd_le (m A B L : ℕ) :
 
 /-- The inverse-square sum beyond the truncation level. -/
 theorem sum_Icc_inv_sq_le {R : ℕ} (hR : 1 ≤ R) (M : ℕ) :
-    ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ 2 ≤ 1 / (R : ℝ) := by
+    ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ (2 : ℕ) ≤ 1 / (R : ℝ) := by
   classical
   have hIcc : Finset.Icc (R + 1) M = Finset.Ico (R + 1) (M + 1) := by
     ext x
     simp
   rw [hIcc, Finset.sum_Ico_eq_sum_range]
   have hcong : ∀ i ∈ Finset.range (M + 1 - (R + 1)),
-      (1 : ℝ) / ((R + 1 + i : ℕ) : ℝ) ^ 2 = (1 : ℝ) / ((i : ℝ) + R + 1) ^ 2 := by
+      (1 : ℝ) / ((R + 1 + i : ℕ) : ℝ) ^ (2 : ℕ) = (1 : ℝ) / ((i : ℝ) + R + 1) ^ (2 : ℕ) := by
     intro i _
     congr 2
     push_cast
@@ -92,7 +92,7 @@ theorem sum_Icc_inv_sq_le {R : ℕ} (hR : 1 ≤ R) (M : ℕ) :
 contribute at most `L·((B+L-A)/R + M)`. -/
 theorem sum_tail_divisor_count_le (A B L R M : ℕ) (hR : 1 ≤ R) (hAB : A ≤ B + L) :
     (∑ t ∈ Finset.Ico A B,
-        ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ))
+        ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ))
       ≤ (L : ℝ) * (((B : ℝ) + L - A) / (R : ℝ) + (M : ℝ)) := by
   classical
   have hlen : (0 : ℝ) ≤ (B : ℝ) + L - A := by
@@ -101,45 +101,45 @@ theorem sum_tail_divisor_count_le (A B L R M : ℕ) (hR : 1 ≤ R) (hAB : A ≤ 
     linarith
   have hLnn : (0 : ℝ) ≤ (L : ℝ) := Nat.cast_nonneg L
   have hswap : ∑ t ∈ Finset.Ico A B,
-      ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
+      ∑ d ∈ Finset.Icc (R + 1) M, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
       = ∑ d ∈ Finset.Icc (R + 1) M,
-          ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ) :=
+          ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ) :=
     Finset.sum_comm
   rw [hswap]
   have hper : ∀ d ∈ Finset.Icc (R + 1) M,
-      ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
-        ≤ (L : ℝ) * (((B : ℝ) + L - A) / (d : ℝ) ^ 2 + 1) := by
+      ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
+        ≤ (L : ℝ) * (((B : ℝ) + L - A) / (d : ℝ) ^ (2 : ℕ) + 1) := by
     intro d hd
     obtain ⟨hd1, -⟩ := Finset.mem_Icc.1 hd
-    have hdsq : 0 < d ^ 2 := pow_pos (by omega) 2
-    have hnat := sum_card_filter_dvd_le (d ^ 2) A B L
-    have hcast : ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
-        ≤ (L : ℝ) * ((#{n ∈ Finset.Ioc A (B + L) | d ^ 2 ∣ n} : ℕ) : ℝ) := by
-      have : ((∑ t ∈ Finset.Ico A B, (#{n ∈ Finset.Ioc t (t + L) | d ^ 2 ∣ n}) : ℕ) : ℝ)
-          ≤ ((L * (#{n ∈ Finset.Ioc A (B + L) | d ^ 2 ∣ n}) : ℕ) : ℝ) := by
+    have hdsq : 0 < d ^ (2 : ℕ) := pow_pos (by omega) 2
+    have hnat := sum_card_filter_dvd_le (d ^ (2 : ℕ)) A B L
+    have hcast : ∑ t ∈ Finset.Ico A B, ((#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
+        ≤ (L : ℝ) * ((#{n ∈ Finset.Ioc A (B + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ) := by
+      have : ((∑ t ∈ Finset.Ico A B, (#{n ∈ Finset.Ioc t (t + L) | d ^ (2 : ℕ) ∣ n}) : ℕ) : ℝ)
+          ≤ ((L * (#{n ∈ Finset.Ioc A (B + L) | d ^ (2 : ℕ) ∣ n}) : ℕ) : ℝ) := by
         exact_mod_cast hnat
       push_cast at this
       exact this
-    have hcount := abs_card_filter_dvd_Ioc_sub_lt (d ^ 2) A (B + L) hdsq hAB
+    have hcount := abs_card_filter_dvd_Ioc_sub_lt (d ^ (2 : ℕ)) A (B + L) hdsq hAB
     have hc1 : (((B + L : ℕ)) : ℝ) - (A : ℝ) = (B : ℝ) + L - A := by push_cast; ring
-    have hc2 : (((d ^ 2 : ℕ)) : ℝ) = (d : ℝ) ^ 2 := by push_cast; ring
+    have hc2 : (((d ^ (2 : ℕ) : ℕ)) : ℝ) = (d : ℝ) ^ (2 : ℕ) := by push_cast; ring
     rw [hc1, hc2] at hcount
-    have hub : ((#{n ∈ Finset.Ioc A (B + L) | d ^ 2 ∣ n} : ℕ) : ℝ)
-        ≤ ((B : ℝ) + L - A) / (d : ℝ) ^ 2 + 1 := by
+    have hub : ((#{n ∈ Finset.Ioc A (B + L) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
+        ≤ ((B : ℝ) + L - A) / (d : ℝ) ^ (2 : ℕ) + 1 := by
       have := (abs_lt.1 hcount).2
       linarith
     exact le_trans hcast (mul_le_mul_of_nonneg_left hub hLnn)
   refine le_trans (Finset.sum_le_sum hper) ?_
   rw [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, mul_one]
   refine mul_le_mul_of_nonneg_left ?_ hLnn
-  have hsq : ∑ d ∈ Finset.Icc (R + 1) M, ((B : ℝ) + L - A) / (d : ℝ) ^ 2
+  have hsq : ∑ d ∈ Finset.Icc (R + 1) M, ((B : ℝ) + L - A) / (d : ℝ) ^ (2 : ℕ)
       ≤ ((B : ℝ) + L - A) / (R : ℝ) := by
-    have hfac : ∑ d ∈ Finset.Icc (R + 1) M, ((B : ℝ) + L - A) / (d : ℝ) ^ 2
-        = ((B : ℝ) + L - A) * ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ 2 := by
+    have hfac : ∑ d ∈ Finset.Icc (R + 1) M, ((B : ℝ) + L - A) / (d : ℝ) ^ (2 : ℕ)
+        = ((B : ℝ) + L - A) * ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun d _ => by ring
     rw [hfac]
-    calc ((B : ℝ) + L - A) * ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ 2
+    calc ((B : ℝ) + L - A) * ∑ d ∈ Finset.Icc (R + 1) M, (1 : ℝ) / (d : ℝ) ^ (2 : ℕ)
         ≤ ((B : ℝ) + L - A) * (1 / (R : ℝ)) :=
           mul_le_mul_of_nonneg_left (sum_Icc_inv_sq_le hR M) hlen
       _ = ((B : ℝ) + L - A) / (R : ℝ) := by ring

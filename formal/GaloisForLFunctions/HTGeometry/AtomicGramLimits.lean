@@ -20,7 +20,7 @@ open scoped Classical
 
 /-- The constant in the atomic diagonal estimate. -/
 def atomicDiagConst {d : ℕ} (a c : Fin d → ℝ) (l : Fin d) : ℝ :=
-  ∑ j ∈ univ.erase l, ‖(c j : ℂ)‖ / (a j - a l) ^ 2
+  ∑ j ∈ univ.erase l, ‖(c j : ℂ)‖ / (a j - a l) ^ (2 : ℕ)
 
 /-- The constant in the atomic off-diagonal estimate. -/
 def atomicOffDiagConst {d : ℕ} (a c : Fin d → ℝ) (l m : Fin d) : ℝ :=
@@ -30,14 +30,14 @@ def atomicOffDiagConst {d : ℕ} (a c : Fin d → ℝ) (l m : Fin d) : ℝ :=
 theorem tendsto_atomicGram_diagonal_sub {d : ℕ} (a c : Fin d → ℝ)
     (ha : Function.Injective a) (l : Fin d) :
     Tendsto (fun y : ℝ => atomicGram a c y l l - ((c l : ℝ) : ℂ)) (𝓝[≠] 0) (𝓝 0) := by
-  refine squeeze_zero_norm' (a := fun y : ℝ => y ^ 2 * atomicDiagConst a c l) ?_ ?_
+  refine squeeze_zero_norm' (a := fun y : ℝ => y ^ (2 : ℕ) * atomicDiagConst a c l) ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with y hy
     refine le_trans (norm_atomicGram_diagonal_sub_le a c ha hy l) (le_of_eq ?_)
     rw [atomicDiagConst, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     ring
-  · have h : Tendsto (fun y : ℝ => y ^ 2 * atomicDiagConst a c l) (𝓝[≠] 0) (𝓝 0) := by
-      have hy2 : Tendsto (fun y : ℝ => y ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+  · have h : Tendsto (fun y : ℝ => y ^ (2 : ℕ) * atomicDiagConst a c l) (𝓝[≠] 0) (𝓝 0) := by
+      have hy2 : Tendsto (fun y : ℝ => y ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
         have := ((continuous_pow 2).tendsto (0 : ℝ)).mono_left
           (nhdsWithin_le_nhds (s := ({0} : Set ℝ)ᶜ))
         simpa using this

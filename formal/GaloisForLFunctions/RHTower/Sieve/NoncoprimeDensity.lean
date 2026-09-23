@@ -21,11 +21,11 @@ open Finset Filter Topology
 
 /-- The partial sums of the sector densities are bounded by `D²A`. -/
 theorem sum_sector_density_le (P : ℕ) :
-    ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2
-      ≤ squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity := by
-  have hD : (0 : ℝ) ≤ squarefreeDensity ^ 2 := by positivity
-  have hcongr : ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2
-      = squarefreeDensity ^ 2 * ∑ p ∈ Nat.primesLE P, RHTower.primeSuccInvSq p := by
+    ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ)
+      ≤ squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity := by
+  have hD : (0 : ℝ) ≤ squarefreeDensity ^ (2 : ℕ) := by positivity
+  have hcongr : ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ)
+      = squarefreeDensity ^ (2 : ℕ) * ∑ p ∈ Nat.primesLE P, RHTower.primeSuccInvSq p := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro p hp
@@ -41,10 +41,10 @@ theorem sum_sector_density_le (P : ℕ) :
 theorem eventually_noncoprime_le {hh : ℝ → ℝ}
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hMR : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop, noncoprimePairCount x (hh x) / (hh x * Real.sqrt x * Real.log 2)
-      ≤ squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity + ε := by
+      ≤ squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity + ε := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   obtain ⟨P, hP1, htail⟩ :=
@@ -52,15 +52,15 @@ theorem eventually_noncoprime_le {hh : ℝ → ℝ}
   -- the finite part converges
   have hfin : Tendsto (fun x => ∑ p ∈ Nat.primesLE P,
       sharedSectorCount x (hh x) p / (hh x * Real.sqrt x * Real.log 2))
-      atTop (𝓝 (∑ p ∈ Nat.primesLE P, squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2)) := by
+      atTop (𝓝 (∑ p ∈ Nat.primesLE P, squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ))) := by
     refine tendsto_finsetSum _ ?_
     intro p hp
     rw [Nat.mem_primesLE] at hp
     exact tendsto_sharedSector_of_MR hp.2 (hMR p hp.2)
   have hfinev := hfin.eventually (eventually_lt_nhds
-    (by linarith : ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2
-      < ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2 + ε / 2))
-  filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop ((P : ℝ) ^ 2),
+    (by linarith : ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ)
+      < ∑ p ∈ Nat.primesLE P, squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ) + ε / 2))
+  filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop ((P : ℝ) ^ (2 : ℕ)),
     hhtop.eventually_gt_atTop (0 : ℝ), htail, hfinev] with x hx0 hxP hhx htx hfx
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   have hden : (0 : ℝ) < hh x * Real.sqrt x * Real.log 2 := by positivity
@@ -68,7 +68,7 @@ theorem eventually_noncoprime_le {hh : ℝ → ℝ}
   have hPle : P ≤ ⌊2 * Real.sqrt x⌋₊ := by
     refine Nat.le_floor ?_
     have hPs : ((P : ℕ) : ℝ) ≤ Real.sqrt x := by
-      have h1 : Real.sqrt (((P : ℕ) : ℝ) ^ 2) ≤ Real.sqrt x := Real.sqrt_le_sqrt hxP
+      have h1 : Real.sqrt (((P : ℕ) : ℝ) ^ (2 : ℕ)) ≤ Real.sqrt x := Real.sqrt_le_sqrt hxP
       rwa [Real.sqrt_sq (by positivity)] at h1
     linarith
   have hsplit := noncoprimePairCount_le_split (h := hh x) hx0 hPle

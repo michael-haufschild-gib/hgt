@@ -32,7 +32,7 @@ def suzukiCompletedFormationPhaseGaugeEnergy
     (epsilon : ℕ → ℝ) (N : ℕ) : ℝ :=
   ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) *
     (anchoredCesaroHighPass
-      (suzukiCompletedFormationPhaseGaugeHistory epsilon) N) ^ 2
+      (suzukiCompletedFormationPhaseGaugeHistory epsilon) N) ^ (2 : ℕ)
 
 /-- Gauge-lifted Suzuki history retains every pointwise signed Abel innovation. -/
 theorem suzukiCompletedFormationPhaseGaugeHistory_current
@@ -44,7 +44,7 @@ theorem suzukiCompletedFormationPhaseGaugeHistory_current
 
 /-- Every local Suzuki phase gauge has the canonical one-step positive production. -/
 theorem suzukiCompletedFormationPhaseGaugeEnergy_eq_innovationEnergy
-    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ 2 = 1)
+    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ (2 : ℕ) = 1)
     {N : ℕ} (hN : 2 ≤ N) :
     suzukiCompletedFormationPhaseGaugeEnergy epsilon N =
       suzukiCompletedFormationInnovationEnergy N := by
@@ -75,7 +75,7 @@ theorem suzukiCompletedAbelSource_action_eq_formationEnergy
 
 /-- Accumulated variance of every local phase lift is the canonical Suzuki action. -/
 theorem suzukiCompletedFormationPhaseGaugeHistory_variance
-    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ 2 = 1)
+    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ (2 : ℕ) = 1)
     {N : ℕ} (hN : 2 ≤ N) :
     anchoredCesaroVariance
         (suzukiCompletedFormationPhaseGaugeHistory epsilon) N =
@@ -87,12 +87,12 @@ theorem suzukiCompletedFormationPhaseGaugeHistory_variance
 
 /-- Conditioned aligned-Gamma energy reads the same local production on every phase-gauge orbit. -/
 theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_phaseGaugeEnergy
-    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ 2 = 1)
+    (epsilon : ℕ → ℝ) (hphase : ∀ k, (epsilon k) ^ (2 : ℕ) = 1)
     {N : ℕ} (hN : 2 ≤ N)
     (hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
       (suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) /
-          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) *
+          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) *
         (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
         suzukiCompletedFormationPhaseGaugeEnergy epsilon N := by
   rw [suzukiCompletedFormationPhaseGaugeEnergy_eq_innovationEnergy epsilon hphase hN]
@@ -116,7 +116,7 @@ theorem suzukiFormationInnovationPhaseGauge_certificate :
       anchoredCesaroHighPass
           (suzukiCompletedFormationPhaseGaugeHistory epsilon) N =
         epsilon N * suzukiTransitionCoreCompletedAbelSource (N + 1)) ∧
-    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ 2 = 1) →
+    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ (2 : ℕ) = 1) →
       ∀ N : ℕ, 2 ≤ N →
       suzukiCompletedFormationPhaseGaugeEnergy epsilon N =
         suzukiCompletedFormationInnovationEnergy N ∧
@@ -127,12 +127,12 @@ theorem suzukiFormationInnovationPhaseGauge_certificate :
       scaleInnovationAction
           (fun k => suzukiTransitionCoreCompletedAbelSource (k + 1)) N =
         suzukiCompletedFormationEnergy N) ∧
-    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ 2 = 1) →
+    (∀ (epsilon : ℕ → ℝ), (∀ k, (epsilon k) ^ (2 : ℕ) = 1) →
       ∀ N : ℕ, 2 ≤ N →
       unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0 →
       suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
         (suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) /
-            unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) *
+            unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) *
           (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
           suzukiCompletedFormationPhaseGaugeEnergy epsilon N) ∧
     (∀ m : ℕ, 2 ≤ m →

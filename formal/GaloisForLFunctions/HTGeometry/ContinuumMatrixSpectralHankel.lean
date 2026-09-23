@@ -68,7 +68,7 @@ theorem integralFeatureGram_quadratic_eq_integral_sq
     (hprod : ∀ i j, Integrable (fun ω => feature i ω * feature j ω) μ)
     (x : ι → ℝ) :
     dotProduct (star x) ((integralFeatureGram μ feature).mulVec x) =
-      ∫ ω, integralFeatureCombination feature x ω ^ 2 ∂μ := by
+      ∫ ω, integralFeatureCombination feature x ω ^ (2 : ℕ) ∂μ := by
   have hterm : ∀ i j,
       Integrable (fun ω => (x i * feature i ω) * (x j * feature j ω)) μ := by
     intro i j
@@ -107,7 +107,7 @@ theorem integralFeatureGram_quadratic_eq_integral_sq
         exact fun j hj => hterm i j
       · intro i hi
         exact integrable_finsetSum Finset.univ (fun j hj => hterm i j)
-    _ = ∫ ω, integralFeatureCombination feature x ω ^ 2 ∂μ := by
+    _ = ∫ ω, integralFeatureCombination feature x ω ^ (2 : ℕ) ∂μ := by
       congr 1
       funext ω
       rw [integralFeatureCombination, pow_two, Fintype.sum_mul_sum]
@@ -137,7 +137,7 @@ theorem integralFeatureGram_posDef_of_support
     rw [integralFeatureGram_quadratic_eq_integral_sq μ feature hprod x]
     rw [integral_pos_iff_support_of_nonneg (fun ω => sq_nonneg _)]
     · simpa [Function.support, integralFeatureCombination] using hseparate x hx
-    · have hsquare : (fun ω => integralFeatureCombination feature x ω ^ 2) =
+    · have hsquare : (fun ω => integralFeatureCombination feature x ω ^ (2 : ℕ)) =
           fun ω => ∑ i, ∑ j,
             (x i * feature i ω) * (x j * feature j ω) := by
         funext ω

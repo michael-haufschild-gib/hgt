@@ -25,11 +25,11 @@ open scoped FourierTransform
 def soninShellCutBandBoundAt (b c : ℝ) (N : ℕ) (w t : ℝ) : ℝ :=
   2 * t * (2 * soninShellCutWidth b c N *
       soninRefTailSup (soninShellCutWidth b c N * (w - t)) +
-    2 * soninShellCutWidth b c N * soninRefTailSup 0) ^ 2
+    2 * soninShellCutWidth b c N * soninRefTailSup 0) ^ (2 : ℕ)
 
 /-- The annulus-free high-side bound at radius `t`. -/
 def soninShellCutHighBoundAt (b c : ℝ) (N : ℕ) (K : ℝ) (N₀ : ℕ) (t : ℝ) : ℝ :=
-  2 * (K * soninShellCutWidth b c N ^ 2 / soninShellCutWidth b c N ^ (2 * N₀)) *
+  2 * (K * soninShellCutWidth b c N ^ (2 : ℕ) / soninShellCutWidth b c N ^ (2 * N₀)) *
     (t ^ (1 - (2 * N₀ : ℝ)) / ((2 * N₀ : ℝ) - 1))
 
 /-- **The band estimate without the mean.**  Under the tail condition the mean is below one, so it
@@ -41,7 +41,7 @@ theorem norm_sq_evenFourierCutoff_soninShellCutPacket_le_uniform
     (i : Fin N) :
     ‖evenFourierCutoff t
         (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
-          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ 2 ≤
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ (2 : ℕ) ≤
       soninShellCutBandBoundAt b c N w t := by
   have hδ := soninShellCutWidth_pos b c hbc hN
   have hmean : |soninScaledPacketMean (soninShellCutCentre b c N i)
@@ -65,7 +65,7 @@ theorem norm_sq_evenFourierCutoff_soninShellCutPacket_le_uniform
   have hmeannn : (0 : ℝ) ≤ μ := abs_nonneg _
   have hle : A + μ * B ≤ A + B := by nlinarith [hmean, hB]
   have hnn : (0 : ℝ) ≤ A + μ * B := by positivity
-  have hsq : (A + μ * B) ^ 2 ≤ (A + B) ^ 2 := by
+  have hsq : (A + μ * B) ^ (2 : ℕ) ≤ (A + B) ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self hnn hle
   exact mul_le_mul_of_nonneg_left hsq (by linarith : (0 : ℝ) ≤ 2 * t)

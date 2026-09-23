@@ -11,7 +11,7 @@ noncomputable section
 
 def tanhDerivativePolynomial : ℕ → Polynomial ℝ
   | 0 => Polynomial.X
-  | q + 1 => (1 - Polynomial.X ^ 2) * (tanhDerivativePolynomial q).derivative
+  | q + 1 => (1 - Polynomial.X ^ (2 : ℕ)) * (tanhDerivativePolynomial q).derivative
 
 def tanhHighJet (q : ℕ) (x : ℝ) : ℝ :=
   (tanhDerivativePolynomial q).eval (Real.tanh x)

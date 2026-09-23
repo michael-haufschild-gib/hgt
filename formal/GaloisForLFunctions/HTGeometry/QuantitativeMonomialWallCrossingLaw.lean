@@ -16,7 +16,7 @@ noncomputable section
 
 /-- Global quadratic upper bound for the sinc defect. -/
 theorem abs_real_sinc_sub_one_le_sq_div_six (x : ℝ) :
-    |Real.sinc x - 1| ≤ x ^ 2 / 6 := by
+    |Real.sinc x - 1| ≤ x ^ (2 : ℕ) / 6 := by
   rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (Real.sinc_le_one x))]
   by_cases hx : x = 0
   · simp [hx]
@@ -29,10 +29,10 @@ theorem abs_real_sinc_sub_one_le_sq_div_six (x : ℝ) :
         exact Real.sinc_neg x
     calc
       1 - Real.sinc x = 1 - Real.sinc |x| := by rw [heven]
-      _ ≤ |x| ^ 2 / 6 := by
+      _ ≤ |x| ^ (2 : ℕ) / 6 := by
         simpa [Real.sinc_of_ne_zero habs.ne'] using
           HTGeometry.ConstraintRelativity.one_sub_sinc_le habs
-      _ = x ^ 2 / 6 := by rw [sq_abs]
+      _ = x ^ (2 : ℕ) / 6 := by rw [sq_abs]
 
 /-- Exact symmetric-window reporter for a monomial detuning at inverse-power horizon `r`. -/
 def monomialSincReporter
@@ -44,7 +44,7 @@ theorem abs_monomialSincReporter_sub_one_le_precritical
     {τ a g : ℝ} (hτ : 0 < τ) (ha : 0 < a) (hg : 0 < g)
     {b r : ℕ} (hrb : r < b) :
     |monomialSincReporter τ a g b r - 1| ≤
-      (τ * a) ^ 2 * g ^ (2 * (b - r)) / 6 := by
+      (τ * a) ^ (2 : ℕ) * g ^ (2 * (b - r)) / 6 := by
   have harg :
       (τ / g ^ r) * (g ^ b * a) =
         τ * a * g ^ (b - r) := by
@@ -53,9 +53,9 @@ theorem abs_monomialSincReporter_sub_one_le_precritical
   rw [monomialSincReporter, harg]
   calc
     |Real.sinc (τ * a * g ^ (b - r)) - 1|
-        ≤ (τ * a * g ^ (b - r)) ^ 2 / 6 :=
+        ≤ (τ * a * g ^ (b - r)) ^ (2 : ℕ) / 6 :=
           abs_real_sinc_sub_one_le_sq_div_six _
-    _ = (τ * a) ^ 2 * g ^ (2 * (b - r)) / 6 := by ring
+    _ = (τ * a) ^ (2 : ℕ) * g ^ (2 * (b - r)) / 6 := by ring
 
 /-- At birth, the reporter is exactly the universal sinc profile at every nonzero coupling. -/
 theorem monomialSincReporter_critical
@@ -96,7 +96,7 @@ theorem quantitativeMonomialSincWallCrossing
     (b : ℕ) :
     (∀ r < b,
       |monomialSincReporter τ a g b r - 1| ≤
-        (τ * a) ^ 2 * g ^ (2 * (b - r)) / 6) ∧
+        (τ * a) ^ (2 : ℕ) * g ^ (2 * (b - r)) / 6) ∧
     monomialSincReporter τ a g b b = Real.sinc (τ * a) ∧
     (∀ r, b < r →
       |monomialSincReporter τ a g b r| ≤

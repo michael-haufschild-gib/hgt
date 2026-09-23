@@ -34,13 +34,13 @@ theorem fzzCigarParityDilatedKreinOperator_sourceMetricReflection_anticommute
   have hr := (fzzKreinRAt_pos hbeta).ne'
   have ha := (fzzCigarParitySourceMetricReflectionScale_pos hbeta).ne'
   have hpa2 :
-      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ 2 =
+      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ (2 : ℕ) =
         fzzKreinRAt beta := by
     rw [ha2]
     field_simp
   have hpa2c :
       (fzzKreinPAt beta : ℂ) *
-          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ 2 =
+          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ (2 : ℕ) =
         (fzzKreinRAt beta : ℂ) := by
     exact_mod_cast hpa2
   have haC : (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ≠ 0 := by
@@ -77,22 +77,22 @@ theorem fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_eq
 theorem norm_sq_fzzCigarParityDilatedKreinEigenvalue_sub_p
     {beta : ℝ} (hbeta : 0 < beta) :
     ‖fzzCigarParityDilatedTwoScaleKreinEigenvalue beta -
-        (fzzKreinPAt beta : ℂ)‖ ^ 2 =
-      fzzKreinPAt beta * fzzKreinQAt beta ^ 2 / fzzKreinRAt beta := by
+        (fzzKreinPAt beta : ℂ)‖ ^ (2 : ℕ) =
+      fzzKreinPAt beta * fzzKreinQAt beta ^ (2 : ℕ) / fzzKreinRAt beta := by
   rw [Complex.sq_norm, Complex.normSq_apply,
     fzzCigarParityDilatedTwoScaleKreinEigenvalue]
   simp only [Complex.sub_re, Complex.mul_re, Complex.I_re, Complex.ofReal_re,
     Complex.I_im, Complex.ofReal_im, zero_mul, one_mul, sub_zero,
     Complex.sub_im, Complex.mul_im, mul_zero, zero_add]
   have hsqrt :
-      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ 2 =
+      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ (2 : ℕ) =
         fzzCigarParityDilatedTwoScaleKreinDiscriminant beta :=
     Real.sq_sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant_pos hbeta).le
   rw [show (0 - fzzKreinPAt beta) * (0 - fzzKreinPAt beta) =
-      fzzKreinPAt beta ^ 2 by ring,
+      fzzKreinPAt beta ^ (2 : ℕ) by ring,
     show Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) *
         Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) =
-      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ 2 by ring,
+      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ (2 : ℕ) by ring,
     hsqrt, fzzCigarParityDilatedTwoScaleKreinDiscriminant]
   have hr := (fzzKreinRAt_pos hbeta).ne'
   field_simp

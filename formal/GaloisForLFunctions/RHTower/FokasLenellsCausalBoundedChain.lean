@@ -9,7 +9,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedChainInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Actual bounded sequences whose consecutive coordinates lie in the maximal-generator graph. -/
 def causalBoundedChain : Submodule ℂ (lp (fun _ : ℕ => hardyL2ᗮ) ∞) :=

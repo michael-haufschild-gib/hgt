@@ -48,7 +48,7 @@ theorem ratio_quadratic_of_polynomial_cross (Φ : K →+* K) {a b c α β : K} (
     intro k
     rw [coeff_add, coeff_C_mul, coeff_add, coeff_C_mul, coeff_X, coeff_C, mul_ite, mul_one,
       mul_zero]
-  have hlead : Φ (P.coeff 2) * a ^ 2 = c * P.coeff 2 := by
+  have hlead : Φ (P.coeff 2) * a ^ (2 : ℕ) = c * P.coeff 2 := by
     have h := congrArg (fun R : K[X] => R.coeff 2) hnum
     simp only [twistComp] at h
     rw [coeff_comp_linear_of_natDegree_le ha (hmapdeg 2 le_rfl), coeff_map, hRHS 2,
@@ -68,7 +68,7 @@ theorem ratio_quadratic_of_polynomial_cross (Φ : K →+* K) {a b c α β : K} (
     linear_combination (a * c * P.coeff 2) * hsub - (a * (c * P.coeff 1 + α)) * hlead
   rw [map_div₀]
   field_simp
-  linear_combination (a ^ 0) * key
+  linear_combination (a ^ (0 : ℕ)) * key
 
 /-- **The quadratic branch's constant-term relation.**  The third coefficient equation, read as a
 relation for the ratio of the constant coefficient to the leading one. -/
@@ -76,7 +76,7 @@ theorem ratio_quadratic_constant_of_polynomial_cross (Φ : K →+* K) {a b c α 
     (hc : c ≠ 0) {P : K[X]} (hD : P.natDegree = 2)
     (hnum : twistComp Φ (C a * X + C b) P = C c * P + (C α * X + C β)) :
     Φ (P.coeff 0 / P.coeff 2)
-      = a ^ 2 * (P.coeff 0 / P.coeff 2) - a * b * (P.coeff 1 / P.coeff 2) + b ^ 2
+      = a ^ (2 : ℕ) * (P.coeff 0 / P.coeff 2) - a * b * (P.coeff 1 / P.coeff 2) + b ^ (2 : ℕ)
         + a * (a * β - α * b) / (c * P.coeff 2) := by
   classical
   have hP0 : P ≠ 0 := by
@@ -95,7 +95,7 @@ theorem ratio_quadratic_constant_of_polynomial_cross (Φ : K →+* K) {a b c α 
     intro k
     rw [coeff_add, coeff_C_mul, coeff_add, coeff_C_mul, coeff_X, coeff_C, mul_ite, mul_one,
       mul_zero]
-  have hE2 : Φ (P.coeff 2) * a ^ 2 = c * P.coeff 2 := by
+  have hE2 : Φ (P.coeff 2) * a ^ (2 : ℕ) = c * P.coeff 2 := by
     have h := congrArg (fun R : K[X] => R.coeff 2) hnum
     simp only [twistComp] at h
     rw [coeff_comp_linear_of_natDegree_le ha (hmapdeg 2 le_rfl), coeff_map, hRHS 2,
@@ -108,7 +108,7 @@ theorem ratio_quadratic_constant_of_polynomial_cross (Φ : K →+* K) {a b c α 
       if_pos rfl, if_neg (by omega : ¬ (1 : ℕ) = 0)] at h
     push_cast at h
     linear_combination h
-  have hE0 : Φ (P.coeff 2) * b ^ 2 + Φ (P.coeff 1) * b + Φ (P.coeff 0)
+  have hE0 : Φ (P.coeff 2) * b ^ (2 : ℕ) + Φ (P.coeff 1) * b + Φ (P.coeff 0)
       = c * P.coeff 0 + β := by
     have h := congrArg (fun R : K[X] => R.coeff 0) hnum
     simp only [twistComp] at h
@@ -121,14 +121,14 @@ theorem ratio_quadratic_constant_of_polynomial_cross (Φ : K →+* K) {a b c α 
     linear_combination h
   have hΦlc : Φ (P.coeff 2) ≠ 0 := fun h => hlc ((RingHom.injective Φ) (by rw [h, map_zero]))
   have key : Φ (P.coeff 0) * (c * P.coeff 2)
-      = (a ^ 2 * (c * P.coeff 0 + β) + c * P.coeff 2 * b ^ 2
+      = (a ^ (2 : ℕ) * (c * P.coeff 0 + β) + c * P.coeff 2 * b ^ (2 : ℕ)
           - a * (c * P.coeff 1 + α) * b) * Φ (P.coeff 2) := by
     refine mul_left_cancel₀ (pow_ne_zero 2 ha) ?_
-    linear_combination (a ^ 2 * c * P.coeff 2) * hE0 - (a * c * P.coeff 2 * b) * hE1
-      + (a * b * (c * P.coeff 1 + α) - a ^ 2 * (c * P.coeff 0 + β)) * hE2
+    linear_combination (a ^ (2 : ℕ) * c * P.coeff 2) * hE0 - (a * c * P.coeff 2 * b) * hE1
+      + (a * b * (c * P.coeff 1 + α) - a ^ (2 : ℕ) * (c * P.coeff 0 + β)) * hE2
   rw [map_div₀]
   field_simp
-  linear_combination (a ^ 0) * key
+  linear_combination (a ^ (0 : ℕ)) * key
 
 /-- **The linear branch's constant-term relation.**  When the linear part of the inhomogeneity
 vanishes, a numerator of degree one still carries a second relation: the ratio of its constant
@@ -179,6 +179,6 @@ theorem ratio_linear_of_polynomial_cross (Φ : K →+* K) {a b c β : K} (ha : a
     linear_combination (a * c * P.coeff 1) * hF0 - (a * (c * P.coeff 0 + β)) * hF1
   rw [map_div₀]
   field_simp
-  linear_combination (a ^ 0) * key
+  linear_combination (a ^ (0 : ℕ)) * key
 
 end GaloisForLFunctions.HTGeometry

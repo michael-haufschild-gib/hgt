@@ -14,29 +14,29 @@ namespace HilbertSchmidt
 variable {κ ι : Type*}
 
 /-- Square-summability for a rectangular matrix. -/
-def IsHSRect (K : κ × ι → ℂ) : Prop := Summable (fun p => ‖K p‖ ^ 2)
+def IsHSRect (K : κ × ι → ℂ) : Prop := Summable (fun p => ‖K p‖ ^ (2 : ℕ))
 
 /-- Squared Hilbert--Schmidt norm of a rectangular matrix. -/
-noncomputable def hsNormSqRect (K : κ × ι → ℂ) : ℝ := ∑' p, ‖K p‖ ^ 2
+noncomputable def hsNormSqRect (K : κ × ι → ℂ) : ℝ := ∑' p, ‖K p‖ ^ (2 : ℕ)
 
 theorem hsNormSqRect_nonneg (K : κ × ι → ℂ) : 0 ≤ hsNormSqRect K :=
   tsum_nonneg fun _ => sq_nonneg _
 
 /-- Each row of a rectangular Hilbert--Schmidt matrix is square-summable. -/
 theorem isHSRect_row {K : κ × ι → ℂ} (hK : IsHSRect K) (r : κ) :
-    Summable (fun j => ‖K (r, j)‖ ^ 2) := by
+    Summable (fun j => ‖K (r, j)‖ ^ (2 : ℕ)) := by
   exact hK.comp_injective fun a b h => (Prod.ext_iff.mp h).2
 
 /-- The row energies of a rectangular Hilbert--Schmidt matrix are summable. -/
 theorem summable_rect_row {K : κ × ι → ℂ} (hK : IsHSRect K) :
-    Summable (fun r => ∑' j, ‖K (r, j)‖ ^ 2) := by
+    Summable (fun r => ∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) := by
   have h := hK
-  change Summable (fun p : κ × ι => ‖K p‖ ^ 2) at h
+  change Summable (fun p : κ × ι => ‖K p‖ ^ (2 : ℕ)) at h
   rw [summable_prod_of_nonneg (fun _ => sq_nonneg _)] at h
   exact h.2
 
 theorem tsum_rect_row_normSq {K : κ × ι → ℂ} (hK : IsHSRect K) :
-    ∑' r, ∑' j, ‖K (r, j)‖ ^ 2 = hsNormSqRect K := by
+    ∑' r, ∑' j, ‖K (r, j)‖ ^ (2 : ℕ) = hsNormSqRect K := by
   exact hK.tsum_prod.symm
 
 /-- Transpose of a rectangular matrix. -/
@@ -44,8 +44,8 @@ def rectTranspose (K : κ × ι → ℂ) : ι × κ → ℂ := fun p => K (p.2, 
 
 theorem isHSRect_transpose {K : κ × ι → ℂ} (hK : IsHSRect K) :
     IsHSRect (rectTranspose K) := by
-  have hre : (fun p : ι × κ => ‖rectTranspose K p‖ ^ 2) =
-      (fun p : κ × ι => ‖K p‖ ^ 2) ∘ (Equiv.prodComm ι κ) := by
+  have hre : (fun p : ι × κ => ‖rectTranspose K p‖ ^ (2 : ℕ)) =
+      (fun p : κ × ι => ‖K p‖ ^ (2 : ℕ)) ∘ (Equiv.prodComm ι κ) := by
     funext p
     rfl
   rw [IsHSRect, hre]
@@ -53,29 +53,29 @@ theorem isHSRect_transpose {K : κ × ι → ℂ} (hK : IsHSRect K) :
 
 /-- Each column of a rectangular Hilbert--Schmidt matrix is square-summable. -/
 theorem isHSRect_col {K : κ × ι → ℂ} (hK : IsHSRect K) (j : ι) :
-    Summable (fun r => ‖K (r, j)‖ ^ 2) := by
+    Summable (fun r => ‖K (r, j)‖ ^ (2 : ℕ)) := by
   simpa [rectTranspose] using isHSRect_row (isHSRect_transpose hK) j
 
 /-- The column energies of a rectangular Hilbert--Schmidt matrix are summable. -/
 theorem summable_rect_col {K : κ × ι → ℂ} (hK : IsHSRect K) :
-    Summable (fun j => ∑' r, ‖K (r, j)‖ ^ 2) := by
+    Summable (fun j => ∑' r, ‖K (r, j)‖ ^ (2 : ℕ)) := by
   simpa [rectTranspose] using summable_rect_row (isHSRect_transpose hK)
 
 theorem tsum_rect_col_normSq {K : κ × ι → ℂ} (hK : IsHSRect K) :
-    ∑' j, ∑' r, ‖K (r, j)‖ ^ 2 = hsNormSqRect K := by
+    ∑' j, ∑' r, ‖K (r, j)‖ ^ (2 : ℕ) = hsNormSqRect K := by
   calc
-    ∑' j, ∑' r, ‖K (r, j)‖ ^ 2 =
-        ∑' p : ι × κ, ‖rectTranspose K p‖ ^ 2 :=
+    ∑' j, ∑' r, ‖K (r, j)‖ ^ (2 : ℕ) =
+        ∑' p : ι × κ, ‖rectTranspose K p‖ ^ (2 : ℕ) :=
       (isHSRect_transpose hK).tsum_prod.symm
-    _ = ∑' p : κ × ι, ‖K p‖ ^ 2 :=
-      (Equiv.prodComm ι κ).tsum_eq (fun p : κ × ι => ‖K p‖ ^ 2)
+    _ = ∑' p : κ × ι, ‖K p‖ ^ (2 : ℕ) :=
+      (Equiv.prodComm ι κ).tsum_eq (fun p : κ × ι => ‖K p‖ ^ (2 : ℕ))
     _ = hsNormSqRect K := rfl
 
 /-- Row action of a rectangular Hilbert--Schmidt matrix on an `ℓ²` vector converges. -/
 theorem summable_rect_row_mul {K : κ × ι → ℂ} (hK : IsHSRect K)
     (f : lp (fun _ : ι => ℂ) 2) (r : κ) :
     Summable fun j => K (r, j) * f j := by
-  apply Summable.of_norm_bounded (g := fun j => (‖K (r, j)‖ ^ 2 + ‖f j‖ ^ 2) / 2)
+  apply Summable.of_norm_bounded (g := fun j => (‖K (r, j)‖ ^ (2 : ℕ) + ‖f j‖ ^ (2 : ℕ)) / 2)
   · exact ((isHSRect_row hK r).add (summable_coe_sq f)).div_const 2
   · intro j
     rw [norm_mul]
@@ -86,12 +86,12 @@ private theorem memℓp_rectMulVec {K : κ × ι → ℂ} (hK : IsHSRect K)
     Memℓp (fun r => ∑' j, K (r, j) * f j) 2 := by
   refine memℓp_of_sq ?_
   refine Summable.of_nonneg_of_le (fun r => by positivity) (fun r => ?_)
-    ((summable_rect_row hK).mul_right (‖f‖ ^ 2))
+    ((summable_rect_row hK).mul_right (‖f‖ ^ (2 : ℕ)))
   calc
-    ‖∑' j, K (r, j) * f j‖ ^ 2
-        ≤ (∑' j, ‖K (r, j)‖ ^ 2) * (∑' j, ‖f j‖ ^ 2) :=
+    ‖∑' j, K (r, j) * f j‖ ^ (2 : ℕ)
+        ≤ (∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * (∑' j, ‖f j‖ ^ (2 : ℕ)) :=
       hsComp_entry_bound (isHSRect_row hK r) (summable_coe_sq f)
-    _ = (∑' j, ‖K (r, j)‖ ^ 2) * ‖f‖ ^ 2 := by rw [lp_norm_sq_eq]
+    _ = (∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by rw [lp_norm_sq_eq]
 
 /-- Hilbert--Schmidt norm of a rectangular matrix. -/
 noncomputable def hsNormRect (K : κ × ι → ℂ) : ℝ := Real.sqrt (hsNormSqRect K)
@@ -102,25 +102,25 @@ private theorem norm_rectMulVec_le {K : κ × ι → ℂ} (hK : IsHSRect K)
         lp (fun _ : κ => ℂ) 2)‖ ≤ hsNormRect K * ‖f‖ := by
   set g : lp (fun _ : κ => ℂ) 2 :=
     ⟨fun r => ∑' j, K (r, j) * f j, memℓp_rectMulVec hK f⟩ with hg
-  have hgsq : ‖g‖ ^ 2 ≤ hsNormSqRect K * ‖f‖ ^ 2 := by
+  have hgsq : ‖g‖ ^ (2 : ℕ) ≤ hsNormSqRect K * ‖f‖ ^ (2 : ℕ) := by
     rw [lp_norm_sq_eq g]
     calc
-      ∑' r, ‖g r‖ ^ 2
-          ≤ ∑' r, (∑' j, ‖K (r, j)‖ ^ 2) * ‖f‖ ^ 2 := by
+      ∑' r, ‖g r‖ ^ (2 : ℕ)
+          ≤ ∑' r, (∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by
         refine Summable.tsum_le_tsum (fun r => ?_) (summable_coe_sq g)
-          ((summable_rect_row hK).mul_right (‖f‖ ^ 2))
+          ((summable_rect_row hK).mul_right (‖f‖ ^ (2 : ℕ)))
         calc
-          ‖g r‖ ^ 2 = ‖∑' j, K (r, j) * f j‖ ^ 2 := rfl
-          _ ≤ (∑' j, ‖K (r, j)‖ ^ 2) * (∑' j, ‖f j‖ ^ 2) :=
+          ‖g r‖ ^ (2 : ℕ) = ‖∑' j, K (r, j) * f j‖ ^ (2 : ℕ) := rfl
+          _ ≤ (∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * (∑' j, ‖f j‖ ^ (2 : ℕ)) :=
             hsComp_entry_bound (isHSRect_row hK r) (summable_coe_sq f)
-          _ = (∑' j, ‖K (r, j)‖ ^ 2) * ‖f‖ ^ 2 := by rw [lp_norm_sq_eq]
-      _ = (∑' r, ∑' j, ‖K (r, j)‖ ^ 2) * ‖f‖ ^ 2 := tsum_mul_right
-      _ = hsNormSqRect K * ‖f‖ ^ 2 := by rw [tsum_rect_row_normSq hK]
+          _ = (∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by rw [lp_norm_sq_eq]
+      _ = (∑' r, ∑' j, ‖K (r, j)‖ ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := tsum_mul_right
+      _ = hsNormSqRect K * ‖f‖ ^ (2 : ℕ) := by rw [tsum_rect_row_normSq hK]
   have hroot := Real.sqrt_le_sqrt hgsq
   rw [Real.sqrt_sq (norm_nonneg g)] at hroot
   calc
-    ‖g‖ ≤ Real.sqrt (hsNormSqRect K * ‖f‖ ^ 2) := hroot
-    _ = Real.sqrt (hsNormSqRect K) * Real.sqrt (‖f‖ ^ 2) :=
+    ‖g‖ ≤ Real.sqrt (hsNormSqRect K * ‖f‖ ^ (2 : ℕ)) := hroot
+    _ = Real.sqrt (hsNormSqRect K) * Real.sqrt (‖f‖ ^ (2 : ℕ)) :=
       Real.sqrt_mul (hsNormSqRect_nonneg K) _
     _ = hsNormRect K * ‖f‖ := by
       rw [Real.sqrt_sq (norm_nonneg f), hsNormRect]
@@ -189,8 +189,8 @@ theorem toOperatorRect_ne_zero_iff {K : κ × ι → ℂ}
 
 theorem norm_toOperatorRect_single_sq [DecidableEq ι] {K : κ × ι → ℂ}
     (hK : IsHSRect K) (j : ι) :
-    ‖toOperatorRect hK (lp.single 2 j (1 : ℂ))‖ ^ 2 =
-      ∑' r, ‖K (r, j)‖ ^ 2 := by
+    ‖toOperatorRect hK (lp.single 2 j (1 : ℂ))‖ ^ (2 : ℕ) =
+      ∑' r, ‖K (r, j)‖ ^ (2 : ℕ) := by
   rw [lp_norm_sq_eq]
   exact tsum_congr fun r => by rw [toOperatorRect_single hK r j]
 

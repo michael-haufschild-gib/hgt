@@ -159,7 +159,7 @@ section ConspiracyExponent
 /-- The **conspiracy exponent**.  The off-diagonal of the `2k`-th moment is
 `∑_h (D_k(M,h)/M) K(h)` with `K(h) ≪ min(T, M/h)`; note the normalising `1/M`.  Modelling the errors
 `Δ_k(M,h)` at their conjectured size `M^{1-1/k}` with independent signs, and using
-`∑_{h≤M} K(h)^2 ≍ 2MT`, the predicted error is
+`∑_{h≤M} K(h)^(2 : ℕ) ≍ 2MT`, the predicted error is
 
   `(1/M)(2MT)^{1/2} M^{1-1/k} = √2 · T^{1/2} M^{1/2-1/k} = √2 · T^{k/4}`  at `M = T^{k/2}`.
 

@@ -44,12 +44,12 @@ theorem hasDerivAt_suzukiLerchTailOneClosed {t : ℝ} (ht : 0 < t) :
   apply hraw'.congr_deriv
   rw [screwLerchTail₂_eq ht]
   dsimp [y] at *
-  have hpow : y ^ 4 = Real.exp (-(2 * t)) := by
+  have hpow : y ^ (4 : ℕ) = Real.exp (-(2 * t)) := by
     dsimp [y]
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have hyden : 1 - y ^ 4 ≠ 0 := by
+  have hyden : 1 - y ^ (4 : ℕ) ≠ 0 := by
     rw [hpow]
     exact (one_sub_exp_neg_two_mul_pos ht).ne'
   rw [← hpow]
@@ -233,7 +233,7 @@ theorem tendsto_suzukiLerchTailOneClosed_sub_half_log :
       (𝓝[>] 0) (𝓝 (-Real.log 2)) := by
     have h := (hratio.log (by norm_num : (4 : ℝ) ≠ 0)).const_mul (-(1 / 2 : ℝ))
     convert h using 1
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
     ring
   apply (hatan.add hlog).congr'
   filter_upwards [self_mem_nhdsWithin] with t ht

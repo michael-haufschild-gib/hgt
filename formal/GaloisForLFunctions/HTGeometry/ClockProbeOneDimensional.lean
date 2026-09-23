@@ -39,7 +39,7 @@ theorem deriv_cosProbe (k a : ℝ) :
   exact ((hasDerivAt_cosArg k a x).cos).deriv
 
 theorem secondDeriv_cosProbe (k a x : ℝ) :
-    secondDeriv (cosProbe k a) x = -(k ^ 2) * cosProbe k a x := by
+    secondDeriv (cosProbe k a) x = -(k ^ (2 : ℕ)) * cosProbe k a x := by
   have h : HasDerivAt (fun t : ℝ => -Real.sin (k * (t - a)) * k)
       (-(Real.cos (k * (x - a)) * k) * k) x := by
     exact (((hasDerivAt_cosArg k a x).sin).neg).mul_const k
@@ -48,7 +48,7 @@ theorem secondDeriv_cosProbe (k a x : ℝ) :
 
 /-- **The cosine probe solves the oscillatory equation.** -/
 theorem solvesPotentialWave_cosProbe (k a : ℝ) :
-    SolvesPotentialWave secondDeriv (fun _ => k ^ 2) (cosProbe k a) := by
+    SolvesPotentialWave secondDeriv (fun _ => k ^ (2 : ℕ)) (cosProbe k a) := by
   intro x
   rw [secondDeriv_cosProbe]
   ring
@@ -58,7 +58,7 @@ theorem cosProbe_self (k a : ℝ) : cosProbe k a a = 1 := by
 
 /-- **The oscillatory potential is determined**, by cosines centred at each event. -/
 theorem noCommonZero_oscillatory (k : ℝ) :
-    NoCommonZero secondDeriv (fun _ => k ^ 2) := by
+    NoCommonZero secondDeriv (fun _ => k ^ (2 : ℕ)) := by
   refine noCommonZero_of_exists_normalized fun a => ?_
   exact ⟨cosProbe k a, solvesPotentialWave_cosProbe k a, cosProbe_self k a⟩
 
@@ -81,7 +81,7 @@ theorem deriv_coshProbe (s a : ℝ) :
   exact ((hasDerivAt_cosArg s a x).cosh).deriv
 
 theorem secondDeriv_coshProbe (s a x : ℝ) :
-    secondDeriv (coshProbe s a) x = s ^ 2 * coshProbe s a x := by
+    secondDeriv (coshProbe s a) x = s ^ (2 : ℕ) * coshProbe s a x := by
   have h : HasDerivAt (fun t : ℝ => Real.sinh (s * (t - a)))
       (Real.cosh (s * (x - a)) * s) x := (hasDerivAt_cosArg s a x).sinh
   rw [secondDeriv, deriv_coshProbe, (h.mul_const s).deriv, coshProbe]
@@ -89,7 +89,7 @@ theorem secondDeriv_coshProbe (s a x : ℝ) :
 
 /-- **The hyperbolic cosine probe solves the non-oscillatory equation.** -/
 theorem solvesPotentialWave_coshProbe (s a : ℝ) :
-    SolvesPotentialWave secondDeriv (fun _ => -(s ^ 2)) (coshProbe s a) := by
+    SolvesPotentialWave secondDeriv (fun _ => -(s ^ (2 : ℕ))) (coshProbe s a) := by
   intro x
   rw [secondDeriv_coshProbe]
   ring
@@ -100,7 +100,7 @@ theorem coshProbe_ne_zero (s a x : ℝ) : coshProbe s a x ≠ 0 :=
 
 /-- **The non-oscillatory potential is determined by a single globally nonvanishing probe.** -/
 theorem noCommonZero_nonOscillatory (s : ℝ) :
-    NoCommonZero secondDeriv (fun _ => -(s ^ 2)) :=
+    NoCommonZero secondDeriv (fun _ => -(s ^ (2 : ℕ))) :=
   noCommonZero_of_nonvanishing_probe (coshProbe_ne_zero s 0)
     (solvesPotentialWave_coshProbe s 0)
 
@@ -108,16 +108,16 @@ theorem noCommonZero_nonOscillatory (s : ℝ) :
 
 /-- **Any potential with the same solutions as the oscillatory one is that potential.** -/
 theorem potential_eq_of_oscillatory (k : ℝ) {other : ℝ → ℝ}
-    (hother : ∀ u ∈ solutionSet secondDeriv (fun _ => k ^ 2),
+    (hother : ∀ u ∈ solutionSet secondDeriv (fun _ => k ^ (2 : ℕ)),
       SolvesPotentialWave secondDeriv other u) :
-    other = fun _ => k ^ 2 :=
+    other = fun _ => k ^ (2 : ℕ) :=
   potential_eq_of_noCommonZero (noCommonZero_oscillatory k) hother
 
 /-- **The same for the non-oscillatory regime.** -/
 theorem potential_eq_of_nonOscillatory (s : ℝ) {other : ℝ → ℝ}
-    (hother : ∀ u ∈ solutionSet secondDeriv (fun _ => -(s ^ 2)),
+    (hother : ∀ u ∈ solutionSet secondDeriv (fun _ => -(s ^ (2 : ℕ))),
       SolvesPotentialWave secondDeriv other u) :
-    other = fun _ => -(s ^ 2) :=
+    other = fun _ => -(s ^ (2 : ℕ)) :=
   potential_eq_of_noCommonZero (noCommonZero_nonOscillatory s) hother
 
 end GaloisForLFunctions.HTGeometry

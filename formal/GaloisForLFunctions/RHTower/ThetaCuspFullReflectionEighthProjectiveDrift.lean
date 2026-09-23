@@ -11,7 +11,7 @@ noncomputable section
 def thetaCuspReflectedEighthSourceProjectiveValue (x : ℝ) : ℝ :=
   (thetaCuspReflectedEighthSourcePositiveModularValue x).re /
     (thetaCuspModularSourcePositiveState
-      HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ 6
+      HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ (6 : ℕ)
 
 /-- Polynomial numerator of the projective D1 derivative along the exact source-positive flow. -/
 def thetaCuspReflectedEighthSourceProjectiveDrift (x : ℝ) : ℝ :=
@@ -30,7 +30,7 @@ theorem hasDerivAt_thetaCuspReflectedEighthSourceProjectiveValue
     HasDerivAt thetaCuspReflectedEighthSourceProjectiveValue
       (thetaCuspReflectedEighthSourceProjectiveDrift x /
         (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ 7) x := by
+          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ (7 : ℕ)) x := by
   let v := fun i => thetaCuspModularSourcePositiveState i
   let P := HTGeometry.modularThetaSourcePositiveReflectedEighthPolynomial
   have hP := HTGeometry.hasDerivAt_eval_modularThetaSourcePositivePolynomial
@@ -47,7 +47,7 @@ theorem hasDerivAt_thetaCuspReflectedEighthSourceProjectiveValue
   have hfun :
       (Complex.reCLM ∘ (fun y => MvPolynomial.eval (fun j => v j y) P)) /
           (Complex.reCLM ∘ thetaCuspModularSourcePositiveState
-            HTGeometry.ModularThetaSourcePositiveState.Q) ^ 6 =
+            HTGeometry.ModularThetaSourcePositiveState.Q) ^ (6 : ℕ) =
         thetaCuspReflectedEighthSourceProjectiveValue := by
     funext y
     rfl
@@ -89,10 +89,10 @@ theorem thetaCuspReflectedEighthSourceProjectiveValue_eq_four_mul_fullReflection
   have hHpos := thetaCuspCompletedThetaProfile_pos x
   have hvalue :
       (thetaCuspReflectedEighthSourcePositiveModularValue x).re =
-        4 * q ^ 6 * thetaCuspFullReflectionEighthHankelCurvature x := by
+        4 * q ^ (6 : ℕ) * thetaCuspFullReflectionEighthHankelCurvature x := by
     nlinarith [pow_pos hHpos 6]
   dsimp only [thetaCuspReflectedEighthSourceProjectiveValue]
-  change (thetaCuspReflectedEighthSourcePositiveModularValue x).re / q ^ 6 = _
+  change (thetaCuspReflectedEighthSourcePositiveModularValue x).re / q ^ (6 : ℕ) = _
   rw [hvalue]
   field_simp [hqpos.ne']
 
@@ -102,7 +102,7 @@ theorem hasDerivAt_thetaCuspFullReflectionEighthHankelCurvature_projectiveDrift
     HasDerivAt thetaCuspFullReflectionEighthHankelCurvature
       (thetaCuspReflectedEighthSourceProjectiveDrift x /
         (4 * (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ 7)) x := by
+          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ (7 : ℕ))) x := by
   have heq : thetaCuspReflectedEighthSourceProjectiveValue =ᶠ[nhds x]
       fun y => 4 * thetaCuspFullReflectionEighthHankelCurvature y := by
     filter_upwards [Ioi_mem_nhds hx] with y hy
@@ -178,7 +178,7 @@ theorem thetaCuspReflectedEighthSourceProjectiveValue_eq_raw_div_source_pow_six
     (x : ℝ) :
     thetaCuspReflectedEighthSourceProjectiveValue x =
       thetaCuspFullSourceReflectionEighthHankelCurvature x /
-        thetaCuspFullSource x ^ 6 := by
+        thetaCuspFullSource x ^ (6 : ℕ) := by
   let q := (thetaCuspModularSourcePositiveState
     HTGeometry.ModularThetaSourcePositiveState.Q x).re
   have hqpos : 0 < q := by
@@ -201,7 +201,7 @@ theorem thetaCuspReflectedEighthSourceProjectiveValue_eq_raw_div_source_pow_six
     simpa only [q] using h
   have hHpos := thetaCuspCompletedThetaProfile_pos x
   dsimp only [thetaCuspReflectedEighthSourceProjectiveValue]
-  change (thetaCuspReflectedEighthSourcePositiveModularValue x).re / q ^ 6 = _
+  change (thetaCuspReflectedEighthSourcePositiveModularValue x).re / q ^ (6 : ℕ) = _
   rw [hraw, hsource, mul_pow]
   field_simp [hqpos.ne', hHpos.ne']
 

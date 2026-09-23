@@ -128,7 +128,7 @@ theorem cothField_exists_equilibrium {ι : Type*} (s : Finset ι) (t : ι → �
 
 /-- The reduced spectator energy `W(x) = ¼ Σ csch²((x − t_k)/2)` (doc 27–29). -/
 noncomputable def spurLatticeEnergy {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) : ℝ :=
-  (1 / 4) * ∑ k ∈ s, (rcsch ((x - t k) / 2)) ^ 2
+  (1 / 4) * ∑ k ∈ s, (rcsch ((x - t k) / 2)) ^ (2 : ℕ)
 
 theorem spurLatticeEnergy_nonneg {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) :
     0 ≤ spurLatticeEnergy s t x := by
@@ -143,7 +143,7 @@ theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b 
     HasDerivAt (cothField s t) (-2 * spurLatticeEnergy s t x) x := by
   simp only [mem_Ioo] at hx
   have hterm : ∀ k ∈ s, HasDerivAt (fun y => rcoth ((y - t k) / 2))
-      (-(1 / 2) * (rcsch ((x - t k) / 2)) ^ 2) x := by
+      (-(1 / 2) * (rcsch ((x - t k) / 2)) ^ (2 : ℕ)) x := by
     intro k hk
     have hne : (x - t k) / 2 ≠ 0 := by
       rcases hpoles k hk with h | h
@@ -155,7 +155,7 @@ theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b 
     simpa only [Function.comp_apply] using! this.congr_deriv (by ring)
   have hsum := HasDerivAt.fun_sum (fun k hk => hterm k hk)
   have hval : (-2 : ℝ) * spurLatticeEnergy s t x
-      = ∑ k ∈ s, -(1 / 2) * (rcsch ((x - t k) / 2)) ^ 2 := by
+      = ∑ k ∈ s, -(1 / 2) * (rcsch ((x - t k) / 2)) ^ (2 : ℕ) := by
     rw [spurLatticeEnergy, ← mul_assoc, Finset.mul_sum]
     exact Finset.sum_congr rfl (fun k hk => by ring)
   rw [hval]
@@ -168,7 +168,7 @@ theorem spurLatticeEnergy_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → �
     (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k) (hx : x ∈ Ioo a b) :
     HasDerivAt (spurLatticeEnergy s t) (-(1 / 4) * ∑ k ∈ s, rphi ((x - t k) / 2)) x := by
   simp only [mem_Ioo] at hx
-  have hterm : ∀ k ∈ s, HasDerivAt (fun y => (rcsch ((y - t k) / 2)) ^ 2)
+  have hterm : ∀ k ∈ s, HasDerivAt (fun y => (rcsch ((y - t k) / 2)) ^ (2 : ℕ))
       (-rphi ((x - t k) / 2)) x := by
     intro k hk
     have hne : (x - t k) / 2 ≠ 0 := by
@@ -272,8 +272,8 @@ theorem rphi_paired_sum_gt {ι : Type*} (u : Finset ι) (w : ι → ℝ) {s δ :
 Σ_{n<N} csch²((δ−s+nδ)/2)]`: the equilibrium slid within its gap, near-ahead distance `s`,
 `M` charges ahead and `N` behind at spacing `δ`. -/
 noncomputable def latticeEnergyS (δ : ℝ) (M N : ℕ) (s : ℝ) : ℝ :=
-  (1 / 4) * ((∑ m ∈ Finset.range M, (rcsch ((s + m * δ) / 2)) ^ 2)
-    + ∑ n ∈ Finset.range N, (rcsch ((δ - s + n * δ) / 2)) ^ 2)
+  (1 / 4) * ((∑ m ∈ Finset.range M, (rcsch ((s + m * δ) / 2)) ^ (2 : ℕ))
+    + ∑ n ∈ Finset.range N, (rcsch ((δ - s + n * δ) / 2)) ^ (2 : ℕ))
 
 /-- **`dW/ds = ¼[Σ_{n} φ((δ−s+nδ)/2) − Σ_{m} φ((s+mδ)/2)]`.** The ahead charges pull the
 energy down as `s` shrinks (`−φ`), the behind charges push it up (`+φ`); the near-ahead pole
@@ -283,7 +283,7 @@ theorem latticeEnergyS_hasDerivAt {δ : ℝ} {M N : ℕ} {s : ℝ} (hδ : 0 < δ
     HasDerivAt (latticeEnergyS δ M N)
       ((1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + n * δ) / 2))
         - ∑ m ∈ Finset.range M, rphi ((s + m * δ) / 2))) s := by
-  have hahead : ∀ m ∈ Finset.range M, HasDerivAt (fun y => (rcsch ((y + m * δ) / 2)) ^ 2)
+  have hahead : ∀ m ∈ Finset.range M, HasDerivAt (fun y => (rcsch ((y + m * δ) / 2)) ^ (2 : ℕ))
       (-rphi ((s + m * δ) / 2)) s := by
     intro m _
     have hne : (s + m * δ) / 2 ≠ 0 := by positivity
@@ -291,7 +291,7 @@ theorem latticeEnergyS_hasDerivAt {δ : ℝ} {M N : ℕ} {s : ℝ} (hδ : 0 < δ
       simpa using ((hasDerivAt_id s).add_const (m * δ)).div_const 2
     have := (rcsch_sq_hasDerivAt hne).comp s hin
     simpa only [Function.comp_apply] using! this.congr_deriv (by ring)
-  have hbehind : ∀ n ∈ Finset.range N, HasDerivAt (fun y => (rcsch ((δ - y + n * δ) / 2)) ^ 2)
+  have hbehind : ∀ n ∈ Finset.range N, HasDerivAt (fun y => (rcsch ((δ - y + n * δ) / 2)) ^ (2 : ℕ))
       (rphi ((δ - s + n * δ) / 2)) s := by
     intro n _
     have hpos : (0 : ℝ) < (δ - s + n * δ) / 2 := by positivity
@@ -411,15 +411,15 @@ theorem latticeEnergyS_deriv_neg_outer_scalar {δ : ℝ} {M N : ℕ} {s : ℝ}
     (hs0 : 0 < s) (hs2 : s ≤ 2) (hsδ : 2 * s < δ) (hM : 1 ≤ M) (hMN : M ≤ N)
     (hbase : 1 ≤ (δ - s + (M : ℝ) * δ) / 2) (hfar : 1 ≤ (δ - s) / 2)
     (hscalar : 64 * Real.exp (-(δ - s + (M : ℝ) * δ)) / (1 - Real.exp (-δ))
-        + 64 * Real.exp (-(δ - s)) < 2 / s ^ 3) :
+        + 64 * Real.exp (-(δ - s)) < 2 / s ^ (3 : ℕ)) :
     (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
       - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 := by
   have hδ : 0 < δ := by linarith
   apply latticeEnergyS_deriv_neg_outer_of_near hs0 hsδ hM hMN
   have hoh := overhang_le_geom (N := N) hδ hbase
-  have hcub : (2 : ℝ) / s ^ 3 ≤ rphi (s / 2) := by
+  have hcub : (2 : ℝ) / s ^ (3 : ℕ) ≤ rphi (s / 2) := by
     have h := rphi_ge_cubic (by linarith : 0 < s / 2) (by linarith : s / 2 ≤ 1)
-    have hid : (1 : ℝ) / (4 * (s / 2) ^ 3) = 2 / s ^ 3 := by field_simp; ring
+    have hid : (1 : ℝ) / (4 * (s / 2) ^ (3 : ℕ)) = 2 / s ^ (3 : ℕ) := by field_simp; ring
     rwa [hid] at h
   have hexp : rphi ((δ - s) / 2) ≤ 64 * Real.exp (-(δ - s)) := by
     have h := rphi_le_exp hfar
@@ -451,7 +451,7 @@ theorem latticeEnergyS_deriv_neg_outer_small {δ : ℝ} {M N : ℕ} {s : ℝ}
     (hs0 : 0 < s) (hs2 : s ≤ 2) (hsδ : 2 * s < δ) (hM : 1 ≤ M) (hMN : M ≤ N)
     (hbase : 1 ≤ (δ - s + (M : ℝ) * δ) / 2) (hfar : 1 ≤ (δ - s) / 2)
     (hsmall : 64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2)
-        < 2 / s ^ 3) :
+        < 2 / s ^ (3 : ℕ)) :
     (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
       - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 :=
   latticeEnergyS_deriv_neg_outer_scalar hs0 hs2 hsδ hM hMN hbase hfar
@@ -487,7 +487,7 @@ theorem latticeEnergyS_strictAntiOn_outer {δ : ℝ} {M N : ℕ} {r : ℝ}
     (hbase : ∀ x ∈ Ioo (0 : ℝ) r, 1 ≤ (δ - x + (M : ℝ) * δ) / 2)
     (hfar : ∀ x ∈ Ioo (0 : ℝ) r, 1 ≤ (δ - x) / 2)
     (hsmall : ∀ x ∈ Ioo (0 : ℝ) r,
-      64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2) < 2 / x ^ 3) :
+      64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2) < 2 / x ^ (3 : ℕ)) :
     StrictAntiOn (latticeEnergyS δ M N) (Ioo 0 r) := by
   have hδ : 0 < δ := by linarith
   have hderiv : ∀ x ∈ Ioo (0 : ℝ) r, HasDerivAt (latticeEnergyS δ M N)

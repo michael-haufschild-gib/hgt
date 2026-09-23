@@ -38,7 +38,7 @@ theorem conductorAnalytic_ne_zero (ξ : ℝ) : (2 : ℂ) + Complex.I * ξ ≠ 0 
   have hre : ((2 : ℂ) + Complex.I * ξ).re = 0 := by rw [h]; simp
   simp at hre
 
-theorem norm_two_add_I_mul (ξ : ℝ) : ‖(2 : ℂ) + Complex.I * ξ‖ = Real.sqrt (4 + ξ ^ 2) := by
+theorem norm_two_add_I_mul (ξ : ℝ) : ‖(2 : ℂ) + Complex.I * ξ‖ = Real.sqrt (4 + ξ ^ (2 : ℕ)) := by
   have hre : ((2 : ℂ) + Complex.I * ξ).re = 2 := by simp
   have him : ((2 : ℂ) + Complex.I * ξ).im = ξ := by simp
   rw [Complex.norm_def, Complex.normSq_apply, hre, him]
@@ -46,14 +46,14 @@ theorem norm_two_add_I_mul (ξ : ℝ) : ‖(2 : ℂ) + Complex.I * ξ‖ = Real.
   ring
 
 theorem conductorAnalytic_re (ξ : ℝ) :
-    (conductorAnalytic ξ).re = Real.log (Real.sqrt (4 + ξ ^ 2)) := by
+    (conductorAnalytic ξ).re = Real.log (Real.sqrt (4 + ξ ^ (2 : ℕ))) := by
   rw [conductorAnalytic, Complex.log_re, norm_two_add_I_mul]
 
 /-! ## The bounded difference -/
 
 theorem sq_bounds (ξ : ℝ) :
-    4 + ξ ^ 2 ≤ (2 + |ξ|) ^ 2 ∧ (2 + |ξ|) ^ 2 ≤ 2 * (4 + ξ ^ 2) := by
-  have habs : |ξ| ^ 2 = ξ ^ 2 := sq_abs ξ
+    4 + ξ ^ (2 : ℕ) ≤ (2 + |ξ|) ^ (2 : ℕ) ∧ (2 + |ξ|) ^ (2 : ℕ) ≤ 2 * (4 + ξ ^ (2 : ℕ)) := by
+  have habs : |ξ| ^ (2 : ℕ) = ξ ^ (2 : ℕ) := sq_abs ξ
   have hnn : 0 ≤ |ξ| := abs_nonneg ξ
   constructor
   · nlinarith [habs, hnn]
@@ -61,28 +61,28 @@ theorem sq_bounds (ξ : ℝ) :
 
 theorem conductorSymbol_sub_analytic_nonneg (ξ : ℝ) :
     0 ≤ conductorSymbol ξ - (conductorAnalytic ξ).re := by
-  have hpos : (0 : ℝ) < 4 + ξ ^ 2 := by positivity
+  have hpos : (0 : ℝ) < 4 + ξ ^ (2 : ℕ) := by positivity
   have hsq := (sq_bounds ξ).1
-  have hs : Real.sqrt (4 + ξ ^ 2) ≤ 2 + |ξ| := by
-    rw [show (2 : ℝ) + |ξ| = Real.sqrt ((2 + |ξ|) ^ 2) by
+  have hs : Real.sqrt (4 + ξ ^ (2 : ℕ)) ≤ 2 + |ξ| := by
+    rw [show (2 : ℝ) + |ξ| = Real.sqrt ((2 + |ξ|) ^ (2 : ℕ)) by
       rw [Real.sqrt_sq (by positivity)]]
     exact Real.sqrt_le_sqrt hsq
-  have hspos : (0 : ℝ) < Real.sqrt (4 + ξ ^ 2) := Real.sqrt_pos.mpr hpos
+  have hspos : (0 : ℝ) < Real.sqrt (4 + ξ ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
   rw [conductorSymbol, conductorAnalytic_re, sub_nonneg]
   exact Real.log_le_log hspos hs
 
 theorem conductorSymbol_sub_analytic_le (ξ : ℝ) :
     conductorSymbol ξ - (conductorAnalytic ξ).re ≤ Real.log 2 / 2 := by
-  have hpos : (0 : ℝ) < 4 + ξ ^ 2 := by positivity
+  have hpos : (0 : ℝ) < 4 + ξ ^ (2 : ℕ) := by positivity
   have hsq := (sq_bounds ξ).2
-  have hspos : (0 : ℝ) < Real.sqrt (4 + ξ ^ 2) := Real.sqrt_pos.mpr hpos
-  have hs : (2 : ℝ) + |ξ| ≤ Real.sqrt 2 * Real.sqrt (4 + ξ ^ 2) := by
-    rw [← Real.sqrt_mul (by norm_num) (4 + ξ ^ 2),
-      show (2 : ℝ) + |ξ| = Real.sqrt ((2 + |ξ|) ^ 2) by rw [Real.sqrt_sq (by positivity)]]
+  have hspos : (0 : ℝ) < Real.sqrt (4 + ξ ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
+  have hs : (2 : ℝ) + |ξ| ≤ Real.sqrt 2 * Real.sqrt (4 + ξ ^ (2 : ℕ)) := by
+    rw [← Real.sqrt_mul (by norm_num) (4 + ξ ^ (2 : ℕ)),
+      show (2 : ℝ) + |ξ| = Real.sqrt ((2 + |ξ|) ^ (2 : ℕ)) by rw [Real.sqrt_sq (by positivity)]]
     exact Real.sqrt_le_sqrt hsq
   have hsqrt2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hlog : Real.log (2 + |ξ|) ≤ Real.log (Real.sqrt 2) + Real.log (Real.sqrt (4 + ξ ^ 2)) := by
-    have h1 : Real.log (2 + |ξ|) ≤ Real.log (Real.sqrt 2 * Real.sqrt (4 + ξ ^ 2)) :=
+  have hlog : Real.log (2 + |ξ|) ≤ Real.log (Real.sqrt 2) + Real.log (Real.sqrt (4 + ξ ^ (2 : ℕ))) := by
+    have h1 : Real.log (2 + |ξ|) ≤ Real.log (Real.sqrt 2 * Real.sqrt (4 + ξ ^ (2 : ℕ))) :=
       Real.log_le_log (by positivity) hs
     rwa [Real.log_mul (ne_of_gt hsqrt2) (ne_of_gt hspos)] at h1
   have hval : Real.log (Real.sqrt 2) = Real.log 2 / 2 := by
@@ -173,28 +173,28 @@ theorem tendsto_conductorResolventPrimitive (ξ : ℝ) :
         atTop (𝓝 1) := by
       have hsq : ∀ lam : ℝ, 0 < lam →
           (lam + 2) / ‖(lam : ℂ) + 2 + Complex.I * ξ‖
-            = 1 / Real.sqrt (1 + (ξ / (lam + 2)) ^ 2) := by
+            = 1 / Real.sqrt (1 + (ξ / (lam + 2)) ^ (2 : ℕ)) := by
         intro lam hlam
         have hl2 : (0 : ℝ) < lam + 2 := by linarith
-        have hnn : ‖(lam : ℂ) + 2 + Complex.I * ξ‖ = Real.sqrt ((lam + 2) ^ 2 + ξ ^ 2) := by
+        have hnn : ‖(lam : ℂ) + 2 + Complex.I * ξ‖ = Real.sqrt ((lam + 2) ^ (2 : ℕ) + ξ ^ (2 : ℕ)) := by
           rw [Complex.norm_def, Complex.normSq_apply]
           congr 1
           simp
           ring
         rw [hnn]
-        have hfac : (lam + 2) ^ 2 + ξ ^ 2 = (lam + 2) ^ 2 * (1 + (ξ / (lam + 2)) ^ 2) := by
+        have hfac : (lam + 2) ^ (2 : ℕ) + ξ ^ (2 : ℕ) = (lam + 2) ^ (2 : ℕ) * (1 + (ξ / (lam + 2)) ^ (2 : ℕ)) := by
           field_simp
         rw [hfac, Real.sqrt_mul (by positivity), Real.sqrt_sq hl2.le]
         field_simp
-      have hinner : Tendsto (fun lam : ℝ => 1 + (ξ / (lam + 2)) ^ 2) atTop (𝓝 1) := by
+      have hinner : Tendsto (fun lam : ℝ => 1 + (ξ / (lam + 2)) ^ (2 : ℕ)) atTop (𝓝 1) := by
         have hd : Tendsto (fun lam : ℝ => ξ / (lam + 2)) atTop (𝓝 0) :=
           Tendsto.div_atTop tendsto_const_nhds
             (tendsto_atTop_add_const_right atTop (2 : ℝ) tendsto_id)
         simpa using (tendsto_const_nhds (x := (1:ℝ))).add (hd.pow 2)
-      have hsqrt : Tendsto (fun lam : ℝ => Real.sqrt (1 + (ξ / (lam + 2)) ^ 2)) atTop (𝓝 1) := by
+      have hsqrt : Tendsto (fun lam : ℝ => Real.sqrt (1 + (ξ / (lam + 2)) ^ (2 : ℕ))) atTop (𝓝 1) := by
         have := (Real.continuous_sqrt.continuousAt (x := (1:ℝ))).tendsto.comp hinner
         simpa [Function.comp_def] using this
-      have hinv : Tendsto (fun lam : ℝ => 1 / Real.sqrt (1 + (ξ / (lam + 2)) ^ 2)) atTop (𝓝 1) := by
+      have hinv : Tendsto (fun lam : ℝ => 1 / Real.sqrt (1 + (ξ / (lam + 2)) ^ (2 : ℕ))) atTop (𝓝 1) := by
         simpa using hsqrt.inv₀ (by norm_num)
       refine Tendsto.congr' ?_ hinv
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with lam hlam
@@ -233,9 +233,9 @@ theorem conductorAnalytic_eq_resolvent (ξ : ℝ) :
   have hint : IntegrableOn
       (fun lam : ℝ => 1 / ((lam : ℂ) + 2) - 1 / ((lam : ℂ) + 2 + Complex.I * ξ))
       (Set.Ioi 0) volume := by
-    have hmajor : IntegrableOn (fun lam : ℝ => |ξ| * ((lam + 2) ^ 2)⁻¹)
+    have hmajor : IntegrableOn (fun lam : ℝ => |ξ| * ((lam + 2) ^ (2 : ℕ))⁻¹)
         (Set.Ioi (0:ℝ)) volume := by
-      have hb : IntegrableOn (fun lam : ℝ => ((lam + 2) ^ 2)⁻¹) (Set.Ioi (0:ℝ)) volume := by
+      have hb : IntegrableOn (fun lam : ℝ => ((lam + 2) ^ (2 : ℕ))⁻¹) (Set.Ioi (0:ℝ)) volume := by
         refine integrableOn_Ioi_deriv_of_nonneg (g := fun m : ℝ => -(m + 2)⁻¹) (l := 0)
           ?_ ?_ ?_ ?_
         · refine ContinuousAt.continuousWithinAt ?_
@@ -290,12 +290,12 @@ theorem conductorAnalytic_eq_resolvent (ξ : ℝ) :
       have hmul : |ξ| * ((lam + 2) * (lam + 2))
           ≤ |ξ| * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) :=
         mul_le_mul_of_nonneg_left hstep (abs_nonneg ξ)
-      have hinv : (0 : ℝ) < ((lam + 2) ^ 2)⁻¹ := by positivity
-      calc |ξ| = |ξ| * ((lam + 2) * (lam + 2)) * ((lam + 2) ^ 2)⁻¹ := by
+      have hinv : (0 : ℝ) < ((lam + 2) ^ (2 : ℕ))⁻¹ := by positivity
+      calc |ξ| = |ξ| * ((lam + 2) * (lam + 2)) * ((lam + 2) ^ (2 : ℕ))⁻¹ := by
             field_simp
-        _ ≤ |ξ| * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) * ((lam + 2) ^ 2)⁻¹ :=
+        _ ≤ |ξ| * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) * ((lam + 2) ^ (2 : ℕ))⁻¹ :=
             mul_le_mul_of_nonneg_right hmul hinv.le
-        _ = |ξ| * ((lam + 2) ^ 2)⁻¹ * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) := by ring
+        _ = |ξ| * ((lam + 2) ^ (2 : ℕ))⁻¹ * ((lam + 2) * ‖(lam : ℂ) + 2 + Complex.I * ξ‖) := by ring
   have hval := integral_Ioi_of_hasDerivAt_of_tendsto
     (f := conductorResolventPrimitive ξ)
     (f' := fun lam : ℝ => 1 / ((lam : ℂ) + 2) - 1 / ((lam : ℂ) + 2 + Complex.I * ξ))

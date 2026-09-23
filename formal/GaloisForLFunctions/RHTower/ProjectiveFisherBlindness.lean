@@ -15,7 +15,7 @@ namespace RHTower
 
 /-- Born probability of one coordinate of a complex state. -/
 def bornProbability {ι : Type*} (ψ : ι → ℂ) (i : ι) : ℝ :=
-  ‖ψ i‖ ^ 2 / ∑' j, ‖ψ j‖ ^ 2
+  ‖ψ i‖ ^ (2 : ℕ) / ∑' j, ‖ψ j‖ ^ (2 : ℕ)
 
 /-- Expectation of a real observable in the Born distribution of a complex state. -/
 def bornExpectation {ι : Type*} (ψ : ι → ℂ) (E : ι → ℝ) : ℝ :=
@@ -23,14 +23,14 @@ def bornExpectation {ι : Type*} (ψ : ι → ℂ) (E : ι → ℝ) : ℝ :=
 
 /-- Variance of a real observable in the Born distribution of a complex state. -/
 def bornVariance {ι : Type*} (ψ : ι → ℂ) (E : ι → ℝ) : ℝ :=
-  bornExpectation ψ (fun i => E i ^ 2) - bornExpectation ψ E ^ 2
+  bornExpectation ψ (fun i => E i ^ (2 : ℕ)) - bornExpectation ψ E ^ (2 : ℕ)
 
 /-- A coordinatewise unimodular phase twist leaves every Born probability unchanged. -/
 theorem bornProbability_phase_twist {ι : Type*} (ψ u : ι → ℂ)
     (hu : ∀ i, ‖u i‖ = 1) (i : ι) :
     bornProbability (fun j => u j * ψ j) i = bornProbability ψ i := by
   unfold bornProbability
-  have hterm : ∀ j, ‖u j * ψ j‖ ^ 2 = ‖ψ j‖ ^ 2 := by
+  have hterm : ∀ j, ‖u j * ψ j‖ ^ (2 : ℕ) = ‖ψ j‖ ^ (2 : ℕ) := by
     intro j
     rw [norm_mul, hu]
     simp
@@ -50,7 +50,7 @@ theorem bornVariance_phase_twist {ι : Type*} (ψ u : ι → ℂ) (E : ι → �
     (hu : ∀ i, ‖u i‖ = 1) :
     bornVariance (fun j => u j * ψ j) E = bornVariance ψ E := by
   unfold bornVariance
-  rw [bornExpectation_phase_twist ψ u (fun i => E i ^ 2) hu,
+  rw [bornExpectation_phase_twist ψ u (fun i => E i ^ (2 : ℕ)) hu,
     bornExpectation_phase_twist ψ u E hu]
 
 end RHTower

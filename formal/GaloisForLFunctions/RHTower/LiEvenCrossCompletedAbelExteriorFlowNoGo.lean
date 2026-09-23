@@ -12,14 +12,14 @@ prime--Gamma window.  This module kills that route at every mode.
 
 Writing `t = v * lambda_q(v)`, the atom is a fixed unit-interval defect `P_n(t)` and its velocity
 is `lambda_q(v) * (1-t) * P_n'(t)`.  Thus the full current is exactly one moving polynomial
-moment and, for `v=w^2`, one literal rational--Gamma-minus-von-Mangoldt source whenever
+moment and, for `v=w^(2 : ℕ)`, one literal rational--Gamma-minus-von-Mangoldt source whenever
 `w>1/2`.
 
 The corpus far-right moment asymptotic turns the normalized current into the arcsine functional
 of `(1-X)P_n'`.  An exact arcsine integration-by-parts identity makes this half the functional of
 `P_n/X`; the latter is the nonzero weighted Chebyshev square
 
-`2 * (1-X) * U_n(2X-1)^2`.
+`2 * (1-X) * U_n(2X-1)^(2 : ℕ)`.
 
 Consequently the exterior current is eventually strictly positive for every mode.  Hence the
 nonpositive exterior-flow conjecture that would propagate a zero far-right anchor back to the
@@ -43,7 +43,7 @@ def liEvenCrossUnitAmplitude (n : ℕ) : Polynomial ℝ :=
 
 /-- Fixed unit-coordinate form of one completed-Abel atom. -/
 def liEvenCrossUnitDefect (n : ℕ) : Polynomial ℝ :=
-  C (1 / 2) * (1 - liEvenCrossUnitAmplitude n ^ 2)
+  C (1 / 2) * (1 - liEvenCrossUnitAmplitude n ^ (2 : ℕ))
 
 /-- Quotient current left after the summable reciprocal factor is removed. -/
 def liEvenCrossUnitFluxQuotient (n : ℕ) : Polynomial ℝ :=
@@ -66,16 +66,16 @@ theorem evalRealPolynomial_scaled_comp_apply (P : Polynomial ℝ) (v : ℝ) (z :
   congr 1
 
 theorem two_mul_liEvenCrossUnitDefect (n : ℕ) :
-    2 * liEvenCrossUnitDefect n = 1 - liEvenCrossUnitAmplitude n ^ 2 := by
+    2 * liEvenCrossUnitDefect n = 1 - liEvenCrossUnitAmplitude n ^ (2 : ℕ) := by
   rw [liEvenCrossUnitDefect]
-  change C 2 * (C (1 / 2) * (1 - liEvenCrossUnitAmplitude n ^ 2)) = _
+  change C 2 * (C (1 / 2) * (1 - liEvenCrossUnitAmplitude n ^ (2 : ℕ))) = _
   rw [← mul_assoc, ← C_mul]
   norm_num
 
 theorem liEvenCrossUnitDefect_eq_weightedSquare (n : ℕ) :
     liEvenCrossUnitDefect n =
       2 * X * (1 - X) *
-        ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ 2 := by
+        ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ (2 : ℕ) := by
   have h := congrArg (fun P : Polynomial ℝ => P.comp liEvenCrossUnitAffine)
     (chebyshevT_sq_add_one_sub_X_sq_mul_chebyshevU_sq_real n)
   simp only [add_comp, sub_comp, mul_comp, pow_comp, one_comp,
@@ -84,7 +84,7 @@ theorem liEvenCrossUnitDefect_eq_weightedSquare (n : ℕ) :
   have htwo :
       2 * liEvenCrossUnitDefect n =
         2 * (2 * X * (1 - X) *
-          ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ 2) := by
+          ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ (2 : ℕ)) := by
     rw [two_mul_liEvenCrossUnitDefect, liEvenCrossUnitAmplitude]
     simp only [liEvenCrossUnitAffine]
     ring_nf at h ⊢
@@ -105,7 +105,7 @@ theorem X_mul_liEvenCrossUnitDefect_divX (n : ℕ) :
 theorem liEvenCrossUnitDefect_divX_eq_weightedSquare (n : ℕ) :
     (liEvenCrossUnitDefect n).divX =
       2 * (1 - X) *
-        ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ 2 := by
+        ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp liEvenCrossUnitAffine) ^ (2 : ℕ) := by
   apply mul_left_cancel₀ Polynomial.X_ne_zero
   rw [X_mul_liEvenCrossUnitDefect_divX,
     liEvenCrossUnitDefect_eq_weightedSquare]
@@ -162,7 +162,7 @@ theorem momentFunctional_normalizedCentralBinom_pos_of_nonnegativeOn_Icc
       GaloisForLFunctions.HTGeometry.normalizedCentralBinom P := by
   rw [GaloisForLFunctions.HTGeometry.momentFunctional_normalizedCentralBinom_eq_quarterIntegral]
   apply mul_pos (div_pos (by norm_num) Real.pi_pos)
-  let f : ℝ → ℝ := fun x => P.eval (Real.cos x ^ 2)
+  let f : ℝ → ℝ := fun x => P.eval (Real.cos x ^ (2 : ℕ))
   have hfcont : Continuous f := by
     dsimp only [f]
     fun_prop
@@ -180,7 +180,7 @@ theorem momentFunctional_normalizedCentralBinom_pos_of_nonnegativeOn_Icc
     (Filter.Eventually.of_forall hfnn) hfint]
   refine ⟨by positivity, ?_⟩
   let W : Set ℝ := Set.Ioo (0 : ℝ) (Real.pi / 2) ∩
-    {x : ℝ | P.eval (Real.cos x ^ 2) ≠ 0}
+    {x : ℝ | P.eval (Real.cos x ^ (2 : ℕ)) ≠ 0}
   have hWopen : IsOpen W := by
     exact isOpen_Ioo.inter (isOpen_ne.preimage (P.continuous.comp
       (Real.continuous_cos.pow 2)))
@@ -235,17 +235,17 @@ theorem eval_liEvenCrossUnitDefect (v : ℝ) (n : ℕ) (q : XiZeroCopy) :
       evalRealPolynomial (Polynomial.Chebyshev.T ℝ (2 * ((n + 1 : ℕ) : ℤ)))
           (2 * z - 1) =
         2 * evalRealPolynomial (Polynomial.Chebyshev.T ℝ ((n + 1 : ℕ) : ℤ))
-          (2 * z - 1) ^ 2 - 1 := by
+          (2 * z - 1) ^ (2 : ℕ) - 1 := by
     simpa [evalRealPolynomial] using hdouble
   have hdef : evalRealPolynomial (liEvenCrossUnitDefect n) z =
-      (1 - evalRealPolynomial (liEvenCrossUnitAmplitude n) z ^ 2) / 2 := by
+      (1 - evalRealPolynomial (liEvenCrossUnitAmplitude n) z ^ (2 : ℕ)) / 2 := by
     have h := congrArg (fun P : Polynomial ℝ => evalRealPolynomial P z)
       (two_mul_liEvenCrossUnitDefect n)
     simp only [evalRealPolynomial_mul] at h
     have htwo : evalRealPolynomial (2 : Polynomial ℝ) z = 2 := by
       simp [evalRealPolynomial]
-    have hright : evalRealPolynomial (1 - liEvenCrossUnitAmplitude n ^ 2) z =
-        1 - evalRealPolynomial (liEvenCrossUnitAmplitude n) z ^ 2 := by
+    have hright : evalRealPolynomial (1 - liEvenCrossUnitAmplitude n ^ (2 : ℕ)) z =
+        1 - evalRealPolynomial (liEvenCrossUnitAmplitude n) z ^ (2 : ℕ) := by
       simp [evalRealPolynomial]
     rw [htwo, hright] at h
     linear_combination h / 2
@@ -352,22 +352,22 @@ theorem normalized_liEvenCrossSquareMassAdjacentFlux_eq_momentFunctional
     {w : ℝ} (hw : 1 < w) (n : ℕ) :
     2 * w / Real.log w *
         (∑' q : XiZeroCopy,
-          liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re =
+          liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re =
       HTGeometry.momentFunctional
         (xiShiftedFarRightNormalizedMoment w)
         (liEvenCrossUnitFluxQuotient n) := by
   rw [re_tsum_liEvenCrossSquareMassAdjacentFlux_eq_momentFunctional
     (sq_pos_of_pos (lt_trans zero_lt_one hw))]
   have hseq : xiShiftedFarRightNormalizedMoment w =
-      fun k => (2 * w / Real.log w) * (w ^ 2) ^ k *
-        (xiShiftedReciprocalMoment (w ^ 2) k).re := by
+      fun k => (2 * w / Real.log w) * (w ^ (2 : ℕ)) ^ k *
+        (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re := by
     funext k
     simp only [xiShiftedFarRightNormalizedMoment]
     rw [pow_add, pow_mul]
     ring
   rw [hseq, momentFunctional_scaledSequence_eq_comp_scale
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
-      (2 * w / Real.log w) (w ^ 2)]
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+      (2 * w / Real.log w) (w ^ (2 : ℕ))]
 
 theorem tendsto_momentFunctional_xiShiftedFarRightNormalizedMoment
     (P : Polynomial ℝ) :
@@ -394,7 +394,7 @@ theorem tendsto_normalized_liEvenCrossSquareMassAdjacentFlux (n : ℕ) :
     Tendsto
       (fun w : ℝ => 2 * w / Real.log w *
         (∑' q : XiZeroCopy,
-          liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re)
+          liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re)
       atTop
       (nhds (HTGeometry.momentFunctional
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom
@@ -408,12 +408,12 @@ theorem tendsto_normalized_liEvenCrossSquareMassAdjacentFlux (n : ℕ) :
 theorem eventually_re_tsum_liEvenCrossSquareMassAdjacentFlux_square_pos (n : ℕ) :
     ∀ᶠ w : ℝ in atTop,
       0 < (∑' q : XiZeroCopy,
-        liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re := by
+        liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re := by
   have hlimitPos := momentFunctional_liEvenCrossUnitFluxQuotient_pos n
   have hnormalized : ∀ᶠ w : ℝ in atTop,
       0 < 2 * w / Real.log w *
         (∑' q : XiZeroCopy,
-          liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re :=
+          liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re :=
     (tendsto_normalized_liEvenCrossSquareMassAdjacentFlux n).eventually
       (Ioi_mem_nhds hlimitPos)
   filter_upwards [hnormalized, eventually_gt_atTop (1 : ℝ)] with w hpos hw
@@ -427,10 +427,10 @@ theorem eventually_re_tsum_liEvenCrossSquareMassAdjacentFlux_square_pos (n : ℕ
 theorem re_tsum_liEvenCrossSquareMassAdjacentFlux_sq_eq_arithmeticSource
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
     (∑' q : XiZeroCopy,
-      liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re =
+      liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re =
       xiShiftedPolynomialCompletedArithmeticSource w
         ((liEvenCrossUnitFluxQuotient n).comp
-          (Polynomial.C (w ^ 2) * X)) := by
+          (Polynomial.C (w ^ (2 : ℕ)) * X)) := by
   rw [re_tsum_liEvenCrossSquareMassAdjacentFlux_eq_momentFunctional
     (sq_pos_of_pos (by linarith : 0 < w))]
   rw [xiShiftedPolynomialCompletedArithmeticSource_eq_momentFunctional hw]
@@ -441,7 +441,7 @@ theorem not_forall_re_tsum_liEvenCrossSquareMassAdjacentFlux_square_nonpos
     (n : ℕ) :
     ¬ ∀ w : ℝ, 1 / 2 < w →
       (∑' q : XiZeroCopy,
-        liEvenCrossSquareMassAdjacentFlux (w ^ 2) n q).re ≤ 0 := by
+        liEvenCrossSquareMassAdjacentFlux (w ^ (2 : ℕ)) n q).re ≤ 0 := by
   intro hnonpos
   have hevent :=
     (eventually_re_tsum_liEvenCrossSquareMassAdjacentFlux_square_pos n).and
@@ -454,7 +454,7 @@ theorem not_forall_liEvenCrossFluxArithmeticSource_nonpos (n : ℕ) :
     ¬ ∀ w : ℝ, 1 / 2 < w →
       xiShiftedPolynomialCompletedArithmeticSource w
         ((liEvenCrossUnitFluxQuotient n).comp
-          (Polynomial.C (w ^ 2) * X)) ≤ 0 := by
+          (Polynomial.C (w ^ (2 : ℕ)) * X)) ≤ 0 := by
   intro hnonpos
   apply not_forall_re_tsum_liEvenCrossSquareMassAdjacentFlux_square_nonpos n
   intro w hw

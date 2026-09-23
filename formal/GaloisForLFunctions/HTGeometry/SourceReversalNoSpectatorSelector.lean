@@ -195,7 +195,7 @@ theorem sourcePairParity_fixed_idempotent_eq_zero_or_one
       rcases mul_eq_zero.mp hprod with hbzero | hfactor
       · exact False.elim (hb0 hbzero)
       · nlinarith [hfactor]
-    have hsq : 0 ≤ b ^ 2 := sq_nonneg b
+    have hsq : 0 ≤ b ^ (2 : ℕ) := sq_nonneg b
     exfalso
     nlinarith [ha, htwoa, hsq]
 

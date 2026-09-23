@@ -72,7 +72,7 @@ def polarizedXiPositiveStokesEnergy (n : ℕ) (rho : XiDivisorSupport) : ℝ :=
 theorem polarizedXiPositiveStokesEnergy_eq_square_div
     (n : ℕ) (rho : XiDivisorSupport) :
     polarizedXiPositiveStokesEnergy n rho =
-      (polarizedXiSourceParameter n rho - 1) ^ 2 /
+      (polarizedXiSourceParameter n rho - 1) ^ (2 : ℕ) /
         polarizedXiSourceParameter n rho := by
   have hq : polarizedXiSourceParameter n rho ≠ 0 :=
     (polarizedXiSourceParameter_pos n rho).ne'

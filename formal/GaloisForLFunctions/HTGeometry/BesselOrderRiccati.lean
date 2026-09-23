@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.HolderShiftElimination
 
 The companion equation for the order recurrence is
 
-`sigma^2 y - c (X + 1) sigma y - y = 0`,
+`sigma^(2 : ℕ) y - c (X + 1) sigma y - y = 0`,
 
 so its Riccati equation is `u * sigma u - c (X + 1) * u - 1 = 0` over `ℂ(X)`.
 This module proves unconditionally that the Riccati equation has no rational solution whenever

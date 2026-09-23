@@ -13,7 +13,7 @@ def evenCompactRelativeDet (r a v : ℝ) : ℝ :=
 
 /-- All gap-grade shear identities assemble before the gap itself is substituted. -/
 theorem evenCompactRawPolynomial_relative_eq (u a v : ℝ) :
-    evenCompactRawPolynomial u a (u*(1+v/4)) = evenCompactRelativeDet (u^2) a v := by
+    evenCompactRawPolynomial u a (u*(1+v/4)) = evenCompactRelativeDet (u^(2 : ℕ)) a v := by
   unfold evenCompactRawPolynomial
   rw [evenCompactRawGapGrade0_relative_eq, evenCompactRawGapGrade1_relative_eq, evenCompactRawGapGrade2_relative_eq, evenCompactRawGapGrade3_relative_eq, evenCompactRawGapGrade4_relative_eq, evenCompactRawGapGrade5_relative_eq, evenCompactRawGapGrade6_relative_eq, evenCompactRawGapGrade7_relative_eq, evenCompactRawGapGrade8_relative_eq, evenCompactRawGapGrade9_relative_eq, evenCompactRawGapGrade10_relative_eq, evenCompactRawGapGrade11_relative_eq, evenCompactRawGapGrade12_relative_eq, evenCompactRawGapGrade13_relative_eq, evenCompactRawGapGrade14_relative_eq, evenCompactRawGapGrade15_relative_eq, evenCompactRawGapGrade16_relative_eq, evenCompactRawGapGrade17_relative_eq, evenCompactRawGapGrade18_relative_eq, evenCompactRawGapGrade19_relative_eq, evenCompactRawGapGrade20_relative_eq]
   unfold evenCompactRelativeDet

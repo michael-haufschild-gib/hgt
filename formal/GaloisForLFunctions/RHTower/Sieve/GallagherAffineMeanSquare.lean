@@ -24,11 +24,11 @@ open Complex MeasureTheory Set Finset
 
 /-- **The frequency mean square of the Gallagher polynomial, affine form.** -/
 theorem integral_Icc_normSq_logPoly_le_affine (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * (5 * Real.pi * Real.exp 1
-              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
               * max (2 * Real.pi * W) 1) := by
   rw [integral_Icc_normSq_logPoly_eq a N hW]
   exact mul_le_mul_of_nonneg_left
@@ -37,17 +37,17 @@ theorem integral_Icc_normSq_logPoly_le_affine (a : ℕ → ℂ) (N : ℕ) {W : �
 
 /-- **Gallagher's short-interval mean square with the affine frequency mean square.** -/
 theorem gallagher_meanValue_le_affine (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (hδ : 0 < δ) (hW : 0 < W) :
-    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2
+    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ)
           * ((2 * Real.pi)⁻¹
             * (5 * Real.pi * Real.exp 1
-                  * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-              + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+                  * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+              + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
                 * max (2 * Real.pi * W) 1))
-        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 * (2 / (Real.pi ^ 2 * W)) := by
+        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) * (2 / (Real.pi ^ (2 : ℕ) * W)) := by
   have hI := integral_Icc_normSq_logPoly_le_affine a N hW.le
-  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2
-      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 := by
+  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ)
+      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) := by
     intro w
     exact pow_le_pow_left₀ (norm_nonneg _) (norm_logPoly_le a (Finset.Icc 1 N) w) 2
   exact gallagher_split_integral a (Finset.Icc 1 N) hδ hW (by positivity) hI hM₂
@@ -55,13 +55,13 @@ theorem gallagher_meanValue_le_affine (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (
 /-- **The affine majorant of the frequency mean square.**  `max(2πT, 1) ≤ 2πT + 1` turns the affine
 form into the shape the dyadic tail consumes, with no condition on `W` beyond positivity. -/
 theorem integral_Icc_normSq_logPoly_le_affine_majorant (a : ℕ → ℂ) (N : ℕ) {T : ℝ} (hT : 0 ≤ T) :
-    (∫ w in Set.Icc (-T) T, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
-      ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * T
-        + ((5 * Real.exp 1 / 2) * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-          + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) := by
-  have hS : (0 : ℝ) ≤ ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2 :=
+    (∫ w in Set.Icc (-T) T, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ))
+      ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)) * T
+        + ((5 * Real.exp 1 / 2) * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+          + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))) := by
+  have hS : (0 : ℝ) ≤ ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => by positivity
-  have hW' : (0 : ℝ) ≤ ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2 :=
+  have hW' : (0 : ℝ) ≤ ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => by positivity
   have hbase := integral_Icc_normSq_logPoly_le_affine a N hT
   have hmax : max (2 * Real.pi * T) 1 ≤ 2 * Real.pi * T + 1 := by
@@ -72,18 +72,18 @@ theorem integral_Icc_normSq_logPoly_le_affine_majorant (a : ℕ → ℂ) (N : �
       linarith
   have hstep : (2 * Real.pi)⁻¹
         * (5 * Real.pi * Real.exp 1
-              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
               * max (2 * Real.pi * T) 1)
       ≤ (2 * Real.pi)⁻¹
         * (5 * Real.pi * Real.exp 1
-              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
               * (2 * Real.pi * T + 1)) := by
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    have hmul : (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+    have hmul : (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
           * max (2 * Real.pi * T) 1
-        ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * (2 * Real.pi * T + 1) :=
+        ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)) * (2 * Real.pi * T + 1) :=
       mul_le_mul_of_nonneg_left hmax (by positivity)
     linarith
   refine le_trans (le_trans hbase hstep) (le_of_eq ?_)
@@ -95,17 +95,17 @@ mass and the constant is `(5e/2)` times the `n`-weighted mass, where the previou
 `4N(1 + log N)/π` times the plain mass. -/
 theorem gallagher_meanValue_dyadic_le_affine (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (hδ : 0 < δ)
     (hW : 0 < W) :
-    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2
-          * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * W
+    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ)
+          * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)) * W
             + ((5 * Real.exp 1 / 2)
-                * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-              + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)))
-        + (4 * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) / (Real.pi ^ 2 * W)
+                * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+              + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))))
+        + (4 * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))) / (Real.pi ^ (2 : ℕ) * W)
             + 4 * ((5 * Real.exp 1 / 2)
-                  * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
-                + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2))
-              / (3 * Real.pi ^ 2 * W ^ 2)) := by
+                  * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+                + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)))
+              / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) := by
   refine gallagher_split_integral_dyadic a (Finset.Icc 1 N) hδ hW ?_
   intro T hT
   exact integral_Icc_normSq_logPoly_le_affine_majorant a N (le_trans hW.le hT)

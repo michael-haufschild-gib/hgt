@@ -16,7 +16,7 @@ noncomputable section
 open Set
 
 /-- A uniform third-derivative bound controls the quadratic Taylor remainder
-by `C (x-a)^3 / 2`. -/
+by `C (x-a)^(3 : ℕ) / 2`. -/
 theorem bourgain_quadraticTaylorWithin_remainder
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {f : ℝ → E} {a b C x : ℝ}

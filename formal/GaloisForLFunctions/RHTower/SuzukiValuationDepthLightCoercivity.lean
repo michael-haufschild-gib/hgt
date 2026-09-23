@@ -64,7 +64,7 @@ private theorem normSq_pow (z : ℂ) (e : ℕ) :
 theorem normSq_suzukiCriticalApertureDepthRatio_eq_radius_sq
     (h a t : ℝ) (p : Nat.Primes) :
     Complex.normSq (suzukiCriticalApertureDepthRatio h a t p) =
-      suzukiCriticalApertureDepthFusionRadius h a p ^ 2 := by
+      suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ) := by
   rw [suzukiCriticalApertureDepthRatio_eq_radius_mul_phase,
     Complex.normSq_mul, Complex.normSq_ofReal]
   have hphase :
@@ -79,12 +79,12 @@ theorem normSq_suzukiCriticalApertureDepthRatio_eq_exp_mul_diskNode_fourth
     (h a t : ℝ) (p : Nat.Primes) :
     Complex.normSq (suzukiCriticalApertureDepthRatio h a t p) =
       Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ)) *
-        xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 4 := by
+        xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (4 : ℕ) := by
   rw [normSq_suzukiCriticalApertureDepthRatio_eq_radius_sq,
     suzukiCriticalApertureDepthFusionRadius]
   rw [mul_pow]
   have hExp :
-      Real.exp (-(1 / 4 : ℝ) * Real.log (p : ℝ)) ^ 2 =
+      Real.exp (-(1 / 4 : ℝ) * Real.log (p : ℝ)) ^ (2 : ℕ) =
         Real.exp (-(1 / 2 : ℝ) * Real.log (p : ℝ)) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
@@ -96,7 +96,7 @@ theorem normSq_suzukiCriticalApertureDepthRatio_eq_exp_mul_diskNode_fourth
 theorem normSq_suzukiCriticalApertureBoundaryAtom_zero_eq_endpoint_sq
     (h a t : ℝ) (p : Nat.Primes) :
     Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t p 0) =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 := by
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) := by
   rw [suzukiCriticalApertureBoundaryAtom_zero_eq_endpoint_mul_phase,
     Complex.normSq_mul, Complex.normSq_ofReal]
   have hphase :
@@ -110,8 +110,8 @@ theorem normSq_suzukiCriticalApertureBoundaryAtom_zero_eq_endpoint_sq
 theorem normSq_suzukiCriticalApertureBoundaryAtom_eq_geometricDepth
     (h a t : ℝ) (p : Nat.Primes) (e : ℕ) :
     Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t p e) =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 *
-        (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ e := by
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) *
+        (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ e := by
   rw [suzukiCriticalApertureBoundaryAtom_eq_base_mul_ratio_pow,
     Complex.normSq_mul, normSq_pow,
     normSq_suzukiCriticalApertureBoundaryAtom_zero_eq_endpoint_sq,
@@ -123,9 +123,9 @@ theorem normSq_suzukiCriticalApertureNegativeLightLp_eq_geometricTerm
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     Complex.normSq
         (suzukiCriticalApertureNegativeLightLp h a t hh ha (p, e)) =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
         HTGeometry.geometricNegativeLightTerm
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) e := by
   have hlog :
       Real.log (xiGammaEulerValuationNat (p, e) : ℝ) =
@@ -150,7 +150,7 @@ theorem normSq_suzukiCriticalApertureNegativeLightLp_eq_geometricTerm
       Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t p e) =
         (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
             Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ)) *
-          xiMobiusCubicNormalizedInnovationFeature h a (p, e) ^ 2 := by
+          xiMobiusCubicNormalizedInnovationFeature h a (p, e) ^ (2 : ℕ) := by
     rw [suzukiCriticalApertureBoundaryAtom_eq_wallField_mul_innovation,
       Complex.normSq_mul, hwall, Complex.normSq_ofReal]
     ring
@@ -198,9 +198,9 @@ theorem normSq_suzukiCriticalAperturePositiveLightLp_eq_geometricTerm
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     Complex.normSq
         (suzukiCriticalAperturePositiveLightLp h a t hh ha (p, e)) =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
         HTGeometry.geometricPositiveLightTerm
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) e := by
   have hsum := normSq_suzukiCriticalApertureLightLp_add hh ha t p e
   rw [normSq_suzukiCriticalApertureBoundaryAtom_eq_geometricDepth] at hsum
@@ -229,11 +229,11 @@ theorem suzukiCriticalApertureNegativeLightDepthEnergy_eq
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a)
     (t : ℝ) (p : Nat.Primes) :
     suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
         HTGeometry.geometricNegativeLightEnergy
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) := by
-  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ 2
+  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   have hR0 : 0 ≤ R := sq_nonneg _
@@ -245,7 +245,7 @@ theorem suzukiCriticalApertureNegativeLightDepthEnergy_eq
       Complex.normSq
         (suzukiCriticalApertureNegativeLightLp h a t hh ha (p, e))) =
       ∑' e : ℕ,
-        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
           HTGeometry.geometricNegativeLightTerm
             R (t * Real.log (p : ℝ)) e by
         apply tsum_congr
@@ -261,11 +261,11 @@ theorem suzukiCriticalAperturePositiveLightDepthEnergy_eq
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a)
     (t : ℝ) (p : Nat.Primes) :
     suzukiCriticalAperturePositiveLightDepthEnergy h a t hh ha p =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
         HTGeometry.geometricPositiveLightEnergy
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) := by
-  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ 2
+  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   have hR0 : 0 ≤ R := sq_nonneg _
@@ -277,7 +277,7 @@ theorem suzukiCriticalAperturePositiveLightDepthEnergy_eq
       Complex.normSq
         (suzukiCriticalAperturePositiveLightLp h a t hh ha (p, e))) =
       ∑' e : ℕ,
-        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
           HTGeometry.geometricPositiveLightTerm
             R (t * Real.log (p : ℝ)) e by
         apply tsum_congr
@@ -292,11 +292,11 @@ theorem suzukiCriticalAperturePositiveLightDepthEnergy_eq
 theorem suzukiCriticalApertureNegativeLightDepthEnergy_ge_sharpFloor
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a)
     (t : ℝ) (p : Nat.Primes) :
-    suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-          ((suzukiCriticalApertureDepthFusionRadius h a p ^ 2) /
-            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ 2)) ≤
+    suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+          ((suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) /
+            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ (2 : ℕ))) ≤
       suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p := by
-  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ 2
+  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   have hR0 : 0 ≤ R := sq_nonneg _
@@ -311,11 +311,11 @@ theorem suzukiCriticalApertureNegativeLightDepthEnergy_ge_sharpFloor
 theorem suzukiCriticalAperturePositiveLightDepthEnergy_ge_sharpFloor
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a)
     (t : ℝ) (p : Nat.Primes) :
-    suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-          ((suzukiCriticalApertureDepthFusionRadius h a p ^ 2) /
-            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ 2)) ≤
+    suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+          ((suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) /
+            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ (2 : ℕ))) ≤
       suzukiCriticalAperturePositiveLightDepthEnergy h a t hh ha p := by
-  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ 2
+  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   have hR0 : 0 ≤ R := sq_nonneg _
@@ -333,32 +333,32 @@ theorem suzukiCriticalApertureLightDepthEnergies_add
     (t : ℝ) (p : Nat.Primes) :
     suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p +
         suzukiCriticalAperturePositiveLightDepthEnergy h a t hh ha p =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 /
-        (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ 2) := by
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) /
+        (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) := by
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   rw [suzukiCriticalApertureNegativeLightDepthEnergy_eq hh ha,
     suzukiCriticalAperturePositiveLightDepthEnergy_eq hh ha]
   have hsum :
       HTGeometry.geometricNegativeLightEnergy
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) +
         HTGeometry.geometricPositiveLightEnergy
-          (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+          (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
           (t * Real.log (p : ℝ)) =
-        2 / (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ 2) :=
+        2 / (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) :=
     HTGeometry.geometricLightEnergies_add
       (by nlinarith [mul_pos hr0 (sub_pos.mpr hr1)])
   calc
-    _ = suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
+    _ = suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
         (HTGeometry.geometricNegativeLightEnergy
-            (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+            (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
             (t * Real.log (p : ℝ)) +
           HTGeometry.geometricPositiveLightEnergy
-            (suzukiCriticalApertureDepthFusionRadius h a p ^ 2)
+            (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))
             (t * Real.log (p : ℝ))) := by ring
-    _ = suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-        (2 / (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ 2)) := by
+    _ = suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+        (2 / (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ))) := by
           rw [hsum]
     _ = _ := by ring
 
@@ -372,15 +372,15 @@ theorem suzukiCriticalApertureNegativeLightDepthEnergy_pos
   have hA0 := suzukiCriticalEntryWallEndpointAmplitude_zero_pos hh ha p
   have hfloor :
       0 <
-        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-          ((suzukiCriticalApertureDepthFusionRadius h a p ^ 2) /
-            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ 2)) := by
+        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+          ((suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) /
+            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ (2 : ℕ))) := by
     apply mul_pos
     · exact div_pos (sq_pos_of_pos hA0) (by norm_num)
     · apply div_pos
       · exact sq_pos_of_pos hr0
       · have hrSq :
-            suzukiCriticalApertureDepthFusionRadius h a p ^ 2 < 1 := by
+            suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ) < 1 := by
           nlinarith [mul_pos hr0 (sub_pos.mpr hr1)]
         nlinarith [mul_pos (sq_pos_of_pos hr0) (sub_pos.mpr hrSq)]
   exact hfloor.trans_le
@@ -395,15 +395,15 @@ theorem suzukiCriticalAperturePositiveLightDepthEnergy_pos
   have hA0 := suzukiCriticalEntryWallEndpointAmplitude_zero_pos hh ha p
   have hfloor :
       0 <
-        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-          ((suzukiCriticalApertureDepthFusionRadius h a p ^ 2) /
-            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ 2)) := by
+        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+          ((suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) /
+            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ (2 : ℕ))) := by
     apply mul_pos
     · exact div_pos (sq_pos_of_pos hA0) (by norm_num)
     · apply div_pos
       · exact sq_pos_of_pos hr0
       · have hrSq :
-            suzukiCriticalApertureDepthFusionRadius h a p ^ 2 < 1 := by
+            suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ) < 1 := by
           nlinarith [mul_pos hr0 (sub_pos.mpr hr1)]
         nlinarith [mul_pos (sq_pos_of_pos hr0) (sub_pos.mpr hrSq)]
   exact hfloor.trans_le
@@ -414,10 +414,10 @@ theorem exists_suzukiCriticalApertureNegativeLightDepthEnergy_eq_sharpFloor
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (p : Nat.Primes) :
     ∃ t : ℝ,
       suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p =
-        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 / 2 *
-          ((suzukiCriticalApertureDepthFusionRadius h a p ^ 2) /
-            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ^ 2)) := by
-  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ 2
+        suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) / 2 *
+          ((suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) /
+            (1 - (suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ^ (2 : ℕ))) := by
+  let R := suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)
   have hr0 := suzukiCriticalApertureDepthFusionRadius_pos h a p
   have hr1 := suzukiCriticalApertureDepthFusionRadius_lt_one hh ha p
   have hR0 : 0 ≤ R := sq_nonneg _

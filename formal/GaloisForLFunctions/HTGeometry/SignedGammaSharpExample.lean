@@ -24,7 +24,7 @@ open Complex
 `2^(2s-1)/√π · Γ(s+1/2)/Γ(s)`, whose two signed orbit charges are `+1` at `1/2 + ℤ` and `-1` at
 `ℤ`. -/
 theorem sharpNeutralGammaRatio (s : ℂ) (hs : Complex.Gamma s ≠ 0) :
-    Complex.Gamma (2 * s) / Complex.Gamma s ^ 2
+    Complex.Gamma (2 * s) / Complex.Gamma s ^ (2 : ℕ)
       = (2 : ℂ) ^ (2 * s - 1) / (Real.sqrt Real.pi : ℂ) *
           (Complex.Gamma (s + 1 / 2) / Complex.Gamma s) := by
   have hdup := Complex.Gamma_mul_Gamma_add_half s

@@ -34,7 +34,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_interval_bounds_seven {x : ℝ}
 
 private theorem first_head_abs {x : ℝ} (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspFirstAtomScaledEvenJet 1 x*thetaCuspFirstAtomScaledEvenJet 3 x-
-      thetaCuspFirstAtomScaledEvenJet 2 x^2| ≤ 27000 := by
+      thetaCuspFirstAtomScaledEvenJet 2 x^(2 : ℕ)| ≤ 27000 := by
   have hu := inverseScale_bounds_of_seven_le hq
   rw [thetaCuspFirstAtomScaledEvenJet_1_eq_profile_of_seven_le hq,
     thetaCuspFirstAtomScaledEvenJet_2_eq_profile_of_seven_le hq,
@@ -45,7 +45,7 @@ private theorem first_head_abs {x : ℝ} (hq : 7 ≤ thetaCuspSingleAtomReflecti
 theorem thetaCuspNativeOddHankelThreeDet_scaleSeven_normalized_lower {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     70000000000 ≤ thetaCuspNativeOddHankelThreeDet x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by
   have hx := regimeOne_pos_of_six_le (x := x) (by linarith)
   have hu := inverseScale_bounds_of_seven_le hq
   obtain ⟨h1,h2,h3,h4,h5⟩ := thetaCuspFirstAtomScaledEvenJet_interval_bounds_seven hq
@@ -71,9 +71,9 @@ theorem thetaCuspNativeOddHankelThreeDet_scaleSeven_normalized_lower {x : ℝ}
 theorem thetaCuspNativeOddHeadDet_scaleSeven_normalized_bounds {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     0 < thetaCuspNativeOddHeadDet x /
-      (thetaCuspSourceTerm x 1^4*thetaCuspSingleAtomReflectionScale 1 x^4) ∧
+      (thetaCuspSourceTerm x 1^(4 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)) ∧
     thetaCuspNativeOddHeadDet x /
-      (thetaCuspSourceTerm x 1^4*thetaCuspSingleAtomReflectionScale 1 x^4) ≤ 28000 := by
+      (thetaCuspSourceTerm x 1^(4 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)) ≤ 28000 := by
   have hx := regimeOne_pos_of_six_le (x := x) (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith

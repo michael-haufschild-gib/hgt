@@ -44,12 +44,12 @@ open MeasureTheory Set
 `c·∫_{(0,log2]} 2 sinh²(z/2)·csch²(cz/2) dz`. -/
 def reversalAhead (c : ℝ) : ℝ :=
   c * ∫ z in Ioc (0 : ℝ) (Real.log 2),
-    2 * Real.sinh (z / 2) ^ 2 * ((Real.sinh (c * z / 2))⁻¹) ^ 2
+    2 * Real.sinh (z / 2) ^ (2 : ℕ) * ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ)
 
 /-- Behind piece: `c·∫_{(log2,∞)} (1−e^{−z})·½·csch²(cz/2) dz`. -/
 def reversalBehind (c : ℝ) : ℝ :=
   c * ∫ z in Ioi (Real.log 2),
-    (1 - Real.exp (-z)) * (1 / 2) * ((Real.sinh (c * z / 2))⁻¹) ^ 2
+    (1 - Real.exp (-z)) * (1 / 2) * ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ)
 
 /-- The reversal ledger `R(1/2, c, 0)` (doc 41 §2 unified form). -/
 def reversalLedger (c : ℝ) : ℝ := reversalAhead c - reversalBehind c
@@ -69,9 +69,9 @@ theorem tanh_half_log_two : Real.tanh (Real.log 2 / 2) = 1 / 3 := by
   nlinarith [haa]
 
 /-- `tanh′ = sech²` (mathlib has `hasDerivAt_sinh`/`cosh` but no tanh derivative). -/
-theorem hasDerivAt_tanh (x : ℝ) : HasDerivAt Real.tanh ((Real.cosh x)⁻¹ ^ 2) x := by
+theorem hasDerivAt_tanh (x : ℝ) : HasDerivAt Real.tanh ((Real.cosh x)⁻¹ ^ (2 : ℕ)) x := by
   have h : HasDerivAt (fun y => Real.sinh y / Real.cosh y)
-      ((Real.cosh x * Real.cosh x - Real.sinh x * Real.sinh x) / Real.cosh x ^ 2) x :=
+      ((Real.cosh x * Real.cosh x - Real.sinh x * Real.sinh x) / Real.cosh x ^ (2 : ℕ)) x :=
     (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) (ne_of_gt (Real.cosh_pos x))
   have h1 : Real.cosh x * Real.cosh x - Real.sinh x * Real.sinh x = 1 := by
     nlinarith [Real.cosh_sq_sub_sinh_sq x]
@@ -92,7 +92,7 @@ theorem mul_sinh_cosh_le_sinh_mul {t c : ℝ} (ht : 0 < t) (hc : 2 ≤ c) :
   have hmono : MonotoneOn (fun u : ℝ => Real.sinh (u * t) / u) (Icc 2 c) := by
     have hderiv : ∀ u ∈ interior (Icc (2 : ℝ) c),
         HasDerivAt (fun u : ℝ => Real.sinh (u * t) / u)
-          ((Real.cosh (u * t) * t * u - Real.sinh (u * t) * 1) / u ^ 2) u := by
+          ((Real.cosh (u * t) * t * u - Real.sinh (u * t) * 1) / u ^ (2 : ℕ)) u := by
       intro u hu
       rw [interior_Icc, mem_Ioo] at hu
       have hu0 : u ≠ 0 := ne_of_gt (by linarith [hu.1])
@@ -133,8 +133,8 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
   have hL : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   -- pointwise domination on the domain
   have hfg : ∀ z ∈ Ioc (0 : ℝ) (Real.log 2),
-      2 * Real.sinh (z / 2) ^ 2 * ((Real.sinh (c * z / 2))⁻¹) ^ 2
-        ≤ 2 / c ^ 2 * ((Real.cosh (z / 2))⁻¹) ^ 2 := by
+      2 * Real.sinh (z / 2) ^ (2 : ℕ) * ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ)
+        ≤ 2 / c ^ (2 : ℕ) * ((Real.cosh (z / 2))⁻¹) ^ (2 : ℕ) := by
     intro z hz
     have hz0 : 0 < z := hz.1
     have ht : 0 < z / 2 := by linarith
@@ -149,11 +149,11 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
         ≤ (c * (Real.sinh (z / 2) * Real.cosh (z / 2)))⁻¹ := by
       rw [inv_le_inv₀ hspos hpos]
       exact hkey
-    have hsq : ((Real.sinh (c * z / 2))⁻¹) ^ 2
-        ≤ ((c * (Real.sinh (z / 2) * Real.cosh (z / 2)))⁻¹) ^ 2 :=
+    have hsq : ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ)
+        ≤ ((c * (Real.sinh (z / 2) * Real.cosh (z / 2)))⁻¹) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (inv_nonneg.mpr hspos.le) hinv 2
     have hmul := mul_le_mul_of_nonneg_left hsq
-      (by positivity : (0 : ℝ) ≤ 2 * Real.sinh (z / 2) ^ 2)
+      (by positivity : (0 : ℝ) ≤ 2 * Real.sinh (z / 2) ^ (2 : ℕ))
     refine le_trans hmul (le_of_eq ?_)
     have hsne : Real.sinh (z / 2) ≠ 0 := ne_of_gt hs
     have hchne : Real.cosh (z / 2) ≠ 0 := ne_of_gt hch
@@ -162,13 +162,13 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
   have hchc : Continuous fun z : ℝ => (Real.cosh (z / 2))⁻¹ :=
     (Real.continuous_cosh.comp (continuous_id.div_const 2)).inv₀
       fun x => ne_of_gt (Real.cosh_pos _)
-  have hgcont : Continuous fun z : ℝ => 2 / c ^ 2 * ((Real.cosh (z / 2))⁻¹) ^ 2 :=
+  have hgcont : Continuous fun z : ℝ => 2 / c ^ (2 : ℕ) * ((Real.cosh (z / 2))⁻¹) ^ (2 : ℕ) :=
     continuous_const.mul (hchc.pow 2)
-  have hgint : IntegrableOn (fun z : ℝ => 2 / c ^ 2 * ((Real.cosh (z / 2))⁻¹) ^ 2)
+  have hgint : IntegrableOn (fun z : ℝ => 2 / c ^ (2 : ℕ) * ((Real.cosh (z / 2))⁻¹) ^ (2 : ℕ))
       (Ioc 0 (Real.log 2)) := hgcont.integrableOn_Ioc
   -- the integrand is continuous ON the window (sinh(cz/2) ≠ 0 there), so measurable
   have hfmeas : AEStronglyMeasurable
-      (fun z : ℝ => 2 * Real.sinh (z / 2) ^ 2 * ((Real.sinh (c * z / 2))⁻¹) ^ 2)
+      (fun z : ℝ => 2 * Real.sinh (z / 2) ^ (2 : ℕ) * ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ))
       (volume.restrict (Ioc 0 (Real.log 2))) := by
     apply ContinuousOn.aestronglyMeasurable _ measurableSet_Ioc
     apply ContinuousOn.mul (by fun_prop)
@@ -179,7 +179,7 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
     exact ne_of_gt (sinh_pos_of_pos (by linarith))
   -- integrability by domination (the constant-free route: dominate by the bound itself)
   have hfint : IntegrableOn
-      (fun z : ℝ => 2 * Real.sinh (z / 2) ^ 2 * ((Real.sinh (c * z / 2))⁻¹) ^ 2)
+      (fun z : ℝ => 2 * Real.sinh (z / 2) ^ (2 : ℕ) * ((Real.sinh (c * z / 2))⁻¹) ^ (2 : ℕ))
       (Ioc 0 (Real.log 2)) := by
     apply Integrable.mono' hgint hfmeas
     rw [ae_restrict_iff' measurableSet_Ioc]
@@ -188,16 +188,16 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
     exact hfg z hz
   have hIle := setIntegral_mono_on hfint hgint measurableSet_Ioc hfg
   -- exact evaluation of the dominating integral: FTC with antiderivative (4/c²)tanh(z/2)
-  have heval : ∫ z in Ioc (0 : ℝ) (Real.log 2), 2 / c ^ 2 * ((Real.cosh (z / 2))⁻¹) ^ 2
-      = 4 / (3 * c ^ 2) := by
+  have heval : ∫ z in Ioc (0 : ℝ) (Real.log 2), 2 / c ^ (2 : ℕ) * ((Real.cosh (z / 2))⁻¹) ^ (2 : ℕ)
+      = 4 / (3 * c ^ (2 : ℕ)) := by
     rw [← intervalIntegral.integral_of_le hL.le]
     have hF : ∀ z ∈ uIcc (0 : ℝ) (Real.log 2),
-        HasDerivAt (fun z : ℝ => 4 / c ^ 2 * Real.tanh (z / 2))
-          (2 / c ^ 2 * ((Real.cosh (z / 2))⁻¹) ^ 2) z := by
+        HasDerivAt (fun z : ℝ => 4 / c ^ (2 : ℕ) * Real.tanh (z / 2))
+          (2 / c ^ (2 : ℕ) * ((Real.cosh (z / 2))⁻¹) ^ (2 : ℕ)) z := by
       intro z _
       have h1 : HasDerivAt (fun z : ℝ => z / 2) (1 / 2 : ℝ) z := by
         simpa using (hasDerivAt_id z).div_const 2
-      have h3 := ((hasDerivAt_tanh (z / 2)).comp z h1).const_mul (4 / c ^ 2)
+      have h3 := ((hasDerivAt_tanh (z / 2)).comp z h1).const_mul (4 / c ^ (2 : ℕ))
       exact h3.congr_deriv (by ring)
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
       (hgcont.intervalIntegrable _ _)]
@@ -208,7 +208,7 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
   refine le_trans (mul_le_mul_of_nonneg_left (le_trans hIle (le_of_eq heval)) hc0.le)
     (le_of_eq ?_)
   rw [← mul_div_assoc,
-    div_eq_div_iff (by positivity : (0 : ℝ) < 3 * c ^ 2).ne' (by positivity : (0 : ℝ) < 3 * c).ne']
+    div_eq_div_iff (by positivity : (0 : ℝ) < 3 * c ^ (2 : ℕ)).ne' (by positivity : (0 : ℝ) < 3 * c).ne']
   ring
 
 /-- The behind piece is nonnegative (`1 − e^{−z} ≥ 0` past `log 2 > 0`; the csch² factor

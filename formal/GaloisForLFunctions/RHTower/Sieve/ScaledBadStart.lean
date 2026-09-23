@@ -45,7 +45,7 @@ theorem eventually_card_badOuter_le {c β : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
     (hβ0 : 0 < β) (hβ1 : β < 1) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ y : ℝ in atTop,
       ((badOuter y (scaledLength c β y)).card : ℝ)
-        ≤ 1024 * ε * Real.sqrt y / squarefreeDensity ^ 2 + Real.sqrt y / (Real.log y) ^ 2 := by
+        ≤ 1024 * ε * Real.sqrt y / squarefreeDensity ^ (2 : ℕ) + Real.sqrt y / (Real.log y) ^ (2 : ℕ) := by
   filter_upwards [eventually_fibre_step_one_growing_scaled hc0 hc1 hβ0 hβ1 hε] with y hy
   have hsplit := Finset.card_filter_add_card_filter_not
     (s := outerBlock y (scaledLength c β y)) (p := fun a => goodFibre y (scaledLength c β y) a)

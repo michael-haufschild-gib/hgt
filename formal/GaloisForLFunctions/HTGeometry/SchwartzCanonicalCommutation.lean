@@ -51,21 +51,21 @@ theorem schwartz_oscillator_operatorCCR :
 
 /-- Two-channel Robertson determinant for a Schwartz state and its position/momentum responses. -/
 theorem schwartz_position_momentum_twoChannelRobertson (f : 𝓢(ℝ, ℂ)) :
-    inner ℝ (f.toLp 2 (volume : Measure ℝ)) ((mulXCLM f).toLp 2 volume) ^ 2 *
+    inner ℝ (f.toLp 2 (volume : Measure ℝ)) ((mulXCLM f).toLp 2 volume) ^ (2 : ℕ) *
           inner ℝ ((SchwartzMap.momentumCLM f).toLp 2 volume)
             ((SchwartzMap.momentumCLM f).toLp 2 volume) -
         2 * inner ℝ (f.toLp 2 volume) ((mulXCLM f).toLp 2 volume) *
           inner ℝ (f.toLp 2 volume) ((SchwartzMap.momentumCLM f).toLp 2 volume) *
           inner ℝ ((mulXCLM f).toLp 2 volume)
             ((SchwartzMap.momentumCLM f).toLp 2 volume) +
-        inner ℝ (f.toLp 2 volume) ((SchwartzMap.momentumCLM f).toLp 2 volume) ^ 2 *
+        inner ℝ (f.toLp 2 volume) ((SchwartzMap.momentumCLM f).toLp 2 volume) ^ (2 : ℕ) *
           inner ℝ ((mulXCLM f).toLp 2 volume) ((mulXCLM f).toLp 2 volume) ≤
       inner ℝ (f.toLp 2 volume) (f.toLp 2 volume) *
         (inner ℝ ((mulXCLM f).toLp 2 volume) ((mulXCLM f).toLp 2 volume) *
             inner ℝ ((SchwartzMap.momentumCLM f).toLp 2 volume)
               ((SchwartzMap.momentumCLM f).toLp 2 volume) -
           inner ℝ ((mulXCLM f).toLp 2 volume)
-              ((SchwartzMap.momentumCLM f).toLp 2 volume) ^ 2) :=
+              ((SchwartzMap.momentumCLM f).toLp 2 volume) ^ (2 : ℕ)) :=
   HTGeometry.twoChannelRobertsonGram
     (f.toLp 2 (volume : Measure ℝ))
     ((mulXCLM f).toLp 2 volume)

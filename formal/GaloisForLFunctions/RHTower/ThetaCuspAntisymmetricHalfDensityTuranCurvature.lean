@@ -47,7 +47,7 @@ theorem thetaCuspAtomOddMoment_series {n : ℕ} (hn : 0 < n) :
     (∑' j : ℕ,
       thetaCuspAtomMoment (2 * j + 1) n /
         ((4 : ℝ) ^ j * (Nat.factorial (2 * j + 1) : ℝ))) =
-      Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   let μ : Measure ℝ := volume.restrict (Ioi 0)
   let F : ℕ → ℝ → ℝ := fun j x =>
     2 * ((x / 2) ^ (2 * j + 1) /
@@ -112,8 +112,8 @@ theorem thetaCuspAtomEvenMoment_series {n : ℕ} (hn : 0 < n) :
     2 * (∑' j : ℕ,
       thetaCuspAtomMoment (2 * j) n /
         ((4 : ℝ) ^ j * (Nat.factorial (2 * j) : ℝ))) =
-      (4 * Real.pi * (n : ℝ) ^ 2 - 1) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   let μ : Measure ℝ := volume.restrict (Ioi 0)
   let F : ℕ → ℝ → ℝ := fun j x =>
     2 * ((x / 2) ^ (2 * j) /
@@ -189,14 +189,14 @@ def thetaCuspCoshTiltOrientationExpectation (n : ℕ) : ℝ :=
 theorem thetaCuspCoshTiltOrientationExpectation_eq
     {n : ℕ} (hn : 0 < n) :
     thetaCuspCoshTiltOrientationExpectation n =
-      1 / (4 * Real.pi * (n : ℝ) ^ 2 - 1) := by
-  have hdenpos : 0 < 4 * Real.pi * (n : ℝ) ^ 2 - 1 := by
+      1 / (4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1) := by
+  have hdenpos : 0 < 4 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 1 := by
     have hncast : (1 : ℝ) ≤ n := by exact_mod_cast hn
     nlinarith [Real.pi_gt_three, sq_nonneg ((n : ℝ) - 1)]
   have hcoshpos : 0 < ∫ x : ℝ in Ioi 0,
       Real.cosh (x / 2) * thetaCuspSourceTerm x n := by
     have h := two_mul_integral_cosh_half_mul_thetaCuspSourceTerm_eq_budget hn
-    have hexp := Real.exp_pos (-Real.pi * (n : ℝ) ^ 2)
+    have hexp := Real.exp_pos (-Real.pi * (n : ℝ) ^ (2 : ℕ))
     nlinarith
   have hnum : (∫ x : ℝ in Ioi 0,
       Real.tanh (x / 2) *
@@ -400,9 +400,9 @@ theorem thetaCuspFirstAtomUpperGate_iff_positiveTail :
     (16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
         thetaCuspAtomRawEvenMoment 2 1 ≤
-      45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) ↔
+      45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) ↔
     (8 * thetaCuspAtomRawEvenMoment 2 1 ≤
-      45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 +
+      45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) +
         16 * thetaCuspAtomRawEvenMoment 2 1 *
           thetaCuspFirstAtomEvenTail 1) := by
   rw [thetaCuspFirstAtomTail_one_identity]
@@ -411,14 +411,14 @@ theorem thetaCuspFirstAtomUpperGate_iff_positiveTail :
 theorem thetaCuspFirstAtomUpperGate_of_finite_reduction
     (hfinite :
       8 * thetaCuspAtomRawEvenMoment 2 1 ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 +
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) +
           2 * thetaCuspAtomRawEvenMoment 1 1 *
             thetaCuspAtomRawEvenMoment 2 1 +
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 / 24) :
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) / 24) :
     16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
         thetaCuspAtomRawEvenMoment 2 1 ≤
-      45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 := by
+      45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) := by
   rw [thetaCuspFirstAtomUpperGate_iff_positiveTail]
   have htail := thetaCuspFirstAtomEvenTail_one_lower
   have ha2 := thetaCuspAtomRawEvenMoment_nonneg 2 1
@@ -429,11 +429,11 @@ theorem thetaCuspFirstAtomUpperGate_of_finite_reduction
 theorem thetaCuspFirstAtomLowerGate_tail_form_iff :
     (14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-        thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+        thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
       9 * thetaCuspFirstAtomHalfDensityPairBudget *
         thetaCuspAtomRawEvenMoment 1 1 * thetaCuspAtomRawEvenMoment 3 1) ↔
     (14 * (1 / 2 - thetaCuspFirstAtomEvenTail 2) *
-        thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+        thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
       9 * ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
           thetaCuspFirstAtomEvenTail 2) *
         thetaCuspAtomRawEvenMoment 1 1 * thetaCuspAtomRawEvenMoment 3 1) := by
@@ -441,10 +441,10 @@ theorem thetaCuspFirstAtomLowerGate_tail_form_iff :
   · intro h
     calc
       14 * (1 / 2 - thetaCuspFirstAtomEvenTail 2) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 =
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) =
         14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 := by
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) := by
             rw [thetaCuspFirstAtomTail_two_pair_identity]
       _ ≤ 9 * thetaCuspFirstAtomHalfDensityPairBudget *
           thetaCuspAtomRawEvenMoment 1 1 *
@@ -458,9 +458,9 @@ theorem thetaCuspFirstAtomLowerGate_tail_form_iff :
     calc
       14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 =
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) =
         14 * (1 / 2 - thetaCuspFirstAtomEvenTail 2) *
-          thetaCuspAtomRawEvenMoment 2 1 ^ 2 := by
+          thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) := by
             rw [thetaCuspFirstAtomTail_two_pair_identity]
       _ ≤ 9 * ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
           thetaCuspFirstAtomEvenTail 2) *
@@ -477,7 +477,7 @@ def thetaCuspSlopeQuotient (x : ℝ) : ℝ :=
   thetaCuspFirstLogPotentialSlope x / x
 
 def thetaCuspFullSlopeCurvature (x : ℝ) : ℝ :=
-  thetaCuspFirstAtomBoundaryLogSlope / x ^ 2 +
+  thetaCuspFirstAtomBoundaryLogSlope / x ^ (2 : ℕ) +
     thetaCuspRegularSlopeCurvature x
 
 theorem thetaCuspSlopeQuotient_eq_boundary_add_regular
@@ -534,8 +534,8 @@ theorem intervalIntegral_thetaCuspFullSlopeCurvature
         (fun x : ℝ => 2 * thetaCuspBornWittenSuperpotential 1 x) t :=
       (hasDerivAt_two_thetaCuspBornWittenSuperpotential
         (n := 1) (by norm_num) (hpos t ht).le).continuousAt
-    have hden : ContinuousAt (fun x : ℝ => x ^ 2) t := continuousAt_id.pow 2
-    have hden0 : t ^ 2 ≠ 0 := pow_ne_zero 2 ht0
+    have hden : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) t := continuousAt_id.pow 2
+    have hden0 : t ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 ht0
     unfold thetaCuspFullSlopeCurvature thetaCuspRegularSlopeCurvature
       thetaCuspRegularCurvatureNumerator thetaCuspFirstLogPotentialSlope
     exact ((continuousAt_const.div hden hden0).add
@@ -546,11 +546,11 @@ theorem intervalIntegral_thetaCuspFullSlopeCurvature
 
 theorem thetaCuspFullSlopeCurvature_split (x : ℝ) :
     thetaCuspFullSlopeCurvature x =
-      thetaCuspFirstAtomBoundaryLogSlope / x ^ 2 +
+      thetaCuspFirstAtomBoundaryLogSlope / x ^ (2 : ℕ) +
         thetaCuspRegularSlopeCurvature x := rfl
 
 def thetaCuspTuranDefect (m : ℕ) : ℝ :=
-  thetaCuspTotalMoment (2 * m) ^ 2 -
+  thetaCuspTotalMoment (2 * m) ^ (2 : ℕ) -
     ((2 * m - 1 : ℕ) : ℝ) / ((2 * m + 1 : ℕ) : ℝ) *
       thetaCuspTotalMoment (2 * m - 2) *
         thetaCuspTotalMoment (2 * m + 2)
@@ -558,26 +558,26 @@ def thetaCuspTuranDefect (m : ℕ) : ℝ :=
 def thetaCuspSlopeCurvatureTuranIntegral (m : ℕ) : ℝ :=
   ∫ u : ℝ in Ioi 0,
     ∫ v : ℝ in Ioi 0,
-      u ^ (2 * m) * v ^ (2 * m) * (v ^ 2 - u ^ 2) *
+      u ^ (2 * m) * v ^ (2 * m) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)
 
 def thetaCuspTuranDefectIndex (k : ℕ) : ℝ :=
-  thetaCuspTotalMoment (k + 1) ^ 2 -
+  thetaCuspTotalMoment (k + 1) ^ (2 : ℕ) -
     (k : ℝ) / (k + 2 : ℝ) * thetaCuspTotalMoment (k - 1) *
       thetaCuspTotalMoment (k + 3)
 
 def thetaCuspSlopeCurvatureTuranIntegralIndex (k : ℕ) : ℝ :=
   ∫ u : ℝ in Ioi 0,
     ∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)
 
 private theorem thetaCuspSlopeCurvatureTuran_inner
     {k : ℕ} (hk : 1 ≤ k) {u : ℝ} (hu : 0 < u) :
     (∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)) =
       u ^ (k + 1) * thetaCuspSourceTerm u 1 *
@@ -628,7 +628,7 @@ private theorem thetaCuspSlopeCurvatureTuran_inner
       thetaCuspTotalMoment (k + 1) := by
     simpa only [fD] using (thetaCuspTotalMoment_eq_integral_Ioi (k + 1)).symm
   have hpoint : ∀ᵐ v ∂volume.restrict (Ioi 0),
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t) =
         ((A * fA v - B * fB v) - C * fC v) + D * fD v := by
@@ -672,7 +672,7 @@ private theorem thetaCuspSlopeCurvatureTuran_inner
           MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
   calc
     (∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)) =
       ∫ v : ℝ in Ioi 0,
@@ -727,7 +727,7 @@ theorem thetaCuspSlopeCurvatureTuranIntegralIndex_eq
     rw [show k + 2 - 1 = k + 1 by omega]
   have hpoint : ∀ᵐ u ∂volume.restrict (Ioi 0),
       (∫ v : ℝ in Ioi 0,
-        u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+        u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)) =
         ((fA u * A - fB u * B) - fC u * C) + fD u * D := by
@@ -771,7 +771,7 @@ theorem thetaCuspSlopeCurvatureTuranIntegralIndex_eq
   calc
     (∫ u : ℝ in Ioi 0,
       ∫ v : ℝ in Ioi 0,
-        u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+        u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspFullSlopeCurvature t)) =
       ∫ u : ℝ in Ioi 0,
@@ -818,12 +818,12 @@ theorem thetaCuspSlopeCurvatureTuranIntegral_eq
   exact_mod_cast (show k + 2 = 2 * m + 1 by omega)
 
 def thetaCuspBoundaryPoleCurvature (x : ℝ) : ℝ :=
-  thetaCuspFirstAtomBoundaryLogSlope / x ^ 2
+  thetaCuspFirstAtomBoundaryLogSlope / x ^ (2 : ℕ)
 
 def thetaCuspBoundaryPoleTuranIntegralIndex (k : ℕ) : ℝ :=
   ∫ u : ℝ in Ioi 0,
     ∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t)
 
@@ -862,7 +862,7 @@ theorem intervalIntegral_thetaCuspBoundaryPoleCurvature
 private theorem thetaCuspBoundaryPoleTuran_inner
     (k : ℕ) {u : ℝ} (hu : 0 < u) :
     (∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t)) =
       thetaCuspFirstAtomBoundaryLogSlope *
@@ -896,7 +896,7 @@ private theorem thetaCuspBoundaryPoleTuran_inner
   have hvalD : (∫ v : ℝ in Ioi 0, fD v) = thetaCuspTotalMoment k := by
     simpa only [fD] using (thetaCuspTotalMoment_eq_integral_Ioi k).symm
   have hpoint : ∀ᵐ v ∂volume.restrict (Ioi 0),
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t) =
         ((A * fA v - B * fB v) - C * fC v) + D * fD v := by
@@ -940,7 +940,7 @@ private theorem thetaCuspBoundaryPoleTuran_inner
           MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
   calc
     (∫ v : ℝ in Ioi 0,
-      u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+      u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t)) =
       ∫ v : ℝ in Ioi 0,
@@ -987,7 +987,7 @@ theorem thetaCuspBoundaryPoleTuranIntegralIndex_eq (k : ℕ) :
     simpa only [fD] using (thetaCuspTotalMoment_eq_integral_Ioi (k + 3)).symm
   have hpoint : ∀ᵐ u ∂volume.restrict (Ioi 0),
       (∫ v : ℝ in Ioi 0,
-        u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+        u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t)) =
         s * (((fA u * A - fB u * B) - fC u * C) + fD u * D) := by
@@ -1029,7 +1029,7 @@ theorem thetaCuspBoundaryPoleTuranIntegralIndex_eq (k : ℕ) :
   calc
     (∫ u : ℝ in Ioi 0,
       ∫ v : ℝ in Ioi 0,
-        u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+        u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
             (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t)) =
       ∫ u : ℝ in Ioi 0,
@@ -1049,10 +1049,10 @@ theorem thetaCuspBoundaryPoleTuranIntegralIndex_eq (k : ℕ) :
 
 theorem thetaCuspBoundaryPoleKernel_nonneg
     {u v : ℝ} (hu : 0 < u) (hv : 0 < v) :
-    0 ≤ (v ^ 2 - u ^ 2) * (1 / u - 1 / v) := by
+    0 ≤ (v ^ (2 : ℕ) - u ^ (2 : ℕ)) * (1 / u - 1 / v) := by
   have hrewrite :
-      (v ^ 2 - u ^ 2) * (1 / u - 1 / v) =
-        (v - u) ^ 2 * (v + u) / (u * v) := by
+      (v ^ (2 : ℕ) - u ^ (2 : ℕ)) * (1 / u - 1 / v) =
+        (v - u) ^ (2 : ℕ) * (v + u) / (u * v) := by
     field_simp [hu.ne', hv.ne']
     ring
   rw [hrewrite]
@@ -1060,7 +1060,7 @@ theorem thetaCuspBoundaryPoleKernel_nonneg
 
 theorem thetaCuspBoundaryPoleTuranIntegrand_nonneg
     (k : ℕ) {u v : ℝ} (hu : 0 < u) (hv : 0 < v) :
-    0 ≤ u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+    0 ≤ u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
       thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
         (∫ t : ℝ in u..v, thetaCuspBoundaryPoleCurvature t) := by
   rw [intervalIntegral_thetaCuspBoundaryPoleCurvature hu hv]
@@ -1069,12 +1069,12 @@ theorem thetaCuspBoundaryPoleTuranIntegrand_nonneg
   have hsv := thetaCuspSourceTerm_nonneg_of_pos hv 1
   have hs := thetaCuspFirstAtomBoundaryLogSlope_pos.le
   calc
-    u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+    u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1 *
           (thetaCuspFirstAtomBoundaryLogSlope * (1 / u - 1 / v)) =
       (u ^ (k + 1) * v ^ (k + 1) * thetaCuspSourceTerm u 1 *
           thetaCuspSourceTerm v 1 * thetaCuspFirstAtomBoundaryLogSlope) *
-        ((v ^ 2 - u ^ 2) * (1 / u - 1 / v)) := by ring
+        ((v ^ (2 : ℕ) - u ^ (2 : ℕ)) * (1 / u - 1 / v)) := by ring
     _ ≥ 0 := mul_nonneg (by positivity) hkernel
 
 theorem thetaCuspBoundaryPoleTuranIntegralIndex_nonneg (k : ℕ) :
@@ -1096,7 +1096,7 @@ theorem thetaCuspTotalMoment_cross_nonneg (k : ℕ) :
   nlinarith [thetaCuspFirstAtomBoundaryLogSlope_pos]
 
 def thetaCuspTuranKernelIndex (k : ℕ) (u v : ℝ) : ℝ :=
-  u ^ (k + 1) * v ^ (k + 1) * (v ^ 2 - u ^ 2) *
+  u ^ (k + 1) * v ^ (k + 1) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
     thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1
 
 def thetaCuspRegularSlopeCurvatureTuranIntegralIndex (k : ℕ) : ℝ :=
@@ -1126,7 +1126,7 @@ theorem intervalIntegral_thetaCuspRegularSlopeCurvature
     have hslope : ContinuousAt thetaCuspFirstLogPotentialSlope t :=
       (hasDerivAt_two_thetaCuspBornWittenSuperpotential
         (n := 1) (by norm_num) (hpos t ht).le).continuousAt
-    have hden : ContinuousAt (fun x : ℝ => x ^ 2) t := continuousAt_id.pow 2
+    have hden : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) t := continuousAt_id.pow 2
     unfold thetaCuspRegularSlopeCurvature thetaCuspRegularCurvatureNumerator
     exact (((continuousAt_id.mul hcurv).sub
       (hslope.sub continuousAt_const)).div hden
@@ -1491,7 +1491,7 @@ theorem thetaCuspTuranCrossingWindow_derivative
     HasDerivAt (thetaCuspTuranCrossingWindow m)
       (t ^ (2 * m) * thetaCuspSourceTerm t 1 *
         (thetaCuspTotalMoment (2 * m + 2) -
-          t ^ 2 * thetaCuspTotalMoment (2 * m))) t := by
+          t ^ (2 : ℕ) * thetaCuspTotalMoment (2 * m))) t := by
   have hLp := hasDerivAt_thetaCuspLowerMoment (2 * m) ht
   have hUp := hasDerivAt_thetaCuspUpperTailMoment (2 * m) ht
   have hLp2 := hasDerivAt_thetaCuspLowerMoment (2 * m + 2) ht
@@ -1500,13 +1500,13 @@ theorem thetaCuspTuranCrossingWindow_derivative
   unfold thetaCuspTuranCrossingWindow
   refine hraw.congr_deriv ?_
   unfold thetaCuspMomentDensity thetaCuspLowerMoment
-  rw [show t ^ (2 * m + 2) = t ^ (2 * m) * t ^ 2 by rw [pow_add]]
+  rw [show t ^ (2 * m + 2) = t ^ (2 * m) * t ^ (2 : ℕ) by rw [pow_add]]
   ring
 
 def thetaCuspTuranCrossingIntegral (m : ℕ) (t : ℝ) : ℝ :=
   ∫ u : ℝ in Ioc 0 t,
     ∫ v : ℝ in Ioi t,
-      u ^ (2 * m) * v ^ (2 * m) * (v ^ 2 - u ^ 2) *
+      u ^ (2 * m) * v ^ (2 * m) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1
 
 theorem thetaCuspLowerMoment_eq_integral_Ioc
@@ -1547,7 +1547,7 @@ theorem thetaCuspTuranCrossingIntegral_eq_window
     exact (thetaCuspUpperTailMoment_eq_integral_Ioi (p + 2) ht).symm
   have hinner : ∀ u : ℝ,
       (∫ v : ℝ in Ioi t,
-        u ^ p * v ^ p * (v ^ 2 - u ^ 2) *
+        u ^ p * v ^ p * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
           thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1) =
         fp u * Up2 - fp2 u * Up := by
     intro u
@@ -1560,8 +1560,8 @@ theorem thetaCuspTuranCrossingIntegral_eq_window
         apply integral_congr_ae
         filter_upwards with v
         dsimp [fp, fp2, thetaCuspMomentDensity]
-        rw [show v ^ (p + 2) = v ^ p * v ^ 2 by rw [pow_add],
-          show u ^ (p + 2) = u ^ p * u ^ 2 by rw [pow_add]]
+        rw [show v ^ (p + 2) = v ^ p * v ^ (2 : ℕ) by rw [pow_add],
+          show u ^ (p + 2) = u ^ p * u ^ (2 : ℕ) by rw [pow_add]]
         ring
       _ = (∫ v : ℝ in Ioi t, fp u * fp2 v) -
           ∫ v : ℝ in Ioi t, fp2 u * fp v := by
@@ -1584,7 +1584,7 @@ theorem thetaCuspTuranCrossingIntegral_eq_window
   unfold thetaCuspTuranCrossingIntegral
   change (∫ u : ℝ in Ioc 0 t,
     ∫ v : ℝ in Ioi t,
-      u ^ p * v ^ p * (v ^ 2 - u ^ 2) *
+      u ^ p * v ^ p * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
         thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1) = _
   calc
     _ = ∫ u : ℝ in Ioc 0 t, fp u * Up2 - fp2 u * Up := by
@@ -1604,7 +1604,7 @@ theorem thetaCuspTuranCrossingIntegral_eq_window
 
 private def thetaCuspTuranCrossingInner (m : ℕ) (t u : ℝ) : ℝ :=
   ∫ v : ℝ in Ioi t,
-    u ^ (2 * m) * v ^ (2 * m) * (v ^ 2 - u ^ 2) *
+    u ^ (2 * m) * v ^ (2 * m) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
       thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1
 
 private theorem thetaCuspTuranCrossingInner_eq
@@ -1629,15 +1629,15 @@ private theorem thetaCuspTuranCrossingInner_eq
     hfp.const_mul (fp2 u)
   unfold thetaCuspTuranCrossingInner
   change (∫ v : ℝ in Ioi t,
-    u ^ p * v ^ p * (v ^ 2 - u ^ 2) *
+    u ^ p * v ^ p * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
       thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1) = _
   calc
     _ = ∫ v : ℝ in Ioi t, fp u * fp2 v - fp2 u * fp v := by
       apply integral_congr_ae
       filter_upwards with v
       dsimp [fp, fp2, thetaCuspMomentDensity]
-      rw [show v ^ (p + 2) = v ^ p * v ^ 2 by rw [pow_add],
-        show u ^ (p + 2) = u ^ p * u ^ 2 by rw [pow_add]]
+      rw [show v ^ (p + 2) = v ^ p * v ^ (2 : ℕ) by rw [pow_add],
+        show u ^ (p + 2) = u ^ p * u ^ (2 : ℕ) by rw [pow_add]]
       ring
     _ = (∫ v : ℝ in Ioi t, fp u * fp2 v) -
         ∫ v : ℝ in Ioi t, fp2 u * fp v :=
@@ -1653,7 +1653,7 @@ private theorem thetaCuspTuranCrossingInner_pos
     (m : ℕ) {t u : ℝ} (ht : 0 < t) (hu : u ∈ Ioc (0 : ℝ) t) :
     0 < thetaCuspTuranCrossingInner m t u := by
   let g : ℝ → ℝ := fun v =>
-    u ^ (2 * m) * v ^ (2 * m) * (v ^ 2 - u ^ 2) *
+    u ^ (2 * m) * v ^ (2 * m) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
       thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1
   have hgint : IntegrableOn g (Ioi t) := by
     let fp : ℝ → ℝ := thetaCuspMomentDensity (2 * m)
@@ -1669,14 +1669,14 @@ private theorem thetaCuspTuranCrossingInner_pos
     apply hsep.congr
     filter_upwards with v
     dsimp [g, fp, fp2, thetaCuspMomentDensity]
-    rw [show v ^ (2 * m + 2) = v ^ (2 * m) * v ^ 2 by rw [pow_add],
-      show u ^ (2 * m + 2) = u ^ (2 * m) * u ^ 2 by rw [pow_add]]
+    rw [show v ^ (2 * m + 2) = v ^ (2 * m) * v ^ (2 : ℕ) by rw [pow_add],
+      show u ^ (2 * m + 2) = u ^ (2 * m) * u ^ (2 : ℕ) by rw [pow_add]]
     ring
   have hgpos : ∀ v ∈ Ioi t, 0 < g v := by
     intro v hv
     have hv0 : 0 < v := ht.trans hv
     have huv : u < v := hu.2.trans_lt hv
-    have hsq : 0 < v ^ 2 - u ^ 2 := by
+    have hsq : 0 < v ^ (2 : ℕ) - u ^ (2 : ℕ) := by
       have hfac : 0 < (v - u) * (v + u) :=
         mul_pos (sub_pos.mpr huv) (add_pos hv0 hu.1)
       nlinarith
@@ -1754,7 +1754,7 @@ theorem thetaCuspTuranCrossingPeak_pos (m : ℕ) :
       (thetaCuspTotalMoment_pos (2 * m)))
 
 theorem thetaCuspTuranCrossingPeak_sq (m : ℕ) :
-    thetaCuspTuranCrossingPeak m ^ 2 =
+    thetaCuspTuranCrossingPeak m ^ (2 : ℕ) =
       thetaCuspTotalMoment (2 * m + 2) /
         thetaCuspTotalMoment (2 * m) := by
   unfold thetaCuspTuranCrossingPeak
@@ -1766,9 +1766,9 @@ private theorem thetaCuspTuranCrossingBracket_pos_before_peak
     (m : ℕ) {t : ℝ} (ht : 0 < t)
     (htau : t < thetaCuspTuranCrossingPeak m) :
     0 < thetaCuspTotalMoment (2 * m + 2) -
-      t ^ 2 * thetaCuspTotalMoment (2 * m) := by
+      t ^ (2 : ℕ) * thetaCuspTotalMoment (2 * m) := by
   have hpeak := thetaCuspTuranCrossingPeak_pos m
-  have hsquare : t ^ 2 < thetaCuspTuranCrossingPeak m ^ 2 := by
+  have hsquare : t ^ (2 : ℕ) < thetaCuspTuranCrossingPeak m ^ (2 : ℕ) := by
     have hfac : 0 < (thetaCuspTuranCrossingPeak m - t) *
         (thetaCuspTuranCrossingPeak m + t) :=
       mul_pos (sub_pos.mpr htau) (add_pos hpeak ht)
@@ -1782,10 +1782,10 @@ private theorem thetaCuspTuranCrossingBracket_pos_before_peak
 private theorem thetaCuspTuranCrossingBracket_neg_after_peak
     (m : ℕ) {t : ℝ} (htau : thetaCuspTuranCrossingPeak m < t) :
     thetaCuspTotalMoment (2 * m + 2) -
-      t ^ 2 * thetaCuspTotalMoment (2 * m) < 0 := by
+      t ^ (2 : ℕ) * thetaCuspTotalMoment (2 * m) < 0 := by
   have hpeak := thetaCuspTuranCrossingPeak_pos m
   have ht : 0 < t := hpeak.trans htau
-  have hsquare : thetaCuspTuranCrossingPeak m ^ 2 < t ^ 2 := by
+  have hsquare : thetaCuspTuranCrossingPeak m ^ (2 : ℕ) < t ^ (2 : ℕ) := by
     have hfac : 0 < (t - thetaCuspTuranCrossingPeak m) *
         (t + thetaCuspTuranCrossingPeak m) :=
       mul_pos (sub_pos.mpr htau) (add_pos ht hpeak)
@@ -1863,7 +1863,7 @@ theorem thetaCuspFirstAtomUpperGate_iff_turanMargin :
     (16 * (thetaCuspAtomRawEvenMoment 0 1 +
           thetaCuspHigherHalfDensityBudget) *
         thetaCuspAtomRawEvenMoment 2 1 ≤
-      45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) ↔
+      45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) ↔
     ((1 / 45 + 16 * thetaCuspHigherHalfDensityBudget /
           (45 * thetaCuspAtomRawEvenMoment 0 1)) *
         thetaCuspTotalMoment 0 * thetaCuspTotalMoment 4 ≤
@@ -1887,12 +1887,12 @@ theorem thetaCuspFirstAtomUpperGate_iff_turanMargin :
 theorem thetaCuspFirstAtomLowerGate_iff_turanMargin :
     (14 * (thetaCuspFirstAtomHalfDensityPairBudget +
           thetaCuspHigherHalfDensityBudget) *
-        thetaCuspAtomRawEvenMoment 2 1 ^ 2 ≤
+        thetaCuspAtomRawEvenMoment 2 1 ^ (2 : ℕ) ≤
       9 * thetaCuspFirstAtomHalfDensityPairBudget *
         thetaCuspAtomRawEvenMoment 1 1 * thetaCuspAtomRawEvenMoment 3 1) ↔
     (thetaCuspTuranDefect 2 ≤
       (1 - 14 * thetaCuspReflectedBudgetInflation / 15) *
-        thetaCuspTotalMoment 4 ^ 2) := by
+        thetaCuspTotalMoment 4 ^ (2 : ℕ)) := by
   have h1 := thetaCuspAtomRawEvenMoment_one_eq_two_mul_total 1
   have h2 := thetaCuspAtomRawEvenMoment_one_eq_two_mul_total 2
   have h3 := thetaCuspAtomRawEvenMoment_one_eq_two_mul_total 3
@@ -1957,10 +1957,10 @@ theorem thetaCuspFirstAtomUpperTuranMargin_iff_regularContribution :
 theorem thetaCuspFirstAtomLowerTuranMargin_iff_regularContribution :
     (thetaCuspTuranDefect 2 ≤
       (1 - 14 * thetaCuspReflectedBudgetInflation / 15) *
-        thetaCuspTotalMoment 4 ^ 2) ↔
+        thetaCuspTotalMoment 4 ^ (2 : ℕ)) ↔
     (thetaCuspRegularCurvatureContribution 2 ≤
       (1 - 14 * thetaCuspReflectedBudgetInflation / 15) *
-          thetaCuspTotalMoment 4 ^ 2 -
+          thetaCuspTotalMoment 4 ^ (2 : ℕ) -
         thetaCuspBoundaryPoleContribution 2) := by
   rw [thetaCuspTuranDefect_succ_eq_boundary_add_regular 1]
   norm_num only [Nat.reduceAdd]
@@ -2044,7 +2044,7 @@ private theorem intervalIntegrable_thetaCuspRegularSlopeCurvature
     have hslope : ContinuousAt thetaCuspFirstLogPotentialSlope t :=
       (hasDerivAt_two_thetaCuspBornWittenSuperpotential
         (n := 1) (by norm_num) (hpos t ht).le).continuousAt
-    have hden : ContinuousAt (fun x : ℝ => x ^ 2) t := continuousAt_id.pow 2
+    have hden : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) t := continuousAt_id.pow 2
     unfold thetaCuspRegularSlopeCurvature thetaCuspRegularCurvatureNumerator
     exact (((continuousAt_id.mul hcurv).sub
       (hslope.sub continuousAt_const)).div hden
@@ -2142,7 +2142,7 @@ private theorem intervalIntegral_abs_thetaCuspRegularSlopeCurvature_le
     linarith
 
 private def thetaCuspTuranCrossKernel (m : ℕ) (u v : ℝ) : ℝ :=
-  u ^ (2 * m) * v ^ (2 * m) * (v ^ 2 - u ^ 2) *
+  u ^ (2 * m) * v ^ (2 * m) * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) *
     thetaCuspSourceTerm u 1 * thetaCuspSourceTerm v 1
 
 private theorem abs_thetaCuspTuranCrossKernel_mul_endpoint_le_profile
@@ -2175,31 +2175,31 @@ private theorem abs_thetaCuspTuranCrossKernel_mul_endpoint_le_profile
     have hrr : 0 ≤ ru * rv := mul_nonneg hru hrv
     have hDr : 0 ≤ (D - 1) * (ru + rv) :=
       mul_nonneg (sub_nonneg.mpr hD) (add_nonneg hru hrv)
-    have hDC : C ≤ D ^ 2 := by
+    have hDC : C ≤ D ^ (2 : ℕ) := by
       dsimp [D]
       nlinarith [sq_nonneg C]
     nlinarith
-  have hsquare : 0 ≤ v ^ 2 - u ^ 2 := by nlinarith
-  have hdiff : v ^ 2 - u ^ 2 ≤ v ^ 2 + u ^ 2 := by
+  have hsquare : 0 ≤ v ^ (2 : ℕ) - u ^ (2 : ℕ) := by nlinarith
+  have hdiff : v ^ (2 : ℕ) - u ^ (2 : ℕ) ≤ v ^ (2 : ℕ) + u ^ (2 : ℕ) := by
     nlinarith [sq_nonneg u]
   have hkernel : |thetaCuspTuranCrossKernel m u v| =
-      A * B * (v ^ 2 - u ^ 2) := by
+      A * B * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) := by
     unfold thetaCuspTuranCrossKernel A B
     rw [abs_of_nonneg]
     · ring
     · positivity
-  have hmain : A * B * (v ^ 2 - u ^ 2) * (ru + rv + C) ≤
-      A * B * (v ^ 2 + u ^ 2) * ((ru + D) * (rv + D)) := by
+  have hmain : A * B * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) * (ru + rv + C) ≤
+      A * B * (v ^ (2 : ℕ) + u ^ (2 : ℕ)) * ((ru + D) * (rv + D)) := by
     gcongr
   rw [hkernel]
-  change A * B * (v ^ 2 - u ^ 2) * (ru + rv + C) ≤ _
+  change A * B * (v ^ (2 : ℕ) - u ^ (2 : ℕ)) * (ru + rv + C) ≤ _
   calc
-    _ ≤ A * B * (v ^ 2 + u ^ 2) * ((ru + D) * (rv + D)) := hmain
+    _ ≤ A * B * (v ^ (2 : ℕ) + u ^ (2 : ℕ)) * ((ru + D) * (rv + D)) := hmain
     _ = _ := by
       dsimp [D, C]
       unfold thetaCuspRegularFubiniProfile A B ru rv
-      rw [show u ^ (2 * m + 2) = u ^ (2 * m) * u ^ 2 by rw [pow_add],
-        show v ^ (2 * m + 2) = v ^ (2 * m) * v ^ 2 by rw [pow_add]]
+      rw [show u ^ (2 * m + 2) = u ^ (2 * m) * u ^ (2 : ℕ) by rw [pow_add],
+        show v ^ (2 * m + 2) = v ^ (2 * m) * v ^ (2 : ℕ) by rw [pow_add]]
       ring
 
 private def thetaCuspTuranFubiniSet : Set ((ℝ × ℝ) × ℝ) :=
@@ -2229,7 +2229,7 @@ private theorem aestronglyMeasurable_thetaCuspTuranFubiniIntegrand
     have hslope : ContinuousAt thetaCuspFirstLogPotentialSlope z.2 :=
       (hasDerivAt_two_thetaCuspBornWittenSuperpotential
         (n := 1) (by norm_num) ht0.le).continuousAt
-    have hden : ContinuousAt (fun x : ℝ => x ^ 2) z.2 :=
+    have hden : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) z.2 :=
       continuousAt_id.pow 2
     have hE : ContinuousAt thetaCuspRegularSlopeCurvature z.2 := by
       unfold thetaCuspRegularSlopeCurvature thetaCuspRegularCurvatureNumerator
@@ -2565,8 +2565,8 @@ private theorem integral_pair_thetaCuspTuranFubiniIntegrand_eq_crossing
     apply hsep.congr
     filter_upwards with z
     unfold thetaCuspTuranCrossKernel fp fp2 thetaCuspMomentDensity p
-    rw [show z.1 ^ (2 * m + 2) = z.1 ^ (2 * m) * z.1 ^ 2 by rw [pow_add],
-      show z.2 ^ (2 * m + 2) = z.2 ^ (2 * m) * z.2 ^ 2 by rw [pow_add]]
+    rw [show z.1 ^ (2 * m + 2) = z.1 ^ (2 * m) * z.1 ^ (2 : ℕ) by rw [pow_add],
+      show z.2 ^ (2 * m + 2) = z.2 ^ (2 * m) * z.2 ^ (2 : ℕ) by rw [pow_add]]
     ring
   have hbase : Integrable base
       ((volume.restrict (Ioo (0 : ℝ) t)).prod

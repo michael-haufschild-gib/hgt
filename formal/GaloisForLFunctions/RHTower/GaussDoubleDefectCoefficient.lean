@@ -102,7 +102,7 @@ theorem norm_fourierCoeff_gaussDoubleDefectVector_le
       rw [hsub, hδ, norm_fourierCoeff_shiftedBlockOf_sub_rotation hm k p]
     rw [hval]
     refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-    have hpow : (gaussMovingAmplitudeBlock hp ((0 : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+    have hpow : (gaussMovingAmplitudeBlock hp ((0 : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ))
         (fourierLp 2 0) =
           (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
       rw [pow_zero]

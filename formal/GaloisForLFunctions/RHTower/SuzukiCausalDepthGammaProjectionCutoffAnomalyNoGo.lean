@@ -65,22 +65,22 @@ theorem hsNormSq_ccmCommutator_le_two_mul
   rw [hsNormSq_commutator_eq_boundary_sum_of_hilbertSchmidt Q F hQ2 hQ hF]
   have hQnorm := opNorm_le_one_of_adjoint_eq_self_of_mul_self_eq Q hQ hQ2
   have hQcnorm := one_sub_opNorm_le_one_of_adjoint_eq_self_of_mul_self_eq Q hQ hQ2
-  have hQsq : ‖Q‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg Q]
-  have hQcsq : ‖1 - Q‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg (1 - Q)]
+  have hQsq : ‖Q‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg Q]
+  have hQcsq : ‖1 - Q‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg (1 - Q)]
   have hLowerBase : IsHilbertSchmidt ((1 - Q) * F) := hF.comp_left (1 - Q)
   have hUpperBase : IsHilbertSchmidt (F * (1 - Q)) := hF.comp_right (1 - Q)
   have hLowerRight :
       hsNormSq (((1 - Q) * F) ∘L Q) ≤ hsNormSq ((1 - Q) * F) := by
     calc
       hsNormSq (((1 - Q) * F) ∘L Q) ≤
-          ‖Q‖ ^ 2 * hsNormSq ((1 - Q) * F) :=
+          ‖Q‖ ^ (2 : ℕ) * hsNormSq ((1 - Q) * F) :=
         hsNormSq_comp_right_le (T := (1 - Q) * F) hLowerBase Q
       _ ≤ 1 * hsNormSq ((1 - Q) * F) :=
         mul_le_mul_of_nonneg_right hQsq (hsNormSq_nonneg _)
       _ = hsNormSq ((1 - Q) * F) := by ring
   have hLowerLeft : hsNormSq ((1 - Q) ∘L F) ≤ hsNormSq F := by
     calc
-      hsNormSq ((1 - Q) ∘L F) ≤ ‖1 - Q‖ ^ 2 * hsNormSq F :=
+      hsNormSq ((1 - Q) ∘L F) ≤ ‖1 - Q‖ ^ (2 : ℕ) * hsNormSq F :=
         hsNormSq_comp_left_le (T := F) hF (1 - Q)
       _ ≤ 1 * hsNormSq F :=
         mul_le_mul_of_nonneg_right hQcsq (hsNormSq_nonneg _)
@@ -89,14 +89,14 @@ theorem hsNormSq_ccmCommutator_le_two_mul
     hLowerRight.trans hLowerLeft
   have hUpperLeft : hsNormSq (Q ∘L (F * (1 - Q))) ≤ hsNormSq (F * (1 - Q)) := by
     calc
-      hsNormSq (Q ∘L (F * (1 - Q))) ≤ ‖Q‖ ^ 2 * hsNormSq (F * (1 - Q)) :=
+      hsNormSq (Q ∘L (F * (1 - Q))) ≤ ‖Q‖ ^ (2 : ℕ) * hsNormSq (F * (1 - Q)) :=
         hsNormSq_comp_left_le (T := F * (1 - Q)) hUpperBase Q
       _ ≤ 1 * hsNormSq (F * (1 - Q)) :=
         mul_le_mul_of_nonneg_right hQsq (hsNormSq_nonneg _)
       _ = hsNormSq (F * (1 - Q)) := by ring
   have hUpperRight : hsNormSq (F ∘L (1 - Q)) ≤ hsNormSq F := by
     calc
-      hsNormSq (F ∘L (1 - Q)) ≤ ‖1 - Q‖ ^ 2 * hsNormSq F :=
+      hsNormSq (F ∘L (1 - Q)) ≤ ‖1 - Q‖ ^ (2 : ℕ) * hsNormSq F :=
         hsNormSq_comp_right_le (T := F) hF (1 - Q)
       _ ≤ 1 * hsNormSq F :=
         mul_le_mul_of_nonneg_right hQcsq (hsNormSq_nonneg _)

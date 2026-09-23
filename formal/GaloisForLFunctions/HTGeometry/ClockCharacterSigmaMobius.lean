@@ -67,16 +67,16 @@ theorem differentialAlgEquiv_generator_multiplicative
     simpa using hypertranscendentalOver_jet_transcendental hy 0
   -- `1, y, y²` are linearly independent over `C`
   have hlin : ∀ x y' z : C, algebraMap C E x + algebraMap C E y' * y
-      + algebraMap C E z * y ^ 2 = 0 → x = 0 ∧ y' = 0 ∧ z = 0 := by
+      + algebraMap C E z * y ^ (2 : ℕ) = 0 → x = 0 ∧ y' = 0 ∧ z = 0 := by
     intro x y' z heq
     have hinj := transcendental_iff_injective.mp htrans
     have hP : (Polynomial.aeval y)
         (Polynomial.C x + Polynomial.C y' * Polynomial.X
-          + Polynomial.C z * Polynomial.X ^ 2) = 0 := by
+          + Polynomial.C z * Polynomial.X ^ (2 : ℕ)) = 0 := by
       simp only [map_add, map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X]
       exact heq
     have hP0 : Polynomial.C x + Polynomial.C y' * Polynomial.X
-        + Polynomial.C z * Polynomial.X ^ 2 = 0 :=
+        + Polynomial.C z * Polynomial.X ^ (2 : ℕ) = 0 :=
       hinj (by rw [hP, map_zero])
     refine ⟨?_, ?_, ?_⟩
     · have := congrArg (Polynomial.coeff · 0) hP0; simpa using this

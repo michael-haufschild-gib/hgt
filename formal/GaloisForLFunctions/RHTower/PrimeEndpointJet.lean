@@ -7,14 +7,14 @@ import Mathlib
 For a test function `r` on `(0,1]` vanishing to order `M+1` at the collapsed endpoint, the
 prime-harmonic boundary defect
 
-`D_x(r) = ∑_{p ≤ x} r(log p / log x)/p - ∫_0^1 r(u) du/u`
+`D_x(r) = ∑_{p ≤ x} r(log p / log x)/p - ∫_0^(1 : ℕ) r(u) du/u`
 
 is `O(L^{-M-1})` with `L = log x`, uniformly in `r` given the two bounds `|r(u)| ≤ A u^{M+1}` and
 `|r'(u)| ≤ A u^M`.
 
 The proof is Abel summation of the prime-log weight against `θ` with the Abel weight
 `f_r(t) = r(log t / L)/(t log t)`.  Integration by parts converts the elementary part into
-`∫_{log 2/L}^1 r(u) du/u`, which is the target integral up to the endpoint sliver
+`∫_{log 2/L}^(1 : ℕ) r(u) du/u`, which is the target integral up to the endpoint sliver
 `∫_0^{log 2/L}`, and the remaining `θ`-error integral is dominated by
 `(A/L^{M+1}) · jetTailWeight M`, an integrable envelope built from the logarithmic
 de la Vallée Poussin weights of `PrimeHigherMertens`.
@@ -40,8 +40,8 @@ private def jetWeight (r : ℝ → ℝ) (L t : ℝ) : ℝ := r (Real.log t / L) 
 
 /-- The derivative of the Abel weight. -/
 def derivJetWeight (r r' : ℝ → ℝ) (L t : ℝ) : ℝ :=
-  r' (Real.log t / L) / (L * t ^ 2 * Real.log t)
-    - r (Real.log t / L) * (Real.log t + 1) / (t ^ 2 * Real.log t ^ 2)
+  r' (Real.log t / L) / (L * t ^ (2 : ℕ) * Real.log t)
+    - r (Real.log t / L) * (Real.log t + 1) / (t ^ (2 : ℕ) * Real.log t ^ (2 : ℕ))
 
 theorem hasDerivAt_jetWeight {r r' : ℝ → ℝ} {L t : ℝ} (hL : 0 < L) (ht : 1 < t)
     (hr : HasDerivAt r (r' (Real.log t / L)) (Real.log t / L)) :
@@ -65,9 +65,9 @@ theorem hasDerivAt_jetWeight {r r' : ℝ → ℝ} {L t : ℝ} (hL : 0 < L) (ht :
   field_simp
 
 theorem jetWeight_mul_primeLogWeight (r : ℝ → ℝ) (L : ℝ) (n : ℕ) :
-    jetWeight r L n * primeLogWeight n
+    jetWeight r L n * primeLogWeight_primeRpowAbelSummation n
       = if n.Prime then r (Real.log n / L) / n else 0 := by
-  rw [jetWeight, primeLogWeight]
+  rw [jetWeight, primeLogWeight_primeRpowAbelSummation]
   by_cases hp : n.Prime
   · rw [if_pos hp, if_pos hp]
     have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hp.two_le
@@ -129,12 +129,12 @@ theorem continuousOn_derivJetWeight {r r' : ℝ → ℝ} {L x : ℝ} (hL : 0 < L
     fun u hu => (hr u hu).continuousAt.continuousWithinAt
   have hmaps := mapsTo_logDiv hL hx hLx
   have hlogdiv := continuousOn_logDiv (L := L) (x := x)
-  have hne1 : ∀ t ∈ Icc (2 : ℝ) x, L * t ^ 2 * Real.log t ≠ 0 := by
+  have hne1 : ∀ t ∈ Icc (2 : ℝ) x, L * t ^ (2 : ℕ) * Real.log t ≠ 0 := by
     intro t ht
     have ht2 : (2 : ℝ) ≤ t := ht.1
     have hlogt : 0 < Real.log t := Real.log_pos (by linarith)
     positivity
-  have hne2 : ∀ t ∈ Icc (2 : ℝ) x, t ^ 2 * Real.log t ^ 2 ≠ 0 := by
+  have hne2 : ∀ t ∈ Icc (2 : ℝ) x, t ^ (2 : ℕ) * Real.log t ^ (2 : ℕ) ≠ 0 := by
     intro t ht
     have ht2 : (2 : ℝ) ≤ t := ht.1
     have hlogt : 0 < Real.log t := Real.log_pos (by linarith)
@@ -176,7 +176,7 @@ theorem primeBoundaryJetSumIoc_eq {r r' : ℝ → ℝ} {L x : ℝ} (hL : 0 < L) 
   have hint : IntegrableOn (deriv (jetWeight r L)) (Icc 2 x) := by
     refine hcont.integrableOn_Icc.congr_fun (fun t ht => ?_) measurableSet_Icc
     exact ((hderiv t ht).deriv).symm
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation
     (f := jetWeight r L) (a := (2 : ℝ)) (b := x) (by norm_num) hx
     (fun t ht => (hderiv t ht).differentiableAt) hint
   simp only [sum_primeLogWeight_eq_theta] at habel
@@ -282,7 +282,7 @@ open Filter Topology Set MeasureTheory
 
 /-! ## The exact endpoint decomposition -/
 
-/-- `D_x(r) = ∑_{p ≤ x} r(log p / log x)/p - ∫_0^1 r(u) du/u`, the prime-harmonic boundary
+/-- `D_x(r) = ∑_{p ≤ x} r(log p / log x)/p - ∫_0^(1 : ℕ) r(u) du/u`, the prime-harmonic boundary
 defect of the card. -/
 def primeBoundaryDefect (r : ℝ → ℝ) (x : ℝ) : ℝ :=
   (∑ n ∈ Finset.Icc 0 ⌊x⌋₊, (if n.Prime then r (Real.log n / Real.log x) / n else 0))
@@ -384,7 +384,7 @@ open Filter Topology Set MeasureTheory
 /-- The integrable envelope controlling the `θ`-error part of the endpoint defect. -/
 def jetTailWeight (M : ℕ) (t : ℝ) : ℝ :=
   ((1 / Real.log 2) * (Real.log t) ^ M
-      + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1))
+      + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1))
     * |thetaError t| / t
 
 theorem jetTailWeight_nonneg (M : ℕ) {t : ℝ} (ht : 2 < t) : 0 ≤ jetTailWeight M t := by
@@ -393,7 +393,7 @@ theorem jetTailWeight_nonneg (M : ℕ) {t : ℝ} (ht : 2 < t) : 0 ≤ jetTailWei
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   rw [jetTailWeight]
   have h1 : (0 : ℝ) ≤ (1 / Real.log 2) * (Real.log t) ^ M := by positivity
-  have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) := by
+  have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) := by
     positivity
   exact div_nonneg (mul_nonneg (by linarith) (abs_nonneg _)) ht0.le
 
@@ -412,7 +412,7 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
   refine IntegrableOn.union ?_ ?_
   · have hcont : ContinuousOn
         (fun t : ℝ => ((1 / Real.log 2) * (Real.log t) ^ M
-          + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) / t) (Icc 2 T) := by
+          + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) / t) (Icc 2 T) := by
       intro t ht
       have ht0 : t ≠ 0 := by
         have := ht.1
@@ -425,7 +425,7 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
     have h0 := ((integrableOn_thetaError T).mul_continuousOn hcont isCompact_Icc)
     have h : IntegrableOn (fun t : ℝ => |thetaError t *
         (((1 / Real.log 2) * (Real.log t) ^ M
-          + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) / t)|)
+          + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) / t)|)
         (Icc 2 T) := h0.abs
     refine (IntegrableOn.congr_fun h (fun t ht => ?_)
       measurableSet_Icc).mono_set Ioc_subset_Icc_self
@@ -433,9 +433,9 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
     have htpos : (0 : ℝ) < t := by linarith
     have hlogt : 0 < Real.log t := Real.log_pos (by linarith)
     have hgnn : (0 : ℝ) ≤ ((1 / Real.log 2) * (Real.log t) ^ M
-        + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) / t := by
+        + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) / t := by
       have h1 : (0 : ℝ) ≤ (1 / Real.log 2) * (Real.log t) ^ M := by positivity
-      have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) := by
+      have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) := by
         positivity
       exact div_nonneg (by linarith) htpos.le
     rw [abs_mul, abs_of_nonneg hgnn, jetTailWeight]
@@ -443,7 +443,7 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
   · set g : ℝ → ℝ := fun t : ℝ =>
       |C| * ((1 / Real.log 2) *
           ((Real.log t) ^ M * Real.exp (-c * Real.sqrt (Real.log t)) / t))
-        + |C| * (((1 / Real.log 2) + (1 / Real.log 2) ^ 2) *
+        + |C| * (((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) *
           ((Real.log t) ^ (M + 1) * Real.exp (-c * Real.sqrt (Real.log t)) / t)) with hg
     have hgint : IntegrableOn g (Ioi (2 : ℝ)) := by
       refine Integrable.add ?_ ?_
@@ -478,9 +478,9 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
           ≤ |C| * (t * Real.exp (-c * Real.sqrt (Real.log t))) := hnum
         _ = |C| * Real.exp (-c * Real.sqrt (Real.log t)) * t := by ring
     have hcoef : (0 : ℝ) ≤ (1 / Real.log 2) * (Real.log t) ^ M
-        + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) := by
+        + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) := by
       have h1 : (0 : ℝ) ≤ (1 / Real.log 2) * (Real.log t) ^ M := by positivity
-      have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) := by
+      have h2 : (0 : ℝ) ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) := by
         positivity
       linarith
     have hgnn : 0 ≤ g t := by
@@ -491,16 +491,16 @@ theorem integrableOn_jetTailWeight (M : ℕ) : IntegrableOn (jetTailWeight M) (I
         div_nonneg (mul_nonneg (pow_nonneg hlog.le _) he.le) htpos.le
       rw [hg]
       have hc1 : (0 : ℝ) ≤ 1 / Real.log 2 := by positivity
-      have hc2 : (0 : ℝ) ≤ (1 / Real.log 2) + (1 / Real.log 2) ^ 2 := by positivity
+      have hc2 : (0 : ℝ) ≤ (1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ) := by positivity
       exact add_nonneg (mul_nonneg (abs_nonneg C) (mul_nonneg hc1 h1))
         (mul_nonneg (abs_nonneg C) (mul_nonneg hc2 h2))
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hgnn, jetTailWeight, abs_div,
       abs_of_pos htpos, abs_mul, abs_of_nonneg hcoef, abs_abs]
     rw [div_le_iff₀ htpos]
     have hstep : ((1 / Real.log 2) * (Real.log t) ^ M
-        + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) * |thetaError t|
+        + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) * |thetaError t|
         ≤ ((1 / Real.log 2) * (Real.log t) ^ M
-          + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1))
+          + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1))
           * (|C| * Real.exp (-c * Real.sqrt (Real.log t))) :=
       mul_le_mul_of_nonneg_left herr hcoef
     refine hstep.trans_eq ?_
@@ -725,10 +725,10 @@ theorem exists_abs_primeBoundaryDefect_le (M : ℕ) :
       have hkey : |derivJetWeight r r' L t * t|
           ≤ (A / L ^ (M + 1)) *
             (((1 / Real.log 2) * (Real.log t) ^ M
-              + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) / t) := by
+              + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) / t) := by
         have hval : derivJetWeight r r' L t * t
             = r' (Real.log t / L) / (L * t * Real.log t)
-              - r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ 2) := by
+              - r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ (2 : ℕ)) := by
           rw [derivJetWeight]
           field_simp
         have hb1 : |r' (Real.log t / L) / (L * t * Real.log t)|
@@ -749,46 +749,46 @@ theorem exists_abs_primeBoundaryDefect_le (M : ℕ) :
             _ = (A * (Real.log t) ^ M / L ^ M) * 1 := (mul_one _).symm
             _ ≤ (A * (Real.log t) ^ M / L ^ M) * (Real.log t / Real.log 2) := by
                 exact mul_le_mul_of_nonneg_left hge1 hnn
-        have hb2 : |r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ 2)|
+        have hb2 : |r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ (2 : ℕ))|
             ≤ (A / L ^ (M + 1)) *
-              (((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) / t) := by
-          rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < t * Real.log t ^ 2), abs_mul,
+              (((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) / t) := by
+          rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < t * Real.log t ^ (2 : ℕ)), abs_mul,
             abs_of_pos (by linarith : (0 : ℝ) < Real.log t + 1),
-            div_le_iff₀ (by positivity : (0 : ℝ) < t * Real.log t ^ 2)]
+            div_le_iff₀ (by positivity : (0 : ℝ) < t * Real.log t ^ (2 : ℕ))]
           have htarget : (A / L ^ (M + 1)) *
-              (((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1) / t)
-              * (t * Real.log t ^ 2)
+              (((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1) / t)
+              * (t * Real.log t ^ (2 : ℕ))
               = (A * (Real.log t) ^ (M + 1) / L ^ (M + 1)) *
-                (((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * Real.log t ^ 2) := by
+                (((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * Real.log t ^ (2 : ℕ)) := by
             field_simp
           rw [htarget]
           have hnn : (0 : ℝ) ≤ A * (Real.log t) ^ (M + 1) / L ^ (M + 1) := by positivity
           have hcomp : Real.log t + 1
-              ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * Real.log t ^ 2 := by
-            have h1 : Real.log t ≤ (1 / Real.log 2) * Real.log t ^ 2 := by
+              ≤ ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * Real.log t ^ (2 : ℕ) := by
+            have h1 : Real.log t ≤ (1 / Real.log 2) * Real.log t ^ (2 : ℕ) := by
               rw [one_div, inv_mul_eq_div, le_div_iff₀ hlog2]
               nlinarith
-            have h2 : (1 : ℝ) ≤ (1 / Real.log 2) ^ 2 * Real.log t ^ 2 := by
-              have : (1 : ℝ) ≤ (Real.log t / Real.log 2) ^ 2 := by
+            have h2 : (1 : ℝ) ≤ (1 / Real.log 2) ^ (2 : ℕ) * Real.log t ^ (2 : ℕ) := by
+              have : (1 : ℝ) ≤ (Real.log t / Real.log 2) ^ (2 : ℕ) := by
                 have hge1 : (1 : ℝ) ≤ Real.log t / Real.log 2 := by
                   rw [le_div_iff₀ hlog2]
                   linarith
                 nlinarith
-              calc (1 : ℝ) ≤ (Real.log t / Real.log 2) ^ 2 := this
-                _ = (1 / Real.log 2) ^ 2 * Real.log t ^ 2 := by
+              calc (1 : ℝ) ≤ (Real.log t / Real.log 2) ^ (2 : ℕ) := this
+                _ = (1 / Real.log 2) ^ (2 : ℕ) * Real.log t ^ (2 : ℕ) := by
                     field_simp
             nlinarith
           calc |r (Real.log t / L)| * (Real.log t + 1)
               ≤ (A * (Real.log t) ^ (M + 1) / L ^ (M + 1)) * (Real.log t + 1) := by
                 exact mul_le_mul_of_nonneg_right hru (by linarith)
             _ ≤ (A * (Real.log t) ^ (M + 1) / L ^ (M + 1)) *
-                (((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * Real.log t ^ 2) := by
+                (((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * Real.log t ^ (2 : ℕ)) := by
                 exact mul_le_mul_of_nonneg_left hcomp hnn
         rw [hval]
         have htri : |r' (Real.log t / L) / (L * t * Real.log t)
-            - r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ 2)|
+            - r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ (2 : ℕ))|
             ≤ |r' (Real.log t / L) / (L * t * Real.log t)|
-              + |r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ 2)| := by
+              + |r (Real.log t / L) * (Real.log t + 1) / (t * Real.log t ^ (2 : ℕ))| := by
           rw [sub_eq_add_neg]
           refine (abs_add_le _ _).trans_eq ?_
           rw [abs_neg]
@@ -801,7 +801,7 @@ theorem exists_abs_primeBoundaryDefect_le (M : ℕ) :
             rw [Real.norm_eq_abs, abs_mul]
         _ ≤ ((A / L ^ (M + 1)) *
               (((1 / Real.log 2) * (Real.log t) ^ M
-                + ((1 / Real.log 2) + (1 / Real.log 2) ^ 2) * (Real.log t) ^ (M + 1)) / t))
+                + ((1 / Real.log 2) + (1 / Real.log 2) ^ (2 : ℕ)) * (Real.log t) ^ (M + 1)) / t))
               * |thetaError t| := by
             exact mul_le_mul_of_nonneg_right hkey (abs_nonneg _)
         _ = (A / L ^ (M + 1)) * jetTailWeight M t := by

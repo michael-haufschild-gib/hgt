@@ -107,7 +107,7 @@ theorem routeE_binary_componentHistory_zero_forces_density_floor
     Real.exp
         (-(2 * (Fintype.card C : ℝ) / (((m + 1 : ℕ) : ℝ) - 2))) ≤
       2 * Real.tanh
-        (((((m + 1 : ℕ) : ℝ) * H ^ 2 / (X * (X - H))) / 4)) := by
+        (((((m + 1 : ℕ) : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) / 4)) := by
   classical
   have hcompare := routeE_binary_componentHistory_gibbsParity_sub_bias_le_tanh
     m k value X H hk hone hX hH hHX haperture
@@ -143,12 +143,12 @@ theorem routeE_binary_componentHistory_zero_forces_component_count
     -(((((m + 1 : ℕ) : ℝ) - 2) / 2)) *
         Real.log
           (2 * Real.tanh
-            (((((m + 1 : ℕ) : ℝ) * H ^ 2 / (X * (X - H))) / 4))) ≤
+            (((((m + 1 : ℕ) : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) / 4))) ≤
       Fintype.card C := by
   apply routeE_component_count_lower_of_exp_neg_density_le
     (m + 1) (Fintype.card C)
     (2 * Real.tanh
-      (((((m + 1 : ℕ) : ℝ) * H ^ 2 / (X * (X - H))) / 4))) hM
+      (((((m + 1 : ℕ) : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) / 4))) hM
   exact routeE_binary_componentHistory_zero_forces_density_floor
     m k value X H hM hk hone hX hH hHX haperture hzero
 

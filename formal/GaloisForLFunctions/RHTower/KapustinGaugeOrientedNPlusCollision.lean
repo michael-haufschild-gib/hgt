@@ -50,8 +50,8 @@ theorem kapustinUniversalGammaCarrier_neg_div_norm (x : ℝ) :
 
 private theorem diskMultiplierLineBoundary_squareRoot_sq_ae
     (O H : DiskMultiplier)
-    (hHsq : ∀ z ∈ ball (0 : ℂ) 1, H.fn z ^ 2 = O.fn z) :
-    (fun x => diskMultiplierLineBoundary H x ^ 2) =ᵐ[volume]
+    (hHsq : ∀ z ∈ ball (0 : ℂ) 1, H.fn z ^ (2 : ℕ) = O.fn z) :
+    (fun x => diskMultiplierLineBoundary H x ^ (2 : ℕ)) =ᵐ[volume]
       diskMultiplierLineBoundary O := by
   have hmul := diskMultiplierLineBoundary_mul_ae H H
   have hcongr : diskMultiplierLineBoundary (H.mul H) =ᵐ[volume]
@@ -80,7 +80,7 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
       (by simpa [Metric.mem_ball, dist_zero_right] using hz)
   let hrootExists := Oouter.exists_squareRoot_of_zeroFree hOzero
   let Hroot : DiskMultiplier := Classical.choose hrootExists
-  have hHsq : ∀ z ∈ ball (0 : ℂ) 1, Hroot.fn z ^ 2 = Oouter.fn z :=
+  have hHsq : ∀ z ∈ ball (0 : ℂ) 1, Hroot.fn z ^ (2 : ℕ) = Oouter.fn z :=
     Classical.choose_spec hrootExists
   have hHnonzero : ∃ z ∈ ball (0 : ℂ) 1, Hroot.fn z ≠ 0 := by
     refine ⟨0, by simp [Metric.mem_ball], ?_⟩
@@ -123,7 +123,7 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     have hphi : phi ≠ 0 := hxPhiNe
     have hq : q ≠ 0 := mul_ne_zero ha hphi
     have hfactor' : i * o = phi := hxFactor
-    have hrootSq' : h ^ 2 = o := hxRootSq
+    have hrootSq' : h ^ (2 : ℕ) = o := hxRootSq
     have hinnerNorm : ‖i‖ = 1 := hxInnerUnit
     have hqPhase : Complex.exp (I * (q.arg : ℂ)) = q / (‖q‖ : ℂ) := by
       have hp := Complex.norm_mul_exp_arg_mul_I q
@@ -135,11 +135,11 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
         _ = q / (‖q‖ : ℂ) := by
           field_simp [hnorm]
           simpa [mul_comm] using hp
-    have hnormQ : ‖q‖ = ‖a‖ * ‖h‖ ^ 2 := by
-      change ‖a * phi‖ = ‖a‖ * ‖h‖ ^ 2
+    have hnormQ : ‖q‖ = ‖a‖ * ‖h‖ ^ (2 : ℕ) := by
+      change ‖a * phi‖ = ‖a‖ * ‖h‖ ^ (2 : ℕ)
       rw [← hfactor', norm_mul, norm_mul,
         hinnerNorm, one_mul, ← hrootSq', norm_pow]
-    have hrootConjMul : (starRingEnd ℂ) h * h = (‖h‖ ^ 2 : ℂ) := by
+    have hrootConjMul : (starRingEnd ℂ) h * h = (‖h‖ ^ (2 : ℕ) : ℂ) := by
       rw [Complex.conj_mul']
     rw [smirnovToeplitzSymbolMul, smirnovToeplitzSymbolMul,
       diskMultiplierPhaseReflectionSymbol, if_neg hxRootNe,
@@ -157,8 +157,8 @@ noncomputable def kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     rw [← conj_realCayley_pow_four_eq_exp_neg_eight_arctan,
       ← kapustinUniversalGammaCarrier_neg_div_norm x]
     change ((starRingEnd ℂ) h / h) *
-        ((starRingEnd ℂ) (realCayley x ^ 4) * (q / (‖q‖ : ℂ))) =
-      (a / (‖a‖ : ℂ)) * (starRingEnd ℂ) (realCayley x ^ 4) * i
+        ((starRingEnd ℂ) (realCayley x ^ (4 : ℕ)) * (q / (‖q‖ : ℂ))) =
+      (a / (‖a‖ : ℂ)) * (starRingEnd ℂ) (realCayley x ^ (4 : ℕ)) * i
     have hqEq : q = a * phi := rfl
     rw [hnormQ, hqEq, ← hfactor', ← hrootSq']
     have hnormA : (‖a‖ : ℂ) ≠ 0 := by

@@ -27,16 +27,16 @@ namespace RHTower
 /-! ## The movable-anchor Clark kernel -/
 
 /-- The movable-anchor Clark kernel in the squared ordinate. -/
-def clarkSquaredKernel (c s u : ℝ) : ℝ := (u + c ^ 2) / (u + s)
+def clarkSquaredKernel (c s u : ℝ) : ℝ := (u + c ^ (2 : ℕ)) / (u + s)
 
 /-- The fixed Stieltjes kernel in the squared ordinate. -/
 def stieltjesSquaredKernel (s u : ℝ) : ℝ := u / (u + s)
 
 /-- **`(116)`: the movable kernel is uniformly close to the fixed one.** -/
 theorem abs_clarkSquaredKernel_sub_le {c s u : ℝ} (hs : 0 < s) (hu : 0 ≤ u) :
-    |clarkSquaredKernel c s u - stieltjesSquaredKernel s u| ≤ c ^ 2 / s := by
+    |clarkSquaredKernel c s u - stieltjesSquaredKernel s u| ≤ c ^ (2 : ℕ) / s := by
   have hus : (0 : ℝ) < u + s := by linarith
-  have hval : clarkSquaredKernel c s u - stieltjesSquaredKernel s u = c ^ 2 / (u + s) := by
+  have hval : clarkSquaredKernel c s u - stieltjesSquaredKernel s u = c ^ (2 : ℕ) / (u + s) := by
     rw [clarkSquaredKernel, stieltjesSquaredKernel, div_sub_div_same]
     congr 1
     ring

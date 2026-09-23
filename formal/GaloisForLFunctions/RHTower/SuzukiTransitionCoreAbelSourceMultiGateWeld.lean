@@ -54,7 +54,7 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_eq_completedAbelSource
     suzukiTransitionCoreAlignedGammaCompletedEnergy N =
       suzukiNaturalApertureTransitionCoreCauchyEnergy N *
         (suzukiTransitionCoreCompletedAbelSource N /
-          unitRieszCoherentPrimeOutgoingCharge N) ^ 2 := by
+          unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy, dif_neg hcharge,
     suzukiNaturalApertureCompletedLowerHardyAmplitude_eq_completedAbelSource hN]
 
@@ -70,7 +70,7 @@ theorem suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_eq_completedAb
       2 * (xiSupportMultiplicity rho : ℝ) *
         suzukiNaturalApertureTransitionCoreCauchyEnergy N *
           (suzukiTransitionCoreCompletedAbelSource N /
-            unitRieszCoherentPrimeOutgoingCharge N) ^ 2 *
+            unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) *
           Complex.normSq (routePXiBaseConormalResidueFeature (rho : ℂ) r) := by
   rw [suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_eq,
     suzukiTransitionCoreAlignedGammaCompletedEnergy_eq_completedAbelSource hN hcharge]

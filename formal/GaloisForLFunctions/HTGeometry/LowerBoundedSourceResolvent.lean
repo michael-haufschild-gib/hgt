@@ -40,7 +40,7 @@ structure LowerBoundedSource (H : Type*) [NormedAddCommGroup H] [InnerProductSpa
   /-- A real lower bound for the quadratic form. -/
   floor : ℝ
   /-- The quadratic form is bounded below by `floor`. -/
-  lower : ∀ x : domain, floor * ‖(x : H)‖ ^ 2 ≤ RCLike.re (inner ℂ (op x) (x : H))
+  lower : ∀ x : domain, floor * ‖(x : H)‖ ^ (2 : ℕ) ≤ RCLike.re (inner ℂ (op x) (x : H))
   /-- Every shift above the lower bound is surjective. -/
   shift_surjective :
     ∀ r : ℝ, 0 < floor + r → ∀ f : H, ∃ x : domain, op x + (r : ℂ) • (x : H) = f
@@ -68,14 +68,14 @@ theorem shift_smul (r c : ℝ) (x : S.domain) :
 /-- The real part of the shifted quadratic form. -/
 theorem re_inner_shift (r : ℝ) (x : S.domain) :
     RCLike.re (inner ℂ (S.shift r x) (x : H))
-      = RCLike.re (inner ℂ (S.op x) (x : H)) + r * ‖(x : H)‖ ^ 2 := by
-  have hself : (inner ℂ (x : H) (x : H) : ℂ) = ((‖(x : H)‖ ^ 2 : ℝ) : ℂ) := by
+      = RCLike.re (inner ℂ (S.op x) (x : H)) + r * ‖(x : H)‖ ^ (2 : ℕ) := by
+  have hself : (inner ℂ (x : H) (x : H) : ℂ) = ((‖(x : H)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
-  have hs : inner ℂ ((r : ℂ) • (x : H)) (x : H) = ((r * ‖(x : H)‖ ^ 2 : ℝ) : ℂ) := by
+  have hs : inner ℂ ((r : ℂ) • (x : H)) (x : H) = ((r * ‖(x : H)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_smul_left, hself, Complex.conj_ofReal]
     norm_cast
-  have hre : RCLike.re (((r * ‖(x : H)‖ ^ 2 : ℝ) : ℂ)) = r * ‖(x : H)‖ ^ 2 := RCLike.ofReal_re _
+  have hre : RCLike.re (((r * ‖(x : H)‖ ^ (2 : ℕ) : ℝ) : ℂ)) = r * ‖(x : H)‖ ^ (2 : ℕ) := RCLike.ofReal_re _
   rw [shift, inner_add_left, hs, map_add, hre]
 
 /-- **Lower bound for the shifted operator.** -/
@@ -83,16 +83,16 @@ theorem norm_shift_ge (r : ℝ) (x : S.domain) :
     (S.floor + r) * ‖(x : H)‖ ≤ ‖S.shift r x‖ := by
   rcases eq_or_lt_of_le (norm_nonneg (x : H)) with hx | hx
   · simp [← hx]
-  · have key : (S.floor + r) * ‖(x : H)‖ ^ 2 ≤ ‖S.shift r x‖ * ‖(x : H)‖ := by
-      calc (S.floor + r) * ‖(x : H)‖ ^ 2
-          = S.floor * ‖(x : H)‖ ^ 2 + r * ‖(x : H)‖ ^ 2 := by ring
-        _ ≤ RCLike.re (inner ℂ (S.op x) (x : H)) + r * ‖(x : H)‖ ^ 2 := by
+  · have key : (S.floor + r) * ‖(x : H)‖ ^ (2 : ℕ) ≤ ‖S.shift r x‖ * ‖(x : H)‖ := by
+      calc (S.floor + r) * ‖(x : H)‖ ^ (2 : ℕ)
+          = S.floor * ‖(x : H)‖ ^ (2 : ℕ) + r * ‖(x : H)‖ ^ (2 : ℕ) := by ring
+        _ ≤ RCLike.re (inner ℂ (S.op x) (x : H)) + r * ‖(x : H)‖ ^ (2 : ℕ) := by
             have := S.lower x; linarith
         _ = RCLike.re (inner ℂ (S.shift r x) (x : H)) := (S.re_inner_shift r x).symm
         _ ≤ ‖S.shift r x‖ * ‖(x : H)‖ := re_inner_le_norm _ _
     have : (S.floor + r) * ‖(x : H)‖ * ‖(x : H)‖ ≤ ‖S.shift r x‖ * ‖(x : H)‖ := by
       calc (S.floor + r) * ‖(x : H)‖ * ‖(x : H)‖
-          = (S.floor + r) * ‖(x : H)‖ ^ 2 := by ring
+          = (S.floor + r) * ‖(x : H)‖ ^ (2 : ℕ) := by ring
         _ ≤ _ := key
     exact le_of_mul_le_mul_right this hx
 

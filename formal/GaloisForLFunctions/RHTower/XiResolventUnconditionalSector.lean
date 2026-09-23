@@ -6,10 +6,10 @@ import GaloisForLFunctions.RHTower.XiResolventMassDecay
 RH is equivalent to positive semidefiniteness of the resolvent Hankel array at any one shift
 `X ≥ 0`.  This file proves that a growing sector of that criterion holds **unconditionally**.
 
-The mechanism is a cone law with a degree-dependent aperture.  The height gap `2 < g^2` and the
-critical strip `|b| < 1/2` place every shifted squared spectral point `w = (g + b i)^2 + X` in the
-sector `(2n+1) |Im w| < Re w` as soon as `X ≥ ((2n+1)^2 + 1)/4` — by the arithmetic–geometric mean
-inequality `(2n+1) g ≤ g^2 + (2n+1)^2/4`, with no square roots.  The sector is inherited by the
+The mechanism is a cone law with a degree-dependent aperture.  The height gap `2 < g^(2 : ℕ)` and the
+critical strip `|b| < 1/2` place every shifted squared spectral point `w = (g + b i)^(2 : ℕ) + X` in the
+sector `(2n+1) |Im w| < Re w` as soon as `X ≥ ((2n+1)^(2 : ℕ) + 1)/4` — by the arithmetic–geometric mean
+inequality `(2n+1) g ≤ g^(2 : ℕ) + (2n+1)^(2 : ℕ)/4`, with no square roots.  The sector is inherited by the
 resolvent coordinate `u = w⁻¹`, and an elementary Bernoulli–geometric-series estimate shows that a
 sector element of aperture `1/(2n+1)` keeps all powers up to `n+1` in the open right half-plane:
 
@@ -18,14 +18,14 @@ sector element of aperture `1/(2n+1)` keeps all powers up to `n+1` in the open r
 Consequences, all unconditional:
 
 * every resolvent moment `R n X = sum_q u_q^(n+1)` has strictly positive real part once
-  `X ≥ (n+1)^2` — the diagonal of the Hankel criterion holds to **unbounded degree** with a
+  `X ≥ (n+1)^(2 : ℕ)` — the diagonal of the Hankel criterion holds to **unbounded degree** with a
   quadratic shift law;
 * the Hankel quadratic form is nonnegative — strictly positive for a nonzero weight — on the whole
-  cone of **nonnegative coefficient vectors** once `X ≥ (2N+1)^2`;
+  cone of **nonnegative coefficient vectors** once `X ≥ (2N+1)^(2 : ℕ)`;
 * hence any coefficient vector witnessing Hankel negativity at such a shift must change sign.
 
 Together with the corpus equivalence `RH ↔ all Hankel forms nonnegative at one shift` and the mass
-bounds `|failure| ≤ 2 L^2 M(X)`, `M(X) ≤ 2H/(X+1)^2`, this pins the RH obstruction precisely: it is
+bounds `|failure| ≤ 2 L^(2 : ℕ) M(X)`, `M(X) ≤ 2H/(X+1)^(2 : ℕ)`, this pins the RH obstruction precisely: it is
 invisible to every linear (moment) test and to every one-signed quadratic test, and can live only
 in sign-changing bilinear tests against the deviation mass `M(X)`.
 -/
@@ -49,9 +49,9 @@ theorem sub_nat_mul_mul_pow_le {a b : ℝ} (hb : 0 ≤ b) (hba : b ≤ a) (n : �
     have hpow : 0 ≤ a ^ n := pow_nonneg ha n
     have h1 : (a - n * b) * a ^ n * (a - b) ≤ (a - b) ^ n * a * (a - b) :=
       mul_le_mul_of_nonneg_right ih hab
-    have hnb : 0 ≤ (n : ℝ) * b ^ 2 * a ^ n := by positivity
+    have hnb : 0 ≤ (n : ℝ) * b ^ (2 : ℕ) * a ^ n := by positivity
     calc (a - ((n + 1 : ℕ) : ℝ) * b) * a ^ (n + 1)
-        = (a - n * b) * a ^ n * (a - b) - (n : ℝ) * b ^ 2 * a ^ n := by push_cast; ring
+        = (a - n * b) * a ^ n * (a - b) - (n : ℝ) * b ^ (2 : ℕ) * a ^ n := by push_cast; ring
       _ ≤ (a - n * b) * a ^ n * (a - b) := by linarith
       _ ≤ (a - b) ^ n * a * (a - b) := h1
       _ = (a - b) ^ (n + 1) * a := by ring
@@ -64,10 +64,10 @@ theorem sector_pow_gap {a b : ℝ} (hb : 0 ≤ b) (n : ℕ) (hsec : (2 * n + 1) 
   have hba : b ≤ a := by nlinarith [mul_nonneg (by positivity : (0:ℝ) ≤ 2 * (n:ℝ)) hb]
   have hab : 0 ≤ a + b := by linarith
   have h1 : (a + b) ^ n * (a - b) ^ n ≤ a ^ (2 * n) := by
-    have hprod : (a + b) * (a - b) ≤ a ^ 2 := by nlinarith [sq_nonneg b]
+    have hprod : (a + b) * (a - b) ≤ a ^ (2 : ℕ) := by nlinarith [sq_nonneg b]
     have hprodnn : 0 ≤ (a + b) * (a - b) := mul_nonneg hab (by linarith)
     calc (a + b) ^ n * (a - b) ^ n = ((a + b) * (a - b)) ^ n := (mul_pow _ _ n).symm
-      _ ≤ (a ^ 2) ^ n := pow_le_pow_left₀ hprodnn hprod n
+      _ ≤ (a ^ (2 : ℕ)) ^ n := pow_le_pow_left₀ hprodnn hprod n
       _ = a ^ (2 * n) := by rw [← pow_mul]
   have hbern := sub_nat_mul_mul_pow_le hb hba n
   have h2 : (a - n * b) * ((a + b) ^ n * a ^ n) ≤ a ^ (n + 1) * a ^ n := by
@@ -162,28 +162,28 @@ theorem re_pow_pos_of_sector (z : ℂ) (n : ℕ) (hsec : (2 * n + 1) * |z.im| < 
 
 /-- The sector threshold is monotone in the degree. -/
 theorem resolventSector_threshold_mono {m n : ℕ} (h : m ≤ n) :
-    ((2 * (m : ℝ) + 1) ^ 2 + 1) / 4 ≤ ((2 * (n : ℝ) + 1) ^ 2 + 1) / 4 := by
+    ((2 * (m : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ ((2 * (n : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 := by
   have hc : (m : ℝ) ≤ n := Nat.cast_le.mpr h
   have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   nlinarith [mul_nonneg (sub_nonneg.mpr hc) (by positivity : (0:ℝ) ≤ (n : ℝ) + m + 1)]
 
-/-- **The divisor cone law**: at shift `X ≥ ((2n+1)^2 + 1)/4` every shifted squared spectral point
+/-- **The divisor cone law**: at shift `X ≥ ((2n+1)^(2 : ℕ) + 1)/4` every shifted squared spectral point
 lies in the sector `(2n+1)|Im w| < Re w`.  Height gap bounds the numerator, the strip halves it,
 and the arithmetic–geometric mean inequality supplies the aperture. -/
 theorem sector_xiSpectralSq_add (n : ℕ) {X : ℝ}
-    (hX : ((2 * (n : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) (q : XiZeroCopy) :
-    (2 * (n : ℝ) + 1) * |(xiSpectralPoint q ^ 2 + (X : ℂ)).im| <
-      (xiSpectralPoint q ^ 2 + (X : ℂ)).re := by
-  have hγ : 2 < (xiSpectralPoint q).re ^ 2 := by
+    (hX : ((2 * (n : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) (q : XiZeroCopy) :
+    (2 * (n : ℝ) + 1) * |(xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im| <
+      (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).re := by
+  have hγ : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have h := xiZeroCopy_two_lt_im_sq q
     rwa [← xiSpectralPoint_re_eq] at h
   have hb : |(xiSpectralPoint q).im| < 1 / 2 := abs_xiSpectralPoint_im_lt_half q
   set γ := (xiSpectralPoint q).re with hγdef
   set b := (xiSpectralPoint q).im with hbdef
-  have him : (xiSpectralPoint q ^ 2 + (X : ℂ)).im = 2 * γ * b := by
+  have him : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im = 2 * γ * b := by
     rw [Complex.add_im, Complex.ofReal_im, sq, Complex.mul_im, ← hγdef, ← hbdef]
     ring
-  have hre : (xiSpectralPoint q ^ 2 + (X : ℂ)).re = γ ^ 2 - b ^ 2 + X := by
+  have hre : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).re = γ ^ (2 : ℕ) - b ^ (2 : ℕ) + X := by
     rw [Complex.add_re, Complex.ofReal_re, sq, Complex.mul_re, ← hγdef, ← hbdef]
     ring
   rw [him, hre]
@@ -193,23 +193,23 @@ theorem sector_xiSpectralSq_add (n : ℕ) {X : ℝ}
   have hstep1 : (2 * (n : ℝ) + 1) * (2 * |γ| * |b|) < (2 * (n : ℝ) + 1) * |γ| := by
     have hlt : 2 * |γ| * |b| < |γ| := by nlinarith [abs_nonneg γ, abs_nonneg b]
     exact mul_lt_mul_of_pos_left hlt (by positivity)
-  have hstep2 : (2 * (n : ℝ) + 1) * |γ| ≤ γ ^ 2 + (X - 1 / 4) := by
+  have hstep2 : (2 * (n : ℝ) + 1) * |γ| ≤ γ ^ (2 : ℕ) + (X - 1 / 4) := by
     nlinarith [sq_nonneg (|γ| - (2 * (n : ℝ) + 1) / 2), sq_abs γ]
-  have hb2 : b ^ 2 ≤ 1 / 4 := by nlinarith [sq_abs b, abs_nonneg b]
+  have hb2 : b ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_abs b, abs_nonneg b]
   calc (2 * (n : ℝ) + 1) * |2 * γ * b|
       = (2 * (n : ℝ) + 1) * (2 * |γ| * |b|) := by rw [habs]
     _ < (2 * (n : ℝ) + 1) * |γ| := hstep1
-    _ ≤ γ ^ 2 + (X - 1 / 4) := hstep2
-    _ ≤ γ ^ 2 - b ^ 2 + X := by linarith
+    _ ≤ γ ^ (2 : ℕ) + (X - 1 / 4) := hstep2
+    _ ≤ γ ^ (2 : ℕ) - b ^ (2 : ℕ) + X := by linarith
 
 /-- The cone transfers to the resolvent coordinate under inversion. -/
 theorem sector_xiResolventPoint (n : ℕ) {X : ℝ}
-    (hX : ((2 * (n : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) (q : XiZeroCopy) :
+    (hX : ((2 * (n : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) (q : XiZeroCopy) :
     (2 * (n : ℝ) + 1) * |(xiResolventPoint X q).im| < (xiResolventPoint X q).re := by
   have hX0 : (0 : ℝ) ≤ X := le_trans (by positivity) hX
   have hw := sector_xiSpectralSq_add n hX q
   have hne := xiSpectralSq_add_ofReal_ne_zero hX0 q
-  have hnsq : 0 < Complex.normSq (xiSpectralPoint q ^ 2 + (X : ℂ)) :=
+  have hnsq : 0 < Complex.normSq (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)) :=
     Complex.normSq_pos.mpr hne
   rw [xiResolventPoint, Complex.inv_re, Complex.inv_im, abs_div, abs_neg,
     abs_of_pos hnsq, ← mul_div_assoc]
@@ -218,18 +218,18 @@ theorem sector_xiResolventPoint (n : ℕ) {X : ℝ}
 /-! ## §3 Moment positivity to unbounded degree -/
 
 /-- All resolvent-coordinate powers up to `n+1` have strictly positive real part at shift
-`X ≥ ((2n+1)^2 + 1)/4`. -/
+`X ≥ ((2n+1)^(2 : ℕ) + 1)/4`. -/
 theorem xiResolventPoint_pow_re_pos {k n : ℕ} (hkn : k ≤ n) {X : ℝ}
-    (hX : ((2 * (n : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) (q : XiZeroCopy) :
+    (hX : ((2 * (n : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) (q : XiZeroCopy) :
     0 < ((xiResolventPoint X q) ^ (k + 1)).re := by
-  have hthr : ((2 * (k : ℝ) + 1) ^ 2 + 1) / 4 ≤ X :=
+  have hthr : ((2 * (k : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X :=
     le_trans (resolventSector_threshold_mono hkn) hX
   exact re_pow_pos_of_sector _ k (sector_xiResolventPoint k hthr q)
 
 /-- **Every resolvent moment is strictly positive at its quadratic shift threshold** — the
 diagonal of the Hankel criterion holds unconditionally to unbounded degree. -/
 theorem xiResolventMoment_re_pos (n : ℕ) {X : ℝ}
-    (hX : ((2 * (n : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) :
+    (hX : ((2 * (n : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) :
     0 < (xiResolventMoment n X).re := by
   have hX0 : (0 : ℝ) ≤ X := le_trans (by positivity) hX
   have hsum := summable_xiResolventPoint_pow hX0 n
@@ -240,9 +240,9 @@ theorem xiResolventMoment_re_pos (n : ℕ) {X : ℝ}
   exact hre.tsum_pos (fun q => (xiResolventPoint_pow_re_pos le_rfl hX q).le) q₀
     (xiResolventPoint_pow_re_pos le_rfl hX q₀)
 
-/-- Clean threshold form: the `n`-th moment is strictly positive once `X ≥ (n+1)^2`. -/
+/-- Clean threshold form: the `n`-th moment is strictly positive once `X ≥ (n+1)^(2 : ℕ)`. -/
 theorem xiResolventMoment_re_pos_of_add_one_sq_le (n : ℕ) {X : ℝ}
-    (hX : ((n : ℝ) + 1) ^ 2 ≤ X) : 0 < (xiResolventMoment n X).re := by
+    (hX : ((n : ℝ) + 1) ^ (2 : ℕ) ≤ X) : 0 < (xiResolventMoment n X).re := by
   refine xiResolventMoment_re_pos n (le_trans ?_ hX)
   nlinarith [Nat.cast_nonneg (α := ℝ) n]
 
@@ -260,10 +260,10 @@ theorem xiResolventHankelForm_re (N : ℕ) (a : ℕ → ℝ) (X : ℝ) :
   simp [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
 
 /-- **Unconditional Hankel nonnegativity on the nonnegative-coefficient cone** at shift
-`X ≥ ((4N+1)^2 + 1)/4`: every moment appearing in the form is strictly positive there. -/
+`X ≥ ((4N+1)^(2 : ℕ) + 1)/4`: every moment appearing in the form is strictly positive there. -/
 theorem xiResolventHankelForm_re_nonneg_of_nonneg (N : ℕ) (a : ℕ → ℝ)
     (ha : ∀ j, 0 ≤ a j) {X : ℝ}
-    (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) :
+    (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) :
     0 ≤ (xiResolventHankelForm N a X).re := by
   rw [xiResolventHankelForm_re]
   refine Finset.sum_nonneg fun j hj => Finset.sum_nonneg fun k hk => ?_
@@ -279,7 +279,7 @@ theorem xiResolventHankelForm_re_nonneg_of_nonneg (N : ℕ) (a : ℕ → ℝ)
 below the truncation order forces a strictly positive form. -/
 theorem xiResolventHankelForm_re_pos_of_nonneg (N : ℕ) (a : ℕ → ℝ)
     (ha : ∀ j, 0 ≤ a j) {i : ℕ} (hi : i < N) (hai : 0 < a i) {X : ℝ}
-    (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ 2 + 1) / 4 ≤ X) :
+    (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X) :
     0 < (xiResolventHankelForm N a X).re := by
   have hmom : ∀ {m : ℕ}, m ≤ 2 * N → 0 < (xiResolventMoment m X).re := fun {m} hm =>
     xiResolventMoment_re_pos m (le_trans (resolventSector_threshold_mono hm) hX)
@@ -301,9 +301,9 @@ theorem xiResolventHankelForm_re_pos_of_nonneg (N : ℕ) (a : ℕ → ℝ)
   exact mul_pos (mul_pos hai hai) (hmom (by omega))
 
 /-- Clean threshold form: the nonnegative cone is unconditionally Hankel-nonnegative once
-`X ≥ (2N+1)^2`. -/
+`X ≥ (2N+1)^(2 : ℕ)`. -/
 theorem xiResolventHankelForm_re_nonneg_of_nonneg_of_sq_le (N : ℕ) (a : ℕ → ℝ)
-    (ha : ∀ j, 0 ≤ a j) {X : ℝ} (hX : (2 * (N : ℝ) + 1) ^ 2 ≤ X) :
+    (ha : ∀ j, 0 ≤ a j) {X : ℝ} (hX : (2 * (N : ℝ) + 1) ^ (2 : ℕ) ≤ X) :
     0 ≤ (xiResolventHankelForm N a X).re := by
   refine xiResolventHankelForm_re_nonneg_of_nonneg N a ha (le_trans ?_ hX)
   push_cast
@@ -313,7 +313,7 @@ theorem xiResolventHankelForm_re_nonneg_of_nonneg_of_sq_le (N : ℕ) (a : ℕ �
 form is even in the weight, so a one-signed weight of either sign is covered by the cone
 positivity; a negative value forces coefficients of both strict signs. -/
 theorem exists_coeff_neg_and_pos_of_xiResolventHankelForm_re_neg (N : ℕ) (a : ℕ → ℝ)
-    {X : ℝ} (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ 2 + 1) / 4 ≤ X)
+    {X : ℝ} (hX : ((2 * ((2 * N : ℕ) : ℝ) + 1) ^ (2 : ℕ) + 1) / 4 ≤ X)
     (hneg : (xiResolventHankelForm N a X).re < 0) :
     (∃ j, a j < 0) ∧ (∃ k, 0 < a k) := by
   constructor

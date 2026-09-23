@@ -46,11 +46,11 @@ theorem iteratedDeriv_atomMomentFrame (p : ℝ) (P : ℝ[X]) (n : ℕ) :
 
 /-- The clock construction is the actual nth theta source atom, including its full seed. -/
 theorem atomMomentFrame_thetaClockSeed_eq_source (n : ℕ) (x : ℝ) :
-    atomMomentFrame (Real.pi*(n : ℝ)^2) thetaClockSeed x = RHTower.thetaCuspSourceTerm x n := by
-  have he : Real.exp (2*x) = Real.exp x^2 := by
+    atomMomentFrame (Real.pi*(n : ℝ)^(2 : ℕ)) thetaClockSeed x = RHTower.thetaCuspSourceTerm x n := by
+  have he : Real.exp (2*x) = Real.exp x^(2 : ℕ) := by
     rw [show 2*x=x+x by ring,Real.exp_add]
     ring
-  have hq : (Real.pi*(n : ℝ)^2)*Real.exp (2*x) = Real.pi*((n : ℝ)*Real.exp x)^2 := by
+  have hq : (Real.pi*(n : ℝ)^(2 : ℕ))*Real.exp (2*x) = Real.pi*((n : ℝ)*Real.exp x)^(2 : ℕ) := by
     rw [he]
     ring
   unfold atomMomentFrame thetaClockSeed
@@ -64,9 +64,9 @@ theorem atomMomentFrame_thetaClockSeed_eq_source (n : ℕ) (x : ℝ) :
 /-- All literal theta-atom jets admit the same source-identified signed-clock formula. -/
 theorem iteratedDeriv_thetaCuspSourceTerm_eq_atomMomentFrame (n k : ℕ) :
     iteratedDeriv k (fun x : ℝ => RHTower.thetaCuspSourceTerm x n) =
-      atomMomentFrame (Real.pi*(n : ℝ)^2) ((thetaClockMultiply^[k]) thetaClockSeed) := by
+      atomMomentFrame (Real.pi*(n : ℝ)^(2 : ℕ)) ((thetaClockMultiply^[k]) thetaClockSeed) := by
   have he : (fun x : ℝ => RHTower.thetaCuspSourceTerm x n) =
-      atomMomentFrame (Real.pi*(n : ℝ)^2) thetaClockSeed := by
+      atomMomentFrame (Real.pi*(n : ℝ)^(2 : ℕ)) thetaClockSeed := by
     funext x
     exact (atomMomentFrame_thetaClockSeed_eq_source n x).symm
   rw [he]
@@ -184,10 +184,10 @@ theorem thetaCuspAtomPairReflectionJet_eq_moment (n a b : ℕ) (x : ℝ) :
   rw [hleft,hright,iteratedDeriv_thetaCuspSourceTerm_eq_atomMomentFrame,
     iteratedDeriv_thetaCuspSourceTerm_eq_atomMomentFrame]
   simp only [atomMomentFrame,smul_eq_mul,RHTower.thetaCuspSingleAtomReflectionScale]
-  have he : Real.exp (x-(Real.pi*(a : ℝ)^2)*Real.exp (2*x)-
-      (Real.pi*(b : ℝ)^2)*Real.exp (2*x)) =
-      Real.exp (x/2-(Real.pi*(a : ℝ)^2)*Real.exp (2*x))*
-        Real.exp (x/2-(Real.pi*(b : ℝ)^2)*Real.exp (2*x)) := by
+  have he : Real.exp (x-(Real.pi*(a : ℝ)^(2 : ℕ))*Real.exp (2*x)-
+      (Real.pi*(b : ℝ)^(2 : ℕ))*Real.exp (2*x)) =
+      Real.exp (x/2-(Real.pi*(a : ℝ)^(2 : ℕ))*Real.exp (2*x))*
+        Real.exp (x/2-(Real.pi*(b : ℝ)^(2 : ℕ))*Real.exp (2*x)) := by
     rw [← Real.exp_add]
     congr 1
     ring
@@ -208,7 +208,7 @@ theorem thetaCuspAtomPairEvenEnergy_eq_moment {N : ℕ} (c : Fin N → ℝ)
       pairedNegativePoissonEvaluation
         (RHTower.thetaCuspSingleAtomReflectionScale a x)
         (RHTower.thetaCuspSingleAtomReflectionScale b x)
-        (thetaPairEvenPolynomial c^2*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed)) := by
+        (thetaPairEvenPolynomial c^(2 : ℕ)*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed)) := by
   simp_rw [thetaCuspAtomPairReflectionJet_eq_moment]
   unfold thetaPairEvenPolynomial
   rw [pow_two,Finset.sum_mul]
@@ -234,9 +234,9 @@ def thetaPairShift (u v : ℝ) :
 /-- The full pair seed has four exact shifts, retaining both negative mixed terms. -/
 theorem pairedNegativePoissonEvaluation_seed_mul (p r : ℝ) (Z : ℝ[X] ⊗[ℝ] ℝ[X]) :
     pairedNegativePoissonEvaluation p r ((thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed)*Z) =
-      16*p^2*r^2*pairedNegativePoissonEvaluation p r (thetaPairShift 2 2 Z)-
-        24*p^2*r*pairedNegativePoissonEvaluation p r (thetaPairShift 2 1 Z)-
-        24*p*r^2*pairedNegativePoissonEvaluation p r (thetaPairShift 1 2 Z)+
+      16*p^(2 : ℕ)*r^(2 : ℕ)*pairedNegativePoissonEvaluation p r (thetaPairShift 2 2 Z)-
+        24*p^(2 : ℕ)*r*pairedNegativePoissonEvaluation p r (thetaPairShift 2 1 Z)-
+        24*p*r^(2 : ℕ)*pairedNegativePoissonEvaluation p r (thetaPairShift 1 2 Z)+
         36*p*r*pairedNegativePoissonEvaluation p r (thetaPairShift 1 1 Z) := by
   induction Z using TensorProduct.induction_on with
   | zero => simp
@@ -254,10 +254,10 @@ noncomputable local instance (n : ℕ) : AddCommGroup (PolyBelow n) := inferInst
 /-- A finite separated square in the source functional is exactly the proved signed square sum. -/
 theorem pairedNegativePoissonEvaluation_separated_square {N : ℕ} (n m : ℕ)
     (p r : ℝ) (P : Fin N → PolyBelow n) (Q : Fin N → PolyBelow m) :
-    pairedNegativePoissonEvaluation p r ((∑ i, (P i : ℝ[X]) ⊗ₜ[ℝ] (Q i : ℝ[X]))^2) =
+    pairedNegativePoissonEvaluation p r ((∑ i, (P i : ℝ[X]) ⊗ₜ[ℝ] (Q i : ℝ[X]))^(2 : ℕ)) =
       ∑ k ∈ Finset.range n, ∑ l ∈ Finset.range m, weight (-p) k*weight (-r) l*
         (∑ i, moment n (-p) (((difference n)^k) (P i))*
-          moment m (-r) (((difference m)^l) (Q i)))^2 := by
+          moment m (-r) (((difference m)^l) (Q i)))^(2 : ℕ) := by
   rw [← pairSquare_eq_difference_squares]
   unfold pairSquare
   rw [pow_two,Finset.sum_mul]
@@ -300,18 +300,18 @@ def thetaPairShiftedEvenPolynomial {N : ℕ} (c : Fin N → ℝ) (h : ℝ) :
 theorem pairedNegativePoissonEvaluation_seed_even_square {N : ℕ}
     (c : Fin N → ℝ) (p r : ℝ) :
     pairedNegativePoissonEvaluation p r
-        (thetaPairEvenPolynomial c^2*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed)) =
-      (16*p^2*r^2+36*p*r)*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^2)-
-        24*p^2*r*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c 2^2)-
-        24*p*r^2*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c (-2)^2) := by
+        (thetaPairEvenPolynomial c^(2 : ℕ)*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed)) =
+      (16*p^(2 : ℕ)*r^(2 : ℕ)+36*p*r)*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^(2 : ℕ))-
+        24*p^(2 : ℕ)*r*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c 2^(2 : ℕ))-
+        24*p*r^(2 : ℕ)*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c (-2)^(2 : ℕ)) := by
   rw [mul_comm,pairedNegativePoissonEvaluation_seed_mul]
   simp only [map_pow,thetaPairShift_evenPolynomial]
   norm_num only [sub_self,mul_zero,zero_smul,add_zero,show (2*(2-1) : ℝ) = 2 by ring,
     show (2*(1-2) : ℝ) = -2 by ring]
-  change 16*p^2*r^2*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^2)-
-      24*p^2*r*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c 2^2)-
-      24*p*r^2*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c (-2)^2)+
-      36*p*r*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^2) = _
+  change 16*p^(2 : ℕ)*r^(2 : ℕ)*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^(2 : ℕ))-
+      24*p^(2 : ℕ)*r*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c 2^(2 : ℕ))-
+      24*p*r^(2 : ℕ)*pairedNegativePoissonEvaluation p r (thetaPairShiftedEvenPolynomial c (-2)^(2 : ℕ))+
+      36*p*r*pairedNegativePoissonEvaluation p r (thetaPairEvenPolynomial c^(2 : ℕ)) = _
   ring
 
 private theorem atomPair_contDiffAt (n a b : ℕ) (x : ℝ) :
@@ -353,7 +353,7 @@ def thetaPairSourceEvenEnergy {N : ℕ} (c : Fin N → ℝ) (a b : ℕ) (x : ℝ
   pairedNegativePoissonEvaluation
     (RHTower.thetaCuspSingleAtomReflectionScale a x)
     (RHTower.thetaCuspSingleAtomReflectionScale b x)
-    (thetaPairEvenPolynomial c^2*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed))
+    (thetaPairEvenPolynomial c^(2 : ℕ)*(thetaClockSeed ⊗ₜ[ℝ] thetaClockSeed))
 
 /-- Exact two-atom even energy, retaining both unequal pairs at every finite rank. -/
 theorem thetaCuspTwoAtomEvenEnergy_eq_four_pair_moments {N : ℕ} (c : Fin N → ℝ) (x : ℝ) :

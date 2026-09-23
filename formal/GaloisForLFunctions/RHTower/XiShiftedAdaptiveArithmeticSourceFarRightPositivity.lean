@@ -12,7 +12,7 @@ sufficiently far right.
 
 The mechanism is the least coefficient, not pointwise kernel positivity.  If `d` is the least
 nonzero degree of `A`, then the adaptive shear polynomial has least degree `2d+2` and least
-coefficient `(d+1) A.trailingCoeff^2 > 0`.  The shifted-Xi moments recede to the arcsine moments
+coefficient `(d+1) A.trailingCoeff^(2 : ℕ) > 0`.  The shifted-Xi moments recede to the arcsine moments
 after mass dilation, so this coefficient is the unique surviving term.  Thus any persistent
 obstruction must escape through a moving, nonuniform admission rather than a fixed reporter.
 -/
@@ -41,7 +41,7 @@ theorem tendsto_scaled_xiShiftedPolynomialMoment_sum (q : Polynomial ℝ) :
     Tendsto
       (fun w : ℝ => 2 * w ^ (2 * q.natTrailingDegree + 1) / Real.log w *
         (∑ k ∈ Finset.range (q.natDegree + 1),
-          q.coeff k * (xiShiftedReciprocalMoment (w ^ 2) k).re))
+          q.coeff k * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re))
       atTop
       (nhds (q.trailingCoeff *
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom q.natTrailingDegree)) := by
@@ -52,7 +52,7 @@ theorem tendsto_scaled_xiShiftedPolynomialMoment_sum (q : Polynomial ℝ) :
   have hterms : ∀ k ∈ Finset.range (q.natDegree + 1),
       Tendsto
         (fun w : ℝ => 2 * w ^ (2 * d + 1) / Real.log w *
-          (q.coeff k * (xiShiftedReciprocalMoment (w ^ 2) k).re))
+          (q.coeff k * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re))
         atTop (nhds (C k)) := by
     intro k hk
     by_cases hlt : k < d
@@ -80,9 +80,9 @@ theorem tendsto_scaled_xiShiftedPolynomialMoment_sum (q : Polynomial ℝ) :
         have hevent :
             (fun w : ℝ => q.coeff k * ((w⁻¹) ^ (2 * (k - d)) *
                 (2 * w ^ (2 * k + 1) / Real.log w *
-                  (xiShiftedReciprocalMoment (w ^ 2) k).re))) =ᶠ[atTop]
+                  (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re))) =ᶠ[atTop]
               (fun w : ℝ => 2 * w ^ (2 * d + 1) / Real.log w *
-                (q.coeff k * (xiShiftedReciprocalMoment (w ^ 2) k).re)) := by
+                (q.coeff k * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)) := by
           filter_upwards [eventually_gt_atTop (1 : ℝ)] with w hw
           have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
           have hlog : Real.log w ≠ 0 := ne_of_gt (Real.log_pos hw)
@@ -110,7 +110,7 @@ theorem tendsto_scaled_xiShiftedMomentFunctional (q : Polynomial ℝ) :
     Tendsto
       (fun w : ℝ => 2 * w ^ (2 * q.natTrailingDegree + 1) / Real.log w *
         HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) q)
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) q)
       atTop
       (nhds (q.trailingCoeff *
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom q.natTrailingDegree)) := by
@@ -119,7 +119,7 @@ theorem tendsto_scaled_xiShiftedMomentFunctional (q : Polynomial ℝ) :
   filter_upwards with w
   congr 1
   have hrange := q.sum_over_range
-    (f := fun k c => c * (xiShiftedReciprocalMoment (w ^ 2) k).re) (by simp)
+    (f := fun k c => c * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (by simp)
   rw [Polynomial.sum_def] at hrange
   rw [HTGeometry.momentFunctional_eq_support_sum, hrange]
 
@@ -130,7 +130,7 @@ theorem xiShiftedBoundaryAdaptiveShearPolynomial_trailing
     let d := A.natTrailingDegree
     let Q := xiShiftedBoundaryAdaptiveShearPolynomial A
     Q.natTrailingDegree = 2 * d + 2 ∧
-      Q.trailingCoeff = (d + 1 : ℕ) * A.trailingCoeff ^ 2 := by
+      Q.trailingCoeff = (d + 1 : ℕ) * A.trailingCoeff ^ (2 : ℕ) := by
   dsimp only
   let d := A.natTrailingDegree
   let E := xiShiftedBoundaryShiftedEuler 1 A
@@ -185,10 +185,10 @@ theorem tendsto_scaled_xiShiftedAdaptiveShear
     Tendsto
       (fun w : ℝ => 2 * w ^ (4 * d + 5) / Real.log w *
         HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
           (xiShiftedBoundaryAdaptiveShearPolynomial A))
       atTop
-      (nhds ((((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ 2) *
+      (nhds ((((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ (2 : ℕ)) *
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom (2 * d + 2))) := by
   dsimp only
   obtain ⟨hdeg, hcoeff⟩ := xiShiftedBoundaryAdaptiveShearPolynomial_trailing hA
@@ -209,7 +209,7 @@ theorem tendsto_scaled_xiShiftedAdaptiveArithmeticSource
       (fun w : ℝ => w ^ (4 * d + 5) / Real.log w *
         xiShiftedAdaptiveMixedCompletedArithmeticSource w A)
       atTop
-      (nhds ((((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ 2) *
+      (nhds ((((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ (2 : ℕ)) *
         GaloisForLFunctions.HTGeometry.normalizedCentralBinom (2 * d + 2))) := by
   dsimp only
   have h := tendsto_scaled_xiShiftedAdaptiveShear hA
@@ -217,7 +217,7 @@ theorem tendsto_scaled_xiShiftedAdaptiveArithmeticSource
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with w hw
   have hsource : xiShiftedAdaptiveMixedCompletedArithmeticSource w A =
       2 * HTGeometry.momentFunctional
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
         (xiShiftedBoundaryAdaptiveShearPolynomial A) := by
     rw [← xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource
         (by linarith : 1 / 2 < w) A,
@@ -237,7 +237,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_eventually_pos
   let d := A.natTrailingDegree
   have htc : A.trailingCoeff ≠ 0 :=
     Polynomial.trailingCoeff_nonzero_iff_nonzero.mpr hA
-  have hlimit : 0 < (((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ 2) *
+  have hlimit : 0 < (((d + 1 : ℕ) : ℝ) * A.trailingCoeff ^ (2 : ℕ)) *
       GaloisForLFunctions.HTGeometry.normalizedCentralBinom (2 * d + 2) := by
     exact mul_pos
       (mul_pos (by positivity) (sq_pos_of_ne_zero htc))

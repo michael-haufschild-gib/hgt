@@ -25,47 +25,47 @@ noncomputable section
 /-- First-three-coordinate model for three normalized Xi-shift tangents, in inverse-prime
 coordinates `a`, `b`, and `c`. -/
 def xiShiftTangentExteriorFrame (a b c : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
-  !![-a * Real.sqrt (1 - a ^ 2), -b * Real.sqrt (1 - b ^ 2),
-      -c * Real.sqrt (1 - c ^ 2);
-    (1 - 2 * a ^ 2) * Real.sqrt (1 - a ^ 2),
-      (1 - 2 * b ^ 2) * Real.sqrt (1 - b ^ 2),
-      (1 - 2 * c ^ 2) * Real.sqrt (1 - c ^ 2);
-    a * (2 - 3 * a ^ 2) * Real.sqrt (1 - a ^ 2),
-      b * (2 - 3 * b ^ 2) * Real.sqrt (1 - b ^ 2),
-      c * (2 - 3 * c ^ 2) * Real.sqrt (1 - c ^ 2)]
+  !![-a * Real.sqrt (1 - a ^ (2 : ℕ)), -b * Real.sqrt (1 - b ^ (2 : ℕ)),
+      -c * Real.sqrt (1 - c ^ (2 : ℕ));
+    (1 - 2 * a ^ (2 : ℕ)) * Real.sqrt (1 - a ^ (2 : ℕ)),
+      (1 - 2 * b ^ (2 : ℕ)) * Real.sqrt (1 - b ^ (2 : ℕ)),
+      (1 - 2 * c ^ (2 : ℕ)) * Real.sqrt (1 - c ^ (2 : ℕ));
+    a * (2 - 3 * a ^ (2 : ℕ)) * Real.sqrt (1 - a ^ (2 : ℕ)),
+      b * (2 - 3 * b ^ (2 : ℕ)) * Real.sqrt (1 - b ^ (2 : ℕ)),
+      c * (2 - 3 * c ^ (2 : ℕ)) * Real.sqrt (1 - c ^ (2 : ℕ))]
 
 /-- Exact generalized-Vandermonde factorization of the abstract exterior frame. -/
 theorem xiShiftTangentExteriorFrame_det_eq (a b c : ℝ) :
     (xiShiftTangentExteriorFrame a b c).det =
-      -3 * Real.sqrt (1 - a ^ 2) * Real.sqrt (1 - b ^ 2) *
-        Real.sqrt (1 - c ^ 2) *
+      -3 * Real.sqrt (1 - a ^ (2 : ℕ)) * Real.sqrt (1 - b ^ (2 : ℕ)) *
+        Real.sqrt (1 - c ^ (2 : ℕ)) *
         (b - a) * (c - a) * (c - b) * (a + b + c + 2 * a * b * c) := by
   simp [xiShiftTangentExteriorFrame, Matrix.det_fin_three]
   ring
 
 /-- Squared exterior-volume formula once the three source weights are nonnegative. -/
 theorem xiShiftTangentExteriorFrame_det_sq_eq (a b c : ℝ)
-    (ha : 0 ≤ 1 - a ^ 2) (hb : 0 ≤ 1 - b ^ 2) (hc : 0 ≤ 1 - c ^ 2) :
-    (xiShiftTangentExteriorFrame a b c).det ^ 2 =
-      9 * (1 - a ^ 2) * (1 - b ^ 2) * (1 - c ^ 2) *
-        (b - a) ^ 2 * (c - a) ^ 2 * (c - b) ^ 2 *
-        (a + b + c + 2 * a * b * c) ^ 2 := by
+    (ha : 0 ≤ 1 - a ^ (2 : ℕ)) (hb : 0 ≤ 1 - b ^ (2 : ℕ)) (hc : 0 ≤ 1 - c ^ (2 : ℕ)) :
+    (xiShiftTangentExteriorFrame a b c).det ^ (2 : ℕ) =
+      9 * (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ)) * (1 - c ^ (2 : ℕ)) *
+        (b - a) ^ (2 : ℕ) * (c - a) ^ (2 : ℕ) * (c - b) ^ (2 : ℕ) *
+        (a + b + c + 2 * a * b * c) ^ (2 : ℕ) := by
   rw [xiShiftTangentExteriorFrame_det_eq]
   calc
-    (-3 * Real.sqrt (1 - a ^ 2) * Real.sqrt (1 - b ^ 2) *
-          Real.sqrt (1 - c ^ 2) *
+    (-3 * Real.sqrt (1 - a ^ (2 : ℕ)) * Real.sqrt (1 - b ^ (2 : ℕ)) *
+          Real.sqrt (1 - c ^ (2 : ℕ)) *
           (b - a) * (c - a) * (c - b) *
-          (a + b + c + 2 * a * b * c)) ^ 2 =
-        9 * Real.sqrt (1 - a ^ 2) ^ 2 * Real.sqrt (1 - b ^ 2) ^ 2 *
-          Real.sqrt (1 - c ^ 2) ^ 2 *
-          (b - a) ^ 2 * (c - a) ^ 2 * (c - b) ^ 2 *
-          (a + b + c + 2 * a * b * c) ^ 2 := by ring
+          (a + b + c + 2 * a * b * c)) ^ (2 : ℕ) =
+        9 * Real.sqrt (1 - a ^ (2 : ℕ)) ^ (2 : ℕ) * Real.sqrt (1 - b ^ (2 : ℕ)) ^ (2 : ℕ) *
+          Real.sqrt (1 - c ^ (2 : ℕ)) ^ (2 : ℕ) *
+          (b - a) ^ (2 : ℕ) * (c - a) ^ (2 : ℕ) * (c - b) ^ (2 : ℕ) *
+          (a + b + c + 2 * a * b * c) ^ (2 : ℕ) := by ring
     _ = _ := by rw [Real.sq_sqrt ha, Real.sq_sqrt hb, Real.sq_sqrt hc]
 
 /-- Depth-zero coordinate of the actual normalized Xi-shift tangent. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFeature_zero (p : Nat.Primes) :
     gammaSewnXiShiftEndpointUnitTangentFeature p 0 =
-      -((p : ℝ)⁻¹) * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ 2) := by
+      -((p : ℝ)⁻¹) * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   unfold gammaSewnXiShiftEndpointUnitTangentFeature
     gammaSewnXiShiftEndpointTangentFeature
@@ -76,8 +76,8 @@ theorem gammaSewnXiShiftEndpointUnitTangentFeature_zero (p : Nat.Primes) :
 /-- Depth-one coordinate of the actual normalized Xi-shift tangent. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFeature_one (p : Nat.Primes) :
     gammaSewnXiShiftEndpointUnitTangentFeature p 1 =
-      (1 - 2 * ((p : ℝ)⁻¹) ^ 2) *
-        Real.sqrt (1 - ((p : ℝ)⁻¹) ^ 2) := by
+      (1 - 2 * ((p : ℝ)⁻¹) ^ (2 : ℕ)) *
+        Real.sqrt (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   unfold gammaSewnXiShiftEndpointUnitTangentFeature
     gammaSewnXiShiftEndpointTangentFeature
@@ -89,8 +89,8 @@ theorem gammaSewnXiShiftEndpointUnitTangentFeature_one (p : Nat.Primes) :
 /-- Depth-two coordinate of the actual normalized Xi-shift tangent. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFeature_two (p : Nat.Primes) :
     gammaSewnXiShiftEndpointUnitTangentFeature p 2 =
-      (p : ℝ)⁻¹ * (2 - 3 * ((p : ℝ)⁻¹) ^ 2) *
-        Real.sqrt (1 - ((p : ℝ)⁻¹) ^ 2) := by
+      (p : ℝ)⁻¹ * (2 - 3 * ((p : ℝ)⁻¹) ^ (2 : ℕ)) *
+        Real.sqrt (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   unfold gammaSewnXiShiftEndpointUnitTangentFeature
     gammaSewnXiShiftEndpointTangentFeature
@@ -126,9 +126,9 @@ theorem gammaSewnXiShiftEndpointUnitTangentFrame_eq (p q r : Nat.Primes) :
 /-- Exact determinant formula for the actual three-prime source frame. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFrame_det_eq (p q r : Nat.Primes) :
     (gammaSewnXiShiftEndpointUnitTangentFrame p q r).det =
-      -3 * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ 2) *
-        Real.sqrt (1 - ((q : ℝ)⁻¹) ^ 2) *
-        Real.sqrt (1 - ((r : ℝ)⁻¹) ^ 2) *
+      -3 * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) *
+        Real.sqrt (1 - ((q : ℝ)⁻¹) ^ (2 : ℕ)) *
+        Real.sqrt (1 - ((r : ℝ)⁻¹) ^ (2 : ℕ)) *
         ((q : ℝ)⁻¹ - (p : ℝ)⁻¹) *
         ((r : ℝ)⁻¹ - (p : ℝ)⁻¹) *
         ((r : ℝ)⁻¹ - (q : ℝ)⁻¹) *
@@ -138,7 +138,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentFrame_det_eq (p q r : Nat.Primes) :
   exact xiShiftTangentExteriorFrame_det_eq _ _ _
 
 private theorem invPrime_unit_sub_sq_pos (p : Nat.Primes) :
-    0 < 1 - ((p : ℝ)⁻¹) ^ 2 := by
+    0 < 1 - ((p : ℝ)⁻¹) ^ (2 : ℕ) := by
   have hp : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
   have ha0 : 0 < (p : ℝ)⁻¹ := inv_pos.mpr (by exact_mod_cast p.2.pos)
   have ha1 : (p : ℝ)⁻¹ < 1 := (inv_lt_one₀ (by positivity)).mpr hp
@@ -155,14 +155,14 @@ private theorem invPrime_ne_invPrime {p q : Nat.Primes} (hpq : p ≠ q) :
 
 /-- Exact squared exterior-volume formula for the actual three-prime source frame. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFrame_det_sq_eq (p q r : Nat.Primes) :
-    (gammaSewnXiShiftEndpointUnitTangentFrame p q r).det ^ 2 =
-      9 * (1 - ((p : ℝ)⁻¹) ^ 2) * (1 - ((q : ℝ)⁻¹) ^ 2) *
-        (1 - ((r : ℝ)⁻¹) ^ 2) *
-        ((q : ℝ)⁻¹ - (p : ℝ)⁻¹) ^ 2 *
-        ((r : ℝ)⁻¹ - (p : ℝ)⁻¹) ^ 2 *
-        ((r : ℝ)⁻¹ - (q : ℝ)⁻¹) ^ 2 *
+    (gammaSewnXiShiftEndpointUnitTangentFrame p q r).det ^ (2 : ℕ) =
+      9 * (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) * (1 - ((q : ℝ)⁻¹) ^ (2 : ℕ)) *
+        (1 - ((r : ℝ)⁻¹) ^ (2 : ℕ)) *
+        ((q : ℝ)⁻¹ - (p : ℝ)⁻¹) ^ (2 : ℕ) *
+        ((r : ℝ)⁻¹ - (p : ℝ)⁻¹) ^ (2 : ℕ) *
+        ((r : ℝ)⁻¹ - (q : ℝ)⁻¹) ^ (2 : ℕ) *
         ((p : ℝ)⁻¹ + (q : ℝ)⁻¹ + (r : ℝ)⁻¹ +
-          2 * (p : ℝ)⁻¹ * (q : ℝ)⁻¹ * (r : ℝ)⁻¹) ^ 2 := by
+          2 * (p : ℝ)⁻¹ * (q : ℝ)⁻¹ * (r : ℝ)⁻¹) ^ (2 : ℕ) := by
   rw [gammaSewnXiShiftEndpointUnitTangentFrame_eq]
   exact xiShiftTangentExteriorFrame_det_sq_eq _ _ _
     (invPrime_unit_sub_sq_pos p).le
@@ -172,7 +172,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentFrame_det_sq_eq (p q r : Nat.Primes) 
 /-- Pairwise distinct primes have a strictly positive Xi-shift tangent exterior cube. -/
 theorem gammaSewnXiShiftEndpointUnitTangentFrame_det_sq_pos
     (p q r : Nat.Primes) (hpq : p ≠ q) (hpr : p ≠ r) (hqr : q ≠ r) :
-    0 < (gammaSewnXiShiftEndpointUnitTangentFrame p q r).det ^ 2 := by
+    0 < (gammaSewnXiShiftEndpointUnitTangentFrame p q r).det ^ (2 : ℕ) := by
   have hp := invPrime_unit_sub_sq_pos p
   have hq := invPrime_unit_sub_sq_pos q
   have hr := invPrime_unit_sub_sq_pos r

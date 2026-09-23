@@ -50,7 +50,7 @@ def slaterSpectralCompressionMatrix (evaluation : Fin n → κ → ℝ)
 /-- Compression of the square of a diagonal spectral observable. -/
 def slaterSpectralSecondMomentMatrix (evaluation : Fin n → κ → ℝ)
     (energy : κ → ℝ) : Matrix (Fin n) (Fin n) ℝ :=
-  Matrix.of fun i j => ∑ k, energy k ^ 2 * evaluation i k * evaluation j k
+  Matrix.of fun i j => ∑ k, energy k ^ (2 : ℕ) * evaluation i k * evaluation j k
 
 /-- Exponentially degree-scaled feature Gram path. -/
 def exponentialFeatureGram (evaluation : Fin n → κ → ℝ) (degree : κ → ℕ)
@@ -69,7 +69,7 @@ def exponentialFeatureGramFirst (evaluation : Fin n → κ → ℝ) (degree : κ
 def exponentialFeatureGramSecond (evaluation : Fin n → κ → ℝ) (degree : κ → ℕ)
     (s : ℝ) : Matrix (Fin n) (Fin n) ℝ :=
   Matrix.of fun i j =>
-    ∑ k, (degree k : ℝ) ^ 2 * Real.exp (s * (degree k : ℝ)) *
+    ∑ k, (degree k : ℝ) ^ (2 : ℕ) * Real.exp (s * (degree k : ℝ)) *
       evaluation i k * evaluation j k
 
 /-- The exponential Gram path is the existing square-root-scaled feature Gram path. -/
@@ -204,7 +204,7 @@ theorem trace_sq_slaterSpectralCompressionMatrix
     (∑ i, ∑ j,
       (∑ k, energy k * evaluation i k * evaluation j k) *
         ∑ k, energy k * evaluation j k * evaluation i k) =
-      ∑ i, ∑ j, (∑ k, energy k * evaluation i k * evaluation j k) ^ 2
+      ∑ i, ∑ j, (∑ k, energy k * evaluation i k * evaluation j k) ^ (2 : ℕ)
   apply Finset.sum_congr rfl
   intro i _
   apply Finset.sum_congr rfl
@@ -330,7 +330,7 @@ theorem canonicalFeatureVolume_logFanoMargin_three_defect
         (canonicalFeatureVolume evaluation (fun _ => 1) degree (Real.exp s))) 0 -
       deriv (deriv (fun s => Real.log
         (canonicalFeatureVolume evaluation (fun _ => 1) degree (Real.exp s)))) 0 =
-      (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) +
+      (n : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) +
         slaterSpectralSecantDefect evaluation (fun k => (degree k : ℝ)) lower upper +
         slaterSpectralCenteringDefect evaluation (fun k => (degree k : ℝ)) lower upper +
         slaterSpectralCoherenceDefect evaluation (fun k => (degree k : ℝ)) := by
@@ -347,7 +347,7 @@ theorem canonicalFeatureVolume_logFanoMargin_lower_bound
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ (degree k : ℝ))
     (hupper : ∀ k, (degree k : ℝ) ≤ upper) :
-    (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ≤
+    (n : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ≤
       deriv (fun s => Real.log
           (canonicalFeatureVolume evaluation (fun _ => 1) degree (Real.exp s))) 0 -
         deriv (deriv (fun s => Real.log
@@ -522,7 +522,7 @@ theorem quasiFreeCompressedSpectralEnergy_orthonormalRealGramCoordinates
     (energy occupation : Fin n → ℝ) :
     quasiFreeCompressedSpectralEnergy
         (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
-      ∑ i, occupation i ^ 2 * energy i ^ 2 := by
+      ∑ i, occupation i ^ (2 : ℕ) * energy i ^ (2 : ℕ) := by
   simp [quasiFreeCompressedSpectralEnergy, hx, pow_two]
 
 /-- **Independent-mode quasi-free variance law.**  In square orthonormal Gram coordinates every
@@ -534,7 +534,7 @@ theorem quasiFreeSpectralVariance_orthonormalRealGramCoordinates
     (energy occupation : Fin n → ℝ) :
     quasiFreeSpectralVariance
         (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
-      ∑ i, occupation i * (1 - occupation i) * energy i ^ 2 := by
+      ∑ i, occupation i * (1 - occupation i) * energy i ^ (2 : ℕ) := by
   rw [quasiFreeSpectralVariance,
     quasiFreeCompressedSpectralEnergy_orthonormalRealGramCoordinates
       𝕜 x hx energy occupation]
@@ -555,7 +555,7 @@ theorem quasiFreeSpectralFanoMargin_orthonormalRealGramCoordinates
     quasiFreeSpectralFanoMargin
         (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
       ∑ i, occupation i *
-        (energy i - (1 - occupation i) * energy i ^ 2) := by
+        (energy i - (1 - occupation i) * energy i ^ (2 : ℕ)) := by
   rw [quasiFreeSpectralFanoMargin,
     quasiFreeSpectralMean_orthonormalRealGramCoordinates
       𝕜 x hx energy occupation,
@@ -579,7 +579,7 @@ theorem quasiFreeSpectralRankVarianceDiscriminant_orthonormalRealGramCoordinates
         (orthonormalRealGramCoordinates 𝕜 x) energy occupation lower upper =
       (n : ℝ) * ∑ i, occupation i * (energy i - lower) * (upper - energy i) +
         (∑ i, ∑ j,
-          (occupation i * energy i - occupation j * energy j) ^ 2) / 2 := by
+          (occupation i * energy i - occupation j * energy j) ^ (2 : ℕ)) / 2 := by
   have hsecant :
       quasiFreeSpectralSecantDefect
           (orthonormalRealGramCoordinates 𝕜 x) energy occupation lower upper =
@@ -593,7 +593,7 @@ theorem quasiFreeSpectralRankVarianceDiscriminant_orthonormalRealGramCoordinates
       quasiFreeSpectralPairwiseMeanDefect
           (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
         (∑ i, ∑ j,
-          (occupation i * energy i - occupation j * energy j) ^ 2) / 2 := by
+          (occupation i * energy i - occupation j * energy j) ^ (2 : ℕ)) / 2 := by
     simp [quasiFreeSpectralPairwiseMeanDefect, orbitalSpectralMean, hx]
   have hcoherence :
       quasiFreeSpectralCoherenceDefect
@@ -622,7 +622,7 @@ private theorem slaterSpectralCenteringDefect_orthonormalRealGramCoordinates
     (x : Fin n → E) (hx : Orthonormal 𝕜 x)
     (energy : Fin n → ℝ) (lower upper : ℝ) :
     slaterSpectralCenteringDefect (orthonormalRealGramCoordinates 𝕜 x) energy lower upper =
-      ∑ k, (energy k - (lower + upper - 1) / 2) ^ 2 := by
+      ∑ k, (energy k - (lower + upper - 1) / 2) ^ (2 : ℕ) := by
   simp [slaterSpectralCenteringDefect, orbitalSpectralMean, hx]
 
 private theorem slaterSpectralCoherenceDefect_orthonormalRealGramCoordinates
@@ -642,7 +642,7 @@ theorem slaterSpectralFanoMargin_orthonormalRealGramCoordinates_eq_lower_bound_i
     (energy : Fin n → ℝ) (lower upper : ℝ) (hn : 0 < n)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     slaterSpectralFanoMargin (orthonormalRealGramCoordinates 𝕜 x) energy =
-        (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ↔
+        (n : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ↔
       upper = lower + 1 ∧ ∀ k, energy k = lower := by
   have hframe := orthonormalRealGramCoordinates_isOrthonormalCoordinateFrame 𝕜 x hx
   constructor
@@ -803,7 +803,7 @@ theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_lower_bound_
       deriv (deriv (fun s => Real.log
         (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
           degree (Real.exp s)))) 0 =
-        (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ↔
+        (n : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ↔
       upper = lower + 1 ∧ ∀ k, (degree k : ℝ) = lower := by
   rw [canonicalFeatureVolume_logFanoMargin_eq_slaterSpectralFanoMargin
     (orthonormalRealGramCoordinates 𝕜 x) degree
@@ -870,7 +870,7 @@ theorem orthonormalHilbert_canonicalFeatureVolume_logFanoMargin_three_defect
       deriv (deriv (fun s => Real.log
         (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
           degree (Real.exp s)))) 0 =
-      (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) +
+      (n : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) +
         slaterSpectralSecantDefect (orthonormalCoordinates x)
           (fun k => (degree k : ℝ)) lower upper +
         slaterSpectralCenteringDefect (orthonormalCoordinates x)

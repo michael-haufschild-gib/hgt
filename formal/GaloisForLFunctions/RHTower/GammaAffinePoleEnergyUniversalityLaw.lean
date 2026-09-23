@@ -22,7 +22,7 @@ its coefficient is nonzero. -/
 theorem boundaryPoleApproachEnergy_unbounded_iff_coefficient_ne_zero
     (gamma : ℝ) (c : ℂ) :
     (¬ ∃ C : ℝ, ∀ m : ℕ,
-      (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile gamma c m t‖ ^ 2) ≤ C) ↔
+      (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile gamma c m t‖ ^ (2 : ℕ)) ≤ C) ↔
       c ≠ 0 := by
   constructor
   · intro hunbounded hc
@@ -45,7 +45,7 @@ theorem gammaPoleAffineSource_simple_iff_boundaryEnergy_unbounded
         ((-1 : ℤ) : WithTop ℤ) ↔
       ¬ ∃ C : ℝ, ∀ m : ℕ,
         (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile 0
-          (b.eval (-(branch : ℂ))) m t‖ ^ 2) ≤ C := by
+          (b.eval (-(branch : ℂ))) m t‖ ^ (2 : ℕ)) ≤ C := by
   rw [gammaPoleAffineSource_order_eq_neg_one_iff,
     boundaryPoleApproachEnergy_unbounded_iff_coefficient_ne_zero]
 
@@ -62,7 +62,7 @@ theorem gammaPoleProfileAtMostSimple_simple_iff_boundaryEnergy_unbounded
       ¬ ∃ C : ℝ, ∀ m : ℕ,
         (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile 0
           (((MvPolynomial.pderiv (0 : Fin (n + 1)) P).coeff 0).eval
-            (-(branch : ℂ))) m t‖ ^ 2) ≤ C := by
+            (-(branch : ℂ))) m t‖ ^ (2 : ℕ)) ≤ C := by
   rw [gammaPoleProfileAtMostSimple_order_eq_neg_one_iff hprofile,
     boundaryPoleApproachEnergy_unbounded_iff_coefficient_ne_zero]
 

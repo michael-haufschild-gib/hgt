@@ -58,7 +58,7 @@ def radiationVector (tau : ℝ) : lp (fun _ : ℕ => ℂ) 2 :=
     radiationVector tau n = (Real.sqrt (radiationMass tau n) : ℂ) := rfl
 
 /-- The infinite occupation vector is genuinely normalized. -/
-theorem radiationVector_norm_sq (tau : ℝ) : ‖radiationVector tau‖ ^ 2 = 1 :=
+theorem radiationVector_norm_sq (tau : ℝ) : ‖radiationVector tau‖ ^ (2 : ℕ) = 1 :=
   norm_sq_geometricOccupationHalfDensity _ _
 
 /-- Two-mode purification, realized as an existing Hilbert--Schmidt kernel. -/
@@ -119,13 +119,13 @@ theorem radiationPair_not_product (tau : ℝ) :
 
 /-- Exact purity of the thermal reduced state. -/
 theorem radiationMass_purity (tau : ℝ) :
-    (∑' n, radiationMass tau n ^ 2) =
+    (∑' n, radiationMass tau n ^ (2 : ℕ)) =
       (1 - thermalRatio tau) / (1 + thermalRatio tau) := by
   exact tsum_sq_geometricLayerMass (thermalRatio_pos tau).le (thermalRatio_lt_one tau)
 
 /-- The radiation is strictly mixed, despite its pure two-mode purification. -/
 theorem radiationMass_purity_lt_one (tau : ℝ) :
-    (∑' n, radiationMass tau n ^ 2) < 1 := by
+    (∑' n, radiationMass tau n ^ (2 : ℕ)) < 1 := by
   rw [radiationMass_purity]
   apply (div_lt_one (by linarith [thermalRatio_pos tau] : 0 < 1 + thermalRatio tau)).mpr
   linarith [thermalRatio_pos tau]
@@ -168,7 +168,7 @@ theorem radiationMass_entropy (tau : ℝ) :
 
 /-- The corpus collision-loss observable is exactly radiation linear entropy. -/
 theorem radiationMass_collision_loss (tau : ℝ) :
-    geometricExecutionTV (thermalRatio tau) = 1 - ∑' n, radiationMass tau n ^ 2 :=
+    geometricExecutionTV (thermalRatio tau) = 1 - ∑' n, radiationMass tau n ^ (2 : ℕ) :=
   geometricExecutionTV_eq_one_sub_purity (thermalRatio_pos tau).le (thermalRatio_lt_one tau)
 
 end GaloisForLFunctions.HTGeometry.CPV

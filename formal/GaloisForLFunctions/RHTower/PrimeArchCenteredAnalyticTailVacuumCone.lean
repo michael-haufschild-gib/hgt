@@ -58,7 +58,7 @@ theorem norm_evalRealPolynomial_le_norm_mul_nonconstantCoeffL1_of_coeff_zero
       apply Finset.sum_le_sum
       intro k hk
       rw [norm_mul, norm_pow, Complex.norm_real]
-      have hpow : ‖z‖ ^ (k + 1) ≤ ‖z‖ ^ 1 :=
+      have hpow : ‖z‖ ^ (k + 1) ≤ ‖z‖ ^ (1 : ℕ) :=
         pow_le_pow_of_le_one (norm_nonneg z) hz (by omega)
       simpa [mul_comm] using
         mul_le_mul_of_nonneg_left hpow (abs_nonneg (p.coeff (k + 1)))
@@ -73,16 +73,16 @@ theorem norm_xiZeroCopyReciprocalSquare_le_eightyFive_div_eightyFour_mul_re
   let z := xiZeroCopyReciprocalSquare q
   have hre : 0 < z.re := xiZeroCopyReciprocalSquare_re_pos q
   have hratio := xiZeroCopyReciprocalSquare_normSq_div_re_le q
-  have hsq : ‖z‖ ^ 2 ≤ (85 / 84 : ℝ) * z.re ^ 2 := by
+  have hsq : ‖z‖ ^ (2 : ℕ) ≤ (85 / 84 : ℝ) * z.re ^ (2 : ℕ) := by
     have h := (div_le_iff₀ hre).mp hratio
     rw [Complex.sq_norm]
-    change Complex.normSq z ≤ (85 / 84 : ℝ) * z.re ^ 2
+    change Complex.normSq z ≤ (85 / 84 : ℝ) * z.re ^ (2 : ℕ)
     change Complex.normSq z ≤ (85 / 84 : ℝ) * z.re * z.re at h
     nlinarith
-  have hsq' : ‖z‖ ^ 2 ≤ ((85 / 84 : ℝ) * z.re) ^ 2 := by
+  have hsq' : ‖z‖ ^ (2 : ℕ) ≤ ((85 / 84 : ℝ) * z.re) ^ (2 : ℕ) := by
     calc
-      ‖z‖ ^ 2 ≤ (85 / 84 : ℝ) * z.re ^ 2 := hsq
-      _ ≤ ((85 / 84 : ℝ) * z.re) ^ 2 := by
+      ‖z‖ ^ (2 : ℕ) ≤ (85 / 84 : ℝ) * z.re ^ (2 : ℕ) := hsq
+      _ ≤ ((85 / 84 : ℝ) * z.re) ^ (2 : ℕ) := by
         nlinarith [sq_nonneg z.re]
   exact (sq_le_sq₀ (norm_nonneg z) (by positivity)).mp hsq'
 
@@ -93,18 +93,18 @@ theorem norm_xiZeroCopyReciprocalSquare_le_twoHundredNinetyFive_div_twoHundredNi
       (295 / 294 : ℝ) * (xiZeroCopyReciprocalSquare q).re := by
   let z := xiZeroCopyReciprocalSquare q
   have hre : 0 < z.re := xiZeroCopyReciprocalSquare_re_pos q
-  have him : z.im ^ 2 ≤ (1 / 147 : ℝ) * z.re ^ 2 := by
+  have him : z.im ^ (2 : ℕ) ≤ (1 / 147 : ℝ) * z.re ^ (2 : ℕ) := by
     simpa only [z, xiThermalNode] using
       xiThermalOrientationTerm_le_one_over_oneHundredFortySeven_node_sq q
-  have hsq : ‖z‖ ^ 2 ≤ (148 / 147 : ℝ) * z.re ^ 2 := by
+  have hsq : ‖z‖ ^ (2 : ℕ) ≤ (148 / 147 : ℝ) * z.re ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
     rw [Complex.normSq_apply]
     nlinarith
-  have hsq' : ‖z‖ ^ 2 ≤ ((295 / 294 : ℝ) * z.re) ^ 2 := by
+  have hsq' : ‖z‖ ^ (2 : ℕ) ≤ ((295 / 294 : ℝ) * z.re) ^ (2 : ℕ) := by
     calc
-      ‖z‖ ^ 2 ≤ (148 / 147 : ℝ) * z.re ^ 2 := hsq
-      _ ≤ ((295 / 294 : ℝ) * z.re) ^ 2 := by
-        have hfactor : (148 / 147 : ℝ) ≤ (295 / 294) ^ 2 := by norm_num
+      ‖z‖ ^ (2 : ℕ) ≤ (148 / 147 : ℝ) * z.re ^ (2 : ℕ) := hsq
+      _ ≤ ((295 / 294 : ℝ) * z.re) ^ (2 : ℕ) := by
+        have hfactor : (148 / 147 : ℝ) ≤ (295 / 294) ^ (2 : ℕ) := by norm_num
         nlinarith [sq_nonneg z.re]
   exact (sq_le_sq₀ (norm_nonneg z) (by positivity)).mp hsq'
 
@@ -137,16 +137,16 @@ theorem xiCenteredAnalyticTailHankelTerm_nonneg
   have hre : 0 < z.re := by
     simpa only [z] using xiZeroCopyReciprocalSquare_re_pos q
   have hperturbNorm :
-      ‖z * ((-2 * μ : ℂ) * w + w ^ 2)‖ ≤ z.re * μ ^ 2 := by
+      ‖z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))‖ ≤ z.re * μ ^ (2 : ℕ) := by
     calc
-      ‖z * ((-2 * μ : ℂ) * w + w ^ 2)‖ =
-          ‖z‖ * ‖(-2 * μ : ℂ) * w + w ^ 2‖ := by rw [norm_mul]
-      _ ≤ ‖z‖ * (2 * |μ| * ‖w‖ + ‖w‖ ^ 2) := by
+      ‖z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))‖ =
+          ‖z‖ * ‖(-2 * μ : ℂ) * w + w ^ (2 : ℕ)‖ := by rw [norm_mul]
+      _ ≤ ‖z‖ * (2 * |μ| * ‖w‖ + ‖w‖ ^ (2 : ℕ)) := by
         gcongr
         calc
-          ‖(-2 * μ : ℂ) * w + w ^ 2‖ ≤
-              ‖(-2 * μ : ℂ) * w‖ + ‖w ^ 2‖ := norm_add_le _ _
-          _ = 2 * |μ| * ‖w‖ + ‖w‖ ^ 2 := by
+          ‖(-2 * μ : ℂ) * w + w ^ (2 : ℕ)‖ ≤
+              ‖(-2 * μ : ℂ) * w‖ + ‖w ^ (2 : ℕ)‖ := norm_add_le _ _
+          _ = 2 * |μ| * ‖w‖ + ‖w‖ ^ (2 : ℕ) := by
             rw [norm_mul, norm_pow]
             have hnorm : ‖(-2 * μ : ℂ)‖ = 2 * |μ| := by
               rw [show (-2 * μ : ℂ) = ((-2 * μ : ℝ) : ℂ) by push_cast; ring,
@@ -155,43 +155,43 @@ theorem xiCenteredAnalyticTailHankelTerm_nonneg
             rw [hnorm]
       _ ≤ ((295 / 294 : ℝ) * z.re) *
           (2 * |μ| * ((423 / 1025 : ℝ) * |μ|) +
-            ((423 / 1025 : ℝ) * |μ|) ^ 2) := by
+            ((423 / 1025 : ℝ) * |μ|) ^ (2 : ℕ)) := by
         gcongr
-      _ ≤ z.re * μ ^ 2 := by
+      _ ≤ z.re * μ ^ (2 : ℕ) := by
         have hcoef :
             (295 / 294 : ℝ) *
-                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ 2) ≤ 1 := by
+                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ (2 : ℕ)) ≤ 1 := by
           norm_num
         calc
           (295 / 294 : ℝ) * z.re *
               (2 * |μ| * ((423 / 1025 : ℝ) * |μ|) +
-                ((423 / 1025 : ℝ) * |μ|) ^ 2) =
+                ((423 / 1025 : ℝ) * |μ|) ^ (2 : ℕ)) =
               z.re * ((295 / 294 : ℝ) *
-                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ 2)) * |μ| ^ 2 := by
+                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ (2 : ℕ))) * |μ| ^ (2 : ℕ) := by
             ring
-          _ ≤ z.re * 1 * |μ| ^ 2 := by gcongr
-          _ = z.re * μ ^ 2 := by rw [sq_abs]; ring
+          _ ≤ z.re * 1 * |μ| ^ (2 : ℕ) := by gcongr
+          _ = z.re * μ ^ (2 : ℕ) := by rw [sq_abs]; ring
   unfold xiSquaredEulerApertureHankelTerm
-  change 0 ≤ (z * evalRealPolynomial (p - C μ) z ^ 2).re
+  change 0 ≤ (z * evalRealPolynomial (p - C μ) z ^ (2 : ℕ)).re
   have heval : evalRealPolynomial (p - C μ) z = w - (μ : ℂ) := by
     simp [evalRealPolynomial, w]
   rw [heval]
   have hsplit :
-      (z * (w - (μ : ℂ)) ^ 2).re =
-        z.re * μ ^ 2 + (z * ((-2 * μ : ℂ) * w + w ^ 2)).re := by
+      (z * (w - (μ : ℂ)) ^ (2 : ℕ)).re =
+        z.re * μ ^ (2 : ℕ) + (z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))).re := by
     simp [pow_two, mul_re, mul_im]
     ring
   rw [hsplit]
   have hreal :
-      -(z.re * μ ^ 2) ≤ (z * ((-2 * μ : ℂ) * w + w ^ 2)).re := by
+      -(z.re * μ ^ (2 : ℕ)) ≤ (z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))).re := by
     calc
-      -(z.re * μ ^ 2) ≤ -‖z * ((-2 * μ : ℂ) * w + w ^ 2)‖ := by
+      -(z.re * μ ^ (2 : ℕ)) ≤ -‖z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))‖ := by
         exact neg_le_neg hperturbNorm
-      _ ≤ (z * ((-2 * μ : ℂ) * w + w ^ 2)).re := by
+      _ ≤ (z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))).re := by
         have habs := Complex.abs_re_le_norm
-          (z * ((-2 * μ : ℂ) * w + w ^ 2))
+          (z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ)))
         have hneg := neg_abs_le
-          (z * ((-2 * μ : ℂ) * w + w ^ 2)).re
+          (z * ((-2 * μ : ℂ) * w + w ^ (2 : ℕ))).re
         linarith
   linarith
 

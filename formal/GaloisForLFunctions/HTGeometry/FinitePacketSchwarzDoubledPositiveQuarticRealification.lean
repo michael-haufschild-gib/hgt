@@ -8,7 +8,7 @@ node is paired with its Schwarz conjugate, so no choice of conjugate-pair repres
 initial conjugation-closure hypothesis is needed. The total lift preserves complete traces one
 and two, while its quartic defect is the finite sum
 
-`sum_i 100 (Im z_i)^2 (6 (Re z_i)^2 + 23 (Im z_i)^2)`.
+`sum_i 100 (Im z_i)^(2 : ℕ) (6 (Re z_i)^(2 : ℕ) + 23 (Im z_i)^(2 : ℕ))`.
 
 This charge is nonnegative and vanishes exactly when every packet node is real. Both the charge
 and every graded anomaly are invariant under Schwarz conjugation and arbitrary finite reindexing.

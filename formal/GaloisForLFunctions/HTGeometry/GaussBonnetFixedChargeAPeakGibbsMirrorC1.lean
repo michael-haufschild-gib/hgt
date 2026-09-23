@@ -39,15 +39,15 @@ theorem egbFixedChargeAPeakGibbsMirrorDifference_uniform_normalized_zero_limit (
   have hn := hτ (-ψ)
   simp only [Real.dist_eq, zero_sub, abs_neg] at hp hn ⊢
   have hf : (egbFixedChargeAPeakGibbsMirrorDifference w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂) / egbCoexistenceASymmetricRatio τ =
-      (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ -
-      (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (-ψ) / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos (-ψ) ^ 4) / egbCoexistenceASymmetricRatio τ := by
+      (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ -
+      (egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (-ψ) / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos (-ψ) ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ := by
     unfold egbFixedChargeAPeakGibbsMirrorDifference
     rw [cos_neg]
     ring
   rw [hf]
   calc
-    _ ≤ |(egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ| +
-        |-((egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (-ψ) / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos (-ψ) ^ 4) /
+    _ ≤ |(egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ| +
+        |-((egbFixedChargeAPeakAlignedGibbsGap w φ τ l₁ (-ψ) / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos (-ψ) ^ (4 : ℕ)) /
           egbCoexistenceASymmetricRatio τ)| := abs_add_le _ _
     _ < ε := by rw [abs_neg]; linarith
 
@@ -62,7 +62,7 @@ theorem egbFixedChargeAPeakGibbsMirrorDifference_moving_normalized_zero_limit (w
   simpa only [dist_comm] using hτ (ψ τ)
 
 theorem egbFixedChargeAPeakGibbsMirrorDifference_moving_fifth_zero_limit (w φ l : ℝ) (ψ : ℝ → ℝ) :
-    Tendsto (fun τ => egbFixedChargeAPeakGibbsMirrorDifference w φ τ l (ψ τ) / egbCoexistenceASymmetricRatio τ ^ 5)
+    Tendsto (fun τ => egbFixedChargeAPeakGibbsMirrorDifference w φ τ l (ψ τ) / egbCoexistenceASymmetricRatio τ ^ (5 : ℕ))
       atBot (𝓝 (0 : ℝ)) := by
   have h := (egbFixedChargeAPeakGibbsMirrorDifference_moving_normalized_zero_limit w φ l l ψ).mul
     (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l)

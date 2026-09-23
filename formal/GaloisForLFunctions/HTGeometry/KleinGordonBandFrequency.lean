@@ -50,7 +50,7 @@ theorem measurable_kgFreqLow (R : ℝ) : Measurable (kgFreqLow (E := E) R) :=
     (measurable_kgLowPass R)
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem norm_kgFreqLow_le (R : ℝ) (ξ : E) : ‖kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ 2) := by
+theorem norm_kgFreqLow_le (R : ℝ) (ξ : E) : ‖kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ (2 : ℕ)) := by
   rw [kgFreqLow, kgLowPass]
   split
   · rename_i hξ
@@ -65,7 +65,7 @@ theorem norm_kgFreqLow_le (R : ℝ) (ξ : E) : ‖kgFreqLow R ξ‖ ≤ Real.sqr
 def kgFreqLowOp (R : ℝ) : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E) :=
   fourierMulCLM (measurable_kgFreqLow (E := E) R) (Real.sqrt_nonneg _) (norm_kgFreqLow_le R)
 
-theorem norm_kgFreqLowOp_le (R : ℝ) : ‖kgFreqLowOp (E := E) R‖ ≤ Real.sqrt (1 + R ^ 2) :=
+theorem norm_kgFreqLowOp_le (R : ℝ) : ‖kgFreqLowOp (E := E) R‖ ≤ Real.sqrt (1 + R ^ (2 : ℕ)) :=
   norm_fourierMulCLM_le _ _ _
 
 /-! ## The identities -/
@@ -143,13 +143,13 @@ theorem kgCosOp_kgFreqLowOp (t R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     kgCosOp t (kgFreqLowOp R x) = kgFreqLowOp R (kgCosOp t x) := by
   have hmeas : Measurable fun ξ : E => kgCosSymbol t ξ * kgFreqLow R ξ :=
     (measurable_kgCosSymbol t).mul (measurable_kgFreqLow R)
-  have hbd : ∀ ξ : E, ‖kgCosSymbol t ξ * kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ 2) := by
+  have hbd : ∀ ξ : E, ‖kgCosSymbol t ξ * kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ (2 : ℕ)) := by
     intro ξ
     rw [norm_mul]
     have h1 := norm_kgCosSymbol_le t ξ
     have h2 := norm_kgFreqLow_le R ξ
     nlinarith [norm_nonneg (kgCosSymbol t ξ), norm_nonneg (kgFreqLow R ξ),
-      Real.sqrt_nonneg (1 + R ^ 2)]
+      Real.sqrt_nonneg (1 + R ^ (2 : ℕ))]
   have hL : kgCosOp (E := E) t (kgFreqLowOp R x)
       = fourierMulCLM hmeas (Real.sqrt_nonneg _) hbd x := by
     rw [kgCosOp_eq, kgFreqLowOp]
@@ -166,7 +166,7 @@ theorem kgFreqSqLowOp_kgCosOp (t R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     kgFreqSqLowOp R (kgCosOp t x) = kgCosOp t (kgFreqSqLowOp R x) := by
   have hmeas : Measurable fun ξ : E => kgFreqSqLow R ξ * kgCosSymbol t ξ :=
     (measurable_kgFreqSqLow R).mul (measurable_kgCosSymbol t)
-  have hbd : ∀ ξ : E, ‖kgFreqSqLow R ξ * kgCosSymbol t ξ‖ ≤ 1 + R ^ 2 := by
+  have hbd : ∀ ξ : E, ‖kgFreqSqLow R ξ * kgCosSymbol t ξ‖ ≤ 1 + R ^ (2 : ℕ) := by
     intro ξ
     rw [norm_mul]
     have h1 := norm_kgFreqSqLow_le R ξ
@@ -188,13 +188,13 @@ theorem kgFreqSqLowOp_kgSinFreqOp (t R : ℝ) (x : Lp ℂ 2 (volume : Measure E)
     kgFreqSqLowOp R (kgSinFreqOp t x) = kgSinOp t (kgFreqLowOp R x) := by
   have hmeas : Measurable fun ξ : E => kgSinPhase t ξ * kgFreqLow R ξ :=
     (measurable_kgSinPhase t).mul (measurable_kgFreqLow R)
-  have hbd : ∀ ξ : E, ‖kgSinPhase t ξ * kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ 2) := by
+  have hbd : ∀ ξ : E, ‖kgSinPhase t ξ * kgFreqLow R ξ‖ ≤ Real.sqrt (1 + R ^ (2 : ℕ)) := by
     intro ξ
     rw [norm_mul]
     have h1 := norm_kgSinPhase_le t ξ
     have h2 := norm_kgFreqLow_le R ξ
     nlinarith [norm_nonneg (kgSinPhase t ξ), norm_nonneg (kgFreqLow R ξ),
-      Real.sqrt_nonneg (1 + R ^ 2)]
+      Real.sqrt_nonneg (1 + R ^ (2 : ℕ))]
   have hL : kgFreqSqLowOp (E := E) R (kgSinFreqOp t x)
       = fourierMulCLM hmeas (Real.sqrt_nonneg _) hbd x := by
     rw [kgSinFreqOp_eq, kgFreqSqLowOp]

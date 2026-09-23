@@ -107,6 +107,6 @@ paper. It supplied no mathematical input for arithmetic-source cancellation.
   unrelated unreachable modules: `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
 - All owned Lean and search processes exited. Scratch proof files removed;
   audit logs remain under `/tmp/hgt-growing-depth-*.log`.

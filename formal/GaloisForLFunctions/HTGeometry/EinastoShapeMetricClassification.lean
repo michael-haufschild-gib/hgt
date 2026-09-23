@@ -92,7 +92,7 @@ theorem einastoShapeMetric_superGaussian_curvatures (d l k σ β t : ℝ) :
 
 /-- The Gaussian boundary contributes a derivative term absent on the strictly regular side. -/
 def einastoShapeCoreMultiplier (d l a σ β : ℝ) : ℝ :=
-  1 + (if exp (-a) = 2 then 72 * β / exp l ^ 2 else 0) + 64 * Real.pi * β * (1 - σ) * exp d
+  1 + (if exp (-a) = 2 then 72 * β / exp l ^ (2 : ℕ) else 0) + 64 * Real.pi * β * (1 - σ) * exp d
 
 theorem einastoShapeCoreMultiplier_zero_coupling (d l a σ : ℝ) : einastoShapeCoreMultiplier d l a σ 0 = 1 := by
   simp [einastoShapeCoreMultiplier]
@@ -116,7 +116,7 @@ theorem einastoShapeCoreMultiplier_superGaussian (d l k σ β : ℝ) :
 theorem einastoShapeMetric_Kretschmann_complete_limit (d l a σ β : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) atBot
       (if β ≠ 0 ∧ exp (-a) < 2 then atTop else
-        𝓝 ((512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoShapeCoreMultiplier d l a σ β ^ 2)) := by
+        𝓝 ((512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoShapeCoreMultiplier d l a σ β ^ (2 : ℕ))) := by
   by_cases hb : β = 0
   · subst β
     have he : einastoShapePerturbedMetric d l a σ 0 = einastoMetric d l a := by
@@ -158,7 +158,7 @@ theorem einastoShapeMetric_Kretschmann_complete_limit (d l a σ β : ℝ) :
 theorem einastoShapeMetric_Kretschmann_finite_limit_iff (d l a σ β K : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) atBot (𝓝 K) ↔
       (β = 0 ∨ 2 ≤ exp (-a)) ∧
-        K = (512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoShapeCoreMultiplier d l a σ β ^ 2 := by
+        K = (512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoShapeCoreMultiplier d l a σ β ^ (2 : ℕ) := by
   have h := einastoShapeMetric_Kretschmann_complete_limit d l a σ β
   by_cases hs : β ≠ 0 ∧ exp (-a) < 2
   · rw [if_pos hs] at h

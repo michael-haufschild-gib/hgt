@@ -122,7 +122,7 @@ theorem not_nuclear_half_normalized_primeArch_energy_moments
 
 namespace HedenmalmThetaSource
 
-local instance : ContinuousFunctionalCalculus ℝ
+local instance gammaSewnPluckerGlobalMeanMomentNoGoInst1 : ContinuousFunctionalCalculus ℝ
     (GammaSewnCriticalPhysicalPluckerHilbert →L[ℂ] GammaSewnCriticalPhysicalPluckerHilbert)
       IsSelfAdjoint := IsSelfAdjoint.instContinuousFunctionalCalculus
 

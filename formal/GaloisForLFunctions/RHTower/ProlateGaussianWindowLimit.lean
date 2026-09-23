@@ -20,10 +20,10 @@ open Set Filter Topology GaloisForLFunctions.HTGeometry
 namespace RHTower
 
 /-- The Gaussian profile, the even solution of `v″ = (ξ² − 1)v` with `v(0) = 1`. -/
-noncomputable def gaussianProfile (x : ℝ) : ℝ := Real.exp (-(x ^ 2) / 2)
+noncomputable def gaussianProfile (x : ℝ) : ℝ := Real.exp (-(x ^ (2 : ℕ)) / 2)
 
 /-- Its derivative. -/
-noncomputable def gaussianProfileDeriv (x : ℝ) : ℝ := -x * Real.exp (-(x ^ 2) / 2)
+noncomputable def gaussianProfileDeriv (x : ℝ) : ℝ := -x * Real.exp (-(x ^ (2 : ℕ)) / 2)
 
 @[simp]
 theorem gaussianProfile_zero : gaussianProfile 0 = 1 := by
@@ -35,7 +35,7 @@ theorem gaussianProfileDeriv_zero : gaussianProfileDeriv 0 = 0 := by
 
 theorem hasDerivAt_gaussianProfile (x : ℝ) :
     HasDerivAt gaussianProfile (gaussianProfileDeriv x) x := by
-  have hq : HasDerivAt (fun y : ℝ => -(y ^ 2) / 2) (-x) x := by
+  have hq : HasDerivAt (fun y : ℝ => -(y ^ (2 : ℕ)) / 2) (-x) x := by
     have h := ((hasDerivAt_pow 2 x).neg).div_const 2
     refine h.congr_deriv ?_
     push_cast
@@ -47,13 +47,13 @@ theorem hasDerivAt_gaussianProfile (x : ℝ) :
 
 theorem hasDerivAt_gaussianProfileDeriv (x : ℝ) :
     HasDerivAt gaussianProfileDeriv (hermiteRungP 0 x * gaussianProfile x) x := by
-  have hq : HasDerivAt (fun y : ℝ => -(y ^ 2) / 2) (-x) x := by
+  have hq : HasDerivAt (fun y : ℝ => -(y ^ (2 : ℕ)) / 2) (-x) x := by
     have h := ((hasDerivAt_pow 2 x).neg).div_const 2
     refine h.congr_deriv ?_
     push_cast
     ring
-  have he : HasDerivAt (fun y : ℝ => Real.exp (-(y ^ 2) / 2))
-      (Real.exp (-(x ^ 2) / 2) * (-x)) x := hq.exp
+  have he : HasDerivAt (fun y : ℝ => Real.exp (-(y ^ (2 : ℕ)) / 2))
+      (Real.exp (-(x ^ (2 : ℕ)) / 2) * (-x)) x := hq.exp
   have hx : HasDerivAt (fun y : ℝ => -y) (-1 : ℝ) x := (hasDerivAt_id x).neg
   have h := hx.mul he
   refine h.congr_deriv ?_
@@ -65,7 +65,7 @@ theorem hasDerivAt_gaussianProfileDeriv (x : ℝ) :
 stays within the explicit Grönwall envelope of the Gaussian on `[0, K]`. -/
 theorem prolateProfile_window_gaussian_dist_le
     {c mu K B : ℝ} {u u' u'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
       u'' x = rescaledProlateP c mu x * u x + rescaledProlateQ c x * u' x)
@@ -87,7 +87,7 @@ separation constant approaches the first rung, the normalized rescaled profile c
 theorem tendsto_prolateProfile_gaussian
     {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K B : ℝ}
     {u u' u'' : ι → ℝ → ℝ}
-    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ 2 ≤ c i)
+    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ (2 : ℕ) ≤ c i)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hequ : ∀ i, ∀ x ∈ Icc (0 : ℝ) K,
       u'' i x = rescaledProlateP (c i) (mu i) x * u i x + rescaledProlateQ (c i) x * u' i x)

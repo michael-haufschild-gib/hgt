@@ -161,14 +161,14 @@ private theorem compactHeight_second (q : XiZeroCopy) (n : ℕ) (y : ℝ) (hy : 
   ring
 
 def compactHeightImage (q : XiZeroCopy) (n : ℕ) (y : ℝ) : ℂ :=
-  compactHeight q n y-(y:ℂ)^2*deriv (deriv (compactHeight q n)) y
+  compactHeight q n y-(y:ℂ)^(2 : ℕ)*deriv (deriv (compactHeight q n)) y
 
 /-- Literal operator image of the compact seed, with both cutoff errors retained. -/
 theorem compactHeightImage_eq (q : XiZeroCopy) (n : ℕ) (y : ℝ) (hy : 0 < y) :
     compactHeightImage q n y = energy q*compactHeight q n y-
       (cutoff n y:ℂ)*(SelbergThetaNativeSource.positiveProfile y:ℂ)/4-
       2*((y*deriv (cutoff n) y:ℝ):ℂ)*((y:ℂ)*deriv (heightProfile q) y)-
-      ((y^2*deriv (deriv (cutoff n)) y:ℝ):ℂ)*heightProfile q y := by
+      ((y^(2 : ℕ)*deriv (deriv (cutoff n)) y:ℝ):ℂ)*heightProfile q y := by
   unfold compactHeightImage
   rw [compactHeight_second q n y hy]
   unfold compactHeight
@@ -206,7 +206,7 @@ theorem compactHeightImage_bound (q : XiZeroCopy) :
   refine ⟨‖energy q‖*C+1/4+2*a*D+b*E,by positivity,fun n y hy => ?_⟩
   have hc1 : ‖((y*deriv (cutoff n) y:ℝ):ℂ)‖ ≤ a := by
     simpa only [pow_one,iteratedDeriv_one,Complex.norm_real,Real.norm_eq_abs] using hab n y hy
-  have hc2 : ‖((y^2*deriv (deriv (cutoff n)) y:ℝ):ℂ)‖ ≤ b := by
+  have hc2 : ‖((y^(2 : ℕ)*deriv (deriv (cutoff n)) y:ℝ):ℂ)‖ ≤ b := by
     simpa only [iteratedDeriv_succ,iteratedDeriv_one,iteratedDeriv_zero,Complex.norm_real,Real.norm_eq_abs] using hbb n y hy
   have hc : ‖(cutoff n y:ℂ)‖ ≤ 1 := by simpa only [Complex.norm_real,Real.norm_eq_abs] using cutoff_bound n y
   have hp : ‖(SelbergThetaNativeSource.positiveProfile y:ℂ)‖ = SelbergThetaNativeSource.positiveProfile y := by
@@ -216,7 +216,7 @@ theorem compactHeightImage_bound (q : XiZeroCopy) :
     _ ≤ ‖energy q*compactHeight q n y‖+
         ‖(cutoff n y:ℂ)*(SelbergThetaNativeSource.positiveProfile y:ℂ)/4‖+
         ‖2*((y*deriv (cutoff n) y:ℝ):ℂ)*((y:ℂ)*deriv (heightProfile q) y)‖+
-        ‖((y^2*deriv (deriv (cutoff n)) y:ℝ):ℂ)*heightProfile q y‖ :=
+        ‖((y^(2 : ℕ)*deriv (deriv (cutoff n)) y:ℝ):ℂ)*heightProfile q y‖ :=
       (norm_sub_le _ _).trans (add_le_add ((norm_sub_le _ _).trans
         (add_le_add (norm_sub_le _ _) le_rfl)) le_rfl)
     _ ≤ _ := by
@@ -244,12 +244,12 @@ private theorem native_dominated
     (Lp.aestronglyMeasurable (f n)).congr (hf n)
   have hGm : AEStronglyMeasurable G angularMeasure :=
     (Lp.aestronglyMeasurable g).congr hg
-  have hi : Integrable (fun z => (2*C)^2*positiveSource z^2) angularMeasure :=
+  have hi : Integrable (fun z => (2*C)^(2 : ℕ)*positiveSource z^(2 : ℕ)) angularMeasure :=
     positiveSource_memLp.integrable_sq.const_mul _
-  have hlim : Tendsto (fun n => ∫ z, ‖F n z-G z‖^2 ∂angularMeasure) atTop (𝓝 0) := by
+  have hlim : Tendsto (fun n => ∫ z, ‖F n z-G z‖^(2 : ℕ) ∂angularMeasure) atTop (𝓝 0) := by
     have hl := tendsto_integral_of_dominated_convergence
-      (μ := angularMeasure) (F := fun n z => ‖F n z-G z‖^2) (f := fun _ => (0:ℝ))
-      (fun z => (2*C)^2*positiveSource z^2)
+      (μ := angularMeasure) (F := fun n z => ‖F n z-G z‖^(2 : ℕ)) (f := fun _ => (0:ℝ))
+      (fun z => (2*C)^(2 : ℕ)*positiveSource z^(2 : ℕ))
       (fun n => ((hFm n).sub hGm).norm.pow 2) hi
       (fun n => Eventually.of_forall (fun z => by
         rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
@@ -257,19 +257,19 @@ private theorem native_dominated
         have hs : ‖F n z-G z‖ ≤ 2*(C*positiveSource z) := by
           nlinarith [norm_sub_le (F n z) (G z),hb n z,hG z]
         calc
-          _ ≤ (2*(C*positiveSource z))^2 := pow_le_pow_left₀ (norm_nonneg _) hs 2
+          _ ≤ (2*(C*positiveSource z))^(2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) hs 2
           _ = _ := by ring))
       (Eventually.of_forall (fun z => by
         have h := (((ht z).sub_const (G z)).norm).pow 2
         simpa using h))
     simpa only [integral_zero] using hl
-  have he (n : ℕ) : ‖f n-g‖^2 = ∫ z, ‖F n z-G z‖^2 ∂angularMeasure := by
+  have he (n : ℕ) : ‖f n-g‖^(2 : ℕ) = ∫ z, ‖F n z-G z‖^(2 : ℕ) ∂angularMeasure := by
     rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [Lp.coeFn_sub (f n) g,hf n,hg] with z hs hfn hgn
     rw [hs,Pi.sub_apply,hfn,hgn]
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  have hs : Tendsto (fun n => ‖f n-g‖^2) atTop (𝓝 0) := hlim.congr (fun n => (he n).symm)
+  have hs : Tendsto (fun n => ‖f n-g‖^(2 : ℕ)) atTop (𝓝 0) := hlim.congr (fun n => (he n).symm)
   have h := (Real.continuous_sqrt.tendsto 0).comp hs
   simpa only [Function.comp_def,Real.sqrt_sq (norm_nonneg _),Real.sqrt_zero] using h
 
@@ -466,19 +466,19 @@ private def positiveMeanCoefficient : ℂ :=
 
 private theorem mean_forcing_balance (q : XiZeroCopy) :
     (energy q-1)*sourceMeanCoefficient q = (1/4:ℂ)*positiveMeanCoefficient := by
-  have hs : inner ℂ constantVector (nativeSource q) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^2) := by
+  have hs : inner ℂ constantVector (nativeSource q) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^(2 : ℕ)) := by
     rw [inner_constantVector,integral_congr_ae (nativeSource_coe q),source_integral]
   have hp : inner ℂ constantVector nativePositive = (sourceMass:ℂ) := by
     rw [inner_constantVector,integral_congr_ae nativePositive_coe]
     rw [integral_complex_ofReal,positiveSource_integral]
   unfold sourceMeanCoefficient positiveMeanCoefficient
   rw [hs,hp]
-  have he : (energy q-1)*((sourceMass:ℂ)/(1+(xiSpectralPoint q)^2)) = (sourceMass:ℂ)/4 := by
+  have he : (energy q-1)*((sourceMass:ℂ)/(1+(xiSpectralPoint q)^(2 : ℕ))) = (sourceMass:ℂ)/4 := by
     unfold energy
     field_simp [mean_denominator_ne_zero q]
     ring
   calc
-    _ = ((energy q-1)*((sourceMass:ℂ)/(1+(xiSpectralPoint q)^2)))/
+    _ = ((energy q-1)*((sourceMass:ℂ)/(1+(xiSpectralPoint q)^(2 : ℕ))))/
         inner ℂ constantVector constantVector := by ring
     _ = _ := by rw [he]; ring
 

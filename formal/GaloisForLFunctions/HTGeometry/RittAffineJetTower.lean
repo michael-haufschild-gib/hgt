@@ -212,14 +212,14 @@ theorem sigma_affineLogSeed (Fr : RittFrame K L) {τ : L} {q : K} (hτ : τ ≠ 
     (hq : q ≠ 0) (hqconst : Fr.dK q = 0) (hshift : Fr.σ τ = algebraMap K L q * τ) :
     Fr.σ (Fr.affineLogSeed τ)
       = algebraMap K L Fr.ρ⁻¹ * Fr.affineLogSeed τ
-        + algebraMap K L (-(Fr.dK Fr.ρ) / Fr.ρ ^ 2) := by
+        + algebraMap K L (-(Fr.dK Fr.ρ) / Fr.ρ ^ (2 : ℕ)) := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   have hρL : algebraMap K L Fr.ρ ≠ 0 :=
     (map_ne_zero_iff _ (algebraMap K L).injective).mpr hρ0
   have hqL : algebraMap K L q ≠ 0 := (map_ne_zero_iff _ (algebraMap K L).injective).mpr hq
   have hd1 := Fr.sigma_d_eq_of_shift hqconst hshift
   have hd2 := Fr.sigma_second_jet hqconst hshift
-  have hdq : Fr.dK (q / Fr.ρ) = -(q * Fr.dK Fr.ρ) / Fr.ρ ^ 2 := by
+  have hdq : Fr.dK (q / Fr.ρ) = -(q * Fr.dK Fr.ρ) / Fr.ρ ^ (2 : ℕ) := by
     rw [Fr.dK_div hρ0, hqconst]
     ring
   have hdτL : Fr.σ (Fr.d τ) ≠ 0 := by

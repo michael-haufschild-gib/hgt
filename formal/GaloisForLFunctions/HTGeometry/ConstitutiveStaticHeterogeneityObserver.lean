@@ -98,10 +98,10 @@ theorem hasDerivAt_staticHeterogeneityMoment_one
   have hsum := HasDerivAt.sum
       (fun i (_ : i ∈ (Finset.univ : Finset ι)) =>
         (hasDerivAt_staticHeterogeneityWeight weight rate t i).mul_const
-          (rate i ^ 1))
+          (rate i ^ (1 : ℕ)))
   have heq :
-      (∑ i, staticHeterogeneityWeight weight rate i t * (-rate i) * rate i ^ 1) =
-        -(∑ i, staticHeterogeneityWeight weight rate i t * rate i ^ 2) := by
+      (∑ i, staticHeterogeneityWeight weight rate i t * (-rate i) * rate i ^ (1 : ℕ)) =
+        -(∑ i, staticHeterogeneityWeight weight rate i t * rate i ^ (2 : ℕ)) := by
     rw [← Finset.sum_neg_distrib]
     apply Finset.sum_congr rfl
     intro i _
@@ -126,7 +126,7 @@ def staticHeterogeneityVariance {ι : Type*} [Fintype ι]
     (weight rate : ι → ℝ) : ℝ → ℝ := fun t =>
   staticHeterogeneityMoment weight rate 2 t /
       staticHeterogeneityPartition weight rate t -
-    staticHeterogeneityMean weight rate t ^ 2
+    staticHeterogeneityMean weight rate t ^ (2 : ℕ)
 
 /-- Local apparent exponent `t * posteriorMean(t)`. -/
 def staticHeterogeneityExponent {ι : Type*} [Fintype ι]
@@ -187,7 +187,7 @@ theorem staticHeterogeneityVariance_eq_sum_sq
     (hw : ∀ i, 0 ≤ weight i) (hwpos : ∃ i, 0 < weight i) (t : ℝ) :
     staticHeterogeneityVariance weight rate t =
       ∑ i, staticHeterogeneityPosterior weight rate t i *
-        (rate i - staticHeterogeneityMean weight rate t) ^ 2 := by
+        (rate i - staticHeterogeneityMean weight rate t) ^ (2 : ℕ) := by
   have hzero := sum_staticHeterogeneityPosterior_eq_one weight rate hw hwpos t
   have hone := sum_staticHeterogeneityPosterior_mul_rate_pow weight rate 1 t
   have htwo := sum_staticHeterogeneityPosterior_mul_rate_pow weight rate 2 t
@@ -195,18 +195,18 @@ theorem staticHeterogeneityVariance_eq_sum_sq
   rw [staticHeterogeneityVariance]
   rw [← htwo]
   calc
-    (∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ 2) -
-        staticHeterogeneityMean weight rate t ^ 2 =
-      (∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ 2) -
+    (∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ (2 : ℕ)) -
+        staticHeterogeneityMean weight rate t ^ (2 : ℕ) =
+      (∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ (2 : ℕ)) -
         2 * staticHeterogeneityMean weight rate t *
           (∑ i, staticHeterogeneityPosterior weight rate t i * rate i) +
-        staticHeterogeneityMean weight rate t ^ 2 *
+        staticHeterogeneityMean weight rate t ^ (2 : ℕ) *
           (∑ i, staticHeterogeneityPosterior weight rate t i) := by
             rw [hone, hzero]
             simp only [staticHeterogeneityMean, Pi.div_apply]
             ring
     _ = ∑ i, staticHeterogeneityPosterior weight rate t i *
-        (rate i - staticHeterogeneityMean weight rate t) ^ 2 := by
+        (rate i - staticHeterogeneityMean weight rate t) ^ (2 : ℕ) := by
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib,
         ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
@@ -232,7 +232,7 @@ theorem staticHeterogeneityPosterior_pairwiseSqGap
     (∑ i, ∑ j,
         staticHeterogeneityPosterior weight rate t i *
           staticHeterogeneityPosterior weight rate t j *
-            (rate i - rate j) ^ 2) =
+            (rate i - rate j) ^ (2 : ℕ)) =
       2 * staticHeterogeneityVariance weight rate t := by
   have hpair := normalizedWeight_pairwiseSqGap_eq_two_mul_variance
     (staticHeterogeneityPosterior weight rate t) rate
@@ -244,9 +244,9 @@ theorem staticHeterogeneityPosterior_pairwiseSqGap
     (∑ i, ∑ j,
         staticHeterogeneityPosterior weight rate t i *
           staticHeterogeneityPosterior weight rate t j *
-            (rate i - rate j) ^ 2) =
-      2 * ((∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ 2) -
-        (∑ i, staticHeterogeneityPosterior weight rate t i * rate i) ^ 2) := hpair
+            (rate i - rate j) ^ (2 : ℕ)) =
+      2 * ((∑ i, staticHeterogeneityPosterior weight rate t i * rate i ^ (2 : ℕ)) -
+        (∑ i, staticHeterogeneityPosterior weight rate t i * rate i) ^ (2 : ℕ)) := hpair
     _ = 2 * staticHeterogeneityVariance weight rate t := by
       rw [hone, htwo, staticHeterogeneityVariance]
       simp only [staticHeterogeneityMean, Pi.div_apply]
@@ -258,8 +258,8 @@ theorem staticHeterogeneityDeterminant_eq_variance
     (hw : ∀ i, 0 ≤ weight i) (hwpos : ∃ i, 0 < weight i) (t : ℝ) :
     staticHeterogeneityPartition weight rate t *
           staticHeterogeneityMoment weight rate 2 t -
-        staticHeterogeneityMoment weight rate 1 t ^ 2 =
-      staticHeterogeneityPartition weight rate t ^ 2 *
+        staticHeterogeneityMoment weight rate 1 t ^ (2 : ℕ) =
+      staticHeterogeneityPartition weight rate t ^ (2 : ℕ) *
         staticHeterogeneityVariance weight rate t := by
   have hZ := ne_of_gt (staticHeterogeneityPartition_pos weight rate hw hwpos t)
   rw [staticHeterogeneityVariance]
@@ -281,7 +281,7 @@ theorem hasDerivAt_staticHeterogeneityMean
           staticHeterogeneityPartition weight rate t -
         staticHeterogeneityMoment weight rate 1 t *
           (-staticHeterogeneityMoment weight rate 1 t)) /
-          staticHeterogeneityPartition weight rate t ^ 2 =
+          staticHeterogeneityPartition weight rate t ^ (2 : ℕ) =
         -staticHeterogeneityVariance weight rate t := by
     rw [staticHeterogeneityVariance]
     simp only [staticHeterogeneityMean, Pi.div_apply]
@@ -309,11 +309,11 @@ theorem staticHeterogeneityExponent_balance
     t * (staticHeterogeneityMean weight rate t -
         t * staticHeterogeneityVariance weight rate t) =
       staticHeterogeneityExponent weight rate t -
-        t ^ 2 * staticHeterogeneityVariance weight rate t := by
+        t ^ (2 : ℕ) * staticHeterogeneityVariance weight rate t := by
   change t * (staticHeterogeneityMean weight rate t -
       t * staticHeterogeneityVariance weight rate t) =
     t * staticHeterogeneityMean weight rate t -
-      t ^ 2 * staticHeterogeneityVariance weight rate t
+      t ^ (2 : ℕ) * staticHeterogeneityVariance weight rate t
   ring
 
 /-- A common rate floor survives posterior normalization. -/
@@ -392,17 +392,17 @@ theorem active_rates_eq_of_staticHeterogeneityVariance_eq_zero
   rw [staticHeterogeneityVariance_eq_sum_sq weight rate hw hwpos t] at hzero
   have hterm : ∀ k ∈ (Finset.univ : Finset ι),
       0 ≤ staticHeterogeneityPosterior weight rate t k *
-        (rate k - staticHeterogeneityMean weight rate t) ^ 2 := by
+        (rate k - staticHeterogeneityMean weight rate t) ^ (2 : ℕ) := by
     intro k _
     exact mul_nonneg
       (staticHeterogeneityPosterior_nonneg weight rate hw hwpos t k) (sq_nonneg _)
   have hizero := (Finset.sum_eq_zero_iff_of_nonneg hterm).mp hzero i (Finset.mem_univ i)
   have hjzero := (Finset.sum_eq_zero_iff_of_nonneg hterm).mp hzero j (Finset.mem_univ j)
-  have hisq : (rate i - staticHeterogeneityMean weight rate t) ^ 2 = 0 := by
+  have hisq : (rate i - staticHeterogeneityMean weight rate t) ^ (2 : ℕ) = 0 := by
     exact (mul_eq_zero.mp hizero).resolve_left
       (ne_of_gt (staticHeterogeneityPosterior_pos_of_weight_pos
         weight rate hw hwpos t i hi))
-  have hjsq : (rate j - staticHeterogeneityMean weight rate t) ^ 2 = 0 := by
+  have hjsq : (rate j - staticHeterogeneityMean weight rate t) ^ (2 : ℕ) = 0 := by
     exact (mul_eq_zero.mp hjzero).resolve_left
       (ne_of_gt (staticHeterogeneityPosterior_pos_of_weight_pos
         weight rate hw hwpos t j hj))
@@ -423,7 +423,7 @@ theorem staticHeterogeneityVariance_eq_zero_of_active_rates_eq
       (∑ i, ∑ j,
         staticHeterogeneityPosterior weight rate t i *
           staticHeterogeneityPosterior weight rate t j *
-            (rate i - rate j) ^ 2) = 0 := by
+            (rate i - rate j) ^ (2 : ℕ)) = 0 := by
     apply Finset.sum_eq_zero
     intro i _
     apply Finset.sum_eq_zero

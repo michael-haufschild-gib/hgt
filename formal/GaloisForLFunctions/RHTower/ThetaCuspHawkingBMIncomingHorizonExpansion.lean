@@ -21,7 +21,7 @@ private theorem primitive_quadratic_bound {f f' : ℝ → ℂ} {d : ℂ} {b C : 
     (hi : IntervalIntegrable f' volume 0 b)
     (hC : ∀ t ∈ Ioc (0:ℝ) b, ‖f' t-d‖ ≤ C*t)
     {z : ℝ} (hz : z ∈ Ioc (0:ℝ) b) :
-    ‖f z-(f b-∫ t in 0..b, f' t)-d*(z:ℂ)‖ ≤ C*z^2 := by
+    ‖f z-(f b-∫ t in 0..b, f' t)-d*(z:ℂ)‖ ≤ C*z^(2 : ℕ) := by
   have hiz : IntervalIntegrable f' volume 0 z := hi.mono_set (by
     rw [uIcc_of_le (hz.1.le.trans hz.2),uIcc_of_le hz.1.le]
     exact Icc_subset_Icc le_rfl hz.2)
@@ -108,7 +108,7 @@ theorem continuedResponse_horizon_quadratic_expansion (s chi a J K w : ℂ)
     ∃ R b C : ℝ, 0 < R ∧ 0 < b ∧ b ≤ 1/2 ∧ 0 ≤ C ∧
       ∀ u ∈ ball w R, connection u chi ≠ 0 → ∀ z ∈ Ioc (0:ℝ) b,
         ‖continuedResponse s chi a J K z u/horizon u chi z-incomingResponseEndpoint s chi a J K u b-
-          (sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1)))*(z:ℂ)‖ ≤ C*z^2 := by
+          (sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1)))*(z:ℂ)‖ ≤ C*z^(2 : ℕ) := by
   obtain ⟨R,b,C,M,hR,hb,hbhalf,hC,_,hbound⟩ := source_transport_common_neighborhood s chi a J K w hw hwr hs
   refine ⟨R,b,C,hR,hb,hbhalf,hC,?_⟩
   intro u hu hc z hz
@@ -199,7 +199,7 @@ theorem incomingSourcePrimitive_common_data (s chi a J K w : ℂ)
           AnalyticAt ℂ (fun v => incomingSourcePrimitive s chi a J K v z) u ∧
           ‖incomingSourcePrimitive s chi a J K u z‖ ≤ M*z ∧
           ‖incomingSourcePrimitive s chi a J K u z-
-            (sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1)))*(z:ℂ)‖ ≤ C*z^2 ∧
+            (sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1)))*(z:ℂ)‖ ≤ C*z^(2 : ℕ) ∧
           (connection u chi ≠ 0 → continuedResponse s chi a J K z u/horizon u chi z=
             incomingResponseEndpoint s chi a J K u b+incomingSourcePrimitive s chi a J K u z) := by
   obtain ⟨R,b,C,M,hR,hb,hbhalf,hC,hM,hbound⟩ := source_transport_common_neighborhood s chi a J K w hw hwr hs
@@ -251,7 +251,7 @@ theorem incomingSourcePrimitive_common_data (s chi a J K w : ℂ)
       rw [intervalIntegral.integral_sub hiz intervalIntegrable_const,intervalIntegral.integral_const]
       simp only [incomingSourcePrimitive,sub_zero,Complex.real_smul]
       ring
-    change ‖incomingSourcePrimitive s chi a J K u z-d*(z:ℂ)‖ ≤ C*z^2
+    change ‖incomingSourcePrimitive s chi a J K u z-d*(z:ℂ)‖ ≤ C*z^(2 : ℕ)
     rw [he]
     have hn := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0:ℝ)) (b := z)
       (f := fun t => incomingSourceTransport s chi a J K u t-d) (C := C*z) (fun t ht => by

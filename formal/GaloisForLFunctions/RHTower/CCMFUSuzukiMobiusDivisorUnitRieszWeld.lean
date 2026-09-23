@@ -31,7 +31,7 @@ theorem sqrtGap_eq_half_aperture_mul_unitApertureWeight
   have hkR : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
   rw [unitApertureCriticalPrimeWeight_eq_riesz hMR hkR]
   have hsM : Real.sqrt (M : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hMR).ne'
-  have hsMSq : Real.sqrt (M : ℝ) ^ 2 = M := Real.sq_sqrt hMR.le
+  have hsMSq : Real.sqrt (M : ℝ) ^ (2 : ℕ) = M := Real.sq_sqrt hMR.le
   have hsdiv : Real.sqrt ((k : ℝ) / M) =
       Real.sqrt k / Real.sqrt M := Real.sqrt_div (by positivity) M
   rw [hsdiv]

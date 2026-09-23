@@ -166,7 +166,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   its canonical Herglotz normalization `m(i)=i`, the aperture-independent Schwarz majorant
   `|Theta(z)| <= |(z-i)/(z+i)|`, unconditional local Montel subsequences, and a two-angle quotient
   in which common entire gauges cancel.  The paper's ordinary entire-compact
-  target `z^2 xi/xi'` has unconditional real poles,
+  target `z^(2 : ℕ) xi/xi'` has unconditional real poles,
   so the old zero-transfer predicate below is retained only as a legacy impossible-premise
   connector.  `SuzukiProjectiveDefectBoundary` proves the positive survivor of the failed
   arbitrary-shift route: common source scales cancel, the two-defect Gram state splits exactly
@@ -185,9 +185,9 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   ground-edge escape to the linear point at infinity.  `SuzukiDonoghueSpectralMeasure` identifies
   the exact finite-aperture measure interface: the canonical Herglotz function is
   `-i W_1/W_{-1}`, its Donoghue kernel has zero linear term, and every simple Clark atom has weight
-  reciprocal to boundary phase speed.  On paper the full source measure is `(1+t^2)` times the
+  reciprocal to boundary phase speed.  On paper the full source measure is `(1+t^(2 : ℕ))` times the
   spectral probability of the normalized positive deficiency vector for the even extension, with
-  atom weight `(1+x^2)|F(-x)|^2/(||v_+||_T^2 ||v_x||_T^2)`.  The live wall is therefore concrete
+  atom weight `(1+x^(2 : ℕ))|F(-x)|^(2 : ℕ)/(||v_+||_T^(2 : ℕ) ||v_x||_T^(2 : ℕ))`.  The live wall is therefore concrete
   and measure-level.  `SuzukiFiniteShiftNonClock` proves that no finite admissible shift is the
   free clock and that the far-negative source path has a nonzero first projective tangent.
   `SuzukiPrimeTangentTomography` strengthens this from nonvanishing to exact arithmetic
@@ -218,7 +218,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   pole escape, collision, and separate residue matching are no longer walls.
   `SuzukiCompactifiedPhaseProfile` now supplies the source-specific compactness coordinate.  After
   factoring the forced Cayley zero, the boundary phase speed satisfies the sharp floor
-  `q(x)(1+x^2) >= 2`; hence `U(y)=arctan(phi⁻¹(pi+y))` is odd, increasing, and globally
+  `q(x)(1+x^(2 : ℕ)) >= 2`; hence `U(y)=arctan(phi⁻¹(pi+y))` is odd, increasing, and globally
   `1/2`-Lipschitz.  On the fixed odd-`pi` lattice, every compactified Donoghue atom is exactly
   `2 U'(y_k)`, so the moving probability measure is encoded by one inverse-phase `C¹` jet.  The
   paper theorem classifies every cofinal subsequential limit as the surviving fixed-label atomic
@@ -237,9 +237,9 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   anchor `m(i)=i`.  It does not identify that ratio with Suzuki's one-phase Xi target.
   `SuzukiShiftedXiTargetFlatPencil` removes a further false obligation from that identification.
   The continuous-kernel shift produces the affine boundary-free pencil
-  `D_eta=XiC'-eta*XiC`, and every finite shifted quotient `z^2*XiC/D_eta` has exactly the same Xi
+  `D_eta=XiC'-eta*XiC`, and every finite shifted quotient `z^(2 : ℕ)*XiC/D_eta` has exactly the same Xi
   divisor.  An Xi zero of arbitrary multiplicity `m` becomes a simple target zero with exact
-  trailing coefficient `z^2/m`, independent of `eta`; two distinct denominator fibres recover
+  trailing coefficient `z^(2 : ℕ)/m`, independent of `eta`; two distinct denominator fibres recover
   `XiC` by an affine secant.  `SuzukiOppositeShiftParityHarmonicRecovery` supplies the missing
   semantic classifier: reflection exchanges `eta` and `-eta`, and the zero fibre is the unique odd
   member, so a nonzero fibre cannot itself be the canonical odd Donoghue carrier.  Opposite finite
@@ -250,7 +250,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   common-gauge premises, which actual opposite resolvents do not supply.  Cross-multiplying each
   remainder by the opposite characteristic gives one zero-shift exterior remainder with product
   characteristic.  Division by that product descends through two independent zero-free gauges,
-  eliminates explicit shift, and has universal pole coefficient `ord_z(XiC)/z^2` at every
+  eliminates explicit shift, and has universal pole coefficient `ord_z(XiC)/z^(2 : ℕ)` at every
   hypothetical nonreal Xi zero.  Off-real holomorphy of this projective distinct-channel
   observable is equivalent to RH.  Source admissibility invalidates the proposed opposite-shift
   schedule, however: a nonzero pair `lambda,-lambda` lies below Suzuki's spectral floor exactly
@@ -262,7 +262,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   projective normalization.  More strongly, normalized observables from any two distinct source
   pairs differ only by an off-real analytic interval-quotient correction, so the nonreal Xi-pole
   germ is independent of source-pair choice and retains universal coefficient
-  `ord_z(XiC)/z^2`.  Shift-floor control and a cofinal shift tending to zero are therefore not
+  `ord_z(XiC)/z^(2 : ℕ)`.  Shift-floor control and a cofinal shift tending to zero are therefore not
   operator walls.  The honest remaining theorem is source-side: identify one affine-sewn
   exterior observable with actual finite-aperture channels and prove its off-real analytic
   continuation.  That continuation is equivalent to RH after source identification.  The
@@ -296,7 +296,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   Both parity presentations are one invariant: `2*C_jump` is exactly the continued right sheet
   minus the continued left sheet.  The admissible Weyl candidate
   `m_ext=-C_odd/P=-(E_R-E_L)/(2*P)` is the negative odd part of the normalized affine exterior.
-  Its Xi-zero coefficient is universally `-ord_z(XiC)/z^2`, independent of shifts and gauges.
+  Its Xi-zero coefficient is universally `-ord_z(XiC)/z^(2 : ℕ)`, independent of shifts and gauges.
   Suzuki's finite Donoghue function cannot be substituted for this jump quotient because their
   pole divisors differ.  A rational FE--Schwarz orbit insertion also falsifies every source-free
   or finite-shell-only continuation.
@@ -349,7 +349,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `SuzukiShiftSpectralMonotoneRatio` supplies a source-pure producer for that cross-Wronskian sign.
   If numerator and denominator cross-spectral measures share one positive base measure and their
   response ratio monovaries with restricted-Weil spectral node, the squared resolvent reweighting
-  forces `(N' D-N D')/D^2<=0`.  Paper-level complex symmetrization makes the quotient anti-Pick in
+  forces `(N' D-N D')/D^(2 : ℕ)<=0`.  Paper-level complex symmetrization makes the quotient anti-Pick in
   shift variable and hence negative Stieltjes.  Concrete frontier is now the eigen-coefficient law
   `w_j=<e,phi_j><2*(1+x),phi_j>>=0` and monotonicity of
   `<h_a,phi_j>/<2*(1+x),phi_j>` in eigenvalue, followed by exact chord-mass gap and full jump kernel.
@@ -391,7 +391,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `W_alpha'(0)/W_alpha-W_beta'(0)/W_beta`.  The exact second-resolvent update turns this into a
   centered projective tangent.  At dyadic shifts `(-2L,-L)`, the factor `L` preserves the
   `1/L` far-negative motion: after central-jet normalization the correction converges locally
-  meromorphically to `a^2*dotW_0/(2*z*sin(a*z))`.  Endpoint finite-part asymmetry proves this
+  meromorphically to `a^(2 : ℕ)*dotW_0/(2*z*sin(a*z))`.  Endpoint finite-part asymmetry proves this
   limit is not identically zero.  Hence a valid producer must factor the coupled Euler--Gamma plus
   Neumann-holonomy kernel; a prime--Gamma-only square is false, and far-negative escape does not
   erase full-frequency source information.
@@ -417,7 +417,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   node set.  This analytic realization and coherent assembly remain open.
   The same module proves the exact two-channel Schur correction: if positive weight is `a>0`,
   negative debt is `n`, direct completion is `c`, and projective coupling is `b`, full positivity
-  is equivalent to `c>=n+b^2/a`.  Thus nonzero Neumann holonomy imposes a strict coupling tax.
+  is equivalent to `c>=n+b^(2 : ℕ)/a`.  Thus nonzero Neumann holonomy imposes a strict coupling tax.
   Since finite-aperture restricted-Weil negative subspace is finite-dimensional, exact remaining
   target is one finite negative-block Schur complement, not an uncontrolled infinite estimate.
   Spectral calculus fixes coherent all-node completion uniquely: affine defect is `sgn(A)*W`
@@ -458,21 +458,21 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   opposite shifts alternating sector vanishes while symmetric sector survives.
   `SuzukiGlobalLocalCompoundBezoutianWeld` now identifies the unique division-free way to include
   global Xi deficit.  For local marked pair `(Q,P)` and global pair
-  `(S,T)=(XiC',z^2*XiC)`, compound pair is `N=Q*T-S*P`, `D=P*T`.  Common pointwise affine gauge
+  `(S,T)=(XiC',z^(2 : ℕ)*XiC)`, compound pair is `N=Q*T-S*P`, `D=P*T`.  Common pointwise affine gauge
   cancels exactly; independent gauges leave only relative curvature.  Its Hermitian Bezoutian is
   exactly `T*T#*[Q,P]-P*P#*[S,T]`, so chart ambiguity and zero denominators no longer obscure
   frontier.  `SuzukiMarkedSecantMidpointLorentzCompletion` resolves inertia and source location of
   its local marked block.  For shifts `m-d,m+d`, exact pair is
-  `Q=U*V-d^2*x*y+m*F`, `P=V^2-d^2*y^2`; unique rooted diagonal completion rate is `d^2`, and
+  `Q=U*V-d^(2 : ℕ)*x*y+m*F`, `P=V^(2 : ℕ)-d^(2 : ℕ)*y^(2 : ℕ)`; unique rooted diagonal completion rate is `d^(2 : ℕ)`, and
   compound numerator splits into midpoint determinant, rooted halfgap debt, and Pluecker flux.
-  More strongly, product-resolvent equation puts literal `-d^2*H_r0(v)` term inside relative
-  Volterra phase.  For dyadic `(-2L,-L)`, missing rooted rate is exactly `L^2/4`.  Existing
+  More strongly, product-resolvent equation puts literal `-d^(2 : ℕ)*H_r0(v)` term inside relative
+  Volterra phase.  For dyadic `(-2L,-L)`, missing rooted rate is exactly `L^(2 : ℕ)/4`.  Existing
   two-boundary balanced prime--Gamma Grams vanish at canonical packet, so producer must retain raw
   rooted Bianchi coordinate until this debt is paid.  But
   `SuzukiCriticalRootedBianchiCofinalNoGo` now kills the unrenormalized cofinal version of that
   proposal.  Raw Bianchi prime mass is `Lambda(p)/p*exp(-x*log p)`; critical Suzuki weight forces
   `x=-1/2`, giving `Lambda(p)/sqrt(p)`, which dominates `log(2)/p` and is not summable.  Therefore
-  no standalone critical raw Bianchi `ell^2` vector exists.  This lands on actual corpus source:
+  no standalone critical raw Bianchi `ell^(2 : ℕ)` vector exists.  This lands on actual corpus source:
   uniquely renormalized complete Gamma-conormal boundary coordinate is exactly square root of this
   mass.  Scalar-renormalization rigidity says a constant residual multiple is square-summable iff
   coefficient vanishes.  `SuzukiCriticalAffineCauchyResidualDivergence` next hostile-tests the
@@ -484,28 +484,28 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   corpus's actual finite current.  Pair critical Gamma boundary with cubically normalized
   true-aperture innovation before squaring.  Its valuation atoms form an exact geometric sequence
   with ratio
-  `exp(-(1/4)*log p)*exp(i*t*log p/2)*r^2`, `r=exp(-(h*a/2)*log p)`.
+  `exp(-(1/4)*log p)*exp(i*t*log p/2)*r^(2 : ℕ)`, `r=exp(-(h*a/2)*log p)`.
   Positive aperture makes ratio strictly contractive, so distributional boundary/innovation
   pairing has exact per-prime resolvent sum despite absence of standalone boundary Hilbert vector.
   This changes representation from residual-square completion to rigged boundary-current pairing.
   `SuzukiCausalHingeBoundaryTailGreenLaw` now kills atomwise finite version as well.  One delayed
   prime hinge has exact cancellation-before-limit exterior: below delay wall
   it is truncated source tail plus two boundary moments; above `log n=2a` local triangle is zero
-  and source remains pure global jump atom `-i Lambda(n)/sqrt(n) exp(iz log n)/z^2`.  Its Pick
+  and source remains pure global jump atom `-i Lambda(n)/sqrt(n) exp(iz log n)/z^(2 : ℕ)`.  Its Pick
   diagonal is positive on imaginary axis but strictly negative at phase-aligned UHP node
   `2pi/log n+i*pi/log n`; every nonzero compound denominator preserves negative sign.  Thus no
   direct sum of positive prime atoms and no fixed finite common-prime carrier can factor compound
   kernel.  Current RH-bearing wall is collective `SUZUKI-CAUSAL-APERTURE-ENTRY-COMPOUND-WELD`:
   assemble finite-delay boundary tails, complete far-prime tail, and exact polar--Gamma source
   inside compound Bezoutian before positivity or cofinal limit, and prove assembled kernel pays
-  exact `d^2` rooted debt.  One negative principal minor falsifies it; success gives jump Pick
+  exact `d^(2 : ℕ)` rooted debt.  One negative principal minor falsifies it; success gives jump Pick
   positivity and RH.  `SuzukiCausalWeilRobinGreenIdentity` now identifies collective channel
   before positivity.  Two source-level integrations by parts give
-  `z^2*R_g=exp(I*a*z)*(I*z*U(a)-U'(a))+E_(-g'')`: compound denominator removes universal screw
+  `z^(2 : ℕ)*R_g=exp(I*a*z)*(I*z*U(a)-U'(a))+E_(-g'')`: compound denominator removes universal screw
   primitive, leaving one Robin boundary current plus causal exterior of already-completed Weil
   distribution.  Delayed-hinge specialization exactly recovers boundary--tail law, while
   `K_(g-lambda*r0)=K_g-lambda*delta_0` and compact support remove direct shift delta from exterior.
-  Thus midpoint `d^2` channel is localized to Robin boundary current, not raw Bianchi bulk.
+  Thus midpoint `d^(2 : ℕ)` channel is localized to Robin boundary current, not raw Bianchi bulk.
   `SuzukiAffineSewnWeilRobinFarTailFactorization` then proves two-shift sewing cannot remove any
   far prime: every common normalized channel factors through complete sewn characteristic, so
   far von-Mangoldt tail becomes characteristic times one universal shift-independent tail.
@@ -515,32 +515,32 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   defect is merely eventually bounded below on the logarithmic rectangular mesh proves RH;
   false RH forces that defect to `-infinity` cofinally for every such energy.  Sharpened open core
   `SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED` asks only this lower bound after marked
-  Robin/near-entry/polar--Gamma assembly pays universal far tail and exact `d^2` plus holonomy
+  Robin/near-entry/polar--Gamma assembly pays universal far tail and exact `d^(2 : ℕ)` plus holonomy
   Schur debt.  `SuzukiCausalEntryThirdJetBoundaryLaw` removes the last unspecified discrete
   near-entry coordinate.  Denominator-matched near and far hinge channels agree through delay
-  order two; their first defect is exactly `z^2*exp(I*a*z)*v(-a)`.  Affine sewing turns this into
+  order two; their first defect is exactly `z^(2 : ℕ)*exp(I*a*z)*v(-a)`.  Affine sewing turns this into
   one marked barycentric endpoint trace, and even a common normalized trace survives.  Thus
   instantaneous positive entry jumps are impossible.  Every discrete near-entry contribution to
   the rectangular Ward defect must be transported through this endpoint-trace third jet and
   coupled to the quarter-shift Gamma current before proving the lower bound.
   `SuzukiCriticalEntryWallQuarterShiftGreenLaw` performs that coupling at source level.  The
   complete near/far gap satisfies the all-depth Ward equation
-  `(d/dell-I*z) gap'' = z^2*exp(I*a*z)*endpointTrace`.  At the prime-power wall
+  `(d/dell-I*z) gap'' = z^(2 : ℕ)*exp(I*a*z)*endpointTrace`.  At the prime-power wall
   `a=log(p^(e+1))/2`, its phase is exactly the conjugated critical Gamma phase, so the calibrated
-  third-jet forcing is `t^2` times the existing quarter-shift atom.  Its valuation-depth sum is the
+  third-jet forcing is `t^(2 : ℕ)` times the existing quarter-shift atom.  Its valuation-depth sum is the
   already formalized contractive resolvent, and off `t=0` the matching endpoint amplitude is
   unique.  `SuzukiCriticalWallFieldSquareRootWeld` corrects one source-type error in that
   calibration: its amplitude contains independently chosen observer aperture and therefore
   cannot literally be Suzuki's deficiency endpoint.  At depth zero it is injective in positive
   observer aperture.  Removing observer innovation exposes bare Gamma wall field `omega_e` with
-  exact identities `omega_e^2=(Lambda(n)/sqrt(n))*exp(I*t*log n)`, bare entry third jet
-  `t^2*omega_e`, and observed entry third jet `t^2*omega_e*I_e`.  Thus universal far hinge is the
+  exact identities `omega_e^(2 : ℕ)=(Lambda(n)/sqrt(n))*exp(I*t*log n)`, bare entry third jet
+  `t^(2 : ℕ)*omega_e`, and observed entry third jet `t^(2 : ℕ)*omega_e*I_e`.  Thus universal far hinge is the
   symmetric square of same linear entry field, not an independent matching channel.  This removes
   phase matching, triple integration, and separate far-channel matching from open core.
   `SuzukiCriticalWallFieldResolventDressingLaw` makes second source correction: bare wall amplitude
   is input coordinate, not deficiency endpoint; restricted-Weil response first multiplies it by
   scalar mode resolvent `(s-lambda)^(-1)`.  Self-paired two-shift mismatch is exactly
-  `K_(alpha,beta)(s)*omega_e^2`, hence exact Krein defect times far-hinge numerator.  At zero
+  `K_(alpha,beta)(s)*omega_e^(2 : ℕ)`, hence exact Krein defect times far-hinge numerator.  At zero
   height it is strictly negative on every negative spectral level and positive on every positive
   level.  Corpus projective audit prevents treating this one-mode law as canonical producer:
   common source scaling cancels from normalized characteristic response.
@@ -552,7 +552,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `SuzukiWallFieldAntidiagonalGramLift` then resolves positivity-type obstruction.  Two-height
   kernel `K_e(t,u)=omega_e(t)*conj(omega_e(u))` is stationary rank-one Hermitian Gram on every
   finite height packet.  Its positive diagonal is exactly `Lambda(n)/sqrt(n)` and supplies sharp
-  `d^2` rooted midpoint completion; its FE-reflected anti-diagonal is exactly
+  `d^(2 : ℕ)` rooted midpoint completion; its FE-reflected anti-diagonal is exactly
   `(Lambda(n)/sqrt(n))*exp(I*t*log n)`, hence complete far-hinge phase.  Complex wall square was
   never supposed to be Gram diagonal: it is reflected anti-diagonal of one genuine PSD block.
   `SuzukiWallFieldLightConeKernelCompletion` now extracts unique non-common FE/Xi-real split of
@@ -563,7 +563,7 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `(Re omega,Im omega)`, rather than adding fitted source.  Thus
   `F_reflected+Gram(ell_-)=Gram(ell_+)`, and both light matrices remain PSD after arbitrary finite
   prime-power and height assembly.  Off center this gives exact real delayed-hinge completion
-  `t^2*Re J_e+|ell_-|^2=|ell_+|^2`.  This closes wall-source realization of abstract light
+  `t^(2 : ℕ)*Re J_e+|ell_-|^(2 : ℕ)=|ell_+|^(2 : ℕ)`.  This closes wall-source realization of abstract light
   channel, but not its occurrence in actual rectangular carrier.
   Remaining RH-bearing source problem is now exact `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`:
   prove actual division-free Robin/Gamma/holonomy trace equals or dominates forced

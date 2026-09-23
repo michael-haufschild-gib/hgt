@@ -16,7 +16,7 @@ namespace RHTower
 /-- The inclusive gcd completion is superquadratic along literal late-prime cutoffs. -/
 theorem tendsto_mobiusDivisorInclusiveGcdGram_div_quadratic_atTop :
     Tendsto (fun N : ℕ => mobiusDivisorInclusiveGcdGram (4 * N) /
-      ((4 * N : ℕ) : ℝ) ^ 2) atTop atTop := by
+      ((4 * N : ℕ) : ℝ) ^ (2 : ℕ)) atTop atTop := by
   have hmass := tendsto_mobiusDivisorLatePrimeMass_div_atTop
   have hsource := hmass.const_mul_atTop (show (0 : ℝ) < 2 / 5 by norm_num)
   apply tendsto_atTop_mono' _ _ hsource
@@ -41,19 +41,19 @@ theorem tendsto_mobiusDivisorInclusiveGcdGram_div_quadratic_atTop :
             (mobiusDivisorLatePrimeMass (4 * N) * ((4 * N : ℕ) : ℝ)) := by ring
       _ ≤ (2 / 5 : ℝ) *
           (mobiusDivisorLatePrimeMass (4 * N) * mobiusDivisorLatePrimeMass (4 * N)) := hscale
-      _ = (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ 2 := by ring
+      _ = (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ (2 : ℕ) := by ring
       _ ≤ mobiusDivisorInclusiveGcdGram (4 * N) :=
         two_fifths_late_prime_mass_sq_le_inclusiveGcdGram N hN
   have hdiv : (2 / 5 : ℝ) *
       (mobiusDivisorLatePrimeMass (4 * N) / ((4 * N : ℕ) : ℝ)) ≤
-        mobiusDivisorInclusiveGcdGram (4 * N) / ((4 * N : ℕ) : ℝ) ^ 2 := by
+        mobiusDivisorInclusiveGcdGram (4 * N) / ((4 * N : ℕ) : ℝ) ^ (2 : ℕ) := by
     calc
       (2 / 5 : ℝ) *
           (mobiusDivisorLatePrimeMass (4 * N) / ((4 * N : ℕ) : ℝ)) =
           ((2 / 5 : ℝ) * mobiusDivisorLatePrimeMass (4 * N) *
-            ((4 * N : ℕ) : ℝ)) / ((4 * N : ℕ) : ℝ) ^ 2 := by
+            ((4 * N : ℕ) : ℝ)) / ((4 * N : ℕ) : ℝ) ^ (2 : ℕ) := by
             field_simp
-      _ ≤ mobiusDivisorInclusiveGcdGram (4 * N) / ((4 * N : ℕ) : ℝ) ^ 2 :=
+      _ ≤ mobiusDivisorInclusiveGcdGram (4 * N) / ((4 * N : ℕ) : ℝ) ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right hprod (by positivity)
   simpa [hfour] using hdiv
 

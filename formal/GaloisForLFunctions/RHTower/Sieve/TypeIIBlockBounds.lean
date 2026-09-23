@@ -20,10 +20,10 @@ theorem norm_maskedBlockSum_sq_le_bound {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (hfour : ∀ m ∈ effSet A B P Q L, 4 * (r / m) ≤ (P : ℝ))
     (hlam : ∀ m₁ ∈ effSet A B P Q L, ∀ m₂ ∈ effSet A B P Q L,
       curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1) :
-    ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
-        * (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
-          + (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
+    ‖maskedBlockSum T r A B L P Q a b‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
+        * (((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
+          + (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
             * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
                 gapCorrBound T r (effLow A Q) (effHigh B P) P Q h)) := by
   refine le_trans (norm_maskedBlockSum_sq_le T r A B L P Q a b) ?_
@@ -47,9 +47,9 @@ theorem Ico_eff_subset_Icc_effHigh (A B P Q : ℕ) :
 
 /-- The short-side energy over any subset of an initial segment. -/
 theorem sum_typeIIShort_sq_subset_le {S : Finset ℕ} {N : ℕ} (hS : S ⊆ Finset.Icc 1 N) (V : ℕ) :
-    (∑ m ∈ S, |typeIIShort V m| ^ 2) ≤ 2 * (N : ℝ) + 2 * ((N : ℝ) * invSum N ^ 3) := by
-  have hsub : (∑ m ∈ S, |typeIIShort V m| ^ 2)
-      ≤ ∑ m ∈ Finset.Icc 1 N, |typeIIShort V m| ^ 2 :=
+    (∑ m ∈ S, |typeIIShort V m| ^ (2 : ℕ)) ≤ 2 * (N : ℝ) + 2 * ((N : ℝ) * invSum N ^ (3 : ℕ)) := by
+  have hsub : (∑ m ∈ S, |typeIIShort V m| ^ (2 : ℕ))
+      ≤ ∑ m ∈ Finset.Icc 1 N, |typeIIShort V m| ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg hS fun m _ _ => sq_nonneg _
   have hfull := sum_typeIIShort_sq_le V N
   have hnorm : ∀ m : ℕ, ‖((typeIIShort V m : ℝ) : ℂ)‖ = |typeIIShort V m| := fun m => by
@@ -60,10 +60,10 @@ theorem sum_typeIIShort_sq_subset_le {S : Finset ℕ} {N : ℕ} (hS : S ⊆ Fins
 /-- The long-side energy of a block, in absolute-value form. -/
 theorem sum_typeIILong_sq_block_abs_le {C : ℝ}
     (hC : ∀ (U P Q L : ℕ), 1 ≤ L → Q ≤ L + 1 →
-      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
         ≤ C * (Q : ℝ) * Real.log (L : ℝ))
     (U P Q L : ℕ) (hL : 1 ≤ L) (hQL : Q ≤ L + 1) :
-    (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2) ≤ C * (Q : ℝ) * Real.log (L : ℝ) := by
+    (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ)) ≤ C * (Q : ℝ) * Real.log (L : ℝ) := by
   have h := hC U P Q L hL hQL
   have hnorm : ∀ d : ℕ, ‖((typeIILong U d : ℝ) : ℂ)‖ = |typeIILong U d| := fun d => by
     rw [Complex.norm_real, Real.norm_eq_abs]

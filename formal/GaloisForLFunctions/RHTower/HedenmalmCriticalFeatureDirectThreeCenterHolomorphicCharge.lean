@@ -17,11 +17,11 @@ noncomputable section
 /-- Off-line part of the real holomorphic critical-feature square. -/
 def offLineCriticalFeatureHolomorphicEnergy (t : ℝ) (q : XiZeroCopy) : ℝ :=
   if (q.1 : ℂ).re = 1 / 2 then 0
-  else ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re
+  else ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re
 
 private theorem criticalFeatureHolomorphicSquare_re_nonneg
     (t : ℝ) (q : XiZeroCopy) :
-    0 ≤ ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re := by
+    0 ≤ ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
   have hsector := half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
     t (abs_xiSpectralPoint_im_lt_half q)
   nlinarith [Complex.normSq_nonneg
@@ -37,15 +37,15 @@ theorem offLineCriticalFeatureHolomorphicEnergy_nonneg
 
 private theorem criticalFeatureHolomorphicSquare_re_summable (t : ℝ) :
     Summable (fun q : XiZeroCopy =>
-      ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re) := by
+      ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
   let F : ℂ → ℂ := criticalFeatureCauchyKernelTest t
   have hF := criticalFeatureCauchyKernelTest_squareSummable t
   rw [XiWeilSquareSummable] at hF
   have hsquareNorm : Summable (fun q : XiZeroCopy =>
-      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+      ‖(F (xiSpectralPoint q)) ^ (2 : ℕ)‖) := by
     simpa only [norm_pow] using hF
   have hsquare : Summable (fun q : XiZeroCopy =>
-      (F (xiSpectralPoint q)) ^ 2) :=
+      (F (xiSpectralPoint q)) ^ (2 : ℕ)) :=
     summable_norm_iff.mp hsquareNorm
   exact (hsquare.map Complex.reCLM Complex.reCLM.continuous).congr
     (fun q => rfl)
@@ -65,35 +65,35 @@ private theorem criticalFeaturePrimeGammaSourceDiagonal_re_eq_tsum_holomorphicSq
     (t : ℝ) :
     (criticalFeaturePrimeGammaSourceDiagonal t).re =
       ∑' q : XiZeroCopy,
-        ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re := by
+        ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
   let F : ℂ → ℂ := criticalFeatureCauchyKernelTest t
   have hF := criticalFeatureCauchyKernelTest_squareSummable t
   rw [XiWeilSquareSummable] at hF
   have hsquareNorm : Summable (fun q : XiZeroCopy =>
-      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+      ‖(F (xiSpectralPoint q)) ^ (2 : ℕ)‖) := by
     simpa only [norm_pow] using hF
   have hsquare : Summable (fun q : XiZeroCopy =>
-      (F (xiSpectralPoint q)) ^ 2) :=
+      (F (xiSpectralPoint q)) ^ (2 : ℕ)) :=
     summable_norm_iff.mp hsquareNorm
   calc
     (criticalFeaturePrimeGammaSourceDiagonal t).re =
         (xiWeilPolarization F F).re := by
       rw [xiWeilPolarization_criticalFeatureCauchyKernelTest_eq_sourceDiagonal]
-    _ = (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ 2).re := by
+    _ = (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       unfold xiWeilPolarization
       rw [show xiWeilSharp F = F by
         simpa only [F] using xiWeilSharp_criticalFeatureCauchyKernelTest t]
       congr 2
       funext q
       ring
-    _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re := by
+    _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       rw [Complex.re_tsum hsquare]
 
 private theorem criticalLineEnergy_add_offLineHolomorphicEnergy_eq
     (t : ℝ) (q : XiZeroCopy) :
     criticalLineCriticalFeatureEnergy t q +
         offLineCriticalFeatureHolomorphicEnergy t q =
-      ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
   by_cases hq : (q.1 : ℂ).re = 1 / 2
   · rw [criticalLineCriticalFeatureEnergy, if_pos hq,
       offLineCriticalFeatureHolomorphicEnergy, if_pos hq, add_zero]
@@ -132,7 +132,7 @@ theorem criticalFeaturePrimeGammaOffLineExcess_eq_tsum_offLineHolomorphicEnergy
     calc
       (criticalFeaturePrimeGammaSourceDiagonal t).re =
           ∑' q : XiZeroCopy,
-            ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re :=
+            ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re :=
         criticalFeaturePrimeGammaSourceDiagonal_re_eq_tsum_holomorphicSquare t
       _ = ∑' q : XiZeroCopy,
           (criticalLineCriticalFeatureEnergy t q +
@@ -153,9 +153,9 @@ theorem directThreeCenterCriticalFeatureHolomorphicCharge_lower
     {t : ℝ} {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
     (63488 / 21125 : ℝ) ≤
-      ((criticalFeatureCauchyKernelTest (t - 1) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest t z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest (t - 1) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ (2 : ℕ)).re := by
   have hthree := sharp_threeCenterCriticalFeatureEnergy_lower hz ht
   rw [threeCenterCriticalFeatureEnergy] at hthree
   have hcenter : (64 / 25 : ℝ) ≤
@@ -202,7 +202,7 @@ theorem finite_strictRight_card_mul_directThreeCenterCharge_le_offLineLatticeBud
           (abs_xiSpectralPoint_im_lt_half q) (abs_sub_round _)
       have hoffeq (j : ℤ) :
           ((criticalFeatureCauchyKernelTest (j : ℝ)
-            (xiSpectralPoint q)) ^ 2).re =
+            (xiSpectralPoint q)) ^ (2 : ℕ)).re =
             offLineCriticalFeatureHolomorphicEnergy (j : ℝ) q := by
         rw [offLineCriticalFeatureHolomorphicEnergy, if_neg hqoff]
       have hcastm : (kq : ℝ) - 1 = ((kq - 1 : ℤ) : ℝ) := by

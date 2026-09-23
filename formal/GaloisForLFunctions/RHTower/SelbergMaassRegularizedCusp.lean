@@ -29,13 +29,13 @@ theorem radius_slice_periodic {y : ℝ} (hy : 0 < y) :
     Function.Periodic (fun x => radius N f e (point x y)) 1 := by
   intro x
   unfold radius
-  exact congrArg (fun t : ℝ => Real.sqrt (t + (e : ℝ) ^ 2)) (density_slice_periodic N f hy x)
+  exact congrArg (fun t : ℝ => Real.sqrt (t + (e : ℝ) ^ (2 : ℕ))) (density_slice_periodic N f hy x)
 
 /-- Original uniform density decay forces the regularized radius to its regulator. -/
 theorem radius_cusp_limit :
     Tendsto (fun z : ℍ => radius N f e (z : ℂ)) atImInfty (𝓝 (e : ℝ)) := by
   have hd : Tendsto (density N f) atImInfty (𝓝 0) := density_decay N f
-  have h := (hd.add_const ((e : ℝ) ^ 2)).sqrt
+  have h := (hd.add_const ((e : ℝ) ^ (2 : ℕ))).sqrt
   simpa only [zero_add, Real.sqrt_sq e.2.le, radius, ofComplex_apply] using h
 
 /-- The actual unit horizontal radius average converges to the regulator. -/
@@ -65,7 +65,7 @@ theorem average_radius_limit :
 
 /-- The source curvature equation gives an inverse-square lower bound for every real eigenvalue. -/
 theorem radius_laplacian_lower (z : ℍ) :
-    -|lam| * radius N f e (z : ℂ) / z.im ^ 2 ≤ realLaplacian (radius N f e) (z : ℂ) := by
+    -|lam| * radius N f e (z : ℂ) / z.im ^ (2 : ℕ) ≤ realLaplacian (radius N f e) (z : ℂ) := by
   have hr := radius_pos N f e (z : ℂ)
   have hs := radius_sq N f e (z : ℂ)
   simp only [ofComplex_apply] at hs
@@ -77,11 +77,11 @@ theorem radius_laplacian_lower (z : ℍ) :
   rw [hid]
   apply (mul_le_mul_iff_right₀ hy).mp
   field_simp
-  have hm : lam * density N f z ≤ radius N f e (z : ℂ) ^ 2 * |lam| := by
+  have hm : lam * density N f z ≤ radius N f e (z : ℂ) ^ (2 : ℕ) * |lam| := by
     calc
       lam * density N f z ≤ |lam| * density N f z := mul_le_mul_of_nonneg_right (le_abs_self lam) hD
-      _ ≤ |lam| * radius N f e (z : ℂ) ^ 2 := mul_le_mul_of_nonneg_left (by linarith [sq_nonneg (e : ℝ)]) (abs_nonneg lam)
-      _ = radius N f e (z : ℂ) ^ 2 * |lam| := mul_comm _ _
+      _ ≤ |lam| * radius N f e (z : ℂ) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left (by linarith [sq_nonneg (e : ℝ)]) (abs_nonneg lam)
+      _ = radius N f e (z : ℂ) ^ (2 : ℕ) * |lam| := mul_comm _ _
   nlinarith only [hm, mul_nonneg hrem hy.le]
 
 /-- The actual radius mean differentiates to its vertical-current mean. -/
@@ -98,7 +98,7 @@ theorem average_current_hasDerivAt {y : ℝ} (hy : 0 < y) :
 
 /-- Periodicity and source positivity give the mean inverse-square forcing bound. -/
 theorem average_laplacian_lower {y : ℝ} (hy : 0 < y) :
-    -|lam| * average (radius N f e) y / y ^ 2 ≤ average (realLaplacian (radius N f e)) y := by
+    -|lam| * average (radius N f e) y / y ^ (2 : ℕ) ≤ average (realLaplacian (radius N f e)) y := by
   have hc := SelbergScalarHorizontalAverage.slice_continuous (radius_contDiffOn N f e).continuousOn hy
   have hi : IntegrableOn (fun x => radius N f e (point x y)) (Ioc (0 : ℝ) 1) :=
     hc.integrableOn_Icc.mono_set Ioc_subset_Icc_self
@@ -106,7 +106,7 @@ theorem average_laplacian_lower {y : ℝ} (hy : 0 < y) :
     (SelbergScalarHorizontalAverage.slice_continuous (dir_contDiffOn
       (dir_contDiffOn (radius_contDiffOn N f e) (m := 1) (by norm_num) v)
       (m := 0) (by norm_num) v).continuousOn hy).integrableOn_Icc.mono_set Ioc_subset_Icc_self
-  have h := setIntegral_mono_on ((hi.const_mul (-|lam|)).div_const (y ^ 2))
+  have h := setIntegral_mono_on ((hi.const_mul (-|lam|)).div_const (y ^ (2 : ℕ)))
     ((hdi 1).add (hdi Complex.I)) measurableSet_Ioc (fun x _ => ?_)
   · simpa only [integral_div, integral_const_mul, SelbergScalarHorizontalAverage.average, realLaplacian, Pi.add_apply] using h
   · have hp : 0 < (point x y).im := by simpa [point] using hy

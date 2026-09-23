@@ -20,9 +20,9 @@ private theorem norm_dependent_sum_mul_sq_le_sq_mul_sq_global
     {α β : Type*} [DecidableEq α] [DecidableEq β]
     (A : Finset α) (D : α → Finset β)
     (a s : α → β → ℂ) :
-    ‖∑ i ∈ A, ∑ j ∈ D i, a i j * s i j‖ ^ 2 ≤
-      (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ ^ 2) *
-        ∑ i ∈ A, ∑ j ∈ D i, ‖s i j‖ ^ 2 := by
+    ‖∑ i ∈ A, ∑ j ∈ D i, a i j * s i j‖ ^ (2 : ℕ) ≤
+      (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ ^ (2 : ℕ)) *
+        ∑ i ∈ A, ∑ j ∈ D i, ‖s i j‖ ^ (2 : ℕ) := by
   have htri :
       ‖∑ i ∈ A, ∑ j ∈ D i, a i j * s i j‖ ≤
         ∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ * ‖s i j‖ := by
@@ -36,14 +36,14 @@ private theorem norm_dependent_sum_mul_sq_le_sq_mul_sq_global
   have hsum0 : 0 ≤ ∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ * ‖s i j‖ := by
     positivity
   calc
-    ‖∑ i ∈ A, ∑ j ∈ D i, a i j * s i j‖ ^ 2 ≤
-        (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ * ‖s i j‖) ^ 2 := by
+    ‖∑ i ∈ A, ∑ j ∈ D i, a i j * s i j‖ ^ (2 : ℕ) ≤
+        (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ * ‖s i j‖) ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (∑ i ∈ A, ∑ j ∈ D i, a i j * s i j)]
-    _ ≤ (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ ^ 2) *
-        ∑ i ∈ A, ∑ j ∈ D i, ‖s i j‖ ^ 2 := by
+    _ ≤ (∑ i ∈ A, ∑ j ∈ D i, ‖a i j‖ ^ (2 : ℕ)) *
+        ∑ i ∈ A, ∑ j ∈ D i, ‖s i j‖ ^ (2 : ℕ) := by
       rw [Finset.sum_sigma' A D (fun i j => ‖a i j‖ * ‖s i j‖)]
-      rw [Finset.sum_sigma' A D (fun i j => ‖a i j‖ ^ 2)]
-      rw [Finset.sum_sigma' A D (fun i j => ‖s i j‖ ^ 2)]
+      rw [Finset.sum_sigma' A D (fun i j => ‖a i j‖ ^ (2 : ℕ))]
+      rw [Finset.sum_sigma' A D (fun i j => ‖s i j‖ ^ (2 : ℕ))]
       exact Finset.sum_mul_sq_le_sq_mul_sq (A.sigma D)
         (fun p => ‖a p.1 p.2‖) (fun p => ‖s p.1 p.2‖)
 
@@ -63,11 +63,11 @@ theorem normSq_kloostermanGlobalCollisionTimeTransform_le_weightPairResponseEner
   calc
     ‖∑ q ∈ Q, ∑ r ∈ Q.erase q,
         star (w q * kloostermanGlobalModulusTimeResponse q B b k.val) *
-          (w r * kloostermanGlobalModulusTimeResponse r B b k.val)‖ ^ 2 =
+          (w r * kloostermanGlobalModulusTimeResponse r B b k.val)‖ ^ (2 : ℕ) =
       ‖∑ q ∈ Q, ∑ r ∈ Q.erase q,
         (star (w q) * w r) *
           (star (kloostermanGlobalModulusTimeResponse q B b k.val) *
-            kloostermanGlobalModulusTimeResponse r B b k.val)‖ ^ 2 := by
+            kloostermanGlobalModulusTimeResponse r B b k.val)‖ ^ (2 : ℕ) := by
       congr 2
       apply Finset.sum_congr rfl
       intro q hq
@@ -75,10 +75,10 @@ theorem normSq_kloostermanGlobalCollisionTimeTransform_le_weightPairResponseEner
       intro r hr
       rw [star_mul]
       ring
-    _ ≤ (∑ q ∈ Q, ∑ r ∈ Q.erase q, ‖star (w q) * w r‖ ^ 2) *
+    _ ≤ (∑ q ∈ Q, ∑ r ∈ Q.erase q, ‖star (w q) * w r‖ ^ (2 : ℕ)) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           ‖star (kloostermanGlobalModulusTimeResponse q B b k.val) *
-            kloostermanGlobalModulusTimeResponse r B b k.val‖ ^ 2 :=
+            kloostermanGlobalModulusTimeResponse r B b k.val‖ ^ (2 : ℕ) :=
       norm_dependent_sum_mul_sq_le_sq_mul_sq_global Q (fun q => Q.erase q)
         (fun q r => star (w q) * w r)
         (fun q r => star (kloostermanGlobalModulusTimeResponse q B b k.val) *
@@ -97,7 +97,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair
     kloostermanGlobalFrequencyCollisionEnergy Q w B b ≤
       kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
             (∑ z : ZMod (q + 1),
               Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
             ∑ z : ZMod (r + 1),
@@ -160,7 +160,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair
       intro q hq
       rw [Finset.mul_sum]
     _ ≤ W * ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-        (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+        (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
           (∑ z : ZMod (q + 1),
             Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
           ∑ z : ZMod (r + 1),
@@ -176,7 +176,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_weightPair
         positivity
     _ = kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
             (∑ z : ZMod (q + 1),
               Complex.normSq (kloostermanSourceResidue (q + 1) B b z)) *
             ∑ z : ZMod (r + 1),
@@ -188,7 +188,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_weightPair
     kloostermanGlobalFrequencyCollisionEnergy Q w (Finset.Icc 1 N) b ≤
       kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
             ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
               ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
             ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -197,7 +197,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_weightPair
     kloostermanGlobalFrequencyCollisionEnergy Q w (Finset.Icc 1 N) b ≤
       kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
             (∑ z : ZMod (q + 1),
               Complex.normSq
                 (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
@@ -208,7 +208,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_weightPair
         Q w (Finset.Icc 1 N) b
     _ ≤ kloostermanDistinctModulusWeightPairEnergy Q w *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
             ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
               ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
             ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -236,28 +236,28 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_weightPair
             (mul_nonneg (Nat.cast_nonneg _)
               (Finset.sum_nonneg fun n hn => Complex.normSq_nonneg _))
         calc
-          (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (q + 1),
                 Complex.normSq
                   (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
               ∑ z : ZMod (r + 1),
                 Complex.normSq
                   (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) =
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ)) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ)) *
               ((∑ z : ZMod (q + 1),
                   Complex.normSq
                     (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
                 ∑ z : ZMod (r + 1),
                   Complex.normSq
                     (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) := by ring
-          _ ≤ (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ)) *
+          _ ≤ (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ)) *
               (((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                   ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
                 ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
                   ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n))) :=
             mul_le_mul_of_nonneg_left hproduct
               (mul_nonneg (sq_nonneg _) (Nat.cast_nonneg _))
-          _ = (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+          _ = (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                 ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
               ((kloostermanIntervalResidueMultiplicity r N : ℝ) *

@@ -8,11 +8,11 @@ laws drive the moment-defect recession.
 
 * `weightedMoment_gaussianWindow_rescale` is the change of variables `x = y / sqrt tau`, writing the
   `m`-th Gaussian-windowed moment of a density `J` as `(sqrt tau)⁻¹ ^ (m+1)` times the *cooled
-  moment* `∫ y^m exp(-y^2) J(y / sqrt tau) dy`.
+  moment* `∫ y^m exp(-y^(2 : ℕ)) J(y / sqrt tau) dy`.
 
 * `tendsto_gaussianCooledMoment` is the dominated-convergence limit of the cooled moment: as
   `tau -> infinity` the rescaled density `J(y / sqrt tau)` converges to the constant `J 0`, so the
-  cooled moment tends to `J 0` times the fixed Gaussian moment `∫ y^m exp(-y^2) dy`.
+  cooled moment tends to `J 0` times the fixed Gaussian moment `∫ y^m exp(-y^(2 : ℕ)) dy`.
 
 Together these are the diagonal-congruence factor and the entrywise Hankel limit `K_tau -> J(0) G`
 underlying eventual positive-definiteness of every finite Gaussian Hankel section.
@@ -25,7 +25,7 @@ open scoped BigOperators ENNReal
 
 namespace RHTower
 
-/-- Every real monomial is integrable against the standard Gaussian weight `exp(-y^2)`. -/
+/-- Every real monomial is integrable against the standard Gaussian weight `exp(-y^(2 : ℕ))`. -/
 theorem integrable_pow_mul_exp_neg_sq (m : ℕ) :
     Integrable (fun y : ℝ => y ^ m * Real.exp (-y ^ 2)) := by
   letI := gaussianWindowMeasure_finite (tau := 1) one_pos
@@ -46,7 +46,7 @@ theorem integrable_pow_mul_exp_neg_sq (m : ℕ) :
   rwa [hcomm] at h1
 
 /-- **Gaussian moment rescaling.**  The `m`-th Gaussian-windowed moment of `J` equals
-`(sqrt tau)⁻¹ ^ (m+1)` times the cooled moment `∫ y^m exp(-y^2) J(y / sqrt tau) dy`, by the change
+`(sqrt tau)⁻¹ ^ (m+1)` times the cooled moment `∫ y^m exp(-y^(2 : ℕ)) J(y / sqrt tau) dy`, by the change
 of variables `x = y / sqrt tau`.  Holds for every density `J`. -/
 theorem weightedMoment_gaussianWindow_rescale {tau : ℝ} (htau : 0 < tau) (J : ℝ → ℝ) (m : ℕ) :
     weightedMoment (gaussianWindowMeasure tau) J m
@@ -83,8 +83,8 @@ theorem weightedMoment_gaussianWindow_rescale {tau : ℝ} (htau : 0 < tau) (J : 
   rw [hinner, ← mul_assoc, ← pow_succ']
 
 /-- **Cooling limit of the cooled moment.**  For a bounded continuous density, the cooled moment
-`∫ y^m exp(-y^2) J(y / sqrt tau) dy` converges as `tau -> infinity` to `J 0` times the fixed Gaussian
-moment `∫ y^m exp(-y^2) dy`, by dominated convergence with dominating function `C * ‖y^m exp(-y^2)‖`. -/
+`∫ y^m exp(-y^(2 : ℕ)) J(y / sqrt tau) dy` converges as `tau -> infinity` to `J 0` times the fixed Gaussian
+moment `∫ y^m exp(-y^(2 : ℕ)) dy`, by dominated convergence with dominating function `C * ‖y^m exp(-y^(2 : ℕ))‖`. -/
 theorem tendsto_gaussianCooledMoment (J : ℝ → ℝ) (hJc : Continuous J)
     {C : ℝ} (hJb : ∀ x, |J x| ≤ C) (m : ℕ) :
     Tendsto (fun tau : ℝ => ∫ y, y ^ m * Real.exp (-y ^ 2) * J ((Real.sqrt tau)⁻¹ * y)) atTop

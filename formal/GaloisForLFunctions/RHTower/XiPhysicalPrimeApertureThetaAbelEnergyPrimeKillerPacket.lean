@@ -65,7 +65,7 @@ theorem exists_correctedPrimeKillerPacket_of_weil_re_lt
       XiPhysicalThetaAbelEnergyCorrectedPrimeKillerPacket L A c a B t := by
   let f : XiZeroCopy → ℂ := fun q =>
     xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-      (xiSpectralPoint q) ^ 2
+      (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable hA hc L a
   have htsum : (∑' q, f q).re < B := by

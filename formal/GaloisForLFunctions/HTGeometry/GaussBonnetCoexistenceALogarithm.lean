@@ -14,9 +14,9 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbCoexistenceAKernelPrimitive (τ u : ℝ) : ℝ :=
-  (1 + egbCoexistenceASymmetricRatio τ ^ 2) / (2 * egbCoexistenceASymmetricRatio τ ^ 3) *
+  (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (2 * egbCoexistenceASymmetricRatio τ ^ (3 : ℕ)) *
     (log (1 + egbCoexistenceASymmetricRatio τ * u) - log (1 - egbCoexistenceASymmetricRatio τ * u)) -
-      u / egbCoexistenceASymmetricRatio τ ^ 2
+      u / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)
 
 theorem egbCoexistenceASymmetricRatio_log_identity (τ : ℝ) :
     log (1 + egbCoexistenceASymmetricRatio τ) - log (1 - egbCoexistenceASymmetricRatio τ) = -log (thermalRatio τ) := by
@@ -45,7 +45,7 @@ theorem egbCoexistenceAKernel_primitive_integral (τ : ℝ) :
     positivity
   have hm : 0 < 1 - egbCoexistenceASymmetricRatio τ * u := by
     nlinarith [mul_nonneg (le_of_lt hd.1) (sub_nonneg.mpr huI.2)]
-  have hD : 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≠ 0 := by
+  have hD : 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≠ 0 := by
     have hprod := mul_pos hm hp
     apply ne_of_gt
     nlinarith
@@ -53,8 +53,8 @@ theorem egbCoexistenceAKernel_primitive_integral (τ : ℝ) :
   have hplus := ((hi.const_mul (egbCoexistenceASymmetricRatio τ)).const_add 1).log hp.ne'
   have hminus := ((hi.const_mul (egbCoexistenceASymmetricRatio τ)).const_sub 1).log hm.ne'
   have h := ((hplus.sub hminus).const_mul
-    ((1 + egbCoexistenceASymmetricRatio τ ^ 2) / (2 * egbCoexistenceASymmetricRatio τ ^ 3))).sub
-      (hi.div_const (egbCoexistenceASymmetricRatio τ ^ 2))
+    ((1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (2 * egbCoexistenceASymmetricRatio τ ^ (3 : ℕ)))).sub
+      (hi.div_const (egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)))
   apply h.congr_deriv
   unfold egbCoexistenceAKernelIntegrand
   norm_num only [id_eq]
@@ -64,8 +64,8 @@ theorem egbCoexistenceAKernel_primitive_integral (τ : ℝ) :
 
 theorem egbCoexistenceAKernel_log_integral (τ : ℝ) :
     (∫ u in (0 : ℝ)..1, egbCoexistenceAKernelIntegrand τ u) =
-      (1 + egbCoexistenceASymmetricRatio τ ^ 2) / (2 * egbCoexistenceASymmetricRatio τ ^ 3) *
-        (-log (thermalRatio τ)) - 1 / egbCoexistenceASymmetricRatio τ ^ 2 := by
+      (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (2 * egbCoexistenceASymmetricRatio τ ^ (3 : ℕ)) *
+        (-log (thermalRatio τ)) - 1 / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by
   rw [egbCoexistenceAKernel_primitive_integral]
   unfold egbCoexistenceAKernelPrimitive
   simp only [mul_one, mul_zero, add_zero, sub_zero, log_one, zero_div, sub_self]
@@ -73,9 +73,9 @@ theorem egbCoexistenceAKernel_log_integral (τ : ℝ) :
 
 /-- Polynomial-times-log identity used directly by the equal-Gibbs proof. -/
 theorem egbCoexistenceALogKernel_cubic_identity (τ : ℝ) :
-    (thermalRatio τ - 1) ^ 3 * egbCoexistenceALogKernel τ =
-      3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) * log (thermalRatio τ) -
-        4 * (thermalRatio τ ^ 2 + thermalRatio τ + 1) * (thermalRatio τ - 1) := by
+    (thermalRatio τ - 1) ^ (3 : ℕ) * egbCoexistenceALogKernel τ =
+      3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) * log (thermalRatio τ) -
+        4 * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) * (thermalRatio τ - 1) := by
   unfold egbCoexistenceALogKernel
   rw [egbCoexistenceAKernel_log_integral]
   unfold egbCoexistenceASymmetricRatio
@@ -88,8 +88,8 @@ theorem egbCoexistenceALogKernel_cubic_identity (τ : ℝ) :
 
 theorem egbCoexistenceALogKernel_logarithmic_formula (τ : ℝ) :
     egbCoexistenceALogKernel τ =
-      (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) * (log (thermalRatio τ) / (thermalRatio τ - 1)) -
-        4 * (thermalRatio τ ^ 2 + thermalRatio τ + 1)) / (thermalRatio τ - 1) ^ 2 := by
+      (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) * (log (thermalRatio τ) / (thermalRatio τ - 1)) -
+        4 * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)) / (thermalRatio τ - 1) ^ (2 : ℕ) := by
   have h := egbCoexistenceALogKernel_cubic_identity τ
   have hn : thermalRatio τ - 1 ≠ 0 := by linarith [thermalRatio_lt_one τ]
   field_simp

@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTZetaAsymptotics
 
 The four exact contour edges are reduced to one power-saving monomial.  Smoothing width
 `H = N^(1-s/3)` balances the sharp-comparison error with the left-edge smoothing loss, where `s`
-is the actual Route-T contour shift.  High edges are paid by `U >= N^4`.
+is the actual Route-T contour shift.  High edges are paid by `U >= N^(4 : ℕ)`.
 -/
 
 namespace RHTower.Sieve

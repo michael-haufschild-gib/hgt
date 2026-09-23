@@ -37,7 +37,7 @@ def electroweakMassEnergy (g h : ℝ) (x : EventQuaternion) : ℝ :=
 
 /-- Gram operator of the coupling-weighted vacuum displacement. -/
 def electroweakMassOperator (g h : ℝ) : EventQuaternion →ₗ[ℝ] EventQuaternion where
-  toFun x := ⟨g^2 * x.re, g^2 * x.imI,
+  toFun x := ⟨g^(2 : ℕ) * x.re, g^(2 : ℕ) * x.imI,
     g * (g * x.imJ - h * x.imK), -h * (g * x.imJ - h * x.imK)⟩
   map_add' x y := by
     ext <;> simp <;> ring
@@ -67,7 +67,7 @@ theorem electroweakMassEnergy_nonneg (g h : ℝ) (x : EventQuaternion) :
 /-- Charged squares and the one neutral square give the entire energy. -/
 theorem electroweakMassEnergy_eq (g h : ℝ) (x : EventQuaternion) :
     electroweakMassEnergy g h x =
-      g^2 * (x.re^2 + x.imI^2) + (g * x.imJ - h * x.imK)^2 := by
+      g^(2 : ℕ) * (x.re^(2 : ℕ) + x.imI^(2 : ℕ)) + (g * x.imJ - h * x.imK)^(2 : ℕ) := by
   rw [electroweakMassEnergy, electroweakVacuumDisplacement_coordinates]
   simp only [Quaternion.normSq_def']
   ring
@@ -108,18 +108,18 @@ theorem electroweakMassOperator_symmetric (g h : ℝ) (x y : EventQuaternion) :
 
 /-- First charged direction has eigenvalue `g²`. -/
 theorem electroweakMassOperator_charged_one (g h : ℝ) :
-    electroweakMassOperator g h 1 = g^2 • (1 : EventQuaternion) := by
+    electroweakMassOperator g h 1 = g^(2 : ℕ) • (1 : EventQuaternion) := by
   ext <;> simp [electroweakMassOperator]
 
 /-- Second charged direction has the same eigenvalue `g²`. -/
 theorem electroweakMassOperator_charged_I (g h : ℝ) :
-    electroweakMassOperator g h quaternionGaugeIValue = g^2 • quaternionGaugeIValue := by
+    electroweakMassOperator g h quaternionGaugeIValue = g^(2 : ℕ) • quaternionGaugeIValue := by
   ext <;> simp [electroweakMassOperator, quaternionGaugeIValue]
 
 /-- The massive neutral direction has eigenvalue `g² + h²`. -/
 theorem electroweakMassOperator_neutral (g h : ℝ) :
     electroweakMassOperator g h (electroweakNeutralMassive g h) =
-      (g^2 + h^2) • electroweakNeutralMassive g h := by
+      (g^(2 : ℕ) + h^(2 : ℕ)) • electroweakNeutralMassive g h := by
   ext <;> simp [electroweakMassOperator, electroweakNeutralMassive] <;> ring
 
 /-- The cancellation direction is exactly massless for every coupling. -/
@@ -137,7 +137,7 @@ theorem electroweakNeutral_orthogonal (g h : ℝ) :
 theorem electroweakNeutral_resolution (g h z b : ℝ) :
     (g*z - h*b) • electroweakNeutralMassive g h +
       (h*z + g*b) • electroweakPhotonDirection g h =
-        (g^2 + h^2) • (⟨0, 0, z, b⟩ : EventQuaternion) := by
+        (g^(2 : ℕ) + h^(2 : ℕ)) • (⟨0, 0, z, b⟩ : EventQuaternion) := by
   ext <;> simp [electroweakNeutralMassive, electroweakPhotonDirection] <;> ring
 
 /-- Kernel of the operator equals kernel of the vacuum action. -/
@@ -184,13 +184,13 @@ theorem electroweak_unbroken_iff_residual (u : ElectroweakGaugeGroup) :
 theorem electroweakMassOperator_cubic (g h : ℝ) (x : EventQuaternion) :
     electroweakMassOperator g h (electroweakMassOperator g h
         (electroweakMassOperator g h x)) -
-      (2*g^2 + h^2) • electroweakMassOperator g h (electroweakMassOperator g h x) +
-      (g^2 * (g^2 + h^2)) • electroweakMassOperator g h x = 0 := by
+      (2*g^(2 : ℕ) + h^(2 : ℕ)) • electroweakMassOperator g h (electroweakMassOperator g h x) +
+      (g^(2 : ℕ) * (g^(2 : ℕ) + h^(2 : ℕ))) • electroweakMassOperator g h x = 0 := by
   ext <;> simp [electroweakMassOperator] <;> ring
 
 /-- The physical vacuum scale adds an exact all-massless branch at zero scale. -/
 theorem electroweak_scaled_mass_kernel (v g h : ℝ) (x : EventQuaternion) :
-    2 * v^2 * electroweakMassEnergy g h x = 0 ↔
+    2 * v^(2 : ℕ) * electroweakMassEnergy g h x = 0 ↔
       v = 0 ∨ electroweakVacuumDisplacement g h x = 0 := by
   rw [mul_eq_zero, mul_eq_zero, sq_eq_zero_iff,
     electroweakMassEnergy_eq_zero_iff]
@@ -198,18 +198,18 @@ theorem electroweak_scaled_mass_kernel (v g h : ℝ) (x : EventQuaternion) :
 
 /-- The entire neutral norm is recovered by the massive and cancellation coordinates. -/
 theorem electroweakNeutral_energy_resolution (g h z b : ℝ) :
-    (g*z - h*b)^2 + (h*z + g*b)^2 = (g^2 + h^2) * (z^2 + b^2) := by
+    (g*z - h*b)^(2 : ℕ) + (h*z + g*b)^(2 : ℕ) = (g^(2 : ℕ) + h^(2 : ℕ)) * (z^(2 : ℕ) + b^(2 : ℕ)) := by
   ring
 
 /-- The neutral massive and massless coordinates form a complete spectral list. -/
 theorem electroweakMassOperator_eigenvalues (g h μ : ℝ) :
     (∃ x : EventQuaternion, x ≠ 0 ∧ electroweakMassOperator g h x = μ • x) ↔
-      μ = 0 ∨ μ = g^2 ∨ μ = g^2 + h^2 := by
+      μ = 0 ∨ μ = g^(2 : ℕ) ∨ μ = g^(2 : ℕ) + h^(2 : ℕ) := by
   constructor
   · rintro ⟨x, hx, he⟩
     have hc := electroweakMassOperator_cubic g h x
     rw [he, map_smul, he, map_smul, map_smul, he] at hc
-    have hf : (μ * (μ - g^2) * (μ - (g^2+h^2))) • x = 0 := by
+    have hf : (μ * (μ - g^(2 : ℕ)) * (μ - (g^(2 : ℕ)+h^(2 : ℕ)))) • x = 0 := by
       convert hc using 1
       module
     have hz := (smul_eq_zero.mp hf).resolve_right hx
@@ -245,7 +245,7 @@ theorem electroweakVacuumDisplacement_action_expansion (g h t : ℝ) (x : EventQ
     (1 + t • electroweakLeftGenerator g x) * quaternionHiggsVacuum *
       (1 + t • electroweakRightGenerator h x) =
     quaternionHiggsVacuum + t • electroweakVacuumDisplacement g h x +
-      t^2 • (electroweakLeftGenerator g x * quaternionHiggsVacuum *
+      t^(2 : ℕ) • (electroweakLeftGenerator g x * quaternionHiggsVacuum *
         electroweakRightGenerator h x) := by
   simp only [electroweakVacuumDisplacement, quaternionHiggsVacuum,
     add_mul, mul_add, one_mul, mul_one, smul_add, smul_mul_assoc,

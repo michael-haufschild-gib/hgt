@@ -24,7 +24,7 @@ noncomputable section
 
 /-- Newton's quadratic identity for a real multiset, in the exact form used by admission roots. -/
 theorem multiset_sum_sq_sub_two_esymm_two (r : Multiset ℝ) :
-    r.sum ^ 2 - 2 * r.esymm 2 = (r.map fun x => x ^ 2).sum := by
+    r.sum ^ (2 : ℕ) - 2 * r.esymm 2 = (r.map fun x => x ^ (2 : ℕ)).sum := by
   induction r using Multiset.induction_on with
   | empty => simp [Multiset.esymm]
   | @cons a r ih =>
@@ -41,24 +41,24 @@ theorem multiset_sum_sq_sub_two_esymm_two (r : Multiset ℝ) :
 
 /-- Quadratic spread of a multiset relative to an externally supplied cardinality. -/
 def multisetQuadraticSpread (r : Multiset ℝ) (n : ℕ) : ℝ :=
-  (r.map fun x => x ^ 2).sum - r.sum ^ 2 / (n : ℝ)
+  (r.map fun x => x ^ (2 : ℕ)).sum - r.sum ^ (2 : ℕ) / (n : ℝ)
 
 /-- Quadratic spread is translation invariant and has weight two under dilation. -/
 theorem multisetQuadraticSpread_map_affine
     (r : Multiset ℝ) (n : ℕ) (c d : ℝ)
     (hcard : r.card = n) (hn : 0 < n) :
     multisetQuadraticSpread (r.map fun x => c * x + d) n =
-      c ^ 2 * multisetQuadraticSpread r n := by
+      c ^ (2 : ℕ) * multisetQuadraticSpread r n := by
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hn
   have hsum : (r.map fun x => c * x + d).sum =
       c * r.sum + (n : ℝ) * d := by
     rw [Multiset.sum_map_add, Multiset.sum_map_mul_left]
     simp [hcard]
-  have hsumsq : (r.map fun x => (c * x + d) ^ 2).sum =
-      c ^ 2 * (r.map fun x => x ^ 2).sum +
-        2 * c * d * r.sum + (n : ℝ) * d ^ 2 := by
-    simp_rw [show ∀ x : ℝ, (c * x + d) ^ 2 =
-        c ^ 2 * x ^ 2 + 2 * c * d * x + d ^ 2 by
+  have hsumsq : (r.map fun x => (c * x + d) ^ (2 : ℕ)).sum =
+      c ^ (2 : ℕ) * (r.map fun x => x ^ (2 : ℕ)).sum +
+        2 * c * d * r.sum + (n : ℝ) * d ^ (2 : ℕ) := by
+    simp_rw [show ∀ x : ℝ, (c * x + d) ^ (2 : ℕ) =
+        c ^ (2 : ℕ) * x ^ (2 : ℕ) + 2 * c * d * x + d ^ (2 : ℕ) by
       intro x
       ring]
     rw [Multiset.sum_map_add, Multiset.sum_map_add,
@@ -67,9 +67,9 @@ theorem multisetQuadraticSpread_map_affine
   unfold multisetQuadraticSpread
   rw [hsum]
   simpa only [Multiset.map_map, Function.comp_apply] using (show
-    (r.map fun x => (c * x + d) ^ 2).sum -
-        (c * r.sum + (n : ℝ) * d) ^ 2 / (n : ℝ) =
-      c ^ 2 * ((r.map fun x => x ^ 2).sum - r.sum ^ 2 / (n : ℝ)) by
+    (r.map fun x => (c * x + d) ^ (2 : ℕ)).sum -
+        (c * r.sum + (n : ℝ) * d) ^ (2 : ℕ) / (n : ℝ) =
+      c ^ (2 : ℕ) * ((r.map fun x => x ^ (2 : ℕ)).sum - r.sum ^ (2 : ℕ) / (n : ℝ)) by
     rw [hsumsq]
     field_simp [hn0]
     ring)
@@ -117,8 +117,8 @@ theorem monicOrtho_roots_esymm_two_eq_secondCoeff_below
 theorem monicOrtho_roots_sum_sq_eq_jacobiEnergy_below
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hn : 2 ≤ n) (hnN : n < N) :
-    ((monicOrtho s n).roots.map fun x => x ^ 2).sum =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+    ((monicOrtho s n).roots.map fun x => x ^ (2 : ℕ)).sum =
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by
   have hsum := monicOrtho_roots_sum_eq_sum_alpha_below h (by omega) hnN
   have hesymm := monicOrtho_roots_esymm_two_eq_secondCoeff_below h hn hnN
@@ -185,7 +185,7 @@ theorem projectiveHardEdgeGaussRootSpread_eq_four_mul_mass_sq_mul
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 2 ≤ n) (hnN : n < N) (y : ℝ) :
     projectiveHardEdgeGaussRootSpread y s n =
-      4 * y ^ 2 * projectiveGaussRootSpread s n := by
+      4 * y ^ (2 : ℕ) * projectiveGaussRootSpread s n := by
   have hsplit : (HTGeometry.monicOrtho s n).Splits := by
     obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt (by omega : 0 < n))
     simpa only using HTGeometry.monicOrtho_splits_below h (n := k) hnN
@@ -205,7 +205,7 @@ theorem projectiveJacobiRetainedInventory_eq_rootSpread_add_mismatch_add_edge
     (hn : 2 ≤ n) (hnN : n < N) :
     projectiveJacobiRetainedInventory s n =
       2 * (2 * n + 1 : ℝ) * projectiveGaussRootSpread s n +
-        2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ 2 +
+        2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ (2 : ℕ) +
         2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
           HTGeometry.monicOrthoBeta s n := by
   rw [projectiveJacobiRetainedInventory,
@@ -221,7 +221,7 @@ theorem rootSpread_part_le_projectiveJacobiRetainedInventory
       projectiveJacobiRetainedInventory s n := by
   rw [projectiveJacobiRetainedInventory_eq_rootSpread_add_mismatch_add_edge h hn hnN]
   have hmismatch : 0 ≤
-      2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ 2 :=
+      2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ (2 : ℕ) :=
     mul_nonneg (by positivity) (sq_nonneg _)
   have hedge : 0 ≤
       2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) * HTGeometry.monicOrthoBeta s n :=
@@ -241,7 +241,7 @@ theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_edges_add_root
         2 * (2 * n + 1 : ℝ) *
           projectiveGaussRootSpread (xiShiftedRealMomentSequence w) n +
         2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch
-          (xiShiftedRealMomentSequence w) n ^ 2 +
+          (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) +
         2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n := by
   rw [xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_nextEdge_add_retained
@@ -260,7 +260,7 @@ theorem xiShiftedCanonicalAdmissionRetainedProjectiveArithmeticWork_eq_rootSprea
         (2 * (2 * n + 1 : ℝ) *
             projectiveGaussRootSpread (xiShiftedRealMomentSequence w) n +
           2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch
-            (xiShiftedRealMomentSequence w) n ^ 2 +
+            (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) +
           2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
             HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n) := by
   unfold xiShiftedCanonicalAdmissionRetainedProjectiveArithmeticWork
@@ -276,16 +276,16 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_projectiveWork_eq_nextNo
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     let s := xiShiftedRealMomentSequence w
     let alpha := HTGeometry.monicOrthoAlpha s n
-    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
     let h := HTGeometry.monicOrthoNormSq s n
     let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
       (HTGeometry.monicMomentAdmissionPolynomial s n)
     (2 * n + 1 : ℝ) *
-        (source - h * (alpha * F + 2 * (n : ℝ) * alpha ^ 2)) - h * F ^ 2 =
+        (source - h * (alpha * F + 2 * (n : ℝ) * alpha ^ (2 : ℕ))) - h * F ^ (2 : ℕ) =
       2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
           HTGeometry.monicOrthoNormSq s (n + 1) +
         h * (2 * (2 * n + 1 : ℝ) * projectiveGaussRootSpread s n +
-          2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ 2 +
+          2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ (2 : ℕ) +
           2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
             HTGeometry.monicOrthoBeta s n) := by
   dsimp only

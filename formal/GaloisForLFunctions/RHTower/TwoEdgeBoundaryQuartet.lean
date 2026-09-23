@@ -109,7 +109,7 @@ def quartetEdge (δ T : ℝ) : ℂ := (δ : ℂ) + (T : ℂ) * Complex.I
 
 /-- **Equation `(7)`.**  The Weil contribution of a functional-equation/Schwarz quartet. -/
 def quartetContribution (f : ℝ → ℝ) (L a : ℝ) (w : ℂ) : ℝ :=
-  4 * ((twoEdgeTransform f L a w) ^ 2).re
+  4 * ((twoEdgeTransform f L a w) ^ (2 : ℕ)).re
 
 theorem quartetContribution_eq_mul (f : ℝ → ℝ) (L a : ℝ) (w : ℂ) :
     quartetContribution f L a w
@@ -121,18 +121,18 @@ theorem quartetContribution_expand (f : ℝ → ℝ) (L a δ T : ℝ) :
     quartetContribution f L a (quartetEdge δ T)
       = 4 * Real.exp (2 * a * δ)
           * (Complex.exp (((2 * a * T : ℝ) : ℂ) * Complex.I)
-              * (edgeLaplace f L (quartetEdge δ T)) ^ 2).re
+              * (edgeLaplace f L (quartetEdge δ T)) ^ (2 : ℕ)).re
         + 8 * (edgeLaplace f L (quartetEdge δ T)
               * edgeLaplace f L (-(quartetEdge δ T))).re
         + 4 * Real.exp (-(2 * a * δ))
           * (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I))
-              * (edgeLaplace f L (-(quartetEdge δ T))) ^ 2).re := by
+              * (edgeLaplace f L (-(quartetEdge δ T))) ^ (2 : ℕ)).re := by
   set w : ℂ := quartetEdge δ T with hw
   set A : ℂ := edgeLaplace f L w with hA
   set B : ℂ := edgeLaplace f L (-w) with hB
-  have hsq : (twoEdgeTransform f L a w) ^ 2
-      = Complex.exp (2 * (a : ℂ) * w) * A ^ 2 + 2 * (A * B)
-        + Complex.exp (-(2 * (a : ℂ) * w)) * B ^ 2 := by
+  have hsq : (twoEdgeTransform f L a w) ^ (2 : ℕ)
+      = Complex.exp (2 * (a : ℂ) * w) * A ^ (2 : ℕ) + 2 * (A * B)
+        + Complex.exp (-(2 * (a : ℂ) * w)) * B ^ (2 : ℕ) := by
     rw [twoEdgeTransform_eq]
     have h1 : Complex.exp ((a : ℂ) * w) * Complex.exp ((a : ℂ) * w)
         = Complex.exp (2 * (a : ℂ) * w) := by
@@ -143,7 +143,7 @@ theorem quartetContribution_expand (f : ℝ → ℝ) (L a δ T : ℝ) :
     have h3 : Complex.exp ((a : ℂ) * w) * Complex.exp (-((a : ℂ) * w)) = 1 := by
       rw [← Complex.exp_add]; simp
     rw [← hA, ← hB]
-    linear_combination (A ^ 2) * h1 + (B ^ 2) * h2 + (2 * A * B) * h3
+    linear_combination (A ^ (2 : ℕ)) * h1 + (B ^ (2 : ℕ)) * h2 + (2 * A * B) * h3
   have hsplitPos : Complex.exp (2 * (a : ℂ) * w)
       = ((Real.exp (2 * a * δ) : ℝ) : ℂ) * Complex.exp (((2 * a * T : ℝ) : ℂ) * Complex.I) := by
     rw [Complex.ofReal_exp, ← Complex.exp_add]
@@ -173,8 +173,8 @@ def apertureSeq (A : ℂ) (T : ℝ) (k : ℕ) : ℝ :=
 
 /-- **Equation `(9)`.**  At these apertures the leading oscillatory factor is exactly `-‖A‖²`. -/
 theorem exp_apertureSeq_mul_sq (A : ℂ) {T : ℝ} (hT : 0 < T) (k : ℕ) :
-    Complex.exp (((2 * apertureSeq A T k * T : ℝ) : ℂ) * Complex.I) * A ^ 2
-      = -((‖A‖ ^ 2 : ℝ) : ℂ) := by
+    Complex.exp (((2 * apertureSeq A T k * T : ℝ) : ℂ) * Complex.I) * A ^ (2 : ℕ)
+      = -((‖A‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hphase : (2 * apertureSeq A T k * T : ℝ) = Real.pi - 2 * A.arg + 2 * Real.pi * k := by
     rw [apertureSeq]
     field_simp
@@ -182,7 +182,7 @@ theorem exp_apertureSeq_mul_sq (A : ℂ) {T : ℝ} (hT : 0 < T) (k : ℕ) :
   set θ : ℝ := A.arg with hθ
   have hA : A = (r : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) := by
     rw [hr, hθ]; exact (Complex.norm_mul_exp_arg_mul_I A).symm
-  have hsq : (Complex.exp ((θ : ℂ) * Complex.I)) ^ 2
+  have hsq : (Complex.exp ((θ : ℂ) * Complex.I)) ^ (2 : ℕ)
       = Complex.exp (2 * (θ : ℂ) * Complex.I) := by
     rw [sq, ← Complex.exp_add]; congr 1; ring
   have hexp : Complex.exp (((Real.pi - 2 * θ + 2 * Real.pi * (k : ℕ) : ℝ) : ℂ) * Complex.I)
@@ -195,8 +195,8 @@ theorem exp_apertureSeq_mul_sq (A : ℂ) {T : ℝ} (hT : 0 < T) (k : ℕ) :
     rw [hval, Complex.exp_add, Complex.exp_pi_mul_I, Complex.exp_int_mul_two_pi_mul_I, mul_one]
   rw [hphase, hA, mul_pow, hsq]
   rw [show (Complex.exp (((Real.pi - 2 * θ + 2 * Real.pi * (k : ℕ) : ℝ) : ℂ) * Complex.I)
-      * ((r : ℂ) ^ 2 * Complex.exp (2 * (θ : ℂ) * Complex.I)))
-      = ((r : ℂ) ^ 2) * (Complex.exp (((Real.pi - 2 * θ + 2 * Real.pi * (k : ℕ) : ℝ) : ℂ)
+      * ((r : ℂ) ^ (2 : ℕ) * Complex.exp (2 * (θ : ℂ) * Complex.I)))
+      = ((r : ℂ) ^ (2 : ℕ)) * (Complex.exp (((Real.pi - 2 * θ + 2 * Real.pi * (k : ℕ) : ℝ) : ℂ)
         * Complex.I) * Complex.exp (2 * (θ : ℂ) * Complex.I)) from by ring]
   rw [hexp]
   push_cast
@@ -223,22 +223,22 @@ theorem quartetContribution_apertureSeq_le (f : ℝ → ℝ) (L δ T : ℝ) {hT 
     (hak : 0 ≤ apertureSeq (edgeLaplace f L (quartetEdge δ T)) T k) (hδ : 0 ≤ δ) :
     quartetContribution f L (apertureSeq (edgeLaplace f L (quartetEdge δ T)) T k)
         (quartetEdge δ T)
-      ≤ -(4 * ‖edgeLaplace f L (quartetEdge δ T)‖ ^ 2)
+      ≤ -(4 * ‖edgeLaplace f L (quartetEdge δ T)‖ ^ (2 : ℕ))
           * Real.exp (2 * apertureSeq (edgeLaplace f L (quartetEdge δ T)) T k * δ)
         + (8 * (‖edgeLaplace f L (quartetEdge δ T)‖
               * ‖edgeLaplace f L (-(quartetEdge δ T))‖)
-            + 4 * ‖edgeLaplace f L (-(quartetEdge δ T))‖ ^ 2) := by
+            + 4 * ‖edgeLaplace f L (-(quartetEdge δ T))‖ ^ (2 : ℕ)) := by
   set A : ℂ := edgeLaplace f L (quartetEdge δ T) with hA
   set B : ℂ := edgeLaplace f L (-(quartetEdge δ T)) with hB
   set a : ℝ := apertureSeq A T k with ha
   rw [quartetContribution_expand]
-  have hlead : (Complex.exp (((2 * a * T : ℝ) : ℂ) * Complex.I) * A ^ 2).re = -‖A‖ ^ 2 := by
+  have hlead : (Complex.exp (((2 * a * T : ℝ) : ℂ) * Complex.I) * A ^ (2 : ℕ)).re = -‖A‖ ^ (2 : ℕ) := by
     rw [ha, exp_apertureSeq_mul_sq A hT k]
     rw [Complex.neg_re, Complex.ofReal_re]
   have hmid : (A * B).re ≤ ‖A‖ * ‖B‖ := by
     refine le_trans (Complex.re_le_norm _) ?_
     rw [norm_mul]
-  have htail : (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ 2).re ≤ ‖B‖ ^ 2 := by
+  have htail : (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ (2 : ℕ)).re ≤ ‖B‖ ^ (2 : ℕ) := by
     refine le_trans (Complex.re_le_norm _) ?_
     rw [norm_mul, norm_pow]
     have hnorm : ‖Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I))‖ = 1 := by
@@ -251,17 +251,17 @@ theorem quartetContribution_apertureSeq_le (f : ℝ → ℝ) (L δ T : ℝ) {hT 
     rw [Real.exp_le_one_iff]
     have : 0 ≤ 2 * a * δ := by positivity
     linarith
-  have hBsq : (0 : ℝ) ≤ ‖B‖ ^ 2 := by positivity
+  have hBsq : (0 : ℝ) ≤ ‖B‖ ^ (2 : ℕ) := by positivity
   have hexppos : (0 : ℝ) < Real.exp (2 * a * δ) := Real.exp_pos _
   rw [hlead]
   have hterm3 : 4 * Real.exp (-(2 * a * δ))
-      * (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ 2).re
-      ≤ 4 * ‖B‖ ^ 2 := by
+      * (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ (2 : ℕ)).re
+      ≤ 4 * ‖B‖ ^ (2 : ℕ) := by
     have h1 : Real.exp (-(2 * a * δ))
-        * (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ 2).re
-        ≤ Real.exp (-(2 * a * δ)) * ‖B‖ ^ 2 :=
+        * (Complex.exp (-(((2 * a * T : ℝ) : ℂ) * Complex.I)) * B ^ (2 : ℕ)).re
+        ≤ Real.exp (-(2 * a * δ)) * ‖B‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left htail (Real.exp_pos _).le
-    have h2 : Real.exp (-(2 * a * δ)) * ‖B‖ ^ 2 ≤ 1 * ‖B‖ ^ 2 :=
+    have h2 : Real.exp (-(2 * a * δ)) * ‖B‖ ^ (2 : ℕ) ≤ 1 * ‖B‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hexpneg hBsq
     linarith
   nlinarith [hmid, hterm3, hexppos]
@@ -281,18 +281,18 @@ theorem tendsto_quartetContribution_atBot (f : ℝ → ℝ) (L δ T : ℝ) (hδ 
     Filter.Tendsto.atTop_mul_const hδ (Filter.Tendsto.const_mul_atTop (by norm_num) hseq)
   have hexp : Tendsto (fun k : ℕ => Real.exp (2 * apertureSeq A T k * δ)) atTop atTop :=
     Real.tendsto_exp_atTop.comp hlin
-  have hApos : (0 : ℝ) < 4 * ‖A‖ ^ 2 := by
+  have hApos : (0 : ℝ) < 4 * ‖A‖ ^ (2 : ℕ) := by
     have : (0 : ℝ) < ‖A‖ := norm_pos_iff.mpr hAne
     positivity
-  have hgrow : Tendsto (fun k : ℕ => (4 * ‖A‖ ^ 2)
+  have hgrow : Tendsto (fun k : ℕ => (4 * ‖A‖ ^ (2 : ℕ))
       * Real.exp (2 * apertureSeq A T k * δ)) atTop atTop :=
     Filter.Tendsto.const_mul_atTop hApos hexp
-  have hneg : Tendsto (fun k : ℕ => -((4 * ‖A‖ ^ 2)
+  have hneg : Tendsto (fun k : ℕ => -((4 * ‖A‖ ^ (2 : ℕ))
       * Real.exp (2 * apertureSeq A T k * δ))) atTop atBot :=
     Filter.tendsto_neg_atTop_atBot.comp hgrow
-  have hbound : Tendsto (fun k : ℕ => -((4 * ‖A‖ ^ 2)
+  have hbound : Tendsto (fun k : ℕ => -((4 * ‖A‖ ^ (2 : ℕ))
       * Real.exp (2 * apertureSeq A T k * δ))
-      + (8 * (‖A‖ * ‖B‖) + 4 * ‖B‖ ^ 2)) atTop atBot :=
+      + (8 * (‖A‖ * ‖B‖) + 4 * ‖B‖ ^ (2 : ℕ))) atTop atBot :=
     Filter.tendsto_atBot_add_const_right _ _ hneg
   refine tendsto_atBot_mono' _ ?_ hbound
   have hev : ∀ᶠ k : ℕ in atTop, 0 ≤ apertureSeq A T k := hseq.eventually_ge_atTop 0
@@ -345,27 +345,27 @@ by the profile transform data alone, uniformly in the aperture. -/
 theorem abs_quartetContribution_imaginary_le (f : ℝ → ℝ) (L a t : ℝ) :
     |quartetContribution f L a ((t : ℂ) * Complex.I)|
       ≤ 4 * (‖edgeLaplace f L ((t : ℂ) * Complex.I)‖
-          + ‖edgeLaplace f L (-((t : ℂ) * Complex.I))‖) ^ 2 := by
+          + ‖edgeLaplace f L (-((t : ℂ) * Complex.I))‖) ^ (2 : ℕ) := by
   set G : ℂ := twoEdgeTransform f L a ((t : ℂ) * Complex.I) with hG
   set S : ℝ := ‖edgeLaplace f L ((t : ℂ) * Complex.I)‖
       + ‖edgeLaplace f L (-((t : ℂ) * Complex.I))‖ with hS
   have hGS : ‖G‖ ≤ S := norm_twoEdgeTransform_imaginary_le f L a t
   have hSnn : 0 ≤ S := le_trans (norm_nonneg _) hGS
-  have hre : |(G ^ 2).re| ≤ ‖G‖ ^ 2 := by
+  have hre : |(G ^ (2 : ℕ)).re| ≤ ‖G‖ ^ (2 : ℕ) := by
     refine le_trans (Complex.abs_re_le_norm _) ?_
     rw [norm_pow]
-  have hsq : ‖G‖ ^ 2 ≤ S ^ 2 := by
+  have hsq : ‖G‖ ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ (norm_nonneg _) hGS 2
   rw [quartetContribution, abs_mul]
   have h4 : |(4 : ℝ)| = 4 := by norm_num
   rw [h4]
-  have : |(G ^ 2).re| ≤ S ^ 2 := le_trans hre hsq
+  have : |(G ^ (2 : ℕ)).re| ≤ S ^ (2 : ℕ) := le_trans hre hsq
   linarith
 
 /-- Summability of the all-line background, uniformly in the aperture. -/
 theorem summable_quartetContribution_imaginary (f : ℝ → ℝ) (L a : ℝ) (t : ℕ → ℝ)
     (hsum : Summable fun n => (‖edgeLaplace f L ((t n : ℂ) * Complex.I)‖
-      + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ 2) :
+      + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ (2 : ℕ)) :
     Summable fun n => quartetContribution f L a ((t n : ℂ) * Complex.I) := by
   refine Summable.of_abs ?_
   refine Summable.of_nonneg_of_le (fun n => abs_nonneg _)
@@ -376,10 +376,10 @@ theorem summable_quartetContribution_imaginary (f : ℝ → ℝ) (L a : ℝ) (t 
 aperture. -/
 theorem abs_tsum_quartetContribution_imaginary_le (f : ℝ → ℝ) (L a : ℝ) (t : ℕ → ℝ)
     (hsum : Summable fun n => (‖edgeLaplace f L ((t n : ℂ) * Complex.I)‖
-      + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ 2) :
+      + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ (2 : ℕ)) :
     |∑' n, quartetContribution f L a ((t n : ℂ) * Complex.I)|
       ≤ 4 * ∑' n, (‖edgeLaplace f L ((t n : ℂ) * Complex.I)‖
-          + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ 2 := by
+          + ‖edgeLaplace f L (-((t n : ℂ) * Complex.I))‖) ^ (2 : ℕ) := by
   rw [← Real.norm_eq_abs]
   refine tsum_of_norm_bounded (hsum.hasSum.mul_left 4) fun n => ?_
   rw [Real.norm_eq_abs]
@@ -490,8 +490,8 @@ theorem norm_integral_oscillatory_le' (c : ℂ) {T : ℝ} (hT : T ≠ 0) (Y : �
         rw [show (2 : ℝ) / (2 * |T|) = 1 / |T| from by field_simp]
         ring
 
-theorem re_sq_eq (z : ℂ) : z.re ^ 2 = ((z ^ 2).re + ‖z‖ ^ 2) / 2 := by
-  have hsq : (z ^ 2).re = z.re * z.re - z.im * z.im := by
+theorem re_sq_eq (z : ℂ) : z.re ^ (2 : ℕ) = ((z ^ (2 : ℕ)).re + ‖z‖ ^ (2 : ℕ)) / 2 := by
+  have hsq : (z ^ (2 : ℕ)).re = z.re * z.re - z.im * z.im := by
     rw [sq, Complex.mul_re]
   rw [hsq, Complex.sq_norm, Complex.normSq_apply]
   ring
@@ -502,7 +502,7 @@ def trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) : ℂ :
   ∑ j, c j * Complex.exp (((2 * a * T j : ℝ) : ℂ) * Complex.I)
 
 theorem trigPoly_sq {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) :
-    (trigPoly c T a) ^ 2
+    (trigPoly c T a) ^ (2 : ℕ)
       = ∑ j, ∑ k, (c j * c k)
           * Complex.exp (((2 * a * (T j + T k) : ℝ) : ℂ) * Complex.I) := by
   rw [trigPoly, sq, Finset.sum_mul_sum]
@@ -530,11 +530,11 @@ theorem conj_trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ
   ring
 
 theorem trigPoly_normSq {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) :
-    ((‖trigPoly c T a‖ ^ 2 : ℝ) : ℂ)
+    ((‖trigPoly c T a‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ j, ∑ k, (c j * (starRingEnd ℂ) (c k))
           * Complex.exp (((2 * a * (T j - T k) : ℝ) : ℂ) * Complex.I) := by
   have hmul : trigPoly c T a * (starRingEnd ℂ) (trigPoly c T a)
-      = ((‖trigPoly c T a‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖trigPoly c T a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [Complex.mul_conj, Complex.sq_norm]
   rw [← hmul, conj_trigPoly, trigPoly, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
@@ -549,7 +549,7 @@ theorem trigPoly_normSq {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : �
   ring
 
 theorem trigPolyRe_sq {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) :
-    ((trigPoly c T a).re) ^ 2
+    ((trigPoly c T a).re) ^ (2 : ℕ)
       = ((∑ j, ∑ k, (c j * c k)
             * Complex.exp (((2 * a * (T j + T k) : ℝ) : ℂ) * Complex.I)).re
         + (∑ j, ∑ k, (c j * (starRingEnd ℂ) (c k))
@@ -585,7 +585,7 @@ open MeasureTheory in
 coefficient energy, with a remainder bounded independently of the length of the interval. -/
 theorem abs_integral_trigPolyRe_sq_sub_le {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
     (hT : ∀ j, 0 < T j) (hinj : Function.Injective T) (Y : ℝ) :
-    |(∫ a in (0 : ℝ)..Y, ((trigPoly c T a).re) ^ 2) - (Y / 2) * (∑ j, ‖c j‖ ^ 2)|
+    |(∫ a in (0 : ℝ)..Y, ((trigPoly c T a).re) ^ (2 : ℕ)) - (Y / 2) * (∑ j, ‖c j‖ ^ (2 : ℕ))|
       ≤ ((∑ j, ∑ k, ‖c j * c k‖ / |T j + T k|)
           + ∑ j, ∑ k ∈ Finset.univ.erase j,
               ‖c j * (starRingEnd ℂ) (c k)‖ / |T j - T k|) / 2 := by
@@ -600,14 +600,14 @@ theorem abs_integral_trigPolyRe_sq_sub_le {r : ℕ} (c : Fin r → ℂ) (T : Fin
   have hcontD : Continuous Dsum := by
     rw [hDsum]
     exact continuous_finsetSum _ fun j _ => continuous_finsetSum _ fun k _ => by fun_prop
-  have hpt : ∀ a : ℝ, ((trigPoly c T a).re) ^ 2 = ((Ssum a).re + (Dsum a).re) / 2 := by
+  have hpt : ∀ a : ℝ, ((trigPoly c T a).re) ^ (2 : ℕ) = ((Ssum a).re + (Dsum a).re) / 2 := by
     intro a
     exact trigPolyRe_sq c T a
   have hintS : IntervalIntegrable (fun a : ℝ => (Ssum a).re) volume 0 Y :=
     (Complex.continuous_re.comp hcontS).intervalIntegrable 0 Y
   have hintD : IntervalIntegrable (fun a : ℝ => (Dsum a).re) volume 0 Y :=
     (Complex.continuous_re.comp hcontD).intervalIntegrable 0 Y
-  have hsplit : (∫ a in (0 : ℝ)..Y, ((trigPoly c T a).re) ^ 2)
+  have hsplit : (∫ a in (0 : ℝ)..Y, ((trigPoly c T a).re) ^ (2 : ℕ))
       = ((∫ a in (0 : ℝ)..Y, (Ssum a).re) + ∫ a in (0 : ℝ)..Y, (Dsum a).re) / 2 := by
     rw [intervalIntegral.integral_congr (g := fun a : ℝ => ((Ssum a).re + (Dsum a).re) / 2)
       (fun a _ => hpt a)]
@@ -638,7 +638,7 @@ theorem abs_integral_trigPolyRe_sq_sub_le {r : ℕ} (c : Fin r → ℂ) (T : Fin
   have hcontDoff : Continuous Doff := by
     rw [hDoff]
     exact continuous_finsetSum _ fun j _ => continuous_finsetSum _ fun k _ => by fun_prop
-  have hDsplit : ∀ a : ℝ, Dsum a = ((∑ j, ‖c j‖ ^ 2 : ℝ) : ℂ) + Doff a := by
+  have hDsplit : ∀ a : ℝ, Dsum a = ((∑ j, ‖c j‖ ^ (2 : ℕ) : ℝ) : ℂ) + Doff a := by
     intro a
     rw [hDsum, hDoff, Complex.ofReal_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -665,25 +665,25 @@ theorem abs_integral_trigPolyRe_sq_sub_le {r : ℕ} (c : Fin r → ℂ) (T : Fin
     intro hzero
     exact hkj (hinj (by linarith [sub_eq_zero.mp hzero]))
   have hDre : (∫ a in (0 : ℝ)..Y, (Dsum a).re)
-      = Y * (∑ j, ‖c j‖ ^ 2) + (∫ a in (0 : ℝ)..Y, Doff a).re := by
+      = Y * (∑ j, ‖c j‖ ^ (2 : ℕ)) + (∫ a in (0 : ℝ)..Y, Doff a).re := by
     have hfun : (fun a : ℝ => (Dsum a).re)
-        = fun a : ℝ => (∑ j, ‖c j‖ ^ 2) + (Doff a).re := by
+        = fun a : ℝ => (∑ j, ‖c j‖ ^ (2 : ℕ)) + (Doff a).re := by
       funext a
       rw [hDsplit a, Complex.add_re, Complex.ofReal_re]
     have hoff : (∫ a in (0 : ℝ)..Y, (Doff a).re) = (∫ a in (0 : ℝ)..Y, Doff a).re :=
       intervalIntegral_re (hcontDoff.intervalIntegrable 0 Y)
     rw [hfun, intervalIntegral.integral_add
-      (f := fun _ : ℝ => (∑ j, ‖c j‖ ^ 2)) (g := fun a : ℝ => (Doff a).re)
+      (f := fun _ : ℝ => (∑ j, ‖c j‖ ^ (2 : ℕ))) (g := fun a : ℝ => (Doff a).re)
       intervalIntegrable_const
       ((Complex.continuous_re.comp hcontDoff).intervalIntegrable 0 Y),
       intervalIntegral.integral_const, hoff]
     simp [smul_eq_mul]
-  have hDabs : |(∫ a in (0 : ℝ)..Y, (Dsum a).re) - Y * (∑ j, ‖c j‖ ^ 2)|
+  have hDabs : |(∫ a in (0 : ℝ)..Y, (Dsum a).re) - Y * (∑ j, ‖c j‖ ^ (2 : ℕ))|
       ≤ ∑ j, ∑ k ∈ Finset.univ.erase j,
           ‖c j * (starRingEnd ℂ) (c k)‖ / |T j - T k| := by
     rw [hDre]
-    have hval : Y * (∑ j, ‖c j‖ ^ 2) + (∫ a in (0 : ℝ)..Y, Doff a).re
-        - Y * (∑ j, ‖c j‖ ^ 2) = (∫ a in (0 : ℝ)..Y, Doff a).re := by ring
+    have hval : Y * (∑ j, ‖c j‖ ^ (2 : ℕ)) + (∫ a in (0 : ℝ)..Y, Doff a).re
+        - Y * (∑ j, ‖c j‖ ^ (2 : ℕ)) = (∫ a in (0 : ℝ)..Y, Doff a).re := by ring
     rw [hval]
     exact le_trans (Complex.abs_re_le_norm _) hDoffbound
   have h1 := abs_le.mp hSabs
@@ -725,7 +725,7 @@ theorem exists_neg_trigPolyRe {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
     ∃ η : ℝ, 0 < η ∧ ∀ A₀ : ℝ, ∃ a : ℝ, A₀ ≤ a ∧ (trigPoly c T a).re ≤ -η := by
   classical
   set P : ℝ → ℝ := fun a => (trigPoly c T a).re with hP
-  set S : ℝ := ∑ j, ‖c j‖ ^ 2 with hSdef
+  set S : ℝ := ∑ j, ‖c j‖ ^ (2 : ℕ) with hSdef
   set B : ℝ := ∑ j, ‖c j‖ with hBdef
   set M₀ : ℝ := ∑ j, ‖c j‖ / T j with hM₀
   set C : ℝ := ((∑ j, ∑ k, ‖c j * c k‖ / |T j + T k|)
@@ -789,22 +789,22 @@ theorem exists_neg_trigPolyRe {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
     rw [Set.uIcc_of_le hAY] at ha
     have := hcon a ha.1
     linarith
-  have hQle : ∀ a ∈ Set.uIcc A₀ Y, (P a + η) ^ 2 ≤ (B + η) * (P a + η) := by
+  have hQle : ∀ a ∈ Set.uIcc A₀ Y, (P a + η) ^ (2 : ℕ) ≤ (B + η) * (P a + η) := by
     intro a ha
     have h0 := hQnn a ha
     have hb := (abs_le.mp (hPbound a)).2
     nlinarith
   -- integral comparisons
-  have hint1 : IntervalIntegrable (fun a => (P a + η) ^ 2) volume A₀ Y :=
+  have hint1 : IntervalIntegrable (fun a => (P a + η) ^ (2 : ℕ)) volume A₀ Y :=
     (((hPcont.add continuous_const)).pow 2).intervalIntegrable A₀ Y
   have hint2 : IntervalIntegrable (fun a => (B + η) * (P a + η)) volume A₀ Y :=
     ((continuous_const.mul (hPcont.add continuous_const))).intervalIntegrable A₀ Y
-  have hmono : (∫ a in A₀..Y, (P a + η) ^ 2) ≤ ∫ a in A₀..Y, (B + η) * (P a + η) :=
+  have hmono : (∫ a in A₀..Y, (P a + η) ^ (2 : ℕ)) ≤ ∫ a in A₀..Y, (B + η) * (P a + η) :=
     intervalIntegral.integral_mono_on hAY hint1 hint2 (fun a ha => hQle a (by
       rw [Set.uIcc_of_le hAY]; exact ha))
   -- integrability of the pieces
   have hPint : IntervalIntegrable P volume A₀ Y := hPcont.intervalIntegrable A₀ Y
-  have hP2int : IntervalIntegrable (fun a => P a ^ 2) volume A₀ Y :=
+  have hP2int : IntervalIntegrable (fun a => P a ^ (2 : ℕ)) volume A₀ Y :=
     (hPcont.pow 2).intervalIntegrable A₀ Y
   -- the linear integral
   set I : ℝ := ∫ a in A₀..Y, P a with hI
@@ -819,8 +819,8 @@ theorem exists_neg_trigPolyRe {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
     rw [abs_le]
     constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
   -- the quadratic integral
-  set J : ℝ := ∫ a in A₀..Y, P a ^ 2 with hJ
-  have hJsplit : J = (∫ a in (0 : ℝ)..Y, P a ^ 2) - ∫ a in (0 : ℝ)..A₀, P a ^ 2 := by
+  set J : ℝ := ∫ a in A₀..Y, P a ^ (2 : ℕ) with hJ
+  have hJsplit : J = (∫ a in (0 : ℝ)..Y, P a ^ (2 : ℕ)) - ∫ a in (0 : ℝ)..A₀, P a ^ (2 : ℕ) := by
     rw [hJ]
     exact (intervalIntegral.integral_interval_sub_left
       ((hPcont.pow 2).intervalIntegrable 0 Y)
@@ -830,15 +830,15 @@ theorem exists_neg_trigPolyRe {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
     have h1 := abs_le.mp (abs_integral_trigPolyRe_sq_sub_le c T hT hinj Y)
     have h2 := abs_le.mp (abs_integral_trigPolyRe_sq_sub_le c T hT hinj A₀)
     linarith [h1.1, h2.2]
-  have hLHS : (∫ a in A₀..Y, (P a + η) ^ 2) = J + 2 * η * I + η ^ 2 * (Y - A₀) := by
-    have hfun : (fun a : ℝ => (P a + η) ^ 2)
-        = fun a : ℝ => P a ^ 2 + (2 * η * P a + η ^ 2) := by
+  have hLHS : (∫ a in A₀..Y, (P a + η) ^ (2 : ℕ)) = J + 2 * η * I + η ^ (2 : ℕ) * (Y - A₀) := by
+    have hfun : (fun a : ℝ => (P a + η) ^ (2 : ℕ))
+        = fun a : ℝ => P a ^ (2 : ℕ) + (2 * η * P a + η ^ (2 : ℕ)) := by
       funext a; ring
     rw [hfun,
-      intervalIntegral.integral_add (f := fun a : ℝ => P a ^ 2)
-        (g := fun a : ℝ => 2 * η * P a + η ^ 2) hP2int
+      intervalIntegral.integral_add (f := fun a : ℝ => P a ^ (2 : ℕ))
+        (g := fun a : ℝ => 2 * η * P a + η ^ (2 : ℕ)) hP2int
         (((continuous_const.mul hPcont).add continuous_const).intervalIntegrable A₀ Y),
-      intervalIntegral.integral_add (f := fun a : ℝ => 2 * η * P a) (g := fun _ : ℝ => η ^ 2)
+      intervalIntegral.integral_add (f := fun a : ℝ => 2 * η * P a) (g := fun _ : ℝ => η ^ (2 : ℕ))
         ((continuous_const.mul hPcont).intervalIntegrable A₀ Y) intervalIntegrable_const,
       intervalIntegral.integral_const_mul, intervalIntegral.integral_const, ← hJ, ← hI]
     simp only [smul_eq_mul]
@@ -856,12 +856,12 @@ theorem exists_neg_trigPolyRe {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ)
   have hab := abs_le.mp hIbound
   have hIle : (B + η) * I - 2 * η * I ≤ 2 * (B + η) * M₀ + 4 * η * M₀ := by
     nlinarith [hab.1, hab.2, hBnn, hηpos.le, hM₀nn]
-  have hcoef : S / 4 ≤ S / 2 + η ^ 2 - (B + η) * η := by
+  have hcoef : S / 4 ≤ S / 2 + η ^ (2 : ℕ) - (B + η) * η := by
     nlinarith [hηkey, sq_nonneg η]
-  have hkey : Z * (S / 2 + η ^ 2 - (B + η) * η) ≤ 2 * C + ((B + η) * I - 2 * η * I) := by
+  have hkey : Z * (S / 2 + η ^ (2 : ℕ) - (B + η) * η) ≤ 2 * C + ((B + η) * I - 2 * η * I) := by
     nlinarith [hmono, hJbound]
   have hfinal : Z * (S / 4) ≤ K := by
-    have h1 : Z * (S / 4) ≤ Z * (S / 2 + η ^ 2 - (B + η) * η) :=
+    have h1 : Z * (S / 4) ≤ Z * (S / 2 + η ^ (2 : ℕ) - (B + η) * η) :=
       mul_le_mul_of_nonneg_left hcoef hZpos.le
     rw [hK]
     linarith [h1, hkey, hIle]

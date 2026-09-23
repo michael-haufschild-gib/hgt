@@ -27,7 +27,7 @@ theorem card_mul_omitted_le_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q
     (w : ℕ → ℝ) (hwp : ∀ p ∈ P, w p < (p : ℝ))
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ)) :
     (A.card : ℝ) * ∑ p ∈ P, w p / ((p : ℝ) - w p)
-      ≤ (Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ) := by
+      ≤ (Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ) := by
   have hbase := montgomery_sieve_sharp N hN hQ A hA hAne P hP
   have hcard : (0 : ℝ) ≤ (A.card : ℝ) := by positivity
   have hmono : ∑ p ∈ P, w p / ((p : ℝ) - w p)
@@ -48,7 +48,7 @@ theorem card_le_of_sieve_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (
     (w : ℕ → ℝ) (hwp : ∀ p ∈ P, w p < (p : ℝ))
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ))
     {L : ℝ} (hL : 0 < L) (hLle : L ≤ ∑ p ∈ P, w p / ((p : ℝ) - w p)) :
-    (A.card : ℝ) ≤ ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) / L := by
+    (A.card : ℝ) ≤ ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) / L := by
   have hbase := card_mul_omitted_le_sharp N hN hQ A hA hAne P hP w hwp hocc
   have hcard : (0 : ℝ) ≤ (A.card : ℝ) := by positivity
   rw [le_div_iff₀ hL]
@@ -62,7 +62,7 @@ theorem card_le_of_half_omitted_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 �
     (hwp : ∀ p ∈ P, w p < (p : ℝ))
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ)) :
     (A.card : ℝ)
-      ≤ 3 * ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) / (P.card : ℝ) := by
+      ≤ 3 * ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) / (P.card : ℝ) := by
   have hPcard : (0 : ℝ) < (P.card : ℝ) := by
     have := Finset.card_pos.mpr hPne
     exact_mod_cast this
@@ -79,8 +79,8 @@ theorem card_le_of_half_omitted_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 �
     exact Finset.sum_le_sum hratio
   have hLpos : (0 : ℝ) < (P.card : ℝ) / 3 := by positivity
   have hbase := card_le_of_sieve_sharp N hN hQ A hA hAne P hP w hwp hocc hLpos hL
-  have heq : ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) / ((P.card : ℝ) / 3)
-      = 3 * ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) / (P.card : ℝ) := by
+  have heq : ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) / ((P.card : ℝ) / 3)
+      = 3 * ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) / (P.card : ℝ) := by
     rw [div_div_eq_mul_div, mul_comm]
   rw [heq] at hbase
   exact hbase

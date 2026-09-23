@@ -148,27 +148,27 @@ theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_of_rationalMomentEnclo
     ThetaCuspFirstAtomSingleGibbsRelaxedCertificate]
   constructor
   · rw [hUeq]
-    change (14 * (3005 / 2997 : ℝ) ^ 2 - 9) * J1 ^ 2 * U ≤
-      9 * J0 * C ^ 2
+    change (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) * J1 ^ (2 : ℕ) * U ≤
+      9 * J0 * C ^ (2 : ℕ)
     calc
-      (14 * (3005 / 2997 : ℝ) ^ 2 - 9) * J1 ^ 2 * U ≤
-          (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-            (0.00047155079379 : ℝ) ^ 2 *
+      (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) * J1 ^ (2 : ℕ) * U ≤
+          (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+            (0.00047155079379 : ℝ) ^ (2 : ℕ) *
               (0.00397751749476338850697725 : ℝ) := by
             gcongr
       _ ≤ 9 * (0.0036560148424 : ℝ) *
-          (0.000369937497095 : ℝ) ^ 2 := by norm_num
-      _ ≤ 9 * J0 * C ^ 2 := by gcongr
+          (0.000369937497095 : ℝ) ^ (2 : ℕ) := by norm_num
+      _ ≤ 9 * J0 * C ^ (2 : ℕ) := by gcongr
   · change 16 * ((3005 / 2997 : ℝ) * E0) *
-      ((3005 / 2997 : ℝ) * J1) ≤ 45 * J0 ^ 2
+      ((3005 / 2997 : ℝ) * J1) ≤ 45 * J0 ^ (2 : ℕ)
     calc
       16 * ((3005 / 2997 : ℝ) * E0) *
           ((3005 / 2997 : ℝ) * J1) ≤
           16 * ((3005 / 2997 : ℝ) * (0.0790918959010 : ℝ)) *
             ((3005 / 2997 : ℝ) * (0.00047155079379 : ℝ)) := by
               gcongr
-      _ ≤ 45 * (0.0036560148424 : ℝ) ^ 2 := by norm_num
-      _ ≤ 45 * J0 ^ 2 := by gcongr
+      _ ≤ 45 * (0.0036560148424 : ℝ) ^ (2 : ℕ) := by norm_num
+      _ ≤ 45 * J0 ^ (2 : ℕ) := by gcongr
 
 /-- The finite rational enclosure is already sufficient for every linear source trace-Hankel
 test. -/

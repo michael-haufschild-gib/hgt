@@ -79,7 +79,7 @@ structure PWGlobalReciprocalFEReflectionData where
   mapsPositive : ∀ {x : ℝ}, 0 < x → 0 < energyMap x
   mellinGradeOne : ∀ {x : ℝ}, 0 < x → weight x = x⁻¹
   mellinGradeTwo : ∀ {x : ℝ}, 0 < x →
-    weight x * energyMap x = x⁻¹ ^ 2
+    weight x * energyMap x = x⁻¹ ^ (2 : ℕ)
 
 /-- The forced reciprocal map and weight realize the global two-grade
 functional-equation reverse. -/

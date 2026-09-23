@@ -8,7 +8,7 @@ relative thermal estimate only needs a height bound on off-line atoms.  Charging
 functional-equation--Schwarz copies improves the relevant height floor from
 `C⁻¹ - 1` to `4 * C⁻¹ - 1`.  The exact source-dependent orientation factor becomes
 
-`16 * C * (4 - C) / (16 - 5 * C)^2`,
+`16 * C * (4 - C) / (16 - 5 * C)^(2 : ℕ)`,
 
 which is strictly below `1 / 84` under the certified endpoint bound `C < 93 / 2000`.
 -/
@@ -23,12 +23,12 @@ noncomputable section
 /-- The exact orientation factor after the off-line FE--Schwarz quartet is charged as one orbit. -/
 def xiThermalQuartetRelativeOrientationFactor : ℝ :=
   16 * xiEndpointCompletedCurvature * (4 - xiEndpointCompletedCurvature) /
-    (16 - 5 * xiEndpointCompletedCurvature) ^ 2
+    (16 - 5 * xiEndpointCompletedCurvature) ^ (2 : ℕ)
 
 theorem xiThermalQuartetRelativeOrientationFactor_eq_boundaryRatio :
     xiThermalQuartetRelativeOrientationFactor =
       ((4 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature) /
-        ((4 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature - 1 / 4) ^ 2 := by
+        ((4 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature - 1 / 4) ^ (2 : ℕ) := by
   have hCne := xiEndpointCompletedCurvature_pos.ne'
   unfold xiThermalQuartetRelativeOrientationFactor
   field_simp [hCne]
@@ -62,13 +62,13 @@ theorem xiThermalQuartetRelativeOrientationFactor_lt_one_eightyFourth :
     nlinarith
   have hproduct : 0 < (c₀ - c) * (5536 - 1369 * (c₀ + c)) :=
     mul_pos hgap hlinear
-  have hbase : 0 < 256 - 5536 * c₀ + 1369 * c₀ ^ 2 := by
+  have hbase : 0 < 256 - 5536 * c₀ + 1369 * c₀ ^ (2 : ℕ) := by
     dsimp only [c₀]
     norm_num
-  have hpoly : 0 < 256 - 5536 * c + 1369 * c ^ 2 := by
+  have hpoly : 0 < 256 - 5536 * c + 1369 * c ^ (2 : ℕ) := by
     nlinarith [hproduct, hbase]
   unfold xiThermalQuartetRelativeOrientationFactor
-  change 16 * c * (4 - c) / (16 - 5 * c) ^ 2 < 1 / 84
+  change 16 * c * (4 - c) / (16 - 5 * c) ^ (2 : ℕ) < 1 / 84
   rw [div_lt_iff₀ (sq_pos_of_pos hden)]
   nlinarith
 
@@ -79,8 +79,8 @@ theorem xiThermalQuartetRelativeOrientationFactor_lt_one :
 /-- **Quartet atomwise orientation estimate.**  On-line atoms contribute zero transverse energy;
 off-line atoms obey the four-charge height floor. -/
 theorem xiThermalOrientationTerm_le_quartetRelativeFactor_node_sq (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      xiThermalQuartetRelativeOrientationFactor * xiThermalNode q ^ 2 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      xiThermalQuartetRelativeOrientationFactor * xiThermalNode q ^ (2 : ℕ) := by
   by_cases hon : (q.1 : ℂ).re = 1 / 2
   · have hfactor := xiThermalQuartetRelativeOrientationFactor_nonneg
     rw [xiZeroCopyReciprocalSquare_im_formula, hon]
@@ -88,9 +88,9 @@ theorem xiThermalOrientationTerm_le_quartetRelativeFactor_node_sq (q : XiZeroCop
     exact mul_nonneg hfactor (sq_nonneg (xiThermalNode q))
   let c : ℝ := xiEndpointCompletedCurvature
   let a : ℝ := (4 - c) / c
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let D : ℝ := (u + v) ^ 2
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+  let D : ℝ := (u + v) ^ (2 : ℕ)
   have hc0 : 0 < c := by simpa only [c] using xiEndpointCompletedCurvature_pos
   have hc : c < 93 / 2000 := by
     simpa only [c] using
@@ -116,25 +116,25 @@ theorem xiThermalOrientationTerm_le_quartetRelativeFactor_node_sq (q : XiZeroCop
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
   change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2 ≤
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
     xiThermalQuartetRelativeOrientationFactor *
-      (((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2
-  rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-    show (q.1 : ℂ).im ^ 2 = v by rfl,
-    show (u + v) ^ 2 = D by rfl,
+      (((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)
+  rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+    show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+    show (u + v) ^ (2 : ℕ) = D by rfl,
     xiThermalQuartetRelativeOrientationFactor_eq_boundaryRatio]
-  change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im / D) ^ 2 ≤
-    (a / (a - 1 / 4) ^ 2) * ((v - u) / D) ^ 2
+  change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im / D) ^ (2 : ℕ) ≤
+    (a / (a - 1 / 4) ^ (2 : ℕ)) * ((v - u) / D) ^ (2 : ℕ)
   rw [div_pow, div_pow]
-  rw [show (a / (a - 1 / 4) ^ 2) * ((v - u) ^ 2 / D ^ 2) =
-      ((a / (a - 1 / 4) ^ 2) * (v - u) ^ 2) / D ^ 2 by ring]
+  rw [show (a / (a - 1 / 4) ^ (2 : ℕ)) * ((v - u) ^ (2 : ℕ) / D ^ (2 : ℕ)) =
+      ((a / (a - 1 / 4) ^ (2 : ℕ)) * (v - u) ^ (2 : ℕ)) / D ^ (2 : ℕ) by ring]
   apply (div_le_div_iff_of_pos_right (sq_pos_of_pos hD)).2
   calc
-    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 = 4 * u * v := by
+    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) = 4 * u * v := by
       dsimp [u, v]
       ring
-    _ ≤ (a / (a - 1 / 4) ^ 2) * (v - u) ^ 2 := hratio
+    _ ≤ (a / (a - 1 / 4) ^ (2 : ℕ)) * (v - u) ^ (2 : ℕ) := hratio
 
 /-- The global thermal orientation energy obeys the exact four-orbit factor. -/
 theorem xiThermalOrientationEnergy_le_quartetRelativeFactor_secondMoment :

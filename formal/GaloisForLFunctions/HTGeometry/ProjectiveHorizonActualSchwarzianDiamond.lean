@@ -382,9 +382,9 @@ theorem map_freeJetSchwarzian
       (differentialJet 3 (freeJetBase C) / differentialJet 1 (freeJetBase C) -
         (3 / 2 : FreeScalarJetField C) *
           (differentialJet 2 (freeJetBase C) /
-            differentialJet 1 (freeJetBase C)) ^ 2) =
+            differentialJet 1 (freeJetBase C)) ^ (2 : ℕ)) =
     differentialJet 3 x / differentialJet 1 x -
-      (3 / 2 : E) * (differentialJet 2 x / differentialJet 1 x) ^ 2
+      (3 / 2 : E) * (differentialJet 2 x / differentialJet 1 x) ^ (2 : ℕ)
   simp only [map_sub, map_div₀, map_mul, map_pow]
   have hbase : phi (freeJetBase C) = x := by
     change ((e (freeJetBase C) : J) : E) = x

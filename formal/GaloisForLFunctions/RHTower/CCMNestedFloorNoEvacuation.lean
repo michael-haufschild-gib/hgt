@@ -208,7 +208,7 @@ theorem apertureDomain_mono {a b : ℝ} (h : a ≤ b) : apertureDomain a ⊆ ape
   exact ⟨by linarith, by linarith⟩
 
 /-- The `L²` mass of a trial function. -/
-def sqMass (v : ℝ → ℝ) : ℝ := ∫ x : ℝ, v x ^ 2
+def sqMass (v : ℝ → ℝ) : ℝ := ∫ x : ℝ, v x ^ (2 : ℕ)
 
 /-- The restricted floor of the two-variable kernel form at aperture `a`. -/
 def restrictedKernelFloor (K : ℝ → ℝ) (a : ℝ) : ℝ :=
@@ -237,19 +237,19 @@ theorem rayleighQuotientSet_apertureDomain_nonempty (K : ℝ → ℝ) {a : ℝ} 
     intro x hx
     rw [← hsupp]
     exact hx
-  have hsup2 : (Function.support fun x : ℝ => (F : ℝ → ℝ) x ^ 2) = Ioo (-a) a := by
+  have hsup2 : (Function.support fun x : ℝ => (F : ℝ → ℝ) x ^ (2 : ℕ)) = Ioo (-a) a := by
     rw [← hsupp]
     ext x
     simp [Function.mem_support]
-  have hcs : HasCompactSupport fun x : ℝ => (F : ℝ → ℝ) x ^ 2 := by
+  have hcs : HasCompactSupport fun x : ℝ => (F : ℝ → ℝ) x ^ (2 : ℕ) := by
     have h := F.hasCompactSupport
     simp only [HasCompactSupport, tsupport] at h ⊢
     rw [hsup2, ← hsupp]
     exact h
-  have hint : Integrable fun x : ℝ => (F : ℝ → ℝ) x ^ 2 :=
+  have hint : Integrable fun x : ℝ => (F : ℝ → ℝ) x ^ (2 : ℕ) :=
     (F.continuous.pow 2).integrable_of_hasCompactSupport hcs
-  have hnn : (0 : ℝ → ℝ) ≤ fun x : ℝ => (F : ℝ → ℝ) x ^ 2 := fun x => sq_nonneg _
-  have hpos : 0 < ∫ x : ℝ, (F : ℝ → ℝ) x ^ 2 := by
+  have hnn : (0 : ℝ → ℝ) ≤ fun x : ℝ => (F : ℝ → ℝ) x ^ (2 : ℕ) := fun x => sq_nonneg _
+  have hpos : 0 < ∫ x : ℝ, (F : ℝ → ℝ) x ^ (2 : ℕ) := by
     rw [integral_pos_iff_support_of_nonneg hnn hint, hsup2, Real.volume_Ioo]
     have : (0 : ℝ) < a - -a := by linarith
     simpa using this

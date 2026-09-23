@@ -28,19 +28,19 @@ theorem measurable_norm_primeBlockPoly (B : Finset ℕ) :
 /-- **One block, split by the level sets of the prime polynomial.** -/
 theorem integral_normSq_blockProduct_levelSplit (a : ℕ → ℂ) (B D : Finset ℕ) {G : ℝ}
     {V₀ : ℝ} (hV₀ : 0 < V₀) {J : ℕ} (hJ : ((B.card : ℕ) : ℝ) ≤ 2 ^ J * V₀) :
-    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2)
-      ≤ V₀ ^ 2 * (∫ w in Set.Icc (-G) G, ‖logPoly a D w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * (∫ w in Set.Icc (-G) G, ‖logPoly a D w‖ ^ (2 : ℕ))
         + ∑ j ∈ Finset.range J,
-            (2 ^ (j + 1) * V₀) ^ 2
+            (2 ^ (j + 1) * V₀) ^ (2 : ℕ)
               * ∫ w in Set.Icc (-G) G ∩ {w | 2 ^ j * V₀ ≤ ‖primeBlockPoly B w‖},
-                  ‖logPoly a D w‖ ^ 2 := by
+                  ‖logPoly a D w‖ ^ (2 : ℕ) := by
   classical
   have hcontP : Continuous fun w : ℝ => ‖primeBlockPoly B w‖ :=
     (continuous_primeBlockPoly B).norm
-  have hcontC : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ 2 :=
+  have hcontC : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly a D).norm).pow 2
-  have hrw : (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2)
-      = ∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w‖ ^ 2 * ‖logPoly a D w‖ ^ 2 := by
+  have hrw : (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      = ∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖logPoly a D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
     simp only []
     rw [norm_mul, mul_pow]

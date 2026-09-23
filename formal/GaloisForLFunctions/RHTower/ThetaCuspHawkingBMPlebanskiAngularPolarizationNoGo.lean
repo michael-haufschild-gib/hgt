@@ -10,10 +10,10 @@ of the horizon Hessian.  This module gives an unconditional local classification
 At the physical rapidity-chart point `(tau,xi,sigma)=(0,1,1)`, compare the zero jet with a jet
 whose only second derivatives are
 
-`partial_x^2 f = -1`, `partial_sigma^2 f = 1`.
+`partial_x^(2 : ℕ) f = -1`, `partial_sigma^(2 : ℕ) f = 1`.
 
 Their value, complete first jet, and hyperbolic Laplacian trace agree.  Nevertheless the diagonal
-flat Plebanski bracket of the traceless jet is exactly `-sech(1)^2/16`, hence nonzero.  Therefore
+flat Plebanski bracket of the traceless jet is exactly `-sech(1)^(2 : ℕ)/16`, hence nonzero.  Therefore
 the scalar angular eigenvalue and scalar triple vertex cannot reconstruct the HC94 source.  The
 positive survivor is precise: the angular input must retain a spin-two/traceless-Hessian
 polarization (or an equivalent derivative Eisenstein vertex).
@@ -80,7 +80,7 @@ theorem d4BMUnitTracelessHorizonHessian_scalarData_eq_zero :
     d4BMUnitTracelessHorizonHessianSecondJet, d4BMZeroFullSecondJet]
 
 /-- Exact physical-chart evaluation: the diagonal coordinate Plebanski bracket detects the
-traceless horizon Hessian by the nonzero coefficient `-sech(1)^2/16`. -/
+traceless horizon Hessian by the nonzero coefficient `-sech(1)^(2 : ℕ)/16`. -/
 theorem ads4PlebanskiJacobiDoubleBracket_tracelessHorizonWitness_eq :
     ads4PlebanskiJacobiDoubleBracketOnBMFullSecondJets
         0
@@ -89,7 +89,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_tracelessHorizonWitness_eq :
         0 1 1
         d4BMUnitTracelessHorizonHessianSecondJet
         d4BMUnitTracelessHorizonHessianSecondJet =
-      -(d4BMRindlerRapiditySech 1 : ℂ) ^ 2 / 16 := by
+      -(d4BMRindlerRapiditySech 1 : ℂ) ^ (2 : ℕ) / 16 := by
   have haR : Real.tanh (1 : ℝ) ≠ 0 := by
     rw [Real.tanh_eq_sinh_div_cosh]
     exact div_ne_zero (Real.sinh_ne_zero.mpr one_ne_zero)
@@ -103,12 +103,12 @@ theorem ads4PlebanskiJacobiDoubleBracket_tracelessHorizonWitness_eq :
   have haComplex : Complex.tanh (1 : ℂ) ≠ 0 := by
     simpa using ha
   have haCancel :
-      (Complex.tanh (1 : ℂ))⁻¹ * Complex.tanh (1 : ℂ) ^ 2 =
+      (Complex.tanh (1 : ℂ))⁻¹ * Complex.tanh (1 : ℂ) ^ (2 : ℕ) =
         Complex.tanh (1 : ℂ) := by
     field_simp [haComplex]
   have hbCancel :
       (d4BMRindlerRapiditySech 1 : ℂ)⁻¹ *
-          (d4BMRindlerRapiditySech 1 : ℂ) ^ 2 =
+          (d4BMRindlerRapiditySech 1 : ℂ) ^ (2 : ℕ) =
         (d4BMRindlerRapiditySech 1 : ℂ) := by
     field_simp [hb]
   simp [ads4PlebanskiJacobiDoubleBracketOnBMFullSecondJets,
@@ -167,10 +167,10 @@ theorem not_forall_pulledPlebanskiSelfBracket_eq_of_hyperbolicScalarData_eq :
     exact inv_ne_zero (ne_of_gt (Real.cosh_pos 1))
   have hb : (d4BMRindlerRapiditySech (1 : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast hbR
-  have hsquare : (d4BMRindlerRapiditySech 1 : ℂ) ^ 2 = 0 := by
+  have hsquare : (d4BMRindlerRapiditySech 1 : ℂ) ^ (2 : ℕ) = 0 := by
     calc
-      (d4BMRindlerRapiditySech 1 : ℂ) ^ 2 =
-          -16 * (-(d4BMRindlerRapiditySech 1 : ℂ) ^ 2 / 16) := by ring
+      (d4BMRindlerRapiditySech 1 : ℂ) ^ (2 : ℕ) =
+          -16 * (-(d4BMRindlerRapiditySech 1 : ℂ) ^ (2 : ℕ) / 16) := by ring
       _ = -16 * 0 := by rw [h]
       _ = 0 := by ring
   exact (pow_ne_zero 2 hb) hsquare

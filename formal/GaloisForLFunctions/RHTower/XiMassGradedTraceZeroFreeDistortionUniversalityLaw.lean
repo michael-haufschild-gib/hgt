@@ -54,21 +54,21 @@ divisor. -/
 theorem nine_mul_sq_im_xiSpectralPoint_le_of_xiMassTraceLineGrowth
     {a lam : ℝ} (ha : 1 / 2 ≤ a) (hlam : 0 ≤ lam)
     (hgrowth : xiMassTraceLineGrowth ha lam) (q : XiZeroCopy) :
-    9 * (xiSpectralPoint q).im ^ 2 ≤
-      (9 + a ^ 2) * lam ^ 2 := by
+    9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+      (9 + a ^ (2 : ℕ)) * lam ^ (2 : ℕ) := by
   obtain ⟨σ, C, hσ, hline⟩ := hgrowth
   have hmass :=
     (xiMassFamily ha).abs_im_le_of_line_growth_all
       hσ hlam hline q
   have hmasssq :
-      ((xiMassFamily ha).pt q).im ^ 2 ≤ lam ^ 2 := by
+      ((xiMassFamily ha).pt q).im ^ (2 : ℕ) ≤ lam ^ (2 : ℕ) := by
     rw [← sq_abs ((xiMassFamily ha).pt q).im]
     exact (sq_le_sq₀ (abs_nonneg _) hlam).mpr hmass
   calc
-    9 * (xiSpectralPoint q).im ^ 2 ≤
-        (9 + a ^ 2) * ((xiMassFamily ha).pt q).im ^ 2 :=
+    9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+        (9 + a ^ (2 : ℕ)) * ((xiMassFamily ha).pt q).im ^ (2 : ℕ) :=
       nine_mul_sq_im_xiSpectralPoint_le ha q
-    _ ≤ (9 + a ^ 2) * lam ^ 2 :=
+    _ ≤ (9 + a ^ (2 : ℕ)) * lam ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hmasssq (by positivity)
 
 /-- **Mass-graded Xi zero-free distortion law.**  Original transverse width bounds
@@ -80,8 +80,8 @@ theorem xiMass_gradedTrace_zeroFreeDistortionUniversality
       xiMassTraceLineGrowth ha lam) ∧
     (xiMassTraceLineGrowth ha lam →
       ∀ q : XiZeroCopy,
-        9 * (xiSpectralPoint q).im ^ 2 ≤
-          (9 + a ^ 2) * lam ^ 2) := by
+        9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+          (9 + a ^ (2 : ℕ)) * lam ^ (2 : ℕ)) := by
   exact
     ⟨xiMassTraceLineGrowth_of_xiZeroStrip ha hlam,
       fun h q =>

@@ -295,7 +295,7 @@ noncomputable def reflectionTateCohomologyEquivFixedParity
     (QuotientAddGroup.quotientKerEquivOfSurjective
       (reflectionTateFixedParity r) (reflectionTateFixedParity_surjective r))
 
-/-- If the reflection has exactly two fixed labels, its anomaly group is `(Z/2)^2`. -/
+/-- If the reflection has exactly two fixed labels, its anomaly group is `(Z/2)^(2 : ℕ)`. -/
 noncomputable def reflectionTateCohomologyEquivZModTwoSquared
     {ι : Type*} (r : ι ≃ ι) (hr : Function.Involutive r)
     (hfixed : ReflectionFixedPoint r ≃ Fin 2) :
@@ -374,7 +374,7 @@ noncomputable def unitAddCircleReflectionFixedEquivFinTwo :
       simpa [f, unitAddCircleTwoTorsion] using hx
   exact (Equiv.ofBijective f ⟨hinj, hsurj⟩).symm
 
-/-- The standard reflected Gamma shift circle has anomaly group exactly `(Z/2)^2`. -/
+/-- The standard reflected Gamma shift circle has anomaly group exactly `(Z/2)^(2 : ℕ)`. -/
 noncomputable def unitAddCircleReflectionTateCohomologyEquivZModTwoSquared :
     ReflectionTateCohomology unitAddCircleReflection (fun x => neg_neg x) ≃+
       (ZMod 2 × ZMod 2) :=

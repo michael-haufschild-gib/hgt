@@ -11,7 +11,7 @@ representations before discarding the adaptive null polynomial.
 
 For a coefficient vector `c`, base order `r`, and
 
-`A(u,x,w) = u * (w * log x + u / 2)`, `T(u,x,w) = A(u,x,w) / (2 * w^2)`,
+`A(u,x,w) = u * (w * log x + u / 2)`, `T(u,x,w) = A(u,x,w) / (2 * w^(2 : ℕ))`,
 
 the exact combined radial kernel is
 
@@ -20,7 +20,7 @@ the exact combined radial kernel is
 
 where
 
-`P^sharp(T) = sum_j c_j T^j / ((r+j)!)^2`.
+`P^sharp(T) = sum_j c_j T^j / ((r+j)!)^(2 : ℕ)`.
 
 Both the density and carrier argument are positive on `w > 0`, `x >= 1`, `u > 0`.  Therefore the
 remaining sign is exactly the distribution of the positive Gamma carrier across the sign

@@ -36,7 +36,7 @@ theorem exists_nonzero_pair_of_mul_eq_one {M N : Matrix (Fin n) (Fin n) ℝ} (h 
 
 /-- A nonzero integer entry has square at least one. -/
 theorem one_le_sq_of_int_ne_zero {x : ℝ} {z : ℤ} (hx : x = (z : ℝ)) (hne : x ≠ 0) :
-    (1 : ℝ) ≤ x ^ 2 := by
+    (1 : ℝ) ≤ x ^ (2 : ℕ) := by
   have hz : z ≠ 0 := by
     intro hcon
     exact hne (by rw [hx, hcon, Int.cast_zero])
@@ -50,15 +50,15 @@ theorem one_le_sq_of_int_ne_zero {x : ℝ} {z : ℤ} (hx : x = (z : ℝ)) (hne :
 theorem d_le_of_entry_ne_zero {J J' : JacobiData n} {t u c : ℝ} (ht : 1 ≤ t) (hc : 0 < c)
     (hS' : J'.IsSiegel t u) (hred' : ∀ a b : Fin n, a < b → |J'.U a b| ≤ 1 / 2)
     {γ : Matrix (Fin n) (Fin n) ℝ} (hγ : J'.form = γᵀ * J.form * γ)
-    (hquasi : ∀ v : Fin n → ℝ, c * (∑ m, J.d m * (v m) ^ 2) ≤ v ⬝ᵥ (J.form *ᵥ v))
+    (hquasi : ∀ v : Fin n → ℝ, c * (∑ m, J.d m * (v m) ^ (2 : ℕ)) ≤ v ⬝ᵥ (J.form *ᵥ v))
     {g : Matrix (Fin n) (Fin n) ℤ} (hg : ∀ a b, γ a b = (g a b : ℝ))
     {k i : Fin n} (hne : γ k i ≠ 0) :
     c * J.d k ≤ (1 + (n : ℝ) / 4 * t ^ n) * J'.d i := by
-  have hsq : (1 : ℝ) ≤ (γ k i) ^ 2 := one_le_sq_of_int_ne_zero (hg k i) hne
+  have hsq : (1 : ℝ) ≤ (γ k i) ^ (2 : ℕ) := one_le_sq_of_int_ne_zero (hg k i) hne
   have hbound := siegel_entry_bound ht hc hS' hred' hγ hquasi k i
   have hdk : (0 : ℝ) < J.d k := J.pos k
   have h0 : (0 : ℝ) ≤ c * J.d k := (mul_pos hc hdk).le
-  have hstep : c * J.d k ≤ c * (J.d k * (γ k i) ^ 2) := by nlinarith [hsq, h0]
+  have hstep : c * J.d k ≤ c * (J.d k * (γ k i) ^ (2 : ℕ)) := by nlinarith [hsq, h0]
   exact le_trans hstep hbound
 
 /-- **Every index of the congruate has a two-sidedly comparable partner.** -/

@@ -50,7 +50,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     (hlow18 : greenFunctionDyn c 0 + 1/8 ≤ Real.log rlo)
     {ra rb RW : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbRW : rb < RW) (hRWR : RW < R₀)
     (hrb14 : Real.log rb ≤ 2 * greenFunctionDyn c 0 - 1/4)
-    (hraRW : ra ^ 2 < RW)
+    (hraRW : ra ^ (2 : ℕ) < RW)
     (hRW12 : Real.log RW ≤ 4 * greenFunctionDyn c 0 - 1/2)
     {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi)
     (havoid : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
@@ -117,7 +117,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     hBconn.image _ ((hSLP j).1.continuousOn)
   -- the doubling window is nonempty
   have hrasqrt : ra < Real.sqrt RW := by
-    have h1 : Real.sqrt (ra ^ 2) < Real.sqrt RW :=
+    have h1 : Real.sqrt (ra ^ (2 : ℕ)) < Real.sqrt RW :=
       Real.sqrt_lt_sqrt (by positivity) hraRW
     rwa [Real.sqrt_sq (le_of_lt hrapos)] at h1
   have hWne : (arcAnnulus ra (Real.sqrt RW) J₁ J₂).Nonempty :=
@@ -126,12 +126,12 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     intro w hw
     have h1 : arcAnnulus ra (Real.sqrt RW) J₁ J₂ ⊆ arcAnnulus ra RW J₁ J₂ :=
       arcAnnulus_mono_radius (Real.sqrt_pos.mpr (by linarith)) (by
-        have h2 : Real.sqrt RW < Real.sqrt (RW ^ 2) :=
+        have h2 : Real.sqrt RW < Real.sqrt (RW ^ (2 : ℕ)) :=
           Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
         rw [Real.sqrt_sq (by linarith : (0:ℝ) ≤ RW)] at h2
         linarith)
     exact arcAnnulus_mono hαJ₁ hJ₂β (h1 hw)
-  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ 2 ∈ A := by
+  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ (2 : ℕ) ∈ A := by
     intro w hw
     apply sq_mem_arcAnnulus (r' := ra) (R' := Real.sqrt RW) _ _ hJ₁dbl hJ₂dbl hw
     · linarith [Real.log_pos (show (1:ℝ) < ra from by nlinarith)]
@@ -144,19 +144,19 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
   -- pairwise overlaps
   have hover0 : (P0 ∩ Pσ 1).Nonempty := by
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ 1 (w ^ 2), ?_, ?_⟩
+    refine ⟨σ 1 (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl 0 w hw
       rw [h1, hσ0]
       exact ⟨w, hAsubS w (hWsubA hw), rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hoverσ : ∀ j : ℕ, (Pσ j ∩ Pσ (j+1)).Nonempty := by
     intro j
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ (j+1) (w ^ 2), ?_, ?_⟩
+    refine ⟨σ (j+1) (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl j w hw
       rw [h1]
       exact ⟨w, hWsubA hw, rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hCne : (arcAnnulus ra rb α β).Nonempty :=
     (isConnected_arcAnnulus hrapos hrb hαβ).nonempty
   have hCsubB : arcAnnulus ra rb α β ⊆ B := arcAnnulus_subset _ _ hrapos hrb
@@ -286,7 +286,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
               exact Real.log_lt_log (lt_trans hrapos
                 (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -300,7 +300,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
             have h1 : Real.log ‖v‖ < Real.log rb :=
               Real.log_lt_log (lt_trans hrapos hv.1) hv.2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -328,12 +328,12 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
             rcases Nat.eq_zero_or_pos n with hn0 | hnpos
             · -- depth 1: the slit avoidance gives the norm floor directly
               subst hn0
-              have hsq1 : σ 1 v ^ 2 = σ 0 v - c := hσsq 0 v hv
+              have hsq1 : σ 1 v ^ (2 : ℕ) = σ 0 v - c := hσsq 0 v hv
               rw [hσ0] at hsq1
               have h5 := havoidA v hv
               rw [Metric.mem_closedBall, dist_eq_norm] at h5
               have h4 : 4 < ‖S.T v - c‖ := not_le.mp h5
-              have hn2 : ‖σ 1 v‖ ^ 2 = ‖S.T v - c‖ := by
+              have hn2 : ‖σ 1 v‖ ^ (2 : ℕ) = ‖S.T v - c‖ := by
                 rw [← norm_pow, hsq1]
               nlinarith [norm_nonneg (σ 1 v)]
             · -- depth ≥ 2: Green value below `4·(G_c(0) − 1/8) / 4`
@@ -344,7 +344,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
                 exact Real.log_lt_log (lt_trans hrapos
                   (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
               have h3 : (4:ℝ) ≤ 2 ^ (n+1) := by
-                calc (4:ℝ) = 2 ^ 2 := by norm_num
+                calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
                   _ ≤ 2 ^ (n+1) := by
                     apply pow_le_pow_right₀ (by norm_num)
                     omega
@@ -357,7 +357,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
             have h1 : Real.log ‖v‖ < Real.log rb :=
               Real.log_lt_log (lt_trans hrapos hv.1) hv.2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -473,12 +473,12 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     (hlow18 : greenFunctionDyn c 0 + 1/8 ≤ Real.log rlo)
     {ra rb RW : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbRW : rb < RW) (hRWR : RW < R₀)
     (hrb14 : Real.log rb ≤ 2 * greenFunctionDyn c 0 - 1/4)
-    (hraRW : ra ^ 2 < RW)
+    (hraRW : ra ^ (2 : ℕ) < RW)
     (hRW12 : Real.log RW ≤ 4 * greenFunctionDyn c 0 - 1/2)
-    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
+    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
     {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi)
     (havoid : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
-      S.T v ∉ Metric.closedBall c (s ^ 2))
+      S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)))
     (k : ℕ) :
     ∃ (Ext : Set ℂ) (SL : ℂ → ℂ),
       IsOpen Ext ∧ IsConnected Ext ∧
@@ -509,7 +509,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     hσsq, hσdbl, hσne⟩ :=
     exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1
       (by linarith [Real.pi_pos] : θs ≤ 2 * Real.pi) hslitne
-  have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c (s ^ 2) := by
+  have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)) := by
     rw [hαeq, hβeq]
     exact havoid
   obtain ⟨SL, hSL0, hSLP, hSLsq, hSLmatch, hSLne⟩ :=
@@ -541,7 +541,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     hBconn.image _ ((hSLP j).1.continuousOn)
   -- the doubling window is nonempty
   have hrasqrt : ra < Real.sqrt RW := by
-    have h1 : Real.sqrt (ra ^ 2) < Real.sqrt RW :=
+    have h1 : Real.sqrt (ra ^ (2 : ℕ)) < Real.sqrt RW :=
       Real.sqrt_lt_sqrt (by positivity) hraRW
     rwa [Real.sqrt_sq (le_of_lt hrapos)] at h1
   have hWne : (arcAnnulus ra (Real.sqrt RW) J₁ J₂).Nonempty :=
@@ -550,12 +550,12 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     intro w hw
     have h1 : arcAnnulus ra (Real.sqrt RW) J₁ J₂ ⊆ arcAnnulus ra RW J₁ J₂ :=
       arcAnnulus_mono_radius (Real.sqrt_pos.mpr (by linarith)) (by
-        have h2 : Real.sqrt RW < Real.sqrt (RW ^ 2) :=
+        have h2 : Real.sqrt RW < Real.sqrt (RW ^ (2 : ℕ)) :=
           Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
         rw [Real.sqrt_sq (by linarith : (0:ℝ) ≤ RW)] at h2
         linarith)
     exact arcAnnulus_mono hαJ₁ hJ₂β (h1 hw)
-  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ 2 ∈ A := by
+  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ (2 : ℕ) ∈ A := by
     intro w hw
     apply sq_mem_arcAnnulus (r' := ra) (R' := Real.sqrt RW) _ _ hJ₁dbl hJ₂dbl hw
     · linarith [Real.log_pos (show (1:ℝ) < ra from by nlinarith)]
@@ -568,19 +568,19 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
   -- pairwise overlaps
   have hover0 : (P0 ∩ Pσ 1).Nonempty := by
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ 1 (w ^ 2), ?_, ?_⟩
+    refine ⟨σ 1 (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl 0 w hw
       rw [h1, hσ0]
       exact ⟨w, hAsubS w (hWsubA hw), rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hoverσ : ∀ j : ℕ, (Pσ j ∩ Pσ (j+1)).Nonempty := by
     intro j
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ (j+1) (w ^ 2), ?_, ?_⟩
+    refine ⟨σ (j+1) (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl j w hw
       rw [h1]
       exact ⟨w, hWsubA hw, rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hCne : (arcAnnulus ra rb α β).Nonempty :=
     (isConnected_arcAnnulus hrapos hrb hαβ).nonempty
   have hCsubB : arcAnnulus ra rb α β ⊆ B := arcAnnulus_subset _ _ hrapos hrb
@@ -710,7 +710,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
               exact Real.log_lt_log (lt_trans hrapos
                 (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -724,7 +724,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
             have h1 : Real.log ‖v‖ < Real.log rb :=
               Real.log_lt_log (lt_trans hrapos hv.1) hv.2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -752,12 +752,12 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
             rcases Nat.eq_zero_or_pos n with hn0 | hnpos
             · -- depth 1: the slit avoidance gives the norm floor directly
               subst hn0
-              have hsq1 : σ 1 v ^ 2 = σ 0 v - c := hσsq 0 v hv
+              have hsq1 : σ 1 v ^ (2 : ℕ) = σ 0 v - c := hσsq 0 v hv
               rw [hσ0] at hsq1
               have h5 := havoidA v hv
               rw [Metric.mem_closedBall, dist_eq_norm] at h5
-              have h4 : s ^ 2 < ‖S.T v - c‖ := not_le.mp h5
-              have hn2 : ‖σ 1 v‖ ^ 2 = ‖S.T v - c‖ := by
+              have h4 : s ^ (2 : ℕ) < ‖S.T v - c‖ := not_le.mp h5
+              have hn2 : ‖σ 1 v‖ ^ (2 : ℕ) = ‖S.T v - c‖ := by
                 rw [← norm_pow, hsq1]
               nlinarith [norm_nonneg (σ 1 v), hs2]
             · -- depth ≥ 2: Green value below `4·(G_c(0) − 1/8) / 4`
@@ -768,7 +768,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
                 exact Real.log_lt_log (lt_trans hrapos
                   (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
               have h3 : (4:ℝ) ≤ 2 ^ (n+1) := by
-                calc (4:ℝ) = 2 ^ 2 := by norm_num
+                calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
                   _ ≤ 2 ^ (n+1) := by
                     apply pow_le_pow_right₀ (by norm_num)
                     omega
@@ -781,7 +781,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
             have h1 : Real.log ‖v‖ < Real.log rb :=
               Real.log_lt_log (lt_trans hrapos hv.1) hv.2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega

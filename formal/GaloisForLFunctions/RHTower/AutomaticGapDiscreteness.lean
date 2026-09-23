@@ -49,8 +49,8 @@ namespace RHTower
 /-- **The variational cross term.**  Along `h_t = cos t·h + sin t·φ` the form expands as
 `cos²t·Q(h) + 2 cos t sin t·B + sin²t·Q(φ)` with `B` the polarization. -/
 theorem variation_expansion (Qh Qφ B t : ℝ) :
-    (Real.cos t) ^ 2 * Qh + 2 * Real.cos t * Real.sin t * B + (Real.sin t) ^ 2 * Qφ
-      = Qh + (2 * Real.cos t * Real.sin t) * B + (Real.sin t) ^ 2 * (Qφ - Qh) := by
+    (Real.cos t) ^ (2 : ℕ) * Qh + 2 * Real.cos t * Real.sin t * B + (Real.sin t) ^ (2 : ℕ) * Qφ
+      = Qh + (2 * Real.cos t * Real.sin t) * B + (Real.sin t) ^ (2 : ℕ) * (Qφ - Qh) := by
   have hpy := Real.sin_sq_add_cos_sq t
   linear_combination Qh * hpy
 
@@ -59,8 +59,8 @@ in the appropriate direction strictly lowers the value: the second-order penalty
 first-order gain. -/
 theorem strict_decrease_of_cross {Qh Qφ B s : ℝ} (_hB : 0 < B) (hs : 0 < s)
     (hsmall : s * |Qφ - Qh| < 2 * B) :
-    Qh - (2 * s * B - s ^ 2 * |Qφ - Qh|) < Qh := by
-  have hkey : 0 < 2 * s * B - s ^ 2 * |Qφ - Qh| := by
+    Qh - (2 * s * B - s ^ (2 : ℕ) * |Qφ - Qh|) < Qh := by
+  have hkey : 0 < 2 * s * B - s ^ (2 : ℕ) * |Qφ - Qh| := by
     have hmul : s * (s * |Qφ - Qh|) < s * (2 * B) := by
       exact mul_lt_mul_of_pos_left hsmall hs
     nlinarith [hmul, hs]

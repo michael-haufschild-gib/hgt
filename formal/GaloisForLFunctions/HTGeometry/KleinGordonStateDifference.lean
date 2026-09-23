@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
 /-- A state with vanishing first component has the norm of its second. -/
 theorem norm_kgPair_zero_left (z : Lp ℂ 2 (volume : Measure E)) :
     ‖kgPair E ((0 : Lp ℂ 2 (volume : Measure E)), z)‖ = ‖z‖ := by
-  have h : ‖kgPair E ((0 : Lp ℂ 2 (volume : Measure E)), z)‖ ^ 2 = ‖z‖ ^ 2 := by
+  have h : ‖kgPair E ((0 : Lp ℂ 2 (volume : Measure E)), z)‖ ^ (2 : ℕ) = ‖z‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd, norm_zero]
     ring
   have h1 : (0 : ℝ) ≤ ‖kgPair E ((0 : Lp ℂ 2 (volume : Measure E)), z)‖ := norm_nonneg _

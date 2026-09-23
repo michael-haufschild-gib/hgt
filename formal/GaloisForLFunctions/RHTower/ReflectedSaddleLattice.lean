@@ -33,7 +33,7 @@ def reflectedPhaseDeriv (T : ℝ) (k : ℕ) (x : ℝ) : ℝ :=
 
 /-- The second derivative of the reflected-block phase; the mode index does not occur. -/
 def reflectedPhaseSecond (T : ℝ) (_k : ℕ) (x : ℝ) : ℝ :=
-  -T * (x ^ 2)⁻¹
+  -T * (x ^ (2 : ℕ))⁻¹
 
 /-- The reflected phase has the stated first derivative away from `0`. -/
 theorem reflectedPhase_hasDerivAt {T : ℝ} {k : ℕ} {x : ℝ} (hx : x ≠ 0) :
@@ -51,8 +51,8 @@ theorem reflectedPhase_hasDerivAt {T : ℝ} {k : ℕ} {x : ℝ} (hx : x ≠ 0) :
 /-- The reflected phase derivative has second derivative `-T/x²`, independent of the mode. -/
 theorem reflectedPhaseDeriv_hasDerivAt {T : ℝ} {k : ℕ} {x : ℝ} (hx : x ≠ 0) :
     HasDerivAt (reflectedPhaseDeriv T k) (reflectedPhaseSecond T k x) x := by
-  have hinv : HasDerivAt (fun y : ℝ => y⁻¹) (-(x ^ 2)⁻¹) x := hasDerivAt_inv hx
-  have hT : HasDerivAt (fun y : ℝ => T * y⁻¹) (T * (-(x ^ 2)⁻¹)) x := hinv.const_mul T
+  have hinv : HasDerivAt (fun y : ℝ => y⁻¹) (-(x ^ (2 : ℕ))⁻¹) x := hasDerivAt_inv hx
+  have hT : HasDerivAt (fun y : ℝ => T * y⁻¹) (T * (-(x ^ (2 : ℕ))⁻¹)) x := hinv.const_mul T
   have hconst : HasDerivAt (fun _y : ℝ => -(2 * Real.pi * ((k + 1 : ℕ) : ℝ))) 0 x :=
     hasDerivAt_const x _
   convert! hconst.add hT using 1

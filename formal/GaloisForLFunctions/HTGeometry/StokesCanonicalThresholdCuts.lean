@@ -122,7 +122,7 @@ theorem cutSide_pendant (d : NatContactDendrogram m K N) (i j : Fin m) :
 /-- Threshold-class indicators are idempotent. -/
 theorem sideAt_sq (d : NatContactDendrogram m K N)
     (edge : d.ThresholdEdge) (i : Fin m) :
-    d.sideAt edge i ^ 2 = d.sideAt edge i := by
+    d.sideAt edge i ^ (2 : ℕ) = d.sideAt edge i := by
   classical
   simp [sideAt]
 

@@ -81,28 +81,28 @@ private theorem norm_hardyFun_shiftCommutant_one_le
     ‖hardyFun (T hardyOne) z‖ ≤ ‖T‖ := by
   let k : HardyDisk := hardyKernel hz
   have hpoint := hardyFun_shiftCommutant T hT k hz
-  have hself : hardyFun k z = ((‖k‖ : ℂ) ^ 2) := by
+  have hself : hardyFun k z = ((‖k‖ : ℂ) ^ (2 : ℕ)) := by
     calc
       hardyFun k z = inner ℂ (hardyKernel hz) k :=
         (inner_hardyKernel hz k).symm
       _ = inner ℂ k k := by rfl
-      _ = ((‖k‖ : ℂ) ^ 2) := inner_self_eq_norm_sq_to_K k
+      _ = ((‖k‖ : ℂ) ^ (2 : ℕ)) := inner_self_eq_norm_sq_to_K k
   have hkpos : 0 < ‖k‖ := norm_pos_iff.mpr (hardyKernel_ne_zero hz)
   have hevalBound : ‖hardyFun (T k) z‖ ≤ ‖k‖ * ‖T k‖ := by
     rw [← inner_hardyKernel hz (T k)]
     exact norm_inner_le_norm _ _
   have hTbound : ‖T k‖ ≤ ‖T‖ * ‖k‖ := T.le_opNorm k
-  have hmul : ‖hardyFun (T hardyOne) z‖ * ‖k‖ ^ 2 ≤
-      ‖T‖ * ‖k‖ ^ 2 := by
+  have hmul : ‖hardyFun (T hardyOne) z‖ * ‖k‖ ^ (2 : ℕ) ≤
+      ‖T‖ * ‖k‖ ^ (2 : ℕ) := by
     calc
-      ‖hardyFun (T hardyOne) z‖ * ‖k‖ ^ 2 =
+      ‖hardyFun (T hardyOne) z‖ * ‖k‖ ^ (2 : ℕ) =
           ‖hardyFun (T k) z‖ := by
         rw [hpoint, hself, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (norm_nonneg k)]
       _ ≤ ‖k‖ * ‖T k‖ := hevalBound
       _ ≤ ‖k‖ * (‖T‖ * ‖k‖) :=
         mul_le_mul_of_nonneg_left hTbound (norm_nonneg _)
-      _ = ‖T‖ * ‖k‖ ^ 2 := by ring
+      _ = ‖T‖ * ‖k‖ ^ (2 : ℕ) := by ring
   exact le_of_mul_le_mul_right hmul (sq_pos_of_pos hkpos)
 
 /-- Bounded analytic symbol of an operator in the unilateral-shift commutant. -/

@@ -60,11 +60,11 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel_det
     (routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r).det =
       ((-64 * r : ℝ) : ℂ) := by
   rw [Matrix.det_fin_two]
-  have hsqrt : (Real.sqrt r) ^ 2 = r := Real.sq_sqrt hr
-  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) :=
+  have hsqrt : (Real.sqrt r) ^ (2 : ℕ) = r := Real.sq_sqrt hr
+  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) :=
     routeEPCubicFourthDepthJuliaDefect_sq
   simp [routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel]
-  have hmul : (Real.sqrt r * routeEPCubicFourthDepthJuliaDefect) ^ 2 =
+  have hmul : (Real.sqrt r * routeEPCubicFourthDepthJuliaDefect) ^ (2 : ℕ) =
       r * (63 / 64 : ℝ) := by rw [mul_pow, hsqrt, hdefect]
   have hreal :
       -r - (8 * Real.sqrt r * routeEPCubicFourthDepthJuliaDefect) *
@@ -90,13 +90,13 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel_factor
       routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r).det =
       routePPrimitiveGammaJuliaSignedBivariateFactor lam (64 * u) (r * u) := by
   rw [Matrix.det_fin_two]
-  have hsqrt : (Real.sqrt r) ^ 2 = r := Real.sq_sqrt hr
-  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) :=
+  have hsqrt : (Real.sqrt r) ^ (2 : ℕ) = r := Real.sq_sqrt hr
+  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) :=
     routeEPCubicFourthDepthJuliaDefect_sq
   simp [routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel,
     routePPrimitiveGammaJuliaSignedBivariateFactor]
-  have hsqrtC : (Real.sqrt r : ℂ) ^ 2 = (r : ℂ) := by exact_mod_cast hsqrt
-  have hdefectC : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
+  have hsqrtC : (Real.sqrt r : ℂ) ^ (2 : ℕ) = (r : ℂ) := by exact_mod_cast hsqrt
+  have hdefectC : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
       ((63 / 64 : ℝ) : ℂ) := by exact_mod_cast hdefect
   ring_nf
   rw [hsqrtC, hdefectC]
@@ -226,9 +226,9 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel_isHS
     HilbertSchmidt.IsHS
       (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r) := by
   let g : Fin 2 × Fin 2 → ℝ := fun ij =>
-    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ 2
+    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ (2 : ℕ)
   let h : Nat.Primes × Nat.Primes → ℝ := fun pq =>
-    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ 2
+    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ (2 : ℕ)
   have hg : Summable g := Summable.of_finite
   have hh : Summable h :=
     routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd

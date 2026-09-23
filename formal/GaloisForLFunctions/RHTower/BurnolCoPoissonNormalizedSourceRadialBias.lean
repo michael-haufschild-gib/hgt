@@ -32,7 +32,7 @@ theorem burnolWindow_two_cosh_sub_one_lt_mul_sinh {a : ℝ} (ha : 0 < a) :
 
 /-- The derivative numerator of the centered endpoint modulus is strictly positive. -/
 theorem burnolWindow_cosh_cos_derivativeNumerator_pos {a : ℝ} (ha : 0 < a) (b : ℝ) :
-    0 < (a ^ 2 + b ^ 2) * Real.sinh a - 2 * a * (Real.cosh a - Real.cos b) := by
+    0 < (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * Real.sinh a - 2 * a * (Real.cosh a - Real.cos b) := by
   have hfirst := mul_pos ha
     (sub_pos.mpr (burnolWindow_two_cosh_sub_one_lt_mul_sinh ha))
   have hsecond := mul_nonneg (sq_nonneg b)
@@ -44,24 +44,24 @@ theorem burnolWindow_cosh_cos_derivativeNumerator_pos {a : ℝ} (ha : 0 < a) (b 
 /-- Removing the elementary exponential factor leaves a strictly increasing
 endpoint modulus on every positive horizontal ray. -/
 theorem burnolWindow_cosh_cos_quotient_strictMonoOn (b : ℝ) :
-    StrictMonoOn (fun a : ℝ => (Real.cosh a - Real.cos b) / (a ^ 2 + b ^ 2))
+    StrictMonoOn (fun a : ℝ => (Real.cosh a - Real.cos b) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)))
       (Ioi 0) := by
   apply strictMonoOn_of_deriv_pos (convex_Ioi 0)
   · intro a ha
     have ha0 : 0 < a := ha
-    have hd : a ^ 2 + b ^ 2 ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg b] : 0 < a^2+b^2)
+    have hd : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg b] : 0 < a^(2 : ℕ)+b^(2 : ℕ))
     exact ((Real.continuous_cosh.continuousAt.sub continuousAt_const).div
       ((continuousAt_id.pow 2).add continuousAt_const) hd).continuousWithinAt
   · intro a ha
     rw [interior_Ioi] at ha
     have ha0 : 0 < a := ha
-    have hd : a ^ 2 + b ^ 2 ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg b] : 0 < a^2+b^2)
+    have hd : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg b] : 0 < a^(2 : ℕ)+b^(2 : ℕ))
     have hder : HasDerivAt
-        (fun a : ℝ => (Real.cosh a - Real.cos b) / (a ^ 2 + b ^ 2))
-        (((a ^ 2 + b ^ 2) * Real.sinh a - 2 * a * (Real.cosh a - Real.cos b)) /
-          (a ^ 2 + b ^ 2) ^ 2) a := by
+        (fun a : ℝ => (Real.cosh a - Real.cos b) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)))
+        (((a ^ (2 : ℕ) + b ^ (2 : ℕ)) * Real.sinh a - 2 * a * (Real.cosh a - Real.cos b)) /
+          (a ^ (2 : ℕ) + b ^ (2 : ℕ)) ^ (2 : ℕ)) a := by
       apply (((Real.hasDerivAt_cosh a).sub_const (Real.cos b)).div
-        (((hasDerivAt_id a).pow 2).add_const (b ^ 2)) hd).congr_deriv
+        (((hasDerivAt_id a).pow 2).add_const (b ^ (2 : ℕ))) hd).congr_deriv
       simp only [Pi.pow_apply, id_eq]
       ring
     rw [hder.deriv]
@@ -69,15 +69,15 @@ theorem burnolWindow_cosh_cos_quotient_strictMonoOn (b : ℝ) :
 
 /-- Exact squared modulus of the unit-length complex endpoint gauge. -/
 theorem burnolWindow_norm_endpointGauge_sq (z : ℂ) :
-    ‖(Complex.exp z - 1) / z‖ ^ 2 =
-      2 * Real.exp z.re * ((Real.cosh z.re - Real.cos z.im) / (z.re ^ 2 + z.im ^ 2)) := by
+    ‖(Complex.exp z - 1) / z‖ ^ (2 : ℕ) =
+      2 * Real.exp z.re * ((Real.cosh z.re - Real.cos z.im) / (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ))) := by
   rw [Complex.sq_norm, Complex.normSq_div, Complex.normSq_sub,
     ← Complex.sq_norm (Complex.exp z), Complex.norm_exp]
   simp only [map_one, mul_one, Complex.exp_re]
   rw [Complex.normSq_apply]
   have he : Real.exp z.re * Real.exp (-z.re) = 1 := by
     rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
-  have hn : Real.exp z.re ^ 2 + 1 - 2 * (Real.exp z.re * Real.cos z.im) =
+  have hn : Real.exp z.re ^ (2 : ℕ) + 1 - 2 * (Real.exp z.re * Real.cos z.im) =
       2 * Real.exp z.re * (Real.cosh z.re - Real.cos z.im) := by
     rw [Real.cosh_eq]
     nlinarith
@@ -88,8 +88,8 @@ theorem burnolWindow_norm_endpointGauge_sq (z : ℂ) :
 strictly faster than its elementary exponential factor. -/
 theorem burnolWindow_endpointGauge_sq_strict_growth
     {z w : ℂ} (hz : 0 < z.re) (hzw : z.re < w.re) (hi : z.im = w.im) :
-    Real.exp (w.re - z.re) * ‖(Complex.exp z - 1) / z‖ ^ 2 <
-      ‖(Complex.exp w - 1) / w‖ ^ 2 := by
+    Real.exp (w.re - z.re) * ‖(Complex.exp z - 1) / z‖ ^ (2 : ℕ) <
+      ‖(Complex.exp w - 1) / w‖ ^ (2 : ℕ) := by
   have hw : 0 < w.re := hz.trans hzw
   have hq := burnolWindow_cosh_cos_quotient_strictMonoOn z.im hz hw hzw
   rw [hi] at hq
@@ -99,16 +99,16 @@ theorem burnolWindow_endpointGauge_sq_strict_growth
   have hp := mul_lt_mul_of_pos_left hq (by positivity : 0 < 2 * Real.exp w.re)
   calc
     _ = 2 * (Real.exp (w.re - z.re) * Real.exp z.re) *
-        ((Real.cosh z.re - Real.cos w.im) / (z.re ^ 2 + w.im ^ 2)) := by ring
+        ((Real.cosh z.re - Real.cos w.im) / (z.re ^ (2 : ℕ) + w.im ^ (2 : ℕ))) := by ring
     _ = 2 * Real.exp w.re *
-        ((Real.cosh z.re - Real.cos w.im) / (z.re ^ 2 + w.im ^ 2)) := by rw [he]
+        ((Real.cosh z.re - Real.cos w.im) / (z.re ^ (2 : ℕ) + w.im ^ (2 : ℕ))) := by rw [he]
     _ < _ := hp
 
 /-- Exact rescaling from arbitrary positive window length to the unit gauge. -/
 theorem burnolWindow_norm_endpointGauge_scaled_sq
     {L : ℝ} (hL : 0 < L) {z : ℂ} (hz : 0 < z.re) :
-    ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 =
-      L ^ 2 * ‖(Complex.exp ((L : ℂ) * z) - 1) / ((L : ℂ) * z)‖ ^ 2 := by
+    ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) =
+      L ^ (2 : ℕ) * ‖(Complex.exp ((L : ℂ) * z) - 1) / ((L : ℂ) * z)‖ ^ (2 : ℕ) := by
   have hLc : (L : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hL.ne'
   have hzc : z ≠ 0 := by intro h; simp [h] at hz
   have he : (Complex.exp ((L : ℂ) * z) - 1) / z =
@@ -121,8 +121,8 @@ theorem burnolWindow_endpointGauge_scaled_sq_strict_growth
     {L : ℝ} (hL : 0 < L) {z w : ℂ}
     (hz : 0 < z.re) (hzw : z.re < w.re) (hi : z.im = w.im) :
     Real.exp (L * (w.re - z.re)) *
-        ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 <
-      ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ 2 := by
+        ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) <
+      ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ (2 : ℕ) := by
   have hr (v : ℂ) : ((L : ℂ) * v).re = L * v.re := by simp
   have him : ((L : ℂ) * z).im = ((L : ℂ) * w).im := by simp [hi]
   have hs := burnolWindow_endpointGauge_sq_strict_growth
@@ -136,8 +136,8 @@ theorem burnolWindow_endpointGauge_scaled_sq_strict_growth
 
 /-- Complex conjugation of the gauge changes no squared amplitude. -/
 theorem burnolWindow_endpointGauge_conj_sq (L : ℝ) (z : ℂ) :
-    ‖(Complex.exp ((L : ℂ) * starRingEnd ℂ z) - 1) / starRingEnd ℂ z‖ ^ 2 =
-      ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 := by
+    ‖(Complex.exp ((L : ℂ) * starRingEnd ℂ z) - 1) / starRingEnd ℂ z‖ ^ (2 : ℕ) =
+      ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) := by
   have he : (Complex.exp ((L : ℂ) * starRingEnd ℂ z) - 1) / starRingEnd ℂ z =
       starRingEnd ℂ ((Complex.exp ((L : ℂ) * z) - 1) / z) := by
     simp only [map_div₀, map_sub, map_one, ← Complex.exp_conj, map_mul,
@@ -148,8 +148,8 @@ theorem burnolWindow_endpointGauge_conj_sq (L : ℝ) (z : ℂ) :
 theorem burnolWindow_endpointGauge_scaled_sq_lt
     {L : ℝ} (hL : 0 < L) {z w : ℂ}
     (hz : 0 < z.re) (hzw : z.re < w.re) (hi : z.im = w.im) :
-    ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 <
-      ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ 2 := by
+    ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) <
+      ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ (2 : ℕ) := by
   have he : 1 ≤ Real.exp (L * (w.re - z.re)) :=
     Real.one_le_exp (mul_nonneg hL.le (sub_nonneg.mpr hzw.le))
   have hmul := mul_le_mul_of_nonneg_right he
@@ -160,14 +160,14 @@ theorem burnolWindow_endpointGauge_scaled_sq_lt
 /-- Equal reflected endpoint amplitudes occur precisely at the center of the open strip. -/
 theorem burnolWindow_endpointGauge_reflection_sq_eq_iff
     {L : ℝ} (hL : 0 < L) {z : ℂ} (hz0 : 0 < z.re) (hz1 : z.re < 1) :
-    (‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 =
-      ‖(Complex.exp ((L : ℂ) * (1 - z)) - 1) / (1 - z)‖ ^ 2) ↔ z.re = 1 / 2 := by
+    (‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) =
+      ‖(Complex.exp ((L : ℂ) * (1 - z)) - 1) / (1 - z)‖ ^ (2 : ℕ)) ↔ z.re = 1 / 2 := by
   let w := starRingEnd ℂ (1 - z)
   have hwre : w.re = 1 - z.re := by simp [w]
   have hwim : w.im = z.im := by simp [w]
   have hw0 : 0 < w.re := by rw [hwre]; linarith
   have hnorm := burnolWindow_endpointGauge_conj_sq L (1 - z)
-  change ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ 2 = _ at hnorm
+  change ‖(Complex.exp ((L : ℂ) * w) - 1) / w‖ ^ (2 : ℕ) = _ at hnorm
   rw [← hnorm]
   constructor
   · intro heq
@@ -231,8 +231,8 @@ exceeds the physical exponential gain, with the original conormal retained. -/
 theorem burnolWindowCompletedTopJets_strict_radial_bias
     {L : ℝ} (hL : 0 < L) (rho : XiDivisorSupport) (hr : 1 / 2 < (rho : ℂ).re) :
     Real.exp (L * (2 * (rho : ℂ).re - 1)) *
-        ‖burnolWindowFourierCompletedTopJet L hL rho‖ ^ 2 <
-      ‖burnolWindowCompletedTopJet L hL rho‖ ^ 2 := by
+        ‖burnolWindowFourierCompletedTopJet L hL rho‖ ^ (2 : ℕ) <
+      ‖burnolWindowCompletedTopJet L hL rho‖ ^ (2 : ℕ) := by
   let z : ℂ := starRingEnd ℂ (1 - (rho : ℂ))
   have hzre : z.re = 1 - (rho : ℂ).re := by simp [z]
   have hzim : z.im = (rho : ℂ).im := by simp [z]
@@ -240,7 +240,7 @@ theorem burnolWindowCompletedTopJets_strict_radial_bias
   have hzr : z.re < (rho : ℂ).re := by rw [hzre]; linarith
   have hs := burnolWindow_endpointGauge_scaled_sq_strict_growth hL hz0 hzr hzim
   have hnorm := burnolWindow_endpointGauge_conj_sq L (1 - (rho : ℂ))
-  change ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ 2 = _ at hnorm
+  change ‖(Complex.exp ((L : ℂ) * z) - 1) / z‖ ^ (2 : ℕ) = _ at hnorm
   rw [hnorm, hzre, show (rho : ℂ).re - (1 - (rho : ℂ).re) =
     2 * (rho : ℂ).re - 1 by ring] at hs
   have hC : mellinCompletionFactor (rho : ℂ) *
@@ -314,8 +314,8 @@ theorem burnolJetNormalizedWindowSource_norm_eq_iff
 theorem burnolJetNormalizedWindowSource_strict_radial_bias
     {L : ℝ} (hL : 0 < L) (rho : XiDivisorSupport) (hr : 1 / 2 < (rho : ℂ).re) :
     Real.exp (L * (2 * (rho : ℂ).re - 1)) *
-        ‖burnolJetNormalizedWindowSource L hL rho‖ ^ 2 <
-      ‖burnolJetNormalizedFourierWindowSource L hL rho‖ ^ 2 := by
+        ‖burnolJetNormalizedWindowSource L hL rho‖ ^ (2 : ℕ) <
+      ‖burnolJetNormalizedFourierWindowSource L hL rho‖ ^ (2 : ℕ) := by
   have hf := coPoissonSubWindowEven_ne_zero (Real.exp_pos (-L))
     (Real.exp_lt_one_iff.mpr (by linarith : -L < 0))
   have hfpos := sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hf)

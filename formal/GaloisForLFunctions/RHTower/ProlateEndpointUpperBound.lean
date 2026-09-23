@@ -38,31 +38,31 @@ variable {c χ : ℝ} {Φ : ℝ → ℝ}
 /-! ## Monotonicity of the two coefficients -/
 
 /-- The Riccati potential is nondecreasing on the nonnegative part of the band. -/
-theorem prolatePotential_mono (hcχ : 0 ≤ c ^ 2 + χ) {y z : ℝ}
+theorem prolatePotential_mono (hcχ : 0 ≤ c ^ (2 : ℕ) + χ) {y z : ℝ}
     (hy0 : 0 ≤ y) (hyz : y ≤ z) (hz1 : z < 1) :
-    (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) ≤ (χ + c ^ 2 * z ^ 2) / (1 - z ^ 2) := by
+    (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)) ≤ (χ + c ^ (2 : ℕ) * z ^ (2 : ℕ)) / (1 - z ^ (2 : ℕ)) := by
   have hy1 : y < 1 := lt_of_le_of_lt hyz hz1
   have hz0 : 0 ≤ z := le_trans hy0 hyz
-  have hpy : 0 < 1 - y ^ 2 := by nlinarith
-  have hpz : 0 < 1 - z ^ 2 := by nlinarith
-  have hsq : y ^ 2 ≤ z ^ 2 := by nlinarith
+  have hpy : 0 < 1 - y ^ (2 : ℕ) := by nlinarith
+  have hpz : 0 < 1 - z ^ (2 : ℕ) := by nlinarith
+  have hsq : y ^ (2 : ℕ) ≤ z ^ (2 : ℕ) := by nlinarith
   rw [div_le_div_iff₀ hpy hpz]
   nlinarith [hcχ, hsq]
 
 /-- The drift coefficient is nondecreasing on the nonnegative part of the band. -/
 theorem prolateDrift_mono {y z : ℝ} (hy0 : 0 ≤ y) (hyz : y ≤ z) (hz1 : z < 1) :
-    2 * y / (1 - y ^ 2) ≤ 2 * z / (1 - z ^ 2) := by
+    2 * y / (1 - y ^ (2 : ℕ)) ≤ 2 * z / (1 - z ^ (2 : ℕ)) := by
   have hy1 : y < 1 := lt_of_le_of_lt hyz hz1
   have hz0 : 0 ≤ z := le_trans hy0 hyz
-  have hpy : 0 < 1 - y ^ 2 := by nlinarith
-  have hpz : 0 < 1 - z ^ 2 := by nlinarith
+  have hpy : 0 < 1 - y ^ (2 : ℕ) := by nlinarith
+  have hpz : 0 < 1 - z ^ (2 : ℕ) := by nlinarith
   rw [div_le_div_iff₀ hpy hpz]
   nlinarith [mul_nonneg (sub_nonneg.2 hyz) (by positivity : (0 : ℝ) ≤ 1 + y * z)]
 
 /-- The drift coefficient is nonnegative on the nonnegative part of the band. -/
 theorem prolateDrift_nonneg {y : ℝ} (hy0 : 0 ≤ y) (hy1 : y < 1) :
-    0 ≤ 2 * y / (1 - y ^ 2) := by
-  have hpy : 0 < 1 - y ^ 2 := by nlinarith
+    0 ≤ 2 * y / (1 - y ^ (2 : ℕ)) := by
+  have hpy : 0 < 1 - y ^ (2 : ℕ) := by nlinarith
   positivity
 
 /-! ## The Riccati derivative is nonnegative beyond the turning point -/
@@ -73,7 +73,7 @@ theorem prolateLogDeriv_nonneg
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
     {y₀ : ℝ} (hy₀ : -1 < y₀)
     (hpos : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
-    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ 2 * t ^ 2)
+    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ (2 : ℕ) * t ^ (2 : ℕ))
     {y : ℝ} (hy : y ∈ Ico y₀ 1) :
     0 ≤ prolateLogDeriv Φ y := by
   have hd := deriv_nonpos_of_turning hsm heig hy₀ (fun t ht => (hpos t ht).le) hturn hy
@@ -90,28 +90,28 @@ WKB profile there, less the drift at the right end and the reciprocal window len
 theorem prolateWKB_sub_le_prolateLogDeriv
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
-    (hcχ : 0 ≤ c ^ 2 + χ)
+    (hcχ : 0 ≤ c ^ (2 : ℕ) + χ)
     {y₀ y₁ : ℝ} (hy0 : 0 ≤ y₀) (hlt : y₀ < y₁) (hy1 : y₁ < 1)
     (hpos : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
-    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ 2 * t ^ 2)
-    (hQ0 : 0 < χ + c ^ 2 * y₀ ^ 2) :
-    prolateWKB c χ y₀ - 2 * y₁ / (1 - y₁ ^ 2) - 2 / (y₁ - y₀)
+    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ (2 : ℕ) * t ^ (2 : ℕ))
+    (hQ0 : 0 < χ + c ^ (2 : ℕ) * y₀ ^ (2 : ℕ)) :
+    prolateWKB c χ y₀ - 2 * y₁ / (1 - y₁ ^ (2 : ℕ)) - 2 / (y₁ - y₀)
       ≤ prolateLogDeriv Φ y₀ := by
   have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hd2 : Differentiable ℝ (deriv Φ) :=
     (contDiff_infty_iff_deriv.mp ((contDiff_infty_iff_deriv.mp hsm).2)).1
   have hy₀neg : (-1 : ℝ) < y₀ := by linarith
   have hsubIcc : Icc y₀ y₁ ⊆ Icc y₀ 1 := Icc_subset_Icc le_rfl hy1.le
-  have hpow : ∀ y ∈ Icc y₀ y₁, (0 : ℝ) < 1 - y ^ 2 := by
+  have hpow : ∀ y ∈ Icc y₀ y₁, (0 : ℝ) < 1 - y ^ (2 : ℕ) := by
     intro y hy
     have h1 : 0 ≤ y := le_trans hy0 hy.1
     have h2 : y < 1 := lt_of_le_of_lt hy.2 hy1
     nlinarith
   -- the Riccati datum
   set v : ℝ → ℝ := prolateLogDeriv Φ with hv
-  set B : ℝ → ℝ := fun y => 2 * y / (1 - y ^ 2) with hB
-  set Q : ℝ → ℝ := fun y => (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) with hQ
-  set v' : ℝ → ℝ := fun y => v y ^ 2 + B y * v y - Q y with hv'
+  set B : ℝ → ℝ := fun y => 2 * y / (1 - y ^ (2 : ℕ)) with hB
+  set Q : ℝ → ℝ := fun y => (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)) with hQ
+  set v' : ℝ → ℝ := fun y => v y ^ (2 : ℕ) + B y * v y - Q y with hv'
   have hvcont : ContinuousOn v (Icc y₀ y₁) := by
     refine ContinuousOn.neg (ContinuousOn.div hd2.continuous.continuousOn
       hd1.continuous.continuousOn ?_)
@@ -129,8 +129,8 @@ theorem prolateWKB_sub_le_prolateLogDeriv
   have hvnn : ∀ y ∈ Icc y₀ y₁, 0 ≤ v y := by
     intro y hy
     exact prolateLogDeriv_nonneg hsm heig hy₀neg hpos hturn ⟨hy.1, lt_of_le_of_lt hy.2 hy1⟩
-  have hpow0 : (0 : ℝ) < 1 - y₀ ^ 2 := hpow y₀ (left_mem_Icc.2 hlt.le)
-  have hSsq : prolateWKB c χ y₀ ^ 2 = Q y₀ := by
+  have hpow0 : (0 : ℝ) < 1 - y₀ ^ (2 : ℕ) := hpow y₀ (left_mem_Icc.2 hlt.le)
+  have hSsq : prolateWKB c χ y₀ ^ (2 : ℕ) = Q y₀ := by
     rw [prolateWKB, hQ]
     exact Real.sq_sqrt (by positivity)
   have hSpos : 0 < prolateWKB c χ y₀ := by
@@ -154,18 +154,18 @@ like the exponential of the WKB integral, up to the drift and the window loss. -
 theorem prolate_endpoint_le
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
-    (hcχ : 0 ≤ c ^ 2 + χ)
+    (hcχ : 0 ≤ c ^ (2 : ℕ) + χ)
     {a b l : ℝ} (ha0 : 0 ≤ a) (hab : a ≤ b) (hl : 0 < l) (hbl : b + l < 1)
     (hpos : ∀ t ∈ Icc a 1, 0 < Φ t)
-    (hturn : ∀ t ∈ Icc a 1, 0 ≤ χ + c ^ 2 * t ^ 2)
-    (hQ0 : 0 < χ + c ^ 2 * a ^ 2) :
+    (hturn : ∀ t ∈ Icc a 1, 0 ≤ χ + c ^ (2 : ℕ) * t ^ (2 : ℕ))
+    (hQ0 : 0 < χ + c ^ (2 : ℕ) * a ^ (2 : ℕ)) :
     Φ b ≤ Φ a * Real.exp (-∫ t in a..b,
-      (prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ 2) - 2 / l)) := by
+      (prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ (2 : ℕ)) - 2 / l)) := by
   have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hb1 : b < 1 := by linarith
   have hsubIcc : Icc a b ⊆ Icc a 1 := Icc_subset_Icc le_rfl hb1.le
   set W : ℝ → ℝ := fun t =>
-    prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ 2) - 2 / l with hW
+    prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ (2 : ℕ)) - 2 / l with hW
   have hWcont : ContinuousOn W (Icc a b) := by
     refine ContinuousOn.sub (ContinuousOn.sub ?_ continuousOn_const) continuousOn_const
     refine continuousOn_prolateWKB fun y hy => ?_
@@ -180,18 +180,18 @@ theorem prolate_endpoint_le
     have htl1 : t + l < 1 := by linarith [ht.2]
     have hposT : ∀ u ∈ Icc t 1, 0 < Φ u := fun u hu =>
       hpos u ⟨le_trans ht.1 hu.1, hu.2⟩
-    have hturnT : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ 2 * u ^ 2 := fun u hu =>
+    have hturnT : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ (2 : ℕ) * u ^ (2 : ℕ) := fun u hu =>
       hturn u ⟨le_trans ht.1 hu.1, hu.2⟩
-    have hQT : 0 < χ + c ^ 2 * t ^ 2 := by
-      have hsq : a ^ 2 ≤ t ^ 2 := by nlinarith [ht.1, ha0]
+    have hQT : 0 < χ + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
+      have hsq : a ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [ht.1, ha0]
       nlinarith [hQ0, hsq, sq_nonneg c]
     have hbound := prolateWKB_sub_le_prolateLogDeriv hsm heig hcχ ht0 htl htl1
       hposT hturnT hQT
-    have hdrift : 2 * (t + l) / (1 - (t + l) ^ 2) ≤ 2 * (b + l) / (1 - (b + l) ^ 2) :=
+    have hdrift : 2 * (t + l) / (1 - (t + l) ^ (2 : ℕ)) ≤ 2 * (b + l) / (1 - (b + l) ^ (2 : ℕ)) :=
       prolateDrift_mono (by linarith) (by linarith [ht.2]) hbl
     have hlen : t + l - t = l := by ring
     rw [hlen] at hbound
-    show prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ 2) - 2 / l ≤ prolateLogDeriv Φ t
+    show prolateWKB c χ t - 2 * (b + l) / (1 - (b + l) ^ (2 : ℕ)) - 2 / l ≤ prolateLogDeriv Φ t
     linarith [hbound, hdrift]
   have hlogderiv : ∀ t ∈ Icc a b, deriv Φ t ≤ (-W t) * Φ t := by
     intro t ht
@@ -214,11 +214,11 @@ the absolute constant `6`. -/
 theorem prolateWKB_sub_six_div_le_prolateLogDeriv
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
-    (hcχ : 0 ≤ c ^ 2 + χ)
+    (hcχ : 0 ≤ c ^ (2 : ℕ) + χ)
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t < 1)
     (hpos : ∀ u ∈ Icc t 1, 0 < Φ u)
-    (hturn : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ 2 * u ^ 2)
-    (hQ0 : 0 < χ + c ^ 2 * t ^ 2) :
+    (hturn : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ (2 : ℕ) * u ^ (2 : ℕ))
+    (hQ0 : 0 < χ + c ^ (2 : ℕ) * t ^ (2 : ℕ)) :
     prolateWKB c χ t - 6 / (1 - t) ≤ prolateLogDeriv Φ t := by
   have hmid : t < (1 + t) / 2 := by linarith
   have hmid1 : (1 + t) / 2 < 1 := by linarith
@@ -229,8 +229,8 @@ theorem prolateWKB_sub_six_div_le_prolateLogDeriv
     rw [hgap]
     field_simp
     norm_num
-  have hden : 1 - ((1 + t) / 2) ^ 2 = (1 - t) * (3 + t) / 4 := by ring
-  have hdrift : 2 * ((1 + t) / 2) / (1 - ((1 + t) / 2) ^ 2) = 4 * (1 + t) / ((1 - t) * (3 + t)) := by
+  have hden : 1 - ((1 + t) / 2) ^ (2 : ℕ) = (1 - t) * (3 + t) / 4 := by ring
+  have hdrift : 2 * ((1 + t) / 2) / (1 - ((1 + t) / 2) ^ (2 : ℕ)) = 4 * (1 + t) / ((1 - t) * (3 + t)) := by
     rw [hden]
     field_simp
   have h3t : (0 : ℝ) < 3 + t := by linarith
@@ -252,11 +252,11 @@ power of it. -/
 theorem prolate_endpoint_le_log
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
-    (hcχ : 0 ≤ c ^ 2 + χ)
+    (hcχ : 0 ≤ c ^ (2 : ℕ) + χ)
     {a b : ℝ} (ha0 : 0 ≤ a) (hab : a ≤ b) (hb1 : b < 1)
     (hpos : ∀ t ∈ Icc a 1, 0 < Φ t)
-    (hturn : ∀ t ∈ Icc a 1, 0 ≤ χ + c ^ 2 * t ^ 2)
-    (hQ0 : 0 < χ + c ^ 2 * a ^ 2) :
+    (hturn : ∀ t ∈ Icc a 1, 0 ≤ χ + c ^ (2 : ℕ) * t ^ (2 : ℕ))
+    (hQ0 : 0 < χ + c ^ (2 : ℕ) * a ^ (2 : ℕ)) :
     Φ b ≤ Φ a * Real.exp (-∫ t in a..b, (prolateWKB c χ t - 6 / (1 - t))) := by
   have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hsubIcc : Icc a b ⊆ Icc a 1 := Icc_subset_Icc le_rfl hb1.le
@@ -275,10 +275,10 @@ theorem prolate_endpoint_le_log
     have ht0 : 0 ≤ t := le_trans ha0 ht.1
     have ht1 : t < 1 := lt_of_le_of_lt ht.2 hb1
     have hposT : ∀ u ∈ Icc t 1, 0 < Φ u := fun u hu => hpos u ⟨le_trans ht.1 hu.1, hu.2⟩
-    have hturnT : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ 2 * u ^ 2 := fun u hu =>
+    have hturnT : ∀ u ∈ Icc t 1, 0 ≤ χ + c ^ (2 : ℕ) * u ^ (2 : ℕ) := fun u hu =>
       hturn u ⟨le_trans ht.1 hu.1, hu.2⟩
-    have hQT : 0 < χ + c ^ 2 * t ^ 2 := by
-      have hsq : a ^ 2 ≤ t ^ 2 := by nlinarith [ht.1, ha0]
+    have hQT : 0 < χ + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
+      have hsq : a ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [ht.1, ha0]
       nlinarith [hQ0, hsq, sq_nonneg c]
     exact prolateWKB_sub_six_div_le_prolateLogDeriv hsm heig hcχ ht0 ht1 hposT hturnT hQT
   have hlogderiv : ∀ t ∈ Icc a b, deriv Φ t ≤ (-W t) * Φ t := by

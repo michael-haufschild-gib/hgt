@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.SuzukiCanonicalSignedCompensationSaturation
 
 Let `C_N` be the positive Suzuki transition core and `E_N` its aligned Gamma-completed energy.
 The first-contact residual `E_N` is already known to be bounded exactly under RH.  This module
-studies the first nonlinear alternative `E_N^2 / C_N`.
+studies the first nonlinear alternative `E_N^(2 : ℕ) / C_N`.
 
 If that quadratic residual is eventually bounded, the completed Suzuki Green amplitude grows at
 most like `N^(1/4)`.  Exact Green/outgoing-charge identities and the logarithmic-lattice handoff
@@ -28,7 +28,7 @@ open _root_.RHTower
 
 def suzukiTransitionCoreQuadraticContactResidual (N : ℕ) : ℝ :=
   if _hC : suzukiNaturalApertureTransitionCoreCauchyEnergy N = 0 then 0
-  else suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ 2 /
+  else suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ (2 : ℕ) /
     suzukiNaturalApertureTransitionCoreCauchyEnergy N
 
 theorem suzukiTransitionCoreQuadraticContactResidual_nonneg (N : ℕ) :
@@ -45,21 +45,21 @@ def SuzukiTransitionCoreQuadraticContactResidualEventuallyBounded : Prop :=
     suzukiTransitionCoreQuadraticContactResidual N ≤ B
 
 private theorem le_fourth_add_one {x : ℝ} (hx : 0 ≤ x) :
-    x ≤ x ^ 4 + 1 := by
+    x ≤ x ^ (4 : ℕ) + 1 := by
   by_cases hx1 : x ≤ 1
-  · have hnonneg : 0 ≤ x ^ 4 := by positivity
+  · have hnonneg : 0 ≤ x ^ (4 : ℕ) := by positivity
     linarith
   · have h1x : 1 ≤ x := le_of_not_ge hx1
-    have hx2 : x ≤ x ^ 2 := by nlinarith
-    have hx2one : 1 ≤ x ^ 2 := by nlinarith
-    have hx24 : x ^ 2 ≤ (x ^ 2) ^ 2 := by nlinarith
+    have hx2 : x ≤ x ^ (2 : ℕ) := by nlinarith
+    have hx2one : 1 ≤ x ^ (2 : ℕ) := by nlinarith
+    have hx24 : x ^ (2 : ℕ) ≤ (x ^ (2 : ℕ)) ^ (2 : ℕ) := by nlinarith
     calc
-      x ≤ x ^ 2 := hx2
-      _ ≤ x ^ 4 := by nlinarith
-      _ ≤ x ^ 4 + 1 := by linarith
+      x ≤ x ^ (2 : ℕ) := hx2
+      _ ≤ x ^ (4 : ℕ) := by nlinarith
+      _ ≤ x ^ (4 : ℕ) + 1 := by linarith
 
 def suzukiTransitionCoreLinearEnvelope : ℝ :=
-  18 * (Real.log 4 + 4) ^ 2
+  18 * (Real.log 4 + 4) ^ (2 : ℕ)
 
 theorem suzukiTransitionCoreLinearEnvelope_nonneg :
     0 ≤ suzukiTransitionCoreLinearEnvelope := by
@@ -81,47 +81,47 @@ theorem eventually_abs_completedLowerHardyAmplitude_le_quarterPower_of_quadratic
   have hC0 : 0 < suzukiNaturalApertureTransitionCoreCauchyEnergy N :=
     lt_of_le_of_ne (suzukiNaturalApertureTransitionCoreCauchyEnergy_nonneg N)
       (Ne.symm hC)
-  have hE2 : suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ 2 ≤
+  have hE2 : suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ (2 : ℕ) ≤
       B * suzukiNaturalApertureTransitionCoreCauchyEnergy N := by
     rw [suzukiTransitionCoreQuadraticContactResidual, dif_neg hC] at hres
     exact (div_le_iff₀ hC0).mp hres
   have hCupper := suzukiNaturalApertureTransitionCoreCauchyEnergy_le_linear N
   have hG2nonneg : 0 ≤
-      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 := sq_nonneg _
+      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) := sq_nonneg _
   have hE0 := suzukiTransitionCoreAlignedGammaCompletedEnergy_nonneg N
   have hG4E2 :
-      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 4 ≤
-        suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ 2 := by
+      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (4 : ℕ) ≤
+        suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ (2 : ℕ) := by
     nlinarith [sq_nonneg
       (suzukiTransitionCoreAlignedGammaCompletedEnergy N -
-        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2)]
+        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ))]
   have hG4 :
-      |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ 4 ≤
+      |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ (4 : ℕ) ≤
         (B * suzukiTransitionCoreLinearEnvelope) * N := by
     have habs4 :
-        |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ 4 =
-          suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 4 := by
-      rw [show |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ 4 =
-        (|suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ 2) ^ 2 by ring,
+        |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ (4 : ℕ) =
+          suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (4 : ℕ) := by
+      rw [show |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ (4 : ℕ) =
+        (|suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
         sq_abs]
       ring
     rw [habs4]
     unfold suzukiTransitionCoreLinearEnvelope
     calc
-      _ ≤ suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ 2 := hG4E2
+      _ ≤ suzukiTransitionCoreAlignedGammaCompletedEnergy N ^ (2 : ℕ) := hG4E2
       _ ≤ B * suzukiNaturalApertureTransitionCoreCauchyEnergy N := hE2
-      _ ≤ B * (18 * (Real.log 4 + 4) ^ 2 * N) := by
+      _ ≤ B * (18 * (Real.log 4 + 4) ^ (2 : ℕ) * N) := by
         exact mul_le_mul_of_nonneg_left hCupper hB0
       _ = _ := by ring
   have hNR : (0 : ℝ) < N := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_two hN)
   let y : ℝ := Real.exp (Real.log N / 4)
   have hy : 0 < y := Real.exp_pos _
-  have hy4 : y ^ 4 = (N : ℝ) := by
+  have hy4 : y ^ (4 : ℕ) = (N : ℝ) := by
     dsimp only [y]
-    rw [show Real.exp (Real.log N / 4) ^ 4 =
+    rw [show Real.exp (Real.log N / 4) ^ (4 : ℕ) =
       Real.exp (Real.log N / 4 + Real.log N / 4 +
         Real.log N / 4 + Real.log N / 4) by
-      rw [show Real.exp (Real.log N / 4) ^ 4 =
+      rw [show Real.exp (Real.log N / 4) ^ (4 : ℕ) =
         Real.exp (Real.log N / 4) * Real.exp (Real.log N / 4) *
           Real.exp (Real.log N / 4) * Real.exp (Real.log N / 4) by ring,
         ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]]
@@ -130,9 +130,9 @@ theorem eventually_abs_completedLowerHardyAmplitude_le_quarterPower_of_quadratic
       Real.exp_log hNR]
   let z : ℝ := |suzukiNaturalApertureCompletedLowerHardyAmplitude N| / y
   have hz0 : 0 ≤ z := div_nonneg (abs_nonneg _) hy.le
-  have hz4 : z ^ 4 ≤ B * suzukiTransitionCoreLinearEnvelope := by
-    rw [show z ^ 4 =
-      |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ 4 / y ^ 4 by
+  have hz4 : z ^ (4 : ℕ) ≤ B * suzukiTransitionCoreLinearEnvelope := by
+    rw [show z ^ (4 : ℕ) =
+      |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ^ (4 : ℕ) / y ^ (4 : ℕ) by
       dsimp only [z]
       exact div_pow _ _ 4]
     rw [hy4]

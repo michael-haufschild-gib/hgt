@@ -49,7 +49,7 @@ theorem tortoiseMode_hasDerivAt_continued (w chi : ℂ) (t : ℝ) (ht : t < 0) :
 /-- The continued horizon mode satisfies the homogeneous tortoise equation. -/
 theorem tortoiseMode_equation_continued (w chi : ℂ) (hw : w.im ≠ 0) (t : ℝ) (ht : t < 0) :
     tortoiseModeSecond false w chi t =
-      (w ^ 2 + (horizonCoordinate t:ℂ) * (1 / 4 + chi ^ 2)) * tortoiseMode false w chi t := by
+      (w ^ (2 : ℕ) + (horizonCoordinate t:ℂ) * (1 / 4 + chi ^ (2 : ℕ))) * tortoiseMode false w chi t := by
   have hz := horizonCoordinate_interior t ht
   have he := horizon_equation_continued (w := w) (chi := chi) hw hz
   dsimp only [D4BMPhysicalMaster.radialJet] at he
@@ -58,7 +58,7 @@ theorem tortoiseMode_equation_continued (w chi : ℂ) (hw : w.im ≠ 0) (t : ℝ
   field_simp [hz0] at he
   simp only [tortoiseMode, tortoiseModeSecond, radialMode_false, radialModeFirst_false,
     radialModeSecond_false, coordinateFirst, coordinateSecond]
-  have hu : (radialUnit t:ℂ) ^ 2 = 1 - (horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ) ^ (2 : ℕ) = 1 - (horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate, Complex.ofReal_sub, Complex.ofReal_one, Complex.ofReal_pow]
     ring
   push_cast
@@ -69,26 +69,26 @@ theorem tortoiseMode_equation_continued (w chi : ℂ) (hw : w.im ≠ 0) (t : ℝ
 theorem tortoiseMode_horizon_growth_bound (w chi : ℂ) (hw : w.im ≠ 0) (t : ℝ) (ht : t < 0) :
     ‖tortoiseMode false w chi t‖ ≤
       symmetricHorizonGrowthCoefficient w (tortoiseMode false w chi (-1))
-        (tortoiseModeFirst false w chi (-1)) (4 * ‖(1 / 4:ℂ) + chi ^ 2‖) 0 *
+        (tortoiseModeFirst false w chi (-1)) (4 * ‖(1 / 4:ℂ) + chi ^ (2 : ℕ)‖) 0 *
         Real.exp (-|w.re| * t) := by
   have hw0 : w ≠ 0 := by intro he; apply hw; simp [he]
   have hd (r : ℝ) (hr : r < 0) := tortoiseMode_hasDerivAt_continued w chi r hr
   have hV (r : ℝ) (hr : r < 0) : HasDerivAt (tortoiseModeFirst false w chi)
-      (w ^ 2 * tortoiseMode false w chi r +
-        ((horizonCoordinate r:ℂ) * (1 / 4 + chi ^ 2)) * tortoiseMode false w chi r - 0) r := by
+      (w ^ (2 : ℕ) * tortoiseMode false w chi r +
+        ((horizonCoordinate r:ℂ) * (1 / 4 + chi ^ (2 : ℕ))) * tortoiseMode false w chi r - 0) r := by
     have h := (hd r hr).2
     rw [tortoiseMode_equation_continued w chi hw r hr] at h
     convert h using 1
     ring
   have hp (r : ℝ) (hr : r < 0) :
-      ‖(horizonCoordinate r:ℂ) * ((1 / 4:ℂ) + chi ^ 2)‖ ≤
-        (4 * ‖(1 / 4:ℂ) + chi ^ 2‖) * Real.exp (2 * r) := by
+      ‖(horizonCoordinate r:ℂ) * ((1 / 4:ℂ) + chi ^ (2 : ℕ))‖ ≤
+        (4 * ‖(1 / 4:ℂ) + chi ^ (2 : ℕ)‖) * Real.exp (2 * r) := by
     rw [norm_mul]
     exact (mul_le_mul_of_nonneg_right (horizonCoordinate_norm_le_exp r hr)
       (norm_nonneg _)).trans_eq (by ring)
   have hf (r : ℝ) (_ : r < 0) : ‖(0:ℂ)‖ ≤ (0:ℝ) * Real.exp ((w.re + 2) * r) := by simp
   exact forcedSecondOrder_horizon_bound_symmetric w hw0 (tortoiseMode false w chi)
-    (tortoiseModeFirst false w chi) (fun r => (horizonCoordinate r:ℂ) * (1 / 4 + chi ^ 2))
+    (tortoiseModeFirst false w chi) (fun r => (horizonCoordinate r:ℂ) * (1 / 4 + chi ^ (2 : ℕ)))
     (fun _ => 0) _ 0 (by positivity) le_rfl (fun r hr => (hd r hr).1) hV hp hf t ht
 
 /-- One constant bounds the continued horizon mode on a frequency neighbourhood and a whole
@@ -104,7 +104,7 @@ theorem tortoiseMode_outer_uniform_bound (w chi : ℂ) (hw : w.im ≠ 0) (T : �
   have hstrip : ∀ u ∈ closedBall w R, u.im ≠ 0 := fun u hu =>
     hrall (lt_of_le_of_lt (mem_closedBall.mp hu)
       (lt_of_le_of_lt (min_le_left _ _) (half_lt_self hr0)))
-  let A : ℝ := 4 * ‖(1 / 4:ℂ) + chi ^ 2‖
+  let A : ℝ := 4 * ‖(1 / 4:ℂ) + chi ^ (2 : ℕ)‖
   let D (u : ℂ) : ℝ := symmetricHorizonGrowthCoefficient u (tortoiseMode false u chi (-1))
     (tortoiseModeFirst false u chi (-1)) A 0
   have hz1 : horizonCoordinate (-1) ∈ Ioo 0 1 := horizonCoordinate_interior (-1) (by norm_num)

@@ -20,7 +20,7 @@ private lemma fibre_bound (M : ℕ) (P R : Finset ℕ) (E : ℝ)
 
 private lemma receiving_error (a b x y E : ℝ)
     (ha : |a|≤Real.sqrt E) (hb : |b|≤Real.sqrt E) :
-    -2*a*x-2*b*y+x^2+y^2 ≤ 2*Real.sqrt E*(|x|+|y|)+(|x|+|y|)^2 := by
+    -2*a*x-2*b*y+x^(2 : ℕ)+y^(2 : ℕ) ≤ 2*Real.sqrt E*(|x|+|y|)+(|x|+|y|)^(2 : ℕ) := by
   have bound (a x : ℝ) (ha : |a|≤Real.sqrt E) : -a*x≤Real.sqrt E*|x| := by
     calc
       -a*x=-(a*x) := by ring
@@ -31,7 +31,7 @@ private lemma receiving_error (a b x y E : ℝ)
   nlinarith only [bound a x ha,bound b y hb,hxy,sq_abs x,sq_abs y]
 
 private lemma receiving_merged_error (a x y E : ℝ) (ha : |a|≤Real.sqrt E) :
-    -2*a*(x+y)+(x+y)^2 ≤ 2*Real.sqrt E*(|x|+|y|)+(|x|+|y|)^2 := by
+    -2*a*(x+y)+(x+y)^(2 : ℕ) ≤ 2*Real.sqrt E*(|x|+|y|)+(|x|+|y|)^(2 : ℕ) := by
   have hab : -a*(x+y)≤Real.sqrt E*(|x|+|y|) := by
     calc
       -a*(x+y)=-(a*(x+y)) := by ring
@@ -67,9 +67,9 @@ private lemma other_energy (M : ℕ) (P L : Finset ℕ) (hM : 2<M)
     mobiusDivisorSelectionEnergy M (insert q (P∪L))=mobiusDivisorSelectionEnergy M (insert q P)-
       2*mobiusDivisorSelectionFibre M (insert q P) ∅*(∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)-
       2*mobiusDivisorSelectionFibre M (insert q P) {2}*(∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})+
-      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)^2+
-      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})^2-
-      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)-
+      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
   have hL' : ∀ p∈L,p.Prime ∧ p<M ∧ p∉insert q P ∧ p≠2 := by
     intro p hp
     obtain ⟨hpprime,hpM,hpP,hp2⟩ := hL p hp
@@ -85,10 +85,10 @@ private lemma other_energy (M : ℕ) (P L : Finset ℕ) (hM : 2<M)
     apply sum_congr rfl
     intro p hp
     rw [hi p hp R]
-  have hsquares : (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^2))=
-      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+  have hsquares : (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^(2 : ℕ)))=
+      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
     apply sum_congr rfl
     intro p hp
     rw [hi p hp ∅,hi p hp {2}]
@@ -104,20 +104,20 @@ theorem mobiusDivisorSuccessorEnvelope_two_block_reserve_error
     (hchild : ∀ p∈L,∀ q∈L,p≠q → M/p+1≤q) :
     let X := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅
     let Y := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}
-    let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2)
-    let T := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2
+    let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))
+    let T := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)
     mobiusDivisorSuccessorEnvelope M (P∪L)+min R T ≤ mobiusDivisorSuccessorEnvelope M P+
-      2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*(|X|+|Y|)+(|X|+|Y|)^2 := by
+      2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*(|X|+|Y|)+(|X|+|Y|)^(2 : ℕ) := by
   let X := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅
   let Y := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}
-  let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2)
-  let T := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2
+  let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))
+  let T := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)
   let E := mobiusDivisorSuccessorEnvelope M P
   let a := mobiusDivisorSelectionFibre M P ∅
   let b := mobiusDivisorSelectionFibre M P {2}
   have hbase := (mobiusDivisorSuccessorEnvelope_le_iff M P E).mp le_rfl
   have h0 := mobiusDivisorSelectionEnergy_union_two_child_inactive M P L hM hL hcore hchild
-  change mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P-2*a*X-2*b*Y+X^2+Y^2-R at h0
+  change mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P-2*a*X-2*b*Y+X^(2 : ℕ)+Y^(2 : ℕ)-R at h0
   have hcost := mobiusDivisorSelectionEnergy_two_block_transport M P L hM hL hcore hchild
   have hsquares : T=R+∑ p∈L,2*(p:ℝ)*mobiusDivisorInterpolatedFibre M p P ∅*mobiusDivisorInterpolatedFibre M p P {2} := by
     dsimp only [T,R]
@@ -128,9 +128,9 @@ theorem mobiusDivisorSuccessorEnvelope_two_block_reserve_error
   change mobiusDivisorSelectionEnergy M (insert 2 (P∪L))-mobiusDivisorSelectionEnergy M (P∪L)=
     mobiusDivisorSelectionEnergy M (insert 2 P)-mobiusDivisorSelectionEnergy M P-2*a*Y-2*b*X+2*X*Y-_ at hcost
   have h2 : mobiusDivisorSelectionEnergy M (insert 2 (P∪L))=
-      mobiusDivisorSelectionEnergy M (insert 2 P)-2*(a+b)*(X+Y)+(X+Y)^2-T := by
+      mobiusDivisorSelectionEnergy M (insert 2 P)-2*(a+b)*(X+Y)+(X+Y)^(2 : ℕ)-T := by
     nlinarith only [h0,hcost,hsquares]
-  have he : mobiusDivisorSuccessorEnvelope M (P∪L) ≤ E+2*Real.sqrt E*(|X|+|Y|)+(|X|+|Y|)^2-min R T := by
+  have he : mobiusDivisorSuccessorEnvelope M (P∪L) ≤ E+2*Real.sqrt E*(|X|+|Y|)+(|X|+|Y|)^(2 : ℕ)-min R T := by
     rw [mobiusDivisorSuccessorEnvelope_le_iff]
     refine ⟨?_,?_⟩
     · have hbnd := receiving_error a b X Y E (fibre_bound M P ∅ E hbase.1) (fibre_bound M P {2} E hbase.1)
@@ -148,10 +148,10 @@ theorem mobiusDivisorSuccessorEnvelope_two_block_reserve_error
         linarith only [h2,hqbase,hbnd,min_le_right R T]
       · have hs := other_energy M P L hM hL hcore hchild (mem_filter.mp hqactive).2 hqP hqL hq2
         change mobiusDivisorSelectionEnergy M (insert q (P∪L))=mobiusDivisorSelectionEnergy M (insert q P)-
-          2*mobiusDivisorSelectionFibre M (insert q P) ∅*X-2*mobiusDivisorSelectionFibre M (insert q P) {2}*Y+X^2+Y^2-R at hs
+          2*mobiusDivisorSelectionFibre M (insert q P) ∅*X-2*mobiusDivisorSelectionFibre M (insert q P) {2}*Y+X^(2 : ℕ)+Y^(2 : ℕ)-R at hs
         have hbnd := receiving_error _ _ X Y E (fibre_bound M (insert q P) ∅ E hqbase)
           (fibre_bound M (insert q P) {2} E hqbase)
         linarith only [hs,hqbase,hbnd,min_le_left R T]
-  change mobiusDivisorSuccessorEnvelope M (P∪L)+min R T ≤ E+2*Real.sqrt E*(|X|+|Y|)+(|X|+|Y|)^2
+  change mobiusDivisorSuccessorEnvelope M (P∪L)+min R T ≤ E+2*Real.sqrt E*(|X|+|Y|)+(|X|+|Y|)^(2 : ℕ)
   linarith only [he]
 end RHTower

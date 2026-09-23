@@ -240,9 +240,9 @@ theorem thirdVariation_diagonal (J K : CoordinateMetricTwoJet d ℝ)
 theorem secondVariation_twoMode (q : MetricTwoJetSpace d) (hq : Matrix.det q.1 ≠ 0)
     (i j : Fin d) (p m : MetricTwoJetSpace d) (x y : ℝ) :
     secondVariation q i j (x • p + y • m) (x • p + y • m) / 2 =
-      x ^ 2 * (secondVariation q i j p p / 2) +
+      x ^ (2 : ℕ) * (secondVariation q i j p p / 2) +
       x * y * secondVariation q i j p m +
-      y ^ 2 * (secondVariation q i j m m / 2) := by
+      y ^ (2 : ℕ) * (secondVariation q i j m m / 2) := by
   simp only [map_add, map_smul, add_apply,
     smul_apply, smul_eq_mul]
   rw [secondVariation_symm q hq i j m p]
@@ -252,12 +252,12 @@ theorem secondVariation_twoMode (q : MetricTwoJetSpace d) (hq : Matrix.det q.1 �
 theorem thirdVariation_twoMode_permutations (q : MetricTwoJetSpace d)
     (i j : Fin d) (p m : MetricTwoJetSpace d) (x y : ℝ) :
     thirdVariation q i j (x • p + y • m) (x • p + y • m) (x • p + y • m) / 6 =
-      x ^ 3 * (thirdVariation q i j p p p / 6) +
-      x ^ 2 * y * ((thirdVariation q i j p p m + thirdVariation q i j p m p +
+      x ^ (3 : ℕ) * (thirdVariation q i j p p p / 6) +
+      x ^ (2 : ℕ) * y * ((thirdVariation q i j p p m + thirdVariation q i j p m p +
         thirdVariation q i j m p p) / 6) +
-      x * y ^ 2 * ((thirdVariation q i j p m m + thirdVariation q i j m p m +
+      x * y ^ (2 : ℕ) * ((thirdVariation q i j p m m + thirdVariation q i j m p m +
         thirdVariation q i j m m p) / 6) +
-      y ^ 3 * (thirdVariation q i j m m m / 6) := by
+      y ^ (3 : ℕ) * (thirdVariation q i j m m m / 6) := by
   simp only [map_add, map_smul, add_apply,
     smul_apply, smul_eq_mul]
   ring
@@ -275,10 +275,10 @@ theorem thirdVariation_plusPlusMinus (q : MetricTwoJetSpace d) (hq : Matrix.det 
 theorem affineEinsteinCubicCoefficient_twoMode (J : CoordinateMetricTwoJet d ℝ)
     (hJ : J.metric.det ≠ 0) (i j : Fin d) (p m : MetricTwoJetSpace d) (x y : ℝ) :
     affineEinsteinCubicCoefficient J (ofSpace (x • p + y • m)) i j =
-      x ^ 3 * affineEinsteinCubicCoefficient J (ofSpace p) i j +
-      x ^ 2 * y * (thirdVariation J.toSpace i j p p m / 2) +
-      x * y ^ 2 * (thirdVariation J.toSpace i j p m m / 2) +
-      y ^ 3 * affineEinsteinCubicCoefficient J (ofSpace m) i j := by
+      x ^ (3 : ℕ) * affineEinsteinCubicCoefficient J (ofSpace p) i j +
+      x ^ (2 : ℕ) * y * (thirdVariation J.toSpace i j p p m / 2) +
+      x * y ^ (2 : ℕ) * (thirdVariation J.toSpace i j p m m / 2) +
+      y ^ (3 : ℕ) * affineEinsteinCubicCoefficient J (ofSpace m) i j := by
   rw [← thirdVariation_diagonal J (ofSpace (x • p + y • m)) hJ i j,
     ← thirdVariation_diagonal J (ofSpace p) hJ i j,
     ← thirdVariation_diagonal J (ofSpace m) hJ i j]

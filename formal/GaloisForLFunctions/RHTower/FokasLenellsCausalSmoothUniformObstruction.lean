@@ -8,10 +8,10 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
-local instance : IsUniformAddGroup causalSmoothGraph := causalSmoothGraph_uniformAddGroup
+local instance fokasLenellsCausalSmoothUniformObstructionInst1 : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
+local instance fokasLenellsCausalSmoothUniformObstructionInst2 : IsUniformAddGroup causalSmoothGraph := causalSmoothGraph_uniformAddGroup
 local instance : BarrelledSpace ℝ causalSmoothGraph := causalSmoothGraph_barrelled
-local instance : ContinuousSMul ℝ causalSmoothGraph := withSeminorms_causalSmoothGraph.continuousSMul
+local instance fokasLenellsCausalSmoothUniformObstructionInst3 : ContinuousSMul ℝ causalSmoothGraph := withSeminorms_causalSmoothGraph.continuousSMul
 
 /-- Real continuous orbit readouts indexed by integer time and an actual Hilbert unit vector. -/
 def causalSmoothOrbitReadout (p : ℕ × {v : hardyL2ᗮ // ‖v‖ = 1}) : causalSmoothGraph →L[ℝ] ℝ :=
@@ -47,9 +47,9 @@ theorem causalSmoothOrbitReadout_boundary (n : ℕ) (b : ℝ) :
         (causalBoundaryEigenvector b 0).val (causalBoundaryEigenvector b 0).val := by
     exact real_inner_smul_right _ _ _
   have hn : inner ℝ (causalBoundaryEigenvector b 0).val (causalBoundaryEigenvector b 0).val =
-      ‖(causalBoundaryEigenvector b 0).val‖^2 := real_inner_self_eq_norm_sq _
+      ‖(causalBoundaryEigenvector b 0).val‖^(2 : ℕ) := real_inner_self_eq_norm_sq _
   rw [hi, hn]
-  change ((n : ℝ)+1)*(Real.exp (-(n : ℝ)*Real.exp b)*‖causalBoundaryEigenvector b 0‖^2) = _
+  change ((n : ℝ)+1)*(Real.exp (-(n : ℝ)*Real.exp b)*‖causalBoundaryEigenvector b 0‖^(2 : ℕ)) = _
   rw [norm_causalBoundaryEigenvector, one_pow, mul_one]
 
 private theorem boundary_finite_seminorm_le (s : Finset (Σ _j : ℕ, Fin 1))

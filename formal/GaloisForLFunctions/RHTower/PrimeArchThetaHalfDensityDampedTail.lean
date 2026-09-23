@@ -17,7 +17,7 @@ noncomputable section
 
 /-- Extra logarithmic damping rate of the `n`th theta atom relative to the first. -/
 def thetaCuspSourceAtomDampingRate (n : ℕ) : ℝ :=
-  2 * Real.pi * ((n : ℝ) ^ 2 - 1)
+  2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)
 
 /-- Refined first-atom domination retaining the unused Gaussian cusp decay. -/
 theorem thetaCuspSourceTerm_le_first_mul_exp_damping
@@ -31,84 +31,84 @@ theorem thetaCuspSourceTerm_le_first_mul_exp_damping
     dsimp [u]
     simpa using Real.exp_le_exp.mpr hx
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have hnSq : 1 ≤ (n : ℝ) ^ 2 := by nlinarith
-  have huSq : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-  have huSqDamped : 1 + 2 * x ≤ u ^ 2 := by
+  have hnSq : 1 ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have huSq : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have huSqDamped : 1 + 2 * x ≤ u ^ (2 : ℕ) := by
     calc
       1 + 2 * x ≤ Real.exp (2 * x) := by
         simpa only [add_comm] using Real.add_one_le_exp (2 * x)
-      _ = u ^ 2 := by
+      _ = u ^ (2 : ℕ) := by
         dsimp [u]
         rw [show 2 * x = x + x by ring, Real.exp_add]
         ring
   have hprod :
-      0 ≤ ((n : ℝ) ^ 2 - 1) * (u ^ 2 - 1 - 2 * x) :=
+      0 ≤ ((n : ℝ) ^ (2 : ℕ) - 1) * (u ^ (2 : ℕ) - 1 - 2 * x) :=
     mul_nonneg (sub_nonneg.mpr hnSq) (by linarith)
   have hexponent :
-      -Real.pi * ((n : ℝ) * u) ^ 2 ≤
-        -Real.pi * ((n : ℝ) ^ 2 - 1) +
-          (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) +
-            (-Real.pi * u ^ 2) := by
+      -Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) ≤
+        -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) +
+          (-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) +
+            (-Real.pi * u ^ (2 : ℕ)) := by
     nlinarith [Real.pi_pos]
   have hgauss :
-      Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2) ≤
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-          (Real.exp (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) *
-            Real.exp (-Real.pi * u ^ 2)) := by
+      Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+          (Real.exp (-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) *
+            Real.exp (-Real.pi * u ^ (2 : ℕ))) := by
     calc
-      Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2) ≤
+      Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
           Real.exp
-            (-Real.pi * ((n : ℝ) ^ 2 - 1) +
-              (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) +
-                (-Real.pi * u ^ 2)) := Real.exp_le_exp.mpr hexponent
+            (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) +
+              (-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) +
+                (-Real.pi * u ^ (2 : ℕ))) := Real.exp_le_exp.mpr hexponent
       _ = _ := by
         rw [show
-          -Real.pi * ((n : ℝ) ^ 2 - 1) +
-                (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) +
-                  (-Real.pi * u ^ 2) =
-              -Real.pi * ((n : ℝ) ^ 2 - 1) +
-                ((-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) +
-                  (-Real.pi * u ^ 2)) by ring,
+          -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) +
+                (-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) +
+                  (-Real.pi * u ^ (2 : ℕ)) =
+              -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) +
+                ((-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) +
+                  (-Real.pi * u ^ (2 : ℕ))) by ring,
           Real.exp_add, Real.exp_add]
   have hpoly_u :
-      0 ≤ 2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2) := by
-    have hcore : 0 ≤ 2 * Real.pi * u ^ 2 - 3 := by
+      0 ≤ 2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)) := by
+    have hcore : 0 ≤ 2 * Real.pi * u ^ (2 : ℕ) - 3 := by
       nlinarith [Real.pi_gt_three]
-    rw [show 2 * Real.pi * u ^ 4 - 3 * u ^ 2 =
-      u ^ 2 * (2 * Real.pi * u ^ 2 - 3) by ring]
+    rw [show 2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ) =
+      u ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 3) by ring]
     positivity
   have hpoly_nu :
       0 ≤ 2 * Real.pi *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-          3 * ((n : ℝ) * u) ^ 2) := by
+        (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+          3 * ((n : ℝ) * u) ^ (2 : ℕ)) := by
     have hnu : 1 ≤ (n : ℝ) * u := by nlinarith [Real.exp_pos x]
-    have hnuSq : 1 ≤ ((n : ℝ) * u) ^ 2 := by nlinarith
-    have hcore : 0 ≤ 2 * Real.pi * ((n : ℝ) * u) ^ 2 - 3 := by
+    have hnuSq : 1 ≤ ((n : ℝ) * u) ^ (2 : ℕ) := by nlinarith
+    have hcore : 0 ≤ 2 * Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) - 3 := by
       nlinarith [Real.pi_gt_three]
-    rw [show 2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-        3 * ((n : ℝ) * u) ^ 2 =
-      ((n : ℝ) * u) ^ 2 *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 2 - 3) by ring]
+    rw [show 2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+        3 * ((n : ℝ) * u) ^ (2 : ℕ) =
+      ((n : ℝ) * u) ^ (2 : ℕ) *
+        (2 * Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) - 3) by ring]
     positivity
   have hpolyUpper :
       2 * Real.pi *
-          (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-            3 * ((n : ℝ) * u) ^ 2) ≤
-        2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2)) := by
-    have hcore : 0 ≤ 2 * Real.pi * u ^ 2 - 6 := by
+          (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+            3 * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
+        2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ))) := by
+    have hcore : 0 ≤ 2 * Real.pi * u ^ (2 : ℕ) - 6 := by
       nlinarith [Real.pi_gt_three]
     have hbracket :
-        0 ≤ (n : ℝ) ^ 2 * (2 * Real.pi * u ^ 2 - 6) + 3 := by
+        0 ≤ (n : ℝ) ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 6) + 3 := by
       positivity
     have hid :
-        2 * (n : ℝ) ^ 4 *
-              (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2)) -
+        2 * (n : ℝ) ^ (4 : ℕ) *
+              (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ))) -
             2 * Real.pi *
-              (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-                3 * ((n : ℝ) * u) ^ 2) =
-          2 * Real.pi * (n : ℝ) ^ 2 * u ^ 2 *
-            ((n : ℝ) ^ 2 * (2 * Real.pi * u ^ 2 - 6) + 3) := by
+              (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+                3 * ((n : ℝ) * u) ^ (2 : ℕ)) =
+          2 * Real.pi * (n : ℝ) ^ (2 : ℕ) * u ^ (2 : ℕ) *
+            ((n : ℝ) ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 6) + 3) := by
       ring
     apply sub_nonneg.mp
     rw [hid]
@@ -118,27 +118,27 @@ theorem thetaCuspSourceTerm_le_first_mul_exp_damping
   simp only [Nat.cast_one, one_mul]
   change Real.exp (x / 2) *
       (2 * Real.pi *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-          3 * ((n : ℝ) * u) ^ 2) *
-            Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) ≤ _
+        (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+          3 * ((n : ℝ) * u) ^ (2 : ℕ)) *
+            Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) ≤ _
   change _ ≤
-    (2 * (n : ℝ) ^ 4 * Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-      Real.exp (-(2 * Real.pi * ((n : ℝ) ^ 2 - 1)) * x)) *
+    (2 * (n : ℝ) ^ (4 : ℕ) * Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+      Real.exp (-(2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) * x)) *
         (Real.exp (x / 2) *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2) *
-            Real.exp (-Real.pi * u ^ 2)))
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)) *
+            Real.exp (-Real.pi * u ^ (2 : ℕ))))
   calc
     _ ≤ Real.exp (x / 2) *
-        ((2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2))) *
-            Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) := by
+        ((2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)))) *
+            Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) := by
       gcongr
     _ ≤ Real.exp (x / 2) *
-        ((2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2))) *
-            (Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-              (Real.exp (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) *
-                Real.exp (-Real.pi * u ^ 2)))) := by
+        ((2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)))) *
+            (Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+              (Real.exp (-2 * Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) * x) *
+                Real.exp (-Real.pi * u ^ (2 : ℕ))))) := by
       gcongr
     _ = _ := by ring_nf
 
@@ -149,10 +149,10 @@ theorem cosh_half_mul_exp_neg_thetaCuspSourceAtomDampingRate_le_one
         Real.exp (-thetaCuspSourceAtomDampingRate n * x) ≤ 1 := by
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hrate : (1 / 2 : ℝ) ≤ thetaCuspSourceAtomDampingRate n := by
-    have hnSq : (4 : ℝ) ≤ (n : ℝ) ^ 2 := by
+    have hnSq : (4 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg ((n : ℝ) - 2)]
-    have hgap : (3 : ℝ) ≤ (n : ℝ) ^ 2 - 1 := by linarith
-    have hmul : (9 : ℝ) ≤ Real.pi * ((n : ℝ) ^ 2 - 1) := by
+    have hgap : (3 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) - 1 := by linarith
+    have hmul : (9 : ℝ) ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) := by
       have h := mul_le_mul Real.pi_gt_three.le hgap
         (by norm_num : (0 : ℝ) ≤ 3) Real.pi_pos.le
       norm_num at h ⊢

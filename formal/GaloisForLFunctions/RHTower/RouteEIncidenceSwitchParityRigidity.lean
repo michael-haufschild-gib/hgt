@@ -22,7 +22,7 @@ noncomputable section
 namespace RHTower
 
 /-- Symmetric difference removes two copies of the intersection from the sum of cardinalities. -/
-theorem card_add_eq_card_symmDiff_add_twice_inter (S T : Finset ℕ) :
+theorem card_add_eq_card_symmDiff_add_twice_inter_routeEIncidenceSwitchParityRigidity (S T : Finset ℕ) :
     S.card + T.card = (S ∆ T).card + 2 * (S ∩ T).card := by
   have hdisj : Disjoint (S \ T) (T \ S) := by
     refine Finset.disjoint_left.mpr ?_
@@ -38,7 +38,7 @@ theorem card_add_eq_card_symmDiff_add_twice_inter (S T : Finset ℕ) :
 is even. -/
 theorem even_card_symmDiff_iff_even_card_add (S T : Finset ℕ) :
     Even (S ∆ T).card ↔ Even (S.card + T.card) := by
-  have hcard := card_add_eq_card_symmDiff_add_twice_inter S T
+  have hcard := card_add_eq_card_symmDiff_add_twice_inter_routeEIncidenceSwitchParityRigidity S T
   constructor
   · rintro ⟨k, hk⟩
     exact ⟨k + (S ∩ T).card, by omega⟩

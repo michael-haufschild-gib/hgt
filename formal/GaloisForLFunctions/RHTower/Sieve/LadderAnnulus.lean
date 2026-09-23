@@ -39,27 +39,27 @@ theorem setIntegral_Icc_split {f : ℝ → ℝ} (hf : Continuous f) {w₀ G : �
 theorem integral_normSq_ladderProductPoly_set_le {P : Finset ℕ} (A₀ B₀ : ℕ) (Q η : ℝ) {L : ℕ}
     (v : ℕ → ℝ) (hv : ∀ j ∈ Finset.range L, 0 < v j) {E : Set ℝ} (hEm : MeasurableSet E)
     {G : ℝ} (hEG : E ⊆ Set.Icc (-G) G) :
-    (∫ w in E, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in E, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (∑ j ∈ Finset.range L, 1 / v j)
         * ∑ j ∈ Finset.range L, v j
             * ∫ w in E,
-                ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2 := by
+                ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ) := by
   classical
   set F : ℕ → ℝ → ℝ := fun j w =>
-    ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-      * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2 with hF
+    ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+      * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ) with hF
   have hcontF : ∀ j : ℕ, Continuous (F j) := by
     intro j
     exact (((continuous_primeBlockPoly _).norm).pow 2).mul
       (((continuous_logPoly _ _).norm).pow 2)
-  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     refine ((continuous_finsetSum _ fun j _ => ?_).norm).pow 2
     exact (continuous_primeBlockPoly _).mul (continuous_logPoly _ _)
   have hcontR : Continuous fun w : ℝ =>
       (∑ j ∈ Finset.range L, 1 / v j) * ∑ j ∈ Finset.range L, v j * F j w :=
     (continuous_finsetSum _ fun j _ => (hcontF j).const_mul _).const_mul _
-  have hintZ : IntegrableOn (fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2) E volume :=
+  have hintZ : IntegrableOn (fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)) E volume :=
     (hcontZ.integrableOn_Icc (a := -G) (b := G)).mono_set hEG
   have hintR : IntegrableOn (fun w : ℝ =>
       (∑ j ∈ Finset.range L, 1 / v j) * ∑ j ∈ Finset.range L, v j * F j w) E volume :=
@@ -79,36 +79,36 @@ theorem integral_normSq_ladderStep_set_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA
     {E : Set ℝ} (hEm : MeasurableSet E) (hEG : E ⊆ Set.Icc (-G) G)
     (hbound : ∀ w ∈ E, ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V) :
     (∫ w in E,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2)
-      ≤ V ^ 2 * ((5 * Real.pi / 2 * G
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
             + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
           * ((geomCofactorBlockAt A₀ B₀ Q η j).card : ℝ)) := by
   classical
   set D : Finset ℕ := geomCofactorBlockAt A₀ B₀ Q η j with hD
-  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 :=
+  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) :=
     ((continuous_primeBlockPoly _).norm).pow 2
-  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ 2 :=
+  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   have hint1 : IntegrableOn (fun w : ℝ =>
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2)
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ))
       E volume := ((hcontR.mul hcontS).integrableOn_Icc (a := -G) (b := G)).mono_set hEG
-  have hint2 : IntegrableOn (fun w : ℝ => V ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2) E volume :=
+  have hint2 : IntegrableOn (fun w : ℝ => V ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ)) E volume :=
     (((hcontS.const_mul _)).integrableOn_Icc (a := -G) (b := G)).mono_set hEG
   have hpt : ∀ w ∈ E,
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2
-        ≤ V ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2 := by
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ)
+        ≤ V ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) := by
     intro w hw
     have hb := hbound w hw
     have h0 : (0 : ℝ) ≤ ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ := norm_nonneg _
-    have hsq : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 ≤ V ^ 2 := by nlinarith [hb, h0]
+    have hsq : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) ≤ V ^ (2 : ℕ) := by nlinarith [hb, h0]
     exact mul_le_mul_of_nonneg_right hsq (by positivity)
   have hmono := setIntegral_mono_on hint1 hint2 hEm hpt
   rw [MeasureTheory.integral_const_mul] at hmono
   refine hmono.trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  have hwiden : (∫ w in E, ‖logPoly moebiusCoeff D w‖ ^ 2)
-      ≤ ∫ w in Set.Icc (-G) G, ‖logPoly moebiusCoeff D w‖ ^ 2 := by
+  have hwiden : (∫ w in E, ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ))
+      ≤ ∫ w in Set.Icc (-G) G, ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_set hcontS.integrableOn_Icc ?_
       (Filter.Eventually.of_forall hEG)
     exact Filter.Eventually.of_forall fun w => by positivity
@@ -123,31 +123,31 @@ theorem integral_normSq_ladderStep_low_le {P : Finset ℕ} {A₀ B₀ : ℕ} {Q 
     (hcof : ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U) :
     (∫ w in Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2)
-      ≤ V ^ 2 * U ^ 2 * (2 * w₀) := by
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+          * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * U ^ (2 : ℕ) * (2 * w₀) := by
   classical
   set D : Finset ℕ := geomCofactorBlockAt A₀ B₀ Q η j with hD
-  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 :=
+  have hcontR : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) :=
     ((continuous_primeBlockPoly _).norm).pow 2
-  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ 2 :=
+  have hcontS : Continuous fun w : ℝ => ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   have hint1 : IntegrableOn (fun w : ℝ =>
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2)
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ))
       (Set.Icc (-w₀) w₀) volume := (hcontR.mul hcontS).integrableOn_Icc
-  have hint2 : IntegrableOn (fun _ : ℝ => V ^ 2 * U ^ 2) (Set.Icc (-w₀) w₀) volume :=
+  have hint2 : IntegrableOn (fun _ : ℝ => V ^ (2 : ℕ) * U ^ (2 : ℕ)) (Set.Icc (-w₀) w₀) volume :=
     (continuous_const.integrableOn_Icc)
   have hpt : ∀ w ∈ Set.Icc (-w₀) w₀,
-      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 * ‖logPoly moebiusCoeff D w‖ ^ 2
-        ≤ V ^ 2 * U ^ 2 := by
+      ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) * ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ)
+        ≤ V ^ (2 : ℕ) * U ^ (2 : ℕ) := by
     intro w hw
     have hb := hprime w hw
     have hc := hcof w hw
     have h0 : (0 : ℝ) ≤ ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ := norm_nonneg _
     have h1 : (0 : ℝ) ≤ ‖logPoly moebiusCoeff D w‖ := norm_nonneg _
-    have hsq1 : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 ≤ V ^ 2 := by nlinarith [hb, h0]
-    have hsq2 : ‖logPoly moebiusCoeff D w‖ ^ 2 ≤ U ^ 2 := by nlinarith [hc, h1]
-    have hs1 : (0 : ℝ) ≤ ‖logPoly moebiusCoeff D w‖ ^ 2 := by positivity
+    have hsq1 : ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) ≤ V ^ (2 : ℕ) := by nlinarith [hb, h0]
+    have hsq2 : ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) ≤ U ^ (2 : ℕ) := by nlinarith [hc, h1]
+    have hs1 : (0 : ℝ) ≤ ‖logPoly moebiusCoeff D w‖ ^ (2 : ℕ) := by positivity
     nlinarith [hsq1, hsq2, hs1, hV, hU]
   have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc hpt
   refine hmono.trans (le_of_eq ?_)

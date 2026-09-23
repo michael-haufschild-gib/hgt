@@ -107,12 +107,12 @@ theorem eventually_thetaSourceSignedStageGreenBoundary_exact_margin_inertia :
     eventually_thetaSourceSignedStageGreenBoundary_fixed_mixedInertia] with k hnorm hmix
   haveI := finiteDimensional_range_pinnedBoundaryCLM
   have hcalc : ((1 : ℝ) / 13) * ((13 : ℝ) / 12) = 1 / 12 := by norm_num
-  have hp : ((1 : ℝ) / 13) * ‖pinnedPositiveMode‖ ^ 2 <
+  have hp : ((1 : ℝ) / 13) * ‖pinnedPositiveMode‖ ^ (2 : ℕ) <
       reQuad (thetaSourceSignedStageGreenBoundary k) pinnedPositiveMode := by
     rw [norm_pinnedPositiveMode_sq, hcalc]
     exact hmix.1
   have hm : reQuad (thetaSourceSignedStageGreenBoundary k) pinnedNegativeMode <
-      -(((1 : ℝ) / 13) * ‖pinnedNegativeMode‖ ^ 2) := by
+      -(((1 : ℝ) / 13) * ‖pinnedNegativeMode‖ ^ (2 : ℕ)) := by
     rw [norm_pinnedNegativeMode_sq, hcalc]
     have h2 := hmix.2
     unfold reQuad

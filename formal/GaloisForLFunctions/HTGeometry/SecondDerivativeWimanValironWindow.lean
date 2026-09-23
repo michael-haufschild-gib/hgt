@@ -53,14 +53,14 @@ theorem norm_mul_sq_deriv2_div_sub_le
     (hfz : maxTerm a (Real.exp x) ≤ ‖coeffFun a z‖)
     (hmax : ∀ θ : ℝ, ‖coeffFun a (circleMap 0 (Real.exp x) θ)‖ ≤ ‖coeffFun a z‖)
     {G₂ : ℝ}
-    (hG₂ : ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
+    (hG₂ : ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ (2 : ℕ)
         * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j) ≤ G₂)
     {E : ℝ}
     (hE : ‖z * deriv (coeffFun a) z / coeffFun a z
         - (centralIndex a (Real.exp x) : ℂ)‖ ≤ E) :
-    ‖z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+    ‖z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z / coeffFun a z
         - ((centralIndex a (Real.exp x) : ℂ) * ((centralIndex a (Real.exp x) : ℂ) - 1))‖
-      ≤ ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
+      ≤ ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
         + (2 * (centralIndex a (Real.exp x) : ℝ) + 1) * E := by
   classical
   set r : ℝ := Real.exp x with hr
@@ -73,16 +73,16 @@ theorem norm_mul_sq_deriv2_div_sub_le
   -- the second moment against the value
   have hW := window_mass_le_sqrt ha N hz hmax
   have hM2 := tsum_index_sq_le_gaussian ha hn₀ hH hL hN0 hNK hNv hlipA hlipB hW
-  have hM2' : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n)
-      ≤ ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂) * ‖coeffFun a z‖ := by
+  have hM2' : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n)
+      ≤ ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂) * ‖coeffFun a z‖ := by
     refine le_trans hM2 ?_
-    have h1 : (N : ℝ) ^ 2 * (Real.sqrt (2 * (N : ℝ) + 1) * ‖coeffFun a z‖)
-        ≤ (N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) * ‖coeffFun a z‖ := by ring_nf; rfl
-    have h2 : 2 * maxTerm a r * (∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
+    have h1 : (N : ℝ) ^ (2 : ℕ) * (Real.sqrt (2 * (N : ℝ) + 1) * ‖coeffFun a z‖)
+        ≤ (N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) * ‖coeffFun a z‖ := by ring_nf; rfl
+    have h2 : 2 * maxTerm a r * (∑' j : ℕ, ((N : ℝ) + 1 + j) ^ (2 : ℕ)
           * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j))
         ≤ 2 * G₂ * ‖coeffFun a z‖ := by
       have hμle : maxTerm a r ≤ ‖coeffFun a z‖ := hfz
-      have hGnn : (0 : ℝ) ≤ ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
+      have hGnn : (0 : ℝ) ≤ ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ (2 : ℕ)
           * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j) := by
         refine tsum_nonneg fun j => ?_
         positivity
@@ -97,9 +97,9 @@ theorem norm_mul_sq_deriv2_div_sub_le
     exact hE
   -- combine
   have hdev := norm_mul_sq_deriv2_sub_le ha hzn v
-  have hsplit2 : z ^ 2 * deriv (deriv (coeffFun a)) z / coeffFun a z
+  have hsplit2 : z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z / coeffFun a z
         - ((v : ℂ) * ((v : ℂ) - 1))
-      = (z ^ 2 * deriv (deriv (coeffFun a)) z - ((v : ℂ) * ((v : ℂ) - 1)) * coeffFun a z)
+      = (z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z - ((v : ℂ) * ((v : ℂ) - 1)) * coeffFun a z)
           / coeffFun a z := by
     field_simp
   rw [hz] at hdev
@@ -108,12 +108,12 @@ theorem norm_mul_sq_deriv2_div_sub_le
   have h3 : (2 * (v : ℝ) + 1) * ‖z * deriv (coeffFun a) z - (v : ℂ) * coeffFun a z‖
       ≤ (2 * (v : ℝ) + 1) * (E * ‖coeffFun a z‖) :=
     mul_le_mul_of_nonneg_left hE' hνnn
-  calc ‖z ^ 2 * deriv (deriv (coeffFun a)) z - (v : ℂ) * ((v : ℂ) - 1) * coeffFun a z‖
-      ≤ (∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n))
+  calc ‖z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z - (v : ℂ) * ((v : ℂ) - 1) * coeffFun a z‖
+      ≤ (∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n))
         + (2 * (v : ℝ) + 1) * ‖z * deriv (coeffFun a) z - (v : ℂ) * coeffFun a z‖ := hdev
-    _ ≤ ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂) * ‖coeffFun a z‖
+    _ ≤ ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂) * ‖coeffFun a z‖
         + (2 * (v : ℝ) + 1) * (E * ‖coeffFun a z‖) := by linarith [hM2', h3]
-    _ = (((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
+    _ = (((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
         + (2 * (v : ℝ) + 1) * E) * ‖coeffFun a z‖ := by ring
 
 end GaloisForLFunctions.HTGeometry

@@ -50,7 +50,7 @@ namespace RHTower
 
 /-- **Sharpness of the energy bound.**  For an isolated conjugate pair `I₀ = 2y₀²` and the merge
 happens at `y₀²/2`, so `Λ = I₀/4` exactly. -/
-theorem isolated_pair_sharp (y₀ : ℝ) : y₀ ^ 2 / 2 = (2 * y₀ ^ 2) / 4 := by ring
+theorem isolated_pair_sharp (y₀ : ℝ) : y₀ ^ (2 : ℕ) / 2 = (2 * y₀ ^ (2 : ℕ)) / 4 := by ring
 
 /-- **No squeeze.**  A reverse inequality `Λ ≥ κ I₀` with `κ > ¼` together with `Λ ≤ I₀/4` forces
 `I₀ ≤ 0`; but the isolated pair realises `Λ = I₀/4` with `I₀ > 0`, so no such `κ` exists. -/

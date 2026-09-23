@@ -32,7 +32,7 @@ theorem clockSolution_eq_clamped {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V :
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T) {z : ℂ} (hz : |z.im| ≤ ρ) :
     clockSolution V ξ η z = 1 + ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η, clampedStep V T z s t := by
   rw [clockSolution_integral_equation hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall hξT hηT hz]
@@ -49,7 +49,7 @@ theorem continuous_clampedInner {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : ℂ} (hz : |z.im| ≤ ρ) (η : ℝ) :
     Continuous fun s : ℝ => ∫ t in (0 : ℝ)..η, clampedStep V T z s t :=
   intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
@@ -63,7 +63,7 @@ theorem hasDerivAt_clockSolution_fst {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξ : |ξ| < T) (hηT : |η| ≤ T) {z : ℂ} (hz : |z.im| ≤ ρ) :
     HasDerivAt (fun x : ℝ => clockSolution V x η z)
       (∫ t in (0 : ℝ)..η, clampedStep V T z ξ t) ξ := by
@@ -82,7 +82,7 @@ theorem deriv_clockSolution_fst {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξ : |ξ| < T) (hηT : |η| ≤ T) {z : ℂ} (hz : |z.im| ≤ ρ) :
     deriv (fun x : ℝ => clockSolution V x η z) ξ = ∫ t in (0 : ℝ)..η, clampedStep V T z ξ t :=
   (hasDerivAt_clockSolution_fst hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall hξ hηT hz).deriv
@@ -94,7 +94,7 @@ theorem hasDerivAt_deriv_clockSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξ : |ξ| < T) (hη : |η| < T) {z : ℂ} (hz : |z.im| ≤ ρ) :
     HasDerivAt (fun y : ℝ => deriv (fun x : ℝ => clockSolution V x y z) ξ)
       (clockStripStep (V ξ η) (clockSolution V ξ η) z) η := by
@@ -114,7 +114,7 @@ theorem clockSolution_zero_zero {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     clockSolution V 0 0 z = 1 := by
   have habs : |(0 : ℝ)| ≤ T := by simpa using hT

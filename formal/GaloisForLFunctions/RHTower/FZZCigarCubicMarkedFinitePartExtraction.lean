@@ -112,14 +112,14 @@ private theorem actual_angle_integral (f : ℂ → ℝ) (r : ℝ) :
   rw [h]
   field_simp [Real.pi_ne_zero]
 
-private theorem rpow_neg_six (r : ℝ) (hr : 0 ≤ r) : r^(-6:ℝ) = (r^6)⁻¹ := by
+private theorem rpow_neg_six (r : ℝ) (hr : 0 ≤ r) : r^(-6:ℝ) = (r^(6 : ℕ))⁻¹ := by
   rw [Real.rpow_neg hr,show (6:ℝ)=((6:ℕ):ℝ) from rfl,Real.rpow_natCast]
 
 private theorem regular_mark_angle (r : ℝ) (hr : 0 < r) (hR : r < 1/2) :
     (∫ θ : ℝ in Ioo (-Real.pi) Real.pi,
       originalPolar (fzzScreeningFifthRegularMark (-6) (-6)) (r,θ)) =
       2*Real.pi*(fzzScreeningCubicMarkedRadialRemainder r-
-        ((788/3)*r+(1779/8)*r^3+(459/40)*r^5)) := by
+        ((788/3)*r+(1779/8)*r^(3 : ℕ)+(459/40)*r^(5 : ℕ))) := by
   have hc : Continuous (fun θ : ℝ => circleMap 0 r θ) := by unfold circleMap; fun_prop
   have hn : ∀ θ : ℝ, 1-circleMap 0 r θ ≠ 0 := by
     intro θ he
@@ -130,7 +130,7 @@ private theorem regular_mark_angle (r : ℝ) (hr : 0 < r) (hR : r < 1/2) :
   have hn0 θ : ‖1-circleMap 0 r θ‖ ≠ 0 := norm_ne_zero_iff.mpr (hn θ)
   have hcN : Continuous (fun θ : ℝ => ‖1-circleMap 0 r θ‖) := (continuous_const.sub hc).norm
   have hi : IntegrableOn (fun θ : ℝ => Real.log ‖1-circleMap 0 r θ‖*
-      (‖1-circleMap 0 r θ‖^6)⁻¹) (Ioo (-Real.pi) Real.pi) :=
+      (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) (Ioo (-Real.pi) Real.pi) :=
     ((hcN.log hn0).mul ((hcN.pow 6).inv₀ (fun θ => pow_ne_zero _ (hn0 θ)))).continuousOn.integrableOn_compact isCompact_Icc |>.mono_set Ioo_subset_Icc_self
   have ht : IntegrableOn (fun θ : ℝ => fzzScreeningFifthTaylorMark (-6) (circleMap 0 r θ))
       (Ioo (-Real.pi) Real.pi) := by
@@ -140,25 +140,25 @@ private theorem regular_mark_angle (r : ℝ) (hr : 0 < r) (hR : r < 1/2) :
     exact hh.continuousOn.integrableOn_compact isCompact_Icc |>.mono_set Ioo_subset_Icc_self
   simp only [originalPolar,fzzScreeningFifthRegularMark,norm_circleMap_zero,abs_of_pos hr]
   have he (θ : ℝ) : Real.log ‖circleMap 0 r θ-1‖*‖circleMap 0 r θ-1‖^(-6:ℝ) =
-      Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^6)⁻¹ := by
+      Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹ := by
     rw [rpow_neg_six _ (norm_nonneg _),norm_sub_rev]
   simp_rw [he]
   rw [integral_const_mul,integral_const_mul,integral_sub hi ht,
-    actual_angle_integral (fun z : ℂ => Real.log ‖1-z‖*(‖1-z‖^6)⁻¹),
+    actual_angle_integral (fun z : ℂ => Real.log ‖1-z‖*(‖1-z‖^(6 : ℕ))⁻¹),
     actual_angle_integral (fzzScreeningFifthTaylorMark (-6)),
     fzzScreeningFifthTaylorMark_cubic_circleAverage,rpow_neg_six r hr.le]
   rw [← mul_assoc]
-  change r*(r^6)⁻¹*(2*Real.pi*fzzScreeningHigherMarkedAngular 3 r-
-    2*Real.pi*(-3*r^2-21*r^4+(788/3)*r^6+(1779/8)*r^8+(459/40)*r^10)) = _
+  change r*(r^(6 : ℕ))⁻¹*(2*Real.pi*fzzScreeningHigherMarkedAngular 3 r-
+    2*Real.pi*(-3*r^(2 : ℕ)-21*r^(4 : ℕ)+(788/3)*r^(6 : ℕ)+(1779/8)*r^(8 : ℕ)+(459/40)*r^(10 : ℕ))) = _
   unfold fzzScreeningCubicMarkedRadialRemainder
   field_simp [hr.ne']
   ring
 
-private def markedFiniteTail (r : ℝ) := (788/3)*r+(1779/8)*r^3+(459/40)*r^5
+private def markedFiniteTail (r : ℝ) := (788/3)*r+(1779/8)*r^(3 : ℕ)+(459/40)*r^(5 : ℕ)
 
 private theorem markedFiniteTail_integral :
     (∫ r : ℝ in (0:ℝ)..(1/2), markedFiniteTail r) = 558149/15360 := by
-  let P : ℝ → ℝ := fun r => (394/3)*r^2+(1779/32)*r^4+(153/80)*r^6
+  let P : ℝ → ℝ := fun r => (394/3)*r^(2 : ℕ)+(1779/32)*r^(4 : ℕ)+(153/80)*r^(6 : ℕ)
   have hd (r : ℝ) : HasDerivAt P (markedFiniteTail r) r := by
     have h := ((((hasDerivAt_id r).pow 2).const_mul (394/3)).fun_add
       (((hasDerivAt_id r).pow 4).const_mul (1779/32))).fun_add
@@ -217,12 +217,12 @@ private theorem taylor_angle_integral (r : ℝ) :
   field_simp [Real.pi_ne_zero]
 
 private theorem kernel_angle_integral (r : ℝ) :
-    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi,(‖1-circleMap 0 r θ‖^6)⁻¹) =
+    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi,(‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) =
       2*Real.pi*fzzScreeningHigherAngular 3 r := by
   have h := Real.circleAverage_eq_integral_add
-    (f := fun z : ℂ => (‖1-z‖^6)⁻¹) (c := 0) (R := r) (-Real.pi)
+    (f := fun z : ℂ => (‖1-z‖^(6 : ℕ))⁻¹) (c := 0) (R := r) (-Real.pi)
   rw [intervalIntegral.integral_comp_add_right
-      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^6)⁻¹) (-Real.pi),zero_add,
+      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) (-Real.pi),zero_add,
     show 2*Real.pi+-Real.pi=Real.pi by ring,smul_eq_mul,
     intervalIntegral.integral_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi),
     integral_Ioc_eq_integral_Ioo] at h
@@ -232,7 +232,7 @@ private theorem kernel_angle_integral (r : ℝ) :
 
 private theorem angular_remainder (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
     fzzScreeningHigherAngular 3 r =
-      1+9*r^2+36*r^4+r^6*fzzScreeningCubicAngularRemainder r := by
+      1+9*r^(2 : ℕ)+36*r^(4 : ℕ)+r^(6 : ℕ)*fzzScreeningCubicAngularRemainder r := by
   have he : fzzScreeningAngularRadius (Real.log ((1-r)/r)) = r := by
     rw [fzzScreeningAngularRadius,Real.exp_log (div_pos (sub_pos.mpr hr1) hr)]
     field_simp [hr.ne']
@@ -242,7 +242,7 @@ private theorem angular_remainder (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
 
 private theorem remainder_angle_integral (r : ℝ) (hr : 0 < r) (hrR : r < 1/2) :
     (∫ θ : ℝ in Ioo (-Real.pi) Real.pi,originalPolar (fzzScreeningFifthSubtracted (-6) (-6)) (r,θ)) =
-      2*Real.pi*(r*fzzScreeningCubicAngularRemainder r+460*r+405*r^3+21*r^5) := by
+      2*Real.pi*(r*fzzScreeningCubicAngularRemainder r+460*r+405*r^(3 : ℕ)+21*r^(5 : ℕ)) := by
   have hc : Continuous (fun θ : ℝ => circleMap 0 r θ) := by unfold circleMap; fun_prop
   have hn : ∀ θ : ℝ,1-circleMap 0 r θ ≠ 0 := by
     intro θ he
@@ -250,7 +250,7 @@ private theorem remainder_angle_integral (r : ℝ) (hr : 0 < r) (hrR : r < 1/2) 
     have hnorm : ‖circleMap 0 r θ‖ = r := by rw [norm_circleMap_zero,abs_of_pos hr]
     rw [hz,norm_one] at hnorm
     linarith
-  have hi : IntegrableOn (fun θ : ℝ => (‖1-circleMap 0 r θ‖^6)⁻¹) (Ioo (-Real.pi) Real.pi) :=
+  have hi : IntegrableOn (fun θ : ℝ => (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) (Ioo (-Real.pi) Real.pi) :=
     (((continuous_const.sub hc).norm.pow 6).inv₀ (fun θ => pow_ne_zero _
       (norm_ne_zero_iff.mpr (hn θ)))).continuousOn.integrableOn_compact isCompact_Icc
       |>.mono_set Ioo_subset_Icc_self
@@ -261,7 +261,7 @@ private theorem remainder_angle_integral (r : ℝ) (hr : 0 < r) (hrR : r < 1/2) 
       fun_prop
     exact hh.continuousOn.integrableOn_compact isCompact_Icc |>.mono_set Ioo_subset_Icc_self
   simp only [originalPolar,fzzScreeningFifthSubtracted,norm_circleMap_zero,abs_of_pos hr]
-  have he (θ : ℝ) : ‖circleMap 0 r θ-1‖^(-6:ℝ) = (‖1-circleMap 0 r θ‖^6)⁻¹ := by
+  have he (θ : ℝ) : ‖circleMap 0 r θ-1‖^(-6:ℝ) = (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹ := by
     rw [rpow_neg_six _ (norm_nonneg _),norm_sub_rev]
   simp_rw [he]
   rw [integral_const_mul,integral_const_mul,integral_sub hi ht,kernel_angle_integral,
@@ -272,7 +272,7 @@ private theorem remainder_angle_integral (r : ℝ) (hr : 0 < r) (hrR : r < 1/2) 
 
 
 private def singularFiniteTail (r : ℝ) :=
-  (r*Real.log r)*(460+405*r^2+21*r^4)
+  (r*Real.log r)*(460+405*r^(2 : ℕ)+21*r^(4 : ℕ))
 
 private theorem singularFiniteTail_continuous : Continuous singularFiniteTail := by
   exact Real.continuous_mul_log.mul (by fun_prop)
@@ -281,12 +281,12 @@ private theorem singularFiniteTail_integral :
     (∫ r : ℝ in (0:ℝ)..(1/2),singularFiniteTail r) =
       (8177/128)*Real.log (1/2)-11651/384 := by
   let P : ℝ → ℝ := fun r =>
-    230*r^2*Real.log r-115*r^2+(405/4)*r^4*Real.log r-(405/16)*r^4+
-      (7/2)*r^6*Real.log r-(7/12)*r^6
+    230*r^(2 : ℕ)*Real.log r-115*r^(2 : ℕ)+(405/4)*r^(4 : ℕ)*Real.log r-(405/16)*r^(4 : ℕ)+
+      (7/2)*r^(6 : ℕ)*Real.log r-(7/12)*r^(6 : ℕ)
   have hC : Continuous P := by
     have he : P = fun r : ℝ =>
-        230*r*(r*Real.log r)-115*r^2+(405/4)*r^3*(r*Real.log r)-(405/16)*r^4+
-          (7/2)*r^5*(r*Real.log r)-(7/12)*r^6 := by
+        230*r*(r*Real.log r)-115*r^(2 : ℕ)+(405/4)*r^(3 : ℕ)*(r*Real.log r)-(405/16)*r^(4 : ℕ)+
+          (7/2)*r^(5 : ℕ)*(r*Real.log r)-(7/12)*r^(6 : ℕ) := by
       funext r
       dsimp [P]
       ring
@@ -347,7 +347,7 @@ and the endpoint of its distinct logarithmic collision primitive. -/
 theorem fzzScreeningCubicSingularMarkedLocalFinitePart_eq_fifthMark :
     fzzScreeningCubicSingularMarkedLocalFinitePart =
       (∫ z : ℂ in ball 0 (1/2),Real.log ‖z‖*fzzScreeningFifthSubtracted (-6) (-6) z)+
-        Real.pi*(36*(Real.log (1/2))^2-(10993/64)*Real.log (1/2)+7811/192) := by
+        Real.pi*(36*(Real.log (1/2))^(2 : ℕ)-(10993/64)*Real.log (1/2)+7811/192) := by
   rw [singular_mark_disk_angular]
   have hi : IntegrableOn (fun r : ℝ => (r*Real.log r)*fzzScreeningCubicAngularRemainder r)
       (Ioo (0:ℝ) (1/2)) :=
@@ -370,7 +370,7 @@ theorem fzzScreeningCubicMarkedPlaneFinitePart_eq_fifthMarks :
       (∫ z : ℂ in ball 0 (1/2),Real.log ‖z‖*fzzScreeningFifthSubtracted (-6) (-6) z)+
       (∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthRegularMark (-6) (-6) z)+
       (∫ z : ℂ in fzzScreeningPlaneExterior,Real.log ‖z‖*fzzScreeningPlaneKernel (-6) (-6) z)+
-      Real.pi*(36*(Real.log (1/2))^2-(13681/64)*Real.log (1/2)+962749/7680) := by
+      Real.pi*(36*(Real.log (1/2))^(2 : ℕ)-(13681/64)*Real.log (1/2)+962749/7680) := by
   rw [fzzScreeningCubicMarkedPlaneFinitePart,
     fzzScreeningCubicSingularMarkedLocalFinitePart_eq_fifthMark,
     fzzScreeningCubicRegularMarkedLocalFinitePart_eq_fifthMark]

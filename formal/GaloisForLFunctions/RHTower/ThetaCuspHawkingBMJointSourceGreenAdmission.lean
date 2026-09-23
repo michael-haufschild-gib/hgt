@@ -43,11 +43,11 @@ theorem tortoiseGreen_memLp {w chi : ℂ} (h : Chamber w chi) (s a J K T : ℂ) 
     intro u hu
     have hc := (power_derivatives w (by linarith [hu.1] : 0 < 1+u)).1.continuousAt
     exact (hc.comp_of_eq (continuous_const.add continuous_id).continuousAt rfl).continuousWithinAt
-  have hz : Set.MapsTo (fun u : ℝ => 1-u^2) (Icc 0 1) (Icc 0 1) := by
+  have hz : Set.MapsTo (fun u : ℝ => 1-u^(2 : ℕ)) (Icc 0 1) (Icc 0 1) := by
     intro u hu
     constructor <;> nlinarith [hu.1,hu.2]
-  have hF : ContinuousOn (fun u => power w (1+u)*g (1-u^2)) (Icc 0 1) :=
-    hp.mul (hg.comp (by fun_prop : Continuous (fun u : ℝ => 1-u^2)).continuousOn hz)
+  have hF : ContinuousOn (fun u => power w (1+u)*g (1-u^(2 : ℕ))) (Icc 0 1) :=
+    hp.mul (hg.comp (by fun_prop : Continuous (fun u : ℝ => 1-u^(2 : ℕ))).continuousOn hz)
   have hm := laplaceProfile_memLp w (chamber_re_pos h) _ hF
   apply hm.ae_eq
   filter_upwards [ae_restrict_mem measurableSet_Iio] with t ht

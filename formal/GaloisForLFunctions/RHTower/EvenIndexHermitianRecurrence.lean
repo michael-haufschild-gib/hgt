@@ -34,7 +34,7 @@ theorem frequently_re_pos_of_norm_unbounded (a : ℕ → ℂ) {k : ℕ} (hk : 1 
     have hr0 : 0 ≤ Real.sqrt u := Real.sqrt_nonneg u
     have hr1 : Real.sqrt u < 1 := by
       rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_lt_sqrt hu0 hu1
-    have hru : Real.sqrt u ^ 2 = u := Real.sq_sqrt hu0
+    have hru : Real.sqrt u ^ (2 : ℕ) = u := Real.sq_sqrt hu0
     have hcomplex := summable_evenIndex_mixedAdditive a (habs (Real.sqrt u) hr0 hr1) k
     refine (hcomplex.map Complex.reCLM.toLinearMap.toAddMonoidHom Complex.reCLM.continuous).congr
       (fun q => ?_)
@@ -46,15 +46,15 @@ theorem frequently_re_pos_of_norm_unbounded (a : ℕ → ℂ) {k : ℕ} (hk : 1 
     set P := ∑ q ∈ Finset.range Q, |(mixedAdditiveConvolutionPower a k (2 * q)).re| with hP
     have hP0 : 0 ≤ P := Finset.sum_nonneg (fun q _ => abs_nonneg _)
     obtain ⟨r, hr0, hr1, hrB⟩ := hunb (2 * P + 1)
-    refine ⟨r ^ 2, by positivity, pow_lt_one₀ hr0 hr1 two_ne_zero, ?_⟩
+    refine ⟨r ^ (2 : ℕ), by positivity, pow_lt_one₀ hr0 hr1 two_ne_zero, ?_⟩
     have hbound := norm_pow_sq_le_two_mul_tsum_evenIndex_re a (habs r hr0 hr1) k
-    have hnorm : ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ 2
+    have hnorm : ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ (2 : ℕ)
         = ‖∑' N : ℕ, a N * (r : ℂ) ^ N‖ ^ (2 * k) := by
       rw [norm_pow, ← pow_mul, mul_comm]
     have hge1 : (1 : ℝ) ≤ ‖∑' N : ℕ, a N * (r : ℂ) ^ N‖ := by linarith [hrB, hP0]
     have hself : ‖∑' N : ℕ, a N * (r : ℂ) ^ N‖ ≤ ‖∑' N : ℕ, a N * (r : ℂ) ^ N‖ ^ (2 * k) :=
       le_self_pow₀ hge1 (by omega)
-    have hsumeq : (∑' q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q)).re * (r ^ 2) ^ q)
+    have hsumeq : (∑' q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q)).re * (r ^ (2 : ℕ)) ^ q)
         = ∑' q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q)).re * r ^ (2 * q) := by
       refine tsum_congr (fun q => ?_)
       rw [pow_mul]

@@ -96,13 +96,13 @@ theorem sum_cglPacketCharacterFrequencySet {q R : ℕ}
 noncomputable def characterHybridLengthBound (q N : ℕ) (a : ℕ → ℂ) (T : ℝ) : ℝ :=
   ((5 * Real.exp 1 / 2) * (N : ℝ) +
       (5 / 2) * ((q + 1).totient : ℝ) * T) *
-    ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2
+    ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ)
 
 theorem sum_cglPacketCharacterFrequencySet_normSq_le {q R N : ℕ}
     (P : RHTower.CGLFibreSeparatedPacket q R) (a : ℕ → ℂ)
     {T : ℝ} (hT : 1 ≤ T) (hheight : ∀ r : Fin R, |P.ordinate r| ≤ T) :
     ∑ χ : DirichletCharacter ℂ (q + 1),
-        ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ 2
+        ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ)
       ≤ (2 * Real.pi / P.spacing + 1) *
           characterHybridLengthBound q N a (T + P.spacing)
         + characterHybridLengthBound q N (characterLogDerivCoeff a) (T + P.spacing) := by
@@ -124,10 +124,10 @@ theorem sum_cglPacketCharacterFrequencySet_normSq_le {q R N : ℕ}
     exact div_nonneg (by linarith [P.spacing_pos]) hD.le
   have hT' : 1 ≤ T + P.spacing := by linarith [P.spacing_pos]
   have hper : ∀ χ : DirichletCharacter ℂ (q + 1),
-      ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ 2
-        ≤ (1 / δ + 1) * (∫ w in Set.Icc (-H) H, ‖characterLogPoly q N a χ w‖ ^ 2)
+      ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ)
+        ≤ (1 / δ + 1) * (∫ w in Set.Icc (-H) H, ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ))
           + (∫ w in Set.Icc (-H) H,
-              ‖characterLogPoly q N (characterLogDerivCoeff a) χ w‖ ^ 2) := by
+              ‖characterLogPoly q N (characterLogDerivCoeff a) χ w‖ ^ (2 : ℕ)) := by
     intro χ
     let S := cglPacketCharacterFrequencySet P χ
     let f : ℝ → ℂ := characterLogPoly q N a χ
@@ -167,15 +167,15 @@ theorem sum_cglPacketCharacterFrequencySet_normSq_le {q R N : ℕ}
     have hf'c : Continuous f' := continuous_characterLogPoly q N (characterLogDerivCoeff a) χ
     have hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (B + δ) :=
       (by fun_prop : Continuous (fun y => 2 * inner ℝ (f y) (f' y))).intervalIntegrable _ _
-    have hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (B + δ) :=
+    have hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (B + δ) :=
       hfc.norm.pow 2 |>.intervalIntegrable _ _
-    have hf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume A (B + δ) :=
+    have hf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume A (B + δ) :=
       hf'c.norm.pow 2 |>.intervalIntegrable _ _
     have hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (B + δ) :=
       (by fun_prop : Continuous (fun y => 2 * (‖f y‖ * ‖f' y‖))).intervalIntegrable _ _
     have hgal := RHTower.gallagher_separated hδ hAB hSmem hSsep hf hg'int hgint hcrossint
     have hcross : (∫ y in A..B + δ, 2 * (‖f y‖ * ‖f' y‖))
-        ≤ (∫ y in A..B + δ, ‖f y‖ ^ 2) + (∫ y in A..B + δ, ‖f' y‖ ^ 2) := by
+        ≤ (∫ y in A..B + δ, ‖f y‖ ^ (2 : ℕ)) + (∫ y in A..B + δ, ‖f' y‖ ^ (2 : ℕ)) := by
       refine le_trans (intervalIntegral.integral_mono_on hABδ hcrossint
         (hgint.add hf'int) ?_) ?_
       · intro y hy
@@ -193,31 +193,31 @@ theorem sum_cglPacketCharacterFrequencySet_normSq_le {q R N : ℕ}
     have hsub : Set.Ioc A (B + δ) ⊆ Set.Icc (-H) H := by
       intro y hy
       exact ⟨hHA.trans (le_of_lt hy.1), hy.2.trans hBH⟩
-    have hFbig : IntegrableOn (fun y => ‖f y‖ ^ 2) (Set.Icc (-H) H) :=
+    have hFbig : IntegrableOn (fun y => ‖f y‖ ^ (2 : ℕ)) (Set.Icc (-H) H) :=
       hfc.norm.pow 2 |>.integrableOn_Icc
-    have hDbig : IntegrableOn (fun y => ‖f' y‖ ^ 2) (Set.Icc (-H) H) :=
+    have hDbig : IntegrableOn (fun y => ‖f' y‖ ^ (2 : ℕ)) (Set.Icc (-H) H) :=
       hf'c.norm.pow 2 |>.integrableOn_Icc
-    have hIF : (∫ y in A..B + δ, ‖f y‖ ^ 2)
-        ≤ ∫ y in Set.Icc (-H) H, ‖f y‖ ^ 2 := by
+    have hIF : (∫ y in A..B + δ, ‖f y‖ ^ (2 : ℕ))
+        ≤ ∫ y in Set.Icc (-H) H, ‖f y‖ ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_of_le hABδ]
       exact setIntegral_mono_set hFbig (Filter.Eventually.of_forall fun y => by positivity)
         (Filter.Eventually.of_forall fun y hy => hsub hy)
-    have hID : (∫ y in A..B + δ, ‖f' y‖ ^ 2)
-        ≤ ∫ y in Set.Icc (-H) H, ‖f' y‖ ^ 2 := by
+    have hID : (∫ y in A..B + δ, ‖f' y‖ ^ (2 : ℕ))
+        ≤ ∫ y in Set.Icc (-H) H, ‖f' y‖ ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_of_le hABδ]
       exact setIntegral_mono_set hDbig (Filter.Eventually.of_forall fun y => by positivity)
         (Filter.Eventually.of_forall fun y hy => hsub hy)
     have hcoef : (0 : ℝ) ≤ 1 / δ := by positivity
-    change (∑ w ∈ S, ‖f w‖ ^ 2) ≤ _
+    change (∑ w ∈ S, ‖f w‖ ^ (2 : ℕ)) ≤ _
     have hIFscaled := mul_le_mul_of_nonneg_left hIF hcoef
     linarith
   have hsum :
       ∑ χ : DirichletCharacter ℂ (q + 1),
-          ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ 2
+          ∑ w ∈ cglPacketCharacterFrequencySet P χ, ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ)
         ≤ ∑ χ : DirichletCharacter ℂ (q + 1),
-          ((1 / δ + 1) * (∫ w in Set.Icc (-H) H, ‖characterLogPoly q N a χ w‖ ^ 2)
+          ((1 / δ + 1) * (∫ w in Set.Icc (-H) H, ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ))
             + (∫ w in Set.Icc (-H) H,
-                ‖characterLogPoly q N (characterLogDerivCoeff a) χ w‖ ^ 2)) :=
+                ‖characterLogPoly q N (characterLogDerivCoeff a) χ w‖ ^ (2 : ℕ))) :=
     Finset.sum_le_sum (fun χ _ => hper χ)
   rw [Finset.sum_add_distrib, ← Finset.mul_sum] at hsum
   have hA := sum_integral_normSq_characterLogPoly_le_length q N a hT'
@@ -238,12 +238,12 @@ theorem sum_normSq_characterLogPoly_cglPacket_le {q R N : ℕ}
     (P : RHTower.CGLFibreSeparatedPacket q R) (a : ℕ → ℂ)
     {T : ℝ} (hT : 1 ≤ T) (hheight : ∀ r : Fin R, |P.ordinate r| ≤ T) :
     ∑ r : Fin R,
-        ‖characterLogPoly q N a (P.character r) (cglPacketLogFrequency P r)‖ ^ 2
+        ‖characterLogPoly q N a (P.character r) (cglPacketLogFrequency P r)‖ ^ (2 : ℕ)
       ≤ (2 * Real.pi / P.spacing + 1) *
           characterHybridLengthBound q N a (T + P.spacing)
         + characterHybridLengthBound q N (characterLogDerivCoeff a) (T + P.spacing) := by
   rw [← sum_cglPacketCharacterFrequencySet P
-    (fun χ w => ‖characterLogPoly q N a χ w‖ ^ 2)]
+    (fun χ w => ‖characterLogPoly q N a χ w‖ ^ (2 : ℕ))]
   exact sum_cglPacketCharacterFrequencySet_normSq_le P a hT hheight
 
 end RHTower.Sieve

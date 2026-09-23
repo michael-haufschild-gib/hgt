@@ -19,7 +19,7 @@ Its three exponential moments cancel, so its Gram response is supported on a lag
 The obstruction has a sharp positive survivor.  The source-Gram quadratic is positive and equals
 one quarter of the packet's piecewise weak-generator graph energy
 
-`integral (4 * |g'|^2 + |g|^2)`.
+`integral (4 * |g'|^(2 : ℕ) + |g|^(2 : ℕ))`.
 
 Thus bare polar averaging loses precisely the first-order anti-concentration channel; generator or
 boundary-slope energy is forced.  This is an unconditional source-side theorem.  It does not bound
@@ -64,12 +64,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_distancePacket
     congr 1
     ring
   have ea2 : Real.exp (-(a + 2 * h) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 2 := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   have ea3 : Real.exp (-(a + 3 * h) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 3 := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (3 : ℕ) := by
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
@@ -77,10 +77,10 @@ theorem unitExponentialThirdDifferenceResponse_eq_distancePacket
     unitExponentialThirdDifferenceCoefficient, unitExponentialIncrementKernel,
     ea1, ea2, ea3]
   have eh := exp_half_mul_exp_neg_half h
-  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
       Real.exp (-h / 2) := by
     calc
-      Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+      Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
           (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (-h / 2) := by ring
       _ = _ := by rw [eh]; ring
   ring_nf at eh eh2 ⊢
@@ -102,12 +102,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_first
     congr 1
     ring
   have ea2 : Real.exp (-(a + 2 * h) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 2 := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   have ea3 : Real.exp (-(a + 3 * h) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 3 := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (3 : ℕ) := by
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
@@ -122,12 +122,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_first
     congr 1
     ring
   have ec2 : Real.exp (-(a + 2 * h - u) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 2 * Real.exp (u / 2) := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (2 : ℕ) * Real.exp (u / 2) := by
     rw [pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
   have ec3 : Real.exp (-(a + 3 * h - u) / 2) =
-      Real.exp (-a / 2) * Real.exp (-h / 2) ^ 3 * Real.exp (u / 2) := by
+      Real.exp (-a / 2) * Real.exp (-h / 2) ^ (3 : ℕ) * Real.exp (u / 2) := by
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add,
       ← Real.exp_add]
     congr 1
@@ -146,10 +146,10 @@ theorem unitExponentialThirdDifferenceResponse_eq_first
     unitExponentialThirdDifferenceCoefficient, unitExponentialIncrementKernel,
     h0, h1, h2, h3, ea1, ea2, ea3, ec0, ec1, ec2, ec3, erhs1, erhs2]
   have eh := exp_half_mul_exp_neg_half h
-  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
       Real.exp (-h / 2) := by
     calc
-      Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+      Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
           (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (-h / 2) := by ring
       _ = _ := by rw [eh]; ring
   ring_nf at eh eh2 ⊢
@@ -208,12 +208,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_last
   have h3 : |a + 3 * h - u| = a + 3 * h - u := by
     rw [abs_of_nonneg (sub_nonneg.mpr hu3)]
   let W := Real.exp ((a + 3 * h - u) / 2)
-  have e0 : Real.exp (-(u - a) / 2) = W * Real.exp (-h / 2) ^ 3 := by
+  have e0 : Real.exp (-(u - a) / 2) = W * Real.exp (-h / 2) ^ (3 : ℕ) := by
     dsimp only [W]
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
-  have e1 : Real.exp (-(u - a - h) / 2) = W * Real.exp (-h / 2) ^ 2 := by
+  have e1 : Real.exp (-(u - a - h) / 2) = W * Real.exp (-h / 2) ^ (2 : ℕ) := by
     dsimp only [W]
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
@@ -227,10 +227,10 @@ theorem unitExponentialThirdDifferenceResponse_eq_last
     e0, e1, e2]
   simp only [unitExponentialThirdDifferenceCoefficient, W]
   have eh := exp_half_mul_exp_neg_half h
-  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
       Real.exp (-h / 2) := by
     calc
-      Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+      Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
           (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (-h / 2) := by ring
       _ = _ := by rw [eh]; ring
   ring_nf at eh eh2 ⊢
@@ -257,12 +257,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_zero_of_le
     rw [← Real.exp_add]
     congr 1
     ring
-  have e2 : Real.exp (-(a + 2 * h - u) / 2) = Z * Real.exp (-h / 2) ^ 2 := by
+  have e2 : Real.exp (-(a + 2 * h - u) / 2) = Z * Real.exp (-h / 2) ^ (2 : ℕ) := by
     dsimp only [Z]
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
-  have e3 : Real.exp (-(a + 3 * h - u) / 2) = Z * Real.exp (-h / 2) ^ 3 := by
+  have e3 : Real.exp (-(a + 3 * h - u) / 2) = Z * Real.exp (-h / 2) ^ (3 : ℕ) := by
     dsimp only [Z]
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
@@ -271,10 +271,10 @@ theorem unitExponentialThirdDifferenceResponse_eq_zero_of_le
     e0, e1, e2, e3]
   simp only [unitExponentialThirdDifferenceCoefficient, Z]
   have eh := exp_half_mul_exp_neg_half h
-  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+  have eh2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
       Real.exp (-h / 2) := by
     calc
-      Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+      Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
           (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (-h / 2) := by ring
       _ = _ := by rw [eh]; ring
   ring_nf at eh eh2 ⊢
@@ -298,12 +298,12 @@ theorem unitExponentialThirdDifferenceResponse_eq_zero_of_ge
     rw [← Real.exp_add]
     congr 1
     ring
-  have e2 : Real.exp (-(u - a - 2 * h) / 2) = Y * Real.exp (h / 2) ^ 2 := by
+  have e2 : Real.exp (-(u - a - 2 * h) / 2) = Y * Real.exp (h / 2) ^ (2 : ℕ) := by
     dsimp only [Y]
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
-  have e3 : Real.exp (-(u - a - 3 * h) / 2) = Y * Real.exp (h / 2) ^ 3 := by
+  have e3 : Real.exp (-(u - a - 3 * h) / 2) = Y * Real.exp (h / 2) ^ (3 : ℕ) := by
     dsimp only [Y]
     rw [pow_succ, pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
@@ -312,10 +312,10 @@ theorem unitExponentialThirdDifferenceResponse_eq_zero_of_ge
     e0, e1, e2, e3]
   simp only [unitExponentialThirdDifferenceCoefficient, Y]
   have eh := exp_half_mul_exp_neg_half h
-  have ehq2 : Real.exp (-h / 2) * Real.exp (h / 2) ^ 2 =
+  have ehq2 : Real.exp (-h / 2) * Real.exp (h / 2) ^ (2 : ℕ) =
       Real.exp (h / 2) := by
     calc
-      Real.exp (-h / 2) * Real.exp (h / 2) ^ 2 =
+      Real.exp (-h / 2) * Real.exp (h / 2) ^ (2 : ℕ) =
           (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (h / 2) := by ring
       _ = _ := by rw [eh]; ring
   ring_nf at eh ehq2 ⊢
@@ -409,13 +409,13 @@ theorem abs_unitExponentialThirdDifferenceResponse_le
 
 def unitExponentialThirdDifferencePolarEnergy (a h : ℝ) : ℝ :=
   ∫ u in Ioi (0 : ℝ), Real.exp (-u) *
-    unitExponentialThirdDifferenceResponse a h u ^ 2
+    unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)
 
 theorem unitExponentialThirdDifferencePolarEnergy_eq_interval
     {a h : ℝ} (ha : 0 ≤ a) (hh : 0 ≤ h) :
     unitExponentialThirdDifferencePolarEnergy a h =
       ∫ u in a..(a + 3 * h), Real.exp (-u) *
-        unitExponentialThirdDifferenceResponse a h u ^ 2 := by
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) := by
   rw [unitExponentialThirdDifferencePolarEnergy]
   have hsub : Ioc a (a + 3 * h) ⊆ Ioi (0 : ℝ) := by
     intro u hu
@@ -442,12 +442,12 @@ theorem unitExponentialThirdDifferencePolarEnergy_nonneg
 theorem unitExponentialThirdDifferencePolarEnergy_le
     {a h : ℝ} (ha : 0 ≤ a) (hh : 0 ≤ h) :
     unitExponentialThirdDifferencePolarEnergy a h ≤
-      3 * h * (Real.exp (h / 2) - Real.exp (-h / 2)) ^ 2 := by
+      3 * h * (Real.exp (h / 2) - Real.exp (-h / 2)) ^ (2 : ℕ) := by
   rw [unitExponentialThirdDifferencePolarEnergy_eq_interval ha hh]
   let d := Real.exp (h / 2) - Real.exp (-h / 2)
   have hd : 0 ≤ d := sub_nonneg.mpr (Real.exp_le_exp.mpr (by linarith))
   have hbound : ∀ u ∈ Set.uIoc a (a + 3 * h),
-      ‖Real.exp (-u) * unitExponentialThirdDifferenceResponse a h u ^ 2‖ ≤ d ^ 2 := by
+      ‖Real.exp (-u) * unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)‖ ≤ d ^ (2 : ℕ) := by
     intro u hu
     rw [Set.uIoc_of_le (by linarith : a ≤ a + 3 * h)] at hu
     have hu0 : 0 ≤ u := ha.trans hu.1.le
@@ -455,7 +455,7 @@ theorem unitExponentialThirdDifferencePolarEnergy_le
       rw [← Real.exp_zero]
       exact Real.exp_le_exp.mpr (by linarith)
     have hr := abs_unitExponentialThirdDifferenceResponse_le hh hu.1.le hu.2
-    have hrsq : unitExponentialThirdDifferenceResponse a h u ^ 2 ≤ d ^ 2 := by
+    have hrsq : unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) ≤ d ^ (2 : ℕ) := by
       dsimp only [d] at hr ⊢
       nlinarith [sq_abs (unitExponentialThirdDifferenceResponse a h u),
         abs_nonneg (unitExponentialThirdDifferenceResponse a h u)]
@@ -463,7 +463,7 @@ theorem unitExponentialThirdDifferencePolarEnergy_le
     nlinarith [Real.exp_pos (-u)]
   have hnorm := intervalIntegral.norm_integral_le_of_norm_le_const hbound
   have hnonneg : 0 ≤ ∫ u in a..(a + 3 * h), Real.exp (-u) *
-      unitExponentialThirdDifferenceResponse a h u ^ 2 :=
+      unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg (by linarith) (fun u _hu => by positivity)
   rw [Real.norm_eq_abs, abs_of_nonneg hnonneg] at hnorm
   dsimp only [d] at hnorm ⊢
@@ -477,7 +477,7 @@ theorem exists_unitExponentialThirdDifference_fixedSample_gt_polarEnergy
     (C : ℝ) (hC : 0 ≤ C) :
     ∃ h : ℝ, 0 < h ∧ 0 < 1 - h ∧
       C * unitExponentialThirdDifferencePolarEnergy (1 - h) h <
-        unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ 2 := by
+        unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ (2 : ℕ) := by
   let h : ℝ := 1 / (6 * (C + 1))
   have hden : 0 < 6 * (C + 1) := by positivity
   have hh : 0 < h := by dsimp only [h]; positivity
@@ -504,23 +504,23 @@ theorem exists_unitExponentialThirdDifference_fixedSample_gt_polarEnergy
     rw [div_lt_one hden2]
     linarith
   have hmul : C * unitExponentialThirdDifferencePolarEnergy (1 - h) h ≤
-      C * (3 * h * d ^ 2) := by
+      C * (3 * h * d ^ (2 : ℕ)) := by
     apply mul_le_mul_of_nonneg_left _ hC
     simpa only [d] using henergy
   refine ⟨h, hh, by linarith, ?_⟩
   rw [hsample]
-  have hd2 : 0 < d ^ 2 := sq_pos_of_pos hd
+  have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_pos hd
   calc
     C * unitExponentialThirdDifferencePolarEnergy (1 - h) h ≤
-        C * (3 * h * d ^ 2) := hmul
-    _ = (C * (3 * h)) * d ^ 2 := by ring
-    _ < d ^ 2 := (mul_lt_iff_lt_one_left hd2).2 hfactor
+        C * (3 * h * d ^ (2 : ℕ)) := hmul
+    _ = (C * (3 * h)) * d ^ (2 : ℕ) := by ring
+    _ < d ^ (2 : ℕ) := (mul_lt_iff_lt_one_left hd2).2 hfactor
 
 /-- No finite Loewner constant can dominate the fixed lag-one coherent projector by the bare
 continuous polar frame, even after restricting to finite source-span packets. -/
 theorem no_unitExponentialCoherent_fixedSample_polarDomination :
     ¬ ∃ C : ℝ, ∀ a h : ℝ, 0 ≤ a → 0 < h → a + h = 1 →
-      unitExponentialThirdDifferenceResponse a h 1 ^ 2 ≤
+      unitExponentialThirdDifferenceResponse a h 1 ^ (2 : ℕ) ≤
         C * unitExponentialThirdDifferencePolarEnergy a h := by
   rintro ⟨C, hdom⟩
   let D := max C 0
@@ -596,7 +596,7 @@ theorem unitExponentialThirdDifferenceSourceGram_pos
 channel, whereas the source norm recovers the fixed sample with the sharp four-packet factor. -/
 theorem unitExponentialThirdDifference_fixedSample_eq_sourceGram
     {h : ℝ} (hh : 0 < h) :
-    unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ 2 =
+    unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ (2 : ℕ) =
       ((Real.exp (h / 2) - Real.exp (-h / 2)) /
         (2 * unitExponentialThirdDifferenceCoefficient h)) *
           unitExponentialThirdDifferenceSourceGram (1 - h) h := by
@@ -734,16 +734,16 @@ theorem hasDerivAt_unitExponentialThirdDifferenceResponse_last
 
 theorem unitExponentialThirdDifference_first_graphDensity
     {a h u : ℝ} (hu0 : a ≤ u) (hu1 : u ≤ a + h) :
-    4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2 =
+    4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
       2 * (Real.exp (u - a) + Real.exp (a - u)) := by
   rw [unitExponentialThirdDifferenceResponse_eq_first hu0 hu1]
   simp only [unitExponentialThirdDifferenceFirstGenerator]
-  have ep : Real.exp ((u - a) / 2) ^ 2 = Real.exp (u - a) := by
+  have ep : Real.exp ((u - a) / 2) ^ (2 : ℕ) = Real.exp (u - a) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have em : Real.exp (-(u - a) / 2) ^ 2 = Real.exp (a - u) := by
+  have em : Real.exp (-(u - a) / 2) ^ (2 : ℕ) = Real.exp (a - u) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -752,17 +752,17 @@ theorem unitExponentialThirdDifference_first_graphDensity
 
 theorem unitExponentialThirdDifference_middle_graphDensity
     {a h u : ℝ} (hu1 : a + h ≤ u) (hu2 : u ≤ a + 2 * h) :
-    4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2 =
-      2 * (1 + Real.exp (h / 2)) ^ 2 *
+    4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
+      2 * (1 + Real.exp (h / 2)) ^ (2 : ℕ) *
         (Real.exp (a + h - u) + Real.exp (u - a - 2 * h)) := by
   rw [unitExponentialThirdDifferenceResponse_eq_middle hu1 hu2]
   simp only [unitExponentialThirdDifferenceMiddleGenerator]
-  have ep : Real.exp ((a + h - u) / 2) ^ 2 = Real.exp (a + h - u) := by
+  have ep : Real.exp ((a + h - u) / 2) ^ (2 : ℕ) = Real.exp (a + h - u) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have em : Real.exp ((u - a - 2 * h) / 2) ^ 2 =
+  have em : Real.exp ((u - a - 2 * h) / 2) ^ (2 : ℕ) =
       Real.exp (u - a - 2 * h) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
@@ -773,17 +773,17 @@ theorem unitExponentialThirdDifference_middle_graphDensity
 
 theorem unitExponentialThirdDifference_last_graphDensity
     {a h u : ℝ} (hu2 : a + 2 * h ≤ u) (hu3 : u ≤ a + 3 * h) :
-    4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2 =
+    4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
       2 * (Real.exp (u - a - 3 * h) + Real.exp (a + 3 * h - u)) := by
   rw [unitExponentialThirdDifferenceResponse_eq_last hu2 hu3]
   simp only [unitExponentialThirdDifferenceLastGenerator]
-  have ep : Real.exp ((u - a - 3 * h) / 2) ^ 2 =
+  have ep : Real.exp ((u - a - 3 * h) / 2) ^ (2 : ℕ) =
       Real.exp (u - a - 3 * h) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have em : Real.exp ((a + 3 * h - u) / 2) ^ 2 =
+  have em : Real.exp ((a + 3 * h - u) / 2) ^ (2 : ℕ) =
       Real.exp (a + 3 * h - u) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
@@ -795,26 +795,26 @@ theorem unitExponentialThirdDifference_last_graphDensity
 three displayed generators are the classical derivative on each open cell. -/
 def unitExponentialThirdDifferenceGeneratorEnergy (a h : ℝ) : ℝ :=
   (∫ u in a..(a + h),
-      4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2) +
+      4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)) +
   (∫ u in (a + h)..(a + 2 * h),
-      4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2) +
+      4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)) +
   ∫ u in (a + 2 * h)..(a + 3 * h),
-      4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2
+      4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)
 
 theorem unitExponentialThirdDifferenceGeneratorEnergy_eq_sourceGram
     (a : ℝ) {h : ℝ} (hh : 0 ≤ h) :
     unitExponentialThirdDifferenceGeneratorEnergy a h =
       4 * unitExponentialThirdDifferenceSourceGram a h := by
   have hfirst : (∫ u in a..(a + h),
-      4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2) =
+      4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)) =
       2 * (Real.exp h - Real.exp (-h)) := by
     have hcongr : ∀ u ∈ Set.uIcc a (a + h),
-        4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2 =
+        4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
           2 * (Real.exp (u - a) + Real.exp (a - u)) := by
       intro u hu
       rw [Set.uIcc_of_le (by linarith : a ≤ a + h)] at hu
@@ -829,13 +829,13 @@ theorem unitExponentialThirdDifferenceGeneratorEnergy_eq_sourceGram
       integral_exp_forward, integral_exp_backward]
     ring
   have hmiddle : (∫ u in (a + h)..(a + 2 * h),
-      4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2) =
-      4 * (1 + Real.exp (h / 2)) ^ 2 * (1 - Real.exp (-h)) := by
+      4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)) =
+      4 * (1 + Real.exp (h / 2)) ^ (2 : ℕ) * (1 - Real.exp (-h)) := by
     have hcongr : ∀ u ∈ Set.uIcc (a + h) (a + 2 * h),
-        4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2 =
-          2 * (1 + Real.exp (h / 2)) ^ 2 *
+        4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
+          2 * (1 + Real.exp (h / 2)) ^ (2 : ℕ) *
             (Real.exp (a + h - u) + Real.exp (u - a - 2 * h)) := by
       intro u hu
       rw [Set.uIcc_of_le (by linarith : a + h ≤ a + 2 * h)] at hu
@@ -876,12 +876,12 @@ theorem unitExponentialThirdDifferenceGeneratorEnergy_eq_sourceGram
     rw [hbeq, hfeq]
     ring
   have hlast : (∫ u in (a + 2 * h)..(a + 3 * h),
-      4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2) =
+      4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ)) =
       2 * (Real.exp h - Real.exp (-h)) := by
     have hcongr : ∀ u ∈ Set.uIcc (a + 2 * h) (a + 3 * h),
-        4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2 =
+        4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) =
           2 * (Real.exp (u - a - 3 * h) + Real.exp (a + 3 * h - u)) := by
       intro u hu
       rw [Set.uIcc_of_le (by linarith : a + 2 * h ≤ a + 3 * h)] at hu
@@ -942,22 +942,22 @@ theorem unitExponentialThirdDifferenceGeneratorEnergy_eq_sourceGram
     unitExponentialThirdDifferenceSourceGram_eq a hh]
   simp only [unitExponentialThirdDifferenceCoefficient]
   have eh := exp_half_mul_exp_neg_half h
-  have hq2 : Real.exp (h / 2) ^ 2 = Real.exp h := by
+  have hq2 : Real.exp (h / 2) ^ (2 : ℕ) = Real.exp h := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hr2 : Real.exp (-h / 2) ^ 2 = Real.exp (-h) := by
+  have hr2 : Real.exp (-h / 2) ^ (2 : ℕ) = Real.exp (-h) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hqr2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ 2 =
+  have hqr2 : Real.exp (h / 2) * Real.exp (-h / 2) ^ (2 : ℕ) =
       Real.exp (-h / 2) := by
     calc
       _ = (Real.exp (h / 2) * Real.exp (-h / 2)) * Real.exp (-h / 2) := by ring
       _ = _ := by rw [eh]; ring
-  have hq2r2 : Real.exp (h / 2) ^ 2 * Real.exp (-h / 2) ^ 2 = 1 := by
+  have hq2r2 : Real.exp (h / 2) ^ (2 : ℕ) * Real.exp (-h / 2) ^ (2 : ℕ) = 1 := by
     calc
-      _ = (Real.exp (h / 2) * Real.exp (-h / 2)) ^ 2 := by ring
+      _ = (Real.exp (h / 2) * Real.exp (-h / 2)) ^ (2 : ℕ) := by ring
       _ = _ := by rw [eh]; norm_num
   rw [← hq2, ← hr2]
   ring_nf at hqr2 hq2r2 ⊢

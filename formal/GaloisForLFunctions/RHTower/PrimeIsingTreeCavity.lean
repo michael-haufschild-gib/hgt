@@ -52,7 +52,7 @@ theorem cavityTransfer_eq_blaschkeFactor (c : FerromagneticCoupling) (r : ℂ) :
 theorem normSq_cavityTransfer_gap (c : FerromagneticCoupling) (r : ℂ) :
     Complex.normSq (1 + (c.coefficient : ℂ) * r) -
         Complex.normSq ((c.coefficient : ℂ) + r) =
-      (1 - c.coefficient ^ 2) * (1 - Complex.normSq r) := by
+      (1 - c.coefficient ^ (2 : ℕ)) * (1 - Complex.normSq r) := by
   rw [Complex.normSq_apply, Complex.normSq_apply, Complex.normSq_apply]
   simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
     Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im]

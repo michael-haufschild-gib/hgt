@@ -222,19 +222,19 @@ theorem rootTrace_continuousOn {G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ r R : �
 /-- The trace squares to the member along the whole period. -/
 theorem rootTrace_sq {f G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ r R : ℝ}
     (h0 : 0 ≤ r₀) (hr₀ : r₀ < r) (hrR : r < R)
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfT : f (a + (r : ℂ) * I) ≠ 0) :
     ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      rootTrace G₁ G₂ a r θ ^ 2 = f (circleMap a r θ) := by
+      rootTrace G₁ G₂ a r θ ^ (2 : ℕ) = f (circleMap a r θ) := by
   have hπ := Real.pi_pos
   intro θ hθ
-  show (if θ ≤ Real.pi / 2 then _ else _) ^ 2 = _
+  show (if θ ≤ Real.pi / 2 then _ else _) ^ (2 : ℕ) = _
   by_cases hcase : θ ≤ Real.pi / 2
   · rw [if_pos hcase]
     exact hpG₁ _ (circleMap_mem_chartRA h0 hr₀ hrR ⟨hθ.1, hcase⟩)
   · rw [if_neg hcase]
-    have hεsq : (G₁ (a + (r : ℂ) * I) / G₂ (a + (r : ℂ) * I)) ^ 2 = 1 := by
+    have hεsq : (G₁ (a + (r : ℂ) * I) / G₂ (a + (r : ℂ) * I)) ^ (2 : ℕ) = 1 := by
       rw [div_pow, hpG₁ _ (top_port_mem_charts h0 hr₀ hrR).1,
         hpG₂ _ (top_port_mem_charts h0 hr₀ hrR).2, div_self hfT]
     rw [mul_pow, hεsq, one_mul]
@@ -284,13 +284,13 @@ theorem continuous_trace_holonomy {f G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ r 
     (h0 : 0 ≤ r₀) (hr₀ : r₀ < r) (hrR : r < R)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hf0 : ∀ z ∈ ball a R \ closedBall a r₀, f z ≠ 0)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     U (3 * Real.pi / 2)
       = deckClass G₁ G₂ (a + (r : ℂ) * I) (a - (r : ℂ) * I)
         * U (-(Real.pi / 2)) := by
@@ -323,7 +323,7 @@ theorem continuous_trace_holonomy {f G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ r 
   have hq_pm : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
       U θ / rootTrace G₁ G₂ a r θ = 1 ∨ U θ / rootTrace G₁ G₂ a r θ = -1 := by
     intro θ hθ
-    have hsq1 : (U θ / rootTrace G₁ G₂ a r θ) ^ 2 = 1 := by
+    have hsq1 : (U θ / rootTrace G₁ G₂ a r θ) ^ (2 : ℕ) = 1 := by
       rw [div_pow, hUsq θ hθ, hSsq θ hθ, div_self (hmemIcc θ hθ)]
     have hfac : (U θ / rootTrace G₁ G₂ a r θ - 1)
         * (U θ / rootTrace G₁ G₂ a r θ + 1) = 0 := by
@@ -383,8 +383,8 @@ theorem deckClass_vertical_port_indep {f G₁ G₂ : ℂ → ℂ} {a : ℂ} {r�
     (h0 : 0 ≤ r₀) (hc : r₀ < c) (hcR : c < R) (hc' : r₀ < c') (hc'R : c' < R)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hf0 : ∀ z ∈ ball a R \ closedBall a r₀, f z ≠ 0) :
     deckClass G₁ G₂ (a + (c : ℂ) * I) (a - (c : ℂ) * I)
       = deckClass G₁ G₂ (a + (c' : ℂ) * I) (a - (c' : ℂ) * I) := by
@@ -460,12 +460,12 @@ theorem continuous_trace_holonomy_neg_one_pow {ι : Type*} (s : Finset ι)
     (hfact : ∀ z ∈ ball a R, f z = (∏ i ∈ s, (z - ρc i) ^ m i) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     U (3 * Real.pi / 2) = (-1) ^ (∑ i ∈ s, m i) * U (-(Real.pi / 2)) := by
   have hrR' : r₀ < R := lt_trans hr₀ hrR
   have hf0 := enclosed_ne_zero_on_annulus' hρ hh0 hfact
@@ -713,12 +713,12 @@ theorem trace_parity_spectral_dichotomy {ι : Type*} (s : Finset ι)
     (hfact : ∀ z ∈ ball a R, f z = (∏ i ∈ s, (z - ρc i) ^ m i) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     (Even (∑ i ∈ s, m i) ∧ U (3 * Real.pi / 2) = U (-(Real.pi / 2)) ∧
       ∃ p : ℝ → ℂ,
         ContinuousOn p (Icc (-(Real.pi / 2)) (3 * Real.pi / 2 + 2 * Real.pi)) ∧
@@ -764,12 +764,12 @@ theorem trace_holonomy_isolated_zero {f : ℂ → ℂ} {ρ : ℂ} {r₀ r R : �
     {G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA ρ r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA ρ r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap ρ r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap ρ r θ)) :
     U (3 * Real.pi / 2) = (-1) ^ m * U (-(Real.pi / 2)) := by
   have hR : 0 < R := lt_of_le_of_lt h0 (lt_trans hr₀ hrR)
   obtain ⟨h, hhan, hhρ, hfact, -⟩ := exists_peel isOpen_ball hf
@@ -801,9 +801,9 @@ theorem holonomy_eq_of_circle_domination {f g : ℂ → ℂ} {a : ℂ} {r : ℝ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hVc : ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ))
+      U θ ^ (2 : ℕ) = f (circleMap a r θ))
     (hVsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      V θ ^ 2 = g (circleMap a r θ))
+      V θ ^ (2 : ℕ) = g (circleMap a r θ))
     (hdom : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
       ‖g (circleMap a r θ) - f (circleMap a r θ)‖ < ‖f (circleMap a r θ)‖)
     (hσ : U (3 * Real.pi / 2) = σ * U (-(Real.pi / 2)))
@@ -848,7 +848,7 @@ theorem holonomy_eq_of_circle_domination {f g : ℂ → ℂ} {a : ℂ} {r : ℝ}
   have hW0 : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
       (V θ / U θ).re ≠ 0 := by
     intro θ hθ hzero
-    have hWsq : (V θ / U θ) ^ 2
+    have hWsq : (V θ / U θ) ^ (2 : ℕ)
         = g (circleMap a r θ) / f (circleMap a r θ) := by
       rw [div_pow, hUsq θ hθ, hVsq θ hθ]
     have hcomp : (g (circleMap a r θ) / f (circleMap a r θ)).re

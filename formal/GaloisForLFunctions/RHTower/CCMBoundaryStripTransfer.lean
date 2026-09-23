@@ -208,14 +208,14 @@ theorem hsNormSq_le_of_weak_limit {ι : Type*} {K : ι × ι → ℂ}
       ≤ Real.sqrt B := by
     filter_upwards [hb] with n hn
     rw [show ‖(⟨A n, (hA n).memℓp⟩ : lp (fun _ : ι × ι => ℂ) 2)‖
-        = Real.sqrt (‖(⟨A n, (hA n).memℓp⟩ : lp (fun _ : ι × ι => ℂ) 2)‖ ^ 2) from
+        = Real.sqrt (‖(⟨A n, (hA n).memℓp⟩ : lp (fun _ : ι × ι => ℂ) 2)‖ ^ (2 : ℕ)) from
       (Real.sqrt_sq (norm_nonneg _)).symm]
     refine Real.sqrt_le_sqrt ?_
     rw [_root_.HilbertSchmidt.lp_norm_sq (hA n)]
     exact hn
   have hnorm := norm_le_of_weak_limit_complex hwlp hblp
   rw [← _root_.HilbertSchmidt.lp_norm_sq hK]
-  calc ‖(⟨K, hK.memℓp⟩ : lp (fun _ : ι × ι => ℂ) 2)‖ ^ 2 ≤ (Real.sqrt B) ^ 2 :=
+  calc ‖(⟨K, hK.memℓp⟩ : lp (fun _ : ι × ι => ℂ) 2)‖ ^ (2 : ℕ) ≤ (Real.sqrt B) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     _ = B := Real.sq_sqrt hB
 

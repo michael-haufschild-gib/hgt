@@ -81,8 +81,8 @@ theorem summable_suzukiLerchDiffTerm_all {t : ℝ} (ht : 0 ≤ t) (w : ℂ) :
   refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   have hexp : ‖((Real.exp (-(2 * ((n + K : ℕ) : ℝ) * t)) : ℝ) : ℂ)‖ ≤ 1 := norm_exp_block_le ht _
-  calc ‖((Real.exp (-(2 * ((n + K : ℕ) : ℝ) * t)) : ℝ) : ℂ)‖ * ((n : ℝ) + 1) ^ 2
-      ≤ 1 * ((n : ℝ) + 1) ^ 2 := by
+  calc ‖((Real.exp (-(2 * ((n + K : ℕ) : ℝ) * t)) : ℝ) : ℂ)‖ * ((n : ℝ) + 1) ^ (2 : ℕ)
+      ≤ 1 * ((n : ℝ) + 1) ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_right hexp (by positivity)
     _ = ((n : ℝ) + 1) * ((n : ℝ) + 1) := by ring
     _ ≤ ‖((n + K : ℕ) : ℂ) + w‖ * ‖((n + K : ℕ) : ℂ) + 1 / 4‖ :=
@@ -179,16 +179,16 @@ theorem digamma_sub_quarter_eq_offPoles {w : ℂ} (hw : ∀ m : ℕ, w ≠ -(m :
 
 /-- A crude but uniform bound for the Lerch kernel on `Re w ≥ 1`. -/
 theorem norm_suzukiLerchKernel_le_of_one_le_re {t : ℝ} (ht : 0 ≤ t) {w : ℂ} (hw : 1 ≤ w.re) :
-    ‖suzukiLerchKernel t w‖ ≤ 4 * ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ 2 := by
-  have hsum : Summable (fun n : ℕ => 4 * (1 / ((n : ℝ) + 1) ^ 2)) :=
+    ‖suzukiLerchKernel t w‖ ≤ 4 * ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ (2 : ℕ) := by
+  have hsum : Summable (fun n : ℕ => 4 * (1 / ((n : ℝ) + 1) ^ (2 : ℕ))) :=
     summable_one_div_nat_add_one_sq.mul_left 4
-  have hbd : ∀ n : ℕ, ‖suzukiLerchKernelTerm t w n‖ ≤ 4 * (1 / ((n : ℝ) + 1) ^ 2) := by
+  have hbd : ∀ n : ℕ, ‖suzukiLerchKernelTerm t w n‖ ≤ 4 * (1 / ((n : ℝ) + 1) ^ (2 : ℕ)) := by
     intro n
     have := norm_suzukiLerchKernelTerm_le ht (c := 1) one_pos le_rfl hw n
     simpa using this
-  calc ‖suzukiLerchKernel t w‖ ≤ ∑' n : ℕ, 4 * (1 / ((n : ℝ) + 1) ^ 2) :=
+  calc ‖suzukiLerchKernel t w‖ ≤ ∑' n : ℕ, 4 * (1 / ((n : ℝ) + 1) ^ (2 : ℕ)) :=
         tsum_of_norm_bounded hsum.hasSum hbd
-    _ = 4 * ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ 2 := tsum_mul_left
+    _ = 4 * ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ (2 : ℕ) := tsum_mul_left
 
 end
 end RHTower

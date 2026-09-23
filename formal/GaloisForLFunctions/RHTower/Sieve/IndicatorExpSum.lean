@@ -50,17 +50,17 @@ theorem expSum_indicatorVec {N : ℕ} (A : Finset ℕ) (hA : A ⊆ Finset.range 
 
 /-- The energy of an indicator vector is the cardinality. -/
 theorem sum_normSq_indicatorVec {N : ℕ} (A : Finset ℕ) (hA : A ⊆ Finset.range N) :
-    ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ 2 = (A.card : ℝ) := by
+    ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ (2 : ℕ) = (A.card : ℝ) := by
   classical
   have hfilter : (Finset.range N).filter (fun n => n ∈ A) = A := by
     ext n
     simp only [Finset.mem_filter]
     exact ⟨fun h => h.2, fun h => ⟨hA h, h⟩⟩
-  have hstep : ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ 2
+  have hstep : ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ (2 : ℕ)
       = ∑ n ∈ Finset.range N, (if n ∈ A then (1 : ℝ) else 0) := by
-    have h1 : ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ 2
-        = ∑ n ∈ Finset.range N, ‖(if n ∈ A then (1 : ℂ) else 0)‖ ^ 2 :=
-      Fin.sum_univ_eq_sum_range (fun n => ‖(if n ∈ A then (1 : ℂ) else 0)‖ ^ 2) N
+    have h1 : ∑ n : Fin N, ‖(indicatorVec N A) n‖ ^ (2 : ℕ)
+        = ∑ n ∈ Finset.range N, ‖(if n ∈ A then (1 : ℂ) else 0)‖ ^ (2 : ℕ) :=
+      Fin.sum_univ_eq_sum_range (fun n => ‖(if n ∈ A then (1 : ℂ) else 0)‖ ^ (2 : ℕ)) N
     rw [h1]
     refine Finset.sum_congr rfl fun n _ => ?_
     by_cases h : n ∈ A <;> simp [h]
@@ -69,8 +69,8 @@ theorem sum_normSq_indicatorVec {N : ℕ} (A : Finset ℕ) (hA : A ⊆ Finset.ra
 /-- **The large sieve for the exponential sum of a set of integers.** -/
 theorem largeSieve_set_fareySet (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset ℕ)
     (hA : A ⊆ Finset.range N) :
-    ∑ p ∈ fareySet Q, ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((p.1 : ℝ) / (p.2 : ℝ)))‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) * (A.card : ℝ) := by
+    ∑ p ∈ fareySet Q, ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((p.1 : ℝ) / (p.2 : ℝ)))‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) * (A.card : ℝ) := by
   have hbase := largeSieve_expSum_fareySet N hQ (indicatorVec N A)
   rw [sum_normSq_indicatorVec A hA] at hbase
   simp only [expSum_indicatorVec A hA] at hbase

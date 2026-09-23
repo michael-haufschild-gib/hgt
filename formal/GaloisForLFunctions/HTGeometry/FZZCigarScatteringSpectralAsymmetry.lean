@@ -40,7 +40,7 @@ def fzzCigarRightMovingSpectralAsymmetry (m p : ℝ) : ℂ :=
 /-- The exact reflection-amplitude asymmetry is a real negative Cauchy density. -/
 theorem fzzCigarRightMovingSpectralAsymmetry_eq (m p : ℝ) :
     fzzCigarRightMovingSpectralAsymmetry m p =
-      (((-m / (Real.pi * (p ^ 2 + m ^ 2))) : ℝ) : ℂ) := by
+      (((-m / (Real.pi * (p ^ (2 : ℕ) + m ^ (2 : ℕ)))) : ℝ) : ℂ) := by
   by_cases hm : m = 0
   · subst m
     simp [fzzCigarRightMovingSpectralAsymmetry]
@@ -54,16 +54,16 @@ theorem fzzCigarRightMovingSpectralAsymmetry_eq (m p : ℝ) :
     have hre := congrArg Complex.re h
     simp at hre
     exact hm hre
-  have hden : p ^ 2 + m ^ 2 ≠ 0 := by positivity
+  have hden : p ^ (2 : ℕ) + m ^ (2 : ℕ) ≠ 0 := by positivity
   have hprod :
       (Complex.I * (p : ℂ) - (m : ℂ)) *
           (Complex.I * (p : ℂ) + (m : ℂ)) =
-        -(((p ^ 2 + m ^ 2) : ℝ) : ℂ) := by
+        -(((p ^ (2 : ℕ) + m ^ (2 : ℕ)) : ℝ) : ℂ) := by
     calc
       (Complex.I * (p : ℂ) - (m : ℂ)) *
             (Complex.I * (p : ℂ) + (m : ℂ)) =
-          (Complex.I * (p : ℂ)) ^ 2 - (m : ℂ) ^ 2 := by ring
-      _ = -(((p ^ 2 + m ^ 2) : ℝ) : ℂ) := by
+          (Complex.I * (p : ℂ)) ^ (2 : ℕ) - (m : ℂ) ^ (2 : ℕ) := by ring
+      _ = -(((p ^ (2 : ℕ) + m ^ (2 : ℕ)) : ℝ) : ℂ) := by
         rw [mul_pow, Complex.I_sq]
         push_cast
         ring
@@ -78,19 +78,19 @@ theorem fzzCigarRightMovingSpectralAsymmetry_eq (m p : ℝ) :
           (Complex.I * (p : ℂ) + (m : ℂ))) by ring]
   rw [hprod]
   push_cast
-  have hdenC : (p : ℂ) ^ 2 + (m : ℂ) ^ 2 ≠ 0 := by
+  have hdenC : (p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ) ≠ 0 := by
     exact_mod_cast hden
   rw [show
-    -(2 * (m : ℂ) * -((p : ℂ) ^ 2 + (m : ℂ) ^ 2) /
-        ((p : ℂ) ^ 2 + (m : ℂ) ^ 2)) =
-      ((m : ℂ) * 2 * ((p : ℂ) ^ 2 + (m : ℂ) ^ 2)) /
-        ((p : ℂ) ^ 2 + (m : ℂ) ^ 2) by ring]
+    -(2 * (m : ℂ) * -((p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ)) /
+        ((p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ))) =
+      ((m : ℂ) * 2 * ((p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ))) /
+        ((p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ)) by ring]
   apply (eq_div_iff hdenC).2
   ring
 
 /-- Positive reflection deficit, the sign-reversal of the continuum spectral asymmetry. -/
 def fzzCigarReflectionDeficit (m p : ℝ) : ℝ :=
-  m / (Real.pi * (p ^ 2 + m ^ 2))
+  m / (Real.pi * (p ^ (2 : ℕ) + m ^ (2 : ℕ)))
 
 /-- Every positive-charge cigar reflection deficit is strictly positive at every real radial
 momentum. -/
@@ -109,17 +109,17 @@ theorem integral_fzzCigarReflectionDeficit_mul_cexp_neg
     GaloisForLFunctions.HTGeometry.integral_inv_sq_add_sq_mul_cexp_neg hm t
   simp_rw [fzzCigarReflectionDeficit]
   have hfactor :
-      (∫ p : ℝ, (((m / (Real.pi * (p ^ 2 + m ^ 2))) : ℝ) : ℂ) *
+      (∫ p : ℝ, (((m / (Real.pi * (p ^ (2 : ℕ) + m ^ (2 : ℕ)))) : ℝ) : ℂ) *
         Complex.exp (((-(t * p) : ℝ) : ℂ) * I)) =
         (((m / Real.pi : ℝ) : ℂ) *
-          ∫ p : ℝ, (((m ^ 2 + p ^ 2 : ℝ) : ℂ)⁻¹ *
+          ∫ p : ℝ, (((m ^ (2 : ℕ) + p ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ *
             Complex.exp (((-(t * p) : ℝ) : ℂ) * I))) := by
     rw [← MeasureTheory.integral_const_mul]
     apply integral_congr_ae
     filter_upwards with p
     push_cast
-    rw [show (p : ℂ) ^ 2 + (m : ℂ) ^ 2 =
-      (m : ℂ) ^ 2 + (p : ℂ) ^ 2 by ring]
+    rw [show (p : ℂ) ^ (2 : ℕ) + (m : ℂ) ^ (2 : ℕ) =
+      (m : ℂ) ^ (2 : ℕ) + (p : ℂ) ^ (2 : ℕ) by ring]
     rw [div_eq_mul_inv, mul_inv]
     ring
   rw [hfactor, h]

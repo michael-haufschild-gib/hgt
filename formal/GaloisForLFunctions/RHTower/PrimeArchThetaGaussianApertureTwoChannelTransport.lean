@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureHeightLocalized
 
 The positive `p=4` first-atom channel and its signed `p=2` correction differ by the exact
 likelihood `exp(-2x)`.  Combining that shift with the physical source score and its global
-`3*pi*x^2` coercive residual gives a quantitative transport law between their adjacent moment
+`3*pi*x^(2 : ℕ)` coercive residual gives a quantitative transport law between their adjacent moment
 ratios.  The resulting RMS-height collar controls both the relative loss of the correction ratio
 and the adjacent variation of the amplitude multiplier that enters second-degree curvature.
 
@@ -854,7 +854,7 @@ theorem thetaCuspGaussianApertureLeadingChannelScoreResidual_strictMonoOn_Ici_ze
     rw [(hasDerivAt_thetaCuspGaussianApertureLeadingChannelScoreResidual lambda x).deriv]
     exact thetaCuspGaussianApertureLeadingChannelScoreResidualSlope_pos hlambda hx
 
-/-- The exact source score lies strictly above its `3*pi*x^2` Gaussian reference at every
+/-- The exact source score lies strictly above its `3*pi*x^(2 : ℕ)` Gaussian reference at every
 positive height. -/
 theorem thetaCuspGaussianApertureLeadingChannelScoreResidual_pos
     {lambda x : ℝ} (hlambda : lambda ≤ 0) (hx : 0 < x) :

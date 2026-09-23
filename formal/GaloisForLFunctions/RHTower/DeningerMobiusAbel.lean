@@ -45,17 +45,17 @@ theorem deningerAbelBoundary_tendsto_zero {h : 𝓢(ℝ, ℂ)} (hh : h ∈ Denin
     Tendsto (fun n : ℕ => deningerLogPull h ((n : ℝ) * x) * ((Sieve.mertensM n : ℝ) : ℂ))
       atTop (𝓝 0) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
-  have hmaj : Tendsto (fun n : ℕ => (C / x ^ 2) * (1 / (n : ℝ) + 1 / (n : ℝ) ^ 2))
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+  have hmaj : Tendsto (fun n : ℕ => (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) + 1 / (n : ℝ) ^ (2 : ℕ)))
       atTop (𝓝 0) := by
     have h1 : Tendsto (fun n : ℕ => 1 / (n : ℝ)) atTop (𝓝 0) :=
       tendsto_one_div_atTop_nhds_zero_nat
-    have h2 : Tendsto (fun n : ℕ => 1 / (n : ℝ) ^ 2) atTop (𝓝 0) := by
+    have h2 : Tendsto (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) atTop (𝓝 0) := by
       have hm := h1.mul h1
       rw [mul_zero] at hm
       refine hm.congr fun n => ?_
       rw [div_mul_div_comm, one_mul, ← pow_two]
-    have := (h1.add h2).const_mul (C / x ^ 2)
+    have := (h1.add h2).const_mul (C / x ^ (2 : ℕ))
     simpa using this
   refine squeeze_zero_norm' ?_ hmaj
   filter_upwards [eventually_gt_atTop 0] with n hn
@@ -67,7 +67,7 @@ theorem deningerAbelBoundary_tendsto_zero {h : 𝓢(ℝ, ℂ)} (hh : h ∈ Denin
     exact deningerMertensM_abs_le n
   rw [norm_mul]
   have hstep : ‖deningerLogPull h ((n : ℝ) * x)‖ * ‖((Sieve.mertensM n : ℝ) : ℂ)‖
-      ≤ (C / ((n : ℝ) * x) ^ 2) * ((n : ℝ) + 1) :=
+      ≤ (C / ((n : ℝ) * x) ^ (2 : ℕ)) * ((n : ℝ) + 1) :=
     mul_le_mul hH hM (norm_nonneg _) (by positivity)
   refine le_trans hstep (le_of_eq ?_)
   field_simp

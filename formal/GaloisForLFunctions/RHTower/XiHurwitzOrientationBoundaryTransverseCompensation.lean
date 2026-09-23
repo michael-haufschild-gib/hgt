@@ -44,7 +44,7 @@ theorem xiWeilHilbertQuadratic_boundaryCoordinates_add_fixedTransverse
     xiWeilHilbertQuadratic
         ((α : ℂ) • xiHurwitzOrientationBoundaryPlus +
           (β : ℂ) • xiHurwitzOrientationBoundaryMinus + z) =
-      -α * β * xiHurwitzOrientationEnergy + ‖z‖ ^ 2 := by
+      -α * β * xiHurwitzOrientationEnergy + ‖z‖ ^ (2 : ℕ) := by
   let x : XiWeilCarrier :=
     (α : ℂ) • xiHurwitzOrientationBoundaryPlus +
       (β : ℂ) • xiHurwitzOrientationBoundaryMinus
@@ -53,7 +53,7 @@ theorem xiWeilHilbertQuadratic_boundaryCoordinates_add_fixedTransverse
   rw [xiWeilHilbertQuadratic_add_cross,
     show xiWeilHilbertQuadratic x = -α * β * xiHurwitzOrientationEnergy by
       exact xiWeilHilbertQuadratic_boundaryCoordinates α β]
-  have hqz : xiWeilHilbertQuadratic z = ‖z‖ ^ 2 := by
+  have hqz : xiWeilHilbertQuadratic z = ‖z‖ ^ (2 : ℕ) := by
     unfold xiWeilHilbertQuadratic
     rw [hzfix]
     change RCLike.re (inner ℂ z z) = _
@@ -90,7 +90,7 @@ theorem xiWeilHilbertQuadratic_boundaryCoordinates_add_antiTransverse
     xiWeilHilbertQuadratic
         ((α : ℂ) • xiHurwitzOrientationBoundaryPlus +
           (β : ℂ) • xiHurwitzOrientationBoundaryMinus + z) =
-      -α * β * xiHurwitzOrientationEnergy - ‖z‖ ^ 2 := by
+      -α * β * xiHurwitzOrientationEnergy - ‖z‖ ^ (2 : ℕ) := by
   let x : XiWeilCarrier :=
     (α : ℂ) • xiHurwitzOrientationBoundaryPlus +
       (β : ℂ) • xiHurwitzOrientationBoundaryMinus
@@ -99,7 +99,7 @@ theorem xiWeilHilbertQuadratic_boundaryCoordinates_add_antiTransverse
   rw [xiWeilHilbertQuadratic_add_cross,
     show xiWeilHilbertQuadratic x = -α * β * xiHurwitzOrientationEnergy by
       exact xiWeilHilbertQuadratic_boundaryCoordinates α β]
-  have hqz : xiWeilHilbertQuadratic z = -‖z‖ ^ 2 := by
+  have hqz : xiWeilHilbertQuadratic z = -‖z‖ ^ (2 : ℕ) := by
     unfold xiWeilHilbertQuadratic
     rw [hzanti, inner_neg_left, Complex.neg_re]
     change -RCLike.re (inner ℂ z z) = _
@@ -137,7 +137,7 @@ theorem mul_orientationEnergy_le_norm_sq_of_fixedTransverse_weil_nonnegative
     (hnonneg : 0 ≤ xiWeilHilbertQuadratic
       ((α : ℂ) • xiHurwitzOrientationBoundaryPlus +
         (β : ℂ) • xiHurwitzOrientationBoundaryMinus + z)) :
-    α * β * xiHurwitzOrientationEnergy ≤ ‖z‖ ^ 2 := by
+    α * β * xiHurwitzOrientationEnergy ≤ ‖z‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic_boundaryCoordinates_add_fixedTransverse
     α β z hzfix hzorth] at hnonneg
   linarith
@@ -149,7 +149,7 @@ theorem xiWeilHilbertQuadratic_orientation_add_fixedTransverse
     (hzfix : xiWeilLineConjLinearIsometry z = z)
     (hzorth : (inner ℂ xiHurwitzOrientationAbsoluteVector z).re = 0) :
     xiWeilHilbertQuadratic (xiHurwitzOrientationVector + z) =
-      ‖z‖ ^ 2 - xiHurwitzOrientationEnergy := by
+      ‖z‖ ^ (2 : ℕ) - xiHurwitzOrientationEnergy := by
   have h := xiWeilHilbertQuadratic_boundaryCoordinates_add_fixedTransverse
     1 1 z hzfix hzorth
   norm_num at h
@@ -162,7 +162,7 @@ theorem orientationEnergy_le_norm_sq_of_fixedTransverse_weil_nonnegative
     (hzfix : xiWeilLineConjLinearIsometry z = z)
     (hzorth : (inner ℂ xiHurwitzOrientationAbsoluteVector z).re = 0)
     (hnonneg : 0 ≤ xiWeilHilbertQuadratic (xiHurwitzOrientationVector + z)) :
-    xiHurwitzOrientationEnergy ≤ ‖z‖ ^ 2 := by
+    xiHurwitzOrientationEnergy ≤ ‖z‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic_orientation_add_fixedTransverse z hzfix hzorth] at hnonneg
   linarith
 
@@ -172,7 +172,7 @@ theorem xiWeilHilbertQuadratic_orientation_add_antiTransverse
     (hzanti : xiWeilLineConjLinearIsometry z = -z)
     (hzorth : (inner ℂ xiHurwitzOrientationVector z).re = 0) :
     xiWeilHilbertQuadratic (xiHurwitzOrientationVector + z) =
-      -xiHurwitzOrientationEnergy - ‖z‖ ^ 2 := by
+      -xiHurwitzOrientationEnergy - ‖z‖ ^ (2 : ℕ) := by
   have h := xiWeilHilbertQuadratic_boundaryCoordinates_add_antiTransverse
     1 1 z hzanti hzorth
   norm_num at h
@@ -241,15 +241,15 @@ theorem four_mul_orientationEnergy_add_oddChannel_le_evenChannel_of_transverse_w
       ((α : ℂ) • xiHurwitzOrientationBoundaryPlus +
         (β : ℂ) • xiHurwitzOrientationBoundaryMinus + z)) :
     4 * (α * β * xiHurwitzOrientationEnergy) +
-        ‖z - xiWeilLineConjLinearIsometry z‖ ^ 2 ≤
-      ‖z + xiWeilLineConjLinearIsometry z‖ ^ 2 := by
+        ‖z - xiWeilLineConjLinearIsometry z‖ ^ (2 : ℕ) ≤
+      ‖z + xiWeilLineConjLinearIsometry z‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic_boundaryCoordinates_add_transverse
     α β z hzw hze] at hnonneg
   have hbalance := CliffordWeil.four_mul_quadratic_eq_even_sub_odd
     xiWeilLineConjLinearIsometry xiWeilLineConjLinearIsometry_involutive z
   change 4 * xiWeilHilbertQuadratic z =
-    ‖z + xiWeilLineConjLinearIsometry z‖ ^ 2 -
-      ‖z - xiWeilLineConjLinearIsometry z‖ ^ 2 at hbalance
+    ‖z + xiWeilLineConjLinearIsometry z‖ ^ (2 : ℕ) -
+      ‖z - xiWeilLineConjLinearIsometry z‖ ^ (2 : ℕ) at hbalance
   linarith
 
 end

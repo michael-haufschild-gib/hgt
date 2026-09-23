@@ -30,7 +30,7 @@ theorem not_algebraicIndependent_jets_of_mem_finite_derivationClosed_state
   have hjets : ∀ i : Fin (Fintype.card d + 1),
       differentialJet (i : ℕ) x ∈ M := by
     intro i
-    exact differentialJet_mem_of_derivationClosed hclosed (i : ℕ) hx
+    exact differentialJet_mem_of_derivationClosed_jetHorizonTorsorTower hclosed (i : ℕ) hx
   have htr : Algebra.trdeg F M ≤ ((Fintype.card d : ℕ) : Cardinal) := by
     have hbase := trdeg_intermediateFieldAdjoin_range_le
       (F := F) (E := K) (I := d) state

@@ -113,7 +113,7 @@ structure QNNHessianRankAssumptions (gens : Set (Matrix (Fin N) (Fin N) ℂ)) wh
   and `r = min{rank A, rank O}` [LJG+21, main2.tex:718-720]. -/
   hessianRank_le_comb : ∀ M,
     hessianRank M ≤ 2 * N * min dataOp.rank obs.rank
-      - min dataOp.rank obs.rank ^ 2 - min dataOp.rank obs.rank
+      - min dataOp.rank obs.rank ^ (2 : ℕ) - min dataOp.rank obs.rank
 
 /-- **Overparametrization data for a QNN** with generator set `gens` [LJG+21], built on the genuine
 QFIM-rank-saturation predicate (`extends OverparamData`). The inherited fields supply
@@ -214,18 +214,18 @@ theorem hessianRank_le_dlaDim (M : ℕ) :
 
 /-- **Theorem 3 Hessian-rank combinatorial bound**, from the explicit assumption bundle. -/
 theorem hessianRank_le_comb (M : ℕ) :
-    Q.hessianRank M ≤ 2 * N * Q.stateRank - Q.stateRank ^ 2 - Q.stateRank :=
+    Q.hessianRank M ≤ 2 * N * Q.stateRank - Q.stateRank ^ (2 : ℕ) - Q.stateRank :=
   Q.hessianAssumptions.hessianRank_le_comb M
 
 /-- **Theorem 3 (Hessian-rank bound).** The Hessian rank at a minimum is bounded by
 `min (dim g) (2·d·r − r² − r)` — derived (`le_min`) from the two explicit named assumptions. -/
 theorem hessianRank_le_min_of_assumptions (M : ℕ) :
-    Q.hessianRank M ≤ min (dlaDim gens) (2 * N * Q.stateRank - Q.stateRank ^ 2 - Q.stateRank) :=
+    Q.hessianRank M ≤ min (dlaDim gens) (2 * N * Q.stateRank - Q.stateRank ^ (2 : ℕ) - Q.stateRank) :=
   le_min (Q.hessianRank_le_dlaDim M) (Q.hessianRank_le_comb M)
 
 /-- Backward-compatible spelling for the explicitly assumed Theorem 3 Hessian-rank bound. -/
 theorem hessianRank_le_min (M : ℕ) :
-    Q.hessianRank M ≤ min (dlaDim gens) (2 * N * Q.stateRank - Q.stateRank ^ 2 - Q.stateRank) :=
+    Q.hessianRank M ≤ min (dlaDim gens) (2 * N * Q.stateRank - Q.stateRank ^ (2 : ℕ) - Q.stateRank) :=
   Q.hessianRank_le_min_of_assumptions M
 
 end QNNOverparametrization

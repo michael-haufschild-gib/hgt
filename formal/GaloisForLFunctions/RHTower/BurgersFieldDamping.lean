@@ -64,19 +64,19 @@ namespace RHTower
 
 /-- **First Riccati identity.**  With `L = H'/H` one has `H''/H = L' + L²`. -/
 theorem riccati_second {H H1 H2 L Lp : ℝ} (_hH : H ≠ 0) (_hL : L = H1 / H)
-    (hLp : Lp = H2 / H - L ^ 2) : H2 / H = Lp + L ^ 2 := by
+    (hLp : Lp = H2 / H - L ^ (2 : ℕ)) : H2 / H = Lp + L ^ (2 : ℕ) := by
   rw [hLp]; ring
 
 /-- **Second Riccati identity.**  `H'''/H = L'' + 3LL' + L³`. -/
 theorem riccati_third {H H2 H3 L Lp Lpp : ℝ} (_hH : H ≠ 0)
-    (hLp : Lp = H2 / H - L ^ 2) (hLpp : Lpp = H3 / H - 3 * L * (H2 / H) + 2 * L ^ 3) :
-    H3 / H = Lpp + 3 * L * Lp + L ^ 3 := by
+    (hLp : Lp = H2 / H - L ^ (2 : ℕ)) (hLpp : Lpp = H3 / H - 3 * L * (H2 / H) + 2 * L ^ (3 : ℕ)) :
+    H3 / H = Lpp + 3 * L * Lp + L ^ (3 : ℕ) := by
   rw [hLpp, hLp]; ring
 
 /-- **The Burgers equation.**  Since `∂_τ H = H''`, the log-derivative obeys
 `L_τ = H'''/H - L·(H''/H) = L'' + 2LL'`. -/
 theorem burgers_logDeriv {H H2 H3 L Lp Lpp Lt : ℝ}
-    (hLp : Lp = H2 / H - L ^ 2) (hLpp : Lpp = H3 / H - 3 * L * (H2 / H) + 2 * L ^ 3)
+    (hLp : Lp = H2 / H - L ^ (2 : ℕ)) (hLpp : Lpp = H3 / H - 3 * L * (H2 / H) + 2 * L ^ (3 : ℕ))
     (hLt : Lt = H3 / H - L * (H2 / H)) : Lt = Lpp + 2 * L * Lp := by
   rw [hLt, hLpp, hLp]; ring
 
@@ -84,15 +84,15 @@ theorem burgers_logDeriv {H H2 H3 L Lp Lpp Lt : ℝ}
 `V_τ = V_zz + 2LV_z - 2V²`: the nonlinearity is a damping term. -/
 theorem field_damping {L Lp Lpp Lppp V Vp Vpp Vt : ℝ}
     (hV : V = -Lp) (hVp : Vp = -Lpp) (hVpp : Vpp = -Lppp)
-    (hVt : Vt = -(Lppp + 2 * Lp ^ 2 + 2 * L * Lpp)) :
-    Vt = Vpp + 2 * L * Vp - 2 * V ^ 2 := by
+    (hVt : Vt = -(Lppp + 2 * Lp ^ (2 : ℕ) + 2 * L * Lpp)) :
+    Vt = Vpp + 2 * L * Vp - 2 * V ^ (2 : ℕ) := by
   rw [hVt, hVpp, hVp, hV]; ring
 
 /-- **The Riccati comparison solution.**  `v(τ) = v₀/(1 + 2v₀τ)` solves `v' = -2v²`, so a field
 quantity governed by the damping term decays like `1/τ` and in particular never exceeds `v₀`. -/
 theorem riccati_solution {v₀ : ℝ} (hv : 0 < v₀) (τ : ℝ) (hτ : 0 ≤ τ) :
     HasDerivAt (fun s : ℝ => v₀ / (1 + 2 * v₀ * s))
-      (-2 * (v₀ / (1 + 2 * v₀ * τ)) ^ 2) τ := by
+      (-2 * (v₀ / (1 + 2 * v₀ * τ)) ^ (2 : ℕ)) τ := by
   have hden : (1 : ℝ) + 2 * v₀ * τ ≠ 0 := by positivity
   have h : HasDerivAt (fun s : ℝ => 1 + 2 * v₀ * s) (2 * v₀) τ := by
     simpa using (HasDerivAt.const_mul (2 * v₀) (hasDerivAt_id τ)).const_add 1
@@ -142,13 +142,13 @@ theorem frozen_collision_time {D u₀ : ℝ} (hD : 0 < D) (hθ : D * u₀ < 2) :
 density `ϱ` gives `Δ_sum ≍ (2π²/3)ϱ²`, so the admissible normalized gap is `√(3c/(2π²))`.  The sharp
 value `c = 4` gives `√6/π`, and the small-gap threshold `0.5155` requires `c > 2π²(0.5155)²/3`. -/
 theorem normalized_gap_threshold {c : ℝ} (hc : 0 < c) :
-    Real.sqrt (3 * c / (2 * π ^ 2)) ^ 2 = 3 * c / (2 * π ^ 2) := by
+    Real.sqrt (3 * c / (2 * π ^ (2 : ℕ))) ^ (2 : ℕ) = 3 * c / (2 * π ^ (2 : ℕ)) := by
   refine Real.sq_sqrt ?_
   have : (0 : ℝ) < π := Real.pi_pos
   positivity
 
 /-- The sharp threshold: `c = 4` gives normalized gap `√6/π`. -/
-theorem sharp_threshold : (3 : ℝ) * 4 / (2 * π ^ 2) = 6 / π ^ 2 := by
+theorem sharp_threshold : (3 : ℝ) * 4 / (2 * π ^ (2 : ℕ)) = 6 / π ^ (2 : ℕ) := by
   have hpi : (π : ℝ) ≠ 0 := ne_of_gt Real.pi_pos
   field_simp
   ring

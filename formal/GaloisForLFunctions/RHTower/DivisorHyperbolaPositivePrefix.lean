@@ -17,27 +17,27 @@ open Finset
 namespace RHTower
 
 private theorem hyperbola_quadratic_floor {x s : ℝ} (hs : 1 ≤ s)
-    (hlo : s^2 ≤ x) (hhi : x ≤ s^2+2*s) :
-    (x-s^2)^2/(2*(s+1)^2) ≤ x*(Real.log x-2*Real.log s)-x+s^2 := by
+    (hlo : s^(2 : ℕ) ≤ x) (hhi : x ≤ s^(2 : ℕ)+2*s) :
+    (x-s^(2 : ℕ))^(2 : ℕ)/(2*(s+1)^(2 : ℕ)) ≤ x*(Real.log x-2*Real.log s)-x+s^(2 : ℕ) := by
   have hs0 : 0 < s := by linarith
   have hx0 : 0 < x := lt_of_lt_of_le (sq_pos_of_pos hs0) hlo
-  have hlog : 2*(x-s^2)/(x+s^2) ≤ Real.log x-2*Real.log s := by
-    by_cases heq : x = s^2
+  have hlog : 2*(x-s^(2 : ℕ))/(x+s^(2 : ℕ)) ≤ Real.log x-2*Real.log s := by
+    by_cases heq : x = s^(2 : ℕ)
     · subst x
       simp [Real.log_pow]
-    have hu : 0 < (x-s^2)/s^2 := by positivity
+    have hu : 0 < (x-s^(2 : ℕ))/s^(2 : ℕ) := by positivity
     have h := (Real.lt_log_one_add_of_pos hu).le
-    have harg : 1+(x-s^2)/s^2=x/s^2 := by field_simp; ring
+    have harg : 1+(x-s^(2 : ℕ))/s^(2 : ℕ)=x/s^(2 : ℕ) := by field_simp; ring
     rw [harg,Real.log_div hx0.ne' (ne_of_gt (sq_pos_of_pos hs0)),Real.log_pow] at h
-    have hcoeff : 2*((x-s^2)/s^2)/((x-s^2)/s^2+2)=2*(x-s^2)/(x+s^2) := by
+    have hcoeff : 2*((x-s^(2 : ℕ))/s^(2 : ℕ))/((x-s^(2 : ℕ))/s^(2 : ℕ)+2)=2*(x-s^(2 : ℕ))/(x+s^(2 : ℕ)) := by
       field_simp [hs0.ne']
       ring_nf
-      field_simp [ne_of_gt (show 0 < x+s^2 by positivity)]
+      field_simp [ne_of_gt (show 0 < x+s^(2 : ℕ) by positivity)]
     rwa [hcoeff] at h
   have hmul := mul_le_mul_of_nonneg_left hlog hx0.le
-  have hid : x*(2*(x-s^2)/(x+s^2))-x+s^2 = (x-s^2)^2/(x+s^2) := by
+  have hid : x*(2*(x-s^(2 : ℕ))/(x+s^(2 : ℕ)))-x+s^(2 : ℕ) = (x-s^(2 : ℕ))^(2 : ℕ)/(x+s^(2 : ℕ)) := by
     field_simp; ring
-  have hfirst : (x-s^2)^2/(x+s^2) ≤ x*(Real.log x-2*Real.log s)-x+s^2 := by
+  have hfirst : (x-s^(2 : ℕ))^(2 : ℕ)/(x+s^(2 : ℕ)) ≤ x*(Real.log x-2*Real.log s)-x+s^(2 : ℕ) := by
     rw [← hid]
     linarith only [hmul]
   apply le_trans _ hfirst
@@ -45,12 +45,12 @@ private theorem hyperbola_quadratic_floor {x s : ℝ} (hs : 1 ≤ s)
   nlinarith only [hhi,hs]
 
 private theorem hyperbola_quadratic_correction {x s : ℝ} (hs : 1 ≤ s)
-    (hhi : x ≤ s^2+2*s) :
-    (x-s^2-s)^2/(2*(s+1)^2)-5/s ≤
-      1/3 - 1/(2*s) + (x-s^2)^2/(2*(s+1)^2) - (x-s^2)/s +
-        (2*x+1)/(12*(s+1)^2) := by
+    (hhi : x ≤ s^(2 : ℕ)+2*s) :
+    (x-s^(2 : ℕ)-s)^(2 : ℕ)/(2*(s+1)^(2 : ℕ))-5/s ≤
+      1/3 - 1/(2*s) + (x-s^(2 : ℕ))^(2 : ℕ)/(2*(s+1)^(2 : ℕ)) - (x-s^(2 : ℕ))/s +
+        (2*x+1)/(12*(s+1)^(2 : ℕ)) := by
   have hs0 : 0 < s := by linarith
-  have hprod : 0 ≤ (2*s-(x-s^2))*(22*s+12) :=
+  have hprod : 0 ≤ (2*s-(x-s^(2 : ℕ)))*(22*s+12) :=
     mul_nonneg (by linarith) (by positivity)
   field_simp
   nlinarith only [hprod,sq_nonneg s,hs]
@@ -58,15 +58,15 @@ private theorem hyperbola_quadratic_correction {x s : ℝ} (hs : 1 ≤ s)
 /-- The smooth divisor-hyperbola boundary retains a quadratic well on each square block. -/
 theorem divisorHyperbolaSmoothRemainder_ge_quadratic {N : ℕ} (hN : 1 ≤ N) :
     let s : ℝ := Nat.sqrt N
-    ((N : ℝ)-s^2-s)^2/(2*(s+1)^2)-5/s ≤ divisorHyperbolaSmoothRemainder N := by
+    ((N : ℝ)-s^(2 : ℕ)-s)^(2 : ℕ)/(2*(s+1)^(2 : ℕ))-5/s ≤ divisorHyperbolaSmoothRemainder N := by
   let s := Nat.sqrt N
   have hs : 1 ≤ s := Nat.le_sqrt.mpr (by simpa using hN)
   have hsR : (1 : ℝ) ≤ s := by exact_mod_cast hs
   have hs0 : (0 : ℝ) < s := by positivity
-  have hlo : (s : ℝ)^2 ≤ N := by
+  have hlo : (s : ℝ)^(2 : ℕ) ≤ N := by
     rw [pow_two]
     exact_mod_cast Nat.sqrt_le N
-  have hhi : (N : ℝ) ≤ (s : ℝ)^2+2*s := by
+  have hhi : (N : ℝ) ≤ (s : ℝ)^(2 : ℕ)+2*s := by
     have h := Nat.lt_succ_sqrt N
     change N < (s+1)*(s+1) at h
     have h' : N ≤ s*s+2*s := by nlinarith
@@ -86,11 +86,11 @@ theorem divisorHyperbolaSmoothRemainder_ge_quadratic {N : ℕ} (hN : 1 ≤ N) :
     norm_num only [Nat.cast_ofNat] at h
     linarith only [h]
   have hid : (2*(N : ℝ)+1)/(2*s) = (N : ℝ)/s+1/(2*s) := by ring
-  have hcancel : (s : ℝ)^2/s=s := by field_simp
+  have hcancel : (s : ℝ)^(2 : ℕ)/s=s := by field_simp
   dsimp only
-  change ((N : ℝ)-(s : ℝ)^2-s)^2/(2*((s : ℝ)+1)^2)-5/s ≤ _
+  change ((N : ℝ)-(s : ℝ)^(2 : ℕ)-s)^(2 : ℕ)/(2*((s : ℝ)+1)^(2 : ℕ))-5/s ≤ _
   change _ ≤ (∑ m ∈ Icc 1 N, Real.log m) -
-    (2*(N : ℝ)+1)*((harmonic s : ℚ) : ℝ)+(s : ℝ)^2+s+2*Real.eulerMascheroniConstant*N
+    (2*(N : ℝ)+1)*((harmonic s : ℚ) : ℝ)+(s : ℝ)^(2 : ℕ)+s+2*Real.eulerMascheroniConstant*N
   simp only [mul_sub,mul_one_div] at hHm
   rw [hid] at hHm
   rw [sub_div,hcancel] at hc
@@ -103,20 +103,20 @@ private theorem sum_range_cast_id (n : ℕ) :
   | succ n ih => rw [Finset.sum_range_succ,ih]; push_cast; ring
 
 private theorem sum_range_cast_sq (n : ℕ) :
-    (∑ i ∈ range n, (i : ℝ)^2) = n*((n : ℝ)-1)*(2*n-1)/6 := by
+    (∑ i ∈ range n, (i : ℝ)^(2 : ℕ)) = n*((n : ℝ)-1)*(2*n-1)/6 := by
   induction n with
   | zero => simp
   | succ n ih => rw [Finset.sum_range_succ,ih]; push_cast; ring
 
 private theorem sum_centered_square_block (s : ℕ) :
-    (∑ k ∈ Ico (s*s) ((s+1)*(s+1)), ((k : ℝ)-(s : ℝ)^2-s)^2) =
+    (∑ k ∈ Ico (s*s) ((s+1)*(s+1)), ((k : ℝ)-(s : ℝ)^(2 : ℕ)-s)^(2 : ℕ)) =
       (s : ℝ)*(s+1)*(2*s+1)/3 := by
   have hn : (s+1)*(s+1)=s*s+(2*s+1) := by ring
   rw [hn,sum_Ico_eq_sum_range]
   have hnum : s*s+(2*s+1)-s*s=2*s+1 := by omega
   rw [hnum]
-  have hpoly (i : ℕ) : (((s*s+i : ℕ) : ℝ)-(s : ℝ)^2-s)^2 =
-      (i : ℝ)^2-2*s*i+(s : ℝ)^2 := by push_cast; ring
+  have hpoly (i : ℕ) : (((s*s+i : ℕ) : ℝ)-(s : ℝ)^(2 : ℕ)-s)^(2 : ℕ) =
+      (i : ℝ)^(2 : ℕ)-2*s*i+(s : ℝ)^(2 : ℕ) := by push_cast; ring
   simp_rw [hpoly]
   rw [sum_add_distrib,sum_sub_distrib,← mul_sum,sum_range_cast_sq,sum_range_cast_id]
   simp only [sum_const,card_range,nsmul_eq_mul]
@@ -127,7 +127,7 @@ private theorem sum_centered_square_block (s : ℕ) :
 theorem sum_divisorHyperbolaSmoothRemainder_square_block_ge {s : ℕ} (hs : 1 ≤ s) :
     (s : ℝ)/3-91/6 ≤ ∑ k ∈ Ico (s*s) ((s+1)*(s+1)), divisorHyperbolaSmoothRemainder k := by
   have hpoint (k : ℕ) (hk : k ∈ Ico (s*s) ((s+1)*(s+1))) :
-      ((k : ℝ)-(s : ℝ)^2-s)^2/(2*((s : ℝ)+1)^2)-5/s ≤ divisorHyperbolaSmoothRemainder k := by
+      ((k : ℝ)-(s : ℝ)^(2 : ℕ)-s)^(2 : ℕ)/(2*((s : ℝ)+1)^(2 : ℕ))-5/s ≤ divisorHyperbolaSmoothRemainder k := by
     have hroot : Nat.sqrt k=s := (Nat.eq_sqrt.mpr (mem_Ico.mp hk)).symm
     have hk1 : 1 ≤ k := by have := (mem_Ico.mp hk).1; nlinarith
     simpa only [hroot] using divisorHyperbolaSmoothRemainder_ge_quadratic hk1
@@ -140,14 +140,14 @@ theorem sum_divisorHyperbolaSmoothRemainder_square_block_ge {s : ℕ} (hs : 1 �
   simp only [sum_const,hcard,nsmul_eq_mul] at hsum
   have hsR : (1 : ℝ) ≤ s := by exact_mod_cast hs
   have hpoly : (s : ℝ)/3-91/6 ≤
-      ((s : ℝ)*(s+1)*(2*s+1)/3)/(2*((s : ℝ)+1)^2) - (2*s+1 : ℕ)*(5/(s : ℝ)) := by
+      ((s : ℝ)*(s+1)*(2*s+1)/3)/(2*((s : ℝ)+1)^(2 : ℕ)) - (2*s+1 : ℕ)*(5/(s : ℝ)) := by
     push_cast
     field_simp
     nlinarith [sq_nonneg ((s : ℝ)-1)]
   exact hpoly.trans hsum
 
 private theorem smooth_square_prefix (t : ℕ) :
-    ((t+1 : ℕ) : ℝ)^2/6-(46/3)*((t+1 : ℕ) : ℝ)+91/6 ≤
+    ((t+1 : ℕ) : ℝ)^(2 : ℕ)/6-(46/3)*((t+1 : ℕ) : ℝ)+91/6 ≤
       ∑ k ∈ Ico 1 ((t+1)*(t+1)), divisorHyperbolaSmoothRemainder k := by
   induction t with
   | zero => norm_num
@@ -162,7 +162,7 @@ private theorem smooth_square_prefix (t : ℕ) :
 
 /-- Complete smooth-prefix floor with the last partial square block retained. -/
 theorem sum_divisorHyperbolaSmoothRemainder_ge {N : ℕ} (hN : 1 ≤ N) :
-    (Nat.sqrt N : ℝ)^2/6-16*Nat.sqrt N ≤
+    (Nat.sqrt N : ℝ)^(2 : ℕ)/6-16*Nat.sqrt N ≤
       ∑ k ∈ Icc 1 N, divisorHyperbolaSmoothRemainder k := by
   let s := Nat.sqrt N
   have hs : 1 ≤ s := Nat.le_sqrt.mpr (by simpa using hN)
@@ -178,7 +178,7 @@ theorem sum_divisorHyperbolaSmoothRemainder_ge {N : ℕ} (hN : 1 ≤ N) :
     have hroot : Nat.sqrt k=s := (Nat.eq_sqrt.mpr ⟨hk'.1,by omega⟩).symm
     have h := divisorHyperbolaSmoothRemainder_ge_quadratic hk1
     simp only [hroot] at h
-    have hq : 0 ≤ ((k : ℝ)-(s : ℝ)^2-s)^2/(2*((s : ℝ)+1)^2) := by positivity
+    have hq : 0 ≤ ((k : ℝ)-(s : ℝ)^(2 : ℕ)-s)^(2 : ℕ)/(2*((s : ℝ)+1)^(2 : ℕ)) := by positivity
     linarith only [h,hq]
   have hlast := sum_le_sum hpoint
   have hcard : (Ico (s*s) (N+1)).card ≤ 2*s+1 := by
@@ -196,7 +196,7 @@ theorem sum_divisorHyperbolaSmoothRemainder_ge {N : ℕ} (hN : 1 ≤ N) :
   rw [← Ico_add_one_right_eq_Icc]
   rw [← sum_Ico_consecutive (show 1 ≤ s*s by nlinarith) (show s*s ≤ N+1 by omega)
     (f := divisorHyperbolaSmoothRemainder)]
-  change (s : ℝ)^2/6-16*s ≤ _
+  change (s : ℝ)^(2 : ℕ)/6-16*s ≤ _
   linarith only [hpref,hlast',hsR]
 
 private theorem centered_hyperbola_range_birth (M : ℕ) :
@@ -267,7 +267,7 @@ theorem sum_centeredDivisorHyperbola_bounds (N : ℕ) :
 
 /-- The literal divisor-defect prefixes have a positive linear floor after a square-root loss. -/
 theorem sum_primeFreeDivisorDefect_ge {N : ℕ} (hN : 1 ≤ N) :
-    (Nat.sqrt N : ℝ)^2/24-17*Nat.sqrt N ≤ ∑ k ∈ Icc 1 N, primeFreeDivisorDefect k := by
+    (Nat.sqrt N : ℝ)^(2 : ℕ)/24-17*Nat.sqrt N ≤ ∑ k ∈ Icc 1 N, primeFreeDivisorDefect k := by
   have hR := sum_divisorHyperbolaSmoothRemainder_ge hN
   have hE := (sum_centeredDivisorHyperbola_bounds N).1
   have hsplit : (∑ k ∈ Icc 1 N, primeFreeDivisorDefect k) =
@@ -296,7 +296,7 @@ theorem sum_primeFreeDivisorDefect_ge_affine (N : ℕ) :
   by_cases hN : N=0
   · simp [hN]
   have h := sum_primeFreeDivisorDefect_ge (by omega : 1 ≤ N)
-  have hupper : (N : ℝ) ≤ (Nat.sqrt N : ℝ)^2+2*Nat.sqrt N := by
+  have hupper : (N : ℝ) ≤ (Nat.sqrt N : ℝ)^(2 : ℕ)+2*Nat.sqrt N := by
     have h' := Nat.sqrt_le_add N
     rw [pow_two]
     exact_mod_cast (show N ≤ Nat.sqrt N*Nat.sqrt N+2*Nat.sqrt N by omega)

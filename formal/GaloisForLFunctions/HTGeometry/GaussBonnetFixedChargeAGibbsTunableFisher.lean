@@ -7,13 +7,13 @@ noncomputable section
 
 /-- The normalized Fisher curve after compensating for the two decay rates. -/
 def egbFixedChargeAGibbsTunableFisherCurve (t : ℝ) : ℝ :=
-  (25 / 36 : ℝ) * t ^ 2 / (1 + t ^ 2) ^ 2
+  (25 / 36 : ℝ) * t ^ (2 : ℕ) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)
 
 private theorem fisher_shape_square_ratio (x t : ℝ) (hx : 0 < x) :
-    egbFixedChargeAGibbsCollisionFisherShape x (x * t ^ 2) =
+    egbFixedChargeAGibbsCollisionFisherShape x (x * t ^ (2 : ℕ)) =
       egbFixedChargeAGibbsTunableFisherCurve t := by
-  have hd : 1 + t ^ 2 ≠ 0 := (show 0 < 1 + t ^ 2 by positivity).ne'
-  have hs : x + x * t ^ 2 ≠ 0 := (show 0 < x + x * t ^ 2 by positivity).ne'
+  have hd : 1 + t ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + t ^ (2 : ℕ) by positivity).ne'
+  have hs : x + x * t ^ (2 : ℕ) ≠ 0 := (show 0 < x + x * t ^ (2 : ℕ) by positivity).ne'
   unfold egbFixedChargeAGibbsCollisionFisherShape egbFixedChargeAGibbsTunableFisherCurve
   field_simp [hx.ne', hd, hs]
   <;> ring

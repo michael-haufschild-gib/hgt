@@ -31,7 +31,7 @@ theorem thermalCFTResponse_mul_deSitterZeroModeCarrier_eq_orientedGammaSquare
     thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
         deSitterTypeIStaticBogoliubovGammaCarrierMero
           (coulombDeSitterZeroModeBranchMass ell) 0 =
-      gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2 *
+      gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ) *
         physicalExponentialMero lambda := by
   rw [deSitterZeroModeGammaCarrier_eq_coulombPhase,
     thermalCFTFrequencyResponseMero, gammaReflectionProductMero,
@@ -73,7 +73,7 @@ theorem hypertranscendentalOver_thermalCFTResponse_mul_deSitterZeroModeCarrier
           (coulombDeSitterZeroModeBranchMass ell) 0) := by
   rw [thermalCFTResponse_mul_deSitterZeroModeCarrier_eq_orientedGammaSquare]
   have hgamma : HypertranscendentalOver (RatFunc ℂ)
-      (gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2) := by
+      (gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ)) := by
     have h := hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
       (fun _ : Fin 1 => (((ell + 1 : ℕ) : ℂ)))
       (fun _ : Fin 1 => (2 : ℤ)) (by intro i; norm_num)
@@ -91,7 +91,7 @@ theorem thermalDeSitter_orientedGammaTomographyUniversality
     thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
           deSitterTypeIStaticBogoliubovGammaCarrierMero
             (coulombDeSitterZeroModeBranchMass ell) 0 =
-        gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2 *
+        gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ) *
           physicalExponentialMero lambda ∧
       DifferentialAlgebraicOver (RatFunc ℂ)
         (thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda) ∧

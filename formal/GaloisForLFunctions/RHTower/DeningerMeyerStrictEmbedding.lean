@@ -33,7 +33,7 @@ namespace RHTower
 
 /-! ## Monotonicity of the Meyer seminorms in the exponent -/
 
-theorem deningerMeyerSeminormFun_mono {A B : ℝ} (hAB : A ≤ B) (n : ℕ) (h : DeningerExpSchwartz) :
+theorem deningerMeyerSeminormFun_mono_deningerMeyerStrictEmbedding {A B : ℝ} (hAB : A ≤ B) (n : ℕ) (h : DeningerExpSchwartz) :
     deningerMeyerSeminormFun A n h ≤ deningerMeyerSeminormFun B n h := by
   refine deningerMeyerSeminormFun_le fun t => ?_
   refine le_trans ?_ (deningerMeyerWeight_le B n h t)

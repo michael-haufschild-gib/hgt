@@ -207,7 +207,7 @@ theorem integral_norm_iteratedDeriv_blockWindowC_le (K : ℕ) {p q η : ℝ} (h�
         rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul]
         ring
 
-theorem norm_fourier_le_integral_norm (f : ℝ → ℂ) (ξ : ℝ) : ‖𝓕 f ξ‖ ≤ ∫ t, ‖f t‖ := by
+theorem norm_fourier_le_integral_norm_smoothBlockWindow (f : ℝ → ℂ) (ξ : ℝ) : ‖𝓕 f ξ‖ ≤ ∫ t, ‖f t‖ := by
   rw [Real.fourier_real_eq]
   refine le_trans (norm_integral_le_integral_norm _) (le_of_eq ?_)
   congr 1
@@ -234,7 +234,7 @@ theorem norm_fourier_blockWindowC_le (K : ℕ) {p q η : ℝ} (hη : 0 < η) (hp
     have := abs_pos.mpr hξ
     positivity
   rw [le_div_iff₀ hpos, ← hnorm, mul_comm, ← norm_smul, ← hK]
-  exact le_trans (norm_fourier_le_integral_norm _ _)
+  exact le_trans (norm_fourier_le_integral_norm_smoothBlockWindow _ _)
     (integral_norm_iteratedDeriv_blockWindowC_le K hη hpq)
 
 /-- The window against the height oscillation `exp(-iξt)` is its Fourier transform at `ξ/2π`. -/

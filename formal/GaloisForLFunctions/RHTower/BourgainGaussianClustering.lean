@@ -7,7 +7,7 @@ clustering step directly with an explicit Gaussian majorant.
 
 Each real coordinate is placed in a half-unit floor cell.  Gaussian decay
 is dominated by a bilateral half-geometric kernel.  Its exact row mass is
-three, so the four-dimensional Schur constant is `3^4 = 81`.  Equal floor
+three, so the four-dimensional Schur constant is `3^(4 : ℕ) = 81`.  Equal floor
 cells are coordinatewise near.  All sums are finite and all constants are
 explicit.
 -/
@@ -163,7 +163,7 @@ theorem bourgainFourCellKernel_symm
   congr 1
   rw [show k j - l j = -(l j - k j) by ring, Int.natAbs_neg]
 
-/-- Four-dimensional product row bound `3^4 = 81`. -/
+/-- Four-dimensional product row bound `3^(4 : ℕ) = 81`. -/
 theorem sum_bourgainFourCellKernel_grid_le
     (S : Fin 4 → Finset ℤ) (k : Fin 4 → ℤ) :
     ∑ l ∈ Fintype.piFinset S, bourgainFourCellKernel k l ≤ 81 := by
@@ -449,7 +449,7 @@ theorem bourgainScaledNear_of_cell_eq
   linarith
 
 /-- Pointwise four-dimensional Gaussian domination by the product cell
-kernel.  The explicit factor is `8^4 = 4096`. -/
+kernel.  The explicit factor is `8^(4 : ℕ) = 4096`. -/
 theorem bourgainGaussianPairWeight_le_cellKernel
     (X u v : BourgainPhaseSpace) :
     Real.exp (-Real.pi * bourgainScaledSqDist X u v) ≤
@@ -507,7 +507,7 @@ def bourgainWeightedScaledNearEnergy
 
 /-- Unconditional Gaussian clustering estimate in four dimensions.
 
-The constant is `8^4 * 3^4 = 24^4 = 331776`. -/
+The constant is `8^(4 : ℕ) * 3^(4 : ℕ) = 24^(4 : ℕ) = 331776`. -/
 theorem bourgainWeightedGaussianEnergy_le_scaledNearEnergy
     {ι : Type*} [Fintype ι]
     (X : BourgainPhaseSpace) (p : ι → BourgainPhaseSpace)

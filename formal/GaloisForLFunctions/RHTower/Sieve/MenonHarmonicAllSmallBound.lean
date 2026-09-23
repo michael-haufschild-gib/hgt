@@ -18,13 +18,13 @@ noncomputable section
 /-- Exact reciprocal-HM cost of one harmonic geometric Ramaré block. -/
 def menonHarmonicAllSmallBlockCost
     (P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W V : ℝ) (E : Set ℝ) (j : ℕ) : ℝ :=
-  2 * V ^ 2 * ((2 * Real.pi)⁻¹ *
+  2 * V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
       (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊
         (2 * Real.pi * W) (2 * Real.pi * volume.real E) *
           ((1 / (⌈(A₀ : ℝ) /
-            ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+            ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
             ((harmonicGeomCofactorBlock A₀ B₀ Q eta j).card : ℝ))))
-    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
         harmonicCofactorSupportError A₀ B₀ Q eta W j
 
 /-- Menon's complete Case-I estimate on the harmonic all-small frequency set.  This is the exact
@@ -40,7 +40,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_allSmall
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in menonHarmonicAllBlocksSmall P Q eta L V W,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
             (menonHarmonicAllBlocksSmall P Q eta L V W) j := by

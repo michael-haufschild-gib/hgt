@@ -22,29 +22,29 @@ namespace GaloisForLFunctions.RHTower
 /-- Cubically renormalized source test used when the completed current is rewritten through the
 CCM-FU third-grade cumulative source. -/
 def unitRieszCesaroTest (t s : ℝ) : ℝ :=
-  (3 / 32) * (s ^ 3 *
+  (3 / 32) * (s ^ (3 : ℕ) *
     (Real.exp (-t + s / 2) - Real.exp (-3 * t / 2 + s)))
 
 def unitRieszCesaroTestDeriv (t s : ℝ) : ℝ :=
   (3 / 32) *
-    (3 * s ^ 2 * (Real.exp (-t + s / 2) - Real.exp (-3 * t / 2 + s)) +
-      s ^ 3 * ((1 / 2) * Real.exp (-t + s / 2) -
+    (3 * s ^ (2 : ℕ) * (Real.exp (-t + s / 2) - Real.exp (-3 * t / 2 + s)) +
+      s ^ (3 : ℕ) * ((1 / 2) * Real.exp (-t + s / 2) -
         Real.exp (-3 * t / 2 + s)))
 
 /-- Slow half-rate polynomial in the second derivative. -/
 def unitRieszCesaroSlowPolynomial (s : ℝ) : ℝ :=
-  6 * s + 3 * s ^ 2 + s ^ 3 / 4
+  6 * s + 3 * s ^ (2 : ℕ) + s ^ (3 : ℕ) / 4
 
 /-- Fast unit-rate polynomial in the second derivative. -/
 def unitRieszCesaroFastPolynomial (s : ℝ) : ℝ :=
-  6 * s + 6 * s ^ 2 + s ^ 3
+  6 * s + 6 * s ^ (2 : ℕ) + s ^ (3 : ℕ)
 
 def unitRieszCesaroTestSecondDeriv (t s : ℝ) : ℝ :=
   (3 / 32) *
     (6 * s * (Real.exp (-t + s / 2) - Real.exp (-3 * t / 2 + s)) +
-      6 * s ^ 2 * ((1 / 2) * Real.exp (-t + s / 2) -
+      6 * s ^ (2 : ℕ) * ((1 / 2) * Real.exp (-t + s / 2) -
         Real.exp (-3 * t / 2 + s)) +
-      s ^ 3 * ((1 / 4) * Real.exp (-t + s / 2) -
+      s ^ (3 : ℕ) * ((1 / 4) * Real.exp (-t + s / 2) -
         Real.exp (-3 * t / 2 + s)))
 
 private theorem hasDerivAt_slowExp (t s : ℝ) :
@@ -63,7 +63,7 @@ private theorem hasDerivAt_fastExp (t s : ℝ) :
 
 theorem hasDerivAt_unitRieszCesaroTest (t s : ℝ) :
     HasDerivAt (unitRieszCesaroTest t) (unitRieszCesaroTestDeriv t s) s := by
-  have hp : HasDerivAt (fun x : ℝ => x ^ 3) (3 * s ^ 2) s := by
+  have hp : HasDerivAt (fun x : ℝ => x ^ (3 : ℕ)) (3 * s ^ (2 : ℕ)) s := by
     exact (hasDerivAt_pow 3 s).congr_deriv (by norm_num)
   have he := (hasDerivAt_slowExp t s).sub (hasDerivAt_fastExp t s)
   unfold unitRieszCesaroTest unitRieszCesaroTestDeriv
@@ -71,7 +71,7 @@ theorem hasDerivAt_unitRieszCesaroTest (t s : ℝ) :
     (hp.mul he).const_mul (3 / 32)
 
 theorem unitRieszCesaroTestDeriv_endpoint (t : ℝ) :
-    unitRieszCesaroTestDeriv t t = -(3 / 64) * t ^ 3 * Real.exp (-t / 2) := by
+    unitRieszCesaroTestDeriv t t = -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) := by
   rw [unitRieszCesaroTestDeriv]
   have he : Real.exp (-t + t / 2) = Real.exp (-3 * t / 2 + t) := by
     congr 1
@@ -82,9 +82,9 @@ theorem unitRieszCesaroTestDeriv_endpoint (t : ℝ) :
 theorem hasDerivAt_unitRieszCesaroTestDeriv (t s : ℝ) :
     HasDerivAt (unitRieszCesaroTestDeriv t)
       (unitRieszCesaroTestSecondDeriv t s) s := by
-  have hs2 : HasDerivAt (fun x : ℝ => x ^ 2) (2 * s) s := by
+  have hs2 : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ)) (2 * s) s := by
     exact (hasDerivAt_pow 2 s).congr_deriv (by norm_num)
-  have hs3 : HasDerivAt (fun x : ℝ => x ^ 3) (3 * s ^ 2) s := by
+  have hs3 : HasDerivAt (fun x : ℝ => x ^ (3 : ℕ)) (3 * s ^ (2 : ℕ)) s := by
     exact (hasDerivAt_pow 3 s).congr_deriv (by norm_num)
   have hA := hasDerivAt_slowExp t s
   have hB := hasDerivAt_fastExp t s
@@ -101,11 +101,11 @@ theorem hasDerivAt_unitRieszCesaroTestDeriv (t s : ℝ) :
       (3 / 32) *
           (3 * (2 * s) *
               (Real.exp (-t + s / 2) - Real.exp (-3 * t / 2 + s)) +
-            3 * s ^ 2 * ((1 / 2) * Real.exp (-t + s / 2) -
+            3 * s ^ (2 : ℕ) * ((1 / 2) * Real.exp (-t + s / 2) -
               Real.exp (-3 * t / 2 + s)) +
-            (3 * s ^ 2 * ((1 / 2) * Real.exp (-t + s / 2) -
+            (3 * s ^ (2 : ℕ) * ((1 / 2) * Real.exp (-t + s / 2) -
                 Real.exp (-3 * t / 2 + s)) +
-              s ^ 3 * ((1 / 4) * Real.exp (-t + s / 2) -
+              s ^ (3 : ℕ) * ((1 / 4) * Real.exp (-t + s / 2) -
                 Real.exp (-3 * t / 2 + s)))) =
         unitRieszCesaroTestSecondDeriv t s by
           rw [unitRieszCesaroTestSecondDeriv]
@@ -125,9 +125,9 @@ theorem unitRieszCesaroTestSecondDeriv_eq_polynomials (t s : ℝ) :
 theorem unitRieszCesaroFast_div_slow
     {s : ℝ} (hs : 0 < s) :
     unitRieszCesaroFastPolynomial s / unitRieszCesaroSlowPolynomial s =
-      4 * (s ^ 2 + 6 * s + 6) / (s ^ 2 + 12 * s + 24) := by
+      4 * (s ^ (2 : ℕ) + 6 * s + 6) / (s ^ (2 : ℕ) + 12 * s + 24) := by
   rw [unitRieszCesaroSlowPolynomial, unitRieszCesaroFastPolynomial]
-  have hden : s ^ 2 + 12 * s + 24 ≠ 0 := by
+  have hden : s ^ (2 : ℕ) + 12 * s + 24 ≠ 0 := by
     positivity
   field_simp [hs.ne', hden]
   ring
@@ -204,7 +204,7 @@ theorem unitRieszCesaroCurvatureKernel_neg_iff (u : ℝ) :
 
 theorem integral_Ioi_mul_rexp_neg_mul
     {b : ℝ} (hb : 0 < b) :
-    (∫ u in Set.Ioi (0 : ℝ), u * Real.exp (-(b * u))) = 1 / b ^ 2 := by
+    (∫ u in Set.Ioi (0 : ℝ), u * Real.exp (-(b * u))) = 1 / b ^ (2 : ℕ) := by
   have hbC : 0 < ((b : ℂ)).re := by simpa using hb
   have hc := integral_Ioi_sub_mul_cexp_neg_mul (b := (b : ℂ)) hbC
     (u := (0 : ℝ)) (le_refl 0)
@@ -217,7 +217,7 @@ theorem integral_Ioi_mul_rexp_neg_mul
     ring
   have hcast :
       (((∫ u in Set.Ioi (0 : ℝ), u * Real.exp (-(b * u))) : ℝ) : ℂ) =
-        (((1 / b ^ 2 : ℝ)) : ℂ) := by
+        (((1 / b ^ (2 : ℕ) : ℝ)) : ℂ) := by
     calc
       (((∫ u in Set.Ioi (0 : ℝ), u * Real.exp (-(b * u))) : ℝ) : ℂ) =
           ∫ u in Set.Ioi (0 : ℝ),
@@ -226,8 +226,8 @@ theorem integral_Ioi_mul_rexp_neg_mul
       _ = ∫ u in Set.Ioi (0 : ℝ),
           ((u : ℂ) - (0 : ℂ)) * Complex.exp (-((b : ℂ) * (u : ℂ))) :=
         setIntegral_congr_fun measurableSet_Ioi fun u _ => hpoint u
-      _ = Complex.exp (-((b : ℂ) * (0 : ℂ))) * (b : ℂ)⁻¹ ^ 2 := hc
-      _ = (((1 / b ^ 2 : ℝ)) : ℂ) := by
+      _ = Complex.exp (-((b : ℂ) * (0 : ℂ))) * (b : ℂ)⁻¹ ^ (2 : ℕ) := hc
+      _ = (((1 / b ^ (2 : ℕ) : ℝ)) : ℂ) := by
         rw [mul_zero, neg_zero, Complex.exp_zero, one_mul]
         push_cast
         field_simp [hb.ne']

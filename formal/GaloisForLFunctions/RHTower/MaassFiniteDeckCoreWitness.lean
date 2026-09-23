@@ -116,9 +116,9 @@ theorem exists_retractedDeck_witness_line {N : ℕ} {ε a b c d : ℝ} (hε : 0 
         Complex.normSq
           (retractedDeckComponent ε F q (x, y) -
             verticalCellAverage c d (retractedDeckComponent ε F q) x0)) ≤
-        8 * (b - a) ^ 2 * (∑ q, ∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
+        8 * (b - a) ^ (2 : ℕ) * (∑ q, ∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
           Complex.normSq (retractedDeckComponentX ε F q (x, y))) +
-        2 * (d - c) ^ 2 * (∑ q, ∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d,
+        2 * (d - c) ^ (2 : ℕ) * (∑ q, ∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d,
           Complex.normSq (retractedDeckComponentY ε F q (x, y))) := by
   exact exists_rectangle_witness_line_finset hab hcd
     (fun q => (contDiff_retractedDeckComponent hε F q).continuous)
@@ -221,8 +221,8 @@ theorem retractedDeckComponentY_eq_chartDeriv {N : ℕ} {ε x y : ℝ}
 
 /-- The finite-deck Hilbert norm is the sum of the coordinate norm squares. -/
 theorem sum_normSq_deckCoordinate {N : ℕ} (v : DeckSpace N) :
-    (∑ q, Complex.normSq (deckCoordinate N q v)) = ‖v‖ ^ 2 := by
-  change (∑ q, Complex.normSq (v q)) = ‖v‖ ^ 2
+    (∑ q, Complex.normSq (deckCoordinate N q v)) = ‖v‖ ^ (2 : ℕ) := by
+  change (∑ q, Complex.normSq (v q)) = ‖v‖ ^ (2 : ℕ)
   rw [PiLp.norm_sq_eq_of_L2]
   simp only [Complex.normSq_eq_norm_sq]
 
@@ -231,7 +231,7 @@ theorem sum_retractedDeckComponentX_normSq_eq {N : ℕ} {ε x y : ℝ}
     (hε : 0 < ε) (hy : ε < y) (F : formPreDomain N) :
     (∑ q, Complex.normSq (retractedDeckComponentX ε F q (x, y))) =
       ‖chartDeriv (F : ℍ → DeckSpace N) 1
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 := by
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) := by
   calc
     (∑ q, Complex.normSq (retractedDeckComponentX ε F q (x, y))) =
         ∑ q, Complex.normSq
@@ -241,7 +241,7 @@ theorem sum_retractedDeckComponentX_normSq_eq {N : ℕ} {ε x y : ℝ}
           intro q _
           rw [retractedDeckComponentX_eq_chartDeriv hε hy F q]
     _ = ‖chartDeriv (F : ℍ → DeckSpace N) 1
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 :=
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) :=
       sum_normSq_deckCoordinate _
 
 /-- On the core, coordinate vertical energies reconstruct the vector chart energy exactly. -/
@@ -249,7 +249,7 @@ theorem sum_retractedDeckComponentY_normSq_eq {N : ℕ} {ε x y : ℝ}
     (hε : 0 < ε) (hy : ε < y) (F : formPreDomain N) :
     (∑ q, Complex.normSq (retractedDeckComponentY ε F q (x, y))) =
       ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 := by
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) := by
   calc
     (∑ q, Complex.normSq (retractedDeckComponentY ε F q (x, y))) =
         ∑ q, Complex.normSq
@@ -259,7 +259,7 @@ theorem sum_retractedDeckComponentY_normSq_eq {N : ℕ} {ε x y : ℝ}
           intro q _
           rw [retractedDeckComponentY_eq_chartDeriv hε hy F q]
     _ = ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 :=
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) :=
       sum_normSq_deckCoordinate _
 
 /-- The global deck-valued field whose coordinates feed the witness construction. -/
@@ -294,7 +294,7 @@ theorem sum_retractedDeckCell_error_normSq {N : ℕ} (ε c d : ℝ)
     (∑ q, Complex.normSq
       (retractedDeckComponent ε F q p -
         verticalCellAverage c d (retractedDeckComponent ε F q) x0)) =
-      ‖retractedDeckField ε F p - retractedDeckCellAverage ε c d F x0‖ ^ 2 := by
+      ‖retractedDeckField ε F p - retractedDeckCellAverage ε c d F x0‖ ^ (2 : ℕ) := by
   rw [← sum_normSq_deckCoordinate]
   apply Finset.sum_congr rfl
   intro q _
@@ -393,10 +393,10 @@ theorem exists_retractedDeck_witness_line_vectorized {N : ℕ} {ε a b c d : ℝ
     (hε : 0 < ε) (hab : a < b) (hcd : c ≤ d) (F : formPreDomain N) :
     ∃ x0 ∈ Set.Ioc a b,
       (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
-        ‖retractedDeckField ε F (x, y) - retractedDeckCellAverage ε c d F x0‖ ^ 2) ≤
-        8 * (b - a) ^ 2 * (∑ q, ∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
+        ‖retractedDeckField ε F (x, y) - retractedDeckCellAverage ε c d F x0‖ ^ (2 : ℕ)) ≤
+        8 * (b - a) ^ (2 : ℕ) * (∑ q, ∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
           Complex.normSq (retractedDeckComponentX ε F q (x, y))) +
-        2 * (d - c) ^ 2 * (∑ q, ∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d,
+        2 * (d - c) ^ (2 : ℕ) * (∑ q, ∫ x in Set.Ioc a b, ∫ y in Set.Ioc c d,
           Complex.normSq (retractedDeckComponentY ε F q (x, y))) := by
   obtain ⟨x0, hx0, hbound⟩ :=
     exists_retractedDeck_witness_line hε hab hcd F
@@ -426,7 +426,7 @@ theorem exists_retractedDeck_witness_line_vectorized {N : ℕ} {ε a b c d : ℝ
     exact ((hE q).comp (continuous_id.prodMk continuous_const)).integrableOn_Ioc
   calc
     (∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b,
-      ‖retractedDeckField ε F (x, y) - retractedDeckCellAverage ε c d F x0‖ ^ 2) =
+      ‖retractedDeckField ε F (x, y) - retractedDeckCellAverage ε c d F x0‖ ^ (2 : ℕ)) =
         ∫ y in Set.Ioc c d, ∫ x in Set.Ioc a b, ∑ q, E q (x, y) := by
           apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
           intro y _
@@ -452,12 +452,12 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
       (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
         ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
           ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
-            ‖retractedDeckField ε F (x, y) - C k j‖ ^ 2) ≤
-        8 * hx ^ 2 *
+            ‖retractedDeckField ε F (x, y) - C k j‖ ^ (2 : ℕ)) ≤
+        8 * hx ^ (2 : ℕ) *
           (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
             ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               retractedDeckEnergyX ε F (x, y)) +
-        2 * hy ^ 2 *
+        2 * hy ^ (2 : ℕ) *
           (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
             ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               retractedDeckEnergyY ε F (x, y)) := by
@@ -481,12 +481,12 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
   have hcell (k j : ℕ) : ∃ v : DeckSpace N,
       (∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
         ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
-          ‖retractedDeckField ε F (x, y) - v‖ ^ 2) ≤
-        8 * hx ^ 2 *
+          ‖retractedDeckField ε F (x, y) - v‖ ^ (2 : ℕ)) ≤
+        8 * hx ^ (2 : ℕ) *
           (∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
             ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
               retractedDeckEnergyX ε F (x, y)) +
-        2 * hy ^ 2 *
+        2 * hy ^ (2 : ℕ) *
           (∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
             ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               retractedDeckEnergyY ε F (x, y)) := by
@@ -499,20 +499,20 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
         ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
           ‖retractedDeckField ε F (x, y) -
             retractedDeckCellAverage ε
-              (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy) F x0‖ ^ 2) ≤
-          8 * ((a + ((j + 1 : ℕ) : ℝ) * hx) - (a + (j : ℝ) * hx)) ^ 2 *
+              (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy) F x0‖ ^ (2 : ℕ)) ≤
+          8 * ((a + ((j + 1 : ℕ) : ℝ) * hx) - (a + (j : ℝ) * hx)) ^ (2 : ℕ) *
             (∑ q, ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
                 Complex.normSq (retractedDeckComponentX ε F q (x, y))) +
-          2 * ((c + ((k + 1 : ℕ) : ℝ) * hy) - (c + (k : ℝ) * hy)) ^ 2 *
+          2 * ((c + ((k + 1 : ℕ) : ℝ) * hy) - (c + (k : ℝ) * hy)) ^ (2 : ℕ) *
             (∑ q, ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
               ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
                 Complex.normSq (retractedDeckComponentY ε F q (x, y))) := hx0bound
-      _ = 8 * hx ^ 2 *
+      _ = 8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
               ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y)) := by
@@ -523,26 +523,26 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
   refine ⟨C, ?_⟩
   have hsplit (X Y : ℕ → ℕ → ℝ) :
       (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
-        ((8 * hx ^ 2) * X k j + (2 * hy ^ 2) * Y k j)) =
-        (8 * hx ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
-          (2 * hy ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
+        ((8 * hx ^ (2 : ℕ)) * X k j + (2 * hy ^ (2 : ℕ)) * Y k j)) =
+        (8 * hx ^ (2 : ℕ)) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
+          (2 * hy ^ (2 : ℕ)) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
     calc
       (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
-        ((8 * hx ^ 2) * X k j + (2 * hy ^ 2) * Y k j)) =
+        ((8 * hx ^ (2 : ℕ)) * X k j + (2 * hy ^ (2 : ℕ)) * Y k j)) =
           ∑ k ∈ Finset.range K,
-            ((∑ j ∈ Finset.range M, (8 * hx ^ 2) * X k j) +
-              ∑ j ∈ Finset.range M, (2 * hy ^ 2) * Y k j) := by
+            ((∑ j ∈ Finset.range M, (8 * hx ^ (2 : ℕ)) * X k j) +
+              ∑ j ∈ Finset.range M, (2 * hy ^ (2 : ℕ)) * Y k j) := by
             apply Finset.sum_congr rfl
             intro k _
             rw [Finset.sum_add_distrib]
       _ = ∑ k ∈ Finset.range K,
-            ((8 * hx ^ 2) * (∑ j ∈ Finset.range M, X k j) +
-              (2 * hy ^ 2) * (∑ j ∈ Finset.range M, Y k j)) := by
+            ((8 * hx ^ (2 : ℕ)) * (∑ j ∈ Finset.range M, X k j) +
+              (2 * hy ^ (2 : ℕ)) * (∑ j ∈ Finset.range M, Y k j)) := by
             apply Finset.sum_congr rfl
             intro k _
             rw [← Finset.mul_sum, ← Finset.mul_sum]
-      _ = (8 * hx ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
-          (2 * hy ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
+      _ = (8 * hx ^ (2 : ℕ)) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
+          (2 * hy ^ (2 : ℕ)) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
             rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   have hXgrid := setIntegral_rectangle_grid_sum
     (continuous_retractedDeckEnergyX hε F) (a := a) (c := c) (hx := hx) (hy := hy)
@@ -564,13 +564,13 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
     (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
       ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
         ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
-          ‖retractedDeckField ε F (x, y) - C k j‖ ^ 2) ≤
+          ‖retractedDeckField ε F (x, y) - C k j‖ ^ (2 : ℕ)) ≤
         ∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
-          ((8 * hx ^ 2) *
+          ((8 * hx ^ (2 : ℕ)) *
             (∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          (2 * hy ^ 2) *
+          (2 * hy ^ (2 : ℕ)) *
             (∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
               ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) := by
@@ -579,22 +579,22 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
           apply Finset.sum_le_sum
           intro j _
           exact hC k j
-    _ = 8 * hx ^ 2 *
+    _ = 8 * hx ^ (2 : ℕ) *
           (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
             ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-        2 * hy ^ 2 *
+        2 * hy ^ (2 : ℕ) *
           (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
             ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
               ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y)) := by
           exact hsplit _ _
-    _ = 8 * hx ^ 2 *
+    _ = 8 * hx ^ (2 : ℕ) *
           (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
             ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               retractedDeckEnergyX ε F (x, y)) +
-        2 * hy ^ 2 *
+        2 * hy ^ (2 : ℕ) *
           (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
             ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               retractedDeckEnergyY ε F (x, y)) := by

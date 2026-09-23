@@ -115,7 +115,7 @@ theorem quenchedReplica_returnExcisedCoareaIncidence_bound
       (fun x => replicaTargetCoordinate r target (state x) i)
         (μ.restrict returnSetᶜ))
     (hcoord : ∀ i, Integrable
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2)
+      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ))
         (μ.restrict returnSetᶜ)) :
     (μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} ≤
@@ -124,7 +124,7 @@ theorem quenchedReplica_returnExcisedCoareaIncidence_bound
           threshold ≤ finitePureStateFidelity (state x) (target c)}) ∧
     (((μ.restrict returnSetᶜ).real {x | ∃ c,
           threshold ≤ finitePureStateFidelity (state x) (target c)} *
-        threshold ^ r) ^ 2 ≤
+        threshold ^ r) ^ (2 : ℕ) ≤
       (replicaTargetHilbertNumber r target : ℝ) *
         returnExcisedReplicaIncidenceAction μ r target state returnSet) := by
   constructor
@@ -133,7 +133,7 @@ theorem quenchedReplica_returnExcisedCoareaIncidence_bound
   · calc
       (((μ.restrict returnSetᶜ).real {x | ∃ c,
             threshold ≤ finitePureStateFidelity (state x) (target c)} *
-          threshold ^ r) ^ 2) ≤
+          threshold ^ r) ^ (2 : ℕ)) ≤
           (replicaTargetHilbertNumber r target : ℝ) *
             replicaTargetIncidenceCollision
               (μ.restrict returnSetᶜ) r target state :=
@@ -162,7 +162,7 @@ theorem measureReal_capture_le_return_add_sqrt_action
       (fun x => replicaTargetCoordinate r target (state x) i)
         (μ.restrict returnSetᶜ))
     (hcoord : ∀ i, Integrable
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2)
+      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ))
         (μ.restrict returnSetᶜ)) :
     μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} ≤

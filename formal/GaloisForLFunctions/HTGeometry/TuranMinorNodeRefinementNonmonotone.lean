@@ -26,28 +26,28 @@ namespace GaloisForLFunctions.HTGeometry
 /-- **The single-pair minor identity**: the `(0,2,1)` Turán minor of the moment sequence of one
 weighted pair `(w, W), (w̄, W̄)` factors as `WW̄ · ww̄ · (w − w̄)²`. -/
 theorem pair_minor_identity (w W wb Wb : ℂ) :
-    (w * W + wb * Wb) * (w ^ 3 * W + wb ^ 3 * Wb) - (w ^ 2 * W + wb ^ 2 * Wb) ^ 2 =
-      W * Wb * (w * wb) * (w - wb) ^ 2 := by
+    (w * W + wb * Wb) * (w ^ (3 : ℕ) * W + wb ^ (3 : ℕ) * Wb) - (w ^ (2 : ℕ) * W + wb ^ (2 : ℕ) * Wb) ^ (2 : ℕ) =
+      W * Wb * (w * wb) * (w - wb) ^ (2 : ℕ) := by
   ring
 
 /-- For a genuine conjugate pair the single-pair minor is `-4·|W|²·|w|²·Im(w)²`: strictly
 negative whenever the pair is off the real axis and the weight does not vanish on it. -/
 theorem pair_minor_re_neg {w W : ℂ} (hw : w ≠ 0) (him : w.im ≠ 0) (hW : W ≠ 0) :
     ((w * W + (starRingEnd ℂ) w * (starRingEnd ℂ) W) *
-      (w ^ 3 * W + ((starRingEnd ℂ) w) ^ 3 * (starRingEnd ℂ) W) -
-      (w ^ 2 * W + ((starRingEnd ℂ) w) ^ 2 * (starRingEnd ℂ) W) ^ 2).re < 0 := by
+      (w ^ (3 : ℕ) * W + ((starRingEnd ℂ) w) ^ (3 : ℕ) * (starRingEnd ℂ) W) -
+      (w ^ (2 : ℕ) * W + ((starRingEnd ℂ) w) ^ (2 : ℕ) * (starRingEnd ℂ) W) ^ (2 : ℕ)).re < 0 := by
   have hid := pair_minor_identity w W ((starRingEnd ℂ) w) ((starRingEnd ℂ) W)
   have hval : W * (starRingEnd ℂ) W * (w * (starRingEnd ℂ) w) *
-      (w - (starRingEnd ℂ) w) ^ 2 =
-      ((-(4 * (Complex.normSq W * (Complex.normSq w * w.im ^ 2))) : ℝ) : ℂ) := by
+      (w - (starRingEnd ℂ) w) ^ (2 : ℕ) =
+      ((-(4 * (Complex.normSq W * (Complex.normSq w * w.im ^ (2 : ℕ)))) : ℝ) : ℂ) := by
     rw [Complex.mul_conj, Complex.mul_conj, Complex.sub_conj, mul_pow, Complex.I_sq]
     push_cast
     ring
   rw [hid, hval, Complex.ofReal_re]
   have hW0 : 0 < Complex.normSq W := Complex.normSq_pos.mpr hW
   have hw0 : 0 < Complex.normSq w := Complex.normSq_pos.mpr hw
-  have him2 : 0 < w.im ^ 2 := by positivity
-  have hpos : 0 < Complex.normSq W * (Complex.normSq w * w.im ^ 2) :=
+  have him2 : 0 < w.im ^ (2 : ℕ) := by positivity
+  have hpos : 0 < Complex.normSq W * (Complex.normSq w * w.im ^ (2 : ℕ)) :=
     mul_pos hW0 (mul_pos hw0 him2)
   linarith
 
@@ -60,11 +60,11 @@ theorem exists_config_turanMinor_nonneg_nodal_refinement_neg :
       (∀ i, 0 < c i) ∧ (∀ i, ‖v i‖ ≤ 1) ∧ (∀ i, 0 < (v i).re) ∧
       (∀ i, ∃ j, v j = (starRingEnd ℂ) (v i) ∧ c j = c i) ∧
       (0 < r ∧ r ≤ 1) ∧
-      0 ≤ ((∑ i, (c i : ℂ) * v i ^ 1) * (∑ i, (c i : ℂ) * v i ^ 3) -
-        (∑ i, (c i : ℂ) * v i ^ 2) ^ 2).re ∧
-      ((∑ i, (c i : ℂ) * v i ^ 1 * (v i - ((r : ℝ) : ℂ)) ^ 2) *
-        (∑ i, (c i : ℂ) * v i ^ 3 * (v i - ((r : ℝ) : ℂ)) ^ 2) -
-        (∑ i, (c i : ℂ) * v i ^ 2 * (v i - ((r : ℝ) : ℂ)) ^ 2) ^ 2).re < 0 := by
+      0 ≤ ((∑ i, (c i : ℂ) * v i ^ (1 : ℕ)) * (∑ i, (c i : ℂ) * v i ^ (3 : ℕ)) -
+        (∑ i, (c i : ℂ) * v i ^ (2 : ℕ)) ^ (2 : ℕ)).re ∧
+      ((∑ i, (c i : ℂ) * v i ^ (1 : ℕ) * (v i - ((r : ℝ) : ℂ)) ^ (2 : ℕ)) *
+        (∑ i, (c i : ℂ) * v i ^ (3 : ℕ) * (v i - ((r : ℝ) : ℂ)) ^ (2 : ℕ)) -
+        (∑ i, (c i : ℂ) * v i ^ (2 : ℕ) * (v i - ((r : ℝ) : ℂ)) ^ (2 : ℕ)) ^ (2 : ℕ)).re < 0 := by
   classical
   set a : ℂ := ((1 / 2 : ℝ) : ℂ) with ha
   set w : ℂ := ((3 / 10 : ℝ) : ℂ) + ((2 / 5 : ℝ) : ℂ) * I with hw
@@ -76,11 +76,11 @@ theorem exists_config_turanMinor_nonneg_nodal_refinement_neg :
   · intro i
     fin_cases i <;> norm_num
   · intro i
-    have hwn : ‖w‖ ^ 2 = 1 / 4 := by
+    have hwn : ‖w‖ ^ (2 : ℕ) = 1 / 4 := by
       rw [Complex.sq_norm, hw]
       norm_num [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
         Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
-    have hw'n : ‖w'‖ ^ 2 = 1 / 4 := by
+    have hw'n : ‖w'‖ ^ (2 : ℕ) = 1 / 4 := by
       rw [Complex.sq_norm, hw']
       norm_num [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.mul_re,
         Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
@@ -120,17 +120,17 @@ theorem exists_config_turanMinor_nonneg_nodal_refinement_neg :
     · exact ⟨0, by simpa using haconj, rfl⟩
     · exact ⟨2, by simpa using hwconj, rfl⟩
     · exact ⟨1, by simpa using hw'conj, rfl⟩
-  · have hMa : (6 : ℂ) * a ^ 1 + (1 : ℂ) * w ^ 1 + (1 : ℂ) * w' ^ 1 =
+  · have hMa : (6 : ℂ) * a ^ (1 : ℕ) + (1 : ℂ) * w ^ (1 : ℕ) + (1 : ℂ) * w' ^ (1 : ℕ) =
         ((18 / 5 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
       ring
-    have hMb : (6 : ℂ) * a ^ 2 + (1 : ℂ) * w ^ 2 + (1 : ℂ) * w' ^ 2 =
+    have hMb : (6 : ℂ) * a ^ (2 : ℕ) + (1 : ℂ) * w ^ (2 : ℕ) + (1 : ℂ) * w' ^ (2 : ℕ) =
         ((34 / 25 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
       linear_combination (8 / 25 : ℂ) * Complex.I_sq
-    have hMc : (6 : ℂ) * a ^ 3 + (1 : ℂ) * w ^ 3 + (1 : ℂ) * w' ^ 3 =
+    have hMc : (6 : ℂ) * a ^ (3 : ℕ) + (1 : ℂ) * w ^ (3 : ℕ) + (1 : ℂ) * w' ^ (3 : ℕ) =
         ((129 / 250 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
@@ -140,24 +140,24 @@ theorem exists_config_turanMinor_nonneg_nodal_refinement_neg :
     rw [hMa, hMb, hMc, ← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Complex.ofReal_sub,
       Complex.ofReal_re]
     norm_num
-  · have hNa : (6 : ℂ) * a ^ 1 * (a - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w ^ 1 * (w - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w' ^ 1 * (w' - ((1 / 2 : ℝ) : ℂ)) ^ 2 = ((7 / 125 : ℝ) : ℂ) := by
+  · have hNa : (6 : ℂ) * a ^ (1 : ℕ) * (a - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w ^ (1 : ℕ) * (w - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w' ^ (1 : ℕ) * (w' - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) = ((7 / 125 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
       linear_combination (-(4 / 125) : ℂ) * Complex.I_sq
-    have hNb : (6 : ℂ) * a ^ 2 * (a - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w ^ 2 * (w - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w' ^ 2 * (w' - ((1 / 2 : ℝ) : ℂ)) ^ 2 = ((117 / 1250 : ℝ) : ℂ) := by
+    have hNb : (6 : ℂ) * a ^ (2 : ℕ) * (a - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w ^ (2 : ℕ) * (w - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w' ^ (2 : ℕ) * (w' - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) = ((117 / 1250 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
-      linear_combination ((32 / 625 : ℂ) * Complex.I ^ 2 - 54 / 625) * Complex.I_sq
-    have hNc : (6 : ℂ) * a ^ 3 * (a - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w ^ 3 * (w - ((1 / 2 : ℝ) : ℂ)) ^ 2 +
-        (1 : ℂ) * w' ^ 3 * (w' - ((1 / 2 : ℝ) : ℂ)) ^ 2 = ((527 / 12500 : ℝ) : ℂ) := by
+      linear_combination ((32 / 625 : ℂ) * Complex.I ^ (2 : ℕ) - 54 / 625) * Complex.I_sq
+    have hNc : (6 : ℂ) * a ^ (3 : ℕ) * (a - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w ^ (3 : ℕ) * (w - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) +
+        (1 : ℂ) * w' ^ (3 : ℕ) * (w' - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) = ((527 / 12500 : ℝ) : ℂ) := by
       rw [ha, hw, hw']
       push_cast
-      linear_combination ((16 / 625 : ℂ) * Complex.I ^ 2 - 1 / 25) * Complex.I_sq
+      linear_combination ((16 / 625 : ℂ) * Complex.I ^ (2 : ℕ) - 1 / 25) * Complex.I_sq
     simp only [Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one,
       hv2, hc2, Nat.cast_ofNat, Nat.cast_one]
     rw [hNa, hNb, hNc, ← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Complex.ofReal_sub,

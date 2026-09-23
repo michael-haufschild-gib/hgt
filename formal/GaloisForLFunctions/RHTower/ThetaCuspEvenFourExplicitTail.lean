@@ -14,14 +14,14 @@ noncomputable section
 /-- The complete correction loses at most two over thirty to the fourth in twelfth-entry units. -/
 theorem thetaCuspCenterCompensationSource_six_normalized_lower {x : ℝ}
     (hq : 30 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    -(2 : ℝ)/30^4 ≤ thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+    -(2 : ℝ)/30^(4 : ℕ) ≤ thetaCuspCenterCompensationSource x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   have h := thetaCuspCenterCompensationSource_normalized_lower hq
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
   have heq : thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) =
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) =
       (thetaCuspCenterCompensationSource x /
-        (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^5)) /
+        (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ))) /
           thetaCuspSingleAtomReflectionScale 1 x := by
     rw [div_div]
     congr 1
@@ -35,7 +35,7 @@ theorem thetaCuspNativeEvenFourCompensated_effective_normalized_lower {C x : ℝ
     (hC0 : 0 ≤ C) (hC1 : C ≤ 3000000000000)
     (hq : 30 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     90000000 < (thetaCuspNativeEvenFourSchur x+C*thetaCuspCenterCompensationSource x) /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by
   have hs := thetaCuspNativeEvenFourSchur_effective_normalized_lower hq
   have hg := thetaCuspCenterCompensationSource_six_normalized_lower hq
   have hm := mul_le_mul_of_nonneg_left hg hC0
@@ -50,10 +50,10 @@ theorem thetaCuspNativeEvenFourCompensated_posDef_of_thirty_le {C x : ℝ}
   have hx : 0 < x := regimeOne_pos_of_six_le (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6 := by positivity
+  have hd : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ) := by positivity
   have hm := thetaCuspNativeEvenFourCompensated_effective_normalized_lower hC0 hC1 hq
   have hp : 0 < (thetaCuspNativeEvenFourSchur x+C*thetaCuspCenterCompensationSource x) /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6) := by linarith
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)) := by linarith
   rw [thetaCuspNativeEvenFourCompensated_posDef_iff hx.le]
   exact (div_pos_iff_of_pos_right hd).mp hp
 

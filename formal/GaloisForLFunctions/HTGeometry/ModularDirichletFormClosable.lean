@@ -91,11 +91,11 @@ theorem InteriorTest.hasCompactSupport_fderiv (T : InteriorTest) (v : ℂ) :
   T.compact.of_isClosed_subset (isClosed_tsupport _) (T.tsupport_fderiv_subset v)
 
 theorem InteriorTest.weight_eq (T : InteriorTest) :
-    T.weight = fun z : ℍ => (z.im : ℂ) ^ 1 * T.φ z := by
+    T.weight = fun z : ℍ => (z.im : ℂ) ^ (1 : ℕ) * T.φ z := by
   funext z; simp [InteriorTest.weight]
 
 theorem InteriorTest.weightD_eq (T : InteriorTest) (v : ℂ) :
-    T.weightD v = fun z : ℍ => (z.im : ℂ) ^ 2 * fderiv ℝ T.φ z v := by
+    T.weightD v = fun z : ℍ => (z.im : ℂ) ^ (2 : ℕ) * fderiv ℝ T.φ z v := by
   funext z; simp [InteriorTest.weightD, pow_two, mul_assoc]
 
 /-- The conjugate weight `conj (y φ)`. -/
@@ -109,7 +109,7 @@ theorem InteriorTest.memLp_conjWeight (T : InteriorTest) :
     MemLp T.conjWeight 2 modularCellMeasure := by
   have h := memLp_im_pow_mul (Complex.continuous_conj.comp T.contDiff.continuous)
     (T.compact.comp_left (map_zero _)) 1
-  have heq : T.conjWeight = fun z : ℍ => (z.im : ℂ) ^ 1 * starRingEnd ℂ (T.φ z) := by
+  have heq : T.conjWeight = fun z : ℍ => (z.im : ℂ) ^ (1 : ℕ) * starRingEnd ℂ (T.φ z) := by
     funext z; simp [InteriorTest.conjWeight, InteriorTest.weight]
   rw [heq]; exact h
 
@@ -118,7 +118,7 @@ theorem InteriorTest.memLp_conjWeightD (T : InteriorTest) (v : ℂ) :
   have h := memLp_im_pow_mul (Complex.continuous_conj.comp (T.continuous_fderiv v))
     ((T.hasCompactSupport_fderiv v).comp_left (map_zero _)) 2
   have heq : T.conjWeightD v =
-      fun z : ℍ => (z.im : ℂ) ^ 2 * starRingEnd ℂ (fderiv ℝ T.φ z v) := by
+      fun z : ℍ => (z.im : ℂ) ^ (2 : ℕ) * starRingEnd ℂ (fderiv ℝ T.φ z v) := by
     funext z; simp [InteriorTest.conjWeightD, InteriorTest.weightD, pow_two, mul_assoc]
   rw [heq]; exact h
 

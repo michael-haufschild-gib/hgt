@@ -22,7 +22,7 @@ private theorem equal_from_zero_derivative (f g : ℝ → ℂ)
 /-- The odd part of the actual third lower primitive is a local cube. -/
 theorem rawThirdSlope_oddInitialPart_reflection_difference (q : SchwartzMap ℝ ℂ) (x : ℝ) :
     (rawThirdSlope (oddInitialPart q) 0 (1,0) x).2-
-      (rawThirdSlope (oddInitialPart q) 0 (1,0) (-x)).2 = I*(oddInitialPart q x)^3/3 := by
+      (rawThirdSlope (oddInitialPart q) 0 (1,0) (-x)).2 = I*(oddInitialPart q x)^(3 : ℕ)/3 := by
   have h3 (y : ℝ) : HasDerivAt (fun z => (rawThirdSlope (oddInitialPart q) 0 (1,0) z).2)
       (rawThirdIntegrand (oddInitialPart q) 0 (1,0) y).2 y :=
     (ContinuousLinearMap.snd ℝ ℂ ℂ).hasFDerivAt.comp_hasDerivAt y
@@ -31,7 +31,7 @@ theorem rawThirdSlope_oddInitialPart_reflection_difference (q : SchwartzMap ℝ 
   apply equal_from_zero_derivative
     (fun y => (rawThirdSlope (oddInitialPart q) 0 (1,0) y).2-
       (rawThirdSlope (oddInitialPart q) 0 (1,0) (-y)).2)
-    (fun y => I*(oddInitialPart q y)^3/3) ?_ ?_ x
+    (fun y => I*(oddInitialPart q y)^(3 : ℕ)/3) ?_ ?_ x
   · intro y
     have hg := ((((oddInitialPart q).hasDerivAt y).pow 3).const_mul I).div_const 3
     have hh := ((h3 y).sub ((h3 (-y)).scomp y (hasDerivAt_id y).neg)).sub hg
@@ -58,7 +58,7 @@ theorem rawFourthIntegrand_oddInitialPart_zero_first (q : SchwartzMap ℝ ℂ) (
 /-- The even part of the genuine fourth primitive is a local fourth power. -/
 theorem rawFourthSlope_oddInitialPart_reflection_sum (q : SchwartzMap ℝ ℂ) (x : ℝ) :
     (rawFourthSlope (oddInitialPart q) 0 (1,0) x).1+
-      (rawFourthSlope (oddInitialPart q) 0 (1,0) (-x)).1 = (oddInitialPart q x)^4/12 := by
+      (rawFourthSlope (oddInitialPart q) 0 (1,0) (-x)).1 = (oddInitialPart q x)^(4 : ℕ)/12 := by
   have h4 (y : ℝ) : HasDerivAt (fun z => (rawFourthSlope (oddInitialPart q) 0 (1,0) z).1)
       (rawFourthIntegrand (oddInitialPart q) 0 (1,0) y).1 y :=
     (ContinuousLinearMap.fst ℝ ℂ ℂ).hasFDerivAt.comp_hasDerivAt y
@@ -66,12 +66,12 @@ theorem rawFourthSlope_oddInitialPart_reflection_sum (q : SchwartzMap ℝ ℂ) (
   apply equal_from_zero_derivative
     (fun y => (rawFourthSlope (oddInitialPart q) 0 (1,0) y).1+
       (rawFourthSlope (oddInitialPart q) 0 (1,0) (-y)).1)
-    (fun y => (oddInitialPart q y)^4/12) ?_ ?_ x
+    (fun y => (oddInitialPart q y)^(4 : ℕ)/12) ?_ ?_ x
   · intro y
     have he := congrArg (fun z : ℂ => -I*deriv (oddInitialPart q) y*z)
       (rawThirdSlope_oddInitialPart_reflection_difference q y)
-    have hi : -I*deriv (oddInitialPart q) y*(I*(oddInitialPart q y)^3/3) =
-        (oddInitialPart q y)^3*deriv (oddInitialPart q) y/3 := by
+    have hi : -I*deriv (oddInitialPart q) y*(I*(oddInitialPart q y)^(3 : ℕ)/3) =
+        (oddInitialPart q y)^(3 : ℕ)*deriv (oddInitialPart q) y/3 := by
       ring_nf
       simp only [I_sq]
       ring
@@ -88,8 +88,8 @@ theorem rawFourthSlope_oddInitialPart_reflection_sum (q : SchwartzMap ℝ ℂ) (
 theorem rawFifthIntegrand_oddInitialPart_symmetrization (q : SchwartzMap ℝ ℂ) (x : ℝ) :
     (rawFifthIntegrand (oddInitialPart q) 0 (1,0) x).2+
       (rawFifthIntegrand (oddInitialPart q) 0 (1,0) (-x)).2 =
-      I*(oddInitialPart q x)^4*deriv (oddInitialPart q) x/12-
-        4*I*(x : ℂ)^2*deriv (oddInitialPart q) x := by
+      I*(oddInitialPart q x)^(4 : ℕ)*deriv (oddInitialPart q) x/12-
+        4*I*(x : ℂ)^(2 : ℕ)*deriv (oddInitialPart q) x := by
   have he := congrArg (fun z : ℂ => I*deriv (oddInitialPart q) x*z)
     (rawFourthSlope_oddInitialPart_reflection_sum q x)
   simp only [rawFifthIntegrand,rawDividedOperator_apply,rawCubicOperator_zero_apply,
@@ -104,11 +104,11 @@ theorem rawFifthIntegrand_oddInitialPart_symmetrization (q : SchwartzMap ℝ ℂ
     exact mul_one c
   simp only [hs]
   change I*deriv (oddInitialPart q) x*(rawFourthSlope (oddInitialPart q) 0 (1,0) x).1+
-    -2*(x : ℂ)*deriv (oddInitialPart q) x*((oddInitialPart q x)^2/2)+
-    -2*I*(x : ℂ)^2*deriv (oddInitialPart q) x+
+    -2*(x : ℂ)*deriv (oddInitialPart q) x*((oddInitialPart q x)^(2 : ℕ)/2)+
+    -2*I*(x : ℂ)^(2 : ℕ)*deriv (oddInitialPart q) x+
     (I*deriv (oddInitialPart q) x*(rawFourthSlope (oddInitialPart q) 0 (1,0) (-x)).1+
-    -2*(-(x : ℂ))*deriv (oddInitialPart q) x*((-oddInitialPart q x)^2/2)+
-    -2*I*(-(x : ℂ))^2*deriv (oddInitialPart q) x) = _
+    -2*(-(x : ℂ))*deriv (oddInitialPart q) x*((-oddInitialPart q x)^(2 : ℕ)/2)+
+    -2*I*(-(x : ℂ))^(2 : ℕ)*deriv (oddInitialPart q) x) = _
   linear_combination he
 
 end

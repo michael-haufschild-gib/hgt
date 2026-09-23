@@ -25,9 +25,9 @@ namespace RHTower
 
 /-- Derivative of the Sturm–Liouville flux `(1−y²)·f'`. -/
 theorem hasDerivAt_bandFlux {f : ℝ → ℝ} {t : ℝ} (hf2 : DifferentiableAt ℝ (deriv f) t) :
-    HasDerivAt (fun y => (1 - y ^ 2) * deriv f y)
-      (-(2 * t) * deriv f t + (1 - t ^ 2) * deriv (deriv f) t) t := by
-  have hpoly : HasDerivAt (fun y : ℝ => 1 - y ^ 2) (-(2 * t)) t := by
+    HasDerivAt (fun y => (1 - y ^ (2 : ℕ)) * deriv f y)
+      (-(2 * t) * deriv f t + (1 - t ^ (2 : ℕ)) * deriv (deriv f) t) t := by
+  have hpoly : HasDerivAt (fun y : ℝ => 1 - y ^ (2 : ℕ)) (-(2 * t)) t := by
     have h0 := (hasDerivAt_pow 2 t).const_sub 1
     simpa using h0
   exact hpoly.mul hf2.hasDerivAt
@@ -37,16 +37,16 @@ differentiable weight loses its boundary terms, since the flux `(1−y²)·f'` v
 theorem band_flux_integral_by_parts {f g : ℝ → ℝ}
     (hf2 : Differentiable ℝ (deriv f)) (hf2c : Continuous (deriv (deriv f)))
     (hg1 : Differentiable ℝ g) (hg'c : Continuous (deriv g)) :
-    ∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y)
-      = -∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y) := by
+    ∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y)
+      = -∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ (2 : ℕ)) * deriv f y) := by
   have hu : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt g (deriv g y) y :=
     fun y _ => (hg1 y).hasDerivAt
-  have hv : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt (fun t => (1 - t ^ 2) * deriv f t)
-      (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y) y :=
+  have hv : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt (fun t => (1 - t ^ (2 : ℕ)) * deriv f t)
+      (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y) y :=
     fun y _ => hasDerivAt_bandFlux (hf2 y)
   have hu' : IntervalIntegrable (deriv g) volume (-1) 1 := hg'c.intervalIntegrable _ _
   have hv' : IntervalIntegrable
-      (fun y => -(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y) volume (-1) 1 := by
+      (fun y => -(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y) volume (-1) 1 := by
     have hf'c : Continuous (deriv f) := hf2.continuous
     apply Continuous.intervalIntegrable
     fun_prop
@@ -69,40 +69,40 @@ theorem prolateSLAction_band_symmetric {f g : ℝ → ℝ}
   have hf'c : Continuous (deriv f) := hf2.continuous
   have hg'c : Continuous (deriv g) := hg2.continuous
   have hAf : IntervalIntegrable
-      (fun y => g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y))
+      (fun y => g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y))
       volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
-  have hBf : IntervalIntegrable (fun y => g y * (c ^ 2 * y ^ 2 * f y)) volume (-1) 1 := by
+  have hBf : IntervalIntegrable (fun y => g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hAg : IntervalIntegrable
-      (fun y => f y * (-(2 * y) * deriv g y + (1 - y ^ 2) * deriv (deriv g) y))
+      (fun y => f y * (-(2 * y) * deriv g y + (1 - y ^ (2 : ℕ)) * deriv (deriv g) y))
       volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
-  have hBg : IntervalIntegrable (fun y => f y * (c ^ 2 * y ^ 2 * g y)) volume (-1) 1 := by
+  have hBg : IntervalIntegrable (fun y => f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hsplitf : ∫ y in (-1 : ℝ)..1, g y * prolateSLAction c f y
-      = (∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y))
-        - ∫ y in (-1 : ℝ)..1, g y * (c ^ 2 * y ^ 2 * f y) := by
+      = (∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y))
+        - ∫ y in (-1 : ℝ)..1, g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y) := by
     rw [← intervalIntegral.integral_sub hAf hBf]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [prolateSLAction]; ring
   have hsplitg : ∫ y in (-1 : ℝ)..1, f y * prolateSLAction c g y
-      = (∫ y in (-1 : ℝ)..1, f y * (-(2 * y) * deriv g y + (1 - y ^ 2) * deriv (deriv g) y))
-        - ∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * g y) := by
+      = (∫ y in (-1 : ℝ)..1, f y * (-(2 * y) * deriv g y + (1 - y ^ (2 : ℕ)) * deriv (deriv g) y))
+        - ∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y) := by
     rw [← intervalIntegral.integral_sub hAg hBg]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [prolateSLAction]; ring
   have hibpf := band_flux_integral_by_parts hf2 hf2c hg1 hg'c
   have hibpg := band_flux_integral_by_parts hg2 hg2c hf1 hf'c
-  have hcross : ∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y)
-      = ∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ 2) * deriv g y) :=
+  have hcross : ∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ (2 : ℕ)) * deriv f y)
+      = ∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ (2 : ℕ)) * deriv g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
-  have hmul : ∫ y in (-1 : ℝ)..1, g y * (c ^ 2 * y ^ 2 * f y)
-      = ∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * g y) :=
+  have hmul : ∫ y in (-1 : ℝ)..1, g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y)
+      = ∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
   rw [hsplitf, hibpf, hcross, hmul, ← hibpg, ← hsplitg]
 
@@ -115,12 +115,12 @@ theorem band_flux_integral_by_parts_on {f g : ℝ → ℝ} {U : Set ℝ}
     (hf2c : ContinuousOn (deriv (deriv f)) U)
     (hg1 : ∀ y ∈ U, DifferentiableAt ℝ g y)
     (hg2 : ∀ y ∈ U, DifferentiableAt ℝ (deriv g) y) :
-    ∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y)
-      = -∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y) := by
+    ∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y)
+      = -∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ (2 : ℕ)) * deriv f y) := by
   have hu : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt g (deriv g y) y :=
     fun y hy => (hg1 y (hUI hy)).hasDerivAt
-  have hv : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt (fun t => (1 - t ^ 2) * deriv f t)
-      (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y) y :=
+  have hv : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt (fun t => (1 - t ^ (2 : ℕ)) * deriv f t)
+      (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y) y :=
     fun y hy => hasDerivAt_bandFlux (hf2 y (hUI hy))
   have hg'on : ContinuousOn (deriv g) (Set.uIcc (-1 : ℝ) 1) :=
     fun y hy => ((hg2 y (hUI hy)).continuousAt).continuousWithinAt
@@ -128,7 +128,7 @@ theorem band_flux_integral_by_parts_on {f g : ℝ → ℝ} {U : Set ℝ}
     fun y hy => ((hf2 y (hUI hy)).continuousAt).continuousWithinAt
   have hu' : IntervalIntegrable (deriv g) volume (-1) 1 := hg'on.intervalIntegrable
   have hv' : IntervalIntegrable
-      (fun y => -(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y) volume (-1) 1 := by
+      (fun y => -(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y) volume (-1) 1 := by
     apply ContinuousOn.intervalIntegrable
     exact (((continuous_const.mul continuous_id).neg.continuousOn).mul hf'on).add
       (((continuous_const.sub (continuous_pow 2)).continuousOn).mul (hf2c.mono hUI))
@@ -157,42 +157,42 @@ theorem prolateSLAction_band_symmetric_on {f g : ℝ → ℝ} {U : Set ℝ}
   have hg'on : ContinuousOn (deriv g) (Set.uIcc (-1 : ℝ) 1) :=
     fun y hy => ((hg2 y (hUI hy)).continuousAt).continuousWithinAt
   have hAf : IntervalIntegrable
-      (fun y => g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y))
+      (fun y => g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y))
       volume (-1) 1 := by
     apply ContinuousOn.intervalIntegrable
     exact hgon.mul ((((continuous_const.mul continuous_id).neg.continuousOn).mul hf'on).add
       (((continuous_const.sub (continuous_pow 2)).continuousOn).mul (hf2c.mono hUI)))
-  have hBf : IntervalIntegrable (fun y => g y * (c ^ 2 * y ^ 2 * f y)) volume (-1) 1 := by
+  have hBf : IntervalIntegrable (fun y => g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y)) volume (-1) 1 := by
     apply ContinuousOn.intervalIntegrable
     exact hgon.mul (((continuous_const.mul (continuous_pow 2)).continuousOn).mul hfon)
   have hAg : IntervalIntegrable
-      (fun y => f y * (-(2 * y) * deriv g y + (1 - y ^ 2) * deriv (deriv g) y))
+      (fun y => f y * (-(2 * y) * deriv g y + (1 - y ^ (2 : ℕ)) * deriv (deriv g) y))
       volume (-1) 1 := by
     apply ContinuousOn.intervalIntegrable
     exact hfon.mul ((((continuous_const.mul continuous_id).neg.continuousOn).mul hg'on).add
       (((continuous_const.sub (continuous_pow 2)).continuousOn).mul (hg2c.mono hUI)))
-  have hBg : IntervalIntegrable (fun y => f y * (c ^ 2 * y ^ 2 * g y)) volume (-1) 1 := by
+  have hBg : IntervalIntegrable (fun y => f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y)) volume (-1) 1 := by
     apply ContinuousOn.intervalIntegrable
     exact hfon.mul (((continuous_const.mul (continuous_pow 2)).continuousOn).mul hgon)
   have hsplitf : ∫ y in (-1 : ℝ)..1, g y * prolateSLAction c f y
-      = (∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y))
-        - ∫ y in (-1 : ℝ)..1, g y * (c ^ 2 * y ^ 2 * f y) := by
+      = (∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y))
+        - ∫ y in (-1 : ℝ)..1, g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y) := by
     rw [← intervalIntegral.integral_sub hAf hBf]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [prolateSLAction]; ring
   have hsplitg : ∫ y in (-1 : ℝ)..1, f y * prolateSLAction c g y
-      = (∫ y in (-1 : ℝ)..1, f y * (-(2 * y) * deriv g y + (1 - y ^ 2) * deriv (deriv g) y))
-        - ∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * g y) := by
+      = (∫ y in (-1 : ℝ)..1, f y * (-(2 * y) * deriv g y + (1 - y ^ (2 : ℕ)) * deriv (deriv g) y))
+        - ∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y) := by
     rw [← intervalIntegral.integral_sub hAg hBg]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [prolateSLAction]; ring
   have hibpf := band_flux_integral_by_parts_on hUI hf2 hf2c hg1 hg2
   have hibpg := band_flux_integral_by_parts_on hUI hg2 hg2c hf1 hf2
-  have hcross : ∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y)
-      = ∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ 2) * deriv g y) :=
+  have hcross : ∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ (2 : ℕ)) * deriv f y)
+      = ∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ (2 : ℕ)) * deriv g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
-  have hmul : ∫ y in (-1 : ℝ)..1, g y * (c ^ 2 * y ^ 2 * f y)
-      = ∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * g y) :=
+  have hmul : ∫ y in (-1 : ℝ)..1, g y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y)
+      = ∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * g y) :=
     intervalIntegral.integral_congr fun y _ => by ring
   rw [hsplitf, hibpf, hcross, hmul, ← hibpg, ← hsplitg]
 

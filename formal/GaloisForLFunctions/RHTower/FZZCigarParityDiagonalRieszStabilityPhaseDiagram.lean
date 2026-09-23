@@ -29,15 +29,15 @@ noncomputable section
 /-- Center of the dimensionless diagonal-coupling instability window. -/
 def fzzCigarParityDilatedDiagonalStabilityCenter (beta : ℝ) : ℝ :=
   2 * fzzCigarParityDilatedTwoScaleKreinDiscriminant beta /
-    fzzKreinPAt beta ^ 2
+    fzzKreinPAt beta ^ (2 : ℕ)
 
 /-- Radius of the dimensionless diagonal-coupling instability window. -/
 def fzzCigarParityDilatedDiagonalStabilityRadius (beta : ℝ) : ℝ :=
   2 * Real.sqrt
       (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta *
         (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta +
-          fzzKreinPAt beta ^ 2)) /
-    fzzKreinPAt beta ^ 2
+          fzzKreinPAt beta ^ (2 : ℕ))) /
+    fzzKreinPAt beta ^ (2 : ℕ)
 
 theorem fzzCigarParityDilatedDiagonalStabilityRadius_pos
     {beta : ℝ} (hbeta : 0 < beta) :
@@ -51,10 +51,10 @@ theorem fzzCigarParityDilatedDiagonalStabilityRadius_pos
 theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_eq_squareWindow
     {beta : ℝ} (hbeta : 0 < beta) (gamma : ℝ) :
     fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta gamma =
-      fzzKreinPAt beta ^ 2 *
+      fzzKreinPAt beta ^ (2 : ℕ) *
         ((gamma / fzzCigarParityDilatedTwoScaleKreinGap beta -
-            fzzCigarParityDilatedDiagonalStabilityCenter beta) ^ 2 -
-          fzzCigarParityDilatedDiagonalStabilityRadius beta ^ 2) := by
+            fzzCigarParityDilatedDiagonalStabilityCenter beta) ^ (2 : ℕ) -
+          fzzCigarParityDilatedDiagonalStabilityRadius beta ^ (2 : ℕ)) := by
   have hP := fzzKreinPAt_pos hbeta
   have hE := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
   have hD := fzzCigarParityDilatedTwoScaleKreinDiscriminant_pos hbeta
@@ -62,10 +62,10 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_e
       Real.sqrt
           (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta *
             (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta +
-              fzzKreinPAt beta ^ 2)) ^ 2 =
+              fzzKreinPAt beta ^ (2 : ℕ))) ^ (2 : ℕ) =
         fzzCigarParityDilatedTwoScaleKreinDiscriminant beta *
           (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta +
-            fzzKreinPAt beta ^ 2) := by
+            fzzKreinPAt beta ^ (2 : ℕ)) := by
     rw [Real.sq_sqrt]
     positivity
   rw [fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_eq,
@@ -83,7 +83,7 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_n
         fzzCigarParityDilatedDiagonalStabilityRadius beta := by
   rw [fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_eq_squareWindow
     hbeta]
-  have hP2 : 0 < fzzKreinPAt beta ^ 2 := sq_pos_of_pos (fzzKreinPAt_pos hbeta)
+  have hP2 : 0 < fzzKreinPAt beta ^ (2 : ℕ) := sq_pos_of_pos (fzzKreinPAt_pos hbeta)
   have hr := fzzCigarParityDilatedDiagonalStabilityRadius_pos hbeta
   let x := gamma / fzzCigarParityDilatedTwoScaleKreinGap beta -
     fzzCigarParityDilatedDiagonalStabilityCenter beta
@@ -91,16 +91,16 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_n
   have hr' : 0 < r := by simpa [r] using hr
   constructor
   · intro h
-    have hs : x ^ 2 < r ^ 2 := by
-      change fzzKreinPAt beta ^ 2 * (x ^ 2 - r ^ 2) < 0 at h
+    have hs : x ^ (2 : ℕ) < r ^ (2 : ℕ) := by
+      change fzzKreinPAt beta ^ (2 : ℕ) * (x ^ (2 : ℕ) - r ^ (2 : ℕ)) < 0 at h
       nlinarith
     change |x| < r
     simpa [abs_of_pos hr'] using (sq_lt_sq.mp hs)
   · intro h
-    have hs : x ^ 2 < r ^ 2 := by
+    have hs : x ^ (2 : ℕ) < r ^ (2 : ℕ) := by
       change |x| < r at h
       exact sq_lt_sq.mpr (by simpa [abs_of_pos hr'] using h)
-    change fzzKreinPAt beta ^ 2 * (x ^ 2 - r ^ 2) < 0
+    change fzzKreinPAt beta ^ (2 : ℕ) * (x ^ (2 : ℕ) - r ^ (2 : ℕ)) < 0
     nlinarith
 
 /-- Nonnegative discriminant is the complement of the open instability window. -/
@@ -116,8 +116,8 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_n
 
 private theorem complexQuadraticRoot_eq_star_of_discriminant_nonneg
     {T D : ℝ} {lambda : ℂ}
-    (hdisc : 0 ≤ T ^ 2 - 4 * D)
-    (hroot : lambda ^ 2 - (T : ℂ) * lambda + (D : ℂ) = 0) :
+    (hdisc : 0 ≤ T ^ (2 : ℕ) - 4 * D)
+    (hroot : lambda ^ (2 : ℕ) - (T : ℂ) * lambda + (D : ℂ) = 0) :
     lambda = star lambda := by
   have hre := congrArg Complex.re hroot
   have him := congrArg Complex.im hroot
@@ -131,7 +131,7 @@ private theorem complexQuadraticRoot_eq_star_of_discriminant_nonneg
         nlinarith
       have := (mul_eq_zero.mp hfactor).resolve_right hli
       linarith
-    have hdiscEq : T ^ 2 - 4 * D = -4 * lambda.im ^ 2 := by
+    have hdiscEq : T ^ (2 : ℕ) - 4 * D = -4 * lambda.im ^ (2 : ℕ) := by
       nlinarith
     nlinarith [sq_pos_of_ne_zero hli]
 
@@ -141,7 +141,7 @@ private theorem twoByTwoRealEigenvalue_quadratic
     (heigen :
       ((a : ℂ) * v.1 + (b : ℂ) * v.2,
           (c : ℂ) * v.1 + (d : ℂ) * v.2) = lambda • v) :
-    lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda + ((a * d - b * c : ℝ) : ℂ) = 0 := by
+    lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda + ((a * d - b * c : ℝ) : ℂ) = 0 := by
   rcases v with ⟨x, y⟩
   have hfirst := congrArg Prod.fst heigen
   have hsecond := congrArg Prod.snd heigen
@@ -151,10 +151,10 @@ private theorem twoByTwoRealEigenvalue_quadratic
   have hsecondZero : (c : ℂ) * x + (d : ℂ) * y - lambda * y = 0 :=
     sub_eq_zero.mpr hsecond
   have hxprod :
-      (lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda +
+      (lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda +
           ((a * d - b * c : ℝ) : ℂ)) * x = 0 := by
     calc
-      (lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda +
+      (lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda +
             ((a * d - b * c : ℝ) : ℂ)) * x =
           -((lambda - (d : ℂ)) *
               ((a : ℂ) * x + (b : ℂ) * y - lambda * x) +
@@ -163,10 +163,10 @@ private theorem twoByTwoRealEigenvalue_quadratic
               ring
       _ = 0 := by rw [hfirstZero, hsecondZero]; ring
   have hyprod :
-      (lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda +
+      (lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda +
           ((a * d - b * c : ℝ) : ℂ)) * y = 0 := by
     calc
-      (lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda +
+      (lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda +
             ((a * d - b * c : ℝ) : ℂ)) * y =
           -((c : ℂ) *
               ((a : ℂ) * x + (b : ℂ) * y - lambda * x) +
@@ -186,7 +186,7 @@ private theorem twoByTwoRealEigenvalue_quadratic
 private theorem twoByTwoReal_eigenpair_of_quadratic_root
     {a b c d : ℝ} {lambda : ℂ}
     (hroot :
-      lambda ^ 2 - ((a + d : ℝ) : ℂ) * lambda +
+      lambda ^ (2 : ℕ) - ((a + d : ℝ) : ℂ) * lambda +
         ((a * d - b * c : ℝ) : ℂ) = 0) :
     ((a : ℂ) * (b : ℂ) + (b : ℂ) * (lambda - (a : ℂ)),
         (c : ℂ) * (b : ℂ) + (d : ℂ) * (lambda - (a : ℂ))) =
@@ -205,7 +205,7 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbed_eigenvalue_characteristic
     (heigen :
       fzzCigarParityDilatedSecondDiagonalPerturbedKreinOperator beta gamma v =
         lambda • v) :
-    lambda ^ 2 -
+    lambda ^ (2 : ℕ) -
         (fzzCigarParityDilatedSecondDiagonalPerturbedTrace beta gamma : ℂ) * lambda +
         (fzzCigarParityDilatedSecondDiagonalPerturbedDeterminant beta gamma : ℂ) = 0 := by
   let a : ℝ := fzzKreinPAt beta
@@ -275,7 +275,7 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue_root
     {beta gamma : ℝ}
     (hdisc :
       fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta gamma < 0) :
-    fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma ^ 2 -
+    fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma ^ (2 : ℕ) -
         (fzzCigarParityDilatedSecondDiagonalPerturbedTrace beta gamma : ℂ) *
           fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma +
         (fzzCigarParityDilatedSecondDiagonalPerturbedDeterminant beta gamma : ℂ) = 0 := by
@@ -284,12 +284,12 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue_root
   let disc :=
     fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta gamma
   let y := Real.sqrt (-disc) / 2
-  have hdiscEq : disc = T ^ 2 - 4 * D := by
+  have hdiscEq : disc = T ^ (2 : ℕ) - 4 * D := by
     rfl
   have hnonneg : 0 ≤ -disc := by
     dsimp [disc]
     linarith
-  have hy2 : y ^ 2 = -disc / 4 := by
+  have hy2 : y ^ (2 : ℕ) = -disc / 4 := by
     dsimp [y]
     rw [div_pow, Real.sq_sqrt hnonneg]
     norm_num
@@ -400,7 +400,7 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenpair
   have hroot :=
     fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue_root hdisc
   have hroot' :
-      fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma ^ 2 -
+      fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma ^ (2 : ℕ) -
           ((a + d : ℝ) : ℂ) *
             fzzCigarParityDilatedSecondDiagonalPerturbedInstabilityEigenvalue beta gamma +
           ((a * d - b * c : ℝ) : ℂ) = 0 := by

@@ -69,18 +69,18 @@ structure FZZCigarParityPositiveNonlocalFEReflectionData where
       (u : ℝ) * fzzCigarPositiveDelayDensity u) (kernel t)
   grade_two_integrable : ∀ t, Integrable
     (fun u : FZZCigarPositiveDelay =>
-      (u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u) (kernel t)
+      (u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) (kernel t)
   grade_zero : ∀ t,
     ∫ u : FZZCigarPositiveDelay, fzzCigarPositiveDelayDensity u ∂kernel t =
       (t : ℝ)⁻¹ * fzzCigarPositiveDelayDensity t
   grade_one : ∀ t,
     ∫ u : FZZCigarPositiveDelay,
       (u : ℝ) * fzzCigarPositiveDelayDensity u ∂kernel t =
-      (t : ℝ)⁻¹ ^ 2 * fzzCigarPositiveDelayDensity t
+      (t : ℝ)⁻¹ ^ (2 : ℕ) * fzzCigarPositiveDelayDensity t
   grade_two : ∀ t,
     ∫ u : FZZCigarPositiveDelay,
-      (u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u ∂kernel t =
-      (t : ℝ)⁻¹ ^ 3 * fzzCigarPositiveDelayDensity t
+      (u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂kernel t =
+      (t : ℝ)⁻¹ ^ (3 : ℕ) * fzzCigarPositiveDelayDensity t
 
 private theorem fzzCigarPositiveDelayDensity_pos (t : FZZCigarPositiveDelay) :
     0 < fzzCigarPositiveDelayDensity t := by
@@ -97,86 +97,86 @@ theorem FZZCigarParityPositiveNonlocalFEReflectionData.kernel_ae_reciprocal
   let a : ℝ := (t : ℝ)⁻¹
   have hlinear : Integrable
       (fun u : FZZCigarPositiveDelay =>
-        ((u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u -
+        ((u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u -
           (2 * a) * ((u : ℝ) * fzzCigarPositiveDelayDensity u)) +
-          a ^ 2 * fzzCigarPositiveDelayDensity u)
+          a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u)
       (D.kernel t) :=
     ((D.grade_two_integrable t).sub
       ((D.grade_one_integrable t).const_mul (2 * a))).add
-        ((D.grade_zero_integrable t).const_mul (a ^ 2))
+        ((D.grade_zero_integrable t).const_mul (a ^ (2 : ℕ)))
   have hvarInt : Integrable
       (fun u : FZZCigarPositiveDelay =>
-        ((u : ℝ) - a) ^ 2 * fzzCigarPositiveDelayDensity u)
+        ((u : ℝ) - a) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u)
       (D.kernel t) := by
     refine hlinear.congr ?_
     filter_upwards with u
     ring
   have hnonneg : 0 ≤ᵐ[D.kernel t]
       (fun u : FZZCigarPositiveDelay =>
-        ((u : ℝ) - a) ^ 2 * fzzCigarPositiveDelayDensity u) :=
+        ((u : ℝ) - a) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) :=
     Eventually.of_forall fun u =>
       mul_nonneg (sq_nonneg _) (fzzCigarPositiveDelayDensity_pos u).le
   have hvarZero :
       (∫ u : FZZCigarPositiveDelay,
-        ((u : ℝ) - a) ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t) = 0 := by
+        ((u : ℝ) - a) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) = 0 := by
     calc
       _ = ∫ u : FZZCigarPositiveDelay,
-          (((u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u -
+          (((u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u -
             (2 * a) * ((u : ℝ) * fzzCigarPositiveDelayDensity u)) +
-            a ^ 2 * fzzCigarPositiveDelayDensity u) ∂D.kernel t := by
+            a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) ∂D.kernel t := by
         apply integral_congr_ae
         filter_upwards with u
         ring
       _ =
           (∫ u : FZZCigarPositiveDelay,
-              (u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t) -
+              (u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) -
             (2 * a) *
               (∫ u : FZZCigarPositiveDelay,
                 (u : ℝ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) +
-            a ^ 2 *
+            a ^ (2 : ℕ) *
               (∫ u : FZZCigarPositiveDelay,
                 fzzCigarPositiveDelayDensity u ∂D.kernel t) := by
         have hshape :
             (fun u : FZZCigarPositiveDelay =>
-              ((u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u -
+              ((u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u -
                 (2 * a) * ((u : ℝ) * fzzCigarPositiveDelayDensity u)) +
-                a ^ 2 * fzzCigarPositiveDelayDensity u) =
+                a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) =
               ((fun u : FZZCigarPositiveDelay =>
-                  (u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u) -
+                  (u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) -
                 (fun u : FZZCigarPositiveDelay =>
                   (2 * a) * ((u : ℝ) * fzzCigarPositiveDelayDensity u))) +
                 (fun u : FZZCigarPositiveDelay =>
-                  a ^ 2 * fzzCigarPositiveDelayDensity u) := by
+                  a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) := by
           rfl
         rw [hshape]
         calc
           _ =
               (∫ u : FZZCigarPositiveDelay,
                 ((fun v : FZZCigarPositiveDelay =>
-                    (v : ℝ) ^ 2 * fzzCigarPositiveDelayDensity v) -
+                    (v : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity v) -
                   (fun v : FZZCigarPositiveDelay =>
                     (2 * a) * ((v : ℝ) * fzzCigarPositiveDelayDensity v))) u
                   ∂D.kernel t) +
                 (∫ u : FZZCigarPositiveDelay,
-                  a ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t) :=
+                  a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) :=
             integral_add
               ((D.grade_two_integrable t).sub
                 ((D.grade_one_integrable t).const_mul (2 * a)))
-              ((D.grade_zero_integrable t).const_mul (a ^ 2))
+              ((D.grade_zero_integrable t).const_mul (a ^ (2 : ℕ)))
           _ =
               ((∫ u : FZZCigarPositiveDelay,
-                  (u : ℝ) ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t) -
+                  (u : ℝ) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) -
                 (∫ u : FZZCigarPositiveDelay,
                   (2 * a) * ((u : ℝ) * fzzCigarPositiveDelayDensity u)
                     ∂D.kernel t)) +
                 (∫ u : FZZCigarPositiveDelay,
-                  a ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t) := by
+                  a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t) := by
             have hsub := integral_sub (D.grade_two_integrable t)
               ((D.grade_one_integrable t).const_mul (2 * a))
             exact congrArg
               (fun x : ℝ => x +
                 ∫ u : FZZCigarPositiveDelay,
-                  a ^ 2 * fzzCigarPositiveDelayDensity u ∂D.kernel t)
+                  a ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u ∂D.kernel t)
               hsub
           _ = _ := by rw [integral_const_mul, integral_const_mul]
       _ = 0 := by
@@ -185,11 +185,11 @@ theorem FZZCigarParityPositiveNonlocalFEReflectionData.kernel_ae_reciprocal
         ring
   have haeZero :
       (fun u : FZZCigarPositiveDelay =>
-        ((u : ℝ) - a) ^ 2 * fzzCigarPositiveDelayDensity u) =ᵐ[D.kernel t] 0 :=
+        ((u : ℝ) - a) ^ (2 : ℕ) * fzzCigarPositiveDelayDensity u) =ᵐ[D.kernel t] 0 :=
     (integral_eq_zero_iff_of_nonneg_ae hnonneg hvarInt).mp hvarZero
   filter_upwards [haeZero] with u hu
   have hdensity := fzzCigarPositiveDelayDensity_pos u
-  have hsquare : ((u : ℝ) - a) ^ 2 = 0 := by
+  have hsquare : ((u : ℝ) - a) ^ (2 : ℕ) = 0 := by
     rcases mul_eq_zero.mp hu with h | h
     · exact h
     · exact False.elim (hdensity.ne' h)

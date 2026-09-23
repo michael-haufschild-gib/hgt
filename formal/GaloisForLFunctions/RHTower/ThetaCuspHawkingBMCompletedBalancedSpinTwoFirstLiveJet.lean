@@ -13,7 +13,7 @@ At this leg the two shifted completed factors become `XiC(z-3I)` and
 `XiC(-z-3I)`, both in the unconditional zero-free half-plane.  The remaining
 Bochner coefficient factors as
 
-`(4 z^2 + 1)(4 z^2 + 25)/32`.
+`(4 z^(2 : ℕ) + 1)(4 z^(2 : ℕ) + 25)/32`.
 
 Its four possible roots lie outside the strict centered Xi strip.  Thus the
 angular source is unconditionally active on every Xi copy.  Full HB incidence
@@ -80,7 +80,7 @@ theorem thetaCuspHawkingBalancedSpinTwoBochnerCoefficient_actualRepeated_project
     (z : ℂ) :
     thetaCuspHawkingBalancedSpinTwoBochnerCoefficient
         d4BMActualRepeatedEisensteinCenteredParameter (Complex.I * z) =
-      ((4 * z ^ 2 + 1) * (4 * z ^ 2 + 25)) / 32 := by
+      ((4 * z ^ (2 : ℕ) + 1) * (4 * z ^ (2 : ℕ) + 25)) / 32 := by
   have hleft :
       thetaCuspHawkingEisensteinGeometricEigenvalue
           d4BMActualRepeatedEisensteinCenteredParameter = 2 := by
@@ -88,12 +88,12 @@ theorem thetaCuspHawkingBalancedSpinTwoBochnerCoefficient_actualRepeated_project
       d4BMActualRepeatedEisensteinCenteredParameter]
   have hright :
       thetaCuspHawkingEisensteinGeometricEigenvalue (Complex.I * z) =
-        -z ^ 2 - 1 / 4 := by
+        -z ^ (2 : ℕ) - 1 / 4 := by
     unfold thetaCuspHawkingEisensteinGeometricEigenvalue
-    rw [show (Complex.I * z) ^ 2 = -z ^ 2 by
+    rw [show (Complex.I * z) ^ (2 : ℕ) = -z ^ (2 : ℕ) by
       calc
-        (Complex.I * z) ^ 2 = (Complex.I * Complex.I) * z ^ 2 := by ring
-        _ = -z ^ 2 := by rw [Complex.I_mul_I]; ring]
+        (Complex.I * z) ^ (2 : ℕ) = (Complex.I * Complex.I) * z ^ (2 : ℕ) := by ring
+        _ = -z ^ (2 : ℕ) := by rw [Complex.I_mul_I]; ring]
   unfold thetaCuspHawkingBalancedSpinTwoBochnerCoefficient
   rw [hleft, hright]
   simp [d4BMHyperbolicBalancedSpinTwoBochnerCoefficient,
@@ -101,19 +101,19 @@ theorem thetaCuspHawkingBalancedSpinTwoBochnerCoefficient_actualRepeated_project
   ring
 
 theorem four_mul_xiSpectralPoint_sq_add_one_ne_zero (q : XiZeroCopy) :
-    4 * xiSpectralPoint q ^ 2 + 1 ≠ 0 := by
+    4 * xiSpectralPoint q ^ (2 : ℕ) + 1 ≠ 0 := by
   intro h
   have hfactor :
       (2 * xiSpectralPoint q - Complex.I) *
           (2 * xiSpectralPoint q + Complex.I) = 0 := by
     rw [show (2 * xiSpectralPoint q - Complex.I) *
         (2 * xiSpectralPoint q + Complex.I) =
-          4 * xiSpectralPoint q ^ 2 + 1 by
+          4 * xiSpectralPoint q ^ (2 : ℕ) + 1 by
       calc
         (2 * xiSpectralPoint q - Complex.I) *
             (2 * xiSpectralPoint q + Complex.I) =
-          4 * xiSpectralPoint q ^ 2 - Complex.I * Complex.I := by ring
-        _ = 4 * xiSpectralPoint q ^ 2 + 1 := by rw [Complex.I_mul_I]; ring]
+          4 * xiSpectralPoint q ^ (2 : ℕ) - Complex.I * Complex.I := by ring
+        _ = 4 * xiSpectralPoint q ^ (2 : ℕ) + 1 := by rw [Complex.I_mul_I]; ring]
     exact h
   rcases mul_eq_zero.mp hfactor with hminus | hplus
   · have him := congrArg Complex.im hminus
@@ -126,19 +126,19 @@ theorem four_mul_xiSpectralPoint_sq_add_one_ne_zero (q : XiZeroCopy) :
     linarith
 
 theorem four_mul_xiSpectralPoint_sq_add_twentyFive_ne_zero (q : XiZeroCopy) :
-    4 * xiSpectralPoint q ^ 2 + 25 ≠ 0 := by
+    4 * xiSpectralPoint q ^ (2 : ℕ) + 25 ≠ 0 := by
   intro h
   have hfactor :
       (2 * xiSpectralPoint q - 5 * Complex.I) *
           (2 * xiSpectralPoint q + 5 * Complex.I) = 0 := by
     rw [show (2 * xiSpectralPoint q - 5 * Complex.I) *
         (2 * xiSpectralPoint q + 5 * Complex.I) =
-          4 * xiSpectralPoint q ^ 2 + 25 by
+          4 * xiSpectralPoint q ^ (2 : ℕ) + 25 by
       calc
         (2 * xiSpectralPoint q - 5 * Complex.I) *
             (2 * xiSpectralPoint q + 5 * Complex.I) =
-          4 * xiSpectralPoint q ^ 2 - 25 * (Complex.I * Complex.I) := by ring
-        _ = 4 * xiSpectralPoint q ^ 2 + 25 := by rw [Complex.I_mul_I]; ring]
+          4 * xiSpectralPoint q ^ (2 : ℕ) - 25 * (Complex.I * Complex.I) := by ring
+        _ = 4 * xiSpectralPoint q ^ (2 : ℕ) + 25 := by rw [Complex.I_mul_I]; ring]
     exact h
   rcases mul_eq_zero.mp hfactor with hminus | hplus
   · have him := congrArg Complex.im hminus

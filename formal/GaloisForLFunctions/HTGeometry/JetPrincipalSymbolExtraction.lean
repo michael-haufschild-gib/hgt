@@ -87,7 +87,7 @@ theorem exists_mem_mul_of_mem_adjoin
   · rintro y w hy hw ⟨qy, hqy, hDy⟩ ⟨qw, hqw, hDw⟩
     exact ⟨qy + qw, add_mem hqy hqw, by rw [map_add, hDy, hDw, add_mul]⟩
   · rintro y hy ⟨qy, hqy, hDy⟩
-    refine ⟨-(y⁻¹ ^ 2) * qy, mul_mem (neg_mem (pow_mem (inv_mem hy) 2)) hqy, ?_⟩
+    refine ⟨-(y⁻¹ ^ (2 : ℕ)) * qy, mul_mem (neg_mem (pow_mem (inv_mem hy) 2)) hqy, ?_⟩
     rw [Derivation.leibniz_inv, smul_eq_mul, hDy]
     ring
   · rintro y w hy hw ⟨qy, hqy, hDy⟩ ⟨qw, hqw, hDw⟩

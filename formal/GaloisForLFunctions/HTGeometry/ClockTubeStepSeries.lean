@@ -52,8 +52,8 @@ theorem tubeStep_tsum {ρ₂ ρ₁ ρ' : ℝ} (h21 : ρ₂ < ρ₁) (h1ρ : ρ�
   have hsumd : ∀ i : Fin k, Summable fun m => cpartial i (cpartial i (f m)) z := by
     intro i
     refine Summable.of_norm_bounded
-      (g := fun m => 16 * M m / (ρ' - ρ₂) ^ 2) ?_ fun m => ?_
-    · simpa [mul_div_assoc] using (hMs.mul_left 16).div_const ((ρ' - ρ₂) ^ 2)
+      (g := fun m => 16 * M m / (ρ' - ρ₂) ^ (2 : ℕ)) ?_ fun m => ?_
+    · simpa [mul_div_assoc] using (hMs.mul_left 16).div_const ((ρ' - ρ₂) ^ (2 : ℕ))
     · exact norm_cpartial_cpartial_le_of_sliceHolo h2ρ (hf m) (hM m) (fun j => (hz j).le) i
   have hsumS : Summable fun m => ∑ i, cpartial i (cpartial i (f m)) z :=
     summable_sum fun i _ => hsumd i

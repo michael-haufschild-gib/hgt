@@ -26,23 +26,23 @@ theorem unitDisk_avoids_filledJulia_three {z : ℂ} (hz : ‖z‖ ≤ 1) :
     z ∉ filledJulia (3 : ℂ) := by
   intro hmem
   -- the second iterate, expanded
-  have hit2 : (quadratic (3 : ℂ))^[2] z = z ^ 4 + 6 * z ^ 2 + 12 := by
+  have hit2 : (quadratic (3 : ℂ))^[2] z = z ^ (4 : ℕ) + 6 * z ^ (2 : ℕ) + 12 := by
     have h : (quadratic (3 : ℂ))^[2] z = quadratic 3 (quadratic 3 z) := rfl
     rw [h, quadratic_apply, quadratic_apply]
     ring
   -- |Re| bounds on the two power terms
-  have h2 : |(z ^ 2).re| ≤ 1 := by
+  have h2 : |(z ^ (2 : ℕ)).re| ≤ 1 := by
     refine le_trans (Complex.abs_re_le_norm _) ?_
     rw [norm_pow]
     exact pow_le_one₀ (norm_nonneg z) hz
-  have h4 : |(z ^ 4).re| ≤ 1 := by
+  have h4 : |(z ^ (4 : ℕ)).re| ≤ 1 := by
     refine le_trans (Complex.abs_re_le_norm _) ?_
     rw [norm_pow]
     exact pow_le_one₀ (norm_nonneg z) hz
   -- real part of the second iterate is ≥ 5
   have hre : (5 : ℝ) ≤ ((quadratic (3 : ℂ))^[2] z).re := by
     rw [hit2]
-    have hsplit : (z ^ 4 + 6 * z ^ 2 + 12).re = (z ^ 4).re + 6 * (z ^ 2).re + 12 := by
+    have hsplit : (z ^ (4 : ℕ) + 6 * z ^ (2 : ℕ) + 12).re = (z ^ (4 : ℕ)).re + 6 * (z ^ (2 : ℕ)).re + 12 := by
       simp [Complex.add_re, Complex.mul_re]
     rw [hsplit]
     linarith [(abs_le.mp h2).1, (abs_le.mp h4).1]

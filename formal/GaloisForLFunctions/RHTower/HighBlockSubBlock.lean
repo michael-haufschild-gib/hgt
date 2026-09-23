@@ -69,22 +69,22 @@ theorem continuous_highBlockDualHeadFrozen (d x T : ℝ) (L : ℕ) :
 /-! ### Elementary square inequalities -/
 
 theorem sq_add_le_young {p q η : ℝ} (hp : 0 ≤ p) (hq : 0 ≤ q) (hη : 0 < η) :
-    (p + q) ^ 2 ≤ (1 + η) * p ^ 2 + (1 + 1 / η) * q ^ 2 := by
-  have h : 2 * p * q ≤ η * p ^ 2 + (1 / η) * q ^ 2 := by
-    have hid : η * p ^ 2 + (1 / η) * q ^ 2 - 2 * p * q = (η * p - q) ^ 2 / η := by
+    (p + q) ^ (2 : ℕ) ≤ (1 + η) * p ^ (2 : ℕ) + (1 + 1 / η) * q ^ (2 : ℕ) := by
+  have h : 2 * p * q ≤ η * p ^ (2 : ℕ) + (1 / η) * q ^ (2 : ℕ) := by
+    have hid : η * p ^ (2 : ℕ) + (1 / η) * q ^ (2 : ℕ) - 2 * p * q = (η * p - q) ^ (2 : ℕ) / η := by
       field_simp
       ring
-    have h0 : 0 ≤ (η * p - q) ^ 2 / η := by positivity
+    have h0 : 0 ≤ (η * p - q) ^ (2 : ℕ) / η := by positivity
     linarith [hid, h0]
-  have hexp : (p + q) ^ 2 = p ^ 2 + 2 * p * q + q ^ 2 := by ring
+  have hexp : (p + q) ^ (2 : ℕ) = p ^ (2 : ℕ) + 2 * p * q + q ^ (2 : ℕ) := by ring
   linarith [h, hexp]
 
 theorem sq_add_three_le {p q r : ℝ} (_hp : 0 ≤ p) (_hq : 0 ≤ q) (_hr : 0 ≤ r) :
-    (p + q + r) ^ 2 ≤ 3 * (p ^ 2 + q ^ 2 + r ^ 2) := by
+    (p + q + r) ^ (2 : ℕ) ≤ 3 * (p ^ (2 : ℕ) + q ^ (2 : ℕ) + r ^ (2 : ℕ)) := by
   nlinarith [sq_nonneg (p - q), sq_nonneg (q - r), sq_nonneg (p - r)]
 
 theorem sq_add_two_le {p q : ℝ} (_hp : 0 ≤ p) (_hq : 0 ≤ q) :
-    (p + q) ^ 2 ≤ 2 * (p ^ 2 + q ^ 2) := by
+    (p + q) ^ (2 : ℕ) ≤ 2 * (p ^ (2 : ℕ) + q ^ (2 : ℕ)) := by
   nlinarith [sq_nonneg (p - q)]
 
 /-! ### The sub-block estimate -/
@@ -101,17 +101,17 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
     (hpole : ∀ τ ∈ Set.Icc T T',
       ‖smoothAFEZetaShiftedPoleResidue (displacedLinePt d τ) x‖ ≤ Epole)
     (htail : ∀ τ ∈ Set.Icc T T', ‖highBlockAFETail d x τ L‖ ≤ Etail)
-    (hW : ∀ τ ∈ Set.Icc T T', ‖zetaChi (displacedLinePt d τ)‖ ^ 2 ≤ Wsup) :
+    (hW : ∀ τ ∈ Set.Icc T T', ‖zetaChi (displacedLinePt d τ)‖ ^ (2 : ℕ) ≤ Wsup) :
     (∫ τ in T..T', ‖riemannZeta (displacedLinePt d τ) *
-        edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ 2) ≤
+        edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ (2 : ℕ)) ≤
       (1 + η) * (2 * ((T' - T) * Edir +
           8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edir) +
-        2 * (Real.exp (2 * d * (Real.pi / T + 5 / T ^ 2)) *
+        2 * (Real.exp (2 * d * (Real.pi / T + 5 / T ^ (2 : ℕ))) *
           (Edual * (∫ τ in T..T', chiModulusWeight (2 * d) τ) +
             8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edual *
               (2 * chiModulusWeight (2 * d) T')))) +
       (1 + 1 / η) * 3 * (T' - T) *
-        ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+        ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
   have hT0 : 0 < T := by linarith
   have hdhalf : d < 1 / 2 := by linarith
   set Ψ : ℝ → ℂ := fun τ => edPoly b (Finset.Icc 1 N) (displacedLinePt d τ) with hΨ
@@ -128,9 +128,9 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
     norm_edPoly_le_card hbn (by rw [displacedLinePt_re]; linarith)
   -- pointwise inequality
   have hpoint : ∀ τ ∈ Set.Icc T T',
-      ‖riemannZeta (displacedLinePt d τ) * Ψ τ‖ ^ 2 ≤
-        (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ 2 + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ 2) +
-        (1 + 1 / η) * 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+      ‖riemannZeta (displacedLinePt d τ) * Ψ τ‖ ^ (2 : ℕ) ≤
+        (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ (2 : ℕ) + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) +
+        (1 + 1 / η) * 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
     intro τ hτ
     have hAFE := riemannZeta_displaced_eq_truncated hx hd hdhalf τ L
     rw [sum_highBlockDualTerm_eq] at hAFE
@@ -148,20 +148,20 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
     set E := (χ τ * (highBlockDualHead d x τ L - highBlockDualHeadFrozen d x T τ L) -
         smoothAFEZetaShiftedPoleResidue (displacedLinePt d τ) x + highBlockAFETail d x τ L) *
         Ψ τ with hE
-    have hFE : ‖F + E‖ ^ 2 ≤ (1 + η) * ‖F‖ ^ 2 + (1 + 1 / η) * ‖E‖ ^ 2 :=
+    have hFE : ‖F + E‖ ^ (2 : ℕ) ≤ (1 + η) * ‖F‖ ^ (2 : ℕ) + (1 + 1 / η) * ‖E‖ ^ (2 : ℕ) :=
       le_trans (pow_le_pow_left₀ (norm_nonneg _) (norm_add_le F E) 2)
         (sq_add_le_young (norm_nonneg _) (norm_nonneg _) hη)
-    have hFb : ‖F‖ ^ 2 ≤ 2 * ‖D τ * Ψ τ‖ ^ 2 + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ 2 := by
+    have hFb : ‖F‖ ^ (2 : ℕ) ≤ 2 * ‖D τ * Ψ τ‖ ^ (2 : ℕ) + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ) := by
       have h1 : ‖F‖ ≤ ‖D τ * Ψ τ‖ + ‖χ τ * HT τ * Ψ τ‖ := by
         rw [hF, add_mul]
         exact norm_add_le _ _
-      calc ‖F‖ ^ 2 ≤ (‖D τ * Ψ τ‖ + ‖χ τ * HT τ * Ψ τ‖) ^ 2 :=
+      calc ‖F‖ ^ (2 : ℕ) ≤ (‖D τ * Ψ τ‖ + ‖χ τ * HT τ * Ψ τ‖) ^ (2 : ℕ) :=
             pow_le_pow_left₀ (norm_nonneg _) h1 2
-        _ ≤ 2 * (‖D τ * Ψ τ‖ ^ 2 + ‖χ τ * HT τ * Ψ τ‖ ^ 2) :=
+        _ ≤ 2 * (‖D τ * Ψ τ‖ ^ (2 : ℕ) + ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) :=
             sq_add_two_le (norm_nonneg _) (norm_nonneg _)
-        _ = 2 * ‖D τ * Ψ τ‖ ^ 2 + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ 2 := by ring
-    have hEb : ‖E‖ ^ 2 ≤ 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
-      have hχτ : ‖χ τ‖ ^ 2 ≤ Wsup := hW τ hτ
+        _ = 2 * ‖D τ * Ψ τ‖ ^ (2 : ℕ) + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ) := by ring
+    have hEb : ‖E‖ ^ (2 : ℕ) ≤ 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
+      have hχτ : ‖χ τ‖ ^ (2 : ℕ) ≤ Wsup := hW τ hτ
       have hχ0 : 0 ≤ ‖χ τ‖ := norm_nonneg _
       have hfr := hfreeze τ hτ
       have hpo := hpole τ hτ
@@ -183,23 +183,23 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
               gcongr
               rw [norm_mul]
               exact mul_le_mul_of_nonneg_left hfr hχ0
-      have h2 : ((‖χ τ‖ * Efreeze + Epole + Etail) * N) ^ 2 =
-          (N : ℝ) ^ 2 * (‖χ τ‖ * Efreeze + Epole + Etail) ^ 2 := by ring
-      calc ‖E‖ ^ 2 ≤ ((‖χ τ‖ * Efreeze + Epole + Etail) * N) ^ 2 :=
+      have h2 : ((‖χ τ‖ * Efreeze + Epole + Etail) * N) ^ (2 : ℕ) =
+          (N : ℝ) ^ (2 : ℕ) * (‖χ τ‖ * Efreeze + Epole + Etail) ^ (2 : ℕ) := by ring
+      calc ‖E‖ ^ (2 : ℕ) ≤ ((‖χ τ‖ * Efreeze + Epole + Etail) * N) ^ (2 : ℕ) :=
             pow_le_pow_left₀ (norm_nonneg _) h1 2
-        _ = (N : ℝ) ^ 2 * (‖χ τ‖ * Efreeze + Epole + Etail) ^ 2 := h2
-        _ ≤ (N : ℝ) ^ 2 * (3 * ((‖χ τ‖ * Efreeze) ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+        _ = (N : ℝ) ^ (2 : ℕ) * (‖χ τ‖ * Efreeze + Epole + Etail) ^ (2 : ℕ) := h2
+        _ ≤ (N : ℝ) ^ (2 : ℕ) * (3 * ((‖χ τ‖ * Efreeze) ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
             gcongr
             exact sq_add_three_le (by positivity) hEp0 hEt0
-        _ ≤ (N : ℝ) ^ 2 * (3 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+        _ ≤ (N : ℝ) ^ (2 : ℕ) * (3 * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
             gcongr
             rw [mul_pow]
             exact mul_le_mul_of_nonneg_right hχτ (by positivity)
-        _ = 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by ring
+        _ = 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by ring
     have h1η : 0 ≤ 1 + 1 / η := by positivity
-    calc ‖F + E‖ ^ 2 ≤ (1 + η) * ‖F‖ ^ 2 + (1 + 1 / η) * ‖E‖ ^ 2 := hFE
-      _ ≤ (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ 2 + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ 2) +
-          (1 + 1 / η) * (3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2))) :=
+    calc ‖F + E‖ ^ (2 : ℕ) ≤ (1 + η) * ‖F‖ ^ (2 : ℕ) + (1 + 1 / η) * ‖E‖ ^ (2 : ℕ) := hFE
+      _ ≤ (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ (2 : ℕ) + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) +
+          (1 + 1 / η) * (3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ)))) :=
           add_le_add (mul_le_mul_of_nonneg_left hFb (by positivity))
             (mul_le_mul_of_nonneg_left hEb h1η)
       _ = _ := by ring
@@ -207,17 +207,17 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
   have hΨc : Continuous Ψ := continuous_edPoly_displacedLinePt b N d
   have hDc : Continuous D := continuous_sum_directTerm d x L
   have hHTc : Continuous HT := continuous_highBlockDualHeadFrozen d x T L
-  have hχc : Continuous χ := continuous_zetaChi_displacedLinePt hd.le
+  have hχc : Continuous χ := continuous_zetaChi_displacedLinePt_highBlockDualMeanSquare hd.le
   have hζc : Continuous (fun τ => riemannZeta (displacedLinePt d τ)) :=
     continuous_riemannZeta_displacedLinePt hd
   have hint1 : IntervalIntegrable
-      (fun τ => ‖riemannZeta (displacedLinePt d τ) * Ψ τ‖ ^ 2) volume T T' :=
+      (fun τ => ‖riemannZeta (displacedLinePt d τ) * Ψ τ‖ ^ (2 : ℕ)) volume T T' :=
     ((hζc.mul hΨc).norm.pow 2).intervalIntegrable T T'
-  have hg1 : Continuous (fun τ => ‖D τ * Ψ τ‖ ^ 2) := (hDc.mul hΨc).norm.pow 2
-  have hg2 : Continuous (fun τ => ‖χ τ * HT τ * Ψ τ‖ ^ 2) := ((hχc.mul hHTc).mul hΨc).norm.pow 2
+  have hg1 : Continuous (fun τ => ‖D τ * Ψ τ‖ ^ (2 : ℕ)) := (hDc.mul hΨc).norm.pow 2
+  have hg2 : Continuous (fun τ => ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) := ((hχc.mul hHTc).mul hΨc).norm.pow 2
   have hint2 : IntervalIntegrable (fun τ =>
-      (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ 2 + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ 2) +
-        (1 + 1 / η) * 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)))
+      (1 + η) * (2 * ‖D τ * Ψ τ‖ ^ (2 : ℕ) + 2 * ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) +
+        (1 + 1 / η) * 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))))
       volume T T' :=
     (((continuous_const.mul (hg1.const_mul 2 |>.add (hg2.const_mul 2))).add
       continuous_const)).intervalIntegrable T T'
@@ -225,21 +225,21 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
   refine hmono.trans ?_
   -- evaluate the right-hand integral
   have hf1 : IntervalIntegrable
-      (fun u => (1 + η) * (2 * ‖D u * Ψ u‖ ^ 2 + 2 * ‖χ u * HT u * Ψ u‖ ^ 2)) volume T T' :=
+      (fun u => (1 + η) * (2 * ‖D u * Ψ u‖ ^ (2 : ℕ) + 2 * ‖χ u * HT u * Ψ u‖ ^ (2 : ℕ))) volume T T' :=
     (continuous_const.mul ((hg1.const_mul 2).add (hg2.const_mul 2))).intervalIntegrable T T'
   have hf2 : IntervalIntegrable (fun _ : ℝ =>
-      (1 + 1 / η) * 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2))) volume T T' :=
+      (1 + 1 / η) * 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ)))) volume T T' :=
     continuous_const.intervalIntegrable T T'
-  have hf3 : IntervalIntegrable (fun u => 2 * ‖D u * Ψ u‖ ^ 2) volume T T' :=
+  have hf3 : IntervalIntegrable (fun u => 2 * ‖D u * Ψ u‖ ^ (2 : ℕ)) volume T T' :=
     (hg1.const_mul 2).intervalIntegrable T T'
-  have hf4 : IntervalIntegrable (fun u => 2 * ‖χ u * HT u * Ψ u‖ ^ 2) volume T T' :=
+  have hf4 : IntervalIntegrable (fun u => 2 * ‖χ u * HT u * Ψ u‖ ^ (2 : ℕ)) volume T T' :=
     (hg2.const_mul 2).intervalIntegrable T T'
   rw [intervalIntegral.integral_add hf1 hf2, intervalIntegral.integral_const,
     intervalIntegral.integral_const_mul, intervalIntegral.integral_add hf3 hf4,
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
   -- B4 and B5
   have hB4 := abs_integral_normSq_highBlockDirect_sub_le d x b L N T T'
-  have hdir : (∫ τ in T..T', ‖D τ * Ψ τ‖ ^ 2) ≤
+  have hdir : (∫ τ in T..T', ‖D τ * Ψ τ‖ ^ (2 : ℕ)) ≤
       (T' - T) * Edir + 8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edir := by
     have h := (abs_le.mp hB4).2
     have hE0 : 0 ≤ highBlockDirectEnergy d x b L N :=
@@ -256,16 +256,16 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
     linarith
   have hB5 := integral_normSq_chi_mul_highBlockDualFrozen_le hd.le hd4 hT0 hTT' x T L N
     (fun m => highBlockMollifierCoeffNat d b m)
-  have hdual : (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ 2) ≤
-      Real.exp (2 * d * (Real.pi / T + 5 / T ^ 2)) *
+  have hdual : (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) ≤
+      Real.exp (2 * d * (Real.pi / T + 5 / T ^ (2 : ℕ))) *
         (Edual * (∫ τ in T..T', chiModulusWeight (2 * d) τ) +
           8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edual *
             (2 * chiModulusWeight (2 * d) T')) := by
     have hΨeq : ∀ τ, Ψ τ = Sieve.dirPoly N (fun m => highBlockMollifierCoeffNat d b m) (-τ) :=
       fun τ => edPoly_Icc_eq_dirPoly d τ b N
-    have hint : (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ 2) =
+    have hint : (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ)) =
         ∫ τ in T..T', ‖zetaChi (displacedLinePt d τ) * highBlockDualHeadFrozen d x T τ L *
-          Sieve.dirPoly N (fun m => highBlockMollifierCoeffNat d b m) (-τ)‖ ^ 2 := by
+          Sieve.dirPoly N (fun m => highBlockMollifierCoeffNat d b m) (-τ)‖ ^ (2 : ℕ) := by
       refine intervalIntegral.integral_congr fun τ _ => ?_
       simp only [hχ, hHT, hΨeq]
     rw [hint]
@@ -278,15 +278,15 @@ theorem integral_normSq_zeta_mul_edPoly_subBlock_le
       Finset.sum_nonneg fun _ _ => by positivity
     gcongr
   have hh : 0 ≤ T' - T := by linarith
-  calc (1 + η) * (2 * (∫ τ in T..T', ‖D τ * Ψ τ‖ ^ 2) + 2 * (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ 2)) +
-        (T' - T) • ((1 + 1 / η) * 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)))
+  calc (1 + η) * (2 * (∫ τ in T..T', ‖D τ * Ψ τ‖ ^ (2 : ℕ)) + 2 * (∫ τ in T..T', ‖χ τ * HT τ * Ψ τ‖ ^ (2 : ℕ))) +
+        (T' - T) • ((1 + 1 / η) * 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))))
       ≤ (1 + η) * (2 * ((T' - T) * Edir +
             8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edir) +
-          2 * (Real.exp (2 * d * (Real.pi / T + 5 / T ^ 2)) *
+          2 * (Real.exp (2 * d * (Real.pi / T + 5 / T ^ (2 : ℕ))) *
             (Edual * (∫ τ in T..T', chiModulusWeight (2 * d) τ) +
               8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) * Edual *
                 (2 * chiModulusWeight (2 * d) T')))) +
-        (T' - T) • ((1 + 1 / η) * 3 * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2))) := by
+        (T' - T) • ((1 + 1 / η) * 3 * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ)))) := by
         gcongr
     _ = _ := by
         rw [smul_eq_mul]

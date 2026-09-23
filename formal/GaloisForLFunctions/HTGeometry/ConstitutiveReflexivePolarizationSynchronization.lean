@@ -40,11 +40,11 @@ def localPolarPower (h v : ι → ℝ) : ℝ := capC h v
 
 /-- Power of the single correction executable by the common source. -/
 def fusedPolarPower (h v : ι → ℝ) : ℝ :=
-  totalPolarization h * sharedPolarVelocity h v ^ 2
+  totalPolarization h * sharedPolarVelocity h v ^ (2 : ℕ)
 
 /-- Power created by incompatibility of the locally optimal velocities. -/
 def synchronizationTension (h v : ι → ℝ) : ℝ :=
-  ∑ i, h i * (v i - sharedPolarVelocity h v) ^ 2
+  ∑ i, h i * (v i - sharedPolarVelocity h v) ^ (2 : ℕ)
 
 /-- Common scalar amplification of a local-velocity packet. -/
 def amplifyPolarVelocity (r : ℝ) (v : ι → ℝ) : ι → ℝ := fun i => r * v i
@@ -78,7 +78,7 @@ theorem localPolarPower_eq_fused_add_tension [Nonempty ι]
   have hexpand := quadratic_expand h v (sharedPolarVelocity h v) 1
   simp only [one_mul] at hexpand
   have hsquare :
-      (∑ i, h i * (sharedPolarVelocity h v - v i) ^ 2) = synchronizationTension h v := by
+      (∑ i, h i * (sharedPolarVelocity h v - v i) ^ (2 : ℕ)) = synchronizationTension h v := by
     rw [synchronizationTension]
     apply Finset.sum_congr rfl
     intro i _
@@ -107,10 +107,10 @@ theorem synchronizationTension_eq_zero_iff {h v : ι → ℝ} (hh : ∀ i, 0 < h
   constructor
   · intro hz i
     have hterm : ∀ j ∈ (Finset.univ : Finset ι),
-        0 ≤ h j * (v j - sharedPolarVelocity h v) ^ 2 :=
+        0 ≤ h j * (v j - sharedPolarVelocity h v) ^ (2 : ℕ) :=
       fun j _ => mul_nonneg (hh j).le (sq_nonneg _)
     have hi := (Finset.sum_eq_zero_iff_of_nonneg hterm).mp hz i (Finset.mem_univ i)
-    have hsquare : (v i - sharedPolarVelocity h v) ^ 2 = 0 := by
+    have hsquare : (v i - sharedPolarVelocity h v) ^ (2 : ℕ) = 0 := by
       exact (mul_eq_zero.mp hi).resolve_left (hh i).ne'
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
   · intro hv
@@ -123,10 +123,10 @@ theorem localPolarPower_eq_zero_iff {h v : ι → ℝ} (hh : ∀ i, 0 < h i) :
   constructor
   · intro hz i
     rw [localPolarPower, capC] at hz
-    have hterm : ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ h j * v j ^ 2 :=
+    have hterm : ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ h j * v j ^ (2 : ℕ) :=
       fun j _ => mul_nonneg (hh j).le (sq_nonneg _)
     have hi := (Finset.sum_eq_zero_iff_of_nonneg hterm).mp hz i (Finset.mem_univ i)
-    have hsquare : v i ^ 2 = 0 := (mul_eq_zero.mp hi).resolve_left (hh i).ne'
+    have hsquare : v i ^ (2 : ℕ) = 0 := (mul_eq_zero.mp hi).resolve_left (hh i).ne'
     exact sq_eq_zero_iff.mp hsquare
   · intro hv
     rw [localPolarPower, capC]
@@ -144,7 +144,7 @@ theorem sharedPolarVelocity_amplify (h v : ι → ℝ) (r : ℝ) :
   ring
 
 theorem localPolarPower_amplify (h v : ι → ℝ) (r : ℝ) :
-    localPolarPower h (amplifyPolarVelocity r v) = r ^ 2 * localPolarPower h v := by
+    localPolarPower h (amplifyPolarVelocity r v) = r ^ (2 : ℕ) * localPolarPower h v := by
   rw [localPolarPower, localPolarPower, capC, capC, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
@@ -152,13 +152,13 @@ theorem localPolarPower_amplify (h v : ι → ℝ) (r : ℝ) :
   ring
 
 theorem fusedPolarPower_amplify (h v : ι → ℝ) (r : ℝ) :
-    fusedPolarPower h (amplifyPolarVelocity r v) = r ^ 2 * fusedPolarPower h v := by
+    fusedPolarPower h (amplifyPolarVelocity r v) = r ^ (2 : ℕ) * fusedPolarPower h v := by
   rw [fusedPolarPower, sharedPolarVelocity_amplify, fusedPolarPower]
   ring
 
 theorem synchronizationTension_amplify (h v : ι → ℝ) (r : ℝ) :
     synchronizationTension h (amplifyPolarVelocity r v) =
-      r ^ 2 * synchronizationTension h v := by
+      r ^ (2 : ℕ) * synchronizationTension h v := by
   rw [synchronizationTension, synchronizationTension, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
@@ -182,13 +182,13 @@ theorem boundedLocalPolarOrbit_iff [Nonempty ι] {d : ℝ} {h v : ι → ℝ}
       exact hv ((localPolarPower_eq_zero_iff hh).mp hzero)
     have hP : 0 < localPolarPower h v :=
       lt_of_le_of_ne (localPolarPower_nonneg fun i => (hh i).le) (Ne.symm hPnonzero)
-    have hd2 : 1 < d ^ 2 := by nlinarith
-    have hgrow : Tendsto (fun n : ℕ => (d ^ 2) ^ n * localPolarPower h v) atTop atTop :=
+    have hd2 : 1 < d ^ (2 : ℕ) := by nlinarith
+    have hgrow : Tendsto (fun n : ℕ => (d ^ (2 : ℕ)) ^ n * localPolarPower h v) atTop atTop :=
       Tendsto.atTop_mul_const hP (tendsto_pow_atTop_atTop_of_one_lt hd2)
     obtain ⟨n, hn⟩ := (hgrow.eventually_gt_atTop B).exists
     have hbound := hB n
     rw [localPolarPower_amplify] at hbound
-    have heq : (d ^ n) ^ 2 = (d ^ 2) ^ n := by
+    have heq : (d ^ n) ^ (2 : ℕ) = (d ^ (2 : ℕ)) ^ n := by
       rw [← pow_mul, Nat.mul_comm, pow_mul]
     rw [heq] at hbound
     linarith
@@ -201,17 +201,17 @@ theorem boundedLocalPolarOrbit_iff [Nonempty ι] {d : ℝ} {h v : ι → ℝ}
 /-- Instantaneous derivative forced on the independent local power by the channel response laws. -/
 def localPolarPowerRate (h τ v : ι → ℝ) : ℝ :=
   -2 * fusedPolarPower h v
-    - ∑ i, τ i * sharedPolarVelocity h v * v i ^ 2
+    - ∑ i, τ i * sharedPolarVelocity h v * v i ^ (2 : ℕ)
 
 /-- Instantaneous derivative forced on executable fused power by total third response. -/
 def fusedPolarPowerRate (h τ v : ι → ℝ) : ℝ :=
   -2 * fusedPolarPower h v
-    - (∑ i, τ i) * sharedPolarVelocity h v ^ 3
+    - (∑ i, τ i) * sharedPolarVelocity h v ^ (3 : ℕ)
 
 /-- Cubic current that transports synchronization tension. -/
 def cubicSynchronizationTransport (h τ v : ι → ℝ) : ℝ :=
   ∑ i, τ i *
-    (sharedPolarVelocity h v ^ 3 - sharedPolarVelocity h v * v i ^ 2)
+    (sharedPolarVelocity h v ^ (3 : ℕ) - sharedPolarVelocity h v * v i ^ (2 : ℕ))
 
 /-- Difference of local and fused power rates is exactly the cubic synchronization current. -/
 theorem localRate_sub_fusedRate_eq_cubicTransport (h τ v : ι → ℝ) :
@@ -221,8 +221,8 @@ theorem localRate_sub_fusedRate_eq_cubicTransport (h τ v : ι → ℝ) :
   simp_rw [mul_sub]
   rw [Finset.sum_sub_distrib, Finset.sum_mul]
   have hcomm :
-      (∑ i, τ i * sharedPolarVelocity h v * v i ^ 2) =
-        ∑ i, sharedPolarVelocity h v * τ i * v i ^ 2 := by
+      (∑ i, τ i * sharedPolarVelocity h v * v i ^ (2 : ℕ)) =
+        ∑ i, sharedPolarVelocity h v * τ i * v i ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i _
     ring
@@ -242,7 +242,7 @@ theorem quadratic_twoChannel_persistent_tension (a : ℝ) :
     let h : Fin 2 → ℝ := fun _ => 1
     let v : Fin 2 → ℝ := ![a + 1, a - 1]
     sharedPolarVelocity h v = a ∧
-      fusedPolarPower h v = 2 * a ^ 2 ∧
+      fusedPolarPower h v = 2 * a ^ (2 : ℕ) ∧
       synchronizationTension h v = 2 := by
   dsimp
   constructor

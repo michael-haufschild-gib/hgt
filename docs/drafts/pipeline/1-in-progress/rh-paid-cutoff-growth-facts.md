@@ -68,4 +68,4 @@ Global lint remains blocked by the same four unrelated unreachable modules:
 `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
 `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
 `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-`XiHeatCassiniWoldJointDepthMöbiusSourceTransport`. Whitespace audit passed.
+`XiHeatCassiniWoldJointDepthMobiusSourceTransport`. Whitespace audit passed.

@@ -18,8 +18,8 @@ theorem timeReducedCoefficient_closed (s a : ℂ) (tau x : ℝ) :
     timeReducedCoefficient s a tau x =
       let u : ℂ := radialUnit x
       sourceAmplitude s 0 a 1 x*Complex.exp (2*s*((tau+x:ℝ):ℂ))*
-        (-u*(1-u^2)*(2*s+1)*(2*s+2)*(Real.smoothTransition (tau+x):ℂ)+
-          s*(s-1)/2*u^2*(1-u)*(3+(2*s+3)*u)*
+        (-u*(1-u^(2 : ℕ))*(2*s+1)*(2*s+2)*(Real.smoothTransition (tau+x):ℂ)+
+          s*(s-1)/2*u^(2 : ℕ)*(1-u)*(3+(2*s+3)*u)*
             ((deriv Real.smoothTransition (tau+x):ℝ):ℂ)) := by
   dsimp [timeReducedCoefficient,reducedCoefficient,reducedPolynomial,
     radialLiftFirst,liftFirstPolynomial,liftSecondPolynomial,amplitudeRate,
@@ -95,11 +95,11 @@ theorem tail_clock_contact :
   linarith only [h]
 
 private def rationalBasis (i : Fin 5) (x : ℝ) : ℝ :=
-  ![(-1/6)*(x^6)⁻¹,(-1/5)*(x^5)⁻¹,(-1/4)*(x^4)⁻¹,
-    (-1/3)*(x^3)⁻¹,(-1/2)*(x^2)⁻¹] i
+  ![(-1/6)*(x^(6 : ℕ))⁻¹,(-1/5)*(x^(5 : ℕ))⁻¹,(-1/4)*(x^(4 : ℕ))⁻¹,
+    (-1/3)*(x^(3 : ℕ))⁻¹,(-1/2)*(x^(2 : ℕ))⁻¹] i
 
 private theorem rationalBasis_derivative (i : Fin 5) (x : Ioi (0:ℝ)) :
-    HasDerivAt (rationalBasis i) (x.val^i.val/x.val^7) x.val := by
+    HasDerivAt (rationalBasis i) (x.val^i.val/x.val^(7 : ℕ)) x.val := by
   have hx : x.val ≠ 0 := ne_of_gt x.property
   fin_cases i
   · convert (((hasDerivAt_id x.val).pow 6).inv (pow_ne_zero 6 hx)).const_mul (-1/6) using 1 <;>
@@ -114,13 +114,13 @@ private theorem rationalBasis_derivative (i : Fin 5) (x : Ioi (0:ℝ)) :
       first | rfl | (try dsimp only [id_eq,Pi.pow_apply]; field_simp [hx]; ring)
 
 private def row11 (L d : ℂ) : Fin 5 → ℂ := ![0,L*d,-(L+d),1,0]
-private def row21 (L d : ℂ) : Fin 5 → ℂ := ![-L^2*d,L^2+2*L*d,-(2*L+d),1,0]
+private def row21 (L d : ℂ) : Fin 5 → ℂ := ![-L^(2 : ℕ)*d,L^(2 : ℕ)+2*L*d,-(2*L+d),1,0]
 private def row31 (L d : ℂ) : Fin 5 → ℂ :=
-  ![L^3*d,-(L^3+3*L^2*d),3*L^2+3*L*d,-(3*L+d),1]
+  ![L^(3 : ℕ)*d,-(L^(3 : ℕ)+3*L^(2 : ℕ)*d),3*L^(2 : ℕ)+3*L*d,-(3*L+d),1]
 
 /-- The physical angular weight on the complete native circle mean. -/
 def spinTwoMean (q : XiZeroCopy) (L z X k : ℝ) : ℂ :=
-  let U := fun p : Point => angularKernel q ((L^2+1-z^2)/(2*L)) (p 0) (Real.log (p 1))
+  let U := fun p : Point => angularKernel q ((L^(2 : ℕ)+1-z^(2 : ℕ))/(2*L)) (p 0) (Real.log (p 1))
   let p : Point := ![X,Real.exp k]
   (-scalarLaplacian (scalarLaplacian U) p+2*scalarLaplacian U p)
 
@@ -143,8 +143,8 @@ def density (q : XiZeroCopy) (branch : Bool) (L z X k x : ℝ) : ℂ :=
   let kt := t*(t-1)/4
   let y : ℂ := x-L
   let u : ℂ := x-(L-z)
-  etaS*(etaT*y*u/(x:ℂ)^6-36*kt*y^2*u/(x:ℂ)^7+
-    12*kt*(2*s+3)/(L:ℂ)*y^3*u/(x:ℂ)^7)*spinTwoMean q L z X k
+  etaS*(etaT*y*u/(x:ℂ)^(6 : ℕ)-36*kt*y^(2 : ℕ)*u/(x:ℂ)^(7 : ℕ)+
+    12*kt*(2*s+3)/(L:ℂ)*y^(3 : ℕ)*u/(x:ℂ)^(7 : ℕ))*spinTwoMean q L z X k
 
 /-- The explicit reduced primitive uses only five inverse powers of radius. -/
 def primitive (q : XiZeroCopy) (branch : Bool) (L z X k x : ℝ) : ℂ :=

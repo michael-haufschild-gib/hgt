@@ -42,9 +42,9 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
           (2 * Real.log m + 2) * |psiRemainder (N / m)|
         ≤ (N : ℝ) * ((a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * ρ
               / (8 * Real.log ((2 * Q : ℕ) : ℝ)))
-            * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+            * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
-              - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+              - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
           + ((J : ℝ) + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))) := by
   set ε' : ℝ := δ + ρ * (Real.log (1 / ρ) + 3) + κ with hε'
   set L : ℝ := Real.log ((2 * Q : ℕ) : ℝ) with hL
@@ -76,9 +76,9 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
       ∑ m ∈ Finset.Ioc Y (2 * Q * Y),
           (2 * Real.log m + 2) * |psiRemainder (N / m)|
         ≤ (N : ℝ) * ((a - θ)
-            * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+            * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-              - (Real.log Y ^ 2 + 2 * Real.log Y))
+              - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
           + 3 * a * ((2 * Real.log N + 8) / x₁)) := by
     intro Y hx₁Y' hNY hWρY hx₀Y hjunkUY
     have hY8 : 8 ≤ Y := le_trans hx₁8 hx₁Y'
@@ -126,9 +126,9 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
       rw [hcast2QY, Real.log_mul (ne_of_gt h2Q0R) (ne_of_gt hY0R), hL]
     have hlogY : Real.log x₁ ≤ Real.log Y :=
       Real.log_le_log hx₁0R (by exact_mod_cast hx₁Y')
-    have hΔG : (Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+    have hΔG : (Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-        - (Real.log Y ^ 2 + 2 * Real.log Y)
+        - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y)
         = L * (2 * Real.log Y + L + 2) := by
       rw [hlogsplit]
       ring
@@ -143,9 +143,9 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
         - (a - ε') * (ρ / 8) * (2 * Real.log Y + L + 2)
         = (a - ε') * ρ * (2 * Real.log Y - (L + 2)) / 8 := by
       ring
-    have hθG : θ * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+    have hθG : θ * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-        - (Real.log Y ^ 2 + 2 * Real.log Y))
+        - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
         ≤ (a - ε') * (ρ / 2) * Real.log Y := by
       rw [hΔG, hLL]
       linarith [hkey, hid]
@@ -171,28 +171,28 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
         _ ≤ (2 * Real.log N + 8) / x₁ := by
             apply div_le_div_of_nonneg_right _ hx₁0R.le
             linarith
-    have hexp : (a - θ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+    have hexp : (a - θ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-        - (Real.log Y ^ 2 + 2 * Real.log Y))
-        = a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+        - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
+        = a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-          - (Real.log Y ^ 2 + 2 * Real.log Y))
-          - θ * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+          - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
+          - θ * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-          - (Real.log Y ^ 2 + 2 * Real.log Y)) := by
+          - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y)) := by
       ring
     calc ∑ m ∈ Finset.Ioc Y (2 * Q * Y),
           (2 * Real.log m + 2) * |psiRemainder (N / m)|
-        ≤ (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+        ≤ (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-            - (Real.log Y ^ 2 + 2 * Real.log Y))
+            - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
           - (a - ε') * (ρ / 2) * Real.log Y
           + 3 * a * ((2 * Real.log ((2 * Q * Y : ℕ) : ℝ) + 8) / Y)) :=
           hblock
       _ ≤ (N : ℝ) * ((a - θ)
-            * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+            * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-              - (Real.log Y ^ 2 + 2 * Real.log Y))
+              - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
           + 3 * a * ((2 * Real.log N + 8) / x₁)) := by
           apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg N)
           linarith [hθG, herr, hexp]
@@ -260,23 +260,23 @@ theorem m_ladder_contraction {a δ ρ κ : ℝ} {Q x₀ x₁ N : ℕ}
             (2 * Q * (x₁ * (2 * Q) ^ (J + 1))),
             (2 * Real.log m + 2) * |psiRemainder (N / m)|
         ≤ ((N : ℝ) * ((a - θ)
-            * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+            * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
-              - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+              - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
           + ((J : ℝ) + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))))
           + (N : ℝ) * ((a - θ)
-            * ((Real.log ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ) ^ 2
+            * ((Real.log ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log
                   ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ))
-              - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+              - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ)))
           + 3 * a * ((2 * Real.log N + 8) / x₁)) :=
           add_le_add IH hblocktop
       _ = (N : ℝ) * ((a - θ)
-            * ((Real.log ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ) ^ 2
+            * ((Real.log ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ) ^ (2 : ℕ)
                 + 2 * Real.log
                   ((2 * Q * (x₁ * (2 * Q) ^ (J + 1)) : ℕ) : ℝ))
-              - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+              - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
           + (((J + 1 : ℕ) : ℝ) + 1)
             * (3 * a * ((2 * Real.log N + 8) / x₁))) := by
           push_cast

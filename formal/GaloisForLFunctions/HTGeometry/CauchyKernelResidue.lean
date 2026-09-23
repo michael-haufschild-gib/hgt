@@ -99,7 +99,7 @@ theorem laurentCoeff_inv_pow_mul_inv_sub {ρ Z : ℂ} (hZ : Z ≠ ρ) {m : ℕ} 
   have hker : AnalyticAt ℂ (fun t : ℂ => (w - t)⁻¹) 0 := by
     refine AnalyticAt.inv ?_ (by simpa using hw)
     fun_prop
-  have hpow : taylorCoeffZero (fun t : ℂ => t ^ 1 * (w - t)⁻¹) m
+  have hpow : taylorCoeffZero (fun t : ℂ => t ^ (1 : ℕ) * (w - t)⁻¹) m
       = if 1 ≤ m then taylorCoeffZero (fun t : ℂ => (w - t)⁻¹) (m - 1) else 0 :=
     taylorCoeffZero_pow_mul hker 1 m
   simp only [pow_one] at hpow

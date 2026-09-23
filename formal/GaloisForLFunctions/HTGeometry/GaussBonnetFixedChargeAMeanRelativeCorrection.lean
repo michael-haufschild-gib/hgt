@@ -11,7 +11,7 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAMeanRelativeCorrection (φ : ℝ) : ℝ :=
-  (25 + 28 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ 2) /
+  (25 + 28 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ (2 : ℕ)) /
     (15 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeACritical_fraction_quotient (φ : ℝ) :

@@ -37,9 +37,9 @@ theorem boundedLocalPauliCommutatorWeight_le
   simp only [Fintype.card_fin]
   calc
     (2 : ℝ) ^ n *
-        ∑ P, ‖pauliCoeff A P‖ ^ 2 *
-          ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2 ≤
-        (2 : ℝ) ^ n * (4 * ∑ P, ‖pauliCoeff A P‖ ^ 2) := by
+        ∑ P, ‖pauliCoeff A P‖ ^ (2 : ℕ) *
+          ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ) ≤
+        (2 : ℝ) ^ n * (4 * ∑ P, ‖pauliCoeff A P‖ ^ (2 : ℕ)) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       rw [Finset.mul_sum]
       apply Finset.sum_le_sum
@@ -48,16 +48,16 @@ theorem boundedLocalPauliCommutatorWeight_le
       by_cases hanti : finitePauliConjugationSign Q.1 P = -1
       · simpa [hanti, mul_comm]
       · simp [hanti]
-    _ = 4 * ((2 : ℝ) ^ n * ∑ P, ‖pauliCoeff A P‖ ^ 2) := by ring
+    _ = 4 * ((2 : ℝ) ^ n * ∑ P, ‖pauliCoeff A P‖ ^ (2 : ℕ)) := by ring
 
 def boundedLocalPauliCommutatorDirectionEnergyRatio
     {n q : ℕ}
     (A : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ) : ℝ :=
   (∑ Q : boundedLocalPauliLabel n q,
-      boundedLocalPauliCommutatorWeight A Q) ^ 2 /
+      boundedLocalPauliCommutatorWeight A Q) ^ (2 : ℕ) /
     ∑ Q : boundedLocalPauliLabel n q,
-      boundedLocalPauliCommutatorWeight A Q ^ 2
+      boundedLocalPauliCommutatorWeight A Q ^ (2 : ℕ)
 
 theorem boundedLocalPauliCommutatorDirectionEnergyRatio_nonneg
     {n q : ℕ}
@@ -126,7 +126,7 @@ theorem frobSq_unitaryGroup_finiteQubit
   rw [frobSq]
   calc
     (∑ a, ∑ b, ‖(U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ) a b‖ ^ 2) =
+        (FiniteQubitConfiguration (Fin n)) ℂ) a b‖ ^ (2 : ℕ)) =
         ∑ a, ∑ b, finiteUnitaryEntryWeight U a b := by
       apply Finset.sum_congr rfl
       intro a _
@@ -143,8 +143,8 @@ theorem frobSq_unitaryGroup_finiteQubit
 theorem norm_pauliScalarCoefficient_sq_eq_normalizedTrace
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (A : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
-    ‖pauliCoeff A pauliCharacterZero‖ ^ 2 =
-      ‖Matrix.trace A‖ ^ 2 / ((2 : ℝ) ^ Fintype.card σ) ^ 2 := by
+    ‖pauliCoeff A pauliCharacterZero‖ ^ (2 : ℕ) =
+      ‖Matrix.trace A‖ ^ (2 : ℕ) / ((2 : ℝ) ^ Fintype.card σ) ^ (2 : ℕ) := by
   rw [trace_eq_card_mul_pauliScalarCoefficient, norm_mul, norm_pow]
   norm_num
   have hpow : (0 : ℝ) < (2 : ℝ) ^ Fintype.card σ := by positivity
@@ -155,7 +155,7 @@ theorem unitary_pauliCoeff_total_mass_eq_one
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) :
     (∑ P : Fin n → Option (Fin 3),
         ‖pauliCoeff (U : Matrix (FiniteQubitConfiguration (Fin n))
-          (FiniteQubitConfiguration (Fin n)) ℂ) P‖ ^ 2) = 1 := by
+          (FiniteQubitConfiguration (Fin n)) ℂ) P‖ ^ (2 : ℕ)) = 1 := by
   let A : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ := U
   have hparseval := frobSq_pauliCombination (pauliCoeff A)
@@ -170,17 +170,17 @@ theorem unitary_nonzero_pauliCoeff_mass_eq_traceDeficit
     (∑ P : NonzeroPauliCharacter (Fin n),
         ‖pauliCoeff
           (U : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ) P.1‖ ^ 2) =
+            (FiniteQubitConfiguration (Fin n)) ℂ) P.1‖ ^ (2 : ℕ)) =
       1 - ‖pauliCoeff
         (U : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)
-        pauliCharacterZero‖ ^ 2 := by
+        pauliCharacterZero‖ ^ (2 : ℕ) := by
   let A : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ := U
   have hsplit := sum_norm_pauliScalarShiftCoefficient_sq
     (pauliCoeff A) 0
   simp only [pauliScalarShiftCoefficient, sub_zero, ite_self] at hsplit
-  have htotal : (∑ P : Fin n → Option (Fin 3), ‖pauliCoeff A P‖ ^ 2) = 1 :=
+  have htotal : (∑ P : Fin n → Option (Fin 3), ‖pauliCoeff A P‖ ^ (2 : ℕ)) = 1 :=
     unitary_pauliCoeff_total_mass_eq_one U
   simp only [A] at hsplit htotal ⊢
   rw [htotal] at hsplit
@@ -200,12 +200,12 @@ theorem unitary_scalarDistance_ratio_eq_traceDeficit
       1 - ‖pauliCoeff
         (U : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)
-        pauliCharacterZero‖ ^ 2 := by
+        pauliCharacterZero‖ ^ (2 : ℕ) := by
   let A : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ := U
   have hnonzero :
-      (∑ P : NonzeroPauliCharacter (Fin n), ‖pauliCoeff A P.1‖ ^ 2) =
-        1 - ‖pauliCoeff A pauliCharacterZero‖ ^ 2 := by
+      (∑ P : NonzeroPauliCharacter (Fin n), ‖pauliCoeff A P.1‖ ^ (2 : ℕ)) =
+        1 - ‖pauliCoeff A pauliCharacterZero‖ ^ (2 : ℕ) := by
     simpa only [A] using unitary_nonzero_pauliCoeff_mass_eq_traceDeficit U
   rw [frobSq_sub_pauliScalarPart, frobSq_unitaryGroup_finiteQubit U]
   simp only [Fintype.card_fin, A] at hnonzero ⊢
@@ -221,7 +221,7 @@ theorem twoLocalPauliCommutatorDirectionEnergyRatio_unitary_ge_traceDeficit
         (1 - ‖pauliCoeff
           (U : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)
-          pauliCharacterZero‖ ^ 2) ≤
+          pauliCharacterZero‖ ^ (2 : ℕ)) ≤
       boundedLocalPauliCommutatorDirectionEnergyRatio (q := 2)
         (U : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ) := by
@@ -238,8 +238,8 @@ theorem twoLocalPauliCommutatorDirectionEnergyRatio_unitary_ge_normalizedTraceDe
     ((n - 1 : ℕ) : ℝ) *
         (1 - ‖Matrix.trace
           (U : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-          ((2 : ℝ) ^ n) ^ 2) ≤
+            (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+          ((2 : ℝ) ^ n) ^ (2 : ℕ)) ≤
       boundedLocalPauliCommutatorDirectionEnergyRatio (q := 2)
         (U : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ) := by

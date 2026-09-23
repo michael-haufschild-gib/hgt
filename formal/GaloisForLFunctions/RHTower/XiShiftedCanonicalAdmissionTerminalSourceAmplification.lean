@@ -11,7 +11,7 @@ reciprocal is the inertia of the already-formed vacuum-free mixed/completed `P^s
 
 For every finite positive block, the dimensionless terminal source at a current node satisfies
 
-`resistance * dimensionless source = hard coordinate ^ 4`.
+`resistance * dimensionless source = hard coordinate ^ (4 : ℕ)`.
 
 Sedrakyan--Cauchy therefore makes total dimensionless source dominate the square of total
 hard-root quadratic energy.  After exact reciprocal-mass transport this dominates squared
@@ -32,7 +32,7 @@ noncomputable section
 /-- Terminal source in the intrinsic hard chart, normalized by the preceding admitted norm. -/
 def gaussDimensionlessHardEdgeTerminalSourceMass
     (y : ℝ) (s : ℕ → ℝ) (m : ℕ) (x : ℝ) : ℝ :=
-  y ^ 3 * xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
+  y ^ (3 : ℕ) * xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
       (HTGeometry.monicOrtho s (m + 1)) x /
     HTGeometry.monicOrthoNormSq s m
 
@@ -44,7 +44,7 @@ theorem gaussTerminalSourceResistance_mul_dimensionlessTerminalSourceMass_eq
     (hroot : (HTGeometry.monicOrtho s (m + 1)).eval x = 0) :
     HTGeometry.gaussTerminalSourceResistance s m x *
         gaussDimensionlessHardEdgeTerminalSourceMass y s m x =
-      (y * x) ^ 4 := by
+      (y * x) ^ (4 : ℕ) := by
   have hsource := gaussTerminalSourceResistance_mul_hardEdgeTerminalMass_eq
     h hmN y hroot
   have hnorm : HTGeometry.monicOrthoNormSq s m ≠ 0 :=
@@ -52,17 +52,17 @@ theorem gaussTerminalSourceResistance_mul_dimensionlessTerminalSourceMass_eq
   unfold gaussDimensionlessHardEdgeTerminalSourceMass
   calc
     HTGeometry.gaussTerminalSourceResistance s m x *
-          (y ^ 3 * xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
+          (y ^ (3 : ℕ) * xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
               (HTGeometry.monicOrtho s (m + 1)) x /
             HTGeometry.monicOrthoNormSq s m) =
-        y ^ 3 *
+        y ^ (3 : ℕ) *
             (HTGeometry.gaussTerminalSourceResistance s m x *
               xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
                 (HTGeometry.monicOrtho s (m + 1)) x) /
           HTGeometry.monicOrthoNormSq s m := by ring
-    _ = y ^ 3 * (y * x ^ 4 * HTGeometry.monicOrthoNormSq s m) /
+    _ = y ^ (3 : ℕ) * (y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m) /
           HTGeometry.monicOrthoNormSq s m := by rw [hsource]
-    _ = (y * x) ^ 4 := by field_simp [hnorm]
+    _ = (y * x) ^ (4 : ℕ) := by field_simp [hnorm]
 
 /-- **Super-apex source amplification.**  A current Gauss node beyond the moving hard apex
 `y*x = 1` carries more than one full intrinsic terminal-source quantum.  The proof uses the
@@ -89,14 +89,14 @@ theorem one_lt_gaussDimensionlessHardEdgeTerminalSourceMass_of_superApex
   have hrsum : ∑ z ∈ nodes, r z = 1 :=
     HTGeometry.sum_gaussTerminalSourceResistance_eq_one h hmN
   have hrle : r x ≤ 1 := by simpa only [hrsum] using hrleSum
-  have hproduct : r x * source = (y * x) ^ 4 := by
+  have hproduct : r x * source = (y * x) ^ (4 : ℕ) := by
     simpa only [r, source] using
       gaussTerminalSourceResistance_mul_dimensionlessTerminalSourceMass_eq
         h hmN (y := y) hroot
-  have hsq : 1 < (y * x) ^ 2 := by
+  have hsq : 1 < (y * x) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hsuper) (by linarith : 0 < y * x + 1)]
-  have hfourth : 1 < (y * x) ^ 4 := by
-    nlinarith [mul_pos (sub_pos.mpr hsq) (by linarith : 0 < (y * x) ^ 2 + 1)]
+  have hfourth : 1 < (y * x) ^ (4 : ℕ) := by
+    nlinarith [mul_pos (sub_pos.mpr hsq) (by linarith : 0 < (y * x) ^ (2 : ℕ) + 1)]
   by_contra hnot
   have hsourceLe : source ≤ 1 := le_of_not_gt hnot
   have hproductLe : r x * source ≤ 1 := by
@@ -113,7 +113,7 @@ divided by; zero hard nodes are permitted. -/
 theorem hardCoordinateQuadraticEnergy_sq_le_sum_dimensionlessTerminalSourceMass
     {s : ℕ → ℝ} {N m : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hmN : m + 1 < N) (y : ℝ) :
-    (∑ x ∈ HTGeometry.gaussNodes s m, (y * x) ^ 2) ^ 2 ≤
+    (∑ x ∈ HTGeometry.gaussNodes s m, (y * x) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
       ∑ x ∈ HTGeometry.gaussNodes s m,
         gaussDimensionlessHardEdgeTerminalSourceMass y s m x := by
   let nodes := HTGeometry.gaussNodes s m
@@ -123,13 +123,13 @@ theorem hardCoordinateQuadraticEnergy_sq_le_sum_dimensionlessTerminalSourceMass
     exact HTGeometry.gaussTerminalSourceResistance_pos h hmN
       ((HTGeometry.mem_gaussNodes_iff m x).mp hx)
   have hcauchy := Finset.sq_sum_div_le_sum_sq_div nodes
-    (fun x => (y * x) ^ 2) hrpos
+    (fun x => (y * x) ^ (2 : ℕ)) hrpos
   have hrsum : ∑ x ∈ nodes, r x = 1 :=
     HTGeometry.sum_gaussTerminalSourceResistance_eq_one h hmN
   rw [hrsum, div_one] at hcauchy
   calc
-    (∑ x ∈ HTGeometry.gaussNodes s m, (y * x) ^ 2) ^ 2 ≤
-        ∑ x ∈ nodes, ((y * x) ^ 2) ^ 2 / r x := by
+    (∑ x ∈ HTGeometry.gaussNodes s m, (y * x) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        ∑ x ∈ nodes, ((y * x) ^ (2 : ℕ)) ^ (2 : ℕ) / r x := by
       simpa only [nodes, r] using hcauchy
     _ = ∑ x ∈ HTGeometry.gaussNodes s m,
         gaussDimensionlessHardEdgeTerminalSourceMass y s m x := by
@@ -141,7 +141,7 @@ theorem hardCoordinateQuadraticEnergy_sq_le_sum_dimensionlessTerminalSourceMass
         h hmN (y := y) hroot
       have hrne : HTGeometry.gaussTerminalSourceResistance s m x ≠ 0 :=
         ne_of_gt (HTGeometry.gaussTerminalSourceResistance_pos h hmN hroot)
-      rw [show ((y * x) ^ 2) ^ 2 = (y * x) ^ 4 by ring]
+      rw [show ((y * x) ^ (2 : ℕ)) ^ (2 : ℕ) = (y * x) ^ (4 : ℕ) by ring]
       apply (div_eq_iff hrne).2
       simpa only [mul_comm] using hpoint.symm
 
@@ -151,7 +151,7 @@ theorem mass_mul_norm_mul_gaussNodeQuadraticEnergy_sq_le_sum_terminalSourceMass
     {s : ℕ → ℝ} {N m : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hmN : m + 1 < N) {y : ℝ} (hy : 0 ≤ y) :
     y * HTGeometry.monicOrthoNormSq s m *
-        (∑ x ∈ HTGeometry.gaussNodes s m, x ^ 2) ^ 2 ≤
+        (∑ x ∈ HTGeometry.gaussNodes s m, x ^ (2 : ℕ)) ^ (2 : ℕ) ≤
       ∑ x ∈ HTGeometry.gaussNodes s m,
         xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
           (HTGeometry.monicOrtho s (m + 1)) x := by
@@ -161,7 +161,7 @@ theorem mass_mul_norm_mul_gaussNodeQuadraticEnergy_sq_le_sum_terminalSourceMass
     intro x hx
     exact HTGeometry.gaussTerminalSourceResistance_pos h hmN
       ((HTGeometry.mem_gaussNodes_iff m x).mp hx)
-  have hcauchy := Finset.sq_sum_div_le_sum_sq_div nodes (fun x => x ^ 2) hrpos
+  have hcauchy := Finset.sq_sum_div_le_sum_sq_div nodes (fun x => x ^ (2 : ℕ)) hrpos
   have hrsum : ∑ x ∈ nodes, r x = 1 :=
     HTGeometry.sum_gaussTerminalSourceResistance_eq_one h hmN
   rw [hrsum, div_one] at hcauchy
@@ -169,9 +169,9 @@ theorem mass_mul_norm_mul_gaussNodeQuadraticEnergy_sq_le_sum_terminalSourceMass
     (HTGeometry.monicOrthoNorm_pos_below h (by omega)).le
   calc
     y * HTGeometry.monicOrthoNormSq s m *
-          (∑ x ∈ HTGeometry.gaussNodes s m, x ^ 2) ^ 2 ≤
+          (∑ x ∈ HTGeometry.gaussNodes s m, x ^ (2 : ℕ)) ^ (2 : ℕ) ≤
         y * HTGeometry.monicOrthoNormSq s m *
-          (∑ x ∈ nodes, (x ^ 2) ^ 2 / r x) := by
+          (∑ x ∈ nodes, (x ^ (2 : ℕ)) ^ (2 : ℕ) / r x) := by
       exact mul_le_mul_of_nonneg_left (by simpa only [nodes, r] using hcauchy)
         (mul_nonneg hy hnormnonneg)
     _ = ∑ x ∈ HTGeometry.gaussNodes s m,
@@ -186,7 +186,7 @@ theorem mass_mul_norm_mul_gaussNodeQuadraticEnergy_sq_le_sum_terminalSourceMass
         h hmN y hroot
       have hrne : HTGeometry.gaussTerminalSourceResistance s m x ≠ 0 :=
         ne_of_gt (HTGeometry.gaussTerminalSourceResistance_pos h hmN hroot)
-      rw [show (x ^ 2) ^ 2 = x ^ 4 by ring]
+      rw [show (x ^ (2 : ℕ)) ^ (2 : ℕ) = x ^ (4 : ℕ) by ring]
       dsimp only [r]
       field_simp [hrne]
       simpa only [mul_comm, mul_left_comm, mul_assoc] using hsource.symm
@@ -203,7 +203,7 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_eq_beta_mul_terminalResista
       (HTGeometry.monicMomentAdmissionPolynomial
         (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds y]
           fun _ => 0) :
-    (x y) ^ 2 * (-xdot / (x y) ^ 2 - 1) =
+    (x y) ^ (2 : ℕ) * (-xdot / (x y) ^ (2 : ℕ) - 1) =
       2 * (n : ℝ) * HTGeometry.monicOrthoBeta
           (fun k => (xiShiftedReciprocalMoment y k).re) n *
         HTGeometry.gaussTerminalSourceResistance
@@ -226,7 +226,7 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_eq_beta_mul_terminalResista
       hy (by omega : 0 < m + 1) hH hx hx0 hroot
   have hres0 := gaussTerminalSourceResistance_mul_hardEdgeTerminalMass_eq
     hbelow (by omega : m + 1 < m + 3) y hrootOrtho
-  have hres : r * Gamma = y * (x y) ^ 4 * HTGeometry.monicOrthoNormSq s m := by
+  have hres : r * Gamma = y * (x y) ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m := by
     simpa only [r, Gamma, hP] using hres0
   have hnorm := HTGeometry.monicOrthoNormSq_mul_nextBeta hbelow
     (n := m) (by omega : m + 1 < m + 3)
@@ -235,18 +235,18 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_eq_beta_mul_terminalResista
   have hGamma : Gamma ≠ 0 := by
     intro hzero
     rw [hzero, mul_zero] at hres
-    have hrhs : 0 < y * (x y) ^ 4 * HTGeometry.monicOrthoNormSq s m := by
+    have hrhs : 0 < y * (x y) ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m := by
       positivity
     linarith
   apply (mul_right_cancel₀ hGamma)
   calc
-    ((x y) ^ 2 * (-xdot / (x y) ^ 2 - 1)) * Gamma =
-        (x y) ^ 2 *
-          ((-xdot / (x y) ^ 2 - 1) * Gamma) := by ring
-    _ = (x y) ^ 2 *
-        (2 * ((m + 1 : ℕ) : ℝ) * y * (x y) ^ 2 *
+    ((x y) ^ (2 : ℕ) * (-xdot / (x y) ^ (2 : ℕ) - 1)) * Gamma =
+        (x y) ^ (2 : ℕ) *
+          ((-xdot / (x y) ^ (2 : ℕ) - 1) * Gamma) := by ring
+    _ = (x y) ^ (2 : ℕ) *
+        (2 * ((m + 1 : ℕ) : ℝ) * y * (x y) ^ (2 : ℕ) *
           HTGeometry.monicOrthoNormSq s (m + 1)) := by
-      simpa only [Gamma, P, s] using congrArg (fun z => (x y) ^ 2 * z) hworld
+      simpa only [Gamma, P, s] using congrArg (fun z => (x y) ^ (2 : ℕ) * z) hworld
     _ = 2 * ((m + 1 : ℕ) : ℝ) * beta * (r * Gamma) := by
       rw [hres, ← hnorm]
       ring
@@ -265,17 +265,17 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_dimensionlessTerminalSo
       (HTGeometry.monicMomentAdmissionPolynomial
         (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds y]
           fun _ => 0) :
-    (-xdot / (x y) ^ 2 - 1) *
+    (-xdot / (x y) ^ (2 : ℕ) - 1) *
         gaussDimensionlessHardEdgeTerminalSourceMass y
           (fun k => (xiShiftedReciprocalMoment y k).re) (n - 1) (x y) =
       2 * (n : ℝ) *
         HTGeometry.monicOrthoBeta
           (fun k => (xiShiftedReciprocalMoment y k).re) n *
-        y ^ 4 * (x y) ^ 2 := by
+        y ^ (4 : ℕ) * (x y) ^ (2 : ℕ) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let r := HTGeometry.gaussTerminalSourceResistance s (n - 1) (x y)
   let source := gaussDimensionlessHardEdgeTerminalSourceMass y s (n - 1) (x y)
-  let velocity := -xdot / (x y) ^ 2 - 1
+  let velocity := -xdot / (x y) ^ (2 : ℕ) - 1
   let beta := HTGeometry.monicOrthoBeta s n
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hP : HTGeometry.monicMomentAdmissionPolynomial s n =
@@ -289,25 +289,25 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_dimensionlessTerminalSo
   have hmobility :=
     xiShiftedCanonicalAdmissionHardEdgeWorldline_eq_beta_mul_terminalResistance
       hy hn hH hx hx0 hroot
-  have hmobility' : (x y) ^ 2 * velocity = 2 * (n : ℝ) * beta * r := by
+  have hmobility' : (x y) ^ (2 : ℕ) * velocity = 2 * (n : ℝ) * beta * r := by
     simpa only [velocity, beta, r, s] using hmobility
   have hrootOrtho' :
       (HTGeometry.monicOrtho s (n - 1 + 1)).eval (x y) = 0 := by
     simpa only [show n - 1 + 1 = n by omega] using hrootOrtho
-  have hduality : r * source = (y * x y) ^ 4 := by
+  have hduality : r * source = (y * x y) ^ (4 : ℕ) := by
     simpa only [r, source, show n - 1 + 1 = n by omega, s] using
       gaussTerminalSourceResistance_mul_dimensionlessTerminalSourceMass_eq
         hbelow (m := n - 1) (by omega : n - 1 + 1 < n + 2)
           (y := y) hrootOrtho'
   apply mul_left_cancel₀ (pow_ne_zero 2 hx0)
   calc
-    (x y) ^ 2 * (velocity * source) =
-        ((x y) ^ 2 * velocity) * source := by ring
+    (x y) ^ (2 : ℕ) * (velocity * source) =
+        ((x y) ^ (2 : ℕ) * velocity) * source := by ring
     _ = (2 * (n : ℝ) * beta * r) * source := by rw [hmobility']
     _ = 2 * (n : ℝ) * beta * (r * source) := by ring
-    _ = 2 * (n : ℝ) * beta * (y * x y) ^ 4 := by rw [hduality]
-    _ = (x y) ^ 2 *
-        (2 * (n : ℝ) * beta * y ^ 4 * (x y) ^ 2) := by ring
+    _ = 2 * (n : ℝ) * beta * (y * x y) ^ (4 : ℕ) := by rw [hduality]
+    _ = (x y) ^ (2 : ℕ) *
+        (2 * (n : ℝ) * beta * y ^ (4 : ℕ) * (x y) ^ (2 : ℕ)) := by ring
 
 namespace XiShiftedCanonicalAdmission
 
@@ -316,7 +316,7 @@ theorem projectiveGaussRootSpread_le_gaussNodeQuadraticEnergy
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n < N) :
     projectiveGaussRootSpread s n ≤
-      ∑ x ∈ HTGeometry.gaussNodes s (n - 1), x ^ 2 := by
+      ∑ x ∈ HTGeometry.gaussNodes s (n - 1), x ^ (2 : ℕ) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
   simp only [Nat.succ_sub_one]
   rw [projectiveGaussRootSpread, HTGeometry.multisetQuadraticSpread,
@@ -324,7 +324,7 @@ theorem projectiveGaussRootSpread_le_gaussNodeQuadraticEnergy
     Multiset.dedup_eq_self.mpr
       (HTGeometry.monicOrtho_roots_nodup_below h hnN)]
   have hcenter : 0 ≤
-      (HTGeometry.monicOrtho s (m + 1)).roots.sum ^ 2 / ((m + 1 : ℕ) : ℝ) := by
+      (HTGeometry.monicOrtho s (m + 1)).roots.sum ^ (2 : ℕ) / ((m + 1 : ℕ) : ℝ) := by
     positivity
   linarith
 
@@ -334,7 +334,7 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
     (hA : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     projectiveGaussRootSpread (xiShiftedFarRightNormalizedMoment w) n =
-      w ^ 4 * projectiveGaussRootSpread (xiShiftedRealMomentSequence w) n := by
+      w ^ (4 : ℕ) * projectiveGaussRootSpread (xiShiftedRealMomentSequence w) n := by
   have hN0 := xiShiftedFarRightNormalizedHankelMatrix_posDef_of_actual hw (n + 2) hA
   have hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef := by
@@ -343,7 +343,7 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
   let hAbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hA
   have halpha : ∀ j ∈ Finset.range n,
       HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 2 * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
+        w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hjn : j < n := Finset.mem_range.mp hj
     have hNj : (HTGeometry.momentHankelMatrix
@@ -353,12 +353,12 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
         (xiShiftedRealMomentSequence w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA
     change HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedAlpha_eq_square_mul_actualAlpha hw j hNj hAj
   have hbeta : ∀ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 4 * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
+        w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hjn : j < n := Finset.mem_range.mp hj
     have hNj : (HTGeometry.momentHankelMatrix
@@ -368,13 +368,13 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
         (xiShiftedRealMomentSequence w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA
     change HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 4 * HTGeometry.monicOrthoBeta
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedBeta_eq_fourth_mul_actualBeta hw j hNj hAj
   have hsumAlpha :
       (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j) =
-      w ^ 2 * ∑ j ∈ Finset.range n,
+      w ^ (2 : ℕ) * ∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -382,9 +382,9 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
     rw [halpha j hj]
   have hsumAlphaSq :
       (∑ j ∈ Finset.range n,
-        HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j ^ 2) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
-        HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j ^ 2 := by
+        HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j ^ (2 : ℕ)) =
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
+        HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro j hj
@@ -393,7 +393,7 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
   have hsumBeta :
       (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -411,7 +411,7 @@ theorem projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
 def xiShiftedCanonicalAdmissionDimensionlessTerminalSourceMassAggregate
     (w : ℝ) (n : ℕ) : ℝ :=
   ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
-    gaussDimensionlessHardEdgeTerminalSourceMass (w ^ 2)
+    gaussDimensionlessHardEdgeTerminalSourceMass (w ^ (2 : ℕ))
       (xiShiftedRealMomentSequence w) (n - 1) x
 
 /-- **Projective spread forces completed-source amplification.**  In every finite positive
@@ -420,11 +420,11 @@ theorem projectiveGaussRootSpread_sq_le_dimensionlessTerminalSourceMassAggregate
     {w : ℝ} (hw : 1 < w) {n : ℕ} (hn : 2 ≤ n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    projectiveGaussRootSpread (xiShiftedFarRightNormalizedMoment w) n ^ 2 ≤
+    projectiveGaussRootSpread (xiShiftedFarRightNormalizedMoment w) n ^ (2 : ℕ) ≤
       xiShiftedCanonicalAdmissionDimensionlessTerminalSourceMassAggregate w n := by
   let s := xiShiftedRealMomentSequence w
   let spread := projectiveGaussRootSpread s n
-  let energy := ∑ x ∈ HTGeometry.gaussNodes s (n - 1), (w ^ 2 * x) ^ 2
+  let energy := ∑ x ∈ HTGeometry.gaussNodes s (n - 1), (w ^ (2 : ℕ) * x) ^ (2 : ℕ)
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hspreadScale := projectiveGaussRootSpread_normalized_eq_fourth_mul_actual
     hw hn hH
@@ -435,24 +435,24 @@ theorem projectiveGaussRootSpread_sq_le_dimensionlessTerminalSourceMassAggregate
   have henergyNonneg : 0 ≤ energy := by
     dsimp only [energy]
     exact Finset.sum_nonneg fun _ _ => sq_nonneg _
-  have henergyEq : energy = w ^ 4 *
-      (∑ x ∈ HTGeometry.gaussNodes s (n - 1), x ^ 2) := by
+  have henergyEq : energy = w ^ (4 : ℕ) *
+      (∑ x ∈ HTGeometry.gaussNodes s (n - 1), x ^ (2 : ℕ)) := by
     dsimp only [energy]
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro x hx
     ring
-  have hw4 : 0 ≤ w ^ 4 := by positivity
-  have hscaledLe : w ^ 4 * spread ≤ energy := by
+  have hw4 : 0 ≤ w ^ (4 : ℕ) := by positivity
+  have hscaledLe : w ^ (4 : ℕ) * spread ≤ energy := by
     rw [henergyEq]
     exact mul_le_mul_of_nonneg_left hspreadLe hw4
-  have hscaledNonneg : 0 ≤ w ^ 4 * spread := mul_nonneg hw4 hspreadNonneg
-  have hsquares : (w ^ 4 * spread) ^ 2 ≤ energy ^ 2 := by
-    have hproduct : 0 ≤ (energy - w ^ 4 * spread) * (energy + w ^ 4 * spread) :=
+  have hscaledNonneg : 0 ≤ w ^ (4 : ℕ) * spread := mul_nonneg hw4 hspreadNonneg
+  have hsquares : (w ^ (4 : ℕ) * spread) ^ (2 : ℕ) ≤ energy ^ (2 : ℕ) := by
+    have hproduct : 0 ≤ (energy - w ^ (4 : ℕ) * spread) * (energy + w ^ (4 : ℕ) * spread) :=
       mul_nonneg (sub_nonneg.mpr hscaledLe) (add_nonneg henergyNonneg hscaledNonneg)
     nlinarith
   have haggregate := hardCoordinateQuadraticEnergy_sq_le_sum_dimensionlessTerminalSourceMass
-    hbelow (m := n - 1) (by omega : n - 1 + 1 < n + 2) (w ^ 2)
+    hbelow (m := n - 1) (by omega : n - 1 + 1 < n + 2) (w ^ (2 : ℕ))
   rw [hspreadScale]
   exact hsquares.trans (by
     simpa only [energy, spread, s,
@@ -463,7 +463,7 @@ capacity of the current/adjacent vacuum-free mixed/completed `P^sharp` producer 
 all-root aggregation. -/
 def xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass
     (w : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  (w ^ 2) ^ 3 *
+  (w ^ (2 : ℕ)) ^ (3 : ℕ) *
       (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
         xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
           w n x) /
@@ -480,7 +480,7 @@ theorem one_lt_dimensionlessVacuumFreeCompletedSourceMass_of_superApex
     {x : ℝ}
     (hroot : (HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n).eval x = 0)
-    (hsuper : 1 < w ^ 2 * x) :
+    (hsuper : 1 < w ^ (2 : ℕ) * x) :
     1 < xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass w n x := by
   let s := xiShiftedRealMomentSequence w
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -496,7 +496,7 @@ theorem one_lt_dimensionlessVacuumFreeCompletedSourceMass_of_superApex
     linarith
   have hgeneric := one_lt_gaussDimensionlessHardEdgeTerminalSourceMass_of_superApex
     hbelow (m := n - 1) (by omega : n - 1 + 1 < n + 2)
-      (y := w ^ 2) (by simpa only [show n - 1 + 1 = n by omega] using hrootOrtho)
+      (y := w ^ (2 : ℕ)) (by simpa only [show n - 1 + 1 = n by omega] using hrootOrtho)
       hsuper
   have hsource :=
     xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_unitRenormalizedNondegenerateEffectiveSourceCapacity_eq_terminalMass
@@ -515,25 +515,25 @@ theorem hardEdgeWorldline_mul_dimensionlessVacuumFreeCompletedSourceMass_eq
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
-    (-xdot / (x (w ^ 2)) ^ 2 - 1) *
+    (-xdot / (x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1) *
         xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass
-          w n (x (w ^ 2)) =
+          w n (x (w ^ (2 : ℕ))) =
       2 * (n : ℝ) *
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-      (w ^ 2) ^ 4 * (x (w ^ 2)) ^ 2 := by
+      (w ^ (2 : ℕ)) ^ (4 : ℕ) * (x (w ^ (2 : ℕ))) ^ (2 : ℕ) := by
   let s := xiShiftedRealMomentSequence w
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (lt_trans (by norm_num) hw)
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (lt_trans (by norm_num) hw)
   have hgeneric :=
     xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_dimensionlessTerminalSourceMass_eq
       hy hn hH hx hx0 hroot
   have hroot0 :
-      (HTGeometry.monicMomentAdmissionPolynomial s n).eval (x (w ^ 2)) = 0 :=
+      (HTGeometry.monicMomentAdmissionPolynomial s n).eval (x (w ^ (2 : ℕ))) = 0 :=
     hroot.eq_of_nhds
   have hP : HTGeometry.monicMomentAdmissionPolynomial s n =
       HTGeometry.monicOrtho s n :=
@@ -543,9 +543,9 @@ theorem hardEdgeWorldline_mul_dimensionlessVacuumFreeCompletedSourceMass_eq
       (w := w) (n := n) hx0 hroot0
   have hmassEq :
       xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass
-          w n (x (w ^ 2)) =
-        gaussDimensionlessHardEdgeTerminalSourceMass (w ^ 2) s (n - 1)
-          (x (w ^ 2)) := by
+          w n (x (w ^ (2 : ℕ))) =
+        gaussDimensionlessHardEdgeTerminalSourceMass (w ^ (2 : ℕ)) s (n - 1)
+          (x (w ^ (2 : ℕ))) := by
     unfold xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass
     rw [hsource]
     simp only [xiShiftedCanonicalAdmissionHardEdgeGaussTerminalMass]
@@ -553,12 +553,12 @@ theorem hardEdgeWorldline_mul_dimensionlessVacuumFreeCompletedSourceMass_eq
     unfold gaussDimensionlessHardEdgeTerminalSourceMass
     simp only [show n - 1 + 1 = n by omega, s]
   rw [hmassEq]
-  change (-xdot / (x (w ^ 2)) ^ 2 - 1) *
-      gaussDimensionlessHardEdgeTerminalSourceMass (w ^ 2)
-        (xiShiftedRealMomentSequence w) (n - 1) (x (w ^ 2)) =
+  change (-xdot / (x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1) *
+      gaussDimensionlessHardEdgeTerminalSourceMass (w ^ (2 : ℕ))
+        (xiShiftedRealMomentSequence w) (n - 1) (x (w ^ (2 : ℕ))) =
     2 * (n : ℝ) *
       HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-      (w ^ 2) ^ 4 * (x (w ^ 2)) ^ 2 at hgeneric
+      (w ^ (2 : ℕ)) ^ (4 : ℕ) * (x (w ^ (2 : ℕ))) ^ (2 : ℕ) at hgeneric
   exact hgeneric
 
 /-- Source action after subtracting the intrinsic moving-apex vacuum.  This is built from the
@@ -566,27 +566,27 @@ literal current/adjacent completed-source product and actual root velocity, not 
 orientation functional. -/
 def apexCenteredDimensionlessVacuumFreeCompletedSourceAction
     (w : ℝ) (n : ℕ) (x xdot : ℝ) : ℝ :=
-  (-xdot / x ^ 2 - 1) *
+  (-xdot / x ^ (2 : ℕ) - 1) *
       xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass w n x -
     2 * (n : ℝ) *
-      HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n * (w ^ 2) ^ 2
+      HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n * (w ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- Exact moving-apex polarization of literal completed-source work. -/
 theorem apexCenteredDimensionlessVacuumFreeCompletedSourceAction_eq
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
     apexCenteredDimensionlessVacuumFreeCompletedSourceAction
-        w n (x (w ^ 2)) xdot =
+        w n (x (w ^ (2 : ℕ))) xdot =
       2 * (n : ℝ) *
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-        (w ^ 2) ^ 2 * ((w ^ 2 * x (w ^ 2)) ^ 2 - 1) := by
+        (w ^ (2 : ℕ)) ^ (2 : ℕ) * ((w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1) := by
   rw [apexCenteredDimensionlessVacuumFreeCompletedSourceAction,
     hardEdgeWorldline_mul_dimensionlessVacuumFreeCompletedSourceMass_eq
       hw hn hH hx hx0 hroot]
@@ -598,38 +598,38 @@ theorem apexCenteredDimensionlessVacuumFreeCompletedSourceAction_eq_neg_hardCoor
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
     apexCenteredDimensionlessVacuumFreeCompletedSourceAction
-        w n (x (w ^ 2)) xdot =
+        w n (x (w ^ (2 : ℕ))) xdot =
       -(2 * (n : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-          (w ^ 2) ^ 2 * x (w ^ 2) * (w ^ 2 * x (w ^ 2) + 1)) *
-        ((x (w ^ 2))⁻¹ - w ^ 2) := by
+          (w ^ (2 : ℕ)) ^ (2 : ℕ) * x (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1)) *
+        ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) := by
   rw [apexCenteredDimensionlessVacuumFreeCompletedSourceAction_eq
     hw hn hH hx hx0 hroot]
   have hcore :
-      (w ^ 2 * x (w ^ 2)) ^ 2 - 1 =
-        -x (w ^ 2) * (w ^ 2 * x (w ^ 2) + 1) *
-          ((x (w ^ 2))⁻¹ - w ^ 2) := by
+      (w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1 =
+        -x (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1) *
+          ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) := by
     have hlinear :
-        w ^ 2 * x (w ^ 2) - 1 =
-          -x (w ^ 2) * ((x (w ^ 2))⁻¹ - w ^ 2) := by
+        w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) - 1 =
+          -x (w ^ (2 : ℕ)) * ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) := by
       calc
-        w ^ 2 * x (w ^ 2) - 1 =
-            w ^ 2 * x (w ^ 2) - x (w ^ 2) * (x (w ^ 2))⁻¹ := by
+        w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) - 1 =
+            w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) - x (w ^ (2 : ℕ)) * (x (w ^ (2 : ℕ)))⁻¹ := by
           rw [mul_inv_cancel₀ hx0]
-        _ = -x (w ^ 2) * ((x (w ^ 2))⁻¹ - w ^ 2) := by ring
+        _ = -x (w ^ (2 : ℕ)) * ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) := by ring
     calc
-      (w ^ 2 * x (w ^ 2)) ^ 2 - 1 =
-          (w ^ 2 * x (w ^ 2) - 1) *
-            (w ^ 2 * x (w ^ 2) + 1) := by ring
-      _ = -x (w ^ 2) * (w ^ 2 * x (w ^ 2) + 1) *
-          ((x (w ^ 2))⁻¹ - w ^ 2) := by rw [hlinear]; ring
+      (w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1 =
+          (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) - 1) *
+            (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1) := by ring
+      _ = -x (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1) *
+          ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) := by rw [hlinear]; ring
   rw [hcore]
   ring
 
@@ -639,35 +639,35 @@ theorem apexCenteredDimensionlessVacuumFreeCompletedSourceAction_pos_iff_neg_har
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hxpos : 0 < x (w ^ 2))
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hxpos : 0 < x (w ^ (2 : ℕ)))
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
     0 < apexCenteredDimensionlessVacuumFreeCompletedSourceAction
-        w n (x (w ^ 2)) xdot ↔
-      (x (w ^ 2))⁻¹ - w ^ 2 < 0 := by
+        w n (x (w ^ (2 : ℕ))) xdot ↔
+      (x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ) < 0 := by
   rw [apexCenteredDimensionlessVacuumFreeCompletedSourceAction_eq_neg_hardCoordinate
     hw hn hH hx hxpos.ne' hroot]
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hbeta : 0 < HTGeometry.monicOrthoBeta
       (xiShiftedRealMomentSequence w) n :=
     HTGeometry.monicOrthoBeta_pos_below hbelow hn (by omega)
-  have hw2 : 0 < w ^ 2 := sq_pos_of_pos (lt_trans (by norm_num) hw)
-  have hsum : 0 < w ^ 2 * x (w ^ 2) + 1 := by positivity
+  have hw2 : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (lt_trans (by norm_num) hw)
+  have hsum : 0 < w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1 := by positivity
   have hfactor : 0 < 2 * (n : ℝ) *
       HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-      (w ^ 2) ^ 2 * x (w ^ 2) * (w ^ 2 * x (w ^ 2) + 1) := by
+      (w ^ (2 : ℕ)) ^ (2 : ℕ) * x (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1) := by
     positivity
   constructor
   · intro hpos
     by_contra hnot
-    have hnonneg : 0 ≤ (x (w ^ 2))⁻¹ - w ^ 2 := le_of_not_gt hnot
+    have hnonneg : 0 ≤ (x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ) := le_of_not_gt hnot
     have : -(2 * (n : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-          (w ^ 2) ^ 2 * x (w ^ 2) * (w ^ 2 * x (w ^ 2) + 1)) *
-          ((x (w ^ 2))⁻¹ - w ^ 2) ≤ 0 :=
+          (w ^ (2 : ℕ)) ^ (2 : ℕ) * x (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1)) *
+          ((x (w ^ (2 : ℕ)))⁻¹ - w ^ (2 : ℕ)) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hfactor.le) hnonneg
     linarith
   · intro hneg
@@ -678,18 +678,18 @@ theorem apexCenteredDimensionlessVacuumFreeCompletedSourceAction_div_degreeEdgeM
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0) :
     apexCenteredDimensionlessVacuumFreeCompletedSourceAction
-          w n (x (w ^ 2)) xdot /
+          w n (x (w ^ (2 : ℕ))) xdot /
         (2 * (n : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-          (w ^ 2) ^ 2) =
-      (w ^ 2 * x (w ^ 2)) ^ 2 - 1 := by
+          (w ^ (2 : ℕ)) ^ (2 : ℕ)) =
+      (w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1 := by
   rw [apexCenteredDimensionlessVacuumFreeCompletedSourceAction_eq
     hw hn hH hx hx0 hroot]
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -698,7 +698,7 @@ theorem apexCenteredDimensionlessVacuumFreeCompletedSourceAction_div_degreeEdgeM
     HTGeometry.monicOrthoBeta_pos_below hbelow hn (by omega)
   have hfactor : 2 * (n : ℝ) *
       HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-      (w ^ 2) ^ 2 ≠ 0 := by positivity
+      (w ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0 := by positivity
   exact mul_div_cancel_left₀ _ hfactor
 
 /-- **Bounded hard-root survival in centered source coordinates.**  If mass tends to infinity and
@@ -709,29 +709,29 @@ theorem tendsto_mass_mul_apexCenteredHardSourceWork
     {y u : ℕ → ℝ} {d : ℝ}
     (hy : Tendsto y atTop atTop) (hu : Tendsto u atTop (nhds d)) :
     Tendsto (fun k =>
-      y k * ((y k * (y k + u k)⁻¹) ^ 2 - 1))
+      y k * ((y k * (y k + u k)⁻¹) ^ (2 : ℕ) - 1))
       atTop (nhds (-2 * d)) := by
   have hyinv : Tendsto (fun k => (y k)⁻¹) atTop (nhds 0) :=
     tendsto_inv_atTop_zero.comp hy
   have huratio : Tendsto (fun k => u k * (y k)⁻¹) atTop (nhds 0) := by
     simpa only [Pi.mul_apply, mul_zero] using hu.mul hyinv
-  have hunum : Tendsto (fun k => -(2 * u k + u k ^ 2 * (y k)⁻¹))
+  have hunum : Tendsto (fun k => -(2 * u k + u k ^ (2 : ℕ) * (y k)⁻¹))
       atTop (nhds (-2 * d)) := by
-    have husqinv : Tendsto (fun k => u k ^ 2 * (y k)⁻¹) atTop (nhds 0) := by
+    have husqinv : Tendsto (fun k => u k ^ (2 : ℕ) * (y k)⁻¹) atTop (nhds 0) := by
       simpa only [Pi.mul_apply, Pi.pow_apply, mul_zero] using
         (hu.pow 2).mul hyinv
     simpa only [Pi.neg_apply, Pi.add_apply, add_zero, neg_mul] using
       ((hu.const_mul 2).add husqinv).neg
-  have hden : Tendsto (fun k => (1 + u k * (y k)⁻¹) ^ 2)
+  have hden : Tendsto (fun k => (1 + u k * (y k)⁻¹) ^ (2 : ℕ))
       atTop (nhds 1) := by
     simpa only [Pi.add_apply, Pi.pow_apply, add_zero, one_pow] using
       ((tendsto_const_nhds (x := (1 : ℝ))).add huratio).pow 2
   have hquot : Tendsto (fun k =>
-      -(2 * u k + u k ^ 2 * (y k)⁻¹) /
-        (1 + u k * (y k)⁻¹) ^ 2) atTop (nhds (-2 * d)) := by
+      -(2 * u k + u k ^ (2 : ℕ) * (y k)⁻¹) /
+        (1 + u k * (y k)⁻¹) ^ (2 : ℕ)) atTop (nhds (-2 * d)) := by
     change Tendsto
-      ((fun k : ℕ => -(2 * u k + u k ^ 2 * (y k)⁻¹)) /
-        (fun k : ℕ => (1 + u k * (y k)⁻¹) ^ 2))
+      ((fun k : ℕ => -(2 * u k + u k ^ (2 : ℕ) * (y k)⁻¹)) /
+        (fun k : ℕ => (1 + u k * (y k)⁻¹) ^ (2 : ℕ)))
       atTop (nhds (-2 * d))
     simpa only [div_one] using
       hunum.div hden (by norm_num : (1 : ℝ) ≠ 0)
@@ -752,23 +752,23 @@ theorem tendsto_mass_mul_normalizedApexCenteredVacuumFreeCompletedSourceAction
     (hw : ∀ k, 1 / 2 < w k) (hn : ∀ k, 0 < n k)
     (hH : ∀ k, (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (w k)) (n k + 2)).PosDef)
-    (hx : ∀ k, HasDerivAt (x k) (xdot k) (w k ^ 2))
-    (hx0 : ∀ k, x k (w k ^ 2) ≠ 0)
+    (hx : ∀ k, HasDerivAt (x k) (xdot k) (w k ^ (2 : ℕ)))
+    (hx0 : ∀ k, x k (w k ^ (2 : ℕ)) ≠ 0)
     (hroot : ∀ k,
       (fun v =>
         (HTGeometry.monicMomentAdmissionPolynomial
           (fun j => (xiShiftedReciprocalMoment v j).re) (n k)).eval (x k v))
-        =ᶠ[nhds (w k ^ 2)] fun _ => 0)
-    (hcoord : ∀ k, x k (w k ^ 2) = (w k ^ 2 + u k)⁻¹)
-    (hmass : Tendsto (fun k => w k ^ 2) atTop atTop)
+        =ᶠ[nhds (w k ^ (2 : ℕ))] fun _ => 0)
+    (hcoord : ∀ k, x k (w k ^ (2 : ℕ)) = (w k ^ (2 : ℕ) + u k)⁻¹)
+    (hmass : Tendsto (fun k => w k ^ (2 : ℕ)) atTop atTop)
     (hu : Tendsto u atTop (nhds d)) :
     Tendsto (fun k =>
-      (w k ^ 2) *
+      (w k ^ (2 : ℕ)) *
         (apexCenteredDimensionlessVacuumFreeCompletedSourceAction
-            (w k) (n k) (x k (w k ^ 2)) (xdot k) /
+            (w k) (n k) (x k (w k ^ (2 : ℕ))) (xdot k) /
           (2 * (n k : ℝ) *
             HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence (w k)) (n k) *
-            (w k ^ 2) ^ 2)))
+            (w k ^ (2 : ℕ)) ^ (2 : ℕ))))
       atTop (nhds (-2 * d)) := by
   have hlimit := tendsto_mass_mul_apexCenteredHardSourceWork hmass hu
   apply hlimit.congr'
@@ -784,19 +784,19 @@ theorem degreeEdgeMassAction_lt_hardEdgeWorldline_mul_dimensionlessVacuumFreeCom
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
-    (hx0 : x (w ^ 2) ≠ 0)
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0)
-    (hsuper : 1 < w ^ 2 * x (w ^ 2)) :
+    (hsuper : 1 < w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) :
     2 * (n : ℝ) *
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-        (w ^ 2) ^ 2 <
-      (-xdot / (x (w ^ 2)) ^ 2 - 1) *
+        (w ^ (2 : ℕ)) ^ (2 : ℕ) <
+      (-xdot / (x (w ^ (2 : ℕ))) ^ (2 : ℕ) - 1) *
         xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceMass
-          w n (x (w ^ 2)) := by
+          w n (x (w ^ (2 : ℕ))) := by
   have haction :=
     hardEdgeWorldline_mul_dimensionlessVacuumFreeCompletedSourceMass_eq
       hw hn hH hx hx0 hroot
@@ -804,25 +804,25 @@ theorem degreeEdgeMassAction_lt_hardEdgeWorldline_mul_dimensionlessVacuumFreeCom
   have hbeta : 0 < HTGeometry.monicOrthoBeta
       (xiShiftedRealMomentSequence w) n :=
     HTGeometry.monicOrthoBeta_pos_below hbelow hn (by omega)
-  have hmass : 0 < w ^ 2 := sq_pos_of_pos (lt_trans (by norm_num) hw)
-  have ht2 : 1 < (w ^ 2 * x (w ^ 2)) ^ 2 := by
+  have hmass : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (lt_trans (by norm_num) hw)
+  have ht2 : 1 < (w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hsuper)
-      (by linarith : 0 < w ^ 2 * x (w ^ 2) + 1)]
+      (by linarith : 0 < w ^ (2 : ℕ) * x (w ^ (2 : ℕ)) + 1)]
   rw [haction]
   have hfactor : 0 < 2 * (n : ℝ) *
-      HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n * (w ^ 2) ^ 2 := by
+      HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n * (w ^ (2 : ℕ)) ^ (2 : ℕ) := by
     positivity
   calc
     2 * (n : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-          (w ^ 2) ^ 2 <
+          (w ^ (2 : ℕ)) ^ (2 : ℕ) <
         (2 * (n : ℝ) *
           HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-          (w ^ 2) ^ 2) * (w ^ 2 * x (w ^ 2)) ^ 2 := by
+          (w ^ (2 : ℕ)) ^ (2 : ℕ)) * (w ^ (2 : ℕ) * x (w ^ (2 : ℕ))) ^ (2 : ℕ) := by
       simpa only [mul_one] using mul_lt_mul_of_pos_left ht2 hfactor
     _ = 2 * (n : ℝ) *
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) n *
-        (w ^ 2) ^ 4 * (x (w ^ 2)) ^ 2 := by ring
+        (w ^ (2 : ℕ)) ^ (4 : ℕ) * (x (w ^ (2 : ℕ))) ^ (2 : ℕ) := by ring
 
 /-- Literal aggregate of Padé residue times endogenous vacuum-free mixed/completed `P^sharp`
 capacity, normalized in the intrinsic hard chart. -/
@@ -839,7 +839,7 @@ theorem projectiveGaussRootSpread_sq_le_dimensionlessVacuumFreeCompletedSourceAg
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
     (hnodes : ∀ x ∈ HTGeometry.gaussNodes
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) :
-    projectiveGaussRootSpread (xiShiftedFarRightNormalizedMoment w) n ^ 2 ≤
+    projectiveGaussRootSpread (xiShiftedFarRightNormalizedMoment w) n ^ (2 : ℕ) ≤
       xiShiftedCanonicalAdmissionDimensionlessVacuumFreeCompletedSourceAggregate w n := by
   have hbase := projectiveGaussRootSpread_sq_le_dimensionlessTerminalSourceMassAggregate
     hw hn hH
@@ -900,7 +900,7 @@ theorem tendsto_dimensionlessTerminalSourceMassAggregate_along_cofinal_actual_po
   have hspreadOne : 1 ≤ spread := le_trans (le_max_left 1 A) hlarge
   have hspreadA : A ≤ spread := le_trans (le_max_right 1 A) hlarge
   have hspreadZero : 0 ≤ spread := le_trans (by norm_num) hspreadOne
-  have hsq : spread ≤ spread ^ 2 := by
+  have hsq : spread ≤ spread ^ (2 : ℕ) := by
     have hproduct : 0 ≤ spread * (spread - 1) :=
       mul_nonneg hspreadZero (sub_nonneg.mpr hspreadOne)
     nlinarith
@@ -937,7 +937,7 @@ theorem tendsto_dimensionlessVacuumFreeCompletedSourceAggregate_along_cofinal_ac
   have hspreadOne : 1 ≤ spread := le_trans (le_max_left 1 A) hlarge
   have hspreadA : A ≤ spread := le_trans (le_max_right 1 A) hlarge
   have hspreadZero : 0 ≤ spread := le_trans (by norm_num) hspreadOne
-  have hsq : spread ≤ spread ^ 2 := by
+  have hsq : spread ≤ spread ^ (2 : ℕ) := by
     have hproduct : 0 ≤ spread * (spread - 1) :=
       mul_nonneg hspreadZero (sub_nonneg.mpr hspreadOne)
     nlinarith

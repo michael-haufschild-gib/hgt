@@ -26,7 +26,7 @@ open Finset
 
 /-- A window is a deviation of the partial sums. -/
 theorem maxWindowSq_le_maxDev_sq (f : ℕ → ℝ) {H J y : ℕ} (hy : 1 ≤ y) (hJ : H + 1 ≤ 2 ^ J) :
-    maxWindowSq f H y ≤ (maxDev (partialSum f) J (y - 1)) ^ 2 := by
+    maxWindowSq f H y ≤ (maxDev (partialSum f) J (y - 1)) ^ (2 : ℕ) := by
   rw [maxWindowSq]
   refine Finset.sup'_le _ _ fun m hm => ?_
   rw [Finset.mem_range] at hm
@@ -36,9 +36,9 @@ theorem maxWindowSq_le_maxDev_sq (f : ℕ → ℝ) {H J y : ℕ} (hy : 1 ≤ y) 
   have hk : m + 1 ≤ 2 ^ J := by omega
   have h1 : |partialSum f ((y - 1) + (m + 1)) - partialSum f (y - 1)|
       ≤ maxDev (partialSum f) J (y - 1) := le_maxDev _ hk
-  calc (partialSum f ((y - 1) + (m + 1)) - partialSum f (y - 1)) ^ 2
-      = |partialSum f ((y - 1) + (m + 1)) - partialSum f (y - 1)| ^ 2 := (sq_abs _).symm
-    _ ≤ (maxDev (partialSum f) J (y - 1)) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h1 2
+  calc (partialSum f ((y - 1) + (m + 1)) - partialSum f (y - 1)) ^ (2 : ℕ)
+      = |partialSum f ((y - 1) + (m + 1)) - partialSum f (y - 1)| ^ (2 : ℕ) := (sq_abs _).symm
+    _ ≤ (maxDev (partialSum f) J (y - 1)) ^ (2 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) h1 2
 
 /-- **The maximal window square is a dyadic sum of squares.** -/
 theorem maxWindowSq_le_blockSq (f : ℕ → ℝ) {H J y : ℕ} (hy : 1 ≤ y) (hJ : H + 1 ≤ 2 ^ J) :

@@ -115,19 +115,19 @@ theorem thermalStepReflection_occupation (e tau : ℝ) :
 
 /-- The reflection amplitude also recovers the exact purity of the reduced thermofield state. -/
 theorem thermalStepReflection_purity (e tau : ℝ) :
-    (∑' n, radiationMass tau n ^ 2) * (2 * thermalStepReflection e tau - 1) = 1 := by
+    (∑' n, radiationMass tau n ^ (2 : ℕ)) * (2 * thermalStepReflection e tau - 1) = 1 := by
   rw [radiationMass_purity, thermalStepReflection_formula]
   field_simp [(sub_pos.mpr (thermalRatio_lt_one tau)).ne',
     (show 1 + thermalRatio tau ≠ 0 by linarith [thermalRatio_pos tau])]
   ring
 
 /-- Amplification exceeds unity for every finite thermal parameter. -/
-theorem thermalStepReflection_amplifies (e tau : ℝ) : 1 < thermalStepReflection e tau ^ 2 :=
+theorem thermalStepReflection_amplifies (e tau : ℝ) : 1 < thermalStepReflection e tau ^ (2 : ℕ) :=
   chargedStep_reflection_power_gt_one _ _
 
 theorem thermalStepReflection_power_temperature (e ell tau : ℝ) :
-    thermalStepReflection e tau ^ 2 =
-      (Real.exp ell / (4 * Real.pi * stringBlackHoleTemperature ell tau)) ^ 2 := by
+    thermalStepReflection e tau ^ (2 : ℕ) =
+      (Real.exp ell / (4 * Real.pi * stringBlackHoleTemperature ell tau)) ^ (2 : ℕ) := by
   rw [thermalStepReflection_temperature e ell tau]
 
 theorem thermalStepWave_contDiff_one (e tau : ℝ) : ContDiff ℝ 1 (thermalStepWave e tau) :=
@@ -141,9 +141,9 @@ theorem thermalStepWave_not_twice_differentiable (e tau : ℝ) :
 theorem thermalStepWave_flux (e tau x : ℝ) :
     complexRadialFlux (thermalStepWave e tau) x =
       thermalStepScale e tau * thermalRatio tau / 2 *
-        ((2 - thermalRatio tau) / (1 - thermalRatio tau)) ^ 2 := by
+        ((2 - thermalRatio tau) / (1 - thermalRatio tau)) ^ (2 : ℕ) := by
   rw [thermalStepWave, chargedStepWave_flux, thermalStepB_exp]
-  exact congrArg (fun z : ℝ => thermalStepScale e tau * thermalRatio tau / 2 * z ^ 2)
+  exact congrArg (fun z : ℝ => thermalStepScale e tau * thermalRatio tau / 2 * z ^ (2 : ℕ))
     (thermalStepTransmission_formula e tau)
 
 theorem thermalStepWave_flux_pos (e tau x : ℝ) :
@@ -153,7 +153,7 @@ theorem thermalStepWave_flux_pos (e tau x : ℝ) :
 /-- The true second derivative satisfies the horizon-side charged radial equation. -/
 theorem thermalStepWave_horizon_equation (e ell tau u : ℝ) :
     deriv (deriv (thermalStepWave e tau)) (-Real.exp u) +
-      ((thermalStepFrequency e tau - Real.exp e * stringBlackHolePotential ell tau 0 : ℝ) : ℂ)^2 *
+      ((thermalStepFrequency e tau - Real.exp e * stringBlackHolePotential ell tau 0 : ℝ) : ℂ)^(2 : ℕ) *
         thermalStepWave e tau (-Real.exp u) = 0 := by
   rw [thermalStep_horizon_frequency]
   have h := chargedStepWave_second_derivative_left (thermalStepA e tau) (thermalStepB e tau) u
@@ -165,7 +165,7 @@ theorem thermalStepWave_horizon_equation (e ell tau u : ℝ) :
 /-- The same constructed wave solves the free radial equation outside the charged region. -/
 theorem thermalStepWave_infinity_equation (e tau u : ℝ) :
     deriv (deriv (thermalStepWave e tau)) (Real.exp u) +
-      (thermalStepFrequency e tau : ℂ)^2 * thermalStepWave e tau (Real.exp u) = 0 := by
+      (thermalStepFrequency e tau : ℂ)^(2 : ℕ) * thermalStepWave e tau (Real.exp u) = 0 := by
   rw [thermalStepWave, (chargedStepWave_second_derivative_right _ _ u).deriv]
   unfold thermalStepFrequency
   ring

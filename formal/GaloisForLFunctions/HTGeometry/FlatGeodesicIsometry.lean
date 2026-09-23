@@ -73,23 +73,23 @@ theorem sqrtOp_eq_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (hn : finrank ℂ 
         rw [← Submodule.span_range_eq_iSup, ← Set.image_univ]
         simpa using b.toBasis.span_eq]
   · have hleft : {i : Fin n | c < Real.sqrt (hf.eigenvalues hn i)}
-        = {i : Fin n | c ^ 2 < hf.eigenvalues hn i} := by
+        = {i : Fin n | c ^ (2 : ℕ) < hf.eigenvalues hn i} := by
       ext i
       simp only [Set.mem_setOf_eq]
-      rw [show (c < Real.sqrt (hf.eigenvalues hn i)) ↔ (c ^ 2 < hf.eigenvalues hn i) from
+      rw [show (c < Real.sqrt (hf.eigenvalues hn i)) ↔ (c ^ (2 : ℕ) < hf.eigenvalues hn i) from
         Real.lt_sqrt hc]
-    have hright : {i : Fin n | c < Real.sqrt (d i)} = {i : Fin n | c ^ 2 < d i} := by
+    have hright : {i : Fin n | c < Real.sqrt (d i)} = {i : Fin n | c ^ (2 : ℕ) < d i} := by
       ext i
       simp only [Set.mem_setOf_eq]
-      rw [show (c < Real.sqrt (d i)) ↔ (c ^ 2 < d i) from Real.lt_sqrt hc]
+      rw [show (c < Real.sqrt (d i)) ↔ (c ^ (2 : ℕ) < d i) from Real.lt_sqrt hc]
     rw [hleft, hright,
       ← eigenSum_eq_span_of_eigenbasis (hf.eigenvectorBasis hn).toBasis
         (w := fun i => hf.eigenvalues hn i) (fun i => by
           rw [OrthonormalBasis.coe_toBasis]
-          exact hf.apply_eigenvectorBasis hn i) (c ^ 2),
+          exact hf.apply_eigenvectorBasis hn i) (c ^ (2 : ℕ)),
       ← eigenSum_eq_span_of_eigenbasis b.toBasis (w := d) (fun i => by
           rw [OrthonormalBasis.coe_toBasis]
-          exact hd i) (c ^ 2)]
+          exact hd i) (c ^ (2 : ℕ))]
 
 /-- **The inverse of a form diagonal in a frame is diagonal in the same frame**, with the inverses
 of its weights. -/
@@ -144,7 +144,7 @@ their weights.**  So a maximal flat is isometrically a Euclidean space. -/
 theorem observerDist_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (hn : finrank ℂ E = n)
     {p q : Fin n → ℝ} (hp : ∀ i, 0 < p i) (hq : ∀ i, 0 < q i) :
     observerDist (isSymmetric_diagOp b p) hn (isSymmetric_diagOp b q)
-      = Real.sqrt (∑ i, (Real.log (q i) - Real.log (p i)) ^ 2) := by
+      = Real.sqrt (∑ i, (Real.log (q i) - Real.log (p i)) ^ (2 : ℕ)) := by
   have hwpos : ∀ i, 0 < (Real.sqrt (p i))⁻¹ * q i * (Real.sqrt (p i))⁻¹ := fun i =>
     mul_pos (mul_pos (inv_pos.2 (Real.sqrt_pos.2 (hp i))) (hq i))
       (inv_pos.2 (Real.sqrt_pos.2 (hp i)))
@@ -190,8 +190,8 @@ theorem observerDist_metricRay {T : E →ₗ[ℂ] E} (hT : T.IsSymmetric) (hn : 
       (isSymmetric_diagOp u fun i => Real.exp (t * lam i)) hn hs ht,
     observerDist_diagOp u hn (fun i => Real.exp_pos _) fun i => Real.exp_pos _,
     hsNorm_toCLM_eq_sqrt hT hn, ← hlamdef]
-  rw [show (∑ i, (Real.log (Real.exp (t * lam i)) - Real.log (Real.exp (s * lam i))) ^ 2)
-      = (t - s) ^ 2 * ∑ i, lam i ^ 2 from by
+  rw [show (∑ i, (Real.log (Real.exp (t * lam i)) - Real.log (Real.exp (s * lam i))) ^ (2 : ℕ))
+      = (t - s) ^ (2 : ℕ) * ∑ i, lam i ^ (2 : ℕ) from by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Real.log_exp, Real.log_exp]
@@ -207,7 +207,7 @@ theorem observerDist_metricRay_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (hn :
     (w w' : Fin n → ℝ) (t : ℝ) :
     observerDist (isSymmetric_metricRay (isSymmetric_diagOp b w) hn t) hn
         (isSymmetric_metricRay (isSymmetric_diagOp b w') hn t)
-      = |t| * Real.sqrt (∑ i, (w' i - w i) ^ 2) := by
+      = |t| * Real.sqrt (∑ i, (w' i - w i) ^ (2 : ℕ)) := by
   rw [observerDist_congr (isSymmetric_metricRay (isSymmetric_diagOp b w) hn t)
       (isSymmetric_diagOp b fun i => Real.exp (t * w i))
       (isSymmetric_metricRay (isSymmetric_diagOp b w') hn t)
@@ -215,8 +215,8 @@ theorem observerDist_metricRay_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (hn :
       (metricRay_eq_diagOp b (diagOp_apply_basis b w) t)
       (metricRay_eq_diagOp b (diagOp_apply_basis b w') t),
     observerDist_diagOp b hn (fun i => Real.exp_pos _) fun i => Real.exp_pos _,
-    show (∑ i, (Real.log (Real.exp (t * w' i)) - Real.log (Real.exp (t * w i))) ^ 2)
-      = t ^ 2 * ∑ i, (w' i - w i) ^ 2 from by
+    show (∑ i, (Real.log (Real.exp (t * w' i)) - Real.log (Real.exp (t * w i))) ^ (2 : ℕ))
+      = t ^ (2 : ℕ) * ∑ i, (w' i - w i) ^ (2 : ℕ) from by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Real.log_exp, Real.log_exp]
@@ -234,7 +234,7 @@ theorem exists_pos_observerDist_metricRay_diagOp (b : OrthonormalBasis (Fin n) �
     by_contra hcon
     push Not at hcon
     exact h (funext fun i => by linarith [sub_eq_zero.1 (hcon i)])
-  refine ⟨Real.sqrt (∑ i, (w' i - w i) ^ 2), Real.sqrt_pos.2 ?_, fun t ht => ?_⟩
+  refine ⟨Real.sqrt (∑ i, (w' i - w i) ^ (2 : ℕ)), Real.sqrt_pos.2 ?_, fun t ht => ?_⟩
   · refine Finset.sum_pos' (fun i _ => sq_nonneg _) ⟨i₀, Finset.mem_univ i₀, ?_⟩
     exact pow_pos (abs_pos.2 hi₀) 2 |>.trans_le (le_of_eq (sq_abs _))
   · rw [observerDist_metricRay_diagOp b hn w w' t, abs_of_nonneg ht]

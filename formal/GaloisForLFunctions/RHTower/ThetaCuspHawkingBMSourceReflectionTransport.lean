@@ -390,7 +390,7 @@ theorem physical_reader_eigenvalue_defect (q : XiZeroCopy) :
       D4BMLiteralCusp.scalarQ (physicalAngularParameter (xiZeroCopyReflectEquiv q)) = center q/2 := by
   rw [D4BMLiteralCusp.scalarQ, D4BMLiteralCusp.scalarQ,
     physicalAngularParameter_eq, physicalAngularParameter_eq]
-  change (1/4-(((q.1:ℂ)-1)/2)^2)-(1/4-(((1-(q.1:ℂ))-1)/2)^2) = ((q.1:ℂ)-1/2)/2
+  change (1/4-(((q.1:ℂ)-1)/2)^(2 : ℕ))-(1/4-(((1-(q.1:ℂ))-1)/2)^(2 : ℕ)) = ((q.1:ℂ)-1/2)/2
   ring
 
 /-- Individual physical readers are unequal at every actual Xi occurrence, including on the line.

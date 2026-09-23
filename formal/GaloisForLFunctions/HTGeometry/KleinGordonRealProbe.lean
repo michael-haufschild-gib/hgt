@@ -118,7 +118,7 @@ theorem differentiableAt_deriv_kgFlowField_dir (hN : (Module.finrank ℝ E : ℝ
 theorem kgRealField_wave_equation (hN : (Module.finrank ℝ E : ℝ) + 2 < N)
     (hreal : IsRealFamily a) (b : OrthonormalBasis ι ℝ E) (t : ℝ) (x : E) :
     deriv (deriv fun r : ℝ => kgRealField a G₀ r x) t
-      = ((2 * Real.pi) ^ 2 : ℝ)⁻¹
+      = ((2 * Real.pi) ^ (2 : ℕ) : ℝ)⁻¹
           * ∑ i, deriv (deriv fun s : ℝ => kgRealField a G₀ t (x + s • b i)) 0
         - kgRealField a G₀ t x
         + (kgPotential (a.density t) x).re * kgRealField a G₀ t x := by
@@ -131,7 +131,7 @@ theorem kgRealField_wave_equation (hN : (Module.finrank ℝ E : ℝ) + 2 < N)
       = (deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • b i)) 0).re := fun i =>
     deriv_deriv_re_eq (differentiableAt_kgFlowField_dir a G₀ hN t x (b i))
       (differentiableAt_deriv_kgFlowField_dir a G₀ hN t x (b i)) 0
-  have hcast : (((2 * Real.pi) ^ 2 : ℝ) : ℂ)⁻¹ = ((((2 * Real.pi) ^ 2)⁻¹ : ℝ) : ℂ) :=
+  have hcast : (((2 * Real.pi) ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ = ((((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) :=
     (Complex.ofReal_inv _).symm
   rw [hcast] at hcomplex
   have hsum : (∑ i, deriv (deriv fun s : ℝ => kgRealField a G₀ t (x + s • b i)) 0)

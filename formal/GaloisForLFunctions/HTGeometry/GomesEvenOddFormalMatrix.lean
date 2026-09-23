@@ -41,7 +41,7 @@ theorem gomesFormalSeriesDerivativePowerMatrixHom_two_X :
       (gomesFormalSeriesDerivativePowerMatrixHom K 2 PowerSeries.X 0 1) = _
     rw [gomesFormalSeriesDerivativePowerMatrixHom_first_row]
     simp [PowerSeries.coeff_X, PowerSeries.coeff_one]
-  have hs : M ^ 2 = Matrix.scalar (Fin 2) (PowerSeries.X : PowerSeries K) :=
+  have hs : M ^ (2 : ℕ) = Matrix.scalar (Fin 2) (PowerSeries.X : PowerSeries K) :=
     gomesFormalSeriesDerivativePowerMatrixHom_X_power K 2
   have h10 : M 1 0 = PowerSeries.X := by
     have h := congrArg (fun N : Matrix (Fin 2) (Fin 2) (PowerSeries K) => N 0 0) hs

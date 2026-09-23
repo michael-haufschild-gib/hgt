@@ -84,16 +84,16 @@ theorem q8Actual_fortyOne_decomposition_le_topXStabilizer
   change (g : Gal(K3/ℚ)) deningerQ8RootNumberNegOneTopX =
     deningerQ8RootNumberNegOneTopX
   have hsq :
-      ((g : Gal(K3/ℚ)) deningerQ8RootNumberNegOneTopX) ^ 2 =
-        deningerQ8RootNumberNegOneTopX ^ 2 := by
+      ((g : Gal(K3/ℚ)) deningerQ8RootNumberNegOneTopX) ^ (2 : ℕ) =
+        deningerQ8RootNumberNegOneTopX ^ (2 : ℕ) := by
     calc
-      ((g : Gal(K3/ℚ)) deningerQ8RootNumberNegOneTopX) ^ 2 =
-          (g : Gal(K3/ℚ)) (deningerQ8RootNumberNegOneTopX ^ 2) := by
+      ((g : Gal(K3/ℚ)) deningerQ8RootNumberNegOneTopX) ^ (2 : ℕ) =
+          (g : Gal(K3/ℚ)) (deningerQ8RootNumberNegOneTopX ^ (2 : ℕ)) := by
             rw [map_pow]
       _ = (g : Gal(K3/ℚ)) 5 := by
         rw [deningerQ8RootNumberNegOne_topX_sq]
       _ = 5 := map_ofNat _ 5
-      _ = deningerQ8RootNumberNegOneTopX ^ 2 :=
+      _ = deningerQ8RootNumberNegOneTopX ^ (2 : ℕ) :=
         deningerQ8RootNumberNegOne_topX_sq.symm
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with hfix | hneg
   · exact hfix
@@ -120,7 +120,7 @@ theorem q8Actual_fortyOne_decomposition_le_topXStabilizer
       dsimp [u]
       calc
         (q8LiteralTwoAdicU - 7) * (q8LiteralTwoAdicU + 6) =
-            q8LiteralTwoAdicU ^ 2 - q8LiteralTwoAdicU - 42 := by ring
+            q8LiteralTwoAdicU ^ (2 : ℕ) - q8LiteralTwoAdicU - 42 := by ring
         _ = -41 := by rw [q8LiteralTwoAdicU_sq]; ring
     have hor : u - 7 ∈ P ∨ u + 6 ∈ P :=
       (Ideal.IsPrime.mem_or_mem inferInstance) (hprod.symm ▸ hminusFortyOne)

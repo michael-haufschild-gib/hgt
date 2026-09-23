@@ -39,12 +39,12 @@ def xiShiftedResponseMass (y : ℝ) (q : XiZeroCopy) : ℝ :=
 
 /-- Radial response slope of one shifted reciprocal Xi atom. -/
 def xiShiftedResponseSlope (y : ℝ) (q : XiZeroCopy) : ℝ :=
-  (xiShiftedReciprocalSquare y q ^ 2).re /
+  (xiShiftedReciprocalSquare y q ^ (2 : ℕ)).re /
     xiShiftedResponseMass y q
 
 /-- Transverse charge density of one shifted reciprocal Xi atom. -/
 def xiShiftedTransverseChargeDensity (y : ℝ) (q : XiZeroCopy) : ℝ :=
-  (xiShiftedReciprocalSquare y q).im ^ 2 *
+  (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) *
       Complex.normSq (xiShiftedReciprocalSquare y q) /
     xiShiftedResponseMass y q
 
@@ -57,8 +57,8 @@ theorem xiShiftedResponseMass_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
 summability estimates below. -/
 theorem xiShiftedReciprocalSquare_im_sq_lt_re_sq
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    (xiShiftedReciprocalSquare y q).im ^ 2 <
-      (xiShiftedReciprocalSquare y q).re ^ 2 := by
+    (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) <
+      (xiShiftedReciprocalSquare y q).re ^ (2 : ℕ) := by
   have hsq :=
     re_xiShiftedReciprocalSquare_pow_pos hy q (m := 2) (by norm_num)
   rw [pow_two, Complex.mul_re] at hsq
@@ -84,7 +84,7 @@ theorem xiShiftedTransverseChargeDensity_nonneg
 /-- The second response coefficient is mass times shifted slope. -/
 theorem xiShiftedReciprocalSquare_sq_re_eq_mass_mul_slope
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    (xiShiftedReciprocalSquare y q ^ 2).re =
+    (xiShiftedReciprocalSquare y q ^ (2 : ℕ)).re =
       xiShiftedResponseMass y q * xiShiftedResponseSlope y q := by
   unfold xiShiftedResponseSlope
   field_simp [(xiShiftedResponseMass_pos hy q).ne']
@@ -92,17 +92,17 @@ theorem xiShiftedReciprocalSquare_sq_re_eq_mass_mul_slope
 /-- The third response coefficient is the positive slope square minus transverse charge. -/
 theorem xiShiftedReciprocalSquare_cube_re_eq_mass_mul_slope_sq_sub_charge
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    (xiShiftedReciprocalSquare y q ^ 3).re =
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2 -
+    (xiShiftedReciprocalSquare y q ^ (3 : ℕ)).re =
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ) -
         xiShiftedTransverseChargeDensity y q := by
   let z := xiShiftedReciprocalSquare y q
   have hz : z.re ≠ 0 := (xiShiftedResponseMass_pos hy q).ne'
   unfold xiShiftedResponseMass xiShiftedResponseSlope
     xiShiftedTransverseChargeDensity
-  change (z ^ 3).re =
-    z.re * ((z ^ 2).re / z.re) ^ 2 -
-      z.im ^ 2 * Complex.normSq z / z.re
-  rw [show z ^ 3 = z * z * z by ring, show z ^ 2 = z * z by ring]
+  change (z ^ (3 : ℕ)).re =
+    z.re * ((z ^ (2 : ℕ)).re / z.re) ^ (2 : ℕ) -
+      z.im ^ (2 : ℕ) * Complex.normSq z / z.re
+  rw [show z ^ (3 : ℕ) = z * z * z by ring, show z ^ (2 : ℕ) = z * z by ring]
   simp only [Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   field_simp [hz]
   ring
@@ -111,7 +111,7 @@ theorem xiShiftedReciprocalSquare_cube_re_eq_mass_mul_slope_sq_sub_charge
 
 private theorem summable_norm_xiShiftedReciprocalSquare_cube
     {y : ℝ} (hy : 0 ≤ y) :
-    Summable (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ 3) := by
+    Summable (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ (3 : ℕ)) := by
   simpa only [norm_pow] using
     (summable_xiShiftedReciprocalSquare_pow hy 2).norm
 
@@ -132,30 +132,30 @@ theorem summable_xiShiftedResponseMass_mul_slope
 
 private theorem norm_mass_mul_slope_sq_le_cube
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    ‖xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2‖ ≤
-      ‖xiShiftedReciprocalSquare y q‖ ^ 3 := by
+    ‖xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)‖ ≤
+      ‖xiShiftedReciprocalSquare y q‖ ^ (3 : ℕ) := by
   let z := xiShiftedReciprocalSquare y q
   have ha : 0 < z.re := xiShiftedResponseMass_pos hy q
-  have hb : z.im ^ 2 < z.re ^ 2 :=
+  have hb : z.im ^ (2 : ℕ) < z.re ^ (2 : ℕ) :=
     xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q
-  have hdiff0 : 0 ≤ z.re ^ 2 - z.im ^ 2 := by linarith
-  have hdiffle : z.re ^ 2 - z.im ^ 2 ≤ z.re ^ 2 := by
+  have hdiff0 : 0 ≤ z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ) := by linarith
+  have hdiffle : z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ) ≤ z.re ^ (2 : ℕ) := by
     nlinarith [sq_nonneg z.im]
   have hsqle :
-      (z.re ^ 2 - z.im ^ 2) ^ 2 ≤ (z.re ^ 2) ^ 2 :=
+      (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (z.re ^ (2 : ℕ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hdiff0 hdiffle 2
   have hdiv :
-      (z.re ^ 2 - z.im ^ 2) ^ 2 / z.re ≤ z.re ^ 3 := by
+      (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) / z.re ≤ z.re ^ (3 : ℕ) := by
     apply (div_le_iff₀ ha).2
     nlinarith
-  have hrele : z.re ^ 3 ≤ ‖z‖ ^ 3 :=
+  have hrele : z.re ^ (3 : ℕ) ≤ ‖z‖ ^ (3 : ℕ) :=
     pow_le_pow_left₀ ha.le (Complex.re_le_norm z) 3
   have hterm :
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2 =
-        (z.re ^ 2 - z.im ^ 2) ^ 2 / z.re := by
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ) =
+        (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) / z.re := by
     unfold xiShiftedResponseMass xiShiftedResponseSlope
-    change z.re * ((z ^ 2).re / z.re) ^ 2 = _
-    rw [show (z ^ 2).re = z.re ^ 2 - z.im ^ 2 by
+    change z.re * ((z ^ (2 : ℕ)).re / z.re) ^ (2 : ℕ) = _
+    rw [show (z ^ (2 : ℕ)).re = z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ) by
       rw [pow_two, Complex.mul_re]
       ring]
     field_simp [ha.ne']
@@ -165,7 +165,7 @@ private theorem norm_mass_mul_slope_sq_le_cube
 theorem summable_xiShiftedResponseMass_mul_slope_sq
     {y : ℝ} (hy : 0 < y) :
     Summable (fun q : XiZeroCopy =>
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) := by
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) := by
   exact Summable.of_norm_bounded
     (summable_norm_xiShiftedReciprocalSquare_cube hy.le)
     (norm_mass_mul_slope_sq_le_cube hy)
@@ -173,31 +173,31 @@ theorem summable_xiShiftedResponseMass_mul_slope_sq
 private theorem norm_transverseChargeDensity_le_two_mul_cube
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     ‖xiShiftedTransverseChargeDensity y q‖ ≤
-      2 * ‖xiShiftedReciprocalSquare y q‖ ^ 3 := by
+      2 * ‖xiShiftedReciprocalSquare y q‖ ^ (3 : ℕ) := by
   let z := xiShiftedReciprocalSquare y q
   have ha : 0 < z.re := xiShiftedResponseMass_pos hy q
-  have hb : z.im ^ 2 ≤ z.re ^ 2 :=
+  have hb : z.im ^ (2 : ℕ) ≤ z.re ^ (2 : ℕ) :=
     (xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q).le
-  have hnormSq : Complex.normSq z ≤ 2 * z.re ^ 2 := by
+  have hnormSq : Complex.normSq z ≤ 2 * z.re ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     nlinarith
   have hprod :
-      z.im ^ 2 * Complex.normSq z ≤ z.re ^ 2 * (2 * z.re ^ 2) :=
+      z.im ^ (2 : ℕ) * Complex.normSq z ≤ z.re ^ (2 : ℕ) * (2 * z.re ^ (2 : ℕ)) :=
     mul_le_mul hb hnormSq
       (by
         rw [Complex.normSq_apply]
         exact add_nonneg (mul_self_nonneg _) (mul_self_nonneg _))
       (sq_nonneg _)
   have hdiv :
-      z.im ^ 2 * Complex.normSq z / z.re ≤ 2 * z.re ^ 3 := by
+      z.im ^ (2 : ℕ) * Complex.normSq z / z.re ≤ 2 * z.re ^ (3 : ℕ) := by
     apply (div_le_iff₀ ha).2
     nlinarith
-  have hrele : 2 * z.re ^ 3 ≤ 2 * ‖z‖ ^ 3 := by
+  have hrele : 2 * z.re ^ (3 : ℕ) ≤ 2 * ‖z‖ ^ (3 : ℕ) := by
     exact mul_le_mul_of_nonneg_left
       (pow_le_pow_left₀ ha.le (Complex.re_le_norm z) 3) (by norm_num)
   have hterm :
       xiShiftedTransverseChargeDensity y q =
-        z.im ^ 2 * Complex.normSq z / z.re := rfl
+        z.im ^ (2 : ℕ) * Complex.normSq z / z.re := rfl
   rw [hterm, Real.norm_eq_abs,
     abs_of_nonneg (div_nonneg
       (mul_nonneg (sq_nonneg _)
@@ -231,7 +231,7 @@ theorem tsum_xiShiftedResponseMass_mul_slope_eq_moment_re
   calc
     ∑' q : XiZeroCopy,
         xiShiftedResponseMass y q * xiShiftedResponseSlope y q =
-        ∑' q : XiZeroCopy, (xiShiftedReciprocalSquare y q ^ 2).re := by
+        ∑' q : XiZeroCopy, (xiShiftedReciprocalSquare y q ^ (2 : ℕ)).re := by
           apply tsum_congr
           intro q
           exact (xiShiftedReciprocalSquare_sq_re_eq_mass_mul_slope hy q).symm
@@ -242,16 +242,16 @@ theorem tsum_xiShiftedResponseMass_mul_slope_eq_moment_re
 theorem tsum_xiShiftedResponseSlopeSq_sub_charge_eq_moment_re
     {y : ℝ} (hy : 0 < y) :
     (∑' q : XiZeroCopy,
-        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) -
+        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) -
       ∑' q : XiZeroCopy, xiShiftedTransverseChargeDensity y q =
         (xiShiftedReciprocalMoment y 2).re := by
   rw [← (summable_xiShiftedResponseMass_mul_slope_sq hy).tsum_sub
     (summable_xiShiftedTransverseChargeDensity hy)]
   calc
     ∑' q : XiZeroCopy,
-        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2 -
+        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ) -
           xiShiftedTransverseChargeDensity y q) =
-        ∑' q : XiZeroCopy, (xiShiftedReciprocalSquare y q ^ 3).re := by
+        ∑' q : XiZeroCopy, (xiShiftedReciprocalSquare y q ^ (3 : ℕ)).re := by
           apply tsum_congr
           intro q
           exact
@@ -265,8 +265,8 @@ theorem tsum_xiShiftedResponseSlopeSq_sub_charge_eq_moment_re
 def xiShiftedResponseHilbertDispersion (y : ℝ) : ℝ :=
   (xiShiftedReciprocalMoment y 0).re *
       ∑' q : XiZeroCopy,
-        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2 -
-    (xiShiftedReciprocalMoment y 1).re ^ 2
+        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ) -
+    (xiShiftedReciprocalMoment y 1).re ^ (2 : ℕ)
 
 /-- Complete shifted transverse charge, with the same zeroth-moment normalization as the Hankel
 minor. -/
@@ -279,7 +279,7 @@ theorem xiShiftedHankelMinor_eq_hilbertDispersion_sub_transverseCharge
     {y : ℝ} (hy : 0 < y) :
     (xiShiftedReciprocalMoment y 0).re *
           (xiShiftedReciprocalMoment y 2).re -
-        (xiShiftedReciprocalMoment y 1).re ^ 2 =
+        (xiShiftedReciprocalMoment y 1).re ^ (2 : ℕ) =
       xiShiftedResponseHilbertDispersion y -
         xiShiftedTransverseCharge y := by
   rw [xiShiftedResponseHilbertDispersion, xiShiftedTransverseCharge,
@@ -300,18 +300,18 @@ theorem xiShiftedResponseHilbertDispersion_nonneg
   have hS1 : Summable (fun q => x q * e q) := by
     have h := summable_xiShiftedResponseMass_mul_slope hy
     simpa only [e, x, mul_comm] using h
-  have hS2 : Summable (fun q => x q ^ 2 * e q) := by
+  have hS2 : Summable (fun q => x q ^ (2 : ℕ) * e q) := by
     have h := summable_xiShiftedResponseMass_mul_slope_sq hy
     simpa only [e, x, mul_comm] using h
   have hS0nn : 0 ≤ ∑' q, e q := tsum_nonneg fun q => (hepos q).le
   have hS1nn : 0 ≤ ∑' q, x q * e q :=
     tsum_nonneg fun q => mul_nonneg (hxpos q).le (hepos q).le
-  have hS2nn : 0 ≤ ∑' q, x q ^ 2 * e q :=
+  have hS2nn : 0 ≤ ∑' q, x q ^ (2 : ℕ) * e q :=
     tsum_nonneg fun q =>
       mul_nonneg (sq_nonneg _) (hepos q).le
   have hbound : ∀ s : Finset XiZeroCopy,
       ∑ q ∈ s, x q * e q ≤
-        Real.sqrt ((∑' q, e q) * ∑' q, x q ^ 2 * e q) := by
+        Real.sqrt ((∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q) := by
     intro s
     have hcs := Finset.sum_mul_sq_le_sq_mul_sq s
       (fun q => Real.sqrt (e q)) (fun q => x q * Real.sqrt (e q))
@@ -322,10 +322,10 @@ theorem xiShiftedResponseHilbertDispersion_nonneg
         Real.sqrt (e q) * (x q * Real.sqrt (e q)) =
             x q * (Real.sqrt (e q) * Real.sqrt (e q)) := by ring
         _ = x q * e q := by rw [Real.mul_self_sqrt (hepos q).le]
-    have hsq1 : ∀ q, Real.sqrt (e q) ^ 2 = e q := fun q =>
+    have hsq1 : ∀ q, Real.sqrt (e q) ^ (2 : ℕ) = e q := fun q =>
       Real.sq_sqrt (hepos q).le
     have hsq2 : ∀ q,
-        (x q * Real.sqrt (e q)) ^ 2 = x q ^ 2 * e q := by
+        (x q * Real.sqrt (e q)) ^ (2 : ℕ) = x q ^ (2 : ℕ) * e q := by
       intro q
       rw [mul_pow, hsq1]
     rw [Finset.sum_congr rfl (fun q _ => hprod q),
@@ -333,37 +333,37 @@ theorem xiShiftedResponseHilbertDispersion_nonneg
       Finset.sum_congr rfl (fun q _ => hsq2 q)] at hcs
     have hle0 : ∑ q ∈ s, e q ≤ ∑' q, e q :=
       hS0.sum_le_tsum s (fun q _ => (hepos q).le)
-    have hle2 : ∑ q ∈ s, x q ^ 2 * e q ≤ ∑' q, x q ^ 2 * e q :=
+    have hle2 : ∑ q ∈ s, x q ^ (2 : ℕ) * e q ≤ ∑' q, x q ^ (2 : ℕ) * e q :=
       hS2.sum_le_tsum s (fun q _ =>
         mul_nonneg (sq_nonneg _) (hepos q).le)
     have hnn : 0 ≤ ∑ q ∈ s, x q * e q :=
       Finset.sum_nonneg fun q _ => mul_nonneg (hxpos q).le (hepos q).le
-    have hchain : (∑ q ∈ s, x q * e q) ^ 2 ≤
-        (∑' q, e q) * ∑' q, x q ^ 2 * e q := by
+    have hchain : (∑ q ∈ s, x q * e q) ^ (2 : ℕ) ≤
+        (∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q := by
       refine le_trans hcs ?_
       have h0nn : 0 ≤ ∑ q ∈ s, e q :=
         Finset.sum_nonneg fun q _ => (hepos q).le
-      have h2nn : 0 ≤ ∑ q ∈ s, x q ^ 2 * e q :=
+      have h2nn : 0 ≤ ∑ q ∈ s, x q ^ (2 : ℕ) * e q :=
         Finset.sum_nonneg fun q _ =>
           mul_nonneg (sq_nonneg _) (hepos q).le
       nlinarith
     exact (Real.le_sqrt hnn (mul_nonneg hS0nn hS2nn)).mpr hchain
   have hS1le : (∑' q, x q * e q) ≤
-      Real.sqrt ((∑' q, e q) * ∑' q, x q ^ 2 * e q) :=
+      Real.sqrt ((∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q) :=
     hS1.tsum_le_of_sum_le hbound
-  have hsq : (∑' q, x q * e q) ^ 2 ≤
-      (∑' q, e q) * ∑' q, x q ^ 2 * e q := by
+  have hsq : (∑' q, x q * e q) ^ (2 : ℕ) ≤
+      (∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q := by
     calc
-      (∑' q, x q * e q) ^ 2 ≤
-          Real.sqrt ((∑' q, e q) * ∑' q, x q ^ 2 * e q) ^ 2 := by
+      (∑' q, x q * e q) ^ (2 : ℕ) ≤
+          Real.sqrt ((∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q) ^ (2 : ℕ) := by
             exact pow_le_pow_left₀ hS1nn hS1le 2
-      _ = (∑' q, e q) * ∑' q, x q ^ 2 * e q :=
+      _ = (∑' q, e q) * ∑' q, x q ^ (2 : ℕ) * e q :=
         Real.sq_sqrt (mul_nonneg hS0nn hS2nn)
   rw [xiShiftedResponseHilbertDispersion,
     ← tsum_xiShiftedResponseMass_eq_moment_re hy.le,
     ← tsum_xiShiftedResponseMass_mul_slope_eq_moment_re hy]
   change 0 ≤ (∑' q, e q) *
-      ∑' q, e q * x q ^ 2 - (∑' q, e q * x q) ^ 2
+      ∑' q, e q * x q ^ (2 : ℕ) - (∑' q, e q * x q) ^ (2 : ℕ)
   simpa only [mul_comm] using sub_nonneg.mpr hsq
 
 theorem xiShiftedTransverseCharge_nonneg
@@ -459,7 +459,7 @@ nonnegative shifted response dispersion minus the RH-complete transverse charge.
 theorem primeArchSafeShiftHankelMinor_eq_hilbertDispersion_sub_transverseCharge :
     (primeArchShiftedReciprocalMoment 1 0).re *
           (primeArchShiftedReciprocalMoment 1 2).re -
-        (primeArchShiftedReciprocalMoment 1 1).re ^ 2 =
+        (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) =
       xiShiftedResponseHilbertDispersion 1 -
         xiShiftedTransverseCharge 1 := by
   rw [← xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
@@ -477,7 +477,7 @@ theorem primeArchSafeShiftHankelMinor_nonneg_iff_transverseCharge_le_dispersion 
     0 ≤
         (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re -
-          (primeArchShiftedReciprocalMoment 1 1).re ^ 2 ↔
+          (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) ↔
       xiShiftedTransverseCharge 1 ≤
         xiShiftedResponseHilbertDispersion 1 := by
   rw [primeArchSafeShiftHankelMinor_eq_hilbertDispersion_sub_transverseCharge]

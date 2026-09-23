@@ -26,7 +26,7 @@ noncomputable section
 to the Wold anomaly at prime `p` and depth `e`. -/
 def primeDepthBVWoldPrimeConsecutiveTriangleLogScale
     (p : Nat.Primes) (e : ℕ) : ℝ :=
-  (1 - ((p.1 : ℝ)⁻¹)) ^ 3 * ((p.1 : ℝ)⁻¹) ^ e *
+  (1 - ((p.1 : ℝ)⁻¹)) ^ (3 : ℕ) * ((p.1 : ℝ)⁻¹) ^ e *
     Real.log (p.1 : ℝ)
 
 theorem primeDepthBVWoldPrimeConsecutiveTriangleLogScale_pos

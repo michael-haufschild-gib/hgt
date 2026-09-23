@@ -54,7 +54,7 @@ def finiteDiagonalHamiltonian {d : ℕ}
 /-- Elementary weighted variance of a finite energy packet. -/
 def finiteSpectralVariance {d : ℕ}
     (w energy : Fin d → ℝ) : ℝ :=
-  (∑ i, w i * energy i ^ 2) - (∑ i, w i * energy i) ^ 2
+  (∑ i, w i * energy i ^ (2 : ℕ)) - (∑ i, w i * energy i) ^ (2 : ℕ)
 
 /-- Matrix of the finite mixed-spike state with background `b` and spike `c`. -/
 def finiteMixedSpikeMatrix {d : ℕ}
@@ -80,7 +80,7 @@ theorem finiteMixedSpikeMatrix_trace {d : ℕ}
           norm_cast
           calc
             b + c * Real.sqrt (w i) * Real.sqrt (w i) =
-                b + c * Real.sqrt (w i) ^ 2 := by ring
+                b + c * Real.sqrt (w i) ^ (2 : ℕ) := by ring
             _ = b + c * w i := by rw [Real.sq_sqrt (hw i)]
     _ = (((d : ℝ) * b + c * ∑ i, w i : ℝ) : ℂ) := by
       simp_rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
@@ -127,7 +127,7 @@ theorem finiteIndexDiagonalHamiltonian_selfAdjoint
 theorem finiteIndexWeightKet_norm_sq
     {ι : Type*} [Fintype ι]
     (w : ι → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteIndexWeightKet w‖ ^ 2 = ∑ i, w i := by
+    ‖finiteIndexWeightKet w‖ ^ (2 : ℕ) = ∑ i, w i := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -148,7 +148,7 @@ theorem finiteIndexPhasedWeightKet_norm_sq
     {ι : Type*} [Fintype ι]
     (w : ι → ℝ) (phase : ι → ℂ) (hw : ∀ i, 0 ≤ w i)
     (hphase : ∀ i, ‖phase i‖ = 1) :
-    ‖finiteIndexPhasedWeightKet w phase‖ ^ 2 = ∑ i, w i := by
+    ‖finiteIndexPhasedWeightKet w phase‖ ^ (2 : ℕ) = ∑ i, w i := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -173,7 +173,7 @@ theorem finiteIndexWeightKet_inner_phasedWeightKet
   calc
     ((Real.sqrt (w i) : ℂ) * phase i) *
         (Real.sqrt (w i) : ℂ) =
-      ((Real.sqrt (w i) ^ 2 : ℝ) : ℂ) * phase i := by
+      ((Real.sqrt (w i) ^ (2 : ℕ) : ℝ) : ℂ) * phase i := by
         push_cast
         ring
     _ = (w i : ℂ) * phase i := by rw [Real.sq_sqrt (hw i)]
@@ -182,8 +182,8 @@ theorem finiteIndexWeightKet_inner_phasedWeightKet
 theorem finiteIndexDiagonalHamiltonian_weightKet_norm_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (w energy : ι → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteIndexDiagonalHamiltonian energy (finiteIndexWeightKet w)‖ ^ 2 =
-      ∑ i, w i * energy i ^ 2 := by
+    ‖finiteIndexDiagonalHamiltonian energy (finiteIndexWeightKet w)‖ ^ (2 : ℕ) =
+      ∑ i, w i * energy i ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -212,7 +212,7 @@ theorem finiteIndexWeightKet_inner_diagonalHamiltonian
   intro i _hi
   calc
     energy i * Real.sqrt (w i) * Real.sqrt (w i) =
-        energy i * Real.sqrt (w i) ^ 2 := by ring
+        energy i * Real.sqrt (w i) ^ (2 : ℕ) := by ring
     _ = energy i * w i := by rw [Real.sq_sqrt (hw i)]
     _ = w i * energy i := by ring
 
@@ -220,11 +220,11 @@ theorem finiteIndexWeightKet_inner_diagonalHamiltonian
 theorem finiteIndexWeightKet_diagonal_variance
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (w energy : ι → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteIndexDiagonalHamiltonian energy (finiteIndexWeightKet w)‖ ^ 2 -
+    ‖finiteIndexDiagonalHamiltonian energy (finiteIndexWeightKet w)‖ ^ (2 : ℕ) -
         ‖inner ℂ (finiteIndexWeightKet w)
           (finiteIndexDiagonalHamiltonian energy
-            (finiteIndexWeightKet w))‖ ^ 2 =
-      (∑ i, w i * energy i ^ 2) - (∑ i, w i * energy i) ^ 2 := by
+            (finiteIndexWeightKet w))‖ ^ (2 : ℕ) =
+      (∑ i, w i * energy i ^ (2 : ℕ)) - (∑ i, w i * energy i) ^ (2 : ℕ) := by
   rw [finiteIndexDiagonalHamiltonian_weightKet_norm_sq w energy hw,
     finiteIndexWeightKet_inner_diagonalHamiltonian w energy hw]
   simp only [Complex.norm_real, Real.norm_eq_abs]
@@ -260,7 +260,7 @@ theorem finiteDiagonalHamiltonian_selfAdjoint {d : ℕ}
 /-- Squared norm of the canonical weight ket is total weight. -/
 theorem finiteWeightKet_norm_sq {d : ℕ}
     (w : Fin d → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteWeightKet w‖ ^ 2 = ∑ i, w i := by
+    ‖finiteWeightKet w‖ ^ (2 : ℕ) = ∑ i, w i := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -278,8 +278,8 @@ theorem finiteWeightKet_norm_eq_one {d : ℕ}
 /-- Second moment of the diagonal Hamiltonian in the weight ket. -/
 theorem finiteDiagonalHamiltonian_weightKet_norm_sq {d : ℕ}
     (w energy : Fin d → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteDiagonalHamiltonian energy (finiteWeightKet w)‖ ^ 2 =
-      ∑ i, w i * energy i ^ 2 := by
+    ‖finiteDiagonalHamiltonian energy (finiteWeightKet w)‖ ^ (2 : ℕ) =
+      ∑ i, w i * energy i ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -307,16 +307,16 @@ theorem finiteWeightKet_inner_diagonalHamiltonian {d : ℕ}
   intro i _hi
   calc
     energy i * Real.sqrt (w i) * Real.sqrt (w i) =
-        energy i * Real.sqrt (w i) ^ 2 := by ring
+        energy i * Real.sqrt (w i) ^ (2 : ℕ) := by ring
     _ = energy i * w i := by rw [Real.sq_sqrt (hw i)]
     _ = w i * energy i := by ring
 
 /-- Exact agreement between Hilbert-space variance and weighted variance. -/
 theorem finiteWeightKet_diagonal_variance {d : ℕ}
     (w energy : Fin d → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    ‖finiteDiagonalHamiltonian energy (finiteWeightKet w)‖ ^ 2 -
+    ‖finiteDiagonalHamiltonian energy (finiteWeightKet w)‖ ^ (2 : ℕ) -
         ‖inner ℂ (finiteWeightKet w)
-          (finiteDiagonalHamiltonian energy (finiteWeightKet w))‖ ^ 2 =
+          (finiteDiagonalHamiltonian energy (finiteWeightKet w))‖ ^ (2 : ℕ) =
       finiteSpectralVariance w energy := by
   rw [finiteDiagonalHamiltonian_weightKet_norm_sq w energy hw,
     finiteWeightKet_inner_diagonalHamiltonian w energy hw]

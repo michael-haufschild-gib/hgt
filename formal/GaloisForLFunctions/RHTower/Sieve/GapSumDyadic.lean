@@ -14,12 +14,12 @@ open Finset RHTower
 
 noncomputable section
 
-theorem sqrt_cube (b : ℝ) (hb : 0 ≤ b) : Real.sqrt (b ^ 3) = b * Real.sqrt b := by
-  rw [show b ^ 3 = b ^ 2 * b by ring, Real.sqrt_mul (by positivity), Real.sqrt_sq hb]
+theorem sqrt_cube (b : ℝ) (hb : 0 ≤ b) : Real.sqrt (b ^ (3 : ℕ)) = b * Real.sqrt b := by
+  rw [show b ^ (3 : ℕ) = b ^ (2 : ℕ) * b by ring, Real.sqrt_mul (by positivity), Real.sqrt_sq hb]
 
 theorem sqrt_cube_div (X b c : ℝ) (hX : 0 ≤ X) (hb : 0 ≤ b) (hc : 0 < c) :
-    Real.sqrt (X * b ^ 3 / c ^ 2) = Real.sqrt X * b * Real.sqrt b / c := by
-  rw [Real.sqrt_div (by positivity) (c ^ 2), Real.sqrt_sq hc.le, Real.sqrt_mul hX,
+    Real.sqrt (X * b ^ (3 : ℕ) / c ^ (2 : ℕ)) = Real.sqrt X * b * Real.sqrt b / c := by
+  rw [Real.sqrt_div (by positivity) (c ^ (2 : ℕ)), Real.sqrt_sq hc.le, Real.sqrt_mul hX,
     sqrt_cube b hb]
   ring
 
@@ -77,85 +77,85 @@ theorem gapSumBound_le_unswap {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A B P Q : �
   have hQ2 : (Q : ℝ) ≤ 2 * (P : ℝ) := by exact_mod_cast hQ2P
   have hlow0 : (0 : ℝ) < ((effLow A Q : ℕ) : ℝ) := lt_of_lt_of_le (by positivity) hlow
   -- first term
-  have hfirst : 2500 * Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3
-      / (((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P)))
+  have hfirst : 2500 * Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ)
+      / (((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P)))
       ≤ 500 * Real.sqrt (T * r) * (B : ℝ) * Real.sqrt B / ((A : ℝ) * P) := by
-    have hrad : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3
-        / (((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P))
-        ≤ (T * r * (B : ℝ) ^ 3 / (((A : ℝ) * P) ^ 2)) / 25 := by
-      have hnum : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3 ≤ T * r * ((B : ℝ) / P) ^ 3 := by
+    have hrad : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ)
+        / (((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))
+        ≤ (T * r * (B : ℝ) ^ (3 : ℕ) / (((A : ℝ) * P) ^ (2 : ℕ))) / 25 := by
+      have hnum : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ) ≤ T * r * ((B : ℝ) / P) ^ (3 : ℕ) := by
         have := pow_le_pow_left₀ (Nat.cast_nonneg _) hgap 3
         nlinarith [this, hTr]
-      have hden : ((A : ℝ) / (2 * P)) ^ 2 * (36 * Real.pi * P)
-          ≤ ((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P) := by
+      have hden : ((A : ℝ) / (2 * P)) ^ (2 : ℕ) * (36 * Real.pi * P)
+          ≤ ((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P) := by
         have hle : (A : ℝ) / (2 * P) ≤ ((effLow A Q : ℕ) : ℝ) := by
           refine le_trans ?_ hlow
           exact div_le_div_of_nonneg_left hA0.le hQ0 hQ2
-        have hsq : ((A : ℝ) / (2 * P)) ^ 2 ≤ ((effLow A Q : ℕ) : ℝ) ^ 2 :=
+        have hsq : ((A : ℝ) / (2 * P)) ^ (2 : ℕ) ≤ ((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) :=
           pow_le_pow_left₀ (by positivity) hle 2
         exact mul_le_mul_of_nonneg_right hsq (by positivity)
-      have hstep : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3
-          / (((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P))
-          ≤ T * r * ((B : ℝ) / P) ^ 3 / (((A : ℝ) / (2 * P)) ^ 2 * (36 * Real.pi * P)) := by
+      have hstep : T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ)
+          / (((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))
+          ≤ T * r * ((B : ℝ) / P) ^ (3 : ℕ) / (((A : ℝ) / (2 * P)) ^ (2 : ℕ) * (36 * Real.pi * P)) := by
         refine div_le_div₀ (by positivity) hnum (by positivity) hden
       refine le_trans hstep ?_
-      have heq : T * r * ((B : ℝ) / P) ^ 3 / (((A : ℝ) / (2 * P)) ^ 2 * (36 * Real.pi * P))
-          = (4 / (36 * Real.pi)) * (T * r * (B : ℝ) ^ 3 / (((A : ℝ) * P) ^ 2)) := by
+      have heq : T * r * ((B : ℝ) / P) ^ (3 : ℕ) / (((A : ℝ) / (2 * P)) ^ (2 : ℕ) * (36 * Real.pi * P))
+          = (4 / (36 * Real.pi)) * (T * r * (B : ℝ) ^ (3 : ℕ) / (((A : ℝ) * P) ^ (2 : ℕ))) := by
         field_simp
         ring
       rw [heq]
       have hcoef : (4 : ℝ) / (36 * Real.pi) ≤ 1 / 25 := by
         rw [div_le_div_iff₀ (by positivity) (by norm_num)]
         nlinarith [hpi3]
-      have hpos : (0 : ℝ) ≤ T * r * (B : ℝ) ^ 3 / (((A : ℝ) * P) ^ 2) := by positivity
+      have hpos : (0 : ℝ) ≤ T * r * (B : ℝ) ^ (3 : ℕ) / (((A : ℝ) * P) ^ (2 : ℕ)) := by positivity
       nlinarith [hcoef, hpos]
-    have hsq : Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3
-        / (((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P)))
-        ≤ Real.sqrt ((T * r * (B : ℝ) ^ 3 / (((A : ℝ) * P) ^ 2)) / 25) := Real.sqrt_le_sqrt hrad
-    have hval : Real.sqrt ((T * r * (B : ℝ) ^ 3 / (((A : ℝ) * P) ^ 2)) / 25)
+    have hsq : Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ)
+        / (((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P)))
+        ≤ Real.sqrt ((T * r * (B : ℝ) ^ (3 : ℕ) / (((A : ℝ) * P) ^ (2 : ℕ))) / 25) := Real.sqrt_le_sqrt hrad
+    have hval : Real.sqrt ((T * r * (B : ℝ) ^ (3 : ℕ) / (((A : ℝ) * P) ^ (2 : ℕ))) / 25)
         = Real.sqrt (T * r) * (B : ℝ) * Real.sqrt B / ((A : ℝ) * P) / 5 := by
       rw [Real.sqrt_div (by positivity) (25 : ℝ),
-        show (25 : ℝ) = (5 : ℝ) ^ 2 by norm_num, Real.sqrt_sq (by norm_num),
+        show (25 : ℝ) = (5 : ℝ) ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num),
         sqrt_cube_div (T * r) (B : ℝ) ((A : ℝ) * P) hTr.le hB0 (by positivity)]
-    calc 2500 * Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ 3
-            / (((effLow A Q : ℕ) : ℝ) ^ 2 * (36 * Real.pi * P)))
+    calc 2500 * Real.sqrt (T * r * ((effGap A B P Q : ℕ) : ℝ) ^ (3 : ℕ)
+            / (((effLow A Q : ℕ) : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P)))
         ≤ 2500 * (Real.sqrt (T * r) * (B : ℝ) * Real.sqrt B / ((A : ℝ) * P) / 5) :=
           mul_le_mul_of_nonneg_left (hval ▸ hsq) (by norm_num)
       _ = 500 * Real.sqrt (T * r) * (B : ℝ) * Real.sqrt B / ((A : ℝ) * P) := by ring
   -- second term
-  have hsecond : 44 * Real.sqrt (36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
+  have hsecond : 44 * Real.sqrt (36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
       * ((effGap A B P Q : ℕ) : ℝ) / (T * r))
       ≤ 1500 * (B : ℝ) * Real.sqrt B / Real.sqrt (T * r) := by
-    have hrad : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
+    have hrad : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
         * ((effGap A B P Q : ℕ) : ℝ) / (T * r)
-        ≤ (1500 / 44) ^ 2 * ((B : ℝ) ^ 3 / (T * r)) := by
-      have hnum : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
+        ≤ (1500 / 44) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)) := by
+      have hnum : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
           * ((effGap A B P Q : ℕ) : ℝ)
-          ≤ 36 * Real.pi * ((B : ℝ) / P) ^ 2 * (2 * (P : ℝ)) ^ 3 * ((B : ℝ) / P) := by
+          ≤ 36 * Real.pi * ((B : ℝ) / P) ^ (2 : ℕ) * (2 * (P : ℝ)) ^ (3 : ℕ) * ((B : ℝ) / P) := by
         have hEnn : (0 : ℝ) ≤ ((effHigh B P : ℕ) : ℝ) := Nat.cast_nonneg _
         have hGnn : (0 : ℝ) ≤ ((effGap A B P Q : ℕ) : ℝ) := Nat.cast_nonneg _
         gcongr
-      have heq : 36 * Real.pi * ((B : ℝ) / P) ^ 2 * (2 * (P : ℝ)) ^ 3 * ((B : ℝ) / P)
-          = 288 * Real.pi * (B : ℝ) ^ 3 := by
+      have heq : 36 * Real.pi * ((B : ℝ) / P) ^ (2 : ℕ) * (2 * (P : ℝ)) ^ (3 : ℕ) * ((B : ℝ) / P)
+          = 288 * Real.pi * (B : ℝ) ^ (3 : ℕ) := by
         field_simp
         ring
-      have hcoef : 288 * Real.pi ≤ (1500 / 44 : ℝ) ^ 2 := by
+      have hcoef : 288 * Real.pi ≤ (1500 / 44 : ℝ) ^ (2 : ℕ) := by
         nlinarith [hpi4]
-      have hstep : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
-          * ((effGap A B P Q : ℕ) : ℝ) ≤ (1500 / 44 : ℝ) ^ 2 * (B : ℝ) ^ 3 := by
+      have hstep : 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
+          * ((effGap A B P Q : ℕ) : ℝ) ≤ (1500 / 44 : ℝ) ^ (2 : ℕ) * (B : ℝ) ^ (3 : ℕ) := by
         rw [heq] at hnum
         nlinarith [hnum, hcoef, pow_nonneg hB0 3]
       have := div_le_div_of_nonneg_right hstep hTr.le
-      calc 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
+      calc 36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
             * ((effGap A B P Q : ℕ) : ℝ) / (T * r)
-          ≤ (1500 / 44 : ℝ) ^ 2 * (B : ℝ) ^ 3 / (T * r) := this
-        _ = (1500 / 44 : ℝ) ^ 2 * ((B : ℝ) ^ 3 / (T * r)) := by ring
+          ≤ (1500 / 44 : ℝ) ^ (2 : ℕ) * (B : ℝ) ^ (3 : ℕ) / (T * r) := this
+        _ = (1500 / 44 : ℝ) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)) := by ring
     have hsq := Real.sqrt_le_sqrt hrad
-    have hval : Real.sqrt ((1500 / 44 : ℝ) ^ 2 * ((B : ℝ) ^ 3 / (T * r)))
+    have hval : Real.sqrt ((1500 / 44 : ℝ) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)))
         = (1500 / 44 : ℝ) * ((B : ℝ) * Real.sqrt B / Real.sqrt (T * r)) := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num),
         Real.sqrt_div (by positivity) (T * r), sqrt_cube (B : ℝ) hB0]
-    calc 44 * Real.sqrt (36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ 2 * (Q : ℝ) ^ 3
+    calc 44 * Real.sqrt (36 * Real.pi * ((effHigh B P : ℕ) : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (3 : ℕ)
             * ((effGap A B P Q : ℕ) : ℝ) / (T * r))
         ≤ 44 * ((1500 / 44 : ℝ) * ((B : ℝ) * Real.sqrt B / Real.sqrt (T * r))) :=
           mul_le_mul_of_nonneg_left (hval ▸ hsq) (by norm_num)
@@ -213,70 +213,70 @@ theorem gapSumBound_le_swap {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A B P Q : ℕ
     push_cast
     linarith [h2, h3]
   have hQ'nn : (0 : ℝ) ≤ (((effHigh B P + 1 : ℕ)) : ℝ) := Nat.cast_nonneg _
-  have hfirst : 2500 * Real.sqrt (T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ 3
-      / ((P : ℝ) ^ 2 * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ))))
+  have hfirst : 2500 * Real.sqrt (T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ (3 : ℕ)
+      / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ))))
       ≤ 350 * (P : ℝ) * Real.sqrt (T * r) / Real.sqrt A := by
-    have hrad : T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ 3
-        / ((P : ℝ) ^ 2 * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ)))
-        ≤ (350 / 2500 : ℝ) ^ 2 * (T * r * (P : ℝ) ^ 2 / (A : ℝ)) := by
-      have hstep : T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ 3
-          / ((P : ℝ) ^ 2 * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ)))
-          ≤ T * r * (P : ℝ) ^ 3 / ((P : ℝ) ^ 2 * (36 * Real.pi * ((A : ℝ) / (2 * P)))) := by
+    have hrad : T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ (3 : ℕ)
+        / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ)))
+        ≤ (350 / 2500 : ℝ) ^ (2 : ℕ) * (T * r * (P : ℝ) ^ (2 : ℕ) / (A : ℝ)) := by
+      have hstep : T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ (3 : ℕ)
+          / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ)))
+          ≤ T * r * (P : ℝ) ^ (3 : ℕ) / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((A : ℝ) / (2 * P)))) := by
         gcongr
       refine le_trans hstep ?_
-      have heq : T * r * (P : ℝ) ^ 3 / ((P : ℝ) ^ 2 * (36 * Real.pi * ((A : ℝ) / (2 * P))))
-          = (2 / (36 * Real.pi)) * (T * r * (P : ℝ) ^ 2 / (A : ℝ)) := by
+      have heq : T * r * (P : ℝ) ^ (3 : ℕ) / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((A : ℝ) / (2 * P))))
+          = (2 / (36 * Real.pi)) * (T * r * (P : ℝ) ^ (2 : ℕ) / (A : ℝ)) := by
         field_simp
       rw [heq]
-      have hcoef : (2 : ℝ) / (36 * Real.pi) ≤ (350 / 2500 : ℝ) ^ 2 := by
+      have hcoef : (2 : ℝ) / (36 * Real.pi) ≤ (350 / 2500 : ℝ) ^ (2 : ℕ) := by
         rw [div_le_iff₀ (by positivity)]
         nlinarith [hpi3]
-      have hpos : (0 : ℝ) ≤ T * r * (P : ℝ) ^ 2 / (A : ℝ) := by positivity
+      have hpos : (0 : ℝ) ≤ T * r * (P : ℝ) ^ (2 : ℕ) / (A : ℝ) := by positivity
       nlinarith [hcoef, hpos]
     have hsq := Real.sqrt_le_sqrt hrad
-    have hval : Real.sqrt ((350 / 2500 : ℝ) ^ 2 * (T * r * (P : ℝ) ^ 2 / (A : ℝ)))
+    have hval : Real.sqrt ((350 / 2500 : ℝ) ^ (2 : ℕ) * (T * r * (P : ℝ) ^ (2 : ℕ) / (A : ℝ)))
         = (350 / 2500 : ℝ) * ((P : ℝ) * Real.sqrt (T * r) / Real.sqrt A) := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num),
         Real.sqrt_div (by positivity) ((A : ℝ)), Real.sqrt_mul hTr.le, Real.sqrt_sq hP0.le]
       ring
-    calc 2500 * Real.sqrt (T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ 3
-            / ((P : ℝ) ^ 2 * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ))))
+    calc 2500 * Real.sqrt (T * r * (((Q - 1 - P : ℕ)) : ℝ) ^ (3 : ℕ)
+            / ((P : ℝ) ^ (2 : ℕ) * (36 * Real.pi * ((effLow A Q : ℕ) : ℝ))))
         ≤ 2500 * ((350 / 2500 : ℝ) * ((P : ℝ) * Real.sqrt (T * r) / Real.sqrt A)) :=
           mul_le_mul_of_nonneg_left (hval ▸ hsq) (by norm_num)
       _ = 350 * (P : ℝ) * Real.sqrt (T * r) / Real.sqrt A := by ring
-  have hsecond : 44 * Real.sqrt (36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-      * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ) / (T * r))
+  have hsecond : 44 * Real.sqrt (36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+      * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ) / (T * r))
       ≤ 3000 * (B : ℝ) * Real.sqrt B / Real.sqrt (T * r) := by
-    have hrad : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-        * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ) / (T * r)
-        ≤ (3000 / 44 : ℝ) ^ 2 * ((B : ℝ) ^ 3 / (T * r)) := by
-      have hnum : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-          * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ)
-          ≤ 36 * Real.pi * (2 * (P : ℝ)) ^ 2 * (2 * (B : ℝ) / P) ^ 3 * (P : ℝ) := by
+    have hrad : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+        * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ) / (T * r)
+        ≤ (3000 / 44 : ℝ) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)) := by
+      have hnum : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+          * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ)
+          ≤ 36 * Real.pi * (2 * (P : ℝ)) ^ (2 : ℕ) * (2 * (B : ℝ) / P) ^ (3 : ℕ) * (P : ℝ) := by
         gcongr
-      have heq : 36 * Real.pi * (2 * (P : ℝ)) ^ 2 * (2 * (B : ℝ) / P) ^ 3 * (P : ℝ)
-          = 1152 * Real.pi * (B : ℝ) ^ 3 := by
+      have heq : 36 * Real.pi * (2 * (P : ℝ)) ^ (2 : ℕ) * (2 * (B : ℝ) / P) ^ (3 : ℕ) * (P : ℝ)
+          = 1152 * Real.pi * (B : ℝ) ^ (3 : ℕ) := by
         field_simp
         ring
-      have hcoef : 1152 * Real.pi ≤ (3000 / 44 : ℝ) ^ 2 := by
+      have hcoef : 1152 * Real.pi ≤ (3000 / 44 : ℝ) ^ (2 : ℕ) := by
         nlinarith [hpi4]
-      have hstep : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-          * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ)
-          ≤ (3000 / 44 : ℝ) ^ 2 * (B : ℝ) ^ 3 := by
+      have hstep : 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+          * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ)
+          ≤ (3000 / 44 : ℝ) ^ (2 : ℕ) * (B : ℝ) ^ (3 : ℕ) := by
         rw [heq] at hnum
         nlinarith [hnum, hcoef, pow_nonneg hB0.le 3]
-      calc 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-            * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ) / (T * r)
-          ≤ (3000 / 44 : ℝ) ^ 2 * (B : ℝ) ^ 3 / (T * r) :=
+      calc 36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+            * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ) / (T * r)
+          ≤ (3000 / 44 : ℝ) ^ (2 : ℕ) * (B : ℝ) ^ (3 : ℕ) / (T * r) :=
             div_le_div_of_nonneg_right hstep hTr.le
-        _ = (3000 / 44 : ℝ) ^ 2 * ((B : ℝ) ^ 3 / (T * r)) := by ring
+        _ = (3000 / 44 : ℝ) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)) := by ring
     have hsq := Real.sqrt_le_sqrt hrad
-    have hval : Real.sqrt ((3000 / 44 : ℝ) ^ 2 * ((B : ℝ) ^ 3 / (T * r)))
+    have hval : Real.sqrt ((3000 / 44 : ℝ) ^ (2 : ℕ) * ((B : ℝ) ^ (3 : ℕ) / (T * r)))
         = (3000 / 44 : ℝ) * ((B : ℝ) * Real.sqrt B / Real.sqrt (T * r)) := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num),
         Real.sqrt_div (by positivity) (T * r), sqrt_cube (B : ℝ) hB0.le]
-    calc 44 * Real.sqrt (36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ 2
-            * (((effHigh B P + 1 : ℕ)) : ℝ) ^ 3 * (((Q - 1 - P : ℕ)) : ℝ) / (T * r))
+    calc 44 * Real.sqrt (36 * Real.pi * (((Q - 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+            * (((effHigh B P + 1 : ℕ)) : ℝ) ^ (3 : ℕ) * (((Q - 1 - P : ℕ)) : ℝ) / (T * r))
         ≤ 44 * ((3000 / 44 : ℝ) * ((B : ℝ) * Real.sqrt B / Real.sqrt (T * r))) :=
           mul_le_mul_of_nonneg_left (hval ▸ hsq) (by norm_num)
       _ = 3000 * (B : ℝ) * Real.sqrt B / Real.sqrt (T * r) := by ring

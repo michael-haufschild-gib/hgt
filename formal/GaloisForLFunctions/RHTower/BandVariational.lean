@@ -29,18 +29,18 @@ open MeasureTheory intervalIntegral
 `⟪B psi, psi⟫ <= ‖B‖ ‖psi‖²`, so the normalized deficit is at least `1 - ‖B‖`. -/
 theorem one_sub_norm_le_rayleigh_deficit {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] (B : E →L[ℝ] E) {ψ : E} (hψ : ψ ≠ 0) :
-    1 - ‖B‖ ≤ (‖ψ‖ ^ 2 - inner ℝ (B ψ) ψ) / ‖ψ‖ ^ 2 := by
-  have hpos : 0 < ‖ψ‖ ^ 2 := by
+    1 - ‖B‖ ≤ (‖ψ‖ ^ (2 : ℕ) - inner ℝ (B ψ) ψ) / ‖ψ‖ ^ (2 : ℕ) := by
+  have hpos : 0 < ‖ψ‖ ^ (2 : ℕ) := by
     have h := norm_pos_iff.mpr hψ
     positivity
-  have hCS : (inner ℝ (B ψ) ψ : ℝ) ≤ ‖B‖ * ‖ψ‖ ^ 2 := by
+  have hCS : (inner ℝ (B ψ) ψ : ℝ) ≤ ‖B‖ * ‖ψ‖ ^ (2 : ℕ) := by
     have h1 : (inner ℝ (B ψ) ψ : ℝ) ≤ ‖B ψ‖ * ‖ψ‖ := real_inner_le_norm _ _
     have h2 : ‖B ψ‖ ≤ ‖B‖ * ‖ψ‖ := B.le_opNorm ψ
     have h3 : ‖B ψ‖ * ‖ψ‖ ≤ (‖B‖ * ‖ψ‖) * ‖ψ‖ :=
       mul_le_mul_of_nonneg_right h2 (norm_nonneg ψ)
     calc (inner ℝ (B ψ) ψ : ℝ) ≤ ‖B ψ‖ * ‖ψ‖ := h1
       _ ≤ (‖B‖ * ‖ψ‖) * ‖ψ‖ := h3
-      _ = ‖B‖ * ‖ψ‖ ^ 2 := by ring
+      _ = ‖B‖ * ‖ψ‖ ^ (2 : ℕ) := by ring
   rw [le_div_iff₀ hpos]
   nlinarith [hCS]
 

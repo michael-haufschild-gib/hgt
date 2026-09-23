@@ -69,7 +69,7 @@ theorem thetaCuspHawkingResonanceCanonicalProbeEnergy_eq_minor_mul_det
     (q : XiZeroCopy) (rapidity x y z : ℝ) :
     thetaCuspHawkingResonanceCanonicalProbeEnergy q rapidity x y z =
       let K := thetaCuspHawkingSelectiveModularGainKernel q rapidity
-      (K x x * K y y - K x y ^ 2) * symmetricThreePointDet K x y z := by
+      (K x x * K y y - K x y ^ (2 : ℕ)) * symmetricThreePointDet K x y z := by
   exact symmetricThreePointLongEdgeEnergy_canonicalProbe_eq
     (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z
 
@@ -90,7 +90,7 @@ def thetaCuspHawkingPoleBranchCutCompletedProbeEnergy
     {H : Type*} [Norm H]
     (q : XiZeroCopy) (rapidity x y z : ℝ) (continuumOutput : H) : ℝ :=
   thetaCuspHawkingResonanceCanonicalProbeEnergy q rapidity x y z +
-    ‖continuumOutput‖ ^ 2
+    ‖continuumOutput‖ ^ (2 : ℕ)
 
 /-- Conditional lower bound inside the preceding algebraic ansatz.  It is not a Teukolsky optical
 theorem. -/
@@ -100,7 +100,7 @@ theorem thetaCuspHawking_passiveFullScattering_branchCutNormSq_lower
     (hpassive : 0 ≤ thetaCuspHawkingPoleBranchCutCompletedProbeEnergy
       q rapidity x y z continuumOutput) :
     -thetaCuspHawkingResonanceCanonicalProbeEnergy q rapidity x y z ≤
-      ‖continuumOutput‖ ^ 2 := by
+      ‖continuumOutput‖ ^ (2 : ℕ) := by
   unfold thetaCuspHawkingPoleBranchCutCompletedProbeEnergy at hpassive
   linarith
 
@@ -113,7 +113,7 @@ theorem thetaCuspHawking_negativeCubic_forces_positiveBranchCutEnergy
       (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z < 0)
     (hpassive : 0 ≤ thetaCuspHawkingPoleBranchCutCompletedProbeEnergy
       q rapidity x y z continuumOutput) :
-    0 < ‖continuumOutput‖ ^ 2 := by
+    0 < ‖continuumOutput‖ ^ (2 : ℕ) := by
   have hresonance :=
     thetaCuspHawking_negativeCubic_forces_negativeResonanceProbeEnergy
       q rapidity hx hxy hyz hnegative
@@ -161,7 +161,7 @@ theorem exists_eventually_thetaCuspHawking_offCritical_forces_branchCutMixing
       ∀ continuumOutput : H,
         0 ≤ thetaCuspHawkingPoleBranchCutCompletedProbeEnergy
           q rapidity x y z continuumOutput →
-        0 < ‖continuumOutput‖ ^ 2 ∧ continuumOutput ≠ 0 := by
+        0 < ‖continuumOutput‖ ^ (2 : ℕ) ∧ continuumOutput ≠ 0 := by
   obtain ⟨R, hR⟩ :=
     exists_eventually_negative_thetaCuspHawkingSelectiveModularGainKernel_threePointDet
       q hoff hx hxy hyz

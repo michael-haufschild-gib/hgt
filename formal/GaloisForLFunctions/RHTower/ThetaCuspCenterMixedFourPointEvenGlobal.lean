@@ -15,7 +15,7 @@ theorem toeplitzFourEvenParityWall_cos_nonneg_of_concave_step
     (hmid : (theta1 + theta3) / 2 ≤ theta2)
     (hthree : theta3 ≤ 3 * theta1) :
     0 ≤ (1 + Real.cos theta3) * (1 + Real.cos theta1) -
-      (Real.cos theta1 + Real.cos theta2) ^ 2 := by
+      (Real.cos theta1 + Real.cos theta2) ^ (2 : ℕ) := by
   have h20 : 0 ≤ theta2 := h10.trans h12
   have h30 : 0 ≤ theta3 := h20.trans h23
   have h1pi : theta1 ≤ Real.pi :=
@@ -58,12 +58,12 @@ theorem toeplitzFourEvenParityWall_cos_nonneg_of_concave_step
     exact mul_nonneg
       (Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], by linarith⟩)
       (Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], by linarith⟩)
-  have hsq : Y ^ 2 ≤ X ^ 2 := (sq_le_sq₀ hY0 hX0).2 hYX
-  have hcos1 : 1 + Real.cos theta1 = 2 * Real.cos (theta1 / 2) ^ 2 := by
+  have hsq : Y ^ (2 : ℕ) ≤ X ^ (2 : ℕ) := (sq_le_sq₀ hY0 hX0).2 hYX
+  have hcos1 : 1 + Real.cos theta1 = 2 * Real.cos (theta1 / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul (theta1 / 2)
     rw [show 2 * (theta1 / 2) = theta1 by ring] at h
     linarith
-  have hcos3 : 1 + Real.cos theta3 = 2 * Real.cos (theta3 / 2) ^ 2 := by
+  have hcos3 : 1 + Real.cos theta3 = 2 * Real.cos (theta3 / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul (theta3 / 2)
     rw [show 2 * (theta3 / 2) = theta3 by ring] at h
     linarith
@@ -180,14 +180,14 @@ theorem thetaCuspReflectedSourceEvenParityWall_nonneg
   have hscale (s : ℝ) : d * p s = thetaCuspReflectedSourceProduct u s := by
     dsimp [p, thetaCuspReflectedSourceCorrelation]
     exact mul_div_cancel₀ _ hd.ne'
-  have hd2 : 0 < d ^ 2 := sq_pos_of_pos hd
+  have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_pos hd
   dsimp [toeplitzFourEvenParityWall]
   rw [← hscale 0, ← hscale t, ← hscale (2 * t), ← hscale (3 * t)]
   calc
-    0 ≤ d ^ 2 * ((1 + p (3 * t)) * (1 + p t) - (p t + p (2 * t)) ^ 2) :=
+    0 ≤ d ^ (2 : ℕ) * ((1 + p (3 * t)) * (1 + p t) - (p t + p (2 * t)) ^ (2 : ℕ)) :=
       mul_nonneg hd2.le hnormalized
     _ = (d * p 0 + d * p (3 * t)) * (d * p 0 + d * p t) -
-        (d * p t + d * p (2 * t)) ^ 2 := by
+        (d * p t + d * p (2 * t)) ^ (2 : ℕ) := by
       have hp0 : p 0 = 1 := by
         dsimp [p, thetaCuspReflectedSourceCorrelation]
         exact div_self hd.ne'

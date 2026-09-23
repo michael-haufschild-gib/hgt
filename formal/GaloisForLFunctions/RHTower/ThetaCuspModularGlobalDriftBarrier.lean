@@ -19,7 +19,7 @@ def thetaCuspModularMassDrift (x : ℝ) : ℝ := -(thetaCuspModularDrift x).re
 /-- Real Riccati equation retaining the positive discriminant gap. -/
 theorem hasDerivAt_thetaCuspModularMassDrift (x : ℝ) :
     HasDerivAt thetaCuspModularMassDrift
-      (-3 + thetaCuspModularMassDrift x^2/3 +
+      (-3 + thetaCuspModularMassDrift x^(2 : ℕ)/3 +
         3*thetaCuspModularGapAmplitude x/4) x := by
   convert (hasDerivAt_thetaCuspModularDrift_re x).neg using 1 <;>
     first | rfl | (dsimp [thetaCuspModularMassDrift, thetaCuspModularGapAmplitude]; ring)
@@ -39,18 +39,18 @@ private def dampedGap (x : ℝ) : ℝ :=
 
 private theorem hasDerivAt_dampedGap (x : ℝ) :
     HasDerivAt dampedGap
-      (-Real.exp (-2*x) * ((1-thetaCuspModularMassDrift x/3)^2 +
+      (-Real.exp (-2*x) * ((1-thetaCuspModularMassDrift x/3)^(2 : ℕ) +
         thetaCuspModularGapAmplitude x/4)) x := by
   have he := ((hasDerivAt_id x).const_mul (-2 : ℝ)).exp
   have hu := ((hasDerivAt_thetaCuspModularMassDrift x).div_const 3).const_sub 1
   convert he.mul hu using 1 <;> first | rfl | (simp only [id_eq]; ring)
 
 private theorem dampedGap_contraction {x : ℝ} (hx : 0 < x) :
-    deriv dampedGap x < -(dampedGap x)^2 := by
+    deriv dampedGap x < -(dampedGap x)^(2 : ℕ) := by
   rw [(hasDerivAt_dampedGap x).deriv]
   have he := Real.exp_pos (-2*x)
   have he1 : Real.exp (-2*x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have he2 : Real.exp (-2*x)^2 ≤ Real.exp (-2*x) := by nlinarith
+  have he2 : Real.exp (-2*x)^(2 : ℕ) ≤ Real.exp (-2*x) := by nlinarith
   have hb := mul_le_mul_of_nonneg_right he2
     (sq_nonneg (1-thetaCuspModularMassDrift x/3))
   have ha := mul_pos he (thetaCuspModularGapAmplitude_pos x)

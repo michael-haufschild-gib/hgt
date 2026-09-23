@@ -46,7 +46,7 @@ noncomputable def deningerGermFlow (t : ℝ) (p : ℂ × ℝ) : ℂ × ℝ :=
   (Real.exp (t / 2) • p.1, Real.exp (-t) * p.2)
 
 /-- The invariant transverse coordinate of the quotient germ. -/
-def deningerGermTransverse (p : ℂ × ℝ) : ℝ := p.2 ^ 2
+def deningerGermTransverse (p : ℂ × ℝ) : ℝ := p.2 ^ (2 : ℕ)
 
 /-- **The involution is an involution.** -/
 theorem deningerGermSigma_involutive : Function.Involutive deningerGermSigma := by
@@ -111,14 +111,14 @@ quotient germ. -/
 theorem deningerGermTransverse_sigma (p : ℂ × ℝ) :
     deningerGermTransverse (deningerGermSigma p) = deningerGermTransverse p := by
   rcases p with ⟨z, r⟩
-  show (-r) ^ 2 = r ^ 2
+  show (-r) ^ (2 : ℕ) = r ^ (2 : ℕ)
   ring
 
 /-- **The transverse coordinate separates the involution orbits.**  Its fibres over the leaf are
 exactly the pairs `{r, -r}`, so `x = r²` is the transverse coordinate downstairs. -/
 theorem deningerGermTransverse_fiber {p q : ℂ × ℝ}
     (h : deningerGermTransverse p = deningerGermTransverse q) : q.2 = p.2 ∨ q.2 = -p.2 := by
-  have h' : q.2 ^ 2 = p.2 ^ 2 := h.symm
+  have h' : q.2 ^ (2 : ℕ) = p.2 ^ (2 : ℕ) := h.symm
   exact sq_eq_sq_iff_eq_or_eq_neg.mp h'
 
 /-- **The transverse exponent is `-2`.**  The descended flow contracts the orbifold coordinate by
@@ -127,7 +127,7 @@ theorem deningerGermTransverse_flow (t : ℝ) (p : ℂ × ℝ) :
     deningerGermTransverse (deningerGermFlow t p)
       = deningerReesFlow t (deningerGermTransverse p) := by
   rcases p with ⟨z, r⟩
-  show (Real.exp (-t) * r) ^ 2 = Real.exp (-2 * t) * r ^ 2
+  show (Real.exp (-t) * r) ^ (2 : ℕ) = Real.exp (-2 * t) * r ^ (2 : ℕ)
   rw [mul_pow, ← Real.exp_nat_mul]
   congr 2
   ring
@@ -193,7 +193,7 @@ noncomputable def deningerGermIota (x : ℝ) : ℂ × ℝ := (0, Real.sqrt x)
 leaf distribution. -/
 theorem deningerGermTransverse_iota {x : ℝ} (hx : 0 ≤ x) :
     deningerGermTransverse (deningerGermIota x) = x := by
-  show Real.sqrt x ^ 2 = x
+  show Real.sqrt x ^ (2 : ℕ) = x
   rw [Real.sq_sqrt hx]
 
 /-- **The transverse embedding meets the preserved leaf only at the apex.** -/
@@ -212,7 +212,7 @@ theorem deningerGermIota_equivariant (t x : ℝ) :
   · show Real.exp (-t) * Real.sqrt x = Real.sqrt (Real.exp (-2 * t) * x)
     rw [Real.sqrt_mul (le_of_lt (Real.exp_pos _))]
     congr 1
-    have hsq : Real.exp (-2 * t) = Real.exp (-t) ^ 2 := by
+    have hsq : Real.exp (-2 * t) = Real.exp (-t) ^ (2 : ℕ) := by
       rw [← Real.exp_nat_mul]
       congr 1
       ring
@@ -277,13 +277,13 @@ theorem deningerGermWeight_ne {t : ℝ} (ht : t ≠ 0) :
 inverse square of the linear normal weight: the two are the two ends of the germ's weight
 spectrum. -/
 theorem deningerGermLeafWeight_sq (t : ℝ) :
-    deningerGermLeafWeight t ^ 2 = Real.exp t := by
+    deningerGermLeafWeight t ^ (2 : ℕ) = Real.exp t := by
   rw [deningerGermLeafWeight, ← Real.exp_nat_mul]
   congr 1
   ring
 
 theorem deningerGermTransverseWeight_eq (t : ℝ) :
-    deningerGermTransverseWeight t = Real.exp (-t) ^ 2 := by
+    deningerGermTransverseWeight t = Real.exp (-t) ^ (2 : ℕ) := by
   rw [deningerGermTransverseWeight, ← Real.exp_nat_mul]
   congr 1
   ring
@@ -361,7 +361,7 @@ theorem deningerGermJ_sq (a : (ℝ × ℝ) × (ℝ × ℝ)) : deningerGermJ (den
 against its `J`-image is the sum of the squared lengths of its real and imaginary parts. -/
 theorem deningerGermJ_pos (a : (ℝ × ℝ) × (ℝ × ℝ)) :
     deningerLeafWedge a.1 (deningerGermJ a).1 - deningerLeafWedge a.2 (deningerGermJ a).2
-      = (a.1.1 ^ 2 + a.1.2 ^ 2) + (a.2.1 ^ 2 + a.2.2 ^ 2) := by
+      = (a.1.1 ^ (2 : ℕ) + a.1.2 ^ (2 : ℕ)) + (a.2.1 ^ (2 : ℕ) + a.2.2 ^ (2 : ℕ)) := by
   show deningerLeafWedge a.1 (deningerLeafStar a.1)
       - deningerLeafWedge a.2 (-deningerLeafStar a.2) = _
   have h2 : deningerLeafWedge a.2 (-deningerLeafStar a.2)
@@ -379,11 +379,11 @@ theorem deningerGermJ_pos_of_ne {a : (ℝ × ℝ) × (ℝ × ℝ)} (ha : a ≠ 0
   · have hv : v ≠ 0 := fun hv => ha (by rw [hu, hv]; rfl)
     have hpos : 0 < deningerLeafWedge v (deningerLeafStar v) := deningerLeafWedge_star_pos hv
     rw [deningerLeafWedge_star] at hpos
-    have hnn : 0 ≤ u.1 ^ 2 + u.2 ^ 2 := by positivity
+    have hnn : 0 ≤ u.1 ^ (2 : ℕ) + u.2 ^ (2 : ℕ) := by positivity
     simpa using by linarith
   · have hpos : 0 < deningerLeafWedge u (deningerLeafStar u) := deningerLeafWedge_star_pos hu
     rw [deningerLeafWedge_star] at hpos
-    have hnn : 0 ≤ v.1 ^ 2 + v.2 ^ 2 := by positivity
+    have hnn : 0 ≤ v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ) := by positivity
     simpa using by linarith
 
 end OrientationSign

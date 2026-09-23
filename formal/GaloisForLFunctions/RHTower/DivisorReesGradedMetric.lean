@@ -34,27 +34,27 @@ theorem divisorReesGram_isHermitian (B S C : ℝ) :
 /-- **The converse cross bound.**  A nonnegative diagonal and the Cauchy–Schwarz inequality
 between the entries make the Gram model positive semidefinite. -/
 theorem divisorReesGram_posSemidef_of_crossBound {B S C : ℝ} (hC : 0 ≤ C)
-    (h : S ^ 2 ≤ B ^ 2 * C) : (divisorReesGram B S C).PosSemidef := by
+    (h : S ^ (2 : ℕ) ≤ B ^ (2 : ℕ) * C) : (divisorReesGram B S C).PosSemidef := by
   refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
     (divisorReesGram_isHermitian B S C) fun x => ?_
   have hform : (star x) ⬝ᵥ (divisorReesGram B S C *ᵥ x)
-      = B ^ 2 * x 0 ^ 2 + 2 * S * x 0 * x 1 + C * x 1 ^ 2 := by
+      = B ^ (2 : ℕ) * x 0 ^ (2 : ℕ) + 2 * S * x 0 * x 1 + C * x 1 ^ (2 : ℕ) := by
     simp [divisorReesGram, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
     ring
   rw [hform]
   rcases eq_or_ne B 0 with hB | hB
   · have hS : S = 0 := by
-      have h0 : S ^ 2 ≤ 0 := by simpa [hB] using h
+      have h0 : S ^ (2 : ℕ) ≤ 0 := by simpa [hB] using h
       nlinarith [sq_nonneg S]
-    have : 0 ≤ C * x 1 ^ 2 := mul_nonneg hC (sq_nonneg _)
+    have : 0 ≤ C * x 1 ^ (2 : ℕ) := mul_nonneg hC (sq_nonneg _)
     simpa [hB, hS] using this
-  · have hB2 : 0 < B ^ 2 := by positivity
-    have hkey : 0 ≤ B ^ 2 * (B ^ 2 * x 0 ^ 2 + 2 * S * x 0 * x 1 + C * x 1 ^ 2) := by
-      have hexp : B ^ 2 * (B ^ 2 * x 0 ^ 2 + 2 * S * x 0 * x 1 + C * x 1 ^ 2)
-          = (B ^ 2 * x 0 + S * x 1) ^ 2 + (B ^ 2 * C - S ^ 2) * x 1 ^ 2 := by ring
+  · have hB2 : 0 < B ^ (2 : ℕ) := by positivity
+    have hkey : 0 ≤ B ^ (2 : ℕ) * (B ^ (2 : ℕ) * x 0 ^ (2 : ℕ) + 2 * S * x 0 * x 1 + C * x 1 ^ (2 : ℕ)) := by
+      have hexp : B ^ (2 : ℕ) * (B ^ (2 : ℕ) * x 0 ^ (2 : ℕ) + 2 * S * x 0 * x 1 + C * x 1 ^ (2 : ℕ))
+          = (B ^ (2 : ℕ) * x 0 + S * x 1) ^ (2 : ℕ) + (B ^ (2 : ℕ) * C - S ^ (2 : ℕ)) * x 1 ^ (2 : ℕ) := by ring
       rw [hexp]
-      have h1 : 0 ≤ (B ^ 2 * x 0 + S * x 1) ^ 2 := sq_nonneg _
-      have h2 : 0 ≤ (B ^ 2 * C - S ^ 2) * x 1 ^ 2 :=
+      have h1 : 0 ≤ (B ^ (2 : ℕ) * x 0 + S * x 1) ^ (2 : ℕ) := sq_nonneg _
+      have h2 : 0 ≤ (B ^ (2 : ℕ) * C - S ^ (2 : ℕ)) * x 1 ^ (2 : ℕ) :=
         mul_nonneg (by linarith) (sq_nonneg _)
       linarith
     nlinarith [hkey, hB2]
@@ -83,7 +83,7 @@ theorem gradedDivisorFisherNumerator_eq {d : ℕ} {t : ℝ} (ht : t ≠ 0) :
 multiplicity completes the graded mass and score to a positive Gram. -/
 theorem gradedDivisorReesGram_posSemidef (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     (divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
-      ((d : ℝ) ^ 2)).PosSemidef := by
+      ((d : ℝ) ^ (2 : ℕ))).PosSemidef := by
   refine divisorReesGram_posSemidef_of_crossBound (by positivity) ?_
   rw [gradedDivisorOverlap_eq_one ht, gradedDivisorFisherNumerator_eq ht]
   simp
@@ -94,7 +94,7 @@ theorem exists_bounded_positive_gradedDivisorReesGram (d : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, t ≠ 0 →
       (divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
         C).PosSemidef :=
-  ⟨(d : ℝ) ^ 2, by positivity, fun _ ht => gradedDivisorReesGram_posSemidef d ht⟩
+  ⟨(d : ℝ) ^ (2 : ℕ), by positivity, fun _ ht => gradedDivisorReesGram_posSemidef d ht⟩
 
 /-! ### The general regular model -/
 
@@ -116,22 +116,22 @@ no smallness of the coordinate is needed. -/
 theorem gradedScoreOfUnit_posSemidef {d : ℕ} {u v : ℝ → ℝ} {m K : ℝ} (hm : 0 < m)
     {s : Set ℝ} (hu : ∀ t ∈ s, m ≤ |u t|)
     (hK : ∀ t ∈ s, |gradedScoreOfUnit d u v t| ≤ K) (t : ℝ) (hts : t ∈ s) :
-    (divisorReesGram (u t) (gradedScoreOfUnit d u v t) (K ^ 2 / m ^ 2)).PosSemidef := by
+    (divisorReesGram (u t) (gradedScoreOfUnit d u v t) (K ^ (2 : ℕ) / m ^ (2 : ℕ))).PosSemidef := by
   have hKnonneg : 0 ≤ K := le_trans (abs_nonneg _) (hK t hts)
   refine divisorReesGram_posSemidef_of_crossBound (by positivity) ?_
-  have hut : m ^ 2 ≤ u t ^ 2 := by
+  have hut : m ^ (2 : ℕ) ≤ u t ^ (2 : ℕ) := by
     have := hu t hts
     nlinarith [abs_nonneg (u t), sq_abs (u t)]
-  have hSt : gradedScoreOfUnit d u v t ^ 2 ≤ K ^ 2 := by
+  have hSt : gradedScoreOfUnit d u v t ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := by
     have := hK t hts
     nlinarith [abs_nonneg (gradedScoreOfUnit d u v t), sq_abs (gradedScoreOfUnit d u v t)]
-  have hm2 : 0 < m ^ 2 := by positivity
-  have hgoal : K ^ 2 ≤ u t ^ 2 * K ^ 2 / m ^ 2 := by
+  have hm2 : 0 < m ^ (2 : ℕ) := by positivity
+  have hgoal : K ^ (2 : ℕ) ≤ u t ^ (2 : ℕ) * K ^ (2 : ℕ) / m ^ (2 : ℕ) := by
     rw [le_div_iff₀ hm2]
     nlinarith [sq_nonneg K]
-  calc gradedScoreOfUnit d u v t ^ 2 ≤ K ^ 2 := hSt
-    _ ≤ u t ^ 2 * K ^ 2 / m ^ 2 := hgoal
-    _ = u t ^ 2 * (K ^ 2 / m ^ 2) := by ring
+  calc gradedScoreOfUnit d u v t ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := hSt
+    _ ≤ u t ^ (2 : ℕ) * K ^ (2 : ℕ) / m ^ (2 : ℕ) := hgoal
+    _ = u t ^ (2 : ℕ) * (K ^ (2 : ℕ) / m ^ (2 : ℕ)) := by ring
 
 /-- **The metric constant is determined by the datum.**  On a compact region where the unit does not
 vanish, the bounds of `gradedScoreOfUnit_posSemidef` exist automatically, so the positive metric is
@@ -145,7 +145,7 @@ theorem exists_gradedScoreOfUnit_posSemidef_of_isCompact {d : ℕ} {u v : ℝ �
   obtain ⟨t₁, ht₁s, ht₁⟩ := hs.exists_isMaxOn hne
     (((continuousOn_const.mul hu).add (continuousOn_id.mul hv)).abs)
   have hm : 0 < |u t₀| := abs_pos.mpr (hu0 t₀ ht₀s)
-  refine ⟨|gradedScoreOfUnit d u v t₁| ^ 2 / |u t₀| ^ 2, by positivity, fun t hts => ?_⟩
+  refine ⟨|gradedScoreOfUnit d u v t₁| ^ (2 : ℕ) / |u t₀| ^ (2 : ℕ), by positivity, fun t hts => ?_⟩
   exact gradedScoreOfUnit_posSemidef hm (fun _ hw => ht₀ hw) (fun _ hw => ht₁ hw) t hts
 
 /-! ### The graded symbol is a single-Kraus positive form -/
@@ -153,7 +153,7 @@ theorem exists_gradedScoreOfUnit_posSemidef_of_isCompact {d : ℕ} {u v : ℝ �
 /-- **The graded Gram is an outer square.**  At every nonzero point the graded mass/score pair is
 the outer product of the constant vector `(1, d)` with itself. -/
 theorem gradedDivisorReesGram_eq_vecMulVec (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
-    divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t) ((d : ℝ) ^ 2)
+    divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t) ((d : ℝ) ^ (2 : ℕ))
       = Matrix.vecMulVec ![1, (d : ℝ)] ![1, (d : ℝ)] := by
   rw [gradedDivisorOverlap_eq_one ht, gradedDivisorFisherNumerator_eq ht]
   ext i j
@@ -163,7 +163,7 @@ theorem gradedDivisorReesGram_eq_vecMulVec (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
 Gram is positive with one Kraus vector, and that vector does not depend on the point. -/
 theorem gradedDivisorReesGram_posSemidef_of_outerSquare (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     (divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
-      ((d : ℝ) ^ 2)).PosSemidef := by
+      ((d : ℝ) ^ (2 : ℕ))).PosSemidef := by
   rw [gradedDivisorReesGram_eq_vecMulVec d ht]
   simpa using Matrix.posSemidef_vecMulVec_self_star (R := ℝ) ![1, (d : ℝ)]
 
@@ -171,15 +171,15 @@ theorem gradedDivisorReesGram_posSemidef_of_outerSquare (d : ℕ) {t : ℝ} (ht 
 the local coordinate leaves the graded Gram, and its metric constant, unchanged: the dagger costs
 nothing on the graded symbol. -/
 theorem gradedDivisorReesGram_eq_of_ne_zero (d : ℕ) {t t' : ℝ} (ht : t ≠ 0) (ht' : t' ≠ 0) :
-    divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t) ((d : ℝ) ^ 2)
+    divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t) ((d : ℝ) ^ (2 : ℕ))
       = divisorReesGram (gradedDivisorOverlap d t') (gradedDivisorFisherNumerator d t')
-          ((d : ℝ) ^ 2) := by
+          ((d : ℝ) ^ (2 : ℕ)) := by
   rw [gradedDivisorReesGram_eq_vecMulVec d ht, gradedDivisorReesGram_eq_vecMulVec d ht']
 
 /-! ### The normalized graded symbol is a complete contraction -/
 
 /-- The energy of the graded symbol: the squared length of its Kraus vector. -/
-def gradedDivisorEnergy (d : ℕ) : ℝ := 1 + (d : ℝ) ^ 2
+def gradedDivisorEnergy (d : ℕ) : ℝ := 1 + (d : ℝ) ^ (2 : ℕ)
 
 theorem gradedDivisorEnergy_pos (d : ℕ) : 0 < gradedDivisorEnergy d := by
   unfold gradedDivisorEnergy
@@ -187,7 +187,7 @@ theorem gradedDivisorEnergy_pos (d : ℕ) : 0 < gradedDivisorEnergy d := by
 
 /-- The contraction defect of the graded symbol normalized by its own energy. -/
 def gradedDivisorDefect (d : ℕ) : Matrix (Fin 2) (Fin 2) ℝ :=
-  !![(d : ℝ) ^ 2 / gradedDivisorEnergy d, -(d : ℝ) / gradedDivisorEnergy d;
+  !![(d : ℝ) ^ (2 : ℕ) / gradedDivisorEnergy d, -(d : ℝ) / gradedDivisorEnergy d;
      -(d : ℝ) / gradedDivisorEnergy d, 1 / gradedDivisorEnergy d]
 
 /-- **The defect is again an outer square.**  Its Kraus vector is the orthogonal complement
@@ -206,7 +206,7 @@ theorem gradedDivisorDefect_posSemidef (d : ℕ) : (gradedDivisorDefect d).PosSe
   · ext i j
     fin_cases i <;> fin_cases j <;> simp [gradedDivisorDefect]
   · have hform : (star x) ⬝ᵥ (gradedDivisorDefect d *ᵥ x)
-        = (gradedDivisorEnergy d)⁻¹ * ((d : ℝ) * x 0 - x 1) ^ 2 := by
+        = (gradedDivisorEnergy d)⁻¹ * ((d : ℝ) * x 0 - x 1) ^ (2 : ℕ) := by
       simp [gradedDivisorDefect, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
       field_simp
       ring
@@ -218,7 +218,7 @@ theorem gradedDivisorDefect_eq (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     gradedDivisorDefect d
       = 1 - (gradedDivisorEnergy d)⁻¹ •
           divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
-            ((d : ℝ) ^ 2) := by
+            ((d : ℝ) ^ (2 : ℕ)) := by
   have hE := (gradedDivisorEnergy_pos d).ne'
   rw [gradedDivisorReesGram_eq_vecMulVec d ht]
   ext i j
@@ -232,7 +232,7 @@ contraction holds at every matrix level rather than only at the scalar one. -/
 theorem gradedDivisorReesGram_contraction (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     (1 - (gradedDivisorEnergy d)⁻¹ •
       divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
-        ((d : ℝ) ^ 2)).PosSemidef := by
+        ((d : ℝ) ^ (2 : ℕ))).PosSemidef := by
   rw [← gradedDivisorDefect_eq d ht]
   exact gradedDivisorDefect_posSemidef d
 
@@ -246,7 +246,7 @@ theorem gradedDivisorProjection_eq (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     gradedDivisorProjection d
       = (gradedDivisorEnergy d)⁻¹ •
           divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
-            ((d : ℝ) ^ 2) := by
+            ((d : ℝ) ^ (2 : ℕ)) := by
   rw [gradedDivisorProjection, gradedDivisorReesGram_eq_vecMulVec d ht]
 
 /-- **The normalized graded symbol is idempotent.**  Being the outer square of a vector divided by
@@ -310,7 +310,7 @@ theorem gradedScoreOfUnit_posSemidef_reflected {d : ℕ} {u v : ℝ → ℝ} {m 
     (hu : ∀ t ∈ s, m ≤ |u t|)
     (hK : ∀ t ∈ s, |gradedScoreOfUnit d u v t| ≤ K) (t : ℝ) (hts : t ∈ s) :
     (divisorReesGram (u (rho t)) (gradedScoreOfUnit d u v (rho t))
-      (K ^ 2 / m ^ 2)).PosSemidef :=
+      (K ^ (2 : ℕ) / m ^ (2 : ℕ))).PosSemidef :=
   gradedScoreOfUnit_posSemidef hm hu hK (rho t) (hrho t hts)
 
 end

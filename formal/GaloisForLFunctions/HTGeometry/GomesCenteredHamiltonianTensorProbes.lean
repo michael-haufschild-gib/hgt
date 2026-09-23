@@ -56,8 +56,8 @@ theorem gomesDilatonCenteredPotential_affine_probes_blind (a b c d r s : ℝ) :
 /-- A fixed quadratic tensor probe restores all first-order connection information. -/
 theorem gomesDilatonCenteredPotential_quadratic_probe_iff (H K : ℝ[X]) :
     (gomesDilatonCenteredPotential H = gomesDilatonCenteredPotential K ∧
-      gomesDilatonCenteredPotential (H + X ^ 2) =
-        gomesDilatonCenteredPotential (K + X ^ 2)) ↔
+      gomesDilatonCenteredPotential (H + X ^ (2 : ℕ)) =
+        gomesDilatonCenteredPotential (K + X ^ (2 : ℕ))) ↔
           dilatonSuperchargeCLM H = dilatonSuperchargeCLM K := by
   constructor
   · rintro ⟨hb, hp⟩
@@ -77,7 +77,7 @@ theorem gomesDilatonCenteredPotential_quadratic_probe_iff (H K : ℝ[X]) :
     obtain ⟨c, hc⟩ := (gomesDilatonConnection_constant_iff H K).mp h
     constructor
     · rw [hc, gomesDilatonCenteredPotential_constant]
-    · have hs : H + X ^ 2 = (K + X ^ 2) + C c := by rw [hc]; ring
+    · have hs : H + X ^ (2 : ℕ) = (K + X ^ (2 : ℕ)) + C c := by rw [hc]; ring
       rw [hs, gomesDilatonCenteredPotential_constant]
 
 /-- All energy-independent tensor-context observations contain exactly the connection information. -/
@@ -88,7 +88,7 @@ theorem gomesDilatonCenteredPotential_all_tensor_contexts_iff (H K : ℝ[X]) :
   constructor
   · intro h
     apply (gomesDilatonCenteredPotential_quadratic_probe_iff H K).mp
-    exact ⟨by simpa only [add_zero] using h 0, h (X ^ 2)⟩
+    exact ⟨by simpa only [add_zero] using h 0, h (X ^ (2 : ℕ))⟩
   · intro h R
     obtain ⟨c, hc⟩ := (gomesDilatonConnection_constant_iff H K).mp h
     have hs : H + R = (K + R) + C c := by rw [hc]; ring
@@ -96,7 +96,7 @@ theorem gomesDilatonCenteredPotential_all_tensor_contexts_iff (H K : ℝ[X]) :
 
 /-- Two energy-independent potential observations, before and after the fixed quadratic probe. -/
 def gomesDilatonCenteredTensorRecord (H : ℝ[X]) : (ℝ → ℝ) × (ℝ → ℝ) :=
-  (gomesDilatonCenteredPotential H, gomesDilatonCenteredPotential (H + X ^ 2))
+  (gomesDilatonCenteredPotential H, gomesDilatonCenteredPotential (H + X ^ (2 : ℕ)))
 
 /-- The quadratic-probe record forgets only the constant log-amplitude. -/
 theorem gomesDilatonCenteredTensorRecord_eq_iff (H K : ℝ[X]) :

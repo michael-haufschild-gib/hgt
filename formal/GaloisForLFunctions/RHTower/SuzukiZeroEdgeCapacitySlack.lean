@@ -80,8 +80,8 @@ theorem ratio_ge_of_log_le {r ε R : ℝ} (hr : 0 < r) (hε : 0 < ε)
 /-- **`(333)`: the hazard numerator is a difference of the two spectral points against a positive
 kernel.** -/
 theorem hazard_kernel_identity {t u s : ℝ} (ht : 0 < t + s) (hu : 0 < u + s) :
-    1 / ((t + s) ^ 2 * (u + s)) - 1 / ((u + s) ^ 2 * (t + s))
-      = (u - t) / ((t + s) ^ 2 * (u + s) ^ 2) := by
+    1 / ((t + s) ^ (2 : ℕ) * (u + s)) - 1 / ((u + s) ^ (2 : ℕ) * (t + s))
+      = (u - t) / ((t + s) ^ (2 : ℕ) * (u + s) ^ (2 : ℕ)) := by
   field_simp
   ring
 

@@ -158,7 +158,7 @@ theorem fpderiv_iterate_logSum_top_closed {Q : ℕ → Polynomial ℂ} (v : ℕ 
       = ((topShift Q v (n + 1))^[r])
           (prodHead Q (n + 1)
             * (fact (scaledLogWronskian (Q (n + 1)) (v (n + 1))) (n + 1)
-                / fact (Q (n + 1)) (n + 1) ^ 2)) := by
+                / fact (Q (n + 1)) (n + 1) ^ (2 : ℕ))) := by
   rw [fpderiv_iterate_prodDerivation_top Q v r
       (logSum_mem_lowSub_succ Q v (le_refl (n + 2))),
     fpderiv_logSum_top Q v (hQ (n + 1))]

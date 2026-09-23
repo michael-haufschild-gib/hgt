@@ -32,7 +32,7 @@ functional equation, and the absence of nonzero quasi-periods come from
 
 **A note on the repair interface.**  The packaged
 `exists_scalar_add_simultaneousFlatPolynomial_pos_real_on_imaginaryAxis` is *not* usable: its
-hypothesis `∀ i y, (y : ℂ)^2 + (α i)^2 ≠ 0` binds `y` at type `ℂ` (the ascription is a no-op), and
+hypothesis `∀ i y, (y : ℂ)^(2 : ℕ) + (α i)^(2 : ℕ) ≠ 0` binds `y` at type `ℂ` (the ascription is a no-op), and
 that is unsatisfiable, since `y = ± i α i` is a root.  The intended reading quantifies `y` over `ℝ`.
 This capstone therefore calls the primitive `exists_scalar_add_mul_pos_real_on_imaginaryAxis`
 directly and supplies packet positivity from `simultaneousFlatPolynomial_mul_I_pos_real`, whose
@@ -282,13 +282,13 @@ theorem exists_quartet_passport_polynomial_of_base {J : Type} [Fintype J] [Decid
   set M : J → ℕ := fun j => N j + 2 with hMdef
   set S : Polynomial ℂ := simultaneousFlatPolynomial M α with hSdef
   -- the packet is strictly positive real on the imaginary axis
-  have hneY : ∀ (y : ℝ) (j : J), ((y : ℂ) ^ 2) + (α j) ^ 2 ≠ 0 := by
+  have hneY : ∀ (y : ℝ) (j : J), ((y : ℂ) ^ (2 : ℕ)) + (α j) ^ (2 : ℕ) ≠ 0 := by
     intro y j hzero
     have hfac : ((α j) + (y : ℂ) * I) * ((α j) - (y : ℂ) * I) = 0 := by
-      have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
+      have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
       calc ((α j) + (y : ℂ) * I) * ((α j) - (y : ℂ) * I)
-          = (α j) ^ 2 - ((y : ℂ) ^ 2) * (I : ℂ) ^ 2 := by ring
-        _ = (α j) ^ 2 + ((y : ℂ) ^ 2) := by rw [hI]; ring
+          = (α j) ^ (2 : ℕ) - ((y : ℂ) ^ (2 : ℕ)) * (I : ℂ) ^ (2 : ℕ) := by ring
+        _ = (α j) ^ (2 : ℕ) + ((y : ℂ) ^ (2 : ℕ)) := by rw [hI]; ring
         _ = 0 := by rw [add_comm]; exact hzero
     rcases mul_eq_zero.mp hfac with h | h
     · have hval : α j = -((y : ℂ) * I) := by linear_combination h

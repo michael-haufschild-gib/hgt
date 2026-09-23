@@ -39,20 +39,20 @@ variable {m : Type*} [Fintype m] [DecidableEq m]
 theorem taylorCoeff_finiteDet2_one (M : Matrix m m ℂ) :
     taylorCoeff (fun z => finiteDet2 M z) 1 = 0 := by
   obtain ⟨P, hP⟩ : ∃ P : Polynomial ℂ, ∀ z : ℂ,
-      ((1 : Matrix m m ℂ) + z • M).det = 1 + M.trace * z + Polynomial.eval z P * z ^ 2 :=
+      ((1 : Matrix m m ℂ) + z • M).det = 1 + M.trace * z + Polynomial.eval z P * z ^ (2 : ℕ) :=
     ⟨(1 + Polynomial.X • M.map (Polynomial.C : ℂ →+* Polynomial ℂ)).det.divX.divX,
       fun z => Matrix.det_one_add_smul z M⟩
   have hfun : (fun z : ℂ => finiteDet2 M z)
-      = fun z : ℂ => (1 + M.trace * z + Polynomial.eval z P * z ^ 2)
+      = fun z : ℂ => (1 + M.trace * z + Polynomial.eval z P * z ^ (2 : ℕ))
           * Complex.exp (-(z * M.trace)) := by
     funext z
     rw [finiteDet2, hP z]
   have hA : HasDerivAt (fun z : ℂ => 1 + M.trace * z) M.trace 0 :=
     (((hasDerivAt_id (0 : ℂ)).const_mul M.trace).const_add (1 : ℂ)).congr_deriv (by ring)
-  have hB : HasDerivAt (fun z : ℂ => Polynomial.eval z P * z ^ 2) 0 0 :=
+  have hB : HasDerivAt (fun z : ℂ => Polynomial.eval z P * z ^ (2 : ℕ)) 0 0 :=
     ((P.hasDerivAt (0 : ℂ)).mul (hasDerivAt_pow 2 (0 : ℂ))).congr_deriv (by norm_num)
   have hg : HasDerivAt
-      (fun z : ℂ => 1 + M.trace * z + Polynomial.eval z P * z ^ 2) M.trace 0 :=
+      (fun z : ℂ => 1 + M.trace * z + Polynomial.eval z P * z ^ (2 : ℕ)) M.trace 0 :=
     (hA.add hB).congr_deriv (by ring)
   have hi : HasDerivAt (fun z : ℂ => -(z * M.trace)) (-M.trace) 0 :=
     (((hasDerivAt_id (0 : ℂ)).mul_const M.trace).neg).congr_deriv (by ring)

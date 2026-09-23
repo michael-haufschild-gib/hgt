@@ -37,7 +37,7 @@ private theorem decay_pos (q : XiZeroCopy) : 0 < decayExponent q := by
 private theorem shifted_second (v : ℂ) (c u : ℝ) :
     timeOnsetSecond v u = Complex.exp (-(c:ℂ)*(u:ℂ))*
       (timeOnsetSecond (v+c) u-2*c*timeOnsetFirst (v+c) u+
-        (c:ℂ)^2*timeOnset (v+c) u) := by
+        (c:ℂ)^(2 : ℕ)*timeOnset (v+c) u) := by
   unfold timeOnsetSecond timeOnsetFirst timeOnset
   have he : Complex.exp (-(c:ℂ)*(u:ℂ))*Complex.exp ((v+c)*(u:ℂ)) =
       Complex.exp (v*(u:ℂ)) := by
@@ -47,13 +47,13 @@ private theorem shifted_second (v : ℂ) (c u : ℝ) :
   calc
     _ = Complex.exp (v*(u:ℂ))*
         (((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)+
-          2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+v^2*(Real.smoothTransition u:ℂ)) := by ring
+          2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+v^(2 : ℕ)*(Real.smoothTransition u:ℂ)) := by ring
     _ = _ := by rw [← he]; ring
 
 private theorem shifted_third (v : ℂ) (c u : ℝ) :
     timeOnsetThird v u = Complex.exp (-(c:ℂ)*(u:ℂ))*
       (timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u+
-        3*(c:ℂ)^2*timeOnsetFirst (v+c) u-(c:ℂ)^3*timeOnset (v+c) u) := by
+        3*(c:ℂ)^(2 : ℕ)*timeOnsetFirst (v+c) u-(c:ℂ)^(3 : ℕ)*timeOnset (v+c) u) := by
   unfold timeOnsetThird timeOnsetSecond timeOnsetFirst timeOnset
   have he : Complex.exp (-(c:ℂ)*(u:ℂ))*Complex.exp ((v+c)*(u:ℂ)) =
       Complex.exp (v*(u:ℂ)) := by
@@ -80,22 +80,22 @@ theorem onset_derivative_bound (q : XiZeroCopy) (branch : Bool) :
   obtain ⟨B,hB,hb⟩ := timeOnset_pair_bound v c hv
   obtain ⟨D,hD,hd⟩ := timeOnset_derivative_pair_bound (v+c) hvc
   obtain ⟨A,hA,ha⟩ := timeOnset_pair_bound (v+c) 0 (by simpa using hvc)
-  refine ⟨B+D+2*c*D+c^2*A,by positivity,fun u => ?_⟩
+  refine ⟨B+D+2*c*D+c^(2 : ℕ)*A,by positivity,fun u => ?_⟩
   have h0 : ‖timeOnset (v+c) u‖ ≤ A := by
     have h := ha u
     simp only [neg_zero,zero_mul,Real.exp_zero,mul_one] at h
     linarith [norm_nonneg (timeOnsetFirst (v+c) u)]
   have h1 : ‖timeOnsetFirst (v+c) u‖ ≤ D := by linarith [hd u,norm_nonneg (timeOnsetSecond (v+c) u)]
   have h2 : ‖timeOnsetSecond (v+c) u‖ ≤ D := by linarith [hd u,norm_nonneg (timeOnsetFirst (v+c) u)]
-  have hs : ‖timeOnsetSecond v u‖ ≤ Real.exp (-c*u)*(D+2*c*D+c^2*A) := by
+  have hs : ‖timeOnsetSecond v u‖ ≤ Real.exp (-c*u)*(D+2*c*D+c^(2 : ℕ)*A) := by
     rw [shifted_second v c u,norm_mul,Complex.norm_exp]
     have he : (-(c:ℂ)*(u:ℂ)).re = -c*u := by simp
     rw [he]
     apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
     calc
       _ ≤ ‖timeOnsetSecond (v+c) u‖+‖2*(c:ℂ)*timeOnsetFirst (v+c) u‖+
-          ‖(c:ℂ)^2*timeOnset (v+c) u‖ := (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
-      _ ≤ D+2*c*D+c^2*A := by
+          ‖(c:ℂ)^(2 : ℕ)*timeOnset (v+c) u‖ := (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
+      _ ≤ D+2*c*D+c^(2 : ℕ)*A := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hc]
         gcongr
   have hf : ‖timeOnsetFirst v u‖ ≤ B*Real.exp (-c*u) := by
@@ -124,7 +124,7 @@ theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
   obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
   obtain ⟨D,hD,hd⟩ := timeOnset_second_derivative_pair_bound (v+c) hvc
   obtain ⟨A,hA,ha⟩ := timeOnset_pair_bound (v+c) 0 (by simpa using hvc)
-  refine ⟨B+D+3*c*D+3*c^2*A+c^3*A,by positivity,fun u => ?_⟩
+  refine ⟨B+D+3*c*D+3*c^(2 : ℕ)*A+c^(3 : ℕ)*A,by positivity,fun u => ?_⟩
   have h0 : ‖timeOnset (v+c) u‖ ≤ A := by
     have h := ha u
     simp only [neg_zero,zero_mul,Real.exp_zero,mul_one] at h
@@ -138,7 +138,7 @@ theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
   have h3 : ‖timeOnsetThird (v+c) u‖ ≤ D := by
     linarith [hd u,norm_nonneg (timeOnsetSecond (v+c) u)]
   have ht : ‖timeOnsetThird v u‖ ≤
-      Real.exp (-c*u)*(D+3*c*D+3*c^2*A+c^3*A) := by
+      Real.exp (-c*u)*(D+3*c*D+3*c^(2 : ℕ)*A+c^(3 : ℕ)*A) := by
     rw [shifted_third v c u,norm_mul,Complex.norm_exp]
     have he : (-(c:ℂ)*(u:ℂ)).re = -c*u := by simp
     rw [he]
@@ -146,18 +146,18 @@ theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
     calc
       _ ≤ ‖timeOnsetThird (v+c) u‖+
           ‖3*(c:ℂ)*timeOnsetSecond (v+c) u‖+
-          ‖3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖+
-          ‖(c:ℂ)^3*timeOnset (v+c) u‖ := by
+          ‖3*(c:ℂ)^(2 : ℕ)*timeOnsetFirst (v+c) u‖+
+          ‖(c:ℂ)^(3 : ℕ)*timeOnset (v+c) u‖ := by
         calc
           _ ≤ ‖timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u+
-              3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖+
-              ‖(c:ℂ)^3*timeOnset (v+c) u‖ := norm_sub_le _ _
+              3*(c:ℂ)^(2 : ℕ)*timeOnsetFirst (v+c) u‖+
+              ‖(c:ℂ)^(3 : ℕ)*timeOnset (v+c) u‖ := norm_sub_le _ _
           _ ≤ (‖timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u‖+
-              ‖3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖)+
-              ‖(c:ℂ)^3*timeOnset (v+c) u‖ :=
+              ‖3*(c:ℂ)^(2 : ℕ)*timeOnsetFirst (v+c) u‖)+
+              ‖(c:ℂ)^(3 : ℕ)*timeOnset (v+c) u‖ :=
             add_le_add (norm_add_le _ _) le_rfl
           _ ≤ _ := add_le_add (add_le_add (norm_sub_le _ _) le_rfl) le_rfl
-      _ ≤ D+3*c*D+3*c^2*A+c^3*A := by
+      _ ≤ D+3*c*D+3*c^(2 : ℕ)*A+c^(3 : ℕ)*A := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat,Complex.norm_real,
           Real.norm_eq_abs,abs_of_nonneg hc]
         gcongr
@@ -337,7 +337,7 @@ private theorem secondTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (sourceGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem secondTimeDensity_integrable (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
     IntegrableOn (secondTimeDensity q branch v x X k) (Ioi 0) := by
@@ -448,13 +448,23 @@ theorem capBoundaryField_time_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     have himage := HasDerivAt.comp_sub_const t x
       (boundaryArm_time_hasDerivAt q branch (t-x) (-x) X k)
     have hcap := (hdirect.sub himage).const_mul (-liftTraceCoefficient q branch amplitude)
-    convert hcap.deriv using 1
-    simp only [capBoundaryField]
+    have hfun :
+        (fun s => -liftTraceCoefficient q branch amplitude*
+          (boundaryArm q branch (s+x) x X k-boundaryArm q branch (s-x) (-x) X k)) =
+        (fun y => -liftTraceCoefficient q branch amplitude*
+          ((fun s => boundaryArm q branch (s+x) x X k)-
+            fun s => boundaryArm q branch (s-x) (-x) X k) y) := by
+      funext y
+      rfl
+    change deriv (fun s => -liftTraceCoefficient q branch amplitude*
+      (boundaryArm q branch (s+x) x X k-boundaryArm q branch (s-x) (-x) X k)) t = _
+    rw [hfun]
+    exact hcap.deriv
   rw [hfirst]
   have hdirect := HasDerivAt.comp_add_const τ x
-    (boundaryArm_time_second_hasDerivAt q branch (τ+x) x X k)
+    (timeArm_hasDerivAt q branch (τ+x) x X k)
   have himage := HasDerivAt.comp_sub_const τ x
-    (boundaryArm_time_second_hasDerivAt q branch (τ-x) (-x) X k)
+    (timeArm_hasDerivAt q branch (τ-x) (-x) X k)
   exact (hdirect.sub himage).const_mul (-liftTraceCoefficient q branch amplitude)
 
 private theorem sourceWeight_integrable (q : XiZeroCopy) (branch normal : Bool) (v : ℝ) :
@@ -541,7 +551,7 @@ theorem normalArm_ingoing (q : XiZeroCopy) (branch : Bool) (v X k : ℝ) :
 private def delayFlow (b h : ℝ) : ℝ := Real.log ((b+Real.exp h-1)/b)
 private def delayJac (b h : ℝ) : ℝ := Real.exp h/(b+Real.exp h-1)
 private def delaySlope (b h : ℝ) : ℝ := (b+Real.exp h-1)⁻¹-b⁻¹
-private def jacSlope (b h : ℝ) : ℝ := -Real.exp h/(b+Real.exp h-1)^2
+private def jacSlope (b h : ℝ) : ℝ := -Real.exp h/(b+Real.exp h-1)^(2 : ℕ)
 
 private theorem delay_den_pos (b h : ℝ) (hb : 0 < b) (hh : 0 ≤ h) :
     0 < b+Real.exp h-1 := by

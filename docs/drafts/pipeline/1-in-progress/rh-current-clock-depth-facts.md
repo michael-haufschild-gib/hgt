@@ -59,7 +59,7 @@ prime itself or a redundant processed prime.
   `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
 - Positive survivor: the literal preserved-sample lower bound, uniform in
   adaptive helper sets and their cardinalities, proved in Lean.
 - Search: focused depth search completed with `partial=false`; a second

@@ -29,7 +29,7 @@ theorem directStaticChoiCentralizerMass_le_norm
   simp only [one_mul, one_pow, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one] at hcs
   have hdiagSq :
-      Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) =
+      Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) =
         ‖directStaticChoiTargetDiagonal target‖ := by
     rw [← Real.sqrt_sq (norm_nonneg (directStaticChoiTargetDiagonal target))]
     congr 1
@@ -41,9 +41,9 @@ theorem directStaticChoiCentralizerMass_le_norm
     (Real.sqrt (d : ℝ))⁻¹ * ∑ i : Fin d, ‖target (i, i)‖ ≤
         (Real.sqrt (d : ℝ))⁻¹ *
           (Real.sqrt (d : ℝ) *
-            Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2)) :=
+            Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hcs (inv_nonneg.mpr hsqrtPos.le)
-    _ = Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) := by
+    _ = Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) := by
       rw [← mul_assoc, inv_mul_cancel₀ (ne_of_gt hsqrtPos), one_mul]
     _ = ‖directStaticChoiTargetDiagonal target‖ := hdiagSq
     _ ≤ ‖target‖ := norm_directStaticChoiTargetDiagonal_le target
@@ -66,8 +66,8 @@ theorem directStaticChoiTargetNearActionMass_nonneg
 theorem directStaticChoiCentralizerMass_sq_le_diagonalMass
     {d : ℕ} (hd : 0 < d)
     (target : EuclideanSpace ℂ (Fin d × Fin d)) :
-    directStaticChoiCentralizerMass target ^ 2 ≤
-      ∑ i : Fin d, ‖target (i, i)‖ ^ 2 := by
+    directStaticChoiCentralizerMass target ^ (2 : ℕ) ≤
+      ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) := by
   have hdR : 0 < (d : ℝ) := by exact_mod_cast hd
   have hsqrtPos : 0 < Real.sqrt (d : ℝ) := Real.sqrt_pos.2 hdR
   have hcs := Real.sum_mul_le_sqrt_mul_sqrt
@@ -76,18 +76,18 @@ theorem directStaticChoiCentralizerMass_sq_le_diagonalMass
   simp only [one_mul, one_pow, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one] at hcs
   have hmass : directStaticChoiCentralizerMass target ≤
-      Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) := by
+      Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) := by
     unfold directStaticChoiCentralizerMass directStaticChoiTargetWeight
     rw [← Finset.mul_sum]
     calc
       (Real.sqrt (d : ℝ))⁻¹ * ∑ i : Fin d, ‖target (i, i)‖ ≤
           (Real.sqrt (d : ℝ))⁻¹ *
             (Real.sqrt (d : ℝ) *
-              Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2)) :=
+              Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hcs (inv_nonneg.mpr hsqrtPos.le)
-      _ = Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) := by
+      _ = Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) := by
         rw [← mul_assoc, inv_mul_cancel₀ (ne_of_gt hsqrtPos), one_mul]
-  have hsum0 : 0 ≤ ∑ i : Fin d, ‖target (i, i)‖ ^ 2 :=
+  have hsum0 : 0 ≤ ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   have hsquare := pow_le_pow_left₀
     (directStaticChoiCentralizerMass_nonneg target) hmass 2
@@ -95,16 +95,16 @@ theorem directStaticChoiCentralizerMass_sq_le_diagonalMass
 
 theorem diagonalMass_add_offDiagonalMass_eq_norm_sq
     {d : ℕ} (target : EuclideanSpace ℂ (Fin d × Fin d)) :
-    (∑ i : Fin d, ‖target (i, i)‖ ^ 2) +
+    (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) +
         ∑ i : Fin d, ∑ j : Fin d,
-          (if i = j then 0 else ‖target (i, j)‖ ^ 2) =
-      ‖target‖ ^ 2 := by
+          (if i = j then 0 else ‖target (i, j)‖ ^ (2 : ℕ)) =
+      ‖target‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i _
-  rw [show ‖target (i, i)‖ ^ 2 =
-      ∑ j : Fin d, if i = j then ‖target (i, j)‖ ^ 2 else 0 by simp]
+  rw [show ‖target (i, i)‖ ^ (2 : ℕ) =
+      ∑ j : Fin d, if i = j then ‖target (i, j)‖ ^ (2 : ℕ) else 0 by simp]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j _
@@ -119,10 +119,10 @@ theorem offDiagonalMass_staticChoiAnchorResidual_choiVector_eq
     (∑ i : Fin d, ∑ j : Fin d,
         (if i = j then 0 else
           ‖staticChoiAnchorResidual energy anchor
-            (GaloisForLFunctions.RHTower.choiVector W) (i, j)‖ ^ 2)) =
+            (GaloisForLFunctions.RHTower.choiVector W) (i, j)‖ ^ (2 : ℕ))) =
       normalizedSpectralOffDiagonalMass W := by
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
-  have hsqrt : Real.sqrt (d : ℝ) ^ 2 = d := Real.sq_sqrt hdR.le
+  have hsqrt : Real.sqrt (d : ℝ) ^ (2 : ℕ) = d := Real.sq_sqrt hdR.le
   have hsqrtNe : Real.sqrt (d : ℝ) ≠ 0 := Real.sqrt_ne_zero'.mpr hdR
   unfold normalizedSpectralOffDiagonalMass
   rw [Finset.mul_sum]
@@ -157,9 +157,9 @@ theorem directStaticChoiTargetNearActionMass_anchorResidual_choiVector_le_jointD
         (staticChoiAnchorResidual energy anchor
           (GaloisForLFunctions.RHTower.choiVector W)) energy r δ ≤
       (1 - ‖staticChoiAnchorComponent energy anchor
-          (GaloisForLFunctions.RHTower.choiVector W)‖ ^ 2 -
+          (GaloisForLFunctions.RHTower.choiVector W)‖ ^ (2 : ℕ) -
         normalizedSpectralCommutatorEnergy energy W /
-          staticChoiOscillationScale energy ^ 2) ^ r := by
+          staticChoiOscillationScale energy ^ (2 : ℕ)) ^ r := by
   let target : EuclideanSpace ℂ (Fin d × Fin d) :=
     GaloisForLFunctions.RHTower.choiVector W
   let residual := staticChoiAnchorResidual energy anchor target
@@ -168,51 +168,51 @@ theorem directStaticChoiTargetNearActionMass_anchorResidual_choiVector_le_jointD
       (by simpa using hd)
     simpa [target, Matrix.star_eq_conjTranspose] using
       (Matrix.mem_unitaryGroup_iff'.mp hW)
-  have hnormResidual : ‖residual‖ ^ 2 =
-      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2 := by
+  have hnormResidual : ‖residual‖ ^ (2 : ℕ) =
+      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ) := by
     exact norm_sq_staticChoiAnchorResidual_eq_one_sub_norm_sq_component
       hd energy anchor htarget
   have hsplit := diagonalMass_add_offDiagonalMass_eq_norm_sq residual
   have hoff :
       (∑ i : Fin d, ∑ j : Fin d,
-        (if i = j then 0 else ‖residual (i, j)‖ ^ 2)) =
+        (if i = j then 0 else ‖residual (i, j)‖ ^ (2 : ℕ))) =
         normalizedSpectralOffDiagonalMass W := by
     simpa [residual, target] using
       offDiagonalMass_staticChoiAnchorResidual_choiVector_eq
         hd energy anchor W
   rw [hoff, hnormResidual] at hsplit
   have hdiag :
-      (∑ i : Fin d, ‖residual (i, i)‖ ^ 2) =
-        1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2 -
+      (∑ i : Fin d, ‖residual (i, i)‖ ^ (2 : ℕ)) =
+        1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ) -
           normalizedSpectralOffDiagonalMass W := by
     linarith
-  have hscale : 0 < staticChoiOscillationScale energy ^ 2 :=
+  have hscale : 0 < staticChoiOscillationScale energy ^ (2 : ℕ) :=
     sq_pos_of_pos (staticChoiOscillationScale_pos energy)
   have hcomm :=
     normalizedSpectralCommutatorEnergy_le_oscillation_sq_mul_offDiagonal
       energy W
   have hratio : normalizedSpectralCommutatorEnergy energy W /
-      staticChoiOscillationScale energy ^ 2 ≤
+      staticChoiOscillationScale energy ^ (2 : ℕ) ≤
         normalizedSpectralOffDiagonalMass W := by
     exact (div_le_iff₀ hscale).2 (by simpa [mul_comm] using hcomm)
   have hmassSq := directStaticChoiCentralizerMass_sq_le_diagonalMass
     hd residual
   rw [hdiag] at hmassSq
-  have hbase : directStaticChoiCentralizerMass residual ^ 2 ≤
-      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2 -
+  have hbase : directStaticChoiCentralizerMass residual ^ (2 : ℕ) ≤
+      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ) -
         normalizedSpectralCommutatorEnergy energy W /
-          staticChoiOscillationScale energy ^ 2 := by
+          staticChoiOscillationScale energy ^ (2 : ℕ) := by
     linarith
   calc
     directStaticChoiTargetNearActionMass residual energy r δ ≤
         directStaticChoiCentralizerMass residual ^ (2 * r) :=
       directStaticChoiTargetNearActionMass_le_centralizerMass_pow
         residual energy r δ
-    _ = (directStaticChoiCentralizerMass residual ^ 2) ^ r := by
+    _ = (directStaticChoiCentralizerMass residual ^ (2 : ℕ)) ^ r := by
       rw [pow_mul]
-    _ ≤ (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2 -
+    _ ≤ (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ) -
           normalizedSpectralCommutatorEnergy energy W /
-            staticChoiOscillationScale energy ^ 2) ^ r :=
+            staticChoiOscillationScale energy ^ (2 : ℕ)) ^ r :=
       pow_le_pow_left₀ (sq_nonneg _) hbase r
 
 theorem returnObserverJointDefect_nonneg
@@ -220,9 +220,9 @@ theorem returnObserverJointDefect_nonneg
     {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) :
     0 ≤ 1 - ‖staticChoiAnchorComponent energy anchor
-        (GaloisForLFunctions.RHTower.choiVector W)‖ ^ 2 -
+        (GaloisForLFunctions.RHTower.choiVector W)‖ ^ (2 : ℕ) -
       normalizedSpectralCommutatorEnergy energy W /
-        staticChoiOscillationScale energy ^ 2 := by
+        staticChoiOscillationScale energy ^ (2 : ℕ) := by
   have h :=
     directStaticChoiTargetNearActionMass_anchorResidual_choiVector_le_jointDefect
       hd energy anchor hW 1 0
@@ -241,13 +241,13 @@ theorem directStaticChoiTargetNearActionMass_anchorResidual_choiVector_le_exp_jo
           (GaloisForLFunctions.RHTower.choiVector W)) energy r δ ≤
       Real.exp (-(r : ℝ) *
         (‖staticChoiAnchorComponent energy anchor
-            (GaloisForLFunctions.RHTower.choiVector W)‖ ^ 2 +
+            (GaloisForLFunctions.RHTower.choiVector W)‖ ^ (2 : ℕ) +
           normalizedSpectralCommutatorEnergy energy W /
-            staticChoiOscillationScale energy ^ 2)) := by
+            staticChoiOscillationScale energy ^ (2 : ℕ))) := by
   let q := ‖staticChoiAnchorComponent energy anchor
-      (GaloisForLFunctions.RHTower.choiVector W)‖ ^ 2 +
+      (GaloisForLFunctions.RHTower.choiVector W)‖ ^ (2 : ℕ) +
     normalizedSpectralCommutatorEnergy energy W /
-      staticChoiOscillationScale energy ^ 2
+      staticChoiOscillationScale energy ^ (2 : ℕ)
   have hbase : 0 ≤ 1 - q := by
     simpa [q, sub_sub] using
       returnObserverJointDefect_nonneg hd energy anchor hW
@@ -317,11 +317,11 @@ theorem directStaticChoiTargetNearActionMass_zeroAnchorResidual_hermitianSpectra
           (GaloisForLFunctions.RHTower.choiVector
             (hermitianSpectralEndpoint hH U :
               Matrix (Fin d) (Fin d) ℂ))) hH.eigenvalues r δ ≤
-      (1 - (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ 2 -
+      (1 - (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ (2 : ℕ) -
         ((d : ℝ)⁻¹ * finiteMatrixHilbertSchmidtEnergy
           (H * (U : Matrix (Fin d) (Fin d) ℂ) -
             (U : Matrix (Fin d) (Fin d) ℂ) * H)) /
-          staticChoiOscillationScale hH.eigenvalues ^ 2) ^ r := by
+          staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ)) ^ r := by
   have h :=
     directStaticChoiTargetNearActionMass_anchorResidual_choiVector_le_jointDefect
       hd hH.eigenvalues 0 (hermitianSpectralEndpoint hH U).2 r δ
@@ -342,8 +342,8 @@ theorem directStaticChoiTargetNearActionMass_zeroAnchorResidual_hermitianSpectra
             (hermitianSpectralEndpoint hH U :
               Matrix (Fin d) (Fin d) ℂ))) hH.eigenvalues r δ ≤
       Real.exp (-(r : ℝ) *
-          (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ 2) *
-        Real.exp (-(((r : ℝ) * (d : ℝ)⁻¹ / B ^ 2) *
+          (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ (2 : ℕ)) *
+        Real.exp (-(((r : ℝ) * (d : ℝ)⁻¹ / B ^ (2 : ℕ)) *
           finiteMatrixHilbertSchmidtEnergy
             (H * (U : Matrix (Fin d) (Fin d) ℂ) -
               (U : Matrix (Fin d) (Fin d) ℂ) * H))) := by
@@ -356,10 +356,10 @@ theorem directStaticChoiTargetNearActionMass_zeroAnchorResidual_hermitianSpectra
   refine hraw.trans (Real.exp_le_exp.mpr ?_)
   have hspos : 0 < staticChoiOscillationScale hH.eigenvalues :=
     staticChoiOscillationScale_pos hH.eigenvalues
-  have hsq : staticChoiOscillationScale hH.eigenvalues ^ 2 ≤ B ^ 2 :=
+  have hsq : staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
     (sq_le_sq₀ hspos.le hB.le).2 hscale
-  have hinv : (B ^ 2)⁻¹ ≤
-      (staticChoiOscillationScale hH.eigenvalues ^ 2)⁻¹ :=
+  have hinv : (B ^ (2 : ℕ))⁻¹ ≤
+      (staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ))⁻¹ :=
     (inv_le_inv₀ (sq_pos_of_pos hB) (sq_pos_of_pos hspos)).2 hsq
   have hE : 0 ≤ finiteMatrixHilbertSchmidtEnergy
       (H * (U : Matrix (Fin d) (Fin d) ℂ) -
@@ -369,27 +369,27 @@ theorem directStaticChoiTargetNearActionMass_zeroAnchorResidual_hermitianSpectra
     (mul_nonneg (Nat.cast_nonneg r)
       (inv_nonneg.mpr (Nat.cast_nonneg d)))
   have hfull := mul_le_mul_of_nonneg_right hcoef hE
-  let u := (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ 2
+  let u := (‖Matrix.trace (U : Matrix (Fin d) (Fin d) ℂ)‖ / d) ^ (2 : ℕ)
   calc
     -(r : ℝ) * (u + (d : ℝ)⁻¹ *
         finiteMatrixHilbertSchmidtEnergy
           (H * (U : Matrix (Fin d) (Fin d) ℂ) -
             (U : Matrix (Fin d) (Fin d) ℂ) * H) /
-        staticChoiOscillationScale hH.eigenvalues ^ 2) =
+        staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ)) =
       -(r : ℝ) * u -
         (((r : ℝ) * (d : ℝ)⁻¹) *
-          (staticChoiOscillationScale hH.eigenvalues ^ 2)⁻¹ *
+          (staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ))⁻¹ *
             finiteMatrixHilbertSchmidtEnergy
               (H * (U : Matrix (Fin d) (Fin d) ℂ) -
                 (U : Matrix (Fin d) (Fin d) ℂ) * H)) := by ring
     _ ≤ -(r : ℝ) * u -
-        (((r : ℝ) * (d : ℝ)⁻¹) * (B ^ 2)⁻¹ *
+        (((r : ℝ) * (d : ℝ)⁻¹) * (B ^ (2 : ℕ))⁻¹ *
           finiteMatrixHilbertSchmidtEnergy
             (H * (U : Matrix (Fin d) (Fin d) ℂ) -
               (U : Matrix (Fin d) (Fin d) ℂ) * H)) :=
       sub_le_sub_left hfull _
     _ = -(r : ℝ) * u +
-        -(((r : ℝ) * (d : ℝ)⁻¹ / B ^ 2) *
+        -(((r : ℝ) * (d : ℝ)⁻¹ / B ^ (2 : ℕ)) *
           finiteMatrixHilbertSchmidtEnergy
             (H * (U : Matrix (Fin d) (Fin d) ℂ) -
               (U : Matrix (Fin d) (Fin d) ℂ) * H)) := by ring
@@ -413,9 +413,9 @@ theorem FiniteGaussianHermitianPencil.affineZeroAnchorResidualNearAction_le_exp_
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ)))
         (P.affineSpectralEnergy hH₀ x) r δ ≤
       Real.exp (-(r : ℝ) *
-          (‖Matrix.trace (U : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2) *
-        Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ / B ^ 2) *
-          ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ 2)) := by
+          (‖Matrix.trace (U : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ)) *
+        Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ / B ^ (2 : ℕ)) *
+          ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ))) := by
   let Ufin := finiteGaussianHermitianPencilReindexedEndpoint U
   have h :=
     directStaticChoiTargetNearActionMass_zeroAnchorResidual_hermitianSpectralEndpoint_le_exp_trace_mul_action_of_scale
@@ -450,10 +450,10 @@ theorem FiniteGaussianHermitianPencil.scaledAffineZeroAnchorResidualNearAction_l
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ)))
         (P.scaledAffineSpectralEnergy hH₀ scale x) r δ ≤
       Real.exp (-(r : ℝ) *
-          (‖Matrix.trace (U : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2) *
-        Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
+          (‖Matrix.trace (U : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ)) *
+        Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
           ‖P.commutatorMap U x -
-            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2)) := by
+            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ))) := by
   have h := P.affineZeroAnchorResidualNearAction_le_exp_trace_mul_action_of_scale
     hH₀ (scale • x) U r δ B hosc hB
   rw [P.scaledAffineCommutatorEnergy hscale H₀ x U] at h
@@ -488,16 +488,16 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedScaledAffineZe
           (P.scaledAffineSpectralEnergy hH₀ scale x) r δ} ≤
       (∑ c, w c *
         Real.exp (-(r : ℝ) *
-          (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2) *
+          (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ)) *
         ∏ i : Fin n, (Real.sqrt (2 * Real.pi))⁻¹ *
           Real.sqrt (Real.pi /
-            (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
-              (P.commutatorMap (U c)).singularValues i ^ 2 + 1 / 2))) / κ := by
+            (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ) + 1 / 2))) / κ := by
   let tau : ℝ :=
-    (r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2
+    (r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)
   let prefactor : C → ℝ := fun c =>
     Real.exp (-(r : ℝ) *
-      (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2)
+      (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ))
   have htau : 0 ≤ tau := by
     dsimp [tau]
     positivity
@@ -554,13 +554,13 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedScaledAffineZe
           (P.scaledAffineSpectralEnergy hH₀ scale x) r δ} ≤
       (∑ c, w c *
         Real.exp (-(r : ℝ) *
-          (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2) *
+          (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ)) *
         Real.exp (-((
-          ((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
-            (∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2) /
-          (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
-              (∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ 4) +
-            ∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ 2)))) / κ := by
+          ((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+            (∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
+          (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              (∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)) +
+            ∑ i : Fin n, (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ))))) / κ := by
   have hbase :=
     P.stdGaussian_measure_weightedScaledAffineZeroAnchorResidualNearAction_on_scaleSet_ge_le
       hH₀ hscale G U w hw r δ B hosc hB n hn hκ
@@ -611,7 +611,7 @@ theorem stdGaussian_measure_pairQubitProjectiveSeedWeightedReturnExcisedGrowingR
               (pairQubitPathUnitaryReindex L (U c) :
                 Matrix (FiniteQubitConfiguration (Fin (L * 2)))
                   (FiniteQubitConfiguration (Fin (L * 2))) ℂ)‖ /
-            Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ 2) *
+            Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ (2 : ℕ)) *
         ∏ i : Fin (Module.finrank ℝ
             (TwoLocalPauliCoefficientSpace (L * 2))),
           (Real.sqrt (2 * Real.pi))⁻¹ *
@@ -619,12 +619,12 @@ theorem stdGaussian_measure_pairQubitProjectiveSeedWeightedReturnExcisedGrowingR
               (((r : ℝ) *
                   (Fintype.card
                     (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ *
-                  scale ^ 2 /
+                  scale ^ (2 : ℕ) /
                     pairQubitProjectiveSeedGrowingReplicaOscillationCeiling
-                      L rho scale ^ 2) *
+                      L rho scale ^ (2 : ℕ)) *
                 ((twoLocalPauliGaussianHermitianPencil
                     (L * 2)).commutatorMap
-                      (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ 2 +
+                      (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ (2 : ℕ) +
                 1 / 2))) / κ := by
   let P := twoLocalPauliGaussianHermitianPencil (L * 2)
   let B := pairQubitProjectiveSeedGrowingReplicaOscillationCeiling L rho scale
@@ -675,7 +675,7 @@ noncomputable def pairQubitProjectiveSeedWeightedReturnExcisedGrowingReplicaBudg
           (pairQubitPathUnitaryReindex L (U c) :
             Matrix (FiniteQubitConfiguration (Fin (L * 2)))
               (FiniteQubitConfiguration (Fin (L * 2))) ℂ)‖ /
-        Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ 2) *
+        Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ (2 : ℕ)) *
     ∏ i : Fin (Module.finrank ℝ
         (TwoLocalPauliCoefficientSpace (L * 2))),
       (Real.sqrt (2 * Real.pi))⁻¹ *
@@ -683,12 +683,12 @@ noncomputable def pairQubitProjectiveSeedWeightedReturnExcisedGrowingReplicaBudg
           (((r : ℝ) *
               (Fintype.card
                 (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ *
-              scale ^ 2 /
+              scale ^ (2 : ℕ) /
                 pairQubitProjectiveSeedGrowingReplicaOscillationCeiling
-                  L rho scale ^ 2) *
+                  L rho scale ^ (2 : ℕ)) *
             ((twoLocalPauliGaussianHermitianPencil
                 (L * 2)).commutatorMap
-                  (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ 2 +
+                  (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ (2 : ℕ) +
             1 / 2))) / κ
 
 theorem stdGaussian_measure_pairQubitProjectiveSeedWeightedReturnExcisedGrowingReplicaBadSet_le
@@ -811,15 +811,15 @@ theorem directStaticChoiTargetNearActionMass_anchorResidual_le
     (htarget : ‖target‖ = 1) (r : ℕ) (δ : ℝ) :
     directStaticChoiTargetNearActionMass
         (staticChoiAnchorResidual energy anchor target) energy r δ ≤
-      (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2) ^ r := by
+      (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ)) ^ r := by
   calc
     directStaticChoiTargetNearActionMass
         (staticChoiAnchorResidual energy anchor target) energy r δ ≤
       ‖staticChoiAnchorResidual energy anchor target‖ ^ (2 * r) :=
         directStaticChoiTargetNearActionMass_le_norm_pow hd _ energy r δ
-    _ = (‖staticChoiAnchorResidual energy anchor target‖ ^ 2) ^ r := by
+    _ = (‖staticChoiAnchorResidual energy anchor target‖ ^ (2 : ℕ)) ^ r := by
       rw [pow_mul]
-    _ = (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2) ^ r := by
+    _ = (1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ)) ^ r := by
       rw [norm_sq_staticChoiAnchorResidual_eq_one_sub_norm_sq_component
         hd energy anchor htarget]
 

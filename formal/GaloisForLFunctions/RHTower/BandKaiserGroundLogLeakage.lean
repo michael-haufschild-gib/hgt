@@ -8,8 +8,8 @@ Combining the exact physical carrier, the central-window Kaiser energy lower bou
 exterior `log(c) / c` tail proves an unconditional theorem for the actual ground prolate spectrum:
 
 ```text
-1 - mu_0(a)^2 <= 16 c (2 + log c) / sqrt(c) * exp(-2(c-1)),
-c = 2*pi*a^2.
+1 - mu_0(a)^(2 : ℕ) <= 16 c (2 + log c) / sqrt(c) * exp(-2(c-1)),
+c = 2*pi*a^(2 : ℕ).
 ```
 
 This is within one logarithm of the fixed-index Fuchs ground-state prefactor.
@@ -25,14 +25,14 @@ open GaloisForLFunctions.RHTower
 
 /-- Exact physical Kaiser defect with the logarithmically sharp exterior-tail bound. -/
 theorem groundPhysicalKaiser_defect_le_log
-    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ 2) :
-    ‖kaiserGroundPhysicalEven a ha‖ ^ 2 -
-        ‖evenTimeBandFourier a (kaiserGroundPhysicalEven a ha)‖ ^ 2 ≤
-      (8 + 4 * Real.log (2 * Real.pi * a ^ 2)) /
-        (Real.pi * (2 * Real.pi * a ^ 2)) := by
-  let c : ℝ := 2 * Real.pi * a ^ 2
+    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ (2 : ℕ)) :
+    ‖kaiserGroundPhysicalEven a ha‖ ^ (2 : ℕ) -
+        ‖evenTimeBandFourier a (kaiserGroundPhysicalEven a ha)‖ ^ (2 : ℕ) ≤
+      (8 + 4 * Real.log (2 * Real.pi * a ^ (2 : ℕ))) /
+        (Real.pi * (2 * Real.pi * a ^ (2 : ℕ))) := by
+  let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
   have htail := integral_tail_kaiser_log_le (c := c) hc
-  have hband : c / (2 * Real.pi) = a ^ 2 := by
+  have hband : c / (2 * Real.pi) = a ^ (2 : ℕ) := by
     dsimp [c]
     field_simp [Real.pi_ne_zero]
   rw [kaiserGroundPhysicalEven,
@@ -41,31 +41,31 @@ theorem groundPhysicalKaiser_defect_le_log
 
 /-- Every vector on the Kaiser ground line retains the refined explicit Fourier-energy fraction. -/
 theorem groundPhysicalKaiser_span_form_log
-    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ 2) :
+    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ (2 : ℕ)) :
     ∀ f ∈ Submodule.span ℂ ({kaiserGroundPhysicalEven a ha} : Set evenSubspace),
-      (1 - ((8 + 4 * Real.log (2 * Real.pi * a ^ 2)) /
-          (Real.pi * (2 * Real.pi * a ^ 2))) /
-            kaiserCentralEnergyFactor (2 * Real.pi * a ^ 2)) * ‖f‖ ^ 2 ≤
-        ‖evenTimeBandFourier a f‖ ^ 2 := by
-  let c : ℝ := 2 * Real.pi * a ^ 2
+      (1 - ((8 + 4 * Real.log (2 * Real.pi * a ^ (2 : ℕ))) /
+          (Real.pi * (2 * Real.pi * a ^ (2 : ℕ)))) /
+            kaiserCentralEnergyFactor (2 * Real.pi * a ^ (2 : ℕ))) * ‖f‖ ^ (2 : ℕ) ≤
+        ‖evenTimeBandFourier a f‖ ^ (2 : ℕ) := by
+  let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
   let E : ℝ := kaiserCentralEnergyFactor c
   let T : ℝ := (8 + 4 * Real.log c) / (Real.pi * c)
   let v : evenSubspace := kaiserGroundPhysicalEven a ha
   have hcpos : 0 < c := by dsimp [c]; positivity
   have hEpos : 0 < E := kaiserCentralEnergyFactor_pos hcpos
-  have hEle : E ≤ ‖v‖ ^ 2 := kaiserCentralEnergyFactor_le_norm_sq_groundPhysical ha hc
+  have hEle : E ≤ ‖v‖ ^ (2 : ℕ) := kaiserCentralEnergyFactor_le_norm_sq_groundPhysical ha hc
   have hTnonneg : 0 ≤ T := by
     dsimp [T]
     have hlog : 0 ≤ Real.log c := Real.log_nonneg (by linarith)
     positivity
-  have hdefect : ‖v‖ ^ 2 - ‖evenTimeBandFourier a v‖ ^ 2 ≤ T := by
+  have hdefect : ‖v‖ ^ (2 : ℕ) - ‖evenTimeBandFourier a v‖ ^ (2 : ℕ) ≤ T := by
     exact groundPhysicalKaiser_defect_le_log ha hc
-  have htail : T ≤ T / E * ‖v‖ ^ 2 := by
+  have htail : T ≤ T / E * ‖v‖ ^ (2 : ℕ) := by
     calc
       T = T / E * E := by field_simp [hEpos.ne']
-      _ ≤ T / E * ‖v‖ ^ 2 :=
+      _ ≤ T / E * ‖v‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hEle (div_nonneg hTnonneg hEpos.le)
-  have hbase : (1 - T / E) * ‖v‖ ^ 2 ≤ ‖evenTimeBandFourier a v‖ ^ 2 := by
+  have hbase : (1 - T / E) * ‖v‖ ^ (2 : ℕ) ≤ ‖evenTimeBandFourier a v‖ ^ (2 : ℕ) := by
     nlinarith
   intro f hf
   obtain ⟨z, rfl⟩ := Submodule.mem_span_singleton.mp hf
@@ -75,11 +75,11 @@ theorem groundPhysicalKaiser_span_form_log
 
 /-- **True ground leakage with the logarithmic Kaiser refinement.** -/
 theorem evenProlateLeakageValue_zero_le_kaiserLog
-    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ 2) :
+    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ (2 : ℕ)) :
     evenProlateLeakageValue a 0 ≤
-      ((8 + 4 * Real.log (2 * Real.pi * a ^ 2)) /
-        (Real.pi * (2 * Real.pi * a ^ 2))) /
-          kaiserCentralEnergyFactor (2 * Real.pi * a ^ 2) := by
+      ((8 + 4 * Real.log (2 * Real.pi * a ^ (2 : ℕ))) /
+        (Real.pi * (2 * Real.pi * a ^ (2 : ℕ)))) /
+          kaiserCentralEnergyFactor (2 * Real.pi * a ^ (2 : ℕ)) := by
   let v : evenSubspace := kaiserGroundPhysicalEven a ha
   let V : Submodule ℂ evenSubspace := Submodule.span ℂ ({v} : Set evenSubspace)
   have hv : v ≠ 0 := kaiserGroundPhysicalEven_ne_zero ha hc
@@ -92,11 +92,11 @@ theorem evenProlateLeakageValue_zero_le_kaiserLog
 
 /-- Signed-spectrum form of the logarithmically refined true ground leakage bound. -/
 theorem one_sub_evenProlateSignedValue_zero_sq_le_kaiserLog
-    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ 2) :
-    1 - evenProlateSignedValue a 0 ^ 2 ≤
-      ((8 + 4 * Real.log (2 * Real.pi * a ^ 2)) /
-        (Real.pi * (2 * Real.pi * a ^ 2))) /
-          kaiserCentralEnergyFactor (2 * Real.pi * a ^ 2) := by
+    {a : ℝ} (ha : 0 < a) (hc : 2 ≤ 2 * Real.pi * a ^ (2 : ℕ)) :
+    1 - evenProlateSignedValue a 0 ^ (2 : ℕ) ≤
+      ((8 + 4 * Real.log (2 * Real.pi * a ^ (2 : ℕ))) /
+        (Real.pi * (2 * Real.pi * a ^ (2 : ℕ)))) /
+          kaiserCentralEnergyFactor (2 * Real.pi * a ^ (2 : ℕ)) := by
   rw [← evenProlateLeakageValue_eq_signedValue_leakage a ha 0]
   exact evenProlateLeakageValue_zero_le_kaiserLog ha hc
 
@@ -107,7 +107,7 @@ theorem kaiserLogTail_div_centralEnergy_eq {c : ℝ} (hc : 0 < c) :
         Real.exp (-(2 * (c - 1))) := by
   have hsqrt : Real.sqrt c ≠ 0 := (Real.sqrt_pos.mpr hc).ne'
   have hexp : Real.exp (c - 1) ≠ 0 := Real.exp_ne_zero _
-  have hpow : Real.exp ((c - 1) * 2) = Real.exp (c - 1) ^ 2 := by
+  have hpow : Real.exp ((c - 1) * 2) = Real.exp (c - 1) ^ (2 : ℕ) := by
     rw [show (c - 1) * 2 = (c - 1) + (c - 1) by ring, Real.exp_add, pow_two]
   rw [kaiserCentralEnergyFactor, Real.exp_neg]
   field_simp [hsqrt, hexp, Real.pi_ne_zero]
@@ -117,16 +117,16 @@ theorem kaiserLogTail_div_centralEnergy_eq {c : ℝ} (hc : 0 < c) :
 /-- Eventually, actual signed ground leakage obeys the `sqrt(c) log(c) exp(-2c)` envelope. -/
 theorem eventually_one_sub_evenProlateSignedValue_zero_sq_le_kaiserLog :
     ∀ᶠ a : ℝ in atTop,
-      1 - evenProlateSignedValue a 0 ^ 2 ≤
-        16 * ((2 * Real.pi * a ^ 2) *
-          (2 + Real.log (2 * Real.pi * a ^ 2)) /
-            Real.sqrt (2 * Real.pi * a ^ 2)) *
-              Real.exp (-(2 * (2 * Real.pi * a ^ 2 - 1))) := by
-  have hscale : Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2) atTop atTop := by
+      1 - evenProlateSignedValue a 0 ^ (2 : ℕ) ≤
+        16 * ((2 * Real.pi * a ^ (2 : ℕ)) *
+          (2 + Real.log (2 * Real.pi * a ^ (2 : ℕ))) /
+            Real.sqrt (2 * Real.pi * a ^ (2 : ℕ))) *
+              Real.exp (-(2 * (2 * Real.pi * a ^ (2 : ℕ) - 1))) := by
+  have hscale : Tendsto (fun a : ℝ => 2 * Real.pi * a ^ (2 : ℕ)) atTop atTop := by
     exact (Filter.tendsto_pow_atTop (n := 2) (by norm_num)).const_mul_atTop (by positivity)
   filter_upwards [hscale.eventually_ge_atTop 2, eventually_gt_atTop (0 : ℝ)] with a hc ha
   rw [← kaiserLogTail_div_centralEnergy_eq
-    (show 0 < 2 * Real.pi * a ^ 2 by positivity)]
+    (show 0 < 2 * Real.pi * a ^ (2 : ℕ) by positivity)]
   exact one_sub_evenProlateSignedValue_zero_sq_le_kaiserLog ha hc
 
 end RHTower

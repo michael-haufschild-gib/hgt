@@ -135,7 +135,7 @@ for every `‖f‖ ≤ 1`.  All three factors are the ones the log recursion pro
 Perron steps see no arithmetic input beyond this bound. -/
 theorem norm_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) (N M : ℕ) {n : ℕ} (hn : 1 ≤ n) :
     ‖(LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f M) f)) n‖
-      ≤ (Real.log n) ^ 4 / (Real.log 2) ^ 3 := by
+      ≤ (Real.log n) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have h := norm_convolution_triple_le_log_pow_const
     (A := 1 / Real.log 2) (B := 1) (by positivity) zero_le_one

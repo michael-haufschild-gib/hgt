@@ -66,7 +66,7 @@ theorem normalizedCentralBinom_nonneg (n : ℕ) :
   positivity
 
 theorem tangentVectorEntry_sq (n : ℕ) :
-    tangentVectorEntry n ^ 2 = normalizedCentralBinom n := by
+    tangentVectorEntry n ^ (2 : ℕ) = normalizedCentralBinom n := by
   unfold tangentVectorEntry
   exact Real.sq_sqrt (normalizedCentralBinom_nonneg n)
 
@@ -132,9 +132,9 @@ theorem semilocalFirstEulerMonomialHankelEntry_even_rankOne (i j : ℕ) :
         (-1 / 4 : ℝ) ^ k := by
     calc
       (-1 : ℝ) ^ k * (1 / 2 : ℝ) ^ (2 * k) =
-          (-1 : ℝ) ^ k * ((1 / 2 : ℝ) ^ 2) ^ k := by
+          (-1 : ℝ) ^ k * ((1 / 2 : ℝ) ^ (2 : ℕ)) ^ k := by
             rw [← pow_mul]
-      _ = ((-1 : ℝ) * (1 / 2 : ℝ) ^ 2) ^ k := by
+      _ = ((-1 : ℝ) * (1 / 2 : ℝ) ^ (2 : ℕ)) ^ k := by
             rw [mul_pow]
       _ = (-1 / 4 : ℝ) ^ k := by norm_num
   rw [show 2 * (i + j) = 2 * i + 2 * j by omega, pow_add, pow_add]
@@ -157,9 +157,9 @@ theorem semilocalFirstEulerMonomialHankelEntry_odd_rankOne (i j : ℕ) :
         (-1 / 4 : ℝ) ^ k := by
     calc
       (-1 : ℝ) ^ k * (1 / 2 : ℝ) ^ (2 * k) =
-          (-1 : ℝ) ^ k * ((1 / 2 : ℝ) ^ 2) ^ k := by
+          (-1 : ℝ) ^ k * ((1 / 2 : ℝ) ^ (2 : ℕ)) ^ k := by
             rw [← pow_mul]
-      _ = ((-1 : ℝ) * (1 / 2 : ℝ) ^ 2) ^ k := by
+      _ = ((-1 : ℝ) * (1 / 2 : ℝ) ^ (2 : ℕ)) ^ k := by
             rw [mul_pow]
       _ = (-1 / 4 : ℝ) ^ k := by norm_num
   calc
@@ -176,7 +176,7 @@ def semilocalFirstEulerOrthonormalEvaluation (m : ℕ) : ℝ :=
   semilocalArchimedeanJacobiNormalization m
 
 theorem semilocalFirstEulerOrthonormalEvaluation_sq (m : ℕ) :
-    semilocalFirstEulerOrthonormalEvaluation m ^ 2 =
+    semilocalFirstEulerOrthonormalEvaluation m ^ (2 : ℕ) =
       normalizedCentralBinom m := by
   exact semilocalArchimedeanJacobiNormalization_sq_eq_normalizedCentralBinom m
 
@@ -221,7 +221,7 @@ theorem trace_normalizedHankelTangent (n : ℕ) :
       2 * Real.sqrt 2 * (-1 : ℝ) ^ i.val *
             tangentVectorEntry i.val * tangentVectorEntry i.val =
           2 * Real.sqrt 2 * (-1 : ℝ) ^ i.val *
-            (tangentVectorEntry i.val ^ 2) := by ring
+            (tangentVectorEntry i.val ^ (2 : ℕ)) := by ring
       _ = 2 * Real.sqrt 2 * ((-1 : ℝ) ^ i.val *
             normalizedCentralBinom i.val) := by
               rw [tangentVectorEntry_sq]
@@ -333,7 +333,7 @@ theorem archimedeanSquaredRadius_pos (n : ℕ) :
 
 theorem archimedeanSquaredRadius_eq_coefficient_sq (n : ℕ) :
     archimedeanSquaredRadius n =
-      semilocalArchimedeanJacobiCoefficient n ^ 2 := by
+      semilocalArchimedeanJacobiCoefficient n ^ (2 : ℕ) := by
   rw [semilocalArchimedeanJacobiCoefficient_sq]
   rfl
 
@@ -343,7 +343,7 @@ def squaredJacobiRadiusPath (n : ℕ) (q : ℝ) : ℝ :=
   archimedeanSquaredRadius n *
     (previousNormalizedHankelDeterminantPath n q *
       normalizedHankelDeterminantPath (n + 1) q /
-        normalizedHankelDeterminantPath n q ^ 2)
+        normalizedHankelDeterminantPath n q ^ (2 : ℕ))
 
 /-- Exact first Euler jet of the squared Jacobi radius. -/
 def squaredJacobiRadiusJet (n : ℕ) : ℝ :=
@@ -368,7 +368,7 @@ theorem hasDerivAt_squaredJacobiRadiusPath (n : ℕ) :
     (fun q : ℝ => archimedeanSquaredRadius n *
       ((previousNormalizedHankelDeterminantPath n *
         normalizedHankelDeterminantPath (n + 1) /
-          normalizedHankelDeterminantPath n ^ 2) q))
+          normalizedHankelDeterminantPath n ^ (2 : ℕ)) q))
     (squaredJacobiRadiusJet n) 0
   refine hscaled.congr_deriv ?_
   simp only [Pi.mul_apply, Pi.pow_apply,
@@ -454,8 +454,8 @@ theorem hasDerivAt_criticalResidualPath (n : ℕ) :
   have h := (((h₀.mul h₁).sub (h₁.pow 2)).sub (h₂.pow 2)).add (h₂.mul h₃)
   change HasDerivAt
     (jacobiRadiusPath (2 * n) * jacobiRadiusPath (2 * n + 1) -
-      jacobiRadiusPath (2 * n + 1) ^ 2 -
-      jacobiRadiusPath (2 * n + 2) ^ 2 +
+      jacobiRadiusPath (2 * n + 1) ^ (2 : ℕ) -
+      jacobiRadiusPath (2 * n + 2) ^ (2 : ℕ) +
       jacobiRadiusPath (2 * n + 2) * jacobiRadiusPath (2 * n + 3))
     (criticalResidualJet n) 0
   refine h.congr_deriv ?_
@@ -471,7 +471,7 @@ def previousDeterminantPathOf (Δ : ℕ → ℝ → ℝ) : ℕ → ℝ → ℝ
 /-- Squared Jacobi-radius quotient attached to an arbitrary normalized determinant family. -/
 def squaredJacobiRadiusPathOf (Δ : ℕ → ℝ → ℝ) (n : ℕ) (q : ℝ) : ℝ :=
   archimedeanSquaredRadius n *
-    (previousDeterminantPathOf Δ n q * Δ (n + 1) q / Δ n q ^ 2)
+    (previousDeterminantPathOf Δ n q * Δ (n + 1) q / Δ n q ^ (2 : ℕ))
 
 /-- Positive Jacobi-radius path attached to an arbitrary normalized determinant family. -/
 def jacobiRadiusPathOf (Δ : ℕ → ℝ → ℝ) (n : ℕ) (q : ℝ) : ℝ :=
@@ -524,7 +524,7 @@ theorem hasDerivAt_squaredJacobiRadiusPathOf
   have hscaled := hquot.const_mul (archimedeanSquaredRadius n)
   change HasDerivAt
     (fun q : ℝ => archimedeanSquaredRadius n *
-      ((previousDeterminantPathOf Δ n * Δ (n + 1) / Δ n ^ 2) q))
+      ((previousDeterminantPathOf Δ n * Δ (n + 1) / Δ n ^ (2 : ℕ)) q))
     (squaredJacobiRadiusJet n) 0
   refine hscaled.congr_deriv ?_
   simp only [Pi.mul_apply, Pi.pow_apply,
@@ -591,8 +591,8 @@ theorem hasDerivAt_criticalResidualPathOf
   have h := (((h₀.mul h₁).sub (h₁.pow 2)).sub (h₂.pow 2)).add (h₂.mul h₃)
   change HasDerivAt
     (jacobiRadiusPathOf Δ (2 * n) * jacobiRadiusPathOf Δ (2 * n + 1) -
-      jacobiRadiusPathOf Δ (2 * n + 1) ^ 2 -
-      jacobiRadiusPathOf Δ (2 * n + 2) ^ 2 +
+      jacobiRadiusPathOf Δ (2 * n + 1) ^ (2 : ℕ) -
+      jacobiRadiusPathOf Δ (2 * n + 2) ^ (2 : ℕ) +
       jacobiRadiusPathOf Δ (2 * n + 2) * jacobiRadiusPathOf Δ (2 * n + 3))
     (criticalResidualJet n) 0
   refine h.congr_deriv ?_
@@ -664,9 +664,9 @@ def criticalBracket (m : ℕ) : ℝ :=
       centralBinomRatio m * centralBinomRatio (m + 1) *
       (centralBinomRatio (m + 2) * centralBinomJumpFactor (m + 3) -
         centralBinomJumpFactor (m + 2)) +
-    2 * (r (m + 2) ^ 2 * centralBinomRatio m *
+    2 * (r (m + 2) ^ (2 : ℕ) * centralBinomRatio m *
         centralBinomRatio (m + 1) * centralBinomJumpFactor (m + 2) -
-      r (m + 1) ^ 2 * centralBinomRatio m *
+      r (m + 1) ^ (2 : ℕ) * centralBinomRatio m *
         centralBinomJumpFactor (m + 1))
 
 /-- Determinant-provenance factorization of the full critical residual jet. -/
@@ -748,13 +748,13 @@ theorem semilocalArchimedeanJacobiCoefficient_div_succ (n : ℕ) :
   have hright : 0 ≤ Real.sqrt ((2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2)) :=
     Real.sqrt_nonneg _
   have hsquareLeft :
-      (semilocalArchimedeanJacobiCoefficient n / ((n : ℝ) + 1)) ^ 2 =
+      (semilocalArchimedeanJacobiCoefficient n / ((n : ℝ) + 1)) ^ (2 : ℕ) =
         (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2) := by
     rw [div_pow, semilocalArchimedeanJacobiCoefficient_sq]
     have hn : (n : ℝ) + 1 ≠ 0 := by positivity
     field_simp [hn]
   have hsquareRight :
-      Real.sqrt ((2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2)) ^ 2 =
+      Real.sqrt ((2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2)) ^ (2 : ℕ) =
         (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2) :=
     Real.sq_sqrt hratio
   nlinarith
@@ -1012,7 +1012,7 @@ theorem criticalResidualJet_div_sqrt_eq_boundary_product (n : ℕ) :
   have hsqrt : Real.sqrt (criticalBoundaryDegree n) ≠ 0 :=
     (Real.sqrt_pos.2 hpos).ne'
   have hsquare :
-      Real.sqrt (criticalBoundaryDegree n) ^ 2 =
+      Real.sqrt (criticalBoundaryDegree n) ^ (2 : ℕ) =
         (criticalBoundaryDegree n : ℝ) :=
     Real.sq_sqrt hpos.le
   field_simp [hsqrt, hpos.ne']

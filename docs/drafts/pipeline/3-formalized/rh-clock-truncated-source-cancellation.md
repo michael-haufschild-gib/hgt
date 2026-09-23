@@ -72,7 +72,7 @@ clock action or to a product with an arbitrary sign-changing dilated head.
   `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
   The last already has direct umbrella imports. These diagnostics do not name
   the new module; this audit does not certify the entire repository.
 

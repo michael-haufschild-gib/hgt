@@ -76,7 +76,7 @@ private theorem orbit_smooth {U : F} (hU : ExteriorSmooth U) (j : Fin 2) :
   by_cases hj : j=0
   · subst j
     exact h1
-  · have he : orbitDerivative U j=(fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 U z+coordDeriv 0 U z) := by
+  · have he : orbitDerivative U j=(fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 U z+coordDeriv 0 U z) := by
       funext z
       exact if_neg hj
     rw [he]
@@ -98,8 +98,8 @@ private theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth 
   have hR : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
   change ContDiffAt ℝ ∞ (fun z : P =>
-    -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
+    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
     2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
   exact ((((hR.pow 2).neg.mul ((hR.pow 2).sub contDiffAt_const)).mul h11).sub
     ((hR.pow 2).mul (h01.add h10)) |>.sub ((contDiffAt_const.mul hR).mul h1)).add
@@ -112,8 +112,8 @@ private theorem contact_modular {U : F} (hU : ExteriorSmooth U) (hm : ExteriorMo
   have h01 := modular_partial (smooth_partial hU 1) (modular_partial hU hm 1 (Or.inr rfl)) 0 (Or.inl rfl) p R hp hr A z
   have h10 := modular_partial (smooth_partial hU 0) (modular_partial hU hm 0 (Or.inl rfl)) 1 (Or.inr rfl) p R hp hr A z
   have h11 := modular_partial (smooth_partial hU 1) (modular_partial hU hm 1 (Or.inr rfl)) 1 (Or.inr rfl) p R hp hr A z
-  change -(R:ℂ)^2*((R:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) (slice p R ((A • z:UpperHalfPlane):ℂ))-
-    (R:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) (slice p R ((A • z:UpperHalfPlane):ℂ))+coordDeriv 1 (coordDeriv 0 U) (slice p R ((A • z:UpperHalfPlane):ℂ)))-
+  change -(R:ℂ)^(2 : ℕ)*((R:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) (slice p R ((A • z:UpperHalfPlane):ℂ))-
+    (R:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) (slice p R ((A • z:UpperHalfPlane):ℂ))+coordDeriv 1 (coordDeriv 0 U) (slice p R ((A • z:UpperHalfPlane):ℂ)))-
     2*(R:ℂ)*coordDeriv 1 U (slice p R ((A • z:UpperHalfPlane):ℂ))+2*(R:ℂ)*coordDeriv 0 U (slice p R ((A • z:UpperHalfPlane):ℂ))=_
   rw [h0,h1,h01,h10,h11]
   rfl
@@ -182,19 +182,19 @@ private theorem normalCurrent_coexact (U V : F) (p R : ℝ) (hp : 0<p) (hr : 1<R
 private theorem normalCurrent_modular (U V : F) (p R : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorModular U) (hV : ExteriorSmooth V) (hmV : ExteriorModular V)
     (A : SL(2,ℤ)) (z : UpperHalfPlane) (a : ℂ) :
-    normalCurrent U V p R z a=normalCurrent U V p R ((A • z:UpperHalfPlane):ℂ) ((1/(denom A z)^2)*a) := by
+    normalCurrent U V p R z a=normalCurrent U V p R ((A • z:UpperHalfPlane):ℂ) ((1/(denom A z)^(2 : ℕ))*a) := by
   rw [normalCurrent_coexact U V p R hp hr hV,normalCurrent_coexact U V p R hp hr hV,
     hU p R hp hr A z]
   have he := coexact_modular_action A (planarField V p R)
     (planar_smooth V p R hp hr hV) (hmV p R hp hr A) z (-Complex.I*a)
-  have hv : -Complex.I*((1/(denom A z)^2)*a)=(1/(denom A z)^2)*(-Complex.I*a) := by ring
+  have hv : -Complex.I*((1/(denom A z)^(2 : ℕ))*a)=(1/(denom A z)^(2 : ℕ))*(-Complex.I*a) := by ring
   rw [hv,he]
 private theorem normalCurrent_inversion (U V : F) (p R : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorModular U) (hV : ExteriorSmooth V) (hmV : ExteriorModular V)
     (z : UpperHalfPlane) :
     normalCurrent U V p R z z+normalCurrent U V p R ((S • z:UpperHalfPlane):ℂ) ((S • z:UpperHalfPlane):ℂ)=0 := by
   have h := normalCurrent_modular U V p R hp hr hU hV hmV S z z
-  have hv : (1/(denom S z)^2)*(z:ℂ)=-((S • z:UpperHalfPlane):ℂ) := by
+  have hv : (1/(denom S z)^(2 : ℕ))*(z:ℂ)=-((S • z:UpperHalfPlane):ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom,ModularGroup.S,inv_neg]
     field_simp
@@ -220,7 +220,7 @@ private theorem side_cancellation (U V : F) (p R : ℝ) (hp : 0<p) (hr : 1<R)
 
 private theorem arc_cancellation (U V : F) (p R : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorModular U) (hV : ExteriorSmooth V) (hmV : ExteriorModular V)
-    {x y : ℝ} (hy : 0<y) (hxy : x^2+y^2=1) :
+    {x y : ℝ} (hy : 0<y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     ((-x/y:ℝ):ℂ)*transfer U V 0 (slice p R (point x y))-transfer U V 1 (slice p R (point x y))+
     ((x/y:ℝ):ℂ)*transfer U V 0 (slice p R (point (-x) y))-transfer U V 1 (slice p R (point (-x) y))=0 := by
   have h := normalCurrent_inversion U V p R hp hr hU hV hmV (ofComplex (point x y))
@@ -310,10 +310,10 @@ theorem original_metric_top_integral (q r : XiZeroCopy) (branch side outer : Boo
     let D := forcedContact q branch amp
     let E := orbitDerivative W j
     (∫ w in domain Y, metricDensity q r branch side outer amp j (slice p R (point w.1 w.2)))+
-      1/(R:ℂ)^2*((D4BMLeftModeRadialEquation.eigenvalue r*(D4BMLeftModeRadialEquation.eigenvalue r-2))*
+      1/(R:ℂ)^(2 : ℕ)*((D4BMLeftModeRadialEquation.eigenvalue r*(D4BMLeftModeRadialEquation.eigenvalue r-2))*
         D4BMOriginalReaderEquation.scalarPeriod A W p R Y-
         D4BMLeftModeRadialEquation.eigenvalue r*D4BMOriginalReaderEquation.scalarPeriod D E p R Y)=
-      1/(R:ℂ)^2*(topFlux A (scalarContact W) p R Y-topFlux D E p R Y) := by
+      1/(R:ℂ)^(2 : ℕ)*(topFlux A (scalarContact W) p R Y-topFlux D E p R Y) := by
   dsimp only
   have h := D4BMOriginalReaderEquation.original_metric_scalar_integral q r branch side outer amp p R hp hr hY j
   have hb := original_transfer_boundary q r branch side outer amp p R hp hr hY j
@@ -345,12 +345,12 @@ private theorem forced_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
 private theorem period_integrable (U V : F) (p R Y : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorSmooth U) (hV : ExteriorSmooth V) :
     IntegrableOn (fun w : ℝ×ℝ =>
-      U (slice p R (point w.1 w.2))*V (slice p R (point w.1 w.2))/(w.2:ℂ)^2) (domain Y) := by
+      U (slice p R (point w.1 w.2))*V (slice p R (point w.1 w.2))/(w.2:ℂ)^(2 : ℕ)) (domain Y) := by
   have hm : Continuous (fun w : ℝ×ℝ => slice p R (point w.1 w.2)) := by
     unfold slice point
     fun_prop
   have hc : ContinuousOn (fun w : ℝ×ℝ =>
-      U (slice p R (point w.1 w.2))*V (slice p R (point w.1 w.2))/(w.2:ℂ)^2) (cell Y) := by
+      U (slice p R (point w.1 w.2))*V (slice p R (point w.1 w.2))/(w.2:ℂ)^(2 : ℕ)) (cell Y) := by
     intro w hw
     have hy : 0<w.2 := by linarith [hw.2.1]
     have hu := (hU (slice p R (point w.1 w.2)) hp hr (by simpa [slice,point] using hy)).continuousAt.comp
@@ -430,7 +430,7 @@ theorem original_forced_orbit_period (q r : XiZeroCopy) (branch side outer : Boo
     let E := orbitDerivative (leftScalar r side outer) j
     scalarPeriod (forcedContact q branch amp) E p R Y=
       (eigenvalue r-2)*scalarPeriod U E p R Y+
-      (R:ℂ)^3/((R:ℂ)^2-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
+      (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
       (topFlux E U p R Y-topFlux U E p R Y) := by
   dsimp only
   let U := sourceScalar q branch amp
@@ -444,7 +444,7 @@ theorem original_forced_orbit_period (q r : XiZeroCopy) (branch side outer : Boo
     (orbit_smooth (reader_smooth r side outer) j)
   have hf : scalarPeriod D E p R Y+2*scalarPeriod U E p R Y-
       scalarPeriod (angularLap U) E p R Y=
-      (R:ℂ)^3/((R:ℂ)^2-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y := by
+      (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y := by
     have hi := integral_sub (hD.add (hU.const_mul 2)) hL
     simp only [Pi.add_apply] at hi
     rw [integral_add hD (hU.const_mul 2),integral_const_mul] at hi
@@ -481,9 +481,9 @@ theorem original_metric_complete_scalar_integral (q r : XiZeroCopy)
     let W := leftScalar r side outer
     let E := orbitDerivative W j
     (∫ w in domain Y, metricDensity q r branch side outer amp j (slice p R (point w.1 w.2)))=
-      1/(R:ℂ)^2*((eigenvalue r*(eigenvalue r-2))*
+      1/(R:ℂ)^(2 : ℕ)*((eigenvalue r*(eigenvalue r-2))*
         (scalarPeriod U E p R Y-scalarPeriod (orbitDerivative U j) W p R Y)+
-        eigenvalue r*((R:ℂ)^3/((R:ℂ)^2-1))*
+        eigenvalue r*((R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1))*
           scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
         completeTopFlux q r branch side outer amp j p R Y) := by
   have h := original_metric_top_integral q r branch side outer amp p R hp hr hY j
@@ -498,28 +498,28 @@ private theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : 
   intro x hp hr hy
   let U := sourceScalar q branch amp
   have he : D4BMOriginalSourceContact.originalForcing q branch amp =ᶠ[𝓝 x]
-      fun z => (((z 1:ℂ)^2-1)/(z 1:ℂ)^3)*
+      fun z => (((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ))*
         (scalarContact U z-angularLap U z+2*U z) := by
     filter_upwards [(isOpen_lt continuous_const (continuous_apply 0)).mem_nhds hp,
       (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hr,
       (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hz0 hz1 hz3
     have hc := original_scalar_contact q branch amp z hz0 hz1 hz3
     have hh : scalarContact U z-angularLap U z+2*U z=
-        (z 1:ℂ)^3/((z 1:ℂ)^2-1)*D4BMOriginalSourceContact.originalForcing q branch amp z := by
+        (z 1:ℂ)^(3 : ℕ)/((z 1:ℂ)^(2 : ℕ)-1)*D4BMOriginalSourceContact.originalForcing q branch amp z := by
       dsimp only [U]
       linear_combination hc
     rw [hh]
     have hR : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-    have hf : (z 1:ℂ)^2-1≠0 := by exact_mod_cast (show (z 1)^2-1≠0 by nlinarith)
+    have hf : (z 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show (z 1)^(2 : ℕ)-1≠0 by nlinarith)
     field_simp [hR,hf]
   have hR : ContDiffAt ℝ ∞ (fun z : P => z 1) x :=
     (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt
-  have hnum : ContDiffAt ℝ ∞ (fun z : P => (z 1)^2-1) x :=
+  have hnum : ContDiffAt ℝ ∞ (fun z : P => (z 1)^(2 : ℕ)-1) x :=
     (hR.pow 2).sub contDiffAt_const
   have hreal := hnum.div (hR.pow 3) (pow_ne_zero 3 (show x 1≠0 by linarith))
-  have hs : ContDiffAt ℝ ∞ (fun z : P => ((z 1:ℂ)^2-1)/(z 1:ℂ)^3) x := by
+  have hs : ContDiffAt ℝ ∞ (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ)) x := by
     have hc := Complex.ofRealCLM.contDiff.contDiffAt.comp x hreal
-    change ContDiffAt ℝ ∞ (fun z : P => ((((z 1)^2-1)/(z 1)^3:ℝ):ℂ)) x at hc
+    change ContDiffAt ℝ ∞ (fun z : P => ((((z 1)^(2 : ℕ)-1)/(z 1)^(3 : ℕ):ℝ):ℂ)) x at hc
     simpa only [Complex.ofReal_div,Complex.ofReal_sub,Complex.ofReal_pow,Complex.ofReal_one] using! hc
   have hv : ContDiffAt ℝ ∞ (fun z => scalarContact U z-angularLap U z+2*U z) x :=
     ((contact_smooth (source_smooth q branch amp) x hp hr hy).sub
@@ -530,12 +530,12 @@ private theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : 
 private theorem period_orbit_left (U V : F) (p R Y : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorSmooth U) (hV : ExteriorSmooth V) :
     scalarPeriod (orbitDerivative U 1) V p R Y=
-      ((R:ℂ)^2-1)*scalarPeriod (orbitDerivative U 0) V p R Y+
+      ((R:ℂ)^(2 : ℕ)-1)*scalarPeriod (orbitDerivative U 0) V p R Y+
         scalarPeriod (coordDeriv 0 U) V p R Y := by
   have hR := period_integrable (orbitDerivative U 0) V p R Y hp hr (orbit_smooth hU 0) hV
   have hp' := period_integrable (coordDeriv 0 U) V p R Y hp hr (smooth_partial hU 0) hV
   simp only [scalarPeriod,← integral_const_mul]
-  rw [← integral_add (hR.const_mul ((R:ℂ)^2-1)) hp']
+  rw [← integral_add (hR.const_mul ((R:ℂ)^(2 : ℕ)-1)) hp']
   apply setIntegral_congr_fun (isCompact_domain Y).measurableSet
   intro w hw
   simp only [orbitDerivative,one_ne_zero,ite_false,ite_true,slice,Matrix.cons_val_one,Matrix.cons_val_zero]
@@ -544,12 +544,12 @@ private theorem period_orbit_left (U V : F) (p R Y : ℝ) (hp : 0<p) (hr : 1<R)
 private theorem period_orbit_right (U V : F) (p R Y : ℝ) (hp : 0<p) (hr : 1<R)
     (hU : ExteriorSmooth U) (hV : ExteriorSmooth V) :
     scalarPeriod U (orbitDerivative V 1) p R Y=
-      ((R:ℂ)^2-1)*scalarPeriod U (orbitDerivative V 0) p R Y+
+      ((R:ℂ)^(2 : ℕ)-1)*scalarPeriod U (orbitDerivative V 0) p R Y+
         scalarPeriod U (coordDeriv 0 V) p R Y := by
   have hR := period_integrable U (orbitDerivative V 0) p R Y hp hr hU (orbit_smooth hV 0)
   have hp' := period_integrable U (coordDeriv 0 V) p R Y hp hr hU (smooth_partial hV 0)
   simp only [scalarPeriod,← integral_const_mul]
-  rw [← integral_add (hR.const_mul ((R:ℂ)^2-1)) hp']
+  rw [← integral_add (hR.const_mul ((R:ℂ)^(2 : ℕ)-1)) hp']
   apply setIntegral_congr_fun (isCompact_domain Y).measurableSet
   intro w hw
   simp only [orbitDerivative,one_ne_zero,ite_false,ite_true,slice,Matrix.cons_val_one,Matrix.cons_val_zero]
@@ -605,16 +605,16 @@ theorem original_static_metric_scalar_integral (q r : XiZeroCopy)
     {Y : ℝ} (hY : 1≤Y) :
     let U := sourceScalar q branch amp
     let W := leftScalar r side outer
-    let f := (R:ℂ)^2-1
+    let f := (R:ℂ)^(2 : ℕ)-1
     let μ := eigenvalue r
     let w := frequency r side
     (∫ z in domain Y, metricDensity q r branch side outer amp 0 (slice p R (point z.1 z.2)))-
       (∫ z in domain Y, metricDensity q r branch side outer amp 1 (slice p R (point z.1 z.2)))/f=
-      μ*(μ-2)/((R:ℂ)^2*f)*
+      μ*(μ-2)/((R:ℂ)^(2 : ℕ)*f)*
         (scalarPeriod (coordDeriv 0 U) W p R Y+w*scalarPeriod U W p R Y)+
-      μ*(R:ℂ)*w/f^2*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) W p R Y+
+      μ*(R:ℂ)*w/f^(2 : ℕ)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) W p R Y+
       (completeTopFlux q r branch side outer amp 0 p R Y-
-        completeTopFlux q r branch side outer amp 1 p R Y/f)/(R:ℂ)^2 := by
+        completeTopFlux q r branch side outer amp 1 p R Y/f)/(R:ℂ)^(2 : ℕ) := by
   dsimp only
   rw [original_metric_complete_scalar_integral q r branch side outer amp p R hp hr hY 0,
     original_metric_complete_scalar_integral q r branch side outer amp p R hp hr hY 1]
@@ -623,7 +623,7 @@ theorem original_static_metric_scalar_integral (q r : XiZeroCopy)
     period_orbit_right _ _ p R Y hp hr (original_forcing_smooth q branch amp) (reader_smooth r side outer),
     period_reader_time _ r side outer p R Y hr,period_reader_time _ r side outer p R Y hr]
   have hR : (R:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (R:ℂ)^2-1≠0 := by exact_mod_cast (show R^2-1≠0 by nlinarith)
+  have hf : (R:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show R^(2 : ℕ)-1≠0 by nlinarith)
   field_simp [hR,hf]
   ring
 
@@ -673,9 +673,9 @@ theorem mode_metric_top_integral (q r : XiZeroCopy) (branch outer : Bool) (amp w
     let D := forcedContact q branch amp
     let E := orbitDerivative W j
     (∫ v in domain Y, modeMetricDensity q r branch outer amp w j (slice p R (point v.1 v.2)))+
-      1/(R:ℂ)^2*(eigenvalue r*(eigenvalue r-2)*scalarPeriod A W p R Y-
+      1/(R:ℂ)^(2 : ℕ)*(eigenvalue r*(eigenvalue r-2)*scalarPeriod A W p R Y-
         eigenvalue r*scalarPeriod D E p R Y)=
-      1/(R:ℂ)^2*(topFlux A (scalarContact W) p R Y-topFlux D E p R Y) := by
+      1/(R:ℂ)^(2 : ℕ)*(topFlux A (scalarContact W) p R Y-topFlux D E p R Y) := by
   dsimp only
   let U := sourceScalar q branch amp
   let W := modeScalar r w outer
@@ -725,7 +725,7 @@ theorem mode_metric_top_integral (q r : XiZeroCopy) (branch outer : Bool) (amp w
       Complex.mul_I_im,Complex.ofReal_re,zero_add]
     ring
   have hi : (∫ v in domain Y, modeMetricDensity q r branch outer amp w j (slice p R (point v.1 v.2)))=
-      1/(R:ℂ)^2*((∫ v in domain Y, pairing A B (slice p R (point v.1 v.2)))-
+      1/(R:ℂ)^(2 : ℕ)*((∫ v in domain Y, pairing A B (slice p R (point v.1 v.2)))-
         ∫ v in domain Y, pairing D E (slice p R (point v.1 v.2))) := by
     rw [← integral_sub (mode_area_integrable _ (mode_pairing_smooth A B hA hB) p R Y hp hr)
       (mode_area_integrable _ (mode_pairing_smooth D E hD hE) p R Y hp hr),← integral_const_mul]
@@ -737,7 +737,7 @@ theorem mode_metric_top_integral (q r : XiZeroCopy) (branch outer : Bool) (amp w
   rw [habs] at hab
   rw [hdes] at hde
   rw [hi]
-  linear_combination (1/(R:ℂ)^2)*hab-(1/(R:ℂ)^2)*hde
+  linear_combination (1/(R:ℂ)^(2 : ℕ))*hab-(1/(R:ℂ)^(2 : ℕ))*hde
 
 /-- Moving the source Laplacian onto either orbit derivative of the unchanged
 physical reader retains the exact antisymmetric top flux. -/
@@ -775,7 +775,7 @@ theorem mode_forced_orbit_period (q r : XiZeroCopy) (branch outer : Bool) (amp w
     let E := orbitDerivative (modeScalar r w outer) j
     scalarPeriod (forcedContact q branch amp) E p R Y=
       (eigenvalue r-2)*scalarPeriod U E p R Y+
-      (R:ℂ)^3/((R:ℂ)^2-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
+      (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
       (topFlux E U p R Y-topFlux U E p R Y) := by
   dsimp only
   let U := sourceScalar q branch amp
@@ -789,7 +789,7 @@ theorem mode_forced_orbit_period (q r : XiZeroCopy) (branch outer : Bool) (amp w
     (orbit_smooth (mode_smooth r w hw outer) j)
   have hf : scalarPeriod D E p R Y+2*scalarPeriod U E p R Y-
       scalarPeriod (angularLap U) E p R Y=
-      (R:ℂ)^3/((R:ℂ)^2-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y := by
+      (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y := by
     have hi := integral_sub (hD.add (hU.const_mul 2)) hL
     simp only [Pi.add_apply] at hi
     rw [integral_add hD (hU.const_mul 2),integral_const_mul] at hi
@@ -826,9 +826,9 @@ theorem mode_metric_complete_scalar_integral (q r : XiZeroCopy)
     let W := modeScalar r w outer
     let E := orbitDerivative W j
     (∫ v in domain Y, modeMetricDensity q r branch outer amp w j (slice p R (point v.1 v.2)))=
-      1/(R:ℂ)^2*((eigenvalue r*(eigenvalue r-2))*
+      1/(R:ℂ)^(2 : ℕ)*((eigenvalue r*(eigenvalue r-2))*
         (scalarPeriod U E p R Y-scalarPeriod (orbitDerivative U j) W p R Y)+
-        eigenvalue r*((R:ℂ)^3/((R:ℂ)^2-1))*
+        eigenvalue r*((R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1))*
           scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) E p R Y+
         modeCompleteTopFlux q r branch outer amp w j p R Y) := by
   have h := mode_metric_top_integral q r branch outer amp w hw p R hp hr hY j
@@ -858,15 +858,15 @@ theorem mode_static_metric_scalar_integral (q r : XiZeroCopy)
     {Y : ℝ} (hY : 1≤Y) :
     let U := sourceScalar q branch amp
     let W := modeScalar r w outer
-    let f := (R:ℂ)^2-1
+    let f := (R:ℂ)^(2 : ℕ)-1
     let μ := eigenvalue r
     (∫ z in domain Y, modeMetricDensity q r branch outer amp w 0 (slice p R (point z.1 z.2)))-
       (∫ z in domain Y, modeMetricDensity q r branch outer amp w 1 (slice p R (point z.1 z.2)))/f=
-      μ*(μ-2)/((R:ℂ)^2*f)*
+      μ*(μ-2)/((R:ℂ)^(2 : ℕ)*f)*
         (scalarPeriod (coordDeriv 0 U) W p R Y+w*scalarPeriod U W p R Y)+
-      μ*(R:ℂ)*w/f^2*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) W p R Y+
+      μ*(R:ℂ)*w/f^(2 : ℕ)*scalarPeriod (D4BMOriginalSourceContact.originalForcing q branch amp) W p R Y+
       (modeCompleteTopFlux q r branch outer amp w 0 p R Y-
-        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^2 := by
+        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^(2 : ℕ) := by
   dsimp only
   rw [mode_metric_complete_scalar_integral q r branch outer amp w hw p R hp hr hY 0,
     mode_metric_complete_scalar_integral q r branch outer amp w hw p R hp hr hY 1]
@@ -875,7 +875,7 @@ theorem mode_static_metric_scalar_integral (q r : XiZeroCopy)
     period_orbit_right _ _ p R Y hp hr (original_forcing_smooth q branch amp) (mode_smooth r w hw outer),
     mode_period_time _ r w hw outer p R Y hr,mode_period_time _ r w hw outer p R Y hr]
   have hR : (R:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (R:ℂ)^2-1≠0 := by exact_mod_cast (show R^2-1≠0 by nlinarith)
+  have hf : (R:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show R^(2 : ℕ)-1≠0 by nlinarith)
   field_simp [hR,hf]
   ring
 /-- Exact specialization of the complete family flux to the prescribed QNM. -/
@@ -999,17 +999,17 @@ private theorem coordinate_line_diff (U : F) (x : P) (i : Fin 4)
 private theorem normal_orbit (V : F) (hV : ExteriorSmooth V) (x : P)
     (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) :
     coordDeriv 3 (orbitDerivative V 1) x=
-      ((x 1:ℂ)^2-1)*coordDeriv 3 (coordDeriv 1 V) x+coordDeriv 3 (coordDeriv 0 V) x := by
+      ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 3 (coordDeriv 1 V) x+coordDeriv 3 (coordDeriv 0 V) x := by
   have h1 := (smooth_partial hV 1 x hp hr hy).differentiableAt (by simp)
   have h0 := (smooth_partial hV 0 x hp hr hy).differentiableAt (by simp)
   rw [coordinate_update _ x 3 ((orbit_smooth hV 1 x hp hr hy).differentiableAt (by simp))]
   have he : (fun a => orbitDerivative V 1 (Function.update x 3 a))=
-      fun a => ((x 1:ℂ)^2-1)*coordDeriv 1 V (Function.update x 3 a)+
+      fun a => ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 V (Function.update x 3 a)+
         coordDeriv 0 V (Function.update x 3 a) := by
     funext a
     simp only [orbitDerivative,one_ne_zero,ite_false,Function.update_of_ne (by decide : (1:Fin 4)≠3)]
   rw [he]
-  change deriv ((fun a => ((x 1:ℂ)^2-1)*coordDeriv 1 V (Function.update x 3 a)) +
+  change deriv ((fun a => ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 V (Function.update x 3 a)) +
     fun a => coordDeriv 0 V (Function.update x 3 a)) (x 3) = _
   rw [deriv_add ((coordinate_line_diff _ x 3 h1).const_mul _)
     (coordinate_line_diff _ x 3 h0),deriv_const_mul _ (coordinate_line_diff _ x 3 h1),
@@ -1056,11 +1056,11 @@ private theorem mode_static_top_density (q r : XiZeroCopy) (branch outer : Bool)
     let U := sourceScalar q branch amp
     let W := modeScalar r w outer
     let D := forcedContact q branch amp
-    let f := (x 1:ℂ)^2-1
+    let f := (x 1:ℂ)^(2 : ℕ)-1
     let mu := eigenvalue r
-    (modeTopDensity q r branch outer amp w 0 x-modeTopDensity q r branch outer amp w 1 x/f)/(x 1:ℂ)^2=
+    (modeTopDensity q r branch outer amp w 0 x-modeTopDensity q r branch outer amp w 1 x/f)/(x 1:ℂ)^(2 : ℕ)=
       (-(mu-2)*transfer (coordDeriv 0 U) W 1 x-w*transfer D W 1 x+
-        mu*w*(transfer W U 1 x-transfer U W 1 x))/((x 1:ℂ)^2*f) := by
+        mu*w*(transfer W U 1 x-transfer U W 1 x))/((x 1:ℂ)^(2 : ℕ)*f) := by
   dsimp only
   simp only [modeTopDensity,transfer,angularIndex,Matrix.cons_val]
   rw [mode_normal_contact r w hw outer x hr hy,
@@ -1073,7 +1073,7 @@ private theorem mode_static_top_density (q r : XiZeroCopy) (branch outer : Bool)
   simp only [orbitDerivative,ite_true,one_ne_zero,ite_false]
   rw [mode_time_derivative r w hw outer x hr hy]
   have hR : (x 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show (x 1)^2-1≠0 by nlinarith)
+  have hf : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show (x 1)^(2 : ℕ)-1≠0 by nlinarith)
   field_simp [hR,hf]
   ring
 
@@ -1084,13 +1084,13 @@ theorem mode_static_top_flux (q r : XiZeroCopy) (branch outer : Bool) (amp w : �
     (hw : w.im≠0) (p R Y : ℝ) (hp : 0<p) (hr : 1<R) (hy : 0<Y) :
     let U := sourceScalar q branch amp
     let W := modeScalar r w outer
-    let f := (R:ℂ)^2-1
+    let f := (R:ℂ)^(2 : ℕ)-1
     let mu := eigenvalue r
     (modeCompleteTopFlux q r branch outer amp w 0 p R Y-
-      modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^2=
+      modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^(2 : ℕ)=
       (-(mu-2)*topFlux (coordDeriv 0 U) W p R Y-
         w*topFlux (forcedContact q branch amp) W p R Y+
-        mu*w*(topFlux W U p R Y-topFlux U W p R Y))/((R:ℂ)^2*f) := by
+        mu*w*(topFlux W U p R Y-topFlux U W p R Y))/((R:ℂ)^(2 : ℕ)*f) := by
   dsimp only
   have hU := source_smooth q branch amp
   have hW := mode_smooth r w hw outer
@@ -1103,13 +1103,13 @@ theorem mode_static_top_flux (q r : XiZeroCopy) (branch outer : Bool) (amp w : �
   rw [modeCompleteTopFlux_integral q r branch outer amp w hw 0 p R Y hp hr hy,
     modeCompleteTopFlux_integral q r branch outer amp w hw 1 p R Y hp hr hy,
     ← intervalIntegral.integral_div,← intervalIntegral.integral_sub h0
-      (h1.div_const ((R:ℂ)^2-1)),← intervalIntegral.integral_div]
+      (h1.div_const ((R:ℂ)^(2 : ℕ)-1)),← intervalIntegral.integral_div]
   calc
     _ = ∫ X in (-1/2:ℝ)..1/2,
       (-(eigenvalue r-2)*transfer (coordDeriv 0 (sourceScalar q branch amp)) (modeScalar r w outer) 1 (slice p R (point X Y))-
         w*transfer (forcedContact q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y))+
         eigenvalue r*w*(transfer (modeScalar r w outer) (sourceScalar q branch amp) 1 (slice p R (point X Y))-
-          transfer (sourceScalar q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y))))/((R:ℂ)^2*((R:ℂ)^2-1)) := by
+          transfer (sourceScalar q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y))))/((R:ℂ)^(2 : ℕ)*((R:ℂ)^(2 : ℕ)-1)) := by
       apply intervalIntegral.integral_congr
       intro X hX
       exact mode_static_top_density q r branch outer amp w hw (slice p R (point X Y)) hp hr (by simpa [slice,point] using hy)
@@ -1247,7 +1247,7 @@ private theorem top_forced_decomposition (q r : XiZeroCopy) (branch outer : Bool
     let W := modeScalar r w outer
     topFlux (forcedContact q branch amp) W p R Y=
       topFlux (angularLap U) W p R Y-2*topFlux U W p R Y+
-        (R:ℂ)^3/((R:ℂ)^2-1)*topFlux (originalForcing q branch amp) W p R Y := by
+        (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*topFlux (originalForcing q branch amp) W p R Y := by
   dsimp only
   have hU := source_smooth q branch amp
   have hW := mode_smooth r w hw outer
@@ -1259,7 +1259,7 @@ private theorem top_forced_decomposition (q r : XiZeroCopy) (branch outer : Bool
     _ = ∫ X in (-1/2:ℝ)..1/2,
       transfer (angularLap (sourceScalar q branch amp)) (modeScalar r w outer) 1 (slice p R (point X Y))-
         2*transfer (sourceScalar q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y))+
-        (R:ℂ)^3/((R:ℂ)^2-1)*transfer (originalForcing q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y)) := by
+        (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*transfer (originalForcing q branch amp) (modeScalar r w outer) 1 (slice p R (point X Y)) := by
       apply intervalIntegral.integral_congr
       intro X hX
       simp only [transfer,forcedContact,slice,Matrix.cons_val]
@@ -1277,21 +1277,21 @@ theorem mode_complete_boundary_time_transfer (q r : XiZeroCopy) (branch outer : 
     (hw : w.im≠0) (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) :
     let U := sourceScalar q branch amp
     let W := modeScalar r w outer
-    let f := (R:ℂ)^2-1
+    let f := (R:ℂ)^(2 : ℕ)-1
     let mu := eigenvalue r
     let lam := mu-2
     (∫ p in a..b,
       (modeCompleteTopFlux q r branch outer amp w 0 p R Y-
-        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^2)=
+        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^(2 : ℕ))=
       (-lam*(topFlux U W b R Y-topFlux U W a R Y)+
         w*(∫ p in a..b,mu*topFlux W U p R Y-topFlux (angularLap U) W p R Y-
-          2*lam*topFlux U W p R Y-(R:ℂ)^3/f*topFlux (originalForcing q branch amp) W p R Y))/
-        ((R:ℂ)^2*f) := by
+          2*lam*topFlux U W p R Y-(R:ℂ)^(3 : ℕ)/f*topFlux (originalForcing q branch amp) W p R Y))/
+        ((R:ℂ)^(2 : ℕ)*f) := by
   dsimp only
   let U := sourceScalar q branch amp
   let W := modeScalar r w outer
   let mu := eigenvalue r
-  let f := (R:ℂ)^2-1
+  let f := (R:ℂ)^(2 : ℕ)-1
   have hU := source_smooth q branch amp
   have hW := mode_smooth r w hw outer
   have hu := top_time_integrable U W hU hW a b R Y ha hab hr hy
@@ -1302,10 +1302,10 @@ theorem mode_complete_boundary_time_transfer (q r : XiZeroCopy) (branch outer : 
   have hF := top_time_integrable (originalForcing q branch amp) W (original_forcing_smooth q branch amp) hW a b R Y ha hab hr hy
   have hD : (∫ p in a..b,topFlux (forcedContact q branch amp) W p R Y)=
       (∫ p in a..b,topFlux (angularLap U) W p R Y)-2*(∫ p in a..b,topFlux U W p R Y)+
-        (R:ℂ)^3/f*(∫ p in a..b,topFlux (originalForcing q branch amp) W p R Y) := by
+        (R:ℂ)^(3 : ℕ)/f*(∫ p in a..b,topFlux (originalForcing q branch amp) W p R Y) := by
     calc
       _ = ∫ p in a..b,topFlux (angularLap U) W p R Y-2*topFlux U W p R Y+
-        (R:ℂ)^3/f*topFlux (originalForcing q branch amp) W p R Y := by
+        (R:ℂ)^(3 : ℕ)/f*topFlux (originalForcing q branch amp) W p R Y := by
         apply intervalIntegral.integral_congr
         intro p hp
         have hp' : p∈Icc a b := by simpa only [uIcc_of_le hab] using hp
@@ -1316,14 +1316,14 @@ theorem mode_complete_boundary_time_transfer (q r : XiZeroCopy) (branch outer : 
           intervalIntegral.integral_const_mul]
   have hB : (∫ p in a..b,
       (modeCompleteTopFlux q r branch outer amp w 0 p R Y-
-        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^2)=
+        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^(2 : ℕ))=
       (-(mu-2)*(∫ p in a..b,topFlux (coordDeriv 0 U) W p R Y)-
         w*(∫ p in a..b,topFlux (forcedContact q branch amp) W p R Y)+
-        mu*w*((∫ p in a..b,topFlux W U p R Y)-(∫ p in a..b,topFlux U W p R Y)))/((R:ℂ)^2*f) := by
+        mu*w*((∫ p in a..b,topFlux W U p R Y)-(∫ p in a..b,topFlux U W p R Y)))/((R:ℂ)^(2 : ℕ)*f) := by
     calc
       _ = ∫ p in a..b, (-(mu-2)*topFlux (coordDeriv 0 U) W p R Y-
         w*topFlux (forcedContact q branch amp) W p R Y+
-        mu*w*(topFlux W U p R Y-topFlux U W p R Y))/((R:ℂ)^2*f) := by
+        mu*w*(topFlux W U p R Y-topFlux U W p R Y))/((R:ℂ)^(2 : ℕ)*f) := by
         apply intervalIntegral.integral_congr
         intro p hp
         have hp' : p∈Icc a b := by simpa only [uIcc_of_le hab] using hp
@@ -1336,10 +1336,10 @@ theorem mode_complete_boundary_time_transfer (q r : XiZeroCopy) (branch outer : 
           intervalIntegral.integral_const_mul,intervalIntegral.integral_sub hv hu]
   change (∫ p in a..b,
       (modeCompleteTopFlux q r branch outer amp w 0 p R Y-
-        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^2)=
+        modeCompleteTopFlux q r branch outer amp w 1 p R Y/f)/(R:ℂ)^(2 : ℕ))=
       (-(mu-2)*(topFlux U W b R Y-topFlux U W a R Y)+
         w*(∫ p in a..b,mu*topFlux W U p R Y-topFlux (angularLap U) W p R Y-
-          2*(mu-2)*topFlux U W p R Y-(R:ℂ)^3/f*topFlux (originalForcing q branch amp) W p R Y))/((R:ℂ)^2*f)
+          2*(mu-2)*topFlux U W p R Y-(R:ℂ)^(3 : ℕ)/f*topFlux (originalForcing q branch amp) W p R Y))/((R:ℂ)^(2 : ℕ)*f)
   rw [hB,hD,top_time_transfer U hU r w hw outer a b R Y ha hab hr hy,
     intervalIntegral.integral_sub (((hv.const_mul mu).sub hL).sub (hu.const_mul _)) (hF.const_mul _),
     intervalIntegral.integral_sub ((hv.const_mul mu).sub hL) (hu.const_mul _),

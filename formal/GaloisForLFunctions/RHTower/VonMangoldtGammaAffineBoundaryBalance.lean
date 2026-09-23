@@ -10,7 +10,7 @@ and `-a` which cancels the first two Laurent coefficients at infinity.
 
 The residual has the exact triple-denominator factor
 
-`(w^2-a^2) / ((w+lambda)(a+lambda)(-a+lambda))`.
+`(w^(2 : ℕ)-a^(2 : ℕ)) / ((w+lambda)(a+lambda)(-a+lambda))`.
 
 For `a=1/2` this removes both Mellin boundary values and gains three inverse powers of the
 prime-log rate.  The resulting finite von Mangoldt vectors are literal prefixes of one common
@@ -64,7 +64,7 @@ theorem twoBoundaryCauchyAffineResidual_eq
     (hw : w + lambda ≠ 0) (hp : a + lambda ≠ 0)
     (hm : -a + lambda ≠ 0) :
     twoBoundaryCauchyAffineResidual a w lambda =
-      (w ^ 2 - a ^ 2) /
+      (w ^ (2 : ℕ) - a ^ (2 : ℕ)) /
         ((w + lambda) * (a + lambda) * (-a + lambda)) := by
   rw [twoBoundaryCauchyAffineResidual,
     twoBoundaryCauchyAffinePlusCoefficient,
@@ -122,7 +122,7 @@ theorem finiteExponentialAllDepthAffineBalancedCauchyFeature_eq_triple
         weight rate N i a w p =
       (Real.sqrt (weight p) * rate p ^ (i : ℕ) *
           expNegOrientedRemainder (N - (i : ℕ)) (rate p) : ℝ) *
-        ((w ^ 2 - a ^ 2) /
+        ((w ^ (2 : ℕ) - a ^ (2 : ℕ)) /
           ((w + (rate p : ℂ)) * (a + (rate p : ℂ)) *
             (-a + (rate p : ℂ)))) := by
   rw [finiteExponentialAllDepthAffineBalancedCauchyFeature_eq_residual,

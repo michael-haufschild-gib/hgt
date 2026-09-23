@@ -34,7 +34,7 @@ theorem tendsto_exponentCoord (p : ℕ) :
 /-! ## Uniform bounds from a bounded weight -/
 
 theorem sq_exp_sub_one_le {z F : ℝ} (hz : |z| ≤ F) :
-    (Real.exp z - 1) ^ 2 ≤ (Real.exp F - 1) ^ 2 := by
+    (Real.exp z - 1) ^ (2 : ℕ) ≤ (Real.exp F - 1) ^ (2 : ℕ) := by
   have hFnn : 0 ≤ F := le_trans (abs_nonneg z) hz
   have hzF : z ≤ F := le_trans (le_abs_self z) hz
   have hFz : -F ≤ z := neg_le_of_abs_le hz
@@ -52,10 +52,10 @@ theorem sq_exp_sub_one_le {z F : ℝ} (hz : |z| ≤ F) :
     · linarith
     · linarith
   have hnn : (0 : ℝ) ≤ Real.exp F - 1 := by linarith
-  calc (Real.exp z - 1) ^ 2 = |Real.exp z - 1| ^ 2 := (sq_abs _).symm
-    _ ≤ (Real.exp F - 1) ^ 2 := by gcongr
+  calc (Real.exp z - 1) ^ (2 : ℕ) = |Real.exp z - 1| ^ (2 : ℕ) := (sq_abs _).symm
+    _ ≤ (Real.exp F - 1) ^ (2 : ℕ) := by gcongr
 
-theorem exp_sq_le {z F : ℝ} (hz : |z| ≤ F) : Real.exp z ^ 2 ≤ Real.exp F ^ 2 := by
+theorem exp_sq_le {z F : ℝ} (hz : |z| ≤ F) : Real.exp z ^ (2 : ℕ) ≤ Real.exp F ^ (2 : ℕ) := by
   have hzF : z ≤ F := le_trans (le_abs_self z) hz
   have hup : Real.exp z ≤ Real.exp F := Real.exp_le_exp.mpr hzF
   nlinarith [Real.exp_pos z, hup]
@@ -66,12 +66,12 @@ theorem exp_sq_le {z F : ℝ} (hz : |z| ≤ F) : Real.exp z ^ 2 ≤ Real.exp F ^
 def leakageExpansionTerm (f : ℝ → ℝ) (N p : ℕ) : ℝ :=
   if 2 ≤ p then
     primeLeakage p (f (Real.log p / Real.log N))
-      - (Real.exp (f (Real.log p / Real.log N)) - 1) ^ 2 / (p : ℝ)
+      - (Real.exp (f (Real.log p / Real.log N)) - 1) ^ (2 : ℕ) / (p : ℝ)
   else 0
 
 theorem abs_leakageExpansionTerm_le {f : ℝ → ℝ} {F : ℝ} (hfb : ∀ t, |f t| ≤ F) (N p : ℕ) :
     |leakageExpansionTerm f N p|
-      ≤ ((Real.exp F - 1) ^ 2 * (1 + Real.exp F ^ 2)) / (p : ℝ) ^ 2 := by
+      ≤ ((Real.exp F - 1) ^ (2 : ℕ) * (1 + Real.exp F ^ (2 : ℕ))) / (p : ℝ) ^ (2 : ℕ) := by
   rw [leakageExpansionTerm]
   split_ifs with hp
   · set z : ℝ := f (Real.log p / Real.log N) with hz
@@ -80,12 +80,12 @@ theorem abs_leakageExpansionTerm_le {f : ℝ → ℝ} {F : ℝ} (hfb : ∀ t, |f
     refine le_trans hbase ?_
     have hpR2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
     refine div_le_div_of_nonneg_right ?_ (by positivity)
-    have h1 : (Real.exp z - 1) ^ 2 ≤ (Real.exp F - 1) ^ 2 := sq_exp_sub_one_le hzF
-    have h2 : Real.exp z ^ 2 ≤ Real.exp F ^ 2 := exp_sq_le hzF
-    have hnn1 : (0 : ℝ) ≤ (Real.exp z - 1) ^ 2 := sq_nonneg _
-    have hnn2 : (0 : ℝ) ≤ 1 + Real.exp z ^ 2 := by positivity
+    have h1 : (Real.exp z - 1) ^ (2 : ℕ) ≤ (Real.exp F - 1) ^ (2 : ℕ) := sq_exp_sub_one_le hzF
+    have h2 : Real.exp z ^ (2 : ℕ) ≤ Real.exp F ^ (2 : ℕ) := exp_sq_le hzF
+    have hnn1 : (0 : ℝ) ≤ (Real.exp z - 1) ^ (2 : ℕ) := sq_nonneg _
+    have hnn2 : (0 : ℝ) ≤ 1 + Real.exp z ^ (2 : ℕ) := by positivity
     nlinarith [hnn1, hnn2, h1, h2, sq_nonneg (Real.exp F - 1)]
-  · have hnn : (0 : ℝ) ≤ ((Real.exp F - 1) ^ 2 * (1 + Real.exp F ^ 2)) / (p : ℝ) ^ 2 := by
+  · have hnn : (0 : ℝ) ≤ ((Real.exp F - 1) ^ (2 : ℕ) * (1 + Real.exp F ^ (2 : ℕ))) / (p : ℝ) ^ (2 : ℕ) := by
       positivity
     simpa using hnn
 
@@ -103,17 +103,17 @@ theorem tendsto_leakageExpansionTerm {f : ℝ → ℝ} (hf : Continuous f) (hf0 
         (𝓝 0) := by
       have hcont : Continuous (fun z : ℝ => primeLeakage p z) := by
         unfold primeLeakage
-        have hden : ∀ z : ℝ, (p : ℝ) + Real.exp z ^ 2 ≠ 0 := by
+        have hden : ∀ z : ℝ, (p : ℝ) + Real.exp z ^ (2 : ℕ) ≠ 0 := by
           intro z
-          have : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
+          have : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
           exact ne_of_gt this
         fun_prop (disch := exact hden _)
       have hcomp := (hcont.tendsto 0).comp hfz
       simp only [Function.comp_def] at hcomp
       rwa [primeLeakage_zero] at hcomp
     have hprof : Tendsto (fun N : ℕ =>
-        (Real.exp (f (Real.log p / Real.log N)) - 1) ^ 2 / (p : ℝ)) atTop (𝓝 0) := by
-      have hcont : Continuous (fun z : ℝ => (Real.exp z - 1) ^ 2 / (p : ℝ)) := by fun_prop
+        (Real.exp (f (Real.log p / Real.log N)) - 1) ^ (2 : ℕ) / (p : ℝ)) atTop (𝓝 0) := by
+      have hcont : Continuous (fun z : ℝ => (Real.exp z - 1) ^ (2 : ℕ) / (p : ℝ)) := by fun_prop
       have hcomp := (hcont.tendsto 0).comp hfz
       simp only [Function.comp_def] at hcomp
       simpa using hcomp
@@ -131,7 +131,7 @@ theorem tendsto_sum_leakageExpansion {f : ℝ → ℝ} {F : ℝ} (hf : Continuou
     (hfb : ∀ t, |f t| ≤ F) :
     Tendsto (fun N : ℕ => ∑ p ∈ Nat.primesLE N, leakageExpansionTerm f N p) atTop (𝓝 0) := by
   refine tendsto_sum_primesLE_of_dominated
-    (b := fun p => ((Real.exp F - 1) ^ 2 * (1 + Real.exp F ^ 2)) / (p : ℝ) ^ 2) ?_ ?_ ?_ ?_
+    (b := fun p => ((Real.exp F - 1) ^ (2 : ℕ) * (1 + Real.exp F ^ (2 : ℕ))) / (p : ℝ) ^ (2 : ℕ)) ?_ ?_ ?_ ?_
   · exact (Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2)).mul_left _ |>.congr
       (fun p => by rw [mul_one_div])
   · intro p
@@ -152,10 +152,10 @@ def leakageLogDefectTerm (f : ℝ → ℝ) (N p : ℕ) : ℝ :=
 
 theorem abs_leakageLogDefectTerm_le {f : ℝ → ℝ} {F : ℝ} (hfb : ∀ t, |f t| ≤ F) (N p : ℕ) :
     |leakageLogDefectTerm f N p|
-      ≤ ((Real.exp F - 1) ^ 2) ^ 2 /
-          ((1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) * (p : ℝ) ^ 2) := by
+      ≤ ((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) /
+          ((1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) * (p : ℝ) ^ (2 : ℕ)) := by
   have hθ := theta_lt_one F
-  have hgap : (0 : ℝ) < 1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2) := by linarith
+  have hgap : (0 : ℝ) < 1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ)) := by linarith
   rw [leakageLogDefectTerm]
   split_ifs with hp
   · set z : ℝ := f (Real.log p / Real.log N) with hz
@@ -166,27 +166,27 @@ theorem abs_leakageLogDefectTerm_le {f : ℝ → ℝ} {F : ℝ} (hfb : ∀ t, |f
     have hLθ := primeLeakage_le_theta hp hzle
     have hbase := abs_log_one_sub_add_le hL0 hθ hLθ
     refine le_trans hbase ?_
-    have hLdiv : primeLeakage p z ≤ (Real.exp F - 1) ^ 2 / (p : ℝ) := by
+    have hLdiv : primeLeakage p z ≤ (Real.exp F - 1) ^ (2 : ℕ) / (p : ℝ) := by
       refine le_trans (primeLeakage_le_div hp z) ?_
       exact div_le_div_of_nonneg_right (sq_exp_sub_one_le hzF) (by linarith)
-    have hsq : primeLeakage p z ^ 2 ≤ ((Real.exp F - 1) ^ 2 / (p : ℝ)) ^ 2 := by
-      have hd0 : (0 : ℝ) ≤ (Real.exp F - 1) ^ 2 / (p : ℝ) := le_trans hL0 hLdiv
+    have hsq : primeLeakage p z ^ (2 : ℕ) ≤ ((Real.exp F - 1) ^ (2 : ℕ) / (p : ℝ)) ^ (2 : ℕ) := by
+      have hd0 : (0 : ℝ) ≤ (Real.exp F - 1) ^ (2 : ℕ) / (p : ℝ) := le_trans hL0 hLdiv
       nlinarith [hL0, hLdiv, hd0]
     rw [div_le_div_iff₀ hgap (by positivity)]
-    have hexp : ((Real.exp F - 1) ^ 2 / (p : ℝ)) ^ 2
-        = ((Real.exp F - 1) ^ 2) ^ 2 / (p : ℝ) ^ 2 := by
+    have hexp : ((Real.exp F - 1) ^ (2 : ℕ) / (p : ℝ)) ^ (2 : ℕ)
+        = ((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) / (p : ℝ) ^ (2 : ℕ) := by
       rw [div_pow]
     rw [hexp] at hsq
-    have hp2 : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
-    calc primeLeakage p z ^ 2 * ((1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) * (p : ℝ) ^ 2)
-        ≤ (((Real.exp F - 1) ^ 2) ^ 2 / (p : ℝ) ^ 2) *
-            ((1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) * (p : ℝ) ^ 2) := by
+    have hp2 : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
+    calc primeLeakage p z ^ (2 : ℕ) * ((1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) * (p : ℝ) ^ (2 : ℕ))
+        ≤ (((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) / (p : ℝ) ^ (2 : ℕ)) *
+            ((1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) * (p : ℝ) ^ (2 : ℕ)) := by
           gcongr
-      _ = ((Real.exp F - 1) ^ 2) ^ 2 *
-            (1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) := by
+      _ = ((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) *
+            (1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) := by
           field_simp
-  · have hnn : (0 : ℝ) ≤ ((Real.exp F - 1) ^ 2) ^ 2 /
-        ((1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) * (p : ℝ) ^ 2) := by
+  · have hnn : (0 : ℝ) ≤ ((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) /
+        ((1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) * (p : ℝ) ^ (2 : ℕ)) := by
       positivity
     simpa using hnn
 
@@ -202,9 +202,9 @@ theorem tendsto_leakageLogDefectTerm {f : ℝ → ℝ} (hf : Continuous f) (hf0 
       linarith
     have hcont : Continuous (fun z : ℝ => primeLeakage p z) := by
       unfold primeLeakage
-      have hden : ∀ z : ℝ, (p : ℝ) + Real.exp z ^ 2 ≠ 0 := by
+      have hden : ∀ z : ℝ, (p : ℝ) + Real.exp z ^ (2 : ℕ) ≠ 0 := by
         intro z
-        have : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
+        have : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
         exact ne_of_gt this
       fun_prop (disch := exact hden _)
     have hleak : Tendsto (fun N : ℕ => primeLeakage p (f (Real.log p / Real.log N))) atTop
@@ -234,12 +234,12 @@ theorem tendsto_sum_leakageLogDefect {f : ℝ → ℝ} {F : ℝ} (hf : Continuou
     (hfb : ∀ t, |f t| ≤ F) :
     Tendsto (fun N : ℕ => ∑ p ∈ Nat.primesLE N, leakageLogDefectTerm f N p) atTop (𝓝 0) := by
   have hθ := theta_lt_one F
-  have hgap : (0 : ℝ) < 1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2) := by linarith
+  have hgap : (0 : ℝ) < 1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ)) := by linarith
   refine tendsto_sum_primesLE_of_dominated
-    (b := fun p => ((Real.exp F - 1) ^ 2) ^ 2 /
-      ((1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)) * (p : ℝ) ^ 2)) ?_ ?_ ?_ ?_
+    (b := fun p => ((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) /
+      ((1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))) * (p : ℝ) ^ (2 : ℕ))) ?_ ?_ ?_ ?_
   · have hbase := (Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2)).mul_left
-      (((Real.exp F - 1) ^ 2) ^ 2 / (1 - (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2)))
+      (((Real.exp F - 1) ^ (2 : ℕ)) ^ (2 : ℕ) / (1 - (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ))))
     refine hbase.congr ?_
     intro p
     field_simp

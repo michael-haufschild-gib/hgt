@@ -64,7 +64,7 @@ theorem HasTubePolyGrowth.pow {f : ℂ → ℂ} (hf : HasTubePolyGrowth f) (n : 
   induction n with
   | zero =>
       have h := HasTubePolyGrowth.one
-      have heq : (fun _ : ℂ => (1 : ℂ)) = fun z : ℂ => f z ^ 0 := by
+      have heq : (fun _ : ℂ => (1 : ℂ)) = fun z : ℂ => f z ^ (0 : ℕ) := by
         funext z
         rw [pow_zero]
       rwa [heq] at h

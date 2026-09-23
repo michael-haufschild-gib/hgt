@@ -22,9 +22,9 @@ noncomputable section
 
 private theorem completedDensityNoGo_E_re_ofReal (t : ℝ) :
     (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).re =
-      2 * t ^ 2 * (XiC (t : ℂ)).re := by
+      2 * t ^ (2 : ℕ) * (XiC (t : ℂ)).re := by
   have h := thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed t
-  have hq : (t : ℂ) ^ 2 + 1 / 4 = ((t ^ 2 + 1 / 4 : ℝ) : ℂ) := by
+  have hq : (t : ℂ) ^ (2 : ℕ) + 1 / 4 = ((t ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) := by
     push_cast
     ring
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -37,8 +37,8 @@ private theorem completedDensityNoGo_E_re_ofReal (t : ℝ) :
 private theorem completedDensityNoGo_hasDerivAt_E {z : ℂ} (hz : -1 < z.im) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesE
       (2 * z * thetaCuspTailSecondDensityPhaseValue z +
-        (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative z) z := by
-  have hq : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+        (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative z) z := by
+  have hq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     simpa [mul_comm] using ((hasDerivAt_id z).pow 2).add_const (1 / 4)
   have hF := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := z) hz
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -47,8 +47,8 @@ private theorem completedDensityNoGo_hasDerivAt_E {z : ℂ} (hz : -1 < z.im) :
 private theorem completedDensityNoGo_hasDerivAt_ESharp {z : ℂ} (hz : z.im < 1) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesESharp
       (2 * z * thetaCuspTailSecondDensityPhaseValue (-z) -
-        (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative (-z)) z := by
-  have hq : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+        (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative (-z)) z := by
+  have hq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     simpa [mul_comm] using ((hasDerivAt_id z).pow 2).add_const (1 / 4)
   have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := (hasDerivAt_id z).neg
   have hF0 := hasDerivAt_thetaCuspTailSecondDensityPhaseValue
@@ -64,12 +64,12 @@ private theorem completedDensityNoGo_vertical_gap_derivative (t : ℝ) :
       (fun y : ℝ => thetaCuspTailSecondDensityDeBrangesGap
         ((t : ℂ) + (y : ℂ) * I))
       (-4 * (((2 * (t : ℂ) * thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-          ((t : ℂ) ^ 2 + 1 / 4) *
+          ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
             thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) *
         starRingEnd ℂ (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im)) 0 := by
   let E' : ℂ :=
     2 * (t : ℂ) * thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-      ((t : ℂ) ^ 2 + 1 / 4) *
+      ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
         thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)
   have hz : HasDerivAt (fun y : ℝ => (t : ℂ) + (y : ℂ) * I) I 0 := by
     have h := (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).mul_const I
@@ -166,7 +166,7 @@ private theorem completedDensityNoGo_boundary_current_nonneg_of_gap_pos
     (t : ℝ) :
     0 ≤ -4 * ((2 * (t : ℂ) *
           thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-        ((t : ℂ) ^ 2 + 1 / 4) *
+        ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
           thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) *
       starRingEnd ℂ
         (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im := by
@@ -174,7 +174,7 @@ private theorem completedDensityNoGo_boundary_current_nonneg_of_gap_pos
     ((t : ℂ) + (y : ℂ) * I)
   let D : ℝ := -4 * ((2 * (t : ℂ) *
         thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-      ((t : ℂ) ^ 2 + 1 / 4) *
+      ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
         thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) *
     starRingEnd ℂ
       (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im
@@ -333,10 +333,10 @@ theorem tendsto_thetaCuspTailSecondDensity_sine_scaled_atTop_dropMass :
 private theorem completedDensityNoGo_E_im_over_t_eq
     {t : ℝ} (ht : t ≠ 0) :
     (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im / t =
-      (1 + 1 / (4 * t ^ 2)) *
+      (1 + 1 / (4 * t ^ (2 : ℕ))) *
         (t * (∫ x : ℝ in Ioi 0,
           thetaCuspTailSecondDensity x * Real.sin (t * x))) := by
-  have hq : (t : ℂ) ^ 2 + 1 / 4 = ((t ^ 2 + 1 / 4 : ℝ) : ℂ) := by
+  have hq : (t : ℂ) ^ (2 : ℕ) + 1 / 4 = ((t ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) := by
     push_cast
     ring
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -354,13 +354,13 @@ theorem tendsto_thetaCuspTailSecondDensityDeBrangesE_im_div_atTop_dropMass :
       atTop (𝓝 thetaCuspTailThirdDerivativeDropMass) := by
   have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero
-  have hfactor : Tendsto (fun t : ℝ => 1 + 1 / (4 * t ^ 2))
+  have hfactor : Tendsto (fun t : ℝ => 1 + 1 / (4 * t ^ (2 : ℕ)))
       atTop (𝓝 1) := by
     have hsquare := hinv.pow 2
     have hc : Tendsto (fun _ : ℝ => (1 / 4 : ℝ)) atTop (𝓝 (1 / 4)) :=
       tendsto_const_nhds
     have hquarter :
-        Tendsto (fun t : ℝ => (1 / 4 : ℝ) * (t⁻¹) ^ 2) atTop (𝓝 0) := by
+        Tendsto (fun t : ℝ => (1 / 4 : ℝ) * (t⁻¹) ^ (2 : ℕ)) atTop (𝓝 0) := by
       simpa using hc.mul hsquare
     have hone : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (𝓝 1) :=
       tendsto_const_nhds
@@ -368,7 +368,7 @@ theorem tendsto_thetaCuspTailSecondDensityDeBrangesE_im_div_atTop_dropMass :
       mul_comm, mul_left_comm, one_mul, add_zero] using hone.add hquarter
   have hprod := hfactor.mul tendsto_thetaCuspTailSecondDensity_sine_scaled_atTop_dropMass
   have hprod' : Tendsto (fun t : ℝ =>
-      (1 + 1 / (4 * t ^ 2)) *
+      (1 + 1 / (4 * t ^ (2 : ℕ))) *
         (t * (∫ x : ℝ in Ioi 0,
           thetaCuspTailSecondDensity x * Real.sin (t * x))))
       atTop (𝓝 thetaCuspTailThirdDerivativeDropMass) := by
@@ -384,7 +384,7 @@ private theorem completedDensityNoGo_tendsto_mul_XiC_re_atTop_zero :
   apply squeeze_zero_norm' (a := fun t : ℝ => C / t)
   · filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
     have htpos : 0 < t := lt_of_lt_of_le zero_lt_one ht
-    have hdec' : t ^ 2 * ‖XiC (t : ℂ)‖ ≤ C := by
+    have hdec' : t ^ (2 : ℕ) * ‖XiC (t : ℂ)‖ ≤ C := by
       have := hdec t
       simpa only [S, norm_iteratedFDeriv_zero, Real.norm_eq_abs,
         abs_of_nonneg (le_trans zero_le_one ht),
@@ -393,8 +393,8 @@ private theorem completedDensityNoGo_tendsto_mul_XiC_re_atTop_zero :
       abs_of_nonneg (le_trans zero_le_one ht)]
     apply (le_div_iff₀ htpos).2
     calc
-      t * |(XiC (t : ℂ)).re| * t = t ^ 2 * |(XiC (t : ℂ)).re| := by ring
-      _ ≤ t ^ 2 * ‖XiC (t : ℂ)‖ :=
+      t * |(XiC (t : ℂ)).re| * t = t ^ (2 : ℕ) * |(XiC (t : ℂ)).re| := by ring
+      _ ≤ t ^ (2 : ℕ) * ‖XiC (t : ℂ)‖ :=
         mul_le_mul_of_nonneg_left (Complex.abs_re_le_norm _) (sq_nonneg t)
       _ ≤ C := hdec'
   · simpa only [div_eq_mul_inv, mul_zero] using
@@ -471,14 +471,14 @@ private theorem completedDensityNoGo_hasDerivAt_E_re_div_im
           (thetaCuspTailSecondDensityDeBrangesE (s : ℂ)).im)
       ((-4 * ((2 * (t : ℂ) *
               thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-            ((t : ℂ) ^ 2 + 1 / 4) *
+            ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
               thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) *
           starRingEnd ℂ
             (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im) /
-        (4 * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ 2)) t := by
+        (4 * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ (2 : ℕ))) t := by
   let E' : ℂ :=
     2 * (t : ℂ) * thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-      ((t : ℂ) ^ 2 + 1 / 4) *
+      ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
         thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)
   have hE : HasDerivAt
       (fun s : ℝ => thetaCuspTailSecondDensityDeBrangesE (s : ℂ)) E' t := by
@@ -496,7 +496,7 @@ private theorem completedDensityNoGo_hasDerivAt_E_re_div_im
   have hratio := hre.div him himne
   exact hratio.congr_deriv (by
     have hE'eq : ((2 * (t : ℂ) * thetaCuspTailSecondDensityPhaseValue (t : ℂ) * 4 +
-        ((t : ℂ) ^ 2 * 4 + 1) * thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) / 4 : ℂ) =
+        ((t : ℂ) ^ (2 : ℕ) * 4 + 1) * thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) / 4 : ℂ) =
         E' := by
       dsimp only [E']
       ring
@@ -517,11 +517,11 @@ private theorem completedDensityNoGo_monotoneOn_E_re_div_im_of_gap_pos
   let J : ℝ → ℝ := fun t =>
     ((-4 * ((2 * (t : ℂ) *
               thetaCuspTailSecondDensityPhaseValue (t : ℂ) +
-            ((t : ℂ) ^ 2 + 1 / 4) *
+            ((t : ℂ) ^ (2 : ℕ) + 1 / 4) *
               thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) *
           starRingEnd ℂ
             (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im) /
-      (4 * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ 2))
+      (4 * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ (2 : ℕ)))
   refine monotoneOn_of_hasDerivWithinAt_nonneg
     (convex_Ioi (0 : ℝ)) (f' := J) ?_ ?_ ?_
   · intro t ht

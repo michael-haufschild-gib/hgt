@@ -33,7 +33,7 @@ theorem totient_le_two_iff {n : ℕ} (hn : 0 < n) :
       · rcases eq_or_ne p 2 with rfl | hp2
         · by_contra hcon
           push Not at hcon
-          have h8 : (2 : ℕ) ^ 3 ∣ n := by
+          have h8 : (2 : ℕ) ^ (3 : ℕ) ∣ n := by
             rw [Nat.Prime.pow_dvd_iff_le_factorization hp hn.ne']
             have : (12 : ℕ).factorization 2 = 2 := by decide +kernel
             omega
@@ -43,7 +43,7 @@ theorem totient_le_two_iff {n : ℕ} (hn : 0 < n) :
         · rcases eq_or_ne p 3 with rfl | hp3
           · by_contra hcon
             push Not at hcon
-            have h9 : (3 : ℕ) ^ 2 ∣ n := by
+            have h9 : (3 : ℕ) ^ (2 : ℕ) ∣ n := by
               rw [Nat.Prime.pow_dvd_iff_le_factorization hp hn.ne']
               have : (12 : ℕ).factorization 3 = 1 := by decide +kernel
               omega
@@ -59,7 +59,7 @@ theorem totient_le_two_iff {n : ℕ} (hn : 0 < n) :
               omega
             have hp12 : ¬p ∣ 12 := by
               intro hpdvd
-              have hfactor : (12 : ℕ) = 3 * 2 ^ 2 := by norm_num
+              have hfactor : (12 : ℕ) = 3 * 2 ^ (2 : ℕ) := by norm_num
               rw [hfactor] at hpdvd
               rcases hp.dvd_mul.mp hpdvd with h3 | h2
               · exact hp3 ((Nat.prime_dvd_prime_iff_eq hp (by decide)).mp h3)

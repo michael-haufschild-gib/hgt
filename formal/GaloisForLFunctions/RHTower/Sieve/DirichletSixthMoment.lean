@@ -24,31 +24,31 @@ theorem sixthMoment_dirPoly (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : 
     (hδ : 0 < δ) (hT : 0 ≤ T)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ T)
-    (hD : ∀ j : Fin (N ^ 3), ((cubeFibre N j).card : ℝ) ≤ D) :
-    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 6
-      ≤ (T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
-          * (1 / δ + 2 * Real.log ((N ^ 3 : ℕ) : ℝ))
-          * (D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3) := by
+    (hD : ∀ j : Fin (N ^ (3 : ℕ)), ((cubeFibre N j).card : ℝ) ≤ D) :
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ (6 : ℕ)
+      ≤ (T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)))
+          * (1 / δ + 2 * Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ))
+          * (D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
   classical
-  have hN3 : 2 ≤ N ^ 3 := le_trans hN (Nat.le_self_pow (by norm_num) N)
-  have hmv := largeValues_dirPoly (N ^ 3) hN3 (convCube N a) hδ hT hgap hlow R hhigh
+  have hN3 : 2 ≤ N ^ (3 : ℕ) := le_trans hN (Nat.le_self_pow (by norm_num) N)
+  have hmv := largeValues_dirPoly (N ^ (3 : ℕ)) hN3 (convCube N a) hδ hT hgap hlow R hhigh
   have hrewrite : ∀ r : ℕ,
-      ‖dirPoly (N ^ 3) (convCube N a) (lam r)‖ ^ 2 = ‖dirPoly N a (lam r)‖ ^ 6 := by
+      ‖dirPoly (N ^ (3 : ℕ)) (convCube N a) (lam r)‖ ^ (2 : ℕ) = ‖dirPoly N a (lam r)‖ ^ (6 : ℕ) := by
     intro r
     rw [dirPoly_convCube, norm_pow, ← pow_mul]
   simp only [hrewrite] at hmv
   refine le_trans hmv ?_
-  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ 3 : ℕ) : ℝ) := by
+  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ) := by
     refine Real.log_nonneg ?_
-    have : (1 : ℕ) ≤ N ^ 3 := by omega
+    have : (1 : ℕ) ≤ N ^ (3 : ℕ) := by omega
     exact_mod_cast this
   have hfactor : (0 : ℝ)
-      ≤ (T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
-          * (1 / δ + 2 * Real.log ((N ^ 3 : ℕ) : ℝ)) := by
-    have hcast : (0 : ℝ) ≤ ((N ^ 3 : ℕ) : ℝ) := Nat.cast_nonneg _
-    have h1 : (0 : ℝ) ≤ T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)) := by
+      ≤ (T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)))
+          * (1 / δ + 2 * Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)) := by
+    have hcast : (0 : ℝ) ≤ ((N ^ (3 : ℕ) : ℕ) : ℝ) := Nat.cast_nonneg _
+    have h1 : (0 : ℝ) ≤ T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)) := by
       nlinarith
-    have h2 : (0 : ℝ) ≤ 1 / δ + 2 * Real.log ((N ^ 3 : ℕ) : ℝ) := by
+    have h2 : (0 : ℝ) ≤ 1 / δ + 2 * Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ) := by
       have : (0 : ℝ) < 1 / δ := by positivity
       linarith
     exact mul_nonneg h1 h2
@@ -59,17 +59,17 @@ theorem card_largeValues_sixth_le (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {
     {δ T V D : ℝ} (hδ : 0 < δ) (hT : 0 ≤ T) (hV : 0 < V)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ T)
-    (hD : ∀ j : Fin (N ^ 3), ((cubeFibre N j).card : ℝ) ≤ D)
+    (hD : ∀ j : Fin (N ^ (3 : ℕ)), ((cubeFibre N j).card : ℝ) ≤ D)
     (hbig : ∀ r ∈ Finset.range (R + 1), V ≤ ‖dirPoly N a (lam r)‖) :
-    ((R : ℝ) + 1) * V ^ 6
-      ≤ (T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
-          * (1 / δ + 2 * Real.log ((N ^ 3 : ℕ) : ℝ))
-          * (D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3) := by
-  have hterm : ∀ r ∈ Finset.range (R + 1), V ^ 6 ≤ ‖dirPoly N a (lam r)‖ ^ 6 := by
+    ((R : ℝ) + 1) * V ^ (6 : ℕ)
+      ≤ (T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)))
+          * (1 / δ + 2 * Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ))
+          * (D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
+  have hterm : ∀ r ∈ Finset.range (R + 1), V ^ (6 : ℕ) ≤ ‖dirPoly N a (lam r)‖ ^ (6 : ℕ) := by
     intro r hr
     exact pow_le_pow_left₀ hV.le (hbig r hr) 6
-  have hcount : ((R : ℝ) + 1) * V ^ 6
-      ≤ ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 6 := by
+  have hcount : ((R : ℝ) + 1) * V ^ (6 : ℕ)
+      ≤ ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ (6 : ℕ) := by
     refine le_trans (le_of_eq ?_) (Finset.sum_le_sum hterm)
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     push_cast

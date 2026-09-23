@@ -52,11 +52,11 @@ private theorem principal_derivatives (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz :
 
 /-- The principal gradient retains all three squared-source powers. -/
 theorem principal_gradient_expansion (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
-    (z 1:ℂ)^2*((coordDeriv 0 (principal (center q)) z)^2+
-      (coordDeriv 1 (principal (center q)) z)^2)/2=
-    ∑ i : Fin 3, (![((q.1:ℂ))^2*principalAmplitude q 0,
+    (z 1:ℂ)^(2 : ℕ)*((coordDeriv 0 (principal (center q)) z)^(2 : ℕ)+
+      (coordDeriv 1 (principal (center q)) z)^(2 : ℕ))/2=
+    ∑ i : Fin 3, (![((q.1:ℂ))^(2 : ℕ)*principalAmplitude q 0,
       (q.1:ℂ)*(1-(q.1:ℂ))*principalAmplitude q 1,
-      (1-(q.1:ℂ))^2*principalAmplitude q 2] i)*(z 1:ℂ)^(principalExponent q i) := by
+      (1-(q.1:ℂ))^(2 : ℕ)*principalAmplitude q 2] i)*(z 1:ℂ)^(principalExponent q i) := by
   have h := principal_derivatives q z hz
   have hn : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   have hm (w : ℂ) : (z 1:ℂ)*(z 1:ℂ)^(w-1)=(z 1:ℂ)^w := by
@@ -81,16 +81,16 @@ theorem principal_gradient_expansion (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 
     (weylCoefficient q true*(q.1:ℂ)) (weylCoefficient q false*(1-(q.1:ℂ))) z hz
   rw [Fin.sum_univ_three]
   change (weylCoefficient q true*(q.1:ℂ)*(z 1:ℂ)^(q.1:ℂ)+
-      weylCoefficient q false*(1-(q.1:ℂ))*(z 1:ℂ)^(1-(q.1:ℂ)))^2/2=
-    (q.1:ℂ)^2*(weylCoefficient q true^2/2)*(z 1:ℂ)^(2*(q.1:ℂ))+
+      weylCoefficient q false*(1-(q.1:ℂ))*(z 1:ℂ)^(1-(q.1:ℂ)))^(2 : ℕ)/2=
+    (q.1:ℂ)^(2 : ℕ)*(weylCoefficient q true^(2 : ℕ)/2)*(z 1:ℂ)^(2*(q.1:ℂ))+
     (q.1:ℂ)*(1-(q.1:ℂ))*(weylCoefficient q true*weylCoefficient q false)*(z 1:ℂ)^(1:ℂ)+
-    (1-(q.1:ℂ))^2*(weylCoefficient q false^2/2)*(z 1:ℂ)^(2-2*(q.1:ℂ))
+    (1-(q.1:ℂ))^(2 : ℕ)*(weylCoefficient q false^(2 : ℕ)/2)*(z 1:ℂ)^(2-2*(q.1:ℂ))
   linear_combination (-1/2:ℂ)*hs
 
 private theorem principal_gradient_canonical (q : XiZeroCopy) (branch : Bool)
     (z : Fin 2 → ℝ) (hz : 0 < z 1) :
-    (z 1:ℂ)^2*((coordDeriv 0 (principal (center q)) z)^2+
-      (coordDeriv 1 (principal (center q)) z)^2)/2=
+    (z 1:ℂ)^(2 : ℕ)*((coordDeriv 0 (principal (center q)) z)^(2 : ℕ)+
+      (coordDeriv 1 (principal (center q)) z)^(2 : ℕ))/2=
     ∑ i : Fin 3, principalGradient q branch i*(z 1:ℂ)^(principalExponent q i) := by
   rw [principal_gradient_expansion q z hz]
   apply Finset.sum_congr rfl
@@ -127,11 +127,11 @@ theorem principalForcing_eq_channels (q : XiZeroCopy) (branch : Bool) (amp : ℂ
   let v := logCircle d theta x k
   have hv : 0 < v 1 := mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have hJ := principalSquare_expansion q v hv
-  change (principal (center q) v)^2/2=_ at hJ
+  change (principal (center q) v)^(2 : ℕ)/2=_ at hJ
   have hK := principal_gradient_canonical q branch v hv
   change (p*(1-sourceLower image p rho alpha):ℝ)*compactForcing (physicalRate q branch) amp
-    (p*alpha) (sourceZ image p rho alpha beta) ((principal (center q) v)^2/2)
-      ((v 1:ℂ)^2*((coordDeriv 0 (principal (center q)) v)^2+(coordDeriv 1 (principal (center q)) v)^2)/2)/4=_
+    (p*alpha) (sourceZ image p rho alpha beta) ((principal (center q) v)^(2 : ℕ)/2)
+      ((v 1:ℂ)^(2 : ℕ)*((coordDeriv 0 (principal (center q)) v)^(2 : ℕ)+(coordDeriv 1 (principal (center q)) v)^(2 : ℕ))/2)/4=_
   rw [hJ,hK]
   have hp (i : Fin 3) : (v 1:ℂ)^(principalExponent q i)=
       Complex.exp (principalExponent q i*(k:ℂ))*(height d theta:ℂ)^(principalExponent q i) :=
@@ -163,11 +163,11 @@ private theorem compactForcing_continuousAt {E : Type*} [TopologicalSpace E]
   have hT : ContinuousAt (fun x => D4BMJointSource.timeOnset (2*s) (a x)) v := by
     unfold D4BMJointSource.timeOnset
     fun_prop
-  have hn : (1+(z v:ℂ))^2 ≠ 0 := pow_ne_zero 2 (by exact_mod_cast hp.ne')
-  have hD : ContinuousAt (fun x => (-8:ℂ)*(compactUnit (z x):ℂ)/(1+(z x:ℂ))^2) v :=
+  have hn : (1+(z v:ℂ))^(2 : ℕ) ≠ 0 := pow_ne_zero 2 (by exact_mod_cast hp.ne')
+  have hD : ContinuousAt (fun x => (-8:ℂ)*(compactUnit (z x):ℂ)/(1+(z x:ℂ))^(2 : ℕ)) v :=
     (continuousAt_const.mul hU).div ((continuousAt_const.add hZ).pow 2) hn
-  have hB : ContinuousAt (fun x => ((5*s^2+15*s+4)/4)*J x+
-      s*(s-1)*(compactUnit (z x):ℂ)^2/4*((s+2)^2*J x-K x)) v :=
+  have hB : ContinuousAt (fun x => ((5*s^(2 : ℕ)+15*s+4)/4)*J x+
+      s*(s-1)*(compactUnit (z x):ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J x-K x)) v :=
     (continuousAt_const.mul hJ).add (((continuousAt_const.mul (hU.pow 2)).div_const 4).mul
       ((continuousAt_const.mul hJ).sub hK))
   exact (((hD.mul hP).mul continuousAt_const).mul hB).mul hT

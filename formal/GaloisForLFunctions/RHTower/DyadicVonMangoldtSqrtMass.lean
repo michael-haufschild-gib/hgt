@@ -91,7 +91,7 @@ theorem eventually_dyadicSqrtVonMangoldtMass_ge :
   have hsqrtX : (0 : ℝ) < Real.sqrt X := Real.sqrt_pos.2 hX0
   have hsq2 : Real.sqrt (2 * X) = Real.sqrt 2 * Real.sqrt X := Real.sqrt_mul (by norm_num) X
   have hsqrt2 : Real.sqrt 2 ≤ 3 / 2 := by
-    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ 2) from by
+    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ (2 : ℕ)) from by
       rw [Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt (by norm_num)
   have hsqrtpos : (0 : ℝ) < Real.sqrt (2 * X) := by

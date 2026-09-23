@@ -82,8 +82,8 @@ theorem cglLemma45CharacterFibreOrdinates_packing
     (H : CGLLemma45FibrePacketHeightBounded P)
     (χ : DirichletCharacter ℂ (q + 1)) :
     ((cglLemma45CharacterFibreOrdinates P χ).card : ℝ) *
-        ((P.spacing / 2) / 2) ^ 1 ≤
-      (H.height + (P.spacing / 2) / 2) ^ 1 := by
+        ((P.spacing / 2) / 2) ^ (1 : ℕ) ≤
+      (H.height + (P.spacing / 2) / 2) ^ (1 : ℕ) := by
   simpa only [Module.finrank_self, Nat.cast_one] using
     GaloisForLFunctions.HTGeometry.card_mul_pow_le_of_separated (E := ℝ) volume
       (cglLemma45CharacterFibreOrdinates P χ) H.height (P.spacing / 2)
@@ -102,8 +102,8 @@ theorem cglLemma45CharacterFibreOrdinates_unitHalf_packing
     (χ : DirichletCharacter ℂ (q + 1))
     (U : CGLLemma45UnitSeparatedPacket P) :
     ((cglLemma45CharacterFibreOrdinates P χ).card : ℝ) *
-        (((1 : ℝ) / 2) / 2) ^ 1 ≤
-      ((H.height : ℝ) + ((1 : ℝ) / 2) / 2) ^ 1 := by
+        (((1 : ℝ) / 2) / 2) ^ (1 : ℕ) ≤
+      ((H.height : ℝ) + ((1 : ℝ) / 2) / 2) ^ (1 : ℕ) := by
   simpa only [Module.finrank_self, Nat.cast_one] using
     GaloisForLFunctions.HTGeometry.card_mul_pow_le_of_separated (E := ℝ) volume
       (cglLemma45CharacterFibreOrdinates P χ) H.height ((1 : ℝ) / 2)
@@ -238,7 +238,7 @@ source scale. -/
 theorem cglLemma45NaturalHeightSourcePacket_rowCount_le_cube
     {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45NaturalHeightSourcePacket P N) :
-    R ≤ S.scale ^ 3 := by
+    R ≤ S.scale ^ (3 : ℕ) := by
   calc
     R ≤ (q + 1).totient * (4 * S.height + 1) :=
       cglLemma45RowCard_le_totient_mul_four_mul_height_add_one P S.toHeightBounded
@@ -252,12 +252,12 @@ theorem cglLemma45NaturalHeightSourcePacket_rowCount_le_cube
           _ ≤ 4 * S.scale + S.scale :=
             Nat.add_le_add_left (le_trans (Nat.succ_le_succ (Nat.zero_le q)) S.modulus_le) _
           _ = 5 * S.scale := (Nat.succ_mul 4 S.scale).symm
-    _ ≤ S.scale ^ 3 := by
+    _ ≤ S.scale ^ (3 : ℕ) := by
       calc
         S.scale * (5 * S.scale) = (5 * S.scale) * S.scale := Nat.mul_comm _ _
         _ ≤ (S.scale * S.scale) * S.scale :=
           Nat.mul_le_mul_right S.scale (Nat.mul_le_mul_right S.scale S.five_le_scale)
-        _ = S.scale ^ 3 := by simp [pow_succ, Nat.mul_assoc]
+        _ = S.scale ^ (3 : ℕ) := by simp [pow_succ, Nat.mul_assoc]
 
 /-- Convert literal bounded-height source data into the source-scale
 certificate consumed by the all-order Lemma 4.5 zero-mode estimate. -/

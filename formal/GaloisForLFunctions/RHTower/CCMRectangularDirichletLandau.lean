@@ -9,7 +9,7 @@ import GaloisForLFunctions.RHTower.ZetaVerticalSqrtBound
 
 This module isolates the Dirichlet-series layer of the explicit rectangular
 two-edge route.  A positive-transverse Xi copy contributes the nonzero weight
-`A_L(w)^2`; at aperture `(log n)/2` its growing edge is exactly `A_L(w)^2 n^w`.
+`A_L(w)^(2 : ℕ)`; at aperture `(log n)/2` its growing edge is exactly `A_L(w)^(2 : ℕ) n^w`.
 
 The results below establish the unconditional coefficient summability and the
 shifted-zeta series on a safe right half-plane.  They do not assert its local

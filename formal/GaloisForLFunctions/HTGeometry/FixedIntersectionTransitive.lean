@@ -83,7 +83,7 @@ theorem mem_right_iff_blockIndex {S T : Finset α} (x : α) :
   by_cases hS : x ∈ S <;> by_cases hT : x ∈ T <;> simp [hS, hT]
 
 /-- **Transitivity on ordered pairs of subsets with a fixed intersection size.** -/
-theorem exists_perm_image_pair {m j : ℕ} {S T S' T' : Finset α}
+theorem exists_perm_image_pair_fixedIntersectionTransitive {m j : ℕ} {S T S' T' : Finset α}
     (hS : S.card = m) (hT : T.card = m) (hint : (S ∩ T).card = j)
     (hS' : S'.card = m) (hT' : T'.card = m) (hint' : (S' ∩ T').card = j) :
     ∃ σ : Equiv.Perm α, S.image σ = S' ∧ T.image σ = T' := by
@@ -166,7 +166,7 @@ theorem eq_top_of_rootAction_of_swap {m j : ℕ} (hj : j < m) (hbig : 2 * m ≤ 
     {S₀ T₀ : {s : Finset α // s.card = m}} (hj₀ : (S₀.1 ∩ T₀.1).card = j)
     (hsw : Equiv.swap S₀ T₀ ∈ G) : G = ⊤ := by
   refine eq_top_of_johnsonSwaps hj hbig hne fun S T hST => ?_
-  obtain ⟨σ, hσS, hσT⟩ := exists_perm_image_pair S₀.2 T₀.2 hj₀ S.2 T.2 hST
+  obtain ⟨σ, hσS, hσT⟩ := exists_perm_image_pair_fixedIntersectionTransitive S₀.2 T₀.2 hj₀ S.2 T.2 hST
   have h1 : cardImagePerm m σ S₀ = S := Subtype.ext hσS
   have h2 : cardImagePerm m σ T₀ = T := Subtype.ext hσT
   rw [← h1, ← h2, cardImagePerm_swap]

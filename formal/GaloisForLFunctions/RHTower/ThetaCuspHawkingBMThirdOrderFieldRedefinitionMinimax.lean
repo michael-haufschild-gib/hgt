@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelThreshold
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEThirdOrderFieldRedefinition
 
 /-!
-# Field-redefinition orbit and minimax classification of the third-order source split
+# Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity-redefinition orbit and minimax classification of the third-order source split
 
 Quadratic perturbation-coordinate changes redistribute two complex projection amplitudes from the
 stationary and second-harmonic cascades into the direct third variation.  The induced affine action

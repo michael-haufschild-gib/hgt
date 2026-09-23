@@ -61,14 +61,14 @@ theorem current_eq_realPairing (v : ℂ) (z : ℍ) : current N f v z = 2 * realP
   simpa only [Function.comp_apply, ofComplex_apply] using h
 
 private theorem normSq_shift (a b : ℂ) (c : ℝ) :
-    normSq (b - (c : ℂ) * a) = normSq b - 2 * c * (b * (starRingEnd ℂ) a).re + c ^ 2 * normSq a := by
+    normSq (b - (c : ℂ) * a) = normSq b - 2 * c * (b * (starRingEnd ℂ) a).re + c ^ (2 : ℕ) * normSq a := by
   simp only [normSq_apply, sub_re, sub_im, mul_re, mul_im, ofReal_re, ofReal_im,
     zero_mul, sub_zero, conj_re, conj_im]
   ring
 
 /-- Exact square expansion for the actual derivative residual. -/
 theorem radialResidual_expansion (v : ℂ) (c : ℝ) (z : ℍ) :
-    radialResidual N f v c z = directionalEnergy N f v z - c * current N f v z + c ^ 2 * density N f z := by
+    radialResidual N f v c z = directionalEnergy N f v z - c * current N f v z + c ^ (2 : ℕ) * density N f z := by
   unfold radialResidual
   simp_rw [normSq_shift]
   rw [current_eq_realPairing]
@@ -83,7 +83,7 @@ theorem radialResidual_nonneg (v : ℂ) (c : ℝ) (z : ℍ) : 0 ≤ radialResidu
 /-- Canonical radial subtraction gives the exact minimum and retains its full quadratic excess. -/
 theorem radialResidual_minimization (v : ℂ) (z : ℍ) (hz : 0 < density N f z) (c : ℝ) :
     radialResidual N f v c z = radialResidual N f v (radialSlope N f v z) z +
-      density N f z * (c - radialSlope N f v z) ^ 2 := by
+      density N f z * (c - radialSlope N f v z) ^ (2 : ℕ) := by
   rw [radialResidual_expansion, radialResidual_expansion]
   unfold radialSlope
   field_simp [hz.ne']
@@ -91,7 +91,7 @@ theorem radialResidual_minimization (v : ℂ) (z : ℍ) (hz : 0 < density N f z)
 
 /-- Actual directional energy splits into radial current energy and its nonnegative residual. -/
 theorem directionalEnergy_decomposition (v : ℂ) (z : ℍ) (hz : 0 < density N f z) :
-    directionalEnergy N f v z = current N f v z ^ 2 / (4 * density N f z) +
+    directionalEnergy N f v z = current N f v z ^ (2 : ℕ) / (4 * density N f z) +
       radialResidual N f v (radialSlope N f v z) z := by
   rw [radialResidual_expansion]
   unfold radialSlope
@@ -116,7 +116,7 @@ theorem amplitude_dir (v : ℂ) (z : ℍ) (hz : 0 < density N f z) :
 
 /-- At positive density the full directional source energy retains scalar-amplitude energy and the residual. -/
 theorem directionalEnergy_eq_amplitude_add_residual (v : ℂ) (z : ℍ) (hz : 0 < density N f z) :
-    directionalEnergy N f v z = dir v (amplitude N f) (z : ℂ) ^ 2 +
+    directionalEnergy N f v z = dir v (amplitude N f) (z : ℂ) ^ (2 : ℕ) +
       radialResidual N f v (radialSlope N f v z) z := by
   rw [directionalEnergy_decomposition N f v z hz, amplitude_dir N f v z hz]
   congr 1
@@ -134,8 +134,8 @@ theorem angularEnergy_nonneg (z : ℍ) : 0 ≤ angularEnergy N f z :=
 
 /-- Exact actual radial-plus-angular gradient decomposition at positive density. -/
 theorem gradientDensity_eq_radial_add_angular (z : ℍ) (hz : 0 < density N f z) :
-    gradientDensity N f (z : ℂ) = dir 1 (amplitude N f) (z : ℂ) ^ 2 +
-      dir Complex.I (amplitude N f) (z : ℂ) ^ 2 + angularEnergy N f z := by
+    gradientDensity N f (z : ℂ) = dir 1 (amplitude N f) (z : ℂ) ^ (2 : ℕ) +
+      dir Complex.I (amplitude N f) (z : ℂ) ^ (2 : ℕ) + angularEnergy N f z := by
   have hg : gradientDensity N f (z : ℂ) = directionalEnergy N f 1 z + directionalEnergy N f Complex.I z := by
     exact Finset.sum_add_distrib
   rw [hg, directionalEnergy_eq_amplitude_add_residual N f 1 z hz,
@@ -145,8 +145,8 @@ theorem gradientDensity_eq_radial_add_angular (z : ℍ) (hz : 0 < density N f z)
 
 /-- Actual quarter density retains the full radial quarter density and angular residual. -/
 theorem quarterDensity_eq_radial_add_angular (z : ℍ) (hz : 0 < density N f z) :
-    quarterDensity N f z = (dir 1 (amplitude N f) (z : ℂ) ^ 2 +
-      dir Complex.I (amplitude N f) (z : ℂ) ^ 2 - density N f z / (4 * z.im ^ 2)) + angularEnergy N f z := by
+    quarterDensity N f z = (dir 1 (amplitude N f) (z : ℂ) ^ (2 : ℕ) +
+      dir Complex.I (amplitude N f) (z : ℂ) ^ (2 : ℕ) - density N f z / (4 * z.im ^ (2 : ℕ))) + angularEnergy N f z := by
   rw [quarterDensity, gradientDensity_eq_radial_add_angular N f z hz]
   ring
 
@@ -164,7 +164,7 @@ theorem current_zero_of_density_zero (v : ℂ) (z : ℍ) (hz : density N f z = 0
 
 /-- The multiplied directional decomposition holds at every point, including trace zeros. -/
 theorem density_mul_directionalEnergy (v : ℂ) (z : ℍ) :
-    density N f z * directionalEnergy N f v z = current N f v z ^ 2 / 4 +
+    density N f z * directionalEnergy N f v z = current N f v z ^ (2 : ℕ) / 4 +
       density N f z * radialResidual N f v (radialSlope N f v z) z := by
   by_cases hz : 0 < density N f z
   · rw [directionalEnergy_decomposition N f v z hz]
@@ -176,7 +176,7 @@ theorem density_mul_directionalEnergy (v : ℂ) (z : ℍ) :
 /-- The multiplied radial-plus-angular decomposition holds everywhere without a norm-smoothness assumption. -/
 theorem density_mul_gradientDensity (z : ℍ) :
     density N f z * gradientDensity N f (z : ℂ) =
-      (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) / 4 + density N f z * angularEnergy N f z := by
+      (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) / 4 + density N f z * angularEnergy N f z := by
   have hg : gradientDensity N f (z : ℂ) = directionalEnergy N f 1 z + directionalEnergy N f Complex.I z :=
     Finset.sum_add_distrib
   rw [hg, mul_add, density_mul_directionalEnergy, density_mul_directionalEnergy]
@@ -217,11 +217,11 @@ theorem angularEnergy_eq_zero_iff (z : ℍ) : angularEnergy N f z = 0 ↔
 /-- The actual trace Fisher identity retains the eigenvalue and the complete angular residual, including at zeros. -/
 theorem trace_fisher_identity (z : ℍ) :
     density N f z * realLaplacian (density N f ∘ ofComplex) (z : ℂ) =
-      (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) / 2 +
-        2 * density N f z * angularEnergy N f z - 2 * lam * density N f z ^ 2 / z.im ^ 2 := by
+      (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) / 2 +
+        2 * density N f z * angularEnergy N f z - 2 * lam * density N f z ^ (2 : ℕ) / z.im ^ (2 : ℕ) := by
   calc
     _ = 2 * (density N f z * gradientDensity N f (z : ℂ)) -
-        2 * lam * density N f z ^ 2 / z.im ^ 2 := by
+        2 * lam * density N f z ^ (2 : ℕ) / z.im ^ (2 : ℕ) := by
       rw [trace_laplacian]
       ring
     _ = _ := by

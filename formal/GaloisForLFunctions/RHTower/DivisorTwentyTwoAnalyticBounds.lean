@@ -20,14 +20,14 @@ private lemma gamma_box : (0.577215:ℝ) ≤ Real.eulerMascheroniConstant ∧
     Real.eulerMascheroniConstant ≤ 0.577216 := by
   have h := harmonic_mascheroni_le_half_sub_twelfth (n:=64) (by norm_num)
   have he : Real.log (64:ℝ)=6*Real.log 2 := by
-    rw [show (64:ℝ)=2^6 by norm_num,Real.log_pow]; norm_num
+    rw [show (64:ℝ)=2^(6 : ℕ) by norm_num,Real.log_pow]; norm_num
   norm_num [harmonic,Finset.sum_range_succ,he] at h
   constructor
   · linarith [Real.log_two_lt_d9]
   · linarith [eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion]
 private lemma ratio_box {x : ℝ} (h0 : 0≤x) (h1 : x<1) :
-    2*(x+x^3/3+x^5/5) ≤ Real.log ((1+x)/(1-x)) ∧
-      Real.log ((1+x)/(1-x)) ≤ 2*(x+x^3/3+x^5/5+x^7/(1-x^2)) := by
+    2*(x+x^(3 : ℕ)/3+x^(5 : ℕ)/5) ≤ Real.log ((1+x)/(1-x)) ∧
+      Real.log ((1+x)/(1-x)) ≤ 2*(x+x^(3 : ℕ)/3+x^(5 : ℕ)/5+x^(7 : ℕ)/(1-x^(2 : ℕ))) := by
   have hl := Real.sum_range_le_log_div h0 h1 3
   have hu := Real.log_div_le_sum_range_add h0 h1 3
   norm_num [Finset.sum_range_succ] at hl hu
@@ -46,15 +46,15 @@ private lemma prime_log_boxes :
   have h19 := ratio_box (x:=(1/39:ℝ)) (by norm_num) (by norm_num)
   norm_num at h7 h11 h13 h17 h19
   have l8 : Real.log (8:ℝ)=3*Real.log 2 := by
-    rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+    rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l10 : Real.log (10:ℝ)=Real.log 2+Real.log 5 := by
     rw [show (10:ℝ)=2*5 by norm_num,Real.log_mul (by norm_num) (by norm_num)]
   have l27 : Real.log (27:ℝ)=3*Real.log 3 := by
-    rw [show (27:ℝ)=3^3 by norm_num,Real.log_pow]; norm_num
+    rw [show (27:ℝ)=3^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l26 : Real.log (26:ℝ)=Real.log 2+Real.log 13 := by
     rw [show (26:ℝ)=2*13 by norm_num,Real.log_mul (by norm_num) (by norm_num)]
   have l16 : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]; norm_num
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l20 : Real.log (20:ℝ)=2*Real.log 2+Real.log 5 := by
     rw [show (20:ℝ)=4*5 by norm_num,Real.log_mul (by norm_num) (by norm_num),Real.log_four_eq]
   rw [Real.log_div (by norm_num) (by norm_num),l8] at h7
@@ -332,8 +332,8 @@ private lemma witness_boxes :
 private def active : Finset ℕ := {1,2,3,5,6,7,10,11,13,14,15,17,19,21}
 set_option maxHeartbeats 3000000 in
 private lemma initial_unsigned_box :
-    (0.550:ℝ) ≤ ∑ d∈active,(divisorUnsignedDilationChannel 22 d)^2 ∧
-      (∑ d∈active,(divisorUnsignedDilationChannel 22 d)^2) ≤ 0.553 := by
+    (0.550:ℝ) ≤ ∑ d∈active,(divisorUnsignedDilationChannel 22 d)^(2 : ℕ) ∧
+      (∑ d∈active,(divisorUnsignedDilationChannel 22 d)^(2 : ℕ)) ≤ 0.553 := by
   have hl (d : ℕ) (hd : d∈active) : 0≤channelLower d := by
     simp only [active,mem_insert,mem_singleton] at hd
     rcases hd with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl
@@ -351,11 +351,11 @@ private lemma initial_unsigned_box :
       (divisorUnsignedDilationChannel_nonneg 22 d)
       ((divisorUnsignedDilationChannel_nonneg 22 d).trans (channel_box (hpos d hd)).2))
   simp only [← pow_two] at hlo hhi
-  have hlow : (0.550:ℝ) ≤ ∑ d∈active,(channelLower d)^2 := by
+  have hlow : (0.550:ℝ) ≤ ∑ d∈active,(channelLower d)^(2 : ℕ) := by
     norm_num [active,channelLower,Finset.sum_Icc_succ_top]
     norm_num [termLower,weightLower,weightUpper,defectLower,
       logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
-  have hupp : (∑ d∈active,(channelUpper d)^2) ≤ (0.553:ℝ) := by
+  have hupp : (∑ d∈active,(channelUpper d)^(2 : ℕ)) ≤ (0.553:ℝ) := by
     norm_num [active,channelUpper,Finset.sum_Icc_succ_top]
     norm_num [termUpper,weightLower,weightUpper,defectUpper,
       logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top]
@@ -383,9 +383,9 @@ theorem divisorUnsignedDilationChannel_twentyTwo_profile_boxes :
 strict rational enclosure, derived solely from the actual analytic source. -/
 theorem sum_divisorUnsignedDilationChannel_twentyTwo_sq_bounds :
     (0.550:ℝ) ≤ ∑ d∈({1,2,3,5,6,7,10,11,13,14,15,17,19,21}:Finset ℕ),
-      (divisorUnsignedDilationChannel 22 d)^2 ∧
+      (divisorUnsignedDilationChannel 22 d)^(2 : ℕ) ∧
     (∑ d∈({1,2,3,5,6,7,10,11,13,14,15,17,19,21}:Finset ℕ),
-      (divisorUnsignedDilationChannel 22 d)^2) ≤ 0.553 := initial_unsigned_box
+      (divisorUnsignedDilationChannel 22 d)^(2 : ℕ)) ≤ 0.553 := initial_unsigned_box
 end RHTower
 namespace RHTower
 
@@ -446,9 +446,9 @@ set_option maxHeartbeats 3000000 in
 /-- The actual original diagonal at seventeen has a strict analytic enclosure. -/
 theorem sum_divisorUnsignedDilationChannel_seventeen_sq_bounds :
     (0.360:ℝ) ≤ ∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),
-      (divisorUnsignedDilationChannel 17 d)^2 ∧
+      (divisorUnsignedDilationChannel 17 d)^(2 : ℕ) ∧
     (∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),
-      (divisorUnsignedDilationChannel 17 d)^2) ≤ 0.365 := by
+      (divisorUnsignedDilationChannel 17 d)^(2 : ℕ)) ≤ 0.365 := by
   let active : Finset ℕ := {1,2,3,5,6,7,10,11,13,14,15}
   have hpos (d : ℕ) (hd : d∈active) : 1≤d := by
     simp only [active,mem_insert,mem_singleton] at hd
@@ -466,11 +466,11 @@ theorem sum_divisorUnsignedDilationChannel_seventeen_sq_bounds :
     mul_le_mul (seventeen_channel_box (hpos d hd)).2 (seventeen_channel_box (hpos d hd)).2
       (divisorUnsignedDilationChannel_nonneg 17 d)
       ((divisorUnsignedDilationChannel_nonneg 17 d).trans (seventeen_channel_box (hpos d hd)).2))
-  have hlow : (0.360:ℝ) ≤ ∑ d∈active,(seventeenLower d)^2 := by
+  have hlow : (0.360:ℝ) ≤ ∑ d∈active,(seventeenLower d)^(2 : ℕ) := by
     norm_num [active,seventeenLower,Finset.sum_Icc_succ_top]
     norm_num [termLower,weightLower,weightUpper,defectLower,
       logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
-  have hupp : (∑ d∈active,(seventeenUpper d)^2) ≤ (0.365:ℝ) := by
+  have hupp : (∑ d∈active,(seventeenUpper d)^(2 : ℕ)) ≤ (0.365:ℝ) := by
     norm_num [active,seventeenUpper,Finset.sum_Icc_succ_top]
     norm_num [termUpper,weightLower,weightUpper,defectUpper,
       logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top]
@@ -551,7 +551,7 @@ private lemma log_twentyThree_box : (3.135493:ℝ) ≤ Real.log 23 ∧ Real.log 
   norm_num at h
   have he : Real.log (24:ℝ)=3*Real.log 2+Real.log 3 := by
     rw [show (24:ℝ)=8*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),
-      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num]
+      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num]
   rw [Real.log_div (by norm_num) (by norm_num),he] at h
   constructor <;> linarith [Real.log_two_gt_d9,Real.log_two_lt_d9,Real.log_three_gt_d9,Real.log_three_lt_d9]
 
@@ -563,7 +563,7 @@ private lemma log_box_twentyFour {n : ℕ} (hn : n∈Icc 1 24) :
     rw [show (22:ℝ)=2*11 by norm_num,Real.log_mul (by norm_num) (by norm_num)]
   have he24 : Real.log (24:ℝ)=3*Real.log 2+Real.log 3 := by
     rw [show (24:ℝ)=8*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),
-      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num]
+      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num]
   have h11 := prime_log_boxes.2.1
   have h23 := log_twentyThree_box
   have hlo : 22 ≤ n := by omega
@@ -675,7 +675,7 @@ set_option maxHeartbeats 3000000 in
 /-- A squarefree source subdiagonal already supplies four fifths of energy at cutoff twenty-five. -/
 theorem sum_divisorUnsignedDilationChannel_twentyFive_sq_lower :
     (0.8:ℝ) ≤ ∑ d∈({1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23}:Finset ℕ),
-      (divisorUnsignedDilationChannel 25 d)^2 := by
+      (divisorUnsignedDilationChannel 25 d)^(2 : ℕ) := by
   let active : Finset ℕ := {1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23}
   have hpos (d : ℕ) (hd : d∈active) : 1 ≤ d := by
     simp only [active,mem_insert,mem_singleton] at hd
@@ -689,7 +689,7 @@ theorem sum_divisorUnsignedDilationChannel_twentyFive_sq_lower :
   have hlo := sum_le_sum (fun d (hd : d∈active) =>
     mul_le_mul (twentyFive_channel_box (hpos d hd)).1 (twentyFive_channel_box (hpos d hd)).1
       (hl d hd) ((hl d hd).trans (twentyFive_channel_box (hpos d hd)).1))
-  have hlower : (0.8:ℝ) ≤ ∑ d∈active,(twentyFiveLower d)^2 := by
+  have hlower : (0.8:ℝ) ≤ ∑ d∈active,(twentyFiveLower d)^(2 : ℕ) := by
     norm_num [active,twentyFiveLower,Finset.sum_Icc_succ_top]
     norm_num [termLower,weightLower,weightUpper,defectLower,
       logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]

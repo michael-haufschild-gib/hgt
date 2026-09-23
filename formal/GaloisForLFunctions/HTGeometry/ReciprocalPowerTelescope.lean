@@ -43,18 +43,18 @@ theorem norm_pow_sub_pow_le_of_sub_eq_mul {a b : ℂ} (hab : a - b = a * b) (hba
           exact hstep
       _ = j * ‖a‖ ^ (j - 1) := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-  have hab' : ‖a * b‖ ≤ ‖a‖ ^ 2 := by
+  have hab' : ‖a * b‖ ≤ ‖a‖ ^ (2 : ℕ) := by
     rw [norm_mul, sq]
     exact mul_le_mul_of_nonneg_left hba (norm_nonneg _)
   have hnn : (0 : ℝ) ≤ ‖∑ i ∈ Finset.range j, a ^ i * b ^ (j - 1 - i)‖ := norm_nonneg _
   calc ‖∑ i ∈ Finset.range j, a ^ i * b ^ (j - 1 - i)‖ * ‖a * b‖
-      ≤ (j * ‖a‖ ^ (j - 1)) * ‖a‖ ^ 2 := by
+      ≤ (j * ‖a‖ ^ (j - 1)) * ‖a‖ ^ (2 : ℕ) := by
         refine mul_le_mul hsum hab' (norm_nonneg _) ?_
         positivity
     _ ≤ j * ‖a‖ ^ (j + 1) := by
         rcases Nat.eq_zero_or_pos j with rfl | hj
         · simp
-        · have hexp : ‖a‖ ^ (j - 1) * ‖a‖ ^ 2 = ‖a‖ ^ (j + 1) := by
+        · have hexp : ‖a‖ ^ (j - 1) * ‖a‖ ^ (2 : ℕ) = ‖a‖ ^ (j + 1) := by
             rw [← pow_add]
             congr 1
             omega

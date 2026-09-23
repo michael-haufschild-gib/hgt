@@ -13,7 +13,7 @@ before completing over primes gives the multiplier
 
 where `q = exp(-x log p)` is the true aperture node.  Its fourth power is
 
-`(1 + q)^4 / (8 * (1 + q^4))`.
+`(1 + q)^(4 : ℕ) / (8 * (1 + q^(4 : ℕ)))`.
 
 Consequently it is a strict contraction for every positive aperture, becomes lossless only at
 the zero-aperture boundary, and never kills a prime coordinate.  Its defect has exact quadratic

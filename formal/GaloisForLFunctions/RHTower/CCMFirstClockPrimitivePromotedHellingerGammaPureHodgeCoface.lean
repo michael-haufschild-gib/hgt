@@ -142,7 +142,7 @@ theorem hellingerGammaGaugedModularCoefficient_tendsto_zero
 gauge. -/
 def hellingerGammaGaugedPureHodgeCapacity
     (a : ℝ) (p q : Nat.Primes) (n : ℕ) : ℝ :=
-  hellingerEvenGammaResidueGauge n ^ 2 *
+  hellingerEvenGammaResidueGauge n ^ (2 : ℕ) *
     pureHodgeBalancedGraphCapacity a p q n
 
 theorem hellingerGammaGaugedPureHodgeCapacity_nonneg
@@ -195,23 +195,23 @@ theorem hellingerGammaGaugedPureHodgeCapacity_le_majorant
           (n.factorial : ℝ) := by
   let c : ℝ := |2 * a * (Real.log (p : ℝ) + Real.log (q : ℝ))|
   have hcap := pureHodgeBalancedGraphCapacity_le_absExp a p q n
-  have hfacNat : n.factorial ≤ ((2 * n).factorial) ^ 2 := by
+  have hfacNat : n.factorial ≤ ((2 * n).factorial) ^ (2 : ℕ) := by
     calc
       n.factorial ≤ (2 * n).factorial := Nat.factorial_le (by omega)
-      _ ≤ ((2 * n).factorial) ^ 2 := by
+      _ ≤ ((2 * n).factorial) ^ (2 : ℕ) := by
         rw [pow_two]
         exact Nat.le_mul_of_pos_right _ (Nat.factorial_pos _)
-  have hfac : (n.factorial : ℝ) ≤ ((2 * n).factorial : ℝ) ^ 2 := by
+  have hfac : (n.factorial : ℝ) ≤ ((2 * n).factorial : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast hfacNat
   have hnfac : (0 : ℝ) < n.factorial := by positivity
   have hnum : 0 ≤ 2 * Real.exp (c * ((n : ℝ) + 1)) := by positivity
   calc
     hellingerGammaGaugedPureHodgeCapacity a p q n ≤
-        hellingerEvenGammaResidueGauge n ^ 2 *
+        hellingerEvenGammaResidueGauge n ^ (2 : ℕ) *
           (2 * Real.exp (c * ((n : ℝ) + 1))) := by
       exact mul_le_mul_of_nonneg_left hcap (sq_nonneg _)
     _ = (2 * Real.exp (c * ((n : ℝ) + 1))) /
-          ((2 * n).factorial : ℝ) ^ 2 := by
+          ((2 * n).factorial : ℝ) ^ (2 : ℕ) := by
       simp only [hellingerEvenGammaResidueGauge, inv_pow, div_eq_mul_inv]
       ring
     _ ≤ (2 * Real.exp (c * ((n : ℝ) + 1))) /
@@ -249,13 +249,13 @@ The factor `2` from its two opposite coordinates has already been
 simplified into the displayed quotient. -/
 def hellingerGammaGaugedOddCoefficientCapacity
     (a : ℝ) (p q : Nat.Primes) (n : ℕ) : ℝ :=
-  hellingerEvenGammaResidueGauge n ^ 2 *
+  hellingerEvenGammaResidueGauge n ^ (2 : ℕ) *
     ((Real.exp
         (a * (xiGammaEulerPrimitiveModularRate (p, n) +
           xiGammaEulerPrimitiveModularRate (q, n))) -
       Real.exp
         (-a * (xiGammaEulerPrimitiveModularRate (p, n) +
-          xiGammaEulerPrimitiveModularRate (q, n)))) ^ 2 / 2)
+          xiGammaEulerPrimitiveModularRate (q, n)))) ^ (2 : ℕ) / 2)
 
 theorem hellingerGammaGaugedOddCoefficientCapacity_nonneg
     (a : ℝ) (p q : Nat.Primes) (n : ℕ) :
@@ -275,7 +275,7 @@ theorem hellingerGammaGaugedOddCoefficientCapacity_le
   let y := Real.exp
     (a * (xiGammaEulerPrimitiveModularRate (p, n) +
       xiGammaEulerPrimitiveModularRate (q, n)))
-  have hxy : (y - x) ^ 2 / 2 ≤ x ^ 2 + y ^ 2 := by
+  have hxy : (y - x) ^ (2 : ℕ) / 2 ≤ x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (x + y)]
   unfold hellingerGammaGaugedOddCoefficientCapacity
     hellingerGammaGaugedPureHodgeCapacity

@@ -38,16 +38,16 @@ def besselJ0Deriv (u : ℝ) : ℝ :=
 
 /-- The second derivative of the order-zero Bessel function, as an integral. -/
 def besselJ0SecondDeriv (u : ℝ) : ℝ :=
-  -(1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ 2 * Real.cos (u * Real.sin θ)
+  -(1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ)
 
 theorem continuous_sin_mul_sin (u : ℝ) :
     Continuous fun θ : ℝ => Real.sin θ * Real.sin (u * Real.sin θ) := by fun_prop
 
 theorem continuous_sin_sq_mul_cos (u : ℝ) :
-    Continuous fun θ : ℝ => Real.sin θ ^ 2 * Real.cos (u * Real.sin θ) := by fun_prop
+    Continuous fun θ : ℝ => Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by fun_prop
 
 theorem continuous_cos_sq_mul_cos (u : ℝ) :
-    Continuous fun θ : ℝ => Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by fun_prop
+    Continuous fun θ : ℝ => Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by fun_prop
 
 /-! ## Differentiation under the integral sign -/
 
@@ -96,7 +96,7 @@ theorem hasDerivAt_besselJ0Deriv (u : ℝ) :
   have hmain := intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := volume) (a := (0 : ℝ)) (b := Real.pi) (bound := fun _ : ℝ => (1 : ℝ))
     (F := fun (x : ℝ) (θ : ℝ) => Real.sin θ * Real.sin (x * Real.sin θ))
-    (F' := fun (x : ℝ) (θ : ℝ) => Real.sin θ ^ 2 * Real.cos (x * Real.sin θ))
+    (F' := fun (x : ℝ) (θ : ℝ) => Real.sin θ ^ (2 : ℕ) * Real.cos (x * Real.sin θ))
     (x₀ := u) (s := Set.univ) (by simp)
     (Filter.Eventually.of_forall fun x =>
       ((continuous_sin_mul_sin x).aestronglyMeasurable).restrict)
@@ -104,7 +104,7 @@ theorem hasDerivAt_besselJ0Deriv (u : ℝ) :
     (((continuous_sin_sq_mul_cos u).aestronglyMeasurable).restrict)
     (Filter.Eventually.of_forall fun θ _ x _ => by
       rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg (Real.sin θ))]
-      have h1 : Real.sin θ ^ 2 ≤ 1 := by
+      have h1 : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
         nlinarith [Real.abs_sin_le_one θ, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
       have h2 : |Real.cos (x * Real.sin θ)| ≤ 1 := Real.abs_cos_le_one _
       nlinarith [sq_nonneg (Real.sin θ), abs_nonneg (Real.cos (x * Real.sin θ))])
@@ -114,7 +114,7 @@ theorem hasDerivAt_besselJ0Deriv (u : ℝ) :
         simpa using (hasDerivAt_id x).mul_const (Real.sin θ)
       have h := ((Real.hasDerivAt_sin (x * Real.sin θ)).comp x hinner).const_mul (Real.sin θ)
       have hval : Real.sin θ * (Real.cos (x * Real.sin θ) * Real.sin θ)
-          = Real.sin θ ^ 2 * Real.cos (x * Real.sin θ) := by ring
+          = Real.sin θ ^ (2 : ℕ) * Real.cos (x * Real.sin θ) := by ring
       rw [hval] at h
       exact h)
   have hderiv := hmain.2
@@ -130,7 +130,7 @@ theorem hasDerivAt_besselJ0Deriv (u : ℝ) :
 moment of `sin(u sin θ)` into the `cos²`-weighted cosine integral. -/
 theorem integral_sin_mul_sin_eq (u : ℝ) :
     (∫ θ in (0 : ℝ)..Real.pi, Real.sin θ * Real.sin (u * Real.sin θ))
-      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by
+      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by
   have hf : ∀ x ∈ Set.uIcc (0 : ℝ) Real.pi, HasDerivAt Real.cos (-Real.sin x) x :=
     fun x _ => Real.hasDerivAt_cos x
   have hg : ∀ x ∈ Set.uIcc (0 : ℝ) Real.pi,
@@ -157,7 +157,7 @@ theorem integral_sin_mul_sin_eq (u : ℝ) :
   rw [hbdry] at hibp
   have hleft : (∫ x in (0 : ℝ)..Real.pi,
       Real.cos x * (u * Real.cos x * Real.cos (u * Real.sin x)))
-      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by
+      = u * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by
     rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun θ _ => ?_
     ring
@@ -174,14 +174,14 @@ theorem integral_sin_mul_sin_eq (u : ℝ) :
 /-- The `cos²`-weighted cosine integral is the sum of the second derivative and the value. -/
 theorem besselJ0SecondDeriv_add_besselJ0 (u : ℝ) :
     besselJ0SecondDeriv u + besselJ0 u
-      = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by
+      = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by
   have hsub : (∫ θ in (0 : ℝ)..Real.pi, Real.cos (u * Real.sin θ))
-      - ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ 2 * Real.cos (u * Real.sin θ)
-      = ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by
+      - ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ)
+      = ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by
     rw [← intervalIntegral.integral_sub ((continuous_cos_mul_sin u).intervalIntegrable _ _)
       ((continuous_sin_sq_mul_cos u).intervalIntegrable _ _)]
     refine intervalIntegral.integral_congr fun θ _ => ?_
-    have hpy : Real.cos θ ^ 2 = 1 - Real.sin θ ^ 2 := by
+    have hpy : Real.cos θ ^ (2 : ℕ) = 1 - Real.sin θ ^ (2 : ℕ) := by
       have := Real.sin_sq_add_cos_sq θ
       linarith
     rw [hpy]
@@ -196,7 +196,7 @@ theorem besselJ0_ode {u : ℝ} (hu : u ≠ 0) :
   have hkey := integral_sin_mul_sin_eq u
   have hsum := besselJ0SecondDeriv_add_besselJ0 u
   have hd : besselJ0Deriv u / u
-      = -(1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ 2 * Real.cos (u * Real.sin θ) := by
+      = -(1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.sin θ) := by
     rw [besselJ0Deriv, hkey]
     field_simp
   rw [hd] at *

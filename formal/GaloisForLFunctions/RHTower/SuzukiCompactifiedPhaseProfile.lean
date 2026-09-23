@@ -191,9 +191,9 @@ theorem deriv_suzukiCompactifiedInversePhase_mem
 
 /-! ## Fixed-lattice Donoghue probability holography -/
 
-/-- **`(2)`.**  The Donoghue atom is the Clark atom divided by `1 + x^2`, because the two measures
+/-- **`(2)`.**  The Donoghue atom is the Clark atom divided by `1 + x^(2 : ℕ)`, because the two measures
 differ by exactly that density.  With the Clark atom `2/q(x)` at an even-extension pole this is
-`nu({x}) = 2 / [q(x) (1 + x^2)]`. -/
+`nu({x}) = 2 / [q(x) (1 + x^(2 : ℕ))]`. -/
 theorem suzukiDonoghueAtom_eq {q x muAtom nuAtom : ℝ}
     (hdensity : muAtom = (1 + x ^ 2) * nuAtom) (hmu : muAtom = 2 / q) (hq : q ≠ 0) :
     nuAtom = 2 / (q * (1 + x ^ 2)) := by

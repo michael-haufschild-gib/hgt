@@ -40,7 +40,7 @@ theorem stepAffineMajorant_pos {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (hη 
 /-- **The step majorant dominates the step at every height.** -/
 theorem stepAffineMajorant_sq_ge {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (hη : 0 ≤ η) (hρ : 0 ≤ ρ)
     (hT : 0 ≤ T) (j : ℕ) {V : ℕ → ℝ} (hV0 : 0 ≤ V j) (hVj : V j ≤ ρ * (Q * (1 + η) ^ j)) :
-    V j ^ 2 * ladderStepMVT B₀ Q η T j ≤ (stepAffineMajorant B₀ Q η ρ T j) ^ 2 := by
+    V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η T j ≤ (stepAffineMajorant B₀ Q η ρ T j) ^ (2 : ℕ) := by
   have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
   set N : ℝ := (B₀ : ℝ) / (Q * (1 + η) ^ j) with hN
   have hN0 : (0 : ℝ) ≤ N := div_nonneg (Nat.cast_nonneg _) hbase.le
@@ -49,11 +49,11 @@ theorem stepAffineMajorant_sq_ge {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (h�
   set b : ℝ := Real.sqrt (5 * Real.exp 1 / 2 * N * (N + 1)) with hb
   have ha0 : (0 : ℝ) ≤ a := Real.sqrt_nonneg _
   have hb0 : (0 : ℝ) ≤ b := Real.sqrt_nonneg _
-  have hasq : a ^ 2 = 5 * Real.pi / 2 * T * (N + 1) := by
+  have hasq : a ^ (2 : ℕ) = 5 * Real.pi / 2 * T * (N + 1) := by
     rw [ha, Real.sq_sqrt (by positivity)]
-  have hbsq : b ^ 2 = 5 * Real.exp 1 / 2 * N * (N + 1) := by
+  have hbsq : b ^ (2 : ℕ) = 5 * Real.exp 1 / 2 * N * (N + 1) := by
     rw [hb, Real.sq_sqrt (by positivity)]
-  have hmvt : ladderStepMVT B₀ Q η T j ≤ a ^ 2 + b ^ 2 := by
+  have hmvt : ladderStepMVT B₀ Q η T j ≤ a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     rw [ladderStepMVT, ← hN, hasq, hbsq]
     have hstep : 5 * Real.pi / 2 * T + 5 * Real.exp 1 / 2 * ((⌊N⌋₊ : ℕ) : ℝ)
         ≤ 5 * Real.pi / 2 * T + 5 * Real.exp 1 / 2 * N := by
@@ -67,10 +67,10 @@ theorem stepAffineMajorant_sq_ge {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (h�
         + 5 * Real.exp 1 / 2 * ((⌊N⌋₊ : ℕ) : ℝ) := by positivity
     have h2 : (0 : ℝ) ≤ N + 1 := by linarith
     exact mul_nonneg h1 h2
-  have hVsq : V j ^ 2 ≤ (ρ * (Q * (1 + η) ^ j)) ^ 2 := by nlinarith [hVj, hV0]
-  have hsum : a ^ 2 + b ^ 2 ≤ (a + b) ^ 2 := by nlinarith [ha0, hb0]
-  have hchain : V j ^ 2 * ladderStepMVT B₀ Q η T j
-      ≤ (ρ * (Q * (1 + η) ^ j)) ^ 2 * (a + b) ^ 2 :=
+  have hVsq : V j ^ (2 : ℕ) ≤ (ρ * (Q * (1 + η) ^ j)) ^ (2 : ℕ) := by nlinarith [hVj, hV0]
+  have hsum : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≤ (a + b) ^ (2 : ℕ) := by nlinarith [ha0, hb0]
+  have hchain : V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η T j
+      ≤ (ρ * (Q * (1 + η) ^ j)) ^ (2 : ℕ) * (a + b) ^ (2 : ℕ) :=
     mul_le_mul hVsq (le_trans hmvt hsum) hmvt0 (by positivity)
   refine hchain.trans (le_of_eq ?_)
   rw [stepAffineMajorant, ← hN, ← ha, ← hb, mul_pow]
@@ -79,14 +79,14 @@ theorem stepAffineMajorant_sq_ge {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (h�
 /-- **The single sum of the step majorants is affine in the height.** -/
 theorem sum_stepAffineMajorant_sq_le {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q) (hη : 0 ≤ η)
     (hT : 0 ≤ T) (L : ℕ) :
-    (∑ j ∈ Finset.range L, stepAffineMajorant B₀ Q η ρ T j) ^ 2
-      ≤ 2 * (5 * Real.pi / 2 * T) * ρ ^ 2
+    (∑ j ∈ Finset.range L, stepAffineMajorant B₀ Q η ρ T j) ^ (2 : ℕ)
+      ≤ 2 * (5 * Real.pi / 2 * T) * ρ ^ (2 : ℕ)
           * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
-              * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ 2
-        + 2 * (5 * Real.exp 1 / 2) * ρ ^ 2
+              * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ (2 : ℕ)
+        + 2 * (5 * Real.exp 1 / 2) * ρ ^ (2 : ℕ)
           * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
               * Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j))
-                  * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ 2 := by
+                  * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ (2 : ℕ) := by
   classical
   set S₁ : ℝ := ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
       * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) with hS₁
@@ -111,9 +111,9 @@ theorem sum_stepAffineMajorant_sq_le {B₀ : ℕ} {Q η ρ T : ℝ} (hQ : 0 < Q)
     rw [stepAffineMajorant, h1, h2]
     ring
   rw [hsplit]
-  have hsq1 : (ρ * Real.sqrt (5 * Real.pi / 2 * T)) ^ 2 = ρ ^ 2 * (5 * Real.pi / 2 * T) := by
+  have hsq1 : (ρ * Real.sqrt (5 * Real.pi / 2 * T)) ^ (2 : ℕ) = ρ ^ (2 : ℕ) * (5 * Real.pi / 2 * T) := by
     rw [mul_pow, Real.sq_sqrt (by positivity)]
-  have hsq2 : (ρ * Real.sqrt (5 * Real.exp 1 / 2)) ^ 2 = ρ ^ 2 * (5 * Real.exp 1 / 2) := by
+  have hsq2 : (ρ * Real.sqrt (5 * Real.exp 1 / 2)) ^ (2 : ℕ) = ρ ^ (2 : ℕ) * (5 * Real.exp 1 / 2) := by
     rw [mul_pow, Real.sq_sqrt (by positivity)]
   nlinarith [sq_nonneg (ρ * Real.sqrt (5 * Real.pi / 2 * T) * S₁
       - ρ * Real.sqrt (5 * Real.exp 1 / 2) * S₂), hsq1, hsq2, sq_nonneg S₁, sq_nonneg S₂]

@@ -163,7 +163,7 @@ theorem exists_polynomialOuterization_sqrt {p : ℂ[X]} (hp : p ≠ 0)
     (hunit : ∀ a ∈ p.roots, ‖a‖ ≠ 1) :
     ∃ R : ℝ, 1 < R ∧ ∃ s : ℂ → ℂ,
       DifferentiableOn ℂ s (Metric.ball 0 R) ∧
-      ∀ z ∈ Metric.ball (0 : ℂ) R, s z ^ 2 = polynomialOuterization p z := by
+      ∀ z ∈ Metric.ball (0 : ℂ) R, s z ^ (2 : ℕ) = polynomialOuterization p z := by
   let U : Set ℂ := polynomialOuterization p ⁻¹' ({0} : Set ℂ)ᶜ
   have hUopen : IsOpen U :=
     isClosed_singleton.isOpen_compl.preimage (differentiable_polynomialOuterization p).continuous
@@ -193,8 +193,8 @@ theorem exists_polynomialOuterization_sqrt_boundary_norm {p : ℂ[X]} (hp : p �
     (hunit : ∀ a ∈ p.roots, ‖a‖ ≠ 1) :
     ∃ R : ℝ, 1 < R ∧ ∃ s : ℂ → ℂ,
       DifferentiableOn ℂ s (Metric.ball 0 R) ∧
-      (∀ z ∈ Metric.ball (0 : ℂ) R, s z ^ 2 = polynomialOuterization p z) ∧
-      ∀ z : ℂ, ‖z‖ = 1 → ‖s z‖ ^ 2 = ‖p.eval z‖ := by
+      (∀ z ∈ Metric.ball (0 : ℂ) R, s z ^ (2 : ℕ) = polynomialOuterization p z) ∧
+      ∀ z : ℂ, ‖z‖ = 1 → ‖s z‖ ^ (2 : ℕ) = ‖p.eval z‖ := by
   obtain ⟨R, hR, s, hs, hsq⟩ := exists_polynomialOuterization_sqrt hp hunit
   refine ⟨R, hR, s, hs, hsq, ?_⟩
   intro z hz
@@ -238,9 +238,9 @@ theorem exists_polynomial_hardy_factorization_open {p : ℂ[X]} (hp : p ≠ 0) :
       DifferentiableOn ℂ h (Metric.ball 0 1) ∧
       (∀ z ∈ Metric.ball (0 : ℂ) 1, g z * h z = p.eval z) ∧
       (∀ z ∈ Metric.ball (0 : ℂ) 1,
-        ‖h z‖ ^ 2 = ‖polynomialOuterization p z‖) ∧
+        ‖h z‖ ^ (2 : ℕ) = ‖polynomialOuterization p z‖) ∧
       ∀ z ∈ Metric.ball (0 : ℂ) 1,
-        ‖g z‖ ^ 2 = ‖polynomialBlaschke p z‖ ^ 2 *
+        ‖g z‖ ^ (2 : ℕ) = ‖polynomialBlaschke p z‖ ^ (2 : ℕ) *
           ‖polynomialOuterization p z‖ := by
   obtain ⟨s, hs, hsq⟩ := exists_sqrt_of_ne_zero
     ((differentiable_polynomialOuterization p).differentiableOn)
@@ -279,7 +279,7 @@ theorem exists_polynomial_hardy_factorization {p : ℂ[X]} (hp : p ≠ 0)
       DifferentiableOn ℂ h (Metric.ball 0 1) ∧
       (∀ z ∈ Metric.ball (0 : ℂ) 1, g z * h z = p.eval z) ∧
       ∀ z : ℂ, ‖z‖ = 1 →
-        ‖g z‖ ^ 2 = ‖p.eval z‖ ∧ ‖h z‖ ^ 2 = ‖p.eval z‖ := by
+        ‖g z‖ ^ (2 : ℕ) = ‖p.eval z‖ ∧ ‖h z‖ ^ (2 : ℕ) = ‖p.eval z‖ := by
   obtain ⟨R, hR, s, hs, hsq, hsnorm⟩ :=
     exists_polynomialOuterization_sqrt_boundary_norm hp hunit
   let g : ℂ → ℂ := fun z => polynomialBlaschke p z * s z

@@ -87,7 +87,7 @@ theorem finiteOperatorFamilyClass_ne_zero_iff_exists_localWitness
 
 /-- Sum of squared local-output norms. -/
 def finiteOperatorFamilyHasseEnergy (A : J → X →ₗ[ℂ] X) (x : X) : ℝ :=
-  ∑ j, ‖A j x‖ ^ 2
+  ∑ j, ‖A j x‖ ^ (2 : ℕ)
 
 omit [FiniteDimensional ℂ X] in
 theorem finiteOperatorFamilyHasseEnergy_nonneg

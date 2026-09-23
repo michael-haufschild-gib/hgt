@@ -25,11 +25,11 @@ theorem norm_one_sub_exp_mul_I (φ : ℝ) :
   have hexp : Complex.exp ((φ : ℂ) * Complex.I)
       = (Real.cos φ : ℂ) + (Real.sin φ : ℂ) * Complex.I := by
     rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-  have hcos : Real.cos φ = 1 - 2 * Real.sin (φ / 2) ^ 2 := by
+  have hcos : Real.cos φ = 1 - 2 * Real.sin (φ / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul' (φ / 2)
     rw [show 2 * (φ / 2) = φ by ring] at h
     nlinarith [Real.sin_sq_add_cos_sq (φ / 2), h]
-  have hsq : ‖1 - Complex.exp ((φ : ℂ) * Complex.I)‖ ^ 2 = (2 * |Real.sin (φ / 2)|) ^ 2 := by
+  have hsq : ‖1 - Complex.exp ((φ : ℂ) * Complex.I)‖ ^ (2 : ℕ) = (2 * |Real.sin (φ / 2)|) ^ (2 : ℕ) := by
     rw [hexp, ← Complex.normSq_eq_norm_sq]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.one_re,
       Complex.one_im, Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,

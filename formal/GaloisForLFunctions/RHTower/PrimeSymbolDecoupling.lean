@@ -53,12 +53,12 @@ namespace RHTower
 
 /-- Local factor of the prime symbol at a prime with `x = p^{-1/2}`, written in the variable
 `c = cos θ`: the closed form of `Σ_{k≥1} x^k cos(kθ)`. -/
-def primeLocalSymbol (x c : ℝ) : ℝ := (x * c - x ^ 2) / (1 - 2 * x * c + x ^ 2)
+def primeLocalSymbol (x c : ℝ) : ℝ := (x * c - x ^ (2 : ℕ)) / (1 - 2 * x * c + x ^ (2 : ℕ))
 
 theorem primeLocalSymbol_denom_pos {x c : ℝ} (hx : 0 < x) (hx1 : x < 1) (hc : |c| ≤ 1) :
-    0 < 1 - 2 * x * c + x ^ 2 := by
+    0 < 1 - 2 * x * c + x ^ (2 : ℕ) := by
   have hc1 : c ≤ 1 := (abs_le.mp hc).2
-  have hsq : 0 < (1 - x) ^ 2 := by nlinarith
+  have hsq : 0 < (1 - x) ^ (2 : ℕ) := by nlinarith
   nlinarith [hsq, hx.le]
 
 /-- At `θ = 0` the local factor attains `x/(1-x)`. -/
@@ -66,8 +66,8 @@ theorem primeLocalSymbol_one {x : ℝ} (hx : 0 < x) (hx1 : x < 1) :
     primeLocalSymbol x 1 = x / (1 - x) := by
   have h1 : (1 : ℝ) - x ≠ 0 := by linarith
   unfold primeLocalSymbol
-  rw [show (1 : ℝ) - 2 * x * 1 + x ^ 2 = (1 - x) ^ 2 from by ring,
-    show x * 1 - x ^ 2 = x * (1 - x) from by ring]
+  rw [show (1 : ℝ) - 2 * x * 1 + x ^ (2 : ℕ) = (1 - x) ^ (2 : ℕ) from by ring,
+    show x * 1 - x ^ (2 : ℕ) = x * (1 - x) from by ring]
   field_simp
 
 /-- At `θ = π` the local factor attains `-x/(1+x)`. -/
@@ -75,8 +75,8 @@ theorem primeLocalSymbol_neg_one {x : ℝ} (hx : 0 < x) (hx1 : x < 1) :
     primeLocalSymbol x (-1) = -(x / (1 + x)) := by
   have h1 : (1 : ℝ) + x ≠ 0 := by linarith
   unfold primeLocalSymbol
-  rw [show (1 : ℝ) - 2 * x * (-1) + x ^ 2 = (1 + x) ^ 2 from by ring,
-    show x * (-1) - x ^ 2 = -(x * (1 + x)) from by ring]
+  rw [show (1 : ℝ) - 2 * x * (-1) + x ^ (2 : ℕ) = (1 + x) ^ (2 : ℕ) from by ring,
+    show x * (-1) - x ^ (2 : ℕ) = -(x * (1 + x)) from by ring]
   field_simp
 
 /-- **Monotonicity in `c = cos θ`.**  The local factor is strictly increasing, because its numerator
@@ -88,9 +88,9 @@ theorem primeLocalSymbol_strictMono {x c d : ℝ} (hx : 0 < x) (hx1 : x < 1)
   have hDd := primeLocalSymbol_denom_pos hx hx1 hd
   unfold primeLocalSymbol
   rw [div_lt_div_iff₀ hDc hDd]
-  have hkey : 0 < x * (d - c) * (1 - x ^ 2) := by
+  have hkey : 0 < x * (d - c) * (1 - x ^ (2 : ℕ)) := by
     have h1 : 0 < x * (d - c) := mul_pos hx (sub_pos.mpr hcd)
-    have h2 : (0 : ℝ) < 1 - x ^ 2 := by nlinarith
+    have h2 : (0 : ℝ) < 1 - x ^ (2 : ℕ) := by nlinarith
     exact mul_pos h1 h2
   nlinarith [hkey]
 

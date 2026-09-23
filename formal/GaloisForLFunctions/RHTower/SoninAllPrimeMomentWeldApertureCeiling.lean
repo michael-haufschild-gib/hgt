@@ -181,8 +181,8 @@ theorem tendsto_hsNormSq_centralSoninWeightedPrimePowerResidual_atTop
     exact norm_pos_iff.mpr (soninLogPrimePowerCoefficient_ne_zero pk)
   apply Filter.tendsto_atTop.mpr
   intro b
-  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (b / c ^ 2)
-  have hNc : b < (N : ℝ) * c ^ 2 := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (b / c ^ (2 : ℕ))
+  have hNc : b < (N : ℝ) * c ^ (2 : ℕ) := by
     rw [div_lt_iff₀ (sq_pos_of_pos hc)] at hN
     simpa [mul_comm] using hN
   have hmode : ∀ i : ℕ, ∀ᶠ n in atTop,

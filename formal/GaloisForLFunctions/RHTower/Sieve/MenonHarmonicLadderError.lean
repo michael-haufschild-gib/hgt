@@ -34,8 +34,8 @@ theorem integral_Icc_normSq_sum_logPoly_le_support_bound
     (hK : ∀ n ∈ Finset.Icc 1 N,
       ((I.filter (fun i => n ∈ S i)).card : ℝ) ≤ K)
     (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ 2)
-      ≤ Omega ^ 2 *
+    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ (2 : ℕ))
+      ≤ Omega ^ (2 : ℕ) *
           ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
             (K * ∑ i ∈ I, ((S i).card : ℝ))) := by
   classical
@@ -62,8 +62,8 @@ theorem integral_Icc_normSq_sum_logPoly_le_support_bound
     simp only [b, hi, hn, and_self, if_true]
     ring
   have hrep : ∀ w : ℝ,
-      ‖∑ i ∈ I, logPoly (b i) (S i) w‖ ^ 2 =
-        ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ 2 / Omega ^ 2 := by
+      ‖∑ i ∈ I, logPoly (b i) (S i) w‖ ^ (2 : ℕ) =
+        ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ (2 : ℕ) / Omega ^ (2 : ℕ) := by
     intro w
     have hsum : (∑ i ∈ I, logPoly (b i) (S i) w) =
         (∑ i ∈ I, logPoly (a i) (S i) w) / (Omega : ℂ) := by
@@ -71,9 +71,9 @@ theorem integral_Icc_normSq_sum_logPoly_le_support_bound
       exact Finset.sum_congr rfl fun i hi => hpoly i hi w
     rw [hsum, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hOmega, div_pow]
   have hint :
-      (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (b i) (S i) w‖ ^ 2) =
-        (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ 2) /
-          Omega ^ 2 := by
+      (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (b i) (S i) w‖ ^ (2 : ℕ)) =
+        (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ (2 : ℕ)) /
+          Omega ^ (2 : ℕ) := by
     rw [← MeasureTheory.integral_div]
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hrep w
   rw [hint, div_le_iff₀ (by positivity)] at hbase
@@ -212,13 +212,13 @@ theorem harmonicLadderProductPoly_sub_harmonicRamareBilinear_eq
 /-- Explicit harmonic global-defect budget. -/
 def menonHarmonicLadderErrorBudget
     (A₀ B₀ : ℕ) (Q eta W : ℝ) (L : ℕ) : ℝ :=
-  ((1 + eta) / (A₀ : ℝ)) ^ 2 *
+  ((1 + eta) / (A₀ : ℝ)) ^ (2 : ℕ) *
     ((5 * Real.pi / 2 * W +
         5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ)) *
       (Real.log ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ) / Real.log Q *
         ∑ j ∈ Finset.range L, (Q * (1 + eta) ^ j * eta + 1) *
           (((A₀ : ℝ) + (B₀ : ℝ)) * eta / (Q * (1 + eta) ^ j) + 5 +
-            (B₀ : ℝ) / (Q * (1 + eta) ^ j) ^ 2)))
+            (B₀ : ℝ) / (Q * (1 + eta) ^ j) ^ (2 : ℕ))))
 
 /-- Reciprocal coefficient bound on every shifted gap support. -/
 theorem norm_harmonicPrimeShiftCoeff_ladderGap_le
@@ -291,13 +291,13 @@ theorem norm_harmonicPrimeShiftCoeff_ladderGap_le
     show (0 : ℝ) ≤ (1 + eta) / (A₀ : ℝ) by positivity]
 
 /-- Mean square of the global harmonic support defect.  One overlap count and one gap budget are
-paid, while the dyadic harmonic normalization contributes `((1 + eta) / A₀)^2`. -/
+paid, while the dyadic harmonic normalization contributes `((1 + eta) / A₀)^(2 : ℕ)`. -/
 theorem integral_Icc_normSq_harmonicLadderProductDefect_le_closed
     {P : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0 < A₀)
     {Q eta W : ℝ} (hQ : 1 < Q) (heta : 0 ≤ eta) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (hPge : ∀ p ∈ P, Q ≤ (p : ℝ)) :
     (∫ w in Set.Icc (-W) W,
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) ≤
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) ≤
         menonHarmonicLadderErrorBudget A₀ B₀ Q eta W L := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
@@ -355,11 +355,11 @@ theorem integral_Icc_normSq_harmonicLadderProductDefect_le_closed
       (harmonicRamareCofactorCoeff P) (hDpos x hx) w
   have hcongr :
       (∫ w in Set.Icc (-W) W,
-        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) =
+        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) =
       ∫ w in Set.Icc (-W) W,
         ‖∑ x ∈ ladderIndex P Q eta L,
           logPoly (harmonicPrimeShiftCoeff x.2 (harmonicRamareCofactorCoeff P))
-            ((ladderGapSetAt A₀ B₀ Q eta x).image (fun m => x.2 * m)) w‖ ^ 2 := by
+            ((ladderGapSetAt A₀ B₀ Q eta x).image (fun m => x.2 * m)) w‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => by rw [hrep w]
   rw [hcongr]
   have hmain := integral_Icc_normSq_sum_logPoly_le_support_bound
@@ -389,7 +389,7 @@ theorem integral_Icc_normSq_harmonicLadderProductDefect_le_closed
   dsimp only [Omega, K, N] at hmain ⊢
   have hmean0 : 0 ≤ 5 * Real.pi / 2 * W +
       5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ) := by positivity
-  have hscale0 : 0 ≤ ((1 + eta) / (A₀ : ℝ)) ^ 2 := sq_nonneg _
+  have hscale0 : 0 ≤ ((1 + eta) / (A₀ : ℝ)) ^ (2 : ℕ) := sq_nonneg _
   have hKnonneg : 0 ≤ Real.log ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ) /
       Real.log Q := div_nonneg (Real.log_natCast_nonneg _) hlogQ.le
   have hgapK := mul_le_mul_of_nonneg_left hgap hKnonneg
@@ -405,21 +405,21 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ladder_error
     (hPprime : ∀ q ∈ P, q.Prime)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + eta) ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (∫ w in E,
           ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
             logPoly (harmonicRamareCofactorCoeff P)
-              (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2) +
-      2 * ∫ w in E, ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+              (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)) +
+      2 * ∫ w in E, ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
   classical
   set F : ℕ → ℝ → ℂ := fun j w =>
     harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
       logPoly (harmonicRamareCofactorCoeff P) (geomCofactorBlockAt A₀ B₀ Q eta j) w
-  have hcontF : ∀ j : ℕ, Continuous fun w : ℝ => ‖F j w‖ ^ 2 := fun j =>
+  have hcontF : ∀ j : ℕ, Continuous fun w : ℝ => ‖F j w‖ ^ (2 : ℕ) := fun j =>
     (((continuous_harmonicPrimeBlockPoly _).mul (continuous_logPoly _ _)).norm).pow 2
   have hcontD : Continuous fun w : ℝ =>
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 :=
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) :=
     (continuous_harmonicLadderProductDefect P A₀ B₀ Q eta L).norm.pow 2
   have hdec : ∀ w : ℝ, harmonicRamareBilinear P (Finset.Icc A₀ B₀) w =
       (∑ j ∈ Finset.range L, F j w) +
@@ -431,17 +431,17 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ladder_error
     rw [← harmonicLadderProductPoly]
     linear_combination -h
   have hpt : ∀ w : ℝ,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 ≤
-        2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2) +
-          2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) ≤
+        2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ)) +
+          2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
     intro w
     rw [hdec w]
-    have hsum : ‖∑ j ∈ Finset.range L, F j w‖ ^ 2 ≤
-        (L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2 := by
+    have hsum : ‖∑ j ∈ Finset.range L, F j w‖ ^ (2 : ℕ) ≤
+        (L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ) := by
       have h1 : ‖∑ j ∈ Finset.range L, F j w‖ ≤
           ∑ j ∈ Finset.range L, ‖F j w‖ := norm_sum_le _ _
-      have h2 : (∑ j ∈ Finset.range L, ‖F j w‖) ^ 2 ≤
-          ((Finset.range L).card : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2 :=
+      have h2 : (∑ j ∈ Finset.range L, ‖F j w‖) ^ (2 : ℕ) ≤
+          ((Finset.range L).card : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ) :=
         sq_sum_le_card_mul_sum_sq
       rw [Finset.card_range] at h2
       exact (pow_le_pow_left₀ (norm_nonneg _) h1 2).trans h2
@@ -453,30 +453,30 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ladder_error
       sq_nonneg (‖∑ j ∈ Finset.range L, F j w‖ -
         ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖)]
   have hcontZ : Continuous fun w : ℝ =>
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 := by
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) := by
     refine (continuous_finsetSum P fun p _ => ?_).norm.pow 2
     exact (((continuous_moebiusPhase p).div_const _).mul (continuous_logPoly _ _))
   have hcontR : Continuous fun w : ℝ =>
-      2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2) +
-        2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 :=
+      2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ)) +
+        2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) :=
     (((continuous_finsetSum _ fun j _ => hcontF j).const_mul _).const_mul 2).add
       (hcontD.const_mul 2)
   have hintZ : IntegrableOn (fun w : ℝ =>
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) E volume :=
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) E volume :=
     (hcontZ.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hintR : IntegrableOn (fun w : ℝ =>
-      2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2) +
-        2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) E volume :=
+      2 * ((L : ℝ) * ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ)) +
+        2 * ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) E volume :=
     (hcontR.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hintF : ∀ j ∈ Finset.range L,
-      IntegrableOn (fun w : ℝ => ‖F j w‖ ^ 2) E volume := fun j _ =>
+      IntegrableOn (fun w : ℝ => ‖F j w‖ ^ (2 : ℕ)) E volume := fun j _ =>
     ((hcontF j).integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hintSum : IntegrableOn (fun w : ℝ =>
-      ∑ j ∈ Finset.range L, ‖F j w‖ ^ 2) E volume :=
+      ∑ j ∈ Finset.range L, ‖F j w‖ ^ (2 : ℕ)) E volume :=
     ((continuous_finsetSum _ fun j _ => hcontF j).integrableOn_Icc
       (a := -W) (b := W)).mono_set hEs
   have hintD : IntegrableOn (fun w : ℝ =>
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) E volume :=
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) E volume :=
     (hcontD.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hmono := setIntegral_mono_on hintZ hintR hEm (fun w _ => hpt w)
   refine hmono.trans (le_of_eq ?_)
@@ -493,22 +493,22 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ladder_closed
     (hPprime : ∀ q ∈ P, q.Prime)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + eta) ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (∫ w in E,
           ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
             logPoly (harmonicRamareCofactorCoeff P)
-              (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2) +
+              (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)) +
       2 * menonHarmonicLadderErrorBudget A₀ B₀ Q eta W L := by
   have hbase := setIntegral_normSq_harmonicRamareBilinear_le_ladder_error
     (P := P) A₀ B₀ (lt_trans zero_lt_one hQ) heta hL hPprime hP hEm hEs
   have hcont : Continuous fun w : ℝ =>
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 :=
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) :=
     (continuous_harmonicLadderProductDefect P A₀ B₀ Q eta L).norm.pow 2
   have hmono : (∫ w in E,
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) ≤
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) ≤
       ∫ w in Set.Icc (-W) W,
-        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_set
       (hcont.integrableOn_Icc (a := -W) (b := W))
       (Filter.Eventually.of_forall fun _ => by positivity)

@@ -32,7 +32,7 @@ def sourceHorizontalBoseMean (x : ℝ) : ℝ :=
 
 /-- Fisher variance of geometric valuation. -/
 def sourceHorizontalBoseVariance (x : ℝ) : ℝ :=
-  Real.exp x / (1 - Real.exp x) ^ 2
+  Real.exp x / (1 - Real.exp x) ^ (2 : ℕ)
 
 /-- Directed KL chirality of two geometric laws with natural parameters `c+s` and `c-s`. -/
 def sourceHorizontalCenteredGeometricKLChirality (c s : ℝ) : ℝ :=
@@ -61,23 +61,23 @@ theorem sourceHorizontalHasDerivAt_boseMean {x : ℝ} (hx : x < 0) :
   have h := (Real.hasDerivAt_exp x).div
     ((hasDerivAt_const x 1).sub (Real.hasDerivAt_exp x)) hden
   change HasDerivAt (fun y => Real.exp y / (1 - Real.exp y))
-    (Real.exp x / (1 - Real.exp x) ^ 2) x
+    (Real.exp x / (1 - Real.exp x) ^ (2 : ℕ)) x
   refine (h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => rfl)).congr_deriv ?_
   change (Real.exp x * (1 - Real.exp x) - Real.exp x * (0 - Real.exp x)) /
-      (1 - Real.exp x) ^ 2 =
-    Real.exp x / (1 - Real.exp x) ^ 2
+      (1 - Real.exp x) ^ (2 : ℕ) =
+    Real.exp x / (1 - Real.exp x) ^ (2 : ℕ)
   ring
 
 theorem sourceHorizontalHasDerivAt_boseVariance {x : ℝ} (hx : x < 0) :
     HasDerivAt sourceHorizontalBoseVariance
-      (Real.exp x * (1 + Real.exp x) / (1 - Real.exp x) ^ 3) x := by
+      (Real.exp x * (1 + Real.exp x) / (1 - Real.exp x) ^ (3 : ℕ)) x := by
   have hden : 1 - Real.exp x ≠ 0 := by
     have := Real.exp_lt_one_iff.mpr hx
     linarith
   have hbase := (hasDerivAt_const x 1).sub (Real.hasDerivAt_exp x)
   have hsq := hbase.pow 2
   have h := (Real.hasDerivAt_exp x).div hsq (pow_ne_zero 2 hden)
-  change HasDerivAt (fun y => Real.exp y / (1 - Real.exp y) ^ 2) _ x
+  change HasDerivAt (fun y => Real.exp y / (1 - Real.exp y) ^ (2 : ℕ)) _ x
   refine (h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => rfl)).congr_deriv ?_
   simp only [Pi.pow_apply, Pi.sub_apply, Nat.cast_ofNat]
   norm_num
@@ -202,7 +202,7 @@ theorem sourceHorizontalBoseMean_dyadic_split {x : ℝ} (hx : x < 0) :
     sourceHorizontalBoseMean]
   rw [show 2 * x = x + x by ring, Real.exp_add]
   field_simp [hminus, hplus,
-    show 1 - Real.exp x ^ 2 ≠ 0 by nlinarith [Real.exp_pos x]]
+    show 1 - Real.exp x ^ (2 : ℕ) ≠ 0 by nlinarith [Real.exp_pos x]]
   ring
 
 /-- **Exact information-chain split.**  Total geometric chirality is visible Bernoulli parity

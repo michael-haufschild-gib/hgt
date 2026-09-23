@@ -7,10 +7,10 @@ import GaloisForLFunctions.HTGeometry.LogSquaredTailIntegral
 
 The prime-power completion stability `(PFK14)` of
 `xi-physical-prime-log-aperture-fusion-cross-kernel` is dominated by the `r = 2` band
-`∑_{p, p^2 > X} log p / p^2`.  This file provides the reusable prime→integer sub-sum comparison and
+`∑_{p, p^(2 : ℕ) > X} log p / p^(2 : ℕ)`.  This file provides the reusable prime→integer sub-sum comparison and
 its specialization to that band: a finite set of primes all exceeding `N₀` has weight-sum bounded by
 the natural-number tail controlled in `HTGeometry.LogLinearTailIntegral`, giving
-`∑_p log p / p^2 ≤ (log N₀ + 1)/N₀`.  With `N₀ = ⌈√X⌉` this is `≪ log X / √X`, the `(PFK14)` `r=2`
+`∑_p log p / p^(2 : ℕ) ≤ (log N₀ + 1)/N₀`.  With `N₀ = ⌈√X⌉` this is `≪ log X / √X`, the `(PFK14)` `r=2`
 estimate.
 -/
 
@@ -51,21 +51,21 @@ theorem sum_primes_le_tsum_shift {f : ℕ → ℝ} (hf : Summable f) (hf0 : ∀ 
 `∑_p log p/p² ≤ (log N₀ + 1)/N₀`. -/
 theorem sum_primes_logLin_div_sq_le_tail {N₀ : ℕ} (hN₀ : 3 ≤ N₀)
     (P : Finset Nat.Primes) (hP : ∀ p ∈ P, N₀ < (p : ℕ)) :
-    ∑ p ∈ P, Real.log (p : ℕ) / (p : ℕ) ^ 2 ≤ (Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ) := by
+    ∑ p ∈ P, Real.log (p : ℕ) / (p : ℕ) ^ (2 : ℕ) ≤ (Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ) := by
   have hexp : Real.exp 1 ≤ (N₀ : ℝ) := by
     have h1 : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
     have h2 : (3 : ℝ) ≤ (N₀ : ℝ) := by exact_mod_cast hN₀
     linarith
-  have hf0 : ∀ n : ℕ, 0 ≤ Real.log n / n ^ 2 := by
+  have hf0 : ∀ n : ℕ, 0 ≤ Real.log n / n ^ (2 : ℕ) := by
     intro n
     rcases Nat.eq_zero_or_pos n with h | h
     · simp [h]
     · exact div_nonneg (Real.log_nonneg (by exact_mod_cast h)) (by positivity)
-  have hgen := sum_primes_le_tsum_shift (f := fun n => Real.log n / n ^ 2)
+  have hgen := sum_primes_le_tsum_shift (f := fun n => Real.log n / n ^ (2 : ℕ))
     summable_logLin_div_sq hf0 P hP
   refine le_trans hgen ?_
-  have hcast : ∑' i : ℕ, Real.log ((N₀ + 1 + i : ℕ) : ℝ) / ((N₀ + 1 + i : ℕ) : ℝ) ^ 2
-      = ∑' i : ℕ, Real.log ((N₀ : ℝ) + ((i : ℝ) + 1)) / ((N₀ : ℝ) + ((i : ℝ) + 1)) ^ 2 := by
+  have hcast : ∑' i : ℕ, Real.log ((N₀ + 1 + i : ℕ) : ℝ) / ((N₀ + 1 + i : ℕ) : ℝ) ^ (2 : ℕ)
+      = ∑' i : ℕ, Real.log ((N₀ : ℝ) + ((i : ℝ) + 1)) / ((N₀ : ℝ) + ((i : ℝ) + 1)) ^ (2 : ℕ) := by
     apply tsum_congr
     intro i
     have hh : ((N₀ + 1 + i : ℕ) : ℝ) = (N₀ : ℝ) + ((i : ℝ) + 1) := by push_cast; ring
@@ -81,13 +81,13 @@ theorem sum_primes_primePowerTail_le {N₀ : ℕ} (hN₀ : 3 ≤ N₀)
     ∑ p ∈ P, ∑' r : ℕ, Real.log (p : ℕ) / (p : ℕ) ^ (2 + r)
       ≤ 2 * ((Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ)) := by
   have hinner : ∀ p ∈ P, ∑' r : ℕ, Real.log (p : ℕ) / (p : ℕ) ^ (2 + r)
-      ≤ 2 * Real.log (p : ℕ) / (p : ℕ) ^ 2 := by
+      ≤ 2 * Real.log (p : ℕ) / (p : ℕ) ^ (2 : ℕ) := by
     intro p hp
     have hp2 : (2 : ℝ) ≤ (p : ℕ) := by exact_mod_cast p.prop.two_le
     exact tsum_log_div_pow_shift_le hp2 2
   calc ∑ p ∈ P, ∑' r : ℕ, Real.log (p : ℕ) / (p : ℕ) ^ (2 + r)
-      ≤ ∑ p ∈ P, 2 * Real.log (p : ℕ) / (p : ℕ) ^ 2 := Finset.sum_le_sum hinner
-    _ = 2 * ∑ p ∈ P, Real.log (p : ℕ) / (p : ℕ) ^ 2 := by
+      ≤ ∑ p ∈ P, 2 * Real.log (p : ℕ) / (p : ℕ) ^ (2 : ℕ) := Finset.sum_le_sum hinner
+    _ = 2 * ∑ p ∈ P, Real.log (p : ℕ) / (p : ℕ) ^ (2 : ℕ) := by
         rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro p _; ring
     _ ≤ 2 * ((Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ)) :=
         mul_le_mul_of_nonneg_left (sum_primes_logLin_div_sq_le_tail hN₀ P hP) (by norm_num)

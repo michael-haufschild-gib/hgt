@@ -5,11 +5,11 @@ import GaloisForLFunctions.RHTower.FEPairedPrimeJetBarycentricRigidity
 # Functional-equation-paired Vandermonde defects are scalar Schur residuals
 
 Antisymmetric reflection reduces the odd prime-log moments to ordinary moments at the squared nodes
-`(log p)^2`.  The target becomes evaluation at the origin.  This file proves that the first omitted
+`(log p)^(2 : ℕ)`.  The target becomes evaluation at the origin.  This file proves that the first omitted
 FE-paired defect is again the negative scalar Schur complement of a bordered moment matrix.
 
 The algebraic invariant changes under reflection: the one-sided derivation residual is `Q'(0)`,
-whereas the paired residual is `Q(0) = ∏ i, (-(log p_i)^2)`.  Its sign therefore alternates with the
+whereas the paired residual is `Q(0) = ∏ i, (-(log p_i)^(2 : ℕ))`.  Its sign therefore alternates with the
 number of reflected pairs.  Functional-equation symmetry does not turn the finite defect into a
 positive Gram Schur complement.
 -/

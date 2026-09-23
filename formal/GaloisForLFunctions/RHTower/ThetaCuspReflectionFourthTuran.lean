@@ -47,12 +47,12 @@ def thetaCuspAtomLikelihoodRatioJetOne (n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Second ordinary likelihood-ratio jet. -/
 def thetaCuspAtomLikelihoodRatioJetTwo (n : ℕ) (x : ℝ) : ℝ :=
-  (thetaCuspAtomLikelihoodLogJetZero n x ^ 2 +
+  (thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) +
     thetaCuspAtomLikelihoodLogJetOne n x) * thetaCuspAtomLikelihoodRatio n x
 
 /-- Third ordinary likelihood-ratio jet. -/
 def thetaCuspAtomLikelihoodRatioJetThree (n : ℕ) (x : ℝ) : ℝ :=
-  (thetaCuspAtomLikelihoodLogJetZero n x ^ 3 +
+  (thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) +
       3 * thetaCuspAtomLikelihoodLogJetZero n x *
         thetaCuspAtomLikelihoodLogJetOne n x +
       thetaCuspAtomLikelihoodLogJetTwo n x) *
@@ -60,10 +60,10 @@ def thetaCuspAtomLikelihoodRatioJetThree (n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Fourth ordinary likelihood-ratio jet. -/
 def thetaCuspAtomLikelihoodRatioJetFour (n : ℕ) (x : ℝ) : ℝ :=
-  (thetaCuspAtomLikelihoodLogJetZero n x ^ 4 +
-      6 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+  (thetaCuspAtomLikelihoodLogJetZero n x ^ (4 : ℕ) +
+      6 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
         thetaCuspAtomLikelihoodLogJetOne n x +
-      3 * thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
+      3 * thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
       4 * thetaCuspAtomLikelihoodLogJetZero n x *
         thetaCuspAtomLikelihoodLogJetTwo n x +
       thetaCuspAtomLikelihoodLogJetThree n x) *
@@ -192,65 +192,65 @@ theorem iteratedDeriv_four_thetaCuspAtomLikelihoodRatio_eq
 
 theorem thetaCuspMorseScale_eq_logConcavityScale_mul_sq
     (n : ℕ) (x : ℝ) :
-    thetaCuspMorseScale n x = thetaCuspLogConcavityScale x * (n : ℝ) ^ 2 := by
+    thetaCuspMorseScale n x = thetaCuspLogConcavityScale x * (n : ℝ) ^ (2 : ℕ) := by
   unfold thetaCuspMorseScale thetaCuspLogConcavityScale
   ring
 
 theorem scale_div_sub_sq_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
-    T / (T - 3 / 2) ^ 2 < A / (A - 3 / 2) ^ 2 := by
+    T / (T - 3 / 2) ^ (2 : ℕ) < A / (A - 3 / 2) ^ (2 : ℕ) := by
   have hAden : 0 < A - 3 / 2 := by linarith
   have hTden : 0 < T - 3 / 2 := by linarith
   apply (div_lt_div_iff₀ (sq_pos_of_pos hTden) (sq_pos_of_pos hAden)).2
-  have hfactor : 0 < A * T - (3 / 2 : ℝ) ^ 2 := by nlinarith
+  have hfactor : 0 < A * T - (3 / 2 : ℝ) ^ (2 : ℕ) := by nlinarith
   nlinarith [mul_pos (sub_pos.mpr hAT) hfactor]
 
 theorem scale_div_sub_cube_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
-    T / (T - 3 / 2) ^ 3 < A / (A - 3 / 2) ^ 3 := by
+    T / (T - 3 / 2) ^ (3 : ℕ) < A / (A - 3 / 2) ^ (3 : ℕ) := by
   have hAden : 0 < A - 3 / 2 := by linarith
   have hTden : 0 < T - 3 / 2 := by linarith
   have hsq := scale_div_sub_sq_strictAnti hA hAT
   have hinv : (T - 3 / 2)⁻¹ < (A - 3 / 2)⁻¹ :=
     (inv_lt_inv₀ hTden hAden).2 (by linarith)
-  rw [show T / (T - 3 / 2) ^ 3 =
-      (T / (T - 3 / 2) ^ 2) * (T - 3 / 2)⁻¹ by
+  rw [show T / (T - 3 / 2) ^ (3 : ℕ) =
+      (T / (T - 3 / 2) ^ (2 : ℕ)) * (T - 3 / 2)⁻¹ by
     field_simp [hTden.ne'],
-    show A / (A - 3 / 2) ^ 3 =
-      (A / (A - 3 / 2) ^ 2) * (A - 3 / 2)⁻¹ by
+    show A / (A - 3 / 2) ^ (3 : ℕ) =
+      (A / (A - 3 / 2) ^ (2 : ℕ)) * (A - 3 / 2)⁻¹ by
     field_simp [hAden.ne']]
   calc
-    T / (T - 3 / 2) ^ 2 * (T - 3 / 2)⁻¹ <
-        A / (A - 3 / 2) ^ 2 * (T - 3 / 2)⁻¹ :=
+    T / (T - 3 / 2) ^ (2 : ℕ) * (T - 3 / 2)⁻¹ <
+        A / (A - 3 / 2) ^ (2 : ℕ) * (T - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_right hsq (by positivity)
-    _ < A / (A - 3 / 2) ^ 2 * (A - 3 / 2)⁻¹ :=
+    _ < A / (A - 3 / 2) ^ (2 : ℕ) * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv (by positivity)
 
 theorem scale_div_sub_four_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
-    T / (T - 3 / 2) ^ 4 < A / (A - 3 / 2) ^ 4 := by
+    T / (T - 3 / 2) ^ (4 : ℕ) < A / (A - 3 / 2) ^ (4 : ℕ) := by
   have hAden : 0 < A - 3 / 2 := by linarith
   have hTden : 0 < T - 3 / 2 := by linarith
   have hcube := scale_div_sub_cube_strictAnti hA hAT
   have hinv : (T - 3 / 2)⁻¹ < (A - 3 / 2)⁻¹ :=
     (inv_lt_inv₀ hTden hAden).2 (by linarith)
-  rw [show T / (T - 3 / 2) ^ 4 =
-      (T / (T - 3 / 2) ^ 3) * (T - 3 / 2)⁻¹ by
+  rw [show T / (T - 3 / 2) ^ (4 : ℕ) =
+      (T / (T - 3 / 2) ^ (3 : ℕ)) * (T - 3 / 2)⁻¹ by
     field_simp [hTden.ne'],
-    show A / (A - 3 / 2) ^ 4 =
-      (A / (A - 3 / 2) ^ 3) * (A - 3 / 2)⁻¹ by
+    show A / (A - 3 / 2) ^ (4 : ℕ) =
+      (A / (A - 3 / 2) ^ (3 : ℕ)) * (A - 3 / 2)⁻¹ by
     field_simp [hAden.ne']]
   calc
-    T / (T - 3 / 2) ^ 3 * (T - 3 / 2)⁻¹ <
-        A / (A - 3 / 2) ^ 3 * (T - 3 / 2)⁻¹ :=
+    T / (T - 3 / 2) ^ (3 : ℕ) * (T - 3 / 2)⁻¹ <
+        A / (A - 3 / 2) ^ (3 : ℕ) * (T - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_right hcube (by positivity)
-    _ < A / (A - 3 / 2) ^ 3 * (A - 3 / 2)⁻¹ :=
+    _ < A / (A - 3 / 2) ^ (3 : ℕ) * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv (by positivity)
 
 theorem scale_div_sub_sq_lt_four_thirds
     {A : ℝ} (hA : 3 < A) :
-    A / (A - 3 / 2) ^ 2 < (4 / 3 : ℝ) := by
-  have hden : 0 < (A - 3 / 2) ^ 2 := sq_pos_of_pos (by linarith)
+    A / (A - 3 / 2) ^ (2 : ℕ) < (4 / 3 : ℝ) := by
+  have hden : 0 < (A - 3 / 2) ^ (2 : ℕ) := sq_pos_of_pos (by linarith)
   apply (div_lt_iff₀ hden).2
   have hprod : 0 < (A - 3) * (4 * A - 3) :=
     mul_pos (by linarith) (by linarith)
@@ -258,26 +258,26 @@ theorem scale_div_sub_sq_lt_four_thirds
 
 theorem scale_div_sub_cube_lt_eight_ninths
     {A : ℝ} (hA : 3 < A) :
-    A / (A - 3 / 2) ^ 3 < (8 / 9 : ℝ) := by
-  have hden : 0 < (A - 3 / 2) ^ 3 := pow_pos (by linarith) 3
+    A / (A - 3 / 2) ^ (3 : ℕ) < (8 / 9 : ℝ) := by
+  have hden : 0 < (A - 3 / 2) ^ (3 : ℕ) := pow_pos (by linarith) 3
   apply (div_lt_iff₀ hden).2
   let y := A - 3
   have hy : 0 < y := by dsimp [y]; linarith
   apply sub_pos.mp
-  rw [show (8 / 9 : ℝ) * (A - 3 / 2) ^ 3 - A =
-      (8 / 9) * y ^ 3 + 4 * y ^ 2 + 5 * y by dsimp [y]; ring]
+  rw [show (8 / 9 : ℝ) * (A - 3 / 2) ^ (3 : ℕ) - A =
+      (8 / 9) * y ^ (3 : ℕ) + 4 * y ^ (2 : ℕ) + 5 * y by dsimp [y]; ring]
   positivity
 
 theorem scale_div_sub_four_lt_sixteen_twentysevenths
     {A : ℝ} (hA : 3 < A) :
-    A / (A - 3 / 2) ^ 4 < (16 / 27 : ℝ) := by
-  have hden : 0 < (A - 3 / 2) ^ 4 := pow_pos (by linarith) 4
+    A / (A - 3 / 2) ^ (4 : ℕ) < (16 / 27 : ℝ) := by
+  have hden : 0 < (A - 3 / 2) ^ (4 : ℕ) := pow_pos (by linarith) 4
   apply (div_lt_iff₀ hden).2
   let y := A - 3
   have hy : 0 < y := by dsimp [y]; linarith
   apply sub_pos.mp
-  rw [show (16 / 27 : ℝ) * (A - 3 / 2) ^ 4 - A =
-      (16 / 27) * y ^ 4 + (32 / 9) * y ^ 3 + 8 * y ^ 2 + 7 * y by
+  rw [show (16 / 27 : ℝ) * (A - 3 / 2) ^ (4 : ℕ) - A =
+      (16 / 27) * y ^ (4 : ℕ) + (32 / 9) * y ^ (3 : ℕ) + 8 * y ^ (2 : ℕ) + 7 * y by
     dsimp [y]; ring]
   positivity
 
@@ -286,7 +286,7 @@ private theorem thetaCuspBornWittenLogCurvature_eq_scaleProfile
     thetaCuspBornWittenLogCurvature n x =
       4 * thetaCuspMorseScale n x +
         6 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 2 := by
+          (thetaCuspMorseScale n x - 3 / 2) ^ (2 : ℕ) := by
   unfold thetaCuspBornWittenLogCurvature thetaCuspBornWittenCurvature
   rw [thetaCuspBornWittenWeight_eq]
   ring
@@ -296,9 +296,9 @@ private theorem thetaCuspBornWittenLogThirdDerivative_eq_scaleProfile
     thetaCuspBornWittenLogThirdDerivative n x =
       8 * thetaCuspMorseScale n x -
         12 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 2 -
+          (thetaCuspMorseScale n x - 3 / 2) ^ (2 : ℕ) -
         36 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 3 := by
+          (thetaCuspMorseScale n x - 3 / 2) ^ (3 : ℕ) := by
   have hweight := thetaCuspBornWittenWeight_pos hn hx
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogThirdDerivative
@@ -310,11 +310,11 @@ private theorem thetaCuspBornWittenLogFourthDerivative_eq_scaleProfile
     thetaCuspBornWittenLogFourthDerivative n x =
       16 * thetaCuspMorseScale n x +
         24 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 2 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (2 : ℕ) +
         216 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 3 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (3 : ℕ) +
         324 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 4 := by
+          (thetaCuspMorseScale n x - 3 / 2) ^ (4 : ℕ) := by
   have hweight := thetaCuspBornWittenWeight_pos hn hx
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogFourthDerivative
@@ -324,36 +324,36 @@ private theorem thetaCuspBornWittenLogFourthDerivative_eq_scaleProfile
 theorem thetaCuspLikelihoodScaleFacts
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 ≤ x) :
     let A := thetaCuspLogConcavityScale x
-    let d := (n : ℝ) ^ 2 - 1
+    let d := (n : ℝ) ^ (2 : ℕ) - 1
     let z := A * d
-    let T := A * (n : ℝ) ^ 2
+    let T := A * (n : ℝ) ^ (2 : ℕ)
     3 < A ∧ 3 ≤ d ∧ 9 < z ∧ A < T := by
   dsimp
   have hA := thetaCuspLogConcavityScale_gt_three hx
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-  have hd : (3 : ℝ) ≤ (n : ℝ) ^ 2 - 1 := by nlinarith
-  have hz : 9 < thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1) := by
+  have hd : (3 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) - 1 := by nlinarith
+  have hz : 9 < thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1) := by
     calc
       9 < thetaCuspLogConcavityScale x * 3 := by nlinarith
-      _ ≤ thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1) :=
+      _ ≤ thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1) :=
         mul_le_mul_of_nonneg_left hd (thetaCuspLogConcavityScale_pos x).le
   have hT : thetaCuspLogConcavityScale x <
-      thetaCuspLogConcavityScale x * (n : ℝ) ^ 2 := by
+      thetaCuspLogConcavityScale x * (n : ℝ) ^ (2 : ℕ) := by
     have hApos := thetaCuspLogConcavityScale_pos x
-    nlinarith [mul_lt_mul_of_pos_left (by nlinarith : (1 : ℝ) < (n : ℝ) ^ 2) hApos]
+    nlinarith [mul_lt_mul_of_pos_left (by nlinarith : (1 : ℝ) < (n : ℝ) ^ (2 : ℕ)) hApos]
   exact ⟨hA, hd, hz, hT⟩
 
 theorem thetaCuspAtomLikelihoodLogJetZero_bounds
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     -(20 / 9 : ℝ) *
-        (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) <
+        (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) <
         thetaCuspAtomLikelihoodLogJetZero n x ∧
       thetaCuspAtomLikelihoodLogJetZero n x <
-        -2 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+        -2 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let d := (n : ℝ) ^ 2 - 1
+  let d := (n : ℝ) ^ (2 : ℕ) - 1
   let z := A * d
-  let T := A * (n : ℝ) ^ 2
+  let T := A * (n : ℝ) ^ (2 : ℕ)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, hd, hz, hAT⟩
@@ -363,7 +363,7 @@ theorem thetaCuspAtomLikelihoodLogJetZero_bounds
   rw [thetaCuspMorseScale_eq_logConcavityScale_mul_sq,
     thetaCuspMorseScale_eq_logConcavityScale_mul_sq] at hdiff
   norm_num at hdiff
-  have hscale : A * (n : ℝ) ^ 2 - A = z := by
+  have hscale : A * (n : ℝ) ^ (2 : ℕ) - A = z := by
     dsimp [A, z]
     ring
   rw [hscale] at hdiff
@@ -398,13 +398,13 @@ theorem thetaCuspAtomLikelihoodLogJetZero_bounds
 
 theorem thetaCuspAtomLikelihoodLogJetOne_bounds
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
-    -4 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) <
+    -4 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) <
         thetaCuspAtomLikelihoodLogJetOne n x ∧
       thetaCuspAtomLikelihoodLogJetOne n x <
-        -4 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) + 8 := by
+        -4 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) + 8 := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, _hz, hAT⟩
@@ -416,13 +416,13 @@ theorem thetaCuspAtomLikelihoodLogJetOne_bounds
   norm_num at hprofile1
   have hanti := scale_div_sub_sq_strictAnti hA hAT
   have hAupper := scale_div_sub_sq_lt_four_thirds hA
-  have hTpos : 0 < T / (T - 3 / 2) ^ 2 := by
+  have hTpos : 0 < T / (T - 3 / 2) ^ (2 : ℕ) := by
     apply div_pos
     · exact lt_trans (by linarith) hAT
     · exact sq_pos_of_pos (by linarith)
   dsimp [T, A] at hTpos
   have hvalue : thetaCuspAtomLikelihoodLogJetOne n x =
-      -4 * z + 6 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) := by
+      -4 * z + 6 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetOne
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -433,13 +433,13 @@ theorem thetaCuspAtomLikelihoodLogJetOne_bounds
 
 theorem thetaCuspAtomLikelihoodLogJetTwo_bounds
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
-    -8 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) - 48 <
+    -8 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) - 48 <
         thetaCuspAtomLikelihoodLogJetTwo n x ∧
       thetaCuspAtomLikelihoodLogJetTwo n x <
-        -8 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+        -8 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, _hz, hAT⟩
@@ -453,19 +453,19 @@ theorem thetaCuspAtomLikelihoodLogJetTwo_bounds
   have hanti3 := scale_div_sub_cube_strictAnti hA hAT
   have hA2 := scale_div_sub_sq_lt_four_thirds hA
   have hA3 := scale_div_sub_cube_lt_eight_ninths hA
-  have hT2 : 0 < T / (T - 3 / 2) ^ 2 := by
+  have hT2 : 0 < T / (T - 3 / 2) ^ (2 : ℕ) := by
     apply div_pos
     · exact lt_trans (by linarith) hAT
     · exact sq_pos_of_pos (by linarith)
-  have hT3 : 0 < T / (T - 3 / 2) ^ 3 := by
+  have hT3 : 0 < T / (T - 3 / 2) ^ (3 : ℕ) := by
     apply div_pos
     · exact lt_trans (by linarith) hAT
     · exact pow_pos (by linarith) 3
   dsimp [T, A] at hT2 hT3
   have hvalue : thetaCuspAtomLikelihoodLogJetTwo n x =
       -8 * z +
-        12 * (T / (T - 3 / 2) ^ 2 - A / (A - 3 / 2) ^ 2) +
-        36 * (T / (T - 3 / 2) ^ 3 - A / (A - 3 / 2) ^ 3) := by
+        12 * (T / (T - 3 / 2) ^ (2 : ℕ) - A / (A - 3 / 2) ^ (2 : ℕ)) +
+        36 * (T / (T - 3 / 2) ^ (3 : ℕ) - A / (A - 3 / 2) ^ (3 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetTwo
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -476,11 +476,11 @@ theorem thetaCuspAtomLikelihoodLogJetTwo_bounds
 
 theorem thetaCuspAtomLikelihoodLogJetThree_lower
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
-    -16 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) <
+    -16 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) <
       thetaCuspAtomLikelihoodLogJetThree n x := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, _hz, hAT⟩
@@ -495,9 +495,9 @@ theorem thetaCuspAtomLikelihoodLogJetThree_lower
   have hanti4 := scale_div_sub_four_strictAnti hA hAT
   have hvalue : thetaCuspAtomLikelihoodLogJetThree n x =
       -16 * z +
-        24 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) +
-        216 * (A / (A - 3 / 2) ^ 3 - T / (T - 3 / 2) ^ 3) +
-        324 * (A / (A - 3 / 2) ^ 4 - T / (T - 3 / 2) ^ 4) := by
+        24 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) +
+        216 * (A / (A - 3 / 2) ^ (3 : ℕ) - T / (T - 3 / 2) ^ (3 : ℕ)) +
+        324 * (A / (A - 3 / 2) ^ (4 : ℕ) - T / (T - 3 / 2) ^ (4 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetThree
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -512,10 +512,10 @@ termwise differentiation of the complete higher-atom mixture. -/
 theorem thetaCuspAtomLikelihoodLogJetThree_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodLogJetThree n x| ≤
-      32 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+      32 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, hz, hAT⟩
@@ -531,17 +531,17 @@ theorem thetaCuspAtomLikelihoodLogJetThree_abs_le
   have hA2 := scale_div_sub_sq_lt_four_thirds hA
   have hA3 := scale_div_sub_cube_lt_eight_ninths hA
   have hA4 := scale_div_sub_four_lt_sixteen_twentysevenths hA
-  have hT2 : 0 < T / (T - 3 / 2) ^ 2 := by
+  have hT2 : 0 < T / (T - 3 / 2) ^ (2 : ℕ) := by
     exact div_pos (lt_trans (by linarith) hAT) (sq_pos_of_pos (by linarith))
-  have hT3 : 0 < T / (T - 3 / 2) ^ 3 := by
+  have hT3 : 0 < T / (T - 3 / 2) ^ (3 : ℕ) := by
     exact div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 3)
-  have hT4 : 0 < T / (T - 3 / 2) ^ 4 := by
+  have hT4 : 0 < T / (T - 3 / 2) ^ (4 : ℕ) := by
     exact div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 4)
   have hvalue : thetaCuspAtomLikelihoodLogJetThree n x =
       -16 * z +
-        24 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) +
-        216 * (A / (A - 3 / 2) ^ 3 - T / (T - 3 / 2) ^ 3) +
-        324 * (A / (A - 3 / 2) ^ 4 - T / (T - 3 / 2) ^ 4) := by
+        24 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) +
+        216 * (A / (A - 3 / 2) ^ (3 : ℕ) - T / (T - 3 / 2) ^ (3 : ℕ)) +
+        324 * (A / (A - 3 / 2) ^ (4 : ℕ) - T / (T - 3 / 2) ^ (4 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetThree
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -555,9 +555,9 @@ theorem thetaCuspAtomLikelihoodRatioJetOne_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodRatioJetOne n x| ≤
       (20 / 9 : ℝ) *
-        (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) *
+        (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) *
           thetaCuspAtomLikelihoodRatio n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hq := thetaCuspAtomLikelihoodLogJetZero_bounds hn hx
   have hr := thetaCuspAtomLikelihoodRatio_pos (by omega : 0 < n) hx
   have hz := (thetaCuspLikelihoodScaleFacts hn hx.le).2.2.1
@@ -573,9 +573,9 @@ theorem thetaCuspAtomLikelihoodRatioJetTwo_pos_le
     0 < thetaCuspAtomLikelihoodRatioJetTwo n x ∧
       thetaCuspAtomLikelihoodRatioJetTwo n x ≤
         (400 / 81 : ℝ) *
-            (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) ^ 2 *
+            (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) ^ (2 : ℕ) *
           thetaCuspAtomLikelihoodRatio n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   let p := -thetaCuspAtomLikelihoodLogJetZero n x
   have hq := thetaCuspAtomLikelihoodLogJetZero_bounds hn hx
   have hq1 := thetaCuspAtomLikelihoodLogJetOne_bounds hn hx
@@ -583,16 +583,16 @@ theorem thetaCuspAtomLikelihoodRatioJetTwo_pos_le
   have hz := (thetaCuspLikelihoodScaleFacts hn hx.le).2.2.1
   have hpLower : 2 * z < p := by dsimp [p]; linarith
   have hpUpper : p < (20 / 9 : ℝ) * z := by dsimp [p]; linarith
-  have hcoeffPos : 0 < p ^ 2 + thetaCuspAtomLikelihoodLogJetOne n x := by
-    have hpsq : (2 * z) ^ 2 < p ^ 2 := by nlinarith
+  have hcoeffPos : 0 < p ^ (2 : ℕ) + thetaCuspAtomLikelihoodLogJetOne n x := by
+    have hpsq : (2 * z) ^ (2 : ℕ) < p ^ (2 : ℕ) := by nlinarith
     nlinarith
   have hcoeffUpper :
-      p ^ 2 + thetaCuspAtomLikelihoodLogJetOne n x ≤ (400 / 81 : ℝ) * z ^ 2 := by
-    have hpsq : p ^ 2 < ((20 / 9 : ℝ) * z) ^ 2 := by nlinarith
+      p ^ (2 : ℕ) + thetaCuspAtomLikelihoodLogJetOne n x ≤ (400 / 81 : ℝ) * z ^ (2 : ℕ) := by
+    have hpsq : p ^ (2 : ℕ) < ((20 / 9 : ℝ) * z) ^ (2 : ℕ) := by nlinarith
     have hq1neg : thetaCuspAtomLikelihoodLogJetOne n x < 0 := by nlinarith
     nlinarith
   dsimp [thetaCuspAtomLikelihoodRatioJetTwo, p]
-  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ 2 = p ^ 2 by dsimp [p]; ring]
+  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) = p ^ (2 : ℕ) by dsimp [p]; ring]
   exact ⟨mul_pos hcoeffPos hr,
     mul_le_mul_of_nonneg_right hcoeffUpper hr.le⟩
 
@@ -600,9 +600,9 @@ theorem thetaCuspAtomLikelihoodRatioJetThree_neg_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     thetaCuspAtomLikelihoodRatioJetThree n x < 0 ∧
       |thetaCuspAtomLikelihoodRatioJetThree n x| ≤
-        12 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) ^ 3 *
+        12 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) ^ (3 : ℕ) *
           thetaCuspAtomLikelihoodRatio n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   let p := -thetaCuspAtomLikelihoodLogJetZero n x
   let alpha := -thetaCuspAtomLikelihoodLogJetOne n x
   let beta := -thetaCuspAtomLikelihoodLogJetTwo n x
@@ -618,32 +618,32 @@ theorem thetaCuspAtomLikelihoodRatioJetThree_neg_abs_le
   have hbLower : 8 * z < beta := by dsimp [beta]; linarith
   have hbUpper : beta < 8 * z + 48 := by dsimp [beta]; linarith
   have hp0 : 0 < p := by nlinarith
-  have hcoeffNeg : -p ^ 3 + 3 * p * alpha - beta < 0 := by
-    have hp2 : p ^ 2 > 3 * alpha := by
-      have : 4 * z ^ 2 > 12 * z := by nlinarith
+  have hcoeffNeg : -p ^ (3 : ℕ) + 3 * p * alpha - beta < 0 := by
+    have hp2 : p ^ (2 : ℕ) > 3 * alpha := by
+      have : 4 * z ^ (2 : ℕ) > 12 * z := by nlinarith
       nlinarith
     nlinarith [mul_pos hp0 (sub_pos.mpr hp2)]
-  have hcoeffLower : -(12 * z ^ 3) ≤ -p ^ 3 + 3 * p * alpha - beta := by
-    have hp3 : p ^ 3 < (20 / 9 : ℝ) ^ 3 * z ^ 3 := by
+  have hcoeffLower : -(12 * z ^ (3 : ℕ)) ≤ -p ^ (3 : ℕ) + 3 * p * alpha - beta := by
+    have hp3 : p ^ (3 : ℕ) < (20 / 9 : ℝ) ^ (3 : ℕ) * z ^ (3 : ℕ) := by
       have hp3' := pow_lt_pow_left₀ hpUpper hp0.le (by norm_num : (3 : ℕ) ≠ 0)
       convert hp3' using 1 <;> first | rfl | ring
-    have hcubic : 8 * z + 48 < (1 / 6 : ℝ) * z ^ 3 := by
+    have hcubic : 8 * z + 48 < (1 / 6 : ℝ) * z ^ (3 : ℕ) := by
       let y := z - 9
       have hy : 0 < y := by dsimp [y, z]; linarith
       apply sub_pos.mp
-      rw [show (1 / 6 : ℝ) * z ^ 3 - (8 * z + 48) =
-          (1 / 6) * y ^ 3 + (9 / 2) * y ^ 2 + (65 / 2) * y + 3 / 2 by
+      rw [show (1 / 6 : ℝ) * z ^ (3 : ℕ) - (8 * z + 48) =
+          (1 / 6) * y ^ (3 : ℕ) + (9 / 2) * y ^ (2 : ℕ) + (65 / 2) * y + 3 / 2 by
         dsimp [y]; ring]
       positivity
-    have hb : beta < (1 / 6 : ℝ) * z ^ 3 := lt_trans hbUpper hcubic
+    have hb : beta < (1 / 6 : ℝ) * z ^ (3 : ℕ) := lt_trans hbUpper hcubic
     nlinarith [mul_nonneg (mul_nonneg (by positivity : 0 ≤ (3 : ℝ))
       (by positivity : 0 ≤ p)) ha0.le]
   dsimp [thetaCuspAtomLikelihoodRatioJetThree, p, alpha, beta]
-  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ 3 +
+  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) +
         3 * thetaCuspAtomLikelihoodLogJetZero n x *
           thetaCuspAtomLikelihoodLogJetOne n x +
         thetaCuspAtomLikelihoodLogJetTwo n x =
-      -p ^ 3 + 3 * p * alpha - beta by dsimp [p, alpha, beta]; ring]
+      -p ^ (3 : ℕ) + 3 * p * alpha - beta by dsimp [p, alpha, beta]; ring]
   constructor
   · exact mul_neg_of_neg_of_pos hcoeffNeg hr
   · rw [abs_mul, abs_of_pos hr, abs_of_neg hcoeffNeg]
@@ -652,7 +652,7 @@ theorem thetaCuspAtomLikelihoodRatioJetThree_neg_abs_le
 theorem thetaCuspAtomLikelihoodRatioJetFour_pos
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     0 < thetaCuspAtomLikelihoodRatioJetFour n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   let p := -thetaCuspAtomLikelihoodLogJetZero n x
   let alpha := -thetaCuspAtomLikelihoodLogJetOne n x
   let beta := -thetaCuspAtomLikelihoodLogJetTwo n x
@@ -668,39 +668,39 @@ theorem thetaCuspAtomLikelihoodRatioJetFour_pos
   have hb0 : 0 < beta := by dsimp [beta]; nlinarith
   have hp0 : 0 < p := by nlinarith
   have hcore :
-      0 < p ^ 4 - 6 * p ^ 2 * alpha + 3 * alpha ^ 2 +
+      0 < p ^ (4 : ℕ) - 6 * p ^ (2 : ℕ) * alpha + 3 * alpha ^ (2 : ℕ) +
           4 * p * beta + thetaCuspAtomLikelihoodLogJetThree n x := by
-    have hp2 : 4 * z ^ 2 < p ^ 2 := by nlinarith
-    have hbracket : 4 * z * (z - 6) < p ^ 2 - 6 * alpha := by nlinarith
-    have hprod : 16 * z ^ 3 * (z - 6) < p ^ 2 * (p ^ 2 - 6 * alpha) := by
+    have hp2 : 4 * z ^ (2 : ℕ) < p ^ (2 : ℕ) := by nlinarith
+    have hbracket : 4 * z * (z - 6) < p ^ (2 : ℕ) - 6 * alpha := by nlinarith
+    have hprod : 16 * z ^ (3 : ℕ) * (z - 6) < p ^ (2 : ℕ) * (p ^ (2 : ℕ) - 6 * alpha) := by
       have hleftPos : 0 < 4 * z * (z - 6) := by
         exact mul_pos (mul_pos (by norm_num) (by nlinarith)) (by nlinarith)
       calc
-        16 * z ^ 3 * (z - 6) =
-            (4 * z ^ 2) * (4 * z * (z - 6)) := by ring
-        _ < p ^ 2 * (4 * z * (z - 6)) :=
+        16 * z ^ (3 : ℕ) * (z - 6) =
+            (4 * z ^ (2 : ℕ)) * (4 * z * (z - 6)) := by ring
+        _ < p ^ (2 : ℕ) * (4 * z * (z - 6)) :=
           mul_lt_mul_of_pos_right hp2 hleftPos
-        _ < p ^ 2 * (p ^ 2 - 6 * alpha) :=
+        _ < p ^ (2 : ℕ) * (p ^ (2 : ℕ) - 6 * alpha) :=
           mul_lt_mul_of_pos_left hbracket (sq_pos_of_pos hp0)
-    have hbase : 0 < 16 * z ^ 3 * (z - 6) - 16 * z := by
-      have hinner : 1 < z ^ 2 * (z - 6) := by
-        have hzsq : 1 < z ^ 2 := by nlinarith
+    have hbase : 0 < 16 * z ^ (3 : ℕ) * (z - 6) - 16 * z := by
+      have hinner : 1 < z ^ (2 : ℕ) * (z - 6) := by
+        have hzsq : 1 < z ^ (2 : ℕ) := by nlinarith
         have hz6 : 3 < z - 6 := by nlinarith
         nlinarith [mul_lt_mul_of_pos_left hz6 (sq_pos_of_pos (by nlinarith : 0 < z))]
-      rw [show 16 * z ^ 3 * (z - 6) - 16 * z =
-          16 * z * (z ^ 2 * (z - 6) - 1) by ring]
+      rw [show 16 * z ^ (3 : ℕ) * (z - 6) - 16 * z =
+          16 * z * (z ^ (2 : ℕ) * (z - 6) - 1) by ring]
       exact mul_pos (mul_pos (by norm_num) (by nlinarith)) (sub_pos.mpr hinner)
     nlinarith [mul_pos (by norm_num : (0 : ℝ) < 3) (sq_pos_of_pos ha0),
       mul_pos (mul_pos (by norm_num : (0 : ℝ) < 4) hp0) hb0]
   unfold thetaCuspAtomLikelihoodRatioJetFour
-  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ 4 +
-        6 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ (4 : ℕ) +
+        6 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
           thetaCuspAtomLikelihoodLogJetOne n x +
-        3 * thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
+        3 * thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
         4 * thetaCuspAtomLikelihoodLogJetZero n x *
           thetaCuspAtomLikelihoodLogJetTwo n x +
         thetaCuspAtomLikelihoodLogJetThree n x =
-      p ^ 4 - 6 * p ^ 2 * alpha + 3 * alpha ^ 2 + 4 * p * beta +
+      p ^ (4 : ℕ) - 6 * p ^ (2 : ℕ) * alpha + 3 * alpha ^ (2 : ℕ) + 4 * p * beta +
         thetaCuspAtomLikelihoodLogJetThree n x by
     dsimp [p, alpha, beta]; ring]
   exact mul_pos hcore hr
@@ -711,9 +711,9 @@ used only to justify differentiation of the infinite mixture; the strict sign is
 theorem thetaCuspAtomLikelihoodRatioJetFour_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodRatioJetFour n x| ≤
-      600 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) ^ 4 *
+      600 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) ^ (4 : ℕ) *
         thetaCuspAtomLikelihoodRatio n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   let p := -thetaCuspAtomLikelihoodLogJetZero n x
   let alpha := -thetaCuspAtomLikelihoodLogJetOne n x
   let beta := -thetaCuspAtomLikelihoodLogJetTwo n x
@@ -729,37 +729,37 @@ theorem thetaCuspAtomLikelihoodRatioJetFour_abs_le
   have ha : alpha ≤ 4 * z := by dsimp [alpha, z]; linarith
   have hb0 : 0 ≤ beta := by dsimp [beta, z]; linarith
   have hb : beta ≤ 14 * z := by dsimp [beta, z]; linarith
-  have hp4 : p ^ 4 ≤ 81 * z ^ 4 := by
+  have hp4 : p ^ (4 : ℕ) ≤ 81 * z ^ (4 : ℕ) := by
     have := pow_le_pow_left₀ hp0 hp 4
     nlinarith
-  have hp2 : p ^ 2 ≤ 9 * z ^ 2 := by
+  have hp2 : p ^ (2 : ℕ) ≤ 9 * z ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ hp0 hp 2
     nlinarith
-  have hpa : 6 * p ^ 2 * alpha ≤ 216 * z ^ 3 := by
+  have hpa : 6 * p ^ (2 : ℕ) * alpha ≤ 216 * z ^ (3 : ℕ) := by
     calc
-      6 * p ^ 2 * alpha ≤ 6 * (9 * z ^ 2) * (4 * z) := by gcongr
-      _ = 216 * z ^ 3 := by ring
-  have ha2 : 3 * alpha ^ 2 ≤ 48 * z ^ 2 := by
+      6 * p ^ (2 : ℕ) * alpha ≤ 6 * (9 * z ^ (2 : ℕ)) * (4 * z) := by gcongr
+      _ = 216 * z ^ (3 : ℕ) := by ring
+  have ha2 : 3 * alpha ^ (2 : ℕ) ≤ 48 * z ^ (2 : ℕ) := by
     have halpha := pow_le_pow_left₀ ha0 ha 2
     nlinarith
-  have hpb : 4 * p * beta ≤ 168 * z ^ 2 := by
+  have hpb : 4 * p * beta ≤ 168 * z ^ (2 : ℕ) := by
     calc
       4 * p * beta ≤ 4 * (3 * z) * (14 * z) := by gcongr
-      _ = 168 * z ^ 2 := by ring
-  have hz1 : z ≤ z ^ 4 := by
+      _ = 168 * z ^ (2 : ℕ) := by ring
+  have hz1 : z ≤ z ^ (4 : ℕ) := by
     have hzpos : 0 ≤ z := by linarith
-    have hzsq : z ≤ z ^ 2 := by nlinarith
-    have hzsq4 : z ^ 2 ≤ z ^ 4 := by nlinarith
+    have hzsq : z ≤ z ^ (2 : ℕ) := by nlinarith
+    have hzsq4 : z ^ (2 : ℕ) ≤ z ^ (4 : ℕ) := by nlinarith
     exact hzsq.trans hzsq4
-  have hz2 : z ^ 2 ≤ z ^ 4 := by nlinarith
-  have hz3 : z ^ 3 ≤ z ^ 4 := by
+  have hz2 : z ^ (2 : ℕ) ≤ z ^ (4 : ℕ) := by nlinarith
+  have hz3 : z ^ (3 : ℕ) ≤ z ^ (4 : ℕ) := by
     calc
-      z ^ 3 = z ^ 3 * 1 := by ring
-      _ ≤ z ^ 3 * z := by gcongr; linarith
-      _ = z ^ 4 := by ring
+      z ^ (3 : ℕ) = z ^ (3 : ℕ) * 1 := by ring
+      _ ≤ z ^ (3 : ℕ) * z := by gcongr; linarith
+      _ = z ^ (4 : ℕ) := by ring
   have hcoeff :
-      |p ^ 4 - 6 * p ^ 2 * alpha + 3 * alpha ^ 2 + 4 * p * beta +
-          thetaCuspAtomLikelihoodLogJetThree n x| ≤ 600 * z ^ 4 := by
+      |p ^ (4 : ℕ) - 6 * p ^ (2 : ℕ) * alpha + 3 * alpha ^ (2 : ℕ) + 4 * p * beta +
+          thetaCuspAtomLikelihoodLogJetThree n x| ≤ 600 * z ^ (4 : ℕ) := by
     rw [abs_le]
     have hq3' :
         -32 * z ≤ thetaCuspAtomLikelihoodLogJetThree n x ∧
@@ -769,14 +769,14 @@ theorem thetaCuspAtomLikelihoodRatioJetFour_abs_le
       constructor <;> linarith
     constructor <;> nlinarith
   unfold thetaCuspAtomLikelihoodRatioJetFour
-  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ 4 +
-        6 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ (4 : ℕ) +
+        6 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetOne n x +
-          3 * thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
+          3 * thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
         4 * thetaCuspAtomLikelihoodLogJetZero n x *
             thetaCuspAtomLikelihoodLogJetTwo n x +
           thetaCuspAtomLikelihoodLogJetThree n x =
-      p ^ 4 - 6 * p ^ 2 * alpha + 3 * alpha ^ 2 + 4 * p * beta +
+      p ^ (4 : ℕ) - 6 * p ^ (2 : ℕ) * alpha + 3 * alpha ^ (2 : ℕ) + 4 * p * beta +
         thetaCuspAtomLikelihoodLogJetThree n x by
       dsimp [p, alpha, beta]; ring]
   rw [abs_mul, abs_of_pos hr]

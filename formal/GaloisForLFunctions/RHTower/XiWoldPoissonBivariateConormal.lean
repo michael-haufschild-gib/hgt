@@ -101,9 +101,9 @@ theorem xiWoldPoissonBivariateConormalResidueMode_poisson_conservation
     x ^ r / r.factorial *
         ‖iteratedDeriv r
           (xiWoldPoissonBivariateConormalResidueMode n rho)
-          (x : ℂ)‖ ^ 2 =
+          (x : ℂ)‖ ^ (2 : ℕ) =
       ‖shellMultiplier n rho *
-          ((analyticOrderAt xi rho).toNat : ℂ)‖ ^ 2 *
+          ((analyticOrderAt xi rho).toNat : ℂ)‖ ^ (2 : ℕ) *
         Real.exp
           (HTGeometry.sourceCayleyTransverseRate 1 rho * tau) *
           HTGeometry.poissonOrderWeight tau r := by

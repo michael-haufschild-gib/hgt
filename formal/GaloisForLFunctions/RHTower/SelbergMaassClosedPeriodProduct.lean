@@ -8,7 +8,7 @@ For two points strictly inside that period, the original weighted chord
 inequality applies to both complementary arcs. Exact resistance and
 current splitting give four times the squared chord as a lower bound for
 the complete period product. The scalar integrands have unit period, so
-this is `(N+1)^2` times the original unit-period product.
+this is `(N+1)^(2 : ℕ)` times the original unit-period product.
 
 For a nonzero cuspidal source with eigenvalue strictly between zero and
 one quarter, every positive height has positive integrated source mass.
@@ -67,7 +67,7 @@ theorem source_level_periodic (e : Ioi (0:ℝ)) (j : Option (Deck N)) {y : ℝ}
 /-- The actual regulated radius has the same complete level period. -/
 theorem radius_level_periodic (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y) (x : ℝ) :
     radius N f e (point (x+(N+1:ℕ)) y)=radius N f e (point x y) := by
-  have h : radius N f e (point (x+(N+1:ℕ)) y)^2=radius N f e (point x y)^2 := by
+  have h : radius N f e (point (x+(N+1:ℕ)) y)^(2 : ℕ)=radius N f e (point x y)^(2 : ℕ) := by
     rw [← source_normSq,← source_normSq]
     apply Finset.sum_congr rfl
     intro j _
@@ -110,7 +110,7 @@ theorem pathEnergy_add (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y) (a b c : ℝ) :
 /-- The complete level-period product is exactly level-width squared times the original unit-period product. -/
 theorem level_period_product (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y) (a : ℝ) :
     pathResistance N f e y a (a+(N+1:ℕ))*pathEnergy N f e y a (a+(N+1:ℕ))=
-      ((N+1:ℕ):ℝ)^2*periodCost N f e y := by
+      ((N+1:ℕ):ℝ)^(2 : ℕ)*periodCost N f e y := by
   have hr := pathResistance_integer N f e hy a ((N+1:ℕ):ℤ)
   have he := pathEnergy_integer N f e hy a ((N+1:ℕ):ℤ)
   simp only [Int.cast_natCast,pathResistance_one_period N f e hy,pathEnergy_one_period N f e hy] at hr he
@@ -122,7 +122,7 @@ theorem level_period_product (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y) (a : ℝ) 
 theorem four_chord_le_level_product (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y)
     {a b : ℝ} (hab : a < b) (hba : b < a+(N+1:ℕ)) :
     4*distanceSq N f e (ofComplex (point a y)) (ofComplex (point b y)) ≤
-      ((N+1:ℕ):ℝ)^2*periodCost N f e y := by
+      ((N+1:ℕ):ℝ)^(2 : ℕ)*periodCost N f e y := by
   have h₁ := chord_le_resistance_energy N f e hy hab.le
   have h₂ := chord_le_resistance_energy N f e hy hba.le
   rw [closed_arc_distance N f e hy a b] at h₂
@@ -147,7 +147,7 @@ theorem radius_mono_regulator {e r : Ioi (0:ℝ)} (he : (e:ℝ) ≤ (r:ℝ)) (z 
     radius N f e z ≤ radius N f r z := by
   apply Real.sqrt_le_sqrt
   have hh := mul_nonneg (sub_nonneg.mpr he) (add_nonneg r.2.le e.2.le)
-  change density N f (ofComplex z)+(e:ℝ)^2 ≤ density N f (ofComplex z)+(r:ℝ)^2
+  change density N f (ofComplex z)+(e:ℝ)^(2 : ℕ) ≤ density N f (ofComplex z)+(r:ℝ)^(2 : ℕ)
   nlinarith
 
 /-- A negative original correlation gives a fixed augmented chord margin above two at every small regulator. -/
@@ -168,7 +168,7 @@ theorem uniform_chord_margin_of_negative_correlation (z w : ℍ)
   intro e he
   have he1 : (e:ℝ) ≤ (oneE:ℝ) := he.trans (min_le_left _ _)
   have heS : (e:ℝ) ≤ Real.sqrt (-correlation N f z w)/2 := he.trans (min_le_right _ _)
-  have hsq : (e:ℝ)^2 ≤ -correlation N f z w/4 := by
+  have hsq : (e:ℝ)^(2 : ℕ) ≤ -correlation N f z w/4 := by
     have h := mul_nonneg (sub_nonneg.mpr heS) (add_nonneg hs.le e.2.le)
     have hh := Real.sq_sqrt (show 0 ≤ -correlation N f z w by linarith)
     nlinarith
@@ -225,7 +225,7 @@ theorem source_closed_period_margin {y : ℝ} (hy : 0 < y) :
 /-- Complete original resistance/current products have a strict level-scaled floor at every height, including nodal heights. -/
 theorem source_period_product_floor {y : ℝ} (hy : 0 < y) :
     ∃ r : Ioi (0:ℝ), ∃ c : ℝ, 8 < c ∧
-      ∀ e : Ioi (0:ℝ), (e:ℝ) ≤ (r:ℝ) → c ≤ ((N+1:ℕ):ℝ)^2*periodCost N g e y := by
+      ∀ e : Ioi (0:ℝ), (e:ℝ) ≤ (r:ℝ) → c ≤ ((N+1:ℕ):ℝ)^(2 : ℕ)*periodCost N g e y := by
   obtain ⟨a,b,hab,hba,r,d,hd,hsep⟩ := source_closed_period_margin N mu g hy
   refine ⟨r,4*d,by linarith,?_⟩
   intro e he
@@ -235,7 +235,7 @@ theorem source_period_product_floor {y : ℝ} (hy : 0 < y) :
 /-- A fixed positive product floor survives uniformly over all sufficiently small regulators. -/
 theorem eventually_source_period_product_floor {y : ℝ} (hy : 0 < y) :
     ∃ c : ℝ, 8 < c ∧ ∀ᶠ e : Ioi (0:ℝ) in regulatorAtZero,
-      c ≤ ((N+1:ℕ):ℝ)^2*periodCost N g e y := by
+      c ≤ ((N+1:ℕ):ℝ)^(2 : ℕ)*periodCost N g e y := by
   obtain ⟨r,c,hc,h⟩ := source_period_product_floor N mu g hy
   refine ⟨c,hc,?_⟩
   have he := (tendsto_order.mp regulator_coe_limit).2 (r:ℝ) r.2
@@ -244,11 +244,11 @@ theorem eventually_source_period_product_floor {y : ℝ} (hy : 0 < y) :
 /-- The complete current cannot decay faster than a fixed inverse-resistance scale. -/
 theorem eventually_current_gt_inverse_resistance {y : ℝ} (hy : 0 < y) :
     ∀ᶠ e : Ioi (0:ℝ) in regulatorAtZero,
-      8 / (((N+1:ℕ):ℝ)^2 * periodResistance N g e y) < periodCurrentEnergy N g e y := by
+      8 / (((N+1:ℕ):ℝ)^(2 : ℕ) * periodResistance N g e y) < periodCurrentEnergy N g e y := by
   obtain ⟨c,hc,h⟩ := eventually_source_period_product_floor N mu g hy
   filter_upwards [h] with e he
   have hR : 0 < periodResistance N g e y := pathResistance_pos N g e hy (by norm_num)
-  have hw : 0 < ((N+1:ℕ):ℝ)^2 := by positivity
+  have hw : 0 < ((N+1:ℕ):ℝ)^(2 : ℕ) := by positivity
   apply (div_lt_iff₀ (mul_pos hw hR)).mpr
   have hh := hc.trans_le he
   unfold periodCost at hh
@@ -257,7 +257,7 @@ theorem eventually_current_gt_inverse_resistance {y : ℝ} (hy : 0 < y) :
 /-- Any finite limit of an actual period product lies strictly above its level-scaled threshold. -/
 theorem finite_product_limit_strict_lower {y L : ℝ} (hy : 0 < y)
     (hL : Tendsto (fun e : Ioi (0:ℝ) => periodCost N g e y) regulatorAtZero (𝓝 L)) :
-    8 < ((N+1:ℕ):ℝ)^2*L := by
+    8 < ((N+1:ℕ):ℝ)^(2 : ℕ)*L := by
   obtain ⟨c,hc,h⟩ := eventually_source_period_product_floor N mu g hy
   exact hc.trans_le (ge_of_tendsto (tendsto_const_nhds.mul hL) h)
 
@@ -271,7 +271,7 @@ theorem period_product_not_tendsto_zero {y : ℝ} (hy : 0 < y) :
 /-- On zero-free original periods, the exact unregularized product satisfies the same strict source threshold. -/
 theorem zero_free_limiting_product_strict_lower {y : ℝ} (hy : 0 < y)
     (hp : ∀ x ∈ Icc (0:ℝ) 1, 0 < density N g (ofComplex (point x y))) :
-    8 < ((N+1:ℕ):ℝ)^2 *
+    8 < ((N+1:ℕ):ℝ)^(2 : ℕ) *
       (unregularizedPeriodResistance N g y * periodCurrentLimit N g y) :=
   finite_product_limit_strict_lower N mu g hy (periodCost_tendsto_of_zero_free N g hy hp)
 
@@ -280,9 +280,9 @@ theorem zero_current_retains_product_floor {y : ℝ} (hy : 0 < y)
     (hE : periodCurrentLimit N g y=0) :
     Tendsto (fun e : Ioi (0:ℝ) => periodCurrentEnergy N g e y) regulatorAtZero (𝓝 0) ∧
       (∃ c : ℝ, 8 < c ∧ ∀ᶠ e : Ioi (0:ℝ) in regulatorAtZero,
-        c ≤ ((N+1:ℕ):ℝ)^2 * periodCost N g e y) ∧
+        c ≤ ((N+1:ℕ):ℝ)^(2 : ℕ) * periodCost N g e y) ∧
       (∀ᶠ e : Ioi (0:ℝ) in regulatorAtZero,
-        8 / (((N+1:ℕ):ℝ)^2 * periodResistance N g e y) < periodCurrentEnergy N g e y) := by
+        8 / (((N+1:ℕ):ℝ)^(2 : ℕ) * periodResistance N g e y) < periodCurrentEnergy N g e y) := by
   refine ⟨?_,eventually_source_period_product_floor N mu g hy,
     eventually_current_gt_inverse_resistance N mu g hy⟩
   simpa only [hE] using periodCurrentEnergy_tendsto N g hy

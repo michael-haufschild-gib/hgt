@@ -11,7 +11,7 @@ at `log z ≍ log(b-a) / log log (b-a)`, so the density gained is `1/log z` rath
 
 The Selberg sieve has no truncation defect.  Its density is `2 / log Y` for every level `Y ≤ z`, and
 its whole error is confined to divisors `d ≤ Y²` with `|Λ²_d| ≤ 4^{ω d}`, so it is at most
-`Y² exp(4 c₁)(log z)^4`.  Choosing `Y` a small power of the interval length therefore gives the
+`Y² exp(4 c₁)(log z)^(4 : ℕ)`.  Choosing `Y` a small power of the interval length therefore gives the
 lower-tail bound with `log Y ≍ log(b-a)`, with no `log log` loss.
 
 This module transports that fibrewise bound through the same smooth/rough fibring used for the pure

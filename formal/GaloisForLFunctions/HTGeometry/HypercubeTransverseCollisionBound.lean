@@ -105,7 +105,7 @@ theorem spectralCollision_transverseFamilyHam_le (d : (Fin n → Bool) → ℝ) 
     (heb : IsOrthoEigenBasis
       (transverseFamilyHam (fun x => ((d x : ℝ) : ℂ)) (fun i => ((u i : ℝ) : ℂ))) e lam) :
     spectralCollision e (zeroState n)
-      ≤ (cubeNorm n + 2 * ‖fun x => ((d x : ℝ) : ℂ)‖ / gap) ^ 2 := by
+      ≤ (cubeNorm n + 2 * ‖fun x => ((d x : ℝ) : ℂ)‖ / gap) ^ (2 : ℕ) := by
   classical
   set H : Matrix (Fin n → Bool) (Fin n → Bool) ℂ :=
     transverseFamilyHam (fun x => ((d x : ℝ) : ℂ)) (fun i => ((u i : ℝ) : ℂ)) with hH

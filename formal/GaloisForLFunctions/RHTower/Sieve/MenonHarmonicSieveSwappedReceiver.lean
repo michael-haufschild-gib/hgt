@@ -33,10 +33,10 @@ theorem setIntegral_normSq_product_le_meanSquareSup
     {F G : ℝ → ℂ} (hF : Continuous F) (hG : Continuous G) {W U I : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hbound : ∀ w ∈ E, ‖G w‖ ≤ U)
-    (hI : (∫ w in E, ‖F w‖ ^ 2) ≤ I) :
-    (∫ w in E, ‖F w * G w‖ ^ 2) ≤ U ^ 2 * I := by
-  have hrw : (∫ w in E, ‖F w * G w‖ ^ 2)
-      = ∫ w in E, ‖G w‖ ^ 2 * ‖F w‖ ^ 2 := by
+    (hI : (∫ w in E, ‖F w‖ ^ (2 : ℕ)) ≤ I) :
+    (∫ w in E, ‖F w * G w‖ ^ (2 : ℕ)) ≤ U ^ (2 : ℕ) * I := by
+  have hrw : (∫ w in E, ‖F w * G w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖G w‖ ^ (2 : ℕ) * ‖F w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_mul, mul_pow, mul_comm]
   rw [hrw]
@@ -55,12 +55,12 @@ theorem integral_Icc_normSq_dyadicPrimePoly_mul_harmonicCofactor_le
     (hk : Real.exp 1 * (∑ p ∈ rangePrimes P₁ h, 2 / ((p : ℝ) - 2)) + Real.log 2 ≤ (k : ℝ)) :
     (∫ w in Set.Icc (-W) W,
         ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w
-          * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2)
-      ≤ harmonicPrimeMass D ^ 2 *
-          ((5 / (4 * δ)) * (1 / (R : ℝ) ^ 2)
+          * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ))
+      ≤ harmonicPrimeMass D ^ (2 : ℕ) *
+          ((5 / (4 * δ)) * (1 / (R : ℝ) ^ (2 : ℕ))
             * (((bigPrimeSet R (2 * R)).card : ℝ)
               + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ))
-                      / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                      / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                     + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
                         (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)))) := by
   have hsieve := integral_normSq_dyadicPrimePoly_le (R := R) (h := h) (K := K) (k := k)

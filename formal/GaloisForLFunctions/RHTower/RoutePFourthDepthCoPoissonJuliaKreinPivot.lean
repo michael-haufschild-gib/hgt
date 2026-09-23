@@ -8,7 +8,7 @@ and cross `(sqrt 63 / 8) w`.  P-G104 identified the cross coefficient with the J
 the normalized contraction `c = 1 / 8`; P-G105 realized that contraction and defect on Burnol's
 actual even co-Poisson carrier.  This file constructs the missing pivot from those same data.
 
-For `U` the unitary fourfold dilation and `d = sqrt (1 - c^2)`, define
+For `U` the unitary fourfold dilation and `d = sqrt (1 - c^(2 : ℕ))`, define
 
 ```text
 child f = (c U f, 0),
@@ -18,8 +18,8 @@ pivot f = ((d / c) U f, (1 / c) f).
 In the canonical signature `(+, -)` their Krein Gram block is exactly
 
 ```text
-[[ ||f||^2 / 64, (sqrt 63 / 8) ||f||^2 ],
- [ (sqrt 63 / 8) ||f||^2,              -||f||^2 ]].
+[[ ||f||^(2 : ℕ) / 64, (sqrt 63 / 8) ||f||^(2 : ℕ) ],
+ [ (sqrt 63 / 8) ||f||^(2 : ℕ),              -||f||^(2 : ℕ) ]].
 ```
 
 Thus P-G103's pivot, cross, determinant, and restored Schur energy are all forced by the same
@@ -89,7 +89,7 @@ def routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot
     (f : evenSubspace) : evenSubspace × evenSubspace :=
   let c : ℂ := routeEPCubicFourthDepthNormalizedContraction
   let d : ℂ := routeEPCubicFourthDepthJuliaDefect
-  ((d / c ^ 2) • routePPrimitiveFourthDepthCoPoissonContraction f,
+  ((d / c ^ (2 : ℕ)) • routePPrimitiveFourthDepthCoPoissonContraction f,
     (1 / c) • f)
 
 theorem routeEPCubicFourthDepthNormalizedContraction_ne_zero :
@@ -99,8 +99,8 @@ theorem routeEPCubicFourthDepthNormalizedContraction_ne_zero :
 /-- Julia's Pythagorean identity is precisely the Lorentz normalization of the pivot. -/
 theorem routeEPCubicFourthDepthJulia_lorentzCoefficient :
     (routeEPCubicFourthDepthJuliaDefect /
-          routeEPCubicFourthDepthNormalizedContraction) ^ 2 -
-        (1 / routeEPCubicFourthDepthNormalizedContraction) ^ 2 = -1 := by
+          routeEPCubicFourthDepthNormalizedContraction) ^ (2 : ℕ) -
+        (1 / routeEPCubicFourthDepthNormalizedContraction) ^ (2 : ℕ) = -1 := by
   have h := routeEPCubicFourthDepthJulia_pythagoras
   field_simp [routeEPCubicFourthDepthNormalizedContraction_ne_zero]
   nlinarith
@@ -139,7 +139,7 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_child_child
     routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonKreinChild f)
         (routePPrimitiveFourthDepthCoPoissonKreinChild f) =
-      ((‖f‖ ^ 2 / 64 : ℝ) : ℂ) := by
+      ((‖f‖ ^ (2 : ℕ) / 64 : ℝ) : ℂ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair,
     routePPrimitiveFourthDepthCoPoissonKreinChild]
   simp only [sub_zero, inner_zero_left]
@@ -157,7 +157,7 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot
     routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonKreinChild f)
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f) =
-      (routeEPCubicFourthDepthJuliaDefect : ℂ) * (‖f‖ : ℂ) ^ 2 := by
+      (routeEPCubicFourthDepthJuliaDefect : ℂ) * (‖f‖ : ℂ) ^ (2 : ℕ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair,
     routePPrimitiveFourthDepthCoPoissonKreinChild,
     routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot]
@@ -167,7 +167,7 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot
     (routePPrimitiveFourthDepthCoPoissonContraction f)
     (routePPrimitiveFourthDepthCoPoissonContraction f)
     ((routeEPCubicFourthDepthJuliaDefect : ℂ) /
-      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ 2)]
+      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ (2 : ℕ))]
   have hinner := inner_self_eq_norm_sq_to_K
     (𝕜 := ℂ) (routePPrimitiveFourthDepthCoPoissonContraction f)
   rw [hinner, norm_routePPrimitiveFourthDepthCoPoissonContraction]
@@ -181,7 +181,7 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot_eq_quantized
     routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonKreinChild f)
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f) =
-      (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ 2) : ℂ) := by
+      (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ (2 : ℕ)) : ℂ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot,
     routeEPCubicFourthDepthQuantizedPolarCross,
     routeEPCubicFourthDepthJuliaDefect_eq_sqrt63_div_eight]
@@ -193,22 +193,22 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_pivot_pivot
     routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f) =
-      -((‖f‖ ^ 2 : ℝ) : ℂ) := by
+      -((‖f‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair,
     routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot]
   dsimp only
   rw [@inner_smul_left ℂ evenSubspace _ _ _
     (routePPrimitiveFourthDepthCoPoissonContraction f)
     (((routeEPCubicFourthDepthJuliaDefect : ℂ) /
-      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ 2) •
+      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ (2 : ℕ)) •
         routePPrimitiveFourthDepthCoPoissonContraction f)
     ((routeEPCubicFourthDepthJuliaDefect : ℂ) /
-      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ 2)]
+      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ (2 : ℕ))]
   rw [@inner_smul_right ℂ evenSubspace _ _ _
     (routePPrimitiveFourthDepthCoPoissonContraction f)
     (routePPrimitiveFourthDepthCoPoissonContraction f)
     ((routeEPCubicFourthDepthJuliaDefect : ℂ) /
-      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ 2)]
+      (routeEPCubicFourthDepthNormalizedContraction : ℂ) ^ (2 : ℕ))]
   rw [@inner_smul_left ℂ evenSubspace _ _ _ f
     ((1 / (routeEPCubicFourthDepthNormalizedContraction : ℂ)) • f)
     (1 / (routeEPCubicFourthDepthNormalizedContraction : ℂ))]
@@ -221,20 +221,20 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_pivot_pivot
   simp only [map_div₀, map_pow, Complex.conj_ofReal, map_one]
   have hreal :
       (routeEPCubicFourthDepthJuliaDefect /
-            routeEPCubicFourthDepthNormalizedContraction ^ 2) *
+            routeEPCubicFourthDepthNormalizedContraction ^ (2 : ℕ)) *
           (routeEPCubicFourthDepthJuliaDefect /
-            routeEPCubicFourthDepthNormalizedContraction ^ 2) *
-          (routeEPCubicFourthDepthNormalizedContraction * ‖f‖) ^ 2 -
+            routeEPCubicFourthDepthNormalizedContraction ^ (2 : ℕ)) *
+          (routeEPCubicFourthDepthNormalizedContraction * ‖f‖) ^ (2 : ℕ) -
         (1 / routeEPCubicFourthDepthNormalizedContraction) *
-          ((1 / routeEPCubicFourthDepthNormalizedContraction) * ‖f‖ ^ 2) =
-          -‖f‖ ^ 2 := by
+          ((1 / routeEPCubicFourthDepthNormalizedContraction) * ‖f‖ ^ (2 : ℕ)) =
+          -‖f‖ ^ (2 : ℕ) := by
     calc
       _ = ((routeEPCubicFourthDepthJuliaDefect /
-              routeEPCubicFourthDepthNormalizedContraction) ^ 2 -
-            (1 / routeEPCubicFourthDepthNormalizedContraction) ^ 2) *
-          ‖f‖ ^ 2 := by
+              routeEPCubicFourthDepthNormalizedContraction) ^ (2 : ℕ) -
+            (1 / routeEPCubicFourthDepthNormalizedContraction) ^ (2 : ℕ)) *
+          ‖f‖ ^ (2 : ℕ) := by
             field_simp [routeEPCubicFourthDepthNormalizedContraction_ne_zero]
-      _ = -‖f‖ ^ 2 := by
+      _ = -‖f‖ ^ (2 : ℕ) := by
         rw [routeEPCubicFourthDepthJulia_lorentzCoefficient]
         ring
   have hcast := congrArg (fun x : ℝ => (x : ℂ)) hreal
@@ -253,11 +253,11 @@ theorem routePPrimitiveFourthDepthCoPoissonKreinPair_pivot_neg
       (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)
       (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re < 0 := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair_pivot_pivot]
-  change -‖(f : SoninL2)‖ ^ 2 < 0
+  change -‖(f : SoninL2)‖ ^ (2 : ℕ) < 0
   exact neg_lt_zero.mpr
     (sq_pos_of_pos (norm_pos_iff.mpr (Subtype.coe_ne_coe.mpr hf)))
 
-/-- The realized two-channel block has determinant exactly `-||f||^4`. -/
+/-- The realized two-channel block has determinant exactly `-||f||^(4 : ℕ)`. -/
 theorem routePPrimitiveFourthDepthCoPoissonJuliaKreinBlock_det
     (f : evenSubspace) :
     (routePPrimitiveFourthDepthCoPoissonKreinPair
@@ -268,25 +268,25 @@ theorem routePPrimitiveFourthDepthCoPoissonJuliaKreinBlock_det
           (routePPrimitiveFourthDepthCoPoissonKreinChild f)).re -
       (routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonKreinChild f)
-        (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re ^ 2 =
-      -‖f‖ ^ 4 := by
+        (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re ^ (2 : ℕ) =
+      -‖f‖ ^ (4 : ℕ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair_child_child,
     routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot_eq_quantized,
     routePPrimitiveFourthDepthCoPoissonKreinPair_pivot_pivot]
-  change (-(‖(f : SoninL2)‖ ^ 2)) * (‖(f : SoninL2)‖ ^ 2 / 64) -
-      routeEPCubicFourthDepthQuantizedPolarCross (‖(f : SoninL2)‖ ^ 2) ^ 2 =
-        -‖(f : SoninL2)‖ ^ 4
+  change (-(‖(f : SoninL2)‖ ^ (2 : ℕ))) * (‖(f : SoninL2)‖ ^ (2 : ℕ) / 64) -
+      routeEPCubicFourthDepthQuantizedPolarCross (‖(f : SoninL2)‖ ^ (2 : ℕ)) ^ (2 : ℕ) =
+        -‖(f : SoninL2)‖ ^ (4 : ℕ)
   rw [routeEPCubicPolarBlockDet_quantized]
   ring
 
 /-- Shorting the realized child through its realized Julia pivot restores full parent energy. -/
 theorem routePPrimitiveFourthDepthCoPoissonJuliaKrein_shorting
     (f : evenSubspace) (hf : f ≠ 0) :
-    routeEPCubicPolarPivotShortedFourthDepthEnergy (‖f‖ ^ 2)
+    routeEPCubicPolarPivotShortedFourthDepthEnergy (‖f‖ ^ (2 : ℕ))
         (routePPrimitiveFourthDepthCoPoissonKreinPair
           (routePPrimitiveFourthDepthCoPoissonKreinChild f)
           (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re =
-      ‖f‖ ^ 2 := by
+      ‖f‖ ^ (2 : ℕ) := by
   rw [routePPrimitiveFourthDepthCoPoissonKreinPair_child_pivot_eq_quantized]
   norm_num
   exact routeEPCubicPolarPivotShortedFourthDepthEnergy_quantized _
@@ -304,23 +304,23 @@ theorem routePPrimitiveFourthDepthCoPoisson_JuliaKreinPivot
       routePPrimitiveFourthDepthCoPoissonKreinPair
           (routePPrimitiveFourthDepthCoPoissonKreinChild f)
           (routePPrimitiveFourthDepthCoPoissonKreinChild f) =
-        ((‖f‖ ^ 2 / 64 : ℝ) : ℂ) ∧
+        ((‖f‖ ^ (2 : ℕ) / 64 : ℝ) : ℂ) ∧
       routePPrimitiveFourthDepthCoPoissonKreinPair
           (routePPrimitiveFourthDepthCoPoissonKreinChild f)
           (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f) =
-        (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ 2) : ℂ) ∧
+        (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ (2 : ℕ)) : ℂ) ∧
       routePPrimitiveFourthDepthCoPoissonKreinPair
           (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)
           (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f) =
-        -((‖f‖ ^ 2 : ℝ) : ℂ) ∧
+        -((‖f‖ ^ (2 : ℕ) : ℝ) : ℂ) ∧
       (routePPrimitiveFourthDepthCoPoissonKreinPair
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)
         (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re < 0 ∧
-      routeEPCubicPolarPivotShortedFourthDepthEnergy (‖f‖ ^ 2)
+      routeEPCubicPolarPivotShortedFourthDepthEnergy (‖f‖ ^ (2 : ℕ))
           (routePPrimitiveFourthDepthCoPoissonKreinPair
             (routePPrimitiveFourthDepthCoPoissonKreinChild f)
             (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot f)).re =
-        ‖f‖ ^ 2 := by
+        ‖f‖ ^ (2 : ℕ) := by
   exact ⟨(routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot_mem_sourceSpaces hb hf).1,
     (routePPrimitiveFourthDepthCoPoissonJuliaKreinPivot_mem_sourceSpaces hb hf).2,
     routePPrimitiveFourthDepthCoPoissonKreinPair_child_child f,

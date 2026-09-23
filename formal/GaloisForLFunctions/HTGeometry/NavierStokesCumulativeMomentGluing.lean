@@ -62,8 +62,8 @@ def radialMomentIntegrand (profile : RadialProfile) : RadialMomentKind → ℝ �
   | .mass, x => profile.U x
   | .angular, x => Real.sqrt (2 * x) * profile.E x
   | .mixed, x => profile.U x * (Real.sqrt (2 * x) * profile.E x)
-  | .energy, x => profile.U x ^ 2 - profile.E x ^ 2 / 2
-  | .pressure, x => profile.E x ^ 2 / (2 * x)
+  | .energy, x => profile.U x ^ (2 : ℕ) - profile.E x ^ (2 : ℕ) / 2
+  | .pressure, x => profile.E x ^ (2 : ℕ) / (2 * x)
 
 /-- Cumulative radial moment based at the cylindrical axis. -/
 def cumulativeRadialMoment (profile : RadialProfile) (kind : RadialMomentKind) (X : ℝ) : ℝ :=

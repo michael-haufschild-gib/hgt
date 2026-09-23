@@ -91,9 +91,9 @@ theorem routePPrimitiveFourthDepthCoPoissonJuliaDefect_mem_sourceSpace
 /-- Exact source-axis Julia conservation law on Burnol's actual even `L²` carrier. -/
 theorem routePPrimitiveFourthDepthCoPoisson_JuliaEnergy
     (f : evenSubspace) :
-    ‖routePPrimitiveFourthDepthCoPoissonContraction f‖ ^ 2 +
-        ‖routePPrimitiveFourthDepthCoPoissonJuliaDefect f‖ ^ 2 =
-      ‖f‖ ^ 2 := by
+    ‖routePPrimitiveFourthDepthCoPoissonContraction f‖ ^ (2 : ℕ) +
+        ‖routePPrimitiveFourthDepthCoPoissonJuliaDefect f‖ ^ (2 : ℕ) =
+      ‖f‖ ^ (2 : ℕ) := by
   rw [norm_routePPrimitiveFourthDepthCoPoissonContraction,
     norm_routePPrimitiveFourthDepthCoPoissonJuliaDefect]
   have h := routeEPCubicFourthDepthJulia_pythagoras
@@ -103,7 +103,7 @@ theorem routePPrimitiveFourthDepthCoPoisson_JuliaEnergy
 theorem inner_routePPrimitiveFourthDepthCoPoissonJuliaDefect
     (f : evenSubspace) :
     ⟪f, routePPrimitiveFourthDepthCoPoissonJuliaDefect f⟫_ℂ =
-      (routeEPCubicFourthDepthJuliaDefect : ℂ) * (‖f‖ : ℂ) ^ 2 := by
+      (routeEPCubicFourthDepthJuliaDefect : ℂ) * (‖f‖ : ℂ) ^ (2 : ℕ) := by
   rw [routePPrimitiveFourthDepthCoPoissonJuliaDefect,
     smul_apply, one_apply_eq_self,
     inner_smul_right, inner_self_eq_norm_sq_to_K]
@@ -112,7 +112,7 @@ theorem inner_routePPrimitiveFourthDepthCoPoissonJuliaDefect
 theorem inner_routePPrimitiveFourthDepthCoPoissonJuliaDefect_eq_quantizedPolarCross
     (f : evenSubspace) :
     ⟪f, routePPrimitiveFourthDepthCoPoissonJuliaDefect f⟫_ℂ =
-      (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ 2) : ℂ) := by
+      (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ (2 : ℕ)) : ℂ) := by
   rw [inner_routePPrimitiveFourthDepthCoPoissonJuliaDefect,
     routeEPCubicFourthDepthQuantizedPolarCross,
     routeEPCubicFourthDepthJuliaDefect_eq_sqrt63_div_eight]
@@ -140,9 +140,9 @@ theorem routePPrimitiveFourthDepthCoPoissonJuliaTransportV_sourceAxis
 
 theorem routePPrimitiveFourthDepthCoPoissonJuliaTransportV_normSq
     (v : evenSubspace × evenSubspace) :
-    ‖(routePPrimitiveFourthDepthCoPoissonJuliaTransportV v).1‖ ^ 2 +
-        ‖(routePPrimitiveFourthDepthCoPoissonJuliaTransportV v).2‖ ^ 2 =
-      ‖v.1‖ ^ 2 + ‖v.2‖ ^ 2 := by
+    ‖(routePPrimitiveFourthDepthCoPoissonJuliaTransportV v).1‖ ^ (2 : ℕ) +
+        ‖(routePPrimitiveFourthDepthCoPoissonJuliaTransportV v).2‖ ^ (2 : ℕ) =
+      ‖v.1‖ ^ (2 : ℕ) + ‖v.2‖ ^ (2 : ℕ) := by
   have hc0 : 0 ≤ routeEPCubicFourthDepthNormalizedContraction := by
     norm_num [routeEPCubicFourthDepthNormalizedContraction]
   have hd0 : 0 ≤ routeEPCubicFourthDepthJuliaDefect := Real.sqrt_nonneg _
@@ -219,10 +219,10 @@ theorem routePPrimitiveFourthDepthCoPoisson_JuliaSourcePair
         burnolCoPoissonSourceSpace ((4 : ℝ)⁻¹ * b) ∧
       routePPrimitiveFourthDepthCoPoissonJuliaDefect f ∈
         burnolCoPoissonSourceSpace b ∧
-      ‖routePPrimitiveFourthDepthCoPoissonContraction f‖ ^ 2 +
-          ‖routePPrimitiveFourthDepthCoPoissonJuliaDefect f‖ ^ 2 = ‖f‖ ^ 2 ∧
+      ‖routePPrimitiveFourthDepthCoPoissonContraction f‖ ^ (2 : ℕ) +
+          ‖routePPrimitiveFourthDepthCoPoissonJuliaDefect f‖ ^ (2 : ℕ) = ‖f‖ ^ (2 : ℕ) ∧
       ⟪f, routePPrimitiveFourthDepthCoPoissonJuliaDefect f⟫_ℂ =
-        (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ 2) : ℂ) := by
+        (routeEPCubicFourthDepthQuantizedPolarCross (‖f‖ ^ (2 : ℕ)) : ℂ) := by
   exact ⟨routePPrimitiveFourthDepthCoPoissonContraction_mem_sourceSpace hb hf,
     routePPrimitiveFourthDepthCoPoissonJuliaDefect_mem_sourceSpace hf,
     routePPrimitiveFourthDepthCoPoisson_JuliaEnergy f,

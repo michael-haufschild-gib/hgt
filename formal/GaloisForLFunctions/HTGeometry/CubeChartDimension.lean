@@ -98,8 +98,8 @@ theorem le_of_unitCube_charts {m k N : ℕ}
       nlinarith
   have hnear : ∀ v ∈ unitCube m, dist (cubeBox a s v) (x₀ : EuclideanSpace ℝ (Fin m)) < ρ := by
     intro v hv
-    have hcoord : ∀ i, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ 2
-        ≤ (2 * s) ^ 2 := by
+    have hcoord : ∀ i, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ (2 : ℕ)
+        ≤ (2 * s) ^ (2 : ℕ) := by
       intro i
       obtain ⟨hv0, hv1⟩ := hv i
       obtain ⟨h00, h01⟩ := hx₀mem i
@@ -123,13 +123,13 @@ theorem le_of_unitCube_charts {m k N : ℕ}
         linarith
       nlinarith [abs_nonneg (cubeBox a s v i - (x₀ : EuclideanSpace ℝ (Fin m)) i)]
     rw [EuclideanSpace.dist_eq]
-    have hsum : ∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ 2
-        ≤ (m : ℝ) * (2 * s) ^ 2 := by
-      calc ∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ 2
-          ≤ ∑ _i : Fin m, (2 * s) ^ 2 := Finset.sum_le_sum fun i _ => hcoord i
-        _ = (m : ℝ) * (2 * s) ^ 2 := by simp
-    calc Real.sqrt (∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ 2)
-        ≤ Real.sqrt ((m : ℝ) * (2 * s) ^ 2) := Real.sqrt_le_sqrt hsum
+    have hsum : ∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ (2 : ℕ)
+        ≤ (m : ℝ) * (2 * s) ^ (2 : ℕ) := by
+      calc ∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ (2 : ℕ)
+          ≤ ∑ _i : Fin m, (2 * s) ^ (2 : ℕ) := Finset.sum_le_sum fun i _ => hcoord i
+        _ = (m : ℝ) * (2 * s) ^ (2 : ℕ) := by simp
+    calc Real.sqrt (∑ i : Fin m, dist (cubeBox a s v i) ((x₀ : EuclideanSpace ℝ (Fin m)) i) ^ (2 : ℕ))
+        ≤ Real.sqrt ((m : ℝ) * (2 * s) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsum
       _ = Real.sqrt m * (2 * s) := by
           rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)]
       _ < ρ := hsρ

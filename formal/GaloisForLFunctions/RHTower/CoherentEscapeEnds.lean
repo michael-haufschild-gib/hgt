@@ -40,13 +40,13 @@ theorem intervalIntegrable_divProfile_coherentProfile_sub {a b : ℝ}
 
 /-- **The half-normal end diverges logarithmically.** -/
 theorem coherentExponent_neg_ge {V : ℝ} (hV : 1 ≤ V) :
-    (1 - Real.exp (-1)) ^ 2 / 2 * Real.log V ≤ coherentExponent (-V) 0 := by
+    (1 - Real.exp (-1)) ^ (2 : ℕ) / 2 * Real.log V ≤ coherentExponent (-V) 0 := by
   have hV0 : (0 : ℝ) < V := by linarith
   have hVinv : (0 : ℝ) < 1 / V := by positivity
   have hVinv1 : 1 / V ≤ 1 := by rw [div_le_one hV0]; linarith
   -- the integrand dominates `(1 - e^{-1})²/t` on `[1/V, 1]`
   have hdom : ∀ t ∈ Set.Icc (1 / V) 1,
-      (1 - Real.exp (-1)) ^ 2 * (1 / t) ≤ divProfile (coherentProfile (-V) 0) t := by
+      (1 - Real.exp (-1)) ^ (2 : ℕ) * (1 / t) ≤ divProfile (coherentProfile (-V) 0) t := by
     intro t ht
     have ht0 : 0 < t := lt_of_lt_of_le hVinv ht.1
     have htne : t ≠ 0 := ne_of_gt ht0
@@ -58,7 +58,7 @@ theorem coherentExponent_neg_ge {V : ℝ} (hV : 1 ≤ V) :
       refine Real.exp_le_exp.mpr ?_
       nlinarith
     have hpos : 0 ≤ Real.exp (-V * t) := Real.exp_nonneg _
-    have hsq : (1 - Real.exp (-1)) ^ 2 ≤ (Real.exp (-V * t) - Real.exp (0 * t)) ^ 2 := by
+    have hsq : (1 - Real.exp (-1)) ^ (2 : ℕ) ≤ (Real.exp (-V * t) - Real.exp (0 * t)) ^ (2 : ℕ) := by
       rw [show (0 : ℝ) * t = 0 by ring, Real.exp_zero]
       have h1 : Real.exp (-V * t) - 1 ≤ Real.exp (-1) - 1 := by linarith
       have h2 : Real.exp (-1) - 1 < 0 := by
@@ -66,9 +66,9 @@ theorem coherentExponent_neg_ge {V : ℝ} (hV : 1 ≤ V) :
         linarith
       nlinarith [hpos]
     rw [divProfile, if_neg htne, coherentProfile]
-    rw [show (1 - Real.exp (-1)) ^ 2 * (1 / t) = (1 - Real.exp (-1)) ^ 2 / t by ring]
+    rw [show (1 - Real.exp (-1)) ^ (2 : ℕ) * (1 / t) = (1 - Real.exp (-1)) ^ (2 : ℕ) / t by ring]
     gcongr
-  have hint1 : IntervalIntegrable (fun t : ℝ => (1 - Real.exp (-1)) ^ 2 * (1 / t))
+  have hint1 : IntervalIntegrable (fun t : ℝ => (1 - Real.exp (-1)) ^ (2 : ℕ) * (1 / t))
       volume (1 / V) 1 := by
     refine IntervalIntegrable.const_mul ?_ _
     refine intervalIntegral.intervalIntegrable_one_div (fun x hx => ?_) ?_
@@ -77,11 +77,11 @@ theorem coherentExponent_neg_ge {V : ℝ} (hV : 1 ≤ V) :
     · exact continuous_id.continuousOn
   have hint2 := intervalIntegrable_divProfile_coherentProfile_sub hVinv.le hVinv1
     (le_refl (1 : ℝ)) (-V) 0
-  have hcmp : (∫ t in (1 / V)..1, (1 - Real.exp (-1)) ^ 2 * (1 / t))
+  have hcmp : (∫ t in (1 / V)..1, (1 - Real.exp (-1)) ^ (2 : ℕ) * (1 / t))
       ≤ ∫ t in (1 / V)..1, divProfile (coherentProfile (-V) 0) t := by
     exact intervalIntegral.integral_mono_on hVinv1 hint1 hint2 (fun t ht => hdom t ht)
-  have hlogval : (∫ t in (1 / V)..1, (1 - Real.exp (-1)) ^ 2 * (1 / t))
-      = (1 - Real.exp (-1)) ^ 2 * Real.log V := by
+  have hlogval : (∫ t in (1 / V)..1, (1 - Real.exp (-1)) ^ (2 : ℕ) * (1 / t))
+      = (1 - Real.exp (-1)) ^ (2 : ℕ) * Real.log V := by
     rw [intervalIntegral.integral_const_mul, integral_one_div_of_pos hVinv zero_lt_one,
       one_div_one_div]
   have hsplit : (∫ t in (0 : ℝ)..1, divProfile (coherentProfile (-V) 0) t)
@@ -100,11 +100,11 @@ theorem coherentExponent_neg_ge {V : ℝ} (hV : 1 ≤ V) :
 
 /-- **The positive end diverges like an exponential of an exponential.** -/
 theorem coherentExponent_pos_ge {u : ℝ} (hu : 0 ≤ u) :
-    (Real.exp (u / 2) - 1) ^ 2 / 4 ≤ coherentExponent u 0 := by
+    (Real.exp (u / 2) - 1) ^ (2 : ℕ) / 4 ≤ coherentExponent u 0 := by
   have hhalf : (0 : ℝ) ≤ 1 / 2 := by norm_num
   have hhalf1 : (1 : ℝ) / 2 ≤ 1 := by norm_num
   have hdom : ∀ t ∈ Set.Icc (1 / 2 : ℝ) 1,
-      (Real.exp (u / 2) - 1) ^ 2 ≤ divProfile (coherentProfile u 0) t := by
+      (Real.exp (u / 2) - 1) ^ (2 : ℕ) ≤ divProfile (coherentProfile u 0) t := by
     intro t ht
     have ht0 : (0 : ℝ) < t := lt_of_lt_of_le (by norm_num) ht.1
     have htne : t ≠ 0 := ne_of_gt ht0
@@ -114,17 +114,17 @@ theorem coherentExponent_pos_ge {u : ℝ} (hu : 0 ≤ u) :
     have h1 : (0 : ℝ) ≤ Real.exp (u / 2) - 1 := by
       have := Real.one_le_exp (by linarith : (0 : ℝ) ≤ u / 2)
       linarith
-    have hsq : (Real.exp (u / 2) - 1) ^ 2 ≤ (Real.exp (u * t) - Real.exp (0 * t)) ^ 2 := by
+    have hsq : (Real.exp (u / 2) - 1) ^ (2 : ℕ) ≤ (Real.exp (u * t) - Real.exp (0 * t)) ^ (2 : ℕ) := by
       rw [show (0 : ℝ) * t = 0 by ring, Real.exp_zero]
       nlinarith
     rw [divProfile, if_neg htne, coherentProfile]
     rw [le_div_iff₀ ht0]
     nlinarith [hsq, ht.2, ht0, sq_nonneg (Real.exp (u * t) - 1)]
-  have hint1 : IntervalIntegrable (fun _ : ℝ => (Real.exp (u / 2) - 1) ^ 2)
+  have hint1 : IntervalIntegrable (fun _ : ℝ => (Real.exp (u / 2) - 1) ^ (2 : ℕ))
       volume (1 / 2) 1 := intervalIntegrable_const
   have hint2 := intervalIntegrable_divProfile_coherentProfile_sub hhalf hhalf1
     (le_refl (1 : ℝ)) u 0
-  have hcmp : (∫ _t in (1 / 2 : ℝ)..1, (Real.exp (u / 2) - 1) ^ 2)
+  have hcmp : (∫ _t in (1 / 2 : ℝ)..1, (Real.exp (u / 2) - 1) ^ (2 : ℕ))
       ≤ ∫ t in (1 / 2 : ℝ)..1, divProfile (coherentProfile u 0) t :=
     intervalIntegral.integral_mono_on hhalf1 hint1 hint2 (fun t ht => hdom t ht)
   rw [intervalIntegral.integral_const] at hcmp
@@ -145,7 +145,7 @@ theorem coherentExponent_pos_ge {u : ℝ} (hu : 0 ≤ u) :
 theorem tendsto_coherentExponent_atTop :
     Tendsto (fun u : ℝ => coherentExponent u 0) atTop atTop := by
   refine tendsto_atTop_mono' atTop
-    (f₁ := fun u : ℝ => (Real.exp (u / 2) - 1) ^ 2 / 4) ?_ ?_
+    (f₁ := fun u : ℝ => (Real.exp (u / 2) - 1) ^ (2 : ℕ) / 4) ?_ ?_
   · filter_upwards [eventually_ge_atTop (0 : ℝ)] with u hu
     exact coherentExponent_pos_ge hu
   · have hexp : Tendsto (fun u : ℝ => Real.exp (u / 2)) atTop atTop :=
@@ -168,10 +168,10 @@ theorem tendsto_coherentExponent_atBot :
     Tendsto (fun u : ℝ => coherentExponent u 0) atBot atTop := by
   have hcomp : Tendsto (fun V : ℝ => coherentExponent (-V) 0) atTop atTop := by
     refine tendsto_atTop_mono' atTop
-      (f₁ := fun V : ℝ => (1 - Real.exp (-1)) ^ 2 / 2 * Real.log V) ?_ ?_
+      (f₁ := fun V : ℝ => (1 - Real.exp (-1)) ^ (2 : ℕ) / 2 * Real.log V) ?_ ?_
     · filter_upwards [eventually_ge_atTop (1 : ℝ)] with V hV
       exact coherentExponent_neg_ge hV
-    · have hc : (0 : ℝ) < (1 - Real.exp (-1)) ^ 2 / 2 := by
+    · have hc : (0 : ℝ) < (1 - Real.exp (-1)) ^ (2 : ℕ) / 2 := by
         have h1 : Real.exp (-1) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
         have h2 : (0 : ℝ) < 1 - Real.exp (-1) := by linarith
         positivity
@@ -188,7 +188,7 @@ theorem coherentExponent_nonneg (u v : ℝ) : 0 ≤ coherentExponent u v := by
 
 /-- **Cauchy–Schwarz for the prime-scale Gram form.** -/
 theorem primeScaleInner_cauchy (u v : ℝ) :
-    primeScaleInner u v ^ 2 ≤ primeScaleInner u u * primeScaleInner v v := by
+    primeScaleInner u v ^ (2 : ℕ) ≤ primeScaleInner u u * primeScaleInner v v := by
   have hquad : ∀ x : ℝ, 0 ≤ primeScaleInner u u * (x * x) + 2 * primeScaleInner u v * x
       + primeScaleInner v v := by
     intro x
@@ -206,7 +206,7 @@ theorem tendsto_coherentExponent_of_tendsto {l : Filter ℝ} (v : ℝ)
     (hdiag : Tendsto (fun u : ℝ => coherentExponent u 0) l atTop) :
     Tendsto (fun u : ℝ => coherentExponent u v) l atTop := by
   have hkey : ∀ u : ℝ, (Real.sqrt (2 * coherentExponent u 0)
-      - Real.sqrt (2 * coherentExponent v 0)) ^ 2 / 2 ≤ coherentExponent u v := by
+      - Real.sqrt (2 * coherentExponent v 0)) ^ (2 : ℕ) / 2 ≤ coherentExponent u v := by
     intro u
     have hA : primeScaleInner u u = 2 * coherentExponent u 0 := primeScaleInner_self u
     have hC : primeScaleInner v v = 2 * coherentExponent v 0 := primeScaleInner_self v
@@ -216,16 +216,16 @@ theorem tendsto_coherentExponent_of_tendsto {l : Filter ℝ} (v : ℝ)
       have := coherentExponent_nonneg u 0; linarith
     have hC0 : 0 ≤ 2 * coherentExponent v 0 := by
       have := coherentExponent_nonneg v 0; linarith
-    have hsa : Real.sqrt (2 * coherentExponent u 0) ^ 2 = 2 * coherentExponent u 0 :=
+    have hsa : Real.sqrt (2 * coherentExponent u 0) ^ (2 : ℕ) = 2 * coherentExponent u 0 :=
       Real.sq_sqrt hA0
-    have hsc : Real.sqrt (2 * coherentExponent v 0) ^ 2 = 2 * coherentExponent v 0 :=
+    have hsc : Real.sqrt (2 * coherentExponent v 0) ^ (2 : ℕ) = 2 * coherentExponent v 0 :=
       Real.sq_sqrt hC0
     have hbound : primeScaleInner u v
         ≤ Real.sqrt (2 * coherentExponent u 0) * Real.sqrt (2 * coherentExponent v 0) := by
       have h1 : primeScaleInner u v ≤ |primeScaleInner u v| := le_abs_self _
-      have h2 : |primeScaleInner u v| = Real.sqrt (primeScaleInner u v ^ 2) :=
+      have h2 : |primeScaleInner u v| = Real.sqrt (primeScaleInner u v ^ (2 : ℕ)) :=
         (Real.sqrt_sq_eq_abs _).symm
-      have h3 : Real.sqrt (primeScaleInner u v ^ 2)
+      have h3 : Real.sqrt (primeScaleInner u v ^ (2 : ℕ))
           ≤ Real.sqrt ((2 * coherentExponent u 0) * (2 * coherentExponent v 0)) :=
         Real.sqrt_le_sqrt hcs
       rw [Real.sqrt_mul hA0] at h3
@@ -233,7 +233,7 @@ theorem tendsto_coherentExponent_of_tendsto {l : Filter ℝ} (v : ℝ)
       linarith
     have hpol := primeScaleInner_eq u v
     have hexpand : (Real.sqrt (2 * coherentExponent u 0)
-        - Real.sqrt (2 * coherentExponent v 0)) ^ 2
+        - Real.sqrt (2 * coherentExponent v 0)) ^ (2 : ℕ)
         = 2 * coherentExponent u 0 - 2 * (Real.sqrt (2 * coherentExponent u 0)
           * Real.sqrt (2 * coherentExponent v 0)) + 2 * coherentExponent v 0 := by
       rw [sub_sq, hsa, hsc]
@@ -242,7 +242,7 @@ theorem tendsto_coherentExponent_of_tendsto {l : Filter ℝ} (v : ℝ)
     linarith
   refine tendsto_atTop_mono' l
     (f₁ := fun u : ℝ => (Real.sqrt (2 * coherentExponent u 0)
-      - Real.sqrt (2 * coherentExponent v 0)) ^ 2 / 2) ?_ ?_
+      - Real.sqrt (2 * coherentExponent v 0)) ^ (2 : ℕ) / 2) ?_ ?_
   · exact Filter.Eventually.of_forall hkey
   · refine Filter.Tendsto.atTop_div_const (by norm_num) ?_
     have hsq : Tendsto (fun u : ℝ => Real.sqrt (2 * coherentExponent u 0)) l atTop := by
@@ -283,8 +283,8 @@ theorem coherentExponent_comm (u v : ℝ) : coherentExponent u v = coherentExpon
   rw [divProfile, divProfile, coherentProfile, coherentProfile]
   split_ifs with ht
   · rfl
-  · rw [show (Real.exp (u * t) - Real.exp (v * t)) ^ 2
-      = (Real.exp (v * t) - Real.exp (u * t)) ^ 2 by ring]
+  · rw [show (Real.exp (u * t) - Real.exp (v * t)) ^ (2 : ℕ)
+      = (Real.exp (v * t) - Real.exp (u * t)) ^ (2 : ℕ) by ring]
 
 /-! ## The reflection-doubled chart `(13g)`–`(13h)` -/
 

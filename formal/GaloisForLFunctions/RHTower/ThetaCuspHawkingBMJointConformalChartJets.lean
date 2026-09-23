@@ -11,12 +11,12 @@ abbrev Point3 := Fin 3 → ℝ
 def chart (p : Point3) : Point3 := ![p 2*radialUnit (p 0),p 2*warp (p 0),p 1]
 
 def chartFirst (p : Point3) (i : Fin 3) : Point3 :=
-  ![![-p 2*warp (p 0)^2,p 2*warp (p 0)*radialUnit (p 0),0],
+  ![![-p 2*warp (p 0)^(2 : ℕ),p 2*warp (p 0)*radialUnit (p 0),0],
     ![0,0,1],![radialUnit (p 0),warp (p 0),0]] i
 
 def chartSecond (p : Point3) (i : Fin 3) : Point3 :=
-  ![![-2*p 2*warp (p 0)^2*radialUnit (p 0),
-    p 2*warp (p 0)*(2*radialUnit (p 0)^2-1),0],0,0] i
+  ![![-2*p 2*warp (p 0)^(2 : ℕ)*radialUnit (p 0),
+    p 2*warp (p 0)*(2*radialUnit (p 0)^(2 : ℕ)-1),0],0,0] i
 
 theorem chart_smooth : ContDiff ℝ ∞ chart := by
   apply contDiff_pi.mpr
@@ -48,7 +48,7 @@ theorem chartFirstCurve_hasDerivAt (p : Point3) (i : Fin 3) (s : ℝ) :
   fin_cases i <;> apply hasDerivAt_pi.mpr <;> intro j <;> fin_cases j
   · have h := ((warp_hasDerivAt s).pow 2).const_mul (-p 2)
     have hd : (-p 2)*(2*warp s^(2-1)*(warp s*radialUnit s)) =
-        -2*p 2*warp s^2*radialUnit s := by ring
+        -2*p 2*warp s^(2 : ℕ)*radialUnit s := by ring
     simpa [chartFirst,chartSecond,coordinateLine] using h.congr_deriv hd
   · simpa [chartFirst,chartSecond,coordinateLine,mul_assoc] using
       (warpFirst_hasDerivAt s).const_mul (p 2)

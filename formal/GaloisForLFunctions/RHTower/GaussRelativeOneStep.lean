@@ -165,7 +165,7 @@ theorem tendsto_norm_gaussPrincipalStep_one_sub_amplitude {m : ℕ} (hm2 : 2 ≤
           ≤ 4 * (p : ℝ) / (1 + (j.natAbs : ℝ)) := by
       intro n j
       have h1pow : (gaussMovingAmplitudeBlock hp
-          ((Int.fract (gaussSamplePhase m p (ι n)) : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+          ((Int.fract (gaussSamplePhase m p (ι n)) : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ))
           (fourierLp 2 0)
           = (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
         rw [pow_zero]

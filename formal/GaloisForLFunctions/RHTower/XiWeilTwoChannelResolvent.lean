@@ -10,7 +10,7 @@ In centred coordinates `X(W) = ξ(1/2 + W)`, `L = X'/X`, and with `α` running o
 multiplicity-exact centred Xi divisor, the two canonical resolvent channels are
 
 ```
-A_w (z) = w / (w ^ 2 + z ^ 2),      B_w (z) = z / (w ^ 2 + z ^ 2),
+A_w (z) = w / (w ^ (2 : ℕ) + z ^ (2 : ℕ)),      B_w (z) = z / (w ^ (2 : ℕ) + z ^ (2 : ℕ)),
 ```
 
 equivalently the two Hardy orientations `R_w^± (z) = 1 / (w ∓ i z)`.  The paired Hadamard
@@ -60,21 +60,21 @@ theorem add_I_mul_spectral_ne_zero {W : ℂ} (hW : 1 / 2 < W.re) (q : XiZeroCopy
   linarith [hb.1]
 
 theorem sq_add_spectral_sq_ne_zero {W : ℂ} (hW : 1 / 2 < W.re) (q : XiZeroCopy) :
-    W ^ 2 + (xiSpectralPoint q) ^ 2 ≠ 0 := by
-  have hfac : W ^ 2 + (xiSpectralPoint q) ^ 2
+    W ^ (2 : ℕ) + (xiSpectralPoint q) ^ (2 : ℕ) ≠ 0 := by
+  have hfac : W ^ (2 : ℕ) + (xiSpectralPoint q) ^ (2 : ℕ)
       = (W - Complex.I * xiSpectralPoint q) * (W + Complex.I * xiSpectralPoint q) := by
     have h := Complex.I_mul_I
-    linear_combination (xiSpectralPoint q ^ 2) * h
+    linear_combination (xiSpectralPoint q ^ (2 : ℕ)) * h
   rw [hfac]
   exact mul_ne_zero (sub_I_mul_spectral_ne_zero hW q) (add_I_mul_spectral_ne_zero hW q)
 
 /-! ### The two canonical channels -/
 
 /-- The even resolvent channel `A_w`. -/
-def weilChannelA (w z : ℂ) : ℂ := w / (w ^ 2 + z ^ 2)
+def weilChannelA (w z : ℂ) : ℂ := w / (w ^ (2 : ℕ) + z ^ (2 : ℕ))
 
 /-- The odd resolvent channel `B_w`. -/
-def weilChannelB (w z : ℂ) : ℂ := z / (w ^ 2 + z ^ 2)
+def weilChannelB (w z : ℂ) : ℂ := z / (w ^ (2 : ℕ) + z ^ (2 : ℕ))
 
 /-- The forward Hardy resolvent orientation. -/
 def weilResolventPlus (w z : ℂ) : ℂ := 1 / (w - Complex.I * z)
@@ -82,11 +82,11 @@ def weilResolventPlus (w z : ℂ) : ℂ := 1 / (w - Complex.I * z)
 /-- The backward Hardy resolvent orientation. -/
 def weilResolventMinus (w z : ℂ) : ℂ := 1 / (w + Complex.I * z)
 
-theorem weilChannelA_eq_resolvent {w z : ℂ} (hz : w ^ 2 + z ^ 2 ≠ 0) :
+theorem weilChannelA_eq_resolvent {w z : ℂ} (hz : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     weilChannelA w z = (weilResolventPlus w z + weilResolventMinus w z) / 2 := by
-  have hfac : w ^ 2 + z ^ 2 = (w - Complex.I * z) * (w + Complex.I * z) := by
+  have hfac : w ^ (2 : ℕ) + z ^ (2 : ℕ) = (w - Complex.I * z) * (w + Complex.I * z) := by
     have h := Complex.I_mul_I
-    linear_combination (z ^ 2) * h
+    linear_combination (z ^ (2 : ℕ)) * h
   have h1 : w - Complex.I * z ≠ 0 := by
     intro h
     apply hz
@@ -99,12 +99,12 @@ theorem weilChannelA_eq_resolvent {w z : ℂ} (hz : w ^ 2 + z ^ 2 ≠ 0) :
   field_simp
   ring
 
-theorem weilChannelB_eq_resolvent {w z : ℂ} (hz : w ^ 2 + z ^ 2 ≠ 0) :
+theorem weilChannelB_eq_resolvent {w z : ℂ} (hz : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     weilChannelB w z
       = (weilResolventPlus w z - weilResolventMinus w z) / (2 * Complex.I) := by
-  have hfac : w ^ 2 + z ^ 2 = (w - Complex.I * z) * (w + Complex.I * z) := by
+  have hfac : w ^ (2 : ℕ) + z ^ (2 : ℕ) = (w - Complex.I * z) * (w + Complex.I * z) := by
     have h := Complex.I_mul_I
-    linear_combination (z ^ 2) * h
+    linear_combination (z ^ (2 : ℕ)) * h
   have h1 : w - Complex.I * z ≠ 0 := by
     intro h
     apply hz
@@ -153,7 +153,7 @@ theorem weilChannelA_factored (w z : ℂ) :
     weilChannelA w z = w / ((w - Complex.I * z) * (w + Complex.I * z)) := by
   rw [weilChannelA]
   congr 1
-  linear_combination (z ^ 2) * Complex.I_mul_I
+  linear_combination (z ^ (2 : ℕ)) * Complex.I_mul_I
 
 theorem xiCent_ne_zero_spectral {W : ℂ} (hW : 1 / 2 < W.re) : XiC (-Complex.I * W) ≠ 0 := by
   rw [← xiCent_eq_XiC]
@@ -250,13 +250,13 @@ theorem eventually_norm_spectral_ge (M : ℝ) :
   by_cases hM : M ≤ 0
   · exact Filter.Eventually.of_forall fun q => le_trans hM (norm_nonneg _)
   · rw [not_le] at hM
-    have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+    have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
       xiSpectralPoint_inv_sq_summable
-    have hlt : ∀ᶠ q in Filter.cofinite, 1 / ‖xiSpectralPoint q‖ ^ 2 < 1 / M ^ 2 :=
+    have hlt : ∀ᶠ q in Filter.cofinite, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) < 1 / M ^ (2 : ℕ) :=
       hbase.tendsto_cofinite_zero.eventually_lt_const (by positivity)
     filter_upwards [hlt] with q hq
     have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-    have hsq : M ^ 2 < ‖xiSpectralPoint q‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos hpos 2) hq
+    have hsq : M ^ (2 : ℕ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := lt_of_one_div_lt_one_div (pow_pos hpos 2) hq
     exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
 
 theorem norm_sub_I_mul_spectral_ge {w : ℂ} {q : XiZeroCopy}
@@ -282,10 +282,10 @@ theorem norm_add_I_mul_spectral_ge {w : ℂ} {q : XiZeroCopy}
 
 theorem norm_sq_add_spectral_sq_ge {w : ℂ} {q : XiZeroCopy}
     (h : 2 * ‖w‖ ≤ ‖xiSpectralPoint q‖) :
-    ‖xiSpectralPoint q‖ ^ 2 / 4 ≤ ‖w ^ 2 + (xiSpectralPoint q) ^ 2‖ := by
-  have hfac : w ^ 2 + (xiSpectralPoint q) ^ 2
+    ‖xiSpectralPoint q‖ ^ (2 : ℕ) / 4 ≤ ‖w ^ (2 : ℕ) + (xiSpectralPoint q) ^ (2 : ℕ)‖ := by
+  have hfac : w ^ (2 : ℕ) + (xiSpectralPoint q) ^ (2 : ℕ)
       = (w - Complex.I * xiSpectralPoint q) * (w + Complex.I * xiSpectralPoint q) := by
-    linear_combination ((xiSpectralPoint q) ^ 2) * Complex.I_mul_I
+    linear_combination ((xiSpectralPoint q) ^ (2 : ℕ)) * Complex.I_mul_I
   have h1 := norm_sub_I_mul_spectral_ge h
   have h2 := norm_add_I_mul_spectral_ge h
   rw [hfac, norm_mul]
@@ -293,10 +293,10 @@ theorem norm_sq_add_spectral_sq_ge {w : ℂ} {q : XiZeroCopy}
     norm_nonneg (w + Complex.I * xiSpectralPoint q)]
 
 theorem norm_weilChannelA_le {w : ℂ} {q : XiZeroCopy} (h : 2 * ‖w‖ ≤ ‖xiSpectralPoint q‖) :
-    ‖weilChannelA w (xiSpectralPoint q)‖ ≤ 4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ 2 := by
+    ‖weilChannelA w (xiSpectralPoint q)‖ ≤ 4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hden := norm_sq_add_spectral_sq_ge h
-  have hdenpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 / 4 := by positivity
+  have hdenpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) / 4 := by positivity
   rw [weilChannelA, norm_div, div_le_div_iff₀ (lt_of_lt_of_le hdenpos hden) (by positivity)]
   nlinarith [norm_nonneg w, hden, hpos]
 
@@ -304,7 +304,7 @@ theorem norm_weilChannelB_le {w : ℂ} {q : XiZeroCopy} (h : 2 * ‖w‖ ≤ ‖
     ‖weilChannelB w (xiSpectralPoint q)‖ ≤ 4 / ‖xiSpectralPoint q‖ := by
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hden := norm_sq_add_spectral_sq_ge h
-  have hdenpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 / 4 := by positivity
+  have hdenpos : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) / 4 := by positivity
   rw [weilChannelB, norm_div, div_le_div_iff₀ (lt_of_lt_of_le hdenpos hden) hpos]
   nlinarith [hden, hpos]
 
@@ -329,7 +329,7 @@ theorem norm_weilResolventMinus_le {w : ℂ} {q : XiZeroCopy} (h : 2 * ‖w‖ �
 theorem summable_channelA_mul (w u : ℂ) :
     Summable (fun q : XiZeroCopy =>
       weilChannelA w (xiSpectralPoint q) * weilChannelA u (xiSpectralPoint q)) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   refine (hbase.mul_left (16 * (‖w‖ * ‖u‖))).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖), eventually_norm_spectral_ge (2 * ‖u‖),
@@ -339,23 +339,23 @@ theorem summable_channelA_mul (w u : ℂ) :
   have b2 := norm_weilChannelA_le hu
   rw [norm_mul]
   have hprod : ‖weilChannelA w (xiSpectralPoint q)‖ * ‖weilChannelA u (xiSpectralPoint q)‖
-      ≤ (4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ 2) * (4 * ‖u‖ / ‖xiSpectralPoint q‖ ^ 2) :=
+      ≤ (4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * (4 * ‖u‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     mul_le_mul b1 b2 (norm_nonneg _) (by positivity)
   refine hprod.trans ?_
   rw [div_mul_div_comm, mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
-  have hsq1 : (1 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ 2 := by nlinarith [h1, hpos]
-  have ha2 : ‖xiSpectralPoint q‖ ^ 2 ≤ ‖xiSpectralPoint q‖ ^ 2 * ‖xiSpectralPoint q‖ ^ 2 := by
+  have hsq1 : (1 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by nlinarith [h1, hpos]
+  have ha2 : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     have hmul := mul_le_mul_of_nonneg_right hsq1 (sq_nonneg ‖xiSpectralPoint q‖)
     linarith
   have hkey : 0 ≤ (‖w‖ * ‖u‖) *
-      (‖xiSpectralPoint q‖ ^ 2 * ‖xiSpectralPoint q‖ ^ 2 - ‖xiSpectralPoint q‖ ^ 2) :=
+      (‖xiSpectralPoint q‖ ^ (2 : ℕ) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) - ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     mul_nonneg (mul_nonneg (norm_nonneg w) (norm_nonneg u)) (by linarith)
   nlinarith [hkey]
 
 theorem summable_channelB_mul (w u : ℂ) :
     Summable (fun q : XiZeroCopy =>
       weilChannelB w (xiSpectralPoint q) * weilChannelB u (xiSpectralPoint q)) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   refine (hbase.mul_left 16).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖), eventually_norm_spectral_ge (2 * ‖u‖)]
@@ -374,7 +374,7 @@ theorem summable_channelB_mul (w u : ℂ) :
 theorem summable_resolvent_mul (w u : ℂ) :
     Summable (fun q : XiZeroCopy =>
       weilResolventPlus w (xiSpectralPoint q) * weilResolventMinus u (xiSpectralPoint q)) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   refine (hbase.mul_left 4).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖), eventually_norm_spectral_ge (2 * ‖u‖)]
@@ -394,7 +394,7 @@ theorem summable_resolvent_mul (w u : ℂ) :
 theorem summable_resolvent_mul' (w u : ℂ) :
     Summable (fun q : XiZeroCopy =>
       weilResolventMinus w (xiSpectralPoint q) * weilResolventPlus u (xiSpectralPoint q)) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   refine (hbase.mul_left 4).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖), eventually_norm_spectral_ge (2 * ‖u‖)]
@@ -414,38 +414,38 @@ theorem summable_resolvent_mul' (w u : ℂ) :
 /-! ### Square summability of the channels on the divisor -/
 
 theorem xiWeilSquareSummable_channelA (w : ℂ) : XiWeilSquareSummable (weilChannelA w) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
-  refine (hbase.mul_left (16 * ‖w‖ ^ 2)).of_norm_bounded_eventually ?_
+  refine (hbase.mul_left (16 * ‖w‖ ^ (2 : ℕ))).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖), eventually_norm_spectral_ge 1]
     with q hw h1
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have b1 := norm_weilChannelA_le hw
-  have hsq1 : (1 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ 2 := by nlinarith [h1, hpos]
+  have hsq1 : (1 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by nlinarith [h1, hpos]
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  have hstep : ‖weilChannelA w (xiSpectralPoint q)‖ ^ 2
-      ≤ (4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ 2) ^ 2 := by
+  have hstep : ‖weilChannelA w (xiSpectralPoint q)‖ ^ (2 : ℕ)
+      ≤ (4 * ‖w‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     have := norm_nonneg (weilChannelA w (xiSpectralPoint q))
     nlinarith [b1]
   refine hstep.trans ?_
   rw [div_pow, mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
-  have hkey : 0 ≤ ‖w‖ ^ 2 *
-      (‖xiSpectralPoint q‖ ^ 2 * (‖xiSpectralPoint q‖ ^ 2) ^ 2
-        - ‖xiSpectralPoint q‖ ^ 2 * ‖xiSpectralPoint q‖ ^ 2) := by
+  have hkey : 0 ≤ ‖w‖ ^ (2 : ℕ) *
+      (‖xiSpectralPoint q‖ ^ (2 : ℕ) * (‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ)
+        - ‖xiSpectralPoint q‖ ^ (2 : ℕ) * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     have hm := mul_le_mul_of_nonneg_left hsq1
-      (by positivity : (0 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ 2 * ‖xiSpectralPoint q‖ ^ 2)
+      (by positivity : (0 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
     nlinarith [sq_nonneg ‖w‖]
   nlinarith [hkey]
 
 theorem xiWeilSquareSummable_channelB (w : ℂ) : XiWeilSquareSummable (weilChannelB w) := by
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   refine (hbase.mul_left 16).of_norm_bounded_eventually ?_
   filter_upwards [eventually_norm_spectral_ge (2 * ‖w‖)] with q hw
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have b1 := norm_weilChannelB_le hw
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  have hstep : ‖weilChannelB w (xiSpectralPoint q)‖ ^ 2 ≤ (4 / ‖xiSpectralPoint q‖) ^ 2 := by
+  have hstep : ‖weilChannelB w (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤ (4 / ‖xiSpectralPoint q‖) ^ (2 : ℕ) := by
     have := norm_nonneg (weilChannelB w (xiSpectralPoint q))
     nlinarith [b1]
   refine hstep.trans ?_
@@ -454,7 +454,7 @@ theorem xiWeilSquareSummable_channelB (w : ℂ) : XiWeilSquareSummable (weilChan
 
 /-! ### Equations (8) and (9): the exact resolvent--Weil identity -/
 
-theorem channel_pair_pointwise {w u z : ℂ} (hw : w ^ 2 + z ^ 2 ≠ 0) (hu : u ^ 2 + z ^ 2 ≠ 0)
+theorem channel_pair_pointwise {w u z : ℂ} (hw : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) (hu : u ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0)
     (hwu : w + u ≠ 0) :
     weilChannelA w z * weilChannelA u z + weilChannelB w z * weilChannelB u z
       = (weilChannelA w z + weilChannelA u z) / (w + u) := by
@@ -483,14 +483,14 @@ theorem criticalLogDerivKernel_eq_twoChannel {w v : ℂ} (hw : 1 / 2 < w.re) (hv
     ← logDeriv_xiCent_eq_tsum_channelA hw, ← logDeriv_xiCent_eq_tsum_channelA hcv,
     logDeriv_xiCent_conj hv, criticalLogDerivKernel]
 
-theorem resolvent_pair_pointwise {w u z : ℂ} (hw : w ^ 2 + z ^ 2 ≠ 0) (hu : u ^ 2 + z ^ 2 ≠ 0) :
+theorem resolvent_pair_pointwise {w u z : ℂ} (hw : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) (hu : u ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     weilResolventPlus w z * weilResolventMinus u z
         + weilResolventMinus w z * weilResolventPlus u z
       = 2 * (weilChannelA w z * weilChannelA u z + weilChannelB w z * weilChannelB u z) := by
-  have hfw : w ^ 2 + z ^ 2 = (w - Complex.I * z) * (w + Complex.I * z) := by
-    linear_combination (z ^ 2) * Complex.I_mul_I
-  have hfu : u ^ 2 + z ^ 2 = (u - Complex.I * z) * (u + Complex.I * z) := by
-    linear_combination (z ^ 2) * Complex.I_mul_I
+  have hfw : w ^ (2 : ℕ) + z ^ (2 : ℕ) = (w - Complex.I * z) * (w + Complex.I * z) := by
+    linear_combination (z ^ (2 : ℕ)) * Complex.I_mul_I
+  have hfu : u ^ (2 : ℕ) + z ^ (2 : ℕ) = (u - Complex.I * z) * (u + Complex.I * z) := by
+    linear_combination (z ^ (2 : ℕ)) * Complex.I_mul_I
   have hw1 : w - Complex.I * z ≠ 0 := by
     intro h; apply hw; rw [hfw, h, zero_mul]
   have hw2 : w + Complex.I * z ≠ 0 := by
@@ -501,7 +501,7 @@ theorem resolvent_pair_pointwise {w u z : ℂ} (hw : w ^ 2 + z ^ 2 ≠ 0) (hu : 
     intro h; apply hu; rw [hfu, h, mul_zero]
   simp only [weilResolventPlus, weilResolventMinus, weilChannelA, weilChannelB, hfw, hfu]
   field_simp
-  linear_combination (-2 * z ^ 2) * Complex.I_mul_I
+  linear_combination (-2 * z ^ (2 : ℕ)) * Complex.I_mul_I
 
 /-- **Equation (9).**  The same kernel is the mean of the two Hardy orientation Gram kernels. -/
 theorem criticalLogDerivKernel_eq_resolventChannels {w v : ℂ} (hw : 1 / 2 < w.re)

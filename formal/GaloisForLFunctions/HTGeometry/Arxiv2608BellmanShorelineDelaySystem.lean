@@ -46,7 +46,7 @@ theorem bellmanShoreline_hasDerivAt_normalize
 /-- Scalar old-contact denominator in regular three-dimensional delay chamber. -/
 def bellmanShorelineDelayDenominator
     (kappa mu tau geodesicCurvature : ℝ) (n q : F) : ℝ :=
-  -(1 + kappa ^ 2) * mu * Real.exp (kappa * tau) +
+  -(1 + kappa ^ (2 : ℕ)) * mu * Real.exp (kappa * tau) +
     geodesicCurvature * inner ℝ n q
 
 /-- Frenet contact identities reduce differentiated tangency factor to delay denominator. -/

@@ -23,18 +23,18 @@ theorem exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean
     (hupper : ∀ θ ∈ Icc (0 : ℝ) 1, f θ ≤ M)
     (hmean : (∫ θ in (0 : ℝ)..1, f θ) = 0) :
     ∃ θ ∈ Icc (0 : ℝ) 1,
-      f θ ≤ -(∫ t in (0 : ℝ)..1, (f t) ^ 2) / M := by
+      f θ ≤ -(∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ)) / M := by
   obtain ⟨θ₀, hθ₀mem, hmin⟩ :=
     (isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).exists_isMinOn
       (Set.nonempty_Icc.mpr (by norm_num)) hf.continuousOn
   have hfInt : IntervalIntegrable f volume 0 1 := hf.intervalIntegrable _ _
-  have hsqInt : IntervalIntegrable (fun θ => (f θ) ^ 2) volume 0 1 :=
+  have hsqInt : IntervalIntegrable (fun θ => (f θ) ^ (2 : ℕ)) volume 0 1 :=
     (hf.pow 2).intervalIntegrable _ _
   have hmajorInt : IntervalIntegrable
       (fun θ => (M + f θ₀) * f θ - f θ₀ * M) volume 0 1 := by
     exact ((continuous_const.mul hf).sub continuous_const).intervalIntegrable _ _
   have hpoint : ∀ θ ∈ Icc (0 : ℝ) 1,
-      (f θ) ^ 2 ≤ (M + f θ₀) * f θ - f θ₀ * M := by
+      (f θ) ^ (2 : ℕ) ≤ (M + f θ₀) * f θ - f θ₀ * M := by
     intro θ hθ
     have hlow : f θ₀ ≤ f θ := hmin hθ
     have hhi : f θ ≤ M := hupper θ hθ
@@ -42,7 +42,7 @@ theorem exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean
   have hint := intervalIntegral.integral_mono_on (by norm_num)
     hsqInt hmajorInt hpoint
   have hbound :
-      (∫ θ in (0 : ℝ)..1, (f θ) ^ 2) ≤ -f θ₀ * M := by
+      (∫ θ in (0 : ℝ)..1, (f θ) ^ (2 : ℕ)) ≤ -f θ₀ * M := by
     have hsplit :
         (∫ θ in (0 : ℝ)..1, (M + f θ₀) * f θ - f θ₀ * M) =
           (∫ θ in (0 : ℝ)..1, (M + f θ₀) * f θ) -
@@ -52,7 +52,7 @@ theorem exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean
           ((continuous_const.mul hf).intervalIntegrable _ _)
           (continuous_const.intervalIntegrable _ _)
     calc
-      (∫ θ in (0 : ℝ)..1, (f θ) ^ 2) ≤
+      (∫ θ in (0 : ℝ)..1, (f θ) ^ (2 : ℕ)) ≤
           ∫ θ in (0 : ℝ)..1, ((M + f θ₀) * f θ - f θ₀ * M) := hint
       _ = -f θ₀ * M := by
         rw [hsplit, intervalIntegral.integral_const_mul, hmean, mul_zero]
@@ -64,7 +64,7 @@ theorem exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean
 /-- Boundary variance of source alias after the divisor-free limit has been fixed. -/
 def criticalFeatureCompactSourceBoundaryAliasRealVariance (cutoff : ℕ) : ℝ :=
   ∫ theta in (0 : ℝ)..1,
-    (criticalFeatureCompactSourceBoundaryAliasAtPhase cutoff theta) ^ 2
+    (criticalFeatureCompactSourceBoundaryAliasAtPhase cutoff theta) ^ (2 : ℕ)
 
 /-- Sharp source envelope inherited from the `37/200` HCF periodization ripple. -/
 def criticalFeatureCompactSourceBoundaryAliasUpperEnvelope (cutoff : ℕ) : ℝ :=

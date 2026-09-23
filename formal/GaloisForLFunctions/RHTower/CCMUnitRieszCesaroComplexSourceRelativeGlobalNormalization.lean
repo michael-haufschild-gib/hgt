@@ -22,16 +22,16 @@ namespace GaloisForLFunctions.RHTower
 
 private theorem integral_cpow_three_mul_cexp
     {c : ℂ} (hc : c ≠ 0) (t : ℝ) :
-    (∫ s in (0 : ℝ)..t, ((s : ℂ) ^ 3) * Complex.exp (c * (s : ℂ))) =
+    (∫ s in (0 : ℝ)..t, ((s : ℂ) ^ (3 : ℕ)) * Complex.exp (c * (s : ℂ))) =
       Complex.exp (c * (t : ℂ)) *
-          ((t : ℂ) ^ 3 / c - 3 * (t : ℂ) ^ 2 / c ^ 2 +
-            6 * (t : ℂ) / c ^ 3 - 6 / c ^ 4) +
-        6 / c ^ 4 := by
+          ((t : ℂ) ^ (3 : ℕ) / c - 3 * (t : ℂ) ^ (2 : ℕ) / c ^ (2 : ℕ) +
+            6 * (t : ℂ) / c ^ (3 : ℕ) - 6 / c ^ (4 : ℕ)) +
+        6 / c ^ (4 : ℕ) := by
   have hA (x : ℝ) :
       GaloisForLFunctions.HTGeometry.cexpAntider (-c) 3 x =
         Complex.exp (c * (x : ℂ)) *
-          ((x : ℂ) ^ 3 / c - 3 * (x : ℂ) ^ 2 / c ^ 2 +
-            6 * (x : ℂ) / c ^ 3 - 6 / c ^ 4) := by
+          ((x : ℂ) ^ (3 : ℕ) / c - 3 * (x : ℂ) ^ (2 : ℕ) / c ^ (2 : ℕ) +
+            6 * (x : ℂ) / c ^ (3 : ℕ) - 6 / c ^ (4 : ℕ)) := by
     simp only [GaloisForLFunctions.HTGeometry.cexpAntider]
     have he : Complex.exp (-(-c * (x : ℂ))) = Complex.exp (c * (x : ℂ)) := by
       congr 1
@@ -41,14 +41,14 @@ private theorem integral_cpow_three_mul_cexp
     ring
   have hderiv (s : ℝ) : HasDerivAt
       (GaloisForLFunctions.HTGeometry.cexpAntider (-c) 3)
-      (((s : ℂ) ^ 3) * Complex.exp (c * (s : ℂ))) s := by
+      (((s : ℂ) ^ (3 : ℕ)) * Complex.exp (c * (s : ℂ))) s := by
     have h := GaloisForLFunctions.HTGeometry.hasDerivAt_cexpAntider
       (c := -c) (neg_ne_zero.mpr hc) 3 s
     convert h using 1
     congr 2
     ring
   have hint : IntervalIntegrable
-      (fun s : ℝ => ((s : ℂ) ^ 3) * Complex.exp (c * (s : ℂ))) volume 0 t := by
+      (fun s : ℝ => ((s : ℂ) ^ (3 : ℕ)) * Complex.exp (c * (s : ℂ))) volume 0 t := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -64,8 +64,8 @@ private theorem tendsto_cexp_mul_real_atTop_zero
     tendsto_const_nhds.neg_mul_atTop hq tendsto_id
 
 private def complexCubicExponentialTerminal (c : ℂ) (t : ℝ) : ℂ :=
-  Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ 3 *
-    ∫ s in (0 : ℝ)..t, ((s : ℂ) ^ 3) * Complex.exp (c * (s : ℂ))
+  Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ (3 : ℕ) *
+    ∫ s in (0 : ℝ)..t, ((s : ℂ) ^ (3 : ℕ)) * Complex.exp (c * (s : ℂ))
 
 private theorem tendsto_complexCubicExponentialTerminal
     {c : ℂ} (hc : 0 < c.re) :
@@ -83,36 +83,36 @@ private theorem tendsto_complexCubicExponentialTerminal
     funext t
     congr 1
     ring
-  have h1 : Tendsto (fun t : ℝ => 3 / (c ^ 2 * (t : ℂ))) atTop (nhds 0) := by
-    convert hinv.const_mul (3 / c ^ 2) using 1
+  have h1 : Tendsto (fun t : ℝ => 3 / (c ^ (2 : ℕ) * (t : ℂ))) atTop (nhds 0) := by
+    convert hinv.const_mul (3 / c ^ (2 : ℕ)) using 1
     · funext t
       push_cast
       ring
     · simp
-  have h2 : Tendsto (fun t : ℝ => 6 / (c ^ 3 * (t : ℂ) ^ 2)) atTop (nhds 0) := by
-    convert (hinv.pow 2).const_mul (6 / c ^ 3) using 1
+  have h2 : Tendsto (fun t : ℝ => 6 / (c ^ (3 : ℕ) * (t : ℂ) ^ (2 : ℕ))) atTop (nhds 0) := by
+    convert (hinv.pow 2).const_mul (6 / c ^ (3 : ℕ)) using 1
     · funext t
       push_cast
       ring
     · simp
-  have h3 : Tendsto (fun t : ℝ => 6 / (c ^ 4 * (t : ℂ) ^ 3)) atTop (nhds 0) := by
-    convert (hinv.pow 3).const_mul (6 / c ^ 4) using 1
+  have h3 : Tendsto (fun t : ℝ => 6 / (c ^ (4 : ℕ) * (t : ℂ) ^ (3 : ℕ))) atTop (nhds 0) := by
+    convert (hinv.pow 3).const_mul (6 / c ^ (4 : ℕ)) using 1
     · funext t
       push_cast
       ring
     · simp
   have h4 : Tendsto (fun t : ℝ =>
-      6 * Complex.exp (-(c * (t : ℂ))) / (c ^ 4 * (t : ℂ) ^ 3))
+      6 * Complex.exp (-(c * (t : ℂ))) / (c ^ (4 : ℕ) * (t : ℂ) ^ (3 : ℕ)))
       atTop (nhds 0) := by
-    convert (hexp.mul (hinv.pow 3)).const_mul (6 / c ^ 4) using 1
+    convert (hexp.mul (hinv.pow 3)).const_mul (6 / c ^ (4 : ℕ)) using 1
     · funext t
       push_cast
       ring
     · ring
   have hsum : Tendsto (fun t : ℝ =>
-      1 / c - 3 / (c ^ 2 * (t : ℂ)) + 6 / (c ^ 3 * (t : ℂ) ^ 2) -
-        6 / (c ^ 4 * (t : ℂ) ^ 3) +
-          6 * Complex.exp (-(c * (t : ℂ))) / (c ^ 4 * (t : ℂ) ^ 3))
+      1 / c - 3 / (c ^ (2 : ℕ) * (t : ℂ)) + 6 / (c ^ (3 : ℕ) * (t : ℂ) ^ (2 : ℕ)) -
+        6 / (c ^ (4 : ℕ) * (t : ℂ) ^ (3 : ℕ)) +
+          6 * Complex.exp (-(c * (t : ℂ))) / (c ^ (4 : ℕ) * (t : ℂ) ^ (3 : ℕ)))
       atTop (nhds (1 / c)) := by
     convert (((tendsto_const_nhds.sub h1).add h2).sub h3).add h4 using 1
     all_goals ring_nf
@@ -135,7 +135,7 @@ def unitRieszCesaroComplexFiniteCompletedReporterSymbol (t : ℝ) (z : ℂ) : �
 private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq
     {t : ℝ} (ht : 0 < t) (z : ℂ) :
     unitRieszCesaroComplexFiniteCompletedReporterSymbol t z =
-      -((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) * z ^ 2 *
+      -((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) * z ^ (2 : ℕ) *
         ∫ s in (0 : ℝ)..t,
           Complex.exp (-(z * ((t - s : ℝ) : ℂ))) * (unitRieszCesaroTest t s : ℂ) := by
   let f : ℝ → ℂ := fun s => Complex.exp (-(z * ((t - s : ℝ) : ℂ)))
@@ -155,16 +155,16 @@ private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq
     exact (hasDerivAt_unitRieszCesaroTestDeriv t s).ofReal_comp
   let F : ℝ → ℂ := fun s => f s * G' s - z * f s * G s
   have hF (s : ℝ) : HasDerivAt F
-      (f s * G'' s - z ^ 2 * f s * G s) s := by
+      (f s * G'' s - z ^ (2 : ℕ) * f s * G s) s := by
     have hleft := (hf s).mul (hG' s)
     have hright := ((hf s).mul (hG s)).const_mul z
     have hraw := hleft.sub hright
     have hraw' := hraw.congr_deriv (show
         z * f s * G' s + f s * G'' s -
             z * (z * f s * G s + f s * G' s) =
-          f s * G'' s - z ^ 2 * f s * G s by ring)
+          f s * G'' s - z ^ (2 : ℕ) * f s * G s by ring)
     change HasDerivAt (fun x => f x * G' x - z * f x * G x)
-      (f s * G'' s - z ^ 2 * f s * G s) s
+      (f s * G'' s - z ^ (2 : ℕ) * f s * G s) s
     apply hraw'.congr_of_eventuallyEq
     filter_upwards with x
     simp only [Pi.mul_apply, Pi.sub_apply, mul_assoc]
@@ -177,40 +177,40 @@ private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq
       exact Complex.continuous_ofReal.comp (continuous_unitRieszCesaroTestSecondDeriv t)
     exact (hfcont.mul hGcont).intervalIntegrable _ _
   have hsecondInt : IntervalIntegrable
-      (fun s : ℝ => z ^ 2 * f s * G s) volume 0 t := by
+      (fun s : ℝ => z ^ (2 : ℕ) * f s * G s) volume 0 t := by
     have hfcont : Continuous f := by
       dsimp only [f]
       fun_prop
     have hGcont : Continuous G := by
       dsimp only [G]
       exact Complex.continuous_ofReal.comp (continuous_unitRieszCesaroTest t)
-    have hc : Continuous (fun s : ℝ => z ^ 2 * (f s * G s)) :=
+    have hc : Continuous (fun s : ℝ => z ^ (2 : ℕ) * (f s * G s)) :=
       continuous_const.mul (hfcont.mul hGcont)
     exact hc.congr (fun s => by ring) |>.intervalIntegrable _ _
   have hderivInt : IntervalIntegrable
-      (fun s : ℝ => f s * G'' s - z ^ 2 * f s * G s) volume 0 t :=
+      (fun s : ℝ => f s * G'' s - z ^ (2 : ℕ) * f s * G s) volume 0 t :=
     hfirstInt.sub hsecondInt
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun s _ => hF s) hderivInt
   rw [intervalIntegral.integral_sub hfirstInt hsecondInt] at hftc
   have hsecondEq :
-      (∫ s in (0 : ℝ)..t, z ^ 2 * f s * G s) =
-        z ^ 2 * ∫ s in (0 : ℝ)..t, f s * G s := by
-    rw [show (fun s : ℝ => z ^ 2 * f s * G s) =
-        fun s : ℝ => z ^ 2 * (f s * G s) by funext s; ring,
+      (∫ s in (0 : ℝ)..t, z ^ (2 : ℕ) * f s * G s) =
+        z ^ (2 : ℕ) * ∫ s in (0 : ℝ)..t, f s * G s := by
+    rw [show (fun s : ℝ => z ^ (2 : ℕ) * f s * G s) =
+        fun s : ℝ => z ^ (2 : ℕ) * (f s * G s) by funext s; ring,
       intervalIntegral.integral_const_mul]
   rw [hsecondEq] at hftc
   have hGt : G t = 0 := by simp [G, unitRieszCesaroTest_self]
   have hG0 : G 0 = 0 := by simp [G, unitRieszCesaroTest_zero]
   have hG'0 : G' 0 = 0 := by simp [G', unitRieszCesaroTestDeriv_zero]
-  have hG't : G' t = (-(3 / 64) * t ^ 3 * Real.exp (-t / 2) : ℝ) := by
+  have hG't : G' t = (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) : ℝ) := by
     dsimp only [G']
     rw [unitRieszCesaroTestDeriv_endpoint]
   have hft : f t = 1 := by simp [f]
   have hftc' :
       (∫ s in (0 : ℝ)..t, f s * G'' s) =
-        (-(3 / 64) * t ^ 3 * Real.exp (-t / 2) : ℝ) +
-          z ^ 2 * ∫ s in (0 : ℝ)..t, f s * G s := by
+        (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) : ℝ) +
+          z ^ (2 : ℕ) * ∫ s in (0 : ℝ)..t, f s * G s := by
     dsimp only [F] at hftc
     rw [hGt, hG0, hG'0, hG't, hft] at hftc
     simp only [mul_zero, sub_zero] at hftc
@@ -222,7 +222,7 @@ private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq
     simpa using (intervalIntegral.integral_comp_sub_left
       (a := (0 : ℝ)) (b := t) H t).symm
   have hkernel : ∀ s : ℝ,
-      H (t - s) = -((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) * (f s * G'' s) := by
+      H (t - s) = -((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) * (f s * G'' s) := by
     intro s
     dsimp only [H, f, G'']
     rw [unitRieszCesaroApertureKernel_eq_secondDeriv]
@@ -234,23 +234,23 @@ private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq
   rw [hcv]
   simp_rw [hkernel]
   rw [intervalIntegral.integral_const_mul, hftc']
-  have ht3 : t ^ 3 ≠ 0 := by positivity
+  have ht3 : t ^ (3 : ℕ) ≠ 0 := by positivity
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
     rw [← Real.exp_add, show t / 2 + -t / 2 = (0 : ℝ) by ring, Real.exp_zero]
   dsimp only [f, G]
   have hboundary :
-      -((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) *
-          ((-(3 / 64) * t ^ 3 * Real.exp (-t / 2) : ℝ) : ℂ) = 3 / 64 := by
+      -((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) *
+          ((-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) : ℝ) : ℂ) = 3 / 64 := by
     have hreal :
-        -(Real.exp (t / 2) / t ^ 3) *
-            (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) = (3 / 64 : ℝ) := by
+        -(Real.exp (t / 2) / t ^ (3 : ℕ)) *
+            (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) = (3 / 64 : ℝ) := by
       calc
         _ = (3 / 64 : ℝ) *
-            (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ 3 / t ^ 3) := by ring
+            (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ (3 : ℕ) / t ^ (3 : ℕ)) := by ring
         _ = _ := by rw [hexp, div_self ht3]; ring
     calc
-      _ = ((-(Real.exp (t / 2) / t ^ 3) *
-          (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) : ℝ) : ℂ) := by
+      _ = ((-(Real.exp (t / 2) / t ^ (3 : ℕ)) *
+          (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) : ℝ) : ℂ) := by
         push_cast
         ring
       _ = (3 / 64 : ℝ) := by rw [hreal]
@@ -263,9 +263,9 @@ private theorem complexWeighted_unitRieszCesaroTest_eq_twoChannels
     Complex.exp (-(z * ((t - s : ℝ) : ℂ))) * (unitRieszCesaroTest t s : ℂ) =
       (3 / 32 : ℂ) *
         (Complex.exp (-((z + 1) * (t : ℂ))) *
-            ((s : ℂ) ^ 3 * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
+            ((s : ℂ) ^ (3 : ℕ) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
           Complex.exp (-((z + 3 / 2) * (t : ℂ))) *
-            ((s : ℂ) ^ 3 * Complex.exp ((z + 1) * (s : ℂ)))) := by
+            ((s : ℂ) ^ (3 : ℕ) * Complex.exp ((z + 1) * (s : ℂ)))) := by
   rw [unitRieszCesaroTest]
   push_cast
   have hslow :
@@ -285,10 +285,10 @@ private theorem complexWeighted_unitRieszCesaroTest_eq_twoChannels
     congr 1
     ring
   rw [show Complex.exp (-(z * ((t : ℂ) - (s : ℂ)))) *
-        ((3 / 32 : ℂ) * ((s : ℂ) ^ 3 *
+        ((3 / 32 : ℂ) * ((s : ℂ) ^ (3 : ℕ) *
           (Complex.exp (-(t : ℂ) + (s : ℂ) / 2) -
             Complex.exp (-3 * (t : ℂ) / 2 + (s : ℂ))))) =
-      (3 / 32 : ℂ) * (s : ℂ) ^ 3 *
+      (3 / 32 : ℂ) * (s : ℂ) ^ (3 : ℕ) *
         (Complex.exp (-(z * ((t : ℂ) - (s : ℂ)))) *
             Complex.exp (-(t : ℂ) + (s : ℂ) / 2) -
           Complex.exp (-(z * ((t : ℂ) - (s : ℂ)))) *
@@ -303,26 +303,26 @@ private theorem integral_complexWeighted_unitRieszCesaroTest_eq_twoChannels
       (3 / 32 : ℂ) *
         (Complex.exp (-((z + 1) * (t : ℂ))) *
             (∫ s in (0 : ℝ)..r,
-              ((s : ℂ) ^ 3) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
+              ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
           Complex.exp (-((z + 3 / 2) * (t : ℂ))) *
             (∫ s in (0 : ℝ)..r,
-              ((s : ℂ) ^ 3) * Complex.exp ((z + 1) * (s : ℂ)))) := by
+              ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1) * (s : ℂ)))) := by
   have hslowInt : IntervalIntegrable
-      (fun s : ℝ => ((s : ℂ) ^ 3) * Complex.exp ((z + 1 / 2) * (s : ℂ)))
+      (fun s : ℝ => ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1 / 2) * (s : ℂ)))
       volume 0 r := by
     apply Continuous.intervalIntegrable
     fun_prop
   have hfastInt : IntervalIntegrable
-      (fun s : ℝ => ((s : ℂ) ^ 3) * Complex.exp ((z + 1) * (s : ℂ)))
+      (fun s : ℝ => ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1) * (s : ℂ)))
       volume 0 r := by
     apply Continuous.intervalIntegrable
     fun_prop
   calc
     _ = ∫ s in (0 : ℝ)..r, (3 / 32 : ℂ) *
         (Complex.exp (-((z + 1) * (t : ℂ))) *
-            ((s : ℂ) ^ 3 * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
+            ((s : ℂ) ^ (3 : ℕ) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
           Complex.exp (-((z + 3 / 2) * (t : ℂ))) *
-            ((s : ℂ) ^ 3 * Complex.exp ((z + 1) * (s : ℂ)))) := by
+            ((s : ℂ) ^ (3 : ℕ) * Complex.exp ((z + 1) * (s : ℂ)))) := by
       apply intervalIntegral.integral_congr
       intro s _
       exact complexWeighted_unitRieszCesaroTest_eq_twoChannels t s z
@@ -336,53 +336,53 @@ private theorem integral_complexWeighted_unitRieszCesaroTest_eq_twoChannels
 private theorem unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq_terminals
     {t : ℝ} (ht : 0 < t) (z : ℂ) :
     unitRieszCesaroComplexFiniteCompletedReporterSymbol t z =
-      -(3 / 32 : ℂ) * z ^ 2 *
+      -(3 / 32 : ℂ) * z ^ (2 : ℕ) *
         (complexCubicExponentialTerminal (z + 1 / 2) t -
           complexCubicExponentialTerminal (z + 1) t) := by
   rw [unitRieszCesaroComplexFiniteCompletedReporterSymbol_eq ht,
     integral_complexWeighted_unitRieszCesaroTest_eq_twoChannels]
   have hslowShift :
-      ((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) *
+      ((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) *
           Complex.exp (-((z + 1) * (t : ℂ))) =
-        Complex.exp (-((z + 1 / 2) * (t : ℂ))) / (t : ℂ) ^ 3 := by
+        Complex.exp (-((z + 1 / 2) * (t : ℂ))) / (t : ℂ) ^ (3 : ℕ) := by
     push_cast
-    rw [show Complex.exp ((t : ℂ) / 2) / (t : ℂ) ^ 3 *
+    rw [show Complex.exp ((t : ℂ) / 2) / (t : ℂ) ^ (3 : ℕ) *
           Complex.exp (-((z + 1) * (t : ℂ))) =
         (Complex.exp ((t : ℂ) / 2) *
-          Complex.exp (-((z + 1) * (t : ℂ)))) / (t : ℂ) ^ 3 by ring,
+          Complex.exp (-((z + 1) * (t : ℂ)))) / (t : ℂ) ^ (3 : ℕ) by ring,
       ← Complex.exp_add]
     congr 2
     ring
   have hfastShift :
-      ((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) *
+      ((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) *
           Complex.exp (-((z + 3 / 2) * (t : ℂ))) =
-        Complex.exp (-((z + 1) * (t : ℂ))) / (t : ℂ) ^ 3 := by
+        Complex.exp (-((z + 1) * (t : ℂ))) / (t : ℂ) ^ (3 : ℕ) := by
     push_cast
-    rw [show Complex.exp ((t : ℂ) / 2) / (t : ℂ) ^ 3 *
+    rw [show Complex.exp ((t : ℂ) / 2) / (t : ℂ) ^ (3 : ℕ) *
           Complex.exp (-((z + 3 / 2) * (t : ℂ))) =
         (Complex.exp ((t : ℂ) / 2) *
-          Complex.exp (-((z + 3 / 2) * (t : ℂ)))) / (t : ℂ) ^ 3 by ring,
+          Complex.exp (-((z + 3 / 2) * (t : ℂ)))) / (t : ℂ) ^ (3 : ℕ) by ring,
       ← Complex.exp_add]
     congr 2
     ring
   simp only [complexCubicExponentialTerminal]
-  rw [show -((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) * z ^ 2 *
+  rw [show -((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) * z ^ (2 : ℕ) *
         ((3 / 32 : ℂ) *
           (Complex.exp (-((z + 1) * (t : ℂ))) *
               (∫ s in (0 : ℝ)..t,
-                ((s : ℂ) ^ 3) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
+                ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
             Complex.exp (-((z + 3 / 2) * (t : ℂ))) *
               (∫ s in (0 : ℝ)..t,
-                ((s : ℂ) ^ 3) * Complex.exp ((z + 1) * (s : ℂ))))) =
-      -(3 / 32 : ℂ) * z ^ 2 *
-        ((((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) *
+                ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1) * (s : ℂ))))) =
+      -(3 / 32 : ℂ) * z ^ (2 : ℕ) *
+        ((((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) *
             Complex.exp (-((z + 1) * (t : ℂ)))) *
               (∫ s in (0 : ℝ)..t,
-                ((s : ℂ) ^ 3) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
-          (((Real.exp (t / 2) / t ^ 3 : ℝ) : ℂ) *
+                ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1 / 2) * (s : ℂ))) -
+          (((Real.exp (t / 2) / t ^ (3 : ℕ) : ℝ) : ℂ) *
             Complex.exp (-((z + 3 / 2) * (t : ℂ)))) *
               (∫ s in (0 : ℝ)..t,
-                ((s : ℂ) ^ 3) * Complex.exp ((z + 1) * (s : ℂ)))) by ring,
+                ((s : ℂ) ^ (3 : ℕ)) * Complex.exp ((z + 1) * (s : ℂ)))) by ring,
     hslowShift, hfastShift]
 
 /-- Complex full finite-aperture reporter converges on the critical-Mellin half-plane. -/
@@ -399,12 +399,12 @@ theorem tendsto_unitRieszCesaroComplexFiniteCompletedReporterSymbol
   have hslow := tendsto_complexCubicExponentialTerminal hslowPos
   have hfast := tendsto_complexCubicExponentialTerminal hfastPos
   have hcombo : Tendsto (fun t : ℝ =>
-      -(3 / 32 : ℂ) * z ^ 2 *
+      -(3 / 32 : ℂ) * z ^ (2 : ℕ) *
         (complexCubicExponentialTerminal (z + 1 / 2) t -
           complexCubicExponentialTerminal (z + 1) t)) atTop
-      (nhds (-(3 / 32 : ℂ) * z ^ 2 *
+      (nhds (-(3 / 32 : ℂ) * z ^ (2 : ℕ) *
         (1 / (z + 1 / 2) - 1 / (z + 1)))) := by
-    exact (hslow.sub hfast).const_mul (-(3 / 32 : ℂ) * z ^ 2)
+    exact (hslow.sub hfast).const_mul (-(3 / 32 : ℂ) * z ^ (2 : ℕ))
   have hslow0 : z + 1 / 2 ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
@@ -431,7 +431,7 @@ theorem tendsto_unitRieszCesaroComplexFiniteCompletedReporterSymbol
       mul_inv_cancel₀ htwo0'
     linear_combination hunit
   have hlimit :
-      -(3 / 32 : ℂ) * z ^ 2 * (1 / (z + 1 / 2) - 1 / (z + 1)) =
+      -(3 / 32 : ℂ) * z ^ (2 : ℕ) * (1 / (z + 1 / 2) - 1 / (z + 1)) =
         unitRieszCesaroComplexCompletedReporterSymbol z := by
     rw [hdiff, unitRieszCesaroComplexCompletedReporterSymbol_eq hz]
     ring
@@ -447,7 +447,7 @@ def unitRieszCesaroComplexSourceRelativeCompletedReporterSymbol
     Complex.exp (-(z * (u : ℂ))) * (unitRieszCesaroApertureKernel t u : ℂ)) - 3 / 64
 
 private def complexCofinalDecay (c : ℂ) (t : ℝ) : ℂ :=
-  Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ 3
+  Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ (3 : ℕ)
 
 private theorem tendsto_complexCofinalDecay_zero
     {c : ℂ} (hc : 0 < c.re) :
@@ -462,7 +462,7 @@ private theorem tendsto_complexCofinalDecay_zero
     congr 1
     ring
   change Tendsto (fun t : ℝ =>
-    Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ 3) atTop (nhds 0)
+    Complex.exp (-(c * (t : ℂ))) / (t : ℂ) ^ (3 : ℕ)) atTop (nhds 0)
   convert hexp.mul (hinv.pow 3) using 1
   · funext t
     push_cast
@@ -525,7 +525,7 @@ private theorem unitRieszCesaroComplexSourceRelativeTail_eq_twoFixedHeads
     let Es : ℂ := Complex.exp (-((t : ℂ) - (s : ℂ)) / 2)
     let R : ℂ := unitRieszCesaroFastPolynomial s
     let P : ℂ := unitRieszCesaroSlowPolynomial s
-    change Ez * ((3 / 32 : ℂ) * (Ef * R - Es * P) / (t : ℂ) ^ 3) = _
+    change Ez * ((3 / 32 : ℂ) * (Ef * R - Es * P) / (t : ℂ) ^ (3 : ℕ)) = _
     have hfast' : Ez * Ef =
         Complex.exp (-((z + 1) * (t : ℂ))) *
           Complex.exp ((z + 1) * (s : ℂ)) := hfast
@@ -533,8 +533,8 @@ private theorem unitRieszCesaroComplexSourceRelativeTail_eq_twoFixedHeads
         Complex.exp (-((z + 1 / 2) * (t : ℂ))) *
           Complex.exp ((z + 1 / 2) * (s : ℂ)) := hslow
     calc
-      Ez * ((3 / 32 : ℂ) * (Ef * R - Es * P) / (t : ℂ) ^ 3) =
-          (3 / 32 : ℂ) / (t : ℂ) ^ 3 * (Ez * Ef * R - Ez * Es * P) := by ring
+      Ez * ((3 / 32 : ℂ) * (Ef * R - Es * P) / (t : ℂ) ^ (3 : ℕ)) =
+          (3 / 32 : ℂ) / (t : ℂ) ^ (3 : ℕ) * (Ez * Ef * R - Ez * Es * P) := by ring
       _ = _ := by
         rw [hfast', hslow']
         dsimp only [complexCofinalDecay, R, P]

@@ -107,7 +107,7 @@ def thetaCuspFirstRadialQuadraticVirialCurrent (x : ℝ) : ℝ :=
     thetaCuspBornWittenRadialSuperpotential 1 1 x *
       thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2
 
-/-- Position-score coupling selected by `P(x)=x-x^2/2`. -/
+/-- Position-score coupling selected by `P(x)=x-x^(2 : ℕ)/2`. -/
 def thetaCuspFirstRadialQuadraticSteinCoupling : ℝ :=
   ∫ x : ℝ in Ioi 0,
     (x ^ 2 - x ^ 3 / 2) *

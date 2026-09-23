@@ -30,12 +30,12 @@ open MeasureTheory
 /-- **For every tolerance there is an admissible probing time whose drift term is below it.** -/
 theorem exists_small_probe_time {b L R T ε : ℝ} (hb0 : 0 ≤ b) (hL0 : 0 ≤ L) (hT0 : 0 < T)
     (hε : 0 < ε) :
-    ∃ x : ℝ, 0 < x ∧ x ≤ T ∧ x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) ≤ 1 / 8
+    ∃ x : ℝ, 0 < x ∧ x ≤ T ∧ x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) ≤ 1 / 8
       ∧ 8 * (L * Real.exp (b * T)) * x ≤ ε := by
-  set K : ℝ := (1 + R ^ 2) / 2 + b * Real.exp (b * T) with hK
+  set K : ℝ := (1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T) with hK
   have hK0 : 0 < K := by
     rw [hK]
-    have h1 : (0 : ℝ) < (1 + R ^ 2) / 2 := by positivity
+    have h1 : (0 : ℝ) < (1 + R ^ (2 : ℕ)) / 2 := by positivity
     have h2 : (0 : ℝ) ≤ b * Real.exp (b * T) := by positivity
     linarith
   set M : ℝ := 8 * (L * Real.exp (b * T)) with hM
@@ -49,11 +49,11 @@ theorem exists_small_probe_time {b L R T ε : ℝ} (hb0 : 0 ≤ b) (hL0 : 0 ≤ 
   refine ⟨x, hx0, min_le_left _ _, ?_, ?_⟩
   · have hxs : x ≤ Real.sqrt (1 / (8 * K)) :=
       le_trans (min_le_right _ _) (min_le_left _ _)
-    have hsq : x ^ 2 ≤ 1 / (8 * K) := by
-      have hh : x ^ 2 ≤ (Real.sqrt (1 / (8 * K))) ^ 2 := by gcongr
+    have hsq : x ^ (2 : ℕ) ≤ 1 / (8 * K) := by
+      have hh : x ^ (2 : ℕ) ≤ (Real.sqrt (1 / (8 * K))) ^ (2 : ℕ) := by gcongr
       rwa [Real.sq_sqrt (by positivity)] at hh
-    have hstep : x ^ 2 * K ≤ (1 / (8 * K)) * K := mul_le_mul_of_nonneg_right hsq hK0.le
-    calc x ^ 2 * K ≤ (1 / (8 * K)) * K := hstep
+    have hstep : x ^ (2 : ℕ) * K ≤ (1 / (8 * K)) * K := mul_le_mul_of_nonneg_right hsq hK0.le
+    calc x ^ (2 : ℕ) * K ≤ (1 / (8 * K)) * K := hstep
       _ = 1 / 8 := by field_simp
   · have hxe : x ≤ ε / (M + 1) := le_trans (min_le_right _ _) (min_le_right _ _)
     have h1 : M * x ≤ M * (ε / (M + 1)) := mul_le_mul_of_nonneg_left hxe hM0
@@ -99,7 +99,7 @@ theorem eq_of_exact_observation_everywhere (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ
     obtain ⟨x, hx0, hxT, hxK, hdrift⟩ := exists_small_probe_time (R := R) hb0 hL0 hT0 hε
     have hmain := norm_sub_le_of_lowPassT_everywhere hb0 hW₁b hW₁s hW₂b hW₂s hL0 hLip hAdom hAran
       (η := 0) le_rfl hx0 hxT hxK hobs' s
-    have hfirst : 8 * ((0 : ℝ) * (1 + b * T)) / x ^ 2 = 0 := by
+    have hfirst : 8 * ((0 : ℝ) * (1 + b * T)) / x ^ (2 : ℕ) = 0 := by
       rw [zero_mul, mul_zero, zero_div]
     rw [hfirst, zero_add] at hmain
     exact hmain.trans hdrift

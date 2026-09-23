@@ -5,21 +5,21 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedHorizonRegularBranch
 # Exact massless topological KI reconstruction on Birmingham--Mokhtari jets
 
 The four-dimensional Birmingham--Mokhtari background has `n = 2`, `K = -1`, `M = 0`,
-`f(r) = r^2 - 1`.  Specializing the Kodama--Ishibashi scalar reconstruction coefficients to
+`f(r) = r^(2 : ℕ) - 1`.  Specializing the Kodama--Ishibashi scalar reconstruction coefficients to
 this background collapses them to
 
-`P_X = 16 m^2 k^2`, `Q_X = 4m(2-r^2)`, `P_Y = 0`, `Q_Y = -4mr^2`, `P_Z = 4m`,
+`P_X = 16 m^(2 : ℕ) k^(2 : ℕ)`, `Q_X = 4m(2-r^(2 : ℕ))`, `P_Y = 0`, `Q_Y = -4mr^(2 : ℕ)`, `P_Z = 4m`,
 
-where `m = k^2 + 2`.  Converting from `r` to the Birmingham--Mokhtari variable
-`z = 1-rho^2`, `rho = r^-1`, gives the gauge-invariant orbit below.  `zInv` is kept as an
+where `m = k^(2 : ℕ) + 2`.  Converting from `r` to the Birmingham--Mokhtari variable
+`z = 1-rho^(2 : ℕ)`, `rho = r^-1`, gives the gauge-invariant orbit below.  `zInv` is kept as an
 algebraic inverse-coordinate variable, so every theorem is unconditional.
 
 The key cancellation is
 
-`2 rho Ztilde - (X+Y) = rho (k^2+2) Phi`.
+`2 rho Ztilde - (X+Y) = rho (k^(2 : ℕ)+2) Phi`.
 
 Thus the master field is already encoded algebraically in the reconstructed metric invariants;
-all first-radial-jet terms cancel.  For an actual Xi divisor the factor `k^2+2` is proved nonzero,
+all first-radial-jet terms cancel.  For an actual Xi divisor the factor `k^(2 : ℕ)+2` is proved nonzero,
 so a reduced reconstruction recovers the exact hypergeometric monodromy mode with no hypothesis.
 This supplies the missing scalar master-to-metric bridge.  It does not yet identify the resulting
 scalar/vector chiral combination with the Plebanski light-cone field.
@@ -49,18 +49,18 @@ structure D4KIScalarGaugeInvariantOrbit where
 variable. -/
 def d4KIScalarMasslessTopologicalX
     (rho zInv omega kSq : ℂ) (J : D4ComplexRadialTwoJet) : ℂ :=
-  omega ^ 2 * rho * zInv * J.value - kSq * rho * J.value +
-    2 * rho * (2 * rho ^ 2 - 1) * J.first
+  omega ^ (2 : ℕ) * rho * zInv * J.value - kSq * rho * J.value +
+    2 * rho * (2 * rho ^ (2 : ℕ) - 1) * J.first
 
 /-- Exact `Y` invariant after the same specialization. -/
 def d4KIScalarMasslessTopologicalY
     (rho zInv omega : ℂ) (J : D4ComplexRadialTwoJet) : ℂ :=
-  -omega ^ 2 * rho * zInv * J.value - 2 * rho * J.first
+  -omega ^ (2 : ℕ) * rho * zInv * J.value - 2 * rho * J.first
 
 /-- Frequency-free KI mixed invariant. -/
 def d4KIScalarMasslessTopologicalZtilde
     (rho : ℂ) (J : D4ComplexRadialTwoJet) : ℂ :=
-  J.value - 2 * (1 - rho ^ 2) * J.first
+  J.value - 2 * (1 - rho ^ (2 : ℕ)) * J.first
 
 /-- Exact scalar-type KI gauge-invariant metric reconstruction from a BM master two-jet. -/
 def d4KIScalarGaugeInvariantOrbitOfBMMaster
@@ -92,7 +92,7 @@ theorem d4KIScalarMasslessTopologicalX_add_Y
     (rho zInv omega kSq : ℂ) (J : D4ComplexRadialTwoJet) :
     d4KIScalarMasslessTopologicalX rho zInv omega kSq J +
         d4KIScalarMasslessTopologicalY rho zInv omega J =
-      -kSq * rho * J.value - 4 * rho * (1 - rho ^ 2) * J.first := by
+      -kSq * rho * J.value - 4 * rho * (1 - rho ^ (2 : ℕ)) * J.first := by
   simp [d4KIScalarMasslessTopologicalX, d4KIScalarMasslessTopologicalY]
   ring
 
@@ -100,7 +100,7 @@ theorem d4KIScalarMasslessTopologicalX_add_Y
 theorem d4KIScalarGaugeInvariantOrbitOfBMMaster_angularTrace
     (rho zInv omega kSq : ℂ) (J : D4ComplexRadialTwoJet) :
     (d4KIScalarGaugeInvariantOrbitOfBMMaster rho zInv omega kSq J).angularTrace =
-      rho / 4 * (kSq * J.value + 4 * (1 - rho ^ 2) * J.first) := by
+      rho / 4 * (kSq * J.value + 4 * (1 - rho ^ (2 : ℕ)) * J.first) := by
   simp [d4KIScalarGaugeInvariantOrbitOfBMMaster,
     d4KIScalarMasslessTopologicalX, d4KIScalarMasslessTopologicalY]
   ring
@@ -123,7 +123,7 @@ theorem d4KIScalarGaugeInvariantOrbitOfBMMaster_masterRecovery
 theorem d4KIScalarGaugeInvariantOrbitOfBMMaster_reducedMasterRecovery
     (rho zInv omega kSq : ℂ) (J : D4ComplexRadialTwoJet) :
     2 * (d4KIScalarGaugeInvariantOrbitOfBMMaster rho zInv omega kSq J).Ztilde +
-        kSq * J.value + 4 * (1 - rho ^ 2) * J.first =
+        kSq * J.value + 4 * (1 - rho ^ (2 : ℕ)) * J.first =
       (kSq + 2) * J.value := by
   simp [d4KIScalarGaugeInvariantOrbitOfBMMaster,
     d4KIScalarMasslessTopologicalZtilde]
@@ -140,14 +140,14 @@ def d4BMXiMixedHorizonExactMonodromyTwoJet
 def d4KIXiScalarHarmonicGap (q : XiZeroCopy) : ℂ :=
   thetaCuspHawkingTopologicalBlackHoleAngularEigenvalue (xiSpectralPoint q) + 2
 
-/-- Actual Xi fibres never hit the exceptional scalar harmonic `k^2+2=0`.  Nonzero real part of
+/-- Actual Xi fibres never hit the exceptional scalar harmonic `k^(2 : ℕ)+2=0`.  Nonzero real part of
 the continued BM angular momentum rules out the only possible complex square collision. -/
 theorem d4KIXiScalarHarmonicGap_ne_zero (q : XiZeroCopy) :
     d4KIXiScalarHarmonicGap q ≠ 0 := by
   let chi := d4BMXiMixedHorizonAngularMomentum q
   have hchi : chi.re ≠ 0 := d4BMXiMixedHorizonAngularMomentum_re_ne_zero q
   intro h
-  change (1 / 4 + chi ^ 2) + 2 = 0 at h
+  change (1 / 4 + chi ^ (2 : ℕ)) + 2 = 0 at h
   have hre := congrArg Complex.re h
   have him := congrArg Complex.im h
   simp [pow_two, Complex.mul_re, Complex.mul_im] at hre him
@@ -176,7 +176,7 @@ theorem d4KIXiScalarGaugeInvariantOrbit_recovers_exactMonodromyMode
     (2 * (d4KIXiScalarGaugeInvariantOrbit rho zInv omega n k q z).Ztilde +
           thetaCuspHawkingTopologicalBlackHoleAngularEigenvalue (xiSpectralPoint q) *
             d4BMXiMixedHorizonExactMonodromyMode n k q z +
-          4 * (1 - rho ^ 2) *
+          4 * (1 - rho ^ (2 : ℕ)) *
             d4BMXiMixedHorizonExactMonodromyModeDerivative n k q z) /
         d4KIXiScalarHarmonicGap q =
       d4BMXiMixedHorizonExactMonodromyMode n k q z := by

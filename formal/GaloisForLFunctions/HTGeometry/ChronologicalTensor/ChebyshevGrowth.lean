@@ -34,7 +34,7 @@ theorem cosh_nat_power_bound (t : ℝ) (n : ℕ) :
   let s := Real.sinh |t|
   have hc : 0 < c := Real.cosh_pos _
   have hs : 0 ≤ s := Real.sinh_nonneg_iff.mpr (abs_nonneg _)
-  have hrel : c^2 = 1+s^2 := Real.cosh_sq' _
+  have hrel : c^(2 : ℕ) = 1+s^(2 : ℕ) := Real.cosh_sq' _
   change Real.cosh ((n : ℝ)*|t|) ≤ c^(n*n)
   induction n with
   | zero => simp
@@ -42,7 +42,7 @@ theorem cosh_nat_power_bound (t : ℝ) (n : ℕ) :
     have hn := sinh_nat_comparison t n
     change Real.sinh ((n : ℝ)*|t|)*c ≤ (n : ℝ)*s*Real.cosh ((n : ℝ)*|t|) at hn
     have hm := mul_le_mul_of_nonneg_right hn hs
-    have hber := one_add_mul_le_pow (a := s^2) (by nlinarith [sq_nonneg s]) (n+1)
+    have hber := one_add_mul_le_pow (a := s^(2 : ℕ)) (by nlinarith [sq_nonneg s]) (n+1)
     rw [← hrel,← pow_mul] at hber
     have hber' := mul_le_mul_of_nonneg_left hber (Real.cosh_pos ((n : ℝ)*|t|)).le
     have hstep : Real.cosh (((n+1 : ℕ) : ℝ)*|t|)*c ≤

@@ -27,17 +27,17 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_general {P : Finset ℕ}
       ‖(2 * Real.pi : ℝ) • (∑' n : ℕ, dampedTwist P t τ n
           * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ 2 * ((invZetaRightBound K * dampedCorrBound P (leftAbscissa K))
-              * (C / H ^ 2 * (N + H + 1) ^ 2 * (N + H + 1) ^ rightAbscissa K))
+              * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) * (N + H + 1) ^ rightAbscissa K))
             / twistHeight K τ
           + (invZetaEdgeBound K * dampedCorrBound P (leftAbscissa K))
-              * (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ rightAbscissa K)
+              * (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ rightAbscissa K)
               / (twistHeight K τ) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
           + (invZetaEdgeBound K * dampedCorrBound P (leftAbscissa K))
-              * (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ rightAbscissa K)
+              * (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ rightAbscissa K)
               / (twistHeight K τ) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
           + (max M₀ (invZetaEdgeBound K) * dampedCorrBound P (leftAbscissa K))
               * (2 * ((N + H) ^ leftAbscissa K / leftAbscissa K)
-                  + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 * (N + H + 1) ^ leftAbscissa K)) := by
+                  + 2 * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) * (N + H + 1) ^ leftAbscissa K)) := by
   have hP2 : ∀ q ∈ P, 2 ≤ q := fun q hq => (hPprime q hq).two_le
   obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1
   obtain ⟨C', hC', hdecj⟩ := exists_bound_mellin_smoothWeight_uniform_upto 0
@@ -45,11 +45,11 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_general {P : Finset ℕ}
   obtain ⟨δ₂, hδ₂, M₀, hM₀, hbdbox⟩ := exists_bound_invZeta_low_box 2 (by norm_num)
   have hlog : Tendsto (fun n : ℕ => Real.log n) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ 9) atTop atTop :=
+  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ (9 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (by norm_num)).comp hlog
   have h1 : ∀ᶠ n : ℕ in atTop, (3 : ℝ) ≤ Real.log n := hlog.eventually_ge_atTop 3
   have h2 : ∀ᶠ n : ℕ in atTop,
-      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ 9 := hpow.eventually_ge_atTop _
+      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ (9 : ℕ) := hpow.eventually_ge_atTop _
   obtain ⟨K₁, hK₁⟩ := eventually_atTop.1 (h1.and h2)
   refine ⟨C, C', M₀, max K₁ 5, hC, hC', hM₀, fun t ht0 ht1 N H hN hH τ K hKle hKτ => ?_⟩
   obtain ⟨hlogK, hfitpow⟩ := hK₁ K (le_trans (le_max_left _ _) hKle)
@@ -57,7 +57,7 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_general {P : Finset ℕ}
   have hK2 : 2 ≤ K := by omega
   have hδ0 : (0 : ℝ) < min δ₁ δ₂ := lt_min hδ₁ hδ₂
   have hL9 := twentySeven_le_log_pow hlogK
-  have hfit : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ min δ₁ δ₂ := by
+  have hfit : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ min δ₁ δ₂ := by
     rw [div_le_iff₀ (by positivity)]
     rw [div_le_iff₀ (by positivity)] at hfitpow
     linarith

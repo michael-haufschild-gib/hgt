@@ -12,7 +12,7 @@ a zero-free region of width `≍ log log t / log t`, one logarithm better than t
 With `L = wideScale γ = log(γ/2π)` and `x = log L`, the parameters are
 
 ```text
-R = wideEta γ / 2 ≍ x²/L ,     Φ = (L+3)^34 + 6 ,     δ = x/(4000 L) ,
+R = wideEta γ / 2 ≍ x²/L ,     Φ = (L+3)^(34 : ℕ) + 6 ,     δ = x/(4000 L) ,
 ```
 
 so the remainder of the inequality is `(80/R)·(5/4 log Φ + 3/4 log(1+1/δ) + 6) ≤ 1472 L/x` while the
@@ -29,7 +29,7 @@ open Complex Metric
 
 /-- The growth bound on the two Landau discs and at the doubled-doubled height. -/
 theorem wide_disc_growth {γ δ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
-    (hL : (10 : ℝ) ^ 16 + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
+    (hL : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     {w : ℂ} (hre1 : 1 - wideEta γ < w.re) (hre2 : w.re ≤ 2)
     (him1 : γ - 1 ≤ w.im) (him2 : w.im ≤ 5 * γ) :
     ‖riemannZeta w‖ < (wideScale γ + 3) ^ (34 : ℕ) + 6 := by
@@ -51,9 +51,9 @@ theorem exists_littlewood_zero_free_region :
   set A' : ℝ := max A 0 with hA'def
   have hA'0 : 0 ≤ A' := le_max_right _ _
   have hAA' : A ≤ A' := le_max_left _ _
-  set L₀ : ℝ := max ((10 : ℝ) ^ 16 + 1) (4 * (A' + 1) ^ 2) with hL₀def
-  have hL₀big : (10 : ℝ) ^ 16 + 1 ≤ L₀ := le_max_left _ _
-  have hL₀sq : 4 * (A' + 1) ^ 2 ≤ L₀ := le_max_right _ _
+  set L₀ : ℝ := max ((10 : ℝ) ^ (16 : ℕ) + 1) (4 * (A' + 1) ^ (2 : ℕ)) with hL₀def
+  have hL₀big : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ L₀ := le_max_left _ _
+  have hL₀sq : 4 * (A' + 1) ^ (2 : ℕ) ≤ L₀ := le_max_right _ _
   refine ⟨max (16 * Real.pi + 1) (2 * Real.pi * Real.exp L₀), ?_, ?_⟩
   · exact le_trans (by nlinarith) (le_max_left _ _)
   intro β γ hγT hβ1 hβc hzero
@@ -69,9 +69,9 @@ theorem exists_littlewood_zero_free_region :
       linarith
     have := Real.log_le_log (Real.exp_pos L₀) hexp
     rwa [Real.log_exp] at this
-  have hL1 : (10 : ℝ) ^ 16 + 1 ≤ L := le_trans hL₀big hLL₀
-  have hL16 : (10 : ℝ) ^ 16 ≤ L := by linarith
-  have hL12 : (10 : ℝ) ^ 12 ≤ L := by nlinarith
+  have hL1 : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ L := le_trans hL₀big hLL₀
+  have hL16 : (10 : ℝ) ^ (16 : ℕ) ≤ L := by linarith
+  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ L := by nlinarith
   have hLpos : (0 : ℝ) < L := by nlinarith
   set x : ℝ := Real.log L with hxdef
   have hx31 : (31 : ℝ) ≤ x := thirtyone_le_log_wideScale hL16
@@ -81,7 +81,7 @@ theorem exists_littlewood_zero_free_region :
   have hsnn : (0 : ℝ) ≤ Real.sqrt L := Real.sqrt_nonneg L
   -- `L ≥ (A' + 1) x`
   have hsqA : 2 * (A' + 1) ≤ Real.sqrt L := by
-    have h4 : 4 * (A' + 1) ^ 2 ≤ L := le_trans hL₀sq hLL₀
+    have h4 : 4 * (A' + 1) ^ (2 : ℕ) ≤ L := le_trans hL₀sq hLL₀
     nlinarith [hsq, hsnn, hA'0]
   have hLAx : (A' + 1) * x ≤ L := by nlinarith [hxL, hsqA, hsq, hsnn, hA'0]
   -- the parameters
@@ -91,12 +91,12 @@ theorem exists_littlewood_zero_free_region :
     rw [hδdef, div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hxL, hsq, hsnn]
   set η : ℝ := wideEta γ with hηdef
-  have hηge : 5 * x ^ 2 / L ≤ η := by
+  have hηge : 5 * x ^ (2 : ℕ) / L ≤ η := by
     rw [hηdef, hxdef, hLdef]; exact wideEta_ge hL12
-  have hηle : η ≤ 10 * x ^ 2 / L := by
+  have hηle : η ≤ 10 * x ^ (2 : ℕ) / L := by
     rw [hηdef, hxdef, hLdef]; exact wideEta_le hL12
   have hηpos : 0 < η := by
-    have : (0 : ℝ) < 5 * x ^ 2 / L := by positivity
+    have : (0 : ℝ) < 5 * x ^ (2 : ℕ) / L := by positivity
     linarith
   have hηsmall : η ≤ 1 / 1000 := by
     have hK := ten_le_wideOrder hL12
@@ -157,7 +157,7 @@ theorem exists_littlewood_zero_free_region :
     have : 8 * x / (32000 * L) + x / (32000 * L) = 9 * x / (32000 * L) := by ring
     linarith [hβdist]
   have hclose : 1 + δ - β ≤ η / 4 := by
-    have h1 : 9 * x / (32000 * L) ≤ 5 * x ^ 2 / L / 4 := by
+    have h1 : 9 * x / (32000 * L) ≤ 5 * x ^ (2 : ℕ) / L / 4 := by
       rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
       nlinarith [mul_nonneg (mul_pos hxpos hLpos).le
         (by linarith : (0 : ℝ) ≤ 160000 * x - 36)]
@@ -221,22 +221,22 @@ theorem exists_littlewood_zero_free_region :
     have hinvpos : (0 : ℝ) < 1 / δ := by positivity
     have h2 : (0 : ℝ) ≤ Real.log (1 + 1 / δ) := Real.log_nonneg (by linarith)
     rw [hXdef]; linarith
-  have hRfac : 80 / (η / 2) ≤ 32 * L / x ^ 2 := by
-    have h1 : 5 * x ^ 2 / L ≤ η := hηge
+  have hRfac : 80 / (η / 2) ≤ 32 * L / x ^ (2 : ℕ) := by
+    have h1 : 5 * x ^ (2 : ℕ) / L ≤ η := hηge
     have h2 : (0 : ℝ) < η / 2 := by linarith
     rw [div_le_div_iff₀ h2 (by positivity)]
-    have h3 : 5 * x ^ 2 ≤ η * L := by
+    have h3 : 5 * x ^ (2 : ℕ) ≤ η * L := by
       rw [div_le_iff₀ hLpos] at h1
       linarith
     nlinarith [h3, hLpos, hxpos]
   have hrem : 80 / (η / 2) * X ≤ 1472 * L / x := by
-    have h1 : 80 / (η / 2) * X ≤ (32 * L / x ^ 2) * (46 * x) := by
+    have h1 : 80 / (η / 2) * X ≤ (32 * L / x ^ (2 : ℕ)) * (46 * x) := by
       have hRpos : (0 : ℝ) < 80 / (η / 2) := by positivity
       calc 80 / (η / 2) * X ≤ 80 / (η / 2) * (46 * x) :=
             mul_le_mul_of_nonneg_left hX hRpos.le
-        _ ≤ (32 * L / x ^ 2) * (46 * x) := by
+        _ ≤ (32 * L / x ^ (2 : ℕ)) * (46 * x) := by
             refine mul_le_mul_of_nonneg_right hRfac (by positivity)
-    have h2 : (32 * L / x ^ 2) * (46 * x) = 1472 * L / x := by
+    have h2 : (32 * L / x ^ (2 : ℕ)) * (46 * x) = 1472 * L / x := by
       field_simp
       ring
     linarith

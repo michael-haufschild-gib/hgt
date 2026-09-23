@@ -20,35 +20,35 @@ noncomputable section
 theorem volume_windowSuperLevel_le
     {F : ℝ → ℂ} (hF : Continuous F) {W V : ℝ} (_hW : 0 ≤ W) (hV : 0 < V) :
     volume.real (windowSuperLevel F W V)
-      ≤ (∫ w in Set.Icc (-W) W, ‖F w‖ ^ 2) / V ^ 2 := by
+      ≤ (∫ w in Set.Icc (-W) W, ‖F w‖ ^ (2 : ℕ)) / V ^ (2 : ℕ) := by
   classical
   set S : Set ℝ := windowSuperLevel F W V with hSdef
   have hSm : MeasurableSet S := measurableSet_windowSuperLevel hF W V
   have hSs : S ⊆ Set.Icc (-W) W := windowSuperLevel_subset F W V
-  have hcont : Continuous fun w : ℝ => ‖F w‖ ^ 2 := (hF.norm).pow 2
+  have hcont : Continuous fun w : ℝ => ‖F w‖ ^ (2 : ℕ) := (hF.norm).pow 2
   have hfin : volume S ≠ ⊤ := by
     refine ne_top_of_le_ne_top ?_ (measure_mono hSs)
     simp [Real.volume_Icc]
-  have hint : IntegrableOn (fun w : ℝ => ‖F w‖ ^ 2) (Set.Icc (-W) W) volume :=
+  have hint : IntegrableOn (fun w : ℝ => ‖F w‖ ^ (2 : ℕ)) (Set.Icc (-W) W) volume :=
     hcont.integrableOn_Icc
-  have hintS : IntegrableOn (fun w : ℝ => ‖F w‖ ^ 2) S volume := hint.mono_set hSs
-  have hconstS : IntegrableOn (fun _ : ℝ => V ^ 2) S volume :=
+  have hintS : IntegrableOn (fun w : ℝ => ‖F w‖ ^ (2 : ℕ)) S volume := hint.mono_set hSs
+  have hconstS : IntegrableOn (fun _ : ℝ => V ^ (2 : ℕ)) S volume :=
     integrableOn_const (by exact hfin) (by simp)
-  have hlow : V ^ 2 * volume.real S ≤ ∫ w in S, ‖F w‖ ^ 2 := by
+  have hlow : V ^ (2 : ℕ) * volume.real S ≤ ∫ w in S, ‖F w‖ ^ (2 : ℕ) := by
     have hmono := setIntegral_mono_on hconstS hintS hSm fun w hw => by
       have hwv : V < ‖F w‖ := hw.2
       nlinarith [norm_nonneg (F w), hV]
     rw [MeasureTheory.setIntegral_const, smul_eq_mul, mul_comm] at hmono
     exact hmono
-  have hsub : (∫ w in S, ‖F w‖ ^ 2) ≤ ∫ w in Set.Icc (-W) W, ‖F w‖ ^ 2 :=
+  have hsub : (∫ w in S, ‖F w‖ ^ (2 : ℕ)) ≤ ∫ w in Set.Icc (-W) W, ‖F w‖ ^ (2 : ℕ) :=
     setIntegral_mono_set hint (Filter.Eventually.of_forall fun w => by positivity)
       (LE.le.eventuallyLE hSs)
-  have hV2 : (0 : ℝ) < V ^ 2 := by positivity
+  have hV2 : (0 : ℝ) < V ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hV2]
   calc
-    volume.real S * V ^ 2 = V ^ 2 * volume.real S := by ring
-    _ ≤ ∫ w in S, ‖F w‖ ^ 2 := hlow
-    _ ≤ ∫ w in Set.Icc (-W) W, ‖F w‖ ^ 2 := hsub
+    volume.real S * V ^ (2 : ℕ) = V ^ (2 : ℕ) * volume.real S := by ring
+    _ ≤ ∫ w in S, ‖F w‖ ^ (2 : ℕ) := hlow
+    _ ≤ ∫ w in Set.Icc (-W) W, ‖F w‖ ^ (2 : ℕ) := hsub
 
 /-- **The window estimate with the exceptional measure eliminated by any mean-square majorant.** -/
 theorem integral_Icc_normSq_harmonicRamareBilinear_le_threshold_chebyshev
@@ -65,11 +65,11 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_threshold_chebyshev
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     (hI : (∫ w in Set.Icc (-W) W,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤ I) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ V ^ 2 * (2 * W)
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤ I) :
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * (2 * W)
         + harmonicPrimeMass P * ∑ j ∈ Finset.range L,
-            menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (I / V ^ 2) k j (J j) (V₀ j)
+            menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (I / V ^ (2 : ℕ)) k j (J j) (V₀ j)
               / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
   classical
   have hcont := continuous_harmonicRamareBilinear P (Finset.Icc A₀ B₀)
@@ -78,7 +78,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_threshold_chebyshev
     (by linarith : (0 : ℝ) ≤ W)
   have hvol : volume.real
       (windowSuperLevel (harmonicRamareBilinear P (Finset.Icc A₀ B₀)) W V)
-      ≤ I / V ^ 2 := by
+      ≤ I / V ^ (2 : ℕ) := by
     refine (volume_windowSuperLevel_le hcont (by linarith) hV).trans ?_
     exact div_le_div_of_nonneg_right hI (by positivity)
   have hlad := setIntegral_normSq_harmonicRamareBilinear_le_levelTrivial_mass
@@ -94,20 +94,20 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_threshold_chebyshev
             k j (J j) (V₀ j)
           / harmonicPrimeMass (geomBlock P Q (1 + eta) j)
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
-        menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (I / V ^ 2) k j (J j) (V₀ j)
+        menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (I / V ^ (2 : ℕ)) k j (J j) (V₀ j)
           / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
     refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun j hj => ?_) hPmass
     refine div_le_div_of_nonneg_right ?_ (hmass j hj).le
     rw [menonHarmonicLevelTrivialBlockCost, menonHarmonicLevelTrivialBlockCost]
     have hmassD : (0 : ℝ) ≤
-        harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 := by positivity
+        harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) := by positivity
     have hstep : volume.real
         (windowSuperLevel (harmonicRamareBilinear P (Finset.Icc A₀ B₀)) W V) *
-          harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2
-        ≤ (I / V ^ 2) *
-          harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 :=
+          harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ)
+        ≤ (I / V ^ (2 : ℕ)) *
+          harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hvol hmassD
-    have hV₀j : (0 : ℝ) ≤ V₀ j ^ 2 := by positivity
+    have hV₀j : (0 : ℝ) ≤ V₀ j ^ (2 : ℕ) := by positivity
     nlinarith [hstep, hV₀j]
   exact hsplit.trans (add_le_add le_rfl (hlad.trans hmono))
 

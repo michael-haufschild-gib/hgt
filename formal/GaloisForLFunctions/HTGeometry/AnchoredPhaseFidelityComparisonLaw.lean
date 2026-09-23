@@ -34,8 +34,8 @@ theorem projectiveWeightedPairwiseEnergy_le_four_mul_pivot
     projectiveWeightedPairwiseEnergy w phase ≤
       4 * projectiveWeightedPivotEnergy w phase k := by
   have hchord (i j : Fin d) :
-      ‖phase i - phase j‖ ^ 2 ≤
-        2 * (‖phase i - phase k‖ ^ 2 + ‖phase j - phase k‖ ^ 2) := by
+      ‖phase i - phase j‖ ^ (2 : ℕ) ≤
+        2 * (‖phase i - phase k‖ ^ (2 : ℕ) + ‖phase j - phase k‖ ^ (2 : ℕ)) := by
     have htri : ‖phase i - phase j‖ ≤
         ‖phase i - phase k‖ + ‖phase j - phase k‖ := by
       calc
@@ -44,17 +44,17 @@ theorem projectiveWeightedPairwiseEnergy_le_four_mul_pivot
           congr 1
           ring
         _ ≤ _ := norm_sub_le _ _
-    have hsq : ‖phase i - phase j‖ ^ 2 ≤
-        (‖phase i - phase k‖ + ‖phase j - phase k‖) ^ 2 :=
+    have hsq : ‖phase i - phase j‖ ^ (2 : ℕ) ≤
+        (‖phase i - phase k‖ + ‖phase j - phase k‖) ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _)
         (add_nonneg (norm_nonneg _) (norm_nonneg _))).2 htri
     nlinarith [hsq, sq_nonneg
       (‖phase i - phase k‖ - ‖phase j - phase k‖)]
   rw [projectiveWeightedPairwiseEnergy]
   calc
-    (∑ i, ∑ j, w i * w j * ‖phase i - phase j‖ ^ 2) ≤
+    (∑ i, ∑ j, w i * w j * ‖phase i - phase j‖ ^ (2 : ℕ)) ≤
         ∑ i, ∑ j, w i * w j *
-          (2 * (‖phase i - phase k‖ ^ 2 + ‖phase j - phase k‖ ^ 2)) := by
+          (2 * (‖phase i - phase k‖ ^ (2 : ℕ) + ‖phase j - phase k‖ ^ (2 : ℕ))) := by
       apply Finset.sum_le_sum
       intro i _hi
       apply Finset.sum_le_sum
@@ -64,17 +64,17 @@ theorem projectiveWeightedPairwiseEnergy_le_four_mul_pivot
     _ = 4 * projectiveWeightedPivotEnergy w phase k := by
       have hsplit (i j : Fin d) :
           w i * w j *
-              (2 * (‖phase i - phase k‖ ^ 2 + ‖phase j - phase k‖ ^ 2)) =
-            w i * w j * ‖phase i - phase k‖ ^ 2 * 2 +
-              w i * w j * ‖phase j - phase k‖ ^ 2 * 2 := by
+              (2 * (‖phase i - phase k‖ ^ (2 : ℕ) + ‖phase j - phase k‖ ^ (2 : ℕ))) =
+            w i * w j * ‖phase i - phase k‖ ^ (2 : ℕ) * 2 +
+              w i * w j * ‖phase j - phase k‖ ^ (2 : ℕ) * 2 := by
         ring
       simp_rw [hsplit, Finset.sum_add_distrib]
       have hleft :
-          (∑ i, ∑ j, w i * w j * ‖phase i - phase k‖ ^ 2 * 2) =
-            2 * ∑ i, w i * ‖phase i - phase k‖ ^ 2 := by
+          (∑ i, ∑ j, w i * w j * ‖phase i - phase k‖ ^ (2 : ℕ) * 2) =
+            2 * ∑ i, w i * ‖phase i - phase k‖ ^ (2 : ℕ) := by
         calc
-          (∑ i, ∑ j, w i * w j * ‖phase i - phase k‖ ^ 2 * 2) =
-              ∑ i, (w i * ‖phase i - phase k‖ ^ 2 * 2) *
+          (∑ i, ∑ j, w i * w j * ‖phase i - phase k‖ ^ (2 : ℕ) * 2) =
+              ∑ i, (w i * ‖phase i - phase k‖ ^ (2 : ℕ) * 2) *
                 (∑ j, w j) := by
             apply Finset.sum_congr rfl
             intro i _hi
@@ -82,19 +82,19 @@ theorem projectiveWeightedPairwiseEnergy_le_four_mul_pivot
             apply Finset.sum_congr rfl
             intro j _hj
             ring
-          _ = 2 * ∑ i, w i * ‖phase i - phase k‖ ^ 2 := by
+          _ = 2 * ∑ i, w i * ‖phase i - phase k‖ ^ (2 : ℕ) := by
             rw [hmass]
             simp only [mul_one, Finset.mul_sum]
             apply Finset.sum_congr rfl
             intro i _hi
             ring
       have hright :
-          (∑ i, ∑ j, w i * w j * ‖phase j - phase k‖ ^ 2 * 2) =
-            2 * ∑ j, w j * ‖phase j - phase k‖ ^ 2 := by
+          (∑ i, ∑ j, w i * w j * ‖phase j - phase k‖ ^ (2 : ℕ) * 2) =
+            2 * ∑ j, w j * ‖phase j - phase k‖ ^ (2 : ℕ) := by
         rw [Finset.sum_comm]
         calc
-          (∑ j, ∑ i, w i * w j * ‖phase j - phase k‖ ^ 2 * 2) =
-              ∑ j, (w j * ‖phase j - phase k‖ ^ 2 * 2) *
+          (∑ j, ∑ i, w i * w j * ‖phase j - phase k‖ ^ (2 : ℕ) * 2) =
+              ∑ j, (w j * ‖phase j - phase k‖ ^ (2 : ℕ) * 2) *
                 (∑ i, w i) := by
             apply Finset.sum_congr rfl
             intro j _hj
@@ -102,7 +102,7 @@ theorem projectiveWeightedPairwiseEnergy_le_four_mul_pivot
             apply Finset.sum_congr rfl
             intro i _hi
             ring
-          _ = 2 * ∑ j, w j * ‖phase j - phase k‖ ^ 2 := by
+          _ = 2 * ∑ j, w j * ‖phase j - phase k‖ ^ (2 : ℕ) := by
             rw [hmass]
             simp only [mul_one, Finset.mul_sum]
             apply Finset.sum_congr rfl
@@ -118,8 +118,8 @@ theorem weightedFidelityDeficit_pivot_comparable
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
     (hphase : ∀ i, ‖phase i‖ = 1) (k : Fin d) :
     (w k / 2) * projectiveWeightedPivotEnergy w phase k ≤
-        1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ 2 ∧
-      1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ 2 ≤
+        1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ (2 : ℕ) ∧
+      1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ (2 : ℕ) ≤
         2 * projectiveWeightedPivotEnergy w phase k := by
   have hpair := projectiveWeightedPairwiseEnergy_eq_two_mul_fidelityDeficit
     w phase hmass hphase

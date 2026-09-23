@@ -265,9 +265,9 @@ theorem loopCharge_xiDescent_disc_two_eq_zero (c : ℂ) (hc : c.im = 0) {r R : �
 the winding of `xiDescent` around a small circle about `(ρ − 1/2)²` equals `ord_ρ ξ`. -/
 theorem windingNumber_xiDescent_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHalf) :
     ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
-      windingNumber (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 + ↑r * exp (I * ↑θ)))
+      windingNumber (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) + ↑r * exp (I * ↑θ)))
           0 (2 * Real.pi) = ((analyticOrderAt xi ρ).toNat : ℤ) := by
-  obtain ⟨R₀, hR₀, hw⟩ := windingNumber_xiDescent_zero ((ρ - (1 / 2 : ℂ)) ^ 2)
+  obtain ⟨R₀, hR₀, hw⟩ := windingNumber_xiDescent_zero ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ))
   refine ⟨R₀, hR₀, fun r hr hrR => ?_⟩
   rw [hw r hr hrR, analyticOrderAt_xiDescent_center_sq hρ]
 
@@ -276,7 +276,7 @@ around the descended image `(ρ − 1/2)²` equals the `s`-plane winding of `ξ`
 winding and the slit winding are the same integer. -/
 theorem windingNumber_xiDescent_eq_xi_of_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHalf) :
     ∃ R₀ > 0, ∀ r r' : ℝ, 0 < r → r < R₀ → 0 < r' → r' < R₀ →
-      windingNumber (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 + ↑r * exp (I * ↑θ)))
+      windingNumber (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) + ↑r * exp (I * ↑θ)))
           0 (2 * Real.pi)
         = windingNumber (fun θ => xi (ρ + ↑r' * exp (I * ↑θ))) 0 (2 * Real.pi) := by
   obtain ⟨R₁, hR₁, hu⟩ := windingNumber_xiDescent_center_sq hρ

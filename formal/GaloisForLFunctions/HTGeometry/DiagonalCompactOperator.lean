@@ -22,7 +22,7 @@ variable {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [InnerProductSpac
 
 /-- **Pythagoras for a finite orthonormal combination.** -/
 theorem norm_sq_sum_smul_orthonormal {ι : Type*} {v : ι → E} (hv : Orthonormal 𝕜 v)
-    (l : ι → 𝕜) (s : Finset ι) : ‖∑ i ∈ s, l i • v i‖ ^ 2 = ∑ i ∈ s, ‖l i‖ ^ 2 := by
+    (l : ι → 𝕜) (s : Finset ι) : ‖∑ i ∈ s, l i • v i‖ ^ (2 : ℕ) = ∑ i ∈ s, ‖l i‖ ^ (2 : ℕ) := by
   have h := hv.inner_sum l l s
   rw [inner_self_eq_norm_sq_to_K] at h
   rw [Finset.sum_congr rfl fun i _ => RCLike.conj_mul (l i)] at h
@@ -50,26 +50,26 @@ theorem norm_sub_hsTruncation_diag_le {ι : Type*} (b : HilbertBasis ι 𝕜 E) 
     rw [hdiag, smul_smul]
   have hbound : ∀ u : Finset {i // i ∉ s}, ‖∑ i ∈ u, f i‖ ≤ ε * ‖x‖ := by
     intro u
-    have hsq : ‖∑ i ∈ u, f i‖ ^ 2
-        = ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ 2 := by
+    have hsq : ‖∑ i ∈ u, f i‖ ^ (2 : ℕ)
+        = ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ (2 : ℕ) := by
       rw [Finset.sum_congr rfl fun i _ => hrewrite i]
       exact norm_sq_sum_smul_orthonormal hortho _ u
-    have hle : ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ 2
-        ≤ ε ^ 2 * ‖x‖ ^ 2 := by
-      have hstep : ∀ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ 2
-          ≤ ε ^ 2 * ‖inner 𝕜 (b (i : ι)) x‖ ^ 2 := by
+    have hle : ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ (2 : ℕ)
+        ≤ ε ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by
+      have hstep : ∀ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ (2 : ℕ)
+          ≤ ε ^ (2 : ℕ) * ‖inner 𝕜 (b (i : ι)) x‖ ^ (2 : ℕ) := by
         intro i _
         rw [norm_mul, mul_pow]
         have hcε : ‖c (i : ι)‖ ≤ ε := hc (i : ι) i.2
-        have h1 : ‖c (i : ι)‖ ^ 2 ≤ ε ^ 2 := by nlinarith [norm_nonneg (c (i : ι))]
+        have h1 : ‖c (i : ι)‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) := by nlinarith [norm_nonneg (c (i : ι))]
         nlinarith [sq_nonneg ‖inner 𝕜 (b (i : ι)) x‖, norm_nonneg (inner 𝕜 (b (i : ι)) x)]
-      calc ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ 2
-          ≤ ∑ i ∈ u, ε ^ 2 * ‖inner 𝕜 (b (i : ι)) x‖ ^ 2 := Finset.sum_le_sum hstep
-        _ = ε ^ 2 * ∑ i ∈ u, ‖inner 𝕜 (b (i : ι)) x‖ ^ 2 := by rw [Finset.mul_sum]
-        _ ≤ ε ^ 2 * ‖x‖ ^ 2 :=
+      calc ∑ i ∈ u, ‖(inner 𝕜 (b (i : ι)) x) * c (i : ι)‖ ^ (2 : ℕ)
+          ≤ ∑ i ∈ u, ε ^ (2 : ℕ) * ‖inner 𝕜 (b (i : ι)) x‖ ^ (2 : ℕ) := Finset.sum_le_sum hstep
+        _ = ε ^ (2 : ℕ) * ∑ i ∈ u, ‖inner 𝕜 (b (i : ι)) x‖ ^ (2 : ℕ) := by rw [Finset.mul_sum]
+        _ ≤ ε ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left (Orthonormal.sum_inner_products_le x hortho)
               (by positivity)
-    have hfinal : ‖∑ i ∈ u, f i‖ ^ 2 ≤ (ε * ‖x‖) ^ 2 := by
+    have hfinal : ‖∑ i ∈ u, f i‖ ^ (2 : ℕ) ≤ (ε * ‖x‖) ^ (2 : ℕ) := by
       rw [hsq, mul_pow]
       exact hle
     have hnn : 0 ≤ ε * ‖x‖ := mul_nonneg hε (norm_nonneg x)

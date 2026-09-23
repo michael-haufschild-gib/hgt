@@ -20,12 +20,12 @@ noncomputable section
 /-- The Cauchy weights of the integer cell centres sum to `4π`, uniformly in the number of
 cells. -/
 theorem sum_inv_one_add_sq_cellCentre_le (H : ℕ) :
-    ∑ k ∈ Finset.range (2 * H + 1), 1 / (1 + (cellCentre H k) ^ 2) ≤ 4 * Real.pi := by
+    ∑ k ∈ Finset.range (2 * H + 1), 1 / (1 + (cellCentre H k) ^ (2 : ℕ)) ≤ 4 * Real.pi := by
   classical
   set a : ℕ → ℝ := fun k => -(H : ℝ) - 1 / 2 + (k : ℝ) with ha
   have hterm : ∀ k ∈ Finset.range (2 * H + 1),
-      1 / (1 + (cellCentre H k) ^ 2)
-        ≤ 4 * ∫ t in (a k)..(a (k + 1)), 1 / (1 + t ^ 2) := by
+      1 / (1 + (cellCentre H k) ^ (2 : ℕ))
+        ≤ 4 * ∫ t in (a k)..(a (k + 1)), 1 / (1 + t ^ (2 : ℕ)) := by
     intro k _
     have hak : a k = cellCentre H k - 1 / 2 := by rw [ha, cellCentre_sub]
     have hak1 : a (k + 1) = cellCentre H k + 1 / 2 := by
@@ -33,15 +33,15 @@ theorem sum_inv_one_add_sq_cellCentre_le (H : ℕ) :
     rw [hak, hak1]
     have hbase := inv_one_add_sq_centre_le_integral (ρ := 1 / 2) (by norm_num) le_rfl
       (cellCentre H k)
-    have hid : (1 / 2 : ℝ) / 2 / (1 + (cellCentre H k) ^ 2)
-        = (1 / 4) * (1 / (1 + (cellCentre H k) ^ 2)) := by
+    have hid : (1 / 2 : ℝ) / 2 / (1 + (cellCentre H k) ^ (2 : ℕ))
+        = (1 / 4) * (1 / (1 + (cellCentre H k) ^ (2 : ℕ))) := by
       ring
     rw [hid] at hbase
     linarith
   refine (Finset.sum_le_sum hterm).trans ?_
   rw [← Finset.mul_sum]
   have hsum := intervalIntegral.sum_integral_adjacent_intervals
-    (f := fun t : ℝ => 1 / (1 + t ^ 2)) (μ := volume) (a := a) (n := 2 * H + 1)
+    (f := fun t : ℝ => 1 / (1 + t ^ (2 : ℕ))) (μ := volume) (a := a) (n := 2 * H + 1)
     (fun k _ => ((continuous_const.div (by continuity) fun t => by positivity)).intervalIntegrable
       (a k) (a (k + 1)))
   rw [hsum]
@@ -60,25 +60,25 @@ theorem cellForm_split_le {H : ℕ} {W : ℕ → ℝ} (hW : ∀ k, 0 ≤ W k) (E
     {ord exc wexc : ℝ} (hord : 0 ≤ ord) (hexc : 0 ≤ exc) (hwexc : 0 ≤ wexc)
     (hOrd : ∀ k ∈ Finset.range (2 * H + 1), k ∉ Exc → W k ≤ ord)
     (hExc : ∀ k ∈ Exc, W k ≤ exc)
-    (hw : ∀ k ∈ Exc, 1 / (1 + (cellCentre H k) ^ 2) ≤ wexc) :
-    ∑ k ∈ Finset.range (2 * H + 1), W k / (1 + (cellCentre H k) ^ 2)
+    (hw : ∀ k ∈ Exc, 1 / (1 + (cellCentre H k) ^ (2 : ℕ)) ≤ wexc) :
+    ∑ k ∈ Finset.range (2 * H + 1), W k / (1 + (cellCentre H k) ^ (2 : ℕ))
       ≤ 4 * Real.pi * ord + (Exc.card : ℝ) * (exc * wexc) := by
   classical
   set s : Finset ℕ := Finset.range (2 * H + 1) with hs
   have hsplit := Finset.sum_filter_add_sum_filter_not s (fun k => k ∈ Exc)
-    (fun k => W k / (1 + (cellCentre H k) ^ 2))
+    (fun k => W k / (1 + (cellCentre H k) ^ (2 : ℕ)))
   rw [← hsplit]
-  have hE : ∑ k ∈ s.filter (fun k => k ∈ Exc), W k / (1 + (cellCentre H k) ^ 2)
+  have hE : ∑ k ∈ s.filter (fun k => k ∈ Exc), W k / (1 + (cellCentre H k) ^ (2 : ℕ))
       ≤ (Exc.card : ℝ) * (exc * wexc) := by
     have hterm : ∀ k ∈ s.filter (fun k => k ∈ Exc),
-        W k / (1 + (cellCentre H k) ^ 2) ≤ exc * wexc := by
+        W k / (1 + (cellCentre H k) ^ (2 : ℕ)) ≤ exc * wexc := by
       intro k hk
       have hkE : k ∈ Exc := (Finset.mem_filter.1 hk).2
-      have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ 2 := by positivity
-      have hid : W k / (1 + (cellCentre H k) ^ 2)
-          = W k * (1 / (1 + (cellCentre H k) ^ 2)) := by ring
+      have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ (2 : ℕ) := by positivity
+      have hid : W k / (1 + (cellCentre H k) ^ (2 : ℕ))
+          = W k * (1 / (1 + (cellCentre H k) ^ (2 : ℕ))) := by ring
       rw [hid]
-      have h1 : W k * (1 / (1 + (cellCentre H k) ^ 2)) ≤ W k * wexc :=
+      have h1 : W k * (1 / (1 + (cellCentre H k) ^ (2 : ℕ))) ≤ W k * wexc :=
         mul_le_mul_of_nonneg_left (hw k hkE) (hW k)
       have h2 : W k * wexc ≤ exc * wexc :=
         mul_le_mul_of_nonneg_right (hExc k hkE) hwexc
@@ -90,28 +90,28 @@ theorem cellForm_split_le {H : ℕ} {W : ℕ → ℝ} (hW : ∀ k, 0 ≤ W k) (E
         Finset.card_le_card (fun k hk => (Finset.mem_filter.1 hk).2)
       exact_mod_cast this
     exact mul_le_mul_of_nonneg_right hcard (by positivity)
-  have hO : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), W k / (1 + (cellCentre H k) ^ 2)
+  have hO : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), W k / (1 + (cellCentre H k) ^ (2 : ℕ))
       ≤ 4 * Real.pi * ord := by
     have hterm : ∀ k ∈ s.filter (fun k => ¬ k ∈ Exc),
-        W k / (1 + (cellCentre H k) ^ 2) ≤ ord * (1 / (1 + (cellCentre H k) ^ 2)) := by
+        W k / (1 + (cellCentre H k) ^ (2 : ℕ)) ≤ ord * (1 / (1 + (cellCentre H k) ^ (2 : ℕ))) := by
       intro k hk
       rw [Finset.mem_filter] at hk
-      have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ 2 := by positivity
-      have hid : W k / (1 + (cellCentre H k) ^ 2)
-          = W k * (1 / (1 + (cellCentre H k) ^ 2)) := by ring
+      have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ (2 : ℕ) := by positivity
+      have hid : W k / (1 + (cellCentre H k) ^ (2 : ℕ))
+          = W k * (1 / (1 + (cellCentre H k) ^ (2 : ℕ))) := by ring
       rw [hid]
       exact mul_le_mul_of_nonneg_right (hOrd k hk.1 hk.2) (by positivity)
     refine (Finset.sum_le_sum hterm).trans ?_
     rw [← Finset.mul_sum]
-    have hsub : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ 2)
-        ≤ ∑ k ∈ s, 1 / (1 + (cellCentre H k) ^ 2) := by
+    have hsub : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ (2 : ℕ))
+        ≤ ∑ k ∈ s, 1 / (1 + (cellCentre H k) ^ (2 : ℕ)) := by
       refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun i _ _ => ?_
       positivity
     have htot := sum_inv_one_add_sq_cellCentre_le H
     rw [← hs] at htot
-    have hchain : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ 2)
+    have hchain : ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ (2 : ℕ))
         ≤ 4 * Real.pi := le_trans hsub htot
-    calc ord * ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ 2)
+    calc ord * ∑ k ∈ s.filter (fun k => ¬ k ∈ Exc), 1 / (1 + (cellCentre H k) ^ (2 : ℕ))
         ≤ ord * (4 * Real.pi) := mul_le_mul_of_nonneg_left hchain hord
       _ = 4 * Real.pi * ord := by ring
   linarith

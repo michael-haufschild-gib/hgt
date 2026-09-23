@@ -21,7 +21,7 @@ variable [NormedAddCommGroup F] [InnerProductSpace 𝕜 F] [CompleteSpace F]
 
 /-- The coefficients of a bounded functional along a Hilbert basis are square-summable. -/
 theorem summable_norm_apply_sq {ι : Type*} (b : HilbertBasis ι 𝕜 E) (φ : E →L[𝕜] 𝕜) :
-    Summable (fun i => ‖φ (b i)‖ ^ 2) := by
+    Summable (fun i => ‖φ (b i)‖ ^ (2 : ℕ)) := by
   classical
   set u : E := (InnerProductSpace.toDual 𝕜 E).symm φ with hu
   have hval : ∀ i, φ (b i) = inner 𝕜 u (b i) := by
@@ -36,11 +36,11 @@ omit [CompleteSpace F] in
 /-- **A rank-one operator is Hilbert--Schmidt.** -/
 theorem isHilbertSchmidt_smulRight (φ : E →L[𝕜] 𝕜) (v : F) :
     ContinuousLinearMap.IsHilbertSchmidt (φ.smulRight v) := by
-  have hval : ∀ i, ‖(φ.smulRight v) (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ 2
-      = ‖φ (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ 2 * ‖v‖ ^ 2 := by
+  have hval : ∀ i, ‖(φ.smulRight v) (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ (2 : ℕ)
+      = ‖φ (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by
     intro i
     rw [ContinuousLinearMap.smulRight_apply, norm_smul, mul_pow]
-  show Summable (fun i => ‖(φ.smulRight v) (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ 2)
+  show Summable (fun i => ‖(φ.smulRight v) (ContinuousLinearMap.hsBasis 𝕜 E i)‖ ^ (2 : ℕ))
   simp only [hval]
   exact (summable_norm_apply_sq (ContinuousLinearMap.hsBasis 𝕜 E) φ).mul_right _
 

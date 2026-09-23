@@ -210,7 +210,7 @@ lemma d4BMXiThetaMirrorStarobinskyCrossingProduct_midpoint_eq
         ((4 : ℝ) * n + 2 + (q.1 : ℂ).re) *
         (d4BMXiThetaMirrorAlgebraicallySpecialMass n q -
           d4BMXiThetaMirrorAlgebraicallySpecialMass n
-            (xiZeroCopyReflectEquiv q)) ^ 2 := by
+            (xiZeroCopyReflectEquiv q)) ^ (2 : ℕ) := by
   rw [d4BMXiThetaMirrorStarobinskyCrossingProduct_factorization]
   unfold d4BMXiThetaMirrorAlgebraicallySpecialMassMidpoint
   ring
@@ -238,7 +238,7 @@ theorem d4BMXiThetaMirrorStarobinskyCrossingProduct_midpoint_neg_of_tilted
       ((d4BMXiThetaMirrorAlgebraicallySpecialMass_eq_reflect_iff n q).mp h)
   have hs : 0 < (d4BMXiThetaMirrorAlgebraicallySpecialMass n q -
       d4BMXiThetaMirrorAlgebraicallySpecialMass n
-        (xiZeroCopyReflectEquiv q)) ^ 2 :=
+        (xiZeroCopyReflectEquiv q)) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hm)
   have hq := d4BMXiThetaMirrorDampingRate_pos n q
   have hr := d4BMXiThetaMirrorReflectedDampingRate_pos n q
@@ -246,7 +246,7 @@ theorem d4BMXiThetaMirrorStarobinskyCrossingProduct_midpoint_neg_of_tilted
       ((4 : ℝ) * n + 2 + (q.1 : ℂ).re) *
       (d4BMXiThetaMirrorAlgebraicallySpecialMass n q -
         d4BMXiThetaMirrorAlgebraicallySpecialMass n
-          (xiZeroCopyReflectEquiv q)) ^ 2 := by
+          (xiZeroCopyReflectEquiv q)) ^ (2 : ℕ) := by
     positivity
   nlinarith
 
@@ -273,7 +273,7 @@ theorem d4BMXiThetaMirrorStarobinskyCrossingProduct_nonnegative_all_mass_iff
     have hp : 0 ≤ 144 * ((4 : ℝ) * n + 3 - (q.1 : ℂ).re) *
         ((4 : ℝ) * n + 2 + (q.1 : ℂ).re) *
         (M - d4BMXiThetaMirrorAlgebraicallySpecialMass n
-          (xiZeroCopyReflectEquiv q)) ^ 2 := by
+          (xiZeroCopyReflectEquiv q)) ^ (2 : ℕ) := by
       positivity
     convert hp using 1
     ring
@@ -380,11 +380,11 @@ theorem d4BMXiThetaMirrorHorizonForwardSMatrix_at_asMass
 def d4TopologicalDarbouxBoundaryTraceMap
     (W nu omega : ℂ) (b : ℂ × ℂ) : ℂ × ℂ :=
   (W * b.1 + b.2,
-    (W ^ 2 - nu ^ 2 - omega ^ 2) * b.1 + W * b.2)
+    (W ^ (2 : ℕ) - nu ^ (2 : ℕ) - omega ^ (2 : ℕ)) * b.1 + W * b.2)
 
 lemma d4TopologicalDarbouxBoundaryTraceDeterminant
     (W nu omega : ℂ) :
-    W * W - (W ^ 2 - nu ^ 2 - omega ^ 2) = nu ^ 2 + omega ^ 2 := by
+    W * W - (W ^ (2 : ℕ) - nu ^ (2 : ℕ) - omega ^ (2 : ℕ)) = nu ^ (2 : ℕ) + omega ^ (2 : ℕ) := by
   ring
 
 /-- Darboux sends Dirichlet trace to a transverse Robin trace. -/
@@ -405,7 +405,7 @@ lemma d4TopologicalDarbouxBoundaryTraceMap_dirichlet_ne_zero
 
 /-- At Darboux degeneracy the boundary kernel is the Robin line `(1, -W)`. -/
 lemma d4TopologicalDarbouxBoundaryTraceMap_robin
-    (W nu omega : ℂ) (hdeg : nu ^ 2 + omega ^ 2 = 0) :
+    (W nu omega : ℂ) (hdeg : nu ^ (2 : ℕ) + omega ^ (2 : ℕ) = 0) :
     d4TopologicalDarbouxBoundaryTraceMap W nu omega (1, -W) = (0, 0) := by
   apply Prod.ext <;> simp [d4TopologicalDarbouxBoundaryTraceMap]
   linear_combination -hdeg
@@ -432,8 +432,8 @@ lemma d4BMXiThetaMirrorPhysicalBoundaryDegeneracy_at_asMass
     (n : ℕ) (q : XiZeroCopy) :
     d4TopologicalDarbouxPhysicalAlgebraicConstant
           (d4BMXiThetaMirrorAlgebraicallySpecialMass n q : ℂ)
-          (d4BMXiReflectedRealPairMediatorAngularQ q : ℂ) ^ 2 +
-        d4BMXiReflectedRealPairFrequency n q ^ 2 = 0 := by
+          (d4BMXiReflectedRealPairMediatorAngularQ q : ℂ) ^ (2 : ℕ) +
+        d4BMXiReflectedRealPairFrequency n q ^ (2 : ℕ) = 0 := by
   have h :=
     d4BMXiThetaMirrorPhysicalAlgebraicConstant_add_iomega_at_asMass n q
   have hnu : d4TopologicalDarbouxPhysicalAlgebraicConstant

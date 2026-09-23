@@ -377,7 +377,7 @@ theorem re_inner_twoOutcomePinchingKadisonDefect_eq_disturbanceNormSq
     (e X : E →L[k] E) (he : IsIdempotentElem e)
     (heAdj : e.adjoint = e) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re (inner k psi (twoOutcomePinchingKadisonDefect e X psi)) =
-      ‖(X - twoOutcomePinching e X) psi‖ ^ 2 := by
+      ‖(X - twoOutcomePinching e X) psi‖ ^ (2 : ℕ) := by
   rw [twoOutcomePinchingKadisonDefect_eq_quantumMasterConstraint_disturbance
     e X he heAdj hXAdj]
   exact re_inner_quantumMasterConstraint_eq_normSq
@@ -389,8 +389,8 @@ theorem re_inner_twoOutcomePinchingKadisonDefect_eq_transitionNormSq_add
     (e X : E →L[k] E) (he : IsIdempotentElem e)
     (heAdj : e.adjoint = e) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re (inner k psi (twoOutcomePinchingKadisonDefect e X psi)) =
-      ‖twoOutcomeLowerTransition e X psi‖ ^ 2 +
-        ‖twoOutcomeUpperTransition e X psi‖ ^ 2 := by
+      ‖twoOutcomeLowerTransition e X psi‖ ^ (2 : ℕ) +
+        ‖twoOutcomeUpperTransition e X psi‖ ^ (2 : ℕ) := by
   rw [twoOutcomePinchingKadisonDefect_eq_quantumMasterConstraint_sum
     e X he heAdj hXAdj]
   simp only [_root_.add_apply, inner_add_right, map_add,
@@ -421,7 +421,7 @@ omit [CompleteSpace E] in
 /-- For an involutive clock step, the two-element observable twirl is the exact conjugation
 symmetrizer `(A + U A U) / 2`. -/
 theorem finiteInvolutiveObservableTwirl_eq_symmetrizer
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     finiteCyclicObservableTwirl U X 2 =
       ((2 : k)⁻¹) • (U * X * U + X) := by
   simp [finiteCyclicObservableTwirl, finiteCyclicObservableTwirlNumerator,
@@ -432,7 +432,7 @@ omit [CompleteSpace E] in
 commutator, followed by the clock step.  This is an operator identity and requires neither a
 state nor a temporal evolution. -/
 theorem sub_finiteInvolutiveObservableTwirl_eq_half_commutator_mul
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     X - finiteCyclicObservableTwirl U X 2 =
       ((2 : k)⁻¹) • ((X * U - U * X) * U) := by
   rw [finiteInvolutiveObservableTwirl_eq_symmetrizer U X hsq]
@@ -451,7 +451,7 @@ exactly the nonselective projective measurement associated with the clock's inva
 anti-invariant sectors.  This identifies observer-algebra averaging with an existing static
 measurement operation, without introducing a time parameter. -/
 theorem twoOutcomePinching_finiteInvolutiveGaugeAverage_eq_observableTwirl
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     twoOutcomePinching (finiteCyclicGaugeAverage U 2) X =
       finiteCyclicObservableTwirl U X 2 := by
   apply ContinuousLinearMap.ext
@@ -476,7 +476,7 @@ omit [CompleteSpace E] in
 /-- The clock-twirl defect is literally the already-formalized two-outcome pinching defect for
 the invariant-sector projector. -/
 theorem finiteInvolutiveObservableTwirlKadisonDefect_eq_pinching
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     finiteInvolutiveObservableTwirlKadisonDefect U X =
       twoOutcomePinchingKadisonDefect (finiteCyclicGaugeAverage U 2) X := by
   rw [finiteInvolutiveObservableTwirlKadisonDefect,
@@ -489,11 +489,11 @@ involutive unitary clock twirl as the sum of the two squared transition amplitud
 clock's invariant and anti-invariant sectors. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_transitionNormSq_add
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) (psi : E) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) =
-      ‖twoOutcomeLowerTransition (finiteCyclicGaugeAverage U 2) X psi‖ ^ 2 +
-        ‖twoOutcomeUpperTransition (finiteCyclicGaugeAverage U 2) X psi‖ ^ 2 := by
+      ‖twoOutcomeLowerTransition (finiteCyclicGaugeAverage U 2) X psi‖ ^ (2 : ℕ) +
+        ‖twoOutcomeUpperTransition (finiteCyclicGaugeAverage U 2) X psi‖ ^ (2 : ℕ) := by
   rw [finiteInvolutiveObservableTwirlKadisonDefect_eq_pinching U X hsq]
   have hPAdj : (finiteCyclicGaugeAverage U 2).adjoint =
       finiteCyclicGaugeAverage U 2 := by
@@ -508,7 +508,7 @@ erased by clock averaging.  This removes the two separate transition channels fr
 master-constraint and Ward arguments. -/
 theorem finiteInvolutiveObservableTwirlKadisonDefect_eq_quantumMasterConstraint_disturbance
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) :
     finiteInvolutiveObservableTwirlKadisonDefect U X =
       quantumMasterConstraint (X - finiteCyclicObservableTwirl U X 2) := by
   rw [finiteInvolutiveObservableTwirlKadisonDefect_eq_pinching U X hsq]
@@ -527,7 +527,7 @@ to the clock commutant.  Hence the defect detects observational incompatibility 
 reference to temporal evolution or to a chosen state. -/
 theorem finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutes
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) :
     finiteInvolutiveObservableTwirlKadisonDefect U X = 0 ↔
       U * X = X * U := by
   rw [finiteInvolutiveObservableTwirlKadisonDefect_eq_quantumMasterConstraint_disturbance
@@ -551,10 +551,10 @@ theorem finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutes
 observable component erased by the clock conditional expectation. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_disturbanceNormSq
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) (psi : E) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) =
-      ‖(X - finiteCyclicObservableTwirl U X 2) psi‖ ^ 2 := by
+      ‖(X - finiteCyclicObservableTwirl U X 2) psi‖ ^ (2 : ℕ) := by
   rw [finiteInvolutiveObservableTwirlKadisonDefect_eq_quantumMasterConstraint_disturbance
     U X hadjoint_mul hsq hXAdj]
   exact re_inner_quantumMasterConstraint_eq_normSq
@@ -565,10 +565,10 @@ defect as one quarter of the squared commutator evaluated on the clock-shifted s
 stationary law below is the fixed-state specialization `U psi = psi`. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq_shifted
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) (psi : E) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) =
-      (4 : ℝ)⁻¹ * ‖((X * U - U * X) : E →L[k] E) (U psi)‖ ^ 2 := by
+      (4 : ℝ)⁻¹ * ‖((X * U - U * X) : E →L[k] E) (U psi)‖ ^ (2 : ℕ) := by
   rw [re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_disturbanceNormSq
     U X hadjoint_mul hsq hXAdj,
     sub_finiteInvolutiveObservableTwirl_eq_half_commutator_mul U X hsq,
@@ -583,7 +583,7 @@ the clock-shifted state.  This is the statewise faithful-detection form of the o
 commutant criterion. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutator_shifted
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) (psi : E) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) (psi : E) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) = 0 ↔
       ((X * U - U * X) : E →L[k] E) (U psi) = 0 := by
@@ -591,7 +591,7 @@ theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commut
     U X hadjoint_mul hsq hXAdj]
   constructor
   · intro hzero
-    have hnormSq : ‖((X * U - U * X) : E →L[k] E) (U psi)‖ ^ 2 = 0 :=
+    have hnormSq : ‖((X * U - U * X) : E →L[k] E) (U psi)‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hzero).resolve_left (by norm_num)
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnormSq)
   · intro hzero
@@ -603,11 +603,11 @@ twirl defect is one quarter of the squared clock--observable commutator.  The gl
 stationary; the nonzero value measures only whether the clock can distinguish the observable. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq_of_fixed
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) {psi : E}
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) {psi : E}
     (hpsi : U psi = psi) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) =
-      (4 : ℝ)⁻¹ * ‖((X * U - U * X) : E →L[k] E) psi‖ ^ 2 := by
+      (4 : ℝ)⁻¹ * ‖((X * U - U * X) : E →L[k] E) psi‖ ^ (2 : ℕ) := by
   rw [re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq_shifted
     U X hadjoint_mul hsq hXAdj, hpsi]
 
@@ -615,7 +615,7 @@ theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commuta
 unshifted clock commutator. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commutator_of_fixed
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) {psi : E}
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) {psi : E}
     (hpsi : U psi = psi) :
     RCLike.re
         (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) = 0 ↔
@@ -627,7 +627,7 @@ theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_zero_iff_commut
 hypothesis: involutive unitarity and self-adjointness of the observed quantity discharge it. -/
 theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_nonneg
     (U X : E →L[k] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1) (hXAdj : X.adjoint = X) (psi : E) :
+    (hsq : U ^ (2 : ℕ) = 1) (hXAdj : X.adjoint = X) (psi : E) :
     0 ≤ RCLike.re
       (inner k psi (finiteInvolutiveObservableTwirlKadisonDefect U X psi)) := by
   rw [re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_transitionNormSq_add

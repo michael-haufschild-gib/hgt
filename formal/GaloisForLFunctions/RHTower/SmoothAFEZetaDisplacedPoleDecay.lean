@@ -14,7 +14,7 @@ namespace RHTower
 
 open Complex MeasureTheory Set
 
-/-- Pointwise `ell^1` envelope for the literal linear Levinson mollifier. -/
+/-- Pointwise `ell^(1 : ℕ)` envelope for the literal linear Levinson mollifier. -/
 theorem norm_levinsonLinearMollifier_le
     {M : ℕ} (hM : 1 < M) (t : ℝ) :
     ‖Sieve.levinsonLinearMollifier M t‖ ≤ 2 * Real.sqrt M := by

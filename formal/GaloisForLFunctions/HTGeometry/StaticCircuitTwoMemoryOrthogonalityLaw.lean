@@ -188,8 +188,8 @@ theorem twoMemory_norm_conservation
     (hPid : ∀ z, P (P z) = P z)
     (hPPi : ∀ z, P (PiOp z) = PiOp z)
     (hUP : ∀ z, U (P z) = P z) :
-    ‖staticMemory PiOp P x‖ ^ 2 + ‖dynamicMemory P U x‖ ^ 2 =
-      ‖x - PiOp x‖ ^ 2 := by
+    ‖staticMemory PiOp P x‖ ^ (2 : ℕ) + ‖dynamicMemory P U x‖ ^ (2 : ℕ) =
+      ‖x - PiOp x‖ ^ (2 : ℕ) := by
   have hcperp : inner 𝕜 (staticMemory PiOp P x) (x - P x) = 0 := by
     rw [staticMemory, inner_sub_left]
     have h1 : inner 𝕜 (P x) (x - P x) = 0 :=
@@ -208,12 +208,12 @@ theorem twoMemory_norm_conservation
     simp only [staticMemory]
     abel
   calc
-    ‖staticMemory PiOp P x‖ ^ 2 + ‖dynamicMemory P U x‖ ^ 2 =
-        ‖staticMemory PiOp P x‖ ^ 2 + ‖x - P x‖ ^ 2 := by rw [hrnorm]
-    _ = ‖staticMemory PiOp P x + (x - P x)‖ ^ 2 := by
+    ‖staticMemory PiOp P x‖ ^ (2 : ℕ) + ‖dynamicMemory P U x‖ ^ (2 : ℕ) =
+        ‖staticMemory PiOp P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ) := by rw [hrnorm]
+    _ = ‖staticMemory PiOp P x + (x - P x)‖ ^ (2 : ℕ) := by
       simpa only [pow_two] using
         (norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ hcperp).symm
-    _ = ‖x - PiOp x‖ ^ 2 := by rw [← hxsplit]
+    _ = ‖x - PiOp x‖ ^ (2 : ℕ) := by rw [← hxsplit]
 
 omit [CompleteSpace E] in
 /-- A preparation channel preserving the universal projection preserves it at every depth. -/

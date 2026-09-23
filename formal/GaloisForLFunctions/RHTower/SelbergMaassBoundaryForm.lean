@@ -25,15 +25,15 @@ noncomputable section
 private def majorant (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     (y : ℝ) (n : ℤ) : ℝ :=
-  signedFrequency (N + 1 : ℕ) n ^ 2 * Complex.normSq (maassCoefficient N f n y) +
+  signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) * Complex.normSq (maassCoefficient N f n y) +
     Complex.normSq (deriv (maassCoefficient N f n) y) +
-      (1 / (4 * y ^ 2)) * Complex.normSq (maassCoefficient N f n y)
+      (1 / (4 * y ^ (2 : ℕ))) * Complex.normSq (maassCoefficient N f n y)
 
 private theorem majorant_hasSum (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    HasSum (majorant N f y) (gradientEnergy N f y + (1 / (4 * y ^ 2)) * mass N f y) :=
-  (gradientEnergy_hasSum N f hy).add ((mass_hasSum N f hy).mul_left (1 / (4 * y ^ 2)))
+    HasSum (majorant N f y) (gradientEnergy N f y + (1 / (4 * y ^ (2 : ℕ))) * mass N f y) :=
+  (gradientEnergy_hasSum N f hy).add ((mass_hasSum N f hy).mul_left (1 / (4 * y ^ (2 : ℕ))))
 
 private theorem energy_norm_le_majorant (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (n : ℤ)
@@ -44,7 +44,7 @@ private theorem energy_norm_le_majorant (N : ℕ) {lam : ℝ}
   have hD := Complex.normSq_nonneg (deriv (maassCoefficient N f n) y)
   have hk := mul_nonneg (sq_nonneg (signedFrequency (N + 1 : ℕ) n))
     (Complex.normSq_nonneg (maassCoefficient N f n y))
-  have hm := mul_nonneg (by positivity : 0 ≤ 1 / (4 * y ^ 2))
+  have hm := mul_nonneg (by positivity : 0 ≤ 1 / (4 * y ^ (2 : ℕ)))
     (Complex.normSq_nonneg (maassCoefficient N f n y))
   constructor <;> nlinarith
 
@@ -161,7 +161,7 @@ theorem maass_boundary_form_lower_bound (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 theorem maass_flux_boundary_identity (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ)) (T : ℝ) :
     -flux N f (Real.exp T) + ((lam : ℝ) - 1 / 4) *
-        (∫ y in Ioi (Real.exp T), mass N f y / y ^ 2) =
+        (∫ y in Ioi (Real.exp T), mass N f y / y ^ (2 : ℕ)) =
       boundaryForm (Real.log (N + 1 : ℕ)) T (formTrace N f T) +
         ∑' n : ℤ, modeSquareTail N f T n := by
   rw [← quarterSlice_tail_identity N lam f (Real.exp_pos T)]

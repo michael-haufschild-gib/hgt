@@ -28,7 +28,7 @@ structure TubeDatum (V Vs Vt : ℝ → ℝ → (Fin k → ℂ) → ℂ) (ρ₀ M
   radNonneg : 0 ≤ ρ
   rad : ρ < ρ₀
   sideNonneg : 0 ≤ T
-  small : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1
+  small : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1
   rad₁Pos : 0 < ρ₁
   rad₁ : ρ₁ < ρ
   rad₂Pos : 0 < ρ₂

@@ -86,7 +86,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_zero_of_not_prime
     2 * cellMeasure.real (historyFibre n (clock n - 1)) *
         (∑ b ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
-            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ 2) = 0 := by
+            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ (2 : ℕ)) = 0 := by
   rw [two_mul_terminal_historyLayer_parent_child_energy_eq_physicalCell_pairwise]
   apply Finset.sum_eq_zero
   intro b hb

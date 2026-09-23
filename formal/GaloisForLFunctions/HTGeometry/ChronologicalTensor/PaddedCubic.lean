@@ -13,24 +13,24 @@ noncomputable section
 
 theorem padded_reversal_bound (p a b c d e : ℝ) :
     |(p+(a+b+c+d+e))*reversalResponse a b c d e| ≤
-      (|p|+sixCost a b c d e)^4 := by
+      (|p|+sixCost a b c d e)^(4 : ℕ) := by
   let V := sixCost a b c d e
   let P := reversalResponse a b c d e
   let S := a+b+c+d+e
   have hV : 0 ≤ V := by dsimp [V,sixCost]; positivity
-  have hP : |P| ≤ (8/7 : ℝ)*V^3 := cubic_rational_envelope a b c d e
-  have hSP : |S*P| ≤ V^4 := one_enclosure_reversal_bound a b c d e
-  have hgap : (|p|+V)^4 - (|p| *((8/7 : ℝ)*V^3)+V^4) =
-      |p|^4+4*|p|^3*V+6*|p|^2*V^2+(20/7 : ℝ)*|p| *V^3 := by ring
-  have hn : 0 ≤ |p|^4+4*|p|^3*V+6*|p|^2*V^2+(20/7 : ℝ)*|p| *V^3 := by positivity
-  change |(p+S)*P| ≤ (|p|+V)^4
+  have hP : |P| ≤ (8/7 : ℝ)*V^(3 : ℕ) := cubic_rational_envelope a b c d e
+  have hSP : |S*P| ≤ V^(4 : ℕ) := one_enclosure_reversal_bound a b c d e
+  have hgap : (|p|+V)^(4 : ℕ) - (|p| *((8/7 : ℝ)*V^(3 : ℕ))+V^(4 : ℕ)) =
+      |p|^(4 : ℕ)+4*|p|^(3 : ℕ)*V+6*|p|^(2 : ℕ)*V^(2 : ℕ)+(20/7 : ℝ)*|p| *V^(3 : ℕ) := by ring
+  have hn : 0 ≤ |p|^(4 : ℕ)+4*|p|^(3 : ℕ)*V+6*|p|^(2 : ℕ)*V^(2 : ℕ)+(20/7 : ℝ)*|p| *V^(3 : ℕ) := by positivity
+  change |(p+S)*P| ≤ (|p|+V)^(4 : ℕ)
   calc
     |(p+S)*P| = |p*P+S*P| := by congr 1; ring
     _ ≤ |p*P|+|S*P| := abs_add_le _ _
     _ = |p| * |P|+|S*P| := by rw [abs_mul]
-    _ ≤ |p| *((8/7 : ℝ)*V^3)+V^4 :=
+    _ ≤ |p| *((8/7 : ℝ)*V^(3 : ℕ))+V^(4 : ℕ) :=
       add_le_add (mul_le_mul_of_nonneg_left hP (abs_nonneg p)) hSP
-    _ ≤ (|p|+V)^4 := by linarith only [hgap,hn]
+    _ ≤ (|p|+V)^(4 : ℕ) := by linarith only [hgap,hn]
 
 theorem padded_reversal_capacity_one_le :
     sealedCapacity (padWindows sixWindows) ![27,-1] 1 ≤ 1 := by

@@ -101,7 +101,7 @@ theorem bdGram_quarter :
   push_cast at hval
   rw [hval]
   have hlog4 : Real.log (4 : ℝ) = 2 * Real.log 2 := by
-    rw [show (4 : ℝ) = (2 : ℝ) ^ 2 from by norm_num, Real.log_pow]
+    rw [show (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) from by norm_num, Real.log_pow]
     push_cast
     ring
   rw [hlog4]
@@ -109,8 +109,8 @@ theorem bdGram_quarter :
 
 /-- **A better single-generator bound.**  The `m = 4` generator beats `m = 2`. -/
 theorem bdDist_sq_le_quarter_bound :
-    bdDist (fun _ : Fin 1 => 1 / (4 : ℝ)) ^ 2
-      ≤ 1 - Real.log 2 ^ 2 / (4 * (3 * Real.log 2 / 8 - Real.pi / 32)) := by
+    bdDist (fun _ : Fin 1 => 1 / (4 : ℝ)) ^ (2 : ℕ)
+      ≤ 1 - Real.log 2 ^ (2 : ℕ) / (4 * (3 * Real.log 2 / 8 - Real.pi / 32)) := by
   have hgram := bdGram_quarter
   have hpos : 0 < 3 * Real.log 2 / 8 - Real.pi / 32 := by
     have h2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
@@ -122,7 +122,7 @@ theorem bdDist_sq_le_quarter_bound :
   have h := bdDist_sq_le_quadratic (fun _ : Fin 1 => 1 / (4 : ℝ)) hθ
     (fun _ : Fin 1 => Real.log 2 / (2 * (3 * Real.log 2 / 8 - Real.pi / 32)))
   have hlog : Real.log (1 / (4 : ℝ)) = -(2 * Real.log 2) := by
-    rw [one_div, Real.log_inv, show (4 : ℝ) = (2 : ℝ) ^ 2 from by norm_num, Real.log_pow]
+    rw [one_div, Real.log_inv, show (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) from by norm_num, Real.log_pow]
     push_cast
     ring
   refine le_trans h ?_

@@ -266,7 +266,7 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatio_le_global :
       ‖deriv
           (fun u : ℝ => smoothAFEZetaChiShiftRatio (linePt u)
             (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) tau‖ ≤
-        D * (1 + |tau|) ^ 2 * (1 + |v|) ^ 2 := by
+        D * (1 + |tau|) ^ (2 : ℕ) * (1 + |v|) ^ (2 : ℕ) := by
   obtain ⟨D, hD, hslope⟩ :=
     exists_norm_logDeriv_zetaChi_shift_sub_line_le_global
   refine ⟨D, hD, ?_⟩
@@ -286,6 +286,6 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatio_le_global :
     _ ≤ ((1 + |tau|) * (1 + |v|)) *
           (D * (1 + |tau|) * (1 + |v|)) :=
         mul_le_mul_of_nonneg_left (hslope tau v) (by positivity)
-    _ = D * (1 + |tau|) ^ 2 * (1 + |v|) ^ 2 := by ring
+    _ = D * (1 + |tau|) ^ (2 : ℕ) * (1 + |v|) ^ (2 : ℕ) := by ring
 
 end RHTower

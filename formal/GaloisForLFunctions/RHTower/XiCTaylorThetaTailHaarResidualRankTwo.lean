@@ -424,7 +424,7 @@ theorem half_hermitianCrossCurrent_dyadicCentered_eq_normalizedSquareDifference
 
 /-- Opposite logarithmic phase drifts cancel identically in the symmetric off-diagonal
 Hermitian current.  Only the real part of the relative phase survives; in particular no
-`a * |F|^2` drift remains in this channel. -/
+`a * |F|^(2 : ℕ)` drift remains in this channel. -/
 theorem hermitianCrossCurrent_oppositePhaseDrift_cancel
     (p q F F' : ℂ) (a : ℝ) :
     ((p * (F' + ((a : ℂ) * I) * F) *
@@ -453,7 +453,7 @@ theorem spectralTranslationPhase_mul_conj_neg_re
   ring_nf
 
 /-- Exact current of the two opposite untruncated translation channels.  Their individual
-exponential weights and their `a * |F|^2` drifts disappear from the Hermitian cross; the result is
+exponential weights and their `a * |F|^(2 : ℕ)` drifts disappear from the Hermitian cross; the result is
 the original current rotated by the bounded scalar `2 cos (2 a Re z)`. -/
 theorem hermitianCrossCurrent_spectralTranslationPhase
     (F F' : ℂ) (a : ℝ) (z : ℂ) :

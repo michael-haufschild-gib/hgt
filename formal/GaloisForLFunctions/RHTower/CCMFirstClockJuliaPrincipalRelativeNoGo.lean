@@ -51,10 +51,10 @@ theorem eventually_not_juliaSchurResidual_orients_sourceFaithfulAnchor
       (𝓝 0) (𝓝 1) :=
     HTGeometry.tendsto_juliaDefectAttenuationKernel_zero.comp harg
   have hsquare : Tendsto
-      (fun x : ℝ => HTGeometry.juliaDefectAttenuationKernel (x * node) ^ 2)
-      (𝓝 0) (𝓝 (1 ^ 2)) := hcoefficient.pow 2
+      (fun x : ℝ => HTGeometry.juliaDefectAttenuationKernel (x * node) ^ (2 : ℕ))
+      (𝓝 0) (𝓝 (1 ^ (2 : ℕ))) := hcoefficient.pow 2
   have hevent : ∀ᶠ x : ℝ in 𝓝 0,
-      1 / 2 < HTGeometry.juliaDefectAttenuationKernel (x * node) ^ 2 :=
+      1 / 2 < HTGeometry.juliaDefectAttenuationKernel (x * node) ^ (2 : ℕ) :=
     (tendsto_order.1 hsquare).1 (1 / 2) (by norm_num)
   filter_upwards [hevent] with x hx
   exact
@@ -73,7 +73,7 @@ theorem ccmFirstClockReducedGoodPrimeTerm_eq_zero_of_length_one
 /-- Every prime in the sixth-power block is a pure-bad reduced source cell. -/
 theorem ccmFirstClockJuliaSixthPower_block_goodTerm_eq_zero
     {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     ccmFirstClockReducedGoodPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
       ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩ = 0 := by
   exact ccmFirstClockReducedGoodPrimeTerm_eq_zero_of_length_one _
@@ -82,7 +82,7 @@ theorem ccmFirstClockJuliaSixthPower_block_goodTerm_eq_zero
 /-- Every sixth-power-block bad term is strictly positive, not merely nonnegative. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_pos
     {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     0 < ccmFirstClockReducedBadPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
       ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩ := by
   let q : Nat.Primes := ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩
@@ -98,14 +98,14 @@ theorem ccmFirstClockJuliaSixthPower_block_badTerm_pos
     obtain ⟨_, _, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
     dsimp only [q]
     calc
-      p ≤ 5 * m ^ 4 := hpUpper
-      _ ≤ m ^ 2 * m ^ 4 := Nat.mul_le_mul_right _ (by nlinarith)
-      _ = m ^ 6 := by ring
+      p ≤ 5 * m ^ (4 : ℕ) := hpUpper
+      _ ≤ m ^ (2 : ℕ) * m ^ (4 : ℕ) := Nat.mul_le_mul_right _ (by nlinarith)
+      _ = m ^ (6 : ℕ) := by ring
   have hbadNonneg : 0 ≤ bad :=
     ccmFirstClockReducedBadPrimeTerm_nonneg hL q hpCut
   have hlower := ccmFirstClockJuliaSixthPower_block_badTerm_sq_lower hm hp
   have hpPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hp).1
-  have hlowerPos : 0 < (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p := by
+  have hlowerPos : 0 < (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p := by
     have hlog : 0 < Real.log (p : ℝ) :=
       Real.log_pos (by exact_mod_cast hpPrime.one_lt)
     have hpReal : (0 : ℝ) < p := by exact_mod_cast hpPrime.pos
@@ -122,13 +122,13 @@ channel-linear current whose pure-bad diagonal weight is zero cannot dominate th
 excursion.  The contradiction occurs before any good/bad packet is scalarized. -/
 theorem ccmFirstClockJuliaSixthPower_block_not_oriented_by_badDiagonalNullLinearCurrent
     {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     (goodWeight mixedWeight badWeight : ℝ) (hbadWeight : badWeight = 0) :
     ¬ (GaloisForLFunctions.HTGeometry.twoChannelSignedExcursion
           (ccmFirstClockReducedGoodPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
             ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩)
           (ccmFirstClockReducedBadPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
-            ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩) ^ 2 ≤
+            ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩) ^ (2 : ℕ) ≤
         GaloisForLFunctions.HTGeometry.twoChannelLinearCurrent
           goodWeight mixedWeight badWeight
           (ccmFirstClockReducedGoodPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
@@ -147,11 +147,11 @@ original Route-J excursion on any pure-bad sixth-power cell.  Its squared diagon
 one half, whereas faithful domination of a nonzero cell requires gain at least one. -/
 theorem ccmFirstClockJuliaSixthPower_block_not_oriented_by_endpointCorrectionDressing
     {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     let q : Nat.Primes := ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩
     let bad := ccmFirstClockReducedBadPrimeTerm
       (ccmFirstClockJuliaSixthPowerAperture m) q
-    ¬ bad ^ 2 ≤ (gammaJuliaEndpointCorrectionMultiplier q 0 * bad) ^ 2 := by
+    ¬ bad ^ (2 : ℕ) ≤ (gammaJuliaEndpointCorrectionMultiplier q 0 * bad) ^ (2 : ℕ) := by
   dsimp only
   let q : Nat.Primes := ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩
   let bad := ccmFirstClockReducedBadPrimeTerm
@@ -160,10 +160,10 @@ theorem ccmFirstClockJuliaSixthPower_block_not_oriented_by_endpointCorrectionDre
     ccmFirstClockJuliaSixthPower_block_badTerm_pos hm hp
   have hmult := gammaJuliaEndpointCorrectionMultiplier_sq_le_half q 0
   intro hdominates
-  have hbadSq : 0 < bad ^ 2 := sq_pos_of_pos hbad
+  have hbadSq : 0 < bad ^ (2 : ℕ) := sq_pos_of_pos hbad
   have hfactor :
-      (gammaJuliaEndpointCorrectionMultiplier q 0 * bad) ^ 2 =
-        gammaJuliaEndpointCorrectionMultiplier q 0 ^ 2 * bad ^ 2 := by
+      (gammaJuliaEndpointCorrectionMultiplier q 0 * bad) ^ (2 : ℕ) =
+        gammaJuliaEndpointCorrectionMultiplier q 0 ^ (2 : ℕ) * bad ^ (2 : ℕ) := by
     ring
   rw [hfactor] at hdominates
   nlinarith [mul_le_mul_of_nonneg_right hmult hbadSq.le]
@@ -173,8 +173,8 @@ theorem ccmFirstClockJuliaSixthPower_block_not_oriented_by_endpointCorrectionDre
 /-- Every sixth-power-block bad coefficient has a coarse unsquared lower bound.  This converts the
 Chebyshev theta mass into a quadratic-size total bad mass without a prime-gap input. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_lower {m p : ℕ}
-    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
-    Real.log (p : ℝ) / (6 * (m : ℝ) ^ 2) ≤
+    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
+    Real.log (p : ℝ) / (6 * (m : ℝ) ^ (2 : ℕ)) ≤
       ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p := by
   have hpPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hp).1
   have hpUpper := (mem_suzukiMangoldtFivePrimeBlock.mp hp).2.2
@@ -188,109 +188,109 @@ theorem ccmFirstClockJuliaSixthPower_block_badTerm_lower {m p : ℕ}
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm hp).le
   have hsqLower := ccmFirstClockJuliaSixthPower_block_badTerm_sq_lower hm hp
   rw [← ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime] at hsqLower
-  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ 4 := by exact_mod_cast hpUpper
+  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ (4 : ℕ) := by exact_mod_cast hpUpper
   have hscale :
-      (Real.log (p : ℝ) / (6 * (m : ℝ) ^ 2)) ^ 2 ≤
-        (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p := by
-    have hden : (0 : ℝ) < 6 * (m : ℝ) ^ 2 := by positivity
-    have hfourp : (4 : ℝ) * p ≤ 36 * (m : ℝ) ^ 4 := by nlinarith
+      (Real.log (p : ℝ) / (6 * (m : ℝ) ^ (2 : ℕ))) ^ (2 : ℕ) ≤
+        (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p := by
+    have hden : (0 : ℝ) < 6 * (m : ℝ) ^ (2 : ℕ) := by positivity
+    have hfourp : (4 : ℝ) * p ≤ 36 * (m : ℝ) ^ (4 : ℕ) := by nlinarith
     rw [div_pow]
     apply (div_le_div_iff₀ (sq_pos_of_pos hden) hpR).2
     nlinarith [sq_nonneg (Real.log (p : ℝ))]
   have hsq :
-      (Real.log (p : ℝ) / (6 * (m : ℝ) ^ 2)) ^ 2 ≤
+      (Real.log (p : ℝ) / (6 * (m : ℝ) ^ (2 : ℕ))) ^ (2 : ℕ) ≤
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := hscale.trans hsqLower
+          (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := hscale.trans hsqLower
   nlinarith
 
 /-- A block bad square is at most its undamped one-mode square. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_sq_upper {m p : ℕ}
-    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
-    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 ≤
-      Real.log (p : ℝ) ^ 2 / p := by
+    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
+    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) ≤
+      Real.log (p : ℝ) ^ (2 : ℕ) / p := by
   have hpPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hp).1
   let theta :=
     (2 * Real.pi / ccmFirstClockJuliaSixthPowerAperture m) * Real.log (p : ℝ)
   have hsinLower := Real.neg_one_le_sin theta
   have hsinUpper := Real.sin_le_one theta
-  have hsinSq : Real.sin theta ^ 2 ≤ 1 := by nlinarith
+  have hsinSq : Real.sin theta ^ (2 : ℕ) ≤ 1 := by nlinarith
   rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime,
     ccmFirstClockJuliaSixthPower_block_badTerm_eq hm hp]
   rw [show (2 * Real.pi / ccmFirstClockJuliaSixthPowerAperture m) *
       Real.log (p : ℝ) = theta by rfl]
   have hrSq := criticalPrimeTowerRadius_sq p
-  have hfactor : 0 ≤ Real.log (p : ℝ) ^ 2 * criticalPrimeTowerRadius p ^ 2 := by
+  have hfactor : 0 ≤ Real.log (p : ℝ) ^ (2 : ℕ) * criticalPrimeTowerRadius p ^ (2 : ℕ) := by
     positivity
   calc
-    (-(Real.log (p : ℝ) * criticalPrimeTowerRadius p * Real.sin theta)) ^ 2 =
-        (Real.log (p : ℝ) ^ 2 * criticalPrimeTowerRadius p ^ 2) *
-          Real.sin theta ^ 2 := by ring
-    _ ≤ (Real.log (p : ℝ) ^ 2 * criticalPrimeTowerRadius p ^ 2) * 1 :=
+    (-(Real.log (p : ℝ) * criticalPrimeTowerRadius p * Real.sin theta)) ^ (2 : ℕ) =
+        (Real.log (p : ℝ) ^ (2 : ℕ) * criticalPrimeTowerRadius p ^ (2 : ℕ)) *
+          Real.sin theta ^ (2 : ℕ) := by ring
+    _ ≤ (Real.log (p : ℝ) ^ (2 : ℕ) * criticalPrimeTowerRadius p ^ (2 : ℕ)) * 1 :=
       mul_le_mul_of_nonneg_left hsinSq hfactor
-    _ = Real.log (p : ℝ) ^ 2 / p := by
+    _ = Real.log (p : ℝ) ^ (2 : ℕ) / p := by
       rw [hrSq]
       ring
 
 /-- Uniform block version of the one-mode square upper bound. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_sq_coarse_upper {m p : ℕ}
-    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
-    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 ≤
-      13 * Real.log (m : ℝ) ^ 2 / (m : ℝ) ^ 4 := by
+    (hm : 25 ≤ m) (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
+    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) ≤
+      13 * Real.log (m : ℝ) ^ (2 : ℕ) / (m : ℝ) ^ (4 : ℕ) := by
   obtain ⟨hpPrime, hpLower, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
   have hmR : (0 : ℝ) < m := by positivity
   have hpR : (0 : ℝ) < p := by exact_mod_cast hpPrime.pos
   have hlogm : 0 ≤ Real.log (m : ℝ) :=
     (Real.log_pos (by exact_mod_cast (show 1 < m by omega))).le
-  have hpPow : p ≤ m ^ 5 := by
+  have hpPow : p ≤ m ^ (5 : ℕ) := by
     calc
-      p ≤ 5 * m ^ 4 := hpUpper
-      _ ≤ m * m ^ 4 := Nat.mul_le_mul_right _ (by omega)
-      _ = m ^ 5 := by ring
+      p ≤ 5 * m ^ (4 : ℕ) := hpUpper
+      _ ≤ m * m ^ (4 : ℕ) := Nat.mul_le_mul_right _ (by omega)
+      _ = m ^ (5 : ℕ) := by ring
   have hlogp : Real.log (p : ℝ) ≤ 5 * Real.log (m : ℝ) := by
-    have hpPowR : (p : ℝ) ≤ (m : ℝ) ^ 5 := by exact_mod_cast hpPow
+    have hpPowR : (p : ℝ) ≤ (m : ℝ) ^ (5 : ℕ) := by exact_mod_cast hpPow
     have h := Real.log_le_log hpR hpPowR
     rw [Real.log_pow] at h
     norm_num at h
     exact h
   have hlogp0 : 0 ≤ Real.log (p : ℝ) :=
     (Real.log_pos (by exact_mod_cast hpPrime.one_lt)).le
-  have hlogSq : Real.log (p : ℝ) ^ 2 ≤ 25 * Real.log (m : ℝ) ^ 2 := by
+  have hlogSq : Real.log (p : ℝ) ^ (2 : ℕ) ≤ 25 * Real.log (m : ℝ) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (5 * Real.log (m : ℝ) - Real.log (p : ℝ))]
-  have hpLowerR : 2 * (m : ℝ) ^ 4 < (p : ℝ) := by exact_mod_cast hpLower
+  have hpLowerR : 2 * (m : ℝ) ^ (4 : ℕ) < (p : ℝ) := by exact_mod_cast hpLower
   have hraw := ccmFirstClockJuliaSixthPower_block_badTerm_sq_upper hm hp
   calc
-    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 ≤
-        Real.log (p : ℝ) ^ 2 / p := hraw
-    _ ≤ 25 * Real.log (m : ℝ) ^ 2 / p :=
+    ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) ≤
+        Real.log (p : ℝ) ^ (2 : ℕ) / p := hraw
+    _ ≤ 25 * Real.log (m : ℝ) ^ (2 : ℕ) / p :=
       div_le_div_of_nonneg_right hlogSq hpR.le
-    _ ≤ 13 * Real.log (m : ℝ) ^ 2 / (m : ℝ) ^ 4 := by
+    _ ≤ 13 * Real.log (m : ℝ) ^ (2 : ℕ) / (m : ℝ) ^ (4 : ℕ) := by
       apply (div_le_div_iff₀ hpR (pow_pos hmR 4)).2
       nlinarith [sq_nonneg (Real.log (m : ℝ))]
 
 /-- Chebyshev theta mass forces quadratic-size unsquared bad mass on the sixth-power block. -/
 theorem ccmFirstClockJuliaSixthPower_block_badMass_lower {m : ℕ}
-    (hm : 25 ≤ m) (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
-    (m : ℝ) ^ 2 / 24 ≤
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hm : 25 ≤ m) (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
+    (m : ℝ) ^ (2 : ℕ) / 24 ≤
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p := by
   have hmR : (0 : ℝ) < m := by positivity
   have hcheb := chebyshev_fivePrimeBlock_logMass_floor hmCheb
   calc
-    (m : ℝ) ^ 2 / 24 =
-        (1 / (6 * (m : ℝ) ^ 2)) * (((m ^ 4 : ℕ) : ℝ) / 4) := by
+    (m : ℝ) ^ (2 : ℕ) / 24 =
+        (1 / (6 * (m : ℝ) ^ (2 : ℕ))) * (((m ^ (4 : ℕ) : ℕ) : ℝ) / 4) := by
       push_cast
       field_simp
       ring
-    _ ≤ (1 / (6 * (m : ℝ) ^ 2)) *
-        ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4), Real.log (p : ℝ) := by
+    _ ≤ (1 / (6 * (m : ℝ) ^ (2 : ℕ))) *
+        ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)), Real.log (p : ℝ) := by
       exact mul_le_mul_of_nonneg_left hcheb (by positivity)
-    _ = ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-        Real.log (p : ℝ) / (6 * (m : ℝ) ^ 2) := by
+    _ = ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+        Real.log (p : ℝ) / (6 * (m : ℝ) ^ (2 : ℕ)) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro p _hp
       ring
-    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
           (ccmFirstClockJuliaSixthPowerAperture m) p := by
       exact Finset.sum_le_sum fun p hp =>
@@ -299,8 +299,8 @@ theorem ccmFirstClockJuliaSixthPower_block_badMass_lower {m : ℕ}
 /-- The macroscopic prime block has the trivial sharp ambient-cardinality ceiling needed to sum
 the pointwise bad-square bound. -/
 theorem card_suzukiMangoldtFivePrimeBlock_fourthPower_le {m : ℕ} :
-    (suzukiMangoldtFivePrimeBlock (m ^ 4)).card ≤ 5 * m ^ 4 := by
-  have hsubset : suzukiMangoldtFivePrimeBlock (m ^ 4) ⊆ Finset.Icc 1 (5 * m ^ 4) := by
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card ≤ 5 * m ^ (4 : ℕ) := by
+  have hsubset : suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)) ⊆ Finset.Icc 1 (5 * m ^ (4 : ℕ)) := by
     intro p hp
     obtain ⟨hpPrime, _hpLower, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
     exact Finset.mem_Icc.mpr ⟨hpPrime.pos, hpUpper⟩
@@ -312,40 +312,40 @@ theorem card_suzukiMangoldtFivePrimeBlock_fourthPower_le {m : ℕ} :
 quadratic in `m`. -/
 theorem ccmFirstClockJuliaSixthPower_block_badDiagonal_upper {m : ℕ}
     (hm : 25 ≤ m) :
-    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-      ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2) ≤
-      65 * Real.log (m : ℝ) ^ 2 := by
+    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+      ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ)) ≤
+      65 * Real.log (m : ℝ) ^ (2 : ℕ) := by
   have hmR : (0 : ℝ) < m := by positivity
   calc
-    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-      ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2) ≤
-        ∑ _p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-          13 * Real.log (m : ℝ) ^ 2 / (m : ℝ) ^ 4 := by
+    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+      ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ)) ≤
+        ∑ _p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+          13 * Real.log (m : ℝ) ^ (2 : ℕ) / (m : ℝ) ^ (4 : ℕ) := by
       exact Finset.sum_le_sum fun p hp =>
         ccmFirstClockJuliaSixthPower_block_badTerm_sq_coarse_upper hm hp
-    _ = ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) *
-        (13 * Real.log (m : ℝ) ^ 2 / (m : ℝ) ^ 4) := by simp
-    _ ≤ ((5 * m ^ 4 : ℕ) : ℝ) *
-        (13 * Real.log (m : ℝ) ^ 2 / (m : ℝ) ^ 4) := by
+    _ = ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) *
+        (13 * Real.log (m : ℝ) ^ (2 : ℕ) / (m : ℝ) ^ (4 : ℕ)) := by simp
+    _ ≤ ((5 * m ^ (4 : ℕ) : ℕ) : ℝ) *
+        (13 * Real.log (m : ℝ) ^ (2 : ℕ) / (m : ℝ) ^ (4 : ℕ)) := by
       exact mul_le_mul_of_nonneg_right
         (by exact_mod_cast card_suzukiMangoldtFivePrimeBlock_fourthPower_le (m := m))
         (by positivity)
-    _ = 65 * Real.log (m : ℝ) ^ 2 := by
+    _ = 65 * Real.log (m : ℝ) ^ (2 : ℕ) := by
       push_cast
       field_simp
       ring
 
 /-- Exact ordered pair mass on the block has a quartic-minus-logarithmic lower bound. -/
 theorem ccmFirstClockJuliaSixthPower_block_badPairMass_lower {m : ℕ}
-    (hm : 25 ≤ m) (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
-    (m : ℝ) ^ 4 / 576 - 65 * Real.log (m : ℝ) ^ 2 ≤
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hm : 25 ≤ m) (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
+    (m : ℝ) ^ (4 : ℕ) / 576 - 65 * Real.log (m : ℝ) ^ (2 : ℕ) ≤
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 -
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) -
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := by
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+          (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := by
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad := ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   have hmass := ccmFirstClockJuliaSixthPower_block_badMass_lower hm hmCheb
   have hdiag := ccmFirstClockJuliaSixthPower_block_badDiagonal_upper hm
@@ -356,8 +356,8 @@ theorem ccmFirstClockJuliaSixthPower_block_badPairMass_lower {m : ℕ}
     dsimp only [bad]
     rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime]
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm hp).le
-  have hlower0 : 0 ≤ (m : ℝ) ^ 2 / 24 := by positivity
-  have hmassSq : ((m : ℝ) ^ 2 / 24) ^ 2 ≤ (∑ p ∈ block, bad p) ^ 2 :=
+  have hlower0 : 0 ≤ (m : ℝ) ^ (2 : ℕ) / 24 := by positivity
+  have hmassSq : ((m : ℝ) ^ (2 : ℕ) / 24) ^ (2 : ℕ) ≤ (∑ p ∈ block, bad p) ^ (2 : ℕ) :=
     (sq_le_sq₀ hlower0 hmass0).2 (by simpa only [block, bad] using hmass)
   dsimp only [block, bad] at hmassSq ⊢
   nlinarith
@@ -366,20 +366,20 @@ theorem ccmFirstClockJuliaSixthPower_block_badPairMass_lower {m : ℕ}
 the aperture.  This is the uniformity needed to pass a zero Julia scale through a moving block. -/
 theorem abs_log_sub_log_le_two_of_mem_suzukiMangoldtFivePrimeBlock_fourthPower
     {m p q : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4))
-    (hq : q ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
+    (hq : q ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     |Real.log (q : ℝ) - Real.log (p : ℝ)| ≤ 2 := by
   obtain ⟨hpPrime, hpLower, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
   obtain ⟨hqPrime, hqLower, hqUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hq
   have hmR : (0 : ℝ) < m := by positivity
   have hpR : (0 : ℝ) < p := by exact_mod_cast hpPrime.pos
   have hqR : (0 : ℝ) < q := by exact_mod_cast hqPrime.pos
-  have hpLowerR : 2 * (m : ℝ) ^ 4 < (p : ℝ) := by exact_mod_cast hpLower
-  have hqLowerR : 2 * (m : ℝ) ^ 4 < (q : ℝ) := by exact_mod_cast hqLower
-  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ 4 := by exact_mod_cast hpUpper
-  have hqUpperR : (q : ℝ) ≤ 5 * (m : ℝ) ^ 4 := by exact_mod_cast hqUpper
-  have hpLogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ 4) hpLowerR
-  have hqLogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ 4) hqLowerR
+  have hpLowerR : 2 * (m : ℝ) ^ (4 : ℕ) < (p : ℝ) := by exact_mod_cast hpLower
+  have hqLowerR : 2 * (m : ℝ) ^ (4 : ℕ) < (q : ℝ) := by exact_mod_cast hqLower
+  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ (4 : ℕ) := by exact_mod_cast hpUpper
+  have hqUpperR : (q : ℝ) ≤ 5 * (m : ℝ) ^ (4 : ℕ) := by exact_mod_cast hqUpper
+  have hpLogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ (4 : ℕ)) hpLowerR
+  have hqLogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ (4 : ℕ)) hqLowerR
   have hpLogUpperRaw := Real.log_le_log hpR hpUpperR
   have hqLogUpperRaw := Real.log_le_log hqR hqUpperR
   rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (by positivity), Real.log_pow] at hpLogLowerRaw hqLogLowerRaw
@@ -395,7 +395,7 @@ makes it ambient-indefinite, while positive Julia off-diagonal entries make it c
 actual nonnegative bad masses. -/
 def ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy (x : ℝ) (m : ℕ) : ℝ :=
   GaloisForLFunctions.HTGeometry.finsetOffDiagonalKernelEnergy
-    (suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     (fun p q => HTGeometry.juliaDefectAttenuationKernel
       (x * (Real.log (q : ℝ) - Real.log (p : ℝ))))
     (ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m))
@@ -404,14 +404,14 @@ def ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy (x : ℝ) (m : ℕ) : ℝ
 diagonal-null current. -/
 theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_lower
     {x kappa : ℝ} {m : ℕ} (hkappa : 0 ≤ kappa) (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ))
-    (hkernel : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ 4), p ≠ q →
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ))
+    (hkernel : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)), p ≠ q →
         kappa ≤ HTGeometry.juliaDefectAttenuationKernel
           (x * (Real.log (q : ℝ) - Real.log (p : ℝ)))) :
-    kappa * ((m : ℝ) ^ 4 / 576 - 65 * Real.log (m : ℝ) ^ 2) ≤
+    kappa * ((m : ℝ) ^ (4 : ℕ) / 576 - 65 * Real.log (m : ℝ) ^ (2 : ℕ)) ≤
       ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy x m := by
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad := ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   let kernel := fun p q : ℕ => HTGeometry.juliaDefectAttenuationKernel
     (x * (Real.log (q : ℝ) - Real.log (p : ℝ)))
@@ -433,8 +433,8 @@ theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_lower
 every sixth-power block because all block log-ratios have bounded size. -/
 theorem eventually_half_le_juliaKernel_on_every_sixthPowerBlock :
     ∀ᶠ x : ℝ in 𝓝 0, ∀ m : ℕ, 25 ≤ m →
-      ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         (1 / 2 : ℝ) ≤ HTGeometry.juliaDefectAttenuationKernel
           (x * (Real.log (q : ℝ) - Real.log (p : ℝ))) := by
   have hkernelLimit := HTGeometry.tendsto_juliaDefectAttenuationKernel_zero
@@ -468,9 +468,9 @@ theorem eventually_half_le_juliaKernel_on_every_sixthPowerBlock :
 lower floor on the diagonal-null block current. -/
 theorem eventually_ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_lower :
     ∀ᶠ x : ℝ in 𝓝 0, ∀ m : ℕ, 25 ≤ m →
-      Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) →
+      Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) →
       (1 / 2 : ℝ) *
-          ((m : ℝ) ^ 4 / 576 - 65 * Real.log (m : ℝ) ^ 2) ≤
+          ((m : ℝ) ^ (4 : ℕ) / 576 - 65 * Real.log (m : ℝ) ^ (2 : ℕ)) ≤
         ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy x m := by
   filter_upwards [eventually_half_le_juliaKernel_on_every_sixthPowerBlock] with x hx
   intro m hm hmCheb
@@ -535,9 +535,9 @@ theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_te
   have hmExp : Real.exp 20 < (m : ℝ) :=
     (le_max_left (Real.exp 20) (max 300 (2304 * (|C| + 1)))).trans_lt houter
   have hmNatPos : 0 < m := by omega
-  have hmPowNat : m ≤ m ^ 4 := by
-    simpa using (Nat.pow_le_pow_right hmNatPos (show 1 ≤ 4 by omega) : m ^ 1 ≤ m ^ 4)
-  have hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) := by
+  have hmPowNat : m ≤ m ^ (4 : ℕ) := by
+    simpa using (Nat.pow_le_pow_right hmNatPos (show 1 ≤ 4 by omega) : m ^ (1 : ℕ) ≤ m ^ (4 : ℕ))
+  have hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) := by
     exact hmExp.le.trans (by exact_mod_cast hmPowNat)
   have hlower := hM m hMm m hm25 hmCheb
   have hmTarget : 2304 * (|C| + 1) < (m : ℝ) :=
@@ -547,8 +547,8 @@ theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_te
     have habs : |C| + 1 < (m : ℝ) / 2304 := by
       exact (lt_div_iff₀ (by norm_num : (0 : ℝ) < 2304)).2 (by nlinarith)
     linarith
-  have hmPowReal : (m : ℝ) ≤ (m : ℝ) ^ 4 := by exact_mod_cast hmPowNat
-  have hCquartic : C < (m : ℝ) ^ 4 / 2304 :=
+  have hmPowReal : (m : ℝ) ≤ (m : ℝ) ^ (4 : ℕ) := by exact_mod_cast hmPowNat
+  have hCquartic : C < (m : ℝ) ^ (4 : ℕ) / 2304 :=
     hCsmall.trans_le (div_le_div_of_nonneg_right hmPowReal (by norm_num))
   have hmR : (0 : ℝ) < m := by positivity
   have hlog0 : 0 ≤ Real.log (m : ℝ) :=
@@ -556,17 +556,17 @@ theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_te
   have hlogLe : Real.log (m : ℝ) ≤ (m : ℝ) := by
     have h := Real.log_le_sub_one_of_pos hmR
     linarith
-  have hlogSq : Real.log (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 2 := by
+  have hlogSq : Real.log (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ((m : ℝ) - Real.log (m : ℝ))]
-  have hmSq : (74880 : ℝ) ≤ (m : ℝ) ^ 2 := by nlinarith
-  have hquartic : 74880 * (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 := by
+  have hmSq : (74880 : ℝ) ≤ (m : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hquartic : 74880 * (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (4 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hmSq (sq_nonneg (m : ℝ))
     nlinarith
-  have hlogQuartic : 74880 * Real.log (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 :=
+  have hlogQuartic : 74880 * Real.log (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (4 : ℕ) :=
     (mul_le_mul_of_nonneg_left hlogSq (by norm_num)).trans hquartic
   have hpolynomial :
-      (m : ℝ) ^ 4 / 2304 ≤
-        (1 / 2 : ℝ) * ((m : ℝ) ^ 4 / 576 - 65 * Real.log (m : ℝ) ^ 2) := by
+      (m : ℝ) ^ (4 : ℕ) / 2304 ≤
+        (1 / 2 : ℝ) * ((m : ℝ) ^ (4 : ℕ) / 576 - 65 * Real.log (m : ℝ) ^ (2 : ℕ)) := by
     nlinarith
   exact ⟨m, hCquartic.trans_le (hpolynomial.trans hlower)⟩
 
@@ -582,7 +582,7 @@ def CCMFirstClockPrincipalRelativeCapacityOnTail : Prop :=
         0 ≤ capacity L ∧
         capacity L ≤ M ∧
         (ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L) < 0 →
-          ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L) ^ 2 ≤
+          ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L) ^ (2 : ℕ) ≤
             capacity L)
 
 /-- Any uniformly bounded negative-excursion capacity gives the literal first clock a fixed lower
@@ -596,7 +596,7 @@ theorem ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_principalRelativeC
   let source := ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
   have hdata := hcapacity L hL
   by_cases hsource : source < 0
-  · have hsquare : source ^ 2 ≤ M := (hdata.2.2 hsource).trans hdata.2.1
+  · have hsquare : source ^ (2 : ℕ) ≤ M := (hdata.2.2 hsource).trans hdata.2.1
     dsimp only [source] at hsquare ⊢
     nlinarith [sq_nonneg (source + 1)]
   · have hsource0 : 0 ≤ source := le_of_not_gt hsource
@@ -607,7 +607,7 @@ theorem ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_principalRelativeC
 reverse logical classification; it is not claimed as a source mechanism. -/
 def ccmFirstClockCanonicalNegativePartCapacity (L : ℝ) : ℝ :=
   let source := ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
-  if source < 0 then source ^ 2 else 0
+  if source < 0 then source ^ (2 : ℕ) else 0
 
 /-- A tail lower floor supplies the target-defined negative-part witness.  This proves logical
 completeness of the unrestricted interface and identifies why the witness itself is representation
@@ -618,7 +618,7 @@ theorem principalRelativeCapacityOnTail_of_ccmFirstClockPublishedSourceEventuall
   obtain ⟨C, A, hC, hA, hsource⟩ := hbounded
   let source := fun L : ℝ =>
     ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
-  refine ⟨ccmFirstClockCanonicalNegativePartCapacity, C ^ 2, A,
+  refine ⟨ccmFirstClockCanonicalNegativePartCapacity, C ^ (2 : ℕ), A,
     sq_nonneg C, hA, ?_⟩
   intro L hL
   have hfloor := hsource L hL
@@ -627,7 +627,7 @@ theorem principalRelativeCapacityOnTail_of_ccmFirstClockPublishedSourceEventuall
     have hle : -source L ≤ C := by
       dsimp only [source] at hfloor ⊢
       linarith
-    have hsquare : (-source L) ^ 2 ≤ C ^ 2 :=
+    have hsquare : (-source L) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) :=
       (sq_le_sq₀ hneg0 hC).2 hle
     rw [ccmFirstClockCanonicalNegativePartCapacity]
     rw [if_pos hneg]

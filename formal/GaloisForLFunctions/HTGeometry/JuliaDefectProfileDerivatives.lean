@@ -13,7 +13,7 @@ namespace HTGeometry
 
 noncomputable section
 
-private def juliaProfileNumerator (y : ℝ) : ℝ := Real.cosh (y / 2) ^ 2
+private def juliaProfileNumerator (y : ℝ) : ℝ := Real.cosh (y / 2) ^ (2 : ℕ)
 private def juliaProfileDenominator (y : ℝ) : ℝ := Real.sqrt (Real.cosh (2 * y))
 private def juliaProfileNumeratorDeriv (y : ℝ) : ℝ :=
   Real.cosh (y / 2) * Real.sinh (y / 2)
@@ -22,11 +22,11 @@ private def juliaProfileDenominatorDeriv (y : ℝ) : ℝ :=
 private def juliaProfileClosedDeriv (y : ℝ) : ℝ :=
   (juliaProfileNumeratorDeriv y * juliaProfileDenominator y -
       juliaProfileNumerator y * juliaProfileDenominatorDeriv y) /
-    juliaProfileDenominator y ^ 2
+    juliaProfileDenominator y ^ (2 : ℕ)
 
 private theorem hasDerivAt_juliaProfileNumerator (y : ℝ) :
     HasDerivAt juliaProfileNumerator (juliaProfileNumeratorDeriv y) y := by
-  change HasDerivAt (fun z : ℝ => Real.cosh (z / 2) ^ 2)
+  change HasDerivAt (fun z : ℝ => Real.cosh (z / 2) ^ (2 : ℕ))
     (Real.cosh (y / 2) * Real.sinh (y / 2)) y
   have hinner : HasDerivAt (fun z : ℝ => z / 2) (1 / 2 : ℝ) y :=
     (hasDerivAt_id y).div_const 2
@@ -62,7 +62,7 @@ private theorem hasDerivAt_juliaProfileClosed (y : ℝ) :
     (fun z : ℝ => juliaProfileNumerator z / juliaProfileDenominator z)
     ((juliaProfileNumeratorDeriv y * juliaProfileDenominator y -
       juliaProfileNumerator y * juliaProfileDenominatorDeriv y) /
-      juliaProfileDenominator y ^ 2) y
+      juliaProfileDenominator y ^ (2 : ℕ)) y
   exact h
 
 private theorem deriv_juliaProfileClosed :
@@ -111,7 +111,7 @@ private theorem hasDerivAt_juliaProfileClosedDeriv_zero :
     (fun y : ℝ =>
       (juliaProfileNumeratorDeriv y * juliaProfileDenominator y -
         juliaProfileNumerator y * juliaProfileDenominatorDeriv y) /
-        juliaProfileDenominator y ^ 2) (-3 / 2 : ℝ) 0
+        juliaProfileDenominator y ^ (2 : ℕ)) (-3 / 2 : ℝ) 0
   refine (h.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
   norm_num [juliaProfileNumerator, juliaProfileDenominator,

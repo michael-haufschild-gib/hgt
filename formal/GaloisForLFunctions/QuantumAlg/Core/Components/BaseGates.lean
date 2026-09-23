@@ -136,14 +136,14 @@ def littleEndianWire {n : Nat} (bit : Fin n) : Fin n :=
 
 /-- Flip one addressed wire of a computational-basis label. -/
 def flipBit {n : Nat} (target : Fin n) (x : Fin (2 ^ n)) : Fin (2 ^ n) :=
-  ⟨x.val ^^^ 2 ^ (bitIndex target).val,
+  ⟨x.val ^^^ (2 : ℕ) ^ (bitIndex target).val,
     Nat.xor_lt_two_pow x.isLt
       (Nat.pow_lt_pow_right one_lt_two (bitIndex target).isLt)⟩
 
 theorem bit_flipBit {n : Nat} (target bit : Fin n) (x : Fin (2 ^ n)) :
     (flipBit target x).val.testBit (bitIndex bit).val =
       (x.val.testBit (bitIndex bit).val ^^ decide (target = bit)) := by
-  change (x.val ^^^ 2 ^ (bitIndex target).val).testBit (bitIndex bit).val =
+  change (x.val ^^^ (2 : ℕ) ^ (bitIndex target).val).testBit (bitIndex bit).val =
     (x.val.testBit (bitIndex bit).val ^^ decide (target = bit))
   rw [Nat.testBit_xor, Nat.testBit_two_pow]
   congr 1
@@ -174,8 +174,8 @@ theorem flipBit_comm {n : Nat} (left right : Fin n) (x : Fin (2 ^ n)) :
   unfold flipBit
   ext
   change
-    (x.val ^^^ 2 ^ (bitIndex right).val) ^^^ 2 ^ (bitIndex left).val =
-      (x.val ^^^ 2 ^ (bitIndex left).val) ^^^ 2 ^ (bitIndex right).val
+    (x.val ^^^ (2 : ℕ) ^ (bitIndex right).val) ^^^ (2 : ℕ) ^ (bitIndex left).val =
+      (x.val ^^^ (2 : ℕ) ^ (bitIndex left).val) ^^^ (2 : ℕ) ^ (bitIndex right).val
   rw [Nat.xor_assoc, Nat.xor_assoc]
   rw [Nat.xor_comm (2 ^ (bitIndex right).val) (2 ^ (bitIndex left).val)]
 
@@ -260,13 +260,13 @@ def Toffoli : Gate (Qubits 3) :=
 /-- The Toffoli gate is unitary by construction as a permutation gate. -/
 theorem Toffoli_mem_unitaryGroup :
     (Toffoli : HilbertOperator (Qubits 3)) ∈
-      Matrix.unitaryGroup (Fin (2 ^ 3)) ℂ :=
+      Matrix.unitaryGroup (Fin (2 ^ (3 : ℕ))) ℂ :=
   Toffoli.unitary
 
 /-- `Toffoli` swaps `|110>` and `|111>` and fixes the other basis states. -/
-theorem Toffoli_apply_ket (x : Fin (2 ^ 3)) :
+theorem Toffoli_apply_ket (x : Fin (2 ^ (3 : ℕ))) :
     Toffoli.apply (PureState.ket x) =
-      PureState.ket (R := Qubits 3) (Equiv.swap (6 : Fin (2 ^ 3)) 7 x) := by
+      PureState.ket (R := Qubits 3) (Equiv.swap (6 : Fin (2 ^ (3 : ℕ))) 7 x) := by
   rw [Toffoli, ofPerm_apply_ket, Equiv.swap_inv]
 
 /-- Addressed X/NOT gate on an `n`-qubit register. -/

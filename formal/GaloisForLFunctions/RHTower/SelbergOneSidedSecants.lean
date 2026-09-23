@@ -18,7 +18,7 @@ theorem derivative_le_forward_secant {u v a2 : ℝ → ℝ} {A C y : ℝ}
     (hA : 0 < A) (hC : 0 ≤ C)
     (hu : ∀ s ∈ Ici A, HasDerivAt u (v s) s)
     (hv : ∀ s ∈ Ici A, HasDerivAt v (a2 s) s)
-    (ha2 : ∀ s ∈ Ici A, -C / s ^ 2 ≤ a2 s) (hy : A ≤ y) :
+    (ha2 : ∀ s ∈ Ici A, -C / s ^ (2 : ℕ) ≤ a2 s) (hy : A ≤ y) :
     v y ≤ u (y + 1) - u y + C / y := by
   have hmono := corrected_derivative_monotone hA hv ha2
   have hs := (convex_Icc y (y + 1)).mul_sub_le_image_sub_of_le_deriv
@@ -42,7 +42,7 @@ theorem backward_secant_le_derivative {u v a2 : ℝ → ℝ} {A C y : ℝ}
     (hA : 0 < A) (hC : 0 ≤ C)
     (hu : ∀ s ∈ Ici A, HasDerivAt u (v s) s)
     (hv : ∀ s ∈ Ici A, HasDerivAt v (a2 s) s)
-    (ha2 : ∀ s ∈ Ici A, -C / s ^ 2 ≤ a2 s) (hy : A + 1 ≤ y) :
+    (ha2 : ∀ s ∈ Ici A, -C / s ^ (2 : ℕ) ≤ a2 s) (hy : A + 1 ≤ y) :
     u y - u (y - 1) - C / (y - 1) ≤ v y := by
   have hmono := corrected_derivative_monotone hA hv ha2
   have hAy : A ≤ y := by linarith
@@ -70,7 +70,7 @@ theorem abs_derivative_le_of_range {u v a2 : ℝ → ℝ} {A C L delta y : ℝ}
     (hA : 0 < A) (hC : 0 ≤ C)
     (hu : ∀ s ∈ Ici A, HasDerivAt u (v s) s)
     (hv : ∀ s ∈ Ici A, HasDerivAt v (a2 s) s)
-    (ha2 : ∀ s ∈ Ici A, -C / s ^ 2 ≤ a2 s)
+    (ha2 : ∀ s ∈ Ici A, -C / s ^ (2 : ℕ) ≤ a2 s)
     (hb : ∀ s ∈ Ici A, L ≤ u s ∧ u s ≤ L + delta) (hy : A + 1 ≤ y) :
     |v y| ≤ delta + C / (y - 1) := by
   have hAy : A ≤ y := by linarith

@@ -31,18 +31,18 @@ theorem norm_smoothMulSum_mul_norm_smoothMulSum_two_le {f : ℕ → ℂ} (hf : �
     (hmul : ∀ a b : ℕ, Nat.Coprime a b → f (a * b) = f a * f b) (h1 : f 1 = 1)
     {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hneg : ∀ p ∈ P, f p = -1) (t : ℝ) :
     ‖smoothMulSum f P t‖ * ‖smoothMulSum f P (2 * t)‖
-      ≤ Real.exp (2 * (∑ p ∈ P, 1 / (p : ℝ)) + 2 * (∑ p ∈ P, 1 / (p : ℝ) ^ 2)
+      ≤ Real.exp (2 * (∑ p ∈ P, 1 / (p : ℝ)) + 2 * (∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ))
           - 2 * (∑ p ∈ P, 1 / (p : ℝ)) / 5) := by
   classical
   have hPpos : ∀ p ∈ P, 0 < p := fun p hp => (hP p hp).pos
   set A : ℝ := ∑ p ∈ P, 1 / (p : ℝ) with hA
-  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ 2 with hB
+  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ) with hB
   set δ : ℝ := Real.sqrt (2 * A / 5) with hδdef
   have hAnn : (0 : ℝ) ≤ A := Finset.sum_nonneg fun p hp => by
     have : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hPpos p hp
     positivity
   have hδ0 : (0 : ℝ) ≤ δ := Real.sqrt_nonneg _
-  have hδsq : δ ^ 2 = 2 * A / 5 := Real.sq_sqrt (by positivity)
+  have hδsq : δ ^ (2 : ℕ) = 2 * A / 5 := Real.sq_sqrt (by positivity)
   -- the sign-sensitive maximum
   have hmax := two_mul_sum_inv_div_five_le_max hneg hPpos t
   -- the trivial and damped bounds, both stated on the smooth sum
@@ -55,7 +55,7 @@ theorem norm_smoothMulSum_mul_norm_smoothMulSum_two_le {f : ℕ → ℂ} (hf : �
       exact mulDistSqPair_nonneg_disc (fun p _ => hf p) (fun p _ => (norm_charFn u p).le) hPpos
     linarith
   have hdamp : ∀ u : ℝ, δ ≤ Real.sqrt (mulDistSqPair f (charFn u) P) →
-      ‖smoothMulSum f P u‖ ≤ Real.exp (A + B - δ ^ 2) := by
+      ‖smoothMulSum f P u‖ ≤ Real.exp (A + B - δ ^ (2 : ℕ)) := by
     intro u hfar
     rw [smoothMulSum]
     exact norm_sum_smooth_le_exp_of_far hf hmul h1 u hP hδ0 hfar
@@ -71,7 +71,7 @@ theorem norm_smoothMulSum_mul_norm_smoothMulSum_two_le {f : ℕ → ℂ} (hf : �
       rw [max_eq_right h] at hmax
       rw [hA]
       linarith [hmax]
-  have hprodval : Real.exp (A + B - δ ^ 2) * Real.exp (A + B)
+  have hprodval : Real.exp (A + B - δ ^ (2 : ℕ)) * Real.exp (A + B)
       = Real.exp (2 * A + 2 * B - 2 * A / 5) := by
     rw [← Real.exp_add, hδsq]
     congr 1
@@ -80,13 +80,13 @@ theorem norm_smoothMulSum_mul_norm_smoothMulSum_two_le {f : ℕ → ℂ} (hf : �
   have hnn2 : (0 : ℝ) ≤ ‖smoothMulSum f P (2 * t)‖ := norm_nonneg _
   rcases hsplit with h | h
   · calc ‖smoothMulSum f P t‖ * ‖smoothMulSum f P (2 * t)‖
-        ≤ Real.exp (A + B - δ ^ 2) * Real.exp (A + B) :=
+        ≤ Real.exp (A + B - δ ^ (2 : ℕ)) * Real.exp (A + B) :=
           mul_le_mul (hdamp t h) (htriv (2 * t)) hnn2 (Real.exp_pos _).le
       _ = Real.exp (2 * A + 2 * B - 2 * A / 5) := hprodval
   · calc ‖smoothMulSum f P t‖ * ‖smoothMulSum f P (2 * t)‖
-        ≤ Real.exp (A + B) * Real.exp (A + B - δ ^ 2) :=
+        ≤ Real.exp (A + B) * Real.exp (A + B - δ ^ (2 : ℕ)) :=
           mul_le_mul (htriv t) (hdamp (2 * t) h) hnn2 (Real.exp_pos _).le
-      _ = Real.exp (A + B - δ ^ 2) * Real.exp (A + B) := by ring
+      _ = Real.exp (A + B - δ ^ (2 : ℕ)) * Real.exp (A + B) := by ring
       _ = Real.exp (2 * A + 2 * B - 2 * A / 5) := hprodval
 
 /-- **At least one of the two frequencies is damped.**  The minimum form of the pair bound. -/
@@ -94,18 +94,18 @@ theorem min_norm_smoothMulSum_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1)
     (hmul : ∀ a b : ℕ, Nat.Coprime a b → f (a * b) = f a * f b) (h1 : f 1 = 1)
     {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hneg : ∀ p ∈ P, f p = -1) (t : ℝ) :
     min ‖smoothMulSum f P t‖ ‖smoothMulSum f P (2 * t)‖
-      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ 2)
+      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ))
           - 2 * (∑ p ∈ P, 1 / (p : ℝ)) / 5) := by
   classical
   have hPpos : ∀ p ∈ P, 0 < p := fun p hp => (hP p hp).pos
   set A : ℝ := ∑ p ∈ P, 1 / (p : ℝ) with hA
-  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ 2 with hB
+  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ) with hB
   set δ : ℝ := Real.sqrt (2 * A / 5) with hδdef
   have hAnn : (0 : ℝ) ≤ A := Finset.sum_nonneg fun p hp => by
     have : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hPpos p hp
     positivity
   have hδ0 : (0 : ℝ) ≤ δ := Real.sqrt_nonneg _
-  have hδsq : δ ^ 2 = 2 * A / 5 := Real.sq_sqrt (by positivity)
+  have hδsq : δ ^ (2 : ℕ) = 2 * A / 5 := Real.sq_sqrt (by positivity)
   have hmax := two_mul_sum_inv_div_five_le_max hneg hPpos t
   have hdamp : ∀ u : ℝ, δ ≤ Real.sqrt (mulDistSqPair f (charFn u) P) →
       ‖smoothMulSum f P u‖ ≤ Real.exp (A + B - 2 * A / 5) := by

@@ -255,7 +255,7 @@ theorem norm_projectionPhaseRotation_apply_sq_eq_norm_tangent_apply_sq
     (hP2 : P * P = P)
     (hPadj : adjoint P = P) (hDadj : adjoint D = D)
     (hDtan : D * P + P * D = D) (psi : H) :
-    ‖projectionPhaseRotation P D psi‖ ^ 2 = ‖D psi‖ ^ 2 := by
+    ‖projectionPhaseRotation P D psi‖ ^ (2 : ℕ) = ‖D psi‖ ^ (2 : ℕ) := by
   let Q : H →L[ℂ] H := projectionNormalCorner P D
   have hQ : Q * Q = 0 := projectionNormalCorner_sq_eq_zero P D hP2
   have hphase :

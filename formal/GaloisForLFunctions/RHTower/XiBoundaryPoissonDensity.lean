@@ -39,7 +39,7 @@ theorem re_inv_sub_I_mul (w z : ℂ) :
       zero_add]
   rw [one_div, Complex.inv_re, Complex.normSq_apply, hre, him, halfPlanePoisson]
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
-  rcases eq_or_ne ((w.re + z.im) ^ 2 + (w.im - z.re) ^ 2) 0 with h0 | h0
+  rcases eq_or_ne ((w.re + z.im) ^ (2 : ℕ) + (w.im - z.re) ^ (2 : ℕ)) 0 with h0 | h0
   · have h1 : (w.re + z.im) * (w.re + z.im) + (w.im - z.re) * (w.im - z.re) = 0 := by
       nlinarith [h0]
     rw [h1, h0]
@@ -58,7 +58,7 @@ theorem re_inv_add_I_mul (w z : ℂ) :
       zero_add]
   rw [one_div, Complex.inv_re, Complex.normSq_apply, hre, him, halfPlanePoisson]
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
-  rcases eq_or_ne ((w.re - z.im) ^ 2 + (w.im + z.re) ^ 2) 0 with h0 | h0
+  rcases eq_or_ne ((w.re - z.im) ^ (2 : ℕ) + (w.im + z.re) ^ (2 : ℕ)) 0 with h0 | h0
   · have h1 : (w.re - z.im) * (w.re - z.im) + (w.im + z.re) * (w.im + z.re) = 0 := by
       nlinarith [h0]
     rw [h1, h0]
@@ -66,7 +66,7 @@ theorem re_inv_add_I_mul (w z : ℂ) :
   · field_simp
 
 /-- **The even channel is a pair of Poisson kernels.** -/
-theorem re_weilChannelA {w z : ℂ} (hz : w ^ 2 + z ^ 2 ≠ 0) :
+theorem re_weilChannelA {w z : ℂ} (hz : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     (weilChannelA w z).re
       = (Real.pi / 2) * (halfPlanePoisson (w.re + z.im) (w.im - z.re)
         + halfPlanePoisson (w.re - z.im) (w.im + z.re)) := by

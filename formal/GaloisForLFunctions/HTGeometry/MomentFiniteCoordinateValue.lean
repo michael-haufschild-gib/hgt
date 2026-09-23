@@ -31,7 +31,7 @@ theorem momentFunctional_ofFn
 /-- The finite Hankel quadratic value is exactly the moment-functional square value. -/
 theorem momentFunctional_sq_ofFn
     (s : ℕ → ℝ) (n : ℕ) (a : Fin n → ℝ) :
-    momentFunctional s ((Polynomial.ofFn n a) ^ 2) =
+    momentFunctional s ((Polynomial.ofFn n a) ^ (2 : ℕ)) =
       a ⬝ᵥ (momentHankelMatrix s n).mulVec a := by
   exact (dotProduct_mulVec_momentHankelMatrix s n a).symm
 

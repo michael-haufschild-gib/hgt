@@ -61,7 +61,7 @@ noncomputable local instance : CommGroup
     (FundamentalGroup (Matrix.unitaryGroup iota ℂ) 1) :=
   fundamentalGroupCommGroup
 
-noncomputable local instance : CommGroup (FundamentalGroup (Units ℂ) 1) :=
+noncomputable local instance primeAFMatrixOperatorKOneInst1 : CommGroup (FundamentalGroup (Units ℂ) 1) :=
   fundamentalGroupCommGroup
 
 /-- Determinant-induced map from a finite matrix-stage operator `K₁` group to the scalar stage. -/

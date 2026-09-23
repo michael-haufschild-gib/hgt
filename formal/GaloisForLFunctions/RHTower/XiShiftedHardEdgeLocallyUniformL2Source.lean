@@ -105,11 +105,11 @@ theorem routeUHardEdge_pointwise_limit_toLp_eq
 theorem evalRealPolynomial_routeUHardEdgeAngularPoly_hardEdgeCoordinate
     {a : ℝ} (ha : a ≠ 0) (p : Polynomial ℝ) (x : ℝ) :
     evalRealPolynomial (routeUHardEdgeAngularPoly a p)
-        ((((a ^ 2 - x ^ 2 : ℝ)) : ℂ) / (((a ^ 2 + x ^ 2 : ℝ)) : ℂ)) =
-      ((p.eval ((a ^ 2 + x ^ 2)⁻¹) : ℝ) : ℂ) := by
+        ((((a ^ (2 : ℕ) - x ^ (2 : ℕ) : ℝ)) : ℂ) / (((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ)) : ℂ)) =
+      ((p.eval ((a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹) : ℝ) : ℂ) := by
   have hcoord :
-      (((a ^ 2 - x ^ 2 : ℝ) : ℂ) / (((a ^ 2 + x ^ 2 : ℝ)) : ℂ)) =
-        ((((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2) : ℝ)) : ℂ) := by
+      (((a ^ (2 : ℕ) - x ^ (2 : ℕ) : ℝ) : ℂ) / (((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ)) : ℂ)) =
+        ((((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) : ℝ)) : ℂ) := by
     push_cast
     rfl
   rw [hcoord, evalRealPolynomial_ofReal]
@@ -117,32 +117,32 @@ theorem evalRealPolynomial_routeUHardEdgeAngularPoly_hardEdgeCoordinate
     Polynomial.eval_C, Polynomial.eval_add, Polynomial.eval_X]
   norm_cast
   apply congrArg (fun y : ℝ => p.eval y)
-  have hden : a ^ 2 + x ^ 2 ≠ 0 := by
+  have hden : a ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero ha, sq_nonneg x]
   field_simp [ha, hden]
   ring
 
 theorem tendsto_routeUHardEdge_halfDensity_one
     {a : ℕ → ℝ} (ha : ∀ n, 0 < a n) (haT : Tendsto a atTop atTop) (x : ℝ) :
-    Tendsto (fun n => a n / Real.sqrt ((a n) ^ 2 + x ^ 2)) atTop (𝓝 1) := by
+    Tendsto (fun n => a n / Real.sqrt ((a n) ^ (2 : ℕ) + x ^ (2 : ℕ))) atTop (𝓝 1) := by
   have hinv : Tendsto (fun n => (a n)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp haT
-  have hratio : Tendsto (fun n => x ^ 2 / (a n) ^ 2) atTop (𝓝 0) := by
+  have hratio : Tendsto (fun n => x ^ (2 : ℕ) / (a n) ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hsq := hinv.pow 2
-    have hmul := hsq.const_mul (x ^ 2)
+    have hmul := hsq.const_mul (x ^ (2 : ℕ))
     simpa [div_pow, div_eq_mul_inv] using hmul
-  have hsqrt : Tendsto (fun n => Real.sqrt (1 + x ^ 2 / (a n) ^ 2)) atTop (𝓝 1) := by
-    have hadd : Tendsto (fun n => 1 + x ^ 2 / (a n) ^ 2) atTop (𝓝 (1 + 0)) :=
+  have hsqrt : Tendsto (fun n => Real.sqrt (1 + x ^ (2 : ℕ) / (a n) ^ (2 : ℕ))) atTop (𝓝 1) := by
+    have hadd : Tendsto (fun n => 1 + x ^ (2 : ℕ) / (a n) ^ (2 : ℕ)) atTop (𝓝 (1 + 0)) :=
       tendsto_const_nhds.add hratio
-    have hadd' : Tendsto (fun n => 1 + x ^ 2 / (a n) ^ 2) atTop (𝓝 1) := by
+    have hadd' : Tendsto (fun n => 1 + x ^ (2 : ℕ) / (a n) ^ (2 : ℕ)) atTop (𝓝 1) := by
       simpa only [add_zero] using hadd
     simpa only [Function.comp_def, Real.sqrt_one] using
       (Real.continuous_sqrt.tendsto 1).comp hadd'
-  have hrecip : Tendsto (fun n => (Real.sqrt (1 + x ^ 2 / (a n) ^ 2))⁻¹)
+  have hrecip : Tendsto (fun n => (Real.sqrt (1 + x ^ (2 : ℕ) / (a n) ^ (2 : ℕ)))⁻¹)
       atTop (𝓝 1) := by
     simpa using hsqrt.inv₀ (by norm_num)
   refine hrecip.congr fun n => ?_
-  have harg : 1 + x ^ 2 / (a n) ^ 2 = ((a n) ^ 2 + x ^ 2) / (a n) ^ 2 := by
+  have harg : 1 + x ^ (2 : ℕ) / (a n) ^ (2 : ℕ) = ((a n) ^ (2 : ℕ) + x ^ (2 : ℕ)) / (a n) ^ (2 : ℕ) := by
     field_simp [ne_of_gt (ha n)]
   rw [harg, Real.sqrt_div (by positivity), Real.sqrt_sq_eq_abs,
     abs_of_pos (ha n)]
@@ -156,35 +156,35 @@ theorem tendsto_routeUHardEdgeRationalTest_of_angular_locallyUniform
     {F : ℂ → ℂ}
     (hF : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
     (x : ℝ) :
     Tendsto
       (fun n => ((routeUHardEdgeRationalTest (a n) (p n) x : ℝ) : ℂ))
-      atTop (𝓝 (F ((x : ℂ) ^ 2))) := by
-  let u : ℂ := (x : ℂ) ^ 2
+      atTop (𝓝 (F ((x : ℂ) ^ (2 : ℕ)))) := by
+  let u : ℂ := (x : ℂ) ^ (2 : ℕ)
   have hpoly : Tendsto
       (fun n => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u)))
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u)))
       atTop (𝓝 (F u)) := by
     have huniform := (tendstoLocallyUniformly_iff_forall_isCompact.mp hF)
       ({u} : Set ℂ) isCompact_singleton
     exact huniform.tendsto_at (Set.mem_singleton u)
   have hhalf : Tendsto
-      (fun n => ((a n / Real.sqrt ((a n) ^ 2 + x ^ 2) : ℝ) : ℂ))
+      (fun n => ((a n / Real.sqrt ((a n) ^ (2 : ℕ) + x ^ (2 : ℕ)) : ℝ) : ℂ))
       atTop (𝓝 (1 : ℂ)) := by
     have hreal := tendsto_routeUHardEdge_halfDensity_one ha haT x
     simpa only [Function.comp_def, Complex.ofReal_div, Complex.ofReal_one] using
       (Complex.continuous_ofReal.tendsto 1).comp hreal
   have heq : ∀ n,
       ((routeUHardEdgeRationalTest (a n) (p n) x : ℝ) : ℂ) =
-        ((a n / Real.sqrt ((a n) ^ 2 + x ^ 2) : ℝ) : ℂ) *
+        ((a n / Real.sqrt ((a n) ^ (2 : ℕ) + x ^ (2 : ℕ)) : ℝ) : ℂ) *
           evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-            ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u)) := by
+            ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u)) := by
     intro n
     have hcoord :
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u)) =
-          ((((a n) ^ 2 - x ^ 2 : ℝ) : ℂ) /
-            (((a n) ^ 2 + x ^ 2 : ℝ) : ℂ)) := by
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u)) =
+          ((((a n) ^ (2 : ℕ) - x ^ (2 : ℕ) : ℝ) : ℂ) /
+            (((a n) ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)) := by
       dsimp [u]
       push_cast
       rfl
@@ -205,13 +205,13 @@ theorem routeUHardEdge_angularLocallyUniformLimit_sq_im_eq_zero
     {F : ℂ → ℂ}
     (hF : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
     (x : ℝ) :
-    (F ((x : ℂ) ^ 2)).im = 0 := by
+    (F ((x : ℂ) ^ (2 : ℕ))).im = 0 := by
   have hpoint := tendsto_routeUHardEdgeRationalTest_of_angular_locallyUniform ha haT hF x
   have him : Tendsto
       (fun n => (((routeUHardEdgeRationalTest (a n) (p n) x : ℝ) : ℂ)).im)
-      atTop (𝓝 (F ((x : ℂ) ^ 2)).im) :=
+      atTop (𝓝 (F ((x : ℂ) ^ (2 : ℕ))).im) :=
     (Complex.continuous_im.tendsto _).comp hpoint
   have hzero : Tendsto
       (fun _n : ℕ => (0 : ℝ)) atTop (𝓝 0) := tendsto_const_nhds
@@ -233,9 +233,9 @@ theorem exists_memLp_routeUHardEdge_angularLocallyUniformLimit_toLp_eq
     {F : ℂ → ℂ}
     (hF : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop) :
-    ∃ hf2 : MemLp (fun x : ℝ => F ((x : ℂ) ^ 2)) 2 (volume : Measure ℝ),
-      hf2.toLp (fun x : ℝ => F ((x : ℂ) ^ 2)) = ofRealLp L := by
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop) :
+    ∃ hf2 : MemLp (fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) 2 (volume : Measure ℝ),
+      hf2.toLp (fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) = ofRealLp L := by
   let g : ℕ → ℝ → ℂ := fun k x => ((routeUHardEdgeRationalTest (a k) (p k) x : ℝ) : ℂ)
   have hg2 : ∀ k, MemLp (g k) 2 (volume : Measure ℝ) := fun k =>
     memLp_ofReal (memLp_routeUHardEdgeRationalTest (ha k) (p k))
@@ -248,7 +248,7 @@ theorem exists_memLp_routeUHardEdge_angularLocallyUniformLimit_toLp_eq
     refine hcomp.congr fun k => ?_
     exact (ofRealLp_toLp (memLp_routeUHardEdgeRationalTest (ha k) (p k))).symm
   have hpoint : ∀ x : ℝ, Tendsto (fun n => g n x) atTop
-      (𝓝 ((fun x : ℝ => F ((x : ℂ) ^ 2)) x)) := by
+      (𝓝 ((fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) x)) := by
     intro x
     exact tendsto_routeUHardEdgeRationalTest_of_angular_locallyUniform ha haT hF x
   exact exists_memLp_toLp_eq_of_tendsto_pointwise_of_tendsto_L2 hg2 hLc hpoint
@@ -265,7 +265,7 @@ theorem routeUHardEdge_angularLocallyUniformLimit_has_literal_compact_source
         Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
     (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -273,16 +273,16 @@ theorem routeUHardEdge_angularLocallyUniformLimit_has_literal_compact_source
     {F : ℂ → ℂ}
     (hFlocal : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
     (hFcont : Continuous F) :
     ∃ q : ℝ → ℂ,
       Integrable q ∧ MemLp q 2 volume ∧
       (∀ x : ℝ, x ≤ -(C / Real.pi) ∨ C / Real.pi ≤ x → q x = 0) ∧
       (∀ w : ℝ, routeURealFourier q w =
-        F ((((w / (2 * Real.pi) : ℝ)) : ℂ) ^ 2)) := by
+        F ((((w / (2 * Real.pi) : ℝ)) : ℂ) ^ (2 : ℕ))) := by
   obtain ⟨hf2, hrep⟩ :=
     exists_memLp_routeUHardEdge_angularLocallyUniformLimit_toLp_eq ha haT hL hFlocal
-  have hfcont : Continuous (fun x : ℝ => F ((x : ℂ) ^ 2)) := by
+  have hfcont : Continuous (fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) := by
     fun_prop
   exact routeUHardEdge_limit_has_literal_compact_source
     hC ha haT hb hNC hnorm hL hfcont hf2 hrep
@@ -299,7 +299,7 @@ theorem routeUHardEdge_angularLocallyUniformLimit_has_literal_compact_factorizat
         Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
     (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -307,25 +307,25 @@ theorem routeUHardEdge_angularLocallyUniformLimit_has_literal_compact_factorizat
     {F : ℂ → ℂ}
     (hFlocal : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
     (hFcont : Continuous F)
     {r : ℝ} {m : ℕ} {H : ℂ → ℂ} (hHcont : Continuous H)
-    (hfactor : ∀ u : ℂ, F u = (u - (r : ℂ) ^ 2) ^ m * H u) :
+    (hfactor : ∀ u : ℂ, F u = (u - (r : ℂ) ^ (2 : ℕ)) ^ m * H u) :
     ∃ q : ℝ → ℂ, ∃ G : ℝ → ℂ,
       Integrable q ∧ MemLp q 2 volume ∧ Continuous G ∧
       (∀ x : ℝ, x ≤ -(C / Real.pi) ∨ C / Real.pi ≤ x → q x = 0) ∧
       (∀ w : ℝ, routeURealFourier q w =
-        (((w ^ 2 - (2 * Real.pi * r) ^ 2 : ℝ) : ℂ) ^ m) * G (w ^ 2)) := by
+        (((w ^ (2 : ℕ) - (2 * Real.pi * r) ^ (2 : ℕ) : ℝ) : ℂ) ^ m) * G (w ^ (2 : ℕ))) := by
   obtain ⟨hf2, hrep⟩ :=
     exists_memLp_routeUHardEdge_angularLocallyUniformLimit_toLp_eq ha haT hL hFlocal
-  have hfcont : Continuous (fun x : ℝ => F ((x : ℂ) ^ 2)) := by
+  have hfcont : Continuous (fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) := by
     fun_prop
   let K : ℝ → ℂ := fun u => H (u : ℂ)
   have hK : Continuous K := by
     dsimp [K]
     fun_prop
   have hfactorReal : ∀ x : ℝ,
-      F ((x : ℂ) ^ 2) = (((x ^ 2 - r ^ 2 : ℝ) : ℂ) ^ m) * K (x ^ 2) := by
+      F ((x : ℂ) ^ (2 : ℕ)) = (((x ^ (2 : ℕ) - r ^ (2 : ℕ) : ℝ) : ℂ) ^ m) * K (x ^ (2 : ℕ)) := by
     intro x
     rw [hfactor]
     dsimp [K]

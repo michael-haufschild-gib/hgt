@@ -81,7 +81,7 @@ theorem
   simp_rw [hcoefficient]
   rw [
     eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
-    eval₂_spectralRelationOrbitPolynomial_complex]
+    eval₂_spectralRelationOrbitPolynomial]
   have hreal :
       spectralRelationOrbitValue k energy ≠ 0 :=
     spectralRelationOrbitValue_ne_zero_of_maximallyProjective

@@ -109,14 +109,14 @@ theorem suzukiThreePointSourceOperator_selfAdjoint
 theorem suzukiThreePointResolvent_quadratic
     (centralWeight : ℝ) (v : SuzukiThreePointVector) :
     suzukiThreePointDot v (suzukiThreePointResolvent centralWeight v) =
-      v.neg ^ 2 + centralWeight * v.zero ^ 2 + v.pos ^ 2 := by
+      v.neg ^ (2 : ℕ) + centralWeight * v.zero ^ (2 : ℕ) + v.pos ^ (2 : ℕ) := by
   simp only [suzukiThreePointDot, suzukiThreePointResolvent]
   ring
 
 theorem suzukiThreePointSourceOperator_quadratic
     (centralWeight : ℝ) (v : SuzukiThreePointVector) :
     suzukiThreePointDot v (suzukiThreePointSourceOperator centralWeight v) =
-      v.neg ^ 2 + v.zero ^ 2 / centralWeight + v.pos ^ 2 := by
+      v.neg ^ (2 : ℕ) + v.zero ^ (2 : ℕ) / centralWeight + v.pos ^ (2 : ℕ) := by
   simp only [suzukiThreePointDot, suzukiThreePointSourceOperator]
   ring
 
@@ -155,7 +155,7 @@ theorem suzukiThreePointSourceOperator_pos
         apply hv
         simp [hneg, hzero, hpos]
       simpa [hneg, hzero] using sq_pos_of_ne_zero hpos
-    · have hz : 0 < vzero ^ 2 / centralWeight :=
+    · have hz : 0 < vzero ^ (2 : ℕ) / centralWeight :=
         div_pos (sq_pos_of_ne_zero hzero) hcentral
       nlinarith [sq_nonneg vneg, sq_nonneg vpos]
   · nlinarith [sq_pos_of_ne_zero hneg, sq_nonneg vpos,
@@ -287,14 +287,14 @@ def suzukiThreePointOddTilt : ℝ :=
 
 theorem suzukiThreePointEvenEnergy_eq :
     suzukiThreePointEvenEnergy =
-      suzukiThreePointCentralWeight + 2 * Real.cosh 1 ^ 2 := by
+      suzukiThreePointCentralWeight + 2 * Real.cosh 1 ^ (2 : ℕ) := by
   simp only [suzukiThreePointEvenEnergy, suzukiThreePointDot,
     suzukiThreePointResponse, suzukiThreePointResolvent,
     suzukiThreePointExponentialSource, suzukiThreePointEvenWeight]
   ring
 
 theorem suzukiThreePointOddEnergy_eq :
-    suzukiThreePointOddEnergy = 2 * Real.sinh 1 ^ 2 := by
+    suzukiThreePointOddEnergy = 2 * Real.sinh 1 ^ (2 : ℕ) := by
   simp only [suzukiThreePointOddEnergy, suzukiThreePointDot,
     suzukiThreePointResponse, suzukiThreePointResolvent,
     suzukiThreePointExponentialSource, suzukiThreePointOddWeight]

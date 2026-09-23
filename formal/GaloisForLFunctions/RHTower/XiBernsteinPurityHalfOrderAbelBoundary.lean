@@ -30,13 +30,13 @@ theorem exists_positive_halfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_
       (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
       (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
       L = ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u ∧
       0 < L ∧ 0 < Real.sqrt Real.pi * L ∧
       Tendsto
-        (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
           primeArchEndpointBernsteinAbelSusceptibility t)
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
         (nhds (Real.sqrt Real.pi * L)) := by
   obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hcoeff⟩ :=
@@ -46,9 +46,9 @@ theorem exists_positive_halfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_
     GaloisForLFunctions.HTGeometry.tendsto_sqrt_scaled_boundary_mul_tsum_of_halfOrder
       hBpos hcoeff
   have hradial' : Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
         primeArchEndpointBernsteinAbelSusceptibility t)
-      (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+      (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
       (nhds (Real.sqrt Real.pi * L)) := by
     simpa only [primeArchEndpointBernsteinAbelSusceptibility] using hradial
   exact ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub, hL, hLpos,

@@ -6,28 +6,28 @@ noncomputable section
 
 /-- Signed squared growth branch of the exact charged wave determinant. -/
 def chargedTwoSiteGrowthSquare (k m d : ℝ) : ℝ :=
-  Real.sqrt ((Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2) -
-    (chargedTwoSiteBase k m + d ^ 2)
+  Real.sqrt ((Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ)) -
+    (chargedTwoSiteBase k m + d ^ (2 : ℕ))
 
 /-- The signed branch is positive exactly in an intermediate charge-gap interval. -/
 theorem chargedTwoSiteGrowthSquare_pos_iff (k m d : ℝ) :
-    0 < chargedTwoSiteGrowthSquare k m d ↔ m ^ 2 < d ^ 2 ∧ d ^ 2 < m ^ 2 + 2 * Real.exp k := by
-  have hs : 0 ≤ chargedTwoSiteBase k m + d ^ 2 := by
+    0 < chargedTwoSiteGrowthSquare k m d ↔ m ^ (2 : ℕ) < d ^ (2 : ℕ) ∧ d ^ (2 : ℕ) < m ^ (2 : ℕ) + 2 * Real.exp k := by
+  have hs : 0 ≤ chargedTwoSiteBase k m + d ^ (2 : ℕ) := by
     nlinarith [chargedTwoSiteBase_pos k m, sq_nonneg d]
   unfold chargedTwoSiteGrowthSquare
   rw [sub_pos, Real.lt_sqrt hs]
-  have hid : (Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2 -
-      (chargedTwoSiteBase k m + d ^ 2) ^ 2 =
-        (Real.exp k) ^ 2 - (chargedTwoSiteBase k m - d ^ 2) ^ 2 := by ring
+  have hid : (Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ) -
+      (chargedTwoSiteBase k m + d ^ (2 : ℕ)) ^ (2 : ℕ) =
+        (Real.exp k) ^ (2 : ℕ) - (chargedTwoSiteBase k m - d ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
   constructor
   · intro h
-    have hsq : (chargedTwoSiteBase k m - d ^ 2) ^ 2 < (Real.exp k) ^ 2 := by nlinarith [hid]
+    have hsq : (chargedTwoSiteBase k m - d ^ (2 : ℕ)) ^ (2 : ℕ) < (Real.exp k) ^ (2 : ℕ) := by nlinarith [hid]
     have hb := abs_lt_of_sq_lt_sq' hsq (Real.exp_pos k).le
     unfold chargedTwoSiteBase at hb
     exact ⟨by linarith, by linarith⟩
   · rintro ⟨hl, hu⟩
-    have hb : -Real.exp k < chargedTwoSiteBase k m - d ^ 2 ∧
-        chargedTwoSiteBase k m - d ^ 2 < Real.exp k := by
+    have hb : -Real.exp k < chargedTwoSiteBase k m - d ^ (2 : ℕ) ∧
+        chargedTwoSiteBase k m - d ^ (2 : ℕ) < Real.exp k := by
       unfold chargedTwoSiteBase
       constructor <;> linarith
     have hsq := sq_lt_sq' hb.1 hb.2
@@ -35,8 +35,8 @@ theorem chargedTwoSiteGrowthSquare_pos_iff (k m d : ℝ) :
 
 /-- The signed branch satisfies the exact centered determinant equation for all charge values. -/
 theorem chargedTwoSiteGrowthSquare_equation (k m d : ℝ) :
-    (chargedTwoSiteGrowthSquare k m d + chargedTwoSiteBase k m + d ^ 2) ^ 2 =
-      (Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2 := by
+    (chargedTwoSiteGrowthSquare k m d + chargedTwoSiteBase k m + d ^ (2 : ℕ)) ^ (2 : ℕ) =
+      (Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ) := by
   have h := Real.sq_sqrt (chargedTwoSiteDiscriminant_pos k m d).le
   unfold chargedTwoSiteGrowthSquare
   nlinarith [h]
@@ -44,15 +44,15 @@ theorem chargedTwoSiteGrowthSquare_equation (k m d : ℝ) :
 /-- Every actual growing mode has the unique positive squared growth branch. -/
 theorem chargedTwoSite_growing_frequency_classification (k m c d : ℝ) (ω : ℂ) :
     (ChargedTwoSiteHasMode k m c d ω ∧ 0 < ω.im) ↔
-      ω.re = c ∧ 0 < ω.im ∧ ω.im ^ 2 = chargedTwoSiteGrowthSquare k m d := by
+      ω.re = c ∧ 0 < ω.im ∧ ω.im ^ (2 : ℕ) = chargedTwoSiteGrowthSquare k m d := by
   rw [chargedTwoSite_growing_mode_iff]
   constructor
   · rintro ⟨hx, hy, hg⟩
     refine ⟨hx, hy, ?_⟩
-    have hs : 0 < ω.im ^ 2 + chargedTwoSiteBase k m + d ^ 2 := by
+    have hs : 0 < ω.im ^ (2 : ℕ) + chargedTwoSiteBase k m + d ^ (2 : ℕ) := by
       nlinarith [chargedTwoSiteBase_pos k m, sq_nonneg ω.im, sq_nonneg d]
-    have hr : Real.sqrt ((Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2) =
-        ω.im ^ 2 + chargedTwoSiteBase k m + d ^ 2 := by
+    have hr : Real.sqrt ((Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ)) =
+        ω.im ^ (2 : ℕ) + chargedTwoSiteBase k m + d ^ (2 : ℕ) := by
       rw [← hg, Real.sqrt_sq_eq_abs, abs_of_pos hs]
     unfold chargedTwoSiteGrowthSquare
     linarith
@@ -69,10 +69,10 @@ def chargedTwoSiteGrowingFrequency (k m c d : ℝ) : ℂ :=
 theorem chargedTwoSiteGrowingFrequency_mode_iff (k m c d : ℝ) :
     (ChargedTwoSiteHasMode k m c d (chargedTwoSiteGrowingFrequency k m c d) ∧
       0 < (chargedTwoSiteGrowingFrequency k m c d).im) ↔
-        m ^ 2 < d ^ 2 ∧ d ^ 2 < m ^ 2 + 2 * Real.exp k := by
+        m ^ (2 : ℕ) < d ^ (2 : ℕ) ∧ d ^ (2 : ℕ) < m ^ (2 : ℕ) + 2 * Real.exp k := by
   rw [chargedTwoSite_growing_frequency_classification]
   change (c = c ∧ 0 < Real.sqrt (chargedTwoSiteGrowthSquare k m d) ∧
-    Real.sqrt (chargedTwoSiteGrowthSquare k m d) ^ 2 = chargedTwoSiteGrowthSquare k m d) ↔ _
+    Real.sqrt (chargedTwoSiteGrowthSquare k m d) ^ (2 : ℕ) = chargedTwoSiteGrowthSquare k m d) ↔ _
   constructor
   · rintro ⟨_, hp, _⟩
     exact (chargedTwoSiteGrowthSquare_pos_iff k m d).1 (Real.sqrt_pos.mp hp)
@@ -83,7 +83,7 @@ theorem chargedTwoSiteGrowingFrequency_mode_iff (k m c d : ℝ) :
 /-- There are actual nonzero growing modes exactly for intermediate charge, rather than for all sufficiently large charge. -/
 theorem chargedTwoSite_exists_growing_mode_iff (k m c d : ℝ) :
     (∃ ω : ℂ, ChargedTwoSiteHasMode k m c d ω ∧ 0 < ω.im) ↔
-      m ^ 2 < d ^ 2 ∧ d ^ 2 < m ^ 2 + 2 * Real.exp k := by
+      m ^ (2 : ℕ) < d ^ (2 : ℕ) ∧ d ^ (2 : ℕ) < m ^ (2 : ℕ) + 2 * Real.exp k := by
   constructor
   · rintro ⟨ω, hω⟩
     have h := (chargedTwoSite_growing_frequency_classification k m c d ω).1 hω
@@ -104,10 +104,10 @@ theorem chargedTwoSite_neutral_no_growing_mode (k m c : ℝ) :
 /-- Both boundary faces have a real central-frequency mode, and no other charge gap does. -/
 theorem chargedTwoSite_central_mode_iff_threshold (k m c d : ℝ) :
     ChargedTwoSiteHasMode k m c d (c : ℂ) ↔
-      d ^ 2 = m ^ 2 ∨ d ^ 2 = m ^ 2 + 2 * Real.exp k := by
+      d ^ (2 : ℕ) = m ^ (2 : ℕ) ∨ d ^ (2 : ℕ) = m ^ (2 : ℕ) + 2 * Real.exp k := by
   rw [chargedTwoSiteHasMode_iff_determinant]
   have hd : chargedTwoSiteDeterminant k m c d (c : ℂ) =
-      (((m ^ 2 - d ^ 2) * (m ^ 2 + 2 * Real.exp k - d ^ 2) : ℝ) : ℂ) := by
+      (((m ^ (2 : ℕ) - d ^ (2 : ℕ)) * (m ^ (2 : ℕ) + 2 * Real.exp k - d ^ (2 : ℕ)) : ℝ) : ℂ) := by
     unfold chargedTwoSiteDeterminant chargedTwoSiteBase
     push_cast
     ring

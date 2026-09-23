@@ -171,7 +171,7 @@ pattern: no new transcendental data enters, only further derivatives of the same
 theorem deriv2_entireCascade_succ {f : ℕ → ℂ → ℂ}
     (hf : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ) (n : ℕ) (z : ℂ) :
     deriv (deriv (entireCascade f (n + 1))) z
-      = deriv (deriv (f n)) (entireCascade f n z) * (deriv (entireCascade f n) z) ^ 2
+      = deriv (deriv (f n)) (entireCascade f n z) * (deriv (entireCascade f n) z) ^ (2 : ℕ)
         + deriv (f n) (entireCascade f n z) * deriv (deriv (entireCascade f n)) z := by
   have hFan : AnalyticOnNhd ℂ (entireCascade f n) Set.univ := analyticOnNhd_entireCascade hf n
   have hfun : deriv (entireCascade f (n + 1))

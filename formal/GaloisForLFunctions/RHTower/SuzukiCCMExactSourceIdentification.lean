@@ -139,8 +139,8 @@ theorem suzukiWeilArchimedeanConstant_completed_identity :
 
 private theorem pairing_shift_suzukiCore_eq_autocorrelation
     {a h : ℝ} (u : SuzukiRestrictedWeilCore a) :
-    pairing (fun x => u (x + h)) u = suzukiCoreAutocorrelation u h := by
-  unfold pairing suzukiCoreAutocorrelation screwCrossCorr
+    l2Pairing (fun x => u (x + h)) u = suzukiCoreAutocorrelation u h := by
+  unfold l2Pairing suzukiCoreAutocorrelation screwCrossCorr
   apply integral_congr_ae
   filter_upwards with x
   rw [add_comm h x]
@@ -159,7 +159,7 @@ theorem weilPrimeBlock_suzukiRestrictedWeilIndices_eq_autocorrelation
   intro n hn
   have hnpos : 0 < n := lt_of_lt_of_le (by norm_num) (Finset.mem_Icc.mp hn).1
   rw [pairing_shift_suzukiCore_eq_autocorrelation]
-  have hminus : pairing (fun x => u (x - Real.log n)) u =
+  have hminus : l2Pairing (fun x => u (x - Real.log n)) u =
       suzukiCoreAutocorrelation u (Real.log n) := by
     have h := pairing_shift_suzukiCore_eq_autocorrelation
       (u := u) (h := -Real.log n)

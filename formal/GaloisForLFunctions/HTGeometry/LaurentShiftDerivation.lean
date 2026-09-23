@@ -18,13 +18,13 @@ noncomputable section
 
 /-- `d/ds = -X² d/dX` on the formal Laurent field at infinity. -/
 @[reducible] def laurentSDifferential : Differential (LaurentSeries ℂ) :=
-  ⟨(-(laurentX ^ 2)) • (GaloisForLFunctions.formalLaurentDifferential.deriv)⟩
+  ⟨(-(laurentX ^ (2 : ℕ))) • (GaloisForLFunctions.formalLaurentDifferential.deriv)⟩
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance laurentShiftDerivationInst1 : Differential (LaurentSeries ℂ) := laurentSDifferential
 
 theorem laurentSDeriv_apply (F : LaurentSeries ℂ) :
-    F′ = -(laurentX ^ 2) * (GaloisForLFunctions.formalLaurentDifferential.deriv F) := by
-  show ((-(laurentX ^ 2)) • (GaloisForLFunctions.formalLaurentDifferential.deriv)) F = _
+    F′ = -(laurentX ^ (2 : ℕ)) * (GaloisForLFunctions.formalLaurentDifferential.deriv F) := by
+  show ((-(laurentX ^ (2 : ℕ))) • (GaloisForLFunctions.formalLaurentDifferential.deriv)) F = _
   simp only [Derivation.coe_smul, Pi.smul_apply, smul_eq_mul]
 
 theorem laurentSDeriv_add (x y : LaurentSeries ℂ) : (x + y)′ = x′ + y′ := by
@@ -46,7 +46,7 @@ theorem laurentSDeriv_algebraMap (F : PowerSeries ℂ) :
     map_mul, map_neg, map_pow]
   rfl
 
-theorem deriv_laurentX : (laurentX)′ = -(laurentX ^ 2) := by
+theorem deriv_laurentX : (laurentX)′ = -(laurentX ^ (2 : ℕ)) := by
   have h := laurentSDeriv_algebraMap (PowerSeries.X : PowerSeries ℂ)
   rw [coordDerivPS, PowerSeries.derivative_X, mul_one, map_neg, map_pow] at h
   exact h
@@ -58,8 +58,8 @@ theorem deriv_coordS : (coordS)′ = 1 := by
   have hd := congrArg (fun z : LaurentSeries ℂ => z′) hmul
   simp only [Derivation.leibniz, Derivation.map_one_eq_zero, smul_eq_mul] at hd
   rw [deriv_laurentX] at hd
-  have hcs : coordS * laurentX ^ 2 = laurentX := by
-    have hstep : coordS * laurentX ^ 2 = (coordS * laurentX) * laurentX := by ring
+  have hcs : coordS * laurentX ^ (2 : ℕ) = laurentX := by
+    have hstep : coordS * laurentX ^ (2 : ℕ) = (coordS * laurentX) * laurentX := by ring
     rw [hstep, hmul, one_mul]
   have hz : laurentX * ((coordS)′ - 1) = 0 := by linear_combination hd + hcs
   rcases mul_eq_zero.mp hz with hc | hc

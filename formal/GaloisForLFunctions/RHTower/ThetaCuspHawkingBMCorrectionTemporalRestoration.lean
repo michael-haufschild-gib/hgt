@@ -37,11 +37,11 @@ def angularPair (J K : Fin 2 → ScalarTwoJet (Fin 2) ℂ) : ℂ :=
 /-- Exact temporal Einstein density of the correction against the left stream. -/
 theorem temporal_action (p : D4BMBackground.ExteriorPoint)
     (w c cr d dr drr : ℂ) (J K : Fin 2 → ScalarTwoJet (Fin 2) ℂ) :
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (temporalMetricJet w c cr J)
       (streamMetricJet (p.val 1) (fun a => staticStreamJet (-w) d dr drr (K a))) 0 =
-      w*d/((p.val 1:ℂ)^2-1) * (cr-2*c/(p.val 1:ℂ)) * angularPair J K := by
+      w*d/((p.val 1:ℂ)^(2 : ℕ)-1) * (cr-2*c/(p.val 1:ℂ)) * angularPair J K := by
   unfold temporalMetricJet streamMetricJet
   rw [mixed_complete_action_current]
   simp [completeCurrentDensity, staticStreamJet, angularPair, Fin.sum_univ_succ]
@@ -50,12 +50,12 @@ theorem temporal_action (p : D4BMBackground.ExteriorPoint)
 /-- The literal correction coefficient after retaining the original onset transform. -/
 def correctionRadial (s w a T : ℂ) (r : ℝ) : ℂ :=
   s*(s+1)/2 * sourceAmplitude s w a T (D4BMIngoingCoordinates.tortoise r) *
-    ((r:ℂ)^2-1)/(r:ℂ)^3
+    ((r:ℂ)^(2 : ℕ)-1)/(r:ℂ)^(3 : ℕ)
 
 /-- The exact radial derivative minus the temporal curvature term in the Einstein current. -/
 def correctionReducedDerivative (s w a T : ℂ) (r : ℝ) : ℂ :=
   s*(s+1)/2 * sourceAmplitude s w a T (D4BMIngoingCoordinates.tortoise r) *
-    ((w-2*s)/(r:ℂ)^3-3/(r:ℂ)^2+(5+2*s)/(r:ℂ)^4)
+    ((w-2*s)/(r:ℂ)^(3 : ℕ)-3/(r:ℂ)^(2 : ℕ)+(5+2*s)/(r:ℂ)^(4 : ℕ))
 
 /-- Differentiate the actual source envelope at the original exterior radius. -/
 theorem correctionRadial_hasDerivAt (s w a T : ℂ) (t : ℝ) (ht : t < 0) :
@@ -66,7 +66,7 @@ theorem correctionRadial_hasDerivAt (s w a T : ℂ) (t : ℝ) (ht : t < 0) :
   let r := tortoiseRadius t
   have hr : 1 < r := tortoiseRadius_exterior t ht
   have h0 : (r:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hF : (r:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show r^2-1 ≠ 0 by nlinarith)
+  have hF : (r:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show r^(2 : ℕ)-1 ≠ 0 by nlinarith)
   have hR := (hasDerivAt_id r).ofReal_comp
   have hA := (sourceAmplitude_hasDerivAt s w a T (D4BMIngoingCoordinates.tortoise r)).scomp r
     (D4BMIngoingCoordinates.tortoise_hasDerivAt r hr)
@@ -77,8 +77,8 @@ theorem correctionRadial_hasDerivAt (s w a T : ℂ) (t : ℝ) (ht : t < 0) :
   rw [show D4BMIngoingCoordinates.tortoise r = t from tortoise_original_inverse t ht]
   rw [amplitudeRate, radialUnit_inverse_radius]
   change _ = s*(s+1)/2*sourceAmplitude s w a T t*
-    ((w-2*s)/(r:ℂ)^3-3/(r:ℂ)^2+(5+2*s)/(r:ℂ)^4) +
-    2*(s*(s+1)/2*sourceAmplitude s w a T t*((r:ℂ)^2-1)/(r:ℂ)^3)/(r:ℂ)
+    ((w-2*s)/(r:ℂ)^(3 : ℕ)-3/(r:ℂ)^(2 : ℕ)+(5+2*s)/(r:ℂ)^(4 : ℕ)) +
+    2*(s*(s+1)/2*sourceAmplitude s w a T t*((r:ℂ)^(2 : ℕ)-1)/(r:ℂ)^(3 : ℕ))/(r:ℂ)
   push_cast
   simp only [show tortoiseRadius t = r from rfl]
   field_simp
@@ -90,7 +90,7 @@ def temporalProfile (q : XiZeroCopy) (branch : Bool) (a angular : ℂ) (w : ℂ)
     amplitudeProfile (physicalRate q branch) a (continuedOnset (physicalRate q branch)) w z *
     gaussProfile q w z *
     ((w-2*physicalRate q branch)*(Real.sqrt (1-z):ℂ)-3+
-      (5+2*physicalRate q branch)*(Real.sqrt (1-z):ℂ)^2)
+      (5+2*physicalRate q branch)*(Real.sqrt (1-z):ℂ)^(2 : ℕ))
 
 /-- Quadratic horizon control is derived from the literal amplitude and left Gauss mode. -/
 theorem temporalProfile_germ (q : XiZeroCopy) (branch side : Bool) (a angular : ℂ) :
@@ -177,9 +177,9 @@ theorem incomingTemporalDensity_eq (q : XiZeroCopy) (branch : Bool) (a angular w
     gaussFactor w (physicalRadialFrequency q) false (z:ℂ)*
     (physicalRate q branch*(physicalRate q branch+1)/2)*
     amplitudeProfile (physicalRate q branch) a (continuedOnset (physicalRate q branch)) w z *
-    ((w-2*physicalRate q branch)/(tortoiseRadius (tortoiseOf z):ℂ)^3-
-      3/(tortoiseRadius (tortoiseOf z):ℂ)^2+
-      (5+2*physicalRate q branch)/(tortoiseRadius (tortoiseOf z):ℂ)^4)*angular /
+    ((w-2*physicalRate q branch)/(tortoiseRadius (tortoiseOf z):ℂ)^(3 : ℕ)-
+      3/(tortoiseRadius (tortoiseOf z):ℂ)^(2 : ℕ)+
+      (5+2*physicalRate q branch)/(tortoiseRadius (tortoiseOf z):ℂ)^(4 : ℕ))*angular /
     (2*(z:ℂ)*(tortoiseRadius (tortoiseOf z):ℂ)⁻¹)
   calc
     _ = ((z:ℂ)^(w/2)*(z:ℂ)^(w/2))*C := by dsimp [C]; ring
@@ -278,19 +278,19 @@ theorem actionSymplectic_congr_first {d : ℕ} (J H H' K : CoordinateMetricTwoJe
 
 /-- The original scalar/coexact-vector product, retaining its complete angular first jet. -/
 def originalAngularJet (s y S Sx Sy Sxx Sxy : ℂ) : Fin 2 → ScalarTwoJet (Fin 2) ℂ :=
-  ![⟨S*Sy, ![Sx*Sy+S*Sxy, Sy^2+S*((s+1)*(s+2)*S/y^2-Sxx)], fun _ _ => 0⟩,
-    ⟨-S*Sx, ![-Sx^2-S*Sxx, -Sy*Sx-S*Sxy], fun _ _ => 0⟩]
+  ![⟨S*Sy, ![Sx*Sy+S*Sxy, Sy^(2 : ℕ)+S*((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx)], fun _ _ => 0⟩,
+    ⟨-S*Sx, ![-Sx^(2 : ℕ)-S*Sxx, -Sy*Sx-S*Sxy], fun _ _ => 0⟩]
 
-def originalRadial (s r B : ℂ) : ℂ := s*(s+1)/2*B^2*(r^2-1)/r^3
+def originalRadial (s r B : ℂ) : ℂ := s*(s+1)/2*B^(2 : ℕ)*(r^(2 : ℕ)-1)/r^(3 : ℕ)
 
-def originalRadialFirst (s r B : ℂ) : ℂ := s*(s+1)/2*B^2*(-1/r^2+(2*s+3)/r^4)
+def originalRadialFirst (s r B : ℂ) : ℂ := s*(s+1)/2*B^(2 : ℕ)*(-1/r^(2 : ℕ)+(2*s+3)/r^(4 : ℕ))
 
 
 private def originalRadialJet (s r B : ℂ) : ScalarTwoJet (Fin 4) ℂ :=
   let R := D4BMScalarLinearEquation.coord r 1
   let F := (R.mul R).add (ScalarTwoJet.constant (-1))
   (((ScalarTwoJet.constant (s*(s+1)/2)).mul
-    (D4BMScalarLinearEquation.temporalRadial (2*s) r (B^2))).mul F).mul
+    (D4BMScalarLinearEquation.temporalRadial (2*s) r (B^(2 : ℕ)))).mul F).mul
       ((R.inv.mul R.inv).mul R.inv)
 
 private theorem originalRadialJet_value (s r B : ℂ) :
@@ -300,7 +300,7 @@ private theorem originalRadialJet_value (s r B : ℂ) :
     ScalarTwoJet.constant, ScalarTwoJet.inv]
   ring
 
-private theorem originalRadialJet_first (s r B : ℂ) (hr : r ≠ 0) (hF : r^2-1 ≠ 0) :
+private theorem originalRadialJet_first (s r B : ℂ) (hr : r ≠ 0) (hF : r^(2 : ℕ)-1 ≠ 0) :
     (originalRadialJet s r B).first =
       ![2*s*originalRadial s r B, originalRadialFirst s r B, 0, 0] := by
   ext k
@@ -336,14 +336,14 @@ theorem originalCorrection_metric (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) :
       ScalarTwoJet.constant, ScalarTwoJet.add, ScalarTwoJet.mul, ScalarTwoJet.inv] <;> ring
 
 private theorem originalCorrection_first_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hF : r^2-1 ≠ 0) (k : Fin 4) :
+    (hr : r ≠ 0) (hF : r^(2 : ℕ)-1 ≠ 0) (k : Fin 4) :
     (D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy).first k 0 2 =
       (temporalMetricJet (2*s) (originalRadial s r B) (originalRadialFirst s r B)
         (originalAngularJet s y S Sx Sy Sxx Sxy)).first k 0 2 := by
   change (((originalRadialJet s r B).mul
     (D4BMScalarLinearEquation.angular s y S Sx Sy Sxx Sxy)).mul
       (D4BMVectorLinearEquation.angular0 s y Sy Sxy
-        ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx))).first k = _
+        ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx))).first k = _
   rw [product_first, originalRadialJet_first s r B hr hF, originalRadialJet_value]
   fin_cases k <;>
     simp [temporalMetricJet, mixedJet, mixedMatrix, originalAngularJet,
@@ -352,14 +352,14 @@ private theorem originalCorrection_first_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : 
   simp
 
 private theorem originalCorrection_first_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hF : r^2-1 ≠ 0) (k : Fin 4) :
+    (hr : r ≠ 0) (hF : r^(2 : ℕ)-1 ≠ 0) (k : Fin 4) :
     (D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy).first k 0 3 =
       (temporalMetricJet (2*s) (originalRadial s r B) (originalRadialFirst s r B)
         (originalAngularJet s y S Sx Sy Sxx Sxy)).first k 0 3 := by
   change (((originalRadialJet s r B).mul
     (D4BMScalarLinearEquation.angular s y S Sx Sy Sxx Sxy)).mul
       (D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-        Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx))).first k = _
+        Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx))).first k = _
   rw [product_first, originalRadialJet_first s r B hr hF, originalRadialJet_value]
   fin_cases k <;>
     simp [temporalMetricJet, mixedJet, mixedMatrix, originalAngularJet,
@@ -368,7 +368,7 @@ private theorem originalCorrection_first_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : 
 /-- Every first derivative of the original correction is retained. The two nonzero columns
 are checked once, then assembled using the metric's sparse symmetry. -/
 theorem originalCorrection_first (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hF : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hF : r^(2 : ℕ)-1 ≠ 0) :
     (D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy).first =
       (temporalMetricJet (2*s) (originalRadial s r B) (originalRadialFirst s r B)
         (originalAngularJet s y S Sx Sy Sxx Sxy)).first := by
@@ -391,14 +391,14 @@ theorem originalCorrection_temporal_action (p : D4BMBackground.ExteriorPoint)
     (K : Fin 2 → ScalarTwoJet (Fin 2) ℂ) :
     let r : ℂ := p.val 1
     let y : ℂ := p.val 3
-    r^2/y^2 * actionSymplectic (D4BMBackground.jet r y)
+    r^(2 : ℕ)/y^(2 : ℕ) * actionSymplectic (D4BMBackground.jet r y)
       (D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy)
       (streamMetricJet r (fun a => staticStreamJet (-2*s) d dr drr (K a))) 0 =
-      (2*s)*d/(r^2-1) * (s*(s+1)/2*B^2*((2*s+5)/r^4-3/r^2)) *
+      (2*s)*d/(r^(2 : ℕ)-1) * (s*(s+1)/2*B^(2 : ℕ)*((2*s+5)/r^(4 : ℕ)-3/r^(2 : ℕ))) *
         angularPair (originalAngularJet s y S Sx Sy Sxx Sxy) K := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [p.property.1])
-  have hF : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hF : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   dsimp only
   rw [actionSymplectic_congr_first _ _ _ _ (originalCorrection_metric ..)
     (originalCorrection_first _ _ _ _ _ _ _ _ _ _ _ hr hF)]
@@ -417,7 +417,7 @@ theorem incomingTemporalDensity_action (q : XiZeroCopy) (branch : Bool) (a w dr 
     let r : ℂ := p.val 1
     let c := correctionRadial (physicalRate q branch) w a
       (continuedOnset (physicalRate q branch) w)
-    (r^2-1) * (r^2/(p.val 3:ℂ)^2 * actionSymplectic
+    (r^(2 : ℕ)-1) * (r^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet r (p.val 3))
       (temporalMetricJet w (c (p.val 1)) (deriv c (p.val 1)) J)
       (streamMetricJet r (fun j => staticStreamJet (-w)
@@ -426,17 +426,17 @@ theorem incomingTemporalDensity_action (q : XiZeroCopy) (branch : Bool) (a w dr 
       incomingTemporalDensity q branch a (angularPair J K) w z := by
   dsimp only
   rw [temporal_action]
-  change (((tortoiseRadius (tortoiseOf z):ℂ)^2-1) *
+  change (((tortoiseRadius (tortoiseOf z):ℂ)^(2 : ℕ)-1) *
     (w*((tortoiseRadius (tortoiseOf z):ℂ)*horizon w (physicalRadialFrequency q) z)/
-      ((tortoiseRadius (tortoiseOf z):ℂ)^2-1) *
+      ((tortoiseRadius (tortoiseOf z):ℂ)^(2 : ℕ)-1) *
       (deriv (correctionRadial (physicalRate q branch) w a
         (continuedOnset (physicalRate q branch) w)) (tortoiseRadius (tortoiseOf z))-
       2*correctionRadial (physicalRate q branch) w a
         (continuedOnset (physicalRate q branch) w) (tortoiseRadius (tortoiseOf z))/
         (tortoiseRadius (tortoiseOf z):ℂ)) * angularPair J K)) / _ = _
   rw [(correctionRadial_hasDerivAt _ _ _ _ _ (tortoiseOf_neg hz)).deriv]
-  have hF : (tortoiseRadius (tortoiseOf z):ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius (tortoiseOf z))^2-1 ≠ 0 by
+  have hF : (tortoiseRadius (tortoiseOf z):ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius (tortoiseOf z))^(2 : ℕ)-1 ≠ 0 by
       nlinarith [tortoiseRadius_exterior (tortoiseOf z) (tortoiseOf_neg hz)])
   unfold incomingTemporalDensity
   field_simp

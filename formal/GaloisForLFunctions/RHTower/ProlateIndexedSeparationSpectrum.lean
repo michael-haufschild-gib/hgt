@@ -50,13 +50,13 @@ theorem signedModeRadialData_chi_injective
   have hmRBand : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a)
           (signedModeRadialData a m).R x =
-        evenProlateSignedValue a m ^ 2 * (signedModeRadialData a m).R x := by
+        evenProlateSignedValue a m ^ (2 : ℕ) * (signedModeRadialData a m).R x := by
     rw [hmRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hmBand
   have hnRBand : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a)
           (signedModeRadialData a n).R x =
-        evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x := by
+        evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x := by
     rw [hnRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hnBand
   have hnProlate' : ∀ x : ℝ,
@@ -66,8 +66,8 @@ theorem signedModeRadialData_chi_injective
     intro x
     rw [hchi]
     exact hnProlate x
-  have hsq : evenProlateSignedValue a m ^ 2 =
-      evenProlateSignedValue a n ^ 2 :=
+  have hsq : evenProlateSignedValue a m ^ (2 : ℕ) =
+      evenProlateSignedValue a n ^ (2 : ℕ) :=
     bandEigenvalue_eq_of_same_even_prolate_eigen
       hmRSmooth hnRSmooth hmRNe hnRNe hmREven hnREven
       (pow_ne_zero 2 (evenProlateSignedValue_ne_zero ha m))

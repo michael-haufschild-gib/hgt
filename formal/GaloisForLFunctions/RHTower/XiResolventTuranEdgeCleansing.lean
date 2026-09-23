@@ -6,17 +6,17 @@ import GaloisForLFunctions.RHTower.XiResolventDiagonalEdgeDetection
 Diagonal moment positivity places one lowest zero on the critical line
 (`exists_criticalLine_copy_of_forall_moment_re_nonneg`).  This file proves that the next layer of
 the Hankel criterion — nonnegativity of all consecutive **Turán minors**
-`R n * R (n+2) - R (n+1)^2` at one shift — cleanses the edge completely: **every** divisor copy
+`R n * R (n+2) - R (n+1)^(2 : ℕ)` at one shift — cleanses the edge completely: **every** divisor copy
 of maximal resolvent modulus lies on the critical line.
 
 Mechanism.  The variance expansion identifies twice the level-`n` minor with the pair sum
-`sum_(q,r) (u_q u_r)^(n+1) (u_q - u_r)^2`.  Normalizing by `r^(2(n+1))`, the maximal pair points
-`u_q u_r` of modulus `r^2` land on the unit circle; those equal to `r^2` itself are exactly the
+`sum_(q,r) (u_q u_r)^(n+1) (u_q - u_r)^(2 : ℕ)`.  Normalizing by `r^(2(n+1))`, the maximal pair points
+`u_q u_r` of modulus `r^(2 : ℕ)` land on the unit circle; those equal to `r^(2 : ℕ)` itself are exactly the
 conjugate pairs `u_r = conj u_q`, and their weights are the exact negative reals
-`-4 (Im u_q)^2`.  Summing over `n < N`: the conjugate-pair contribution is `-4 (Im u_q)^2 * N`
+`-4 (Im u_q)^(2 : ℕ)`.  Summing over `n < N`: the conjugate-pair contribution is `-4 (Im u_q)^(2 : ℕ) * N`
 per off-critical edge copy, all remaining unit pair points contribute boundedly (geometric sums),
 and the sub-maximal tail is a convergent geometric series.  Minor nonnegativity therefore forces
-`(Im u_q)^2 * N` bounded in `N`, i.e. every edge copy has real resolvent value, and the height
+`(Im u_q)^(2 : ℕ) * N` bounded in `N`, i.e. every edge copy has real resolvent value, and the height
 gap lifts this to the critical line.
 
 Together with diagonal edge detection this grades the Hankel criterion by depth: the diagonal
@@ -32,10 +32,10 @@ noncomputable section
 /-- **The variance expansion of the level-`n` Turán minor.** -/
 theorem two_mul_turanMinorAt_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X) (n : ℕ) :
     2 * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-        xiResolventMoment (n + 1) X ^ 2) =
+        xiResolventMoment (n + 1) X ^ (2 : ℕ)) =
       ∑' z : XiZeroCopy × XiZeroCopy,
         (xiResolventPoint X z.1 * xiResolventPoint X z.2) ^ (n + 1) *
-          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ 2 := by
+          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ (2 : ℕ) := by
   have h0 := summable_norm_xiResolventPoint_pow hX n
   have h1 := summable_norm_xiResolventPoint_pow hX (n + 1)
   have h2 := summable_norm_xiResolventPoint_pow hX (n + 2)
@@ -47,7 +47,7 @@ theorem two_mul_turanMinorAt_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X) (n : ℕ) :
   have hsumC := summable_mul_of_summable_norm h2 h0
   have hpt : ∀ z : XiZeroCopy × XiZeroCopy,
       (xiResolventPoint X z.1 * xiResolventPoint X z.2) ^ (n + 1) *
-          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ 2 =
+          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ (2 : ℕ) =
         ((xiResolventPoint X z.1 ^ (n + 1) * xiResolventPoint X z.2 ^ (n + 2 + 1) -
             2 * (xiResolventPoint X z.1 ^ (n + 1 + 1) *
               xiResolventPoint X z.2 ^ (n + 1 + 1))) +
@@ -63,7 +63,7 @@ theorem two_mul_turanMinorAt_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X) (n : ℕ) :
 theorem xiResolventPoint_im_ne_zero_of_spectral {X : ℝ} (hX : 0 ≤ X) {q : XiZeroCopy}
     (h : (xiSpectralPoint q).im ≠ 0) : (xiResolventPoint X q).im ≠ 0 := by
   have hne := xiSpectralSq_add_ofReal_ne_zero hX q
-  have hnsq : Complex.normSq (xiSpectralPoint q ^ 2 + (X : ℂ)) ≠ 0 :=
+  have hnsq : Complex.normSq (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)) ≠ 0 :=
     fun hc => hne (Complex.normSq_eq_zero.mp hc)
   have hrene : (xiSpectralPoint q).re ≠ 0 := by
     have hg := xiZeroCopy_two_lt_im_sq q
@@ -71,7 +71,7 @@ theorem xiResolventPoint_im_ne_zero_of_spectral {X : ℝ} (hX : 0 ≤ X) {q : Xi
     intro h0
     rw [h0] at hg
     norm_num at hg
-  have himw : (xiSpectralPoint q ^ 2 + (X : ℂ)).im ≠ 0 := by
+  have himw : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im ≠ 0 := by
     rw [Complex.add_im, Complex.ofReal_im, add_zero, sq, Complex.mul_im]
     intro h0
     rcases mul_eq_zero.mp (by linarith [h0] : (xiSpectralPoint q).re *
@@ -92,11 +92,11 @@ theorem re_div_ofReal (z : ℂ) (a : ℝ) : (z / (a : ℂ)).re = z.re / a := by
     Complex.ofReal_im, mul_zero, sub_zero, div_eq_mul_inv]
 
 /-- **Turán minors cleanse the edge**: if every consecutive Turán minor
-`R n * R (n+2) - R (n+1)^2` at one shift is nonnegative, then every divisor copy of maximal
+`R n * R (n+2) - R (n+1)^(2 : ℕ)` at one shift is nonnegative, then every divisor copy of maximal
 resolvent modulus lies on the critical line. -/
 theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hminor : ∀ n : ℕ, 0 ≤ (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-      xiResolventMoment (n + 1) X ^ 2).re) :
+      xiResolventMoment (n + 1) X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, (∀ q', ‖xiResolventPoint X q'‖ ≤ ‖xiResolventPoint X q‖) →
       (xiSpectralPoint q).im = 0 := by
   classical
@@ -152,8 +152,8 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
   set c : ℂ := ((r : ℝ) : ℂ) with hc
   have hcne : c ≠ 0 := Complex.ofReal_ne_zero.mpr hrpos.ne'
   set u : XiZeroCopy → ℂ := fun q => xiResolventPoint X q with hu
-  set w : XiZeroCopy × XiZeroCopy → ℂ := fun z => (u z.1 - u z.2) ^ 2 with hw
-  set V : XiZeroCopy × XiZeroCopy → ℂ := fun z => u z.1 * u z.2 / c ^ 2 with hV
+  set w : XiZeroCopy × XiZeroCopy → ℂ := fun z => (u z.1 - u z.2) ^ (2 : ℕ) with hw
+  set V : XiZeroCopy × XiZeroCopy → ℂ := fun z => u z.1 * u z.2 / c ^ (2 : ℕ) with hV
   set TT : Finset (XiZeroCopy × XiZeroCopy) := T ×ˢ T with hTT
   -- the tail mass
   have hprodsum : Summable (fun z : XiZeroCopy × XiZeroCopy => ‖u z.1‖ * ‖u z.2‖) := by
@@ -173,7 +173,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
   have hpairsummable : ∀ n : ℕ, Summable (fun z : XiZeroCopy × XiZeroCopy =>
       (u z.1 * u z.2) ^ (n + 1) * w z) := by
     intro n
-    refine Summable.of_norm_bounded (hprodsum.mul_right ((2 * r) ^ 2)) fun z => ?_
+    refine Summable.of_norm_bounded (hprodsum.mul_right ((2 * r) ^ (2 : ℕ))) fun z => ?_
     rw [norm_mul, mul_pow, norm_mul]
     simp only [hw]
     have h1 : ‖u z.1 ^ (n + 1)‖ ≤ ‖u z.1‖ := by
@@ -186,24 +186,24 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
       have hle1 : ‖u z.2‖ ^ n ≤ 1 :=
         pow_le_one₀ (norm_nonneg _) (norm_xiResolventPoint_le_one hX z.2)
       nlinarith [norm_nonneg (u z.2), pow_nonneg (norm_nonneg (u z.2)) n]
-    have h3 : ‖(u z.1 - u z.2) ^ 2‖ ≤ (2 * r) ^ 2 := by
+    have h3 : ‖(u z.1 - u z.2) ^ (2 : ℕ)‖ ≤ (2 * r) ^ (2 : ℕ) := by
       rw [norm_pow]
       refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
       calc ‖u z.1 - u z.2‖ ≤ ‖u z.1‖ + ‖u z.2‖ := norm_sub_le _ _
         _ ≤ r + r := add_le_add (hqhmax z.1) (hqhmax z.2)
         _ = 2 * r := by ring
-    calc ‖u z.1 ^ (n + 1)‖ * ‖u z.2 ^ (n + 1)‖ * ‖(u z.1 - u z.2) ^ 2‖
-        ≤ (‖u z.1‖ * ‖u z.2‖) * (2 * r) ^ 2 := by
+    calc ‖u z.1 ^ (n + 1)‖ * ‖u z.2 ^ (n + 1)‖ * ‖(u z.1 - u z.2) ^ (2 : ℕ)‖
+        ≤ (‖u z.1‖ * ‖u z.2‖) * (2 * r) ^ (2 : ℕ) := by
           have := mul_le_mul (mul_le_mul h1 h2 (norm_nonneg _) (norm_nonneg _)) h3
             (norm_nonneg _)
             (mul_nonneg (norm_nonneg _) (norm_nonneg _))
           linarith
-      _ = ‖u z.1‖ * ‖u z.2‖ * (2 * r) ^ 2 := by ring
+      _ = ‖u z.1‖ * ‖u z.2‖ * (2 * r) ^ (2 : ℕ) := by ring
   -- tail bound at level n
   have htail : ∀ n : ℕ,
       ‖∑' z : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
         (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
-          w ↑z‖ ≤ (ρ * r) ^ n * ((2 * r) ^ 2 * P₀) := by
+          w ↑z‖ ≤ (ρ * r) ^ n * ((2 * r) ^ (2 : ℕ) * P₀) := by
     intro n
     have hsubpair : Summable (fun z : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ =>
         ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
@@ -215,10 +215,10 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
             ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) *
               w ↑z‖ := norm_tsum_le_tsum_norm hsubpair
       _ ≤ ∑' z : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
-            (ρ * r) ^ n * ((2 * r) ^ 2 *
+            (ρ * r) ^ n * ((2 * r) ^ (2 : ℕ) *
               (‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ * ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖)) := by
           refine Summable.tsum_le_tsum (fun z => ?_) hsubpair
-            (((hsubprod.mul_left ((2 * r) ^ 2)).mul_left ((ρ * r) ^ n)))
+            (((hsubprod.mul_left ((2 * r) ^ (2 : ℕ))).mul_left ((ρ * r) ^ n)))
           obtain ⟨z', hz'⟩ := z
           have hznot : z' ∉ TT := by
             simp only [Set.mem_compl_iff, Finset.mem_coe] at hz'
@@ -268,7 +268,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
                 _ = (ρ * r) ^ n * (‖u z'.1‖ * ‖u z'.2‖) := by
                     rw [mul_pow]
                     ring
-          have hb2 : ‖(u z'.1 - u z'.2) ^ 2‖ ≤ (2 * r) ^ 2 := by
+          have hb2 : ‖(u z'.1 - u z'.2) ^ (2 : ℕ)‖ ≤ (2 * r) ^ (2 : ℕ) := by
             rw [norm_pow]
             refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
             calc ‖u z'.1 - u z'.2‖ ≤ ‖u z'.1‖ + ‖u z'.2‖ := norm_sub_le _ _
@@ -276,15 +276,15 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
               _ = 2 * r := by ring
           rw [norm_mul, mul_pow, norm_mul]
           simp only [hw]
-          calc ‖u z'.1 ^ (n + 1)‖ * ‖u z'.2 ^ (n + 1)‖ * ‖(u z'.1 - u z'.2) ^ 2‖
-              ≤ ((ρ * r) ^ n * (‖u z'.1‖ * ‖u z'.2‖)) * (2 * r) ^ 2 := by
+          calc ‖u z'.1 ^ (n + 1)‖ * ‖u z'.2 ^ (n + 1)‖ * ‖(u z'.1 - u z'.2) ^ (2 : ℕ)‖
+              ≤ ((ρ * r) ^ n * (‖u z'.1‖ * ‖u z'.2‖)) * (2 * r) ^ (2 : ℕ) := by
                 have hnn : (0 : ℝ) ≤ ‖u z'.1 ^ (n + 1)‖ * ‖u z'.2 ^ (n + 1)‖ :=
                   mul_nonneg (norm_nonneg _) (norm_nonneg _)
                 have := mul_le_mul hb1 hb2 (norm_nonneg _)
                   (by positivity)
                 linarith
-            _ = (ρ * r) ^ n * ((2 * r) ^ 2 * (‖u z'.1‖ * ‖u z'.2‖)) := by ring
-      _ = (ρ * r) ^ n * ((2 * r) ^ 2 * P₀) := by
+            _ = (ρ * r) ^ n * ((2 * r) ^ (2 : ℕ) * (‖u z'.1‖ * ‖u z'.2‖)) := by ring
+      _ = (ρ * r) ^ n * ((2 * r) ^ (2 : ℕ) * P₀) := by
           rw [tsum_mul_left, tsum_mul_left, hP₀]
   -- unit pair points on the edge
   have hVnorm : ∀ z ∈ TT, ‖V z‖ = 1 := by
@@ -296,16 +296,16 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
     rw [pow_two]
     exact div_self (by positivity)
   -- edge pair points at `1` are conjugate pairs with nonpositive real weight
-  have hP1w : ∀ z ∈ TT, V z = 1 → w z = ((-(4 * (u z.1).im ^ 2) : ℝ) : ℂ) := by
+  have hP1w : ∀ z ∈ TT, V z = 1 → w z = ((-(4 * (u z.1).im ^ (2 : ℕ)) : ℝ) : ℂ) := by
     intro z hz hVz
     rw [hTT, Finset.mem_product] at hz
     have hz1ne : u z.1 ≠ 0 := xiResolventPoint_ne_zero hX z.1
-    have h1 : u z.1 * u z.2 = c ^ 2 := by
+    have h1 : u z.1 * u z.2 = c ^ (2 : ℕ) := by
       have h0 := hVz
       simp only [hV] at h0
       rw [div_eq_iff (pow_ne_zero 2 hcne), one_mul] at h0
       exact h0
-    have h2 : u z.1 * (starRingEnd ℂ) (u z.1) = c ^ 2 := by
+    have h2 : u z.1 * (starRingEnd ℂ) (u z.1) = c ^ (2 : ℕ) := by
       rw [Complex.mul_conj, hc, ← Complex.ofReal_pow]
       norm_cast
       rw [← Complex.sq_norm, hTval z.1 hz.1]
@@ -326,9 +326,9 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
   have hzhTT : zh ∈ TT := by
     rw [hzh, hTT, Finset.mem_product]
     exact ⟨hqhT, hconjT⟩
-  have hprodzh : u zh.1 * u zh.2 = c ^ 2 := by
+  have hprodzh : u zh.1 * u zh.2 = c ^ (2 : ℕ) := by
     rw [hzh]
-    show u qh * u (xiZeroCopyLineConjEquiv qh) = c ^ 2
+    show u qh * u (xiZeroCopyLineConjEquiv qh) = c ^ (2 : ℕ)
     rw [hlineconj, Complex.mul_conj, hc, ← Complex.ofReal_pow]
     norm_cast
     rw [← Complex.sq_norm, hTval qh hqhT]
@@ -349,7 +349,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
     nlinarith [pow_nonneg hκ0 N]
   set CT : ℝ := 4 * P₀ * (1 / (1 - ρ / r)) with hCT
   set CP2 : ℝ := ∑ z ∈ TT.filter (fun z => ¬ V z = 1), ‖w z‖ * (2 / ‖V z - 1‖) with hCP2
-  set β : ℝ := (u qh).im ^ 2 with hβ
+  set β : ℝ := (u qh).im ^ (2 : ℕ) with hβ
   have hβpos : 0 < β := by
     rw [hβ]
     have him := xiResolventPoint_im_ne_zero_of_spectral hX hqhoff
@@ -359,19 +359,19 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
     intro N
     have hlhs : 0 ≤ ∑ n ∈ Finset.range N,
         (2 * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-          xiResolventMoment (n + 1) X ^ 2)).re / r ^ (2 * (n + 1)) := by
+          xiResolventMoment (n + 1) X ^ (2 : ℕ))).re / r ^ (2 * (n + 1)) := by
       refine Finset.sum_nonneg fun n _ => ?_
       have h1 := hminor n
       have h2 : (2 * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-          xiResolventMoment (n + 1) X ^ 2)).re = 2 * (xiResolventMoment n X *
-            xiResolventMoment (n + 2) X - xiResolventMoment (n + 1) X ^ 2).re := by
+          xiResolventMoment (n + 1) X ^ (2 : ℕ))).re = 2 * (xiResolventMoment n X *
+            xiResolventMoment (n + 2) X - xiResolventMoment (n + 1) X ^ (2 : ℕ)).re := by
         simp [Complex.mul_re]
       rw [h2]
       have h3 : (0 : ℝ) < r ^ (2 * (n + 1)) := pow_pos hrpos _
       positivity
     have hn : ∀ n ∈ Finset.range N,
         (2 * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-          xiResolventMoment (n + 1) X ^ 2)).re / r ^ (2 * (n + 1)) =
+          xiResolventMoment (n + 1) X ^ (2 : ℕ))).re / r ^ (2 * (n + 1)) =
         (∑ z ∈ TT, w z * V z ^ (n + 1)).re +
           (∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             (u (↑zc : XiZeroCopy × XiZeroCopy).1 *
@@ -381,7 +381,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
       have hexp := two_mul_turanMinorAt_eq_tsum_pair hX n
       have hsplit := (hpairsummable n).sum_add_tsum_compl (s := TT)
       have hEq : (2 : ℂ) * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-          xiResolventMoment (n + 1) X ^ 2) =
+          xiResolventMoment (n + 1) X ^ (2 : ℕ)) =
           (∑ z ∈ TT, (u z.1 * u z.2) ^ (n + 1) * w z) +
             ∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
               (u (↑zc : XiZeroCopy × XiZeroCopy).1 *
@@ -397,7 +397,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
             ((r ^ (2 * (n + 1)) : ℝ) : ℂ) := by
         rw [Finset.sum_div]
         refine Finset.sum_congr rfl fun z _ => ?_
-        have hden : (c ^ 2) ^ (n + 1) = ((r ^ (2 * (n + 1)) : ℝ) : ℂ) := by
+        have hden : (c ^ (2 : ℕ)) ^ (n + 1) = ((r ^ (2 * (n + 1)) : ℝ) : ℂ) := by
           rw [hc]
           push_cast
           ring
@@ -407,7 +407,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
       rw [hCfin, re_div_ofReal]
     have hdecomp : ∑ n ∈ Finset.range N,
         (2 * (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-          xiResolventMoment (n + 1) X ^ 2)).re / r ^ (2 * (n + 1)) =
+          xiResolventMoment (n + 1) X ^ (2 : ℕ))).re / r ^ (2 * (n + 1)) =
         (∑ z ∈ TT, (w z * ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) +
           ∑ n ∈ Finset.range N,
             (∑' zc : ↑(↑TT : Set (XiZeroCopy × XiZeroCopy))ᶜ,
@@ -431,7 +431,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
           (w z * ∑ n ∈ Finset.range N, V z ^ (n + 1)).re) ≤ -(4 * β) * N := by
         have hterm : ∀ z ∈ TT.filter (fun z => V z = 1),
             (w z * ∑ n ∈ Finset.range N, V z ^ (n + 1)).re =
-              -(4 * (u z.1).im ^ 2) * (N : ℝ) := by
+              -(4 * (u z.1).im ^ (2 : ℕ)) * (N : ℝ) := by
           intro z hz
           rw [Finset.mem_filter] at hz
           rw [hP1w z hz.1 hz.2, hz.2]
@@ -441,12 +441,12 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
         have hzhfil : zh ∈ TT.filter (fun z => V z = 1) :=
           Finset.mem_filter.mpr ⟨hzhTT, hVzh⟩
         rw [← Finset.add_sum_erase _ _ hzhfil]
-        have h1 : -(4 * (u zh.1).im ^ 2) * (N : ℝ) = -(4 * β) * N := by
+        have h1 : -(4 * (u zh.1).im ^ (2 : ℕ)) * (N : ℝ) = -(4 * β) * N := by
           simp only [hzh, hβ]
         have h2 : ∑ z ∈ (TT.filter (fun z => V z = 1)).erase zh,
-            -(4 * (u z.1).im ^ 2) * (N : ℝ) ≤ 0 := by
+            -(4 * (u z.1).im ^ (2 : ℕ)) * (N : ℝ) ≤ 0 := by
           refine Finset.sum_nonpos fun z _ => ?_
-          have h3 : (0 : ℝ) ≤ 4 * (u z.1).im ^ 2 * N := by positivity
+          have h3 : (0 : ℝ) ≤ 4 * (u z.1).im ^ (2 : ℕ) * N := by positivity
           linarith
         rw [h1]
         linarith
@@ -483,7 +483,7 @@ theorem forall_edge_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 
                   u (↑zc : XiZeroCopy × XiZeroCopy).2) ^ (n + 1) * w ↑zc)
             have hd : (0 : ℝ) < r ^ (2 * (n + 1)) := pow_pos hrpos _
             rw [div_le_iff₀ hd]
-            have halg : (ρ * r) ^ n * ((2 * r) ^ 2 * P₀) =
+            have halg : (ρ * r) ^ n * ((2 * r) ^ (2 : ℕ) * P₀) =
                 4 * P₀ * (ρ / r) ^ n * r ^ (2 * (n + 1)) := by
               rw [div_pow, mul_pow]
               field_simp

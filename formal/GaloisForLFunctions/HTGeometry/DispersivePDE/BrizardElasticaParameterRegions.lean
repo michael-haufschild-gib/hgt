@@ -36,7 +36,7 @@ theorem nuSq_pos_iff (P : Parameters) :
       (P.modulus < (P.q₀ : ℝ) ∧ (P.q₀ : ℝ) < 1) ∨
       (1 < (P.q₀ : ℝ) ∧ (P.q₀ : ℝ) < P.modulus) := by
   rw [nuSq, div_pos_iff]
-  have hden : 0 < (P.q₀ : ℝ) ^ 2 := sq_pos_of_ne_zero P.q₀.ne_zero
+  have hden : 0 < (P.q₀ : ℝ) ^ (2 : ℕ) := sq_pos_of_ne_zero P.q₀.ne_zero
   constructor
   · rintro (h | h)
     · rcases mul_pos_iff.mp h.1 with hpos | hneg

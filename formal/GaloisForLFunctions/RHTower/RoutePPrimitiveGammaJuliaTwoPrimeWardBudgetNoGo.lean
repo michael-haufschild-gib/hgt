@@ -34,7 +34,7 @@ def routePTwoPrimeWardCell (i : Fin 2) : Nat.Primes × ℕ :=
   if i = 0 then routePTwoPrimeWardCellTwo else routePTwoPrimeWardCellThree
 
 def routePTwoPrimeWardRawWeight (u : ℝ) (i : Fin 2) : ℝ :=
-  xiGammaEulerPrimitiveDescentTestAmplitude u (routePTwoPrimeWardCell i) ^ 2
+  xiGammaEulerPrimitiveDescentTestAmplitude u (routePTwoPrimeWardCell i) ^ (2 : ℕ)
 
 def routePTwoPrimeWardMass (u : ℝ) : ℝ :=
   ∑ i : Fin 2, routePTwoPrimeWardRawWeight u i
@@ -141,9 +141,9 @@ theorem routePTwoPrimeWardHamiltonian_selfAdjoint :
 theorem routePTwoPrimeSourceStateWardEnergy_eq_variance (u : ℝ) :
     routePTwoPrimeSourceStateWardEnergy u =
       2 * ((∑ i : Fin 2,
-          routePTwoPrimeWardWeight u i * routePTwoPrimeWardEnergyLevel i ^ 2) -
+          routePTwoPrimeWardWeight u i * routePTwoPrimeWardEnergyLevel i ^ (2 : ℕ)) -
         (∑ i : Fin 2,
-          routePTwoPrimeWardWeight u i * routePTwoPrimeWardEnergyLevel i) ^ 2) := by
+          routePTwoPrimeWardWeight u i * routePTwoPrimeWardEnergyLevel i) ^ (2 : ℕ)) := by
   rw [routePTwoPrimeSourceStateWardEnergy,
     hsNormSq_rankOneHamiltonianCommutator routePTwoPrimeWardHamiltonian
       routePTwoPrimeWardHamiltonian_selfAdjoint (routePTwoPrimeWardKet u)
@@ -157,7 +157,7 @@ theorem routePTwoPrimeSourceStateWardEnergy_eq_variance (u : ℝ) :
 theorem routePTwoPrimeSourceStateWardEnergy_eq_pair (u : ℝ) :
     routePTwoPrimeSourceStateWardEnergy u =
       2 * routePTwoPrimeWardWeight u 0 * routePTwoPrimeWardWeight u 1 *
-        (routePTwoPrimeWardEnergyLevel 0 - routePTwoPrimeWardEnergyLevel 1) ^ 2 := by
+        (routePTwoPrimeWardEnergyLevel 0 - routePTwoPrimeWardEnergyLevel 1) ^ (2 : ℕ) := by
   rw [routePTwoPrimeSourceStateWardEnergy_eq_variance]
   rw [Fin.sum_univ_two, Fin.sum_univ_two]
   have hsum := routePTwoPrimeWardWeight_sum u
@@ -201,7 +201,7 @@ theorem continuous_routePTwoPrimeSourceStateWardEnergy :
       fun u : ℝ =>
         2 * routePTwoPrimeWardWeight u 0 * routePTwoPrimeWardWeight u 1 *
           (routePTwoPrimeWardEnergyLevel 0 -
-            routePTwoPrimeWardEnergyLevel 1) ^ 2 by
+            routePTwoPrimeWardEnergyLevel 1) ^ (2 : ℕ) by
     funext u
     exact routePTwoPrimeSourceStateWardEnergy_eq_pair u]
   exact (((continuous_const.mul

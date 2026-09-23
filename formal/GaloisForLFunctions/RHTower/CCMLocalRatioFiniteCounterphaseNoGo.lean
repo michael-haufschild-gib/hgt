@@ -22,12 +22,12 @@ theorem tendsto_covarianceAnomaly_div_sq_of_neutral_imaginary {ι : Type*} [Deci
     {u : ι → ℝ → ℂ} {b : ι → ℝ} (hu : ∀ v, u v 0 = 1)
     (hd : ∀ v, HasDerivAt (u v) (-Complex.I * ((b v : ℝ) : ℂ)) 0) (s : Finset ι)
     (hneutral : ∑ v ∈ s, b v = 0) :
-    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
-      (𝓝 ((((∑ v ∈ s, b v ^ 2) / 2 : ℝ) : ℂ))) := by
+    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
+      (𝓝 ((((∑ v ∈ s, b v ^ (2 : ℕ)) / 2 : ℝ) : ℂ))) := by
   have h := tendsto_covarianceAnomaly_div_sq_of_imaginary hu hd s
   rw [hneutral] at h
-  have hvalue : (((∑ v ∈ s, b v ^ 2) / 2 : ℝ) : ℂ)
-      = -((((0 : ℝ) ^ 2 - ∑ v ∈ s, b v ^ 2) / 2 : ℝ) : ℂ) := by
+  have hvalue : (((∑ v ∈ s, b v ^ (2 : ℕ)) / 2 : ℝ) : ℂ)
+      = -((((0 : ℝ) ^ (2 : ℕ) - ∑ v ∈ s, b v ^ (2 : ℕ)) / 2 : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hvalue]
@@ -35,7 +35,7 @@ theorem tendsto_covarianceAnomaly_div_sq_of_neutral_imaginary {ι : Type*} [Deci
 
 /-- A nonzero finite real first-jet family has strictly positive total square. -/
 theorem sum_sq_pos_of_exists_mem_ne_zero {ι : Type*} [DecidableEq ι] {b : ι → ℝ}
-    (s : Finset ι) (hnonzero : ∃ v ∈ s, b v ≠ 0) : 0 < ∑ v ∈ s, b v ^ 2 := by
+    (s : Finset ι) (hnonzero : ∃ v ∈ s, b v ≠ 0) : 0 < ∑ v ∈ s, b v ^ (2 : ℕ) := by
   obtain ⟨v, hv, hb⟩ := hnonzero
   refine lt_of_lt_of_le (sq_pos_of_ne_zero hb) ?_
   exact Finset.single_le_sum (fun w _ => sq_nonneg (b w)) hv
@@ -48,9 +48,9 @@ theorem exists_pos_quadratic_covarianceAnomaly_of_neutral_imaginary
     (hd : ∀ v, HasDerivAt (u v) (-Complex.I * ((b v : ℝ) : ℂ)) 0) (s : Finset ι)
     (hneutral : ∑ v ∈ s, b v = 0) (hnonzero : ∃ v ∈ s, b v ≠ 0) :
     ∃ L : ℝ, 0 < L ∧
-      Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
+      Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
         (𝓝 (L : ℂ)) := by
-  refine ⟨(∑ v ∈ s, b v ^ 2) / 2, ?_, ?_⟩
+  refine ⟨(∑ v ∈ s, b v ^ (2 : ℕ)) / 2, ?_, ?_⟩
   · exact half_pos (sum_sq_pos_of_exists_mem_ne_zero s hnonzero)
   · exact tendsto_covarianceAnomaly_div_sq_of_neutral_imaginary hu hd s hneutral
 

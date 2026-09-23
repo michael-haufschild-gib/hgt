@@ -88,7 +88,7 @@ theorem ofReal_xiShiftedPolynomialWeightedMoment_eq_xiPolyMoment
         evalRealPolynomial (X ^ k * (p * p))
           (xiShiftedReciprocalSquare y q)) =
     ∑' q : XiZeroCopy, xiResolventPoint y q ^ (k + 1) *
-      evalRealPolynomial p (xiResolventPoint y q) ^ 2
+      evalRealPolynomial p (xiResolventPoint y q) ^ (2 : ℕ)
   apply tsum_congr
   intro q
   rw [xiShiftedReciprocalSquare_eq_xiResolventPoint hy]
@@ -102,7 +102,7 @@ theorem ofReal_xiShiftedPolynomialWeightedMass_eq_xiPolyMoment
     {y : ℝ} (hy : 0 ≤ y) (p : Polynomial ℝ) :
     ((xiShiftedPolynomialWeightedMass y p : ℝ) : ℂ) = xiPolyMoment p 0 y := by
   rw [xiShiftedPolynomialWeightedMass, HTGeometry.momentInner_def,
-    show p * p = X ^ 0 * (p * p) by simp,
+    show p * p = X ^ (0 : ℕ) * (p * p) by simp,
     ofReal_xiShiftedPolynomialWeightedMoment_eq_xiPolyMoment hy]
 
 /-- First weighted real moment is the first complex resolvent moment. -/
@@ -110,7 +110,7 @@ theorem ofReal_xiShiftedPolynomialWeightedCurrent_eq_xiPolyMoment
     {y : ℝ} (hy : 0 ≤ y) (p : Polynomial ℝ) :
     ((xiShiftedPolynomialWeightedCurrent y p : ℝ) : ℂ) = xiPolyMoment p 1 y := by
   rw [xiShiftedPolynomialWeightedCurrent, HTGeometry.momentInner_def,
-    show p * (X * p) = X ^ 1 * (p * p) by ring,
+    show p * (X * p) = X ^ (1 : ℕ) * (p * p) by ring,
     ofReal_xiShiftedPolynomialWeightedMoment_eq_xiPolyMoment hy]
 
 /-- Second weighted real moment is the second complex resolvent moment. -/
@@ -120,7 +120,7 @@ theorem ofReal_xiShiftedPolynomialWeightedSecond_eq_xiPolyMoment
       (fun k => (xiShiftedReciprocalMoment y k).re)
       (X * p) (X * p) : ℝ) : ℂ) = xiPolyMoment p 2 y := by
   rw [HTGeometry.momentInner_def,
-    show (X * p) * (X * p) = X ^ 2 * (p * p) by ring,
+    show (X * p) * (X * p) = X ^ (2 : ℕ) * (p * p) by ring,
     ofReal_xiShiftedPolynomialWeightedMoment_eq_xiPolyMoment hy]
 
 /-- Admission makes the division-free successor orthogonal to its source amplitude. -/
@@ -142,7 +142,7 @@ theorem xiShiftedPolynomialWeightAdaptiveSuccessor_mixedLanding (y : ℝ) (p : P
         HTGeometry.momentInner
           (fun k => (xiShiftedReciprocalMoment y k).re)
           (X * p) (X * p) -
-      xiShiftedPolynomialWeightedCurrent y p ^ 2 := by
+      xiShiftedPolynomialWeightedCurrent y p ^ (2 : ℕ) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let A := xiShiftedPolynomialWeightedMass y p
   let B := xiShiftedPolynomialWeightedCurrent y p
@@ -171,7 +171,7 @@ theorem xiShiftedPolynomialWeightAdaptiveSuccessor_energy_eq_mass_mul_landing
             HTGeometry.momentInner
               (fun k => (xiShiftedReciprocalMoment y k).re)
               (X * p) (X * p) -
-          xiShiftedPolynomialWeightedCurrent y p ^ 2) := by
+          xiShiftedPolynomialWeightedCurrent y p ^ (2 : ℕ)) := by
   simp only [xiShiftedPolynomialWeightAdaptiveSuccessor, HTGeometry.momentInner_sub_left,
     HTGeometry.momentInner_sub_right, HTGeometry.momentInner_smul_left,
     HTGeometry.momentInner_smul_right]
@@ -182,7 +182,7 @@ theorem xiShiftedPolynomialWeightAdaptiveSuccessor_energy_eq_mass_mul_landing
 /-- Literal rational–Gamma-minus-von-Mangoldt landing selected by `(p,Q)`. -/
 def xiShiftedAdaptiveMixedCompletedArithmeticLanding
     (w : ℝ) (p : Polynomial ℝ) : ℝ :=
-  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
   let c := xiShiftedBilinearCrossingCoefficientPacket p Q
   xiShiftedBoundaryRationalGammaAggregate w 1 c -
     xiShiftedBoundaryVonMangoldtAggregate w 1 c
@@ -190,7 +190,7 @@ def xiShiftedAdaptiveMixedCompletedArithmeticLanding
 /-- Landing retains one amplitude-dependent kernel in continuum and prime-label formations. -/
 theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_commonKernel_sourceFormation
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
-    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
     let c := xiShiftedBilinearCrossingCoefficientPacket p Q
     xiShiftedAdaptiveMixedCompletedArithmeticLanding w p =
       xiShiftedBoundaryArchimedeanAggregate w 1 c +
@@ -207,12 +207,12 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_commonKernel_sourceF
 theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_turan
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
     xiShiftedAdaptiveMixedCompletedArithmeticLanding w p =
-      xiShiftedPolynomialWeightedMass (w ^ 2) p *
+      xiShiftedPolynomialWeightedMass (w ^ (2 : ℕ)) p *
           HTGeometry.momentInner
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
             (X * p) (X * p) -
-        xiShiftedPolynomialWeightedCurrent (w ^ 2) p ^ 2 := by
-  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+        xiShiftedPolynomialWeightedCurrent (w ^ (2 : ℕ)) p ^ (2 : ℕ) := by
+  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
   let c := xiShiftedBilinearCrossingCoefficientPacket p Q
   rw [xiShiftedAdaptiveMixedCompletedArithmeticLanding]
   change xiShiftedBoundaryRationalGammaAggregate w 1 c -
@@ -220,29 +220,29 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_turan
   rw [← xiShiftedBoundaryCompletedAggregate_eq_rationalGamma_sub_vonMangoldt hw,
     ← xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate
       (by linarith : 0 < w)]
-  change xiShiftedCompletedMomentAggregate (w ^ 2) 1
+  change xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 1
       (xiShiftedBilinearCrossingCoefficientPacket p Q) = _
   rw [xiShiftedCompletedMomentAggregate_bilinearPacket_eq_momentInner]
-  exact xiShiftedPolynomialWeightAdaptiveSuccessor_mixedLanding (w ^ 2) p
+  exact xiShiftedPolynomialWeightAdaptiveSuccessor_mixedLanding (w ^ (2 : ℕ)) p
 
 /-- Arithmetic landing is the real part of the resolvent single minor. -/
 theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_re_xiPolyTuranMinor
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
     xiShiftedAdaptiveMixedCompletedArithmeticLanding w p =
-      (xiPolyMoment p 0 (w ^ 2) * xiPolyMoment p 2 (w ^ 2) -
-        xiPolyMoment p 1 (w ^ 2) ^ 2).re := by
+      (xiPolyMoment p 0 (w ^ (2 : ℕ)) * xiPolyMoment p 2 (w ^ (2 : ℕ)) -
+        xiPolyMoment p 1 (w ^ (2 : ℕ)) ^ (2 : ℕ)).re := by
   rw [xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_turan hw]
   have h0 := ofReal_xiShiftedPolynomialWeightedMass_eq_xiPolyMoment (sq_nonneg w) p
   have h1 := ofReal_xiShiftedPolynomialWeightedCurrent_eq_xiPolyMoment (sq_nonneg w) p
   have h2 := ofReal_xiShiftedPolynomialWeightedSecond_eq_xiPolyMoment (sq_nonneg w) p
   have hcast :
-      (((xiShiftedPolynomialWeightedMass (w ^ 2) p *
+      (((xiShiftedPolynomialWeightedMass (w ^ (2 : ℕ)) p *
         HTGeometry.momentInner
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
           (X * p) (X * p) -
-        xiShiftedPolynomialWeightedCurrent (w ^ 2) p ^ 2 : ℝ) : ℂ)) =
-      xiPolyMoment p 0 (w ^ 2) * xiPolyMoment p 2 (w ^ 2) -
-        xiPolyMoment p 1 (w ^ 2) ^ 2 := by
+        xiShiftedPolynomialWeightedCurrent (w ^ (2 : ℕ)) p ^ (2 : ℕ) : ℝ) : ℂ)) =
+      xiPolyMoment p 0 (w ^ (2 : ℕ)) * xiPolyMoment p 2 (w ^ (2 : ℕ)) -
+        xiPolyMoment p 1 (w ^ (2 : ℕ)) ^ (2 : ℕ) := by
     push_cast
     rw [h0, h1, h2]
   have hre := congrArg Complex.re hcast
@@ -251,13 +251,13 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticLanding_eq_re_xiPolyTuranMinor
 /-- After admission, frozen mixed landing differentiates to literal bilinear arithmetic source. -/
 theorem hasDerivAt_xiShiftedAdaptiveMixedCompletedLanding_frozenSource
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
-    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+    let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
     HasDerivAt
       (fun y => xiShiftedCompletedMomentAggregate y 1
         (xiShiftedBilinearCrossingCoefficientPacket p Q))
-      (-xiShiftedAdaptiveBilinearCompletedArithmeticSource w p Q) (w ^ 2) := by
+      (-xiShiftedAdaptiveBilinearCompletedArithmeticSource w p Q) (w ^ (2 : ℕ)) := by
   dsimp only
-  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p
+  let Q := xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p
   let c := xiShiftedBilinearCrossingCoefficientPacket p Q
   have h := hasDerivAt_xiShiftedCompletedMomentAggregate
     (sq_pos_of_pos (by linarith : 0 < w)) 1 c
@@ -305,7 +305,7 @@ theorem xiShiftedAdaptiveMixedMomentLanding_eq_turan
     (y : ℝ) (p : Polynomial ℝ) :
     xiShiftedAdaptiveMixedMomentLanding y p =
       xiShiftedPolynomialWeightedMass y p * xiShiftedPolynomialWeightedSecond y p -
-        xiShiftedPolynomialWeightedCurrent y p ^ 2 := by
+        xiShiftedPolynomialWeightedCurrent y p ^ (2 : ℕ) := by
   rw [xiShiftedAdaptiveMixedMomentLanding, xiShiftedPolynomialWeightedSecond]
   exact xiShiftedPolynomialWeightAdaptiveSuccessor_mixedLanding y p
 
@@ -342,54 +342,54 @@ theorem xiShiftedBilinearSource_adaptiveSuccessor_eq
 theorem xiShiftedArithmeticSource_adaptiveSuccessor_eq
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w p
-        (xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p) =
-      xiShiftedPolynomialWeightedMass (w ^ 2) p *
-          xiShiftedPolynomialWeightedSecondSource (w ^ 2) p -
-        xiShiftedPolynomialWeightedCurrent (w ^ 2) p *
-          xiShiftedPolynomialWeightedCurrentSource (w ^ 2) p := by
+        (xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p) =
+      xiShiftedPolynomialWeightedMass (w ^ (2 : ℕ)) p *
+          xiShiftedPolynomialWeightedSecondSource (w ^ (2 : ℕ)) p -
+        xiShiftedPolynomialWeightedCurrent (w ^ (2 : ℕ)) p *
+          xiShiftedPolynomialWeightedCurrentSource (w ^ (2 : ℕ)) p := by
   rw [xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_shear hw]
-  exact xiShiftedBilinearSource_adaptiveSuccessor_eq (w ^ 2) p
+  exact xiShiftedBilinearSource_adaptiveSuccessor_eq (w ^ (2 : ℕ)) p
 
 /-- Actual moving-admission law: derivative is minus arithmetic producer plus connection source. -/
 theorem hasDerivAt_xiShiftedAdaptiveMixedMomentLanding_eq_source_add_connection
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
     HasDerivAt (fun y => xiShiftedAdaptiveMixedMomentLanding y p)
       (-(xiShiftedAdaptiveBilinearCompletedArithmeticSource w p
-          (xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ 2) p) +
-        xiShiftedPolynomialWeightAdmissionConnectionSource (w ^ 2) p)) (w ^ 2) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+          (xiShiftedPolynomialWeightAdaptiveSuccessor (w ^ (2 : ℕ)) p) +
+        xiShiftedPolynomialWeightAdmissionConnectionSource (w ^ (2 : ℕ)) p)) (w ^ (2 : ℕ)) := by
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have hA : HasDerivAt (fun y => xiShiftedPolynomialWeightedMass y p)
-      (-xiShiftedPolynomialWeightedMassSource (w ^ 2) p) (w ^ 2) := by
+      (-xiShiftedPolynomialWeightedMassSource (w ^ (2 : ℕ)) p) (w ^ (2 : ℕ)) := by
     simpa only [xiShiftedPolynomialWeightedMass, HTGeometry.momentInner_def,
       xiShiftedPolynomialWeightedMassSource] using
       hasDerivAt_xiShiftedMomentFunctional_sourceConnection hy (p * p)
   have hB : HasDerivAt (fun y => xiShiftedPolynomialWeightedCurrent y p)
-      (-xiShiftedPolynomialWeightedCurrentSource (w ^ 2) p) (w ^ 2) := by
+      (-xiShiftedPolynomialWeightedCurrentSource (w ^ (2 : ℕ)) p) (w ^ (2 : ℕ)) := by
     simpa only [xiShiftedPolynomialWeightedCurrent, xiShiftedPolynomialWeightedCurrentSource] using
       hasDerivAt_xiShiftedMomentInner_bilinearCrossing_eq_adaptiveShear hy p p
   have hC : HasDerivAt (fun y => xiShiftedPolynomialWeightedSecond y p)
-      (-xiShiftedPolynomialWeightedSecondSource (w ^ 2) p) (w ^ 2) := by
+      (-xiShiftedPolynomialWeightedSecondSource (w ^ (2 : ℕ)) p) (w ^ (2 : ℕ)) := by
     simpa only [xiShiftedPolynomialWeightedSecond, xiShiftedPolynomialWeightedSecondSource] using
       hasDerivAt_xiShiftedMomentInner_bilinearCrossing_eq_adaptiveShear hy (X * p) p
   have hdet := (hA.mul hC).sub (hB.pow 2)
   have hfun : (fun y => xiShiftedAdaptiveMixedMomentLanding y p) =
       (fun y => xiShiftedPolynomialWeightedMass y p * xiShiftedPolynomialWeightedSecond y p -
-        xiShiftedPolynomialWeightedCurrent y p ^ 2) := by
+        xiShiftedPolynomialWeightedCurrent y p ^ (2 : ℕ)) := by
     funext y
     exact xiShiftedAdaptiveMixedMomentLanding_eq_turan y p
   rw [hfun, xiShiftedArithmeticSource_adaptiveSuccessor_eq hw]
   have hderiv :
-      -(xiShiftedPolynomialWeightedMass (w ^ 2) p *
-            xiShiftedPolynomialWeightedSecondSource (w ^ 2) p -
-          xiShiftedPolynomialWeightedCurrent (w ^ 2) p *
-            xiShiftedPolynomialWeightedCurrentSource (w ^ 2) p +
-        xiShiftedPolynomialWeightAdmissionConnectionSource (w ^ 2) p) =
-      -xiShiftedPolynomialWeightedMassSource (w ^ 2) p *
-          xiShiftedPolynomialWeightedSecond (w ^ 2) p +
-        xiShiftedPolynomialWeightedMass (w ^ 2) p *
-          -xiShiftedPolynomialWeightedSecondSource (w ^ 2) p -
-        (2 : ℝ) * xiShiftedPolynomialWeightedCurrent (w ^ 2) p ^ (2 - 1) *
-          -xiShiftedPolynomialWeightedCurrentSource (w ^ 2) p := by
+      -(xiShiftedPolynomialWeightedMass (w ^ (2 : ℕ)) p *
+            xiShiftedPolynomialWeightedSecondSource (w ^ (2 : ℕ)) p -
+          xiShiftedPolynomialWeightedCurrent (w ^ (2 : ℕ)) p *
+            xiShiftedPolynomialWeightedCurrentSource (w ^ (2 : ℕ)) p +
+        xiShiftedPolynomialWeightAdmissionConnectionSource (w ^ (2 : ℕ)) p) =
+      -xiShiftedPolynomialWeightedMassSource (w ^ (2 : ℕ)) p *
+          xiShiftedPolynomialWeightedSecond (w ^ (2 : ℕ)) p +
+        xiShiftedPolynomialWeightedMass (w ^ (2 : ℕ)) p *
+          -xiShiftedPolynomialWeightedSecondSource (w ^ (2 : ℕ)) p -
+        (2 : ℝ) * xiShiftedPolynomialWeightedCurrent (w ^ (2 : ℕ)) p ^ (2 - 1) *
+          -xiShiftedPolynomialWeightedCurrentSource (w ^ (2 : ℕ)) p := by
     simp only [xiShiftedPolynomialWeightAdmissionConnectionSource]
     ring
   rw [hderiv]

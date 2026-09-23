@@ -145,7 +145,7 @@ theorem hbXiPeierlsWeightedDot_single
 def HBXiPeierlsUnitSourceFEWeightWard
     (w : XiZeroCopy → ℂ) : Prop :=
   ∀ q : XiZeroCopy,
-    w (xiZeroCopyReflectEquiv q) * hbXiPeierlsUnitSourceFECocycle q ^ 2 =
+    w (xiZeroCopyReflectEquiv q) * hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) =
       (starRingEnd ℂ) (w q)
 
 /-- The orbitwise coefficient law is sufficient for full finite-packet Ward covariance. -/
@@ -169,7 +169,7 @@ theorem hbXiPeierlsWeightedDot_packetTransport_of_weightWard
         xiZeroCopyReflectEquiv_apply_apply, map_mul, map_mul]
       calc
         _ = (w (xiZeroCopyReflectEquiv q) *
-              hbXiPeierlsUnitSourceFECocycle q ^ 2) *
+              hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ)) *
               (starRingEnd ℂ) c * (starRingEnd ℂ) (y q) := by ring
         _ = _ := by rw [hw q]
 
@@ -210,7 +210,7 @@ theorem hbXiPeierlsUnitSourceFETransportedWeight_weightWard :
   calc
     (starRingEnd ℂ)
           (hbXiPeierlsUnitSourceFECocycle (xiZeroCopyReflectEquiv q)) *
-        hbXiPeierlsUnitSourceFECocycle q ^ 2 =
+        hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) =
       ((starRingEnd ℂ)
           (hbXiPeierlsUnitSourceFECocycle (xiZeroCopyReflectEquiv q)) *
         hbXiPeierlsUnitSourceFECocycle q) *
@@ -241,7 +241,7 @@ theorem hbXiPeierlsUnitSourceFETransportedWeight_eq_one_iff
   · intro hweight
     have hkappa := congrArg (starRingEnd ℂ) hweight
     simp only [hbXiPeierlsUnitSourceFETransportedWeight, map_one] at hkappa
-    have hsquare : hbXiPeierlsUnitSourceFECocycle q ^ 2 = 1 := by
+    have hsquare : hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) = 1 := by
       rw [show hbXiPeierlsUnitSourceFECocycle q = 1 by simpa using hkappa]
       norm_num
     exact (hbXiPeierlsUnitSourceFECocycle_sq_eq_one_iff q).mp hsquare

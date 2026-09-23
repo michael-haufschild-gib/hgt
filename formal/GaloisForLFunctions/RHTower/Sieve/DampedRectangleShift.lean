@@ -27,7 +27,7 @@ theorem one_sub_cpow_ne_zero_of_pos_re {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 
   have hp1 : 1 ≤ p := by omega
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hnorm : ‖(p : ℂ) ^ (-s)‖ = (p : ℝ) ^ (-s.re) := by
-    rw [RHTower.norm_natCast_cpow hp1, Complex.neg_re]
+    rw [RHTower.norm_natCast_cpow_zetaVerticalLineBound hp1, Complex.neg_re]
   have hlt : (p : ℝ) ^ (-s.re) < 1 :=
     Real.rpow_lt_one_of_one_lt_of_neg (by linarith) (by linarith)
   intro hcon

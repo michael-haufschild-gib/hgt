@@ -6,13 +6,13 @@ import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
 
 The unsigned reciprocal-Gamma cell envelope diverges because it squares each quantile displacement
 before prime and polar phases are assembled.  This module keeps the completed carrier coherent.
-For the literal Fourier density `|g(xi)|^2` of an actual form-domain head it proves
+For the literal Fourier density `|g(xi)|^(2 : ℕ)` of an actual form-domain head it proves
 
-`source(a,u) = integral W_a(2 pi xi) |g(xi)|^2 dxi`,
+`source(a,u) = integral W_a(2 pi xi) |g(xi)|^(2 : ℕ) dxi`,
 
 and, after removing the retained Gamma scalar,
 
-`signedProducer(a,u) = integral (W_a(2 pi xi) - 2 gammaRate(0)) |g(xi)|^2 dxi`.
+`signedProducer(a,u) = integral (W_a(2 pi xi) - 2 gammaRate(0)) |g(xi)|^(2 : ℕ) dxi`.
 
 Here `W_a` is the corrected finite-aperture CCM symbol.  Prime atoms, polar continuum, and Gamma
 multiplier are combined pointwise before integration.  The proof uses the actual head throughout;
@@ -161,7 +161,7 @@ lemma integrable_ccmActualHeadPrimeCosineDensity (n : ℕ) (g : SoninL2) :
         Real.cos (2 * Real.pi * Real.log n * xi) * ‖g xi‖ ^ 2) := by
   have hsq : Integrable (fun xi : ℝ => ‖g xi‖ ^ 2) :=
     (MeasureTheory.Lp.memLp g).integrable_norm_pow (by norm_num)
-  have hw : 0 ≤ criticalMellinAtomWeight n := criticalMellinAtomWeight_nonneg n
+  have hw : 0 ≤ criticalMellinAtomWeight n := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have h := Integrable.mul_bdd (c := criticalMellinAtomWeight n) hsq
     (by
       exact ((by fun_prop : Continuous fun xi : ℝ =>

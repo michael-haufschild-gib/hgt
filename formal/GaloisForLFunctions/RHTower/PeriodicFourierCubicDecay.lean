@@ -28,7 +28,7 @@ theorem norm_fourierCoeffOn_le_of_periodic_three
     (hper : f b = f a) (hper' : f' b = f' a) (hper'' : f'' b = f'' a)
     {n : ℤ} (hn : n ≠ 0) :
     ‖fourierCoeffOn hab f n‖ ≤
-      ((b - a) / (2 * Real.pi)) ^ 3 * C * (1 / |(n : ℝ)| ^ 3) := by
+      ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * C * (1 / |(n : ℝ)| ^ (3 : ℕ)) := by
   have hba : (0 : ℝ) < b - a := by linarith
   have hnabs : (0 : ℝ) < |(n : ℝ)| := by
     exact abs_pos.mpr (Int.cast_ne_zero.mpr hn)
@@ -40,24 +40,24 @@ theorem norm_fourierCoeffOn_le_of_periodic_three
     le_trans (norm_nonneg (f''' a)) (hf'''b a)
   have hchain :
       ‖fourierCoeffOn hab f n‖ =
-        ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ 3 *
+        ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ (3 : ℕ) *
           ‖fourierCoeffOn hab f''' n‖ := by
     rw [hstep1, hstep2, hstep3]
     ring
   have hfactor :
-      ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ 3 =
-        ((b - a) / (2 * Real.pi)) ^ 3 * (1 / |(n : ℝ)| ^ 3) := by
+      ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ (3 : ℕ) =
+        ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * (1 / |(n : ℝ)| ^ (3 : ℕ)) := by
     field_simp [Real.pi_ne_zero, ne_of_gt hnabs]
   rw [hchain, hfactor]
   have hnonneg :
-      0 ≤ ((b - a) / (2 * Real.pi)) ^ 3 * (1 / |(n : ℝ)| ^ 3) := by
+      0 ≤ ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * (1 / |(n : ℝ)| ^ (3 : ℕ)) := by
     positivity
   calc
-    ((b - a) / (2 * Real.pi)) ^ 3 * (1 / |(n : ℝ)| ^ 3) *
+    ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * (1 / |(n : ℝ)| ^ (3 : ℕ)) *
         ‖fourierCoeffOn hab f''' n‖
-        ≤ ((b - a) / (2 * Real.pi)) ^ 3 * (1 / |(n : ℝ)| ^ 3) * C :=
+        ≤ ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * (1 / |(n : ℝ)| ^ (3 : ℕ)) * C :=
       mul_le_mul_of_nonneg_left hbnd hnonneg
-    _ = ((b - a) / (2 * Real.pi)) ^ 3 * C * (1 / |(n : ℝ)| ^ 3) := by
+    _ = ((b - a) / (2 * Real.pi)) ^ (3 : ℕ) * C * (1 / |(n : ℝ)| ^ (3 : ℕ)) := by
       ring
 
 end GaloisForLFunctions.RHTower

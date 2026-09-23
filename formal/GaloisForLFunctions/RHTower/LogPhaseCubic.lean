@@ -115,10 +115,10 @@ theorem hasDerivAt_logRemainder {v : ℝ} (hv : -1 < v) :
   ring
 
 /-- The upper comparison function `v² + (log(1+v) - v)`. -/
-private def logUpper (v : ℝ) : ℝ := v ^ 2 + logRemainder v
+private def logUpper (v : ℝ) : ℝ := v ^ (2 : ℕ) + logRemainder v
 
 /-- The lower comparison function `v² - (log(1+v) - v)`. -/
-private def logLower (v : ℝ) : ℝ := v ^ 2 - logRemainder v
+private def logLower (v : ℝ) : ℝ := v ^ (2 : ℕ) - logRemainder v
 
 private theorem hasDerivAt_logUpper {v : ℝ} (hv : -1 < v) :
     HasDerivAt logUpper (v * (1 + 2 * v) / (1 + v)) v := by
@@ -138,7 +138,7 @@ private theorem hasDerivAt_logLower {v : ℝ} (hv : -1 < v) :
 
 /-- **The quadratic bound on the logarithmic remainder.**  `|log(1+v) - v| ≤ v²` for `|v| ≤ 1/2`. -/
 theorem abs_logRemainder_le_sq {v : ℝ} (h1 : -(1/2 : ℝ) ≤ v) (h2 : v ≤ 1/2) :
-    |logRemainder v| ≤ v ^ 2 := by
+    |logRemainder v| ≤ v ^ (2 : ℕ) := by
   have hv : -1 < v := by linarith
   have hup : 0 ≤ logUpper v := by
     rcases le_or_gt 0 v with h0 | h0
@@ -175,7 +175,7 @@ theorem abs_logRemainder_le_sq {v : ℝ} (h1 : -(1/2 : ℝ) ≤ v) (h2 : v ≤ 1
 /-! ### The cubic remainder of the profile -/
 
 /-- The second-order remainder of the universal profile. -/
-def logPhaseCubicRemainder (v : ℝ) : ℝ := -logPhaseProfile v - v ^ 2 / 2
+def logPhaseCubicRemainder (v : ℝ) : ℝ := -logPhaseProfile v - v ^ (2 : ℕ) / 2
 
 @[simp] theorem logPhaseCubicRemainder_zero : logPhaseCubicRemainder 0 = 0 := by
   simp [logPhaseCubicRemainder]
@@ -183,26 +183,26 @@ def logPhaseCubicRemainder (v : ℝ) : ℝ := -logPhaseProfile v - v ^ 2 / 2
 theorem hasDerivAt_logPhaseCubicRemainder {v : ℝ} (hv : -1 < v) :
     HasDerivAt logPhaseCubicRemainder (logRemainder v) v := by
   have h1 := hasDerivAt_neg_logPhaseProfile hv
-  have h2 : HasDerivAt (fun x : ℝ => x ^ 2 / 2) (2 * v / 2) v := by
+  have h2 : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) / 2) (2 * v / 2) v := by
     simpa using ((hasDerivAt_pow 2 v).div_const 2)
   have h := h1.sub h2
   refine h.congr_deriv ?_
   simp [logRemainder]
 
-private def cubicUpper (v : ℝ) : ℝ := v ^ 3 / 3 + logPhaseCubicRemainder v
-private def cubicLower (v : ℝ) : ℝ := v ^ 3 / 3 - logPhaseCubicRemainder v
+private def cubicUpper (v : ℝ) : ℝ := v ^ (3 : ℕ) / 3 + logPhaseCubicRemainder v
+private def cubicLower (v : ℝ) : ℝ := v ^ (3 : ℕ) / 3 - logPhaseCubicRemainder v
 
 private theorem hasDerivAt_cubicUpper {v : ℝ} (hv : -1 < v) :
-    HasDerivAt cubicUpper (v ^ 2 + logRemainder v) v := by
-  have h1 : HasDerivAt (fun x : ℝ => x ^ 3 / 3) (3 * v ^ 2 / 3) v := by
+    HasDerivAt cubicUpper (v ^ (2 : ℕ) + logRemainder v) v := by
+  have h1 : HasDerivAt (fun x : ℝ => x ^ (3 : ℕ) / 3) (3 * v ^ (2 : ℕ) / 3) v := by
     simpa using ((hasDerivAt_pow 3 v).div_const 3)
   have h := h1.add (hasDerivAt_logPhaseCubicRemainder hv)
   refine h.congr_deriv ?_
   ring
 
 private theorem hasDerivAt_cubicLower {v : ℝ} (hv : -1 < v) :
-    HasDerivAt cubicLower (v ^ 2 - logRemainder v) v := by
-  have h1 : HasDerivAt (fun x : ℝ => x ^ 3 / 3) (3 * v ^ 2 / 3) v := by
+    HasDerivAt cubicLower (v ^ (2 : ℕ) - logRemainder v) v := by
+  have h1 : HasDerivAt (fun x : ℝ => x ^ (3 : ℕ) / 3) (3 * v ^ (2 : ℕ) / 3) v := by
     simpa using ((hasDerivAt_pow 3 v).div_const 3)
   have h := h1.sub (hasDerivAt_logPhaseCubicRemainder hv)
   refine h.congr_deriv ?_
@@ -210,23 +210,23 @@ private theorem hasDerivAt_cubicLower {v : ℝ} (hv : -1 < v) :
 
 /-- **The cubic bound.**  `|-ψ(v) - v²/2| ≤ |v|³/3` for `|v| ≤ 1/2`. -/
 theorem abs_logPhaseCubicRemainder_le {v : ℝ} (h1 : -(1/2 : ℝ) ≤ v) (h2 : v ≤ 1/2) :
-    |logPhaseCubicRemainder v| ≤ |v| ^ 3 / 3 := by
-  have hUderiv : ∀ x : ℝ, -(1/2 : ℝ) < x → x < 1/2 → 0 ≤ x ^ 2 + logRemainder x := by
+    |logPhaseCubicRemainder v| ≤ |v| ^ (3 : ℕ) / 3 := by
+  have hUderiv : ∀ x : ℝ, -(1/2 : ℝ) < x → x < 1/2 → 0 ≤ x ^ (2 : ℕ) + logRemainder x := by
     intro x hx1 hx2
     have h := abs_le.mp (abs_logRemainder_le_sq hx1.le hx2.le)
     linarith [h.1]
-  have hLderiv : ∀ x : ℝ, -(1/2 : ℝ) < x → x < 1/2 → 0 ≤ x ^ 2 - logRemainder x := by
+  have hLderiv : ∀ x : ℝ, -(1/2 : ℝ) < x → x < 1/2 → 0 ≤ x ^ (2 : ℕ) - logRemainder x := by
     intro x hx1 hx2
     have h := abs_le.mp (abs_logRemainder_le_sq hx1.le hx2.le)
     linarith [h.2]
   rcases le_or_gt 0 v with h0 | h0
   · have hU : 0 ≤ cubicUpper v :=
-      nonneg_of_hasDerivAt_right (b := 1/2) (D := fun x => x ^ 2 + logRemainder x)
+      nonneg_of_hasDerivAt_right (b := 1/2) (D := fun x => x ^ (2 : ℕ) + logRemainder x)
         (by norm_num) (by simp [cubicUpper])
         (fun x hx => hasDerivAt_cubicUpper (by linarith [hx.1]))
         (fun x hx => hUderiv x (by linarith [hx.1]) hx.2) v ⟨h0, h2⟩
     have hL : 0 ≤ cubicLower v :=
-      nonneg_of_hasDerivAt_right (b := 1/2) (D := fun x => x ^ 2 - logRemainder x)
+      nonneg_of_hasDerivAt_right (b := 1/2) (D := fun x => x ^ (2 : ℕ) - logRemainder x)
         (by norm_num) (by simp [cubicLower])
         (fun x hx => hasDerivAt_cubicLower (by linarith [hx.1]))
         (fun x hx => hLderiv x (by linarith [hx.1]) hx.2) v ⟨h0, h2⟩
@@ -234,12 +234,12 @@ theorem abs_logPhaseCubicRemainder_le {v : ℝ} (h1 : -(1/2 : ℝ) ≤ v) (h2 : 
     rw [abs_of_nonneg h0, abs_le]
     constructor <;> linarith
   · have hU : cubicUpper v ≤ 0 :=
-      nonpos_of_hasDerivAt_left (a := -(1/2 : ℝ)) (D := fun x => x ^ 2 + logRemainder x)
+      nonpos_of_hasDerivAt_left (a := -(1/2 : ℝ)) (D := fun x => x ^ (2 : ℕ) + logRemainder x)
         (by norm_num) (by simp [cubicUpper])
         (fun x hx => hasDerivAt_cubicUpper (by linarith [hx.1]))
         (fun x hx => hUderiv x hx.1 (by linarith [hx.2])) v ⟨h1, h0.le⟩
     have hL : cubicLower v ≤ 0 :=
-      nonpos_of_hasDerivAt_left (a := -(1/2 : ℝ)) (D := fun x => x ^ 2 - logRemainder x)
+      nonpos_of_hasDerivAt_left (a := -(1/2 : ℝ)) (D := fun x => x ^ (2 : ℕ) - logRemainder x)
         (by norm_num) (by simp [cubicLower])
         (fun x hx => hasDerivAt_cubicLower (by linarith [hx.1]))
         (fun x hx => hLderiv x hx.1 (by linarith [hx.2])) v ⟨h1, h0.le⟩

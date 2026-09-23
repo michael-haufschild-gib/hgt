@@ -71,22 +71,22 @@ theorem planar_all_sobolev_fourier_moments (u : 𝓢'(ℂ,ℂ))
     convert hu (2*n+2) using 1; push_cast; ring
   obtain ⟨w,hw⟩ := hb.fourier_memL1 (by norm_num [Complex.finrank_real_complex])
   rw [fourier_besselPotential_eq_smulLeftCLM_fourier_apply,hv] at hw
-  have he : smulLeftCLM ℂ (fun z : ℂ => (((1+‖z‖^2)^n:ℝ):ℂ))
+  have he : smulLeftCLM ℂ (fun z : ℂ => (((1+‖z‖^(2 : ℕ))^n:ℝ):ℂ))
       (v : 𝓢'(ℂ,ℂ)) = (w : 𝓢'(ℂ,ℂ)) := by
     simpa only [mul_div_cancel_left₀ (n:ℝ) (show (2:ℝ) ≠ 0 by norm_num),
       Real.rpow_natCast] using hw
-  have ha : (fun z : ℂ => (((1+‖z‖^2)^n:ℝ):ℂ)).HasTemperateGrowth := by fun_prop
+  have ha : (fun z : ℂ => (((1+‖z‖^(2 : ℕ))^n:ℝ):ℂ)).HasTemperateGrowth := by fun_prop
   have hae := planar_multiplier_ae v w _ ha he
-  have hi : Integrable (fun z : ℂ => (((1+‖z‖^2)^n:ℝ):ℂ) * v z) :=
+  have hi : Integrable (fun z : ℂ => (((1+‖z‖^(2 : ℕ))^n:ℝ):ℂ) * v z) :=
     (L1.integrable_coeFn w).congr hae.symm
-  have hnorm : Integrable (fun z : ℂ => (1+‖z‖^2)^n * ‖v z‖) := by
+  have hnorm : Integrable (fun z : ℂ => (1+‖z‖^(2 : ℕ))^n * ‖v z‖) := by
     convert hi.norm using 1
     ext z
     rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (by positivity)]
   apply hnorm.mono'
     ((continuous_norm.pow n).aestronglyMeasurable.mul (Lp.aestronglyMeasurable v).norm)
   filter_upwards with z
-  change ‖‖z‖^n * ‖v z‖‖ ≤ (1+‖z‖^2)^n * ‖v z‖
+  change ‖‖z‖^n * ‖v z‖‖ ≤ (1+‖z‖^(2 : ℕ))^n * ‖v z‖
   rw [Real.norm_eq_abs,abs_of_nonneg (by positivity)]
   gcongr
   nlinarith [sq_nonneg (‖z‖-1)]

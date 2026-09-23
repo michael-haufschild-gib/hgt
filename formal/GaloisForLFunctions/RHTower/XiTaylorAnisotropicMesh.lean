@@ -3,9 +3,9 @@ import Mathlib
 /-!
 # An anisotropic Gaussian-rational mesh for transverse pole detection
 
-The mesh has horizontal spacing `1/n` and vertical spacing `1/n^2`.  For every complex target
+The mesh has horizontal spacing `1/n` and vertical spacing `1/n^(2 : ℕ)`.  For every complex target
 `sigma`, an explicit ceiling/floor choice produces a mesh point whose horizontal displacement is
-between `1/n` and `2/n`, while its vertical displacement has norm below `1/n^2`.
+between `1/n` and `2/n`, while its vertical displacement has norm below `1/n^(2 : ℕ)`.
 
 This geometry is independent of Xi.  Its role in the top-down RH chain is to approach a hypothetical
 left-half-strip source pole from a uniformly positive transverse direction without making any
@@ -18,16 +18,16 @@ namespace RHTower
 
 noncomputable section
 
-/-- The `1/n` by `1/n^2` Gaussian-rational mesh. -/
+/-- The `1/n` by `1/n^(2 : ℕ)` Gaussian-rational mesh. -/
 def xiTaylorAnisotropicMeshPoint (n : ℕ) (a b : ℤ) : ℂ :=
   Complex.ofReal ((a : ℝ) / (n : ℝ)) +
-    Complex.ofReal ((b : ℝ) / (n : ℝ) ^ 2) * I
+    Complex.ofReal ((b : ℝ) / (n : ℝ) ^ (2 : ℕ)) * I
 
 /-- The explicit mesh point immediately to the right of `sigma`, with a finer vertical floor. -/
 def xiTaylorAnisotropicRightApprox (sigma : ℂ) (n : ℕ) : ℂ :=
   xiTaylorAnisotropicMeshPoint n
     (Int.ceil ((n : ℝ) * sigma.re) + 1)
-    (Int.floor ((n : ℝ) ^ 2 * sigma.im))
+    (Int.floor ((n : ℝ) ^ (2 : ℕ) * sigma.im))
 
 @[simp] theorem xiTaylorAnisotropicMeshPoint_re (n : ℕ) (a b : ℤ) :
     (xiTaylorAnisotropicMeshPoint n a b).re = (a : ℝ) / (n : ℝ) := by
@@ -36,7 +36,7 @@ def xiTaylorAnisotropicRightApprox (sigma : ℂ) (n : ℕ) : ℂ :=
   ring
 
 @[simp] theorem xiTaylorAnisotropicMeshPoint_im (n : ℕ) (a b : ℤ) :
-    (xiTaylorAnisotropicMeshPoint n a b).im = (b : ℝ) / (n : ℝ) ^ 2 := by
+    (xiTaylorAnisotropicMeshPoint n a b).im = (b : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
   rw [xiTaylorAnisotropicMeshPoint, add_im, mul_im, Complex.ofReal_re,
     Complex.ofReal_im, I_re, I_im]
   ring
@@ -65,34 +65,34 @@ theorem xiTaylorAnisotropicRightApprox_re_sub_bounds
     push_cast
     linarith
 
-/-- The vertical error of the chosen mesh point is strictly smaller than `1/n^2`. -/
+/-- The vertical error of the chosen mesh point is strictly smaller than `1/n^(2 : ℕ)`. -/
 theorem abs_xiTaylorAnisotropicRightApprox_im_sub_lt
     (sigma : ℂ) {n : ℕ} (hn : 0 < n) :
     |(xiTaylorAnisotropicRightApprox sigma n - sigma).im| <
-      1 / (n : ℝ) ^ 2 := by
+      1 / (n : ℝ) ^ (2 : ℕ) := by
   have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
-  have hn2 : (0 : ℝ) < (n : ℝ) ^ 2 := sq_pos_of_pos hnR
-  have hlo := Int.floor_le ((n : ℝ) ^ 2 * sigma.im)
-  have hhi := Int.lt_floor_add_one ((n : ℝ) ^ 2 * sigma.im)
+  have hn2 : (0 : ℝ) < (n : ℝ) ^ (2 : ℕ) := sq_pos_of_pos hnR
+  have hlo := Int.floor_le ((n : ℝ) ^ (2 : ℕ) * sigma.im)
+  have hhi := Int.lt_floor_add_one ((n : ℝ) ^ (2 : ℕ) * sigma.im)
   rw [xiTaylorAnisotropicRightApprox, sub_im,
     xiTaylorAnisotropicMeshPoint_im]
   have hrepr :
-      ((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) / (n : ℝ) ^ 2 - sigma.im =
-        ((((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) -
-          (n : ℝ) ^ 2 * sigma.im) / (n : ℝ) ^ 2) := by
+      ((Int.floor ((n : ℝ) ^ (2 : ℕ) * sigma.im) : ℤ) : ℝ) / (n : ℝ) ^ (2 : ℕ) - sigma.im =
+        ((((Int.floor ((n : ℝ) ^ (2 : ℕ) * sigma.im) : ℤ) : ℝ) -
+          (n : ℝ) ^ (2 : ℕ) * sigma.im) / (n : ℝ) ^ (2 : ℕ)) := by
     field_simp
   rw [hrepr]
   have hnumLow : (-1 : ℝ) <
-      ((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) -
-        (n : ℝ) ^ 2 * sigma.im := by
+      ((Int.floor ((n : ℝ) ^ (2 : ℕ) * sigma.im) : ℤ) : ℝ) -
+        (n : ℝ) ^ (2 : ℕ) * sigma.im := by
     linarith
   have hnumHigh :
-      ((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) -
-        (n : ℝ) ^ 2 * sigma.im ≤ 0 := by
+      ((Int.floor ((n : ℝ) ^ (2 : ℕ) * sigma.im) : ℤ) : ℝ) -
+        (n : ℝ) ^ (2 : ℕ) * sigma.im ≤ 0 := by
     linarith
   rw [abs_lt]
   constructor
-  · rw [show -(1 / (n : ℝ) ^ 2) = (-1 : ℝ) / (n : ℝ) ^ 2 by ring,
+  · rw [show -(1 / (n : ℝ) ^ (2 : ℕ)) = (-1 : ℝ) / (n : ℝ) ^ (2 : ℕ) by ring,
       div_lt_div_iff_of_pos_right hn2]
     exact hnumLow
   · rw [div_lt_div_iff_of_pos_right hn2]
@@ -105,7 +105,7 @@ theorem nat_div_five_lt_inv_re_of_anisotropic
     {delta : ℂ} {n : ℕ} (hn : 0 < n)
     (hxlo : 1 / (n : ℝ) ≤ delta.re)
     (hxhi : delta.re < 2 / (n : ℝ))
-    (hy : |delta.im| < 1 / (n : ℝ) ^ 2) :
+    (hy : |delta.im| < 1 / (n : ℝ) ^ (2 : ℕ)) :
     (n : ℝ) / 5 < delta⁻¹.re := by
   have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   let u : ℝ := 1 / (n : ℝ)
@@ -115,16 +115,16 @@ theorem nat_div_five_lt_inv_re_of_anisotropic
     rw [div_le_one hnR]
     exact_mod_cast hn
   have hx0 : 0 < delta.re := lt_of_lt_of_le hu hxlo
-  have hx2 : delta.re ^ 2 < (2 * u) ^ 2 := by
+  have hx2 : delta.re ^ (2 : ℕ) < (2 * u) ^ (2 : ℕ) := by
     apply (sq_lt_sq₀ hx0.le (by positivity)).2
     simpa [u, div_eq_mul_inv] using hxhi
-  have hy2 : delta.im ^ 2 < (u ^ 2) ^ 2 := by
+  have hy2 : delta.im ^ (2 : ℕ) < (u ^ (2 : ℕ)) ^ (2 : ℕ) := by
     have h := (sq_lt_sq₀ (abs_nonneg delta.im) (sq_nonneg u)).2
     have habs2 := h (by simpa [u, div_pow] using hy)
     rwa [sq_abs] at habs2
-  have hu4 : u ^ 4 ≤ u ^ 2 := by
-    nlinarith [sq_nonneg u, sq_nonneg (u ^ 2 - u)]
-  have hnorm : Complex.normSq delta < 5 * u ^ 2 := by
+  have hu4 : u ^ (4 : ℕ) ≤ u ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg u, sq_nonneg (u ^ (2 : ℕ) - u)]
+  have hnorm : Complex.normSq delta < 5 * u ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     nlinarith
   have hnormPos : 0 < Complex.normSq delta := by
@@ -133,7 +133,7 @@ theorem nat_div_five_lt_inv_re_of_anisotropic
   rw [Complex.inv_re, lt_div_iff₀ hnormPos]
   calc
     (n : ℝ) / 5 * Complex.normSq delta <
-        (n : ℝ) / 5 * (5 * u ^ 2) := by
+        (n : ℝ) / 5 * (5 * u ^ (2 : ℕ)) := by
       exact mul_lt_mul_of_pos_left hnorm (by positivity)
     _ = u := by
       dsimp [u]
@@ -172,7 +172,7 @@ theorem tendsto_xiTaylorAnisotropicRightApprox_succ
     have hN_one : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
     have hre := xiTaylorAnisotropicRightApprox_re_sub_bounds sigma hN
     have him := abs_xiTaylorAnisotropicRightApprox_im_sub_lt sigma hN
-    have hinvSq : 1 / (N : ℝ) ^ 2 ≤ 1 / (N : ℝ) := by
+    have hinvSq : 1 / (N : ℝ) ^ (2 : ℕ) ≤ 1 / (N : ℝ) := by
       apply one_div_le_one_div_of_le hNR
       nlinarith
     have hreNonneg : 0 ≤ (xiTaylorAnisotropicRightApprox sigma N - sigma).re :=

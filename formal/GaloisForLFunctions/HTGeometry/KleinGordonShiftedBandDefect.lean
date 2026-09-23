@@ -30,16 +30,16 @@ variable {v : E → ℝ} {b : ℝ}
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **Below a fixed frequency the shifted frequency is bounded.** -/
 theorem kgShiftedFreq_sq_le (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) {R : ℝ} {ξ : E}
-    (hξ : ‖ξ‖ ≤ R) : kgShiftedFreq v ξ ^ 2 ≤ 1 + R ^ 2 + b := by
+    (hξ : ‖ξ‖ ≤ R) : kgShiftedFreq v ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) + b := by
   rw [kgShiftedFreq_sq hb1 hvb ξ]
-  have hfreq : kgFreq ξ ^ 2 ≤ 1 + R ^ 2 := by
+  have hfreq : kgFreq ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) := by
     rw [kgFreq, Real.sq_sqrt (by positivity)]
     nlinarith [norm_nonneg ξ]
   have hv : v ξ ≤ b := le_of_abs_le (hvb ξ)
   linarith
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem band_bound_nonneg (hb0 : 0 ≤ b) (R : ℝ) : (0 : ℝ) ≤ 1 + R ^ 2 + b := by
+theorem band_bound_nonneg (hb0 : 0 ≤ b) (R : ℝ) : (0 : ℝ) ≤ 1 + R ^ (2 : ℕ) + b := by
   nlinarith [sq_nonneg R]
 
 /-! ## The cosine defect -/
@@ -56,20 +56,20 @@ theorem measurable_kgShiftedCosDefectLow (hv : Measurable v) (τ R : ℝ) :
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem norm_kgShiftedCosDefectLow_le (hb0 : 0 ≤ b) (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b)
     (τ R : ℝ) (ξ : E) :
-    ‖kgShiftedCosDefectLow v τ R ξ‖ ≤ τ ^ 2 * (1 + R ^ 2 + b) / 2 := by
+    ‖kgShiftedCosDefectLow v τ R ξ‖ ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 := by
   have hband := band_bound_nonneg hb0 R
-  have hB0 : (0 : ℝ) ≤ τ ^ 2 * (1 + R ^ 2 + b) / 2 :=
+  have hB0 : (0 : ℝ) ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 :=
     div_nonneg (mul_nonneg (sq_nonneg τ) hband) (by norm_num)
   rw [kgShiftedCosDefectLow, kgLowPass]
   split
   · rename_i hξ
     rw [mul_one, kgShiftedCos, show ((1 : ℂ)) = ((1 : ℝ) : ℂ) by norm_num,
       ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs]
-    have h1 : |Real.cos (τ * kgShiftedFreq v ξ) - 1| ≤ (τ * kgShiftedFreq v ξ) ^ 2 / 2 :=
+    have h1 : |Real.cos (τ * kgShiftedFreq v ξ) - 1| ≤ (τ * kgShiftedFreq v ξ) ^ (2 : ℕ) / 2 :=
       abs_cos_sub_one_le _
-    have h2 : (τ * kgShiftedFreq v ξ) ^ 2 / 2 = τ ^ 2 * kgShiftedFreq v ξ ^ 2 / 2 := by ring
-    have h3 : kgShiftedFreq v ξ ^ 2 ≤ 1 + R ^ 2 + b := kgShiftedFreq_sq_le hb1 hvb hξ
-    have h4 : τ ^ 2 * kgShiftedFreq v ξ ^ 2 / 2 ≤ τ ^ 2 * (1 + R ^ 2 + b) / 2 := by
+    have h2 : (τ * kgShiftedFreq v ξ) ^ (2 : ℕ) / 2 = τ ^ (2 : ℕ) * kgShiftedFreq v ξ ^ (2 : ℕ) / 2 := by ring
+    have h3 : kgShiftedFreq v ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) + b := kgShiftedFreq_sq_le hb1 hvb hξ
+    have h4 : τ ^ (2 : ℕ) * kgShiftedFreq v ξ ^ (2 : ℕ) / 2 ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 := by
       nlinarith [sq_nonneg τ]
     rw [h2] at h1
     linarith
@@ -80,9 +80,9 @@ set_option maxHeartbeats 1000000 in
 theorem norm_kgShiftedCosOp_lowPass_sub_le (hv : Measurable v) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hvb : ∀ ξ : E, |v ξ| ≤ b) (τ R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     ‖kgShiftedCosOp hv τ (kgLowPassOp R x) - kgLowPassOp R x‖
-      ≤ τ ^ 2 * (1 + R ^ 2 + b) / 2 * ‖x‖ := by
+      ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 * ‖x‖ := by
   have hband := band_bound_nonneg hb0 R
-  have hB0 : (0 : ℝ) ≤ τ ^ 2 * (1 + R ^ 2 + b) / 2 :=
+  have hB0 : (0 : ℝ) ≤ τ ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 :=
     div_nonneg (mul_nonneg (sq_nonneg τ) hband) (by norm_num)
   have hprod : Measurable fun ξ : E => kgShiftedCos v τ ξ * kgLowPass R ξ :=
     (measurable_kgShiftedCos hv τ).mul (measurable_kgLowPass R)
@@ -124,9 +124,9 @@ theorem measurable_kgShiftedSinDefectLow (hv : Measurable v) (τ R : ℝ) :
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem norm_kgShiftedSinDefectLow_le (hb0 : 0 ≤ b) (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b)
     (τ R : ℝ) (ξ : E) :
-    ‖kgShiftedSinDefectLow v τ R ξ‖ ≤ |τ| ^ 3 * (1 + R ^ 2 + b) / 6 := by
+    ‖kgShiftedSinDefectLow v τ R ξ‖ ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 := by
   have hband := band_bound_nonneg hb0 R
-  have hB0 : (0 : ℝ) ≤ |τ| ^ 3 * (1 + R ^ 2 + b) / 6 :=
+  have hB0 : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 :=
     div_nonneg (mul_nonneg (pow_nonneg (abs_nonneg τ) 3) hband) (by norm_num)
   rw [kgShiftedSinDefectLow, kgLowPass]
   split
@@ -139,19 +139,19 @@ theorem norm_kgShiftedSinDefectLow_le (hb0 : 0 ≤ b) (hb1 : b < 1) (hvb : ∀ �
       field_simp
     rw [hrw, abs_div, abs_of_pos hpos, div_le_iff₀ hpos]
     have h1 : |Real.sin (τ * kgShiftedFreq v ξ) - τ * kgShiftedFreq v ξ|
-        ≤ |τ * kgShiftedFreq v ξ| ^ 3 / 6 := abs_sin_sub_self_le _
-    have habs : |τ * kgShiftedFreq v ξ| ^ 3 = |τ| ^ 3 * kgShiftedFreq v ξ ^ 3 := by
+        ≤ |τ * kgShiftedFreq v ξ| ^ (3 : ℕ) / 6 := abs_sin_sub_self_le _
+    have habs : |τ * kgShiftedFreq v ξ| ^ (3 : ℕ) = |τ| ^ (3 : ℕ) * kgShiftedFreq v ξ ^ (3 : ℕ) := by
       rw [abs_mul, abs_of_pos hpos, mul_pow]
-    have h3 : kgShiftedFreq v ξ ^ 2 ≤ 1 + R ^ 2 + b := kgShiftedFreq_sq_le hb1 hvb hξ
+    have h3 : kgShiftedFreq v ξ ^ (2 : ℕ) ≤ 1 + R ^ (2 : ℕ) + b := kgShiftedFreq_sq_le hb1 hvb hξ
     rw [habs] at h1
-    have hstep : kgShiftedFreq v ξ ^ 2 * kgShiftedFreq v ξ
-        ≤ (1 + R ^ 2 + b) * kgShiftedFreq v ξ := mul_le_mul_of_nonneg_right h3 hpos.le
-    have habs3 : (0 : ℝ) ≤ |τ| ^ 3 := pow_nonneg (abs_nonneg τ) 3
-    have h4 : |τ| ^ 3 * kgShiftedFreq v ξ ^ 3 / 6
-        ≤ |τ| ^ 3 * (1 + R ^ 2 + b) / 6 * kgShiftedFreq v ξ := by
+    have hstep : kgShiftedFreq v ξ ^ (2 : ℕ) * kgShiftedFreq v ξ
+        ≤ (1 + R ^ (2 : ℕ) + b) * kgShiftedFreq v ξ := mul_le_mul_of_nonneg_right h3 hpos.le
+    have habs3 : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) := pow_nonneg (abs_nonneg τ) 3
+    have h4 : |τ| ^ (3 : ℕ) * kgShiftedFreq v ξ ^ (3 : ℕ) / 6
+        ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * kgShiftedFreq v ξ := by
       have hmul := mul_le_mul_of_nonneg_left hstep habs3
-      have hcube : kgShiftedFreq v ξ ^ 3
-          = kgShiftedFreq v ξ ^ 2 * kgShiftedFreq v ξ := by ring
+      have hcube : kgShiftedFreq v ξ ^ (3 : ℕ)
+          = kgShiftedFreq v ξ ^ (2 : ℕ) * kgShiftedFreq v ξ := by ring
       rw [hcube]
       linarith
     linarith
@@ -163,9 +163,9 @@ fixed frequency.** -/
 theorem norm_kgShiftedSinFreqOp_lowPass_sub_le (hv : Measurable v) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hvb : ∀ ξ : E, |v ξ| ≤ b) (τ R : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     ‖kgShiftedSinFreqOp hv τ (kgLowPassOp R x) - (τ : ℂ) • kgLowPassOp R x‖
-      ≤ |τ| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖ := by
+      ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖ := by
   have hband := band_bound_nonneg hb0 R
-  have hB0 : (0 : ℝ) ≤ |τ| ^ 3 * (1 + R ^ 2 + b) / 6 :=
+  have hB0 : (0 : ℝ) ≤ |τ| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 :=
     div_nonneg (mul_nonneg (pow_nonneg (abs_nonneg τ) 3) hband) (by norm_num)
   have hprod : Measurable fun ξ : E => kgShiftedSinOverFreq v τ ξ * kgLowPass R ξ :=
     (measurable_kgShiftedSinOverFreq hv τ).mul (measurable_kgLowPass R)

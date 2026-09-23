@@ -64,7 +64,7 @@ theorem scalarCircleLoopReverse_winding (gamma : ScalarCircleLoop) :
 
 /-- Forward/backward fringe loop: relative phase is twice the original phase. -/
 def scalarCircleLoopFringe (gamma : ScalarCircleLoop) : ScalarCircleLoop where
-  toFun := fun t => gamma t ^ 2
+  toFun := fun t => gamma t ^ (2 : ℕ)
   isLoop := by
     refine ⟨gamma.isLoop.continuous.pow 2,
       fun t => pow_ne_zero 2 (gamma.isLoop.nonzero t), ?_⟩
@@ -85,7 +85,7 @@ theorem scalarCircleLoopFringe_winding_even (gamma : ScalarCircleLoop) :
 /-- Differential fringe of a clock loop and a counter-oriented system loop. -/
 def scalarCircleLoopDifferentialFringe
     (clock system : ScalarCircleLoop) : ScalarCircleLoop where
-  toFun := fun t => clock t ^ 2 * scalarCircleLoopReverse system t ^ 2
+  toFun := fun t => clock t ^ (2 : ℕ) * scalarCircleLoopReverse system t ^ (2 : ℕ)
   isLoop := by
     refine ⟨(clock.isLoop.continuous.pow 2).mul
         ((scalarCircleLoopReverse system).isLoop.continuous.pow 2),

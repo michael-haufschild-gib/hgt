@@ -36,8 +36,8 @@ theorem heathBrownFareyValue_injOn_fareySet {Q : ℕ} (hQ : 1 ≤ Q) :
   by_contra hpne
   have hsep := fareySet_sep p hp q hq hpne
   have hQpos : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQ
-  have hpos : (0 : ℝ) < 1 / (Q : ℝ) ^ 2 := by positivity
-  change 1 / (Q : ℝ) ^ 2 ≤ toIntDist
+  have hpos : (0 : ℝ) < 1 / (Q : ℝ) ^ (2 : ℕ) := by positivity
+  change 1 / (Q : ℝ) ^ (2 : ℕ) ≤ toIntDist
     (heathBrownFareyValue q - heathBrownFareyValue p) at hsep
   rw [← hpq, sub_self] at hsep
   have hzero : toIntDist (0 : ℝ) = 0 := by simp [toIntDist]
@@ -49,17 +49,17 @@ theorem heathBrownFareyValue_injOn_fareySet {Q : ℕ} (hQ : 1 ≤ Q) :
 theorem card_heathBrownFareyWindow_le {Q : ℕ} (hQ : 1 ≤ Q)
     {a b : ℝ} (hab : a ≤ b) :
     ((heathBrownFareyWindow Q a b).card : ℝ) ≤
-      (b - a) * (Q : ℝ) ^ 2 + 1 := by
+      (b - a) * (Q : ℝ) ^ (2 : ℕ) + 1 := by
   let W := heathBrownFareyWindow Q a b
   let V := W.image heathBrownFareyValue
   have hQpos : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQ
-  have hL : (0 : ℝ) < 1 / (Q : ℝ) ^ 2 := by positivity
+  have hL : (0 : ℝ) < 1 / (Q : ℝ) ^ (2 : ℕ) := by positivity
   have hinj : Set.InjOn heathBrownFareyValue (W : Set (ℕ × ℕ)) :=
     (heathBrownFareyValue_injOn_fareySet hQ).mono fun p hp =>
       (mem_heathBrownFareyWindow.mp hp).1
   have hcard : V.card = W.card := Finset.card_image_of_injOn hinj
   have hsep : ∀ x ∈ V, ∀ y ∈ V, x ≠ y →
-      1 / (Q : ℝ) ^ 2 ≤ |x - y| := by
+      1 / (Q : ℝ) ^ (2 : ℕ) ≤ |x - y| := by
     intro x hx y hy hxy
     obtain ⟨p, hpW, rfl⟩ := Finset.mem_image.mp hx
     obtain ⟨q, hqW, rfl⟩ := Finset.mem_image.mp hy

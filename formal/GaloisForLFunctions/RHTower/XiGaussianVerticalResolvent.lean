@@ -18,17 +18,17 @@ noncomputable section
 
 theorem hasDerivAt_xiGaussianTestC (t : ℝ) (k : ℕ) (z : ℂ) :
     HasDerivAt (xiGaussianTestC t k)
-      (((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1) * Complex.exp (-(t : ℂ) * z ^ 2) +
+      (((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1) * Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)) +
         z ^ (2 * k) *
-          (Complex.exp (-(t : ℂ) * z ^ 2) * (-(t : ℂ) * (2 * z)))) z := by
+          (Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)) * (-(t : ℂ) * (2 * z)))) z := by
   unfold xiGaussianTestC
   have hpow := (hasDerivAt_id z).pow (2 * k)
   have hsq := (hasDerivAt_id z).pow 2
   have hinner := (hasDerivAt_const z (-(t : ℂ))).mul hsq
-  have hexp := (Complex.hasDerivAt_exp (-(t : ℂ) * z ^ 2)).comp z hinner
+  have hexp := (Complex.hasDerivAt_exp (-(t : ℂ) * z ^ (2 : ℕ))).comp z hinner
   let F : ℂ → ℂ :=
-    (id ^ (2 * k)) * (Complex.exp ∘ ((fun _ : ℂ => -(t : ℂ)) * id ^ 2))
-  have hF : F = fun w : ℂ => w ^ (2 * k) * Complex.exp (-(t : ℂ) * w ^ 2) := by
+    (id ^ (2 * k)) * (Complex.exp ∘ ((fun _ : ℂ => -(t : ℂ)) * id ^ (2 : ℕ)))
+  have hF : F = fun w : ℂ => w ^ (2 * k) * Complex.exp (-(t : ℂ) * w ^ (2 : ℕ)) := by
     funext w
     simp [F, Function.comp_apply]
   rw [← hF]
@@ -47,7 +47,7 @@ private theorem norm_xiGaussianVerticalPoint_le (R y : ℝ) (hy : |y| ≤ 1) :
 theorem norm_xiGaussianTestC_vertical_le
     {t : ℝ} (ht : 0 < t) (k : ℕ) (R y : ℝ) (hy : |y| ≤ 1) :
     ‖xiGaussianTestC t k ((R : ℂ) + y * I)‖ ≤
-      Real.exp t * (1 + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)) := by
+      Real.exp t * (1 + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))) := by
   rw [norm_xiGaussianTestC_eq_norm_rotated]
   have hbound := norm_xiGaussianTest_le_of_strip ht k (R := 1)
     (s := (((1 / 2 - y : ℝ) : ℂ) + (R : ℂ) * I))
@@ -58,22 +58,22 @@ theorem norm_deriv_xiGaussianTestC_vertical_le
     {t : ℝ} (ht : 0 < t) (k : ℕ) (R y : ℝ) (hy : |y| ≤ 1) :
     ‖deriv (xiGaussianTestC t k) ((R : ℂ) + y * I)‖ ≤
       Real.exp t * (((2 * k : ℕ) : ℝ) + 2 * t) *
-        (1 + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)) := by
+        (1 + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))) := by
   let z : ℂ := (R : ℂ) + y * I
   let B : ℝ := 1 + |R|
-  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ 2))
+  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ (2 : ℕ)))
   have hB : 1 ≤ B := by dsimp only [B]; linarith [abs_nonneg R]
   have hz : ‖z‖ ≤ B := by
     simpa only [z, B] using norm_xiGaussianVerticalPoint_le R y hy
-  have hexp : ‖Complex.exp (-(t : ℂ) * z ^ 2)‖ ≤ E := by
+  have hexp : ‖Complex.exp (-(t : ℂ) * z ^ (2 : ℕ))‖ ≤ E := by
     have hzero := norm_xiGaussianTestC_vertical_le ht 0 R y hy
     simpa [xiGaussianTestC, z, E] using hzero
   rw [(hasDerivAt_xiGaussianTestC t k z).deriv]
   calc
     ‖(((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1) *
-          Complex.exp (-(t : ℂ) * z ^ 2) +
+          Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)) +
         z ^ (2 * k) *
-          (Complex.exp (-(t : ℂ) * z ^ 2) * (-(t : ℂ) * (2 * z))))‖ ≤
+          (Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)) * (-(t : ℂ) * (2 * z))))‖ ≤
         ((((2 * k : ℕ) : ℝ) * B ^ (2 * k - 1) * E) +
           (B ^ (2 * k) * (E * (t * (2 * B))))) := by
       apply (norm_add_le _ _).trans
@@ -100,7 +100,7 @@ theorem norm_deriv_xiGaussianTestC_vertical_le
               ring
         _ = (((2 * k : ℕ) : ℝ) + 2 * t) * B ^ (2 * k + 1) * E := by ring
     _ = Real.exp t * (((2 * k : ℕ) : ℝ) + 2 * t) *
-        (1 + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)) := by
+        (1 + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))) := by
       dsimp only [B, E]
       ring
 
@@ -115,7 +115,7 @@ def xiGaussianVerticalRawTerm (t : ℝ) (k : ℕ) (R : ℝ)
 def xiGaussianVerticalIntegratedNumerator (t : ℝ) (k : ℕ) (R : ℝ) : ℝ :=
   Real.exp t *
     (xiVerticalCauchyKernelBound + 2 * (((2 * k : ℕ) : ℝ) + 2 * t + 1)) *
-    (1 + |R|) ^ (2 * k + 2) * Real.exp (-(t * R ^ 2))
+    (1 + |R|) ^ (2 * k + 2) * Real.exp (-(t * R ^ (2 : ℕ)))
 
 theorem xiGaussianVerticalIntegratedNumerator_nonneg
     {t : ℝ} (ht : 0 < t) (k : ℕ) (R : ℝ) :
@@ -135,7 +135,7 @@ theorem norm_integral_xiGaussianVerticalRawTerm_le
   let g : ℂ → ℂ := xiGaussianTestC t k
   let h : ℝ → ℂ := fun y => g (z y) * z y / p
   let B : ℝ := 1 + |R|
-  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ 2))
+  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ (2 : ℕ)))
   let A : ℝ := ((2 * k : ℕ) : ℝ) + 2 * t
   let M : ℝ := E * (A + 1) * B ^ (2 * k + 2) / ‖p‖
   have hp0 : p ≠ 0 := xiSpectralPoint_ne_zero q
@@ -289,11 +289,11 @@ theorem norm_xiGaussianVerticalRawTerm_le_inv_sq
     {y : ℝ} (hy : |y| ≤ 1) :
     ‖xiGaussianVerticalRawTerm t k R q y‖ ≤
       2 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+        Real.exp (-(t * R ^ (2 : ℕ))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   let p : ℂ := xiSpectralPoint q
   let z : ℂ := (R : ℂ) + y * I
   let B : ℝ := 1 + |R|
-  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ 2))
+  let E : ℝ := Real.exp t * Real.exp (-(t * R ^ (2 : ℕ)))
   have hp : 0 < ‖p‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hB : 0 ≤ B := by dsimp only [B]; positivity
   have hz : ‖z‖ ≤ B := by
@@ -325,7 +325,7 @@ theorem norm_xiGaussianVerticalRawTerm_le_inv_sq
     _ ≤ (E * B ^ (2 * k + 1)) / (‖p‖ * (‖p‖ / 2)) :=
       div_le_div_of_nonneg_left (by positivity) (by positivity) hden
     _ = 2 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+        Real.exp (-(t * R ^ (2 : ℕ))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       dsimp only [E, B, p]
       field_simp
 
@@ -334,7 +334,7 @@ theorem integral_norm_xiGaussianVerticalRawTerm_le_inv_sq
     (hfar : 3 * (1 + |R|) ≤ ‖xiSpectralPoint q‖) :
     (∫ y in (-1 : ℝ)..1, ‖xiGaussianVerticalRawTerm t k R q y‖) ≤
       4 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+        Real.exp (-(t * R ^ (2 : ℕ))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have him := xiSpectralPoint_im_mem_openHalf q
   have himAbs : |(xiSpectralPoint q).im| < 1 / 2 := by
     rw [abs_lt]
@@ -352,7 +352,7 @@ theorem integral_norm_xiGaussianVerticalRawTerm_le_inv_sq
       simpa only [uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hcont
     exact hcontu.intervalIntegrable
   let C : ℝ := 2 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-    Real.exp (-(t * R ^ 2)) / ‖xiSpectralPoint q‖ ^ 2
+    Real.exp (-(t * R ^ (2 : ℕ))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hmono :
       (∫ y in (-1 : ℝ)..1, ‖xiGaussianVerticalRawTerm t k R q y‖) ≤
         ∫ _y in (-1 : ℝ)..1, C := by
@@ -364,7 +364,7 @@ theorem integral_norm_xiGaussianVerticalRawTerm_le_inv_sq
     (∫ y in (-1 : ℝ)..1, ‖xiGaussianVerticalRawTerm t k R q y‖) ≤
         ∫ _y in (-1 : ℝ)..1, C := hmono
     _ = 4 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+        Real.exp (-(t * R ^ (2 : ℕ))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_const]
       dsimp only [C]
       norm_num
@@ -384,8 +384,8 @@ def xiGaussianVerticalTsumMajorant (t : ℝ) (k : ℕ) (R : ℝ) : ℝ :=
       (∑' q : XiZeroCopy,
         1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)) +
     (4 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2))) *
-      (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2)
+        Real.exp (-(t * R ^ (2 : ℕ)))) *
+      (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
 
 theorem summable_integral_xiGaussianVerticalRawTerm_and_norm_tsum_le
     {t : ℝ} (ht : 0 < t) (k : ℕ) (R : ℝ)
@@ -399,10 +399,10 @@ theorem summable_integral_xiGaussianVerticalRawTerm_and_norm_tsum_le
     ∫ y in (-1 : ℝ)..1, xiGaussianVerticalRawTerm t k R q y
   let w₃ : XiZeroCopy → ℝ := fun q =>
     1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)
-  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ 2
+  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let N : ℝ := xiGaussianVerticalIntegratedNumerator t k R
   let B : ℝ := 1 + |R|
-  let F : ℝ := 4 * Real.exp t * B ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))
+  let F : ℝ := 4 * Real.exp t * B ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))
   let c₃ : ℝ := 2 * N * B
   have hN : 0 ≤ N := xiGaussianVerticalIntegratedNumerator_nonneg ht k R
   have hB : 0 ≤ B := by dsimp only [B]; positivity
@@ -442,7 +442,7 @@ theorem summable_integral_xiGaussianVerticalRawTerm_and_norm_tsum_le
               (show (-1 : ℝ) ≤ 1 by norm_num) :
               ‖∫ y in (-1 : ℝ)..1, xiGaussianVerticalRawTerm t k R q y‖ ≤
                 ∫ y in (-1 : ℝ)..1, ‖xiGaussianVerticalRawTerm t k R q y‖)
-        _ ≤ F / ‖xiSpectralPoint q‖ ^ 2 := by
+        _ ≤ F / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
           simpa only [F, B] using
             integral_norm_xiGaussianVerticalRawTerm_le_inv_sq ht k R q hfar
         _ = F * w₂ q := by dsimp only [w₂]; ring
@@ -466,13 +466,13 @@ theorem tendsto_xiGaussianVerticalTsumMajorant_atTop
     Tendsto (xiGaussianVerticalTsumMajorant t k) atTop (nhds 0) := by
   let S₃ : ℝ := ∑' q : XiZeroCopy,
     1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)
-  let S₂ : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+  let S₂ : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let K : ℝ := Real.exp t *
     (xiVerticalCauchyKernelBound + 2 * (((2 * k : ℕ) : ℝ) + 2 * t + 1))
   have hfirst0 := tendsto_polyGaussian_atTop ht (2 * k + 3) 1
   have hfirst : Tendsto
       (fun R : ℝ => (2 * K * (1 + |R|) ^ (2 * k + 3) *
-        Real.exp (-(t * R ^ 2))) * S₃) atTop (nhds 0) := by
+        Real.exp (-(t * R ^ (2 : ℕ)))) * S₃) atTop (nhds 0) := by
     convert (hfirst0.const_mul (2 * K)).mul_const S₃ using 1
     · funext R
       ring
@@ -480,7 +480,7 @@ theorem tendsto_xiGaussianVerticalTsumMajorant_atTop
   have hsecond0 := tendsto_polyGaussian_atTop ht (2 * k + 1) 1
   have hsecond : Tendsto
       (fun R : ℝ => (4 * Real.exp t * (1 + |R|) ^ (2 * k + 1) *
-        Real.exp (-(t * R ^ 2))) * S₂) atTop (nhds 0) := by
+        Real.exp (-(t * R ^ (2 : ℕ)))) * S₂) atTop (nhds 0) := by
     convert (hsecond0.const_mul (4 * Real.exp t)).mul_const S₂ using 1
     · funext R
       ring
@@ -530,8 +530,8 @@ theorem integral_tsum_xiGaussianVerticalRawTerm_eq_tsum_integral
       ∑' q : XiZeroCopy,
         ∫ y in (-1 : ℝ)..1, xiGaussianVerticalRawTerm t k R q y := by
   let B : ℝ := 1 + |R|
-  let F : ℝ := 4 * Real.exp t * B ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))
-  let b : XiZeroCopy → ℝ := fun q => F / ‖xiSpectralPoint q‖ ^ 2
+  let F : ℝ := 4 * Real.exp t * B ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))
+  let b : XiZeroCopy → ℝ := fun q => F / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hB : 0 < B := by dsimp only [B]; positivity
   have hb : Summable b := by
     have hscaled := xiSpectralPoint_inv_sq_summable.mul_left F

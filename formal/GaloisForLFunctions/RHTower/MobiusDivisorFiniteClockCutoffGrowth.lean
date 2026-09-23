@@ -49,7 +49,7 @@ private lemma first_defect_positive : 0 < primeFreeDivisorDefect 1 := by
 private lemma first_primitive (P : Finset ℕ) :
     mobiusDivisorHeadBlockPrimitive P 1 1 -
       mobiusDivisorHeadBlockPrimitive P 1 (1/2) =
-        (primeFreeDivisorDefect 1)^2*((2/3)*Real.sqrt (1/2)-11/24) := by
+        (primeFreeDivisorDefect 1)^(2 : ℕ)*((2/3)*Real.sqrt (1/2)-11/24) := by
   have hi : mobiusDivisorHeadBlockIntercept P 1 = -primeFreeDivisorDefect 1 := by
     simp [mobiusDivisorHeadBlockIntercept, first_slope,
       mobiusDivisorSelectionFibre, mobiusDivisorSelectionIndices, subsetLabelFibre]
@@ -67,15 +67,15 @@ private lemma first_primitive_positive (P : Finset ℕ) :
   nlinarith
 
 private lemma first_block_lower (P : Finset ℕ) {M : ℕ} (hM : 2≤M) :
-    Real.log ((M:ℝ)/2) * (mobiusDivisorFixedCoreBlockEnergy P M 1/(M:ℝ)^2) ≤
-      mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 := by
+    Real.log ((M:ℝ)/2) * (mobiusDivisorFixedCoreBlockEnergy P M 1/(M:ℝ)^(2 : ℕ)) ≤
+      mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) := by
   have hsum : Real.log ((M:ℝ)/2) * mobiusDivisorFixedCoreBlockEnergy P M 1 ≤
       mobiusDivisorFiniteClockEnergy 1 M P := by
     unfold mobiusDivisorFixedCoreBlockEnergy mobiusDivisorFiniteClockEnergy
     rw [mul_sum]
     calc
       _ ≤ ∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r=1),
-          (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+          (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
         apply sum_le_sum
         intro r hr
         obtain ⟨hr,he⟩ := mem_filter.mp hr
@@ -105,7 +105,7 @@ literal finite counting measure. The coefficient may depend on the core. -/
 theorem exists_mobiusDivisorFiniteClockEnergy_log_lower (P : Finset Nat.Primes) :
     ∃ a : ℝ, 0<a ∧ ∀ᶠ M : ℕ in atTop,
       a*Real.log ((M:ℝ)/2) ≤
-      mobiusDivisorFiniteClockEnergy 1 M (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^2 := by
+      mobiusDivisorFiniteClockEnergy 1 M (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^(2 : ℕ) := by
   let Q := P.image (fun p : Nat.Primes => (p:ℕ))
   have hQ : ∀p∈Q,p.Prime := by
     intro p hp
@@ -119,7 +119,7 @@ theorem exists_mobiusDivisorFiniteClockEnergy_log_lower (P : Finset Nat.Primes) 
     · rw [Sieve.squarefreeDensity_eq]; positivity
     · exact prod_pos (fun p hp => div_pos (by exact_mod_cast (hQ p hp).pos) (by positivity))
   have ht := tendsto_mobiusDivisorFixedCoreBlockEnergy_div_sq Q hQ (by omega : 0<1)
-  have ht' : Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy Q M 1/(M:ℝ)^2)
+  have ht' : Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy Q M 1/(M:ℝ)^(2 : ℕ))
       atTop (𝓝 m) := by convert ht using 1; norm_num [m]
   refine ⟨m/2,by positivity,?_⟩
   filter_upwards [ht'.eventually (eventually_gt_nhds (show m/2 < m by linarith)),
@@ -133,7 +133,7 @@ theorem exists_mobiusDivisorFiniteClockEnergy_log_lower (P : Finset Nat.Primes) 
 /-- No fixed finite prime core bounds the normalized logarithmic clock energy. -/
 theorem tendsto_mobiusDivisorFiniteClockEnergy_div_sq_atTop (P : Finset Nat.Primes) :
     Tendsto (fun M : ℕ =>
-      mobiusDivisorFiniteClockEnergy 1 M (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^2) atTop atTop := by
+      mobiusDivisorFiniteClockEnergy 1 M (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^(2 : ℕ)) atTop atTop := by
   obtain ⟨a,ha,hl⟩ := exists_mobiusDivisorFiniteClockEnergy_log_lower P
   have ht : Tendsto (fun M : ℕ => a*Real.log ((M:ℝ)/2)) atTop atTop :=
     (Real.tendsto_log_atTop.comp
@@ -146,9 +146,9 @@ theorem tendsto_mobiusDivisorFiniteClockEnergy_div_sq_atTop (P : Finset Nat.Prim
 /-- Exact positive source surviving in the first quotient cell, before any
 density limit: the core affects only which squarefree indices are counted. -/
 theorem mobiusDivisorFixedCoreBlockEnergy_first_eq (P : Finset ℕ) (M : ℕ) :
-    mobiusDivisorFixedCoreBlockEnergy P M 1 = (primeFreeDivisorDefect 1)^2 *
+    mobiusDivisorFixedCoreBlockEnergy P M 1 = (primeFreeDivisorDefect 1)^(2 : ℕ) *
       ∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r=1),
-        (Real.sqrt M-Real.sqrt r)^2 := by
+        (Real.sqrt M-Real.sqrt r)^(2 : ℕ) := by
   have hi : mobiusDivisorHeadBlockIntercept P 1 = -primeFreeDivisorDefect 1 := by
     simp [mobiusDivisorHeadBlockIntercept,first_slope,
       mobiusDivisorSelectionFibre,mobiusDivisorSelectionIndices,subsetLabelFibre]
@@ -160,7 +160,7 @@ theorem mobiusDivisorFixedCoreBlockEnergy_first_eq (P : Finset ℕ) (M : ℕ) :
   have hr0 := (mem_Icc.mp (mem_filter.mp hr).1).1
   have h := mobiusDivisorInterpolatedHead_eq_block_affine P hr0 he
   rw [first_slope,hi] at h
-  have hh := congrArg (fun x : ℝ => x^2) h
+  have hh := congrArg (fun x : ℝ => x^(2 : ℕ)) h
   rw [mul_pow,Real.sq_sqrt (Nat.cast_nonneg r)] at hh
   rw [hh]
   ring
@@ -172,10 +172,10 @@ theorem exists_mobiusDivisorFiniteClockEnergy_growing_cutoffs
     ∃ M : ℕ → ℕ, StrictMono M ∧ ∀ n,
       (∀ p ∈ P n, (p:ℕ) < M n) ∧
       b n ≤ mobiusDivisorFiniteClockEnergy 1 (M n)
-        ((P n).image (fun p : Nat.Primes => (p:ℕ)))/(M n:ℝ)^2 := by
+        ((P n).image (fun p : Nat.Primes => (p:ℕ)))/(M n:ℝ)^(2 : ℕ) := by
   have hthreshold : ∀ n, ∃ N : ℕ, ∀ M : ℕ, N≤M →
       b n ≤ mobiusDivisorFiniteClockEnergy 1 M
-        ((P n).image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^2 := by
+        ((P n).image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^(2 : ℕ) := by
     intro n
     exact eventually_atTop.mp ((tendsto_atTop.mp
       (tendsto_mobiusDivisorFiniteClockEnergy_div_sq_atTop (P n))) (b n))

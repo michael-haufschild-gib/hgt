@@ -15,7 +15,7 @@ commutator activation energy.  Truncation at zero makes the law uniform even
 when the requested activation exceeds the full spectral speed budget. -/
 def staticChoiAdaptiveReplicaBase
     {d : ℕ} (energy : Fin d → ℝ) (activation : ℝ) : ℝ :=
-  max 0 (1 - activation / (2 * staticChoiSpeed energy) ^ 2)
+  max 0 (1 - activation / (2 * staticChoiSpeed energy) ^ (2 : ℕ))
 
 /-- **Exact action--carrier dichotomy.** At every finite dimension, every
 unitary endpoint and every replica order, near-action mass has only two
@@ -43,36 +43,36 @@ theorem directStaticChoiTargetNearActionMass_choiVector_le_adaptiveAction_add_ca
       exact le_max_left _ _
     nlinarith [pow_nonneg hbase0 r]
   · rw [if_neg htube, add_zero]
-    have hspeed : 0 < (2 * staticChoiSpeed energy) ^ 2 := by
+    have hspeed : 0 < (2 * staticChoiSpeed energy) ^ (2 : ℕ) := by
       exact pow_pos (mul_pos (by norm_num) (staticChoiSpeed_pos energy)) 2
     have hcomm :
         normalizedSpectralCommutatorEnergy energy W ≤
-          (2 * staticChoiSpeed energy) ^ 2 *
-            (1 - unitaryDiagonalCentralizerMass W ^ 2) := by
+          (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+            (1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) := by
       calc
         normalizedSpectralCommutatorEnergy energy W ≤
-            (2 * staticChoiSpeed energy) ^ 2 *
+            (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
               normalizedSpectralOffDiagonalMass W :=
           normalizedSpectralCommutatorEnergy_le_speed_sq_mul_offDiagonal energy W
-        _ ≤ (2 * staticChoiSpeed energy) ^ 2 *
-              (1 - unitaryDiagonalCentralizerMass W ^ 2) :=
+        _ ≤ (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+              (1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left
             (normalizedSpectralOffDiagonalMass_le_one_sub_centralizerMass_sq hd hW)
             (sq_nonneg _)
     have hstrict :
-        unitaryDiagonalCentralizerMass W ^ 2 <
-          1 - activation / (2 * staticChoiSpeed energy) ^ 2 := by
+        unitaryDiagonalCentralizerMass W ^ (2 : ℕ) <
+          1 - activation / (2 * staticChoiSpeed energy) ^ (2 : ℕ) := by
       have hactlt : activation < normalizedSpectralCommutatorEnergy energy W :=
         lt_of_not_ge htube
       have hratio :
-          activation / (2 * staticChoiSpeed energy) ^ 2 <
-            1 - unitaryDiagonalCentralizerMass W ^ 2 :=
+          activation / (2 * staticChoiSpeed energy) ^ (2 : ℕ) <
+            1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ) :=
         (div_lt_iff₀ hspeed).2 (by
           simpa [mul_comm] using hactlt.trans_le hcomm)
       linarith
     have hbaseEq :
         staticChoiAdaptiveReplicaBase energy activation =
-          1 - activation / (2 * staticChoiSpeed energy) ^ 2 := by
+          1 - activation / (2 * staticChoiSpeed energy) ^ (2 : ℕ) := by
       rw [staticChoiAdaptiveReplicaBase, max_eq_right]
       exact le_trans (sq_nonneg (unitaryDiagonalCentralizerMass W)) hstrict.le
     have hpow :
@@ -80,8 +80,8 @@ theorem directStaticChoiTargetNearActionMass_choiVector_le_adaptiveAction_add_ca
           staticChoiAdaptiveReplicaBase energy activation ^ r := by
       calc
         unitaryDiagonalCentralizerMass W ^ (2 * r) =
-            (unitaryDiagonalCentralizerMass W ^ 2) ^ r := by rw [pow_mul]
-        _ ≤ (1 - activation / (2 * staticChoiSpeed energy) ^ 2) ^ r :=
+            (unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) ^ r := by rw [pow_mul]
+        _ ≤ (1 - activation / (2 * staticChoiSpeed energy) ^ (2 : ℕ)) ^ r :=
           pow_le_pow_left₀ (sq_nonneg _) hstrict.le r
         _ = staticChoiAdaptiveReplicaBase energy activation ^ r := by rw [hbaseEq]
     exact hnear.trans hpow

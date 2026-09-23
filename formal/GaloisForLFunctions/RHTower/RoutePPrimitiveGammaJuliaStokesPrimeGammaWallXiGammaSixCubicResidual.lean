@@ -322,7 +322,7 @@ theorem iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCor
   have hscaled := hcosh.const_mul (2 * k ^ 2)
   simpa [Function.comp_def] using hscaled.deriv
 
-/-- The Gamma-six-corrected wall retains the cold cubic jet `2 c_Xi^3`. -/
+/-- The Gamma-six-corrected wall retains the cold cubic jet `2 c_Xi^(3 : ℕ)`. -/
 theorem tendsto_iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectedWallLog_three_atTop :
     Tendsto (fun d : ℝ => iteratedDeriv 3
       (routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectedWallLog d) 0)

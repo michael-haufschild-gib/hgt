@@ -82,7 +82,7 @@ theorem sum_normSq_convPow_le_divisorBounded {ε : ℝ} (hε : 0 < ε) (N ℓ : 
       ≤ (divisorBoundConst ε * (((N ^ ℓ : ℕ) : ℝ)) ^ ε) ^ ℓ
           * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ := by
   have hC := divisorBoundConst_pos hε
-  refine sum_normSq_convPow_le_of_support N ℓ a Finset.univ (fun n _ => Finset.mem_univ n)
+  refine sum_normSq_convPow_le_of_support_primePowerSupport N ℓ a Finset.univ (fun n _ => Finset.mem_univ n)
     (fun j => powFibreOn_univ_card_le_rpow hε N ℓ j) ?_
   positivity
 
@@ -98,7 +98,7 @@ theorem volume_largeValues_pow_symm_le_divisorBounded {ε : ℝ} (hε : 0 < ε) 
               * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ)) := by
   have hVl : (0 : ℝ) ≤ V ^ ℓ := by positivity
   have hbase := volume_largeValues_symm_le (N ^ ℓ) (convPow N ℓ a) hT hVl
-  rw [largeValues_pow_setOf N ℓ hℓ a (Set.Icc (-T) T) hV] at hbase
+  rw [largeValues_pow_setOf_primePowerSupport N ℓ hℓ a (Set.Icc (-T) T) hV] at hbase
   have hpow : (V ^ ℓ) ^ 2 = V ^ (2 * ℓ) := by
     rw [← pow_mul, mul_comm]
   rw [hpow] at hbase

@@ -55,20 +55,20 @@ theorem isPreconnected_ball_one_inter_exterior {ε : ℝ} (hε : 0 < ε) (hε2 :
     have hqe : (1:ℝ) < ‖q‖ := hqext
     have hqball' : q ∈ Metric.ball (1:ℂ) ε := hqball
     rw [Metric.mem_ball, Complex.dist_eq] at hqball
-    have hq3 : 1 < q.re^2 + q.im^2 := by
-      have h1 : (1:ℝ) < ‖q‖^2 := by nlinarith [norm_nonneg q, hqe]
+    have hq3 : 1 < q.re^(2 : ℕ) + q.im^(2 : ℕ) := by
+      have h1 : (1:ℝ) < ‖q‖^(2 : ℕ) := by nlinarith [norm_nonneg q, hqe]
       rw [Complex.sq_norm, Complex.normSq_apply] at h1; nlinarith [h1]
-    have hq2 : (q.re - 1)^2 + q.im^2 < ε^2 := by
-      have h1 : ‖q - 1‖^2 < ε^2 := by nlinarith [norm_nonneg (q-1), hqball]
+    have hq2 : (q.re - 1)^(2 : ℕ) + q.im^(2 : ℕ) < ε^(2 : ℕ) := by
+      have h1 : ‖q - 1‖^(2 : ℕ) < ε^(2 : ℕ) := by nlinarith [norm_nonneg (q-1), hqball]
       rw [Complex.sq_norm, Complex.normSq_apply] at h1
       simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im] at h1
       nlinarith [h1]
-    have hx : 1 - ε^2/2 < q.re := by nlinarith [hq2, hq3]
+    have hx : 1 - ε^(2 : ℕ)/2 < q.re := by nlinarith [hq2, hq3]
     have hsx : 1 ≤ (1 + ε/2) * q.re := by
       have hpos1 : (0:ℝ) < 1 + ε/2 := by linarith
-      have hpos2 : (0:ℝ) < q.re - (1 - ε^2/2) := by linarith
+      have hpos2 : (0:ℝ) < q.re - (1 - ε^(2 : ℕ)/2) := by linarith
       nlinarith [mul_pos hpos1 hpos2, hε, hε2, mul_nonneg hε.le (sq_nonneg ε)]
-    have hs21 : (0:ℝ) < (1 + ε/2)^2 - 1 := by nlinarith [hε, sq_nonneg ε]
+    have hs21 : (0:ℝ) < (1 + ε/2)^(2 : ℕ) - 1 := by nlinarith [hε, sq_nonneg ε]
     intro w hw
     obtain ⟨a, b, ha, hb, hab, rfl⟩ := hw
     refine ⟨?_, ?_⟩
@@ -78,7 +78,7 @@ theorem isPreconnected_ball_one_inter_exterior {ε : ℝ} (hε : 0 < ε) (hε2 :
         simp only [Complex.add_re, Complex.smul_re, hp_re, smul_eq_mul]
       have hwim : (a • p + b • q).im = b * q.im := by
         simp only [Complex.add_im, Complex.smul_im, hp_im, smul_eq_mul, mul_zero, zero_add]
-      have hnorm2 : 1 < ‖a • p + b • q‖^2 := by
+      have hnorm2 : 1 < ‖a • p + b • q‖^(2 : ℕ) := by
         rw [Complex.sq_norm, Complex.normSq_apply, hwre, hwim]
         rcases eq_or_lt_of_le hb with hb0 | hbpos
         · have ha1 : a = 1 := by linarith
@@ -86,9 +86,9 @@ theorem isPreconnected_ball_one_inter_exterior {ε : ℝ} (hε : 0 < ε) (hε2 :
           have hb0' : b = 0 := by linarith
           subst hb0'
           nlinarith [hε, hε2]
-        · have hbQ : 0 < b^2 * (q.re^2 + q.im^2 - 1) := by
+        · have hbQ : 0 < b^(2 : ℕ) * (q.re^(2 : ℕ) + q.im^(2 : ℕ) - 1) := by
             apply mul_pos (by positivity) (by linarith [hq3])
-          have hA : 0 ≤ a^2 * ((1+ε/2)^2 - 1) := mul_nonneg (sq_nonneg a) hs21.le
+          have hA : 0 ≤ a^(2 : ℕ) * ((1+ε/2)^(2 : ℕ) - 1) := mul_nonneg (sq_nonneg a) hs21.le
           have hM : 0 ≤ 2 * a * b * ((1+ε/2) * q.re - 1) :=
             mul_nonneg (by positivity) (by linarith [hsx])
           nlinarith [hbQ, hA, hM, hab]
@@ -693,7 +693,7 @@ theorem false_of_continuation_deriv_ne_zero_package
     (hψβ : ∀ z ∈ (filledJulia c)ᶜ, ψ (β z) = z)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
     (hhe : ∀ t ∈ ball (0:ℂ) 1, h (-t) = h t)
-    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1)
     (hbridge : ∀ t : ℂ, t ≠ 0 → ‖t‖ < 1 → h t = t * ψ (1 / t)) :
     False := by
@@ -745,7 +745,7 @@ theorem false_of_continuation_connected_package
     (hψβ : ∀ z ∈ (filledJulia c)ᶜ, ψ (β z) = z)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
     (hhe : ∀ t ∈ ball (0:ℂ) 1, h (-t) = h t)
-    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1)
     (hbridge : ∀ t : ℂ, t ≠ 0 → ‖t‖ < 1 → h t = t * ψ (1 / t)) :
     False := by

@@ -20,72 +20,72 @@ set_option linter.unusedVariables false
 
 namespace RHTower.D4BMScalarStream
 
-theorem skewPlateauLineForm_zero (t : ℝ) : skewPlateauLineForm t 0 = (-74655 / 2048 : ℝ) * t + (-58863 / 256 : ℝ) * t ^ 3 + (-19053 / 32 : ℝ) * t ^ 5 + (-36367 / 32 : ℝ) * t ^ 7 + (-3151 / 8 : ℝ) * t ^ 9 + (46 : ℝ) * t ^ 11 + (36 : ℝ) * t ^ 13 + (8 : ℝ) * t ^ 15 := by
+theorem skewPlateauLineForm_zero (t : ℝ) : skewPlateauLineForm t 0 = (-74655 / 2048 : ℝ) * t + (-58863 / 256 : ℝ) * t ^ (3 : ℕ) + (-19053 / 32 : ℝ) * t ^ (5 : ℕ) + (-36367 / 32 : ℝ) * t ^ (7 : ℕ) + (-3151 / 8 : ℝ) * t ^ (9 : ℕ) + (46 : ℝ) * t ^ (11 : ℕ) + (36 : ℝ) * t ^ (13 : ℕ) + (8 : ℝ) * t ^ (15 : ℕ) := by
   unfold skewPlateauLineForm
   ring
 
 /-- At the constant harmonic the line form is at least `4t¹⁵` for `t ≥ 3`. -/
-theorem skewPlateauLineForm_zero_ge (t : ℝ) (ht : (3 : ℝ) ≤ t) : 4 * t ^ 15 ≤ skewPlateauLineForm t 0 := by
+theorem skewPlateauLineForm_zero_ge (t : ℝ) (ht : (3 : ℝ) ≤ t) : 4 * t ^ (15 : ℕ) ≤ skewPlateauLineForm t 0 := by
   rw [skewPlateauLineForm_zero]
   have h1 : (0 : ℝ) < t := by linarith
-  have p1 : t * 3 ^ 14 ≤ t ^ 15 := by
+  have p1 : t * 3 ^ (14 : ℕ) ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 3) ht 14
-    calc t * 3 ^ 14 ≤ t * t ^ 14 := by exact mul_le_mul_of_nonneg_left this h1.le
-      _ = t ^ 15 := by ring
-  have p3 : t ^ 3 * 3 ^ 12 ≤ t ^ 15 := by
+    calc t * 3 ^ (14 : ℕ) ≤ t * t ^ (14 : ℕ) := by exact mul_le_mul_of_nonneg_left this h1.le
+      _ = t ^ (15 : ℕ) := by ring
+  have p3 : t ^ (3 : ℕ) * 3 ^ (12 : ℕ) ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 3) ht 12
-    calc t ^ 3 * 3 ^ 12 ≤ t ^ 3 * t ^ 12 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have p5 : t ^ 5 * 3 ^ 10 ≤ t ^ 15 := by
+    calc t ^ (3 : ℕ) * 3 ^ (12 : ℕ) ≤ t ^ (3 : ℕ) * t ^ (12 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have p5 : t ^ (5 : ℕ) * 3 ^ (10 : ℕ) ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 3) ht 10
-    calc t ^ 5 * 3 ^ 10 ≤ t ^ 5 * t ^ 10 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have p7 : t ^ 7 * 3 ^ 8 ≤ t ^ 15 := by
+    calc t ^ (5 : ℕ) * 3 ^ (10 : ℕ) ≤ t ^ (5 : ℕ) * t ^ (10 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have p7 : t ^ (7 : ℕ) * 3 ^ (8 : ℕ) ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 3) ht 8
-    calc t ^ 7 * 3 ^ 8 ≤ t ^ 7 * t ^ 8 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have p9 : t ^ 9 * 3 ^ 6 ≤ t ^ 15 := by
+    calc t ^ (7 : ℕ) * 3 ^ (8 : ℕ) ≤ t ^ (7 : ℕ) * t ^ (8 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have p9 : t ^ (9 : ℕ) * 3 ^ (6 : ℕ) ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 3) ht 6
-    calc t ^ 9 * 3 ^ 6 ≤ t ^ 9 * t ^ 6 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have q11 : (0 : ℝ) ≤ t ^ 11 := by positivity
-  have q13 : (0 : ℝ) ≤ t ^ 13 := by positivity
+    calc t ^ (9 : ℕ) * 3 ^ (6 : ℕ) ≤ t ^ (9 : ℕ) * t ^ (6 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have q11 : (0 : ℝ) ≤ t ^ (11 : ℕ) := by positivity
+  have q13 : (0 : ℝ) ≤ t ^ (13 : ℕ) := by positivity
   nlinarith
 
 /-- The constant-mode kernel is at least `t¹¹/2176` for `t ≥ 5`. -/
 theorem skewPlateauMu_constant_mode_im_ge (t : ℝ) (ht : (5 : ℝ) ≤ t) :
-    t ^ 11 / 2176 ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im := by
+    t ^ (11 : ℕ) / 2176 ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im := by
   have h := congrArg Complex.im (skewPlateauMu_line t 0 le_rfl)
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_add, one_mul] at h
   have hden := skewPlateauLineDen_pos t 0 le_rfl
   have hF := skewPlateauLineForm_zero_ge t (by linarith)
-  have hd : 128 * (2 + (0 : ℝ)) ^ 2 * ((4 * t ^ 2 - 2 - 0) ^ 2 + 36 * t ^ 2) ≤ 8704 * t ^ 4 := by
-    have h25 : (25 : ℝ) ≤ t ^ 2 := by nlinarith
-    have h4 : (625 : ℝ) ≤ t ^ 4 := by nlinarith
+  have hd : 128 * (2 + (0 : ℝ)) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - 0) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ)) ≤ 8704 * t ^ (4 : ℕ) := by
+    have h25 : (25 : ℝ) ≤ t ^ (2 : ℕ) := by nlinarith
+    have h4 : (625 : ℝ) ≤ t ^ (4 : ℕ) := by nlinarith
     nlinarith
-  have hpos4 : (0 : ℝ) < t ^ 4 := by positivity
-  -- Im * den = F ≥ 4 t^15 and den ≤ 2176 t^4
+  have hpos4 : (0 : ℝ) < t ^ (4 : ℕ) := by positivity
+  -- Im * den = F ≥ 4 t^(15 : ℕ) and den ≤ 2176 t^(4 : ℕ)
   have hIm : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im *
-      (128 * (2 + (0 : ℝ)) ^ 2 * ((4 * t ^ 2 - 2 - 0) ^ 2 + 36 * t ^ 2)) = skewPlateauLineForm t 0 := by
+      (128 * (2 + (0 : ℝ)) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - 0) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ))) = skewPlateauLineForm t 0 := by
     simpa using h
-  have h15 : (0 : ℝ) < t ^ 15 := by positivity
+  have h15 : (0 : ℝ) < t ^ (15 : ℕ) := by positivity
   have hImpos : 0 < (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im := by
     have : 0 < skewPlateauLineForm t 0 := by linarith
     exact pos_of_mul_pos_left (by rw [hIm]; exact this) hden.le
-  have key : 4 * t ^ 15 ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * (8704 * t ^ 4) := by
+  have key : 4 * t ^ (15 : ℕ) ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * (8704 * t ^ (4 : ℕ)) := by
     have := mul_le_mul_of_nonneg_left hd hImpos.le
     linarith
   rw [div_le_iff₀ (by norm_num : (0 : ℝ) < 2176)]
-  have h4 : t ^ 11 * t ^ 4 ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * 2176 * t ^ 4 := by
-    have e1 : t ^ 11 * t ^ 4 = t ^ 15 := by ring
+  have h4 : t ^ (11 : ℕ) * t ^ (4 : ℕ) ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * 2176 * t ^ (4 : ℕ) := by
+    have e1 : t ^ (11 : ℕ) * t ^ (4 : ℕ) = t ^ (15 : ℕ) := by ring
     rw [e1]
-    have e2 : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * 2176 * t ^ 4 =
-        (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * (8704 * t ^ 4) / 4 := by ring
+    have e2 : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * 2176 * t ^ (4 : ℕ) =
+        (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-((0 : ℝ) : ℂ))).im * (8704 * t ^ (4 : ℕ)) / 4 := by ring
     rw [e2]; linarith
   exact le_of_mul_le_mul_right h4 hpos4
 
-theorem skewPlateauLineForm_bulk_upper (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : t ^ 2 ≤ l) (h2 : l ≤ 3 * t ^ 2) :
-    0 ≤ t ^ 9 * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) / 1000 - skewPlateauLineForm t l := by
+theorem skewPlateauLineForm_bulk_upper (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : t ^ (2 : ℕ) ≤ l) (h2 : l ≤ 3 * t ^ (2 : ℕ)) :
+    0 ≤ t ^ (9 : ℕ) * (128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ))) / 1000 - skewPlateauLineForm t l := by
   have ht0 : (0 : ℝ) ≤ t := by linarith
   have hl0 : (0 : ℝ) ≤ l := by nlinarith
   have hg3 : (0 : ℝ) ≤ t - 50 := by linarith
@@ -93,7 +93,7 @@ theorem skewPlateauLineForm_bulk_upper (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 :
   have hg11 : (0 : ℝ) ≤ l - t ^ (2 : ℕ) := by linarith
   have hp50 : (0 : ℝ) ≤ t + 50 := by linarith
   have hp2 : (0 : ℝ) ≤ t + 2 := by linarith
-  have key : t ^ 9 * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) / 1000 - skewPlateauLineForm t l = (16 / 125 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t - 50) * (t + 2)) + (768 / 125 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t - 50)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ)) + (32 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (79936 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (3 * t ^ (2 : ℕ) - l)) + (16 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (64 / 125 : ℝ) * (t ^ (11 : ℕ) * l * (t - 50) * (t + 2)) + (3072 / 125 : ℝ) * (t ^ (12 : ℕ) * l) + (6144 / 125 : ℝ) * (t ^ (11 : ℕ) * l) + (256 / 125 : ℝ) * (t ^ (9 : ℕ) * l) + (128 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (319744 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (3 * t ^ (2 : ℕ) - l)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (2304 / 125 : ℝ) * (t ^ (11 : ℕ) * l) + (64 / 125 : ℝ) * (t ^ (11 : ℕ) * (t - 50) * (t + 2)) + (3072 / 125 : ℝ) * (t ^ (12 : ℕ)) + (6144 / 125 : ℝ) * (t ^ (11 : ℕ)) + (256 / 125 : ℝ) * (t ^ (9 : ℕ)) + (128 / 125 : ℝ) * (t ^ (9 : ℕ) * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (319744 / 125 : ℝ) * (t ^ (9 : ℕ) * (3 * t ^ (2 : ℕ) - l)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (2304 / 125 : ℝ) * (t ^ (11 : ℕ)) + (5 / 64 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (l - 4 * t ^ (2 : ℕ)) ^ (2 : ℕ)) + (74655 / 2048 : ℝ) * (t) + (58863 / 256 : ℝ) * (t ^ (3 : ℕ)) + (19053 / 32 : ℝ) * (t ^ (5 : ℕ)) + (36367 / 32 : ℝ) * (t ^ (7 : ℕ)) + (3151 / 8 : ℝ) * (t ^ (9 : ℕ)) + (46 : ℝ) * (t ^ (7 : ℕ) * l * (l - t ^ (2 : ℕ))) + (46 : ℝ) * (t ^ (9 : ℕ) * (l - t ^ (2 : ℕ))) + (23 / 3125000 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * (t ^ (4 : ℕ) - 50 ^ (4 : ℕ))) + (36 : ℝ) * (t ^ (9 : ℕ) * l * (l - t ^ (2 : ℕ))) + (36 : ℝ) * (t ^ (11 : ℕ) * (l - t ^ (2 : ℕ))) + (9 / 625 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t ^ (2 : ℕ) - 50 ^ (2 : ℕ))) + (8 : ℝ) * (t ^ (11 : ℕ) * l * (l - t ^ (2 : ℕ))) + (8 : ℝ) * (t ^ (13 : ℕ) * (l - t ^ (2 : ℕ))) + (95169 / 4096 : ℝ) * (t * l) + (728753 / 2048 : ℝ) * (t * l * (l - t ^ (2 : ℕ))) + (728753 / 200000000000000000000 : ℝ) * (t * l ^ (2 : ℕ) * (t ^ (10 : ℕ) - 50 ^ (10 : ℕ))) + (402363 / 512 : ℝ) * (t ^ (3 : ℕ) * l * (l - t ^ (2 : ℕ))) + (402363 / 20000000000000000 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * (t ^ (8 : ℕ) - 50 ^ (8 : ℕ))) + (16915 / 64 : ℝ) * (t ^ (7 : ℕ) * l) + (2259 / 8 : ℝ) * (t ^ (9 : ℕ) * l) + (443 / 8 : ℝ) * (t ^ (11 : ℕ) * l) + (29 / 2 : ℝ) * (t ^ (13 : ℕ) * l) + (5049 / 80000000000000000000 : ℝ) * (t * l ^ (2 : ℕ) * (t ^ (10 : ℕ) - 50 ^ (10 : ℕ))) + (896173 / 4096 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ)) + (11443 / 3200000000000 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * (t ^ (6 : ℕ) - 50 ^ (6 : ℕ))) + (6265 / 128 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ)) + (943 / 32 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ)) + (47 / 16 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t ^ (0 : ℕ) - 50 ^ (0 : ℕ))) + (238617 / 8192 : ℝ) * (t * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (1 : ℕ) - l ^ (1 : ℕ))) + (715851 / 320000000000000000 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * (t ^ (8 : ℕ) - 50 ^ (8 : ℕ))) + (76823 / 2048 : ℝ) * (t ^ (3 : ℕ) * l ^ (3 : ℕ)) + (2667 / 256 : ℝ) * (t ^ (5 : ℕ) * l ^ (3 : ℕ)) + (639 / 64 : ℝ) * (t ^ (7 : ℕ) * l ^ (3 : ℕ)) + (83 / 32 : ℝ) * (t ^ (9 : ℕ) * l ^ (3 : ℕ)) + (226443 / 16384 : ℝ) * (t * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (2037987 / 256000000000000 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * (t ^ (6 : ℕ) - 50 ^ (6 : ℕ))) + (11623 / 1024 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (104607 / 6400000000 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * (t ^ (4 : ℕ) - 50 ^ (4 : ℕ))) + (2249 / 512 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (20241 / 1280000 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t ^ (2 : ℕ) - 50 ^ (2 : ℕ))) + (31 / 64 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (279 / 64 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t ^ (0 : ℕ) - 50 ^ (0 : ℕ))) + (123507555200938826755999 / 400000000000000000000 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ)) := by
+  have key : t ^ (9 : ℕ) * (128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ))) / 1000 - skewPlateauLineForm t l = (16 / 125 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t - 50) * (t + 2)) + (768 / 125 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t - 50)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ)) + (32 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (79936 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (3 * t ^ (2 : ℕ) - l)) + (16 / 125 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (64 / 125 : ℝ) * (t ^ (11 : ℕ) * l * (t - 50) * (t + 2)) + (3072 / 125 : ℝ) * (t ^ (12 : ℕ) * l) + (6144 / 125 : ℝ) * (t ^ (11 : ℕ) * l) + (256 / 125 : ℝ) * (t ^ (9 : ℕ) * l) + (128 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (319744 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (3 * t ^ (2 : ℕ) - l)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * l * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (2304 / 125 : ℝ) * (t ^ (11 : ℕ) * l) + (64 / 125 : ℝ) * (t ^ (11 : ℕ) * (t - 50) * (t + 2)) + (3072 / 125 : ℝ) * (t ^ (12 : ℕ)) + (6144 / 125 : ℝ) * (t ^ (11 : ℕ)) + (256 / 125 : ℝ) * (t ^ (9 : ℕ)) + (128 / 125 : ℝ) * (t ^ (9 : ℕ) * (t - 50) * (t + 50) * (3 * t ^ (2 : ℕ) - l)) + (319744 / 125 : ℝ) * (t ^ (9 : ℕ) * (3 * t ^ (2 : ℕ) - l)) + (64 / 125 : ℝ) * (t ^ (9 : ℕ) * (3 * t ^ (2 : ℕ) - l) ^ (2 : ℕ)) + (2304 / 125 : ℝ) * (t ^ (11 : ℕ)) + (5 / 64 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (l - 4 * t ^ (2 : ℕ)) ^ (2 : ℕ)) + (74655 / 2048 : ℝ) * (t) + (58863 / 256 : ℝ) * (t ^ (3 : ℕ)) + (19053 / 32 : ℝ) * (t ^ (5 : ℕ)) + (36367 / 32 : ℝ) * (t ^ (7 : ℕ)) + (3151 / 8 : ℝ) * (t ^ (9 : ℕ)) + (46 : ℝ) * (t ^ (7 : ℕ) * l * (l - t ^ (2 : ℕ))) + (46 : ℝ) * (t ^ (9 : ℕ) * (l - t ^ (2 : ℕ))) + (23 / 3125000 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * (t ^ (4 : ℕ) - 50 ^ (4 : ℕ))) + (36 : ℝ) * (t ^ (9 : ℕ) * l * (l - t ^ (2 : ℕ))) + (36 : ℝ) * (t ^ (11 : ℕ) * (l - t ^ (2 : ℕ))) + (9 / 625 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t ^ (2 : ℕ) - 50 ^ (2 : ℕ))) + (8 : ℝ) * (t ^ (11 : ℕ) * l * (l - t ^ (2 : ℕ))) + (8 : ℝ) * (t ^ (13 : ℕ) * (l - t ^ (2 : ℕ))) + (95169 / 4096 : ℝ) * (t * l) + (728753 / 2048 : ℝ) * (t * l * (l - t ^ (2 : ℕ))) + (728753 / 200000000000000000000 : ℝ) * (t * l ^ (2 : ℕ) * (t ^ (10 : ℕ) - 50 ^ (10 : ℕ))) + (402363 / 512 : ℝ) * (t ^ (3 : ℕ) * l * (l - t ^ (2 : ℕ))) + (402363 / 20000000000000000 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * (t ^ (8 : ℕ) - 50 ^ (8 : ℕ))) + (16915 / 64 : ℝ) * (t ^ (7 : ℕ) * l) + (2259 / 8 : ℝ) * (t ^ (9 : ℕ) * l) + (443 / 8 : ℝ) * (t ^ (11 : ℕ) * l) + (29 / 2 : ℝ) * (t ^ (13 : ℕ) * l) + (5049 / 80000000000000000000 : ℝ) * (t * l ^ (2 : ℕ) * (t ^ (10 : ℕ) - 50 ^ (10 : ℕ))) + (896173 / 4096 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ)) + (11443 / 3200000000000 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * (t ^ (6 : ℕ) - 50 ^ (6 : ℕ))) + (6265 / 128 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ)) + (943 / 32 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ)) + (47 / 16 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t ^ (0 : ℕ) - 50 ^ (0 : ℕ))) + (238617 / 8192 : ℝ) * (t * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (1 : ℕ) - l ^ (1 : ℕ))) + (715851 / 320000000000000000 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * (t ^ (8 : ℕ) - 50 ^ (8 : ℕ))) + (76823 / 2048 : ℝ) * (t ^ (3 : ℕ) * l ^ (3 : ℕ)) + (2667 / 256 : ℝ) * (t ^ (5 : ℕ) * l ^ (3 : ℕ)) + (639 / 64 : ℝ) * (t ^ (7 : ℕ) * l ^ (3 : ℕ)) + (83 / 32 : ℝ) * (t ^ (9 : ℕ) * l ^ (3 : ℕ)) + (226443 / 16384 : ℝ) * (t * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (2037987 / 256000000000000 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * (t ^ (6 : ℕ) - 50 ^ (6 : ℕ))) + (11623 / 1024 : ℝ) * (t ^ (3 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (104607 / 6400000000 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * (t ^ (4 : ℕ) - 50 ^ (4 : ℕ))) + (2249 / 512 : ℝ) * (t ^ (5 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (20241 / 1280000 : ℝ) * (t ^ (9 : ℕ) * l ^ (2 : ℕ) * (t ^ (2 : ℕ) - 50 ^ (2 : ℕ))) + (31 / 64 : ℝ) * (t ^ (7 : ℕ) * l ^ (2 : ℕ) * ((3 * t ^ (2 : ℕ)) ^ (2 : ℕ) - l ^ (2 : ℕ))) + (279 / 64 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t ^ (0 : ℕ) - 50 ^ (0 : ℕ))) + (123507555200938826755999 / 400000000000000000000 : ℝ) * (t ^ (11 : ℕ) * l ^ (2 : ℕ)) := by
     unfold skewPlateauLineForm
     ring
   have m0 : 0 ≤ t ^ (11 : ℕ) * l ^ (2 : ℕ) * (t - 50) * (t + 2) := (mul_nonneg (mul_nonneg (mul_nonneg (pow_nonneg ht0 11) (pow_nonneg hl0 2)) hg3) hp2)
@@ -233,14 +233,14 @@ theorem skewPlateauLineForm_bulk_upper (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 :
   exact hP
 
 /-- On the bulk band the scalar-scalar kernel is at most `t⁹/1000` for `t ≥ 50`. -/
-theorem skewPlateauMu_bulk_im_le (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : t ^ 2 ≤ l) (h2 : l ≤ 3 * t ^ 2) :
-    (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im ≤ t ^ 9 / 1000 := by
+theorem skewPlateauMu_bulk_im_le (t l : ℝ) (ht : (50 : ℝ) ≤ t) (h1 : t ^ (2 : ℕ) ≤ l) (h2 : l ≤ 3 * t ^ (2 : ℕ)) :
+    (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im ≤ t ^ (9 : ℕ) / 1000 := by
   have hl0 : (0 : ℝ) ≤ l := by nlinarith
   have h := congrArg Complex.im (skewPlateauMu_line t l hl0)
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_add, one_mul] at h
   have hden := skewPlateauLineDen_pos t l hl0
   have hU := skewPlateauLineForm_bulk_upper t l ht h1 h2
-  have : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) ≤ t ^ 9 / 1000 * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) := by
+  have : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im * (128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ))) ≤ t ^ (9 : ℕ) / 1000 * (128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ))) := by
     rw [h]; nlinarith
   exact le_of_mul_le_mul_right this hden
 

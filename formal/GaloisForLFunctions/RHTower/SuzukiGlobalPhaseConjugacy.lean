@@ -159,12 +159,12 @@ compactifying factors `(1+x²)/(1+T(x)²)`. -/
 theorem suzukiPhaseTransport_probabilityMass
     {x y transportSpeed atomMassₛ atomMassᵣ probabilityMassₛ probabilityMassᵣ : ℝ}
     (hatom : atomMassₛ = transportSpeed * atomMassᵣ)
-    (hprobabilityₛ : probabilityMassₛ = atomMassₛ / (1 + y ^ 2))
-    (hprobabilityᵣ : probabilityMassᵣ = atomMassᵣ / (1 + x ^ 2)) :
+    (hprobabilityₛ : probabilityMassₛ = atomMassₛ / (1 + y ^ (2 : ℕ)))
+    (hprobabilityᵣ : probabilityMassᵣ = atomMassᵣ / (1 + x ^ (2 : ℕ))) :
     probabilityMassₛ =
-      transportSpeed * (1 + x ^ 2) / (1 + y ^ 2) * probabilityMassᵣ := by
-  have hx : 1 + x ^ 2 ≠ 0 := by positivity
-  have hy : 1 + y ^ 2 ≠ 0 := by positivity
+      transportSpeed * (1 + x ^ (2 : ℕ)) / (1 + y ^ (2 : ℕ)) * probabilityMassᵣ := by
+  have hx : 1 + x ^ (2 : ℕ) ≠ 0 := by positivity
+  have hy : 1 + y ^ (2 : ℕ) ≠ 0 := by positivity
   rw [hprobabilityₛ, hprobabilityᵣ, hatom]
   field_simp [hx, hy]
 

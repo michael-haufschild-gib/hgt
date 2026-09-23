@@ -33,9 +33,9 @@ noncomputable def xiShiftedCanonicalAdmissionAllDegreeRetainedSourceReserve
       (HTGeometry.monicOrthoAlpha
           (fun k => (xiShiftedReciprocalMoment y k).re) j -
         HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ 2) +
+          (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ (2 : ℕ)) +
     2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment y k).re) 0 ^ 2 +
+        (fun k => (xiShiftedReciprocalMoment y k).re) 0 ^ (2 : ℕ) +
     8 * (∑ j ∈ Finset.range N,
       HTGeometry.monicOrthoBeta
         (fun k => (xiShiftedReciprocalMoment y k).re) j) +
@@ -49,16 +49,16 @@ Jacobi coordinate or a reporting functional. -/
 noncomputable def xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge
     (w : ℝ) (N : ℕ) : ℝ :=
   2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w N -
-    xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ 2) N -
-    xiShiftedCanonicalAdmissionAllDegreeRetainedSourceReserve (w ^ 2) N
+    xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ (2 : ℕ)) N -
+    xiShiftedCanonicalAdmissionAllDegreeRetainedSourceReserve (w ^ (2 : ℕ)) N
 
 /-- Exact, unconditional accounting identity defining the terminal channel inside the literal
 source aggregate. -/
 theorem two_mul_adaptiveMixedCompletedSourceAction_eq_connector_add_retained_add_terminalCharge
     (w : ℝ) (N : ℕ) :
     2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w N =
-      xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ 2) N +
-        xiShiftedCanonicalAdmissionAllDegreeRetainedSourceReserve (w ^ 2) N +
+      xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ (2 : ℕ)) N +
+        xiShiftedCanonicalAdmissionAllDegreeRetainedSourceReserve (w ^ (2 : ℕ)) N +
         xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge w N := by
   rw [xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge]
   ring
@@ -85,7 +85,7 @@ theorem adaptiveMixedTerminalSourceCharge_eq_terminalBeta
     xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge w N =
       4 * (N + 1 : ℝ) *
         HTGeometry.monicOrthoBeta
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (N + 1) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (N + 1) := by
   rw [xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge,
     two_mul_adaptiveMixedCompletedSourceAction_eq_allDegreeConnectorEnergy_add_reserve
       hw hN hH,
@@ -119,12 +119,12 @@ theorem adaptiveMixedTerminalSourceCharge_eq_terminalAdmissionEdge
       (xiShiftedRealMomentSequence w) (N + 2)).PosDef) :
     xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceCharge w N =
       4 * (N + 1 : ℝ) *
-        xiShiftedCanonicalAdmissionAdjacentEdge (w ^ 2) (N + 1) := by
+        xiShiftedCanonicalAdmissionAdjacentEdge (w ^ (2 : ℕ)) (N + 1) := by
   rw [adaptiveMixedTerminalSourceCharge_eq_terminalBeta hw hN hH]
   have hhead : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (N + 1)).PosDef := by
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (N + 1)).PosDef := by
     have hseq : xiShiftedRealMomentSequence w =
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) := by
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) := by
       rfl
     rw [← hseq]
     exact xiShiftedMomentHankel_posDef_of_le (by omega) hH
@@ -218,7 +218,7 @@ theorem tendsto_adaptiveMixedTerminalSourceCharge_div_pow_at_strictFrontierConta
       dsimp only [y]
       linarith
     nlinarith [Real.sq_sqrt (add_pos hy hu).le, Real.sqrt_nonneg (y + u)]
-  have hsquare : (Real.sqrt (y + u)) ^ 2 = y + u :=
+  have hsquare : (Real.sqrt (y + u)) ^ (2 : ℕ) = y + u :=
     Real.sq_sqrt (add_pos hy hu).le
   have hsource := adaptiveMixedTerminalSourceCharge_eq_terminalAdmissionEdge
     hyv (by omega : 0 < n + 1) (by

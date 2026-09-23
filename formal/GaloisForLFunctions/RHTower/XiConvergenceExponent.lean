@@ -55,20 +55,20 @@ lemma xi_divisor_nonneg (U : Set ℂ) (z : ℂ) : 0 ≤ MeromorphicOn.divisor xi
 /-- The pure real inequality behind the shell estimate: with `a = ‖ρ‖`, `b = ‖ρ − 2‖`, multiplicity
 `d ≥ 0`, and `2ˢ ≤ b`, `4 ≤ b`, `b/2 ≤ a`, one has `d/a² ≤ 4·d·4⁻ˢ`. -/
 lemma shell_term_bound {a b d : ℝ} {s : ℕ} (hd : 0 ≤ d) (hb4 : 4 ≤ b)
-    (hab : b / 2 ≤ a) (hbs : (2:ℝ) ^ s ≤ b) : d / a ^ 2 ≤ 4 * d * (1/4) ^ s := by
+    (hab : b / 2 ≤ a) (hbs : (2:ℝ) ^ s ≤ b) : d / a ^ (2 : ℕ) ≤ 4 * d * (1/4) ^ s := by
   have hbpos : 0 < b := by linarith
   have hapos : 0 < a := by linarith
-  have h1 : d / a ^ 2 ≤ d / (b/2) ^ 2 :=
+  have h1 : d / a ^ (2 : ℕ) ≤ d / (b/2) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left hd (by positivity) (pow_le_pow_left₀ (by positivity) hab 2)
-  have h2 : d / (b/2) ^ 2 = 4 * d / b ^ 2 := by field_simp; ring
-  have h3 : 4 * d / b ^ 2 ≤ 4 * d / ((2:ℝ) ^ s) ^ 2 :=
+  have h2 : d / (b/2) ^ (2 : ℕ) = 4 * d / b ^ (2 : ℕ) := by field_simp; ring
+  have h3 : 4 * d / b ^ (2 : ℕ) ≤ 4 * d / ((2:ℝ) ^ s) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by positivity) (by positivity) (pow_le_pow_left₀ (by positivity) hbs 2)
-  have h4 : 4 * d / ((2:ℝ) ^ s) ^ 2 = 4 * d * (1/4) ^ s := by
-    have he : ((2:ℝ) ^ s) ^ 2 = (4:ℝ) ^ s := by rw [← pow_mul, mul_comm s 2, pow_mul]; norm_num
+  have h4 : 4 * d / ((2:ℝ) ^ s) ^ (2 : ℕ) = 4 * d * (1/4) ^ s := by
+    have he : ((2:ℝ) ^ s) ^ (2 : ℕ) = (4:ℝ) ^ s := by rw [← pow_mul, mul_comm s 2, pow_mul]; norm_num
     rw [he, show (1/4:ℝ) = (4:ℝ)⁻¹ from by norm_num, inv_pow, div_eq_mul_inv]
-  calc d / a ^ 2 ≤ d / (b/2) ^ 2 := h1
-    _ = 4 * d / b ^ 2 := h2
-    _ ≤ 4 * d / ((2:ℝ) ^ s) ^ 2 := h3
+  calc d / a ^ (2 : ℕ) ≤ d / (b/2) ^ (2 : ℕ) := h1
+    _ = 4 * d / b ^ (2 : ℕ) := h2
+    _ ≤ 4 * d / ((2:ℝ) ^ s) ^ (2 : ℕ) := h3
     _ = 4 * d * (1/4) ^ s := h4
 
 /-- **The ξ-zeros are square-summable.**  Indexed by the actual divisor-support subtype and weighted by
@@ -76,11 +76,11 @@ the integer multiplicity `divisor ξ` at each zero, the series `∑_ρ mult(ρ)/
 the convergence exponent of the completed-zeta zero sequence is strictly below `2`. -/
 theorem xi_zero_multiplicity_inv_sq_summable :
     Summable (fun ρ : ↥(MeromorphicOn.divisor xi Set.univ).support =>
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
   classical
   obtain ⟨C, hCpos, hN⟩ := xi_zeroCount_growth
   set D := MeromorphicOn.divisor xi Set.univ with hDdef
-  set f : ↥D.support → ℝ := fun ρ => ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ)‖ ^ 2 with hfdef
+  set f : ↥D.support → ℝ := fun ρ => ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ)‖ ^ (2 : ℕ) with hfdef
   have hfnn : ∀ ρ : ↥D.support, 0 ≤ f ρ := by
     intro ρ
     apply div_nonneg _ (by positivity)

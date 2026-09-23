@@ -17,7 +17,7 @@ abbrev FactorTensorPolynomial (R : Type*) [CommSemiring R] (d : ℕ) :=
 def factorTensorRelation
     {R : Type*} [CommRing R] {d : ℕ}
     (a : R) (r : Fin d → ℕ) (i : Fin d) : FactorTensorPolynomial R d :=
-  MvPolynomial.X i ^ 2 - MvPolynomial.C (a ^ (2 * r i))
+  MvPolynomial.X i ^ (2 : ℕ) - MvPolynomial.C (a ^ (2 * r i))
 
 def factorTensorRelationIdeal
     {R : Type*} [CommRing R] {d : ℕ}

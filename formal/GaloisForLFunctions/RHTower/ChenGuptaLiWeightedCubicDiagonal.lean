@@ -8,7 +8,7 @@ namespace RHTower
 
 /-- One row's weighted unit-supported diagonal mass. -/
 def cglCharacterDyadicWeightedUnitWeightMass (N q : ℕ) (weight : Fin N → ℂ) : ℝ :=
-  ∑ j, ‖weight j‖ ^ 2 * cglCharacterDyadicUnitSupport N q j
+  ∑ j, ‖weight j‖ ^ (2 : ℕ) * cglCharacterDyadicUnitSupport N q j
 
 /-- Every row has the same diagonal Gram mass. -/
 theorem cglCharacterDyadicWeightedGram_diagonal_eq_unitWeightMass
@@ -22,7 +22,7 @@ theorem cglCharacterDyadicWeightedGram_diagonal_eq_unitWeightMass
   calc
     ∑ j, cglCharacterDyadicWeightedEvaluationMatrix N q R weight w r j *
         (cglCharacterDyadicWeightedEvaluationMatrix N q R weight w)ᴴ j r =
-        ∑ j, (↑(‖cglCharacterDyadicWeightedEvaluationMatrix N q R weight w r j‖ ^ 2 : ℝ) : ℂ) := by
+        ∑ j, (↑(‖cglCharacterDyadicWeightedEvaluationMatrix N q R weight w r j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       apply Finset.sum_congr rfl
       intro j hj
       simp only [Matrix.conjTranspose_apply]
@@ -31,7 +31,7 @@ theorem cglCharacterDyadicWeightedGram_diagonal_eq_unitWeightMass
       rw [Complex.mul_conj]
       norm_cast
       exact Complex.normSq_eq_norm_sq _
-    _ = (∑ j, ‖cglCharacterDyadicWeightedEvaluationMatrix N q R weight w r j‖ ^ 2 : ℝ) := by
+    _ = (∑ j, ‖cglCharacterDyadicWeightedEvaluationMatrix N q R weight w r j‖ ^ (2 : ℕ) : ℝ) := by
       rw [Complex.ofReal_sum]
     _ = _ := by
       congr 1
@@ -54,7 +54,7 @@ theorem cglCharacterDyadicWeighted_trace_self_mul_conjTranspose_eq_card_mul_unit
 theorem cglCharacterDyadicWeightedGramCubicDiagonal_eq_sum_diagonalCube
     (N q R : ℕ) (weight : Fin N → ℂ) (w : Fin R → CGLCharacterDyadicRowData q) :
     cglCharacterDyadicWeightedGramCubicDiagonal N q R weight w =
-      ∑ r, (cglCharacterDyadicWeightedGram N q R weight w r r) ^ 3 := by
+      ∑ r, (cglCharacterDyadicWeightedGram N q R weight w r r) ^ (3 : ℕ) := by
   classical
   unfold cglCharacterDyadicWeightedGramCubicDiagonal
   refine Finset.sum_bij (fun rst _ => rst.1) ?_ ?_ ?_ ?_
@@ -93,7 +93,7 @@ theorem cglCharacterDyadicWeightedGramCubicDiagonal_eq_sum_diagonalCube
 theorem cglCharacterDyadicWeightedGramCubicDiagonal_eq_card_mul_unitWeightMass_cube
     (N q R : ℕ) (weight : Fin N → ℂ) (w : Fin R → CGLCharacterDyadicRowData q) :
     cglCharacterDyadicWeightedGramCubicDiagonal N q R weight w =
-      (R : ℂ) * (cglCharacterDyadicWeightedUnitWeightMass N q weight : ℂ) ^ 3 := by
+      (R : ℂ) * (cglCharacterDyadicWeightedUnitWeightMass N q weight : ℂ) ^ (3 : ℕ) := by
   rw [cglCharacterDyadicWeightedGramCubicDiagonal_eq_sum_diagonalCube]
   simp_rw [cglCharacterDyadicWeightedGram_diagonal_eq_unitWeightMass]
   simp
@@ -104,8 +104,8 @@ theorem cglCharacterDyadicWeightedGramCubicDiagonal_eq_traceCube_div_cardSq
     (N q R : ℕ) (weight : Fin N → ℂ) (w : Fin (R + 1) → CGLCharacterDyadicRowData q) :
     cglCharacterDyadicWeightedGramCubicDiagonal N q (R + 1) weight w =
       ((cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w *
-        (cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w)ᴴ).trace) ^ 3 /
-          (R + 1 : ℂ) ^ 2 := by
+        (cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w)ᴴ).trace) ^ (3 : ℕ) /
+          (R + 1 : ℂ) ^ (2 : ℕ) := by
   rw [cglCharacterDyadicWeightedGramCubicDiagonal_eq_card_mul_unitWeightMass_cube]
   rw [cglCharacterDyadicWeighted_trace_self_mul_conjTranspose_eq_card_mul_unitWeightMass]
   push_cast
@@ -116,10 +116,10 @@ theorem cglCharacterDyadicWeightedGramCubicDiagonal_eq_traceCube_div_cardSq
 /-- The centered cubic trace is exactly the not-all-equal weighted correlation sum. -/
 theorem cglCharacterDyadicWeighted_centeredCubicTrace_eq_offDiagonal
     (N q R : ℕ) (weight : Fin N → ℂ) (w : Fin (R + 1) → CGLCharacterDyadicRowData q) :
-    ((cglCharacterDyadicWeightedGram N q (R + 1) weight w) ^ 3).trace -
+    ((cglCharacterDyadicWeightedGram N q (R + 1) weight w) ^ (3 : ℕ)).trace -
       ((cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w *
-        (cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w)ᴴ).trace) ^ 3 /
-          (R + 1 : ℂ) ^ 2 =
+        (cglCharacterDyadicWeightedEvaluationMatrix N q (R + 1) weight w)ᴴ).trace) ^ (3 : ℕ) /
+          (R + 1 : ℂ) ^ (2 : ℕ) =
         cglCharacterDyadicWeightedGramCubicOffDiagonal N q (R + 1) weight w := by
   rw [← cglCharacterDyadicWeightedGramCubicTrace_eq_trace_pow]
   rw [cglCharacterDyadicWeightedGramCubicTrace_eq_diagonal_add_offDiagonal]
@@ -129,9 +129,9 @@ theorem cglCharacterDyadicWeighted_centeredCubicTrace_eq_offDiagonal
 /-- Real form of the centered cubic trace identity used in CGL Lemma 4.2. -/
 theorem cglCharacterDyadicWeighted_centeredCubicTrace_re_eq_offDiagonal_re
     (N q R : ℕ) (weight : Fin N → ℂ) (w : Fin (R + 1) → CGLCharacterDyadicRowData q) :
-    ((cglCharacterDyadicWeightedGram N q (R + 1) weight w) ^ 3).trace.re -
-      (cglCharacterDyadicWeightedGram N q (R + 1) weight w).trace.re ^ 3 /
-        (R + 1 : ℝ) ^ 2 =
+    ((cglCharacterDyadicWeightedGram N q (R + 1) weight w) ^ (3 : ℕ)).trace.re -
+      (cglCharacterDyadicWeightedGram N q (R + 1) weight w).trace.re ^ (3 : ℕ) /
+        (R + 1 : ℝ) ^ (2 : ℕ) =
       (cglCharacterDyadicWeightedGramCubicOffDiagonal N q (R + 1) weight w).re := by
   have h := congrArg Complex.re
     (cglCharacterDyadicWeighted_centeredCubicTrace_eq_offDiagonal N q R weight w)
@@ -143,10 +143,10 @@ theorem cglCharacterDyadicWeighted_centeredCubicTrace_re_eq_offDiagonal_re
       N q (R + 1) weight w
   have hratio :
       (((((↑(R + 1 : ℕ) : ℂ) *
-        (cglCharacterDyadicWeightedUnitWeightMass N q weight : ℂ)) ^ 3) /
-          ((R : ℂ) + 1) ^ 2).re) =
-        ((R + 1 : ℝ) * cglCharacterDyadicWeightedUnitWeightMass N q weight) ^ 3 /
-          (R + 1 : ℝ) ^ 2 := by
+        (cglCharacterDyadicWeightedUnitWeightMass N q weight : ℂ)) ^ (3 : ℕ)) /
+          ((R : ℂ) + 1) ^ (2 : ℕ)).re) =
+        ((R + 1 : ℝ) * cglCharacterDyadicWeightedUnitWeightMass N q weight) ^ (3 : ℕ) /
+          (R + 1 : ℝ) ^ (2 : ℕ) := by
     norm_cast
   have hre :
       (((↑(R + 1 : ℕ) : ℂ) *

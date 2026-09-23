@@ -14,7 +14,7 @@ The two block operators are
 Lean checks that `G - J` is the previously studied defect and that every
 nontrivial pencil equation `G x = lambda J x`, away from `lambda = 1`, reduces
 to an ordinary eigenvector equation for `C† C` with eigenvalue
-`1 - lambda^2`.
+`1 - lambda^(2 : ℕ)`.
 -/
 
 namespace RiemannGaussian
@@ -118,7 +118,7 @@ theorem gramWeil_pencilEquation_implies_adjoint_comp
     (h : gramWeilGramOperator C x =
       lambda • gramWeilSignatureOperator
         (𝕜 := 𝕜) (P := P) (N := N) x) :
-    C.adjoint (C x.2) = (1 - lambda ^ 2) • x.2 := by
+    C.adjoint (C x.2) = (1 - lambda ^ (2 : ℕ)) • x.2 := by
   obtain ⟨hfirst, hsecond⟩ :=
     (gramWeil_pencilEquation_iff C lambda x).mp h
   calc
@@ -126,7 +126,7 @@ theorem gramWeil_pencilEquation_implies_adjoint_comp
       rw [hfirst]
     _ = (1 - lambda) • C.adjoint x.1 := by rw [map_smul]
     _ = (1 - lambda) • ((1 + lambda) • x.2) := by rw [hsecond]
-    _ = (1 - lambda ^ 2) • x.2 := by
+    _ = (1 - lambda ^ (2 : ℕ)) • x.2 := by
       rw [smul_smul]
       congr 1
       ring
@@ -152,11 +152,11 @@ theorem gramWeil_pencilEquation_right_ne_zero
   · simpa using hright
 
 /-- Conversely, an eigenmode of `C† C` lifts to a pencil mode whenever
-`lambda ≠ 1` and its eigenvalue is `1 - lambda^2`. -/
+`lambda ≠ 1` and its eigenvalue is `1 - lambda^(2 : ℕ)`. -/
 theorem gramWeil_lift_adjointComp_eigenvector
     (C : N →ₗ[𝕜] P) {lambda : 𝕜} (hlambda : lambda ≠ 1)
     {n : N}
-    (hmode : C.adjoint (C n) = (1 - lambda ^ 2) • n) :
+    (hmode : C.adjoint (C n) = (1 - lambda ^ (2 : ℕ)) • n) :
     gramWeilGramOperator C
         ((1 - lambda)⁻¹ • C n, n) =
       lambda • gramWeilSignatureOperator
@@ -169,7 +169,7 @@ theorem gramWeil_lift_adjointComp_eigenvector
     field_simp
     simp
   · rw [map_smul, hmode, smul_smul]
-    have hfactor : (1 - lambda)⁻¹ * (1 - lambda ^ 2) =
+    have hfactor : (1 - lambda)⁻¹ * (1 - lambda ^ (2 : ℕ)) =
         1 + lambda := by
       field_simp
       ring
@@ -196,19 +196,19 @@ theorem gramWeil_adjointComp_realEigenvalue_mem_Ioo
   have hnormn : 0 < ‖n‖ := norm_pos_iff.mpr hn
   have hnormCn : 0 < ‖C n‖ := norm_pos_iff.mpr hCn
   have hnormlt : ‖C n‖ < ‖n‖ := hcontract n hn
-  have hsquare : ‖C n‖ ^ 2 = s * ‖n‖ ^ 2 := by
+  have hsquare : ‖C n‖ ^ (2 : ℕ) = s * ‖n‖ ^ (2 : ℕ) := by
     calc
-      ‖C n‖ ^ 2 = RCLike.re (inner 𝕜 (C n) (C n)) :=
+      ‖C n‖ ^ (2 : ℕ) = RCLike.re (inner 𝕜 (C n) (C n)) :=
         norm_sq_eq_re_inner _
       _ = RCLike.re (inner 𝕜 (C.adjoint (C n)) n) := by
         rw [LinearMap.adjoint_inner_left]
       _ = RCLike.re (inner 𝕜 ((s : 𝕜) • n) n) := by rw [hmode]
-      _ = s * ‖n‖ ^ 2 := by
+      _ = s * ‖n‖ ^ (2 : ℕ) := by
         rw [inner_smul_left]
         simp
   constructor
   · nlinarith [sq_pos_of_pos hnormCn, sq_pos_of_pos hnormn]
-  · have hsquare_lt : ‖C n‖ ^ 2 < ‖n‖ ^ 2 := by
+  · have hsquare_lt : ‖C n‖ ^ (2 : ℕ) < ‖n‖ ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (C n), norm_nonneg n]
     nlinarith [sq_pos_of_pos hnormn]
 
@@ -230,9 +230,9 @@ theorem gramWeil_realPencilEigenvalue_mem_Ioo
     gramWeil_pencilEquation_right_ne_zero hlambdaField hx hpencil
   have hmode := gramWeil_pencilEquation_implies_adjoint_comp hpencil
   have hmodeReal : C.adjoint (C x.2) =
-      ((1 - lambda ^ 2 : ℝ) : 𝕜) • x.2 := by
-    rw [show ((1 - lambda ^ 2 : ℝ) : 𝕜) =
-      1 - (lambda : 𝕜) ^ 2 by
+      ((1 - lambda ^ (2 : ℕ) : ℝ) : 𝕜) • x.2 := by
+    rw [show ((1 - lambda ^ (2 : ℕ) : ℝ) : 𝕜) =
+      1 - (lambda : 𝕜) ^ (2 : ℕ) by
         push_cast
         ring]
     exact hmode

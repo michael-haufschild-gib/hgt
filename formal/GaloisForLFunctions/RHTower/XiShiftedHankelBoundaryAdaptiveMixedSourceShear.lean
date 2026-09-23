@@ -32,8 +32,8 @@ noncomputable section
 
 /-- Coefficients of the odd contact polynomial `p²`, kept as one finite adaptive packet. -/
 def xiShiftedOddCrossingCoefficientPacket (p : Polynomial ℝ) :
-    Fin ((p ^ 2).natDegree + 1) → ℝ :=
-  Polynomial.toFn ((p ^ 2).natDegree + 1) (p ^ 2)
+    Fin ((p ^ (2 : ℕ)).natDegree + 1) → ℝ :=
+  Polynomial.toFn ((p ^ (2 : ℕ)).natDegree + 1) (p ^ (2 : ℕ))
 
 private theorem shiftedEuler_monomial
     (a b : ℝ) (j : ℕ) :
@@ -149,9 +149,9 @@ theorem xiShiftedCompletedMomentAggregate_oddPacket_eq_momentInner
         (xiShiftedOddCrossingCoefficientPacket p) =
       HTGeometry.momentInner
         (fun k => (xiShiftedReciprocalMoment y k).re) p (X * p) := by
-  let N := (p ^ 2).natDegree + 1
+  let N := (p ^ (2 : ℕ)).natDegree + 1
   let c : Fin N → ℝ := xiShiftedOddCrossingCoefficientPacket p
-  have hc : Polynomial.ofFn N c = p ^ 2 := by
+  have hc : Polynomial.ofFn N c = p ^ (2 : ℕ) := by
     exact Polynomial.ofFn_comp_toFn_eq_id_of_natDegree_lt (Nat.lt_succ_self _)
   have hprod : X * Polynomial.ofFn N c = p * (X * p) := by
     rw [hc]
@@ -229,7 +229,7 @@ theorem hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_sourceShear
         (xiShiftedApertureArchimedeanSourcePair w
             (X * p) (X * xiShiftedBoundaryShiftedEuler 1 p) +
           xiShiftedApertureDiscrepancySourcePair w
-            (X * p) (X * xiShiftedBoundaryShiftedEuler 1 p))) (w ^ 2) := by
+            (X * p) (X * xiShiftedBoundaryShiftedEuler 1 p))) (w ^ (2 : ℕ)) := by
   have h :=
     hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_adaptiveShear
       (sq_pos_of_pos (by linarith : 0 < w)) p
@@ -317,7 +317,7 @@ theorem hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_completedMixedSource
             (xiShiftedOddCrossingCoefficientPacket p)) +
         xiShiftedHankelBoundaryRadialDiscrepancy w 2
           (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
-            (xiShiftedOddCrossingCoefficientPacket p)))) (w ^ 2) := by
+            (xiShiftedOddCrossingCoefficientPacket p)))) (w ^ (2 : ℕ)) := by
   have h :=
     hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_sourceShear hw p
   rw [xiShiftedCompletedAdaptiveOddPacketSource_eq_two_sourceShear hw p]

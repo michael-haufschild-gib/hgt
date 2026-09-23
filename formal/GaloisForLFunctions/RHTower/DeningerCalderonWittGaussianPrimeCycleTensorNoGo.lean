@@ -47,7 +47,7 @@ def deningerGaussianPrimeTriangleHolonomy
 theorem deningerGaussianPrimeTriangleHolonomy_smul
     (c : ℂ) (T : RouteKPrimeHilbert →L[ℂ] RouteKPrimeHilbert) (n : ℕ) :
     deningerGaussianPrimeTriangleHolonomy (c • T) n =
-      c ^ 3 * deningerGaussianPrimeTriangleHolonomy T n := by
+      c ^ (3 : ℕ) * deningerGaussianPrimeTriangleHolonomy T n := by
   simp only [deningerGaussianPrimeTriangleHolonomy,
     smul_apply, inner_smul_right]
   ring
@@ -145,7 +145,7 @@ theorem deningerGaussianEntropyPrimeCycleCarrier_selectedHolonomy
     (M n : ℕ) (q : XiZeroCopy) :
     deningerGaussianPrimeTriangleHolonomy
         (deningerGaussianEntropyPrimeCycleCarrier M q) (n + M) =
-      (riemannReflectedSourceEntropy (q.1 : ℂ) : ℂ) ^ 3 *
+      (riemannReflectedSourceEntropy (q.1 : ℂ) : ℂ) ^ (3 : ℕ) *
         deningerGaussianPrimeTriangleHolonomy
           (routeKCofinalTriangleNuclearCarrierFrom M) (n + M) := by
   exact deningerGaussianPrimeTriangleHolonomy_smul _ _ _

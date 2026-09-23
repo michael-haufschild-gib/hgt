@@ -15,8 +15,8 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAMeanGibbsDeficit_temperature_cubic_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) ^ 3)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (egbFixedChargeATemperatureGapCoefficient w φ) ^ 3)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) ^ (3 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (egbFixedChargeATemperatureGapCoefficient w φ) ^ (3 : ℕ))) := by
   have hp := egbFixedChargeATemperatureGapCoefficient_pos w φ
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).div
     ((egbFixedChargeATemperatureGap_quadratic_critical_limit w φ).pow 3) (by positivity)
@@ -27,8 +27,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_temperature_cubic_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMeanGibbsDeficit_pressure_cubic_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) ^ 3)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (egbFixedChargeAPressureGapCoefficient w φ) ^ 3)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) ^ (3 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (egbFixedChargeAPressureGapCoefficient w φ) ^ (3 : ℕ))) := by
   have hp := egbFixedChargeAPressureGapCoefficient_pos w φ
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).div
     ((egbFixedChargeAPressureGap_quadratic_critical_limit w φ).pow 3) (by positivity)
@@ -39,8 +39,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_pressure_cubic_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMeanGibbsDeficit_radius_sixth_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeALargeRadius w φ τ - egbFixedChargeASmallRadius w φ τ) ^ 6)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (2 * egbFixedChargeACriticalRadius w φ) ^ 6)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeALargeRadius w φ τ - egbFixedChargeASmallRadius w φ τ) ^ (6 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (2 * egbFixedChargeACriticalRadius w φ) ^ (6 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).div
     ((egbFixedChargeA_radius_gap_asymmetry_limit w φ).pow 6) (by positivity)
@@ -51,8 +51,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_radius_sixth_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMeanGibbsDeficit_entropy_sixth_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeAEntropyJump w φ τ) ^ 6)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) ^ 6)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeAEntropyJump w φ τ) ^ (6 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) ^ (6 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hp := Real.pi_pos
@@ -65,8 +65,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_entropy_sixth_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMeanGibbsDeficit_volume_sixth_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeAVolumeJump w φ τ) ^ 6)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3) ^ 6)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeAVolumeJump w φ τ) ^ (6 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ)) ^ (6 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hp := Real.pi_pos
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).div
@@ -78,8 +78,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_volume_sixth_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAMeanGibbsDeficit_latent_heat_sixth_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeATemperature w φ τ * egbFixedChargeAEntropyJump w φ τ) ^ 6)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (4 * egbFixedChargeACriticalRadius w φ / 3) ^ 6)) := by
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / (egbFixedChargeATemperature w φ τ * egbFixedChargeAEntropyJump w φ τ) ^ (6 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ / (4 * egbFixedChargeACriticalRadius w φ / 3) ^ (6 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).div
     ((egbFixedChargeA_latent_heat_asymmetry_critical_limit w φ).pow 6) (by positivity)
@@ -92,8 +92,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_latent_heat_sixth_limit (w φ l : ℝ) :
 theorem egbFixedChargeAMeanGibbsDeficit_small_heat_cubed_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l₁ *
       egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l₂
-        (egbFixedChargeASmallRadius w φ τ) ^ 3)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ 3)) := by
+        (egbFixedChargeASmallRadius w φ τ) ^ (3 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ (3 : ℕ))) := by
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l₁).mul
     ((egbFixedChargeA_small_heat_capacity_amplitude w φ l₂).pow 3)
   convert h using 1
@@ -104,8 +104,8 @@ theorem egbFixedChargeAMeanGibbsDeficit_small_heat_cubed_limit (w φ l₁ l₂ :
 theorem egbFixedChargeAMeanGibbsDeficit_large_heat_cubed_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l₁ *
       egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l₂
-        (egbFixedChargeALargeRadius w φ τ) ^ 3)
-      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ 3)) := by
+        (egbFixedChargeALargeRadius w φ τ) ^ (3 : ℕ))
+      atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ (3 : ℕ))) := by
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l₁).mul
     ((egbFixedChargeA_large_heat_capacity_amplitude w φ l₂).pow 3)
   convert h using 1
@@ -116,12 +116,12 @@ theorem egbFixedChargeAMeanGibbsDeficit_large_heat_cubed_limit (w φ l₁ l₂ :
 theorem egbFixedChargeAMeanGibbsDeficit_mean_heat_cubed_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l₁ *
       egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l₂
-        (egbFixedChargeAMeanRadius w φ τ) ^ 3)
-      atBot (𝓝 (-8 * egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ 3)) := by
+        (egbFixedChargeAMeanRadius w φ τ) ^ (3 : ℕ))
+      atBot (𝓝 (-8 * egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ (3 : ℕ))) := by
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l₁).mul
     ((egbFixedChargeA_mean_heat_capacity_amplitude w φ l₂).pow 3)
-  have he : egbFixedChargeAMeanDeficitCoefficient w φ * (-2 * egbFixedChargeACriticalHeatAmplitude w φ) ^ 3 =
-      -8 * egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ 3 := by ring
+  have he : egbFixedChargeAMeanDeficitCoefficient w φ * (-2 * egbFixedChargeACriticalHeatAmplitude w φ) ^ (3 : ℕ) =
+      -8 * egbFixedChargeAMeanDeficitCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ (3 : ℕ) := by ring
   rw [he] at h
   convert h using 1
   funext τ

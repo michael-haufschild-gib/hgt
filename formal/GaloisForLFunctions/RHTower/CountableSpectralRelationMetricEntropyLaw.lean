@@ -51,14 +51,14 @@ theorem norm_countableSpectralPhaseState_sub_sq_eq
     (p : ℕ → ℝ) (hp : ∀ k, 0 ≤ p k) (hsum : Summable p)
     (z w : ℕ → UnitAddCircle) :
     ‖countableSpectralPhaseState p hp hsum z -
-        countableSpectralPhaseState p hp hsum w‖ ^ 2 =
+        countableSpectralPhaseState p hp hsum w‖ ^ (2 : ℕ) =
       2 * GaloisForLFunctions.HTGeometry.screwValue p (z - w) := by
   rw [HilbertSchmidt.lp_norm_sq_eq,
     GaloisForLFunctions.HTGeometry.screwValue, ← tsum_mul_left]
   change
     (∑' k : ℕ,
       ‖countableSpectralPhaseState p hp hsum z k -
-        countableSpectralPhaseState p hp hsum w k‖ ^ 2) =
+        countableSpectralPhaseState p hp hsum w k‖ ^ (2 : ℕ)) =
       ∑' k : ℕ, 2 * (p k *
         (1 - (GaloisForLFunctions.HTGeometry.screwCoord
           ((z - w) k)).re))
@@ -142,7 +142,7 @@ theorem countableSpectralPhaseState_continuous
     GaloisForLFunctions.HTGeometry.screwValue_nonneg hp (zw.1 - zw.2)
   have hsqrtSq :
       Real.sqrt (2 *
-        GaloisForLFunctions.HTGeometry.screwValue p (zw.1 - zw.2)) ^ 2 =
+        GaloisForLFunctions.HTGeometry.screwValue p (zw.1 - zw.2)) ^ (2 : ℕ) =
           2 * GaloisForLFunctions.HTGeometry.screwValue p
             (zw.1 - zw.2) :=
     Real.sq_sqrt (mul_nonneg (by norm_num) hvalue)
@@ -279,7 +279,7 @@ theorem countableSpectralFirstCoherenceTime_le_card_of_relationHullCover
       CountableSpectralRelationHullCover p hp hsum omega C r) :
     countableTorusWeightedFirstCoherenceTime p
         (GaloisForLFunctions.HTGeometry.screwPhase omega 1)
-        (2 * r ^ 2) ≤ C.card := by
+        (2 * r ^ (2 : ℕ)) ≤ C.card := by
   apply countableSpectralFirstCoherenceTime_le_card_of_orbitCover
     p hp hsum htotal
       (GaloisForLFunctions.HTGeometry.screwPhase omega 1) C hr
@@ -303,7 +303,7 @@ theorem exists_countableSpectralRelationHullFirstReturnBound
       CountableSpectralRelationHullCover p hp hsum omega C r ∧
       countableTorusWeightedFirstCoherenceTime p
           (GaloisForLFunctions.HTGeometry.screwPhase omega 1)
-          (2 * r ^ 2) ≤ C.card := by
+          (2 * r ^ (2 : ℕ)) ≤ C.card := by
   obtain ⟨C, hC⟩ :=
     exists_countableSpectralRelationHullCover p hp hsum omega hr
   exact ⟨C, hC,
@@ -320,7 +320,7 @@ theorem countableSpectralFirstCoherenceTime_le_relationHullCoveringNumber
     (omega : ℕ → ℝ) {r : ℝ} (hr : 0 < r) :
     countableTorusWeightedFirstCoherenceTime p
         (GaloisForLFunctions.HTGeometry.screwPhase omega 1)
-        (2 * r ^ 2) ≤
+        (2 * r ^ (2 : ℕ)) ≤
       countableSpectralRelationHullCoveringNumber
         p hp hsum omega r := by
   obtain ⟨C, hcover, hcard⟩ :=
@@ -346,7 +346,7 @@ theorem exists_countableSpectralRelationLatticeFirstReturnBound
           ‖countableSpectralPhaseState p hp hsum z - c‖ ≤ r) ∧
       countableTorusWeightedFirstCoherenceTime p
           (GaloisForLFunctions.HTGeometry.screwPhase omega 1)
-          (2 * r ^ 2) ≤ C.card := by
+          (2 * r ^ (2 : ℕ)) ≤ C.card := by
   obtain ⟨C, hcover, htime⟩ :=
     exists_countableSpectralRelationHullFirstReturnBound
       p hp hsum htotal omega hr

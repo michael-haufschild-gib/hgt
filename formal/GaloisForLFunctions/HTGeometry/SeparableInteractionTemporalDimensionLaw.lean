@@ -98,7 +98,7 @@ theorem separableSpectralRelation_selected
     separableSpectralRelation left right j
         (selectedSeparableParameter x s) =
       separableSpectralRelation left right j 0 +
-        (j.1 x : ℝ) * s ^ 2 := by
+        (j.1 x : ℝ) * s ^ (2 : ℕ) := by
   classical
   unfold separableSpectralRelation
   unfold separableInteractionEnergy

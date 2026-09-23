@@ -100,7 +100,7 @@ This is the arithmetic-mass energy — distinct from the crossing-length energy
 `SeamCrossingTower.finite_weil_energy_nonneg` — and it is the finite-prime half of the flux-renormalized
 Weil form. -/
 theorem flux_energy_nonneg (S : Finset (ℕ × ℕ)) (hS : ∀ pr ∈ S, 2 ≤ pr.1) (h : ℕ × ℕ → ℂ) :
-    0 ≤ ∑ pr ∈ S, Real.log pr.1 * ‖h pr‖ ^ 2 :=
+    0 ≤ ∑ pr ∈ S, Real.log pr.1 * ‖h pr‖ ^ (2 : ℕ) :=
   Finset.sum_nonneg fun pr hpr => by
     have hlog : 0 ≤ Real.log pr.1 :=
       Real.log_nonneg (by exact_mod_cast le_trans (by norm_num) (hS pr hpr))

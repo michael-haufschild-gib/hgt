@@ -18,12 +18,12 @@ noncomputable section
 def thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve
     (q e4 e6 : ℝ) : ℝ :=
   thetaCuspFirstAtomEighthNoSixthLossBaseline q +
-    e4 * (68 * e4 ^ 2 +
-      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+    e4 * (68 * e4 ^ (2 : ℕ) +
+      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
         204 * thetaCuspFirstAtomFourthProfile q) * e4 +
       thetaCuspFullReflectionEighthCompactFourthCoefficient q) +
     e6 * ((thetaCuspFullReflectionEighthCompactEighthCoefficient q + e4) *
-      (1 / 69) * (q + 3 / 2) ^ 2 -
+      (1 / 69) * (q + 3 / 2) ^ (2 : ℕ) -
       (thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6))
 
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_pos_at_baseline
@@ -32,7 +32,7 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_pos_at_baseli
   have hqpos : 0 < q := by linarith
   let y := q - 7 / 3
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 16 *
+  have hmul : 0 < q ^ (16 : ℕ) *
       thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve q 28 14200 := by
     dsimp [thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve,
       thetaCuspFirstAtomEighthNoSixthLossBaseline,
@@ -50,13 +50,13 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_pos_at_baseli
 
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_fourthLinearCoefficient_pos
     {q : ℝ} (hq : (7 / 3 : ℝ) ≤ q) :
-    0 < 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+    0 < 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
       204 * thetaCuspFirstAtomFourthProfile q := by
   have hqpos : 0 < q := by linarith
   let y := q - 7 / 3
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 8 *
-      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+  have hmul : 0 < q ^ (8 : ℕ) *
+      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
         204 * thetaCuspFirstAtomFourthProfile q) := by
     dsimp [thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomFourthProfile]
     field_simp [hqpos.ne']
@@ -75,7 +75,7 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_mono_fourth
   let a := e4 - 28
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have ha : 0 ≤ a := by dsimp only [a]; linarith
-  have hmul : 0 ≤ q ^ 16 *
+  have hmul : 0 ≤ q ^ (16 : ℕ) *
       (thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve q e4 e6 -
         thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve q 28 e6) := by
     dsimp [thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve,
@@ -97,15 +97,15 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_sixthLossCoefficient_pos
     {q : ℝ} (hq : (7 / 3 : ℝ) ≤ q) (hqhi : q ≤ 19 / 8) :
     0 < thetaCuspFullReflectionEighthCompactSixthCoefficient q + 14200 -
       (thetaCuspFullReflectionEighthCompactEighthCoefficient q + 28) *
-        (1 / 69) * (q + 3 / 2) ^ 2 := by
+        (1 / 69) * (q + 3 / 2) ^ (2 : ℕ) := by
   have hqpos : 0 < q := by linarith
   let y := q - 7 / 3
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hyhi : y ≤ 1 / 24 := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 12 *
+  have hmul : 0 < q ^ (12 : ℕ) *
       (thetaCuspFullReflectionEighthCompactSixthCoefficient q + 14200 -
         (thetaCuspFullReflectionEighthCompactEighthCoefficient q + 28) *
-          (1 / 69) * (q + 3 / 2) ^ 2) := by
+          (1 / 69) * (q + 3 / 2) ^ (2 : ℕ)) := by
     dsimp [thetaCuspFullReflectionEighthCompactSixthCoefficient,
       thetaCuspFullReflectionEighthCompactEighthCoefficient,
       thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomFourthProfile,
@@ -114,27 +114,27 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_sixthLossCoefficient_pos
     rw [show q = 7 / 3 + y by dsimp only [y]; ring]
     ring_nf
     have hc : 0 < (675038720 / 3 : ℝ) - 25600 * y := by linarith
-    have hlast : 0 ≤ y ^ 15 * (675038720 / 3 : ℝ) - y ^ 16 * 25600 := by
+    have hlast : 0 ≤ y ^ (15 : ℕ) * (675038720 / 3 : ℝ) - y ^ (16 : ℕ) * 25600 := by
       calc
-        y ^ 15 * (675038720 / 3 : ℝ) - y ^ 16 * 25600 =
-            y ^ 15 * ((675038720 / 3 : ℝ) - 25600 * y) := by ring
+        y ^ (15 : ℕ) * (675038720 / 3 : ℝ) - y ^ (16 : ℕ) * 25600 =
+            y ^ (15 : ℕ) * ((675038720 / 3 : ℝ) - 25600 * y) := by ring
         _ ≥ 0 := mul_nonneg (pow_nonneg hy 15) hc.le
     have hprefix : 0 <
         29350567649555002870964 / 43046721 +
           y * (52943049380059878205376 / 14348907) +
-          y ^ 2 * (14883535568172176988824 / 1594323) +
-          y ^ 3 * (23371735183691135757712 / 1594323) +
-          y ^ 4 * (8496477413950713237316 / 531441) +
-          y ^ 5 * (757829570301931562288 / 59049) +
-          y ^ 6 * (462751137647108238656 / 59049) +
-          y ^ 7 * (72978020819098701152 / 19683) +
-          y ^ 8 * (999109329374134588 / 729) +
-          y ^ 9 * (865681517156012576 / 2187) +
-          y ^ 10 * (64582147048462856 / 729) +
-          y ^ 11 * (1221941365393328 / 81) +
-          y ^ 12 * (153206590177708 / 81) +
-          y ^ 13 * (4448567540368 / 27) +
-          y ^ 14 * (26727872528 / 3) := by
+          y ^ (2 : ℕ) * (14883535568172176988824 / 1594323) +
+          y ^ (3 : ℕ) * (23371735183691135757712 / 1594323) +
+          y ^ (4 : ℕ) * (8496477413950713237316 / 531441) +
+          y ^ (5 : ℕ) * (757829570301931562288 / 59049) +
+          y ^ (6 : ℕ) * (462751137647108238656 / 59049) +
+          y ^ (7 : ℕ) * (72978020819098701152 / 19683) +
+          y ^ (8 : ℕ) * (999109329374134588 / 729) +
+          y ^ (9 : ℕ) * (865681517156012576 / 2187) +
+          y ^ (10 : ℕ) * (64582147048462856 / 729) +
+          y ^ (11 : ℕ) * (1221941365393328 / 81) +
+          y ^ (12 : ℕ) * (153206590177708 / 81) +
+          y ^ (13 : ℕ) * (4448567540368 / 27) +
+          y ^ (14 : ℕ) * (26727872528 / 3) := by
       positivity
     linarith
   nlinarith [pow_pos hqpos 12]
@@ -150,7 +150,7 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_mono_sixth
   have hfactor : 0 ≤
       thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6 + 14200 -
         (thetaCuspFullReflectionEighthCompactEighthCoefficient q + 28) *
-          (1 / 69) * (q + 3 / 2) ^ 2 := by
+          (1 / 69) * (q + 3 / 2) ^ (2 : ℕ) := by
     linarith
   have hprod := mul_nonneg hgap hfactor
   have hid :
@@ -159,7 +159,7 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_mono_sixth
         (14200 - e6) *
           (thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6 + 14200 -
             (thetaCuspFullReflectionEighthCompactEighthCoefficient q + 28) *
-              (1 / 69) * (q + 3 / 2) ^ 2) := by
+              (1 / 69) * (q + 3 / 2) ^ (2 : ℕ)) := by
     dsimp [thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve]
     ring
   linarith
@@ -192,7 +192,7 @@ theorem thetaCuspFullReflectionEighthSixthSpectralReserve_pos_of_scale_mem
     dsimp only [A, q, thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hqlo : (7 / 3 : ℝ) ≤ q := by
@@ -236,7 +236,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_sevenThirds_le_weigh
       dsimp only [thetaCuspSingleAtomReflectionScale]
       rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
       norm_num
-      rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+      rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
         rw [show 2 * x = x + x by ring, Real.exp_add]
         ring]
     have hAlo : (23 / 6 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x := by
@@ -276,7 +276,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_oneTenth_le
   have hqBound : (7 / 3 : ℝ) ≤ thetaCuspBornWittenWeight 1 x := by
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
     linarith

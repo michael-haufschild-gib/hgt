@@ -34,12 +34,12 @@ theorem tendsto_scaled_power_increment_ray
   have hq0 : 0 < q := Real.sqrt_pos.2 hr0
   have hqq : q * q = r := Real.mul_self_sqrt hr0.le
   have hq1 : q < 1 := by nlinarith
-  have hS : Summable fun m : ℕ => (m : ℝ) ^ 2 * q ^ m := by
+  have hS : Summable fun m : ℕ => (m : ℝ) ^ (2 : ℕ) * q ^ m := by
     have hnorm : ‖q‖ < 1 := by
       rw [Real.norm_eq_abs, abs_of_pos hq0]
       exact hq1
     exact summable_pow_mul_geometric_of_norm_lt_one 2 hnorm
-  set S : ℝ := ∑' m : ℕ, (m : ℝ) ^ 2 * q ^ m with hSdef
+  set S : ℝ := ∑' m : ℕ, (m : ℝ) ^ (2 : ℕ) * q ^ m with hSdef
   have hS0 : 0 ≤ S := tsum_nonneg fun m => by positivity
   set lam : ℝ := Real.log (1 / q) with hlam
   have hlam0 : 0 < lam := by
@@ -76,7 +76,7 @@ theorem tendsto_scaled_power_increment_ray
     -- termwise domination
     have hterm : ∀ m : ℕ,
         |(n : ℝ) * ((1 + t / n) ^ m - 1) - t * m| * r ^ m
-          ≤ t ^ 2 / n * ((m : ℝ) ^ 2 * q ^ m) := by
+          ≤ t ^ (2 : ℕ) / n * ((m : ℝ) ^ (2 : ℕ) * q ^ m) := by
       intro m
       have hfactor : (n : ℝ) * ((1 + t / n) ^ m - 1) - t * m
           = (n : ℝ) * ((1 + t / n) ^ m - 1 - m * (t / n)) := by
@@ -87,31 +87,31 @@ theorem tendsto_scaled_power_increment_ray
         rw [abs_div, abs_of_pos hn0]
       rw [habs] at hb
       calc (n : ℝ) * |(1 + t / n) ^ m - 1 - m * (t / n)| * r ^ m
-          ≤ (n : ℝ) * (((m : ℝ) * (|t| / n)) ^ 2
+          ≤ (n : ℝ) * (((m : ℝ) * (|t| / n)) ^ (2 : ℕ)
               * Real.exp ((m : ℝ) * (|t| / n))) * r ^ m := by
             apply mul_le_mul_of_nonneg_right _ (by positivity)
             exact mul_le_mul_of_nonneg_left hb hn0.le
-        _ = t ^ 2 / n * ((m : ℝ) ^ 2
+        _ = t ^ (2 : ℕ) / n * ((m : ℝ) ^ (2 : ℕ)
             * (Real.exp (|t| / n) * r) ^ m) := by
             rw [Real.exp_nat_mul, mul_pow (Real.exp (|t| / n)) r m,
               mul_pow (m : ℝ) (|t| / n) 2, div_pow, sq_abs]
             field_simp
-        _ ≤ t ^ 2 / n * ((m : ℝ) ^ 2 * q ^ m) := by
+        _ ≤ t ^ (2 : ℕ) / n * ((m : ℝ) ^ (2 : ℕ) * q ^ m) := by
             apply mul_le_mul_of_nonneg_left _ (by positivity)
             apply mul_le_mul_of_nonneg_left _ (by positivity)
             exact pow_le_pow_left₀ hbase0 hbase m
     -- sum the domination
-    have hRS : Summable fun m : ℕ => t ^ 2 / n * ((m : ℝ) ^ 2 * q ^ m) :=
+    have hRS : Summable fun m : ℕ => t ^ (2 : ℕ) / n * ((m : ℝ) ^ (2 : ℕ) * q ^ m) :=
       hS.mul_left _
     have hLS : Summable fun m : ℕ =>
         |(n : ℝ) * ((1 + t / n) ^ m - 1) - t * m| * r ^ m :=
       Summable.of_nonneg_of_le (fun m => by positivity) hterm hRS
     calc (∑' m : ℕ, |(n : ℝ) * ((1 + t / n) ^ m - 1) - t * m| * r ^ m)
-        ≤ ∑' m : ℕ, t ^ 2 / n * ((m : ℝ) ^ 2 * q ^ m) :=
+        ≤ ∑' m : ℕ, t ^ (2 : ℕ) / n * ((m : ℝ) ^ (2 : ℕ) * q ^ m) :=
           hLS.tsum_le_tsum hterm hRS
-      _ = t ^ 2 * S / n := by
+      _ = t ^ (2 : ℕ) * S / n := by
           rw [tsum_mul_left, ← hSdef]
           ring
-  · exact tendsto_const_div_atTop_nhds_zero_nat (t ^ 2 * S)
+  · exact tendsto_const_div_atTop_nhds_zero_nat (t ^ (2 : ℕ) * S)
 
 end HTGeometry

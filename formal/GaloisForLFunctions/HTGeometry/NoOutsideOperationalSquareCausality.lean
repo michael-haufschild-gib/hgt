@@ -137,7 +137,7 @@ theorem twoRecordPrecedes_iff_exists_colorEvent_increment
 
 /-- Closed Lorentz-future condition in real Pauli coordinates. -/
 def IsLorentzFuture (t x y z : ℝ) : Prop :=
-  0 ≤ t ∧ 0 ≤ t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2
+  0 ≤ t ∧ 0 ≤ t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ)
 
 /-- Matrix trace is twice the Lorentz time coordinate. -/
 theorem lorentzHermitianMatrix_trace
@@ -166,14 +166,14 @@ theorem lorentzHermitianMatrix_posSemidef_iff
     have h11re : 0 ≤ t - z := by
       exact (Complex.nonneg_iff.mp h11).1
     have hdetre :
-        0 ≤ t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2 := by
+        0 ≤ t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ) := by
       rw [lorentzHermitianMatrix_det] at hdet
       exact (Complex.nonneg_iff.mp hdet).1
     exact ⟨by linarith, hdetre⟩
   · rintro ⟨ht, hdet⟩
-    have hx2 : 0 ≤ x ^ 2 := sq_nonneg x
-    have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-    have hzbound : z ^ 2 ≤ t ^ 2 := by nlinarith
+    have hx2 : 0 ≤ x ^ (2 : ℕ) := sq_nonneg x
+    have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+    have hzbound : z ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith
     have ha : 0 ≤ t + z := by nlinarith
     have hd : 0 ≤ t - z := by nlinarith
     have hHermitian := lorentzHermitianMatrix_isHermitian t x y z
@@ -182,7 +182,7 @@ theorem lorentzHermitianMatrix_posSemidef_iff
     apply Complex.nonneg_iff.mpr
     constructor
     · by_cases ha0 : t + z = 0
-      · have hxy : x ^ 2 + y ^ 2 = 0 := by
+      · have hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 0 := by
           nlinarith
         have hx : x = 0 := by nlinarith [sq_nonneg x, sq_nonneg y]
         have hy : y = 0 := by nlinarith [sq_nonneg x, sq_nonneg y]
@@ -197,7 +197,7 @@ theorem lorentzHermitianMatrix_posSemidef_iff
               (t + z) *
                   Complex.normSq
                     (v 0 + (((x : ℂ) + (y : ℂ) * Complex.I) / (t + z)) * v 1) +
-                ((t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2) / (t + z)) *
+                ((t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ)) / (t + z)) *
                   Complex.normSq (v 1) := by
           simp [lorentzHermitianMatrix, Matrix.mulVec, dotProduct,
             Fin.sum_univ_succ, Complex.normSq_apply, Complex.div_re,

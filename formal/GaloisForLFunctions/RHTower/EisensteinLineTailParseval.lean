@@ -10,7 +10,7 @@ coefficients all have modulus equal to the mode size of the previous module.  Th
 the three period-averaged facts the mean-square bound of the Eisenstein source needs:
 
 * `T(·, Y)` has zero mean over a period;
-* Parseval: `∫_0^1 ‖T(x, Y)‖² dx = 8 Σ_N mode_N(Y)²`;
+* Parseval: `∫_0^(1 : ℕ) ‖T(x, Y)‖² dx = 8 Σ_N mode_N(Y)²`;
 * `‖T(x, Y)‖ ≤ 4 Σ_N mode_N(Y)` pointwise;
 
 together with joint continuity of `T` above height `1/2`, which makes the source a measurable
@@ -85,7 +85,7 @@ theorem intervalIntegral_fourierPhase (negative : Bool) (N : ℕ) :
   rw [integral_exp_mul_complex (eisensteinPhaseRate_ne_zero negative N)]
   simp [exp_eisensteinPhaseRate]
 
-/-- Twisted phases: `∫_0^1 exp(2πi m x) · phase = [m + rate = 0]`.  Stated with the product rate
+/-- Twisted phases: `∫_0^(1 : ℕ) exp(2πi m x) · phase = [m + rate = 0]`.  Stated with the product rate
 `c + c'`. -/
 theorem intervalIntegral_exp_mul_fourierPhase (c : ℂ) (negative : Bool) (N : ℕ)
     (hc : Complex.exp c = 1) :
@@ -418,8 +418,8 @@ theorem fourierCoeffOn_eisensteinLineTailPart_zero (t : ℝ) {Y : ℝ} (hY : 1 /
 
 /-- **Parseval for the nonconstant part on a period.** -/
 theorem intervalIntegral_normSq_eisensteinLineTailPart (t : ℝ) {Y : ℝ} (hY : 1 / 2 ≤ Y) :
-    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t Y x‖ ^ 2 =
-      8 * ∑' N : ℕ, eisensteinLineModeSize t Y N ^ 2 := by
+    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t Y x‖ ^ (2 : ℕ) =
+      8 * ∑' N : ℕ, eisensteinLineModeSize t Y N ^ (2 : ℕ) := by
   have hcont : Continuous (eisensteinLineTailPart t Y) := continuous_cuspTailPart_x t hY
   have hL2 : MemLp (eisensteinLineTailPart t Y) 2 (volume.restrict (Ioc (0 : ℝ) 1)) :=
     MemLp.of_bound hcont.aestronglyMeasurable (4 * ∑' N, eisensteinLineModeSize t Y N)
@@ -428,14 +428,14 @@ theorem intervalIntegral_normSq_eisensteinLineTailPart (t : ℝ) {Y : ℝ} (hY :
   simp only [sub_zero, inv_one, one_smul] at hP
   rw [← hP]
   have hsq := summable_eisensteinLineModeSize_sq (t := t) hY
-  have hpos : ∀ n : ℕ, ‖fourierCoeffOn (zero_lt_one' ℝ) (eisensteinLineTailPart t Y) ((n : ℤ) + 1)‖ ^ 2 =
-      4 * eisensteinLineModeSize t Y n ^ 2 := by
+  have hpos : ∀ n : ℕ, ‖fourierCoeffOn (zero_lt_one' ℝ) (eisensteinLineTailPart t Y) ((n : ℤ) + 1)‖ ^ (2 : ℕ) =
+      4 * eisensteinLineModeSize t Y n ^ (2 : ℕ) := by
     intro n
     rw [fourierCoeffOn_eisensteinLineTailPart_pos t hY, norm_mul, Complex.norm_ofNat,
       norm_eisensteinLineModeCoeff]
     ring
-  have hneg : ∀ n : ℕ, ‖fourierCoeffOn (zero_lt_one' ℝ) (eisensteinLineTailPart t Y) (-((n : ℤ) + 1))‖ ^ 2 =
-      4 * eisensteinLineModeSize t Y n ^ 2 := by
+  have hneg : ∀ n : ℕ, ‖fourierCoeffOn (zero_lt_one' ℝ) (eisensteinLineTailPart t Y) (-((n : ℤ) + 1))‖ ^ (2 : ℕ) =
+      4 * eisensteinLineModeSize t Y n ^ (2 : ℕ) := by
     intro n
     rw [fourierCoeffOn_eisensteinLineTailPart_neg t hY, norm_mul, Complex.norm_ofNat,
       norm_eisensteinLineModeCoeff]

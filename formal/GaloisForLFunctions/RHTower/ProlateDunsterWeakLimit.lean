@@ -18,15 +18,15 @@ theorem tendsto_profileWeight_fixed_radius
     {ι : Type*} {l : Filter ι} {s : ι → ℝ} (hs : Tendsto s l (nhds 0))
     {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => profileWeight (s i) a) l (nhds (profileWeight 0 a)) := by
-  have hleft : 0 < a ^ 2 - 1 := by nlinarith
-  have hden : Real.pi * Real.sqrt ((a ^ 2 - 1) * (a ^ 2 - 0)) ≠ 0 := by
+  have hleft : 0 < a ^ (2 : ℕ) - 1 := by nlinarith
+  have hden : Real.pi * Real.sqrt ((a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - 0)) ≠ 0 := by
     have ha0 : 0 < a := by linarith
-    have : 0 < (a ^ 2 - 1) * (a ^ 2 - 0) :=
+    have : 0 < (a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - 0) :=
       by simpa using mul_pos hleft (sq_pos_of_pos ha0)
     positivity
   have hcont : ContinuousAt (fun u : ℝ => profileWeight u a) 0 := by
     rw [show (fun u : ℝ => profileWeight u a) =
-        fun u => 1 / (Real.pi * Real.sqrt ((a ^ 2 - 1) * (a ^ 2 - u))) by
+        fun u => 1 / (Real.pi * Real.sqrt ((a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - u))) by
       funext u
       rw [profileWeight]]
     exact continuousAt_const.div
@@ -39,15 +39,15 @@ theorem tendsto_ampFourth_fixed_radius
     {ι : Type*} {l : Filter ι} {s : ι → ℝ} (hs : Tendsto s l (nhds 0))
     {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => ampFourth (s i) a) l (nhds (ampFourth 0 a)) := by
-  have hden : Real.sqrt (Real.sqrt ((a ^ 2 - 1) * (a ^ 2 - 0))) ≠ 0 := by
-    have hleft : 0 < a ^ 2 - 1 := by nlinarith
+  have hden : Real.sqrt (Real.sqrt ((a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - 0))) ≠ 0 := by
+    have hleft : 0 < a ^ (2 : ℕ) - 1 := by nlinarith
     have ha0 : 0 < a := by linarith
-    have : 0 < (a ^ 2 - 1) * (a ^ 2 - 0) :=
+    have : 0 < (a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - 0) :=
       by simpa using mul_pos hleft (sq_pos_of_pos ha0)
     positivity
   have hcont : ContinuousAt (fun u : ℝ => ampFourth u a) 0 := by
     rw [show (fun u : ℝ => ampFourth u a) =
-        fun u => 1 / Real.sqrt (Real.sqrt ((a ^ 2 - 1) * (a ^ 2 - u))) by
+        fun u => 1 / Real.sqrt (Real.sqrt ((a ^ (2 : ℕ) - 1) * (a ^ (2 : ℕ) - u))) by
       funext u
       rw [ampFourth]]
     exact continuousAt_const.div
@@ -67,29 +67,29 @@ theorem tendsto_c_mul_xiEndpointPhase_fixed_radius_atTop
     (hs.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono
       fun _ hi => hi.le
   have hcPos : ∀ᶠ i in l, 0 < c i := hc.eventually (eventually_gt_atTop 0)
-  have hq : 0 < (2 / 3 : ℝ) * Real.sqrt (a ^ 2 - 1) := by
-    have : 0 < a ^ 2 - 1 := by nlinarith
+  have hq : 0 < (2 / 3 : ℝ) * Real.sqrt (a ^ (2 : ℕ) - 1) := by
+    have : 0 < a ^ (2 : ℕ) - 1 := by nlinarith
     positivity
   have hlinear : Tendsto
-      (fun i => ((2 / 3 : ℝ) * Real.sqrt (a ^ 2 - 1)) * c i) l atTop :=
+      (fun i => ((2 / 3 : ℝ) * Real.sqrt (a ^ (2 : ℕ) - 1)) * c i) l atTop :=
     hc.const_mul_atTop hq
   refine tendsto_atTop_mono' l ?_ hlinear
   filter_upwards [hs0, hsHalf, hcPos] with i hsi0 hsi1 hci
   have hphase := sqrt_div_sqrt_two_le_xiEndpointPhase hsi0 hsi1 ha.le
-  have h23 : (2 / 3 : ℝ) * Real.sqrt (a ^ 2 - 1) ≤
-      Real.sqrt (a ^ 2 - 1) / Real.sqrt 2 := by
+  have h23 : (2 / 3 : ℝ) * Real.sqrt (a ^ (2 : ℕ) - 1) ≤
+      Real.sqrt (a ^ (2 : ℕ) - 1) / Real.sqrt 2 := by
     have hsqrt2pos : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
     have hsqrt2 : Real.sqrt 2 ≤ 3 / 2 := by
       nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
-    have hroot : 0 ≤ Real.sqrt (a ^ 2 - 1) := Real.sqrt_nonneg _
+    have hroot : 0 ≤ Real.sqrt (a ^ (2 : ℕ) - 1) := Real.sqrt_nonneg _
     have hcoeff : (2 / 3 : ℝ) ≤ 1 / Real.sqrt 2 := by
       rw [le_div_iff₀ hsqrt2pos]
       nlinarith
     calc
-      (2 / 3 : ℝ) * Real.sqrt (a ^ 2 - 1)
-          ≤ (1 / Real.sqrt 2) * Real.sqrt (a ^ 2 - 1) :=
+      (2 / 3 : ℝ) * Real.sqrt (a ^ (2 : ℕ) - 1)
+          ≤ (1 / Real.sqrt 2) * Real.sqrt (a ^ (2 : ℕ) - 1) :=
         mul_le_mul_of_nonneg_right hcoeff hroot
-      _ = Real.sqrt (a ^ 2 - 1) / Real.sqrt 2 := by
+      _ = Real.sqrt (a ^ (2 : ℕ) - 1) / Real.sqrt 2 := by
         rw [div_eq_mul_inv]
         ring
   nlinarith
@@ -136,11 +136,11 @@ theorem tendsto_profileSqError_zero
           Real.sqrt (Real.sqrt (c i * xiEndpointPhase (s i) a))) * (b - a))
       l (nhds 0) := by
     convert (hB.mul hE).mul_const (b - a) using 1 <;> ring
-  have hden : Tendsto (fun i => a ^ 2 - s i) l (nhds (a ^ 2)) := by
+  have hden : Tendsto (fun i => a ^ (2 : ℕ) - s i) l (nhds (a ^ (2 : ℕ))) := by
     simpa using tendsto_const_nhds.sub hs
-  have ha2 : a ^ 2 ≠ 0 := by positivity
+  have ha2 : a ^ (2 : ℕ) ≠ 0 := by positivity
   have hterm3 : Tendsto (fun i =>
-      3 * s i * profileDensity a / (a ^ 2 - s i) * (b - a)) l (nhds 0) := by
+      3 * s i * profileDensity a / (a ^ (2 : ℕ) - s i) * (b - a)) l (nhds 0) := by
     have hnum : Tendsto (fun i => 3 * s i * profileDensity a) l (nhds 0) := by
       have hnum' := hs.const_mul (3 * profileDensity a)
       convert hnum' using 1
@@ -148,11 +148,11 @@ theorem tendsto_profileSqError_zero
         ring
       · ring
     have hquot : Tendsto (fun i =>
-        3 * s i * profileDensity a / (a ^ 2 - s i)) l (nhds 0) := by
+        3 * s i * profileDensity a / (a ^ (2 : ℕ) - s i)) l (nhds 0) := by
       convert hnum.div hden ha2 using 1
       · funext i
-        change 3 * s i * profileDensity a / (a ^ 2 - s i) =
-          3 * s i * profileDensity a / (a ^ 2 - s i)
+        change 3 * s i * profileDensity a / (a ^ (2 : ℕ) - s i) =
+          3 * s i * profileDensity a / (a ^ (2 : ℕ) - s i)
         rfl
       · ring
     simpa using hquot.mul_const (b - a)
@@ -163,7 +163,7 @@ theorem tendsto_profileSqError_zero
               Real.sqrt (Real.sqrt (c i * xiEndpointPhase (s i) a))) *
           (5 * ampFourth (s i) a /
             Real.sqrt (Real.sqrt (c i * xiEndpointPhase (s i) a))) * (b - a) +
-        3 * s i * profileDensity a / (a ^ 2 - s i) * (b - a) by
+        3 * s i * profileDensity a / (a ^ (2 : ℕ) - s i) * (b - a) by
     funext i
     rw [profileSqError]]
   convert (hterm1.add hterm2).add hterm3 using 1 <;> ring
@@ -217,7 +217,7 @@ theorem tendsto_integral_Ioi_radialProlateBesselDensity
     (hs0 : ∀ᶠ i in l, 0 ≤ s i) {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => ∫ x in Ioi a, radialProlateBesselDensity (s i) (c i) x) l
       (nhds (∫ x in Ioi a, profileDensity x)) := by
-  let K : ℝ := 4 * Real.pi * lgBesselCommonEnvelopeConstant ^ 2
+  let K : ℝ := 4 * Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ)
   have hK0 : 0 ≤ K := by dsimp [K]; positivity
   have hsHalf : ∀ᶠ i in l, s i ≤ 1 / 2 :=
     (hs.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono
@@ -334,9 +334,9 @@ theorem tendsto_dunsterEndpointCrossing_comp_atTop_one
     (hc.eventually (eventually_gt_atTop 0)).mono fun _ hi => hi.ne'
   have hinv : Tendsto (fun i => (c i)⁻¹) l (nhds 0) :=
     tendsto_inv_atTop_zero.comp hc
-  have hterm : Tendsto (fun i => 9 / (8 * c i ^ 2)) l (nhds 0) := by
+  have hterm : Tendsto (fun i => 9 / (8 * c i ^ (2 : ℕ))) l (nhds 0) := by
     have hraw := (hinv.pow 2).const_mul (9 / 8)
-    have hraw0 : Tendsto (fun i => (9 / 8 : ℝ) * (c i)⁻¹ ^ 2) l (nhds 0) := by
+    have hraw0 : Tendsto (fun i => (9 / 8 : ℝ) * (c i)⁻¹ ^ (2 : ℕ)) l (nhds 0) := by
       simpa using hraw
     apply hraw0.congr'
     filter_upwards [hc0] with i hci
@@ -352,8 +352,8 @@ theorem tendsto_integral_Ioi_radialProlateDensity
     (hR1 : ∀ᶠ i in l, R i 1 = 1)
     (hR : ∀ᶠ i in l, ∀ t, HasDerivAt (R i) (DR i t) t)
     (hDR : ∀ᶠ i in l, ∀ t, HasDerivAt (DR i) (DDR i t) t)
-    (hode : ∀ᶠ i in l, ∀ t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
-      - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
+    (hode : ∀ᶠ i in l, ∀ t, (t ^ (2 : ℕ) - 1) * DDR i t + 2 * t * DR i t
+      - (s i * c i ^ (2 : ℕ) - c i ^ (2 : ℕ) * t ^ (2 : ℕ)) * R i t = 0)
     {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => ∫ x in Ioi a, radialProlateDensity (c i) (R i) x) l
       (nhds (∫ x in Ioi a, profileDensity x)) := by

@@ -106,7 +106,7 @@ theorem cglLemma62_tailContour_vertical_integrable
       ⟨sigma.value,v,sigma.lower,sigma.upper,hylarge,hshift⟩
     have hp := hpoint p
     have hvpos : 0 < |v| := lt_of_lt_of_le zero_lt_one hylarge
-    have hrewrite : C/|v|^2 = C*|v|^(-(2:ℝ)) := by
+    have hrewrite : C/|v|^(2 : ℕ) = C*|v|^(-(2:ℝ)) := by
       rw [Real.rpow_neg (le_of_lt hvpos),Real.rpow_two,div_eq_mul_inv]
     change ‖f v‖ ≤ C*|v|^(-(2:ℝ))
     rw [←hrewrite]

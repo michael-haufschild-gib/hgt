@@ -61,15 +61,15 @@ theorem rawPhaseAverage_tendsto_zero (x : ℝ) :
 
 /-- The two original scattering phases have an exact quadratic spectral remainder. -/
 theorem staggerPhase_square_sub_one_factor (k x : ℝ) :
-    FDNLS.staggerPhase (2*k^2) x-1 =
-      (k : ℂ)^2*(-2*I*(x : ℂ))*rawPhaseAverage (2*k^2) x := by
+    FDNLS.staggerPhase (2*k^(2 : ℕ)) x-1 =
+      (k : ℂ)^(2 : ℕ)*(-2*I*(x : ℂ))*rawPhaseAverage (2*k^(2 : ℕ)) x := by
   rw [staggerPhase_sub_one_factor]
   push_cast
   ring
 
 theorem staggerPhase_neg_square_sub_one_factor (k x : ℝ) :
-    FDNLS.staggerPhase (-(2*k^2)) x-1 =
-      (k : ℂ)^2*(2*I*(x : ℂ))*rawPhaseAverage (-(2*k^2)) x := by
+    FDNLS.staggerPhase (-(2*k^(2 : ℕ))) x-1 =
+      (k : ℂ)^(2 : ℕ)*(2*I*(x : ℂ))*rawPhaseAverage (-(2*k^(2 : ℕ))) x := by
   rw [staggerPhase_sub_one_factor]
   push_cast
   ring

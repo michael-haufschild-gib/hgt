@@ -34,7 +34,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {w Dw DDw q : ℝ → ℝ}
 
 /-- The oscillator energy. -/
-def oscEnergy (w Dw : ℝ → ℝ) (u : ℝ) : ℝ := w u ^ 2 + Dw u ^ 2
+def oscEnergy (w Dw : ℝ → ℝ) (u : ℝ) : ℝ := w u ^ (2 : ℕ) + Dw u ^ (2 : ℕ)
 
 theorem oscEnergy_nonneg (w Dw : ℝ → ℝ) (u : ℝ) : 0 ≤ oscEnergy w Dw u := by
   rw [oscEnergy]
@@ -46,12 +46,12 @@ theorem hasDerivAt_oscEnergy {u : ℝ}
     (hw : HasDerivAt w (Dw u) u) (hDw : HasDerivAt Dw (DDw u) u)
     (hode : DDw u + (1 + q u) * w u = 0) :
     HasDerivAt (oscEnergy w Dw) (-(2 * q u * (w u * Dw u))) u := by
-  have h1 : HasDerivAt (fun v : ℝ => w v ^ 2) (2 * w u * Dw u) u := by
+  have h1 : HasDerivAt (fun v : ℝ => w v ^ (2 : ℕ)) (2 * w u * Dw u) u := by
     have h := hw.pow 2
     have hv : ((2 : ℕ) : ℝ) * w u ^ (2 - 1) * Dw u = 2 * w u * Dw u := by norm_num
     rw [hv] at h
     exact h
-  have h2 : HasDerivAt (fun v : ℝ => Dw v ^ 2) (2 * Dw u * DDw u) u := by
+  have h2 : HasDerivAt (fun v : ℝ => Dw v ^ (2 : ℕ)) (2 * Dw u * DDw u) u := by
     have h := hDw.pow 2
     have hv : ((2 : ℕ) : ℝ) * Dw u ^ (2 - 1) * DDw u = 2 * Dw u * DDw u := by norm_num
     rw [hv] at h
@@ -66,29 +66,29 @@ theorem hasDerivAt_oscEnergy {u : ℝ}
 
 /-- **The differential inequality**, by the arithmetic–geometric mean inequality. -/
 theorem abs_deriv_oscEnergy_le {u κ : ℝ} (hu : 0 < u) (hκ : 0 ≤ κ)
-    (hq : |q u| ≤ κ / u ^ 2) :
-    |-(2 * q u * (w u * Dw u))| ≤ κ / u ^ 2 * oscEnergy w Dw u := by
-  have hamgm : 2 * |w u| * |Dw u| ≤ w u ^ 2 + Dw u ^ 2 := by
+    (hq : |q u| ≤ κ / u ^ (2 : ℕ)) :
+    |-(2 * q u * (w u * Dw u))| ≤ κ / u ^ (2 : ℕ) * oscEnergy w Dw u := by
+  have hamgm : 2 * |w u| * |Dw u| ≤ w u ^ (2 : ℕ) + Dw u ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|w u| - |Dw u|), sq_abs (w u), sq_abs (Dw u)]
   rw [abs_neg, abs_mul, abs_mul, oscEnergy, abs_mul (w u) (Dw u)]
   have habs : |(2 : ℝ)| = 2 := by norm_num
   rw [habs]
   have hnn : (0 : ℝ) ≤ |w u| * |Dw u| := by positivity
-  calc 2 * |q u| * (|w u| * |Dw u|) ≤ 2 * (κ / u ^ 2) * (|w u| * |Dw u|) := by
+  calc 2 * |q u| * (|w u| * |Dw u|) ≤ 2 * (κ / u ^ (2 : ℕ)) * (|w u| * |Dw u|) := by
         have := mul_le_mul_of_nonneg_left hq (by norm_num : (0 : ℝ) ≤ 2)
         nlinarith [hnn]
-    _ ≤ κ / u ^ 2 * (w u ^ 2 + Dw u ^ 2) := by
-        have hκu : (0 : ℝ) ≤ κ / u ^ 2 := by positivity
+    _ ≤ κ / u ^ (2 : ℕ) * (w u ^ (2 : ℕ) + Dw u ^ (2 : ℕ)) := by
+        have hκu : (0 : ℝ) ≤ κ / u ^ (2 : ℕ) := by positivity
         nlinarith [hamgm, hκu]
 
 theorem hasDerivAt_const_div {κ v : ℝ} (hv : v ≠ 0) :
-    HasDerivAt (fun t : ℝ => κ / t) (-(κ / v ^ 2)) v := by
+    HasDerivAt (fun t : ℝ => κ / t) (-(κ / v ^ (2 : ℕ))) v := by
   have h := (hasDerivAt_inv hv).const_mul κ
   have hfun : (fun t : ℝ => κ * t⁻¹) = fun t : ℝ => κ / t := by
     funext t
     rw [div_eq_mul_inv]
   rw [hfun] at h
-  have hval : κ * -(v ^ 2)⁻¹ = -(κ / v ^ 2) := by field_simp
+  have hval : κ * -(v ^ (2 : ℕ))⁻¹ = -(κ / v ^ (2 : ℕ)) := by field_simp
   rwa [hval] at h
 
 /-- **Grönwall for the energy.**  An integrable perturbation traps the energy between two multiples
@@ -97,25 +97,25 @@ theorem oscEnergy_le_exp {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 0 �
     (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ)) :
     oscEnergy w Dw u ≤ oscEnergy w Dw a * Real.exp (κ / a - κ / u) := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
   set G : ℝ → ℝ := fun v : ℝ => oscEnergy w Dw v * Real.exp (κ / v) with hGdef
   have hGd : ∀ v : ℝ, 0 < v → HasDerivAt G
       (-(2 * q v * (w v * Dw v)) * Real.exp (κ / v)
-        + oscEnergy w Dw v * (Real.exp (κ / v) * -(κ / v ^ 2))) v := by
+        + oscEnergy w Dw v * (Real.exp (κ / v) * -(κ / v ^ (2 : ℕ)))) v := by
     intro v hv
     have hexp : HasDerivAt (fun t : ℝ => Real.exp (κ / t))
-        (Real.exp (κ / v) * -(κ / v ^ 2)) v :=
+        (Real.exp (κ / v) * -(κ / v ^ (2 : ℕ))) v :=
       (hasDerivAt_const_div (ne_of_gt hv)).exp
     exact (hasDerivAt_oscEnergy (hw v hv) (hDw v hv) (hode v hv)).mul hexp
   have hnonpos : ∀ v ∈ Set.Ioo a u, deriv G v ≤ 0 := by
     intro v hv
     have hv0 : 0 < v := lt_trans ha hv.1
     have hE0 : 0 ≤ oscEnergy w Dw v := oscEnergy_nonneg w Dw v
-    have hκv : (0 : ℝ) ≤ κ / v ^ 2 := by positivity
+    have hκv : (0 : ℝ) ≤ κ / v ^ (2 : ℕ) := by positivity
     have hbound := abs_deriv_oscEnergy_le (w := w) (Dw := Dw) hv0 hκ (hq v hv0)
-    have hle : -(2 * q v * (w v * Dw v)) ≤ κ / v ^ 2 * oscEnergy w Dw v :=
+    have hle : -(2 * q v * (w v * Dw v)) ≤ κ / v ^ (2 : ℕ) * oscEnergy w Dw v :=
       le_trans (le_abs_self _) hbound
     have hexppos : 0 < Real.exp (κ / v) := Real.exp_pos _
     rw [(hGd v hv0).deriv]
@@ -154,7 +154,7 @@ theorem osc_eq_coeff (w Dw : ℝ → ℝ) (u : ℝ) :
 
 /-- The coefficients carry exactly the energy. -/
 theorem oscCoeff_sq_add (w Dw : ℝ → ℝ) (u : ℝ) :
-    oscCosCoeff w Dw u ^ 2 + oscSinCoeff w Dw u ^ 2 = oscEnergy w Dw u := by
+    oscCosCoeff w Dw u ^ (2 : ℕ) + oscSinCoeff w Dw u ^ (2 : ℕ) = oscEnergy w Dw u := by
   rw [oscCosCoeff, oscSinCoeff, oscEnergy]
   nlinarith [Real.sin_sq_add_cos_sq u]
 
@@ -194,19 +194,19 @@ theorem abs_osc_le {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 0 ≤ κ)
     (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ)) :
     |w u| ≤ Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
   have hE := oscEnergy_le_exp (q := q) (DDw := DDw) ha hau hκ hw hDw hode hq
   have hEa : 0 ≤ oscEnergy w Dw a := oscEnergy_nonneg w Dw a
-  have hsq : w u ^ 2 ≤ oscEnergy w Dw u := by
+  have hsq : w u ^ (2 : ℕ) ≤ oscEnergy w Dw u := by
     rw [oscEnergy]
     nlinarith [sq_nonneg (Dw u)]
   have hexp1 : Real.exp (κ / a - κ / u) ≤ Real.exp (κ / a) := by
     refine Real.exp_le_exp.mpr ?_
     have : (0 : ℝ) ≤ κ / u := by positivity
     linarith
-  have hchain : w u ^ 2 ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
+  have hchain : w u ^ (2 : ℕ) ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
     have hstep : oscEnergy w Dw a * Real.exp (κ / a - κ / u)
         ≤ oscEnergy w Dw a * Real.exp (κ / a) := mul_le_mul_of_nonneg_left hexp1 hEa
     linarith [hsq, hE, hstep]
@@ -218,7 +218,7 @@ theorem abs_oscCoeff_le_base {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 
     (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ)) :
     |oscCosCoeff w Dw u| ≤ Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a))
       ∧ |oscSinCoeff w Dw u| ≤ Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
@@ -234,11 +234,11 @@ theorem abs_oscCoeff_le_base {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 
     linarith [hE, hstep]
   have hsum := oscCoeff_sq_add w Dw u
   constructor
-  · have hle : oscCosCoeff w Dw u ^ 2 ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
+  · have hle : oscCosCoeff w Dw u ^ (2 : ℕ) ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
       nlinarith [sq_nonneg (oscSinCoeff w Dw u), hsum, hbud]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
-  · have hle : oscSinCoeff w Dw u ^ 2 ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
+  · have hle : oscSinCoeff w Dw u ^ (2 : ℕ) ≤ oscEnergy w Dw a * Real.exp (κ / a) := by
       nlinarith [sq_nonneg (oscCosCoeff w Dw u), hsum, hbud]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
@@ -249,25 +249,25 @@ theorem abs_deriv_oscCoeff_le_base {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (
     (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ)) :
     |q u * w u * Real.sin u|
-        ≤ κ / u ^ 2 * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a))
+        ≤ κ / u ^ (2 : ℕ) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a))
       ∧ |-(q u * w u * Real.cos u)|
-        ≤ κ / u ^ 2 * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
+        ≤ κ / u ^ (2 : ℕ) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
-  have hκu : (0 : ℝ) ≤ κ / u ^ 2 := by positivity
+  have hκu : (0 : ℝ) ≤ κ / u ^ (2 : ℕ) := by positivity
   have hwb := abs_osc_le (q := q) (DDw := DDw) ha hau hκ hw hDw hode hq
   have hqb := hq u hu
   have hM : (0 : ℝ) ≤ Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := Real.sqrt_nonneg _
   have hmain : ∀ T : ℝ, |T| ≤ 1 → |q u * w u * T|
-      ≤ κ / u ^ 2 * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
+      ≤ κ / u ^ (2 : ℕ) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by
     intro T hT
     rw [abs_mul, abs_mul]
     calc |q u| * |w u| * |T|
-        ≤ (κ / u ^ 2) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) * 1 := by
+        ≤ (κ / u ^ (2 : ℕ)) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) * 1 := by
           exact mul_le_mul (mul_le_mul hqb hwb (abs_nonneg _) hκu) hT (abs_nonneg _)
             (by positivity)
-      _ = κ / u ^ 2 * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by ring
+      _ = κ / u ^ (2 : ℕ) * Real.sqrt (oscEnergy w Dw a * Real.exp (κ / a)) := by ring
   refine ⟨hmain _ (Real.abs_sin_le_one u), ?_⟩
   rw [abs_neg]
   exact hmain _ (Real.abs_cos_le_one u)
@@ -279,15 +279,15 @@ theorem exp_mul_oscEnergy_le {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 
     (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ)) :
     oscEnergy w Dw a * Real.exp (-(κ / a - κ / u)) ≤ oscEnergy w Dw u := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
   set G : ℝ → ℝ := fun v : ℝ => oscEnergy w Dw v * Real.exp (-(κ / v)) with hGdef
   have hGd : ∀ v : ℝ, 0 < v → HasDerivAt G
       (-(2 * q v * (w v * Dw v)) * Real.exp (-(κ / v))
-        + oscEnergy w Dw v * (Real.exp (-(κ / v)) * (κ / v ^ 2))) v := by
+        + oscEnergy w Dw v * (Real.exp (-(κ / v)) * (κ / v ^ (2 : ℕ)))) v := by
     intro v hv
-    have hinner : HasDerivAt (fun t : ℝ => -(κ / t)) (κ / v ^ 2) v := by
+    have hinner : HasDerivAt (fun t : ℝ => -(κ / t)) (κ / v ^ (2 : ℕ)) v := by
       refine (hasDerivAt_const_div (κ := κ) (ne_of_gt hv)).neg.congr_deriv ?_
       ring
     exact (hasDerivAt_oscEnergy (hw v hv) (hDw v hv) (hode v hv)).mul hinner.exp
@@ -295,9 +295,9 @@ theorem exp_mul_oscEnergy_le {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 
     intro v hv
     have hv0 : 0 < v := lt_trans ha hv.1
     have hE0 : 0 ≤ oscEnergy w Dw v := oscEnergy_nonneg w Dw v
-    have hκv : (0 : ℝ) ≤ κ / v ^ 2 := by positivity
+    have hκv : (0 : ℝ) ≤ κ / v ^ (2 : ℕ) := by positivity
     have hbound := abs_deriv_oscEnergy_le (w := w) (Dw := Dw) hv0 hκ (hq v hv0)
-    have hge : -(κ / v ^ 2 * oscEnergy w Dw v) ≤ -(2 * q v * (w v * Dw v)) :=
+    have hge : -(κ / v ^ (2 : ℕ) * oscEnergy w Dw v) ≤ -(2 * q v * (w v * Dw v)) :=
       neg_le_of_abs_le hbound
     have hexppos : 0 < Real.exp (-(κ / v)) := Real.exp_pos _
     rw [(hGd v hv0).deriv]
@@ -335,28 +335,28 @@ theorem mass_lower_of_oscEnergy {α β κ Elow Ehigh : ℝ} (hαβ : α ≤ β) 
     (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
     (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
     (hqc : ContinuousOn q (Set.Icc α β))
-    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2)
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ (2 : ℕ))
     (hElow : ∀ v ∈ Set.Icc α β, Elow ≤ oscEnergy w Dw v)
     (hEhigh : ∀ v ∈ Set.Icc α β, oscEnergy w Dw v ≤ Ehigh) :
-    ((β - α) * Elow - Ehigh) / (2 + κ / α ^ 2) ≤ ∫ u in α..β, w u ^ 2 := by
+    ((β - α) * Elow - Ehigh) / (2 + κ / α ^ (2 : ℕ)) ≤ ∫ u in α..β, w u ^ (2 : ℕ) := by
   have hmem : ∀ v ∈ Set.Icc α β, 0 < v := fun v hv => lt_of_lt_of_le hα hv.1
   have huIcc : Set.uIcc α β = Set.Icc α β := Set.uIcc_of_le hαβ
   have hwc : ContinuousOn w (Set.Icc α β) := fun v hv =>
     ((hw v (hmem v hv)).continuousAt).continuousWithinAt
   have hDwc : ContinuousOn Dw (Set.Icc α β) := fun v hv =>
     ((hDw v (hmem v hv)).continuousAt).continuousWithinAt
-  have hw2int : IntervalIntegrable (fun u : ℝ => w u ^ 2) MeasureTheory.volume α β := by
+  have hw2int : IntervalIntegrable (fun u : ℝ => w u ^ (2 : ℕ)) MeasureTheory.volume α β := by
     rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
     exact ((hwc.pow 2).integrableOn_compact isCompact_Icc)
-  have hDw2int : IntervalIntegrable (fun u : ℝ => Dw u ^ 2) MeasureTheory.volume α β := by
+  have hDw2int : IntervalIntegrable (fun u : ℝ => Dw u ^ (2 : ℕ)) MeasureTheory.volume α β := by
     rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
     exact ((hDwc.pow 2).integrableOn_compact isCompact_Icc)
-  have hqw2int : IntervalIntegrable (fun u : ℝ => q u * w u ^ 2) MeasureTheory.volume α β := by
+  have hqw2int : IntervalIntegrable (fun u : ℝ => q u * w u ^ (2 : ℕ)) MeasureTheory.volume α β := by
     rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
     exact ((hqc.mul (hwc.pow 2)).integrableOn_compact isCompact_Icc)
   -- the virial identity
   have hprod : ∀ v ∈ Set.uIcc α β,
-      HasDerivAt (fun t : ℝ => w t * Dw t) (Dw v ^ 2 - (1 + q v) * w v ^ 2) v := by
+      HasDerivAt (fun t : ℝ => w t * Dw t) (Dw v ^ (2 : ℕ) - (1 + q v) * w v ^ (2 : ℕ)) v := by
     intro v hv
     rw [huIcc] at hv
     have hv0 : 0 < v := hmem v hv
@@ -365,25 +365,25 @@ theorem mass_lower_of_oscEnergy {α β κ Elow Ehigh : ℝ} (hαβ : α ≤ β) 
     have hsec : DDw v = -((1 + q v) * w v) := by linarith [hode v hv0]
     rw [hsec]
     ring
-  have hvirint : IntervalIntegrable (fun v : ℝ => Dw v ^ 2 - (1 + q v) * w v ^ 2)
+  have hvirint : IntervalIntegrable (fun v : ℝ => Dw v ^ (2 : ℕ) - (1 + q v) * w v ^ (2 : ℕ))
       MeasureTheory.volume α β := by
-    have h1 : IntervalIntegrable (fun v : ℝ => w v ^ 2 + q v * w v ^ 2)
+    have h1 : IntervalIntegrable (fun v : ℝ => w v ^ (2 : ℕ) + q v * w v ^ (2 : ℕ))
         MeasureTheory.volume α β := hw2int.add hqw2int
     refine hDw2int.sub (h1.congr ?_)
     intro v _
     ring
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hprod hvirint
-  have hsplit : (∫ v in α..β, (Dw v ^ 2 - (1 + q v) * w v ^ 2))
-      = (∫ v in α..β, Dw v ^ 2) - ((∫ v in α..β, w v ^ 2) + ∫ v in α..β, q v * w v ^ 2) := by
-    have hcongr : (∫ v in α..β, (Dw v ^ 2 - (1 + q v) * w v ^ 2))
-        = ∫ v in α..β, (Dw v ^ 2 - (w v ^ 2 + q v * w v ^ 2)) := by
+  have hsplit : (∫ v in α..β, (Dw v ^ (2 : ℕ) - (1 + q v) * w v ^ (2 : ℕ)))
+      = (∫ v in α..β, Dw v ^ (2 : ℕ)) - ((∫ v in α..β, w v ^ (2 : ℕ)) + ∫ v in α..β, q v * w v ^ (2 : ℕ)) := by
+    have hcongr : (∫ v in α..β, (Dw v ^ (2 : ℕ) - (1 + q v) * w v ^ (2 : ℕ)))
+        = ∫ v in α..β, (Dw v ^ (2 : ℕ) - (w v ^ (2 : ℕ) + q v * w v ^ (2 : ℕ))) := by
       refine intervalIntegral.integral_congr fun v _ => ?_
       ring
     rw [hcongr, intervalIntegral.integral_sub hDw2int (hw2int.add hqw2int),
       intervalIntegral.integral_add hw2int hqw2int]
   -- the energy from below
-  have hElowint : (β - α) * Elow ≤ (∫ v in α..β, w v ^ 2) + ∫ v in α..β, Dw v ^ 2 := by
-    have hmono : (∫ _v in α..β, Elow) ≤ ∫ v in α..β, (w v ^ 2 + Dw v ^ 2) := by
+  have hElowint : (β - α) * Elow ≤ (∫ v in α..β, w v ^ (2 : ℕ)) + ∫ v in α..β, Dw v ^ (2 : ℕ) := by
+    have hmono : (∫ _v in α..β, Elow) ≤ ∫ v in α..β, (w v ^ (2 : ℕ) + Dw v ^ (2 : ℕ)) := by
       refine intervalIntegral.integral_mono_on hαβ
         ((continuous_const : Continuous fun _ : ℝ => Elow).intervalIntegrable _ _)
         (hw2int.add hDw2int) fun v hv => ?_
@@ -404,26 +404,26 @@ theorem mass_lower_of_oscEnergy {α β κ Elow Ehigh : ℝ} (hαβ : α ≤ β) 
       nlinarith [sq_nonneg (w α + Dw α)]
     linarith
   -- the perturbation term
-  have hqw : (∫ v in α..β, q v * w v ^ 2) ≤ (κ / α ^ 2) * ∫ v in α..β, w v ^ 2 := by
-    have hmono : (∫ v in α..β, q v * w v ^ 2)
-        ≤ ∫ v in α..β, (κ / α ^ 2) * w v ^ 2 := by
-      have hconstint : IntervalIntegrable (fun v : ℝ => (κ / α ^ 2) * w v ^ 2)
+  have hqw : (∫ v in α..β, q v * w v ^ (2 : ℕ)) ≤ (κ / α ^ (2 : ℕ)) * ∫ v in α..β, w v ^ (2 : ℕ) := by
+    have hmono : (∫ v in α..β, q v * w v ^ (2 : ℕ))
+        ≤ ∫ v in α..β, (κ / α ^ (2 : ℕ)) * w v ^ (2 : ℕ) := by
+      have hconstint : IntervalIntegrable (fun v : ℝ => (κ / α ^ (2 : ℕ)) * w v ^ (2 : ℕ))
           MeasureTheory.volume α β := by
         rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
         exact ((continuousOn_const.mul (hwc.pow 2)).integrableOn_compact isCompact_Icc)
       refine intervalIntegral.integral_mono_on hαβ hqw2int hconstint fun v hv => ?_
       have hv0 : 0 < v := hmem v hv
-      have hqv : |q v| ≤ κ / v ^ 2 := hq v hv0
-      have hle : κ / v ^ 2 ≤ κ / α ^ 2 := by
+      have hqv : |q v| ≤ κ / v ^ (2 : ℕ) := hq v hv0
+      have hle : κ / v ^ (2 : ℕ) ≤ κ / α ^ (2 : ℕ) := by
         refine div_le_div_of_nonneg_left hκ (by positivity) ?_
         nlinarith [hv.1, hα]
-      have h1 : q v ≤ κ / α ^ 2 := le_trans (le_trans (le_abs_self _) hqv) hle
+      have h1 : q v ≤ κ / α ^ (2 : ℕ) := le_trans (le_trans (le_abs_self _) hqv) hle
       nlinarith [sq_nonneg (w v), h1]
     rwa [intervalIntegral.integral_const_mul] at hmono
   -- assemble
-  have hmasspos : (0 : ℝ) ≤ ∫ v in α..β, w v ^ 2 := by
+  have hmasspos : (0 : ℝ) ≤ ∫ v in α..β, w v ^ (2 : ℕ) := by
     refine intervalIntegral.integral_nonneg hαβ fun v _ => sq_nonneg _
-  have hden : (0 : ℝ) < 2 + κ / α ^ 2 := by positivity
+  have hden : (0 : ℝ) < 2 + κ / α ^ (2 : ℕ) := by positivity
   rw [div_le_iff₀ hden]
   nlinarith [hFTC, hsplit, hElowint, hbd, hqw, hmasspos]
 
@@ -436,7 +436,7 @@ only route to an energy lower bound that does not evaluate the solution anywhere
 
 /-- **Cauchy–Schwarz for the Wronskian.** -/
 theorem sq_wronskian_le_oscEnergy_mul (w₁ Dw₁ w₂ Dw₂ : ℝ → ℝ) (u : ℝ) :
-    (w₁ u * Dw₂ u - Dw₁ u * w₂ u) ^ 2
+    (w₁ u * Dw₂ u - Dw₁ u * w₂ u) ^ (2 : ℕ)
       ≤ oscEnergy w₁ Dw₁ u * oscEnergy w₂ Dw₂ u := by
   rw [oscEnergy, oscEnergy]
   nlinarith [sq_nonneg (w₁ u * w₂ u + Dw₁ u * Dw₂ u)]
@@ -446,7 +446,7 @@ the solution's own energy is at least `W²/C`. -/
 theorem oscEnergy_lower_of_wronskian {w₁ Dw₁ w₂ Dw₂ : ℝ → ℝ} {u W C : ℝ}
     (hWval : w₁ u * Dw₂ u - Dw₁ u * w₂ u = W)
     (hE₂ : oscEnergy w₂ Dw₂ u ≤ C) (hC : 0 < C) :
-    W ^ 2 / C ≤ oscEnergy w₁ Dw₁ u := by
+    W ^ (2 : ℕ) / C ≤ oscEnergy w₁ Dw₁ u := by
   have hCS := sq_wronskian_le_oscEnergy_mul w₁ Dw₁ w₂ Dw₂ u
   rw [hWval] at hCS
   have hE1 : 0 ≤ oscEnergy w₁ Dw₁ u := oscEnergy_nonneg _ _ _

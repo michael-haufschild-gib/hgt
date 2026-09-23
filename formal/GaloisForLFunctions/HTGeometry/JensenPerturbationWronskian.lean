@@ -34,29 +34,29 @@ namespace JensenWronskian
 
 /-- The model polynomial `A(z) = ∑_{j≤4} c j · z^j`. -/
 noncomputable def modelA (c : Fin 5 → ℝ) (z : ℝ) : ℝ :=
-  c 0 + c 1 * z + c 2 * z ^ 2 + c 3 * z ^ 3 + c 4 * z ^ 4
+  c 0 + c 1 * z + c 2 * z ^ (2 : ℕ) + c 3 * z ^ (3 : ℕ) + c 4 * z ^ (4 : ℕ)
 
 /-- The second-cumulant perturbation `B(z) = ∑_{j≤4} C(j,2) · c j · z^j = ½ z² A''(z)`. -/
 noncomputable def perturbB (c : Fin 5 → ℝ) (z : ℝ) : ℝ :=
-  c 2 * z ^ 2 + 3 * c 3 * z ^ 3 + 6 * c 4 * z ^ 4
+  c 2 * z ^ (2 : ℕ) + 3 * c 3 * z ^ (3 : ℕ) + 6 * c 4 * z ^ (4 : ℕ)
 
 /-- The derivative of `modelA`. -/
 noncomputable def modelA' (c : Fin 5 → ℝ) (z : ℝ) : ℝ :=
-  c 1 + 2 * c 2 * z + 3 * c 3 * z ^ 2 + 4 * c 4 * z ^ 3
+  c 1 + 2 * c 2 * z + 3 * c 3 * z ^ (2 : ℕ) + 4 * c 4 * z ^ (3 : ℕ)
 
 /-- The derivative of `perturbB`. -/
 noncomputable def perturbB' (c : Fin 5 → ℝ) (z : ℝ) : ℝ :=
-  2 * c 2 * z + 9 * c 3 * z ^ 2 + 24 * c 4 * z ^ 3
+  2 * c 2 * z + 9 * c 3 * z ^ (2 : ℕ) + 24 * c 4 * z ^ (3 : ℕ)
 
 theorem hasDerivAt_modelA (c : Fin 5 → ℝ) (z : ℝ) :
     HasDerivAt (modelA c) (modelA' c z) z := by
   have h0 : HasDerivAt (fun _ : ℝ => c 0) 0 z := hasDerivAt_const _ _
   have h1 : HasDerivAt (fun y : ℝ => c 1 * y) (c 1 * 1) z := (hasDerivAt_id z).const_mul (c 1)
-  have h2 : HasDerivAt (fun y : ℝ => c 2 * y ^ 2) (c 2 * (2 * z ^ 1)) z := by
+  have h2 : HasDerivAt (fun y : ℝ => c 2 * y ^ (2 : ℕ)) (c 2 * (2 * z ^ (1 : ℕ))) z := by
     simpa using (hasDerivAt_pow 2 z).const_mul (c 2)
-  have h3 : HasDerivAt (fun y : ℝ => c 3 * y ^ 3) (c 3 * (3 * z ^ 2)) z := by
+  have h3 : HasDerivAt (fun y : ℝ => c 3 * y ^ (3 : ℕ)) (c 3 * (3 * z ^ (2 : ℕ))) z := by
     simpa using (hasDerivAt_pow 3 z).const_mul (c 3)
-  have h4 : HasDerivAt (fun y : ℝ => c 4 * y ^ 4) (c 4 * (4 * z ^ 3)) z := by
+  have h4 : HasDerivAt (fun y : ℝ => c 4 * y ^ (4 : ℕ)) (c 4 * (4 * z ^ (3 : ℕ))) z := by
     simpa using (hasDerivAt_pow 4 z).const_mul (c 4)
   have hsum := (((h0.add h1).add h2).add h3).add h4
   refine hsum.congr_deriv ?_
@@ -65,11 +65,11 @@ theorem hasDerivAt_modelA (c : Fin 5 → ℝ) (z : ℝ) :
 
 theorem hasDerivAt_perturbB (c : Fin 5 → ℝ) (z : ℝ) :
     HasDerivAt (perturbB c) (perturbB' c z) z := by
-  have h2 : HasDerivAt (fun y : ℝ => c 2 * y ^ 2) (c 2 * (2 * z ^ 1)) z := by
+  have h2 : HasDerivAt (fun y : ℝ => c 2 * y ^ (2 : ℕ)) (c 2 * (2 * z ^ (1 : ℕ))) z := by
     simpa using (hasDerivAt_pow 2 z).const_mul (c 2)
-  have h3 : HasDerivAt (fun y : ℝ => 3 * c 3 * y ^ 3) (3 * c 3 * (3 * z ^ 2)) z := by
+  have h3 : HasDerivAt (fun y : ℝ => 3 * c 3 * y ^ (3 : ℕ)) (3 * c 3 * (3 * z ^ (2 : ℕ))) z := by
     simpa using (hasDerivAt_pow 3 z).const_mul (3 * c 3)
-  have h4 : HasDerivAt (fun y : ℝ => 6 * c 4 * y ^ 4) (6 * c 4 * (4 * z ^ 3)) z := by
+  have h4 : HasDerivAt (fun y : ℝ => 6 * c 4 * y ^ (4 : ℕ)) (6 * c 4 * (4 * z ^ (3 : ℕ))) z := by
     simpa using (hasDerivAt_pow 4 z).const_mul (6 * c 4)
   have hsum := (h2.add h3).add h4
   refine hsum.congr_deriv ?_
@@ -92,15 +92,15 @@ a negative sign.  Hence for a coefficient sequence of positive numbers every cri
 pencil `A + κB` is a negative real number, and they are the roots of one explicit quintic. -/
 theorem wronskian_collapse (c : Fin 5 → ℝ) (z : ℝ) :
     modelA' c z * perturbB c z - modelA c z * perturbB' c z
-      = -(z / 2) * (gapConv c 0 + 2 * gapConv c 1 * z + 3 * gapConv c 2 * z ^ 2
-          + 4 * gapConv c 3 * z ^ 3 + 5 * gapConv c 4 * z ^ 4 + 6 * gapConv c 5 * z ^ 5) := by
+      = -(z / 2) * (gapConv c 0 + 2 * gapConv c 1 * z + 3 * gapConv c 2 * z ^ (2 : ℕ)
+          + 4 * gapConv c 3 * z ^ (3 : ℕ) + 5 * gapConv c 4 * z ^ (4 : ℕ) + 6 * gapConv c 5 * z ^ (5 : ℕ)) := by
   unfold modelA modelA' perturbB perturbB' gapConv
   ring
 
 /-- The critical polynomial: `W(z) = −(z/2)·criticalQuintic(z)`. -/
 noncomputable def criticalQuintic (c : Fin 5 → ℝ) (z : ℝ) : ℝ :=
-  gapConv c 0 + 2 * gapConv c 1 * z + 3 * gapConv c 2 * z ^ 2
-    + 4 * gapConv c 3 * z ^ 3 + 5 * gapConv c 4 * z ^ 4 + 6 * gapConv c 5 * z ^ 5
+  gapConv c 0 + 2 * gapConv c 1 * z + 3 * gapConv c 2 * z ^ (2 : ℕ)
+    + 4 * gapConv c 3 * z ^ (3 : ℕ) + 5 * gapConv c 4 * z ^ (4 : ℕ) + 6 * gapConv c 5 * z ^ (5 : ℕ)
 
 /-- **No critical point on the nonnegative axis.**  With strictly positive coefficients the critical
 quintic is strictly positive for `z ≥ 0`, so every double root of the pencil occurs at `z < 0` —
@@ -113,10 +113,10 @@ theorem criticalQuintic_pos_of_nonneg (c : Fin 5 → ℝ) (hc : ∀ i, 0 < c i) 
   have h2 := hc 2
   have h3 := hc 3
   have h4 := hc 4
-  have hz2 : 0 ≤ z ^ 2 := by positivity
-  have hz3 : 0 ≤ z ^ 3 := by positivity
-  have hz4 : 0 ≤ z ^ 4 := by positivity
-  have hz5 : 0 ≤ z ^ 5 := by positivity
+  have hz2 : 0 ≤ z ^ (2 : ℕ) := by positivity
+  have hz3 : 0 ≤ z ^ (3 : ℕ) := by positivity
+  have hz4 : 0 ≤ z ^ (4 : ℕ) := by positivity
+  have hz5 : 0 ≤ z ^ (5 : ℕ) := by positivity
   nlinarith [mul_nonneg (mul_nonneg h0.le h3.le) hz, mul_nonneg (mul_nonneg h1.le h2.le) hz,
     mul_nonneg (mul_nonneg h0.le h4.le) hz2, mul_nonneg (mul_nonneg h1.le h3.le) hz2,
     mul_nonneg (mul_nonneg h1.le h4.le) hz3, mul_nonneg (mul_nonneg h2.le h3.le) hz3,
@@ -144,8 +144,8 @@ which is exactly the window `D n ≤ 2/(2n+1) = 1/(n+½)` proved in
 
 /-- The degree-two model at its critical point. -/
 theorem degreeTwo_critical_values {b : ℝ} (hb : 0 < b) :
-    (1 : ℝ) + (2 / b) * (-b) + (1 / (b * (b + 1))) * (-b) ^ 2 = -(1 / (b + 1)) ∧
-      (1 / (b * (b + 1))) * (-b) ^ 2 = b / (b + 1) := by
+    (1 : ℝ) + (2 / b) * (-b) + (1 / (b * (b + 1))) * (-b) ^ (2 : ℕ) = -(1 / (b + 1)) ∧
+      (1 / (b * (b + 1))) * (-b) ^ (2 : ℕ) = b / (b + 1) := by
   have hb1 : b + 1 ≠ 0 := by positivity
   refine ⟨by field_simp; ring, by field_simp⟩
 

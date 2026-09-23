@@ -175,7 +175,7 @@ theorem det_infiniteVonMangoldtGammaFirstFactorialTraceGram
     (infiniteVonMangoldtGammaFirstFactorialTraceGram x).det =
       infiniteVonMangoldtGammaRawMoment x 1 *
           (infiniteVonMangoldtGammaRawMoment x 5 / 120) -
-        (infiniteVonMangoldtGammaRawMoment x 3 / 6) ^ 2 := by
+        (infiniteVonMangoldtGammaRawMoment x 3 / 6) ^ (2 : ℕ) := by
   rw [infiniteVonMangoldtGammaFirstFactorialTraceGram, Matrix.det_fin_two]
   norm_num
   ring

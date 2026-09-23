@@ -351,7 +351,7 @@ theorem principalCoorientedPositiveCone_noShorting
       exact ⟨j, hj, mul_pos hwj (hg j hj)⟩
   calc
     a * ∑ j ∈ S, w j * (a * g j) =
-        a ^ 2 * ∑ j ∈ S, w j * g j := by
+        a ^ (2 : ℕ) * ∑ j ∈ S, w j * g j := by
           simp only [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro j hj

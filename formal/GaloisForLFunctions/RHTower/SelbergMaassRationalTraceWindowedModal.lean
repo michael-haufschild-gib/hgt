@@ -81,9 +81,9 @@ theorem rationalPrincipalTraceSummand_windowed_modal_equation (N : ℕ) {lam : �
     (q : principalCongruenceGL N ⧸
       ((rationalConjugateGroup N g).subgroupOf (principalCongruenceGL N)))
     (w : ℝ) (hw : 0 < w) (n : ℤ) {y : ℝ} (hy : 0 < y) :
-    -(y : ℂ) ^ 2 *
+    -(y : ℂ) ^ (2 : ℕ) *
       (deriv (deriv (coefficient w n (rationalPrincipalTraceSummand N f g hg q ∘ ofComplex))) y -
-        ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+        ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
           coefficient w n (rationalPrincipalTraceSummand N f g hg q ∘ ofComplex) y +
         (directional 1 (rationalPrincipalTraceSummand N f g hg q ∘ ofComplex) (point w y) -
           directional 1 (rationalPrincipalTraceSummand N f g hg q ∘ ofComplex) (point 0 y)) / w +
@@ -130,9 +130,9 @@ theorem rationalPrincipalTraceSummandCoefficient_windowed_modal_equation (N : �
     (q : principalCongruenceGL N ⧸
       ((rationalConjugateGroup N g).subgroupOf (principalCongruenceGL N)))
     (w : ℝ) (hw : 0 < w) (n : ℤ) {y : ℝ} (hy : 0 < y) :
-    -(y : ℂ) ^ 2 *
+    -(y : ℂ) ^ (2 : ℕ) *
       (deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y -
-        ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+        ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
           rationalPrincipalTraceSummandCoefficient N f g hg q w n y +
         rationalPrincipalTraceSummandSeam N f g hg q w n y) =
       (lam : ℂ) * rationalPrincipalTraceSummandCoefficient N f g hg q w n y := by
@@ -151,10 +151,10 @@ theorem rationalPrincipalTraceSummandCoefficient_sum_windowed_modal_equation
       rationalConjugateGroup_isFiniteRelIndex N g
     letI := Fintype.ofFinite (principalCongruenceGL N ⧸
       ((rationalConjugateGroup N g).subgroupOf (principalCongruenceGL N)))
-    (-(y : ℂ) ^ 2 *
+    (-(y : ℂ) ^ (2 : ℕ) *
       (deriv (deriv (fun t : ℝ => ∑ q,
           rationalPrincipalTraceSummandCoefficient N f g hg q w n t)) y -
-        ((signedFrequency w n : ℝ) : ℂ) ^ 2 * (∑ q,
+        ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * (∑ q,
           rationalPrincipalTraceSummandCoefficient N f g hg q w n y) +
         (∑ q, rationalPrincipalTraceSummandSeam N f g hg q w n y)) =
       (lam : ℂ) * (∑ q, rationalPrincipalTraceSummandCoefficient N f g hg q w n y)) := by
@@ -194,9 +194,9 @@ theorem rationalPrincipalTraceSummandCoefficient_sum_windowed_modal_equation
       (∑ q, deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y) y := by
     apply hsumSecondRaw.congr_of_eventuallyEq
     exact hderivSum
-  have hsumModal : ∑ q, -(y : ℂ) ^ 2 *
+  have hsumModal : ∑ q, -(y : ℂ) ^ (2 : ℕ) *
       (deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y -
-        ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+        ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
           rationalPrincipalTraceSummandCoefficient N f g hg q w n y +
         rationalPrincipalTraceSummandSeam N f g hg q w n y) =
       ∑ q, (lam : ℂ) * rationalPrincipalTraceSummandCoefficient N f g hg q w n y := by
@@ -208,21 +208,21 @@ theorem rationalPrincipalTraceSummandCoefficient_sum_windowed_modal_equation
     (lam : ℂ) * (∑ q, rationalPrincipalTraceSummandCoefficient N f g hg q w n y) =
         ∑ q, (lam : ℂ) * rationalPrincipalTraceSummandCoefficient N f g hg q w n y :=
       by rw [Finset.mul_sum]
-    _ = ∑ q, -(y : ℂ) ^ 2 *
+    _ = ∑ q, -(y : ℂ) ^ (2 : ℕ) *
         (deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y -
-          ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+          ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
             rationalPrincipalTraceSummandCoefficient N f g hg q w n y +
           rationalPrincipalTraceSummandSeam N f g hg q w n y) := hsumModal.symm
     _ =
-        -(y : ℂ) ^ 2 * ∑ q,
+        -(y : ℂ) ^ (2 : ℕ) * ∑ q,
           (deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y -
-            ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+            ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
               rationalPrincipalTraceSummandCoefficient N f g hg q w n y +
             rationalPrincipalTraceSummandSeam N f g hg q w n y) :=
       by rw [Finset.mul_sum]
-    _ = -(y : ℂ) ^ 2 *
+    _ = -(y : ℂ) ^ (2 : ℕ) *
         ((∑ q, deriv (deriv (rationalPrincipalTraceSummandCoefficient N f g hg q w n)) y) -
-          ((signedFrequency w n : ℝ) : ℂ) ^ 2 *
+          ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) *
             (∑ q, rationalPrincipalTraceSummandCoefficient N f g hg q w n y) +
           (∑ q, rationalPrincipalTraceSummandSeam N f g hg q w n y)) := by
       congr 1
@@ -310,20 +310,20 @@ theorem rationalPrincipalTrace_summandSeam_sum_eq_zero
   rw [hcoefficient y hy, hsecond] at hperiodic
   have hwindowed := rationalPrincipalTraceSummandCoefficient_sum_windowed_modal_equation
     N f g hg (N + 1 : ℕ) (by positivity) n hy
-  have hseam : -(y : ℂ) ^ 2 *
+  have hseam : -(y : ℂ) ^ (2 : ℕ) *
       (∑ q, rationalPrincipalTraceSummandSeam N f g hg q (N + 1 : ℕ) n y) = 0 := by
     calc
-      -(y : ℂ) ^ 2 * (∑ q, rationalPrincipalTraceSummandSeam N f g hg q (N + 1 : ℕ) n y) =
-          -(y : ℂ) ^ 2 *
+      -(y : ℂ) ^ (2 : ℕ) * (∑ q, rationalPrincipalTraceSummandSeam N f g hg q (N + 1 : ℕ) n y) =
+          -(y : ℂ) ^ (2 : ℕ) *
             (deriv (deriv (fun t => ∑ q,
               rationalPrincipalTraceSummandCoefficient N f g hg q (N + 1 : ℕ) n t)) y -
-              ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ 2 *
+              ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ (2 : ℕ) *
                 (∑ q, rationalPrincipalTraceSummandCoefficient N f g hg q (N + 1 : ℕ) n y) +
               (∑ q, rationalPrincipalTraceSummandSeam N f g hg q (N + 1 : ℕ) n y)) -
-            -(y : ℂ) ^ 2 *
+            -(y : ℂ) ^ (2 : ℕ) *
               (deriv (deriv (fun t => ∑ q,
                 rationalPrincipalTraceSummandCoefficient N f g hg q (N + 1 : ℕ) n t)) y -
-                ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ 2 *
+                ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ (2 : ℕ) *
                   (∑ q, rationalPrincipalTraceSummandCoefficient N f g hg q (N + 1 : ℕ) n y)) := by
             ring
       _ = (lam : ℂ) * (∑ q,

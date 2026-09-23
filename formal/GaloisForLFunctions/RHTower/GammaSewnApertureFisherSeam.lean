@@ -31,12 +31,12 @@ private theorem tendsto_sinh_div_self_zero :
 
 /-- Third-order boundary coefficient of `sinh`, obtained by two exact l'Hôpital steps. -/
 private theorem tendsto_sinh_sub_self_div_cube_zero :
-    Tendsto (fun y : ℝ => (Real.sinh y - y) / y ^ 3)
+    Tendsto (fun y : ℝ => (Real.sinh y - y) / y ^ (3 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
   have hbase : Tendsto (fun y : ℝ => Real.sinh y / (y * 6))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     simpa only [div_div] using tendsto_sinh_div_self_zero.div_const 6
-  have hcosh : Tendsto (fun y : ℝ => (Real.cosh y - 1) / (3 * y ^ 2))
+  have hcosh : Tendsto (fun y : ℝ => (Real.cosh y - 1) / (3 * y ^ (2 : ℕ)))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     refine HasDerivAt.lhopital_zero_nhdsNE
       (f' := fun y : ℝ => Real.sinh y) (g' := fun y : ℝ => y * 6) ?_ ?_ ?_ ?_ ?_ hbase
@@ -52,12 +52,12 @@ private theorem tendsto_sinh_sub_self_div_cube_zero :
       have ht : Tendsto (fun y : ℝ => Real.cosh y - 1) (𝓝 0) (𝓝 0) := by
         simpa using hcont.tendsto
       exact ht.mono_left nhdsWithin_le_nhds
-    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ 2) 0 := by fun_prop
-      have ht : Tendsto (fun y : ℝ => 3 * y ^ 2) (𝓝 0) (𝓝 0) := by
+    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ (2 : ℕ)) 0 := by fun_prop
+      have ht : Tendsto (fun y : ℝ => 3 * y ^ (2 : ℕ)) (𝓝 0) (𝓝 0) := by
         simpa using hcont.tendsto
       exact ht.mono_left nhdsWithin_le_nhds
   refine HasDerivAt.lhopital_zero_nhdsNE
-    (f' := fun y : ℝ => Real.cosh y - 1) (g' := fun y : ℝ => 3 * y ^ 2) ?_ ?_ ?_ ?_ ?_ hcosh
+    (f' := fun y : ℝ => Real.cosh y - 1) (g' := fun y : ℝ => 3 * y ^ (2 : ℕ)) ?_ ?_ ?_ ?_ ?_ hcosh
   · exact Filter.Eventually.of_forall fun y =>
       (Real.hasDerivAt_sinh y).sub (hasDerivAt_id y)
   · exact Filter.Eventually.of_forall fun y => hasDerivAt_pow 3 y
@@ -68,14 +68,14 @@ private theorem tendsto_sinh_sub_self_div_cube_zero :
     have ht : Tendsto (fun y : ℝ => Real.sinh y - y) (𝓝 0) (𝓝 0) := by
       simpa using hcont.tendsto
     exact ht.mono_left nhdsWithin_le_nhds
-  · have hcont : ContinuousAt (fun y : ℝ => y ^ 3) 0 := by fun_prop
-    have ht : Tendsto (fun y : ℝ => y ^ 3) (𝓝 0) (𝓝 0) := by
+  · have hcont : ContinuousAt (fun y : ℝ => y ^ (3 : ℕ)) 0 := by fun_prop
+    have ht : Tendsto (fun y : ℝ => y ^ (3 : ℕ)) (𝓝 0) (𝓝 0) := by
       simpa using hcont.tendsto
     exact ht.mono_left nhdsWithin_le_nhds
 
-/-- Finite part of the double pole of `csch^2` at the origin. -/
+/-- Finite part of the double pole of `csch^(2 : ℕ)` at the origin. -/
 private theorem tendsto_inv_sinh_sq_sub_inv_sq_zero :
-    Tendsto (fun y : ℝ => 1 / Real.sinh y ^ 2 - 1 / y ^ 2)
+    Tendsto (fun y : ℝ => 1 / Real.sinh y ^ (2 : ℕ) - 1 / y ^ (2 : ℕ))
       (𝓝[≠] 0) (𝓝 (-1 / 3 : ℝ)) := by
   have hself : Tendsto (fun y : ℝ => y / Real.sinh y) (𝓝[≠] 0) (𝓝 1) := by
     have h := tendsto_sinh_div_self_zero.inv₀ (by norm_num)
@@ -97,15 +97,15 @@ private theorem tendsto_inv_sinh_sq_sub_inv_sq_zero :
 private theorem tendsto_gammaSewnApertureRenormalizedKernel_zero :
     Tendsto
       (fun y : ℝ =>
-        1 / Real.sinh y ^ 2 + 1 / Real.cosh (2 * y) ^ 2 - 1 / y ^ 2)
+        1 / Real.sinh y ^ (2 : ℕ) + 1 / Real.cosh (2 * y) ^ (2 : ℕ) - 1 / y ^ (2 : ℕ))
       (𝓝[≠] 0) (𝓝 (2 / 3 : ℝ)) := by
-  have hsech : Tendsto (fun y : ℝ => 1 / Real.cosh (2 * y) ^ 2)
+  have hsech : Tendsto (fun y : ℝ => 1 / Real.cosh (2 * y) ^ (2 : ℕ))
       (𝓝[≠] 0) (𝓝 1) := by
-    have hcont : ContinuousAt (fun y : ℝ => 1 / Real.cosh (2 * y) ^ 2) 0 := by
+    have hcont : ContinuousAt (fun y : ℝ => 1 / Real.cosh (2 * y) ^ (2 : ℕ)) 0 := by
       have hcosh : ContinuousAt (fun y : ℝ => Real.cosh (2 * y)) 0 :=
         (Real.continuous_cosh.comp (continuous_const.mul continuous_id)).continuousAt
       exact continuousAt_const.div (hcosh.pow 2) (by norm_num)
-    have ht : Tendsto (fun y : ℝ => 1 / Real.cosh (2 * y) ^ 2)
+    have ht : Tendsto (fun y : ℝ => 1 / Real.cosh (2 * y) ^ (2 : ℕ))
         (𝓝 0) (𝓝 1) := by
       simpa using hcont.tendsto
     exact ht.mono_left nhdsWithin_le_nhds
@@ -118,15 +118,15 @@ private theorem tendsto_gammaSewnApertureRenormalizedKernel_zero :
 def gammaSewnMobiusApertureFisherCurvature
     (x : ℝ) (p : Nat.Primes) : ℝ :=
   let q := xiMobiusContinuousApertureDiskNode x p
-  Real.log (p : ℝ) ^ 2 *
-    (4 * q ^ 2 / (1 - q ^ 2) ^ 2 +
-      4 * q ^ 4 / (1 + q ^ 4) ^ 2)
+  Real.log (p : ℝ) ^ (2 : ℕ) *
+    (4 * q ^ (2 : ℕ) / (1 - q ^ (2 : ℕ)) ^ (2 : ℕ) +
+      4 * q ^ (4 : ℕ) / (1 + q ^ (4 : ℕ)) ^ (2 : ℕ))
 
 /-- Removal of the universal boundary pole from the prime Fisher curvature.  This is the Hessian
 seen by the normalized Rees feature `B_x / x`. -/
 def gammaSewnMobiusApertureRenormalizedFisherCurvature
     (x : ℝ) (p : Nat.Primes) : ℝ :=
-  gammaSewnMobiusApertureFisherCurvature x p - 1 / x ^ 2
+  gammaSewnMobiusApertureFisherCurvature x p - 1 / x ^ (2 : ℕ)
 
 /-- The prime Fisher curvature is strictly positive throughout the physical aperture chamber. -/
 theorem gammaSewnMobiusApertureFisherCurvature_pos
@@ -138,11 +138,11 @@ theorem gammaSewnMobiusApertureFisherCurvature_pos
   have hL : 0 < Real.log (p : ℝ) := Real.log_pos hp1
   have hq0 : 0 < q := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
-  have hminus : 0 < 1 - q ^ 2 := by
-    have hqsq : q ^ 2 < (1 : ℝ) ^ 2 :=
+  have hminus : 0 < 1 - q ^ (2 : ℕ) := by
+    have hqsq : q ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ hq0.le (by norm_num)).2 hq1
     nlinarith
-  have hplus : 0 < 1 + q ^ 4 := by positivity
+  have hplus : 0 < 1 + q ^ (4 : ℕ) := by positivity
   unfold gammaSewnMobiusApertureFisherCurvature
   exact mul_pos (sq_pos_of_pos hL)
     (add_pos
@@ -154,11 +154,11 @@ boundary pole and the Gamma-sewing correction, respectively. -/
 theorem gammaSewnMobiusApertureFisherCurvature_eq_hyperbolic
     (x : ℝ) (p : Nat.Primes) :
     gammaSewnMobiusApertureFisherCurvature x p =
-      Real.log (p : ℝ) ^ 2 *
-        (1 / Real.sinh (x * Real.log (p : ℝ)) ^ 2 +
-          1 / Real.cosh (2 * (x * Real.log (p : ℝ))) ^ 2) := by
+      Real.log (p : ℝ) ^ (2 : ℕ) *
+        (1 / Real.sinh (x * Real.log (p : ℝ)) ^ (2 : ℕ) +
+          1 / Real.cosh (2 * (x * Real.log (p : ℝ))) ^ (2 : ℕ)) := by
   have htwo : Real.exp (2 * (x * Real.log (p : ℝ))) =
-      Real.exp (x * Real.log (p : ℝ)) ^ 2 := by
+      Real.exp (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
     rw [show 2 * (x * Real.log (p : ℝ)) =
       (x * Real.log (p : ℝ)) + (x * Real.log (p : ℝ)) by ring,
       Real.exp_add, pow_two]
@@ -172,13 +172,13 @@ theorem gammaSewnMobiusApertureFisherCurvature_eq_hyperbolic
   ring
 
 /-- The lossless-boundary finite part is the prime Fisher clock
-`(2/3) * (log p)^2`.  This is a two-sided punctured limit; the physical right-hand limit follows
+`(2/3) * (log p)^(2 : ℕ)`.  This is a two-sided punctured limit; the physical right-hand limit follows
 by restriction. -/
 theorem tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_zero
     (p : Nat.Primes) :
     Tendsto
       (fun x : ℝ => gammaSewnMobiusApertureRenormalizedFisherCurvature x p)
-      (𝓝[≠] 0) (𝓝 ((2 / 3 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+      (𝓝[≠] 0) (𝓝 ((2 / 3 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
   let L := Real.log (p : ℝ)
   have hp1 : (1 : ℝ) < (p : ℝ) := by
     exact_mod_cast p.2.one_lt
@@ -193,22 +193,22 @@ theorem tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_zero
       simp only [mem_compl_iff, mem_singleton_iff] at hx ⊢
       exact mul_ne_zero hx hL.ne'
   have hkernel := tendsto_gammaSewnApertureRenormalizedKernel_zero.comp hscale
-  have hscaled := hkernel.const_mul (L ^ 2)
+  have hscaled := hkernel.const_mul (L ^ (2 : ℕ))
   have heq :
-      (fun x : ℝ => L ^ 2 *
-        (1 / Real.sinh (x * L) ^ 2 +
-          1 / Real.cosh (2 * (x * L)) ^ 2 - 1 / (x * L) ^ 2)) =ᶠ[𝓝[≠] 0]
+      (fun x : ℝ => L ^ (2 : ℕ) *
+        (1 / Real.sinh (x * L) ^ (2 : ℕ) +
+          1 / Real.cosh (2 * (x * L)) ^ (2 : ℕ) - 1 / (x * L) ^ (2 : ℕ))) =ᶠ[𝓝[≠] 0]
         (fun x : ℝ => gammaSewnMobiusApertureRenormalizedFisherCurvature x p) := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     simp only [mem_compl_iff, mem_singleton_iff] at hx
     rw [gammaSewnMobiusApertureRenormalizedFisherCurvature,
       gammaSewnMobiusApertureFisherCurvature_eq_hyperbolic]
-    change L ^ 2 *
-        (1 / Real.sinh (x * L) ^ 2 + 1 / Real.cosh (2 * (x * L)) ^ 2 -
-          1 / (x * L) ^ 2) =
-      L ^ 2 * (1 / Real.sinh (x * L) ^ 2 + 1 / Real.cosh (2 * (x * L)) ^ 2) -
-        1 / x ^ 2
-    have hpole : L ^ 2 * (1 / (x * L) ^ 2) = 1 / x ^ 2 := by
+    change L ^ (2 : ℕ) *
+        (1 / Real.sinh (x * L) ^ (2 : ℕ) + 1 / Real.cosh (2 * (x * L)) ^ (2 : ℕ) -
+          1 / (x * L) ^ (2 : ℕ)) =
+      L ^ (2 : ℕ) * (1 / Real.sinh (x * L) ^ (2 : ℕ) + 1 / Real.cosh (2 * (x * L)) ^ (2 : ℕ)) -
+        1 / x ^ (2 : ℕ)
+    have hpole : L ^ (2 : ℕ) * (1 / (x * L) ^ (2 : ℕ)) = 1 / x ^ (2 : ℕ) := by
       field_simp [hx, hL.ne']
     rw [mul_sub, hpole]
   have hfinal := hscaled.congr' heq
@@ -216,7 +216,7 @@ theorem tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_zero
 
 /-- Boundary Fisher clock selected by the finite part of the Gamma-sewn aperture Hessian. -/
 def gammaSewnMobiusApertureBoundaryFisherClock (p : Nat.Primes) : ℝ :=
-  (2 / 3 : ℝ) * Real.log (p : ℝ) ^ 2
+  (2 / 3 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)
 
 theorem tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_boundaryClock
     (p : Nat.Primes) :
@@ -231,15 +231,15 @@ with the boundary derivative of the normalized Wronskian is recorded separately 
 def gammaSewnMobiusApertureBoundarySecondJetClock
     (p : Nat.Primes) (e : ℕ) : ℝ :=
   gammaSewnMobiusApertureBoundaryFisherClock p -
-    gammaSewnMobiusApertureCellMidHeight p e ^ 2
+    gammaSewnMobiusApertureCellMidHeight p e ^ (2 : ℕ)
 
 /-- The midpoint clock and second-jet clock reconstruct the square of the prime logarithm. -/
 theorem gammaSewnMobiusApertureBoundary_log_sq_eq_twoJet
     (p : Nat.Primes) (e : ℕ) :
-    Real.log (p : ℝ) ^ 2 =
+    Real.log (p : ℝ) ^ (2 : ℕ) =
       (3 / 2 : ℝ) *
         (gammaSewnMobiusApertureBoundarySecondJetClock p e +
-          gammaSewnMobiusApertureCellMidHeight p e ^ 2) := by
+          gammaSewnMobiusApertureCellMidHeight p e ^ (2 : ℕ)) := by
   unfold gammaSewnMobiusApertureBoundarySecondJetClock
     gammaSewnMobiusApertureBoundaryFisherClock
   ring
@@ -252,7 +252,7 @@ theorem gammaSewnMobiusApertureBoundary_log_eq_sqrt_twoJet
       Real.sqrt
         ((3 / 2 : ℝ) *
           (gammaSewnMobiusApertureBoundarySecondJetClock p e +
-            gammaSewnMobiusApertureCellMidHeight p e ^ 2)) := by
+            gammaSewnMobiusApertureCellMidHeight p e ^ (2 : ℕ))) := by
   rw [← gammaSewnMobiusApertureBoundary_log_sq_eq_twoJet]
   have hp1 : (1 : ℝ) < (p : ℝ) := by
     exact_mod_cast p.2.one_lt
@@ -277,12 +277,12 @@ theorem hasDerivAt_gammaSewnMobiusApertureCellVelocity
       simp only [Function.comp_apply]
   have hq0 : 0 < q x := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q x < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
-  have hminus : 1 - q x ^ 2 ≠ 0 := by
-    have hqsq : (q x) ^ 2 < (1 : ℝ) ^ 2 :=
+  have hminus : 1 - q x ^ (2 : ℕ) ≠ 0 := by
+    have hqsq : (q x) ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ hq0.le (by norm_num)).2 hq1
-    have : 0 < 1 - q x ^ 2 := by nlinarith
+    have : 0 < 1 - q x ^ (2 : ℕ) := by nlinarith
     exact this.ne'
-  have hplus : 1 + q x ^ 4 ≠ 0 := by positivity
+  have hplus : 1 + q x ^ (4 : ℕ) ≠ 0 := by positivity
   have hfirst := ((hq.pow 2).const_mul 2).div
     ((hasDerivAt_const (x := x) (c := (1 : ℝ))).sub (hq.pow 2)) hminus
   have hsecond := (hq.pow 4).div
@@ -309,7 +309,7 @@ theorem hasDerivAt_gammaSewnMobiusAperturePrimeCenteringError
       (fun y : ℝ => gammaSewnMobiusAperturePrimeCenteringError y p)
       (-gammaSewnMobiusApertureRenormalizedFisherCurvature x p) x := by
   have hvelocity := hasDerivAt_gammaSewnMobiusApertureCellVelocity hx p 0
-  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-1 / x ^ 2) x := by
+  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-1 / x ^ (2 : ℕ)) x := by
     apply ((((hasDerivAt_const (x := x) (c := (1 : ℝ))).div
       (hasDerivAt_id x) hx.ne').congr_deriv (by
         simp only [Function.id_def]
@@ -357,7 +357,7 @@ theorem hasDerivAt_gammaSewnMobiusApertureNormalizedReesFeature
 features. -/
 theorem gammaSewnMobiusApertureExteriorCell_div_sq_eq_normalizedReesWronskian
     {x : ℝ} (hx : 0 < x) (i j : Nat.Primes × ℕ) :
-    gammaSewnMobiusApertureExteriorCell x i j / x ^ 2 =
+    gammaSewnMobiusApertureExteriorCell x i j / x ^ (2 : ℕ) =
       gammaSewnMobiusApertureNormalizedReesFeature x i.1 i.2 *
           deriv (fun y : ℝ =>
             gammaSewnMobiusApertureNormalizedReesFeature y j.1 j.2) x -

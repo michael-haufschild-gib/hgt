@@ -53,7 +53,7 @@ reflection-positive Hankel moment functional. -/
 theorem matrixTracePowerMoment_nonnegative
     {n : Type*} [Fintype n] [DecidableEq n]
     {A : Matrix n n ℂ} (hA : A.PosSemidef) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (matrixTracePowerMoment A) (p ^ 2) := by
+    0 ≤ momentFunctional (matrixTracePowerMoment A) (p ^ (2 : ℕ)) := by
   letI : SeminormedAddCommGroup (Matrix n n ℂ) :=
     A.toMatrixSeminormedAddCommGroup hA
   letI : InnerProductSpace ℂ (Matrix n n ℂ) :=

@@ -84,7 +84,7 @@ theorem thetaCuspRightLine_projectiveRayleighGap_strict
     (hcoercive : gap * ‖thetaCuspRightLineUnitTangent a ha -
         inner ℂ (thetaCuspRightLineUnitSource a ha)
           (thetaCuspRightLineUnitTangent a ha) •
-            thetaCuspRightLineUnitSource a ha‖ ^ 2 ≤
+            thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) ≤
       (T - (epsilon : ℂ) • ContinuousLinearMap.id ℂ
         (Lp (α := ℝ) ℂ 2 volume)).reApplyInnerSelf
         (thetaCuspRightLineUnitTangent a ha -

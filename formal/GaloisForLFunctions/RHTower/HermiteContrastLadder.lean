@@ -34,7 +34,7 @@ namespace GaloisForLFunctions.RHTower
 variable {a : ℕ → ℝ}
 
 /-- The partial sums of the squared centre values. -/
-def contrastPartialSum (a : ℕ → ℝ) (k : ℕ) : ℝ := ∑ j ∈ range (k + 1), a j ^ 2
+def contrastPartialSum (a : ℕ → ℝ) (k : ℕ) : ℝ := ∑ j ∈ range (k + 1), a j ^ (2 : ℕ)
 
 /-- The `k`-th Hermite contrast ladder vector. -/
 def contrastLadder (a : ℕ → ℝ) (k : ℕ) (i : ℕ) : ℝ :=
@@ -68,7 +68,7 @@ theorem contrastLadder_inner_centre {k N : ℕ} (hN : k + 2 ≤ N) (ha : a (k + 
   rw [hsplit, Finset.sum_range_succ, contrastLadder_succ]
   have hhead : ∑ i ∈ range (k + 1), contrastLadder a k i * a i
       = -contrastPartialSum a k := by
-    have hterm : ∀ i ∈ range (k + 1), contrastLadder a k i * a i = -(a i ^ 2) := by
+    have hterm : ∀ i ∈ range (k + 1), contrastLadder a k i * a i = -(a i ^ (2 : ℕ)) := by
       intro i hi
       have hle : i ≤ k := by
         have := Finset.mem_range.1 hi
@@ -191,7 +191,7 @@ theorem contrastLadder_inner_rawContrast_succ {k N : ℕ} (hN : k + 1 < N) (ha :
       = a 0 * contrastPartialSum a (k + 1) / a (k + 1) := by
   rw [sum_mul_rawContrast (a := a) (by omega) hN, contrastLadder_of_le (Nat.zero_le k),
     contrastLadder_succ]
-  have hS : contrastPartialSum a (k + 1) = contrastPartialSum a k + a (k + 1) ^ 2 := by
+  have hS : contrastPartialSum a (k + 1) = contrastPartialSum a k + a (k + 1) ^ (2 : ℕ) := by
     rw [contrastPartialSum, contrastPartialSum, Finset.sum_range_succ]
   rw [hS]
   field_simp

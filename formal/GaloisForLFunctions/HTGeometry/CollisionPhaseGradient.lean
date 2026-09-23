@@ -33,7 +33,7 @@ def cubicVector (U : Matrix D D ℂ) (θ : D → ℝ) (j : D) : ℂ :=
 
 /-- The quartic collision functional of a phase orbit. -/
 def collisionFunctional (U : Matrix D D ℂ) (θ : D → ℝ) : ℝ :=
-  ∑ j, Complex.normSq (phaseOrbit U θ j) ^ 2
+  ∑ j, Complex.normSq (phaseOrbit U θ j) ^ (2 : ℕ)
 
 /-- The derivative of the collision functional in the `a`-th phase coordinate, in closed form. -/
 def phaseDerivative (U : Matrix D D ℂ) (θ : D → ℝ) (a : D) : ℝ :=
@@ -57,23 +57,23 @@ omit [DecidableEq D] in
 /-- **The gradient energy of the quartic functional.**  Summing the squared phase derivatives costs
 sixteen times the squared norm of the adjoint applied to the cubic vector. -/
 theorem sum_sq_phaseDerivative_le (U : Matrix D D ℂ) (θ : D → ℝ) :
-    ∑ a, phaseDerivative U θ a ^ 2
-      ≤ 16 * ∑ a, ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖ ^ 2 := by
+    ∑ a, phaseDerivative U θ a ^ (2 : ℕ)
+      ≤ 16 * ∑ a, ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖ ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun a _ => ?_
   have habs := abs_phaseDerivative_le U θ a
-  have hsq : phaseDerivative U θ a ^ 2 = |phaseDerivative U θ a| ^ 2 := (sq_abs _).symm
+  have hsq : phaseDerivative U θ a ^ (2 : ℕ) = |phaseDerivative U θ a| ^ (2 : ℕ) := (sq_abs _).symm
   rw [hsq]
   have hnn : (0 : ℝ) ≤ 4 * ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖ := by positivity
-  calc |phaseDerivative U θ a| ^ 2
-      ≤ (4 * ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖) ^ 2 := by
+  calc |phaseDerivative U θ a| ^ (2 : ℕ)
+      ≤ (4 * ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖) ^ (2 : ℕ) := by
         exact pow_le_pow_left₀ (abs_nonneg _) habs 2
-    _ = 16 * ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖ ^ 2 := by ring
+    _ = 16 * ‖∑ j, (starRingEnd ℂ) (cubicVector U θ j) * U j a‖ ^ (2 : ℕ) := by ring
 
 omit [DecidableEq D] in
 /-- The cubic vector has squared norm the sixth power sum of the orbit. -/
 theorem sum_normSq_cubicVector (U : Matrix D D ℂ) (θ : D → ℝ) :
-    ∑ j, ‖cubicVector U θ j‖ ^ 2 = ∑ j, Complex.normSq (phaseOrbit U θ j) ^ 3 := by
+    ∑ j, ‖cubicVector U θ j‖ ^ (2 : ℕ) = ∑ j, Complex.normSq (phaseOrbit U θ j) ^ (3 : ℕ) := by
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [cubicVector, norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Complex.normSq_nonneg _), mul_pow, Complex.normSq_eq_norm_sq]
@@ -82,9 +82,9 @@ theorem sum_normSq_cubicVector (U : Matrix D D ℂ) (θ : D → ℝ) :
 /-- **Unitarity preserves the energy of the cubic vector.**  The entries of the adjoint applied to a
 vector have the same total energy as the vector. -/
 theorem sum_normSq_vecMul_conj (U : Matrix D D ℂ) (hU : U * Uᴴ = 1) (v : D → ℂ) :
-    ∑ a, ‖∑ j, (starRingEnd ℂ) (v j) * U j a‖ ^ 2 = ∑ j, ‖v j‖ ^ 2 := by
+    ∑ a, ‖∑ j, (starRingEnd ℂ) (v j) * U j a‖ ^ (2 : ℕ) = ∑ j, ‖v j‖ ^ (2 : ℕ) := by
   classical
-  have hsq : ∀ z : ℂ, ‖z‖ ^ 2 = (z * (starRingEnd ℂ) z).re := by
+  have hsq : ∀ z : ℂ, ‖z‖ ^ (2 : ℕ) = (z * (starRingEnd ℂ) z).re := by
     intro z
     rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
   have hentry : ∀ j k : D, ∑ a, U j a * (starRingEnd ℂ) (U k a) = if j = k then 1 else 0 := by
@@ -123,7 +123,7 @@ theorem sum_normSq_vecMul_conj (U : Matrix D D ℂ) (hU : U * Uᴴ = 1) (v : D �
             ring
           · intro hj
             exact absurd (Finset.mem_univ j) hj
-  calc ∑ a, ‖∑ j, (starRingEnd ℂ) (v j) * U j a‖ ^ 2
+  calc ∑ a, ‖∑ j, (starRingEnd ℂ) (v j) * U j a‖ ^ (2 : ℕ)
       = ∑ a, ((∑ j, (starRingEnd ℂ) (v j) * U j a) *
           (starRingEnd ℂ) (∑ j, (starRingEnd ℂ) (v j) * U j a)).re :=
         Finset.sum_congr rfl fun a _ => hsq _
@@ -131,15 +131,15 @@ theorem sum_normSq_vecMul_conj (U : Matrix D D ℂ) (hU : U * Uᴴ = 1) (v : D �
           (starRingEnd ℂ) (∑ j, (starRingEnd ℂ) (v j) * U j a)).re := by
         rw [Complex.re_sum]
     _ = (∑ j, v j * (starRingEnd ℂ) (v j)).re := by rw [hcomplex]
-    _ = ∑ j, ‖v j‖ ^ 2 := by
+    _ = ∑ j, ‖v j‖ ^ (2 : ℕ) := by
         rw [Complex.re_sum]
         exact Finset.sum_congr rfl fun j _ => (hsq (v j)).symm
 
 /-- **`(13)`: the phase-gradient energy of the collision functional.**  The squared phase gradient
 is at most sixteen times the sixth power sum of the orbit. -/
 theorem sum_sq_phaseDerivative_le_sixth (U : Matrix D D ℂ) (hU : U * Uᴴ = 1) (θ : D → ℝ) :
-    ∑ a, phaseDerivative U θ a ^ 2
-      ≤ 16 * ∑ j, Complex.normSq (phaseOrbit U θ j) ^ 3 := by
+    ∑ a, phaseDerivative U θ a ^ (2 : ℕ)
+      ≤ 16 * ∑ j, Complex.normSq (phaseOrbit U θ j) ^ (3 : ℕ) := by
   refine le_trans (sum_sq_phaseDerivative_le U θ) ?_
   rw [sum_normSq_vecMul_conj U hU (cubicVector U θ), sum_normSq_cubicVector]
 
@@ -207,8 +207,8 @@ theorem hasDerivAt_collisionFunctional (U : Matrix D D ℂ) (θ : D → ℝ) (a 
       rw [Function.update_self, add_zero]
     · rw [Function.update_of_ne hb]
   have hterm : ∀ j : D, HasDerivAt
-      (fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ 2)
-      (2 * Complex.normSq (phaseOrbit U θ j) ^ 1 *
+      (fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ (2 : ℕ))
+      (2 * Complex.normSq (phaseOrbit U θ j) ^ (1 : ℕ) *
         (2 * ((starRingEnd ℂ) (phaseOrbit U θ j) *
           (U j a * (Complex.exp (Complex.I * (θ a : ℂ)) * Complex.I))).re)) 0 := by
     intro j
@@ -218,7 +218,7 @@ theorem hasDerivAt_collisionFunctional (U : Matrix D D ℂ) (θ : D → ℝ) (a 
     rw [hupd] at h3
     have hfun : ((fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j)) *
         fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j))
-        = fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ 2 := by
+        = fun s : ℝ => Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ (2 : ℕ) := by
       funext s
       simp only [Pi.mul_apply]
       ring
@@ -226,12 +226,12 @@ theorem hasDerivAt_collisionFunctional (U : Matrix D D ℂ) (θ : D → ℝ) (a 
     refine h3.congr_deriv ?_
     ring
   have hsum : HasDerivAt (fun s : ℝ => collisionFunctional U (Function.update θ a (θ a + s)))
-      (∑ j, 2 * Complex.normSq (phaseOrbit U θ j) ^ 1 *
+      (∑ j, 2 * Complex.normSq (phaseOrbit U θ j) ^ (1 : ℕ) *
         (2 * ((starRingEnd ℂ) (phaseOrbit U θ j) *
           (U j a * (Complex.exp (Complex.I * (θ a : ℂ)) * Complex.I))).re)) 0 := by
     have hfun2 : (fun s : ℝ => collisionFunctional U (Function.update θ a (θ a + s)))
         = ∑ j : D, (fun s : ℝ =>
-            Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ 2) := by
+            Complex.normSq (phaseOrbit U (Function.update θ a (θ a + s)) j) ^ (2 : ℕ)) := by
       funext s
       rw [collisionFunctional, Finset.sum_apply]
     rw [hfun2]

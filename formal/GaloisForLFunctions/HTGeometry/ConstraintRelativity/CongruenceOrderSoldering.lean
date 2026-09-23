@@ -140,7 +140,7 @@ variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [Invertible ((m : R) + 1)]
 
 /-- The trace-law defect in coordinates. -/
 noncomputable def traceDefectModelEquiv (a : R) (m : ℕ) [Invertible ((m : R) + 1)] :
-    traceDefect a m ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+    traceDefect a m ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   scaledTraceDefectEquiv
 
 theorem traceDefectModelEquiv_mk (z : ↥(scaledDualA a m)) :

@@ -132,7 +132,7 @@ def routePDeningerLowerSquaredCauchyJet
 @[simp] theorem routePDeningerLowerSquaredCauchyJet_apply
     (A : ℂ) (z : DeningerPrimeGammaLowerPoint) (q : XiZeroCopy) :
     routePDeningerLowerSquaredCauchyJet A z q =
-      A * xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) ^ 2 := by
+      A * xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) ^ (2 : ℕ) := by
   change (starRingEnd ℂ)
       (routePDeningerUpperSquaredCauchyTest ((starRingEnd ℂ) A)
         (deningerPrimeGammaPointConjEquiv z)
@@ -263,15 +263,15 @@ theorem re_inner_lineConj_upperSquaredCauchyJet_fourLegHodgeMate
     (inner ℂ
         (xiWeilLineConjLp (routePDeningerUpperSquaredCauchyJet A w))
         (routePDeningerUpperFourLegHodgeMate A w)).re =
-      ‖routePDeningerUpperSquaredCauchyJet A w‖ ^ 2 := by
+      ‖routePDeningerUpperSquaredCauchyJet A w‖ ^ (2 : ℕ) := by
   rw [inner_lineConj_upperSquaredCauchyJet_fourLegHodgeMate]
   calc
     (inner ℂ (routePDeningerUpperFourLegHodgeMate A w)
       (routePDeningerUpperFourLegHodgeMate A w)).re =
-        ‖routePDeningerUpperFourLegHodgeMate A w‖ ^ 2 :=
+        ‖routePDeningerUpperFourLegHodgeMate A w‖ ^ (2 : ℕ) :=
       (InnerProductSpace.norm_sq_eq_re_inner
         (𝕜 := ℂ) (routePDeningerUpperFourLegHodgeMate A w)).symm
-    _ = ‖routePDeningerUpperSquaredCauchyJet A w‖ ^ 2 := by
+    _ = ‖routePDeningerUpperSquaredCauchyJet A w‖ ^ (2 : ℕ) := by
       rw [norm_routePDeningerUpperFourLegHodgeMate]
 
 /-- Matrix-complete four-leg source graph Gram. -/

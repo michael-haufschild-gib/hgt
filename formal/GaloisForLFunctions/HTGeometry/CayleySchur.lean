@@ -28,7 +28,7 @@ of the Herglotz ⟷ Schur correspondence — the carrier's disk picture. -/
 theorem cayley_herglotz_schur (m : ℂ) (hm : 0 ≤ m.im) (h : m + Complex.I ≠ 0) :
     ‖(m - Complex.I) / (m + Complex.I)‖ ≤ 1 := by
   rw [norm_div, div_le_one (norm_pos_iff.mpr h)]
-  have key : ‖m - Complex.I‖ ^ 2 ≤ ‖m + Complex.I‖ ^ 2 := by
+  have key : ‖m - Complex.I‖ ^ (2 : ℕ) ≤ ‖m + Complex.I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
                Complex.I_re, Complex.I_im]
@@ -61,11 +61,11 @@ theorem blaschke_schur (a z : ℂ) (ha : ‖a‖ ≤ 1) (hz : ‖z‖ ≤ 1)
     (h : 1 - (starRingEnd ℂ) a * z ≠ 0) :
     ‖(z - a) / (1 - (starRingEnd ℂ) a * z)‖ ≤ 1 := by
   rw [norm_div, div_le_one (norm_pos_iff.mpr h)]
-  have hA : (0 : ℝ) ≤ 1 - (a.re ^ 2 + a.im ^ 2) := by
+  have hA : (0 : ℝ) ≤ 1 - (a.re ^ (2 : ℕ) + a.im ^ (2 : ℕ)) := by
     nlinarith [Complex.sq_norm a, Complex.normSq_apply a, ha, norm_nonneg a]
-  have hZ : (0 : ℝ) ≤ 1 - (z.re ^ 2 + z.im ^ 2) := by
+  have hZ : (0 : ℝ) ≤ 1 - (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
     nlinarith [Complex.sq_norm z, Complex.normSq_apply z, hz, norm_nonneg z]
-  have key : ‖z - a‖ ^ 2 ≤ ‖1 - (starRingEnd ℂ) a * z‖ ^ 2 := by
+  have key : ‖z - a‖ ^ (2 : ℕ) ≤ ‖1 - (starRingEnd ℂ) a * z‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im, Complex.one_re,
                Complex.one_im, Complex.conj_re, Complex.conj_im]
@@ -127,7 +127,7 @@ disk (`‖w‖ < 1`), the diagonal of the de Branges–Rovnyak kernel `K_θ(w,w)
 is nonnegative — the defining positivity of the model space `H(θ)`. -/
 @[aesop safe]
 theorem deBrangesRovnyak_diag_nonneg (θ w : ℂ) (hθ : ‖θ‖ ≤ 1) (hw : ‖w‖ < 1) :
-    0 ≤ (1 - ‖θ‖ ^ 2) / (1 - ‖w‖ ^ 2) := by
+    0 ≤ (1 - ‖θ‖ ^ (2 : ℕ)) / (1 - ‖w‖ ^ (2 : ℕ)) := by
   apply div_nonneg
   · nlinarith [norm_nonneg θ, hθ]
   · nlinarith [norm_nonneg w, hw]
@@ -144,7 +144,7 @@ theorem cayley_upperHalfPlane_to_disk (z : ℂ) (hz : 0 < z.im) :
     simp only [Complex.add_im, Complex.I_im] at him
     linarith
   rw [norm_div, div_lt_one (norm_pos_iff.mpr h)]
-  have key : ‖z - Complex.I‖ ^ 2 < ‖z + Complex.I‖ ^ 2 := by
+  have key : ‖z - Complex.I‖ ^ (2 : ℕ) < ‖z + Complex.I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
                Complex.I_re, Complex.I_im]

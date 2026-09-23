@@ -10,7 +10,7 @@ the two null lines with opposite signs.
 
 This file proves the exact crossing law
 
-`B(v, Dv) = P(2)^2 * lambda`
+`B(v, Dv) = P(2)^(2 : ℕ) * lambda`
 
 for the positive-imaginary source eigenmode. Its imaginary part is strictly positive; the conjugate
 mode has exactly the negative crossing. This is a coefficient-faithful oriented survivor, obtained
@@ -47,7 +47,7 @@ off-diagonal source coefficient times the nonreal eigenvalue. -/
 theorem fzzCigarParityTwoScaleKreinEigenvector_gradeCrossing :
     fzzCigarParityTwoScaleGradeCrossing
         fzzCigarParityTwoScaleKreinEigenvector =
-      (fzzKreinQ : ℂ) ^ 2 *
+      (fzzKreinQ : ℂ) ^ (2 : ℕ) *
         fzzCigarParityTwoScaleKreinEigenvalue := by
   rw [fzzCigarParityTwoScaleGradeCrossing,
     fzzCigarParityTwoScaleGrade, fzzCigarParityTwoScaleKreinPairing,
@@ -75,7 +75,7 @@ theorem fzzCigarParityTwoScaleKreinEigenvector_gradeCrossing_im_pos :
   rw [fzzCigarParityTwoScaleKreinEigenvector_gradeCrossing,
     fzzCigarParityTwoScaleKreinEigenvalue]
   simp
-  have hre : ((fzzKreinQ : ℂ) ^ 2).re = fzzKreinQ ^ 2 := by
+  have hre : ((fzzKreinQ : ℂ) ^ (2 : ℕ)).re = fzzKreinQ ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow, Complex.ofReal_re]
   rw [hre]
   have hQ : 0 < fzzKreinQ := by

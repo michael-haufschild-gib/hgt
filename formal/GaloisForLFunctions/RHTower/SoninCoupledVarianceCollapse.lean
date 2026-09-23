@@ -22,13 +22,13 @@ noncomputable section
 /-- The all-prime coupled column has the scalar Shannon-area bound on every source vector. -/
 theorem norm_sq_soninAllPrimeColumnOperator_apply_le_area
     (a : ℝ) (ha : 0 < a) (x : SoninL2) :
-    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤
-      ((128 * a ^ 2) * soninAllPrimeColumnWeightSqMass) * ‖x‖ ^ 2 := by
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ (2 : ℕ) ≤
+      ((128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) * ‖x‖ ^ (2 : ℕ) := by
   rw [norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum]
   have hpoint : ∀ pk : Nat.Primes × ℕ,
-      ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ 2 ≤
+      ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ (2 : ℕ) ≤
         ContinuousLinearMap.hsNormSq
-            (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ 2 := by
+            (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ (2 : ℕ) := by
     intro pk
     let R := centralSoninWeightedPrimePowerResidual a pk
     have hR : ContinuousLinearMap.IsHilbertSchmidt R :=
@@ -38,30 +38,30 @@ theorem norm_sq_soninAllPrimeColumnOperator_apply_le_area
     have happ : ‖R x‖ ≤ ‖R‖ * ‖x‖ := R.le_opNorm x
     have hnorm : ‖R x‖ ≤ ContinuousLinearMap.hsNorm R * ‖x‖ :=
       happ.trans (mul_le_mul_of_nonneg_right hop (norm_nonneg x))
-    have hsq : ‖R x‖ ^ 2 ≤ (ContinuousLinearMap.hsNorm R * ‖x‖) ^ 2 :=
+    have hsq : ‖R x‖ ^ (2 : ℕ) ≤ (ContinuousLinearMap.hsNorm R * ‖x‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg (R x)) hnorm 2
     calc
-      ‖R x‖ ^ 2 ≤ (ContinuousLinearMap.hsNorm R * ‖x‖) ^ 2 := hsq
-      _ = ContinuousLinearMap.hsNormSq R * ‖x‖ ^ 2 := by
+      ‖R x‖ ^ (2 : ℕ) ≤ (ContinuousLinearMap.hsNorm R * ‖x‖) ^ (2 : ℕ) := hsq
+      _ = ContinuousLinearMap.hsNormSq R * ‖x‖ ^ (2 : ℕ) := by
         rw [mul_pow, ContinuousLinearMap.hsNorm,
           Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg R)]
   have hsum : Summable (fun pk : Nat.Primes × ℕ =>
       ContinuousLinearMap.hsNormSq
-          (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ 2) :=
+          (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ (2 : ℕ)) :=
     (summable_centralSoninWeightedPrimePowerResidual_hsNormSq a ha).mul_right _
   calc
     ∑' pk : Nat.Primes × ℕ,
-        ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ 2 ≤
+        ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ (2 : ℕ) ≤
       ∑' pk : Nat.Primes × ℕ,
         ContinuousLinearMap.hsNormSq
-            (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ 2 :=
+            (centralSoninWeightedPrimePowerResidual a pk) * ‖x‖ ^ (2 : ℕ) :=
       (Summable.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint hsum).tsum_le_tsum
         hpoint hsum
     _ = (∑' pk : Nat.Primes × ℕ,
         ContinuousLinearMap.hsNormSq
-          (centralSoninWeightedPrimePowerResidual a pk)) * ‖x‖ ^ 2 :=
+          (centralSoninWeightedPrimePowerResidual a pk)) * ‖x‖ ^ (2 : ℕ) :=
       tsum_mul_right
-    _ ≤ ((128 * a ^ 2) * soninAllPrimeColumnWeightSqMass) * ‖x‖ ^ 2 := by
+    _ ≤ ((128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) * ‖x‖ ^ (2 : ℕ) := by
       apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
       simpa [soninAllPrimeColumnWeightSqMass] using
         tsum_centralSoninWeightedPrimePowerResidual_hsNormSq_le_area a ha
@@ -69,9 +69,9 @@ theorem norm_sq_soninAllPrimeColumnOperator_apply_le_area
 /-- Operator-norm square of the physical coupled column is at most its scalar area budget. -/
 theorem norm_soninAllPrimeColumnOperator_sq_le_area
     (a : ℝ) (ha : 0 < a) :
-    ‖soninAllPrimeColumnOperator a ha‖ ^ 2 ≤
-      (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass := by
-  let R : ℝ := (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass
+    ‖soninAllPrimeColumnOperator a ha‖ ^ (2 : ℕ) ≤
+      (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass := by
+  let R : ℝ := (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass
   have hR : 0 ≤ R := mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg a))
     soninAllPrimeColumnWeightSqMass_nonneg
   have hop : ‖soninAllPrimeColumnOperator a ha‖ ≤ Real.sqrt R := by
@@ -80,23 +80,23 @@ theorem norm_soninAllPrimeColumnOperator_sq_le_area
     apply (sq_le_sq₀ (norm_nonneg _)
       (mul_nonneg (Real.sqrt_nonneg R) (norm_nonneg x))).mp
     calc
-      ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤ R * ‖x‖ ^ 2 :=
+      ‖soninAllPrimeColumnOperator a ha x‖ ^ (2 : ℕ) ≤ R * ‖x‖ ^ (2 : ℕ) :=
         norm_sq_soninAllPrimeColumnOperator_apply_le_area a ha x
-      _ = (Real.sqrt R * ‖x‖) ^ 2 := by
+      _ = (Real.sqrt R * ‖x‖) ^ (2 : ℕ) := by
         rw [mul_pow, Real.sq_sqrt hR]
   calc
-    ‖soninAllPrimeColumnOperator a ha‖ ^ 2 ≤ (Real.sqrt R) ^ 2 :=
+    ‖soninAllPrimeColumnOperator a ha‖ ^ (2 : ℕ) ≤ (Real.sqrt R) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hop 2
     _ = R := Real.sq_sqrt hR
 
 /-- Hilbert-coordinate presentation of the coupled column has the same small-aperture area bound. -/
 theorem norm_soninAllPrimeColumnCoordinateOperator_sq_le_area
     (a : ℝ) (ha : 0 < a) :
-    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ 2 ≤
-      (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass := by
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ (2 : ℕ) ≤
+      (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass := by
   let U := (ContinuousLinearMap.hsBasis ℂ SoninL2).repr
   let C := soninAllPrimeColumnCoordinateOperator a ha
-  let R : ℝ := (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass
+  let R : ℝ := (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass
   have hR : 0 ≤ R := mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg a))
     soninAllPrimeColumnWeightSqMass_nonneg
   have hop : ‖C‖ ≤ Real.sqrt R := by
@@ -120,7 +120,7 @@ theorem norm_soninAllPrimeColumnCoordinateOperator_sq_le_area
           (norm_nonneg x)
       _ = Real.sqrt R * ‖f‖ := by rw [hxnorm]
   calc
-    ‖C‖ ^ 2 ≤ (Real.sqrt R) ^ 2 := pow_le_pow_left₀ (norm_nonneg C) hop 2
+    ‖C‖ ^ (2 : ℕ) ≤ (Real.sqrt R) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg C) hop 2
     _ = R := Real.sq_sqrt hR
 
 /-- Finite coefficient `l1` mass used in the quantitative polynomial-variance estimate. -/
@@ -131,14 +131,14 @@ def soninCoupledPolynomialCoeffL1 (p : Polynomial ℝ) : ℝ :=
 theorem re_soninAllPrimeCoupledTraceMoment_le_area_pow_mul_zero
     (a : SoninPositiveAperture) (k : ℕ) :
     (soninAllPrimeCoupledTraceMoment a k).re ≤
-      (((128 * a.1 ^ 2) * soninAllPrimeColumnWeightSqMass) ^ k) *
+      (((128 * a.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) ^ k) *
         (soninAllPrimeCoupledTraceMoment a 0).re := by
   let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
-  let R : ℝ := (128 * a.1 ^ 2) * soninAllPrimeColumnWeightSqMass
+  let R : ℝ := (128 * a.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass
   have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
     HilbertSchmidt.isHilbertSchmidt_toOperatorRect
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
-  have hCR : ‖C‖ ^ 2 ≤ R :=
+  have hCR : ‖C‖ ^ (2 : ℕ) ≤ R :=
     norm_soninAllPrimeColumnCoordinateOperator_sq_le_area a.1 a.2
   induction k with
   | zero => simp
@@ -163,26 +163,26 @@ theorem re_soninAllPrimeCoupledTraceMoment_div_zero_le_area_pow
     (a : SoninCoupledNondegenerateAperture) (k : ℕ) :
     (soninAllPrimeCoupledTraceMoment a.1 k).re /
         (soninAllPrimeCoupledTraceMoment a.1 0).re ≤
-      ((128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass) ^ k := by
+      ((128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) ^ k := by
   rw [div_le_iff₀
     ((soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2)]
   exact re_soninAllPrimeCoupledTraceMoment_le_area_pow_mul_zero a.1 k
 
-/-- A zero-constant polynomial has normalized source square expectation of order at most `a^4`. -/
+/-- A zero-constant polynomial has normalized source square expectation of order at most `a^(4 : ℕ)`. -/
 theorem soninCoupledMomentNormalizedExpectation_sq_le_coeffL1_mul_area_sq
     (a : SoninCoupledNondegenerateAperture) (q : Polynomial ℝ)
     (hq : q.coeff 0 = 0)
-    (hRle : (128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass ≤ 1) :
+    (hRle : (128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass ≤ 1) :
     HTGeometry.momentNormalizedExpectation
-        (soninAllPrimeCoupledRealTraceMoment a.1) (q ^ 2) ≤
-      soninCoupledPolynomialCoeffL1 (q ^ 2) *
-        ((128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass) ^ 2 := by
-  let r : Polynomial ℝ := q ^ 2
-  let R : ℝ := (128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass
+        (soninAllPrimeCoupledRealTraceMoment a.1) (q ^ (2 : ℕ)) ≤
+      soninCoupledPolynomialCoeffL1 (q ^ (2 : ℕ)) *
+        ((128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) ^ (2 : ℕ) := by
+  let r : Polynomial ℝ := q ^ (2 : ℕ)
+  let R : ℝ := (128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass
   have hR0 : 0 ≤ R := mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg a.1.1))
     soninAllPrimeColumnWeightSqMass_nonneg
   have hX : Polynomial.X ∣ q := Polynomial.X_dvd_iff.mpr hq
-  have hX2 : Polynomial.X ^ 2 ∣ r := by
+  have hX2 : Polynomial.X ^ (2 : ℕ) ∣ r := by
     simpa only [r] using pow_dvd_pow_of_dvd hX 2
   have hk2 : ∀ k ∈ r.support, 2 ≤ k := by
     intro k hk
@@ -201,7 +201,7 @@ theorem soninCoupledMomentNormalizedExpectation_sq_le_coeffL1_mul_area_sq
     ∑ k ∈ r.support,
         r.coeff k * soninAllPrimeCoupledRealTraceMoment a.1 k /
           soninAllPrimeCoupledRealTraceMoment a.1 0 ≤
-      ∑ k ∈ r.support, |r.coeff k| * R ^ 2 := by
+      ∑ k ∈ r.support, |r.coeff k| * R ^ (2 : ℕ) := by
         apply Finset.sum_le_sum
         intro k hk
         have hratio0 : 0 ≤ soninAllPrimeCoupledRealTraceMoment a.1 k /
@@ -210,7 +210,7 @@ theorem soninCoupledMomentNormalizedExpectation_sq_le_coeffL1_mul_area_sq
         have hratiopow : soninAllPrimeCoupledRealTraceMoment a.1 k /
             soninAllPrimeCoupledRealTraceMoment a.1 0 ≤ R ^ k :=
           re_soninAllPrimeCoupledTraceMoment_div_zero_le_area_pow a k
-        have hpow : R ^ k ≤ R ^ 2 :=
+        have hpow : R ^ k ≤ R ^ (2 : ℕ) :=
           pow_le_pow_of_le_one hR0 hRle (hk2 k hk)
         calc
           r.coeff k * soninAllPrimeCoupledRealTraceMoment a.1 k /
@@ -223,20 +223,20 @@ theorem soninCoupledMomentNormalizedExpectation_sq_le_coeffL1_mul_area_sq
             mul_le_mul_of_nonneg_right (le_abs_self _) hratio0
           _ ≤ |r.coeff k| * R ^ k :=
             mul_le_mul_of_nonneg_left hratiopow (abs_nonneg _)
-          _ ≤ |r.coeff k| * R ^ 2 :=
+          _ ≤ |r.coeff k| * R ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
-    _ = soninCoupledPolynomialCoeffL1 r * R ^ 2 := by
+    _ = soninCoupledPolynomialCoeffL1 r * R ^ (2 : ℕ) := by
       rw [soninCoupledPolynomialCoeffL1, Finset.sum_mul]
 
 /-- Quantitative small-aperture bound for normalized coupled Sonin polynomial variance. -/
 theorem soninCoupledMomentNormalizedVariance_le_coeffL1_mul_area_sq
     (a : SoninCoupledNondegenerateAperture) (q : Polynomial ℝ)
     (hq : q.coeff 0 = 0)
-    (hRle : (128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass ≤ 1) :
+    (hRle : (128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass ≤ 1) :
     HTGeometry.momentNormalizedVariance
         (soninAllPrimeCoupledRealTraceMoment a.1) q ≤
-      soninCoupledPolynomialCoeffL1 (q ^ 2) *
-        ((128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass) ^ 2 :=
+      soninCoupledPolynomialCoeffL1 (q ^ (2 : ℕ)) *
+        ((128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass) ^ (2 : ℕ) :=
   (HTGeometry.momentNormalizedVariance_le_secondMoment _ q).trans
     (soninCoupledMomentNormalizedExpectation_sq_le_coeffL1_mul_area_sq a q hq hRle)
 
@@ -248,9 +248,9 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
   let p : Polynomial ℝ := q.map (Int.castRingHom ℝ)
   let d : ℝ := min δ 1
   let A : ℝ := 128 * soninAllPrimeColumnWeightSqMass
-  let C : ℝ := soninCoupledPolynomialCoeffL1 (p ^ 2)
+  let C : ℝ := soninCoupledPolynomialCoeffL1 (p ^ (2 : ℕ))
   let K : ℝ := 1 + A + C
-  let av : ℝ := d / K ^ 2
+  let av : ℝ := d / K ^ (2 : ℕ)
   have hp0 : p.coeff 0 = 0 := by
     simp [p, hq]
   have hd0 : 0 < d := lt_min hδ zero_lt_one
@@ -264,8 +264,8 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
     dsimp only [K]
     nlinarith
   have hK0 : 0 < K := lt_of_lt_of_le zero_lt_one hK1
-  have hKsq0 : 0 < K ^ 2 := sq_pos_of_pos hK0
-  have hKsq1 : 1 ≤ K ^ 2 := by nlinarith
+  have hKsq0 : 0 < K ^ (2 : ℕ) := sq_pos_of_pos hK0
+  have hKsq1 : 1 ≤ K ^ (2 : ℕ) := by nlinarith
   have hav0 : 0 < av := div_pos hd0 hKsq0
   have hav1 : av ≤ 1 := by
     rw [div_le_one hKsq0]
@@ -278,10 +278,10 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
   have hCleK : C ≤ K := by
     dsimp only [K]
     nlinarith
-  have havsq : av ^ 2 ≤ av := by nlinarith
-  have hRle : A * av ^ 2 ≤ d / K := by
+  have havsq : av ^ (2 : ℕ) ≤ av := by nlinarith
+  have hRle : A * av ^ (2 : ℕ) ≤ d / K := by
     calc
-      A * av ^ 2 ≤ K * av ^ 2 :=
+      A * av ^ (2 : ℕ) ≤ K * av ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hAleK (sq_nonneg av)
       _ ≤ K * av := mul_le_mul_of_nonneg_left havsq hK0.le
       _ = d / K := by
@@ -291,18 +291,18 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
     rw [div_le_one hK0]
     exact hd1.trans hK1
   have hsourceRle :
-      (128 * a.1.1 ^ 2) * soninAllPrimeColumnWeightSqMass ≤ 1 := by
+      (128 * a.1.1 ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass ≤ 1 := by
     simpa only [A, a, soninCoupledNondegenerateAperture_value,
       mul_assoc, mul_left_comm, mul_comm] using hRle.trans hdKle1
-  have hR0 : 0 ≤ A * av ^ 2 := mul_nonneg hA0 (sq_nonneg av)
-  have hR2 : (A * av ^ 2) ^ 2 ≤ (d / K) ^ 2 :=
+  have hR0 : 0 ≤ A * av ^ (2 : ℕ) := mul_nonneg hA0 (sq_nonneg av)
+  have hR2 : (A * av ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (d / K) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hR0 hRle 2
-  have hbound : C * (A * av ^ 2) ^ 2 ≤ δ := by
+  have hbound : C * (A * av ^ (2 : ℕ)) ^ (2 : ℕ) ≤ δ := by
     calc
-      C * (A * av ^ 2) ^ 2 ≤ K * (A * av ^ 2) ^ 2 :=
+      C * (A * av ^ (2 : ℕ)) ^ (2 : ℕ) ≤ K * (A * av ^ (2 : ℕ)) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hCleK (sq_nonneg _)
-      _ ≤ K * (d / K) ^ 2 := mul_le_mul_of_nonneg_left hR2 hK0.le
-      _ = d ^ 2 / K := by
+      _ ≤ K * (d / K) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hR2 hK0.le
+      _ = d ^ (2 : ℕ) / K := by
         field_simp [hK0.ne']
       _ ≤ d := by
         rw [div_le_iff₀ hK0]
@@ -316,7 +316,7 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
   calc
     HTGeometry.momentNormalizedVariance
         (soninAllPrimeCoupledRealTraceMoment a.1) p ≤
-      C * (A * av ^ 2) ^ 2 := by
+      C * (A * av ^ (2 : ℕ)) ^ (2 : ℕ) := by
         simpa only [C, A, a, soninCoupledNondegenerateAperture_value,
           mul_assoc, mul_left_comm, mul_comm] using hv
     _ ≤ δ := hbound

@@ -17,21 +17,21 @@ def directStaticChoiTargetDiagonal
 theorem norm_directStaticChoiTargetDiagonal_le
     {d : ℕ} (target : EuclideanSpace ℂ (Fin d × Fin d)) :
     ‖directStaticChoiTargetDiagonal target‖ ≤ ‖target‖ := by
-  have hdiag : (∑ i : Fin d, ‖target (i, i)‖ ^ 2) ≤
-      ∑ ij : Fin d × Fin d, ‖target ij‖ ^ 2 := by
+  have hdiag : (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) ≤
+      ∑ ij : Fin d × Fin d, ‖target ij‖ ^ (2 : ℕ) := by
     let diag : Fin d → Fin d × Fin d := fun i => (i, i)
     have hinj : Function.Injective diag := by
       intro i j h
       exact congrArg Prod.fst h
     calc
-      ∑ i : Fin d, ‖target (i, i)‖ ^ 2 =
-          ∑ i : Fin d, ‖target (diag i)‖ ^ 2 := rfl
-      _ = ∑ ij ∈ Finset.univ.image diag, ‖target ij‖ ^ 2 := by
+      ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) =
+          ∑ i : Fin d, ‖target (diag i)‖ ^ (2 : ℕ) := rfl
+      _ = ∑ ij ∈ Finset.univ.image diag, ‖target ij‖ ^ (2 : ℕ) := by
         rw [Finset.sum_image]
         exact hinj.injOn
-      _ ≤ ∑ ij : Fin d × Fin d, ‖target ij‖ ^ 2 :=
+      _ ≤ ∑ ij : Fin d × Fin d, ‖target ij‖ ^ (2 : ℕ) :=
         Finset.sum_le_univ_sum_of_nonneg fun _ => sq_nonneg _
-  have hsq : ‖directStaticChoiTargetDiagonal target‖ ^ 2 ≤ ‖target‖ ^ 2 := by
+  have hsq : ‖directStaticChoiTargetDiagonal target‖ ^ (2 : ℕ) ≤ ‖target‖ ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq]
     simpa [directStaticChoiTargetDiagonal] using hdiag
   nlinarith [norm_nonneg (directStaticChoiTargetDiagonal target), norm_nonneg target]
@@ -68,7 +68,7 @@ theorem staticChoiTargetCapture_implies_krylovCarrier
     (htBound : |t| ≤ T) (hB : 0 ≤ B) (henergy : ∀ i, ‖energy i‖ ≤ B)
     (hepsilon : 0 ≤ epsilon) (hepsilonOne : epsilon ≤ 1)
     (ht : t ∈ staticChoiTargetCaptureSet energy target epsilon) :
-    Real.sqrt (1 - epsilon ^ 2) -
+    Real.sqrt (1 - epsilon ^ (2 : ℕ)) -
         B ^ (K + 1) * |t| ^ (K + 1) / (K + 1).factorial ≤
       ‖spectralKrylovCarrier (fun i => -energy i) K
         (directStaticChoiTargetDiagonal target)‖ := by
@@ -96,7 +96,7 @@ theorem no_staticChoiTargetCapture_of_krylovCarrierLoad
     (hepsilon : 0 ≤ epsilon) (hepsilonOne : epsilon ≤ 1)
     (hbudget : Real.sqrt (directStaticChoiKrylovCarrierLoad target energy K) +
         B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial <
-          Real.sqrt (1 - epsilon ^ 2)) :
+          Real.sqrt (1 - epsilon ^ (2 : ℕ))) :
     ∀ t, |t| ≤ T → ∀ w,
       t ∉ staticChoiTargetCaptureSet energy (target w) epsilon := by
   intro t ht w hcapture
@@ -110,7 +110,7 @@ theorem no_staticChoiTargetCapture_of_krylovCarrierLoad
         (fun v => directStaticChoiTargetDiagonal (target v))
         (fun i => -energy i) K) +
           B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial <
-            Real.sqrt (1 - epsilon ^ 2) by simpa [directStaticChoiKrylovCarrierLoad] using hbudget)
+            Real.sqrt (1 - epsilon ^ (2 : ℕ)) by simpa [directStaticChoiKrylovCarrierLoad] using hbudget)
       t ht w
   rw [normalizedSpectralAmplitude_directStaticChoiTargetDiagonal] at hnone
   have hlarge := staticChoiTargetCapture_implies_directCoherence
@@ -133,10 +133,10 @@ theorem no_staticChoiTargetCapture_of_krylovCarrierReplicaLoad
     {energy : Fin d → ℝ} {K r : ℕ} {T B epsilon : ℝ}
     (hB : 0 ≤ B) (henergy : ∀ i, ‖energy i‖ ≤ B)
     (hepsilon : 0 ≤ epsilon) (hepsilonOne : epsilon ≤ 1)
-    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ 2) -
+    (hthreshold : 0 ≤ Real.sqrt (1 - epsilon ^ (2 : ℕ)) -
       B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial)
     (hbudget : directStaticChoiKrylovCarrierReplicaLoad target energy K r <
-      (Real.sqrt (1 - epsilon ^ 2) -
+      (Real.sqrt (1 - epsilon ^ (2 : ℕ)) -
         B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial) ^ (2 * r)) :
     ∀ t, |t| ≤ T → ∀ w,
       t ∉ staticChoiTargetCaptureSet energy (target w) epsilon := by
@@ -150,7 +150,7 @@ theorem no_staticChoiTargetCapture_of_krylovCarrierReplicaLoad
     (show finiteKrylovCarrierReplicaLoad
         (fun v => directStaticChoiTargetDiagonal (target v))
         (fun i => -energy i) K r <
-          (Real.sqrt (1 - epsilon ^ 2) -
+          (Real.sqrt (1 - epsilon ^ (2 : ℕ)) -
             B ^ (K + 1) * T ^ (K + 1) / (K + 1).factorial) ^ (2 * r) by
       simpa [directStaticChoiKrylovCarrierReplicaLoad] using hbudget)
   intro t ht w hcapture

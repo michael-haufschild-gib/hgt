@@ -302,20 +302,20 @@ theorem kreinEscapePoint_ne_zero {r : ℕ} (δ : Fin r → ℝ) {T : ℝ} (hT : 
   exact lt_irrefl 0 this
 
 theorem normSq_kreinEscapePoint {r : ℕ} (δ : Fin r → ℝ) (T : ℝ) (q : Fin r) :
-    Complex.normSq (kreinEscapePoint δ T q) = (δ q) ^ 2 + (T + q) ^ 2 := by
+    Complex.normSq (kreinEscapePoint δ T q) = (δ q) ^ (2 : ℕ) + (T + q) ^ (2 : ℕ) := by
   rw [Complex.normSq_apply, kreinEscapePoint_re, kreinEscapePoint_im]
   ring
 
 /-- **The escape hypothesis holds for the card's parameterization.** -/
 theorem tendsto_normSq_inv_kreinEscapePoint {r : ℕ} (δ : Fin r → ℝ) (q : Fin r) :
     Tendsto (fun T : ℝ => ((Complex.normSq (kreinEscapePoint δ T q) : ℂ))⁻¹) atTop (nhds 0) := by
-  have hreal : Tendsto (fun T : ℝ => (δ q) ^ 2 + (T + q) ^ 2) atTop atTop := by
-    have h1 : Tendsto (fun T : ℝ => (T + q) ^ 2) atTop atTop :=
+  have hreal : Tendsto (fun T : ℝ => (δ q) ^ (2 : ℕ) + (T + q) ^ (2 : ℕ)) atTop atTop := by
+    have h1 : Tendsto (fun T : ℝ => (T + q) ^ (2 : ℕ)) atTop atTop :=
       (tendsto_pow_atTop (n := 2) (by norm_num)).comp (tendsto_atTop_add_const_right _ _ tendsto_id)
     exact tendsto_atTop_add_const_left _ _ h1
-  have hinv : Tendsto (fun T : ℝ => ((δ q) ^ 2 + (T + q) ^ 2)⁻¹) atTop (nhds 0) :=
+  have hinv : Tendsto (fun T : ℝ => ((δ q) ^ (2 : ℕ) + (T + q) ^ (2 : ℕ))⁻¹) atTop (nhds 0) :=
     hreal.inv_tendsto_atTop
-  have hcast : Tendsto (fun T : ℝ => ((((δ q) ^ 2 + (T + q) ^ 2)⁻¹ : ℝ) : ℂ)) atTop (nhds 0) := by
+  have hcast : Tendsto (fun T : ℝ => ((((δ q) ^ (2 : ℕ) + (T + q) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ)) atTop (nhds 0) := by
     have h := (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp hinv
     rw [Complex.ofReal_zero] at h
     exact h

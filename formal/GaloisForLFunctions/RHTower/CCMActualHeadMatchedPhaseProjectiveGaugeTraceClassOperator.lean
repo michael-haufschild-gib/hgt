@@ -56,7 +56,7 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeSourceCoefficient
 
 theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeWeightAtom :
     Summable (fun n : ℕ =>
-      ‖(ccmActualHeadMatchedPhaseProjectiveGauge n : ℂ)‖ ^ 2) := by
+      ‖(ccmActualHeadMatchedPhaseProjectiveGauge n : ℂ)‖ ^ (2 : ℕ)) := by
   apply summable_criticalMellinAtomWeight_sq_div_exp_half_log.congr
   intro n
   norm_cast
@@ -67,7 +67,7 @@ theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeSourceAtom
     (xi : ℝ) :
     Summable (fun n : ℕ =>
       ‖(ccmActualHeadMatchedPhaseProjectiveGauge n *
-        (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re : ℂ)‖ ^ 2) := by
+        (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re : ℂ)‖ ^ (2 : ℕ)) := by
   apply Summable.of_norm_bounded
     (summable_ccmActualHeadMatchedPhaseProjectiveGaugeArithmeticDiagonal xi)
   intro n
@@ -80,7 +80,7 @@ theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeSourceAtom
 
 theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeWeightCoefficient :
     Summable (fun k : ℕ =>
-      ‖ccmActualHeadMatchedPhaseProjectiveGaugeWeightCoefficient k‖ ^ 2) := by
+      ‖ccmActualHeadMatchedPhaseProjectiveGaugeWeightCoefficient k‖ ^ (2 : ℕ)) := by
   apply (summable_nat_add_iff 2).1
   simpa [ccmActualHeadMatchedPhaseProjectiveGaugeWeightCoefficient] using
     summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeWeightAtom
@@ -88,7 +88,7 @@ theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeWeightCoefficie
 theorem summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeSourceCoefficient
     (xi : ℝ) :
     Summable (fun k : ℕ =>
-      ‖ccmActualHeadMatchedPhaseProjectiveGaugeSourceCoefficient xi k‖ ^ 2) := by
+      ‖ccmActualHeadMatchedPhaseProjectiveGaugeSourceCoefficient xi k‖ ^ (2 : ℕ)) := by
   apply (summable_nat_add_iff 2).1
   simpa [ccmActualHeadMatchedPhaseProjectiveGaugeSourceCoefficient] using
     summable_norm_sq_ccmActualHeadMatchedPhaseProjectiveGaugeSourceAtom xi
@@ -255,7 +255,7 @@ theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_projectiveGaugeTraceClassOp
     ccmActualHeadMatchedPrimePolarFiniteBlock F f =
       -2 * ∫ xi : ℝ,
         ccmActualHeadMatchedPhaseProjectiveGaugeTraceClassFiniteReporter F xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
   congr 2
   funext xi

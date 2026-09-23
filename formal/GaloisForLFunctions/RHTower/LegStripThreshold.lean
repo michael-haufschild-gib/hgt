@@ -333,20 +333,20 @@ theorem stripResidue_strictAntiOn : StrictAntiOn stripResidue (Set.Ioi 1) := by
   have ha1 : 1 < a := ha
   have hb1 : 1 < b := hb
   rw [stripResidue_eq_tsum ha1, stripResidue_eq_tsum hb1]
-  have hle : ∀ n : ℕ+, 2 / ((b * (n:ℝ))^2 - 1) ≤ 2 / ((a * (n:ℝ))^2 - 1) := by
+  have hle : ∀ n : ℕ+, 2 / ((b * (n:ℝ))^(2 : ℕ) - 1) ≤ 2 / ((a * (n:ℝ))^(2 : ℕ) - 1) := by
     intro n
     have hn1 : (1:ℝ) ≤ (n:ℝ) := by exact_mod_cast n.pos
     have han0 : (0:ℝ) ≤ a * (n:ℝ) := by positivity
     have han : a * (n:ℝ) ≤ b * (n:ℝ) := by nlinarith [hab.le, hn1]
-    have hsq : (a * (n:ℝ))^2 ≤ (b * (n:ℝ))^2 := by nlinarith [han, han0]
-    have hDa : 0 < (a * (n:ℝ))^2 - 1 := by
+    have hsq : (a * (n:ℝ))^(2 : ℕ) ≤ (b * (n:ℝ))^(2 : ℕ) := by nlinarith [han, han0]
+    have hDa : 0 < (a * (n:ℝ))^(2 : ℕ) - 1 := by
       nlinarith [hn1, ha1, mul_nonneg (show (0:ℝ) ≤ a by linarith) (show (0:ℝ) ≤ (n:ℝ)-1 by linarith)]
     gcongr
-  have hlt : 2 / ((b * ((1:ℕ+):ℝ))^2 - 1) < 2 / ((a * ((1:ℕ+):ℝ))^2 - 1) := by
+  have hlt : 2 / ((b * ((1:ℕ+):ℝ))^(2 : ℕ) - 1) < 2 / ((a * ((1:ℕ+):ℝ))^(2 : ℕ) - 1) := by
     have h1 : ((1:ℕ+):ℝ) = 1 := by norm_num
     rw [h1, mul_one, mul_one]
-    have hDa : 0 < a^2 - 1 := by nlinarith [ha1]
-    have hDab : a^2 - 1 < b^2 - 1 := by nlinarith [ha1, hb1, hab]
+    have hDa : 0 < a^(2 : ℕ) - 1 := by nlinarith [ha1]
+    have hDab : a^(2 : ℕ) - 1 < b^(2 : ℕ) - 1 := by nlinarith [ha1, hb1, hab]
     gcongr
   exact Summable.tsum_lt_tsum hle hlt
     (stripResidue_series_summable hb1) (stripResidue_series_summable ha1)
@@ -564,10 +564,10 @@ section RiemannSum
 open MeasureTheory intervalIntegral Filter Topology
 
 /-- **Antitone Riemann sums converge to the integral** on `[0,1]`: for `f` antitone on `[0,1]`,
-the left-endpoint average `(1/i)·Σ_{k<i} f(k/i)` tends to `∫_0^1 f`. This is the Riemann-sum step
+the left-endpoint average `(1/i)·Σ_{k<i} f(k/i)` tends to `∫_0^(1 : ℕ) f`. This is the Riemann-sum step
 of the continuum passage `(A−B)/i → Φ(c)`, isolated as a reusable fact (mathlib has the
 sum↔integral sandwich but not this limit). Proof: the sum-integral comparison gives
-`∫_0^1 f ≤ (1/i)Σ_{k<i}f(k/i)` and `(1/i)Σ_{k<i}f((k+1)/i) ≤ ∫_0^1 f`, and the two averages
+`∫_0^(1 : ℕ) f ≤ (1/i)Σ_{k<i}f(k/i)` and `(1/i)Σ_{k<i}f((k+1)/i) ≤ ∫_0^(1 : ℕ) f`, and the two averages
 differ by the telescoping `(f 0 − f 1)/i → 0`, so a squeeze delivers the limit. -/
 theorem tendsto_riemann_sum_antitone {f : ℝ → ℝ} (hf : AntitoneOn f (Set.Icc 0 1)) :
     Tendsto (fun i : ℕ => (1 / (i : ℝ)) * ∑ k ∈ Finset.range i, f ((k : ℝ) / i)) atTop
@@ -626,7 +626,7 @@ theorem tendsto_riemann_sum_antitone {f : ℝ → ℝ} (hf : AntitoneOn f (Set.I
 /-- **The near part of one shell, formalized.** Expanding `1/(e^u − 1) = Σ_{n≥1} e^{−nu}`, the
 excess balance splits into shells whose `n`-th ahead term has continuum profile `(1+x)^{−r}`
 (`r = nc`, bounded and antitone — unlike the singular full excess). Its `[0,1]` Riemann sum
-converges to `∫_0^1 (1+x)^{−r}` for every `r ≥ 0`. This is `tendsto_riemann_sum_antitone` on the
+converges to `∫_0^(1 : ℕ) (1+x)^{−r}` for every `r ≥ 0`. This is `tendsto_riemann_sum_antitone` on the
 concrete shell function, the discrete-to-continuum step made explicit on a genuine piece of the
 limit. -/
 theorem tendsto_riemann_sum_shell {r : ℝ} (hr : 0 ≤ r) :

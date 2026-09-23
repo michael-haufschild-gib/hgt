@@ -7,7 +7,7 @@ This module enriches the signed spectral heat carrier without reducing it to
 one trace snapshot.  For a finite Hermitian matrix `A`, Lean defines the full
 matrix hierarchy
 
-`A^k * exp (-u*A^2)`
+`A^k * exp (-u*A^(2 : ℕ))`
 
 through the already checked spectral functional calculus.  Products add both
 moment order and heat scale, even orders are positive semidefinite, and the
@@ -17,7 +17,7 @@ For any finite family of orders and scales, Lean then retains the complete
 cross-scale moment matrix.  It is a positive-semidefinite Gram matrix, and its
 `(i,j)` entry is exactly both
 
-`tr(A^(k_i+k_j) exp (-(u_i+u_j) A^2))`
+`tr(A^(k_i+k_j) exp (-(u_i+u_j) A^(2 : ℕ)))`
 
 and the trace product of the two separate matrix-valued moment flows.  This
 keeps mixed orders and distinct heat scales as simultaneous measurements.
@@ -41,10 +41,10 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 /-! ## The complete Hermitian heat-moment hierarchy -/
 
 /-- The matrix-valued order-`k` spectral heat flow
-`A^k * exp (-u*A^2)`. -/
+`A^k * exp (-u*A^(2 : ℕ))`. -/
 def hermitianHeatMomentFlow {A : Matrix n n K} (hA : A.IsHermitian)
     (order : ℕ) (u : ℝ) : Matrix n n K :=
-  specMap hA (fun x ↦ x ^ order * Real.exp (-u * x ^ 2))
+  specMap hA (fun x ↦ x ^ order * Real.exp (-u * x ^ (2 : ℕ)))
 
 /-- The real trace of the order-`k` spectral heat flow. -/
 def hermitianHeatMomentTrace {A : Matrix n n K} (hA : A.IsHermitian)
@@ -100,23 +100,23 @@ theorem hermitianHeatMomentFlow_mul {A : Matrix n n K}
   funext x
   simp only [Pi.mul_apply, pow_add]
   calc
-    x ^ order₁ * Real.exp (-u * x ^ 2) *
-        (x ^ order₂ * Real.exp (-v * x ^ 2)) =
+    x ^ order₁ * Real.exp (-u * x ^ (2 : ℕ)) *
+        (x ^ order₂ * Real.exp (-v * x ^ (2 : ℕ))) =
       (x ^ order₁ * x ^ order₂) *
-        (Real.exp (-u * x ^ 2) * Real.exp (-v * x ^ 2)) := by ring
+        (Real.exp (-u * x ^ (2 : ℕ)) * Real.exp (-v * x ^ (2 : ℕ))) := by ring
     _ = (x ^ order₁ * x ^ order₂) *
-        Real.exp ((-u * x ^ 2) + (-v * x ^ 2)) := by
+        Real.exp ((-u * x ^ (2 : ℕ)) + (-v * x ^ (2 : ℕ))) := by
       rw [Real.exp_add]
-    _ = x ^ order₁ * x ^ order₂ * Real.exp (-(u + v) * x ^ 2) := by
-      rw [show (-u * x ^ 2) + (-v * x ^ 2) =
-        -(u + v) * x ^ 2 by ring]
+    _ = x ^ order₁ * x ^ order₂ * Real.exp (-(u + v) * x ^ (2 : ℕ)) := by
+      rw [show (-u * x ^ (2 : ℕ)) + (-v * x ^ (2 : ℕ)) =
+        -(u + v) * x ^ (2 : ℕ) by ring]
 
 /-- The order-`k` heat trace is the complete eigenvalue moment sum. -/
 theorem hermitianHeatMomentTrace_eq_sum_eigenvalues {A : Matrix n n K}
     (hA : A.IsHermitian) (order : ℕ) (u : ℝ) :
     hermitianHeatMomentTrace hA order u =
       ∑ i, (hA.eigenvalues i) ^ order *
-        Real.exp (-u * (hA.eigenvalues i) ^ 2) := by
+        Real.exp (-u * (hA.eigenvalues i) ^ (2 : ℕ)) := by
   unfold hermitianHeatMomentTrace hermitianHeatMomentFlow
   exact rtrace_specMap hA _
 
@@ -135,18 +135,18 @@ theorem rtrace_hermitianHeatMomentFlow_mul {A : Matrix n n K}
 the sign. -/
 theorem hasDerivAt_heatMomentScalar (x : ℝ) (order : ℕ) (u : ℝ) :
     HasDerivAt
-      (fun v : ℝ ↦ x ^ order * Real.exp (-v * x ^ 2))
-      (-x ^ (order + 2) * Real.exp (-u * x ^ 2)) u := by
-  have hinner : HasDerivAt (fun v : ℝ ↦ -v * x ^ 2) (-x ^ 2) u := by
-    simpa using (hasDerivAt_id u).neg.mul_const (x ^ 2)
-  have hexp := (Real.hasDerivAt_exp (-u * x ^ 2)).comp u hinner
+      (fun v : ℝ ↦ x ^ order * Real.exp (-v * x ^ (2 : ℕ)))
+      (-x ^ (order + 2) * Real.exp (-u * x ^ (2 : ℕ))) u := by
+  have hinner : HasDerivAt (fun v : ℝ ↦ -v * x ^ (2 : ℕ)) (-x ^ (2 : ℕ)) u := by
+    simpa using (hasDerivAt_id u).neg.mul_const (x ^ (2 : ℕ))
+  have hexp := (Real.hasDerivAt_exp (-u * x ^ (2 : ℕ))).comp u hinner
   have h := hexp.const_mul (x ^ order)
   change HasDerivAt
-    (fun v : ℝ ↦ x ^ order * Real.exp (-v * x ^ 2))
-    (x ^ order * (Real.exp (-u * x ^ 2) * (-x ^ 2))) u at h
+    (fun v : ℝ ↦ x ^ order * Real.exp (-v * x ^ (2 : ℕ)))
+    (x ^ order * (Real.exp (-u * x ^ (2 : ℕ)) * (-x ^ (2 : ℕ)))) u at h
   have hderiv :
-      x ^ order * (Real.exp (-u * x ^ 2) * (-x ^ 2)) =
-        -x ^ (order + 2) * Real.exp (-u * x ^ 2) := by
+      x ^ order * (Real.exp (-u * x ^ (2 : ℕ)) * (-x ^ (2 : ℕ))) =
+        -x ^ (order + 2) * Real.exp (-u * x ^ (2 : ℕ)) := by
     rw [pow_add]
     ring
   rwa [hderiv] at h
@@ -159,14 +159,14 @@ theorem hasDerivAt_hermitianHeatMomentTrace {A : Matrix n n K}
       (-hermitianHeatMomentTrace hA (order + 2) u) u := by
   have hsum : HasDerivAt
       (fun v : ℝ ↦ ∑ i, (hA.eigenvalues i) ^ order *
-        Real.exp (-v * (hA.eigenvalues i) ^ 2))
+        Real.exp (-v * (hA.eigenvalues i) ^ (2 : ℕ)))
       (∑ i, -(hA.eigenvalues i) ^ (order + 2) *
-        Real.exp (-u * (hA.eigenvalues i) ^ 2)) u := by
+        Real.exp (-u * (hA.eigenvalues i) ^ (2 : ℕ))) u := by
     exact HasDerivAt.fun_sum fun i _hi ↦
       hasDerivAt_heatMomentScalar (hA.eigenvalues i) order u
   rw [show hermitianHeatMomentTrace hA order =
       (fun v : ℝ ↦ ∑ i, (hA.eigenvalues i) ^ order *
-        Real.exp (-v * (hA.eigenvalues i) ^ 2)) by
+        Real.exp (-v * (hA.eigenvalues i) ^ (2 : ℕ))) by
     funext v
     exact hermitianHeatMomentTrace_eq_sum_eigenvalues hA order v]
   rw [hermitianHeatMomentTrace_eq_sum_eigenvalues]
@@ -185,7 +185,7 @@ order and heat scale. -/
 def hermitianHeatMomentFeature {A : Matrix n n K} (hA : A.IsHermitian)
     (order : r → ℕ) (scale : r → ℝ) (a : n) (i : r) : ℝ :=
   (hA.eigenvalues a) ^ (order i) *
-    Real.exp (-(scale i) * (hA.eigenvalues a) ^ 2)
+    Real.exp (-(scale i) * (hA.eigenvalues a) ^ (2 : ℕ))
 
 /-- The simultaneous Gram matrix of an arbitrary finite family of heat
 moment orders and scales. -/
@@ -233,19 +233,19 @@ theorem hermitianHeatMomentGram_apply {A : Matrix n n K}
   intro a _ha
   rw [pow_add]
   calc
-    hA.eigenvalues a ^ order i * Real.exp (-scale i * hA.eigenvalues a ^ 2) *
-        (hA.eigenvalues a ^ order j * Real.exp (-scale j * hA.eigenvalues a ^ 2)) =
+    hA.eigenvalues a ^ order i * Real.exp (-scale i * hA.eigenvalues a ^ (2 : ℕ)) *
+        (hA.eigenvalues a ^ order j * Real.exp (-scale j * hA.eigenvalues a ^ (2 : ℕ))) =
       (hA.eigenvalues a ^ order i * hA.eigenvalues a ^ order j) *
-        (Real.exp (-scale i * hA.eigenvalues a ^ 2) *
-          Real.exp (-scale j * hA.eigenvalues a ^ 2)) := by ring
+        (Real.exp (-scale i * hA.eigenvalues a ^ (2 : ℕ)) *
+          Real.exp (-scale j * hA.eigenvalues a ^ (2 : ℕ))) := by ring
     _ = (hA.eigenvalues a ^ order i * hA.eigenvalues a ^ order j) *
-        Real.exp ((-scale i * hA.eigenvalues a ^ 2) +
-          (-scale j * hA.eigenvalues a ^ 2)) := by rw [Real.exp_add]
+        Real.exp ((-scale i * hA.eigenvalues a ^ (2 : ℕ)) +
+          (-scale j * hA.eigenvalues a ^ (2 : ℕ))) := by rw [Real.exp_add]
     _ = hA.eigenvalues a ^ order i * hA.eigenvalues a ^ order j *
-        Real.exp (-(scale i + scale j) * hA.eigenvalues a ^ 2) := by
-      rw [show (-scale i * hA.eigenvalues a ^ 2) +
-        (-scale j * hA.eigenvalues a ^ 2) =
-          -(scale i + scale j) * hA.eigenvalues a ^ 2 by ring]
+        Real.exp (-(scale i + scale j) * hA.eigenvalues a ^ (2 : ℕ)) := by
+      rw [show (-scale i * hA.eigenvalues a ^ (2 : ℕ)) +
+        (-scale j * hA.eigenvalues a ^ (2 : ℕ)) =
+          -(scale i + scale j) * hA.eigenvalues a ^ (2 : ℕ) by ring]
 
 omit [Fintype r] [DecidableEq r] in
 /-- Each moment-Gram entry is also the trace product of the two separate

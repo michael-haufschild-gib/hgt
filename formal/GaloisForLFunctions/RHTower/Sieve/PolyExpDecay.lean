@@ -32,7 +32,7 @@ theorem tendsto_pow_mul_exp_neg_mul (n : ℕ) {κ : ℝ} (hκ : 0 < κ) :
 
 /-- **A degree-nine polynomial against a decaying exponential.** -/
 theorem tendsto_poly9_mul_exp_neg {a κ : ℝ} (hκ : 0 < κ) :
-    Tendsto (fun t : ℝ => (1 + a * t ^ 9) * Real.exp (-(κ * t))) atTop (𝓝 0) := by
+    Tendsto (fun t : ℝ => (1 + a * t ^ (9 : ℕ)) * Real.exp (-(κ * t))) atTop (𝓝 0) := by
   have h0 : Tendsto (fun t : ℝ => t ^ (0 : ℕ) * Real.exp (-(κ * t))) atTop (𝓝 0) :=
     tendsto_pow_mul_exp_neg_mul 0 hκ
   have h9 : Tendsto (fun t : ℝ => t ^ (9 : ℕ) * Real.exp (-(κ * t))) atTop (𝓝 0) :=
@@ -46,7 +46,7 @@ theorem tendsto_poly9_mul_exp_neg {a κ : ℝ} (hκ : 0 < κ) :
 
 /-- **The full polynomial shape against a decaying exponential.** -/
 theorem tendsto_polyEdge_mul_exp_neg {a b c κ : ℝ} (hκ : 0 < κ) :
-    Tendsto (fun t : ℝ => (1 + a * t ^ 9) * (b + c * t) * Real.exp (-(κ * t)))
+    Tendsto (fun t : ℝ => (1 + a * t ^ (9 : ℕ)) * (b + c * t) * Real.exp (-(κ * t)))
       atTop (𝓝 0) := by
   have h0 := tendsto_pow_mul_exp_neg_mul 0 hκ
   have h1 := tendsto_pow_mul_exp_neg_mul 1 hκ

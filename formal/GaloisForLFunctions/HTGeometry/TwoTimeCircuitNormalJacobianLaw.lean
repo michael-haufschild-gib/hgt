@@ -99,16 +99,16 @@ theorem realTwoLocalPauli_twoTime_normalJacobian_incidence_conservation
     Module.finrank ℝ (LinearMap.range
         (normalQuotientObserver
           (realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap
+            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap
           circuitTangent)) +
         Module.finrank ℝ
           (LinearMap.range
               ((realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-                (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap) ⊓
+                (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap) ⊓
             LinearMap.range circuitTangent : Submodule ℝ _) =
       Fintype.card (PauliTracelessLabel (n + 1) 2) := by
   let L := (realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-    (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap
+    (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap
   have hconservation :=
     finrank_range_normalQuotientObserver_add_incidence_eq L circuitTangent
   have hLinj : Function.Injective L := by
@@ -118,11 +118,11 @@ theorem realTwoLocalPauli_twoTime_normalJacobian_incidence_conservation
     have hlower :=
       realTwoLocalPauliTwoTimeEndpointRealJacobian_lower_of_mem_box
         (n := n + 1) (Nat.succ_pos n) z.2 t (x - y)
-    change (1 / (72 * (((n + 1 : ℕ) : ℝ)) ^ 3)) / 4 * ‖x - y‖ ≤
+    change (1 / (72 * (((n + 1 : ℕ) : ℝ)) ^ (3 : ℕ))) / 4 * ‖x - y‖ ≤
       ‖L (x - y)‖ at hlower
     rw [hzero, norm_zero] at hlower
     have hscale : 0 <
-        (1 / (72 * (((n + 1 : ℕ) : ℝ)) ^ 3)) / 4 := by positivity
+        (1 / (72 * (((n + 1 : ℕ) : ℝ)) ^ (3 : ℕ))) / 4 := by positivity
     have hnorm : ‖x - y‖ = 0 := by nlinarith [norm_nonneg (x - y)]
     exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
   rw [LinearMap.finrank_range_of_inj hLinj] at hconservation
@@ -144,7 +144,7 @@ theorem realTwoLocalPauli_twoTime_normalJacobian_rank_floor
       Module.finrank ℝ (LinearMap.range
         (normalQuotientObserver
           (realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap
+            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap
           circuitTangent)) := by
   have hconservation :=
     realTwoLocalPauli_twoTime_normalJacobian_incidence_conservation
@@ -152,13 +152,13 @@ theorem realTwoLocalPauli_twoTime_normalJacobian_rank_floor
   have hintersection : Module.finrank ℝ
       (LinearMap.range
           ((realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap) ⊓
+            (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap) ⊓
         LinearMap.range circuitTangent : Submodule ℝ _) ≤ s * 16 := by
     calc
       Module.finrank ℝ
           (LinearMap.range
               ((realTwoLocalPauliTwoTimeEndpointRealJacobian z.1 t
-                (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ 3))).toLinearMap) ⊓
+                (1 / (72 * ((n + 1 : ℕ) : ℝ) ^ (3 : ℕ)))).toLinearMap) ⊓
             LinearMap.range circuitTangent : Submodule ℝ _) ≤
           Module.finrank ℝ (LinearMap.range circuitTangent) :=
         Submodule.finrank_mono inf_le_right

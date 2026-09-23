@@ -34,7 +34,7 @@ theorem egbFixedChargeAMeanDeficitForce_dominated (φ : ℝ) :
   let c := egbFixedChargeAMiddleQuadraticShift τ φ
   let N := egbFixedChargeAMeanPressureNumerator τ φ
   let L := 2 * egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ
-  let R := (egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ + egbFixedChargeAMiddleMeanConstant τ φ) / d ^ 2
+  let R := (egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ + egbFixedChargeAMiddleMeanConstant τ φ) / d ^ (2 : ℕ)
   let D := egbFixedChargeAMeanDenominator τ φ
   have hd : 0 < d := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hN : 0 < N := egbFixedChargeAMeanPressureNumerator_pos τ φ
@@ -51,22 +51,22 @@ theorem egbFixedChargeAMeanDeficitForce_dominated (φ : ℝ) :
   have hRabs : |R| ≤ 2 := abs_le.mpr ⟨hRlo.le, hRhi.le⟩
   have hcabs : |c| ≤ 1 := abs_le.mpr ⟨hc.1.le, by linarith [hc.2]⟩
   have huabs : |u| ≤ 1 := by rw [abs_of_nonneg hu.1]; exact hu.2
-  have hd2 : d ^ 2 ≤ 1 := by nlinarith [mul_nonneg hd.le (show 0 ≤ 1 - d by linarith)]
-  have hc2 : c ^ 2 ≤ 1 := by
+  have hd2 : d ^ (2 : ℕ) ≤ 1 := by nlinarith [mul_nonneg hd.le (show 0 ≤ 1 - d by linarith)]
+  have hc2 : c ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg (show 0 ≤ 1 - c by linarith [hc.2]) (show 0 ≤ c + 1 by linarith [hc.1])]
-  have hu2 : u ^ 2 ≤ 1 := by nlinarith [mul_nonneg hu.1 (sub_nonneg.mpr hu.2)]
-  have ha0 : 0 ≤ d ^ 2 * c ^ 2 * u ^ 2 := by positivity
-  have ha1 : d ^ 2 * c ^ 2 * u ^ 2 ≤ 1 := by
+  have hu2 : u ^ (2 : ℕ) ≤ 1 := by nlinarith [mul_nonneg hu.1 (sub_nonneg.mpr hu.2)]
+  have ha0 : 0 ≤ d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) := by positivity
+  have ha1 : d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ 1 := by
     calc
       _ ≤ (1 * 1) * 1 := mul_le_mul (mul_le_mul hd2 hc2 (sq_nonneg c) (by norm_num)) hu2 (sq_nonneg u) (by norm_num)
       _ = _ := by norm_num
-  have haf : |d ^ 2 * c ^ 2 * u ^ 2 - 1| ≤ 1 := by
+  have haf : |d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) - 1| ≤ 1 := by
     apply abs_le.mpr
     constructor <;> linarith
-  have hterm1 : |N * d ^ 2 * c ^ 2 * u ^ 2| ≤ 4 := by
+  have hterm1 : |N * d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ)| ≤ 4 := by
     calc
-      _ = |N| * (d ^ 2 * c ^ 2 * u ^ 2) := by
-        rw [show N * d ^ 2 * c ^ 2 * u ^ 2 = N * (d ^ 2 * c ^ 2 * u ^ 2) by ring,
+      _ = |N| * (d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
+        rw [show N * d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) = N * (d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ)) by ring,
           abs_mul, abs_of_nonneg ha0]
       _ ≤ 4 * 1 := mul_le_mul hNabs ha1 ha0 (by norm_num)
       _ = _ := by norm_num
@@ -76,33 +76,33 @@ theorem egbFixedChargeAMeanDeficitForce_dominated (φ : ℝ) :
       _ ≤ (5 * 1) * 1 := mul_le_mul (mul_le_mul hLabs hcabs (abs_nonneg c) (by norm_num)) huabs (abs_nonneg u) (by norm_num)
       _ = _ := by norm_num
   have hpoly : |egbFixedChargeAMeanDeficitPolynomial τ φ u| ≤ 11 := by
-    change |N * d ^ 2 * c ^ 2 * u ^ 2 + L * c * u + R| ≤ 11
+    change |N * d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) + L * c * u + R| ≤ 11
     calc
-      _ ≤ |N * d ^ 2 * c ^ 2 * u ^ 2 + L * c * u| + |R| := abs_add_le _ _
-      _ ≤ (|N * d ^ 2 * c ^ 2 * u ^ 2| + |L * c * u|) + |R| := add_le_add (abs_add_le _ _) le_rfl
+      _ ≤ |N * d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) + L * c * u| + |R| := abs_add_le _ _
+      _ ≤ (|N * d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ)| + |L * c * u|) + |R| := add_le_add (abs_add_le _ _) le_rfl
       _ ≤ (4 + 5) + 2 := add_le_add (add_le_add hterm1 hterm2) hRabs
       _ = _ := by norm_num
-  have hnum : |(d ^ 2 * c ^ 2 * u ^ 2 - 1) * egbFixedChargeAMeanDeficitPolynomial τ φ u| ≤ 11 := by
+  have hnum : |(d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) - 1) * egbFixedChargeAMeanDeficitPolynomial τ φ u| ≤ 11 := by
     rw [abs_mul]
     calc
       _ ≤ 1 * 11 := mul_le_mul haf hpoly (abs_nonneg _) (by norm_num)
       _ = _ := by norm_num
-  have hs : 1 / 2 ≤ 1 + d ^ 2 * c * u := by
+  have hs : 1 / 2 ≤ 1 + d ^ (2 : ℕ) * c * u := by
     have hscale := (egbFixedChargeAMeanDeficitPathScale_mapsTo τ φ hu).1
-    change 1 - d ≤ 1 + d ^ 2 * c * u at hscale
+    change 1 - d ≤ 1 + d ^ (2 : ℕ) * c * u at hscale
     linarith
-  have hs2 : 1 / 4 ≤ (1 + d ^ 2 * c * u) ^ 2 := by nlinarith [sq_nonneg (1 + d ^ 2 * c * u - 1 / 2)]
-  have hbase : 8 ≤ 2 * D * (1 + d ^ 2) := by
+  have hs2 : 1 / 4 ≤ (1 + d ^ (2 : ℕ) * c * u) ^ (2 : ℕ) := by nlinarith [sq_nonneg (1 + d ^ (2 : ℕ) * c * u - 1 / 2)]
+  have hbase : 8 ≤ 2 * D * (1 + d ^ (2 : ℕ)) := by
     calc
       _ = 8 * 1 := by ring
-      _ ≤ (2 * D) * (1 + d ^ 2) := mul_le_mul (by linarith) (by nlinarith [sq_nonneg d]) (by norm_num) (by linarith)
-  have hden2 : 2 ≤ 2 * D * (1 + d ^ 2) * (1 + d ^ 2 * c * u) ^ 2 := by
+      _ ≤ (2 * D) * (1 + d ^ (2 : ℕ)) := mul_le_mul (by linarith) (by nlinarith [sq_nonneg d]) (by norm_num) (by linarith)
+  have hden2 : 2 ≤ 2 * D * (1 + d ^ (2 : ℕ)) * (1 + d ^ (2 : ℕ) * c * u) ^ (2 : ℕ) := by
     calc
       _ = 8 * (1 / 4) := by norm_num
       _ ≤ _ := mul_le_mul hbase hs2 (by norm_num) (by nlinarith)
-  have hdenpos : 0 < 2 * D * (1 + d ^ 2) * (1 + d ^ 2 * c * u) ^ 2 := by linarith
-  change |((d ^ 2 * c ^ 2 * u ^ 2 - 1) * egbFixedChargeAMeanDeficitPolynomial τ φ u) /
-    (2 * D * (1 + d ^ 2) * (1 + d ^ 2 * c * u) ^ 2)| ≤ 11
+  have hdenpos : 0 < 2 * D * (1 + d ^ (2 : ℕ)) * (1 + d ^ (2 : ℕ) * c * u) ^ (2 : ℕ) := by linarith
+  change |((d ^ (2 : ℕ) * c ^ (2 : ℕ) * u ^ (2 : ℕ) - 1) * egbFixedChargeAMeanDeficitPolynomial τ φ u) /
+    (2 * D * (1 + d ^ (2 : ℕ)) * (1 + d ^ (2 : ℕ) * c * u) ^ (2 : ℕ))| ≤ 11
   rw [abs_div, abs_of_pos hdenpos]
   apply (div_le_iff₀ hdenpos).2
   nlinarith only [hnum, hden2]

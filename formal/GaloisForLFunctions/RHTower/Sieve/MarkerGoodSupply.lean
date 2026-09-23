@@ -17,13 +17,13 @@ open Finset
 theorem half_card_le_card_markers_start_notMem {X : ℕ} {M S : Finset ℕ} {K : ℕ} {Pi : ℝ}
     (hsep : ∀ p ∈ M, ∀ q ∈ M, p < q → X / q = X / p → q ≤ p + K)
     (hpair : ∑ d ∈ Finset.Icc 1 K, (((M.filter (fun p => p + d ∈ M)).card : ℕ) : ℝ) ≤ Pi)
-    (hthr : (S.card : ℝ) * ((M.card : ℝ) + 2 * Pi) ≤ ((M.card : ℝ)) ^ 2 / 4) :
+    (hthr : (S.card : ℝ) * ((M.card : ℝ) + 2 * Pi) ≤ ((M.card : ℝ)) ^ (2 : ℕ) / 4) :
     ((M.card : ℝ)) / 2 ≤ (((M.filter (fun p => X / p ∉ S)).card : ℕ) : ℝ) := by
   classical
   have hdev := sq_card_markers_start_mem_le (X := X) (M := M) (S := S) (K := K) hsep hpair
   have hle : (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ≤ (M.card : ℝ) / 2 := by
-    have hsq : (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ 2
-        ≤ ((M.card : ℝ) / 2) ^ 2 := by
+    have hsq : (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ (2 : ℕ)
+        ≤ ((M.card : ℝ) / 2) ^ (2 : ℕ) := by
       refine hdev.trans (le_trans hthr (le_of_eq ?_))
       ring
     have h0 : (0 : ℝ) ≤ (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) := Nat.cast_nonneg _

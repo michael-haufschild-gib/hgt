@@ -17,7 +17,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalGeneratorCriterionInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- The literal forward orbit with the identity extension before time zero. -/
 def causalForwardOrbit (u : hardyL2ᗮ) (r : ℝ) : hardyL2ᗮ :=

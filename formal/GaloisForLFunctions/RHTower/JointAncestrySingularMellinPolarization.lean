@@ -121,7 +121,7 @@ theorem jointAncestrySingularMellinOperator_translation_mem
     (MellinL2.realTranslation_measurePreserving t)
   have hscaled := hcomp.const_mul (Real.exp (-t) : ℂ)
   refine (memLp_congr_ae ?_).mpr hscaled
-  filter_upwards [translation_coeFn t (f : Lp (α := ℝ) ℂ 2)] with x hx
+  filter_upwards [translation_coeFn_massGaugeSuperluminalCompression t (f : Lp (α := ℝ) ℂ 2)] with x hx
   rw [hx]
   change (Real.exp x : ℂ) * (f : Lp (α := ℝ) ℂ 2) (x + t) =
     (Real.exp (-t) : ℂ) *
@@ -153,10 +153,10 @@ theorem jointAncestrySingularMellinOperator_covariance
   have hTfCoe : (Tf : ℝ → ℂ) =ᵐ[volume]
       (MellinL2.additiveTranslationUnitary t (f : Lp (α := ℝ) ℂ 2) : ℝ → ℂ) := by
     rw [htranslate]
-  filter_upwards [hApply, hTfCoe, translation_coeFn t (f : Lp (α := ℝ) ℂ 2),
+  filter_upwards [hApply, hTfCoe, translation_coeFn_massGaugeSuperluminalCompression t (f : Lp (α := ℝ) ℂ 2),
     Lp.coeFn_smul (Real.exp (-t) : ℂ)
       (MellinL2.additiveTranslationUnitary t (jointAncestrySingularMellinOperator f)),
-    translation_coeFn t (jointAncestrySingularMellinOperator f), hAf] with x hleft hTf' hf hs hr hA
+    translation_coeFn_massGaugeSuperluminalCompression t (jointAncestrySingularMellinOperator f), hAf] with x hleft hTf' hf hs hr hA
   rw [hleft, hTf', hf, hs]
   change (Real.exp x : ℂ) * (f : Lp (α := ℝ) ℂ 2) (x + t) =
     (Real.exp (-t) : ℂ) *

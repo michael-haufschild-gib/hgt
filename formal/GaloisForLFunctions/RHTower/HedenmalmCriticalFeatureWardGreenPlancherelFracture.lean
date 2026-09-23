@@ -9,8 +9,8 @@ import GaloisForLFunctions.HTGeometry.TwoSidedExponentialMoments
 
 Continuous real-centered critical features form an exact Fourier frame for the strip-tilted source
 profile. This module compares its Hermitian mass with its holomorphic polarization. The latter is
-the constant `2π`; the former is `2π / (1 - Im(z)^2)`. Thus every transverse signal lies in the
-exact excess `2π Im(z)^2 / (1 - Im(z)^2)`.
+the constant `2π`; the former is `2π / (1 - Im(z)^(2 : ℕ))`. Thus every transverse signal lies in the
+exact excess `2π Im(z)^(2 : ℕ) / (1 - Im(z)^(2 : ℕ))`.
 
 Off the Ward kernel, multiplying this excess by the source Green weight reconstructs the whole
 Hermitian mass. On the kernel, totalized Green inversion and the excess both vanish while Hermitian
@@ -53,7 +53,7 @@ theorem integrable_criticalFeatureFrameSourceProfile
     {z : ℂ} (hz : |z.im| < 1 / 2) :
     Integrable (criticalFeatureFrameSourceProfile z) := by
   have hc : 0 < 1 - |z.im| := by linarith
-  refine Integrable.mono' (integrable_exp_neg_mul_abs hc)
+  refine Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc)
     (continuous_criticalFeatureFrameSourceProfile z).aestronglyMeasurable ?_
   filter_upwards with x
   rw [norm_criticalFeatureFrameSourceProfile]
@@ -70,7 +70,7 @@ theorem memLp_two_criticalFeatureFrameSourceProfile
   rw [memLp_two_iff_integrable_sq_norm
     (continuous_criticalFeatureFrameSourceProfile z).aestronglyMeasurable]
   have hc : 0 < 2 * (1 - |z.im|) := by linarith
-  refine Integrable.mono' (integrable_exp_neg_mul_abs hc) ?_ ?_
+  refine Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc) ?_ ?_
   · exact ((continuous_criticalFeatureFrameSourceProfile z).norm.pow 2).aestronglyMeasurable
   · filter_upwards with x
     rw [norm_criticalFeatureFrameSourceProfile]
@@ -134,8 +134,8 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq_sourceEnergy
       Complex.normSq
         (criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)))) =
       2 * Real.pi *
-        ∫ x : ℝ, ‖criticalFeatureFrameSourceProfile z x‖ ^ 2 := by
-  let H : ℝ → ℝ := fun ξ => ‖𝓕 (criticalFeatureFrameSourceProfile z) ξ‖ ^ 2
+        ∫ x : ℝ, ‖criticalFeatureFrameSourceProfile z x‖ ^ (2 : ℕ) := by
+  let H : ℝ → ℝ := fun ξ => ‖𝓕 (criticalFeatureFrameSourceProfile z) ξ‖ ^ (2 : ℕ)
   have hline : (fun t : ℝ =>
       Complex.normSq
         (criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)))) =
@@ -274,13 +274,13 @@ theorem integral_fourier_criticalFeatureFrameSourceProfile_sq
 theorem integral_criticalEvaluation_realCriticalFeature_sq
     (z : ℂ) (hz : |z.im| < 1 / 2) :
     (∫ t : ℝ,
-      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ 2) =
+      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ (2 : ℕ)) =
       (2 * Real.pi : ℝ) := by
   let H : ℝ → ℂ := fun ξ =>
     𝓕 (criticalFeatureFrameSourceProfile z) ξ *
       𝓕 (criticalFeatureFrameSourceProfile z) ξ
   have hline : (fun t : ℝ =>
-      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ 2) =
+      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ (2 : ℕ)) =
       fun t : ℝ => H (t / (2 * Real.pi)) := by
     funext t
     rw [criticalEvaluation_realCriticalFeature_eq_fourier]
@@ -300,12 +300,12 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero
       Complex.normSq
         (HedenmalmThetaSource.criticalEvaluation z hz
           (HedenmalmThetaSource.criticalFeature (t : ℂ) (by norm_num)))) =
-      2 * Real.pi / (1 - z.im ^ 2) := by
+      2 * Real.pi / (1 - z.im ^ (2 : ℕ)) := by
   let y : ℝ := z.im
   let a : ℝ := 1 - y
   let b : ℝ := 1 + y
   let g : ℝ → ℝ := fun u =>
-    4 / ((a ^ 2 + u ^ 2) * (b ^ 2 + u ^ 2))
+    4 / ((a ^ (2 : ℕ) + u ^ (2 : ℕ)) * (b ^ (2 : ℕ) + u ^ (2 : ℕ)))
   have ha : 0 < a := by
     dsimp [a, y]
     linarith [(abs_lt.mp hz).2]
@@ -324,11 +324,11 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero
     congr 1
     ring
   have hpartial : g = fun u =>
-      y⁻¹ * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹) := by
+      y⁻¹ * ((a ^ (2 : ℕ) + u ^ (2 : ℕ))⁻¹ - (b ^ (2 : ℕ) + u ^ (2 : ℕ))⁻¹) := by
     funext u
     dsimp only [g]
-    have hda : a ^ 2 + u ^ 2 ≠ 0 := by positivity
-    have hdb : b ^ 2 + u ^ 2 ≠ 0 := by positivity
+    have hda : a ^ (2 : ℕ) + u ^ (2 : ℕ) ≠ 0 := by positivity
+    have hdb : b ^ (2 : ℕ) + u ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp
     dsimp only [a, b]
     ring
@@ -341,7 +341,7 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero
   dsimp only [a, b, y]
   have hza : 1 - z.im ≠ 0 := by linarith [ha]
   have hzb : 1 + z.im ≠ 0 := by linarith [hb]
-  have hzden : 1 - z.im ^ 2 ≠ 0 := by
+  have hzden : 1 - z.im ^ (2 : ℕ) ≠ 0 := by
     have hyabs := abs_lt.mp hz
     nlinarith [sq_nonneg (z.im - 1 / 2), sq_nonneg (z.im + 1 / 2)]
   field_simp [hy, hza, hzb, hzden]
@@ -354,7 +354,7 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_eq_zero
         (criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)))) =
       2 * Real.pi := by
   rw [integral_normSq_criticalEvaluation_realCriticalFeature_eq_sourceEnergy]
-  have hprofile : (fun x : ℝ => ‖criticalFeatureFrameSourceProfile z x‖ ^ 2) =
+  have hprofile : (fun x : ℝ => ‖criticalFeatureFrameSourceProfile z x‖ ^ (2 : ℕ)) =
       fun x : ℝ => Real.exp (-2 * |x|) := by
     funext x
     rw [norm_criticalFeatureFrameSourceProfile, hy, zero_mul, sub_zero,
@@ -376,7 +376,7 @@ theorem integral_normSq_criticalEvaluation_realCriticalFeature_eq
     (∫ t : ℝ,
       Complex.normSq
         (criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)))) =
-      2 * Real.pi / (1 - z.im ^ 2) := by
+      2 * Real.pi / (1 - z.im ^ (2 : ℕ)) := by
   by_cases hy : z.im = 0
   · rw [integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_eq_zero
       z hz hy, hy]
@@ -391,18 +391,18 @@ def criticalFeatureContinuousFrameHermitianExcess
       Complex.normSq
         (criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)))) -
     (∫ t : ℝ,
-      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ 2).re
+      criticalEvaluation z hz (criticalFeature (t : ℂ) (by norm_num)) ^ (2 : ℕ)).re
 
 /-- Exact Hermitian/holomorphic fracture: transverse displacement is the entire excess. -/
 theorem criticalFeatureContinuousFrameHermitianExcess_eq_of_im_ne_zero
     (z : ℂ) (hz : |z.im| < 1 / 2) (hy : z.im ≠ 0) :
     criticalFeatureContinuousFrameHermitianExcess z hz =
-      2 * Real.pi * z.im ^ 2 / (1 - z.im ^ 2) := by
+      2 * Real.pi * z.im ^ (2 : ℕ) / (1 - z.im ^ (2 : ℕ)) := by
   rw [criticalFeatureContinuousFrameHermitianExcess,
     integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero z hz hy,
     integral_criticalEvaluation_realCriticalFeature_sq z hz]
   simp only [Complex.ofReal_re]
-  have hden : 1 - z.im ^ 2 ≠ 0 := by
+  have hden : 1 - z.im ^ (2 : ℕ) ≠ 0 := by
     have hyabs := abs_lt.mp hz
     nlinarith [sq_nonneg (z.im - 1 / 2), sq_nonneg (z.im + 1 / 2)]
   field_simp [hden]
@@ -412,12 +412,12 @@ theorem criticalFeatureContinuousFrameHermitianExcess_eq_of_im_ne_zero
 theorem criticalFeatureContinuousFrameHermitianExcess_eq
     (z : ℂ) (hz : |z.im| < 1 / 2) :
     criticalFeatureContinuousFrameHermitianExcess z hz =
-      2 * Real.pi * z.im ^ 2 / (1 - z.im ^ 2) := by
+      2 * Real.pi * z.im ^ (2 : ℕ) / (1 - z.im ^ (2 : ℕ)) := by
   rw [criticalFeatureContinuousFrameHermitianExcess,
     integral_normSq_criticalEvaluation_realCriticalFeature_eq z hz,
     integral_criticalEvaluation_realCriticalFeature_sq z hz]
   simp only [Complex.ofReal_re]
-  have hden : 1 - z.im ^ 2 ≠ 0 := by
+  have hden : 1 - z.im ^ (2 : ℕ) ≠ 0 := by
     have hyabs := abs_lt.mp hz
     nlinarith [sq_nonneg (z.im - 1 / 2), sq_nonneg (z.im + 1 / 2)]
   field_simp [hden]
@@ -441,7 +441,7 @@ theorem wardGreen_mul_criticalFeatureContinuousFrameHermitianExcess_eq
       (xiSpectralPoint q) (abs_xiSpectralPoint_im_lt_half q) hy,
     integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero
       (xiSpectralPoint q) (abs_xiSpectralPoint_im_lt_half q) hy]
-  have hden : 1 - (xiSpectralPoint q).im ^ 2 ≠ 0 := by
+  have hden : 1 - (xiSpectralPoint q).im ^ (2 : ℕ) ≠ 0 := by
     have hyabs := abs_lt.mp (abs_xiSpectralPoint_im_lt_half q)
     nlinarith [sq_nonneg ((xiSpectralPoint q).im - 1 / 2),
       sq_nonneg ((xiSpectralPoint q).im + 1 / 2)]
@@ -454,7 +454,7 @@ theorem wardGreen_mul_criticalFeatureContinuousFrameHermitianExcess_eq_sourceEne
         criticalFeatureContinuousFrameHermitianExcess
           (xiSpectralPoint q) (abs_xiSpectralPoint_im_lt_half q) =
       2 * Real.pi /
-        (1 - (xiSpectralPoint q).im ^ 2) := by
+        (1 - (xiSpectralPoint q).im ^ (2 : ℕ)) := by
   rw [wardGreen_mul_criticalFeatureContinuousFrameHermitianExcess_eq q hy,
     integral_normSq_criticalEvaluation_realCriticalFeature_eq_of_im_ne_zero
       (xiSpectralPoint q) (abs_xiSpectralPoint_im_lt_half q) hy]
@@ -484,7 +484,7 @@ theorem wardGreen_kernel_continuousFrame_fracture
 /-- Height-erased continuous-frame density of one Ward--Green Xi copy. -/
 def fiveShiftWardGreenContinuousFrameDensity (q : XiZeroCopy) : ℝ :=
   fiveShiftEulerGammaRenormalizedKreinDefectCombination 1 q *
-    (2 * Real.pi / (1 - (xiSpectralPoint q).im ^ 2))
+    (2 * Real.pi / (1 - (xiSpectralPoint q).im ^ (2 : ℕ)))
 
 /-- Tonelli atom law: integrating one fixed-feature current over every real feature center removes
 height and leaves the explicit transverse density. -/
@@ -524,10 +524,10 @@ theorem fiveShiftWardGreenContinuousFrameDensity_right_ge
     2 * Real.pi / 81 ≤ fiveShiftWardGreenContinuousFrameDensity q.1 := by
   have hscalar := fiveShiftEulerGammaRenormalizedKreinDefectCombination_right_ge q
   have hyabs := abs_lt.mp (abs_xiSpectralPoint_im_lt_half q.1)
-  have hdenpos : 0 < 1 - (xiSpectralPoint q.1).im ^ 2 := by
+  have hdenpos : 0 < 1 - (xiSpectralPoint q.1).im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ((xiSpectralPoint q.1).im - 1 / 2),
       sq_nonneg ((xiSpectralPoint q.1).im + 1 / 2)]
-  have hinv : 1 ≤ (1 - (xiSpectralPoint q.1).im ^ 2)⁻¹ := by
+  have hinv : 1 ≤ (1 - (xiSpectralPoint q.1).im ^ (2 : ℕ))⁻¹ := by
     exact (one_le_inv₀ hdenpos).2 (sub_le_self _ (sq_nonneg _))
   have hpi : 0 ≤ 2 * Real.pi := by positivity
   have hscalar_nonneg :
@@ -535,7 +535,7 @@ theorem fiveShiftWardGreenContinuousFrameDensity_right_ge
     fiveShiftEulerGammaRenormalizedKreinDefectCombination_one_nonneg q.1
   have htwopi :
       2 * Real.pi ≤
-        (2 * Real.pi) * (1 - (xiSpectralPoint q.1).im ^ 2)⁻¹ :=
+        (2 * Real.pi) * (1 - (xiSpectralPoint q.1).im ^ (2 : ℕ))⁻¹ :=
     by simpa using mul_le_mul_of_nonneg_left hinv hpi
   rw [fiveShiftWardGreenContinuousFrameDensity, div_eq_mul_inv]
   calc
@@ -543,10 +543,10 @@ theorem fiveShiftWardGreenContinuousFrameDensity_right_ge
     _ ≤ fiveShiftEulerGammaRenormalizedKreinDefectCombination 1 q.1 *
           (2 * Real.pi) := mul_le_mul_of_nonneg_right hscalar hpi
     _ ≤ fiveShiftEulerGammaRenormalizedKreinDefectCombination 1 q.1 *
-          ((2 * Real.pi) * (1 - (xiSpectralPoint q.1).im ^ 2)⁻¹) := by
+          ((2 * Real.pi) * (1 - (xiSpectralPoint q.1).im ^ (2 : ℕ))⁻¹) := by
       exact mul_le_mul_of_nonneg_left htwopi hscalar_nonneg
     _ = fiveShiftEulerGammaRenormalizedKreinDefectCombination 1 q.1 *
-          (2 * Real.pi * (1 - (xiSpectralPoint q.1).im ^ 2)⁻¹) := rfl
+          (2 * Real.pi * (1 - (xiSpectralPoint q.1).im ^ (2 : ℕ))⁻¹) := rfl
 
 end
 

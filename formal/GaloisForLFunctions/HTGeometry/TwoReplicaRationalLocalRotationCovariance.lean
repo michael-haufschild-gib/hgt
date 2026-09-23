@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem complex_I_pow_five : Complex.I ^ 5 = Complex.I := by
+theorem complex_I_pow_five : Complex.I ^ (5 : ℕ) = Complex.I := by
   rw [show 5 = 4 + 1 by norm_num, pow_succ, Complex.I_pow_four, one_mul]
 
 def boolPauliDoubleRotationGate (a : Fin 3) : Matrix Bool Bool ℂ :=

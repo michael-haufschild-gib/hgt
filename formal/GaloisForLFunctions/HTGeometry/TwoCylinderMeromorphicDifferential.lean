@@ -108,7 +108,7 @@ theorem meroDeriv_leibniz (x y : meroField (Set.univ : Set ℂ)) :
   simp only [smul_eq_mul]
 
 theorem meroDeriv_div (a b : meroField (Set.univ : Set ℂ)) (hb : b ≠ 0) :
-    (a / b)′ = (a′ * b - a * b′) / b ^ 2 :=
+    (a / b)′ = (a′ * b - a * b′) / b ^ (2 : ℕ) :=
   leibniz_div (fun x : meroField (Set.univ : Set ℂ) => x′) meroDeriv_leibniz hb
 
 set_option synthInstance.maxHeartbeats 1000000 in

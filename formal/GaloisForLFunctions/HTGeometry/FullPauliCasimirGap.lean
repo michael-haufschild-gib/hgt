@@ -328,7 +328,7 @@ theorem fullPauliCasimir_eigenvalue_gap {n : ℕ} {lam : ℝ}
     {Y : (R → Fin (2 ^ n)) × (R → Fin (2 ^ n)) → ℂ} (hY : Y ≠ 0)
     (heig : (∑ q : NonidentityPauliLabel n, finiteReplicaFullPauliCommutatorMatrix R n q *
         finiteReplicaFullPauliCommutatorMatrix R n q) *ᵥ Y = (lam : ℂ) • Y) :
-    lam = 0 ∨ 2 * ((2 : ℝ) ^ n) ^ 2 ≤ lam := by
+    lam = 0 ∨ 2 * ((2 : ℝ) ^ n) ^ (2 : ℕ) ≤ lam := by
   classical
   have hD : (0 : ℝ) < (2 : ℝ) ^ n := by positivity
   have hDC : ((2 : ℂ) ^ n) ≠ 0 := by

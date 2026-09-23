@@ -27,7 +27,7 @@ variable {D α : Type*} [Fintype D] [Fintype α] [DecidableEq α]
 
 /-- The spectral collision of a state in an orthonormal family. -/
 def spectralCollision (e : D → α → ℂ) (ψ : α → ℂ) : ℝ :=
-  ∑ j, finitePureStateFidelity (e j) ψ ^ 2
+  ∑ j, finitePureStateFidelity (e j) ψ ^ (2 : ℕ)
 
 theorem spectralCollision_nonneg (e : D → α → ℂ) (ψ : α → ℂ) :
     0 ≤ spectralCollision e ψ :=
@@ -65,11 +65,11 @@ variable {n : ℕ}
 /-- The stabilizer two-design bound, stated for the spectral collision. -/
 theorem sum_spectralCollision_prodStab_le (s : ℂ) (hs : s * s = 1 / 2)
     (hsc : (starRingEnd ℂ) s = s) {D : Type*} [Fintype D]
-    (e : D → (Fin n → Fin 2) → ℂ) (he : ∀ j, ∑ b, ‖e j b‖ ^ 2 = 1) :
+    (e : D → (Fin n → Fin 2) → ℂ) (he : ∀ j, ∑ b, ‖e j b‖ ^ (2 : ℕ) = 1) :
     (∑ σ : Fin n → Fin 6, spectralCollision e (prodStabAmp s σ)) ≤
       (Fintype.card D : ℝ) * 2 ^ n := by
   have hrw : ∀ σ : Fin n → Fin 6, spectralCollision e (prodStabAmp s σ) =
-      ∑ j : D, ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ 4 := by
+      ∑ j : D, ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ (4 : ℕ) := by
     intro σ
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [finitePureStateFidelity, ← pow_mul, finiteComplexInner]

@@ -23,9 +23,9 @@ theorem arg_liMobiusCoordinate_remoteQuartetZero
     Complex.arg (liMobiusCoordinate (liRemoteQuartetZero a T)) =
       liRemoteAngularCoordinate a T := by
   let q := liMobiusCoordinate (liRemoteQuartetZero a T)
-  have hden : 0 < T ^ 2 + (1 / 2 - a) ^ 2 := by
+  have hden : 0 < T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos (by linarith : 0 < T)]
-  have hnum : 0 < T ^ 2 - (1 / 2 - a) * (1 - (1 / 2 - a)) := by
+  have hnum : 0 < T ^ (2 : ℕ) - (1 / 2 - a) * (1 - (1 / 2 - a)) := by
     nlinarith [sq_pos_of_pos (by linarith : 0 < T), sq_nonneg a]
   have hqre : 0 < q.re := by
     dsimp [q]
@@ -41,7 +41,7 @@ theorem arg_liMobiusCoordinate_remoteQuartetZero
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, mul_zero, mul_one,
     sub_zero, zero_add]
   unfold liRemoteAngularSmallParameter
-  have hnum0 : T ^ 2 - (1 / 2 - a) * (1 - (1 / 2 - a)) ≠ 0 := ne_of_gt hnum
+  have hnum0 : T ^ (2 : ℕ) - (1 / 2 - a) * (1 - (1 / 2 - a)) ≠ 0 := ne_of_gt hnum
   field_simp [hden.ne', hnum0]
   ring
 
@@ -51,11 +51,11 @@ theorem norm_liMobiusCoordinate_remoteQuartetZero
     ‖liMobiusCoordinate (liRemoteQuartetZero a T)‖ =
       Real.exp (liRemoteRadialCoordinate a T) := by
   let q := liMobiusCoordinate (liRemoteQuartetZero a T)
-  have hsqexp : Real.exp (liRemoteRadialCoordinate a T) ^ 2 = Complex.normSq q := by
+  have hsqexp : Real.exp (liRemoteRadialCoordinate a T) ^ (2 : ℕ) = Complex.normSq q := by
     rw [← Real.exp_nat_mul]
     norm_num
     exact exp_two_mul_liRemoteRadialCoordinate ha hT
-  have hsqnorm : ‖q‖ ^ 2 = Complex.normSq q := Complex.sq_norm q
+  have hsqnorm : ‖q‖ ^ (2 : ℕ) = Complex.normSq q := Complex.sq_norm q
   have hexpPos : 0 < Real.exp (liRemoteRadialCoordinate a T) := Real.exp_pos _
   have hnormNonneg : 0 ≤ ‖q‖ := norm_nonneg _
   nlinarith

@@ -30,10 +30,10 @@ theorem summable_besselJ_term (ν : ℕ) (x : ℝ) :
     Summable fun j : ℕ =>
       (-1 : ℝ) ^ j * (x / 2) ^ (2 * j + ν) / ((j.factorial : ℝ) * ((j + ν).factorial : ℝ)) := by
   refine Summable.of_norm_bounded
-    ((Real.summable_pow_div_factorial ((x / 2) ^ 2)).mul_left (|x / 2| ^ ν)) fun j => ?_
+    ((Real.summable_pow_div_factorial ((x / 2) ^ (2 : ℕ))).mul_left (|x / 2| ^ ν)) fun j => ?_
   have hf : (1 : ℝ) ≤ ((j + ν).factorial : ℝ) := by exact_mod_cast Nat.factorial_pos _
   have hj : (0 : ℝ) < (j.factorial : ℝ) := by positivity
-  have hnum : |x / 2| ^ (2 * j + ν) = |x / 2| ^ ν * ((x / 2) ^ 2) ^ j := by
+  have hnum : |x / 2| ^ (2 * j + ν) = |x / 2| ^ ν * ((x / 2) ^ (2 : ℕ)) ^ j := by
     rw [pow_add, pow_mul, sq_abs, mul_comm]
   rw [Real.norm_eq_abs, abs_div, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul, abs_pow,
     abs_of_pos (by positivity : (0 : ℝ) < (j.factorial : ℝ) * ((j + ν).factorial : ℝ)), hnum,
@@ -53,19 +53,19 @@ theorem besselJ_eq_mul_tsum (ν : ℕ) (x : ℝ) :
 
 /-! ## The inner series is a Bessel function -/
 
-theorem neg_two_pi_I_sq : ((-2 * π * I) ^ 2 : ℂ) = -((2 * π) ^ 2) := by
-  linear_combination (4 * (π : ℂ) ^ 2) * I_sq
+theorem neg_two_pi_I_sq : ((-2 * π * I) ^ (2 : ℕ) : ℂ) = -((2 * π) ^ (2 : ℕ)) := by
+  linear_combination (4 * (π : ℂ) ^ (2 : ℕ)) * I_sq
 
 /-- The termwise identity behind the Bessel form. -/
 theorem expansionCoeff_mul_pow_eq (k' m : ℕ) (c : ℕ+) (n j : ℕ) :
     expansionCoeff k' m c j * (n : ℂ) ^ (k' + j)
       = (-2 * π * I) ^ (k' + 1) * ((c : ℂ) ^ (k' + 1))⁻¹ * (n : ℂ) ^ k' *
-          (((-1 : ℝ) ^ j * ((2 * π / (c : ℝ)) ^ 2 * (m * n)) ^ j /
+          (((-1 : ℝ) ^ j * ((2 * π / (c : ℝ)) ^ (2 : ℕ) * (m * n)) ^ j /
             ((j.factorial : ℝ) * ((j + k').factorial : ℝ)) : ℝ) : ℂ) := by
   have hc : (c : ℂ) ≠ 0 := by exact_mod_cast c.ne_zero
   have hj : (j.factorial : ℂ) ≠ 0 := by exact_mod_cast (Nat.factorial_pos j).ne'
   have hjk : ((j + k').factorial : ℂ) ≠ 0 := by exact_mod_cast (Nat.factorial_pos _).ne'
-  have hsq : ((-2 * π * I) ^ j : ℂ) * (-2 * π * I) ^ j = (-1) ^ j * ((2 * π) ^ 2) ^ j := by
+  have hsq : ((-2 * π * I) ^ j : ℂ) * (-2 * π * I) ^ j = (-1) ^ j * ((2 * π) ^ (2 : ℕ)) ^ j := by
     rw [← pow_add, ← two_mul, pow_mul, neg_two_pi_I_sq, neg_pow]
   unfold expansionCoeff
   rw [Nat.add_comm k' j]
@@ -103,7 +103,7 @@ theorem tsum_expansionCoeff_mul_pow_eq_besselJ {k' m n : ℕ} (hm : 1 ≤ m) (hn
   set T : ℝ := ∑' j : ℕ, (-1 : ℝ) ^ j * (2 * π * Real.sqrt (m * n) / c) ^ (2 * j) /
     ((j.factorial : ℝ) * ((j + k').factorial : ℝ)) with hT
   have hts : Real.sqrt (n / m) * Real.sqrt (m * n) = n := by
-    rw [← Real.sqrt_mul (by positivity), show (n : ℝ) / m * (m * n) = (n : ℝ) ^ 2 by
+    rw [← Real.sqrt_mul (by positivity), show (n : ℝ) / m * (m * n) = (n : ℝ) ^ (2 : ℕ) by
       field_simp, Real.sqrt_sq hn'.le]
   have hI : (-2 * π * I : ℂ) ^ (k' + 1) = (2 * π) ^ (k' + 1) * (-I) ^ (k' + 1) := by
     rw [← mul_pow]

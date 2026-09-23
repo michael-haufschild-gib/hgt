@@ -23,13 +23,13 @@ theorem soninLogClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQF
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
-    ‖X ψ‖ ^ 4 -
-        ‖inner ℂ (X ψ) (soninLogFourierScattering (X ψ))‖ ^ 2 =
-      ‖soninLogFourierInvariantAverage (X ψ)‖ ^ 2 *
-        HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    ‖X ψ‖ ^ (4 : ℕ) -
+        ‖inner ℂ (X ψ) (soninLogFourierScattering (X ψ))‖ ^ (2 : ℕ) =
+      ‖soninLogFourierInvariantAverage (X ψ)‖ ^ (2 : ℕ) *
+        HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
           (‖inner ℂ ψ
             ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-          (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) := by
+          (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) := by
   have hcomm :
       ((X * soninLogFourierScattering - soninLogFourierScattering * X) :
           SoninL2 →L[ℂ] SoninL2) ψ =

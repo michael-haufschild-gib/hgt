@@ -20,7 +20,7 @@ noncomputable section
 
 /-- Separation between the large atom and the `N-1` equal small atoms. -/
 def twoLevelDeviation (E F : ℝ) (N : ℕ) : ℝ :=
-  Real.sqrt (((N : ℝ) * F - E ^ 2) / ((N : ℝ) - 1))
+  Real.sqrt (((N : ℝ) * F - E ^ (2 : ℕ)) / ((N : ℝ) - 1))
 
 /-- The unique large atom in the two-level carrier. -/
 def twoLevelLarge (E F : ℝ) (N : ℕ) : ℝ :=
@@ -32,9 +32,9 @@ def twoLevelSmall (E F : ℝ) (N : ℕ) : ℝ :=
 
 theorem twoLevelDeviation_sq
     {E F : ℝ} {N : ℕ} (hN : 2 ≤ N)
-    (hlow : E ^ 2 / N < F) :
-    twoLevelDeviation E F N ^ 2 =
-      ((N : ℝ) * F - E ^ 2) / ((N : ℝ) - 1) := by
+    (hlow : E ^ (2 : ℕ) / N < F) :
+    twoLevelDeviation E F N ^ (2 : ℕ) =
+      ((N : ℝ) * F - E ^ (2 : ℕ)) / ((N : ℝ) - 1) := by
   rw [twoLevelDeviation]
   apply Real.sq_sqrt
   have hNr : (0 : ℝ) < N := by
@@ -56,7 +56,7 @@ theorem twoLevelDeviation_nonneg (E F : ℝ) (N : ℕ) :
 
 theorem twoLevelDeviation_le
     {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
-    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2) :
+    (hlow : E ^ (2 : ℕ) / N < F) (hhigh : F ≤ E ^ (2 : ℕ)) :
     twoLevelDeviation E F N ≤ E := by
   have hsq := twoLevelDeviation_sq hN hlow
   have hNr1 : (1 : ℝ) < N := by
@@ -65,7 +65,7 @@ theorem twoLevelDeviation_le
     linarith
   have hdev : 0 ≤ twoLevelDeviation E F N :=
     twoLevelDeviation_nonneg E F N
-  have hbound : twoLevelDeviation E F N ^ 2 ≤ E ^ 2 := by
+  have hbound : twoLevelDeviation E F N ^ (2 : ℕ) ≤ E ^ (2 : ℕ) := by
     rw [hsq, div_le_iff₀ hNm1]
     nlinarith
   nlinarith
@@ -87,12 +87,34 @@ theorem twoLevelLarge_pos
 
 theorem twoLevelSmall_nonneg
     {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
-    (hlow : E ^ 2 / N < F) (hhigh : F ≤ E ^ 2) :
+    (hlow : E ^ (2 : ℕ) / N < F) (hhigh : F ≤ E ^ (2 : ℕ)) :
     0 ≤ twoLevelSmall E F N := by
   rw [twoLevelSmall]
   exact div_nonneg
     (sub_nonneg.mpr (twoLevelDeviation_le hE hN hlow hhigh))
     (by exact_mod_cast (show 0 ≤ N by omega))
+
+/-- Strictly inside the finite atomic cone, every small atom is strictly positive. -/
+theorem twoLevelSmall_pos
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 2 ≤ N)
+    (hlow : E ^ (2 : ℕ) / N < F) (hhigh : F < E ^ (2 : ℕ)) :
+    0 < twoLevelSmall E F N := by
+  have hNr : (0 : ℝ) < N := by
+    exact_mod_cast (show 0 < N by omega)
+  have hNm1 : (0 : ℝ) < (N : ℝ) - 1 := by
+    have : (1 : ℝ) < N := by exact_mod_cast (show 1 < N by omega)
+    linarith
+  have hdevsq := twoLevelDeviation_sq hN hlow
+  have hdevnonneg : 0 ≤ twoLevelDeviation E F N :=
+    twoLevelDeviation_nonneg E F N
+  have hdevsq_lt : twoLevelDeviation E F N ^ (2 : ℕ) < E ^ (2 : ℕ) := by
+    rw [hdevsq, div_lt_iff₀ hNm1]
+    have hmul := mul_lt_mul_of_pos_left hhigh hNr
+    nlinarith
+  have hdevlt : twoLevelDeviation E F N < E := by
+    nlinarith
+  rw [twoLevelSmall]
+  exact div_pos (sub_pos.mpr hdevlt) hNr
 
 /-- Exact first moment: one large atom plus `N-1` small atoms. -/
 theorem twoLevel_firstMoment
@@ -108,9 +130,9 @@ theorem twoLevel_firstMoment
 /-- Exact second moment: squares of the same finite atomic carrier. -/
 theorem twoLevel_secondMoment
     {E F : ℝ} {N : ℕ} (hN : 2 ≤ N)
-    (hlow : E ^ 2 / N < F) :
-    twoLevelLarge E F N ^ 2 +
-        ((N : ℝ) - 1) * twoLevelSmall E F N ^ 2 = F := by
+    (hlow : E ^ (2 : ℕ) / N < F) :
+    twoLevelLarge E F N ^ (2 : ℕ) +
+        ((N : ℝ) - 1) * twoLevelSmall E F N ^ (2 : ℕ) = F := by
   have hN0 : (N : ℝ) ≠ 0 := by
     exact_mod_cast (show N ≠ 0 by omega)
   have hNm1 : (N : ℝ) - 1 ≠ 0 := by

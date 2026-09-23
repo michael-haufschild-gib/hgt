@@ -39,7 +39,7 @@ theorem regularizedCurrent_eq (v : ℂ) (x : ℝ) {y : ℝ} (hy : 0 < y) :
   simpa only [hc, regularizedCurrent] using h
 
 /-- The original inversion symmetry pairs the regularized radii on the circular boundary. -/
-theorem radius_arc_eq {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+theorem radius_arc_eq {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     radius N f e (point (-x) y) = radius N f e (point x y) := by
   have h := radius_invariant N f e ModularGroup.S (ofComplex (point x y))
   rw [inversion_on_unit_circle hy hxy] at h
@@ -61,7 +61,7 @@ theorem regularized_side {y : ℝ} (hy : 0 < y) :
     side_current_cancellation N f hy]
 
 /-- Actual regularized arc currents cancel with their full geometric weight. -/
-theorem regularized_arc {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+theorem regularized_arc {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     (x / y) * (regularizedCurrent N f e 1 (-x) y - regularizedCurrent N f e 1 x y) -
       regularizedCurrent N f e Complex.I (-x) y - regularizedCurrent N f e Complex.I x y = 0 := by
   simp only [regularizedCurrent_eq N f e _ _ hy, radius_arc_eq N f e hy hxy]
@@ -78,7 +78,7 @@ theorem regularized_area_stokes {Y : ℝ} (hY : 1 ≤ Y) :
 
 /-- Actual source mass density with the inverse regularized amplitude weight. -/
 def weightedMassDensity (p : ℝ × ℝ) : ℝ :=
-  density N f (ofComplex (point p.1 p.2)) / (p.2 ^ 2 * radius N f e (point p.1 p.2))
+  density N f (ofComplex (point p.1 p.2)) / (p.2 ^ (2 : ℕ) * radius N f e (point p.1 p.2))
 
 /-- Actual nonnegative regularized curvature remainder in planar coordinates. -/
 def weightedRemainder (p : ℝ × ℝ) : ℝ :=

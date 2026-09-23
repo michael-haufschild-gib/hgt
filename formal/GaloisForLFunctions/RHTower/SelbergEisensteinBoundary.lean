@@ -70,7 +70,7 @@ theorem model_c2 (lam : Ioi (0 : ℝ)) : ContDiffOn ℝ 2 (model lam) {z : ℂ |
 
 /-- Differentiating actual modular invariance transports the real model differential. -/
 theorem current_modular (lam : Ioi (0 : ℝ)) (A : SL2Z) (z : ℍ) (v : ℂ) :
-    dir v (model lam) (z : ℂ) = dir ((1 / (denom A z) ^ 2) * v) (model lam) ((A • z : ℍ) : ℂ) := by
+    dir v (model lam) (z : ℂ) = dir ((1 / (denom A z) ^ (2 : ℕ)) * v) (model lam) ((A • z : ℍ) : ℂ) := by
   let G : ℂ → ℂ := fun w => ((A • ofComplex w : ℍ) : ℂ)
   have hG : HasFDerivAt G (UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ)) (z : ℂ) :=
     (UpperHalfPlane.hasStrictFDerivAt_smul (A : GL (Fin 2) ℝ) z).hasFDerivAt
@@ -86,7 +86,7 @@ theorem current_modular (lam : Ioi (0 : ℝ)) (A : SL2Z) (z : ℍ) (v : ℂ) :
   have h := congrArg (fun L => L v) hc.fderiv
   rw [he.fderiv_eq] at h
   have hj : UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ) v =
-      (1 / (denom A z) ^ 2) * v := by
+      (1 / (denom A z) ^ (2 : ℕ)) * v := by
     simp [UpperHalfPlane.smulFDeriv, UpperHalfPlane.σ, mul_comm]
   simpa only [ContinuousLinearMap.comp_apply, G, ofComplex_apply, hj, dir] using h
 
@@ -106,7 +106,7 @@ theorem radial_inversion (lam : Ioi (0 : ℝ)) (z : ℍ) :
     dir (z : ℂ) (model lam) (z : ℂ) +
       dir ((S • z : ℍ) : ℂ) (model lam) ((S • z : ℍ) : ℂ) = 0 := by
   have h := current_modular lam S z (z : ℂ)
-  have hv : (1 / (denom S z) ^ 2) * (z : ℂ) = -((S • z : ℍ) : ℂ) := by
+  have hv : (1 / (denom S z) ^ (2 : ℕ)) * (z : ℂ) = -((S • z : ℍ) : ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom, ModularGroup.S, inv_neg]
     field_simp
@@ -127,7 +127,7 @@ theorem side_cancellation (lam : Ioi (0 : ℝ)) {y : ℝ} (hy : 0 < y) :
   simpa [denom, ModularGroup.T, ofComplex_apply_of_im_pos (hp _), currentAt] using h.symm
 
 /-- The two literal oriented unit-circle currents cancel for the actual model. -/
-theorem arc_cancellation (lam : Ioi (0 : ℝ)) {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+theorem arc_cancellation (lam : Ioi (0 : ℝ)) {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     (x / y) * (currentAt (model lam) 1 (-x) y - currentAt (model lam) 1 x y) -
       currentAt (model lam) Complex.I (-x) y - currentAt (model lam) Complex.I x y = 0 := by
   have h := radial_inversion lam (ofComplex (point x y))

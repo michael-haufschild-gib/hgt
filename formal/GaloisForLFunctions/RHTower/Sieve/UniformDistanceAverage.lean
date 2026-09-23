@@ -247,7 +247,7 @@ zero-free region, sieve, anything — if it holds uniformly on `|t| ≤ T` then 
 theorem sq_le_prime_mass_of_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ} {δ T : ℝ}
     (hδ : 0 ≤ δ) (hT : 0 < T)
     (hunif : ∀ t : ℝ, |t| ≤ T → δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
-    δ ^ 2 ≤ (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ)) + 4 * primeInvLogConst / T := by
+    δ ^ (2 : ℕ) ≤ (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ)) + 4 * primeInvLogConst / T := by
   obtain ⟨t, ht, hle⟩ := exists_mulDistSqPair_le_prime_mass hf z hT
   rw [Set.mem_Icc] at ht
   have habs : |t| ≤ T := by
@@ -256,7 +256,7 @@ theorem sq_le_prime_mass_of_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤
   have hnn : 0 ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) :=
     mulDistSqPair_nonneg_disc (fun p _ => hf p) (fun p _ => (norm_charFn t p).le)
       (fun p hp => (Nat.prime_of_mem_primesLE hp).pos)
-  have hsq : δ ^ 2 ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) := by
+  have hsq : δ ^ (2 : ℕ) ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) := by
     have h := pow_le_pow_left₀ hδ (hunif t habs) 2
     rwa [Real.sq_sqrt hnn] at h
   exact le_trans hsq hle

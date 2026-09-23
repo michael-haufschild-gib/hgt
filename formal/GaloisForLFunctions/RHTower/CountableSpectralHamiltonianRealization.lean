@@ -99,9 +99,9 @@ theorem countableSpectralKet_norm
     (p : ℕ → ℝ) (hp : ∀ k, 0 ≤ p k) (hsum : Summable p)
     (htotal : ∑' k, p k = 1) :
     ‖countableSpectralKet p hp hsum‖ = 1 := by
-  have hnormsq : ‖countableSpectralKet p hp hsum‖ ^ 2 = 1 := by
+  have hnormsq : ‖countableSpectralKet p hp hsum‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
-    rw [show (∑' k : ℕ, ‖countableSpectralKet p hp hsum k‖ ^ 2) =
+    rw [show (∑' k : ℕ, ‖countableSpectralKet p hp hsum k‖ ^ (2 : ℕ)) =
         ∑' k : ℕ, p k by
       apply tsum_congr
       intro k
@@ -117,10 +117,10 @@ theorem countableSpectralKetAt_norm
     (x : ℕ → UnitAddCircle) (t : ℝ) :
     ‖countableSpectralKetAt p hp hsum x t‖ = 1 := by
   have hnormsq :
-      ‖countableSpectralKetAt p hp hsum x t‖ ^ 2 = 1 := by
+      ‖countableSpectralKetAt p hp hsum x t‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     rw [show (∑' k : ℕ,
-        ‖countableSpectralKetAt p hp hsum x t k‖ ^ 2) =
+        ‖countableSpectralKetAt p hp hsum x t k‖ ^ (2 : ℕ)) =
         ∑' k : ℕ, p k by
       apply tsum_congr
       intro k
@@ -150,7 +150,7 @@ theorem countableSpectralKet_inner_ketAt
     (Real.sqrt (p k) : ℂ) *
           countableSpectralHamiltonianEvolutionPhase x t k *
         (Real.sqrt (p k) : ℂ) =
-      ((Real.sqrt (p k) ^ 2 : ℝ) : ℂ) *
+      ((Real.sqrt (p k) ^ (2 : ℕ) : ℝ) : ℂ) *
         countableSpectralHamiltonianEvolutionPhase x t k := by
           push_cast
           ring

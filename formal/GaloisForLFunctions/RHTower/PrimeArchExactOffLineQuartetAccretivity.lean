@@ -7,7 +7,7 @@ The four FE--Schwarz copies of an off-line Xi zero consume four equal endpoint c
 Keeping the exact completed curvature instead of replacing it immediately by `2 / 43` gives the
 natural central-band condition
 
-`C * ((R + 1 / 2)^2 + 1) < 4`.
+`C * ((R + 1 / 2)^(2 : ℕ) + 1) < 4`.
 
 On every such band the continued prime--Gamma response is unconditionally anti-Herglotz in the
 upper half-strip.  The rational certificates already available for Euler's constant and
@@ -37,18 +37,18 @@ abbrev XiOffLineQuartetAccretiveBand (R : ℝ) : Prop :=
 upper bound. -/
 theorem four_le_endpointCurvature_mul_one_add_im_sq_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) := by
+    4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) := by
   have hlower := endpoint_cross_term_re_ge_inv_one_add_im_sq q
   have horbit := four_mul_xiEndpointCrossCharge_le_curvature_of_offLine q hoff
-  have hden : 0 < (q.1 : ℂ).im ^ 2 + 1 := by positivity
-  have hcharge : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hden : 0 < (q.1 : ℂ).im ^ (2 : ℕ) + 1 := by positivity
+  have hcharge : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       4 * xiEndpointCrossCharge q := by
     calc
-      4 / ((q.1 : ℂ).im ^ 2 + 1) =
-          4 * (1 / ((q.1 : ℂ).im ^ 2 + 1)) := by ring
+      4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) =
+          4 * (1 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1)) := by ring
       _ ≤ 4 * xiEndpointCrossCharge q :=
         mul_le_mul_of_nonneg_left hlower (by norm_num)
-  have hbudget : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hbudget : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       xiEndpointCompletedCurvature := hcharge.trans horbit
   rw [div_le_iff₀ hden] at hbudget
   simpa [mul_comm] using hbudget
@@ -66,10 +66,10 @@ theorem xiOffLineQuartetAccretiveBand_add_half_lt_abs_im_of_offLine
   have hCpos : 0 < xiEndpointCompletedCurvature :=
     xiEndpointCompletedCurvature_pos
   have hmul :
-      xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) <
-        xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) :=
+      xiEndpointCompletedCurvature * ((R + 1 / 2) ^ (2 : ℕ) + 1) <
+        xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) :=
     hband.2.trans_le hfour
-  have hsq : (R + 1 / 2) ^ 2 < (q.1 : ℂ).im ^ 2 := by
+  have hsq : (R + 1 / 2) ^ (2 : ℕ) < (q.1 : ℂ).im ^ (2 : ℕ) := by
     have hinner := lt_of_mul_lt_mul_left hmul hCpos.le
     linarith
   have hnonneg : 0 ≤ R + 1 / 2 := by linarith [hband.1]
@@ -91,18 +91,18 @@ available rational endpoint-curvature certificate forces every off-critical Xi z
 squared ordinate `7907 / 93`. -/
 theorem xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    7907 / 93 < (q.1 : ℂ).im ^ 2 := by
+    7907 / 93 < (q.1 : ℂ).im ^ (2 : ℕ) := by
   have hbudget :=
     four_le_endpointCurvature_mul_one_add_im_sq_of_offLine q hoff
   have hC := xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand
   nlinarith [sq_nonneg (q.1 : ℂ).im]
 
 /-- **Source-produced critical-line group.** Every Xi zero copy in the closed central squared-height
-band `Im(ρ)^2 ≤ 7907 / 93` lies on the critical line.  This is the direct contrapositive packaging
+band `Im(ρ)^(2 : ℕ) ≤ 7907 / 93` lies on the critical line.  This is the direct contrapositive packaging
 of the endpoint-curvature quartet gap, with no external zero computation or RH hypothesis. -/
 theorem xiZeroCopy_re_eq_half_of_im_sq_le_sevenThousandNineHundredSeven_over_ninetyThree
     (q : XiZeroCopy)
-    (hheight : (q.1 : ℂ).im ^ 2 ≤ 7907 / 93) :
+    (hheight : (q.1 : ℂ).im ^ (2 : ℕ) ≤ 7907 / 93) :
     (q.1 : ℂ).re = 1 / 2 := by
   by_contra hoff
   have hgap :=

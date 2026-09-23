@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.TraceHankelConverse
 # Degree-one atomwise no-go for shifted Xi trace forms
 
 At a nonreal spectral atom, evaluation of real affine polynomials is surjective onto `ℂ`.  A
-complex phase can therefore rotate `lambda p(lambda)^2` into the negative real half-line.  Applied
+complex phase can therefore rotate `lambda p(lambda)^(2 : ℕ)` into the negative real half-line.  Applied
 to every positive mass shift of the reciprocal-square Xi divisor, this proves:
 
 * every off-critical zero has a degree-at-most-one polynomial with strictly negative atomwise
@@ -23,7 +23,7 @@ namespace RHTower
 
 noncomputable section
 
-theorem natDegree_realLinearInterpolator_le_one (alpha c : ℂ) :
+theorem natDegree_realLinearInterpolator_le_one_xiShiftedAtomwisePositivityNoGo (alpha c : ℂ) :
     (realLinearInterpolator alpha c).natDegree <= 1 := by
   change (C (c.re - (c.im / alpha.im) * alpha.re) +
     C (c.im / alpha.im) * X).natDegree <= 1
@@ -38,10 +38,10 @@ theorem natDegree_realLinearInterpolator_le_one (alpha c : ℂ) :
 theorem exists_affine_traceAtom_re_neg {lambda : ℂ} (him : lambda.im ≠ 0) :
     ∃ p : Polynomial ℝ,
       p.natDegree <= 1 ∧
-        (lambda * evalRealPolynomial p lambda ^ 2).re < 0 := by
+        (lambda * evalRealPolynomial p lambda ^ (2 : ℕ)).re < 0 := by
   obtain ⟨c, hc⟩ := exists_phase_sq_re_neg him
   refine ⟨realLinearInterpolator lambda c,
-    natDegree_realLinearInterpolator_le_one lambda c, ?_⟩
+    natDegree_realLinearInterpolator_le_one_xiShiftedAtomwisePositivityNoGo lambda c, ?_⟩
   rw [evalRealLinearInterpolator him]
   exact hc
 
@@ -53,7 +53,7 @@ theorem exists_affine_xiShifted_traceAtom_re_neg
     ∃ p : Polynomial ℝ,
       p.natDegree <= 1 ∧
         (xiShiftedReciprocalSquare y q *
-          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ 2).re < 0 := by
+          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ (2 : ℕ)).re < 0 := by
   have him : (xiShiftedReciprocalSquare y q).im ≠ 0 := by
     exact (xiShiftedReciprocalSquare_im_eq_zero_iff_criticalLine hy q).not.mpr hoff
   exact exists_affine_traceAtom_re_neg him
@@ -65,7 +65,7 @@ theorem criticalLine_of_xiShifted_atomwiseAffine_nonneg
     (hpos : ∀ (q : XiZeroCopy) (p : Polynomial ℝ),
       p.natDegree <= 1 →
         0 <= (xiShiftedReciprocalSquare y q *
-          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ 2).re) :
+          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2 := by
   intro q
   by_contra hoff
@@ -80,7 +80,7 @@ theorem xiShifted_atomwiseAffine_nonneg_iff_riemannHypothesis
     (∀ (q : XiZeroCopy) (p : Polynomial ℝ),
       p.natDegree <= 1 →
         0 <= (xiShiftedReciprocalSquare y q *
-          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ 2).re) ↔
+          evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ (2 : ℕ)).re) ↔
       RiemannHypothesis := by
   constructor
   · intro hpos

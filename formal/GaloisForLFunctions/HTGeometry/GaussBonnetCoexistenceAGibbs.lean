@@ -117,7 +117,7 @@ theorem egbCoexistenceA_stationary_temperature_iff (k τ θ u : ℝ) :
     · intro h
       rw [← h, egbTemperatureA_pressure]
   rw [hEOS, ← sub_eq_zero, egbCoexistenceA_pressure_residual]
-  have hden : 8 * Real.pi * exp k ^ 2 * exp u ^ 4 ≠ 0 := by positivity
+  have hden : 8 * Real.pi * exp k ^ (2 : ℕ) * exp u ^ (4 : ℕ) ≠ 0 := by positivity
   have hsmall : 2 * exp u ≠ 0 := by positivity
   have hs := egbCoexistenceA_stationary_radii_iff τ θ u
   rw [(egbCoexistenceAReducedLogGibbs_hasDerivAt τ θ u).deriv] at hs

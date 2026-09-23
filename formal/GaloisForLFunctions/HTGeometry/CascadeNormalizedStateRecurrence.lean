@@ -28,7 +28,7 @@ theorem cascadeDeg_inv_cascadeTowerMonomial (w : ℕ → ℕ) (k : ℕ) :
     cascadeDeg w (cascadeTowerMonomial k)⁻¹ =
       ((-towerWeight w k : ℤ) : WithBot ℤ) := by
   have hP : cascadeTowerMonomial k ≠ 0 :=
-    algebraMap_fractionRing_ne_zero_of_ne_zero (towerMonomial_ne_zero k)
+    algebraMap_fractionRing_ne_zero_of_ne_zero (towerMonomial_ne_zero_towerWeightedDegree k)
   have hPinv : (cascadeTowerMonomial k)⁻¹ ≠ 0 := inv_ne_zero hP
   have hdegP : cascadeDeg w (cascadeTowerMonomial k) =
       ((towerWeight w k : ℤ) : WithBot ℤ) := by

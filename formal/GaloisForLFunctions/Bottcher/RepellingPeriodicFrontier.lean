@@ -34,7 +34,7 @@ theorem differentiable_quadratic_periodic_block_iterate (c : ℂ) (p n : ℕ) :
       simp
   | succ n ih =>
       rw [Function.iterate_succ']
-      exact (differentiable_quadratic_iterate c p).comp ih
+      exact (differentiable_quadratic_iterate_repellingFixedPoint c p).comp ih
 
 /-- **A repelling periodic point is not in the interior of `K_c`.**
 
@@ -69,7 +69,7 @@ theorem not_mem_interior_of_repelling_periodic_deriv {c z₀ : ℂ} {p : ℕ}
   have hderivtend : Tendsto (fun k => deriv (F (φ k)) z₀) atTop (𝓝 (deriv g z₀)) :=
     hderivlu.tendsto_at (Metric.mem_ball_self hr0)
   have hf : HasDerivAt ((quadratic c)^[p]) (deriv ((quadratic c)^[p]) z₀) z₀ :=
-    (differentiable_quadratic_iterate c p).differentiableAt.hasDerivAt
+    (differentiable_quadratic_iterate_repellingFixedPoint c p).differentiableAt.hasDerivAt
   have hderivpow : ∀ k, deriv (F (φ k)) z₀ =
       (deriv ((quadratic c)^[p]) z₀) ^ (φ k) :=
     fun k => (HasDerivAt.iterate z₀ hf hper (φ k)).deriv

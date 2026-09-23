@@ -97,9 +97,9 @@ theorem coeffAbs_nonneg {N : ℕ} (a : Fin N → ℂ) (k : ℕ) : 0 ≤ coeffAbs
 
 /-- **The integral mean value theorem for Dirichlet polynomials.** -/
 theorem norm_integral_normSq_dirPoly_sub_diag_le_explicit (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)‖
-      ≤ 4 * (N : ℝ) * (∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ)) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)‖
+      ≤ 4 * (N : ℝ) * (∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ)) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
   classical
   refine le_trans (norm_integral_normSq_dirPoly_sub_diag_le N a T) ?_
   have hbridge : ∑ m : Fin N, ∑ n ∈ (Finset.univ : Finset (Fin N)).erase m,
@@ -123,8 +123,8 @@ theorem norm_integral_normSq_dirPoly_sub_diag_le_explicit (N : ℕ) (a : Fin N �
     ring
   rw [hbridge]
   refine le_trans (RHTower.offDiagonal_le (coeffAbs a) (Finset.Subset.refl _)) ?_
-  have hsq : ∑ k ∈ Finset.Icc 1 N, (coeffAbs a k) ^ 2 = ∑ m : Fin N, ‖a m‖ ^ 2 := by
-    rw [← sum_fin_eq_sum_Icc N (fun k => (coeffAbs a k) ^ 2)]
+  have hsq : ∑ k ∈ Finset.Icc 1 N, (coeffAbs a k) ^ (2 : ℕ) = ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
+    rw [← sum_fin_eq_sum_Icc N (fun k => (coeffAbs a k) ^ (2 : ℕ))]
     refine Finset.sum_congr rfl ?_
     intro m _
     rw [coeffAbs_succ]
@@ -132,12 +132,12 @@ theorem norm_integral_normSq_dirPoly_sub_diag_le_explicit (N : ℕ) (a : Fin N �
 
 /-- **The mean value theorem, in the `T + O(N log N)` form.** -/
 theorem norm_integral_normSq_dirPoly_sub_diag_le_log (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)‖
-      ≤ 4 * (N : ℝ) * (1 + Real.log N) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)‖
+      ≤ 4 * (N : ℝ) * (1 + Real.log N) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
   refine le_trans (norm_integral_normSq_dirPoly_sub_diag_le_explicit N a T) ?_
   have hcoef : (0 : ℝ) ≤ 4 * (N : ℝ) := by positivity
-  have hsq : (0 : ℝ) ≤ ∑ m : Fin N, ‖a m‖ ^ 2 :=
+  have hsq : (0 : ℝ) ≤ ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => by positivity
   have hharm := sum_Icc_one_div_le_one_add_log N
   have hstep : 4 * (N : ℝ) * (∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ))

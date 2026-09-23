@@ -57,8 +57,8 @@ theorem exists_extensionChart_quadraticOrbit_ne_zero [Nonempty A] (hcard : 3 ≤
     (c : A × Bool → ℂ) (κ : ℂ) (hzero : ∑ i, c i = 0) (hcne : c ≠ 0) :
     ∃ (z₀ : ℂ) (C : LocalExtensionEigenbranchChart (fun a => (E a : ℂ)) (boolShift z₀) M),
       ∃ p ∈ C.U, (∏ σ : Equiv.Perm (A × Bool),
-        ((∑ i, c i * C.branch (σ i) p) ^ 2
-          - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace)) ≠ 0 := by
+        ((∑ i, c i * C.branch (σ i) p) ^ (2 : ℕ)
+          - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace)) ≠ 0 := by
   obtain ⟨z₀, hz₀⟩ := exists_admissible_split_shift (fun a => (E a : ℂ))
   have hsplit : Function.Injective (layerSplitEnergy (fun a => (E a : ℂ)) z₀) :=
     injective_layerSplitEnergy hE hz₀

@@ -16,7 +16,7 @@ Conversely, if `A` is positive definite on `ker β`, the splitting `V = ker β �
 `⟪k, T w⟫ = ⟪k, T q⟫` for all `k ∈ ker β`.  Completing the square in that splitting gives the exact
 congruence
 
-`(A + t β* β)(v) = A(v - (β v) • (q - w)) + ‖β v‖ ^ 2 * (A q + t - A w)`,
+`(A + t β* β)(v) = A(v - (β v) • (q - w)) + ‖β v‖ ^ (2 : ℕ) * (A q + t - A w)`,
 
 whose first summand runs over `ker β`.  So the repair is positive (semi)definite exactly when the
 single Schur scalar `A q + t - A w` is (nonneg) positive, and `A w = Re ⟪w, T q⟫` is the energy
@@ -36,7 +36,7 @@ def hermitianForm (T : V →ₗ[ℂ] V) (v : V) : ℝ := (⟪v, T v⟫_ℂ).re
 
 /-- The form repaired by `t` copies of the rank-one boundary square `β* β`. -/
 def repairedForm (T : V →ₗ[ℂ] V) (β : V →ₗ[ℂ] ℂ) (t : ℝ) (v : V) : ℝ :=
-  hermitianForm T v + t * ‖β v‖ ^ 2
+  hermitianForm T v + t * ‖β v‖ ^ (2 : ℕ)
 
 theorem hermitianForm_zero (T : V →ₗ[ℂ] V) : hermitianForm T 0 = 0 := by
   simp [hermitianForm]
@@ -52,7 +52,7 @@ theorem hermitianForm_add {T : V →ₗ[ℂ] V} (hT : T.IsSymmetric) (x y : V) :
   ring
 
 theorem hermitianForm_smul (T : V →ₗ[ℂ] V) (c : ℂ) (v : V) :
-    hermitianForm T (c • v) = ‖c‖ ^ 2 * hermitianForm T v := by
+    hermitianForm T (c • v) = ‖c‖ ^ (2 : ℕ) * hermitianForm T v := by
   unfold hermitianForm
   rw [map_smul, inner_smul_left, inner_smul_right, ← mul_assoc, RCLike.conj_mul]
   simp [pow_two]
@@ -118,7 +118,7 @@ theorem repairedForm_split {T : V →ₗ[ℂ] V} (hT : T.IsSymmetric) (β : V �
     (hproj : ∀ k : V, β k = 0 → ⟪k, T w⟫_ℂ = ⟪k, T q⟫_ℂ) (t : ℝ) (v : V) :
     repairedForm T β t v =
       hermitianForm T (v - (β v) • (q - w)) +
-        ‖β v‖ ^ 2 * (hermitianForm T q + t - hermitianForm T w) := by
+        ‖β v‖ ^ (2 : ℕ) * (hermitianForm T q + t - hermitianForm T w) := by
   have hβu : β (v - (β v) • q) = 0 := by
     simp [map_sub, map_smul, hq]
   have hv : v = (v - (β v) • q) + (β v) • q := by abel
@@ -171,8 +171,8 @@ theorem repairedForm_pos_iff {T : V →ₗ[ℂ] V} (hT : T.IsSymmetric) (β : V 
         rcases eq_or_ne (v - (β v) • (q - w)) 0 with h0 | h0
         · rw [h0, hermitianForm_zero]
         · exact (hB _ hzker h0).le
-      have h2 : 0 < ‖β v‖ ^ 2 * (hermitianForm T q + t - hermitianForm T w) := by
-        have : 0 < ‖β v‖ ^ 2 := by positivity
+      have h2 : 0 < ‖β v‖ ^ (2 : ℕ) * (hermitianForm T q + t - hermitianForm T w) := by
+        have : 0 < ‖β v‖ ^ (2 : ℕ) := by positivity
         exact mul_pos this hscalar
       linarith
 
@@ -194,8 +194,8 @@ theorem repairedForm_nonneg_iff {T : V →ₗ[ℂ] V} (hT : T.IsSymmetric) (β :
     have hzker : β (v - (β v) • (q - w)) = 0 := by
       simp [map_sub, map_smul, hq, hw]
     have h1 : 0 ≤ hermitianForm T (v - (β v) • (q - w)) := hB _ hzker
-    have h2 : 0 ≤ ‖β v‖ ^ 2 * (hermitianForm T q + t - hermitianForm T w) := by
-      have : (0:ℝ) ≤ ‖β v‖ ^ 2 := by positivity
+    have h2 : 0 ≤ ‖β v‖ ^ (2 : ℕ) * (hermitianForm T q + t - hermitianForm T w) := by
+      have : (0:ℝ) ≤ ‖β v‖ ^ (2 : ℕ) := by positivity
       exact mul_nonneg this hscalar
     linarith
 
@@ -223,7 +223,7 @@ theorem uvarov_repair_requires_boundary_kernel_positivity [FiniteDimensional ℂ
 
 /-! ### The scalar shadow is not faithful without kernel positivity
 
-On `ℂ ^ 2` with `T = -1`, the boundary functional `β (x, y) = x` and `t = 2`, the kernel vector `0`
+On `ℂ ^ (2 : ℕ)` with `T = -1`, the boundary functional `β (x, y) = x` and `t = 2`, the kernel vector `0`
 represents `q = e₀` against `ker β`, so the Schur scalar is `-1 + 2 - 0 = 1 > 0`; yet the repaired
 form is `-1` at `e₁`.  Hence the scalar criterion above genuinely needs the kernel form to be
 positive definite: a positive scalar alone certifies nothing. -/
@@ -249,7 +249,7 @@ theorem shadowOperator_isSymmetric : (shadowOperator).IsSymmetric := by
   simp [shadowOperator, inner_neg_left, inner_neg_right]
 
 theorem hermitianForm_shadowOperator (v : ShadowSpace) :
-    hermitianForm shadowOperator v = -‖v‖ ^ 2 := by
+    hermitianForm shadowOperator v = -‖v‖ ^ (2 : ℕ) := by
   unfold hermitianForm shadowOperator
   rw [LinearMap.neg_apply, LinearMap.id_apply, inner_neg_right, Complex.neg_re]
   have := inner_self_eq_norm_sq (𝕜 := ℂ) v

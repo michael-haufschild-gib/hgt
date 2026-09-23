@@ -25,7 +25,7 @@ noncomputable section
 controlled by the size of that set and the second moment of the per-start count. -/
 theorem sq_sum_subset_le_card_mul_sumSq {ι : Type*} [DecidableEq ι] {S B : Finset ι}
     (hBS : B ⊆ S) (π : ι → ℝ) :
-    (∑ i ∈ B, π i) ^ 2 ≤ (B.card : ℝ) * ∑ i ∈ S, (π i) ^ 2 := by
+    (∑ i ∈ B, π i) ^ (2 : ℕ) ≤ (B.card : ℝ) * ∑ i ∈ S, (π i) ^ (2 : ℕ) := by
   classical
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq B (fun _ => (1 : ℝ)) π
   simp only [one_mul, one_pow] at hcs

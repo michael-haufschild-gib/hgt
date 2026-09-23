@@ -9,7 +9,7 @@ noncomputable section
 /-- Original wave operator with actual static-time, tortoise, and angular derivatives. -/
 def timeFieldWave (U : ℝ → ℝ → Point → ℂ) (τ t : ℝ) (z : Point) : ℂ :=
   deriv (deriv (fun σ => U σ t z)) τ-deriv (deriv (fun x => U τ x z)) t-
-    (1-(radialUnit t:ℂ)^2)*scalarLaplacian (U τ t) z
+    (1-(radialUnit t:ℂ)^(2 : ℕ))*scalarLaplacian (U τ t) z
 
 /-- Actual full-square field with the fixed delayed onset. -/
 def timeLiftField (q : XiZeroCopy) (branch : Bool) (a : ℂ) (τ t : ℝ) (z : Point) : ℂ :=

@@ -59,14 +59,14 @@ theorem inv_sqrt_card_mul_sum_norm_le_norm
     (Finset.univ : Finset (Fin d)) (fun _ => (1 : ℝ)) (fun i => ‖x i‖)
   simp only [one_mul, one_pow, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul, mul_one] at hcs
-  have hsquares : (∑ i : Fin d, ‖x i‖ ^ 2) = ‖x‖ ^ 2 :=
+  have hsquares : (∑ i : Fin d, ‖x i‖ ^ (2 : ℕ)) = ‖x‖ ^ (2 : ℕ) :=
     (EuclideanSpace.norm_sq_eq x).symm
-  have hnormsqrt : Real.sqrt (∑ i : Fin d, ‖x i‖ ^ 2) = ‖x‖ := by
+  have hnormsqrt : Real.sqrt (∑ i : Fin d, ‖x i‖ ^ (2 : ℕ)) = ‖x‖ := by
     rw [hsquares, Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg x)]
   calc
     (Real.sqrt (d : ℝ))⁻¹ * ∑ i, ‖x i‖ ≤
         (Real.sqrt (d : ℝ))⁻¹ *
-          (Real.sqrt (d : ℝ) * Real.sqrt (∑ i : Fin d, ‖x i‖ ^ 2)) :=
+          (Real.sqrt (d : ℝ) * Real.sqrt (∑ i : Fin d, ‖x i‖ ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hcs (inv_nonneg.mpr hsqrtPos.le)
     _ = ‖x‖ := by rw [hnormsqrt]; field_simp
 
@@ -240,7 +240,7 @@ def finiteKrylovCarrierLoad
     {d : ℕ} {W : Type*} [Fintype W]
     (target : W → EuclideanSpace ℂ (Fin d))
     (frequency : Fin d → ℝ) (K : ℕ) : ℝ :=
-  ∑ w, ‖spectralKrylovCarrier frequency K (target w)‖ ^ 2
+  ∑ w, ‖spectralKrylovCarrier frequency K (target w)‖ ^ (2 : ℕ)
 
 theorem krylovCarrier_norm_le_sqrt_finiteLoad
     {d : ℕ} {W : Type*} [Fintype W]
@@ -248,7 +248,7 @@ theorem krylovCarrier_norm_le_sqrt_finiteLoad
     (frequency : Fin d → ℝ) (K : ℕ) (w : W) :
     ‖spectralKrylovCarrier frequency K (target w)‖ ≤
       Real.sqrt (finiteKrylovCarrierLoad target frequency K) := by
-  have hterm : ‖spectralKrylovCarrier frequency K (target w)‖ ^ 2 ≤
+  have hterm : ‖spectralKrylovCarrier frequency K (target w)‖ ^ (2 : ℕ) ≤
       finiteKrylovCarrierLoad target frequency K := by
     unfold finiteKrylovCarrierLoad
     exact Finset.single_le_sum (fun v hv => sq_nonneg

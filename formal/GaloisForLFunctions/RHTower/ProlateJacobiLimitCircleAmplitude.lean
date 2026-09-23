@@ -24,29 +24,29 @@ theorem forall_ge_succ {P : ℕ → Prop} {M : ℕ} (h : ∀ m, M ≤ m → P (m
 variable {β γ c lam z : ℝ}
 
 theorem prolateDefect_le_sq (hβ : 0 ≤ β) (hγ : 2 ≤ γ) {n : ℕ} (hn : 1 ≤ n) :
-    prolateDefect β γ n ≤ 1 / (64 * (n : ℝ) ^ 2) := by
+    prolateDefect β γ n ≤ 1 / (64 * (n : ℝ) ^ (2 : ℕ)) := by
   have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hd := prolateDefect_pos (β := β) (γ := γ) (n := n) hβ hγ
   have hm := prolateDefect_le (β := β) (γ := γ) (n := n) hβ hγ
-  have hb : 16 * (n : ℝ) ^ 2 ≤ prolateBase β γ n := by
+  have hb : 16 * (n : ℝ) ^ (2 : ℕ) ≤ prolateBase β γ n := by
     unfold prolateBase
     nlinarith
-  have hpos : (0:ℝ) < 64 * (n : ℝ) ^ 2 := by positivity
+  have hpos : (0:ℝ) < 64 * (n : ℝ) ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hpos]
   nlinarith [hm, hd, hb]
 
 /-- **The prolate radius is `4n²` to relative order `1/n`.** -/
 theorem relApprox_prolateRho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) {n : ℕ} (hn : 1 ≤ n) :
-    RelApprox (prolateRho β γ n) (4 * (n : ℝ) ^ 2) ((β + γ + 1) / (16 * (n : ℝ))) := by
+    RelApprox (prolateRho β γ n) (4 * (n : ℝ) ^ (2 : ℕ)) ((β + γ + 1) / (16 * (n : ℝ))) := by
   have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hd := prolateDefect_pos (β := β) (γ := γ) (n := n) hβ hγ
   have hd4 := prolateDefect_lt_quarter (β := β) (γ := γ) (n := n) hβ hγ
-  have hval : prolateRho β γ n - 4 * (n : ℝ) ^ 2
+  have hval : prolateRho β γ n - 4 * (n : ℝ) ^ (2 : ℕ)
       = β * (n : ℝ) / 4 + γ / 4 - prolateDefect β γ n := by
     rw [prolateRho_eq_sub]
     unfold prolateBase
     ring
-  have hrhs : (β + γ + 1) / (16 * (n : ℝ)) * (4 * (n : ℝ) ^ 2) = (β + γ + 1) * (n : ℝ) / 4 := by
+  have hrhs : (β + γ + 1) / (16 * (n : ℝ)) * (4 * (n : ℝ) ^ (2 : ℕ)) = (β + γ + 1) * (n : ℝ) / 4 := by
     field_simp
     ring
   rw [RelApprox, hval, hrhs, abs_le]
@@ -55,34 +55,34 @@ theorem relApprox_prolateRho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) {n : ℕ} (hn : 1
 /-- The exact `λ`-linear form of the potential. -/
 theorem prolatePotential_succ_linear (β γ c lam z : ℝ) (n : ℕ) :
     prolatePotential β γ c lam z (n + 1)
-      = 16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1) + (3 / 4 + 2 * Real.pi * lam ^ 2 * c - z)
+      = 16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1) + (3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z)
         - prolateDefect β γ (n + 1) - prolateDefect β γ n := by
   rw [prolatePotential_succ]
   ring
 
 /-- **The prolate potential is `A n` to relative order `1/n`.** -/
 theorem relApprox_prolatePotential (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) (n : ℕ) :
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) (n : ℕ) :
     RelApprox (prolatePotential β γ c lam z (n + 1))
-      (16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1))
-      ((|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-        / (16 * Real.pi * lam ^ 2) / ((n : ℝ) + 1)) := by
+      (16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1))
+      ((|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+        / (16 * Real.pi * lam ^ (2 : ℕ)) / ((n : ℝ) + 1)) := by
   have hd1 := prolateDefect_pos (β := β) (γ := γ) (n := n) hβ hγ
   have hd2 := prolateDefect_pos (β := β) (γ := γ) (n := n + 1) hβ hγ
   have hd3 := prolateDefect_lt_quarter (β := β) (γ := γ) (n := n) hβ hγ
   have hd4 := prolateDefect_lt_quarter (β := β) (γ := γ) (n := n + 1) hβ hγ
   have hn1 : (0:ℝ) < (n : ℝ) + 1 := by positivity
   have hval : prolatePotential β γ c lam z (n + 1)
-      - 16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1)
-      = (3 / 4 + 2 * Real.pi * lam ^ 2 * c - z)
+      - 16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1)
+      = (3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z)
         - prolateDefect β γ (n + 1) - prolateDefect β γ n := by
     rw [prolatePotential_succ_linear]
     ring
-  have hrhs : (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-        / (16 * Real.pi * lam ^ 2) / ((n : ℝ) + 1)
-        * (16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1))
-      = |3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2 := by
-    have hD : (16 * Real.pi * lam ^ 2) ≠ 0 := ne_of_gt hA
+  have hrhs : (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+        / (16 * Real.pi * lam ^ (2 : ℕ)) / ((n : ℝ) + 1)
+        * (16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1))
+      = |3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2 := by
+    have hD : (16 * Real.pi * lam ^ (2 : ℕ)) ≠ 0 := ne_of_gt hA
     have hM : ((n : ℝ) + 1) ≠ 0 := ne_of_gt hn1
     have hlam : lam ≠ 0 := by
       intro h
@@ -90,34 +90,34 @@ theorem relApprox_prolatePotential (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
       simp at hA
     field_simp
   rw [RelApprox, hval, hrhs, abs_le]
-  have habs := abs_le.mp (le_refl |3 / 4 + 2 * Real.pi * lam ^ 2 * c - z|)
-  have hlb := neg_abs_le (3 / 4 + 2 * Real.pi * lam ^ 2 * c - z)
-  have hub := le_abs_self (3 / 4 + 2 * Real.pi * lam ^ 2 * c - z)
+  have habs := abs_le.mp (le_refl |3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z|)
+  have hlb := neg_abs_le (3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z)
+  have hub := le_abs_self (3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z)
   constructor <;> linarith
 
 /-! ## A single relative-error constant -/
 
 /-- A constant dominating every relative error of a prolate block. -/
 noncomputable def prolateErr (β γ c lam z : ℝ) : ℝ :=
-  (β + γ + 1) / 16 + (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-    / (16 * Real.pi * lam ^ 2) + 7
+  (β + γ + 1) / 16 + (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+    / (16 * Real.pi * lam ^ (2 : ℕ)) + 7
 
-theorem seven_le_prolateErr (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2) :
+theorem seven_le_prolateErr (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) :
     7 ≤ prolateErr β γ c lam z := by
   unfold prolateErr
   have h1 : (0:ℝ) ≤ (β + γ + 1) / 16 := by positivity
-  have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-      / (16 * Real.pi * lam ^ 2) := by positivity
+  have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+      / (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
   linarith
 
-theorem prolateErr_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2) :
+theorem prolateErr_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) :
     0 < prolateErr β γ c lam z := by
   have := seven_le_prolateErr (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA
   linarith
 
-theorem relApprox_rho_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem relApprox_rho_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     (n : ℕ) :
-    RelApprox (prolateRho β γ (n + 1)) (4 * ((n : ℝ) + 1) ^ 2)
+    RelApprox (prolateRho β γ (n + 1)) (4 * ((n : ℝ) + 1) ^ (2 : ℕ))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
   have h := relApprox_prolateRho (β := β) (γ := γ) (n := n + 1) hβ hγ (by omega)
   have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
@@ -125,21 +125,21 @@ theorem relApprox_rho_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.
   refine h.mono (by positivity) ?_
   have hle : (β + γ + 1) / 16 ≤ prolateErr β γ c lam z := by
     unfold prolateErr
-    have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-        / (16 * Real.pi * lam ^ 2) := by positivity
+    have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+        / (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
     linarith
   have hx : (0:ℝ) < (n : ℝ) + 1 := by positivity
   rw [div_le_div_iff₀ (by positivity) hx]
   nlinarith [hle, hx]
 
-theorem relApprox_Q_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem relApprox_Q_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     (n : ℕ) :
-    RelApprox (prolatePotential β γ c lam z (n + 1)) (16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1))
+    RelApprox (prolatePotential β γ c lam z (n + 1)) (16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
   have h := relApprox_prolatePotential (β := β) (γ := γ) (c := c) (lam := lam) (z := z)
     hβ hγ hA n
   refine h.mono (by positivity) ?_
-  have hle : (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2) / (16 * Real.pi * lam ^ 2)
+  have hle : (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2) / (16 * Real.pi * lam ^ (2 : ℕ))
       ≤ prolateErr β γ c lam z := by
     unfold prolateErr
     have h1 : (0:ℝ) ≤ (β + γ + 1) / 16 := by positivity
@@ -149,19 +149,19 @@ theorem relApprox_Q_err (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi
 /-! ## Shifted references -/
 
 theorem relApprox_shift_sq {x : ℝ} (hx : 1 ≤ x) :
-    RelApprox (4 * (x + 1) ^ 2) (4 * x ^ 2) (3 / x) := by
+    RelApprox (4 * (x + 1) ^ (2 : ℕ)) (4 * x ^ (2 : ℕ)) (3 / x) := by
   have hx0 : (0:ℝ) < x := by linarith
-  have hval : 4 * (x + 1) ^ 2 - 4 * x ^ 2 = 8 * x + 4 := by ring
-  have hrhs : 3 / x * (4 * x ^ 2) = 12 * x := by field_simp; ring
+  have hval : 4 * (x + 1) ^ (2 : ℕ) - 4 * x ^ (2 : ℕ) = 8 * x + 4 := by ring
+  have hrhs : 3 / x * (4 * x ^ (2 : ℕ)) = 12 * x := by field_simp; ring
   rw [RelApprox, hval, hrhs, abs_le]
   constructor <;> linarith
 
 theorem relApprox_shift_cube {A x : ℝ} (hA : 0 < A) (hx : 1 ≤ x) :
-    RelApprox (4 * A * (x + 1) ^ 3) (4 * A * x ^ 3) (7 / x) := by
+    RelApprox (4 * A * (x + 1) ^ (3 : ℕ)) (4 * A * x ^ (3 : ℕ)) (7 / x) := by
   have hx0 : (0:ℝ) < x := by linarith
-  have hval : 4 * A * (x + 1) ^ 3 - 4 * A * x ^ 3 = 4 * A * (3 * x ^ 2 + 3 * x + 1) := by ring
-  have hrhs : 7 / x * (4 * A * x ^ 3) = 28 * A * x ^ 2 := by field_simp; ring
-  have hquad : (0:ℝ) ≤ 4 * x ^ 2 - 3 * x - 1 := by nlinarith
+  have hval : 4 * A * (x + 1) ^ (3 : ℕ) - 4 * A * x ^ (3 : ℕ) = 4 * A * (3 * x ^ (2 : ℕ) + 3 * x + 1) := by ring
+  have hrhs : 7 / x * (4 * A * x ^ (3 : ℕ)) = 28 * A * x ^ (2 : ℕ) := by field_simp; ring
+  have hquad : (0:ℝ) ≤ 4 * x ^ (2 : ℕ) - 3 * x - 1 := by nlinarith
   rw [RelApprox, hval, hrhs, abs_le]
   constructor <;> nlinarith [mul_nonneg hA.le hquad, hA, hx0]
 
@@ -196,12 +196,12 @@ theorem prolateRho_succ_sub_eq (β γ : ℝ) (n : ℕ) :
 
 theorem prolatePotential_succ_sub_eq (β γ c lam z : ℝ) (n : ℕ) :
     prolatePotential β γ c lam z (n + 2) - prolatePotential β γ c lam z (n + 1)
-      = 16 * Real.pi * lam ^ 2 - prolateDefect β γ (n + 2) + prolateDefect β γ n := by
+      = 16 * Real.pi * lam ^ (2 : ℕ) - prolateDefect β γ (n + 2) + prolateDefect β γ n := by
   rw [prolatePotential_succ_linear, prolatePotential_succ_linear]
   push_cast
   ring
 
-theorem relApprox_drho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2) (n : ℕ) :
+theorem relApprox_drho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) (n : ℕ) :
     RelApprox (prolateRho β γ (n + 2) - prolateRho β γ (n + 1)) (8 * ((n : ℝ) + 1))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
   have hd1 := prolateDefect_pos (β := β) (γ := γ) (n := n + 1) hβ hγ
@@ -211,8 +211,8 @@ theorem relApprox_drho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi 
   have hx : (0:ℝ) < (n : ℝ) + 1 := by positivity
   have hK : 7 + β / 16 ≤ prolateErr β γ c lam z := by
     unfold prolateErr
-    have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2)
-        / (16 * Real.pi * lam ^ 2) := by positivity
+    have h2 : (0:ℝ) ≤ (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2)
+        / (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
     have h1 : β / 16 ≤ (β + γ + 1) / 16 := by linarith
     linarith
   have hval : prolateRho β γ (n + 2) - prolateRho β γ (n + 1) - 8 * ((n : ℝ) + 1)
@@ -224,51 +224,51 @@ theorem relApprox_drho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi 
   rw [RelApprox, hval, hrhs, abs_le]
   constructor <;> nlinarith [hK, hβ]
 
-theorem relApprox_dQ (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem relApprox_dQ (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     {n : ℕ} (hn : 1 ≤ n) :
     RelApprox (prolatePotential β γ c lam z (n + 2) - prolatePotential β γ c lam z (n + 1))
-      (16 * Real.pi * lam ^ 2) (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
+      (16 * Real.pi * lam ^ (2 : ℕ)) (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
   have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hd1 := prolateDefect_pos (β := β) (γ := γ) (n := n) hβ hγ
   have hd2 := prolateDefect_pos (β := β) (γ := γ) (n := n + 2) hβ hγ
   have hb1 := prolateDefect_le_sq (β := β) (γ := γ) (n := n) hβ hγ hn
   have hb2 := prolateDefect_le_sq (β := β) (γ := γ) (n := n + 2) hβ hγ (by omega)
   have hx : (0:ℝ) < (n : ℝ) + 1 := by positivity
-  have hK : (1 / 2) / (16 * Real.pi * lam ^ 2) ≤ prolateErr β γ c lam z := by
+  have hK : (1 / 2) / (16 * Real.pi * lam ^ (2 : ℕ)) ≤ prolateErr β γ c lam z := by
     unfold prolateErr
     have h1 : (0:ℝ) ≤ (β + γ + 1) / 16 := by positivity
-    have h2 : (1 / 2 : ℝ) / (16 * Real.pi * lam ^ 2)
-        ≤ (|3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2) / (16 * Real.pi * lam ^ 2) := by
-      have hnum : (1 / 2 : ℝ) ≤ |3 / 4 + 2 * Real.pi * lam ^ 2 * c - z| + 1 / 2 := by
-        have := abs_nonneg (3 / 4 + 2 * Real.pi * lam ^ 2 * c - z)
+    have h2 : (1 / 2 : ℝ) / (16 * Real.pi * lam ^ (2 : ℕ))
+        ≤ (|3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2) / (16 * Real.pi * lam ^ (2 : ℕ)) := by
+      have hnum : (1 / 2 : ℝ) ≤ |3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z| + 1 / 2 := by
+        have := abs_nonneg (3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * c - z)
         linarith
       exact div_le_div_of_nonneg_right hnum hA.le
     linarith
-  have hKA : 1 / 2 ≤ prolateErr β γ c lam z * (16 * Real.pi * lam ^ 2) := by
+  have hKA : 1 / 2 ≤ prolateErr β γ c lam z * (16 * Real.pi * lam ^ (2 : ℕ)) := by
     rw [div_le_iff₀ hA] at hK
     linarith
   have hval : prolatePotential β γ c lam z (n + 2) - prolatePotential β γ c lam z (n + 1)
-      - 16 * Real.pi * lam ^ 2
+      - 16 * Real.pi * lam ^ (2 : ℕ)
       = -prolateDefect β γ (n + 2) + prolateDefect β γ n := by
     rw [prolatePotential_succ_sub_eq]
     ring
-  have hrhs : prolateErr β γ c lam z / ((n : ℝ) + 1) * (16 * Real.pi * lam ^ 2)
-      = prolateErr β γ c lam z * (16 * Real.pi * lam ^ 2) / ((n : ℝ) + 1) := by
+  have hrhs : prolateErr β γ c lam z / ((n : ℝ) + 1) * (16 * Real.pi * lam ^ (2 : ℕ))
+      = prolateErr β γ c lam z * (16 * Real.pi * lam ^ (2 : ℕ)) / ((n : ℝ) + 1) := by
     field_simp
   have hsmall : prolateDefect β γ n ≤ 1 / (2 * ((n : ℝ) + 1)) := by
-    have hcalc : (1:ℝ) / (64 * (n : ℝ) ^ 2) ≤ 1 / (2 * ((n : ℝ) + 1)) := by
+    have hcalc : (1:ℝ) / (64 * (n : ℝ) ^ (2 : ℕ)) ≤ 1 / (2 * ((n : ℝ) + 1)) := by
       apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
       nlinarith
     linarith
   have hsmall2 : prolateDefect β γ (n + 2) ≤ 1 / (2 * ((n : ℝ) + 1)) := by
     have hcast : ((n + 2 : ℕ) : ℝ) = (n : ℝ) + 2 := by push_cast; ring
     rw [hcast] at hb2
-    have hcalc : (1:ℝ) / (64 * ((n : ℝ) + 2) ^ 2) ≤ 1 / (2 * ((n : ℝ) + 1)) := by
+    have hcalc : (1:ℝ) / (64 * ((n : ℝ) + 2) ^ (2 : ℕ)) ≤ 1 / (2 * ((n : ℝ) + 1)) := by
       apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
       nlinarith
     linarith
   have hbig : 1 / (2 * ((n : ℝ) + 1))
-      ≤ prolateErr β γ c lam z * (16 * Real.pi * lam ^ 2) / ((n : ℝ) + 1) := by
+      ≤ prolateErr β γ c lam z * (16 * Real.pi * lam ^ (2 : ℕ)) / ((n : ℝ) + 1) := by
     rw [div_le_div_iff₀ (by positivity) hx]
     nlinarith [hKA, hx]
   rw [RelApprox, hval, hrhs, abs_le]
@@ -282,13 +282,13 @@ theorem neg_drift_form (a bb d r : ℝ) : -((a - bb) / d * r) = ((bb - a) * r) /
   ring
 
 theorem sqrt_weight_ref {A x : ℝ} (hA : 0 < A) (hx : 0 < x) :
-    Real.sqrt (4 * A * x ^ 3) = 2 * Real.sqrt A * x * Real.sqrt x := by
-  have hsq : (2 * Real.sqrt A * x * Real.sqrt x) ^ 2 = 4 * A * x ^ 3 := by
-    have h1 : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA.le
-    have h2 : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
-    calc (2 * Real.sqrt A * x * Real.sqrt x) ^ 2
-        = 4 * (Real.sqrt A ^ 2) * x ^ 2 * (Real.sqrt x ^ 2) := by ring
-      _ = 4 * A * x ^ 3 := by rw [h1, h2]; ring
+    Real.sqrt (4 * A * x ^ (3 : ℕ)) = 2 * Real.sqrt A * x * Real.sqrt x := by
+  have hsq : (2 * Real.sqrt A * x * Real.sqrt x) ^ (2 : ℕ) = 4 * A * x ^ (3 : ℕ) := by
+    have h1 : Real.sqrt A ^ (2 : ℕ) = A := Real.sq_sqrt hA.le
+    have h2 : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
+    calc (2 * Real.sqrt A * x * Real.sqrt x) ^ (2 : ℕ)
+        = 4 * (Real.sqrt A ^ (2 : ℕ)) * x ^ (2 : ℕ) * (Real.sqrt x ^ (2 : ℕ)) := by ring
+      _ = 4 * A * x ^ (3 : ℕ) := by rw [h1, h2]; ring
   rw [← hsq, Real.sqrt_sq (by positivity)]
 
 /-! ## Composed weight approximations -/
@@ -296,10 +296,10 @@ theorem sqrt_weight_ref {A x : ℝ} (hA : 0 < A) (hx : 0 < x) :
 section Composed
 
 theorem relApprox_weight_succ (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (prolateWeight β γ c lam z (n + 1))
-      (4 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 3)
+      (4 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ))
       (3 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -310,14 +310,14 @@ theorem relApprox_weight_succ (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     linarith
   have h := (relApprox_rho_err (c := c) (z := z) hβ hγ hA n).mul (by positivity) (by positivity)
     (by linarith) (relApprox_Q_err hβ hγ hA n)
-  rw [show (4 * ((n : ℝ) + 1) ^ 2) * (16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1))
-      = 4 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 3 from by ring] at h
+  rw [show (4 * ((n : ℝ) + 1) ^ (2 : ℕ)) * (16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1))
+      = 4 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ) from by ring] at h
   exact h.mono (by positivity) (by nlinarith)
 
 theorem relApprox_rho_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
-    RelApprox (prolateRho β γ (n + 2)) (4 * ((n : ℝ) + 1) ^ 2)
+    RelApprox (prolateRho β γ (n + 2)) (4 * ((n : ℝ) + 1) ^ (2 : ℕ))
       (3 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -330,11 +330,11 @@ theorem relApprox_rho_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   have h0 := relApprox_rho_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA (n + 1)
   rw [hcast] at h0
-  have hstep : RelApprox (prolateRho β γ (n + 2)) (4 * (((n : ℝ) + 1) + 1) ^ 2)
+  have hstep : RelApprox (prolateRho β γ (n + 2)) (4 * (((n : ℝ) + 1) + 1) ^ (2 : ℕ))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
     refine h0.mono (by positivity) ?_
     exact div_le_div_of_nonneg_left (by linarith) hx0 (by linarith)
-  have hsh : RelApprox (4 * (((n : ℝ) + 1) + 1) ^ 2) (4 * ((n : ℝ) + 1) ^ 2)
+  have hsh : RelApprox (4 * (((n : ℝ) + 1) + 1) ^ (2 : ℕ)) (4 * ((n : ℝ) + 1) ^ (2 : ℕ))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
     refine (relApprox_shift_sq (x := (n : ℝ) + 1) hx1).mono (by positivity) ?_
     exact div_le_div_of_nonneg_right (by linarith) hx0.le
@@ -342,10 +342,10 @@ theorem relApprox_rho_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   exact h.mono (by positivity) (by nlinarith)
 
 theorem relApprox_weight_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (prolateWeight β γ c lam z (n + 2))
-      (4 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 3)
+      (4 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ))
       (5 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -356,26 +356,26 @@ theorem relApprox_weight_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     rw [div_le_div_iff₀ hx0 (by norm_num)]
     linarith
   have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
-  have hρ2 : RelApprox (prolateRho β γ (n + 2)) (4 * (((n : ℝ) + 1) + 1) ^ 2)
+  have hρ2 : RelApprox (prolateRho β γ (n + 2)) (4 * (((n : ℝ) + 1) + 1) ^ (2 : ℕ))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
     have h0 := relApprox_rho_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA (n + 1)
     rw [hcast] at h0
     refine h0.mono (by positivity) ?_
     exact div_le_div_of_nonneg_left (by linarith) hx0 (by linarith)
   have hQ2 : RelApprox (prolatePotential β γ c lam z (n + 2))
-      (16 * Real.pi * lam ^ 2 * (((n : ℝ) + 1) + 1))
+      (16 * Real.pi * lam ^ (2 : ℕ) * (((n : ℝ) + 1) + 1))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
     have h0 := relApprox_Q_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA (n + 1)
     rw [hcast] at h0
     refine h0.mono (by positivity) ?_
     exact div_le_div_of_nonneg_left (by linarith) hx0 (by linarith)
   have hprod := hρ2.mul (by positivity) (by positivity) (by linarith) hQ2
-  rw [show (4 * (((n : ℝ) + 1) + 1) ^ 2) * (16 * Real.pi * lam ^ 2 * (((n : ℝ) + 1) + 1))
-      = 4 * (16 * Real.pi * lam ^ 2) * (((n : ℝ) + 1) + 1) ^ 3 from by ring] at hprod
-  have hsh : RelApprox (4 * (16 * Real.pi * lam ^ 2) * (((n : ℝ) + 1) + 1) ^ 3)
-      (4 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 3)
+  rw [show (4 * (((n : ℝ) + 1) + 1) ^ (2 : ℕ)) * (16 * Real.pi * lam ^ (2 : ℕ) * (((n : ℝ) + 1) + 1))
+      = 4 * (16 * Real.pi * lam ^ (2 : ℕ)) * (((n : ℝ) + 1) + 1) ^ (3 : ℕ) from by ring] at hprod
+  have hsh : RelApprox (4 * (16 * Real.pi * lam ^ (2 : ℕ)) * (((n : ℝ) + 1) + 1) ^ (3 : ℕ))
+      (4 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (3 : ℕ))
       (prolateErr β γ c lam z / ((n : ℝ) + 1)) := by
-    refine (relApprox_shift_cube (A := 16 * Real.pi * lam ^ 2) (x := (n : ℝ) + 1)
+    refine (relApprox_shift_cube (A := 16 * Real.pi * lam ^ (2 : ℕ)) (x := (n : ℝ) + 1)
       hA hx1).mono (by positivity) ?_
     exact div_le_div_of_nonneg_right (by linarith) hx0.le
   have hcomb := (hprod.mono (by positivity)
@@ -387,10 +387,10 @@ theorem relApprox_weight_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   exact hcomb.mono (by positivity) (by nlinarith)
 
 theorem relApprox_sqrt_weight_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (Real.sqrt (prolateWeight β γ c lam z (n + 2)))
-      (2 * Real.sqrt (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1))
+      (2 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1))
       (5 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -401,10 +401,10 @@ theorem relApprox_sqrt_weight_succ2 (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   rwa [sqrt_weight_ref hA hx0] at h
 
 theorem relApprox_dW (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ} (hn : 1 ≤ n)
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ} (hn : 1 ≤ n)
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (prolateWeight β γ c lam z (n + 2) - prolateWeight β γ c lam z (n + 1))
-      (12 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 2)
+      (12 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (2 : ℕ))
       (5 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -430,9 +430,9 @@ theorem relApprox_dW (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
         + prolateErr β γ c lam z / ((n : ℝ) + 1) * (prolateErr β γ c lam z / ((n : ℝ) + 1))
       ≤ 5 * (prolateErr β γ c lam z / ((n : ℝ) + 1)))
   have h := T1'.add (by positivity) (by positivity) T2'
-  rw [show 4 * ((n : ℝ) + 1) ^ 2 * (16 * Real.pi * lam ^ 2)
-      + 16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1) * (8 * ((n : ℝ) + 1))
-      = 12 * (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) ^ 2 from by ring] at h
+  rw [show 4 * ((n : ℝ) + 1) ^ (2 : ℕ) * (16 * Real.pi * lam ^ (2 : ℕ))
+      + 16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1) * (8 * ((n : ℝ) + 1))
+      = 12 * (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) ^ (2 : ℕ) from by ring] at h
   rw [prolateWeight_succ_sub]
   simpa using h
 
@@ -441,13 +441,13 @@ end Composed
 set_option maxHeartbeats 1000000 in
 /-- **The Liouville--Green drift of a prolate block is `−6/(√A √n)` to relative order `1/n`.** -/
 theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ} (hn : 1 ≤ n)
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ} (hn : 1 ≤ n)
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (-(slgAbelDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)))
-      (6 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt ((n : ℝ) + 1)))
+      (6 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt ((n : ℝ) + 1)))
       (20 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-  set A : ℝ := 16 * Real.pi * lam ^ 2 with hAdef
+  set A : ℝ := 16 * Real.pi * lam ^ (2 : ℕ) with hAdef
   set K : ℝ := prolateErr β γ c lam z with hKdef
   set x : ℝ := (n : ℝ) + 1 with hxdef
   have hK7 : 7 ≤ K := seven_le_prolateErr hβ hγ hA
@@ -460,11 +460,11 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     linarith [hbig]
   have hcast : ((n + 1 : ℕ) : ℝ) = x := by rw [hxdef]; push_cast; ring
   -- the four basic approximations
-  have Rρ1 : RelApprox (prolateRho β γ (n + 1)) (4 * x ^ 2) e :=
+  have Rρ1 : RelApprox (prolateRho β γ (n + 1)) (4 * x ^ (2 : ℕ)) e :=
     relApprox_rho_err (c := c) (z := z) hβ hγ hA n
   have RQ1 : RelApprox (prolatePotential β γ c lam z (n + 1)) (A * x) e :=
     relApprox_Q_err hβ hγ hA n
-  have Rρ2a : RelApprox (prolateRho β γ (n + 2)) (4 * (x + 1) ^ 2) e := by
+  have Rρ2a : RelApprox (prolateRho β γ (n + 2)) (4 * (x + 1) ^ (2 : ℕ)) e := by
     have h := relApprox_rho_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA (n + 1)
     rw [hcast] at h
     refine h.mono (by positivity) ?_
@@ -477,20 +477,20 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     rw [hedef]
     exact div_le_div_of_nonneg_left (by linarith) hx0 (by linarith)
   -- weights
-  have RW1 : RelApprox (prolateWeight β γ c lam z (n + 1)) (4 * A * x ^ 3) (3 * e) := by
+  have RW1 : RelApprox (prolateWeight β γ c lam z (n + 1)) (4 * A * x ^ (3 : ℕ)) (3 * e) := by
     have h := Rρ1.mul (by positivity) (by positivity) (by linarith) RQ1
-    rw [show (4 * x ^ 2) * (A * x) = 4 * A * x ^ 3 from by ring] at h
+    rw [show (4 * x ^ (2 : ℕ)) * (A * x) = 4 * A * x ^ (3 : ℕ) from by ring] at h
     exact h.mono (by positivity) (by nlinarith)
-  have RW2a : RelApprox (prolateWeight β γ c lam z (n + 2)) (4 * A * (x + 1) ^ 3) (3 * e) := by
+  have RW2a : RelApprox (prolateWeight β γ c lam z (n + 2)) (4 * A * (x + 1) ^ (3 : ℕ)) (3 * e) := by
     have h := Rρ2a.mul (by positivity) (by positivity) (by linarith) RQ2a
-    rw [show (4 * (x + 1) ^ 2) * (A * (x + 1)) = 4 * A * (x + 1) ^ 3 from by ring] at h
+    rw [show (4 * (x + 1) ^ (2 : ℕ)) * (A * (x + 1)) = 4 * A * (x + 1) ^ (3 : ℕ) from by ring] at h
     exact h.mono (by positivity) (by nlinarith)
-  have Rshift3 : RelApprox (4 * A * (x + 1) ^ 3) (4 * A * x ^ 3) e := by
+  have Rshift3 : RelApprox (4 * A * (x + 1) ^ (3 : ℕ)) (4 * A * x ^ (3 : ℕ)) e := by
     have h := relApprox_shift_cube (A := A) (x := x) hA (by linarith)
     refine h.mono (by positivity) ?_
     rw [hedef]
     exact div_le_div_of_nonneg_right (by linarith) hx0.le
-  have RW2 : RelApprox (prolateWeight β γ c lam z (n + 2)) (4 * A * x ^ 3) (5 * e) := by
+  have RW2 : RelApprox (prolateWeight β γ c lam z (n + 2)) (4 * A * x ^ (3 : ℕ)) (5 * e) := by
     have h := RW2a.trans (by positivity) (by positivity) Rshift3
     exact h.mono (by positivity) (by nlinarith)
   have RsqrtW2 : RelApprox (Real.sqrt (prolateWeight β γ c lam z (n + 2)))
@@ -504,17 +504,17 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     have h := relApprox_drho (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA n
     rw [← hxdef] at h
     exact h
-  have Rshift2 : RelApprox (4 * (x + 1) ^ 2) (4 * x ^ 2) e := by
+  have Rshift2 : RelApprox (4 * (x + 1) ^ (2 : ℕ)) (4 * x ^ (2 : ℕ)) e := by
     have h := relApprox_shift_sq (x := x) (by linarith)
     refine h.mono (by positivity) ?_
     rw [hedef]
     exact div_le_div_of_nonneg_right (by linarith) hx0.le
-  have Rρ2 : RelApprox (prolateRho β γ (n + 2)) (4 * x ^ 2) (3 * e) := by
+  have Rρ2 : RelApprox (prolateRho β γ (n + 2)) (4 * x ^ (2 : ℕ)) (3 * e) := by
     have h := Rρ2a.trans (by positivity) (by positivity) Rshift2
     exact h.mono (by positivity) (by nlinarith)
   have T1 : RelApprox (prolateRho β γ (n + 2)
       * (prolatePotential β γ c lam z (n + 2) - prolatePotential β γ c lam z (n + 1)))
-      (4 * x ^ 2 * A) (5 * e) := by
+      (4 * x ^ (2 : ℕ) * A) (5 * e) := by
     have h := Rρ2.mul (by positivity) hA (by linarith) RdQ
     exact h.mono (by positivity) (by nlinarith)
   have T2 : RelApprox (prolatePotential β γ c lam z (n + 1)
@@ -522,9 +522,9 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     have h := RQ1.mul (by positivity) (by positivity) (by linarith) RdRho
     exact h.mono (by positivity) (by nlinarith)
   have RdW : RelApprox (prolateWeight β γ c lam z (n + 2)
-      - prolateWeight β γ c lam z (n + 1)) (12 * A * x ^ 2) (5 * e) := by
+      - prolateWeight β γ c lam z (n + 1)) (12 * A * x ^ (2 : ℕ)) (5 * e) := by
     have h := T1.add (by positivity) (by positivity) T2
-    rw [show 4 * x ^ 2 * A + A * x * (8 * x) = 12 * A * x ^ 2 from by ring] at h
+    rw [show 4 * x ^ (2 : ℕ) * A + A * x * (8 * x) = 12 * A * x ^ (2 : ℕ) from by ring] at h
     rw [prolateWeight_succ_sub]
     refine h.mono (by positivity) ?_
     rw [max_le_iff]
@@ -532,22 +532,22 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   -- numerator and denominator
   have RNum : RelApprox ((prolateWeight β γ c lam z (n + 2)
       - prolateWeight β γ c lam z (n + 1)) * prolateRho β γ (n + 1))
-      (48 * A * x ^ 4) (7 * e) := by
+      (48 * A * x ^ (4 : ℕ)) (7 * e) := by
     have h := RdW.mul (by positivity) (by positivity) (by linarith) Rρ1
-    rw [show 12 * A * x ^ 2 * (4 * x ^ 2) = 48 * A * x ^ 4 from by ring] at h
+    rw [show 12 * A * x ^ (2 : ℕ) * (4 * x ^ (2 : ℕ)) = 48 * A * x ^ (4 : ℕ) from by ring] at h
     exact h.mono (by positivity) (by nlinarith)
   have RDen : RelApprox (prolateWeight β γ c lam z (n + 1)
       * Real.sqrt (prolateWeight β γ c lam z (n + 2)))
-      (8 * A * Real.sqrt A * x ^ 4 * Real.sqrt x) (9 * e) := by
+      (8 * A * Real.sqrt A * x ^ (4 : ℕ) * Real.sqrt x) (9 * e) := by
     have h := RW1.mul (by positivity) (by positivity) (by linarith) RsqrtW2
-    rw [show 4 * A * x ^ 3 * (2 * Real.sqrt A * x * Real.sqrt x)
-        = 8 * A * Real.sqrt A * x ^ 4 * Real.sqrt x from by ring] at h
+    rw [show 4 * A * x ^ (3 : ℕ) * (2 * Real.sqrt A * x * Real.sqrt x)
+        = 8 * A * Real.sqrt A * x ^ (4 : ℕ) * Real.sqrt x from by ring] at h
     exact h.mono (by positivity) (by nlinarith)
   -- the quotient
   have hsA : 0 < Real.sqrt A := Real.sqrt_pos.mpr hA
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx0
   have RQuot := RNum.div (by positivity) (by positivity) (by linarith) RDen
-  have hrefeq : 48 * A * x ^ 4 / (8 * A * Real.sqrt A * x ^ 4 * Real.sqrt x)
+  have hrefeq : 48 * A * x ^ (4 : ℕ) / (8 * A * Real.sqrt A * x ^ (4 : ℕ) * Real.sqrt x)
       = 6 / (Real.sqrt A * Real.sqrt x) := by
     field_simp
     ring
@@ -567,10 +567,10 @@ theorem relApprox_slgAbelDrift (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
 /-! ## Two-sided bounds and the control coefficient -/
 
 theorem relApprox_sqrt_weight_succ (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     RelApprox (Real.sqrt (prolateWeight β γ c lam z (n + 1)))
-      (2 * Real.sqrt (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1))
+      (2 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1))
       (3 * (prolateErr β γ c lam z / ((n : ℝ) + 1))) := by
   have hK7 : 7 ≤ prolateErr β γ c lam z := seven_le_prolateErr hβ hγ hA
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -583,10 +583,10 @@ theorem relApprox_sqrt_weight_succ (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
 set_option maxHeartbeats 2000000 in
 /-- **The per-step control coefficient of a prolate block is `O(n^{-3/2})`.** -/
 theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ} (hn : 1 ≤ n)
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ} (hn : 1 ≤ n)
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)
-      ≤ (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
+      ≤ (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
         / (((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1)) := by
   have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   -- gather all relative approximations before abbreviating
@@ -602,7 +602,7 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   have hQ2r := relApprox_Q_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA (n + 1)
   rw [hcast] at hQ2r
-  set A : ℝ := 16 * Real.pi * lam ^ 2 with hAdef
+  set A : ℝ := 16 * Real.pi * lam ^ (2 : ℕ) with hAdef
   set x : ℝ := (n : ℝ) + 1 with hxdef
   set K : ℝ := prolateErr β γ c lam z with hKdef
   have hK7 : 7 ≤ K := seven_le_prolateErr hβ hγ hA
@@ -610,8 +610,8 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   have hx0 : (0:ℝ) < x := by linarith
   have hsA : 0 < Real.sqrt A := Real.sqrt_pos.mpr hA
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx0
-  have hsx2 : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx0.le
-  have hsA2 : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA.le
+  have hsx2 : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx0.le
+  have hsA2 : Real.sqrt A ^ (2 : ℕ) = A := Real.sq_sqrt hA.le
   have hsxx : Real.sqrt x ≤ x := by nlinarith [hsx, hsx2, hx2]
   have hxne : x ≠ 0 := ne_of_gt hx0
   have hsxne : Real.sqrt x ≠ 0 := ne_of_gt hsx
@@ -625,11 +625,11 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     rw [hedef]
     exact div_le_div_of_nonneg_left (by linarith) hx0 (by linarith)
   -- two-sided bounds
-  have hsq0 : (0:ℝ) < x ^ 2 := by positivity
+  have hsq0 : (0:ℝ) < x ^ (2 : ℕ) := by positivity
   have hAx : (0:ℝ) < A * x := mul_pos hA hx0
-  have hAx3 : (0:ℝ) < A * x ^ 3 := by positivity
+  have hAx3 : (0:ℝ) < A * x ^ (3 : ℕ) := by positivity
   have hSxx : (0:ℝ) < Real.sqrt A * x * Real.sqrt x := by positivity
-  have hρlo : 3 * x ^ 2 ≤ prolateRho β γ (n + 1) := by
+  have hρlo : 3 * x ^ (2 : ℕ) ≤ prolateRho β γ (n + 1) := by
     nlinarith [hρ1.lower, mul_nonneg hsq0.le (by linarith : (0:ℝ) ≤ 1 - 4 * e)]
   have hρpos : 0 < prolateRho β γ (n + 1) := by nlinarith [hρlo, hsq0]
   have hQlo : 0 < prolatePotential β γ c lam z (n + 1) := by
@@ -653,8 +653,8 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   have hW2pos : 0 < prolateWeight β γ c lam z (n + 2) := by
     nlinarith [hW2.lower, mul_pos (by linarith : (0:ℝ) < 1 - 5 * e) hAx3]
   have hdWabs : |prolateWeight β γ c lam z (n + 2) - prolateWeight β γ c lam z (n + 1)|
-      ≤ 13 * (A * x ^ 2) := by
-    have hp : (0:ℝ) < A * x ^ 2 := by positivity
+      ≤ 13 * (A * x ^ (2 : ℕ)) := by
+    have hp : (0:ℝ) < A * x ^ (2 : ℕ) := by positivity
     rw [abs_le]
     constructor <;>
       nlinarith [hdW.lower, hdW.upper, mul_nonneg hp.le (by linarith : (0:ℝ) ≤ 1 - 60 * e),
@@ -690,7 +690,7 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     · nlinarith [hdrift.lower, mul_nonneg h6.le (by linarith : (0:ℝ) ≤ 1 - 20 * e),
         mul_nonneg h6.le (by linarith : (0:ℝ) ≤ (4:ℝ) / 3)]
   have habs : |slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
-      ≤ 3 / (Real.sqrt A * x ^ 2 * Real.sqrt x) := by
+      ≤ 3 / (Real.sqrt A * x ^ (2 : ℕ) * Real.sqrt x) := by
     have hpos : (0:ℝ) < Real.sqrt A * Real.sqrt x := by positivity
     have hform : slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)
         = slgAbelDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)
@@ -712,9 +712,9 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
       have := Real.sqrt_pos.mpr hW1pos
       have := Real.sqrt_pos.mpr hW2pos
       linarith
-    have hq1 : Real.sqrt (prolateWeight β γ c lam z (n + 1)) ^ 2
+    have hq1 : Real.sqrt (prolateWeight β γ c lam z (n + 1)) ^ (2 : ℕ)
         = prolateWeight β γ c lam z (n + 1) := Real.sq_sqrt hW1pos.le
-    have hq2 : Real.sqrt (prolateWeight β γ c lam z (n + 2)) ^ 2
+    have hq2 : Real.sqrt (prolateWeight β γ c lam z (n + 2)) ^ (2 : ℕ)
         = prolateWeight β γ c lam z (n + 2) := Real.sq_sqrt hW2pos.le
     have hfac : (Real.sqrt (prolateWeight β γ c lam z (n + 1))
         - Real.sqrt (prolateWeight β γ c lam z (n + 2)))
@@ -748,23 +748,23 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
         + Real.sqrt (prolateWeight β γ c lam z (n + 2)))), ← abs_mul, hdefeq]
     have hmain : |slgRatioDefect (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
         * (2 * (Real.sqrt (prolateWeight β γ c lam z (n + 1))
-          + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ 2)
-        ≤ 13 * (A * x ^ 2) := by
+          + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ (2 : ℕ))
+        ≤ 13 * (A * x ^ (2 : ℕ)) := by
       have hstep : |slgRatioDefect (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
           * (2 * (Real.sqrt (prolateWeight β γ c lam z (n + 1))
-            + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ 2)
+            + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ (2 : ℕ))
           = |prolateWeight β γ c lam z (n + 2) - prolateWeight β γ c lam z (n + 1)| := by
         rw [← hdiffabs, ← habsdef]
         ring
       rw [hstep]
       exact hdWabs
-    have hbig2 : 8 * (A * x ^ 3)
+    have hbig2 : 8 * (A * x ^ (3 : ℕ))
         ≤ 2 * (Real.sqrt (prolateWeight β γ c lam z (n + 1))
-          + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ 2 := by
-      have hsq : (2 * (Real.sqrt A * x * Real.sqrt x)) ^ 2 = 4 * (A * x ^ 3) := by
-        calc (2 * (Real.sqrt A * x * Real.sqrt x)) ^ 2
-            = 4 * (Real.sqrt A ^ 2) * x ^ 2 * (Real.sqrt x ^ 2) := by ring
-          _ = 4 * (A * x ^ 3) := by rw [hsA2, hsx2]; ring
+          + Real.sqrt (prolateWeight β γ c lam z (n + 2))) ^ (2 : ℕ) := by
+      have hsq : (2 * (Real.sqrt A * x * Real.sqrt x)) ^ (2 : ℕ) = 4 * (A * x ^ (3 : ℕ)) := by
+        calc (2 * (Real.sqrt A * x * Real.sqrt x)) ^ (2 : ℕ)
+            = 4 * (Real.sqrt A ^ (2 : ℕ)) * x ^ (2 : ℕ) * (Real.sqrt x ^ (2 : ℕ)) := by ring
+          _ = 4 * (A * x ^ (3 : ℕ)) := by rw [hsA2, hsx2]; ring
       nlinarith [hsumlo, hsq, hsw, hsA, hsx, hx0]
     have hnn : (0:ℝ)
         ≤ |slgRatioDefect (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)| :=
@@ -777,11 +777,11 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
       ≤ 6 * Real.sqrt A / (x * Real.sqrt x) := by
     have hstep : |slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
         * prolatePotential β γ c lam z (n + 1)
-        ≤ (3 / (Real.sqrt A * x ^ 2 * Real.sqrt x)) * (2 * (A * x)) :=
+        ≤ (3 / (Real.sqrt A * x ^ (2 : ℕ) * Real.sqrt x)) * (2 * (A * x)) :=
       mul_le_mul habs hQhi hQlo.le (by positivity)
     refine le_trans hstep (le_of_eq ?_)
     rw [div_mul_eq_mul_div, div_eq_div_iff (by positivity) (by positivity)]
-    linear_combination (-(6 * x ^ 2 * Real.sqrt x)) * hsA2
+    linear_combination (-(6 * x ^ (2 : ℕ) * Real.sqrt x)) * hsA2
   have hT2 : |slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
       * |slgRatioDefect (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
       * Real.sqrt (prolateWeight β γ c lam z (n + 1))
@@ -789,13 +789,13 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     have hstep : |slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
         * |slgRatioDefect (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
         * Real.sqrt (prolateWeight β γ c lam z (n + 1))
-        ≤ (3 / (Real.sqrt A * x ^ 2 * Real.sqrt x)) * (13 / (8 * x))
+        ≤ (3 / (Real.sqrt A * x ^ (2 : ℕ) * Real.sqrt x)) * (13 / (8 * x))
           * (3 * (Real.sqrt A * x * Real.sqrt x)) := by
       refine mul_le_mul (mul_le_mul habs hdefabs (abs_nonneg _) (by positivity))
         hs1hi (Real.sqrt_nonneg _) (by positivity)
     refine le_trans hstep ?_
-    have heq : (3 / (Real.sqrt A * x ^ 2 * Real.sqrt x)) * (13 / (8 * x))
-        * (3 * (Real.sqrt A * x * Real.sqrt x)) = 117 / (8 * x ^ 2) := by
+    have heq : (3 / (Real.sqrt A * x ^ (2 : ℕ) * Real.sqrt x)) * (13 / (8 * x))
+        * (3 * (Real.sqrt A * x * Real.sqrt x)) = 117 / (8 * x ^ (2 : ℕ)) := by
       field_simp
       ring
     rw [heq, div_le_div_iff₀ (by positivity) (by positivity)]
@@ -808,20 +808,20 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
         * |prolateRho β γ (n + 2) - prolateRho β γ (n + 1)|) ≤ 4 * (4 * (A * x) * (9 * x)) := by
       have := mul_le_mul hQ2abs hdrhoabs (abs_nonneg _) (by positivity)
       linarith
-    have hden : 3 * x ^ 2 * (Real.sqrt A * x * Real.sqrt x)
+    have hden : 3 * x ^ (2 : ℕ) * (Real.sqrt A * x * Real.sqrt x)
         ≤ prolateRho β γ (n + 1) * Real.sqrt (prolateWeight β γ c lam z (n + 2)) :=
       mul_le_mul hρlo hs2lo (by positivity) (by positivity)
-    have hdenpos : (0:ℝ) < 3 * x ^ 2 * (Real.sqrt A * x * Real.sqrt x) := by positivity
+    have hdenpos : (0:ℝ) < 3 * x ^ (2 : ℕ) * (Real.sqrt A * x * Real.sqrt x) := by positivity
     have hnumnn : (0:ℝ) ≤ 4 * (|prolatePotential β γ c lam z (n + 2)|
         * |prolateRho β γ (n + 2) - prolateRho β γ (n + 1)|) := by positivity
     calc 4 * (|prolatePotential β γ c lam z (n + 2)|
           * |prolateRho β γ (n + 2) - prolateRho β γ (n + 1)|)
         / (prolateRho β γ (n + 1) * Real.sqrt (prolateWeight β γ c lam z (n + 2)))
-        ≤ 4 * (4 * (A * x) * (9 * x)) / (3 * x ^ 2 * (Real.sqrt A * x * Real.sqrt x)) := by
+        ≤ 4 * (4 * (A * x) * (9 * x)) / (3 * x ^ (2 : ℕ) * (Real.sqrt A * x * Real.sqrt x)) := by
           apply div_le_div₀ (by positivity) hnum hdenpos hden
       _ = 48 * Real.sqrt A / (x * Real.sqrt x) := by
           rw [div_eq_div_iff (by positivity) (by positivity)]
-          linear_combination (-(144 * x ^ 3 * Real.sqrt x)) * hsA2
+          linear_combination (-(144 * x ^ (3 : ℕ) * Real.sqrt x)) * hsA2
   rw [slgControl]
   calc |slgDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)|
         * prolatePotential β γ c lam z (n + 1)
@@ -844,64 +844,64 @@ theorem slgControl_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
 
 /-- The explicit monotone Abel drift of a prolate block. -/
 noncomputable def prolateDrift (lam : ℝ) (n : ℕ) : ℝ :=
-  -(6 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt (n : ℝ)))
+  -(6 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt (n : ℝ)))
 
 /-- The deviation of the true Liouville--Green drift from `prolateDrift`. -/
 noncomputable def prolateDev (β γ c lam z : ℝ) (n : ℕ) : ℝ :=
   120 * prolateErr β γ c lam z
-    / (Real.sqrt (16 * Real.pi * lam ^ 2) * (n : ℝ) * Real.sqrt (n : ℝ))
+    / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * (n : ℝ) * Real.sqrt (n : ℝ))
 
-theorem prolateDev_nonneg (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem prolateDev_nonneg (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     (n : ℕ) : 0 ≤ prolateDev β γ c lam z n := by
   unfold prolateDev
   have hK := prolateErr_pos (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA
   positivity
 
 theorem prolate_dev_bound (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ} (hn : 1 ≤ n)
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ} (hn : 1 ≤ n)
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     |slgAbelDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)
       - prolateDrift lam (n + 1)| ≤ prolateDev β γ c lam z (n + 1) := by
   have hcast : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
-  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ 2) := Real.sqrt_pos.mpr hA
+  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := Real.sqrt_pos.mpr hA
   have hsx : 0 < Real.sqrt ((n : ℝ) + 1) := Real.sqrt_pos.mpr hx0
   have h := relApprox_slgAbelDrift hβ hγ hA hn hbig
   have hval : |slgAbelDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1)
       - prolateDrift lam (n + 1)|
       = |-(slgAbelDrift (prolateRho β γ) (prolatePotential β γ c lam z) (n + 1))
-        - 6 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt ((n : ℝ) + 1))| := by
+        - 6 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt ((n : ℝ) + 1))| := by
     rw [prolateDrift, hcast, ← abs_neg]
     congr 1
     ring
   have hdevval : prolateDev β γ c lam z (n + 1)
       = 20 * (prolateErr β γ c lam z / ((n : ℝ) + 1))
-        * (6 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt ((n : ℝ) + 1))) := by
+        * (6 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt ((n : ℝ) + 1))) := by
     rw [prolateDev, hcast]
     field_simp
     ring
   rw [hval, hdevval]
   exact h
 
-theorem prolateDrift_bdry (hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
-    (hn : (96 : ℝ) / Real.sqrt (16 * Real.pi * lam ^ 2) ≤ Real.sqrt (n : ℝ)) :
+theorem prolateDrift_bdry (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
+    (hn : (96 : ℝ) / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) ≤ Real.sqrt (n : ℝ)) :
     2 * |prolateDrift lam n| ≤ 1 / 8 := by
-  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ 2) := Real.sqrt_pos.mpr hA
+  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := Real.sqrt_pos.mpr hA
   have hsx : (0:ℝ) < Real.sqrt (n : ℝ) := by
-    have h1 : (0:ℝ) < 96 / Real.sqrt (16 * Real.pi * lam ^ 2) := by positivity
+    have h1 : (0:ℝ) < 96 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
     linarith
   rw [div_le_iff₀ hsA] at hn
   rw [prolateDrift, abs_neg, abs_of_pos (by positivity),
-    show (2:ℝ) * (6 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt (n : ℝ)))
-      = 12 / (Real.sqrt (16 * Real.pi * lam ^ 2) * Real.sqrt (n : ℝ)) from by ring,
+    show (2:ℝ) * (6 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt (n : ℝ)))
+      = 12 / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * Real.sqrt (n : ℝ)) from by ring,
     div_le_iff₀ (by positivity)]
   nlinarith [hn, hsA, hsx]
 
-theorem prolateDrift_diff (hA : 0 < 16 * Real.pi * lam ^ 2) {k : ℕ} (hk : 1 ≤ k) :
+theorem prolateDrift_diff (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {k : ℕ} (hk : 1 ≤ k) :
     |prolateDrift lam (k + 1) - prolateDrift lam k|
-      = 6 / Real.sqrt (16 * Real.pi * lam ^ 2)
+      = 6 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
         * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)) := by
-  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ 2) := Real.sqrt_pos.mpr hA
+  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := Real.sqrt_pos.mpr hA
   have hk1 : (1:ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
   have hsk : (0:ℝ) < Real.sqrt (k : ℝ) := Real.sqrt_pos.mpr (by linarith)
   have hsk1 : (0:ℝ) < Real.sqrt ((k : ℝ) + 1) := Real.sqrt_pos.mpr (by linarith)
@@ -909,7 +909,7 @@ theorem prolateDrift_diff (hA : 0 < 16 * Real.pi * lam ^ 2) {k : ℕ} (hk : 1 �
     Real.sqrt_lt_sqrt (by linarith) (by linarith)
   have hcast : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by push_cast; ring
   have hval : prolateDrift lam (k + 1) - prolateDrift lam k
-      = 6 / Real.sqrt (16 * Real.pi * lam ^ 2)
+      = 6 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
         * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)) := by
     rw [prolateDrift, prolateDrift, hcast]
     field_simp
@@ -917,20 +917,20 @@ theorem prolateDrift_diff (hA : 0 < 16 * Real.pi * lam ^ 2) {k : ℕ} (hk : 1 �
   rw [hval, abs_of_nonneg]
   have hinv : 1 / Real.sqrt ((k : ℝ) + 1) ≤ 1 / Real.sqrt (k : ℝ) :=
     one_div_le_one_div_of_le hsk hmono.le
-  have : (0:ℝ) ≤ 6 / Real.sqrt (16 * Real.pi * lam ^ 2) := by positivity
+  have : (0:ℝ) ≤ 6 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
   nlinarith [hinv]
 
 /-! ## The summed control -/
 
 theorem inv_succ_le_sqrt_div_sq {k : ℕ} (hk : 1 ≤ k) :
-    1 / (((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1)) ≤ Real.sqrt (k : ℝ) / (k : ℝ) ^ 2 := by
+    1 / (((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1)) ≤ Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ) := by
   have hk1 : (1:ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
   have hsk : (0:ℝ) < Real.sqrt (k : ℝ) := Real.sqrt_pos.mpr (by linarith)
   have hsk1 : (0:ℝ) < Real.sqrt ((k : ℝ) + 1) := Real.sqrt_pos.mpr (by linarith)
-  have hsk2 : Real.sqrt (k : ℝ) ^ 2 = (k : ℝ) := Real.sq_sqrt (by linarith)
+  have hsk2 : Real.sqrt (k : ℝ) ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt (by linarith)
   have hmono : Real.sqrt (k : ℝ) ≤ Real.sqrt ((k : ℝ) + 1) :=
     Real.sqrt_le_sqrt (by linarith)
-  have heq : Real.sqrt (k : ℝ) / (k : ℝ) ^ 2 = 1 / ((k : ℝ) * Real.sqrt (k : ℝ)) := by
+  have heq : Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ) = 1 / ((k : ℝ) * Real.sqrt (k : ℝ)) := by
     rw [div_eq_div_iff (by positivity) (by positivity)]
     nlinarith [hsk2]
   rw [heq]
@@ -939,24 +939,24 @@ theorem inv_succ_le_sqrt_div_sq {k : ℕ} (hk : 1 ≤ k) :
 
 /-- The constant controlling the whole Liouville--Green sum of a prolate block. -/
 noncomputable def prolateTotalConst (β γ c lam z : ℝ) : ℝ :=
-  12 / Real.sqrt (16 * Real.pi * lam ^ 2)
-    + 4 * (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-      + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2))
+  12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+    + 4 * (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+      + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
 
 set_option maxHeartbeats 1000000 in
-theorem prolate_sum_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem prolate_sum_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     {N₀ : ℕ} (hN₀ : 1 ≤ N₀)
     (hbigall : ∀ n : ℕ, N₀ ≤ n → 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) (K : ℕ) :
     ∑ k ∈ Finset.Ico N₀ K, (2 * |prolateDrift lam (k + 1) - prolateDrift lam k|
       + 2 * (slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
         + 2 * prolateDev β γ c lam z (k + 1)))
       ≤ prolateTotalConst β γ c lam z / Real.sqrt (N₀ : ℝ) := by
-  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ 2) := Real.sqrt_pos.mpr hA
+  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := Real.sqrt_pos.mpr hA
   have hK' := prolateErr_pos (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA
   have hN₀r : (1:ℝ) ≤ (N₀ : ℝ) := by exact_mod_cast hN₀
   have hsN : (0:ℝ) < Real.sqrt (N₀ : ℝ) := Real.sqrt_pos.mpr (by linarith)
-  set Cbig : ℝ := 2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-    + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2) with hCbig
+  set Cbig : ℝ := 2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+    + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) with hCbig
   have hCbig0 : 0 ≤ Cbig := by rw [hCbig]; positivity
   rcases Nat.lt_or_ge K N₀ with hKN | hNK
   · rw [Finset.Ico_eq_empty (by omega)]
@@ -968,9 +968,9 @@ theorem prolate_sum_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi 
         2 * |prolateDrift lam (k + 1) - prolateDrift lam k|
           + 2 * (slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
             + 2 * prolateDev β γ c lam z (k + 1))
-        ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ 2)
+        ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
             * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1))
-          + Cbig * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+          + Cbig * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
       intro k hk
       rw [Finset.mem_Ico] at hk
       have hk1 : 1 ≤ k := le_trans hN₀ hk.1
@@ -980,72 +980,72 @@ theorem prolate_sum_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi 
       have hc := slgControl_le hβ hγ hA hk1 hbig
       have hdev : prolateDev β γ c lam z (k + 1)
           = 120 * prolateErr β γ c lam z
-            / (Real.sqrt (16 * Real.pi * lam ^ 2) * ((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1)) := by
+            / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1)) := by
         rw [prolateDev, hcast]
       have hbase := inv_succ_le_sqrt_div_sq hk1
       have hcle : slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
-          ≤ (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+          ≤ (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
         refine le_trans hc ?_
-        have hrw : (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
+        have hrw : (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
             / (((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1))
-            = (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
+            = (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
               * (1 / (((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1))) := by ring
         rw [hrw]
         exact mul_le_mul_of_nonneg_left hbase (by positivity)
       have hdle : prolateDev β γ c lam z (k + 1)
-          ≤ 120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2)
-            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+          ≤ 120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
         rw [hdev]
         have hrw : 120 * prolateErr β γ c lam z
-            / (Real.sqrt (16 * Real.pi * lam ^ 2) * ((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1))
-            = 120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2)
+            / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1))
+            = 120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
               * (1 / (((k : ℝ) + 1) * Real.sqrt ((k : ℝ) + 1))) := by
           field_simp
         rw [hrw]
         exact mul_le_mul_of_nonneg_left hbase (by positivity)
       rw [hd, hCbig]
-      have h12 : 2 * (6 / Real.sqrt (16 * Real.pi * lam ^ 2)
+      have h12 : 2 * (6 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
           * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)))
-          = 12 / Real.sqrt (16 * Real.pi * lam ^ 2)
+          = 12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
             * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)) := by ring
       rw [h12]
       have hfin : 2 * (slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
           + 2 * prolateDev β γ c lam z (k + 1))
-          ≤ (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-            + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2))
-            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
-        have e3 : 2 * ((15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2))
-            + 4 * (120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2)
-              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2))
-            = (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-              + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2))
-              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by ring
+          ≤ (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+            + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+            * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
+        have e3 : 2 * ((15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)))
+            + 4 * (120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)))
+            = (2 * (15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+              + 480 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by ring
         have e1 : 2 * slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
-            ≤ 2 * ((15 + 54 * Real.sqrt (16 * Real.pi * lam ^ 2))
-              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2)) := by linarith [hcle]
+            ≤ 2 * ((15 + 54 * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)))
+              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ))) := by linarith [hcle]
         have e2 : 4 * prolateDev β γ c lam z (k + 1)
-            ≤ 4 * (120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ 2)
-              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2)) := by linarith [hdle]
+            ≤ 4 * (120 * prolateErr β γ c lam z / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+              * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ))) := by linarith [hdle]
         linarith [e1, e2, e3]
       linarith
     calc ∑ k ∈ Finset.Ico N₀ K, (2 * |prolateDrift lam (k + 1) - prolateDrift lam k|
           + 2 * (slgControl (prolateRho β γ) (prolatePotential β γ c lam z) (k + 1)
             + 2 * prolateDev β γ c lam z (k + 1)))
-        ≤ ∑ k ∈ Finset.Ico N₀ K, (12 / Real.sqrt (16 * Real.pi * lam ^ 2)
+        ≤ ∑ k ∈ Finset.Ico N₀ K, (12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
             * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1))
-            + Cbig * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2)) := Finset.sum_le_sum hsplit
-      _ = 12 / Real.sqrt (16 * Real.pi * lam ^ 2)
+            + Cbig * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ))) := Finset.sum_le_sum hsplit
+      _ = 12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
             * (∑ k ∈ Finset.Ico N₀ K, (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)))
-          + Cbig * (∑ k ∈ Finset.Ico N₀ K, Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+          + Cbig * (∑ k ∈ Finset.Ico N₀ K, Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
-      _ ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ 2) * (1 / Real.sqrt (N₀ : ℝ))
+      _ ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * (1 / Real.sqrt (N₀ : ℝ))
           + Cbig * (4 / Real.sqrt (N₀ : ℝ)) := by
           have h1 := sum_Ico_sqrtinv_telescope hNK
           have h2 := sum_Ico_sqrt_div_sq_le hN₀ hNK
           have h3 : (0:ℝ) ≤ 1 / Real.sqrt (K : ℝ) := by positivity
-          have h4 : (0:ℝ) ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ 2) := by positivity
+          have h4 : (0:ℝ) ≤ 12 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
           nlinarith [h1, h2, h3, h4, hCbig0]
       _ = prolateTotalConst β γ c lam z / Real.sqrt (N₀ : ℝ) := by
           rw [prolateTotalConst, hCbig]
@@ -1053,14 +1053,14 @@ theorem prolate_sum_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi 
 
 /-! ## Positivity of the prolate potential and the weight lower bound -/
 
-theorem prolate_e_le (_hβ : 0 ≤ β) (_hγ : 2 ≤ γ) (_hA : 0 < 16 * Real.pi * lam ^ 2) {n : ℕ}
+theorem prolate_e_le (_hβ : 0 ≤ β) (_hγ : 2 ≤ γ) (_hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {n : ℕ}
     (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     prolateErr β γ c lam z / ((n : ℝ) + 1) ≤ 1 / 100 := by
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
   rw [div_le_div_iff₀ hx0 (by norm_num)]
   linarith
 
-theorem prolatePotential_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem prolatePotential_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     {n : ℕ} (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
     0 < prolatePotential β γ c lam z (n + 1) := by
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
@@ -1071,9 +1071,9 @@ theorem prolatePotential_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Re
   nlinarith [hlo, mul_pos (by linarith : (0:ℝ) < 1 - prolateErr β γ c lam z / ((n : ℝ) + 1))
     (mul_pos hA hx0)]
 
-theorem prolatePotential_le_rho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem prolatePotential_le_rho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     {n : ℕ} (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1)
-    (hAx : 16 * Real.pi * lam ^ 2 ≤ (n : ℝ) + 1) :
+    (hAx : 16 * Real.pi * lam ^ (2 : ℕ) ≤ (n : ℝ) + 1) :
     prolatePotential β γ c lam z (n + 1) ≤ prolateRho β γ (n + 1) := by
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
   have he1 := prolate_e_le hβ hγ hA hbig
@@ -1081,23 +1081,23 @@ theorem prolatePotential_le_rho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 *
   have he0 : 0 ≤ prolateErr β γ c lam z / ((n : ℝ) + 1) := div_nonneg hKpos.le hx0.le
   have hup := (relApprox_Q_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA n).upper
   have hlo := (relApprox_rho_err (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA n).lower
-  have hQhi : prolatePotential β γ c lam z (n + 1) ≤ 2 * (16 * Real.pi * lam ^ 2 * ((n : ℝ) + 1)) := by
+  have hQhi : prolatePotential β γ c lam z (n + 1) ≤ 2 * (16 * Real.pi * lam ^ (2 : ℕ) * ((n : ℝ) + 1)) := by
     nlinarith [hup, mul_nonneg (by linarith : (0:ℝ) ≤ 1 - prolateErr β γ c lam z / ((n : ℝ) + 1))
       (mul_pos hA hx0).le]
-  have hρlo : 3 * ((n : ℝ) + 1) ^ 2 ≤ prolateRho β γ (n + 1) := by
-    nlinarith [hlo, mul_nonneg (by positivity : (0:ℝ) ≤ ((n : ℝ) + 1) ^ 2)
+  have hρlo : 3 * ((n : ℝ) + 1) ^ (2 : ℕ) ≤ prolateRho β γ (n + 1) := by
+    nlinarith [hlo, mul_nonneg (by positivity : (0:ℝ) ≤ ((n : ℝ) + 1) ^ (2 : ℕ))
       (by linarith : (0:ℝ) ≤ 1 - 4 * (prolateErr β γ c lam z / ((n : ℝ) + 1)))]
   nlinarith [hQhi, hρlo, hAx, hx0]
 
-theorem sqrt_weight_lower (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ 2)
+theorem sqrt_weight_lower (hβ : 0 ≤ β) (hγ : 2 ≤ γ) (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ))
     {n : ℕ} (hbig : 100 * prolateErr β γ c lam z ≤ (n : ℝ) + 1) :
-    Real.sqrt (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1)
+    Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1) * Real.sqrt ((n : ℝ) + 1)
       ≤ Real.sqrt (prolateWeight β γ c lam z (n + 1)) := by
   have hx0 : (0:ℝ) < (n : ℝ) + 1 := by positivity
   have he1 := prolate_e_le hβ hγ hA hbig
   have hKpos := prolateErr_pos (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA
   have he0 : 0 ≤ prolateErr β γ c lam z / ((n : ℝ) + 1) := div_nonneg hKpos.le hx0.le
-  have hSxx : (0:ℝ) ≤ Real.sqrt (16 * Real.pi * lam ^ 2) * ((n : ℝ) + 1)
+  have hSxx : (0:ℝ) ≤ Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((n : ℝ) + 1)
       * Real.sqrt ((n : ℝ) + 1) := by positivity
   have hlo := (relApprox_sqrt_weight_succ hβ hγ hA hbig).lower
   nlinarith [hlo, mul_nonneg hSxx
@@ -1109,29 +1109,29 @@ set_option maxHeartbeats 1000000 in
 /-- **The limit-circle half.**  For a positive prolate parameter every real solution of the block
 is square-summable. -/
 theorem prolate_summable_of_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {q : ℕ → ℝ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {q : ℕ → ℝ}
     (hq : ∀ n : ℕ, (prolateBase β γ (n + 1) + prolateBase β γ n) / 4 + q (n + 1)
-        = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + c))
+        = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + c))
     {u : ℕ → ℝ} (hu : IsJacobiRecR (prolateRho β γ) q z u) :
-    Summable fun n => u n ^ 2 := by
-  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ 2) := Real.sqrt_pos.mpr hA
+    Summable fun n => u n ^ (2 : ℕ) := by
+  have hsA : 0 < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := Real.sqrt_pos.mpr hA
   have hKpos := prolateErr_pos (β := β) (γ := γ) (c := c) (lam := lam) (z := z) hβ hγ hA
   have hslg : IsSLGSolution (prolateRho β γ) (prolatePotential β γ c lam z) u :=
     isSLGSolution_of_jacobi (fun n => prolatePotential_eq hq n) hu
   obtain ⟨M, hM⟩ := exists_nat_gt
-    (max (max (100 * prolateErr β γ c lam z) ((96 / Real.sqrt (16 * Real.pi * lam ^ 2)) ^ 2))
-      (max ((8 * prolateTotalConst β γ c lam z) ^ 2) (max (16 * Real.pi * lam ^ 2) 1)))
+    (max (max (100 * prolateErr β γ c lam z) ((96 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))) ^ (2 : ℕ)))
+      (max ((8 * prolateTotalConst β γ c lam z) ^ (2 : ℕ)) (max (16 * Real.pi * lam ^ (2 : ℕ)) 1)))
   have hM1 : (1:ℝ) < (M : ℝ) :=
     lt_of_le_of_lt (le_trans (le_max_right _ _) (le_trans (le_max_right _ _)
       (le_max_right _ _))) hM
   have hMnat : 1 ≤ M := by exact_mod_cast hM1.le
   have hMK : 100 * prolateErr β γ c lam z < (M : ℝ) :=
     lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_left _ _)) hM
-  have hMsq : (96 / Real.sqrt (16 * Real.pi * lam ^ 2)) ^ 2 < (M : ℝ) :=
+  have hMsq : (96 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))) ^ (2 : ℕ) < (M : ℝ) :=
     lt_of_le_of_lt (le_trans (le_max_right _ _) (le_max_left _ _)) hM
-  have hMtot : (8 * prolateTotalConst β γ c lam z) ^ 2 < (M : ℝ) :=
+  have hMtot : (8 * prolateTotalConst β γ c lam z) ^ (2 : ℕ) < (M : ℝ) :=
     lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_right _ _)) hM
-  have hMA : 16 * Real.pi * lam ^ 2 < (M : ℝ) :=
+  have hMA : 16 * Real.pi * lam ^ (2 : ℕ) < (M : ℝ) :=
     lt_of_le_of_lt (le_trans (le_max_left _ _) (le_trans (le_max_right _ _)
       (le_max_right _ _))) hM
   -- the window
@@ -1160,7 +1160,7 @@ theorem prolate_summable_of_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     intro n hn
     refine prolateDrift_bdry hA ?_
     have hnr : (M : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast hn
-    have h1 : (96 / Real.sqrt (16 * Real.pi * lam ^ 2)) ^ 2 ≤ (n : ℝ) := by linarith
+    have h1 : (96 / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))) ^ (2 : ℕ) ≤ (n : ℝ) := by linarith
     have h2 := Real.sqrt_le_sqrt h1
     rwa [Real.sqrt_sq (by positivity)] at h2
   have hsN : (0:ℝ) < Real.sqrt ((M + 1 : ℕ) : ℝ) := by
@@ -1171,7 +1171,7 @@ theorem prolate_summable_of_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   have hsumbound : prolateTotalConst β γ c lam z / Real.sqrt ((M + 1 : ℕ) : ℝ) ≤ 1 / 8 := by
     have hCpos : (0:ℝ) < prolateTotalConst β γ c lam z := by
       rw [prolateTotalConst]; positivity
-    have hnr : (8 * prolateTotalConst β γ c lam z) ^ 2 ≤ ((M + 1 : ℕ) : ℝ) := by
+    have hnr : (8 * prolateTotalConst β γ c lam z) ^ (2 : ℕ) ≤ ((M + 1 : ℕ) : ℝ) := by
       push_cast
       linarith
     have h2 := Real.sqrt_le_sqrt hnr
@@ -1193,58 +1193,58 @@ theorem prolate_summable_of_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     exact slgNormalizedEnergy_nonneg (hρpos (M + 1) le_rfl) (hQpos (M + 1) le_rfl).le
       (by linarith [hQρ (M + 1) le_rfl, hρpos (M + 1) le_rfl])
   have hbound : ∀ m : ℕ, M + 1 ≤ m →
-      u m ^ 2 ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2) * (Real.sqrt (m : ℝ) / (m : ℝ) ^ 2) := by
+      u m ^ (2 : ℕ) ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * (Real.sqrt (m : ℝ) / (m : ℝ) ^ (2 : ℕ)) := by
     refine forall_ge_succ (fun j hj => ?_)
     have hj1 : (1:ℝ) ≤ (j : ℝ) := by exact_mod_cast le_trans hMnat hj
     have hx0 : (0:ℝ) < (j : ℝ) + 1 := by positivity
     have hcast : ((j + 1 : ℕ) : ℝ) = (j : ℝ) + 1 := by push_cast; ring
     have hlow := sqrt_weight_lower hβ hγ hA (hbigsucc j hj)
     have h := hamp (j + 1) (by omega)
-    have hWpos : (0:ℝ) < Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1)
+    have hWpos : (0:ℝ) < Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1)
         * Real.sqrt ((j : ℝ) + 1) := by positivity
     have hden : 0 < Real.sqrt (slgWeight (prolateRho β γ) (prolatePotential β γ c lam z) (j + 1)) :=
       lt_of_lt_of_le hWpos hlow
     have hstep : 4 * C / Real.sqrt (slgWeight (prolateRho β γ)
         (prolatePotential β γ c lam z) (j + 1))
-        ≤ 4 * C / (Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1)
+        ≤ 4 * C / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1)
           * Real.sqrt ((j : ℝ) + 1)) :=
       div_le_div_of_nonneg_left (by linarith) hWpos hlow
-    have hfin : 4 * C / (Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1)
+    have hfin : 4 * C / (Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1)
         * Real.sqrt ((j : ℝ) + 1))
-        = 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2)
-          * (Real.sqrt (((j + 1 : ℕ)) : ℝ) / (((j + 1 : ℕ)) : ℝ) ^ 2) := by
+        = 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+          * (Real.sqrt (((j + 1 : ℕ)) : ℝ) / (((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ)) := by
       rw [hcast]
-      have hsj : Real.sqrt ((j : ℝ) + 1) ^ 2 = (j : ℝ) + 1 := Real.sq_sqrt (by linarith)
-      have hne1 : Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1)
+      have hsj : Real.sqrt ((j : ℝ) + 1) ^ (2 : ℕ) = (j : ℝ) + 1 := Real.sq_sqrt (by linarith)
+      have hne1 : Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1)
           * Real.sqrt ((j : ℝ) + 1) ≠ 0 := by positivity
-      have hne2 : Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1) ^ 2 ≠ 0 := by positivity
+      have hne2 : Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
       rw [div_mul_div_comm, div_eq_div_iff hne1 hne2]
-      linear_combination (-(4 * C * Real.sqrt (16 * Real.pi * lam ^ 2) * ((j : ℝ) + 1))) * hsj
+      linear_combination (-(4 * C * Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * ((j : ℝ) + 1))) * hsj
     linarith [h, hstep, hfin.le, hfin.ge]
   -- summability
-  have hsummable : Summable fun i : ℕ => u (i + (M + 1)) ^ 2 := by
+  have hsummable : Summable fun i : ℕ => u (i + (M + 1)) ^ (2 : ℕ) := by
     refine summable_of_sum_range_le
-      (c := 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2) * (4 / Real.sqrt ((M + 1 : ℕ) : ℝ)))
+      (c := 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * (4 / Real.sqrt ((M + 1 : ℕ) : ℝ)))
       (fun i => sq_nonneg _) (fun r => ?_)
-    have hre : ∑ i ∈ Finset.range r, u (i + (M + 1)) ^ 2
-        ≤ ∑ i ∈ Finset.range r, 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2)
-          * (Real.sqrt ((i + (M + 1) : ℕ) : ℝ) / ((i + (M + 1) : ℕ) : ℝ) ^ 2) := by
+    have hre : ∑ i ∈ Finset.range r, u (i + (M + 1)) ^ (2 : ℕ)
+        ≤ ∑ i ∈ Finset.range r, 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+          * (Real.sqrt ((i + (M + 1) : ℕ) : ℝ) / ((i + (M + 1) : ℕ) : ℝ) ^ (2 : ℕ)) := by
       refine Finset.sum_le_sum (fun i _ => hbound _ (by omega))
-    have hre2 : ∑ i ∈ Finset.range r, 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2)
-          * (Real.sqrt ((i + (M + 1) : ℕ) : ℝ) / ((i + (M + 1) : ℕ) : ℝ) ^ 2)
-        = 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2)
-          * ∑ k ∈ Finset.Ico (M + 1) (M + 1 + r), Real.sqrt (k : ℝ) / (k : ℝ) ^ 2 := by
+    have hre2 : ∑ i ∈ Finset.range r, 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+          * (Real.sqrt ((i + (M + 1) : ℕ) : ℝ) / ((i + (M + 1) : ℕ) : ℝ) ^ (2 : ℕ))
+        = 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+          * ∑ k ∈ Finset.Ico (M + 1) (M + 1 + r), Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ) := by
       rw [Finset.sum_Ico_eq_sum_range]
       simp only [Nat.add_sub_cancel_left, ← Finset.mul_sum]
       refine congrArg _ (Finset.sum_congr rfl (fun i _ => ?_))
       congr 2 <;> [skip; skip] <;> · congr 1; omega
     have hre3 := sum_Ico_sqrt_div_sq_le (N := M + 1) (P := M + 1 + r) (by omega) (by omega)
-    have hpos : (0:ℝ) ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2) := by positivity
-    calc ∑ i ∈ Finset.range r, u (i + (M + 1)) ^ 2
-        ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2)
-          * ∑ k ∈ Finset.Ico (M + 1) (M + 1 + r), Real.sqrt (k : ℝ) / (k : ℝ) ^ 2 := by
+    have hpos : (0:ℝ) ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) := by positivity
+    calc ∑ i ∈ Finset.range r, u (i + (M + 1)) ^ (2 : ℕ)
+        ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ))
+          * ∑ k ∈ Finset.Ico (M + 1) (M + 1 + r), Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ) := by
           rw [← hre2]; exact hre
-      _ ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ 2) * (4 / Real.sqrt ((M + 1 : ℕ) : ℝ)) :=
+      _ ≤ 4 * C / Real.sqrt (16 * Real.pi * lam ^ (2 : ℕ)) * (4 / Real.sqrt ((M + 1 : ℕ) : ℝ)) :=
           mul_le_mul_of_nonneg_left hre3 hpos
   exact (summable_nat_add_iff (M + 1)).mp hsummable
 
@@ -1254,9 +1254,9 @@ set_option maxHeartbeats 1000000 in
 /-- **The limit-circle theorem.**  For a positive prolate parameter the deficiency space of the
 block is nontrivial at *every* spectral parameter. -/
 theorem prolate_jacobiDeficiency_ne_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
-    (hA : 0 < 16 * Real.pi * lam ^ 2) {q : ℕ → ℝ}
+    (hA : 0 < 16 * Real.pi * lam ^ (2 : ℕ)) {q : ℕ → ℝ}
     (hq : ∀ n : ℕ, (prolateBase β γ (n + 1) + prolateBase β γ n) / 4 + q (n + 1)
-        = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + c))
+        = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + c))
     (Z : ℂ) :
     jacobiDeficiency (prolateRho β γ) q Z ≠ ⊥ := by
   classical
@@ -1271,18 +1271,18 @@ theorem prolate_jacobiDeficiency_ne_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   set ψ : ℕ → ℝ := jacobiSol (prolateRho β γ) q (0 : ℝ) 0 1 with hψdef
   have hφ : IsJacobiRecR (prolateRho β γ) q (0 : ℝ) φ := isJacobiRecR_jacobiSol ha 1 0
   have hψ : IsJacobiRecR (prolateRho β γ) q (0 : ℝ) ψ := isJacobiRecR_jacobiSol ha 0 1
-  have hφ2 : Summable fun n => φ n ^ 2 := prolate_summable_of_pos hβ hγ hA hq hφ
-  have hψ2 : Summable fun n => ψ n ^ 2 := prolate_summable_of_pos hβ hγ hA hq hψ
+  have hφ2 : Summable fun n => φ n ^ (2 : ℕ) := prolate_summable_of_pos hβ hγ hA hq hφ
+  have hψ2 : Summable fun n => ψ n ^ (2 : ℕ) := prolate_summable_of_pos hβ hγ hA hq hψ
   have hφC : IsJacobiRec (prolateRho β γ) q (0 : ℂ) (fun n => (φ n : ℂ)) := by
     have := isJacobiRec_ofReal hφ
     simpa using this
   have hψC : IsJacobiRec (prolateRho β γ) q (0 : ℂ) (fun n => (ψ n : ℂ)) := by
     have := isJacobiRec_ofReal hψ
     simpa using this
-  have hφ2C : Summable fun n => ‖(φ n : ℂ)‖ ^ 2 := by
+  have hφ2C : Summable fun n => ‖(φ n : ℂ)‖ ^ (2 : ℕ) := by
     refine hφ2.congr (fun n => ?_)
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
-  have hψ2C : Summable fun n => ‖(ψ n : ℂ)‖ ^ 2 := by
+  have hψ2C : Summable fun n => ‖(ψ n : ℂ)‖ ^ (2 : ℕ) := by
     refine hψ2.congr (fun n => ?_)
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   -- the constant Wronskian of the fundamental system
@@ -1310,7 +1310,7 @@ theorem prolate_jacobiDeficiency_ne_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
     rw [h1, h2, hAdef, hBdef]
     field_simp
     ring
-  have hx2 : Summable fun n => ‖x n‖ ^ 2 :=
+  have hx2 : Summable fun n => ‖x n‖ ^ (2 : ℕ) :=
     summable_sq_of_fundamental hφC hψC hxrec hWne hWn hφ2C hψ2C
   intro hbot
   rw [Submodule.eq_bot_iff] at hbot
@@ -1322,8 +1322,8 @@ theorem prolate_jacobiDeficiency_ne_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
 
 /-! ## The two archimedean parity blocks at positive parameter -/
 
-theorem prolate_A_pos {lam : ℝ} (hlam : lam ≠ 0) : 0 < 16 * Real.pi * lam ^ 2 := by
-  have h2 : 0 < lam ^ 2 := lt_of_le_of_ne (sq_nonneg lam) (Ne.symm (pow_ne_zero 2 hlam))
+theorem prolate_A_pos {lam : ℝ} (hlam : lam ≠ 0) : 0 < 16 * Real.pi * lam ^ (2 : ℕ) := by
+  have h2 : 0 < lam ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg lam) (Ne.symm (pow_ne_zero 2 hlam))
   have hpi := Real.pi_pos
   nlinarith
 

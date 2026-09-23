@@ -174,7 +174,7 @@ theorem sesq_real_affine_line_constant_iff
     (∀ t : ℝ, B (w + (t : ℂ) • e) (w + (t : ℂ) • e) = B w w) ↔
       B e e = 0 ∧ B e w + B w e = 0 := by
   have hexp (t : ℝ) : B (w + (t : ℂ) • e) (w + (t : ℂ) • e) =
-      B w w + (t : ℂ) * (B e w + B w e) + (t : ℂ)^2 * B e e := by
+      B w w + (t : ℂ) * (B e w + B w e) + (t : ℂ)^(2 : ℕ) * B e e := by
     simp only [map_add,map_smulₛₗ,LinearMap.add_apply,LinearMap.smul_apply,
       RingHom.id_apply,Complex.conj_ofReal,smul_eq_mul]
     ring

@@ -67,7 +67,7 @@ theorem suzukiSecondDefectParityCurvature_eq_relativeTiltGap
         evenEnergy oddEnergy evenTilt oddTilt =
       -2 *
         (1 - GaloisForLFunctions.RHTower.suzukiDefectAngle
-          evenEnergy oddEnergy ^ 2) *
+          evenEnergy oddEnergy ^ (2 : ℕ)) *
         suzukiRelativeTiltGap
           evenEnergy oddEnergy evenTilt oddTilt := by
   rw [suzukiSecondDefectParityCurvature,
@@ -133,10 +133,10 @@ theorem suzukiAllAngleCarrier_forces_relativeTiltGap_le_one
 /-- Exact prime--Gamma value of Suzuki's dimensionless relative tilt gap. -/
 def primeArchSuzukiRelativeTiltGapCalibration : ℝ :=
   -primeArchSuzukiSecondDefectCalibration /
-    (2 * (1 - primeArchSuzukiFirstDefectCalibration ^ 2))
+    (2 * (1 - primeArchSuzukiFirstDefectCalibration ^ (2 : ℕ)))
 
 private theorem primeArchSuzuki_schurBoundary_pos :
-    0 < 2 * (1 - primeArchSuzukiFirstDefectCalibration ^ 2) := by
+    0 < 2 * (1 - primeArchSuzukiFirstDefectCalibration ^ (2 : ℕ)) := by
   rcases primeArchSuzukiFirstDefectCalibration_mem_Ioo with ⟨hlower, hupper⟩
   have hpos : 0 < primeArchSuzukiFirstDefectCalibration := by
     linarith
@@ -154,7 +154,7 @@ theorem primeArchSuzukiRelativeTiltGapCalibration_eq_moments :
     primeArchSuzukiRelativeTiltGapCalibration =
       ((primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 1).re +
-          (primeArchShiftedReciprocalMoment 1 1).re ^ 2 -
+          (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) -
           2 * (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re) /
         ((primeArchShiftedReciprocalMoment 1 1).re *
@@ -169,21 +169,21 @@ theorem primeArchSuzukiRelativeTiltGapCalibration_eq_moments :
     eightyFive_mul_re_primeArchShiftedReciprocalMoment_one_lt_four_mul_zero
   have hAB : 0 < A - B := by linarith
   have hidentity :
-      2 * (1 - ((A - 2 * B) / A) ^ 2) =
-        8 * B * (A - B) / A ^ 2 := by
+      2 * (1 - ((A - 2 * B) / A) ^ (2 : ℕ)) =
+        8 * B * (A - B) / A ^ (2 : ℕ) := by
     field_simp [hA.ne']
     ring
   have hboundary :
-      2 * (1 - ((A - 2 * B) / A) ^ 2) ≠ 0 := by
+      2 * (1 - ((A - 2 * B) / A) ^ (2 : ℕ)) ≠ 0 := by
     rw [hidentity]
     positivity
   rw [primeArchSuzukiRelativeTiltGapCalibration,
     primeArchSuzukiSecondDefectCalibration,
     primeArchSuzukiFirstDefectCalibration]
   change
-    -(8 * (2 * C / A - B / A - (B / A) ^ 2)) /
-        (2 * (1 - ((A - 2 * B) / A) ^ 2)) =
-      (A * B + B ^ 2 - 2 * A * C) / (B * (A - B))
+    -(8 * (2 * C / A - B / A - (B / A) ^ (2 : ℕ))) /
+        (2 * (1 - ((A - 2 * B) / A) ^ (2 : ℕ))) =
+      (A * B + B ^ (2 : ℕ) - 2 * A * C) / (B * (A - B))
   rw [hidentity]
   field_simp [hA.ne', hB.ne', hAB.ne', hboundary]
   ring
@@ -194,12 +194,12 @@ theorem primeArchSuzukiRelativeTiltGapCalibration_le_one_iff_shiftedHankelMinor_
       0 ≤
         (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re -
-          (primeArchShiftedReciprocalMoment 1 1).re ^ 2 := by
+          (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) := by
   have hden := primeArchSuzuki_schurBoundary_pos
   calc
     primeArchSuzukiRelativeTiltGapCalibration ≤ 1 ↔
         0 ≤ primeArchSuzukiSecondDefectCalibration +
-          2 * (1 - primeArchSuzukiFirstDefectCalibration ^ 2) := by
+          2 * (1 - primeArchSuzukiFirstDefectCalibration ^ (2 : ℕ)) := by
       rw [primeArchSuzukiRelativeTiltGapCalibration, div_le_one hden]
       constructor <;> intro h <;> linarith
     _ ↔ _ :=
@@ -221,7 +221,7 @@ theorem deriv_squaredXiReciprocalRadialField
     {y : ℝ} (hy : 0 < y) :
     deriv squaredXiReciprocalRadialField y =
       -iteratedDeriv 1 squaredXiRadialField y /
-        squaredXiRadialField y ^ 2 := by
+        squaredXiRadialField y ^ (2 : ℕ) := by
   have hfield :=
     hasDerivAt_iteratedDeriv_squaredXiRadialField 0 hy
   have hne : squaredXiRadialField y ≠ 0 :=
@@ -242,10 +242,10 @@ theorem iteratedDeriv_two_squaredXiReciprocalRadialField
     {y : ℝ} (hy : 0 < y) :
     iteratedDeriv 2 squaredXiReciprocalRadialField y =
       4 *
-        ((xiShiftedReciprocalMoment y 1).re ^ 2 -
+        ((xiShiftedReciprocalMoment y 1).re ^ (2 : ℕ) -
           (xiShiftedReciprocalMoment y 0).re *
             (xiShiftedReciprocalMoment y 2).re) /
-        (xiShiftedReciprocalMoment y 0).re ^ 3 := by
+        (xiShiftedReciprocalMoment y 0).re ^ (3 : ℕ) := by
   let F := squaredXiRadialField
   have hF0 : F y ≠ 0 := ne_of_gt (squaredXiRadialField_pos hy)
   have hF :
@@ -258,25 +258,25 @@ theorem iteratedDeriv_two_squaredXiReciprocalRadialField
       hasDerivAt_iteratedDeriv_squaredXiRadialField 1 hy
   have hEq :
       deriv squaredXiReciprocalRadialField =ᶠ[nhds y]
-        fun v => -iteratedDeriv 1 F v / F v ^ 2 := by
+        fun v => -iteratedDeriv 1 F v / F v ^ (2 : ℕ) := by
     filter_upwards [Ioi_mem_nhds hy] with v hv
     simpa only [F] using deriv_squaredXiReciprocalRadialField hv
   have hquotRaw :=
     hF1.neg.div (hF.pow 2) (pow_ne_zero 2 hF0)
   have hquot :
-      deriv (fun v => -iteratedDeriv 1 F v / F v ^ 2) y =
-        ((-iteratedDeriv 2 F y) * F y ^ 2 -
+      deriv (fun v => -iteratedDeriv 1 F v / F v ^ (2 : ℕ)) y =
+        ((-iteratedDeriv 2 F y) * F y ^ (2 : ℕ) -
             (-iteratedDeriv 1 F y) *
               (2 * F y * iteratedDeriv 1 F y)) /
-          (F y ^ 2) ^ 2 := by
-    rw [show (fun v => -iteratedDeriv 1 F v / F v ^ 2) =
-      -iteratedDeriv 1 F / F ^ 2 by rfl]
+          (F y ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    rw [show (fun v => -iteratedDeriv 1 F v / F v ^ (2 : ℕ)) =
+      -iteratedDeriv 1 F / F ^ (2 : ℕ) by rfl]
     simpa only [Pi.neg_apply, Pi.pow_apply, Nat.cast_ofNat,
       Nat.reduceSub, pow_one] using hquotRaw.deriv
   have habstract :
       iteratedDeriv 2 squaredXiReciprocalRadialField y =
-        (2 * (iteratedDeriv 1 F y) ^ 2 -
-          F y * iteratedDeriv 2 F y) / F y ^ 3 := by
+        (2 * (iteratedDeriv 1 F y) ^ (2 : ℕ) -
+          F y * iteratedDeriv 2 F y) / F y ^ (3 : ℕ) := by
     rw [show (2 : ℕ) = 1 + 1 by norm_num, iteratedDeriv_succ,
       iteratedDeriv_one, hEq.deriv_eq, hquot]
     field_simp [hF0]
@@ -303,10 +303,10 @@ prime--Gamma coordinates. -/
 theorem iteratedDeriv_two_squaredXiReciprocalRadialField_one_eq_primeArch :
     iteratedDeriv 2 squaredXiReciprocalRadialField 1 =
       4 *
-        ((primeArchShiftedReciprocalMoment 1 1).re ^ 2 -
+        ((primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) -
           (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re) /
-        (primeArchShiftedReciprocalMoment 1 0).re ^ 3 := by
+        (primeArchShiftedReciprocalMoment 1 0).re ^ (3 : ℕ) := by
   rw [iteratedDeriv_two_squaredXiReciprocalRadialField (by norm_num)]
   rw [xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
       (y := 1) (by norm_num) (by norm_num) 0,
@@ -321,11 +321,11 @@ theorem squaredXiReciprocalRadialField_concaveAt_one_iff_shiftedHankelMinor_nonn
       0 ≤
         (primeArchShiftedReciprocalMoment 1 0).re *
             (primeArchShiftedReciprocalMoment 1 2).re -
-          (primeArchShiftedReciprocalMoment 1 1).re ^ 2 := by
+          (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) := by
   rw [iteratedDeriv_two_squaredXiReciprocalRadialField_one_eq_primeArch]
   have hA : 0 < (primeArchShiftedReciprocalMoment 1 0).re :=
     re_primeArchShiftedReciprocalMoment_one_zero_pos
-  have hA3 : 0 < (primeArchShiftedReciprocalMoment 1 0).re ^ 3 := by
+  have hA3 : 0 < (primeArchShiftedReciprocalMoment 1 0).re ^ (3 : ℕ) := by
     positivity
   rw [div_le_iff₀ hA3]
   constructor <;> intro h <;> nlinarith

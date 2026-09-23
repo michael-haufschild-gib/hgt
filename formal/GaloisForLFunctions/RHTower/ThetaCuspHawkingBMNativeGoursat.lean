@@ -52,7 +52,7 @@ private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh d
   field_simp [hc,hy]
 
 private theorem tanh_derivative_local (x : ℝ) :
-    HasDerivAt Real.tanh (1-Real.tanh x^2) x := by
+    HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
   have hc := (Real.cosh_pos x).ne'
   have hd := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) hc
   rw [show Real.tanh = Real.sinh / Real.cosh by
@@ -127,20 +127,20 @@ private theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz :
     field_simp [hnC]
 
 private theorem angular_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := mean_darboux q (Real.arcosh z) X k
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q z X k at h
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [argumentSecond,argumentFirst]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
     ContDiff ℝ ∞ (fun p : ℝ × ℝ =>
@@ -148,7 +148,7 @@ private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
     mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k))=
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^2*
+      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ)*
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
          coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
     funext p
@@ -264,7 +264,7 @@ private def nativeFirst (q : XiZeroCopy) (y X k u v : ℝ) : ℂ :=
   argumentFirst q (nullZ y u v) X k*(nullInvariantFirst y u v:ℂ)
 
 private def nativeIntegrand (q : XiZeroCopy) (y X k u v : ℝ) : ℂ :=
-  closedAction q (nullZ y u v) X k/(4*(Real.cosh (y+(u-v)/2):ℂ)^2)
+  closedAction q (nullZ y u v) X k/(4*(Real.cosh (y+(u-v)/2):ℂ)^(2 : ℕ))
 
 private theorem nativeCharacteristic_continuous (q : XiZeroCopy) (y X k : ℝ) :
     Continuous (fun z : ℝ × ℝ => nativeCharacteristic q y X k z.1 z.2) :=
@@ -302,17 +302,17 @@ private theorem nativeFirst_mixed (q : XiZeroCopy) (y X k : ℝ) {u v : ℝ}
   have hz := nullZ_gt y hu hv
   let h := (u+v)/2
   let x := y+(u-v)/2
-  have hg1 : (invariantTimeFirst h x y:ℂ)^2-(invariantSpaceFirst h x y:ℂ)^2 =
-      ((invariant h x y:ℂ)^2-1)/(Real.cosh x:ℂ)^2 := by
+  have hg1 : (invariantTimeFirst h x y:ℂ)^(2 : ℕ)-(invariantSpaceFirst h x y:ℂ)^(2 : ℕ) =
+      ((invariant h x y:ℂ)^(2 : ℕ)-1)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).1
   have hg2 : (invariantTimeSecond h x y:ℂ)-(invariantSpaceSecond h x y:ℂ) =
-      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^2 := by
+      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).2
   have hd := ((angular_derivatives q X k hz).2.scomp v (nullInvariant_second y u v)).mul
     (nullInvariant_mixed y u v).ofReal_comp
   apply hd.congr_deriv
   simp only [nativeIntegrand,closedAction_eq q X k hz.le,Complex.real_smul,Function.comp_apply]
-  change _ = angularAction q (invariant h x y) X k/(4*(Real.cosh x:ℂ)^2)
+  change _ = angularAction q (invariant h x y) X k/(4*(Real.cosh x:ℂ)^(2 : ℕ))
   dsimp only [nullInvariantFirst]
   push_cast
   change ((invariantTimeFirst h x y-invariantSpaceFirst h x y:ℂ)/2*
@@ -323,7 +323,7 @@ private theorem nativeFirst_mixed (q : XiZeroCopy) (y X k : ℝ) {u v : ℝ}
   have he := angular_equation q X k hz
   simp only [← Complex.ofReal_cosh]
   linear_combination argumentSecond q (invariant h x y) X k/4*hg1+
-    argumentFirst q (invariant h x y) X k/4*hg2+he/(4*(Real.cosh x:ℂ)^2)
+    argumentFirst q (invariant h x y) X k/4*hg2+he/(4*(Real.cosh x:ℂ)^(2 : ℕ))
 
 private theorem nullFirst_axis (y u : ℝ) : nullInvariantFirst y u 0 = 0 := by
   have hd := nullInvariant_first y u 0
@@ -393,7 +393,7 @@ theorem nativeRiemannKernel_goursat (q : XiZeroCopy) (p : CausalPoint) (X k : �
     nativeRiemannKernel q p.time p.target p.source X k = fullSquarePotential q ![X,Real.exp k]+
       ∫ a in (0:ℝ)..(p.time+p.target-p.source), ∫ b in (0:ℝ)..(p.time-p.target+p.source),
         angularAction q (invariant ((a+b)/2) (p.source+(a-b)/2) p.source) X k/
-          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^2) := by
+          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^(2 : ℕ)) := by
   have hu : 0 ≤ p.time+p.target-p.source := by have := (abs_le.mp p.inside).1; linarith
   have hv : 0 ≤ p.time-p.target+p.source := by have := (abs_le.mp p.inside).2; linarith
   have h := nativeCharacteristic_integral q p.source X k hu hv
@@ -425,7 +425,7 @@ def nativeAngularCorrection (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
   if |x-y| ≤ h then
     ∫ a in (0:ℝ)..(h+x-y), ∫ b in (0:ℝ)..(h-x+y),
       angularAction q (invariant ((a+b)/2) (y+(a-b)/2) y) X k/
-        (4*(Real.cosh (y+(a-b)/2):ℂ)^2)
+        (4*(Real.cosh (y+(a-b)/2):ℂ)^(2 : ℕ))
   else 0
 
 private theorem nativeCausal_split (q : XiZeroCopy) (h x y X k : ℝ) :

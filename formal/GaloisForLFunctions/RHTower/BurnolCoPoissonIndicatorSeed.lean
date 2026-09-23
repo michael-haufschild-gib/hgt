@@ -359,13 +359,13 @@ dominated by a multiple of `(1 + |t|)⁻¹`. -/
 theorem norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile
     {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) (t : ℝ) :
     ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤
-      (2 * (4 * b + 4 / b) + (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b)) * (1 + |t|)⁻¹ := by
+      (2 * (4 * b + 4 / b) + (2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹) * (1 + 2 / b)) * (1 + |t|)⁻¹ := by
   have hlog := two_log_inv_nonneg hb hb1
   have hb2 : b * b ≤ 1 := by nlinarith
   have h2b : (2 : ℝ) ≤ 2 / b := by
     rw [le_div_iff₀ hb]; nlinarith
   have hK1 : (0 : ℝ) ≤ 2 * (4 * b + 4 / b) := by positivity
-  have hK2 : (0 : ℝ) ≤ (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b) := by positivity
+  have hK2 : (0 : ℝ) ≤ (2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹) * (1 + 2 / b) := by positivity
   have hden : (0 : ℝ) < 1 + |t| := by positivity
   have habs : burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t =
       burnolCoPoissonRightSum (coPoissonIndicatorSeed b) |t| := by
@@ -385,15 +385,15 @@ theorem norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile
       linarith [hstep, hval.le, hval.ge]
     nlinarith [norm_nonneg (burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t)]
   · have hB := norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_local hb hb1 t
-    have hsq : |t| / b ≤ 2 / b ^ 2 := by
+    have hsq : |t| / b ≤ 2 / b ^ (2 : ℕ) := by
       have h1 : |t| / b ≤ (2 / b) / b := div_le_div_of_nonneg_right hnear.le hb.le
-      have h2 : (2 / b) / b = 2 / b ^ 2 := by
+      have h2 : (2 / b) / b = 2 / b ^ (2 : ℕ) := by
         rw [div_div, sq]
       linarith
     have hC0 : ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤
-        2 / b ^ 2 + 2 * Real.log b⁻¹ := by linarith
+        2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹ := by linarith
     have h1t : 1 + |t| ≤ 1 + 2 / b := by linarith
-    have hnn : (0 : ℝ) ≤ 2 / b ^ 2 + 2 * Real.log b⁻¹ := by positivity
+    have hnn : (0 : ℝ) ≤ 2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹ := by positivity
     nlinarith [norm_nonneg (burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t)]
 
 /-- **The co-Poisson sum of the indicator seed is square integrable.** -/

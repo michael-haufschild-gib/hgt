@@ -40,7 +40,7 @@ def navierStokesExpandingEigenvalue : ℝ := 4 + Real.sqrt 2
 /-- The smaller eigenvalue is still expanding, as asserted after equation (6.2). -/
 theorem one_lt_navierStokesContractingEigenvalue : 1 < navierStokesContractingEigenvalue := by
   have hsqrtNonneg : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hsqrtSq : Real.sqrt 2 ^ 2 = (2 : ℝ) := Real.sq_sqrt (by norm_num)
+  have hsqrtSq : Real.sqrt 2 ^ (2 : ℕ) = (2 : ℝ) := Real.sq_sqrt (by norm_num)
   unfold navierStokesContractingEigenvalue
   nlinarith
 
@@ -53,7 +53,7 @@ theorem navierStokesContractingEigenvalue_lt_expandingEigenvalue :
 /-- Product of eigenvalues recovers the covering degree. -/
 theorem navierStokesEigenvalue_product :
     navierStokesContractingEigenvalue * navierStokesExpandingEigenvalue = 14 := by
-  have hsqrtSq : Real.sqrt 2 ^ 2 = (2 : ℝ) := Real.sq_sqrt (by norm_num)
+  have hsqrtSq : Real.sqrt 2 ^ (2 : ℕ) = (2 : ℝ) := Real.sq_sqrt (by norm_num)
   unfold navierStokesContractingEigenvalue navierStokesExpandingEigenvalue
   nlinarith
 
@@ -103,7 +103,7 @@ theorem irrationalLinearForm_ne_zero {a b : ℤ} (hab : a ≠ 0 ∨ b ≠ 0) :
 theorem irrationalLinearForm_smallDivisor {a b : ℤ} (hab : a ≠ 0 ∨ b ≠ 0) :
     (3 * (1 + |(a : ℝ)| + |(b : ℝ)|))⁻¹ ≤
       |(a : ℝ) + Real.sqrt 2 * (b : ℝ)| := by
-  have hsqrtSq : Real.sqrt 2 ^ 2 = (2 : ℝ) := Real.sq_sqrt (by norm_num)
+  have hsqrtSq : Real.sqrt 2 ^ (2 : ℕ) = (2 : ℝ) := Real.sq_sqrt (by norm_num)
   have hsqrtNonneg : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
   have hsqrtLe : Real.sqrt 2 ≤ 2 := by nlinarith
   have habNeg : a ≠ 0 ∨ -b ≠ 0 := hab.imp_right neg_ne_zero.mpr
@@ -111,19 +111,19 @@ theorem irrationalLinearForm_smallDivisor {a b : ℤ} (hab : a ≠ 0 ∨ b ≠ 0
   have hright : (a : ℝ) - Real.sqrt 2 * (b : ℝ) ≠ 0 := by
     simpa only [Int.cast_neg, mul_neg, sub_eq_add_neg] using
       irrationalLinearForm_ne_zero habNeg
-  have hdisc : a ^ 2 - 2 * b ^ 2 ≠ 0 := by
+  have hdisc : a ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) ≠ 0 := by
     intro hzero
     apply mul_ne_zero hleft hright
-    have hcast : ((a ^ 2 - 2 * b ^ 2 : ℤ) : ℝ) = 0 := by
+    have hcast : ((a ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) : ℤ) : ℝ) = 0 := by
       exact_mod_cast hzero
     push_cast at hcast
     nlinarith
-  have hdiscAbs : (1 : ℝ) ≤ |((a ^ 2 - 2 * b ^ 2 : ℤ) : ℝ)| := by
+  have hdiscAbs : (1 : ℝ) ≤ |((a ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) : ℤ) : ℝ)| := by
     exact_mod_cast Int.one_le_abs hdisc
   have hproduct :
       ((a : ℝ) + Real.sqrt 2 * (b : ℝ)) *
           ((a : ℝ) - Real.sqrt 2 * (b : ℝ)) =
-        ((a ^ 2 - 2 * b ^ 2 : ℤ) : ℝ) := by
+        ((a ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) : ℤ) : ℝ) := by
     push_cast
     nlinarith
   have hone :

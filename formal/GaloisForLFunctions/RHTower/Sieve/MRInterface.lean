@@ -30,7 +30,7 @@ noncomputable def pairSum (f : ℕ → ℝ) (x h : ℝ) : ℝ :=
 /-- **The bilinear all-interval theorem**, for one weight and one window law. -/
 def MRBilinear (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
   Tendsto (fun x => pairSum f x (hh x) / (hh x * Real.sqrt x * Real.log 2)
-      - (blockMean f x) ^ 2) atTop (𝓝 0)
+      - (blockMean f x) ^ (2 : ℕ)) atTop (𝓝 0)
 
 /-- The signed pair sum is the pair sum of `μ`. -/
 theorem signedPairSum_eq_pairSum (x h : ℝ) :
@@ -38,7 +38,7 @@ theorem signedPairSum_eq_pairSum (x h : ℝ) :
 
 /-- The squarefree pair count is the pair sum of `μ²`. -/
 theorem squarefreePairCount_eq_pairSum (x h : ℝ) :
-    squarefreePairCount x h = pairSum (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) x h := rfl
+    squarefreePairCount x h = pairSum (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) x h := rfl
 
 /-- **The signed pair sum vanishes**, given the interface at `μ`. -/
 theorem tendsto_signedPairSum_of_MR {hh : ℝ → ℝ}
@@ -46,7 +46,7 @@ theorem tendsto_signedPairSum_of_MR {hh : ℝ → ℝ}
     Tendsto (fun x => signedPairSum x (hh x) / (hh x * Real.sqrt x * Real.log 2))
       atTop (𝓝 0) := by
   have hmean := tendsto_blockMean_moebius
-  have hsq : Tendsto (fun x => (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ)) x) ^ 2)
+  have hsq : Tendsto (fun x => (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ)) x) ^ (2 : ℕ))
       atTop (𝓝 0) := by
     have := hmean.pow 2
     simpa using this
@@ -58,12 +58,12 @@ theorem tendsto_signedPairSum_of_MR {hh : ℝ → ℝ}
 
 /-- **The squarefree pair count has density `D²`**, given the interface at `μ²`. -/
 theorem tendsto_squarefreePairCount_of_MR {hh : ℝ → ℝ}
-    (hMR : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) hh) :
+    (hMR : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) hh) :
     Tendsto (fun x => squarefreePairCount x (hh x) / (hh x * Real.sqrt x * Real.log 2))
-      atTop (𝓝 (squarefreeDensity ^ 2)) := by
+      atTop (𝓝 (squarefreeDensity ^ (2 : ℕ))) := by
   have hmean := tendsto_blockMean_moebius_sq
-  have hsq : Tendsto (fun x => (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) x) ^ 2)
-      atTop (𝓝 (squarefreeDensity ^ 2)) := hmean.pow 2
+  have hsq : Tendsto (fun x => (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) x) ^ (2 : ℕ))
+      atTop (𝓝 (squarefreeDensity ^ (2 : ℕ))) := hmean.pow 2
   have hadd := hMR.add hsq
   rw [zero_add] at hadd
   refine hadd.congr fun x => ?_
@@ -73,11 +73,11 @@ theorem tendsto_squarefreePairCount_of_MR {hh : ℝ → ℝ}
 /-- **Card equation (7).**  Both sign classes carry half the squarefree pair density. -/
 theorem tendsto_signClass_of_MR {hh : ℝ → ℝ}
     (hMR1 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) hh) :
+    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) hh) :
     Tendsto (fun x => signClassCount x (hh x) 1 / (hh x * Real.sqrt x * Real.log 2))
-        atTop (𝓝 (squarefreeDensity ^ 2 / 2))
+        atTop (𝓝 (squarefreeDensity ^ (2 : ℕ) / 2))
       ∧ Tendsto (fun x => signClassCount x (hh x) (-1) / (hh x * Real.sqrt x * Real.log 2))
-        atTop (𝓝 (squarefreeDensity ^ 2 / 2)) :=
+        atTop (𝓝 (squarefreeDensity ^ (2 : ℕ) / 2)) :=
   tendsto_signClass_of_limits (N := fun x => hh x * Real.sqrt x * Real.log 2)
     (tendsto_squarefreePairCount_of_MR hMR2) (tendsto_signedPairSum_of_MR hMR1)
 

@@ -231,7 +231,7 @@ theorem coordPartial_coordPartial_sqCoord (k i : Fin d) (x : Fin d → ℝ) :
 theorem chartRiccatiPotential_ofSignature_sqCoord (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
     (k : Fin d) (x : Fin d → ℝ) :
     chartRiccatiPotential (SmoothPseudoMetric.ofSignature eps heps).chart (sqCoord k) x
-      = -((eps k)⁻¹ * 2 + (eps k)⁻¹ * (2 * x k) ^ 2) := by
+      = -((eps k)⁻¹ * 2 + (eps k)⁻¹ * (2 * x k) ^ (2 : ℕ)) := by
   have hdal : (SmoothPseudoMetric.ofSignature eps heps).chart.dalembert (sqCoord k) x
       = (eps k)⁻¹ * 2 := by
     rw [SmoothPseudoMetric.ofSignature_dalembert eps heps (contDiff_sqCoord k) x,
@@ -244,7 +244,7 @@ theorem chartRiccatiPotential_ofSignature_sqCoord (eps : Fin d → ℝ) (heps : 
     · intro hn
       exact absurd (Finset.mem_univ k) hn
   have hgp : (SmoothPseudoMetric.ofSignature eps heps).chart.gradPair (sqCoord k) (sqCoord k) x
-      = (eps k)⁻¹ * (2 * x k) ^ 2 := by
+      = (eps k)⁻¹ * (2 * x k) ^ (2 : ℕ) := by
     rw [ofSignature_gradPair, Finset.sum_eq_single k]
     · rw [coordPartial_sqCoord]
       simp
@@ -269,7 +269,7 @@ theorem exists_determined_potential_not_leafConstant :
   have h1 : ((1 : Fin (d + 1 + 1)) : ℕ) = 1 := by simp
   have hval : ∀ x : Fin (d + 1 + 1) → ℝ,
       chartRiccatiPotential (SmoothPseudoMetric.minkowski (d + 1 + 1)).chart (sqCoord 1) x
-        = -(2 + (2 * x 1) ^ 2) := by
+        = -(2 + (2 * x 1) ^ (2 : ℕ)) := by
     intro x
     rw [SmoothPseudoMetric.minkowski,
       chartRiccatiPotential_ofSignature_sqCoord _ _ 1 x]

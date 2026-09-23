@@ -216,7 +216,7 @@ theorem exists_entire_approx_cauchyTransform_gap {α : Type*} [MeasurableSpace �
     have h := tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
     simpa using ((h.div_const (d₂ - L)).const_mul A)
   obtain ⟨N, hN⟩ := (htendN.eventually (gt_mem_nhds (by linarith : (0:ℝ) < ε / 2))).exists
-  set B : ℝ := (N : ℝ) ^ 2 * (max 1 (2 * L / d₁)) ^ N with hB
+  set B : ℝ := (N : ℝ) ^ (2 : ℕ) * (max 1 (2 * L / d₁)) ^ N with hB
   have hB0 : 0 ≤ B := by
     rw [hB]
     positivity
@@ -411,21 +411,21 @@ theorem exists_entire_approx_single_kernel {c a : ℂ} (ha : a.re < 1) {ρ : ℝ
       linarith
     have hreabs : |a.re| ≤ ‖a‖ / 8 := by
       refine abs_le.mpr ⟨by linarith, by linarith⟩
-    have hsq : (a.re) ^ 2 ≤ (‖a‖ / 8) ^ 2 := by
-      have h1 : |a.re| ^ 2 = (a.re) ^ 2 := sq_abs _
-      calc (a.re) ^ 2 = |a.re| ^ 2 := h1.symm
-        _ ≤ (‖a‖ / 8) ^ 2 := by
+    have hsq : (a.re) ^ (2 : ℕ) ≤ (‖a‖ / 8) ^ (2 : ℕ) := by
+      have h1 : |a.re| ^ (2 : ℕ) = (a.re) ^ (2 : ℕ) := sq_abs _
+      calc (a.re) ^ (2 : ℕ) = |a.re| ^ (2 : ℕ) := h1.symm
+        _ ≤ (‖a‖ / 8) ^ (2 : ℕ) := by
             refine pow_le_pow_left₀ (abs_nonneg _) hreabs 2
-    have hnormsq : ‖a‖ ^ 2 = (a.re) ^ 2 + (a.im) ^ 2 := by
+    have hnormsq : ‖a‖ ^ (2 : ℕ) = (a.re) ^ (2 : ℕ) + (a.im) ^ (2 : ℕ) := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
       ring
-    have himsq : (‖a‖ / 2) ^ 2 ≤ (a.im) ^ 2 := by
-      have h64 : (‖a‖ / 8) ^ 2 = ‖a‖ ^ 2 / 64 := by ring
-      have h4 : (‖a‖ / 2) ^ 2 = ‖a‖ ^ 2 / 4 := by ring
+    have himsq : (‖a‖ / 2) ^ (2 : ℕ) ≤ (a.im) ^ (2 : ℕ) := by
+      have h64 : (‖a‖ / 8) ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) / 64 := by ring
+      have h4 : (‖a‖ / 2) ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) / 4 := by ring
       nlinarith [hnormsq, hsq, h64, h4, sq_nonneg (a.im)]
     have him : ‖a‖ / 2 ≤ |a.im| := by
       have h1 : (0:ℝ) ≤ ‖a‖ / 2 := by positivity
-      have h2 : |a.im| ^ 2 = (a.im) ^ 2 := sq_abs _
+      have h2 : |a.im| ^ (2 : ℕ) = (a.im) ^ (2 : ℕ) := sq_abs _
       nlinarith [abs_nonneg a.im, himsq, h2]
     have hcar2 : ρ + L + δ ≤ |a.im| := by
       refine le_trans ?_ him

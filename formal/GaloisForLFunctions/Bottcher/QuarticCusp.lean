@@ -23,7 +23,7 @@ theorem tendsto_quarticDefect_atImInfty :
   have h := ((tendsto_thetaThree_atImInfty.pow 4).sub
     (tendsto_thetaTwo_atImInfty.pow 4)).sub (tendsto_thetaFour_atImInfty.pow 4)
   rw [show quarticDefect =
-      (fun τ => thetaThree τ ^ 4 - thetaTwo τ ^ 4 - thetaFour τ ^ 4) by
+      (fun τ => thetaThree τ ^ (4 : ℕ) - thetaTwo τ ^ (4 : ℕ) - thetaFour τ ^ (4 : ℕ)) by
     rfl]
   norm_num at h
   exact h
@@ -42,11 +42,11 @@ theorem modularLambda_ne_one_of_quartic {τ : ℂ} (hτ : 0 < τ.im) (hF : quart
   intro hlam
   have h3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
   have h4 : thetaFour τ ≠ 0 := thetaFour_ne_zero_of_im_pos hτ
-  have heq : thetaTwo τ ^ 4 = thetaThree τ ^ 4 := by
+  have heq : thetaTwo τ ^ (4 : ℕ) = thetaThree τ ^ (4 : ℕ) := by
     rw [modularLambda, div_pow] at hlam
     field_simp at hlam
     linear_combination hlam
-  have hz : thetaFour τ ^ 4 = 0 := by
+  have hz : thetaFour τ ^ (4 : ℕ) = 0 := by
     rw [quarticDefect] at hF
     linear_combination -hF - heq
   exact h4 ((pow_eq_zero_iff (by norm_num : (4 : ℕ) ≠ 0)).mp hz)

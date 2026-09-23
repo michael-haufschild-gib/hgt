@@ -27,7 +27,7 @@ set_option autoImplicit false
 
 /-- Hyperbolically weighted gradient pairing of two literal angular fields. -/
 def crossGradient (F G : Field) (z : Point) : ℂ :=
-  (z 1 : ℂ) ^ 2 *
+  (z 1 : ℂ) ^ (2 : ℕ) *
     (coordDeriv 0 F z * coordDeriv 0 G z +
       coordDeriv 1 F z * coordDeriv 1 G z)
 
@@ -53,8 +53,8 @@ def crossBranchGradient (q : XiZeroCopy) (z : Point) : ℂ :=
 
 /-- Complete non-eigenfield forcing of the complementary-rate angular product. -/
 def crossBranchAngularForcing (q : XiZeroCopy) (z : Point) : ℂ :=
-  (parameter q true / 2) * scalar (center q) z ^ 2 * fullAngularField q false z +
-    (parameter q false / 2) * scalar (center q) z ^ 2 * fullAngularField q true z +
+  (parameter q true / 2) * scalar (center q) z ^ (2 : ℕ) * fullAngularField q false z +
+    (parameter q false / 2) * scalar (center q) z ^ (2 : ℕ) * fullAngularField q true z +
       2 * crossBranchGradient q z
 
 /-- Exact angular source equation for the complementary physical branches.
@@ -110,7 +110,7 @@ theorem crossBranchClockParameter_eq_twenty (q : XiZeroCopy) :
 cross-gradient term is accounted for. -/
 theorem crossBranchAngularParameter_eq (q : XiZeroCopy) :
     crossBranchAngularParameter q =
-      8 * (q.1 : ℂ) ^ 2 - 8 * (q.1 : ℂ) + 6 := by
+      8 * (q.1 : ℂ) ^ (2 : ℕ) - 8 * (q.1 : ℂ) + 6 := by
   rw [crossBranchAngularParameter, physicalRate_parameter q true,
     physicalRate_parameter q false]
   simp only [physicalRate, if_true, Bool.false_eq_true, if_false]

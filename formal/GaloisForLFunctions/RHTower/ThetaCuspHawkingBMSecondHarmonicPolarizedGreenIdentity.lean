@@ -143,9 +143,9 @@ theorem hasDerivAt_d4BMPlusPlusIntegratingFactor
         (Real.sqrt (1 - z) : ℂ) +
       Complex.exp (c * (Real.log z : ℂ)) *
         ((1 / (2 * Real.sqrt (1 - z)) * -1 : ℝ) : ℂ) = _
-  have hsquare : Real.sqrt (1 - z) ^ 2 = 1 - z :=
+  have hsquare : Real.sqrt (1 - z) ^ (2 : ℕ) = 1 - z :=
     Real.sq_sqrt (sub_nonneg.mpr (le_of_lt hz1))
-  have hsquareC : (Real.sqrt (1 - z) : ℂ) ^ 2 = (1 - z : ℝ) := by
+  have hsquareC : (Real.sqrt (1 - z) : ℂ) ^ (2 : ℕ) = (1 - z : ℝ) := by
     exact_mod_cast hsquare
   have hzC : (z : ℂ) ≠ 0 := by exact_mod_cast hz
   have h1zC : (1 - z : ℂ) ≠ 0 := by exact_mod_cast h1z

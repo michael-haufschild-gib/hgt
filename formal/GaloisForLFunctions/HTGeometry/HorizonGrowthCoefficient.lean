@@ -9,7 +9,7 @@ set_option backward.isDefEq.respectTransparency false
 
 /-- The bound depends only on the frequency, one interior solution jet, and the two forcing bounds. -/
 def horizonGrowthCoefficient (w x y : ℂ) (A B : ℝ) : ℝ :=
-  let E := ‖(Real.exp w.re:ℂ)*(y+w*x)‖^2+‖(Real.exp w.re:ℂ)*(y-w*x)‖^2
+  let E := ‖(Real.exp w.re:ℂ)*(y+w*x)‖^(2 : ℕ)+‖(Real.exp w.re:ℂ)*(y-w*x)‖^(2 : ℕ)
   max ((E+1)*Real.exp ((4*(A/(2*‖w‖))+2*B)/2))
     ((E+1)*Real.exp (-4*w.re+4*(A/(2*‖w‖))+2*B))/(2*‖w‖)
 
@@ -27,7 +27,7 @@ theorem horizonGrowthCoefficient_continuousAt (w x y : ℂ) (A B : ℝ) (hw : w 
 theorem forcedSecondOrder_horizon_bound_explicit (w : ℂ) (hw : w ≠ 0) (hwr : w.re ≤ 0)
     (U V p f : ℝ → ℂ) (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B)
     (hU : ∀ t < 0, HasDerivAt U (V t) t)
-    (hV : ∀ t < 0, HasDerivAt V (w^2*U t+p t*U t-f t) t)
+    (hV : ∀ t < 0, HasDerivAt V (w^(2 : ℕ)*U t+p t*U t-f t) t)
     (hp : ∀ t < 0, ‖p t‖ ≤ A*Real.exp (2*t))
     (hf : ∀ t < 0, ‖f t‖ ≤ B*Real.exp ((w.re+2)*t)) (t : ℝ) (ht : t < 0) :
     ‖U t‖ ≤ horizonGrowthCoefficient w (U (-1)) (V (-1)) A B*Real.exp (w.re*t) := by

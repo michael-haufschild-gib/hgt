@@ -71,8 +71,8 @@ theorem exists_routeKRVM_initial_tail_energy_lt
   rw [hsNormSq_routeKRVMTailOperator]
   calc
     ∑' p : Nat.Primes,
-        routeKRVMTailWeight (routeKInitialPrimeFinset N) p ^ 2
-      ≤ ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ 2 := by
+        routeKRVMTailWeight (routeKInitialPrimeFinset N) p ^ (2 : ℕ)
+      ≤ ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ (2 : ℕ) := by
         apply Summable.tsum_le_tsum
         · intro p
           by_cases hpN : p ∈ routeKInitialPrimeFinset N
@@ -83,12 +83,12 @@ theorem exists_routeKRVM_initial_tail_energy_lt
         · exact summable_routeKRVMTailWeight_sq _
         · exact summable_routeKRVMTailWeight_sq _
     _ = ∑' p : {p : Nat.Primes // p ∉ s},
-          routeKPrimeRVMReciprocal p ^ 2 := by
+          routeKPrimeRVMReciprocal p ^ (2 : ℕ) := by
         calc
-          (∑' p : Nat.Primes, routeKRVMTailWeight s p ^ 2) =
+          (∑' p : Nat.Primes, routeKRVMTailWeight s p ^ (2 : ℕ)) =
               ∑' p : Nat.Primes,
                 ({p : Nat.Primes | p ∉ s}.indicator
-                  (fun p => routeKPrimeRVMReciprocal p ^ 2)) p := by
+                  (fun p => routeKPrimeRVMReciprocal p ^ (2 : ℕ))) p := by
             apply tsum_congr
             intro p
             by_cases hp : p ∈ s <;>
@@ -96,11 +96,11 @@ theorem exists_routeKRVM_initial_tail_energy_lt
           _ = _ := by
             exact
               (tsum_subtype {p : Nat.Primes | p ∉ s}
-                (fun p => routeKPrimeRVMReciprocal p ^ 2)).symm
+                (fun p => routeKPrimeRVMReciprocal p ^ (2 : ℕ))).symm
     _ < ε := by
       change
         (∑' p : {p : Nat.Primes // p ∉ s},
-          routeKPrimeRVMReciprocal p ^ 2) < ε at hs
+          routeKPrimeRVMReciprocal p ^ (2 : ℕ)) < ε at hs
       exact hs
 
 end

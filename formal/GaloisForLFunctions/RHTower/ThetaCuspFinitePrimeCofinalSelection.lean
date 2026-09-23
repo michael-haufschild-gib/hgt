@@ -21,16 +21,16 @@ namespace RHTower
 def finitePrimeThetaCuspScreenAccuracy (j N : ℕ) : Prop :=
   ∀ m ≤ j, ∀ x ∈ Icc (-((j + 1 : ℕ) : ℝ)) ((j + 1 : ℕ) : ℝ),
     |iteratedDeriv m (finitePrimeThetaCuspSource N) x -
-      iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ 2))
+      iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ (2 : ℕ)))
 
 theorem exists_finitePrimeThetaCuspDerivativeThreshold (j m : ℕ) :
     ∃ N₀ : ℕ, ∀ N ≥ N₀, ∀ x ∈ Icc (-((j + 1 : ℕ) : ℝ)) ((j + 1 : ℕ) : ℝ),
       |iteratedDeriv m (finitePrimeThetaCuspSource N) x -
-        iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ 2)) := by
+        iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ (2 : ℕ))) := by
   have hconv := iteratedDeriv_finitePrimeThetaCuspSource_tendstoUniformlyOn_Icc
     m ((j + 1 : ℕ) : ℝ)
   have hev := (Metric.tendstoUniformlyOn_iff.mp hconv)
-    (Real.exp (-((j : ℝ) ^ 2))) (Real.exp_pos _)
+    (Real.exp (-((j : ℝ) ^ (2 : ℕ)))) (Real.exp_pos _)
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.1 hev
   refine ⟨N₀, fun N hN x hx ↦ ?_⟩
   simpa [Real.dist_eq, abs_sub_comm] using hN₀ N hN x hx
@@ -43,7 +43,7 @@ theorem finitePrimeThetaCuspDerivativeThreshold_spec (j m : ℕ) {N : ℕ}
     (hN : finitePrimeThetaCuspDerivativeThreshold j m ≤ N) :
     ∀ x ∈ Icc (-((j + 1 : ℕ) : ℝ)) ((j + 1 : ℕ) : ℝ),
       |iteratedDeriv m (finitePrimeThetaCuspSource N) x -
-        iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ 2)) :=
+        iteratedDeriv m thetaCuspFullSource x| < Real.exp (-((j : ℝ) ^ (2 : ℕ))) :=
   (Classical.choose_spec (exists_finitePrimeThetaCuspDerivativeThreshold j m)) N hN
 
 /-- One threshold controlling every derivative order through `j`. -/

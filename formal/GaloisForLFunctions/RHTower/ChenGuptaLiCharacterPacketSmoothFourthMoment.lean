@@ -6,7 +6,7 @@ character-product expansion of the fourth packet moment.  The product
 configurations split into the source energy configurations, whose additive
 pair-frequency is at most one, and a far part.  The near contribution is
 bounded by the literal energy; the far contribution has an arbitrary-order
-polynomial tail, with the finite `R^4` configuration count made explicit.
+polynomial tail, with the finite `R^(4 : ℕ)` configuration count made explicit.
 
 No RH, GRH, smoothness, energy, large-value, or zero-density premise is used.
 -/

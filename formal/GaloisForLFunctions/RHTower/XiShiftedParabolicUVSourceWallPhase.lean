@@ -26,7 +26,7 @@ def XiShiftedParabolicCofinalNonintegrableChristoffelSourceWallPhase : Prop :=
       xiShiftedHigherBlockTerminalFrontier n <
         xiShiftedHigherBlockTerminalFrontier (n + 1) ∧
       xiShiftedHigherBlockTerminalFrontier (n + 1) <
-        routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ 2) ∧
+        routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ (2 : ℕ)) ∧
       ∀ b : ℝ, xiShiftedHigherBlockTerminalFrontier (n + 1) < b →
         ¬IntervalIntegrable
           (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1))

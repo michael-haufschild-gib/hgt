@@ -67,7 +67,7 @@ def pairQubitWeakTwoLocalNearActionGapEvent
         (pairQubitWeakTwoLocalSpectralEnergy L scale x)
         ((Fintype.card
             (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ *
-          (scale ^ 2 *
+          (scale ^ (2 : ℕ) *
             (twoLocalPauliGaussianHermitianPencil (L * 2)).commutatorActivation
               (pairQubitPathUnitaryReindex L (U c)))) ^ r) + κ ≤
     ∑ c, finiteUnitaryChoiOptimalDesignWeight r
@@ -88,13 +88,13 @@ def pairQubitWeakTwoLocalCarrierBudget
     (κ : ℝ) : ℝ :=
   (∑ c, finiteUnitaryChoiOptimalDesignWeight r
       (fun c => pairQubitPathUnitaryReindex L (U c)) c *
-    Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+    Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
       (((6 * (L * 2) - 4 : ℕ) : ℝ) *
         pairQubitUnitaryProjectiveTraceDeficit (U c)))) / κ
 
 def pairQubitWeakTwoLocalGrowthFailureBudget (L : ℕ) : ℝ :=
   (Fintype.card (PauliTracelessLabel (L * 2) 2) : ℝ) *
-    (2 * Real.exp (-((L * 2 : ℕ) : ℝ) ^ 2 / 2))
+    (2 * Real.exp (-((L * 2 : ℕ) : ℝ) ^ (2 : ℕ) / 2))
 
 theorem stdGaussian_measure_pairQubitOptimalDesignScaledAffineTwoLocalNearAction_gap_le
     {L : ℕ} {scale : ℝ} (hscale : scale ≠ 0)
@@ -151,7 +151,7 @@ theorem pairQubitWeakTwoLocalCarrierBudget_le_of_projectiveDeficit
     {η κ : ℝ} (hη : ∀ c, η ≤ pairQubitUnitaryProjectiveTraceDeficit (U c))
     (hκ : 0 < κ) :
     pairQubitWeakTwoLocalCarrierBudget r U κ ≤
-      Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+      Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
         (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) / κ := by
   unfold pairQubitWeakTwoLocalCarrierBudget
   apply div_le_div_of_nonneg_right _ hκ.le
@@ -161,10 +161,10 @@ theorem pairQubitWeakTwoLocalCarrierBudget_le_of_projectiveDeficit
     finiteUnitaryChoiOptimalDesignWeight_mem_stdSimplex r
       (fun c => pairQubitPathUnitaryReindex L (U c))
   calc
-    (∑ c, w c * Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+    (∑ c, w c * Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
         (((6 * (L * 2) - 4 : ℕ) : ℝ) *
           pairQubitUnitaryProjectiveTraceDeficit (U c)))) ≤
-      ∑ c, w c * Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+      ∑ c, w c * Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
         (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) := by
       apply Finset.sum_le_sum
       intro c _
@@ -173,7 +173,7 @@ theorem pairQubitWeakTwoLocalCarrierBudget_le_of_projectiveDeficit
       apply mul_le_mul_of_nonpos_left
       · exact mul_le_mul_of_nonneg_left (hη c) (by positivity)
       · exact neg_nonpos.mpr (by positivity)
-    _ = Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+    _ = Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
         (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) := by
       rw [← Finset.sum_mul, hw.2, one_mul]
 
@@ -189,7 +189,7 @@ theorem exists_pairQubitWeakTwoLocal_sameDraw_growth_and_carrier_of_projectiveDe
     (hη : ∀ c, η ≤ pairQubitUnitaryProjectiveTraceDeficit (U c))
     (hκ : 0 < κ)
     (hjoint : pairQubitWeakTwoLocalGrowthFailureBudget L +
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) / κ < 1) :
     ∃ x : TwoLocalPauliCoefficientSpace (L * 2),
       x ∈ weakTwoLocalPauliCertifiedGrowthSet L ∧

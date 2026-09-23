@@ -72,8 +72,8 @@ theorem excess_order {k : ℝ} (hk : 1 ≤ k) :
 /-- **The Turán ratio factorises** into the moment ratio times the factorial gap. -/
 theorem turan_ratio_factorises {mk mk1 mk2 fk fk1 fk2 : ℝ}
     (h0 : mk ≠ 0) (h2 : mk2 ≠ 0) (g0 : fk ≠ 0) (g1 : fk1 ≠ 0) (g2 : fk2 ≠ 0) :
-    ((mk1 / fk1) ^ 2) / ((mk / fk) * (mk2 / fk2))
-      = (mk1 ^ 2 / (mk * mk2)) * ((fk * fk2) / fk1 ^ 2) := by
+    ((mk1 / fk1) ^ (2 : ℕ)) / ((mk / fk) * (mk2 / fk2))
+      = (mk1 ^ (2 : ℕ) / (mk * mk2)) * ((fk * fk2) / fk1 ^ (2 : ℕ)) := by
   field_simp
 
 /-- **Turán is the competition.**  The normalised ratio is at least one exactly when the moment ratio

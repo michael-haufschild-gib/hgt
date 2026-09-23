@@ -26,13 +26,13 @@ section RootFactorization
 /-- Off the negative real axis the principal root is the unique square root with positive real
 part. -/
 theorem csqrt_eq_of_sq_of_re_pos_of_im_ne_zero {w v : ℂ} (hw : w.im ≠ 0) (hv : 0 < v.re)
-    (hsq : v ^ 2 = w) : _root_.HTGeometry.csqrt w = v := by
-  have hcs : _root_.HTGeometry.csqrt w ^ 2 = w := _root_.HTGeometry.csqrt_sq_of_im_ne_zero hw
+    (hsq : v ^ (2 : ℕ) = w) : _root_.HTGeometry.csqrt w = v := by
+  have hcs : _root_.HTGeometry.csqrt w ^ (2 : ℕ) = w := _root_.HTGeometry.csqrt_sq_of_im_ne_zero hw
   have hcre : 0 < (_root_.HTGeometry.csqrt w).re :=
     _root_.HTGeometry.csqrt_re_pos_of_im_ne_zero hw
   have hfac : (_root_.HTGeometry.csqrt w - v) * (_root_.HTGeometry.csqrt w + v) = 0 := by
     have : (_root_.HTGeometry.csqrt w - v) * (_root_.HTGeometry.csqrt w + v)
-        = _root_.HTGeometry.csqrt w ^ 2 - v ^ 2 := by ring
+        = _root_.HTGeometry.csqrt w ^ (2 : ℕ) - v ^ (2 : ℕ) := by ring
     rw [this, hcs, hsq, sub_self]
   rcases mul_eq_zero.mp hfac with h | h
   · exact sub_eq_zero.mp h
@@ -44,60 +44,60 @@ theorem csqrt_eq_of_sq_of_re_pos_of_im_ne_zero {w v : ℂ} (hw : w.im ≠ 0) (hv
     simp only [Complex.neg_re] at hcre
     linarith
 
-theorem norm_shellQuot (t : ℂ) (x : ℝ) : ‖((x : ℂ)) ^ 2 / t ^ 2‖ = x ^ 2 / ‖t‖ ^ 2 := by
+theorem norm_shellQuot (t : ℂ) (x : ℝ) : ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ = x ^ (2 : ℕ) / ‖t‖ ^ (2 : ℕ) := by
   rw [norm_div, norm_pow, norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 /-- **The mass-shell root factors through the spectral parameter.** -/
 theorem massBesselRoot_eq_mul_csqrt {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ)
-    (hsmall : x ^ 2 < t.re * ‖t‖) :
+    (hsmall : x ^ (2 : ℕ) < t.re * ‖t‖) :
     _root_.HTGeometry.massBesselRoot t x
-      = t * _root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ 2 / t ^ 2) := by
+      = t * _root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)) := by
   have htne : t ≠ 0 := by
     intro h
     rw [h] at htre
     simp at htre
   have htnorm : (0 : ℝ) < ‖t‖ := norm_pos_iff.mpr htne
   have hrele : t.re ≤ ‖t‖ := Complex.re_le_norm t
-  have hu : ‖((x : ℂ)) ^ 2 / t ^ 2‖ = x ^ 2 / ‖t‖ ^ 2 := norm_shellQuot t x
-  have hulet : ‖((x : ℂ)) ^ 2 / t ^ 2‖ * ‖t‖ = x ^ 2 / ‖t‖ := by
+  have hu : ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ = x ^ (2 : ℕ) / ‖t‖ ^ (2 : ℕ) := norm_shellQuot t x
+  have hulet : ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ * ‖t‖ = x ^ (2 : ℕ) / ‖t‖ := by
     rw [hu]
     field_simp
-  have hxlt : x ^ 2 / ‖t‖ < t.re := by
+  have hxlt : x ^ (2 : ℕ) / ‖t‖ < t.re := by
     rw [div_lt_iff₀ htnorm]
     exact hsmall
-  have hulr : ‖((x : ℂ)) ^ 2 / t ^ 2‖ < 1 := by
+  have hulr : ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ < 1 := by
     rw [hu, div_lt_one (by positivity)]
     nlinarith [hsmall, hrele, htnorm, htre]
-  have hre1 : 0 < (1 + ((x : ℂ)) ^ 2 / t ^ 2).re := by
-    have hb : |(((x : ℂ)) ^ 2 / t ^ 2).re| ≤ ‖((x : ℂ)) ^ 2 / t ^ 2‖ :=
+  have hre1 : 0 < (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)).re := by
+    have hb : |(((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)).re| ≤ ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ :=
       Complex.abs_re_le_norm _
     have := abs_le.mp hb
     simp only [Complex.add_re, Complex.one_re]
     linarith [this.1, hulr]
-  have hcsl : ‖_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ 2 / t ^ 2) - 1‖
-      ≤ ‖((x : ℂ)) ^ 2 / t ^ 2‖ := by
+  have hcsl : ‖_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)) - 1‖
+      ≤ ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ := by
     have h := _root_.HTGeometry.norm_csqrt_sub_one_le hre1
     simpa using h
-  set v : ℂ := t * _root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ 2 / t ^ 2) with hvdef
-  have hvt : ‖v - t‖ ≤ x ^ 2 / ‖t‖ := by
-    have hfac : v - t = t * (_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ 2 / t ^ 2) - 1) := by
+  set v : ℂ := t * _root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)) with hvdef
+  have hvt : ‖v - t‖ ≤ x ^ (2 : ℕ) / ‖t‖ := by
+    have hfac : v - t = t * (_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)) - 1) := by
       rw [hvdef]
       ring
     rw [hfac, norm_mul]
-    calc ‖t‖ * ‖_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ 2 / t ^ 2) - 1‖
-        ≤ ‖t‖ * ‖((x : ℂ)) ^ 2 / t ^ 2‖ := mul_le_mul_of_nonneg_left hcsl (norm_nonneg t)
-      _ = x ^ 2 / ‖t‖ := by rw [mul_comm]; exact hulet
+    calc ‖t‖ * ‖_root_.HTGeometry.csqrt (1 + ((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)) - 1‖
+        ≤ ‖t‖ * ‖((x : ℂ)) ^ (2 : ℕ) / t ^ (2 : ℕ)‖ := mul_le_mul_of_nonneg_left hcsl (norm_nonneg t)
+      _ = x ^ (2 : ℕ) / ‖t‖ := by rw [mul_comm]; exact hulet
   have hvre : 0 < v.re := by
     have hb : |(v - t).re| ≤ ‖v - t‖ := Complex.abs_re_le_norm _
     have := abs_le.mp hb
     have hsub : (v - t).re = v.re - t.re := by simp
     rw [hsub] at this
     linarith [this.1, hvt, hxlt]
-  have hvsq : v ^ 2 = t ^ 2 + ((x : ℂ)) ^ 2 := by
+  have hvsq : v ^ (2 : ℕ) = t ^ (2 : ℕ) + ((x : ℂ)) ^ (2 : ℕ) := by
     have hsq := _root_.HTGeometry.csqrt_sq hre1
     rw [hvdef, mul_pow, hsq]
     field_simp
-  have him : (t ^ 2 + ((x : ℂ)) ^ 2).im ≠ 0 :=
+  have him : (t ^ (2 : ℕ) + ((x : ℂ)) ^ (2 : ℕ)).im ≠ 0 :=
     _root_.HTGeometry.massShell_im_ne_zero htre htim x
   rw [_root_.HTGeometry.massBesselRoot]
   exact csqrt_eq_of_sq_of_re_pos_of_im_ne_zero him hvre hvsq

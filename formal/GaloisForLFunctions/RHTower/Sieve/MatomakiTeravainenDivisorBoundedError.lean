@@ -24,7 +24,7 @@ theorem norm_mtC1Coefficient_le_divisorBounded
     (α : ℕ → ℂ) {z D n : ℕ} (hn : 0 < n)
     {B : ℝ} (hB : 0 ≤ B) (hα : MTDivisorBounded α B) :
     ‖mtC1Coefficient α z D n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 * siftTailDivisorCount z D n := by
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) * siftTailDivisorCount z D n := by
   unfold mtC1Coefficient
   calc
     ‖∑ m ∈ n.divisors,
@@ -52,7 +52,7 @@ theorem norm_mtC1Coefficient_le_divisorBounded
         ((hα hmPos).trans (mul_le_mul_of_nonneg_left hmCard hB))
         (hnorm.trans (truncTail_le_siftTailDivisorCount hkDiv))
         (norm_nonneg _) (mul_nonneg hB (Nat.cast_nonneg _))
-    _ = B * (n.divisors.card : ℝ) ^ 2 * siftTailDivisorCount z D n := by
+    _ = B * (n.divisors.card : ℝ) ^ (2 : ℕ) * siftTailDivisorCount z D n := by
       simp [Finset.sum_const, nsmul_eq_mul]
       ring
 
@@ -61,11 +61,11 @@ theorem norm_mtC2Coefficient_le_divisorBounded
     (α : ℕ → ℂ) (lowerSpill upperSpill : Finset ℕ) (level : ℕ → ℕ)
     {n : ℕ} (hn : 0 < n) {B : ℝ} (hB : 0 ≤ B) (hα : MTDivisorBounded α B) :
     ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 *
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n) := by
   have boundary : ∀ S : Finset ℕ,
       ‖mtC2BoundaryCoefficient α S level n‖ ≤
-        B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount S n := by
+        B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount S n := by
     intro S
     unfold mtC2BoundaryCoefficient primeDivisorCount
     calc
@@ -76,7 +76,7 @@ theorem norm_mtC2Coefficient_le_divisorBounded
           ∑ m ∈ (n / q).divisors,
             α m * (rho ((n / q) / m) (level q) : ℂ) else 0‖ := norm_sum_le _ _
       _ ≤ ∑ q ∈ S,
-          if q ∣ n then B * (n.divisors.card : ℝ) ^ 2 else 0 := by
+          if q ∣ n then B * (n.divisors.card : ℝ) ^ (2 : ℕ) else 0 := by
         apply Finset.sum_le_sum
         intro q hq
         split_ifs with hqn
@@ -106,11 +106,11 @@ theorem norm_mtC2Coefficient_le_divisorBounded
             _ = B * (n.divisors.card : ℝ) * ((n / q).divisors.card : ℝ) := by
               simp [Finset.sum_const, nsmul_eq_mul]
               ring
-            _ ≤ B * (n.divisors.card : ℝ) ^ 2 := by
+            _ ≤ B * (n.divisors.card : ℝ) ^ (2 : ℕ) := by
               nlinarith [mul_le_mul_of_nonneg_left hcardN
                 (mul_nonneg hB (Nat.cast_nonneg n.divisors.card))]
         · simp
-      _ = B * (n.divisors.card : ℝ) ^ 2 *
+      _ = B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
           (∑ q ∈ S, if q ∣ n then 1 else 0) := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
@@ -122,10 +122,10 @@ theorem norm_mtC2Coefficient_le_divisorBounded
         mtC2BoundaryCoefficient α lowerSpill level n‖ ≤
       ‖mtC2BoundaryCoefficient α upperSpill level n‖ +
         ‖mtC2BoundaryCoefficient α lowerSpill level n‖ := norm_sub_le _ _
-    _ ≤ B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount upperSpill n +
-        B * (n.divisors.card : ℝ) ^ 2 * primeDivisorCount lowerSpill n :=
+    _ ≤ B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount upperSpill n +
+        B * (n.divisors.card : ℝ) ^ (2 : ℕ) * primeDivisorCount lowerSpill n :=
       add_le_add (boundary upperSpill) (boundary lowerSpill)
-    _ = B * (n.divisors.card : ℝ) ^ 2 *
+    _ = B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n) := by ring
 
 /-- The Buchstab replacement error under one divisor-function coefficient envelope. -/
@@ -134,7 +134,7 @@ theorem norm_mtC3Coefficient_le_divisorBounded
     (hS : ∀ q ∈ S, q.Prime) (hlower : ∀ q ∈ S, lower q ≤ q)
     {B : ℝ} (hB : 0 ≤ B) (hα : MTDivisorBounded α B) :
     ‖mtC3Coefficient α S lower n‖ ≤
-      B * (n.divisors.card : ℝ) ^ 2 *
+      B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         primePairDivisorCount S (fun q => primesIco (lower q) q) n := by
   rw [mtC3Coefficient_eq_expanded α S lower hn hS hlower]
   have hexp : ‖mtC3Expanded α S lower n‖ ≤
@@ -201,7 +201,7 @@ theorem norm_mtC3Coefficient_le_divisorBounded
           primePairDivisorCount S (fun q => primesIco (lower q) q) n) := by
       apply mul_le_mul_of_nonneg_left (mtC3ExpansionCount_le_pairDivisorCount S lower hn)
       positivity
-    _ = B * (n.divisors.card : ℝ) ^ 2 *
+    _ = B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
         primePairDivisorCount S (fun q => primesIco (lower q) q) n := by ring
 
 /-- Fifth-moment first bound for the truncation error. -/
@@ -211,17 +211,17 @@ theorem divisor_mul_ternary_mul_norm_mtC1Coefficient_le
     (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
         ‖mtC1Coefficient α z D n‖ ≤
       B * weightedSiftTailDivisorCount 5 z D n := by
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hc := norm_mtC1Coefficient_le_divisorBounded α (z := z) (D := D) hn hB hα
   unfold weightedSiftTailDivisorCount
   calc
     (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
         ‖mtC1Coefficient α z D n‖ ≤
-      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-        (B * (n.divisors.card : ℝ) ^ 2 * siftTailDivisorCount z D n) := by
+      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+        (B * (n.divisors.card : ℝ) ^ (2 : ℕ) * siftTailDivisorCount z D n) := by
       gcongr
-    _ = B * ((n.divisors.card : ℝ) ^ 5 * siftTailDivisorCount z D n) := by ring
+    _ = B * ((n.divisors.card : ℝ) ^ (5 : ℕ) * siftTailDivisorCount z D n) := by ring
 
 /-- Fifth-moment first bound for the endpoint error. -/
 theorem divisor_mul_ternary_mul_norm_mtC2Coefficient_le
@@ -231,7 +231,7 @@ theorem divisor_mul_ternary_mul_norm_mtC2Coefficient_le
         ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
       B * ((weightedPrimeDivisorCount 5 lowerSpill n) +
         weightedPrimeDivisorCount 5 upperSpill n) := by
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hc := norm_mtC2Coefficient_le_divisorBounded
     α lowerSpill upperSpill level hn hB hα
@@ -245,12 +245,12 @@ theorem divisor_mul_ternary_mul_norm_mtC2Coefficient_le
   calc
     (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
         ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
-      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-        (B * (n.divisors.card : ℝ) ^ 2 *
+      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+        (B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
           (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n)) := by
       gcongr
-    _ = B * ((n.divisors.card : ℝ) ^ 5 * primeDivisorCount lowerSpill n +
-        (n.divisors.card : ℝ) ^ 5 * primeDivisorCount upperSpill n) := by ring
+    _ = B * ((n.divisors.card : ℝ) ^ (5 : ℕ) * primeDivisorCount lowerSpill n +
+        (n.divisors.card : ℝ) ^ (5 : ℕ) * primeDivisorCount upperSpill n) := by ring
 
 /-- Fifth-moment first bound for the Buchstab replacement error. -/
 theorem divisor_mul_ternary_mul_norm_mtC3Coefficient_le
@@ -260,7 +260,7 @@ theorem divisor_mul_ternary_mul_norm_mtC3Coefficient_le
     (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
         ‖mtC3Coefficient α S lower n‖ ≤
       B * weightedPrimePairDivisorCount 5 S (fun q => primesIco (lower q) q) n := by
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hc := norm_mtC3Coefficient_le_divisorBounded α S lower hn hS hlower hB hα
   unfold weightedPrimePairDivisorCount
@@ -270,11 +270,11 @@ theorem divisor_mul_ternary_mul_norm_mtC3Coefficient_le
   calc
     (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
         ‖mtC3Coefficient α S lower n‖ ≤
-      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ 2) *
-        (B * (n.divisors.card : ℝ) ^ 2 *
+      (n.divisors.card : ℝ) * ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
+        (B * (n.divisors.card : ℝ) ^ (2 : ℕ) *
           primePairDivisorCount S (fun q => primesIco (lower q) q) n) := by
       gcongr
-    _ = B * ((n.divisors.card : ℝ) ^ 5 *
+    _ = B * ((n.divisors.card : ℝ) ^ (5 : ℕ) *
         primePairDivisorCount S (fun q => primesIco (lower q) q) n) := by ring
 
 /-- Divisor-bounded combined error has one extra divisor factor in its pointwise envelope. -/
@@ -463,7 +463,7 @@ theorem sum_norm_sq_mtLemma23Error_le_five_mul_divisor_weighted
     (lower : ℕ → ℕ) (Y : ℕ) {B : ℝ}
     (hB : 0 ≤ B) (hα : MTDivisorBounded α B) :
     ∑ n ∈ Finset.Icc 1 Y,
-        ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ ^ 2 ≤
+        ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ ^ (2 : ℕ) ≤
       5 * B * ∑ n ∈ Finset.Icc 1 Y,
         (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ) *
           ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ := by
@@ -476,7 +476,7 @@ theorem sum_norm_sq_mtLemma23Error_le_five_mul_divisor_weighted
   have hpoint := norm_mtLemma23Error_le_five_mul_divisor_mul_ternary
     α z D lowerSpill upperSpill P lower hnPos hB hα
   calc
-    ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ ^ 2 =
+    ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ ^ (2 : ℕ) =
       ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ *
         ‖mtLemma23Error α z D lowerSpill upperSpill P lower n‖ := by ring
     _ ≤ (5 * B * (n.divisors.card : ℝ) * (ternaryDivisorCount n : ℝ)) *

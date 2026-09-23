@@ -31,7 +31,7 @@ theorem measure_draws_with_large_boundedTargetCapture_le
         target (state y) threshold)))
     (q : ℝ)
     (hmomentJoint : ∀ c, ∫ p : Y × X,
-      ‖finiteComplexInner (state p.1 p.2) (target c)‖ ^ 2
+      ‖finiteComplexInner (state p.1 p.2) (target c)‖ ^ (2 : ℕ)
         ∂(nu.prod mu) ≤ q)
     (level : ℝ) (hlevel : 0 < level) :
     nu.real {y | level ≤ threshold *
@@ -107,7 +107,7 @@ theorem measure_draws_with_large_boundedTargetCapture_le
             (finiteBuresTargetRay (target c)) (jointState p) ∂(nu.prod mu) :=
         finitePositiveReporter_re_trace_covariance_mul_eq_integral
           (nu.prod mu) jointState (finiteBuresTargetRay (target c)) hprodJoint
-      _ = ∫ p, ‖finiteComplexInner (jointState p) (target c)‖ ^ 2
+      _ = ∫ p, ‖finiteComplexInner (jointState p) (target c)‖ ^ (2 : ℕ)
             ∂(nu.prod mu) := by
         apply integral_congr_ae
         filter_upwards [] with p

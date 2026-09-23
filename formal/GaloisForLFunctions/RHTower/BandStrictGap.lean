@@ -35,11 +35,11 @@ open _root_.RHTower
 theorem bandClass_one_ne_zero :
     bandClass (fun _ : ℝ => (1 : ℝ)) continuous_const ≠ 0 := by
   intro h
-  have hnorm : ‖bandClass (fun _ : ℝ => (1 : ℝ)) continuous_const‖ ^ 2 = 0 := by
+  have hnorm : ‖bandClass (fun _ : ℝ => (1 : ℝ)) continuous_const‖ ^ (2 : ℕ) = 0 := by
     rw [h, norm_zero]
     norm_num
   rw [norm_sq_bandClass] at hnorm
-  have hval : (∫ _x in (-1 : ℝ)..1, (1 : ℝ) ^ 2) = 2 := by
+  have hval : (∫ _x in (-1 : ℝ)..1, (1 : ℝ) ^ (2 : ℕ)) = 2 := by
     rw [intervalIntegral.integral_const]
     norm_num
   rw [hval] at hnorm
@@ -48,7 +48,7 @@ theorem bandClass_one_ne_zero :
 /-- A continuous test function vanishing on the open band has vanishing energy: the two endpoints are
 a null set. -/
 theorem integral_sq_eq_zero_of_eqOn_zero_Ioo {Φ : ℝ → ℝ}
-    (h : ∀ x ∈ Ioo (-1 : ℝ) 1, Φ x = 0) : (∫ x in (-1 : ℝ)..1, Φ x ^ 2) = 0 := by
+    (h : ∀ x ∈ Ioo (-1 : ℝ) 1, Φ x = 0) : (∫ x in (-1 : ℝ)..1, Φ x ^ (2 : ℕ)) = 0 := by
   rw [intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1),
     ← MeasureTheory.setIntegral_congr_set (Ioo_ae_eq_Ioc (a := (-1 : ℝ)) (b := 1))]
   refine MeasureTheory.setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
@@ -71,20 +71,20 @@ theorem not_hasEigenvalue_one {c : ℝ} (hc : 0 < c) :
     exact (coeFn_bandClass (eigenExtension c 1 ψ) hΦcont).trans
       (eigenExtension_ae_eq one_ne_zero heq).symm
   -- its Rayleigh quotient is one, so its spectral tail vanishes
-  have hform : (inner ℝ (bandOperatorL2 c ψ) ψ : ℝ) = ‖ψ‖ ^ 2 := by
+  have hform : (inner ℝ (bandOperatorL2 c ψ) ψ : ℝ) = ‖ψ‖ ^ (2 : ℕ) := by
     rw [heq, one_smul, real_inner_self_eq_norm_sq]
-  have hE : (∫ x in (-1 : ℝ)..1, eigenExtension c 1 ψ x ^ 2) = ‖ψ‖ ^ 2 := by
+  have hE : (∫ x in (-1 : ℝ)..1, eigenExtension c 1 ψ x ^ (2 : ℕ)) = ‖ψ‖ ^ (2 : ℕ) := by
     rw [← norm_sq_bandClass (eigenExtension c 1 ψ) hΦcont, hclass]
   have hF : (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1,
-      sincKernelSmooth c x y * (eigenExtension c 1 ψ x * eigenExtension c 1 ψ y)) = ‖ψ‖ ^ 2 := by
+      sincKernelSmooth c x y * (eigenExtension c 1 ψ x * eigenExtension c 1 ψ y)) = ‖ψ‖ ^ (2 : ℕ) := by
     rw [← inner_bandOperatorL2_bandClass c (eigenExtension c 1 ψ) hΦcont, hclass, hform]
   have htail : (∫ ξ in (Icc (-(c / (2 * Real.pi))) (c / (2 * Real.pi)))ᶜ,
-      ‖𝓕 (bandTrunc (eigenExtension c 1 ψ)) ξ‖ ^ 2) = 0 := by
+      ‖𝓕 (bandTrunc (eigenExtension c 1 ψ)) ξ‖ ^ (2 : ℕ)) = 0 := by
     rw [← leakage_eq_spectral_tail hc hΦcont, hE, hF]
     ring
   -- the uncertainty principle then kills the eigenvector
   have hzeroΦ := eqOn_zero_of_spectral_tail_eq_zero hc hΦcont htail
-  have hEzero : (∫ x in (-1 : ℝ)..1, eigenExtension c 1 ψ x ^ 2) = 0 :=
+  have hEzero : (∫ x in (-1 : ℝ)..1, eigenExtension c 1 ψ x ^ (2 : ℕ)) = 0 :=
     integral_sq_eq_zero_of_eqOn_zero_Ioo hzeroΦ
   rw [hE] at hEzero
   exact hne (norm_eq_zero.mp (by nlinarith [norm_nonneg ψ]))

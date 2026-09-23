@@ -52,7 +52,7 @@ theorem analyticAt_spectralEnsembleMatrix_pow_entry (P : Fin N → Matrix (Fin D
     AnalyticAt ℝ (fun θ : Fin N → ℝ => ((spectralEnsembleMatrix P θ) ^ m) x y) θ₀ := by
   induction m generalizing x y with
   | zero =>
-      have hfun : (fun θ : Fin N → ℝ => ((spectralEnsembleMatrix P θ) ^ 0) x y)
+      have hfun : (fun θ : Fin N → ℝ => ((spectralEnsembleMatrix P θ) ^ (0 : ℕ)) x y)
           = fun _ => (if x = y then (1 : ℂ) else 0) := by
         funext θ
         rw [pow_zero, Matrix.one_apply]

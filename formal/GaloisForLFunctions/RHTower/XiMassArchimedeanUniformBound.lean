@@ -644,8 +644,8 @@ theorem integrable_xiMassCenteredArchMajorant {σ : ℝ} (hσ : 0 < σ) :
   have hmajor : Integrable (fun x : ℝ =>
       xiMassArchVerticalGrowthConstant * Real.exp (-(σ * |x|)) +
         (1 / 2 : ℝ) * (|x| * Real.exp (-(σ * |x|)))) :=
-    ((integrable_exp_neg_mul_abs hσ).const_mul xiMassArchVerticalGrowthConstant).add
-      ((integrable_abs_mul_exp_neg_mul_abs hσ).const_mul (1 / 2 : ℝ))
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul xiMassArchVerticalGrowthConstant).add
+      ((integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul (1 / 2 : ℝ))
   apply hmajor.congr
   filter_upwards with x
   unfold xiMassCenteredArchMajorant

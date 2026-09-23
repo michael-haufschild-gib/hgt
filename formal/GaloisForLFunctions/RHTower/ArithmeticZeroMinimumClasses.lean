@@ -313,7 +313,7 @@ theorem reciprocalSquareMass_le_two : reciprocalSquareMass ≤ 2 := by
       have hn2 : (0 : ℝ) < N + 2 := by positivity
       have he : (2 : ℝ) / (N + 1) - 2 / (N + 2) =
           2 / (((N : ℝ) + 1) * (N + 2)) := by field_simp; ring
-      have hstep : (1 : ℝ) / ((N : ℝ) + 1)^2 ≤ 2 / (N + 1) - 2 / (N + 2) := by
+      have hstep : (1 : ℝ) / ((N : ℝ) + 1)^(2 : ℕ) ≤ 2 / (N + 1) - 2 / (N + 2) := by
         rw [he]
         apply (div_le_div_iff₀ (sq_pos_of_pos hn) (mul_pos hn hn2)).2
         nlinarith [Nat.cast_nonneg (α := ℝ) N]
@@ -321,7 +321,7 @@ theorem reciprocalSquareMass_le_two : reciprocalSquareMass ≤ 2 := by
       simp only [Nat.cast_add, Nat.cast_one]
       rw [show (N : ℝ) + 1 + 1 = N + 2 by ring]
       linarith
-  rw [reciprocalSquareMass, tsum_pnat_eq_tsum_succ (f := fun n : ℕ => (1 : ℝ) / (n : ℝ)^2)]
+  rw [reciprocalSquareMass, tsum_pnat_eq_tsum_succ (f := fun n : ℕ => (1 : ℝ) / (n : ℝ)^(2 : ℕ))]
   apply Real.tsum_le_of_sum_range_le (fun _ => by positivity)
   intro N
   have h := hfin N
@@ -334,13 +334,13 @@ theorem lowerBound_rightMinimumProfile_at_zero {s : ℂ}
     {b : ℝ} (hb : ∀ p : ℕ, 0 < p → b ≤ rightMinimumProfile s p) :
     b * reciprocalSquareMass ≤ -((star s * (1 - star s))⁻¹).re / 2 := by
   have hs1 : s ≠ 1 := by intro h; rw [h] at hs'; norm_num at hs'
-  have hh : Summable (fun p : ℕ+ => rightMinimumProfile s p / (p : ℝ)^2) := by
+  have hh : Summable (fun p : ℕ+ => rightMinimumProfile s p / (p : ℝ)^(2 : ℕ)) := by
     simpa only [rightMinimumProfile, show (1 : ℝ) + 1 = 2 by norm_num, Real.rpow_two] using
       summable_minimumProfile_div_weight hs hs1 1
-  have hb' : Summable (fun p : ℕ+ => b / (p : ℝ)^2) := by
+  have hb' : Summable (fun p : ℕ+ => b / (p : ℝ)^(2 : ℕ)) := by
     simpa only [mul_one_div] using summable_reciprocalSquareWeight.mul_left b
   have h := hb'.tsum_le_tsum (fun (p : ℕ+) => div_le_div_of_nonneg_right (hb p p.pos) (by positivity)) hh
-  have he : (∑' p : ℕ+, rightMinimumProfile s p / (p : ℝ)^2) =
+  have he : (∑' p : ℕ+, rightMinimumProfile s p / (p : ℝ)^(2 : ℕ)) =
       -((star s * (1 - star s))⁻¹).re / 2 := by
     simpa only [rightMinimumProfile, show (1 : ℝ) + 1 = 2 by norm_num, Real.rpow_two] using
       tsum_minimumProfile_div_weight_at_zero hs hs' hz 1

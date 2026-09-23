@@ -18,7 +18,7 @@ open CPV
 
 def egbCoexistenceASymmetricRatio (τ : ℝ) : ℝ := (1 - thermalRatio τ) / (1 + thermalRatio τ)
 def egbCoexistenceAKernelIntegrand (τ u : ℝ) : ℝ :=
-  (1 + u ^ 2) / (1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2)
+  (1 + u ^ (2 : ℕ)) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ))
 def egbCoexistenceALogKernel (τ : ℝ) : ℝ :=
   3 * (∫ u in (0 : ℝ)..1, egbCoexistenceAKernelIntegrand τ u) - 1
 
@@ -33,7 +33,7 @@ theorem egbCoexistenceASymmetricRatio_bounds (τ : ℝ) :
     linarith
 
 theorem egbCoexistenceASymmetricRatio_complement (τ : ℝ) :
-    1 - egbCoexistenceASymmetricRatio τ ^ 2 = 4 * thermalRatio τ / (1 + thermalRatio τ) ^ 2 := by
+    1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) = 4 * thermalRatio τ / (1 + thermalRatio τ) ^ (2 : ℕ) := by
   have hz := thermalRatio_pos τ
   unfold egbCoexistenceASymmetricRatio
   field_simp
@@ -41,24 +41,24 @@ theorem egbCoexistenceASymmetricRatio_complement (τ : ℝ) :
 
 private theorem egbCoexistenceAKernel_den_bounds (τ : ℝ) :
     ∀ u ∈ Icc (0 : ℝ) 1,
-      0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ∧
-      1 - egbCoexistenceASymmetricRatio τ ^ 2 ≤ 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ∧
-      1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≤ 1 := by
+      0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ∧
+      1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) ≤ 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ∧
+      1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ 1 := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
   intro u hu
-  have hu₂ : u ^ 2 ≤ 1 := by nlinarith [hu.1, hu.2]
-  have hmul : egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≤ egbCoexistenceASymmetricRatio τ ^ 2 := by
+  have hu₂ : u ^ (2 : ℕ) ≤ 1 := by nlinarith [hu.1, hu.2]
+  have hmul : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg (egbCoexistenceASymmetricRatio τ)) (sub_nonneg.mpr hu₂)]
-  have hd₂ : egbCoexistenceASymmetricRatio τ ^ 2 < 1 := by nlinarith [hd.1, hd.2]
+  have hd₂ : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) < 1 := by nlinarith [hd.1, hd.2]
   refine ⟨by linarith, by linarith, ?_⟩
-  have hm : 0 ≤ egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 := by positivity
+  have hm : 0 ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) := by positivity
   linarith
 
 theorem egbCoexistenceAKernelIntegrand_continuousOn (τ : ℝ) :
     ContinuousOn (egbCoexistenceAKernelIntegrand τ) (Icc 0 1) := by
   unfold egbCoexistenceAKernelIntegrand
-  have hn : Continuous (fun u : ℝ => 1 + u ^ 2) := continuous_const.add (continuous_id.pow 2)
-  have hd : Continuous (fun u : ℝ => 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2) :=
+  have hn : Continuous (fun u : ℝ => 1 + u ^ (2 : ℕ)) := continuous_const.add (continuous_id.pow 2)
+  have hd : Continuous (fun u : ℝ => 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ)) :=
     continuous_const.sub (continuous_const.mul (continuous_id.pow 2))
   exact hn.continuousOn.div hd.continuousOn fun u hu => ne_of_gt (egbCoexistenceAKernel_den_bounds τ u hu).1
 
@@ -67,30 +67,30 @@ theorem egbCoexistenceAKernelIntegrand_intervalIntegrable (τ : ℝ) :
   ContinuousOn.intervalIntegrable_of_Icc (by norm_num) (egbCoexistenceAKernelIntegrand_continuousOn τ)
 
 private theorem egbCoexistenceAKernel_polynomial_integral :
-    (∫ u in (0 : ℝ)..1, (1 + u ^ 2)) = 4 / 3 := by
+    (∫ u in (0 : ℝ)..1, (1 + u ^ (2 : ℕ))) = 4 / 3 := by
   have h₁ : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) MeasureTheory.volume 0 1 := continuous_const.intervalIntegrable 0 1
-  have h₂ : IntervalIntegrable (fun u : ℝ => u ^ 2) MeasureTheory.volume 0 1 := (continuous_id.pow 2).intervalIntegrable 0 1
+  have h₂ : IntervalIntegrable (fun u : ℝ => u ^ (2 : ℕ)) MeasureTheory.volume 0 1 := (continuous_id.pow 2).intervalIntegrable 0 1
   rw [intervalIntegral.integral_add h₁ h₂]
   norm_num [integral_pow]
 
 theorem egbCoexistenceALogKernel_lower_bound (τ : ℝ) : 3 ≤ egbCoexistenceALogKernel τ := by
-  have hi : IntervalIntegrable (fun u : ℝ => 1 + u ^ 2) MeasureTheory.volume 0 1 :=
+  have hi : IntervalIntegrable (fun u : ℝ => 1 + u ^ (2 : ℕ)) MeasureTheory.volume 0 1 :=
     (continuous_const.add (continuous_id.pow 2)).intervalIntegrable 0 1
   have h := intervalIntegral.integral_mono_on (by norm_num : (0 : ℝ) ≤ 1) hi
     (egbCoexistenceAKernelIntegrand_intervalIntegrable τ) (fun u hu => by
       have hb := egbCoexistenceAKernel_den_bounds τ u hu
       unfold egbCoexistenceAKernelIntegrand
       apply (le_div_iff₀ hb.1).2
-      nlinarith [mul_nonneg (show 0 ≤ 1 + u ^ 2 by positivity) (sub_nonneg.mpr hb.2.2)])
+      nlinarith [mul_nonneg (show 0 ≤ 1 + u ^ (2 : ℕ) by positivity) (sub_nonneg.mpr hb.2.2)])
   rw [egbCoexistenceAKernel_polynomial_integral] at h
   unfold egbCoexistenceALogKernel
   linarith
 
 theorem egbCoexistenceALogKernel_upper_bound (τ : ℝ) :
-    egbCoexistenceALogKernel τ ≤ (thermalRatio τ ^ 2 + thermalRatio τ + 1) / thermalRatio τ := by
+    egbCoexistenceALogKernel τ ≤ (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) / thermalRatio τ := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hd₀ : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
-  have hi : IntervalIntegrable (fun u : ℝ => (1 + u ^ 2) / (1 - egbCoexistenceASymmetricRatio τ ^ 2))
+  have hd₀ : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
+  have hi : IntervalIntegrable (fun u : ℝ => (1 + u ^ (2 : ℕ)) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)))
       MeasureTheory.volume 0 1 :=
     ((continuous_const.add (continuous_id.pow 2)).div_const _).intervalIntegrable 0 1
   have h := intervalIntegral.integral_mono_on (by norm_num : (0 : ℝ) ≤ 1)
@@ -98,12 +98,12 @@ theorem egbCoexistenceALogKernel_upper_bound (τ : ℝ) :
       have hb := egbCoexistenceAKernel_den_bounds τ u hu
       unfold egbCoexistenceAKernelIntegrand
       apply (div_le_div_iff₀ hb.1 hd₀).2
-      nlinarith [mul_nonneg (show 0 ≤ 1 + u ^ 2 by positivity) (sub_nonneg.mpr hb.2.1)])
+      nlinarith [mul_nonneg (show 0 ≤ 1 + u ^ (2 : ℕ) by positivity) (sub_nonneg.mpr hb.2.1)])
   rw [intervalIntegral.integral_div, egbCoexistenceAKernel_polynomial_integral] at h
   calc
     egbCoexistenceALogKernel τ = 3 * (∫ u in (0 : ℝ)..1, egbCoexistenceAKernelIntegrand τ u) - 1 := rfl
-    _ ≤ 3 * ((4 / 3) / (1 - egbCoexistenceASymmetricRatio τ ^ 2)) - 1 := by linarith
-    _ = (thermalRatio τ ^ 2 + thermalRatio τ + 1) / thermalRatio τ := by
+    _ ≤ 3 * ((4 / 3) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) - 1 := by linarith
+    _ = (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) / thermalRatio τ := by
       rw [egbCoexistenceASymmetricRatio_complement]
       have hz := thermalRatio_pos τ
       field_simp

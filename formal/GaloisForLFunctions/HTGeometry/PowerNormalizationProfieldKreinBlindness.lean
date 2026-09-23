@@ -784,21 +784,21 @@ theorem movingEvenCanonicalSurgeryCarrier_exactIndex
 
 def evenSurgeryAmplitudeNumeratorPoly {k : ℕ}
     (t : Fin k → ℂ) : Polynomial ℂ :=
-  ∏ i, ((Polynomial.X ^ 2 - Polynomial.C ((t i) ^ 2)) *
-    (Polynomial.X ^ 2 - Polynomial.C ((star (t i)) ^ 2)))
+  ∏ i, ((Polynomial.X ^ (2 : ℕ) - Polynomial.C ((t i) ^ (2 : ℕ))) *
+    (Polynomial.X ^ (2 : ℕ) - Polynomial.C ((star (t i)) ^ (2 : ℕ))))
 
 def evenSurgeryAmplitudeDenominatorPoly {k : ℕ}
     (θ : BoundedRealSequence) (aIdx bIdx : Fin k → ℕ) : Polynomial ℂ :=
-  ∏ i, ((Polynomial.X ^ 2 -
-      Polynomial.C ((movingCanonicalZero θ (aIdx i) : ℂ) ^ 2)) *
-    (Polynomial.X ^ 2 -
-      Polynomial.C ((movingCanonicalZero θ (bIdx i) : ℂ) ^ 2)))
+  ∏ i, ((Polynomial.X ^ (2 : ℕ) -
+      Polynomial.C ((movingCanonicalZero θ (aIdx i) : ℂ) ^ (2 : ℕ))) *
+    (Polynomial.X ^ (2 : ℕ) -
+      Polynomial.C ((movingCanonicalZero θ (bIdx i) : ℂ) ^ (2 : ℕ))))
 
 @[simp] theorem eval_evenSurgeryAmplitudeNumeratorPoly {k : ℕ}
     (t : Fin k → ℂ) (z : ℂ) :
     (evenSurgeryAmplitudeNumeratorPoly t).eval z =
-      ∏ i, ((z ^ 2 - (t i) ^ 2) *
-        (z ^ 2 - (star (t i)) ^ 2)) := by
+      ∏ i, ((z ^ (2 : ℕ) - (t i) ^ (2 : ℕ)) *
+        (z ^ (2 : ℕ) - (star (t i)) ^ (2 : ℕ))) := by
   rw [evenSurgeryAmplitudeNumeratorPoly, eval_prod]
   apply Finset.prod_congr rfl
   intro i hi
@@ -807,8 +807,8 @@ def evenSurgeryAmplitudeDenominatorPoly {k : ℕ}
 @[simp] theorem eval_evenSurgeryAmplitudeDenominatorPoly {k : ℕ}
     (θ : BoundedRealSequence) (aIdx bIdx : Fin k → ℕ) (z : ℂ) :
     (evenSurgeryAmplitudeDenominatorPoly θ aIdx bIdx).eval z =
-      ∏ i, ((z ^ 2 - (movingCanonicalZero θ (aIdx i) : ℂ) ^ 2) *
-        (z ^ 2 - (movingCanonicalZero θ (bIdx i) : ℂ) ^ 2)) := by
+      ∏ i, ((z ^ (2 : ℕ) - (movingCanonicalZero θ (aIdx i) : ℂ) ^ (2 : ℕ)) *
+        (z ^ (2 : ℕ) - (movingCanonicalZero θ (bIdx i) : ℂ) ^ (2 : ℕ))) := by
   rw [evenSurgeryAmplitudeDenominatorPoly, eval_prod]
   apply Finset.prod_congr rfl
   intro i hi
@@ -821,8 +821,8 @@ theorem evenSurgeryAmplitudeNumeratorPoly_ne_zero {k : ℕ}
   apply Finset.prod_ne_zero_iff.mpr
   intro i hi
   exact mul_ne_zero
-    (Polynomial.monic_X_pow_sub_C ((t i) ^ 2) (by omega)).ne_zero
-    (Polynomial.monic_X_pow_sub_C ((star (t i)) ^ 2) (by omega)).ne_zero
+    (Polynomial.monic_X_pow_sub_C ((t i) ^ (2 : ℕ)) (by omega)).ne_zero
+    (Polynomial.monic_X_pow_sub_C ((star (t i)) ^ (2 : ℕ)) (by omega)).ne_zero
 
 theorem evenSurgeryAmplitudeDenominatorPoly_ne_zero {k : ℕ}
     (θ : BoundedRealSequence) (aIdx bIdx : Fin k → ℕ) :
@@ -832,9 +832,9 @@ theorem evenSurgeryAmplitudeDenominatorPoly_ne_zero {k : ℕ}
   intro i hi
   exact mul_ne_zero
     (Polynomial.monic_X_pow_sub_C
-      ((movingCanonicalZero θ (aIdx i) : ℂ) ^ 2) (by omega)).ne_zero
+      ((movingCanonicalZero θ (aIdx i) : ℂ) ^ (2 : ℕ)) (by omega)).ne_zero
     (Polynomial.monic_X_pow_sub_C
-      ((movingCanonicalZero θ (bIdx i) : ℂ) ^ 2) (by omega)).ne_zero
+      ((movingCanonicalZero θ (bIdx i) : ℂ) ^ (2 : ℕ)) (by omega)).ne_zero
 
 /-- Rational amplitude gauge after translating the coordinate by `h`. -/
 def evenSurgeryAmplitudeGaugeRatFunc {k : ℕ}
@@ -996,10 +996,10 @@ theorem evenSurgeryProductTranslateFamily_eq_mul {k : ℕ}
     movingEvenCanonicalSurgeryProduct_empty]
   rw [Finset.prod_div_distrib] at hquot
   have hdeneval :
-      (∏ i, (((z + h) ^ 2 -
-          (movingCanonicalZero θ (aIdx i) : ℂ) ^ 2) *
-        ((z + h) ^ 2 -
-          (movingCanonicalZero θ (bIdx i) : ℂ) ^ 2))) ≠ 0 := by
+      (∏ i, (((z + h) ^ (2 : ℕ) -
+          (movingCanonicalZero θ (aIdx i) : ℂ) ^ (2 : ℕ)) *
+        ((z + h) ^ (2 : ℕ) -
+          (movingCanonicalZero θ (bIdx i) : ℂ) ^ (2 : ℕ)))) ≠ 0 := by
     apply Finset.prod_ne_zero_iff.mpr
     intro i hi
     apply mul_ne_zero

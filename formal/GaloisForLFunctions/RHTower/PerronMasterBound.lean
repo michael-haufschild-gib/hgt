@@ -27,18 +27,18 @@ theorem exists_smoothed_chebyshev_error_bound :
       ∀ x a W σ₀ Medge : ℝ, 1 ≤ x → 1 < a → a ≤ 2 →
         9 ≤ 2 * Real.pi * W →
         a ≤ 1 + zetaLowerA
-          / (2 * Real.log (2 * Real.pi * W) ^ 9) →
+          / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ)) →
         σ₀ = 1 - min δ₀ (zetaLowerA
-          / (2 * Real.log (2 * Real.pi * W) ^ 9)) →
+          / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))) →
         Medge = max (M₀ + (1 - σ₀)⁻¹)
-          (2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ 9) →
+          (2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ (9 : ℕ)) →
         ‖(∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)
             * ((max (Real.log (x / n)) 0 : ℝ) : ℂ)) - (x : ℂ)‖
-          ≤ 2 * (8 / (a - 1) ^ 2 * x ^ a / (4 * Real.pi ^ 2 * W))
+          ≤ 2 * (8 / (a - 1) ^ (2 : ℕ) * x ^ a / (4 * Real.pi ^ (2 : ℕ) * W))
             + (2 * Real.pi)⁻¹ * (Medge * x ^ σ₀ * (Real.pi / σ₀)
               + 2 * (2240 / zetaLowerA
-                  * Real.log (2 * Real.pi * W) ^ 9
-                * x ^ a / (2 * Real.pi * W) ^ 2 * |a - σ₀|)) := by
+                  * Real.log (2 * Real.pi * W) ^ (9 : ℕ)
+                * x ^ a / (2 * Real.pi * W) ^ (2 : ℕ) * |a - σ₀|)) := by
   obtain ⟨δ₀, M₀, hδ0, hδ8, hM0, hmargin, hlow⟩ :=
     exists_low_height_logDeriv_bound
   refine ⟨δ₀, M₀, hδ0, hδ8, hM0, ?_⟩
@@ -50,21 +50,21 @@ theorem exists_smoothed_chebyshev_error_bound :
   have hT1 : (1 : ℝ) < 2 * Real.pi * W := by linarith
   have hlogT0 : (0 : ℝ) < Real.log (2 * Real.pi * W) :=
     Real.log_pos hT1
-  have hlogT9 : (0 : ℝ) < Real.log (2 * Real.pi * W) ^ 9 := by
+  have hlogT9 : (0 : ℝ) < Real.log (2 * Real.pi * W) ^ (9 : ℕ) := by
     positivity
   have hmin0 : (0 : ℝ) < min δ₀ (zetaLowerA
-      / (2 * Real.log (2 * Real.pi * W) ^ 9)) :=
+      / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))) :=
     lt_min hδ0 (by positivity)
   have hminδ : min δ₀ (zetaLowerA
-      / (2 * Real.log (2 * Real.pi * W) ^ 9)) ≤ δ₀ := min_le_left _ _
+      / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))) ≤ δ₀ := min_le_left _ _
   have hminA : min δ₀ (zetaLowerA
-      / (2 * Real.log (2 * Real.pi * W) ^ 9))
-      ≤ zetaLowerA / (2 * Real.log (2 * Real.pi * W) ^ 9) :=
+      / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ)))
+      ≤ zetaLowerA / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ)) :=
     min_le_right _ _
   have hσ₀pos : (0 : ℝ) < σ₀ := by
     rw [hσ₀def]
     have : min δ₀ (zetaLowerA
-        / (2 * Real.log (2 * Real.pi * W) ^ 9)) ≤ 1 / 8 :=
+        / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))) ≤ 1 / 8 :=
       le_trans hminδ hδ8
     linarith
   have hσ₀lt1 : σ₀ < 1 := by
@@ -74,12 +74,12 @@ theorem exists_smoothed_chebyshev_error_bound :
     rw [hσ₀def]
     linarith
   have hσ₀A : 1 - zetaLowerA
-      / (2 * Real.log (2 * Real.pi * W) ^ 9) ≤ σ₀ := by
+      / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ)) ≤ σ₀ := by
     rw [hσ₀def]
     linarith
   have hσ₀a : σ₀ ≤ a := by linarith
   have h1σ₀ : 1 - σ₀ = min δ₀ (zetaLowerA
-      / (2 * Real.log (2 * Real.pi * W) ^ 9)) := by
+      / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))) := by
     rw [hσ₀def]
     ring
   -- the constant relation `16·A = C`
@@ -100,12 +100,12 @@ theorem exists_smoothed_chebyshev_error_bound :
           Real.log_pos (by linarith)
         have hmono : Real.log |s.im| ≤ Real.log (2 * Real.pi * W) :=
           Real.log_le_log (by linarith) h3
-        have hpow : Real.log |s.im| ^ 9
-            ≤ Real.log (2 * Real.pi * W) ^ 9 :=
+        have hpow : Real.log |s.im| ^ (9 : ℕ)
+            ≤ Real.log (2 * Real.pi * W) ^ (9 : ℕ) :=
           pow_le_pow_left₀ hlogy0.le hmono 9
         have hkey : zetaLowerA
-            / (2 * Real.log (2 * Real.pi * W) ^ 9)
-            < zetaZeroFreeC / Real.log |s.im| ^ 9 := by
+            / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ))
+            < zetaZeroFreeC / Real.log |s.im| ^ (9 : ℕ) := by
           rw [div_lt_div_iff₀ (by positivity) (by positivity)]
           nlinarith [pow_pos hlogy0 9, hpow, hA0]
         linarith [hσ₀A]
@@ -118,12 +118,12 @@ theorem exists_smoothed_chebyshev_error_bound :
     - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
       / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
     * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-      / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2) with hI1
+      / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)) with hI1
   set I2 : ℂ := ∫ w in Set.Ioi W,
     - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
       / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
     * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-      / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2) with hI2
+      / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)) with hI2
   set Bv : ℂ := ∫ t in σ₀..a,
     - deriv riemannZeta ((t : ℂ)
         + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I)
@@ -132,7 +132,7 @@ theorem exists_smoothed_chebyshev_error_bound :
     * ((x : ℂ) ^ ((t : ℂ)
         + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I)
       / ((t : ℂ)
-        + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ 2) with hBv
+        + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)) with hBv
   set Tv : ℂ := ∫ t in σ₀..a,
     - deriv riemannZeta ((t : ℂ)
         + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
@@ -141,12 +141,12 @@ theorem exists_smoothed_chebyshev_error_bound :
     * ((x : ℂ) ^ ((t : ℂ)
         + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
       / ((t : ℂ)
-        + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ 2) with hTv
+        + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)) with hTv
   set Lv : ℂ := ∫ y in (-(2 * Real.pi * W))..(2 * Real.pi * W),
     - deriv riemannZeta ((σ₀ : ℂ) + (y : ℂ) * Complex.I)
       / riemannZeta ((σ₀ : ℂ) + (y : ℂ) * Complex.I)
     * ((x : ℂ) ^ ((σ₀ : ℂ) + (y : ℂ) * Complex.I)
-      / ((σ₀ : ℂ) + (y : ℂ) * Complex.I) ^ 2) with hLv
+      / ((σ₀ : ℂ) + (y : ℂ) * Complex.I) ^ (2 : ℕ)) with hLv
   rw [hasm]
   have hcancel : (x : ℂ) + (I1 + I2)
       + (2 * Real.pi)⁻¹ • (Complex.I * (Bv - Tv) + Lv) - (x : ℂ)
@@ -158,7 +158,7 @@ theorem exists_smoothed_chebyshev_error_bound :
   have hIic := norm_integral_perron_tail_Iic hx0 ha1 ha2 hW0
   have hIoi := norm_integral_perron_tail_Ioi hx0 ha1 ha2 hW0
   have hMh0 : (0 : ℝ) ≤ 2240 / zetaLowerA
-      * Real.log (2 * Real.pi * W) ^ 9 := by positivity
+      * Real.log (2 * Real.pi * W) ^ (9 : ℕ) := by positivity
   have hMe0 : (0 : ℝ) ≤ Medge := by
     rw [hMedge]
     exact le_trans hMh0 (le_max_right _ _)
@@ -167,7 +167,7 @@ theorem exists_smoothed_chebyshev_error_bound :
       ∀ t : ℝ, t ∈ Set.Ioc σ₀ a →
       ‖deriv riemannZeta ((t : ℂ) + (c : ℂ) * Complex.I)
         / riemannZeta ((t : ℂ) + (c : ℂ) * Complex.I)‖
-      ≤ 2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ 9 := by
+      ≤ 2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ (9 : ℕ) := by
     intro c hc t ht
     apply norm_zeta_logDeriv_le_strip_range hT9
       (by rw [hc]; linarith) (by rw [hc])
@@ -200,7 +200,7 @@ theorem exists_smoothed_chebyshev_error_bound :
       rw [hMedge]
       exact le_trans hb (le_max_left _ _)
     · have hApos : (0 : ℝ) < zetaLowerA
-          / (2 * Real.log (2 * Real.pi * W) ^ 9) := by positivity
+          / (2 * Real.log (2 * Real.pi * W) ^ (9 : ℕ)) := by positivity
       have hb := norm_zeta_logDeriv_le_strip_range hT9 h9.le
         hyabs (σ := σ₀) (by linarith [hσ₀A])
         (by linarith [hσ₀lt1.le, hApos])
@@ -223,14 +223,14 @@ theorem exists_smoothed_chebyshev_error_bound :
           have := norm_sub_le Bv Tv
           linarith
   have hBb2 : ‖Bv‖ ≤ 2240 / zetaLowerA
-      * Real.log (2 * Real.pi * W) ^ 9
-      * x ^ a / (2 * Real.pi * W) ^ 2 * |a - σ₀| := by
+      * Real.log (2 * Real.pi * W) ^ (9 : ℕ)
+      * x ^ a / (2 * Real.pi * W) ^ (2 : ℕ) * |a - σ₀| := by
     calc ‖Bv‖ ≤ 2240 / zetaLowerA
-          * Real.log (2 * Real.pi * W) ^ 9 * x ^ a
-          / (-(2 * Real.pi * W)) ^ 2 * |a - σ₀| := hBb
-      _ = 2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ 9
-          * x ^ a / (2 * Real.pi * W) ^ 2 * |a - σ₀| := by
-          rw [show (-(2 * Real.pi * W)) ^ 2 = (2 * Real.pi * W) ^ 2
+          * Real.log (2 * Real.pi * W) ^ (9 : ℕ) * x ^ a
+          / (-(2 * Real.pi * W)) ^ (2 : ℕ) * |a - σ₀| := hBb
+      _ = 2240 / zetaLowerA * Real.log (2 * Real.pi * W) ^ (9 : ℕ)
+          * x ^ a / (2 * Real.pi * W) ^ (2 : ℕ) * |a - σ₀| := by
+          rw [show (-(2 * Real.pi * W)) ^ (2 : ℕ) = (2 * Real.pi * W) ^ (2 : ℕ)
             from by ring]
   calc ‖(I1 + I2)
         + (2 * Real.pi)⁻¹ • (Complex.I * (Bv - Tv) + Lv)‖
@@ -242,20 +242,20 @@ theorem exists_smoothed_chebyshev_error_bound :
         rw [hsmul]
         exact add_le_add (norm_add_le _ _)
           (mul_le_mul_of_nonneg_left hedge (by positivity))
-    _ ≤ 2 * (8 / (a - 1) ^ 2 * x ^ a / (4 * Real.pi ^ 2 * W))
+    _ ≤ 2 * (8 / (a - 1) ^ (2 : ℕ) * x ^ a / (4 * Real.pi ^ (2 : ℕ) * W))
         + (2 * Real.pi)⁻¹ * (Medge * x ^ σ₀ * (Real.pi / σ₀)
           + 2 * (2240 / zetaLowerA
-              * Real.log (2 * Real.pi * W) ^ 9
-            * x ^ a / (2 * Real.pi * W) ^ 2 * |a - σ₀|)) := by
+              * Real.log (2 * Real.pi * W) ^ (9 : ℕ)
+            * x ^ a / (2 * Real.pi * W) ^ (2 : ℕ) * |a - σ₀|)) := by
         have h6 : (‖Bv‖ + ‖Tv‖) + ‖Lv‖
             ≤ Medge * x ^ σ₀ * (Real.pi / σ₀)
               + 2 * (2240 / zetaLowerA
-                  * Real.log (2 * Real.pi * W) ^ 9
-                * x ^ a / (2 * Real.pi * W) ^ 2 * |a - σ₀|) := by
+                  * Real.log (2 * Real.pi * W) ^ (9 : ℕ)
+                * x ^ a / (2 * Real.pi * W) ^ (2 : ℕ) * |a - σ₀|) := by
           linarith [hBb2, hTb, hLb]
         have h7 : ‖I1‖ + ‖I2‖
-            ≤ 2 * (8 / (a - 1) ^ 2 * x ^ a
-              / (4 * Real.pi ^ 2 * W)) := by
+            ≤ 2 * (8 / (a - 1) ^ (2 : ℕ) * x ^ a
+              / (4 * Real.pi ^ (2 : ℕ) * W)) := by
           linarith [hIic, hIoi]
         have h8 := mul_le_mul_of_nonneg_left h6
           (by positivity : (0 : ℝ) ≤ (2 * Real.pi)⁻¹)

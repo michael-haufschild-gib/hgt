@@ -55,21 +55,21 @@ theorem hasDerivAt_bandWronskian (hs1 : s ≤ 1 / 8) (hc : 0 < c)
     (hy0 : 1 / 2 < y) (hy1 : y < 1)
     (hU : HasDerivAt U (DU y) y)
     (hDU : HasDerivAt DU (-(bandFirstOrderCoeff s y) * DU y
-      - (-(c ^ 2 * prolateWKBProfile s y ^ 2) + bandComparisonDefect s y) * U y) y) :
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)) + bandComparisonDefect s y) * U y) y) :
     HasDerivAt (bandWronskian s c U DU)
       (bandLiouvilleWeight s y * bandComparisonDefect s y * (U y * bandModel s c y)) y := by
-  have hys : s < y ^ 2 := by nlinarith
+  have hys : s < y ^ (2 : ℕ) := by nlinarith
   have hm := hasDerivAt_bandLiouvilleWeight (s := s) (by linarith) hy1 hys
   have hV := hasDerivAt_bandModel (s := s) (c := c) (by linarith) hy1 hys.le
   have hDV : HasDerivAt (bandModelDerivFn s c)
       (-(bandFirstOrderCoeff s y) * bandModelDerivFn s c y
-        - (-(c ^ 2 * prolateWKBProfile s y ^ 2) + 0) * bandModel s c y) y := by
+        - (-(c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)) + 0) * bandModel s c y) y := by
     have h := hasDerivAt_bandModelDerivFn (s := s) (c := c) (by linarith) hy1 hys
     refine h.congr_deriv ?_
     have hode := bandModel_ode (s := s) (c := c) hc (by linarith) hy1 hys
     linarith [hode]
   have h := hasDerivAt_driftWronskian (m := bandLiouvilleWeight s)
-    (B := bandFirstOrderCoeff s) (κ := -(c ^ 2 * prolateWKBProfile s y ^ 2))
+    (B := bandFirstOrderCoeff s) (κ := -(c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)))
     (a := bandComparisonDefect s y) (b := 0) hm hU hDU hV hDV
   refine h.congr_deriv ?_
   ring
@@ -79,14 +79,14 @@ simple pole of the defect. -/
 theorem bandLiouvilleWeight_mul_abs_defect_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8)
     (hy0 : 1 / 2 ≤ y) (hy1 : y < 1) :
     bandLiouvilleWeight s y * |bandComparisonDefect s y| ≤ 600 := by
-  have hy2 : y ^ 2 < 1 := by nlinarith
-  have h1y2 : (0 : ℝ) < 1 - y ^ 2 := by linarith
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
+  have h1y2 : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by linarith
   have hm := bandLiouvilleWeight_le hs0 hs1 hy0 hy1.le
   have hmnn : 0 ≤ bandLiouvilleWeight s y := by
-    have hys : s < y ^ 2 := by nlinarith
+    have hys : s < y ^ (2 : ℕ) := by nlinarith
     exact (bandLiouvilleWeight_pos (by linarith) hy1 hys).le
   have ha := abs_bandComparisonDefect_le hs0 hs1 hy0 hy1
-  have hanb : |bandComparisonDefect s y| * (1 - y ^ 2) ≤ 100 := (le_div_iff₀ h1y2).mp ha
+  have hanb : |bandComparisonDefect s y| * (1 - y ^ (2 : ℕ)) ≤ 100 := (le_div_iff₀ h1y2).mp ha
   have hkey : |bandComparisonDefect s y| * (1 - y) ≤ 100 := by
     nlinarith [hanb, abs_nonneg (bandComparisonDefect s y), hy0]
   nlinarith [hm, hkey, hmnn, abs_nonneg (bandComparisonDefect s y),
@@ -106,7 +106,7 @@ theorem continuousOn_bandLiouvilleWeight (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h�
       have hnn : 0 ≤ bandLiouvilleWeight s u := by
         rcases eq_or_lt_of_le hu1 with rfl | hult
         · rw [bandLiouvilleWeight_one]
-        · have hys : s < u ^ 2 := by nlinarith
+        · have hys : s < u ^ (2 : ℕ) := by nlinarith
           exact (bandLiouvilleWeight_pos (by linarith) hult hys).le
       rw [Real.norm_eq_abs, abs_of_nonneg hnn]
       exact bandLiouvilleWeight_le hs0 hs1 (by linarith) hu1
@@ -114,8 +114,8 @@ theorem continuousOn_bandLiouvilleWeight (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h�
         (continuous_const.mul (continuous_const.sub continuous_id)).tendsto (1:ℝ)
       simp only [sub_self, mul_zero] at h0
       exact h0.mono_left nhdsWithin_le_nhds
-  · have hys : s < t ^ 2 := by nlinarith
-    have hy : (0 : ℝ) < 1 - t ^ 2 := by nlinarith
+  · have hys : s < t ^ (2 : ℕ) := by nlinarith
+    have hy : (0 : ℝ) < 1 - t ^ (2 : ℕ) := by nlinarith
     have hP : 0 < prolateWKBProfile s t := prolateWKBProfile_pos hy hys
     have hcXi : ContinuousWithinAt (bandEndpointPhase s) (Icc α 1) t :=
       (continuous_bandEndpointPhase s).continuousWithinAt
@@ -131,8 +131,8 @@ theorem bandLiouvilleWeight_mul_modelDeriv (hs1 : s ≤ 1 / 8) (hy0 : 1 / 2 ≤ 
   rcases eq_or_lt_of_le hy1 with rfl | hlt
   · rw [bandLiouvilleWeight_one, bandEndpointPhase_one]
     ring
-  · have hys : s < y ^ 2 := by nlinarith
-    have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+  · have hys : s < y ^ (2 : ℕ) := by nlinarith
+    have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
     have hP : 0 < prolateWKBProfile s y := prolateWKBProfile_pos hy hys
     rw [bandLiouvilleWeight, bandModelDerivFn, besselIModelDeriv, bandPhaseDeriv]
     field_simp
@@ -178,7 +178,7 @@ theorem bandWronskian_eq_neg_integral (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 
     (hUc : ContinuousOn U (Icc α 1)) (hDUc : ContinuousOn (fun t : ℝ => bandLiouvilleWeight s t * DU t) (Icc α 1))
     (hU : ∀ x ∈ Ioo α 1, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Ioo α 1, HasDerivAt DU (-(bandFirstOrderCoeff s x) * DU x
-      - (-(c ^ 2 * prolateWKBProfile s x ^ 2) + bandComparisonDefect s x) * U x) x)
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s x ^ (2 : ℕ)) + bandComparisonDefect s x) * U x) x)
     {K : ℝ} (hK : ∀ x ∈ Ioo α 1,
       |bandLiouvilleWeight s x * bandComparisonDefect s x
         * (U x * bandModel s c x)| ≤ K)
@@ -223,7 +223,7 @@ theorem bandLiouvilleWeight_mul_abs_defect_le' (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   · exact bandLiouvilleWeight_mul_abs_defect_le hs0 hs1 hy0 hlt
 
 theorem abs_U_mul_bandModel_le {M : ℝ} (hM : |bandRatio s c U y| ≤ M) :
-    |U y| * bandModel s c y ≤ M * bandModel s c y ^ 2 := by
+    |U y| * bandModel s c y ≤ M * bandModel s c y ^ (2 : ℕ) := by
   have hV : 0 < bandModel s c y := bandModel_pos
   have hU : U y = bandRatio s c U y * bandModel s c y := by
     rw [bandRatio, div_mul_cancel₀ _ hV.ne']
@@ -236,13 +236,13 @@ theorem abs_bandWronskian_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c) (h
     (hUc : ContinuousOn U (Icc α 1)) (hDUc : ContinuousOn (fun t : ℝ => bandLiouvilleWeight s t * DU t) (Icc α 1))
     (hU : ∀ x ∈ Ioo α 1, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Ioo α 1, HasDerivAt DU (-(bandFirstOrderCoeff s x) * DU x
-      - (-(c ^ 2 * prolateWKBProfile s x ^ 2) + bandComparisonDefect s x) * U x) x)
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s x ^ (2 : ℕ)) + bandComparisonDefect s x) * U x) x)
     {M : ℝ} (hM : ∀ t ∈ Icc α 1, |bandRatio s c U t| ≤ M)
     {τ : ℝ} (hτ : τ ∈ Icc α 1) :
-    |bandWronskian s c U DU τ| ≤ 600 * M * bandModel s c τ ^ 2 * (1 - τ) := by
+    |bandWronskian s c U DU τ| ≤ 600 * M * bandModel s c τ ^ (2 : ℕ) * (1 - τ) := by
   have hM0 : 0 ≤ M := le_trans (abs_nonneg _) (hM τ hτ)
   have hdens : ∀ t ∈ Icc α 1, |bandLiouvilleWeight s t * bandComparisonDefect s t
-      * (U t * bandModel s c t)| ≤ 600 * M * bandModel s c t ^ 2 := by
+      * (U t * bandModel s c t)| ≤ 600 * M * bandModel s c t ^ (2 : ℕ) := by
     intro t ht
     have ht0 : (1 : ℝ) / 2 ≤ t := le_trans hα.le ht.1
     have h1 := bandLiouvilleWeight_mul_abs_defect_le' hs0 hs1 ht0 ht.2
@@ -250,34 +250,34 @@ theorem abs_bandWronskian_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c) (h
     have hmnn : 0 ≤ bandLiouvilleWeight s t := by
       rcases eq_or_lt_of_le ht.2 with rfl | hlt
       · rw [bandLiouvilleWeight_one]
-      · have hys : s < t ^ 2 := by nlinarith
+      · have hys : s < t ^ (2 : ℕ) := by nlinarith
         exact (bandLiouvilleWeight_pos (by linarith) hlt hys).le
     have hV : 0 < bandModel s c t := bandModel_pos
     rw [abs_mul, abs_mul, abs_of_nonneg hmnn, abs_mul, abs_of_pos hV]
     have hA : bandLiouvilleWeight s t * |bandComparisonDefect s t| * (|U t| * bandModel s c t)
         ≤ 600 * (|U t| * bandModel s c t) :=
       mul_le_mul_of_nonneg_right h1 (by positivity)
-    have hB : 600 * (|U t| * bandModel s c t) ≤ 600 * M * bandModel s c t ^ 2 := by
+    have hB : 600 * (|U t| * bandModel s c t) ≤ 600 * M * bandModel s c t ^ (2 : ℕ) := by
       nlinarith [h2]
     linarith [hA, hB]
   have hKbd : ∀ x ∈ Ioo α 1, |bandLiouvilleWeight s x * bandComparisonDefect s x
-      * (U x * bandModel s c x)| ≤ 600 * M * bandModel s c α ^ 2 := by
+      * (U x * bandModel s c x)| ≤ 600 * M * bandModel s c α ^ (2 : ℕ) := by
     intro x hx
     refine le_trans (hdens x ⟨hx.1.le, hx.2.le⟩) ?_
     have hVle : bandModel s c x ≤ bandModel s c α := antitone_bandModel hc.le hx.1.le
     have hV : 0 < bandModel s c x := bandModel_pos
-    have hsq : bandModel s c x ^ 2 ≤ bandModel s c α ^ 2 := by nlinarith [hV.le, hVle]
+    have hsq : bandModel s c x ^ (2 : ℕ) ≤ bandModel s c α ^ (2 : ℕ) := by nlinarith [hV.le, hVle]
     nlinarith [mul_le_mul_of_nonneg_left hsq (by positivity : (0:ℝ) ≤ 600 * M)]
   have heq := bandWronskian_eq_neg_integral hs0 hs1 hc hα hUc hDUc hU hDU hKbd hτ
   have hconst : ∀ t ∈ Set.uIoc τ 1, ‖bandLiouvilleWeight s t * bandComparisonDefect s t
-      * (U t * bandModel s c t)‖ ≤ 600 * M * bandModel s c τ ^ 2 := by
+      * (U t * bandModel s c t)‖ ≤ 600 * M * bandModel s c τ ^ (2 : ℕ) := by
     intro t ht
     rw [Set.uIoc_of_le hτ.2] at ht
     have htmem : t ∈ Icc α 1 := ⟨le_trans hτ.1 ht.1.le, ht.2⟩
     refine le_trans (hdens t htmem) ?_
     have hVle : bandModel s c t ≤ bandModel s c τ := antitone_bandModel hc.le ht.1.le
     have hV : 0 < bandModel s c t := bandModel_pos
-    have hsq : bandModel s c t ^ 2 ≤ bandModel s c τ ^ 2 := by nlinarith [hV.le, hVle]
+    have hsq : bandModel s c t ^ (2 : ℕ) ≤ bandModel s c τ ^ (2 : ℕ) := by nlinarith [hV.le, hVle]
     nlinarith [mul_le_mul_of_nonneg_left hsq (by positivity : (0:ℝ) ≤ 600 * M)]
   have hnorm := intervalIntegral.norm_integral_le_of_norm_le_const hconst
   rw [heq, abs_neg]
@@ -290,8 +290,8 @@ theorem abs_bandWronskian_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c) (h
 theorem hasDerivAt_bandRatio (hs1 : s ≤ 1 / 8) (hy0 : 1 / 2 < y) (hy1 : y < 1)
     (hU : HasDerivAt U (DU y) y) :
     HasDerivAt (bandRatio s c U)
-      (-(bandWronskian s c U DU y / (bandLiouvilleWeight s y * bandModel s c y ^ 2))) y := by
-  have hys : s < y ^ 2 := by nlinarith
+      (-(bandWronskian s c U DU y / (bandLiouvilleWeight s y * bandModel s c y ^ (2 : ℕ)))) y := by
+  have hys : s < y ^ (2 : ℕ) := by nlinarith
   have hV : 0 < bandModel s c y := bandModel_pos
   have hm : 0 < bandLiouvilleWeight s y := bandLiouvilleWeight_pos (by linarith) hy1 hys
   have hVd := hasDerivAt_bandModel (s := s) (c := c) (by linarith) hy1 hys.le
@@ -315,7 +315,7 @@ theorem abs_bandRatio_sub_one_le_of_bound (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h
     (hUc : ContinuousOn U (Icc α 1)) (hDUc : ContinuousOn (fun t : ℝ => bandLiouvilleWeight s t * DU t) (Icc α 1))
     (hU : ∀ x ∈ Ioo α 1, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Ioo α 1, HasDerivAt DU (-(bandFirstOrderCoeff s x) * DU x
-      - (-(c ^ 2 * prolateWKBProfile s x ^ 2) + bandComparisonDefect s x) * U x) x)
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s x ^ (2 : ℕ)) + bandComparisonDefect s x) * U x) x)
     (hU1 : U 1 = 1)
     {M : ℝ} (hM : ∀ t ∈ Icc α 1, |bandRatio s c U t| ≤ M)
     {y : ℝ} (hy : y ∈ Icc α 1) :
@@ -326,27 +326,27 @@ theorem abs_bandRatio_sub_one_le_of_bound (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h
   -- the pointwise bound on the derivative of the ratio
   have hderivbd : ∀ x ∈ Ioo y 1,
       |-(bandWronskian s c U DU x
-        / (bandLiouvilleWeight s x * bandModel s c x ^ 2))| ≤ 600 * M := by
+        / (bandLiouvilleWeight s x * bandModel s c x ^ (2 : ℕ)))| ≤ 600 * M := by
     intro x hx
     have hxmem : x ∈ Icc α 1 := ⟨le_trans hy.1 hx.1.le, hx.2.le⟩
     have hx0 : (1 : ℝ) / 2 < x := lt_of_lt_of_le hα hxmem.1
-    have hys : s < x ^ 2 := by nlinarith
+    have hys : s < x ^ (2 : ℕ) := by nlinarith
     have hm : 0 < bandLiouvilleWeight s x := bandLiouvilleWeight_pos (by linarith) hx.2 hys
     have hV : 0 < bandModel s c x := bandModel_pos
     have hmlow : 1 - x ≤ bandLiouvilleWeight s x :=
       one_sub_le_bandLiouvilleWeight (by linarith) hx.2.le hys
     have hW := abs_bandWronskian_le hs0 hs1 hc hα hUc hDUc hU hDU hM hxmem
     rw [abs_neg, abs_div, abs_of_pos (by positivity : (0:ℝ) < bandLiouvilleWeight s x
-      * bandModel s c x ^ 2), div_le_iff₀ (by positivity)]
-    have hstep : 600 * M * bandModel s c x ^ 2 * (1 - x)
-        ≤ 600 * M * (bandLiouvilleWeight s x * bandModel s c x ^ 2) := by
+      * bandModel s c x ^ (2 : ℕ)), div_le_iff₀ (by positivity)]
+    have hstep : 600 * M * bandModel s c x ^ (2 : ℕ) * (1 - x)
+        ≤ 600 * M * (bandLiouvilleWeight s x * bandModel s c x ^ (2 : ℕ)) := by
       nlinarith [mul_le_mul_of_nonneg_left hmlow
-        (by positivity : (0:ℝ) ≤ 600 * M * bandModel s c x ^ 2)]
+        (by positivity : (0:ℝ) ≤ 600 * M * bandModel s c x ^ (2 : ℕ))]
     linarith [hW, hstep]
   -- the derivative of the ratio, on the open interval
   have hRd : ∀ x ∈ Ioo y 1, HasDerivWithinAt (bandRatio s c U)
       (-(bandWronskian s c U DU x
-        / (bandLiouvilleWeight s x * bandModel s c x ^ 2))) (Ioi x) x := by
+        / (bandLiouvilleWeight s x * bandModel s c x ^ (2 : ℕ)))) (Ioi x) x := by
     intro x hx
     have hxmem : x ∈ Ioo α 1 := ⟨lt_of_le_of_lt hy.1 hx.1, hx.2⟩
     have hx0 : (1 : ℝ) / 2 < x := lt_of_lt_of_le hα hxmem.1.le
@@ -354,7 +354,7 @@ theorem abs_bandRatio_sub_one_le_of_bound (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h
   -- integrability
   have hint : IntervalIntegrable
       (fun x : ℝ => -(bandWronskian s c U DU x
-        / (bandLiouvilleWeight s x * bandModel s c x ^ 2))) volume y 1 := by
+        / (bandLiouvilleWeight s x * bandModel s c x ^ (2 : ℕ)))) volume y 1 := by
     refine intervalIntegrable_of_continuousOn_Ioo_of_bounded (M := 600 * M) hy1 ?_ hderivbd
     have hsub' : Ioo y 1 ⊆ Icc α 1 := fun x hx => ⟨le_trans hy.1 hx.1.le, hx.2.le⟩
     refine ContinuousOn.neg (ContinuousOn.div
@@ -364,7 +364,7 @@ theorem abs_bandRatio_sub_one_le_of_bound (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h
     intro x hx
     have hxmem : x ∈ Icc α 1 := hsub' hx
     have hx0 : (1 : ℝ) / 2 < x := lt_of_lt_of_le hα hxmem.1
-    have hys : s < x ^ 2 := by nlinarith
+    have hys : s < x ^ (2 : ℕ) := by nlinarith
     have hm : 0 < bandLiouvilleWeight s x := bandLiouvilleWeight_pos (by linarith) hx.2 hys
     have hV : 0 < bandModel s c x := bandModel_pos
     positivity
@@ -373,7 +373,7 @@ theorem abs_bandRatio_sub_one_le_of_bound (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (h
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hy1 hRc hRd hint
   have hnorm := intervalIntegral.norm_integral_le_of_norm_le_const
     (f := fun x : ℝ => -(bandWronskian s c U DU x
-      / (bandLiouvilleWeight s x * bandModel s c x ^ 2)))
+      / (bandLiouvilleWeight s x * bandModel s c x ^ (2 : ℕ))))
     (a := y) (b := 1) (C := 600 * M) (by
       intro t ht
       rw [Set.uIoc_of_le hy1] at ht
@@ -398,7 +398,7 @@ theorem abs_bandRatio_sub_one_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c
     (hUc : ContinuousOn U (Icc α 1)) (hDUc : ContinuousOn (fun t : ℝ => bandLiouvilleWeight s t * DU t) (Icc α 1))
     (hU : ∀ x ∈ Ioo α 1, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Ioo α 1, HasDerivAt DU (-(bandFirstOrderCoeff s x) * DU x
-      - (-(c ^ 2 * prolateWKBProfile s x ^ 2) + bandComparisonDefect s x) * U x) x)
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s x ^ (2 : ℕ)) + bandComparisonDefect s x) * U x) x)
     (hU1 : U 1 = 1) :
     ∀ y ∈ Icc α 1, |bandRatio s c U y - 1| ≤ 1 / 3 := by
   have hκ0 : (0 : ℝ) ≤ 600 * (1 - α) := by nlinarith [hα1]
@@ -418,7 +418,7 @@ theorem bandModel_le_and_le_bandModel (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 
     (hUc : ContinuousOn U (Icc α 1)) (hDUc : ContinuousOn (fun t : ℝ => bandLiouvilleWeight s t * DU t) (Icc α 1))
     (hU : ∀ x ∈ Ioo α 1, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Ioo α 1, HasDerivAt DU (-(bandFirstOrderCoeff s x) * DU x
-      - (-(c ^ 2 * prolateWKBProfile s x ^ 2) + bandComparisonDefect s x) * U x) x)
+      - (-(c ^ (2 : ℕ) * prolateWKBProfile s x ^ (2 : ℕ)) + bandComparisonDefect s x) * U x) x)
     (hU1 : U 1 = 1) :
     ∀ y ∈ Icc α 1, 2 / 3 * bandModel s c y ≤ U y ∧ U y ≤ 4 / 3 * bandModel s c y := by
   intro y hy

@@ -56,20 +56,20 @@ theorem log_norm_le_circleAverage_log_norm_const_add {a : ℂ} (ha : a ≠ 0) {R
   rw [circleAverage_log_norm_const_add a hR]
   exact Real.log_le_log (norm_pos_iff.mpr ha) (le_max_right _ _)
 
-/-- On the unit circle, twice the real part of `z * w` has modulus `‖conj w + z ^ 2 * w‖`. -/
+/-- On the unit circle, twice the real part of `z * w` has modulus `‖conj w + z ^ (2 : ℕ) * w‖`. -/
 theorem abs_two_re_mul_eq_norm_conj_add_sq_mul {z : ℂ} (hz : ‖z‖ = 1) (w : ℂ) :
-    |2 * (z * w).re| = ‖(starRingEnd ℂ) w + z ^ 2 * w‖ := by
+    |2 * (z * w).re| = ‖(starRingEnd ℂ) w + z ^ (2 : ℕ) * w‖ := by
   have hzz : z * (starRingEnd ℂ) z = 1 := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hz]; norm_num
-  have hfac : (starRingEnd ℂ) w + z ^ 2 * w = z * ((2 * (z * w).re : ℝ) : ℂ) := by
+  have hfac : (starRingEnd ℂ) w + z ^ (2 : ℕ) * w = z * ((2 * (z * w).re : ℝ) : ℂ) := by
     rw [← Complex.add_conj, map_mul]
     linear_combination (-(starRingEnd ℂ) w) * hzz
   rw [hfac, norm_mul, hz, one_mul, Complex.norm_real, Real.norm_eq_abs]
 
-/-- The unit-circle average is invariant under the doubling map `z ↦ z ^ 2`. -/
+/-- The unit-circle average is invariant under the doubling map `z ↦ z ^ (2 : ℕ)`. -/
 theorem circleAverage_comp_sq {g : ℂ → ℝ} (hg : CircleIntegrable g 0 1) :
-    circleAverage (fun z : ℂ => g (z ^ 2)) 0 1 = circleAverage g 0 1 := by
-  have hsq : ∀ θ : ℝ, circleMap 0 1 θ ^ 2 = circleMap 0 1 (2 * θ) := by
+    circleAverage (fun z : ℂ => g (z ^ (2 : ℕ))) 0 1 = circleAverage g 0 1 := by
+  have hsq : ∀ θ : ℝ, circleMap 0 1 θ ^ (2 : ℕ) = circleMap 0 1 (2 * θ) := by
     intro θ
     rw [circleMap_zero, circleMap_zero, Complex.ofReal_one, one_mul, one_mul,
       ← Complex.exp_nat_mul]
@@ -139,7 +139,7 @@ one. This is a randomized main-term identity; no zeta remainder or deterministic
 theorem circleAverage_log_norm_two_re_mul (w : ℂ) :
     circleAverage (fun z : ℂ => Real.log |2 * (z * w).re|) 0 1 = Real.log ‖w‖ := by
   have hsphere : Set.EqOn (fun z : ℂ => Real.log |2 * (z * w).re|)
-      (fun z : ℂ => Real.log ‖(starRingEnd ℂ) w + z ^ 2 * w‖) (Metric.sphere (0 : ℂ) |1|) := by
+      (fun z : ℂ => Real.log ‖(starRingEnd ℂ) w + z ^ (2 : ℕ) * w‖) (Metric.sphere (0 : ℂ) |1|) := by
     intro z hz
     have hz1 : ‖z‖ = 1 := by simpa using hz
     simp only

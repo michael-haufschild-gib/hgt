@@ -24,7 +24,7 @@ open scoped BigOperators
 have the same crossing-coordinate value. -/
 def geometricCDDStep
     {K : Type*} [Field K] (q t : K) (k : ℕ) : K :=
-  ((1 - q ^ k * t) / (1 + q ^ k * t)) ^ 2
+  ((1 - q ^ k * t) / (1 + q ^ k * t)) ^ (2 : ℕ)
 
 /-- Finite geometric CDD product through scales `0,...,N-1`. -/
 def geometricCDDTruncation
@@ -67,7 +67,7 @@ theorem geometricCDDStep_neg_mul
   let a := q ^ k * t
   change 1 - a ≠ 0 at hminus
   change 1 + a ≠ 0 at hplus
-  change (((1 + a) / (1 - a)) ^ 2) * (((1 - a) / (1 + a)) ^ 2) = 1
+  change (((1 + a) / (1 - a)) ^ (2 : ℕ)) * (((1 - a) / (1 + a)) ^ (2 : ℕ)) = 1
   field_simp [hminus, hplus]
 
 /-- Finite unitarity/inversion identity away from the finite zero and pole set. -/
@@ -147,7 +147,7 @@ noncomputable def geometricCDDTruncationPhaseSlope
     (q C theta : ℝ) (N : ℕ) : ℝ :=
   4 * ∑ k ∈ Finset.range N,
     (q ^ k * Real.cosh theta / C) /
-      (1 + (q ^ k * Real.sinh theta / C) ^ 2)
+      (1 + (q ^ k * Real.sinh theta / C) ^ (2 : ℕ))
 
 /-- The displayed finite phase slope is the actual derivative of the unwrapped CDD phase. -/
 theorem hasDerivAt_geometricCDDTruncationPhase
@@ -159,7 +159,7 @@ theorem hasDerivAt_geometricCDDTruncationPhase
       HasDerivAt
         (fun u : ℝ ↦ Real.arctan (q ^ k * Real.sinh u / C))
         ((q ^ k * Real.cosh theta / C) /
-          (1 + (q ^ k * Real.sinh theta / C) ^ 2)) theta := by
+          (1 + (q ^ k * Real.sinh theta / C) ^ (2 : ℕ))) theta := by
     intro k hk
     convert (((Real.hasDerivAt_sinh theta).const_mul (q ^ k)).div_const C).arctan using 1
     all_goals ring

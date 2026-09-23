@@ -32,7 +32,7 @@ def gibbsCriticalEulerBaseline (P : Finset Nat.Primes) : ℝ :=
 the critical Gibbs Euler baseline, leaving the square-summable Euler factor. -/
 theorem sieveDensity_mul_gibbsCriticalEulerBaseline (P : Finset Nat.Primes) :
     sieveDensity P * gibbsCriticalEulerBaseline P =
-      ∏ p ∈ P, (1 - ((((p : ℕ) : ℝ) ^ 2)⁻¹)) := by
+      ∏ p ∈ P, (1 - ((((p : ℕ) : ℝ) ^ (2 : ℕ))⁻¹)) := by
   rw [sieveDensity, gibbsCriticalEulerBaseline, ← Finset.prod_mul_distrib]
   apply Finset.prod_congr rfl
   intro p hp

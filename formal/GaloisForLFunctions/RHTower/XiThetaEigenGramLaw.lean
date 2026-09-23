@@ -109,7 +109,7 @@ theorem xiWeilPolarization_thetaEigen_diagonal_eq_zero_of_im_ne_zero
 theorem xiWeilPolarization_thetaEigen_diagonal_of_im_eq_zero
     {alpha : ℂ} (halpha : XiC alpha = 0) (him : alpha.im = 0) :
     xiWeilPolarization (xiThetaEigenFourier alpha) (xiThetaEigenFourier alpha) =
-      (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ 2 : ℝ) : ℂ) := by
+      (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hconj : alpha = (starRingEnd ℂ) alpha := (Complex.conj_eq_iff_im.mpr him).symm
   rw [xiWeilPolarization_thetaEigen halpha halpha, xiThetaEigenGram, if_pos hconj.symm.symm]
   rw [mul_assoc, Complex.mul_conj']
@@ -135,7 +135,7 @@ theorem xiWeilPolarization_thetaEigen_diagonal_re_pos_iff
     rw [xiWeilPolarization_thetaEigen_diagonal_of_im_eq_zero halpha him, Complex.ofReal_re]
     have hm : 0 < (xiSpectralMultiplicity alpha : ℝ) := by
       exact_mod_cast xiSpectralMultiplicity_pos_of_XiC_eq_zero halpha
-    have hd : 0 < ‖deriv XiC alpha‖ ^ 2 := by positivity
+    have hd : 0 < ‖deriv XiC alpha‖ ^ (2 : ℕ) := by positivity
     positivity
 
 
@@ -228,7 +228,7 @@ theorem xiWeilPolarization_thetaEigen_finsetSum {A : Finset ℂ}
 theorem xiThetaEigenGram_of_im_eq_zero {alpha beta : ℂ} (him : alpha.im = 0) :
     xiThetaEigenGram alpha beta =
       if beta = alpha then
-        (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ 2 : ℝ) : ℂ) else 0 := by
+        (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ (2 : ℕ) : ℝ) : ℂ) else 0 := by
   have hconj : (starRingEnd ℂ) alpha = alpha := Complex.conj_eq_iff_im.mpr him
   rw [xiThetaEigenGram, hconj]
   split_ifs with h
@@ -244,7 +244,7 @@ theorem xiWeilPolarization_thetaEigen_finsetSum_of_forall_im_eq_zero
     {A : Finset ℂ} (hA : ∀ α ∈ A, XiC α = 0) (him : ∀ α ∈ A, α.im = 0) (c : ℂ → ℂ) :
     xiWeilPolarization (fun z => ∑ α ∈ A, c α * xiThetaEigenFourier α z)
         (fun z => ∑ β ∈ A, c β * xiThetaEigenFourier β z) =
-      ((∑ α ∈ A, ‖c α‖ ^ 2 * ((xiSpectralMultiplicity α : ℝ) * ‖deriv XiC α‖ ^ 2) : ℝ) : ℂ) := by
+      ((∑ α ∈ A, ‖c α‖ ^ (2 : ℕ) * ((xiSpectralMultiplicity α : ℝ) * ‖deriv XiC α‖ ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [xiWeilPolarization_thetaEigen_finsetSum hA c c]
   push_cast
   refine Finset.sum_congr rfl (fun α hα => ?_)

@@ -86,13 +86,13 @@ private theorem response_smooth (r A D : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1)
 
 private theorem response_partial (r A D : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) (i : Fin 2) :
     coordDeriv i (cuspPowerResponse 2 r A D) z =
-      coordDeriv i (monomial (A^2/((2*r)*(2*r-1)-2)) (2*r)) z+
+      coordDeriv i (monomial (A^(2 : ℕ)/((2*r)*(2*r-1)-2)) (2*r)) z+
       coordDeriv i (monomial (2*A*D/(-2)) 1) z+
-      coordDeriv i (monomial (D^2/((2-2*r)*(1-2*r)-2)) (2-2*r)) z := by
+      coordDeriv i (monomial (D^(2 : ℕ)/((2-2*r)*(1-2*r)-2)) (2-2*r)) z := by
   have he : cuspPowerResponse 2 r A D = fun w =>
-      monomial (A^2/((2*r)*(2*r-1)-2)) (2*r) w+
+      monomial (A^(2 : ℕ)/((2*r)*(2*r-1)-2)) (2*r) w+
       monomial (2*A*D/(-2)) 1 w+
-      monomial (D^2/((2-2*r)*(1-2*r)-2)) (2-2*r) w := by
+      monomial (D^(2 : ℕ)/((2-2*r)*(1-2*r)-2)) (2-2*r) w := by
     funext w
     simp only [cuspPowerResponse,powerResponse,monomial]
     congr 2 <;> ring
@@ -109,30 +109,30 @@ private theorem response_horizontal (r A D : ℂ) (z : Fin 2 → ℝ) (hz : 0 < 
 
 private theorem response_euler (r A D : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     (z 1:ℂ)*coordDeriv 1 (cuspPowerResponse 2 r A D) z =
-      (2*r)*monomial (A^2/((2*r)*(2*r-1)-2)) (2*r) z+
+      (2*r)*monomial (A^(2 : ℕ)/((2*r)*(2*r-1)-2)) (2*r) z+
       monomial (2*A*D/(-2)) 1 z+
-      (2-2*r)*monomial (D^2/((2-2*r)*(1-2*r)-2)) (2-2*r) z := by
+      (2-2*r)*monomial (D^(2 : ℕ)/((2-2*r)*(1-2*r)-2)) (2-2*r) z := by
   rw [response_partial r A D z hz,mul_add,mul_add]
   simp only [monomial_euler _ _ z hz,one_mul]
 
 private theorem principal_balance (q : XiZeroCopy) (A D : ℂ) (z : Fin 2 → ℝ)
     (hz : 0 < z 1) :
-    (q.1:ℂ)*((q.1:ℂ)-1)*((principalField (q.1:ℂ) A D z)^2+
+    (q.1:ℂ)*((q.1:ℂ)-1)*((principalField (q.1:ℂ) A D z)^(2 : ℕ)+
       2*cuspPowerResponse 2 (q.1:ℂ) A D z+
       2*(z 1:ℂ)*coordDeriv 1 (cuspPowerResponse 2 (q.1:ℂ) A D) z) =
-        ((z 1:ℂ)*coordDeriv 1 (principalField (q.1:ℂ) A D) z)^2 := by
+        ((z 1:ℂ)*coordDeriv 1 (principalField (q.1:ℂ) A D) z)^(2 : ℕ) := by
   obtain ⟨h0,h2⟩ := D4BMScalarStream.xi_cusp_two_denominators q
   let r : ℂ := q.1
   let d0 := (2*r)*(2*r-1)-2
   let d2 := (2-2*r)*(1-2*r)-2
   change d0 ≠ 0 at h0
   change d2 ≠ 0 at h2
-  have hp : r*(r-1)*(1+2*(1+2*r)/d0) = r^2 := by
+  have hp : r*(r-1)*(1+2*(1+2*r)/d0) = r^(2 : ℕ) := by
     calc
       _ = (r*(r-1)*(d0+2*(1+2*r)))/d0 := by
         simp only [mul_add,add_div,mul_div_assoc,div_self h0,mul_one]
       _ = _ := (div_eq_iff h0).2 (by dsimp only [d0]; ring)
-  have hm : r*(r-1)*(1+2*(1+(2-2*r))/d2) = (1-r)^2 := by
+  have hm : r*(r-1)*(1+2*(1+(2-2*r))/d2) = (1-r)^(2 : ℕ) := by
     calc
       _ = (r*(r-1)*(d2+2*(1+(2-2*r))))/d2 := by
         simp only [mul_add,add_div,mul_div_assoc,div_self h2,mul_one]
@@ -141,8 +141,8 @@ private theorem principal_balance (q : XiZeroCopy) (A D : ℂ) (z : Fin 2 → �
   rw [principal_euler _ _ _ z hz]
   have h1 := cusp_power_square (q.1:ℂ) A D z hz
   have h3 := cusp_power_square (q.1:ℂ) ((q.1:ℂ)*A) ((1-(q.1:ℂ))*D) z hz
-  change _ = (principalField (q.1:ℂ) A D z)^2 at h1
-  change _ = (principalField (q.1:ℂ) ((q.1:ℂ)*A) ((1-(q.1:ℂ))*D) z)^2 at h3
+  change _ = (principalField (q.1:ℂ) A D z)^(2 : ℕ) at h1
+  change _ = (principalField (q.1:ℂ) ((q.1:ℂ)*A) ((1-(q.1:ℂ))*D) z)^(2 : ℕ) at h3
   rw [← h1,← h3,show 2*(z 1:ℂ)*coordDeriv 1 (cuspPowerResponse 2 (q.1:ℂ) A D) z =
     2*((z 1:ℂ)*coordDeriv 1 (cuspPowerResponse 2 (q.1:ℂ) A D) z) by ring,
     response_euler _ _ _ z hz]
@@ -151,8 +151,8 @@ private theorem principal_balance (q : XiZeroCopy) (A D : ℂ) (z : Fin 2 → �
       (2-2*(q.1:ℂ))*(1-2*(q.1:ℂ))-2 := by ring
   rw [he]
   norm_num only [sub_self,mul_zero,zero_sub]
-  linear_combination (A^2*(z 1:ℂ)^(2*(q.1:ℂ)))*hp+
-    (D^2*(z 1:ℂ)^(2-2*(q.1:ℂ)))*hm
+  linear_combination (A^(2 : ℕ)*(z 1:ℂ)^(2*(q.1:ℂ)))*hp+
+    (D^(2 : ℕ)*(z 1:ℂ)^(2-2*(q.1:ℂ)))*hm
 
 private theorem partial_neg (f : Field) (i : Fin 2) (z : Fin 2 → ℝ) :
     coordDeriv i (fun w => -f w) z = -coordDeriv i f z := by
@@ -185,13 +185,13 @@ private theorem principal_components_zero (q : XiZeroCopy) (A D : ℂ) (z : Fin 
     exact response_second_horizontal (q.1:ℂ) A D z hz 1
   constructor
   · have he := D4BMScalarStream.xi_cusp_two_response_equation q A D z hz
-    change (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 (cuspPowerResponse 2 (q.1:ℂ) A D)) z+
+    change (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (cuspPowerResponse 2 (q.1:ℂ) A D)) z+
       coordDeriv 1 (coordDeriv 1 (cuspPowerResponse 2 (q.1:ℂ) A D)) z)-
-      2*cuspPowerResponse 2 (q.1:ℂ) A D z = (principalField (q.1:ℂ) A D z)^2 at he
+      2*cuspPowerResponse 2 (q.1:ℂ) A D z = (principalField (q.1:ℂ) A D z)^(2 : ℕ) at he
     rw [hxx,zero_add] at he
     have hb := principal_balance q A D z hz
-    have hn : 2*(z 1:ℂ)^2 ≠ 0 := mul_ne_zero (by norm_num) (pow_ne_zero 2 hy)
-    apply (mul_eq_zero.mp (show 2*(z 1:ℂ)^2*
+    have hn : 2*(z 1:ℂ)^(2 : ℕ) ≠ 0 := mul_ne_zero (by norm_num) (pow_ne_zero 2 hy)
+    apply (mul_eq_zero.mp (show 2*(z 1:ℂ)^(2 : ℕ)*
       componentA (principalField (q.1:ℂ) A D) (fun w => -cuspPowerResponse 2 (q.1:ℂ) A D w)
         ((q.1:ℂ)*((q.1:ℂ)-1)) z = 0 from ?_)).resolve_left hn
     simp only [componentA,principal_horizontal _ _ _ z hz,zero_pow (by norm_num : 2 ≠ 0),zero_sub]

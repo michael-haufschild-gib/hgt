@@ -83,7 +83,7 @@ theorem
     (t : ℝ) :
     thetaCuspCompletedProductFiberHigherTailLikelihoodFifthRootCurvatureNumeratorAtZero t =
       thetaCuspCompletedProductFiberHigherTailLikelihoodBaseFifthRootCurvatureNumeratorAtZero t -
-        5 * t ^ 2 * thetaCuspCompletedProductFiberHigherTailDrop 0 t *
+        5 * t ^ (2 : ℕ) * thetaCuspCompletedProductFiberHigherTailDrop 0 t *
           thetaCuspCompletedProductFiberAmplitude 1 0 t *
           thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo t := by
   unfold
@@ -104,14 +104,14 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodAbsorptionBudgetAtZero
     thetaCuspCompletedProductFiberFirstDrop 0 t *
       thetaCuspReflectedSourceFirstDrop 0 t *
       thetaCuspCompletedProductFiberHigherTailLikelihoodFifthRootCurvatureNumeratorAtZero t +
-    4 * t ^ 2 *
+    4 * t ^ (2 : ℕ) *
       (thetaCuspCompletedProductFiberFirstDrop 0 t *
           (thetaCuspCompletedProductFiberFirstDecayFlux 0 t *
               (1 + thetaCuspCompletedProductFiberCofinalLikelihoodFactor t) -
             thetaCuspCompletedProductFiberAmplitude 1 0 t *
               thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t) -
         thetaCuspReflectedSourceFirstDrop 0 t *
-          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ 2
+          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ (2 : ℕ)
 
 /-- Base absorption budget with adverse likelihood curvature removed. -/
 def thetaCuspCompletedProductFiberCofinalLikelihoodBaseAbsorptionBudgetAtZero
@@ -125,19 +125,19 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodBaseAbsorptionBudgetAtZero
     thetaCuspCompletedProductFiberFirstDrop 0 t *
       thetaCuspReflectedSourceFirstDrop 0 t *
       thetaCuspCompletedProductFiberHigherTailLikelihoodBaseFifthRootCurvatureNumeratorAtZero t +
-    4 * t ^ 2 *
+    4 * t ^ (2 : ℕ) *
       (thetaCuspCompletedProductFiberFirstDrop 0 t *
           (thetaCuspCompletedProductFiberFirstDecayFlux 0 t *
               (1 + thetaCuspCompletedProductFiberCofinalLikelihoodFactor t) -
             thetaCuspCompletedProductFiberAmplitude 1 0 t *
               thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t) -
         thetaCuspReflectedSourceFirstDrop 0 t *
-          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ 2
+          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ (2 : ℕ)
 
 /-- Likelihood-convexity contribution to cofinal absorption budget. -/
 def thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero
     (t : ℝ) : ℝ :=
-  -5 * t ^ 2 *
+  -5 * t ^ (2 : ℕ) *
     thetaCuspCompletedProductFiberFirstDrop 0 t *
     thetaCuspReflectedSourceFirstDrop 0 t *
     thetaCuspCompletedProductFiberHigherTailDrop 0 t *
@@ -198,12 +198,12 @@ theorem thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero_pos
     neg_pos.mpr ha
   unfold thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero
   rw [show
-    -5 * t ^ 2 * thetaCuspCompletedProductFiberFirstDrop 0 t *
+    -5 * t ^ (2 : ℕ) * thetaCuspCompletedProductFiberFirstDrop 0 t *
           thetaCuspReflectedSourceFirstDrop 0 t *
           thetaCuspCompletedProductFiberHigherTailDrop 0 t *
           thetaCuspCompletedProductFiberAmplitude 1 0 t *
           thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo t =
-      5 * t ^ 2 * (-thetaCuspCompletedProductFiberFirstDrop 0 t) *
+      5 * t ^ (2 : ℕ) * (-thetaCuspCompletedProductFiberFirstDrop 0 t) *
           thetaCuspReflectedSourceFirstDrop 0 t *
           thetaCuspCompletedProductFiberHigherTailDrop 0 t *
           thetaCuspCompletedProductFiberAmplitude 1 0 t *

@@ -72,7 +72,7 @@ theorem norm_deriv_le_on_imStrip {ρ ρ' M : ℝ} (hρ : ρ' < ρ) {f : ℂ → 
 /-- **Two derivatives cost two powers of the gap.** -/
 theorem norm_deriv_deriv_le_on_imStrip {ρ ρ' M : ℝ} (hρ : ρ' < ρ) {f : ℂ → ℂ}
     (hf : DifferentiableOn ℂ f (imStrip ρ)) (hM : ∀ z ∈ imStrip ρ, ‖f z‖ ≤ M)
-    {z : ℂ} (hz : |z.im| ≤ ρ') : ‖deriv (deriv f) z‖ ≤ 16 * M / (ρ - ρ') ^ 2 := by
+    {z : ℂ} (hz : |z.im| ≤ ρ') : ‖deriv (deriv f) z‖ ≤ 16 * M / (ρ - ρ') ^ (2 : ℕ) := by
   have hgap : (0 : ℝ) < ρ - ρ' := by linarith
   have hmid : ρ' < (ρ + ρ') / 2 := by linarith
   have hmid' : (ρ + ρ') / 2 < ρ := by linarith
@@ -92,7 +92,7 @@ theorem norm_deriv_deriv_le_on_imStrip {ρ ρ' M : ℝ} (hρ : ρ' < ρ) {f : �
     rwa [hrw] at hb
   have hsecond := norm_deriv_le_on_imStrip hmid hderiv hMd hz
   have hne : ρ - ρ' ≠ 0 := ne_of_gt hgap
-  have hrw : 2 * (4 * M / (ρ - ρ')) / ((ρ + ρ') / 2 - ρ') = 16 * M / (ρ - ρ') ^ 2 := by
+  have hrw : 2 * (4 * M / (ρ - ρ')) / ((ρ + ρ') / 2 - ρ') = 16 * M / (ρ - ρ') ^ (2 : ℕ) := by
     rw [show (ρ + ρ') / 2 - ρ' = (ρ - ρ') / 2 by ring]
     field_simp
     ring

@@ -27,7 +27,7 @@ theorem sliceMoment_zero_eq_card {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (
     {y : Fin n → ℂ} (hy : SliceAdmissible f t y) :
     sliceMoment f t 0 y = ((sliceRoots f t y).card : ℂ) := by
   rw [sliceMoment_eq_powerSum ht hy 0]
-  have hmap : (sliceRoots f t y).map (fun x : ℂ => x ^ 0)
+  have hmap : (sliceRoots f t y).map (fun x : ℂ => x ^ (0 : ℕ))
       = Multiset.replicate (sliceRoots f t y).card (1 : ℂ) := by
     rw [← Multiset.map_const']
     exact Multiset.map_congr rfl fun x _ => pow_zero x

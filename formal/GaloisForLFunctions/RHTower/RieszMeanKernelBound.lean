@@ -32,16 +32,16 @@ namespace GaloisForLFunctions.RHTower
 /-- The Riesz-mean kernel `e^{λw}/w²` at the point `w = c + i t` of a vertical line. -/
 def rieszKernel (lam c t : ℝ) : ℂ :=
   Complex.exp ((lam : ℂ) * ((c : ℂ) + (t : ℂ) * Complex.I))
-    / ((c : ℂ) + (t : ℂ) * Complex.I) ^ 2
+    / ((c : ℂ) + (t : ℂ) * Complex.I) ^ (2 : ℕ)
 
 /-- **The kernel has a Poisson profile on the line.** -/
 theorem norm_rieszKernel {c : ℝ} (hc : 0 < c) (lam t : ℝ) :
-    ‖rieszKernel lam c t‖ = Real.exp (lam * c) / (c ^ 2 + t ^ 2) := by
-  have hpos : (0 : ℝ) < c ^ 2 + t ^ 2 := by positivity
-  have hnorm : ‖(c : ℂ) + (t : ℂ) * Complex.I‖ = Real.sqrt (c ^ 2 + t ^ 2) := by
+    ‖rieszKernel lam c t‖ = Real.exp (lam * c) / (c ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
+  have hpos : (0 : ℝ) < c ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
+  have hnorm : ‖(c : ℂ) + (t : ℂ) * Complex.I‖ = Real.sqrt (c ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     rw [Complex.norm_eq_sqrt_sq_add_sq]
     simp
-  have hsq : ‖((c : ℂ) + (t : ℂ) * Complex.I) ^ 2‖ = c ^ 2 + t ^ 2 := by
+  have hsq : ‖((c : ℂ) + (t : ℂ) * Complex.I) ^ (2 : ℕ)‖ = c ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     rw [norm_pow, hnorm, Real.sq_sqrt hpos.le]
   have hre : ((lam : ℂ) * ((c : ℂ) + (t : ℂ) * Complex.I)).re = lam * c := by
     simp
@@ -52,7 +52,7 @@ theorem integrable_norm_rieszKernel {c : ℝ} (hc : 0 < c) (lam : ℝ) :
     Integrable (fun t : ℝ => ‖rieszKernel lam c t‖) := by
   have hbase := (HTGeometry.integrable_inv_sq_add_sq hc).const_mul (Real.exp (lam * c))
   refine hbase.congr (Filter.Eventually.of_forall fun t => ?_)
-  show Real.exp (lam * c) * (c ^ 2 + t ^ 2)⁻¹ = ‖rieszKernel lam c t‖
+  show Real.exp (lam * c) * (c ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹ = ‖rieszKernel lam c t‖
   rw [norm_rieszKernel hc lam t, div_eq_mul_inv]
 
 /-- **The normalised line integral of the kernel.** -/
@@ -61,7 +61,7 @@ theorem integral_norm_rieszKernel {c : ℝ} (hc : 0 < c) (lam : ℝ) :
   have hval : (∫ t : ℝ, ‖rieszKernel lam c t‖)
       = Real.exp (lam * c) * (Real.pi / c) := by
     have hcongr : (fun t : ℝ => ‖rieszKernel lam c t‖)
-        = fun t : ℝ => Real.exp (lam * c) * (c ^ 2 + t ^ 2)⁻¹ := by
+        = fun t : ℝ => Real.exp (lam * c) * (c ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹ := by
       funext t
       rw [norm_rieszKernel hc lam t, div_eq_mul_inv]
     rw [hcongr, integral_const_mul, HTGeometry.integral_inv_sq_add_sq hc]

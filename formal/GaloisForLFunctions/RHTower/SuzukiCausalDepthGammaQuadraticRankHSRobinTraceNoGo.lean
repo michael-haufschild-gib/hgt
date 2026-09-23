@@ -13,7 +13,7 @@ different pre-Gram mechanism could pair the actual Hilbert--Schmidt Gamma featur
 with a moving finite-rank response.  Uniform operator-norm control alone does not bound that
 pairing, because the response's Hilbert--Schmidt norm may grow with rank.
 
-This module closes the natural quadratic-rank class.  If a response has rank at most `(qN)^2`
+This module closes the natural quadratic-rank class.  If a response has rank at most `(qN)^(2 : ℕ)`
 and uniformly bounded operator norm, its pairing with any fixed Hilbert--Schmidt source is `o(N)`.
 The decisive gain over the crude `O(N)` rank estimate is finite-rank density of the fixed source:
 the Hilbert--Schmidt tail is arbitrarily small, while the fixed finite-rank head pairs with the
@@ -40,14 +40,14 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 norm. -/
 theorem hsNormSq_le_rank_mul_norm_sq_of_hasRankLE
     {T : H →L[ℂ] H} {N : ℕ} (hT : HasRankLE T N) :
-    hsNormSq T ≤ (N : ℝ) * ‖T‖ ^ 2 := by
+    hsNormSq T ≤ (N : ℝ) * ‖T‖ ^ (2 : ℕ) := by
   have hHS : IsHilbertSchmidt T := isHilbertSchmidt_of_hasRankLE hT
   have hzero : ∀ k : ℕ, N ≤ k → approxNumber T k = 0 := by
     intro k hk
     refine le_antisymm ?_ (approxNumber_nonneg T k)
     have hle := approxNumber_le T k T (hT.mono hk)
     simpa using hle
-  have hsum : Summable (fun k : ℕ => approxNumber T k ^ 2) := by
+  have hsum : Summable (fun k : ℕ => approxNumber T k ^ (2 : ℕ)) := by
     refine summable_of_ne_finset_zero (s := Finset.range N) ?_
     intro k hk
     rw [Finset.mem_range, not_lt] at hk
@@ -55,26 +55,26 @@ theorem hsNormSq_le_rank_mul_norm_sq_of_hasRankLE
     norm_num
   rw [hsNormSq_eq_tsum_approxNumber_sq hHS,
     ← hsum.sum_add_tsum_nat_add N]
-  have htail : ∑' k : ℕ, approxNumber T (k + N) ^ 2 = 0 := by
+  have htail : ∑' k : ℕ, approxNumber T (k + N) ^ (2 : ℕ) = 0 := by
     simp [hzero]
   rw [htail, add_zero]
   calc
-    ∑ k ∈ Finset.range N, approxNumber T k ^ 2 ≤
-        ∑ _k ∈ Finset.range N, ‖T‖ ^ 2 := by
+    ∑ k ∈ Finset.range N, approxNumber T k ^ (2 : ℕ) ≤
+        ∑ _k ∈ Finset.range N, ‖T‖ ^ (2 : ℕ) := by
       exact Finset.sum_le_sum fun k _ =>
         pow_le_pow_left₀ (approxNumber_nonneg T k)
           (approxNumber_le_norm T k) 2
-    _ = (N : ℝ) * ‖T‖ ^ 2 := by simp
+    _ = (N : ℝ) * ‖T‖ ^ (2 : ℕ) := by simp
 
 /-- Square-rank form of the finite-rank Hilbert--Schmidt/operator-norm comparison. -/
 theorem hsNorm_le_rankRoot_mul_norm_of_hasRankLE_sq
-    {T : H →L[ℂ] H} {d : ℕ} (hT : HasRankLE T (d ^ 2)) :
+    {T : H →L[ℂ] H} {d : ℕ} (hT : HasRankLE T (d ^ (2 : ℕ))) :
     hsNorm T ≤ (d : ℝ) * ‖T‖ := by
   have hsq := hsNormSq_le_rank_mul_norm_sq_of_hasRankLE hT
-  have hleft : hsNorm T ^ 2 = hsNormSq T :=
+  have hleft : hsNorm T ^ (2 : ℕ) = hsNormSq T :=
     Real.sq_sqrt (hsNormSq_nonneg T)
-  have hright : (((d : ℝ) * ‖T‖) ^ 2) =
-      ((d ^ 2 : ℕ) : ℝ) * ‖T‖ ^ 2 := by
+  have hright : (((d : ℝ) * ‖T‖) ^ (2 : ℕ)) =
+      ((d ^ (2 : ℕ) : ℕ) : ℝ) * ‖T‖ ^ (2 : ℕ) := by
     push_cast
     ring
   have hnonneg : 0 ≤ (d : ℝ) * ‖T‖ :=
@@ -101,12 +101,12 @@ theorem norm_hsInner_le_traceNorm_mul_norm_of_hasRankLE
     _ = traceNorm H F * ‖R‖ := by simp
 
 /-- **Fixed-Hilbert--Schmidt/quadratic-rank little-`o` law.**  Pairing any fixed
-Hilbert--Schmidt source with uniformly operator-bounded responses of rank at most `(qN)^2` is
+Hilbert--Schmidt source with uniformly operator-bounded responses of rank at most `(qN)^(2 : ℕ)` is
 sublinear in `N`. -/
 theorem tendsto_re_hsInner_div_nat_of_quadraticRank_uniformlyBounded
     {F : H →L[ℂ] H} (hF : IsHilbertSchmidt F)
     (R : ℕ → H →L[ℂ] H) (q : ℕ) (M : ℝ) (hM : 0 ≤ M)
-    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ 2))
+    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ (2 : ℕ)))
     (hNorm : ∀ N : ℕ, ‖R N‖ ≤ M) :
     Tendsto (fun N : ℕ => (hsInner (R N) F).re / (N : ℝ))
       atTop (𝓝 0) := by
@@ -231,7 +231,7 @@ theorem suzukiCausalDepthGammaQuadraticRankHSCorrection_sublinear
     (R : ℕ → SuzukiCausalDepthGammaTraceL2 →L[ℂ]
       SuzukiCausalDepthGammaTraceL2)
     (q : ℕ) (M : ℝ) (hM : 0 ≤ M)
-    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ 2))
+    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ (2 : ℕ)))
     (hNorm : ∀ N : ℕ, ‖R N‖ ≤ M) :
     SuzukiTransitionCoreCorrectionSublinear
       (suzukiCausalDepthGammaQuadraticRankHSCorrection R) := by
@@ -253,7 +253,7 @@ structure SuzukiCausalDepthGammaQuadraticRankHSWardProducer where
   opNormCeiling : ℝ
   opNormCeiling_nonneg : 0 ≤ opNormCeiling
   response_rank : ∀ N : ℕ,
-    HasRankLE (response N) ((rankScale * N) ^ 2)
+    HasRankLE (response N) ((rankScale * N) ^ (2 : ℕ))
   response_opNorm_le : ∀ N : ℕ, ‖response N‖ ≤ opNormCeiling
   lower : ℝ
   ward_semibounded : ∀ᶠ n : ℕ in atTop,

@@ -30,7 +30,7 @@ theorem realQuad_zero (A : Matrix (Fin n) (Fin n) ℝ) : realQuad A 0 = 0 := by
 
 /-- The form is homogeneous of degree two. -/
 theorem realQuad_smul (A : Matrix (Fin n) (Fin n) ℝ) (t : ℝ) (c : Fin n → ℝ) :
-    realQuad A (t • c) = t ^ 2 * realQuad A c := by
+    realQuad A (t • c) = t ^ (2 : ℕ) * realQuad A c := by
   simp only [realQuad, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
@@ -51,7 +51,7 @@ theorem sum_abs_le_card_mul_norm (c : Fin n → ℝ) : ∑ i, |c i| ≤ (n : ℝ
 quadratic form at most `ε n² ‖c‖²`. -/
 theorem abs_realQuad_le_of_entries (A : Matrix (Fin n) (Fin n) ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (hA : ∀ i j, |A i j| ≤ ε) (c : Fin n → ℝ) :
-    |realQuad A c| ≤ ε * (n : ℝ) ^ 2 * ‖c‖ ^ 2 := by
+    |realQuad A c| ≤ ε * (n : ℝ) ^ (2 : ℕ) * ‖c‖ ^ (2 : ℕ) := by
   have hstep : |realQuad A c| ≤ ∑ i, ∑ j, ε * |c i| * |c j| := by
     refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
     refine Finset.sum_le_sum fun i _ => ?_
@@ -75,7 +75,7 @@ theorem abs_realQuad_le_of_entries (A : Matrix (Fin n) (Fin n) ℝ) {ε : ℝ} (
         have h1 : ε * (∑ i, |c i|) ≤ ε * ((n : ℝ) * ‖c‖) :=
           mul_le_mul_of_nonneg_left hsum hε
         exact mul_le_mul h1 hsum hsum0 (by positivity)
-    _ = ε * (n : ℝ) ^ 2 * ‖c‖ ^ 2 := by ring
+    _ = ε * (n : ℝ) ^ (2 : ℕ) * ‖c‖ ^ (2 : ℕ) := by ring
 
 /-- **Uniform margin of a negative definite form.**  A real quadratic form strictly negative on
 every nonzero vector satisfies `Q c ≤ -δ ‖c‖²` for some `δ > 0`: the form is continuous, the unit
@@ -83,7 +83,7 @@ sphere is compact in finite dimension, so the form attains a strictly negative m
 homogeneity propagates the bound to every vector. -/
 theorem exists_margin_of_negDef (A : Matrix (Fin n) (Fin n) ℝ)
     (hA : ∀ c : Fin n → ℝ, c ≠ 0 → realQuad A c < 0) :
-    ∃ δ : ℝ, 0 < δ ∧ ∀ c : Fin n → ℝ, realQuad A c ≤ -δ * ‖c‖ ^ 2 := by
+    ∃ δ : ℝ, 0 < δ ∧ ∀ c : Fin n → ℝ, realQuad A c ≤ -δ * ‖c‖ ^ (2 : ℕ) := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
     refine ⟨1, one_pos, fun c => ?_⟩
@@ -116,35 +116,35 @@ theorem exists_margin_of_negDef (A : Matrix (Fin n) (Fin n) ℝ)
       have hmax : realQuad A (‖c‖⁻¹ • c) ≤ realQuad A c₀ :=
         (isMaxOn_iff.mp hc₀max) _ hunit
       rw [realQuad_smul] at hmax
-      have : ‖c‖ ^ 2 * (‖c‖⁻¹ ^ 2 * realQuad A c) ≤ ‖c‖ ^ 2 * realQuad A c₀ :=
+      have : ‖c‖ ^ (2 : ℕ) * (‖c‖⁻¹ ^ (2 : ℕ) * realQuad A c) ≤ ‖c‖ ^ (2 : ℕ) * realQuad A c₀ :=
         mul_le_mul_of_nonneg_left hmax (by positivity)
       rw [← mul_assoc] at this
-      have hcancel : ‖c‖ ^ 2 * ‖c‖⁻¹ ^ 2 = 1 := by
+      have hcancel : ‖c‖ ^ (2 : ℕ) * ‖c‖⁻¹ ^ (2 : ℕ) = 1 := by
         field_simp [hcn.ne']
       rw [hcancel, one_mul] at this
-      calc realQuad A c ≤ ‖c‖ ^ 2 * realQuad A c₀ := this
-        _ = -δ * ‖c‖ ^ 2 := by simp only [hδdef]; ring
+      calc realQuad A c ≤ ‖c‖ ^ (2 : ℕ) * realQuad A c₀ := this
+        _ = -δ * ‖c‖ ^ (2 : ℕ) := by simp only [hδdef]; ring
 
 /-- **Negative definiteness is stable under a small entrywise perturbation.**  If `A` is negative
 definite with margin `δ` and every entry of `B - A` is at most `ε` with `ε n² < δ`, then `B` is
 negative definite. -/
 theorem negDef_of_entrywise_close {A B : Matrix (Fin n) (Fin n) ℝ} {δ ε : ℝ}
     (hε : 0 ≤ ε)
-    (hmargin : ∀ c : Fin n → ℝ, realQuad A c ≤ -δ * ‖c‖ ^ 2)
+    (hmargin : ∀ c : Fin n → ℝ, realQuad A c ≤ -δ * ‖c‖ ^ (2 : ℕ))
     (hclose : ∀ i j, |B i j - A i j| ≤ ε)
-    (hsmall : ε * (n : ℝ) ^ 2 < δ) :
+    (hsmall : ε * (n : ℝ) ^ (2 : ℕ) < δ) :
     ∀ c : Fin n → ℝ, c ≠ 0 → realQuad B c < 0 := by
   intro c hc
   have hdiff : realQuad B c - realQuad A c = realQuad (B - A) c := by
     simp only [realQuad, Matrix.sub_apply, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
-  have hbound : |realQuad (B - A) c| ≤ ε * (n : ℝ) ^ 2 * ‖c‖ ^ 2 :=
+  have hbound : |realQuad (B - A) c| ≤ ε * (n : ℝ) ^ (2 : ℕ) * ‖c‖ ^ (2 : ℕ) :=
     abs_realQuad_le_of_entries _ hε (fun i j => by simpa using hclose i j) c
   have hcn : 0 < ‖c‖ := norm_pos_iff.2 hc
-  have hsq : 0 < ‖c‖ ^ 2 := by positivity
+  have hsq : 0 < ‖c‖ ^ (2 : ℕ) := by positivity
   have hA := hmargin c
-  have h1 : realQuad B c ≤ realQuad A c + ε * (n : ℝ) ^ 2 * ‖c‖ ^ 2 := by
+  have h1 : realQuad B c ≤ realQuad A c + ε * (n : ℝ) ^ (2 : ℕ) * ‖c‖ ^ (2 : ℕ) := by
     have := (abs_le.1 hbound).2
     linarith [hdiff]
   nlinarith [h1, hA, hsq, hsmall]

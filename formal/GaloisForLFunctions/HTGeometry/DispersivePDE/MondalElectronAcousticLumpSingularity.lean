@@ -19,7 +19,7 @@ theorem mondalNegativeBetaLumpOffset_neg (betaLog gammaLog r : ℝ) :
   unfold mondalNegativeBetaLumpOffset mondalLumpOffset mondalLumpNormSq
   have hgamma : 0 < Real.exp gammaLog := Real.exp_pos gammaLog
   have hbeta : 0 < Real.exp betaLog := Real.exp_pos betaLog
-  have hnorm : 0 < 1 + r ^ 2 := by nlinarith [sq_nonneg r]
+  have hnorm : 0 < 1 + r ^ (2 : ℕ) := by nlinarith [sq_nonneg r]
   have hleft : 3 * (-Real.exp betaLog) / Real.exp gammaLog < 0 :=
     div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by norm_num) (neg_lt_zero.mpr hbeta)) hgamma
   exact mul_neg_of_neg_of_pos hleft (pow_pos hnorm 3)

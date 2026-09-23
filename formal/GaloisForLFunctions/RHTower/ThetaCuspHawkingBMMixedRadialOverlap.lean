@@ -47,14 +47,14 @@ theorem profile_value (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:ℝ)) :
 /-- The first derivative is derived from the actual continued profile. -/
 theorem profileFirst_eq (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:ℝ)) :
     D4BMLeftModeRadialEquation.profileFirst q side outer t=
-      (physicalFundamentalFrequency q side+1-(tortoiseRadius t:ℂ)^2)/(tortoiseRadius t:ℂ)*
+      (physicalFundamentalFrequency q side+1-(tortoiseRadius t:ℂ)^(2 : ℕ))/(tortoiseRadius t:ℂ)*
         D4BMLeftModeRadialEquation.profile q side outer t := by
   have hz := horizonCoordinate_interior t t.2
   have hp := ((power_derivatives (physicalFundamentalFrequency q side/2) hz.1).1.scomp (t:ℝ)
     (horizonCoordinate_hasDerivAt t)).mul (radialUnit_hasDerivAt t).ofReal_comp
   have hh : HasDerivAt (D4BMLeftModeRadialEquation.profile q side outer)
       ((coordinateFirst t:ℂ)*powerFirst (physicalFundamentalFrequency q side/2) (horizonCoordinate t)*(radialUnit t:ℂ)+
-        power (physicalFundamentalFrequency q side/2) (horizonCoordinate t)*((radialUnit t:ℂ)^2-1)) t := by
+        power (physicalFundamentalFrequency q side/2) (horizonCoordinate t)*((radialUnit t:ℂ)^(2 : ℕ)-1)) t := by
     apply HasDerivAt.congr_of_eventuallyEq (by simpa only [Complex.real_smul,Complex.ofReal_sub,
       Complex.ofReal_pow,Complex.ofReal_one] using! hp)
     filter_upwards [Iio_mem_nhds t.2] with v hv
@@ -75,7 +75,7 @@ theorem reader_eigenvalue (q : XiZeroCopy) (side : Bool) :
     D4BMLeftModeRadialEquation.eigenvalue q=
       (physicalFundamentalFrequency q side+1)*(physicalFundamentalFrequency q side+2) := by
   have h := D4BMLeftHorizonFactor.physical_angular_eigenvalue q side
-  change physicalAngularParameter q^2-1/4=_
+  change physicalAngularParameter q^(2 : ℕ)-1/4=_
   linear_combination h
 
 /-- The original left temporal and radial-curl blocks become elementary at the actual QNM. -/
@@ -131,13 +131,13 @@ theorem radial_coefficients (q r : XiZeroCopy) (branch side outer : Bool) (a : �
     let s := physicalRate q branch
     let w := physicalFundamentalFrequency r side
     let R := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let g := D4BMLeftModeRadialEquation.profile r side outer t
     let dg := D4BMLeftModeRadialEquation.profileFirst r side outer t
     radialPairCoefficient s R E (D4BMLeftModeRadialEquation.eigenvalue r) g dg 1 0=
-      (w*E*g/R^2)*2*s*(w-2*s) ∧
+      (w*E*g/R^(2 : ℕ))*2*s*(w-2*s) ∧
     radialPairCoefficient s R E (D4BMLeftModeRadialEquation.eigenvalue r) g dg 0 1=
-      (w*E*g/R^2)*s^2*(w+(s+1)*(2*s+2-w)/(2*R^2)) := by
+      (w*E*g/R^(2 : ℕ))*s^(2 : ℕ)*(w+(s+1)*(2*s+2-w)/(2*R^(2 : ℕ))) := by
   dsimp only
   simp only [radialPairCoefficient,
     show (modePoint t z.val z.2).val 1=tortoiseRadius t from rfl]
@@ -159,7 +159,7 @@ def bulkOverlapCoefficient (q reader : XiZeroCopy) (branch side outer : Bool) (a
   let p := modePoint t z.val z.2
   let s := physicalRate q branch
   let r := (p.val 1:ℂ)
-  let E := envelope (2*s) (a^2) p.val
+  let E := envelope (2*s) (a^(2 : ℕ)) p.val
   let g := D4BMLeftModeRadialEquation.profile reader side outer t
   let dg := D4BMLeftModeRadialEquation.profileFirst reader side outer t
   let lam := D4BMLeftModeRadialEquation.eigenvalue reader
@@ -174,10 +174,10 @@ theorem bulkOverlapCoefficient_eq (q reader : XiZeroCopy) (branch side outer : B
     let s := physicalRate q branch
     let w := physicalFundamentalFrequency reader side
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let g := D4BMLeftModeRadialEquation.profile reader side outer t
     bulkOverlapCoefficient q reader branch side outer a t z=
-      (w*E*g/r^2)*(w-2*s)*s*(overlapConstant s w+overlapInverseSquare s w/r^2) := by
+      (w*E*g/r^(2 : ℕ))*(w-2*s)*s*(overlapConstant s w+overlapInverseSquare s w/r^(2 : ℕ)) := by
   dsimp only [bulkOverlapCoefficient]
   rw [(radial_coefficients q reader branch side outer a t z).1,
     (radial_coefficients q reader branch side outer a t z).2,
@@ -238,7 +238,7 @@ private theorem profile_ne_zero (q : XiZeroCopy) (side outer : Bool) (t : Iio (0
 theorem bulkOverlapCoefficient_zero_iff (q reader : XiZeroCopy) (branch side outer : Bool)
     (t : Iio (0:ℝ)) (z : {z : D4BMHorizon.Point // 0 < z 1}) :
     bulkOverlapCoefficient q reader branch side outer 1 t z=0 ↔
-      overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^2+
+      overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^(2 : ℕ)+
         overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side)=0 := by
   have hw : physicalFundamentalFrequency reader side≠0 := by
     intro he
@@ -252,7 +252,7 @@ theorem bulkOverlapCoefficient_zero_iff (q reader : XiZeroCopy) (branch side out
     exact lt_irrefl (0:ℝ) hh
   have hs := (source_rate_factors q branch).1
   have hg := profile_ne_zero reader side outer t
-  have hE : envelope (2*physicalRate q branch) ((1:ℂ)^2) (modePoint t z.val z.2).val≠0 := by
+  have hE : envelope (2*physicalRate q branch) ((1:ℂ)^(2 : ℕ)) (modePoint t z.val z.2).val≠0 := by
     rw [envelope_eq_exp]
     simp only [one_pow,one_mul,ne_eq,Complex.exp_ne_zero,not_false_eq_true]
   have hr : (tortoiseRadius t:ℂ)≠0 := Complex.ofReal_ne_zero.mpr
@@ -261,9 +261,9 @@ theorem bulkOverlapCoefficient_zero_iff (q reader : XiZeroCopy) (branch side out
   simp only [show (modePoint t z.val z.2).val 1=tortoiseRadius t from rfl,
     mul_eq_zero,div_eq_zero_iff,hw,hE,hg,hd,hs,pow_ne_zero 2 hr,or_self,false_or]
   have he : overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)+
-      overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side)/(tortoiseRadius t:ℂ)^2=
-      (overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^2+
-        overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side))/(tortoiseRadius t:ℂ)^2 := by
+      overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side)/(tortoiseRadius t:ℂ)^(2 : ℕ)=
+      (overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^(2 : ℕ)+
+        overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side))/(tortoiseRadius t:ℂ)^(2 : ℕ) := by
     field_simp [hr]
   rw [he,div_eq_zero_iff]
   simp only [pow_ne_zero 2 hr,or_false]
@@ -272,7 +272,7 @@ theorem bulkOverlapCoefficient_zero_iff (q reader : XiZeroCopy) (branch side out
 theorem bulkOverlapCoefficient_amplitude (q reader : XiZeroCopy) (branch side outer : Bool) (a : ℂ)
     (t : Iio (0:ℝ)) (z : {z : D4BMHorizon.Point // 0 < z 1}) :
     bulkOverlapCoefficient q reader branch side outer a t z=
-      a^2*bulkOverlapCoefficient q reader branch side outer 1 t z := by
+      a^(2 : ℕ)*bulkOverlapCoefficient q reader branch side outer 1 t z := by
   rw [bulkOverlapCoefficient_eq,bulkOverlapCoefficient_eq,envelope_eq_exp,envelope_eq_exp]
   ring
 
@@ -280,7 +280,7 @@ theorem bulkOverlapCoefficient_amplitude (q reader : XiZeroCopy) (branch side ou
 theorem bulkOverlapCoefficient_zero_iff_amplitude (q reader : XiZeroCopy) (branch side outer : Bool) (a : ℂ)
     (t : Iio (0:ℝ)) (z : {z : D4BMHorizon.Point // 0 < z 1}) :
     bulkOverlapCoefficient q reader branch side outer a t z=0 ↔ a=0 ∨
-      overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^2+
+      overlapConstant (physicalRate q branch) (physicalFundamentalFrequency reader side)*(tortoiseRadius t:ℂ)^(2 : ℕ)+
         overlapInverseSquare (physicalRate q branch) (physicalFundamentalFrequency reader side)=0 := by
   rw [bulkOverlapCoefficient_amplitude,mul_eq_zero,bulkOverlapCoefficient_zero_iff]
   simp only [pow_eq_zero_iff (by norm_num : (2:ℕ)≠0)]
@@ -298,10 +298,10 @@ theorem bulkOverlapCoefficient_zero_set_subsingleton (q reader : XiZeroCopy) (br
     apply h
     refine ⟨he,?_⟩
     simpa only [he,zero_mul,zero_add] using h1
-  have hsq : (tortoiseRadius t:ℂ)^2=(tortoiseRadius v:ℂ)^2 := by
+  have hsq : (tortoiseRadius t:ℂ)^(2 : ℕ)=(tortoiseRadius v:ℂ)^(2 : ℕ) := by
     apply mul_left_cancel₀ hc
     linear_combination h1-h2
-  have hsqR : (tortoiseRadius t)^2=(tortoiseRadius v)^2 := by exact_mod_cast hsq
+  have hsqR : (tortoiseRadius t)^(2 : ℕ)=(tortoiseRadius v)^(2 : ℕ) := by exact_mod_cast hsq
   have hr : tortoiseRadius t=tortoiseRadius v := by
     nlinarith [tortoiseRadius_exterior t t.2,tortoiseRadius_exterior v v.2]
   apply Subtype.ext
@@ -325,7 +325,7 @@ theorem exists_bulkOverlapCoefficient_ne_zero (q reader : XiZeroCopy) (branch si
 
 /-- Source-square current whose divergence controls the remaining actual angular overlap. -/
 def squareReaderCurrent (q reader : XiZeroCopy) (j : Fin 2) (z : D4BMHorizon.Point) : ℂ :=
-  (D4BMAngularTwoTensor.source q z)^2/2*
+  (D4BMAngularTwoTensor.source q z)^(2 : ℕ)/2*
     coordDeriv j (D4BMLiteralCusp.scalar (physicalAngularParameter reader)) z
 
 /-- The complete source-square/reader overlap is a boundary divergence minus a full triple density. -/
@@ -334,8 +334,8 @@ theorem squareReaderCurrent_divergence (q reader : XiZeroCopy)
     (∑ j : Fin 2, coordDeriv j (squareReaderCurrent q reader j) z.val)=
       (∑ j : Fin 2, fullSquareCovector q j z.val*
         D4BMLiteralCusp.vector (physicalAngularParameter reader) j z.val)+
-      D4BMLeftModeRadialEquation.eigenvalue reader*(D4BMAngularTwoTensor.source q z.val)^2*
-        D4BMLiteralCusp.scalar (physicalAngularParameter reader) z.val/(2*(z.val 1:ℂ)^2) := by
+      D4BMLeftModeRadialEquation.eigenvalue reader*(D4BMAngularTwoTensor.source q z.val)^(2 : ℕ)*
+        D4BMLiteralCusp.scalar (physicalAngularParameter reader) z.val/(2*(z.val 1:ℂ)^(2 : ℕ)) := by
   let S := D4BMAngularTwoTensor.source q
   let R := D4BMLiteralCusp.scalar (physicalAngularParameter reader)
   let lam := D4BMLeftModeRadialEquation.eigenvalue reader
@@ -346,7 +346,7 @@ theorem squareReaderCurrent_divergence (q reader : XiZeroCopy)
   have dS := (hS.differentiableAt (by norm_num)).hasFDerivAt
   have hd (j : Fin 2) : coordDeriv j (squareReaderCurrent q reader j) z.val=
       S z.val*coordDeriv j S z.val*coordDeriv j R z.val+
-        S z.val^2/2*coordDeriv j (coordDeriv j R) z.val := by
+        S z.val^(2 : ℕ)/2*coordDeriv j (coordDeriv j R) z.val := by
     have dr := (ScalarTwoJet.coordDeriv_hasFDerivAt hR j).differentiableAt.hasFDerivAt
     have hh := ((dS.pow 2).mul_const (2:ℂ)⁻¹).mul dr
     change HasFDerivAt (squareReaderCurrent q reader j) _ z.val at hh
@@ -355,17 +355,17 @@ theorem squareReaderCurrent_divergence (q reader : XiZeroCopy)
     ring
   have heR := D4BMLiteralCusp.scalar_equation (physicalAngularParameter reader) z.val z.2
   rw [D4BMHorizon.scalarLaplacian_eq _ z.val z.2] at heR
-  have he : (z.val 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 R) z.val+
+  have he : (z.val 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 R) z.val+
       coordDeriv 1 (coordDeriv 1 R) z.val)=lam*R z.val := by
     dsimp only [R,lam,D4BMLeftModeRadialEquation.eigenvalue,D4BMLiteralCusp.scalarQ] at heR ⊢
     linear_combination heR
   change (∑ j : Fin 2, coordDeriv j (squareReaderCurrent q reader j) z.val)=
     (∑ j : Fin 2, S z.val*D4BMHorizon.coexact S j z.val*D4BMHorizon.coexact R j z.val)+
-      lam*S z.val^2*R z.val/(2*(z.val 1:ℂ)^2)
+      lam*S z.val^(2 : ℕ)*R z.val/(2*(z.val 1:ℂ)^(2 : ℕ))
   have hy : (z.val 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr z.2.ne'
   simp only [Fin.sum_univ_two,hd,D4BMHorizon.coexact,Matrix.cons_val_zero,Matrix.cons_val_one]
   field_simp [hy]
-  linear_combination (S z.val^2)*he
+  linear_combination (S z.val^(2 : ℕ))*he
 
 /-- Exact original left-QNM radial balance with both boundary currents and the full triple source.
 No horizon, cusp, onset or source-contact contribution is set to zero. -/
@@ -374,7 +374,7 @@ theorem original_radial_triple_balance (q reader : XiZeroCopy) (branch side oute
     let p := modePoint t z.val z.2
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let g := D4BMLeftModeRadialEquation.profile reader side outer t
     let dg := D4BMLeftModeRadialEquation.profileFirst reader side outer t
     let lam := D4BMLeftModeRadialEquation.eigenvalue reader
@@ -382,8 +382,8 @@ theorem original_radial_triple_balance (q reader : XiZeroCopy) (branch side oute
     let C := radialPairCoefficient s r E lam g dg 1 0
     let Omega := bulkOverlapCoefficient q reader branch side outer a t z
     (lam-mu)*current q branch a reader side outer t z 1+
-      Omega*lam*(D4BMAngularTwoTensor.source q z.val)^2*
-        D4BMLiteralCusp.scalar (physicalAngularParameter reader) z.val/(2*(z.val 1:ℂ)^2)=
+      Omega*lam*(D4BMAngularTwoTensor.source q z.val)^(2 : ℕ)*
+        D4BMLiteralCusp.scalar (physicalAngularParameter reader) z.val/(2*(z.val 1:ℂ)^(2 : ℕ))=
       C*(∑ j : Fin 2, coordDeriv j (angularGreenCurrent q branch reader j) z.val)+
         Omega*(∑ j : Fin 2, coordDeriv j (squareReaderCurrent q reader j) z.val) := by
   dsimp only

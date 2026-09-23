@@ -225,7 +225,7 @@ theorem occupiedTargetBures_completeIncidence_minimax_bound
         (finitePositiveReporterCaptureEvent target state threshold) ≤
       compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance mu state)
-        (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 := by
+        (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) := by
   let V : Set (Fin n → ℂ) := Set.range target
   have hVne : V.Nonempty := Set.range_nonempty target
   exact compactBures_completeIncidence_minimax_bound
@@ -252,7 +252,7 @@ theorem occupiedTargetBures_returnExcisedIncidence_minimax_bound
         compactBuresDualCapacity
           (finitePositiveReporterSourceCovariance
             (mu.restrict returnSetᶜ) state)
-          (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 / threshold := by
+          (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) / threshold := by
   let V : Set (Fin n → ℂ) := Set.range target
   have hVne : V.Nonempty := Set.range_nonempty target
   exact compactBures_returnExcisedIncidence_minimax_bound
@@ -408,7 +408,7 @@ theorem occupiedTargetBures_completeIncidence_minimax_bound_of_isBounded
         (finitePositiveReporterCaptureEvent target state threshold) ≤
       compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance mu state)
-        (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 := by
+        (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) := by
   let V : Set (Fin n → ℂ) := Set.range target
   have hVne : V.Nonempty := Set.range_nonempty target
   exact compactBures_completeIncidence_minimax_bound
@@ -435,7 +435,7 @@ theorem occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_isBounded
         compactBuresDualCapacity
           (finitePositiveReporterSourceCovariance
             (mu.restrict returnSetᶜ) state)
-          (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 / threshold := by
+          (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) / threshold := by
   let V : Set (Fin n → ℂ) := Set.range target
   have hVne : V.Nonempty := Set.range_nonempty target
   exact compactBures_returnExcisedIncidence_minimax_bound
@@ -460,7 +460,7 @@ theorem occupiedTargetBures_completeIncidence_minimax_bound_of_norm_le_one
         (finitePositiveReporterCaptureEvent target state threshold) ≤
       compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance mu state)
-        (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 := by
+        (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) := by
   apply occupiedTargetBures_completeIncidence_minimax_bound_of_isBounded
     mu target state threshold hthreshold
   · rw [isBounded_iff_forall_norm_le]
@@ -484,7 +484,7 @@ theorem occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_norm_le_one
         compactBuresDualCapacity
           (finitePositiveReporterSourceCovariance
             (mu.restrict returnSetᶜ) state)
-          (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 / threshold := by
+          (finiteBuresOccupiedTargetBody (Set.range target)) ^ (2 : ℕ) / threshold := by
   apply occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_isBounded
     mu target state threshold hthreshold returnSet hreturn
   · rw [isBounded_iff_forall_norm_le]

@@ -32,7 +32,7 @@ def growingMultiplicityEscapingQuartetGaugedXi (a : ℝ) (n : ℕ) (s : ℂ) : �
   growingMultiplicityEscapingQuartetGauge a n s * xi s
 
 private theorem growingMultiplicityEscapingQuartet_ratio_tendsto_zero :
-    Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2))
+    Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ) / (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
       atTop (nhds 0) := by
   convert (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)) using 1
   funext n
@@ -41,8 +41,8 @@ private theorem growingMultiplicityEscapingQuartet_ratio_tendsto_zero :
 
 private theorem escapingQuartetScale_sq_mul_eq_div
     (n : ℕ) (z : ℂ) :
-    (escapingQuartetScale n : ℂ) ^ 2 * z =
-      z / (((((n + 1 : ℕ) : ℝ) : ℂ)) ^ 2) := by
+    (escapingQuartetScale n : ℂ) ^ (2 : ℕ) * z =
+      z / (((((n + 1 : ℕ) : ℝ) : ℂ)) ^ (2 : ℕ)) := by
   unfold escapingQuartetScale escapingQuartetHeight
   push_cast
   field_simp
@@ -58,9 +58,9 @@ theorem growingMultiplicityEscapingQuartetGauge_tendstoLocallyUniformly_one
     (fun n => by positivity)
     growingMultiplicityEscapingQuartet_ratio_tendsto_zero
   have hminus := hbase.comp
-    (fun s : ℂ => ((s - (1 / 2 : ℂ)) - (a : ℂ)) ^ 2) (by fun_prop)
+    (fun s : ℂ => ((s - (1 / 2 : ℂ)) - (a : ℂ)) ^ (2 : ℕ)) (by fun_prop)
   have hplus := hbase.comp
-    (fun s : ℂ => ((s - (1 / 2 : ℂ)) + (a : ℂ)) ^ 2) (by fun_prop)
+    (fun s : ℂ => ((s - (1 / 2 : ℂ)) + (a : ℂ)) ^ (2 : ℕ)) (by fun_prop)
   have hprod := hminus.mul₀ hplus continuous_const continuous_const
   convert hprod using 1
   · funext n s

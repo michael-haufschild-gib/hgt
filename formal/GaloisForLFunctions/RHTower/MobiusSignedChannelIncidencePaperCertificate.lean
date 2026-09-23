@@ -15,8 +15,8 @@ Formal certificate for
 (6)      ||R_omega|| = 1  and  R_omega R_omega^* = I ;
 (8)      (R_omega^* h)_d = eps(d) sqrt(P_omega(d)) h ;
 (10)     Pi_omega = R_omega^* R_omega is an idempotent self-adjoint channel projection ;
-(15)     ||B_{omega,d}||^2 = ||k_omega||^2 + c_omega^2 log d ;
-(16)/(17) ||Y_omega||^2 = ||k_omega||^2 + c_omega^2 E_{P_omega}[log d],
+(15)     ||B_{omega,d}||^(2 : ℕ) = ||k_omega||^(2 : ℕ) + c_omega^(2 : ℕ) log d ;
+(16)/(17) ||Y_omega||^(2 : ℕ) = ||k_omega||^(2 : ℕ) + c_omega^(2 : ℕ) E_{P_omega}[log d],
           E_{P_omega}[log d] = -zeta'/zeta(sigma) + 2 zeta'/zeta(2 sigma) ;
 (20)/(21) R_omega Y_omega = F_omega / Z_omega ;
 (23)     ||F_omega|| = Z_omega ||Pi_omega Y_omega|| ;

@@ -25,7 +25,7 @@ private theorem source_first_two_nonneg :
     1/10 ≤ primeFreeDivisorDefect 1 ∧ 0 ≤ primeFreeDivisorDefect 2 := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   have hg : (5768/10000:ℝ) ≤ Real.eulerMascheroniConstant := by
@@ -310,16 +310,16 @@ theorem exists_mobiusDivisorTwoChannelBlockParity :
     exact ⟨two_channel_parity M hM10 P hP hreserve (hsub.trans hbudget) R,
       sparse_block_oriented_le M P (fun p hp => (hP p hp).1)
         (two_fifths_pairwise hM10 P (fun p hp => (hP p hp).2)) R⟩
-  have hsq (R : Finset ℕ) : (mobiusDivisorSelectionFibre M P R)^2≤
-      (mobiusDivisorSelectionFibre M ∅ R)^2 := by
+  have hsq (R : Finset ℕ) : (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)≤
+      (mobiusDivisorSelectionFibre M ∅ R)^(2 : ℕ) := by
     rw [← mobiusDivisorOrientedFibre_sq,← mobiusDivisorOrientedFibre_sq]
     have ha := (hor R).1
     have hb := (hor R).2
     have hc := mul_nonneg (sub_nonneg.mpr hb) (add_nonneg ha (ha.trans hb))
     nlinarith only [hc]
   refine ⟨hor,?_,?_,?_⟩
-  · change (∑ R∈(mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M P R)^2)≤
-      ∑ R∈(mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M ∅ R)^2
+  · change (∑ R∈(mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M P R)^(2 : ℕ))≤
+      ∑ R∈(mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M ∅ R)^(2 : ℕ)
     exact sum_le_sum (fun R _ => hsq R)
   · rw [mobiusDivisorNonemptyEnergy_eq_sum,mobiusDivisorNonemptyEnergy_eq_sum]
     exact sum_le_sum (fun R _ => hsq R)

@@ -42,7 +42,7 @@ theorem mem_spectrum_of_eigenvector (A : H →L[ℂ] H) {c : ℝ} {x : H}
 
 /-- **Functional calculus on an eigenvector.**  If `A x = c • x` with `c` real then
 `g(A) x = g(c) • x` for every real continuous `g` on the spectrum. -/
-theorem cfc_apply_eigenvector (A : H →L[ℂ] H) (hA : IsSelfAdjoint A) {c : ℝ} {x : H}
+theorem cfc_apply_eigenvector_rankOne (A : H →L[ℂ] H) (hA : IsSelfAdjoint A) {c : ℝ} {x : H}
     (hx : A x = (c : ℂ) • x) {g : ℝ → ℝ} (hg : ContinuousOn g (spectrum ℝ A)) :
     cfc g A x = ((g c : ℝ) : ℂ) • x := by
   by_cases hx0 : x = 0
@@ -106,7 +106,7 @@ theorem re_inner_cfc_self_ge_rankOne (A : H →L[ℂ] H) (hA : IsSelfAdjoint A) 
   have hTsa : IsSelfAdjoint T := IsSelfAdjoint.cfc
   have hTe : T e = ((g 1 : ℝ) : ℂ) • e := by
     have h1 : A e = ((1 : ℝ) : ℂ) • e := by rw [he]; simp
-    exact cfc_apply_eigenvector A hA h1 hg
+    exact cfc_apply_eigenvector_rankOne A hA h1 hg
   set a : ℂ := ⟪e, F⟫_ℂ / ((‖e‖ ^ 2 : ℝ) : ℂ) with ha
   set Q := F - (ℂ ∙ e).starProjection F with hQ
   have hP : (ℂ ∙ e).starProjection F = a • e := Submodule.starProjection_singleton ℂ F

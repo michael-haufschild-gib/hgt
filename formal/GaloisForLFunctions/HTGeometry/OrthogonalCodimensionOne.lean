@@ -37,8 +37,8 @@ theorem sup_span_singleton_inf_orthogonal (A : Submodule 𝕜 E) {w : E} (hw : w
     · refine Submodule.mem_sup.2 ⟨0, Submodule.zero_mem _, x, ⟨hx, ?_⟩, by simp⟩
       simp only [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right]
       simp
-    · set c : 𝕜 := ⟪w, x⟫_𝕜 / ((‖w‖ : 𝕜) ^ 2) with hc
-      have hwsq : ((‖w‖ : 𝕜)) ^ 2 ≠ 0 := pow_ne_zero 2 (by simpa using hw0)
+    · set c : 𝕜 := ⟪w, x⟫_𝕜 / ((‖w‖ : 𝕜) ^ (2 : ℕ)) with hc
+      have hwsq : ((‖w‖ : 𝕜)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (by simpa using hw0)
       refine Submodule.mem_sup.2 ⟨c • w, Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self w),
         x - c • w, ⟨Submodule.sub_mem _ hx (Submodule.smul_mem _ _ hw), ?_⟩, by abel⟩
       simp only [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right]
@@ -70,8 +70,8 @@ theorem mem_orthogonal_inf_orthogonal_span_singleton_iff (A : Submodule 𝕜 E)
         simpa using inner_self_eq_zero.1 h0
       simp [this]
     · set x : E := A.starProjection f with hx
-      set c : 𝕜 := ⟪w, x⟫_𝕜 / ((‖w‖ : 𝕜) ^ 2) with hc
-      have hwsq : ((‖w‖ : 𝕜)) ^ 2 ≠ 0 := pow_ne_zero 2 (by simpa using hw0)
+      set c : 𝕜 := ⟪w, x⟫_𝕜 / ((‖w‖ : 𝕜) ^ (2 : ℕ)) with hc
+      have hwsq : ((‖w‖ : 𝕜)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (by simpa using hw0)
       have hy : x - c • w ∈ A ⊓ (𝕜 ∙ w)ᗮ := by
         refine ⟨Submodule.sub_mem _ (A.starProjection_apply_mem f) (Submodule.smul_mem _ _ hw), ?_⟩
         simp only [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right]

@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiWardCubicLogMomentEulerSource
 # Route P: primitive Euler collision-trace budget
 
 P-G173 proves that the full critical ordinate-collision kernel is positive and has diagonal
-`115 / (864 a^3)`.  This module places that complete, non-diagonal kernel on the literal primitive
+`115 / (864 a^(3 : ℕ))`.  This module places that complete, non-diagonal kernel on the literal primitive
 Euler carrier.  Its radial parameter is the prime-power log frequency and its congruence weight is
 the positive square root of the resolved von Mangoldt mass.
 

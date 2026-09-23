@@ -52,9 +52,9 @@ theorem tendsto_gammaSewnMobius_pickDiagonalDefect_nhdsGT_zero
       xiMobiusContinuousApertureDiskNode_lt_one hx p
     have hq_sub : 1 - q x ≠ 0 := sub_ne_zero.mpr hq_lt.ne'
     rw [HTGeometry.pickDiagonalDefect,
-      show 1 - c x ^ 2 = (1 - c x) * (1 + c x) by ring,
-      show 1 - q x ^ 2 = (1 - q x) * (1 + q x) by ring]
-    rw [show 1 - c x = (1 - q x) ^ 2 * g x by
+      show 1 - c x ^ (2 : ℕ) = (1 - c x) * (1 + c x) by ring,
+      show 1 - q x ^ (2 : ℕ) = (1 - q x) * (1 + q x) by ring]
+    rw [show 1 - c x = (1 - q x) ^ (2 : ℕ) * g x by
       simpa only [c, q, g] using
         one_sub_gammaSewnMobiusValuationContractionMultiplier_eq_sq_mul_gain x p]
     field_simp [hq_sub]
@@ -66,8 +66,8 @@ theorem tendsto_gammaSewnMobius_pickDiagonalDefect_nhdsGT_zero
       continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p
   have hgcont : ContinuousAt g 0 := by
     change ContinuousAt (fun x : ℝ =>
-      (7 * q x ^ 2 + 10 * q x + 7) /
-        (8 * (1 + q x ^ 4) * (1 + c x) * (1 + c x ^ 2))) 0
+      (7 * q x ^ (2 : ℕ) + 10 * q x + 7) /
+        (8 * (1 + q x ^ (4 : ℕ)) * (1 + c x) * (1 + c x ^ (2 : ℕ)))) 0
     apply ContinuousAt.div
     · fun_prop
     · fun_prop
@@ -141,7 +141,7 @@ def gammaSewnMobiusApertureCrossDefectDeterminant
     (x y : ℝ) (p : Nat.Primes) : ℝ :=
   gammaSewnMobiusApertureCrossDefect x x p *
       gammaSewnMobiusApertureCrossDefect y y p -
-    gammaSewnMobiusApertureCrossDefect x y p ^ 2
+    gammaSewnMobiusApertureCrossDefect x y p ^ (2 : ℕ)
 
 /-- Positive diagonal congruence identifies the actual Gram-loss determinant with the normalized
 Pick determinant. -/
@@ -149,9 +149,9 @@ theorem gammaSewnMobiusApertureCrossDefectDeterminant_eq
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (p : Nat.Primes) :
     gammaSewnMobiusApertureCrossDefectDeterminant x y p =
       (xiTransversePrimeApertureDiskNode 1 p /
-          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ 4 *
-        (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 *
-        (1 - xiMobiusContinuousApertureDiskNode y p) ^ 2 *
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ (4 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode y p) ^ (2 : ℕ) *
         gammaSewnMobiusPickTwoPointDeterminant x y p := by
   let qx := xiMobiusContinuousApertureDiskNode x p
   let qy := xiMobiusContinuousApertureDiskNode y p
@@ -189,9 +189,9 @@ theorem eventually_gammaSewnMobiusApertureCrossDefectDeterminant_neg
   have hqy := xiMobiusContinuousApertureDiskNode_lt_one hx p
   have hscale : 0 <
       (xiTransversePrimeApertureDiskNode 1 p /
-          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ 4 *
-        (1 - xiMobiusContinuousApertureDiskNode x₀ p) ^ 2 *
-        (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 := by
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ (4 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode x₀ p) ^ (2 : ℕ) *
+        (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) := by
     positivity
   exact mul_neg_of_pos_of_neg hscale hpick
 

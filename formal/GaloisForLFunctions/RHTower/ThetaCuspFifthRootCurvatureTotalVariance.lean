@@ -56,7 +56,7 @@ private theorem contDiff_top_thetaCuspSourceTerm (n : ℕ) :
 private theorem thetaCuspCompletedProductFiberFirst_zero_eventuallyEq_sourceTerm_sq
     {t : ℝ} (ht : 0 < t) :
     thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t]
-      fun s => thetaCuspSourceTerm s 1 ^ 2 := by
+      fun s => thetaCuspSourceTerm s 1 ^ (2 : ℕ) := by
   filter_upwards [isOpen_Ioi.mem_nhds ht] with s hs
   rw [thetaCuspCompletedProductFiberAmplitude_one_zero, abs_of_pos hs]
 
@@ -83,7 +83,7 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne (t : ℝ) : ℝ 
 
 /-- Second ordinary jet of the cofinal likelihood factor. -/
 def thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo (t : ℝ) : ℝ :=
-  2 * (thetaCuspHigherLikelihoodJetOne t ^ 2 +
+  2 * (thetaCuspHigherLikelihoodJetOne t ^ (2 : ℕ) +
     (1 + thetaCuspHigherToFirstAtomLikelihoodRatio t) *
       thetaCuspHigherLikelihoodJetTwo t)
 
@@ -139,11 +139,11 @@ def thetaCuspCompletedProductFiberCofinalCurvatureAbsorptionBudget
     thetaCuspCompletedProductFiberFirstDrop u t *
       thetaCuspReflectedSourceFirstDrop u t *
       thetaCuspCompletedProductFiberHigherTailResidualFifthRootCurvatureNumerator u t +
-    4 * t ^ 2 *
+    4 * t ^ (2 : ℕ) *
       (thetaCuspCompletedProductFiberFirstDrop u t *
           thetaCuspReflectedSourceDecayFlux u t -
         thetaCuspReflectedSourceFirstDrop u t *
-          thetaCuspCompletedProductFiberFirstDecayFlux u t) ^ 2
+          thetaCuspCompletedProductFiberFirstDecayFlux u t) ^ (2 : ℕ)
 
 /-- Fully functional cofinal absorption budget at modular center.  Both
 component curvature terms are literal fifth-root divided-drop numerators. -/
@@ -156,11 +156,11 @@ def thetaCuspCompletedProductFiberCofinalFunctionalAbsorptionBudgetAtZero
     thetaCuspCompletedProductFiberFirstDrop 0 t *
       thetaCuspReflectedSourceFirstDrop 0 t *
       thetaCuspCompletedProductFiberHigherTailFifthRootCurvatureNumerator 0 t +
-    4 * t ^ 2 *
+    4 * t ^ (2 : ℕ) *
       (thetaCuspCompletedProductFiberFirstDrop 0 t *
           thetaCuspReflectedSourceDecayFlux 0 t -
         thetaCuspReflectedSourceFirstDrop 0 t *
-          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ 2
+          thetaCuspCompletedProductFiberFirstDecayFlux 0 t) ^ (2 : ℕ)
 
 /-- Exact drop decomposition induced by the completed product-fibre sum. -/
 theorem thetaCuspReflectedSourceFirstDrop_eq_firstFiber_add_higherTail
@@ -244,7 +244,7 @@ theorem hasDerivAt_thetaCuspCompletedProductFiberAmplitude_one_zero
     {t : ℝ} (ht : 0 < t) :
     HasDerivAt (thetaCuspCompletedProductFiberAmplitude 1 0)
       (-thetaCuspCompletedProductFiberFirstDecayFlux 0 t) t := by
-  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ 2
+  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ (2 : ℕ)
   have hfirst :
       thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t] g :=
     thetaCuspCompletedProductFiberFirst_zero_eventuallyEq_sourceTerm_sq ht
@@ -264,7 +264,7 @@ theorem hasDerivAt_thetaCuspCompletedProductFiberFirstDecayFlux_zero
     {t : ℝ} (ht : 0 < t) :
     HasDerivAt (thetaCuspCompletedProductFiberFirstDecayFlux 0)
       (thetaCuspCompletedProductFiberFirstDecayFluxCurvature 0 t) t := by
-  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ 2
+  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ (2 : ℕ)
   have hfirst :
       thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t] g :=
     thetaCuspCompletedProductFiberFirst_zero_eventuallyEq_sourceTerm_sq ht
@@ -427,7 +427,7 @@ theorem thetaCuspCompletedProductFiberHigherTailDecayFlux_zero_eq_residual
     thetaCuspCompletedProductFiberHigherTailDecayFlux 0 t =
       thetaCuspReflectedSourceDecayFlux 0 t -
         thetaCuspCompletedProductFiberFirstDecayFlux 0 t := by
-  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ 2
+  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ (2 : ℕ)
   have hfirst :
       thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t] g := by
     filter_upwards [isOpen_Ioi.mem_nhds ht] with s hs
@@ -465,7 +465,7 @@ theorem thetaCuspCompletedProductFiberHigherTailDecayFluxCurvature_zero_eq_resid
     thetaCuspCompletedProductFiberHigherTailDecayFluxCurvature 0 t =
       thetaCuspReflectedSourceDecayFluxCurvature 0 t -
         thetaCuspCompletedProductFiberFirstDecayFluxCurvature 0 t := by
-  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ 2
+  let g : ℝ → ℝ := fun s => thetaCuspSourceTerm s 1 ^ (2 : ℕ)
   have hfirst :
       thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t] g := by
     filter_upwards [isOpen_Ioi.mem_nhds ht] with s hs
@@ -559,10 +559,10 @@ theorem thetaCuspReflectedSourceFifthRootCurvature_peel_firstFiber
             (thetaCuspCompletedProductFiberHigherTailDrop u t)
             (thetaCuspReflectedSourceDecayFlux u t - d)
             (thetaCuspReflectedSourceDecayFluxCurvature u t - j) +
-        4 * t ^ 2 *
+        4 * t ^ (2 : ℕ) *
           (thetaCuspCompletedProductFiberFirstDrop u t *
               thetaCuspReflectedSourceDecayFlux u t -
-            thetaCuspReflectedSourceFirstDrop u t * d) ^ 2 := by
+            thetaCuspReflectedSourceFirstDrop u t * d) ^ (2 : ℕ) := by
   have hpeel := HilbertMetric.fifthRootCurvatureJetForm_peel_totalVariance
     t
     (thetaCuspReflectedSourceFirstDrop u t)

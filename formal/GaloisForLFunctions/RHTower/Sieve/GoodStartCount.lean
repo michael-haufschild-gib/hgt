@@ -23,7 +23,7 @@ theorem card_le_good_add_bad {S Bad₁ Bad₂ : Finset ℕ} {L : ℕ} {D : ℝ}
     (h1 : ∀ t ∈ S, t ∉ Bad₁ →
       |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)| ≤ (1 / 8) * D * (L : ℝ))
     (h2 : ∀ t ∈ S, t ∉ Bad₂ →
-      (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2) :
+      (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) :
     S.card
       ≤ (S.filter (fun t =>
           (3 / 16) * D * (L : ℝ)

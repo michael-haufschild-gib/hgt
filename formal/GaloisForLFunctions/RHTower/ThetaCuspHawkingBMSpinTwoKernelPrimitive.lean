@@ -15,9 +15,9 @@ attribute [-instance] NormedSpace.complexToReal
 
 def degree (nu : ℂ) : ℂ := nu*(nu+1)
 def primitive (nu : ℂ) (z : ℝ) : ℂ :=
-  ((z:ℂ)^2-1)*(degree nu*legendreKernel nu z-2*z*legendreKernelFirst nu z)
+  ((z:ℂ)^(2 : ℕ)-1)*(degree nu*legendreKernel nu z-2*z*legendreKernelFirst nu z)
 def primitiveFirst (nu : ℂ) (z : ℝ) : ℂ :=
-  ((z:ℂ)^2-1)*(degree nu-2)*legendreKernelFirst nu z
+  ((z:ℂ)^(2 : ℕ)-1)*(degree nu-2)*legendreKernelFirst nu z
 
 /-- The displayed primitive and its first jet are actual derivatives of the original kernel. -/
 theorem primitive_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
@@ -28,7 +28,7 @@ theorem primitive_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
   have hx := (hasDerivAt_id z).ofReal_comp
   have hp := (hx.pow 2).sub_const (1:ℂ)
   have he := legendreKernel_equation nu hz
-  change ((z:ℂ)^2-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
+  change ((z:ℂ)^(2 : ℕ)-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
     degree nu*legendreKernel nu z=0 at he
   constructor
   · apply (hp.mul ((h0.const_mul (degree nu)).sub
@@ -41,10 +41,10 @@ theorem primitive_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
 
 /-- The same primitive is the second kernel derivative times a double characteristic zero. -/
 theorem primitive_eq_weighted_second (nu : ℂ) {z : ℝ} (hz : 0 < z) :
-    primitive nu z=((z:ℂ)^2-1)^2*legendreKernelSecond nu z := by
+    primitive nu z=((z:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*legendreKernelSecond nu z := by
   have he := legendreKernel_equation nu hz
   dsimp [primitive,degree]
-  linear_combination -((z:ℂ)^2-1)*he
+  linear_combination -((z:ℂ)^(2 : ℕ)-1)*he
 
 /-- Both boundary jets vanish for every complex degree, including the exceptional degrees. -/
 theorem primitive_characteristic (nu : ℂ) :

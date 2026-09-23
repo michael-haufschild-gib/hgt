@@ -30,7 +30,7 @@ noncomputable section
 the construction work for an arbitrary finite set, hence in particular for every invariant one. -/
 def finiteSymmetryFlatPacket (A : Finset ℂ) (nu : ℂ → ℕ) : Polynomial ℂ :=
   simultaneousFlatPolynomial (fun a : {z // z ∈ A} => nu a)
-      (fun a : {z // z ∈ A} => a.1 - (1 / 2 : ℂ)) * X ^ 2
+      (fun a : {z // z ∈ A} => a.1 - (1 / 2 : ℂ)) * X ^ (2 : ℕ)
 
 private theorem quartetFlatPolynomial_eval_neg (a z : ℂ) :
     (quartetFlatPolynomial a).eval (-z) = (quartetFlatPolynomial a).eval z := by
@@ -103,7 +103,7 @@ theorem finiteSymmetryFlatPacket_local_dvd
     (fun b : {z // z ∈ A} => b.1 - (1 / 2 : ℂ)) i
   obtain ⟨Q, hQ⟩ := hpacket
   obtain ⟨R, hR⟩ := hlinear
-  refine ⟨R ^ nu a * Q * X ^ 2, ?_⟩
+  refine ⟨R ^ nu a * Q * X ^ (2 : ℕ), ?_⟩
   rw [finiteSymmetryFlatPacket, hQ, hR, mul_pow]
   ring
 

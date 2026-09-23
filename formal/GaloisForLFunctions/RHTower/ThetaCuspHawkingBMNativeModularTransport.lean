@@ -43,12 +43,13 @@ def circleAverage (F : UpperHalfPlane → ℂ) (d : ℝ) (z : UpperHalfPlane) : 
 
 /-- The literal circle average in the upper-half-plane chart is the original
 `(X, log Y)` circle average. -/
-theorem circleAverage_coordinates (F : Point → ℂ) (d : ℝ) (z : UpperHalfPlane) :
+theorem circleAverage_coordinates (F : (Fin 2 → ℝ) → ℂ) (d : ℝ) (z : UpperHalfPlane) :
     circleAverage (fun w => F (coordinates w)) d z =
       average (fun theta => F (logCircle d theta z.re (Real.log z.im))) := by
   unfold circleAverage
   apply congrArg average
   funext theta
+  change F (coordinates (circlePoint d theta z)) = _
   rw [circlePoint_coordinates]
   simp only [logCircle,coordinates,Real.exp_log z.im_pos]
 
@@ -67,21 +68,21 @@ private theorem section_action (z w : UpperHalfPlane) :
     Matrix.cons_val_one,Matrix.cons_val_fin_one,Algebra.algebraMap_self, RingHom.id_apply,
     Complex.ofReal_zero,Complex.ofReal_div,Complex.ofReal_one,zero_mul,zero_add]
   field_simp
-  have hs : (Real.sqrt z.im:ℂ)^2=(z.im:ℂ) := by exact_mod_cast Real.sq_sqrt z.im_pos.le
+  have hs : (Real.sqrt z.im:ℂ)^(2 : ℕ)=(z.im:ℂ) := by exact_mod_cast Real.sq_sqrt z.im_pos.le
   linear_combination (w:ℂ)*hs
 
 private theorem radius_denominator (d phi : ℝ) :
-    Real.cos phi^2 + (Real.exp d)^2*Real.sin phi^2 =
+    Real.cos phi^(2 : ℕ) + (Real.exp d)^(2 : ℕ)*Real.sin phi^(2 : ℕ) =
       Real.exp d*denominator d (2*phi) := by
   have he : Real.exp d*Real.cosh d-Real.exp d*Real.sinh d=1 := by
     rw [← mul_sub,Real.cosh_sub_sinh,← Real.exp_add]
     simp
-  have he2 : Real.exp d^2 = 1+2*Real.exp d*Real.sinh d := by
+  have he2 : Real.exp d^(2 : ℕ) = 1+2*Real.exp d*Real.sinh d := by
     rw [← Real.cosh_add_sinh]
     nlinarith [Real.cosh_sq_sub_sinh_sq d]
   dsimp [denominator]
   rw [Real.cos_two_mul]
-  linear_combination Real.sin phi^2*he2 +
+  linear_combination Real.sin phi^(2 : ℕ)*he2 +
     (1+2*Real.exp d*Real.sinh d)*(Real.cos_sq_add_sin_sq phi) - he
 
 private theorem rotation_radius (d phi : ℝ) :
@@ -91,7 +92,7 @@ private theorem rotation_radius (d phi : ℝ) :
   rw [UpperHalfPlane.coe_specialLinearGroup_apply]
   have hd := (denominator_pos d (2*phi)).ne'
   have he := (Real.exp_pos d).ne'
-  have he2 : Real.exp d^2-1 = 2*Real.exp d*Real.sinh d := by
+  have he2 : Real.exp d^(2 : ℕ)-1 = 2*Real.exp d*Real.sinh d := by
     rw [← Real.cosh_add_sinh]
     nlinarith [Real.cosh_sq_sub_sinh_sq d]
   simp only [rotation_matrix,Matrix.of_apply,Matrix.cons_val_zero,Matrix.cons_val_one,
@@ -213,7 +214,10 @@ theorem circleAverage_modular (F : UpperHalfPlane → ℂ)
       apply congrArg average
       funext theta
       dsimp only [f]
-      rw [show 2 * phi + theta = theta + 2 * phi by ring, ← hphi d theta]
+      rw [show 2 * phi + theta = theta + 2 * phi by ring]
+      change F (circlePoint d (theta + 2 * phi)
+        ((Matrix.SpecialLinearGroup.map (Int.castRingHom ℝ)) g • z)) = _
+      rw [← hphi d theta]
       exact hF g (circlePoint d theta z)
     _ = circleAverage F d z := rfl
 

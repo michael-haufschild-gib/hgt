@@ -32,10 +32,10 @@ namespace RHTower
 the sum of its values at the two endpoints, using only monotonicity of `e^{−t Re w}` in `t`. -/
 theorem norm_heatMonomial_le_endpoints {a b t : ℝ} (hab : a ≤ t) (htb : t ≤ b)
     (j : ℕ) (q : XiZeroCopy) :
-    ‖(xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm a q‖ +
-        ‖(xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm b q‖
-      ≥ ‖(xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm t q‖ := by
-  set w : ℂ := xiSpectralPoint q ^ 2 with hw
+    ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ j * xiGaussianHeatTerm a q‖ +
+        ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ j * xiGaussianHeatTerm b q‖
+      ≥ ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ j * xiGaussianHeatTerm t q‖ := by
+  set w : ℂ := xiSpectralPoint q ^ (2 : ℕ) with hw
   have hnorm : ∀ s : ℝ, ‖w ^ j * xiGaussianHeatTerm s q‖
       = ‖w‖ ^ j * Real.exp (-s * w.re) := by
     intro s
@@ -69,26 +69,26 @@ theorem hasDerivAt_xiGaussianHeatMoment {t : ℝ} (ht : 0 < t) (n : ℕ) :
   have htb : t < b := by rw [hb]; linarith
   -- the dominating summable family
   set u : XiZeroCopy → ℝ := fun q =>
-    ‖(xiSpectralPoint q ^ 2) ^ (n + 1) * xiGaussianHeatTerm a q‖ +
-      ‖(xiSpectralPoint q ^ 2) ^ (n + 1) * xiGaussianHeatTerm b q‖ with hu
+    ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ (n + 1) * xiGaussianHeatTerm a q‖ +
+      ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ (n + 1) * xiGaussianHeatTerm b q‖ with hu
   have hsumu : Summable u :=
     (summable_norm_xiGaussianHeatMonomialTerm hapos (n + 1)).add
       (summable_norm_xiGaussianHeatMonomialTerm hbpos (n + 1))
   -- termwise derivative on the open interval
   have hderiv : ∀ q : XiZeroCopy, ∀ s ∈ Ioo a b,
-      HasDerivAt (fun r : ℝ => (xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm r q)
-        (-((xiSpectralPoint q ^ 2) ^ (n + 1) * xiGaussianHeatTerm s q)) s := by
+      HasDerivAt (fun r : ℝ => (xiSpectralPoint q ^ (2 : ℕ)) ^ n * xiGaussianHeatTerm r q)
+        (-((xiSpectralPoint q ^ (2 : ℕ)) ^ (n + 1) * xiGaussianHeatTerm s q)) s := by
     intro q s _
-    have h := GaloisForLFunctions.hasDerivAt_heatMonomial (xiSpectralPoint q ^ 2) n s
+    have h := GaloisForLFunctions.hasDerivAt_heatMonomial (xiSpectralPoint q ^ (2 : ℕ)) n s
     simpa [xiGaussianHeatTerm, pow_succ, mul_comm, mul_assoc, mul_left_comm] using h
   have hbound : ∀ q : XiZeroCopy, ∀ s ∈ Ioo a b,
-      ‖-((xiSpectralPoint q ^ 2) ^ (n + 1) * xiGaussianHeatTerm s q)‖ ≤ u q := by
+      ‖-((xiSpectralPoint q ^ (2 : ℕ)) ^ (n + 1) * xiGaussianHeatTerm s q)‖ ≤ u q := by
     intro q s hs
     rw [norm_neg, hu]
     exact norm_heatMonomial_le_endpoints (le_of_lt hs.1) (le_of_lt hs.2) (n + 1) q
   have hmemt : t ∈ Ioo a b := ⟨hat, htb⟩
   have hsum0 : Summable (fun q : XiZeroCopy =>
-      (xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm t q) :=
+      (xiSpectralPoint q ^ (2 : ℕ)) ^ n * xiGaussianHeatTerm t q) :=
     summable_xiGaussianHeatMonomialTerm ht n
   have hmain := hasDerivAt_tsum_of_isPreconnected hsumu isOpen_Ioo
     (isPreconnected_Ioo) hderiv hbound hmemt hsum0 hmemt
@@ -115,15 +115,15 @@ representing measure, hence a real spectrum — is Bernstein's theorem, which is
 /-- Under a real spectrum each monomial term is a nonnegative real. -/
 theorem xiGaussianHeatMonomialTerm_nonneg_of_spectrum_isReal
     (hreal : ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0) {t : ℝ} (n : ℕ) (q : XiZeroCopy) :
-    0 ≤ ((xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm t q).re := by
+    0 ≤ ((xiSpectralPoint q ^ (2 : ℕ)) ^ n * xiGaussianHeatTerm t q).re := by
   obtain ⟨r, hr⟩ : ∃ r : ℝ, xiSpectralPoint q = (r : ℂ) :=
     ⟨(xiSpectralPoint q).re, by
       conv_lhs => rw [← Complex.re_add_im (xiSpectralPoint q)]
       rw [hreal q]
       simp⟩
   rw [hr, xiGaussianHeatTerm, hr]
-  have hcast : ((r : ℂ) ^ 2) ^ n * Complex.exp (-(t : ℂ) * (r : ℂ) ^ 2)
-      = (((r ^ 2) ^ n * Real.exp (-t * r ^ 2) : ℝ) : ℂ) := by
+  have hcast : ((r : ℂ) ^ (2 : ℕ)) ^ n * Complex.exp (-(t : ℂ) * (r : ℂ) ^ (2 : ℕ))
+      = (((r ^ (2 : ℕ)) ^ n * Real.exp (-t * r ^ (2 : ℕ)) : ℝ) : ℂ) := by
     push_cast
     rfl
   rw [hcast, Complex.ofReal_re]

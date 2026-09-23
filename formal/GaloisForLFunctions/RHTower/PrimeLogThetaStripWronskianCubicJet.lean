@@ -7,7 +7,7 @@ The literal finite-prime theta transform has the exact, pre-divisor factorizatio
 
 ```text
 Theta_l(w) = XiC(w) Q_0,l(w),
-Q_n,l(w) = sum_p l_p (2 log(p)^2 / sqrt(p)) log(p)^n exp(-i w log(p)).
+Q_n,l(w) = sum_p l_p (2 log(p)^(2 : ℕ) / sqrt(p)) log(p)^n exp(-i w log(p)).
 ```
 
 This file differentiates that actual finite theta formula in the full strip `|Im w| < 1`.
@@ -19,7 +19,7 @@ W_m(y) = XiC * D(y) - m * D(XiC) * y
 ```
 
 therefore satisfies `W_m(XiC^m Q_n) = XiC^(m+1) Q_(n+1)` without inverting `XiC`.
-Its cubic iterate on the literal theta transform is `XiC^4 Q_3`.
+Its cubic iterate on the literal theta transform is `XiC^(4 : ℕ) Q_3`.
 
 Consequently, at any zero of `XiC` in the theta strip, scalar cubic evaluation kills every
 prime-labelled theta jet even though the corresponding one-prime cubic source symbol is nonzero.

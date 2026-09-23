@@ -34,8 +34,8 @@ def d4BMEisensteinTranslateCoordinate
 
 def d4BMEisensteinInvertCoordinate
     (z : D4BMUpperHalfPlaneCoordinate) : D4BMUpperHalfPlaneCoordinate where
-  x := -z.x / (z.x ^ 2 + z.y ^ 2)
-  y := z.y / (z.x ^ 2 + z.y ^ 2)
+  x := -z.x / (z.x ^ (2 : ℕ) + z.y ^ (2 : ℕ))
+  y := z.y / (z.x ^ (2 : ℕ) + z.y ^ (2 : ℕ))
   y_pos := by
     apply div_pos z.y_pos
     nlinarith [sq_nonneg z.x, sq_pos_of_pos z.y_pos]
@@ -119,13 +119,13 @@ theorem d4BM_poincareSeed_invert
           d4BMPoincareQuadratic (d4BMEisensteinInvertCoordinate z) p.pair =
         z.y / d4BMPoincareQuadratic z
           (d4BMEisensteinRotatePrimitivePair p).pair := by
-    have hR : z.x ^ 2 + z.y ^ 2 ≠ 0 := by
+    have hR : z.x ^ (2 : ℕ) + z.y ^ (2 : ℕ) ≠ 0 := by
       nlinarith [sq_nonneg z.x, sq_pos_of_pos z.y_pos]
     have hquad :
         d4BMPoincareQuadratic (d4BMEisensteinInvertCoordinate z) p.pair =
           d4BMPoincareQuadratic z
             (d4BMEisensteinRotatePrimitivePair p).pair /
-              (z.x ^ 2 + z.y ^ 2) := by
+              (z.x ^ (2 : ℕ) + z.y ^ (2 : ℕ)) := by
       unfold d4BMEisensteinInvertCoordinate d4BMPoincareQuadratic
         d4BMEisensteinRotatePrimitivePair
       field_simp [hR]

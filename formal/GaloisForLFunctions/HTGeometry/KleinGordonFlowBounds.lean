@@ -155,15 +155,15 @@ theorem norm_deriv_kgPotentialFlow_apply_le (a : WienerFamily E N) (G₀ : E →
 theorem norm_deriv_deriv_kgPotentialFlow_apply_le (a : WienerFamily E N) (G₀ : E →ᵇ ℂ) (ξ : E)
     (t : ℝ) :
     ‖deriv (deriv fun r : ℝ => kgPotentialFlow a G₀ r ξ) t‖
-      ≤ kgFreq ξ ^ 2 * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|))
+      ≤ kgFreq ξ ^ (2 : ℕ) * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|))
         + kgFlowBoundConst a * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|)) := by
   have hderiv := (hasDerivAt_deriv_kgPotentialFlow_apply a G₀ ξ t).deriv
   rw [hderiv]
   have hflow : ‖kgPotentialFlow a G₀ t ξ‖ ≤ ‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|) :=
     ((kgPotentialFlow a G₀ t).norm_coe_le_norm ξ).trans (norm_kgPotentialFlow_le a G₀ t)
   have hsrc := norm_kgFlowSource_le a G₀ ξ t
-  have hfreq : ‖-(((kgFreq ξ : ℝ) : ℂ) ^ 2 * kgPotentialFlow a G₀ t ξ)‖
-      ≤ kgFreq ξ ^ 2 * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|)) := by
+  have hfreq : ‖-(((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) * kgPotentialFlow a G₀ t ξ)‖
+      ≤ kgFreq ξ ^ (2 : ℕ) * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|)) := by
     rw [norm_neg, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (kgFreq_pos ξ)]
     exact mul_le_mul_of_nonneg_left hflow (by positivity)
@@ -208,12 +208,12 @@ frequency displayed. -/
 theorem norm_deriv_deriv_kgPotentialFlow_apply_le_of_abs_le (a : WienerFamily E N) (G₀ : E →ᵇ ℂ)
     (ξ : E) {t T : ℝ} (ht : |t| ≤ T) :
     ‖deriv (deriv fun r : ℝ => kgPotentialFlow a G₀ r ξ) t‖
-      ≤ kgFreq ξ ^ 2 * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T := by
+      ≤ kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T := by
   refine (norm_deriv_deriv_kgPotentialFlow_apply_le a G₀ ξ t).trans ?_
   have hsize := kgFlowSize_mono a G₀ ht
   have hM := kgFlowBoundConst_nonneg a
-  have h1 : kgFreq ξ ^ 2 * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|))
-      ≤ kgFreq ξ ^ 2 * kgFlowSize a G₀ T :=
+  have h1 : kgFreq ξ ^ (2 : ℕ) * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|))
+      ≤ kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T :=
     mul_le_mul_of_nonneg_left hsize (by positivity)
   have h2 : kgFlowBoundConst a * (‖G₀‖ * Real.exp (kgFlowBoundConst a * |t|))
       ≤ kgFlowBoundConst a * kgFlowSize a G₀ T := mul_le_mul_of_nonneg_left hsize hM

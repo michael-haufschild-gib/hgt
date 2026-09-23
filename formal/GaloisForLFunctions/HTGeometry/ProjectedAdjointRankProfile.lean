@@ -62,7 +62,7 @@ theorem projectedAdjointDefect_hasFiniteNegativeDimension_iff_rankAtLeast
     have hsplit : d = u + y := by
       change d = u + (d - u)
       abel
-    have hpyth : ‖d‖ ^ 2 = ‖u‖ ^ 2 + ‖y‖ ^ 2 := by
+    have hpyth : ‖d‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ) := by
       rw [hsplit]
       simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero u y hperp
     have hadj : C.adjoint d = C.adjoint y := by

@@ -67,7 +67,7 @@ theorem completeTargetCapture_subset_projectedCapture
     (hdef : ∀ x, ‖WithLp.toLp 2 (state x) -
       S.starProjection (WithLp.toLp 2 (state x))‖ ≤ η) :
     {x | ∃ c, a ≤ finitePureStateFidelity (state x) (target c)} ⊆
-      {x | ∃ c, (Real.sqrt a - η) ^ 2 ≤
+      {x | ∃ c, (Real.sqrt a - η) ^ (2 : ℕ) ≤
         finitePureStateFidelity
           (fun i => S.starProjection (WithLp.toLp 2 (state x)) i)
           (projectedReplicaTarget S target c)} := by
@@ -121,7 +121,7 @@ theorem measureReal_capture_le_return_add_projectedMoment
   let E : Set X :=
     {x | ∃ c, a ≤ finitePureStateFidelity (state x) (target c)}
   let EP : Set X :=
-    {x | ∃ c, δ ^ 2 ≤
+    {x | ∃ c, δ ^ (2 : ℕ) ≤
       finitePureStateFidelity (projectedState x) (projectedTarget c)}
   have hδ : 0 < δ := sub_pos.mpr hη
   have hsubset : E ⊆ EP := by
@@ -145,7 +145,7 @@ theorem measureReal_capture_le_return_add_projectedMoment
           ∂(μ.restrict returnSetᶜ)) / δ ^ (2 * r) := by
     have hbound := measure_completePureStateTargetCapture_le_replicaProjectionMoment
       (μ.restrict returnSetᶜ) hr projectedTarget projectedState
-        hprojectedTarget (δ ^ 2) (sq_pos_of_pos hδ) (by
+        hprojectedTarget (δ ^ (2 : ℕ)) (sq_pos_of_pos hδ) (by
           simpa [projectedTarget, projectedState] using hint)
     simpa [EP, pow_mul] using hbound
   have hresidual :

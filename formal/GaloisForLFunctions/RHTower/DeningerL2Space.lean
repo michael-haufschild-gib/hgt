@@ -42,7 +42,7 @@ theorem deningerL2Space_norm_def (x : DeningerL2Space F) :
 theorem deningerL2Norm_qsmul (q : ℚ) (x : deningerKummerSpace F) :
     deningerL2Norm (q • x) = |(q : ℝ)| * deningerL2Norm x := by
   have hq : deningerSpaceL2Inner (q • x) (q • x)
-      = (q : ℝ) ^ 2 * deningerSpaceL2Inner x x := by
+      = (q : ℝ) ^ (2 : ℕ) * deningerSpaceL2Inner x x := by
     rw [deningerSpaceL2Inner_qsmul_left, deningerSpaceL2Inner_comm x (q • x),
       deningerSpaceL2Inner_qsmul_left, deningerSpaceL2Inner_comm x x]
     ring

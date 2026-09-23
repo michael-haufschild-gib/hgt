@@ -79,13 +79,13 @@ theorem integral_weighted_symmetry_core {f g f' g' : ℝ → ℂ}
   set F : ℝ → ℂ := fun x => f x * (starRingEnd ℂ) (g x) * (sourceWeightC x)⁻¹ with hF
   set F' : ℝ → ℂ := fun x =>
     (f' x * (starRingEnd ℂ) (g x) + f x * (starRingEnd ℂ) (g' x)) * (sourceWeightC x)⁻¹
-      + f x * (starRingEnd ℂ) (g x) * (-((sourceDeriv x : ℝ) : ℂ) / sourceWeightC x ^ 2) with hF'
+      + f x * (starRingEnd ℂ) (g x) * (-((sourceDeriv x : ℝ) : ℂ) / sourceWeightC x ^ (2 : ℕ)) with hF'
   have hderiv : ∀ x, HasDerivAt F (F' x) x := by
     intro x
     have h1 : HasDerivAt (fun t => f t * (starRingEnd ℂ) (g t))
         (f' x * (starRingEnd ℂ) (g x) + f x * (starRingEnd ℂ) (g' x)) x := (hf x).mul (hg x).star
     have h2 : HasDerivAt (fun t => (sourceWeightC t)⁻¹)
-        (-((sourceDeriv x : ℝ) : ℂ) / sourceWeightC x ^ 2) x :=
+        (-((sourceDeriv x : ℝ) : ℂ) / sourceWeightC x ^ (2 : ℕ)) x :=
       (hasDerivAt_sourceWeightC x).inv (sourceWeightC_ne_zero x)
     exact h1.mul h2
   have hF'cont : Continuous F' := by
@@ -198,13 +198,13 @@ theorem integral_weighted_witten {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfs 
 /-- The energy form is real and nonnegative. -/
 theorem integral_weighted_energy_nonneg (f' : ℝ → ℂ) :
     (∫ x, (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x) / sourceWeightC x)
-      = ((∫ x, ‖f' x‖ ^ 2 / thetaCuspFullSource x : ℝ) : ℂ) := by
+      = ((∫ x, ‖f' x‖ ^ (2 : ℕ) / thetaCuspFullSource x : ℝ) : ℂ) := by
   rw [← integral_complex_ofReal]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   have hk : ((thetaCuspFullSource x : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast (thetaCuspFullSource_pos x).ne'
   have hzz : (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x)
-      = ((‖f' x‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖f' x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (E := ℂ) (-Complex.I * f' x)
     rw [RCLike.inner_apply'] at h
     rw [norm_mul, norm_neg, Complex.norm_I, one_mul] at h
@@ -213,7 +213,7 @@ theorem integral_weighted_energy_nonneg (f' : ℝ → ℂ) :
     exact h
   show (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x)
       / ((thetaCuspFullSource x : ℝ) : ℂ)
-    = ((‖f' x‖ ^ 2 / thetaCuspFullSource x : ℝ) : ℂ)
+    = ((‖f' x‖ ^ (2 : ℕ) / thetaCuspFullSource x : ℝ) : ℂ)
   rw [hzz, Complex.ofReal_div]
 
 

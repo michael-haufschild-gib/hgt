@@ -80,9 +80,9 @@ theorem gibbsCovariance_self_eq_zero_iff (β : ℝ) (E f : α → ℝ) :
     have h := (Finset.sum_eq_zero_iff_of_nonneg (fun a _ => hn a)).mp hz a
       (Finset.mem_univ a)
     have hp := finiteGibbsStateWeight_pos β E a
-    have hs : (f a - gibbsMean β E f)^2 = 0 := by
+    have hs : (f a - gibbsMean β E f)^(2 : ℕ) = 0 := by
       apply (mul_eq_zero.mp (show finiteGibbsStateWeight β E a *
-        (f a - gibbsMean β E f)^2 = 0 by nlinarith [h])).resolve_left hp.ne'
+        (f a - gibbsMean β E f)^(2 : ℕ) = 0 by nlinarith [h])).resolve_left hp.ne'
     nlinarith [sq_nonneg (f a - gibbsMean β E f)]
   · intro h
     simp [gibbsCovariance, h]

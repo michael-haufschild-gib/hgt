@@ -42,7 +42,7 @@ def finiteDerivativeReporterInnovation
 def finiteDerivativeReporterConditionalInformation
     {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
     (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) : ℝ :=
-  ‖finiteDerivativeReporterInnovation N f report‖ ^ 2
+  ‖finiteDerivativeReporterInnovation N f report‖ ^ (2 : ℕ)
 
 /-- Conditional information is nonnegative. -/
 theorem finiteDerivativeReporterConditionalInformation_nonneg
@@ -325,7 +325,7 @@ theorem finiteDerivativeReporterGram_succ_det_eq_mul_conditionalInformation
     GaloisForLFunctions.HTGeometry.det_gram_fin_succ_of_det_ne_zero w N hprev']
   congr 1
   change inner ℂ (gramSchmidt ℂ w N) (gramSchmidt ℂ w N) =
-    ((‖gramSchmidt ℂ w N‖ ^ 2 : ℝ) : ℂ)
+    ((‖gramSchmidt ℂ w N‖ ^ (2 : ℕ) : ℝ) : ℂ)
   apply Complex.ext <;> simp
 
 /-- **Sequential observability criterion.**  A finite derivative reporter block is faithful

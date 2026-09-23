@@ -169,7 +169,7 @@ theorem deficit_mul_kernel_ge {d m k : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 2 * m) :
 `‖x - y‖² / 2 ≤ 2 ‖x‖²` whenever `‖y‖ = ‖x‖`.  This is the bound that makes
 `deficit_mul_kernel_ge` applicable with `m = ‖x‖²`. -/
 theorem half_norm_sub_sq_le {E : Type*} [NormedAddCommGroup E] {x y : E} (h : ‖y‖ = ‖x‖) :
-    ‖x - y‖ ^ 2 / 2 ≤ 2 * ‖x‖ ^ 2 := by
+    ‖x - y‖ ^ (2 : ℕ) / 2 ≤ 2 * ‖x‖ ^ (2 : ℕ) := by
   have htri : ‖x - y‖ ≤ 2 * ‖x‖ := by
     calc ‖x - y‖ ≤ ‖x‖ + ‖y‖ := norm_sub_le x y
       _ = 2 * ‖x‖ := by rw [h]; ring

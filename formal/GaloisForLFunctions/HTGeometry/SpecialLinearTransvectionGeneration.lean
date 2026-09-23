@@ -141,22 +141,22 @@ entries `a` and `a⁻¹` at those coordinates. -/
 theorem transvection_prod_eq_elementaryDiagonal
     (i j : n) (hij : i ≠ j) (a : K) (ha : a ≠ 0) :
     Matrix.transvection i j 1 * Matrix.transvection j i (a - 1) *
-        Matrix.transvection i j (-a⁻¹) * Matrix.transvection j i (a - a ^ 2) =
+        Matrix.transvection i j (-a⁻¹) * Matrix.transvection j i (a - a ^ (2 : ℕ)) =
       elementaryDiagonal i j a := by
   have hji : j ≠ i := hij.symm
   have hassoc :
       Matrix.transvection i j (1 : K) * Matrix.transvection j i (a - 1) *
-          Matrix.transvection i j (-a⁻¹) * Matrix.transvection j i (a - a ^ 2) =
+          Matrix.transvection i j (-a⁻¹) * Matrix.transvection j i (a - a ^ (2 : ℕ)) =
         Matrix.transvection i j (1 : K) * (Matrix.transvection j i (a - 1) *
           (Matrix.transvection i j (-a⁻¹) *
-            (Matrix.transvection j i (a - a ^ 2) * (1 : Matrix n n K)))) := by
+            (Matrix.transvection j i (a - a ^ (2 : ℕ)) * (1 : Matrix n n K)))) := by
     rw [Matrix.mul_one, Matrix.mul_assoc, Matrix.mul_assoc]
   ext k l
   rw [hassoc]
   rcases eq_or_ne k i with rfl | hki
   · have hL : (Matrix.transvection k j (1 : K) * (Matrix.transvection j k (a - 1) *
         (Matrix.transvection k j (-a⁻¹) *
-          (Matrix.transvection j k (a - a ^ 2) * (1 : Matrix n n K))))) k l =
+          (Matrix.transvection j k (a - a ^ (2 : ℕ)) * (1 : Matrix n n K))))) k l =
         a * (1 : Matrix n n K) k l := by
       simp only [Matrix.transvection_mul_apply_same,
         Matrix.transvection_mul_apply_of_ne _ _ _ _ hij,
@@ -168,7 +168,7 @@ theorem transvection_prod_eq_elementaryDiagonal
   · rcases eq_or_ne k j with rfl | hkj
     · have hL : (Matrix.transvection i k (1 : K) * (Matrix.transvection k i (a - 1) *
           (Matrix.transvection i k (-a⁻¹) *
-            (Matrix.transvection k i (a - a ^ 2) * (1 : Matrix n n K))))) k l =
+            (Matrix.transvection k i (a - a ^ (2 : ℕ)) * (1 : Matrix n n K))))) k l =
           a⁻¹ * (1 : Matrix n n K) k l := by
         simp only [Matrix.transvection_mul_apply_same,
           Matrix.transvection_mul_apply_of_ne _ _ _ _ hij,
@@ -180,7 +180,7 @@ theorem transvection_prod_eq_elementaryDiagonal
       split_ifs <;> simp
     · have hL : (Matrix.transvection i j (1 : K) * (Matrix.transvection j i (a - 1) *
           (Matrix.transvection i j (-a⁻¹) *
-            (Matrix.transvection j i (a - a ^ 2) * (1 : Matrix n n K))))) k l =
+            (Matrix.transvection j i (a - a ^ (2 : ℕ)) * (1 : Matrix n n K))))) k l =
           (1 : Matrix n n K) k l := by
         simp only [Matrix.transvection_mul_apply_of_ne _ _ _ _ hki,
           Matrix.transvection_mul_apply_of_ne _ _ _ _ hkj]
@@ -194,7 +194,7 @@ theorem IsTransvectionProduct.elementaryDiagonal
   exact (((IsTransvectionProduct.transvection i j hij 1).mul
     (IsTransvectionProduct.transvection j i hij.symm (a - 1))).mul
     (IsTransvectionProduct.transvection i j hij (-a⁻¹))).mul
-    (IsTransvectionProduct.transvection j i hij.symm (a - a ^ 2))
+    (IsTransvectionProduct.transvection j i hij.symm (a - a ^ (2 : ℕ)))
 
 theorem det_elementaryDiagonal (i j : n) (hij : i ≠ j) (a : K) (ha : a ≠ 0) :
     (elementaryDiagonal (K := K) i j a).det = 1 := by

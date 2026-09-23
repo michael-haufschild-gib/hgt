@@ -23,7 +23,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- **A unit-mass combination has squared norm at most the weighted mean of squared norms.** -/
 theorem norm_sum_sq_le_weighted {ι E : Type*} [Fintype ι] [NormedAddCommGroup E]
     [NormedSpace ℂ E] (c : ι → ℂ) (x : ι → E) (hc : ∑ i, ‖c i‖ = 1) :
-    ‖∑ i, c i • x i‖ ^ 2 ≤ ∑ i, ‖c i‖ * ‖x i‖ ^ 2 := by
+    ‖∑ i, c i • x i‖ ^ (2 : ℕ) ≤ ∑ i, ‖c i‖ * ‖x i‖ ^ (2 : ℕ) := by
   have htri : ‖∑ i, c i • x i‖ ≤ ∑ i, ‖c i‖ * ‖x i‖ := by
     refine le_trans (norm_sum_le _ _) ?_
     exact Finset.sum_le_sum fun i _ => le_of_eq (norm_smul (c i) (x i))
@@ -34,13 +34,13 @@ theorem norm_sum_sq_le_weighted {ι E : Type*} [Fintype ι] [NormedAddCommGroup 
   have hprod : ∀ i : ι, Real.sqrt ‖c i‖ * (Real.sqrt ‖c i‖ * ‖x i‖) = ‖c i‖ * ‖x i‖ := by
     intro i
     rw [← mul_assoc, Real.mul_self_sqrt (norm_nonneg _)]
-  have hsqf : ∀ i : ι, Real.sqrt ‖c i‖ ^ 2 = ‖c i‖ := fun i => Real.sq_sqrt (norm_nonneg _)
-  have hsqg : ∀ i : ι, (Real.sqrt ‖c i‖ * ‖x i‖) ^ 2 = ‖c i‖ * ‖x i‖ ^ 2 := by
+  have hsqf : ∀ i : ι, Real.sqrt ‖c i‖ ^ (2 : ℕ) = ‖c i‖ := fun i => Real.sq_sqrt (norm_nonneg _)
+  have hsqg : ∀ i : ι, (Real.sqrt ‖c i‖ * ‖x i‖) ^ (2 : ℕ) = ‖c i‖ * ‖x i‖ ^ (2 : ℕ) := by
     intro i
     rw [mul_pow, hsqf i]
   rw [Finset.sum_congr rfl fun i _ => hprod i, Finset.sum_congr rfl fun i _ => hsqf i,
     Finset.sum_congr rfl fun i _ => hsqg i, hc, one_mul] at hcs
-  have hsq : ‖∑ i, c i • x i‖ ^ 2 ≤ (∑ i, ‖c i‖ * ‖x i‖) ^ 2 := by
+  have hsq : ‖∑ i, c i • x i‖ ^ (2 : ℕ) ≤ (∑ i, ‖c i‖ * ‖x i‖) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖∑ i, c i • x i‖ := norm_nonneg _
     nlinarith [htri, h0, hnn]
   exact le_trans hsq hcs
@@ -57,24 +57,24 @@ theorem hsSqRe_sum_le_weighted {ι : Type*} [Fintype ι] (c : ι → ℂ) (W : �
   have hentry : ∀ a b : d, (∑ i, c i • W i) b a = ∑ i, c i • W i b a := by
     intro a b
     simp [Matrix.sum_apply]
-  have hstep : ∀ a b : d, ‖(∑ i, c i • W i) b a‖ ^ 2 ≤ ∑ i, ‖c i‖ * ‖W i b a‖ ^ 2 := by
+  have hstep : ∀ a b : d, ‖(∑ i, c i • W i) b a‖ ^ (2 : ℕ) ≤ ∑ i, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ) := by
     intro a b
     rw [hentry a b]
     exact norm_sum_sq_le_weighted (E := ℂ) c (fun i => W i b a) hc
   rw [hsSqRe_eq_sum]
-  have hbound : ∑ a, ∑ b, ‖(∑ i, c i • W i) b a‖ ^ 2
-      ≤ ∑ a, ∑ b, ∑ i, ‖c i‖ * ‖W i b a‖ ^ 2 :=
+  have hbound : ∑ a, ∑ b, ‖(∑ i, c i • W i) b a‖ ^ (2 : ℕ)
+      ≤ ∑ a, ∑ b, ∑ i, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ) :=
     Finset.sum_le_sum fun a _ => Finset.sum_le_sum fun b _ => hstep a b
   refine le_trans hbound (le_of_eq ?_)
-  have hR : ∑ i, ‖c i‖ * hsSqRe (W i) = ∑ i, ∑ a, ∑ b, ‖c i‖ * ‖W i b a‖ ^ 2 := by
+  have hR : ∑ i, ‖c i‖ * hsSqRe (W i) = ∑ i, ∑ a, ∑ b, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hsSqRe_eq_sum, Finset.mul_sum]
     exact Finset.sum_congr rfl fun a _ => Finset.mul_sum _ _ _
   rw [hR]
-  calc ∑ a, ∑ b, ∑ i, ‖c i‖ * ‖W i b a‖ ^ 2
-      = ∑ a, ∑ i, ∑ b, ‖c i‖ * ‖W i b a‖ ^ 2 :=
+  calc ∑ a, ∑ b, ∑ i, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ)
+      = ∑ a, ∑ i, ∑ b, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ) :=
         Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ i, ∑ a, ∑ b, ‖c i‖ * ‖W i b a‖ ^ 2 := Finset.sum_comm
+    _ = ∑ i, ∑ a, ∑ b, ‖c i‖ * ‖W i b a‖ ^ (2 : ℕ) := Finset.sum_comm
 
 /-- **Unit-mass Jensen for cut leakage.**  The leakage of a synthesized operator is at most the
 weighted mean of the leakages of its words. -/

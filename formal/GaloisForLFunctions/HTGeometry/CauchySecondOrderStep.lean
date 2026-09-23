@@ -31,7 +31,7 @@ theorem norm_secondOrderOperator_le {f : ℂ → ℂ} {z c₀ c₁ : ℂ} {R M :
     (hf : DiffContOnCl ℂ f (ball z R))
     (hM : ∀ ζ ∈ sphere z R, ‖f ζ‖ ≤ M) :
     ‖c₀ * f z + c₁ * deriv f z - deriv (deriv f) z‖
-      ≤ ‖c₀‖ * M + ‖c₁‖ * (M / R) + 2 * M / R ^ 2 := by
+      ≤ ‖c₀‖ * M + ‖c₁‖ * (M / R) + 2 * M / R ^ (2 : ℕ) := by
   have h0 := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 0 hR hf hM
   have h1 := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 1 hR hf hM
   have h2 := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 2 hR hf hM
@@ -44,7 +44,7 @@ theorem norm_secondOrderOperator_le {f : ℂ → ℂ} {z c₀ c₁ : ℂ} {R M :
     refine le_trans h1 (le_of_eq ?_)
     push_cast
     ring
-  have h2' : ‖deriv (deriv f) z‖ ≤ 2 * M / R ^ 2 := by
+  have h2' : ‖deriv (deriv f) z‖ ≤ 2 * M / R ^ (2 : ℕ) := by
     refine le_trans h2 (le_of_eq ?_)
     push_cast
     ring
@@ -58,7 +58,7 @@ theorem norm_secondOrderOperator_le {f : ℂ → ℂ} {z c₀ c₁ : ℂ} {R M :
       ≤ ‖c₀ * f z + c₁ * deriv f z‖ + ‖deriv (deriv f) z‖ := norm_sub_le _ _
     _ ≤ (‖c₀ * f z‖ + ‖c₁ * deriv f z‖) + ‖deriv (deriv f) z‖ := by
         linarith [norm_add_le (c₀ * f z) (c₁ * deriv f z)]
-    _ ≤ ‖c₀‖ * M + ‖c₁‖ * (M / R) + 2 * M / R ^ 2 := by linarith
+    _ ≤ ‖c₀‖ * M + ‖c₁‖ * (M / R) + 2 * M / R ^ (2 : ℕ) := by linarith
 
 end
 

@@ -31,7 +31,7 @@ def CompletedZeta0OrderOne : Prop :=
 `2(1+r)² ≤ exp (3·(1+r)·log(2+r))`.  Since `exp((1+r)log(2+r)) ≥ 2+r`, cubing gives
 `exp(3·(1+r)log(2+r)) ≥ (2+r)³ ≥ 2(1+r)²`. -/
 private lemma two_mul_sq_le_exp_growth (r : ℝ) (hr : 0 ≤ r) :
-    2 * (1 + r) ^ 2 ≤ Real.exp (3 * ((1 + r) * Real.log (2 + r))) := by
+    2 * (1 + r) ^ (2 : ℕ) ≤ Real.exp (3 * ((1 + r) * Real.log (2 + r))) := by
   set P : ℝ := (1 + r) * Real.log (2 + r) with hP
   have hlog : 0 ≤ Real.log (2 + r) := Real.log_nonneg (by linarith)
   have hPge : Real.log (2 + r) ≤ P := by
@@ -39,10 +39,10 @@ private lemma two_mul_sq_le_exp_growth (r : ℝ) (hr : 0 ≤ r) :
   have hEP : 2 + r ≤ Real.exp P := by
     calc 2 + r = Real.exp (Real.log (2 + r)) := (Real.exp_log (by linarith)).symm
       _ ≤ Real.exp P := Real.exp_le_exp.mpr hPge
-  have hexp3 : Real.exp (3 * P) = Real.exp P ^ 3 := by
+  have hexp3 : Real.exp (3 * P) = Real.exp P ^ (3 : ℕ) := by
     rw [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.exp_nat_mul]
   have h2r0 : (0 : ℝ) ≤ 2 + r := by linarith
-  have hcube : (2 + r) ^ 3 ≤ Real.exp P ^ 3 := by gcongr
+  have hcube : (2 + r) ^ (3 : ℕ) ≤ Real.exp P ^ (3 : ℕ) := by gcongr
   rw [hexp3]
   nlinarith [hcube, hr, mul_nonneg (mul_nonneg hr hr) hr, sq_nonneg r]
 
@@ -67,7 +67,7 @@ theorem xi_growth_order_le_one_of_completedZeta0OrderOne (h : CompletedZeta0Orde
     rw [← hr, mul_assoc, ← hP] at hbs
     exact hbs
   -- envelope facts
-  have henv : 2 * (1 + r) ^ 2 ≤ Real.exp (3 * P) := by
+  have henv : 2 * (1 + r) ^ (2 : ℕ) ≤ Real.exp (3 * P) := by
     rw [hP]; exact two_mul_sq_le_exp_growth r hr0
   have hexpCP : (1 : ℝ) ≤ Real.exp (C * P) := Real.one_le_exp (mul_nonneg hC.le hP0)
   -- polynomial prefactor bound

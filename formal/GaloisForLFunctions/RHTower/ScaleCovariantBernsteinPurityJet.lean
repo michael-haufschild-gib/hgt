@@ -64,7 +64,7 @@ def bernsteinScaleRowPolynomial (m : ℕ → ℝ) (N k : ℕ) : Polynomial ℝ :
 
 /-- The scale-covariant Bernstein purity polynomial. -/
 def bernsteinScalePurityPolynomial (m : ℕ → ℝ) (N : ℕ) : Polynomial ℝ :=
-  ∑ k ∈ Finset.range (N + 1), (bernsteinScaleRowPolynomial m N k) ^ 2
+  ∑ k ∈ Finset.range (N + 1), (bernsteinScaleRowPolynomial m N k) ^ (2 : ℕ)
 
 theorem eval_bernsteinScaleRowPolynomial (m : ℕ → ℝ) (N k : ℕ) (x : ℝ) :
     (bernsteinScaleRowPolynomial m N k).eval x =
@@ -165,7 +165,7 @@ private theorem antidiagonal_index_le {a b r : ℕ}
 
 /-- The constant purity coefficient is exactly the square of the pointed mass. -/
 @[simp] theorem coeff_zero_bernsteinScalePurityPolynomial (m : ℕ → ℝ) (N : ℕ) :
-    (bernsteinScalePurityPolynomial m N).coeff 0 = m 0 ^ 2 := by
+    (bernsteinScalePurityPolynomial m N).coeff 0 = m 0 ^ (2 : ℕ) := by
   rw [coeff_bernsteinScalePurityPolynomial]
   simp [bernsteinPurityCoefficientKernel]
   ring

@@ -186,15 +186,15 @@ theorem topOrd_fpderiv_of_mem_topInt {m : ℕ} {f : CascadeField} (h : f ∈ top
 
 /-- The derivation `∂/∂u` at the uniformiser `u = 1/X_m` of the valuation ring. -/
 noncomputable def uDeriv (m : ℕ) : Derivation ℂ CascadeField CascadeField :=
-  -((fx m) ^ 2) • fpderiv m
+  -((fx m) ^ (2 : ℕ)) • fpderiv m
 
 theorem uDeriv_apply (m : ℕ) (f : CascadeField) :
-    uDeriv m f = -((fx m) ^ 2) * fpderiv m f := rfl
+    uDeriv m f = -((fx m) ^ (2 : ℕ)) * fpderiv m f := rfl
 
 /-- **The derivation at the uniformiser preserves the valuation ring.** -/
 theorem uDeriv_mem_topInt {m : ℕ} {f : CascadeField} (h : f ∈ topInt m) :
     uDeriv m f ∈ topInt m := by
-  have hsq : topOrd m (-((fx m) ^ 2)) = ((-2 : ℤ) : WithTop ℤ) := by
+  have hsq : topOrd m (-((fx m) ^ (2 : ℕ))) = ((-2 : ℤ) : WithTop ℤ) := by
     rw [topOrd_neg, sq, topOrd_mul, topOrd_fx, ← WithTop.coe_add]
     norm_num
   rw [mem_topInt, uDeriv_apply, topOrd_mul, hsq]

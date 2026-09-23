@@ -99,7 +99,7 @@ theorem exists_near_origin_centered_bound :
         ‖centeredSchurQuotient ω z‖ ≤ C := by
   obtain ⟨ρ, Cb, hρpos, hρ8, hCb1, hbd⟩ := exists_poleUnit_ball_bounds
   have hCb0 : (0 : ℝ) < Cb := by linarith
-  refine ⟨ρ / 4, ρ / 8, 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2, by linarith, by linarith,
+  refine ⟨ρ / 4, ρ / 8, 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ), by linarith, by linarith,
     by positivity, ?_⟩
   intro ω hω hωle z hzre hz0 hzδ
   have hzn : (0 : ℝ) < ‖z‖ := norm_pos_iff.mpr hz0
@@ -155,21 +155,21 @@ theorem exists_near_origin_centered_bound :
     linarith
   have hstep : ‖((2 * (ω : ℂ) + z) / zetaPoleUnit (1 + 2 * (ω : ℂ) + z) -
       2 * (ω : ℂ) / zetaPoleUnit (1 + 2 * (ω : ℂ))) / z‖
-      ≤ 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2 := by
+      ≤ 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ) := by
     rw [norm_div, div_le_iff₀ hzn]
-    have hgoal : 2 * Cb * (Cb * ‖z‖) / (1 / 2 : ℝ) ^ 2
-        = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2 * ‖z‖ := by ring
+    have hgoal : 2 * Cb * (Cb * ‖z‖) / (1 / 2 : ℝ) ^ (2 : ℕ)
+        = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ) * ‖z‖ := by ring
     calc ‖(2 * (ω : ℂ) + z) / zetaPoleUnit (1 + 2 * (ω : ℂ) + z) -
           2 * (ω : ℂ) / zetaPoleUnit (1 + 2 * (ω : ℂ))‖
-        ≤ 2 * Cb * (Cb * ‖z‖) / (1 / 2 : ℝ) ^ 2 := hquot
-      _ = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2 * ‖z‖ := hgoal
+        ≤ 2 * Cb * (Cb * ‖z‖) / (1 / 2 : ℝ) ^ (2 : ℕ) := hquot
+      _ = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ) * ‖z‖ := hgoal
   rw [centeredSchurQuotient_eq_poleUnit hω hzre, norm_mul]
   calc ‖(1 : ℂ) / ((1 : ℂ) + (ω : ℂ))‖ *
         ‖((2 * (ω : ℂ) + z) / zetaPoleUnit (1 + 2 * (ω : ℂ) + z) -
           2 * (ω : ℂ) / zetaPoleUnit (1 + 2 * (ω : ℂ))) / z‖
-      ≤ 1 * (2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2) :=
+      ≤ 1 * (2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ)) :=
         mul_le_mul hωnorm hstep (norm_nonneg _) (by norm_num)
-    _ = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ 2 := one_mul _
+    _ = 2 * Cb * (Cb * 1) / (1 / 2 : ℝ) ^ (2 : ℕ) := one_mul _
 
 
 /-! ### The mid-range and far-field bounds -/
@@ -211,7 +211,7 @@ theorem norm_centeredSchurQuotient_line_le {ω : ℝ} (hω : 0 < ω) {τ : ℝ} 
 theorem norm_centeredSchurQuotient_far_le {ω : ℝ} (hω : 0 < ω) (hω1 : 2 * ω ≤ 1)
     (hζinv : ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖ ≤ 1) {τ : ℝ} (hτ : 9 < |τ|) :
     ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I)‖
-      ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ 26 / |τ| := by
+      ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ (26 : ℕ) / |τ| := by
   have hτ9 : (9 : ℝ) ≤ |τ| := le_of_lt hτ
   have hτ0 : τ ≠ 0 := by
     intro h
@@ -221,26 +221,26 @@ theorem norm_centeredSchurQuotient_far_le {ω : ℝ} (hω : 0 < ω) (hω1 : 2 * 
   have hL2 : 2 < Real.log |τ| := two_lt_log_abs hτ9
   have hL1 : (1 : ℝ) ≤ Real.log |τ| := by linarith
   have hshift := norm_inv_riemannZeta_shift_le hω hω1 hτ9
-  have hpow : Real.log |τ| ^ 7 ≤ Real.log |τ| ^ 26 :=
+  have hpow : Real.log |τ| ^ (7 : ℕ) ≤ Real.log |τ| ^ (26 : ℕ) :=
     pow_le_pow_right₀ hL1 (by norm_num)
   have hApos : (0 : ℝ) < zetaLowerA := zetaLowerA_pos
   have hbase := norm_centeredSchurQuotient_line_le hω hτ0
   have hnum : ‖(riemannZeta (1 + 2 * (ω : ℂ) + (τ : ℂ) * Complex.I))⁻¹‖ +
       ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖
-      ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ 26 := by
+      ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ (26 : ℕ) := by
     have h1 : ‖(riemannZeta (1 + 2 * (ω : ℂ) + (τ : ℂ) * Complex.I))⁻¹‖
-        ≤ 26 / zetaLowerA * Real.log |τ| ^ 26 := by
+        ≤ 26 / zetaLowerA * Real.log |τ| ^ (26 : ℕ) := by
       refine le_trans hshift ?_
       have h26 : (0 : ℝ) < 26 / zetaLowerA := by positivity
       nlinarith [hpow]
-    have h2 : ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖ ≤ 1 * Real.log |τ| ^ 26 := by
-      have hge : (1 : ℝ) ≤ Real.log |τ| ^ 26 := one_le_pow₀ hL1
+    have h2 : ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖ ≤ 1 * Real.log |τ| ^ (26 : ℕ) := by
+      have hge : (1 : ℝ) ≤ Real.log |τ| ^ (26 : ℕ) := one_le_pow₀ hL1
       linarith
     linarith
   calc ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I)‖
       ≤ (‖(riemannZeta (1 + 2 * (ω : ℂ) + (τ : ℂ) * Complex.I))⁻¹‖ +
           ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖) / |τ| := hbase
-    _ ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ 26 / |τ| := by gcongr
+    _ ≤ (26 / zetaLowerA + 1) * Real.log |τ| ^ (26 : ℕ) / |τ| := by gcongr
 
 theorem exists_mid_range_centered_bound {ω₀ δ : ℝ} (_hω₀ : 0 < ω₀) (hδ : 0 < δ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ ω : ℝ, 0 < ω → ω ≤ ω₀ →
@@ -346,8 +346,8 @@ theorem exists_uniform_centered_bound :
       have h := norm_centeredSchurQuotient_far_le hω hωhalf hζinv hcase2
       rw [boundaryMajorant_far hcase2]
       have hfFC : farFieldConstant ≠ 0 := ne_of_gt farFieldConstant_pos
-      have hval : lam * (farFieldConstant * Real.log |τ| ^ 26 / |τ|)
-          = Cfar * Real.log |τ| ^ 26 / |τ| := by
+      have hval : lam * (farFieldConstant * Real.log |τ| ^ (26 : ℕ) / |τ|)
+          = Cfar * Real.log |τ| ^ (26 : ℕ) / |τ| := by
         rw [hlam]
         field_simp
       rw [hval]
@@ -429,7 +429,7 @@ theorem continuousOn_centeredSchurQuotient_line {ω : ℝ} (hω : 0 < ω) :
 `G_0(z) = 1/(z ζ(1+z))` in the boundary `L²` (Hardy) norm. -/
 theorem tendsto_boundary_centeredSchur_energy :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₀, K, lam, hω₀, hK, hlam, hbound⟩ := exists_uniform_centered_bound
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < ω ∧ ω ≤ ω₀ := by
@@ -470,7 +470,7 @@ theorem tendsto_boundary_centeredSchur_energy :
   have hmeas : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       AEStronglyMeasurable (fun τ : ℝ =>
         ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-          centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2) volume := by
+          centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) volume := by
     filter_upwards [hev] with ω hω
     have h1 := aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_centeredSchurQuotient_line hω.1)
@@ -478,7 +478,7 @@ theorem tendsto_boundary_centeredSchur_energy :
     exact ((h1.sub h2).norm.pow 2)
   have hdom : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), ∀ᵐ τ : ℝ,
       ‖‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2‖ ≤ lam ^ 2 * boundaryBound K τ := by
+        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)‖ ≤ lam ^ (2 : ℕ) * boundaryBound K τ := by
     filter_upwards [hev] with ω hω
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -493,12 +493,12 @@ theorem tendsto_boundary_centeredSchur_energy :
     have hmaj : (0 : ℝ) ≤ boundaryMajorant K τ := boundaryMajorant_nonneg hK τ
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), boundaryBound_eq K τ]
     calc ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-          centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (2 * (lam * boundaryMajorant K τ)) ^ 2 := pow_le_pow_left₀ h4 h3 2
-      _ = lam ^ 2 * (4 * boundaryMajorant K τ ^ 2) := by ring
+          centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (2 * (lam * boundaryMajorant K τ)) ^ (2 : ℕ) := pow_le_pow_left₀ h4 h3 2
+      _ = lam ^ (2 : ℕ) * (4 * boundaryMajorant K τ ^ (2 : ℕ)) := by ring
   have hlim : ∀ᵐ τ : ℝ, Tendsto (fun ω : ℝ =>
       ‖centeredSchurQuotient ω ((τ : ℂ) * Complex.I) -
-        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -511,8 +511,8 @@ theorem tendsto_boundary_centeredSchur_energy :
       (x := centeredSchurLimit ((τ : ℂ) * Complex.I)))).norm.pow 2)
     simpa using h
   have hDCT := tendsto_integral_filter_of_dominated_convergence
-    (fun τ : ℝ => lam ^ 2 * boundaryBound K τ) hmeas hdom
-    ((integrable_boundaryBound K).const_mul (lam ^ 2)) hlim
+    (fun τ : ℝ => lam ^ (2 : ℕ) * boundaryBound K τ) hmeas hdom
+    ((integrable_boundaryBound K).const_mul (lam ^ (2 : ℕ))) hlim
   simpa using hDCT
 
 theorem boundaryMajorant_smul_add {c1 c2 K1 K2 : ℝ} (h1 : 0 < c1) (h2 : 0 < c2) (τ : ℝ) :
@@ -582,7 +582,7 @@ theorem exists_uniform_floorRemainder_bound :
 to `H_0` in the boundary `L²` norm. -/
 theorem tendsto_boundary_floorRemainder_energy :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₀, K, lam, hω₀, hK, hlam, hbound⟩ := exists_uniform_floorRemainder_bound
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < ω ∧ ω ≤ ω₀ := by
@@ -630,7 +630,7 @@ theorem tendsto_boundary_floorRemainder_energy :
   have hmeas : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       AEStronglyMeasurable (fun τ : ℝ =>
         ‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-          floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2) volume := by
+          floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) volume := by
     filter_upwards [hev] with ω hω
     have h1 := aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_floorRemainderTransfer_line hω.1)
@@ -638,7 +638,7 @@ theorem tendsto_boundary_floorRemainder_energy :
     exact ((h1.sub h2).norm.pow 2)
   have hdom : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), ∀ᵐ τ : ℝ,
       ‖‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2‖ ≤ lam ^ 2 * boundaryBound K τ := by
+        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)‖ ≤ lam ^ (2 : ℕ) * boundaryBound K τ := by
     filter_upwards [hev] with ω hω
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -653,12 +653,12 @@ theorem tendsto_boundary_floorRemainder_energy :
     have hmaj : (0 : ℝ) ≤ boundaryMajorant K τ := boundaryMajorant_nonneg hK τ
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), boundaryBound_eq K τ]
     calc ‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-          floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (2 * (lam * boundaryMajorant K τ)) ^ 2 := pow_le_pow_left₀ h4 h3 2
-      _ = lam ^ 2 * (4 * boundaryMajorant K τ ^ 2) := by ring
+          floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (2 * (lam * boundaryMajorant K τ)) ^ (2 : ℕ) := pow_le_pow_left₀ h4 h3 2
+      _ = lam ^ (2 : ℕ) * (4 * boundaryMajorant K τ ^ (2 : ℕ)) := by ring
   have hlim : ∀ᵐ τ : ℝ, Tendsto (fun ω : ℝ =>
       ‖floorRemainderTransfer ω ((τ : ℂ) * Complex.I) -
-        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ 2)
+        floorRemainderLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -671,8 +671,8 @@ theorem tendsto_boundary_floorRemainder_energy :
       (x := floorRemainderLimit ((τ : ℂ) * Complex.I)))).norm.pow 2)
     simpa using h
   have hDCT := tendsto_integral_filter_of_dominated_convergence
-    (fun τ : ℝ => lam ^ 2 * boundaryBound K τ) hmeas hdom
-    ((integrable_boundaryBound K).const_mul (lam ^ 2)) hlim
+    (fun τ : ℝ => lam ^ (2 : ℕ) * boundaryBound K τ) hmeas hdom
+    ((integrable_boundaryBound K).const_mul (lam ^ (2 : ℕ))) hlim
   simpa using hDCT
 
 
@@ -696,7 +696,7 @@ theorem exists_uniform_centeredSchurLimit_bound :
 
 /-- The critical limit has finite boundary energy. -/
 theorem integrable_norm_sq_centeredSchurLimit :
-    Integrable (fun τ : ℝ => ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2) := by
+    Integrable (fun τ : ℝ => ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) := by
   obtain ⟨K, lam, hK, hlam, hbound⟩ := exists_uniform_centeredSchurLimit_bound
   have hcontlim : ContinuousOn (fun τ : ℝ => centeredSchurLimit ((τ : ℂ) * Complex.I))
       {t : ℝ | t ≠ 0} := by
@@ -715,20 +715,20 @@ theorem integrable_norm_sq_centeredSchurLimit :
     have hA : ContinuousAt (fun t : ℝ => riemannZeta (1 + (t : ℂ) * Complex.I)) τ :=
       continuousAt_zeta_line hne1
     exact (continuousAt_const.div (hz.mul hA) (mul_ne_zero hz0 hζ0)).continuousWithinAt
-  refine Integrable.mono ((integrable_boundaryBound K).const_mul (lam ^ 2))
+  refine Integrable.mono ((integrable_boundaryBound K).const_mul (lam ^ (2 : ℕ)))
     ((aestronglyMeasurable_of_continuousOn_ne_zero hcontlim).norm.pow 2) ?_
   filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
   have hτ : τ ≠ 0 := hτmem
   have h2 := hbound τ hτ
   have h4 : (0 : ℝ) ≤ ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ := norm_nonneg _
   have hmaj : (0 : ℝ) ≤ boundaryMajorant K τ := boundaryMajorant_nonneg hK τ
-  have hbb : (0 : ℝ) ≤ lam ^ 2 * boundaryBound K τ := by
+  have hbb : (0 : ℝ) ≤ lam ^ (2 : ℕ) * boundaryBound K τ := by
     have := boundaryBound_nonneg K τ
     positivity
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), Real.norm_eq_abs,
     abs_of_nonneg hbb, boundaryBound_eq K τ]
-  calc ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ 2
-      ≤ (lam * boundaryMajorant K τ) ^ 2 := pow_le_pow_left₀ h4 h2 2
-    _ ≤ lam ^ 2 * (4 * boundaryMajorant K τ ^ 2) := by nlinarith [sq_nonneg (boundaryMajorant K τ)]
+  calc ‖centeredSchurLimit ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ (lam * boundaryMajorant K τ) ^ (2 : ℕ) := pow_le_pow_left₀ h4 h2 2
+    _ ≤ lam ^ (2 : ℕ) * (4 * boundaryMajorant K τ ^ (2 : ℕ)) := by nlinarith [sq_nonneg (boundaryMajorant K τ)]
 
 end RHTower

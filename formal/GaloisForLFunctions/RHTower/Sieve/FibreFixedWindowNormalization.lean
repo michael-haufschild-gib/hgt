@@ -32,7 +32,7 @@ theorem fibreWindowSq_le_fixedWindowSq_add_lengthError (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) (x h : ℝ) (a ℓ : ℕ) :
     fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a)
       ≤ 2 * fixedWindowSq f ℓ (fibreStartIdx x a)
-        + 2 * |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2 := by
+        + 2 * |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ) := by
   have hbase := fixedWindowSq_le_of_close hf
     (fibreStartIdx x a) (fibreLen x h a) (fibreStartIdx x a) ℓ
   have hend :
@@ -45,7 +45,7 @@ theorem fibreWindowSq_le_fixedWindowSq_add_lengthError (f : ℕ → ℝ)
 
 /-- The fixed-window encoding also covers the zero-length case. -/
 theorem fixedWindowSq_eq_sq_sum_Ioc_all (f : ℕ → ℝ) (ℓ z : ℕ) :
-    fixedWindowSq f ℓ z = (∑ n ∈ Finset.Ioc z (z + ℓ), f n) ^ 2 := by
+    fixedWindowSq f ℓ z = (∑ n ∈ Finset.Ioc z (z + ℓ), f n) ^ (2 : ℕ) := by
   by_cases hℓ : ℓ = 0
   · simp [hℓ, fixedWindowSq]
   · have hw := window_eq_partialSum f (y := z + 1) (by omega) (ℓ - 1)
@@ -110,16 +110,16 @@ theorem abs_fibreLen_sub_fixedLength_le {x h : ℝ} (hx : 4 < x) (hh : 0 ≤ h)
 rounding term. -/
 theorem sum_lengthError_sq_le_localScaleError {x h : ℝ} (hx : 4 < x) (hh : 0 ≤ h)
     (ℓ : ℕ) :
-    (∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2)
+    (∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ))
       ≤ 2 * ∑ a ∈ outerBlock x h,
-          |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ 2
-        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ 2 := by
+          |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ (2 : ℕ)
+        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ (2 : ℕ) := by
   have hs0 : 0 < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
   have hr0 : 0 ≤ h / Real.sqrt x + 1 := by positivity
   have hpoint : ∀ a ∈ outerBlock x h,
-      |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2
-        ≤ 2 * |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ 2
-          + 2 * (h / Real.sqrt x + 1) ^ 2 := by
+      |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ)
+        ≤ 2 * |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ (2 : ℕ)
+          + 2 * (h / Real.sqrt x + 1) ^ (2 : ℕ) := by
     intro a ha
     have hlen := abs_fibreLen_sub_fixedLength_le hx hh ha ℓ
     have he0 : 0 ≤ |(fibreLen x h a : ℝ) - (ℓ : ℝ)| := abs_nonneg _
@@ -128,13 +128,13 @@ theorem sum_lengthError_sq_le_localScaleError {x h : ℝ} (hx : 4 < x) (hh : 0 �
       (|h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| -
         (h / Real.sqrt x + 1))]
   calc
-    (∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2)
+    (∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ))
         ≤ ∑ a ∈ outerBlock x h,
-            (2 * |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ 2
-              + 2 * (h / Real.sqrt x + 1) ^ 2) := Finset.sum_le_sum hpoint
+            (2 * |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ (2 : ℕ)
+              + 2 * (h / Real.sqrt x + 1) ^ (2 : ℕ)) := Finset.sum_le_sum hpoint
     _ = 2 * ∑ a ∈ outerBlock x h,
-          |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ 2
-        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ 2 := by
+          |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ (2 : ℕ)
+        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib, ← Finset.mul_sum]
       simp only [Finset.sum_const, nsmul_eq_mul]
       ring
@@ -146,7 +146,7 @@ theorem sum_fibreWindowSq_le_dyadic_add_lengthError (f : ℕ → ℝ)
     (∑ a ∈ outerBlock x h,
         fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a))
       ≤ 8 * dyadicMeanSquare f ℓ (⌈Real.sqrt x / 2⌉₊ - 1) (⌈Real.sqrt x⌉₊ - 1)
-        + 2 * ∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2 := by
+        + 2 * ∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ) := by
   classical
   set A : ℕ := ⌈Real.sqrt x / 2⌉₊ with hAdef
   set B : ℕ := ⌈Real.sqrt x⌉₊ with hBdef
@@ -164,7 +164,7 @@ theorem sum_fibreWindowSq_le_dyadic_add_lengthError (f : ℕ → ℝ)
   have hpoint : ∀ a ∈ outerBlock x h,
       fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a)
         ≤ 2 * fixedWindowSq f ℓ (fibreStartIdx x a)
-          + 2 * |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2 :=
+          + 2 * |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ) :=
     fun a _ => fibreWindowSq_le_fixedWindowSq_add_lengthError f hf x h a ℓ
   have hsum := Finset.sum_le_sum hpoint
   have hstart :
@@ -182,11 +182,11 @@ theorem sum_fibreWindowSq_le_dyadic_add_lengthError (f : ℕ → ℝ)
 /-- Fibre sums themselves satisfy the finite moving-normalization bridge. -/
 theorem sum_innerFibre_sq_le_dyadic_add_lengthError (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (ℓ : ℕ) :
-    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2)
+    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ))
       ≤ 8 * dyadicMeanSquare f ℓ (⌈Real.sqrt x / 2⌉₊ - 1) (⌈Real.sqrt x⌉₊ - 1)
-        + 2 * ∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ 2 := by
+        + 2 * ∑ a ∈ outerBlock x h, |(fibreLen x h a : ℝ) - (ℓ : ℝ)| ^ (2 : ℕ) := by
   have hreindex :
-      (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2) =
+      (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)) =
         ∑ a ∈ outerBlock x h,
           fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a) := by
     refine Finset.sum_congr rfl (fun a ha => ?_)
@@ -198,11 +198,11 @@ theorem sum_innerFibre_sq_le_dyadic_add_lengthError (f : ℕ → ℝ)
 rounding loss are separated with explicit constants. -/
 theorem sum_innerFibre_sq_le_dyadic_add_localScaleError (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 < x) (hh : 0 ≤ h) (ℓ : ℕ) :
-    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2)
+    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ))
       ≤ 8 * dyadicMeanSquare f ℓ (⌈Real.sqrt x / 2⌉₊ - 1) (⌈Real.sqrt x⌉₊ - 1)
         + 4 * ∑ a ∈ outerBlock x h,
-            |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ 2
-        + 4 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ 2 := by
+            |h * (fibreStartIdx x a : ℝ) / Real.sqrt x - (ℓ : ℝ)| ^ (2 : ℕ)
+        + 4 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 1) ^ (2 : ℕ) := by
   have hbridge := sum_innerFibre_sq_le_dyadic_add_lengthError f hf (le_of_lt hx) hh ℓ
   have hlength := sum_lengthError_sq_le_localScaleError hx hh ℓ
   nlinarith

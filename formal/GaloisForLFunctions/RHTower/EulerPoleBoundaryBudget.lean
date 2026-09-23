@@ -57,7 +57,7 @@ theorem eulerPoleBoundaryProfileL2_ae :
 /-- The unit-amplitude rate-`1/2` causal exponential has squared norm one in the existing Fourier
 normalization. -/
 theorem norm_causalLaplaceWeightL2_eulerPole_sq :
-    ‖causalLaplaceWeightL2 ((2 * Real.pi)⁻¹) eulerPoleRate_pos‖ ^ 2 = 1 := by
+    ‖causalLaplaceWeightL2 ((2 * Real.pi)⁻¹) eulerPoleRate_pos‖ ^ (2 : ℕ) = 1 := by
   rw [← inner_self_eq_norm_sq (𝕜 := ℂ),
     inner_causalLaplaceWeightL2 eulerPoleRate_pos eulerPoleRate_pos]
   push_cast
@@ -67,7 +67,7 @@ theorem norm_causalLaplaceWeightL2_eulerPole_sq :
 /-- **Exact four-unit incoming budget.** The Euler-pole channel `2 exp (-t/2)` has squared
 `L²(ℝ)` norm exactly `4`. -/
 theorem norm_eulerPoleBoundaryProfileL2_sq :
-    ‖eulerPoleBoundaryProfileL2‖ ^ 2 = 4 := by
+    ‖eulerPoleBoundaryProfileL2‖ ^ (2 : ℕ) = 4 := by
   rw [eulerPoleBoundaryProfileL2, norm_smul]
   rw [show ‖(2 : ℂ)‖ = 2 by norm_num]
   have hsq := norm_causalLaplaceWeightL2_eulerPole_sq

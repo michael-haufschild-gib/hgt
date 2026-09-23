@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.DyadicExponentGeometricSummable
 
 A coefficient sequence obeying the single local recursion `a (2 * n) = c * a n` has an Abel series
 that splits exactly into a free odd seed and a rescaled dyadic dilate,
-`A x = O x + c * A (x ^ 2)` (`abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq`).  Iterating the
+`A x = O x + c * A (x ^ (2 : ℕ))` (`abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq`).  Iterating the
 recursion classifies the whole Abel series as the geometric orbit sum
 `A r = ∑_j c ^ j * O (r ^ (2 ^ j))` (`hasSum_dyadicOrbit`), so the odd seed is a free parameter and
 the recursion alone produces no upper estimate.
@@ -14,9 +14,9 @@ the recursion alone produces no upper estimate.
 The same split converts the binary even-index parity Gram decomposition into an orthogonal channel
 decomposition: the even additive channel is the sum of the odd-seed square and the dyadic dilate
 square (`tsum_evenIndex_binary_eq_dyadicOrbitGram`).  For a completely multiplicative sequence with
-`c = a 2` the two channels are `A r - c * A (r ^ 2)` and `c * A (r ^ 2)`
+`c = a 2` the two channels are `A r - c * A (r ^ (2 : ℕ))` and `c * A (r ^ (2 : ℕ))`
 (`tsum_evenIndex_binary_eq_dyadicGram`), which for a real sequence with `c = -1` becomes the pair of
-adjacent real squares `(A r + A (r ^ 2)) ^ 2 + A (r ^ 2) ^ 2`.
+adjacent real squares `(A r + A (r ^ (2 : ℕ))) ^ (2 : ℕ) + A (r ^ (2 : ℕ)) ^ (2 : ℕ)`.
 -/
 
 open Complex Filter
@@ -30,7 +30,7 @@ noncomputable section
 def abelSeries (a : ℕ → ℂ) (x : ℂ) : ℂ := ∑' n : ℕ, a n * x ^ n
 
 /-- The odd-index Abel seed `O x = ∑_{n odd} a n * x ^ n`, written through the halved index. -/
-def oddSeed (a : ℕ → ℂ) (x : ℂ) : ℂ := x * ∑' q : ℕ, a (2 * q + 1) * (x ^ 2) ^ q
+def oddSeed (a : ℕ → ℂ) (x : ℂ) : ℂ := x * ∑' q : ℕ, a (2 * q + 1) * (x ^ (2 : ℕ)) ^ q
 
 variable {a : ℕ → ℂ} {c : ℂ}
 
@@ -42,13 +42,13 @@ theorem tsum_even_eq_const_mul_abelSeries (hrec : ∀ n, a (2 * n) = c * a n) (x
   exact tsum_congr fun q => by rw [hrec q, mul_assoc]
 
 /-- **Exact dyadic split.**  A sequence satisfying `a (2 * n) = c * a n` has Abel series
-`A x = O x + c * A (x ^ 2)`, with `O` the free odd seed. -/
+`A x = O x + c * A (x ^ (2 : ℕ))`, with `O` the free odd seed. -/
 theorem abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq
     (hrec : ∀ n, a (2 * n) = c * a n) {x : ℂ}
     (hx : Summable fun N : ℕ => ‖a N * x ^ N‖) :
-    abelSeries a x = oddSeed a x + c * abelSeries a (x ^ 2) := by
+    abelSeries a x = oddSeed a x + c * abelSeries a (x ^ (2 : ℕ)) := by
   have hsplit := generatingFunction_even_odd_split a x hx
-  rw [tsum_even_eq_const_mul_abelSeries hrec (x ^ 2)] at hsplit
+  rw [tsum_even_eq_const_mul_abelSeries hrec (x ^ (2 : ℕ))] at hsplit
   simp only [abelSeries, oddSeed] at hsplit ⊢
   rw [hsplit]
   ring
@@ -56,7 +56,7 @@ theorem abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq
 /-- The odd seed is the exact defect of the Abel series against its dyadic dilate. -/
 theorem oddSeed_eq_abelSeries_sub (hrec : ∀ n, a (2 * n) = c * a n) {x : ℂ}
     (hx : Summable fun N : ℕ => ‖a N * x ^ N‖) :
-    oddSeed a x = abelSeries a x - c * abelSeries a (x ^ 2) := by
+    oddSeed a x = abelSeries a x - c * abelSeries a (x ^ (2 : ℕ)) := by
   rw [abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq hrec hx]
   ring
 
@@ -68,10 +68,10 @@ theorem tsum_evenIndex_binary_eq_dyadicOrbitGram
     (ha : Summable fun N : ℕ => ‖a N * (r : ℂ) ^ N‖) :
     (∑' q : ℕ, mixedAdditiveConvolutionPower a 1 (2 * q) * (r : ℂ) ^ (2 * q))
       = oddSeed a (r : ℂ) * (starRingEnd ℂ) (oddSeed a (r : ℂ))
-        + (c * abelSeries a ((r : ℂ) ^ 2)) *
-            (starRingEnd ℂ) (c * abelSeries a ((r : ℂ) ^ 2)) := by
+        + (c * abelSeries a ((r : ℂ) ^ (2 : ℕ))) *
+            (starRingEnd ℂ) (c * abelSeries a ((r : ℂ) ^ (2 : ℕ))) := by
   rw [tsum_evenIndex_binary_eq_evenOddGram a r ha,
-    tsum_even_eq_const_mul_abelSeries hrec ((r : ℂ) ^ 2)]
+    tsum_even_eq_const_mul_abelSeries hrec ((r : ℂ) ^ (2 : ℕ))]
   simp only [oddSeed, map_mul, Complex.conj_ofReal]
   ring
 
@@ -81,10 +81,10 @@ theorem tsum_evenIndex_binary_eq_dyadicGram
     (hrec : ∀ n, a (2 * n) = c * a n) (r : ℝ)
     (ha : Summable fun N : ℕ => ‖a N * (r : ℂ) ^ N‖) :
     (∑' q : ℕ, mixedAdditiveConvolutionPower a 1 (2 * q) * (r : ℂ) ^ (2 * q))
-      = (abelSeries a (r : ℂ) - c * abelSeries a ((r : ℂ) ^ 2)) *
-            (starRingEnd ℂ) (abelSeries a (r : ℂ) - c * abelSeries a ((r : ℂ) ^ 2))
-        + (c * abelSeries a ((r : ℂ) ^ 2)) *
-            (starRingEnd ℂ) (c * abelSeries a ((r : ℂ) ^ 2)) := by
+      = (abelSeries a (r : ℂ) - c * abelSeries a ((r : ℂ) ^ (2 : ℕ))) *
+            (starRingEnd ℂ) (abelSeries a (r : ℂ) - c * abelSeries a ((r : ℂ) ^ (2 : ℕ)))
+        + (c * abelSeries a ((r : ℂ) ^ (2 : ℕ))) *
+            (starRingEnd ℂ) (c * abelSeries a ((r : ℂ) ^ (2 : ℕ))) := by
   rw [tsum_evenIndex_binary_eq_dyadicOrbitGram hrec r ha,
     oddSeed_eq_abelSeries_sub hrec ha]
 
@@ -96,17 +96,17 @@ theorem conj_abelSeries_ofReal (hreal : ∀ n, (starRingEnd ℂ) (a n) = a n) (x
   rw [← starRingEnd_apply, map_mul, map_pow, hreal n, Complex.conj_ofReal]
 
 /-- **Two adjacent real squares.**  A real sequence with the dyadic recursion at `c = -1` — the
-Liouville normalisation — has even additive channel `(A r + A (r ^ 2)) ^ 2 + A (r ^ 2) ^ 2`. -/
+Liouville normalisation — has even additive channel `(A r + A (r ^ (2 : ℕ))) ^ (2 : ℕ) + A (r ^ (2 : ℕ)) ^ (2 : ℕ)`. -/
 theorem tsum_evenIndex_binary_eq_dyadicGram_neg_one
     (hreal : ∀ n, (starRingEnd ℂ) (a n) = a n) (hrec : ∀ n, a (2 * n) = -a n) (r : ℝ)
     (ha : Summable fun N : ℕ => ‖a N * (r : ℂ) ^ N‖) :
     (∑' q : ℕ, mixedAdditiveConvolutionPower a 1 (2 * q) * (r : ℂ) ^ (2 * q))
-      = (abelSeries a (r : ℂ) + abelSeries a ((r : ℂ) ^ 2)) ^ 2
-        + abelSeries a ((r : ℂ) ^ 2) ^ 2 := by
+      = (abelSeries a (r : ℂ) + abelSeries a ((r : ℂ) ^ (2 : ℕ))) ^ (2 : ℕ)
+        + abelSeries a ((r : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hrec' : ∀ n, a (2 * n) = (-1 : ℂ) * a n := fun n => by rw [hrec n]; ring
-  have hsq : ((r : ℂ) ^ 2) = ((r ^ 2 : ℝ) : ℂ) := by push_cast; ring
+  have hsq : ((r : ℂ) ^ (2 : ℕ)) = ((r ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
   have hconj1 := conj_abelSeries_ofReal hreal r
-  have hconj2 := conj_abelSeries_ofReal (a := a) hreal (r ^ 2)
+  have hconj2 := conj_abelSeries_ofReal (a := a) hreal (r ^ (2 : ℕ))
   rw [← hsq] at hconj2
   rw [tsum_evenIndex_binary_eq_dyadicGram hrec' r ha]
   simp only [map_sub, map_mul, map_neg, map_one, hconj1, hconj2]
@@ -134,7 +134,7 @@ theorem abelSeries_dyadic_telescope
       have hsum := hdisc (r ^ (2 ^ J)) hy0 hy1
       rw [hcast] at hsum
       have hstep := abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq hrec hsum
-      have hsq : ((r : ℂ) ^ (2 ^ J)) ^ 2 = (r : ℂ) ^ (2 ^ (J + 1)) := by
+      have hsq : ((r : ℂ) ^ (2 ^ J)) ^ (2 : ℕ) = (r : ℂ) ^ (2 ^ (J + 1)) := by
         rw [← pow_mul, ← pow_succ]
       rw [hsq] at hstep
       rw [Finset.sum_range_succ, ih, hstep]
@@ -196,7 +196,7 @@ theorem hasSum_dyadicOrbit
     intro j; push_cast; ring
   have hyle : ∀ j : ℕ, r ^ (2 ^ j) ≤ r := by
     intro j
-    calc r ^ (2 ^ j) ≤ r ^ 1 := pow_le_pow_of_le_one hr0.le hr1.le Nat.one_le_two_pow
+    calc r ^ (2 ^ j) ≤ r ^ (1 : ℕ) := pow_le_pow_of_le_one hr0.le hr1.le Nat.one_le_two_pow
       _ = r := pow_one r
   have hy0 : ∀ j : ℕ, (0 : ℝ) ≤ r ^ (2 ^ j) := fun j => pow_nonneg hr0.le _
   have hy1 : ∀ j : ℕ, r ^ (2 ^ j) < 1 := fun j => lt_of_le_of_lt (hyle j) hr1
@@ -222,7 +222,7 @@ theorem hasSum_dyadicOrbit
     have hsum := hdisc (r ^ (2 ^ j)) (hy0 j) (hy1 j)
     rw [hcastPow j] at hsum
     have hodd := oddSeed_eq_abelSeries_sub hrec hsum
-    have hsq : ((r : ℂ) ^ (2 ^ j)) ^ 2 = ((r ^ (2 ^ j) * r ^ (2 ^ j) : ℝ) : ℂ) := by
+    have hsq : ((r : ℂ) ^ (2 ^ j)) ^ (2 : ℕ) = ((r ^ (2 ^ j) * r ^ (2 ^ j) : ℝ) : ℂ) := by
       push_cast; ring
     rw [hsq] at hodd
     have hyy : r ^ (2 ^ j) * r ^ (2 ^ j) ≤ r := by

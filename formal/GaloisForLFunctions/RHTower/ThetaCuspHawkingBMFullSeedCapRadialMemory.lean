@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFutureSeedHorizonCap
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCapNormalTrace
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCapRadialMemory
 
 /-! The literal full seed cap has a distinct normal trace from the source cap.
@@ -10,8 +11,8 @@ open Set MeasureTheory Filter Topology
 
 namespace RHTower.D4BMFullSeedCapRadialMemory
 open D4BMFutureSeedHorizon D4BMCapNormalTrace D4BMCapRadialMemory
-open D4BMFullAngularCircle D4BMFullAngularGrowth D4BMGlobalAngularResponse
-open D4BMHorizon D4BMModularCore
+open D4BMNativeCircle D4BMFullAngularCircle D4BMFullAngularGrowth D4BMGlobalAngularResponse
+open D4BMHorizon D4BMModularCore D4BMJointSource D4BMFullSourceAdvanced
 noncomputable section
 
 private theorem scale_pos (x : ℝ) : 0 < capScale x :=
@@ -58,7 +59,7 @@ theorem fullHorizonMean_quadratic_remainder (q : XiZeroCopy) (branch : Bool)
       ‖fullHorizonMean q branch x h X k - fullAngularField q branch ![X, Real.exp k] -
         (capScale x * (Real.exp h - 1)) •
           deriv (deriv (fun d => angularMean q branch d X k)) 0‖ ≤
-        C * (capScale x * (Real.exp h - 1)) ^ 2 := by
+        C * (capScale x * (Real.exp h - 1)) ^ (2 : ℕ) := by
   obtain ⟨C, hC, hbound⟩ := fullKernel_quadratic_remainder q branch X k
   have hu0 : 0 ≤ capScale x * (Real.exp h - 1) := by
     exact mul_nonneg (scale_pos x).le (sub_nonneg.mpr (Real.one_le_exp_iff.mpr hh))
@@ -69,8 +70,10 @@ theorem fullHorizonMean_quadratic_remainder (q : XiZeroCopy) (branch : Bool)
 private theorem fullHorizonMean_continuous (q : XiZeroCopy) (branch : Bool)
     (x X k : ℝ) : Continuous (fun h => fullHorizonMean q branch x h X k) := by
   apply (angularMean_smooth q branch X k).continuous.comp
-  exact Real.continuousOn_arcosh.comp_continuous (continuous_const.max continuous_id)
-    (fun z => le_max_left 1 z)
+  have harg : Continuous (fun h : ℝ => 1+capScale x*(Real.exp h-1)) := by fun_prop
+  exact Real.continuousOn_arcosh.comp_continuous (continuous_const.max harg)
+    (fun h => show max 1 (1+capScale x*(Real.exp h-1)) ∈ Ici 1 from
+      le_max_left 1 (1+capScale x*(Real.exp h-1)))
 
 private def normalizedFullMean (q : XiZeroCopy) (branch : Bool) (x X k h : ℝ) : ℂ :=
   (fullHorizonMean q branch x h X k-fullAngularField q branch ![X, Real.exp k]) /
@@ -159,7 +162,7 @@ private def fullNormalDensity (q : XiZeroCopy) (branch : Bool)
 private theorem fullNormalDensity_continuous (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) : Continuous (fullNormalDensity q branch v x X k) :=
   (normalWeight_continuous q branch v).mul
-    ((fullHorizonMean_continuous q branch x X k).sub continuous_const).div_const _
+    (((fullHorizonMean_continuous q branch x X k).sub continuous_const).div_const (capScale x : ℂ))
 
 private theorem fullNormalDensity_bound (q : XiZeroCopy) (branch : Bool) (v X k : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x h : ℝ, capScale x ≤ 1 → 0 ≤ h →
@@ -171,16 +174,21 @@ private theorem fullNormalDensity_bound (q : XiZeroCopy) (branch : Bool) (v X k 
   have hp := hc (capScale x) h (scale_pos x) hx hh
   rw [normalizedFullMean, norm_div, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (scale_pos x)]
-  rw [fullHorizonMean_eq_kernel q branch x h X k hh]
   have hmean :
       ‖fullHorizonMean q branch x h X k-fullAngularField q branch ![X, Real.exp k]‖ /
           capScale x ≤ C*(Real.exp h+Real.exp (strictGrowthExponent q*h)) := by
+    rw [fullHorizonMean_eq_kernel q branch x h X k hh]
     rw [div_le_iff₀ (scale_pos x)]
-    nlinarith [hp]
+    calc
+      _ ≤ capScale x*C*(Real.exp h+Real.exp (strictGrowthExponent q*h)) := hp
+      _ = C*(Real.exp h+Real.exp (strictGrowthExponent q*h))*capScale x := by ring
+  have hmean0 : 0 ≤ ‖fullHorizonMean q branch x h X k-
+      fullAngularField q branch ![X, Real.exp k]‖ / capScale x :=
+    div_nonneg (norm_nonneg _) (scale_pos x).le
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*(Real.exp h+Real.exp (strictGrowthExponent q*h))) :=
-      mul_le_mul (hb v h hh) hmean (norm_nonneg _) (by positivity)
+      mul_le_mul (hb v h hh) hmean hmean0 (by positivity)
     _ = _ := by
       have he1 : Real.exp (-decayExponent q*(v+h))*Real.exp h =
           Real.exp (-decayExponent q*v)*Real.exp ((1-decayExponent q)*h) := by
@@ -196,7 +204,7 @@ private theorem fullNormalDensity_bound (q : XiZeroCopy) (branch : Bool) (v X k 
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*Real.exp h+
           Real.exp (-decayExponent q*(v+h))*Real.exp (strictGrowthExponent q*h)) := by ring
-        _ = _ := by rw [he1, he2]; dsimp [fullKernelMajorant]; ring
+        _ = _ := by rw [he1, he2] <;> simp only [fullKernelMajorant] <;> ring
 
 private theorem fullNormalDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) (hx : capScale x ≤ 1) :
@@ -329,15 +337,15 @@ private theorem fullHorizon_radius_bound (x h : ℝ) (hh : 0 ≤ h) :
   have ht := Real.cosh_le_cosh.mp ((Real.cosh_arcosh hz).trans_le (hZ.trans hc))
   simpa only [abs_of_nonneg (Real.arcosh_nonneg hz), abs_of_nonneg hp] using ht
 
-private theorem fullHorizonMean_growth (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x h X k : ℝ, 0 ≤ h →
+private theorem fullHorizonMean_growth (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x h : ℝ, 0 ≤ h →
       ‖fullHorizonMean q branch x h X k‖ ≤
         C*Real.exp (strictGrowthExponent q*(h+|k|)) := by
-  obtain ⟨C,hC,hb⟩ := angularMean_strict_growth q branch
+  obtain ⟨C,hC,hb⟩ := angularMean_strict_growth q branch X k
   have ha : 0 ≤ strictGrowthExponent q := by
     linarith [(sourceGrowthExponent_bounds q).1, (strictGrowthExponent_bounds q).1]
   refine ⟨C*Real.exp (strictGrowthExponent q*Real.log 4), by positivity,
-    fun x h X k hh => ?_⟩
+    fun x h hh => ?_⟩
   have hd : 1 ≤ max 1 (1+capScale x*(Real.exp h-1)) := le_max_left _ _
   have hm := hb (Real.arcosh (max 1 (1+capScale x*(Real.exp h-1))))
     (Real.arcosh_nonneg hd)
@@ -345,7 +353,17 @@ private theorem fullHorizonMean_growth (q : XiZeroCopy) (branch : Bool) :
   calc
     _ ≤ C*Real.exp (strictGrowthExponent q*
         (Real.arcosh (max 1 (1+capScale x*(Real.exp h-1)))+|k|)) :=
-      (le_add_of_nonneg_right (norm_nonneg _)).trans hm
+      by
+        have hm' : ‖angularMean q branch
+          (Real.arcosh (max 1 (1+capScale x*(Real.exp h-1)))) X k‖ ≤
+          C*Real.exp (strictGrowthExponent q*
+            Real.arcosh (max 1 (1+capScale x*(Real.exp h-1)))) :=
+          (le_add_of_nonneg_right (norm_nonneg _)).trans hm
+        apply hm'.trans
+        apply mul_le_mul_of_nonneg_left
+          (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left
+            (le_add_of_nonneg_right (abs_nonneg k)) ha))
+        exact hC
     _ ≤ C*Real.exp (strictGrowthExponent q*((h+Real.log 4)+|k|)) := by
       have hr : Real.arcosh (max 1 (1+capScale x*(Real.exp h-1)))+|k| ≤
           (h+Real.log 4)+|k| := by
@@ -365,14 +383,14 @@ private theorem fullSeedDensity_continuous (q : XiZeroCopy) (branch : Bool)
       (continuous_const.add continuous_id)).mul
     (fullHorizonMean_continuous q branch x X k)
 
-private theorem fullSeedDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+private theorem fullSeedDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x h : ℝ, 0 ≤ h →
       ‖fullSeedDensity q branch v x X k h‖ ≤
         (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨B*C, mul_nonneg hB hC, fun v x X k h hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨B*C, mul_nonneg hB hC, fun v x h hh => ?_⟩
   have hfirst : ‖timeOnsetFirst (2*physicalRate q branch) (v+h)‖ ≤
       B*Real.exp (-decayExponent q*(v+h)) := by
     linarith [hb (v+h), norm_nonneg (timeOnsetSecond (2*physicalRate q branch) (v+h))]
@@ -380,7 +398,7 @@ private theorem fullSeedDensity_bound (q : XiZeroCopy) (branch : Bool) :
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul hfirst (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul hfirst (hc x h hh) (norm_nonneg _) (by positivity)
     _ = _ := by
       have he : Real.exp (-decayExponent q*(v+h))*
           Real.exp (strictGrowthExponent q*(h+|k|)) =
@@ -392,7 +410,7 @@ private theorem fullSeedDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem fullSeedMajorant_integrable (q : XiZeroCopy) (C : ℝ) :
     IntegrableOn (fun h => C*Real.exp ((strictGrowthExponent q-decayExponent q)*h))
@@ -402,25 +420,25 @@ private theorem fullSeedMajorant_integrable (q : XiZeroCopy) (C : ℝ) :
 private theorem fullSeedDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     IntegrableOn (fullSeedDensity q branch v x X k) (Ioi 0) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch X k
   apply (fullSeedMajorant_integrable q
     (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))).mono'
     (fullSeedDensity_continuous q branch v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hb v x X k h hh.le
+  exact hb v x h hh.le
 
 private def fullSeedArm (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) : ℂ :=
   ∫ h in Ioi (0 : ℝ), fullSeedDensity q branch v x X k h
 
-private theorem fullSeedArm_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k : ℝ,
+private theorem fullSeedArm_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x : ℝ,
       ‖fullSeedArm q branch v x X k‖ ≤
         C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch X k
   have hp : 0 < decayExponent q-strictGrowthExponent q :=
     sub_pos.mpr (strictGrowthExponent_bounds q).2
   refine ⟨C/(decayExponent q-strictGrowthExponent q), div_nonneg hC hp.le,
-    fun v x X k => ?_⟩
+    fun v x => ?_⟩
   let D := C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|)
   have hi := fullSeedDensity_integrable q branch v x X k
   calc
@@ -428,7 +446,7 @@ private theorem fullSeedArm_bound (q : XiZeroCopy) (branch : Bool) :
       norm_integral_le_integral_norm _
     _ ≤ ∫ h in Ioi (0 : ℝ), D*Real.exp ((strictGrowthExponent q-decayExponent q)*h) :=
       setIntegral_mono_on hi.norm (fullSeedMajorant_integrable q D) measurableSet_Ioi
-        (fun h hh => hb v x X k h hh.le)
+        (fun h hh => hb v x h hh.le)
     _ = _ := by
       rw [integral_const_mul,
         integral_exp_mul_Ioi (by linarith : strictGrowthExponent q-decayExponent q < 0)]
@@ -445,11 +463,11 @@ the full Goursat coefficient from the seed arm. -/
 private def fullDelayFlow (b h : ℝ) : ℝ := Real.log ((b+Real.exp h-1)/b)
 private def fullDelayJac (b h : ℝ) : ℝ := Real.exp h/(b+Real.exp h-1)
 private def fullDelaySlope (b h : ℝ) : ℝ := (b+Real.exp h-1)⁻¹-b⁻¹
-private def fullJacSlope (b h : ℝ) : ℝ := -Real.exp h/(b+Real.exp h-1)^2
+private def fullJacSlope (b h : ℝ) : ℝ := -Real.exp h/(b+Real.exp h-1)^(2 : ℕ)
 private def fullDelaySecondSlope (b h : ℝ) : ℝ :=
-  -(b+Real.exp h-1)⁻¹ ^ 2+b⁻¹ ^ 2
+  -(b+Real.exp h-1)⁻¹ ^ (2 : ℕ)+b⁻¹ ^ (2 : ℕ)
 private def fullJacSecondSlope (b h : ℝ) : ℝ :=
-  2*Real.exp h/(b+Real.exp h-1)^3
+  2*Real.exp h/(b+Real.exp h-1)^(3 : ℕ)
 
 private theorem fullDelay_den_pos (b h : ℝ) (hb : 0 < b) (hh : 0 ≤ h) :
     0 < b+Real.exp h-1 := by
@@ -502,7 +520,7 @@ private theorem fullDelaySlope_b_derivative (b h : ℝ) (hb : 0 < b) (hh : 0 ≤
       ((fun a => a+Real.exp h-1)⁻¹-fun a : ℝ => a⁻¹) :=
     Filter.Eventually.of_forall (fun a => rfl)
   have hval : fullDelaySecondSlope b h =
-      -1/(b+Real.exp h-1)^2- -(b^2)⁻¹ := by
+      -1/(b+Real.exp h-1)^(2 : ℕ)- -(b^(2 : ℕ))⁻¹ := by
     rw [fullDelaySecondSlope]
     field_simp [(fullDelay_den_pos b h hb hh).ne', hb.ne']
     ring
@@ -522,13 +540,13 @@ private theorem fullJacSlope_b_derivative (b h : ℝ) (hb : 0 < b) (hh : 0 ≤ h
       rw [div_eq_mul_inv, ← inv_pow, pow_two]
       simp only [Pi.inv_apply])
   have hval : fullJacSecondSlope b h =
-      -Real.exp h*(-1/(b+Real.exp h-1)^2*
+      -Real.exp h*(-1/(b+Real.exp h-1)^(2 : ℕ)*
         (fun a => a+Real.exp h-1)⁻¹ b+
-        (fun a => a+Real.exp h-1)⁻¹ b*(-1/(b+Real.exp h-1)^2)) := by
-    change 2*Real.exp h/(b+Real.exp h-1)^3 =
-      -Real.exp h*(-1/(b+Real.exp h-1)^2*
+        (fun a => a+Real.exp h-1)⁻¹ b*(-1/(b+Real.exp h-1)^(2 : ℕ))) := by
+    change 2*Real.exp h/(b+Real.exp h-1)^(3 : ℕ) =
+      -Real.exp h*(-1/(b+Real.exp h-1)^(2 : ℕ)*
         (b+Real.exp h-1)⁻¹+(b+Real.exp h-1)⁻¹*
-          (-1/(b+Real.exp h-1)^2))
+          (-1/(b+Real.exp h-1)^(2 : ℕ)))
     field_simp [(fullDelay_den_pos b h hb hh).ne']
     ring
   exact (hsquare.const_mul (-Real.exp h)).congr_of_eventuallyEq hfun |>.congr_deriv hval.symm
@@ -584,9 +602,16 @@ private theorem fullDelay_local_bounds (b h : ℝ) (hb : b ∈ Ioo (1/2 : ℝ) 2
   have hjs : |fullJacSlope b h| ≤ 4 := by
     rw [fullJacSlope, abs_div, abs_neg, abs_of_pos (Real.exp_pos h),
       abs_of_nonneg (sq_nonneg _)]
-    rw [div_le_iff₀ (sq_pos_of_pos hd)]
-    have hhalf : (1/2 : ℝ) ≤ b+Real.exp h-1 := by linarith [hb.1]
-    nlinarith
+    let d := b+Real.exp h-1
+    have hquot : Real.exp h / d ≤ 2 := by
+      dsimp only [d]
+      rw [div_le_iff₀ hd]
+      linarith [hb.1]
+    change Real.exp h / d ^ (2 : ℕ) ≤ 4
+    calc
+      _ = (Real.exp h / d)*d⁻¹ := by field_simp
+      _ ≤ 2*2 := mul_le_mul hquot hdi (inv_nonneg.mpr hd.le) (by norm_num)
+      _ = 4 := by norm_num
   refine ⟨hb0,hj0,hj2,hs,hjs,?_⟩
   rw [← Real.exp_le_exp, fullDelay_exp b h hb0 hh, Real.exp_sub,
     Real.exp_log (by norm_num : (0 : ℝ) < 2)]
@@ -606,30 +631,31 @@ private theorem fullDelay_second_local_bounds (b h : ℝ) (hb : b ∈ Ioo (1/2 :
   have hbi : b⁻¹ ≤ 2 := by
     rw [← one_div, div_le_iff₀ hb0]
     linarith [hb.1]
-  have hdisq : (b+Real.exp h-1)⁻¹ ^ 2 ≤ 4 := by
+  have hdisq : (b+Real.exp h-1)⁻¹ ^ (2 : ℕ) ≤ 4 := by
     have hp := mul_nonneg (sub_nonneg.mpr hdi)
       (by positivity : 0 ≤ (b+Real.exp h-1)⁻¹+2)
     nlinarith
-  have hbisq : b⁻¹ ^ 2 ≤ 4 := by
+  have hbisq : b⁻¹ ^ (2 : ℕ) ≤ 4 := by
     have hp := mul_nonneg (sub_nonneg.mpr hbi) (by positivity : 0 ≤ b⁻¹+2)
     nlinarith
   constructor
   · rw [fullDelaySecondSlope]
     calc
-      _ ≤ |-(b+Real.exp h-1)⁻¹ ^ 2|+|b⁻¹ ^ 2| := abs_add _ _
-      _ = (b+Real.exp h-1)⁻¹ ^ 2+b⁻¹ ^ 2 := by
+      _ ≤ |-(b+Real.exp h-1)⁻¹ ^ (2 : ℕ)|+|b⁻¹ ^ (2 : ℕ)| := abs_add_le _ _
+      _ = (b+Real.exp h-1)⁻¹ ^ (2 : ℕ)+b⁻¹ ^ (2 : ℕ) := by
         rw [abs_neg, abs_of_nonneg (sq_nonneg _), abs_of_nonneg (sq_nonneg _)]
       _ ≤ 8 := by linarith
   · have hj : Real.exp h/(b+Real.exp h-1) ≤ 2 := by
       rw [div_le_iff₀ hd]
       linarith [hb.1]
     have hform : fullJacSecondSlope b h =
-        2*(Real.exp h/(b+Real.exp h-1))*(b+Real.exp h-1)⁻¹ ^ 2 := by
+        2*(Real.exp h/(b+Real.exp h-1))*(b+Real.exp h-1)⁻¹ ^ (2 : ℕ) := by
       rw [fullJacSecondSlope]
-      field_simp
-      ring
+      field_simp <;> ring
+    have hj0 : 0 ≤ Real.exp h/(b+Real.exp h-1) :=
+      div_nonneg (Real.exp_pos _).le hd.le
     rw [hform, abs_mul, abs_mul, abs_of_nonneg (by positivity : 0 ≤ (2 : ℝ)),
-      abs_of_nonneg hj, abs_of_nonneg (sq_nonneg _)]
+      abs_of_nonneg hj0, abs_of_nonneg (sq_nonneg _)]
     nlinarith
 
 private def fullMovedDensity (q : XiZeroCopy) (branch : Bool)
@@ -650,7 +676,7 @@ time/Jacobian transport. -/
 private def fullMovedSecondDerivative (q : XiZeroCopy) (branch : Bool)
     (v x X k b h : ℝ) : ℂ :=
   (timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)*
-      (fullDelaySlope b h : ℂ)^2*(fullDelayJac b h : ℂ)+
+      (fullDelaySlope b h : ℂ)^(2 : ℕ)*(fullDelayJac b h : ℂ)+
     timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
       (fullDelaySecondSlope b h : ℂ)*(fullDelayJac b h : ℂ)+
     2*timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
@@ -685,17 +711,18 @@ private theorem fullMovedDerivative_derivative (q : XiZeroCopy) (branch : Bool)
   have hjs := (fullJacSlope_b_derivative b h hb hh).ofReal_comp
   convert! (((hg2.mul hs).mul hj).add (hg1.mul hjs)).mul_const
     (fullHorizonMean q branch x h X k) using 1
-  simp only [fullMovedSecondDerivative, Complex.real_smul, Function.comp_apply]
+  simp only [fullMovedSecondDerivative, Complex.real_smul, Function.comp_apply,
+    Pi.add_apply, Pi.mul_apply]
   ring
 
-private theorem fullMovedDerivative_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
+private theorem fullMovedDerivative_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
       ‖fullMovedDerivative q branch v x X k b h‖ ≤
         C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨8*B*C, by positivity, fun v x X k b h hbl hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨8*B*C, by positivity, fun v x b h hbl hh => ?_⟩
   obtain ⟨hb0,hj0,hj2,hs,hjs,hflow⟩ := fullDelay_local_bounds b h hbl hh
   have hg1 := norm_nonneg (timeOnsetFirst (2*physicalRate q branch) (v+fullDelayFlow b h))
   have hg2 := norm_nonneg (timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h))
@@ -713,15 +740,16 @@ private theorem fullMovedDerivative_bound (q : XiZeroCopy) (branch : Bool) :
   have he : Real.exp (-decayExponent q*(v+fullDelayFlow b h)) ≤
       Real.exp (-decayExponent q*(v-Real.log 2+h)) := by
     apply Real.exp_le_exp.mpr
+    have hdecay : 0 ≤ decayExponent q := by
+      linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
     have hp := mul_le_mul_of_nonpos_left hflow
-      (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-        (decayExponent_bounds q).1).le)
+      (neg_nonpos.mpr hdecay)
     linarith
   rw [fullMovedDerivative, norm_mul]
   calc
     _ ≤ (8*B*Real.exp (-decayExponent q*(v+fullDelayFlow b h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul hm (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul hm (hc x h hh) (norm_nonneg _) (by positivity)
     _ ≤ (8*B*Real.exp (-decayExponent q*(v-Real.log 2+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) := by gcongr
     _ = _ := by
@@ -735,7 +763,7 @@ private theorem fullMovedDerivative_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (8*B*C)*(Real.exp (-decayExponent q*(v-Real.log 2+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [hexp]
+        _ = _ := by rw [hexp]; ring
 
 private theorem fullDelay_one (h : ℝ) :
     fullDelayFlow 1 h = h ∧ fullDelayJac 1 h = 1 ∧
@@ -747,8 +775,8 @@ private theorem fullDelay_one (h : ℝ) :
 private theorem fullDelay_second_one (h : ℝ) :
     fullDelaySecondSlope 1 h = 1-Real.exp (-2*h) ∧
       fullJacSecondSlope 1 h = 2*Real.exp (-2*h) := by
-  have he2 : Real.exp (2*h) = Real.exp h ^ 2 := by
-    rw [show 2*h = h+h by ring, Real.exp_add]
+  have he2 : Real.exp (2*h) = Real.exp h ^ (2 : ℕ) := by
+    rw [show 2*h = h+h by ring, Real.exp_add, pow_two]
   have hneg : -2*h = -(2*h) := by ring
   constructor <;>
     simp [fullDelaySecondSlope, fullJacSecondSlope, hneg, Real.exp_neg, he2] <;>
@@ -805,11 +833,18 @@ private theorem fullMovedDerivative_measurable (q : XiZeroCopy) (branch : Bool)
       continuousOn_const).inv₀ (fun h hh => (fullDelay_den_pos b h hb hh.le).ne')).sub
         (continuousOn_const.inv₀ (fun _ _ => hb.ne'))
   have hjs : ContinuousOn (fullJacSlope b) (Ioi 0) := by
-    change ContinuousOn (fun h => -Real.exp h/(b+Real.exp h-1)^2) (Ioi 0)
-    exact (Real.continuous_exp.continuousOn.div
+    change ContinuousOn (fun h => -Real.exp h/(b+Real.exp h-1)^(2 : ℕ)) (Ioi 0)
+    have hden : ∀ h ∈ Ioi (0 : ℝ), (b+Real.exp h-1)^(2 : ℕ) ≠ 0 := by
+      intro h hh
+      exact pow_ne_zero 2 (fullDelay_den_pos b h hb hh.le).ne'
+    have hcont := (Real.continuous_exp.continuousOn.div
       (((continuousOn_const.add Real.continuous_exp.continuousOn).sub
         continuousOn_const).pow 2)
-      (fun h hh => pow_ne_zero 2 (fullDelay_den_pos b h hb hh.le).ne')).neg
+      hden).neg
+    convert hcont using 1
+    funext h
+    simp only [Pi.neg_apply, Pi.div_apply, Pi.pow_apply, Pi.add_apply, Pi.sub_apply]
+    ring
   have hg1 : ContinuousOn (fun h => timeOnsetFirst (2*physicalRate q branch)
       (v+fullDelayFlow b h)) (Ioi 0) :=
     (continuous_iff_continuousAt.mpr
@@ -818,21 +853,26 @@ private theorem fullMovedDerivative_measurable (q : XiZeroCopy) (branch : Bool)
   have hg2 : ContinuousOn (fun h => timeOnsetSecond (2*physicalRate q branch)
       (v+fullDelayFlow b h)) (Ioi 0) :=
     (timeOnsetSecond_continuous _).comp_continuousOn (continuousOn_const.add hf)
-  simpa only [fullMovedDerivative] using
-    (((hg2.mul (Complex.continuous_ofReal.comp_continuousOn hs)).mul
+  have hsum := (((hg2.mul (Complex.continuous_ofReal.comp_continuousOn hs)).mul
       (Complex.continuous_ofReal.comp_continuousOn hj)).add
-      (hg1.mul (Complex.continuous_ofReal.comp_continuousOn hjs))).mul
-        (fullHorizonMean_continuous q branch x X k).continuousOn).aestronglyMeasurable
-          measurableSet_Ioi
+      (hg1.mul (Complex.continuous_ofReal.comp_continuousOn hjs)))
+  have hcont := hsum.mul (fullHorizonMean_continuous q branch x X k).continuousOn
+  change AEStronglyMeasurable
+    (fun h => (timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
+      (fullDelaySlope b h : ℂ)*(fullDelayJac b h : ℂ)+
+      timeOnsetFirst (2*physicalRate q branch) (v+fullDelayFlow b h)*
+        (fullJacSlope b h : ℂ))*fullHorizonMean q branch x h X k)
+      (volume.restrict (Ioi 0))
+  exact hcont.aestronglyMeasurable measurableSet_Ioi
 
-private theorem fullMovedDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
+private theorem fullMovedDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
       ‖fullMovedDensity q branch v x X k b h‖ ≤
         C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨2*B*C, by positivity, fun v x X k b h hbl hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨2*B*C, by positivity, fun v x b h hbl hh => ?_⟩
   obtain ⟨hb0,hj0,hj2,hs,hjs,hflow⟩ := fullDelay_local_bounds b h hbl hh
   have hg : ‖timeOnsetFirst (2*physicalRate q branch) (v+fullDelayFlow b h)‖ ≤
       B*Real.exp (-decayExponent q*(v+fullDelayFlow b h)) := by
@@ -841,15 +881,18 @@ private theorem fullMovedDensity_bound (q : XiZeroCopy) (branch : Bool) :
   have he : Real.exp (-decayExponent q*(v+fullDelayFlow b h)) ≤
       Real.exp (-decayExponent q*(v-Real.log 2+h)) := by
     apply Real.exp_le_exp.mpr
+    have hdecay : 0 ≤ decayExponent q := by
+      linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
     have hp := mul_le_mul_of_nonpos_left hflow
-      (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-        (decayExponent_bounds q).1).le)
+      (neg_nonpos.mpr hdecay)
     linarith
   rw [fullMovedDensity, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos hj0]
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+fullDelayFlow b h)))*2*
-        (C*Real.exp (strictGrowthExponent q*(h+|k|))) := by gcongr
+        (C*Real.exp (strictGrowthExponent q*(h+|k|))) := by
+      gcongr
+      exact hc x h hh
     _ ≤ (B*Real.exp (-decayExponent q*(v-Real.log 2+h)))*2*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) := by gcongr
     _ = _ := by
@@ -863,17 +906,17 @@ private theorem fullMovedDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (2*B*C)*(Real.exp (-decayExponent q*(v-Real.log 2+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [hexp]
+        _ = _ := by rw [hexp]; ring
 
-private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
+private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x b h : ℝ, b ∈ Ioo (1/2 : ℝ) 2 → 0 ≤ h →
       ‖fullMovedSecondDerivative q branch v x X k b h‖ ≤
         C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B₁,hB₁,hb₁⟩ := onset_derivative_bound q branch
   obtain ⟨B₂,hB₂,hb₂⟩ := onset_second_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨96*(B₁+B₂)*C, by positivity, fun v x X k b h hbl hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨96*(B₁+B₂)*C, by positivity, fun v x b h hbl hh => ?_⟩
   obtain ⟨hb0,hj0,hj2,hs,hjs,hflow⟩ := fullDelay_local_bounds b h hbl hh
   obtain ⟨hss,hjss⟩ := fullDelay_second_local_bounds b h hbl hh
   let D := (B₁+B₂)*Real.exp (-decayExponent q*(v+fullDelayFlow b h))
@@ -884,54 +927,54 @@ private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool)
         linarith [hb₁ (v+fullDelayFlow b h),
           norm_nonneg (timeOnsetSecond (2*physicalRate q branch)
             (v+fullDelayFlow b h))]
-      _ ≤ D := by dsimp only [D]; gcongr
+      _ ≤ D := by dsimp only [D]; gcongr <;> linarith [hB₂]
   have hg2 : ‖timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)‖ ≤ D := by
     calc
       _ ≤ B₁*Real.exp (-decayExponent q*(v+fullDelayFlow b h)) := by
         linarith [hb₁ (v+fullDelayFlow b h),
           norm_nonneg (timeOnsetFirst (2*physicalRate q branch)
             (v+fullDelayFlow b h))]
-      _ ≤ D := by dsimp only [D]; gcongr
+      _ ≤ D := by dsimp only [D]; gcongr <;> linarith [hB₂]
   have hg3 : ‖timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)‖ ≤ D := by
     calc
       _ ≤ B₂*Real.exp (-decayExponent q*(v+fullDelayFlow b h)) := by
         linarith [hb₂ (v+fullDelayFlow b h),
           norm_nonneg (timeOnsetSecond (2*physicalRate q branch)
             (v+fullDelayFlow b h))]
-      _ ≤ D := by dsimp only [D]; gcongr
-  have hs2 : |fullDelaySlope b h|^2 ≤ 16 := by
+      _ ≤ D := by dsimp only [D]; gcongr <;> linarith [hB₁]
+  have hs2 : |fullDelaySlope b h|^(2 : ℕ) ≤ 16 := by
     have hp := mul_nonneg (sub_nonneg.mpr hs)
       (by positivity : 0 ≤ |fullDelaySlope b h|+4)
     nlinarith
   have ht1 : ‖timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)*
-      (fullDelaySlope b h : ℂ)^2*(fullDelayJac b h : ℂ)‖ ≤ 32*D := by
-    rw [norm_mul, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
+      (fullDelaySlope b h : ℂ)^(2 : ℕ)*(fullDelayJac b h : ℂ)‖ ≤ 32*D := by
+    simp only [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos hj0]
     calc
       _ ≤ D*16*2 := by gcongr
       _ = 32*D := by ring
   have ht2 : ‖timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
       (fullDelaySecondSlope b h : ℂ)*(fullDelayJac b h : ℂ)‖ ≤ 16*D := by
-    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos hj0]
     calc
       _ ≤ D*8*2 := by gcongr
       _ = 16*D := by ring
   have ht3 : ‖2*timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
       (fullDelaySlope b h : ℂ)*(fullJacSlope b h : ℂ)‖ ≤ 32*D := by
-    rw [norm_mul, norm_mul, norm_mul, Complex.norm_ofNat, Complex.norm_real,
+    simp only [norm_mul, Complex.norm_ofNat, Complex.norm_real,
       Real.norm_eq_abs]
     calc
       _ ≤ 2*D*4*4 := by gcongr
       _ = 32*D := by ring
   have ht4 : ‖timeOnsetFirst (2*physicalRate q branch) (v+fullDelayFlow b h)*
       (fullJacSecondSlope b h : ℂ)‖ ≤ 16*D := by
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     calc
       _ ≤ D*16 := by gcongr
       _ = 16*D := by ring
   have hm : ‖timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)*
-      (fullDelaySlope b h : ℂ)^2*(fullDelayJac b h : ℂ)+
+      (fullDelaySlope b h : ℂ)^(2 : ℕ)*(fullDelayJac b h : ℂ)+
     timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
       (fullDelaySecondSlope b h : ℂ)*(fullDelayJac b h : ℂ)+
     2*timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
@@ -940,7 +983,7 @@ private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool)
       (fullJacSecondSlope b h : ℂ)‖ ≤ 96*D := by
     calc
       _ ≤ ‖timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)*
-          (fullDelaySlope b h : ℂ)^2*(fullDelayJac b h : ℂ)+
+          (fullDelaySlope b h : ℂ)^(2 : ℕ)*(fullDelayJac b h : ℂ)+
         timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
           (fullDelaySecondSlope b h : ℂ)*(fullDelayJac b h : ℂ)+
         2*timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
@@ -948,7 +991,7 @@ private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool)
         ‖timeOnsetFirst (2*physicalRate q branch) (v+fullDelayFlow b h)*
           (fullJacSecondSlope b h : ℂ)‖ := norm_add_le _ _
       _ ≤ (‖timeOnsetThird (2*physicalRate q branch) (v+fullDelayFlow b h)*
-          (fullDelaySlope b h : ℂ)^2*(fullDelayJac b h : ℂ)+
+          (fullDelaySlope b h : ℂ)^(2 : ℕ)*(fullDelayJac b h : ℂ)+
         timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
           (fullDelaySecondSlope b h : ℂ)*(fullDelayJac b h : ℂ)‖+
         ‖2*timeOnsetSecond (2*physicalRate q branch) (v+fullDelayFlow b h)*
@@ -957,18 +1000,21 @@ private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool)
           (fullJacSecondSlope b h : ℂ)‖ := by
           gcongr
           exact norm_add_le _ _
-      _ ≤ 96*D := by linarith
+      _ ≤ (32*D+16*D)+32*D+16*D := by
+        exact add_le_add (add_le_add ((norm_add_le _ _).trans (add_le_add ht1 ht2)) ht3) ht4
+      _ = 96*D := by ring
   have he : Real.exp (-decayExponent q*(v+fullDelayFlow b h)) ≤
       Real.exp (-decayExponent q*(v-Real.log 2+h)) := by
     apply Real.exp_le_exp.mpr
+    have hdecay : 0 ≤ decayExponent q := by
+      linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
     have hp := mul_le_mul_of_nonpos_left hflow
-      (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-        (decayExponent_bounds q).1).le)
+      (neg_nonpos.mpr hdecay)
     linarith
   rw [fullMovedSecondDerivative, norm_mul]
   calc
     _ ≤ (96*D)*(C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul hm (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul hm (hc x h hh) (norm_nonneg _) (by positivity)
     _ ≤ (96*((B₁+B₂)*Real.exp (-decayExponent q*(v-Real.log 2+h))))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) := by
       dsimp only [D]
@@ -984,17 +1030,17 @@ private theorem fullMovedSecondDerivative_bound (q : XiZeroCopy) (branch : Bool)
       calc
         _ = (96*(B₁+B₂)*C)*(Real.exp (-decayExponent q*(v-Real.log 2+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [hexp]
+        _ = _ := by rw [hexp]; ring
 
 private theorem fullMovedDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k b : ℝ) (hb : b ∈ Ioo (1/2 : ℝ) 2) :
     IntegrableOn (fullMovedDensity q branch v x X k b) (Ioi 0) := by
-  obtain ⟨C,hC,hm⟩ := fullMovedDensity_bound q branch
+  obtain ⟨C,hC,hm⟩ := fullMovedDensity_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)
   apply (fullSeedMajorant_integrable q B).mono'
     (fullMovedDensity_measurable q branch v x X k b (by linarith [hb.1]))
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hm v x X k b h hb hh.le
+  exact hm v x b h hb hh.le
 
 /-! The first parameter differentiation is available on the entire literal
 delay neighbourhood, not only at the base scale.  This is what permits the
@@ -1003,7 +1049,7 @@ private theorem fullMovedIntegral_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (v x X k b : ℝ) (hb : b ∈ Ioo (1/2 : ℝ) 2) :
     HasDerivAt (fun a => ∫ h in Ioi (0 : ℝ), fullMovedDensity q branch v x X k a h)
       (∫ h in Ioi (0 : ℝ), fullMovedDerivative q branch v x X k b h) b := by
-  obtain ⟨C,hC,hm⟩ := fullMovedDerivative_bound q branch
+  obtain ⟨C,hC,hm⟩ := fullMovedDerivative_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)
   have hn : Ioo (1/2 : ℝ) 2 ∈ 𝓝 b := Ioo_mem_nhds hb.1 hb.2
   have hmeas : ∀ᶠ a in 𝓝 b, AEStronglyMeasurable
@@ -1020,7 +1066,7 @@ private theorem fullMovedIntegral_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro a ha
-      exact hm v x X k a h ha hh.le)
+      exact hm v x a h ha hh.le)
     (fullSeedMajorant_integrable q B)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
@@ -1032,7 +1078,7 @@ private theorem fullMovedIntegral_derivative (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     HasDerivAt (fun b => ∫ h in Ioi (0 : ℝ), fullMovedDensity q branch v x X k b h)
       (-fullNormalArm q branch v x X k) 1 := by
-  obtain ⟨C,hC,hb⟩ := fullMovedDerivative_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullMovedDerivative_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)
   have hn : Ioo (1/2 : ℝ) 2 ∈ 𝓝 1 := Ioo_mem_nhds (by norm_num) (by norm_num)
   have hm : ∀ᶠ b in 𝓝 (1 : ℝ), AEStronglyMeasurable
@@ -1045,8 +1091,14 @@ private theorem fullMovedIntegral_derivative (q : XiZeroCopy) (branch : Bool)
   have hm' : AEStronglyMeasurable (fullMovedDerivative q branch v x X k 1)
       (volume.restrict (Ioi 0)) := by
     rw [fullMovedDerivative_one]
-    exact ((normalWeight_continuous q branch v).mul
-      (fullHorizonMean_continuous q branch x X k)).neg.aestronglyMeasurable
+    have hcont : Continuous (fun h : ℝ =>
+        -normalWeight q branch v h*fullHorizonMean q branch x h X k) := by
+      convert ((normalWeight_continuous q branch v).mul
+        (fullHorizonMean_continuous q branch x X k)).neg using 1
+      funext h
+      simp only [Pi.neg_apply, Pi.mul_apply]
+      ring
+    exact hcont.aestronglyMeasurable
   have hd := (hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := volume.restrict (Ioi (0 : ℝ)))
     (F := fun b h => fullMovedDensity q branch v x X k b h)
@@ -1056,14 +1108,15 @@ private theorem fullMovedIntegral_derivative (q : XiZeroCopy) (branch : Bool)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro b hbl
-      exact hb v x X k b h hbl hh.le)
+      exact hb v x b h hbl hh.le)
     (fullSeedMajorant_integrable q B)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro b hbl
       exact fullMovedDensity_derivative q branch v x X k b h
         (by linarith [hbl.1]) hh.le)).2
-  simpa only [fullMovedDerivative_one, integral_neg, fullNormalArm] using hd
+  simpa only [fullMovedDerivative_one, Pi.neg_apply, Pi.mul_apply, neg_mul,
+    integral_neg, fullNormalArm] using hd
 
 private theorem scale_derivative (x : ℝ) :
     HasDerivAt capScale (capScale x*(2-capScale x)) x := by
@@ -1162,14 +1215,14 @@ private theorem fullSeedTimeDensity_continuous (q : XiZeroCopy) (branch : Bool)
   ((timeOnsetSecond_continuous _).comp (continuous_const.add continuous_id)).mul
     (fullHorizonMean_continuous q branch x X k)
 
-private theorem fullSeedTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+private theorem fullSeedTimeDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x h : ℝ, 0 ≤ h →
       ‖fullSeedTimeDensity q branch v x X k h‖ ≤
         (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨B*C, mul_nonneg hB hC, fun v x X k h hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨B*C, mul_nonneg hB hC, fun v x h hh => ?_⟩
   have hsecond : ‖timeOnsetSecond (2*physicalRate q branch) (v+h)‖ ≤
       B*Real.exp (-decayExponent q*(v+h)) := by
     linarith [hb (v+h), norm_nonneg (timeOnsetFirst (2*physicalRate q branch) (v+h))]
@@ -1177,7 +1230,7 @@ private theorem fullSeedTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul hsecond (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul hsecond (hc x h hh) (norm_nonneg _) (by positivity)
     _ = _ := by
       have he : Real.exp (-decayExponent q*(v+h))*
           Real.exp (strictGrowthExponent q*(h+|k|)) =
@@ -1189,17 +1242,17 @@ private theorem fullSeedTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem fullSeedTimeDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     IntegrableOn (fullSeedTimeDensity q branch v x X k) (Ioi 0) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch X k
   apply (fullSeedMajorant_integrable q
     (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))).mono'
     (fullSeedTimeDensity_continuous q branch v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hb v x X k h hh.le
+  exact hb v x h hh.le
 
 private def fullSeedTimeArm (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) : ℂ :=
@@ -1209,7 +1262,7 @@ private theorem fullSeedArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     HasDerivAt (fun w => fullSeedArm q branch w x X k)
       (fullSeedTimeArm q branch v x X k) v := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-1)+strictGrowthExponent q*|k|)
   have hn : Ioo (v-1) (v+1) ∈ 𝓝 v := Ioo_mem_nhds (by linarith) (by linarith)
   have hm (w : ℝ) : Continuous (fullSeedDensity q branch w x X k) :=
@@ -1226,13 +1279,14 @@ private theorem fullSeedArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro w hw
-      apply (hb w x X k h hh.le).trans
+      apply (hb w x h hh.le).trans
       dsimp only [B]
       have he : -decayExponent q*w+strictGrowthExponent q*|k| ≤
           -decayExponent q*(v-1)+strictGrowthExponent q*|k| := by
+        have hdecay : 0 ≤ decayExponent q := by
+          linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
         have hd := mul_le_mul_of_nonpos_left hw.1.le
-          (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-            (decayExponent_bounds q).1).le)
+          (neg_nonpos.mpr hdecay)
         linarith
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) hC) (Real.exp_pos _).le)
@@ -1255,14 +1309,14 @@ private theorem fullSeedTimeSecondDensity_continuous (q : XiZeroCopy) (branch : 
   ((timeOnsetThird_continuous _).comp (continuous_const.add continuous_id)).mul
     (fullHorizonMean_continuous q branch x X k)
 
-private theorem fullSeedTimeSecondDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+private theorem fullSeedTimeSecondDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x h : ℝ, 0 ≤ h →
       ‖fullSeedTimeSecondDensity q branch v x X k h‖ ≤
         (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := onset_second_derivative_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨B*C, mul_nonneg hB hC, fun v x X k h hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨B*C, mul_nonneg hB hC, fun v x h hh => ?_⟩
   have hthird : ‖timeOnsetThird (2*physicalRate q branch) (v+h)‖ ≤
       B*Real.exp (-decayExponent q*(v+h)) := by
     linarith [hb (v+h),
@@ -1271,7 +1325,7 @@ private theorem fullSeedTimeSecondDensity_bound (q : XiZeroCopy) (branch : Bool)
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul hthird (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul hthird (hc x h hh) (norm_nonneg _) (by positivity)
     _ = _ := by
       have he : Real.exp (-decayExponent q*(v+h))*
           Real.exp (strictGrowthExponent q*(h+|k|)) =
@@ -1283,17 +1337,17 @@ private theorem fullSeedTimeSecondDensity_bound (q : XiZeroCopy) (branch : Bool)
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem fullSeedTimeSecondDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     IntegrableOn (fullSeedTimeSecondDensity q branch v x X k) (Ioi 0) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeSecondDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeSecondDensity_bound q branch X k
   apply (fullSeedMajorant_integrable q
     (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))).mono'
     (fullSeedTimeSecondDensity_continuous q branch v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hb v x X k h hh.le
+  exact hb v x h hh.le
 
 private def fullSeedTimeSecondArm (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) : ℂ :=
@@ -1303,7 +1357,7 @@ private theorem fullSeedTimeArm_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     HasDerivAt (fun w => fullSeedTimeArm q branch w x X k)
       (fullSeedTimeSecondArm q branch v x X k) v := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeSecondDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeSecondDensity_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-1)+strictGrowthExponent q*|k|)
   have hn : Ioo (v-1) (v+1) ∈ 𝓝 v := Ioo_mem_nhds (by linarith) (by linarith)
   exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
@@ -1319,13 +1373,14 @@ private theorem fullSeedTimeArm_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro w hw
-      apply (hb w x X k h hh.le).trans
+      apply (hb w x h hh.le).trans
       dsimp only [B]
       have he : -decayExponent q*w+strictGrowthExponent q*|k| ≤
           -decayExponent q*(v-1)+strictGrowthExponent q*|k| := by
+        have hdecay : 0 ≤ decayExponent q := by
+          linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
         have hd := mul_le_mul_of_nonpos_left hw.1.le
-          (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-            (decayExponent_bounds q).1).le)
+          (neg_nonpos.mpr hdecay)
         linarith
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) hC) (Real.exp_pos _).le)
@@ -1390,27 +1445,41 @@ private theorem fullSeedArm_eq_original_arm (q : XiZeroCopy) (branch : Bool)
       D4BMFutureSeedHorizon.halfKernel_at_delay q branch tau x h X k hh.le]
     simp only [fullSeedArm, fullSeedDensity, fullHorizonMean, capScale]
   rw [hdelay] at hshift
-  rw [← hshift]
-  rw [← MeasureTheory.integral_indicator measurableSet_Ioi,
+  rw [← integral_Ici_eq_integral_Ioi] at hshift
+  rw [hshift]
+  rw [← MeasureTheory.integral_indicator measurableSet_Ici,
     ← MeasureTheory.integral_indicator measurableSet_Ioi]
   refine integral_congr_ae ?_
   filter_upwards with u
-  simp only [Set.indicator_apply, Set.mem_Ioi]
+  simp only [Set.indicator_apply, Set.mem_Ici, Set.mem_Ioi]
   by_cases hv : 0 ≤ tau+x
-  · by_cases hu : tau+x < u
-    · rw [if_pos hu, if_pos (by linarith)]
-    · have hzero : F u = 0 := by
-        dsimp only [F, D4BMFutureSeedHorizon.halfKernel]
-        rw [if_neg (by linarith)]
-        ring
-      rw [if_neg hu, if_pos (by linarith), hzero]
-  · by_cases hu : (0 : ℝ) < u
-    · rw [if_pos hu, if_pos (by linarith)]
-    · have hzero : F u = 0 := by
+  · by_cases hu : tau+x ≤ u
+    · by_cases hu0 : 0 < u
+      · rw [if_pos hu, if_pos hu0]
+      · rw [if_pos hu, if_neg hu0]
         dsimp only [F]
         rw [onsetFirst_zero_nonpos _ u (by linarith)]
         ring
-      rw [if_neg hu, if_pos (by linarith), hzero]
+    · have hzero : F u = 0 := by
+        dsimp only [F, D4BMFutureSeedHorizon.halfKernel]
+        rw [if_neg hu]
+        ring
+      dsimp only [F] at hzero
+      by_cases hu0 : 0 < u
+      · rw [if_neg hu, if_pos hu0]
+        exact hzero.symm
+      · rw [if_neg hu, if_neg hu0]
+  · by_cases hu : (0 : ℝ) < u
+    · rw [if_pos (by linarith), if_pos hu]
+    · by_cases htu : tau+x ≤ u
+      · have hzero : F u = 0 := by
+          dsimp only [F]
+          rw [onsetFirst_zero_nonpos _ u (by linarith)]
+          ring
+        dsimp only [F] at hzero
+        rw [if_pos htu, if_neg hu]
+        exact hzero
+      · rw [if_neg htu, if_neg hu]
 
 /-- Exact two-arm realization of the specified seed cap.  This is the bridge
 from its original causal definition to the literal delay arms differentiated
@@ -1468,7 +1537,7 @@ private theorem fullHorizonMean_normal_continuous (q : XiZeroCopy) (branch : Boo
   · exact continuous_const.max
       (continuous_const.add (hs.mul continuous_const))
   · intro z
-    exact le_max_left _ _
+    exact le_max_left (1 : ℝ) _
 
 private theorem fullSeedDensity_joint_continuous (q : XiZeroCopy) (branch : Bool)
     (X k h : ℝ) :
@@ -1492,7 +1561,7 @@ private theorem fullSeedTimeDensity_joint_continuous (q : XiZeroCopy) (branch : 
 
 private theorem fullSeedArm_joint_continuous (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
     Continuous (fun p : ℝ × ℝ => fullSeedArm q branch p.1 p.2 X k) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedDensity_bound q branch X k
   apply continuous_iff_continuousAt.mpr
   intro p
   let B := C*Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|)
@@ -1504,13 +1573,14 @@ private theorem fullSeedArm_joint_continuous (q : XiZeroCopy) (branch : Bool) (X
       continuous_fst.continuousAt.eventually (Ioi_mem_nhds (by linarith : p.1-1 < p.1))
     filter_upwards [hn] with z hz
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-    apply (hb z.1 z.2 X k h hh.le).trans
+    apply (hb z.1 z.2 h hh.le).trans
     have he : Real.exp (-decayExponent q*z.1+strictGrowthExponent q*|k|) ≤
         Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|) := by
       apply Real.exp_le_exp.mpr
+      have hdecay : 0 ≤ decayExponent q := by
+        linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
       have hd := mul_le_mul_of_nonpos_left hz.le
-        (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-          (decayExponent_bounds q).1).le)
+        (neg_nonpos.mpr hdecay)
       linarith
     exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left he hC) (Real.exp_pos _).le
@@ -1520,7 +1590,7 @@ private theorem fullSeedArm_joint_continuous (q : XiZeroCopy) (branch : Bool) (X
 
 private theorem fullSeedTimeArm_joint_continuous (q : XiZeroCopy) (branch : Bool)
     (X k : ℝ) : Continuous (fun p : ℝ × ℝ => fullSeedTimeArm q branch p.1 p.2 X k) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch X k
   apply continuous_iff_continuousAt.mpr
   intro p
   let B := C*Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|)
@@ -1532,13 +1602,14 @@ private theorem fullSeedTimeArm_joint_continuous (q : XiZeroCopy) (branch : Bool
       continuous_fst.continuousAt.eventually (Ioi_mem_nhds (by linarith : p.1-1 < p.1))
     filter_upwards [hn] with z hz
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-    apply (hb z.1 z.2 X k h hh.le).trans
+    apply (hb z.1 z.2 h hh.le).trans
     have he : Real.exp (-decayExponent q*z.1+strictGrowthExponent q*|k|) ≤
         Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|) := by
       apply Real.exp_le_exp.mpr
+      have hdecay : 0 ≤ decayExponent q := by
+        linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
       have hd := mul_le_mul_of_nonpos_left hz.le
-        (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-          (decayExponent_bounds q).1).le)
+        (neg_nonpos.mpr hdecay)
       linarith
     exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left he hC) (Real.exp_pos _).le
@@ -1554,19 +1625,19 @@ private theorem fullSeedNormalDensity_continuous (q : XiZeroCopy) (branch : Bool
     (v x X k : ℝ) : Continuous (fullSeedNormalDensity q branch v x X k) :=
   (normalWeight_continuous q branch v).mul (fullHorizonMean_continuous q branch x X k)
 
-private theorem fullSeedNormalDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+private theorem fullSeedNormalDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x h : ℝ, 0 ≤ h →
       ‖fullSeedNormalDensity q branch v x X k h‖ ≤
         (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := normalWeight_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨B*C, mul_nonneg hB hC, fun v x X k h hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨B*C, mul_nonneg hB hC, fun v x h hh => ?_⟩
   rw [fullSeedNormalDensity, norm_mul]
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul (hb v h hh) (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul (hb v h hh) (hc x h hh) (norm_nonneg _) (by positivity)
     _ = _ := by
       have he : Real.exp (-decayExponent q*(v+h))*
           Real.exp (strictGrowthExponent q*(h+|k|)) =
@@ -1578,7 +1649,7 @@ private theorem fullSeedNormalDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem fullSeedNormalDensity_joint_continuous (q : XiZeroCopy) (branch : Bool)
     (X k h : ℝ) :
@@ -1592,18 +1663,15 @@ private theorem fullSeedNormalDensity_joint_continuous (q : XiZeroCopy) (branch 
         (p.1+h)) := (continuous_iff_continuousAt.mpr
           (fun u => (timeOnsetFirst_hasDerivAt _ u).continuousAt)).comp
             (continuous_fst.add continuous_const)
-    exact (h2.mul
-      (continuous_const.sub (Complex.continuous_ofReal.comp
-        (Real.continuous_exp.comp continuous_neg)))).add
-      (h1.mul (Complex.continuous_ofReal.comp
-        (Real.continuous_exp.comp continuous_neg)))
+    have eh : Continuous (fun _ : ℝ × ℝ => (Real.exp (-h) : ℂ)) := continuous_const
+    exact (h2.mul (continuous_const.sub eh)).add (h1.mul eh)
   have hm : Continuous (fun p : ℝ × ℝ => fullHorizonMean q branch p.2 h X k) :=
     (fullHorizonMean_normal_continuous q branch h X k).comp continuous_snd
   exact hn.mul hm
 
 private theorem fullNormalArm_joint_continuous (q : XiZeroCopy) (branch : Bool)
     (X k : ℝ) : Continuous (fun p : ℝ × ℝ => fullNormalArm q branch p.1 p.2 X k) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch X k
   apply continuous_iff_continuousAt.mpr
   intro p
   let B := C*Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|)
@@ -1615,13 +1683,14 @@ private theorem fullNormalArm_joint_continuous (q : XiZeroCopy) (branch : Bool)
       continuous_fst.continuousAt.eventually (Ioi_mem_nhds (by linarith : p.1-1 < p.1))
     filter_upwards [hn] with z hz
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-    apply (hb z.1 z.2 X k h hh.le).trans
+    apply (hb z.1 z.2 h hh.le).trans
     have he : Real.exp (-decayExponent q*z.1+strictGrowthExponent q*|k|) ≤
         Real.exp (-decayExponent q*(p.1-1)+strictGrowthExponent q*|k|) := by
       apply Real.exp_le_exp.mpr
+      have hdecay : 0 ≤ decayExponent q := by
+        linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
       have hd := mul_le_mul_of_nonpos_left hz.le
-        (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-          (decayExponent_bounds q).1).le)
+        (neg_nonpos.mpr hdecay)
       linarith
     exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left he hC) (Real.exp_pos _).le
@@ -1702,17 +1771,18 @@ theorem seedCapField_ingoing_normal_hasDerivAt (q : XiZeroCopy) (branch : Bool)
   · funext y
     rw [seedCapField_eq_fullSeedArms q branch amp (v-y) y X k]
     rw [show v-y+y = v by ring, show v-y-y = v-2*y by ring]
+    simp only [Pi.sub_apply]
   · ring
 
-private theorem fullSeedTimeArm_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k : ℝ,
+private theorem fullSeedTimeArm_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x : ℝ,
       ‖fullSeedTimeArm q branch v x X k‖ ≤
         C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedTimeDensity_bound q branch X k
   have hp : 0 < decayExponent q-strictGrowthExponent q :=
     sub_pos.mpr (strictGrowthExponent_bounds q).2
   refine ⟨C/(decayExponent q-strictGrowthExponent q), div_nonneg hC hp.le,
-    fun v x X k => ?_⟩
+    fun v x => ?_⟩
   let D := C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|)
   have hi := fullSeedTimeDensity_integrable q branch v x X k
   calc
@@ -1720,7 +1790,7 @@ private theorem fullSeedTimeArm_bound (q : XiZeroCopy) (branch : Bool) :
       norm_integral_le_integral_norm _
     _ ≤ ∫ h in Ioi (0 : ℝ), D*Real.exp ((strictGrowthExponent q-decayExponent q)*h) :=
       setIntegral_mono_on hi.norm (fullSeedMajorant_integrable q D) measurableSet_Ioi
-        (fun h hh => hb v x X k h hh.le)
+        (fun h hh => hb v x h hh.le)
     _ = _ := by
       rw [integral_const_mul,
         integral_exp_mul_Ioi (by linarith : strictGrowthExponent q-decayExponent q < 0)]
@@ -1734,12 +1804,12 @@ private theorem fullSeedTimeArm_bound (q : XiZeroCopy) (branch : Bool) :
 private theorem fullSeedNormalDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     IntegrableOn (fullSeedNormalDensity q branch v x X k) (Ioi 0) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch X k
   apply (fullSeedMajorant_integrable q
     (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))).mono'
     (fullSeedNormalDensity_continuous q branch v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hb v x X k h hh.le
+  exact hb v x h hh.le
 
 /-! Time derivative of the literal transported normal weight. -/
 private def normalTimeWeight (q : XiZeroCopy) (branch : Bool) (v h : ℝ) : ℂ :=
@@ -1766,8 +1836,8 @@ private theorem normalWeight_time_derivative (q : XiZeroCopy) (branch : Bool)
     (hasDerivAt_id v |>.add_const h)
   convert! h2.mul_const (1-(Real.exp (-h) : ℂ)) |>.add
     (h1.mul_const (Real.exp (-h) : ℂ)) using 1
-  simp only [normalWeight, normalTimeWeight, Complex.real_smul, Function.comp_apply]
-  ring
+  simp only [normalTimeWeight, Complex.real_smul, Function.comp_apply, one_smul,
+    Complex.ofReal_one, mul_one]
 
 private theorem normalTimeWeight_bound (q : XiZeroCopy) (branch : Bool) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ v h : ℝ, 0 ≤ h →
@@ -1795,19 +1865,19 @@ private theorem fullNormalTimeDensity_continuous (q : XiZeroCopy) (branch : Bool
   (normalTimeWeight_continuous q branch v).mul
     (fullHorizonMean_continuous q branch x X k)
 
-private theorem fullNormalTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+private theorem fullNormalTimeDensity_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x h : ℝ, 0 ≤ h →
       ‖fullNormalTimeDensity q branch v x X k h‖ ≤
         (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))*
           Real.exp ((strictGrowthExponent q-decayExponent q)*h) := by
   obtain ⟨B,hB,hb⟩ := normalTimeWeight_bound q branch
-  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch
-  refine ⟨B*C,mul_nonneg hB hC,fun v x X k h hh => ?_⟩
+  obtain ⟨C,hC,hc⟩ := fullHorizonMean_growth q branch X k
+  refine ⟨B*C,mul_nonneg hB hC,fun v x h hh => ?_⟩
   rw [fullNormalTimeDensity,norm_mul]
   calc
     _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
         (C*Real.exp (strictGrowthExponent q*(h+|k|))) :=
-      mul_le_mul (hb v h hh) (hc x h X k hh) (norm_nonneg _) (by positivity)
+      mul_le_mul (hb v h hh) (hc x h hh) (norm_nonneg _) (by positivity)
     _ = _ := by
       have he : Real.exp (-decayExponent q*(v+h))*
           Real.exp (strictGrowthExponent q*(h+|k|)) =
@@ -1819,17 +1889,17 @@ private theorem fullNormalTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
       calc
         _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
             Real.exp (strictGrowthExponent q*(h+|k|))) := by ring
-        _ = _ := by rw [he]
+        _ = _ := by rw [he]; ring
 
 private theorem fullNormalTimeDensity_integrable (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     IntegrableOn (fullNormalTimeDensity q branch v x X k) (Ioi 0) := by
-  obtain ⟨C,hC,hb⟩ := fullNormalTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullNormalTimeDensity_bound q branch X k
   apply (fullSeedMajorant_integrable q
     (C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))).mono'
     (fullNormalTimeDensity_continuous q branch v x X k).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  exact hb v x X k h hh.le
+  exact hb v x h hh.le
 
 private def fullNormalTimeArm (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) : ℂ :=
@@ -1839,7 +1909,7 @@ private theorem fullNormalArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     HasDerivAt (fun w => fullNormalArm q branch w x X k)
       (fullNormalTimeArm q branch v x X k) v := by
-  obtain ⟨C,hC,hb⟩ := fullNormalTimeDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullNormalTimeDensity_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-1)+strictGrowthExponent q*|k|)
   have hn : Ioo (v-1) (v+1) ∈ 𝓝 v := Ioo_mem_nhds (by linarith) (by linarith)
   exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
@@ -1855,13 +1925,14 @@ private theorem fullNormalArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro w hw
-      apply (hb w x X k h hh.le).trans
+      apply (hb w x h hh.le).trans
       dsimp only [B]
       have he : -decayExponent q*w+strictGrowthExponent q*|k| ≤
           -decayExponent q*(v-1)+strictGrowthExponent q*|k| := by
+        have hdecay : 0 ≤ decayExponent q := by
+          linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
         have hd := mul_le_mul_of_nonpos_left hw.1.le
-          (neg_nonpos.mpr (lt_of_le_of_lt (sourceGrowthExponent_bounds q).1
-            (decayExponent_bounds q).1).le)
+          (neg_nonpos.mpr hdecay)
         linarith
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) hC) (Real.exp_pos _).le)
@@ -1886,14 +1957,13 @@ theorem fullSeedArm_time_normal_hasDerivAt (q : XiZeroCopy) (branch : Bool)
   rw [hfun]
   convert! (fullNormalArm_time_hasDerivAt q branch v x X k).const_mul
     (-((2-capScale x : ℝ) : ℂ)) using 1
-  ring
 
 /-! The second literal normal density.  It is obtained by evaluating the
 second transported delay derivative at its physical base scale. -/
 private def fullSecondNormalDensity (q : XiZeroCopy) (branch : Bool)
     (v x X k h : ℝ) : ℂ :=
   (timeOnsetThird (2*physicalRate q branch) (v+h)*
-      ((Real.exp (-h)-1 : ℝ) : ℂ)^2+
+      ((Real.exp (-h)-1 : ℝ) : ℂ)^(2 : ℕ)+
     timeOnsetSecond (2*physicalRate q branch) (v+h)*
       ((1-Real.exp (-2*h) : ℝ) : ℂ)+
     2*timeOnsetSecond (2*physicalRate q branch) (v+h)*
@@ -1914,20 +1984,27 @@ private theorem fullSecondNormalDensity_continuous (q : XiZeroCopy) (branch : Bo
   have e1 : Continuous (fun h : ℝ => ((Real.exp (-h)-1 : ℝ) : ℂ)) :=
     (Complex.continuous_ofReal.comp
       ((Real.continuous_exp.comp continuous_neg).sub continuous_const))
+  have e2arg : Continuous (fun h : ℝ => -2*h) := by
+    convert ((continuous_const : Continuous fun _ : ℝ => (2 : ℝ)).mul continuous_id).neg using 1
+    funext h
+    simp only [Pi.neg_apply, Pi.mul_apply, id_eq]
+    ring
   have e2 : Continuous (fun h : ℝ => ((1-Real.exp (-2*h) : ℝ) : ℂ)) :=
     Complex.continuous_ofReal.comp
-      (continuous_const.sub (Real.continuous_exp.comp
-        ((continuous_const.mul continuous_id).neg)))
+      (continuous_const.sub (Real.continuous_exp.comp e2arg))
   have e3 : Continuous (fun h : ℝ => (-Real.exp (-h) : ℂ)) :=
     (Complex.continuous_ofReal.comp (Real.continuous_exp.comp continuous_neg)).neg
   have e4 : Continuous (fun h : ℝ => ((2*Real.exp (-2*h) : ℝ) : ℂ)) :=
     Complex.continuous_ofReal.comp
       (continuous_const.mul (Real.continuous_exp.comp
-        ((continuous_const.mul continuous_id).neg)))
-  simpa only [fullSecondNormalDensity] using
-    (((((h3.mul (e1.pow 2)).add (h2.mul e2)).add
-      (((continuous_const.mul h2).mul e1).mul e3)).add (h1.mul e4)).mul
+        e2arg))
+  have twoC : Continuous (fun _ : ℝ => (2 : ℂ)) := continuous_const
+  have hcont := (((((h3.mul (e1.pow 2)).add (h2.mul e2)).add
+      (((twoC.mul h2).mul e1).mul e3)).add (h1.mul e4)).mul
         (fullHorizonMean_continuous q branch x X k))
+  convert hcont using 1
+  funext h
+  simp only [fullSecondNormalDensity, Pi.add_apply, Pi.mul_apply, Pi.pow_apply]
 
 private theorem fullMovedSecondDerivative_one (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
@@ -1939,6 +2016,8 @@ private theorem fullMovedSecondDerivative_one (q : XiZeroCopy) (branch : Bool)
     (fullDelay_second_one h).1, (fullDelay_second_one h).2]
   simp only [Complex.ofReal_one, Complex.ofReal_sub, Complex.ofReal_neg,
     Complex.ofReal_ofNat, mul_one]
+  rw [fullSecondNormalDensity]
+  push_cast
   ring
 
 private def fullSecondNormalArm (q : XiZeroCopy) (branch : Bool)
@@ -1950,7 +2029,7 @@ private theorem fullMovedIntegral_second_derivative (q : XiZeroCopy) (branch : B
     HasDerivAt (fun b => deriv (fun a => ∫ h in Ioi (0 : ℝ),
       fullMovedDensity q branch v x X k a h) b)
       (fullSecondNormalArm q branch v x X k) 1 := by
-  obtain ⟨C,hC,hb⟩ := fullMovedSecondDerivative_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullMovedSecondDerivative_bound q branch X k
   let B := C*Real.exp (-decayExponent q*(v-Real.log 2)+strictGrowthExponent q*|k|)
   have hn : Ioo (1/2 : ℝ) 2 ∈ 𝓝 (1 : ℝ) := Ioo_mem_nhds (by norm_num) (by norm_num)
   have hmeas : ∀ᶠ b in 𝓝 (1 : ℝ), AEStronglyMeasurable
@@ -1959,8 +2038,10 @@ private theorem fullMovedIntegral_second_derivative (q : XiZeroCopy) (branch : B
     exact fullMovedDerivative_measurable q branch v x X k b (by linarith [hb.1])
   have hi : IntegrableOn (fullMovedDerivative q branch v x X k 1) (Ioi 0) := by
     rw [fullMovedDerivative_one]
-    simpa only [fullSeedNormalDensity] using
-      (fullSeedNormalDensity_integrable q branch v x X k).neg
+    convert (fullSeedNormalDensity_integrable q branch v x X k).neg using 1
+    funext h
+    simp only [Pi.neg_apply, fullSeedNormalDensity]
+    ring
   have hm' : AEStronglyMeasurable (fullMovedSecondDerivative q branch v x X k 1)
       (volume.restrict (Ioi 0)) := by
     rw [fullMovedSecondDerivative_one]
@@ -1974,7 +2055,7 @@ private theorem fullMovedIntegral_second_derivative (q : XiZeroCopy) (branch : B
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
       intro b hbl
-      exact hb v x X k b h hbl hh.le)
+      exact hb v x b h hbl hh.le)
     (fullSeedMajorant_integrable q B)
     (by
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
@@ -1996,7 +2077,7 @@ differentiated.  It supplies no cap/contact holonomy identification. -/
 theorem fullSeedArm_normal_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     (v x X k : ℝ) :
     HasDerivAt (fun y => deriv (fun z => fullSeedArm q branch v z X k) y)
-      (((2-capScale x : ℝ) : ℂ)^2*fullSecondNormalArm q branch v x X k-
+      (((2-capScale x : ℝ) : ℂ)^(2 : ℕ)*fullSecondNormalArm q branch v x X k-
         ((2*(2-capScale x)*(1-capScale x) : ℝ) : ℂ)*
           fullNormalArm q branch v x X k) x := by
   let I : ℝ → ℂ := fun b => ∫ h in Ioi (0 : ℝ),
@@ -2008,7 +2089,13 @@ theorem fullSeedArm_normal_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     dsimp only [g]
     exact div_self (scale_pos x).ne'
   have hI' : HasDerivAt I' (fullSecondNormalArm q branch v x X k) 1 := by
-    simpa only [I, I'] using fullMovedIntegral_second_derivative q branch v x X k
+    have hn : Ioo (1/2 : ℝ) 2 ∈ 𝓝 (1 : ℝ) := Ioo_mem_nhds (by norm_num) (by norm_num)
+    have hsecond := fullMovedIntegral_second_derivative q branch v x X k
+    have he : (fun b => deriv I b) =ᶠ[𝓝 (1 : ℝ)] I' := by
+      filter_upwards [hn] with b hb
+      simpa only [I, I'] using
+        (fullMovedIntegral_hasDerivAt q branch v x X k b hb).deriv
+    exact hsecond.congr_of_eventuallyEq he.symm
   have hI'one : I' 1 = -fullNormalArm q branch v x X k := by
     have hnew := (fullMovedIntegral_hasDerivAt q branch v x X k 1
       (by norm_num : (1 : ℝ) ∈ Ioo (1/2 : ℝ) 2)).deriv
@@ -2018,31 +2105,30 @@ theorem fullSeedArm_normal_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
     simpa only [g] using scale_ratio_hasDerivAt x
   have hI'comp : HasDerivAt (fun y => I' (g y))
       (((2-capScale x : ℝ) : ℂ)*fullSecondNormalArm q branch v x X k) x := by
-    have h := hI'.scomp x hg'
+    have hI'at : HasDerivAt I' (fullSecondNormalArm q branch v x X k) (g x) := by
+      simpa only [hg] using hI'
+    have h := hI'at.scomp x hg'
     convert! h using 1
-    simp only [Complex.real_smul]
-    ring
-  have hgg' : HasDerivAt (fun y => (deriv g y : ℂ))
+  have hgg' : HasDerivAt (fun y => ((deriv (𝕜 := ℝ) g y : ℝ) : ℂ))
       ((2*(2-capScale x)*(1-capScale x) : ℝ) : ℂ) x := by
     simpa only [g] using (scale_ratio_derivative_hasDerivAt x).ofReal_comp
   have hproduct := hI'comp.mul hgg'
-  have hproduct' : HasDerivAt (fun y => I' (g y)*(deriv g y : ℂ))
-      (((2-capScale x : ℝ) : ℂ)^2*fullSecondNormalArm q branch v x X k-
+  have hgderiv : deriv g x = 2-capScale x := hg'.deriv
+  have hproduct' : HasDerivAt (fun y => I' (g y)*((deriv (𝕜 := ℝ) g y : ℝ) : ℂ))
+      (((2-capScale x : ℝ) : ℂ)^(2 : ℕ)*fullSecondNormalArm q branch v x X k-
         ((2*(2-capScale x)*(1-capScale x) : ℝ) : ℂ)*
           fullNormalArm q branch v x X k) x := by
     convert! hproduct using 1
-    · rw [hg, hI'one]
-      simp only [Complex.real_smul]
+    · rw [hg, hI'one, hgderiv]
       ring
   have hgt : Tendsto g (𝓝 x) (𝓝 (1 : ℝ)) := by
     have hc : ContinuousAt g x := by
       simpa only [g] using hg'.continuousAt
-    rw [hg] at hc
-    exact hc.tendsto
+    simpa only [hg] using hc.tendsto
   have hgin : ∀ᶠ y in 𝓝 x, g y ∈ Ioo (1/2 : ℝ) 2 :=
     hgt.eventually (Ioo_mem_nhds (by norm_num) (by norm_num))
   have hderiv : (fun y => deriv (fun z => I (g z)) y) =ᶠ[𝓝 x]
-      fun y => I' (g y)*(deriv g y : ℂ) := by
+      fun y => I' (g y)*((deriv (𝕜 := ℝ) g y : ℝ) : ℂ) := by
     filter_upwards [hgin] with y hy
     have hcomp := (fullMovedIntegral_hasDerivAt q branch v x X k (g y) hy).scomp y
       (scale_ratio_base_hasDerivAt x y)
@@ -2061,15 +2147,15 @@ theorem fullSeedArm_normal_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
   rw [hseed]
   exact hsecond
 
-private theorem fullNormalArm_bound (q : XiZeroCopy) (branch : Bool) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k : ℝ,
+private theorem fullNormalArm_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x : ℝ,
       ‖fullNormalArm q branch v x X k‖ ≤
         C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|) := by
-  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch
+  obtain ⟨C,hC,hb⟩ := fullSeedNormalDensity_bound q branch X k
   have hp : 0 < decayExponent q-strictGrowthExponent q :=
     sub_pos.mpr (strictGrowthExponent_bounds q).2
   refine ⟨C/(decayExponent q-strictGrowthExponent q), div_nonneg hC hp.le,
-    fun v x X k => ?_⟩
+    fun v x => ?_⟩
   let D := C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|)
   have hi := fullSeedNormalDensity_integrable q branch v x X k
   calc
@@ -2077,7 +2163,7 @@ private theorem fullNormalArm_bound (q : XiZeroCopy) (branch : Bool) :
       norm_integral_le_integral_norm _
     _ ≤ ∫ h in Ioi (0 : ℝ), D*Real.exp ((strictGrowthExponent q-decayExponent q)*h) :=
       setIntegral_mono_on hi.norm (fullSeedMajorant_integrable q D) measurableSet_Ioi
-        (fun h hh => hb v x X k h hh.le)
+        (fun h hh => hb v x h hh.le)
     _ = _ := by
       rw [integral_const_mul,
         integral_exp_mul_Ioi (by linarith : strictGrowthExponent q-decayExponent q < 0)]
@@ -2112,11 +2198,11 @@ private theorem scale_complement (x : ℝ) : 2-capScale (-x) = capScale x := by
   ring
 
 private theorem image_div_scale_ingoing_of_bound (q : XiZeroCopy) (branch : Bool)
-    (arm : ℝ → ℝ → ℝ → ℝ → ℂ)
-    (hbound : ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k : ℝ,
-      ‖arm v x X k‖ ≤ C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))
-    (v X k : ℝ) :
-    Tendsto (fun x => arm (v-2*x) (-x) X k/(capScale x : ℂ)) atBot (𝓝 0) := by
+    (X k : ℝ) (arm : ℝ → ℝ → ℂ)
+    (hbound : ∃ C : ℝ, 0 ≤ C ∧ ∀ v x : ℝ,
+      ‖arm v x‖ ≤ C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|))
+    (v : ℝ) :
+    Tendsto (fun x => arm (v-2*x) (-x)/(capScale x : ℂ)) atBot (𝓝 0) := by
   obtain ⟨C,hC,hb⟩ := hbound
   have hd : 1 < decayExponent q := by
     linarith [(sourceGrowthExponent_bounds q).1, (decayExponent_bounds q).1]
@@ -2125,11 +2211,11 @@ private theorem image_div_scale_ingoing_of_bound (q : XiZeroCopy) (branch : Bool
   have h1 := Real.tendsto_exp_atBot.comp
     ((tendsto_const_mul_atBot_of_pos (by linarith : 0 < 2*decayExponent q-2)).mpr tendsto_id)
   let D := C*Real.exp (-decayExponent q*v+strictGrowthExponent q*|k|)
-  have hbnd (x : ℝ) : ‖arm (v-2*x) (-x) X k/(capScale x : ℂ)‖ ≤
+  have hbnd (x : ℝ) : ‖arm (v-2*x) (-x)/(capScale x : ℂ)‖ ≤
       D*((Real.exp ((2*decayExponent q)*x)+
         Real.exp ((2*decayExponent q-2)*x))/2) := by
     rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (scale_pos x)]
-    have hb' := hb (v-2*x) (-x) X k
+    have hb' := hb (v-2*x) (-x)
     rw [show -decayExponent q*(v-2*x)+strictGrowthExponent q*|k| =
       (-decayExponent q*v+strictGrowthExponent q*|k|)+(2*decayExponent q)*x by ring,
       Real.exp_add] at hb'
@@ -2146,16 +2232,16 @@ private theorem fullSeedTimeArm_image_div_scale_ingoing (q : XiZeroCopy) (branch
     Tendsto (fun x => fullSeedTimeArm q branch (v-2*x) (-x) X k/
       (capScale x : ℂ)) atBot (𝓝 0) :=
   image_div_scale_ingoing_of_bound q branch
-    (fun v x X k => fullSeedTimeArm q branch v x X k)
-    (fullSeedTimeArm_bound q branch) v X k
+    X k (fun v x => fullSeedTimeArm q branch v x X k)
+    (fullSeedTimeArm_bound q branch X k) v
 
 private theorem fullNormalArm_image_div_scale_ingoing (q : XiZeroCopy) (branch : Bool)
     (v X k : ℝ) :
     Tendsto (fun x => fullNormalArm q branch (v-2*x) (-x) X k/
       (capScale x : ℂ)) atBot (𝓝 0) :=
   image_div_scale_ingoing_of_bound q branch
-    (fun v x X k => fullNormalArm q branch v x X k)
-    (fullNormalArm_bound q branch) v X k
+    X k (fun v x => fullNormalArm q branch v x X k)
+    (fullNormalArm_bound q branch X k) v
 
 private theorem fullSeedArm_image_deriv_div_scale_ingoing (q : XiZeroCopy) (branch : Bool)
     (v X k : ℝ) :
@@ -2165,7 +2251,7 @@ private theorem fullSeedArm_image_deriv_div_scale_ingoing (q : XiZeroCopy) (bran
   have hc : Tendsto (fun x => ((2-capScale (-x) : ℝ) : ℂ)) atBot (𝓝 0) := by
     rw [show (fun x : ℝ => ((2-capScale (-x) : ℝ) : ℂ)) =
       fun x => (capScale x : ℂ) by funext x; rw [scale_complement]]
-    simpa only [Function.comp_def] using
+    simpa only [Complex.ofReal_zero, Function.comp_def] using
       (Complex.continuous_ofReal.tendsto 0).comp scale_limit
   have hnormal := hc.mul (fullNormalArm_image_div_scale_ingoing q branch v X k)
   have he (x : ℝ) : deriv (fun y => fullSeedArm q branch (v-2*y) (-y) X k) x/
@@ -2199,6 +2285,8 @@ theorem seedCapField_ingoing_normal_div_scale (q : XiZeroCopy) (branch : Bool)
         (deriv (fun y => fullSeedArm q branch (v-2*y) (-y) X k) x/
           (capScale x : ℂ)) := by
     rw [(seedCapField_ingoing_normal_hasDerivAt q branch amp v x X k).deriv]
+    rw [(fullSeedArm_normal_hasDerivAt q branch v x X k).deriv,
+      (fullSeedArm_image_hasDerivAt q branch v x X k).deriv]
     field_simp [Complex.ofReal_ne_zero.mpr (scale_pos x).ne']
     ring
   rw [show (2 : ℂ)*D4BMFutureSeedHorizon.seedTraceCoefficient q branch amp*
@@ -2260,10 +2348,14 @@ theorem combinedCap_ingoing_normal_div_scale (q : XiZeroCopy) (branch : Bool)
         (capScale x : ℂ)-parameter q branch*
           (deriv (fun y => D4BMFutureHorizon.capBoundaryField q branch amp (v-y) y X k) x/
             (capScale x : ℂ)) := by
-    rw [(seedCapField_ingoing_normal_hasDerivAt q branch amp v x X k).deriv,
-      (D4BMCapNormalTrace.capBoundaryField_ingoing_normal_hasDerivAt q branch amp v x X k).deriv]
+    have hseed := seedCapField_ingoing_normal_hasDerivAt q branch amp v x X k
+    have hcap := D4BMCapNormalTrace.capBoundaryField_ingoing_normal_hasDerivAt q branch amp v x X k
+    have hdiff := hseed.sub (hcap.const_mul (parameter q branch))
+    change deriv ((fun y => D4BMFutureSeedHorizon.seedCapField q branch amp (v-y) y X k)-
+      fun y => parameter q branch*D4BMFutureHorizon.capBoundaryField q branch amp (v-y) y X k) x/
+      (capScale x : ℂ) = _
+    rw [hdiff.deriv, hseed.deriv, hcap.deriv]
     field_simp [Complex.ofReal_ne_zero.mpr (scale_pos x).ne']
-    ring
   simpa only [he] using hs.sub hc
 
 end

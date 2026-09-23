@@ -90,7 +90,7 @@ theorem countable_differentiallyAlgebraic_multiplicativeTranslationDefect
     have hQderiv := deriv_div
       (hGzh.comp z (differentiableAt_id.add_const h)) hGz (hGne z)
     change deriv (fun u => G (u + h) / G u) z =
-      (deriv (fun u => G (u + h)) z * G z - G (z + h) * deriv G z) / G z ^ 2
+      (deriv (fun u => G (u + h)) z * G z - G (z + h) * deriv G z) / G z ^ (2 : ℕ)
         at hQderiv
     change deriv (fun u => G (u + h) / G u) z / (G (z + h) / G z) =
       deriv G (z + h) / G (z + h) - deriv G z / G z

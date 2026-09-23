@@ -250,7 +250,7 @@ theorem momentFunctional_finiteKMSDissipativeMoment_sq_nonneg
     (β : ℝ) (energy : α → ℝ) (amplitude : α → α → ℂ)
     (hHermitian : ∀ a b, amplitude b a = star (amplitude a b)) (hβ : 0 ≤ β)
     (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (finiteKMSDissipativeMoment β energy amplitude) (p ^ 2) := by
+    0 ≤ momentFunctional (finiteKMSDissipativeMoment β energy amplitude) (p ^ (2 : ℕ)) := by
   rw [show finiteKMSDissipativeMoment β energy amplitude =
       thermalEvenGapMoment
         (finiteKMSDissipativeTransitionIntensity β energy amplitude) energy by
@@ -268,7 +268,7 @@ theorem momentFunctional_X_mul_sq_finiteKMSDissipativeMoment_nonneg
     (hHermitian : ∀ a b, amplitude b a = star (amplitude a b)) (hβ : 0 ≤ β)
     (p : Polynomial ℝ) :
     0 ≤ momentFunctional (finiteKMSDissipativeMoment β energy amplitude)
-      (Polynomial.X * p ^ 2) := by
+      (Polynomial.X * p ^ (2 : ℕ)) := by
   rw [show finiteKMSDissipativeMoment β energy amplitude =
       thermalEvenGapMoment
         (finiteKMSDissipativeTransitionIntensity β energy amplitude) energy by

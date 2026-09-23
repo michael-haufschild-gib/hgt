@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiCarrierNevanli
 
 For the finite carrier measure
 
-`dμ(x) = density(x) dx / (1 + x^2)`,
+`dμ(x) = density(x) dx / (1 + x^(2 : ℕ))`,
 
 the rational feature `F_z(x) = (x - i) / (x - z)` has the exact Gram
 product

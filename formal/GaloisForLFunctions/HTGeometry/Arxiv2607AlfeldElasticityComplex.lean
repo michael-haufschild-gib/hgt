@@ -149,69 +149,69 @@ section Dimensions
 /-- Formula (3.3) with both binomial denominators cleared. -/
 theorem alfeld_hess_dimension_cleared (k : ℤ) :
     (k + 6) * (k + 5) * (k + 4) + 3 * (k + 2) * (k + 1) * k =
-      4 * (k ^ 3 + 6 * k ^ 2 + 20 * k + 30) := by
+      4 * (k ^ (3 : ℕ) + 6 * k ^ (2 : ℕ) + 20 * k + 30) := by
   ring
 
 /-- Formula (3.4), expanded. -/
 theorem alfeld_curl_dimension_expansion (k : ℤ) :
-    (k + 3) * (2 * k ^ 2 + 9 * k + 22) =
-      2 * k ^ 3 + 15 * k ^ 2 + 49 * k + 66 := by
+    (k + 3) * (2 * k ^ (2 : ℕ) + 9 * k + 22) =
+      2 * k ^ (3 : ℕ) + 15 * k ^ (2 : ℕ) + 49 * k + 66 := by
   ring
 
 /-- Formula (3.5), derived by Euler characteristic of the smoother exact complex. -/
 theorem alfeld_smoother_inc_dimension_identity (k : ℤ) :
-    2 * (k ^ 3 + 6 * k ^ 2 + 20 * k + 30) +
+    2 * (k ^ (3 : ℕ) + 6 * k ^ (2 : ℕ) + 20 * k + 30) +
         (4 * k + 3) * (k + 1) * (k + 2) =
-      (4 * k ^ 3 + 21 * k ^ 2 + 53 * k + 60) +
+      (4 * k ^ (3 : ℕ) + 21 * k ^ (2 : ℕ) + 53 * k + 60) +
         2 * k * (k + 1) * (k + 2) + 6 := by
   ring
 
 /-- Formula (3.6), derived by Euler characteristic of the lower-regularity exact complex. -/
 theorem alfeld_lowRegularity_inc_dimension_identity (k : ℤ) :
-    (k + 3) * (2 * k ^ 2 + 9 * k + 22) +
+    (k + 3) * (2 * k ^ (2 : ℕ) + 9 * k + 22) +
         (4 * k + 3) * (k + 1) * (k + 2) =
-      (4 * k ^ 3 + 24 * k ^ 2 + 62 * k + 66) +
+      (4 * k ^ (3 : ℕ) + 24 * k ^ (2 : ℕ) + 62 * k + 66) +
         2 * k * (k + 1) * (k + 2) + 6 := by
   ring
 
 /-- Formula (3.7), expanded. -/
 theorem alfeld_symmetric_div_dimension_expansion (k : ℤ) :
     (4 * k + 3) * (k + 1) * (k + 2) =
-      4 * k ^ 3 + 15 * k ^ 2 + 17 * k + 6 := by
+      4 * k ^ (3 : ℕ) + 15 * k ^ (2 : ℕ) + 17 * k + 6 := by
   ring
 
 /-- Formula (3.18), expanded. -/
 theorem alfeld_div_bubble_dimension_expansion (k : ℤ) :
     (k + 1) * (k + 2) * (4 * k - 3) =
-      4 * k ^ 3 + 9 * k ^ 2 - k - 6 := by
+      4 * k ^ (3 : ℕ) + 9 * k ^ (2 : ℕ) - k - 6 := by
   ring
 
 /-- Formula (3.21) follows from the smoother bubble Euler characteristic. -/
 theorem alfeld_smoother_inc_bubble_dimension_identity (k : ℤ) :
     2 * k * (k + 1) * (k + 2) +
         3 * (k + 1) * (k + 2) * (4 * k - 3) + 18 =
-      3 * (4 * k ^ 3 + 9 * k ^ 2 - k) +
+      3 * (4 * k ^ (3 : ℕ) + 9 * k ^ (2 : ℕ) - k) +
         2 * k * (k + 1) * (k + 2) := by
   ring
 
 /-- Formula (3.23), expanded. -/
 theorem alfeld_curl_bubble_dimension_expansion (k : ℤ) :
-    k * (k + 1) * (2 * k + 3) = 2 * k ^ 3 + 5 * k ^ 2 + 3 * k := by
+    k * (k + 1) * (2 * k + 3) = 2 * k ^ (3 : ℕ) + 5 * k ^ (2 : ℕ) + 3 * k := by
   ring
 
 /-- Formula (3.24) follows from the lower-regularity bubble Euler characteristic. -/
 theorem alfeld_lowRegularity_inc_bubble_dimension_identity (k : ℤ) :
     k * (k + 1) * (2 * k + 3) +
         (k + 1) * (k + 2) * (4 * k - 3) + 6 =
-      (4 * k ^ 3 + 8 * k ^ 2 - 2 * k) +
+      (4 * k ^ (3 : ℕ) + 8 * k ^ (2 : ℕ) - 2 * k) +
         2 * k * (k + 1) * (k + 2) := by
   ring
 
 /-- Section 4's degree-of-freedom count equals the lower-regularity space dimension. -/
 theorem alfeld_lowRegularity_dof_count (k : ℤ) :
-    24 + 18 * (2 * k + 3) + 4 * (4 * k ^ 2 + 7 * k - 3) +
-        (4 * k ^ 3 + 8 * k ^ 2 - 2 * k) =
-      4 * k ^ 3 + 24 * k ^ 2 + 62 * k + 66 := by
+    24 + 18 * (2 * k + 3) + 4 * (4 * k ^ (2 : ℕ) + 7 * k - 3) +
+        (4 * k ^ (3 : ℕ) + 8 * k ^ (2 : ℕ) - 2 * k) =
+      4 * k ^ (3 : ℕ) + 24 * k ^ (2 : ℕ) + 62 * k + 66 := by
   ring
 
 end Dimensions

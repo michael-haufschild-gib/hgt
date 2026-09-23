@@ -19,7 +19,7 @@ noncomputable def galileanCompatibleJet (D v : ℝ) (J : TransportCompatibleJet2
   hasDerivAt_transport := by
     intro c t x
     have hu := J.hasDerivAt_transport (c + 2 * D * v) t x
-    have hp := hasDerivAt_linearPhase_time (-D * v ^ 2 - v * c) v t x
+    have hp := hasDerivAt_linearPhase_time (-D * v ^ (2 : ℕ) - v * c) v t x
     have hprod := hu.mul hp
     apply (hprod.congr_deriv ?_).congr_of_eventuallyEq
     · filter_upwards with s

@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.PeriodicConstantForm
 Averaging a closed periodic form over the periods of all coordinates in turn produces a form
 invariant under every period flow, hence with constant coefficients, and each averaging step changes
 the form only by an exact form with a periodic primitive.  So every closed periodic form of class
-`C^1` on a coordinate space is a constant form plus the exterior derivative of a periodic form, and
+`C^(1 : ℕ)` on a coordinate space is a constant form plus the exterior derivative of a periodic form, and
 by the vanishing of constant forms with periodic primitives the constant form is unique.
 
 * `PeriodicAveragedData` : a form averaged over a list of directions, with its primitive.
@@ -159,8 +159,8 @@ theorem negOne_smul_alternating {m : ℕ} (A : (Fin r → 𝕜) [⋀^Fin m]→L[
   show (-1 : 𝕜) • (A v) = (-A) v
   rw [show ((-A) v) = -(A v) from rfl, smul_eq_mul, neg_one_mul]
 
-/-- **A closed periodic form of class `C^1` on a coordinate space is a constant form plus the
-exterior derivative of a periodic form of class `C^1`.**  Averaging over every coordinate period in
+/-- **A closed periodic form of class `C^(1 : ℕ)` on a coordinate space is a constant form plus the
+exterior derivative of a periodic form of class `C^(1 : ℕ)`.**  Averaging over every coordinate period in
 turn makes the form invariant under all the period flows, hence constant, and each step changes it
 by an exact form with a periodic primitive. -/
 theorem periodic_closed_eq_const_add_exact {p : 𝕜} (hp : p ≠ 0)

@@ -47,10 +47,10 @@ theorem euler_step {Φ β σ x : ℝ} (hβ : 0 < β) (hσ : 0 < σ)
     refine le_trans hexp ?_
     exact mul_le_mul_of_nonneg_left hrecip hψ0.le
   -- algebra: `ψ/(1 + σβ/ψ) = ψ²/(ψ + σβ) ≤ ψ − σβ/2` when `σβ ≤ ψ`
-  have hval : ψ * (1 / (1 + σ * β * ψ⁻¹)) = ψ ^ 2 / (ψ + σ * β) := by
+  have hval : ψ * (1 / (1 + σ * β * ψ⁻¹)) = ψ ^ (2 : ℕ) / (ψ + σ * β) := by
     field_simp
   have hden : (0 : ℝ) < ψ + σ * β := by positivity
-  have hfin : ψ ^ 2 / (ψ + σ * β) ≤ ψ - σ * β / 2 := by
+  have hfin : ψ ^ (2 : ℕ) / (ψ + σ * β) ≤ ψ - σ * β / 2 := by
     rw [div_le_iff₀ hden]
     nlinarith [mul_le_mul_of_nonneg_right hge (le_of_lt (mul_pos hσ hβ)), hψ0]
   rw [hval] at hchain

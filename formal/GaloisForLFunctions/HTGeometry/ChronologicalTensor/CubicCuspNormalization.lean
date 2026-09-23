@@ -19,7 +19,7 @@ open Set Polynomial
 theorem cubicCuspMiddle_isIntegral :
     IsIntegral cubicCuspAlgebra (Polynomial.X : Polynomial (Polynomial ℝ)) := by
   apply IsIntegral.of_pow (n := 2) (by positivity)
-  exact isIntegral_algebraMap (x := (⟨Polynomial.X^2,cubicCuspAlgebra_square⟩ : cubicCuspAlgebra))
+  exact isIntegral_algebraMap (x := (⟨Polynomial.X^(2 : ℕ),cubicCuspAlgebra_square⟩ : cubicCuspAlgebra))
 
 theorem cubicCuspNormalization_isIntegral (P : Polynomial (Polynomial ℝ)) :
     IsIntegral cubicCuspAlgebra P := by
@@ -47,7 +47,7 @@ theorem cubicCuspNormalization_integralClosure :
         (FractionRing (Polynomial (Polynomial ℝ)))) (cubicCuspNormalization_isIntegral P)
 
 theorem cubicCuspAlgebra_clearDenominator (P : Polynomial (Polynomial ℝ)) :
-    P*Polynomial.X^2 ∈ cubicCuspAlgebra := by
+    P*Polynomial.X^(2 : ℕ) ∈ cubicCuspAlgebra := by
   rw [cubicCuspAlgebra_mem,Polynomial.coeff_mul_X_pow']
   simp
 
@@ -57,13 +57,13 @@ theorem cubicCuspNormalization_commonFractionField :
   apply IsFractionRing.of_field (R := cubicCuspAlgebra)
   intro z
   obtain ⟨P,Q,_,rfl⟩ := IsFractionRing.div_surjective (Polynomial (Polynomial ℝ)) z
-  refine ⟨⟨P*Polynomial.X^2,cubicCuspAlgebra_clearDenominator P⟩,
-    ⟨Q*Polynomial.X^2,cubicCuspAlgebra_clearDenominator Q⟩,?_⟩
+  refine ⟨⟨P*Polynomial.X^(2 : ℕ),cubicCuspAlgebra_clearDenominator P⟩,
+    ⟨Q*Polynomial.X^(2 : ℕ),cubicCuspAlgebra_clearDenominator Q⟩,?_⟩
   change algebraMap (Polynomial (Polynomial ℝ)) _ P / algebraMap (Polynomial (Polynomial ℝ)) _ Q=
-    algebraMap (Polynomial (Polynomial ℝ)) _ (P*Polynomial.X^2) /
-      algebraMap (Polynomial (Polynomial ℝ)) _ (Q*Polynomial.X^2)
+    algebraMap (Polynomial (Polynomial ℝ)) _ (P*Polynomial.X^(2 : ℕ)) /
+      algebraMap (Polynomial (Polynomial ℝ)) _ (Q*Polynomial.X^(2 : ℕ))
   have hX : algebraMap (Polynomial (Polynomial ℝ)) (FractionRing (Polynomial (Polynomial ℝ)))
-      (Polynomial.X^2) ≠ 0 := by
+      (Polynomial.X^(2 : ℕ)) ≠ 0 := by
     apply (map_ne_zero_iff _ (IsFractionRing.injective _ _)).mpr
     exact pow_ne_zero _ Polynomial.X_ne_zero
   rw [map_mul,map_mul,mul_div_mul_right _ _ hX]

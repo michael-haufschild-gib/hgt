@@ -43,7 +43,7 @@ noncomputable local instance q8TotallyRealFiniteDimensionalRatK3 : FiniteDimensi
   FiniteDimensional.trans ℚ K2 K3
 
 private theorem complex_conj_eq_self_of_sq_eq_pos
-    {z : ℂ} {r : ℝ} (hr : 0 < r) (hz : z ^ 2 = (r : ℂ)) :
+    {z : ℂ} {r : ℝ} (hr : 0 < r) (hz : z ^ (2 : ℕ) = (r : ℂ)) :
     (starRingEnd ℂ) z = z := by
   rw [Complex.conj_eq_iff_im]
   have him : z.re * z.im + z.im * z.re = 0 := by
@@ -63,7 +63,7 @@ private theorem deningerQ8RootNumberNegOne_complexEmbedding_topX_real
     (starRingEnd ℂ) (φ deningerQ8RootNumberNegOneTopX) =
       φ deningerQ8RootNumberNegOneTopX := by
   apply complex_conj_eq_self_of_sq_eq_pos (r := 5) (by norm_num)
-  convert (show (φ deningerQ8RootNumberNegOneTopX) ^ 2 = (5 : ℂ) by
+  convert (show (φ deningerQ8RootNumberNegOneTopX) ^ (2 : ℕ) = (5 : ℂ) by
     simpa only [map_pow, map_ofNat] using
       congrArg φ deningerQ8RootNumberNegOne_topX_sq) using 1
   norm_num
@@ -73,7 +73,7 @@ private theorem deningerQ8RootNumberNegOne_complexEmbedding_topY_real
     (starRingEnd ℂ) (φ deningerQ8RootNumberNegOneTopY) =
       φ deningerQ8RootNumberNegOneTopY := by
   apply complex_conj_eq_self_of_sq_eq_pos (r := 41) (by norm_num)
-  convert (show (φ deningerQ8RootNumberNegOneTopY) ^ 2 = (41 : ℂ) by
+  convert (show (φ deningerQ8RootNumberNegOneTopY) ^ (2 : ℕ) = (41 : ℂ) by
     simpa only [map_pow, map_ofNat] using
       congrArg φ deningerQ8RootNumberNegOne_topY_sq) using 1
   norm_num
@@ -90,11 +90,11 @@ private theorem deningerQ8RootNumberNegOne_complexEmbedding_topRoot_real
     deningerQ8RootNumberNegOne_complexEmbedding_topY_real φ
   have hxim : x.im = 0 := Complex.conj_eq_iff_im.mp hx
   have hyim : y.im = 0 := Complex.conj_eq_iff_im.mp hy
-  have hxsq : x.re ^ 2 = 5 := by
+  have hxsq : x.re ^ (2 : ℕ) = 5 := by
     have h := congrArg Complex.re
       (congrArg φ deningerQ8RootNumberNegOne_topX_sq)
     simpa [x, map_pow, map_ofNat, pow_two, Complex.mul_re, hxim] using h
-  have hysq : y.re ^ 2 = 41 := by
+  have hysq : y.re ^ (2 : ℕ) = 41 := by
     have h := congrArg Complex.re
       (congrArg φ deningerQ8RootNumberNegOne_topY_sq)
     simpa [y, map_pow, map_ofNat, pow_two, Complex.mul_re, hyim] using h
@@ -103,10 +103,10 @@ private theorem deningerQ8RootNumberNegOne_complexEmbedding_topRoot_real
   have hypos : 0 < 41 + 6 * y.re := by
     nlinarith [sq_nonneg (6 * y.re + 41)]
   have hzsq :
-      (φ deningerQ8RootNumberNegOneTopRoot) ^ 2 =
+      (φ deningerQ8RootNumberNegOneTopRoot) ^ (2 : ℕ) =
         (((5 + x.re) * (41 + 6 * y.re) : ℝ) : ℂ) := by
     calc
-      (φ deningerQ8RootNumberNegOneTopRoot) ^ 2 =
+      (φ deningerQ8RootNumberNegOneTopRoot) ^ (2 : ℕ) =
           φ (deningerQ8RootNumberNegOneR deningerQ8RootNumberNegOneTopX *
             deningerQ8RootNumberNegOneS deningerQ8RootNumberNegOneTopY) := by
               rw [← map_pow, q8TopRoot_radical_relation]

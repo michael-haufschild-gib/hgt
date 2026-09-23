@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiWardCubicCompletedPairResidueIncidence
 # Cubic Ward/Krein opposite-radial pair incidence
 
 Pairing the two functional-equation orientations after both have been placed on the positive
-radial half-line erases every exponential and leaves the nonintegrable density `r^2`.  The signed
+radial half-line erases every exponential and leaves the nonintegrable density `r^(2 : ℕ)`.  The signed
 completed source has more structure before that polarization: its two conormal legs can be formed
 at opposite radial orientations `(-r, r)` while both spectral variables remain on the same
 literal CCM/Krein meromorphic family.
@@ -14,12 +14,12 @@ literal CCM/Krein meromorphic family.
 This module proves that the order matters.  Take the first residue at the reflected Xi pole on the
 negative radial leg and the second residue at the forward Xi pole on the positive radial leg.
 Functional-equation reflection converts the first landing into minus the Hermitian mate, while
-the two signed residues contribute `I^2 = -1`; the signs cancel exactly.  The result is the
+the two signed residues contribute `I^(2 : ℕ) = -1`; the signs cancel exactly.  The result is the
 positive, exponentially decaying cubic conormal pair, with both analytic multiplicities intact.
 
 Consequently every entry of W-H186's positive raw pair-residue matrix is literally the aperture
 integral of iterated residues of one coefficient-faithful signed CCM/Krein source current.  This
-removes the post-residue `r^2` obstruction and explains the correct pre-radial architecture.
+removes the post-residue `r^(2 : ℕ)` obstruction and explains the correct pre-radial architecture.
 It does not prove the remaining global trace contraction: polar--Gamma shorting of this
 opposite-radial quadratic current against the summable primitive Euler carrier is still open.
 -/
@@ -106,7 +106,7 @@ theorem xiWardCubicKreinOppositeRadialPairCurrent_iterated_residue
       mul_left_comm]
   · congr 1
     ring_nf
-    rw [show (I : ℂ) ^ 2 = -1 by norm_num]
+    rw [show (I : ℂ) ^ (2 : ℕ) = -1 by norm_num]
     ring
 
 /-- Coefficient-faithful residue landing of the opposite-radial signed source pair. -/

@@ -32,7 +32,7 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- `(s − 1)ζ(s)/s²` in the half-plane variable `s = w + 1/2`. -/
-def zetaShiftCore : ℂ → ℂ := fun w => (w - 1 / 2) * riemannZeta (w + 1 / 2) / (w + 1 / 2) ^ 2
+def zetaShiftCore : ℂ → ℂ := fun w => (w - 1 / 2) * riemannZeta (w + 1 / 2) / (w + 1 / 2) ^ (2 : ℕ)
 
 /-- The analytic representative of the zeta Hardy core. -/
 def zetaShiftCoreNF : ℂ → ℂ := toMeromorphicNFOn zetaShiftCore Set.univ
@@ -52,7 +52,7 @@ theorem analyticAt_zetaHalfShift {w : ℂ} (hw : w ≠ 1 / 2) :
 
 theorem meromorphicAt_zetaShiftCore (w : ℂ) : MeromorphicAt zetaShiftCore w := by
   have hfun : zetaShiftCore
-      = (fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2)) / fun z : ℂ => (z + 1 / 2) ^ 2 := by
+      = (fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2)) / fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ) := by
     funext z
     rw [zetaShiftCore, Pi.div_apply]
   rw [hfun]
@@ -60,7 +60,7 @@ theorem meromorphicAt_zetaShiftCore (w : ℂ) : MeromorphicAt zetaShiftCore w :=
   · exact ((analyticAt_id.sub analyticAt_const).meromorphicAt).mul (meromorphicAt_zetaHalfShift w)
   · exact ((analyticAt_id.add analyticAt_const).pow 2).meromorphicAt
 
-theorem halfShift_pow_ne_zero {w : ℂ} (hw : w ≠ -(1 / 2)) : ((w : ℂ) + 1 / 2) ^ 2 ≠ 0 := by
+theorem halfShift_pow_ne_zero {w : ℂ} (hw : w ≠ -(1 / 2)) : ((w : ℂ) + 1 / 2) ^ (2 : ℕ) ≠ 0 := by
   refine pow_ne_zero _ ?_
   intro h
   exact hw (by linear_combination h)
@@ -68,7 +68,7 @@ theorem halfShift_pow_ne_zero {w : ℂ} (hw : w ≠ -(1 / 2)) : ((w : ℂ) + 1 /
 theorem analyticAt_zetaShiftCore {w : ℂ} (h1 : w ≠ 1 / 2) (h2 : w ≠ -(1 / 2)) :
     AnalyticAt ℂ zetaShiftCore w := by
   have hfun : zetaShiftCore
-      = fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2) / (z + 1 / 2) ^ 2 := rfl
+      = fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2) / (z + 1 / 2) ^ (2 : ℕ) := rfl
   rw [hfun]
   exact (((analyticAt_id.sub analyticAt_const).mul (analyticAt_zetaHalfShift h1)).div
     ((analyticAt_id.add analyticAt_const).pow 2) (halfShift_pow_ne_zero h2))
@@ -88,7 +88,7 @@ theorem zetaShiftCoreNF_eq_of_analyticAt {z : ℂ} (h : AnalyticAt ℂ zetaShift
     ← (toMeromorphicNFAt_eq_self.2 h.meromorphicNFAt).symm]
 
 theorem zetaShiftCoreNF_eq {z : ℂ} (h1 : z ≠ 1 / 2) (h2 : z ≠ -(1 / 2)) :
-    zetaShiftCoreNF z = (z - 1 / 2) * riemannZeta (z + 1 / 2) / (z + 1 / 2) ^ 2 :=
+    zetaShiftCoreNF z = (z - 1 / 2) * riemannZeta (z + 1 / 2) / (z + 1 / 2) ^ (2 : ℕ) :=
   zetaShiftCoreNF_eq_of_analyticAt (analyticAt_zetaShiftCore h1 h2)
 
 /-- At `w = 1/2` the simple zero of `w − 1/2` cancels the pole of `ζ`. -/
@@ -98,7 +98,7 @@ theorem meromorphicOrderAt_zetaShiftCore_half :
     (analyticAt_id.sub analyticAt_const).meromorphicAt
   have hmzeta : MeromorphicAt (fun z : ℂ => riemannZeta (z + 1 / 2)) (1 / 2 : ℂ) :=
     meromorphicAt_zetaHalfShift _
-  have hmden : MeromorphicAt (fun z : ℂ => (z + 1 / 2) ^ 2) (1 / 2 : ℂ) :=
+  have hmden : MeromorphicAt (fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ)) (1 / 2 : ℂ) :=
     ((analyticAt_id.add analyticAt_const).pow 2).meromorphicAt
   have hnumfun : (fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2))
       = (fun z : ℂ => z - 1 / 2) * fun z : ℂ => riemannZeta (z + 1 / 2) := by
@@ -116,20 +116,20 @@ theorem meromorphicOrderAt_zetaShiftCore_half :
     rw [hnumfun, meromorphicOrderAt_mul (f := fun z : ℂ => z - 1 / 2)
       (g := fun z : ℂ => riemannZeta (z + 1 / 2)) hmsub hmzeta, h1, h2]
     norm_num
-  have hdenord : meromorphicOrderAt (fun z : ℂ => (z + 1 / 2) ^ 2) (1 / 2 : ℂ)
+  have hdenord : meromorphicOrderAt (fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ)) (1 / 2 : ℂ)
       = (0 : WithTop ℤ) := by
-    have hana : AnalyticAt ℂ (fun z : ℂ => (z + 1 / 2) ^ 2) (1 / 2 : ℂ) :=
+    have hana : AnalyticAt ℂ (fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ)) (1 / 2 : ℂ) :=
       (analyticAt_id.add analyticAt_const).pow 2
-    have hne : (((1 : ℂ) / 2) + 1 / 2) ^ 2 ≠ 0 := by norm_num
+    have hne : (((1 : ℂ) / 2) + 1 / 2) ^ (2 : ℕ) ≠ 0 := by norm_num
     rw [hana.meromorphicOrderAt_eq, hana.analyticOrderAt_eq_zero.2 hne]
     simp
   have hfun : zetaShiftCore
       = (fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2))
-        / fun z : ℂ => (z + 1 / 2) ^ 2 := by
+        / fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ) := by
     funext z
     rw [zetaShiftCore, Pi.div_apply]
   rw [hfun, meromorphicOrderAt_div (f := fun z : ℂ => (z - 1 / 2) * riemannZeta (z + 1 / 2))
-    (g := fun z : ℂ => (z + 1 / 2) ^ 2) (hmsub.mul hmzeta) hmden, hnum, hdenord]
+    (g := fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ)) (hmsub.mul hmzeta) hmden, hnum, hdenord]
   simp
 
 /-- **The representative is analytic away from `w = −1/2`.** -/
@@ -196,7 +196,7 @@ theorem natCast_le_analyticOrderAt_zetaShiftCoreNF {ρ : ℂ} (hρ1 : ρ ≠ 1) 
   have hg' : AnalyticAt ℂ g (((ρ : ℂ) - 1 / 2) + 1 / 2) := by rw [hval]; exact hgan
   have hgcomp : AnalyticAt ℂ (fun z : ℂ => g (z + 1 / 2)) (ρ - 1 / 2) :=
     AnalyticAt.comp (g := g) (f := fun z : ℂ => z + 1 / 2) (x := (ρ : ℂ) - 1 / 2) hg' hshift
-  refine ⟨fun z : ℂ => (z - 1 / 2) * g (z + 1 / 2) / (z + 1 / 2) ^ 2, ?_, ?_⟩
+  refine ⟨fun z : ℂ => (z - 1 / 2) * g (z + 1 / 2) / (z + 1 / 2) ^ (2 : ℕ), ?_, ?_⟩
   · exact ((analyticAt_id.sub analyticAt_const).mul hgcomp).div
       ((analyticAt_id.add analyticAt_const).pow 2) (by rw [hval]; exact pow_ne_zero _ hρ0)
   · have hgshift : ∀ᶠ z : ℂ in 𝓝 ((ρ : ℂ) - 1 / 2), riemannZeta (z + 1 / 2)
@@ -212,7 +212,7 @@ theorem natCast_le_analyticOrderAt_zetaShiftCoreNF {ρ : ℂ} (hρ1 : ρ ≠ 1) 
     have hne2 : ∀ᶠ z : ℂ in 𝓝 ((ρ : ℂ) - 1 / 2), z ≠ -(1 / 2) := eventually_ne_nhds hw2
     filter_upwards [hgshift, hne1, hne2] with z hz hz1 hz2
     rw [zetaShiftCoreNF_eq hz1 hz2, hz, smul_eq_mul]
-    have hden : ((z : ℂ) + 1 / 2) ^ 2 ≠ 0 := halfShift_pow_ne_zero hz2
+    have hden : ((z : ℂ) + 1 / 2) ^ (2 : ℕ) ≠ 0 := halfShift_pow_ne_zero hz2
     have hsub : ((z : ℂ) + 1 / 2) - ρ = z - (ρ - 1 / 2) := by ring
     rw [hsub, smul_eq_mul]
     field_simp

@@ -24,7 +24,7 @@ def ccmFirstClockXiVolterraMemory (L : ℝ) : ℂ :=
       Real.sin ((2 * Real.pi / L) * t)) * xiScrewDivisor t
 
 /-- **Multiplicative first-clock Volterra-curvature universality law.**  On the physical aperture
-range, the rectangular Weil value on `n, m*n, m^2*n` is exactly the multiplicative midpoint
+range, the rectangular Weil value on `n, m*n, m^(2 : ℕ)*n` is exactly the multiplicative midpoint
 curvature of the first-clock rational divisor after removing its Volterra memory. -/
 theorem xiWeilPolarization_rectangular_log_mul_sq_eq_firstClockVolterraCurvature
     {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n)

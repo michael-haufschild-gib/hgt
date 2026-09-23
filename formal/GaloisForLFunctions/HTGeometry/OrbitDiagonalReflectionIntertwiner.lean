@@ -43,7 +43,7 @@ theorem orbitDiagonal_intertwines_iff
     (U : ℝ → K →L[ℂ] K) (J : K →L[ℂ] K) (xi : K)
     (hJU : ∀ h : ℝ, J (U h xi) = U (-h) xi)
     (hne : ∀ h : ℝ, U h xi ≠ 0)
-    (m a b : ℂ) (hm : m ^ 2 = 1) (t : ℝ) :
+    (m a b : ℂ) (hm : m ^ (2 : ℕ) = 1) (t : ℝ) :
     (J (a • U t xi) = (m * b) • U (-t) xi ∧
         J (b • U (-t) xi) = (m * a) • U t xi) ↔ a = m * b := by
   have hJneg : J (U (-t) xi) = U t xi := by
@@ -60,17 +60,17 @@ theorem orbitDiagonal_intertwines_iff
   · intro hab
     have hba : b = m * a := by
       rw [hab, ← mul_assoc]
-      rw [show m * m = m ^ 2 by ring, hm, one_mul]
+      rw [show m * m = m ^ (2 : ℕ) by ring, hm, one_mul]
     constructor
     · rw [map_smul, hJU t, hab]
     · rw [map_smul, hJneg, hba]
 
 /-- **Character cancellation.**  Under the forced relation `a = m·b` both descended orbit
 coefficients of a character-graded source weight `m·c` are the character-free weight `c·b`. -/
-theorem orbitDiagonal_descended_coefficients (m c b : ℂ) (hm : m ^ 2 = 1) :
+theorem orbitDiagonal_descended_coefficients (m c b : ℂ) (hm : m ^ (2 : ℕ) = 1) :
     (m * c) * (m * b) = c * b ∧ (m * (m * c)) * b = c * b := by
   have hmm : m * m = 1 := by
-    rw [show m * m = m ^ 2 by ring, hm]
+    rw [show m * m = m ^ (2 : ℕ) by ring, hm]
   constructor
   · calc (m * c) * (m * b) = (m * m) * (c * b) := by ring
       _ = c * b := by rw [hmm, one_mul]
@@ -89,7 +89,7 @@ are all at least `γ` has energy at least `γ` times the square of its total wei
 theorem mul_sq_sum_le_norm_sq_sum {B : Finset ι} {v : ι → K} {w : ι → ℝ} {γ : ℝ}
     (hw : ∀ i ∈ B, 0 ≤ w i)
     (hcov : ∀ i ∈ B, ∀ j ∈ B, γ ≤ (inner ℂ (v i) (v j)).re) :
-    γ * (∑ i ∈ B, w i) ^ 2 ≤ ‖∑ i ∈ B, (w i : ℂ) • v i‖ ^ 2 := by
+    γ * (∑ i ∈ B, w i) ^ (2 : ℕ) ≤ ‖∑ i ∈ B, (w i : ℂ) • v i‖ ^ (2 : ℕ) := by
   have hexpand : (inner ℂ (∑ i ∈ B, (w i : ℂ) • v i) (∑ j ∈ B, (w j : ℂ) • v j) : ℂ)
       = ∑ i ∈ B, ∑ j ∈ B, ((w i : ℂ) * (w j : ℂ)) * inner ℂ (v i) (v j) := by
     rw [sum_inner]
@@ -98,7 +98,7 @@ theorem mul_sq_sum_le_norm_sq_sum {B : Finset ι} {v : ι → K} {w : ι → ℝ
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [inner_smul_left, inner_smul_right, Complex.conj_ofReal]
     ring
-  have hre : ‖∑ i ∈ B, (w i : ℂ) • v i‖ ^ 2
+  have hre : ‖∑ i ∈ B, (w i : ℂ) • v i‖ ^ (2 : ℕ)
       = ∑ i ∈ B, ∑ j ∈ B, w i * w j * (inner ℂ (v i) (v j)).re := by
     rw [← inner_self_eq_norm_sq (𝕜 := ℂ) (∑ i ∈ B, (w i : ℂ) • v i)]
     rw [show (RCLike.re (inner ℂ (∑ i ∈ B, (w i : ℂ) • v i) (∑ j ∈ B, (w j : ℂ) • v j)))
@@ -109,7 +109,7 @@ theorem mul_sq_sum_le_norm_sq_sum {B : Finset ι} {v : ι → K} {w : ι → ℝ
     refine Finset.sum_congr rfl fun j _ => ?_
     simp [Complex.mul_re]
   rw [hre]
-  have hlhs : γ * (∑ i ∈ B, w i) ^ 2 = ∑ i ∈ B, ∑ j ∈ B, γ * (w i * w j) := by
+  have hlhs : γ * (∑ i ∈ B, w i) ^ (2 : ℕ) = ∑ i ∈ B, ∑ j ∈ B, γ * (w i * w j) := by
     rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.mul_sum]

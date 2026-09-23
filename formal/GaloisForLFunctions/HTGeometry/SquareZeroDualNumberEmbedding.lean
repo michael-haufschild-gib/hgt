@@ -24,19 +24,19 @@ def direction (h : A) : k →ₗ[k] A where
   map_smul' _ _ := smul_assoc _ _ _
 
 /-- A square-zero element defines the infinitesimal arc `a + bε ↦ a + b h`. -/
-def dualNumberMap (h : A) (hsq : h ^ 2 = 0) : DualNumber k →ₐ[k] A :=
+def dualNumberMap (h : A) (hsq : h ^ (2 : ℕ) = 0) : DualNumber k →ₐ[k] A :=
   TrivSqZeroExt.liftEquivOfComm ⟨direction h, by
     intro x y
     change (x • h) * (y • h) = 0
     rw [smul_mul_smul, show h * h = 0 by simpa [pow_two] using hsq, smul_zero]⟩
 
 @[simp]
-theorem dualNumberMap_apply (h : A) (hsq : h ^ 2 = 0) (x : DualNumber k) :
+theorem dualNumberMap_apply (h : A) (hsq : h ^ (2 : ℕ) = 0) (x : DualNumber k) :
     dualNumberMap h hsq x = algebraMap k A x.fst + x.snd • h := by
   rfl
 
 /-- A nonzero square-zero direction gives a faithful dual-number arc. -/
-theorem dualNumberMap_injective {h : A} (hne : h ≠ 0) (hsq : h ^ 2 = 0) :
+theorem dualNumberMap_injective {h : A} (hne : h ≠ 0) (hsq : h ^ (2 : ℕ) = 0) :
     Function.Injective (dualNumberMap (k := k) (A := A) h hsq) := by
   letI : Nontrivial A := ⟨⟨h, 0, hne⟩⟩
   intro x y hxy
@@ -48,15 +48,15 @@ theorem dualNumberMap_injective {h : A} (hne : h ≠ 0) (hsq : h ^ 2 = 0) :
   rw [dualNumberMap_apply] at hzmap
   have hbase : algebraMap k A z.fst = -(z.snd • h) :=
     eq_neg_of_add_eq_zero_left hzmap
-  have hsquare := congrArg (fun q : A => q ^ 2) hbase
-  have hbaseSq : algebraMap k A (z.fst ^ 2) = 0 := by
+  have hsquare := congrArg (fun q : A => q ^ (2 : ℕ)) hbase
+  have hbaseSq : algebraMap k A (z.fst ^ (2 : ℕ)) = 0 := by
     rw [map_pow]
     calc
-      algebraMap k A z.fst ^ 2 = (-(z.snd • h)) ^ 2 := hsquare
+      algebraMap k A z.fst ^ (2 : ℕ) = (-(z.snd • h)) ^ (2 : ℕ) := hsquare
       _ = 0 := by
         rw [neg_sq, pow_two, smul_mul_smul,
           show h * h = 0 by simpa [pow_two] using hsq, smul_zero]
-  have hzfstSq : z.fst ^ 2 = 0 :=
+  have hzfstSq : z.fst ^ (2 : ℕ) = 0 :=
     (FaithfulSMul.algebraMap_injective k A) (by simpa using hbaseSq)
   have hzfst : z.fst = 0 :=
     (sq_eq_zero_iff).mp (by simpa [pow_two] using hzfstSq)
@@ -66,7 +66,7 @@ theorem dualNumberMap_injective {h : A} (hne : h ≠ 0) (hsq : h ^ 2 = 0) :
   apply TrivSqZeroExt.ext hzfst hzsnd
 
 /-- The canonical dual-number arc is faithful exactly when its direction is nonzero. -/
-theorem dualNumberMap_injective_iff {h : A} (hsq : h ^ 2 = 0) :
+theorem dualNumberMap_injective_iff {h : A} (hsq : h ^ (2 : ℕ) = 0) :
     Function.Injective (dualNumberMap (k := k) (A := A) h hsq) ↔ h ≠ 0 := by
   constructor
   · intro hinj hzero
@@ -87,7 +87,7 @@ theorem dualNumberMap_injective_iff {h : A} (hsq : h ^ 2 = 0) :
 /-- An algebra contains a nonzero square-zero element exactly when it contains
 an embedded copy of the dual numbers. -/
 theorem exists_nonzero_squareZero_iff_exists_dualNumberEmbedding :
-    (∃ h : A, h ≠ 0 ∧ h ^ 2 = 0) ↔
+    (∃ h : A, h ≠ 0 ∧ h ^ (2 : ℕ) = 0) ↔
       ∃ f : DualNumber k →ₐ[k] A, Function.Injective f := by
   constructor
   · rintro ⟨h, hne, hsq⟩
@@ -104,7 +104,7 @@ theorem exists_nonzero_squareZero_iff_exists_dualNumberEmbedding :
       change (1 : k) = 0 at hsnd
       exact one_ne_zero hsnd
     · calc
-        f epsilon ^ 2 = f (epsilon ^ 2) := (map_pow f epsilon 2).symm
+        f epsilon ^ (2 : ℕ) = f (epsilon ^ (2 : ℕ)) := (map_pow f epsilon 2).symm
         _ = f 0 := by
           congr 1
           simp [epsilon, pow_two]

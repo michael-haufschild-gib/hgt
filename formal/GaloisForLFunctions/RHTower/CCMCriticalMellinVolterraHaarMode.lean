@@ -24,7 +24,7 @@ def exponentialAdjacentBlock (L x : ℝ) (w : ℂ) : ℂ :=
 theorem exponentialAdjacentBlock_eq
     {L x : ℝ} {w : ℂ} (hw : w ≠ 0) :
     exponentialAdjacentBlock L x w =
-      Complex.exp (w * x) * (1 - Complex.exp (-(w * L))) ^ 2 / w := by
+      Complex.exp (w * x) * (1 - Complex.exp (-(w * L))) ^ (2 : ℕ) / w := by
   rw [exponentialAdjacentBlock,
     integral_exp_mul_complex hw,
     integral_exp_mul_complex hw]
@@ -35,7 +35,7 @@ theorem exponentialAdjacentBlock_eq
     push_cast
     ring
   have h2 : Complex.exp (w * (((x - 2 * L : ℝ) : ℂ))) =
-      Complex.exp (w * x) * Complex.exp (-(w * L)) ^ 2 := by
+      Complex.exp (w * x) * Complex.exp (-(w * L)) ^ (2 : ℕ) := by
     rw [pow_two, ← Complex.exp_add, ← Complex.exp_add]
     congr 1
     push_cast
@@ -46,7 +46,7 @@ theorem exponentialAdjacentBlock_eq
 /-- Transfer multiplier of the error-dependent part of the critical-Mellin Volterra--Haar
 observable. -/
 def criticalMellinVolterraHaarMultiplier (L : ℝ) (w : ℂ) : ℂ :=
-  -((2 * w + 1) * (1 - Complex.exp (-(w * L))) ^ 2) / (2 * w ^ 2)
+  -((2 * w + 1) * (1 - Complex.exp (-(w * L))) ^ (2 : ℕ)) / (2 * w ^ (2 : ℕ))
 
 /-- A positive-width Haar window does not erase a mode with positive real exponent. -/
 theorem one_sub_exp_neg_mul_ne_zero

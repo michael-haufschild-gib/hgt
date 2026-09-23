@@ -102,7 +102,7 @@ def fzzScreeningChargeDomain {m : ℕ} (z : Fin m → ℂ) (R T : ℝ) : Set ℂ
   closedBall 0 (Real.exp R) \ ⋃ i, ball (z i) (Real.exp (-T))
 
 def fzzScreeningChargeWeight {m : ℕ} (z : Fin m → ℂ) (w : ℂ) : ℝ :=
-  ∏ i, (‖w-z i‖^6)⁻¹
+  ∏ i, (‖w-z i‖^(6 : ℕ))⁻¹
 
 private theorem chargeDomain_compact {m : ℕ} (z : Fin m → ℂ) (R T : ℝ) :
     IsCompact (fzzScreeningChargeDomain z R T) :=
@@ -146,7 +146,7 @@ def fzzScreeningChargeMomentMatrix {m : ℕ} (z : Fin m → ℂ) (R T : ℝ) (n 
   .of fun i j => fzzScreeningChargeMoment z R T i.val j.val
 
 def fzzScreeningChargeKernel {m n : ℕ} (z : Fin m → ℂ) (w : Fin n → ℂ) : ℝ :=
-  ‖(Matrix.vandermonde w).det‖^2*∏ i, fzzScreeningChargeWeight z (w i)
+  ‖(Matrix.vandermonde w).det‖^(2 : ℕ)*∏ i, fzzScreeningChargeWeight z (w i)
 
 private theorem chargeKernel_det {m n : ℕ} (z : Fin m → ℂ) (w : Fin n → ℂ) :
     (fzzScreeningChargeKernel z w : ℂ) =
@@ -209,17 +209,17 @@ theorem fzzScreeningChargeKernel_integral {m : ℕ} (z : Fin m → ℂ) (R T : �
     Complex.natCast_im,zero_mul,sub_zero,fzzScreeningChargeMeasure] using hr
 
 private theorem within_vandermonde {n : ℕ} (w : Fin n → ℂ) :
-    (∏ i, ∏ j ∈ Finset.Ioi i, ‖w i-w j‖^2) = ‖(Matrix.vandermonde w).det‖^2 := by
+    (∏ i, ∏ j ∈ Finset.Ioi i, ‖w i-w j‖^(2 : ℕ)) = ‖(Matrix.vandermonde w).det‖^(2 : ℕ) := by
   rw [Matrix.det_vandermonde]
   simp only [norm_prod,Finset.prod_pow,norm_sub_rev]
 
 private theorem neutral_charge_factor {n : ℕ} (z w : Fin n → ℂ) :
     fzzNeutralCubicScreeningKernel z w =
-      ‖(Matrix.vandermonde z).det‖^2 * fzzScreeningChargeKernel z w := by
+      ‖(Matrix.vandermonde z).det‖^(2 : ℕ) * fzzScreeningChargeKernel z w := by
   unfold fzzNeutralCubicScreeningKernel fzzScreeningChargeKernel fzzScreeningChargeWeight
   simp only [Finset.prod_mul_distrib]
   rw [within_vandermonde,within_vandermonde]
-  have hc : (∏ i, ∏ j, (‖z i-w j‖^6)⁻¹) = ∏ j, ∏ i, (‖w j-z i‖^6)⁻¹ := by
+  have hc : (∏ i, ∏ j, (‖z i-w j‖^(6 : ℕ))⁻¹) = ∏ j, ∏ i, (‖w j-z i‖^(6 : ℕ))⁻¹ := by
     rw [Finset.prod_comm]
     simp only [norm_sub_rev]
   rw [hc,mul_assoc]
@@ -231,14 +231,14 @@ theorem fzzNeutralCubicScreeningKernel_charge_integrable {n : ℕ}
   change Integrable (fun w => fzzNeutralCubicScreeningKernel z w) _
   simp_rw [neutral_charge_factor]
   exact (fzzScreeningChargeKernel_integrable (n := n) z R T).const_mul
-    (‖(Matrix.vandermonde z).det‖^2)
+    (‖(Matrix.vandermonde z).det‖^(2 : ℕ))
 
 /-- Exact original neutral source integral for every integer screening count.
 All opposite-charge interactions remain inside the original moment matrix. -/
 theorem fzzNeutralCubicScreeningKernel_charge_integral {n : ℕ}
     (z : Fin n → ℂ) (R T : ℝ) :
     (∫ w, fzzNeutralCubicScreeningKernel z w ∂fzzScreeningChargeMeasure z R T n) =
-      ‖(Matrix.vandermonde z).det‖^2 *
+      ‖(Matrix.vandermonde z).det‖^(2 : ℕ) *
         ((n.factorial : ℝ)*(fzzScreeningChargeMomentMatrix z R T n).det.re) := by
   simp_rw [neutral_charge_factor]
   rw [integral_const_mul,fzzScreeningChargeKernel_integral]

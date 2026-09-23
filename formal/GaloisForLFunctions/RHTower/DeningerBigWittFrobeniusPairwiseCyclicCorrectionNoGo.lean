@@ -37,7 +37,7 @@ theorem deningerBigWittPrimePair_bvGreen_degreeCoefficient
         (deningerBigWittPrimePairOrdinaryDegree p q)
         (deningerOrdinaryIntegerBVGreenStokesBoundary
           (deningerBigWittPrimePairOrdinaryDegree p q)) =
-      ((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ ^ 2 -
+      ((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ ^ (2 : ℕ) -
         ((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ := by
   rw [deningerOrdinaryIntegerBVGreenDiagonalCoefficient_eq_operator]
   simp only [deningerOrdinaryIntegerBVGreenDiagonalCoefficient,
@@ -67,7 +67,7 @@ theorem deningerBigWittPrimePairDiagonalReader_boundary
           (deningerBigWittPrimePairOrdinaryDegree p q)) =
       alpha * ((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ +
         beta *
-          (((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ ^ 2 -
+          (((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹ ^ (2 : ℕ) -
             ((((p : ℕ) * (q : ℕ) : ℕ) : ℂ))⁻¹) := by
   rw [deningerBigWittPrimePairDiagonalReader,
     LinearMap.add_apply, LinearMap.smul_apply, LinearMap.smul_apply,
@@ -123,7 +123,7 @@ theorem deningerBigWittPrimePairDiagonalReader_normalized_cyclic_iff
     have hnorm' := hnorm
     have hcyclic' := hcyclic
     change alpha + beta * n⁻¹ = 1 at hnorm'
-    change alpha * n⁻¹ + beta * (n⁻¹ ^ 2 - n⁻¹) = 0 at hcyclic'
+    change alpha * n⁻¹ + beta * (n⁻¹ ^ (2 : ℕ) - n⁻¹) = 0 at hcyclic'
     field_simp [hn] at hnorm' hcyclic'
     have hbetaMul : beta * n = n := by
       linear_combination hnorm' - hcyclic'

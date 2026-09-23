@@ -118,13 +118,13 @@ theorem completedRieszGraphIncrement_eq (k : ℕ) :
   ring
 
 private theorem sq_sqrtSucc_sub_sqrt_le_inv (k : ℕ) :
-    (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ 2 ≤
+    (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ (2 : ℕ) ≤
       1 / (k + 1 : ℕ) := by
   have hk : (0 : ℝ) < (k + 1 : ℕ) := by positivity
   have hks : (0 : ℝ) < (k + 2 : ℕ) := by positivity
-  have hs1 : Real.sqrt (k + 1 : ℕ) ^ 2 = (k + 1 : ℕ) :=
+  have hs1 : Real.sqrt (k + 1 : ℕ) ^ (2 : ℕ) = (k + 1 : ℕ) :=
     Real.sq_sqrt hk.le
-  have hs2 : Real.sqrt (k + 2 : ℕ) ^ 2 = (k + 2 : ℕ) :=
+  have hs2 : Real.sqrt (k + 2 : ℕ) ^ (2 : ℕ) = (k + 2 : ℕ) :=
     Real.sq_sqrt hks.le
   have hsum : Real.sqrt (k + 1 : ℕ) ≤ Real.sqrt (k + 2 : ℕ) := by
     exact Real.sqrt_le_sqrt (by exact_mod_cast (show k + 1 ≤ k + 2 by omega))
@@ -135,15 +135,15 @@ private theorem sq_sqrtSucc_sub_sqrt_le_inv (k : ℕ) :
     calc
       (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) *
           (Real.sqrt (k + 2 : ℕ) + Real.sqrt (k + 1 : ℕ)) =
-        Real.sqrt (k + 2 : ℕ) ^ 2 - Real.sqrt (k + 1 : ℕ) ^ 2 := by ring
+        Real.sqrt (k + 2 : ℕ) ^ (2 : ℕ) - Real.sqrt (k + 1 : ℕ) ^ (2 : ℕ) := by ring
       _ = 1 := by rw [hs2, hs1]; norm_num
   have hdenSq : (k + 1 : ℕ) ≤
-      (Real.sqrt (k + 2 : ℕ) + Real.sqrt (k + 1 : ℕ)) ^ 2 := by
+      (Real.sqrt (k + 2 : ℕ) + Real.sqrt (k + 1 : ℕ)) ^ (2 : ℕ) := by
     nlinarith [Real.sqrt_nonneg (k + 1 : ℕ), Real.sqrt_nonneg (k + 2 : ℕ)]
   apply (le_div_iff₀ hk).2
-  have hmul : d ^ 2 * (k + 1 : ℕ) ≤ d ^ 2 * s ^ 2 :=
+  have hmul : d ^ (2 : ℕ) * (k + 1 : ℕ) ≤ d ^ (2 : ℕ) * s ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left (by simpa only [s] using hdenSq) (sq_nonneg d)
-  have hone : d ^ 2 * s ^ 2 = 1 := by nlinarith [hds]
+  have hone : d ^ (2 : ℕ) * s ^ (2 : ℕ) = 1 := by nlinarith [hds]
   simpa only [d] using hmul.trans_eq hone
 
 private theorem abs_psiRemainder_le_eight_mul (k : ℕ) :
@@ -157,65 +157,65 @@ private theorem psiRemainder_eq_realError (k : ℕ) :
 
 /-- Pointwise domination by the PNT's summable error weight plus a cubic Gamma tail. -/
 theorem sq_completedRieszGraphIncrement_le_majorant (k : ℕ) :
-    completedRieszGraphIncrement k ^ 2 ≤
+    completedRieszGraphIncrement k ^ (2 : ℕ) ≤
       8 *
           (|Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)| *
-            (2 / (((k : ℝ) + 1) ^ 2))) +
-        2 * (2 * Real.eulerMascheroniConstant) ^ 2 /
-          (((k : ℝ) + 1) ^ 3) := by
+            (2 / (((k : ℝ) + 1) ^ (2 : ℕ)))) +
+        2 * (2 * Real.eulerMascheroniConstant) ^ (2 : ℕ) /
+          (((k : ℝ) + 1) ^ (3 : ℕ)) := by
   let n : ℝ := (k : ℝ) + 1
   let R : ℝ := psiRemainder (k + 1)
   let G : ℝ := 2 * Real.eulerMascheroniConstant
   have hn : 0 < n := by positivity
   have hmesh := sq_sqrtSucc_sub_sqrt_le_inv k
   have hR := abs_psiRemainder_le_eight_mul k
-  have hR2 : R ^ 2 ≤ 8 * n * |R| := by
+  have hR2 : R ^ (2 : ℕ) ≤ 8 * n * |R| := by
     have hnonneg : 0 ≤ |R| := abs_nonneg R
     have hm := mul_le_mul_of_nonneg_right hR hnonneg
     calc
-      R ^ 2 = |R| * |R| := by
+      R ^ (2 : ℕ) = |R| * |R| := by
         rw [pow_two, ← abs_mul, abs_of_nonneg (mul_self_nonneg R)]
       _ ≤ 8 * (k + 1 : ℕ) * |R| := hm
       _ = 8 * n * |R| := by simp only [n, Nat.cast_add, Nat.cast_one]
   rw [completedRieszGraphIncrement_eq]
   have hshape :
       (((Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) / (k + 1 : ℕ)) *
-        (psiRemainder (k + 1) + 2 * Real.eulerMascheroniConstant)) ^ 2 =
-      (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ 2 / n ^ 2 *
-        (R + G) ^ 2 := by
+        (psiRemainder (k + 1) + 2 * Real.eulerMascheroniConstant)) ^ (2 : ℕ) =
+      (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ (2 : ℕ) / n ^ (2 : ℕ) *
+        (R + G) ^ (2 : ℕ) := by
     dsimp only [n, R, G]
     push_cast
     field_simp
   rw [hshape]
-  have hsumSq : (R + G) ^ 2 ≤ 2 * (R ^ 2 + G ^ 2) := by nlinarith [sq_nonneg (R - G)]
+  have hsumSq : (R + G) ^ (2 : ℕ) ≤ 2 * (R ^ (2 : ℕ) + G ^ (2 : ℕ)) := by nlinarith [sq_nonneg (R - G)]
   have hfirst :
-      (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ 2 / n ^ 2 *
-          (R + G) ^ 2 ≤
-        (1 / n) / n ^ 2 * (2 * (R ^ 2 + G ^ 2)) := by
+      (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ (2 : ℕ) / n ^ (2 : ℕ) *
+          (R + G) ^ (2 : ℕ) ≤
+        (1 / n) / n ^ (2 : ℕ) * (2 * (R ^ (2 : ℕ) + G ^ (2 : ℕ))) := by
     gcongr
     · simpa only [n, Nat.cast_add, Nat.cast_one] using hmesh
   calc
-    (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ 2 / n ^ 2 *
-          (R + G) ^ 2 ≤
-        (1 / n) / n ^ 2 * (2 * (R ^ 2 + G ^ 2)) := hfirst
-    _ ≤ 16 * |R| / n ^ 2 + 2 * G ^ 2 / n ^ 3 := by
-      have hcoef : 0 ≤ 2 / n ^ 3 := by positivity
-      have hRterm : 2 * R ^ 2 / n ^ 3 ≤ 16 * |R| / n ^ 2 := by
+    (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) ^ (2 : ℕ) / n ^ (2 : ℕ) *
+          (R + G) ^ (2 : ℕ) ≤
+        (1 / n) / n ^ (2 : ℕ) * (2 * (R ^ (2 : ℕ) + G ^ (2 : ℕ))) := hfirst
+    _ ≤ 16 * |R| / n ^ (2 : ℕ) + 2 * G ^ (2 : ℕ) / n ^ (3 : ℕ) := by
+      have hcoef : 0 ≤ 2 / n ^ (3 : ℕ) := by positivity
+      have hRterm : 2 * R ^ (2 : ℕ) / n ^ (3 : ℕ) ≤ 16 * |R| / n ^ (2 : ℕ) := by
         calc
-          2 * R ^ 2 / n ^ 3 = (2 / n ^ 3) * R ^ 2 := by ring
-          _ ≤ (2 / n ^ 3) * (8 * n * |R|) :=
+          2 * R ^ (2 : ℕ) / n ^ (3 : ℕ) = (2 / n ^ (3 : ℕ)) * R ^ (2 : ℕ) := by ring
+          _ ≤ (2 / n ^ (3 : ℕ)) * (8 * n * |R|) :=
             mul_le_mul_of_nonneg_left hR2 hcoef
-          _ = 16 * |R| / n ^ 2 := by field_simp [hn.ne']; ring
+          _ = 16 * |R| / n ^ (2 : ℕ) := by field_simp [hn.ne']; ring
       calc
-        (1 / n) / n ^ 2 * (2 * (R ^ 2 + G ^ 2)) =
-            2 * R ^ 2 / n ^ 3 + 2 * G ^ 2 / n ^ 3 := by
+        (1 / n) / n ^ (2 : ℕ) * (2 * (R ^ (2 : ℕ) + G ^ (2 : ℕ))) =
+            2 * R ^ (2 : ℕ) / n ^ (3 : ℕ) + 2 * G ^ (2 : ℕ) / n ^ (3 : ℕ) := by
               field_simp [hn.ne']
-        _ ≤ 16 * |R| / n ^ 2 + 2 * G ^ 2 / n ^ 3 :=
+        _ ≤ 16 * |R| / n ^ (2 : ℕ) + 2 * G ^ (2 : ℕ) / n ^ (3 : ℕ) :=
           add_le_add hRterm (le_refl _)
     _ = 8 * (|Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)| *
-          (2 / (((k : ℝ) + 1) ^ 2))) +
-        2 * (2 * Real.eulerMascheroniConstant) ^ 2 /
-          (((k : ℝ) + 1) ^ 3) := by
+          (2 / (((k : ℝ) + 1) ^ (2 : ℕ)))) +
+        2 * (2 * Real.eulerMascheroniConstant) ^ (2 : ℕ) /
+          (((k : ℝ) + 1) ^ (3 : ℕ)) := by
       rw [← psiRemainder_eq_realError k]
       dsimp only [n, R, G]
       ring
@@ -223,20 +223,20 @@ theorem sq_completedRieszGraphIncrement_le_majorant (k : ℕ) :
 /-- **Unconditional completed-source graph energy.**  The literal prime--polar--Gamma Riesz
 producer has finite singular graph energy on all cofinal aperture edges. -/
 theorem summable_sq_completedRieszGraphIncrement :
-    Summable (fun k : ℕ => completedRieszGraphIncrement k ^ 2) := by
+    Summable (fun k : ℕ => completedRieszGraphIncrement k ^ (2 : ℕ)) := by
   have hprime : Summable (fun k : ℕ =>
       8 *
         (|Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)| *
-          (2 / (((k : ℝ) + 1) ^ 2)))) :=
+          (2 / (((k : ℝ) + 1) ^ (2 : ℕ))))) :=
     summable_psi_error_weight.mul_left 8
-  have hcube0 : Summable (fun n : ℕ => 1 / ((n : ℝ) ^ 3)) :=
+  have hcube0 : Summable (fun n : ℕ => 1 / ((n : ℝ) ^ (3 : ℕ))) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
   have hcube : Summable (fun k : ℕ =>
-      2 * (2 * Real.eulerMascheroniConstant) ^ 2 /
-        (((k : ℝ) + 1) ^ 3)) := by
-    have hshift : Summable (fun k : ℕ => 1 / ((((k + 1 : ℕ) : ℝ)) ^ 3)) :=
+      2 * (2 * Real.eulerMascheroniConstant) ^ (2 : ℕ) /
+        (((k : ℝ) + 1) ^ (3 : ℕ))) := by
+    have hshift : Summable (fun k : ℕ => 1 / ((((k + 1 : ℕ) : ℝ)) ^ (3 : ℕ))) :=
       (summable_nat_add_iff 1).2 hcube0
-    refine (hshift.mul_left (2 * (2 * Real.eulerMascheroniConstant) ^ 2)).congr
+    refine (hshift.mul_left (2 * (2 * Real.eulerMascheroniConstant) ^ (2 : ℕ))).congr
       (fun k => ?_)
     push_cast
     ring
@@ -249,7 +249,7 @@ theorem summable_sq_weighted_unitApertureWindow_increment :
     Summable fun k : ℕ =>
       ((((k + 2 : ℕ) : ℝ) * completedPrimePolarGammaUnitApertureWindow (k + 2) -
           ((k + 1 : ℕ) : ℝ) * completedPrimePolarGammaUnitApertureWindow (k + 1)) /
-        (2 * ((k + 1 : ℕ) : ℝ))) ^ 2 := by
+        (2 * ((k + 1 : ℕ) : ℝ))) ^ (2 : ℕ) := by
   refine summable_sq_completedRieszGraphIncrement.congr (fun k => ?_)
   have h1 := mobiusMoment_eq_half_aperture_mul_unitApertureWindow
     (M := k + 1) (by omega : 1 ≤ k + 1)
@@ -262,7 +262,7 @@ theorem summable_sq_weighted_unitApertureWindow_increment :
     rw [completedRieszGraphIncrement, h1, h2]
     have hk : ((k + 1 : ℕ) : ℝ) ≠ 0 := by positivity
     field_simp [hk]
-  exact congrArg (fun x : ℝ => x ^ 2) hedge
+  exact congrArg (fun x : ℝ => x ^ (2 : ℕ)) hedge
 
 /-! ## Exact zero charge in the harmonic source clock -/
 

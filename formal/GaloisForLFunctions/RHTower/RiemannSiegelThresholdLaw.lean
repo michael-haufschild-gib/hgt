@@ -74,13 +74,13 @@ theorem averagedSymbol_eq {X imlog θ : ℝ} (hX : X ≠ 0)
 
 /-- **Integrated cubic bound.**  `sinh ℓ - ℓ ≤ (ℓ³/6)·cosh ℓ`, from `cosh t - 1 ≤ (t²/2)cosh t`. -/
 theorem sinh_sub_self_le {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
-    Real.sinh ℓ - ℓ ≤ ℓ ^ 3 / 6 * Real.cosh ℓ := by
-  have hmono : MonotoneOn (fun t : ℝ => t ^ 3 / 6 * Real.cosh t - Real.sinh t + t)
+    Real.sinh ℓ - ℓ ≤ ℓ ^ (3 : ℕ) / 6 * Real.cosh ℓ := by
+  have hmono : MonotoneOn (fun t : ℝ => t ^ (3 : ℕ) / 6 * Real.cosh t - Real.sinh t + t)
       (Set.Ici (0 : ℝ)) := by
-    have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t ^ 3 / 6 * Real.cosh t - Real.sinh t + t)
-        (t ^ 2 / 2 * Real.cosh t + t ^ 3 / 6 * Real.sinh t - Real.cosh t + 1) t := by
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t ^ (3 : ℕ) / 6 * Real.cosh t - Real.sinh t + t)
+        (t ^ (2 : ℕ) / 2 * Real.cosh t + t ^ (3 : ℕ) / 6 * Real.sinh t - Real.cosh t + 1) t := by
       intro t
-      have hcube : HasDerivAt (fun t : ℝ => t ^ 3 / 6) (t ^ 2 / 2) t := by
+      have hcube : HasDerivAt (fun t : ℝ => t ^ (3 : ℕ) / 6) (t ^ (2 : ℕ) / 2) t := by
         have h := (hasDerivAt_pow 3 t).div_const 6
         convert! h using 1
         push_cast
@@ -96,9 +96,9 @@ theorem sinh_sub_self_le {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
     have ht0 : (0 : ℝ) ≤ t := le_of_lt ht
     have hkey := cosh_sub_one_le ht0
     have hsinh : (0 : ℝ) ≤ Real.sinh t := Real.sinh_nonneg_iff.mpr ht0
-    have hcube : (0 : ℝ) ≤ t ^ 3 / 6 * Real.sinh t := by positivity
+    have hcube : (0 : ℝ) ≤ t ^ (3 : ℕ) / 6 * Real.sinh t := by positivity
     linarith
-  have h0 : (0 : ℝ) ^ 3 / 6 * Real.cosh 0 - Real.sinh 0 + 0 = 0 := by simp
+  have h0 : (0 : ℝ) ^ (3 : ℕ) / 6 * Real.cosh 0 - Real.sinh 0 + 0 = 0 := by simp
   have := hmono Set.self_mem_Ici hℓ hℓ
   simp only [h0] at this
   linarith [this]
@@ -120,18 +120,18 @@ theorem cutoff_ge_iff {ℓ t₀ : ℝ} (hℓ : 0 < ℓ) (ht₀ : 0 < t₀) :
 /-- **Positivity criterion at the Riemann–Siegel threshold.**  The elementary baseline is
 nonnegative as soon as the averaged symbol `2θ(X)/X` dominates the cubic pole remainder. -/
 theorem baseline_nonneg_of_theta {P ℓ X θX : ℝ} (hℓ : 0 ≤ ℓ)
-    (hcrit : ℓ ^ 3 / 3 * Real.cosh ℓ ≤ averagedSymbol θX X) :
-    0 ≤ 2 * P ^ 2 - 2 * (Real.sinh ℓ - ℓ) + averagedSymbol θX X := by
-  have hP : (0 : ℝ) ≤ 2 * P ^ 2 := by positivity
+    (hcrit : ℓ ^ (3 : ℕ) / 3 * Real.cosh ℓ ≤ averagedSymbol θX X) :
+    0 ≤ 2 * P ^ (2 : ℕ) - 2 * (Real.sinh ℓ - ℓ) + averagedSymbol θX X := by
+  have hP : (0 : ℝ) ≤ 2 * P ^ (2 : ℕ) := by positivity
   have hcube := sinh_sub_self_le hℓ
-  have hdouble : 2 * (Real.sinh ℓ - ℓ) ≤ ℓ ^ 3 / 3 * Real.cosh ℓ := by linarith
+  have hdouble : 2 * (Real.sinh ℓ - ℓ) ≤ ℓ ^ (3 : ℕ) / 3 * Real.cosh ℓ := by linarith
   linarith
 
 /-- Whenever `θ(X) ≥ 0` and the cubic remainder is dominated, the baseline is nonnegative; the sign
 of `θ` is therefore what cuts the elementary range off. -/
 theorem baseline_nonneg_of_theta_nonneg {P ℓ X θX : ℝ} (hℓ : 0 ≤ ℓ) (_hX : 0 < X)
-    (_hθ : 0 ≤ θX) (hsmall : ℓ ^ 3 / 3 * Real.cosh ℓ ≤ 2 * θX / X) :
-    0 ≤ 2 * P ^ 2 - 2 * (Real.sinh ℓ - ℓ) + averagedSymbol θX X :=
+    (_hθ : 0 ≤ θX) (hsmall : ℓ ^ (3 : ℕ) / 3 * Real.cosh ℓ ≤ 2 * θX / X) :
+    0 ≤ 2 * P ^ (2 : ℕ) - 2 * (Real.sinh ℓ - ℓ) + averagedSymbol θX X :=
   baseline_nonneg_of_theta hℓ hsmall
 
 end RHTower

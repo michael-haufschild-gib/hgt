@@ -9,8 +9,8 @@ axis, then the bottom shell carries no displacement.
 The chain: pick a displacement `l` of maximal modulus; split the shell into the class at `l`, its
 mirror, and a remainder of strictly smaller modulus; align the class at arbitrarily large times so
 that the two classes contribute `-2 ‖A‖`; transfer through the asymptotic identity, whose tail is
-negligible; and observe that `‖A‖ = (class size) * sqrt(g_1^2+l^2)^n` outgrows the remainder's
-`(card) * d^n` because `d < sqrt(g_1^2+l^2)`.
+negligible; and observe that `‖A‖ = (class size) * sqrt(g_1^(2 : ℕ)+l^(2 : ℕ))^n` outgrows the remainder's
+`(card) * d^n` because `d < sqrt(g_1^(2 : ℕ)+l^(2 : ℕ))`.
 -/
 
 open Complex Filter
@@ -95,11 +95,11 @@ theorem xiPoissonPoint_im_eq_zero_of_forall_moment_nonneg
     rw [h0, abs_zero] at hb
     exact hq₁ne (abs_eq_zero.mp (le_antisymm hb (abs_nonneg _)))
   have hmax' : ∀ q ∈ xiPoissonBottomShell, |(xiPoissonPoint q).im| ≤ |l| := hmax
-  set M : ℝ := Real.sqrt (xiPoissonBottomHeight ^ 2 + l ^ 2) with hMdef
+  set M : ℝ := Real.sqrt (xiPoissonBottomHeight ^ (2 : ℕ) + l ^ (2 : ℕ)) with hMdef
   have hMpos : 0 < M := by
     rw [hMdef]
     refine Real.sqrt_pos.mpr ?_
-    have hg : 0 < xiPoissonBottomHeight ^ 2 := pow_pos xiPoissonBottomHeight_pos 2
+    have hg : 0 < xiPoissonBottomHeight ^ (2 : ℕ) := pow_pos xiPoissonBottomHeight_pos 2
     linarith [sq_nonneg l]
   have hqsclass : qs ∈ xiShellClass l := mem_xiShellClass.mpr ⟨hqsmem, rfl⟩
   have hcardpos : 0 < ((xiShellClass l).card : ℝ) := by

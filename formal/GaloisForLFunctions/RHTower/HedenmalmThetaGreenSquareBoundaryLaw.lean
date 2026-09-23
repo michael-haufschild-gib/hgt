@@ -25,7 +25,7 @@ private abbrev ThetaH := Lp ℂ 2 unitIntervalMeasure
 operator is constructed from the theta source before the Xi divisor is read. -/
 def ThetaSquaredSeamSpectrumPositive : Prop :=
   ∀ mu : ℂ, mu ∈ spectrum ℂ thetaKernelOperator → mu ≠ 0 →
-    ∃ r : ℝ, 0 < r ∧ mu ^ 2 = (r : ℂ)
+    ∃ r : ℝ, 0 < r ∧ mu ^ (2 : ℕ) = (r : ℂ)
 
 /-- The universal rank-two boundary current is neutral on every multiplicity-exact theta divisor
 mode. -/
@@ -63,7 +63,7 @@ theorem thetaSquaredSeamSpectrumPositive_iff_riemannHypothesis :
       intro ht0
       apply hmu
       simp [ht0]
-    refine ⟨t ^ 2, sq_pos_of_ne_zero ht, ?_⟩
+    refine ⟨t ^ (2 : ℕ), sq_pos_of_ne_zero ht, ?_⟩
     norm_num
 
 /-- Neutrality of the source-built Green boundary current on every divisor mode is exactly RH. -/

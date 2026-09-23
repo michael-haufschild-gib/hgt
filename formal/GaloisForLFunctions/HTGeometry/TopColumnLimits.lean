@@ -96,7 +96,7 @@ theorem topDegLE_fpderiv_logSum_top (n : ℕ) (hQ : Q (n + 1) ≠ 0)
     topDegLE_inv_fact _ hQ
   have h4 : TopDegLE (n + 1)
       (-((Q (n + 1)).natDegree : ℤ) + -((Q (n + 1)).natDegree : ℤ))
-      ((fact (Q (n + 1)) (n + 1))⁻¹ ^ 2) := by
+      ((fact (Q (n + 1)) (n + 1))⁻¹ ^ (2 : ℕ)) := by
     have h := TopDegLE.mul h3 h3
     rw [pow_two]
     exact h

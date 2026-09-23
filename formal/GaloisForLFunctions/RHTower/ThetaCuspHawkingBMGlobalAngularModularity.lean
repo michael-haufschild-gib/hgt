@@ -144,7 +144,7 @@ theorem xi_scalar_invert (q : XiZeroCopy) (z : D4BMUpperHalfPlaneCoordinate) :
 cutoff response and all its local differential contributions vanish. -/
 theorem forcing_low (q : XiZeroCopy) (minusBranch : Bool) (z : Fin 2 → ℝ)
     (hz : z 1 < 2) :
-    forcing q minusBranch z = (parameter q minusBranch/2)*scalar (center q) z^2 := by
+    forcing q minusBranch z = (parameter q minusBranch/2)*scalar (center q) z^(2 : ℕ) := by
   have he : cutoffResponse q minusBranch =ᶠ[𝓝 z] (fun _ => 0) := by
     filter_upwards [(isOpen_lt (continuous_apply 1) continuous_const).mem_nhds hz] with w hw
     exact cutoffResponse_zero q minusBranch w hw.le

@@ -89,7 +89,7 @@ theorem swap_cushion_gt_two {δ s : ℝ} (hs : 0 < s) (hsδ : s < δ) :
 lowers its `coth` by at most `(δ/2)·csch²(c/2)` — the mean value theorem for `coth` (with
 `coth' = −csch²`) at the nearer endpoint `c/2`. -/
 theorem behind_drift_abs_le {c δ : ℝ} (hc : 0 < c) (hδ : 0 < δ) :
-    rcoth (c / 2) - rcoth ((c + δ) / 2) ≤ (δ / 2) * (rcsch (c / 2)) ^ 2 := by
+    rcoth (c / 2) - rcoth ((c + δ) / 2) ≤ (δ / 2) * (rcsch (c / 2)) ^ (2 : ℕ) := by
   have h := rcoth_pair_le (a := c / 2) (b := (c + δ) / 2) (by positivity) (by linarith)
   have hbma : ((c + δ) / 2 - c / 2) = δ / 2 := by ring
   rw [hbma] at h
@@ -99,7 +99,7 @@ theorem behind_drift_abs_le {c δ : ℝ} (hc : 0 < c) (hδ : 0 < δ) :
 `e > δ`) raises its `coth` by at most `(δ/2)·csch²((e−δ)/2)` — the mean value theorem for
 `coth` at the nearer endpoint `(e−δ)/2`. -/
 theorem ahead_drift_abs_le {e δ : ℝ} (hδ : 0 < δ) (heδ : δ < e) :
-    rcoth ((e - δ) / 2) - rcoth (e / 2) ≤ (δ / 2) * (rcsch ((e - δ) / 2)) ^ 2 := by
+    rcoth ((e - δ) / 2) - rcoth (e / 2) ≤ (δ / 2) * (rcsch ((e - δ) / 2)) ^ (2 : ℕ) := by
   have h := rcoth_pair_le (a := (e - δ) / 2) (b := e / 2) (by linarith) (by linarith)
   have hbma : (e / 2 - (e - δ) / 2) = δ / 2 := by ring
   rw [hbma] at h
@@ -116,8 +116,8 @@ drift increments are gap DIFFERENCES (zero on the constant lattice) against a fa
 theorem adiabatic_march_pos {L R : ℕ} {c e : ℕ → ℝ} {δ s : ℝ}
     (hs : 0 < s) (hsδ : s < δ)
     (hc : ∀ m ∈ range L, 0 < c m) (he : ∀ r ∈ range R, δ < e r)
-    (hcrude : (∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ 2)
-        + (∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ 2)
+    (hcrude : (∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ (2 : ℕ))
+        + (∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ (2 : ℕ))
         < rcoth ((δ - s) / 2) + rcoth ((δ + s) / 2)) :
     0 < legFieldNew L R c e δ s - legFieldOld L R c e δ s := by
   have hδ : 0 < δ := lt_trans hs hsδ
@@ -146,13 +146,13 @@ theorem adiabatic_march_pos {L R : ℕ} {c e : ℕ → ℝ} {δ s : ℝ}
       (Set.mem_Ioi.mpr (by linarith : (0:ℝ) < e r / 2)) (by linarith)
     linarith
   -- the total loss magnitude is below the cushion
-  have hBmag : -BSum ≤ ∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ 2 := by
+  have hBmag : -BSum ≤ ∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ (2 : ℕ) := by
     rw [hBSum, ← Finset.sum_neg_distrib]
     apply Finset.sum_le_sum
     intro m hm
     have := behind_drift_abs_le (hc m hm) hδ
     linarith
-  have hAmag : -ASum ≤ ∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ 2 := by
+  have hAmag : -ASum ≤ ∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ (2 : ℕ) := by
     rw [hASum, ← Finset.sum_neg_distrib]
     apply Finset.sum_le_sum
     intro r hr
@@ -164,8 +164,8 @@ theorem adiabatic_march_pos {L R : ℕ} {c e : ℕ → ℝ} {δ s : ℝ}
   have hbound : |BSum + ASum| < cushion := by
     rw [abs_lt]
     constructor
-    · have : -BSum + -ASum ≤ (∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ 2)
-          + (∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ 2) := by linarith [hBmag, hAmag]
+    · have : -BSum + -ASum ≤ (∑ m ∈ range L, (δ / 2) * (rcsch (c m / 2)) ^ (2 : ℕ))
+          + (∑ r ∈ range R, (δ / 2) * (rcsch ((e r - δ) / 2)) ^ (2 : ℕ)) := by linarith [hBmag, hAmag]
       linarith [hcrude, this]
     · linarith [hBneg, hAneg, hcushpos]
   rw [hledger]
@@ -325,17 +325,17 @@ the outer half (`R ≤ L`) are gains with no ahead partner. Sum: net drift `≥ 
 the mean value theorem for `coth` (`coth′ = −csch²`) evaluated at the FARTHER endpoint `b`,
 where `csch²` is smallest. Companion to `rcoth_pair_le`'s upper bound at the nearer endpoint. -/
 theorem rcoth_pair_ge {a b : ℝ} (ha : 0 < a) (hab : a < b) :
-    (b - a) * (rcsch b) ^ 2 ≤ rcoth a - rcoth b := by
+    (b - a) * (rcsch b) ^ (2 : ℕ) ≤ rcoth a - rcoth b := by
   have hba : (0 : ℝ) < b - a := by linarith
   have hcont : ContinuousOn rcoth (Set.Icc a b) := fun y hy =>
     (rcoth_hasDerivAt (lt_of_lt_of_le ha hy.1).ne').continuousAt.continuousWithinAt
   obtain ⟨c, hc, hslope⟩ := exists_hasDerivAt_eq_slope rcoth
-    (fun y => -(rcsch y) ^ 2) hab hcont (fun y hy => rcoth_hasDerivAt (lt_trans ha hy.1).ne')
+    (fun y => -(rcsch y) ^ (2 : ℕ)) hab hcont (fun y hy => rcoth_hasDerivAt (lt_trans ha hy.1).ne')
   have hc0 : 0 < c := lt_trans ha hc.1
   rw [eq_div_iff hba.ne'] at hslope
-  have hkey : rcoth a - rcoth b = (b - a) * (rcsch c) ^ 2 := by linear_combination hslope
+  have hkey : rcoth a - rcoth b = (b - a) * (rcsch c) ^ (2 : ℕ) := by linear_combination hslope
   rw [hkey]
-  have hcsch : (rcsch b) ^ 2 ≤ (rcsch c) ^ 2 := by
+  have hcsch : (rcsch b) ^ (2 : ℕ) ≤ (rcsch c) ^ (2 : ℕ) := by
     have h1 : rcsch b ≤ rcsch c :=
       (rcsch_strictAntiOn_pos (Set.mem_Ioi.mpr hc0)
         (Set.mem_Ioi.mpr (lt_trans hc0 hc.2)) hc.2).le
@@ -344,14 +344,14 @@ theorem rcoth_pair_ge {a b : ℝ} (ha : 0 < a) (hab : a < b) :
 
 /-- Non-strict form of `rcoth_pair_ge` (equality gives `0 ≤ 0`). -/
 theorem rcoth_pair_ge' {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    (b - a) * (rcsch b) ^ 2 ≤ rcoth a - rcoth b := by
+    (b - a) * (rcsch b) ^ (2 : ℕ) ≤ rcoth a - rcoth b := by
   rcases eq_or_lt_of_le hab with h | h
   · subst h; simp
   · exact rcoth_pair_ge ha h
 
 /-- Non-strict form of `rcoth_pair_le` (equality gives `0 ≤ 0`). -/
 theorem rcoth_pair_le' {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    rcoth a - rcoth b ≤ (b - a) * (rcsch a) ^ 2 := by
+    rcoth a - rcoth b ≤ (b - a) * (rcsch a) ^ (2 : ℕ) := by
   rcases eq_or_lt_of_le hab with h | h
   · subst h; simp
   · exact rcoth_pair_le ha h
@@ -370,17 +370,17 @@ theorem rank_pair_domination {oldB oldA newB newA : ℝ}
   have hnB2 : (0 : ℝ) < newB / 2 := by linarith
   have hnA2 : (0 : ℝ) < newA / 2 := by linarith
   have hoB2 : (0 : ℝ) < oldB / 2 := by linarith
-  have hgain : (oldB / 2 - newB / 2) * (rcsch (oldB / 2)) ^ 2
+  have hgain : (oldB / 2 - newB / 2) * (rcsch (oldB / 2)) ^ (2 : ℕ)
       ≤ rcoth (newB / 2) - rcoth (oldB / 2) := rcoth_pair_ge' hnB2 (by linarith)
   have hloss : rcoth (newA / 2) - rcoth (oldA / 2)
-      ≤ (oldA / 2 - newA / 2) * (rcsch (newA / 2)) ^ 2 := rcoth_pair_le' hnA2 (by linarith)
-  have hcschcmp : (rcsch (newA / 2)) ^ 2 ≤ (rcsch (oldB / 2)) ^ 2 := by
+      ≤ (oldA / 2 - newA / 2) * (rcsch (newA / 2)) ^ (2 : ℕ) := rcoth_pair_le' hnA2 (by linarith)
+  have hcschcmp : (rcsch (newA / 2)) ^ (2 : ℕ) ≤ (rcsch (oldB / 2)) ^ (2 : ℕ) := by
     have h1 : rcsch (newA / 2) ≤ rcsch (oldB / 2) :=
       (rcsch_strictAntiOn_pos.antitoneOn (Set.mem_Ioi.mpr hoB2)
         (Set.mem_Ioi.mpr hnA2) (by linarith))
     exact pow_le_pow_left₀ (rcsch_pos_of_pos hnA2).le h1 2
-  have hmid : (oldA / 2 - newA / 2) * (rcsch (newA / 2)) ^ 2
-      ≤ (oldB / 2 - newB / 2) * (rcsch (oldB / 2)) ^ 2 :=
+  have hmid : (oldA / 2 - newA / 2) * (rcsch (newA / 2)) ^ (2 : ℕ)
+      ≤ (oldB / 2 - newB / 2) * (rcsch (oldB / 2)) ^ (2 : ℕ) :=
     mul_le_mul (by linarith) hcschcmp (sq_nonneg _) (by linarith)
   linarith [hgain, hloss, hmid]
 
@@ -456,8 +456,8 @@ compare. -/
 theorem net_drift_nonneg_csch {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} (hRL : R ≤ L)
     (hsignB : ∀ k ∈ range L, 0 < newB k ∧ newB k ≤ oldB k)
     (hsignA : ∀ k ∈ range R, 0 < newA k ∧ newA k ≤ oldA k)
-    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2
-        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2) :
+    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ (2 : ℕ)
+        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ (2 : ℕ)) :
     0 ≤ (∑ k ∈ range L, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
         + (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2))) := by
   have hahead : (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2)))
@@ -466,20 +466,20 @@ theorem net_drift_nonneg_csch {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} (h
     exact Finset.sum_congr rfl (fun k _ => by ring)
   rw [hahead]
   have hloss : (∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2)))
-      ≤ ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2 := by
+      ≤ ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ (2 : ℕ) := by
     refine Finset.sum_le_sum (fun k hk => ?_)
     obtain ⟨hnA, hAle⟩ := hsignA k hk
     calc rcoth (newA k / 2) - rcoth (oldA k / 2)
-        ≤ (oldA k / 2 - newA k / 2) * (rcsch (newA k / 2)) ^ 2 :=
+        ≤ (oldA k / 2 - newA k / 2) * (rcsch (newA k / 2)) ^ (2 : ℕ) :=
           rcoth_pair_le' (by linarith) (by linarith)
-      _ = ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2 := by ring
-  have hgainR : (∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2)
+      _ = ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ (2 : ℕ) := by ring
+  have hgainR : (∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ (2 : ℕ))
       ≤ ∑ k ∈ range R, (rcoth (newB k / 2) - rcoth (oldB k / 2)) := by
     refine Finset.sum_le_sum (fun k hk => ?_)
     obtain ⟨hnB, hBle⟩ := hsignB k (Finset.mem_range.mpr
       (lt_of_lt_of_le (Finset.mem_range.mp hk) hRL))
-    calc ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2
-        = (oldB k / 2 - newB k / 2) * (rcsch (oldB k / 2)) ^ 2 := by ring
+    calc ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ (2 : ℕ)
+        = (oldB k / 2 - newB k / 2) * (rcsch (oldB k / 2)) ^ (2 : ℕ) := by ring
       _ ≤ rcoth (newB k / 2) - rcoth (oldB k / 2) :=
           rcoth_pair_ge' (by linarith) (by linarith)
   have hmono : (∑ k ∈ range R, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
@@ -500,8 +500,8 @@ theorem bulk_march_pos {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA fB 
     (hA : 0 < fA) (hB : 0 < fB) (hRL : R ≤ L)
     (hsignB : ∀ k ∈ range L, 0 < newB k ∧ newB k ≤ oldB k)
     (hsignA : ∀ k ∈ range R, 0 < newA k ∧ newA k ≤ oldA k)
-    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2
-        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2) :
+    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ (2 : ℕ)
+        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ (2 : ℕ)) :
     2 < legRankNew L R newB newA s fB - legRankOld L R oldB oldA s fA :=
   rank_march_pos hA hB (net_drift_nonneg_csch hRL hsignB hsignA hbox)
 

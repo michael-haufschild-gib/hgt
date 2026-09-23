@@ -23,7 +23,7 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
         (B : ℝ) * (Real.log B / A) ≤ (((2 ^ Q : ℕ) : ℝ) * v) →
         Δ / 2 ≤ a →
         a + ((2 * n : ℕ) : ℝ) * Δ + Δ / 2 ≤ T →
-        let M := 65 * C * (N / R) ^ 2 / U ^ 2
+        let M := 65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ)
         D / (4 * Δ * M) ≤ (n : ℝ) * v ∨
           ∃ lam : ℕ → ℝ, ∃ S : Finset ℕ, ∃ q : ℕ,
             (∀ i, lam i + Δ ≤ lam (i + 1)) ∧
@@ -37,10 +37,10 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
               ‖dirPoly B (routeTVonMangoldtSliceCoeff A B) (lam r)‖) ∧
             D / (4 * Δ * M * (Q : ℝ)) ≤
               (((2 ^ q : ℕ) : ℝ) * v) * (S.card : ℝ) ∧
-            (S.card : ℝ) * ((((2 ^ q : ℕ) : ℝ) * v) ^ 2) ≤
+            (S.card : ℝ) * ((((2 ^ q : ℕ) : ℝ) * v) ^ (2 : ℕ)) ≤
               (T + 4 * (B : ℝ) * (1 + Real.log B)) *
                 (1 / Δ + 2 * Real.log B) *
-                  (((B - A : ℕ) : ℝ) * (Real.log B / A) ^ 2) := by
+                  (((B - A : ℕ) : ℝ) * (Real.log B / A) ^ (2 : ℕ)) := by
   obtain ⟨C, hC, hquad⟩ :=
     exists_routeTNormalizedSmoothWindowMellin_one_quadratic_bound
   refine ⟨C, hC, ?_⟩
@@ -51,7 +51,7 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
   let K : ℝ → ℂ := fun y =>
     routeTNormalizedSmoothWindowMellin N R ((1 : ℂ) + (y : ℝ) * I) -
       routeTNormalizedSmoothWindowMellin N H ((1 : ℂ) + (y : ℝ) * I)
-  let M : ℝ := 65 * C * (N / R) ^ 2 / U ^ 2
+  let M : ℝ := 65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ)
   change D / (4 * Δ * M) ≤ (n : ℝ) * v ∨ _
   have hFc : Continuous F :=
     (continuous_dirPoly B (routeTVonMangoldtSliceCoeff A B)).comp continuous_neg
@@ -63,49 +63,49 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
   have hK : ∀ y ∈ Set.Icc a (a + ((2 * n : ℕ) : ℝ) * Δ), ‖K y‖ ≤ M := by
     intro y hy
     have hyU := haway y hy
-    have hy2 : U ^ 2 ≤ |y| ^ 2 := by nlinarith [sq_nonneg (|y| - U)]
+    have hy2 : U ^ (2 : ℕ) ≤ |y| ^ (2 : ℕ) := by nlinarith [sq_nonneg (|y| - U)]
     have hqR := hquad N R y hN hR hRN
     have hqH := hquad N H y hN hH hHleN
     have hKR : ‖routeTNormalizedSmoothWindowMellin N R
           ((1 : ℂ) + (y : ℝ) * I)‖ ≤
-        13 * C * (N / R) ^ 2 / U ^ 2 := by
+        13 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by
       rw [le_div_iff₀ (sq_pos_of_pos hU)]
       calc
         ‖routeTNormalizedSmoothWindowMellin N R
-              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ 2 =
-            U ^ 2 * ‖routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ (2 : ℕ) =
+            U ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N R
               ((1 : ℂ) + (y : ℝ) * I)‖ := by ring
-        _ ≤ |y| ^ 2 * ‖routeTNormalizedSmoothWindowMellin N R
+        _ ≤ |y| ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N R
               ((1 : ℂ) + (y : ℝ) * I)‖ :=
           mul_le_mul_of_nonneg_right hy2 (norm_nonneg _)
-        _ ≤ 13 * C * (N / R) ^ 2 := hqR
+        _ ≤ 13 * C * (N / R) ^ (2 : ℕ) := hqR
     have hratio : R / H ≤ 2 := (div_le_iff₀ hH).2 hRH
-    have hratioSq : (R / H) ^ 2 ≤ 4 := by
+    have hratioSq : (R / H) ^ (2 : ℕ) ≤ 4 := by
       have hratio0 : 0 ≤ R / H := by positivity
       nlinarith
-    have hNH : (N / H) ^ 2 ≤ 4 * (N / R) ^ 2 := by
+    have hNH : (N / H) ^ (2 : ℕ) ≤ 4 * (N / R) ^ (2 : ℕ) := by
       have hre : N / H = (N / R) * (R / H) := by field_simp
       rw [hre, mul_pow]
       calc
-        (N / R) ^ 2 * (R / H) ^ 2 ≤ (N / R) ^ 2 * 4 :=
+        (N / R) ^ (2 : ℕ) * (R / H) ^ (2 : ℕ) ≤ (N / R) ^ (2 : ℕ) * 4 :=
           mul_le_mul_of_nonneg_left hratioSq (sq_nonneg (N / R))
-        _ = 4 * (N / R) ^ 2 := by ring
+        _ = 4 * (N / R) ^ (2 : ℕ) := by ring
     have hKH : ‖routeTNormalizedSmoothWindowMellin N H
           ((1 : ℂ) + (y : ℝ) * I)‖ ≤
-        52 * C * (N / R) ^ 2 / U ^ 2 := by
+        52 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by
       rw [le_div_iff₀ (sq_pos_of_pos hU)]
       calc
         ‖routeTNormalizedSmoothWindowMellin N H
-              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ 2 =
-            U ^ 2 * ‖routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ (2 : ℕ) =
+            U ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N H
               ((1 : ℂ) + (y : ℝ) * I)‖ := by ring
-        _ ≤ |y| ^ 2 * ‖routeTNormalizedSmoothWindowMellin N H
+        _ ≤ |y| ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N H
               ((1 : ℂ) + (y : ℝ) * I)‖ :=
           mul_le_mul_of_nonneg_right hy2 (norm_nonneg _)
-        _ ≤ 13 * C * (N / H) ^ 2 := hqH
-        _ ≤ 13 * C * (4 * (N / R) ^ 2) :=
+        _ ≤ 13 * C * (N / H) ^ (2 : ℕ) := hqH
+        _ ≤ 13 * C * (4 * (N / R) ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hNH (mul_nonneg (by norm_num) hC0)
-        _ = 52 * C * (N / R) ^ 2 := by ring
+        _ = 52 * C * (N / R) ^ (2 : ℕ) := by ring
     dsimp only [K, M]
     calc
       ‖routeTNormalizedSmoothWindowMellin N R (1 + (y : ℂ) * I) -
@@ -113,9 +113,9 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
           ‖routeTNormalizedSmoothWindowMellin N R (1 + (y : ℂ) * I)‖ +
             ‖routeTNormalizedSmoothWindowMellin N H (1 + (y : ℂ) * I)‖ :=
         norm_sub_le _ _
-      _ ≤ 13 * C * (N / R) ^ 2 / U ^ 2 +
-          52 * C * (N / R) ^ 2 / U ^ 2 := add_le_add hKR hKH
-      _ = 65 * C * (N / R) ^ 2 / U ^ 2 := by ring
+      _ ≤ 13 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) +
+          52 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := add_le_add hKR hKH
+      _ = 65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by ring
   obtain ⟨c, hc, hcellUpper⟩ :=
     exists_cell_max_norm_intervalIntegral_mul_le hFc hKc hΔ (2 * n) hK
   have hM : 0 < M := by

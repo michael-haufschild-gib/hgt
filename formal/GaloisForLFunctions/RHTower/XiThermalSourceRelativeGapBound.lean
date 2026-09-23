@@ -51,7 +51,7 @@ theorem xiEndpointCompletedCurvature_lt_one_third :
 /-- The sharpened endpoint source bound forces every Xi multiplicity copy above squared height
 `2`. -/
 theorem xiZeroCopy_two_lt_im_sq (q : XiZeroCopy) :
-    2 < (q.1 : ℂ).im ^ 2 := by
+    2 < (q.1 : ℂ).im ^ (2 : ℕ) := by
   have hCpos := xiEndpointCompletedCurvature_pos
   have hCinv : 3 < 1 / xiEndpointCompletedCurvature := by
     rw [lt_div_iff₀ hCpos]
@@ -63,20 +63,20 @@ theorem xiZeroCopy_two_lt_im_sq (q : XiZeroCopy) :
 coordinates. -/
 theorem xiZeroCopyReciprocalSquare_re_formula (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).re =
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2 := by
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare_eq, xiCentralReciprocalSquare]
   have hhalf : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
   rw [hhalf]
   simp only [Complex.neg_re, pow_two, Complex.mul_re, Complex.inv_re, Complex.inv_im,
     Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im, sub_zero]
   rw [show Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 by
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) by
     rw [Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im,
       sub_zero]
     ring]
-  have hden : ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hden : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   field_simp [hden]
   ring
@@ -86,35 +86,35 @@ coordinates. -/
 theorem xiZeroCopyReciprocalSquare_im_formula (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).im =
       2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2 := by
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare_eq, xiCentralReciprocalSquare]
   have hhalf : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
   rw [hhalf]
   simp only [Complex.neg_im, pow_two, Complex.mul_im, Complex.inv_re, Complex.inv_im,
     Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im, sub_zero]
   rw [show Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 by
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) by
     rw [Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im,
       sub_zero]
     ring]
-  have hden : ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hden : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   field_simp [hden]
   ring
 
-/-- Real part of the *square* of the centered reciprocal-square coordinate.  Writing `z ^ 2` as
+/-- Real part of the *square* of the centered reciprocal-square coordinate.  Writing `z ^ (2 : ℕ)` as
 `z * z` and substituting the two coordinate formulas gives a quartic numerator in the horizontal
-and vertical squares `u = (re - 1/2)^2`, `v = im^2`, over the fourth power of `u + v`. -/
+and vertical squares `u = (re - 1/2)^(2 : ℕ)`, `v = im^(2 : ℕ)`, over the fourth power of `u + v`. -/
 theorem xiZeroCopyReciprocalSquare_sq_re_formula (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q ^ 2).re =
-      (((q.1 : ℂ).im ^ 2) ^ 2 -
-          6 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (q.1 : ℂ).im ^ 2 +
-          (((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 4 := by
+    (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+      (((q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) -
+          6 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) * (q.1 : ℂ).im ^ (2 : ℕ) +
+          (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (4 : ℕ) := by
   rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
-  have hden : ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hden : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   field_simp [hden]
   ring
@@ -123,11 +123,11 @@ theorem xiZeroCopyReciprocalSquare_sq_re_formula (q : XiZeroCopy) :
 the reciprocal-square coordinate is at most `32/49` of the squared positive thermal node. -/
 theorem xiThermalOrientationTerm_le_thirtyTwo_over_fortyNine_node_sq
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (32 / 49 : ℝ) * xiThermalNode q ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let D : ℝ := (u + v) ^ 2
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (32 / 49 : ℝ) * xiThermalNode q ^ (2 : ℕ) := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+  let D : ℝ := (u + v) ^ (2 : ℕ)
   have hu : 0 ≤ u := by dsimp [u]; positivity
   have hu' : u < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
@@ -136,61 +136,61 @@ theorem xiThermalOrientationTerm_le_thirtyTwo_over_fortyNine_node_sq
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
   change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2 ≤
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
     (32 / 49 : ℝ) *
-      (((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2
-  rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-    show (q.1 : ℂ).im ^ 2 = v by rfl,
-    show (u + v) ^ 2 = D by rfl]
+      (((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)
+  rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+    show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+    show (u + v) ^ (2 : ℕ) = D by rfl]
   rw [div_pow, div_pow]
-  rw [show (32 / 49 : ℝ) * ((v - u) ^ 2 / D ^ 2) =
-      ((32 / 49 : ℝ) * (v - u) ^ 2) / D ^ 2 by ring]
+  rw [show (32 / 49 : ℝ) * ((v - u) ^ (2 : ℕ) / D ^ (2 : ℕ)) =
+      ((32 / 49 : ℝ) * (v - u) ^ (2 : ℕ)) / D ^ (2 : ℕ) by ring]
   apply (div_le_div_iff_of_pos_right (sq_pos_of_pos hD)).2
   have hvEightU : 0 ≤ v - 8 * u := by linarith
   have hvUOverEight : 0 ≤ v - u / 8 := by linarith
   have hfactor : 0 ≤ (v - 8 * u) * (v - u / 8) :=
     mul_nonneg hvEightU hvUOverEight
-  have hcore : 4 * u * v ≤ (32 / 49 : ℝ) * (v - u) ^ 2 := by
+  have hcore : 4 * u * v ≤ (32 / 49 : ℝ) * (v - u) ^ (2 : ℕ) := by
     nlinarith [hfactor]
   calc
-    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 = 4 * u * v := by
+    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) = 4 * u * v := by
       dsimp [u, v]
       ring
-    _ ≤ (32 / 49 : ℝ) * (v - u) ^ 2 := hcore
+    _ ≤ (32 / 49 : ℝ) * (v - u) ^ (2 : ℕ) := hcore
 
 lemma four_mul_u_mul_v_le_boundary_ratio
     {a u v : ℝ} (hu0 : 0 ≤ u) (hu : u ≤ 1 / 4)
     (ha : 1 / 4 < a) (hv : a ≤ v) :
-    4 * u * v ≤ (a / (a - 1 / 4) ^ 2) * (v - u) ^ 2 := by
+    4 * u * v ≤ (a / (a - 1 / 4) ^ (2 : ℕ)) * (v - u) ^ (2 : ℕ) := by
   have hau : 0 < a - u := by linarith
   have hav : 0 < v - u := by linarith
   have hab : 0 < a - 1 / 4 := by linarith
   have ha0 : 0 ≤ a := by linarith
-  have hmonoVCore : v * (a - u) ^ 2 ≤ a * (v - u) ^ 2 := by
+  have hmonoVCore : v * (a - u) ^ (2 : ℕ) ≤ a * (v - u) ^ (2 : ℕ) := by
     have h1 : 0 ≤ v - a := sub_nonneg.mpr hv
-    have h2 : 0 ≤ a * v - u ^ 2 := by
+    have h2 : 0 ≤ a * v - u ^ (2 : ℕ) := by
       have huv : u ≤ a := hu.trans ha.le
-      have haa : a ^ 2 ≤ a * v := by
+      have haa : a ^ (2 : ℕ) ≤ a * v := by
         nlinarith [mul_nonneg ha0 (sub_nonneg.mpr hv)]
       nlinarith [mul_nonneg (sub_nonneg.mpr huv) (add_nonneg ha0 hu0)]
     nlinarith [mul_nonneg h1 h2]
   have hmonoV :
-      4 * u * v / (v - u) ^ 2 ≤ 4 * u * a / (a - u) ^ 2 := by
+      4 * u * v / (v - u) ^ (2 : ℕ) ≤ 4 * u * a / (a - u) ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ (sq_pos_of_pos hav) (sq_pos_of_pos hau)]
     calc
-      4 * u * v * (a - u) ^ 2 = (4 * u) * (v * (a - u) ^ 2) := by ring
-      _ ≤ (4 * u) * (a * (v - u) ^ 2) :=
+      4 * u * v * (a - u) ^ (2 : ℕ) = (4 * u) * (v * (a - u) ^ (2 : ℕ)) := by ring
+      _ ≤ (4 * u) * (a * (v - u) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hmonoVCore (by positivity)
-      _ = 4 * u * a * (v - u) ^ 2 := by ring
-  have hmonoUCore : u * (a - 1 / 4) ^ 2 ≤ (1 / 4 : ℝ) * (a - u) ^ 2 := by
+      _ = 4 * u * a * (v - u) ^ (2 : ℕ) := by ring
+  have hmonoUCore : u * (a - 1 / 4) ^ (2 : ℕ) ≤ (1 / 4 : ℝ) * (a - u) ^ (2 : ℕ) := by
     have h1 : 0 ≤ (1 / 4 : ℝ) - u := sub_nonneg.mpr hu
-    have h2 : 0 ≤ a ^ 2 - (1 / 4 : ℝ) * u := by
+    have h2 : 0 ≤ a ^ (2 : ℕ) - (1 / 4 : ℝ) * u := by
       nlinarith [mul_nonneg (sub_nonneg.mpr (hu.trans ha.le))
         (add_nonneg ha0 hu0)]
     nlinarith [mul_nonneg h1 h2]
   have hmonoU :
-      4 * u * a / (a - u) ^ 2 ≤ a / (a - 1 / 4) ^ 2 := by
+      4 * u * a / (a - u) ^ (2 : ℕ) ≤ a / (a - 1 / 4) ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ (sq_pos_of_pos hau) (sq_pos_of_pos hab)]
     have hscaled := mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) ha0)
       (sub_nonneg.mpr hmonoUCore)
@@ -202,12 +202,12 @@ lemma four_mul_u_mul_v_le_boundary_ratio
 /-- The exact relative orientation factor selected by the completed endpoint source. -/
 def xiThermalRelativeOrientationFactor : ℝ :=
   16 * xiEndpointCompletedCurvature * (1 - xiEndpointCompletedCurvature) /
-    (4 - 5 * xiEndpointCompletedCurvature) ^ 2
+    (4 - 5 * xiEndpointCompletedCurvature) ^ (2 : ℕ)
 
 theorem xiThermalRelativeOrientationFactor_eq_boundaryRatio :
     xiThermalRelativeOrientationFactor =
       ((1 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature) /
-        ((1 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature - 1 / 4) ^ 2 := by
+        ((1 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature - 1 / 4) ^ (2 : ℕ) := by
   have hCne := xiEndpointCompletedCurvature_pos.ne'
   unfold xiThermalRelativeOrientationFactor
   field_simp [hCne]
@@ -215,13 +215,13 @@ theorem xiThermalRelativeOrientationFactor_eq_boundaryRatio :
 
 /-- Exact atomwise source-controlled orientation estimate. -/
 theorem xiThermalOrientationTerm_le_relativeFactor_node_sq (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      xiThermalRelativeOrientationFactor * xiThermalNode q ^ 2 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      xiThermalRelativeOrientationFactor * xiThermalNode q ^ (2 : ℕ) := by
   let c : ℝ := xiEndpointCompletedCurvature
   let a : ℝ := (1 - c) / c
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let D : ℝ := (u + v) ^ 2
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+  let D : ℝ := (u + v) ^ (2 : ℕ)
   have hc0 : 0 < c := by simpa only [c] using xiEndpointCompletedCurvature_pos
   have hc : c < 1 / 3 := by
     simpa only [c] using xiEndpointCompletedCurvature_lt_one_third
@@ -250,25 +250,25 @@ theorem xiThermalOrientationTerm_le_relativeFactor_node_sq (q : XiZeroCopy) :
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
   change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2 ≤
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
     xiThermalRelativeOrientationFactor *
-      (((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2
-  rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-    show (q.1 : ℂ).im ^ 2 = v by rfl,
-    show (u + v) ^ 2 = D by rfl,
+      (((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)
+  rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+    show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+    show (u + v) ^ (2 : ℕ) = D by rfl,
     xiThermalRelativeOrientationFactor_eq_boundaryRatio]
-  change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im / D) ^ 2 ≤
-    (a / (a - 1 / 4) ^ 2) * ((v - u) / D) ^ 2
+  change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im / D) ^ (2 : ℕ) ≤
+    (a / (a - 1 / 4) ^ (2 : ℕ)) * ((v - u) / D) ^ (2 : ℕ)
   rw [div_pow, div_pow]
-  rw [show (a / (a - 1 / 4) ^ 2) * ((v - u) ^ 2 / D ^ 2) =
-      ((a / (a - 1 / 4) ^ 2) * (v - u) ^ 2) / D ^ 2 by ring]
+  rw [show (a / (a - 1 / 4) ^ (2 : ℕ)) * ((v - u) ^ (2 : ℕ) / D ^ (2 : ℕ)) =
+      ((a / (a - 1 / 4) ^ (2 : ℕ)) * (v - u) ^ (2 : ℕ)) / D ^ (2 : ℕ) by ring]
   apply (div_le_div_iff_of_pos_right (sq_pos_of_pos hD)).2
   calc
-    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 = 4 * u * v := by
+    (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) = 4 * u * v := by
       dsimp [u, v]
       ring
-    _ ≤ (a / (a - 1 / 4) ^ 2) * (v - u) ^ 2 := hratio
+    _ ≤ (a / (a - 1 / 4) ^ (2 : ℕ)) * (v - u) ^ (2 : ℕ) := hratio
 
 theorem xiThermalRelativeOrientationFactor_nonneg :
     0 ≤ xiThermalRelativeOrientationFactor := by
@@ -290,29 +290,29 @@ theorem xiThermalRelativeOrientationFactor_lt_thirtyTwo_over_fortyNine :
   have hprod : 0 < (1 / 3 - c) * (32 / 33 - c) := by
     exact mul_pos (sub_pos.mpr hc) (by nlinarith)
   unfold xiThermalRelativeOrientationFactor
-  change 16 * c * (1 - c) / (4 - 5 * c) ^ 2 < 32 / 49
+  change 16 * c * (1 - c) / (4 - 5 * c) ^ (2 : ℕ) < 32 / 49
   rw [div_lt_iff₀ (sq_pos_of_pos hden)]
   nlinarith
 
 set_option maxRecDepth 1000000 in
 /-- A certified decimal-free upper bound for Euler's constant, obtained from the decreasing
-Euler--Mascheroni sequence at the factorable index `3125 = 5^5`. -/
+Euler--Mascheroni sequence at the factorable index `3125 = 5^(5 : ℕ)`. -/
 lemma eulerMascheroniConstant_lt_twoThousandEightHundredEightySeven_over_fiveThousand :
     Real.eulerMascheroniConstant < 2887 / 5000 := by
   refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 3125).trans ?_
   rw [Real.eulerMascheroniSeq']
   norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (3125 : ℝ) = 5 ^ 5 by norm_num, Real.log_pow]
+  rw [show (3125 : ℝ) = 5 ^ (5 : ℕ) by norm_num, Real.log_pow]
   have h := Real.log_five_gt_d9
   norm_num [harmonic] at *
   linarith
 
 /-- A certified lower bound for the archimedean logarithm.  The smooth rational number
-`5^26 / (2^6 * 3^32)` lies below `4 * pi`, and the standard rigorous bounds for the logarithms
+`5^(26 : ℕ) / (2^(6 : ℕ) * 3^(32 : ℕ))` lies below `4 * pi`, and the standard rigorous bounds for the logarithms
 of `2`, `3`, and `5` evaluate its logarithm. -/
 lemma twoThousandFiveHundredThirtyNine_over_thousand_lt_log_four_mul_pi :
     25309 / 10000 < Real.log (4 * Real.pi) := by
-  let v : ℝ := 5 ^ 26 / (2 ^ 6 * 3 ^ 32)
+  let v : ℝ := 5 ^ (26 : ℕ) / (2 ^ (6 : ℕ) * 3 ^ (32 : ℕ))
   have hvpos : 0 < v := by
     dsimp [v]
     positivity
@@ -345,7 +345,7 @@ theorem xiThermalRelativeOrientationFactor_lt_one_twentieth :
     simpa only [c] using xiEndpointCompletedCurvature_lt_two_over_fortyThree
   have hden : 0 < 4 - 5 * c := by linarith
   unfold xiThermalRelativeOrientationFactor
-  change 16 * c * (1 - c) / (4 - 5 * c) ^ 2 < 1 / 20
+  change 16 * c * (1 - c) / (4 - 5 * c) ^ (2 : ℕ) < 1 / 20
   rw [div_lt_iff₀ (sq_pos_of_pos hden)]
   nlinarith [mul_pos (sub_pos.mpr hc) (by nlinarith : 0 < 82 / 21 - c)]
 
@@ -564,14 +564,14 @@ finite KMS divisor systems converge to a positive thermal value lying in the exp
 theorem xiBornWittenThermalQuantitativeMaster :
     (∀ x : ℝ, 0 ≤ x →
       thetaCuspFullSource x =
-        Real.pi * ∑' n : ℕ, thetaCuspBornWittenAmplitude n x ^ 2) ∧
+        Real.pi * ∑' n : ℕ, thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) ∧
     (∀ n : ℕ, 0 < n → ∀ x : ℝ, 0 ≤ x →
       thetaCuspSourceTerm x n =
-          Real.pi * thetaCuspBornWittenAmplitude n x ^ 2 ∧
+          Real.pi * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) ∧
       deriv (thetaCuspBornWittenAmplitude n) x +
           thetaCuspBornWittenSuperpotential n x *
             thetaCuspBornWittenAmplitude n x = 0 ∧
-      4 * Real.pi * (n : ℝ) ^ 2 ≤
+      4 * Real.pi * (n : ℝ) ^ (2 : ℕ) ≤
           thetaCuspBornWittenLogCurvature n x) ∧
     normalizedPrimeArchMoment 1 = thetaCuspBornWittenQuadraticSource ∧
     0 < thetaCuspBornWittenQuadraticSource ∧
@@ -631,13 +631,13 @@ theorem xiBornWittenThermalQuantitativeMaster :
 
 theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_over_16
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 2365 / 16) :
-    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 2365 / 16) :
+    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 2369 / 16
   have hu0 : 0 < u := by simpa only [u] using huLower
@@ -648,9 +648,9 @@ theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_o
   have hwLower : 85 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hw2Lower : (85 : ℝ) ^ 2 < w ^ 2 :=
+  have hw2Lower : (85 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hwLower (by norm_num) (by norm_num)
-  have hw2Upper : w ^ 2 < W ^ 2 :=
+  have hw2Upper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hwUpper hw0.le (by norm_num)
   have huv : u * v < 2365 / 64 := by
     calc
@@ -661,57 +661,57 @@ theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_o
       _ = 2365 / 64 := by ring
   have hshape :
       (1600000 : ℝ) * (2365 / 64) <
-        200000 * w ^ 2 - 9 * w ^ 4 := by
-    by_cases hmid : w ^ 2 ≤ 10000
-    · have hfactor : 0 < 200000 - 9 * (w ^ 2 + 7225) := by
+        200000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ) := by
+    by_cases hmid : w ^ (2 : ℕ) ≤ 10000
+    · have hfactor : 0 < 200000 - 9 * (w ^ (2 : ℕ) + 7225) := by
         nlinarith
       have hprod :
-          0 < (w ^ 2 - 7225) *
-            (200000 - 9 * (w ^ 2 + 7225)) :=
+          0 < (w ^ (2 : ℕ) - 7225) *
+            (200000 - 9 * (w ^ (2 : ℕ) + 7225)) :=
         mul_pos (sub_pos.mpr (by
           norm_num at hw2Lower ⊢
           exact hw2Lower)) hfactor
       have hid :
-          (200000 * w ^ 2 - 9 * w ^ 4) -
-              (200000 * 7225 - 9 * 7225 ^ 2) =
-            (w ^ 2 - 7225) *
-              (200000 - 9 * (w ^ 2 + 7225)) := by
+          (200000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ)) -
+              (200000 * 7225 - 9 * 7225 ^ (2 : ℕ)) =
+            (w ^ (2 : ℕ) - 7225) *
+              (200000 - 9 * (w ^ (2 : ℕ) + 7225)) := by
         ring
       have hend :
           (1600000 : ℝ) * (2365 / 64) <
-            200000 * 7225 - 9 * 7225 ^ 2 := by
+            200000 * 7225 - 9 * 7225 ^ (2 : ℕ) := by
         norm_num
       nlinarith
-    · have hmid' : 10000 < w ^ 2 := lt_of_not_ge hmid
-      have hfactor : 0 < 9 * (W ^ 2 + w ^ 2) - 200000 := by
+    · have hmid' : 10000 < w ^ (2 : ℕ) := lt_of_not_ge hmid
+      have hfactor : 0 < 9 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 200000 := by
         dsimp only [W]
         nlinarith
       have hprod :
-          0 < (W ^ 2 - w ^ 2) *
-            (9 * (W ^ 2 + w ^ 2) - 200000) :=
+          0 < (W ^ (2 : ℕ) - w ^ (2 : ℕ)) *
+            (9 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 200000) :=
         mul_pos (sub_pos.mpr hw2Upper) hfactor
       have hid :
-          (200000 * w ^ 2 - 9 * w ^ 4) -
-              (200000 * W ^ 2 - 9 * W ^ 4) =
-            (W ^ 2 - w ^ 2) *
-              (9 * (W ^ 2 + w ^ 2) - 200000) := by
+          (200000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ)) -
+              (200000 * W ^ (2 : ℕ) - 9 * W ^ (4 : ℕ)) =
+            (W ^ (2 : ℕ) - w ^ (2 : ℕ)) *
+              (9 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 200000) := by
         ring
       have hend :
           (1600000 : ℝ) * (2365 / 64) <
-            200000 * W ^ 2 - 9 * W ^ 4 := by
+            200000 * W ^ (2 : ℕ) - 9 * W ^ (4 : ℕ) := by
         norm_num [W]
       rw [← hid] at hprod
       exact hend.trans (sub_pos.mp hprod)
   have hG :
-      0 < 200000 * (v ^ 2 - 6 * u * v + u ^ 2) - 9 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 200000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 9 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]

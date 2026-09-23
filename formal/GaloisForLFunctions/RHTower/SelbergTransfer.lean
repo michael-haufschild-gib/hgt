@@ -38,16 +38,16 @@ open MeasureTheory Set Complex
 matched sum, this is the statement that the completed truncation's line
 profile is a rotated real signal (Hardy `Z`-shape). -/
 theorem norm_add_sq_unit_conj_eq (v S : ℂ) (hv : ‖v‖ = 1) :
-    ‖S + v ^ 2 * (starRingEnd ℂ) S‖ = 2 * |((starRingEnd ℂ) v * S).re| := by
-  have key : S + v ^ 2 * (starRingEnd ℂ) S
+    ‖S + v ^ (2 : ℕ) * (starRingEnd ℂ) S‖ = 2 * |((starRingEnd ℂ) v * S).re| := by
+  have key : S + v ^ (2 : ℕ) * (starRingEnd ℂ) S
       = v * (((starRingEnd ℂ) v * S) + (starRingEnd ℂ) ((starRingEnd ℂ) v * S)) := by
     have hvv : v * (starRingEnd ℂ) v = 1 := by
       have := Complex.mul_conj v
       rw [this]
       norm_cast
       simp [Complex.normSq_eq_norm_sq, hv]
-    calc S + v ^ 2 * (starRingEnd ℂ) S
-        = (v * (starRingEnd ℂ) v) * S + v ^ 2 * (starRingEnd ℂ) S := by
+    calc S + v ^ (2 : ℕ) * (starRingEnd ℂ) S
+        = (v * (starRingEnd ℂ) v) * S + v ^ (2 : ℕ) * (starRingEnd ℂ) S := by
           rw [hvv, one_mul]
       _ = v * (((starRingEnd ℂ) v * S) + (starRingEnd ℂ) ((starRingEnd ℂ) v * S)) := by
           rw [map_mul, Complex.conj_conj]; ring
@@ -59,7 +59,7 @@ theorem norm_add_sq_unit_conj_eq (v S : ℂ) (hv : ‖v‖ = 1) :
 `‖S + v²·conj S‖ ≤ 2‖S‖`. Contrapositively, a small one-sided sum is only
 possible where the completed profile (= `ζ` up to the R–S error) is small. -/
 theorem norm_add_sq_unit_conj_le (v S : ℂ) (hv : ‖v‖ = 1) :
-    ‖S + v ^ 2 * (starRingEnd ℂ) S‖ ≤ 2 * ‖S‖ := by
+    ‖S + v ^ (2 : ℕ) * (starRingEnd ℂ) S‖ ≤ 2 * ‖S‖ := by
   rw [norm_add_sq_unit_conj_eq v S hv]
   have h1 : |((starRingEnd ℂ) v * S).re| ≤ ‖(starRingEnd ℂ) v * S‖ :=
     Complex.abs_re_le_norm _

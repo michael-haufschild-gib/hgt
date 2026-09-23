@@ -15,7 +15,7 @@ infinity: every finite family of sections is eventually positive definite
 
 The mechanism is the exact diagonal-congruence factorisation
 `v ⬝ᵥ H_(J,tau) *ᵥ v = (sqrt tau)⁻¹ * (w ⬝ᵥ K_tau *ᵥ w)` with `w_i = v_i (sqrt tau)⁻¹^i`, where the
-cooled Hankel matrix `K_tau` has entries `∫ y^(i+j) exp(-y^2) J(y / sqrt tau) dy`.  As `tau -> ∞` those
+cooled Hankel matrix `K_tau` has entries `∫ y^(i+j) exp(-y^(2 : ℕ)) J(y / sqrt tau) dy`.  As `tau -> ∞` those
 entries converge to `J 0` times the standard Gaussian moments, whose Hankel matrix is positive
 definite; positive-definiteness is open under entrywise convergence, so `K_tau` — and therefore
 `H_(J,tau)` — is eventually positive definite.
@@ -39,7 +39,7 @@ theorem weightedMoment_eq_cooled {tau : ℝ} (htau : 0 < tau) (J : ℝ → ℝ) 
       = (Real.sqrt tau)⁻¹ ^ (m + 1) * cooledMoment J tau m :=
   weightedMoment_gaussianWindow_rescale htau J m
 
-/-- The standard Gaussian moment `∫ y^m exp(-y^2) dy` is the unit-window weighted moment of the
+/-- The standard Gaussian moment `∫ y^m exp(-y^(2 : ℕ)) dy` is the unit-window weighted moment of the
 constant density `1`. -/
 theorem gaussianStdMoment_eq (m : ℕ) :
     (∫ y, y ^ m * Real.exp (-y ^ 2)) = weightedMoment (gaussianWindowMeasure 1) (fun _ => 1) m := by

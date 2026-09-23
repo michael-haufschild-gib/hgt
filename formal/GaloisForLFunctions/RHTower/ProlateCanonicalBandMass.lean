@@ -21,7 +21,7 @@ namespace RHTower
 whole line at every live aperture. -/
 theorem integrable_sq_signedModeRadialData
     {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
-    Integrable (fun x : ℝ => (signedModeRadialData a n).R x ^ 2)
+    Integrable (fun x : ℝ => (signedModeRadialData a n).R x ^ (2 : ℕ))
       (volume : Measure ℝ) := by
   let D := signedModeRadialData a n
   have hD := signedModeRadialData_isExact ha n hvalue
@@ -32,13 +32,13 @@ theorem integrable_sq_signedModeRadialData
     positivity
   have hRband : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) D.R x =
-        evenProlateSignedValue a n ^ 2 * D.R x := by
+        evenProlateSignedValue a n ^ (2 : ℕ) * D.R x := by
     rw [hRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hband
   have htransform := GaloisForLFunctions.RHTower.integrable_sq_bandTransform hc hR.continuous
   have hscaled : Integrable
-      (fun x : ℝ => (evenProlateSignedValue a n ^ 2)⁻¹ ^ 2 *
-        (bandTransform (signedModeRadialBandwidth a) D.R x) ^ 2)
+      (fun x : ℝ => (evenProlateSignedValue a n ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) *
+        (bandTransform (signedModeRadialBandwidth a) D.R x) ^ (2 : ℕ))
       (volume : Measure ℝ) := htransform.const_mul _
   refine hscaled.congr ?_
   filter_upwards with x
@@ -50,9 +50,9 @@ theorem integrable_sq_signedModeRadialData
 aperture. -/
 theorem integral_outside_sq_signedModeRadialData_eq_leakage_ratio
     {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
-    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, (signedModeRadialData a n).R x ^ 2) =
-      (∫ x in (-1 : ℝ)..1, (signedModeRadialData a n).R x ^ 2) *
-        evenProlateSignedLeakage a n / evenProlateSignedValue a n ^ 2 := by
+    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, (signedModeRadialData a n).R x ^ (2 : ℕ)) =
+      (∫ x in (-1 : ℝ)..1, (signedModeRadialData a n).R x ^ (2 : ℕ)) *
+        evenProlateSignedLeakage a n / evenProlateSignedValue a n ^ (2 : ℕ) := by
   let D := signedModeRadialData a n
   have hD := signedModeRadialData_isExact ha n hvalue
   rcases hD with ⟨hPhi, _hPhi0, _hPhiEven, _hPhi1, hRdef, hR, _hREven, _hR1,
@@ -62,7 +62,7 @@ theorem integral_outside_sq_signedModeRadialData_eq_leakage_ratio
     positivity
   have hRband : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) D.R x =
-        evenProlateSignedValue a n ^ 2 * D.R x := by
+        evenProlateSignedValue a n ^ (2 : ℕ) * D.R x := by
     rw [hRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hband
   have hmass :=

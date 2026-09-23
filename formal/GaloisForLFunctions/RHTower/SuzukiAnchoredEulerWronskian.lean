@@ -39,7 +39,7 @@ def suzukiEulerWronskian (A B : ℂ → ℂ) (z : ℂ) : ℂ :=
 
 /-- Euler defect of the Donoghue probability kernel, in its endpoint-regular rational form. -/
 def suzukiDonoghueEulerKernel (t : ℝ) (z : ℂ) : ℂ :=
-  ((t : ℂ) * (z ^ 2 - 1) + 2 * z) / ((t : ℂ) - z) ^ 2
+  ((t : ℂ) * (z ^ (2 : ℕ) - 1) + 2 * z) / ((t : ℂ) - z) ^ (2 : ℕ)
 
 /-! ## Exact linear and common-gauge kernels -/
 
@@ -59,7 +59,7 @@ theorem suzukiEulerWronskian_commonGauge
     (G A B : ℂ → ℂ) (z : ℂ)
     (hG : AnalyticAt ℂ G z) (hA : AnalyticAt ℂ A z) (hB : AnalyticAt ℂ B z) :
     suzukiEulerWronskian (fun w => G w * A w) (fun w => G w * B w) z =
-      G z ^ 2 * suzukiEulerWronskian A B z := by
+      G z ^ (2 : ℕ) * suzukiEulerWronskian A B z := by
   have hGA : deriv (fun w => G w * A w) z =
       deriv G z * A z + G z * deriv A z :=
     ((hG.differentiableAt.hasDerivAt).mul
@@ -76,9 +76,9 @@ theorem suzukiEulerDefect_div
     (A B : ℂ → ℂ) (z : ℂ)
     (hA : AnalyticAt ℂ A z) (hB : AnalyticAt ℂ B z) (hBz : B z ≠ 0) :
     suzukiEulerDefect (fun w => A w / B w) z =
-      suzukiEulerWronskian A B z / B z ^ 2 := by
+      suzukiEulerWronskian A B z / B z ^ (2 : ℕ) := by
   have hquot : HasDerivAt (fun w : ℂ => A w / B w)
-      ((deriv A z * B z - A z * deriv B z) / B z ^ 2) z :=
+      ((deriv A z * B z - A z * deriv B z) / B z ^ (2 : ℕ)) z :=
     hA.differentiableAt.hasDerivAt.div hB.differentiableAt.hasDerivAt hBz
   rw [suzukiEulerDefect, suzukiEulerWronskian, hquot.deriv]
   field_simp [hBz]
@@ -88,12 +88,12 @@ theorem suzukiEulerDefect_neg_I_mul_div
     (A B : ℂ → ℂ) (z : ℂ)
     (hA : AnalyticAt ℂ A z) (hB : AnalyticAt ℂ B z) (hBz : B z ≠ 0) :
     suzukiEulerDefect (fun w => -I * (A w / B w)) z =
-      -I * suzukiEulerWronskian A B z / B z ^ 2 := by
+      -I * suzukiEulerWronskian A B z / B z ^ (2 : ℕ) := by
   have hquot : HasDerivAt (fun w : ℂ => A w / B w)
-      ((deriv A z * B z - A z * deriv B z) / B z ^ 2) z :=
+      ((deriv A z * B z - A z * deriv B z) / B z ^ (2 : ℕ)) z :=
     hA.differentiableAt.hasDerivAt.div hB.differentiableAt.hasDerivAt hBz
   have hcarrier : deriv (fun w : ℂ => -I * (A w / B w)) z =
-      -I * ((deriv A z * B z - A z * deriv B z) / B z ^ 2) := by
+      -I * ((deriv A z * B z - A z * deriv B z) / B z ^ (2 : ℕ)) := by
     exact (hquot.const_mul (-I)).deriv
   rw [suzukiEulerDefect, suzukiEulerWronskian, hcarrier]
   field_simp [hBz]
@@ -105,8 +105,8 @@ theorem suzukiEulerWronskianQuotient_commonGauge
     (hG : AnalyticAt ℂ G z) (hA : AnalyticAt ℂ A z) (hB : AnalyticAt ℂ B z)
     (hGz : G z ≠ 0) (hBz : B z ≠ 0) :
     suzukiEulerWronskian (fun w => G w * A w) (fun w => G w * B w) z /
-        (G z * B z) ^ 2 =
-      suzukiEulerWronskian A B z / B z ^ 2 := by
+        (G z * B z) ^ (2 : ℕ) =
+      suzukiEulerWronskian A B z / B z ^ (2 : ℕ) := by
   rw [suzukiEulerWronskian_commonGauge G A B z hG hA hB]
   field_simp [hGz, hBz]
 
@@ -115,7 +115,7 @@ theorem suzukiEulerWronskianQuotient_commonGauge
 /-- Named homogeneous Euler--Wronskian of the boundary-free shifted Xi pair
 `(z² XiC, XiC' - eta XiC)`. -/
 def suzukiShiftedXiEulerWronskian (eta z : ℂ) : ℂ :=
-  suzukiEulerWronskian (fun w => w ^ 2 * _root_.RHTower.XiC w)
+  suzukiEulerWronskian (fun w => w ^ (2 : ℕ) * _root_.RHTower.XiC w)
     (_root_.RHTower.suzukiShiftedXiDenominator eta) z
 
 /-- The one-phase shifted Xi target's Euler defect is exactly its named pair covariant divided by
@@ -126,16 +126,16 @@ theorem suzukiEulerDefect_suzukiShiftedXiTarget
     (hden : _root_.RHTower.suzukiShiftedXiDenominator eta z ≠ 0) :
     suzukiEulerDefect (_root_.RHTower.suzukiShiftedXiTarget eta) z =
       suzukiShiftedXiEulerWronskian eta z /
-        _root_.RHTower.suzukiShiftedXiDenominator eta z ^ 2 := by
+        _root_.RHTower.suzukiShiftedXiDenominator eta z ^ (2 : ℕ) := by
   have hXi : AnalyticAt ℂ _root_.RHTower.XiC z :=
     _root_.RHTower.XiC_analytic z (Set.mem_univ z)
-  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ 2 * _root_.RHTower.XiC w) z := by
+  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ) * _root_.RHTower.XiC w) z := by
     fun_prop
   have hdenAn : AnalyticAt ℂ (_root_.RHTower.suzukiShiftedXiDenominator eta) z := by
     exact hXi.deriv.sub (analyticAt_const.mul hXi)
   simpa only [_root_.RHTower.suzukiShiftedXiTarget,
     suzukiShiftedXiEulerWronskian] using!
-    suzukiEulerDefect_div (fun w : ℂ => w ^ 2 * _root_.RHTower.XiC w)
+    suzukiEulerDefect_div (fun w : ℂ => w ^ (2 : ℕ) * _root_.RHTower.XiC w)
       (_root_.RHTower.suzukiShiftedXiDenominator eta) z hnum hdenAn hden
 
 /-! ## Donoghue kernel and its projective endpoint values -/
@@ -144,15 +144,15 @@ theorem suzukiEulerDefect_suzukiShiftedXiTarget
 theorem hasDerivAt_suzukiDonoghueKernel
     (t : ℝ) (z : ℂ) (h : (t : ℂ) - z ≠ 0) :
     HasDerivAt (suzukiDonoghueKernel t)
-      (((t : ℂ) ^ 2 + 1) / ((t : ℂ) - z) ^ 2) z := by
-  have hnum : HasDerivAt (fun w : ℂ => w ^ 2 + 1) (2 * z) z := by
+      (((t : ℂ) ^ (2 : ℕ) + 1) / ((t : ℂ) - z) ^ (2 : ℕ)) z := by
+  have hnum : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1) (2 * z) z := by
     simpa [id_eq, mul_comm] using ((hasDerivAt_id z).pow 2).add_const 1
   have hden : HasDerivAt (fun w : ℂ => (t : ℂ) - w) (-1) z := by
     simpa using! (hasDerivAt_const z (t : ℂ)).sub (hasDerivAt_id z)
   have hkernel := (hasDerivAt_id z).add (hnum.div hden h)
   have hcoeff :
-      1 + (2 * z * ((t : ℂ) - z) - (z ^ 2 + 1) * (-1)) / ((t : ℂ) - z) ^ 2 =
-        ((t : ℂ) ^ 2 + 1) / ((t : ℂ) - z) ^ 2 := by
+      1 + (2 * z * ((t : ℂ) - z) - (z ^ (2 : ℕ) + 1) * (-1)) / ((t : ℂ) - z) ^ (2 : ℕ) =
+        ((t : ℂ) ^ (2 : ℕ) + 1) / ((t : ℂ) - z) ^ (2 : ℕ) := by
     field_simp [h]
     ring
   rw [← hcoeff]
@@ -172,8 +172,8 @@ theorem suzukiEulerDefect_donoghueKernel
 theorem suzukiDonoghueEulerKernel_eq_inverse_decomp
     (t : ℝ) (z : ℂ) (h : (t : ℂ) - z ≠ 0) :
     suzukiDonoghueEulerKernel t z =
-      (z ^ 2 - 1) / ((t : ℂ) - z) +
-        (z * (z ^ 2 + 1)) / ((t : ℂ) - z) ^ 2 := by
+      (z ^ (2 : ℕ) - 1) / ((t : ℂ) - z) +
+        (z * (z ^ (2 : ℕ) + 1)) / ((t : ℂ) - z) ^ (2 : ℕ) := by
   rw [suzukiDonoghueEulerKernel]
   field_simp [h]
   ring
@@ -193,13 +193,13 @@ theorem tendsto_suzukiDonoghueEulerKernel_atTop
   have hinv : Tendsto (fun t : ℝ => ((t : ℂ) - z)⁻¹) atTop (nhds 0) :=
     tendsto_inv₀_cobounded.comp hden
   have hfirst : Tendsto
-      (fun t : ℝ => (z ^ 2 - 1) * ((t : ℂ) - z)⁻¹) atTop (nhds 0) := by
+      (fun t : ℝ => (z ^ (2 : ℕ) - 1) * ((t : ℂ) - z)⁻¹) atTop (nhds 0) := by
     simpa only [mul_zero] using
-      (tendsto_const_nhds (x := z ^ 2 - 1)).mul hinv
+      (tendsto_const_nhds (x := z ^ (2 : ℕ) - 1)).mul hinv
   have hsecond : Tendsto
-      (fun t : ℝ => (z * (z ^ 2 + 1)) * (((t : ℂ) - z)⁻¹) ^ 2) atTop (nhds 0) := by
+      (fun t : ℝ => (z * (z ^ (2 : ℕ) + 1)) * (((t : ℂ) - z)⁻¹) ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa only [zero_pow two_ne_zero, mul_zero] using
-      (tendsto_const_nhds (x := z * (z ^ 2 + 1))).mul (hinv.pow 2)
+      (tendsto_const_nhds (x := z * (z ^ (2 : ℕ) + 1))).mul (hinv.pow 2)
   have hsum := hfirst.add hsecond
   simpa only [suzukiDonoghueEulerKernel_eq_inverse_decomp _ z (htz _),
     div_eq_mul_inv, inv_pow, mul_zero, add_zero, zero_pow two_ne_zero] using hsum
@@ -219,13 +219,13 @@ theorem tendsto_suzukiDonoghueEulerKernel_atBot
   have hinv : Tendsto (fun t : ℝ => ((t : ℂ) - z)⁻¹) atBot (nhds 0) :=
     tendsto_inv₀_cobounded.comp hden
   have hfirst : Tendsto
-      (fun t : ℝ => (z ^ 2 - 1) * ((t : ℂ) - z)⁻¹) atBot (nhds 0) := by
+      (fun t : ℝ => (z ^ (2 : ℕ) - 1) * ((t : ℂ) - z)⁻¹) atBot (nhds 0) := by
     simpa only [mul_zero] using
-      (tendsto_const_nhds (x := z ^ 2 - 1)).mul hinv
+      (tendsto_const_nhds (x := z ^ (2 : ℕ) - 1)).mul hinv
   have hsecond : Tendsto
-      (fun t : ℝ => (z * (z ^ 2 + 1)) * (((t : ℂ) - z)⁻¹) ^ 2) atBot (nhds 0) := by
+      (fun t : ℝ => (z * (z ^ (2 : ℕ) + 1)) * (((t : ℂ) - z)⁻¹) ^ (2 : ℕ)) atBot (nhds 0) := by
     simpa only [zero_pow two_ne_zero, mul_zero] using
-      (tendsto_const_nhds (x := z * (z ^ 2 + 1))).mul (hinv.pow 2)
+      (tendsto_const_nhds (x := z * (z ^ (2 : ℕ) + 1))).mul (hinv.pow 2)
   have hsum := hfirst.add hsecond
   simpa only [suzukiDonoghueEulerKernel_eq_inverse_decomp _ z (htz _),
     div_eq_mul_inv, inv_pow, mul_zero, add_zero, zero_pow two_ne_zero] using hsum
@@ -261,7 +261,7 @@ theorem eqOn_upperHalfPlane_of_suzukiEulerDefect_eq_of_eq_I
     have hnz : DifferentiableAt ℂ n z :=
       hn.differentiableAt (UpperHalfPlane.isOpen_upperHalfPlaneSet.mem_nhds hz)
     have hformula : deriv q z =
-        (((deriv m z - deriv n z) * z - (m z - n z)) / z ^ 2) := by
+        (((deriv m z - deriv n z) * z - (m z - n z)) / z ^ (2 : ℕ)) := by
       have hsub : HasDerivAt (fun w => m w - n w)
           (deriv m z - deriv n z) z := by
         simpa only [Pi.sub_apply] using! hmz.hasDerivAt.sub hnz.hasDerivAt

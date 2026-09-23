@@ -11,7 +11,7 @@ module carries the *cofinal* statement of
 tau_omega(z) = sum_d mu(d) P_omega(d) d^(-z)
              = zeta(2 sigma)/(zeta(sigma) zeta(sigma+z)) ,       Re z >= 0,
 |tau_omega(z)| <= 1 ,                                            Re z >= 0,
-tau_omega(0)   = zeta(2 sigma)/zeta(sigma)^2 .
+tau_omega(0)   = zeta(2 sigma)/zeta(sigma)^(2 : ℕ) .
 ```
 
 The contraction bound is the exact probabilistic one: `tau_omega` is a signed average of unimodular

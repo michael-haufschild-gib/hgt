@@ -129,7 +129,7 @@ open GaloisForLFunctions.RHTower
 
 /-! ## `ζ'/ζ → 0` on the positive real ray -/
 
-theorem tsum_vonMangoldt_rpow_le {σ : ℝ} (hσ : 3 ≤ σ) :
+theorem tsum_vonMangoldt_rpow_le_suzukiWeilAppendixDerivative {σ : ℝ} (hσ : 3 ≤ σ) :
     (∑' n : ℕ, ArithmeticFunction.vonMangoldt n * (n : ℝ) ^ (-σ))
       ≤ (2 : ℝ) ^ (2 - σ) *
         ∑' n : ℕ, ArithmeticFunction.vonMangoldt n * (n : ℝ) ^ (-(2 : ℝ)) := by
@@ -184,7 +184,7 @@ theorem tendsto_tsum_vonMangoldt_rpow_atTop :
   · refine tsum_nonneg fun n => ?_
     exact mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.rpow_nonneg (by positivity) _)
   · filter_upwards [eventually_ge_atTop (3 : ℝ)] with σ hσ
-    exact tsum_vonMangoldt_rpow_le hσ
+    exact tsum_vonMangoldt_rpow_le_suzukiWeilAppendixDerivative hσ
 
 theorem tendsto_logDeriv_riemannZeta_ofReal_atTop :
     Tendsto (fun σ : ℝ => logDeriv riemannZeta ((σ : ℝ) : ℂ)) atTop (𝓝 0) := by

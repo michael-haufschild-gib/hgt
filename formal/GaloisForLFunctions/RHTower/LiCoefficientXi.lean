@@ -65,12 +65,12 @@ theorem norm_xiRootW_eq_one_iff {ρ : ℂ} (h : ρ ≠ 0) : ‖xiRootW ρ‖ = 1
   rw [norm_xiRootW h, div_eq_one_iff_eq (ne_of_gt hpos)]
   constructor
   · intro hEq
-    have h2 : ‖ρ - 1‖ ^ 2 = ‖ρ‖ ^ 2 := by rw [hEq]
+    have h2 : ‖ρ - 1‖ ^ (2 : ℕ) = ‖ρ‖ ^ (2 : ℕ) := by rw [hEq]
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply,
       Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im] at h2
     nlinarith
   · intro hre
-    have h2 : ‖ρ - 1‖ ^ 2 = ‖ρ‖ ^ 2 := by
+    have h2 : ‖ρ - 1‖ ^ (2 : ℕ) = ‖ρ‖ ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply,
         Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im]
       nlinarith
@@ -121,12 +121,12 @@ theorem exists_bound_xiRootW :
     exact le_trans (hB hmem) (le_trans (le_max_left _ _) (le_max_left _ _))
   · push Not at hρ
     have hsq := xi_divisor_support_centered_re_sq_lt_quarter ρ
-    have hnorm : ‖(ρ : ℂ) - 1 / 2‖ ^ 2 = ((ρ : ℂ).re - 1 / 2) ^ 2 + (ρ : ℂ).im ^ 2 := by
+    have hnorm : ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ) = ((ρ : ℂ).re - 1 / 2) ^ (2 : ℕ) + (ρ : ℂ).im ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
       norm_num
       ring
-    have hgt : (1 : ℝ) < ‖(ρ : ℂ) - 1 / 2‖ ^ 2 := by nlinarith [norm_nonneg ((ρ : ℂ) - 1 / 2)]
-    have himsq : (3 : ℝ) / 4 < (ρ : ℂ).im ^ 2 := by linarith [hnorm, hsq]
+    have hgt : (1 : ℝ) < ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg ((ρ : ℂ) - 1 / 2)]
+    have himsq : (3 : ℝ) / 4 < (ρ : ℂ).im ^ (2 : ℕ) := by linarith [hnorm, hsq]
     have hrho : (1 : ℝ) / 2 < ‖(ρ : ℂ)‖ := by
       have h1 : |(ρ : ℂ).im| ≤ ‖(ρ : ℂ)‖ := Complex.abs_im_le_norm _
       nlinarith [abs_nonneg ((ρ : ℂ).im), sq_abs ((ρ : ℂ).im)]
@@ -175,7 +175,7 @@ def xiLiPaired (n : ℕ) : ℂ := ∑' ρ : XiDivisorSupport, xiLiPairedTerm n �
 theorem summable_xiLiPairedTerm (n : ℕ) : Summable (xiLiPairedTerm n) := by
   obtain ⟨M, hM1, hM⟩ := exists_bound_xiRootW
   refine Summable.of_norm_bounded
-    (xi_zero_multiplicity_inv_sq_summable.mul_left ((n : ℝ) ^ 2 * M ^ n)) fun ρ => ?_
+    (xi_zero_multiplicity_inv_sq_summable.mul_left ((n : ℝ) ^ (2 : ℕ) * M ^ n)) fun ρ => ?_
   have hmult : (0 : ℝ) ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
     exact_mod_cast (xi_divisor_pos_on_support ρ).le
   have him : (ρ : ℂ).im ≠ 0 := xi_divisor_support_im_ne_zero ρ
@@ -193,22 +193,22 @@ theorem summable_xiLiPairedTerm (n : ℕ) : Summable (xiLiPairedTerm n) := by
   rw [norm_xiRootW_sub_one] at hbase
   have hMn : max ‖xiRootW (ρ : ℂ)‖ ‖xiRootW (ρ : ℂ)‖⁻¹ ^ n ≤ M ^ n :=
     pow_le_pow_left₀ (le_trans (norm_nonneg _) (le_max_left _ _)) (hM ρ) n
-  have hsq : (1 / ‖(ρ : ℂ)‖) ^ 2 = 1 / ‖(ρ : ℂ)‖ ^ 2 := by
+  have hsq : (1 / ‖(ρ : ℂ)‖) ^ (2 : ℕ) = 1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ) := by
     rw [div_pow, one_pow]
   rw [xiLiPairedTerm, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hmult]
-  have hfin : ‖liTerm (xiRootW (ρ : ℂ)) n‖ ≤ (n : ℝ) ^ 2 * M ^ n * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+  have hfin : ‖liTerm (xiRootW (ρ : ℂ)) n‖ ≤ (n : ℝ) ^ (2 : ℕ) * M ^ n * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
     refine le_trans hbase ?_
     rw [hsq]
-    have hnn : (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ 2 := by positivity
-    have hnn2 : (0 : ℝ) ≤ (n : ℝ) ^ 2 := sq_nonneg _
+    have hnn : (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ) := by positivity
+    have hnn2 : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := sq_nonneg _
     rw [mul_assoc, mul_assoc]
     gcongr
   calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖liTerm (xiRootW (ρ : ℂ)) n‖
       ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
-          ((n : ℝ) ^ 2 * M ^ n * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
+          ((n : ℝ) ^ (2 : ℕ) * M ^ n * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))) := by
         exact mul_le_mul_of_nonneg_left hfin hmult
-    _ = (n : ℝ) ^ 2 * M ^ n * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) /
-          ‖(ρ : ℂ)‖ ^ 2) := by ring
+    _ = (n : ℝ) ^ (2 : ℕ) * M ^ n * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) /
+          ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by ring
 
 /-- **The easy half of Li's criterion.**  Under RH every zero has `‖w_ρ‖ = 1`, so every paired Li
 coefficient is a nonnegative real. -/

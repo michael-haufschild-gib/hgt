@@ -53,7 +53,7 @@ theorem forced_difference_equation {carrierPos carrierJump carrierAdj carrier : 
 term and boundedness of the adjacency give a bound on the paired vector with the explicit constant
 `(μ − τ)⁻¹`. -/
 theorem energy_estimate {v w positionTerm jumpTerm adjacencyTerm : H} {μ τ : ℝ}
-    (hM : μ * ‖v‖ ^ 2 ≤ (inner ℂ positionTerm v).re)
+    (hM : μ * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ positionTerm v).re)
     (hR : 0 ≤ (inner ℂ jumpTerm v).re)
     (hT : ‖adjacencyTerm‖ ≤ τ * ‖v‖)
     (heq : positionTerm + jumpTerm - adjacencyTerm = w) :
@@ -67,13 +67,13 @@ theorem energy_estimate {v w positionTerm jumpTerm adjacencyTerm : H} {μ τ : �
     have h1 : (inner ℂ adjacencyTerm v).re ≤ ‖adjacencyTerm‖ * ‖v‖ :=
       le_trans (Complex.re_le_norm _) (norm_inner_le_norm (𝕜 := ℂ) adjacencyTerm v)
     exact le_trans h1 (mul_le_mul_of_nonneg_right hT (norm_nonneg _))
-  have hlow : (μ - τ) * ‖v‖ ^ 2 ≤ (inner ℂ w v).re := by
+  have hlow : (μ - τ) * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ w v).re := by
     rw [hsplit]
     nlinarith [hM, hR, hadj, sq_nonneg ‖v‖]
   have hup : (inner ℂ w v).re ≤ ‖w‖ * ‖v‖ :=
     le_trans (Complex.re_le_norm _) (norm_inner_le_norm (𝕜 := ℂ) w v)
   have hkey : (μ - τ) * ‖v‖ * ‖v‖ ≤ ‖w‖ * ‖v‖ := by
-    have : (μ - τ) * ‖v‖ ^ 2 ≤ ‖w‖ * ‖v‖ := le_trans hlow hup
+    have : (μ - τ) * ‖v‖ ^ (2 : ℕ) ≤ ‖w‖ * ‖v‖ := le_trans hlow hup
     nlinarith [this]
   rcases eq_or_lt_of_le (norm_nonneg v) with hv | hv
   · rw [← hv]
@@ -84,7 +84,7 @@ theorem energy_estimate {v w positionTerm jumpTerm adjacencyTerm : H} {μ τ : �
 bounded by the forcing divided by the position gap. -/
 theorem energy_estimate_div {v w positionTerm jumpTerm adjacencyTerm : H} {L₀ τ : ℝ}
     (hgap : τ < 2 * L₀)
-    (hM : (2 * L₀) * ‖v‖ ^ 2 ≤ (inner ℂ positionTerm v).re)
+    (hM : (2 * L₀) * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ positionTerm v).re)
     (hR : 0 ≤ (inner ℂ jumpTerm v).re)
     (hT : ‖adjacencyTerm‖ ≤ τ * ‖v‖)
     (heq : positionTerm + jumpTerm - adjacencyTerm = w) :

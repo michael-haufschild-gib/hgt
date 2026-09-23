@@ -126,7 +126,7 @@ theorem xiFixedAdjacentCayleyAbelCoefficient_one_re_eq_zero
 /-- For a purely imaginary complex number, minus its square is its real norm square. -/
 theorem neg_sq_eq_ofReal_normSq_of_re_eq_zero
     (z : ℂ) (hz : z.re = 0) :
-    -z ^ 2 = (Complex.normSq z : ℂ) := by
+    -z ^ (2 : ℕ) = (Complex.normSq z : ℂ) := by
   apply Complex.ext <;>
     simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im, pow_two, hz]
 
@@ -138,15 +138,15 @@ theorem xiFixedAdjacent_reflectedProjectorTerm_eq_normSq
         (xiFixedCriticalFeatureValue t rho *
             xiFixedCriticalFeatureValue (t + 1) (xiZeroLineConjEquiv rho) -
           xiFixedCriticalFeatureValue t (xiZeroLineConjEquiv rho) *
-            xiFixedCriticalFeatureValue (t + 1) rho) ^ 2 =
+            xiFixedCriticalFeatureValue (t + 1) rho) ^ (2 : ℕ) =
       (Complex.normSq (xiFixedAdjacentCayleyAbelCoefficient 1 t rho) : ℂ) := by
   rw [xiExteriorCayleyAbelGreenMultiplier_lineConj_one_eq_neg,
     xiFixedCriticalFeaturePluecker_eq_adjacentDet]
   rw [show xiExteriorCayleyAbelGreenMultiplier 1 rho *
         -xiExteriorCayleyAbelGreenMultiplier 1 rho *
         adjacentCriticalFeatureEvaluationDet t (xiSpectralPointSupport rho)
-          (abs_xiSpectralPointSupport_im_lt_half_exteriorCarrier rho) ^ 2 =
-      -(xiFixedAdjacentCayleyAbelCoefficient 1 t rho) ^ 2 by
+          (abs_xiSpectralPointSupport_im_lt_half_exteriorCarrier rho) ^ (2 : ℕ) =
+      -(xiFixedAdjacentCayleyAbelCoefficient 1 t rho) ^ (2 : ℕ) by
         rw [xiFixedAdjacentCayleyAbelCoefficient]
         ring]
   exact neg_sq_eq_ofReal_normSq_of_re_eq_zero _
@@ -168,7 +168,7 @@ theorem tendsto_xiFixedAdjacentPrimeCayleyExteriorDeterminant
     (S : Finset XiDivisorSupport)
     (hclosed : ∀ rho ∈ S, xiZeroLineConjEquiv rho ∈ S) (t : ℝ) :
     Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiFixedAdjacentPrimeCayleyExteriorDeterminant S t a b c)
       atTop
@@ -225,7 +225,7 @@ theorem four_mul_transverseQuantum_le_xiFixedCenterExteriorEnergy
     (t : ℝ) (rho : XiDivisorSupport)
     (ht : |(xiSpectralPointSupport rho).re - t| ≤ 1 / 2)
     (hoff : (rho : ℂ).re ≠ 1 / 2) :
-    4 * (96 / 145 : ℝ) ^ 2 ≤ xiFixedCenterExteriorEnergy t rho := by
+    4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤ xiFixedCenterExteriorEnergy t rho := by
   have hy : (xiSpectralPointSupport rho).im ≠ 0 :=
     fun h => hoff ((xiSpectralPointSupport_im_eq_zero_iff rho).1 h)
   have hquantum := orientedAdjacentCriticalFeatureTransverseEnergy_ge t

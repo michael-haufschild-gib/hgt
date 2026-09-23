@@ -29,7 +29,7 @@ variable {ι : Type*} [DecidableEq ι]
 def ReciprocalMassToHSContinuousAtBase
     (β : ℝ) (K : ℝ → ι × ι → ℂ) (K₀ : ι × ι → ℂ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ γ : ℝ,
-    Real.log (1 + γ ^ 2 / (1 - β) ^ 2) < δ →
+    Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) < δ →
       hsNorm (K γ - K₀) < ε
 
 /-- **Reciprocal-topology divisor firewall.** There is no Hilbert--Schmidt kernel assignment which
@@ -52,14 +52,14 @@ theorem not_exists_beurling_reciprocalContinuous_divisorFaithful_entireDet2
   have hγlim : Tendsto γseq atTop (nhds 0) := by
     simpa only [γseq] using tendsto_one_div_add_atTop_nhds_zero_nat
   have hmasslim : Tendsto
-      (fun n => Real.log (1 + γseq n ^ 2 / (1 - β) ^ 2)) atTop (nhds 0) :=
+      (fun n => Real.log (1 + γseq n ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ))) atTop (nhds 0) :=
     (tendsto_reciprocalMass β hβ2).comp hγlim
   have hmass_nonneg : ∀ γ : ℝ,
-      0 ≤ Real.log (1 + γ ^ 2 / (1 - β) ^ 2) := by
+      0 ≤ Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) := by
     intro γ
     apply Real.log_nonneg
-    have hb : 0 < (1 - β) ^ 2 := by positivity
-    have hq : 0 ≤ γ ^ 2 / (1 - β) ^ 2 := div_nonneg (sq_nonneg γ) hb.le
+    have hb : 0 < (1 - β) ^ (2 : ℕ) := by positivity
+    have hq : 0 ≤ γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ) := div_nonneg (sq_nonneg γ) hb.le
     linarith
   have hKlim : Tendsto (fun n => hsNorm (K (γseq n) - K₀)) atTop (nhds 0) := by
     rw [Metric.tendsto_atTop]

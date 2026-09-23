@@ -120,7 +120,7 @@ theorem sum_collisionPairs_eq_two_mul_orientedPairs_of_swap
 def collisionPairOrientationSquare
     (S : Finset ℂ) (m : ℂ → ℕ) (lo hi : ℝ) : ℝ :=
   ∑ p ∈ collisionPairs S lo hi,
-    (m p.1 : ℝ) * (m p.2 : ℝ) * (p.2.re - p.1.re) ^ 2
+    (m p.1 : ℝ) * (m p.2 : ℝ) * (p.2.re - p.1.re) ^ (2 : ℕ)
 
 theorem collisionPairOrientationSquare_nonneg
     (S : Finset ℂ) (m : ℂ → ℕ) (lo hi : ℝ) :
@@ -134,7 +134,7 @@ theorem collisionPairOrientationSquare_eq_two_mul_oriented
     (S : Finset ℂ) (m : ℂ → ℕ) (lo hi : ℝ) :
     collisionPairOrientationSquare S m lo hi =
       2 * ∑ p ∈ orientedPairs S lo hi,
-        (m p.1 : ℝ) * (m p.2 : ℝ) * (p.2.re - p.1.re) ^ 2 := by
+        (m p.1 : ℝ) * (m p.2 : ℝ) * (p.2.re - p.1.re) ^ (2 : ℕ) := by
   unfold collisionPairOrientationSquare
   apply sum_collisionPairs_eq_two_mul_orientedPairs_of_swap
   intro p

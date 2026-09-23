@@ -86,35 +86,35 @@ theorem norm_tubeStep_le {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv0 : 0 ≤ Mv)
     {V w : (Fin k → ℂ) → ℂ} (hw : DifferentiableOn ℂ w (tube k ρ'))
     (hMw : ∀ z ∈ tube k ρ', ‖w z‖ ≤ Mw) (hMv : ∀ z ∈ tube k ρ', ‖V z‖ ≤ Mv)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ) :
-    ‖tubeStep V w z‖ ≤ (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+    ‖tubeStep V w z‖ ≤ (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
   have hgap : (0 : ℝ) < ρ' - ρ := by linarith
   have hzt : z ∈ tube k ρ' := tube_mono hρ.le hz
   have hMw0 : (0 : ℝ) ≤ Mw := le_trans (norm_nonneg _) (hMw z hzt)
-  have hterm : ∀ i : Fin k, ‖cpartial i (cpartial i w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ 2 :=
+  have hterm : ∀ i : Fin k, ‖cpartial i (cpartial i w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) :=
     fun i => norm_cpartial_cpartial_le_on_tube hρ hw hMw hz i
-  have hsum : ‖∑ i, cpartial i (cpartial i w) z‖ ≤ k * (16 * Mw / (ρ' - ρ) ^ 2) := by
+  have hsum : ‖∑ i, cpartial i (cpartial i w) z‖ ≤ k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) := by
     refine le_trans (norm_sum_le _ _) ?_
     calc ∑ i : Fin k, ‖cpartial i (cpartial i w) z‖
-        ≤ ∑ _i : Fin k, 16 * Mw / (ρ' - ρ) ^ 2 := Finset.sum_le_sum fun i _ => hterm i
-      _ = k * (16 * Mw / (ρ' - ρ) ^ 2) := by
+        ≤ ∑ _i : Fin k, 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) := Finset.sum_le_sum fun i _ => hterm i
+      _ = k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hpot : ‖V z * w z‖ ≤ Mv * Mw := by
     rw [norm_mul]
     exact mul_le_mul (hMv z hzt) (hMw z hzt) (norm_nonneg _) hMv0
   have htri : ‖(∑ i, cpartial i (cpartial i w) z) + V z * w z‖
-      ≤ k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw :=
+      ≤ k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw :=
     le_trans (norm_add_le _ _) (add_le_add hsum hpot)
   have hdiv : ‖tubeStep V w z‖
       = ‖(∑ i, cpartial i (cpartial i w) z) + V z * w z‖ / 4 := by
     rw [tubeStep, norm_div]
     norm_num
   rw [hdiv]
-  have hfinal : (k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw) / 4
-      = (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+  have hfinal : (k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw) / 4
+      = (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
     field_simp
     ring
   calc ‖(∑ i, cpartial i (cpartial i w) z) + V z * w z‖ / 4
-      ≤ (k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw) / 4 := by linarith
-    _ = (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := hfinal
+      ≤ (k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw) / 4 := by linarith
+    _ = (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := hfinal
 
 end GaloisForLFunctions.HTGeometry

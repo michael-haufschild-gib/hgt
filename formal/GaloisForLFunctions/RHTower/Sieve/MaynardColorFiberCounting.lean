@@ -25,8 +25,8 @@ theorem card_le_sum_div_sq_of_color_fibre_bounds
     (S : Finset α) (color : α → κ) (V H : κ → ℝ)
     (hV : ∀ c, 0 < V c)
     (hbound : ∀ c,
-      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * (V c) ^ 2 ≤ H c) :
-    (S.card : ℝ) ≤ ∑ c : κ, H c / (V c) ^ 2 := by
+      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * (V c) ^ (2 : ℕ) ≤ H c) :
+    (S.card : ℝ) ≤ ∑ c : κ, H c / (V c) ^ (2 : ℕ) := by
   have hcast : (S.card : ℝ) =
       ∑ c : κ, (((S.filter fun a => color a = c).card : ℕ) : ℝ) := by
     exact_mod_cast card_eq_sum_color_fibres S color
@@ -43,12 +43,12 @@ theorem card_mul_sq_le_card_labels_mul_of_color_fibre_bounds
     (hVmin : 0 < Vmin) (V H : κ → ℝ)
     (hV : ∀ c, Vmin ≤ V c) (hH : ∀ c, H c ≤ Hmax)
     (hbound : ∀ c,
-      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * (V c) ^ 2 ≤ H c) :
-    (S.card : ℝ) * Vmin ^ 2 ≤ (Fintype.card κ : ℝ) * Hmax := by
+      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * (V c) ^ (2 : ℕ) ≤ H c) :
+    (S.card : ℝ) * Vmin ^ (2 : ℕ) ≤ (Fintype.card κ : ℝ) * Hmax := by
   have hfibre : ∀ c,
-      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * Vmin ^ 2 ≤ Hmax := by
+      (((S.filter fun a => color a = c).card : ℕ) : ℝ) * Vmin ^ (2 : ℕ) ≤ Hmax := by
     intro c
-    have hsq : Vmin ^ 2 ≤ (V c) ^ 2 :=
+    have hsq : Vmin ^ (2 : ℕ) ≤ (V c) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hVmin.le (hV c) 2
     exact (mul_le_mul_of_nonneg_left hsq (Nat.cast_nonneg _)).trans
       ((hbound c).trans (hH c))
@@ -56,8 +56,8 @@ theorem card_mul_sq_le_card_labels_mul_of_color_fibre_bounds
       ∑ c : κ, (((S.filter fun a => color a = c).card : ℕ) : ℝ) := by
     exact_mod_cast card_eq_sum_color_fibres S color
   calc
-    (S.card : ℝ) * Vmin ^ 2 =
-        ∑ c : κ, (((S.filter fun a => color a = c).card : ℕ) : ℝ) * Vmin ^ 2 := by
+    (S.card : ℝ) * Vmin ^ (2 : ℕ) =
+        ∑ c : κ, (((S.filter fun a => color a = c).card : ℕ) : ℝ) * Vmin ^ (2 : ℕ) := by
       rw [hcast, Finset.sum_mul]
     _ ≤ ∑ _c : κ, Hmax := Finset.sum_le_sum fun c _ => hfibre c
     _ = (Fintype.card κ : ℝ) * Hmax := by

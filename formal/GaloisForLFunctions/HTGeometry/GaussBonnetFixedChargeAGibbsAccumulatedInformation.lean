@@ -50,7 +50,7 @@ theorem egbFixedChargeAGibbsEntropyDeficit_total_universal (n : ℕ) (β : ℝ)
 theorem egbFixedChargeAGibbsHellinger_sq_summable (n : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     Summable (fun m => finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2) :=
+      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ)) :=
   Summable.of_nonneg_of_le (fun _ => sq_nonneg _)
     (fun m => egbFixedChargeAGibbsEntropyDeficit_hellinger_lower n m β E)
       (egbFixedChargeAGibbsEntropyDeficit_summable n β E)
@@ -59,7 +59,7 @@ theorem egbFixedChargeAGibbsHellinger_sq_summable (n : ℕ) (β : ℝ)
 theorem egbFixedChargeAGibbsHellinger_sq_total_bound (n : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     (∑' m : ℕ, finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2) ≤ (9 / 5) * ((2 : ℝ) ^ (n + 3) - 1) := by
+      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ)) ≤ (9 / 5) * ((2 : ℝ) ^ (n + 3) - 1) := by
   exact (hasSum_le (fun m => egbFixedChargeAGibbsEntropyDeficit_hellinger_lower n m β E)
     (egbFixedChargeAGibbsHellinger_sq_summable n β E).hasSum
       (egbFixedChargeAGibbsEntropyDeficit_summable n β E).hasSum).trans

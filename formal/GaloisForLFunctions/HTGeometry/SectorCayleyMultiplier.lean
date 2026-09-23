@@ -24,7 +24,7 @@ theorem sectorExponential_re_nonneg {w : ℂ}
   exact mul_nonneg (Real.exp_pos _).le
     (Real.cos_nonneg_of_mem_Icc (abs_le.mp hw))
 
-theorem add_one_ne_zero_of_re_nonneg {e : ℂ} (he : 0 ≤ e.re) : e + 1 ≠ 0 := by
+theorem add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier {e : ℂ} (he : 0 ≤ e.re) : e + 1 ≠ 0 := by
   intro hzero
   have hre := congrArg Complex.re hzero
   norm_num at hre
@@ -48,7 +48,7 @@ theorem norm_sectorCayleyValue_le_one {w : ℂ}
     (hw : |w.re| ≤ Real.pi / 2) :
     ‖sectorCayleyValue w‖ ≤ 1 := by
   have hre := sectorExponential_re_nonneg hw
-  have hden := add_one_ne_zero_of_re_nonneg hre
+  have hden := add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier hre
   rw [sectorCayleyValue, norm_div]
   exact (div_le_one (norm_pos_iff.mpr hden)).2
     (norm_sub_one_le_norm_add_one hre)
@@ -58,7 +58,7 @@ theorem one_sub_sectorCayleyValue_re_pos {w : ℂ}
     0 < (1 - sectorCayleyValue w).re := by
   let e := sectorExponential w
   have hre : 0 ≤ e.re := sectorExponential_re_nonneg hw
-  have hden : e + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg hre
+  have hden : e + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier hre
   have hformula : 1 - sectorCayleyValue w = 2 / (e + 1) := by
     rw [sectorCayleyValue]
     change 1 - (e - 1) / (e + 1) = _
@@ -75,7 +75,7 @@ theorem one_add_sectorCayleyValue_re_pos {w : ℂ}
   let e := sectorExponential w
   have hre : 0 ≤ e.re := sectorExponential_re_nonneg hw
   have hene : e ≠ 0 := sectorExponential_ne_zero w
-  have hden : e + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg hre
+  have hden : e + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier hre
   have hformula : 1 + sectorCayleyValue w = 2 * e / (e + 1) := by
     rw [sectorCayleyValue]
     change 1 + (e - 1) / (e + 1) = _
@@ -99,7 +99,7 @@ theorem one_add_sectorCayleyValue_div_one_sub {w : ℂ}
     (1 + sectorCayleyValue w) / (1 - sectorCayleyValue w) =
       sectorExponential w := by
   have hden : sectorExponential w + 1 ≠ 0 :=
-    add_one_ne_zero_of_re_nonneg (sectorExponential_re_nonneg hw)
+    add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier (sectorExponential_re_nonneg hw)
   rw [sectorCayleyValue]
   field_simp
   ring
@@ -128,7 +128,7 @@ def sectorCayleyMultiplier (H : HardyDisk)
       unfold sectorExponential
       fun_prop
     have hdiff := (hExp.sub_const 1).div (hExp.add_const 1)
-      (add_one_ne_zero_of_re_nonneg
+      (add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier
         (sectorExponential_re_nonneg (hH z (by
           simpa [Metric.mem_ball, dist_zero_right] using hz))))
     unfold sectorCayleyValue

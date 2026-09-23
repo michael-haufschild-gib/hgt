@@ -40,12 +40,12 @@ omit [FiniteDimensional ℝ Y] in
 @[simp] theorem rankOne_apply (a x : Y) : rankOne a x = ⟪a, x⟫ • a := rfl
 
 omit [FiniteDimensional ℝ Y] in
-theorem inner_rankOne (a x : Y) : ⟪rankOne a x, x⟫ = ⟪a, x⟫ ^ 2 := by
+theorem inner_rankOne (a x : Y) : ⟪rankOne a x, x⟫ = ⟪a, x⟫ ^ (2 : ℕ) := by
   rw [rankOne_apply, real_inner_smul_left]
   ring
 
 omit [FiniteDimensional ℝ Y] in
-theorem rankOne_smul (c : ℝ) (a : Y) : rankOne (c • a) = (c ^ 2) • rankOne a := by
+theorem rankOne_smul (c : ℝ) (a : Y) : rankOne (c • a) = (c ^ (2 : ℕ)) • rankOne a := by
   ext x
   simp only [rankOne_apply, LinearMap.smul_apply, real_inner_smul_left, smul_smul]
   ring_nf
@@ -83,7 +83,7 @@ noncomputable def gram (n : ℕ) : Y →ₗ[ℝ] Y :=
   L.base + ∑ i, L.weight i n • rankOne (L.dir i)
 
 theorem inner_gram (n : ℕ) (x : Y) :
-    ⟪L.gram n x, x⟫ = ⟪L.base x, x⟫ + ∑ i, L.weight i n * ⟪L.dir i, x⟫ ^ 2 := by
+    ⟪L.gram n x, x⟫ = ⟪L.base x, x⟫ + ∑ i, L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ) := by
   simp only [gram, LinearMap.add_apply, LinearMap.coe_sum, Finset.sum_apply,
     LinearMap.smul_apply, inner_add_left, sum_inner, real_inner_smul_left, inner_rankOne]
 
@@ -95,7 +95,7 @@ theorem gram_symm (n : ℕ) (x y : Y) : ⟪L.gram n x, y⟫ = ⟪x, L.gram n y�
 theorem gram_pos (n : ℕ) (x : Y) (hx : x ≠ 0) : 0 < ⟪L.gram n x, x⟫ := by
   rw [L.inner_gram]
   have hbase := L.base_pos x hx
-  have hsum : 0 ≤ ∑ i, L.weight i n * ⟪L.dir i, x⟫ ^ 2 :=
+  have hsum : 0 ≤ ∑ i, L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => mul_nonneg (L.weight_nonneg i n) (sq_nonneg _)
   linarith
 
@@ -103,7 +103,7 @@ theorem gram_mono (x : Y) : Monotone fun n => ⟪L.gram n x, x⟫ := by
   intro m n hmn
   show ⟪L.gram m x, x⟫ ≤ ⟪L.gram n x, x⟫
   rw [L.inner_gram, L.inner_gram]
-  have : ∀ i : Fin r, L.weight i m * ⟪L.dir i, x⟫ ^ 2 ≤ L.weight i n * ⟪L.dir i, x⟫ ^ 2 :=
+  have : ∀ i : Fin r, L.weight i m * ⟪L.dir i, x⟫ ^ (2 : ℕ) ≤ L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ) :=
     fun i => mul_le_mul_of_nonneg_right (L.weight_mono i hmn) (sq_nonneg _)
   have := Finset.sum_le_sum fun i (_ : i ∈ Finset.univ) => this i
   linarith
@@ -143,21 +143,21 @@ theorem boundedCapacity_eq_orthogonal :
     have hzero : ∀ i ∈ L.divergentIndices, ⟪L.dir i, x⟫ = 0 := by
       intro i hi
       by_contra hne
-      have hsq : 0 < ⟪L.dir i, x⟫ ^ 2 :=
+      have hsq : 0 < ⟪L.dir i, x⟫ ^ (2 : ℕ) :=
         lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hne))
-      have hbase : ∀ n, L.weight i n * ⟪L.dir i, x⟫ ^ 2 ≤ M - ⟪L.base x, x⟫ := by
+      have hbase : ∀ n, L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ) ≤ M - ⟪L.base x, x⟫ := by
         intro n
         have hg := hbound n
         rw [L.inner_gram] at hg
-        have hrest : 0 ≤ ∑ j ∈ Finset.univ.erase i, L.weight j n * ⟪L.dir j, x⟫ ^ 2 :=
+        have hrest : 0 ≤ ∑ j ∈ Finset.univ.erase i, L.weight j n * ⟪L.dir j, x⟫ ^ (2 : ℕ) :=
           Finset.sum_nonneg fun j _ => mul_nonneg (L.weight_nonneg j n) (sq_nonneg _)
-        have hsplit : ∑ j, L.weight j n * ⟪L.dir j, x⟫ ^ 2
-            = L.weight i n * ⟪L.dir i, x⟫ ^ 2
-              + ∑ j ∈ Finset.univ.erase i, L.weight j n * ⟪L.dir j, x⟫ ^ 2 :=
+        have hsplit : ∑ j, L.weight j n * ⟪L.dir j, x⟫ ^ (2 : ℕ)
+            = L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ)
+              + ∑ j ∈ Finset.univ.erase i, L.weight j n * ⟪L.dir j, x⟫ ^ (2 : ℕ) :=
           (Finset.add_sum_erase _ _ (Finset.mem_univ i)).symm
         rw [hsplit] at hg
         linarith
-      have hdiv : Tendsto (fun n => L.weight i n * ⟪L.dir i, x⟫ ^ 2) atTop atTop :=
+      have hdiv : Tendsto (fun n => L.weight i n * ⟪L.dir i, x⟫ ^ (2 : ℕ)) atTop atTop :=
         Filter.Tendsto.atTop_mul_const hsq hi
       obtain ⟨n, hn⟩ := (hdiv.eventually_gt_atTop (M - ⟪L.base x, x⟫)).exists
       exact absurd (hbase n) (not_le.mpr hn)
@@ -178,7 +178,7 @@ theorem boundedCapacity_eq_orthogonal :
     classical
     choose M hM using fun i (hi : i ∉ L.divergentIndices) => L.weight_bddAbove_of_not_divergent hi
     set B : ℝ := ⟪L.base x, x⟫
-      + ∑ i, (if hi : i ∈ L.divergentIndices then 0 else M i hi * ⟪L.dir i, x⟫ ^ 2) with hB
+      + ∑ i, (if hi : i ∈ L.divergentIndices then 0 else M i hi * ⟪L.dir i, x⟫ ^ (2 : ℕ)) with hB
     refine ⟨B, ?_⟩
     rintro s ⟨n, rfl⟩
     show ⟪L.gram n x, x⟫ ≤ B

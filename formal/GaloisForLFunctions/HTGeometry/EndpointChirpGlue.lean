@@ -31,7 +31,7 @@ theorem tendsto_natCast_inv_zero : Tendsto (fun M : ℕ => ((M : ℂ))⁻¹) atT
   exact tendsto_natCast_atTop_atTop.inv_tendsto_atTop
 
 /-- **The descending factorial is the pure power, asymptotically.** -/
-theorem tendsto_descFactorial_div_pow (u j : ℕ) :
+theorem tendsto_descFactorial_div_pow_endpointChirpGlue (u j : ℕ) :
     Tendsto (fun M : ℕ => (((M + u).descFactorial j : ℕ) : ℂ) / ((M : ℂ) ^ j)) atTop (𝓝 1) := by
   induction j with
   | zero =>

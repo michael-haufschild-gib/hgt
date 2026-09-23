@@ -45,8 +45,8 @@ theorem thetaCuspTailSecondCoreAtom_euler
     thetaCuspTailSecondCoreAtomSourceDerivative]
   have heuler := thetaCuspTailSecondSection_euler d z x
   rw [show (x : ℂ) *
-      (-(z ^ 2 + 1 / 4) * thetaCuspTailSecondSectionSourceDerivative d z x) =
-      -(z ^ 2 + 1 / 4) *
+      (-(z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSectionSourceDerivative d z x) =
+      -(z ^ (2 : ℕ) + 1 / 4) *
         ((x : ℂ) * thetaCuspTailSecondSectionSourceDerivative d z x) by ring]
   rw [heuler]
   ring
@@ -165,24 +165,24 @@ theorem integrableOn_thetaCuspTailSecondScoreDensity_mul_coreAtom
       ((x * thetaCuspTailSecondDensityDerivative x : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtom d z x) (Ioi 0) := by
     have hbase : IntegrableOn (fun x : ℝ =>
-        ((x ^ 1 * thetaCuspTailDerivative 3 x : ℝ) : ℂ)) (Ioi 0) :=
+        ((x ^ (1 : ℕ) * thetaCuspTailDerivative 3 x : ℝ) : ℂ)) (Ioi 0) :=
       (integrableOn_pow_mul_thetaCuspTailDerivative 1 3).ofReal
     have hsection :=
       integrableOn_pow_mul_thetaCuspTailDerivative_complex_mul_section 1 3 d z
     unfold thetaCuspTailSecondDensityDerivative thetaCuspTailSecondCoreAtom
     rw [show (fun x : ℝ => ((x * (4 * thetaCuspTailDerivative 3 x) : ℝ) : ℂ) *
-        (1 - (z ^ 2 + 1 / 4) * thetaCuspTailSecondSection d z x)) =
+        (1 - (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSection d z x)) =
       fun x : ℝ => (4 : ℂ) *
-          ((x ^ 1 * thetaCuspTailDerivative 3 x : ℝ) : ℂ) -
-        (4 : ℂ) * (z ^ 2 + 1 / 4) *
-          (((x ^ 1 * thetaCuspTailDerivative 3 x : ℝ) : ℂ) *
+          ((x ^ (1 : ℕ) * thetaCuspTailDerivative 3 x : ℝ) : ℂ) -
+        (4 : ℂ) * (z ^ (2 : ℕ) + 1 / 4) *
+          (((x ^ (1 : ℕ) * thetaCuspTailDerivative 3 x : ℝ) : ℂ) *
             thetaCuspTailSecondSection d z x) by
       funext x
       push_cast
       simp only [pow_one]
       ring]
     exact (hbase.const_mul 4).sub
-      (hsection.const_mul (4 * (z ^ 2 + 1 / 4)))
+      (hsection.const_mul (4 * (z ^ (2 : ℕ) + 1 / 4)))
   unfold thetaCuspTailSecondScoreDensity
   rw [show (fun x : ℝ =>
       ((thetaCuspTailSecondDensity x +
@@ -206,12 +206,12 @@ theorem integrableOn_id_mul_density_mul_coreAtomSourceDerivative
   unfold thetaCuspTailSecondDensity thetaCuspTailSecondCoreAtomSourceDerivative
     thetaCuspTailSecondSectionSourceDerivative
   rw [show (fun x : ℝ => ((x * (4 * thetaCuspTailDerivative 2 x) : ℝ) : ℂ) *
-      (-(z ^ 2 + 1 / 4) *
+      (-(z ^ (2 : ℕ) + 1 / 4) *
         ∑ k ∈ Finset.range (d + 1),
           (-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ) *
             ((x : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial))) =
     fun x : ℝ => ∑ k ∈ Finset.range (d + 1),
-      (-4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) *
+      (-4 * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) *
         ((2 * k + 2 : ℕ) : ℂ) /
           ((2 * k + 2).factorial : ℂ)) *
         (((x ^ (2 * k + 2) * thetaCuspTailDerivative 2 x : ℝ) : ℂ)) by
@@ -227,7 +227,7 @@ theorem integrableOn_id_mul_density_mul_coreAtomSourceDerivative
     ring]
   exact MeasureTheory.integrable_finsetSum _ fun k _ =>
     ((integrableOn_pow_mul_thetaCuspTailDerivative (2 * k + 2) 2).ofReal).const_mul
-      (-4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) *
+      (-4 * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) *
         ((2 * k + 2 : ℕ) : ℂ) / ((2 * k + 2).factorial : ℂ))
 
 theorem id_mul_density_mul_coreAtom_tendsto_atTop_zero
@@ -239,9 +239,9 @@ theorem id_mul_density_mul_coreAtom_tendsto_atTop_zero
       ((x * thetaCuspTailSecondDensity x : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtom d z x) =
     fun x : ℝ =>
-      (4 : ℂ) * (((x ^ 1 * thetaCuspTailDerivative 2 x : ℝ) : ℂ)) -
+      (4 : ℂ) * (((x ^ (1 : ℕ) * thetaCuspTailDerivative 2 x : ℝ) : ℂ)) -
       ∑ k ∈ Finset.range (d + 1),
-        (4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+        (4 * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
           ((2 * k + 2).factorial : ℂ)) *
             (((x ^ (2 * k + 3) * thetaCuspTailDerivative 2 x : ℝ) : ℂ)) by
     funext x
@@ -255,20 +255,20 @@ theorem id_mul_density_mul_coreAtom_tendsto_atTop_zero
     · apply Finset.sum_congr rfl
       intro k _
       rw [show (x : ℂ) ^ (2 * k + 3) =
-          (x : ℂ) ^ 1 * (x : ℂ) ^ (2 * k + 2) by
+          (x : ℂ) ^ (1 : ℕ) * (x : ℂ) ^ (2 * k + 2) by
         rw [show 2 * k + 3 = 1 + (2 * k + 2) by omega, pow_add]]
       ring]
   have hfirst : Tendsto (fun x : ℝ =>
-      (4 : ℂ) * (((x ^ 1 * thetaCuspTailDerivative 2 x : ℝ) : ℂ)))
+      (4 : ℂ) * (((x ^ (1 : ℕ) * thetaCuspTailDerivative 2 x : ℝ) : ℂ)))
       atTop (nhds 0) := by
     have hreal := pow_mul_thetaCuspTailDerivative_tendsto_atTop_zero 1 2
     have hcomplex : Tendsto (fun x : ℝ =>
-        (((x ^ 1 * thetaCuspTailDerivative 2 x : ℝ) : ℂ))) atTop (nhds 0) :=
+        (((x ^ (1 : ℕ) * thetaCuspTailDerivative 2 x : ℝ) : ℂ))) atTop (nhds 0) :=
       (Complex.ofRealCLM.continuous.tendsto 0).comp hreal
     simpa using hcomplex.const_mul (4 : ℂ)
   have hsum : Tendsto (fun x : ℝ =>
       ∑ k ∈ Finset.range (d + 1),
-        (4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+        (4 * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
           ((2 * k + 2).factorial : ℂ)) *
             (((x ^ (2 * k + 3) * thetaCuspTailDerivative 2 x : ℝ) : ℂ)))
       atTop (nhds 0) := by
@@ -281,7 +281,7 @@ theorem id_mul_density_mul_coreAtom_tendsto_atTop_zero
             atTop (nhds 0) :=
           (Complex.ofRealCLM.continuous.tendsto 0).comp hreal
         simpa using hcomplex.const_mul
-          (4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
+          (4 * (z ^ (2 : ℕ) + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
             ((2 * k + 2).factorial : ℂ)))
     simpa using h
   convert hfirst.sub hsum using 1 ; simp
@@ -322,12 +322,12 @@ theorem integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score
     have hu0 : Tendsto u (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
       dsimp [u, thetaCuspTailSecondDensity]
       have hscalar0 : Tendsto
-          (fun x : ℝ => 4 * (x ^ 1 * thetaCuspTailDerivative 2 x))
+          (fun x : ℝ => 4 * (x ^ (1 : ℕ) * thetaCuspTailDerivative 2 x))
           (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
         simpa only [mul_zero] using! hscalar
       have hcomplex : Tendsto
           (fun x : ℝ =>
-            ((4 * (x ^ 1 * thetaCuspTailDerivative 2 x) : ℝ) : ℂ))
+            ((4 * (x ^ (1 : ℕ) * thetaCuspTailDerivative 2 x) : ℝ) : ℂ))
           (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
         simpa only [Function.comp_apply, Complex.ofRealCLM_apply, map_zero] using!
           ((Complex.ofRealCLM.continuous.tendsto 0).comp hscalar0)
@@ -352,11 +352,11 @@ theorem integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score
 
 theorem thetaCuspTailSecondCore_score_identity
     (d : ℕ) (z : ℂ) :
-    (z ^ 2 + 1 / 4) * z *
+    (z ^ (2 : ℕ) + 1 / 4) * z *
         (∫ x : ℝ in Ioi 0,
           (thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondCoreAtomDerivative d z x) =
-      -(z ^ 2 + 1 / 4) *
+      -(z ^ (2 : ℕ) + 1 / 4) *
           (∫ x : ℝ in Ioi 0,
             (thetaCuspTailSecondScoreDensity x : ℂ) *
               thetaCuspTailSecondCoreAtom d z x) +
@@ -393,7 +393,7 @@ theorem thetaCuspTailSecondCore_score_identity
     linear_combination (thetaCuspTailSecondDensity x : ℂ) * he
   have hIBP : X = -Q := by
     exact integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score d z
-  have hCore : (z ^ 2 + 1 / 4) * S = 1 - V := by
+  have hCore : (z ^ (2 : ℕ) + 1 / 4) * S = 1 - V := by
     dsimp [S, V]
     have hmass := integrableOn_thetaCuspTailSecondDensity_complex
     have hsection := integrableOn_thetaCuspTailSecondDensity_mul_section d z
@@ -401,30 +401,30 @@ theorem thetaCuspTailSecondCore_score_identity
         (thetaCuspTailSecondDensity x : ℂ) *
           thetaCuspTailSecondCoreAtom d z x) =
       fun x : ℝ => (thetaCuspTailSecondDensity x : ℂ) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSection d z x) by
       funext x
       unfold thetaCuspTailSecondCoreAtom
       ring]
-    rw [integral_sub hmass (hsection.const_mul (z ^ 2 + 1 / 4)),
+    rw [integral_sub hmass (hsection.const_mul (z ^ (2 : ℕ) + 1 / 4)),
       integral_const_mul, integral_thetaCuspTailSecondDensity_complex]
     ring
-  change (z ^ 2 + 1 / 4) * z * D =
-    -(z ^ 2 + 1 / 4) * Q + (1 / 2 : ℂ) * (1 - V)
+  change (z ^ (2 : ℕ) + 1 / 4) * z * D =
+    -(z ^ (2 : ℕ) + 1 / 4) * Q + (1 / 2 : ℂ) * (1 - V)
   calc
-    (z ^ 2 + 1 / 4) * z * D =
-        (z ^ 2 + 1 / 4) * (z * D) := by ring
-    _ = (z ^ 2 + 1 / 4) * (X + (1 / 2 : ℂ) * S) := by rw [hEuler]
-    _ = -(z ^ 2 + 1 / 4) * Q +
-        (1 / 2 : ℂ) * ((z ^ 2 + 1 / 4) * S) := by rw [hIBP]; ring
-    _ = -(z ^ 2 + 1 / 4) * Q + (1 / 2 : ℂ) * (1 - V) := by rw [hCore]
+    (z ^ (2 : ℕ) + 1 / 4) * z * D =
+        (z ^ (2 : ℕ) + 1 / 4) * (z * D) := by ring
+    _ = (z ^ (2 : ℕ) + 1 / 4) * (X + (1 / 2 : ℂ) * S) := by rw [hEuler]
+    _ = -(z ^ (2 : ℕ) + 1 / 4) * Q +
+        (1 / 2 : ℂ) * ((z ^ (2 : ℕ) + 1 / 4) * S) := by rw [hIBP]; ring
+    _ = -(z ^ (2 : ℕ) + 1 / 4) * Q + (1 / 2 : ℂ) * (1 - V) := by rw [hCore]
 
 theorem xiCTaylorThetaTailCorePolynomial_score_identity
     (d : ℕ) (z : ℂ) :
-    (z ^ 2 + 1 / 4) * z *
+    (z ^ (2 : ℕ) + 1 / 4) * z *
         (xiCTaylorThetaTailCorePolynomial d).derivative.eval z =
-      -(1 / 2 : ℂ) * (z ^ 2 + 1 / 4) *
+      -(1 / 2 : ℂ) * (z ^ (2 : ℕ) + 1 / 4) *
           (∫ x : ℝ in Ioi 0,
             (thetaCuspTailSecondScoreDensity x : ℂ) *
               thetaCuspTailSecondCoreAtom d z x) +

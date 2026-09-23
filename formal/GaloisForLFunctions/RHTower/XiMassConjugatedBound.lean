@@ -37,18 +37,18 @@ theorem xiMassBesselHeightSide_eq_conjugated (a : ℝ) (τ w : ℂ) :
   rw [hz, Complex.exp_zero, one_mul]
 
 theorem re_mul_xiMassHeightRadius (a : ℝ) (τ w : ℂ) :
-    ((a : ℂ) * xiMassHeightRadius τ w).re = a * HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+    ((a : ℂ) * xiMassHeightRadius τ w).re = a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
   rw [xiMassHeightRadius, Complex.mul_re, HTGeometry.csqrt_re]
   simp
 
 /-- **The conjugated carrier is bounded by the reciprocal propagation rate.** -/
 theorem norm_xiMassConjugatedCarrier_le {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     ‖xiMassConjugatedCarrier a τ w‖
-      ≤ 2 * a * ‖τ‖ / HTGeometry.csqrtRe (τ ^ 2 + w ^ 2)
-        * (Real.exp (1 / (2 * (a * HTGeometry.csqrtRe (τ ^ 2 + w ^ 2))))
-          * Real.sqrt (2 * Real.pi / (a * HTGeometry.csqrtRe (τ ^ 2 + w ^ 2)))) := by
-  set R : ℝ := HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) with hR
+      ≤ 2 * a * ‖τ‖ / HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+        * (Real.exp (1 / (2 * (a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))))
+          * Real.sqrt (2 * Real.pi / (a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ))))) := by
+  set R : ℝ := HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) with hR
   have hR0 : (0 : ℝ) < R := HTGeometry.csqrtRe_pos hw
   have haR : (0 : ℝ) < a * R := mul_pos ha hR0
   have hre : ((a : ℂ) * xiMassHeightRadius τ w).re = a * R := re_mul_xiMassHeightRadius a τ w

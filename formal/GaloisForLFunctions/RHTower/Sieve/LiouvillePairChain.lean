@@ -41,7 +41,7 @@ complete multiplicativity by `liouvilleC_mul`, the distance by the zero-free str
 the near-diagonal Perron error and the general affine mean square.  Only the parameters remain free. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_pair_le :
     ∃ C : ℝ, ∀ (N z K : ℕ) (σ t₀ : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → 1 ≤ t₀ →
-      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ 9 →
+      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ (9 : ℕ) →
       ‖∑ n ∈ Finset.Icc 1 N, liouvilleC n‖ * Real.log (N : ℝ)
         ≤ (N : ℝ)
           + (Real.log ((N * N : ℕ) : ℝ) * (((N : ℝ) + 1 / 2)) ^ σ

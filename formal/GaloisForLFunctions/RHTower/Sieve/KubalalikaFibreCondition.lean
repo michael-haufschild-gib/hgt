@@ -37,7 +37,7 @@ theorem rpow_third_cube {x : ℝ} (hx : 0 < x) : (x ^ (1 / 3 : ℝ)) ^ 3 = x := 
 
 /-- **The second-derivative fibre condition holds at every crossover fibre.**
 
-If the reciprocal scale exceeds the block scale by the absolute factor `10^27`, then on every
+If the reciprocal scale exceeds the block scale by the absolute factor `10^(27 : ℕ)`, then on every
 fibre where the second-derivative kernel still dominates the envelope the curvature parameter of
 the contracted block is at most one. -/
 theorem nearDiagonalLambda_le_one_of_fibre_crossover {T r : ℝ} (hT : 0 < T) (hr : 0 < r)

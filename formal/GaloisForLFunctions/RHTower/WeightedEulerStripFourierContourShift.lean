@@ -80,7 +80,7 @@ theorem integrable_shifted_kernel (hgc : Continuous g)
     Integrable fun x : ℝ => g ((x : ℂ) + (y : ℂ) * I) *
       Complex.exp (-(I * (w : ℂ) * ((x : ℂ) + (y : ℂ) * I))) := by
   apply Integrable.mono'
-    ((integrable_exp_neg_mul_abs hε).const_mul (K * Real.exp (τ * |y| + w * y)))
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hε).const_mul (K * Real.exp (τ * |y| + w * y)))
   · apply Continuous.aestronglyMeasurable
     exact (hgc.comp (by fun_prop)).mul (Complex.continuous_exp.comp (by fun_prop))
   · exact ae_of_all _ fun x => norm_shifted_integrand_le hbound w x y
@@ -94,7 +94,7 @@ theorem norm_stripFourierShifted_le
   unfold stripFourierShifted
   rw [← MeasureTheory.integral_const_mul]
   apply norm_integral_le_of_norm_le
-  · exact (integrable_exp_neg_mul_abs hε).const_mul _
+  · exact (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hε).const_mul _
   · exact ae_of_all _ fun x => norm_shifted_integrand_le hbound w x y
 
 /-- **Contour shift**: at a real frequency the strip Fourier transform equals

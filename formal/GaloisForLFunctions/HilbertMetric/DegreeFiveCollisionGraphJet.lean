@@ -10,7 +10,7 @@ order-ten value, first-derivative, and second-derivative jets of the recombined 
 
 After dividing by the positive monomial weight, the three limiting entries are respectively
 `1 + lam²`, `5 + lam²`, and `20`: the literal two-jet at scale one of
-`t ^ 5 + lam² * t`.  No interpolation matrix, collision limit, or asymptotic coefficient is
+`t ^ (5 : ℕ) + lam² * t`.  No interpolation matrix, collision limit, or asymptotic coefficient is
 assumed among the hypotheses.
 -/
 
@@ -68,7 +68,7 @@ theorem recombined_valuePolynomial_top_five {d : ℕ}
       c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
         (∑ n ∈ Finset.range 6,
           e ^ (2 * n) * collisionBaseGramEntry nodes i j ^ n / (n.factorial : ℝ)) =
-      e ^ 10 * (if a = b then fockMonomialWeight a else 0) := by
+      e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a else 0) := by
   calc
     ∑ i, ∑ j,
       c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
@@ -106,7 +106,7 @@ theorem recombined_valuePolynomial_top_five {d : ℕ}
       rw [recombined_innerPower_top_five nodes c hdelta a b
         ⟨n, Finset.mem_range.mp hn⟩]
       simp [topDegreeIndex, Fin.ext_iff]
-    _ = e ^ 10 * (if a = b then fockMonomialWeight a else 0) := by
+    _ = e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a else 0) := by
       by_cases hab : a = b
       · subst b
         rw [if_pos rfl]
@@ -135,7 +135,7 @@ theorem recombined_firstPolynomial_top_five {d : ℕ}
         (∑ k ∈ Finset.range 5,
           e ^ (2 * (k + 1)) * collisionBaseGramEntry nodes i j ^ (k + 1) /
             (k.factorial : ℝ)) =
-      e ^ 10 * (if a = b then 5 * fockMonomialWeight a else 0) := by
+      e ^ (10 : ℕ) * (if a = b then 5 * fockMonomialWeight a else 0) := by
   calc
     ∑ i, ∑ j,
       c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
@@ -173,7 +173,7 @@ theorem recombined_firstPolynomial_top_five {d : ℕ}
       rw [recombined_innerPower_top_five nodes c hdelta a b
         ⟨k + 1, by have hklt := Finset.mem_range.mp hk; omega⟩]
       simp [topDegreeIndex, Fin.ext_iff]
-    _ = e ^ 10 * (if a = b then 5 * fockMonomialWeight a else 0) := by
+    _ = e ^ (10 : ℕ) * (if a = b then 5 * fockMonomialWeight a else 0) := by
       by_cases hab : a = b
       · subst b
         rw [if_pos rfl]
@@ -202,7 +202,7 @@ theorem recombined_secondPolynomial_top_five {d : ℕ}
         (∑ k ∈ Finset.range 4,
           e ^ (2 * (k + 2)) * collisionBaseGramEntry nodes i j ^ (k + 2) /
             (k.factorial : ℝ)) =
-      e ^ 10 * (if a = b then 20 * fockMonomialWeight a else 0) := by
+      e ^ (10 : ℕ) * (if a = b then 20 * fockMonomialWeight a else 0) := by
   calc
     ∑ i, ∑ j,
       c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
@@ -240,7 +240,7 @@ theorem recombined_secondPolynomial_top_five {d : ℕ}
       rw [recombined_innerPower_top_five nodes c hdelta a b
         ⟨k + 2, by have hklt := Finset.mem_range.mp hk; omega⟩]
       simp [topDegreeIndex, Fin.ext_iff]
-    _ = e ^ 10 * (if a = b then 20 * fockMonomialWeight a else 0) := by
+    _ = e ^ (10 : ℕ) * (if a = b then 20 * fockMonomialWeight a else 0) := by
       by_cases hab : a = b
       · subst b
         rw [if_pos rfl]
@@ -269,9 +269,9 @@ theorem degreeFiveTop_valueJet {d : ℕ}
         c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
           Real.exp (coherentCollisionExponent (collisionBaseGramEntry nodes i j)
             (transverseCollisionGramEntry lam nodes i j) e)) -
-        e ^ 10 *
-          (if a = b then fockMonomialWeight a * (1 + lam ^ 2) else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) *
+          (if a = b then fockMonomialWeight a * (1 + lam ^ (2 : ℕ)) else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hjet := coherentCollision_valueJet_finset
     (Finset.univ : Finset (DegreeFiveIndex d × DegreeFiveIndex d))
     (fun p => c (degreeFiveTopGradedIndex a) p.1 *
@@ -282,10 +282,10 @@ theorem degreeFiveTop_valueJet {d : ℕ}
   have htransScaled (e : ℝ) :
       ∑ i, ∑ j,
         c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
-          (e ^ 10 * transverseCollisionGramEntry lam nodes i j) =
-        e ^ 10 * (if a = b then lam ^ 2 * fockMonomialWeight a else 0) := by
+          (e ^ (10 : ℕ) * transverseCollisionGramEntry lam nodes i j) =
+        e ^ (10 : ℕ) * (if a = b then lam ^ (2 : ℕ) * fockMonomialWeight a else 0) := by
     calc
-      _ = e ^ 10 *
+      _ = e ^ (10 : ℕ) *
           (∑ i, ∑ j,
             c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
               transverseCollisionGramEntry lam nodes i j) := by
@@ -323,9 +323,9 @@ theorem degreeFiveTop_firstJet {d : ℕ}
               (transverseCollisionGramEntry lam nodes i j) e *
             Real.exp (coherentCollisionExponent (collisionBaseGramEntry nodes i j)
               (transverseCollisionGramEntry lam nodes i j) e))) -
-        e ^ 10 *
-          (if a = b then fockMonomialWeight a * (5 + lam ^ 2) else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) *
+          (if a = b then fockMonomialWeight a * (5 + lam ^ (2 : ℕ)) else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hjet := coherentCollision_firstJet_finset
     (Finset.univ : Finset (DegreeFiveIndex d × DegreeFiveIndex d))
     (fun p => c (degreeFiveTopGradedIndex a) p.1 *
@@ -336,10 +336,10 @@ theorem degreeFiveTop_firstJet {d : ℕ}
   have htransScaled (e : ℝ) :
       ∑ i, ∑ j,
         c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
-          (e ^ 10 * transverseCollisionGramEntry lam nodes i j) =
-        e ^ 10 * (if a = b then lam ^ 2 * fockMonomialWeight a else 0) := by
+          (e ^ (10 : ℕ) * transverseCollisionGramEntry lam nodes i j) =
+        e ^ (10 : ℕ) * (if a = b then lam ^ (2 : ℕ) * fockMonomialWeight a else 0) := by
     calc
-      _ = e ^ 10 *
+      _ = e ^ (10 : ℕ) *
           (∑ i, ∑ j,
             c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
               transverseCollisionGramEntry lam nodes i j) := by
@@ -373,11 +373,11 @@ theorem degreeFiveTop_secondJet {d : ℕ}
       (∑ i, ∑ j,
         c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
           (coherentCollisionExponent (collisionBaseGramEntry nodes i j)
-              (transverseCollisionGramEntry lam nodes i j) e ^ 2 *
+              (transverseCollisionGramEntry lam nodes i j) e ^ (2 : ℕ) *
             Real.exp (coherentCollisionExponent (collisionBaseGramEntry nodes i j)
               (transverseCollisionGramEntry lam nodes i j) e))) -
-        e ^ 10 * (if a = b then 20 * fockMonomialWeight a else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) * (if a = b then 20 * fockMonomialWeight a else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hjet := coherentCollision_secondJet_finset
     (Finset.univ : Finset (DegreeFiveIndex d × DegreeFiveIndex d))
     (fun p => c (degreeFiveTopGradedIndex a) p.1 *
@@ -394,7 +394,7 @@ def degreeFiveCollisionPoint {d : ℕ} (lam : ℝ)
     (nodes : DegreeFiveIndex d → (Fin d → ℝ)) (e : ℝ) (i : DegreeFiveIndex d) :
     Fin d ⊕ DegreeFiveTopIndex d → ℝ
   | Sum.inl l => e * nodes i l
-  | Sum.inr a => e ^ 5 * transverseCollisionVector lam nodes i a
+  | Sum.inr a => e ^ (5 : ℕ) * transverseCollisionVector lam nodes i a
 
 theorem degreeFiveCollisionPoint_inner {d : ℕ} (lam : ℝ)
     (nodes : DegreeFiveIndex d → (Fin d → ℝ)) (e : ℝ) (i j : DegreeFiveIndex d) :
@@ -438,7 +438,7 @@ def gaussianCollisionGramFirstEntry {d : ℕ} (lam : ℝ)
 def gaussianCollisionGramSecondEntry {d : ℕ} (lam : ℝ)
     (nodes : DegreeFiveIndex d → (Fin d → ℝ)) (e : ℝ)
     (i j : DegreeFiveIndex d) : ℝ :=
-  (∑ x, degreeFiveCollisionPoint lam nodes e i x * degreeFiveCollisionPoint lam nodes e j x) ^ 2 *
+  (∑ x, degreeFiveCollisionPoint lam nodes e i x * degreeFiveCollisionPoint lam nodes e j x) ^ (2 : ℕ) *
     gaussianCollisionGramEntry lam nodes e i j
 
 theorem degreeFiveTop_gaussianValueJet {d : ℕ}
@@ -450,8 +450,8 @@ theorem degreeFiveTop_gaussianValueJet {d : ℕ}
     (fun e =>
       (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
         gaussianCollisionGramEntry lam nodes e i j) -
-      e ^ 10 * (if a = b then fockMonomialWeight a * (1 + lam ^ 2) else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+      e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a * (1 + lam ^ (2 : ℕ)) else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   unfold gaussianCollisionGramEntry
   simp_rw [degreeFiveCollisionPoint_inner]
   exact degreeFiveTop_valueJet lam nodes c hdelta a b
@@ -465,8 +465,8 @@ theorem degreeFiveTop_gaussianFirstJet {d : ℕ}
     (fun e =>
       (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
         gaussianCollisionGramFirstEntry lam nodes e i j) -
-      e ^ 10 * (if a = b then fockMonomialWeight a * (5 + lam ^ 2) else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+      e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a * (5 + lam ^ (2 : ℕ)) else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   unfold gaussianCollisionGramFirstEntry gaussianCollisionGramEntry
   simp_rw [degreeFiveCollisionPoint_inner]
   exact degreeFiveTop_firstJet lam nodes c hdelta a b
@@ -480,8 +480,8 @@ theorem degreeFiveTop_gaussianSecondJet {d : ℕ}
     (fun e =>
       (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
         gaussianCollisionGramSecondEntry lam nodes e i j) -
-      e ^ 10 * (if a = b then 20 * fockMonomialWeight a else 0))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+      e ^ (10 : ℕ) * (if a = b then 20 * fockMonomialWeight a else 0))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   unfold gaussianCollisionGramSecondEntry gaussianCollisionGramEntry
   simp_rw [degreeFiveCollisionPoint_inner]
   exact degreeFiveTop_secondJet lam nodes c hdelta a b
@@ -495,20 +495,20 @@ theorem exists_distinct_degreeFiveGaussianGraphJets (d : ℕ) (lam : ℝ) :
         (fun e =>
           (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
             gaussianCollisionGramEntry lam nodes e i j) -
-          e ^ 10 * (if a = b then fockMonomialWeight a * (1 + lam ^ 2) else 0))
-          =o[nhds 0] (fun e : ℝ => e ^ 10)) ∧
+          e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a * (1 + lam ^ (2 : ℕ)) else 0))
+          =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ))) ∧
       (∀ a b : DegreeFiveTopIndex d,
         (fun e =>
           (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
             gaussianCollisionGramFirstEntry lam nodes e i j) -
-          e ^ 10 * (if a = b then fockMonomialWeight a * (5 + lam ^ 2) else 0))
-          =o[nhds 0] (fun e : ℝ => e ^ 10)) ∧
+          e ^ (10 : ℕ) * (if a = b then fockMonomialWeight a * (5 + lam ^ (2 : ℕ)) else 0))
+          =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ))) ∧
       (∀ a b : DegreeFiveTopIndex d,
         (fun e =>
           (∑ i, ∑ j, c (degreeFiveTopGradedIndex a) i * c (degreeFiveTopGradedIndex b) j *
             gaussianCollisionGramSecondEntry lam nodes e i j) -
-          e ^ 10 * (if a = b then 20 * fockMonomialWeight a else 0))
-          =o[nhds 0] (fun e : ℝ => e ^ 10)) := by
+          e ^ (10 : ℕ) * (if a = b then 20 * fockMonomialWeight a else 0))
+          =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ))) := by
   obtain ⟨nodes, c, hnodes, hdelta⟩ := exists_gradedMonomial_unisolvent_delta d 5
   refine ⟨nodes, c, hnodes, ?_, ?_, ?_, ?_⟩
   · intro e he

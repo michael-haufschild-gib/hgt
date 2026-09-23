@@ -196,7 +196,7 @@ theorem l2ShiftControlled_sobolevOp : L2ShiftControlled (fun g => sobolevOp g) 2
       (by norm_num : 1 + 1 = 2)
   have hid : L2ShiftControlled (fun g : 𝓢(ℝ, ℂ) => g) 2 :=
     l2ShiftControlled_id.mono_le (by norm_num)
-  refine (hid.add (hderiv2.smul (-((4 * (π : ℂ) ^ 2)⁻¹)))).congr fun g => ?_
+  refine (hid.add (hderiv2.smul (-((4 * (π : ℂ) ^ (2 : ℕ))⁻¹)))).congr fun g => ?_
   rw [sobolevOp_apply, neg_smul, ← sub_eq_add_neg]
 
 end GaloisForLFunctions

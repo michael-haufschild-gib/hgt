@@ -28,14 +28,14 @@ def vonMangoldtSuccessorTransportNode (M : ℕ) (i : Fin (M + 1)) : ℝ :=
 /-- Consolidated signed mass at one node of the aperture-`M` successor transport.
 
 Each edge `p + 2 -> p + 3` contributes positively at its target and negatively at its source.
-The factor `log(i + 2)^2` accounts for the two-index offset in the principal-relative Hankel
+The factor `log(i + 2)^(2 : ℕ)` accounts for the two-index offset in the principal-relative Hankel
 matrix. -/
 def vonMangoldtSuccessorTransportMass (M : ℕ) (i : Fin (M + 1)) : ℝ :=
   (∑ p : Fin M,
       ((if p.succ = i then finiteVonMangoldtRealWeight ((p : ℕ) + 2) else 0) -
         (if Fin.castSucc p = i then
           finiteVonMangoldtRealWeight ((p : ℕ) + 2) else 0))) *
-    vonMangoldtSuccessorTransportNode M i ^ 2
+    vonMangoldtSuccessorTransportNode M i ^ (2 : ℕ)
 
 /-- Consecutive logarithmic transport nodes are pairwise distinct. -/
 theorem vonMangoldtSuccessorTransportNode_injective (M : ℕ) :
@@ -118,7 +118,7 @@ theorem finrank_radical_finiteVonMangoldtSuccessorPrincipalRelativeMatrix (M : �
 theorem vonMangoldtSuccessorTransportMass_zero
     (M : ℕ) (hM : 0 < M) :
     vonMangoldtSuccessorTransportMass M ⟨0, Nat.zero_lt_succ M⟩ =
-      -finiteVonMangoldtRealWeight 2 * Real.log 2 ^ 2 := by
+      -finiteVonMangoldtRealWeight 2 * Real.log 2 ^ (2 : ℕ) := by
   classical
   let p0 : Fin M := ⟨0, hM⟩
   unfold vonMangoldtSuccessorTransportMass
@@ -188,7 +188,7 @@ theorem vonMangoldtSuccessorTransportMass_prime_interior
     {p M : ℕ} (hpgt : 3 < p) (hM : p - 1 ≤ M) :
     vonMangoldtSuccessorTransportMass M ⟨p - 2, by omega⟩ =
       (finiteVonMangoldtRealWeight (p - 1) -
-          finiteVonMangoldtRealWeight p) * Real.log p ^ 2 := by
+          finiteVonMangoldtRealWeight p) * Real.log p ^ (2 : ℕ) := by
   classical
   let i : Fin (M + 1) := ⟨p - 2, by omega⟩
   let qIn : Fin M := ⟨p - 3, by omega⟩

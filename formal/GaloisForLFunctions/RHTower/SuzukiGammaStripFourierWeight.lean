@@ -58,7 +58,7 @@ theorem continuous_stripLine {E : ℂ → ℂ} (hEd : DifferentiableOn ℂ E (im
 /-- The boundary datum is square integrable. -/
 theorem memLp_stripLine {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     (hEd : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ : ℝ}
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) {σ : ℝ}
     (hσ : σ ∈ Ioo (0 : ℝ) 1) :
     MemLp (stripLine E T c σ) 2 (volume : Measure ℝ) := by
   refine (memLp_two_iff_integrable_sq_norm
@@ -68,7 +68,7 @@ theorem memLp_stripLine {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoin
 /-- The boundary datum as an `L²` class. -/
 def stripLineLp {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     (hEd : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ : ℝ}
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) {σ : ℝ}
     (hσ : σ ∈ Ioo (0 : ℝ) 1) : Lp X 2 (volume : Measure ℝ) :=
   (memLp_stripLine hT hEd hE c hσ).toLp _
 
@@ -104,7 +104,7 @@ the entire Fourier extension. -/
 theorem integral_weightedTest_smul_fourierInv {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
     (hψs : HasCompactSupport ψ) {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     (hEd : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ : ℝ}
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) {σ : ℝ}
     (hσ : σ ∈ Ioo (0 : ℝ) 1) :
     (∫ L : ℝ, weightedTest ψ σ L •
         ((𝓕⁻ (stripLineLp hT hEd hE c hσ) : Lp X 2 (volume : Measure ℝ)) : ℝ → X) L)
@@ -144,7 +144,7 @@ set_option maxHeartbeats 1000000 in
 /-- **`(32)`: the exponentially damped transforms of the different lines agree.** -/
 theorem stripFourier_weight_eq {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     (hEd : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ σ' : ℝ}
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) {σ σ' : ℝ}
     (hσ : σ ∈ Ioo (0 : ℝ) 1) (hσ' : σ' ∈ Ioo (0 : ℝ) 1) :
     ∀ᵐ L : ℝ, Real.exp (-(2 * Real.pi * σ * L)) •
         ((𝓕⁻ (stripLineLp hT hEd hE c hσ) : Lp X 2 (volume : Measure ℝ)) : ℝ → X) L
@@ -182,7 +182,7 @@ exponential weights `e^{2πσL}F(L)` are exactly the `L²` transforms of the int
 square integrable for every `0 < σ < 1`. -/
 theorem exists_memLp_exp_smul_stripFourier {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     (hEd : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) :
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) :
     ∃ F : ℝ → X, ∀ σ : ℝ, ∀ hσ : σ ∈ Ioo (0 : ℝ) 1,
       (∀ᵐ L : ℝ, ((𝓕⁻ (stripLineLp hT hEd hE c hσ) : Lp X 2 (volume : Measure ℝ)) : ℝ → X) L
           = Real.exp (2 * Real.pi * σ * L) • F L)

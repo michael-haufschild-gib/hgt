@@ -75,10 +75,10 @@ private theorem covarianceEnergy_zero_velocity (J : Y →L[ℂ] X)
     (z v : X) (h : covarianceEnergy J z v=0) : v=0 := by
   have hr := congrArg Complex.re h
   simp only [covarianceEnergy,Complex.add_re,Complex.sub_re,Complex.zero_re] at hr
-  have h1 : (inner ℂ (J.adjoint v) (J.adjoint v)).re=‖J.adjoint v‖^2 :=
+  have h1 : (inner ℂ (J.adjoint v) (J.adjoint v)).re=‖J.adjoint v‖^(2 : ℕ) :=
     inner_self_eq_norm_sq (𝕜 := ℂ) _
-  have h2 : (inner ℂ z z).re=‖z‖^2 := inner_self_eq_norm_sq (𝕜 := ℂ) _
-  have h3 : (inner ℂ (J.adjoint z) (J.adjoint z)).re=‖J.adjoint z‖^2 :=
+  have h2 : (inner ℂ z z).re=‖z‖^(2 : ℕ) := inner_self_eq_norm_sq (𝕜 := ℂ) _
+  have h3 : (inner ℂ (J.adjoint z) (J.adjoint z)).re=‖J.adjoint z‖^(2 : ℕ) :=
     inner_self_eq_norm_sq (𝕜 := ℂ) _
   rw [h1,h2,h3] at hr
   have hz := hcontr z

@@ -31,7 +31,7 @@ theorem abscissaOfAbsConv_shellIndicator_le (k : ℕ) :
   refine lSeriesSummable_shellIndicator k ?_
   simpa using hy
 
-theorem abscissaOfAbsConv_shellIndicator_lt {k : ℕ} {s : ℂ} (hs : 1 < s.re) :
+theorem abscissaOfAbsConv_shellIndicator_lt_spectralCumulantShadow {k : ℕ} {s : ℂ} (hs : 1 < s.re) :
     abscissaOfAbsConv ↗(shellIndicator k) < (s.re : EReal) :=
   lt_of_le_of_lt (abscissaOfAbsConv_shellIndicator_le k) (by exact_mod_cast hs)
 
@@ -47,7 +47,7 @@ theorem logDeriv_shellSource {k : ℕ} (hk : k ≠ 0) {s : ℂ} (hs : 1 < s.re) 
   have heq := shellSource_eventuallyEq_lSeries hk hs
   have h1 : logDeriv (shellSource k) s = logDeriv (LSeries ↗(shellIndicator k)) s := by
     rw [logDeriv_apply, logDeriv_apply, heq.deriv_eq, heq.eq_of_nhds]
-  rw [h1, logDeriv_LSeries (abscissaOfAbsConv_shellIndicator_lt hs)]
+  rw [h1, logDeriv_LSeries (abscissaOfAbsConv_shellIndicator_lt_spectralCumulantShadow hs)]
 
 theorem shellSource_ne_zero {k : ℕ} (hk : 12 ≤ k) {s : ℂ} (hs : 1 < s.re) :
     shellSource k s ≠ 0 := by
@@ -151,8 +151,8 @@ theorem hasDerivAt_neg_logDeriv_survivalTransfer {m r : ℕ} (hm : 12 ≤ m) (hr
     (hs : 1 < s.re) :
     HasDerivAt (fun z => -logDeriv (survivalTransfer m r) z)
       (gibbsLogVar ↗(shellIndicator (r * m)) s
-        - (r : ℂ) ^ 2 * gibbsLogVar ↗(shellIndicator m) ((r : ℂ) * s)
-        - ((s - 1) ^ 2)⁻¹) s := by
+        - (r : ℂ) ^ (2 : ℕ) * gibbsLogVar ↗(shellIndicator m) ((r : ℂ) * s)
+        - ((s - 1) ^ (2 : ℕ))⁻¹) s := by
   have hkm : 12 ≤ r * m := le_trans hm (Nat.le_mul_of_pos_left m (by omega))
   have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const Complex.continuous_re
   have hrs : 1 < ((r : ℂ) * s).re := by
@@ -171,19 +171,19 @@ theorem hasDerivAt_neg_logDeriv_survivalTransfer {m r : ℕ} (hm : 12 ≤ m) (hr
   have hmean1 : HasDerivAt (gibbsLogMean ↗(shellIndicator m))
       (-gibbsLogVar ↗(shellIndicator m) ((r : ℂ) * s)) ((r : ℂ) * s) :=
     GaloisForLFunctions.HTGeometry.hasDerivAt_gibbsLogMean
-      (abscissaOfAbsConv_shellIndicator_lt hrs) (lSeries_shellIndicator_ne_zero hm hrs)
+      (abscissaOfAbsConv_shellIndicator_lt_spectralCumulantShadow hrs) (lSeries_shellIndicator_ne_zero hm hrs)
   have hterm1 : HasDerivAt (fun z : ℂ => (r : ℂ) * gibbsLogMean ↗(shellIndicator m) ((r : ℂ) * z))
       ((r : ℂ) * ((-gibbsLogVar ↗(shellIndicator m) ((r : ℂ) * s)) * (r : ℂ))) s :=
     ((hmean1.comp s hlin).const_mul ((r : ℂ)))
   have hterm2 : HasDerivAt (gibbsLogMean ↗(shellIndicator (r * m)))
       (-gibbsLogVar ↗(shellIndicator (r * m)) s) s :=
     GaloisForLFunctions.HTGeometry.hasDerivAt_gibbsLogMean
-      (abscissaOfAbsConv_shellIndicator_lt hs) (lSeries_shellIndicator_ne_zero hkm hs)
-  have hterm3 : HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-((s - 1) ^ 2)⁻¹) s := by
+      (abscissaOfAbsConv_shellIndicator_lt_spectralCumulantShadow hs) (lSeries_shellIndicator_ne_zero hkm hs)
+  have hterm3 : HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-((s - 1) ^ (2 : ℕ))⁻¹) s := by
     have hd : HasDerivAt (fun z : ℂ => z - 1) 1 s := by
       simpa using (hasDerivAt_id s).sub_const 1
     have h := hd.inv hs1'
-    have hval : -(1 : ℂ) / (s - 1) ^ 2 = -((s - 1) ^ 2)⁻¹ := by
+    have hval : -(1 : ℂ) / (s - 1) ^ (2 : ℕ) = -((s - 1) ^ (2 : ℕ))⁻¹ := by
       rw [neg_div, one_div]
     rw [hval] at h
     exact h

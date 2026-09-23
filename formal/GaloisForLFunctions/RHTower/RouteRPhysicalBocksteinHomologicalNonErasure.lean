@@ -187,7 +187,7 @@ theorem ccmRationalAdelicSignedKummerTensorSquareRegulator_bockstein
     (p : Nat.Primes) (rho : XiDivisorSupport) :
     ccmRationalAdelicSignedKummerTensorSquareRegulator
         (ccmRationalAdelicPrimeXiPhysicalBocksteinTensorSquare p rho) =
-      ccmRationalAdelicPrimeXiSignedKummerPhysicalDefect p rho ^ 2 := by
+      ccmRationalAdelicPrimeXiSignedKummerPhysicalDefect p rho ^ (2 : ℕ) := by
   rw [ccmRationalAdelicSignedKummerTensorSquareRegulator,
     ccmRationalAdelicPrimeXiPhysicalBocksteinTensorSquare,
     LinearMap.comp_apply, TensorProduct.map_tmul]

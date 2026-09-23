@@ -146,7 +146,7 @@ theorem algebraicHankelMatrix_finiteModalSequence_eq_vandermonde
 theorem det_algebraicHankelMatrix_finiteModalSequence
     {K : Type*} [CommRing K] {d : ℕ} (weight node : Fin d → K) :
     (algebraicHankelMatrix (finiteModalSequence weight node) d).det =
-      (Matrix.vandermonde node).det ^ 2 * ∏ i, weight i := by
+      (Matrix.vandermonde node).det ^ (2 : ℕ) * ∏ i, weight i := by
   rw [algebraicHankelMatrix_finiteModalSequence_eq_vandermonde,
     Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, Matrix.det_diagonal]
   ring

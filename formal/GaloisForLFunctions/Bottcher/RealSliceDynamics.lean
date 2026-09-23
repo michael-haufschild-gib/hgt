@@ -17,9 +17,9 @@ open Set Metric Bornology Filter Topology
 namespace Bottcher
 
 /-- The real quadratic map `x ↦ x² + c`. -/
-def quadraticReal (c : ℝ) : ℝ → ℝ := fun x => x ^ 2 + c
+def quadraticReal (c : ℝ) : ℝ → ℝ := fun x => x ^ (2 : ℕ) + c
 
-@[simp] theorem quadraticReal_apply (c x : ℝ) : quadraticReal c x = x ^ 2 + c := rfl
+@[simp] theorem quadraticReal_apply (c x : ℝ) : quadraticReal c x = x ^ (2 : ℕ) + c := rfl
 
 /-- The complex orbit of a real point is the real orbit. -/
 theorem quadratic_iterate_ofReal (c x : ℝ) (n : ℕ) :
@@ -40,15 +40,15 @@ theorem betaFixed_pos (c : ℝ) : 0 < betaFixed c := by
 /-- The fixed-point equation `β² + c = β`, on the full real slice `c ≤ 1/4`
 (generalizing `betaFixed_sq` from `c ≤ 0`). -/
 theorem betaFixed_sq' {c : ℝ} (hc4 : c ≤ 1 / 4) :
-    betaFixed c ^ 2 + c = betaFixed c := by
+    betaFixed c ^ (2 : ℕ) + c = betaFixed c := by
   unfold betaFixed
-  have h1 : Real.sqrt (1 - 4 * c) ^ 2 = 1 - 4 * c := Real.sq_sqrt (by linarith)
+  have h1 : Real.sqrt (1 - 4 * c) ^ (2 : ℕ) = 1 - 4 * c := Real.sq_sqrt (by linarith)
   linear_combination (1 / 4 : ℝ) * h1
 
 theorem betaFixed_le_two {c : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4) :
     betaFixed c ≤ 2 := by
   unfold betaFixed
-  have hs : Real.sqrt (1 - 4 * c) ^ 2 = 1 - 4 * c := Real.sq_sqrt (by linarith)
+  have hs : Real.sqrt (1 - 4 * c) ^ (2 : ℕ) = 1 - 4 * c := Real.sq_sqrt (by linarith)
   have hsnn := Real.sqrt_nonneg (1 - 4 * c)
   by_contra hcon
   push Not at hcon
@@ -67,7 +67,7 @@ theorem abs_quadraticReal_le {c x : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4)
     (hx : |x| ≤ betaFixed c) : |quadraticReal c x| ≤ betaFixed c := by
   have hβ := betaFixed_sq' hc4
   have hβc := betaFixed_add_nonneg hc2 hc4
-  have hx2 : x ^ 2 ≤ betaFixed c ^ 2 := by
+  have hx2 : x ^ (2 : ℕ) ≤ betaFixed c ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ (abs_nonneg x) hx 2
     rwa [sq_abs] at h
   rw [quadraticReal_apply, abs_le]
@@ -97,7 +97,7 @@ theorem lt_quadraticReal_of_betaFixed_lt {c x : ℝ} (hc4 : c ≤ 1 / 4)
     (hx : betaFixed c < x) : x < quadraticReal c x := by
   unfold betaFixed at hx
   set s := Real.sqrt (1 - 4 * c) with hsdef
-  have hs : s ^ 2 = 1 - 4 * c := Real.sq_sqrt (by linarith)
+  have hs : s ^ (2 : ℕ) = 1 - 4 * c := Real.sq_sqrt (by linarith)
   have hsnn : 0 ≤ s := Real.sqrt_nonneg _
   have h1 : (0 : ℝ) < 2 * x - 1 - s := by linarith
   have h2 : (0 : ℝ) < 2 * x - 1 + s := by linarith

@@ -48,7 +48,7 @@ theorem weightedAlignment_eq_inner_sum (r : J → F) (q : F) (w : J → ℝ) :
 
 /-- The recurrence Gram energy is exactly a squared Hilbert norm, hence is nonnegative. -/
 theorem weightedRecurrenceEnergy_eq_norm_sq (r : J → F) (w : J → ℝ) :
-    weightedRecurrenceEnergy r w = ‖weightedMemorySum r w‖ ^ 2 := by
+    weightedRecurrenceEnergy r w = ‖weightedMemorySum r w‖ ^ (2 : ℕ) := by
   calc
     weightedRecurrenceEnergy r w =
         inner ℝ (weightedMemorySum r w) (weightedMemorySum r w) := by
@@ -60,31 +60,31 @@ theorem weightedRecurrenceEnergy_eq_norm_sq (r : J → F) (w : J → ℝ) :
       intro j hj
       rw [real_inner_comm (r i) (r j)]
       rw [mul_assoc]
-    _ = ‖weightedMemorySum r w‖ ^ 2 :=
+    _ = ‖weightedMemorySum r w‖ ^ (2 : ℕ) :=
       real_inner_self_eq_norm_sq (weightedMemorySum r w)
 
 /-- **Alignment--recurrence energy law.**  A fixed preparation memory can recognize a weighted
 history only within the Gram energy carried by that history. -/
 theorem weightedAlignment_sq_le_recurrenceEnergy (r : J → F) (q : F) (w : J → ℝ) :
-    weightedAlignment r q w ^ 2 ≤ ‖q‖ ^ 2 * weightedRecurrenceEnergy r w := by
+    weightedAlignment r q w ^ (2 : ℕ) ≤ ‖q‖ ^ (2 : ℕ) * weightedRecurrenceEnergy r w := by
   rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq]
   have hcs := abs_real_inner_le_norm (weightedMemorySum r w) q
   have hnonneg : 0 ≤ ‖weightedMemorySum r w‖ * ‖q‖ :=
     mul_nonneg (norm_nonneg _) (norm_nonneg _)
   calc
-    inner ℝ (weightedMemorySum r w) q ^ 2 =
-        |inner ℝ (weightedMemorySum r w) q| ^ 2 := by rw [sq_abs]
-    _ ≤ (‖weightedMemorySum r w‖ * ‖q‖) ^ 2 := by
+    inner ℝ (weightedMemorySum r w) q ^ (2 : ℕ) =
+        |inner ℝ (weightedMemorySum r w) q| ^ (2 : ℕ) := by rw [sq_abs]
+    _ ≤ (‖weightedMemorySum r w‖ * ‖q‖) ^ (2 : ℕ) := by
       nlinarith [abs_nonneg (inner ℝ (weightedMemorySum r w) q)]
-    _ = ‖q‖ ^ 2 * ‖weightedMemorySum r w‖ ^ 2 := by ring_nf
+    _ = ‖q‖ ^ (2 : ℕ) * ‖weightedMemorySum r w‖ ^ (2 : ℕ) := by ring_nf
 
 /-- **Sharpness of the universal recurrence-energy frontier.**  Choosing the preparation memory
 to be the weighted history sum saturates the alignment--energy law exactly.  Any improvement that
 loses less than the Cauchy square must therefore use additional preparation structure. -/
 theorem weightedAlignment_sq_eq_recurrenceEnergy_of_historyProbe
     (r : J → F) (w : J → ℝ) :
-    weightedAlignment r (weightedMemorySum r w) w ^ 2 =
-      ‖weightedMemorySum r w‖ ^ 2 * weightedRecurrenceEnergy r w := by
+    weightedAlignment r (weightedMemorySum r w) w ^ (2 : ℕ) =
+      ‖weightedMemorySum r w‖ ^ (2 : ℕ) * weightedRecurrenceEnergy r w := by
   rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq,
     real_inner_self_eq_norm_sq]
   rw [pow_two]
@@ -111,14 +111,14 @@ theorem threshold_sq_le_weightedRecurrenceEnergy
     (r : J → F) (q : F) (w : J → ℝ) {eta : ℝ}
     (heta : 0 ≤ eta) (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) q) :
-    (eta * ∑ j, w j) ^ 2 ≤ ‖q‖ ^ 2 * weightedRecurrenceEnergy r w := by
+    (eta * ∑ j, w j) ^ (2 : ℕ) ≤ ‖q‖ ^ (2 : ℕ) * weightedRecurrenceEnergy r w := by
   have hsumw : 0 ≤ ∑ j, w j := Finset.sum_nonneg fun j _ => hw j
   have hlin : eta * ∑ j, w j ≤ weightedAlignment r q w := by
     rw [Finset.mul_sum]
     exact Finset.sum_le_sum fun j _ => by
       simpa [mul_comm] using mul_le_mul_of_nonneg_left (halign j) (hw j)
   have halign0 : 0 ≤ weightedAlignment r q w := le_trans (mul_nonneg heta hsumw) hlin
-  have hsq : (eta * ∑ j, w j) ^ 2 ≤ weightedAlignment r q w ^ 2 := by
+  have hsq : (eta * ∑ j, w j) ^ (2 : ℕ) ≤ weightedAlignment r q w ^ (2 : ℕ) := by
     simpa only [pow_two] using mul_le_mul_of_nonneg hlin hlin
       (mul_nonneg heta hsumw) halign0
   exact le_trans hsq (weightedAlignment_sq_le_recurrenceEnergy r q w)
@@ -129,7 +129,7 @@ variable [CompleteSpace F]
 /-- Squared norm of the uniform finite-target moment.  When the index type parametrizes the actual
 occupied endpoint image, this is its intrinsic normalized frame energy. -/
 def finitePreparationFrameEnergy (target : I → F) : ℝ :=
-  ‖finitePreparationMoment target‖ ^ 2
+  ‖finitePreparationMoment target‖ ^ (2 : ℕ)
 
 omit [CompleteSpace F] in
 /-- Target frame energy is exactly the average of all target Gram entries.  In replica-projector
@@ -141,7 +141,7 @@ theorem finitePreparationFrameEnergy_eq_pairAverage (target : I → F) :
           inner ℝ (target i) (target j) := by
   calc
     finitePreparationFrameEnergy target =
-        ‖weightedMemorySum target (fun _ => (Fintype.card I : ℝ)⁻¹)‖ ^ 2 := by
+        ‖weightedMemorySum target (fun _ => (Fintype.card I : ℝ)⁻¹)‖ ^ (2 : ℕ) := by
       simp only [finitePreparationFrameEnergy, finitePreparationMoment,
         weightedMemorySum, Finset.smul_sum]
     _ = weightedRecurrenceEnergy target
@@ -157,8 +157,8 @@ theorem preparationMemory_norm_sq_eq_frameEnergy_sub_universal
     (hPisa : IsSelfAdjoint PiOp)
     (hPiid : ∀ z, PiOp (PiOp z) = PiOp z)
     (hPiMoment : PiOp (finitePreparationMoment target) = PiOp x) :
-    ‖preparationMemory PiOp x (finitePreparationMoment target)‖ ^ 2 =
-      finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ 2 := by
+    ‖preparationMemory PiOp x (finitePreparationMoment target)‖ ^ (2 : ℕ) =
+      finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ (2 : ℕ) := by
   have horth := universal_preparation_inner_eq_zero PiOp x
     (finitePreparationMoment target) hPisa hPiid hPiMoment
   have hdecomp : finitePreparationMoment target =
@@ -198,8 +198,8 @@ theorem adaptive_shortcuts_force_recurrence_energy
         (inner ℝ (universalSector PiOp x) (universalSector PiOp x) +
           inner ℝ (staticMemory PiOp P x)
             (preparationMemory PiOp x (finitePreparationMoment target)))) *
-        ∑ j, w j) ^ 2 ≤
-      (finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ 2) *
+        ∑ j, w j) ^ (2 : ℕ) ≤
+      (finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ (2 : ℕ)) *
         ∑ i, ∑ j, w i * w j *
           inner ℝ (x - P x) (U.op (time j - time i) (x - P x)) := by
   let eta : ℝ := (Fintype.card I : ℝ)⁻¹ * a -

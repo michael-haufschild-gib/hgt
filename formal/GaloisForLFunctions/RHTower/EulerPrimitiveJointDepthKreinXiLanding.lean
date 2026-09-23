@@ -128,7 +128,7 @@ theorem xiGammaEulerPrimitiveJointDepthKreinPair_diagonal
     xiGammaEulerPrimitiveJointDepthKreinPair
         (xiGammaEulerPrimitiveJointDepthKreinDiagonal h)
         (xiGammaEulerPrimitiveJointDepthKreinDiagonal h) =
-      2 * (‖h‖ : ℂ) ^ 2 := by
+      2 * (‖h‖ : ℂ) ^ (2 : ℕ) := by
   rw [xiGammaEulerPrimitiveJointDepthKreinPair_apply]
   simp [xiGammaEulerPrimitiveJointDepthKreinDiagonal]
   ring_nf
@@ -139,7 +139,7 @@ theorem xiGammaEulerPrimitiveJointDepthKreinPair_antidiagonal
     xiGammaEulerPrimitiveJointDepthKreinPair
         (xiGammaEulerPrimitiveJointDepthKreinAntidiagonal h)
         (xiGammaEulerPrimitiveJointDepthKreinAntidiagonal h) =
-      -2 * (‖h‖ : ℂ) ^ 2 := by
+      -2 * (‖h‖ : ℂ) ^ (2 : ℕ) := by
   rw [xiGammaEulerPrimitiveJointDepthKreinPair_apply]
   simp [xiGammaEulerPrimitiveJointDepthKreinAntidiagonal]
   ring_nf
@@ -151,7 +151,7 @@ theorem xiGammaEulerPrimitiveJointDepthKreinPair_antidiagonal_re_neg
       (xiGammaEulerPrimitiveJointDepthKreinAntidiagonal h)).re < 0 := by
   rw [xiGammaEulerPrimitiveJointDepthKreinPair_antidiagonal]
   have hnorm : 0 < ‖h‖ := norm_pos_iff.mpr hh
-  have hre : (-2 * (‖h‖ : ℂ) ^ 2).re = -2 * ‖h‖ ^ 2 := by
+  have hre : (-2 * (‖h‖ : ℂ) ^ (2 : ℕ)).re = -2 * ‖h‖ ^ (2 : ℕ) := by
     norm_num [Complex.mul_re, pow_two]
   rw [hre]
   nlinarith [sq_pos_of_pos hnorm]

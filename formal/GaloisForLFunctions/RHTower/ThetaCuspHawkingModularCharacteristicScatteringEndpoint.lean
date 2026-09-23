@@ -106,7 +106,7 @@ theorem thetaCuspHawkingModularPacket_eq_tiltWindow {d : ℕ}
 /-- Half-line energy of a coherent modular Hawking packet. -/
 def thetaCuspHawkingModularPacketEnergy {d : ℕ} (c w : Fin d → ℂ)
     (a : ℝ) : ℝ :=
-  ∫ s in Set.Ioi (0 : ℝ), ‖thetaCuspHawkingModularPacket c w a s‖ ^ 2
+  ∫ s in Set.Ioi (0 : ℝ), ‖thetaCuspHawkingModularPacket c w a s‖ ^ (2 : ℕ)
 
 theorem thetaCuspHawkingModularPacketEnergy_eq_tiltCorrelation {d : ℕ}
     (c w : Fin d → ℂ) (a : ℝ) :
@@ -171,12 +171,12 @@ theorem thetaCuspHawkingCharacteristicOutgoing_eq_contractionMinus {d : ℕ}
 def thetaCuspHawkingCharacteristicIncomingEnergy {d : ℕ}
     (c w : Fin d → ℂ) (t : ℝ) : ℝ :=
   ∫ s in Set.Ioi (0 : ℝ),
-    ‖thetaCuspHawkingCharacteristicIncoming c w t s‖ ^ 2
+    ‖thetaCuspHawkingCharacteristicIncoming c w t s‖ ^ (2 : ℕ)
 
 def thetaCuspHawkingCharacteristicOutgoingEnergy {d : ℕ}
     (c w : Fin d → ℂ) (t : ℝ) : ℝ :=
   ∫ s in Set.Ioi (0 : ℝ),
-    ‖thetaCuspHawkingCharacteristicOutgoing c w t s‖ ^ 2
+    ‖thetaCuspHawkingCharacteristicOutgoing c w t s‖ ^ (2 : ℕ)
 
 /-- Exact coherent characteristic balance.  No positivity assumption enters. -/
 theorem thetaCuspHawkingCharacteristicEnergy_balance {d : ℕ}
@@ -192,9 +192,9 @@ theorem thetaCuspHawkingCharacteristicEnergy_balance {d : ℕ}
     sourceBezoutian thetaCuspTiltSource (w j) (w l)
   change
     (((∫ s in Set.Ioi (0 : ℝ),
-        ‖contractionPlus thetaCuspTiltSource c w t s‖ ^ 2 : ℝ) : ℂ) -
+        ‖contractionPlus thetaCuspTiltSource c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ) -
       ((∫ s in Set.Ioi (0 : ℝ),
-        ‖contractionMinus thetaCuspTiltSource c w t s‖ ^ 2 : ℝ) : ℂ)) =
+        ‖contractionMinus thetaCuspTiltSource c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
       2 * (t : ℂ) * F at h
   have hFim : F.im = 0 := by
     simpa only [F] using sourceBezoutianSum_im thetaCuspTiltSource c w

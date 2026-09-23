@@ -65,7 +65,7 @@ theorem exchange_law (L : ℝ) : primeRange L = Real.sqrt (resolvedHeight L) := 
   rw [Real.sqrt_mul_self (Real.exp_nonneg L)]
 
 /-- Equivalently, the square of the prime range is the resolved height. -/
-theorem exchange_law_sq (L : ℝ) : primeRange L ^ 2 = resolvedHeight L := by
+theorem exchange_law_sq (L : ℝ) : primeRange L ^ (2 : ℕ) = resolvedHeight L := by
   unfold primeRange resolvedHeight
   rw [← Real.exp_nat_mul]
   norm_num
@@ -81,7 +81,7 @@ theorem primeRange_mono {L₁ L₂ : ℝ} (h : L₁ ≤ L₂) : primeRange L₁ 
 /-- Made concrete: doubling the width squares the resolved height and squares the prime range, so the
 ratio of exponents never moves. -/
 theorem doubling_preserves_ratio (L : ℝ) :
-    resolvedHeight (2 * L) = resolvedHeight L ^ 2 ∧ primeRange (2 * L) = primeRange L ^ 2 := by
+    resolvedHeight (2 * L) = resolvedHeight L ^ (2 : ℕ) ∧ primeRange (2 * L) = primeRange L ^ (2 : ℕ) := by
   constructor
   · unfold resolvedHeight
     rw [← Real.exp_nat_mul]

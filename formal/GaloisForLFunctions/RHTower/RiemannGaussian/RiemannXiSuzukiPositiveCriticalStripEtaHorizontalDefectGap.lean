@@ -11,7 +11,7 @@ half-line into the paired-eta support and its omitted gaps.
 On the full positive half-line, the horizontal-defect Fourier kernel has the
 elementary transform
 
-`2 a^2 / (((1/2+a)+I*y) * ((1/2-a)+I*y))`,
+`2 a^(2 : ℕ) / (((1/2+a)+I*y) * ((1/2-a)+I*y))`,
 
 which is nonzero whenever `a != 0` and `|a| < 1/2`.  At an off-critical zeta
 zero, the transform over the eta support vanishes by the complementary-tilt

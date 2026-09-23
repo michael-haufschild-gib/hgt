@@ -84,16 +84,16 @@ theorem archimedean_half_bound {σ₀ σΞ β A : ℝ} (hmono : σ₀ ≤ σΞ) 
 /-- **The assembled baseline.**  Pole diagonalization plus the half-mass archimedean bound minus the
 cubically small negative pole direction. -/
 theorem explicit_baseline {P Q σ₀ σΞ A ℓ : ℝ} (_hℓ : 0 ≤ ℓ)
-    (hQ : Q ^ 2 ≤ Real.sinh ℓ - ℓ) (hAbound : (σ₀ + σΞ) / 2 ≤ A) :
-    2 * P ^ 2 - 2 * (Real.sinh ℓ - ℓ) + (σ₀ + σΞ) / 2 ≤ 2 * P ^ 2 - 2 * Q ^ 2 + A := by
+    (hQ : Q ^ (2 : ℕ) ≤ Real.sinh ℓ - ℓ) (hAbound : (σ₀ + σΞ) / 2 ≤ A) :
+    2 * P ^ (2 : ℕ) - 2 * (Real.sinh ℓ - ℓ) + (σ₀ + σΞ) / 2 ≤ 2 * P ^ (2 : ℕ) - 2 * Q ^ (2 : ℕ) + A := by
   linarith
 
 /-- **Positivity criterion.**  The baseline is nonnegative as soon as the symbol at the cutoff
 exceeds `-σ₀ + 4(sinh ℓ - ℓ)`. -/
 theorem baseline_nonneg {P σ₀ σΞ ℓ : ℝ} (_hℓ : 0 ≤ ℓ)
     (hcrit : -σ₀ + 4 * (Real.sinh ℓ - ℓ) ≤ σΞ) :
-    0 ≤ 2 * P ^ 2 - 2 * (Real.sinh ℓ - ℓ) + (σ₀ + σΞ) / 2 := by
-  have hP : (0 : ℝ) ≤ 2 * P ^ 2 := by positivity
+    0 ≤ 2 * P ^ (2 : ℕ) - 2 * (Real.sinh ℓ - ℓ) + (σ₀ + σΞ) / 2 := by
+  have hP : (0 : ℝ) ≤ 2 * P ^ (2 : ℕ) := by positivity
   linarith
 
 end RHTower

@@ -20,7 +20,7 @@ noncomputable section
 
 /-- A translated, unnormalised real Gaussian. -/
 def translatedGaussian (ε t r : ℝ) : ℝ :=
-  Real.exp (-ε * (r - t) ^ 2)
+  Real.exp (-ε * (r - t) ^ (2 : ℕ))
 
 /-- The additional heat parameter needed to broaden an `a`-Gaussian to an
 `ε`-Gaussian, where `0 < ε < a`. -/
@@ -49,42 +49,42 @@ lemma heatParameter_effective {a ε : ℝ} (hε : 0 < ε) (hεa : ε < a) :
   ring
 
 lemma gaussian_complete_square {a b : ℝ} (hab : a + b ≠ 0) (r t s : ℝ) :
-    b * (t - s) ^ 2 + a * (r - s) ^ 2 =
-      (a + b) * (s - (a * r + b * t) / (a + b)) ^ 2
-        + (a * b / (a + b)) * (r - t) ^ 2 := by
+    b * (t - s) ^ (2 : ℕ) + a * (r - s) ^ (2 : ℕ) =
+      (a + b) * (s - (a * r + b * t) / (a + b)) ^ (2 : ℕ)
+        + (a * b / (a + b)) * (r - t) ^ (2 : ℕ) := by
   field_simp
   ring
 
 lemma translatedGaussian_product_eq
     {a b : ℝ} (hab : a + b ≠ 0) (r t s : ℝ) :
-    Real.exp (-b * (t - s) ^ 2) * translatedGaussian a s r =
-      Real.exp (-(a * b / (a + b)) * (r - t) ^ 2) *
+    Real.exp (-b * (t - s) ^ (2 : ℕ)) * translatedGaussian a s r =
+      Real.exp (-(a * b / (a + b)) * (r - t) ^ (2 : ℕ)) *
         Real.exp (-(a + b) *
-          (s - (a * r + b * t) / (a + b)) ^ 2) := by
+          (s - (a * r + b * t) / (a + b)) ^ (2 : ℕ)) := by
   simp only [translatedGaussian, ← Real.exp_add]
   apply congrArg Real.exp
   calc
-    -b * (t - s) ^ 2 + -a * (r - s) ^ 2 =
-        -(b * (t - s) ^ 2 + a * (r - s) ^ 2) := by ring
-    _ = -((a + b) * (s - (a * r + b * t) / (a + b)) ^ 2
-        + (a * b / (a + b)) * (r - t) ^ 2) := by
+    -b * (t - s) ^ (2 : ℕ) + -a * (r - s) ^ (2 : ℕ) =
+        -(b * (t - s) ^ (2 : ℕ) + a * (r - s) ^ (2 : ℕ)) := by ring
+    _ = -((a + b) * (s - (a * r + b * t) / (a + b)) ^ (2 : ℕ)
+        + (a * b / (a + b)) * (r - t) ^ (2 : ℕ)) := by
           rw [gaussian_complete_square hab]
-    _ = -(a * b / (a + b)) * (r - t) ^ 2
-        + -(a + b) * (s - (a * r + b * t) / (a + b)) ^ 2 := by ring
+    _ = -(a * b / (a + b)) * (r - t) ^ (2 : ℕ)
+        + -(a + b) * (s - (a * r + b * t) / (a + b)) ^ (2 : ℕ) := by ring
 
 lemma integrable_translatedGaussian_product
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (r t : ℝ) :
     Integrable (fun s : ℝ =>
-      Real.exp (-b * (t - s) ^ 2) * translatedGaussian a s r) := by
+      Real.exp (-b * (t - s) ^ (2 : ℕ)) * translatedGaussian a s r) := by
   have hab_pos : 0 < a + b := add_pos ha hb
   have hab : a + b ≠ 0 := ne_of_gt hab_pos
   let m : ℝ := (a * r + b * t) / (a + b)
-  let c : ℝ := Real.exp (-(a * b / (a + b)) * (r - t) ^ 2)
+  let c : ℝ := Real.exp (-(a * b / (a + b)) * (r - t) ^ (2 : ℕ))
   have hgauss : Integrable (fun s : ℝ =>
-      Real.exp (-(a + b) * (s - m) ^ 2)) := by
+      Real.exp (-(a + b) * (s - m) ^ (2 : ℕ))) := by
     simpa using (integrable_exp_neg_mul_sq hab_pos).comp_sub_right m
   have hscaled : Integrable (fun s : ℝ =>
-      c * Real.exp (-(a + b) * (s - m) ^ 2)) := hgauss.const_mul c
+      c * Real.exp (-(a + b) * (s - m) ^ (2 : ℕ))) := hgauss.const_mul c
   refine hscaled.congr (Filter.Eventually.of_forall fun s => ?_)
   exact (translatedGaussian_product_eq hab r t s).symm
 
@@ -92,24 +92,24 @@ lemma integrable_translatedGaussian_product
 theorem integral_translatedGaussian_mul_translatedGaussian
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (r t : ℝ) :
     (∫ s : ℝ,
-        Real.exp (-b * (t - s) ^ 2) * translatedGaussian a s r) =
-      Real.exp (-(a * b / (a + b)) * (r - t) ^ 2) *
+        Real.exp (-b * (t - s) ^ (2 : ℕ)) * translatedGaussian a s r) =
+      Real.exp (-(a * b / (a + b)) * (r - t) ^ (2 : ℕ)) *
         Real.sqrt (Real.pi / (a + b)) := by
   have hab : a + b ≠ 0 := ne_of_gt (add_pos ha hb)
   let m : ℝ := (a * r + b * t) / (a + b)
   have hpoint (s : ℝ) :
-      Real.exp (-b * (t - s) ^ 2) * translatedGaussian a s r =
-        Real.exp (-(a * b / (a + b)) * (r - t) ^ 2) *
-          Real.exp (-(a + b) * (s - m) ^ 2) := by
+      Real.exp (-b * (t - s) ^ (2 : ℕ)) * translatedGaussian a s r =
+        Real.exp (-(a * b / (a + b)) * (r - t) ^ (2 : ℕ)) *
+          Real.exp (-(a + b) * (s - m) ^ (2 : ℕ)) := by
     simpa only [m] using translatedGaussian_product_eq hab r t s
   rw [integral_congr_ae (Filter.Eventually.of_forall hpoint), integral_const_mul]
   have hshift :
-      (∫ s : ℝ, Real.exp (-(a + b) * (s - m) ^ 2)) =
+      (∫ s : ℝ, Real.exp (-(a + b) * (s - m) ^ (2 : ℕ))) =
         Real.sqrt (Real.pi / (a + b)) := by
     calc
-      _ = ∫ x : ℝ, Real.exp (-(a + b) * x ^ 2) := by
+      _ = ∫ x : ℝ, Real.exp (-(a + b) * x ^ (2 : ℕ)) := by
         simpa using MeasureTheory.integral_sub_right_eq_self
-          (fun x : ℝ => Real.exp (-(a + b) * x ^ 2)) m
+          (fun x : ℝ => Real.exp (-(a + b) * x ^ (2 : ℕ))) m
       _ = Real.sqrt (Real.pi / (a + b)) := integral_gaussian (a + b)
   rw [hshift]
 
@@ -120,7 +120,7 @@ theorem translatedGaussian_heat_convolution
     translatedGaussian ε t r =
       heatNormalization a (heatParameter a ε) *
         ∫ s : ℝ,
-          Real.exp (-heatParameter a ε * (t - s) ^ 2) *
+          Real.exp (-heatParameter a ε * (t - s) ^ (2 : ℕ)) *
             translatedGaussian a s r := by
   have ha : 0 < a := hε.trans hεa
   have hb : 0 < heatParameter a ε := heatParameter_pos hε hεa
@@ -137,7 +137,7 @@ lemma heatNormalization_pos {a b : ℝ} (hab : 0 < a + b) :
   exact inv_pos.mpr (Real.sqrt_pos.2 (div_pos Real.pi_pos hab))
 
 /-- The even pair used by the Gaussian-Weil program.  The second summand is
-`exp (-ε (r+t)^2)`, written by reflecting `r`. -/
+`exp (-ε (r+t)^(2 : ℕ))`, written by reflecting `r`. -/
 def symmetricGaussian (ε t r : ℝ) : ℝ :=
   translatedGaussian ε t r + translatedGaussian ε t (-r)
 
@@ -155,7 +155,7 @@ theorem symmetricGaussian_heat_convolution
     symmetricGaussian ε t r =
       heatNormalization a (heatParameter a ε) *
         ∫ s : ℝ,
-          Real.exp (-heatParameter a ε * (t - s) ^ 2) *
+          Real.exp (-heatParameter a ε * (t - s) ^ (2 : ℕ)) *
             symmetricGaussian a s r := by
   have ha : 0 < a := hε.trans hεa
   have hb : 0 < heatParameter a ε := heatParameter_pos hε hεa
@@ -170,7 +170,7 @@ theorem symmetricGaussian_heat_convolution
 /-- Positive Gaussian convolution of a real-valued function. -/
 def heatConvolution (a b : ℝ) (f : ℝ → ℝ) (t : ℝ) : ℝ :=
   heatNormalization a b *
-    ∫ s : ℝ, Real.exp (-b * (t - s) ^ 2) * f s
+    ∫ s : ℝ, Real.exp (-b * (t - s) ^ (2 : ℕ)) * f s
 
 /-- A continuous, everywhere-positive function remains strictly positive
 after normalized Gaussian convolution, provided the product is integrable. -/
@@ -179,16 +179,16 @@ theorem heatConvolution_pos
     {f : ℝ → ℝ} (hf_cont : Continuous f) (hf_pos : ∀ s, 0 < f s)
     (t : ℝ)
     (hf_int : Integrable (fun s : ℝ =>
-      Real.exp (-b * (t - s) ^ 2) * f s)) :
+      Real.exp (-b * (t - s) ^ (2 : ℕ)) * f s)) :
     0 < heatConvolution a b f t := by
   have hcont : Continuous (fun s : ℝ =>
-      Real.exp (-b * (t - s) ^ 2) * f s) := by
+      Real.exp (-b * (t - s) ^ (2 : ℕ)) * f s) := by
     fun_prop
   have hnonneg : 0 ≤ (fun s : ℝ =>
-      Real.exp (-b * (t - s) ^ 2) * f s) := fun s =>
+      Real.exp (-b * (t - s) ^ (2 : ℕ)) * f s) := fun s =>
     mul_nonneg (Real.exp_pos _).le (hf_pos s).le
   have hnonzero :
-      Real.exp (-b * (t - t) ^ 2) * f t ≠ 0 :=
+      Real.exp (-b * (t - t) ^ (2 : ℕ)) * f t ≠ 0 :=
     ne_of_gt (mul_pos (Real.exp_pos _) (hf_pos t))
   exact mul_pos (heatNormalization_pos hab)
     (integral_pos_of_integrable_nonneg_nonzero hcont hf_int hnonneg hnonzero)

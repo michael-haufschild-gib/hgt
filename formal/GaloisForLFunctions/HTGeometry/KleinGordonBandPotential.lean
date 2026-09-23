@@ -119,7 +119,7 @@ theorem norm_kgBandOp_sub_le {W₁ W₂ : Lp ℂ 2 (volume : Measure E) →L[ℂ
         ≤ η * (‖f‖ + ‖k‖)) :
     ‖kgBandOp W₁ R - kgBandOp W₂ R‖
       ≤ 8 * (η * (1 + b * T))
-        * (1 / T ^ 2 + 8 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T))) :=
+        * (1 / T ^ (2 : ℕ) + 8 * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T))) :=
   norm_sub_le_of_lowPass_explicit hb0 (norm_kgBandOp_le hb0 hW₁ R) (norm_kgBandOp_le hb0 hW₂ R)
     (kgBandOp_lowPass_dom W₁ W₂ R) (kgBandOp_lowPass_ran W₁ W₂ R) hη0 hT0 hobs
 
@@ -128,12 +128,12 @@ same class of perturbations carries both halves of the theory: the inverse probl
 it, and the evolution it generates conserves the energy exactly. -/
 theorem kgBandOp_real_energy_conserved {V : E → ℝ} {bV : ℝ} (hV : Measurable V) (hbV0 : 0 ≤ bV)
     (hbV : ∀ a : E, |V a| ≤ bV) (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad (kgBandOp (kgMulOp hV hbV0 hbV) R) g h t‖ ^ 2
-        + ‖kgFieldVel (kgBandOp (kgMulOp hV hbV0 hbV) R) g h t‖ ^ 2
+    ‖kgFieldGrad (kgBandOp (kgMulOp hV hbV0 hbV) R) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVel (kgBandOp (kgMulOp hV hbV0 hbV) R) g h t‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (kgBandOp (kgMulOp hV hbV0 hbV) R
             (kgFieldMild (kgBandOp (kgMulOp hV hbV0 hbV) R) (kgFreqInvOp g) h t))
           (kgFieldMild (kgBandOp (kgMulOp hV hbV0 hbV) R) (kgFreqInvOp g) h t))
-      = ‖g‖ ^ 2 + ‖h‖ ^ 2
+      = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (kgBandOp (kgMulOp hV hbV0 hbV) R (kgFreqInvOp g))
             (kgFreqInvOp g)) :=
   kgFieldEnergy_conserved hbV0 (norm_kgBandOp_le hbV0 (norm_kgMulOp_le hV hbV0 hbV) R)

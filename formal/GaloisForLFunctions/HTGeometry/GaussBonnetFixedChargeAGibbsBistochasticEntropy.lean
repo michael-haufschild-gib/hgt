@@ -58,8 +58,8 @@ theorem egbFixedChargeAGibbsPopulation_majorization
 /-- Gibbs collision probability cannot increase under any number of transitions. -/
 theorem egbFixedChargeAGibbsPopulation_collision_le
     (n m : ℕ) (β : ℝ) (E : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ 2) ≤
-      ∑ i : Fin (2 ^ (n + 3)), _root_.HTGeometry.finiteGibbsStateWeight β E i ^ 2 :=
+    (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ (2 : ℕ)) ≤
+      ∑ i : Fin (2 ^ (n + 3)), _root_.HTGeometry.finiteGibbsStateWeight β E i ^ (2 : ℕ) :=
   egbFixedChargeACriticalMarkov_sum_sq_le n m _
 
 end

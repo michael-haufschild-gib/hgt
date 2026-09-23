@@ -92,14 +92,14 @@ private theorem deningerConnectionPair_summable {h : 𝓢(ℝ, ℂ)}
     (hh : h ∈ DeningerExpSchwartz) {x : ℝ} (hx : 0 < x) :
     Summable (deningerConnectionPair h x) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
-  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
   have hpair : Summable fun q : ℕ × ℕ =>
-      (C / x ^ 2) * ((vonMangoldt q.1 / (q.1 : ℝ) ^ 2) * (1 / (q.2 : ℝ) ^ 2)) := by
+      (C / x ^ (2 : ℕ)) * ((vonMangoldt q.1 / (q.1 : ℝ) ^ (2 : ℕ)) * (1 / (q.2 : ℝ) ^ (2 : ℕ))) := by
     refine Summable.mul_left _ ?_
-    exact Summable.mul_of_nonneg (f := fun n : ℕ => vonMangoldt n / (n : ℝ) ^ 2)
-      (g := fun n : ℕ => 1 / (n : ℝ) ^ 2) deningerVonMangoldt_summable_div_sq hsq
+    exact Summable.mul_of_nonneg (f := fun n : ℕ => vonMangoldt n / (n : ℝ) ^ (2 : ℕ))
+      (g := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) deningerVonMangoldt_summable_div_sq hsq
       (fun n => div_nonneg vonMangoldt_nonneg (by positivity)) (fun n => by positivity)
   refine Summable.of_norm_bounded hpair fun q => ?_
   rcases Nat.eq_zero_or_pos (q.1 * q.2) with hq0 | hqpos
@@ -123,7 +123,7 @@ private theorem deningerConnectionPair_summable {h : 𝓢(ℝ, ℂ)}
       Real.norm_of_nonneg vonMangoldt_nonneg]
     have hinner : ‖((moebius q.2 : ℤ) : ℂ)‖ *
         ‖deningerLogPull h (((q.1 * q.2 : ℕ) : ℝ) * x)‖
-        ≤ C / (((q.1 : ℝ) * (q.2 : ℝ)) * x) ^ 2 := by
+        ≤ C / (((q.1 : ℝ) * (q.2 : ℝ)) * x) ^ (2 : ℕ) := by
       have hstep : ‖((moebius q.2 : ℤ) : ℂ)‖ *
           ‖deningerLogPull h (((q.1 * q.2 : ℕ) : ℝ) * x)‖
           ≤ 1 * ‖deningerLogPull h (((q.1 * q.2 : ℕ) : ℝ) * x)‖ :=

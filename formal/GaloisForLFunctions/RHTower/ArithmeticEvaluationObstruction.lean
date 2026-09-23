@@ -76,10 +76,10 @@ theorem stepGram_deltaSeq {n₀ : ℕ} (hn₀ : 1 ≤ n₀) (s : ℕ → ℝ) {C
   exact hmain.unique hsingle
 
 theorem norm_sq_stepVec_deltaSeq {n₀ : ℕ} (hn₀ : 1 ≤ n₀) :
-    ‖stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀)‖ ^ 2 = 1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1)) := by
+    ‖stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀)‖ ^ (2 : ℕ) = 1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1)) := by
   have h : (RCLike.re (inner ℂ (stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀))
       (stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀))) : ℝ)
-      = ‖stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀)‖ ^ 2 := inner_self_eq_norm_sq _
+      = ‖stepVec (deltaSeq n₀) (abs_deltaSeq_le n₀)‖ ^ (2 : ℕ) := inner_self_eq_norm_sq _
   rw [inner_stepVec, stepGram_deltaSeq hn₀ _ (abs_deltaSeq_le n₀), deltaSeq, if_pos rfl] at h
   rw [← h]
   show ((1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1)) : ℝ) : ℂ).re = 1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1))
@@ -159,7 +159,7 @@ theorem dist_floor_of_forall_dvd {I : Type*} {n₀ : ℕ} (hn₀ : 1 ≤ n₀) (
   refine le_trans (le_of_eq ?_) hkey
   have hsne : Real.sqrt (1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1))) ≠ 0 :=
     ne_of_gt (Real.sqrt_pos.mpr hw)
-  have hsq : Real.sqrt (1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1))) ^ 2
+  have hsq : Real.sqrt (1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1))) ^ (2 : ℕ)
       = 1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1)) := Real.sq_sqrt hw.le
   rw [eq_div_iff hsne]
   nlinarith [hsq, Real.sqrt_nonneg (1 / ((n₀ : ℝ) * ((n₀ : ℝ) + 1)))]

@@ -39,17 +39,17 @@ complex operator. No boundedness assumption is needed. -/
 theorem complexSymmetric_residual_norm_sq
     (Aψ ψ : H) (lambda : ℂ)
     (hsa : ⟪ψ, Aψ⟫_ℂ = ⟪Aψ, ψ⟫_ℂ) :
-    ‖Aψ - lambda • ψ‖ ^ 2 =
-      ‖Aψ - (lambda.re : ℂ) • ψ‖ ^ 2 +
-        lambda.im ^ 2 * ‖ψ‖ ^ 2 := by
-  rw [show ‖Aψ - lambda • ψ‖ ^ 2 =
+    ‖Aψ - lambda • ψ‖ ^ (2 : ℕ) =
+      ‖Aψ - (lambda.re : ℂ) • ψ‖ ^ (2 : ℕ) +
+        lambda.im ^ (2 : ℕ) * ‖ψ‖ ^ (2 : ℕ) := by
+  rw [show ‖Aψ - lambda • ψ‖ ^ (2 : ℕ) =
         (⟪Aψ - lambda • ψ, Aψ - lambda • ψ⟫_ℂ).re from
       norm_sq_eq_re_inner (𝕜 := ℂ) (Aψ - lambda • ψ),
-    show ‖Aψ - (lambda.re : ℂ) • ψ‖ ^ 2 =
+    show ‖Aψ - (lambda.re : ℂ) • ψ‖ ^ (2 : ℕ) =
         (⟪Aψ - (lambda.re : ℂ) • ψ,
           Aψ - (lambda.re : ℂ) • ψ⟫_ℂ).re from
       norm_sq_eq_re_inner (𝕜 := ℂ) (Aψ - (lambda.re : ℂ) • ψ),
-    show ‖ψ‖ ^ 2 = (⟪ψ, ψ⟫_ℂ).re from
+    show ‖ψ‖ ^ (2 : ℕ) = (⟪ψ, ψ⟫_ℂ).re from
       norm_sq_eq_re_inner (𝕜 := ℂ) ψ]
   simp only [inner_sub_left, inner_sub_right, inner_smul_left,
     inner_smul_right, Complex.conj_ofReal, hsa]
@@ -63,10 +63,10 @@ Birmingham--Mokhtari angular channel. -/
 theorem d4ThetaTeukolskyAngularSourceResidual_norm_sq
     (A : H → H) (ψ : H) (z : ℂ)
     (hsa : ⟪ψ, A ψ⟫_ℂ = ⟪A ψ, ψ⟫_ℂ) :
-    ‖A ψ - d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z • ψ‖ ^ 2 =
+    ‖A ψ - d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z • ψ‖ ^ (2 : ℕ) =
       ‖A ψ -
-          ((d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z).re : ℂ) • ψ‖ ^ 2 +
-        4 * z.re ^ 2 * z.im ^ 2 * ‖ψ‖ ^ 2 := by
+          ((d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z).re : ℂ) • ψ‖ ^ (2 : ℕ) +
+        4 * z.re ^ (2 : ℕ) * z.im ^ (2 : ℕ) * ‖ψ‖ ^ (2 : ℕ) := by
   rw [complexSymmetric_residual_norm_sq (A ψ) ψ
       (d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z) hsa,
     d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue_im]
@@ -77,12 +77,12 @@ angular closure. -/
 theorem d4ThetaTeukolskyAngularSourceResidual_sq_lowerBound
     (A : H → H) (ψ : H) (z : ℂ)
     (hsa : ⟪ψ, A ψ⟫_ℂ = ⟪A ψ, ψ⟫_ℂ) :
-    4 * z.re ^ 2 * z.im ^ 2 * ‖ψ‖ ^ 2 ≤
-      ‖A ψ - d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z • ψ‖ ^ 2 := by
+    4 * z.re ^ (2 : ℕ) * z.im ^ (2 : ℕ) * ‖ψ‖ ^ (2 : ℕ) ≤
+      ‖A ψ - d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z • ψ‖ ^ (2 : ℕ) := by
   rw [d4ThetaTeukolskyAngularSourceResidual_norm_sq A ψ z hsa]
   have hnonneg :
       0 ≤ ‖A ψ -
-        ((d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z).re : ℂ) • ψ‖ ^ 2 :=
+        ((d4ThetaTeukolskyThermallyDealiasedAngularEigenvalue z).re : ℂ) • ψ‖ ^ (2 : ℕ) :=
     sq_nonneg _
   linarith
 
@@ -99,12 +99,12 @@ theorem d4ThetaTeukolsky_tiltedAngularSource_forces_leakage
     A ψ (xiSpectralPoint q) hsa
   rw [hzero, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at hbound
   have hnorm : 0 < ‖ψ‖ := norm_pos_iff.mpr hψ
-  have hreSq : 0 < (xiSpectralPoint q).re ^ 2 :=
+  have hreSq : 0 < (xiSpectralPoint q).re ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (thetaCuspHawkingHypergeometricXiSpectralPoint_re_ne_zero q)
-  have himSq : 0 < (xiSpectralPoint q).im ^ 2 := sq_pos_of_ne_zero htilt
+  have himSq : 0 < (xiSpectralPoint q).im ^ (2 : ℕ) := sq_pos_of_ne_zero htilt
   have hpositive :
-      0 < 4 * (xiSpectralPoint q).re ^ 2 *
-        (xiSpectralPoint q).im ^ 2 * ‖ψ‖ ^ 2 := by
+      0 < 4 * (xiSpectralPoint q).re ^ (2 : ℕ) *
+        (xiSpectralPoint q).im ^ (2 : ℕ) * ‖ψ‖ ^ (2 : ℕ) := by
     positivity
   linarith
 

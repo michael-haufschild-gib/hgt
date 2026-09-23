@@ -164,7 +164,7 @@ theorem fabriPicasso_noDeningerBigWittPhysicalPacket :
         ‖z i‖ ^ 2 = deningerBigWittCrossPrimePhysicalAtom i :=
   no_deningerBigWittPhysicalHalfDensity_packet
 
-/-- Universal theta-sector critical amplitude lies outside prime `ell^2`. -/
+/-- Universal theta-sector critical amplitude lies outside prime `ell^(2 : ℕ)`. -/
 theorem fabriPicasso_thetaUniversalCriticalChannelOutsideHilbert :
     ¬ Summable (fun p : Nat.Primes =>
       routeNGammaSewnUniversalCriticalChannelAmplitude p ^ 2) :=
@@ -181,7 +181,7 @@ theorem fabriPicasso_juliaCriticalBoundaryOutsideHilbert :
       juliaCriticalEvenFactorialBoundaryEnergy pj.1 pj.2) :=
   not_summable_juliaCriticalEvenFactorialBoundaryEnergy
 
-/-- Unsmoothed Xi valuation-one critical coefficient lies outside prime `ell^2`. -/
+/-- Unsmoothed Xi valuation-one critical coefficient lies outside prime `ell^(2 : ℕ)`. -/
 theorem fabriPicasso_xiValuationOneCriticalCoefficientOutsideHilbert :
     ¬ Summable (fun p : Nat.Primes =>
       xiMassValuationOneCriticalCoefficient p ^ 2) :=

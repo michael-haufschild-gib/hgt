@@ -109,13 +109,13 @@ theorem continuous_trigExp (D : ℕ) (f : ℤ → ℂ) : Continuous (trigExp D f
 
 /-- **Parseval for trigonometric polynomials.** -/
 theorem integral_normSq_trigExp (D : ℕ) (f : ℤ → ℂ) :
-    (∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ 2)
-      = 2 * Real.pi * ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), ‖f k‖ ^ 2 := by
-  have hcast : ∀ θ : ℝ, ((‖trigExp D f θ‖ ^ 2 : ℝ) : ℂ)
+    (∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ (2 : ℕ))
+      = 2 * Real.pi * ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), ‖f k‖ ^ (2 : ℕ) := by
+  have hcast : ∀ θ : ℝ, ((‖trigExp D f θ‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ j ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ),
         (f j * (starRingEnd ℂ) (f k)) * (expMon j θ * (starRingEnd ℂ) (expMon k θ)) := by
     intro θ
-    have h1 : ((‖trigExp D f θ‖ ^ 2 : ℝ) : ℂ)
+    have h1 : ((‖trigExp D f θ‖ ^ (2 : ℕ) : ℝ) : ℂ)
         = trigExp D f θ * (starRingEnd ℂ) (trigExp D f θ) := by
       rw [Complex.mul_conj]
       norm_cast
@@ -124,11 +124,11 @@ theorem integral_normSq_trigExp (D : ℕ) (f : ℤ → ℂ) :
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul]
     ring
-  have hcastInt : (((∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ 2 : ℝ)) : ℂ)
-      = ∫ θ in (-Real.pi)..Real.pi, ((‖trigExp D f θ‖ ^ 2 : ℝ) : ℂ) :=
+  have hcastInt : (((∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ (2 : ℕ) : ℝ)) : ℂ)
+      = ∫ θ in (-Real.pi)..Real.pi, ((‖trigExp D f θ‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
     intervalIntegral.integral_ofReal.symm
-  have hgoal : (((∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ 2 : ℝ)) : ℂ)
-      = ((2 * Real.pi * ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), ‖f k‖ ^ 2 : ℝ) : ℂ) := by
+  have hgoal : (((∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ (2 : ℕ) : ℝ)) : ℂ)
+      = ((2 * Real.pi * ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), ‖f k‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hcastInt, intervalIntegral.integral_congr (fun θ _ => hcast θ)]
     have hintj : ∀ j ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), IntervalIntegrable
         (fun θ : ℝ => ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ),
@@ -143,7 +143,7 @@ theorem integral_normSq_trigExp (D : ℕ) (f : ℤ → ℂ) :
     have hinner : ∀ j ∈ Finset.Icc (-(D : ℤ)) (D : ℤ),
         (∫ θ in (-Real.pi)..Real.pi, ∑ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ),
           (f j * (starRingEnd ℂ) (f k)) * (expMon j θ * (starRingEnd ℂ) (expMon k θ)))
-          = (2 * Real.pi : ℂ) * ((‖f j‖ ^ 2 : ℝ) : ℂ) := by
+          = (2 * Real.pi : ℂ) * ((‖f j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       intro j hj
       have hintk : ∀ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ), IntervalIntegrable
           (fun θ : ℝ => (f j * (starRingEnd ℂ) (f k))
@@ -161,7 +161,7 @@ theorem integral_normSq_trigExp (D : ℕ) (f : ℤ → ℂ) :
         rw [intervalIntegral.integral_const_mul, integral_expMon_mul_conj]
       rw [Finset.sum_congr rfl hterm, Finset.sum_eq_single j]
       · rw [if_pos rfl, Complex.mul_conj]
-        rw [show ((Complex.normSq (f j) : ℝ) : ℂ) = ((‖f j‖ ^ 2 : ℝ) : ℂ) by
+        rw [show ((Complex.normSq (f j) : ℝ) : ℂ) = ((‖f j‖ ^ (2 : ℕ) : ℝ) : ℂ) by
           norm_cast
           rw [Complex.normSq_eq_norm_sq]]
         ring
@@ -194,11 +194,11 @@ theorem hasDerivAt_trigExp (D : ℕ) (f : ℤ → ℂ) (θ : ℝ) :
 /-- **The `L²` Bernstein inequality for trigonometric polynomials.** -/
 theorem integral_normSq_trigExp_deriv_le (D : ℕ) (f : ℤ → ℂ) :
     (∫ θ in (-Real.pi)..Real.pi,
-        ‖trigExp D (fun k => f k * ((k : ℂ) * Complex.I)) θ‖ ^ 2)
-      ≤ (D : ℝ) ^ 2 * ∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ 2 := by
+        ‖trigExp D (fun k => f k * ((k : ℂ) * Complex.I)) θ‖ ^ (2 : ℕ))
+      ≤ (D : ℝ) ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, ‖trigExp D f θ‖ ^ (2 : ℕ) := by
   rw [integral_normSq_trigExp, integral_normSq_trigExp]
   have hterm : ∀ k ∈ Finset.Icc (-(D : ℤ)) (D : ℤ),
-      ‖f k * ((k : ℂ) * Complex.I)‖ ^ 2 ≤ (D : ℝ) ^ 2 * ‖f k‖ ^ 2 := by
+      ‖f k * ((k : ℂ) * Complex.I)‖ ^ (2 : ℕ) ≤ (D : ℝ) ^ (2 : ℕ) * ‖f k‖ ^ (2 : ℕ) := by
     intro k hk
     simp only [Finset.mem_Icc] at hk
     have habs : |(k : ℝ)| ≤ (D : ℝ) := by
@@ -212,7 +212,7 @@ theorem integral_normSq_trigExp_deriv_le (D : ℕ) (f : ℤ → ℂ) :
       rw [Complex.norm_intCast]
     rw [hnorm, mul_pow]
     have hk0 : (0 : ℝ) ≤ |(k : ℝ)| := abs_nonneg _
-    have hfn : (0 : ℝ) ≤ ‖f k‖ ^ 2 := sq_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖f k‖ ^ (2 : ℕ) := sq_nonneg _
     nlinarith [pow_le_pow_left₀ hk0 habs 2]
   have hsum := Finset.sum_le_sum hterm
   rw [← Finset.mul_sum] at hsum

@@ -28,7 +28,7 @@ noncomputable section
 private theorem twoBranchOneOrbit_localWittForm_eq_contactCoefficient
     {K N : ℕ} (d : PuiseuxOrbitCoareaDatum 1 2 K N) (x : Fin 1 → ℝ) :
     localWittForm d x =
-      (5 - 2 * (d.branches.contactNumerator 0 1 / (N : ℝ))) * x 0 ^ 2 := by
+      (5 - 2 * (d.branches.contactNumerator 0 1 / (N : ℝ))) * x 0 ^ (2 : ℕ) := by
   have horbit : ∀ i : Fin 2, d.toOrbitCoareaDatum.orbit i = 0 := by
     intro i
     change d.orbit i = 0
@@ -53,7 +53,7 @@ private theorem twoBranchOneOrbit_localWittForm_eq_contactCoefficient
     rw [d.branches.canonicalCuts_contact_eq]
     simp
   have hpair : d.toOrbitCoareaDatum.contactPairing x =
-      2 * (d.branches.contactNumerator 0 1 / (N : ℝ)) * x 0 ^ 2 := by
+      2 * (d.branches.contactNumerator 0 1 / (N : ℝ)) * x 0 ^ (2 : ℕ) := by
     simp only [OrbitCoareaDatum.contactPairing]
     simp [OrbitCoareaDatum.liftCharge, horbit, h00, h01, h10, h11]
     ring
@@ -79,7 +79,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicSphereUnitWittForm_twoBranchOneOrbit
     (x : compatibleCharges d) :
     4 * globalReesWittForm 0 d (fun _ _ => 1) x =
       (5 - 2 * ((d 0).branches.contactNumerator 0 1 / (N 0 : ℝ))) *
-        commonRankLinear d x ^ 2 := by
+        commonRankLinear d x ^ (2 : ℕ) := by
   rw [globalReesWittForm_one, globalWittForm, QuadraticMap.add_apply,
     QuadraticMap.sum_apply, QuadraticMap.smul_apply, QuadraticMap.comp_apply,
     QuadraticMap.sq_apply]
@@ -99,8 +99,8 @@ theorem routePPrimitiveGammaJuliaStokesCubicSphereUnitLanding_twoBranchOneOrbit_
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       0 d (fun _ _ => 1)) :
     (2 * ((d 0).branches.contactNumerator 0 1 / (N 0 : ℝ)) - 5) *
-        commonRankLinear d x.1 ^ 2 =
-      -4 * (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) := by
+        commonRankLinear d x.1 ^ (2 : ℕ) =
+      -4 * (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) := by
   have hlaw :=
     routePPrimitiveGammaJuliaStokesCubicSphereUnitWittForm_twoBranchOneOrbit_contactLaw
       d x.1
@@ -126,11 +126,11 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoB
     have hrank_ne :=
       routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_commonRank_ne_zero
         (fun _ _ => zero_le_one) x
-    have hrank_pos : 0 < commonRankLinear d x.1 ^ 2 := sq_pos_of_ne_zero hrank_ne
+    have hrank_pos : 0 < commonRankLinear d x.1 ^ (2 : ℕ) := sq_pos_of_ne_zero hrank_ne
     nlinarith
   · intro hcontact
     let target : ℝ :=
-      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4
+      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4
     let contact : ℝ := (d 0).branches.contactNumerator 0 1 / (N 0 : ℝ)
     let u : ℝ := Real.sqrt ((-target) / (2 * contact - 5))
     let raw : GlobalCharge 0 (fun _ => 1) := fun _ _ => u
@@ -148,10 +148,10 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoB
       nlinarith
     have hquot : 0 ≤ (-target) / (2 * contact - 5) :=
       div_nonneg (neg_nonneg.mpr htarget.le) hdenom.le
-    have hu_sq : u ^ 2 = (-target) / (2 * contact - 5) := by
+    have hu_sq : u ^ (2 : ℕ) = (-target) / (2 * contact - 5) := by
       dsimp [u]
       exact Real.sq_sqrt hquot
-    have hratio : (2 * contact - 5) * u ^ 2 = -target := by
+    have hratio : (2 * contact - 5) * u ^ (2 : ℕ) = -target := by
       rw [hu_sq]
       field_simp [hdenom.ne']
     have hrank : commonRankLinear d y = 2 * u := by
@@ -162,7 +162,7 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_twoB
     rw [hrank] at hlaw
     change globalReesWittForm 0 d (fun _ _ => 1) y = target
     change 4 * globalReesWittForm 0 d (fun _ _ => 1) y =
-      (5 - 2 * contact) * (2 * u) ^ 2 at hlaw
+      (5 - 2 * contact) * (2 * u) ^ (2 : ℕ) at hlaw
     nlinarith
 
 /-- Integral form of the sharp phase boundary: the doubled highest-difference numerator must exceed

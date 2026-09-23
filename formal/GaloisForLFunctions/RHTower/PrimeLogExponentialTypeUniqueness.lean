@@ -75,10 +75,10 @@ theorem exists_chebyshev_primeLog_count_gt_linear (K : ℝ) (hK : 0 < K) (c : �
   have hB : 0 < B := by dsimp [B]; positivity
   have hD : 0 < D := div_pos hB hlog2
   have htend := Real.tendsto_exp_div_pow_atTop 2
-  have hevent : ∀ᶠ t : ℝ in atTop, D + 1 ≤ Real.exp t / t ^ 2 :=
+  have hevent : ∀ᶠ t : ℝ in atTop, D + 1 ≤ Real.exp t / t ^ (2 : ℕ) :=
     (tendsto_atTop.1 htend (D + 1))
   have hall : ∀ᶠ t : ℝ in atTop,
-      D + 1 ≤ Real.exp t / t ^ 2 ∧ 1 ≤ t ∧ Real.log 2 < t := by
+      D + 1 ≤ Real.exp t / t ^ (2 : ℕ) ∧ 1 ≤ t ∧ Real.log 2 < t := by
     filter_upwards [hevent, eventually_ge_atTop (1 : ℝ),
       eventually_gt_atTop (Real.log 2)] with t hratio ht1 htlog2
     exact ⟨hratio, ht1, htlog2⟩
@@ -95,23 +95,23 @@ theorem exists_chebyshev_primeLog_count_gt_linear (K : ℝ) (hK : 0 < K) (c : �
       _ = Real.log 3 + Real.log (Real.exp t) := by
         rw [Real.log_mul (by norm_num) (Real.exp_ne_zero t)]
       _ = t + Real.log 3 := by rw [Real.log_exp]; ring
-  have hgeom : t * (2 + ‖c‖ + t) ≤ (3 + ‖c‖) * t ^ 2 := by
-    have ht_sq : t ≤ t ^ 2 := by nlinarith
-    have hnorm : ‖c‖ * t ≤ ‖c‖ * t ^ 2 :=
+  have hgeom : t * (2 + ‖c‖ + t) ≤ (3 + ‖c‖) * t ^ (2 : ℕ) := by
+    have ht_sq : t ≤ t ^ (2 : ℕ) := by nlinarith
+    have hnorm : ‖c‖ * t ≤ ‖c‖ * t ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left ht_sq (norm_nonneg c)
     nlinarith
   have hsmall : t + Real.log 3 + Real.log 2 ≤
-      (1 + Real.log 3 + Real.log 2) * t ^ 2 := by
+      (1 + Real.log 3 + Real.log 2) * t ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (t - 1)]
-  have hexpDom : B * t ^ 2 < Real.exp t * Real.log 2 := by
-    have hratio' : D < Real.exp t / t ^ 2 := lt_of_lt_of_le (lt_add_one D) hratio
-    have ht2 : 0 < t ^ 2 := sq_pos_of_pos ht0
-    have hmul : D * t ^ 2 < Real.exp t := (lt_div_iff₀ ht2).mp hratio'
+  have hexpDom : B * t ^ (2 : ℕ) < Real.exp t * Real.log 2 := by
+    have hratio' : D < Real.exp t / t ^ (2 : ℕ) := lt_of_lt_of_le (lt_add_one D) hratio
+    have ht2 : 0 < t ^ (2 : ℕ) := sq_pos_of_pos ht0
+    have hmul : D * t ^ (2 : ℕ) < Real.exp t := (lt_div_iff₀ ht2).mp hratio'
     have hBD : B = D * Real.log 2 := by
       dsimp [D]
       field_simp
     calc
-      B * t ^ 2 = (D * t ^ 2) * Real.log 2 := by rw [hBD]; ring
+      B * t ^ (2 : ℕ) = (D * t ^ (2 : ℕ)) * Real.log 2 := by rw [hBD]; ring
       _ < Real.exp t * Real.log 2 := mul_lt_mul_of_pos_right hmul hlog2
   rw [lt_div_iff₀ ht0]
   dsimp [B] at hexpDom

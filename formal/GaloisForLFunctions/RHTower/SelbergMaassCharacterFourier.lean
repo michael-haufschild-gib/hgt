@@ -143,7 +143,7 @@ theorem upperCharacter_mass_hasSum (r : ZMod (N+1)) (q : Deck N) {y : ℝ} (hy :
 /-- The full actual character energy is the sum of every projected coordinate mass. -/
 theorem characterProjection_norm_sq_eq (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) (z : ℍ) :
-    ‖characterProjection N p r (sourceVector N f z)‖^2 =
+    ‖characterProjection N p r (sourceVector N f z)‖^(2 : ℕ) =
       ∑ q : Deck N, normSq (characterField N f p r q (z : ℂ)) := by
   rw [EuclideanSpace.norm_sq_eq]
   simp only [Complex.sq_norm,characterField,ofComplex_apply]
@@ -151,16 +151,16 @@ theorem characterProjection_norm_sq_eq (p : Multiplicative (ZMod (N+1)) →* Dec
 /-- Physical Parseval for any original block-character source, retaining all frequencies. -/
 theorem character_mass_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => ‖characterProjection N p r (coefficientVector N f n y)‖^2)
+    HasSum (fun n : ℤ => ‖characterProjection N p r (coefficientVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
-        ‖characterProjection N p r (sourceVector N f (ofComplex (point x y)))‖^2) := by
+        ‖characterProjection N p r (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)) := by
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => SelbergMaassParseval.coefficient_mass_hasSum (N+1 : ℕ) (by positivity)
       (characterField_continuousOn N f p r q) hy)
   simp_rw [coefficient_characterField N f p r _ _ hy] at h
   have hv (v : EuclideanSpace ℂ (Deck N)) :
       (∑ q : Deck N, normSq (characterProjection N p r v q)) =
-      ‖characterProjection N p r v‖^2 := by
+      ‖characterProjection N p r v‖^(2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm]
   simp_rw [hv] at h
@@ -174,20 +174,20 @@ theorem character_mass_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
   rw [← hi] at h
   have he (x : ℝ) :
       (∑ q : Deck N, normSq (characterField N f p r q (point x y))) =
-      ‖characterProjection N p r (sourceVector N f (ofComplex (point x y)))‖^2 := by
+      ‖characterProjection N p r (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ) := by
     rw [characterProjection_norm_sq_eq,SelbergMaassUnipotentPaths.coe_ofComplex_point x hy]
   simp_rw [he] at h
   exact h
 
 /-- The actual full upper-channel mass is precisely its original residue-class Fourier energy. -/
 theorem upperCharacter_energy_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => if (n : ZMod (N+1))=r then ‖coefficientVector N f n y‖^2 else 0)
+    HasSum (fun n : ℤ => if (n : ZMod (N+1))=r then ‖coefficientVector N f n y‖^(2 : ℕ) else 0)
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ‖characterProjection N (upperBlock N) r
-          (sourceVector N f (ofComplex (point x y)))‖^2) := by
+          (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)) := by
   have h := character_mass_hasSum N f (upperBlock N) r hy
   simp_rw [upperProjection_coefficientVector N f r _ hy] at h
-  simpa only [apply_ite (fun v => ‖v‖^2),norm_zero,zero_pow (show (2 : ℕ)≠0 from Nat.succ_ne_zero 1)] using h
+  simpa only [apply_ite (fun v => ‖v‖^(2 : ℕ)),norm_zero,zero_pow (show (2 : ℕ)≠0 from Nat.succ_ne_zero 1)] using h
 
 open GaloisForLFunctions.HTGeometry ModularGroup
 
@@ -201,13 +201,13 @@ def inversionTransfer (N : ℕ) (r s : ZMod (N+1)) :
 /-- Each transfer column preserves all energy of its input character component. -/
 theorem inversionTransfer_energy_sum (N : ℕ) (s : ZMod (N+1))
     (v : EuclideanSpace ℂ (Deck N)) :
-    (∑ r : ZMod (N+1), ‖inversionTransfer N r s v‖^2)=
-      ‖characterProjection N (upperBlock N) s v‖^2 := by
+    (∑ r : ZMod (N+1), ‖inversionTransfer N r s v‖^(2 : ℕ))=
+      ‖characterProjection N (upperBlock N) s v‖^(2 : ℕ) := by
   unfold inversionTransfer
   simp only [LinearMap.comp_apply,LinearEquiv.coe_coe]
   rw [sum_characterProjection_norm_sq]
   change ‖finiteRegularUnitary (QuotientGroup.mk (S⁻¹) : Deck N)
-    (characterProjection N (upperBlock N) s v)‖^2 = _
+    (characterProjection N (upperBlock N) s v)‖^(2 : ℕ) = _
   rw [LinearIsometryEquiv.norm_map]
 
 /-- The actual source coefficient already lies in its residue eigenspace. -/
@@ -224,14 +224,14 @@ theorem inversionTransfer_coefficientVector (r : ZMod (N+1)) (n : ℤ)
 /-- Exact physical lower-channel mass in terms of the actual finite inversion coupling. -/
 theorem lowerCharacter_transfer_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
     HasSum (fun n : ℤ =>
-      ‖inversionTransfer N (-r) (n : ZMod (N+1)) (coefficientVector N f n y)‖^2)
+      ‖inversionTransfer N (-r) (n : ZMod (N+1)) (coefficientVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ‖characterProjection N (lowerBlock N) r
-          (sourceVector N f (ofComplex (point x y)))‖^2) := by
+          (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)) := by
   have h := character_mass_hasSum N f (lowerBlock N) r hy
   have he (n : ℤ) :
-      ‖characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^2 =
-      ‖inversionTransfer N (-r) (n : ZMod (N+1)) (coefficientVector N f n y)‖^2 := by
+      ‖characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^(2 : ℕ) =
+      ‖inversionTransfer N (-r) (n : ZMod (N+1)) (coefficientVector N f n y)‖^(2 : ℕ) := by
     rw [characterProjection_lower_conjugate,LinearIsometryEquiv.norm_map,
       inversionTransfer_coefficientVector N f (-r) n hy]
   simp_rw [he] at h
@@ -240,15 +240,15 @@ theorem lowerCharacter_transfer_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 /-- Inversion redistributes every original Fourier mode without losing any of its energy. -/
 theorem coefficient_inversion_energy_sum (n : ℤ) {y : ℝ} (hy : 0 < y) :
     (∑ r : ZMod (N+1),
-      ‖inversionTransfer N r (n : ZMod (N+1)) (coefficientVector N f n y)‖^2)=
-      ‖coefficientVector N f n y‖^2 := by
+      ‖inversionTransfer N r (n : ZMod (N+1)) (coefficientVector N f n y)‖^(2 : ℕ))=
+      ‖coefficientVector N f n y‖^(2 : ℕ) := by
   rw [inversionTransfer_energy_sum,upperProjection_coefficientVector N f (n : ZMod (N+1)) n hy,
     if_pos rfl]
 
 /-- Literal finite Fourier–inversion–Fourier kernel on every original deck coordinate. -/
 theorem inversionTransfer_coord (N : ℕ) (r s : ZMod (N+1))
     (v : EuclideanSpace ℂ (Deck N)) (q : Deck N) :
-    inversionTransfer N r s v q = (((N+1 : ℕ) : ℂ)⁻¹)^2 *
+    inversionTransfer N r s v q = (((N+1 : ℕ) : ℂ)⁻¹)^(2 : ℕ) *
       ∑ a : Multiplicative (ZMod (N+1)), ∑ b : Multiplicative (ZMod (N+1)),
         (starRingEnd ℂ) (residueCharacter N r a) *
           (starRingEnd ℂ) (residueCharacter N s b) *

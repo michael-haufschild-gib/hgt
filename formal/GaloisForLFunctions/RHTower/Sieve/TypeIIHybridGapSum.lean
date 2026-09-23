@@ -17,25 +17,25 @@ noncomputable section
 
 /-- Closed-form sum of the hybrid gap envelope. -/
 def hybridGapSumBound (T r : ℝ) (M₀ M₁ P Q H : ℕ) : ℝ :=
-  5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P)))
+  5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P)))
       * ((H : ℝ) * Real.sqrt H)
-    + (75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 / (16 * T * r)) * invSum H
+    + (75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) / (16 * T * r)) * invSum H
     + (H : ℝ)
 
 theorem hybridGapCorrBound_split {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {M₀ M₁ P Q h : ℕ} (hM₀ : 1 ≤ M₀) (hP : 1 ≤ P) (hh : 1 ≤ h) :
     hybridGapCorrBound T r M₀ M₁ P Q h
-      = 5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) * Real.sqrt h
-        + (75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 / (16 * T * r)) * (1 / (h : ℝ))
+      = 5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) * Real.sqrt h
+        + (75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) / (16 * T * r)) * (1 / (h : ℝ))
         + 1 := by
   have hM₀0 : (0 : ℝ) < (M₀ : ℝ) := by exact_mod_cast hM₀
   have hP0 : (0 : ℝ) < (P : ℝ) := by exact_mod_cast hP
   have hh0 : (0 : ℝ) < (h : ℝ) := by exact_mod_cast hh
-  have harg : T * (r * (h : ℝ) / (M₀ : ℝ) ^ 2) / (36 * Real.pi * P)
-      = (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) * h := by
+  have harg : T * (r * (h : ℝ) / (M₀ : ℝ) ^ (2 : ℕ)) / (36 * Real.pi * P)
+      = (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) * h := by
     field_simp
-  have hrec : 75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 / (16 * T * r * h)
-      = (75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 / (16 * T * r)) * (1 / h) := by
+  have hrec : 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) / (16 * T * r * h)
+      = (75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) / (16 * T * r)) * (1 / h) := by
     field_simp
   rw [hybridGapCorrBound, harg, Real.sqrt_mul (by positivity), hrec]
   ring
@@ -45,8 +45,8 @@ theorem sum_hybridGapCorrBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {M₀ M₁ P Q H : ℕ} (hM₀ : 1 ≤ M₀) (hP : 1 ≤ P) :
     (∑ h ∈ Finset.Icc 1 H, hybridGapCorrBound T r M₀ M₁ P Q h)
       ≤ hybridGapSumBound T r M₀ M₁ P Q H := by
-  set C₁ : ℝ := 5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) with hC₁
-  set C₂ : ℝ := 75 * Real.pi * (Q : ℝ) ^ 2 * (M₁ : ℝ) ^ 2 / (16 * T * r) with hC₂
+  set C₁ : ℝ := 5000 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) with hC₁
+  set C₂ : ℝ := 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) * (M₁ : ℝ) ^ (2 : ℕ) / (16 * T * r) with hC₂
   have hC₁0 : 0 ≤ C₁ := by rw [hC₁]; positivity
   have hC₂0 : 0 ≤ C₂ := by rw [hC₂]; positivity
   have hsplit : (∑ h ∈ Finset.Icc 1 H, hybridGapCorrBound T r M₀ M₁ P Q h)

@@ -23,13 +23,13 @@ open GaloisForLFunctions.HTGeometry D4BMJointSource D4BMJointWave D4BMPhysicalMo
 noncomputable section
 
 abbrev frequency (q : XiZeroCopy) (side : Bool) : ℂ := physicalFundamentalFrequency q side
-abbrev eigenvalue (q : XiZeroCopy) : ℂ := physicalAngularParameter q^2-1/4
+abbrev eigenvalue (q : XiZeroCopy) : ℂ := physicalAngularParameter q^(2 : ℕ)-1/4
 abbrev profile (q : XiZeroCopy) (side outer : Bool) : ℝ → ℂ :=
   tortoiseMode outer (frequency q side) (physicalRadialFrequency q)
 abbrev profileFirst (q : XiZeroCopy) (side outer : Bool) : ℝ → ℂ :=
   tortoiseModeFirst outer (frequency q side) (physicalRadialFrequency q)
 def potential (q : XiZeroCopy) (side : Bool) (t : ℝ) : ℂ :=
-  frequency q side^2-eigenvalue q*(horizonCoordinate t:ℂ)
+  frequency q side^(2 : ℕ)-eigenvalue q*(horizonCoordinate t:ℂ)
 def profileSecond (q : XiZeroCopy) (side outer : Bool) (t : ℝ) : ℂ :=
   potential q side t*profile q side outer t
 def profileThird (q : XiZeroCopy) (side outer : Bool) (t : ℝ) : ℂ :=
@@ -63,7 +63,7 @@ private theorem continued_mode_derivatives (q : XiZeroCopy) (side outer : Bool) 
 
 private theorem continued_mode_equation (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:ℝ)) :
     tortoiseModeSecond outer (frequency q side) (physicalRadialFrequency q) t =
-      (frequency q side^2+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^2))*
+      (frequency q side^(2 : ℕ)+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^(2 : ℕ)))*
         profile q side outer t := by
   have hz := horizonCoordinate_interior t t.property
   have he : D4BMPhysicalMaster.radialJet (Complex.I*frequency q side) (physicalRadialFrequency q)
@@ -78,7 +78,7 @@ private theorem continued_mode_equation (q : XiZeroCopy) (side outer : Bool) (t 
   have hz0 : (horizonCoordinate t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.1.ne'
   field_simp [hz0] at he
   dsimp only [profile,tortoiseMode,tortoiseModeSecond,coordinateFirst,coordinateSecond]
-  have hu : (radialUnit t:ℂ)^2=1-(horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ)^(2 : ℕ)=1-(horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
     ring
   push_cast
@@ -113,7 +113,7 @@ theorem profile_smooth (q : XiZeroCopy) (side outer : Bool) :
 theorem profileSecond_hasDerivAt (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:ℝ)) :
     HasDerivAt (profileSecond q side outer) (profileThird q side outer t) t := by
   have hV : HasDerivAt (potential q side) (-(eigenvalue q*(coordinateFirst t:ℂ))) t := by
-    convert! (hasDerivAt_const (t:ℝ) (frequency q side^2)).sub
+    convert! (hasDerivAt_const (t:ℝ) (frequency q side^(2 : ℕ))).sub
       (((horizonCoordinate_hasDerivAt t).ofReal_comp).const_mul (eigenvalue q)) using 1
     simp
   exact hV.mul (profile_derivatives q side outer t).1
@@ -121,8 +121,8 @@ theorem profileSecond_hasDerivAt (q : XiZeroCopy) (side outer : Bool) (t : Iio (
 /-- Full third radius derivative of the original tortoise lift. -/
 def radiusLiftThird (df ddf dddf : ℝ → ℂ) (r : ℝ) : ℂ :=
   ((r:ℂ)*dddf (D4BMIngoingCoordinates.tortoise r)-
-    3*((r:ℂ)^2+1)*ddf (D4BMIngoingCoordinates.tortoise r)+
-    8*(r:ℂ)*df (D4BMIngoingCoordinates.tortoise r))/((r:ℂ)^2-1)^3
+    3*((r:ℂ)^(2 : ℕ)+1)*ddf (D4BMIngoingCoordinates.tortoise r)+
+    8*(r:ℂ)*df (D4BMIngoingCoordinates.tortoise r))/((r:ℂ)^(2 : ℕ)-1)^(3 : ℕ)
 
 private theorem radiusLiftSecond_hasDerivAt (df ddf dddf : ℝ → ℂ) (r : ℝ) (hr : 1 < r)
     (hd : HasDerivAt df (ddf (D4BMIngoingCoordinates.tortoise r)) (D4BMIngoingCoordinates.tortoise r))
@@ -132,7 +132,7 @@ private theorem radiusLiftSecond_hasDerivAt (df ddf dddf : ℝ → ℂ) (r : ℝ
   have hD := hd.scomp r ht
   have hDD := hdd.scomp r ht
   have hR := (hasDerivAt_id r).ofReal_comp
-  have hn : (r:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show r^2-1 ≠ 0 by nlinarith)
+  have hn : (r:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show r^(2 : ℕ)-1 ≠ 0 by nlinarith)
   apply (((hR.mul hDD).sub (hD.const_mul 2)).div (((hR.pow 2).sub_const 1).pow 2)
     (pow_ne_zero 2 hn)).congr_deriv
   dsimp [radiusLiftThird]
@@ -148,8 +148,8 @@ theorem profileFirst_smooth (q : XiZeroCopy) (side outer : Bool) :
   exact (profile_derivatives q side outer ⟨t,ht⟩).1.deriv.symm
 
 private theorem original_coordinate (t : Iio (0:ℝ)) :
-    (horizonCoordinate t:ℂ)=((tortoiseRadius t:ℂ)^2-1)/(tortoiseRadius t:ℂ)^2 ∧
-    (coordinateFirst t:ℂ)=2*((tortoiseRadius t:ℂ)^2-1)/(tortoiseRadius t:ℂ)^3 := by
+    (horizonCoordinate t:ℂ)=((tortoiseRadius t:ℂ)^(2 : ℕ)-1)/(tortoiseRadius t:ℂ)^(2 : ℕ) ∧
+    (coordinateFirst t:ℂ)=2*((tortoiseRadius t:ℂ)^(2 : ℕ)-1)/(tortoiseRadius t:ℂ)^(3 : ℕ) := by
   have hr : (tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show tortoiseRadius t ≠ 0 by linarith [tortoiseRadius_exterior t t.property])
   simp only [horizonCoordinate,coordinateFirst,radialUnit_inverse_radius]
@@ -173,8 +173,8 @@ theorem radius_master_defect (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:�
       radiusLiftFirst (profile q side outer) (profileFirst q side outer) (tortoiseRadius t)*(D-eigenvalue q*A) := by
   have hr : (tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show tortoiseRadius t ≠ 0 by linarith [tortoiseRadius_exterior t t.property])
-  have hf : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius t)^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
+  have hf : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
   dsimp only [D4BMVectorStream.master,D4BMVectorStream.masterFirst,radiusLift,radiusLiftFirst,
     radiusLiftSecond,radiusLiftThird]
   rw [tortoise_original_inverse t t.property]
@@ -204,7 +204,7 @@ private theorem lift_smooth (q : XiZeroCopy) (side outer : Bool) (r : ℝ) (hr :
   have hP1 := ((profileFirst_smooth q side outer).of_le (show (2:ℕ∞ω) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)).contDiffAt
     (isOpen_Iio.mem_nhds (tortoise_negative r hr))
   have hR : ContDiffAt ℝ 2 (fun r : ℝ => (r:ℂ)) r := Complex.ofRealCLM.contDiff.contDiffAt
-  have hF : (r:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show r^2-1 ≠ 0 by nlinarith)
+  have hF : (r:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show r^(2 : ℕ)-1 ≠ 0 by nlinarith)
   refine ⟨hR.mul (hP.comp r ht),?_⟩
   simpa only [radiusLiftFirst,div_eq_mul_inv,Function.comp_def,Pi.inv_apply] using! (hP.comp r ht).add
     ((hR.mul (hP1.comp r ht)).mul (((hR.pow 2).sub (contDiffAt_const (c := (1:ℂ)))).inv hF))
@@ -319,7 +319,7 @@ private theorem block_smooth (q : XiZeroCopy) (side outer : Bool) (p : D4BMBackg
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
   have hF := (hR.mul hR).add (contDiffAt_const (c := (-1:ℂ)))
   have hn : (p.val 1:ℂ)*(p.val 1:ℂ)+(-1) ≠ 0 := by
-    have h : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+    have h : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
     simpa only [←pow_two,←sub_eq_add_neg] using h
   exact ⟨hF.mul (radial_smooth q side outer p).2,
     ((contDiffAt_const (c := -frequency q side)).mul (radial_smooth q side outer p).1).mul (hF.inv hn)⟩
@@ -341,7 +341,7 @@ private theorem block_jets (q : XiZeroCopy) (side outer : Bool) (p : D4BMBackgro
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
   have hF := (hR.mul hR).add (contDiffAt_const (c := (-1:ℂ)))
   have hn : (p.val 1:ℂ)*(p.val 1:ℂ)+(-1) ≠ 0 := by
-    have h : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+    have h : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
     simpa only [←pow_two,←sub_eq_add_neg] using h
   have hjR : ofField (fun x : Fin 4 → ℝ => (x 1:ℂ)) p.val = D4BMScalarLinearEquation.coord (p.val 1) 1 := by
     convert! D4BMFundamentalScalarMetric.coordinate_jet p.val 1 using 1
@@ -416,8 +416,8 @@ theorem metricField_einstein (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:�
       (ofMetricField (metricField q side outer) (modePoint t z.val z.property).val) (-3) i j = 0 := by
   have hr : (tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show tortoiseRadius t ≠ 0 by linarith [tortoiseRadius_exterior t t.property])
-  have hf : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius t)^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
+  have hf : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
   have hy : (z.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.property.ne'
   let V := D4BMLiteralCusp.vector (physicalAngularParameter q)
   have h0 := radius_master_defect q side outer t (V 0 z.val) (streamAngularOperator V 0 z.val)
@@ -431,10 +431,10 @@ theorem metricField_einstein (q : XiZeroCopy) (side outer : Bool) (t : Iio (0:�
   rw [metricField_jet]
   unfold fullMetricJet
   rw [D4BMVectorStream.cosmological_component _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hr hy hf i j]
-  have hT0 := congrArg (fun a : ℂ => -((tortoiseRadius t:ℂ)^2-1)/(2*(tortoiseRadius t:ℂ)^2)*a) h0.2
-  have hT1 := congrArg (fun a : ℂ => -((tortoiseRadius t:ℂ)^2-1)/(2*(tortoiseRadius t:ℂ)^2)*a) h1.2
-  have hR0 := congrArg (fun a : ℂ => -(-frequency q side)/(2*(tortoiseRadius t:ℂ)^2*((tortoiseRadius t:ℂ)^2-1))*a) h0.1
-  have hR1 := congrArg (fun a : ℂ => -(-frequency q side)/(2*(tortoiseRadius t:ℂ)^2*((tortoiseRadius t:ℂ)^2-1))*a) h1.1
+  have hT0 := congrArg (fun a : ℂ => -((tortoiseRadius t:ℂ)^(2 : ℕ)-1)/(2*(tortoiseRadius t:ℂ)^(2 : ℕ))*a) h0.2
+  have hT1 := congrArg (fun a : ℂ => -((tortoiseRadius t:ℂ)^(2 : ℕ)-1)/(2*(tortoiseRadius t:ℂ)^(2 : ℕ))*a) h1.2
+  have hR0 := congrArg (fun a : ℂ => -(-frequency q side)/(2*(tortoiseRadius t:ℂ)^(2 : ℕ)*((tortoiseRadius t:ℂ)^(2 : ℕ)-1))*a) h0.1
+  have hR1 := congrArg (fun a : ℂ => -(-frequency q side)/(2*(tortoiseRadius t:ℂ)^(2 : ℕ)*((tortoiseRadius t:ℂ)^(2 : ℕ)-1))*a) h1.1
   simp only [mul_zero] at hT0 hT1 hR0 hR1
   fin_cases i <;> fin_cases j
   all_goals solve | rfl | convert! hT0 using 1 | convert! hT1 using 1 |
@@ -505,10 +505,10 @@ stream's actual temporal and radial coordinate derivatives. -/
 theorem metricField_is_original_stream (q : XiZeroCopy) (side outer : Bool)
     (p : D4BMBackground.ExteriorPoint) :
     metricField q side outer p.val = D4BMMixedActionCurrent.mixedMatrix
-      (fun a => ((p.val 1:ℂ)^2-1)*coordDeriv 1
+      (fun a => ((p.val 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1
         (physicalLeftModeStream q (frequency q side) outer a) p.val)
       (fun a => coordDeriv 0 (physicalLeftModeStream q (frequency q side) outer a) p.val/
-        ((p.val 1:ℂ)^2-1)) := by
+        ((p.val 1:ℂ)^(2 : ℕ)-1)) := by
   have h (a : Fin 2) := separated_first (-frequency q side) (radiusLift (profile q side outer))
     (D4BMLiteralCusp.vector (physicalAngularParameter q) a) p.val
     (lift_smooth q side outer (p.val 1) p.property.1).1

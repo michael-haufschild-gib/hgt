@@ -42,7 +42,7 @@ theorem traceMk_noIndependence_injective :
     Function.Injective (traceMk (noIndependence α)) := fun _ _ h =>
   traceEq_noIndependence_iff.mp ((traceMk_eq_iff (noIndependence α)).mp h)
 
-theorem traceLen_eq_zero_iff {independent : α → α → Prop} {u : Trace independent} :
+theorem traceLen_eq_zero_iff_circuitFreeWordFirstEntrance {independent : α → α → Prop} {u : Trace independent} :
     traceLen independent u = 0 ↔ u = 1 := by
   obtain ⟨w, rfl⟩ := traceMk_surjective independent u
   rw [traceLen_traceMk]
@@ -83,7 +83,7 @@ theorem eq_of_tracePrefix_of_traceLen_le {independent : α → α → Prop} {u v
   have hw : traceLen independent w = 0 := by
     rw [traceLen_mul] at hlen
     omega
-  rw [traceLen_eq_zero_iff.mp hw, mul_one]
+  rw [traceLen_eq_zero_iff_circuitFreeWordFirstEntrance.mp hw, mul_one]
 
 /-- The first successful causal prefixes of a target dictionary. -/
 def firstSuccessfulTrace (independent : α → α → Prop) (S : Trace independent → Set X) (x : X) :

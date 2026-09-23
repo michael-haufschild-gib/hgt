@@ -35,7 +35,7 @@ theorem integrable_weight_mul_hillDensity {t : ℝ} {w : E → ℝ} (hw : ∀ ξ
     (hmw : AEStronglyMeasurable (fun ξ : E => w ξ * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E))
     (hm : 0 < m) (hc : Continuous c) (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r)
-    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (hint : Integrable (fun ξ : E => w ξ * ‖G₀ ξ‖) (volume : Measure E))
     (ht : 0 ≤ t) :
     Integrable (fun ξ : E => w ξ * ‖hillDensity m c G₀ t ξ‖) (volume : Measure E) := by
@@ -56,7 +56,7 @@ theorem integrable_weight_mul_hillDensity {t : ℝ} {w : E → ℝ} (hw : ∀ ξ
 /-- **The first spatial derivative of the field.** -/
 theorem hasDerivAt_hillEvolutionField_dir (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖G₀ ξ‖) (volume : Measure E))
     {t : ℝ} (ht : 0 ≤ t) (x v : E) (r : ℝ) :
@@ -78,13 +78,13 @@ theorem hasDerivAt_hillEvolutionField_dir (hm : 0 < m) (hc : Continuous c)
 /-- **The second spatial derivative of the field.** -/
 theorem hasDerivAt_deriv_hillEvolutionField_dir (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖G₀ ξ‖) (volume : Measure E))
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖G₀ ξ‖) (volume : Measure E))
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖G₀ ξ‖) (volume : Measure E))
     {t : ℝ} (ht : 0 ≤ t) (x v : E) (r : ℝ) :
     HasDerivAt (fun s : ℝ => deriv (fun q : ℝ => hillEvolutionField m c G₀ t (x + q • v)) s)
-      (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2 * kgChar (x + r • v) ξ *
+      (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar (x + r • v) ξ *
         hillDensity m c G₀ t ξ) r := by
   have hmeas := aestronglyMeasurable_hillDensity hm hc hC hG ht (volume : Measure E)
   have hdint : Integrable (hillDensity m c G₀ t) (volume : Measure E) :=
@@ -92,14 +92,14 @@ theorem hasDerivAt_deriv_hillEvolutionField_dir (hm : 0 < m) (hc : Continuous c)
   have hmw1 : AEStronglyMeasurable (fun ξ : E => kgFreq ξ * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E) :=
     (continuous_kgFreq.aestronglyMeasurable).mul hmeas.norm
-  have hmw2 : AEStronglyMeasurable (fun ξ : E => kgFreq ξ ^ 2 * ‖hillDensity m c G₀ t ξ‖)
+  have hmw2 : AEStronglyMeasurable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E) :=
     ((continuous_kgFreq.pow 2).aestronglyMeasurable).mul hmeas.norm
   have hw1 : Integrable (fun ξ : E => kgFreq ξ * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E) :=
     integrable_weight_mul_hillDensity (fun ξ => le_of_lt (kgFreq_pos ξ)) hmw1 hm hc hcd hcpos hK hC
       h1 ht
-  have hw2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖hillDensity m c G₀ t ξ‖)
+  have hw2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖hillDensity m c G₀ t ξ‖)
       (volume : Measure E) :=
     integrable_weight_mul_hillDensity (fun ξ => sq_nonneg _) hmw2 hm hc hcd hcpos hK hC h2 ht
   exact hasDerivAt_deriv_kgSynthesis_dir hmeas hdint hw1 hw2 x v r

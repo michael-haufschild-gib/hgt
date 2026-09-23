@@ -146,7 +146,7 @@ equivalent to uniform boundedness of the quadrature defect at the cutoff
 theorem exists_riemannHypothesis_iff_logSubcausticQuadratureDefectLineBound
     {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hca : c < a) (hsigma : 0 < sigma) :
     ∃ Lc : ℝ, 0 < Lc ∧ ∀ L q : ℝ, 0 < L → L ≤ Lc → 0 ≤ q →
-      (2 * a ^ 2 - 1 / 2) * q ≤ 1 / 2 →
+      (2 * a ^ (2 : ℕ) - 1 / 2) * q ≤ 1 / 2 →
       (RiemannHypothesis ↔ XiMassMovingQuadratureDefectLineBound a sigma
         (xiMassLogSubcausticHeight a L q)) := by
   have ha : 1 / 2 < a := lt_trans hhalf hca

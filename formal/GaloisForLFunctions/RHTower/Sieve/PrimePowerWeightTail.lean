@@ -20,31 +20,31 @@ open Finset
 
 /-- The inner sum over exponents at a single prime. -/
 theorem sum_range_primePower_weight_le {p : ℕ} (hp : 2 ≤ p) (M : ℕ) :
-    ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ 2 / ((p : ℝ) ^ (j + 2)))
+    ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ (2 : ℕ) / ((p : ℝ) ^ (j + 2)))
       ≤ 24 / (p : ℝ) := by
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
   have hp1 : (1 : ℝ) ≤ (p : ℝ) := by linarith
   have hx0 : (0 : ℝ) ≤ 1 / (p : ℝ) := by positivity
   have hx : 1 / (p : ℝ) ≤ 1 / 2 := one_div_le_one_div_of_le (by norm_num) hpR
-  have hrw : ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ 2 / ((p : ℝ) ^ (j + 2)))
-      = Real.log (p : ℝ) ^ 2 * ∑ j ∈ Finset.range M, ((j : ℝ) + 2) * (1 / (p : ℝ)) ^ (j + 2) := by
+  have hrw : ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ (2 : ℕ) / ((p : ℝ) ^ (j + 2)))
+      = Real.log (p : ℝ) ^ (2 : ℕ) * ∑ j ∈ Finset.range M, ((j : ℝ) + 2) * (1 / (p : ℝ)) ^ (j + 2) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [div_pow, one_pow]
     field_simp
   rw [hrw]
   have hgeom := sum_range_shift_pow_le hx0 hx M
-  have hlogsq : Real.log (p : ℝ) ^ 2 ≤ 4 * (p : ℝ) := log_sq_le_four_mul hp1
-  have hlog0 : (0 : ℝ) ≤ Real.log (p : ℝ) ^ 2 := sq_nonneg _
-  have hstep : Real.log (p : ℝ) ^ 2 * ∑ j ∈ Finset.range M, ((j : ℝ) + 2) * (1 / (p : ℝ)) ^ (j + 2)
-      ≤ Real.log (p : ℝ) ^ 2 * (6 * (1 / (p : ℝ)) ^ 2) :=
+  have hlogsq : Real.log (p : ℝ) ^ (2 : ℕ) ≤ 4 * (p : ℝ) := log_sq_le_four_mul hp1
+  have hlog0 : (0 : ℝ) ≤ Real.log (p : ℝ) ^ (2 : ℕ) := sq_nonneg _
+  have hstep : Real.log (p : ℝ) ^ (2 : ℕ) * ∑ j ∈ Finset.range M, ((j : ℝ) + 2) * (1 / (p : ℝ)) ^ (j + 2)
+      ≤ Real.log (p : ℝ) ^ (2 : ℕ) * (6 * (1 / (p : ℝ)) ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left hgeom hlog0
   refine le_trans hstep ?_
-  calc Real.log (p : ℝ) ^ 2 * (6 * (1 / (p : ℝ)) ^ 2)
-      = 6 * Real.log (p : ℝ) ^ 2 / (p : ℝ) ^ 2 := by
+  calc Real.log (p : ℝ) ^ (2 : ℕ) * (6 * (1 / (p : ℝ)) ^ (2 : ℕ))
+      = 6 * Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) ^ (2 : ℕ) := by
         rw [div_pow, one_pow]; ring
-    _ ≤ 6 * (4 * (p : ℝ)) / (p : ℝ) ^ 2 := by gcongr
+    _ ≤ 6 * (4 * (p : ℝ)) / (p : ℝ) ^ (2 : ℕ) := by gcongr
     _ = 24 / (p : ℝ) := by
         rw [pow_two]
         field_simp
@@ -53,16 +53,16 @@ theorem sum_range_primePower_weight_le {p : ℕ} (hp : 2 ≤ p) (M : ℕ) :
 /-- **The proper prime powers contribute `O(log b)`.** -/
 theorem sum_primePower_weight_le (b M : ℕ) :
     ∑ x ∈ Nat.primesLE b ×ˢ Finset.range M,
-        (((x.2 : ℝ) + 2) * Real.log (x.1 : ℝ) ^ 2 / ((x.1 : ℝ) ^ (x.2 + 2)))
+        (((x.2 : ℝ) + 2) * Real.log (x.1 : ℝ) ^ (2 : ℕ) / ((x.1 : ℝ) ^ (x.2 + 2)))
       ≤ 24 * (1 + Real.log b) := by
   classical
   rw [Finset.sum_product]
   have hinner : ∀ p ∈ Nat.primesLE b,
-      ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ 2 / ((p : ℝ) ^ (j + 2)))
+      ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ (2 : ℕ) / ((p : ℝ) ^ (j + 2)))
         ≤ 24 * (1 / (p : ℝ)) := by
     intro p hp
     have := sum_range_primePower_weight_le (Nat.prime_of_mem_primesLE hp).two_le M
-    calc ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ 2 / ((p : ℝ) ^ (j + 2)))
+    calc ∑ j ∈ Finset.range M, (((j : ℝ) + 2) * Real.log (p : ℝ) ^ (2 : ℕ) / ((p : ℝ) ^ (j + 2)))
         ≤ 24 / (p : ℝ) := this
       _ = 24 * (1 / (p : ℝ)) := by ring
   refine le_trans (Finset.sum_le_sum hinner) ?_

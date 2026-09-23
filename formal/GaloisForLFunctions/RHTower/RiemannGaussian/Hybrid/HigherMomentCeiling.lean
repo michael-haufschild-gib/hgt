@@ -49,11 +49,11 @@ structure DegreeFourMomentModel (ι : Type*) [Fintype ι] where
   /-- First moment. -/
   moment_one : ∑ i, weight i * node i = 1
   /-- Second moment. -/
-  moment_two : ∑ i, weight i * node i ^ 2 = (4 : ℝ) / 3
+  moment_two : ∑ i, weight i * node i ^ (2 : ℕ) = (4 : ℝ) / 3
   /-- Third moment. -/
-  moment_three : ∑ i, weight i * node i ^ 3 = 2
+  moment_three : ∑ i, weight i * node i ^ (3 : ℕ) = 2
   /-- Fourth moment. -/
-  moment_four : ∑ i, weight i * node i ^ 4 = (13 : ℝ) / 4
+  moment_four : ∑ i, weight i * node i ^ (4 : ℕ) = (13 : ℝ) / 4
 
 /-- The complete weighted spectral heat-moment hierarchy of a degree-four
 model.  The prescribed moments are its first five zero-scale values. -/
@@ -61,7 +61,7 @@ def DegreeFourMomentModel.heatMoment
     {ι : Type*} [Fintype ι] (M : DegreeFourMomentModel ι)
     (order : ℕ) (u : ℝ) : ℝ :=
   ∑ i, M.weight i * M.node i ^ order *
-    Real.exp (-u * M.node i ^ 2)
+    Real.exp (-u * M.node i ^ (2 : ℕ))
 
 /-- At zero scale, the weighted heat hierarchy is the ordinary weighted
 moment sequence. -/
@@ -78,9 +78,9 @@ theorem DegreeFourMomentModel.hasDerivAt_heatMoment
     HasDerivAt (M.heatMoment order) (-M.heatMoment (order + 2) u) u := by
   have hsum : HasDerivAt
       (fun v : ℝ ↦ ∑ i, M.weight i *
-        (M.node i ^ order * Real.exp (-v * M.node i ^ 2)))
+        (M.node i ^ order * Real.exp (-v * M.node i ^ (2 : ℕ))))
       (∑ i, M.weight i *
-        (-M.node i ^ (order + 2) * Real.exp (-u * M.node i ^ 2))) u := by
+        (-M.node i ^ (order + 2) * Real.exp (-u * M.node i ^ (2 : ℕ)))) u := by
     exact HasDerivAt.fun_sum fun i _hi ↦
       (HermitianRankTrace.hasDerivAt_heatMomentScalar
         (M.node i) order u).const_mul (M.weight i)
@@ -144,7 +144,7 @@ def DegreeFourMomentModel.certificate
 
 /-- The degree-two Christoffel witness normalized to take value one at zero. -/
 def degreeFourMomentWitness (x : ℝ) : ℝ :=
-  1 - (7 / 4 : ℝ) * x + (2 / 3 : ℝ) * x ^ 2
+  1 - (7 / 4 : ℝ) * x + (2 / 3 : ℝ) * x ^ (2 : ℕ)
 
 /-- The witness is one at the distinguished zero location. -/
 @[simp] theorem degreeFourMomentWitness_zero :
@@ -155,24 +155,24 @@ def degreeFourMomentWitness (x : ℝ) : ℝ :=
 exactly to `5/36`. -/
 theorem DegreeFourMomentModel.sum_weight_mul_witness_sq_eq
     {ι : Type*} [Fintype ι] (M : DegreeFourMomentModel ι) :
-    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 =
+    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) =
       (5 : ℝ) / 36 := by
   calc
-    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 =
+    ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) =
         ∑ i, (M.weight i -
           (7 / 2 : ℝ) * (M.weight i * M.node i) +
-          (211 / 48 : ℝ) * (M.weight i * M.node i ^ 2) -
-          (7 / 3 : ℝ) * (M.weight i * M.node i ^ 3) +
-          (4 / 9 : ℝ) * (M.weight i * M.node i ^ 4)) := by
+          (211 / 48 : ℝ) * (M.weight i * M.node i ^ (2 : ℕ)) -
+          (7 / 3 : ℝ) * (M.weight i * M.node i ^ (3 : ℕ)) +
+          (4 / 9 : ℝ) * (M.weight i * M.node i ^ (4 : ℕ))) := by
       apply Finset.sum_congr rfl
       intro i _hi
       unfold degreeFourMomentWitness
       ring
     _ = (∑ i, M.weight i) -
           (7 / 2 : ℝ) * (∑ i, M.weight i * M.node i) +
-          (211 / 48 : ℝ) * (∑ i, M.weight i * M.node i ^ 2) -
-          (7 / 3 : ℝ) * (∑ i, M.weight i * M.node i ^ 3) +
-          (4 / 9 : ℝ) * (∑ i, M.weight i * M.node i ^ 4) := by
+          (211 / 48 : ℝ) * (∑ i, M.weight i * M.node i ^ (2 : ℕ)) -
+          (7 / 3 : ℝ) * (∑ i, M.weight i * M.node i ^ (3 : ℕ)) +
+          (4 / 9 : ℝ) * (∑ i, M.weight i * M.node i ^ (4 : ℕ)) := by
       simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
         Finset.mul_sum]
     _ = (5 : ℝ) / 36 := by
@@ -187,7 +187,7 @@ theorem DegreeFourMomentModel.zeroMass_le_five_thirtySix
     M.zeroMass ≤ (5 : ℝ) / 36 := by
   calc
     M.zeroMass ≤
-        ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ 2 := by
+        ∑ i, M.weight i * degreeFourMomentWitness (M.node i) ^ (2 : ℕ) := by
       unfold DegreeFourMomentModel.zeroMass
       apply Finset.sum_le_sum
       intro i _hi
@@ -222,7 +222,7 @@ def degreeFourSharpWeight : Fin 3 → ℝ :=
 theorem degreeFourSharpWeight_nonneg (i : Fin 3) :
     0 ≤ degreeFourSharpWeight i := by
   have hsqrt : 0 ≤ Real.sqrt 57 := Real.sqrt_nonneg _
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   have hsqrtLe : Real.sqrt 57 ≤ 8 := by
     nlinarith
@@ -245,33 +245,33 @@ theorem degreeFourSharpMoment_zero :
 /-- The sharp model has first moment one. -/
 theorem degreeFourSharpMoment_one :
     ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i = 1 := by
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   simp [degreeFourSharpWeight, degreeFourSharpNode, Fin.sum_univ_succ]
   nlinarith
 
 /-- The sharp model has second moment `4/3`. -/
 theorem degreeFourSharpMoment_two :
-    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ 2 =
+    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ (2 : ℕ) =
       (4 : ℝ) / 3 := by
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   simp [degreeFourSharpWeight, degreeFourSharpNode, Fin.sum_univ_succ]
   nlinarith
 
 /-- The sharp model has third moment two. -/
 theorem degreeFourSharpMoment_three :
-    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ 3 = 2 := by
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ (3 : ℕ) = 2 := by
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   simp [degreeFourSharpWeight, degreeFourSharpNode, Fin.sum_univ_succ]
   nlinarith
 
 /-- The sharp model has fourth moment `13/4`. -/
 theorem degreeFourSharpMoment_four :
-    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ 4 =
+    ∑ i, degreeFourSharpWeight i * degreeFourSharpNode i ^ (4 : ℕ) =
       (13 : ℝ) / 4 := by
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   simp [degreeFourSharpWeight, degreeFourSharpNode, Fin.sum_univ_succ]
   nlinarith
@@ -291,7 +291,7 @@ def degreeFourSharpModel : DegreeFourMomentModel (Fin 3) where
 theorem degreeFourSharpNode_one_pos :
     0 < degreeFourSharpNode 1 := by
   have hsqrt : 0 ≤ Real.sqrt 57 := Real.sqrt_nonneg _
-  have hsqrtSq : (Real.sqrt 57) ^ 2 = 57 :=
+  have hsqrtSq : (Real.sqrt 57) ^ (2 : ℕ) = 57 :=
     Real.sq_sqrt (by norm_num)
   have hsqrtLe : Real.sqrt 57 ≤ 8 := by
     nlinarith

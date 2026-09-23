@@ -8,7 +8,7 @@ The canonical von Mangoldt Toeplitz counterreader forces reciprocal right-endpoi
 `1 / log(p+1)` toward the germ origin.  The reciprocal-log Gamma coordinate sends these exact
 source nodes to
 
-`r_p = tanh(log(p+1))^2`.
+`r_p = tanh(log(p+1))^(2 : ℕ)`.
 
 They are distinct points of `(0,1)` and their boundary defects are summable over primes.  Their
 infinite product is therefore convergent and nonzero.  Thus the Gamma--Jacobi boundary converts
@@ -31,18 +31,18 @@ def vonMangoldtRightEndpointReciprocalClock (p : Nat.Primes) : ℝ :=
 
 /-- Gamma--Jacobi disk node of the same source endpoint. -/
 def gammaJacobiRightEndpointDiskNode (p : Nat.Primes) : ℝ :=
-  Real.tanh (Real.log (((p : ℕ) + 1 : ℕ) : ℝ)) ^ 2
+  Real.tanh (Real.log (((p : ℕ) + 1 : ℕ) : ℝ)) ^ (2 : ℕ)
 
 /-- Exact reciprocal-log pushforward from the Toeplitz escape clock to the Gamma--Jacobi disk. -/
 theorem gammaJacobiRightEndpointDiskNode_eq_reciprocalClockPushforward
     (p : Nat.Primes) :
     gammaJacobiRightEndpointDiskNode p =
-      Real.tanh ((vonMangoldtRightEndpointReciprocalClock p)⁻¹) ^ 2 := by
+      Real.tanh ((vonMangoldtRightEndpointReciprocalClock p)⁻¹) ^ (2 : ℕ) := by
   rw [gammaJacobiRightEndpointDiskNode, vonMangoldtRightEndpointReciprocalClock, inv_inv]
 
 /-- Closed defect of the hyperbolic disk node at any positive logarithmic source. -/
 theorem one_sub_tanh_log_sq_eq (x : ℝ) (hx : 0 < x) :
-    1 - Real.tanh (Real.log x) ^ 2 = 4 * x ^ 2 / (x ^ 2 + 1) ^ 2 := by
+    1 - Real.tanh (Real.log x) ^ (2 : ℕ) = 4 * x ^ (2 : ℕ) / (x ^ (2 : ℕ) + 1) ^ (2 : ℕ) := by
   rw [HTGeometry.one_sub_tanh_sq, Real.cosh_log hx]
   have hx0 := hx.ne'
   field_simp
@@ -67,8 +67,8 @@ theorem gammaJacobiRightEndpointDiskNode_mem_Ioo (p : Nat.Primes) :
 /-- Exact rational boundary defect of the prime-indexed right-endpoint node. -/
 theorem one_sub_gammaJacobiRightEndpointDiskNode_eq (p : Nat.Primes) :
     1 - gammaJacobiRightEndpointDiskNode p =
-      4 * (((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 /
-        ((((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 + 1) ^ 2 := by
+      4 * (((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) /
+        ((((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) + 1) ^ (2 : ℕ) := by
   rw [gammaJacobiRightEndpointDiskNode]
   exact one_sub_tanh_log_sq_eq _ (by positivity)
 
@@ -78,22 +78,22 @@ theorem one_sub_gammaJacobiRightEndpointDiskNode_nonneg (p : Nat.Primes) :
 
 /-- Elementary `p⁻²` majorant for the Gamma--Jacobi boundary defect. -/
 theorem one_sub_gammaJacobiRightEndpointDiskNode_le (p : Nat.Primes) :
-    1 - gammaJacobiRightEndpointDiskNode p ≤ 4 * ((p : ℝ) ^ 2)⁻¹ := by
+    1 - gammaJacobiRightEndpointDiskNode p ≤ 4 * ((p : ℝ) ^ (2 : ℕ))⁻¹ := by
   rw [one_sub_gammaJacobiRightEndpointDiskNode_eq]
   have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.pos
   have hpn : (0 : ℝ) < (((p : ℕ) + 1 : ℕ) : ℝ) := by positivity
   have hle : (p : ℝ) ≤ (((p : ℕ) + 1 : ℕ) : ℝ) := by
     exact_mod_cast Nat.le_succ (p : ℕ)
-  rw [show 4 * ((p : ℝ) ^ 2)⁻¹ = 4 / (p : ℝ) ^ 2 by rw [div_eq_mul_inv]]
+  rw [show 4 * ((p : ℝ) ^ (2 : ℕ))⁻¹ = 4 / (p : ℝ) ^ (2 : ℕ) by rw [div_eq_mul_inv]]
   rw [le_div_iff₀ (sq_pos_of_pos hp), div_mul_eq_mul_div,
     div_le_iff₀ (sq_pos_of_pos (by positivity :
-      0 < (((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 + 1))]
-  have hsq : (p : ℝ) ^ 2 ≤ (((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 := by
+      0 < (((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) + 1))]
+  have hsq : (p : ℝ) ^ (2 : ℕ) ≤ (((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hle) (by positivity :
       0 ≤ (((p : ℕ) + 1 : ℕ) : ℝ) + (p : ℝ))]
   have hprod :
-      0 ≤ (((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 *
-        ((((p : ℕ) + 1 : ℕ) : ℝ) ^ 2 - (p : ℝ) ^ 2) :=
+      0 ≤ (((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
+        ((((p : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) - (p : ℝ) ^ (2 : ℕ)) :=
     mul_nonneg (sq_nonneg _) (sub_nonneg.mpr hsq)
   nlinarith
 
@@ -102,9 +102,9 @@ summable distance to the unit-circle boundary. -/
 theorem summable_one_sub_gammaJacobiRightEndpointDiskNode :
     Summable (fun p : Nat.Primes =>
       1 - gammaJacobiRightEndpointDiskNode p) := by
-  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) :=
+  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ (2 : ℕ))⁻¹) :=
     Real.summable_nat_pow_inv.mpr (by norm_num)
-  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ 2)⁻¹) :=
+  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
     hnat.comp_injective Subtype.val_injective
   exact Summable.of_nonneg_of_le
     one_sub_gammaJacobiRightEndpointDiskNode_nonneg

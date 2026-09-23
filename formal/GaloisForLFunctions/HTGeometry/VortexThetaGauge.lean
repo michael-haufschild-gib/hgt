@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.GammaGerbeThetaCocycle
 
 The gauge transformations in arXiv:2609.09298, Sections 2.2 and 2.7, can be read directly
 on the corpus's existing Jacobi theta cocycles. A charge-l mode has quadratic multiplier;
-a degree-d charged block has d*l modes and hence cubic coefficient d*l^3. A balanced
+a degree-d charged block has d*l modes and hence cubic coefficient d*l^(3 : ℕ). A balanced
 four-theta quotient has both periods exactly, including its totalized values at zeros.
 -/
 
@@ -22,7 +22,7 @@ def vortexJacobiBlock (τ u : ℂ) (N : ℕ) (l : ℤ) (z : ℂ) : ℂ :=
 /-- The gauge multiplier has quadratic charge dependence for each individual mode. -/
 theorem vortexJacobiBlock_large_gauge (τ u : ℂ) (N : ℕ) (l : ℤ) (z : ℂ) :
     vortexJacobiBlock τ u N l (z + τ) =
-      Complex.exp (-Ⅱ * ((N : ℂ) * (l : ℂ) ^ 2 * (z + τ / 2) +
+      Complex.exp (-Ⅱ * ((N : ℂ) * (l : ℂ) ^ (2 : ℕ) * (z + τ / 2) +
         (l : ℂ) * u * ((N : ℂ) * ((N : ℂ) - 1) / 2))) *
           vortexJacobiBlock τ u N l z := by
   have h := thetaProd_shift (θ := fun w => jacobiTheta₂ w τ)
@@ -42,10 +42,10 @@ theorem vortexJacobiBlock_large_gauge (τ u : ℂ) (N : ℕ) (l : ℤ) (z : ℂ)
   ring
 
 /-- A degree-`d` field of charge magnitude `l` has `d*l` modes, turning the quadratic
-single-mode multiplier into the cubic coefficient `d*l^3`. -/
+single-mode multiplier into the cubic coefficient `d*l^(3 : ℕ)`. -/
 theorem vortexJacobiBlock_cubic_charge (τ u : ℂ) (d l : ℕ) (z : ℂ) :
     vortexJacobiBlock τ u (d * l) (l : ℤ) (z + τ) =
-      Complex.exp (-Ⅱ * ((d : ℂ) * (l : ℂ) ^ 3 * (z + τ / 2) +
+      Complex.exp (-Ⅱ * ((d : ℂ) * (l : ℂ) ^ (3 : ℕ) * (z + τ / 2) +
         (l : ℂ) * u * (((d : ℂ) * l) * ((d : ℂ) * l - 1) / 2))) *
           vortexJacobiBlock τ u (d * l) (l : ℤ) z := by
   rw [vortexJacobiBlock_large_gauge]

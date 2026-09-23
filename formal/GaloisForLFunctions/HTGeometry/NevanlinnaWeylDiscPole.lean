@@ -176,7 +176,7 @@ theorem weylTilt_ne_zero (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) (h
   have hQq : weylForm s z q = 0 := weylForm_eq_zero_of_denominator s z q hqden
   have hQre : 0 < weylForm s z ((q.re : ℝ) : ℂ) := weylForm_pos_ofReal h h0b h0 hz q.re
   have hdiff : weylForm s z q - weylForm s z ((q.re : ℝ) : ℂ)
-      = weylLead s z * q.im ^ 2 + weylTilt s z * q.im := by
+      = weylLead s z * q.im ^ (2 : ℕ) + weylTilt s z * q.im := by
     rw [weylForm_expand, weylForm_expand]
     simp only [Complex.normSq_apply, Complex.ofReal_re, Complex.ofReal_im]
     ring
@@ -238,7 +238,7 @@ theorem nevInf_quotient_im_neg (h : PositiveMomentForm s) (h0b : BoundedKernel s
   have hQq : weylForm s z q = 0 := weylForm_eq_zero_of_denominator s z q hqden
   have hQre : 0 < weylForm s z ((q.re : ℝ) : ℂ) := weylForm_pos_ofReal h h0b h0 hz q.re
   have hdiff : weylForm s z q - weylForm s z ((q.re : ℝ) : ℂ)
-      = weylLead s z * q.im ^ 2 + weylTilt s z * q.im := by
+      = weylLead s z * q.im ^ (2 : ℕ) + weylTilt s z * q.im := by
     rw [weylForm_expand, weylForm_expand]
     simp only [Complex.normSq_apply, Complex.ofReal_re, Complex.ofReal_im]
     ring

@@ -63,7 +63,7 @@ noncomputable def reciprocalSeries
 noncomputable def coefficient
     {F E : Type*} [Field F] [Field E] [Algebra F E] [CharZero E] [Differential E]
     (T : HypertranscendentalPolarizationTower F E) (k : ℕ) : E :=
-  PowerSeries.coeff k (T.reciprocalSeries ^ 2)
+  PowerSeries.coeff k (T.reciprocalSeries ^ (2 : ℕ))
 
 noncomputable def amplitude
     {F E : Type*} [Field F] [Field E] [Algebra F E] [CharZero E] [Differential E]
@@ -124,7 +124,7 @@ theorem zero_depth
 theorem qSystem
     {F E : Type*} [Field F] [Field E] [Algebra F E] [CharZero E] [Differential E]
     (T : HypertranscendentalPolarizationTower F E) (c n : ℕ) (hn : 0 < n) :
-    T.amplitude (c + 1) n ^ 2 =
+    T.amplitude (c + 1) n ^ (2 : ℕ) =
       T.amplitude (c + 1) (n - 1) * T.amplitude (c + 1) (n + 1) +
         T.amplitude c n * T.amplitude (c + 2) n :=
   hypertranscendentalHorizonAmplitude_qSystem T.sourceHT c n hn

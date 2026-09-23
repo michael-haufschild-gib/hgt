@@ -223,10 +223,10 @@ theorem xiSourceCayley_rho_re_reconstruction
 /-- Packet drift and rate reconstruct the squared height of the zero. -/
 theorem xiSourceCayley_rho_im_sq_reconstruction
     (q : XiRightUpperZeroCopy) :
-    (q.1.1.1 : ℂ).im ^ 2 =
+    (q.1.1.1 : ℂ).im ^ (2 : ℕ) =
       1 / xiSourceCayleyDrift q -
         1 / 4 * (1 -
-          xiSourceCayleyExponent q / xiSourceCayleyDrift q) ^ 2 := by
+          xiSourceCayleyExponent q / xiSourceCayleyDrift q) ^ (2 : ℕ) := by
   simpa only [xiSourceCayleyExponent, xiSourceCayleyDrift,
     xiSourceCayleyShift] using
       (HTGeometry.rho_im_sq_from_cayleyFock_ridge
@@ -281,7 +281,7 @@ rate. -/
 theorem xiSourceCayleyWardCoherentJet_poisson_conservation
     (q : XiRightUpperZeroCopy) (x : ℝ) (r : ℕ) :
     x ^ r / r.factorial *
-        ‖xiSourceCayleyWardCoherentJet q x r‖ ^ 2 =
+        ‖xiSourceCayleyWardCoherentJet q x r‖ ^ (2 : ℕ) =
       xiEndpointWardPairWeight q *
         Real.exp (xiSourceCayleyExponent q * x) *
           HTGeometry.poissonOrderWeight
@@ -302,8 +302,8 @@ theorem xiCayleySourceResidueMode_parabolic_conservation
     let x := tau / xiSourceCayleyDrift q
     x ^ r / r.factorial *
         ‖iteratedDeriv r
-          (xiCayleySourceResidueMode (q.1.1.1 : ℂ)) (x : ℂ)‖ ^ 2 =
-      ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ 2 *
+          (xiCayleySourceResidueMode (q.1.1.1 : ℂ)) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ (2 : ℕ) *
         Real.exp ((2 * (q.1.1.1 : ℂ).re - 1) * tau) *
           HTGeometry.poissonOrderWeight tau r := by
   dsimp only
@@ -313,10 +313,10 @@ theorem xiCayleySourceResidueMode_parabolic_conservation
           (HTGeometry.cayleyPoleResidueMode
             ((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)
             1 (q.1.1.1 : ℂ))
-          ((tau / xiSourceCayleyDrift q : ℝ) : ℂ)‖ ^ 2 = _
+          ((tau / xiSourceCayleyDrift q : ℝ) : ℂ)‖ ^ (2 : ℕ) = _
   rw [HTGeometry.cayleyPoleResidueMode_poisson_conservation]
   change
-    ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ 2 *
+    ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ (2 : ℕ) *
           Real.exp
             (xiSourceCayleyExponent q *
               (tau / xiSourceCayleyDrift q)) *
@@ -353,7 +353,7 @@ theorem neg_re_xiSourceCayleyWardExteriorPacket_poisson_conservation
     x ^ r / r.factorial *
         (-(xiSourceCayleyWardExteriorPacket q x r).re) =
       4 * xiEndpointWardPairWeight q *
-        (xiSourceCayleyShift q).im ^ 2 *
+        (xiSourceCayleyShift q).im ^ (2 : ℕ) *
         Real.exp (xiSourceCayleyExponent q * x) *
           HTGeometry.poissonOrderWeight
             (xiSourceCayleyDrift q * x) r := by
@@ -370,7 +370,7 @@ theorem tsum_xiSourceCayleyWardExteriorPacket
         xiSourceCayleyWardExteriorPacket q x r =
       ((xiEndpointWardPairWeight q : ℝ) : ℂ) *
         (xiSourceCayleyShift q -
-          (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ 2 *
+          (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ (2 : ℕ) *
         Complex.exp ((xiSourceCayleyExponent q * x : ℝ) : ℂ) := by
   simp_rw [xiSourceCayleyWardExteriorPacket]
   rw [xiSourceCayleyExponent,
@@ -384,8 +384,8 @@ theorem xiSourceCayleyWardExteriorPacket_re_neg
   rw [xiSourceCayleyWardExteriorPacket,
     HTGeometry.twoModeCoherentExterior_conj_eq]
   rw [show (xiSourceCayleyShift q -
-      (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ 2 =
-      (((-4 * (xiSourceCayleyShift q).im ^ 2 : ℝ) : ℂ)) by
+      (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ (2 : ℕ) =
+      (((-4 * (xiSourceCayleyShift q).im ^ (2 : ℕ) : ℝ) : ℂ)) by
     rw [Complex.sub_conj, mul_pow, Complex.I_sq]
     push_cast
     ring]
@@ -401,7 +401,7 @@ theorem xiSourceCayleyWardExteriorPacket_re_neg
         (Complex.normSq_pos.mpr
           (sub_ne_zero.mpr (xiSourceCayley_rho_ne_one q)))
   have hweight :
-      0 < Real.sqrt (xiEndpointWardPairWeight q) ^ 2 := by
+      0 < Real.sqrt (xiEndpointWardPairWeight q) ^ (2 : ℕ) := by
     rw [Real.sq_sqrt (xiEndpointWardPairWeight_pos q).le]
     exact xiEndpointWardPairWeight_pos q
   have hnorm : 0 < ‖xiSourceCayleyShift q‖ ^ (2 * r) := by
@@ -454,8 +454,8 @@ structure XiSourceCayleyOrderSpaceConservationCertificate : Prop where
       let x := tau / xiSourceCayleyDrift q
       x ^ r / r.factorial *
           ‖iteratedDeriv r
-            (xiCayleySourceResidueMode (q.1.1.1 : ℂ)) (x : ℂ)‖ ^ 2 =
-        ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ 2 *
+            (xiCayleySourceResidueMode (q.1.1.1 : ℂ)) (x : ℂ)‖ ^ (2 : ℕ) =
+        ‖((analyticOrderAt xi (q.1.1.1 : ℂ)).toNat : ℂ)‖ ^ (2 : ℕ) *
           Real.exp ((2 * (q.1.1.1 : ℂ).re - 1) * tau) *
             HTGeometry.poissonOrderWeight tau r
   wardJetsAreSourceResidueJets :
@@ -468,7 +468,7 @@ structure XiSourceCayleyOrderSpaceConservationCertificate : Prop where
   poissonConservation :
     ∀ (q : XiRightUpperZeroCopy) (x : ℝ) (r : ℕ),
       x ^ r / r.factorial *
-          ‖xiSourceCayleyWardCoherentJet q x r‖ ^ 2 =
+          ‖xiSourceCayleyWardCoherentJet q x r‖ ^ (2 : ℕ) =
         xiEndpointWardPairWeight q *
           Real.exp (xiSourceCayleyExponent q * x) *
             HTGeometry.poissonOrderWeight
@@ -480,18 +480,18 @@ structure XiSourceCayleyOrderSpaceConservationCertificate : Prop where
       (q.1.1.1 : ℂ).re =
           1 / 2 * (1 +
             xiSourceCayleyExponent q / xiSourceCayleyDrift q) ∧
-        (q.1.1.1 : ℂ).im ^ 2 =
+        (q.1.1.1 : ℂ).im ^ (2 : ℕ) =
           1 / xiSourceCayleyDrift q -
             1 / 4 * (1 -
               xiSourceCayleyExponent q /
-                xiSourceCayleyDrift q) ^ 2
+                xiSourceCayleyDrift q) ^ (2 : ℕ)
   phaseFreeExterior :
     ∀ (q : XiRightUpperZeroCopy) (x : ℝ) (r : ℕ),
       (xiSourceCayleyWardExteriorPacket q x r).re < 0 ∧
       x ^ r / r.factorial *
           (-(xiSourceCayleyWardExteriorPacket q x r).re) =
         4 * xiEndpointWardPairWeight q *
-          (xiSourceCayleyShift q).im ^ 2 *
+          (xiSourceCayleyShift q).im ^ (2 : ℕ) *
           Real.exp (xiSourceCayleyExponent q * x) *
             HTGeometry.poissonOrderWeight
               (xiSourceCayleyDrift q * x) r
@@ -501,7 +501,7 @@ structure XiSourceCayleyOrderSpaceConservationCertificate : Prop where
           xiSourceCayleyWardExteriorPacket q x r =
         ((xiEndpointWardPairWeight q : ℝ) : ℂ) *
           (xiSourceCayleyShift q -
-            (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ 2 *
+            (starRingEnd ℂ) (xiSourceCayleyShift q)) ^ (2 : ℕ) *
           Complex.exp
             ((xiSourceCayleyExponent q * x : ℝ) : ℂ)
   hurwitzPhaseChart :
@@ -519,7 +519,7 @@ structure XiSourceCayleyOrderSpaceConservationCertificate : Prop where
       (8 * Real.pi) * xiCayleyWardRadialVisibility 0
   heightOrderVisibility :
     ∀ (q : XiRightUpperZeroCopy) (n : ℕ),
-      1 / ((q.1.1.1 : ℂ).im ^ 2 + 1) *
+      1 / ((q.1.1.1 : ℂ).im ^ (2 : ℕ) + 1) *
           (1 - (2 * (q.1.1.1 : ℂ).re - 1) /
             Complex.normSq (q.1.1.1 : ℂ))⁻¹ ^ n ≤
         xiCayleyWardRadialVisibility (2 * n)

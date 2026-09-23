@@ -62,7 +62,7 @@ theorem re_Gammaℝ_mul_levinsonG_eq_zero_iff (lam : ℝ) {τ : ℝ}
   have hG : Complex.Gammaℝ (linePt τ) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos hstrip0
   have hΛ : completedRiemannZeta (linePt τ)
       = Complex.Gammaℝ (linePt τ) * riemannZeta (linePt τ) :=
-    completedRiemannZeta_eq_Gammaℝ_mul hstrip0
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE hstrip0
   have hkey := levinsonY_mul_completed_line lam τ
   constructor
   · intro h0
@@ -124,15 +124,15 @@ theorem log_pi_lt_re_digamma_quarter {τ : ℝ} (hτ : 20 ≤ τ) :
   have hτ0 : (0 : ℝ) < τ := by linarith
   have hb := re_digamma_vertical_bound_uncond (σ := 1 / 4) (t := τ / 2)
     (by norm_num) (by linarith)
-  have hlow : (1 / 2 : ℝ) * Real.log ((1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2)
-        - (1 / (τ / 2) ^ 2 + Real.pi / (2 * (τ / 2)))
+  have hlow : (1 / 2 : ℝ) * Real.log ((1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ))
+        - (1 / (τ / 2) ^ (2 : ℕ) + Real.pi / (2 * (τ / 2)))
       ≤ (Complex.digamma (((1 / 4 : ℝ) : ℂ) + ((τ / 2 : ℝ) : ℂ) * Complex.I)).re := by
     have := (abs_le.mp hb).1
     linarith
   -- the logarithm is at least `log 10`
-  have hmono : Real.log ((τ / 2) ^ 2) ≤ Real.log ((1 / 4 : ℝ) ^ 2 + (τ / 2) ^ 2) := by
+  have hmono : Real.log ((τ / 2) ^ (2 : ℕ)) ≤ Real.log ((1 / 4 : ℝ) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ)) := by
     refine Real.log_le_log (by positivity) (by nlinarith)
-  have hsq : Real.log ((τ / 2) ^ 2) = 2 * Real.log (τ / 2) := by
+  have hsq : Real.log ((τ / 2) ^ (2 : ℕ)) = 2 * Real.log (τ / 2) := by
     rw [Real.log_pow]; push_cast; ring
   have hten : Real.log 10 ≤ Real.log (τ / 2) :=
     Real.log_le_log (by norm_num) (by linarith)
@@ -144,7 +144,7 @@ theorem log_pi_lt_re_digamma_quarter {τ : ℝ} (hτ : 20 ≤ τ) :
       rw [show (8 : ℝ) = 2 ^ (3 : ℕ) by norm_num, Real.log_pow]; push_cast; ring
     linarith
   -- the error terms are small
-  have herr1 : 1 / (τ / 2) ^ 2 ≤ 1 / 100 := by
+  have herr1 : 1 / (τ / 2) ^ (2 : ℕ) ≤ 1 / 100 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith
   have herr2 : Real.pi / (2 * (τ / 2)) ≤ 1 / 6 := by

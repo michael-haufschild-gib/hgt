@@ -9,7 +9,7 @@ import GaloisForLFunctions.RHTower.XiGaussianTestFunction
 The fixed reflected Meyer Gaussian is reconstructed from two literal Cauchy boundary lines in the
 absolute-Euler prime--Gamma sectors.  The reconstruction is performed before restriction to the
 Xi divisor.  After restriction, the two-sided boundary field is Bochner integrable in the exact
-multiplicity-aware Xi `ell^2` carrier and its integral is the reflected-Gaussian horizon vector.
+multiplicity-aware Xi `ell^(2 : ℕ)` carrier and its integral is the reflected-Gaussian horizon vector.
 
 This constructs the nonlocal source completion forced by the compact Green range wall.  It uses no
 RH premise, divisor-indexed damping, target-selected interpolation, or pulled-back source norm.
@@ -49,11 +49,11 @@ def reflectedGaussianLowerCauchyPoint (x : ℝ) : XiCRegularPoint :=
     rw [him] at hstrip
     norm_num at hstrip⟩
 
-/-- Multiplicity-exact Xi `ell^2` Cauchy column on the upper source boundary. -/
+/-- Multiplicity-exact Xi `ell^(2 : ℕ)` Cauchy column on the upper source boundary. -/
 def reflectedGaussianUpperCauchyColumn (x : ℝ) : XiDivisorL2 :=
   xiWeilCauchyLp (reflectedGaussianUpperCauchyPoint x)
 
-/-- Multiplicity-exact Xi `ell^2` Cauchy column on the lower source boundary. -/
+/-- Multiplicity-exact Xi `ell^(2 : ℕ)` Cauchy column on the lower source boundary. -/
 def reflectedGaussianLowerCauchyColumn (x : ℝ) : XiDivisorL2 :=
   xiWeilCauchyLp (reflectedGaussianLowerCauchyPoint x)
 

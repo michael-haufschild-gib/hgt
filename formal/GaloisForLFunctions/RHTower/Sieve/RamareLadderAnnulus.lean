@@ -23,7 +23,7 @@ noncomputable section
 theorem integral_normSq_ramareLadderError_le_defectSum {P : Finset ℕ} (M : ℕ) {Q η W : ℝ}
     (hQ : 1 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (hPge : ∀ p ∈ P, Q ≤ (p : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
           * ladderDefectSum L M Q η := by
   refine (integral_normSq_ramareLadderError_le_closed M hQ hη hW hPprime hPge).trans
@@ -44,12 +44,12 @@ theorem integral_normSq_ramareBilinear_annulus_le {P : Finset ℕ} (M : ℕ) {Q 
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ 2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-            (V j ^ 2 * ((5 * Real.pi / 2 * W
+            (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
                   + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                 * ((geomCofactorBlock M Q η j).card : ℝ))
-              + Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
+              + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
         + 2 * ((5 * Real.pi / 2 * W
               + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * ladderDefectSum L M Q η) := by
@@ -59,12 +59,12 @@ theorem integral_normSq_ramareBilinear_annulus_le {P : Finset ℕ} (M : ℕ) {Q 
   have hsteps : ∑ j ∈ Finset.range L,
       (∫ w in Set.Icc (-W) W,
         ‖primeBlockPoly (geomBlock P Q (1 + η) j) w
-          * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+          * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ ∑ j ∈ Finset.range L,
-          (V j ^ 2 * ((5 * Real.pi / 2 * W
+          (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
                 + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
               * ((geomCofactorBlock M Q η j).card : ℝ))
-            + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+            + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     refine Finset.sum_le_sum fun j hj => ?_
     have hbounds := geomCofactorBlockAt_bounds (A₀ := 1) (B₀ := M) (by norm_num) hQ0 hη j
     exact integral_normSq_blockProduct_annulus_le (ramareCofactorCoeff P)

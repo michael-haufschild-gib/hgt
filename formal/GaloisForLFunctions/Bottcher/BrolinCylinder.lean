@@ -174,7 +174,7 @@ theorem iterate_ne_zero_of_mem_roots_lt_of_disconnected
   intro hzero
   have hroot : (quadratic c)^[n] r = 0 := by
     have hisroot : (quadraticPolyIterate c n).IsRoot r :=
-      (Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero).mp hr
+      (Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero).mp hr
     simpa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] using hisroot
   have hreturn : (quadratic c)^[n - j] (0 : ℂ) = 0 := by
     have hn : n = (n - j) + j := (Nat.sub_add_cancel (le_of_lt hj)).symm

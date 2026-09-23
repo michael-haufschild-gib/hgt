@@ -44,7 +44,7 @@ theorem harmonicGap_mul (D : ℕ) (hD : 1 ≤ D) :
   ring
 
 theorem harmonicGap_sq_mul (D : ℕ) (hD : 1 ≤ D) :
-    (D : ℝ) ^ 2 * harmonicGap D = 1 - 1 / ((D : ℝ) + 1) := by
+    (D : ℝ) ^ (2 : ℕ) * harmonicGap D = 1 - 1 / ((D : ℝ) + 1) := by
   have hDpos : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
   rw [harmonicGap]
   field_simp
@@ -75,7 +75,7 @@ theorem sum_mul_harmonicGap (n : ℕ) :
     ring
 
 theorem sum_sq_mul_harmonicGap (n : ℕ) :
-    ∑ D ∈ Finset.Icc 1 n, (D : ℝ) ^ 2 * harmonicGap D = (n : ℝ) - (harmonicSum (n + 1) - 1) := by
+    ∑ D ∈ Finset.Icc 1 n, (D : ℝ) ^ (2 : ℕ) * harmonicGap D = (n : ℝ) - (harmonicSum (n + 1) - 1) := by
   induction n with
   | zero => simp [harmonicSum]
   | succ n ih =>
@@ -117,7 +117,7 @@ theorem sum_biramp_harmonicGap {l v : ℕ} (hl : 1 ≤ l) :
         ((l : ℝ) - (D : ℝ)) * ((v : ℝ) - (D : ℝ)) * harmonicGap D
       = (l : ℝ) * (v : ℝ) * ∑ D ∈ Finset.Icc 1 (l - 1), harmonicGap D
         - ((l : ℝ) + (v : ℝ)) * ∑ D ∈ Finset.Icc 1 (l - 1), (D : ℝ) * harmonicGap D
-        + ∑ D ∈ Finset.Icc 1 (l - 1), (D : ℝ) ^ 2 * harmonicGap D := by
+        + ∑ D ∈ Finset.Icc 1 (l - 1), (D : ℝ) ^ (2 : ℕ) * harmonicGap D := by
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun D _ => by ring
   rw [hsplit, sum_harmonicGap, sum_mul_harmonicGap, sum_sq_mul_harmonicGap, hsucc]
@@ -319,9 +319,9 @@ theorem pathKernel_eq {N m n : ℕ} (hm : 1 ≤ m) (hmN : m ≤ N) (hn : 1 ≤ n
 
 /-- **(24.43) The exact centered path energy.** -/
 theorem harmonic_pathEnergy_triangularTransport (a : ℕ → ℝ) (N : ℕ) :
-    ∑ D ∈ Finset.Icc 1 (N - 1), harmonicGap D * triangularTransport a N D ^ 2
+    ∑ D ∈ Finset.Icc 1 (N - 1), harmonicGap D * triangularTransport a N D ^ (2 : ℕ)
       = ∑ p ∈ Finset.Icc 1 N ×ˢ Finset.Icc 1 N, a p.1 * a p.2 * pathKernel N p.1 p.2 := by
-  have hexpand : ∀ D : ℕ, harmonicGap D * triangularTransport a N D ^ 2
+  have hexpand : ∀ D : ℕ, harmonicGap D * triangularTransport a N D ^ (2 : ℕ)
       = ∑ p ∈ Finset.Icc 1 (N / (D + 1)) ×ˢ Finset.Icc 1 (N / (D + 1)),
           a p.1 * a p.2 * ((((N / p.1 : ℕ) : ℝ) - (D : ℝ))
             * (((N / p.2 : ℕ) : ℝ) - (D : ℝ)) * harmonicGap D) := by

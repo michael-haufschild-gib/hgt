@@ -26,13 +26,13 @@ lemma primeClockVerticalEnergy_le_four_mul_harmonic
   rw [primeClockVerticalEnergy, Nat.primesLE_eq_filter_Icc_one]
   calc
     (∑ p ∈ (Finset.Icc 1 N).filter Nat.Prime,
-        4 * Real.sin (x * Real.log p / 2) ^ 2 / p) ≤
+        4 * Real.sin (x * Real.log p / 2) ^ (2 : ℕ) / p) ≤
         ∑ p ∈ (Finset.Icc 1 N).filter Nat.Prime, 4 / (p : ℝ) := by
       apply Finset.sum_le_sum
       intro p hp
       have hpprime : p.Prime := (Finset.mem_filter.mp hp).2
       have hp0 : (0 : ℝ) < p := by exact_mod_cast hpprime.pos
-      have hmul : 4 * Real.sin (x * Real.log p / 2) ^ 2 ≤ (4 : ℝ) := by
+      have hmul : 4 * Real.sin (x * Real.log p / 2) ^ (2 : ℕ) ≤ (4 : ℝ) := by
         nlinarith [Real.sin_sq_le_one (x * Real.log p / 2)]
       exact (div_le_div_iff_of_pos_right hp0).2 hmul
     _ ≤ ∑ p ∈ Finset.Icc 1 N, 4 / (p : ℝ) := by
@@ -80,10 +80,10 @@ theorem hedenmalmPrimeNormalSubLogSquare_of_im_eq_zero
       harmonic_le_one_add_log N
     have hlogpos : 0 < Real.log N := lt_of_lt_of_le zero_lt_one hlogone
     calc
-      hedenmalmPrimeNormalEnergy N z / Real.log N ^ 2 ≤
-          (4 * (harmonic N : ℝ)) / Real.log N ^ 2 :=
+      hedenmalmPrimeNormalEnergy N z / Real.log N ^ (2 : ℕ) ≤
+          (4 * (harmonic N : ℝ)) / Real.log N ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right henergy (sq_nonneg _)
-      _ ≤ (4 * (1 + Real.log N)) / Real.log N ^ 2 := by
+      _ ≤ (4 * (1 + Real.log N)) / Real.log N ^ (2 : ℕ) := by
         gcongr
       _ ≤ 8 / Real.log N := by
         rw [div_le_div_iff₀ (sq_pos_of_pos hlogpos) hlogpos]

@@ -102,12 +102,12 @@ theorem deningerMonicH1Cotangent_subsingleton (P : Polynomial A)
   obtain ⟨c, hc⟩ : ∃ c : Polynomial A, c * P = q :=
     Ideal.mem_span_singleton'.1 (Ideal.Quotient.eq_zero_iff_mem.1 hq0)
   rw [Algebra.Extension.Cotangent.mk_eq_zero_iff]
-  have hmem : (q * P : Polynomial A) ∈ Ideal.span ({P} : Set (Polynomial A)) ^ 2 := by
+  have hmem : (q * P : Polynomial A) ∈ Ideal.span ({P} : Set (Polynomial A)) ^ (2 : ℕ) := by
     rw [Ideal.span_singleton_pow]
     refine Ideal.mem_span_singleton'.2 ⟨c, ?_⟩
     rw [← hc]
     ring
-  show y ∈ (deningerMonicExtension P).ker ^ 2
+  show y ∈ (deningerMonicExtension P).ker ^ (2 : ℕ)
   rw [deningerMonicExtension_ker, ← hq]
   exact hmem
 

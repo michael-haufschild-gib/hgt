@@ -1,13 +1,13 @@
 /-
 # The Schatten norms decrease with the exponent
 
-For `s ≤ 1` the `ℓ^s` norm dominates the `ℓ^1` norm: normalising by the `ℓ^s` norm makes every entry
+For `s ≤ 1` the `ℓ^s` norm dominates the `ℓ^(1 : ℕ)` norm: normalising by the `ℓ^s` norm makes every entry
 at most one, and on `[0,1]` a smaller exponent gives a larger power.  So the trace norm of a
 Schatten-`s` operator is at most its Schatten-`s` norm, which is what converts a product estimate
 stated at the exponent `p/n` into one for the trace norm.
 
 Main results:
-* `tsum_le_rpow_tsum_rpow` — **the `ℓ^s ⊆ ℓ^1` norm inequality** for `0 < s ≤ 1`.
+* `tsum_le_rpow_tsum_rpow` — **the `ℓ^s ⊆ ℓ^(1 : ℕ)` norm inequality** for `0 < s ≤ 1`.
 * `traceNorm_le_schattenNorm` — **the trace norm is at most the Schatten-`s` norm**.
 -/
 import GaloisForLFunctions.HTGeometry.SchattenNorm
@@ -20,7 +20,7 @@ noncomputable section
 
 open RHTower
 
-/-- **The `ℓ^s ⊆ ℓ^1` norm inequality** for `0 < s ≤ 1`. -/
+/-- **The `ℓ^s ⊆ ℓ^(1 : ℕ)` norm inequality** for `0 < s ≤ 1`. -/
 theorem tsum_le_rpow_tsum_rpow {a : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) {s : ℝ} (hs0 : 0 < s)
     (hs1 : s ≤ 1) (hsum : Summable fun n => a n ^ s) :
     ∑' n, a n ≤ (∑' n, a n ^ s) ^ (1 / s) := by

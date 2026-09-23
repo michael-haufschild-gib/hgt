@@ -54,9 +54,9 @@ theorem max_eq_add_max_sub (a b : ℝ) : max a b = a + max (b - a) 0 := by
 theorem fibreSmooth_decomp (x h : ℝ) (k i : ℕ) :
     fibreSmooth x h k i
       = max (kernelDiff x h k i - fibreOver x h k i - fibreUnder x i + 1) 0 := by
-  have hinner : fibreHigh x h (i + k) - fibreLow x i
+  have hinner : fibreHigh_fibreKernelExact x h (i + k) - fibreLow_fibreKernelExact x i
       = kernelDiff x h k i - fibreOver x h k i - fibreUnder x i := by
-    rw [fibreHigh_shift_eq, fibreLow, kernelDiff, fibreOver, fibreUnder,
+    rw [fibreHigh_shift_eq, fibreLow_fibreKernelExact, kernelDiff, fibreOver, fibreUnder,
       min_eq_sub_max_sub ((x + h * Real.sqrt x) / ((i : ℝ) + (k : ℝ))) (2 * Real.sqrt x),
       max_eq_add_max_sub (x / (i : ℝ)) (Real.sqrt x)]
     ring

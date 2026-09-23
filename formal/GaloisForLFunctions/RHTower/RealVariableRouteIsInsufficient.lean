@@ -55,7 +55,7 @@ its value is determined by the variance alone and there is no third-order term. 
 theorem gaussian_generating_quadratic (v t : ℝ) :
     v * t ^ 2 / 2 = v / 2 * t ^ 2 := by ring
 
-/-- Consequently a Gaussian's third cumulant, the coefficient of `t^3/6`, is zero. -/
+/-- Consequently a Gaussian's third cumulant, the coefficient of `t^(3 : ℕ)/6`, is zero. -/
 theorem gaussian_third_cumulant_zero (v t : ℝ) :
     v * t ^ 2 / 2 - (v / 2 * t ^ 2 + 0 * t ^ 3 / 6) = 0 := by ring
 

@@ -32,14 +32,14 @@ theorem re_le_half_add_of_lagPoleSeries_extension {a : ℝ} (ha : 0 ≤ a) {F : 
   set ρ₁ : ℂ := (q₁.1 : ℂ) with hρ₁
   set K : Set ℂ := Set.Icc ρ₁.re 1 ×ℂ Set.Icc ρ₁.im ρ₁.im with hK
   have hKc : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
-  have hfin : (xiZeroSet ∩ K).Finite := finite_xiZeroSet_inter hKc
-  have hmem₁ : ρ₁ ∈ xiZeroSet ∩ K := by
+  have hfin : (xiZeroSet_weilLagFunctionCriterion ∩ K).Finite := finite_xiZeroSet_inter hKc
+  have hmem₁ : ρ₁ ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := by
     refine ⟨xi_xiZeroCopy_eq_zero q₁, ?_⟩
     rw [hK, Complex.mem_reProdIm]
     exact ⟨⟨le_rfl, (xiZeroCopy_re_lt_one q₁).le⟩, ⟨le_rfl, le_rfl⟩⟩
   obtain ⟨ρ₀, hρ₀⟩ := hfin.exists_maximalFor Complex.re _ ⟨ρ₁, hmem₁⟩
-  have hρ₀mem : ρ₀ ∈ xiZeroSet ∩ K := hρ₀.1
-  have hmax : ∀ z ∈ xiZeroSet ∩ K, ρ₀.re ≤ z.re → z.re ≤ ρ₀.re := fun z hz h => hρ₀.2 hz h
+  have hρ₀mem : ρ₀ ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := hρ₀.1
+  have hmax : ∀ z ∈ xiZeroSet_weilLagFunctionCriterion ∩ K, ρ₀.re ≤ z.re → z.re ≤ ρ₀.re := fun z hz h => hρ₀.2 hz h
   obtain ⟨q₀, hq₀⟩ := exists_xiZeroCopy_of_xi_eq_zero hρ₀mem.1
   have hρ₀K := hρ₀mem.2
   rw [hK, Complex.mem_reProdIm] at hρ₀K
@@ -58,7 +58,7 @@ theorem re_le_half_add_of_lagPoleSeries_extension {a : ℝ} (ha : 0 ≤ a) {F : 
     have hval : p₀ + t + 1 / 2 = ρ₀ + t := by rw [hp₀]; unfold lagPole; rw [hq₀]; ring
     rw [hval] at hzero
     by_cases hle : (ρ₀ + t).re ≤ 1
-    · have hmemK : ρ₀ + t ∈ xiZeroSet ∩ K := by
+    · have hmemK : ρ₀ + t ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := by
         refine ⟨hzero, ?_⟩
         rw [hK, Complex.mem_reProdIm]
         refine ⟨⟨?_, hle⟩, ?_⟩

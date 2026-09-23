@@ -39,12 +39,12 @@ theorem absMap_comp_self (T : K →L[ℂ] C) : absMap T ∘L absMap T = (adjoint
 theorem norm_absMap_apply (T : K →L[ℂ] C) (x : K) : ‖absMap T x‖ = ‖T x‖ := by
   have hsym : (absMap T).IsSymmetric :=
     isSelfAdjoint_iff_isSymmetric.mp (isSelfAdjoint_absMap T)
-  have h1 : ‖absMap T x‖ ^ 2 = RCLike.re (inner ℂ x ((absMap T ∘L absMap T) x)) := by
+  have h1 : ‖absMap T x‖ ^ (2 : ℕ) = RCLike.re (inner ℂ x ((absMap T ∘L absMap T) x)) := by
     rw [comp_apply, ← inner_self_eq_norm_sq (𝕜 := ℂ) (absMap T x)]
     exact congrArg RCLike.re (hsym x (absMap T x))
-  have h2 : ‖T x‖ ^ 2 = RCLike.re (inner ℂ x ((absMap T ∘L absMap T) x)) := by
+  have h2 : ‖T x‖ ^ (2 : ℕ) = RCLike.re (inner ℂ x ((absMap T ∘L absMap T) x)) := by
     rw [absMap_comp_self, comp_apply, adjoint_inner_right, inner_self_eq_norm_sq]
-  have h3 : ‖absMap T x‖ ^ 2 = ‖T x‖ ^ 2 := by rw [h1, ← h2]
+  have h3 : ‖absMap T x‖ ^ (2 : ℕ) = ‖T x‖ ^ (2 : ℕ) := by rw [h1, ← h2]
   nlinarith [norm_nonneg (absMap T x), norm_nonneg (T x)]
 
 theorem ker_absMap (T : K →L[ℂ] C) :

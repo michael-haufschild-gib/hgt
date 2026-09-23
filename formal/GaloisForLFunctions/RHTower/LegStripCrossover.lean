@@ -23,12 +23,12 @@ edge margin scaled by `√d` converges to `crossoverG ξ = 1/π − ξ/4`. -/
 theorem crossover_derivation (ξ : ℝ) :
     Tendsto (fun d : ℝ =>
       localFactor (2 - ξ/Real.sqrt d) *
-        ((π^2/8)*((2 - ξ/Real.sqrt d) - 2) + (π/2)/Real.sqrt d) * Real.sqrt d)
+        ((π^(2 : ℕ)/8)*((2 - ξ/Real.sqrt d) - 2) + (π/2)/Real.sqrt d) * Real.sqrt d)
       atTop (𝓝 (crossoverG ξ)) := by
   have hsqrt : Tendsto (fun d : ℝ => 1/Real.sqrt d) atTop (𝓝 0) :=
     Tendsto.div_atTop tendsto_const_nhds tendsto_sqrt_atTop
-  have hmain : Tendsto (fun d : ℝ => crossoverG ξ + (ξ^2/8 - ξ/(2*π))*(1/Real.sqrt d)) atTop
-      (𝓝 (crossoverG ξ + (ξ^2/8 - ξ/(2*π))*0)) :=
+  have hmain : Tendsto (fun d : ℝ => crossoverG ξ + (ξ^(2 : ℕ)/8 - ξ/(2*π))*(1/Real.sqrt d)) atTop
+      (𝓝 (crossoverG ξ + (ξ^(2 : ℕ)/8 - ξ/(2*π))*0)) :=
     Tendsto.const_add _ (Tendsto.const_mul _ hsqrt)
   rw [mul_zero, add_zero] at hmain
   refine hmain.congr' ?_
@@ -39,23 +39,23 @@ theorem crossover_derivation (ξ : ℝ) :
   ring
 
 /-- The deformed carrier `a(c) = π²/(4c²)` whose locus is the marginal curve `ρ = 1/π`. -/
-def marginalShell (c : ℝ) : ℝ := π^2/(4*c^2)
+def marginalShell (c : ℝ) : ℝ := π^(2 : ℕ)/(4*c^(2 : ℕ))
 
 /-- **The marginal locus is a curve.** The deformed carrier `a(c) = π²/(4c²)` is marginal
 `ρ(κ(c), a(c)) = 1/π` for every `c > 0` — a one-parameter family of marginal carriers. -/
 theorem rhoOfCarrier_marginal_curve {c : ℝ} (hc : 0 < c) :
     rhoOfCarrier c (marginalShell c) = 1/π := by
   rw [rhoOfCarrier_eq, marginalShell,
-    show (π^2/(4*c^2) : ℝ) = (π/(2*c))^2 by ring, Real.sqrt_sq (by positivity)]
+    show (π^(2 : ℕ)/(4*c^(2 : ℕ)) : ℝ) = (π/(2*c))^(2 : ℕ) by ring, Real.sqrt_sq (by positivity)]
   field_simp
 
 /-- The physical shell coefficient `π²/16` is the marginal carrier at `c = 2`. -/
-theorem marginalShell_two : marginalShell 2 = π^2/16 := by rw [marginalShell]; ring
+theorem marginalShell_two : marginalShell 2 = π^(2 : ℕ)/16 := by rw [marginalShell]; ring
 
 /-- The marginal locus in the abstract `(κ, a)` skeleton: `a = 1/(4π²κ²)` gives `ρ(κ,a) = 1/π`. -/
 theorem rhoFamily_marginal_locus {κ : ℝ} (hκ : 0 < κ) :
-    rhoFamily κ (1/(4*π^2*κ^2)) = 1/π := by
-  rw [rhoFamily, show (1/(4*π^2*κ^2) : ℝ) = (1/(2*π*κ))^2 by ring, Real.sqrt_sq (by positivity)]
+    rhoFamily κ (1/(4*π^(2 : ℕ)*κ^(2 : ℕ))) = 1/π := by
+  rw [rhoFamily, show (1/(4*π^(2 : ℕ)*κ^(2 : ℕ)) : ℝ) = (1/(2*π*κ))^(2 : ℕ) by ring, Real.sqrt_sq (by positivity)]
   field_simp
 
 end RHTower

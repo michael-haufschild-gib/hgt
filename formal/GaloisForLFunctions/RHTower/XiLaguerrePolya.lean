@@ -313,7 +313,7 @@ theorem xiPairedPolynomial_secondDerivative_eval_tendsto (hRH : RiemannHypothesi
 theorem xiCanonicalProduct_laguerre_re_of_rh (hRH : RiemannHypothesis) (x : ℝ) :
     (xiCanonicalProduct (x : ℂ)).re *
         (deriv (deriv xiCanonicalProduct) (x : ℂ)).re ≤
-      (deriv xiCanonicalProduct (x : ℂ)).re ^ 2 := by
+      (deriv xiCanonicalProduct (x : ℂ)).re ^ (2 : ℕ) := by
   have hprod := (xiPairedPolynomial_eval_tendsto hRH x).mul
     (xiPairedPolynomial_secondDerivative_eval_tendsto hRH x)
   have hsq := (xiPairedPolynomial_derivative_eval_tendsto hRH x).pow 2
@@ -408,7 +408,7 @@ theorem Xi_secondDeriv_eq_center_mul_canonicalProduct_re (x : ℝ) :
 /-- Under RH, the first Laguerre inequality for Xi follows from reflection-closed real-split
 finite products converging locally uniformly with their first two derivatives. -/
 theorem xi_laguerre_inequality_of_rh (hRH : RiemannHypothesis) (x : ℝ) :
-    Xi x * deriv (deriv Xi) x ≤ (deriv Xi x) ^ 2 := by
+    Xi x * deriv (deriv Xi) x ≤ (deriv Xi x) ^ (2 : ℕ) := by
   have hP := xiCanonicalProduct_laguerre_re_of_rh hRH x
   have hscaled := mul_le_mul_of_nonneg_left hP (sq_nonneg (Xi 0))
   rw [Xi_eq_center_mul_canonicalProduct_re,
@@ -499,7 +499,7 @@ theorem xi_laguerrePolya_of_rh : RiemannHypothesis → LaguerrePolya Xi := by
     xiLaguerrePolynomial_secondDerivative_eval_tendsto hRH⟩
 
 theorem laguerre_margin_neg_not_RH
-    (h : ∃ t : ℝ, (deriv Xi t) ^ 2 < Xi t * deriv (deriv Xi) t) :
+    (h : ∃ t : ℝ, (deriv Xi t) ^ (2 : ℕ) < Xi t * deriv (deriv Xi) t) :
     ¬ RiemannHypothesis := by
   intro hRH
   obtain ⟨t, ht⟩ := h

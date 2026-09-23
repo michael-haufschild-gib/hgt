@@ -159,7 +159,7 @@ private theorem laplace_circle_continuous (q : XiZeroCopy) (X k : ℝ) :
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
     mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k)) =
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^2 *
+      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ) *
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
          coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
     funext p
@@ -218,7 +218,7 @@ def coneKernel (q : XiZeroCopy) (y u v X k : ℝ) : ℂ :=
 
 private def closedConeAction (q : XiZeroCopy) (y X k : ℝ) (p : ℝ × ℝ) : ℂ :=
   angularAction q (max 1 (invariant ((p.1+p.2)/2) (y+(p.1-p.2)/2) y)) X k /
-    (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^2)
+    (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^(2 : ℕ))
 
 private theorem closedConeAction_continuous (q : XiZeroCopy) (y X k : ℝ) :
     Continuous (closedConeAction q y X k) := by
@@ -265,7 +265,7 @@ theorem coneKernel_transposition (q : XiZeroCopy) (y X k U V : ℝ)
       fullSquarePotential q ![X,Real.exp k]*phi 0*psi 0 +
       ∫ u in (0:ℝ)..U, ∫ v in (0:ℝ)..V,
         angularAction q (invariant ((u+v)/2) (y+(u-v)/2) y) X k /
-          (4*(Real.cosh (y+(u-v)/2):ℂ)^2)*phi u*psi v := by
+          (4*(Real.cosh (y+(u-v)/2):ℂ)^(2 : ℕ))*phi u*psi v := by
   have h := vertex_primitive_pair (fullSquarePotential q ![X,Real.exp k])
     (closedConeAction q y X k) phi phip psi psip U V
     (closedConeAction_continuous q y X k) hp hpd hs hsd hphi hpsi hpU hsV
@@ -351,7 +351,7 @@ private theorem logKernelField_smooth (q : XiZeroCopy) (t : ℝ) :
 
 private theorem angularAction_directions (q : XiZeroCopy) (t : ℝ) (z : ℂ) :
     angularAction q t z.re z.im =
-      (Real.exp z.im:ℂ)^2*planeDir 1 (planeDir 1 (logKernelField q t)) z+
+      (Real.exp z.im:ℂ)^(2 : ℕ)*planeDir 1 (planeDir 1 (logKernelField q t)) z+
         planeDir Complex.I (planeDir Complex.I (logKernelField q t)) z-
           planeDir Complex.I (logKernelField q t) z := by
   have hx (r : ℝ) : HasDerivAt (fun X : ℝ => (X:ℂ)+(z.im:ℂ)*Complex.I) 1 r := by
@@ -417,7 +417,7 @@ theorem angularAction_compact_transposition (q : XiZeroCopy) (t : ℝ) (phi : �
       A z*planeDir 1 (planeDir 1 F) z+B z*planeDir Complex.I (planeDir Complex.I F) z-
         B z*planeDir Complex.I F z := by
     rw [angularAction_directions]
-    have hw : (Real.exp (-z.im):ℂ)*(Real.exp z.im:ℂ)^2=(Real.exp z.im:ℂ) := by
+    have hw : (Real.exp (-z.im):ℂ)*(Real.exp z.im:ℂ)^(2 : ℕ)=(Real.exp z.im:ℂ) := by
       rw [Real.exp_neg,Complex.ofReal_inv]
       field_simp [Complex.ofReal_ne_zero.mpr (Real.exp_pos z.im).ne']
     dsimp only [A,B,F]

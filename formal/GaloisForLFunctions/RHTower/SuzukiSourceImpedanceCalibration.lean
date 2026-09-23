@@ -27,10 +27,10 @@ namespace GaloisForLFunctions.RHTower
 the edge point. -/
 theorem movableWeight_strictAnti_of_pos {c₁ c₂ u : ℝ} (hu : 0 < u) (h1 : 0 ≤ c₁) (h12 : c₁ < c₂) :
     movableWeight c₂ u < movableWeight c₁ u := by
-  have hd1 : (0 : ℝ) < u + c₁ ^ 2 := by positivity
-  have hd2 : (0 : ℝ) < u + c₂ ^ 2 := by nlinarith
+  have hd1 : (0 : ℝ) < u + c₁ ^ (2 : ℕ) := by positivity
+  have hd2 : (0 : ℝ) < u + c₂ ^ (2 : ℕ) := by nlinarith
   have hnum : (0 : ℝ) < u + 1 := by linarith
-  have hsq : c₁ ^ 2 < c₂ ^ 2 := by nlinarith
+  have hsq : c₁ ^ (2 : ℕ) < c₂ ^ (2 : ℕ) := by nlinarith
   rw [movableWeight, movableWeight, div_lt_div_iff₀ hd2 hd1]
   nlinarith [hsq, hnum]
 

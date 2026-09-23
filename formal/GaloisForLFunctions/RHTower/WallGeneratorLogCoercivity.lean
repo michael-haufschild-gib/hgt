@@ -123,21 +123,21 @@ def wallFloor (T : X →L[ℂ] X) (σ x : ℝ) : ℝ :=
 /-- **`(15)`'s input: the generator has a logarithmically growing numerical floor.** -/
 theorem re_inner_wallGenerator_ge {T : X →L[ℂ] X} {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     (x : ℝ) (u : X) :
-    wallFloor T σ x * ‖u‖ ^ 2 ≤ (inner ℂ (wallGenerator T σ x u) u).re := by
+    wallFloor T σ x * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (wallGenerator T σ x u) u).re := by
   have happ : wallGenerator T σ x u = wallGeneratorScalar σ x • u - (1 / 2 : ℂ) • T u := by
     rw [wallGenerator]
     simp
-  have hself : (inner ℂ u u : ℂ) = ((‖u‖ ^ 2 : ℝ) : ℂ) := by
+  have hself : (inner ℂ u u : ℂ) = ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   have hinner : (inner ℂ (wallGenerator T σ x u) u : ℂ)
-      = (starRingEnd ℂ) (wallGeneratorScalar σ x) * ((‖u‖ ^ 2 : ℝ) : ℂ)
+      = (starRingEnd ℂ) (wallGeneratorScalar σ x) * ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ)
         - (starRingEnd ℂ) (1 / 2 : ℂ) * (inner ℂ (T u) u : ℂ) := by
     rw [happ, inner_sub_left, inner_smul_left, inner_smul_left, hself]
   have hhalf : (starRingEnd ℂ) (1 / 2 : ℂ) = (1 : ℂ) / 2 := by
     simp [Complex.ext_iff]
-  have hA : ((starRingEnd ℂ) (wallGeneratorScalar σ x) * ((‖u‖ ^ 2 : ℝ) : ℂ)).re
-      = (wallGeneratorScalar σ x).re * ‖u‖ ^ 2 := by
+  have hA : ((starRingEnd ℂ) (wallGeneratorScalar σ x) * ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ)).re
+      = (wallGeneratorScalar σ x).re * ‖u‖ ^ (2 : ℕ) := by
     rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.ofReal_re, Complex.ofReal_im]
     ring
   have hB : (((1 : ℂ) / 2) * (inner ℂ (T u) u : ℂ)).re = (inner ℂ (T u) u).re / 2 := by
@@ -145,18 +145,18 @@ theorem re_inner_wallGenerator_ge {T : X →L[ℂ] X} {σ : ℝ} (hσ0 : 0 < σ)
     norm_num
     ring
   have hre : (inner ℂ (wallGenerator T σ x u) u).re
-      = (wallGeneratorScalar σ x).re * ‖u‖ ^ 2 - (inner ℂ (T u) u).re / 2 := by
+      = (wallGeneratorScalar σ x).re * ‖u‖ ^ (2 : ℕ) - (inner ℂ (T u) u).re / 2 := by
     rw [hinner, hhalf, Complex.sub_re, hA, hB]
-  have hT : (inner ℂ (T u) u).re ≤ ‖T‖ * ‖u‖ ^ 2 := by
+  have hT : (inner ℂ (T u) u).re ≤ ‖T‖ * ‖u‖ ^ (2 : ℕ) := by
     have h1 : (inner ℂ (T u) u).re ≤ ‖(inner ℂ (T u) u : ℂ)‖ := Complex.re_le_norm _
     have h2 : ‖(inner ℂ (T u) u : ℂ)‖ ≤ ‖T u‖ * ‖u‖ := norm_inner_le_norm (𝕜 := ℂ) _ _
     have h3 : ‖T u‖ ≤ ‖T‖ * ‖u‖ := T.le_opNorm u
     calc (inner ℂ (T u) u).re ≤ ‖T u‖ * ‖u‖ := le_trans h1 h2
       _ ≤ (‖T‖ * ‖u‖) * ‖u‖ := mul_le_mul_of_nonneg_right h3 (norm_nonneg _)
-      _ = ‖T‖ * ‖u‖ ^ 2 := by ring
+      _ = ‖T‖ * ‖u‖ ^ (2 : ℕ) := by ring
   have hsym := two_log_sub_le_re_wallSymbol hσ0 hσ1 x
   have hscal := re_wallGeneratorScalar_ge hσ0 x
-  have hnn : (0 : ℝ) ≤ ‖u‖ ^ 2 := sq_nonneg _
+  have hnn : (0 : ℝ) ≤ ‖u‖ ^ (2 : ℕ) := sq_nonneg _
   rw [hre, wallFloor]
   nlinarith [hsym, hscal, hT, hnn]
 
@@ -209,7 +209,7 @@ theorem exists_inverse_wallGenerator_shift {T : X →L[ℂ] X} {σ : ℝ} (hσ0 
       (∀ u, S ((wallGenerator T σ x + (L : ℂ) • ContinuousLinearMap.id ℂ X) u) = u) ∧
       ∀ v, ‖S v‖ ≤ (wallFloor T σ x + L)⁻¹ * ‖v‖ := by
   have hfloor : ∀ u : X,
-      wallFloor T σ x * ‖u‖ ^ 2 ≤ (inner ℂ (wallGenerator T σ x u) u).re + 0 * ‖u‖ ^ 2 := by
+      wallFloor T σ x * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (wallGenerator T σ x u) u).re + 0 * ‖u‖ ^ (2 : ℕ) := by
     intro u
     have := re_inner_wallGenerator_ge (T := T) hσ0 hσ1 x u
     linarith

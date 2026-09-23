@@ -40,15 +40,15 @@ variable {G : Type*} [Countable G] (S : WaveSpectrum G)
 
 omit [Countable G] in
 theorem norm_traceCoeff_le (P : Polynomial ℝ) (g : G) :
-    ‖S.traceCoeff P g‖ ≤ polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3 := by
+    ‖S.traceCoeff P g‖ ≤ polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) := by
   rw [traceCoeff, norm_div, norm_pow]
   have hg : 0 < ‖S.gamma g‖ := S.norm_gamma_pos g
-  have hpoly : ‖Polynomial.aeval ((S.gamma g ^ 2)⁻¹) P‖ ≤ polyBallBound P (S.lower⁻¹ ^ 2) :=
+  have hpoly : ‖Polynomial.aeval ((S.gamma g ^ (2 : ℕ))⁻¹) P‖ ≤ polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) :=
     norm_aeval_le_polyBallBound P (S.norm_inv_gamma_sq_le g)
   rw [div_le_iff₀ (by positivity)]
-  calc ‖Polynomial.aeval ((S.gamma g ^ 2)⁻¹) P‖
-      ≤ polyBallBound P (S.lower⁻¹ ^ 2) := hpoly
-    _ = polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3 * ‖S.gamma g‖ ^ 3 := by
+  calc ‖Polynomial.aeval ((S.gamma g ^ (2 : ℕ))⁻¹) P‖
+      ≤ polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) := hpoly
+    _ = polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) * ‖S.gamma g‖ ^ (3 : ℕ) := by
         field_simp
 
 omit [Countable G] in
@@ -101,29 +101,29 @@ def poleTransform (P : Polynomial ℝ) (T : ℝ) (s : ℂ) : ℂ := ∑' g, S.po
 
 /-- Uniform majorant for the resolvent terms on a bounded pole-free region. -/
 def poleMajorant (P : Polynomial ℝ) (T M d : ℝ) (g : G) : ℝ :=
-  polyBallBound P (S.lower⁻¹ ^ 2) * Real.exp ((M + S.width) * |T|) / d *
-    (M * ‖S.gamma g‖⁻¹ ^ 3 + ‖S.gamma g‖⁻¹ ^ 2)
+  polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * Real.exp ((M + S.width) * |T|) / d *
+    (M * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) + ‖S.gamma g‖⁻¹ ^ (2 : ℕ))
 
 omit [Countable G] in
 theorem summable_poleMajorant (P : Polynomial ℝ) (T M d : ℝ) :
     Summable (S.poleMajorant P T M d) := by
   have hrepr : S.poleMajorant P T M d = fun g =>
-      polyBallBound P (S.lower⁻¹ ^ 2) * Real.exp ((M + S.width) * |T|) / d *
-        (M * ‖S.gamma g‖⁻¹ ^ 3 + ‖S.gamma g‖⁻¹ ^ 2) := rfl
+      polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * Real.exp ((M + S.width) * |T|) / d *
+        (M * ‖S.gamma g‖⁻¹ ^ (3 : ℕ) + ‖S.gamma g‖⁻¹ ^ (2 : ℕ)) := rfl
   rw [hrepr]
   exact ((S.summable_inv_cube.mul_left M).add S.summable_inv_sq).mul_left _
 
 omit [Countable G] in
 theorem norm_poleTerm_le (P : Polynomial ℝ) (T : ℝ) {s : ℂ} {M d : ℝ} (hd : 0 < d)
-    (hs : ‖s‖ ≤ M) (g : G) (hden : d ≤ ‖s ^ 2 + S.gamma g ^ 2‖) :
+    (hs : ‖s‖ ≤ M) (g : G) (hden : d ≤ ‖s ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ)‖) :
     ‖S.poleTerm P T s g‖ ≤ S.poleMajorant P T M d g := by
   have hg : 0 < ‖S.gamma g‖ := S.norm_gamma_pos g
-  have hC : 0 ≤ polyBallBound P (S.lower⁻¹ ^ 2) := polyBallBound_nonneg P (by positivity)
+  have hC : 0 ≤ polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) := polyBallBound_nonneg P (by positivity)
   have hc := S.norm_traceCoeff_le P g
   have hn := S.norm_poleNumer_le T hs g
   have hMnn : 0 ≤ M := le_trans (norm_nonneg s) hs
   have hnum : ‖S.traceCoeff P g‖ * ‖S.poleNumer T s g‖ ≤
-      (polyBallBound P (S.lower⁻¹ ^ 2) * ‖S.gamma g‖⁻¹ ^ 3) *
+      (polyBallBound P (S.lower⁻¹ ^ (2 : ℕ)) * ‖S.gamma g‖⁻¹ ^ (3 : ℕ)) *
         (Real.exp ((M + S.width) * |T|) * (M + ‖S.gamma g‖)) :=
     mul_le_mul hc hn (norm_nonneg _) (by positivity)
   rw [poleTerm, norm_div, norm_mul]
@@ -135,7 +135,7 @@ theorem norm_poleTerm_le (P : Polynomial ℝ) (T : ℝ) {s : ℂ} {M d : ℝ} (h
 
 omit [Countable G] in
 theorem differentiableOn_poleTerm (P : Polynomial ℝ) (T : ℝ) {U : Set ℂ} (g : G)
-    (hden : ∀ s ∈ U, s ^ 2 + S.gamma g ^ 2 ≠ 0) :
+    (hden : ∀ s ∈ U, s ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ) ≠ 0) :
     DifferentiableOn ℂ (fun s => S.poleTerm P T s g) U := by
   intro s hs
   refine DifferentiableAt.differentiableWithinAt ?_
@@ -146,12 +146,12 @@ theorem differentiableOn_poleTerm (P : Polynomial ℝ) (T : ℝ) {U : Set ℂ} (
           (z * Complex.sin (S.gamma g * (T : ℂ)) +
             S.gamma g * Complex.cos (S.gamma g * (T : ℂ))))) s := by
     fun_prop
-  have hB : DifferentiableAt ℂ (fun z : ℂ => z ^ 2 + S.gamma g ^ 2) s := by fun_prop
+  have hB : DifferentiableAt ℂ (fun z : ℂ => z ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ)) s := by fun_prop
   have hdiv : DifferentiableAt ℂ
       (fun z : ℂ => (S.traceCoeff P g *
         (Complex.exp (-z * (T : ℂ)) *
           (z * Complex.sin (S.gamma g * (T : ℂ)) +
-            S.gamma g * Complex.cos (S.gamma g * (T : ℂ))))) / (z ^ 2 + S.gamma g ^ 2)) s :=
+            S.gamma g * Complex.cos (S.gamma g * (T : ℂ))))) / (z ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ))) s :=
     hA.div hB hne
   exact hdiv
 
@@ -169,7 +169,7 @@ resolvent pole set is positive, the transform is holomorphic. -/
 theorem differentiableOn_poleTransform (P : Polynomial ℝ) (T : ℝ) {U : Set ℂ} (hU : IsOpen U)
     {M d : ℝ} (hd : 0 < d)
     (hbd : ∀ s ∈ U, ‖s‖ ≤ M)
-    (hden : ∀ s ∈ U, ∀ g, d ≤ ‖s ^ 2 + S.gamma g ^ 2‖) :
+    (hden : ∀ s ∈ U, ∀ g, d ≤ ‖s ^ (2 : ℕ) + S.gamma g ^ (2 : ℕ)‖) :
     DifferentiableOn ℂ (S.poleTransform P T) U := by
   refine differentiableOn_tsum_of_summable_norm (u := S.poleMajorant P T M d)
     (S.summable_poleMajorant P T M d) (fun g => ?_) hU (fun g s hs => ?_)

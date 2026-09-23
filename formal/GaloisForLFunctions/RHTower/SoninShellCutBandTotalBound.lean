@@ -28,12 +28,12 @@ theorem norm_sq_evenFourierCutoff_soninShellCutPacket_le
     (i : Fin M) :
     ‖evenFourierCutoff t
         (soninScaledPacketEven (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
-          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hM))‖ ^ 2 ≤
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hM))‖ ^ (2 : ℕ) ≤
       2 * t * (2 * soninShellCutWidth b c M *
             soninRefTailSup (soninShellCutWidth b c M * (w - t)) +
           |soninScaledPacketMean (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
               (2 * Real.pi * w)| *
-            (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ 2 :=
+            (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ (2 : ℕ) :=
   norm_sq_evenFourierCutoff_soninScaledPacketEven_le_uniform _ _ w t
     (soninShellCutWidth_pos b c hbc hM) ht htw
 
@@ -48,19 +48,19 @@ theorem exists_soninCouplingBandTotal_soninShellCutPacket_le (N : ℕ) (hN : 1 �
         soninCouplingBandTotal a b (inv_pos.mpr (zero_lt_one.trans hr))
             (soninScaledPacketEven (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
               (2 * Real.pi * (r * q)) (soninShellCutWidth_pos b c hbc hM)) ≤
-          Real.sqrt (2 * (K * soninShellCutWidth b c M ^ 2 /
+          Real.sqrt (2 * (K * soninShellCutWidth b c M ^ (2 : ℕ) /
                 soninShellCutWidth b c M ^ (2 * N)) *
               ((r * b) ^ (1 - (2 * N : ℝ)) / ((2 * N : ℝ) - 1))) +
             Real.sqrt (2 * (r * a) * (2 * soninShellCutWidth b c M *
                   soninRefTailSup (soninShellCutWidth b c M * (r * q - r * a)) +
                 |soninScaledPacketMean (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
                     (2 * Real.pi * (r * q))| *
-                  (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ 2) +
+                  (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ (2 : ℕ)) +
             Real.sqrt (2 * b * (2 * soninShellCutWidth b c M *
                   soninRefTailSup (soninShellCutWidth b c M * (r * q - b)) +
                 |soninScaledPacketMean (soninShellCutCentre b c M i) (soninShellCutWidth b c M)
                     (2 * Real.pi * (r * q))| *
-                  (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ 2) := by
+                  (2 * soninShellCutWidth b c M * soninRefTailSup 0)) ^ (2 : ℕ)) := by
   obtain ⟨K, hK0, hK⟩ := exists_norm_sq_sub_evenFourierCutoff_soninShellCutPacket_le N hN
   refine ⟨K, hK0, ?_⟩
   intro a b c q hbc M hM r hr hb hab ha haq hqb hbrq htail i

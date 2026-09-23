@@ -28,8 +28,8 @@ theorem abs_integral_radialProlate_sub_besselProfile_le
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hAa : dunsterEndpointCrossing c ≤ a) (hab : a ≤ b) :
     |∫ x in a..b, (R x - xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x))|
       ≤ (4 * radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant / c)

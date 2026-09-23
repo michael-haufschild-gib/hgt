@@ -61,7 +61,7 @@ theorem isOpen_zetaLaurentDomain : IsOpen zetaLaurentDomain := by
 
 /-- The derivative of the Cauchy factor of the Laurent factorisation. -/
 theorem hasDerivAt_sub_one_inv {s : ℂ} (hs : s ≠ 1) :
-    HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-1 / (s - 1) ^ 2) s := by
+    HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-1 / (s - 1) ^ (2 : ℕ)) s := by
   have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs
   have hd : HasDerivAt (fun z : ℂ => z - 1) 1 s := by
     simpa using (hasDerivAt_id s).sub_const 1
@@ -98,7 +98,7 @@ theorem logDeriv_riemannZeta_eqOn :
   ring
 
 theorem deriv_logDeriv_riemannZeta_eq {s : ℂ} (hs : s ∈ zetaLaurentDomain) :
-    zetaFisherMetric s = deriv (logDeriv zetaLaurentUnit) s + (s - 1)⁻¹ ^ 2 := by
+    zetaFisherMetric s = deriv (logDeriv zetaLaurentUnit) s + (s - 1)⁻¹ ^ (2 : ℕ) := by
   have hnhds : zetaLaurentDomain ∈ nhds s := isOpen_zetaLaurentDomain.mem_nhds hs
   have heq : logDeriv riemannZeta =ᶠ[nhds s]
       fun z : ℂ => logDeriv zetaLaurentUnit z - (z - 1)⁻¹ :=
@@ -117,7 +117,7 @@ theorem deriv_logDeriv_riemannZeta_eq {s : ℂ} (hs : s ∈ zetaLaurentDomain) :
       exact hana.deriv.div hana hs.2
     exact hlog.differentiableAt
   have hTotal : HasDerivAt (fun z : ℂ => logDeriv zetaLaurentUnit z - (z - 1)⁻¹)
-      (deriv (logDeriv zetaLaurentUnit) s - (-1 / (s - 1) ^ 2)) s := hU.hasDerivAt.sub hV
+      (deriv (logDeriv zetaLaurentUnit) s - (-1 / (s - 1) ^ (2 : ℕ))) s := hU.hasDerivAt.sub hV
   rw [zetaFisherMetric, heq.deriv_eq, hTotal.deriv]
   field_simp
   ring
@@ -148,16 +148,16 @@ theorem eventually_mem_zetaLaurentDomain :
 /-- **The Fisher horizon.**  `(s-1)² (log ζ)''(s) → 1` as `s → 1`: the information metric blows up
 like `1/(s-1)²` at the pole of `ζ`, i.e. like `1/(2σ-1)²` at the critical line. -/
 theorem tendsto_sub_one_sq_mul_zetaFisherMetric :
-    Tendsto (fun s : ℂ => (s - 1) ^ 2 * zetaFisherMetric s) (nhdsWithin 1 {(1 : ℂ)}ᶜ)
+    Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * zetaFisherMetric s) (nhdsWithin 1 {(1 : ℂ)}ᶜ)
       (nhds 1) := by
-  have hsub : Tendsto (fun s : ℂ => (s - 1) ^ 2) (nhdsWithin 1 {(1 : ℂ)}ᶜ) (nhds 0) := by
+  have hsub : Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ)) (nhdsWithin 1 {(1 : ℂ)}ᶜ) (nhds 0) := by
     have h : Tendsto (fun s : ℂ => s - 1) (nhds (1 : ℂ)) (nhds 0) := by
       simpa using (continuous_sub_right (1 : ℂ)).tendsto (1 : ℂ)
     simpa using (h.pow 2).mono_left nhdsWithin_le_nhds
   have hcont : Tendsto (deriv (logDeriv zetaLaurentUnit)) (nhdsWithin 1 {(1 : ℂ)}ᶜ)
       (nhds (deriv (logDeriv zetaLaurentUnit) 1)) :=
     continuousAt_deriv_logDeriv_zetaLaurentUnit.tendsto.mono_left nhdsWithin_le_nhds
-  have hprod : Tendsto (fun s : ℂ => (s - 1) ^ 2 * deriv (logDeriv zetaLaurentUnit) s)
+  have hprod : Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * deriv (logDeriv zetaLaurentUnit) s)
       (nhdsWithin 1 {(1 : ℂ)}ᶜ) (nhds 0) := by
     simpa using hsub.mul hcont
   have hone : Tendsto (fun _ : ℂ => (1 : ℂ)) (nhdsWithin 1 {(1 : ℂ)}ᶜ) (nhds 1) :=

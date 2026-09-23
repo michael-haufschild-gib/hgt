@@ -33,12 +33,12 @@ theorem tower_iterate_eq {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
       · calc rlo < ‖v‖ := hnorm_v
           _ ≤ ‖v‖ ^ (2 ^ m) := le_self_pow₀ (le_of_lt hv1) (by positivity)
           _ = ‖v ^ (2 ^ m)‖ := (norm_pow v (2 ^ m)).symm
-      · have h1 : ‖v ^ (2 ^ m)‖ ^ 2 = ‖v ^ (2 ^ (m + 1))‖ := by
+      · have h1 : ‖v ^ (2 ^ m)‖ ^ (2 : ℕ) = ‖v ^ (2 ^ (m + 1))‖ := by
           rw [← norm_pow, ← pow_mul, ← pow_succ]
         have h2 : ‖v ^ (2 ^ (m + 1))‖ < R₀ := hvm.2
         nlinarith [norm_nonneg (v ^ (2 ^ m)), hvm.1,
           lt_trans (lt_trans zero_lt_one hrlo) hvm.1]
-    have hsq : (v ^ (2 ^ m)) ^ 2 = v ^ (2 ^ (m + 1)) := by
+    have hsq : (v ^ (2 ^ m)) ^ (2 : ℕ) = v ^ (2 ^ (m + 1)) := by
       rw [← pow_mul, ← pow_succ]
     have hstep := S.fe (v ^ (2 ^ m)) hmid (by rw [hsq]; exact hvm)
     rw [Function.iterate_succ_apply', ihm hmid]
@@ -101,14 +101,14 @@ the consumable core of the quantitative slit gap: combined with a `‖T v − v�
 clause on the anchor band, it yields `‖T v − c‖ ≥ ‖c‖·sin θ₀ − 1 > 1` for `‖c‖` large. -/
 theorem norm_sub_ge_of_angle {v c : ℂ} {θ₀ : ℝ}
     (hang : (starRingEnd ℂ c * v).re ≤ Real.cos θ₀ * (‖c‖ * ‖v‖)) :
-    ‖c‖ ^ 2 * Real.sin θ₀ ^ 2 ≤ ‖v - c‖ ^ 2 := by
+    ‖c‖ ^ (2 : ℕ) * Real.sin θ₀ ^ (2 : ℕ) ≤ ‖v - c‖ ^ (2 : ℕ) := by
   have hvc : ((starRingEnd ℂ c) * v).re = c.re * v.re + c.im * v.im := by
     simp [Complex.mul_re]
-  have hexp : ‖v - c‖ ^ 2 = ‖v‖ ^ 2 + ‖c‖ ^ 2 - 2 * (c.re * v.re + c.im * v.im) := by
+  have hexp : ‖v - c‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) + ‖c‖ ^ (2 : ℕ) - 2 * (c.re * v.re + c.im * v.im) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     ring
-  have hs2 : Real.sin θ₀ ^ 2 = 1 - Real.cos θ₀ ^ 2 := by
+  have hs2 : Real.sin θ₀ ^ (2 : ℕ) = 1 - Real.cos θ₀ ^ (2 : ℕ) := by
     have := Real.sin_sq_add_cos_sq θ₀
     linarith
   rw [hvc] at hang

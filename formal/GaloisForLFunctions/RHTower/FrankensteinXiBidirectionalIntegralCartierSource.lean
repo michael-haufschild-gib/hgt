@@ -92,7 +92,7 @@ theorem deningerIntegralCartierForwardClass_ne_zero :
   have hsq :
       (1 : DeningerIntegralCartierSourceRing) *
           deningerIntegralCartierSourceGenerator ∈
-        DeningerIntegralCartierSourceIdeal ^ 2 := by
+        DeningerIntegralCartierSourceIdeal ^ (2 : ℕ) := by
     simpa only [deningerIntegralCartierSourceGenerator, one_mul] using hzero
   have hmem : (1 : DeningerIntegralCartierSourceRing) ∈
       DeningerIntegralCartierSourceIdeal :=
@@ -112,7 +112,7 @@ theorem deningerIntegralCartierMultiplicityForwardClass_ne_zero
   have hsq :
       (m : DeningerIntegralCartierSourceRing) *
           deningerIntegralCartierSourceGenerator ∈
-        DeningerIntegralCartierSourceIdeal ^ 2 := by
+        DeningerIntegralCartierSourceIdeal ^ (2 : ℕ) := by
     simpa [nsmul_eq_mul] using hzero
   have hmem : (m : DeningerIntegralCartierSourceRing) ∈
       DeningerIntegralCartierSourceIdeal :=

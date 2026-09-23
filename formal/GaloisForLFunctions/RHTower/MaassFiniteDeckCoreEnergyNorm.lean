@@ -21,58 +21,58 @@ theorem integral_hyperbolicChartGradientDensity_eq_gradNormSq {N : ℕ}
     (∫ z in ModularGroup.fd,
       hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z) =
       ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (formPreDomain.memLp_gradX F)‖ ^ 2 +
+          (formPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
       ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-          (formPreDomain.memLp_gradY F)‖ ^ 2 := by
-  have hX : IntegrableOn (fun z => ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2)
+          (formPreDomain.memLp_gradY F)‖ ^ (2 : ℕ) := by
+  have hX : IntegrableOn (fun z => ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ))
       ModularGroup.fd volume :=
     (memLp_two_iff_integrable_sq_norm (formPreDomain.memLp_gradX F).aestronglyMeasurable).mp
       (formPreDomain.memLp_gradX F)
-  have hY : IntegrableOn (fun z => ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2)
+  have hY : IntegrableOn (fun z => ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ))
       ModularGroup.fd volume :=
     (memLp_two_iff_integrable_sq_norm (formPreDomain.memLp_gradY F).aestronglyMeasurable).mp
       (formPreDomain.memLp_gradY F)
   have hnormX :
       ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (formPreDomain.memLp_gradX F)‖ ^ 2 =
-        ∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2 := by
+          (formPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) =
+        ∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     calc
       (∫ z, ‖((toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-        (formPreDomain.memLp_gradX F) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ 2 ∂cellMeasure) =
-          ∫ z, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2 ∂cellMeasure := by
+        (formPreDomain.memLp_gradX F) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ∂cellMeasure) =
+          ∫ z, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ∂cellMeasure := by
           apply integral_congr_ae
           filter_upwards [MemLp.coeFn_toLp (formPreDomain.memLp_gradX F)] with z hz
           change ‖(MemLp.toLp (hypGradX (F : ℍ → DeckSpace N))
-            (formPreDomain.memLp_gradX F) : ℍ → DeckSpace N) z‖ ^ 2 = _
+            (formPreDomain.memLp_gradX F) : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) = _
           rw [hz]
-      _ = ∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2 := by rfl
+      _ = ∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by rfl
   have hnormY :
       ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-          (formPreDomain.memLp_gradY F)‖ ^ 2 =
-        ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2 := by
+          (formPreDomain.memLp_gradY F)‖ ^ (2 : ℕ) =
+        ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     calc
       (∫ z, ‖((toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-        (formPreDomain.memLp_gradY F) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ 2 ∂cellMeasure) =
-          ∫ z, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2 ∂cellMeasure := by
+        (formPreDomain.memLp_gradY F) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ∂cellMeasure) =
+          ∫ z, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ∂cellMeasure := by
           apply integral_congr_ae
           filter_upwards [MemLp.coeFn_toLp (formPreDomain.memLp_gradY F)] with z hz
           change ‖(MemLp.toLp (hypGradY (F : ℍ → DeckSpace N))
-            (formPreDomain.memLp_gradY F) : ℍ → DeckSpace N) z‖ ^ 2 = _
+            (formPreDomain.memLp_gradY F) : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) = _
           rw [hz]
-      _ = ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2 := by rfl
+      _ = ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by rfl
   calc
     (∫ z in ModularGroup.fd,
       hyperbolicChartGradientDensity (F : ℍ → DeckSpace N) z) =
         ∫ z in ModularGroup.fd,
-          ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2 +
-            ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2 := by
+          ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) +
+            ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by
           apply setIntegral_congr_fun ModularGroup.isClosed_fd.measurableSet
           intro z _
           exact hyperbolicChartGradientDensity_eq_hypGradNormSq _ z
-    _ = (∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2) +
-        ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2 :=
+    _ = (∫ z in ModularGroup.fd, ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) +
+        ∫ z in ModularGroup.fd, ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) :=
       integral_add hX hY
     _ = _ := by rw [← hnormX, ← hnormY]
 

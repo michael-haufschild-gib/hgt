@@ -20,14 +20,14 @@ namespace RHTower.GuthMaynard
 
 /-- `Σ_i ‖x_i‖²` is the real part of `star x ⬝ᵥ x`. -/
 theorem re_star_dotProduct_self {n : Type*} [Fintype n] (x : n → ℂ) :
-    (star x ⬝ᵥ x).re = ∑ i, ‖x i‖ ^ 2 := by
+    (star x ⬝ᵥ x).re = ∑ i, ‖x i‖ ^ (2 : ℕ) := by
   simp only [dotProduct, Pi.star_apply, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Complex.star_def, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
 
 /-- `Re (conj z · (r z)) = r ‖z‖²` for real `r`. -/
 theorem re_conj_mul_real_mul (z : ℂ) (r : ℝ) :
-    ((starRingEnd ℂ) z * ((r : ℂ) * z)).re = r * ‖z‖ ^ 2 := by
+    ((starRingEnd ℂ) z * ((r : ℂ) * z)).re = r * ‖z‖ ^ (2 : ℕ) := by
   rw [show (starRingEnd ℂ) z * ((r : ℂ) * z) = (r : ℂ) * (z * (starRingEnd ℂ) z) by ring,
     Complex.mul_conj, Complex.normSq_eq_norm_sq, ← Complex.ofReal_mul, Complex.ofReal_re]
 
@@ -35,7 +35,7 @@ theorem re_conj_mul_real_mul (z : ℂ) (r : ℝ) :
 `Re (star v ⬝ᵥ A v) ≤ μ Σ ‖v_i‖²`. -/
 theorem re_star_dotProduct_mulVec_le {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℂ}
     (hA : A.IsHermitian) {μ : ℝ} (hμ : ∀ i, hA.eigenvalues i ≤ μ) (v : n → ℂ) :
-    (star v ⬝ᵥ (A *ᵥ v)).re ≤ μ * ∑ i, ‖v i‖ ^ 2 := by
+    (star v ⬝ᵥ (A *ᵥ v)).re ≤ μ * ∑ i, ‖v i‖ ^ (2 : ℕ) := by
   set U : Matrix n n ℂ := (hA.eigenvectorUnitary : Matrix n n ℂ) with hUdef
   have hUU : U * Uᴴ = 1 := by
     have := Matrix.mem_unitaryGroup_iff.mp hA.eigenvectorUnitary.2
@@ -53,10 +53,10 @@ theorem re_star_dotProduct_mulVec_le {n : Type*} [Fintype n] [DecidableEq n] {A 
   -- the norm is preserved
   have hnorm : star w ⬝ᵥ w = star v ⬝ᵥ v := by
     rw [hsw, ← dotProduct_mulVec, hwdef, Matrix.mulVec_mulVec, hUU, Matrix.one_mulVec]
-  have hnorm' : ∑ i, ‖w i‖ ^ 2 = ∑ i, ‖v i‖ ^ 2 := by
+  have hnorm' : ∑ i, ‖w i‖ ^ (2 : ℕ) = ∑ i, ‖v i‖ ^ (2 : ℕ) := by
     rw [← re_star_dotProduct_self, ← re_star_dotProduct_self, hnorm]
   -- evaluate the diagonal form
-  have hform : (star w ⬝ᵥ (D *ᵥ w)).re = ∑ i, hA.eigenvalues i * ‖w i‖ ^ 2 := by
+  have hform : (star w ⬝ᵥ (D *ᵥ w)).re = ∑ i, hA.eigenvalues i * ‖w i‖ ^ (2 : ℕ) := by
     simp only [dotProduct, Complex.re_sum, Pi.star_apply, hDdef, Matrix.mulVec_diagonal,
       Function.comp]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -68,13 +68,13 @@ theorem re_star_dotProduct_mulVec_le {n : Type*} [Fintype n] [DecidableEq n] {A 
 
 /-- Cauchy–Schwarz for the dot product: `Re (star x ⬝ᵥ y) ≤ √(Σ‖x‖²) √(Σ‖y‖²)`. -/
 theorem re_star_dotProduct_le_sqrt_mul_sqrt {n : Type*} [Fintype n] (x y : n → ℂ) :
-    (star x ⬝ᵥ y).re ≤ Real.sqrt (∑ i, ‖x i‖ ^ 2) * Real.sqrt (∑ i, ‖y i‖ ^ 2) := by
+    (star x ⬝ᵥ y).re ≤ Real.sqrt (∑ i, ‖x i‖ ^ (2 : ℕ)) * Real.sqrt (∑ i, ‖y i‖ ^ (2 : ℕ)) := by
   set X : EuclideanSpace ℂ n := WithLp.toLp 2 x
   set Y : EuclideanSpace ℂ n := WithLp.toLp 2 y
   have hinner : inner ℂ X Y = star x ⬝ᵥ y := by
     rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
-  have hX : ‖X‖ = Real.sqrt (∑ i, ‖x i‖ ^ 2) := EuclideanSpace.norm_eq X
-  have hY : ‖Y‖ = Real.sqrt (∑ i, ‖y i‖ ^ 2) := EuclideanSpace.norm_eq Y
+  have hX : ‖X‖ = Real.sqrt (∑ i, ‖x i‖ ^ (2 : ℕ)) := EuclideanSpace.norm_eq X
+  have hY : ‖Y‖ = Real.sqrt (∑ i, ‖y i‖ ^ (2 : ℕ)) := EuclideanSpace.norm_eq Y
   calc (star x ⬝ᵥ y).re ≤ ‖star x ⬝ᵥ y‖ := Complex.re_le_norm _
     _ = ‖inner ℂ X Y‖ := by rw [hinner]
     _ ≤ ‖X‖ * ‖Y‖ := norm_inner_le_norm X Y
@@ -85,45 +85,45 @@ theorem re_star_dotProduct_le_sqrt_mul_sqrt {n : Type*} [Fintype n] (x y : n →
 theorem sum_normSq_mulVec_le {W N : Type*} [Fintype W] [Fintype N] [DecidableEq W]
     (M : Matrix W N ℂ) {μ : ℝ} (hμ0 : 0 ≤ μ)
     (hμ : ∀ i, (Matrix.isHermitian_mul_conjTranspose_self M).eigenvalues i ≤ μ) (b : N → ℂ) :
-    ∑ t, ‖(M *ᵥ b) t‖ ^ 2 ≤ μ * ∑ j, ‖b j‖ ^ 2 := by
+    ∑ t, ‖(M *ᵥ b) t‖ ^ (2 : ℕ) ≤ μ * ∑ j, ‖b j‖ ^ (2 : ℕ) := by
   obtain ⟨u, hu⟩ : ∃ u : W → ℂ, u = M *ᵥ b := ⟨_, rfl⟩
   rw [← hu]
-  have hSu0 : 0 ≤ ∑ t, ‖u t‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
-  have hSb0 : 0 ≤ ∑ j, ‖b j‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
+  have hSu0 : 0 ≤ ∑ t, ‖u t‖ ^ (2 : ℕ) := Finset.sum_nonneg fun _ _ => by positivity
+  have hSb0 : 0 ≤ ∑ j, ‖b j‖ ^ (2 : ℕ) := Finset.sum_nonneg fun _ _ => by positivity
   -- `Σ‖u‖² = Re (star (Mᴴ u) ⬝ᵥ b)`
   have e1 : star (Mᴴ *ᵥ u) ⬝ᵥ b = star u ⬝ᵥ u := by
     rw [Matrix.star_mulVec, Matrix.conjTranspose_conjTranspose, ← dotProduct_mulVec, ← hu]
-  have h1 : ∑ t, ‖u t‖ ^ 2 = (star (Mᴴ *ᵥ u) ⬝ᵥ b).re := by
+  have h1 : ∑ t, ‖u t‖ ^ (2 : ℕ) = (star (Mᴴ *ᵥ u) ⬝ᵥ b).re := by
     rw [e1, re_star_dotProduct_self]
   -- `Σ ‖Mᴴ u‖² ≤ μ Σ‖u‖²` by Rayleigh for `M Mᴴ`
   have e2 : star (Mᴴ *ᵥ u) ⬝ᵥ (Mᴴ *ᵥ u) = star u ⬝ᵥ ((M * Mᴴ) *ᵥ u) := by
     rw [Matrix.star_mulVec, Matrix.conjTranspose_conjTranspose, ← dotProduct_mulVec,
       Matrix.mulVec_mulVec]
-  have h2 : ∑ j, ‖(Mᴴ *ᵥ u) j‖ ^ 2 ≤ μ * ∑ t, ‖u t‖ ^ 2 := by
+  have h2 : ∑ j, ‖(Mᴴ *ᵥ u) j‖ ^ (2 : ℕ) ≤ μ * ∑ t, ‖u t‖ ^ (2 : ℕ) := by
     rw [← re_star_dotProduct_self, e2]
     exact re_star_dotProduct_mulVec_le (Matrix.isHermitian_mul_conjTranspose_self M) hμ u
   -- Cauchy–Schwarz
-  have h3 : ∑ t, ‖u t‖ ^ 2 ≤ Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2) := by
-    calc ∑ t, ‖u t‖ ^ 2 = (star (Mᴴ *ᵥ u) ⬝ᵥ b).re := h1
-      _ ≤ Real.sqrt (∑ j, ‖(Mᴴ *ᵥ u) j‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2) :=
+  have h3 : ∑ t, ‖u t‖ ^ (2 : ℕ) ≤ Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ)) := by
+    calc ∑ t, ‖u t‖ ^ (2 : ℕ) = (star (Mᴴ *ᵥ u) ⬝ᵥ b).re := h1
+      _ ≤ Real.sqrt (∑ j, ‖(Mᴴ *ᵥ u) j‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ)) :=
           re_star_dotProduct_le_sqrt_mul_sqrt _ _
-      _ ≤ Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2) :=
+      _ ≤ Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt h2) (Real.sqrt_nonneg _)
   -- conclude: `S ≤ √(μ S) √Sb` gives `S ≤ μ Sb`
   rcases eq_or_lt_of_le hSu0 with h0 | hpos
   · rw [← h0]; positivity
-  · have hsq : (∑ t, ‖u t‖ ^ 2) * (∑ t, ‖u t‖ ^ 2)
-        ≤ (μ * ∑ t, ‖u t‖ ^ 2) * ∑ j, ‖b j‖ ^ 2 := by
+  · have hsq : (∑ t, ‖u t‖ ^ (2 : ℕ)) * (∑ t, ‖u t‖ ^ (2 : ℕ))
+        ≤ (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * ∑ j, ‖b j‖ ^ (2 : ℕ) := by
       have hm := mul_le_mul h3 h3 hSu0 (by positivity)
-      calc (∑ t, ‖u t‖ ^ 2) * (∑ t, ‖u t‖ ^ 2)
-          ≤ (Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2)) *
-              (Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2)) := hm
-        _ = (Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2) * Real.sqrt (μ * ∑ t, ‖u t‖ ^ 2)) *
-              (Real.sqrt (∑ j, ‖b j‖ ^ 2) * Real.sqrt (∑ j, ‖b j‖ ^ 2)) := by ring
-        _ = (μ * ∑ t, ‖u t‖ ^ 2) * ∑ j, ‖b j‖ ^ 2 := by
+      calc (∑ t, ‖u t‖ ^ (2 : ℕ)) * (∑ t, ‖u t‖ ^ (2 : ℕ))
+          ≤ (Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ))) *
+              (Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ))) := hm
+        _ = (Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * Real.sqrt (μ * ∑ t, ‖u t‖ ^ (2 : ℕ))) *
+              (Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ)) * Real.sqrt (∑ j, ‖b j‖ ^ (2 : ℕ))) := by ring
+        _ = (μ * ∑ t, ‖u t‖ ^ (2 : ℕ)) * ∑ j, ‖b j‖ ^ (2 : ℕ) := by
             rw [Real.mul_self_sqrt (by positivity), Real.mul_self_sqrt hSb0]
-    have : (∑ t, ‖u t‖ ^ 2) * (∑ t, ‖u t‖ ^ 2)
-        ≤ (∑ t, ‖u t‖ ^ 2) * (μ * ∑ j, ‖b j‖ ^ 2) := by linarith [hsq]
+    have : (∑ t, ‖u t‖ ^ (2 : ℕ)) * (∑ t, ‖u t‖ ^ (2 : ℕ))
+        ≤ (∑ t, ‖u t‖ ^ (2 : ℕ)) * (μ * ∑ j, ‖b j‖ ^ (2 : ℕ)) := by linarith [hsq]
     exact le_of_mul_le_mul_left this hpos
 
 end RHTower.GuthMaynard

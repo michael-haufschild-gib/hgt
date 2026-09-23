@@ -30,11 +30,11 @@ variable {P : Type*} [DecidableEq P]
 
 /-- The port capacity of a finite aperture. -/
 noncomputable def portCap (w : P → ℝ) (a : P → ℂ) (F : Finset P) : ℝ :=
-  ∑ p ∈ F, ‖a p‖ ^ 2 / w p
+  ∑ p ∈ F, ‖a p‖ ^ (2 : ℕ) / w p
 
 /-- The weighted filling energy of a source vector on a finite aperture. -/
 noncomputable def portEnergy (w : P → ℝ) (x : P → ℂ) (F : Finset P) : ℝ :=
-  ∑ p ∈ F, w p * ‖x p‖ ^ 2
+  ∑ p ∈ F, w p * ‖x p‖ ^ (2 : ℕ)
 
 /-- The observed port value on a finite aperture. -/
 noncomputable def portValue (coef : P → ℂ) (x : P → ℂ) (F : Finset P) : ℂ :=
@@ -60,7 +60,7 @@ theorem portCap_pos (hw : ∀ p, 0 < w p) {F : Finset P} (hF : F.Nonempty) (ha :
     0 < portCap w a F := by
   obtain ⟨q, hq⟩ := hF
   refine Finset.sum_pos' (fun p _ => by have := (hw p).le; positivity) ⟨q, hq, ?_⟩
-  have h1 : 0 < ‖a q‖ ^ 2 := by
+  have h1 : 0 < ‖a q‖ ^ (2 : ℕ) := by
     have : ‖a q‖ ≠ 0 := norm_ne_zero_iff.2 (ha q)
     positivity
   exact div_pos h1 (hw q)
@@ -69,7 +69,7 @@ omit [DecidableEq P] in
 /-- **Weighted Cauchy–Schwarz for a port.** -/
 theorem portValue_normSq_le (hw : ∀ p, 0 < w p) (hcoef : ∀ p, ‖coef p‖ = ‖a p‖)
     (x : P → ℂ) (F : Finset P) :
-    ‖portValue coef x F‖ ^ 2 ≤ portEnergy w x F * portCap w a F := by
+    ‖portValue coef x F‖ ^ (2 : ℕ) ≤ portEnergy w x F * portCap w a F := by
   have hstep : ‖portValue coef x F‖ ≤ ∑ p ∈ F, ‖coef p‖ * ‖x p‖ := by
     refine le_trans (norm_sum_le _ _) ?_
     exact Finset.sum_le_sum fun p _ => le_of_eq (norm_mul _ _)
@@ -80,14 +80,14 @@ theorem portValue_normSq_le (hw : ∀ p, 0 < w p) (hcoef : ∀ p, ‖coef p‖ =
     rw [hcoef p]
     field_simp
     try ring
-  have hcs : (∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) * (‖a p‖ / Real.sqrt (w p))) ^ 2
-      ≤ (∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) ^ 2)
-        * (∑ p ∈ F, (‖a p‖ / Real.sqrt (w p)) ^ 2) :=
+  have hcs : (∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) * (‖a p‖ / Real.sqrt (w p))) ^ (2 : ℕ)
+      ≤ (∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) ^ (2 : ℕ))
+        * (∑ p ∈ F, (‖a p‖ / Real.sqrt (w p)) ^ (2 : ℕ)) :=
     Finset.sum_mul_sq_le_sq_mul_sq F _ _
-  have he : ∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) ^ 2 = portEnergy w x F := by
+  have he : ∑ p ∈ F, (Real.sqrt (w p) * ‖x p‖) ^ (2 : ℕ) = portEnergy w x F := by
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [mul_pow, Real.sq_sqrt (hw p).le]
-  have hc : ∑ p ∈ F, (‖a p‖ / Real.sqrt (w p)) ^ 2 = portCap w a F := by
+  have hc : ∑ p ∈ F, (‖a p‖ / Real.sqrt (w p)) ^ (2 : ℕ) = portCap w a F := by
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [div_pow, Real.sq_sqrt (hw p).le]
   rw [he, hc] at hcs
@@ -96,7 +96,7 @@ theorem portValue_normSq_le (hw : ∀ p, 0 < w p) (hcoef : ∀ p, ‖coef p‖ =
     Finset.sum_congr rfl hsplit
   have hnn : 0 ≤ ∑ p ∈ F, ‖coef p‖ * ‖x p‖ :=
     Finset.sum_nonneg fun p _ => by positivity
-  have hstep2 : ‖portValue coef x F‖ ^ 2 ≤ (∑ p ∈ F, ‖coef p‖ * ‖x p‖) ^ 2 := by
+  have hstep2 : ‖portValue coef x F‖ ^ (2 : ℕ) ≤ (∑ p ∈ F, ‖coef p‖ * ‖x p‖) ^ (2 : ℕ) := by
     have := norm_nonneg (portValue coef x F)
     nlinarith
   rw [hsum] at hstep2
@@ -117,10 +117,10 @@ theorem portValue_portMinimizer (hw : ∀ p, 0 < w p) {F : Finset P}
     portValue coef (portMinimizer w coef F z) F = z := by
   have hCc : ((portCap w coef F : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hC
   have hval : ∀ p ∈ F, coef p * portMinimizer w coef F z p
-      = (z / (portCap w coef F : ℂ)) * (((‖coef p‖ ^ 2 / w p : ℝ)) : ℂ) := by
+      = (z / (portCap w coef F : ℂ)) * (((‖coef p‖ ^ (2 : ℕ) / w p : ℝ)) : ℂ) := by
     intro p hp
     have hwp : (w p : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt (hw p)
-    have hmul : coef p * conj (coef p) = ((‖coef p‖ ^ 2 : ℝ) : ℂ) := by
+    have hmul : coef p * conj (coef p) = ((‖coef p‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [mul_comm, Complex.conj_mul']
       push_cast
       ring
@@ -130,7 +130,7 @@ theorem portValue_portMinimizer (hw : ∀ p, 0 < w p) {F : Finset P}
     push_cast
     field_simp
   rw [portValue, Finset.sum_congr rfl hval, ← Finset.mul_sum]
-  have hsum : ∑ p ∈ F, (((‖coef p‖ ^ 2 / w p : ℝ)) : ℂ) = ((portCap w coef F : ℝ) : ℂ) := by
+  have hsum : ∑ p ∈ F, (((‖coef p‖ ^ (2 : ℕ) / w p : ℝ)) : ℂ) = ((portCap w coef F : ℝ) : ℂ) := by
     rw [portCap]
     push_cast
     rfl
@@ -139,11 +139,11 @@ theorem portValue_portMinimizer (hw : ∀ p, 0 < w p) {F : Finset P}
 
 theorem portEnergy_portMinimizer (hw : ∀ p, 0 < w p) {F : Finset P}
     (hC : portCap w coef F ≠ 0) (z : ℂ) :
-    portEnergy w (portMinimizer w coef F z) F = ‖z‖ ^ 2 / portCap w coef F := by
+    portEnergy w (portMinimizer w coef F z) F = ‖z‖ ^ (2 : ℕ) / portCap w coef F := by
   have hCpos : 0 < portCap w coef F :=
     lt_of_le_of_ne (portCap_nonneg (w := w) (a := coef) hw F) (Ne.symm hC)
-  have hterm : ∀ p ∈ F, w p * ‖portMinimizer w coef F z p‖ ^ 2
-      = (‖z‖ ^ 2 / (portCap w coef F) ^ 2) * (‖coef p‖ ^ 2 / w p) := by
+  have hterm : ∀ p ∈ F, w p * ‖portMinimizer w coef F z p‖ ^ (2 : ℕ)
+      = (‖z‖ ^ (2 : ℕ) / (portCap w coef F) ^ (2 : ℕ)) * (‖coef p‖ ^ (2 : ℕ) / w p) := by
     intro p hp
     have hwp : (0:ℝ) < w p := hw p
     rw [portMinimizer, if_pos hp, norm_div, norm_mul, norm_mul]
@@ -160,7 +160,7 @@ finite aperture is `‖z‖² / C_F`. -/
 theorem isLeast_portEnergy (hw : ∀ p, 0 < w p) {F : Finset P}
     (hC : portCap w coef F ≠ 0) (z : ℂ) :
     IsLeast {e : ℝ | ∃ x : P → ℂ, portValue coef x F = z ∧ portEnergy w x F = e}
-      (‖z‖ ^ 2 / portCap w coef F) := by
+      (‖z‖ ^ (2 : ℕ) / portCap w coef F) := by
   constructor
   · exact ⟨portMinimizer w coef F z, portValue_portMinimizer hw hC z,
       portEnergy_portMinimizer hw hC z⟩
@@ -175,7 +175,7 @@ theorem isLeast_portEnergy (hw : ∀ p, 0 < w p) {F : Finset P}
 omit [DecidableEq P] in
 /-- **The capacity-cost product law.** -/
 theorem portCap_mul_minEnergy {F : Finset P} (hC : portCap w coef F ≠ 0) (z : ℂ) :
-    portCap w coef F * (‖z‖ ^ 2 / portCap w coef F) = ‖z‖ ^ 2 := by
+    portCap w coef F * (‖z‖ ^ (2 : ℕ) / portCap w coef F) = ‖z‖ ^ (2 : ℕ) := by
   field_simp
 
 end WeightedCapacity

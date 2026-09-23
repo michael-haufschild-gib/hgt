@@ -26,8 +26,8 @@ open Finset MeasureTheory
 
 /-- **The mean square minus its diagonal.** -/
 theorem integral_normSq_dirPoly_sub_diag (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)
+    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin N, ∑ n ∈ (Finset.univ : Finset (Fin N)).erase m,
           (a m * (starRingEnd ℂ) (a n))
             * (∫ t in (0 : ℝ)..T, Complex.exp (((t * (Real.log (((m : ℕ) : ℝ) + 1)
@@ -49,7 +49,7 @@ theorem integral_normSq_dirPoly_sub_diag (N : ℕ) (a : Fin N → ℂ) (T : ℝ)
   have hdiag : ∀ m : Fin N, (a m * (starRingEnd ℂ) (a m))
       * (∫ t in (0 : ℝ)..T, Complex.exp (((t * (Real.log (((m : ℕ) : ℝ) + 1)
           - Real.log (((m : ℕ) : ℝ) + 1)) : ℝ) : ℂ) * Complex.I))
-      = (T : ℂ) * ((‖a m‖ ^ 2 : ℝ) : ℂ) := by
+      = (T : ℂ) * ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro m
     rw [integral_dirPhase_diag ((m : ℕ)) T, mul_comm (a m) ((starRingEnd ℂ) (a m)),
       conj_mul_self]
@@ -59,8 +59,8 @@ theorem integral_normSq_dirPoly_sub_diag (N : ℕ) (a : Fin N → ℂ) (T : ℝ)
 
 /-- **The mean value theorem for Dirichlet polynomials, reduced to its off-diagonal sum.** -/
 theorem norm_integral_normSq_dirPoly_sub_diag_le (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)‖
+    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)‖
       ≤ ∑ m : Fin N, ∑ n ∈ (Finset.univ : Finset (Fin N)).erase m,
           ‖a m‖ * ‖a n‖
             * (2 / |Real.log (((m : ℕ) : ℝ) + 1) - Real.log (((n : ℕ) : ℝ) + 1)|) := by

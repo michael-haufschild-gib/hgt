@@ -32,7 +32,7 @@ def bernoulliComplexCell (s : ℂ) (m : ℕ) : ℂ :=
     (RHTower.bernoulliPeriodic x : ℂ) * (x : ℂ)^(-star s-2)
 
 private theorem cell_kernel_continuous : Continuous RHTower.bernoulliPeriodic := by
-  have hc : Continuous (fun x : ℝ => (x^2-x)/2) := by fun_prop
+  have hc : Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) := by fun_prop
   exact hc.continuousOn.comp_fract'' (by norm_num)
 
 private theorem cell_kernel_neg {m : ℕ} {x : ℝ}

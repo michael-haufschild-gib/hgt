@@ -68,7 +68,7 @@ theorem norm_evenSoninApertureLayer_apply_le {a b : ℝ} (hab : a ≤ b)
           ContinuousLinearMap.adjoint_inner_right (evenSoninApertureLayer a b)
             (evenSoninApertureLayer a b x) x
       _ = inner ℂ (evenSoninApertureLayer a b x) x := by rw [hidemx]
-  have hsq : ‖evenSoninApertureLayer a b x‖ ^ 2 =
+  have hsq : ‖evenSoninApertureLayer a b x‖ ^ (2 : ℕ) =
       ‖(inner ℂ (evenSoninApertureLayer a b x) x : ℂ)‖ := by
     rw [← hself, inner_self_eq_norm_sq_to_K]
     simp
@@ -77,7 +77,7 @@ theorem norm_evenSoninApertureLayer_apply_le {a b : ℝ} (hab : a ≤ b)
   rcases eq_or_lt_of_le (norm_nonneg (evenSoninApertureLayer a b x)) with h | h
   · rw [← h]
     exact norm_nonneg x
-  · have hle : ‖evenSoninApertureLayer a b x‖ ^ 2 ≤
+  · have hle : ‖evenSoninApertureLayer a b x‖ ^ (2 : ℕ) ≤
         ‖evenSoninApertureLayer a b x‖ * ‖x‖ := by
       rw [hsq]; exact hcs
     nlinarith [hle, h]

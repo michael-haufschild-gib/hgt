@@ -28,8 +28,8 @@ theorem two_mul_sqrt_succ_sub_two_le_sum (M : ℕ) :
     rw [Finset.sum_Icc_succ_top (by omega)]
     have hv : (0 : ℝ) ≤ Real.sqrt ((m : ℝ) + 1) := Real.sqrt_nonneg _
     have hw : (0 : ℝ) ≤ Real.sqrt ((m : ℝ) + 2) := Real.sqrt_nonneg _
-    have hv2 : Real.sqrt ((m : ℝ) + 1) ^ 2 = (m : ℝ) + 1 := Real.sq_sqrt (by positivity)
-    have hw2 : Real.sqrt ((m : ℝ) + 2) ^ 2 = (m : ℝ) + 2 := Real.sq_sqrt (by positivity)
+    have hv2 : Real.sqrt ((m : ℝ) + 1) ^ (2 : ℕ) = (m : ℝ) + 1 := Real.sq_sqrt (by positivity)
+    have hw2 : Real.sqrt ((m : ℝ) + 2) ^ (2 : ℕ) = (m : ℝ) + 2 := Real.sq_sqrt (by positivity)
     have hv1 : (1 : ℝ) ≤ Real.sqrt ((m : ℝ) + 1) := by nlinarith [hv, hv2]
     have hcast : ((m + 1 : ℕ) : ℝ) = (m : ℝ) + 1 := by push_cast; ring
     rw [hcast, show ((m : ℝ) + 1 + 1) = (m : ℝ) + 2 from by ring]
@@ -146,7 +146,7 @@ theorem sum_telescope_inv (J : ℕ) :
 
 /-- **The reciprocal squares of the odd numbers above one sum to at most `1/4`.** -/
 theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 ∣ d) :
-    ∑ d ∈ s, 1 / ((d : ℝ)) ^ 2 ≤ 1 / 4 := by
+    ∑ d ∈ s, 1 / ((d : ℝ)) ^ (2 : ℕ) ≤ 1 / 4 := by
   classical
   set t : Finset ℕ := s.image (fun d => (d - 1) / 2) with ht
   have hrec : ∀ d ∈ s, 2 * ((d - 1) / 2) + 1 = d := by
@@ -159,8 +159,8 @@ theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 �
     have h2 := hrec b hb
     simp only at hab
     omega
-  have hmapped : ∑ d ∈ s, 1 / ((d : ℝ)) ^ 2
-      = ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2 := by
+  have hmapped : ∑ d ∈ s, 1 / ((d : ℝ)) ^ (2 : ℕ)
+      = ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     rw [ht, Finset.sum_image hinj]
     refine Finset.sum_congr rfl fun d hd => ?_
     rw [hrec d hd]
@@ -174,7 +174,7 @@ theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 �
     rw [Finset.mem_Icc]
     omega
   have hterm : ∀ j ∈ Finset.Icc 1 J,
-      1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2 ≤ (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
+      1 / (((2 * j + 1 : ℕ) : ℝ)) ^ (2 : ℕ) ≤ (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
     intro j hj
     rw [Finset.mem_Icc] at hj
     have hj1 : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj.1
@@ -182,8 +182,8 @@ theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 �
     have hcast : (((2 * j + 1 : ℕ)) : ℝ) = 2 * (j : ℝ) + 1 := by push_cast; ring
     rw [hcast]
     rw [div_le_iff₀ (by positivity)]
-    have hexpand : (1 / 4 : ℝ) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) * (2 * (j : ℝ) + 1) ^ 2
-        = (2 * (j : ℝ) + 1) ^ 2 / (4 * (j : ℝ) * ((j : ℝ) + 1)) := by
+    have hexpand : (1 / 4 : ℝ) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) * (2 * (j : ℝ) + 1) ^ (2 : ℕ)
+        = (2 * (j : ℝ) + 1) ^ (2 : ℕ) / (4 * (j : ℝ) * ((j : ℝ) + 1)) := by
       field_simp
       ring
     rw [hexpand, le_div_iff₀ (by positivity)]
@@ -196,7 +196,7 @@ theorem sum_inv_sq_odd_le {s : Finset ℕ} (hs : ∀ d ∈ s, 3 ≤ d ∧ ¬ 2 �
     have : 1 / ((j : ℝ) + 1) ≤ 1 / (j : ℝ) :=
       one_div_le_one_div_of_le hj0 (by linarith)
     linarith
-  have hstep : ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ 2
+  have hstep : ∑ j ∈ t, 1 / (((2 * j + 1 : ℕ) : ℝ)) ^ (2 : ℕ)
       ≤ ∑ j ∈ Finset.Icc 1 J, (1 / 4) * (1 / (j : ℝ) - 1 / ((j : ℝ) + 1)) := by
     refine le_trans (Finset.sum_le_sum (fun j hj => hterm j (hsubset hj))) ?_
     exact Finset.sum_le_sum_of_subset_of_nonneg hsubset (fun j hj _ => hnn j hj)

@@ -79,7 +79,7 @@ theorem spectralReturnDeficit_eq_orbit_deficit {D : ℕ} (ρ : α ≃ Fin D)
     {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ} (heb : IsOrthoEigenBasis H e lam)
     (Ω : α → ℂ) (t : ℝ) :
     spectralReturnDeficit (fun i => lam (ρ.symm i)) (fun i => spectralWeights e Ω (ρ.symm i)) t
-      = 1 - ‖finiteComplexInner Ω (unitaryEvolution H t *ᵥ Ω)‖ ^ 2 := by
+      = 1 - ‖finiteComplexInner Ω (unitaryEvolution H t *ᵥ Ω)‖ ^ (2 : ℕ) := by
   rw [spectralReturnDeficit, spectralReturnAmplitude,
     finiteComplexInner_unitaryEvolution_eq_sum heb Ω t]
   congr 3
@@ -90,7 +90,7 @@ theorem spectralReturnDeficit_eq_orbit_deficit {D : ℕ} (ρ : α ≃ Fin D)
 
 /-- The first fidelity return of an orbit after a positive cutoff. -/
 def orbitFidelityReturnTime (H : Matrix α α ℂ) (Ω : α → ℂ) (t₀ δ : ℝ) : ℝ :=
-  sInf {t : ℝ | t₀ ≤ t ∧ 1 - ‖finiteComplexInner Ω (unitaryEvolution H t *ᵥ Ω)‖ ^ 2 < δ}
+  sInf {t : ℝ | t₀ ≤ t ∧ 1 - ‖finiteComplexInner Ω (unitaryEvolution H t *ᵥ Ω)‖ ^ (2 : ℕ) < δ}
 
 theorem orbitFidelityReturnTime_eq {D : ℕ} (ρ : α ≃ Fin D)
     {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ} (heb : IsOrthoEigenBasis H e lam)

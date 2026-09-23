@@ -17,7 +17,7 @@ open GaloisForLFunctions
 
 /-- Exact third-channel compensation omitted by the adaptive reserved lower margin. -/
 def c5CompletedAdaptiveResidualReserve (u t : ℝ) : ℝ :=
-  5 * t ^ 2 *
+  5 * t ^ (2 : ℕ) *
     (thetaCuspCompletedReflectedCumulantJetOne u t *
         (c5LikelihoodScaleMixedJetTwo u t -
           c5LikelihoodAdaptiveMasterCurvature u t) -

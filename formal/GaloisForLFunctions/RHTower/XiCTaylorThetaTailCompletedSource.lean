@@ -68,13 +68,13 @@ theorem xiCTaylorApprox_oddCutoff_eq_fullSource_truncatedCosine
     push_cast
     ring]
   rw [MeasureTheory.integral_finsetSum]
-  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) =
         ∑ k ∈ Finset.range (d + 1),
-          eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+          eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
             (C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) by
-      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))
           (∑ k ∈ Finset.range (d + 1),
             C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) = _
       rw [map_sum]
@@ -84,18 +84,18 @@ theorem xiCTaylorApprox_oddCutoff_eq_fullSource_truncatedCosine
     apply Finset.sum_congr rfl
     intro k _
     change ((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
-      (-z ^ 2) ^ k = _
+      (-z ^ (2 : ℕ)) ^ k = _
     rw [thetaCuspRawEvenCoefficient_eq_fullSource_complex_integral]
     calc
       (2 * ∫ x : ℝ in Ioi 0,
           ((x ^ (2 * k) * thetaCuspFullSource x : ℝ) : ℂ) /
-            (2 * k).factorial) * (-z ^ 2) ^ k =
+            (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k =
           2 * ((∫ x : ℝ in Ioi 0,
             ((x ^ (2 * k) * thetaCuspFullSource x : ℝ) : ℂ) /
-              (2 * k).factorial) * (-z ^ 2) ^ k) := by ring
+              (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k) := by ring
       _ = 2 * ∫ x : ℝ in Ioi 0,
           (((x ^ (2 * k) * thetaCuspFullSource x : ℝ) : ℂ) /
-            (2 * k).factorial) * (-z ^ 2) ^ k := by
+            (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k := by
         rw [MeasureTheory.integral_mul_const]
       _ = 2 * ∫ x : ℝ in Ioi 0,
           ((-1 : ℂ) ^ k * z ^ (2 * k)) *
@@ -172,10 +172,10 @@ component.  After the exact completion multiplier it is the actual next Xi Taylo
 the fixed central seam. -/
 theorem sq_mul_two_fullSource_coreAtom_integral_eq_completion_mul_taylor_sub_seam
     (d : ℕ) (z : ℂ) :
-    z ^ 2 *
+    z ^ (2 : ℕ) *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) * thetaCuspTailSecondCoreAtom d z x) =
-      (z ^ 2 + 1 / 4) * xiCTaylorApprox (2 * (d + 1) + 1) z -
+      (z ^ (2 : ℕ) + 1 / 4) * xiCTaylorApprox (2 * (d + 1) + 1) z -
         (1 / 4) * xiCTaylorApprox 1 0 := by
   have hfull : IntegrableOn (fun x : ℝ =>
       (thetaCuspFullSource x : ℂ)) (Ioi 0) := by
@@ -189,38 +189,38 @@ theorem sq_mul_two_fullSource_coreAtom_integral_eq_completion_mul_taylor_sub_sea
     have h := xiCTaylorApprox_oddCutoff_eq_fullSource_truncatedCosine 0 0
     simpa [truncatedCosineSection] using h
   calc
-    z ^ 2 *
+    z ^ (2 : ℕ) *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) * thetaCuspTailSecondCoreAtom d z x) =
       2 * ∫ x : ℝ in Ioi 0,
-        z ^ 2 * ((thetaCuspFullSource x : ℂ) *
+        z ^ (2 : ℕ) * ((thetaCuspFullSource x : ℂ) *
           thetaCuspTailSecondCoreAtom d z x) := by
             rw [MeasureTheory.integral_const_mul]
             ring
     _ = 2 * ∫ x : ℝ in Ioi 0,
         (thetaCuspFullSource x : ℂ) *
-          ((z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4) := by
+          ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4) := by
             congr 2
             funext x
             rw [← sq_mul_thetaCuspTailSecondCoreAtom_eq_completion_mul_cosine_sub]
             ring
-    _ = 2 * ((z ^ 2 + 1 / 4) *
+    _ = 2 * ((z ^ (2 : ℕ) + 1 / 4) *
           (∫ x : ℝ in Ioi 0,
             (thetaCuspFullSource x : ℂ) *
               truncatedCosineSection (d + 1) z x) -
         (1 / 4) * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ)) := by
             rw [show (fun x : ℝ => (thetaCuspFullSource x : ℂ) *
-                ((z ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4)) =
-              fun x : ℝ => (z ^ 2 + 1 / 4) *
+                ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection (d + 1) z x - 1 / 4)) =
+              fun x : ℝ => (z ^ (2 : ℕ) + 1 / 4) *
                   ((thetaCuspFullSource x : ℂ) *
                     truncatedCosineSection (d + 1) z x) -
                 (1 / 4) * (thetaCuspFullSource x : ℂ) by
               funext x
               ring]
-            rw [integral_sub (hcos.const_mul (z ^ 2 + 1 / 4))
+            rw [integral_sub (hcos.const_mul (z ^ (2 : ℕ) + 1 / 4))
               (hfull.const_mul (1 / 4)), integral_const_mul, integral_const_mul]
-    _ = (z ^ 2 + 1 / 4) * xiCTaylorApprox (2 * (d + 1) + 1) z -
+    _ = (z ^ (2 : ℕ) + 1 / 4) * xiCTaylorApprox (2 * (d + 1) + 1) z -
         (1 / 4) * xiCTaylorApprox 1 0 := by
           rw [hP, hP0]
           ring
@@ -345,9 +345,9 @@ theorem xiCTaylorThetaTailCorePolynomial_current_mul_I_neg
     xiCTaylorThetaTailCoreMagnitude_derivative_eval_pos d (sq_nonneg y)
   have hprod : 0 < 2 * y *
       (C (1 / 2) + (X - C (1 / 4)) *
-        thetaCuspTailEvenPolynomial d).derivative.eval (y ^ 2) *
+        thetaCuspTailEvenPolynomial d).derivative.eval (y ^ (2 : ℕ)) *
       (C (1 / 2) + (X - C (1 / 4)) *
-        thetaCuspTailEvenPolynomial d).eval (y ^ 2) := by
+        thetaCuspTailEvenPolynomial d).eval (y ^ (2 : ℕ)) := by
     positivity
   linarith
 
@@ -365,7 +365,7 @@ theorem xiCTaylorThetaTailCorePolynomial_eval_half_mul_I (d : ℕ) :
     (xiCTaylorThetaTailCorePolynomial d).eval ((1 / 2 : ℂ) * I) = 1 / 2 := by
   rw [xiCTaylorThetaTailCorePolynomial, evenMagnitudeLift_eval]
   simp only [eval₂_add, eval₂_C, eval₂_mul, eval₂_sub, eval₂_X]
-  rw [show -(((1 / 2 : ℂ) * I) ^ 2) = (1 / 4 : ℂ) by
+  rw [show -(((1 / 2 : ℂ) * I) ^ (2 : ℕ)) = (1 / 4 : ℂ) by
     rw [mul_pow, I_sq]
     ring]
   push_cast
@@ -378,7 +378,7 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval_half_mul_I (d : ℕ) :
       -I * (evenMagnitudeLift (thetaCuspTailEvenPolynomial d)).eval
         ((1 / 2 : ℂ) * I) := by
   rw [xiCTaylorThetaTailCorePolynomial_derivative_eval]
-  rw [show (((1 / 2 : ℂ) * I) ^ 2 + 1 / 4) = 0 by
+  rw [show (((1 / 2 : ℂ) * I) ^ (2 : ℕ) + 1 / 4) = 0 by
     rw [mul_pow, I_sq]
     ring]
   ring
@@ -393,7 +393,7 @@ theorem xiCTaylorThetaTailCorePolynomial_current_half_mul_I (d : ℕ) :
     xiCTaylorThetaTailCorePolynomial_derivative_eval_half_mul_I,
     xiCTaylorThetaTailCorePolynomial_eval_half_mul_I,
     evenMagnitudeLift_eval]
-  rw [show -(((1 / 2 : ℂ) * I) ^ 2) = (1 / 4 : ℂ) by
+  rw [show -(((1 / 2 : ℂ) * I) ^ (2 : ℕ)) = (1 / 4 : ℂ) by
     rw [mul_pow, I_sq]
     ring]
   rw [show (1 / 4 : ℂ) = algebraMap ℝ ℂ (1 / 4 : ℝ) by norm_num]

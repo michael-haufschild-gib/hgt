@@ -164,7 +164,7 @@ private abbrev nativeRadialSecond (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
 
 private abbrev nativeAngularSecond (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
     (p : ℝ × UpperHalfPlane) : ℂ :=
-  (p.2.im:ℂ)^2*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t p.1 X (Real.log p.2.im))) p.2.re +
+  (p.2.im:ℂ)^(2 : ℕ)*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t p.1 X (Real.log p.2.im))) p.2.re +
     deriv (deriv (fun k => nativeResidualTimePrimitive q s amplitude t p.1 p.2.re k)) (Real.log p.2.im) -
     deriv (fun k => nativeResidualTimePrimitive q s amplitude t p.1 p.2.re k) (Real.log p.2.im)
 
@@ -296,7 +296,7 @@ private theorem elliptic_product_pair (q : XiZeroCopy) (s amplitude : ℂ) (t : 
     conj (angularWeight p.1*(angularWeight p.1*f.field p.1))*conj (g.field p.2)*
       nativeAngularSecond q s amplitude t p =
     conj (f.field p.1)*conj (g.field p.2)*
-      (-nativeRadialSecond q s amplitude t p-nativeAngularSecond q s amplitude t p/(Real.cosh p.1:ℂ)^2)
+      (-nativeRadialSecond q s amplitude t p-nativeAngularSecond q s amplitude t p/(Real.cosh p.1:ℂ)^(2 : ℕ))
   simp only [map_mul]
   rw [show conj (angularWeight p.1) = angularWeight p.1 from Complex.conj_ofReal _]
   simp only [angularWeight,Complex.ofReal_inv,div_eq_mul_inv]

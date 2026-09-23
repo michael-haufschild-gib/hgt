@@ -34,21 +34,21 @@ remaining gate to "`λ` is a local biholomorphism" (`λ' ≠ 0`). -/
 def ThetaWronskian23 : Prop :=
   ∀ {τ : ℂ}, 0 < τ.im →
     deriv thetaTwo τ * thetaThree τ - thetaTwo τ * deriv thetaThree τ
-      = (π : ℂ) * I / 4 * (thetaTwo τ * thetaThree τ * thetaFour τ ^ 4)
+      = (π : ℂ) * I / 4 * (thetaTwo τ * thetaThree τ * thetaFour τ ^ (4 : ℕ))
 
 /-- **`λ'` in closed form (unconditional).** With `g = θ₂/θ₃` and `λ = g⁴`, the quotient and power
 rules give `λ'(τ) = 4·(θ₂/θ₃)³·(θ₂'θ₃ − θ₂θ₃')/θ₃²`. -/
 theorem hasDerivAt_modularLambda {τ : ℂ} (hτ : 0 < τ.im) :
     HasDerivAt modularLambda
-      (4 * (thetaTwo τ / thetaThree τ) ^ 3 *
-        ((deriv thetaTwo τ * thetaThree τ - thetaTwo τ * deriv thetaThree τ) / thetaThree τ ^ 2)) τ := by
+      (4 * (thetaTwo τ / thetaThree τ) ^ (3 : ℕ) *
+        ((deriv thetaTwo τ * thetaThree τ - thetaTwo τ * deriv thetaThree τ) / thetaThree τ ^ (2 : ℕ))) τ := by
   have h3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
   have hg : HasDerivAt (fun s => thetaTwo s / thetaThree s)
-      ((deriv thetaTwo τ * thetaThree τ - thetaTwo τ * deriv thetaThree τ) / thetaThree τ ^ 2) τ := by
+      ((deriv thetaTwo τ * thetaThree τ - thetaTwo τ * deriv thetaThree τ) / thetaThree τ ^ (2 : ℕ)) τ := by
     have hh := (hasDerivAt_thetaTwo hτ).div (hasDerivAt_thetaThree hτ) h3
     rwa [(hasDerivAt_thetaTwo hτ).deriv, (hasDerivAt_thetaThree hτ).deriv]
   have hp := hg.pow 4
-  rw [show modularLambda = (fun s => (thetaTwo s / thetaThree s) ^ 4) by
+  rw [show modularLambda = (fun s => (thetaTwo s / thetaThree s) ^ (4 : ℕ)) by
     funext s
     rfl]
   exact hp.congr_deriv (by norm_num)
@@ -57,7 +57,7 @@ theorem hasDerivAt_modularLambda {τ : ℂ} (hτ : 0 < τ.im) :
 (πi/4)θ₂θ₃θ₄⁴` into `hasDerivAt_modularLambda` and simplifying. -/
 theorem deriv_modularLambda_eq (hW : ThetaWronskian23) {τ : ℂ} (hτ : 0 < τ.im) :
     deriv modularLambda τ
-      = (π : ℂ) * I * thetaTwo τ ^ 4 * thetaFour τ ^ 4 / thetaThree τ ^ 4 := by
+      = (π : ℂ) * I * thetaTwo τ ^ (4 : ℕ) * thetaFour τ ^ (4 : ℕ) / thetaThree τ ^ (4 : ℕ) := by
   have h3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
   rw [(hasDerivAt_modularLambda hτ).deriv, hW hτ]
   field_simp
@@ -66,9 +66,9 @@ theorem deriv_modularLambda_eq (hW : ThetaWronskian23) {τ : ℂ} (hτ : 0 < τ.
 `θ₃⁴ = θ₂⁴ + θ₄⁴` to write `1 − λ = θ₄⁴/θ₃⁴`. -/
 theorem deriv_modularLambda_eq_lambda (hW : ThetaWronskian23) {τ : ℂ} (hτ : 0 < τ.im) :
     deriv modularLambda τ
-      = (π : ℂ) * I * thetaThree τ ^ 4 * modularLambda τ * (1 - modularLambda τ) := by
+      = (π : ℂ) * I * thetaThree τ ^ (4 : ℕ) * modularLambda τ * (1 - modularLambda τ) := by
   have h3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
-  have h1l : 1 - modularLambda τ = thetaFour τ ^ 4 / thetaThree τ ^ 4 := by
+  have h1l : 1 - modularLambda τ = thetaFour τ ^ (4 : ℕ) / thetaThree τ ^ (4 : ℕ) := by
     have hF := Bottcher2Cusp.quarticDefect_eq_zero hτ
     rw [quarticDefect] at hF
     rw [modularLambda, div_pow]

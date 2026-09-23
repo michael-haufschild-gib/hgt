@@ -27,7 +27,7 @@ theorem tsum_inner_integral_tube {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {s η : ℝ} (hsT : |s| ≤ T) (hηT : |η| ≤ T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     (∑' m : ℕ, ∫ t in (0 : ℝ)..η, tubeStep (V s t) (tubeIterate V m s t) z)
@@ -48,7 +48,7 @@ theorem tsum_outer_integral_tube {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     (∑' m : ℕ, ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η, tubeStep (V s t) (tubeIterate V m s t) z)
@@ -79,7 +79,7 @@ theorem tubeStep_tsum_tubeIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {s t : ℝ} (hsT : |s| ≤ T) (htT : |t| ≤ T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     tubeStep (V s t) (tubeSolution V s t) z = ∑' m : ℕ, tubeStep (V s t) (tubeIterate V m s t) z := by
@@ -101,8 +101,8 @@ theorem tubeStep_tsum_tubeIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     obtain ⟨holo, _⟩ := tubeIterate_regular hρ₀ hV m
     exact sliceHolo_mono (holo s t) hσρ₀.le
   have hbound : ∀ (m : ℕ), ∀ w ∈ tube k σ, ‖tubeIterate V m s t w‖
-      ≤ (4 * k + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro m w hw
     have hbase := tubeIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ s t hsT htT w
       fun i => (hw i).le
@@ -110,9 +110,9 @@ theorem tubeStep_tsum_tubeIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     refine hbase.trans ?_
     have hfacpos : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
     gcongr
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hGhalf : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
-  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ 2 / 4) (G := (ρ₀ - ρ) / 2)
+  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := (ρ₀ - ρ) / 2)
     (T := T) hK0 hGhalf hT hsmall
   have hdef : tubeSolution V s t = fun w => ∑' m : ℕ, tubeIterate V m s t w := rfl
   rw [hdef]
@@ -123,13 +123,13 @@ theorem tubeSolution_integral_equation {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     tubeSolution V ξ η z
       = 1 + ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η, tubeStep (V s t) (tubeSolution V s t) z := by
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   -- the weaker smallness condition, for the summability of the iterates
   have hsmall' := ovsyannikov_smallness_of_half_const hK0 hG hsmall
   have hsum := summable_tubeIterate hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall' hξT hηT hz
@@ -169,7 +169,7 @@ theorem continuous_clampedTubeStep {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     Continuous fun r : ℝ × ℝ => clampedTubeStep V T z r.1 r.2 := by
   have hzmem : z ∈ tube k ρ₀ := fun i => lt_of_le_of_lt (hz i) hρ
@@ -197,7 +197,7 @@ theorem continuousAt_tubeStep_tubeSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < �
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) {p : ℝ × ℝ} (hp1T : |p.1| < T) (hp2T : |p.2| < T) :
     ContinuousAt (fun r : ℝ × ℝ => tubeStep (V r.1 r.2) (tubeSolution V r.1 r.2) z) p := by
   refine ((continuous_clampedTubeStep hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall hz).continuousAt).congr ?_

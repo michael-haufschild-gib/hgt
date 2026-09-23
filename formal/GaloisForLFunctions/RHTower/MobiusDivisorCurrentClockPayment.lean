@@ -34,7 +34,7 @@ private lemma weighted_insert_nat (P : Finset ℕ) (hP : ∀q ∈ P,q.Prime)
         (1+Real.log r)*(r:ℝ)*mobiusDivisorInterpolatedFibre M r P ∅*
           mobiusDivisorInterpolatedFibre M (p*r) P ∅ =
       -(p:ℝ)*Real.log p*∑r ∈ fixedCoreSquarefreeIndices (insert p P) M,
-        (r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2 := by
+        (r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ) := by
   let Q : Finset Nat.Primes := P.attach.image (fun q => ⟨q.val,hP q.val q.property⟩)
   have he : (Q.erase ⟨p,hp⟩).image (fun q : Nat.Primes => (q:ℕ))=P := by
     ext q
@@ -97,8 +97,8 @@ private lemma weighted_two_insert (M : ℕ) (P : Finset ℕ) (hP : ∀q ∈ P,q.
     mobiusDivisorFiniteClockEnergy 1 M (insert p P)-mobiusDivisorFiniteClockEnergy 1 M P =
       -2*Real.sqrt p*(mobiusDivisorSelectionFibre M P ∅*mobiusDivisorInterpolatedFibre M p P ∅+
         (1+Real.log 2)*mobiusDivisorSelectionFibre M P {2}*mobiusDivisorInterpolatedFibre M p P {2})-
-      (p:ℝ)*Real.log p*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+      (p:ℝ)*Real.log p*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
   let S := fixedCoreSquarefreeIndices (insert p P) M
   have sub : ({1,2}:Finset ℕ) ⊆ S := by
     intro r hr
@@ -114,18 +114,18 @@ private lemma weighted_two_insert (M : ℕ) (P : Finset ℕ) (hP : ∀q ∈ P,q.
   have data (r : ℕ) (hr : r ∈ S) :
       (r:ℝ)*mobiusDivisorInterpolatedFibre M r P ∅*mobiusDivisorInterpolatedFibre M (p*r) P ∅ =
         mobiusDivisorSelectionFibre M P r.primeFactors*mobiusDivisorInterpolatedFibre M p P r.primeFactors  ∧ 
-      (r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2 =
-        (mobiusDivisorInterpolatedFibre M p P r.primeFactors)^2 := by
+      (r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ) =
+        (mobiusDivisorInterpolatedFibre M p P r.primeFactors)^(2 : ℕ) := by
     obtain ⟨hr,hs,hd⟩ := mem_filter.mp hr
     have h0 := (mem_Icc.mp hr).1
     rw [clipped_sample P M hp hpP h0 hs hd,
       fibre_sample P M hs (hd.mono_right (subset_insert _ _))]
-    have hmu : (((ArithmeticFunction.moebius r:ℤ):ℝ))^2=1 := by
+    have hmu : (((ArithmeticFunction.moebius r:ℤ):ℝ))^(2 : ℕ)=1 := by
       exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hs
     have hsqrt := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) r)
     constructor
     · calc
-        _ = (Real.sqrt r)^2*(((ArithmeticFunction.moebius r:ℤ):ℝ))^2*
+        _ = (Real.sqrt r)^(2 : ℕ)*(((ArithmeticFunction.moebius r:ℤ):ℝ))^(2 : ℕ)*
             mobiusDivisorInterpolatedFibre M r P ∅*mobiusDivisorInterpolatedFibre M (p*r) P ∅ := by
               rw [hsqrt,hmu]; ring
         _ = _ := by ring
@@ -159,10 +159,10 @@ private lemma weighted_two_insert (M : ℕ) (P : Finset ℕ) (hP : ∀q ∈ P,q.
     simp only [← mul_assoc] at hrw
     rw [hrw,reduce]
     simp
-  have diag : (∑r ∈ S,(r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2)=
-      (mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2 := by
+  have diag : (∑r ∈ S,(r:ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ))=
+      (mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ) := by
     rw [sum_congr rfl (fun r hr => (data r hr).2)]
-    have he := sum_subset sub (f:=fun r => (mobiusDivisorInterpolatedFibre M p P r.primeFactors)^2) (by
+    have he := sum_subset sub (f:=fun r => (mobiusDivisorInterpolatedFibre M p P r.primeFactors)^(2 : ℕ)) (by
       intro r hr hn
       have hs := (mem_filter.mp hr).2.1
       have hfac := Nat.prod_primeFactors_of_squarefree hs
@@ -177,12 +177,12 @@ private lemma weighted_two_insert (M : ℕ) (P : Finset ℕ) (hP : ∀q ∈ P,q.
   linarith only [h]
 
 private def clockPair (M : ℕ) (P : Finset ℕ) : ℝ :=
-  (mobiusDivisorSelectionFibre M P ∅)^2+
-    (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^2
+  (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+    (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)
 
 private def clockPacket (M p : ℕ) (P : Finset ℕ) : ℝ :=
-  (p:ℝ)*((1+Real.log p)*(mobiusDivisorInterpolatedFibre M p P ∅)^2+
-    (1+Real.log p+Real.log 2)*(mobiusDivisorInterpolatedFibre M p P {2})^2)
+  (p:ℝ)*((1+Real.log p)*(mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+    (1+Real.log p+Real.log 2)*(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))
 
 private lemma clock_pair_nonneg (M : ℕ) (P : Finset ℕ) : 0 ≤ clockPair M P := by
   have hl : 0 ≤ Real.log (2:ℝ) := Real.log_nonneg (by norm_num)
@@ -208,8 +208,8 @@ private lemma clock_insert_balance (M : ℕ) (P : Finset ℕ) (hP : ∀q ∈ P,q
   rw [mobiusDivisorSelectionFibre_insert_interpolation hp M P ∅ hpP (by simp),
     mobiusDivisorSelectionFibre_insert_interpolation hp M P {2} hpP (by simpa using hp2)]
   have hs := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) p)
-  linear_combination h-((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-    (1+Real.log 2)*(mobiusDivisorInterpolatedFibre M p P {2})^2)*hs
+  linear_combination h-((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+    (1+Real.log 2)*(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))*hs
 
 private lemma clock_union_balance (M : ℕ) (P L : Finset ℕ) (hP : ∀q ∈ P,q.Prime)
     (h2 : 2∉P) (hM : 2<M)
@@ -265,16 +265,16 @@ private lemma scaled_norm {v : ℝ × ℝ} {s : ℝ} (hs : 1 ≤ s) (hv : ‖v�
   · nlinarith only [hg,hs]
 
 private lemma weighted_radius (a b s t x y : ℝ) (hs : s ≠ 0) :
-    s^2*(planeDisplacementRadius (-a/s+x,-t*b/s+t*y))^2 =
-      (a-s*x)^2+t^2*(b-s*y)^2 := by
+    s^(2 : ℕ)*(planeDisplacementRadius (-a/s+x,-t*b/s+t*y))^(2 : ℕ) =
+      (a-s*x)^(2 : ℕ)+t^(2 : ℕ)*(b-s*y)^(2 : ℕ) := by
   rw [planeDisplacementRadius,Real.sq_sqrt (by positivity)]
   field_simp
   ring
 
 private lemma clock_packet_lower (M p : ℕ) (P : Finset ℕ) {d : ℝ}
     (_hd : 0<d) (hlog : Real.log (M:ℝ)/2 ≤ Real.log p)
-    (hr : d*(M:ℝ) ≤ (p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p P {2})^2))
+    (hr : d*(M:ℝ) ≤ (p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))
     (hM : 1 ≤ M) : d*(M:ℝ)*Real.log M/2 ≤ clockPacket M p P := by
   have hm : 0 ≤ Real.log (M:ℝ) := Real.log_nonneg (by exact_mod_cast hM)
   have htwo : 0 ≤ Real.log (2:ℝ) := Real.log_nonneg (by norm_num)
@@ -294,8 +294,8 @@ private lemma window_log_lower (M p : ℕ) (hM : 225 ≤ M) (hp : 0<p) (hq : M/p
   have hpR : (0:ℝ)<p := by exact_mod_cast hp
   have h := Real.log_le_log hMr (show (M:ℝ) ≤ 15*(p:ℝ) by exact_mod_cast hm.le)
   rw [Real.log_mul (by norm_num : (15:ℝ) ≠ 0) hpR.ne'] at h
-  have hsq := Real.log_le_log (by norm_num : (0:ℝ)<(15:ℝ)^2)
-    (show (15:ℝ)^2 ≤ (M:ℝ) by exact_mod_cast hM)
+  have hsq := Real.log_le_log (by norm_num : (0:ℝ)<(15:ℝ)^(2 : ℕ))
+    (show (15:ℝ)^(2 : ℕ) ≤ (M:ℝ) by exact_mod_cast hM)
   rw [Real.log_pow] at hsq
   norm_num only [Nat.cast_ofNat] at hsq
   linarith
@@ -326,18 +326,18 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
         let M := 14*(b+1)*N
         ∀ P : Finset ℕ,(∀p ∈ P,p.Prime)  →  mobiusDivisorCoupledTwoCore ⊆ P  →  2∉P  → 
           (∀p ∈ mobiusDivisorCoupledTwoPool b N,p∉P)  → 
-          (mobiusDivisorSelectionFibre M P ∅)^2+
-            (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^2 ≤ C*(M:ℝ)^2  → 
+          (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+            (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^(2 : ℕ) ≤ C*(M:ℝ)^(2 : ℕ)  → 
           ∃ l : List ℕ,l.Nodup  ∧  l.length=mobiusDivisorCoupledTwoCapacity b N-1  ∧ 
             l.toFinset ⊆ mobiusDivisorCoupledTwoPool b N  ∧ 
             (∀ k : ℕ,mobiusDivisorFiniteClockEnergy 1 M (P∪(l.take k).toFinset) ≤ 
-              mobiusDivisorFiniteClockEnergy 1 M P+R^2*M)  ∧ 
-            (mobiusDivisorSelectionFibre M (P∪l.toFinset) ∅)^2+
-              (1+Real.log 2)*(mobiusDivisorSelectionFibre M (P∪l.toFinset) {2})^2 ≤ R^2*M  ∧ 
+              mobiusDivisorFiniteClockEnergy 1 M P+R^(2 : ℕ)*M)  ∧ 
+            (mobiusDivisorSelectionFibre M (P∪l.toFinset) ∅)^(2 : ℕ)+
+              (1+Real.log 2)*(mobiusDivisorSelectionFibre M (P∪l.toFinset) {2})^(2 : ℕ) ≤ R^(2 : ℕ)*M  ∧ 
             mobiusDivisorFiniteClockEnergy 1 M (P∪l.toFinset)+
-              (mobiusDivisorSelectionFibre M P ∅)^2+
-              (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^2+
-              δ*(M:ℝ)^2 ≤ mobiusDivisorFiniteClockEnergy 1 M P := by
+              (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+              (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)+
+              δ*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorFiniteClockEnergy 1 M P := by
   obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   let t := Real.sqrt (1+Real.log (2:ℝ))
   have hlog2 : 0<Real.log (2:ℝ) := Real.log_pos (by norm_num)
@@ -345,16 +345,16 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     dsimp [t]
     rw [Real.le_sqrt (by norm_num) (by positivity)]
     nlinarith
-  have htsq : t^2=1+Real.log (2:ℝ) := Real.sq_sqrt (by positivity)
+  have htsq : t^(2 : ℕ)=1+Real.log (2:ℝ) := Real.sq_sqrt (by positivity)
   let B := 9*t
   have hB : 0<B := by dsimp [B]; positivity
-  let R := 4*B^2/c+2*B+c
+  let R := 4*B^(2 : ℕ)/c+2*B+c
   have hR : 0<R := by dsimp [R]; positivity
   let δ := d/(4*28*14*((b:ℝ)+1))
   have hδ : 0<δ := by dsimp [δ]; positivity
   refine ⟨b,R,δ,hb,hR,hδ,?_⟩
   intro C hC
-  let A := 4*Real.sqrt C/c+4*R^2/(d*Real.log 2)+1
+  let A := 4*Real.sqrt C/c+4*R^(2 : ℕ)/(d*Real.log 2)+1
   have hA : 0<A := by dsimp [A]; positivity
   filter_upwards [eventually_mobiusDivisorCoupledTwoCapacity_sub_one_ge_sqrt b (by omega) A hA,
     eventually_mobiusDivisorCoupledTwoCapacity_ge_logarithmic b (by omega),
@@ -368,7 +368,7 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     Real.log_le_log (by norm_num) (by exact_mod_cast (show 2 ≤ M by omega))
   let s := Real.sqrt (M:ℝ)
   have hs : 0<s := Real.sqrt_pos.mpr hMr
-  have hssq : s^2=M := Real.sq_sqrt hMr.le
+  have hssq : s^(2 : ℕ)=M := Real.sq_sqrt hMr.le
   have hs1 : 1 ≤ s := by
     dsimp [s]
     rw [Real.le_sqrt (by norm_num) hMr.le]
@@ -417,7 +417,7 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
       change s*(_/s)=_
       field_simp
   have physical (L : Finset ℕ) (hL : L ⊆ l.toFinset) :
-      clockPair M (P∪L)=(M:ℝ)*(planeDisplacementRadius (z L))^2 := by
+      clockPair M (P∪L)=(M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) := by
     have hchild : ∀p ∈ L,∀q ∈ L,p ≠ q → M/p+1 ≤ q := by
       intro p hp q hq _
       have := (pdata p (hL hp)).2.2.2.2
@@ -435,20 +435,20 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     unfold clockPair
     rw [ha,he]
     exact hr.symm
-  have initial : (M:ℝ)*(planeDisplacementRadius z0)^2=clockPair M P := by
+  have initial : (M:ℝ)*(planeDisplacementRadius z0)^(2 : ℕ)=clockPair M P := by
     have hh := physical ∅ (empty_subset _)
     simpa only [union_empty,z,sum_empty,add_zero] using hh.symm
   have hr0 : planeDisplacementRadius z0 ≤ Real.sqrt C*s := by
-    have hrE : (planeDisplacementRadius z0)^2 ≤ C*(M:ℝ) := by
-      change clockPair M P ≤ C*(M:ℝ)^2 at hpair
+    have hrE : (planeDisplacementRadius z0)^(2 : ℕ) ≤ C*(M:ℝ) := by
+      change clockPair M P ≤ C*(M:ℝ)^(2 : ℕ) at hpair
       nlinarith only [hpair,initial,hMr]
-    have he : (Real.sqrt C*s)^2=C*(M:ℝ) := by
+    have he : (Real.sqrt C*s)^(2 : ℕ)=C*(M:ℝ) := by
       rw [mul_pow,Real.sq_sqrt hC.le,hssq]
     nlinarith only [hrE,he,mul_nonneg (Real.sqrt_nonneg C) hs.le,
       show 0 ≤ planeDisplacementRadius z0 from Real.sqrt_nonneg _]
   have hdecay : planeDisplacementRadius z0-(n:ℝ)*c/4 ≤ 0 := by
     have hAroot : 4*Real.sqrt C/c ≤ A := by
-      have hh : 0 ≤ 4*R^2/(d*Real.log 2)+1 := by positivity
+      have hh : 0 ≤ 4*R^(2 : ℕ)/(d*Real.log 2)+1 := by positivity
       dsimp [A]
       linarith only [hh]
     have hh := mul_le_mul_of_nonneg_right hAroot hs.le
@@ -456,8 +456,8 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     have he : (4*Real.sqrt C/c*s)*c=4*(Real.sqrt C*s) := by field_simp
     rw [he] at hh'
     linarith only [hr0,hh']
-  have hpay : R^2 ≤ d/4*(n:ℝ)*Real.log M := by
-    have hAr : 4*R^2/(d*Real.log 2) ≤ A := by
+  have hpay : R^(2 : ℕ) ≤ d/4*(n:ℝ)*Real.log M := by
+    have hAr : 4*R^(2 : ℕ)/(d*Real.log 2) ≤ A := by
       have hh : 0 ≤ 4*Real.sqrt C/c+1 := by positivity
       dsimp [A]
       linarith only [hh]
@@ -482,7 +482,7 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     clock_packet_lower M p P hd
       (window_log_lower M p hM (pdata p hp).1.pos (pdata p hp).2.2.2.2)
       (hreserve p (hsub hp)).1 (by omega)
-  have endpoint : clockPair M (P∪l.toFinset) ≤ R^2*M := by
+  have endpoint : clockPair M (P∪l.toFinset) ≤ R^(2 : ℕ)*M := by
     have hr := hradius n le_rfl
     rw [← hlen,List.take_length,hlen] at hr
     have hrr : planeDisplacementRadius (z l.toFinset) ≤ R :=
@@ -490,7 +490,7 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     rw [physical _ Subset.rfl]
     have hh := (sq_le_sq₀ (Real.sqrt_nonneg _) hR.le).mpr hrr
     have hh' := mul_le_mul_of_nonneg_left hh hMr.le
-    change (M:ℝ)*(planeDisplacementRadius (z l.toFinset))^2 ≤ (M:ℝ)*R^2 at hh'
+    change (M:ℝ)*(planeDisplacementRadius (z l.toFinset))^(2 : ℕ) ≤ (M:ℝ)*R^(2 : ℕ) at hh'
     linarith only [hh']
   refine ⟨l,hnd,hlen,hsub,?_,endpoint,?_⟩
   · intro k
@@ -512,19 +512,19 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
       apply sum_nonneg
       intro p hp
       exact (show 0 ≤ d*(M:ℝ)*Real.log M/2 by positivity).trans (reserve p (hL hp))
-    change mobiusDivisorFiniteClockEnergy 1 M (P∪L) ≤ mobiusDivisorFiniteClockEnergy 1 M P+R^2*M
+    change mobiusDivisorFiniteClockEnergy 1 M (P∪L) ≤ mobiusDivisorFiniteClockEnergy 1 M P+R^(2 : ℕ)*M
     rw [physical L hL] at he
     rcases le_total R (planeDisplacementRadius z0) with hle|hle
     · rw [max_eq_right hle] at hr
       have hh := mul_le_mul_of_nonneg_left
         ((sq_le_sq₀ (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)).mpr hr) hMr.le
-      change (M:ℝ)*(planeDisplacementRadius (z L))^2 ≤
-        (M:ℝ)*(planeDisplacementRadius z0)^2 at hh
+      change (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) ≤
+        (M:ℝ)*(planeDisplacementRadius z0)^(2 : ℕ) at hh
       nlinarith only [he,hh,initial,hres,sq_nonneg R,hMr]
     · rw [max_eq_left hle] at hr
       have hh := mul_le_mul_of_nonneg_left
         ((sq_le_sq₀ (Real.sqrt_nonneg _) hR.le).mpr hr) hMr.le
-      change (M:ℝ)*(planeDisplacementRadius (z L))^2 ≤ (M:ℝ)*R^2 at hh
+      change (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) ≤ (M:ℝ)*R^(2 : ℕ) at hh
       nlinarith only [he,hh,hres,clock_pair_nonneg M P]
   · have he := energy l.toFinset Subset.rfl
     have hr := sum_le_sum (fun p hp => reserve p hp)
@@ -533,11 +533,11 @@ theorem eventually_exists_mobiusDivisorCurrentClockPayment :
     have hcount' := capacity_clock_payment b N (by omega) (by omega) htwo hcount
     change (N:ℝ) ≤ 28*(n:ℝ)*Real.log (M:ℝ) at hcount'
     have hmult := mul_le_mul_of_nonneg_left hcount' (show 0 ≤ d/4*(M:ℝ) by positivity)
-    have hδeq : δ*(M:ℝ)^2=d/4*(M:ℝ)*(N:ℝ)/28 := by
+    have hδeq : δ*(M:ℝ)^(2 : ℕ)=d/4*(M:ℝ)*(N:ℝ)/28 := by
       dsimp [δ,M]
       push_cast
       field_simp
-    change _+a^2+(1+Real.log 2)*e^2+δ*(M:ℝ)^2 ≤ _
+    change _+a^(2 : ℕ)+(1+Real.log 2)*e^(2 : ℕ)+δ*(M:ℝ)^(2 : ℕ) ≤ _
     rw [hδeq]
     dsimp only [clockPair] at he endpoint
     nlinarith only [he,hr,hp,endpoint,hmult]
@@ -552,19 +552,19 @@ theorem eventually_exists_mobiusDivisorInitialClockPayment :
         ∃ l : List ℕ,l.Nodup ∧ l.length=mobiusDivisorCoupledTwoCapacity b N-1 ∧
           l.toFinset ⊆ mobiusDivisorCoupledTwoPool b N ∧
           (∀ k : ℕ,mobiusDivisorFiniteClockEnergy 1 M (P∪(l.take k).toFinset) ≤
-            mobiusDivisorFiniteClockEnergy 1 M P+R^2*M) ∧
-          (mobiusDivisorSelectionFibre M (P∪l.toFinset) ∅)^2+
-            (1+Real.log 2)*(mobiusDivisorSelectionFibre M (P∪l.toFinset) {2})^2 ≤ R^2*M ∧
+            mobiusDivisorFiniteClockEnergy 1 M P+R^(2 : ℕ)*M) ∧
+          (mobiusDivisorSelectionFibre M (P∪l.toFinset) ∅)^(2 : ℕ)+
+            (1+Real.log 2)*(mobiusDivisorSelectionFibre M (P∪l.toFinset) {2})^(2 : ℕ) ≤ R^(2 : ℕ)*M ∧
           mobiusDivisorFiniteClockEnergy 1 M (P∪l.toFinset)+
-            (mobiusDivisorSelectionFibre M P ∅)^2+
-            (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^2+
-            δ*(M:ℝ)^2 ≤ mobiusDivisorFiniteClockEnergy 1 M P := by
+            (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+            (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)+
+            δ*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorFiniteClockEnergy 1 M P := by
   obtain ⟨b,R,δ,hb,hR,hδ,hproduce⟩ := eventually_exists_mobiusDivisorCurrentClockPayment
   let P := mobiusDivisorCoupledTwoCore
   let D : ℝ := (3/5:ℝ)*2^(P.card-1)
   have hD : 0<D := by dsimp [D]; positivity
   have hlog : 0<Real.log (2:ℝ) := Real.log_pos (by norm_num)
-  let C := (2+Real.log (2:ℝ))*D^2
+  let C := (2+Real.log (2:ℝ))*D^(2 : ℕ)
   have hC : 0<C := by dsimp [C]; positivity
   have hprime : ∀p∈P,p.Prime := fun p hp => (mem_filter.mp (mem_erase.mp hp).2).2
   refine ⟨b,R,δ,hb,hR,hδ,?_⟩
@@ -573,7 +573,7 @@ theorem eventually_exists_mobiusDivisorInitialClockPayment :
   have hM : 1≤M := by dsimp [M]; nlinarith
   have hMr : (1:ℝ)≤M := by exact_mod_cast hM
   have amplitude (S : Finset ℕ) (hS : ∀p∈S,p.Prime) :
-      (mobiusDivisorSelectionFibre M P S)^2 ≤ D^2*(M:ℝ) := by
+      (mobiusDivisorSelectionFibre M P S)^(2 : ℕ) ≤ D^(2 : ℕ)*(M:ℝ) := by
     have hh := abs_mobiusDivisorSelectionFibre_le_source_amplitude M P S hprime hS
     change |mobiusDivisorSelectionFibre M P S| ≤ D*Real.sqrt M at hh
     have hh' := (sq_le_sq₀ (abs_nonneg _) (show 0≤D*Real.sqrt M by positivity)).mpr hh
@@ -581,9 +581,9 @@ theorem eventually_exists_mobiusDivisorInitialClockPayment :
   have h0 := amplitude ∅ (by simp)
   have htwo := amplitude {2} (by simpa using Nat.prime_two)
   have hw := mul_le_mul_of_nonneg_left htwo (show 0≤1+Real.log (2:ℝ) by positivity)
-  have hpair : (mobiusDivisorSelectionFibre M P ∅)^2+
-      (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^2 ≤ C*(M:ℝ)^2 := by
-    have hsq : (M:ℝ)≤(M:ℝ)^2 := by nlinarith only [hMr]
+  have hpair : (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+      (1+Real.log 2)*(mobiusDivisorSelectionFibre M P {2})^(2 : ℕ) ≤ C*(M:ℝ)^(2 : ℕ) := by
+    have hsq : (M:ℝ)≤(M:ℝ)^(2 : ℕ) := by nlinarith only [hMr]
     have hh := mul_le_mul_of_nonneg_left hsq hC.le
     dsimp [C] at hh ⊢
     nlinarith only [h0,hw,hh]

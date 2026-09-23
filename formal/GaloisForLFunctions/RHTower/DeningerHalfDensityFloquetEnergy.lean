@@ -31,11 +31,11 @@ noncomputable section
 /-! ## The energy is quadratic -/
 
 theorem deningerFloquetTerm_smul (c : ℂ) (g : DeningerExpSchwartz) (q : ℕ) :
-    deningerFloquetTerm (c • g) q = ‖c‖ ^ 2 * deningerFloquetTerm g q := by
+    deningerFloquetTerm (c • g) q = ‖c‖ ^ (2 : ℕ) * deningerFloquetTerm g q := by
   have hfun : (fun t : ℝ => ‖deningerPeriodizationSum
-      (((c • g : DeningerExpSchwartz) : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ 2)
-      = fun t : ℝ => ‖c‖ ^ 2 * ‖deningerPeriodizationSum
-        ((g : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ 2 := by
+      (((c • g : DeningerExpSchwartz) : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ (2 : ℕ))
+      = fun t : ℝ => ‖c‖ ^ (2 : ℕ) * ‖deningerPeriodizationSum
+        ((g : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ (2 : ℕ) := by
     funext t
     have hcoe : (((c • g : DeningerExpSchwartz) : DeningerExpSchwartz) : 𝓢(ℝ, ℂ))
         = c • ((g : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) := rfl
@@ -45,7 +45,7 @@ theorem deningerFloquetTerm_smul (c : ℂ) (g : DeningerExpSchwartz) (q : ℕ) :
 
 /-- **The energy is quadratic.** -/
 theorem deningerFloquetEnergy_smul (c : ℂ) (g : DeningerExpSchwartz) :
-    deningerFloquetEnergy (c • g) = ‖c‖ ^ 2 * deningerFloquetEnergy g := by
+    deningerFloquetEnergy (c • g) = ‖c‖ ^ (2 : ℕ) * deningerFloquetEnergy g := by
   rw [deningerFloquetEnergy, deningerFloquetEnergy, ← tsum_mul_left]
   exact tsum_congr fun q => deningerFloquetTerm_smul c g (q : ℕ)
 
@@ -111,8 +111,8 @@ theorem deningerHalfDensityFloquetEnergy_nonneg (h : DeningerExpSchwartz) :
 /-- **`E_Fl` is finite and dominated by a Meyer seminorm.** -/
 theorem deningerHalfDensityFloquetEnergy_le (h : DeningerExpSchwartz) :
     deningerHalfDensityFloquetEnergy h
-      ≤ 25 * deningerMeyerSeminormFun 1 0 (deningerHalfDensityLift h) ^ 2
-        * ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ 2 :=
+      ≤ 25 * deningerMeyerSeminormFun 1 0 (deningerHalfDensityLift h) ^ (2 : ℕ)
+        * ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ (2 : ℕ) :=
   deningerFloquetEnergy_le _
 
 /-- The half-density lift kills only zero. -/
@@ -133,7 +133,7 @@ theorem deningerHalfDensityFloquetEnergy_eq_zero_iff (h : DeningerExpSchwartz) :
     exact deningerHalfDensityLift_zero
 
 theorem deningerHalfDensityFloquetEnergy_smul (c : ℂ) (h : DeningerExpSchwartz) :
-    deningerHalfDensityFloquetEnergy (c • h) = ‖c‖ ^ 2 * deningerHalfDensityFloquetEnergy h := by
+    deningerHalfDensityFloquetEnergy (c • h) = ‖c‖ ^ (2 : ℕ) * deningerHalfDensityFloquetEnergy h := by
   rw [deningerHalfDensityFloquetEnergy, deningerHalfDensityLift_smul, deningerFloquetEnergy_smul,
     deningerHalfDensityFloquetEnergy]
 
@@ -163,7 +163,7 @@ theorem deningerHalfDensityFloquetEnergy_centeredFlow (a : ℝ) (h : DeningerExp
     congr 3
     ring
   rw [hfac, deningerHalfDensityFloquetEnergy_smul, deningerHalfDensityFloquetEnergy_translate]
-  have hnorm : ‖((Real.exp (-(a / 2)) : ℝ) : ℂ)‖ ^ 2 = Real.exp (-a) := by
+  have hnorm : ‖((Real.exp (-(a / 2)) : ℝ) : ℂ)‖ ^ (2 : ℕ) = Real.exp (-a) := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul]
     congr 1
     ring

@@ -63,7 +63,7 @@ def xiHorizontalSourceCayleyFiberPencil
 Cayley depth. -/
 def xiHorizontalSourceCayleyResolvedEnergy (T : ℝ) (c : ℕ) : ℝ :=
   ∑ gamma ∈ (stripZeros_finite T).toFinset.image Complex.im,
-    ‖xiHorizontalSourceCayleyFiberPencil T gamma c‖ ^ 2
+    ‖xiHorizontalSourceCayleyFiberPencil T gamma c‖ ^ (2 : ℕ)
 
 /-- Three-depth source pencil.  Prime labels, both line-reflection orientations, local
 multiplicity, and the non-equivariant horizontal source phase are all retained. -/
@@ -180,9 +180,9 @@ energy, without yet averaging away horizontal source orientation. -/
 theorem tendsto_xiHorizontalCollisionPrimeCayleySourcePencil_verticalEnergy
     (T : ℝ) (c : ℕ) :
     Tendsto
-      (fun N : ℕ => ((N : ℝ)⁻¹ ^ 2) *
+      (fun N : ℕ => ((N : ℝ)⁻¹ ^ (2 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
-          ‖xiHorizontalCollisionPrimeCayleySourcePencil T a b c‖ ^ 2)
+          ‖xiHorizontalCollisionPrimeCayleySourcePencil T a b c‖ ^ (2 : ℕ))
       atTop (nhds (xiHorizontalSourceCayleyResolvedEnergy T c)) := by
   let G := (stripZeros_finite T).toFinset.image Complex.im
   have hlim := tendsto_finiteTwoPhasePencil_cesaro_norm_sq G
@@ -207,11 +207,11 @@ theorem tendsto_xiHorizontalSourceCayleyFiberPencil_cesaro_norm_sq
     (_hgamma : gamma ∈ (stripZeros_finite T).toFinset.image Complex.im) :
     Tendsto
       (fun M : ℕ => (M : ℝ)⁻¹ * ∑ c ∈ Finset.range M,
-        ‖xiHorizontalSourceCayleyFiberPencil T gamma c‖ ^ 2)
+        ‖xiHorizontalSourceCayleyFiberPencil T gamma c‖ ^ (2 : ℕ))
       atTop
       (nhds (∑ rho ∈ (stripZeros_finite T).toFinset.filter
         (fun rho => rho.im = gamma),
-          (((analyticOrderAt xi rho).toNat : ℝ) ^ 2))) := by
+          (((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ)))) := by
   let F := (stripZeros_finite T).toFinset.filter (fun rho => rho.im = gamma)
   have hinj : Set.InjOn xiHorizontalSourceCayleyPhase (F : Set ℂ) := by
     intro rho hrho sigma hsigma hphase
@@ -253,11 +253,11 @@ theorem tendsto_xiHorizontalSourceCayleyResolvedEnergy_cesaro
     push_cast
     symm
     change (∑ gamma ∈ G, ∑ rho ∈ S.filter (fun rho => rho.im = gamma),
-      ((analyticOrderAt xi rho).toNat : ℝ) ^ 2) =
-      ∑ rho ∈ S, ((analyticOrderAt xi rho).toNat : ℝ) ^ 2
+      ((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ)) =
+      ∑ rho ∈ S, ((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ)
     exact Finset.sum_fiberwise_of_maps_to
       (fun rho hrho => Finset.mem_image.mpr ⟨rho, hrho, rfl⟩)
-      (fun rho => ((analyticOrderAt xi rho).toNat : ℝ) ^ 2)
+      (fun rho => ((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ))
 
 /-- At depth zero, all horizontal rates are forgotten and the resolved energy is exactly the
 horizontal square census. -/

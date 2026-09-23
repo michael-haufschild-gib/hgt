@@ -17,15 +17,15 @@ helpers per insertion. Its relative order, bounded displacement and linear total
 theorem exists_planeDisplacement_prescribed_stream {ι : Type*} [DecidableEq ι]
     (v : ι → ℝ × ℝ) (U : Finset ι) (t : List ι) (K : ℕ) (z0 : ℝ × ℝ) (B c : ℝ)
     (hB : 0<B) (hc : 0<c) (hK : 2*B ≤ (K:ℝ)*c/4)
-    (hz : planeDisplacementRadius z0 ≤ 4*B^2/c+2*B+c)
+    (hz : planeDisplacementRadius z0 ≤ 4*B^(2 : ℕ)/c+2*B+c)
     (htnd : t.Nodup) (htv : ∀ p ∈ t,‖v p‖ ≤ B)
     (hUt : ∀ p ∈ U,p ∉ t) (hv : ∀ p ∈ U,‖v p‖ ≤ B)
     (hdir : ∀ L ⊆ U,L.card<K*t.length → ∀ z : ℝ × ℝ,
       ∃ p ∈ U,p ∉ L ∧ z.1*(v p).1+z.2*(v p).2 ≤ -c*‖z‖) :
     ∃ l : List ι,l.Nodup ∧ t.Sublist l ∧ l.length=(K+1)*t.length ∧
       l.toFinset ⊆ t.toFinset ∪ U ∧
-      (∀ k : ℕ,planeDisplacementRadius (z0+((l.take k).map v).sum) ≤ 4*B^2/c+4*B+c) ∧
-      planeDisplacementRadius (z0+(l.map v).sum) ≤ 4*B^2/c+2*B+c := by
+      (∀ k : ℕ,planeDisplacementRadius (z0+((l.take k).map v).sum) ≤ 4*B^(2 : ℕ)/c+4*B+c) ∧
+      planeDisplacementRadius (z0+(l.map v).sum) ≤ 4*B^(2 : ℕ)/c+2*B+c := by
   induction t generalizing U z0 with
   | nil =>
     refine ⟨[],by simp,by simp,by simp,by simp,?_,?_⟩

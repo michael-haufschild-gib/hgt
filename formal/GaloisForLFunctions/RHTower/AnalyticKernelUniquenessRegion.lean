@@ -114,7 +114,7 @@ def sectionQuadratic {r : ℕ} (v : Fin r → H) (c : Fin r → ℂ) : ℝ :=
   (inner ℂ (sectionSynthesis v c) (R.form (sectionSynthesis v c))).re
 
 theorem sectionQuadratic_smul {r : ℕ} (v : Fin r → H) (a : ℂ) (c : Fin r → ℂ) :
-    R.sectionQuadratic v (a • c) = ‖a‖ ^ 2 * R.sectionQuadratic v c := by
+    R.sectionQuadratic v (a • c) = ‖a‖ ^ (2 : ℕ) * R.sectionQuadratic v c := by
   simp [sectionQuadratic, sectionSynthesis_smul, map_smul]
   rw [← Complex.normSq_eq_norm_sq]
   simp [Complex.normSq_apply]
@@ -135,7 +135,7 @@ theorem isNegativeTuple_quadratic_neg {r : ℕ} {v : Fin r → H}
     rw [norm_smul, haNorm, inv_mul_cancel₀ hnorm]
   have hneg := hv (a • c) hunit
   rw [R.sectionQuadratic_smul v a c, haNorm] at hneg
-  have hfactor : 0 < ‖c‖⁻¹ ^ 2 := sq_pos_of_ne_zero (inv_ne_zero hnorm)
+  have hfactor : 0 < ‖c‖⁻¹ ^ (2 : ℕ) := sq_pos_of_ne_zero (inv_ne_zero hnorm)
   nlinarith
 
 /-- A strictly negative `r`-tuple consists of `r` linearly independent vectors. -/

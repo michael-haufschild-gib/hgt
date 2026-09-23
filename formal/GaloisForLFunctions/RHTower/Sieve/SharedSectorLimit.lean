@@ -21,7 +21,7 @@ open Finset Filter Topology
 /-- **The bilinear all-interval theorem at a moving pair of parameters.** -/
 def MRBilinearAt (f : ℕ → ℝ) (X hh : ℝ → ℝ) : Prop :=
   Tendsto (fun x => pairSum f (X x) (hh x) / (hh x * Real.sqrt (X x) * Real.log 2)
-      - (blockMean f (X x)) ^ 2) atTop (𝓝 0)
+      - (blockMean f (X x)) ^ (2 : ℕ)) atTop (𝓝 0)
 
 /-- The unrescaled interface is the moving one at the identity. -/
 theorem MRBilinear_iff (f : ℕ → ℝ) (hh : ℝ → ℝ) :
@@ -29,7 +29,7 @@ theorem MRBilinear_iff (f : ℕ → ℝ) (hh : ℝ → ℝ) :
 
 /-- The rescaled square root still grows. -/
 theorem tendsto_sqrt_div_sq {p : ℕ} (hp : 0 < p) :
-    Tendsto (fun x : ℝ => Real.sqrt (x / (p : ℝ) ^ 2)) atTop atTop := by
+    Tendsto (fun x : ℝ => Real.sqrt (x / (p : ℝ) ^ (2 : ℕ))) atTop atTop := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   have hbase : Tendsto (fun x : ℝ => Real.sqrt x / (p : ℝ)) atTop atTop :=
     Real.tendsto_sqrt_atTop.atTop_div_const hp0
@@ -39,7 +39,7 @@ theorem tendsto_sqrt_div_sq {p : ℕ} (hp : 0 < p) :
 
 /-- **The rescaled block mean.**  Card equation `(8)` at the rescaled scale. -/
 theorem tendsto_blockMean_coprime {p : ℕ} (hp : p.Prime) :
-    Tendsto (fun x : ℝ => blockMean (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ 2))
+    Tendsto (fun x : ℝ => blockMean (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ (2 : ℕ)))
       atTop (𝓝 (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))) := by
   have hbase := tendsto_window_coprime_squarefree_density hp
   exact hbase.comp (tendsto_sqrt_div_sq hp.pos)
@@ -47,25 +47,25 @@ theorem tendsto_blockMean_coprime {p : ℕ} (hp : p.Prime) :
 /-- **Card equation (9).**  The shared-prime sector has density `D²/(p+1)²`. -/
 theorem tendsto_sharedSector_of_MR {p : ℕ} (hp : p.Prime) {hh : ℝ → ℝ}
     (hMR : MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     Tendsto (fun x => sharedSectorCount x (hh x) p / (hh x * Real.sqrt x * Real.log 2))
-      atTop (𝓝 (squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2)) := by
+      atTop (𝓝 (squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ))) := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
   have hp1 : (0 : ℝ) < (p : ℝ) + 1 := by linarith
   have hmean := tendsto_blockMean_coprime hp
-  have hsq : Tendsto (fun x : ℝ => (blockMean (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ 2)) ^ 2)
-      atTop (𝓝 ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ 2)) := hmean.pow 2
+  have hsq : Tendsto (fun x : ℝ => (blockMean (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ (2 : ℕ))) ^ (2 : ℕ))
+      atTop (𝓝 ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ (2 : ℕ))) := hmean.pow 2
   have hadd := hMR.add hsq
   rw [zero_add] at hadd
   have hraw : Tendsto (fun x : ℝ =>
-      pairSum (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ 2) (hh x / (p : ℝ))
-        / (hh x / (p : ℝ) * Real.sqrt (x / (p : ℝ) ^ 2) * Real.log 2))
-      atTop (𝓝 ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ 2)) := by
+      pairSum (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ (2 : ℕ)) (hh x / (p : ℝ))
+        / (hh x / (p : ℝ) * Real.sqrt (x / (p : ℝ) ^ (2 : ℕ)) * Real.log 2))
+      atTop (𝓝 ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ (2 : ℕ))) := by
     refine hadd.congr fun x => ?_
     ring
-  have hscaled := hraw.const_mul (1 / (p : ℝ) ^ 2)
-  have hconst : (1 / (p : ℝ) ^ 2) * ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ 2)
-      = squarefreeDensity ^ 2 / ((p : ℝ) + 1) ^ 2 := by
+  have hscaled := hraw.const_mul (1 / (p : ℝ) ^ (2 : ℕ))
+  have hconst : (1 / (p : ℝ) ^ (2 : ℕ)) * ((squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) ^ (2 : ℕ))
+      = squarefreeDensity ^ (2 : ℕ) / ((p : ℝ) + 1) ^ (2 : ℕ) := by
     field_simp
   rw [hconst] at hscaled
   refine hscaled.congr' ?_
@@ -73,7 +73,7 @@ theorem tendsto_sharedSector_of_MR {p : ℕ} (hp : p.Prime) {hh : ℝ → ℝ}
   rw [← sharedSectorCount_eq_pairSum hx hp, sqrt_div_sq hx.le hp.pos]
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx
   rw [show hh x / (p : ℝ) * (Real.sqrt x / (p : ℝ)) * Real.log 2
-      = (hh x * Real.sqrt x * Real.log 2) / (p : ℝ) ^ 2 by ring]
+      = (hh x * Real.sqrt x * Real.log 2) / (p : ℝ) ^ (2 : ℕ) by ring]
   rw [div_div_eq_mul_div]
   field_simp
 

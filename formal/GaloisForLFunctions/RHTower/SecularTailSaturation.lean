@@ -31,7 +31,7 @@ root lies below it, the secular coordinate is dominated by the constraint coordi
 gap. -/
 theorem sq_secular_le_of_floor {ℓ d : ℕ → ℝ} {μ dinf : ℝ} {j : ℕ}
     (hsat : dinf ≤ d j) (hgap : μ < dinf) :
-    (ℓ j / (d j - μ)) ^ 2 ≤ (ℓ j) ^ 2 / (dinf - μ) ^ 2 := by
+    (ℓ j / (d j - μ)) ^ (2 : ℕ) ≤ (ℓ j) ^ (2 : ℕ) / (dinf - μ) ^ (2 : ℕ) := by
   have hd : 0 < dinf - μ := by linarith
   have hdj : dinf - μ ≤ d j - μ := by linarith
   have hdjpos : 0 < d j - μ := lt_of_lt_of_le hd hdj
@@ -44,32 +44,32 @@ turns Bessel summability of the constraint coordinates into summability of the s
 with no condition on the growth of the scale sequence. -/
 theorem summable_secular_of_floor {ℓ d : ℕ → ℝ} {μ dinf : ℝ}
     (hsat : ∀ j, dinf ≤ d j) (hgap : μ < dinf)
-    (hsum : Summable fun j => (ℓ j) ^ 2) :
-    Summable fun j => (ℓ j / (d j - μ)) ^ 2 := by
+    (hsum : Summable fun j => (ℓ j) ^ (2 : ℕ)) :
+    Summable fun j => (ℓ j / (d j - μ)) ^ (2 : ℕ) := by
   have hd : 0 < dinf - μ := by linarith
   refine Summable.of_nonneg_of_le (fun j => sq_nonneg _) (fun j => sq_secular_le_of_floor (hsat j) hgap) ?_
-  simpa [div_eq_mul_inv] using hsum.mul_right ((dinf - μ) ^ 2)⁻¹
+  simpa [div_eq_mul_inv] using hsum.mul_right ((dinf - μ) ^ (2 : ℕ))⁻¹
 
 /-- **The tail estimate.**  Under a leakage floor the secular tail is bounded by the constraint tail
 divided by the squared gap, so it inherits the Bessel decay directly. -/
 theorem tsum_secular_tail_le {ℓ d : ℕ → ℝ} {μ dinf : ℝ} (J : ℕ)
     (hsat : ∀ j, dinf ≤ d j) (hgap : μ < dinf)
-    (hsum : Summable fun j => (ℓ j) ^ 2) :
-    ∑' j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ 2
-      ≤ (∑' j : ℕ, (ℓ (j + J)) ^ 2) / (dinf - μ) ^ 2 := by
+    (hsum : Summable fun j => (ℓ j) ^ (2 : ℕ)) :
+    ∑' j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ (2 : ℕ)
+      ≤ (∑' j : ℕ, (ℓ (j + J)) ^ (2 : ℕ)) / (dinf - μ) ^ (2 : ℕ) := by
   have hd : 0 < dinf - μ := by linarith
-  have hshift : Summable fun j => (ℓ (j + J)) ^ 2 :=
+  have hshift : Summable fun j => (ℓ (j + J)) ^ (2 : ℕ) :=
     (summable_nat_add_iff J).mpr hsum
-  have hle : ∀ j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ 2
-      ≤ (ℓ (j + J)) ^ 2 / (dinf - μ) ^ 2 :=
+  have hle : ∀ j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ (2 : ℕ)
+      ≤ (ℓ (j + J)) ^ (2 : ℕ) / (dinf - μ) ^ (2 : ℕ) :=
     fun j => sq_secular_le_of_floor (hsat (j + J)) hgap
-  have hrhs : Summable fun j : ℕ => (ℓ (j + J)) ^ 2 / (dinf - μ) ^ 2 := by
-    simpa [div_eq_mul_inv] using hshift.mul_right ((dinf - μ) ^ 2)⁻¹
-  calc ∑' j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ 2
-      ≤ ∑' j : ℕ, (ℓ (j + J)) ^ 2 / (dinf - μ) ^ 2 :=
+  have hrhs : Summable fun j : ℕ => (ℓ (j + J)) ^ (2 : ℕ) / (dinf - μ) ^ (2 : ℕ) := by
+    simpa [div_eq_mul_inv] using hshift.mul_right ((dinf - μ) ^ (2 : ℕ))⁻¹
+  calc ∑' j : ℕ, (ℓ (j + J) / (d (j + J) - μ)) ^ (2 : ℕ)
+      ≤ ∑' j : ℕ, (ℓ (j + J)) ^ (2 : ℕ) / (dinf - μ) ^ (2 : ℕ) :=
         Summable.tsum_le_tsum hle
           (Summable.of_nonneg_of_le (fun j => sq_nonneg _) hle hrhs) hrhs
-    _ = (∑' j : ℕ, (ℓ (j + J)) ^ 2) / (dinf - μ) ^ 2 := by
+    _ = (∑' j : ℕ, (ℓ (j + J)) ^ (2 : ℕ)) / (dinf - μ) ^ (2 : ℕ) := by
         rw [← tsum_div_const]
 
 end RHTower

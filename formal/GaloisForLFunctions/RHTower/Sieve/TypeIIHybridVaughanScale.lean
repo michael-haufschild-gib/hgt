@@ -13,11 +13,11 @@ namespace RHTower.Sieve
 noncomputable section
 
 def typeIIHybridVaughanRootEnvelope (T r : ℝ) (A B U V : ℕ) : ℝ :=
-  Real.sqrt ((B : ℝ) ^ 2 / V)
-    + Real.sqrt (2000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B /
+  Real.sqrt ((B : ℝ) ^ (2 : ℕ) / V)
+    + Real.sqrt (2000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B /
         ((A : ℝ) * U))
-    + Real.sqrt (20 * Real.pi * (B : ℝ) ^ 3 / (T * r) * invSum B)
-    + Real.sqrt (2 * (B : ℝ) ^ 2 / U)
+    + Real.sqrt (20 * Real.pi * (B : ℝ) ^ (3 : ℕ) / (T * r) * invSum B)
+    + Real.sqrt (2 * (B : ℝ) ^ (2 : ℕ) / U)
 
 theorem typeIIHybridVaughanRootEnvelope_nonneg (T r : ℝ) (A B U V : ℕ) :
     0 ≤ typeIIHybridVaughanRootEnvelope T r A B U V := by
@@ -48,33 +48,33 @@ theorem typeIIHybridBlockRootEnvelope_le_vaughan_of_ne_zero {T r : ℝ}
   have hPdivV : (P : ℝ) ≤ (B : ℝ) / V := by
     rw [le_div_iff₀ hV0]
     exact hPV
-  let N : ℝ := 1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B
+  let N : ℝ := 1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B
   have hN0 : 0 ≤ N := by dsimp [N]; positivity
-  have h1 : (B : ℝ) * P ≤ (B : ℝ) ^ 2 / V := by
+  have h1 : (B : ℝ) * P ≤ (B : ℝ) ^ (2 : ℕ) / V := by
     have hB0 : 0 ≤ (B : ℝ) := Nat.cast_nonneg B
     calc
       (B : ℝ) * P ≤ (B : ℝ) * ((B : ℝ) / V) :=
         mul_le_mul_of_nonneg_left hPdivV hB0
-      _ = (B : ℝ) ^ 2 / V := by ring
+      _ = (B : ℝ) ^ (2 : ℕ) / V := by ring
   have h2raw : N / ((A : ℝ) * P) ≤ 2 * N / ((A : ℝ) * U) := by
     rw [div_le_div_iff₀ (mul_pos hA0 hP0) (mul_pos hA0 hU0)]
     have hAU : (A : ℝ) * U ≤ (A : ℝ) * (2 * P) :=
       mul_le_mul_of_nonneg_left hU2P (Nat.cast_nonneg A)
     have hmul := mul_le_mul_of_nonneg_left hAU hN0
     nlinarith
-  have h2 : 1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B /
+  have h2 : 1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B /
       ((A : ℝ) * P) ≤
-      2000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B / ((A : ℝ) * U) := by
+      2000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B / ((A : ℝ) * U) := by
     dsimp [N] at h2raw
     calc
-      1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B / ((A : ℝ) * P)
-          ≤ 2 * (1000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B) /
+      1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B / ((A : ℝ) * P)
+          ≤ 2 * (1000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B) /
               ((A : ℝ) * U) := h2raw
-      _ = 2000 * Real.sqrt (T * r) * (B : ℝ) ^ 2 * Real.sqrt B /
+      _ = 2000 * Real.sqrt (T * r) * (B : ℝ) ^ (2 : ℕ) * Real.sqrt B /
               ((A : ℝ) * U) := by ring
-  have h4 : (B : ℝ) ^ 2 / P ≤ 2 * (B : ℝ) ^ 2 / U := by
+  have h4 : (B : ℝ) ^ (2 : ℕ) / P ≤ 2 * (B : ℝ) ^ (2 : ℕ) / U := by
     rw [div_le_div_iff₀ hP0 hU0]
-    have hBsq : 0 ≤ (B : ℝ) ^ 2 := sq_nonneg _
+    have hBsq : 0 ≤ (B : ℝ) ^ (2 : ℕ) := sq_nonneg _
     nlinarith
   rw [typeIIHybridBlockRootEnvelope, typeIIHybridVaughanRootEnvelope]
   have hs1 := Real.sqrt_le_sqrt h1

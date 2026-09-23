@@ -36,7 +36,7 @@ theorem exp_mul_abs_thetaCuspPolynomialAtom_le_at_rate
     (hx : 0 ≤ x) {n : ℕ} (hn : 0 < n) :
     Real.exp (A * x) * |thetaCuspPolynomialAtom P n x| ≤
       thetaCuspGaussianConstant (X ^ N * P) *
-        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) := by
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hy : Real.exp x ≤ (n : ℝ) * Real.exp x := by
     nlinarith [Real.exp_pos x]
@@ -67,7 +67,7 @@ theorem thetaCuspFullSource_derivative_exp_bound_pos (A : ℝ) (k : ℕ) :
   obtain ⟨N, hN⟩ := exists_nat_gt A
   let P := thetaCuspLogDerivativePolynomial k
   refine ⟨thetaCuspGaussianConstant (X ^ N * P) *
-    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2), ?_⟩
+    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)), ?_⟩
   intro x hx
   have ha : Summable (fun n : ℕ => thetaCuspPolynomialAtom P n x) := by
     have h := summable_iteratedDeriv_thetaCuspSourceTerm k x
@@ -75,7 +75,7 @@ theorem thetaCuspFullSource_derivative_exp_bound_pos (A : ℝ) (k : ℕ) :
   have hn (n : ℕ) :
       Real.exp (A * x) * |thetaCuspPolynomialAtom P n x| ≤
         thetaCuspGaussianConstant (X ^ N * P) *
-          Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+          Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) := by
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · rw [show thetaCuspPolynomialAtom P 0 x = 0 from
         thetaCuspPolynomialAtom_derivative_zero k x]

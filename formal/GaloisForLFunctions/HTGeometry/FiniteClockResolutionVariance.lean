@@ -102,7 +102,7 @@ theorem nestedOrthogonalProjection_complement_energy_partition
     (P Q : E →L[𝕜] E)
     (hQadj : Q.adjoint = Q) (hQ2 : Q * Q = Q) (hQP : Q * P = P)
     (x : E) :
-    ‖(1 - P) x‖ ^ 2 = ‖(1 - Q) x‖ ^ 2 + ‖(Q - P) x‖ ^ 2 := by
+    ‖(1 - P) x‖ ^ (2 : ℕ) = ‖(1 - Q) x‖ ^ (2 : ℕ) + ‖(Q - P) x‖ ^ (2 : ℕ) := by
   have hQgap : Q ((Q - P) x) = (Q - P) x := by
     rw [← mul_apply_eq_comp]
     congr 1
@@ -135,10 +135,10 @@ theorem finiteClockResolution_energy_partition
     (U : E →L[𝕜] E) (d M : ℕ) (hM : M ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ (d * M) = 1)
     (x : E) :
-    ‖(1 - finiteCyclicGaugeAverage U (d * M)) x‖ ^ 2 =
-      ‖(1 - finiteCyclicGaugeAverage (U ^ d) M) x‖ ^ 2 +
+    ‖(1 - finiteCyclicGaugeAverage U (d * M)) x‖ ^ (2 : ℕ) =
+      ‖(1 - finiteCyclicGaugeAverage (U ^ d) M) x‖ ^ (2 : ℕ) +
         ‖(finiteCyclicGaugeAverage (U ^ d) M -
-          finiteCyclicGaugeAverage U (d * M)) x‖ ^ 2 := by
+          finiteCyclicGaugeAverage U (d * M)) x‖ ^ (2 : ℕ) := by
   let P : E →L[𝕜] E := finiteCyclicGaugeAverage U (d * M)
   let Q : E →L[𝕜] E := finiteCyclicGaugeAverage (U ^ d) M
   have hsubadjoint : (U ^ d).adjoint * U ^ d = 1 :=
@@ -170,7 +170,7 @@ theorem finiteClockResolution_observabilityVariance
           (inner 𝕜 ψ
             (finiteCyclicObservableTwirlKadisonDefect (U ^ d) X M ψ)) +
         ‖(finiteCyclicGaugeAverage (U ^ d) M -
-          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2 := by
+          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ (2 : ℕ) := by
   have hfullN : d * M ≠ 0 := Nat.mul_ne_zero hd hM
   have hsubadjoint : (U ^ d).adjoint * U ^ d = 1 :=
     adjoint_pow_mul_pow_eq_one_of_adjoint_mul_self U d hadjoint_mul

@@ -51,7 +51,7 @@ theorem kgFieldVel_zero_op (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
 /-- **The free field conserves the energy exactly**, so the constant one in the perturbed estimate
 cannot be improved. -/
 theorem kgFieldEnergy_zero_op (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad 0 g h t‖ ^ 2 + ‖kgFieldVel 0 g h t‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+    ‖kgFieldGrad 0 g h t‖ ^ (2 : ℕ) + ‖kgFieldVel 0 g h t‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
   have hstate : kgFieldState (0 : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E))
       g h t = kgPropagator t (kgPair E (g, h)) := by
     rw [kgFieldState, kgFieldGrad_zero_op, kgFieldVel_zero_op, kgPropagator_apply]
@@ -61,10 +61,10 @@ theorem kgFieldEnergy_zero_op (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     rw [hstate]
     exact norm_kgPropagator_apply t _
   have hsqL : ‖kgFieldState (0 : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E))
-        g h t‖ ^ 2
-      = ‖kgFieldGrad 0 g h t‖ ^ 2 + ‖kgFieldVel 0 g h t‖ ^ 2 := by
+        g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGrad 0 g h t‖ ^ (2 : ℕ) + ‖kgFieldVel 0 g h t‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldState, kgPair_fst, kgPair_snd]
-  have hsqR : ‖kgPair E (g, h)‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+  have hsqR : ‖kgPair E (g, h)‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd]
   rw [← hsqL, ← hsqR, hnorm]
 
@@ -293,20 +293,20 @@ theorem kgFieldStateT_eq_kgStateMildT (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r
 theorem kgFieldEnergyT_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ ≤ b)
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2
-      ≤ (‖g‖ ^ 2 + ‖h‖ ^ 2) * Real.exp (2 * (b * |t|)) := by
+    ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ)
+      ≤ (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) * Real.exp (2 * (b * |t|)) := by
   have hnorm : ‖kgFieldStateT W g h t‖ ≤ ‖kgPair E (g, h)‖ * Real.exp (b * |t|) := by
     rw [kgFieldStateT_eq_kgStateMildT hb0 hWb hWs g h]
     exact norm_kgStateMildT_le hb0 hWb hWs g h t
-  have hsqL : ‖kgFieldStateT W g h t‖ ^ 2
-      = ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2 := by
+  have hsqL : ‖kgFieldStateT W g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldStateT, kgPair_fst, kgPair_snd]
-  have hsqR : ‖kgPair E (g, h)‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+  have hsqR : ‖kgPair E (g, h)‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd]
   have hnn : (0 : ℝ) ≤ ‖kgFieldStateT W g h t‖ := norm_nonneg _
   have hsq := mul_self_le_mul_self hnn hnorm
   rw [← sq, ← sq, mul_pow, hsqL, hsqR] at hsq
-  have hexp : Real.exp (b * |t|) ^ 2 = Real.exp (2 * (b * |t|)) := by
+  have hexp : Real.exp (b * |t|) ^ (2 : ℕ) = Real.exp (2 * (b * |t|)) := by
     rw [two_mul, Real.exp_add, sq]
   rwa [hexp] at hsq
 

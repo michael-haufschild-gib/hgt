@@ -35,17 +35,17 @@ theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT_allHeights :
           moebiusTwist τ n *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ 2 * ((Real.exp (22 / 4) * (1 + 1 / (d - 1))) *
-              (C / H ^ 2 * (N + H + 1) ^ 2 * (N + H + 1) ^ d)) / U
+              (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) * (N + H + 1) ^ d)) / U
           + max M (routeTContourEdgeBound A (|τ| + U)) *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ d) / U ^ (0 + 1) *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ d) / U ^ (0 + 1) *
                 (d - routeTContourLeft A δ (|τ| + U))
           + max M (routeTContourEdgeBound A (|τ| + U)) *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ d) / U ^ (0 + 1) *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ d) / U ^ (0 + 1) *
                 (d - routeTContourLeft A δ (|τ| + U))
           + max M (routeTContourEdgeBound A (|τ| + U)) *
               (2 * ((N + H) ^ routeTContourLeft A δ (|τ| + U) /
                     routeTContourLeft A δ (|τ| + U))
-                + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+                + 2 * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
                     (N + H + 1) ^ routeTContourLeft A δ (|τ| + U))) := by
   obtain ⟨A, hA⟩ := exists_pole_bound
   obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1
@@ -184,17 +184,17 @@ noncomputable section
 /-- The right-hand side of the all-frequency Route-T rectangle bound. -/
 def routeTMoebiusAllHeightsSmoothBound (A C C' M δ N H τ U d : ℝ) : ℝ :=
   2 * ((Real.exp (22 / 4) * (1 + 1 / (d - 1))) *
-        (C / H ^ 2 * (N + H + 1) ^ 2 * (N + H + 1) ^ d)) / U
+        (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) * (N + H + 1) ^ d)) / U
     + max M (routeTContourEdgeBound A (|τ| + U)) *
-        (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ d) / U ^ (0 + 1) *
+        (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ d) / U ^ (0 + 1) *
           (d - routeTContourLeft A δ (|τ| + U))
     + max M (routeTContourEdgeBound A (|τ| + U)) *
-        (C' / H ^ 1 * (N + H + 1) ^ 1 * (N + H + 1) ^ d) / U ^ (0 + 1) *
+        (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) * (N + H + 1) ^ d) / U ^ (0 + 1) *
           (d - routeTContourLeft A δ (|τ| + U))
     + max M (routeTContourEdgeBound A (|τ| + U)) *
         (2 * ((N + H) ^ routeTContourLeft A δ (|τ| + U) /
               routeTContourLeft A δ (|τ| + U))
-          + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+          + 2 * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
               (N + H + 1) ^ routeTContourLeft A δ (|τ| + U)))
 
 /-- **The sharp twisted Mertens sum on the all-frequency Route-T contour.**  Removing the smoothing

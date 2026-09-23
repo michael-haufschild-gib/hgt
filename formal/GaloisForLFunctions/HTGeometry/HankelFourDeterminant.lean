@@ -6,9 +6,9 @@ set_option maxRecDepth 4096
 
 /-- Four-by-four Hankel determinant in scalar cofactor form. -/
 def hankelFourDet {K : Type*} [CommRing K] (a b c d e f g : K) : K :=
-  (a*c*e-a*d^2-b^2*e+2*b*c*d-c^3)*g -
-    ((c*e-d^2)*d^2 + 2*(c*d-b*e)*d*e + 2*(b*d-c^2)*d*f +
-      (a*e-c^2)*e^2 + 2*(b*c-a*d)*e*f + (a*c-b^2)*f^2)
+  (a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ))*g -
+    ((c*e-d^(2 : ℕ))*d^(2 : ℕ) + 2*(c*d-b*e)*d*e + 2*(b*d-c^(2 : ℕ))*d*f +
+      (a*e-c^(2 : ℕ))*e^(2 : ℕ) + 2*(b*c-a*d)*e*f + (a*c-b^(2 : ℕ))*f^(2 : ℕ))
 
 /-- Literal matrix determinant, with no nonzero or positivity premise. -/
 theorem det_hankelFour {K : Type*} [CommRing K] (a b c d e f g : K) :
@@ -24,7 +24,7 @@ theorem det_hankelFour {K : Type*} [CommRing K] (a b c d e f g : K) :
 /-- A correction to the last moment multiplies precisely the leading determinant. -/
 theorem hankelFourDet_last_add {K : Type*} [CommRing K] (a b c d e f g u : K) :
     hankelFourDet a b c d e f (g+u) = hankelFourDet a b c d e f g +
-      u*(a*c*e-a*d^2-b^2*e+2*b*c*d-c^3) := by
+      u*(a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ)) := by
   unfold hankelFourDet
   ring
 

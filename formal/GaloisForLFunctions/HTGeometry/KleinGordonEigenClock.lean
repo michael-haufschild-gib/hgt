@@ -88,9 +88,9 @@ theorem kgFieldEnergy_eigen_conserved_of_small_potential (hb0 : 0 ≤ b) (hb1 : 
     {k : ℂ} (g h : Lp ℂ 2 (volume : Measure E)) (hv : kgPair E (g, h) ≠ 0)
     (heig : kgMonodromy (fun _ : ℝ => W₀) b hb0 hWb hWs T (kgPair E (g, h))
       = k • kgPair E (g, h)) (n : ℕ) :
-    ‖kgFieldGradT (fun _ : ℝ => W₀) g h ((n : ℝ) * T)‖ ^ 2
-        + ‖kgFieldVelT (fun _ : ℝ => W₀) g h ((n : ℝ) * T)‖ ^ 2
-      = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+    ‖kgFieldGradT (fun _ : ℝ => W₀) g h ((n : ℝ) * T)‖ ^ (2 : ℕ)
+        + ‖kgFieldVelT (fun _ : ℝ => W₀) g h ((n : ℝ) * T)‖ ^ (2 : ℕ)
+      = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
   have hone : ‖k‖ = 1 :=
     norm_floquet_multiplier_eq_one_of_small_potential hb0 hb1 hW hsa hWb hWs g h hv heig
   rw [kgFieldEnergyT_eigen hb0 hWb hWs (periodic_const W₀ T) g h heig n, hone]
@@ -105,8 +105,8 @@ theorem kgFieldEnergy_eigen_conserved (hb0 : 0 ≤ b) (hb1 : b < 1) (hW : ‖W�
     {k : ℂ} (g h : Lp ℂ 2 (volume : Measure E)) (hv : kgPair E (g, h) ≠ 0)
     (heig : kgMonodromy (fun _ : ℝ => W₀) b hb0 hWb hWs T (kgPair E (g, h))
       = k • kgPair E (g, h)) (n : ℕ) :
-    ‖kgFieldGrad W₀ g h ((n : ℝ) * T)‖ ^ 2 + ‖kgFieldVel W₀ g h ((n : ℝ) * T)‖ ^ 2
-      = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+    ‖kgFieldGrad W₀ g h ((n : ℝ) * T)‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g h ((n : ℝ) * T)‖ ^ (2 : ℕ)
+      = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
   have hmain := kgFieldEnergy_eigen_conserved_of_small_potential hb0 hb1 hW hsa hWb hWs g h hv
     heig n
   rwa [kgFieldGradT_const, kgFieldVelT_const] at hmain

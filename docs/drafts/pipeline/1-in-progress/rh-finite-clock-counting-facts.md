@@ -30,7 +30,7 @@ still reports the four pre-existing unrelated unreachable modules:
 `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
 `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
 `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-`XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+`XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
 No umbrella or full build was run. Owned Lean processes exited; scratch Lean
 files were removed. Audit logs use `/tmp/hgt-finite-clock-counting-*`.
 

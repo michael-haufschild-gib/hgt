@@ -25,10 +25,10 @@ theorem jacobiSquaredCurvatureAcceleration_at_peak
     (x : JacobiSnPeakPoint J) :
     jacobiSquaredCurvatureAcceleration P.val J x.val =
       2 * P.val.modulus * (1 - P.val.modulus) := by
-  have hdn : J.dn x.val ^ 2 = 1 - P.val.modulus := by
+  have hdn : J.dn x.val ^ (2 : ℕ) = 1 - P.val.modulus := by
     nlinarith [J.dn_sq_add_m_sn_sq x.val, x.sn_sq]
   rw [jacobiSquaredCurvatureAcceleration, jacobiSnPeak_cn_zero J x]
-  rw [show (J.sn x.val * J.dn x.val) ^ 2 = J.sn x.val ^ 2 * J.dn x.val ^ 2 by ring,
+  rw [show (J.sn x.val * J.dn x.val) ^ (2 : ℕ) = J.sn x.val ^ (2 : ℕ) * J.dn x.val ^ (2 : ℕ) by ring,
     x.sn_sq, hdn]
   ring
 
@@ -95,21 +95,21 @@ theorem regionIIJacobiSquaredCurvatureAcceleration_at_peak
   have hgap : 1 - (regionIIComplementModulus P : ℝ) ≠ 0 :=
     ne_of_gt (sub_pos.mpr (regionIIComplementModulus P).property.2)
   have hprod : (1 - (regionIIComplementModulus P : ℝ)) *
-      jacobiSd J x.val ^ 2 = 1 := by
+      jacobiSd J x.val ^ (2 : ℕ) = 1 := by
     rw [hsd]
     field_simp [hgap]
   calc
     2 * (regionIIComplementModulus P : ℝ) *
         (1 - (regionIIComplementModulus P : ℝ)) *
-        (0 ^ 2 + jacobiSd J x.val *
+        (0 ^ (2 : ℕ) + jacobiSd J x.val *
           ((2 * (regionIIComplementModulus P : ℝ) - 1) * jacobiSd J x.val -
             2 * (regionIIComplementModulus P : ℝ) *
-              (1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ 3)) =
+              (1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ (3 : ℕ))) =
       2 * (regionIIComplementModulus P : ℝ) *
-        ((1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ 2) *
+        ((1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ (2 : ℕ)) *
         ((2 * (regionIIComplementModulus P : ℝ) - 1) -
           2 * (regionIIComplementModulus P : ℝ) *
-            ((1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ 2)) := by ring
+            ((1 - (regionIIComplementModulus P : ℝ)) * jacobiSd J x.val ^ (2 : ℕ))) := by ring
     _ = -2 * (regionIIComplementModulus P : ℝ) := by rw [hprod]; ring
 
 theorem regionIIJacobiAmplitudeAcceleration_at_peak

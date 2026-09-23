@@ -54,7 +54,7 @@ theorem hasDerivAt_resolventTrace_zero {K : ι × ι → ℂ} (hK : IsHS K) :
     funext n
     norm_num
   have hu : Summable (fun n : ℕ =>
-      (hsNorm K) ^ 2 * (((n : ℝ) + 1) * (r * hsNorm K) ^ n)) :=
+      (hsNorm K) ^ (2 : ℕ) * (((n : ℝ) + 1) * (r * hsNorm K) ^ n)) :=
     hgeom.mul_left _
   have hderiv := hasDerivAt_tsum_of_isPreconnected hu Metric.isOpen_ball
     (convex_ball (0 : ℂ) r).isPreconnected
@@ -69,7 +69,7 @@ theorem hasDerivAt_resolventTrace_zero {K : ι × ι → ℂ} (hK : IsHS K) :
         ((n : ℝ) + 1) * ‖z‖ ^ n * ‖∑' i, hsPow K (n + 1) (i, i)‖
             ≤ ((n : ℝ) + 1) * r ^ n * hsNorm K ^ (n + 2) := by
               gcongr
-        _ = hsNorm K ^ 2 * (((n : ℝ) + 1) * (r * hsNorm K) ^ n) := by
+        _ = hsNorm K ^ (2 : ℕ) * (((n : ℝ) + 1) * (r * hsNorm K) ^ n) := by
               rw [mul_pow]
               ring)
     (show (0 : ℂ) ∈ ball 0 r by simpa using hr0)

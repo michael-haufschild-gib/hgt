@@ -7,12 +7,12 @@ noncomputable section
 
 /-- The twelfth first-atom reflection jet has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_12_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^6*thetaCuspFirstAtomReflectionJet 12 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(6 : ℕ)*thetaCuspFirstAtomReflectionJet 12 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)))
       atTop (𝓝 (2724986880 : ℝ)) := by
-  let R (u : ℝ) := ((-491520 : ℝ)*u^7 + 1408303104*u^6 - 75547148288*u^5 +
-    603009318912*u^4 - 1280916848640*u^3 + 886529064960*u^2 -
-    239798845440*u + 43599790080) / (4-6*u)^2
+  let R (u : ℝ) := ((-491520 : ℝ)*u^(7 : ℕ) + 1408303104*u^(6 : ℕ) - 75547148288*u^(5 : ℕ) +
+    603009318912*u^(4 : ℕ) - 1280916848640*u^(3 : ℕ) + 886529064960*u^(2 : ℕ) -
+    239798845440*u + 43599790080) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -25,7 +25,7 @@ theorem thetaCuspFirstAtomReflectionJet_12_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -41,7 +41,7 @@ theorem thetaCuspFirstAtomReflectionJet_12_scaled_tendsto :
 theorem thetaCuspNativeScaledEvenJet_six_tendsto :
     Tendsto (thetaCuspNativeScaledEvenJet 6) atTop (𝓝 2724986880) := by
   have herr := ((thetaCuspNativeReflectionJet_firstAtom_error_scaled_tendsto_zero 0 12).mul
-    (thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero.pow 6)).const_mul ((-1 : ℝ)^6)
+    (thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero.pow 6)).const_mul ((-1 : ℝ)^(6 : ℕ))
   have h := thetaCuspFirstAtomReflectionJet_12_scaled_tendsto.add herr
   apply (show Tendsto _ atTop (𝓝 (2724986880 : ℝ)) from by simpa using h).congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
@@ -67,7 +67,7 @@ theorem thetaCuspNativeScaledEvenJet_zero_tendsto :
 /-- Every fixed center-flux coefficient is lower order than the twelfth source entry. -/
 theorem thetaCuspCenterCompensationSource_twelfth_scaled_tendsto_zero :
     Tendsto (fun x : ℝ => thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6))
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ)))
       atTop (𝓝 0) := by
   have h := thetaCuspCenterCompensationSource_scaled_tendsto_zero.mul
     thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero

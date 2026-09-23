@@ -311,7 +311,7 @@ theorem signedGammaProduct_shift {d : ℕ} (μ : Fin d → ℂ) (m : Fin d → �
 differential-algebraic witness (the telescoping half of the ADH dichotomy): if the total orbit charge
 `∑_j m_j` vanishes, then `∏_j Γ(s + n_j)^{m_j} = ∏_j (∏_{i<n_j}(s+i))^{m_j}` — a ratio of Pochhammer
 polynomials, hence a rational function of `s`, with all Gamma content cancelling.  Uses `gamma_add_nat`
-(`Γ(s+n) = Pochhammer·Γ(s)`) factorwise: the `Γ(s)^{m_j}` factors collect to `Γ(s)^{∑ m_j} = Γ(s)^0 = 1`.
+(`Γ(s+n) = Pochhammer·Γ(s)`) factorwise: the `Γ(s)^{m_j}` factors collect to `Γ(s)^{∑ m_j} = Γ(s)^(0 : ℕ) = 1`.
 A rational function is differentially algebraic, so this exhibits the charge-zero product as DA — no
 difference-Galois machinery needed for this direction. -/
 theorem signedGammaProduct_chargeZero_rational {d : ℕ} (nn : Fin d → ℕ) (m : Fin d → ℤ) (s : ℂ)

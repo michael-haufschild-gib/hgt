@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCharacteristicContact
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullCovectorModular
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalForcingProductBounds
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceCircleGrowth
 
 /-!
 # Global growth input for the literal native characteristic current
@@ -16,9 +17,10 @@ normal derivative interchange -> corrected-future cap coefficient -> HB B2`.
 
 open Set Filter Topology MeasureTheory UpperHalfPlane ModularGroup
 open GaloisForLFunctions.HTGeometry
+open scoped MatrixGroups
 namespace RHTower.D4BMNativeCircle
 open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse
-open D4BMOriginalForcingProductBounds
+open D4BMOriginalForcingProductBounds D4BMJointSource
 noncomputable section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
@@ -35,8 +37,8 @@ private theorem sourceField_modular (q : XiZeroCopy) (gradient : Bool)
     sourceField q gradient (coordinates (A • z)) =
       sourceField q gradient (coordinates z) := by
   cases gradient
-  · simpa only [sourceField, if_false] using fullSquarePotential_modular q A z
-  · simpa only [sourceField, if_true, mul_div_assoc] using
+  · simpa [sourceField] using fullSquarePotential_modular q A z
+  · simpa [sourceField, mul_div_assoc] using
       congrArg (fun w : ℂ => w / 2) (fullGradientEnergy_modular q A z)
 
 /-- The actual scalar Laplacian of the literal half-square is a modular
@@ -62,9 +64,9 @@ theorem scalarLaplacian_fullSquarePotential_modular (q : XiZeroCopy)
 private theorem principalExponent_re_le_sourceGrowth (q : XiZeroCopy) (i : Fin 3) :
     (principalExponent q i).re ≤ sourceGrowthExponent q := by
   fin_cases i <;>
-    simp only [principalExponent, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val,
-      sourceGrowthExponent, center, Complex.sub_re, Complex.ofReal_re, Complex.one_re,
-      Complex.mul_re, Complex.ofReal_im, Complex.one_im, mul_zero, sub_zero] <;>
+    simp [principalExponent, sourceGrowthExponent, D4BMGlobalAngularResponse.center,
+      Complex.sub_re, Complex.ofReal_re, Complex.one_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.one_im] <;>
     nlinarith [le_abs_self ((q.1 : ℂ).re - 1 / 2),
       neg_le_abs ((q.1 : ℂ).re - 1 / 2)]
 
@@ -92,7 +94,7 @@ private theorem sourcePrincipal_cusp_growth (q : XiZeroCopy) (branch gradient : 
       intro i _
       exact mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_exponent_le hz
-          ((principalExponent_re_le_sourceGrowth q i).trans hgamma))
+          ((principalExponent_re_le_sourceGrowth q i).trans hgamma.le))
         (norm_nonneg _)
     _ = C * (z 1) ^ gamma := by
       rw [Finset.sum_mul]
@@ -149,11 +151,11 @@ private theorem coordinates_continuous :
 private theorem sourceField_continuous (q : XiZeroCopy) (gradient : Bool) :
     Continuous (fun z : UpperHalfPlane => sourceField q gradient (coordinates z)) := by
   cases gradient
-  · simpa only [sourceField, if_false] using
+  · simpa [sourceField, Function.comp_def] using
       (continuous_iff_continuousAt.mpr (fun z =>
         (fullSquarePotential_smooth q _ z.im_pos 0).continuousAt.comp
           coordinates_continuous.continuousAt))
-  · simpa only [sourceField, if_true] using
+  · simpa [sourceField, Function.comp_def] using
       (continuous_iff_continuousAt.mpr (fun z =>
         ((fullGradientEnergy_smooth q _ z.im_pos).continuousAt.div_const 2).comp
           coordinates_continuous.continuousAt))
@@ -189,10 +191,9 @@ private theorem sourceField_global_growth (q : XiZeroCopy) (branch gradient : Bo
   · have hM : 1 ≤ max 1 (max z.im (1 / z.im)) := le_max_left _ _
     calc
       _ ≤ K := hK (A • z) ⟨hA, hy⟩
-      _ ≤ C := (le_max_right K D).trans (le_max_right 0 _)
-      _ ≤ C * (max 1 (max z.im (1 / z.im)) ^ gamma) := by
-        rw [← one_mul C]
-        exact mul_le_mul_of_nonneg_left (Real.one_le_rpow hM hgamma0) hC
+      _ ≤ C := (le_max_left K D).trans (le_max_right 0 _)
+      _ ≤ C * (max 1 (max z.im (1 / z.im)) ^ gamma) :=
+        le_mul_of_one_le_right hC (Real.one_le_rpow hM hgamma0)
   · have hy1 : 1 ≤ (A • z).im := (lt_of_not_ge hy).le
     have hM : (A • z).im ≤ max 1 (max z.im (1 / z.im)) :=
       hheight.trans (le_max_right _ _)
@@ -222,14 +223,16 @@ theorem scalarLaplacian_fullSquarePotential_global_growth_at (q : XiZeroCopy)
   intro z
   let M : ℝ := max 1 (max z.im (1 / z.im))
   have hsource' : ‖fullSquarePotential q (coordinates z)‖ ≤ A * M ^ gamma := by
-    simpa only [sourceField, if_false] using hsource z
+    exact hsource z
   have hgradient' : ‖fullGradientEnergy q (coordinates z)‖ ≤ 2 * B * M ^ gamma := by
     have h := hgradient z
     change ‖fullGradientEnergy q (coordinates z) / 2‖ ≤ B * M ^ gamma at h
-    rw [show fullGradientEnergy q (coordinates z) =
-        2 * (fullGradientEnergy q (coordinates z) / 2) by field_simp]
-    rw [norm_mul]
-    norm_num
+    have hnorm2 : ‖(2 : ℂ)‖ = 2 := by norm_num
+    have h2 : ‖fullGradientEnergy q (coordinates z)‖ =
+        2 * ‖fullGradientEnergy q (coordinates z) / 2‖ := by
+      rw [norm_div, hnorm2]
+      ring
+    rw [h2, mul_assoc]
     exact mul_le_mul_of_nonneg_left h (by norm_num)
   have hlap := fullSquarePotential_laplacian q false (coordinates z) z.im_pos
   change scalarLaplacian (fullSquarePotential q) (coordinates z) =
@@ -239,7 +242,7 @@ theorem scalarLaplacian_fullSquarePotential_global_growth_at (q : XiZeroCopy)
     ‖c * fullSquarePotential q (coordinates z) + fullGradientEnergy q (coordinates z)‖ ≤
         ‖c‖ * ‖fullSquarePotential q (coordinates z)‖ +
           ‖fullGradientEnergy q (coordinates z)‖ := by
-      rw [norm_mul]
+      rw [← norm_mul]
       exact norm_add_le _ _
     _ ≤ ‖c‖ * (A * M ^ gamma) + 2 * B * M ^ gamma :=
       add_le_add (mul_le_mul_of_nonneg_left hsource' (norm_nonneg _)) hgradient'
@@ -328,10 +331,10 @@ theorem angularAction_global_growth_at (q : XiZeroCopy) (X k gamma : ℝ)
     rw [← Real.exp_mul] at h
     rw [← hw]
     calc
-      _ ≤ D * Real.exp (gamma * (d + |k|)) := h
+      _ ≤ D * Real.exp ((d + |k|) * gamma) := h
       _ = C * Real.exp (gamma * d) := by
         dsimp only [C]
-        rw [← Real.exp_add]
+        rw [mul_assoc, ← Real.exp_add]
         congr 1
         ring
   have haction : angularAction q z X k =
@@ -377,7 +380,8 @@ theorem characteristicFirst_global_growth_at (q : XiZeroCopy) (X k gamma : ℝ)
           _ = K := rfl)
     simpa using h
   have hden : 1 ≤ ‖(z + 1 : ℂ)‖ := by
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+    rw [show ((z : ℂ) + 1) = (((z + 1 : ℝ)) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
     linarith
   unfold characteristicFirst
   calc

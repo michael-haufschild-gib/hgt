@@ -5,7 +5,7 @@ import Mathlib.Analysis.Real.Pi.Irrational
 /-!
 # Multiple-Gamma period-action analytic shadows
 
-This module isolates the analytic two-period family from the marked `Z^3` action presentation.
+This module isolates the analytic two-period family from the marked `Z^(3 : ℕ)` action presentation.
 It proves, without hypotheses, the finite depth-one phase, boundary depth-zero phase, and normalized
 even-rank reciprocal reflection law. Differential-field instances remain local to this module.
 -/

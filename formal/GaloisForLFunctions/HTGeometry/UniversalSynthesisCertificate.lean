@@ -63,7 +63,7 @@ theorem dist_eucVec_pullVec (E : d ≃ Fin K) (u v : Fin K → ℂ) :
     dist (eucVec (pullVec E u)) (eucVec (pullVec E v)) = dist (eucVec u) (eucVec v) := by
   rw [dist_eucVec, dist_eucVec]
   refine congrArg Real.sqrt ?_
-  exact Equiv.sum_comp E (fun r => ‖u r - v r‖ ^ 2)
+  exact Equiv.sum_comp E (fun r => ‖u r - v r‖ ^ (2 : ℕ))
 
 /-- The synthesis alphabet transported to an arbitrary finite register. -/
 def transportAct (E : d ≃ Fin K) (m : ℕ) :
@@ -94,10 +94,10 @@ section Certificate
 variable {d : Type} [Fintype d] [DecidableEq d]
 
 theorem sum_normSq_ofLp_eq_one {ψ : EuclideanSpace ℂ d} (hψ : ‖ψ‖ = 1) :
-    ∑ r, ‖WithLp.ofLp ψ r‖ ^ 2 = 1 := by
-  have h : Real.sqrt (∑ r, ‖WithLp.ofLp ψ r‖ ^ 2) = 1 := by
+    ∑ r, ‖WithLp.ofLp ψ r‖ ^ (2 : ℕ) = 1 := by
+  have h : Real.sqrt (∑ r, ‖WithLp.ofLp ψ r‖ ^ (2 : ℕ)) = 1 := by
     rw [← hψ, EuclideanSpace.norm_eq]
-  have hnn : (0 : ℝ) ≤ ∑ r, ‖WithLp.ofLp ψ r‖ ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ ∑ r, ‖WithLp.ofLp ψ r‖ ^ (2 : ℕ) := by positivity
   nlinarith [Real.sq_sqrt hnn, h]
 
 /-- **The uniform state-synthesis cap.**  Every finite register carries a finite gate alphabet and
@@ -118,7 +118,7 @@ theorem exists_universal_synthesis_certificate (d : Type) [Fintype d] [Decidable
   obtain ⟨w, hwlen, hwdist⟩ := hsynth (pushVec E (WithLp.ofLp ψ))
     (by
       rw [← sum_normSq_ofLp_eq_one hψ]
-      exact Equiv.sum_comp E.symm (fun i => ‖WithLp.ofLp ψ i‖ ^ 2))
+      exact Equiv.sum_comp E.symm (fun i => ‖WithLp.ofLp ψ i‖ ^ (2 : ℕ)))
   refine ⟨w, hwlen, ?_⟩
   rw [wordAct_transportAct, dist_comm]
   have hpull : eucVec (pullVec E (pushVec E (WithLp.ofLp ψ))) = ψ := by
@@ -156,7 +156,7 @@ theorem exists_orbit_synthesis_certificate (d : Type) [Fintype d] [DecidableEq d
         = Matrix.mulVec (unitaryEvolution H s) (WithLp.ofLp ψ) := rfl
     rw [hstep, finiteComplexInner_unitaryEvolution_self hH]
     have hcast : finiteComplexInner (WithLp.ofLp ψ) (WithLp.ofLp ψ)
-        = ((∑ r, ‖WithLp.ofLp ψ r‖ ^ 2 : ℝ) : ℂ) := by
+        = ((∑ r, ‖WithLp.ofLp ψ r‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [finiteComplexInner, Complex.ofReal_sum]
       refine Finset.sum_congr rfl fun r _ => ?_
       rw [← Complex.normSq_eq_conj_mul_self, Complex.sq_norm]

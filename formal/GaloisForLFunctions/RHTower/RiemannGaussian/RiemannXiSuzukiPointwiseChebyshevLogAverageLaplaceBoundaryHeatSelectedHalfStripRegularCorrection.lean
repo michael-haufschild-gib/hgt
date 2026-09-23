@@ -218,26 +218,26 @@ theorem tendsto_selectedHalfStripTopRegularCorrectionMajorant_zero
     Tendsto
       (fun n : ℕ =>
         Real.exp (-tau *
-            (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n)))
       atTop (𝓝 0) := by
   let C : ℝ := selectedHalfStripRegularCorrectionExponentialConstant
   let M : ℝ → ℝ := fun T =>
-    Real.exp (-tau * (x - T) ^ 2) * (C * Real.exp (4 * T))
+    Real.exp (-tau * (x - T) ^ (2 : ℕ)) * (C * Real.exp (4 * T))
   have hbase :=
     tendsto_exp_neg_quadratic_add_linear_atTop htau x 4 0
   have hscaled : Tendsto
       (fun T : ℝ => C *
-        Real.exp (-tau * (T - x) ^ 2 + 4 * T + 0))
+        Real.exp (-tau * (T - x) ^ (2 : ℕ) + 4 * T + 0))
       atTop (𝓝 0) := by
     simpa using hbase.const_mul C
   have hM : Tendsto M atTop (𝓝 0) := by
     apply hscaled.congr'
     filter_upwards with T
     dsimp [M]
-    rw [show -tau * (T - x) ^ 2 + 4 * T + 0 =
-      -tau * (x - T) ^ 2 + 4 * T by ring,
+    rw [show -tau * (T - x) ^ (2 : ℕ) + 4 * T + 0 =
+      -tau * (x - T) ^ (2 : ℕ) + 4 * T by ring,
       Real.exp_add]
     ring
   simpa [M, C, Function.comp_def] using
@@ -250,26 +250,26 @@ theorem tendsto_selectedHalfStripBottomRegularCorrectionMajorant_zero
     Tendsto
       (fun n : ℕ =>
         Real.exp (-tau *
-            (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n)))
       atTop (𝓝 0) := by
   let C : ℝ := selectedHalfStripRegularCorrectionExponentialConstant
   let M : ℝ → ℝ := fun T =>
-    Real.exp (-tau * (x + T) ^ 2) * (C * Real.exp (4 * T))
+    Real.exp (-tau * (x + T) ^ (2 : ℕ)) * (C * Real.exp (4 * T))
   have hbase :=
     tendsto_exp_neg_quadratic_add_linear_atTop htau (-x) 4 0
   have hscaled : Tendsto
       (fun T : ℝ => C *
-        Real.exp (-tau * (T - (-x)) ^ 2 + 4 * T + 0))
+        Real.exp (-tau * (T - (-x)) ^ (2 : ℕ) + 4 * T + 0))
       atTop (𝓝 0) := by
     simpa using hbase.const_mul C
   have hM : Tendsto M atTop (𝓝 0) := by
     apply hscaled.congr'
     filter_upwards with T
     dsimp [M]
-    rw [show -tau * (T - (-x)) ^ 2 + 4 * T + 0 =
-      -tau * (x + T) ^ 2 + 4 * T by ring,
+    rw [show -tau * (T - (-x)) ^ (2 : ℕ) + 4 * T + 0 =
+      -tau * (x + T) ^ (2 : ℕ) + 4 * T by ring,
       Real.exp_add]
     ring
   simpa [M, C, Function.comp_def] using
@@ -285,7 +285,7 @@ theorem norm_suzukiChebyshevLaplaceBoundaryHeatWeightedRegularCorrection_top_le
         ((a : ℂ) +
           (quantitativeSpectralBoundaryTruncation n : ℂ) * Complex.I)‖ ≤
       Real.exp (-tau *
-          (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by
   let T : ℝ := quantitativeSpectralBoundaryTruncation n
@@ -316,7 +316,7 @@ theorem norm_suzukiChebyshevLaplaceBoundaryHeatWeightedRegularCorrection_bottom_
           ((-quantitativeSpectralBoundaryTruncation n : ℝ) : ℂ) *
             Complex.I)‖ ≤
       Real.exp (-tau *
-          (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by
   let T : ℝ := quantitativeSpectralBoundaryTruncation n
@@ -348,14 +348,14 @@ theorem norm_separatedSelectedLaplaceRegularCorrectionTopBoundaryHeat_le_majoran
     (n : ℕ) (hn : 1 ≤ n) :
     ‖separatedSelectedLaplaceRegularCorrectionTopBoundaryHeat x tau n‖ ≤
       Real.exp (-tau *
-          (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by
   let l : ℝ := selectedLaplaceSeparatedLeftBoundary n
   let r : ℝ := selectedLaplaceSeparatedRightBoundary n
   let T : ℝ := quantitativeSpectralBoundaryTruncation n
   let C : ℝ := selectedHalfStripRegularCorrectionExponentialConstant
-  let M : ℝ := Real.exp (-tau * (x - T) ^ 2) *
+  let M : ℝ := Real.exp (-tau * (x - T) ^ (2 : ℕ)) *
     (C * Real.exp (4 * T))
   have hC0 : 0 ≤ C := by
     dsimp [C]
@@ -398,18 +398,18 @@ theorem norm_separatedSelectedLaplaceRegularCorrectionTopBoundaryHeat_le_majoran
             (quantitativeSpectralBoundaryTruncation n : ℂ) *
               Complex.I)‖ ≤
         (Real.exp (-tau *
-            (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n))) *
           |selectedLaplaceSeparatedRightBoundary n -
             selectedLaplaceSeparatedLeftBoundary n| := hIntegral
     _ ≤ (Real.exp (-tau *
-            (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n))) * 1 :=
       mul_le_mul_of_nonneg_left hwidth hM0
     _ = Real.exp (-tau *
-          (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by ring
 
@@ -420,14 +420,14 @@ theorem norm_separatedSelectedLaplaceRegularCorrectionBottomBoundaryHeat_le_majo
     (n : ℕ) (hn : 1 ≤ n) :
     ‖separatedSelectedLaplaceRegularCorrectionBottomBoundaryHeat x tau n‖ ≤
       Real.exp (-tau *
-          (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by
   let l : ℝ := selectedLaplaceSeparatedLeftBoundary n
   let r : ℝ := selectedLaplaceSeparatedRightBoundary n
   let T : ℝ := quantitativeSpectralBoundaryTruncation n
   let C : ℝ := selectedHalfStripRegularCorrectionExponentialConstant
-  let M : ℝ := Real.exp (-tau * (x + T) ^ 2) *
+  let M : ℝ := Real.exp (-tau * (x + T) ^ (2 : ℕ)) *
     (C * Real.exp (4 * T))
   have hC0 : 0 ≤ C := by
     dsimp [C]
@@ -469,18 +469,18 @@ theorem norm_separatedSelectedLaplaceRegularCorrectionBottomBoundaryHeat_le_majo
             ((-quantitativeSpectralBoundaryTruncation n : ℝ) : ℂ) *
               Complex.I)‖ ≤
         (Real.exp (-tau *
-            (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n))) *
           |selectedLaplaceSeparatedRightBoundary n -
             selectedLaplaceSeparatedLeftBoundary n| := hIntegral
     _ ≤ (Real.exp (-tau *
-            (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n))) * 1 :=
       mul_le_mul_of_nonneg_left hwidth hM0
     _ = Real.exp (-tau *
-          (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+          (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
         (selectedHalfStripRegularCorrectionExponentialConstant *
           Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) := by ring
 
@@ -494,7 +494,7 @@ theorem tendsto_separatedSelectedLaplaceRegularCorrectionTopBoundaryHeat_zero
     (show ∀ᶠ n : ℕ in atTop,
       ‖separatedSelectedLaplaceRegularCorrectionTopBoundaryHeat x tau n‖ ≤
         Real.exp (-tau *
-            (x - quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x - quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) by
       filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
@@ -513,7 +513,7 @@ theorem tendsto_separatedSelectedLaplaceRegularCorrectionBottomBoundaryHeat_zero
     (show ∀ᶠ n : ℕ in atTop,
       ‖separatedSelectedLaplaceRegularCorrectionBottomBoundaryHeat x tau n‖ ≤
         Real.exp (-tau *
-            (x + quantitativeSpectralBoundaryTruncation n) ^ 2) *
+            (x + quantitativeSpectralBoundaryTruncation n) ^ (2 : ℕ)) *
           (selectedHalfStripRegularCorrectionExponentialConstant *
             Real.exp (4 * quantitativeSpectralBoundaryTruncation n)) by
       filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn

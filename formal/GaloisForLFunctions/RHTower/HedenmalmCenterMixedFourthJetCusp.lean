@@ -115,7 +115,7 @@ theorem exists_thetaCuspCenterMixedCoalescedWall_pos_right_of_fourthJet
     (hfourth :
       0 < thetaCuspCenterMixedDensity a 0 *
           thetaCuspCenterMixedDensityFourthJet a 0 -
-        thetaCuspCenterMixedDensitySecondJet a 0 ^ 2) :
+        thetaCuspCenterMixedDensitySecondJet a 0 ^ (2 : ℕ)) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ y, 0 < y → y < δ →
       0 < HilbertMetric.threePointCoalescedWall
         (thetaCuspCenterMixedDensity a)
@@ -141,7 +141,7 @@ theorem exists_thetaCuspCenterMixed_coalescedCusp_posDef_of_fourthJet
     (hfourth :
       0 < thetaCuspCenterMixedDensity a 0 *
           thetaCuspCenterMixedDensityFourthJet a 0 -
-        thetaCuspCenterMixedDensitySecondJet a 0 ^ 2) :
+        thetaCuspCenterMixedDensitySecondJet a 0 ^ (2 : ℕ)) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ y : ℝ, 0 < y → y < δ →
       ∃ ε : ℝ, 0 < ε ∧ ∀ x : ℝ, 0 < x → x < ε →
         Matrix.PosDef (thetaCuspCenterMixedThreePointMatrix a x y) := by

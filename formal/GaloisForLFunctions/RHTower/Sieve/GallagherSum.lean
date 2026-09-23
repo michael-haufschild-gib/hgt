@@ -21,23 +21,23 @@ open Finset MeasureTheory
 /-- **Gallagher's bound over a separated family.** -/
 theorem gallagher_sum (N : ℕ) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ A : ℝ} (hδ : 0 < δ)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hA : A ≤ lam 0 - δ / 2) (R : ℕ) :
-    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2
-      ≤ (1 / δ) * (∫ t in A..(lam R + δ / 2), ‖expSum N c t‖ ^ 2)
+    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ t in A..(lam R + δ / 2), ‖expSum N c t‖ ^ (2 : ℕ))
         + (∫ t in A..(lam R + δ / 2),
             2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) := by
-  have hcont1 : Continuous (fun t : ℝ => ‖expSum N c t‖ ^ 2) :=
+  have hcont1 : Continuous (fun t : ℝ => ‖expSum N c t‖ ^ (2 : ℕ)) :=
     ((continuous_expSum N c).norm).pow 2
   have hcont2 : Continuous (fun t : ℝ =>
       2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) :=
     (continuous_const.mul (continuous_expSum N c).norm).mul
       (continuous_expSum N (derivCoeff N c)).norm
-  have hnn1 : ∀ t : ℝ, (0 : ℝ) ≤ ‖expSum N c t‖ ^ 2 := fun t => sq_nonneg _
+  have hnn1 : ∀ t : ℝ, (0 : ℝ) ≤ ‖expSum N c t‖ ^ (2 : ℕ) := fun t => sq_nonneg _
   have hnn2 : ∀ t : ℝ, (0 : ℝ) ≤ 2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖ := by
     intro t
     positivity
   have hterm : ∀ r ∈ Finset.range (R + 1),
-      ‖expSum N c (lam r)‖ ^ 2
-        ≤ (1 / δ) * (∫ t in (lam r - δ / 2)..(lam r + δ / 2), ‖expSum N c t‖ ^ 2)
+      ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+        ≤ (1 / δ) * (∫ t in (lam r - δ / 2)..(lam r + δ / 2), ‖expSum N c t‖ ^ (2 : ℕ))
           + (∫ t in (lam r - δ / 2)..(lam r + δ / 2),
               2 * ‖expSum N c t‖ * ‖expSum N (derivCoeff N c) t‖) :=
     fun r _ => gallagher_at_point N c (lam r) hδ

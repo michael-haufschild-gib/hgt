@@ -61,7 +61,7 @@ def sepSq (z w : ℂ) : ℝ := Complex.normSq (z - w)
 `(k,j)` to `İ` combine into a single nonpositive term. -/
 theorem energy_pair_identity (y₁ y₂ d : ℝ) (hd : d ≠ 0) :
     2 * y₁ * (-(2 * ((y₁ - y₂) / d))) + 2 * y₂ * (-(2 * ((y₂ - y₁) / d)))
-      = -4 * ((y₁ - y₂) ^ 2 / d) := by
+      = -4 * ((y₁ - y₂) ^ (2 : ℕ) / d) := by
   field_simp
   ring
 
@@ -72,16 +72,16 @@ theorem im_inv_eq (w : ℂ) :
   ring
 
 /-- Every ratio in the energy identity is at most one: `(y_j - y_k)² ≤ |z_j - z_k|²`. -/
-theorem ratio_le_one (z w : ℂ) : (z.im - w.im) ^ 2 ≤ sepSq z w := by
+theorem ratio_le_one (z w : ℂ) : (z.im - w.im) ^ (2 : ℕ) ≤ sepSq z w := by
   unfold sepSq
-  have h : Complex.normSq (z - w) = (z.re - w.re) ^ 2 + (z.im - w.im) ^ 2 := by
+  have h : Complex.normSq (z - w) = (z.re - w.re) ^ (2 : ℕ) + (z.im - w.im) ^ (2 : ℕ) := by
     simp [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]; ring
   nlinarith [sq_nonneg (z.re - w.re), h]
 
 /-- **The conjugate pair is extremal.**  For `z` and its conjugate the ratio equals `1`, because the
 two points share a real part. -/
 theorem ratio_conj_eq_one (z : ℂ) :
-    (z.im - (starRingEnd ℂ z).im) ^ 2 = sepSq z (starRingEnd ℂ z) := by
+    (z.im - (starRingEnd ℂ z).im) ^ (2 : ℕ) = sepSq z (starRingEnd ℂ z) := by
   unfold sepSq
   have him : (starRingEnd ℂ z).im = -z.im := Complex.conj_im z
   have hre : (starRingEnd ℂ z).re = z.re := Complex.conj_re z
@@ -106,11 +106,11 @@ theorem energy_ge_four_extinction {I₀ Lam : ℝ} (h : Lam ≤ I₀ / 4) : 4 * 
 
 /-- Specialization to a single conjugate pair: `I₀ = 2y₀²`, so the pair merges by `y₀²/2` — the
 estimate of the preceding module, now with no hypothesis on the remaining zeros. -/
-theorem single_pair_bound (y₀ : ℝ) : 2 * y₀ ^ 2 / 4 = y₀ ^ 2 / 2 := by ring
+theorem single_pair_bound (y₀ : ℝ) : 2 * y₀ ^ (2 : ℕ) / 4 = y₀ ^ (2 : ℕ) / 2 := by ring
 
 /-- Specialization to a single quadruple `½ ± a ± iγ`: four zeros each at squared deviation `a²`
 give `I₀ = 4a²`, hence `Λ ≤ a²`. -/
-theorem single_quadruple_bound (a : ℝ) : 4 * a ^ 2 / 4 = a ^ 2 := by ring
+theorem single_quadruple_bound (a : ℝ) : 4 * a ^ (2 : ℕ) / 4 = a ^ (2 : ℕ) := by ring
 
 /-- The Riemann hypothesis in energy form: the imaginary energy of the divisor vanishes.  Since the
 energy dominates `4Λ` and `Λ ≥ 0`, vanishing energy and vanishing extinction time are equivalent. -/

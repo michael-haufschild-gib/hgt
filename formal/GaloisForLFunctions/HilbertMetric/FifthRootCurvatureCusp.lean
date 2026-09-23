@@ -23,7 +23,7 @@ def fifthRootDividedDropCurvatureNumerator (f : ℝ → ℝ) (t : ℝ) : ℝ :=
   let A := f 0 - f t
   let f₁ := iteratedDeriv 1 f t
   let f₂ := iteratedDeriv 2 f t
-  24 * A ^ 2 + 9 * t * A * f₁ + t ^ 2 * (-5 * A * f₂ - 4 * f₁ ^ 2)
+  24 * A ^ (2 : ℕ) + 9 * t * A * f₁ + t ^ (2 : ℕ) * (-5 * A * f₂ - 4 * f₁ ^ (2 : ℕ))
 
 /-- Even profiles have an even fifth-root curvature numerator. -/
 theorem fifthRootDividedDropCurvatureNumerator_even
@@ -132,7 +132,7 @@ theorem iteratedDeriv_eight_fifthRootDividedDropCurvatureNumerator_zero
     (heven : Function.Even f) :
     iteratedDeriv 8 (fifthRootDividedDropCurvatureNumerator f) 0 =
       1120 * (iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-        iteratedDeriv 4 f 0 ^ 2) := by
+        iteratedDeriv 4 f 0 ^ (2 : ℕ)) := by
   let A : ℝ → ℝ := fun t => f 0 - f t
   let F₁ : ℝ → ℝ := iteratedDeriv 1 f
   let F₂ : ℝ → ℝ := iteratedDeriv 2 f
@@ -450,7 +450,7 @@ theorem exists_fifthRootDividedDropCurvatureNumerator_pos_right
     {f : ℝ → ℝ} (hf : ContDiff ℝ (↑(⊤ : ℕ∞)) f)
     (heven : Function.Even f)
     (hHankel : 0 < iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-      iteratedDeriv 4 f 0 ^ 2) :
+      iteratedDeriv 4 f 0 ^ (2 : ℕ)) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ t : ℝ, 0 < t → t < delta →
       0 < fifthRootDividedDropCurvatureNumerator f t := by
   let W := fifthRootDividedDropCurvatureNumerator f

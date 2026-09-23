@@ -72,15 +72,15 @@ theorem trace_star_mul_rankOneMat {A : Matrix α α ℂ} (hA : A.IsHermitian) (�
   show A x y * ((starRingEnd ℂ) (ψ x) * ψ y) = (starRingEnd ℂ) (ψ x) * (A x y * ψ y)
   ring
 
-theorem frobSq_rankOneMat (ψ : α → ℂ) (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1) :
+theorem frobSq_rankOneMat (ψ : α → ℂ) (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1) :
     frobSq (rankOneMat ψ) = 1 := by
-  have hterm : ∀ a b : α, ‖rankOneMat ψ a b‖ ^ 2 = ‖ψ b‖ ^ 2 * ‖ψ a‖ ^ 2 := by
+  have hterm : ∀ a b : α, ‖rankOneMat ψ a b‖ ^ (2 : ℕ) = ‖ψ b‖ ^ (2 : ℕ) * ‖ψ a‖ ^ (2 : ℕ) := by
     intro a b
     rw [rankOneMat, norm_mul, Complex.norm_conj, mul_pow]
-  calc frobSq (rankOneMat ψ) = ∑ a, ∑ b, ‖ψ b‖ ^ 2 * ‖ψ a‖ ^ 2 := by
+  calc frobSq (rankOneMat ψ) = ∑ a, ∑ b, ‖ψ b‖ ^ (2 : ℕ) * ‖ψ a‖ ^ (2 : ℕ) := by
         rw [frobSq]
         exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => hterm a b
-    _ = ∑ a, (∑ b, ‖ψ b‖ ^ 2) * ‖ψ a‖ ^ 2 := by
+    _ = ∑ a, (∑ b, ‖ψ b‖ ^ (2 : ℕ)) * ‖ψ a‖ ^ (2 : ℕ) := by
         exact Finset.sum_congr rfl fun a _ => (Finset.sum_mul _ _ _).symm
     _ = 1 := by
         simp only [hψ, one_mul]
@@ -99,7 +99,7 @@ theorem conj_matDiag {A : Matrix α α ℂ} (hA : A.IsHermitian) (ψ : α → �
   ring
 
 theorem matDiag_sq {A : Matrix α α ℂ} (hA : A.IsHermitian) (ψ : α → ℂ) :
-    (matDiag A ψ) ^ 2 = ((‖matDiag A ψ‖ ^ 2 : ℝ) : ℂ) := by
+    (matDiag A ψ) ^ (2 : ℕ) = ((‖matDiag A ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hmc := Complex.mul_conj (matDiag A ψ)
   rw [conj_matDiag hA] at hmc
   rw [← sq] at hmc
@@ -118,31 +118,31 @@ theorem bijective_pauliOf : Function.Bijective (pauliOf (n := n)) := by
 
 /-- **Parseval over Pauli labels at a unit state.** -/
 theorem sum_matDiag_pauliMat_sq (ψ : FiniteQubitConfiguration (Fin n) → ℂ)
-    (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1) :
-    (∑ v : PauliSymp n, (matDiag (pauliMat v) ψ) ^ 2) = (2 : ℂ) ^ n := by
+    (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1) :
+    (∑ v : PauliSymp n, (matDiag (pauliMat v) ψ) ^ (2 : ℕ)) = (2 : ℂ) ^ n := by
   classical
   have hherm : ∀ v : PauliSymp n, (pauliMat v).IsHermitian := fun v =>
     finitePauliMatrix_isHermitian _
   have hsq : ∀ v : PauliSymp n,
-      (matDiag (pauliMat v) ψ) ^ 2 = ((‖matDiag (pauliMat v) ψ‖ ^ 2 : ℝ) : ℂ) :=
+      (matDiag (pauliMat v) ψ) ^ (2 : ℕ) = ((‖matDiag (pauliMat v) ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
     fun v => matDiag_sq (hherm v) ψ
-  have hreal : (∑ v : PauliSymp n, ‖matDiag (pauliMat v) ψ‖ ^ 2) = (2 : ℝ) ^ n := by
+  have hreal : (∑ v : PauliSymp n, ‖matDiag (pauliMat v) ψ‖ ^ (2 : ℕ)) = (2 : ℝ) ^ n := by
     have hbij := bijective_pauliOf (n := n)
     have hterm : ∀ v : PauliSymp n,
-        ‖matDiag (pauliMat v) ψ‖ ^ 2 =
-          ‖Matrix.trace (star (pauliMat v) * rankOneMat ψ)‖ ^ 2 := by
+        ‖matDiag (pauliMat v) ψ‖ ^ (2 : ℕ) =
+          ‖Matrix.trace (star (pauliMat v) * rankOneMat ψ)‖ ^ (2 : ℕ) := by
       intro v
       rw [trace_star_mul_rankOneMat (hherm v) ψ]
-    have hbijsum : (∑ v : PauliSymp n, ‖Matrix.trace (star (pauliMat v) * rankOneMat ψ)‖ ^ 2) =
+    have hbijsum : (∑ v : PauliSymp n, ‖Matrix.trace (star (pauliMat v) * rankOneMat ψ)‖ ^ (2 : ℕ)) =
         ∑ P : Fin n → Option (Fin 3),
-          ‖Matrix.trace (star (finitePauliMatrix P) * rankOneMat ψ)‖ ^ 2 :=
+          ‖Matrix.trace (star (finitePauliMatrix P) * rankOneMat ψ)‖ ^ (2 : ℕ) :=
       Fintype.sum_bijective (pauliOf (n := n)) hbij _ _ fun v => rfl
     rw [Finset.sum_congr rfl fun v _ => hterm v, hbijsum,
       sum_normSq_trace_star_pauli_mul, frobSq_rankOneMat ψ hψ, mul_one, Fintype.card_fin]
-  calc (∑ v : PauliSymp n, (matDiag (pauliMat v) ψ) ^ 2)
-      = ∑ v : PauliSymp n, ((‖matDiag (pauliMat v) ψ‖ ^ 2 : ℝ) : ℂ) :=
+  calc (∑ v : PauliSymp n, (matDiag (pauliMat v) ψ) ^ (2 : ℕ))
+      = ∑ v : PauliSymp n, ((‖matDiag (pauliMat v) ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
         Finset.sum_congr rfl fun v _ => hsq v
-    _ = (((∑ v : PauliSymp n, ‖matDiag (pauliMat v) ψ‖ ^ 2 : ℝ)) : ℂ) := by
+    _ = (((∑ v : PauliSymp n, ‖matDiag (pauliMat v) ψ‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
         rw [Complex.ofReal_sum]
     _ = (2 : ℂ) ^ n := by
         rw [hreal]
@@ -169,11 +169,11 @@ theorem matDiag_stabProjector (hb : ∀ i j, symForm (b i) (b j) = 0) (ε : Fin 
 /-- **The sign average of the squared diagonal.** -/
 theorem sum_sign_matDiag_sq (hb : ∀ i j, symForm (b i) (b j) = 0)
     (ψ : FiniteQubitConfiguration (Fin n) → ℂ) :
-    (∑ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) ψ) ^ 2) =
-      ((2 : ℂ) ^ n)⁻¹ * ∑ S : Finset (Fin n), (matDiag (pauliMat (labSum b S)) ψ) ^ 2 := by
+    (∑ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) ψ) ^ (2 : ℕ)) =
+      ((2 : ℂ) ^ n)⁻¹ * ∑ S : Finset (Fin n), (matDiag (pauliMat (labSum b S)) ψ) ^ (2 : ℕ) := by
   classical
   have hpow : ((2 : ℂ) ^ n) ≠ 0 := pow_ne_zero n two_ne_zero
-  have hexp : ∀ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) ψ) ^ 2 =
+  have hexp : ∀ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) ψ) ^ (2 : ℕ) =
       ∑ S : Finset (Fin n), ∑ T : Finset (Fin n),
         (((2 : ℂ) ^ n)⁻¹ * ((2 : ℂ) ^ n)⁻¹) *
           ((signOf (∑ i ∈ S, ε i) * signOf (∑ i ∈ T, ε i)) *
@@ -205,7 +205,7 @@ theorem sum_sign_matDiag_sq (hb : ∀ i j, symForm (b i) (b j) = 0)
           ((signOf (∑ i ∈ S, ε i) * signOf (∑ i ∈ T, ε i)) *
             (stabSign b hb S * stabSign b hb T *
               (matDiag (pauliMat (labSum b S)) ψ * matDiag (pauliMat (labSum b T)) ψ)))) =
-      (if S = T then ((2 : ℂ) ^ n)⁻¹ * (matDiag (pauliMat (labSum b S)) ψ) ^ 2 else 0) := by
+      (if S = T then ((2 : ℂ) ^ n)⁻¹ * (matDiag (pauliMat (labSum b S)) ψ) ^ (2 : ℕ) else 0) := by
     intro S T
     have hfac : (∑ ε : Fin n → ZMod 2,
         (((2 : ℂ) ^ n)⁻¹ * ((2 : ℂ) ^ n)⁻¹) *
@@ -235,7 +235,7 @@ theorem sum_sign_matDiag_sq (hb : ∀ i j, symForm (b i) (b j) = 0)
             ring
         _ = ((2 : ℂ) ^ n)⁻¹ * (1 * (matDiag (pauliMat (labSum b S)) ψ *
               matDiag (pauliMat (labSum b S)) ψ)) := by rw [hcancel, hs]
-        _ = ((2 : ℂ) ^ n)⁻¹ * (matDiag (pauliMat (labSum b S)) ψ) ^ 2 := by ring
+        _ = ((2 : ℂ) ^ n)⁻¹ * (matDiag (pauliMat (labSum b S)) ψ) ^ (2 : ℕ) := by ring
     · rw [if_neg hST, if_neg hST, zero_mul]
   rw [Finset.sum_congr rfl fun S _ => Finset.sum_congr rfl fun T _ => hinner S T]
   rw [Finset.mul_sum]

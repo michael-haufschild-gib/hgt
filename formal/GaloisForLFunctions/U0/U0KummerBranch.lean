@@ -227,7 +227,7 @@ theorem u0_coherent_kummer_tower {b : ℂ}
       (hχ : ∀ k, AnalyticOnNhd ℂ (χ k) (ball (0 : ℂ) r)),
       (∀ k z, χ k z ≠ 0) ∧
       (∀ z ∈ ball (0 : ℂ) r, χ 0 z = psiN b N z) ∧
-      (∀ k, ∀ z ∈ ball (0 : ℂ) r, (χ (k + 1) z) ^ 2 = χ k z) ∧
+      (∀ k, ∀ z ∈ ball (0 : ℂ) r, (χ (k + 1) z) ^ (2 : ℕ) = χ k z) ∧
       (∀ k, ∀ z ∈ ball (0 : ℂ) r, (χ k z) ^ (2 ^ k) = psiN b N z) ∧
       (∀ k,
         letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
@@ -271,7 +271,7 @@ theorem u0_coherent_kummer_tower {b : ℂ}
     simpa using hfeq hz
   · -- coherence `(χ (k+1))² = χ k`
     intro k z _
-    show (Complex.exp (f z / 2 ^ (k + 1))) ^ 2 = Complex.exp (f z / 2 ^ k)
+    show (Complex.exp (f z / 2 ^ (k + 1))) ^ (2 : ℕ) = Complex.exp (f z / 2 ^ k)
     rw [← Complex.exp_nat_mul]
     congr 1
     have h2k : (2 : ℂ) ^ k ≠ 0 := pow_ne_zero k two_ne_zero

@@ -30,25 +30,25 @@ noncomputable section
 def xiWardCubicHardyBichamberCell (p u : ℂ) : ℂ := (p + u)⁻¹
 
 /-- Mixed external derivative of the bichamber Hardy cell. -/
-def xiWardCubicHardyMixedJet (p u : ℂ) : ℂ := 2 / (p + u) ^ 3
+def xiWardCubicHardyMixedJet (p u : ℂ) : ℂ := 2 / (p + u) ^ (3 : ℕ)
 
 /-- First external derivative of a resolved P-G197 Hardy column. -/
 theorem hasDerivAt_xiWardCubicHardyBichamberCell_left
     {p u : ℂ} (h : p + u ≠ 0) :
     HasDerivAt (fun z : ℂ => xiWardCubicHardyBichamberCell z u)
-      (-(p + u)⁻¹ ^ 2) p := by
+      (-(p + u)⁻¹ ^ (2 : ℕ)) p := by
   have hi := ((hasDerivAt_id p).add_const u).inv h
   simpa [xiWardCubicHardyBichamberCell, div_eq_mul_inv, inv_pow] using! hi
 
 /-- The second, independent-chamber derivative is the cubic Hardy jet. -/
 theorem hasDerivAt_xiWardCubicHardyCell_leftDerivative_right
     {p u : ℂ} (h : p + u ≠ 0) :
-    HasDerivAt (fun v : ℂ => -(p + v)⁻¹ ^ 2)
+    HasDerivAt (fun v : ℂ => -(p + v)⁻¹ ^ (2 : ℕ))
       (xiWardCubicHardyMixedJet p u) u := by
   have hi := ((hasDerivAt_const u p).add (hasDerivAt_id u)).inv h
   have hs := (hi.pow 2).neg
-  have hs' : HasDerivAt (fun v : ℂ => -(p + v)⁻¹ ^ 2)
-      (-(2 * (p + u)⁻¹ * (-1 / (p + u) ^ 2))) u := by
+  have hs' : HasDerivAt (fun v : ℂ => -(p + v)⁻¹ ^ (2 : ℕ))
+      (-(2 * (p + u)⁻¹ * (-1 / (p + u) ^ (2 : ℕ)))) u := by
     simpa using! hs
   apply hs'.congr_deriv
   rw [xiWardCubicHardyMixedJet]
@@ -72,8 +72,8 @@ def xiWardCubicResolvedHellingerTransform
 /-- External derivative column of the resolved Hellinger transform. -/
 def xiWardCubicResolvedHellingerExternalJet
     (p z zSharp : ℂ) : ℂ :=
-  (p + z)⁻¹ ^ 2 -
-    (p + xiWardCubicBichamberRightDouble z zSharp)⁻¹ ^ 2
+  (p + z)⁻¹ ^ (2 : ℕ) -
+    (p + xiWardCubicBichamberRightDouble z zSharp)⁻¹ ^ (2 : ℕ)
 
 /-- The cubic conormal transform is exactly the external derivative of the resolved P-G197
 column difference. -/
@@ -87,8 +87,8 @@ theorem hasDerivAt_xiWardCubicResolvedHellingerTransform
   have hsecond := hasDerivAt_xiWardCubicHardyBichamberCell_left hdouble
   have hsub := hfirst.sub hsecond
   have heq :
-      -(p + z)⁻¹ ^ 2 -
-          -(p + xiWardCubicBichamberRightDouble z zSharp)⁻¹ ^ 2 =
+      -(p + z)⁻¹ ^ (2 : ℕ) -
+          -(p + xiWardCubicBichamberRightDouble z zSharp)⁻¹ ^ (2 : ℕ) =
         -xiWardCubicResolvedHellingerExternalJet p z zSharp := by
     rw [xiWardCubicResolvedHellingerExternalJet]
     ring
@@ -144,7 +144,7 @@ theorem routePCollisionDoubledCubicGram_eq_xiWardCubicHardyMixedJet
     {N : ℕ} (R : ℝ) (a kappa : Fin N → ℝ)
     (x y : Fin N ⊕ Fin N) :
     routePCollisionDoubledCubicGram R a kappa x y =
-      (R : ℂ) ^ 3 * xiWardCubicHardyMixedJet
+      (R : ℂ) ^ (3 : ℕ) * xiWardCubicHardyMixedJet
         (routePCollisionDoubledNode R a kappa x)
         (star (routePCollisionDoubledNode R a kappa y)) := by
   rw [routePCollisionDoubledCubicGram_apply]

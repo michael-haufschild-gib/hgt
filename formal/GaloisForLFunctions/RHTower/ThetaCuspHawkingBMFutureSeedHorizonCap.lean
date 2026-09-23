@@ -20,14 +20,14 @@ set_option autoImplicit false
 
 /-- The actual limiting radial coefficient of the original seed. -/
 def seedTraceCoefficient (q : XiZeroCopy) (branch : Bool) (amp : ℂ) : ℂ :=
-  -parameter q branch*power (2*physicalRate q branch) 2*amp^2
+  -parameter q branch*power (2*physicalRate q branch) 2*amp^(2 : ℕ)
 
 private def seedProfile (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (u : ℝ) : ℂ :=
-  -parameter q branch*power (2*physicalRate q branch) (1+u)*amp^2*(u:ℂ)
+  -parameter q branch*power (2*physicalRate q branch) (1+u)*amp^(2 : ℕ)*(u:ℂ)
 
 private def seedFirstProfile (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (u : ℝ) : ℂ :=
-  -parameter q branch*power (2*physicalRate q branch) (1+u)*amp^2*
-    (2*physicalRate q branch*((u:ℂ)-1)*(u:ℂ)+((u:ℂ)^2-1))
+  -parameter q branch*power (2*physicalRate q branch) (1+u)*amp^(2 : ℕ)*
+    (2*physicalRate q branch*((u:ℂ)-1)*(u:ℂ)+((u:ℂ)^(2 : ℕ)-1))
 
 private theorem seed_profiles (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (y : ℝ) :
     sourceSeedField (physicalRate q branch) 0 amp 1 (parameter q branch) y=
@@ -48,11 +48,11 @@ private theorem profiles_continuousAt (q : XiZeroCopy) (branch : Bool) (amp : �
       (continuous_const.add continuous_id).continuousAt
   constructor
   · change ContinuousAt (fun v : ℝ => -parameter q branch*
-      power (2*physicalRate q branch) (1+v)*amp^2*(v:ℂ)) u
+      power (2*physicalRate q branch) (1+v)*amp^(2 : ℕ)*(v:ℂ)) u
     fun_prop
   · change ContinuousAt (fun v : ℝ => -parameter q branch*
-      power (2*physicalRate q branch) (1+v)*amp^2*
-        (2*physicalRate q branch*((v:ℂ)-1)*(v:ℂ)+((v:ℂ)^2-1))) u
+      power (2*physicalRate q branch) (1+v)*amp^(2 : ℕ)*
+        (2*physicalRate q branch*((v:ℂ)-1)*(v:ℂ)+((v:ℂ)^(2 : ℕ)-1))) u
     fun_prop
 
 private theorem unit_limit : Tendsto radialUnit atBot (𝓝 (1:ℝ)) := by

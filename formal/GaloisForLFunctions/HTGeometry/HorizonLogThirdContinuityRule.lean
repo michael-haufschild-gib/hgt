@@ -10,8 +10,8 @@ theorem continuousAt_log_third_form
     (hH : ContinuousAt H x) (hH₁ : ContinuousAt H₁ x)
     (hH₂ : ContinuousAt H₂ x) (hH₃ : ContinuousAt H₃ x)
     (hne : H x ≠ 0) :
-    ContinuousAt (fun y => H₃ y / H y - 3 * H₂ y * H₁ y / H y ^ 2 +
-      2 * H₁ y ^ 3 / H y ^ 3) x := by
+    ContinuousAt (fun y => H₃ y / H y - 3 * H₂ y * H₁ y / H y ^ (2 : ℕ) +
+      2 * H₁ y ^ (3 : ℕ) / H y ^ (3 : ℕ)) x := by
   have hthree : ContinuousAt (fun _ : X => (3 : ℝ)) x := continuousAt_const
   have htwo : ContinuousAt (fun _ : X => (2 : ℝ)) x := continuousAt_const
   have hm := ((hthree.mul hH₂).mul hH₁).div (hH.pow 2) (pow_ne_zero 2 hne)

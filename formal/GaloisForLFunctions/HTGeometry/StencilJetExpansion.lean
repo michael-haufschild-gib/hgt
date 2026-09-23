@@ -28,7 +28,7 @@ noncomputable section
 
 /-! ## A local affine chain rule for iterated derivatives -/
 
-theorem iteratedDeriv_iteratedDeriv (m j : ℕ) (f : ℂ → ℂ) :
+theorem iteratedDeriv_iteratedDeriv_stencilJetExpansion (m j : ℕ) (f : ℂ → ℂ) :
     iteratedDeriv m (iteratedDeriv j f) = iteratedDeriv (m + j) f := by
   induction j generalizing f with
   | zero => simp
@@ -144,7 +144,7 @@ theorem iteratedDeriv_stencilShiftProfile_zero {J : ℕ} {F : ℂ → ℂ} {W : 
     congr 1
     have haff := iteratedDeriv_comp_affine_on hW (analyticOnNhd_iteratedDeriv hF j) a (lam l) m
       (h := (0 : ℂ)) hmem
-    rw [haff, iteratedDeriv_iteratedDeriv]
+    rw [haff, iteratedDeriv_iteratedDeriv_stencilJetExpansion]
     simp
   rw [Finset.sum_congr rfl fun l _ => hone l, stencilMoment, Finset.sum_mul]
   refine Finset.sum_congr rfl fun l _ => ?_

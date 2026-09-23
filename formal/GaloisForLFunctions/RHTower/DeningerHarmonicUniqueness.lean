@@ -101,7 +101,7 @@ private theorem deningerGrowingPart_const (hμ : μ ≠ 0)
 theorem deningerSolution_growing_eq_zero (hμ : μ ≠ 0)
     (ha : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt a (-(Complex.I * (μ : ℂ) * b r)) r)
     (hb : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt b (Complex.I * (μ : ℂ) * a r) r)
-    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ 2 + ‖b r‖ ^ 2) (Ioi (0 : ℝ)))
+    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ (2 : ℕ) + ‖b r‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)))
     {r : ℝ} (hr : r ∈ Ioi (0 : ℝ)) : a r = Complex.I * (deningerFreqSign μ : ℂ) * b r := by
   by_contra hne
   have hv0 : deningerGrowingPart μ a b r ≠ 0 := by
@@ -126,7 +126,7 @@ theorem deningerSolution_growing_eq_zero (hμ : μ ≠ 0)
     rw [hnorm]
     nlinarith [norm_nonneg (deningerGrowingPart μ a b s), hprofile_le s hs,
       deningerModeProfile_pos μ s]
-  refine deningerNotIntegrable_of_pos_le (c := C ^ 2 / 2) (by positivity) hL2 ?_
+  refine deningerNotIntegrable_of_pos_le (c := C ^ (2 : ℕ) / 2) (by positivity) hL2 ?_
   intro s hs
   have hsign : ‖Complex.I * (deningerFreqSign μ : ℂ)‖ = 1 := by
     rw [norm_mul, Complex.norm_I, Complex.norm_real, Real.norm_eq_abs, one_mul,
@@ -144,7 +144,7 @@ theorem deningerSolution_growing_eq_zero (hμ : μ ≠ 0)
 theorem deningerSolution_eq_smul_mode (hμ : μ ≠ 0)
     (ha : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt a (-(Complex.I * (μ : ℂ) * b r)) r)
     (hb : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt b (Complex.I * (μ : ℂ) * a r) r)
-    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ 2 + ‖b r‖ ^ 2) (Ioi (0 : ℝ))) :
+    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ (2 : ℕ) + ‖b r‖ ^ (2 : ℕ)) (Ioi (0 : ℝ))) :
     ∃ c : ℂ, ∀ r ∈ Ioi (0 : ℝ), (a r, b r) = c • deningerMode μ r := by
   have hsq : (deningerFreqSign μ : ℂ) * (deningerFreqSign μ : ℂ) = 1 := by
     exact_mod_cast congrArg (fun x : ℝ => (x : ℂ)) (deningerFreqSign_sq μ)
@@ -155,7 +155,7 @@ theorem deningerSolution_eq_smul_mode (hμ : μ ≠ 0)
     intro r hr
     have h := deningerSolution_growing_eq_zero hμ ha hb hL2 hr
     linear_combination (Complex.I * (deningerFreqSign μ : ℂ)) * h
-      + (Complex.I ^ 2 * b r) * hsq + (b r) * Complex.I_sq
+      + (Complex.I ^ (2 : ℕ) * b r) * hsq + (b r) * Complex.I_sq
   -- the radial equation
   have hrad : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt a (-(((|μ| : ℝ) : ℂ) * a r)) r := by
     intro r hr
@@ -206,10 +206,10 @@ theorem deningerSolution_eq_smul_mode (hμ : μ ≠ 0)
 /-- **No nonzero square-integrable solution at zero frequency.** -/
 theorem deningerSolution_zeroFreq_eq_zero
     (ha : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt a 0 r) (hb : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt b 0 r)
-    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ 2 + ‖b r‖ ^ 2) (Ioi (0 : ℝ)))
+    (hL2 : IntegrableOn (fun r => ‖a r‖ ^ (2 : ℕ) + ‖b r‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)))
     {r : ℝ} (hr : r ∈ Ioi (0 : ℝ)) : a r = 0 ∧ b r = 0 := by
   by_contra hcon
-  have hpos : 0 < ‖a r‖ ^ 2 + ‖b r‖ ^ 2 := by
+  have hpos : 0 < ‖a r‖ ^ (2 : ℕ) + ‖b r‖ ^ (2 : ℕ) := by
     rcases not_and_or.mp hcon with h | h
     · have : 0 < ‖a r‖ := norm_pos_iff.mpr h
       nlinarith [norm_nonneg (b r)]

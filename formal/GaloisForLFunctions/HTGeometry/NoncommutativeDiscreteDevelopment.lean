@@ -20,15 +20,15 @@ open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry.NoncommutativeAbel
 variable {A : Type*} [NormedRing A] [NormedAlgebra ℝ A] [CompleteSpace A]
-local instance : NormedAlgebra ℚ A := .restrictScalars ℚ ℝ A
+local instance noncommutativeDiscreteDevelopmentInst1 : NormedAlgebra ℚ A := .restrictScalars ℚ ℝ A
 
 theorem summable_linear_exponential_error {z : ℕ → A}
-    (hz : Tendsto z atTop (nhds 0)) (hs : Summable (fun n => ‖z n‖ ^ 2)) :
+    (hz : Tendsto z atTop (nhds 0)) (hs : Summable (fun n => ‖z n‖ ^ (2 : ℕ))) :
     Summable (fun n => ‖(1 + z n) - NormedSpace.exp (z n)‖) := by
   have hp := (NormedSpace.hasFPowerSeriesAt_exp_zero_of_radius_pos
     (NormedSpace.expSeries_radius_pos ℝ A)).isBigO_sub_partialSum_pow 2
   have hp' : (fun x : A => NormedSpace.exp x - (1 + x)) =O[nhds 0]
-      (fun x => ‖x‖ ^ 2) := by
+      (fun x => ‖x‖ ^ (2 : ℕ)) := by
     simpa [FormalMultilinearSeries.partialSum, Finset.sum_range_succ,
       NormedSpace.expSeries_apply_eq] using hp
   obtain ⟨C, hC⟩ := Asymptotics.isBigO_iff.mp hp'
@@ -87,11 +87,11 @@ theorem summable_discreteAbelSeam {a : ℕ → ℝ} {b : ℕ → A} {C : ℝ}
     (ha : ∀ n, |coefficientSum a n| ≤ C)
     (hb : Tendsto b atTop (nhds 0))
     (hd : Summable (fun n => ‖b n - b (n+1)‖))
-    (hs : Summable (fun n => ‖b n‖ ^ 2)) :
+    (hs : Summable (fun n => ‖b n‖ ^ (2 : ℕ))) :
     Summable (fun n => ‖discreteAbelSeam a b n - 1‖) := by
   have hz := tendsto_bounded_smul_zero (coefficient_bound_of_partialSum_bound ha) hb
-  have hsq : Summable (fun n => ‖a n • b n‖ ^ 2) := by
-    apply Summable.of_nonneg_of_le (fun _ => sq_nonneg _) (fun n => ?_) (hs.mul_left ((2*C)^2))
+  have hsq : Summable (fun n => ‖a n • b n‖ ^ (2 : ℕ)) := by
+    apply Summable.of_nonneg_of_le (fun _ => sq_nonneg _) (fun n => ?_) (hs.mul_left ((2*C)^(2 : ℕ)))
     rw [norm_smul, Real.norm_eq_abs, mul_pow]
     apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
     exact (sq_le_sq₀ (abs_nonneg _) (by linarith [abs_nonneg (a n),
@@ -117,7 +117,7 @@ theorem ordered_discrete_converges [NormOneClass A]
     (ha : ∀ n, |coefficientSum a n| ≤ C)
     (hb : Tendsto b atTop (nhds 0))
     (hd : Summable (fun n => ‖b n - b (n+1)‖))
-    (hs : Summable (fun n => ‖b n‖ ^ 2)) :
+    (hs : Summable (fun n => ‖b n‖ ^ (2 : ℕ))) :
     ∃ P : A, Tendsto (orderedProduct (fun n => 1 + a n • b n)) atTop (nhds P) := by
   obtain ⟨P, hP⟩ := orderedProduct_converges (summable_discreteAbelSeam ha hb hd hs)
   have hlast := (NormedSpace.exp_continuous.tendsto (0 : A)).comp

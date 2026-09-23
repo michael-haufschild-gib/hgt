@@ -48,12 +48,12 @@ theorem norm_suzukiCutoff_le (a : ℝ) (f : SoninL2) :
 /-- The exact `L² -> L¹` collapse estimate for an arbitrary aperture cutoff. -/
 theorem integral_norm_suzukiCutoff_sq_le
     {a : ℝ} (ha : 0 ≤ a) (f : SoninL2) :
-    (∫ x : ℝ, ‖(suzukiCutoff a f) x‖) ^ 2 ≤
-      (2 * a) * ‖f‖ ^ 2 := by
+    (∫ x : ℝ, ‖(suzukiCutoff a f) x‖) ^ (2 : ℕ) ≤
+      (2 * a) * ‖f‖ ^ (2 : ℕ) := by
   let g : SoninL2 := suzukiCutoff a f
-  have hg2 : Integrable (fun x : ℝ => ‖g x‖ ^ 2) :=
+  have hg2 : Integrable (fun x : ℝ => ‖g x‖ ^ (2 : ℕ)) :=
     (memLp_two_iff_integrable_sq_norm (Lp.memLp g).1).mp (Lp.memLp g)
-  have hg2I : Integrable (fun x : ℝ => ‖g x‖ ^ 2)
+  have hg2I : Integrable (fun x : ℝ => ‖g x‖ ^ (2 : ℕ))
       (volume.restrict (Icc (-a) a)) := hg2.mono_measure Measure.restrict_le_self
   have hgaemeas : AEStronglyMeasurable (g : ℝ → ℂ)
       (volume.restrict (Icc (-a) a)) := (Lp.memLp g).1.restrict
@@ -68,7 +68,7 @@ theorem integral_norm_suzukiCutoff_sq_le
         dsimp only [g, suzukiCutoff]
         rw [hx, indicator_of_notMem hmem]
       rw [indicator_of_notMem hmem, hgzero, norm_zero]
-  have hE : (∫ x in Icc (-a) a, ‖g x‖ ^ 2) = ‖g‖ ^ 2 := by
+  have hE : (∫ x in Icc (-a) a, ‖g x‖ ^ (2 : ℕ)) = ‖g‖ ^ (2 : ℕ) := by
     rw [norm_sq_lp_eq_integral_norm_sq g]
     rw [← integral_indicator measurableSet_Icc]
     apply integral_congr_ae
@@ -228,16 +228,16 @@ def suzukiHankelPhiSumHankelFourierRight
 
 private theorem integral_norm_cutoff_lt_of_log_small
     {C delta a : ℝ} (hC : 0 < C) (hdelta : 0 < delta)
-    (ha : 1 < a) (hsmall : 2 * Real.log a * C ^ 2 < delta ^ 2)
+    (ha : 1 < a) (hsmall : 2 * Real.log a * C ^ (2 : ℕ) < delta ^ (2 : ℕ))
     {f : SoninL2} (hf : ‖f‖ ≤ C) :
     ∫ x : ℝ, ‖(suzukiCutoff (Real.log a) f) x‖ < delta := by
   have hlog : 0 ≤ Real.log a := (Real.log_pos ha).le
   have hsq := integral_norm_suzukiCutoff_sq_le hlog f
   have hfac : 0 ≤ 2 * Real.log a := by positivity
-  have hnormsq : ‖f‖ ^ 2 ≤ C ^ 2 :=
+  have hnormsq : ‖f‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg f) hC.le).2 hf
   have hupper :
-      (∫ x : ℝ, ‖(suzukiCutoff (Real.log a) f) x‖) ^ 2 < delta ^ 2 :=
+      (∫ x : ℝ, ‖(suzukiCutoff (Real.log a) f) x‖) ^ (2 : ℕ) < delta ^ (2 : ℕ) :=
     lt_of_le_of_lt (hsq.trans (mul_le_mul_of_nonneg_left hnormsq hfac)) (by
       simpa [mul_assoc] using hsmall)
   have hIntNonneg : 0 ≤ ∫ x : ℝ, ‖(suzukiCutoff (Real.log a) f) x‖ :=
@@ -263,18 +263,18 @@ theorem tendstoUniformlyOn_suzukiHankelFourierRight_zero
     have h := (Real.continuousAt_log (by norm_num : (1 : ℝ) ≠ 0)).tendsto.mono_left
       (show 𝓝[Ioi (1 : ℝ)] 1 ≤ 𝓝 1 from inf_le_left)
     simpa using h
-  have hsmall : Tendsto (fun a : ℝ => 2 * Real.log a * C0 ^ 2)
+  have hsmall : Tendsto (fun a : ℝ => 2 * Real.log a * C0 ^ (2 : ℕ))
       (𝓝[Ioi (1 : ℝ)] 1) (𝓝 0) := by
     have htwo : Tendsto (fun _ : ℝ => (2 : ℝ))
         (𝓝[Ioi (1 : ℝ)] 1) (𝓝 2) := tendsto_const_nhds
-    have hC : Tendsto (fun _ : ℝ => C0 ^ 2)
-        (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (C0 ^ 2)) := tendsto_const_nhds
+    have hC : Tendsto (fun _ : ℝ => C0 ^ (2 : ℕ))
+        (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (C0 ^ (2 : ℕ))) := tendsto_const_nhds
     simpa using (htwo.mul hlog).mul hC
   constructor <;> rw [Metric.tendstoUniformlyOn_iff] <;> intro epsilon hepsilon
   · have hdelta : 0 < epsilon / D := div_pos hepsilon hD
-    have hsquare : 0 < (epsilon / D) ^ 2 := sq_pos_of_pos hdelta
+    have hsquare : 0 < (epsilon / D) ^ (2 : ℕ) := sq_pos_of_pos hdelta
     have hevSmall : ∀ᶠ a in 𝓝[Ioi (1 : ℝ)] 1,
-        2 * Real.log a * C0 ^ 2 < (epsilon / D) ^ 2 :=
+        2 * Real.log a * C0 ^ (2 : ℕ) < (epsilon / D) ^ (2 : ℕ) :=
       hsmall.eventually (Iio_mem_nhds hsquare)
     have hevTwo : ∀ᶠ a in 𝓝[Ioi (1 : ℝ)] 1, a < 2 :=
       Filter.Eventually.filter_mono inf_le_left
@@ -312,9 +312,9 @@ theorem tendstoUniformlyOn_suzukiHankelFourierRight_zero
         _ = epsilon := div_mul_cancel₀ epsilon hD.ne'
     simpa [suzukiHankelPhiSumFourierRight, ha, dist_eq_norm] using hnormlt
   · have hdelta : 0 < epsilon / D := div_pos hepsilon hD
-    have hsquare : 0 < (epsilon / D) ^ 2 := sq_pos_of_pos hdelta
+    have hsquare : 0 < (epsilon / D) ^ (2 : ℕ) := sq_pos_of_pos hdelta
     have hevSmall : ∀ᶠ a in 𝓝[Ioi (1 : ℝ)] 1,
-        2 * Real.log a * C0 ^ 2 < (epsilon / D) ^ 2 :=
+        2 * Real.log a * C0 ^ (2 : ℕ) < (epsilon / D) ^ (2 : ℕ) :=
       hsmall.eventually (Iio_mem_nhds hsquare)
     have hevTwo : ∀ᶠ a in 𝓝[Ioi (1 : ℝ)] 1, a < 2 :=
       Filter.Eventually.filter_mono inf_le_left

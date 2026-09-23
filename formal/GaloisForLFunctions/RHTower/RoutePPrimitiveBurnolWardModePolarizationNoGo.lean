@@ -53,7 +53,7 @@ the two resolvent values. -/
 theorem det_xiWardCrossModeHerglotzPolarization_two
     (x a b : ℝ) :
     (xiWardCrossModeHerglotzPolarization x ![a, b]).det =
-      ((-((1 / (x + a) - 1 / (x + b)) / x) ^ 2 : ℝ) : ℂ) := by
+      ((-((1 / (x + a) - 1 / (x + b)) / x) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Matrix.det_fin_two]
   simp only [xiWardCrossModeHerglotzPolarization]
   push_cast
@@ -75,11 +75,11 @@ theorem not_posSemidef_xiWardCrossModeHerglotzPolarization_two
   have hquot : (1 / (x + a) - 1 / (x + b)) / x ≠ 0 :=
     div_ne_zero hdiff hx.ne'
   have hsqpos : (0 : ℝ) <
-      ((1 / (x + a) - 1 / (x + b)) / x) ^ 2 :=
+      ((1 / (x + a) - 1 / (x + b)) / x) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hquot
   have hdetReal := (RCLike.nonneg_iff.mp hdet).1
   change 0 ≤
-    (((-((1 / (x + a) - 1 / (x + b)) / x) ^ 2 : ℝ) : ℂ).re) at hdetReal
+    (((-((1 / (x + a) - 1 / (x + b)) / x) ^ (2 : ℕ) : ℝ) : ℂ).re) at hdetReal
   rw [Complex.ofReal_re] at hdetReal
   linarith
 

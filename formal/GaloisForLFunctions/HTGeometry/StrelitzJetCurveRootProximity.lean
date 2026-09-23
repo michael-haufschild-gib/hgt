@@ -295,7 +295,7 @@ zero. -/
 theorem exists_strelitzJetCurveRoots_tendsto_of_order_two_entireHeat_isMaximumOnCircle
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -310,7 +310,7 @@ theorem exists_strelitzJetCurveRoots_tendsto_of_order_two_entireHeat_isMaximumOn
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         Tendsto x atTop atTop ∧
         Tendsto (fun n => ‖eulerLogDeriv (coeffFun a) (z n)‖) atTop atTop ∧
         (∀ᶠ n : ℕ in atTop,
@@ -358,7 +358,7 @@ zero. -/
 theorem exists_strelitzJetCurveRoots_tendsto_of_order_two_entireHeat
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -373,7 +373,7 @@ theorem exists_strelitzJetCurveRoots_tendsto_of_order_two_entireHeat
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         Tendsto x atTop atTop ∧
         Tendsto (fun n => ‖eulerLogDeriv (coeffFun a) (z n)‖) atTop atTop ∧
         (∀ᶠ n : ℕ in atTop,

@@ -7,12 +7,12 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
+local instance fokasLenellsCausalResolventNonattainmentInst1 : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
 
 /-- Exact shifted-generator energy: real damping, imaginary-shift residual, and actual dissipation. -/
 theorem causalComplexGeneratorShift_energy_decomposition (z : ℂ) (u : causalGeneratorDomain) :
-    ‖causalComplexGeneratorShift z u‖^2 = z.re^2 * ‖u.val‖^2 +
-      ‖causalGenerator u-((z.im : ℂ)*I) • u.val‖^2 -
+    ‖causalComplexGeneratorShift z u‖^(2 : ℕ) = z.re^(2 : ℕ) * ‖u.val‖^(2 : ℕ) +
+      ‖causalGenerator u-((z.im : ℂ)*I) • u.val‖^(2 : ℕ) -
       2*z.re*(inner ℂ u.val (causalGenerator u)).re := by
   have hz : (z.re : ℂ)+(z.im : ℂ)*I = z := by apply Complex.ext <;> simp
   have hscalar : (z.re : ℂ) • u.val + ((z.im : ℂ)*I) • u.val = z • u.val := by
@@ -28,7 +28,7 @@ theorem causalComplexGeneratorShift_energy_decomposition (z : ℂ) (u : causalGe
   have him : inner ℝ u.val (((z.im : ℂ)*I) • u.val) = 0 := by
     change (inner ℂ u.val (((z.im : ℂ)*I) • u.val)).re = 0
     rw [inner_smul_right, inner_self_eq_norm_sq_to_K]
-    change (((z.im : ℂ)*I) * ((‖u.val‖ : ℝ) : ℂ)^2).re = 0
+    change (((z.im : ℂ)*I) * ((‖u.val‖ : ℝ) : ℂ)^(2 : ℕ)).re = 0
     rw [← Complex.ofReal_pow, Complex.mul_re]
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, zero_mul, sub_zero]

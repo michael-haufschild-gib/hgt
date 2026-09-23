@@ -35,7 +35,7 @@ theorem sum_gcd_eq_sum_totient_mul_sq {S : Finset ℕ} {M : ℕ}
     (hpos : ∀ d ∈ S, 0 < d) (hM : ∀ d ∈ S, d ≤ M) :
     ∑ p ∈ S ×ˢ S, ((Nat.gcd p.1 p.2 : ℕ) : ℝ)
       = ∑ g ∈ Finset.Icc 1 M,
-          ((Nat.totient g : ℕ) : ℝ) * (((S.filter (fun d => g ∣ d)).card : ℕ) : ℝ) ^ 2 := by
+          ((Nat.totient g : ℕ) : ℝ) * (((S.filter (fun d => g ∣ d)).card : ℕ) : ℝ) ^ (2 : ℕ) := by
   classical
   have hpair : ∀ p ∈ S ×ˢ S, ((Nat.gcd p.1 p.2 : ℕ) : ℝ)
       = ∑ g ∈ Finset.Icc 1 M,
@@ -49,7 +49,7 @@ theorem sum_gcd_eq_sum_totient_mul_sq {S : Finset ℕ} {M : ℕ}
   rw [Finset.sum_congr rfl hpair, Finset.sum_comm]
   refine Finset.sum_congr rfl fun g _ => ?_
   have hcount : ∑ p ∈ S ×ˢ S, (if g ∣ p.1 ∧ g ∣ p.2 then ((Nat.totient g : ℕ) : ℝ) else 0)
-      = ((Nat.totient g : ℕ) : ℝ) * (((S.filter (fun d => g ∣ d)).card : ℕ) : ℝ) ^ 2 := by
+      = ((Nat.totient g : ℕ) : ℝ) * (((S.filter (fun d => g ∣ d)).card : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [Finset.sum_product]
     have hinner : ∀ d₁ ∈ S,
         ∑ d₂ ∈ S, (if g ∣ d₁ ∧ g ∣ d₂ then ((Nat.totient g : ℕ) : ℝ) else 0)
@@ -76,7 +76,7 @@ theorem sum_gcd_eq_sum_totient_mul_sq {S : Finset ℕ} {M : ℕ}
 
 /-- On a window the reciprocal lcm is dominated by the gcd over `y²`. -/
 theorem inv_lcm_le_gcd_div {y a b : ℕ} (hy : 1 ≤ y) (ha : y ≤ a) (hb : y ≤ b) :
-    1 / ((Nat.lcm a b : ℕ) : ℝ) ≤ ((Nat.gcd a b : ℕ) : ℝ) / (y : ℝ) ^ 2 := by
+    1 / ((Nat.lcm a b : ℕ) : ℝ) ≤ ((Nat.gcd a b : ℕ) : ℝ) / (y : ℝ) ^ (2 : ℕ) := by
   have hyR : (1 : ℝ) ≤ (y : ℝ) := by exact_mod_cast hy
   have hy0 : (0 : ℝ) < (y : ℝ) := by linarith
   have ha0 : 0 < a := by omega
@@ -91,7 +91,7 @@ theorem inv_lcm_le_gcd_div {y a b : ℕ} (hy : 1 ≤ y) (ha : y ≤ a) (hb : y �
   have hgcd0 : (0 : ℝ) < ((Nat.gcd a b : ℕ) : ℝ) := by
     have : 0 < Nat.gcd a b := Nat.gcd_pos_of_pos_left b ha0
     exact_mod_cast this
-  have hab : (y : ℝ) ^ 2 ≤ (a : ℝ) * (b : ℝ) := by nlinarith
+  have hab : (y : ℝ) ^ (2 : ℕ) ≤ (a : ℝ) * (b : ℝ) := by nlinarith
   have h1 : 1 / ((Nat.lcm a b : ℕ) : ℝ) = ((Nat.gcd a b : ℕ) : ℝ) / ((a : ℝ) * (b : ℝ)) := by
     rw [← hmul]
     field_simp
@@ -101,7 +101,7 @@ theorem inv_lcm_le_gcd_div {y a b : ℕ} (hy : 1 ≤ y) (ha : y ≤ a) (hb : y �
 /-- **The reciprocal lcm sum is controlled by the gcd sum.** -/
 theorem sum_inv_lcm_le_gcd_sum {y : ℕ} (hy : 1 ≤ y) :
     ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)), 1 / ((Nat.lcm p.1 p.2 : ℕ) : ℝ)
-      ≤ (1 / (y : ℝ) ^ 2)
+      ≤ (1 / (y : ℝ) ^ (2 : ℕ))
         * ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)),
             ((Nat.gcd p.1 p.2 : ℕ) : ℝ) := by
   rw [Finset.mul_sum]
@@ -109,7 +109,7 @@ theorem sum_inv_lcm_le_gcd_sum {y : ℕ} (hy : 1 ≤ y) :
   rw [Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc] at hp
   have h := inv_lcm_le_gcd_div hy hp.1.1 hp.2.1
   calc 1 / ((Nat.lcm p.1 p.2 : ℕ) : ℝ)
-      ≤ ((Nat.gcd p.1 p.2 : ℕ) : ℝ) / (y : ℝ) ^ 2 := h
-    _ = 1 / (y : ℝ) ^ 2 * ((Nat.gcd p.1 p.2 : ℕ) : ℝ) := by ring
+      ≤ ((Nat.gcd p.1 p.2 : ℕ) : ℝ) / (y : ℝ) ^ (2 : ℕ) := h
+    _ = 1 / (y : ℝ) ^ (2 : ℕ) * ((Nat.gcd p.1 p.2 : ℕ) : ℝ) := by ring
 
 end RHTower.Sieve

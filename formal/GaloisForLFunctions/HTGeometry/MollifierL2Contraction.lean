@@ -18,9 +18,9 @@ theorem mollify_eq_lineConvolution (ρ u : ℝ → ℝ) : mollify ρ u = lineCon
 
 /-- **Young's inequality for the mollifier.** -/
 theorem integral_sq_mollify_le {ρ u : ℝ → ℝ} (hρm : Measurable ρ) (hum : Measurable u)
-    (hρi : Integrable (fun t => |ρ t|)) (hu2 : Integrable (fun x => u x ^ 2))
-    (hconv : Integrable (fun x => mollify ρ u x ^ 2)) :
-    (∫ x, mollify ρ u x ^ 2) ≤ (∫ t, |ρ t|) ^ 2 * ∫ x, u x ^ 2 := by
+    (hρi : Integrable (fun t => |ρ t|)) (hu2 : Integrable (fun x => u x ^ (2 : ℕ)))
+    (hconv : Integrable (fun x => mollify ρ u x ^ (2 : ℕ))) :
+    (∫ x, mollify ρ u x ^ (2 : ℕ)) ≤ (∫ t, |ρ t|) ^ (2 : ℕ) * ∫ x, u x ^ (2 : ℕ) := by
   rw [mollify_eq_lineConvolution] at hconv ⊢
   exact integral_sq_lineConvolution_le hρm hum hρi hu2 hconv
 
@@ -28,9 +28,9 @@ theorem integral_sq_mollify_le {ρ u : ℝ → ℝ} (hρm : Measurable ρ) (hum 
 theorem integral_sq_mollify_le_of_isProbabilityDensity {ρ u : ℝ → ℝ}
     (hρm : Measurable ρ) (hum : Measurable u)
     (hρ0 : ∀ t, 0 ≤ ρ t) (hρi : Integrable ρ) (hρ1 : (∫ t, ρ t) = 1)
-    (hu2 : Integrable (fun x => u x ^ 2))
-    (hconv : Integrable (fun x => mollify ρ u x ^ 2)) :
-    (∫ x, mollify ρ u x ^ 2) ≤ ∫ x, u x ^ 2 := by
+    (hu2 : Integrable (fun x => u x ^ (2 : ℕ)))
+    (hconv : Integrable (fun x => mollify ρ u x ^ (2 : ℕ))) :
+    (∫ x, mollify ρ u x ^ (2 : ℕ)) ≤ ∫ x, u x ^ (2 : ℕ) := by
   have habs : (fun t => |ρ t|) = ρ := by
     funext t
     exact abs_of_nonneg (hρ0 t)

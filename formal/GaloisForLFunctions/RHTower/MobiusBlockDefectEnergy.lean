@@ -42,9 +42,9 @@ theorem abs_sum_range_mul_le_endpoint_add_prefixEnergy
       |∑ i ∈ Finset.range (N + 1), d i| * |w N| +
         Real.sqrt
           (∑ j ∈ Finset.range N,
-            (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+            (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
         Real.sqrt
-          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ 2) := by
+          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ (2 : ℕ)) := by
   rw [sum_range_mul_eq_prefix_last_add_sum_prefix_mul_sub]
   calc
     |(∑ i ∈ Finset.range (N + 1), d i) * w N +
@@ -65,9 +65,9 @@ theorem abs_sum_range_mul_le_endpoint_add_prefixEnergy
     _ ≤ |∑ i ∈ Finset.range (N + 1), d i| * |w N| +
         Real.sqrt
           (∑ j ∈ Finset.range N,
-            (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+            (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
         Real.sqrt
-          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ 2) := by
+          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ (2 : ℕ)) := by
       gcongr
       simpa only [sq_abs] using
         Real.sum_mul_le_sqrt_mul_sqrt (Finset.range N)
@@ -91,9 +91,9 @@ theorem abs_sum_range_mul_le_prefixEnergy_of_total_eq_zero
     |∑ j ∈ Finset.range (N + 1), d j * w j| ≤
       Real.sqrt
           (∑ j ∈ Finset.range N,
-            (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+            (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
         Real.sqrt
-          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ 2) := by
+          (∑ j ∈ Finset.range N, (w j - w (j + 1)) ^ (2 : ℕ)) := by
   simpa [htotal] using abs_sum_range_mul_le_endpoint_add_prefixEnergy d w N
 
 /-- Squared-gradient budget for exponential weights on a monotone block mesh. -/
@@ -104,9 +104,9 @@ theorem sum_exp_blockWeightGradient_sq_le
     (hwidth : ∀ j < N, representative (j + 1) - representative j ≤ h) :
     ∑ j ∈ Finset.range N,
         (Real.exp (-(x * representative j)) -
-          Real.exp (-(x * representative (j + 1)))) ^ 2 ≤
+          Real.exp (-(x * representative (j + 1)))) ^ (2 : ℕ) ≤
       ∑ j ∈ Finset.range N,
-        (x * h * Real.exp (-(x * representative j))) ^ 2 := by
+        (x * h * Real.exp (-(x * representative j))) ^ (2 : ℕ) := by
   apply Finset.sum_le_sum
   intro j hj
   rw [sq_le_sq]
@@ -128,10 +128,10 @@ theorem abs_exp_blockDefectCurrent_le_endpoint_add_prefixEnergy
           |Real.exp (-(x * representative N))| +
         Real.sqrt
           (∑ j ∈ Finset.range N,
-            (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+            (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
         Real.sqrt
           (∑ j ∈ Finset.range N,
-            (x * h * Real.exp (-(x * representative j))) ^ 2) := by
+            (x * h * Real.exp (-(x * representative j))) ^ (2 : ℕ)) := by
   calc
     |∑ j ∈ Finset.range (N + 1),
         d j * Real.exp (-(x * representative j))|
@@ -139,11 +139,11 @@ theorem abs_exp_blockDefectCurrent_le_endpoint_add_prefixEnergy
             |Real.exp (-(x * representative N))| +
           Real.sqrt
             (∑ j ∈ Finset.range N,
-              (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+              (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
           Real.sqrt
             (∑ j ∈ Finset.range N,
               (Real.exp (-(x * representative j)) -
-                Real.exp (-(x * representative (j + 1)))) ^ 2) :=
+                Real.exp (-(x * representative (j + 1)))) ^ (2 : ℕ)) :=
       abs_sum_range_mul_le_endpoint_add_prefixEnergy d
         (fun j => Real.exp (-(x * representative j))) N
     _ ≤ _ := by
@@ -166,20 +166,20 @@ theorem abs_exp_zeroTotalSectorFluxCurrent_le_prefixEnergy
         d j * Real.exp (-(x * representative j))| ≤
       Real.sqrt
           (∑ j ∈ Finset.range N,
-            (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+            (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
         Real.sqrt
           (∑ j ∈ Finset.range N,
-            (x * h * Real.exp (-(x * representative j))) ^ 2) := by
+            (x * h * Real.exp (-(x * representative j))) ^ (2 : ℕ)) := by
   calc
     |∑ j ∈ Finset.range (N + 1),
         d j * Real.exp (-(x * representative j))|
         ≤ Real.sqrt
             (∑ j ∈ Finset.range N,
-              (∑ i ∈ Finset.range (j + 1), d i) ^ 2) *
+              (∑ i ∈ Finset.range (j + 1), d i) ^ (2 : ℕ)) *
           Real.sqrt
             (∑ j ∈ Finset.range N,
               (Real.exp (-(x * representative j)) -
-                Real.exp (-(x * representative (j + 1)))) ^ 2) :=
+                Real.exp (-(x * representative (j + 1)))) ^ (2 : ℕ)) :=
       abs_sum_range_mul_le_prefixEnergy_of_total_eq_zero d
         (fun j => Real.exp (-(x * representative j))) N htotal
     _ ≤ _ := by
@@ -197,13 +197,13 @@ theorem twoPhase_zeroTotal (A : ℝ) (m : ℕ) :
 
 /-- Exact hostile transfer function.  Defects `+A` for `m` blocks followed by `-A` for `m`
 blocks have zero total, but their geometric-weight current is
-`A * (1 - r^m)^2 / (1 - r)` when `r ≠ 1`.  The denominator-free identity also covers `r = 1`.
+`A * (1 - r^m)^(2 : ℕ) / (1 - r)` when `r ≠ 1`.  The denominator-free identity also covers `r = 1`.
 -/
 theorem twoPhase_geometricCurrent_transfer
     (A r : ℝ) (m : ℕ) :
     ((∑ j ∈ Finset.range m, A * r ^ j) +
         ∑ j ∈ Finset.range m, (-A) * r ^ (m + j)) * (1 - r) =
-      A * (1 - r ^ m) ^ 2 := by
+      A * (1 - r ^ m) ^ (2 : ℕ) := by
   let G := ∑ j ∈ Finset.range m, r ^ j
   have hpos : (∑ j ∈ Finset.range m, A * r ^ j) = A * G := by
     simp [G, Finset.mul_sum]
@@ -218,7 +218,7 @@ theorem twoPhase_geometricCurrent_transfer
   calc
     (A * G + (-A * r ^ m) * G) * (1 - r) =
         A * (1 - r ^ m) * (G * (1 - r)) := by ring
-    _ = A * (1 - r ^ m) ^ 2 := by rw [hG]; ring
+    _ = A * (1 - r ^ m) ^ (2 : ℕ) := by rw [hG]; ring
 
 /-- A nonconstant root-of-unity defect mode has exactly zero unweighted total. -/
 theorem geometricDefectMode_zeroTotal

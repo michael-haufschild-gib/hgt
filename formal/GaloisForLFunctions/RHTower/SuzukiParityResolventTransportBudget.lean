@@ -262,7 +262,7 @@ def suzukiFiniteParityResolventEnergy
 /-- Squared-resolvent velocity of a finite source spectral energy. -/
 def suzukiFiniteParitySquaredResolventEnergy
     (indices : Finset ι) (node weight : ι → ℝ) (lambda : ℝ) : ℝ :=
-  ∑ i ∈ indices, weight i * suzukiShiftResolventKernel node lambda i ^ 2
+  ∑ i ∈ indices, weight i * suzukiShiftResolventKernel node lambda i ^ (2 : ℕ)
 
 /-- Signed cross-parity spectral-gap mass. Every even--odd pair is weighted by its source masses
 and the squared resolvent denominator; its sign is the sign of `oddNode j - evenNode i`. -/
@@ -272,7 +272,7 @@ def suzukiFiniteParityCrossGapMass
     (lambda : ℝ) : ℝ :=
   ∑ i ∈ evenIndices, ∑ j ∈ oddIndices,
     evenWeight i * oddWeight j * (oddNode j - evenNode i) /
-      ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2)
+      ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ))
 
 /-- Signed cross-parity gap mass normalized by the two parity resolvent energies. -/
 def suzukiFiniteParityNormalizedCrossGapMass
@@ -543,7 +543,7 @@ def suzukiFiniteParityLowerPairCredit
     (lambda : ℝ) : ℝ :=
   ∑ i ∈ evenIndices, ∑ j ∈ oddIndices,
     evenWeight i * oddWeight j * (oddNode j - evenNode i)⁺ /
-      ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2)
+      ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ))
 
 /-- Negative contribution from spectral inversions in which an odd node lies below an even node. -/
 def suzukiFiniteParitySpectralInversionDebt
@@ -552,7 +552,7 @@ def suzukiFiniteParitySpectralInversionDebt
     (lambda : ℝ) : ℝ :=
   ∑ i ∈ evenIndices, ∑ j ∈ oddIndices,
     evenWeight i * oddWeight j * (oddNode j - evenNode i)⁻ /
-      ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2)
+      ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ))
 
 /-- The signed cross-parity mass is exactly lower-pair credit minus spectral-inversion debt. -/
 theorem suzukiFiniteParityCrossGapMass_eq_credit_sub_inversionDebt
@@ -574,15 +574,15 @@ theorem suzukiFiniteParityCrossGapMass_eq_credit_sub_inversionDebt
   intro j hj
   calc
     evenWeight i * oddWeight j * (oddNode j - evenNode i) /
-          ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2) =
+          ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ)) =
         evenWeight i * oddWeight j *
             ((oddNode j - evenNode i)⁺ - (oddNode j - evenNode i)⁻) /
-          ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2) := by
+          ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ)) := by
             rw [posPart_sub_negPart]
     _ = evenWeight i * oddWeight j * (oddNode j - evenNode i)⁺ /
-          ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2) -
+          ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ)) -
         evenWeight i * oddWeight j * (oddNode j - evenNode i)⁻ /
-          ((evenNode i - lambda) ^ 2 * (oddNode j - lambda) ^ 2) := by ring
+          ((evenNode i - lambda) ^ (2 : ℕ) * (oddNode j - lambda) ^ (2 : ℕ)) := by ring
 
 /-- With positive parity energies, positive transport occurs exactly when lower-pair credit beats
 the complete weighted debt from locally reversed odd/even spectral pairs. -/

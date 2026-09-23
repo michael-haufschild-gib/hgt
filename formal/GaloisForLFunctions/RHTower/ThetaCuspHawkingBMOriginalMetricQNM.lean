@@ -298,10 +298,11 @@ theorem canonical_action_QNM_value_formula (q : XiZeroCopy) (br side : Bool) (am
       physicalCornerCandidate q br amp w) =ᶠ[𝓝[≠] w₀]
       D4BMOriginalCanonicalAction.canonicalAction q br amp := by
     filter_upwards [
-      (Filter.Eventually.filter_mono nhdsWithin_le_nhds (ball_mem_nhds w₀ RL)), hcne] with w hwL hcw
+      (Filter.Eventually.filter_mono nhdsWithin_le_nhds (ball_mem_nhds w₀ hRL)), hcne] with w hwL hcw
     unfold D4BMOriginalCanonicalAction.canonicalAction
     dsimp only [c₀, c₁, d₀]
     rw [(hL b hb hbL).2 w hwL hcw]
+    rfl
   have hSlope : Tendsto (fun w => conn q w / (w - w₀)) (𝓝[≠] w₀)
       (𝓝 (connectionSimpleSlope w₀ (chi q) side)) := by
     apply (physicalFundamental_connection_hasDerivAt q side).tendsto_slope.congr'
@@ -316,6 +317,7 @@ theorem canonical_action_QNM_value_formula (q : XiZeroCopy) (br side : Bool) (am
     filter_upwards [self_mem_nhdsWithin, hEq, hCanonicalEq] with w hwne hNw hAw
     rw [hNw, hAw]
     field_simp [sub_ne_zero.mpr hwne]
+    rfl
   have hN0 : N w₀ = 0 := tendsto_nhds_unique
     (hN.continuousAt.tendsto.mono_left nhdsWithin_le_nhds) hlimN
   have hdc : deriv (conn q) w₀ = connectionSimpleSlope w₀ (chi q) side :=
@@ -333,9 +335,11 @@ theorem canonical_action_QNM_value_formula (q : XiZeroCopy) (br side : Bool) (am
       (fun w => radialFinitePart q br amp c₀ c₁ d₀ b w + physicalCornerCandidate q br amp w) := by
     filter_upwards [self_mem_nhdsWithin, hEq, hcne] with w hwne hNw hcw
     change dslope N w₀ w / dslope (conn q) w₀ w = _
-    rw [dslope_of_ne N hwne, dslope_of_ne (conn q) hwne, slope_def_field, slope_def_field,
-      hN0, physicalFundamentalFrequency_connection_zero, sub_zero, sub_zero, hNw]
+    rw [dslope_of_ne N hwne, dslope_of_ne (conn q) hwne, slope_def_field, slope_def_field, hN0]
+    dsimp only [w₀, conn]
+    rw [physicalFundamentalFrequency_connection_zero, sub_zero, sub_zero, hNw]
     field_simp [sub_ne_zero.mpr hwne, hcw]
+    rw [mul_div_assoc, div_self (sub_ne_zero.mpr hwne), mul_one]
   have hFinite : Tendsto (fun w => radialFinitePart q br amp c₀ c₁ d₀ b w +
       physicalCornerCandidate q br amp w) (𝓝[≠] w₀)
       (𝓝 (finiteQNMValue q br side amp c₀ c₁ d₀ b)) := by

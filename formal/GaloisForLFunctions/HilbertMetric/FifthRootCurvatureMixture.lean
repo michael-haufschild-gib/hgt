@@ -15,7 +15,7 @@ noncomputable section
 
 /-- Algebraic fifth-root curvature form in accumulated-drop coordinates. -/
 def fifthRootCurvatureJetForm (t A D J : ℝ) : ℝ :=
-  24 * A ^ 2 - 9 * t * A * D + t ^ 2 * (5 * A * J - 4 * D ^ 2)
+  24 * A ^ (2 : ℕ) - 9 * t * A * D + t ^ (2 : ℕ) * (5 * A * J - 4 * D ^ (2 : ℕ))
 
 /-- The functional numerator is its algebraic jet form with
 `A = f(0)-f(t)`, `D = -f'(t)`, and `J = -f''(t)`. -/
@@ -37,7 +37,7 @@ theorem fifthRootCurvatureJetForm_add_totalVariance
         (A₁ + A₂) (D₁ + D₂) (J₁ + J₂) =
       A₂ * (A₁ + A₂) * fifthRootCurvatureJetForm t A₁ D₁ J₁ +
       A₁ * (A₁ + A₂) * fifthRootCurvatureJetForm t A₂ D₂ J₂ +
-      4 * t ^ 2 * (A₁ * D₂ - A₂ * D₁) ^ 2 := by
+      4 * t ^ (2 : ℕ) * (A₁ * D₂ - A₂ * D₁) ^ (2 : ℕ) := by
   unfold fifthRootCurvatureJetForm
   ring
 
@@ -49,7 +49,7 @@ theorem fifthRootCurvatureJetForm_peel_totalVariance
     a * (A - a) * fifthRootCurvatureJetForm t A D J =
       (A - a) * A * fifthRootCurvatureJetForm t a d j +
       a * A * fifthRootCurvatureJetForm t (A - a) (D - d) (J - j) +
-      4 * t ^ 2 * (a * D - A * d) ^ 2 := by
+      4 * t ^ (2 : ℕ) * (a * D - A * d) ^ (2 : ℕ) := by
   have h := fifthRootCurvatureJetForm_add_totalVariance
     t a d j (A - a) (D - d) (J - j)
   unfold fifthRootCurvatureJetForm at h ⊢
@@ -67,7 +67,7 @@ theorem fifthRootCurvatureJetForm_add_nonneg
   have hRhs : 0 ≤
       A₂ * (A₁ + A₂) * fifthRootCurvatureJetForm t A₁ D₁ J₁ +
       A₁ * (A₁ + A₂) * fifthRootCurvatureJetForm t A₂ D₂ J₂ +
-      4 * t ^ 2 * (A₁ * D₂ - A₂ * D₁) ^ 2 := by
+      4 * t ^ (2 : ℕ) * (A₁ * D₂ - A₂ * D₁) ^ (2 : ℕ) := by
     positivity
   have hEq := fifthRootCurvatureJetForm_add_totalVariance
     t A₁ D₁ J₁ A₂ D₂ J₂

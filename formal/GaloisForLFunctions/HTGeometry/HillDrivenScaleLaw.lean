@@ -39,14 +39,14 @@ theorem regularOpenProbes_hillSpeedChart_driven
     (hs : ContDiff ℝ ∞ a.speed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (hreal : IsRealFamily b) :
     RegularOpenProbes (hillSpeedChart d a.speed hs).dalembert
-      (fun y => hillDrivenChartPotential b y - a.mass ^ 2) := by
+      (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) := by
   intro y₀
   obtain ⟨W, u, hWopen, hWmem, hreg, hsolve, hne⟩ := exists_hillDrivenProbe_at hK a b hreal y₀
   refine ⟨W, hWopen, hWmem, u, hreg, fun y hy => ?_, hne⟩
   have hdiff : ∀ j : Fin (d + 1), DifferentiableAt ℝ (coordPartial j u) y :=
     fun j => hreg.coord j y hy
   show (hillSpeedChart d a.speed hs).dalembert u y +
-    (hillDrivenChartPotential b y - a.mass ^ 2) * u y = 0
+    (hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) * u y = 0
   rw [hillSpeedChart_dalembert hs hdiff]
   exact hsolve y hy
 
@@ -58,7 +58,7 @@ theorem regularOpenProbes_conformalRescale_hillSpeedChart_driven
     {sigma : (Fin (d + 1) → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma) :
     RegularOpenProbes ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert
       ((hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-        (fun y => hillDrivenChartPotential b y - a.mass ^ 2)) :=
+        (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ))) :=
   regularOpenProbes_conformalRescale (hillSpeedChart d a.speed hs) hsigma
     (regularOpenProbes_hillSpeedChart_driven hK a hs b hreal)
 
@@ -72,47 +72,47 @@ theorem twoSpecies_scale_law_hillDriven
     (hK : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) < K) (a : HillSpeed)
     (hs : ContDiff ℝ ∞ a.speed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (hreal : IsRealFamily b)
-    {m₂ : ℝ} (hm₂ : 0 < m₂) (hmass : m₂ ^ 2 - a.mass ^ 2 ≠ 0)
+    {m₂ : ℝ} (hm₂ : 0 < m₂) (hmass : m₂ ^ (2 : ℕ) - a.mass ^ (2 : ℕ) ≠ 0)
     {sigma : (Fin (d + 1) → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma)
     {other₁ other₂ : (Fin (d + 1) → ℝ) → ℝ}
     (h₁ : ∀ (u : (Fin (d + 1) → ℝ) → ℝ) (W : Set (Fin (d + 1) → ℝ)), IsOpen W →
       SolvesPotentialWaveOn
           ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert
           ((hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-            (fun y => hillDrivenChartPotential b y - a.mass ^ 2)) u W →
+            (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ))) u W →
         SolvesPotentialWaveOn
           ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert other₁ u W)
     (h₂ : ∀ (u : (Fin (d + 1) → ℝ) → ℝ) (W : Set (Fin (d + 1) → ℝ)), IsOpen W →
       SolvesPotentialWaveOn
           ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert
           ((hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-            (fun y => hillDrivenChartPotential b y - m₂ ^ 2)) u W →
+            (fun y => hillDrivenChartPotential b y - m₂ ^ (2 : ℕ))) u W →
         SolvesPotentialWaveOn
           ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert other₂ u W)
     (x : Fin (d + 1) → ℝ) :
-    (other₁ x - other₂ x) / (m₂ ^ 2 - a.mass ^ 2) = Real.exp (-2 * sigma x) := by
+    (other₁ x - other₂ x) / (m₂ ^ (2 : ℕ) - a.mass ^ (2 : ℕ)) = Real.exp (-2 * sigma x) := by
   have hspeed : (a.withMass m₂ hm₂).speed = a.speed := rfl
   have e₁ : other₁ = (hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-      (fun y => hillDrivenChartPotential b y - a.mass ^ 2) :=
+      (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) :=
     potential_eq_of_openProbes
       (regularOpenProbes_conformalRescale_hillSpeedChart_driven hK a hs b hreal hsigma).openProbes
       h₁
   have hsecond : RegularOpenProbes
       ((hillSpeedChart d a.speed hs).conformalRescale sigma hsigma).dalembert
       ((hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-        (fun y => hillDrivenChartPotential b y - m₂ ^ 2)) := by
+        (fun y => hillDrivenChartPotential b y - m₂ ^ (2 : ℕ))) := by
     have h := regularOpenProbes_conformalRescale_hillSpeedChart_driven hK
       (a.withMass m₂ hm₂) hs b hreal hsigma
     exact h
   have e₂ : other₂ = (hillSpeedChart d a.speed hs).conformalTransferPotential sigma
-      (fun y => hillDrivenChartPotential b y - m₂ ^ 2) :=
+      (fun y => hillDrivenChartPotential b y - m₂ ^ (2 : ℕ)) :=
     potential_eq_of_openProbes hsecond.openProbes h₂
   rw [e₁, e₂, conformalTransferPotential_sub]
   show Real.exp (-2 * sigma x) *
-      ((hillDrivenChartPotential b x - a.mass ^ 2) - (hillDrivenChartPotential b x - m₂ ^ 2)) /
-        (m₂ ^ 2 - a.mass ^ 2) = Real.exp (-2 * sigma x)
-  have hfac : (hillDrivenChartPotential b x - a.mass ^ 2) -
-      (hillDrivenChartPotential b x - m₂ ^ 2) = m₂ ^ 2 - a.mass ^ 2 := by ring
+      ((hillDrivenChartPotential b x - a.mass ^ (2 : ℕ)) - (hillDrivenChartPotential b x - m₂ ^ (2 : ℕ))) /
+        (m₂ ^ (2 : ℕ) - a.mass ^ (2 : ℕ)) = Real.exp (-2 * sigma x)
+  have hfac : (hillDrivenChartPotential b x - a.mass ^ (2 : ℕ)) -
+      (hillDrivenChartPotential b x - m₂ ^ (2 : ℕ)) = m₂ ^ (2 : ℕ) - a.mass ^ (2 : ℕ) := by ring
   rw [hfac, mul_div_assoc, div_self hmass, mul_one]
 
 end ScaleLaw

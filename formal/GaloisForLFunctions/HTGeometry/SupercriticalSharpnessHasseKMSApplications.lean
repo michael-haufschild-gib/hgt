@@ -41,7 +41,7 @@ theorem geometricLayerMass_quarter_eq_sprinkled_half (n : ℕ) :
 /-- Quarter-recovery tail is exactly the square of the half-recovery tail at every depth. -/
 theorem tsum_geometricLayerMass_quarter_shift_eq_sq_half_shift (N : ℕ) :
     (∑' k : ℕ, geometricLayerMass (1 / 4 : ℝ) (N + k)) =
-      (∑' k : ℕ, geometricLayerMass (1 / 2 : ℝ) (N + k)) ^ 2 := by
+      (∑' k : ℕ, geometricLayerMass (1 / 2 : ℝ) (N + k)) ^ (2 : ℕ) := by
   have hfun :
       (fun k : ℕ ↦ geometricLayerMass (1 / 4 : ℝ) (N + k)) =
         fun k : ℕ ↦ (1 / 4 : ℝ) ^ N * geometricLayerMass (1 / 4 : ℝ) k := by
@@ -51,7 +51,7 @@ theorem tsum_geometricLayerMass_quarter_shift_eq_sq_half_shift (N : ℕ) :
   rw [hfun, tsum_mul_left,
     tsum_geometricLayerMass_eq_one (q := (1 / 4 : ℝ)) (by norm_num) (by norm_num), mul_one]
   rw [tsum_geometricLayerMass_half_shift]
-  rw [show (1 / 4 : ℝ) = (1 / 2 : ℝ) ^ 2 by norm_num]
+  rw [show (1 / 4 : ℝ) = (1 / 2 : ℝ) ^ (2 : ℕ) by norm_num]
   rw [← pow_mul, ← pow_mul]
   congr 1
   omega

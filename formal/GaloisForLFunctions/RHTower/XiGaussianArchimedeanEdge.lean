@@ -98,8 +98,8 @@ theorem integrable_xiGaussianArchHorizontalIntegrand
     {y : ℝ} (hy : -c ≤ y ∧ y ≤ 0) (hyPole : y ≠ -(1 / 2)) :
     Integrable (xiGaussianArchHorizontalIntegrand t k y) := by
   let K : ℝ :=
-    Real.exp (t * ((1 / 2 - y) - 1 / 2) ^ 2) *
-      Real.exp (t / 2 * ((1 / 2 - y) - 1 / 2) ^ 2) *
+    Real.exp (t * ((1 / 2 - y) - 1 / 2) ^ (2 : ℕ)) *
+      Real.exp (t / 2 * ((1 / 2 - y) - 1 / 2) ^ (2 : ℕ)) *
         ((k.factorial : ℝ) / (t / 2) ^ k)
   let C : ℝ := xiMassArchVerticalGrowthConstant
   let M : ℝ := max 2 (1 / 2 + c)
@@ -111,16 +111,16 @@ theorem integrable_xiGaussianArchHorizontalIntegrand
     positivity
   have hC : 0 ≤ C := by
     exact xiMassArchVerticalGrowthConstant_nonneg
-  have hzero : Integrable (fun x : ℝ => Real.exp (-(t / 2 * x ^ 2))) :=
+  have hzero : Integrable (fun x : ℝ => Real.exp (-(t / 2 * x ^ (2 : ℕ)))) :=
     by simpa [neg_mul] using integrable_exp_neg_mul_sq hhalf
   have honeRaw : Integrable (fun x : ℝ =>
-      x * Real.exp (-(t / 2 * x ^ 2))) :=
+      x * Real.exp (-(t / 2 * x ^ (2 : ℕ)))) :=
     by simpa [neg_mul] using integrable_mul_exp_neg_mul_sq hhalf
   have hone : Integrable (fun x : ℝ =>
-      |x| * Real.exp (-(t / 2 * x ^ 2))) := by
+      |x| * Real.exp (-(t / 2 * x ^ (2 : ℕ)))) := by
     simpa [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)] using honeRaw.norm
   have hmajor : Integrable (fun x : ℝ =>
-      K * Real.exp (-(t / 2 * x ^ 2)) * (C + |x| / 2)) := by
+      K * Real.exp (-(t / 2 * x ^ (2 : ℕ))) * (C + |x| / 2)) := by
     have hsum := (hzero.const_mul (K * C)).add (hone.const_mul (K / 2))
     apply hsum.congr
     filter_upwards with x
@@ -137,7 +137,7 @@ theorem integrable_xiGaussianArchHorizontalIntegrand
     have hprofile0 := norm_xiGaussianTest_vertical_le ht k (1 / 2 - y) x
     have hprofile :
         ‖xiGaussianTestC t k ((x : ℂ) + (y : ℂ) * I)‖ ≤
-          K * Real.exp (-(t / 2 * x ^ 2)) := by
+          K * Real.exp (-(t / 2 * x ^ (2 : ℕ))) := by
       rw [norm_xiGaussianTestC_eq_norm_rotated]
       simpa only [K] using hprofile0
     have harch := norm_logDeriv_archFactor_xiMassArchVertical_le
@@ -310,8 +310,8 @@ private theorem norm_xiGaussianTestC_le_on_horizontal_strip_arch
     {t : ℝ} (ht : 0 < t) (n : ℕ) {a b x y : ℝ}
     (hy : y ∈ Set.uIoc a b) :
     ‖xiGaussianTestC t n ((x : ℂ) + (y : ℂ) * I)‖ ≤
-      (|a| + |b| + |x|) ^ (2 * n) * Real.exp (t * (|a| + |b|) ^ 2) *
-        Real.exp (-(t * x ^ 2)) := by
+      (|a| + |b| + |x|) ^ (2 * n) * Real.exp (t * (|a| + |b|) ^ (2 : ℕ)) *
+        Real.exp (-(t * x ^ (2 : ℕ))) := by
   rw [norm_xiGaussianTestC_eq_norm_rotated]
   have hyabs := abs_le_abs_add_abs_of_mem_uIoc_arch hy
   have hbound := norm_xiGaussianTest_le_of_strip ht n
@@ -323,11 +323,11 @@ private theorem norm_xiGaussianTestC_le_on_horizontal_strip_arch
 /-- Gaussian majorant for a finite completed-archimedean vertical edge. -/
 def xiGaussianArchVerticalMajorant
     (t : ℝ) (k : ℕ) (c R : ℝ) : ℝ :=
-  c * Real.exp (t * c ^ 2) *
+  c * Real.exp (t * c ^ (2 : ℕ)) *
     (xiMassArchVerticalGrowthConstant *
-        ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+        ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
       (1 / 2 : ℝ) *
-        ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))))
+        ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))))
 
 theorem xiGaussianArchVerticalMajorant_nonneg
     {t c : ℝ} (hc : 0 ≤ c) (k : ℕ) (R : ℝ) :
@@ -348,11 +348,11 @@ theorem norm_integral_xiGaussianArchVertical_le
   have hpoint : ∀ y ∈ uIoc (-c) 0,
       ‖xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I) *
         logDeriv archFactor (xiMassArchVerticalEulerPoint R y)‖ ≤
-      Real.exp (t * c ^ 2) *
+      Real.exp (t * c ^ (2 : ℕ)) *
         (xiMassArchVerticalGrowthConstant *
-            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
           (1 / 2 : ℝ) *
-            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)))) := by
+            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))))) := by
     intro y hy
     have hyIoc : y ∈ Ioc (-c) 0 := by
       simpa [uIoc_of_le (by linarith : -c ≤ 0)] using hy
@@ -360,8 +360,8 @@ theorem norm_integral_xiGaussianArchVertical_le
       (a := -c) (b := 0) (x := R) hy
     have hprofile :
         ‖xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I)‖ ≤
-          (c + |R|) ^ (2 * k) * Real.exp (t * c ^ 2) *
-            Real.exp (-(t * R ^ 2)) := by
+          (c + |R|) ^ (2 * k) * Real.exp (t * c ^ (2 : ℕ)) *
+            Real.exp (-(t * R ^ (2 : ℕ))) := by
       simpa [abs_of_pos hc0] using hprofile0
     have harch := norm_logDeriv_archFactor_xiMassArchVertical_le
       (c := c) (R := R) (y := y) ⟨hyIoc.1.le, hyIoc.2⟩ hR
@@ -371,53 +371,53 @@ theorem norm_integral_xiGaussianArchVertical_le
         (Real.exp_pos _).le) (Real.exp_pos _).le)).trans ?_
     have hbase : 0 ≤ c + |R| := by positivity
     have hRbase : |R| ≤ c + |R| := by linarith
-    have hpow : 0 ≤ (c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)) := by positivity
+    have hpow : 0 ≤ (c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))) := by positivity
     have hmul :
-        |R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) ≤
-          (c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)) := by
+        |R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) ≤
+          (c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))) := by
       calc
-        |R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) ≤
+        |R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) ≤
             (c + |R|) *
-              ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) :=
+              ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) :=
           mul_le_mul_of_nonneg_right hRbase hpow
-        _ = (c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)) := by
+        _ = (c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))) := by
           rw [pow_succ']
           ring
     have hC := xiMassArchVerticalGrowthConstant_nonneg
     calc
-      (c + |R|) ^ (2 * k) * Real.exp (t * c ^ 2) *
-          Real.exp (-(t * R ^ 2)) *
+      (c + |R|) ^ (2 * k) * Real.exp (t * c ^ (2 : ℕ)) *
+          Real.exp (-(t * R ^ (2 : ℕ))) *
           (xiMassArchVerticalGrowthConstant + |R| / 2) =
-        Real.exp (t * c ^ 2) *
-          (((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) *
+        Real.exp (t * c ^ (2 : ℕ)) *
+          (((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) *
             (xiMassArchVerticalGrowthConstant + |R| / 2)) := by ring
-      _ ≤ Real.exp (t * c ^ 2) *
+      _ ≤ Real.exp (t * c ^ (2 : ℕ)) *
         (xiMassArchVerticalGrowthConstant *
-            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
           (1 / 2 : ℝ) *
-            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2)))) := by
+            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ))))) := by
         apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
         calc
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) *
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) *
           (xiMassArchVerticalGrowthConstant + |R| / 2) =
             xiMassArchVerticalGrowthConstant *
-                ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+                ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
               (1 / 2 : ℝ) *
-                (|R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)))) := by ring
+                (|R| * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))))) := by ring
           _ ≤ xiMassArchVerticalGrowthConstant *
-                ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+                ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
               (1 / 2 : ℝ) *
-                ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))) := by
+                ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
             exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hmul (by norm_num))
   calc
     ‖∫ y in -c..0,
       xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I) *
         logDeriv archFactor (xiMassArchVerticalEulerPoint R y)‖ ≤
-      (Real.exp (t * c ^ 2) *
+      (Real.exp (t * c ^ (2 : ℕ)) *
         (xiMassArchVerticalGrowthConstant *
-            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+            ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
           (1 / 2 : ℝ) *
-            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))))) *
+            ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))))) *
         |0 - (-c)| :=
       intervalIntegral.norm_integral_le_of_norm_le_const hpoint
     _ = xiGaussianArchVerticalMajorant t k c R := by
@@ -433,13 +433,13 @@ theorem tendsto_xiGaussianArchVerticalMajorant_atTop
   have hsum :=
     (h0.const_mul xiMassArchVerticalGrowthConstant).add
       (h1.const_mul (1 / 2 : ℝ))
-  have hscaled := hsum.const_mul (c * Real.exp (t * c ^ 2))
+  have hscaled := hsum.const_mul (c * Real.exp (t * c ^ (2 : ℕ)))
   change Tendsto (fun R : ℝ =>
-    c * Real.exp (t * c ^ 2) *
+    c * Real.exp (t * c ^ (2 : ℕ)) *
       (xiMassArchVerticalGrowthConstant *
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) +
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) +
         (1 / 2 : ℝ) *
-          ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ 2))))) atTop (nhds 0)
+          ((c + |R|) ^ (2 * k + 1) * Real.exp (-(t * R ^ (2 : ℕ)))))) atTop (nhds 0)
   simpa only [mul_zero, add_zero] using hscaled
 
 theorem tendsto_integral_xiGaussianArchVertical_right_atTop
@@ -525,7 +525,7 @@ theorem integral_xiGaussianBottomArch_eq_centered_add_residue
 
 /-- Real Gaussian--Hermite density on the critical line. -/
 def xiGaussianHermiteProfile (t : ℝ) (k : ℕ) (x : ℝ) : ℝ :=
-  x ^ (2 * k) * Real.exp (-(t * x ^ 2))
+  x ^ (2 * k) * Real.exp (-(t * x ^ (2 : ℕ)))
 
 theorem xiGaussianTestC_ofReal (t : ℝ) (k : ℕ) (x : ℝ) :
     xiGaussianTestC t k (x : ℂ) = (xiGaussianHermiteProfile t k x : ℂ) := by

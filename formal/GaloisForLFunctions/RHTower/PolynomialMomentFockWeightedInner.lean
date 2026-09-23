@@ -76,7 +76,7 @@ theorem integral_polynomialMomentFockWeightedInner
     (integrable_polynomialMomentFockWeightedNormSq m hm (f + Complex.I • g)).ofReal
   have hcast (u : MomentFock) :
       (∫ z : ℂ, ((polynomialMomentFockWeightedNormSq m hm u z : ℝ) : ℂ)) =
-        ((‖u‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have hu := integrable_polynomialMomentFockWeightedNormSq m hm u
     change (∫ z : ℂ, Complex.ofRealCLM
       (polynomialMomentFockWeightedNormSq m hm u z)) = _

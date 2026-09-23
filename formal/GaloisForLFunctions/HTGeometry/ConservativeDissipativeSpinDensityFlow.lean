@@ -84,7 +84,7 @@ theorem spinMatrix_expectation_Z (m : EuclideanSpace ℝ (Fin 3)) :
 /-- Nonlinear conservative–dissipative quantum spin field: precession plus double-bracket damping. -/
 def spinDensityField (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (-Complex.I / 2) • (QuantumAlg.pauliZ * ρ - ρ * QuantumAlg.pauliZ) -
-    ((a ^ 2 / 2 : ℝ) : ℂ) •
+    ((a ^ (2 : ℕ) / 2 : ℝ) : ℂ) •
       (ρ * (ρ * QuantumAlg.pauliZ - QuantumAlg.pauliZ * ρ) -
         (ρ * QuantumAlg.pauliZ - QuantumAlg.pauliZ * ρ) * ρ)
 
@@ -104,7 +104,7 @@ theorem spinMatrixTangent_field (a : ℝ) (m : EuclideanSpace ℝ (Fin 3)) :
 /-- The state-dependent Lax generator exposes the isospectral form of spin damping. -/
 def spinDensityLax (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (-Complex.I / 2) • QuantumAlg.pauliZ +
-    ((a ^ 2 / 2 : ℝ) : ℂ) • (ρ * QuantumAlg.pauliZ - QuantumAlg.pauliZ * ρ)
+    ((a ^ (2 : ℕ) / 2 : ℝ) : ℂ) • (ρ * QuantumAlg.pauliZ - QuantumAlg.pauliZ * ρ)
 
 /-- Exact Lax commutator form; no Hermiticity or positivity premise is needed. -/
 theorem spinDensityField_lax (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) :
@@ -140,7 +140,7 @@ theorem spinMatrixTangent_expectation_Z (v : EuclideanSpace ℝ (Fin 3)) :
 /-- Quantum spin damping loses exactly the classical squared torque energy. -/
 theorem spinDensityField_energy (a : ℝ) (m : EuclideanSpace ℝ (Fin 3)) :
     (Matrix.trace (spinDensityField a (spinMatrix m) * QuantumAlg.pauliZ)).re =
-      -a ^ 2 * spinTorqueEnergy m := by
+      -a ^ (2 : ℕ) * spinTorqueEnergy m := by
   rw [← spinMatrixTangent_field, spinMatrixTangent_expectation_Z,
     spinSphereField_components, spinTorqueEnergy_components]
   rfl

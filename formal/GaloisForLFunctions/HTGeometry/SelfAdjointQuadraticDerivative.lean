@@ -45,7 +45,7 @@ theorem hasDerivAt_selfAdjoint_quadratic {v : ℝ → H} {v' : H} {x : ℝ}
 /-- The derivative of the squared norm along a path is twice the pairing with the velocity: the
 case `R = 1`. -/
 theorem hasDerivAt_norm_sq_along {v : ℝ → H} {v' : H} {x : ℝ} (hv : HasDerivAt v v' x) :
-    HasDerivAt (fun t : ℝ => ‖v t‖ ^ 2) (2 * inner ℝ v' (v x)) x := by
+    HasDerivAt (fun t : ℝ => ‖v t‖ ^ (2 : ℕ)) (2 * inner ℝ v' (v x)) x := by
   have hone : ContinuousLinearMap.adjoint (1 : H →L[ℝ] H) = 1 := by
     simp
   have h := hasDerivAt_selfAdjoint_quadratic hv hone

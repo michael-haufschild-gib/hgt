@@ -36,7 +36,7 @@ def coexactField (F : F4) (j : Fin 2) (x : P4) : ℂ :=
   if j=0 then coordDeriv 3 F x else -coordDeriv 2 F x
 
 def angularLap (F : F4) (x : P4) : ℂ :=
-  (x 3:ℂ)^2*(coordDeriv 2 (coordDeriv 2 F) x+coordDeriv 3 (coordDeriv 3 F) x)
+  (x 3:ℂ)^(2 : ℕ)*(coordDeriv 2 (coordDeriv 2 F) x+coordDeriv 3 (coordDeriv 3 F) x)
 
 /-- Bilinear angular transfer formed from actual scalar fields and derivatives. -/
 def greenPair (F G : F4) (j : Fin 2) (x : P4) : ℂ :=
@@ -85,7 +85,7 @@ theorem coexact_current (U W : F4) (x : P4)
     D4BMIngoingFullCurrent.current (x 1) (x 3)
       (fun a => ofField (coexactField U a) x) (fun a => ofField (coexactField W a) x)
       (angularIndex j)=
-      1/(x 1:ℂ)^2*((((x 1:ℂ)^2-1)*greenPair (coordDeriv 1 U) (coordDeriv 1 W) j x)+
+      1/(x 1:ℂ)^(2 : ℕ)*((((x 1:ℂ)^(2 : ℕ)-1)*greenPair (coordDeriv 1 U) (coordDeriv 1 W) j x)+
         greenPair (coordDeriv 1 U) (coordDeriv 0 W) j x+
         greenPair (coordDeriv 0 U) (coordDeriv 1 W) j x) := by
   have hU2 := hU.of_le (show (2:ℕ∞ω)≤3 by norm_num)
@@ -171,7 +171,7 @@ theorem original_current (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     D4BMIngoingFullCurrent.current (x.val 1) (x.val 3)
       (fun a => ofField (D4BMActualIngoingCurrent.originalStream q branch amp a) x.val)
       (fun a => ofField (coexactField W a) x.val) (angularIndex j)=
-      1/(x.val 1:ℂ)^2*((((x.val 1:ℂ)^2-1)*
+      1/(x.val 1:ℂ)^(2 : ℕ)*((((x.val 1:ℂ)^(2 : ℕ)-1)*
         greenPair (coordDeriv 1 (sourceScalar q branch amp)) (coordDeriv 1 W) j x.val)+
         greenPair (coordDeriv 1 (sourceScalar q branch amp)) (coordDeriv 0 W) j x.val+
         greenPair (coordDeriv 0 (sourceScalar q branch amp)) (coordDeriv 1 W) j x.val) := by
@@ -338,7 +338,7 @@ theorem original_physical_current (q r : XiZeroCopy) (branch side outer : Bool) 
     D4BMIngoingFullCurrent.current (x.val 1) (x.val 3)
       (fun a => ofField (D4BMActualIngoingCurrent.originalStream q branch amp a) x.val)
       (fun a => ofField (leftStream r side outer a) x.val) (angularIndex j)=
-      1/(x.val 1:ℂ)^2*((((x.val 1:ℂ)^2-1)*
+      1/(x.val 1:ℂ)^(2 : ℕ)*((((x.val 1:ℂ)^(2 : ℕ)-1)*
         greenPair (coordDeriv 1 (sourceScalar q branch amp))
           (coordDeriv 1 (leftScalar r side outer)) j x.val)+
         greenPair (coordDeriv 1 (sourceScalar q branch amp))
@@ -360,7 +360,7 @@ theorem original_physical_metric_current (q r : XiZeroCopy)
       (D4BMActualIngoingCurrent.originalStaticStream q branch amp)
       (physicalLeftModeStream r (D4BMLeftModeRadialEquation.frequency r side) outer)
         (angularIndex j)=
-      1/(x.val 1:ℂ)^2*((((x.val 1:ℂ)^2-1)*
+      1/(x.val 1:ℂ)^(2 : ℕ)*((((x.val 1:ℂ)^(2 : ℕ)-1)*
         greenPair (coordDeriv 1 (sourceScalar q branch amp))
           (coordDeriv 1 (leftScalar r side outer)) j (D4BMActualIngoingCurrent.ingoingPoint x.val))+
         greenPair (coordDeriv 1 (sourceScalar q branch amp))

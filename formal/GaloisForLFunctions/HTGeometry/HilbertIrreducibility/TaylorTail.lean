@@ -6,7 +6,7 @@ remainder `x ^ (L+1) * F x`, so
 
   `t ^ L * g t⁻¹ = Poly.eval t + t⁻¹ * F t⁻¹`,  `Poly.natDegree ≤ L`.
 
-Differentiating `L + 1` times kills `Poly`, and the recursion `A_{j+1} x = -x^2 * A_j' x`
+Differentiating `L + 1` times kills `Poly`, and the recursion `A_{j+1} x = -x^(2 : ℕ) * A_j' x`
 (`tailSeq`) transports `d/dt` through `t ↦ t⁻¹`, so the `(L+1)`-st derivative of the left-hand side
 is `A_{L+1} t⁻¹`, whose analytic order at `0` is `k + L + 3` where `k` is the order of `F`.  This
 gives a two-sided control of the top derivative, which the divided-difference estimate converts into
@@ -29,15 +29,15 @@ open Filter Topology Polynomial
 
 /-! ### The derivative recursion through `t ↦ t⁻¹` -/
 
-/-- The recursion `A_{j+1}(x) = -x^2 * A_j'(x)`, which transports `d/dt` through `t ↦ t⁻¹`. -/
+/-- The recursion `A_{j+1}(x) = -x^(2 : ℕ) * A_j'(x)`, which transports `d/dt` through `t ↦ t⁻¹`. -/
 noncomputable def tailSeq (F : ℝ → ℝ) : ℕ → (ℝ → ℝ)
   | 0 => fun x => x * F x
-  | (j + 1) => fun x => -(x ^ 2 * deriv (tailSeq F j) x)
+  | (j + 1) => fun x => -(x ^ (2 : ℕ) * deriv (tailSeq F j) x)
 
 theorem tailSeq_zero (F : ℝ → ℝ) : tailSeq F 0 = fun x => x * F x := rfl
 
 theorem tailSeq_succ (F : ℝ → ℝ) (j : ℕ) :
-    tailSeq F (j + 1) = fun x => -(x ^ 2 * deriv (tailSeq F j) x) := rfl
+    tailSeq F (j + 1) = fun x => -(x ^ (2 : ℕ) * deriv (tailSeq F j) x) := rfl
 
 theorem analyticAt_tailSeq {F : ℝ → ℝ} (hF : AnalyticAt ℝ F 0) (j : ℕ) :
     AnalyticAt ℝ (tailSeq F j) 0 := by
@@ -47,8 +47,8 @@ theorem analyticAt_tailSeq {F : ℝ → ℝ} (hF : AnalyticAt ℝ F 0) (j : ℕ)
       rw [tailSeq_succ]
       exact (((analyticAt_id).pow 2).mul ih.deriv).neg
 
-theorem analyticOrderAt_sq : analyticOrderAt (fun x : ℝ => x ^ 2) 0 = ((2 : ℕ) : ℕ∞) := by
-  have hfun : (fun x : ℝ => x ^ 2) = (id : ℝ → ℝ) ^ 2 := by funext x; simp
+theorem analyticOrderAt_sq : analyticOrderAt (fun x : ℝ => x ^ (2 : ℕ)) 0 = ((2 : ℕ) : ℕ∞) := by
+  have hfun : (fun x : ℝ => x ^ (2 : ℕ)) = (id : ℝ → ℝ) ^ (2 : ℕ) := by funext x; simp
   rw [hfun, analyticOrderAt_pow analyticAt_id, analyticOrderAt_id]
   simp
 
@@ -68,14 +68,14 @@ theorem analyticOrderAt_tailSeq {F : ℝ → ℝ} (hF : AnalyticAt ℝ F 0) {k :
         refine analyticOrderAt_deriv_of_pos (analyticAt_tailSeq hF j) (n := k + j) ?_
         rw [ih]; push_cast; ring
       rw [tailSeq_succ]
-      have hneg : analyticOrderAt (fun x : ℝ => -(x ^ 2 * deriv (tailSeq F j) x)) 0
-          = analyticOrderAt (fun x : ℝ => x ^ 2 * deriv (tailSeq F j) x) 0 := by
-        have h : (fun x : ℝ => -(x ^ 2 * deriv (tailSeq F j) x))
-            = -(fun x : ℝ => x ^ 2 * deriv (tailSeq F j) x) := by funext x; rfl
+      have hneg : analyticOrderAt (fun x : ℝ => -(x ^ (2 : ℕ) * deriv (tailSeq F j) x)) 0
+          = analyticOrderAt (fun x : ℝ => x ^ (2 : ℕ) * deriv (tailSeq F j) x) 0 := by
+        have h : (fun x : ℝ => -(x ^ (2 : ℕ) * deriv (tailSeq F j) x))
+            = -(fun x : ℝ => x ^ (2 : ℕ) * deriv (tailSeq F j) x) := by funext x; rfl
         rw [h, analyticOrderAt_neg]
       rw [hneg]
-      have hmul : (fun x : ℝ => x ^ 2 * deriv (tailSeq F j) x)
-          = (fun x : ℝ => x ^ 2) * deriv (tailSeq F j) := by funext x; rfl
+      have hmul : (fun x : ℝ => x ^ (2 : ℕ) * deriv (tailSeq F j) x)
+          = (fun x : ℝ => x ^ (2 : ℕ)) * deriv (tailSeq F j) := by funext x; rfl
       rw [hmul, analyticOrderAt_mul (by fun_prop) (analyticAt_tailSeq hF j).deriv,
         analyticOrderAt_sq, hder]
       push_cast
@@ -85,12 +85,12 @@ theorem analyticOrderAt_tailSeq {F : ℝ → ℝ} (hF : AnalyticAt ℝ F 0) {k :
 theorem hasDerivAt_tailSeq_inv {F : ℝ → ℝ} {j : ℕ} {t : ℝ} (ht : t ≠ 0)
     (hA : AnalyticAt ℝ (tailSeq F j) t⁻¹) :
     HasDerivAt (fun s : ℝ => tailSeq F j s⁻¹) (tailSeq F (j + 1) t⁻¹) t := by
-  have hinv : HasDerivAt (fun s : ℝ => s⁻¹) (-(t ^ 2)⁻¹) t := hasDerivAt_inv ht
+  have hinv : HasDerivAt (fun s : ℝ => s⁻¹) (-(t ^ (2 : ℕ))⁻¹) t := hasDerivAt_inv ht
   have houter : HasDerivAt (tailSeq F j) (deriv (tailSeq F j) t⁻¹) t⁻¹ :=
     hA.differentiableAt.hasDerivAt
   have hcomp := houter.comp t hinv
-  have hval : deriv (tailSeq F j) t⁻¹ * -(t ^ 2)⁻¹ = tailSeq F (j + 1) t⁻¹ := by
-    show _ = -((t⁻¹) ^ 2 * deriv (tailSeq F j) t⁻¹)
+  have hval : deriv (tailSeq F j) t⁻¹ * -(t ^ (2 : ℕ))⁻¹ = tailSeq F (j + 1) t⁻¹ := by
+    show _ = -((t⁻¹) ^ (2 : ℕ) * deriv (tailSeq F j) t⁻¹)
     rw [inv_pow]
     ring
   simpa [Function.comp_def, hval] using hcomp

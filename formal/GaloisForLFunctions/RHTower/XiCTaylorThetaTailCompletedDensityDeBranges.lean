@@ -21,18 +21,18 @@ noncomputable section
 
 /-- The damped one-sided component selected by the completed density reflection. -/
 def thetaCuspTailSecondDensityDeBrangesE (z : ℂ) : ℂ :=
-  (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseValue z - 1 / 4
+  (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseValue z - 1 / 4
 
 /-- The reflected, growing one-sided component. -/
 def thetaCuspTailSecondDensityDeBrangesESharp (z : ℂ) : ℂ :=
-  (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseValue (-z) - 1 / 4
+  (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseValue (-z) - 1 / 4
 
 /-- The two one-sided components reconstruct the completed critical-line transform exactly. -/
 theorem thetaCuspTailSecondDensityDeBrangesE_add_sharp
     {z : ℂ} (hz : |z.im| < 1) :
     thetaCuspTailSecondDensityDeBrangesE z +
         thetaCuspTailSecondDensityDeBrangesESharp z =
-      4 * z ^ 2 * XiC z := by
+      4 * z ^ (2 : ℕ) * XiC z := by
   have h := thetaCuspTailSecondDensityPhaseValue_twoSided_crossed hz
   unfold thetaCuspTailSecondDensityDeBrangesE
     thetaCuspTailSecondDensityDeBrangesESharp
@@ -100,7 +100,7 @@ theorem thetaCuspTailSecondDensityDeBrangesGap_eq_polarizedCurrent
     thetaCuspTailSecondDensityDeBrangesGap z =
       ((thetaCuspTailSecondDensityDeBrangesE z -
           thetaCuspTailSecondDensityDeBrangesESharp z) *
-        starRingEnd ℂ (4 * z ^ 2 * XiC z)).re := by
+        starRingEnd ℂ (4 * z ^ (2 : ℕ) * XiC z)).re := by
   rw [← thetaCuspTailSecondDensityDeBrangesE_add_sharp hz]
   unfold thetaCuspTailSecondDensityDeBrangesGap
   simp only [Complex.normSq_apply, Complex.mul_re, Complex.sub_re,
@@ -297,7 +297,7 @@ theorem thetaCuspTailSecondDensityDeBrangesE_im_ofReal_pos
     {t : ℝ} (ht : 0 < t) :
     0 < (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im := by
   have hF := thetaCuspTailSecondDensityPhaseValue_im_ofReal_pos ht
-  have hq : (t : ℂ) ^ 2 + 1 / 4 = ((t ^ 2 + 1 / 4 : ℝ) : ℂ) := by
+  have hq : (t : ℂ) ^ (2 : ℕ) + 1 / 4 = ((t ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) := by
     push_cast
     ring
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -427,7 +427,7 @@ theorem XiC_I_mul_eq_xi_real (v : ℝ) :
 theorem thetaCuspTailSecondDensityDeBrangesE_I_mul
     (v : ℝ) :
     thetaCuspTailSecondDensityDeBrangesE (I * (v : ℂ)) =
-      (((1 / 4 - v ^ 2) * thetaCuspTailSecondDensityRealLaplace v -
+      (((1 / 4 - v ^ (2 : ℕ)) * thetaCuspTailSecondDensityRealLaplace v -
         1 / 4 : ℝ) : ℂ) := by
   unfold thetaCuspTailSecondDensityDeBrangesE
   rw [thetaCuspTailSecondDensityPhaseValue_I_mul v]
@@ -439,7 +439,7 @@ theorem thetaCuspTailSecondDensityDeBrangesE_I_mul
 theorem thetaCuspTailSecondDensityDeBrangesESharp_I_mul
     (v : ℝ) :
     thetaCuspTailSecondDensityDeBrangesESharp (I * (v : ℂ)) =
-      (((1 / 4 - v ^ 2) * thetaCuspTailSecondDensityRealLaplace (-v) -
+      (((1 / 4 - v ^ (2 : ℕ)) * thetaCuspTailSecondDensityRealLaplace (-v) -
         1 / 4 : ℝ) : ℂ) := by
   unfold thetaCuspTailSecondDensityDeBrangesESharp
   rw [show -(I * (v : ℂ)) = I * ((-v : ℝ) : ℂ) by push_cast; ring]
@@ -455,10 +455,10 @@ theorem thetaCuspTailSecondDensityDeBrangesGap_I_mul_pos
     {v : ℝ} (hv0 : 0 < v) (hvhalf : v < 1 / 2) :
     0 < thetaCuspTailSecondDensityDeBrangesGap (I * (v : ℂ)) := by
   let A : ℝ :=
-    (1 / 4 - v ^ 2) * thetaCuspTailSecondDensityRealLaplace v - 1 / 4
+    (1 / 4 - v ^ (2 : ℕ)) * thetaCuspTailSecondDensityRealLaplace v - 1 / 4
   let B : ℝ :=
-    (1 / 4 - v ^ 2) * thetaCuspTailSecondDensityRealLaplace (-v) - 1 / 4
-  have hq : 0 < 1 / 4 - v ^ 2 := by nlinarith
+    (1 / 4 - v ^ (2 : ℕ)) * thetaCuspTailSecondDensityRealLaplace (-v) - 1 / 4
+  have hq : 0 < 1 / 4 - v ^ (2 : ℕ) := by nlinarith
   have hL := thetaCuspTailSecondDensityRealLaplace_lt_neg hv0 (by linarith)
   have hAB : A < B := by
     dsimp [A, B]
@@ -476,7 +476,7 @@ theorem thetaCuspTailSecondDensityDeBrangesGap_I_mul_pos
   have hxiIm : (XiC (I * (v : ℂ))).im = 0 := by
     rw [XiC_I_mul_eq_xi_real]
     exact xi_real_on_real_anchor (by linarith) (by linarith)
-  have hzsq : (I * (v : ℂ)) ^ 2 = -((v ^ 2 : ℝ) : ℂ) := by
+  have hzsq : (I * (v : ℂ)) ^ (2 : ℕ) = -((v ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring_nf
     rw [I_sq]
@@ -491,18 +491,18 @@ theorem thetaCuspTailSecondDensityDeBrangesGap_I_mul_pos
     rw [thetaCuspTailSecondDensityDeBrangesE_I_mul v,
       thetaCuspTailSecondDensityDeBrangesESharp_I_mul v] at hsum
     have hsum' : ((A + B : ℝ) : ℂ) =
-        ((-4 * v ^ 2 * X : ℝ) : ℂ) := by
+        ((-4 * v ^ (2 : ℕ) * X : ℝ) : ℂ) := by
       rw [Complex.ofReal_add]
       dsimp [A, B]
       calc
-        _ = 4 * (I * (v : ℂ)) ^ 2 * XiC (I * (v : ℂ)) := hsum
+        _ = 4 * (I * (v : ℂ)) ^ (2 : ℕ) * XiC (I * (v : ℂ)) := hsum
         _ = _ := by rw [hzsq, hxiEq]; push_cast; ring
     have hsumRe := congrArg Complex.re hsum'
-    have hsumRe' : A + B = -4 * v ^ 2 * X := by
+    have hsumRe' : A + B = -4 * v ^ (2 : ℕ) * X := by
       simpa only [ofReal_re] using hsumRe
-    have hrightpos : 0 < 4 * v ^ 2 * X :=
+    have hrightpos : 0 < 4 * v ^ (2 : ℕ) * X :=
       mul_pos (mul_pos (by norm_num) (sq_pos_of_pos hv0)) hXpos
-    have hrightneg : -4 * v ^ 2 * X < 0 := by nlinarith
+    have hrightneg : -4 * v ^ (2 : ℕ) * X < 0 := by nlinarith
     linarith
   have hprod : 0 < (A - B) * (A + B) :=
     mul_pos_of_neg_of_neg (sub_neg.mpr hAB) hsumneg

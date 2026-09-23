@@ -13,17 +13,17 @@ open Real Filter
 namespace GaloisForLFunctions.HTGeometry
 
 def egbPressureAD1 (T Q a r : ℝ) : ℝ :=
-  -T / (2 * r ^ 2) - 3 * a ^ 2 * T / r ^ 4 + 1 / (4 * Real.pi * r ^ 3) - (Q ^ 2 + a ^ 2) / (2 * Real.pi * r ^ 5)
+  -T / (2 * r ^ (2 : ℕ)) - 3 * a ^ (2 : ℕ) * T / r ^ (4 : ℕ) + 1 / (4 * Real.pi * r ^ (3 : ℕ)) - (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (2 * Real.pi * r ^ (5 : ℕ))
 def egbPressureAD2 (T Q a r : ℝ) : ℝ :=
-  T / r ^ 3 + 12 * a ^ 2 * T / r ^ 5 - 3 / (4 * Real.pi * r ^ 4) + 5 * (Q ^ 2 + a ^ 2) / (2 * Real.pi * r ^ 6)
+  T / r ^ (3 : ℕ) + 12 * a ^ (2 : ℕ) * T / r ^ (5 : ℕ) - 3 / (4 * Real.pi * r ^ (4 : ℕ)) + 5 * (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (2 * Real.pi * r ^ (6 : ℕ))
 
 theorem egbPressureA_hasDerivAt (T Q a x : ℝ) :
     HasDerivAt (egbPressureA T Q a) (egbPressureAD1 T Q a (exp x)) (exp x) := by
   have hi := hasDerivAt_id (exp x)
   have h₁ := (hasDerivAt_const (exp x) T).div (hi.const_mul 2) (by simp only [id_eq]; positivity)
-  have h₂ := (hasDerivAt_const (exp x) (a ^ 2 * T)).div (hi.pow 3) (by simp only [Pi.pow_apply, id_eq]; positivity)
+  have h₂ := (hasDerivAt_const (exp x) (a ^ (2 : ℕ) * T)).div (hi.pow 3) (by simp only [Pi.pow_apply, id_eq]; positivity)
   have h₃ := (hasDerivAt_const (exp x) (1 : ℝ)).div ((hi.pow 2).const_mul (8 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
-  have h₄ := (hasDerivAt_const (exp x) (Q ^ 2 + a ^ 2)).div ((hi.pow 4).const_mul (8 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
+  have h₄ := (hasDerivAt_const (exp x) (Q ^ (2 : ℕ) + a ^ (2 : ℕ))).div ((hi.pow 4).const_mul (8 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
   have h := ((h₁.add h₂).sub h₃).add h₄
   apply h.congr_deriv
   unfold egbPressureAD1
@@ -35,9 +35,9 @@ theorem egbPressureAD1_hasDerivAt (T Q a x : ℝ) :
     HasDerivAt (egbPressureAD1 T Q a) (egbPressureAD2 T Q a (exp x)) (exp x) := by
   have hi := hasDerivAt_id (exp x)
   have h₁ := (hasDerivAt_const (exp x) (-T)).div ((hi.pow 2).const_mul 2) (by simp only [Pi.pow_apply, id_eq]; positivity)
-  have h₂ := (hasDerivAt_const (exp x) (3 * a ^ 2 * T)).div (hi.pow 4) (by simp only [Pi.pow_apply, id_eq]; positivity)
+  have h₂ := (hasDerivAt_const (exp x) (3 * a ^ (2 : ℕ) * T)).div (hi.pow 4) (by simp only [Pi.pow_apply, id_eq]; positivity)
   have h₃ := (hasDerivAt_const (exp x) (1 : ℝ)).div ((hi.pow 3).const_mul (4 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
-  have h₄ := (hasDerivAt_const (exp x) (Q ^ 2 + a ^ 2)).div ((hi.pow 5).const_mul (2 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
+  have h₄ := (hasDerivAt_const (exp x) (Q ^ (2 : ℕ) + a ^ (2 : ℕ))).div ((hi.pow 5).const_mul (2 * Real.pi)) (by simp only [Pi.pow_apply, id_eq]; positivity)
   have h := ((h₁.sub h₂).add h₃).sub h₄
   apply h.congr_deriv
   unfold egbPressureAD2
@@ -84,9 +84,9 @@ theorem egbCriticalA_pressure_inflection (x θ : ℝ) :
 
 /-- Reduced external temperature t and positive reduced radius exp v. -/
 def egbReducedPressureA (θ t v : ℝ) : ℝ :=
-  (8 * t / exp v + 16 * egbCriticalAShape θ * t / exp v ^ 3 -
-      6 * (1 + 2 * egbCriticalAShape θ) / exp v ^ 2 +
-        (1 - 6 * egbCriticalAShape θ) / exp v ^ 4) / (3 - 2 * egbCriticalAShape θ)
+  (8 * t / exp v + 16 * egbCriticalAShape θ * t / exp v ^ (3 : ℕ) -
+      6 * (1 + 2 * egbCriticalAShape θ) / exp v ^ (2 : ℕ) +
+        (1 - 6 * egbCriticalAShape θ) / exp v ^ (4 : ℕ)) / (3 - 2 * egbCriticalAShape θ)
 
 theorem egbPressureA_reduced_equation (x θ t v : ℝ) :
     egbPressureA (t * egbCriticalATemperature x θ) (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) (exp x * exp v) /

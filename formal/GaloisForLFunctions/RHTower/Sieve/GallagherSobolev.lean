@@ -12,7 +12,7 @@ interval, `f(a) = f(x) + ∫_x^a f'`, so `|f(a)| ≤ |f(x)| + ∫_{a-h}^{a+h} |f
 in `x` over an interval of length `2h` gives the statement.
 
 This is the analytic core of Gallagher's proof of the large sieve.  Applied to `|S|²` at separated
-points, the intervals are disjoint and the averages assemble into `∫_0^1 |S|²` and `∫_0^1 |S| |S'|`,
+points, the intervals are disjoint and the averages assemble into `∫_0^(1 : ℕ) |S|²` and `∫_0^(1 : ℕ) |S| |S'|`,
 which Parseval evaluates — giving a constant of the sharp shape `N + δ^{-1}`, with no logarithm.
 That is the route past the obstruction `sum_inv_abs_dist_le` identifies for absolute-value
 arguments: it never forms a sum of reciprocal separations at all.

@@ -29,9 +29,9 @@ theorem confocalDefectEnvelope_le_two_mul_bound
 /-- Exact finite-scale form of the squared-amplitude recession. -/
 theorem mul_confocalAmplitudeEnvelope_sq_sub_one_eq
     (S : Set ℂ) {R : ℝ} (hR : 0 < R) :
-    R * (confocalAmplitudeEnvelope S R ^ 2 - 1) =
+    R * (confocalAmplitudeEnvelope S R ^ (2 : ℕ) - 1) =
       2 * confocalDefectEnvelope S R +
-        confocalDefectEnvelope S R ^ 2 / R := by
+        confocalDefectEnvelope S R ^ (2 : ℕ) / R := by
   rw [confocalAmplitudeEnvelope]
   field_simp [hR.ne']
   ring
@@ -43,11 +43,11 @@ theorem mul_confocalAmplitudeEnvelope_sq_sub_one_error_bounds
     {S : Set ℂ} (hne : S.Nonempty) {M R : ℝ}
     (hM : 0 ≤ M) (hRM : M < R) (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     0 ≤
-        R * (confocalAmplitudeEnvelope S R ^ 2 - 1) -
+        R * (confocalAmplitudeEnvelope S R ^ (2 : ℕ) - 1) -
           2 * transverseDefectEnvelope S ∧
-      R * (confocalAmplitudeEnvelope S R ^ 2 - 1) -
+      R * (confocalAmplitudeEnvelope S R ^ (2 : ℕ) - 1) -
           2 * transverseDefectEnvelope S ≤
-        M ^ 2 / (R - M) + 4 * M ^ 2 / R := by
+        M ^ (2 : ℕ) / (R - M) + 4 * M ^ (2 : ℕ) / R := by
   let D : ℝ := confocalDefectEnvelope S R
   let delta : ℝ := transverseDefectEnvelope S
   have hR : 0 < R := hM.trans_lt hRM
@@ -57,25 +57,25 @@ theorem mul_confocalAmplitudeEnvelope_sq_sub_one_error_bounds
     exact confocalDefectEnvelope_nonneg hne hR.le hbound
   have hD2M : D ≤ 2 * M := by
     exact confocalDefectEnvelope_le_two_mul_bound hne hR.le hbound
-  have hDsq : D ^ 2 ≤ 4 * M ^ 2 := by nlinarith
+  have hDsq : D ^ (2 : ℕ) ≤ 4 * M ^ (2 : ℕ) := by nlinarith
   have hgap0 : 0 ≤ D - delta := by
     simpa only [D, delta] using sub_nonneg.mpr hcollar.1
-  have hgap : D - delta ≤ M ^ 2 / (2 * (R - M)) := by
+  have hgap : D - delta ≤ M ^ (2 : ℕ) / (2 * (R - M)) := by
     dsimp only [D, delta]
     linarith [hcollar.2]
   rw [mul_confocalAmplitudeEnvelope_sq_sub_one_eq S hR]
-  change 0 ≤ 2 * D + D ^ 2 / R - 2 * delta ∧
-    2 * D + D ^ 2 / R - 2 * delta ≤
-      M ^ 2 / (R - M) + 4 * M ^ 2 / R
+  change 0 ≤ 2 * D + D ^ (2 : ℕ) / R - 2 * delta ∧
+    2 * D + D ^ (2 : ℕ) / R - 2 * delta ≤
+      M ^ (2 : ℕ) / (R - M) + 4 * M ^ (2 : ℕ) / R
   constructor
-  · have hdiv0 : 0 ≤ D ^ 2 / R := div_nonneg (sq_nonneg D) hR.le
+  · have hdiv0 : 0 ≤ D ^ (2 : ℕ) / R := div_nonneg (sq_nonneg D) hR.le
     linarith
-  · have hgap2 : 2 * (D - delta) ≤ M ^ 2 / (R - M) := by
+  · have hgap2 : 2 * (D - delta) ≤ M ^ (2 : ℕ) / (R - M) := by
       have hden : 0 < R - M := sub_pos.mpr hRM
       calc
-        2 * (D - delta) ≤ 2 * (M ^ 2 / (2 * (R - M))) := by linarith
-        _ = M ^ 2 / (R - M) := by field_simp [hden.ne']
-    have hdiv : D ^ 2 / R ≤ 4 * M ^ 2 / R :=
+        2 * (D - delta) ≤ 2 * (M ^ (2 : ℕ) / (2 * (R - M))) := by linarith
+        _ = M ^ (2 : ℕ) / (R - M) := by field_simp [hden.ne']
+    have hdiv : D ^ (2 : ℕ) / R ≤ 4 * M ^ (2 : ℕ) / R :=
       div_le_div_of_nonneg_right hDsq hR.le
     linarith
 
@@ -86,8 +86,8 @@ theorem mul_one_sub_confocalAbelRadius_eq
     (hM : 0 ≤ M) (hRM : M < R) (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     R * (1 - confocalAbelRadius S R) =
       (2 * confocalDefectEnvelope S R +
-          confocalDefectEnvelope S R ^ 2 / R) /
-        (1 + confocalDefectEnvelope S R / R) ^ 2 := by
+          confocalDefectEnvelope S R ^ (2 : ℕ) / R) /
+        (1 + confocalDefectEnvelope S R / R) ^ (2 : ℕ) := by
   let B : ℝ := confocalAmplitudeEnvelope S R
   have hR : 0 < R := hM.trans_lt hRM
   have hD0 : 0 ≤ confocalDefectEnvelope S R :=
@@ -96,16 +96,16 @@ theorem mul_one_sub_confocalAbelRadius_eq
     dsimp only [B, confocalAmplitudeEnvelope]
     positivity
   calc
-    R * (1 - confocalAbelRadius S R) = R * (B ^ 2 - 1) / B ^ 2 := by
+    R * (1 - confocalAbelRadius S R) = R * (B ^ (2 : ℕ) - 1) / B ^ (2 : ℕ) := by
       rw [confocalAbelRadius]
-      change R * (1 - (B ^ 2)⁻¹) = R * (B ^ 2 - 1) / B ^ 2
+      change R * (1 - (B ^ (2 : ℕ))⁻¹) = R * (B ^ (2 : ℕ) - 1) / B ^ (2 : ℕ)
       field_simp [hB.ne']
     _ = (2 * confocalDefectEnvelope S R +
-          confocalDefectEnvelope S R ^ 2 / R) / B ^ 2 := by
+          confocalDefectEnvelope S R ^ (2 : ℕ) / R) / B ^ (2 : ℕ) := by
       rw [mul_confocalAmplitudeEnvelope_sq_sub_one_eq S hR]
     _ = (2 * confocalDefectEnvelope S R +
-          confocalDefectEnvelope S R ^ 2 / R) /
-        (1 + confocalDefectEnvelope S R / R) ^ 2 := by
+          confocalDefectEnvelope S R ^ (2 : ℕ) / R) /
+        (1 + confocalDefectEnvelope S R / R) ^ (2 : ℕ) := by
       rfl
 
 end

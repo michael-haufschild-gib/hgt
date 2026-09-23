@@ -58,10 +58,10 @@ theorem continuous_kgSynthesis_event {F : ℝ → E → ℂ} {B : E → ℝ}
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **The second-derivative density is continuous in time.** -/
 theorem continuous_hillDensitySecond_time (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (ξ : E) :
     Continuous fun t : ℝ => hillDensitySecond m c G₀ t ξ := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hflow : Continuous (hillFlow (massiveFreq m c ‖ξ‖) (1, 0)) :=
     continuous_hillFlow (continuous_massiveFreq hc m ‖ξ‖) hM1 hMb (1, 0)
@@ -69,7 +69,7 @@ theorem continuous_hillDensitySecond_time (hm : 0 < m) (hc : Continuous c)
     continuous_fst.comp hflow
   have hfreq : Continuous fun t : ℝ => massiveFreq m c ‖ξ‖ t := continuous_massiveFreq hc m ‖ξ‖
   have hprod : Continuous fun t : ℝ =>
-      (-(massiveFreq m c ‖ξ‖ t ^ 2) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) :=
+      (-(massiveFreq m c ‖ξ‖ t ^ (2 : ℕ)) * hillSolution (massiveFreq m c ‖ξ‖) (1, 0) t : ℝ) :=
     ((hfreq.pow 2).neg).mul hsol
   exact (Complex.continuous_ofReal.comp hprod).mul continuous_const
 

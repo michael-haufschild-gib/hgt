@@ -123,7 +123,7 @@ family lies strictly outside the unit circle, the paired Li sums are positive fo
 large `n`. -/
 theorem exists_ge_re_tsum_liTerm_pos
     (hm : ∀ i, 1 ≤ m i) (hv : ∀ i, 1 ≤ ‖v i‖) (hM : ∀ i, ‖v i‖ ≤ M)
-    (hs : Summable fun i => m i * ‖v i - 1‖ ^ 2) (hnr : ∀ i, (v i).im ≠ 0)
+    (hs : Summable fun i => m i * ‖v i - 1‖ ^ (2 : ℕ)) (hnr : ∀ i, (v i).im ≠ 0)
     {i₀ : ι} (hlt : 1 < ‖v i₀‖) (N : ℕ) :
     ∃ n : ℕ, N ≤ n ∧ 0 < ∑' i, m i * (liTerm (v i) n).re := by
   classical
@@ -204,7 +204,7 @@ theorem exists_ge_re_tsum_liTerm_pos
   have hε0 : 0 < ε := by rw [hεdef]; exact div_pos (by linarith) (by positivity)
   have hc₀ : 0 < c₀ := by rw [hc₀def]; linarith
   -- the error terms tend to zero relative to `R^n`
-  set C : ℝ := ∑' i, m i * ‖v i - 1‖ ^ 2 with hCdef
+  set C : ℝ := ∑' i, m i * ‖v i - 1‖ ^ (2 : ℕ) with hCdef
   clear_value C
   have hC0 : 0 ≤ C := by
     rw [hCdef]
@@ -217,17 +217,17 @@ theorem exists_ge_re_tsum_liTerm_pos
     have hr0 : 0 ≤ ‖v i‖ / R := by positivity
     have hr1 : ‖v i‖ / R < 1 := by rw [div_lt_one hR0]; exact hElt i hi
     exact (tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1).const_mul _
-  have hlimT : Filter.Tendsto (fun n : ℕ => C * ((n : ℝ) ^ 2 * (q / R) ^ n))
+  have hlimT : Filter.Tendsto (fun n : ℕ => C * ((n : ℝ) ^ (2 : ℕ) * (q / R) ^ n))
       Filter.atTop (nhds 0) := by
     have hr0 : 0 ≤ q / R := by positivity
     have hr1 : q / R < 1 := by rw [div_lt_one hR0]; exact hqR
-    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ 2 * (q / R) ^ n) := by
+    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ (2 : ℕ) * (q / R) ^ n) := by
       refine summable_pow_mul_geometric_of_norm_lt_one 2 ?_
       rw [Real.norm_eq_abs, abs_of_nonneg hr0]
       exact hr1
     simpa using hsum.tendsto_atTop_zero.const_mul C
   have hlim : Filter.Tendsto
-      (fun n : ℕ => ∑ i ∈ E, m i * (‖v i‖ / R) ^ n + C * ((n : ℝ) ^ 2 * (q / R) ^ n))
+      (fun n : ℕ => ∑ i ∈ E, m i * (‖v i‖ / R) ^ n + C * ((n : ℝ) ^ (2 : ℕ) * (q / R) ^ n))
       Filter.atTop (nhds 0) := by simpa using hlimE.add hlimT
   obtain ⟨N₁, hN₁⟩ := (hlim.eventually (gt_mem_nhds hc₀)).exists_forall_of_atTop
   -- recurrence time
@@ -243,10 +243,10 @@ theorem exists_ge_re_tsum_liTerm_pos
   have hsplit := hsummable.sum_add_tsum_compl (s := S)
   -- tail bound (as in the hard half)
   have hBsum : Summable fun i : {x // x ∈ (↑S : Set ι)ᶜ} =>
-      (n' : ℝ) ^ 2 * q ^ n' * (m (i : ι) * ‖v (i : ι) - 1‖ ^ 2) :=
+      (n' : ℝ) ^ (2 : ℕ) * q ^ n' * (m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)) :=
     (hs.subtype _).mul_left _
   have hBle : ∀ i : {x // x ∈ (↑S : Set ι)ᶜ},
-      -((n' : ℝ) ^ 2 * q ^ n' * (m (i : ι) * ‖v (i : ι) - 1‖ ^ 2))
+      -((n' : ℝ) ^ (2 : ℕ) * q ^ n' * (m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)))
         ≤ m (i : ι) * (liTerm (v (i : ι)) n').re := by
     rintro ⟨i, hi⟩
     have hiS : ¬ (q ≤ ‖v i‖) := by
@@ -263,30 +263,30 @@ theorem exists_ge_re_tsum_liTerm_pos
     have hpow : ‖v i‖ ^ n' ≤ q ^ n' := pow_le_pow_left₀ (norm_nonneg _) hlt'.le n'
     have hre : -‖liTerm (v i) n'‖ ≤ (liTerm (v i) n').re :=
       neg_le_of_abs_le (Complex.abs_re_le_norm _)
-    have hchain : ‖liTerm (v i) n'‖ ≤ (n' : ℝ) ^ 2 * q ^ n' * ‖v i - 1‖ ^ 2 := by
+    have hchain : ‖liTerm (v i) n'‖ ≤ (n' : ℝ) ^ (2 : ℕ) * q ^ n' * ‖v i - 1‖ ^ (2 : ℕ) := by
       refine le_trans hbase ?_
-      have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ 2 := sq_nonneg _
-      have h3 : (0:ℝ) ≤ (n' : ℝ) ^ 2 := sq_nonneg _
+      have h2 : (0:ℝ) ≤ ‖v i - 1‖ ^ (2 : ℕ) := sq_nonneg _
+      have h3 : (0:ℝ) ≤ (n' : ℝ) ^ (2 : ℕ) := sq_nonneg _
       rw [mul_assoc, mul_assoc]
       gcongr
     have hmi := hm0 i
-    calc -((n' : ℝ) ^ 2 * q ^ n' * (m i * ‖v i - 1‖ ^ 2))
-        = m i * (-((n' : ℝ) ^ 2 * q ^ n' * ‖v i - 1‖ ^ 2)) := by ring
+    calc -((n' : ℝ) ^ (2 : ℕ) * q ^ n' * (m i * ‖v i - 1‖ ^ (2 : ℕ)))
+        = m i * (-((n' : ℝ) ^ (2 : ℕ) * q ^ n' * ‖v i - 1‖ ^ (2 : ℕ))) := by ring
       _ ≤ m i * (-‖liTerm (v i) n'‖) := by
           apply mul_le_mul_of_nonneg_left _ hmi
           linarith
       _ ≤ m i * (liTerm (v i) n').re := mul_le_mul_of_nonneg_left hre hmi
-  have htailC : (∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * ‖v (i : ι) - 1‖ ^ 2) ≤ C := by
+  have htailC : (∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * ‖v (i : ι) - 1‖ ^ (2 : ℕ)) ≤ C := by
     have hsp := hs.sum_add_tsum_compl (s := S)
-    have hSnn : (0:ℝ) ≤ ∑ i ∈ S, m i * ‖v i - 1‖ ^ 2 :=
+    have hSnn : (0:ℝ) ≤ ∑ i ∈ S, m i * ‖v i - 1‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => by nlinarith [hm0 i, sq_nonneg ‖v i - 1‖]
     rw [hCdef, ← hsp]
     linarith
-  have htail : -((n' : ℝ) ^ 2 * q ^ n' * C)
+  have htail : -((n' : ℝ) ^ (2 : ℕ) * q ^ n' * C)
       ≤ ∑' i : {x // x ∈ (↑S : Set ι)ᶜ}, m (i : ι) * (liTerm (v (i : ι)) n').re := by
     have h1 := Summable.tsum_le_tsum hBle hBsum.neg (hsummable.subtype ((↑S : Set ι)ᶜ))
     rw [tsum_neg, Summable.tsum_mul_left] at h1
-    · have hcoef : (0:ℝ) ≤ (n' : ℝ) ^ 2 * q ^ n' := by positivity
+    · have hcoef : (0:ℝ) ≤ (n' : ℝ) ^ (2 : ℕ) * q ^ n' := by positivity
       have := mul_le_mul_of_nonneg_left htailC hcoef
       linarith
     · exact hs.subtype _
@@ -371,13 +371,13 @@ theorem exists_ge_re_tsum_liTerm_pos
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← pow_mul_div_pow_cancel (a := ‖v i‖) hR0.ne' n']
     ring
-  have hqpow : (n' : ℝ) ^ 2 * q ^ n' * C = R ^ n' * (C * ((n' : ℝ) ^ 2 * (q / R) ^ n')) := by
+  have hqpow : (n' : ℝ) ^ (2 : ℕ) * q ^ n' * C = R ^ n' * (C * ((n' : ℝ) ^ (2 : ℕ) * (q / R) ^ n')) := by
     rw [← pow_mul_div_pow_cancel (a := q) hR0.ne' n']
     ring
   have hRn : (0:ℝ) < R ^ n' := pow_pos hR0 _
   rw [← hsplit, hSDE]
-  have hgap : ∑ i ∈ E, m i * (‖v i‖ / R) ^ n' + C * ((n' : ℝ) ^ 2 * (q / R) ^ n') < c₀ := hsmall
-  have hkey : 0 < R ^ n' * c₀ - ∑ i ∈ E, m i * ‖v i‖ ^ n' - (n' : ℝ) ^ 2 * q ^ n' * C := by
+  have hgap : ∑ i ∈ E, m i * (‖v i‖ / R) ^ n' + C * ((n' : ℝ) ^ (2 : ℕ) * (q / R) ^ n') < c₀ := hsmall
+  have hkey : 0 < R ^ n' * c₀ - ∑ i ∈ E, m i * ‖v i‖ ^ n' - (n' : ℝ) ^ (2 : ℕ) * q ^ n' * C := by
     rw [hEpow, hqpow]
     nlinarith [hRn, hgap]
   linarith [hDbound, hEbound, htail]
@@ -414,24 +414,24 @@ theorem exists_ge_re_xiLiPaired_pos_of_not_riemannHypothesis (hRH : ¬ RiemannHy
     rw [norm_xiRootV (hne0 ρ) (hne1 ρ)]
     exact hMb ρ
   have hsum : Summable fun ρ : XiDivisorSupport =>
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 := by
+      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) := by
     refine Summable.of_nonneg_of_le (fun ρ => by nlinarith [hmult ρ, sq_nonneg ‖xiRootV (ρ:ℂ) - 1‖])
-      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ 2))
+      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ (2 : ℕ)))
     have hb := norm_xiRootV_sub_one_le (hne0 ρ) (hne1 ρ) hM1 (hMb ρ)
     have hw1 : ‖xiRootW (ρ : ℂ) - 1‖ = 1 / ‖(ρ : ℂ)‖ := norm_xiRootW_sub_one _
     rw [hw1] at hb
     have hnn : (0 : ℝ) ≤ ‖xiRootV (ρ : ℂ) - 1‖ := norm_nonneg _
-    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 ≤ M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
       have hM0 : (0 : ℝ) ≤ M := by linarith
-      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ 2 = M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ (2 : ℕ) = M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
         rw [mul_pow, div_pow, one_pow]
       rw [← hmul]
       nlinarith [mul_nonneg hM0 (by positivity : (0:ℝ) ≤ 1 / ‖(ρ : ℂ)‖)]
-    calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ 2
-        ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
+    calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ)
+        ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))) := by
           have := hmult ρ
           nlinarith
-      _ = M ^ 2 * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+      _ = M ^ (2 : ℕ) * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
           ring
   have hnr : ∀ ρ : XiDivisorSupport, (xiRootV (ρ : ℂ)).im ≠ 0 := by
     intro ρ h

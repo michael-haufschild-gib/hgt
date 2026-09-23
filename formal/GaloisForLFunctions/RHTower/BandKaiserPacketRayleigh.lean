@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.RHTower
 def kaiserGridTailEnvelope {m : ℕ} (c : ℝ) : ℝ :=
   ∑ j : Fin m, (8 + 2 * (kaiserBandRadius c + |kaiserPacketFrequency c j|) *
     kaiserEdgeTransformBoundAt
-      (2 * c * |2 * Real.pi * kaiserPacketFrequency c j|) ^ 2)
+      (2 * c * |2 * Real.pi * kaiserPacketFrequency c j|) ^ (2 : ℕ))
 
 theorem kaiserGridTailEnvelope_nonneg {m : ℕ} {c : ℝ} (hc : 0 < c) :
     0 ≤ kaiserGridTailEnvelope (m := m) c := by
@@ -31,23 +31,23 @@ theorem kaiserGridTailEnvelope_nonneg {m : ℕ} {c : ℝ} (hc : 0 < c) :
   positivity
 
 theorem kaiserPacketAngularFrequency_le_c {m : ℕ} {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c) (j : Fin m) :
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c) (j : Fin m) :
     kaiserPacketAngularFrequency c j ≤ c := by
   have hc0 : 0 ≤ c := zero_le_one.trans hc
   have hcpos : 0 < c := one_pos.trans_le hc
   have hstep0 : 0 ≤ kaiserPacketAngularStep c :=
     (kaiserPacketAngularStep_pos hcpos).le
   have hm0 : 0 ≤ (m : ℝ) := Nat.cast_nonneg m
-  have hsqrtSq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc0
-  have hsq : ((m : ℝ) * kaiserPacketAngularStep c) ^ 2 ≤ c ^ 2 := by
+  have hsqrtSq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc0
+  have hsq : ((m : ℝ) * kaiserPacketAngularStep c) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by
     rw [mul_pow, kaiserPacketAngularStep_sq hc0]
     calc
-      (m : ℝ) ^ 2 * (c * Real.sqrt c) =
-          (8 * (m : ℝ) ^ 2) * (c * Real.sqrt c / 8) := by ring
+      (m : ℝ) ^ (2 : ℕ) * (c * Real.sqrt c) =
+          (8 * (m : ℝ) ^ (2 : ℕ)) * (c * Real.sqrt c / 8) := by ring
       _ ≤ Real.sqrt c * (c * Real.sqrt c / 8) :=
         mul_le_mul_of_nonneg_right hscale (by positivity)
-      _ = c ^ 2 / 8 := by nlinarith [hsqrtSq]
-      _ ≤ c ^ 2 := by nlinarith [sq_nonneg c]
+      _ = c ^ (2 : ℕ) / 8 := by nlinarith [hsqrtSq]
+      _ ≤ c ^ (2 : ℕ) := by nlinarith [sq_nonneg c]
   have hmstep : (m : ℝ) * kaiserPacketAngularStep c ≤ c := by
     rw [← sq_le_sq₀ (mul_nonneg hm0 hstep0) hc0]
     exact hsq
@@ -66,11 +66,11 @@ theorem abs_two_pi_mul_kaiserPacketFrequency {m : ℕ} {c : ℝ}
 
 /-- Exact finite-span tail estimate specialized to the conditioned packet grid. -/
 theorem integral_compl_band_norm_sq_fourier_kaiserGridCombination_le {m : ℕ}
-    {c : ℝ} (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c)
+    {c : ℝ} (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c)
     (b : Fin m → ℝ) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2) ≤
-      (∑ j, b j ^ 2) * kaiserGridTailEnvelope (m := m) c := by
+        ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ)) ≤
+      (∑ j, b j ^ (2 : ℕ)) * kaiserGridTailEnvelope (m := m) c := by
   have hcpos : 0 < c := one_pos.trans_le hc
   have hw : ∀ j : Fin m, |2 * Real.pi * kaiserPacketFrequency c j| ≤ c := by
     intro j
@@ -81,32 +81,32 @@ theorem integral_compl_band_norm_sq_fourier_kaiserGridCombination_le {m : ℕ}
 
 /-- The finite conditioned packet span has the correct `exp (-2c)` Rayleigh clock. -/
 theorem exp_sq_mul_kaiserGridSpectralTail_le {m : ℕ} (hm : 0 < m) {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c)
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c)
     (hsmall : 32 * (m : ℝ) * Real.exp (-(Real.sqrt c / 2)) ≤ 1)
     (b : Fin m → ℝ) :
-    Real.exp c ^ 2 *
+    Real.exp c ^ (2 : ℕ) *
         (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-          ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2) ≤
-      128 * (m : ℝ) * c ^ 2 * kaiserGridTailEnvelope (m := m) c *
-        (∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2) := by
-  let C : ℝ := ∑ j, b j ^ 2
+          ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ)) ≤
+      128 * (m : ℝ) * c ^ (2 : ℕ) * kaiserGridTailEnvelope (m := m) c *
+        (∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ (2 : ℕ)) := by
+  let C : ℝ := ∑ j, b j ^ (2 : ℕ)
   let S : ℝ := kaiserGridTailEnvelope (m := m) c
   let Q : ℝ := ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-    ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2
-  let E : ℝ := ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2
+    ‖𝓕 (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ)
+  let E : ℝ := ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ (2 : ℕ)
   have htail : Q ≤ C * S :=
     integral_compl_band_norm_sq_fourier_kaiserGridCombination_le hc hscale b
-  have henergy : C * Real.exp c ^ 2 ≤ 128 * (m : ℝ) * c ^ 2 * E :=
+  have henergy : C * Real.exp c ^ (2 : ℕ) ≤ 128 * (m : ℝ) * c ^ (2 : ℕ) * E :=
     exp_sq_mul_coeffEnergy_le_kaiserGridEnergy hm hc hscale hsmall b
   have hS0 : 0 ≤ S := kaiserGridTailEnvelope_nonneg (one_pos.trans_le hc)
-  change Real.exp c ^ 2 * Q ≤ 128 * (m : ℝ) * c ^ 2 * S * E
+  change Real.exp c ^ (2 : ℕ) * Q ≤ 128 * (m : ℝ) * c ^ (2 : ℕ) * S * E
   calc
-    Real.exp c ^ 2 * Q ≤ Real.exp c ^ 2 * (C * S) :=
+    Real.exp c ^ (2 : ℕ) * Q ≤ Real.exp c ^ (2 : ℕ) * (C * S) :=
       mul_le_mul_of_nonneg_left htail (sq_nonneg _)
-    _ = (C * Real.exp c ^ 2) * S := by ring
-    _ ≤ (128 * (m : ℝ) * c ^ 2 * E) * S :=
+    _ = (C * Real.exp c ^ (2 : ℕ)) * S := by ring
+    _ ≤ (128 * (m : ℝ) * c ^ (2 : ℕ) * E) * S :=
       mul_le_mul_of_nonneg_right henergy hS0
-    _ = 128 * (m : ℝ) * c ^ 2 * S * E := by ring
+    _ = 128 * (m : ℝ) * c ^ (2 : ℕ) * S * E := by ring
 
 end GaloisForLFunctions.RHTower
 

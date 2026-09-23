@@ -147,14 +147,14 @@ theorem hasDerivAt_source_one (N : ℕ) :
 
 /-- Every physical cell, including the infinite tail, contributes its signed square. -/
 theorem hasSum_endpointJet_energy (N : ℕ) :
-    HasSum (fun j : ℕ => jetCell N (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2)))
-      (‖endpointJet N‖^2) := by
+    HasSum (fun j : ℕ => jetCell N (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2)))
+      (‖endpointJet N‖^(2 : ℕ)) := by
   have h := hasSum_sum (s := Icc 1 N) (fun m hm =>
     hasSum_sum (s := Icc 1 N) (fun n hn =>
       (hasSum_bdGram_discrete (mem_Icc.mp hm).1 (mem_Icc.mp hn).1).mul_left
         (jetCoeff m*jetCoeff n)))
   rw [bdGram_quadraticForm_eq_norm_sq] at h
-  change HasSum _ (‖endpointJet N‖^2) at h
+  change HasSum _ (‖endpointJet N‖^(2 : ℕ)) at h
   convert h using 1
   funext j
   simp only [jetCell,pow_two,sum_mul,mul_sum,sum_div]
@@ -167,12 +167,12 @@ theorem hasSum_endpointJet_energy (N : ℕ) :
 
 /-- The endpoint derivative dominates its entire initial prime-power fluctuation. -/
 theorem endpointJet_prefix_lower (N : ℕ) :
-    (∑ k ∈ Icc 1 N,((k : ℝ)*jetHarmonic N+primePowerCount k)^2/
-      ((k : ℝ)*((k : ℝ)+1))) ≤ ‖endpointJet N‖^2 := by
+    (∑ k ∈ Icc 1 N,((k : ℝ)*jetHarmonic N+primePowerCount k)^(2 : ℕ)/
+      ((k : ℝ)*((k : ℝ)+1))) ≤ ‖endpointJet N‖^(2 : ℕ) := by
   have hb := sum_le_hasSum (range N) (fun j _ => by positivity)
     (hasSum_endpointJet_energy N)
-  have he : (∑ j ∈ range N,jetCell N (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2))) =
-      ∑ k ∈ Icc 1 N,((k : ℝ)*jetHarmonic N+primePowerCount k)^2/
+  have he : (∑ j ∈ range N,jetCell N (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2))) =
+      ∑ k ∈ Icc 1 N,((k : ℝ)*jetHarmonic N+primePowerCount k)^(2 : ℕ)/
         ((k : ℝ)*((k : ℝ)+1)) := by
     apply sum_bij (fun j _ => j+1)
     · intro j hj
@@ -197,14 +197,14 @@ def jetVarianceB (N : ℕ) : ℝ := ∑ k ∈ Icc 1 N,primePowerCount k/((k : �
 
 /-- Uncentered prime-power square mass. -/
 def jetVarianceC (N : ℕ) : ℝ :=
-  ∑ k ∈ Icc 1 N,primePowerCount k^2/((k : ℝ)*((k : ℝ)+1))
+  ∑ k ∈ Icc 1 N,primePowerCount k^(2 : ℕ)/((k : ℝ)*((k : ℝ)+1))
 
 /-- Spatial prime-power variance after removing the best possible scalar. -/
-def jetVariance (N : ℕ) : ℝ := jetVarianceC N-jetVarianceB N^2/jetVarianceA N
+def jetVariance (N : ℕ) : ℝ := jetVarianceC N-jetVarianceB N^(2 : ℕ)/jetVarianceA N
 
 private theorem prefix_quadratic (N : ℕ) (h : ℝ) :
-    (∑ k ∈ Icc 1 N,((k : ℝ)*h+primePowerCount k)^2/((k : ℝ)*((k : ℝ)+1))) =
-      jetVarianceA N*h^2+2*jetVarianceB N*h+jetVarianceC N := by
+    (∑ k ∈ Icc 1 N,((k : ℝ)*h+primePowerCount k)^(2 : ℕ)/((k : ℝ)*((k : ℝ)+1))) =
+      jetVarianceA N*h^(2 : ℕ)+2*jetVarianceB N*h+jetVarianceC N := by
   simp only [jetVarianceA,jetVarianceB,jetVarianceC,sum_mul,mul_sum,← sum_add_distrib]
   apply sum_congr rfl
   intro k hk
@@ -219,15 +219,15 @@ private theorem varianceA_pos {N : ℕ} (hN : 1 ≤ N) : 0<jetVarianceA N := by
 
 /-- Exact square completion, retaining every physical cell up to the cutoff. -/
 theorem jet_prefix_square_completion {N : ℕ} (hN : 1 ≤ N) (h : ℝ) :
-    (∑ k ∈ Icc 1 N,((k : ℝ)*h+primePowerCount k)^2/((k : ℝ)*((k : ℝ)+1))) =
-      jetVariance N+jetVarianceA N*(h+jetVarianceB N/jetVarianceA N)^2 := by
+    (∑ k ∈ Icc 1 N,((k : ℝ)*h+primePowerCount k)^(2 : ℕ)/((k : ℝ)*((k : ℝ)+1))) =
+      jetVariance N+jetVarianceA N*(h+jetVarianceB N/jetVarianceA N)^(2 : ℕ) := by
   rw [prefix_quadratic,jetVariance]
   have hA := ne_of_gt (varianceA_pos hN)
   field_simp
   ring
 
 /-- A scalar-independent lower bound on the actual endpoint derivative energy. -/
-theorem jetVariance_le_endpointJet_energy (N : ℕ) : jetVariance N ≤ ‖endpointJet N‖^2 := by
+theorem jetVariance_le_endpointJet_energy (N : ℕ) : jetVariance N ≤ ‖endpointJet N‖^(2 : ℕ) := by
   by_cases hN : 1 ≤ N
   · have h := endpointJet_prefix_lower N
     rw [jet_prefix_square_completion hN] at h
@@ -238,7 +238,7 @@ theorem jetVariance_le_endpointJet_energy (N : ℕ) : jetVariance N ≤ ‖endpo
 /-- The lower bound is sharp among all choices of the finite harmonic scalar. -/
 theorem jetVariance_eq_minimum (N : ℕ) :
     jetVariance N = ∑ k ∈ Icc 1 N,
-      ((k : ℝ)*(-jetVarianceB N/jetVarianceA N)+primePowerCount k)^2/
+      ((k : ℝ)*(-jetVarianceB N/jetVarianceA N)+primePowerCount k)^(2 : ℕ)/
         ((k : ℝ)*((k : ℝ)+1)) := by
   by_cases hN : 1 ≤ N
   · rw [jet_prefix_square_completion hN]
@@ -259,7 +259,7 @@ theorem jetVariance_monotone : Monotone jetVariance := by
   intro N M hNM
   let h : ℝ := -jetVarianceB M/jetVarianceA M
   have hmin : jetVariance N ≤ ∑ k ∈ Icc 1 N,
-      ((k : ℝ)*h+primePowerCount k)^2/((k : ℝ)*((k : ℝ)+1)) := by
+      ((k : ℝ)*h+primePowerCount k)^(2 : ℕ)/((k : ℝ)*((k : ℝ)+1)) := by
     by_cases hN : 1 ≤ N
     · rw [jet_prefix_square_completion hN]
       exact le_add_of_nonneg_right (mul_nonneg (varianceA_pos hN).le (sq_nonneg _))
@@ -267,7 +267,7 @@ theorem jetVariance_monotone : Monotone jetVariance := by
       simp [h0,jetVariance,jetVarianceA,jetVarianceB,jetVarianceC]
   calc
     jetVariance N ≤ _ := hmin
-    _ ≤ ∑ k ∈ Icc 1 M,((k : ℝ)*h+primePowerCount k)^2/((k : ℝ)*((k : ℝ)+1)) := by
+    _ ≤ ∑ k ∈ Icc 1 M,((k : ℝ)*h+primePowerCount k)^(2 : ℕ)/((k : ℝ)*((k : ℝ)+1)) := by
       apply sum_le_sum_of_subset_of_nonneg (fun k hk =>
         mem_Icc.mpr ⟨(mem_Icc.mp hk).1,(mem_Icc.mp hk).2.trans hNM⟩)
       intro k _ _
@@ -277,13 +277,13 @@ theorem jetVariance_monotone : Monotone jetVariance := by
 /-- Pairwise spatial mismatch is exactly the variance after scalar elimination. -/
 theorem jetVariance_pairwise (N : ℕ) :
     2*jetVarianceA N*jetVariance N = ∑ i ∈ Icc 1 N,∑ j ∈ Icc 1 N,
-      ((i : ℝ)*primePowerCount j-(j : ℝ)*primePowerCount i)^2/
+      ((i : ℝ)*primePowerCount j-(j : ℝ)*primePowerCount i)^(2 : ℕ)/
         ((i : ℝ)*((i : ℝ)+1)*(j : ℝ)*((j : ℝ)+1)) := by
   have hpair : (∑ i ∈ Icc 1 N,∑ j ∈ Icc 1 N,
-      ((i : ℝ)*primePowerCount j-(j : ℝ)*primePowerCount i)^2/
+      ((i : ℝ)*primePowerCount j-(j : ℝ)*primePowerCount i)^(2 : ℕ)/
         ((i : ℝ)*((i : ℝ)+1)*(j : ℝ)*((j : ℝ)+1))) =
-      2*jetVarianceA N*jetVarianceC N-2*jetVarianceB N^2 := by
-    rw [show 2*jetVarianceA N*jetVarianceC N-2*jetVarianceB N^2 =
+      2*jetVarianceA N*jetVarianceC N-2*jetVarianceB N^(2 : ℕ) := by
+    rw [show 2*jetVarianceA N*jetVarianceC N-2*jetVarianceB N^(2 : ℕ) =
       jetVarianceA N*jetVarianceC N+jetVarianceC N*jetVarianceA N-
         2*(jetVarianceB N*jetVarianceB N) by ring]
     simp only [jetVarianceA,jetVarianceB,jetVarianceC,sum_mul,mul_sum,

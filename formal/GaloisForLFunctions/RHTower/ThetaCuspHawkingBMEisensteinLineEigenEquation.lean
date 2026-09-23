@@ -274,7 +274,7 @@ theorem weightedTail_eigen (u : ℂ) (negative : Bool) (x : ℝ) {Y : ℝ} (hY :
 /-! ## The constant part -/
 
 /-- `d/dY` of `Y^w` for real `Y > 0`. -/
-theorem hasDerivAt_ofReal_cpow_const (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
+theorem hasDerivAt_ofReal_cpow_const_thetaCuspHawkingBMEisensteinLineEigenEquation (w : ℂ) {Y : ℝ} (hY : 0 < Y) :
     HasDerivAt (fun y : ℝ => ((y : ℂ) ^ w)) (w * (Y : ℂ) ^ (w - 1)) Y := by
   have h1 : HasDerivAt (fun z : ℂ => z ^ w) (w * (Y : ℂ) ^ (w - 1)) (Y : ℂ) := by
     have := (hasDerivAt_id (Y : ℂ)).cpow_const (c := w) (Or.inl (by simpa using hY))
@@ -288,7 +288,7 @@ theorem hasDerivAt_cuspConstantTerm (u : ℂ) (ε : Bool) {Y : ℝ} (hY : 0 < Y)
   unfold d4BMCompletedEisensteinCuspConstantTerm d4BMCompletedEisensteinCuspConstantFirstJetTerm
     d4BMCompletedEisensteinCuspConstantMaassFactor
   simp only [mul_one]
-  exact (hasDerivAt_ofReal_cpow_const _ hY).const_mul _
+  exact (hasDerivAt_ofReal_cpow_const_thetaCuspHawkingBMEisensteinLineEigenEquation _ hY).const_mul _
 
 /-- `d/dY` of one constant first-jet term. -/
 theorem hasDerivAt_cuspConstantFirstJetTerm (u : ℂ) (ε : Bool) {Y : ℝ} (hY : 0 < Y) :
@@ -297,7 +297,7 @@ theorem hasDerivAt_cuspConstantFirstJetTerm (u : ℂ) (ε : Bool) {Y : ℝ} (hY 
   unfold d4BMCompletedEisensteinCuspConstantFirstJetTerm
     d4BMCompletedEisensteinCuspConstantSecondJetTerm
   set w := d4BMCompletedEisensteinCuspWeylExponent u ε with hw
-  have h := ((hasDerivAt_ofReal_cpow_const (w - 1) hY).const_mul w).const_mul
+  have h := ((hasDerivAt_ofReal_cpow_const_thetaCuspHawkingBMEisensteinLineEigenEquation (w - 1) hY).const_mul w).const_mul
     (d4BMCompletedEisensteinCuspConstantCoefficient u ε)
   refine h.congr_deriv ?_
   rw [show w - 1 - 1 = w - 2 by ring]

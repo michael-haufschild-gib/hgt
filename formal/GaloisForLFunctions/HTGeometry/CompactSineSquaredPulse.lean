@@ -18,7 +18,7 @@ noncomputable section
 
 /-- Sine-squared pulse on its active interval, equation `(27)` or `(77)`. -/
 def sineSquaredPulse (a0 u0 tau u : ℝ) : ℝ :=
-  a0 * Real.sin (Real.pi * (u - u0) / tau) ^ 2
+  a0 * Real.sin (Real.pi * (u - u0) / tau) ^ (2 : ℕ)
 
 /-- Analytic velocity of the sine-squared pulse, equation `(28)`. -/
 def sineSquaredPulseVelocity (a0 u0 tau u : ℝ) : ℝ :=
@@ -62,13 +62,13 @@ theorem deriv_sineSquaredPulse (a0 u0 : ℝ) {tau : ℝ} (htau : tau ≠ 0) :
   rw [sineSquaredPulseVelocity]
   have hd := h.deriv
   have hfun : sineSquaredPulse a0 u0 tau =
-      ((fun _ : ℝ => a0) * (Real.sin ∘ fun x => Real.pi * (x - u0) / tau) ^ 2) := by
+      ((fun _ : ℝ => a0) * (Real.sin ∘ fun x => Real.pi * (x - u0) / tau) ^ (2 : ℕ)) := by
     funext x
     rfl
   let rawInner : ℝ → ℝ :=
     ((fun _ : ℝ => Real.pi) * (fun x => id x - u0)) / (fun _ : ℝ => tau)
-  let rawPulse : ℝ → ℝ := (fun _ : ℝ => a0) * (Real.sin ∘ rawInner) ^ 2
-  have hraw : ((fun _ : ℝ => a0) * (Real.sin ∘ fun x => Real.pi * (x - u0) / tau) ^ 2) =
+  let rawPulse : ℝ → ℝ := (fun _ : ℝ => a0) * (Real.sin ∘ rawInner) ^ (2 : ℕ)
+  have hraw : ((fun _ : ℝ => a0) * (Real.sin ∘ fun x => Real.pi * (x - u0) / tau) ^ (2 : ℕ)) =
       rawPulse := by
     funext x
     rfl
@@ -261,7 +261,7 @@ theorem deriv_compactSineSquaredPulse {tau : ℝ} (htau : 0 < tau) (a0 u0 : ℝ)
 /-- Pulse amplitude remains between zero and `a0`. -/
 theorem sineSquaredPulse_mem_Icc {a0 : ℝ} (ha0 : 0 ≤ a0) (u0 tau u : ℝ) :
     sineSquaredPulse a0 u0 tau u ∈ Icc 0 a0 := by
-  have hsinSq : Real.sin (Real.pi * (u - u0) / tau) ^ 2 ≤ 1 := by
+  have hsinSq : Real.sin (Real.pi * (u - u0) / tau) ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.neg_one_le_sin (Real.pi * (u - u0) / tau),
       Real.sin_le_one (Real.pi * (u - u0) / tau)]
   constructor

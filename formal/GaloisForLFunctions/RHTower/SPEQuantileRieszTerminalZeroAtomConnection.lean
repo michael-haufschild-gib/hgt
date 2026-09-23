@@ -254,9 +254,9 @@ wall.  This is an exact finite identity at every zero atom, with no target-selec
 theorem speQuantileRieszPhysicalWall_dynamicOffset_transport_add_terminalConnectionIncrement_eq_zero_of_not_isPrimePow
     (K : ℕ) (hK : ¬ IsPrimePow (K + 3)) :
     ((Real.exp (speQuantileRieszPhysicalWallOffset K / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4 -
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ) -
         (Real.exp (speQuantileRieszPhysicalWallOffset (K + 1) / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4) / 12 +
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ)) / 12 +
       (speQuantileRieszCanonicalTerminalConnection (K + 1) -
         speQuantileRieszCanonicalTerminalConnection K) = 0 := by
   rw [speQuantileRieszPhysicalWall_dynamicOffset_transport_eq_endpointQuartic_sub_of_not_isPrimePow K hK,

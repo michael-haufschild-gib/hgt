@@ -10,7 +10,7 @@ set_option autoImplicit false
 /-- The complete action retains the original quadratic source amplitude,
 including every temporal, metric and forcing term. -/
 theorem canonicalQNMValue_quadratic_amplitude (q : XiZeroCopy) (br side : Bool) (a : ℂ) :
-    canonicalQNMValue q br side a = a^2*canonicalQNMValue q br side 1 := by
+    canonicalQNMValue q br side a = a^(2 : ℕ)*canonicalQNMValue q br side 1 := by
   rw [canonicalQNMValue_eq_source_periods,canonicalQNMValue_eq_source_periods]
   rw [physicalFundamentalSourceMoment_polynomial q br side a,
     physicalFundamentalSourceMoment_polynomial q br side 1]
@@ -20,7 +20,7 @@ theorem canonicalQNMValue_quadratic_amplitude (q : XiZeroCopy) (br side : Bool) 
 /-- Exact fibres of the original complete action at fixed physical source data. -/
 theorem canonicalQNMValue_amplitude_fibres (q : XiZeroCopy) (br side : Bool) (a b : ℂ) :
     canonicalQNMValue q br side a=canonicalQNMValue q br side b ↔
-      canonicalQNMValue q br side 1=0 ∨ a^2=b^2 := by
+      canonicalQNMValue q br side 1=0 ∨ a^(2 : ℕ)=b^(2 : ℕ) := by
   rw [canonicalQNMValue_quadratic_amplitude q br side a,
     canonicalQNMValue_quadratic_amplitude q br side b]
   by_cases h : canonicalQNMValue q br side 1=0
@@ -30,12 +30,12 @@ theorem canonicalQNMValue_amplitude_fibres (q : XiZeroCopy) (br side : Bool) (a 
 
 private theorem polarizedAmplitude_quadratic (q : XiZeroCopy) (a : ℂ) :
     d4BMXiSecondHarmonicPolarizedSourceAmplitude a q =
-      a^2*d4BMXiSecondHarmonicPolarizedSourceAmplitude 1 q := by
+      a^(2 : ℕ)*d4BMXiSecondHarmonicPolarizedSourceAmplitude 1 q := by
   unfold d4BMXiSecondHarmonicPolarizedSourceAmplitude d4ThetaHawkingSelfDualQuadraticCarrierCoefficient
   ring
 
 private theorem plusSource_coordinate (q : XiZeroCopy) (a : ℂ) :
-    (hbXiPeierlsPlusSource a q).1 q=a^2*d4BMXiSecondHarmonicPolarizedSourceAmplitude 1 q := by
+    (hbXiPeierlsPlusSource a q).1 q=a^(2 : ℕ)*d4BMXiSecondHarmonicPolarizedSourceAmplitude 1 q := by
   simp only [hbXiPeierlsPlusSource,Finsupp.single_eq_same]
   exact polarizedAmplitude_quadratic q a
 
@@ -107,7 +107,7 @@ squared amplitude in the complete physical action. -/
 theorem exists_critical_fullCanonical_amplitude_fibre :
     ∃ q : XiZeroCopy, (q.1:ℂ).re=1/2 ∧ canonicalQNMValue q true true 1≠0 ∧
       (∀ a : ℂ, hbXiPeierlsPlusSource a q=0) ∧
-      ∀ a b : ℂ, canonicalQNMValue q true true a=canonicalQNMValue q true true b ↔ a^2=b^2 := by
+      ∀ a b : ℂ, canonicalQNMValue q true true a=canonicalQNMValue q true true b ↔ a^(2 : ℕ)=b^(2 : ℕ) := by
   obtain ⟨q,hq,hne⟩ := exists_critical_canonicalQNMValue_ne_zero
   refine ⟨q,hq,hne,hbXiPeierlsPlusSource_critical_amplitudes q hq,?_⟩
   intro a b

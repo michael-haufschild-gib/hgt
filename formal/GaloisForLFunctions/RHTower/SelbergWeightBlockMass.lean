@@ -25,7 +25,7 @@ open ArithmeticFunction Finset
 theorem abs_sum_selbergWeight_div_sub_le (N : ℕ) (hN : 1 ≤ N) :
     |(∑ m ∈ Finset.Icc 1 N,
         (vonMangoldt m * Real.log m + (vonMangoldt * vonMangoldt) m) / m)
-        - Real.log N ^ 2| ≤ 45 * Real.log N + 121 := by
+        - Real.log N ^ (2 : ℕ)| ≤ 45 * Real.log N + 121 := by
   have hsplit : ∀ m ∈ Finset.Icc 1 N,
       (vonMangoldt m * Real.log m + (vonMangoldt * vonMangoldt) m) / m
         = vonMangoldt m * Real.log m / m
@@ -47,7 +47,7 @@ theorem abs_selbergWeight_block_sub_le {M M' : ℕ} (hM : 1 ≤ M)
     (hMM : M ≤ M') :
     |(∑ m ∈ Finset.Ioc M M',
         (vonMangoldt m * Real.log m + (vonMangoldt * vonMangoldt) m) / m)
-        - (Real.log M' ^ 2 - Real.log M ^ 2)|
+        - (Real.log M' ^ (2 : ℕ) - Real.log M ^ (2 : ℕ))|
       ≤ 90 * Real.log M' + 242 := by
   have hu : Finset.Icc 1 M' = Finset.Icc 1 M ∪ Finset.Ioc M M' := by
     ext x

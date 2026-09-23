@@ -43,7 +43,7 @@ theorem monicOrtho_root_le_of_ae_le (h : PositiveMomentForm s) {mu : Measure ℝ
   have hzero : momentInner s (monicOrtho s (n + 1)) G = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl G hdeg
   -- the pairing is an integral of a nonpositive integrand
-  set F : Polynomial ℝ := (C xi - X) * G ^ 2 with hFdef
+  set F : Polynomial ℝ := (C xi - X) * G ^ (2 : ℕ) with hFdef
   have hFint : Integrable (fun x : ℝ => F.eval x) mu := integrable_eval hint F
   have hFval : ∫ x, F.eval x ∂mu = 0 := by
     have hpair : momentInner s (monicOrtho s (n + 1)) G
@@ -101,7 +101,7 @@ theorem monicOrtho_root_ge_of_ae_ge (h : PositiveMomentForm s) {mu : Measure ℝ
     exact_mod_cast (by omega : G.natDegree < n + 1)
   have hzero : momentInner s (monicOrtho s (n + 1)) G = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl G hdeg
-  set F : Polynomial ℝ := (X - C xi) * G ^ 2 with hFdef
+  set F : Polynomial ℝ := (X - C xi) * G ^ (2 : ℕ) with hFdef
   have hFint : Integrable (fun x : ℝ => F.eval x) mu := integrable_eval hint F
   have hFval : ∫ x, F.eval x ∂mu = 0 := by
     have hpair : momentInner s (monicOrtho s (n + 1)) G

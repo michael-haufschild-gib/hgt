@@ -46,7 +46,7 @@ theorem exists_lower_bound_right_of_abscissa {χ : DirichletCharacter ℂ N} (h�
   have hRr : R - r = ε / 2 := by rw [hr, hR]; ring
   set D : ℝ := R + |σ₀ - 4| with hD
   have hD0 : (0 : ℝ) ≤ D := by rw [hD]; positivity
-  set E : ℝ := C₁ + C₂ * (D + 1) ^ 3 with hE
+  set E : ℝ := C₁ + C₂ * (D + 1) ^ (3 : ℕ) with hE
   have hE0 : (0 : ℝ) < E := by rw [hE]; positivity
   clear_value E D R r
   refine ⟨σ₀, (1 / 2) * Real.exp (-(4 * r / ε) * (Real.log (2 * E) + 1)), 12 * r / ε,
@@ -57,7 +57,7 @@ theorem exists_lower_bound_right_of_abscissa {χ : DirichletCharacter ℂ N} (h�
   have hcim : c.im = t := by rw [hc]; simp
   have ht0 : (0 : ℝ) ≤ |t| := abs_nonneg t
   have hbase : (1 : ℝ) ≤ 2 + |t| := by linarith
-  have hbase3 : (1 : ℝ) ≤ (2 + |t|) ^ 3 := one_le_pow₀ hbase
+  have hbase3 : (1 : ℝ) ≤ (2 + |t|) ^ (3 : ℕ) := one_le_pow₀ hbase
   clear_value c t
   -- geometry of the disc
   have hballre : ∀ z ∈ Metric.ball c R, Θ + ε / 2 < z.re := by
@@ -78,12 +78,12 @@ theorem exists_lower_bound_right_of_abscissa {χ : DirichletCharacter ℂ N} (h�
   have hdiff : DifferentiableOn ℂ (DirichletCharacter.LFunction χ) (Metric.ball c R) :=
     (DirichletCharacter.differentiable_LFunction hχ).differentiableOn
   -- upper bound on the disc
-  have hM : ∀ z ∈ Metric.ball c R, ‖DirichletCharacter.LFunction χ z‖ ≤ E * (2 + |t|) ^ 3 := by
+  have hM : ∀ z ∈ Metric.ball c R, ‖DirichletCharacter.LFunction χ z‖ ≤ E * (2 + |t|) ^ (3 : ℕ) := by
     intro z hz
     have hd : ‖z - c‖ < R := by rwa [Metric.mem_ball, dist_eq_norm] at hz
     rcases le_or_gt 2 z.re with hge | hlt
     · calc ‖DirichletCharacter.LFunction χ z‖ ≤ C₁ := hright z hge
-        _ ≤ E * (2 + |t|) ^ 3 := by
+        _ ≤ E * (2 + |t|) ^ (3 : ℕ) := by
             have hCE : C₁ ≤ E := by
               rw [hE]
               nlinarith [hC₂.le, pow_nonneg (by linarith : (0 : ℝ) ≤ D + 1) 3]
@@ -104,12 +104,12 @@ theorem exists_lower_bound_right_of_abscissa {χ : DirichletCharacter ℂ N} (h�
         rw [hD]
         linarith
       have hz4' : ‖z - 4‖ ≤ (D + 1) * (2 + |t|) := by nlinarith [hD0, ht0]
-      calc ‖DirichletCharacter.LFunction χ z‖ ≤ C₂ * ‖z - 4‖ ^ 3 := hstrip z hlow hupp
-        _ ≤ C₂ * ((D + 1) * (2 + |t|)) ^ 3 := by
+      calc ‖DirichletCharacter.LFunction χ z‖ ≤ C₂ * ‖z - 4‖ ^ (3 : ℕ) := hstrip z hlow hupp
+        _ ≤ C₂ * ((D + 1) * (2 + |t|)) ^ (3 : ℕ) := by
             refine mul_le_mul_of_nonneg_left ?_ hC₂.le
             exact pow_le_pow_left₀ (norm_nonneg _) hz4' 3
-        _ = C₂ * (D + 1) ^ 3 * (2 + |t|) ^ 3 := by ring
-        _ ≤ E * (2 + |t|) ^ 3 := by
+        _ = C₂ * (D + 1) ^ (3 : ℕ) * (2 + |t|) ^ (3 : ℕ) := by ring
+        _ ≤ E * (2 + |t|) ^ (3 : ℕ) := by
             refine mul_le_mul_of_nonneg_right ?_ (by positivity)
             rw [hE]
             nlinarith [hC₁.le, hC₂.le, pow_nonneg (by linarith : (0 : ℝ) ≤ D + 1) 3]
@@ -123,9 +123,9 @@ theorem exists_lower_bound_right_of_abscissa {χ : DirichletCharacter ℂ N} (h�
     linarith
   have hBC := norm_lower_bound_of_ball hr0 hrR hdiff hne hM (by norm_num : (0:ℝ) < 1/2) hm hzc
   -- rewrite the constant
-  have hMm : E * (2 + |t|) ^ 3 / (1 / 2) = 2 * E * (2 + |t|) ^ 3 := by ring
+  have hMm : E * (2 + |t|) ^ (3 : ℕ) / (1 / 2) = 2 * E * (2 + |t|) ^ (3 : ℕ) := by ring
   rw [hMm, hRr] at hBC
-  have hlogsplit : Real.log (2 * E * (2 + |t|) ^ 3)
+  have hlogsplit : Real.log (2 * E * (2 + |t|) ^ (3 : ℕ))
       = Real.log (2 * E) + 3 * Real.log (2 + |t|) := by
     rw [Real.log_mul (by positivity) (by positivity), Real.log_pow]
     push_cast

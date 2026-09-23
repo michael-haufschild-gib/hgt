@@ -29,11 +29,11 @@ def apertureSpectralPoint (σ u : ℝ) : ℂ := (σ : ℂ) + (u : ℂ) * Complex
 @[simp] theorem spectralPoint_im (σ u : ℝ) : (apertureSpectralPoint σ u).im = u := by
   simp [apertureSpectralPoint]
 
-theorem norm_sq_eq_re_add_im (z : ℂ) : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+theorem norm_sq_eq_re_add_im (z : ℂ) : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply]
   ring
 
-theorem norm_spectralPoint_sq (σ u : ℝ) : ‖apertureSpectralPoint σ u‖ ^ 2 = σ ^ 2 + u ^ 2 := by
+theorem norm_spectralPoint_sq (σ u : ℝ) : ‖apertureSpectralPoint σ u‖ ^ (2 : ℕ) = σ ^ (2 : ℕ) + u ^ (2 : ℕ) := by
   rw [norm_sq_eq_re_add_im, spectralPoint_re, spectralPoint_im]
 
 theorem le_norm_spectralPoint (σ u : ℝ) : u ≤ ‖apertureSpectralPoint σ u‖ := by
@@ -53,14 +53,14 @@ theorem norm_add_ge_sub (A B : ℂ) : ‖A‖ - ‖B‖ ≤ ‖A + B‖ := by
   linarith
 
 theorem norm_massBesselRoot_sq_ge {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
-    ‖t‖ ^ 2 - x ^ 2 ≤ ‖massBesselRoot t x‖ ^ 2 := by
-  have hsq : ‖massBesselRoot t x‖ ^ 2 = ‖t ^ 2 + (x : ℂ) ^ 2‖ := by
+    ‖t‖ ^ (2 : ℕ) - x ^ (2 : ℕ) ≤ ‖massBesselRoot t x‖ ^ (2 : ℕ) := by
+  have hsq : ‖massBesselRoot t x‖ ^ (2 : ℕ) = ‖t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ)‖ := by
     rw [← norm_pow, massBesselRoot_sq htre htim]
   rw [hsq]
-  have hx : ‖((x : ℂ)) ^ 2‖ = x ^ 2 := by
+  have hx : ‖((x : ℂ)) ^ (2 : ℕ)‖ = x ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  have ht : ‖t ^ 2‖ = ‖t‖ ^ 2 := norm_pow t 2
-  have := norm_add_ge_sub (t ^ 2) ((x : ℂ) ^ 2)
+  have ht : ‖t ^ (2 : ℕ)‖ = ‖t‖ ^ (2 : ℕ) := norm_pow t 2
+  have := norm_add_ge_sub (t ^ (2 : ℕ)) ((x : ℂ) ^ (2 : ℕ))
   rw [ht, hx] at this
   exact this
 
@@ -71,9 +71,9 @@ carrier of the frequency `x` agrees with the deep-time profile up to a relative 
 `x²/u` and an absolute error of order `1/u`. -/
 theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
     (ha : 0 < a) (hσ : 0 < σ) (hu : 1 ≤ u) (hσu : σ ≤ u)
-    (hx2 : 2 * x ^ 2 ≤ u) (hxσ : 4 * x ^ 2 ≤ σ * u) (hax : 2 * a * x ^ 2 ≤ u) :
+    (hx2 : 2 * x ^ (2 : ℕ) ≤ u) (hxσ : 4 * x ^ (2 : ℕ) ≤ σ * u) (hax : 2 * a * x ^ (2 : ℕ) ≤ u) :
     ‖massBesselCarrier a (apertureSpectralPoint σ u) x - massBesselLeading a (apertureSpectralPoint σ u)‖
-      ≤ (12 + 2 * a) * (x ^ 2 / u) * ‖massBesselLeading a (apertureSpectralPoint σ u)‖
+      ≤ (12 + 2 * a) * (x ^ (2 : ℕ) / u) * ‖massBesselLeading a (apertureSpectralPoint σ u)‖
         + 8 * Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ)) / u := by
   set t : ℂ := apertureSpectralPoint σ u with htdef
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
@@ -82,15 +82,15 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
   set z : ℂ := massBesselRoot t x with hzdef
   have hzre : 0 < z.re := massBesselRoot_re_pos htre htim x
   -- the root defect
-  have hδ : ‖z - t‖ ≤ x ^ 2 / u := by
+  have hδ : ‖z - t‖ ≤ x ^ (2 : ℕ) / u := by
     have := norm_massBesselRoot_sub_le htre htim x
     rw [htdef, spectralPoint_im] at this
     exact this
-  have hδ0 : (0 : ℝ) ≤ x ^ 2 / u := by positivity
+  have hδ0 : (0 : ℝ) ≤ x ^ (2 : ℕ) / u := by positivity
   -- size of the root
   have hnormt : u ≤ ‖t‖ := by rw [htdef]; exact le_norm_spectralPoint σ u
   have hnormt2 : ‖t‖ ≤ 2 * u := by rw [htdef]; exact norm_spectralPoint_le hσ hσu
-  have hzsq : u ^ 2 / 2 ≤ ‖z‖ ^ 2 := by
+  have hzsq : u ^ (2 : ℕ) / 2 ≤ ‖z‖ ^ (2 : ℕ) := by
     have h := norm_massBesselRoot_sq_ge htre htim x
     rw [← hzdef] at h
     nlinarith [hnormt, hu0, hx2, hu]
@@ -98,13 +98,13 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
     nlinarith [hzsq, norm_nonneg z, hu0]
   have hzpos : (0 : ℝ) < ‖z‖ := lt_of_lt_of_le (by positivity) hznorm
   -- the three distortion bounds
-  have hα : ‖z - t‖ / ‖z‖ ≤ 2 * x ^ 2 / u ^ 2 := by
+  have hα : ‖z - t‖ / ‖z‖ ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) := by
     rw [div_le_iff₀ hzpos]
-    have hbig : 2 * x ^ 2 / u ^ 2 * (u / 2) = x ^ 2 / u := by
+    have hbig : 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * (u / 2) = x ^ (2 : ℕ) / u := by
       field_simp
-    calc ‖z - t‖ ≤ x ^ 2 / u := hδ
-      _ = 2 * x ^ 2 / u ^ 2 * (u / 2) := hbig.symm
-      _ ≤ 2 * x ^ 2 / u ^ 2 * ‖z‖ := by
+    calc ‖z - t‖ ≤ x ^ (2 : ℕ) / u := hδ
+      _ = 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * (u / 2) := hbig.symm
+      _ ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * ‖z‖ := by
           refine mul_le_mul_of_nonneg_left hznorm (by positivity)
   have hcstre : Real.sqrt (u / 2) ≤ (csqrt t).re := by
     rw [csqrt_re, csqrtRe]
@@ -115,7 +115,7 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
   have hcszn : Real.sqrt (u / 2) ≤ ‖csqrt z‖ := by
     rw [norm_csqrt hzre]
     exact Real.sqrt_le_sqrt hznorm
-  have hβ : ‖csqrt t - csqrt z‖ / ‖csqrt z‖ ≤ 2 * x ^ 2 / u ^ 2 := by
+  have hβ : ‖csqrt t - csqrt z‖ / ‖csqrt z‖ ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) := by
     have hsqrtsq : Real.sqrt (u / 2) * Real.sqrt (u / 2) = u / 2 :=
       Real.mul_self_sqrt (by positivity)
     have hlip : ‖csqrt t - csqrt z‖ ≤ ‖t - z‖ / (csqrt t).re := norm_csqrt_sub_le htre hzre
@@ -124,28 +124,28 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
       congr 1
       ring
     rw [htz] at hlip
-    have hstep : ‖csqrt t - csqrt z‖ ≤ (x ^ 2 / u) / Real.sqrt (u / 2) := by
+    have hstep : ‖csqrt t - csqrt z‖ ≤ (x ^ (2 : ℕ) / u) / Real.sqrt (u / 2) := by
       refine le_trans hlip ?_
       gcongr
-    have hkey : (x ^ 2 / u) / Real.sqrt (u / 2) ≤ 2 * x ^ 2 / u ^ 2 * Real.sqrt (u / 2) := by
+    have hkey : (x ^ (2 : ℕ) / u) / Real.sqrt (u / 2) ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * Real.sqrt (u / 2) := by
       rw [div_le_iff₀ hcstrepos, mul_assoc, hsqrtsq]
-      have hval : 2 * x ^ 2 / u ^ 2 * (u / 2) = x ^ 2 / u := by
+      have hval : 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * (u / 2) = x ^ (2 : ℕ) / u := by
         field_simp
       rw [hval]
     rw [div_le_iff₀ (lt_of_lt_of_le hcstrepos hcszn)]
-    calc ‖csqrt t - csqrt z‖ ≤ (x ^ 2 / u) / Real.sqrt (u / 2) := hstep
-      _ ≤ 2 * x ^ 2 / u ^ 2 * Real.sqrt (u / 2) := hkey
-      _ ≤ 2 * x ^ 2 / u ^ 2 * ‖csqrt z‖ := mul_le_mul_of_nonneg_left hcszn (by positivity)
-  have hβ1 : 2 * x ^ 2 / u ^ 2 ≤ 1 := by
+    calc ‖csqrt t - csqrt z‖ ≤ (x ^ (2 : ℕ) / u) / Real.sqrt (u / 2) := hstep
+      _ ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * Real.sqrt (u / 2) := hkey
+      _ ≤ 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) * ‖csqrt z‖ := mul_le_mul_of_nonneg_left hcszn (by positivity)
+  have hβ1 : 2 * x ^ (2 : ℕ) / u ^ (2 : ℕ) ≤ 1 := by
     rw [div_le_one (by positivity)]
     nlinarith [hx2, hu, hu0]
-  have hγ : 2 * (a * ‖z - t‖) ≤ 2 * a * x ^ 2 / u := by
+  have hγ : 2 * (a * ‖z - t‖) ≤ 2 * a * x ^ (2 : ℕ) / u := by
     have := mul_le_mul_of_nonneg_left hδ (by positivity : (0:ℝ) ≤ 2 * a)
     calc 2 * (a * ‖z - t‖) = 2 * a * ‖z - t‖ := by ring
-      _ ≤ 2 * a * (x ^ 2 / u) := by
+      _ ≤ 2 * a * (x ^ (2 : ℕ) / u) := by
           exact mul_le_mul_of_nonneg_left hδ (by positivity)
-      _ = 2 * a * x ^ 2 / u := by ring
-  have hγ1 : 2 * a * x ^ 2 / u ≤ 1 := by
+      _ = 2 * a * x ^ (2 : ℕ) / u := by ring
+  have hγ1 : 2 * a * x ^ (2 : ℕ) / u ≤ 1 := by
     rw [div_le_one hu0]
     linarith [hax]
   have hexpsmall : a * ‖z - t‖ ≤ 1 := by
@@ -156,15 +156,15 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
   refine add_le_add ?_ ?_
   · rw [mul_comm]
     refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-    have h1 : 4 * (2 * x ^ 2 / u ^ 2) + 2 * (2 * x ^ 2 / u ^ 2) = 12 * x ^ 2 / u ^ 2 := by ring
+    have h1 : 4 * (2 * x ^ (2 : ℕ) / u ^ (2 : ℕ)) + 2 * (2 * x ^ (2 : ℕ) / u ^ (2 : ℕ)) = 12 * x ^ (2 : ℕ) / u ^ (2 : ℕ) := by ring
     rw [h1]
-    have h2 : 12 * x ^ 2 / u ^ 2 ≤ 12 * (x ^ 2 / u) := by
+    have h2 : 12 * x ^ (2 : ℕ) / u ^ (2 : ℕ) ≤ 12 * (x ^ (2 : ℕ) / u) := by
       rw [div_le_iff₀ (by positivity)]
-      have : x ^ 2 / u * u = x ^ 2 := by field_simp
+      have : x ^ (2 : ℕ) / u * u = x ^ (2 : ℕ) := by field_simp
       nlinarith [hu, sq_nonneg x, hu0, this]
-    have h3 : 2 * a * x ^ 2 / u = 2 * a * (x ^ 2 / u) := by ring
+    have h3 : 2 * a * x ^ (2 : ℕ) / u = 2 * a * (x ^ (2 : ℕ) / u) := by ring
     rw [h3]
-    have : (12 + 2 * a) * (x ^ 2 / u) = 12 * (x ^ 2 / u) + 2 * a * (x ^ 2 / u) := by ring
+    have : (12 + 2 * a) * (x ^ (2 : ℕ) / u) = 12 * (x ^ (2 : ℕ) / u) + 2 * a * (x ^ (2 : ℕ) / u) := by ring
     rw [this]
     linarith
   · -- the Schläfli remainder
@@ -172,7 +172,7 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
       have hre : |(z - t).re| ≤ ‖z - t‖ := Complex.abs_re_le_norm _
       rw [Complex.sub_re] at hre
       have habs := abs_le.mp hre
-      have hxu : x ^ 2 / u ≤ σ / 4 := by
+      have hxu : x ^ (2 : ℕ) / u ≤ σ / 4 := by
         rw [div_le_div_iff₀ hu0 (by norm_num)]
         linarith [hxσ]
       have htrez : t.re = σ := by rw [htdef, spectralPoint_re]
@@ -208,7 +208,7 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
     refine le_trans hstep ?_
     have hkey : 2 * a * (2 * u) *
         (Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ)) / (a * ‖z‖)) / ‖z‖
-        = 4 * u * (Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ))) / ‖z‖ ^ 2 := by
+        = 4 * u * (Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ))) / ‖z‖ ^ (2 : ℕ) := by
       field_simp
       ring
     have hrhs : 8 * Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ)) / u
@@ -221,7 +221,7 @@ theorem norm_massBesselCarrier_sub_leading_le_shell {a σ u x : ℝ}
     clear_value K
     rw [div_le_div_iff₀ (pow_pos hzpos 2) hu0]
     have h8K : (0 : ℝ) ≤ 8 * K := by linarith
-    have h8 : 8 * K * (u ^ 2 / 2) ≤ 8 * K * ‖z‖ ^ 2 := mul_le_mul_of_nonneg_left hzsq h8K
+    have h8 : 8 * K * (u ^ (2 : ℕ) / 2) ≤ 8 * K * ‖z‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hzsq h8K
     linarith [h8]
 
 end

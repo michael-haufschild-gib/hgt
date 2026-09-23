@@ -135,10 +135,10 @@ theorem exists_eps_finrank_range_rieszProjection_eq (T : H →L[ℂ] H) {c : ℂ
     intro lam hlam
     have hd : dist lam c = r := hlam
     exact ⟨by rw [mem_closedBall, hd]; linarith, by intro hb; rw [mem_ball, hd] at hb; linarith⟩
-  refine ⟨min (1 / (2 * M)) (1 / (r * (2 * M ^ 2) + 1)), by positivity, fun S hS => ?_⟩
+  refine ⟨min (1 / (2 * M)) (1 / (r * (2 * M ^ (2 : ℕ)) + 1)), by positivity, fun S hS => ?_⟩
   have hSlt1 : ‖S - T‖ < 1 / (2 * M) := lt_of_lt_of_le hS (min_le_left _ _)
-  have hSlt2 : ‖S - T‖ < 1 / (r * (2 * M ^ 2) + 1) := lt_of_lt_of_le hS (min_le_right _ _)
-  have hpos : (0 : ℝ) < r * (2 * M ^ 2) + 1 := by positivity
+  have hSlt2 : ‖S - T‖ < 1 / (r * (2 * M ^ (2 : ℕ)) + 1) := lt_of_lt_of_le hS (min_le_right _ _)
+  have hpos : (0 : ℝ) < r * (2 * M ^ (2 : ℕ)) + 1 := by positivity
   have hab : 2 * ‖S - T‖ * M ≤ 1 := by
     rw [lt_div_iff₀ (by positivity : (0:ℝ) < 2 * M)] at hSlt1
     nlinarith
@@ -147,7 +147,7 @@ theorem exists_eps_finrank_range_rieszProjection_eq (T : H →L[ℂ] H) {c : ℂ
   have hlt : ‖rieszProjection S c r - rieszProjection T c r‖ < 1 := by
     have hbd := norm_rieszProjection_sub_le T S h0.le (fun lam hlam => hT lam (hsph hlam))
       (fun lam hlam => hM lam (hsph hlam)) hab
-    have hkey : r * (2 * M ^ 2 * ‖S - T‖) < 1 := by
+    have hkey : r * (2 * M ^ (2 : ℕ) * ‖S - T‖) < 1 := by
       rw [lt_div_iff₀ hpos] at hSlt2
       nlinarith [norm_nonneg (S - T), h0.le, sq_nonneg M]
     linarith

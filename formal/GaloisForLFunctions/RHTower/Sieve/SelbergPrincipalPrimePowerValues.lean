@@ -22,12 +22,12 @@ noncomputable section
 
 theorem selbergPrincipalCoeff_prime_pow_zero {p i : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) 1 = selbergMoebiusReciprocalCoeff (p ^ i) := by
-  rw [show (1 : ℕ) = p ^ 0 by simp, selbergPrincipalCoeff_prime_pow_sum hp]
+  rw [show (1 : ℕ) = p ^ (0 : ℕ) by simp, selbergPrincipalCoeff_prime_pow_sum hp]
   simp
 
 theorem selbergPrincipalCoeff_zero_prime_pow {p j : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff 1 (p ^ j) = selbergMoebiusReciprocalCoeff (p ^ j) := by
-  rw [show (1 : ℕ) = p ^ 0 by simp, selbergPrincipalCoeff_prime_pow_sum hp]
+  rw [show (1 : ℕ) = p ^ (0 : ℕ) by simp, selbergPrincipalCoeff_prime_pow_sum hp]
   simp
 
 theorem selbergPrincipalCoeff_prime_pow_diagonal_succ

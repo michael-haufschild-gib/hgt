@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.LevinsonLinearMollifier
 # Linear-Levinson mollified twisted mean value
 
 The AFE-ready twisted mean-value theorem is specialized to the literal linear mollifier.  Its
-coefficient mass is eliminated using the sharp elementary `ell^1 <= 2 sqrt M` bound.
+coefficient mass is eliminated using the sharp elementary `ell^(1 : ℕ) <= 2 sqrt M` bound.
 -/
 
 open Finset Complex

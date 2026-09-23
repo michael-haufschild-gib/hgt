@@ -15,12 +15,12 @@ theorem HasUniformJet3.const_mul {S : Set ℂ} {b : ℝ} {F : ℂ → ℝ → �
       (fun u => k * c₁ u) (fun u => k * c₂ u) (‖k‖ * C) := by
   intro u hu z hz
   calc
-    ‖k * F u z - k * c₀ u - k * c₁ u * z - k * c₂ u * z ^ 2‖ =
-        ‖k‖ * ‖F u z - c₀ u - c₁ u * z - c₂ u * z ^ 2‖ := by
+    ‖k * F u z - k * c₀ u - k * c₁ u * z - k * c₂ u * z ^ (2 : ℕ)‖ =
+        ‖k‖ * ‖F u z - c₀ u - c₁ u * z - c₂ u * z ^ (2 : ℕ)‖ := by
           rw [← norm_mul]
           ring_nf
-    _ ≤ ‖k‖ * (C * z ^ 3) := mul_le_mul_of_nonneg_left (h u hu z hz) (norm_nonneg _)
-    _ = (‖k‖ * C) * z ^ 3 := by ring
+    _ ≤ ‖k‖ * (C * z ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left (h u hu z hz) (norm_nonneg _)
+    _ = (‖k‖ * C) * z ^ (3 : ℕ) := by ring
 
 /-- Products of cubic endpoint jets remain cubic endpoint jets. The retained
 coefficients are the literal degree-zero through degree-two product terms. -/
@@ -35,29 +35,29 @@ theorem HasUniformJet3.mul {S : Set ℂ} {b : ℝ} (hb1 : b ≤ 1)
       (fun u => c₀ u * d₀ u)
       (fun u => c₀ u * d₁ u + c₁ u * d₀ u)
       (fun u => c₀ u * d₂ u + c₁ u * d₁ u + c₂ u * d₀ u)
-      (3 * M ^ 2 + C * (3 * M + D) + 3 * M * D) := by
+      (3 * M ^ (2 : ℕ) + C * (3 * M + D) + 3 * M * D) := by
   intro u hu z hz
   have hz0 : 0 ≤ z := hz.1.le
   have hz1 : z ≤ 1 := hz.2.trans hb1
-  have hz2 : z ^ 2 ≤ 1 := pow_le_one₀ hz0 hz1
-  have hz3 : z ^ 3 ≤ 1 := pow_le_one₀ hz0 hz1
-  have hz4 : z ^ 4 ≤ z ^ 3 := by nlinarith [mul_nonneg (pow_nonneg hz0 3) (sub_nonneg.mpr hz1)]
-  set r := F u z - c₀ u - c₁ u * z - c₂ u * z ^ 2 with hr
-  set s := G u z - d₀ u - d₁ u * z - d₂ u * z ^ 2 with hs
-  have hrn : ‖r‖ ≤ C * z ^ 3 := hF u hu z hz
-  have hsn : ‖s‖ ≤ D * z ^ 3 := hG u hu z hz
-  have hFz : F u z = c₀ u + c₁ u * z + c₂ u * z ^ 2 + r := by rw [hr]; ring
-  have hGz : G u z = d₀ u + d₁ u * z + d₂ u * z ^ 2 + s := by rw [hs]; ring
+  have hz2 : z ^ (2 : ℕ) ≤ 1 := pow_le_one₀ hz0 hz1
+  have hz3 : z ^ (3 : ℕ) ≤ 1 := pow_le_one₀ hz0 hz1
+  have hz4 : z ^ (4 : ℕ) ≤ z ^ (3 : ℕ) := by nlinarith [mul_nonneg (pow_nonneg hz0 3) (sub_nonneg.mpr hz1)]
+  set r := F u z - c₀ u - c₁ u * z - c₂ u * z ^ (2 : ℕ) with hr
+  set s := G u z - d₀ u - d₁ u * z - d₂ u * z ^ (2 : ℕ) with hs
+  have hrn : ‖r‖ ≤ C * z ^ (3 : ℕ) := hF u hu z hz
+  have hsn : ‖s‖ ≤ D * z ^ (3 : ℕ) := hG u hu z hz
+  have hFz : F u z = c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ) + r := by rw [hr]; ring
+  have hGz : G u z = d₀ u + d₁ u * z + d₂ u * z ^ (2 : ℕ) + s := by rw [hs]; ring
   have hzn : ‖(z : ℂ)‖ = z := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hz0]
   have hGb : ‖G u z‖ ≤ 3 * M + D := by
     rw [hGz]
     calc
-      ‖d₀ u + d₁ u * z + d₂ u * z ^ 2 + s‖
-          ≤ ‖d₀ u‖ + ‖d₁ u * z‖ + ‖d₂ u * z ^ 2‖ + ‖s‖ := by
+      ‖d₀ u + d₁ u * z + d₂ u * z ^ (2 : ℕ) + s‖
+          ≤ ‖d₀ u‖ + ‖d₁ u * z‖ + ‖d₂ u * z ^ (2 : ℕ)‖ + ‖s‖ := by
             calc
-              _ ≤ ‖d₀ u + d₁ u * z + d₂ u * z ^ 2‖ + ‖s‖ := norm_add_le _ _
-              _ ≤ (‖d₀ u + d₁ u * z‖ + ‖d₂ u * z ^ 2‖) + ‖s‖ := by
+              _ ≤ ‖d₀ u + d₁ u * z + d₂ u * z ^ (2 : ℕ)‖ + ‖s‖ := norm_add_le _ _
+              _ ≤ (‖d₀ u + d₁ u * z‖ + ‖d₂ u * z ^ (2 : ℕ)‖) + ‖s‖ := by
                 gcongr
                 exact norm_add_le _ _
               _ ≤ _ := by gcongr; exact norm_add_le _ _
@@ -70,12 +70,12 @@ theorem HasUniformJet3.mul {S : Set ℂ} {b : ℝ} (hb1 : b ≤ 1)
           exact mul_le_mul (hd₂ u hu) hz2 (sq_nonneg z) hM
         · exact hsn.trans (mul_le_mul_of_nonneg_left hz3 hD)
       _ = 3 * M + D := by ring
-  have hFb : ‖c₀ u + c₁ u * z + c₂ u * z ^ 2‖ ≤ 3 * M := by
+  have hFb : ‖c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ)‖ ≤ 3 * M := by
     calc
-      ‖c₀ u + c₁ u * z + c₂ u * z ^ 2‖
-          ≤ ‖c₀ u‖ + ‖c₁ u * z‖ + ‖c₂ u * z ^ 2‖ := by
+      ‖c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ)‖
+          ≤ ‖c₀ u‖ + ‖c₁ u * z‖ + ‖c₂ u * z ^ (2 : ℕ)‖ := by
             calc
-              _ ≤ ‖c₀ u + c₁ u * z‖ + ‖c₂ u * z ^ 2‖ := norm_add_le _ _
+              _ ≤ ‖c₀ u + c₁ u * z‖ + ‖c₂ u * z ^ (2 : ℕ)‖ := norm_add_le _ _
               _ ≤ _ := by gcongr; exact norm_add_le _ _
       _ ≤ M + M * 1 + M * 1 := by
         gcongr
@@ -85,57 +85,57 @@ theorem HasUniformJet3.mul {S : Set ℂ} {b : ℝ} (hb1 : b ≤ 1)
         · rw [norm_mul, norm_pow, hzn]
           exact mul_le_mul (hc₂ u hu) hz2 (sq_nonneg z) hM
       _ = 3 * M := by ring
-  have hhigh3 : ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3‖ ≤
-      2 * M ^ 2 * z ^ 3 := by
+  have hhigh3 : ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ)‖ ≤
+      2 * M ^ (2 : ℕ) * z ^ (3 : ℕ) := by
     rw [norm_mul, norm_pow, hzn]
     calc
-      ‖c₁ u * d₂ u + c₂ u * d₁ u‖ * z ^ 3
-          ≤ (‖c₁ u * d₂ u‖ + ‖c₂ u * d₁ u‖) * z ^ 3 :=
+      ‖c₁ u * d₂ u + c₂ u * d₁ u‖ * z ^ (3 : ℕ)
+          ≤ (‖c₁ u * d₂ u‖ + ‖c₂ u * d₁ u‖) * z ^ (3 : ℕ) :=
             mul_le_mul_of_nonneg_right (norm_add_le _ _) (pow_nonneg hz0 _)
-      _ ≤ (M * M + M * M) * z ^ 3 := by
+      _ ≤ (M * M + M * M) * z ^ (3 : ℕ) := by
         gcongr
         · rw [norm_mul]
           exact mul_le_mul (hc₁ u hu) (hd₂ u hu) (norm_nonneg _) hM
         · rw [norm_mul]
           exact mul_le_mul (hc₂ u hu) (hd₁ u hu) (norm_nonneg _) hM
-      _ = 2 * M ^ 2 * z ^ 3 := by ring
-  have hhigh4 : ‖c₂ u * d₂ u * (z : ℂ) ^ 4‖ ≤ M ^ 2 * z ^ 3 := by
+      _ = 2 * M ^ (2 : ℕ) * z ^ (3 : ℕ) := by ring
+  have hhigh4 : ‖c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ)‖ ≤ M ^ (2 : ℕ) * z ^ (3 : ℕ) := by
     rw [norm_mul, norm_mul, norm_pow, hzn]
     calc
-      ‖c₂ u‖ * ‖d₂ u‖ * z ^ 4 ≤ M * M * z ^ 4 := by
+      ‖c₂ u‖ * ‖d₂ u‖ * z ^ (4 : ℕ) ≤ M * M * z ^ (4 : ℕ) := by
         gcongr
         · exact hc₂ u hu
         · exact hd₂ u hu
-      _ ≤ M * M * z ^ 3 := by gcongr
-      _ = M ^ 2 * z ^ 3 := by ring
+      _ ≤ M * M * z ^ (3 : ℕ) := by gcongr
+      _ = M ^ (2 : ℕ) * z ^ (3 : ℕ) := by ring
   have hkey : F u z * G u z - c₀ u * d₀ u -
       (c₀ u * d₁ u + c₁ u * d₀ u) * z -
-      (c₀ u * d₂ u + c₁ u * d₁ u + c₂ u * d₀ u) * z ^ 2 =
-      (c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3 + c₂ u * d₂ u * (z : ℂ) ^ 4 +
-        r * G u z + s * (c₀ u + c₁ u * z + c₂ u * z ^ 2) := by
+      (c₀ u * d₂ u + c₁ u * d₁ u + c₂ u * d₀ u) * z ^ (2 : ℕ) =
+      (c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ) + c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ) +
+        r * G u z + s * (c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ)) := by
     rw [hFz]
     conv_rhs => rw [hGz]
     rw [hGz]
     ring
   rw [hkey]
   calc
-    ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3 + c₂ u * d₂ u * (z : ℂ) ^ 4 +
-        r * G u z + s * (c₀ u + c₁ u * z + c₂ u * z ^ 2)‖
-        ≤ ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3‖ +
-          ‖c₂ u * d₂ u * (z : ℂ) ^ 4‖ + ‖r * G u z‖ +
-            ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ 2)‖ := by
+    ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ) + c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ) +
+        r * G u z + s * (c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ))‖
+        ≤ ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ)‖ +
+          ‖c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ)‖ + ‖r * G u z‖ +
+            ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ))‖ := by
           calc
-            _ ≤ ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3 +
-                c₂ u * d₂ u * (z : ℂ) ^ 4 + r * G u z‖ +
-                  ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ 2)‖ := norm_add_le _ _
-            _ ≤ (‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ 3 +
-                c₂ u * d₂ u * (z : ℂ) ^ 4‖ + ‖r * G u z‖) +
-                  ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ 2)‖ := by
+            _ ≤ ‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ) +
+                c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ) + r * G u z‖ +
+                  ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ))‖ := norm_add_le _ _
+            _ ≤ (‖(c₁ u * d₂ u + c₂ u * d₁ u) * (z : ℂ) ^ (3 : ℕ) +
+                c₂ u * d₂ u * (z : ℂ) ^ (4 : ℕ)‖ + ‖r * G u z‖) +
+                  ‖s * (c₀ u + c₁ u * z + c₂ u * z ^ (2 : ℕ))‖ := by
                   gcongr
                   exact norm_add_le _ _
             _ ≤ _ := by gcongr; exact norm_add_le _ _
-    _ ≤ 2 * M ^ 2 * z ^ 3 + M ^ 2 * z ^ 3 +
-        (C * z ^ 3) * (3 * M + D) + (D * z ^ 3) * (3 * M) := by
+    _ ≤ 2 * M ^ (2 : ℕ) * z ^ (3 : ℕ) + M ^ (2 : ℕ) * z ^ (3 : ℕ) +
+        (C * z ^ (3 : ℕ)) * (3 * M + D) + (D * z ^ (3 : ℕ)) * (3 * M) := by
           apply add_le_add
           · apply add_le_add
             · apply add_le_add hhigh3 hhigh4
@@ -143,7 +143,7 @@ theorem HasUniformJet3.mul {S : Set ℂ} {b : ℝ} (hb1 : b ≤ 1)
               exact mul_le_mul hrn hGb (norm_nonneg _) (by positivity)
           · rw [norm_mul]
             exact mul_le_mul hsn hFb (norm_nonneg _) (by positivity)
-    _ = (3 * M ^ 2 + C * (3 * M + D) + 3 * M * D) * z ^ 3 := by ring
+    _ = (3 * M ^ (2 : ℕ) + C * (3 * M + D) + 3 * M * D) * z ^ (3 : ℕ) := by ring
 
 end
 end GaloisForLFunctions.HTGeometry

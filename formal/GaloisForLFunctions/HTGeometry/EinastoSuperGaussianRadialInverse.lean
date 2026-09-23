@@ -15,9 +15,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def einastoSuperGaussianCorrectionFactor (d l k σ r : ℝ) : ℝ :=
-  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ 2 * einastoSuperGaussianSource d l k σ (r * u)
+  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ (r * u)
 
-def einastoSuperGaussianCorrection (d l k σ r : ℝ) : ℝ := r ^ 2 * einastoSuperGaussianCorrectionFactor d l k σ r
+def einastoSuperGaussianCorrection (d l k σ r : ℝ) : ℝ := r ^ (2 : ℕ) * einastoSuperGaussianCorrectionFactor d l k σ r
 
 def einastoSuperGaussianCorrectionCoefficient (d l k σ : ℝ) : ℝ := 8 * Real.pi * einastoSuperGaussianSource d l k σ 0 / 3
 
@@ -38,7 +38,7 @@ theorem einastoSuperGaussianCorrectionFactor_core (d l k σ : ℝ) :
 /-- The finite quadratic coefficient is extracted from the actual source. -/
 theorem einastoSuperGaussianCorrectionCoefficient_eq (d l k σ : ℝ) :
     einastoSuperGaussianCorrectionCoefficient d l k σ =
-      (512 / 3 : ℝ) * Real.pi ^ 2 * (σ - 1) * exp d ^ 2 := by
+      (512 / 3 : ℝ) * Real.pi ^ (2 : ℕ) * (σ - 1) * exp d ^ (2 : ℕ) := by
   rw [einastoSuperGaussianCorrectionCoefficient, einastoSuperGaussianSource_core]
   ring
 
@@ -50,21 +50,21 @@ theorem einastoSuperGaussianCorrection_center (d l k σ : ℝ) : einastoSuperGau
   ring
 
 theorem einastoSuperGaussianCorrection_primitive (d l k σ r : ℝ) :
-    r * einastoSuperGaussianCorrection d l k σ r = ∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoSuperGaussianSource d l k σ s := by
+    r * einastoSuperGaussianCorrection d l k σ r = ∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s := by
   have h := intervalIntegral.smul_integral_comp_mul_left
-    (fun s : ℝ => s ^ 2 * einastoSuperGaussianSource d l k σ s) r (a := 0) (b := 1)
+    (fun s : ℝ => s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s) r (a := 0) (b := 1)
   simp only [smul_eq_mul, mul_zero, mul_one, mul_pow] at h
-  rw [show (fun u : ℝ => r ^ 2 * u ^ 2 * einastoSuperGaussianSource d l k σ (r * u)) =
-    (fun u : ℝ => r ^ 2 * (u ^ 2 * einastoSuperGaussianSource d l k σ (r * u))) by funext u; ring,
+  rw [show (fun u : ℝ => r ^ (2 : ℕ) * u ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ (r * u)) =
+    (fun u : ℝ => r ^ (2 : ℕ) * (u ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ (r * u))) by funext u; ring,
     intervalIntegral.integral_const_mul] at h
-  rw [show (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoSuperGaussianSource d l k σ s) =
-    (fun s : ℝ => (8 * Real.pi) * (s ^ 2 * einastoSuperGaussianSource d l k σ s)) by funext s; ring,
+  rw [show (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s) =
+    (fun s : ℝ => (8 * Real.pi) * (s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s)) by funext s; ring,
     intervalIntegral.integral_const_mul, ← h]
   unfold einastoSuperGaussianCorrection einastoSuperGaussianCorrectionFactor
   ring
 
 theorem einastoSuperGaussianCorrection_integral (d l k σ r : ℝ) :
-    einastoSuperGaussianCorrection d l k σ r = (∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoSuperGaussianSource d l k σ s) / r := by
+    einastoSuperGaussianCorrection d l k σ r = (∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s) / r := by
   by_cases hr : r = 0
   · subst r
     simp only [einastoSuperGaussianCorrection_center, intervalIntegral.integral_same, zero_div]
@@ -74,7 +74,7 @@ theorem einastoSuperGaussianCorrection_integral (d l k σ r : ℝ) :
 /-- The constructed correction is equation (15) with the actual curvature source. -/
 theorem einastoSuperGaussianCorrection_actual_integral (d l k σ t : ℝ) :
     einastoSuperGaussianCorrection d l k σ (exp t) =
-      (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticRadialSource σ (einastoMetric d l (einastoSuperGaussianShape k)) s) / exp t := by
+      (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l (einastoSuperGaussianShape k)) s) / exp t := by
   rw [einastoSuperGaussianCorrection_integral]
   congr 1
   apply intervalIntegral.integral_congr_Ioo_of_le (exp_pos t).le
@@ -87,7 +87,7 @@ theorem einastoSuperGaussianCorrection_actual_integral (d l k σ t : ℝ) :
 /-- The literal printed appendix also gives this regular inverse near zero. -/
 theorem einastoSuperGaussianCorrection_appendix_integral (d l k : ℝ) :
     (fun t => einastoSuperGaussianCorrection d l k (-1) (exp t)) =ᶠ[atBot]
-      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticAppendixSource (einastoMetric d l (einastoSuperGaussianShape k)) s) / exp t) := by
+      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticAppendixSource (einastoMetric d l (einastoSuperGaussianShape k)) s) / exp t) := by
   obtain ⟨T, hT⟩ := eventually_atBot.mp (einastoSuperGaussianSource_appendix_eventually d l k)
   filter_upwards [eventually_le_atBot T] with t ht
   rw [einastoSuperGaussianCorrection_integral]
@@ -105,11 +105,11 @@ theorem einastoSuperGaussianCorrection_appendix_integral (d l k : ℝ) :
 
 theorem einastoSuperGaussianCorrection_primitive_hasDerivAt (d l k σ r : ℝ) :
     HasDerivAt (fun s => s * einastoSuperGaussianCorrection d l k σ s)
-      (8 * Real.pi * r ^ 2 * einastoSuperGaussianSource d l k σ r) r := by
-  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoSuperGaussianSource d l k σ s) :=
+      (8 * Real.pi * r ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ r) r := by
+  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ s) :=
     (continuous_const.mul (continuous_id.pow 2)).mul (einastoSuperGaussianSource_continuous d l k σ)
   have he : (fun s => s * einastoSuperGaussianCorrection d l k σ s) =
-      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ 2 * einastoSuperGaussianSource d l k σ u) := by
+      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ (2 : ℕ) * einastoSuperGaussianSource d l k σ u) := by
     funext s
     exact einastoSuperGaussianCorrection_primitive d l k σ s
   rw [he]
@@ -118,7 +118,7 @@ theorem einastoSuperGaussianCorrection_primitive_hasDerivAt (d l k σ r : ℝ) :
 
 theorem einastoSuperGaussianCorrection_source_ode (d l k σ t : ℝ) :
     HasDerivAt (fun r => r * einastoSuperGaussianCorrection d l k σ r)
-      (8 * Real.pi * exp t ^ 2 * quadraticRadialSource σ (einastoMetric d l (einastoSuperGaussianShape k)) (exp t)) (exp t) := by
+      (8 * Real.pi * exp t ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l (einastoSuperGaussianShape k)) (exp t)) (exp t) := by
   rw [einastoSuperGaussianSource_actual]
   exact einastoSuperGaussianCorrection_primitive_hasDerivAt d l k σ (exp t)
 
@@ -145,7 +145,7 @@ theorem einastoSuperGaussianCorrectionFactor_hasDerivAt (d l k σ t : ℝ) :
   have h := (einastoSuperGaussianCorrection_hasDerivAt d l k σ t).div
     ((hasDerivAt_id (exp t)).pow 2) (pow_ne_zero 2 (exp_ne_zero t))
   simp only [Pi.div_def, Pi.pow_apply, id_eq] at h
-  have hd : HasDerivAt (fun r => einastoSuperGaussianCorrection d l k σ r / r ^ 2)
+  have hd : HasDerivAt (fun r => einastoSuperGaussianCorrection d l k σ r / r ^ (2 : ℕ))
       ((8 * Real.pi * einastoSuperGaussianSource d l k σ (exp t) - 3 * einastoSuperGaussianCorrectionFactor d l k σ (exp t)) / exp t) (exp t) := by
     apply h.congr_deriv
     unfold einastoSuperGaussianCorrection
@@ -178,9 +178,9 @@ theorem einastoSuperGaussianCorrection_second_hasDerivAt (d l k σ t : ℝ) :
 
 /-- The actual correction has a finite quadratic coefficient for every exponent above two. -/
 theorem einastoSuperGaussianCorrection_quadratic_limit (d l k σ : ℝ) :
-    Tendsto (fun t => einastoSuperGaussianCorrection d l k σ (exp t) / exp t ^ 2) atBot
+    Tendsto (fun t => einastoSuperGaussianCorrection d l k σ (exp t) / exp t ^ (2 : ℕ)) atBot
       (𝓝 (einastoSuperGaussianCorrectionCoefficient d l k σ)) := by
-  have he : (fun t => einastoSuperGaussianCorrection d l k σ (exp t) / exp t ^ 2) =
+  have he : (fun t => einastoSuperGaussianCorrection d l k σ (exp t) / exp t ^ (2 : ℕ)) =
       (fun t => einastoSuperGaussianCorrectionFactor d l k σ (exp t)) := by
     funext t
     unfold einastoSuperGaussianCorrection

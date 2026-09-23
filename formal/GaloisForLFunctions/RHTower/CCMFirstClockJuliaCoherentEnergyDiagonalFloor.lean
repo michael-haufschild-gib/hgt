@@ -26,8 +26,8 @@ def ccmFirstClockJuliaSixthPowerAperture (m : ℕ) : ℝ := 6 * Real.log (m : �
 
 /-- Exact source cutoff at the sixth-power aperture. -/
 theorem ccmFirstClockJuliaSixthPower_cutoff {m : ℕ} (hm : 0 < m) :
-    ⌊Real.exp (ccmFirstClockJuliaSixthPowerAperture m)⌋₊ = m ^ 6 := by
-  have hexponent : ccmFirstClockJuliaSixthPowerAperture m = Real.log ((m : ℝ) ^ 6) := by
+    ⌊Real.exp (ccmFirstClockJuliaSixthPowerAperture m)⌋₊ = m ^ (6 : ℕ) := by
+  have hexponent : ccmFirstClockJuliaSixthPowerAperture m = Real.log ((m : ℝ) ^ (6 : ℕ)) := by
     rw [ccmFirstClockJuliaSixthPowerAperture, Real.log_pow]
     norm_num
   rw [hexponent, Real.exp_log (by positivity), ← Nat.cast_pow,
@@ -35,28 +35,28 @@ theorem ccmFirstClockJuliaSixthPower_cutoff {m : ℕ} (hm : 0 < m) :
 
 /-- Every prime in `(2m⁴, 5m⁴]` has exactly one admitted power at `L_m`. -/
 theorem ccmFirstClockJuliaSixthPower_block_primePowerLength_eq_one {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     ccmFirstClockPrimePowerLength (ccmFirstClockJuliaSixthPowerAperture m) p = 1 := by
   obtain ⟨hpPrime, hpLower, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
   have hm0 : 0 < m := by omega
   have hpOne : 1 < p := hpPrime.one_lt
-  have hpCut : p ≤ m ^ 6 := by
+  have hpCut : p ≤ m ^ (6 : ℕ) := by
     calc
-      p ≤ 5 * m ^ 4 := hpUpper
-      _ ≤ m ^ 2 * m ^ 4 := by
-        exact Nat.mul_le_mul_right (m ^ 4) (by nlinarith)
-      _ = m ^ 6 := by ring
-  have hpSq : m ^ 6 < p * p := by
-    have hpow : m ^ 6 < 4 * m ^ 8 := by
-      have h68 : m ^ 6 ≤ m ^ 8 := Nat.pow_le_pow_right hm0 (by omega)
-      have h8pos : 0 < m ^ 8 := pow_pos hm0 _
+      p ≤ 5 * m ^ (4 : ℕ) := hpUpper
+      _ ≤ m ^ (2 : ℕ) * m ^ (4 : ℕ) := by
+        exact Nat.mul_le_mul_right (m ^ (4 : ℕ)) (by nlinarith)
+      _ = m ^ (6 : ℕ) := by ring
+  have hpSq : m ^ (6 : ℕ) < p * p := by
+    have hpow : m ^ (6 : ℕ) < 4 * m ^ (8 : ℕ) := by
+      have h68 : m ^ (6 : ℕ) ≤ m ^ (8 : ℕ) := Nat.pow_le_pow_right hm0 (by omega)
+      have h8pos : 0 < m ^ (8 : ℕ) := pow_pos hm0 _
       omega
-    have hsq : (2 * m ^ 4) ^ 2 < p ^ 2 :=
+    have hsq : (2 * m ^ (4 : ℕ)) ^ (2 : ℕ) < p ^ (2 : ℕ) :=
       (sq_lt_sq₀ (by omega) (by omega)).2 hpLower
     calc
-      m ^ 6 < 4 * m ^ 8 := hpow
-      _ = (2 * m ^ 4) ^ 2 := by ring
-      _ < p ^ 2 := hsq
+      m ^ (6 : ℕ) < 4 * m ^ (8 : ℕ) := hpow
+      _ = (2 * m ^ (4 : ℕ)) ^ (2 : ℕ) := by ring
+      _ < p ^ (2 : ℕ) := hsq
       _ = p * p := by ring
   rw [ccmFirstClockPrimePowerLength, ccmFirstClockJuliaSixthPower_cutoff hm0, Nat.log_eq_one_iff]
   exact ⟨hpSq, hpOne, hpCut⟩
@@ -84,7 +84,7 @@ theorem half_le_neg_sin_of_four_pi_div_three_le_of_le_three_pi_div_two {theta : 
 
 /-- The complete one-mode prime block lies in the terminal negative sine chamber. -/
 theorem ccmFirstClockJuliaSixthPower_block_phase {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     4 * Real.pi / 3 <
         (2 * Real.pi / ccmFirstClockJuliaSixthPowerAperture m) * Real.log (p : ℝ) ∧
       (2 * Real.pi / ccmFirstClockJuliaSixthPowerAperture m) * Real.log (p : ℝ) ≤
@@ -99,16 +99,16 @@ theorem ccmFirstClockJuliaSixthPower_block_phase {m p : ℕ} (hm : 25 ≤ m)
   have hlog25 : Real.log (25 : ℝ) ≤ Real.log (m : ℝ) :=
     Real.log_le_log (by norm_num) (by exact_mod_cast hm)
   have hlog25eq : Real.log (25 : ℝ) = 2 * Real.log 5 := by
-    rw [show (25 : ℝ) = 5 ^ 2 by norm_num, Real.log_pow]
+    rw [show (25 : ℝ) = 5 ^ (2 : ℕ) by norm_num, Real.log_pow]
     norm_num
   have hlogFiveBudget : Real.log 5 ≤ Real.log (m : ℝ) / 2 := by
     rw [hlog25eq] at hlog25
     linarith
-  have hpLowerR : 2 * (m : ℝ) ^ 4 < (p : ℝ) := by
+  have hpLowerR : 2 * (m : ℝ) ^ (4 : ℕ) < (p : ℝ) := by
     exact_mod_cast hpLower
-  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ 4 := by
+  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ (4 : ℕ) := by
     exact_mod_cast hpUpper
-  have hlogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ 4) hpLowerR
+  have hlogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ (4 : ℕ)) hpLowerR
   have hlogUpperRaw := Real.log_le_log hpR hpUpperR
   have hlogLower : 4 * Real.log (m : ℝ) < Real.log (p : ℝ) := by
     rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (by positivity),
@@ -144,7 +144,7 @@ theorem ccmFirstClockJuliaSixthPower_block_phase {m p : ℕ} (hm : 25 ≤ m)
 
 /-- Exact one-mode formula for the reduced bad coefficient on the prime block. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_eq {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     ccmFirstClockReducedBadPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
         ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩ =
       -(Real.log (p : ℝ) * criticalPrimeTowerRadius p *
@@ -160,15 +160,15 @@ theorem ccmFirstClockJuliaSixthPower_block_badTerm_eq {m p : ℕ} (hm : 25 ≤ m
 
 /-- Pointwise squared lower bound for each block bad coefficient. -/
 theorem ccmFirstClockJuliaSixthPower_block_badTerm_sq_lower {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
-    (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p ≤
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
+    (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p ≤
       ccmFirstClockReducedBadPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m)
-        ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩ ^ 2 := by
+        ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩ ^ (2 : ℕ) := by
   let q : Nat.Primes := ⟨p, (mem_suzukiMangoldtFivePrimeBlock.mp hp).1⟩
   let b := ccmFirstClockReducedBadPrimeTerm (ccmFirstClockJuliaSixthPowerAperture m) q
   let d := (1 / 2 : ℝ) * Real.log (p : ℝ) * criticalPrimeTowerRadius p
   have hpPrime := (mem_suzukiMangoldtFivePrimeBlock.mp hp).1
-  have hpCutNat : p ≤ m ^ 6 := by
+  have hpCutNat : p ≤ m ^ (6 : ℕ) := by
     simpa only [ccmFirstClockJuliaSixthPower_cutoff (show 0 < m by omega)] using
       (Nat.log_eq_one_iff.mp (ccmFirstClockJuliaSixthPower_block_primePowerLength_eq_one hm hp)).2.2
   have hm0 : 0 < m := by omega
@@ -192,13 +192,13 @@ theorem ccmFirstClockJuliaSixthPower_block_badTerm_sq_lower {m p : ℕ} (hm : 25
       (mul_nonneg hlogp hradius)
     nlinarith
   have hd : 0 ≤ d := mul_nonneg (mul_nonneg (by norm_num) hlogp) hradius
-  have hsq : d ^ 2 ≤ b ^ 2 := (sq_le_sq₀ hd hb).2 hdb
+  have hsq : d ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := (sq_le_sq₀ hd hb).2 hdb
   calc
-    (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p = d ^ 2 := by
+    (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p = d ^ (2 : ℕ) := by
       dsimp only [d]
       rw [div_eq_mul_inv, ← criticalPrimeTowerRadius_sq]
       ring
-    _ ≤ b ^ 2 := hsq
+    _ ≤ b ^ (2 : ℕ) := hsq
 
 /-- Totalized natural-prime interface to the reduced bad coefficient. -/
 def ccmFirstClockReducedBadNatTerm (L : ℝ) (p : ℕ) : ℝ :=
@@ -211,18 +211,18 @@ def ccmFirstClockReducedBadNatTerm (L : ℝ) (p : ℕ) : ℝ :=
 
 /-- Convert phase weight to the Chebyshev-compatible logarithmic block weight. -/
 theorem ccmFirstClockJuliaSixthPower_block_weighted_lower {m p : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
-    Real.log (m : ℝ) / (5 * (m : ℝ) ^ 4) * Real.log (p : ℝ) ≤
-      (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p := by
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
+    Real.log (m : ℝ) / (5 * (m : ℝ) ^ (4 : ℕ)) * Real.log (p : ℝ) ≤
+      (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p := by
   obtain ⟨hpPrime, hpLower, hpUpper⟩ := mem_suzukiMangoldtFivePrimeBlock.mp hp
   have hmR : (0 : ℝ) < m := by positivity
   have hpR : (0 : ℝ) < p := by exact_mod_cast hpPrime.pos
   have hlogm : 0 < Real.log (m : ℝ) :=
     Real.log_pos (by exact_mod_cast (show 1 < m by omega))
   have hlogTwo : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
-  have hpLowerR : 2 * (m : ℝ) ^ 4 < (p : ℝ) := by exact_mod_cast hpLower
-  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ 4 := by exact_mod_cast hpUpper
-  have hlogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ 4) hpLowerR
+  have hpLowerR : 2 * (m : ℝ) ^ (4 : ℕ) < (p : ℝ) := by exact_mod_cast hpLower
+  have hpUpperR : (p : ℝ) ≤ 5 * (m : ℝ) ^ (4 : ℕ) := by exact_mod_cast hpUpper
+  have hlogLowerRaw := Real.log_lt_log (by positivity : 0 < 2 * (m : ℝ) ^ (4 : ℕ)) hpLowerR
   have hlogLower : 4 * Real.log (m : ℝ) ≤ Real.log (p : ℝ) := by
     rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (by positivity),
       Real.log_pow] at hlogLowerRaw
@@ -232,50 +232,50 @@ theorem ccmFirstClockJuliaSixthPower_block_weighted_lower {m p : ℕ} (hm : 25 �
     (Real.log_pos (by exact_mod_cast hpPrime.one_lt)).le
   have hlogProduct :
       4 * Real.log (m : ℝ) * Real.log (p : ℝ) ≤
-        Real.log (p : ℝ) ^ 2 := by
+        Real.log (p : ℝ) ^ (2 : ℕ) := by
     simpa only [pow_two] using mul_le_mul_of_nonneg_right hlogLower hlogp
-  have hinv : (5 * (m : ℝ) ^ 4)⁻¹ ≤ (p : ℝ)⁻¹ :=
+  have hinv : (5 * (m : ℝ) ^ (4 : ℕ))⁻¹ ≤ (p : ℝ)⁻¹ :=
     inv_anti₀ hpR hpUpperR
   calc
-    Real.log (m : ℝ) / (5 * (m : ℝ) ^ 4) * Real.log (p : ℝ) =
+    Real.log (m : ℝ) / (5 * (m : ℝ) ^ (4 : ℕ)) * Real.log (p : ℝ) =
         (1 / 4 : ℝ) * (4 * Real.log (m : ℝ) * Real.log (p : ℝ)) *
-          (5 * (m : ℝ) ^ 4)⁻¹ := by ring
-    _ ≤ (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 *
-          (5 * (m : ℝ) ^ 4)⁻¹ := by
+          (5 * (m : ℝ) ^ (4 : ℕ))⁻¹ := by ring
+    _ ≤ (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) *
+          (5 * (m : ℝ) ^ (4 : ℕ))⁻¹ := by
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hlogProduct (by norm_num)) (by positivity)
-    _ ≤ (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 * (p : ℝ)⁻¹ := by
+    _ ≤ (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) * (p : ℝ)⁻¹ := by
       exact mul_le_mul_of_nonneg_left hinv (by positivity)
-    _ = (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p := by ring
+    _ = (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p := by ring
 
 /-- Chebyshev prime mass forces the block diagonal above `log m / 20`. -/
 theorem ccmFirstClockJuliaSixthPower_block_diagonal_lower {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
     Real.log (m : ℝ) / 20 ≤
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-        ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := by
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+        ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := by
   have hmR : (0 : ℝ) < m := by positivity
   have hlogm : 0 ≤ Real.log (m : ℝ) :=
     (Real.log_pos (by exact_mod_cast (show 1 < m by omega))).le
   have hcheb := chebyshev_fivePrimeBlock_logMass_floor hmCheb
   calc
     Real.log (m : ℝ) / 20 =
-        (Real.log (m : ℝ) / (5 * (m : ℝ) ^ 4)) *
-          (((m ^ 4 : ℕ) : ℝ) / 4) := by
+        (Real.log (m : ℝ) / (5 * (m : ℝ) ^ (4 : ℕ))) *
+          (((m ^ (4 : ℕ) : ℕ) : ℝ) / 4) := by
       push_cast
       field_simp
       ring
-    _ ≤ (Real.log (m : ℝ) / (5 * (m : ℝ) ^ 4)) *
-          ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4), Real.log (p : ℝ) := by
+    _ ≤ (Real.log (m : ℝ) / (5 * (m : ℝ) ^ (4 : ℕ))) *
+          ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)), Real.log (p : ℝ) := by
       exact mul_le_mul_of_nonneg_left hcheb (by positivity)
-    _ = ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-          Real.log (m : ℝ) / (5 * (m : ℝ) ^ 4) * Real.log (p : ℝ) := by
+    _ = ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+          Real.log (m : ℝ) / (5 * (m : ℝ) ^ (4 : ℕ)) * Real.log (p : ℝ) := by
       rw [Finset.mul_sum]
-    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-          (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 / p := by
+    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+          (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / p := by
       exact Finset.sum_le_sum fun p hp ↦ ccmFirstClockJuliaSixthPower_block_weighted_lower hm hp
-    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := by
+    _ ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro p hp
       rw [ccmFirstClockReducedBadNatTerm_of_prime _ (mem_suzukiMangoldtFivePrimeBlock.mp hp).1]
@@ -285,7 +285,7 @@ theorem ccmFirstClockJuliaSixthPower_block_diagonal_lower {m : ℕ} (hm : 25 ≤
 theorem ccmFirstClockJuliaBadDiagonalEnergy_le_coherentEnergy
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
-    ∑ i, ccmFirstClockReducedBadPrimeTerm L (p i) ^ 2 ≤
+    ∑ i, ccmFirstClockReducedBadPrimeTerm L (p i) ^ (2 : ℕ) ≤
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   simpa only [ccmFirstClockJuliaBadCoherentEnergy,
     GaloisForLFunctions.HTGeometry.realKernelPacketEnergy] using
@@ -299,17 +299,17 @@ theorem ccmFirstClockJuliaBadDiagonalEnergy_le_coherentEnergy
 
 /-- Full admitted-prime Julia energy retains every squared reduced bad coefficient. -/
 theorem ccmFirstClockJuliaFullBadDiagonalEnergy_le_coherentEnergy {x L : ℝ} (hL : 0 < L) :
-    ∑ p ∈ Nat.primesLE ⌊Real.exp L⌋₊, ccmFirstClockReducedBadNatTerm L p ^ 2 ≤
+    ∑ p ∈ Nat.primesLE ⌊Real.exp L⌋₊, ccmFirstClockReducedBadNatTerm L p ^ (2 : ℕ) ≤
       ccmFirstClockJuliaBadCoherentEnergy x L
         (ccmFirstClockAdmittedPrimePacket L) := by
   have hpacket := ccmFirstClockJuliaBadDiagonalEnergy_le_coherentEnergy (x := x) hL
     (ccmFirstClockAdmittedPrimePacket L)
     (ccmFirstClockAdmittedPrimePacket_le_cutoff L)
   calc
-    ∑ p ∈ Nat.primesLE ⌊Real.exp L⌋₊, ccmFirstClockReducedBadNatTerm L p ^ 2 =
+    ∑ p ∈ Nat.primesLE ⌊Real.exp L⌋₊, ccmFirstClockReducedBadNatTerm L p ^ (2 : ℕ) =
         ∑ i, ccmFirstClockReducedBadPrimeTerm L
-          (ccmFirstClockAdmittedPrimePacket L i) ^ 2 := by
-      rw [← sum_ccmFirstClockAdmittedPrimePacket L (fun p ↦ ccmFirstClockReducedBadNatTerm L p ^ 2)]
+          (ccmFirstClockAdmittedPrimePacket L i) ^ (2 : ℕ) := by
+      rw [← sum_ccmFirstClockAdmittedPrimePacket L (fun p ↦ ccmFirstClockReducedBadNatTerm L p ^ (2 : ℕ))]
       apply Finset.sum_congr rfl
       intro i _
       rw [ccmFirstClockReducedBadNatTerm_of_prime _ (ccmFirstClockAdmittedPrimePacket L i).property]
@@ -319,7 +319,7 @@ theorem ccmFirstClockJuliaFullBadDiagonalEnergy_le_coherentEnergy {x L : ℝ} (h
 
 /-- Aperture-independent logarithmic lower floor for the literal full bad coherent energy. -/
 theorem ccmFirstClockJuliaFullBadCoherentEnergy_sixthPower_lower {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) (x : ℝ) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) (x : ℝ) :
     Real.log (m : ℝ) / 20 ≤
       ccmFirstClockJuliaBadCoherentEnergy x (ccmFirstClockJuliaSixthPowerAperture m)
         (ccmFirstClockAdmittedPrimePacket (ccmFirstClockJuliaSixthPowerAperture m)) := by
@@ -328,7 +328,7 @@ theorem ccmFirstClockJuliaFullBadCoherentEnergy_sixthPower_lower {m : ℕ} (hm :
     rw [ccmFirstClockJuliaSixthPowerAperture]
     exact mul_pos (by norm_num)
       (Real.log_pos (by exact_mod_cast (show 1 < m by omega)))
-  have hsubset : suzukiMangoldtFivePrimeBlock (m ^ 4) ⊆
+  have hsubset : suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)) ⊆
       Nat.primesLE ⌊Real.exp (ccmFirstClockJuliaSixthPowerAperture m)⌋₊ := by
     intro p hp
     obtain ⟨hpPrime, _hpLower, hpUpper⟩ :=
@@ -336,15 +336,15 @@ theorem ccmFirstClockJuliaFullBadCoherentEnergy_sixthPower_lower {m : ℕ} (hm :
     rw [ccmFirstClockJuliaSixthPower_cutoff hm0, Nat.mem_primesLE]
     constructor
     · calc
-        p ≤ 5 * m ^ 4 := hpUpper
-        _ ≤ m ^ 2 * m ^ 4 := Nat.mul_le_mul_right _ (by nlinarith)
-        _ = m ^ 6 := by ring
+        p ≤ 5 * m ^ (4 : ℕ) := hpUpper
+        _ ≤ m ^ (2 : ℕ) * m ^ (4 : ℕ) := Nat.mul_le_mul_right _ (by nlinarith)
+        _ = m ^ (6 : ℕ) := by ring
     · exact hpPrime
   have hblockFull :
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 ≤
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) ≤
         ∑ p ∈ Nat.primesLE ⌊Real.exp (ccmFirstClockJuliaSixthPowerAperture m)⌋₊,
-          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := by
+          ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := by
     exact Finset.sum_le_sum_of_subset_of_nonneg hsubset
       (fun _ _ _ ↦ sq_nonneg _)
   exact (ccmFirstClockJuliaSixthPower_block_diagonal_lower hm hmCheb).trans
@@ -356,7 +356,7 @@ theorem tendsto_ccmFirstClockJuliaFullBadCoherentEnergy_zero (L : ℝ) :
         (ccmFirstClockAdmittedPrimePacket L))
       (𝓝 0)
       (𝓝 ((∑ i, ccmFirstClockReducedBadPrimeTerm L
-        (ccmFirstClockAdmittedPrimePacket L i)) ^ 2)) := by
+        (ccmFirstClockAdmittedPrimePacket L i)) ^ (2 : ℕ))) := by
   simpa only [ccmFirstClockJuliaBadCoherentEnergy,
     GaloisForLFunctions.HTGeometry.realKernelPacketEnergy] using
     (GaloisForLFunctions.HTGeometry.realKernelPacketEnergy_scale_tendsto_mass_sq
@@ -380,13 +380,13 @@ theorem ccmFirstClockJuliaFullBadCoherentEnergy_unbounded_uniformly_in_scale (C 
     tendsto_natCast_atTop_atTop.eventually_ge_atTop (Real.exp 20)
   have hTwentyFive : ∀ᶠ m : ℕ in atTop, 25 ≤ m := eventually_ge_atTop 25
   have hEvent : ∀ᶠ m : ℕ in atTop,
-      25 ≤ m ∧ Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) ∧
+      25 ≤ m ∧ Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) ∧
         C < Real.log (m : ℝ) / 20 := by
     filter_upwards [hC, hExp, hTwentyFive] with m hmC hmExp hm25
-    have hmPowNat : m ≤ m ^ 4 := by
+    have hmPowNat : m ≤ m ^ (4 : ℕ) := by
       simpa only [pow_one] using Nat.pow_le_pow_right (by omega : 0 < m)
         (by omega : 1 ≤ 4)
-    have hmPow : (m : ℝ) ≤ ((m ^ 4 : ℕ) : ℝ) := by exact_mod_cast hmPowNat
+    have hmPow : (m : ℝ) ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) := by exact_mod_cast hmPowNat
     exact ⟨hm25, hmExp.trans hmPow, by linarith⟩
   obtain ⟨m, hm25, hmCheb, hmC⟩ := hEvent.exists
   exact ⟨m, fun x ↦ hmC.trans_le (ccmFirstClockJuliaFullBadCoherentEnergy_sixthPower_lower hm25 hmCheb x)⟩

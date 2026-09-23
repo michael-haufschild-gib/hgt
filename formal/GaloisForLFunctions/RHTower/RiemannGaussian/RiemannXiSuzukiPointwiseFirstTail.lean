@@ -46,14 +46,14 @@ theorem suzukiPrimeEventCut_logTwo_one :
 /-! ## Elementary constants at `log 2` -/
 
 private theorem exp_logTwo_half_sq :
-    Real.exp (Real.log 2 / 2) ^ 2 = 2 := by
+    Real.exp (Real.log 2 / 2) ^ (2 : ℕ) = 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   rw [show (2 : ℝ) * (Real.log 2 / 2) = Real.log 2 by ring,
     Real.exp_log (by norm_num : (0 : ℝ) < 2)]
 
 private theorem exp_neg_logTwo_half_sq :
-    Real.exp (-Real.log 2 / 2) ^ 2 = 1 / 2 := by
+    Real.exp (-Real.log 2 / 2) ^ (2 : ℕ) = 1 / 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   have hneg : Real.exp (-Real.log 2) = (1 / 2 : ℝ) := by
@@ -222,7 +222,7 @@ theorem suzukiPointwiseLerchGapSlope_logTwo_le :
 private theorem sqrt_two_le_ten_sevenths :
     Real.sqrt 2 ≤ 10 / 7 := by
   have hsqrt : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hsq : Real.sqrt 2 ^ 2 = 2 :=
+  have hsq : Real.sqrt 2 ^ (2 : ℕ) = 2 :=
     Real.sq_sqrt (by norm_num)
   nlinarith
 

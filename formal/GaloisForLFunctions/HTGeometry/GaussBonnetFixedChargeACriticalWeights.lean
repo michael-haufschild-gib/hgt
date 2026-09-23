@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeACriticalB (φ : ℝ) : ℝ := 12 * (1 + egbFixedChargeAFraction φ)
 def egbFixedChargeACriticalDiscriminant (φ : ℝ) : ℝ :=
-  egbFixedChargeACriticalB φ ^ 2 + 192 * egbFixedChargeAFraction φ
+  egbFixedChargeACriticalB φ ^ (2 : ℕ) + 192 * egbFixedChargeAFraction φ
 
 def egbFixedChargeACriticalWeight (φ : ℝ) : ℝ :=
   4 / (egbFixedChargeACriticalB φ + sqrt (egbFixedChargeACriticalDiscriminant φ))
@@ -43,11 +43,11 @@ theorem egbFixedChargeACriticalWeight_pos (φ : ℝ) : 0 < egbFixedChargeACritic
   positivity
 
 theorem egbFixedChargeACriticalWeight_quadratic (φ : ℝ) :
-    12 * egbFixedChargeAFraction φ * egbFixedChargeACriticalWeight φ ^ 2 +
+    12 * egbFixedChargeAFraction φ * egbFixedChargeACriticalWeight φ ^ (2 : ℕ) +
       6 * (1 + egbFixedChargeAFraction φ) * egbFixedChargeACriticalWeight φ - 1 = 0 := by
   have hB := egbFixedChargeACriticalB_pos φ
-  have hs : sqrt (egbFixedChargeACriticalDiscriminant φ) ^ 2 =
-      egbFixedChargeACriticalB φ ^ 2 + 192 * egbFixedChargeAFraction φ :=
+  have hs : sqrt (egbFixedChargeACriticalDiscriminant φ) ^ (2 : ℕ) =
+      egbFixedChargeACriticalB φ ^ (2 : ℕ) + 192 * egbFixedChargeAFraction φ :=
     sq_sqrt (egbFixedChargeACriticalDiscriminant_pos φ).le
   unfold egbFixedChargeACriticalWeight
   field_simp
@@ -82,8 +82,8 @@ theorem egbFixedChargeACriticalCouplingWeight_le_max (φ : ℝ) :
     egbFixedChargeACriticalCouplingWeight φ ≤ egbCriticalAMaxShape := by
   have hb := egbFixedChargeACriticalCouplingWeight_bounds φ
   have hbalance := egbFixedChargeACriticalWeight_balance φ
-  have hq : 12 * egbFixedChargeACriticalCouplingWeight φ ^ 2 + 12 * egbFixedChargeACriticalCouplingWeight φ - 1 ≤ 0 := by
-    have he : 12 * egbFixedChargeACriticalCouplingWeight φ ^ 2 + 12 * egbFixedChargeACriticalCouplingWeight φ - 1 =
+  have hq : 12 * egbFixedChargeACriticalCouplingWeight φ ^ (2 : ℕ) + 12 * egbFixedChargeACriticalCouplingWeight φ - 1 ≤ 0 := by
+    have he : 12 * egbFixedChargeACriticalCouplingWeight φ ^ (2 : ℕ) + 12 * egbFixedChargeACriticalCouplingWeight φ - 1 =
         (egbFixedChargeACriticalCouplingWeight φ - egbFixedChargeACriticalWeight φ) *
           (12 * egbFixedChargeACriticalCouplingWeight φ + 6) := by
       linear_combination hbalance

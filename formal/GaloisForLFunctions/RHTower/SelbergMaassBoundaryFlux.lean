@@ -164,7 +164,7 @@ theorem mass_hasDerivAt (N : ℕ) {lam : ℝ}
 private theorem maass_pairing_equation (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    -y ^ 2 * (pairing (N + 1 : ℕ) (directional 1 (directional 1 (f.1.1 ∘ ofComplex)))
+    -y ^ (2 : ℕ) * (pairing (N + 1 : ℕ) (directional 1 (directional 1 (f.1.1 ∘ ofComplex)))
       (f.1.1 ∘ ofComplex) y +
       pairing (N + 1 : ℕ) (directional Complex.I (directional Complex.I (f.1.1 ∘ ofComplex)))
       (f.1.1 ∘ ofComplex) y) = lam * pairing (N + 1 : ℕ) (f.1.1 ∘ ofComplex) (f.1.1 ∘ ofComplex) y := by
@@ -175,20 +175,20 @@ private theorem maass_pairing_equation (N : ℕ) {lam : ℝ}
   have hdd1 := directional_contDiffOn hd1 (m := 0) (by simp) (1 : ℂ)
   have hddI := directional_contDiffOn hdI (m := 0) (by simp) Complex.I
   have he : ∀ x : ℝ,
-      -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+      -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
         directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * F (point x y) := by
     intro x
     have hp : 0 < (point x y).im := by simpa [point] using hy
     have hh := f.2.2.1.2 ⟨point x y, hp⟩
-    change -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+    change -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
       directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * f.1.1 (ofComplex (point x y))
     rw [ofComplex_apply_of_im_pos hp]
     convert hh using 1
     simp [positiveHyperbolicLaplacian, directional, F, UpperHalfPlane.im, point]
     exact Or.inl rfl
-  have hew : ∀ x : ℝ, -(y : ℂ) ^ 2 *
+  have hew : ∀ x : ℝ, -(y : ℂ) ^ (2 : ℕ) *
       (productChart (directional 1 (directional 1 F)) F (point x y) +
         productChart (directional Complex.I (directional Complex.I F)) F (point x y)) =
       (lam : ℂ) * productChart F F (point x y) := by
@@ -209,7 +209,7 @@ private theorem maass_pairing_equation (N : ℕ) {lam : ℝ}
 theorem flux_hasDerivAt (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    HasDerivAt (flux N f) (gradientEnergy N f y - lam / y ^ 2 * mass N f y) y := by
+    HasDerivAt (flux N f) (gradientEnergy N f y - lam / y ^ (2 : ℕ) * mass N f y) y := by
   let F := f.1.1 ∘ ofComplex
   have hf : ContDiffOn ℝ 2 F {z : ℂ | 0 < z.im} := f.2.2.1.1
   have hdI := directional_contDiffOn hf (m := 1) le_rfl Complex.I
@@ -218,7 +218,7 @@ theorem flux_hasDerivAt (N : ℕ) {lam : ℝ}
     (fun x => maass_periodic N f x hy)] at h
   have he : pairing (N + 1 : ℕ) (directional Complex.I (directional Complex.I F)) F y =
       pairing (N + 1 : ℕ) (directional 1 F) (directional 1 F) y -
-        lam / y ^ 2 * pairing (N + 1 : ℕ) F F y := by
+        lam / y ^ (2 : ℕ) * pairing (N + 1 : ℕ) F F y := by
     field_simp
     nlinarith [h]
   change HasDerivAt (fun t => ((N + 1 : ℕ) : ℝ)⁻¹ * pairing (N + 1 : ℕ) (directional Complex.I F) F t) _ y
@@ -229,14 +229,14 @@ theorem flux_hasDerivAt (N : ℕ) {lam : ℝ}
   change _ = ((N + 1 : ℕ) : ℝ)⁻¹ *
     (pairing (N + 1 : ℕ) (directional 1 F) (directional 1 F) y +
       pairing (N + 1 : ℕ) (directional Complex.I F) (directional Complex.I F) y) -
-    lam / y ^ 2 * (((N + 1 : ℕ) : ℝ)⁻¹ * pairing (N + 1 : ℕ) F F y)
+    lam / y ^ (2 : ℕ) * (((N + 1 : ℕ) : ℝ)⁻¹ * pairing (N + 1 : ℕ) F F y)
   ring
 
 /-- The actual second mass derivative equals twice gradient energy minus spectral mass. -/
 theorem mass_second_hasDerivAt (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    HasDerivAt (deriv (mass N f)) (2 * (gradientEnergy N f y - lam / y ^ 2 * mass N f y)) y := by
+    HasDerivAt (deriv (mass N f)) (2 * (gradientEnergy N f y - lam / y ^ (2 : ℕ) * mass N f y)) y := by
   apply ((flux_hasDerivAt N f hy).const_mul 2).congr_of_eventuallyEq
   filter_upwards [Ioi_mem_nhds hy] with t ht
   exact (mass_hasDerivAt N f ht).deriv
@@ -270,7 +270,7 @@ theorem mass_hasSum (N : ℕ) {lam : ℝ}
 theorem gradientEnergy_hasSum (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => SelbergMaassFourier.signedFrequency (N + 1 : ℕ) n ^ 2 *
+    HasSum (fun n : ℤ => SelbergMaassFourier.signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) *
         Complex.normSq (SelbergMaassFourier.maassCoefficient N f n y) +
         Complex.normSq (deriv (SelbergMaassFourier.maassCoefficient N f n) y))
       (gradientEnergy N f y) := by
@@ -287,8 +287,8 @@ theorem quarterSlice_eq_gradient_mass (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
     ((N + 1 : ℕ) : ℝ)⁻¹ * quarterSlice N f y =
-      gradientEnergy N f y - 1 / (4 * y ^ 2) * mass N f y := by
-  have hs := (gradientEnergy_hasSum N f hy).sub ((mass_hasSum N f hy).mul_left (1 / (4 * y ^ 2)))
+      gradientEnergy N f y - 1 / (4 * y ^ (2 : ℕ)) * mass N f y := by
+  have hs := (gradientEnergy_hasSum N f hy).sub ((mass_hasSum N f hy).mul_left (1 / (4 * y ^ (2 : ℕ))))
   apply (maass_quarter_hasSum N f hy).unique
   apply hs.congr_fun
   intro n
@@ -300,7 +300,7 @@ theorem quarterSlice_eq_flux_deriv (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
     ((N + 1 : ℕ) : ℝ)⁻¹ * quarterSlice N f y =
-      deriv (flux N f) y + (lam - 1 / 4) / y ^ 2 * mass N f y := by
+      deriv (flux N f) y + (lam - 1 / 4) / y ^ (2 : ℕ) * mass N f y := by
   rw [quarterSlice_eq_gradient_mass N f hy, (flux_hasDerivAt N f hy).deriv]
   ring
 
@@ -343,25 +343,25 @@ open SelbergMaassFourier
 theorem gradientEnergy_ge_first_frequency (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {y : ℝ} (hy : 0 < y) :
-    (2 * Real.pi / (N + 1 : ℕ)) ^ 2 * mass N f y ≤ gradientEnergy N f y := by
+    (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) * mass N f y ≤ gradientEnergy N f y := by
   have hz : maassCoefficient N f 0 y = 0 := by
     rw [maassCoefficient_zero]
     have hp : 0 < (point 0 y).im := by simpa [point] using hy
     have h := SelbergEulerDecay.maassMean_subquarter_zero N lam f ⟨point 0 y, hp⟩
     have hm : maassMean N f y = 0 := by simpa [UpperHalfPlane.im, point] using h
     rw [hm, mul_zero]
-  apply hasSum_le (g := fun n : ℤ => signedFrequency (N + 1 : ℕ) n ^ 2 *
+  apply hasSum_le (g := fun n : ℤ => signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) *
       Complex.normSq (maassCoefficient N f n y) + Complex.normSq (deriv (maassCoefficient N f n) y))
-    ?_ ((mass_hasSum N f hy).mul_left ((2 * Real.pi / (N + 1 : ℕ)) ^ 2)) (gradientEnergy_hasSum N f hy)
+    ?_ ((mass_hasSum N f hy).mul_left ((2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ))) (gradientEnergy_hasSum N f hy)
   intro n
   by_cases hn : n = 0
   · subst n
     simp only [hz, Complex.normSq_zero, mul_zero, zero_add]
     exact Complex.normSq_nonneg _
-  · have hn2 : (1 : ℤ) ≤ n ^ 2 := Int.add_one_le_iff.mpr (sq_pos_of_ne_zero hn)
-    have hnR : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by exact_mod_cast hn2
-    have he : signedFrequency (N + 1 : ℕ) n ^ 2 =
-        (2 * Real.pi / (N + 1 : ℕ)) ^ 2 * (n : ℝ) ^ 2 := by
+  · have hn2 : (1 : ℤ) ≤ n ^ (2 : ℕ) := Int.add_one_le_iff.mpr (sq_pos_of_ne_zero hn)
+    have hnR : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by exact_mod_cast hn2
+    have he : signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) =
+        (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) * (n : ℝ) ^ (2 : ℕ) := by
       unfold signedFrequency
       ring
     rw [he]

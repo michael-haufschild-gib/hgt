@@ -48,7 +48,7 @@ structure BlockEncoding (alpha : ℝ) (a n : Nat) (epsilon : ℝ)
     (U : Gate (Qubits (a + n))) (A : HilbertOperator (Qubits n)) : Prop where
   alpha_pos : 0 < alpha
   epsilon_nonneg : 0 <= epsilon
-  block_error : blockEncodingErrorSq a n alpha U A <= epsilon ^ 2
+  block_error : blockEncodingErrorSq a n alpha U A <= epsilon ^ (2 : ℕ)
 
 /-- Exact block encoding with ancilla size `a`: the `0^a` projected block of
 the unitary carrier `U` is exactly the system operator `A`.  This is the

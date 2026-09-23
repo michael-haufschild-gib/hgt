@@ -15,17 +15,17 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAColdRadialSlope (w φ : ℝ) : ℝ :=
-  1 / (2 * Real.pi * exp w ^ 2 * (1 + 2 * egbFixedChargeAFraction φ))
+  1 / (2 * Real.pi * exp w ^ (2 : ℕ) * (1 + 2 * egbFixedChargeAFraction φ))
 def egbFixedChargeAColdEntropySlope (w φ : ℝ) : ℝ :=
   2 * Real.pi * exp w * (1 + 2 * egbFixedChargeAFraction φ)
 
 theorem egbFixedChargeA_effective_charge_scaling (w φ τ : ℝ) :
-    (exp w * cos φ) ^ 2 + (exp w * sin φ) ^ 2 =
-      egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeAWeight τ φ := by
+    (exp w * cos φ) ^ (2 : ℕ) + (exp w * sin φ) ^ (2 : ℕ) =
+      egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAWeight τ φ := by
   rw [egbFixedChargeA_conserved_scale, egbFixedChargeA_effective_scale]
 
 theorem egbFixedChargeA_cold_coupling_scaling (w φ : ℝ) :
-    (exp w * sin φ) ^ 2 = exp w ^ 2 * egbFixedChargeAFraction φ := by
+    (exp w * sin φ) ^ (2 : ℕ) = exp w ^ (2 : ℕ) * egbFixedChargeAFraction φ := by
   unfold egbFixedChargeAFraction
   ring
 
@@ -41,7 +41,7 @@ theorem egbFixedChargeAColdEntropySlope_pos (w φ : ℝ) : 0 < egbFixedChargeACo
 
 theorem egbFixedChargeA_extremal_temperature (w φ : ℝ) :
     egbTemperatureA 0 (exp w * cos φ) (exp w * sin φ) (exp w) = 0 := by
-  have h : exp w ^ 2 - (exp w * cos φ) ^ 2 - (exp w * sin φ) ^ 2 = 0 := by
+  have h : exp w ^ (2 : ℕ) - (exp w * cos φ) ^ (2 : ℕ) - (exp w * sin φ) ^ (2 : ℕ) = 0 := by
     nlinarith [egbFixedChargeA_conserved_scale w φ]
   simp only [egbTemperatureA, mul_zero, zero_mul, zero_add, h, zero_div]
 
@@ -71,7 +71,7 @@ theorem egbFixedChargeA_small_radial_slope_cold_limit (w φ : ℝ) :
       (((tendsto_const_nhds.mul hP).mul tendsto_const_nhds).mul (hR.pow 4))).sub
         (hR.pow 4)).add (tendsto_const_nhds.mul (hR.pow 2))).add tendsto_const_nhds).div
           ((tendsto_const_nhds.mul (hR.pow 2)).mul (((hR.pow 2).add tendsto_const_nhds).pow 2))
-            (by change 4 * Real.pi * exp w ^ 2 * (exp w ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2 ≠ 0; positivity)
+            (by change 4 * Real.pi * exp w ^ (2 : ℕ) * (exp w ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0; positivity)
   rwa [egbFixedChargeA_extremal_radial_slope] at h
 
 theorem egbFixedChargeA_small_actual_slope_cold_limit (w φ : ℝ) :
@@ -82,11 +82,11 @@ theorem egbFixedChargeA_small_actual_slope_cold_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_large_radial_slope_normalized (w φ τ : ℝ) :
     egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ 2 =
+      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) =
     (egbFixedChargeAPressureWeight τ φ * (1 + 6 * egbFixedChargeACouplingWeight τ φ) - 1 +
       2 * egbFixedChargeACouplingWeight τ φ + 3 * egbFixedChargeAWeight τ φ +
         2 * egbFixedChargeACouplingWeight τ φ * egbFixedChargeAWeight τ φ) /
-          (4 * Real.pi * (1 + 2 * egbFixedChargeACouplingWeight τ φ) ^ 2) := by
+          (4 * Real.pi * (1 + 2 * egbFixedChargeACouplingWeight τ φ) ^ (2 : ℕ)) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   have hb := (egbFixedChargeACouplingWeight_bounds τ φ).1
   unfold egbTemperatureARadialSlope egbFixedChargeAPressure
@@ -96,7 +96,7 @@ theorem egbFixedChargeA_large_radial_slope_normalized (w φ τ : ℝ) :
 
 theorem egbFixedChargeA_large_radial_slope_scaled_cold_limit (w φ : ℝ) :
     Tendsto (fun τ => egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ 2) atTop (𝓝 (1 / (2 * Real.pi))) := by
+      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) atTop (𝓝 (1 / (2 * Real.pi))) := by
   simp only [egbFixedChargeA_large_radial_slope_normalized]
   have hp := egbFixedChargeAPressureWeight_cold_limit φ
   have hb := egbFixedChargeACouplingWeight_cold_limit φ
@@ -105,20 +105,20 @@ theorem egbFixedChargeA_large_radial_slope_scaled_cold_limit (w φ : ℝ) :
       (egbFixedChargeAPressureWeight τ φ * (1 + 6 * egbFixedChargeACouplingWeight τ φ) - 1 +
         2 * egbFixedChargeACouplingWeight τ φ + 3 * egbFixedChargeAWeight τ φ +
           2 * egbFixedChargeACouplingWeight τ φ * egbFixedChargeAWeight τ φ) /
-            (4 * Real.pi * (1 + 2 * egbFixedChargeACouplingWeight τ φ) ^ 2)) atTop
+            (4 * Real.pi * (1 + 2 * egbFixedChargeACouplingWeight τ φ) ^ (2 : ℕ))) atTop
       (𝓝 (((3 : ℝ) * (1 + 6 * 0) - 1 + 2 * 0 + 3 * 0 + 2 * 0 * 0) /
-        (4 * Real.pi * (1 + 2 * 0) ^ 2))) :=
+        (4 * Real.pi * (1 + 2 * 0) ^ (2 : ℕ)))) :=
     (((((hp.mul (tendsto_const_nhds.add (tendsto_const_nhds.mul hb))).sub tendsto_const_nhds).add
       (tendsto_const_nhds.mul hb)).add (tendsto_const_nhds.mul hs)).add
         ((tendsto_const_nhds.mul hb).mul hs)).div
           (tendsto_const_nhds.mul ((tendsto_const_nhds.add (tendsto_const_nhds.mul hb)).pow 2)) (by positivity)
   have he : ((3 : ℝ) * (1 + 6 * 0) - 1 + 2 * 0 + 3 * 0 + 2 * 0 * 0) /
-      (4 * Real.pi * (1 + 2 * 0) ^ 2) = 1 / (2 * Real.pi) := by field_simp <;> ring
+      (4 * Real.pi * (1 + 2 * 0) ^ (2 : ℕ)) = 1 / (2 * Real.pi) := by field_simp <;> ring
   rwa [he] at h
 
 theorem egbFixedChargeA_large_actual_slope_scaled_cold_limit (w φ : ℝ) :
     Tendsto (fun τ => deriv (egbTemperatureA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ))
-      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ 2) atTop (𝓝 (1 / (2 * Real.pi))) := by
+      (egbFixedChargeALargeRadius w φ τ) * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) atTop (𝓝 (1 / (2 * Real.pi))) := by
   simp only [egbFixedChargeA_large_thermal_slope_formula]
   exact egbFixedChargeA_large_radial_slope_scaled_cold_limit w φ
 

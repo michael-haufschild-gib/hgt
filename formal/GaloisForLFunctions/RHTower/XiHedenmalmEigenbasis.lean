@@ -10,10 +10,10 @@ import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 The multiplicity-exact Xi evaluation space is indexed by `XiZeroCopy`. If every Xi zero is
 simple, that copy index has one point over each centered zero. The removable Hedenmalm quotient
 at a zero then evaluates to `I * XiC'` at its own coordinate and to zero at every other coordinate.
-It is therefore a nonzero scalar multiple of the canonical `ell^2` basis vector.
+It is therefore a nonzero scalar multiple of the canonical `ell^(2 : ℕ)` basis vector.
 
 Consequently the algebraic span of the actual Hedenmalm eigenfunction evaluations is dense in the
-whole Xi `ell^2` carrier. This is the formal completion core needed before constructing the closed
+whole Xi `ell^(2 : ℕ)` carrier. This is the formal completion core needed before constructing the closed
 diagonal realization of the Hedenmalm differential pair. No RH or simplicity assumption is
 asserted: both enter explicitly as theorem hypotheses.
 -/
@@ -106,7 +106,7 @@ def xiThetaEigenEvaluationLp (q : XiZeroCopy) :
       xiThetaEigenFourier (xiSpectralPoint q) (xiSpectralPoint r) := rfl
 
 /-- Under simplicity, an evaluated Hedenmalm eigenfunction is exactly its nonzero derivative
-amplitude times one canonical `ell^2` coordinate vector. -/
+amplitude times one canonical `ell^(2 : ℕ)` coordinate vector. -/
 theorem xiThetaEigenEvaluationLp_eq_smul_single
     (hsimple : XiZerosSimple) (q : XiZeroCopy) :
     xiThetaEigenEvaluationLp q =

@@ -28,14 +28,14 @@ open Filter
 /-- Lorentz form of the homogeneous terminal connection: the terminal source pair and a
 hyperbolic connection pair. -/
 def routePTerminalHomogeneousForm (u : Fin 4 → ℝ) : ℝ :=
-  u 0 ^ 2 - u 1 ^ 2 + 2 * u 2 * u 3
+  u 0 ^ (2 : ℕ) - u 1 ^ (2 : ℕ) + 2 * u 2 * u 3
 
 /-- Parabolic transport forced by one boundary/displacement increment.  On the affine section
 `u 3 = 1`, its first two coordinates are the literal terminal update. -/
 def routePTerminalParabolicConnection (b d : ℝ) (u : Fin 4 → ℝ) : Fin 4 → ℝ :=
   ![u 0 + b * u 3,
     u 1 + d * u 3,
-    u 2 - b * u 0 + d * u 1 - (b ^ 2 - d ^ 2) * u 3 / 2,
+    u 2 - b * u 0 + d * u 1 - (b ^ (2 : ℕ) - d ^ (2 : ℕ)) * u 3 / 2,
     u 3]
 
 /-- The source-forced parabolic connection preserves the homogeneous Lorentz form exactly. -/
@@ -93,8 +93,8 @@ theorem routePTerminalDisplacement_succ_sub (K : ℕ) :
 
 /-- Central height forced by homogeneous preservation of the terminal Lorentz square. -/
 def routePTerminalConnectionHeight (K : ℕ) : ℝ :=
-  (routePTerminalBoundary 0 ^ 2 - routePTerminalDisplacement 0 ^ 2 -
-    (routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2)) / 2
+  (routePTerminalBoundary 0 ^ (2 : ℕ) - routePTerminalDisplacement 0 ^ (2 : ℕ) -
+    (routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ))) / 2
 
 /-- Source-defined homogeneous terminal point.  Its last two coordinates are the connection's
 hyperbolic pair; its affine terminal P point lies in the section with final coordinate one. -/
@@ -104,7 +104,7 @@ def routePTerminalHomogeneousLift (K : ℕ) : Fin 4 → ℝ :=
 
 theorem routePTerminalHomogeneousLift_form_eq_initial (K : ℕ) :
     routePTerminalHomogeneousForm (routePTerminalHomogeneousLift K) =
-      routePTerminalBoundary 0 ^ 2 - routePTerminalDisplacement 0 ^ 2 := by
+      routePTerminalBoundary 0 ^ (2 : ℕ) - routePTerminalDisplacement 0 ^ (2 : ℕ) := by
   simp [routePTerminalHomogeneousForm, routePTerminalHomogeneousLift,
     routePTerminalConnectionHeight]
   ring
@@ -139,8 +139,8 @@ theorem routePTerminalHomogeneousLift_succ_eq_parabolicConnection (K : ℕ) :
 absorbs the wall translation without introducing a new quadratic source term. -/
 theorem routePTerminalIncrement_lightlike_of_not_isPrimePow
     (K : ℕ) (hK : ¬ IsPrimePow (K + 3)) :
-    routePTerminalBoundaryIncrement K ^ 2 -
-      routePTerminalDisplacementIncrement K ^ 2 = 0 := by
+    routePTerminalBoundaryIncrement K ^ (2 : ℕ) -
+      routePTerminalDisplacementIncrement K ^ (2 : ℕ) = 0 := by
   unfold routePTerminalBoundaryIncrement routePTerminalDisplacementIncrement
   rw [criticalMellinAtomWeight_eq_zero_of_not_isPrimePow hK]
   ring
@@ -152,7 +152,7 @@ theorem routePTerminalParabolicConnection_preserves_lift_form (K : ℕ) :
           (routePTerminalBoundaryIncrement K)
           (routePTerminalDisplacementIncrement K)
           (routePTerminalHomogeneousLift K)) =
-      routePTerminalBoundary 0 ^ 2 - routePTerminalDisplacement 0 ^ 2 := by
+      routePTerminalBoundary 0 ^ (2 : ℕ) - routePTerminalDisplacement 0 ^ (2 : ℕ) := by
   rw [← routePTerminalHomogeneousLift_succ_eq_parabolicConnection,
     routePTerminalHomogeneousLift_form_eq_initial]
 
@@ -160,7 +160,7 @@ theorem routePTerminalParabolicConnection_preserves_lift_form (K : ℕ) :
 homogeneous connection. -/
 theorem speQuantileRieszTerminalPJuliaQuadratic_eq_routePTerminalLorentzSquare (K : ℕ) :
     speQuantileRieszTerminalPJuliaQuadratic (speQuantileRieszTerminalPJuliaCoordinates K) =
-      ((routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2 : ℝ) : ℂ) := by
+      ((routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ) : ℝ) : ℂ) := by
   simpa [routePTerminalBoundary, routePTerminalDisplacement] using
     speQuantileRieszTerminalPJuliaQuadratic_eq_terminalLorentzSquare K
 
@@ -169,7 +169,7 @@ with its forced central connection height has cutoff-independent signature. -/
 theorem speQuantileRieszTerminalPJuliaQuadratic_add_connectionHeight_eq_initial (K : ℕ) :
     speQuantileRieszTerminalPJuliaQuadratic (speQuantileRieszTerminalPJuliaCoordinates K) +
         ((2 * routePTerminalConnectionHeight K : ℝ) : ℂ) =
-      ((routePTerminalBoundary 0 ^ 2 - routePTerminalDisplacement 0 ^ 2 : ℝ) : ℂ) := by
+      ((routePTerminalBoundary 0 ^ (2 : ℕ) - routePTerminalDisplacement 0 ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [speQuantileRieszTerminalPJuliaQuadratic_eq_routePTerminalLorentzSquare]
   unfold routePTerminalConnectionHeight
   push_cast
@@ -180,7 +180,7 @@ bound uses only the permanently retained prime-`2` mass, so it does not invoke a
 or zero-distribution input. -/
 theorem routePTerminalLorentzSquare_tendsto_atTop :
     Tendsto (fun K : ℕ =>
-      routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2) atTop atTop := by
+      routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ)) atTop atTop := by
   have htwo : 0 < criticalMellinAtomWeight 2 := by
     exact criticalMellinAtomWeight_pos Nat.prime_two.isPrimePow
   have hmass (K : ℕ) : criticalMellinAtomWeight 2 ≤ ccmActualHeadParabolicMass K := by
@@ -188,18 +188,18 @@ theorem routePTerminalLorentzSquare_tendsto_atTop :
     have hmem : 0 ∈ Finset.range (K + 1) := Finset.mem_range.mpr (by omega)
     simpa using Finset.single_le_sum
       (s := Finset.range (K + 1)) (f := fun n => criticalMellinAtomWeight (n + 2))
-      (fun n _ => criticalMellinAtomWeight_nonneg (n + 2)) hmem
+      (fun n _ => criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (n + 2)) hmem
   have hwall_nonneg (K : ℕ) :
       0 ≤ Real.sqrt ((K + 3 : ℕ) : ℝ) - 1 := by
     have hN : (1 : ℝ) < ((K + 3 : ℕ) : ℝ) := by
       exact_mod_cast (show 1 < K + 3 by omega)
-    have hsquare : 1 < (Real.sqrt ((K + 3 : ℕ) : ℝ)) ^ 2 := by
+    have hsquare : 1 < (Real.sqrt ((K + 3 : ℕ) : ℝ)) ^ (2 : ℕ) := by
       rw [Real.sq_sqrt (by positivity)]
       exact hN
     have hsqrt_nonneg : 0 ≤ Real.sqrt ((K + 3 : ℕ) : ℝ) := Real.sqrt_nonneg _
     nlinarith
   have hformula (K : ℕ) :
-      routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2 =
+      routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ) =
         8 * ccmActualHeadParabolicMass K *
           (Real.sqrt ((K + 3 : ℕ) : ℝ) - 1) := by
     simpa [routePTerminalBoundary, routePTerminalDisplacement] using
@@ -207,7 +207,7 @@ theorem routePTerminalLorentzSquare_tendsto_atTop :
   have hle (K : ℕ) :
       8 * criticalMellinAtomWeight 2 *
           (Real.sqrt ((K + 3 : ℕ) : ℝ) - 1) ≤
-        routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2 := by
+        routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ) := by
     rw [hformula]
     have hmul := mul_le_mul_of_nonneg_right (hmass K) (hwall_nonneg K)
     nlinarith
@@ -234,13 +234,13 @@ theorem routePTerminalConnectionHeight_tendsto_atBot :
     Tendsto routePTerminalConnectionHeight atTop atBot := by
   have hsquare := routePTerminalLorentzSquare_tendsto_atTop
   have hhalf : Tendsto (fun K : ℕ =>
-      (routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2) / 2) atTop atTop :=
+      (routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ)) / 2) atTop atTop :=
     hsquare.atTop_div_const (by norm_num)
   have hneg : Tendsto (fun K : ℕ => -
-      ((routePTerminalBoundary K ^ 2 - routePTerminalDisplacement K ^ 2) / 2)) atTop atBot :=
+      ((routePTerminalBoundary K ^ (2 : ℕ) - routePTerminalDisplacement K ^ (2 : ℕ)) / 2)) atTop atBot :=
     tendsto_neg_atTop_atBot.comp hhalf
   have hshift := tendsto_atBot_add_const_right atTop
-    ((routePTerminalBoundary 0 ^ 2 - routePTerminalDisplacement 0 ^ 2) / 2) hneg
+    ((routePTerminalBoundary 0 ^ (2 : ℕ) - routePTerminalDisplacement 0 ^ (2 : ℕ)) / 2) hneg
   convert hshift using 1
   funext K
   unfold routePTerminalConnectionHeight

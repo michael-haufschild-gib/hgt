@@ -23,8 +23,8 @@ theorem egbFixedChargeAGibbsCollisionFastSourceMass_offset (n m j : ℕ) (β : �
   ring
 
 private theorem rate_ratio (j : ℕ) (t : ℝ) :
-    (4 / 9 : ℝ) ^ j * (t / (4 : ℝ) ^ j) ^ 2 = (1 / 36 : ℝ) ^ j * t ^ 2 := by
-  have hp : ((4 : ℝ) ^ j) ^ 2 = (16 : ℝ) ^ j := by
+    (4 / 9 : ℝ) ^ j * (t / (4 : ℝ) ^ j) ^ (2 : ℕ) = (1 / 36 : ℝ) ^ j * t ^ (2 : ℕ) := by
+  have hp : ((4 : ℝ) ^ j) ^ (2 : ℕ) = (16 : ℝ) ^ j := by
     rw [← pow_mul, mul_comm j 2, pow_mul]
     norm_num
   have hprod : (1 / 36 : ℝ) ^ j * (16 : ℝ) ^ j = (4 / 9 : ℝ) ^ j := by
@@ -39,12 +39,12 @@ theorem egbFixedChargeAGibbsTunable_source_mass_ratio_offset (n k m j : ℕ) (t 
     (egbFixedChargeAGibbsCollisionFastSourceMass n (m + j) 1
       (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) =
       (egbFixedChargeAGibbsCollisionSlowSourceMass n (m + j) 1
-        (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) * (t / (4 : ℝ) ^ j) ^ 2 := by
+        (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) * (t / (4 : ℝ) ^ j) ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsCollisionFastSourceMass_offset,
     egbFixedChargeAGibbsCollisionSlowSourceMass_offset, egbFixedChargeAGibbsTunable_source_mass_ratio]
   calc
     _ = (egbFixedChargeAGibbsCollisionSlowSourceMass n m 1
-      (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) * ((1 / 36 : ℝ) ^ j * t ^ 2) := by ring
+      (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) * ((1 / 36 : ℝ) ^ j * t ^ (2 : ℕ)) := by ring
     _ = _ := by rw [← rate_ratio]; ring
 
 /-- One fixed actual Gibbs energy realizes the entire geometric Fisher history, without retuning at each step. -/
@@ -60,8 +60,8 @@ theorem egbFixedChargeAGibbsTunable_fisher_history (n k m j : ℕ) (t : ℝ) :
   generalize (egbFixedChargeAGibbsCollisionSlowSourceMass n (m + j) 1
     (egbFixedChargeAGibbsTunableEnergy n k m t) : ℝ) = x at hx ⊢
   generalize t / (4 : ℝ) ^ j = z
-  have hd : 1 + z ^ 2 ≠ 0 := (show 0 < 1 + z ^ 2 by positivity).ne'
-  have hs : x + x * z ^ 2 ≠ 0 := (show 0 < x + x * z ^ 2 by positivity).ne'
+  have hd : 1 + z ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + z ^ (2 : ℕ) by positivity).ne'
+  have hs : x + x * z ^ (2 : ℕ) ≠ 0 := (show 0 < x + x * z ^ (2 : ℕ) by positivity).ne'
   unfold egbFixedChargeAGibbsCollisionFisherShape egbFixedChargeAGibbsTunableFisherCurve
   field_simp
   <;> ring
@@ -72,7 +72,7 @@ theorem egbFixedChargeAGibbsTunable_fisher_pair_eq_iff (n k m p q o : ℕ) (t u 
         egbFixedChargeAGibbsCollisionFisherValue p o 1 (egbFixedChargeAGibbsTunableEnergy p q o u) ∧
       egbFixedChargeAGibbsCollisionFisherValue n (m + 1) 1 (egbFixedChargeAGibbsTunableEnergy n k m t) =
         egbFixedChargeAGibbsCollisionFisherValue p (o + 1) 1 (egbFixedChargeAGibbsTunableEnergy p q o u)) ↔
-      t ^ 2 = u ^ 2 := by
+      t ^ (2 : ℕ) = u ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsTunable_fisher_formula, egbFixedChargeAGibbsTunable_fisher_formula,
     egbFixedChargeAGibbsTunable_fisher_history, egbFixedChargeAGibbsTunable_fisher_history]
   simpa only [pow_one] using egbFixedChargeAGibbsTunableFisherCurve_pair_eq_iff t u
@@ -82,7 +82,7 @@ theorem egbFixedChargeAGibbsTunable_fisher_ratio_decode (n k m : ℕ) (t : ℝ) 
     egbFixedChargeAGibbsFisherRatioDecoder
       (egbFixedChargeAGibbsCollisionFisherValue n m 1 (egbFixedChargeAGibbsTunableEnergy n k m t))
       (egbFixedChargeAGibbsCollisionFisherValue n (m + 1) 1 (egbFixedChargeAGibbsTunableEnergy n k m t)) =
-      t ^ 2 := by
+      t ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsTunable_fisher_formula, egbFixedChargeAGibbsTunable_fisher_history]
   simpa only [pow_one] using egbFixedChargeAGibbsFisherRatioDecoder_exact t
 

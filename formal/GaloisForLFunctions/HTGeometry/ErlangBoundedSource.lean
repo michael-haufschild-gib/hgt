@@ -140,7 +140,7 @@ theorem measurable_of_hasDerivAt {f f' : ℝ → ℝ}
   exact measurable_deriv f
 
 /-- Continuity of a differentiable source. -/
-theorem continuous_of_hasDerivAt {f f' : ℝ → ℝ}
+theorem continuous_of_hasDerivAt_erlangBoundedSource {f f' : ℝ → ℝ}
     (hf : ∀ x, HasDerivAt f (f' x) x) : Continuous f :=
   continuous_iff_continuousAt.mpr fun x => (hf x).differentiableAt.continuousAt
 
@@ -151,7 +151,7 @@ theorem hasDerivAt_erlangPowKernel_integral {ε c : ℝ} (hε : 0 < ε) (hc : 0 
     {M : ℝ} (hMf : ∀ y, |f y| ≤ M) (hMf' : ∀ y, |f' y| ≤ M) (x₀ : ℝ) :
     HasDerivAt (fun x => ∫ s in Ioi 0, erlangPowKernel ε k c s * f (x + s))
       (∫ s in Ioi 0, erlangPowKernel ε k c s * f' (x₀ + s)) x₀ := by
-  have hfmeas : Measurable f := (continuous_of_hasDerivAt hf).measurable
+  have hfmeas : Measurable f := (continuous_of_hasDerivAt_erlangBoundedSource hf).measurable
   have hf'meas : Measurable f' := measurable_of_hasDerivAt hf
   have hFmeas : ∀ x : ℝ, AEStronglyMeasurable
       (fun s => erlangPowKernel ε k c s * f (x + s))
@@ -209,7 +209,7 @@ derivatives from kernel domination. -/
 theorem erlangRecoveryAdmissible_of_boundedSource {ε : ℝ} (hε : 0 < ε)
     {f f' : ℝ → ℝ} {M : ℝ} (hsrc : ErlangBoundedSource f f' M) :
     ErlangRecoveryAdmissible ε f f' := by
-  have hfcont : Continuous f := continuous_of_hasDerivAt hsrc.hasDeriv
+  have hfcont : Continuous f := continuous_of_hasDerivAt_erlangBoundedSource hsrc.hasDeriv
   have hfmeas : Measurable f := hfcont.measurable
   have hf'meas : Measurable f' := measurable_of_hasDerivAt hsrc.hasDeriv
   have hε2 : (0 : ℝ) < ε ^ 2 := by positivity

@@ -75,14 +75,14 @@ theorem hyperbolicLaplacian_height_mul (h : ℝ → ℝ) (hh : ContDiff ℝ ∞ 
     (f : (Fin 2 → ℝ) → ℂ) (z : Fin 2 → ℝ) (hf : ContDiffAt ℝ 2 f z) :
     hyperbolicLaplacian (fun w => (h (w 1):ℂ)*f w) z =
       (h (z 1):ℂ)*hyperbolicLaplacian f z+
-      2*(z 1:ℂ)^2*((deriv h (z 1):ℝ):ℂ)*coordDeriv 1 f z+
-      (z 1:ℂ)^2*((deriv (deriv h) (z 1):ℝ):ℂ)*f z := by
+      2*(z 1:ℂ)^(2 : ℕ)*((deriv h (z 1):ℝ):ℂ)*coordDeriv 1 f z+
+      (z 1:ℂ)^(2 : ℕ)*((deriv (deriv h) (z 1):ℝ):ℂ)*f z := by
   have hH : ContDiffAt ℝ 2 (heightProfile h) z := by
     exact Complex.ofRealCLM.contDiff.contDiffAt.comp z
       (((contDiff_infty.mp hh) 2).contDiffAt.comp z
         (show (Fin 2 → ℝ) →L[ℝ] ℝ from ContinuousLinearMap.proj 1).contDiff.contDiffAt)
   have hj := heightProfile_jet h hh z
-  change (z 1:ℂ)^2*((ofField (fun w => heightProfile h w*f w) z).second 0 0+
+  change (z 1:ℂ)^(2 : ℕ)*((ofField (fun w => heightProfile h w*f w) z).second 0 0+
       (ofField (fun w => heightProfile h w*f w) z).second 1 1) = _
   rw [ofField_mul hH hf]
   simp only [ScalarTwoJet.mul,hj.1,hj.2.1,hj.2.2.1,hj.2.2.2]

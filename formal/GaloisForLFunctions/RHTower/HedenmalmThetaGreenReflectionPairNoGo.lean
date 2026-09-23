@@ -55,8 +55,8 @@ theorem thetaXiReciprocalEigenvalue_reflect (q : XiZeroCopy) :
 
 /-- Squaring folds the two reflected source eigenvalues to the same Route P node. -/
 theorem thetaXiReciprocalEigenvalue_sq_reflect (q : XiZeroCopy) :
-    thetaXiReciprocalEigenvalue (xiZeroCopyReflectEquiv q) ^ 2 =
-      thetaXiReciprocalEigenvalue q ^ 2 := by
+    thetaXiReciprocalEigenvalue (xiZeroCopyReflectEquiv q) ^ (2 : ℕ) =
+      thetaXiReciprocalEigenvalue q ^ (2 : ℕ) := by
   rw [thetaXiReciprocalEigenvalue_reflect]
   ring
 
@@ -65,7 +65,7 @@ eigenvalue is a strictly positive real number exactly when that fibre's Green-bo
 neutral. -/
 theorem thetaXiReciprocalEigenvalue_sq_positiveReal_iff_boundaryFlux_zero
     (q : XiZeroCopy) :
-    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ 2 = (r : ℂ)) ↔
+    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (r : ℂ)) ↔
       thetaXiRankTwoBoundaryFlux q = 0 := by
   rw [thetaXiRankTwoBoundaryFlux_eq_zero_iff_spectralIm_eq_zero]
   constructor
@@ -74,13 +74,13 @@ theorem thetaXiReciprocalEigenvalue_sq_positiveReal_iff_boundaryFlux_zero
       rw [← thetaXiReciprocalEigenvalue_sq_eq_reciprocalSquare, hsquare]
       simp
     rw [xiZeroCopyReciprocalSquare_im_eq_spectral] at hnodeIm
-    have hnorm : Complex.normSq (xiSpectralPoint q) ^ 2 ≠ 0 :=
+    have hnorm : Complex.normSq (xiSpectralPoint q) ^ (2 : ℕ) ≠ 0 :=
       pow_ne_zero 2 (Complex.normSq_pos.mpr (xiSpectralPoint_ne_zero q)).ne'
     have hnegnum : -(2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im) = 0 :=
       (div_eq_zero_iff.mp hnodeIm).resolve_right hnorm
     have hnum : 2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im = 0 :=
       neg_eq_zero.mp hnegnum
-    have hheight : 2 < (xiSpectralPoint q).re ^ 2 := by
+    have hheight : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
       rw [xiSpectralPoint_re_eq]
       exact xiZeroCopy_two_lt_im_sq q
     have hre : (xiSpectralPoint q).re ≠ 0 := by
@@ -110,11 +110,11 @@ same squared node, while their aggregate Green-boundary current is zero uncondit
 theorem thetaGreenSquaredReflectionFiber_sameNode_zeroCurrent (q : XiZeroCopy) :
     thetaCompactSourceInverse
         (thetaCompactSourceInverse (thetaXiDivisorEigenvector q)) =
-        thetaXiReciprocalEigenvalue q ^ 2 • thetaXiDivisorEigenvector q ∧
+        thetaXiReciprocalEigenvalue q ^ (2 : ℕ) • thetaXiDivisorEigenvector q ∧
       thetaCompactSourceInverse
         (thetaCompactSourceInverse
           (thetaXiDivisorEigenvector (xiZeroCopyReflectEquiv q))) =
-        thetaXiReciprocalEigenvalue q ^ 2 •
+        thetaXiReciprocalEigenvalue q ^ (2 : ℕ) •
           thetaXiDivisorEigenvector (xiZeroCopyReflectEquiv q) ∧
       thetaXiRankTwoBoundaryFlux q +
         thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) = 0 := by

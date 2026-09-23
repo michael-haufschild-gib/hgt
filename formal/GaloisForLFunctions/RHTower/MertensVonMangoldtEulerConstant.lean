@@ -276,7 +276,7 @@ theorem integrableOn_chebyshevError_div_sq :
 /-! ## Abel summation and the Mellin identity -/
 
 /-- Real summability of `Λ(n) n^{−s}` for `s > 1`. -/
-theorem summable_vonMangoldt_div_rpow {s : ℝ} (hs : 1 < s) :
+theorem summable_vonMangoldt_div_rpow_mertensVonMangoldtEulerConstant {s : ℝ} (hs : 1 < s) :
     Summable (fun n : ℕ => vonMangoldt n / (n : ℝ) ^ s) := by
   have hε : 0 < (s - 1) / 2 := by linarith
   have hsum : Summable (fun n : ℕ => 2 / (s - 1) * ((n : ℝ) ^ ((s + 1) / 2))⁻¹) :=
@@ -374,7 +374,7 @@ theorem tsum_vonMangoldt_div_rpow_eq {s : ℝ} (hs : 1 < s) :
     (by simp) hf_diff hf_int h_lim hg_dom hg_int
   have hsum : Tendsto (fun n : ℕ => ∑ k ∈ Finset.Icc 0 n, f k * vonMangoldt k) atTop
       (𝓝 (∑' n : ℕ, vonMangoldt n / (n : ℝ) ^ s)) := by
-    have hS := (summable_vonMangoldt_div_rpow hs).hasSum.tendsto_sum_nat
+    have hS := (summable_vonMangoldt_div_rpow_mertensVonMangoldtEulerConstant hs).hasSum.tendsto_sum_nat
     have hS' := (Filter.tendsto_add_atTop_iff_nat 1).mpr hS
     refine hS'.congr ?_
     intro n

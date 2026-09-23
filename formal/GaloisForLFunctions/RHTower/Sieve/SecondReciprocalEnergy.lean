@@ -19,18 +19,18 @@ noncomputable section
 
 /-- Each cell centre is charged to the Cauchy integral over its own cell. -/
 theorem inv_one_add_sq_centre_le_integral {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ ≤ 1 / 2) (c : ℝ) :
-    (ρ / 2) / (1 + c ^ 2) ≤ ∫ t in (c - ρ)..(c + ρ), 1 / (1 + t ^ 2) := by
-  have hc0 : (0 : ℝ) < 1 + c ^ 2 := by positivity
+    (ρ / 2) / (1 + c ^ (2 : ℕ)) ≤ ∫ t in (c - ρ)..(c + ρ), 1 / (1 + t ^ (2 : ℕ)) := by
+  have hc0 : (0 : ℝ) < 1 + c ^ (2 : ℕ) := by positivity
   have hle : c - ρ ≤ c + ρ := by linarith
   have hpt : ∀ t ∈ Set.Icc (c - ρ) (c + ρ),
-      (1 / 4) * (1 / (1 + c ^ 2)) ≤ 1 / (1 + t ^ 2) := by
+      (1 / 4) * (1 / (1 + c ^ (2 : ℕ))) ≤ 1 / (1 + t ^ (2 : ℕ)) := by
     intro t ht
     have habs : |c - t| ≤ 1 / 2 := by
       rw [abs_le]
       exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
     have h := inv_one_add_sq_le_cell habs
-    have ht0 : (0 : ℝ) < 1 + t ^ 2 := by positivity
-    have hid : (4 : ℝ) / (1 + t ^ 2) = 4 * (1 / (1 + t ^ 2)) := by ring
+    have ht0 : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
+    have hid : (4 : ℝ) / (1 + t ^ (2 : ℕ)) = 4 * (1 / (1 + t ^ (2 : ℕ))) := by ring
     rw [hid] at h
     linarith
   have hmono := intervalIntegral.integral_mono_on (μ := volume) hle
@@ -44,7 +44,7 @@ theorem inv_one_add_sq_centre_le_integral {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ �
 /-- **The Cauchy weight summed over the cell centres.**  The bound does not depend on the number
 of cells. -/
 theorem sum_inv_one_add_sq_scaledCentre_le {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ ≤ 1 / 2) (N : ℕ) :
-    ∑ k ∈ Finset.range (2 * N), 1 / (1 + (scaledCentre ρ N k) ^ 2)
+    ∑ k ∈ Finset.range (2 * N), 1 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))
       ≤ 2 * Real.pi / ρ := by
   classical
   set a : ℕ → ℝ := fun k => -2 * ρ * (N : ℝ) + 2 * ρ * (k : ℝ) with ha
@@ -54,8 +54,8 @@ theorem sum_inv_one_add_sq_scaledCentre_le {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ 
     · rw [ha, scaledCentre]; ring
     · rw [ha, scaledCentre]; push_cast; ring
   have hterm : ∀ k ∈ Finset.range (2 * N),
-      1 / (1 + (scaledCentre ρ N k) ^ 2)
-        ≤ (2 / ρ) * ∫ t in (a k)..(a (k + 1)), 1 / (1 + t ^ 2) := by
+      1 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))
+        ≤ (2 / ρ) * ∫ t in (a k)..(a (k + 1)), 1 / (1 + t ^ (2 : ℕ)) := by
     intro k _
     obtain ⟨h1, h2⟩ := hcell k
     rw [h1, h2]
@@ -66,7 +66,7 @@ theorem sum_inv_one_add_sq_scaledCentre_le {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ 
   refine (Finset.sum_le_sum hterm).trans ?_
   rw [← Finset.mul_sum]
   have hsum := intervalIntegral.sum_integral_adjacent_intervals
-    (f := fun t : ℝ => 1 / (1 + t ^ 2)) (μ := volume) (a := a) (n := 2 * N)
+    (f := fun t : ℝ => 1 / (1 + t ^ (2 : ℕ))) (μ := volume) (a := a) (n := 2 * N)
     (fun k _ => ((continuous_const.div (by continuity) fun t => by positivity)).intervalIntegrable
       (a k) (a (k + 1)))
   rw [hsum]
@@ -94,20 +94,20 @@ theorem cauchy_energy_bt_le {T : ℝ} (hT : 0 ≤ T) (N : ℕ) (hN : T ≤ 2 * (
     {S : Finset ℕ} (hs : ∀ m ∈ S, Nat.Prime m) {a : ℕ → ℂ} (hbdd : ∀ n : ℕ, ‖a n‖ ≤ 1)
     {F : ℝ → ℝ} (hFc : Continuous F) (hFnn : ∀ t, 0 ≤ F t) {L : ℝ} (hL : ∀ t, F t ≤ L) :
     (∫ w in (-T)..T,
-        ‖logPoly (fun p : ℕ => a p * ((Real.log (p : ℝ) : ℝ) : ℂ) / (p : ℂ)) S w‖ ^ 2
-          * F w / (1 + w ^ 2))
-      ≤ 8 * Real.pi ^ 2 * L
-          * (4500 * ∑ p ∈ S, ‖a p‖ ^ 2 * Real.log p / (p : ℝ) + 16 / Real.pi) := by
+        ‖logPoly (fun p : ℕ => a p * ((Real.log (p : ℝ) : ℝ) : ℂ) / (p : ℂ)) S w‖ ^ (2 : ℕ)
+          * F w / (1 + w ^ (2 : ℕ)))
+      ≤ 8 * Real.pi ^ (2 : ℕ) * L
+          * (4500 * ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) * Real.log p / (p : ℝ) + 16 / Real.pi) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set ρ : ℝ := 1 / Real.pi with hρdef
   have hρ : (0 : ℝ) < ρ := by rw [hρdef]; positivity
   have hρ2 : ρ ≤ 1 / 2 := pi_inv_le_half
   set b : ℕ → ℂ := fun p : ℕ => a p * ((Real.log (p : ℝ) : ℝ) : ℂ) / (p : ℂ) with hb
-  set Eval : ℝ := 4500 * ∑ p ∈ S, ‖a p‖ ^ 2 * Real.log p / (p : ℝ) + 16 / Real.pi with hEval
+  set Eval : ℝ := 4500 * ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) * Real.log p / (p : ℝ) + 16 / Real.pi with hEval
   have hL0 : 0 ≤ L := le_trans (hFnn 0) (hL 0)
   have hE0 : 0 ≤ Eval := by
     rw [hEval]
-    have hsum : 0 ≤ ∑ p ∈ S, ‖a p‖ ^ 2 * Real.log p / (p : ℝ) := by
+    have hsum : 0 ≤ ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) * Real.log p / (p : ℝ) := by
       refine Finset.sum_nonneg fun p hp => ?_
       have hp2 : 2 ≤ p := (hs p hp).two_le
       have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp2
@@ -115,8 +115,8 @@ theorem cauchy_energy_bt_le {T : ℝ} (hT : 0 ≤ T) (N : ℕ) (hN : T ≤ 2 * (
       positivity
     have : (0 : ℝ) ≤ 16 / Real.pi := by positivity
     linarith
-  have hBc : Continuous fun w : ℝ => ‖logPoly b S w‖ ^ 2 := continuous_normSq_logPoly b S
-  have hBnn : ∀ w : ℝ, 0 ≤ ‖logPoly b S w‖ ^ 2 := fun w => by positivity
+  have hBc : Continuous fun w : ℝ => ‖logPoly b S w‖ ^ (2 : ℕ) := continuous_normSq_logPoly b S
+  have hBnn : ∀ w : ℝ, 0 ≤ ‖logPoly b S w‖ ^ (2 : ℕ) := fun w => by positivity
   have hmain := cell_energy_scaled_le (T := T) (ρ := ρ) hT hρ hρ2 N hN hBc hFc hBnn hFnn
     (fun _ => L) (fun _ => Eval)
     (fun k t _ => hL t)
@@ -125,8 +125,8 @@ theorem cauchy_energy_bt_le {T : ℝ} (hT : 0 ≤ T) (N : ℕ) (hN : T ≤ 2 * (
       exact integral_cell_normSq_logPoly_bt_le hs hbdd (scaledCentre ρ N k))
   refine hmain.trans ?_
   have hterm : ∀ k ∈ Finset.range (2 * N),
-      4 * L * Eval / (1 + (scaledCentre ρ N k) ^ 2)
-        = (4 * L * Eval) * (1 / (1 + (scaledCentre ρ N k) ^ 2)) := by
+      4 * L * Eval / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))
+        = (4 * L * Eval) * (1 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))) := by
     intro k _
     ring
   rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum]

@@ -1090,7 +1090,7 @@ open Polynomial Filter
 
 /-- **Exact transferred-dynamics identity for the far-value transition.**
 For `H(w)=φ_{c₂}(ψ₁(w))`, the transported `c₂` map
-`T(w)=φ_{c₁}((ψ₁ w)^2+c₂)` satisfies `H(T(w))=H(w)^2` whenever all points are in the far inverse domain.
+`T(w)=φ_{c₁}((ψ₁ w)^(2 : ℕ)+c₂)` satisfies `H(T(w))=H(w)^(2 : ℕ)` whenever all points are in the far inverse domain.
 This is stronger than the square-defect asymptotic: it is the exact conjugacy relation to use in the
 value-transition route. -/
 theorem value_transition_conj_transferred_quadratic_at
@@ -1111,8 +1111,8 @@ namespace Bottcher
 open Polynomial Filter
 
 /-- **Push an algebraic relation through a semiconjugacy.**
-If `q(x,H x)` vanishes on `V`, `T` maps `U` into `V`, and `H(T x)=H x^2` on `U`, then the pushed
-relation `q(T x, H x^2)` vanishes on `U`. This is the function-level algebraic transfer used before
+If `q(x,H x)` vanishes on `V`, `T` maps `U` into `V`, and `H(T x)=H x^(2 : ℕ)` on `U`, then the pushed
+relation `q(T x, H x^(2 : ℕ))` vanishes on `U`. This is the function-level algebraic transfer used before
 eliminating `H` to get an algebraic relation for the transported map `T`. -/
 theorem eqOn_transition_relation_of_eqOn_relation_and_conj
     {U V : Set ℂ} {H T : ℂ → ℂ} (q : Polynomial (Polynomial ℂ))
@@ -1641,8 +1641,8 @@ theorem quadratic_factor_of_bottcher_relation_and_scaled_defect_quotient_zero
   ring
 
 /-- **Pointwise resultant obstruction from a semiconjugacy.**
-If `q(x,H x)=0` on `V` and `H(T x)=H x^2` on `U`, then for each `x ∈ U` the two one-variable
-polynomials `q(x,Y)` and `q(T x,Y^2)` have the common root `H x`. Therefore their resultant vanishes.
+If `q(x,H x)=0` on `V` and `H(T x)=H x^(2 : ℕ)` on `U`, then for each `x ∈ U` the two one-variable
+polynomials `q(x,Y)` and `q(T x,Y^(2 : ℕ))` have the common root `H x`. Therefore their resultant vanishes.
 
 The extra nonzero-pair hypothesis is exactly the harmless algebraic side condition needed by
 `resultant_eq_zero_iff`; it is separated so later work can prove it from the particular nonzero
@@ -1702,8 +1702,8 @@ theorem eqOn_transitionResultant_of_eqOn_relation_and_conj
   exact resultant_eq_zero_of_common_root_of_natDegree_le hq₁ hq₂ (hnz x hx) hm hn
 
 /-- **Eliminated relation for the transported map.**
-Suppose `q(x,H x)=0`, `H(T x)=H x^2`, and `R(W,Z)` is an eliminant for the pair of equations
-`q(W,Y)=0`, `q(Z,Y^2)=0`. Then `R(x,T x)=0` on `U`. This isolates the next algebraic task: construct a
+Suppose `q(x,H x)=0`, `H(T x)=H x^(2 : ℕ)`, and `R(W,Z)` is an eliminant for the pair of equations
+`q(W,Y)=0`, `q(Z,Y^(2 : ℕ))=0`. Then `R(x,T x)=0` on `U`. This isolates the next algebraic task: construct a
 nonzero `R` by resultants/elimination from a nonzero relation `q` for `H`. -/
 theorem eqOn_eliminated_transition_relation_of_relation_and_conj
     {U V : Set ℂ} {H T : ℂ → ℂ} (q R : Polynomial (Polynomial ℂ))
@@ -1755,7 +1755,7 @@ namespace Bottcher
 open Polynomial Filter
 
 /-- **Pull a transported-map relation back to the original far `z` coordinate.**
-For `T(w)=φ_{c₁}((ψ₁ w)^2+c₂)`, a relation `R(w,T(w))=0` on a value annulus gives the relation
+For `T(w)=φ_{c₁}((ψ₁ w)^(2 : ℕ)+c₂)`, a relation `R(w,T(w))=0` on a value annulus gives the relation
 `R(φ_{c₁}(z), φ_{c₁}(z²+c₂))=0` at every far point whose `φ_{c₁}` value lies in that annulus. -/
 theorem eqOn_transported_relation_pullback_to_z
     {c₁ c₂ : ℂ} {ψ₁ : ℂ → ℂ} {Rfar R' : ℝ} (R : Polynomial (Polynomial ℂ))
@@ -2250,7 +2250,7 @@ open Polynomial Filter
 
 /-- Support expansion of a bivariate polynomial evaluation: outer support in `Z`, inner support in `W`.
 This is the support-indexed replacement for rectangular `natDegree` boxes in the descent. -/
-lemma eval₂_eq_sum_support_coeff_support (R : Polynomial (Polynomial ℂ)) (A B : ℂ) :
+lemma eval₂_eq_sum_support_coeff (R : Polynomial (Polynomial ℂ)) (A B : ℂ) :
     R.eval₂ (Polynomial.evalRingHom A) B =
       ∑ j ∈ R.support, ∑ i ∈ (R.coeff j).support,
         (R.coeff j).coeff i * A ^ i * B ^ j := by
@@ -2283,7 +2283,7 @@ lemma support_sigma_raw_sum_eq (R : Polynomial (Polynomial ℂ)) (A B : ℂ) :
       (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ) * A ^ (s.2 : ℕ) * B ^ (s.1 : ℕ)) =
     R.eval₂ (Polynomial.evalRingHom A) B := by
   classical
-  rw [eval₂_eq_sum_support_coeff_support]
+  rw [eval₂_eq_sum_support_coeff]
   rw [Fintype.sum_sigma]
   symm
   rw [Finset.sum_subtype R.support (by intro j; rfl)]

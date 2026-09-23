@@ -54,8 +54,8 @@ theorem price_mul_factor_le {N Z : ℝ} (hN0 : 0 < N) (hNZ : N ≤ Z) :
 /-- **The whole coefficient of the left edge**, in the form the assembly consumes: the width
 factor times the common exponential is a constant times `exp(-√(log Z)/240000)`. -/
 theorem width_price_le {N H L Cm : ℝ} (hH1 : 1 ≤ H) (hN0 : 0 ≤ N) (hL : N / H ≤ L)
-    (hCm : 0 ≤ Cm) (hLb : (L + 2) ^ 2 ≤ 9 * Real.exp (Real.sqrt (Real.log N) / 120000)) :
-    Cm / H ^ 2 * (N + H + 1) ^ 2
+    (hCm : 0 ≤ Cm) (hLb : (L + 2) ^ (2 : ℕ) ≤ 9 * Real.exp (Real.sqrt (Real.log N) / 120000)) :
+    Cm / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ)
       ≤ Cm * (9 * Real.exp (Real.sqrt (Real.log N) / 120000)) := by
   refine le_trans (sq_width_factor_le hH1 hN0 hL hCm) ?_
   exact mul_le_mul_of_nonneg_left hLb hCm

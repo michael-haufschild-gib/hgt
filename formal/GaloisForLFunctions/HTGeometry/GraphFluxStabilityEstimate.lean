@@ -57,7 +57,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- **Coercivity gives a norm bound.**  If the quadratic form of a state against its image is at
 least `c ‖u‖²`, the state is bounded by its image over `c`.  This is the step that turns a
 numerical-range lower bound into weighted membership of a derivative. -/
-theorem norm_le_of_coercive {c : ℝ} {u w : E} (h : c * ‖u‖ ^ 2 ≤ inner ℝ u w) :
+theorem norm_le_of_coercive_graphFluxStabilityEstimate {c : ℝ} {u w : E} (h : c * ‖u‖ ^ (2 : ℕ) ≤ inner ℝ u w) :
     c * ‖u‖ ≤ ‖w‖ := by
   rcases eq_or_ne u 0 with rfl | hu
   · simp
@@ -69,7 +69,7 @@ theorem norm_le_of_coercive {c : ℝ} {u w : E} (h : c * ‖u‖ ^ 2 ≤ inner �
 /-- **No symmetry is needed.**  For a bounded operator the real part of `⟪-B v, v⟫` is at least
 `-‖B‖ ‖v‖²`, by Cauchy–Schwarz alone. -/
 theorem neg_norm_mul_normSq_le_inner_neg_apply (B : E →L[ℝ] E) (v : E) :
-    -(‖B‖ * ‖v‖ ^ 2) ≤ inner ℝ (-(B v)) v := by
+    -(‖B‖ * ‖v‖ ^ (2 : ℕ)) ≤ inner ℝ (-(B v)) v := by
   have hcs : |inner ℝ (B v) v| ≤ ‖B v‖ * ‖v‖ := abs_real_inner_le_norm _ _
   have hop : ‖B v‖ ≤ ‖B‖ * ‖v‖ := B.le_opNorm v
   have hv : (0 : ℝ) ≤ ‖v‖ := norm_nonneg _
@@ -95,10 +95,10 @@ open MeasureTheory
 theorem sigma_mul_l2_le_of_flux_equation {σ : ℝ} (hσ : 0 < σ) {Y W : ℝ → ℂ}
     (hdiff : Differentiable ℝ Y) (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y)
     (heq : ∀ x, deriv Y x - (σ : ℂ) * Y x = W x) :
-    σ * Real.sqrt (∫ x, ‖Y x‖ ^ 2) ≤ Real.sqrt (∫ x, ‖W x‖ ^ 2) := by
+    σ * Real.sqrt (∫ x, ‖Y x‖ ^ (2 : ℕ)) ≤ Real.sqrt (∫ x, ‖W x‖ ^ (2 : ℕ)) := by
   have hkey := abs_mul_sqrt_integral_normSq_le σ hdiff hcont hc
   rw [abs_of_pos hσ] at hkey
-  have hcongr : (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) = ∫ x, ‖W x‖ ^ 2 :=
+  have hcongr : (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ (2 : ℕ)) = ∫ x, ‖W x‖ ^ (2 : ℕ) :=
     integral_congr_ae (Filter.Eventually.of_forall fun x => by simp only [heq x])
   rwa [hcongr] at hkey
 
@@ -108,8 +108,8 @@ and the spectral gap.  The resolvent estimate `(13)` is no longer assumed — it
 theorem graphFlux_state_bound_of_flux_equation {c d σ V G H : ℝ} (hσ : 0 < σ) {Y W : ℝ → ℂ}
     (hdiff : Differentiable ℝ Y) (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y)
     (heq : ∀ x, deriv Y x - (σ : ℂ) * Y x = W x)
-    (hsrc : Real.sqrt (∫ x, ‖W x‖ ^ 2) ≤ d * V + H)
-    (hcoup : c * V ≤ Real.sqrt (∫ x, ‖Y x‖ ^ 2) + G) (hgap : d / σ < c) :
+    (hsrc : Real.sqrt (∫ x, ‖W x‖ ^ (2 : ℕ)) ≤ d * V + H)
+    (hcoup : c * V ≤ Real.sqrt (∫ x, ‖Y x‖ ^ (2 : ℕ)) + G) (hgap : d / σ < c) :
     V ≤ (c - d / σ)⁻¹ * (G + σ⁻¹ * H) :=
   graphFlux_state_bound hσ hcoup
     ((sigma_mul_l2_le_of_flux_equation hσ hdiff hcont hc heq).trans hsrc) hgap

@@ -16,7 +16,7 @@ namespace RHTower.D4BMFullAngularPhysicalAction
 open Set Filter Topology
 open scoped ContDiff
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
-open D4BMHorizon D4BMModularCore D4BMNativeCircle D4BMCausalKernel
+open D4BMHorizon D4BMModularCore D4BMNativeCircle D4BMCausalKernel D4BMGlobalAngularResponse
 open D4BMFullAngularCircle D4BMFullAngularCircleAction D4BMFullAngularCircleJointJets
 
 noncomputable section
@@ -37,7 +37,7 @@ private theorem smooth_deriv (g : ℝ → ℂ) (hg : ContDiff ℝ ∞ g) :
 
 private theorem logLift_second (g : ℝ → ℂ) (hg : ContDiff ℝ ∞ g) (y : ℝ) (hy : 0 < y) :
     HasDerivAt (fun t : ℝ => deriv (fun s : ℝ => g (Real.log s)) t)
-      ((deriv (deriv g) (Real.log y) - deriv g (Real.log y)) * (y : ℂ)⁻¹ ^ 2) y := by
+      ((deriv (deriv g) (Real.log y) - deriv g (Real.log y)) * (y : ℂ)⁻¹ ^ (2 : ℕ)) y := by
   have hpos : ∀ᶠ t in 𝓝 y, 0 < t := by
     exact (isOpen_lt continuous_const continuous_id).mem_nhds hy
   have he : (fun t : ℝ => deriv (fun s : ℝ => g (Real.log s)) t) =ᶠ[𝓝 y]
@@ -45,7 +45,7 @@ private theorem logLift_second (g : ℝ → ℂ) (hg : ContDiff ℝ ∞ g) (y : 
     filter_upwards [hpos] with t ht
     exact (logLift_first g hg t ht).deriv
   have ha := logLift_first (deriv g) (smooth_deriv g hg) y hy
-  have hb : HasDerivAt (fun t : ℝ => (t : ℂ)⁻¹) (-(y : ℂ)⁻¹ ^ 2) y := by
+  have hb : HasDerivAt (fun t : ℝ => (t : ℂ)⁻¹) (-(y : ℂ)⁻¹ ^ (2 : ℕ)) y := by
     convert (hasDerivAt_inv hy.ne').ofReal_comp using 1
     · ext t
       simp only [Complex.ofReal_inv]
@@ -57,16 +57,16 @@ private def physicalLift (F : ℝ → ℝ → ℂ) (x y : ℝ) : ℂ := F x (Rea
 
 private theorem physicalLift_action (F : ℝ → ℝ → ℂ)
     (hF : ContDiff ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2)) (x y : ℝ) (hy : 0 < y) :
-    (y : ℂ)^2 *
+    (y : ℂ)^(2 : ℕ) *
         (deriv (deriv (fun u : ℝ => physicalLift F u y)) x +
           deriv (deriv (fun v : ℝ => physicalLift F x v)) y) =
-      (Real.exp (Real.log y) : ℂ)^2 * deriv (deriv (fun u : ℝ => F u (Real.log y))) x +
+      (Real.exp (Real.log y) : ℂ)^(2 : ℕ) * deriv (deriv (fun u : ℝ => F u (Real.log y))) x +
         deriv (deriv (fun v : ℝ => F x v)) (Real.log y) -
           deriv (fun v : ℝ => F x v) (Real.log y) := by
   have hg : ContDiff ℝ ∞ (fun v : ℝ => F x v) :=
     hF.comp (contDiff_const.prodMk contDiff_id)
   have hv := (logLift_second (fun v : ℝ => F x v) hg y hy).deriv
-  change (y : ℂ)^2 *
+  change (y : ℂ)^(2 : ℕ) *
       (deriv (deriv (fun u : ℝ => F u (Real.log y))) x +
         deriv (deriv (fun v : ℝ => F x (Real.log v))) y) = _
   rw [hv]
@@ -77,13 +77,14 @@ private theorem physicalLift_action (F : ℝ → ℝ → ℂ)
 
 private theorem angularMean_base_smooth (q : XiZeroCopy) (branch : Bool) (d : ℝ) :
     ContDiff ℝ ∞ (fun p : ℝ × ℝ => angularMean q branch d p.1 p.2) := by
-  apply (angularMean_joint_smooth q branch).comp
-  apply contDiff_pi.mpr
-  intro i
-  fin_cases i
-  · exact contDiff_const
-  · exact contDiff_fst
-  · exact contDiff_snd
+  have hmap : ContDiff ℝ ∞ (fun p : ℝ × ℝ => ![d, p.1, p.2]) := by
+    apply contDiff_pi.mpr
+    intro i
+    fin_cases i
+    · exact contDiff_const
+    · exact contDiff_fst
+    · exact contDiff_snd
+  simpa [Function.comp_def] using (angularMean_joint_smooth q branch).comp hmap
 
 /-- The literal full circle response in the physical base chart, as its actual two-jet. -/
 def physicalMeanJet (q : XiZeroCopy) (branch : Bool) (d : ℝ) (z : Point) :
@@ -92,7 +93,7 @@ def physicalMeanJet (q : XiZeroCopy) (branch : Bool) (d : ℝ) (z : Point) :
 
 /-- The physical `(X,Y)` action density of the literal circle response. -/
 def physicalMeanAction (q : XiZeroCopy) (branch : Bool) (d x y : ℝ) : ℂ :=
-  (y : ℂ)^2 *
+  (y : ℂ)^(2 : ℕ) *
     (deriv (deriv (fun u : ℝ => physicalMean q branch d ![u,y])) x +
       deriv (deriv (fun v : ℝ => physicalMean q branch d ![x,v])) y)
 
@@ -111,11 +112,11 @@ theorem physicalMean_action_equation (q : XiZeroCopy) (branch : Bool) (d x y : �
       parameter q branch *
         (physicalMean q branch d ![x,y] + physicalNativeMean q d x y) := by
   unfold physicalMeanAction physicalNativeMean physicalMean
-  change (y : ℂ)^2 *
+  change (y : ℂ)^(2 : ℕ) *
       (deriv (deriv (fun u : ℝ => angularMean q branch d u (Real.log y))) x +
         deriv (deriv (fun v : ℝ => angularMean q branch d x (Real.log v))) y) = _
   calc
-    _ = (Real.exp (Real.log y) : ℂ)^2 *
+    _ = (Real.exp (Real.log y) : ℂ)^(2 : ℕ) *
         deriv (deriv (fun u : ℝ => angularMean q branch d u (Real.log y))) x +
         deriv (deriv (fun v : ℝ => angularMean q branch d x v)) (Real.log y) -
           deriv (fun v : ℝ => angularMean q branch d x v) (Real.log y) :=

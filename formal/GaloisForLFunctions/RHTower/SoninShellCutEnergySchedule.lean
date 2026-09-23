@@ -34,7 +34,7 @@ theorem exists_card_sub_le_hsNormSq_soninApertureCoupling_shellCut (N₀ : ℕ) 
             Real.sqrt (soninShellCutBandBoundAt b c N (r * q) b)) /
           soninShellCutNormFloor b c N ≤ η →
         ((N : ℝ) - ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b r⁻¹
-            (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ 2) * (1 - η) ^ 2 ≤
+            (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤
           hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c r hr) := by
   obtain ⟨K, hK0, hK⟩ := exists_soninCouplingBandTotal_soninShellCutPacket_le_uniform N₀ hN₀
   refine ⟨K, hK0, ?_⟩

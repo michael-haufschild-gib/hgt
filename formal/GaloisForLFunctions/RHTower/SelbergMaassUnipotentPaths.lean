@@ -72,7 +72,7 @@ theorem augmented_chord_modular (A : SL2Z) (z w : ℍ) :
 
 /-- Exact regulated reconstruction of an original modular displacement, including nodes. -/
 theorem displacementEnergy_eq_radius_sq_mul_augmented_chord (A : SL2Z) (z : ℍ) :
-    displacementEnergy N f A z=radius N f e (z:ℂ)^2*distanceSq N f e z (A • z) := by
+    displacementEnergy N f A z=radius N f e (z:ℂ)^(2 : ℕ)*distanceSq N f e z (A • z) := by
   have h (q : Deck N) :
       (quotientForm N f q).1.1 (A • z)-(quotientForm N f q).1.1 z=
         (radius N f e (z:ℂ):ℂ)*(unit N f e (some q) (A • z : ℍ)-unit N f e (some q) (z:ℂ)) := by
@@ -128,7 +128,7 @@ theorem blockPathCost_nonneg (z : ℍ) : 0 ≤ blockPathCost N f e z := by
 
 /-- Complete original block energy is controlled by the actual regularized current paths. -/
 theorem blockEnergy_le_radius_sq_mul_pathCost (z : ℍ) :
-    blockEnergy N f z ≤ radius N f e (z:ℂ)^2*blockPathCost N f e z := by
+    blockEnergy N f z ≤ radius N f e (z:ℂ)^(2 : ℕ)*blockPathCost N f e z := by
   have hu (j : Multiplicative (ZMod (N+1))) := mul_le_mul_of_nonneg_left
     (upper_augmented_chord_le N f e (j.toAdd.val:ℤ) z) (sq_nonneg (radius N f e (z:ℂ)))
   have hl (j : Multiplicative (ZMod (N+1))) := mul_le_mul_of_nonneg_left
@@ -143,7 +143,7 @@ theorem blockEnergy_le_radius_sq_mul_pathCost (z : ℍ) :
 /-- The complete source comparison retains invariant mean, regularization, and every current path. -/
 theorem density_le_mean_add_pathCost (z : ℍ) :
     density N f z ≤ (Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z)+
-      16*(density N f z+(e:ℝ)^2)*blockPathCost N f e z := by
+      16*(density N f z+(e:ℝ)^(2 : ℕ))*blockPathCost N f e z := by
   have h := density_le_mean_add_blockEnergy N f z
   have hc := blockEnergy_le_radius_sq_mul_pathCost N f e z
   rw [radius_sq,ofComplex_apply] at hc
@@ -151,7 +151,7 @@ theorem density_le_mean_add_pathCost (z : ℍ) :
 
 /-- Mean-zero sources retain a quantitative original-density lower demand on every regulator. -/
 theorem density_fraction_le_pathCost_of_mean_zero (z : ℍ) (hm : sourceMean N f z=0) :
-    density N f z/(density N f z+(e:ℝ)^2) ≤ 16*blockPathCost N f e z := by
+    density N f z/(density N f z+(e:ℝ)^(2 : ℕ)) ≤ 16*blockPathCost N f e z := by
   have h := density_le_mean_add_pathCost N f e z
   simp only [hm,normSq_zero,mul_zero,zero_add] at h
   apply (div_le_iff₀ (by simpa only [ofComplex_apply] using denominator_pos N f e (z:ℂ))).2
@@ -159,8 +159,8 @@ theorem density_fraction_le_pathCost_of_mean_zero (z : ℍ) (hm : sourceMean N f
 
 /-- The literal horizontal current density retains pair, phase and regulator-gradient terms. -/
 def horizontalCurrentDensity (z : ℂ) : ℝ :=
-  (pairEnergy N f 1 z+phaseCurrent N f 1 z^2+
-    (e:ℝ)^2*directionalEnergy N f 1 (ofComplex z))/radius N f e z^3
+  (pairEnergy N f 1 z+phaseCurrent N f 1 z^(2 : ℕ)+
+    (e:ℝ)^(2 : ℕ)*directionalEnergy N f 1 (ofComplex z))/radius N f e z^(3 : ℕ)
 
 /-- Exact source identification, with no common-zero deletion or limit interchange. -/
 theorem horizontalCurrentDensity_eq (z : ℍ) :
@@ -262,7 +262,7 @@ theorem pathEnergy_integer {y : ℝ} (hy : 0 < y) (a : ℝ) (j : ℤ) :
 
 /-- The actual resistance/current path product grows exactly quadratically with integer length. -/
 theorem horizontalCost_integer (z : ℍ) (j : ℤ) :
-    horizontalCost N f e z j=(j:ℝ)^2*horizontalCost N f e z 1 := by
+    horizontalCost N f e z j=(j:ℝ)^(2 : ℕ)*horizontalCost N f e z 1 := by
   unfold horizontalCost
   rw [pathResistance_integer N f e z.im_pos,pathEnergy_integer N f e z.im_pos]
   simp only [Int.cast_one]
@@ -270,20 +270,20 @@ theorem horizontalCost_integer (z : ℍ) (j : ℤ) :
 
 /-- Complete normalized squared parameter moment of the actual unipotent block. -/
 def parameterMoment (N : ℕ) : ℝ :=
-  (2*(N+1:ℕ):ℝ)⁻¹*∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^2
+  (2*(N+1:ℕ):ℝ)⁻¹*∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^(2 : ℕ)
 
 /-- Every actual complete block cost is exactly one parameter moment times two unit-path costs. -/
 theorem blockPathCost_eq_parameterMoment (z : ℍ) :
     blockPathCost N f e z=parameterMoment N*
       (horizontalCost N f e z 1+horizontalCost N f e (S⁻¹ • z) 1) := by
   have hu : (∑ j : Multiplicative (ZMod (N+1)), horizontalCost N f e z (j.toAdd.val:ℤ))=
-      (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^2)*horizontalCost N f e z 1 := by
+      (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^(2 : ℕ))*horizontalCost N f e z 1 := by
     rw [Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro j _
     simpa only [Int.cast_natCast] using horizontalCost_integer N f e z (j.toAdd.val:ℤ)
   have hl : (∑ j : Multiplicative (ZMod (N+1)), horizontalCost N f e (S⁻¹ • z) (-(j.toAdd.val:ℤ)))=
-      (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^2)*horizontalCost N f e (S⁻¹ • z) 1 := by
+      (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^(2 : ℕ))*horizontalCost N f e (S⁻¹ • z) 1 := by
     rw [Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro j _
@@ -293,7 +293,7 @@ theorem blockPathCost_eq_parameterMoment (z : ℍ) :
   ring
 
 /-- The finite sum of squared integer parameters is obtained by polynomial induction. -/
-theorem sum_fin_sq (n : ℕ) : (∑ j : Fin n, (j.val:ℝ)^2)=(n:ℝ)*((n:ℝ)-1)*(2*(n:ℝ)-1)/6 := by
+theorem sum_fin_sq (n : ℕ) : (∑ j : Fin n, (j.val:ℝ)^(2 : ℕ))=(n:ℝ)*((n:ℝ)-1)*(2*(n:ℝ)-1)/6 := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -304,10 +304,10 @@ theorem sum_fin_sq (n : ℕ) : (∑ j : Fin n, (j.val:ℝ)^2)=(n:ℝ)*((n:ℝ)-1
 /-- Exact level dependence of this actual geometric path comparison. -/
 theorem parameterMoment_eq (N : ℕ) : parameterMoment N=(N:ℝ)*(2*(N:ℝ)+1)/12 := by
   have h := Equiv.sum_comp (Multiplicative.ofAdd : ZMod (N+1) ≃ Multiplicative (ZMod (N+1)))
-    (fun j : Multiplicative (ZMod (N+1)) => (j.toAdd.val:ℝ)^2)
+    (fun j : Multiplicative (ZMod (N+1)) => (j.toAdd.val:ℝ)^(2 : ℕ))
   simp only [toAdd_ofAdd] at h
-  have hs : (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^2)=
-      (∑ j : Fin (N+1), (j.val:ℝ)^2) := h.symm
+  have hs : (∑ j : Multiplicative (ZMod (N+1)), (j.toAdd.val:ℝ)^(2 : ℕ))=
+      (∑ j : Fin (N+1), (j.val:ℝ)^(2 : ℕ)) := h.symm
   rw [parameterMoment,hs,sum_fin_sq]
   push_cast
   field_simp
@@ -316,7 +316,7 @@ theorem parameterMoment_eq (N : ℕ) : parameterMoment N=(N:ℝ)*(2*(N:ℝ)+1)/1
 /-- The source comparison is reduced to two one-period current costs with its exact level factor. -/
 theorem density_le_mean_add_two_unit_costs (z : ℍ) :
     density N f z ≤ (Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z)+
-      (4/3:ℝ)*(N:ℝ)*(2*(N:ℝ)+1)*(density N f z+(e:ℝ)^2)*
+      (4/3:ℝ)*(N:ℝ)*(2*(N:ℝ)+1)*(density N f z+(e:ℝ)^(2 : ℕ))*
         (horizontalCost N f e z 1+horizontalCost N f e (S⁻¹ • z) 1) := by
   have h := density_le_mean_add_pathCost N f e z
   rw [blockPathCost_eq_parameterMoment,parameterMoment_eq] at h
@@ -343,7 +343,7 @@ theorem pathEnergy_one_period {y : ℝ} (hy : 0 < y) (a : ℝ) :
 
 /-- The original signed path cost depends only on its height and squared integer length. -/
 theorem horizontalCost_eq_periodCost (z : ℍ) (j : ℤ) :
-    horizontalCost N f e z j=(j:ℝ)^2*periodCost N f e z.im := by
+    horizontalCost N f e z j=(j:ℝ)^(2 : ℕ)*periodCost N f e z.im := by
   rw [horizontalCost_integer,horizontalCost]
   simp only [Int.cast_one,pathResistance_one_period N f e z.im_pos,
     pathEnergy_one_period N f e z.im_pos,periodCost]
@@ -359,7 +359,7 @@ theorem blockPathCost_eq_two_periods (z : ℍ) :
 /-- Complete density control by two source current periods, including its invariant mean and nodes. -/
 theorem density_le_mean_add_two_periods (z : ℍ) :
     density N f z ≤ (Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z)+
-      (4/3:ℝ)*(N:ℝ)*(2*(N:ℝ)+1)*(density N f z+(e:ℝ)^2)*
+      (4/3:ℝ)*(N:ℝ)*(2*(N:ℝ)+1)*(density N f z+(e:ℝ)^(2 : ℕ))*
         (periodCost N f e z.im+periodCost N f e (S⁻¹ • z).im) := by
   have h := density_le_mean_add_pathCost N f e z
   rw [blockPathCost_eq_two_periods] at h
@@ -368,12 +368,12 @@ theorem density_le_mean_add_two_periods (z : ℍ) :
 /-- Positive mean-zero source points require two-period current cost at every regulator
 whose square is no greater than the original density. -/
 theorem two_period_cost_lower_of_mean_zero (z : ℍ) (hz : 0 < density N f z)
-    (hm : sourceMean N f z=0) (he : (e:ℝ)^2 ≤ density N f z) :
+    (hm : sourceMean N f z=0) (he : (e:ℝ)^(2 : ℕ) ≤ density N f z) :
     1 ≤ (8/3:ℝ)*(N:ℝ)*(2*(N:ℝ)+1)*
       (periodCost N f e z.im+periodCost N f e (S⁻¹ • z).im) := by
   have hf := density_fraction_le_pathCost_of_mean_zero N f e z hm
-  have hd : 0 < density N f z+(e:ℝ)^2 := by positivity
-  have hhalf : (1/2:ℝ) ≤ density N f z/(density N f z+(e:ℝ)^2) := by
+  have hd : 0 < density N f z+(e:ℝ)^(2 : ℕ) := by positivity
+  have hhalf : (1/2:ℝ) ≤ density N f z/(density N f z+(e:ℝ)^(2 : ℕ)) := by
     apply (le_div_iff₀ hd).2
     linarith
   have hh : 1 ≤ 32*blockPathCost N f e z := by linarith

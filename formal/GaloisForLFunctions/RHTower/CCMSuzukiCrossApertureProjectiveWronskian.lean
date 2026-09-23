@@ -227,13 +227,13 @@ theorem suzukiTaV2RawCharacteristic_crossAperture_denominatorCleared
     (a b : SuzukiPositiveAperture) (z : ℂ) :
     suzukiTaV2RawCharacteristicA b z * suzukiTaV2RawCharacteristicE a z -
       suzukiTaV2RawCharacteristicA a z * suzukiTaV2RawCharacteristicE b z =
-      (z ^ 2 + 1) * suzukiTaV2CrossApertureRawWronskian a b z := by
+      (z ^ (2 : ℕ) + 1) * suzukiTaV2CrossApertureRawWronskian a b z := by
   rw [suzukiTaV2RawCharacteristicA_eq_rawCompletedFourier,
     suzukiTaV2RawCharacteristicE_eq_rawCompletedFourier,
     suzukiTaV2RawCharacteristicA_eq_rawCompletedFourier,
     suzukiTaV2RawCharacteristicE_eq_rawCompletedFourier]
   unfold suzukiTaV2CrossApertureRawWronskian
-  have hI : (I : ℂ) ^ 2 = -1 := by norm_num
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := by norm_num
   ring_nf
   rw [hI]
   ring
@@ -260,7 +260,7 @@ source Wronskian divided by its two actual nonzero denominator coordinates. -/
 theorem suzukiTaV2Livsic_sub_eq_rawWronskian_div
     (a b : SuzukiPositiveAperture) {z : ℂ} (hz : 0 < z.im) :
     suzukiTaV2Livsic b z - suzukiTaV2Livsic a z =
-      ((z ^ 2 + 1) * suzukiTaV2CrossApertureRawWronskian a b z) /
+      ((z ^ (2 : ℕ) + 1) * suzukiTaV2CrossApertureRawWronskian a b z) /
         (suzukiTaV2RawCharacteristicE b z * suzukiTaV2RawCharacteristicE a z) := by
   have hEa : suzukiTaV2RawCharacteristicE a z ≠ 0 :=
     suzukiTaV2RawCharacteristicE_ne_zero_upperHalfPlane a hz
@@ -350,7 +350,7 @@ theorem suzukiTaV2CrossApertureRawWronskian_anchor_deriv
   have hE_a := differentiable_suzukiTaV2RawCharacteristicE a
   have hE_b := differentiable_suzukiTaV2RawCharacteristicE b
   have hW := differentiable_suzukiTaV2CrossApertureRawWronskian a b
-  have hfac : HasDerivAt (fun z : ℂ => z ^ 2 + 1) (2 * I) I := by
+  have hfac : HasDerivAt (fun z : ℂ => z ^ (2 : ℕ) + 1) (2 * I) I := by
     have hbase : HasDerivAt (fun z : ℂ => z * z + 1) (I + I) I := by
       simpa only [Pi.mul_apply, id_eq, one_mul, mul_one] using
         ((hasDerivAt_id I).mul (hasDerivAt_id I)).add_const 1
@@ -362,20 +362,20 @@ theorem suzukiTaV2CrossApertureRawWronskian_anchor_deriv
     exact ((hA_b I).hasDerivAt.mul (hE_a I).hasDerivAt).sub
       ((hA_a I).hasDerivAt.mul (hE_b I).hasDerivAt)
   have hright : HasDerivAt
-      (fun z => (z ^ 2 + 1) * W z)
-      ((2 * I) * W I + (I ^ 2 + 1) * deriv W I) I := by
+      (fun z => (z ^ (2 : ℕ) + 1) * W z)
+      ((2 * I) * W I + (I ^ (2 : ℕ) + 1) * deriv W I) I := by
     exact hfac.mul (hW I).hasDerivAt
   have hcross : (fun z => A b z * E a z - A a z * E b z) =
-      fun z => (z ^ 2 + 1) * W z := by
+      fun z => (z ^ (2 : ℕ) + 1) * W z := by
     funext z
     exact suzukiTaV2RawCharacteristic_crossAperture_denominatorCleared a b z
   have hderiv :
       deriv (fun z => A b z * E a z - A a z * E b z) I =
-        deriv (fun z => (z ^ 2 + 1) * W z) I := by rw [hcross]
+        deriv (fun z => (z ^ (2 : ℕ) + 1) * W z) I := by rw [hcross]
   have hraw :
       deriv (A b) I * E a I + A b I * deriv (E a) I -
         (deriv (A a) I * E b I + A a I * deriv (E b) I) =
-        (2 * I) * W I + (I ^ 2 + 1) * deriv W I := by
+        (2 * I) * W I + (I ^ (2 : ℕ) + 1) * deriv W I := by
     rw [← hleft.deriv, hderiv, hright.deriv]
   have hAa : A a I = 0 := suzukiTaV2RawCharacteristicA_I a
   have hAb : A b I = 0 := suzukiTaV2RawCharacteristicA_I b
@@ -428,7 +428,7 @@ theorem suzukiTaV2CrossApertureRawWronskian_anchor_eq_defect_increment
     _ = D / (2 * I) := by
       field_simp [hE]
     _ = -(2 * I * D) / 4 := by
-      have hI : (I : ℂ) ^ 2 = -1 := by norm_num
+      have hI : (I : ℂ) ^ (2 : ℕ) = -1 := by norm_num
       field_simp
       ring_nf
       rw [hI]

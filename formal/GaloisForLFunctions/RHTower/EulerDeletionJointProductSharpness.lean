@@ -26,7 +26,7 @@ open scoped BigOperators Matrix.Norms.Operator
 namespace RHTower.DeletionJointSharpness
 open GaloisForLFunctions.HTGeometry.NoncommutativeAbel
 noncomputable section
-local instance : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
+local instance eulerDeletionJointProductSharpnessInst1 : TopologicalSpace A := (inferInstance : NormedRing A).toUniformSpace.toTopologicalSpace
 
 def fifthCoefficient (s : ℂ) (k : ℕ) : ℂ := arithmeticDirichletWeight s (6*k)^5/60
 

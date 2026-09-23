@@ -44,7 +44,7 @@ theorem exists_setIntegral_normSq_harmonicProduct_geom_le_scaled_HM :
           ‖harmonicPrimeBlockPoly
               (geomBlock P Q (1 + eta) j) w *
             logPoly (harmonicRamareCofactorCoeff P)
-              (geomCofactorBlockAt A0 B0 Q eta j) w‖ ^ 2)
+              (geomCofactorBlockAt A0 B0 Q eta j) w‖ ^ (2 : ℕ))
           ≤ menonHarmonicProductCostVolume P A0 B0 Q eta W
               (harmonicCaseIBlockMajorant Ctot D Lx Hmaj mu q t0 xmin
                 ⌊Q * (1 + eta) ^ j⌋₊ ⌊Q * (1 + eta) ^ (j + 1)⌋₊)

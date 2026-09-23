@@ -120,7 +120,7 @@ theorem norm_svdVec_sq {T : H →L[ℂ] H} (hcpt : IsCompactOperator T) {n : ℕ
     exact hne (by rw [singVal, h, Real.sqrt_zero])
   have hunit : ‖svVec (energyOp T) n‖ = 1 :=
     norm_svVec_of_ne_zero (energyOp_compact hcpt) (energyOp_symmetric T) (energyOp_pos T) hμne
-  have hTnorm : ‖T (svVec (energyOp T) n)‖ ^ 2 = singVal T n ^ 2 := by
+  have hTnorm : ‖T (svVec (energyOp T) n)‖ ^ (2 : ℕ) = singVal T n ^ (2 : ℕ) := by
     rw [norm_apply_svVec_sq, hunit, singVal_sq]
     ring
   have hs_pos : 0 < singVal T n :=
@@ -208,7 +208,7 @@ theorem hasSum_inner_svVec_smul_apply (hcpt : IsCompactOperator T) (x : H) :
         exact ⟨n, hne0, rfl⟩
     have hSv : energyOp T (v : H) = 0 :=
       apply_eq_zero_of_forall_inner_svVec hScpt hsym hpos horth_all
-    have hz : (‖T (v : H)‖ ^ 2 : ℝ) = 0 := by
+    have hz : (‖T (v : H)‖ ^ (2 : ℕ) : ℝ) = 0 := by
       rw [← re_inner_energyOp_self T, hSv, inner_zero_right]
       simp
     simpa [pow_eq_zero_iff] using hz
@@ -301,7 +301,7 @@ theorem apply_eq_zero_of_forall_inner_svVec_energyOp (hcpt : IsCompactOperator T
   have hSx : energyOp T x = 0 :=
     apply_eq_zero_of_forall_inner_svVec (energyOp_compact hcpt) (energyOp_symmetric T)
       (energyOp_pos T) hx
-  have hz : (‖T x‖ ^ 2 : ℝ) = 0 := by
+  have hz : (‖T x‖ ^ (2 : ℕ) : ℝ) = 0 := by
     rw [← re_inner_energyOp_self T, hSx, inner_zero_right]
     simp
   simpa [pow_eq_zero_iff] using hz
@@ -327,14 +327,14 @@ theorem svVec_live_injective (hcpt : IsCompactOperator T) {m n : ℕ}
 
 /-- Finite Bessel inequality along the greedy family. -/
 theorem sum_inner_svVec_sq_le (hcpt : IsCompactOperator T) (x : H) (s : Finset ℕ) :
-    ∑ n ∈ s, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+    ∑ n ∈ s, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
   classical
-  have hsplit : ∑ n ∈ s, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2
+  have hsplit : ∑ n ∈ s, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ)
       = ∑ n ∈ s.filter (fun n => svVal (energyOp T) n ≠ 0),
-          ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 := by
+          ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not s (fun n => svVal (energyOp T) n ≠ 0)]
     have hz : ∑ n ∈ s.filter (fun n => ¬svVal (energyOp T) n ≠ 0),
-        ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 = 0 := by
+        ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) = 0 := by
       refine Finset.sum_eq_zero fun n hn => ?_
       have h0 := (Finset.mem_filter.mp hn).2
       rw [not_not] at h0
@@ -359,19 +359,19 @@ theorem sum_inner_svVec_sq_le (hcpt : IsCompactOperator T) (x : H) (s : Finset �
       refine inner_svVec_svVec_of_ne (energyOp T) fun h => hpq ?_
       exact Subtype.ext h
   have hbessel := horthsub.sum_inner_products_le (s := t.attach) x
-  calc ∑ n ∈ t, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2
-      = ∑ p ∈ t.attach, ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ 2 :=
-        (Finset.sum_attach t (fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2)).symm
-    _ ≤ ‖x‖ ^ 2 := hbessel
+  calc ∑ n ∈ t, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ)
+      = ∑ p ∈ t.attach, ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ (2 : ℕ) :=
+        (Finset.sum_attach t (fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ))).symm
+    _ ≤ ‖x‖ ^ (2 : ℕ) := hbessel
 
 /-- Summability of the squared greedy Fourier coefficients. -/
 theorem summable_inner_svVec_sq (hcpt : IsCompactOperator T) (x : H) :
-    Summable (fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2) :=
+    Summable (fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ)) :=
   summable_of_sum_le (fun n => by positivity) (sum_inner_svVec_sq_le hcpt x)
 
 /-- Bessel inequality along the greedy family. -/
 theorem tsum_inner_svVec_sq_le (hcpt : IsCompactOperator T) (x : H) :
-    ∑' n, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 ≤ ‖x‖ ^ 2 :=
+    ∑' n, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) :=
   Real.tsum_le_of_sum_le (fun n => by positivity) (sum_inner_svVec_sq_le hcpt x)
 
 end ContinuousLinearMap

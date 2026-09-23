@@ -30,7 +30,7 @@ square-summable diagonal value is a convergent sum of real squares. -/
 def XiWeilSquareRealization : Prop :=
   ∃ g : (ℂ → ℂ) → XiZeroCopy → ℝ,
     ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
-      HasSum (fun q => g F q ^ 2) ((xiWeilPolarization F F).re)
+      HasSum (fun q => g F q ^ (2 : ℕ)) ((xiWeilPolarization F F).re)
 
 /-- **A square realization forces RH**: sums of squares are nonnegative, and nonnegativity of
 the diagonal Weil form is the corpus's positivity criterion. -/
@@ -40,7 +40,7 @@ theorem riemannHypothesis_of_xiWeilSquareRealization
   rw [riemannHypothesis_iff_xiWeilPolarization_nonneg]
   intro F hF
   have hsum := hg F hF
-  have : (xiWeilPolarization F F).re = ∑' q : XiZeroCopy, g F q ^ 2 :=
+  have : (xiWeilPolarization F F).re = ∑' q : XiZeroCopy, g F q ^ (2 : ℕ) :=
     hsum.tsum_eq.symm
   rw [this]
   exact tsum_nonneg fun q => sq_nonneg _
@@ -53,11 +53,11 @@ theorem xiWeilSquareRealization_of_riemannHypothesis
   intro F hF
   have hdiag := xiWeilPolarization_diagonal_of_riemannHypothesis hRH F
   have hsumC : Summable (fun q : XiZeroCopy =>
-      ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) := by
+      ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
     simpa only [Function.comp_apply] using!
       hF.map Complex.ofRealCLM Complex.ofRealCLM.continuous
   have hre : (xiWeilPolarization F F).re =
-      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [hdiag, Complex.re_tsum hsumC]
     exact tsum_congr fun q => Complex.ofReal_re _
   rw [hre]

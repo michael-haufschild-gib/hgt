@@ -80,7 +80,7 @@ theorem eight_le_re_inv {γ : ℝ} {ρ : ℂ}
   set w : ℂ := (((9 / 8 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) - ρ with hwdef
   have hw0 : w ≠ 0 := sub_ne_zero.mpr hne
   have hwre : w.re = 9 / 8 - ρ.re := by rw [hwdef]; simp
-  have hnormsq : Complex.normSq w = ‖w‖ ^ 2 := Complex.normSq_eq_norm_sq w
+  have hnormsq : Complex.normSq w = ‖w‖ ^ (2 : ℕ) := Complex.normSq_eq_norm_sq w
   have hnorm : ‖w‖ ≤ 1 / 8 := by rw [hwdef]; exact hρ
   have hnormpos : (0 : ℝ) < ‖w‖ := norm_pos_iff.mpr hw0
   have hsq : Complex.normSq w ≤ 1 / 64 := by

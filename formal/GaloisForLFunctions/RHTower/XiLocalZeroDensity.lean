@@ -311,7 +311,7 @@ theorem exists_card_near_xi_zeros_le :
 /-! ## The weighted density -/
 
 theorem re_xiPairTerm_ge_weighted {t : ℝ} (q : XiZeroCopy) :
-    (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2)
+    (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ))
       ≤ ((((2 : ℂ) + (t : ℂ) * I) - (q.1 : ℂ))⁻¹
         + (((2 : ℂ) + (t : ℂ) * I) - 1 + (q.1 : ℂ))⁻¹).re := by
   obtain ⟨h0, h1⟩ := xi_divisor_support_re_mem_open_unit q.1
@@ -322,15 +322,15 @@ theorem re_xiPairTerm_ge_weighted {t : ℝ} (q : XiZeroCopy) :
   have hp2 : 0 < (((2 : ℂ) + (t : ℂ) * I) - 1 + ρ).re := by
     have hval : (((2 : ℂ) + (t : ℂ) * I) - 1 + ρ).re = 1 + ρ.re := by simp; ring
     rw [hval]; linarith
-  have hden : Complex.normSq z = (2 - ρ.re) ^ 2 + (t - ρ.im) ^ 2 := by
+  have hden : Complex.normSq z = (2 - ρ.re) ^ (2 : ℕ) + (t - ρ.im) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hzre, hzim]
     ring
   have hpos : (0 : ℝ) < Complex.normSq z := by
     rw [hden]
     nlinarith [sq_nonneg (t - ρ.im), h1]
-  have hfirst : (1 : ℝ) / 4 / (1 + (t - ρ.im) ^ 2) ≤ (z⁻¹).re := by
+  have hfirst : (1 : ℝ) / 4 / (1 + (t - ρ.im) ^ (2 : ℕ)) ≤ (z⁻¹).re := by
     rw [Complex.inv_re, hzre, hden]
-    have hd2 : (0 : ℝ) < (2 - ρ.re) ^ 2 + (t - ρ.im) ^ 2 := by
+    have hd2 : (0 : ℝ) < (2 - ρ.re) ^ (2 : ℕ) + (t - ρ.im) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (t - ρ.im), h1]
     rw [div_le_div_iff₀ (by positivity) hd2]
     nlinarith [sq_nonneg (t - ρ.im), h0, h1]
@@ -341,8 +341,8 @@ theorem re_xiPairTerm_ge_weighted {t : ℝ} (q : XiZeroCopy) :
 /-- **The weighted local density.**  `Σ_ρ 1/(1+(t−γ)²) = O(log t)`. -/
 theorem exists_tsum_weighted_density_le :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ t : ℝ in atTop,
-      Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ 2)) ∧
-      ∑' q : XiZeroCopy, (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ 2) ≤ C * Real.log t := by
+      Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ))) ∧
+      ∑' q : XiZeroCopy, (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)) ≤ C * Real.log t := by
   obtain ⟨C, hC0, hC⟩ := exists_re_logDeriv_xi_two_line_le
   refine ⟨8 * C, by positivity, ?_⟩
   filter_upwards [hC] with t ht
@@ -356,28 +356,28 @@ theorem exists_tsum_weighted_density_le :
   have hsumre : Summable (fun q => (f q).re) :=
     hsum.map Complex.reAddGroupHom Complex.continuous_re
   have hcomp : ∀ q : XiZeroCopy,
-      (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2) ≤ (f q).re := by
+      (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)) ≤ (f q).re := by
     intro q
     rw [hf, hs]
     exact re_xiPairTerm_ge_weighted q
-  have hnn : ∀ q : XiZeroCopy, 0 ≤ (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2) := by
+  have hnn : ∀ q : XiZeroCopy, 0 ≤ (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)) := by
     intro q
     positivity
   have hsumq : Summable (fun q : XiZeroCopy =>
-      (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2)) :=
+      (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ))) :=
     Summable.of_nonneg_of_le hnn hcomp hsumre
-  have hsumfull : Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ 2)) := by
+  have hsumfull : Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ))) := by
     have := hsumq.mul_left 4
     refine this.congr fun q => ?_
     field_simp
   refine ⟨hsumfull, ?_⟩
-  have hle : (∑' q : XiZeroCopy, (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2))
+  have hle : (∑' q : XiZeroCopy, (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)))
       ≤ ∑' q, (f q).re := hsumq.tsum_le_tsum hcomp hsumre
   have hval : (∑' q, (f q).re) = 2 * (logDeriv xi s).re := by
     rw [← Complex.re_tsum hsum, hf, ← two_logDeriv_xi_eq_pair_tsum hxi]
     simp
-  have hquarter : (∑' q : XiZeroCopy, (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ 2))
-      = (1 / 4) * ∑' q : XiZeroCopy, (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ 2) := by
+  have hquarter : (∑' q : XiZeroCopy, (1 : ℝ) / 4 / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)))
+      = (1 / 4) * ∑' q : XiZeroCopy, (1 : ℝ) / (1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ)) := by
     rw [← tsum_mul_left]
     refine tsum_congr fun q => ?_
     field_simp

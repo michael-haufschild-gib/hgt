@@ -35,7 +35,7 @@ theorem exists_structuredLegEquilibrium_pushed_past_midpoint
       k ≠ 2 * M + E + 1 → t k ≠ b)
     (hbudget : (∑ k ∈ range M,
         ((((a + b) / 2 - t k) - (t (M + k) - (a + b) / 2)) / 2) *
-          (rcsch ((t (M + k) - (a + b) / 2) / 2)) ^ 2)
+          (rcsch ((t (M + k) - (a + b) / 2) / 2)) ^ (2 : ℕ))
       < 2 * (M : ℝ) + 2 * E + 2) :
     ∃ x ∈ Ioo a b,
       cothField (range (2 * M + E + 2)) t x =

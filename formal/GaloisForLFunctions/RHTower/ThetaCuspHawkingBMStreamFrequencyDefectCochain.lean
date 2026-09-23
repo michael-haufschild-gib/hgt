@@ -76,24 +76,24 @@ Its radial entries retain the original mixed source current. -/
 def frequencyDefectCochain (q : XiZeroCopy) (branch : Bool) (w r B : ℂ)
     (z : Point) : Matrix (Fin 4) (Fin 4) ℂ :=
   let v := 2 * physicalRate q branch
-  let f := r ^ 2 - 1
+  let f := r ^ (2 : ℕ) - 1
   let P := forcedStreamValue q branch r B
   let P1 := forcedStreamFirst q branch r B
   let C := fun k => current (physicalRate q branch) r B
     (fullSquareCovector q k z) (fullGradientCovector q branch k z)
-  let T := fun k => f / (2 * r ^ 2) * (w + v) *
-    (r ^ 2 / f * P1 k z - 2 * r / f ^ 2 * P k z)
-  let R := fun k => -C k / (r ^ 2 * f) +
-    w / (2 * r ^ 2 * f) * (w + v) * r ^ 2 / f * P k z
+  let T := fun k => f / (2 * r ^ (2 : ℕ)) * (w + v) *
+    (r ^ (2 : ℕ) / f * P1 k z - 2 * r / f ^ (2 : ℕ) * P k z)
+  let R := fun k => -C k / (r ^ (2 : ℕ) * f) +
+    w / (2 * r ^ (2 : ℕ) * f) * (w + v) * r ^ (2 : ℕ) / f * P k z
   defectMatrix T R
 
 /-- The full mixed frozen metric pencil at fixed radial profile frequency. -/
 def frozenMixedMetricJet (q : XiZeroCopy) (branch : Bool) (w r B : ℂ)
     (z : Point) : CoordinateMetricTwoJet 4 ℂ :=
   frequencyMetricJetCombination (physicalRate q branch * (physicalRate q branch - 1) / 4)
-    (frozenStreamMetricJet w (2 * physicalRate q branch) r (B ^ 2) false
+    (frozenStreamMetricJet w (2 * physicalRate q branch) r (B ^ (2 : ℕ)) false
       (fullAngularCovector q branch) z)
-    (frozenStreamMetricJet w (2 * physicalRate q branch) r (B ^ 2) true
+    (frozenStreamMetricJet w (2 * physicalRate q branch) r (B ^ (2 : ℕ)) true
       (fullSquareCovector q) z)
 
 /-- Literal metric realization of the scaled source-pole defect: the difference
@@ -104,19 +104,19 @@ def frozenMixedDifferenceJet (q : XiZeroCopy) (branch : Bool) (w r B : ℂ)
     (frozenMixedMetricJet q branch (2 * physicalRate q branch) r B z)
 
 private theorem time_factor (v w r P P1 : ℂ) :
-    (r ^ 2 - 1) / (2 * r ^ 2) * (w ^ 2 - v ^ 2) *
-        (r ^ 2 / (r ^ 2 - 1) * P1 - 2 * r / (r ^ 2 - 1) ^ 2 * P) =
-      (w - v) * ((r ^ 2 - 1) / (2 * r ^ 2) * (w + v) *
-        (r ^ 2 / (r ^ 2 - 1) * P1 - 2 * r / (r ^ 2 - 1) ^ 2 * P)) := by
+    (r ^ (2 : ℕ) - 1) / (2 * r ^ (2 : ℕ)) * (w ^ (2 : ℕ) - v ^ (2 : ℕ)) *
+        (r ^ (2 : ℕ) / (r ^ (2 : ℕ) - 1) * P1 - 2 * r / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ) * P) =
+      (w - v) * ((r ^ (2 : ℕ) - 1) / (2 * r ^ (2 : ℕ)) * (w + v) *
+        (r ^ (2 : ℕ) / (r ^ (2 : ℕ) - 1) * P1 - 2 * r / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ) * P)) := by
   ring
 
 private theorem radial_factor (v w r P C : ℂ) :
-    -(w - v) / (r ^ 2 * (r ^ 2 - 1)) * C +
-        w / (2 * r ^ 2 * (r ^ 2 - 1)) * (w ^ 2 - v ^ 2) * r ^ 2 /
-          (r ^ 2 - 1) * P =
-      (w - v) * (-C / (r ^ 2 * (r ^ 2 - 1)) +
-        w / (2 * r ^ 2 * (r ^ 2 - 1)) * (w + v) * r ^ 2 /
-          (r ^ 2 - 1) * P) := by
+    -(w - v) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * C +
+        w / (2 * r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * (w ^ (2 : ℕ) - v ^ (2 : ℕ)) * r ^ (2 : ℕ) /
+          (r ^ (2 : ℕ) - 1) * P =
+      (w - v) * (-C / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) +
+        w / (2 * r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * (w + v) * r ^ (2 : ℕ) /
+          (r ^ (2 : ℕ) - 1) * P) := by
   ring
 
 private theorem defectMatrix_factor (a : ℂ) (T R T' R' : Fin 2 → ℂ)
@@ -137,16 +137,16 @@ theorem frequencyDefectTensor_factor (q : XiZeroCopy) (branch : Bool) (w r B : �
   let P1 := forcedStreamFirst q branch r B
   let C := fun k => current (physicalRate q branch) r B
     (fullSquareCovector q k z) (fullGradientCovector q branch k z)
-  let T := fun k => (r ^ 2 - 1) / (2 * r ^ 2) * (w ^ 2 - v ^ 2) *
-    (r ^ 2 / (r ^ 2 - 1) * P1 k z - 2 * r / (r ^ 2 - 1) ^ 2 * P k z)
-  let R := fun k => -(w - v) / (r ^ 2 * (r ^ 2 - 1)) * C k +
-    w / (2 * r ^ 2 * (r ^ 2 - 1)) * (w ^ 2 - v ^ 2) * r ^ 2 /
-      (r ^ 2 - 1) * P k z
-  let T' := fun k => (r ^ 2 - 1) / (2 * r ^ 2) * (w + v) *
-    (r ^ 2 / (r ^ 2 - 1) * P1 k z - 2 * r / (r ^ 2 - 1) ^ 2 * P k z)
-  let R' := fun k => -C k / (r ^ 2 * (r ^ 2 - 1)) +
-    w / (2 * r ^ 2 * (r ^ 2 - 1)) * (w + v) * r ^ 2 /
-      (r ^ 2 - 1) * P k z
+  let T := fun k => (r ^ (2 : ℕ) - 1) / (2 * r ^ (2 : ℕ)) * (w ^ (2 : ℕ) - v ^ (2 : ℕ)) *
+    (r ^ (2 : ℕ) / (r ^ (2 : ℕ) - 1) * P1 k z - 2 * r / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ) * P k z)
+  let R := fun k => -(w - v) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * C k +
+    w / (2 * r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * (w ^ (2 : ℕ) - v ^ (2 : ℕ)) * r ^ (2 : ℕ) /
+      (r ^ (2 : ℕ) - 1) * P k z
+  let T' := fun k => (r ^ (2 : ℕ) - 1) / (2 * r ^ (2 : ℕ)) * (w + v) *
+    (r ^ (2 : ℕ) / (r ^ (2 : ℕ) - 1) * P1 k z - 2 * r / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ) * P k z)
+  let R' := fun k => -C k / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) +
+    w / (2 * r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1)) * (w + v) * r ^ (2 : ℕ) /
+      (r ^ (2 : ℕ) - 1) * P k z
   have htime (k : Fin 2) :
       T k = (w - v) * T' k := by
     exact time_factor v w r (P k z) (P1 k z)
@@ -165,9 +165,9 @@ theorem frozen_stream_cosmological_source_factor (q : XiZeroCopy) (branch : Bool
     let z := angularPoint p.val
     let E := fun K => CoordinateMetricTwoJet.Linearization.cosmological
       (D4BMBackground.jet r (p.val 3)) K (-3) i j
-    E (frozenStreamMetricJet w (2 * s) r (B ^ 2) false (fullAngularCovector q branch) z) -
+    E (frozenStreamMetricJet w (2 * s) r (B ^ (2 : ℕ)) false (fullAngularCovector q branch) z) -
       (s * (s - 1) / 4) *
-        E (frozenStreamMetricJet w (2 * s) r (B ^ 2) true (fullSquareCovector q) z) +
+        E (frozenStreamMetricJet w (2 * s) r (B ^ (2 : ℕ)) true (fullSquareCovector q) z) +
       literalMixedSource q branch r B z i j =
       (w - 2 * s) * frequencyDefectCochain q branch w r B z i j := by
   dsimp only
@@ -190,8 +190,8 @@ theorem frozenMixedDifferenceJet_cosmological (q : XiZeroCopy) (branch : Bool)
     have hr : (p.val 1 : ℂ) ≠ 0 := by
       exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
     have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-    have hf : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
-      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    have hf : (p.val 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ (2 : ℕ) - 1 ≠ 0)
     change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
     rw [D4BMBackground.metric_det _ _ hf]
     exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))
@@ -220,16 +220,16 @@ def frequencyEnvelope (w v a : ℂ) (x : Fin 4 → ℝ) : ℂ :=
 private def frequencyPhaseJet (u t : ℂ) : ScalarTwoJet (Fin 4) ℂ where
   value := Complex.exp (u * t)
   first := ![u * Complex.exp (u * t), 0, 0, 0]
-  second := !![u ^ 2 * Complex.exp (u * t), 0, 0, 0;
+  second := !![u ^ (2 : ℕ) * Complex.exp (u * t), 0, 0, 0;
     0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0]
 
 /-- Complete jet of a factor with independent temporal and radial frequencies. -/
 def frequencyEnvelopeJet (w v r B : ℂ) : ScalarTwoJet (Fin 4) ℂ where
   value := B
-  first := ![w * B, v * B / (r * (r ^ 2 - 1)), 0, 0]
-  second := !![w ^ 2 * B, w * v * B / (r * (r ^ 2 - 1)), 0, 0;
-    w * v * B / (r * (r ^ 2 - 1)),
-      B * (v ^ 2 - v * (3 * r ^ 2 - 1)) / (r ^ 2 * (r ^ 2 - 1) ^ 2), 0, 0;
+  first := ![w * B, v * B / (r * (r ^ (2 : ℕ) - 1)), 0, 0]
+  second := !![w ^ (2 : ℕ) * B, w * v * B / (r * (r ^ (2 : ℕ) - 1)), 0, 0;
+    w * v * B / (r * (r ^ (2 : ℕ) - 1)),
+      B * (v ^ (2 : ℕ) - v * (3 * r ^ (2 : ℕ) - 1)) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)), 0, 0;
     0, 0, 0, 0; 0, 0, 0, 0]
 
 private theorem frequencyPhase_smooth (u : ℂ) (p : D4BMBackground.ExteriorPoint)
@@ -290,14 +290,14 @@ theorem frequencyEnvelope_diagonal (v a : ℂ) (x : Fin 4 → ℝ) :
 
 /-- The quadratic off-frequency stream is the square of its primary two-rate factor. -/
 theorem frequencyEnvelope_square (w s a : ℂ) (x : Fin 4 → ℝ) :
-    frequencyEnvelope (w / 2) s a x ^ 2 =
-      frequencyEnvelope w (2 * s) (a ^ 2) x := by
+    frequencyEnvelope (w / 2) s a x ^ (2 : ℕ) =
+      frequencyEnvelope w (2 * s) (a ^ (2 : ℕ)) x := by
   rw [frequencyEnvelope, frequencyEnvelope, envelope_double]
   unfold frequencyPhase
   have hfactor : Complex.exp ((w / 2 - s) * (x 0 : ℂ)) * envelope s a x *
       (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) * envelope s a x) =
       (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) *
-        Complex.exp ((w / 2 - s) * (x 0 : ℂ))) * (envelope s a x ^ 2) := by ring
+        Complex.exp ((w / 2 - s) * (x 0 : ℂ))) * (envelope s a x ^ (2 : ℕ)) := by ring
   rw [pow_two, hfactor, ← Complex.exp_add]
   congr 2
   ring
@@ -428,8 +428,8 @@ private theorem frequency_block_smooth (w v a : ℂ) (square : Bool)
   have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val :=
     (hR.mul hR).add contDiffAt_const
   have hF0 : (p.val 1 : ℂ) * (p.val 1 : ℂ) + (-1) ≠ 0 := by
-    have h : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
-      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    have h : (p.val 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ (2 : ℕ) - 1 ≠ 0)
     simpa only [← pow_two, ← sub_eq_add_neg] using h
   exact ⟨hF.mul (frequencyRadialFields_smooth w v a square p 2).2,
     (contDiffAt_const.mul (frequencyRadialFields_smooth w v a square p 2).1).mul
@@ -452,8 +452,8 @@ private theorem frequency_block_jets (w v a : ℂ) (square : Bool)
   have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val :=
     (hR.mul hR).add contDiffAt_const
   have hF0 : (p.val 1 : ℂ) * (p.val 1 : ℂ) + (-1) ≠ 0 := by
-    have h : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
-      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    have h : (p.val 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ (2 : ℕ) - 1 ≠ 0)
     simpa only [← pow_two, ← sub_eq_add_neg] using h
   have hJF : ofField (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val =
       ((coord (p.val 1) 1).mul (coord (p.val 1) 1)).add (constant (-1)) := by
@@ -550,9 +550,9 @@ private theorem frequency_square_c2 (q : XiZeroCopy) (p : D4BMBackground.Exterio
 def frequencyMixedMetricField (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
-  frequencyStreamMetricField w (2 * s) (a ^ 2) false (fullAngularCovector q branch) x -
+  frequencyStreamMetricField w (2 * s) (a ^ (2 : ℕ)) false (fullAngularCovector q branch) x -
     (s * (s - 1) / 4) •
-      frequencyStreamMetricField w (2 * s) (a ^ 2) true (fullSquareCovector q) x
+      frequencyStreamMetricField w (2 * s) (a ^ (2 : ℕ)) true (fullSquareCovector q) x
 
 private theorem frequencyRadialField_smul (w v c a : ℂ) (square : Bool) (x : Fin 4 → ℝ) :
     frequencyRadialField w v (c * a) square x =
@@ -647,7 +647,7 @@ def frequencyStreamMetricBilinear (w v : ℂ) (square : Bool) (V : Covector) :
 theorem frequencyStreamMetricBilinear_diag (w v a : ℂ) (square : Bool) (V : Covector)
     (x : Fin 4 → ℝ) :
     frequencyStreamMetricBilinear w v square V a a x =
-      frequencyStreamMetricField w v (a ^ 2) square V x := by
+      frequencyStreamMetricField w v (a ^ (2 : ℕ)) square V x := by
   simp only [frequencyStreamMetricBilinear, LinearMap.mk₂_apply, pow_two]
 
 /-- The literal two-rate stream is symmetric in its two primary amplitudes. -/
@@ -686,9 +686,9 @@ fields; no square-root choice, fitted propagator, or causal boundary condition e
 
 private theorem linear_polarization {E : Type*} [AddCommGroup E] [Module ℂ E]
     (L : ℂ →ₗ[ℂ] E) (a d : ℂ) :
-    L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ 2) - L ((a - d) ^ 2)) := by
-  have h : a * d = (4 : ℂ)⁻¹ • ((a + d) ^ 2 - (a - d) ^ 2) := by
-    change a * d = (4 : ℂ)⁻¹ * ((a + d) ^ 2 - (a - d) ^ 2)
+    L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ (2 : ℕ)) - L ((a - d) ^ (2 : ℕ))) := by
+  have h : a * d = (4 : ℂ)⁻¹ • ((a + d) ^ (2 : ℕ) - (a - d) ^ (2 : ℕ)) := by
+    change a * d = (4 : ℂ)⁻¹ * ((a + d) ^ (2 : ℕ) - (a - d) ^ (2 : ℕ))
     ring
   rw [h, L.map_smul, L.map_sub]
 
@@ -696,8 +696,8 @@ private theorem frequencyStreamMetricBilinear_polarization (w v a d : ℂ) (squa
     (V : Covector) (x : Fin 4 → ℝ) :
     frequencyStreamMetricBilinear w v square V a d x =
       (4 : ℂ)⁻¹ •
-        (frequencyStreamMetricField w v ((a + d) ^ 2) square V x -
-          frequencyStreamMetricField w v ((a - d) ^ 2) square V x) := by
+        (frequencyStreamMetricField w v ((a + d) ^ (2 : ℕ)) square V x -
+          frequencyStreamMetricField w v ((a - d) ^ (2 : ℕ)) square V x) := by
   let L : ℂ →ₗ[ℂ] Matrix (Fin 4) (Fin 4) ℂ :=
     { toFun := fun z => frequencyStreamMetricField w v z square V x
       map_add' := by
@@ -708,7 +708,7 @@ private theorem frequencyStreamMetricBilinear_polarization (w v a d : ℂ) (squa
         change frequencyStreamMetricField w v (c * z) square V x =
           c • frequencyStreamMetricField w v z square V x
         exact frequencyStreamMetricField_smul w v c z square V x }
-  change L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ 2) - L ((a - d) ^ 2))
+  change L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ (2 : ℕ)) - L ((a - d) ^ (2 : ℕ)))
   exact linear_polarization L a d
 
 /-- The literal off-diagonal stream metric is exactly the polarization of its two actual
@@ -843,9 +843,9 @@ theorem frequencyMixedSourceBilinear_polarization (q : XiZeroCopy) (branch : Boo
         rw [mul_smul] }
   change L (B * D) = _
   rw [linear_polarization L B D]
-  have hL (u : ℂ) : L (u ^ 2) =
+  have hL (u : ℂ) : L (u ^ (2 : ℕ)) =
       literalMixedSourceBilinear q branch (x 1) u u (angularPoint x) := by
-    change u ^ 2 • K = (u * u) • K
+    change u ^ (2 : ℕ) • K = (u * u) • K
     rw [pow_two]
   rw [hL, hL, literalMixedSourceBilinear_diag, literalMixedSourceBilinear_diag]
 
@@ -922,17 +922,17 @@ theorem frequencyMixedMetricField_cosmological_source (q : XiZeroCopy) (branch :
     have hr : (p.val 1 : ℂ) ≠ 0 := by
       exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
     have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-    have hf : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
-      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    have hf : (p.val 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ (2 : ℕ) - 1 ≠ 0)
     change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
     rw [D4BMBackground.metric_det _ _ hf]
     exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))
   have hfield : frequencyMixedMetricField q branch w a =
       fun x i j =>
-        frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ 2) false
+        frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ (2 : ℕ)) false
             (fullAngularCovector q branch) x i j -
           (physicalRate q branch * (physicalRate q branch - 1) / 4) *
-            frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ 2) true
+            frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ (2 : ℕ)) true
               (fullSquareCovector q) x i j := by
     funext x i j
     unfold frequencyMixedMetricField
@@ -982,8 +982,8 @@ theorem frequencyMixedMetricBilinear_cosmological_source (q : XiZeroCopy) (branc
     have hr : (p.val 1 : ℂ) ≠ 0 := by
       exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
     have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-    have hf : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
-      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    have hf : (p.val 1 : ℂ) ^ (2 : ℕ) - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ (2 : ℕ) - 1 ≠ 0)
     change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
     rw [D4BMBackground.metric_det _ _ hf]
     exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))

@@ -20,16 +20,16 @@ theorem exists_typeII_orientation_block_bound :
       ∀ {T r : ℝ} {A B L U V P Q : ℕ},
         0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
         Q ≤ 2 * P → Q ≤ L + 1 → B - 1 ≤ L → P < B → 8 * r ≤ (A : ℝ) →
-        2 * T * r ≤ 9 * Real.pi * A ^ 2 →
+        2 * T * r ≤ 9 * Real.pi * A ^ (2 : ℕ) →
         (‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-              (fun m => typeIIShort V m)‖ ^ 2
+              (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
             ≤ (C₁ * (Q : ℝ) * Real.log L)
               * (((Q - P : ℕ) : ℝ) * typeIIShortEnergyEnvelope (effHigh B P)
                 + typeIIShortEnergyEnvelope (effHigh B P)
                   * (2 * typeIIUnswapGapEnvelope T r A B P)))
           ∨
         (‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-              (fun m => typeIIShort V m)‖ ^ 2
+              (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
             ≤ typeIIShortEnergyEnvelope (effHigh B P)
               * ((((effHigh B P + 1 - effLow A Q : ℕ) : ℝ)
                     * (C₂ * (Q : ℝ) * Real.log L))

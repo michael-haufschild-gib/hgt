@@ -24,9 +24,9 @@ namespace RHTower
 
 /-- Polynomials lose to a Gaussian at `+∞`. -/
 theorem tendsto_polyEval_mul_gauss_atTop (p : Polynomial ℝ) {b : ℝ} (hb : 0 < b) :
-    Tendsto (fun x : ℝ => p.eval x * Real.exp (-(b * x ^ 2))) atTop (𝓝 0) := by
+    Tendsto (fun x : ℝ => p.eval x * Real.exp (-(b * x ^ (2 : ℕ)))) atTop (𝓝 0) := by
   have hterm : ∀ k ∈ Finset.range (p.natDegree + 1),
-      Tendsto (fun x : ℝ => p.coeff k * (x ^ k * Real.exp (-(b * x ^ 2)))) atTop (𝓝 0) := by
+      Tendsto (fun x : ℝ => p.coeff k * (x ^ k * Real.exp (-(b * x ^ (2 : ℕ))))) atTop (𝓝 0) := by
     intro k _
     have h := (tendsto_pow_mul_exp_neg_mul_sq_atTop_nhds_zero k hb).const_mul (p.coeff k)
     simpa using h
@@ -39,7 +39,7 @@ theorem tendsto_polyEval_mul_gauss_atTop (p : Polynomial ℝ) {b : ℝ} (hb : 0 
 
 /-- Polynomials lose to a Gaussian at `−∞`. -/
 theorem tendsto_polyEval_mul_gauss_atBot (p : Polynomial ℝ) {b : ℝ} (hb : 0 < b) :
-    Tendsto (fun x : ℝ => p.eval x * Real.exp (-(b * x ^ 2))) atBot (𝓝 0) := by
+    Tendsto (fun x : ℝ => p.eval x * Real.exp (-(b * x ^ (2 : ℕ)))) atBot (𝓝 0) := by
   have h := tendsto_polyEval_mul_gauss_atTop (p.comp (-Polynomial.X)) hb
   have hneg : Tendsto (fun x : ℝ => -x) atBot atTop := tendsto_neg_atBot_atTop
   refine (h.comp hneg).congr ?_
@@ -50,7 +50,7 @@ theorem tendsto_polyEval_mul_gauss_atBot (p : Polynomial ℝ) {b : ℝ} (hb : 0 
 
 /-- The integer-coefficient form used by the Hermite functions. -/
 theorem tendsto_aevalPoly_mul_gauss_atTop (p : Polynomial ℤ) {b : ℝ} (hb : 0 < b) :
-    Tendsto (fun x : ℝ => Polynomial.aeval x p * Real.exp (-(b * x ^ 2))) atTop (𝓝 0) := by
+    Tendsto (fun x : ℝ => Polynomial.aeval x p * Real.exp (-(b * x ^ (2 : ℕ)))) atTop (𝓝 0) := by
   have hmap : ∀ x : ℝ, Polynomial.aeval x p
       = (p.map (algebraMap ℤ ℝ)).eval x := by
     intro x
@@ -60,7 +60,7 @@ theorem tendsto_aevalPoly_mul_gauss_atTop (p : Polynomial ℤ) {b : ℝ} (hb : 0
   rw [hmap]
 
 theorem tendsto_aevalPoly_mul_gauss_atBot (p : Polynomial ℤ) {b : ℝ} (hb : 0 < b) :
-    Tendsto (fun x : ℝ => Polynomial.aeval x p * Real.exp (-(b * x ^ 2))) atBot (𝓝 0) := by
+    Tendsto (fun x : ℝ => Polynomial.aeval x p * Real.exp (-(b * x ^ (2 : ℕ)))) atBot (𝓝 0) := by
   have hmap : ∀ x : ℝ, Polynomial.aeval x p
       = (p.map (algebraMap ℤ ℝ)).eval x := by
     intro x
@@ -97,7 +97,7 @@ theorem tendsto_deriv_probHermiteFun_atTop (n : ℕ) :
   intro x
   rw [deriv_probHermiteFun]
   simp only [probHermiteFun, map_mul, Polynomial.aeval_X]
-  have hb : -((1 / 4 : ℝ) * x ^ 2) = -(x ^ 2 / 4) := by ring
+  have hb : -((1 / 4 : ℝ) * x ^ (2 : ℕ)) = -(x ^ (2 : ℕ) / 4) := by ring
   rw [hb]
   ring
 
@@ -113,7 +113,7 @@ theorem tendsto_deriv_probHermiteFun_atBot (n : ℕ) :
   intro x
   rw [deriv_probHermiteFun]
   simp only [probHermiteFun, map_mul, Polynomial.aeval_X]
-  have hb : -((1 / 4 : ℝ) * x ^ 2) = -(x ^ 2 / 4) := by ring
+  have hb : -((1 / 4 : ℝ) * x ^ (2 : ℕ)) = -(x ^ (2 : ℕ) / 4) := by ring
   rw [hb]
   ring
 
@@ -266,17 +266,17 @@ theorem exists_hermiteFun_ne_zero (n : ℕ) {a b : ℝ} (hab : a < b) :
 /-- **The window mass of a Hermite function is positive.**  Every nondegenerate window carries
 positive mass, because the Hermite polynomial has only finitely many roots. -/
 theorem integral_hermiteFun_sq_pos (n : ℕ) {a b : ℝ} (hab : a < b) :
-    0 < ∫ x in a..b, hermiteFun n x ^ 2 := by
+    0 < ∫ x in a..b, hermiteFun n x ^ (2 : ℕ) := by
   obtain ⟨x₀, hx₀, hne⟩ := exists_hermiteFun_ne_zero n hab
-  have hcont : Continuous fun x : ℝ => hermiteFun n x ^ 2 := (continuous_hermiteFun n).pow 2
-  have hnn : ∀ x : ℝ, 0 ≤ hermiteFun n x ^ 2 := fun x => sq_nonneg _
+  have hcont : Continuous fun x : ℝ => hermiteFun n x ^ (2 : ℕ) := (continuous_hermiteFun n).pow 2
+  have hnn : ∀ x : ℝ, 0 ≤ hermiteFun n x ^ (2 : ℕ) := fun x => sq_nonneg _
   -- a subinterval around `x₀` on which the square stays above a positive constant
-  have hpos0 : 0 < hermiteFun n x₀ ^ 2 := by positivity
+  have hpos0 : 0 < hermiteFun n x₀ ^ (2 : ℕ) := by positivity
   obtain ⟨δ, hδ, hball⟩ : ∃ δ > 0, ∀ x, |x - x₀| < δ →
-      hermiteFun n x₀ ^ 2 / 2 < hermiteFun n x ^ 2 := by
+      hermiteFun n x₀ ^ (2 : ℕ) / 2 < hermiteFun n x ^ (2 : ℕ) := by
     have hc := hcont.continuousAt (x := x₀)
-    have := hc.eventually (eventually_gt_nhds (by linarith : hermiteFun n x₀ ^ 2 / 2
-      < hermiteFun n x₀ ^ 2))
+    have := hc.eventually (eventually_gt_nhds (by linarith : hermiteFun n x₀ ^ (2 : ℕ) / 2
+      < hermiteFun n x₀ ^ (2 : ℕ)))
     rw [Metric.eventually_nhds_iff] at this
     obtain ⟨δ, hδ, h⟩ := this
     exact ⟨δ, hδ, fun x hx => h (by rwa [Real.dist_eq])⟩
@@ -287,7 +287,7 @@ theorem integral_hermiteFun_sq_pos (n : ℕ) {a b : ℝ} (hab : a < b) :
   have hαβ : α < β := lt_trans hαx hxβ
   have haα : a ≤ α := le_max_left _ _
   have hβb : β ≤ b := min_le_left _ _
-  have hmid : 0 < ∫ x in α..β, hermiteFun n x ^ 2 := by
+  have hmid : 0 < ∫ x in α..β, hermiteFun n x ^ (2 : ℕ) := by
     refine intervalIntegral.intervalIntegral_pos_of_pos_on
       (hcont.intervalIntegrable α β) (fun x hx => ?_) hαβ
     refine lt_trans (by linarith) (hball x ?_)
@@ -299,17 +299,17 @@ theorem integral_hermiteFun_sq_pos (n : ℕ) {a b : ℝ} (hab : a < b) :
     · have : β ≤ x₀ + δ / 2 := min_le_right _ _
       have := hx.2
       linarith
-  have hsplit1 : (∫ x in a..α, hermiteFun n x ^ 2) + ∫ x in α..β, hermiteFun n x ^ 2
-      = ∫ x in a..β, hermiteFun n x ^ 2 :=
+  have hsplit1 : (∫ x in a..α, hermiteFun n x ^ (2 : ℕ)) + ∫ x in α..β, hermiteFun n x ^ (2 : ℕ)
+      = ∫ x in a..β, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_add_adjacent_intervals (hcont.intervalIntegrable _ _)
       (hcont.intervalIntegrable _ _)
-  have hsplit2 : (∫ x in a..β, hermiteFun n x ^ 2) + ∫ x in β..b, hermiteFun n x ^ 2
-      = ∫ x in a..b, hermiteFun n x ^ 2 :=
+  have hsplit2 : (∫ x in a..β, hermiteFun n x ^ (2 : ℕ)) + ∫ x in β..b, hermiteFun n x ^ (2 : ℕ)
+      = ∫ x in a..b, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_add_adjacent_intervals (hcont.intervalIntegrable _ _)
       (hcont.intervalIntegrable _ _)
-  have hleft : (0 : ℝ) ≤ ∫ x in a..α, hermiteFun n x ^ 2 :=
+  have hleft : (0 : ℝ) ≤ ∫ x in a..α, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg haα (fun x _ => hnn x)
-  have hright : (0 : ℝ) ≤ ∫ x in β..b, hermiteFun n x ^ 2 :=
+  have hright : (0 : ℝ) ≤ ∫ x in β..b, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg hβb (fun x _ => hnn x)
   linarith [hsplit1, hsplit2, hmid, hleft, hright]
 

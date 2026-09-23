@@ -42,7 +42,7 @@ theorem factorFaceMonomial_insert {d : ℕ} {i : Fin d} {T : TensorFace d}
 theorem factorFaceMonomial_mul_X_of_mem {d : ℕ} {i : Fin d} {T : TensorFace d}
     (hi : i ∈ T) :
     factorFaceMonomial T * MvPolynomial.X i =
-      (∏ j ∈ T.erase i, MvPolynomial.X j) * MvPolynomial.X i ^ 2 := by
+      (∏ j ∈ T.erase i, MvPolynomial.X j) * MvPolynomial.X i ^ (2 : ℕ) := by
   rw [factorFaceMonomial]
   rw [← Finset.prod_erase_mul T (fun j => MvPolynomial.X j) hi]
   ring
@@ -54,7 +54,7 @@ theorem complexFactorFaceClass_mul_generator_mem_span
       Submodule.span ℂ (Set.range (complexFactorFaceClass (n := n))) := by
   classical
   by_cases hi : i ∈ T.1
-  · have hsquare : MvPolynomial.X i ^ 2 ∈
+  · have hsquare : MvPolynomial.X i ^ (2 : ℕ) ∈
         (factorSquareRelationIdeal : Ideal (FactorTensorPolynomial ℂ (n + 2))) := by
       apply Ideal.subset_span
       exact ⟨i, rfl⟩

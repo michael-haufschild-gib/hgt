@@ -25,10 +25,10 @@ theorem integral_cusp_field_from (L : ℝ) (hL : 1 ≤ L) (F : ℂ → ℂ)
     (hi : Integrable (fun z : UpperHalfPlane => F z) measure)
     (hz : ∀ z : ℂ, z.im ≤ L → F z=0) :
     (∫ z : UpperHalfPlane, F z ∂measure) =
-      ∫ y in Ioi L, mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^2 := by
+      ∫ y in Ioi L, mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^(2 : ℕ) := by
   have hcell : MeasurableSet cellChart :=
     UpperHalfPlane.measurableEmbedding_coe.measurableSet_image.mpr isClosed_fd.measurableSet
-  have hden (z : ℂ) (hp : 0 < z.im) : chartDensity z • F z = F z/(z.im:ℂ)^2 := by
+  have hden (z : ℂ) (hp : 0 < z.im) : chartDensity z • F z = F z/(z.im:ℂ)^(2 : ℕ) := by
     simp only [chartDensity,NNReal.smul_def,NNReal.coe_pow,NNReal.coe_div,NNReal.coe_one,
       coe_nnnorm,Real.norm_eq_abs,abs_of_pos hp,Complex.real_smul,
       Complex.ofReal_pow,Complex.ofReal_div,Complex.ofReal_one]
@@ -39,23 +39,23 @@ theorem integral_cusp_field_from (L : ℝ) (hL : 1 ≤ L) (F : ℂ → ℂ)
   have hd : IntegrableOn (fun z => chartDensity z • F z) cellChart :=
     (integrable_withDensity_iff_integrable_smul (show Measurable chartDensity by
     unfold chartDensity; fun_prop)).mp hmap
-  have hrect : IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^2) (rectangle L) := by
+  have hrect : IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^(2 : ℕ)) (rectangle L) := by
     apply (hd.mono_set (rectangle_subset L hL)).congr_fun
     · intro z hz
       exact hden z (lt_trans (by linarith : 0 < L) hz.2)
     · exact (isClosed_Icc.preimage Complex.continuous_re).measurableSet.inter
         (isOpen_lt continuous_const Complex.continuous_im).measurableSet
-  let G : ℝ × ℝ → ℂ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/(xy.2:ℂ)^2
+  let G : ℝ × ℝ → ℂ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/(xy.2:ℂ)^(2 : ℕ)
   have hG : IntegrableOn G (Icc (-1/2:ℝ) (1/2) ×ˢ Ioi L)
       ((volume : Measure ℝ).prod volume) := by
     rw [← Measure.volume_eq_prod]
     apply (Complex.volume_preserving_equiv_real_prod.integrableOn_comp_preimage
       Complex.measurableEquivRealProd.measurableEmbedding).mp
-    change IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^2) (rectangle L)
+    change IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^(2 : ℕ)) (rectangle L)
     exact hrect
   rw [integral_measure_chart]
   have he : (∫ z in cellChart, chartDensity z • F z) =
-      ∫ z in cellChart, F z/(z.im:ℂ)^2 := by
+      ∫ z in cellChart, F z/(z.im:ℂ)^(2 : ℕ) := by
     apply setIntegral_congr_fun hcell
     rintro z ⟨w,hw,rfl⟩
     exact hden w w.im_pos

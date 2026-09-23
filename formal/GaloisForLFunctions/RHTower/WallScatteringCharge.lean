@@ -32,7 +32,7 @@ def wallTailVector (E : ℂ → ℂ) (T : X →L[ℂ] X) (g : ℝ → X) (m σ Y
 
 theorem integrableOn_wallTailOperator_apply {σ Y μ₀ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖
@@ -50,7 +50,7 @@ theorem integrableOn_wallTailOperator_apply {σ Y μ₀ K₂ m : ℝ}
 /-- **The moving block remainder is the difference of two fixed ray remainders.** -/
 theorem wallRemainderVector_eq_sub {σ Y x μ₀ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖
@@ -100,7 +100,7 @@ variable [Nontrivial X]
 /-- **The forced profile is the propagated charge plus point-dependent terms.** -/
 theorem forcedProfile_eq_charge_add_remainder {σ Y x μ₀ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖

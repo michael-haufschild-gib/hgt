@@ -27,7 +27,7 @@ theorem exists_pow_gt {k : ℕ} (hk : 1 ≤ k) (c : ℝ) : ∃ R : ℝ, 0 < R �
   refine ⟨max 1 (c + 1), lt_of_lt_of_le zero_lt_one (le_max_left _ _), ?_⟩
   have h1 : (1 : ℝ) ≤ max 1 (c + 1) := le_max_left _ _
   have h2 : c + 1 ≤ max 1 (c + 1) := le_max_right _ _
-  have h3 : (max 1 (c + 1)) ^ 1 ≤ (max 1 (c + 1)) ^ k := pow_le_pow_right₀ h1 hk
+  have h3 : (max 1 (c + 1)) ^ (1 : ℕ) ≤ (max 1 (c + 1)) ^ k := pow_le_pow_right₀ h1 hk
   rw [pow_one] at h3
   linarith
 

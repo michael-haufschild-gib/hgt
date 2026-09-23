@@ -47,9 +47,9 @@ theorem xiShiftedHankelBoundaryNullCrossingForm_eq_monicRemainder
 /-- The completed-source jet is the oriented Krein crossing form times the terminal coordinate. -/
 theorem xiShiftedHankelBoundaryNullCrossingForm_eq_inv_mul_sourceJet
     {w : ℝ} (hw : 0 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
-    xiShiftedHankelBoundaryNullCrossingForm (w ^ 2) c =
+    xiShiftedHankelBoundaryNullCrossingForm (w ^ (2 : ℕ)) c =
       (c (Fin.last n))⁻¹ *
         xiShiftedHankelBoundarySourceJet w (n + 1) c := by
   rw [xiShiftedHankelBoundaryNullCrossingForm_eq_monicRemainder c hc hlast,
@@ -59,9 +59,9 @@ theorem xiShiftedHankelBoundaryNullCrossingForm_eq_inv_mul_sourceJet
 crossing type is exactly projective archimedean-over-prime-discrepancy dominance. -/
 theorem xiShiftedHankelBoundaryNullCrossingForm_pos_iff_projectiveSourceDominance
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
-    0 < xiShiftedHankelBoundaryNullCrossingForm (w ^ 2) c ↔
+    0 < xiShiftedHankelBoundaryNullCrossingForm (w ^ (2 : ℕ)) c ↔
       -(c (Fin.last n) *
           xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c) <
         c (Fin.last n) *
@@ -119,7 +119,7 @@ theorem xiShiftedHankelBoundaryNullCrossingForm_eq_inv_mul_nextVolterraIntegral
           (xiShiftedHankelFirstOmittedCoupling y (n + 1) c -
             c (Fin.last n) * xiShiftedHankelBoundaryMonicRemainder y c) =
         c (Fin.last n) * xiShiftedHankelFirstOmittedCoupling y (n + 1) c -
-          c (Fin.last n) ^ 2 * xiShiftedHankelBoundaryMonicRemainder y c := by ring
+          c (Fin.last n) ^ (2 : ℕ) * xiShiftedHankelBoundaryMonicRemainder y c := by ring
       _ = 0 := by rw [hflux]; ring
   have hzero := (mul_eq_zero.mp hfactor).resolve_left hlast
   have hcoupling :
@@ -151,15 +151,15 @@ theorem xiShiftedHankelBoundary_kreinVolterraFlag
 slope simultaneously is the affine extension class and the normalized completed-source jet. -/
 theorem xiShiftedHankelBoundary_kreinCrossingClass
     {w : ℝ} (hw : 0 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     HTGeometry.momentInner
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
         (HTGeometry.finiteHankelNullMonicPolynomial c)
         (HTGeometry.finiteHankelNullMonicPolynomial c) = 0 ∧
-      xiShiftedHankelBoundaryNullCrossingForm (w ^ 2) c =
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c ∧
-      xiShiftedHankelBoundaryNullCrossingForm (w ^ 2) c =
+      xiShiftedHankelBoundaryNullCrossingForm (w ^ (2 : ℕ)) c =
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c ∧
+      xiShiftedHankelBoundaryNullCrossingForm (w ^ (2 : ℕ)) c =
         (c (Fin.last n))⁻¹ *
           xiShiftedHankelBoundarySourceJet w (n + 1) c :=
   ⟨xiShiftedHankelBoundaryNullSelf_eq_zero c hc hlast,

@@ -8,7 +8,7 @@ removing its prime half-density.  A uniform lower Taylor estimate and two-sided 
 additive and logarithmic adjacent-prime gaps therefore complement the existing upper bound.
 
 The resulting equivalence says that absolute convergence of the physical mesh defect is exactly
-summability of `gap(p)^2 / p^(3/2)`.  Consequently no sharper estimate of the same right-endpoint
+summability of `gap(p)^(2 : ℕ) / p^(3/2)`.  Consequently no sharper estimate of the same right-endpoint
 defect can bypass consecutive-prime-gap energy: the arithmetic series is necessary as well as
 sufficient.
 -/
@@ -23,7 +23,7 @@ noncomputable section
 /-- A uniform lower quadratic bound for the negative exponential remainder on `[0,1]`. -/
 theorem exp_neg_sub_one_add_quarter_sq_le
     {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1) :
-    x ^ 2 / 4 ≤ Real.exp (-x) - 1 + x := by
+    x ^ (2 : ℕ) / 4 ≤ Real.exp (-x) - 1 + x := by
   have habs : |(-x)| ≤ 1 := by rw [abs_neg, abs_of_nonneg hx0]; exact hx1
   have hTaylor := Real.exp_bound (x := -x) habs (n := 3) (by norm_num)
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, pow_zero,
@@ -97,7 +97,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_eq
 
 /-- Normalized consecutive-prime-gap energy at the Route-T critical wall. -/
 def xiHeatCassiniPrimeGapCriticalEnergy (N : ℕ) : ℝ :=
-  (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
+  (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
     Real.sqrt (nthPrimeSubtype N : ℝ)
 
 theorem xiHeatCassiniPrimeGapCriticalEnergy_nonneg (N : ℕ) :
@@ -108,7 +108,7 @@ theorem xiHeatCassiniPrimeGapCriticalEnergy_nonneg (N : ℕ) :
 /-- The critical prime-gap energy is bounded below by each exact physical mesh defect. -/
 theorem primeGapSq_criticalWeight_le_norm_defect_neg_half (N : ℕ) :
     (1 / 64 : ℝ) *
-        (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
+        (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
           Real.sqrt (nthPrimeSubtype N : ℝ) ≤
       ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-1 / 2 : ℝ) : ℂ)) N‖ := by
   let p : ℝ := nthPrimeSubtype N
@@ -123,7 +123,7 @@ theorem primeGapSq_criticalWeight_le_norm_defect_neg_half (N : ℕ) :
   have hratio : gap / (2 * p) ≤ delta := by
     simpa only [p, gap, delta] using primeGap_div_two_prime_le_primeLogGap N
   have hratio0 : 0 ≤ gap / (2 * p) := by positivity
-  have hsq : (gap / (2 * p)) ^ 2 ≤ delta ^ 2 :=
+  have hsq : (gap / (2 * p)) ^ (2 : ℕ) ≤ delta ^ (2 : ℕ) :=
     (sq_le_sq₀ hratio0 hdelta).mpr hratio
   have hrem := exp_neg_sub_one_add_quarter_sq_le
     (x := delta / 2) (by positivity) (by linarith)
@@ -137,14 +137,14 @@ theorem primeGapSq_criticalWeight_le_norm_defect_neg_half (N : ℕ) :
       rw [← Real.log_sqrt hq.le, Real.exp_log (Real.sqrt_pos.mpr hq)]
     rwa [hexp]
   rw [norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_eq]
-  change (1 / 64 : ℝ) * (gap / p) ^ 2 * Real.sqrt p ≤
+  change (1 / 64 : ℝ) * (gap / p) ^ (2 : ℕ) * Real.sqrt p ≤
     Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2) *
       (Real.exp (-(delta / 2)) - 1 + delta / 2)
   calc
-    (1 / 64 : ℝ) * (gap / p) ^ 2 * Real.sqrt p =
-        Real.sqrt p * ((gap / (2 * p)) ^ 2 / 16) := by ring
-    _ ≤ Real.sqrt p * (delta ^ 2 / 16) := by gcongr
-    _ = Real.sqrt p * ((delta / 2) ^ 2 / 4) := by ring
+    (1 / 64 : ℝ) * (gap / p) ^ (2 : ℕ) * Real.sqrt p =
+        Real.sqrt p * ((gap / (2 * p)) ^ (2 : ℕ) / 16) := by ring
+    _ ≤ Real.sqrt p * (delta ^ (2 : ℕ) / 16) := by gcongr
+    _ = Real.sqrt p * ((delta / 2) ^ (2 : ℕ) / 4) := by ring
     _ ≤ Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2) *
         (Real.exp (-(delta / 2)) - 1 + delta / 2) := by
       exact mul_le_mul hsqrt hrem (by positivity) (by positivity)
@@ -166,7 +166,7 @@ theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_iff :
     nlinarith [norm_nonneg
       (xiHeatCassiniLogMeshLaplaceScaledDefect (((-1 / 2 : ℝ) : ℂ)) N)]
   · intro henergy
-    let C : ℝ := 2 * ‖(((-1 / 2 : ℝ) : ℂ))‖ ^ 2 *
+    let C : ℝ := 2 * ‖(((-1 / 2 : ℝ) : ℂ))‖ ^ (2 : ℕ) *
       Real.exp ‖(((-1 / 2 : ℝ) : ℂ))‖
     have hmajor := henergy.mul_left C
     refine Summable.of_nonneg_of_le (fun N => norm_nonneg _) (fun N => ?_) hmajor
@@ -177,7 +177,7 @@ theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_iff :
 /-- Consecutive-prime-gap energy at negative Laplace depth `a`, with exact right-endpoint
 half-density. -/
 def xiHeatCassiniPrimeGapAbscissaEnergy (a : ℝ) (N : ℕ) : ℝ :=
-  (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
+  (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
     Real.exp (a * xiMassNthPrimeLogHeight (N + 1))
 
 theorem xiHeatCassiniPrimeGapAbscissaEnergy_nonneg (a : ℝ) (N : ℕ) :
@@ -216,7 +216,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_real_eq
 /-- Uniform lower comparison: the exact defect contains the full weighted gap-square energy. -/
 theorem mul_primeGapAbscissaEnergy_le_norm_defect_neg_real
     {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) (N : ℕ) :
-    (a ^ 2 / 16) * xiHeatCassiniPrimeGapAbscissaEnergy a N ≤
+    (a ^ (2 : ℕ) / 16) * xiHeatCassiniPrimeGapAbscissaEnergy a N ≤
       ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-a : ℝ) : ℂ)) N‖ := by
   let delta : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   let gap : ℝ := xiHeatCassiniOrderedPrimeGap N
@@ -228,31 +228,31 @@ theorem mul_primeGapAbscissaEnergy_le_norm_defect_neg_real
   have hratio : gap / (2 * p) ≤ delta := by
     simpa only [gap, p, delta] using primeGap_div_two_prime_le_primeLogGap N
   have hratio0 : 0 ≤ gap / (2 * p) := by positivity
-  have hsq : (gap / (2 * p)) ^ 2 ≤ delta ^ 2 :=
+  have hsq : (gap / (2 * p)) ^ (2 : ℕ) ≤ delta ^ (2 : ℕ) :=
     (sq_le_sq₀ hratio0 hdelta).mpr hratio
   have hx0 : 0 ≤ a * delta := mul_nonneg ha0.le hdelta
   have hx1 : a * delta ≤ 1 := by nlinarith
   have hrem := exp_neg_sub_one_add_quarter_sq_le hx0 hx1
   rw [norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_real_eq ha0.le]
   unfold xiHeatCassiniPrimeGapAbscissaEnergy
-  change (a ^ 2 / 16) * ((gap / p) ^ 2 *
+  change (a ^ (2 : ℕ) / 16) * ((gap / p) ^ (2 : ℕ) *
       Real.exp (a * xiMassNthPrimeLogHeight (N + 1))) ≤
     Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
       (Real.exp (-(a * delta)) - 1 + a * delta)
   have hexp0 : 0 ≤ Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) :=
     Real.exp_nonneg _
   calc
-    (a ^ 2 / 16) * ((gap / p) ^ 2 *
+    (a ^ (2 : ℕ) / 16) * ((gap / p) ^ (2 : ℕ) *
         Real.exp (a * xiMassNthPrimeLogHeight (N + 1))) =
         Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
-          ((a ^ 2 / 16) * (gap / p) ^ 2) := by ring
+          ((a ^ (2 : ℕ) / 16) * (gap / p) ^ (2 : ℕ)) := by ring
     _ ≤ Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
         (Real.exp (-(a * delta)) - 1 + a * delta) := by
       apply mul_le_mul_of_nonneg_left _ hexp0
       calc
-        (a ^ 2 / 16) * (gap / p) ^ 2 =
-            (a * (gap / (2 * p))) ^ 2 / 4 := by ring
-        _ ≤ (a * delta) ^ 2 / 4 := by
+        (a ^ (2 : ℕ) / 16) * (gap / p) ^ (2 : ℕ) =
+            (a * (gap / (2 * p))) ^ (2 : ℕ) / 4 := by ring
+        _ ≤ (a * delta) ^ (2 : ℕ) / 4 := by
           gcongr
         _ ≤ Real.exp (-(a * delta)) - 1 + a * delta := hrem
 
@@ -260,7 +260,7 @@ theorem mul_primeGapAbscissaEnergy_le_norm_defect_neg_real
 theorem norm_defect_neg_real_le_mul_primeGapAbscissaEnergy
     {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) (N : ℕ) :
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-a : ℝ) : ℂ)) N‖ ≤
-      (a ^ 2 * Real.exp a) * xiHeatCassiniPrimeGapAbscissaEnergy a N := by
+      (a ^ (2 : ℕ) * Real.exp a) * xiHeatCassiniPrimeGapAbscissaEnergy a N := by
   let delta : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   let gap : ℝ := xiHeatCassiniOrderedPrimeGap N
   let p : ℝ := nthPrimeSubtype N
@@ -272,7 +272,7 @@ theorem norm_defect_neg_real_le_mul_primeGapAbscissaEnergy
     simpa only [gap, p, delta] using
       xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
   have hratio0 : 0 ≤ gap / p := by positivity
-  have hsq : delta ^ 2 ≤ (gap / p) ^ 2 :=
+  have hsq : delta ^ (2 : ℕ) ≤ (gap / p) ^ (2 : ℕ) :=
     (sq_le_sq₀ hdelta hratio0).mpr hdle
   have hexp : Real.exp (a * delta) ≤ Real.exp a := by
     apply Real.exp_le_exp.mpr
@@ -288,17 +288,17 @@ theorem norm_defect_neg_real_le_mul_primeGapAbscissaEnergy
   rw [hnorm] at hbase
   unfold xiHeatCassiniPrimeGapAbscissaEnergy
   change ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-a : ℝ) : ℂ)) N‖ ≤
-    (a ^ 2 * Real.exp a) * ((gap / p) ^ 2 *
+    (a ^ (2 : ℕ) * Real.exp a) * ((gap / p) ^ (2 : ℕ) *
       Real.exp (a * xiMassNthPrimeLogHeight (N + 1)))
   calc
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-a : ℝ) : ℂ)) N‖ ≤
         Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
-          (a * delta) ^ 2 * Real.exp (a * delta) := hbase
+          (a * delta) ^ (2 : ℕ) * Real.exp (a * delta) := hbase
     _ ≤ Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
-          (a ^ 2 * (gap / p) ^ 2) * Real.exp a := by
+          (a ^ (2 : ℕ) * (gap / p) ^ (2 : ℕ)) * Real.exp a := by
       gcongr
       nlinarith [hsq]
-    _ = (a ^ 2 * Real.exp a) * ((gap / p) ^ 2 *
+    _ = (a ^ (2 : ℕ) * Real.exp a) * ((gap / p) ^ (2 : ℕ) *
           Real.exp (a * xiMassNthPrimeLogHeight (N + 1))) := by ring
 
 /-- **Route-T obstruction spectrum.**  At every negative depth `0 < a ≤ 1`, absolute convergence
@@ -311,21 +311,21 @@ theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_real_iff
       Summable (xiHeatCassiniPrimeGapAbscissaEnergy a) := by
   constructor
   · intro hdefect
-    have hscale0 : 0 < 16 / a ^ 2 := by positivity
-    have hmajor := hdefect.mul_left (16 / a ^ 2)
+    have hscale0 : 0 < 16 / a ^ (2 : ℕ) := by positivity
+    have hmajor := hdefect.mul_left (16 / a ^ (2 : ℕ))
     refine Summable.of_nonneg_of_le
       (xiHeatCassiniPrimeGapAbscissaEnergy_nonneg a) (fun N => ?_) hmajor
     have hlower := mul_primeGapAbscissaEnergy_le_norm_defect_neg_real ha0 ha1 N
     calc
       xiHeatCassiniPrimeGapAbscissaEnergy a N =
-          (16 / a ^ 2) * ((a ^ 2 / 16) *
+          (16 / a ^ (2 : ℕ)) * ((a ^ (2 : ℕ) / 16) *
             xiHeatCassiniPrimeGapAbscissaEnergy a N) := by
         field_simp [ne_of_gt ha0]
-      _ ≤ (16 / a ^ 2) *
+      _ ≤ (16 / a ^ (2 : ℕ)) *
           ‖xiHeatCassiniLogMeshLaplaceScaledDefect (((-a : ℝ) : ℂ)) N‖ :=
         mul_le_mul_of_nonneg_left hlower hscale0.le
   · intro henergy
-    have hmajor := henergy.mul_left (a ^ 2 * Real.exp a)
+    have hmajor := henergy.mul_left (a ^ (2 : ℕ) * Real.exp a)
     refine Summable.of_nonneg_of_le (fun N => norm_nonneg _) (fun N => ?_) hmajor
     exact norm_defect_neg_real_le_mul_primeGapAbscissaEnergy ha0 ha1 N
 
@@ -381,7 +381,7 @@ their negative real part.  Imaginary height affects the constant but not the ari
 theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy
     (s : ℂ) (N : ℕ) :
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
-      (‖s‖ ^ 2 * Real.exp ‖s‖) *
+      (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) *
         xiHeatCassiniPrimeGapAbscissaEnergy (-s.re) N := by
   let delta : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   let gap : ℝ := xiHeatCassiniOrderedPrimeGap N
@@ -394,7 +394,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy
     simpa only [gap, p, delta] using
       xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
   have hratio0 : 0 ≤ gap / p := by positivity
-  have hsq : delta ^ 2 ≤ (gap / p) ^ 2 :=
+  have hsq : delta ^ (2 : ℕ) ≤ (gap / p) ^ (2 : ℕ) :=
     (sq_le_sq₀ hdelta hratio0).mpr hdle
   have hexp : Real.exp (‖s‖ * delta) ≤ Real.exp ‖s‖ := by
     apply Real.exp_le_exp.mpr
@@ -406,25 +406,25 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy
   rw [hnorm] at hbase
   unfold xiHeatCassiniPrimeGapAbscissaEnergy
   change ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
-    (‖s‖ ^ 2 * Real.exp ‖s‖) * ((gap / p) ^ 2 *
+    (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) * ((gap / p) ^ (2 : ℕ) *
       Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)))
   calc
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
         Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)) *
-          (‖s‖ * delta) ^ 2 * Real.exp (‖s‖ * delta) := by
+          (‖s‖ * delta) ^ (2 : ℕ) * Real.exp (‖s‖ * delta) := by
       simpa only [neg_mul] using hbase
     _ ≤ Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)) *
-          (‖s‖ ^ 2 * (gap / p) ^ 2) * Real.exp ‖s‖ := by
+          (‖s‖ ^ (2 : ℕ) * (gap / p) ^ (2 : ℕ)) * Real.exp ‖s‖ := by
       gcongr
       nlinarith [hsq, sq_nonneg ‖s‖]
-    _ = (‖s‖ ^ 2 * Real.exp ‖s‖) * ((gap / p) ^ 2 *
+    _ = (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) * ((gap / p) ^ (2 : ℕ) *
           Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1))) := by ring
 
 /-- Energy at the real abscissa implies absolute convergence of the full complex defect series. -/
 theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_abscissaEnergy
     (s : ℂ) (henergy : Summable (xiHeatCassiniPrimeGapAbscissaEnergy (-s.re))) :
     Summable (fun N : ℕ => ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖) := by
-  have hmajor := henergy.mul_left (‖s‖ ^ 2 * Real.exp ‖s‖)
+  have hmajor := henergy.mul_left (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖)
   exact Summable.of_nonneg_of_le (fun N => norm_nonneg _)
     (norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy s) hmajor
 

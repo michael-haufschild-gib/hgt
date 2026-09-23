@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryReverseBesselCarrier
 The reverse-Bessel realization of a shifted-Xi boundary packet uses the squared-factorial
 coefficient transform
 
-`P^sharp_r(t) = sum_j c_j t^j / ((r+j)!)^2`.
+`P^sharp_r(t) = sum_j c_j t^j / ((r+j)!)^(2 : ℕ)`.
 
 For any positive atomic carrier with squared-factorial moments, its first omitted coefficient
 combination is exactly the carrier mass tested against `t^r P^sharp_r(t)`.  This file proves that
@@ -36,7 +36,7 @@ noncomputable section
 /-- Squared-factorial moments of a finite atomic carrier. -/
 def squaredFactorialAtomicMoment {ι : Type*} [Fintype ι]
     (weight node : ι → ℝ) (k : ℕ) : ℝ :=
-  (∑ i, weight i * node i ^ k) / ((k.factorial : ℝ) ^ 2)
+  (∑ i, weight i * node i ^ k) / ((k.factorial : ℝ) ^ (2 : ℕ))
 
 /-- **Squared-factorial carrier law.**  A consecutive coefficient packet combines before the
 carrier sum, and the resulting test is exactly `t^r P^sharp_r(t)`. -/
@@ -56,7 +56,7 @@ theorem sum_mul_squaredFactorialAtomicMoment_eq_factorialCarrier
   apply Finset.sum_congr rfl
   intro j _
   rw [pow_add]
-  have hfac : (((r + (j : ℕ)).factorial : ℝ) ^ 2) ≠ 0 := by positivity
+  have hfac : (((r + (j : ℕ)).factorial : ℝ) ^ (2 : ℕ)) ≠ 0 := by positivity
   field_simp [hfac]
 
 def squaredFactorialPositiveCarrierWeight : Fin 2 → ℝ := ![48 / 49, 1 / 49]
@@ -264,7 +264,7 @@ theorem squaredFactorialPositiveCarrier_crossing :
     HTGeometry.momentInner_def]
   norm_num only [Nat.reduceAdd]
   have hpoly : ((X : Polynomial ℝ) - C 1) * (X * (X - C 1)) =
-      (X ^ 3 - X ^ 2 - X ^ 2) + X ^ 1 := by
+      (X ^ (3 : ℕ) - X ^ (2 : ℕ) - X ^ (2 : ℕ)) + X ^ (1 : ℕ) := by
     norm_num
     ring
   rw [hpoly, HTGeometry.momentFunctional_add,
@@ -289,7 +289,7 @@ theorem squaredFactorialNegativeCarrier_crossing :
     HTGeometry.momentInner_def]
   norm_num only [Nat.reduceAdd]
   have hpoly : ((X : Polynomial ℝ) - C 1) * (X * (X - C 1)) =
-      (X ^ 3 - X ^ 2 - X ^ 2) + X ^ 1 := by
+      (X ^ (3 : ℕ) - X ^ (2 : ℕ) - X ^ (2 : ℕ)) + X ^ (1 : ℕ) := by
     norm_num
     ring
   rw [hpoly, HTGeometry.momentFunctional_add,
@@ -304,13 +304,13 @@ theorem squaredFactorialNegativeCarrier_crossing :
     squaredFactorialNegativeCarrierMoment_one]
   norm_num
 
-/-- The positive crossing is exactly positive carrier mass tested against `t^2 P^sharp(t)`. -/
+/-- The positive crossing is exactly positive carrier mass tested against `t^(2 : ℕ) P^sharp(t)`. -/
 theorem squaredFactorialPositiveCarrier_crossing_eq_rootThresholdMass :
     HTGeometry.finiteHankelBoundaryNullCrossingForm
         (squaredFactorialAtomicMoment squaredFactorialPositiveCarrierWeight
           squaredFactorialPositiveCarrierNode) squaredFactorialCarrierNoGoKernel =
       ∑ i : Fin 2, squaredFactorialPositiveCarrierWeight i *
-        squaredFactorialPositiveCarrierNode i ^ 2 *
+        squaredFactorialPositiveCarrierNode i ^ (2 : ℕ) *
           xiShiftedBoundaryFactorialCarrierPolynomial 2
             squaredFactorialCarrierNoGoKernel (squaredFactorialPositiveCarrierNode i) := by
   rw [squaredFactorialPositiveCarrier_crossing]
@@ -323,7 +323,7 @@ theorem squaredFactorialNegativeCarrier_crossing_eq_rootThresholdMass :
         (squaredFactorialAtomicMoment squaredFactorialNegativeCarrierWeight
           squaredFactorialNegativeCarrierNode) squaredFactorialCarrierNoGoKernel =
       ∑ i : Fin 2, squaredFactorialNegativeCarrierWeight i *
-        squaredFactorialNegativeCarrierNode i ^ 2 *
+        squaredFactorialNegativeCarrierNode i ^ (2 : ℕ) *
           xiShiftedBoundaryFactorialCarrierPolynomial 2
             squaredFactorialCarrierNoGoKernel (squaredFactorialNegativeCarrierNode i) := by
   rw [squaredFactorialNegativeCarrier_crossing]
@@ -468,7 +468,7 @@ theorem integral_factorialCarrier_mul_exponentialMixtureDensity
         t ^ r * xiShiftedBoundaryFactorialCarrierPolynomial r c t *
           exponentialMixtureDensity weight scale t) =
       fun t : ℝ => ∑ j : Fin N,
-        (c j / (((r + (j : ℕ)).factorial : ℝ) ^ 2)) *
+        (c j / (((r + (j : ℕ)).factorial : ℝ) ^ (2 : ℕ))) *
           (t ^ (r + (j : ℕ)) * exponentialMixtureDensity weight scale t) := by
     funext t
     unfold xiShiftedBoundaryFactorialCarrierPolynomial
@@ -487,7 +487,7 @@ theorem integral_factorialCarrier_mul_exponentialMixtureDensity
   · intro j _
     exact (integrableOn_pow_mul_exponentialMixtureDensity weight scale hscale
       (r + (j : ℕ))).const_mul
-        (c j / (((r + (j : ℕ)).factorial : ℝ) ^ 2))
+        (c j / (((r + (j : ℕ)).factorial : ℝ) ^ (2 : ℕ)))
 
 theorem factorialCarrierNoGoKernel_eq_squaredFactorialCarrierNoGoKernel :
     HTGeometry.factorialCarrierNoGoKernel = squaredFactorialCarrierNoGoKernel := by
@@ -526,7 +526,7 @@ theorem factorialPositiveCarrier_crossing_eq_exponentialRootThresholdIntegral :
         (HTGeometry.factorialTwoAtomMoment HTGeometry.factorialPositiveCarrierWeight
           HTGeometry.factorialPositiveCarrierNode) HTGeometry.factorialCarrierNoGoKernel =
       ∫ t in Set.Ioi (0 : ℝ),
-        t ^ 2 * xiShiftedBoundaryFactorialCarrierPolynomial 2
+        t ^ (2 : ℕ) * xiShiftedBoundaryFactorialCarrierPolynomial 2
           HTGeometry.factorialCarrierNoGoKernel t *
             exponentialMixtureDensity HTGeometry.factorialPositiveCarrierWeight
               HTGeometry.factorialPositiveCarrierNode t := by
@@ -550,7 +550,7 @@ theorem factorialNegativeCarrier_crossing_eq_exponentialRootThresholdIntegral :
         (HTGeometry.factorialTwoAtomMoment HTGeometry.factorialNegativeCarrierWeight
           HTGeometry.factorialNegativeCarrierNode) HTGeometry.factorialCarrierNoGoKernel =
       ∫ t in Set.Ioi (0 : ℝ),
-        t ^ 2 * xiShiftedBoundaryFactorialCarrierPolynomial 2
+        t ^ (2 : ℕ) * xiShiftedBoundaryFactorialCarrierPolynomial 2
           HTGeometry.factorialCarrierNoGoKernel t *
             exponentialMixtureDensity HTGeometry.factorialNegativeCarrierWeight
               HTGeometry.factorialNegativeCarrierNode t := by

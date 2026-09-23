@@ -22,8 +22,8 @@ open Finset MeasureTheory
 
 /-- **Gallagher's bound at a point, for a Dirichlet polynomial.** -/
 theorem gallagher_dirPoly_at_point (N : ℕ) (a : Fin N → ℂ) (x : ℝ) {δ : ℝ} (hδ : 0 < δ) :
-    ‖dirPoly N a x‖ ^ 2
-      ≤ (1 / δ) * (∫ t in (x - δ / 2)..(x + δ / 2), ‖dirPoly N a t‖ ^ 2)
+    ‖dirPoly N a x‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ t in (x - δ / 2)..(x + δ / 2), ‖dirPoly N a t‖ ^ (2 : ℕ))
         + (∫ t in (x - δ / 2)..(x + δ / 2),
             2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖) := by
   have hh : (0 : ℝ) < δ / 2 := by linarith
@@ -35,14 +35,14 @@ theorem gallagher_dirPoly_at_point (N : ℕ) (a : Fin N → ℂ) (x : ℝ) {δ :
         (continuous_dirPoly N (dirDerivCoeff N a))).add
       (Continuous.inner (𝕜 := ℝ) (continuous_dirPoly N (dirDerivCoeff N a))
         (continuous_dirPoly N a))
-  have hbase := gallagher_sobolev (f := fun s => ‖dirPoly N a s‖ ^ 2)
+  have hbase := gallagher_sobolev (f := fun s => ‖dirPoly N a s‖ ^ (2 : ℕ))
     (f' := fun s => (inner ℝ (dirPoly N a s) (dirPoly N (dirDerivCoeff N a) s) : ℝ)
       + (inner ℝ (dirPoly N (dirDerivCoeff N a) s) (dirPoly N a s) : ℝ))
     (a := x) (h := δ / 2) hh (fun y _ => hasDerivAt_normSq_dirPoly N a y) hcontg.continuousOn
-  have habs1 : (∫ t in (x - δ / 2)..(x + δ / 2), |‖dirPoly N a t‖ ^ 2|)
-      = ∫ t in (x - δ / 2)..(x + δ / 2), ‖dirPoly N a t‖ ^ 2 :=
+  have habs1 : (∫ t in (x - δ / 2)..(x + δ / 2), |‖dirPoly N a t‖ ^ (2 : ℕ)|)
+      = ∫ t in (x - δ / 2)..(x + δ / 2), ‖dirPoly N a t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_congr (fun t _ => abs_of_nonneg (sq_nonneg _))
-  have habs0 : |‖dirPoly N a x‖ ^ 2| = ‖dirPoly N a x‖ ^ 2 := abs_of_nonneg (sq_nonneg _)
+  have habs0 : |‖dirPoly N a x‖ ^ (2 : ℕ)| = ‖dirPoly N a x‖ ^ (2 : ℕ) := abs_of_nonneg (sq_nonneg _)
   have hderivbound : (∫ t in (x - δ / 2)..(x + δ / 2),
         |(inner ℝ (dirPoly N a t) (dirPoly N (dirDerivCoeff N a) t) : ℝ)
           + (inner ℝ (dirPoly N (dirDerivCoeff N a) t) (dirPoly N a t) : ℝ)|)
@@ -61,24 +61,24 @@ theorem gallagher_dirPoly_at_point (N : ℕ) (a : Fin N → ℂ) (x : ℝ) {δ :
 /-- **Gallagher's bound over a separated family, for a Dirichlet polynomial.** -/
 theorem gallagher_dirPoly_sum (N : ℕ) (a : Fin N → ℂ) {lam : ℕ → ℝ} {δ A : ℝ} (hδ : 0 < δ)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hA : A ≤ lam 0 - δ / 2) (R : ℕ) :
-    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 2
-      ≤ (1 / δ) * (∫ t in A..(lam R + δ / 2), ‖dirPoly N a t‖ ^ 2)
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ t in A..(lam R + δ / 2), ‖dirPoly N a t‖ ^ (2 : ℕ))
         + (∫ t in A..(lam R + δ / 2),
             2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖) := by
-  have hcont1 : Continuous (fun t : ℝ => ‖dirPoly N a t‖ ^ 2) :=
+  have hcont1 : Continuous (fun t : ℝ => ‖dirPoly N a t‖ ^ (2 : ℕ)) :=
     ((continuous_dirPoly N a).norm).pow 2
   have hcont2 : Continuous (fun t : ℝ =>
       2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖) :=
     (continuous_const.mul (continuous_dirPoly N a).norm).mul
       (continuous_dirPoly N (dirDerivCoeff N a)).norm
-  have hnn1 : ∀ t : ℝ, (0 : ℝ) ≤ ‖dirPoly N a t‖ ^ 2 := fun t => sq_nonneg _
+  have hnn1 : ∀ t : ℝ, (0 : ℝ) ≤ ‖dirPoly N a t‖ ^ (2 : ℕ) := fun t => sq_nonneg _
   have hnn2 : ∀ t : ℝ,
       (0 : ℝ) ≤ 2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖ := by
     intro t
     positivity
   have hterm : ∀ r ∈ Finset.range (R + 1),
-      ‖dirPoly N a (lam r)‖ ^ 2
-        ≤ (1 / δ) * (∫ t in (lam r - δ / 2)..(lam r + δ / 2), ‖dirPoly N a t‖ ^ 2)
+      ‖dirPoly N a (lam r)‖ ^ (2 : ℕ)
+        ≤ (1 / δ) * (∫ t in (lam r - δ / 2)..(lam r + δ / 2), ‖dirPoly N a t‖ ^ (2 : ℕ))
           + (∫ t in (lam r - δ / 2)..(lam r + δ / 2),
               2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖) :=
     fun r _ => gallagher_dirPoly_at_point N a (lam r) hδ

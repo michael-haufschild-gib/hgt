@@ -177,7 +177,7 @@ theorem branch_linear_coefficient_eq (R : RatFunc C) (hR : substitutionDeriv R �
                 * JetField.pd ((), N + 2) (t : JetField C Unit)) := by
               rw [← mul_assoc, ← map_mul, h23]
     rw [hc₀, map_sub, map_mul, weightScale_jetOverOne, AlgEquiv.commutes, AlgEquiv.commutes] at hiso
-    have h2sq : ((2 : C) ^ 2 / 2) = 2 := by norm_num
+    have h2sq : ((2 : C) ^ (2 : ℕ) / 2) = 2 := by norm_num
     rw [h2sq] at hiso
     have hkey : algebraMap C (JetField C Unit) c₀
         = algebraMap C (JetField C Unit) (2 : C) * algebraMap C (JetField C Unit) c₀ := by

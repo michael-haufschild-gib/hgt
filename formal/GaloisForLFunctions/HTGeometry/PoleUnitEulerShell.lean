@@ -111,7 +111,7 @@ plus the transported curvature of the shell unit logarithm. -/
 theorem shellClock_variance {m : ℕ} (hm : 12 ≤ m) {ε : ℂ} (hre : 1 / 2 < (1 + ε).re)
     (hne : ∀ᶠ z in 𝓝 ε, shellUnit m z ≠ 0) (hε : shellUnit m ε ≠ 0) :
     deriv (fun z => logDeriv (fun y => polarScaleResponse 1 (shellUnit m) ε y) z) 1 =
-      1 + ε ^ 2 * deriv (logDeriv (shellUnit m)) ε := by
+      1 + ε ^ (2 : ℕ) * deriv (logDeriv (shellUnit m)) ε := by
   have h := polarScaleResponse_second_cumulant 1 (U := shellUnit m) (ε := ε)
     (analyticAt_shellUnit hm hre) hne hε
   simpa using h

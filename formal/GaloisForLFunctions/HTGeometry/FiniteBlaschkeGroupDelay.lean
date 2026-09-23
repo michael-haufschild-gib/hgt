@@ -28,7 +28,7 @@ noncomputable section
 theorem hasDerivAt_blaschkeFactor {a z : ℂ}
     (hden : 1 - star a * z ≠ 0) :
     HasDerivAt (fun w : ℂ => (w - a) / (1 - star a * w))
-      ((1 - star a * a) / (1 - star a * z) ^ 2) z := by
+      ((1 - star a * a) / (1 - star a * z) ^ (2 : ℕ)) z := by
   have hnum : HasDerivAt (fun w : ℂ => w - a) 1 z :=
     (hasDerivAt_id z).sub_const a
   have hden' : HasDerivAt (fun w : ℂ => 1 - star a * w) (-star a) z := by

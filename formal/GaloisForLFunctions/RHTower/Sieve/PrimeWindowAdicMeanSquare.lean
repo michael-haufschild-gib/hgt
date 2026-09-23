@@ -49,7 +49,7 @@ theorem exists_sum_sq_card_primeWindow_le_six_mul_delta :
         1 ≤ a → a ≤ b → N₀ ≤ a - 1 → 0 ≤ δ → δ ≤ 1 →
         ((b - 1 : ℕ) : ℝ) ≤ (1 + δ) * ((a - 1 : ℕ) : ℝ) →
         2 * B * Real.exp (-c * Real.sqrt (Real.log ((a - 1 : ℕ) : ℝ))) ≤ δ →
-        ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
+        ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
           6 * (Y : ℝ) * δ := by
   obtain ⟨B, c, N₀, hc, hB, hN₀, hmass⟩ :=
     exists_sum_inv_primesIco_le_logLog_diff_add_exp
@@ -76,13 +76,13 @@ theorem exists_sum_sq_card_primeWindow_le_six_mul_delta :
     linarith
   have hmean := sum_sq_card_primeWindow_le_of_mass (Y := Y) hη hm
   have hY : 0 ≤ (Y : ℝ) := Nat.cast_nonneg Y
-  have hsq : η ^ 2 ≤ (2 * δ) ^ 2 :=
+  have hsq : η ^ (2 : ℕ) ≤ (2 * δ) ^ (2 : ℕ) :=
     (sq_le_sq₀ hη (by positivity)).2 hηle
-  have hbudget : η + η ^ 2 ≤ 6 * δ := by
+  have hbudget : η + η ^ (2 : ℕ) ≤ 6 * δ := by
     nlinarith
   calc
-    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
-        (Y : ℝ) * (η + η ^ 2) := hmean
+    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
+        (Y : ℝ) * (η + η ^ (2 : ℕ)) := hmean
     _ ≤ 6 * (Y : ℝ) * δ := by
       have := mul_le_mul_of_nonneg_left hbudget hY
       nlinarith

@@ -177,7 +177,7 @@ theorem norm_suzukiPrimeClockHalfPhase (a : ℝ) (m : ℕ) :
   exact Real.exp_zero
 
 theorem suzukiPrimeClockHalfPhase_sq (a : ℝ) (m : ℕ) :
-    suzukiPrimeClockHalfPhase a m ^ 2 = suzukiPrimeTangentPhase a m := by
+    suzukiPrimeClockHalfPhase a m ^ (2 : ℕ) = suzukiPrimeTangentPhase a m := by
   rw [suzukiPrimeClockHalfPhase, suzukiPrimeTangentPhase, ← Complex.exp_nat_mul]
   congr 1
   push_cast

@@ -42,17 +42,17 @@ theorem exists_norm_scaledGaussian_realTranslate_le {d : ℕ} (σ : Fin d → �
     (center : Fin d → ℂ) {K : Set (Fin d → ℂ)} (hK : IsCompact K) {B : ℝ} (hB : 1 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (v : Fin d → ℝ) (x : Fin d → ℂ), x ∈ K →
       ‖(centeredComplexGaussian (fun i => B * σ i) center).1 (x + fun i => ((v i : ℝ) : ℂ))‖
-        ≤ C * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := by
+        ≤ C * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) := by
   classical
   obtain ⟨ρ, hρ0, hρ⟩ := exists_centered_radius_of_isCompact center hK
   have hB0 : (0 : ℝ) < B := by linarith
-  refine ⟨Real.exp (B * ((∑ i, σ i) * (2 * ρ ^ 2))), (Real.exp_pos _).le, fun v x hx => ?_⟩
+  refine ⟨Real.exp (B * ((∑ i, σ i) * (2 * ρ ^ (2 : ℕ)))), (Real.exp_pos _).le, fun v x hx => ?_⟩
   rw [norm_centeredComplexGaussian_apply, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
   have hterm : ∀ i : Fin d,
-      -((B * σ i) * ((((x + fun j => ((v j : ℝ) : ℂ)) i - center i).re) ^ 2
-          - (((x + fun j => ((v j : ℝ) : ℂ)) i - center i).im) ^ 2))
-        ≤ B * (σ i * (2 * ρ ^ 2)) - σ i / 4 * (v i) ^ 2 := by
+      -((B * σ i) * ((((x + fun j => ((v j : ℝ) : ℂ)) i - center i).re) ^ (2 : ℕ)
+          - (((x + fun j => ((v j : ℝ) : ℂ)) i - center i).im) ^ (2 : ℕ)))
+        ≤ B * (σ i * (2 * ρ ^ (2 : ℕ))) - σ i / 4 * (v i) ^ (2 : ℕ) := by
     intro i
     have hre : (((x + fun j => ((v j : ℝ) : ℂ)) i - center i)).re
         = (x i).re + v i - (center i).re := by
@@ -66,30 +66,30 @@ theorem exists_norm_scaledGaussian_realTranslate_le {d : ℕ} (σ : Fin d → �
     set u : ℝ := (x i).im - (center i).im with hudef
     have hsum : (x i).re + v i - (center i).re = v i + t := by rw [htdef]; ring
     rw [hsum]
-    have ht2 : t ^ 2 ≤ ρ ^ 2 := by
+    have ht2 : t ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) := by
       have h := pow_le_pow_left₀ (abs_nonneg t) ht 2
       rwa [sq_abs] at h
-    have hu2 : u ^ 2 ≤ ρ ^ 2 := by
+    have hu2 : u ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) := by
       have h := pow_le_pow_left₀ (abs_nonneg u) hu 2
       rwa [sq_abs] at h
-    have hkey : (v i) ^ 2 / 2 - t ^ 2 ≤ (v i + t) ^ 2 := by
+    have hkey : (v i) ^ (2 : ℕ) / 2 - t ^ (2 : ℕ) ≤ (v i + t) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (v i + 2 * t)]
     have hσi := (hσ i).le
     have hBσ : (0 : ℝ) ≤ B * σ i := mul_nonneg hB0.le hσi
-    have hshrink : σ i / 4 * (v i) ^ 2 ≤ B * σ i * ((v i) ^ 2 / 2) := by
-      have hprod : (0 : ℝ) ≤ (B - 1) * σ i * (v i) ^ 2 :=
+    have hshrink : σ i / 4 * (v i) ^ (2 : ℕ) ≤ B * σ i * ((v i) ^ (2 : ℕ) / 2) := by
+      have hprod : (0 : ℝ) ≤ (B - 1) * σ i * (v i) ^ (2 : ℕ) :=
         mul_nonneg (mul_nonneg (by linarith) hσi) (sq_nonneg _)
       nlinarith [sq_nonneg (v i), hσi, hprod]
     nlinarith [mul_le_mul_of_nonneg_left hkey hBσ,
       mul_le_mul_of_nonneg_left ht2 hBσ, mul_le_mul_of_nonneg_left hu2 hBσ, hshrink]
-  have hsum_le : (-∑ i, (B * σ i) * ((((x + fun j => ((v j : ℝ) : ℂ)) i - center i).re) ^ 2
-        - (((x + fun j => ((v j : ℝ) : ℂ)) i - center i).im) ^ 2))
-      ≤ ∑ i, (B * (σ i * (2 * ρ ^ 2)) - σ i / 4 * (v i) ^ 2) := by
+  have hsum_le : (-∑ i, (B * σ i) * ((((x + fun j => ((v j : ℝ) : ℂ)) i - center i).re) ^ (2 : ℕ)
+        - (((x + fun j => ((v j : ℝ) : ℂ)) i - center i).im) ^ (2 : ℕ)))
+      ≤ ∑ i, (B * (σ i * (2 * ρ ^ (2 : ℕ))) - σ i / 4 * (v i) ^ (2 : ℕ)) := by
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_le_sum fun i _ => hterm i
   refine le_trans hsum_le ?_
   rw [Finset.sum_sub_distrib]
-  have hA : ∑ i, B * (σ i * (2 * ρ ^ 2)) = B * ((∑ i, σ i) * (2 * ρ ^ 2)) := by
+  have hA : ∑ i, B * (σ i * (2 * ρ ^ (2 : ℕ))) = B * ((∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) := by
     rw [← Finset.mul_sum, ← Finset.sum_mul]
   rw [hA]
   linarith
@@ -104,7 +104,7 @@ theorem exists_norm_dampedFlatSeed_realTranslate_le {d : ℕ} {I : Type*} [Finty
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (v : Fin d → ℝ) (x : Fin d → ℂ), x ∈ K →
       ‖(dampedFlatSeed w hdistinct target hm σ P B).1 (x + fun i => ((v i : ℝ) : ℂ))‖
         ≤ C * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by
   classical
   obtain ⟨R, hR0, hR⟩ := exists_coordinate_bound_of_isCompact hK
   obtain ⟨Cb, hCb0, hCb⟩ :=
@@ -121,15 +121,15 @@ theorem exists_norm_dampedFlatSeed_realTranslate_le {d : ℕ} {I : Type*} [Finty
     fun v x hx => ?_⟩
   set y : Fin d → ℂ := x + fun i => ((v i : ℝ) : ℂ) with hy
   set G : ℂ := (centeredComplexGaussian (fun i => B * σ i) (w target)).1 y with hGdef
-  have hGb : ‖G‖ ≤ C₀ * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := hC₀ v x hx
-  have hexp2 : Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) ≤ 1 := by
+  have hGb : ‖G‖ ≤ C₀ * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) := hC₀ v x hx
+  have hexp2 : Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) ≤ 1 := by
     refine Real.exp_le_one_iff.mpr ?_
-    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * (v i) ^ 2 :=
+    have : (0 : ℝ) ≤ ∑ i, σ i / 4 * (v i) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => mul_nonneg (by linarith [hσ i]) (sq_nonneg _)
     linarith
   have hGle : ‖G‖ ≤ C₀ := by
     refine le_trans hGb ?_
-    nlinarith [hexp2, hC₀0, (Real.exp_pos (-∑ i, σ i / 4 * (v i) ^ 2)).le]
+    nlinarith [hexp2, hC₀0, (Real.exp_pos (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))).le]
   have hgeom : ∑ r ∈ Finset.range m, (1 + ‖G‖) ^ r
       ≤ ∑ r ∈ Finset.range m, (1 + C₀) ^ r :=
     Finset.sum_le_sum fun r _ =>
@@ -182,35 +182,35 @@ theorem exists_norm_dampedFlatSeed_realTranslate_le {d : ℕ} {I : Type*} [Finty
       ≤ ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
           * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
         * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by
     have hd1 : ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
         ≤ (C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := by
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) := by
       refine le_trans hdamp ?_
       nlinarith [hGb, norm_nonneg G, hgs0]
     calc ‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
           * ‖MvPolynomial.eval y P‖
         ≤ ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
-            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)))
           * ((Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)) * ∏ i, (1 + |v i|) ^ (P.degreeOf i)) :=
           mul_le_mul hd1 h3 (norm_nonneg _)
             (mul_nonneg (mul_nonneg hC₀0 hgs0) (Real.exp_pos _).le)
       _ = ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
             * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
           * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-            * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by ring
+            * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by ring
   calc ‖(flatIntegerLatticePacketSeparatorData w hdistinct target m hm).bump.1 y‖
         * (‖(gaussianFlatSeedData (fun i => B * σ i) (w target) hm).damping.1 y‖
           * ‖MvPolynomial.eval y P‖)
       ≤ Cb * (((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
           * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
         * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2))) :=
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)))) :=
         mul_le_mul h1 hstep (mul_nonneg (norm_nonneg _) (norm_nonneg _)) hCb0
     _ = Cb * ((C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r)
           * (Cp * ∏ i, (1 + 2 * R) ^ (P.degreeOf i)))
         * ((∏ i, (1 + |v i|) ^ (P.degreeOf i))
-          * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2)) := by ring
+          * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ))) := by ring
 
 end
 

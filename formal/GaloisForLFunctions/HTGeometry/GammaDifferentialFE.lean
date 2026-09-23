@@ -566,13 +566,13 @@ theorem gamma_no_linear_relation (c0 c1 : Polynomial ℂ) (hc : c0 ≠ 0 ∨ c1 
       · exact pow_ne_zero k (by norm_num)
       · exact_mod_cast Nat.factorial_ne_zero k
     -- the whole thing ·(s+k)² ≡ 0
-    have h0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^2
+    have h0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ)
         * (c0.eval s * Complex.Gamma s + c1.eval s * deriv Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       refine tendsto_const_nhds.congr' ?_
       filter_upwards with s; rw [hcon s]; ring
     -- (s+k)²·Γ → 0
-    have hg2 : Tendsto (fun s : ℂ => (s + (k:ℂ))^2 * Complex.Gamma s) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
+    have hg2 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ) * Complex.Gamma s) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       have hz : Tendsto (fun s : ℂ => s + (k:ℂ)) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
         have : Tendsto (fun s : ℂ => s + (k:ℂ)) (𝓝 (-(k:ℂ))) (𝓝 ((-(k:ℂ)) + (k:ℂ))) :=
           (continuous_id.add continuous_const).continuousAt
@@ -581,12 +581,12 @@ theorem gamma_no_linear_relation (c0 c1 : Polynomial ℂ) (hc : c0 ≠ 0 ∨ c1 
       simp only [zero_mul] at this
       refine this.congr' ?_; filter_upwards with s; ring
     -- assemble the other limit
-    have hA : Tendsto (fun s : ℂ => c0.eval s * ((s + (k:ℂ))^2 * Complex.Gamma s))
+    have hA : Tendsto (fun s : ℂ => c0.eval s * ((s + (k:ℂ))^(2 : ℕ) * Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       have hc0 : Tendsto (fun s : ℂ => c0.eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 (c0.eval (-(k:ℂ)))) :=
         (c0.continuous.continuousAt).continuousWithinAt
       have := hc0.mul hg2; simpa using this
-    have hB : Tendsto (fun s : ℂ => c1.eval s * ((s + (k:ℂ))^2 * deriv Complex.Gamma s))
+    have hB : Tendsto (fun s : ℂ => c1.eval s * ((s + (k:ℂ))^(2 : ℕ) * deriv Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ))) (𝓝 (c1.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ))))) := by
       have hc1 : Tendsto (fun s : ℂ => c1.eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 (c1.eval (-(k:ℂ)))) :=
         (c1.continuous.continuousAt).continuousWithinAt
@@ -594,7 +594,7 @@ theorem gamma_no_linear_relation (c0 c1 : Polynomial ℂ) (hc : c0 ≠ 0 ∨ c1 
       exact hc1.mul hd
     have hsum := hA.add hB
     rw [zero_add] at hsum
-    have heq : Tendsto (fun s : ℂ => (s + (k:ℂ))^2
+    have heq : Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ)
         * (c0.eval s * Complex.Gamma s + c1.eval s * deriv Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ))) (𝓝 (c1.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ))))) := by
       refine hsum.congr' ?_; filter_upwards with s; ring
@@ -1848,7 +1848,7 @@ theorem tendsto_cpow_div_factorial_pow (j m : ℕ) (hm : 1 ≤ m) :
     have hf1 : (1:ℝ) ≤ (k.factorial : ℝ) := by
       exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero k)
     have hfm : (k.factorial : ℝ) ≤ (k.factorial : ℝ)^m := by
-      calc (k.factorial:ℝ) = (k.factorial:ℝ)^1 := (pow_one _).symm
+      calc (k.factorial:ℝ) = (k.factorial:ℝ)^(1 : ℕ) := (pow_one _).symm
         _ ≤ (k.factorial:ℝ)^m := pow_le_pow_right₀ hf1 hm
     gcongr
   · exact tendsto_natPow_div_factorial j
@@ -1992,7 +1992,7 @@ theorem gamma_no_weightedHomog_firstOrder_rem (N d : ℕ) (hd : 2 * N ≤ d) (c 
       have hfun : (fun s : ℂ => (s + (k:ℂ))^d *
           ((c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b))
           = fun s : ℂ => (c b).eval s *
-            (((s + (k:ℂ)) * Complex.Gamma s)^(d - 2*b) * ((s + (k:ℂ))^2 * deriv Complex.Gamma s)^b) := by
+            (((s + (k:ℂ)) * Complex.Gamma s)^(d - 2*b) * ((s + (k:ℂ))^(2 : ℕ) * deriv Complex.Gamma s)^b) := by
         funext s
         have he1 : (d - 2*b) + 2*b = d := by omega
         rw [mul_pow, mul_pow, ← pow_mul,
@@ -2061,25 +2061,25 @@ theorem gamma_no_quadratic_firstOrder (c₀ c₁ c₂ c₃ : Polynomial ℂ)
         + c₂.eval s * Complex.Gamma s + c₃.eval s = 0) :
     c₀ = 0 ∧ c₁ = 0 := by
   set cc : ℕ → Polynomial ℂ := fun b => if b = 0 then c₀ else c₁ with hcc
-  have hQ : ∀ k : ℕ, Tendsto (fun s : ℂ => (s + (k:ℂ))^2 * (c₂.eval s * Complex.Gamma s + c₃.eval s))
+  have hQ : ∀ k : ℕ, Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ) * (c₂.eval s * Complex.Gamma s + c₃.eval s))
       (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
     intro k
     have hz : Tendsto (fun s : ℂ => s + (k:ℂ)) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       have : Tendsto (fun s : ℂ => s + (k:ℂ)) (𝓝 (-(k:ℂ))) (𝓝 ((-(k:ℂ)) + (k:ℂ))) :=
         (continuous_id.add continuous_const).continuousAt
       rw [neg_add_cancel] at this; exact this.mono_left nhdsWithin_le_nhds
-    have hg2 : Tendsto (fun s : ℂ => (s + (k:ℂ))^2 * Complex.Gamma s) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
+    have hg2 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ) * Complex.Gamma s) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       have := hz.mul (gamma_residue k); simp only [zero_mul] at this
       refine this.congr' ?_; filter_upwards with s; ring
-    have hsq : Tendsto (fun s : ℂ => (s + (k:ℂ))^2) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
+    have hsq : Tendsto (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ)) (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
       have := hz.mul hz; simp only [mul_zero] at this
       refine this.congr' ?_; filter_upwards with s; ring
     have hc2 : Tendsto (fun s : ℂ => c₂.eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 (c₂.eval (-(k:ℂ)))) :=
       c₂.continuous.continuousAt.continuousWithinAt
     have hc3 : Tendsto (fun s : ℂ => c₃.eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 (c₃.eval (-(k:ℂ)))) :=
       c₃.continuous.continuousAt.continuousWithinAt
-    have hfeq : (fun s : ℂ => (s + (k:ℂ))^2 * (c₂.eval s * Complex.Gamma s + c₃.eval s))
-        = fun s : ℂ => c₂.eval s * ((s + (k:ℂ))^2 * Complex.Gamma s) + c₃.eval s * (s + (k:ℂ))^2 := by
+    have hfeq : (fun s : ℂ => (s + (k:ℂ))^(2 : ℕ) * (c₂.eval s * Complex.Gamma s + c₃.eval s))
+        = fun s : ℂ => c₂.eval s * ((s + (k:ℂ))^(2 : ℕ) * Complex.Gamma s) + c₃.eval s * (s + (k:ℂ))^(2 : ℕ) := by
       funext s; ring
     rw [hfeq]
     simpa using (hc2.mul hg2).add (hc3.mul hsq)
@@ -2113,10 +2113,10 @@ theorem gamma_no_cubic_GammaSecondDeriv (c₀ c₁ : Polynomial ℂ)
   have hdom : ∀ k : ℕ, ∑ D ∈ ({1, 3} : Finset ℕ),
       (P D).eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^D = 0 := by
     intro k
-    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^3 *
+    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(3 : ℕ) *
         (c₀.eval s * Complex.Gamma s ^ 3 + c₁.eval s * iteratedDeriv 2 Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
-      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^3 *
+      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^(3 : ℕ) *
           (c₀.eval s * Complex.Gamma s ^ 3 + c₁.eval s * iteratedDeriv 2 Complex.Gamma s) = 0 := by
         filter_upwards [eventually_nhdsWithin_of_eventually_nhds
           (Metric.ball_mem_nhds (-(k:ℂ)) (show (0:ℝ) < 1/2 by norm_num)), self_mem_nhdsWithin]
@@ -2130,14 +2130,14 @@ theorem gamma_no_cubic_GammaSecondDeriv (c₀ c₁ : Polynomial ℂ)
       c₁.continuous.continuousAt.continuousWithinAt
     have hg3 := (gamma_residue k).pow 3
     have hg2 := gamma_iteratedDeriv_residue 2 k
-    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^3 *
+    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(3 : ℕ) *
         (c₀.eval s * Complex.Gamma s ^ 3 + c₁.eval s * iteratedDeriv 2 Complex.Gamma s))
         (𝓝[≠] (-(k:ℂ)))
-        (𝓝 (c₀.eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^3
-          + c₁.eval (-(k:ℂ)) * ((-1)^2 * ((2:ℕ).factorial:ℂ) * ((-1)^k / (k.factorial : ℂ))))) := by
-      have hfeq : (fun s : ℂ => (s + (k:ℂ))^3 *
+        (𝓝 (c₀.eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^(3 : ℕ)
+          + c₁.eval (-(k:ℂ)) * ((-1)^(2 : ℕ) * ((2:ℕ).factorial:ℂ) * ((-1)^k / (k.factorial : ℂ))))) := by
+      have hfeq : (fun s : ℂ => (s + (k:ℂ))^(3 : ℕ) *
           (c₀.eval s * Complex.Gamma s ^ 3 + c₁.eval s * iteratedDeriv 2 Complex.Gamma s))
-          = fun s : ℂ => c₀.eval s * ((s + (k:ℂ)) * Complex.Gamma s)^3
+          = fun s : ℂ => c₀.eval s * ((s + (k:ℂ)) * Complex.Gamma s)^(3 : ℕ)
             + c₁.eval s * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s) := by
         funext s; rw [mul_pow]; ring
       rw [hfeq]
@@ -2445,15 +2445,15 @@ theorem gamma_no_derivCubicSquare (c₀ c₁ : Polynomial ℂ)
   have hdom : ∀ k : ℕ, ∑ D ∈ ({2, 3} : Finset ℕ),
       (P D).eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^D = 0 := by
     intro k
-    have hgd : Tendsto (fun s : ℂ => ((s + (k:ℂ))^2 * deriv Complex.Gamma s)^3)
-        (𝓝[≠] (-(k:ℂ))) (𝓝 ((-((-1)^k / (k.factorial : ℂ)))^3)) := (gamma_deriv_residue k).pow 3
-    have hg2 : Tendsto (fun s : ℂ => ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^2)
-        (𝓝[≠] (-(k:ℂ))) (𝓝 (((-1)^2 * (2 * 1 : ℂ) * ((-1)^k / (k.factorial : ℂ)))^2)) := by
+    have hgd : Tendsto (fun s : ℂ => ((s + (k:ℂ))^(2 : ℕ) * deriv Complex.Gamma s)^(3 : ℕ))
+        (𝓝[≠] (-(k:ℂ))) (𝓝 ((-((-1)^k / (k.factorial : ℂ)))^(3 : ℕ))) := (gamma_deriv_residue k).pow 3
+    have hg2 : Tendsto (fun s : ℂ => ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ))
+        (𝓝[≠] (-(k:ℂ))) (𝓝 (((-1)^(2 : ℕ) * (2 * 1 : ℂ) * ((-1)^k / (k.factorial : ℂ)))^(2 : ℕ))) := by
       have h := (gamma_iteratedDeriv_residue 2 k).pow 2; convert h using 3; norm_num
-    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^6 *
+    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
         (c₀.eval s * (deriv Complex.Gamma s) ^ 3 + c₁.eval s * (iteratedDeriv 2 Complex.Gamma s) ^ 2))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
-      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^6 *
+      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^(6 : ℕ) *
           (c₀.eval s * (deriv Complex.Gamma s) ^ 3
             + c₁.eval s * (iteratedDeriv 2 Complex.Gamma s) ^ 2) = 0 := by
         filter_upwards [eventually_nhdsWithin_of_eventually_nhds
@@ -2466,23 +2466,23 @@ theorem gamma_no_derivCubicSquare (c₀ c₁ : Polynomial ℂ)
       c₀.continuous.continuousAt.continuousWithinAt
     have hc1 : Tendsto (fun s : ℂ => c₁.eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 (c₁.eval (-(k:ℂ)))) :=
       c₁.continuous.continuousAt.continuousWithinAt
-    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^6 *
+    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
         (c₀.eval s * (deriv Complex.Gamma s) ^ 3 + c₁.eval s * (iteratedDeriv 2 Complex.Gamma s) ^ 2))
         (𝓝[≠] (-(k:ℂ)))
-        (𝓝 (c₀.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ)))^3
-          + c₁.eval (-(k:ℂ)) * ((-1)^2 * (2 * 1 : ℂ) * ((-1)^k / (k.factorial : ℂ)))^2)) := by
-      have hfeq : (fun s : ℂ => (s + (k:ℂ))^6 *
+        (𝓝 (c₀.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ)))^(3 : ℕ)
+          + c₁.eval (-(k:ℂ)) * ((-1)^(2 : ℕ) * (2 * 1 : ℂ) * ((-1)^k / (k.factorial : ℂ)))^(2 : ℕ))) := by
+      have hfeq : (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
           (c₀.eval s * (deriv Complex.Gamma s) ^ 3 + c₁.eval s * (iteratedDeriv 2 Complex.Gamma s) ^ 2))
-          = fun s : ℂ => c₀.eval s * ((s + (k:ℂ))^2 * deriv Complex.Gamma s)^3
-            + c₁.eval s * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^2 := by
+          = fun s : ℂ => c₀.eval s * ((s + (k:ℂ))^(2 : ℕ) * deriv Complex.Gamma s)^(3 : ℕ)
+            + c₁.eval s * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ) := by
         funext s
-        rw [mul_pow, mul_pow, show ((s+(k:ℂ))^2)^3 = (s+(k:ℂ))^6 by ring,
-          show ((s+(k:ℂ))^(2+1))^2 = (s+(k:ℂ))^6 by ring]
+        rw [mul_pow, mul_pow, show ((s+(k:ℂ))^(2 : ℕ))^(3 : ℕ) = (s+(k:ℂ))^(6 : ℕ) by ring,
+          show ((s+(k:ℂ))^(2+1))^(2 : ℕ) = (s+(k:ℂ))^(6 : ℕ) by ring]
         ring
       rw [hfeq]
       exact (hc0.mul hgd).add (hc1.mul hg2)
     have hval := tendsto_nhds_unique hlim0 hlim1
-    have h2f : ((-1:ℂ)^2 * (2 * 1 : ℂ))^2 = 4 := by norm_num
+    have h2f : ((-1:ℂ)^(2 : ℕ) * (2 * 1 : ℂ))^(2 : ℕ) = 4 := by norm_num
     rw [Finset.sum_pair (by norm_num : (2:ℕ) ≠ 3), hP]
     simp only [if_neg (by norm_num : (2:ℕ) ≠ 3), if_true, Polynomial.eval_mul, Polynomial.eval_C]
     linear_combination -hval
@@ -2584,11 +2584,11 @@ the combination `Γ·Γ'' − (Γ')²`, which is exactly the leading obstruction
 `(Γ')²`/`Γ·Γ''` tie, equals `Γ²·ψ'`. -/
 theorem gamma_secondDeriv_logDeriv_identity (s : ℂ) (hs : Complex.Gamma s ≠ 0)
     (h1 : DifferentiableAt ℂ Complex.Gamma s) (h2 : DifferentiableAt ℂ (deriv Complex.Gamma) s) :
-    iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s - (deriv Complex.Gamma s)^2
-      = (Complex.Gamma s)^2 * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s := by
+    iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s - (deriv Complex.Gamma s)^(2 : ℕ)
+      = (Complex.Gamma s)^(2 : ℕ) * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s := by
   have hdd : deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
       = (deriv (deriv Complex.Gamma) s * Complex.Gamma s
-        - deriv Complex.Gamma s * deriv Complex.Gamma s) / (Complex.Gamma s)^2 :=
+        - deriv Complex.Gamma s * deriv Complex.Gamma s) / (Complex.Gamma s)^(2 : ℕ) :=
     deriv_div h2 h1 hs
   rw [hdd, show iteratedDeriv 2 Complex.Gamma s = deriv (deriv Complex.Gamma) s from by
     rw [iteratedDeriv_succ, iteratedDeriv_one]]
@@ -2603,17 +2603,17 @@ This is the bridge that turns the sole remaining tie-obstructed case of Hölder'
 differential-non-existence question for the digamma. -/
 theorem gamma_mixed_reduces_to_digamma (α β : Polynomial ℂ) (s : ℂ) (hs : Complex.Gamma s ≠ 0)
     (h1 : DifferentiableAt ℂ Complex.Gamma s) (h2 : DifferentiableAt ℂ (deriv Complex.Gamma) s)
-    (hrel : α.eval s * (deriv Complex.Gamma s)^2
+    (hrel : α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
       + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s) = 0) :
-    (α.eval s + β.eval s) * (deriv Complex.Gamma s / Complex.Gamma s)^2
+    (α.eval s + β.eval s) * (deriv Complex.Gamma s / Complex.Gamma s)^(2 : ℕ)
       + β.eval s * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s = 0 := by
   have hid := gamma_secondDeriv_logDeriv_identity s hs h1 h2
-  have hΓ2 : (Complex.Gamma s)^2 ≠ 0 := pow_ne_zero 2 hs
+  have hΓ2 : (Complex.Gamma s)^(2 : ℕ) ≠ 0 := pow_ne_zero 2 hs
   field_simp
-  have key : α.eval s * (deriv Complex.Gamma s)^2
+  have key : α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
       + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s) = 0 := hrel
   rw [show iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s
-    = (deriv Complex.Gamma s)^2 + (Complex.Gamma s)^2 * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
+    = (deriv Complex.Gamma s)^(2 : ℕ) + (Complex.Gamma s)^(2 : ℕ) * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
     from by linear_combination hid] at key
   linear_combination key
 
@@ -2629,17 +2629,17 @@ tie collapses to `β = 0` once `ψ' − ψ²` (digamma) is shown not identically
 crux of Hölder's theorem for `Γ` in three jet variables. -/
 theorem gamma_mixed_leading (α β : Polynomial ℂ)
     (hrel : ∀ s : ℂ, (∀ m : ℕ, s ≠ -(m:ℂ)) →
-      α.eval s * (deriv Complex.Gamma s)^2
+      α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
         + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s) = 0) :
     α + 2 * β = 0 := by
   have hroot : ∀ k : ℕ, (α + 2 * β).eval (-(k:ℂ)) = 0 := by
     intro k
-    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^4 *
-        (α.eval s * (deriv Complex.Gamma s)^2
+    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(4 : ℕ) *
+        (α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
           + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s)))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
-      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^4 *
-          (α.eval s * (deriv Complex.Gamma s)^2
+      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^(4 : ℕ) *
+          (α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
             + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s)) = 0 := by
         filter_upwards [eventually_nhdsWithin_of_eventually_nhds
           (Metric.ball_mem_nhds (-(k:ℂ)) (show (0:ℝ) < 1/2 by norm_num)), self_mem_nhdsWithin]
@@ -2653,33 +2653,33 @@ theorem gamma_mixed_leading (α β : Polynomial ℂ)
       β.continuous.continuousAt.continuousWithinAt
     have hgd := (gamma_deriv_residue k).pow 2
     have hgm := (gamma_residue k).mul (gamma_iteratedDeriv_residue 2 k)
-    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^4 *
-        (α.eval s * (deriv Complex.Gamma s)^2
+    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(4 : ℕ) *
+        (α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
           + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s)))
         (𝓝[≠] (-(k:ℂ)))
-        (𝓝 (α.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ)))^2
+        (𝓝 (α.eval (-(k:ℂ)) * (-((-1)^k / (k.factorial : ℂ)))^(2 : ℕ)
           + β.eval (-(k:ℂ)) * (((-1)^k / (k.factorial : ℂ))
-            * ((-1)^2 * ((2:ℕ).factorial : ℂ) * ((-1)^k / (k.factorial : ℂ)))))) := by
-      have hfeq : (fun s : ℂ => (s + (k:ℂ))^4 *
-          (α.eval s * (deriv Complex.Gamma s)^2
+            * ((-1)^(2 : ℕ) * ((2:ℕ).factorial : ℂ) * ((-1)^k / (k.factorial : ℂ)))))) := by
+      have hfeq : (fun s : ℂ => (s + (k:ℂ))^(4 : ℕ) *
+          (α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
             + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s)))
-          = fun s : ℂ => α.eval s * ((s + (k:ℂ))^2 * deriv Complex.Gamma s)^2
+          = fun s : ℂ => α.eval s * ((s + (k:ℂ))^(2 : ℕ) * deriv Complex.Gamma s)^(2 : ℕ)
             + β.eval s * ((s + (k:ℂ)) * Complex.Gamma s
               * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)) := by
         funext s
-        rw [mul_pow, show ((s+(k:ℂ))^2)^2 = (s+(k:ℂ))^4 by ring]
+        rw [mul_pow, show ((s+(k:ℂ))^(2 : ℕ))^(2 : ℕ) = (s+(k:ℂ))^(4 : ℕ) by ring]
         ring
       rw [hfeq]
       exact (hcα.mul hgd).add (hcβ.mul hgm)
     have hval := tendsto_nhds_unique hlim0 hlim1
     have hr : ((-1)^k / (k.factorial : ℂ)) ≠ 0 :=
       div_ne_zero (pow_ne_zero k (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero k)
-    have hr2 : ((-1:ℂ)^k / (k.factorial : ℂ))^2 ≠ 0 := pow_ne_zero 2 hr
+    have hr2 : ((-1:ℂ)^k / (k.factorial : ℂ))^(2 : ℕ) ≠ 0 := pow_ne_zero 2 hr
     simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_ofNat]
     have h2f : ((2:ℕ).factorial : ℂ) = 2 := by norm_num
     rw [h2f] at hval
     have hfinal : (α.eval (-(k:ℂ)) + 2 * β.eval (-(k:ℂ)))
-        * ((-1)^k / (k.factorial : ℂ))^2 = 0 := by
+        * ((-1)^k / (k.factorial : ℂ))^(2 : ℕ) = 0 := by
       linear_combination -hval
     rcases mul_eq_zero.mp hfinal with h | h
     · exact h
@@ -2769,7 +2769,7 @@ private theorem off_poles_pos {x : ℂ} (hx : ∃ r : ℝ, 0 < r ∧ x = (r:ℂ)
 
 theorem gamma_F_not_identically_zero :
     ¬ ∀ z : ℂ, (∀ n : ℕ, z ≠ -(n:ℂ)) →
-      Complex.Gamma z * iteratedDeriv 2 Complex.Gamma z - 2 * (iteratedDeriv 1 Complex.Gamma z)^2 = 0 := by
+      Complex.Gamma z * iteratedDeriv 2 Complex.Gamma z - 2 * (iteratedDeriv 1 Complex.Gamma z)^(2 : ℕ) = 0 := by
   intro hF
   have o1 : ∀ n : ℕ, (1:ℂ) ≠ -(n:ℂ) := off_poles_pos ⟨1, by norm_num, by norm_num⟩
   have o2 : ∀ n : ℕ, (2:ℂ) ≠ -(n:ℂ) := off_poles_pos ⟨2, by norm_num, by norm_num⟩
@@ -2795,7 +2795,7 @@ theorem gamma_F_not_identically_zero :
   simp only [show (1:ℕ)-1 = 0 from rfl, show (2:ℕ)-1 = 1 from rfl, iteratedDeriv_zero,
     show (1:ℂ)+1 = 2 by norm_num, show (2:ℂ)+1 = 3 by norm_num,
     Nat.cast_one, Nat.cast_ofNat, hg1, hg2, hg3, one_mul, mul_one] at r1_1 r2_1 r1_2 r2_2 hF1 hF2 hF3
-  -- hF1 : iteratedDeriv 2 Γ 1 - 2*(iteratedDeriv 1 Γ 1)^2 = 0
+  -- hF1 : iteratedDeriv 2 Γ 1 - 2*(iteratedDeriv 1 Γ 1)^(2 : ℕ) = 0
   -- substitute recurrences into hF2, hF3 (in terms of a = id1Γ1, b = id2Γ1)
   rw [r2_1, r1_1] at hF2
   have ha : iteratedDeriv 1 Complex.Gamma 1 = -1 := by linear_combination (hF1 - hF2) / 2
@@ -2837,7 +2837,7 @@ neighborhood `β` vanishes, so `β` has infinitely many roots and `β ≡ 0`, wh
 — the sole obstruction beyond relations in two jet variables — is discharged. -/
 theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
     (hrel : ∀ s : ℂ, (∀ m : ℕ, s ≠ -(m:ℂ)) →
-      α.eval s * (deriv Complex.Gamma s)^2
+      α.eval s * (deriv Complex.Gamma s)^(2 : ℕ)
         + β.eval s * (iteratedDeriv 2 Complex.Gamma s * Complex.Gamma s) = 0) :
     α = 0 ∧ β = 0 := by
   have hlead : α + 2 * β = 0 := gamma_mixed_leading α β hrel
@@ -2849,7 +2849,7 @@ theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
   -- β·F = 0 off poles
   have hβF : ∀ z : ℂ, (∀ m : ℕ, z ≠ -(m:ℂ)) →
       β.eval z * (Complex.Gamma z * iteratedDeriv 2 Complex.Gamma z
-        - 2 * (iteratedDeriv 1 Complex.Gamma z)^2) = 0 := by
+        - 2 * (iteratedDeriv 1 Complex.Gamma z)^(2 : ℕ)) = 0 := by
     intro z hz
     have h := hrel z hz
     have hα : α.eval z = -2 * β.eval z := by
@@ -2857,10 +2857,10 @@ theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
       rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_ofNat] at h0
       linear_combination h0
     rw [iteratedDeriv_one]
-    linear_combination h - (deriv Complex.Gamma z)^2 * hα
+    linear_combination h - (deriv Complex.Gamma z)^(2 : ℕ) * hα
   -- F continuous at z₀
   have hFcont : ContinuousAt (fun z => Complex.Gamma z * iteratedDeriv 2 Complex.Gamma z
-      - 2 * (iteratedDeriv 1 Complex.Gamma z)^2) z₀ := by
+      - 2 * (iteratedDeriv 1 Complex.Gamma z)^(2 : ℕ)) z₀ := by
     have cΓ : ContinuousAt Complex.Gamma z₀ := (contDiffAt_Gamma z₀ hz₀off 1).continuousAt
     have c2 : ContinuousAt (iteratedDeriv 2 Complex.Gamma) z₀ :=
       continuousAt_iteratedDeriv_of_contDiffAt (contDiffAt_Gamma z₀ hz₀off 2)
@@ -2868,7 +2868,7 @@ theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
       continuousAt_iteratedDeriv_of_contDiffAt (contDiffAt_Gamma z₀ hz₀off 1)
     exact (cΓ.mul c2).sub (continuousAt_const.mul (c1.pow 2))
   have hFne : ∀ᶠ z in 𝓝 z₀, Complex.Gamma z * iteratedDeriv 2 Complex.Gamma z
-      - 2 * (iteratedDeriv 1 Complex.Gamma z)^2 ≠ 0 := hFcont.eventually_ne hz₀F
+      - 2 * (iteratedDeriv 1 Complex.Gamma z)^(2 : ℕ) ≠ 0 := hFcont.eventually_ne hz₀F
   have hoff : ∀ᶠ z in 𝓝 z₀, ∀ m : ℕ, z ≠ -(m:ℂ) := offPoles_isOpen.mem_nhds hz₀off
   have hβ0 : ∀ᶠ z in 𝓝 z₀, β.eval z = 0 := by
     filter_upwards [hFne, hoff] with z hFz hoz
@@ -2880,16 +2880,16 @@ theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
   exact ⟨by linear_combination hlead - 2 * hβ, hβ⟩
 
 /-- **The leading constraint on the four-variable tie.**  If the weighted-homogeneous degree-6
-relation `alpha*(Gamma'')^2 + beta*(Gamma'*Gamma''') + gamma*(Gamma*Gamma^(4)) = 0` holds off the poles,
+relation `alpha*(Gamma'')^(2 : ℕ) + beta*(Gamma'*Gamma''') + gamma*(Gamma*Gamma^(4)) = 0` holds off the poles,
 then `4*alpha + 6*beta + 24*gamma = 0`.  All three monomials sit at weighted degree 6 and total degree 2
--- a THREE-way tie -- so their leading Laurent coefficients add on the single power `r_k^2` with residues
-4, 6, 24 (from `(2 r_k)^2`, `(-r_k)(-6 r_k)`, `r_k * 24 r_k` via `gamma_iteratedDeriv_residue` at orders
+-- a THREE-way tie -- so their leading Laurent coefficients add on the single power `r_k^(2 : ℕ)` with residues
+4, 6, 24 (from `(2 r_k)^(2 : ℕ)`, `(-r_k)(-6 r_k)`, `r_k * 24 r_k` via `gamma_iteratedDeriv_residue` at orders
 2; 1,3; 0,4).  Vanishing at every pole forces the polynomial identity.  Unlike the three-variable tie
 (one equation, two coefficients), this leaves a TWO-dimensional kernel: closing the four-variable case
 needs two further subleading constraints, one more than the three-variable case required. -/
 theorem gamma_leading_order4 (α β γ : Polynomial ℂ)
     (hrel : ∀ s : ℂ, (∀ m : ℕ, s ≠ -(m:ℂ)) →
-      α.eval s * (iteratedDeriv 2 Complex.Gamma s)^2
+      α.eval s * (iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
         + β.eval s * (iteratedDeriv 1 Complex.Gamma s * iteratedDeriv 3 Complex.Gamma s)
         + γ.eval s * (Complex.Gamma s * iteratedDeriv 4 Complex.Gamma s) = 0) :
     4 * α + 6 * β + 24 * γ = 0 := by
@@ -2897,13 +2897,13 @@ theorem gamma_leading_order4 (α β γ : Polynomial ℂ)
     intro k
     set r : ℂ := (-1)^k / (k.factorial : ℂ) with hr
     have hrne : r ≠ 0 := div_ne_zero (pow_ne_zero k (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero k)
-    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^6 *
-        (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^2
+    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
+        (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
           + β.eval s * (iteratedDeriv 1 Complex.Gamma s * iteratedDeriv 3 Complex.Gamma s)
           + γ.eval s * (Complex.Gamma s * iteratedDeriv 4 Complex.Gamma s)))
         (𝓝[≠] (-(k:ℂ))) (𝓝 0) := by
-      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^6 *
-          (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^2
+      have hev : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^(6 : ℕ) *
+          (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
             + β.eval s * (iteratedDeriv 1 Complex.Gamma s * iteratedDeriv 3 Complex.Gamma s)
             + γ.eval s * (Complex.Gamma s * iteratedDeriv 4 Complex.Gamma s)) = 0 := by
         filter_upwards [eventually_nhdsWithin_of_eventually_nhds
@@ -2923,19 +2923,19 @@ theorem gamma_leading_order4 (α β γ : Polynomial ℂ)
     have g2 := gamma_iteratedDeriv_residue 2 k
     have g3 := gamma_iteratedDeriv_residue 3 k
     have g4 := gamma_iteratedDeriv_residue 4 k
-    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^6 *
-        (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^2
+    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
+        (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
           + β.eval s * (iteratedDeriv 1 Complex.Gamma s * iteratedDeriv 3 Complex.Gamma s)
           + γ.eval s * (Complex.Gamma s * iteratedDeriv 4 Complex.Gamma s)))
         (𝓝[≠] (-(k:ℂ)))
-        (𝓝 (α.eval (-(k:ℂ)) * ((-1)^2 * ((2:ℕ).factorial:ℂ) * r)^2
-          + β.eval (-(k:ℂ)) * (((-1)^1 * ((1:ℕ).factorial:ℂ) * r) * ((-1)^3 * ((3:ℕ).factorial:ℂ) * r))
-          + γ.eval (-(k:ℂ)) * (((-1)^0 * ((0:ℕ).factorial:ℂ) * r) * ((-1)^4 * ((4:ℕ).factorial:ℂ) * r)))) := by
-      have hfeq : (fun s : ℂ => (s + (k:ℂ))^6 *
-          (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^2
+        (𝓝 (α.eval (-(k:ℂ)) * ((-1)^(2 : ℕ) * ((2:ℕ).factorial:ℂ) * r)^(2 : ℕ)
+          + β.eval (-(k:ℂ)) * (((-1)^(1 : ℕ) * ((1:ℕ).factorial:ℂ) * r) * ((-1)^(3 : ℕ) * ((3:ℕ).factorial:ℂ) * r))
+          + γ.eval (-(k:ℂ)) * (((-1)^(0 : ℕ) * ((0:ℕ).factorial:ℂ) * r) * ((-1)^(4 : ℕ) * ((4:ℕ).factorial:ℂ) * r)))) := by
+      have hfeq : (fun s : ℂ => (s + (k:ℂ))^(6 : ℕ) *
+          (α.eval s * (iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
             + β.eval s * (iteratedDeriv 1 Complex.Gamma s * iteratedDeriv 3 Complex.Gamma s)
             + γ.eval s * (Complex.Gamma s * iteratedDeriv 4 Complex.Gamma s)))
-          = fun s : ℂ => α.eval s * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^2
+          = fun s : ℂ => α.eval s * ((s + (k:ℂ))^(2+1) * iteratedDeriv 2 Complex.Gamma s)^(2 : ℕ)
             + β.eval s * (((s + (k:ℂ))^(1+1) * iteratedDeriv 1 Complex.Gamma s)
                 * ((s + (k:ℂ))^(3+1) * iteratedDeriv 3 Complex.Gamma s))
             + γ.eval s * (((s + (k:ℂ))^(0+1) * iteratedDeriv 0 Complex.Gamma s)
@@ -2947,13 +2947,13 @@ theorem gamma_leading_order4 (α β γ : Polynomial ℂ)
       exact ((cα.mul (g2.pow 2)).add (cβ.mul (g1.mul g3))).add (cγ.mul (g0.mul g4))
     have hval := tendsto_nhds_unique hlim0 hlim1
     simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_ofNat]
-    have hfac : (α.eval (-(k:ℂ)) * ((-1:ℂ)^2 * ((2:ℕ).factorial:ℂ) * r)^2
-        + β.eval (-(k:ℂ)) * (((-1)^1 * ((1:ℕ).factorial:ℂ) * r) * ((-1)^3 * ((3:ℕ).factorial:ℂ) * r))
-        + γ.eval (-(k:ℂ)) * (((-1)^0 * ((0:ℕ).factorial:ℂ) * r) * ((-1)^4 * ((4:ℕ).factorial:ℂ) * r)))
-        = (4 * α.eval (-(k:ℂ)) + 6 * β.eval (-(k:ℂ)) + 24 * γ.eval (-(k:ℂ))) * r^2 := by
+    have hfac : (α.eval (-(k:ℂ)) * ((-1:ℂ)^(2 : ℕ) * ((2:ℕ).factorial:ℂ) * r)^(2 : ℕ)
+        + β.eval (-(k:ℂ)) * (((-1)^(1 : ℕ) * ((1:ℕ).factorial:ℂ) * r) * ((-1)^(3 : ℕ) * ((3:ℕ).factorial:ℂ) * r))
+        + γ.eval (-(k:ℂ)) * (((-1)^(0 : ℕ) * ((0:ℕ).factorial:ℂ) * r) * ((-1)^(4 : ℕ) * ((4:ℕ).factorial:ℂ) * r)))
+        = (4 * α.eval (-(k:ℂ)) + 6 * β.eval (-(k:ℂ)) + 24 * γ.eval (-(k:ℂ))) * r^(2 : ℕ) := by
       simp only [Nat.factorial]; push_cast; ring
     rw [hfac] at hval
-    have : (4 * α.eval (-(k:ℂ)) + 6 * β.eval (-(k:ℂ)) + 24 * γ.eval (-(k:ℂ))) * r^2 = 0 := hval.symm
+    have : (4 * α.eval (-(k:ℂ)) + 6 * β.eval (-(k:ℂ)) + 24 * γ.eval (-(k:ℂ))) * r^(2 : ℕ) = 0 := hval.symm
     rcases mul_eq_zero.mp this with h | h
     · linear_combination h
     · exact absurd h (pow_ne_zero 2 hrne)
@@ -3070,15 +3070,15 @@ theorem digamma_transcendental :
     rw [← htel]
     exact hr
 
-/-- **The trigamma difference equation.**  For `s` off the poles, `psi'(s+1) = psi'(s) - 1/s^2` where
+/-- **The trigamma difference equation.**  For `s` off the poles, `psi'(s+1) = psi'(s) - 1/s^(2 : ℕ)` where
 `psi = Gamma'/Gamma`: differentiating the digamma recurrence `psi(s+1) = psi(s) + 1/s`, valid because the
 domain off the poles is open (`offPoles_isOpen`), so the recurrence holds on a whole neighborhood and may
 be differentiated.  This carries the difference structure to the next polygamma order: iterating gives
-`psi'(s+n) = psi'(s) - sum_{k<n} 1/(s+k)^2`, and the same telescoping-and-distinct-values argument shows
+`psi'(s+n) = psi'(s) - sum_{k<n} 1/(s+k)^(2 : ℕ)`, and the same telescoping-and-distinct-values argument shows
 trigamma is transcendental -- the difference-side ladder extends to every polygamma. -/
 theorem trigamma_recurrence (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
     deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) (s + 1)
-      = deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s - 1 / s^2 := by
+      = deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s - 1 / s^(2 : ℕ) := by
   have hs0 : s ≠ 0 := by simpa using hs 0
   have hs1 : ∀ p : ℕ, s + 1 ≠ -(p:ℂ) := by
     intro p h; exact hs (p+1) (by push_cast; linear_combination h)
@@ -3101,7 +3101,7 @@ theorem trigamma_recurrence (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
     rw [hfun]
     simpa only [mul_one] using hc.deriv
   -- RHS derivative
-  have hR : deriv (fun z => ψ z + 1 / z) s = deriv ψ s - 1 / s^2 := by
+  have hR : deriv (fun z => ψ z + 1 / z) s = deriv ψ s - 1 / s^(2 : ℕ) := by
     have hinv : HasDerivAt (fun z : ℂ => 1 / z) (-1 / s ^ 2) s := by
       have h := hasDerivAt_inv hs0
       have e1 : (fun z : ℂ => 1 / z) = fun z => z⁻¹ := by funext z; rw [one_div]
@@ -3113,8 +3113,8 @@ theorem trigamma_recurrence (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
   rw [← hL, hev.deriv_eq, hR]
 
 /-- **Trigamma telescope and transcendence.**  `trigamma_telescope`: `psi'(s+n) = psi'(s) - sum_{k<n}
-1/(s+k)^2`, iterating `trigamma_recurrence`.  `trigamma_transcendental`: `psi' = deriv(Gamma'/Gamma)` is
-transcendental as a function -- at `s=1` the values `psi'(n+1) = psi'(1) - sum_{k<n} 1/(1+k)^2` are
+1/(s+k)^(2 : ℕ)`, iterating `trigamma_recurrence`.  `trigamma_transcendental`: `psi' = deriv(Gamma'/Gamma)` is
+transcendental as a function -- at `s=1` the values `psi'(n+1) = psi'(1) - sum_{k<n} 1/(1+k)^(2 : ℕ)` are
 strictly decreasing reals, hence pairwise distinct, so no nonzero polynomial vanishes on `psi'`.  The
 digamma ladder (recurrence/telescope/transcendental) reproduced verbatim one polygamma order up, with the
 same open-domain differentiation and distinct-values argument -- the difference side is a generative
@@ -3128,7 +3128,7 @@ private theorem offp_natpos (a : ℕ) (ha : 1 ≤ a) : ∀ p : ℕ, (a:ℂ) ≠ 
 theorem trigamma_telescope (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) (n : ℕ) :
     deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) (s + n)
       = deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
-        - ∑ k ∈ Finset.range n, 1 / (s + (k:ℂ))^2 := by
+        - ∑ k ∈ Finset.range n, 1 / (s + (k:ℂ))^(2 : ℕ) := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -3146,11 +3146,11 @@ theorem trigamma_transcendental :
   rintro ⟨P, hP, hroot⟩
   apply hP
   apply Polynomial.eq_zero_of_infinite_isRoot
-  set hR : ℕ → ℝ := fun n => ∑ k ∈ Finset.range n, 1 / (1 + (k:ℝ))^2 with hRdef
+  set hR : ℕ → ℝ := fun n => ∑ k ∈ Finset.range n, 1 / (1 + (k:ℝ))^(2 : ℕ) with hRdef
   have hmono : StrictMono hR := by
     apply strictMono_nat_of_lt_succ
     intro n; rw [hRdef]; simp only [Finset.sum_range_succ]
-    have : (0:ℝ) < 1 / (1 + (n:ℝ))^2 := by positivity
+    have : (0:ℝ) < 1 / (1 + (n:ℝ))^(2 : ℕ) := by positivity
     linarith
   apply Set.infinite_of_injective_forall_mem
     (f := fun n : ℕ => deriv (fun w => deriv Complex.Gamma w / Complex.Gamma w) 1 - ((hR n : ℝ) : ℂ))
@@ -3158,7 +3158,7 @@ theorem trigamma_transcendental :
     have h2 : ((hR a : ℝ) : ℂ) = ((hR b : ℝ) : ℂ) := by linear_combination -hab
     exact hmono.injective (Complex.ofReal_inj.mp h2)
   · intro n
-    have hcast : ((hR n : ℝ) : ℂ) = ∑ k ∈ Finset.range n, 1 / (1 + (k:ℂ))^2 := by
+    have hcast : ((hR n : ℝ) : ℂ) = ∑ k ∈ Finset.range n, 1 / (1 + (k:ℂ))^(2 : ℕ) := by
       rw [hRdef]; push_cast; ring
     have h1off : ∀ p : ℕ, (1:ℂ) ≠ -(p:ℂ) := by simpa using offp_natpos 1 (le_refl 1)
     have htel := trigamma_telescope 1 h1off n
@@ -3314,16 +3314,16 @@ theorem polygamma_transcendental (m : ℕ) :
     rw [hcast, hc, ← htel]
     exact hr
 
-/-- **`Gamma'' = Gamma * (psi^2 + psi')`** off the poles, for the log-derivative `psi = Gamma'/Gamma`.
+/-- **`Gamma'' = Gamma * (psi^(2 : ℕ) + psi')`** off the poles, for the log-derivative `psi = Gamma'/Gamma`.
 The order-2 Bell identity: the second derivative of `Gamma` equals `Gamma` times a polynomial in the
-`psi`-jet `(psi, psi')`.  Immediate from the log-derivative identity `Gamma''*Gamma - (Gamma')^2 =
-Gamma^2*psi'` (`gamma_secondDeriv_logDeriv_identity`) after dividing by `Gamma`.  This is the order-2 rung
+`psi`-jet `(psi, psi')`.  Immediate from the log-derivative identity `Gamma''*Gamma - (Gamma')^(2 : ℕ) =
+Gamma^(2 : ℕ)*psi'` (`gamma_secondDeriv_logDeriv_identity`) after dividing by `Gamma`.  This is the order-2 rung
 of the Bell chain `Gamma^(n) = Gamma * B_n(psi, ..., psi^(n-1))` that expresses every derivative of `Gamma`
 through its log-derivative jet -- the concrete engine of the reduction `Gamma differentially algebraic ==>
 psi differentially algebraic`, the link from the differential side to the (complete) difference side. -/
 theorem iteratedDeriv_two_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
     iteratedDeriv 2 Complex.Gamma s
-      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^2
+      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^(2 : ℕ)
         + deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s) := by
   have hne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero hs
   have h1 : DifferentiableAt ℂ Complex.Gamma s := (analyticAt_Gamma s hs).differentiableAt
@@ -3332,17 +3332,17 @@ theorem iteratedDeriv_two_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ -
   field_simp
   linear_combination hid
 
-/-- **`Gamma''' = Gamma * (psi^3 + 3 psi psi' + psi'')`** off the poles -- the order-3 Bell identity.
-Obtained by differentiating the order-2 identity `Gamma'' = Gamma*(psi^2 + psi')` on the open off-poles
+/-- **`Gamma''' = Gamma * (psi^(3 : ℕ) + 3 psi psi' + psi'')`** off the poles -- the order-3 Bell identity.
+Obtained by differentiating the order-2 identity `Gamma'' = Gamma*(psi^(2 : ℕ) + psi')` on the open off-poles
 set (`offPoles_isOpen`), with `Gamma`, `psi`, `psi'` differentiable there (`analyticAt_Gamma`,
-`analyticAt_logDeriv_Gamma`): `(Gamma*(psi^2+psi'))' = Gamma'*(psi^2+psi') + Gamma*(2 psi psi' + psi'') =
-Gamma*(psi*(psi^2+psi') + 2 psi psi' + psi'') = Gamma*(psi^3 + 3 psi psi' + psi'')`, using `Gamma' =
+`analyticAt_logDeriv_Gamma`): `(Gamma*(psi^(2 : ℕ)+psi'))' = Gamma'*(psi^(2 : ℕ)+psi') + Gamma*(2 psi psi' + psi'') =
+Gamma*(psi*(psi^(2 : ℕ)+psi') + 2 psi psi' + psi'') = Gamma*(psi^(3 : ℕ) + 3 psi psi' + psi'')`, using `Gamma' =
 Gamma*psi`.  Third rung of the Bell chain `Gamma^(n) = Gamma * B_n(psi-jet)`, differentiated exactly as the
 polygamma recurrences were -- each derivative of `Gamma` is `Gamma` times a polynomial in the log-derivative
 jet, the concrete substitution behind `Gamma differentially algebraic ==> psi differentially algebraic`. -/
 theorem iteratedDeriv_three_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
     iteratedDeriv 3 Complex.Gamma s
-      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^3
+      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^(3 : ℕ)
         + 3 * (deriv Complex.Gamma s / Complex.Gamma s)
             * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
         + deriv (deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z)) s) := by
@@ -3375,7 +3375,7 @@ theorem iteratedDeriv_three_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠
   field_simp
   ring
 
-/-- **`Gamma^(4) = Gamma * (psi^4 + 6 psi^2 psi' + 3 psi'^2 + 4 psi psi'' + psi''')`** off the poles --
+/-- **`Gamma^(4) = Gamma * (psi^(4 : ℕ) + 6 psi^(2 : ℕ) psi' + 3 psi'^(2 : ℕ) + 4 psi psi'' + psi''')`** off the poles --
 the order-4 Bell identity, by differentiating the order-3 identity on the open off-poles set
 (`offPoles_isOpen`), the `psi`-jet differentiable via `analyticAt_logDeriv_Gamma`.  Fourth rung of the Bell
 chain `Gamma^(n) = Gamma * B_n(psi-jet)`; the coefficients `1; 6,3,4; 1` are the complete Bell/Faa-di-Bruno
@@ -3384,10 +3384,10 @@ domain), so the chain is uniform and self-propagating -- the substitution engine
 `Gamma differentially algebraic ==> psi differentially algebraic`. -/
 theorem iteratedDeriv_four_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
     iteratedDeriv 4 Complex.Gamma s
-      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^4
-        + 6 * (deriv Complex.Gamma s / Complex.Gamma s)^2
+      = Complex.Gamma s * ((deriv Complex.Gamma s / Complex.Gamma s)^(4 : ℕ)
+        + 6 * (deriv Complex.Gamma s / Complex.Gamma s)^(2 : ℕ)
             * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
-        + 3 * (deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s)^2
+        + 3 * (deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s)^(2 : ℕ)
         + 4 * (deriv Complex.Gamma s / Complex.Gamma s)
             * deriv (deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z)) s
         + deriv (deriv (deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z))) s) := by
@@ -3575,8 +3575,8 @@ theorem gamma_iteratedDeriv_div_eq_bell (n : ℕ) :
   rw [hB s hs, mul_comm, mul_div_assoc, div_self (Complex.Gamma_ne_zero hs), mul_one]
 
 /-- **The log-derivative's derivative lies in `C(s)(Gamma-jet)` -- the converse inclusion, first rung.**
-Off the poles, `psi' = eval (fun j => Gamma^(j)) (X_2 X_0 - X_1^2) / Gamma^2`, i.e.
-`psi'(s) = (Gamma''(s) Gamma(s) - Gamma'(s)^2)/Gamma(s)^2` -- a rational function of the `Gamma`-jet.
+Off the poles, `psi' = eval (fun j => Gamma^(j)) (X_2 X_0 - X_1^(2 : ℕ)) / Gamma^(2 : ℕ)`, i.e.
+`psi'(s) = (Gamma''(s) Gamma(s) - Gamma'(s)^(2 : ℕ))/Gamma(s)^(2 : ℕ)` -- a rational function of the `Gamma`-jet.
 Immediate from `gamma_secondDeriv_logDeriv_identity`.  Where the Bell chain shows `Gamma^(k) in
 Gamma * C(s)[psi-jet]` (forward), this shows `psi^(k) in C(s)(Gamma-jet)` (converse), here for `k=1`.
 Together the two inclusions give `C(s)<Gamma> = C(s)(Gamma, psi-jet)`: the differential fields of `Gamma`
@@ -3586,7 +3586,7 @@ theorem logDeriv_deriv_eq_gammaJet :
     ∃ N : MvPolynomial (Fin 3) ℂ, ∀ s : ℂ, (∀ p : ℕ, s ≠ -(p:ℂ)) →
       deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
         = MvPolynomial.eval (fun j : Fin 3 => iteratedDeriv (j:ℕ) Complex.Gamma s) N
-            / (Complex.Gamma s)^2 := by
+            / (Complex.Gamma s)^(2 : ℕ) := by
   refine ⟨MvPolynomial.X 2 * MvPolynomial.X 0 - MvPolynomial.X 1 ^ 2, fun s hs => ?_⟩
   have hne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero hs
   have h1 : DifferentiableAt ℂ Complex.Gamma s := (analyticAt_Gamma s hs).differentiableAt
@@ -3691,21 +3691,21 @@ theorem oneDivGamma_logDeriv_eq_neg_digamma (s : ℂ) (hs : ∀ p : ℕ, s ≠ -
   have hne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero hs
   have hd : DifferentiableAt ℂ Complex.Gamma s := (analyticAt_Gamma s hs).differentiableAt
   have h : HasDerivAt (fun z => (Complex.Gamma z)⁻¹)
-      (-deriv Complex.Gamma s / (Complex.Gamma s)^2) s := hd.hasDerivAt.inv hne
+      (-deriv Complex.Gamma s / (Complex.Gamma s)^(2 : ℕ)) s := hd.hasDerivAt.inv hne
   rw [h.deriv]
   field_simp
 
-/-- **The derivative of the reciprocal Gamma.**  Off the poles, `(1/Gamma)'(s) = -Gamma'(s)/Gamma(s)^2`.
+/-- **The derivative of the reciprocal Gamma.**  Off the poles, `(1/Gamma)'(s) = -Gamma'(s)/Gamma(s)^(2 : ℕ)`.
 The product-form basis of the reciprocal's Bell structure: iterating this (with `1/Gamma` entire) gives
 `(1/Gamma)^(n) = (1/Gamma) * B_n(-psi-jet)` -- the Bell chain of `Gamma` with `psi -> -psi`
 (`oneDivGamma_logDeriv_eq_neg_digamma`).  So the entire function `1/Gamma` inherits the full log-derivative
 jet structure of `Gamma`, sign-flipped, and any hypertranscendence of `Gamma` transfers to it. -/
 theorem oneDivGamma_deriv_eq (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
-    deriv (fun z => (Complex.Gamma z)⁻¹) s = -deriv Complex.Gamma s / (Complex.Gamma s)^2 := by
+    deriv (fun z => (Complex.Gamma z)⁻¹) s = -deriv Complex.Gamma s / (Complex.Gamma s)^(2 : ℕ) := by
   have hne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero hs
   have hd : DifferentiableAt ℂ Complex.Gamma s := (analyticAt_Gamma s hs).differentiableAt
   have h : HasDerivAt (fun z => (Complex.Gamma z)⁻¹)
-      (-deriv Complex.Gamma s / (Complex.Gamma s)^2) s := hd.hasDerivAt.inv hne
+      (-deriv Complex.Gamma s / (Complex.Gamma s)^(2 : ℕ)) s := hd.hasDerivAt.inv hne
   exact h.deriv
 
 end GaloisForLFunctions

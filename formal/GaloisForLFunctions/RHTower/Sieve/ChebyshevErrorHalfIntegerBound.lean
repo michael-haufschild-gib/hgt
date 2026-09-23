@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.PerronIntegrandContinuity
 # The Chebyshev error under the Riemann hypothesis, in closed form
 
 Instantiating the master inequality at `σ₁ = 1/2 + ε/2`, `σ₀ = 1 + ε/2` and truncation height
-`T = N + 1/2` makes every one of the four terms a constant times `x^{1/2+ε/2}(1 + log x)^2`:
+`T = N + 1/2` makes every one of the four terms a constant times `x^{1/2+ε/2}(1 + log x)^(2 : ℕ)`:
 the Perron error is polylogarithmic, the shifted vertical side carries `x^{σ₁}` and two
 logarithms, and each horizontal side is `x^{ε/2} log x` because the height cancels a whole power.
 -/
@@ -21,7 +21,7 @@ open Complex ArithmeticFunction
 noncomputable section
 
 /-- **The Chebyshev error at a half-integer cutoff, under RH.**  For every `ε ∈ (0, 1/4]` there is
-a constant `C` with `|ψ(N) − N| ≤ C·(N+1/2)^{1/2+ε/2}(1 + log(N+1/2))^2` for all `N ≥ 7`. -/
+a constant `C` with `|ψ(N) − N| ≤ C·(N+1/2)^{1/2+ε/2}(1 + log(N+1/2))^(2 : ℕ)` for all `N ≥ 7`. -/
 theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ}
     (hε : 0 < ε) (hε4 : ε ≤ 1 / 4) :
     ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 7 ≤ N →

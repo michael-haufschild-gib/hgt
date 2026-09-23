@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.XiFourthTraceExtendedCriticalLineBand
 The canonical D2 tail begins at `233 / 20`, obtained by rounding the exact fourth reciprocal-trace
 zero exclusion before verified-height transfer. This module recovers the discarded algebraic
 margin. Every real threshold `R > 233 / 20` satisfying
-`(R + 1 / 2)^2 < 2365 / 16` has an unconditional explicit defect floor on the intervening band,
+`(R + 1 / 2)^(2 : ℕ) < 2365 / 16` has an unconditional explicit defect floor on the intervening band,
 so lower boundedness strictly above `R` remains equivalent to RH.
 
 The rational threshold `58289 / 5000` satisfies the exact square inequality and yields a closed,
@@ -23,7 +23,7 @@ noncomputable section
 
 /-- Exact fourth-trace squared-height exclusion, exposed as a verified-height certificate. -/
 theorem rhVerifiedThrough_of_sq_lt_2365_over_16
-    (H : ℝ) (hHsq : H ^ 2 < 2365 / 16) :
+    (H : ℝ) (hHsq : H ^ (2 : ℕ) < 2365 / 16) :
     RHVerifiedThrough H := by
   intro rho hzero _hre0 _hre1 him0 himUpper
   let rhoSupport : XiDivisorSupport :=
@@ -34,8 +34,8 @@ theorem rhVerifiedThrough_of_sq_lt_2365_over_16
         ((MeromorphicOn.divisor xi Set.univ) (rhoSupport : ℂ)) := by
       omega
     exact ⟨rhoSupport, ⟨0, hn⟩⟩
-  have hsq : (q.1 : ℂ).im ^ 2 < 2365 / 16 := by
-    change rho.im ^ 2 < 2365 / 16
+  have hsq : (q.1 : ℂ).im ^ (2 : ℕ) < 2365 / 16 := by
+    change rho.im ^ (2 : ℕ) < 2365 / 16
     nlinarith
   have hline := xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hsq
   simpa only [q, rhoSupport] using hline
@@ -43,7 +43,7 @@ theorem rhVerifiedThrough_of_sq_lt_2365_over_16
 /-- The fourth-trace exclusion gives an explicit literal pure-prime floor throughout every
 newly exposed band below its exact squared-height frontier. -/
 theorem primeArchLogHeightDefect_lower_of_fourthTraceBand
-    (R : ℝ) (hRsq : (R + 1 / 2) ^ 2 < 2365 / 16)
+    (R : ℝ) (hRsq : (R + 1 / 2) ^ (2 : ℕ) < 2365 / 16)
     {s : ℂ} (hsRe : 0 < s.re) (hsHalf : s.re < 1 / 2)
     (hsLow : 233 / 20 < s.im) (hsUpper : s.im ≤ R) :
     -(Real.log Real.pi + Real.log 2) - 8 ≤ primeArchLogHeightDefect s := by
@@ -92,7 +92,7 @@ theorem primeArchLogHeightDefect_lower_of_fourthTraceBand
 /-- Every exact fourth-trace band can be removed from the remaining D2 tail burden. -/
 theorem primeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow_iff_rh_of_fourthTraceBand
     (R : ℝ) (hRlower : 233 / 20 < R)
-    (hRsq : (R + 1 / 2) ^ 2 < 2365 / 16) :
+    (hRsq : (R + 1 / 2) ^ (2 : ℕ) < 2365 / 16) :
     PrimeArchLogHeightDefectGaussianRatPositiveFrequencyAboveBoundedBelow R ↔
       RiemannHypothesis := by
   constructor

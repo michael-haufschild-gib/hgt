@@ -17,8 +17,8 @@ noncomputable section
 /-- Weight of the physical path bond with zero-based left endpoint `e`: inverse-square on matching
 bonds and inverse-fourth on inter-pair bridge bonds. -/
 def nestedInfiniteEdgeWeight (e : ℕ) : ℝ :=
-  if Even e then 1 / (((e / 2 + 1 : ℕ) : ℝ) ^ 2)
-  else 1 / (((e / 2 + 2 : ℕ) : ℝ) ^ 4)
+  if Even e then 1 / (((e / 2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))
+  else 1 / (((e / 2 + 2 : ℕ) : ℝ) ^ (4 : ℕ))
 
 /-- Nonidentity Pauli coefficients of the compatible nested `P11` background. -/
 def nestedInfinitePathCenter : InfinitePathLabel → ℝ
@@ -34,8 +34,8 @@ def nestedInfinitePathCenter : InfinitePathLabel → ℝ
 
 /-- Coordinatewise perturbation envelope around the nested background. -/
 def infinitePathRadius : InfinitePathLabel → ℝ
-  | Sum.inl sq => 1 / (1000000 * (((sq.1 + 1 : ℕ) : ℝ) ^ 2))
-  | Sum.inr eab => 1 / (1000000 * (((eab.1 + 1 : ℕ) : ℝ) ^ 2))
+  | Sum.inl sq => 1 / (1000000 * (((sq.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
+  | Sum.inr eab => 1 / (1000000 * (((eab.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
 
 theorem infinitePathRadius_pos (i : InfinitePathLabel) : 0 < infinitePathRadius i := by
   rcases i with i | i <;> simp [infinitePathRadius] <;> positivity

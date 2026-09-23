@@ -19,7 +19,7 @@ Thus horizontal complex-frequency lines of centered Xi are not formal analytic p
 ordinary real-frequency spectrum of a real tilted mirror.  Exact pair-shell integration and
 Plancherel then give the coefficient-correct optical theorem
 
-`E_Hawking(a) = (1/(48*pi)) * integral |k_a''|^2`,
+`E_Hawking(a) = (1/(48*pi)) * integral |k_a''|^(2 : ℕ)`,
 
 equal to the quadratic Davies--Fulling Schwarzian backreaction energy of that same mirror.
 
@@ -214,7 +214,7 @@ theorem thetaCuspHawkingTiltedBornPairKernel_normSq_totalSplit
     Complex.normSq
         (thetaCuspHawkingTiltedBornPairKernel a
           (u : ℂ) ((w - u : ℝ) : ℂ)) =
-      4 * u ^ 2 * (w - u) ^ 2 *
+      4 * u ^ (2 : ℕ) * (w - u) ^ (2 : ℕ) *
         Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
   rw [thetaCuspHawkingTiltedBornPairKernel]
   push_cast
@@ -225,7 +225,7 @@ theorem thetaCuspHawkingTiltedBornPairKernel_normSq_totalSplit
     norm_num [Complex.normSq_apply]
   have hI : Complex.normSq I = 1 := by
     norm_num [Complex.normSq_apply]
-  have hsub : Complex.normSq ((w : ℂ) - (u : ℂ)) = (w - u) ^ 2 := by
+  have hsub : Complex.normSq ((w : ℂ) - (u : ℂ)) = (w - u) ^ (2 : ℕ) := by
     rw [← ofReal_sub, Complex.normSq_ofReal]
     ring
   rw [htwo, hI, hsub]
@@ -237,17 +237,17 @@ def thetaCuspHawkingTiltedBornRightEnergyShellDensity (a w : ℝ) : ℝ :=
     Complex.normSq
         (thetaCuspHawkingTiltedBornPairKernel a
           (u : ℂ) ((w - u : ℝ) : ℂ)) /
-      (16 * Real.pi ^ 2 * (w - u))
+      (16 * Real.pi ^ (2 : ℕ) * (w - u))
 
 theorem thetaCuspHawkingTiltedBornRightEnergyShellIntegrand_eq
     (a w u : ℝ) :
     Complex.normSq
           (thetaCuspHawkingTiltedBornPairKernel a
             (u : ℂ) ((w - u : ℝ) : ℂ)) /
-        (16 * Real.pi ^ 2 * (w - u)) =
-      u ^ 2 * (w - u) *
+        (16 * Real.pi ^ (2 : ℕ) * (w - u)) =
+      u ^ (2 : ℕ) * (w - u) *
         Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-          (4 * Real.pi ^ 2) := by
+          (4 * Real.pi ^ (2 : ℕ)) := by
   rw [thetaCuspHawkingTiltedBornPairKernel_normSq_totalSplit]
   by_cases hv : w - u = 0
   · simp [hv]
@@ -258,8 +258,8 @@ theorem thetaCuspHawkingTiltedBornRightEnergyShellIntegrand_eq
 theorem thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq
     (a w : ℝ) :
     thetaCuspHawkingTiltedBornRightEnergyShellDensity a w =
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-        (48 * Real.pi ^ 2) := by
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
+        (48 * Real.pi ^ (2 : ℕ)) := by
   have h2 := integral_pow (a := (0 : ℝ)) (b := w) (n := 2)
   have h3 := integral_pow (a := (0 : ℝ)) (b := w) (n := 3)
   rw [thetaCuspHawkingTiltedBornRightEnergyShellDensity]
@@ -268,24 +268,24 @@ theorem thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq
         Complex.normSq
             (thetaCuspHawkingTiltedBornPairKernel a
               (u : ℂ) ((w - u : ℝ) : ℂ)) /
-          (16 * Real.pi ^ 2 * (w - u))) =
+          (16 * Real.pi ^ (2 : ℕ) * (w - u))) =
         ∫ u in 0..w,
-          u ^ 2 * (w - u) *
+          u ^ (2 : ℕ) * (w - u) *
             Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2) := by
+              (4 * Real.pi ^ (2 : ℕ)) := by
       apply intervalIntegral.integral_congr
       intro u _hu
       exact thetaCuspHawkingTiltedBornRightEnergyShellIntegrand_eq a w u
     _ = _ := by
       rw [show (fun u : ℝ =>
-          u ^ 2 * (w - u) *
+          u ^ (2 : ℕ) * (w - u) *
             Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2)) =
+              (4 * Real.pi ^ (2 : ℕ))) =
           fun u : ℝ =>
             (w * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2)) * u ^ 2 +
+              (4 * Real.pi ^ (2 : ℕ))) * u ^ (2 : ℕ) +
             (-Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2)) * u ^ 3 by
+              (4 * Real.pi ^ (2 : ℕ))) * u ^ (3 : ℕ) by
         funext u
         ring]
       rw [intervalIntegral.integral_add,
@@ -296,17 +296,17 @@ theorem thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq
       · exact (by fun_prop : Continuous
           (fun u : ℝ =>
             (w * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2)) * u ^ 2)).intervalIntegrable _ _
+              (4 * Real.pi ^ (2 : ℕ))) * u ^ (2 : ℕ))).intervalIntegrable _ _
       · exact (by fun_prop : Continuous
           (fun u : ℝ =>
             (-Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-              (4 * Real.pi ^ 2)) * u ^ 3)).intervalIntegrable _ _
+              (4 * Real.pi ^ (2 : ℕ))) * u ^ (3 : ℕ))).intervalIntegrable _ _
 
 theorem thetaCuspHawkingTiltedBornRightEnergyShellDensity_nonneg
     (a w : ℝ) :
     0 ≤ thetaCuspHawkingTiltedBornRightEnergyShellDensity a w := by
   rw [thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq]
-  have hw4 : 0 ≤ w ^ 4 := by positivity
+  have hw4 : 0 ≤ w ^ (4 : ℕ) := by positivity
   exact div_nonneg
     (mul_nonneg hw4
       (Complex.normSq_nonneg (XiC ((w : ℂ) + (a : ℂ) * I))))
@@ -317,10 +317,10 @@ theorem thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq_zero_iff
     thetaCuspHawkingTiltedBornRightEnergyShellDensity a w = 0 ↔
       XiC ((w : ℂ) + (a : ℂ) * I) = 0 := by
   rw [thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq]
-  have hfactor : w ^ 4 / (48 * Real.pi ^ 2) ≠ 0 := by positivity
-  rw [show w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-      (48 * Real.pi ^ 2) =
-      (w ^ 4 / (48 * Real.pi ^ 2)) *
+  have hfactor : w ^ (4 : ℕ) / (48 * Real.pi ^ (2 : ℕ)) ≠ 0 := by positivity
+  rw [show w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
+      (48 * Real.pi ^ (2 : ℕ)) =
+      (w ^ (4 : ℕ) / (48 * Real.pi ^ (2 : ℕ))) *
         Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) by ring,
     mul_eq_zero]
   simp [hfactor]
@@ -338,7 +338,7 @@ theorem fourier_thetaCuspHawkingTiltedSourceSecondDerivative_scaled
     FourierTransform.fourier
         (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ)
         (w / (2 * Real.pi)) =
-      -(w : ℂ) ^ 2 * XiC ((w : ℂ) + (a : ℂ) * I) := by
+      -(w : ℂ) ^ (2 : ℕ) * XiC ((w : ℂ) + (a : ℂ) * I) := by
   let source : 𝓢(ℝ, ℂ) := thetaCuspTiltedSchwartz a ha
   let d1 : 𝓢(ℝ, ℂ) := SchwartzMap.derivCLM ℂ ℂ source
   have hderiv0 : deriv (source : ℝ → ℂ) = (d1 : ℝ → ℂ) := by
@@ -377,12 +377,12 @@ theorem norm_sq_fourier_thetaCuspHawkingTiltedSourceSecondDerivative_scaled
     {a : ℝ} (ha : |a| < 1) (w : ℝ) :
     ‖FourierTransform.fourier
         (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ)
-        (w / (2 * Real.pi))‖ ^ 2 =
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
+        (w / (2 * Real.pi))‖ ^ (2 : ℕ) =
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
   rw [fourier_thetaCuspHawkingTiltedSourceSecondDerivative_scaled ha]
   rw [← Complex.normSq_eq_norm_sq]
   rw [Complex.normSq_mul, Complex.normSq_neg]
-  have hw : Complex.normSq ((w : ℂ) ^ 2) = w ^ 4 := by
+  have hw : Complex.normSq ((w : ℂ) ^ (2 : ℕ)) = w ^ (4 : ℕ) := by
     rw [← ofReal_pow, Complex.normSq_ofReal]
     ring
   rw [hw]
@@ -390,10 +390,10 @@ theorem norm_sq_fourier_thetaCuspHawkingTiltedSourceSecondDerivative_scaled
 theorem integrable_pow_four_mul_normSq_XiC_tilt
     {a : ℝ} (ha : |a| < 1) :
     Integrable (fun w : ℝ =>
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) := by
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) := by
   let H : ℝ → ℝ := fun xi =>
     ‖FourierTransform.fourier
-      (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) xi‖ ^ 2
+      (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   have hH : Integrable H :=
     GaloisForLFunctions.RHTower.integrable_norm_sq_fourier
       (thetaCuspHawkingTiltedSourceSecondDerivative a ha).integrable
@@ -408,16 +408,16 @@ theorem integrable_pow_four_mul_normSq_XiC_tilt
 theorem integral_pow_four_mul_normSq_XiC_tilt
     {a : ℝ} (ha : |a| < 1) :
     (∫ w : ℝ,
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) =
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) =
       2 * Real.pi *
         ∫ x : ℝ,
-          ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ 2 := by
+          ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
   let H : ℝ → ℝ := fun xi =>
     ‖FourierTransform.fourier
-      (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) xi‖ ^ 2
+      (thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   have hpoint : (fun w : ℝ => H (w / (2 * Real.pi))) =
       fun w : ℝ =>
-        w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
+        w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
     funext w
     exact norm_sq_fourier_thetaCuspHawkingTiltedSourceSecondDerivative_scaled ha w
   have hscale := MeasureTheory.Measure.integral_comp_div H (2 * Real.pi)
@@ -448,21 +448,21 @@ private theorem integral_even_real_tilted
 theorem integral_Ioi_pow_four_mul_normSq_XiC_tilt
     {a : ℝ} (ha : |a| < 1) :
     (∫ w : ℝ in Set.Ioi 0,
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) =
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I))) =
       Real.pi *
         ∫ x : ℝ,
-          ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ 2 := by
+          ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
   have heven : ∀ w : ℝ,
-      (-w) ^ 4 * Complex.normSq
+      (-w) ^ (4 : ℕ) * Complex.normSq
           (XiC (((-w : ℝ) : ℂ) + (a : ℂ) * I)) =
-        w ^ 4 * Complex.normSq
+        w ^ (4 : ℕ) * Complex.normSq
           (XiC ((w : ℂ) + (a : ℂ) * I)) := by
     intro w
     rw [normSq_XiC_neg_frequency_tilt]
     ring
   have hsplit := integral_even_real_tilted
     (fun w : ℝ =>
-      w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)))
+      w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)))
     heven (integrable_pow_four_mul_normSq_XiC_tilt ha)
   rw [integral_pow_four_mul_normSq_XiC_tilt ha] at hsplit
   linarith [Real.pi_pos]
@@ -477,7 +477,7 @@ def thetaCuspHawkingTiltedSchwarzianQuadraticEnergy
     (a : ℝ) (ha : |a| < 1) : ℝ :=
   (1 / (48 * Real.pi)) *
     ∫ x : ℝ,
-      ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ 2
+      ‖(thetaCuspHawkingTiltedSourceSecondDerivative a ha : ℝ → ℂ) x‖ ^ (2 : ℕ)
 
 /-- Exact tilted Hawking emission/backreaction optical theorem. -/
 theorem thetaCuspHawkingTiltedBornSchwarzianOpticalTheorem
@@ -490,14 +490,14 @@ theorem thetaCuspHawkingTiltedBornSchwarzianOpticalTheorem
     (∫ w : ℝ in Set.Ioi 0,
         thetaCuspHawkingTiltedBornRightEnergyShellDensity a w) =
         ∫ w : ℝ in Set.Ioi 0,
-          w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
-            (48 * Real.pi ^ 2) := by
+          w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) /
+            (48 * Real.pi ^ (2 : ℕ)) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro w _hw
       exact thetaCuspHawkingTiltedBornRightEnergyShellDensity_eq a w
-    _ = (1 / (48 * Real.pi ^ 2)) *
+    _ = (1 / (48 * Real.pi ^ (2 : ℕ))) *
         ∫ w : ℝ in Set.Ioi 0,
-          w ^ 4 * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
+          w ^ (4 : ℕ) * Complex.normSq (XiC ((w : ℂ) + (a : ℂ) * I)) := by
       rw [← MeasureTheory.integral_const_mul]
       apply setIntegral_congr_fun measurableSet_Ioi
       intro w _hw

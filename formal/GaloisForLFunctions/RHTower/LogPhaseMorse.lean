@@ -53,7 +53,7 @@ def logPhaseMorse (v : ℝ) : ℝ :=
 
 /-- **The defining identity.**  `w(v)² = -2ψ(v)`, so `ψ(v) = -w(v)²/2`. -/
 theorem logPhaseMorse_sq {v : ℝ} (hv : -1 < v) :
-    logPhaseMorse v ^ 2 = -2 * logPhaseProfile v := by
+    logPhaseMorse v ^ (2 : ℕ) = -2 * logPhaseProfile v := by
   have hnn : (0 : ℝ) ≤ -2 * logPhaseProfile v := by
     have := logPhaseProfile_nonpos hv
     linarith
@@ -93,35 +93,35 @@ theorem abs_le_abs_logPhaseMorse_add {v : ℝ} (hv : -1 < v) :
 
 /-- **The Morse coordinate is a near-identity.**  `|w(v) - v| ≤ 2v²/3` for `|v| ≤ 1/2`. -/
 theorem abs_logPhaseMorse_sub_le {v : ℝ} (h1 : -(1/2 : ℝ) ≤ v) (h2 : v ≤ 1/2) :
-    |logPhaseMorse v - v| ≤ 2 * v ^ 2 / 3 := by
+    |logPhaseMorse v - v| ≤ 2 * v ^ (2 : ℕ) / 3 := by
   rcases eq_or_ne v 0 with rfl | hv0
   · simp
   have hv : -1 < v := by linarith
   have habsv : 0 < |v| := abs_pos.mpr hv0
-  have hsq : logPhaseMorse v ^ 2 = -2 * logPhaseProfile v := logPhaseMorse_sq hv
-  have hrho : logPhaseMorse v ^ 2 - v ^ 2 = 2 * logPhaseCubicRemainder v := by
+  have hsq : logPhaseMorse v ^ (2 : ℕ) = -2 * logPhaseProfile v := logPhaseMorse_sq hv
+  have hrho : logPhaseMorse v ^ (2 : ℕ) - v ^ (2 : ℕ) = 2 * logPhaseCubicRemainder v := by
     rw [hsq]
     simp only [logPhaseCubicRemainder]
     ring
   have hprod : (logPhaseMorse v - v) * (logPhaseMorse v + v) = 2 * logPhaseCubicRemainder v := by
     rw [← hrho]
     ring
-  have hcubic : |logPhaseCubicRemainder v| ≤ |v| ^ 3 / 3 := abs_logPhaseCubicRemainder_le h1 h2
+  have hcubic : |logPhaseCubicRemainder v| ≤ |v| ^ (3 : ℕ) / 3 := abs_logPhaseCubicRemainder_le h1 h2
   have hstep : |logPhaseMorse v - v| * |v|
       ≤ |logPhaseMorse v - v| * |logPhaseMorse v + v| :=
     mul_le_mul_of_nonneg_left (abs_le_abs_logPhaseMorse_add hv) (abs_nonneg _)
   have heq : |logPhaseMorse v - v| * |logPhaseMorse v + v| = 2 * |logPhaseCubicRemainder v| := by
     rw [← abs_mul, hprod, abs_mul]
     norm_num
-  have hfinal : |logPhaseMorse v - v| * |v| ≤ 2 * (|v| ^ 3 / 3) := by
+  have hfinal : |logPhaseMorse v - v| * |v| ≤ 2 * (|v| ^ (3 : ℕ) / 3) := by
     rw [heq] at hstep
     linarith
-  have hcube : |v| ^ 3 = |v| ^ 2 * |v| := by ring
-  have hsqabs : |v| ^ 2 = v ^ 2 := sq_abs v
+  have hcube : |v| ^ (3 : ℕ) = |v| ^ (2 : ℕ) * |v| := by ring
+  have hsqabs : |v| ^ (2 : ℕ) = v ^ (2 : ℕ) := sq_abs v
   rw [hcube, hsqabs] at hfinal
-  have hgoal : |logPhaseMorse v - v| * |v| ≤ 2 * v ^ 2 / 3 * |v| := by
-    calc |logPhaseMorse v - v| * |v| ≤ 2 * (v ^ 2 * |v| / 3) := hfinal
-      _ = 2 * v ^ 2 / 3 * |v| := by ring
+  have hgoal : |logPhaseMorse v - v| * |v| ≤ 2 * v ^ (2 : ℕ) / 3 * |v| := by
+    calc |logPhaseMorse v - v| * |v| ≤ 2 * (v ^ (2 : ℕ) * |v| / 3) := hfinal
+      _ = 2 * v ^ (2 : ℕ) / 3 * |v| := by ring
   exact le_of_mul_le_mul_right hgoal habsv
 
 /-- **The Morse coordinate is a strictly increasing reparametrisation.**  Hence the substitution

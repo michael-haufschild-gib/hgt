@@ -41,7 +41,7 @@ theorem fibre_kernel_symm (x h : ℝ) (m n : ℕ) :
 /-- **Two members of a common fibre differ by at most `h + h²/√x`.** -/
 theorem fibre_shift_band {x h : ℝ} (hx : 0 < x) (hh : 0 ≤ h) {m n a : ℕ}
     (ha : a ∈ outerBlock x h) (hma : m ∈ innerFibre x h a) (hna : n ∈ innerFibre x h a) :
-    |(m : ℝ) - (n : ℝ)| ≤ h + h ^ 2 / Real.sqrt x := by
+    |(m : ℝ) - (n : ℝ)| ≤ h + h ^ (2 : ℕ) / Real.sqrt x := by
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx
   have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
   have hmsupp := fibre_kernel_support hx ha hma
@@ -67,19 +67,19 @@ theorem fibre_shift_band {x h : ℝ} (hx : 0 < x) (hh : 0 ≤ h) {m n a : ℕ}
   -- convert to an additive gap using the localisation
   -- a one-sided gap bound, used twice
   have hgap : ∀ p q : ℕ, x * (q : ℝ) ≤ (x + h * Real.sqrt x) * (p : ℝ) →
-      (p : ℝ) ≤ Real.sqrt x + h → (q : ℝ) - (p : ℝ) ≤ h + h ^ 2 / Real.sqrt x := by
+      (p : ℝ) ≤ Real.sqrt x + h → (q : ℝ) - (p : ℝ) ≤ h + h ^ (2 : ℕ) / Real.sqrt x := by
     intro p q hpq hpb
     have hstep1 : x * ((q : ℝ) - (p : ℝ)) ≤ h * Real.sqrt x * (p : ℝ) := by nlinarith [hpq]
     have hstep2 : (q : ℝ) - (p : ℝ) ≤ h * (p : ℝ) / Real.sqrt x := by
       rw [le_div_iff₀ hs0]
       nlinarith [hstep1, hsq, hs0]
     have h1 : h * (p : ℝ) ≤ h * (Real.sqrt x + h) := mul_le_mul_of_nonneg_left hpb hh
-    have h2 : h * (Real.sqrt x + h) / Real.sqrt x = h + h ^ 2 / Real.sqrt x := by
+    have h2 : h * (Real.sqrt x + h) / Real.sqrt x = h + h ^ (2 : ℕ) / Real.sqrt x := by
       field_simp
-    have h3 : h * (p : ℝ) / Real.sqrt x ≤ h + h ^ 2 / Real.sqrt x := by
+    have h3 : h * (p : ℝ) / Real.sqrt x ≤ h + h ^ (2 : ℕ) / Real.sqrt x := by
       calc h * (p : ℝ) / Real.sqrt x ≤ h * (Real.sqrt x + h) / Real.sqrt x :=
             div_le_div_of_nonneg_right h1 hs0.le
-        _ = h + h ^ 2 / Real.sqrt x := h2
+        _ = h + h ^ (2 : ℕ) / Real.sqrt x := h2
     linarith [hstep2, h3]
   rw [abs_le]
   constructor

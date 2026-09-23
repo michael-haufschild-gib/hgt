@@ -46,7 +46,7 @@ def lgBesselModelDeriv (s c x : ℝ) : ℝ :=
 
 /-- Its second derivative. -/
 def lgBesselModelSecondDeriv (s c x : ℝ) : ℝ :=
-  besselJ0SecondDeriv (c * xiEndpointPhase s x) * (c * xiSpeed s x) ^ 2
+  besselJ0SecondDeriv (c * xiEndpointPhase s x) * (c * xiSpeed s x) ^ (2 : ℕ)
     + besselJ0Deriv (c * xiEndpointPhase s x) * (c * xiSpeedDeriv s x)
 
 theorem hasDerivAt_lgBesselModel {s c x : ℝ} (hs0 : 0 ≤ s) (hx : 1 < x) :
@@ -82,16 +82,16 @@ theorem lgBesselModel_ode {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx 
     lgBesselModelSecondDeriv s c x
         + (xiSpeed s x / xiEndpointPhase s x - xiSpeedDeriv s x / xiSpeed s x)
           * lgBesselModelDeriv s c x
-        + c ^ 2 * xiSpeed s x ^ 2 * lgBesselModel s c x = 0 := by
+        + c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) * lgBesselModel s c x = 0 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hspeed : 0 < xiSpeed s x := by
     rw [xiSpeed]
     exact Real.sqrt_pos.mpr (div_pos h2 h1)
   have hphase : 0 < xiEndpointPhase s x := by
     have hlow := (xiEndpointPhase_bounds hs0 (by linarith) hx.le).1
-    have : (0 : ℝ) < Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) := by
+    have : (0 : ℝ) < Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by
       have hs : (0 : ℝ) < 1 - s := by linarith
       positivity
     linarith
@@ -120,17 +120,17 @@ def lgWeight (s x : ℝ) : ℝ := xiEndpointPhase s x / xiSpeed s x
 
 theorem xiSpeed_pos {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < xiSpeed s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   rw [xiSpeed]
   exact Real.sqrt_pos.mpr (div_pos h2 h1)
 
 theorem xiEndpointPhase_pos {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     0 < xiEndpointPhase s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hlow := (xiEndpointPhase_bounds hs0 (by linarith) hx.le).1
-  have hpos : (0 : ℝ) < Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) := by
+  have hpos : (0 : ℝ) < Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by
     have hs : (0 : ℝ) < 1 - s := by linarith
     positivity
   linarith
@@ -144,7 +144,7 @@ theorem hasDerivAt_lgWeight {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx 
   have h2 : HasDerivAt (xiSpeed s) (xiSpeedDeriv s x) x := hasDerivAt_xiSpeed (by linarith) hx
   have h := h1.fun_div h2 hsp.ne'
   have hval : (xiSpeed s x * xiSpeed s x - xiEndpointPhase s x * xiSpeedDeriv s x)
-        / xiSpeed s x ^ 2
+        / xiSpeed s x ^ (2 : ℕ)
       = lgWeight s x * lgFirstOrderCoeff s x := by
     rw [lgWeight, lgFirstOrderCoeff]
     field_simp
@@ -159,10 +159,10 @@ theorem hasDerivAt_weightedWronskian {s c x a b : ℝ} {U DU V DV : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     (hU : HasDerivAt U (DU x) x)
     (hDU : HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a) * U x) x)
     (hV : HasDerivAt V (DV x) x)
     (hDV : HasDerivAt DV
-      (-(lgFirstOrderCoeff s x) * DV x - (c ^ 2 * xiSpeed s x ^ 2 + b) * V x) x) :
+      (-(lgFirstOrderCoeff s x) * DV x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + b) * V x) x) :
     HasDerivAt (fun t : ℝ => lgWeight s t * (U t * DV t - DU t * V t))
       (lgWeight s x * (a - b) * (U x * V x)) x := by
   have hm := hasDerivAt_lgWeight hs0 hs1 hx
@@ -172,8 +172,8 @@ theorem hasDerivAt_weightedWronskian {s c x a b : ℝ} {U DU V DV : ℝ → ℝ}
     have h2 := hDU.fun_mul hV
     have h := h1.fun_sub h2
     have hval : DU x * DV x
-          + U x * (-(lgFirstOrderCoeff s x) * DV x - (c ^ 2 * xiSpeed s x ^ 2 + b) * V x)
-        - ((-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a) * U x) * V x
+          + U x * (-(lgFirstOrderCoeff s x) * DV x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + b) * V x)
+        - ((-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a) * U x) * V x
           + DU x * DV x)
         = -(lgFirstOrderCoeff s x) * (U x * DV x - DU x * V x) + (a - b) * (U x * V x) := by
       ring
@@ -193,12 +193,12 @@ theorem hasDerivAt_lgBesselModelDeriv_ode {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s
     (hc : 0 < c) :
     HasDerivAt (lgBesselModelDeriv s c)
       (-(lgFirstOrderCoeff s x) * lgBesselModelDeriv s c x
-        - (c ^ 2 * xiSpeed s x ^ 2 + 0) * lgBesselModel s c x) x := by
+        - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * lgBesselModel s c x) x := by
   have h := hasDerivAt_lgBesselModelDeriv (s := s) (c := c) hs0 (by linarith : s ≤ 1) hx
   have hode := lgBesselModel_ode hs0 hs1 hx hc
   have hval : lgBesselModelSecondDeriv s c x
       = -(lgFirstOrderCoeff s x) * lgBesselModelDeriv s c x
-        - (c ^ 2 * xiSpeed s x ^ 2 + 0) * lgBesselModel s c x := by
+        - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * lgBesselModel s c x := by
     rw [lgFirstOrderCoeff]
     linarith [hode]
   rw [hval] at h
@@ -212,7 +212,7 @@ theorem hasDerivAt_lgBesselWronskian {s c x a : ℝ} {U DU : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) (hc : 0 < c)
     (hU : HasDerivAt U (DU x) x)
     (hDU : HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a) * U x) x) :
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a) * U x) x) :
     HasDerivAt (fun t : ℝ =>
         lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t))
       (lgWeight s x * a * (U x * lgBesselModel s c x)) x := by
@@ -230,10 +230,10 @@ theorem hasDerivAt_lgWronskian_const {s c x : ℝ} {V DV W DW : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     (hV : HasDerivAt V (DV x) x)
     (hDV : HasDerivAt DV
-      (-(lgFirstOrderCoeff s x) * DV x - (c ^ 2 * xiSpeed s x ^ 2 + 0) * V x) x)
+      (-(lgFirstOrderCoeff s x) * DV x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * V x) x)
     (hW : HasDerivAt W (DW x) x)
     (hDW : HasDerivAt DW
-      (-(lgFirstOrderCoeff s x) * DW x - (c ^ 2 * xiSpeed s x ^ 2 + 0) * W x) x) :
+      (-(lgFirstOrderCoeff s x) * DW x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * W x) x) :
     HasDerivAt (fun t : ℝ => lgWeight s t * (V t * DW t - DV t * W t)) 0 x := by
   have h := hasDerivAt_weightedWronskian (s := s) (c := c) (a := 0) (b := 0) hs0 hs1 hx hV hDV hW hDW
   have hval : lgWeight s x * (0 - 0) * (V x * W x) = 0 := by ring
@@ -251,7 +251,7 @@ def lgBesselModel2Deriv (s c x : ℝ) : ℝ :=
 
 /-- Its second derivative. -/
 def lgBesselModel2SecondDeriv (s c x : ℝ) : ℝ :=
-  besselKSecondDeriv (c * xiEndpointPhase s x) * (c * xiSpeed s x) ^ 2
+  besselKSecondDeriv (c * xiEndpointPhase s x) * (c * xiSpeed s x) ^ (2 : ℕ)
     + besselKDeriv (c * xiEndpointPhase s x) * (c * xiSpeedDeriv s x)
 
 theorem hasDerivAt_lgBesselModel2 {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
@@ -291,7 +291,7 @@ so the chain rule gives the identical cancellation. -/
 theorem lgBesselModel2_ode {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) (hc : 0 < c) :
     lgBesselModel2SecondDeriv s c x
         + lgFirstOrderCoeff s x * lgBesselModel2Deriv s c x
-        + c ^ 2 * xiSpeed s x ^ 2 * lgBesselModel2 s c x = 0 := by
+        + c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) * lgBesselModel2 s c x = 0 := by
   have hsp := xiSpeed_pos hs1 hx
   have hph := xiEndpointPhase_pos hs0 hs1 hx
   have hzeta : 0 < c * xiEndpointPhase s x := by positivity
@@ -313,12 +313,12 @@ theorem hasDerivAt_lgBesselModel2Deriv_ode {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : 
     (hc : 0 < c) :
     HasDerivAt (lgBesselModel2Deriv s c)
       (-(lgFirstOrderCoeff s x) * lgBesselModel2Deriv s c x
-        - (c ^ 2 * xiSpeed s x ^ 2 + 0) * lgBesselModel2 s c x) x := by
+        - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * lgBesselModel2 s c x) x := by
   have h := hasDerivAt_lgBesselModel2Deriv hs0 hs1 hx hc
   have hode := lgBesselModel2_ode hs0 hs1 hx hc
   have hval : lgBesselModel2SecondDeriv s c x
       = -(lgFirstOrderCoeff s x) * lgBesselModel2Deriv s c x
-        - (c ^ 2 * xiSpeed s x ^ 2 + 0) * lgBesselModel2 s c x := by linarith [hode]
+        - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + 0) * lgBesselModel2 s c x := by linarith [hode]
   rw [hval] at h
   exact h
 
@@ -388,7 +388,7 @@ theorem hasDerivAt_lgBessel2Wronskian {s c x a : ℝ} {U DU : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) (hc : 0 < c)
     (hU : HasDerivAt U (DU x) x)
     (hDU : HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a) * U x) x) :
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a) * U x) x) :
     HasDerivAt (fun t : ℝ =>
         lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t))
       (lgWeight s x * a * (U x * lgBesselModel2 s c x)) x := by
@@ -406,7 +406,7 @@ theorem integral_lgBesselWronskian {s c A B : ℝ} {U DU a : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hAB : A ≤ B) (hA : 1 < A)
     (hU : ∀ x ∈ Set.uIcc A B, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Set.uIcc A B, HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (hint : IntervalIntegrable
       (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel s c t)) volume A B) :
     (∫ t in A..B, lgWeight s t * a t * (U t * lgBesselModel s c t))
@@ -427,7 +427,7 @@ theorem integral_lgBessel2Wronskian {s c A B : ℝ} {U DU a : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hAB : A ≤ B) (hA : 1 < A)
     (hU : ∀ x ∈ Set.uIcc A B, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Set.uIcc A B, HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (hint : IntervalIntegrable
       (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel2 s c t)) volume A B) :
     (∫ t in A..B, lgWeight s t * a t * (U t * lgBesselModel2 s c t))
@@ -450,7 +450,7 @@ theorem abs_lgBesselWronskian_deviation_le {s c A B : ℝ} {U DU a : ℝ → ℝ
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hAB : A ≤ B) (hA : 1 < A)
     (hU : ∀ x ∈ Set.uIcc A B, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Set.uIcc A B, HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (hint : IntervalIntegrable
       (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel s c t)) volume A B) :
     |lgWeight s B * (U B * lgBesselModelDeriv s c B - DU B * lgBesselModel s c B)
@@ -647,13 +647,13 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
     (hac : ContinuousOn a (Set.Icc A B))
     (hU : ∀ x ∈ Set.Icc A B, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Set.Icc A B, HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x) :
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x) :
     ∀ x ∈ Set.Icc A B, |U x|
       ≤ C / Real.sqrt (c * xiEndpointPhase s x) / besselWronskian (c * xiEndpointPhase s A)
         * ((|lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A)|
             + |lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A)|)
           * Real.exp (∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A))) := by
   have hsub : Set.Icc A B ⊆ Set.Ioi 1 := fun x hx => lt_of_lt_of_le hA hx.1
   have hWpos : 0 < besselWronskian (c * xiEndpointPhase s A) := besselWronskian_phase_pos hs0 hs1 hc hA
@@ -693,7 +693,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
         + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|)
       (Set.Icc A B) := hF1c.abs.add hF2c.abs
   have hkc : ContinuousOn (fun t : ℝ => 2 * (lgWeight s t * |a t|)
-      * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+      * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
       / besselWronskian (c * xiEndpointPhase s A)) (Set.Icc A B) :=
     (((continuousOn_const.mul (hmc.mul hac.abs)).mul (hEc.pow 2)).div_const _)
   -- the two integrands of the transport laws are continuous, hence integrable on every subinterval
@@ -711,7 +711,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
     exact ((hmc.mul hac).mul (hUc.mul hV2c)).mono (Set.Icc_subset_Icc le_rfl hx.2)
   have hintk : ∀ x ∈ Set.Icc A B, IntervalIntegrable
       (fun t : ℝ => 2 * (lgWeight s t * |a t|)
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
         / besselWronskian (c * xiEndpointPhase s A)
         * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
           + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|))
@@ -723,13 +723,13 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
   -- the pointwise bound on the integrands
   have hptw : ∀ t ∈ Set.Icc A B,
       |lgWeight s t * a t * (U t * lgBesselModel s c t)|
-        ≤ 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        ≤ 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|)
         / 2
       ∧ |lgWeight s t * a t * (U t * lgBesselModel2 s c t)|
-        ≤ 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        ≤ 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|)
@@ -782,7 +782,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
             have hpos : 0 ≤ lgWeight s t * |a t| := by positivity
             have h := mul_le_mul_of_nonneg_right hUle hEnn
             exact mul_le_mul_of_nonneg_left h hpos
-        _ = 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        _ = 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
               / besselWronskian (c * xiEndpointPhase s A)
             * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
               + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|)
@@ -805,7 +805,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
             have hpos : 0 ≤ lgWeight s t * |a t| := by positivity
             have h := mul_le_mul_of_nonneg_right hUle hEnn
             exact mul_le_mul_of_nonneg_left h hpos
-        _ = 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        _ = 2 * (lgWeight s t * |a t|) * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
               / besselWronskian (c * xiEndpointPhase s A)
             * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
               + |lgWeight s t * (U t * lgBesselModel2Deriv s c t - DU t * lgBesselModel2 s c t)|)
@@ -818,7 +818,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
       ≤ (|lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A)|
           + |lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A)|)
         + ∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
@@ -872,7 +872,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
     -- and the two absolute integrals are each at most half the Grönwall integrand
     have hhalf : IntervalIntegrable
         (fun t : ℝ => 2 * (lgWeight s t * |a t|)
-          * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+          * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
           / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
@@ -880,7 +880,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
       (hintk x hx).div_const 2
     have hmono1 : (∫ t in A..x, |lgWeight s t * a t * (U t * lgBesselModel s c t)|)
         ≤ ∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
@@ -889,7 +889,7 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
       exact (hptw t ⟨ht.1, le_trans ht.2 hx.2⟩).1
     have hmono2 : (∫ t in A..x, |lgWeight s t * a t * (U t * lgBesselModel2 s c t)|)
         ≤ ∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
@@ -897,19 +897,19 @@ theorem abs_perturbed_le_lgEnvelope_mul_exp {s c A B C : ℝ} {U DU a : ℝ → 
       refine intervalIntegral.integral_mono_on hxA ((hint2 x hx).abs) hhalf fun t ht => ?_
       exact (hptw t ⟨ht.1, le_trans ht.2 hx.2⟩).2
     have hsum : (∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
               - DU t * lgBesselModel2 s c t)|) / 2)
         + (∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
               - DU t * lgBesselModel2 s c t)|) / 2)
         = ∫ t in A..x, 2 * (lgWeight s t * |a t|)
-            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)
           * (|lgWeight s t * (U t * lgBesselModelDeriv s c t - DU t * lgBesselModel s c t)|
             + |lgWeight s t * (U t * lgBesselModel2Deriv s c t
@@ -948,40 +948,40 @@ the two mechanical differentiations that supply it. -/
 
 /-- The second derivative of the Liouville speed, i.e. the third derivative of the phase. -/
 def xiSpeedSecondDeriv (s t : ℝ) : ℝ :=
-  ((s - 1) * ((t ^ 2 - 1) ^ 2 * xiSpeed s t)
-      - t * (s - 1) * (4 * t * (t ^ 2 - 1) * xiSpeed s t
-        + (t ^ 2 - 1) ^ 2 * xiSpeedDeriv s t))
-    / ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ^ 2
+  ((s - 1) * ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t)
+      - t * (s - 1) * (4 * t * (t ^ (2 : ℕ) - 1) * xiSpeed s t
+        + (t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeedDeriv s t))
+    / ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t) ^ (2 : ℕ)
 
 theorem hasDerivAt_xiSpeedDeriv {s t : ℝ} (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
     HasDerivAt (xiSpeedDeriv s) (xiSpeedSecondDeriv s t) t := by
   have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
-  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
   have hsp : 0 < xiSpeed s t := xiSpeed_pos hs1 ht
   have hnum : HasDerivAt (fun u : ℝ => u * (s - 1)) (s - 1) t := by
     simpa using (hasDerivAt_id t).mul_const (s - 1)
-  have hpow : HasDerivAt (fun u : ℝ => (u ^ 2 - 1) ^ 2) (2 * (t ^ 2 - 1) * (2 * t)) t := by
-    have hinner : HasDerivAt (fun u : ℝ => u ^ 2 - 1) (2 * t) t := by
+  have hpow : HasDerivAt (fun u : ℝ => (u ^ (2 : ℕ) - 1) ^ (2 : ℕ)) (2 * (t ^ (2 : ℕ) - 1) * (2 * t)) t := by
+    have hinner : HasDerivAt (fun u : ℝ => u ^ (2 : ℕ) - 1) (2 * t) t := by
       simpa using ((hasDerivAt_pow 2 t).sub_const 1)
     have h := hinner.fun_mul hinner
-    have hval : 2 * t * (t ^ 2 - 1) + (t ^ 2 - 1) * (2 * t) = 2 * (t ^ 2 - 1) * (2 * t) := by ring
-    have hfun : (fun u : ℝ => (u ^ 2 - 1) ^ 2) = fun u : ℝ => (u ^ 2 - 1) * (u ^ 2 - 1) := by
+    have hval : 2 * t * (t ^ (2 : ℕ) - 1) + (t ^ (2 : ℕ) - 1) * (2 * t) = 2 * (t ^ (2 : ℕ) - 1) * (2 * t) := by ring
+    have hfun : (fun u : ℝ => (u ^ (2 : ℕ) - 1) ^ (2 : ℕ)) = fun u : ℝ => (u ^ (2 : ℕ) - 1) * (u ^ (2 : ℕ) - 1) := by
       funext u
       ring
     rw [hfun, ← hval]
     exact h
   have hspd : HasDerivAt (xiSpeed s) (xiSpeedDeriv s t) t :=
     hasDerivAt_xiSpeed (s := s) (by linarith : s ≤ 1) ht
-  have hden : HasDerivAt (fun u : ℝ => (u ^ 2 - 1) ^ 2 * xiSpeed s u)
-      (4 * t * (t ^ 2 - 1) * xiSpeed s t + (t ^ 2 - 1) ^ 2 * xiSpeedDeriv s t) t := by
+  have hden : HasDerivAt (fun u : ℝ => (u ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s u)
+      (4 * t * (t ^ (2 : ℕ) - 1) * xiSpeed s t + (t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeedDeriv s t) t := by
     have h := hpow.fun_mul hspd
-    have hval : 2 * (t ^ 2 - 1) * (2 * t) * xiSpeed s t + (t ^ 2 - 1) ^ 2 * xiSpeedDeriv s t
-        = 4 * t * (t ^ 2 - 1) * xiSpeed s t + (t ^ 2 - 1) ^ 2 * xiSpeedDeriv s t := by ring
+    have hval : 2 * (t ^ (2 : ℕ) - 1) * (2 * t) * xiSpeed s t + (t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeedDeriv s t
+        = 4 * t * (t ^ (2 : ℕ) - 1) * xiSpeed s t + (t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeedDeriv s t := by ring
     rw [hval] at h
     exact h
-  have hdne : ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ≠ 0 := by positivity
+  have hdne : ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t) ≠ 0 := by positivity
   have h := hnum.fun_div hden hdne
-  have hfun : xiSpeedDeriv s = fun u : ℝ => u * (s - 1) / ((u ^ 2 - 1) ^ 2 * xiSpeed s u) := by
+  have hfun : xiSpeedDeriv s = fun u : ℝ => u * (s - 1) / ((u ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s u) := by
     funext u
     rw [xiSpeedDeriv]
   rw [hfun, xiSpeedSecondDeriv]
@@ -990,9 +990,9 @@ theorem hasDerivAt_xiSpeedDeriv {s t : ℝ} (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
 /-- The derivative of the first-order coefficient of the comparison equation. -/
 def lgFirstOrderCoeffDeriv (s x : ℝ) : ℝ :=
   (xiSpeedDeriv s x * xiEndpointPhase s x - xiSpeed s x * xiSpeed s x)
-      / xiEndpointPhase s x ^ 2
+      / xiEndpointPhase s x ^ (2 : ℕ)
     - (xiSpeedSecondDeriv s x * xiSpeed s x - xiSpeedDeriv s x * xiSpeedDeriv s x)
-      / xiSpeed s x ^ 2
+      / xiSpeed s x ^ (2 : ℕ)
 
 theorem hasDerivAt_lgFirstOrderCoeff {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     HasDerivAt (lgFirstOrderCoeff s) (lgFirstOrderCoeffDeriv s x) x := by
@@ -1000,13 +1000,13 @@ theorem hasDerivAt_lgFirstOrderCoeff {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 
   have hph := xiEndpointPhase_pos hs0 hs1 hx
   have h1 : HasDerivAt (fun t : ℝ => xiSpeed s t / xiEndpointPhase s t)
       ((xiSpeedDeriv s x * xiEndpointPhase s x - xiSpeed s x * xiSpeed s x)
-        / xiEndpointPhase s x ^ 2) x :=
+        / xiEndpointPhase s x ^ (2 : ℕ)) x :=
     (show HasDerivAt (xiSpeed s) (xiSpeedDeriv s x) x from
       hasDerivAt_xiSpeed (s := s) (by linarith : s ≤ 1) hx).fun_div
       (hasDerivAt_xiEndpointPhase hs0 hx) hph.ne'
   have h2 : HasDerivAt (fun t : ℝ => xiSpeedDeriv s t / xiSpeed s t)
       ((xiSpeedSecondDeriv s x * xiSpeed s x - xiSpeedDeriv s x * xiSpeedDeriv s x)
-        / xiSpeed s x ^ 2) x :=
+        / xiSpeed s x ^ (2 : ℕ)) x :=
     (hasDerivAt_xiSpeedDeriv hs1 hx).fun_div
       (show HasDerivAt (xiSpeed s) (xiSpeedDeriv s x) x from
         hasDerivAt_xiSpeed (s := s) (by linarith : s ≤ 1) hx) hsp.ne'
@@ -1029,8 +1029,8 @@ a = Q + P²/4 + P'/2 - c² (xi')²,
 and this is the quantity whose boundedness is the pole-uniform property.  The definition records it; the
 two derivative laws above are what make it computable. -/
 def lgNormalFormDefect (s c : ℝ) (Q : ℝ → ℝ) (x : ℝ) : ℝ :=
-  Q x + lgFirstOrderCoeff s x ^ 2 / 4 + lgFirstOrderCoeffDeriv s x / 2
-    - c ^ 2 * xiSpeed s x ^ 2
+  Q x + lgFirstOrderCoeff s x ^ (2 : ℕ) / 4 + lgFirstOrderCoeffDeriv s x / 2
+    - c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ)
 
 end GaloisForLFunctions.RHTower
 

@@ -55,15 +55,15 @@ theorem self_le_sinh {s : ℝ} (hs : 0 ≤ s) : s ≤ Real.sinh s := by
 `φ(s) = cosh s/sinh³ s ≤ cosh 1 / s³` for `0 < s ≤ 1`. From `cosh s ≤ cosh 1` and
 `sinh s ≥ s > 0`. Together with `CothInfra.rphi_ge_cubic` this brackets the Calogero kernel
 `1/(4s³) ≤ φ(s) ≤ cosh 1/s³ (< 2/s³)` on `(0,1]`. -/
-theorem rphi_le_cubic {s : ℝ} (hs0 : 0 < s) (hs1 : s ≤ 1) : rphi s ≤ Real.cosh 1 / s ^ 3 := by
+theorem rphi_le_cubic {s : ℝ} (hs0 : 0 < s) (hs1 : s ≤ 1) : rphi s ≤ Real.cosh 1 / s ^ (3 : ℕ) := by
   have hs : 0 < Real.sinh s := sinh_pos_of_pos hs0
   have hself : s ≤ Real.sinh s := self_le_sinh hs0.le
-  have hrphi : rphi s = Real.cosh s / (Real.sinh s) ^ 3 := by
+  have hrphi : rphi s = Real.cosh s / (Real.sinh s) ^ (3 : ℕ) := by
     simp only [rphi, rcsch, rcoth]; field_simp
   rw [hrphi]
   have hcosh : Real.cosh s ≤ Real.cosh 1 := by
     rw [Real.cosh_le_cosh, abs_of_pos hs0, abs_of_pos (by norm_num : (0:ℝ) < 1)]; exact hs1
-  have hsinh3 : s ^ 3 ≤ (Real.sinh s) ^ 3 := pow_le_pow_left₀ hs0.le hself 3
+  have hsinh3 : s ^ (3 : ℕ) ≤ (Real.sinh s) ^ (3 : ℕ) := pow_le_pow_left₀ hs0.le hself 3
   exact div_le_div₀ (Real.cosh_pos 1).le hcosh (by positivity) hsinh3
 
 /-- **Head-gain lower bound with explicit constants** — the estimate the outline asserted but
@@ -72,7 +72,7 @@ least `1/(4x³) − cosh 1/y³`: the cubic blow-up of `φ` at the small ahead-di
 `θδ` small this is `≈ 2/(θδ)³`, dwarfing the far-behind tail — the mechanism of (L1). Combines
 `CothInfra.rphi_ge_cubic` (head) and `rphi_le_cubic` (subtrahend). -/
 theorem headGain_lower {x y : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) (hy0 : 0 < y) (hy1 : y ≤ 1) :
-    1 / (4 * x ^ 3) - Real.cosh 1 / y ^ 3 ≤ rphi x - rphi y := by
+    1 / (4 * x ^ (3 : ℕ)) - Real.cosh 1 / y ^ (3 : ℕ) ≤ rphi x - rphi y := by
   have h1 := rphi_ge_cubic hx0 hx1
   have h2 := rphi_le_cubic hy0 hy1
   linarith
@@ -125,7 +125,7 @@ theorem dW_dtheta_neg {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M)
     (hx1 : θ * δ / 2 ≤ 1) (hy1 : (1 - θ) * δ / 2 ≤ 1)
     (ha : 1 ≤ (1 - θ + M) * (δ / 2))
     (hbeat : 64 * Real.exp (-2 * ((1 - θ + M) * (δ / 2))) / (1 - Real.exp (-2 * (δ / 2)))
-      < 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3) :
+      < 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ)) :
     (∑ k ∈ range N, rphi ((1 - θ + k) * (δ / 2)))
       < ∑ k ∈ range M, rphi ((θ + k) * (δ / 2)) := by
   set fa : ℕ → ℝ := fun k => rphi ((θ + k) * (δ / 2)) with hfa
@@ -135,7 +135,7 @@ theorem dW_dtheta_neg {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M)
     have : (0 : ℝ) < 1 - θ := by linarith
     positivity
   -- head (k = 0) lower bound
-  have hhead0 : 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3
+  have hhead0 : 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ)
       ≤ fa 0 - fb 0 := by
     simp only [hfa, hfb, Nat.cast_zero, add_zero]
     rw [show θ * (δ / 2) = θ * δ / 2 from by ring,
@@ -162,7 +162,7 @@ theorem dW_dtheta_neg {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M)
   refine l1_neg_of_head_gt_tail hMN fa fb ?_
   calc (∑ k ∈ Ico M N, fb k)
       ≤ _ := htail
-    _ < 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 := hbeat
+    _ < 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) := hbeat
     _ ≤ fa 0 - fb 0 := hhead0
     _ ≤ ∑ k ∈ range M, (fa k - fb k) := hheadsum
 
@@ -176,19 +176,19 @@ theorem dW_dtheta_neg_at_eighth {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M) :
   have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM1
   -- real exp anchors
   have he1 : (2.718 : ℝ) < Real.exp 1 := by nlinarith [Real.exp_one_gt_d9]
-  have hexp3 : Real.exp 3 = Real.exp 1 ^ 3 := by
+  have hexp3 : Real.exp 3 = Real.exp 1 ^ (3 : ℕ) := by
     rw [← Real.exp_nat_mul]; norm_num
   have he3 : (16 : ℝ) ≤ Real.exp 3 := by
     rw [hexp3]
     have h := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2.718) he1.le 3
-    have h16 : (16 : ℝ) ≤ (2.718 : ℝ) ^ 3 := by norm_num
+    have h16 : (16 : ℝ) ≤ (2.718 : ℝ) ^ (3 : ℕ) := by norm_num
     linarith
-  have hexp2 : Real.exp 2 = Real.exp 1 ^ 2 := by
+  have hexp2 : Real.exp 2 = Real.exp 1 ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]; norm_num
   have he2 : (2 : ℝ) ≤ Real.exp 2 := by
     rw [hexp2]
     have h := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2.718) he1.le 2
-    have h2 : (2 : ℝ) ≤ (2.718 : ℝ) ^ 2 := by norm_num
+    have h2 : (2 : ℝ) ≤ (2.718 : ℝ) ^ (2 : ℕ) := by norm_num
     linarith
   refine dW_dtheta_neg hMN hM1 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by nlinarith [hM]) ?_
@@ -210,11 +210,11 @@ theorem dW_dtheta_neg_at_eighth {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M) :
       have := le_trans htailexp he3inv; nlinarith [this, Real.exp_pos (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2)))]
     nlinarith [h1, hden, Real.exp_pos (-2 * (2 / 2 : ℝ))]
   have hcosh : Real.cosh 1 < 2 := cosh_one_lt_two
-  have hrhs : (125 : ℝ) < 1 / (4 * ((1 / 8) * 2 / 2) ^ 3) - Real.cosh 1 / ((1 - 1 / 8) * 2 / 2) ^ 3 := by
+  have hrhs : (125 : ℝ) < 1 / (4 * ((1 / 8) * 2 / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - 1 / 8) * 2 / 2) ^ (3 : ℕ) := by
     rw [show ((1 / 8) * 2 / 2 : ℝ) = 1 / 8 by norm_num,
       show ((1 - 1 / 8) * 2 / 2 : ℝ) = 7 / 8 by norm_num]
-    rw [show (1 : ℝ) / (4 * (1 / 8) ^ 3) = 128 by norm_num]
-    rw [show ((7 : ℝ) / 8) ^ 3 = 343 / 512 by norm_num]
+    rw [show (1 : ℝ) / (4 * (1 / 8) ^ (3 : ℕ)) = 128 by norm_num]
+    rw [show ((7 : ℝ) / 8) ^ (3 : ℕ) = 343 / 512 by norm_num]
     rw [div_eq_mul_inv, show ((343 : ℝ) / 512)⁻¹ = 512 / 343 by norm_num]
     nlinarith [hcosh, Real.cosh_pos (1 : ℝ)]
   linarith [hlhs, hrhs]
@@ -259,18 +259,18 @@ theorem dW_dtheta_neg_region {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 
   -- head ≥ 112
   have hxpos : 0 < θ * δ / 2 := by positivity
   have hx8 : θ * δ / 2 ≤ 1 / 8 := by nlinarith [hθ8, hδhi, hθ0, hδ0]
-  have hhead1 : (128 : ℝ) ≤ 1 / (4 * (θ * δ / 2) ^ 3) := by
+  have hhead1 : (128 : ℝ) ≤ 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith [pow_le_pow_left₀ hxpos.le hx8 3]
   have hy2 : (1 : ℝ) / 2 ≤ (1 - θ) * δ / 2 := by nlinarith [hθ8, hδlo, hθ0]
   have hypos : (0 : ℝ) < (1 - θ) * δ / 2 := by linarith
-  have hsub : Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 ≤ 8 * Real.cosh 1 := by
-    have hy3 : (1 : ℝ) / 8 ≤ ((1 - θ) * δ / 2) ^ 3 := by
+  have hsub : Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) ≤ 8 * Real.cosh 1 := by
+    have hy3 : (1 : ℝ) / 8 ≤ ((1 - θ) * δ / 2) ^ (3 : ℕ) := by
       nlinarith [pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 2) hy2 3]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hy3, Real.cosh_pos (1 : ℝ)]
   have hcosh : Real.cosh 1 < 2 := cosh_one_lt_two
-  have hrhs : (112 : ℝ) < 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 := by
+  have hrhs : (112 : ℝ) < 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) := by
     nlinarith [hhead1, hsub, hcosh]
   linarith [htail, hrhs]
 
@@ -319,10 +319,10 @@ theorem rcoth_lt_inv_add_one {s : ℝ} (hs : 0 < s) : rcoth s < 1 / s + 1 := by
   linarith [hkey]
 
 /-- `csch² s ≤ 1/s²` for `s > 0` (from `sinh s ≥ s`). -/
-theorem rcsch_sq_le_inv_sq {s : ℝ} (hs : 0 < s) : (rcsch s) ^ 2 ≤ 1 / s ^ 2 := by
+theorem rcsch_sq_le_inv_sq {s : ℝ} (hs : 0 < s) : (rcsch s) ^ (2 : ℕ) ≤ 1 / s ^ (2 : ℕ) := by
   have hsp : 0 < Real.sinh s := sinh_pos_of_pos hs
   have hself : s ≤ Real.sinh s := self_le_sinh hs.le
-  have hsq : s ^ 2 ≤ (Real.sinh s) ^ 2 := pow_le_pow_left₀ hs.le hself 2
+  have hsq : s ^ (2 : ℕ) ≤ (Real.sinh s) ^ (2 : ℕ) := pow_le_pow_left₀ hs.le hself 2
   simp only [rcsch, one_div, inv_pow]
   rw [inv_le_inv₀ (by positivity) (by positivity)]
   exact hsq
@@ -331,27 +331,27 @@ theorem rcsch_sq_le_inv_sq {s : ℝ} (hs : 0 < s) : (rcsch s) ^ 2 ≤ 1 / s ^ 2 
 control). From `csch² s ≤ 1/s²` and `coth s < 1/s + 1`: `φ = csch²·coth < (1/s²)(1/s+1)`. Unlike
 `rphi_le_cubic` (valid only on `(0,1]`), this is a GLOBAL bound whose `k`-tail
 `Σ (1/·³ + 1/·²)` is a `p=2,3` series — the tool that closes (L1) for `δ → 0`. -/
-theorem rphi_lt_cubic_quadratic {s : ℝ} (hs : 0 < s) : rphi s < 1 / s ^ 3 + 1 / s ^ 2 := by
+theorem rphi_lt_cubic_quadratic {s : ℝ} (hs : 0 < s) : rphi s < 1 / s ^ (3 : ℕ) + 1 / s ^ (2 : ℕ) := by
   have hcoth : rcoth s < 1 / s + 1 := rcoth_lt_inv_add_one hs
   have hcothpos : 0 < rcoth s := rcoth_pos_of_pos hs
-  have hcsch : (rcsch s) ^ 2 ≤ 1 / s ^ 2 := rcsch_sq_le_inv_sq hs
-  have hcschpos : 0 < (rcsch s) ^ 2 := by
+  have hcsch : (rcsch s) ^ (2 : ℕ) ≤ 1 / s ^ (2 : ℕ) := rcsch_sq_le_inv_sq hs
+  have hcschpos : 0 < (rcsch s) ^ (2 : ℕ) := by
     have := rcsch_pos_of_pos hs; positivity
-  have hrphi : rphi s = (rcsch s) ^ 2 * rcoth s := rfl
-  calc rphi s = (rcsch s) ^ 2 * rcoth s := hrphi
-    _ ≤ (1 / s ^ 2) * rcoth s := by
+  have hrphi : rphi s = (rcsch s) ^ (2 : ℕ) * rcoth s := rfl
+  calc rphi s = (rcsch s) ^ (2 : ℕ) * rcoth s := hrphi
+    _ ≤ (1 / s ^ (2 : ℕ)) * rcoth s := by
         apply mul_le_mul_of_nonneg_right hcsch hcothpos.le
-    _ < (1 / s ^ 2) * (1 / s + 1) := by
+    _ < (1 / s ^ (2 : ℕ)) * (1 / s + 1) := by
         apply mul_lt_mul_of_pos_left hcoth (by positivity)
-    _ = 1 / s ^ 3 + 1 / s ^ 2 := by field_simp
+    _ = 1 / s ^ (3 : ℕ) + 1 / s ^ (2 : ℕ) := by field_simp
 
 /-- **Telescoping `p=2` tail** `Σ_{k∈[M,N)} 1/(a+k)² ≤ 1/(a+M−1)`, valid once `a+M−1 > 0`.
 Each term `1/(a+k)² ≤ 1/(a+k−1) − 1/(a+k)` (partial fractions + `(a+k−1)(a+k) ≤ (a+k)²`), and the
 sum telescopes. The convergent-tail tool the small-δ regime needs. -/
 theorem inv_sq_telescope {a : ℝ} {M N : ℕ} (hMN : M ≤ N) (hpos : 0 < a + (M : ℝ) - 1) :
-    ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 2 ≤ 1 / (a + (M : ℝ) - 1) := by
+    ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (2 : ℕ) ≤ 1 / (a + (M : ℝ) - 1) := by
   set g : ℕ → ℝ := fun k => 1 / (a + (k : ℝ) - 1) with hg
-  have hterm : ∀ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 2 ≤ g k - g (k + 1) := by
+  have hterm : ∀ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (2 : ℕ) ≤ g k - g (k + 1) := by
     intro k hk
     rw [Finset.mem_Ico] at hk
     have hkM : (M : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk.1
@@ -364,7 +364,7 @@ theorem inv_sq_telescope {a : ℝ} {M N : ℕ} (hMN : M ≤ N) (hpos : 0 < a + (
       ring
     rw [hgval]
     exact one_div_le_one_div_of_le (by positivity) (by nlinarith [hak])
-  calc ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 2
+  calc ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (2 : ℕ)
       ≤ ∑ k ∈ Finset.Ico M N, (g k - g (k + 1)) := Finset.sum_le_sum hterm
     _ = g M - g N := by
         rw [Finset.sum_Ico_eq_sum_range]
@@ -385,22 +385,22 @@ theorem inv_sq_telescope {a : ℝ} {M N : ℕ} (hMN : M ≤ N) (hpos : 0 < a + (
 `1/(a+k)³ = (1/(a+k))·(1/(a+k)²) ≤ (1/(a+M))·(1/(a+k)²)` (since `a+k ≥ a+M`) and the `p=2`
 telescope. -/
 theorem inv_cube_telescope {a : ℝ} {M N : ℕ} (hMN : M ≤ N) (hpos : 0 < a + (M : ℝ) - 1) :
-    ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 3 ≤ (1 / (a + (M : ℝ))) * (1 / (a + (M : ℝ) - 1)) := by
+    ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (3 : ℕ) ≤ (1 / (a + (M : ℝ))) * (1 / (a + (M : ℝ) - 1)) := by
   have haM : 0 < a + (M : ℝ) := by linarith
   have hterm : ∀ k ∈ Finset.Ico M N,
-      1 / (a + (k : ℝ)) ^ 3 ≤ (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ 2) := by
+      1 / (a + (k : ℝ)) ^ (3 : ℕ) ≤ (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ (2 : ℕ)) := by
     intro k hk
     rw [Finset.mem_Ico] at hk
     have hkM : (M : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk.1
     have hak : 0 < a + (k : ℝ) := by linarith
-    rw [show (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ 2)
-        = 1 / ((a + (M : ℝ)) * (a + (k : ℝ)) ^ 2) from by rw [div_mul_div_comm, one_mul]]
+    rw [show (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ (2 : ℕ))
+        = 1 / ((a + (M : ℝ)) * (a + (k : ℝ)) ^ (2 : ℕ)) from by rw [div_mul_div_comm, one_mul]]
     exact one_div_le_one_div_of_le (by positivity)
       (by nlinarith [hak, hkM, sq_nonneg (a + (k : ℝ))])
-  calc ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 3
-      ≤ ∑ k ∈ Finset.Ico M N, (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ 2) :=
+  calc ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (3 : ℕ)
+      ≤ ∑ k ∈ Finset.Ico M N, (1 / (a + (M : ℝ))) * (1 / (a + (k : ℝ)) ^ (2 : ℕ)) :=
         Finset.sum_le_sum hterm
-    _ = (1 / (a + (M : ℝ))) * ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ 2 := by rw [Finset.mul_sum]
+    _ = (1 / (a + (M : ℝ))) * ∑ k ∈ Finset.Ico M N, 1 / (a + (k : ℝ)) ^ (2 : ℕ) := by rw [Finset.mul_sum]
     _ ≤ (1 / (a + (M : ℝ))) * (1 / (a + (M : ℝ) - 1)) :=
         mul_le_mul_of_nonneg_left (inv_sq_telescope hMN hpos) (by positivity)
 
@@ -411,37 +411,37 @@ and the two telescopes with `a = 1−θ`:
 theorem phi_tail_small_delta {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hδ : 0 < δ)
     (hθ1 : θ < 1) (hMpos : 0 < (M : ℝ) - θ) :
     ∑ k ∈ Finset.Ico M N, rphi ((1 - θ + (k : ℝ)) * (δ / 2))
-      ≤ (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
-        + (4 / δ ^ 2) * (1 / ((M : ℝ) - θ)) := by
-  have hδ3 : (0 : ℝ) < δ ^ 3 := by positivity
-  have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
+      ≤ (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
+        + (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ)) := by
+  have hδ3 : (0 : ℝ) < δ ^ (3 : ℕ) := by positivity
+  have hδ2 : (0 : ℝ) < δ ^ (2 : ℕ) := by positivity
   have hpos : 0 < (1 - θ) + (M : ℝ) - 1 := by linarith [hMpos]
   have hterm : ∀ k ∈ Finset.Ico M N,
       rphi ((1 - θ + (k : ℝ)) * (δ / 2))
-        ≤ (8 / δ ^ 3) * (1 / (1 - θ + (k : ℝ)) ^ 3)
-          + (4 / δ ^ 2) * (1 / (1 - θ + (k : ℝ)) ^ 2) := by
+        ≤ (8 / δ ^ (3 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (3 : ℕ))
+          + (4 / δ ^ (2 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (2 : ℕ)) := by
     intro k hk
     have hx : 0 < 1 - θ + (k : ℝ) := by
       have : (0 : ℝ) ≤ (k : ℝ) := by positivity
       linarith
     have harg : 0 < (1 - θ + (k : ℝ)) * (δ / 2) := by positivity
     have hlt := (rphi_lt_cubic_quadratic harg).le
-    have hcube : 1 / ((1 - θ + (k : ℝ)) * (δ / 2)) ^ 3
-        = (8 / δ ^ 3) * (1 / (1 - θ + (k : ℝ)) ^ 3) := by
+    have hcube : 1 / ((1 - θ + (k : ℝ)) * (δ / 2)) ^ (3 : ℕ)
+        = (8 / δ ^ (3 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (3 : ℕ)) := by
       rw [mul_pow]; field_simp; ring
-    have hsq : 1 / ((1 - θ + (k : ℝ)) * (δ / 2)) ^ 2
-        = (4 / δ ^ 2) * (1 / (1 - θ + (k : ℝ)) ^ 2) := by
+    have hsq : 1 / ((1 - θ + (k : ℝ)) * (δ / 2)) ^ (2 : ℕ)
+        = (4 / δ ^ (2 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (2 : ℕ)) := by
       rw [mul_pow]; field_simp; ring
     rw [hcube, hsq] at hlt
     exact hlt
   calc ∑ k ∈ Finset.Ico M N, rphi ((1 - θ + (k : ℝ)) * (δ / 2))
-      ≤ ∑ k ∈ Finset.Ico M N, ((8 / δ ^ 3) * (1 / (1 - θ + (k : ℝ)) ^ 3)
-          + (4 / δ ^ 2) * (1 / (1 - θ + (k : ℝ)) ^ 2)) := Finset.sum_le_sum hterm
-    _ = (8 / δ ^ 3) * (∑ k ∈ Finset.Ico M N, 1 / (1 - θ + (k : ℝ)) ^ 3)
-        + (4 / δ ^ 2) * (∑ k ∈ Finset.Ico M N, 1 / (1 - θ + (k : ℝ)) ^ 2) := by
+      ≤ ∑ k ∈ Finset.Ico M N, ((8 / δ ^ (3 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (3 : ℕ))
+          + (4 / δ ^ (2 : ℕ)) * (1 / (1 - θ + (k : ℝ)) ^ (2 : ℕ))) := Finset.sum_le_sum hterm
+    _ = (8 / δ ^ (3 : ℕ)) * (∑ k ∈ Finset.Ico M N, 1 / (1 - θ + (k : ℝ)) ^ (3 : ℕ))
+        + (4 / δ ^ (2 : ℕ)) * (∑ k ∈ Finset.Ico M N, 1 / (1 - θ + (k : ℝ)) ^ (2 : ℕ)) := by
         rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
-    _ ≤ (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
-        + (4 / δ ^ 2) * (1 / ((M : ℝ) - θ)) := by
+    _ ≤ (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
+        + (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ)) := by
         gcongr
         · have := inv_cube_telescope (a := 1 - θ) hMN hpos
           simpa [show (1 : ℝ) - θ + (M : ℝ) - 1 = (M : ℝ) - θ from by ring] using this
@@ -460,7 +460,7 @@ theorem dW_dtheta_neg_small_delta {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1
     (∑ k ∈ range N, rphi ((1 - θ + k) * (δ / 2)))
       < ∑ k ∈ range M, rphi ((θ + k) * (δ / 2)) := by
   have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM1
-  have hδ3 : (0 : ℝ) < δ ^ 3 := by positivity
+  have hδ3 : (0 : ℝ) < δ ^ (3 : ℕ) := by positivity
   set fa : ℕ → ℝ := fun k => rphi ((θ + k) * (δ / 2)) with hfa
   set fb : ℕ → ℝ := fun k => rphi ((1 - θ + k) * (δ / 2)) with hfb
   have hxpos : 0 < θ * δ / 2 := by positivity
@@ -468,7 +468,7 @@ theorem dW_dtheta_neg_small_delta {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1
   have hypos : 0 < (1 - θ) * δ / 2 := by nlinarith [hθ8, hδ0]
   have hy1 : (1 - θ) * δ / 2 ≤ 1 := by nlinarith [hθ0, hδ1, hδ0]
   -- head (k = 0)
-  have hhead0 : 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 ≤ fa 0 - fb 0 := by
+  have hhead0 : 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) ≤ fa 0 - fb 0 := by
     simp only [hfa, hfb, Nat.cast_zero, add_zero]
     rw [show θ * (δ / 2) = θ * δ / 2 from by ring,
       show (1 - θ) * (δ / 2) = (1 - θ) * δ / 2 from by ring]
@@ -487,36 +487,36 @@ theorem dW_dtheta_neg_small_delta {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1
     Finset.single_le_sum hnonneg (Finset.mem_range.mpr (by omega))
   -- tail via the small-δ bound
   have htail : (∑ k ∈ Ico M N, fb k)
-      ≤ (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) + (4 / δ ^ 2) * (1 / ((M : ℝ) - θ)) := by
+      ≤ (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) + (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ)) := by
     simp only [hfb]
     exact phi_tail_small_delta hMN hδ0 (by linarith) (by linarith)
   refine l1_neg_of_head_gt_tail hMN fa fb ?_
   -- head-beats-tail: tail ≤ 10/δ³ < 1000/δ³ ≤ head
   have hcosh : Real.cosh 1 < 2 := cosh_one_lt_two
-  have hu : (0 : ℝ) < 1 / δ ^ 3 := by positivity
-  have hd23 : (1 : ℝ) / δ ^ 2 ≤ 1 / δ ^ 3 := by
+  have hu : (0 : ℝ) < 1 / δ ^ (3 : ℕ) := by positivity
+  have hd23 : (1 : ℝ) / δ ^ (2 : ℕ) ≤ 1 / δ ^ (3 : ℕ) := by
     rw [div_le_div_iff₀ (by positivity) hδ3]
     nlinarith [hδ1, hδ0, pow_pos hδ0 2]
-  have hHlow : (1000 : ℝ) / δ ^ 3
-      ≤ 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 := by
-    have e1 : 1 / (4 * (θ * δ / 2) ^ 3) = 2 / (θ ^ 3 * δ ^ 3) := by
-      rw [show (4 : ℝ) * (θ * δ / 2) ^ 3 = θ ^ 3 * δ ^ 3 / 2 from by ring]; rw [one_div_div]
-    have e2 : Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 = 8 * Real.cosh 1 / ((1 - θ) ^ 3 * δ ^ 3) := by
-      rw [show ((1 - θ) * δ / 2) ^ 3 = (1 - θ) ^ 3 * δ ^ 3 / 8 from by ring, div_div_eq_mul_div,
+  have hHlow : (1000 : ℝ) / δ ^ (3 : ℕ)
+      ≤ 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) := by
+    have e1 : 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) = 2 / (θ ^ (3 : ℕ) * δ ^ (3 : ℕ)) := by
+      rw [show (4 : ℝ) * (θ * δ / 2) ^ (3 : ℕ) = θ ^ (3 : ℕ) * δ ^ (3 : ℕ) / 2 from by ring]; rw [one_div_div]
+    have e2 : Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) = 8 * Real.cosh 1 / ((1 - θ) ^ (3 : ℕ) * δ ^ (3 : ℕ)) := by
+      rw [show ((1 - θ) * δ / 2) ^ (3 : ℕ) = (1 - θ) ^ (3 : ℕ) * δ ^ (3 : ℕ) / 8 from by ring, div_div_eq_mul_div,
         mul_comm (Real.cosh 1) (8 : ℝ)]
     rw [e1, e2]
-    have hθ3 : θ ^ 3 ≤ 1 / 512 := by nlinarith [pow_le_pow_left₀ hθ0.le hθ8 3]
-    have h1θ3 : (7 / 8 : ℝ) ^ 3 ≤ (1 - θ) ^ 3 :=
+    have hθ3 : θ ^ (3 : ℕ) ≤ 1 / 512 := by nlinarith [pow_le_pow_left₀ hθ0.le hθ8 3]
+    have h1θ3 : (7 / 8 : ℝ) ^ (3 : ℕ) ≤ (1 - θ) ^ (3 : ℕ) :=
       pow_le_pow_left₀ (by norm_num) (by linarith) 3
-    have hb1 : (1024 : ℝ) / δ ^ 3 ≤ 2 / (θ ^ 3 * δ ^ 3) := by
+    have hb1 : (1024 : ℝ) / δ ^ (3 : ℕ) ≤ 2 / (θ ^ (3 : ℕ) * δ ^ (3 : ℕ)) := by
       rw [div_le_div_iff₀ hδ3 (by positivity)]; nlinarith [hθ3, hδ3, pow_pos hθ0 3]
-    have hb2 : 8 * Real.cosh 1 / ((1 - θ) ^ 3 * δ ^ 3) ≤ 24 / δ ^ 3 := by
+    have hb2 : 8 * Real.cosh 1 / ((1 - θ) ^ (3 : ℕ) * δ ^ (3 : ℕ)) ≤ 24 / δ ^ (3 : ℕ) := by
       rw [div_le_div_iff₀ (by positivity) hδ3]
       nlinarith [h1θ3, hcosh, hδ3, Real.cosh_pos (1 : ℝ)]
-    have h1000 : (1000 : ℝ) / δ ^ 3 = 1024 / δ ^ 3 - 24 / δ ^ 3 := by ring
+    have h1000 : (1000 : ℝ) / δ ^ (3 : ℕ) = 1024 / δ ^ (3 : ℕ) - 24 / δ ^ (3 : ℕ) := by ring
     linarith [hb1, hb2, h1000]
-  have hTup : (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) + (4 / δ ^ 2) * (1 / ((M : ℝ) - θ))
-      ≤ 10 / δ ^ 3 := by
+  have hTup : (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) + (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ))
+      ≤ 10 / δ ^ (3 : ℕ) := by
     have hMθ : (7 / 8 : ℝ) ≤ (M : ℝ) - θ := by linarith
     have h1θM : (15 / 8 : ℝ) ≤ 1 - θ + (M : ℝ) := by linarith
     have ha1 : 1 / (1 - θ + (M : ℝ)) ≤ 8 / 15 := by
@@ -527,28 +527,28 @@ theorem dW_dtheta_neg_small_delta {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1
       calc (1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)) ≤ (8 / 15) * (8 / 7) :=
             mul_le_mul ha1 ha2 (by positivity) (by norm_num)
         _ = 64 / 105 := by norm_num
-    have ht1 : (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) ≤ 5 / δ ^ 3 := by
-      calc (8 / δ ^ 3) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
-          ≤ (8 / δ ^ 3) * (64 / 105) := by
+    have ht1 : (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ))) ≤ 5 / δ ^ (3 : ℕ) := by
+      calc (8 / δ ^ (3 : ℕ)) * ((1 / (1 - θ + (M : ℝ))) * (1 / ((M : ℝ) - θ)))
+          ≤ (8 / δ ^ (3 : ℕ)) * (64 / 105) := by
             apply mul_le_mul_of_nonneg_left hbr (by positivity)
-        _ ≤ 5 / δ ^ 3 := by rw [div_mul_eq_mul_div, div_le_div_iff₀ hδ3 hδ3]; nlinarith [hδ3]
-    have ht2 : (4 / δ ^ 2) * (1 / ((M : ℝ) - θ)) ≤ 5 / δ ^ 3 := by
-      have hstep : (4 / δ ^ 2) * (1 / ((M : ℝ) - θ)) ≤ (4 / δ ^ 2) * (8 / 7) :=
+        _ ≤ 5 / δ ^ (3 : ℕ) := by rw [div_mul_eq_mul_div, div_le_div_iff₀ hδ3 hδ3]; nlinarith [hδ3]
+    have ht2 : (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ)) ≤ 5 / δ ^ (3 : ℕ) := by
+      have hstep : (4 / δ ^ (2 : ℕ)) * (1 / ((M : ℝ) - θ)) ≤ (4 / δ ^ (2 : ℕ)) * (8 / 7) :=
         mul_le_mul_of_nonneg_left ha2 (by positivity)
-      have hstep2 : (4 / δ ^ 2) * (8 / 7) = (32 / 7) * (1 / δ ^ 2) := by ring
-      have hstep3 : (32 / 7 : ℝ) * (1 / δ ^ 2) ≤ (32 / 7) * (1 / δ ^ 3) :=
+      have hstep2 : (4 / δ ^ (2 : ℕ)) * (8 / 7) = (32 / 7) * (1 / δ ^ (2 : ℕ)) := by ring
+      have hstep3 : (32 / 7 : ℝ) * (1 / δ ^ (2 : ℕ)) ≤ (32 / 7) * (1 / δ ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left hd23 (by norm_num)
-      have hstep4 : (32 / 7 : ℝ) * (1 / δ ^ 3) ≤ 5 / δ ^ 3 := by
+      have hstep4 : (32 / 7 : ℝ) * (1 / δ ^ (3 : ℕ)) ≤ 5 / δ ^ (3 : ℕ) := by
         rw [mul_one_div, div_le_div_iff₀ (by positivity) hδ3]; nlinarith [hδ3]
       linarith [hstep, hstep2, hstep3, hstep4]
-    have h10 : (10 : ℝ) / δ ^ 3 = 5 / δ ^ 3 + 5 / δ ^ 3 := by ring
+    have h10 : (10 : ℝ) / δ ^ (3 : ℕ) = 5 / δ ^ (3 : ℕ) + 5 / δ ^ (3 : ℕ) := by ring
     linarith [ht1, ht2, h10]
-  have hlt : (10 : ℝ) / δ ^ 3 < 1000 / δ ^ 3 := by
+  have hlt : (10 : ℝ) / δ ^ (3 : ℕ) < 1000 / δ ^ (3 : ℕ) := by
     rw [div_lt_div_iff₀ hδ3 hδ3]; nlinarith [hδ3]
   calc (∑ k ∈ Ico M N, fb k) ≤ _ := htail
-    _ ≤ 10 / δ ^ 3 := hTup
-    _ < 1000 / δ ^ 3 := hlt
-    _ ≤ 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 := hHlow
+    _ ≤ 10 / δ ^ (3 : ℕ) := hTup
+    _ < 1000 / δ ^ (3 : ℕ) := hlt
+    _ ≤ 1 / (4 * (θ * δ / 2) ^ (3 : ℕ)) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ (3 : ℕ) := hHlow
     _ ≤ fa 0 - fb 0 := hhead0
     _ ≤ ∑ k ∈ range M, (fa k - fb k) := hheadsum
 

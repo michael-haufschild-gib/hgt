@@ -55,8 +55,8 @@ theorem intComb_sq_re (m : ℝ) (x y : ℂ) (a b c d : ℤ) :
         + (d : ℂ) * (starRingEnd ℂ) y)
       * (starRingEnd ℂ) ((a : ℂ) * x + (b : ℂ) * y + (c : ℂ) * (starRingEnd ℂ) x
         + (d : ℂ) * (starRingEnd ℂ) y)).re
-      = ((a : ℝ) ^ 2 + (c : ℝ) ^ 2) * ((m : ℂ) * x * (starRingEnd ℂ) x).re
-        + ((b : ℝ) ^ 2 + (d : ℝ) ^ 2) * ((m : ℂ) * y * (starRingEnd ℂ) y).re
+      = ((a : ℝ) ^ (2 : ℕ) + (c : ℝ) ^ (2 : ℕ)) * ((m : ℂ) * x * (starRingEnd ℂ) x).re
+        + ((b : ℝ) ^ (2 : ℕ) + (d : ℝ) ^ (2 : ℕ)) * ((m : ℂ) * y * (starRingEnd ℂ) y).re
         + 2 * (a : ℝ) * (c : ℝ) * ((m : ℂ) * x * x).re
         + 2 * (b : ℝ) * (d : ℝ) * ((m : ℂ) * y * y).re
         + 2 * ((a : ℝ) * (b : ℝ) + (c : ℝ) * (d : ℝ)) * ((m : ℂ) * x * (starRingEnd ℂ) y).re
@@ -73,8 +73,8 @@ conjugates is the integer-coefficient combination
 of six real numbers.  No imaginary part of any pairing occurs. -/
 theorem wEnergy_intComb (mu : ℕ → ℝ) (s : Finset ℕ) (v w : ℕ → ℂ) (a b c d : ℤ) :
     wEnergy mu s (intComb a b c d v w)
-      = ((a : ℝ) ^ 2 + (c : ℝ) ^ 2) * wEnergy mu s v
-        + ((b : ℝ) ^ 2 + (d : ℝ) ^ 2) * wEnergy mu s w
+      = ((a : ℝ) ^ (2 : ℕ) + (c : ℝ) ^ (2 : ℕ)) * wEnergy mu s v
+        + ((b : ℝ) ^ (2 : ℕ) + (d : ℝ) ^ (2 : ℕ)) * wEnergy mu s w
         + 2 * (a : ℝ) * (c : ℝ) * (wIP mu s v ((starRingEnd ℂ) ∘ v)).re
         + 2 * (b : ℝ) * (d : ℝ) * (wIP mu s w ((starRingEnd ℂ) ∘ w)).re
         + 2 * ((a : ℝ) * (b : ℝ) + (c : ℝ) * (d : ℝ)) * (wIP mu s v w).re

@@ -6,7 +6,7 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 /-!
 # Exact weighted limits of the fixed-core squarefree source
 
-The normalized source survival count has limit rho*(1-t^2). Finite
+The normalized source survival count has limit rho*(1-t^(2 : ℕ)). Finite
 layer cake and dominated convergence give every half-integer moment,
 including their values on moving macroscopic cutoffs. The resulting
 square-root-affine square is the weight of an actual quotient energy block.
@@ -47,19 +47,19 @@ theorem fixedCoreSquarefreeSurvival_eq_counts (P : Finset ℕ) {N : ℕ} (hN : 0
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     fixedCoreSquarefreeSurvival P N t =
       (fixedCoreSquarefreeCount P N : ℝ)/N -
-        (fixedCoreSquarefreeCount P ⌊(N : ℝ)*t^2⌋₊ : ℝ)/N := by
+        (fixedCoreSquarefreeCount P ⌊(N : ℝ)*t^(2 : ℕ)⌋₊ : ℝ)/N := by
   let A := fixedCoreSquarefreeIndices P N
   have hNR : 0 < (N : ℝ) := by exact_mod_cast hN
-  have ht2 : t^2 ≤ 1 := by nlinarith
-  have hcut : ⌊(N : ℝ)*t^2⌋₊ ≤ N := by
+  have ht2 : t^(2 : ℕ) ≤ 1 := by nlinarith
+  have hcut : ⌊(N : ℝ)*t^(2 : ℕ)⌋₊ ≤ N := by
     have h := Nat.floor_mono (mul_le_mul_of_nonneg_left ht2 hNR.le)
     simpa using h
-  have hiff (r : ℕ) : (¬ t < Real.sqrt ((r : ℝ)/N)) ↔ r ≤ ⌊(N : ℝ)*t^2⌋₊ := by
+  have hiff (r : ℕ) : (¬ t < Real.sqrt ((r : ℝ)/N)) ↔ r ≤ ⌊(N : ℝ)*t^(2 : ℕ)⌋₊ := by
     rw [not_lt, Real.sqrt_le_iff, and_iff_right ht0,
       Nat.le_floor_iff (by positivity), div_le_iff₀ hNR]
-    rw [mul_comm (t^2) (N : ℝ)]
+    rw [mul_comm (t^(2 : ℕ)) (N : ℝ)]
   have he : A.filter (fun r : ℕ => ¬t < Real.sqrt ((r : ℝ)/N)) =
-      fixedCoreSquarefreeIndices P ⌊(N : ℝ)*t^2⌋₊ := by
+      fixedCoreSquarefreeIndices P ⌊(N : ℝ)*t^(2 : ℕ)⌋₊ := by
     ext r
     simp only [mem_filter, A, fixedCoreSquarefreeIndices, mem_Icc, hiff]
     constructor
@@ -75,7 +75,7 @@ theorem fixedCoreSquarefreeSurvival_eq_counts (P : Finset ℕ) {N : ℕ} (hN : 0
     rw [← sum_filter]
     simp
   have hcast : ((A.filter (fun r : ℕ => t < Real.sqrt ((r : ℝ)/N))).card : ℝ) +
-      (fixedCoreSquarefreeCount P ⌊(N : ℝ)*t^2⌋₊ : ℝ) = fixedCoreSquarefreeCount P N := by
+      (fixedCoreSquarefreeCount P ⌊(N : ℝ)*t^(2 : ℕ)⌋₊ : ℝ) = fixedCoreSquarefreeCount P N := by
     exact_mod_cast hcard
   unfold fixedCoreSquarefreeSurvival
   change (∑ r ∈ A, if t < Real.sqrt ((r : ℝ)/N) then (1 : ℝ) else 0)/N = _
@@ -87,14 +87,14 @@ theorem fixedCoreSquarefreeSurvival_eq_counts (P : Finset ℕ) {N : ℕ} (hN : 0
 private lemma survival_limit (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
     {t : ℝ} (ht0 : 0 < t) (ht1 : t ≤ 1) :
     Tendsto (fun N : ℕ => fixedCoreSquarefreeSurvival P N t) atTop
-      (𝓝 ((Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1))*(1-t^2))) := by
+      (𝓝 ((Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1))*(1-t^(2 : ℕ)))) := by
   let ρ := Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1)
-  have hscale : Tendsto (fun N : ℕ => (N : ℝ)*t^2) atTop atTop :=
+  have hscale : Tendsto (fun N : ℕ => (N : ℝ)*t^(2 : ℕ)) atTop atTop :=
     (tendsto_mul_const_atTop_of_pos (sq_pos_of_pos ht0)).mpr tendsto_natCast_atTop_atTop
-  have hcount := ((tendsto_fixedCoreSquarefreeRatio P hP).comp hscale).mul_const (t^2)
+  have hcount := ((tendsto_fixedCoreSquarefreeRatio P hP).comp hscale).mul_const (t^(2 : ℕ))
   have hfull := (tendsto_fixedCoreSquarefreeCount_div P hP).sub hcount
-  have he : ρ - ρ*t^2 = ρ*(1-t^2) := by ring
-  change Tendsto _ atTop (𝓝 (ρ-ρ*t^2)) at hfull
+  have he : ρ - ρ*t^(2 : ℕ) = ρ*(1-t^(2 : ℕ)) := by ring
+  change Tendsto _ atTop (𝓝 (ρ-ρ*t^(2 : ℕ))) at hfull
   rw [he] at hfull
   apply hfull.congr'
   filter_upwards [eventually_gt_atTop (0 : ℕ)] with N hN
@@ -153,7 +153,7 @@ theorem tendsto_fixedCoreSquarefree_half_moments
   let ρ := Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1)
   have hint := intervalIntegral.tendsto_integral_filter_of_dominated_convergence
     (F := fun N : ℕ => fun t : ℝ => ((k : ℝ)+1)*t^k*fixedCoreSquarefreeSurvival P N t)
-    (f := fun t : ℝ => ((k : ℝ)+1)*t^k*(ρ*(1-t^2)))
+    (f := fun t : ℝ => ((k : ℝ)+1)*t^k*(ρ*(1-t^(2 : ℕ))))
     (fun _ : ℝ => (k : ℝ)+1)
     (Eventually.of_forall (fun N => (survival_moment_integrable P N k).def'.aestronglyMeasurable))
     (Eventually.of_forall (fun N => Eventually.of_forall (fun t ht => by
@@ -173,8 +173,8 @@ theorem tendsto_fixedCoreSquarefree_half_moments
       have h := (survival_limit P hP (Set.mem_Ioc.mp ht).1 (Set.mem_Ioc.mp ht).2).const_mul
         (((k : ℝ)+1)*t^k)
       exact h))
-  have hi : (∫ t in (0 : ℝ)..1, ((k : ℝ)+1)*t^k*(ρ*(1-t^2))) = 2*ρ/((k : ℝ)+3) := by
-    have he (t : ℝ) : ((k : ℝ)+1)*t^k*(ρ*(1-t^2)) =
+  have hi : (∫ t in (0 : ℝ)..1, ((k : ℝ)+1)*t^k*(ρ*(1-t^(2 : ℕ)))) = 2*ρ/((k : ℝ)+3) := by
+    have he (t : ℝ) : ((k : ℝ)+1)*t^k*(ρ*(1-t^(2 : ℕ))) =
         ((k : ℝ)+1)*ρ*(t^k-t^(k+2)) := by rw [pow_add]; ring
     simp_rw [he]
     rw [intervalIntegral.integral_const_mul,
@@ -254,18 +254,18 @@ theorem tendsto_fixedCoreSquarefree_scaled_affine_sqrt_square
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) (a b : ℝ) {c : ℝ} (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
       (∑ r ∈ fixedCoreSquarefreeIndices P ⌊c*(N : ℝ)⌋₊,
-        (a+b*Real.sqrt ((r : ℝ)/N))^2)/(N : ℝ)) atTop
+        (a+b*Real.sqrt ((r : ℝ)/N))^(2 : ℕ))/(N : ℝ)) atTop
       (𝓝 ((Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1))*
-        (a^2*c+(4/3:ℝ)*a*b*c*Real.sqrt c+b^2*c^2/2))) := by
+        (a^(2 : ℕ)*c+(4/3:ℝ)*a*b*c*Real.sqrt c+b^(2 : ℕ)*c^(2 : ℕ)/2))) := by
   let ρ := Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1)
-  have h0 := (tendsto_fixedCoreSquarefree_scaled_count P hP hc).const_mul (a^2)
+  have h0 := (tendsto_fixedCoreSquarefree_scaled_count P hP hc).const_mul (a^(2 : ℕ))
   have h1 := (tendsto_fixedCoreSquarefree_scaled_half_moments P hP 0 hc).const_mul (2*a*b)
-  have h2 := (tendsto_fixedCoreSquarefree_scaled_half_moments P hP 1 hc).const_mul (b^2)
+  have h2 := (tendsto_fixedCoreSquarefree_scaled_half_moments P hP 1 hc).const_mul (b^(2 : ℕ))
   have h := (h0.add h1).add h2
   convert h using 1
   · ext N
-    have he (r : ℕ) : (a+b*Real.sqrt ((r : ℝ)/N))^2 =
-        a^2+(2*a*b)*Real.sqrt ((r : ℝ)/N)+b^2*(Real.sqrt ((r : ℝ)/N))^2 := by ring
+    have he (r : ℕ) : (a+b*Real.sqrt ((r : ℝ)/N))^(2 : ℕ) =
+        a^(2 : ℕ)+(2*a*b)*Real.sqrt ((r : ℝ)/N)+b^(2 : ℕ)*(Real.sqrt ((r : ℝ)/N))^(2 : ℕ) := by ring
     simp_rw [he]
     simp only [sum_add_distrib, ← mul_sum, sum_const, nsmul_eq_mul,
       fixedCoreSquarefreeCount, Nat.zero_add, Nat.one_add, pow_one, add_div, mul_div_assoc]

@@ -2,7 +2,7 @@
 # The quartic defect as a slash-invariant function (generator invariances)
 
 `quarticDefectH z = F(z) = θ₃⁴−θ₂⁴−θ₄⁴` is invariant under the `SlashAction` of the `Γ(2)` generators.
-With `Gamma2_eq_closure` + `slash_action_generators`, these promote to `F ∈ SlashInvariantForm (↑Γ(2)) 2`.
+With `Gamma2_eq_closure` + `slash_action`, these promote to `F ∈ SlashInvariantForm (↑Γ(2)) 2`.
 -/
 import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators

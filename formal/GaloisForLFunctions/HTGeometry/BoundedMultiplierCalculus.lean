@@ -44,7 +44,7 @@ theorem hasDerivAt_of_ae_mul
       =ᵐ[μ] fun x => φ s x * (f : α → ℂ) x)
     (hD : ∀ f : Lp ℂ 2 μ, ((D f : Lp ℂ 2 μ) : α → ℂ) =ᵐ[μ] fun x => ψ x * (f : α → ℂ) x)
     (hbound : ∀ᶠ h : ℝ in nhds (0 : ℝ),
-      ∀ x, ‖φ (t + h) x - φ t x - (h : ℂ) * ψ x‖ ≤ K * h ^ 2) :
+      ∀ x, ‖φ (t + h) x - φ t x - (h : ℂ) * ψ x‖ ≤ K * h ^ (2 : ℕ)) :
     HasDerivAt T D t := by
   rw [hasDerivAt_iff_isLittleO_nhds_zero, isLittleO_iff]
   intro c hc
@@ -55,7 +55,7 @@ theorem hasDerivAt_of_ae_mul
     rw [Real.dist_eq, sub_zero] at hd
     exact hd.le
   filter_upwards [hbound, hball] with h hb hsmall
-  have hnorm : ‖T (t + h) - T t - h • D‖ ≤ K * h ^ 2 := by
+  have hnorm : ‖T (t + h) - T t - h • D‖ ≤ K * h ^ (2 : ℕ) := by
     refine MeasureTheory.norm_le_of_ae_mul
       (ψ := fun x => φ (t + h) x - φ t x - (h : ℂ) * ψ x) (by positivity) hb ?_
     intro f
@@ -76,7 +76,7 @@ theorem hasDerivAt_of_ae_mul
     ring
   refine hnorm.trans ?_
   rw [Real.norm_eq_abs]
-  have habs : h ^ 2 = |h| * |h| := by
+  have habs : h ^ (2 : ℕ) = |h| * |h| := by
     rw [← abs_mul, abs_of_nonneg (mul_self_nonneg h)]; ring
   rw [habs]
   have hKle : K * |h| ≤ c := by
@@ -192,7 +192,7 @@ theorem freeHamiltonian_comp_freeGroup (ω : α → ℝ) (hω : Measurable ω) {
 /-! ## A uniform second-order bound for the exponential -/
 
 theorem norm_exp_sub_one_sub_le {z : ℂ} (hz : ‖z‖ ≤ 1) :
-    ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * ‖z‖ ^ 2 := by
+    ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * ‖z‖ ^ (2 : ℕ) := by
   have h := Complex.exp_bound hz (n := 2) (by norm_num)
   have hsum : ∑ m ∈ Finset.range 2, z ^ m / (Nat.factorial m : ℂ) = 1 + z := by
     simp [Finset.sum_range_succ]
@@ -200,8 +200,8 @@ theorem norm_exp_sub_one_sub_le {z : ℂ} (hz : ‖z‖ ≤ 1) :
   have hconst : ((Nat.succ 2 : ℕ) : ℝ) * ((Nat.factorial 2 : ℝ) * (2 : ℕ)) ⁻¹ = 3 / 4 := by
     norm_num
   calc ‖Complex.exp z - 1 - z‖ = ‖Complex.exp z - (1 + z)‖ := by rw [sub_sub]
-    _ ≤ ‖z‖ ^ 2 * (((Nat.succ 2 : ℕ) : ℝ) * ((Nat.factorial 2 : ℝ) * (2 : ℕ)) ⁻¹) := h
-    _ = 3 / 4 * ‖z‖ ^ 2 := by rw [hconst]; ring
+    _ ≤ ‖z‖ ^ (2 : ℕ) * (((Nat.succ 2 : ℕ) : ℝ) * ((Nat.factorial 2 : ℝ) * (2 : ℕ)) ⁻¹) := h
+    _ = 3 / 4 * ‖z‖ ^ (2 : ℕ) := by rw [hconst]; ring
 
 /-- **The free group solves the free Schrödinger equation**, in operator norm. -/
 theorem hasDerivAt_freeGroup (ω : α → ℝ) (hω : Measurable ω) {C : ℝ} (hC0 : 0 ≤ C)
@@ -209,7 +209,7 @@ theorem hasDerivAt_freeGroup (ω : α → ℝ) (hω : Measurable ω) {C : ℝ} (
     HasDerivAt (freeGroup (μ := μ) ω hω)
       ((-Complex.I) • ((freeHamiltonian (μ := μ) ω hω hC0 hC) ∘L
         (freeGroup (μ := μ) ω hω t))) t := by
-  refine hasDerivAt_of_ae_mul (K := 3 / 4 * C ^ 2)
+  refine hasDerivAt_of_ae_mul (K := 3 / 4 * C ^ (2 : ℕ))
     (φ := fun s => freeSymbol ω s)
     (ψ := fun x => -Complex.I * ((ω x : ℝ) : ℂ) * freeSymbol ω t x) (by positivity) ?_ ?_ ?_
   · intro s f
@@ -259,14 +259,14 @@ theorem hasDerivAt_freeGroup (ω : α → ℝ) (hω : Measurable ω) {C : ℝ} (
       push_cast
       ring
     rw [hdiff, norm_mul, norm_freeSymbol, one_mul]
-    have hsq : (ω x) ^ 2 ≤ C ^ 2 := by
+    have hsq : (ω x) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
       have h1 : |ω x| ≤ C := hC x
       have h2 : (0 : ℝ) ≤ |ω x| := abs_nonneg _
       nlinarith [sq_abs (ω x)]
-    calc ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * ‖z‖ ^ 2 := norm_exp_sub_one_sub_le hzle
-      _ = 3 / 4 * (h ^ 2 * (ω x) ^ 2) := by rw [hznorm, sq_abs]; ring
-      _ ≤ 3 / 4 * (h ^ 2 * C ^ 2) := by nlinarith [sq_nonneg h]
-      _ = 3 / 4 * C ^ 2 * h ^ 2 := by ring
+    calc ‖Complex.exp z - 1 - z‖ ≤ 3 / 4 * ‖z‖ ^ (2 : ℕ) := norm_exp_sub_one_sub_le hzle
+      _ = 3 / 4 * (h ^ (2 : ℕ) * (ω x) ^ (2 : ℕ)) := by rw [hznorm, sq_abs]; ring
+      _ ≤ 3 / 4 * (h ^ (2 : ℕ) * C ^ (2 : ℕ)) := by nlinarith [sq_nonneg h]
+      _ = 3 / 4 * C ^ (2 : ℕ) * h ^ (2 : ℕ) := by ring
 
 theorem continuous_freeGroup (ω : α → ℝ) (hω : Measurable ω) {C : ℝ} (hC0 : 0 ≤ C)
     (hC : ∀ x, |ω x| ≤ C) : Continuous (freeGroup (μ := μ) ω hω) :=

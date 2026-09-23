@@ -18,7 +18,7 @@ noncomputable section
 namespace RHTower
 
 def nuLambdaDensity (lam d : ℝ) (q : ℝ → ℂ) (x : ℝ) : ℝ :=
-  lam * ‖q (lam * x)‖ ^ 2 / d
+  lam * ‖q (lam * x)‖ ^ (2 : ℕ) / d
 
 theorem nuLambdaDensity_nonneg {lam d : ℝ} (hlam : 0 ≤ lam) (hd : 0 < d)
     (q : ℝ → ℂ) (x : ℝ) :

@@ -17,8 +17,8 @@ theorem sourceProfile_frequency_entire (s a J K T : ℂ) {z : ℝ} (hz : 0 < z) 
     (show Differentiable ℂ (fun w : ℂ => w/2) by fun_prop)
   have hr := (power_exponent_entire (show 0 < 1+Real.sqrt (1-z) by positivity)).comp
     (show Differentiable ℂ (fun w : ℂ => 2*s-w) by fun_prop)
-  have h := hpow.mul (((hr.mul_const (a^2)).mul_const
-    (((5*s^2+15*s+4)/4)*J+(1-(z:ℂ))*s*(s-1)/4*((s+2)^2*J-K))).mul_const T)
+  have h := hpow.mul (((hr.mul_const (a^(2 : ℕ))).mul_const
+    (((5*s^(2 : ℕ)+15*s+4)/4)*J+(1-(z:ℂ))*s*(s-1)/4*((s+2)^(2 : ℕ)*J-K))).mul_const T)
   simpa only [sourceProfile,sourceRemainder,Function.comp_def,Pi.mul_def] using! h
 
 /-- Continuation retains the fixed smooth onset correction and its original source pole. -/

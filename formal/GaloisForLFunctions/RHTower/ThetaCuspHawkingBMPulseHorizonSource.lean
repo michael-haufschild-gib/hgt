@@ -26,15 +26,15 @@ set_option autoImplicit false
 def normalizedPulseSource (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v x : ℝ) (z : Point) (j : Fin 2) : ℂ :=
   -coexact (fullSourceOnsetPulse q branch a (v-x) x) j z /
-    ((radialUnit x:ℂ)*(1-(radialUnit x:ℂ)^2)*parameter q branch)
+    ((radialUnit x:ℂ)*(1-(radialUnit x:ℂ)^(2 : ℕ))*parameter q branch)
 
 /-- Regular expression obtained by cancelling the source's radial zero. -/
 def compactPulseSource (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v u : ℝ) (z : Point) (j : Fin 2) : ℂ :=
   let s := physicalRate q branch
-  2*power (2*s) (1+u)*a^2/((u:ℂ)*(1+(u:ℂ)))*
+  2*power (2*s) (1+u)*a^(2 : ℕ)/((u:ℂ)*(1+(u:ℂ)))*
     (((2*s+1)*(u:ℂ)+1)*fullAngularCovector q branch j z-
-      s*(s-1)/4*(u:ℂ)^2*((2*s+3)*(u:ℂ)+3)*fullSquareCovector q j z)*
+      s*(s-1)/4*(u:ℂ)^(2 : ℕ)*((2*s+3)*(u:ℂ)+3)*fullSquareCovector q j z)*
     ((deriv Real.smoothTransition v:ℝ):ℂ)*Complex.exp (2*s*(v:ℂ))
 
 /-- Horizon drive in terms of the actual incoming trace and normal covectors. -/
@@ -89,7 +89,7 @@ private theorem pulse_coexact (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     coexact (fullSourceOnsetPulse q branch a (v-x) x) j (coordinates z) =
       2*parameter q branch*sourceAmplitude s 0 a 1 x*(1-u)*
         (-((2*s+1)*u+1)*fullAngularCovector q branch j (coordinates z)+
-          s*(s-1)/4*u^2*((2*s+3)*u+3)*fullSquareCovector q j (coordinates z))*
+          s*(s-1)/4*u^(2 : ℕ)*((2*s+3)*u+3)*fullSquareCovector q j (coordinates z))*
         ((deriv Real.smoothTransition v:ℝ):ℂ)*Complex.exp (2*s*(v:ℂ)) := by
   dsimp only
   let s := physicalRate q branch
@@ -98,7 +98,7 @@ private theorem pulse_coexact (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     ((deriv Real.smoothTransition v:ℝ):ℂ)*Complex.exp (2*s*(v:ℂ))
   have he : fullSourceOnsetPulse q branch a (v-x) x =
       fun w => (C*(-((2*s+1)*u+1)))*fullAngularField q branch w+
-        (C*(s*(s-1)/4*u^2*((2*s+3)*u+3)))*fullSquarePotential q w := by
+        (C*(s*(s-1)/4*u^(2 : ℕ)*((2*s+3)*u+3)))*fullSquarePotential q w := by
     funext w
     rw [fullSourceOnsetPulse_radial_factor]
     dsimp only [C,s,u]
@@ -115,8 +115,8 @@ theorem normalizedPulseSource_eq_compact (q : XiZeroCopy) (branch : Bool) (a : �
       compactPulseSource q branch a v (radialUnit x) (coordinates z) j := by
   obtain ⟨h0,h1⟩ := radialUnit_bounds x x.property
   have hu0 : (radialUnit x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt h0)
-  have hu2 : 1-(radialUnit x:ℂ)^2 ≠ 0 := by
-    exact_mod_cast (show 1-(radialUnit x)^2 ≠ 0 by nlinarith)
+  have hu2 : 1-(radialUnit x:ℂ)^(2 : ℕ) ≠ 0 := by
+    exact_mod_cast (show 1-(radialUnit x)^(2 : ℕ) ≠ 0 by nlinarith)
   have hu1 : 1+(radialUnit x:ℂ) ≠ 0 := by
     exact_mod_cast (show 1+radialUnit x ≠ 0 by linarith)
   have hp := parameter_ne_zero q branch
@@ -130,13 +130,13 @@ theorem normalizedPulseSource_eq_compact (q : XiZeroCopy) (branch : Bool) (a : �
 theorem normalizedPulseSource_original_radius (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (x : Iio (0:ℝ)) (z : Point) (j : Fin 2) :
     normalizedPulseSource q branch a v x z j =
-      -(tortoiseRadius x:ℂ)^3/
-        (((tortoiseRadius x:ℂ)^2-1)*parameter q branch)*
+      -(tortoiseRadius x:ℂ)^(3 : ℕ)/
+        (((tortoiseRadius x:ℂ)^(2 : ℕ)-1)*parameter q branch)*
           coexact (fullSourceOnsetPulse q branch a (v-x) x) j z := by
   have hR := tortoiseRadius_exterior x x.property
   have hr : (tortoiseRadius x:ℂ) ≠ 0 := by exact_mod_cast (show tortoiseRadius x ≠ 0 by linarith)
-  have hf : (tortoiseRadius x:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius x)^2-1 ≠ 0 by nlinarith)
+  have hf : (tortoiseRadius x:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius x)^(2 : ℕ)-1 ≠ 0 by nlinarith)
   have hp := parameter_ne_zero q branch
   rw [normalizedPulseSource,radialUnit_inverse_radius]
   push_cast
@@ -233,7 +233,7 @@ private theorem incomingTime_horizon (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
     (responseProfile (physicalRate q true) a 1*Complex.exp (2*physicalRate q true*(v:ℂ)))*
     (responseProfile (physicalRate q false) b 1*Complex.exp (2*physicalRate q false*(v:ℂ))) =
-      a^2*b^2/64*Complex.exp (-6*(v:ℂ)) := by
+      a^(2 : ℕ)*b^(2 : ℕ)/64*Complex.exp (-6*(v:ℂ)) := by
   have ht : physicalRate q false= -physicalRate q true-3 := by simp [physicalRate]; ring
   have hp : power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2=1/64 := by
     unfold power
@@ -250,7 +250,7 @@ private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
   rw [ht]
   simp only [responseProfile,inv_one,show (1:ℝ)+1=2 by norm_num]
   calc
-    _ = a^2*b^2*(power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2)*
+    _ = a^(2 : ℕ)*b^(2 : ℕ)*(power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2)*
         (Complex.exp (2*physicalRate q true*(v:ℂ))*Complex.exp (2*(-physicalRate q true-3)*(v:ℂ))) := by ring
     _ = _ := by rw [hp,he]; ring
 
@@ -258,7 +258,7 @@ private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
 theorem horizonPulseContact_profile (q : XiZeroCopy) (a b : ℂ) (v : ℝ) (z : Point) :
     let s := physicalRate q true
     let t := physicalRate q false
-    let c := a^2*b^2/64
+    let c := a^(2 : ℕ)*b^(2 : ℕ)/64
     let TT := ∑ j : Fin 2, (traceJet q true z j).value*(traceJet q false z j).value
     let X := ∑ j : Fin 2, (traceJet q false z j).value*(normalJet q true z j).value
     let Y := ∑ j : Fin 2, (traceJet q true z j).value*(normalJet q false z j).value
@@ -276,11 +276,11 @@ theorem horizonPulseContact_profile (q : XiZeroCopy) (a b : ℂ) (v : ℝ) (z : 
   let TT := ∑ j : Fin 2, (traceJet q true z j).value*(traceJet q false z j).value
   let X := ∑ j : Fin 2, (traceJet q false z j).value*(normalJet q true z j).value
   let Y := ∑ j : Fin 2, (traceJet q true z j).value*(normalJet q false z j).value
-  have hχ : (2*(X-Y)*dχ^2+4*((s-t)*TT+t*X-s*Y)*χ*dχ)*
+  have hχ : (2*(X-Y)*dχ^(2 : ℕ)+4*((s-t)*TT+t*X-s*Y)*χ*dχ)*
       ((responseProfile s a 1*Complex.exp (2*s*(v:ℂ)))*
         (responseProfile t b 1*Complex.exp (2*t*(v:ℂ)))) =
-      (2*(X-Y)*dχ^2+4*((s-t)*TT+t*X-s*Y)*χ*dχ)*
-        (a^2*b^2/64*Complex.exp (-6*(v:ℂ))) := by rw [he]
+      (2*(X-Y)*dχ^(2 : ℕ)+4*((s-t)*TT+t*X-s*Y)*χ*dχ)*
+        (a^(2 : ℕ)*b^(2 : ℕ)/64*Complex.exp (-6*(v:ℂ))) := by rw [he]
   dsimp only [TT,X,Y,s,t,χ,dχ] at hχ
   simp only [Fin.sum_univ_two] at hχ
   linear_combination hχ
@@ -306,7 +306,7 @@ set_option autoImplicit false
 /-- Original radial source contact, before cancelling the static-chart singularity. -/
 def originalPulseContact (q : XiZeroCopy) (a b : ℂ) (v x : ℝ) (z : Point) : ℂ :=
   let r := tortoiseRadius x
-  ((r:ℂ)^2-1)/(r:ℂ)^2*(∑ j : Fin 2,
+  ((r:ℂ)^(2 : ℕ)-1)/(r:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
     ((staticJet r (incomingJet q true a r v z j)).first 1*
         normalizedPulseSource q false b v x z j-
       (staticJet r (incomingJet q false b r v z j)).first 1*
@@ -316,10 +316,10 @@ def originalPulseContact (q : XiZeroCopy) (a b : ℂ) (v x : ℝ) (z : Point) : 
 def compactPulseContact (q : XiZeroCopy) (a b : ℂ) (v u : ℝ) (z : Point) : ℂ :=
   let r := u⁻¹
   (∑ j : Fin 2,
-    ((((r:ℂ)^2-1)*(incomingJet q true a r v z j).first 1+
+    ((((r:ℂ)^(2 : ℕ)-1)*(incomingJet q true a r v z j).first 1+
         (incomingJet q true a r v z j).first 0)*compactPulseSource q false b v u z j-
-      (((r:ℂ)^2-1)*(incomingJet q false b r v z j).first 1+
-        (incomingJet q false b r v z j).first 0)*compactPulseSource q true a v u z j))/(r:ℂ)^2
+      (((r:ℂ)^(2 : ℕ)-1)*(incomingJet q false b r v z j).first 1+
+        (incomingJet q false b r v z j).first 0)*compactPulseSource q true a v u z j))/(r:ℂ)^(2 : ℕ)
 
 /-- Cancellation of the actual static-chart factor preserves the full radial contact. -/
 theorem originalPulseContact_eq_compact (q : XiZeroCopy) (a b : ℂ) (v : ℝ)
@@ -328,8 +328,8 @@ theorem originalPulseContact_eq_compact (q : XiZeroCopy) (a b : ℂ) (v : ℝ)
       compactPulseContact q a b v (radialUnit x) (coordinates z) := by
   have hR := tortoiseRadius_exterior x x.property
   have hr : (tortoiseRadius x:ℂ) ≠ 0 := by exact_mod_cast (show tortoiseRadius x ≠ 0 by linarith)
-  have hf : (tortoiseRadius x:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius x)^2-1 ≠ 0 by nlinarith)
+  have hf : (tortoiseRadius x:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius x)^(2 : ℕ)-1 ≠ 0 by nlinarith)
   have hI : (radialUnit x)⁻¹ = tortoiseRadius x := by rw [radialUnit_inverse_radius,inv_inv]
   dsimp only [originalPulseContact,compactPulseContact]
   simp only [normalizedPulseSource_eq_compact q false b v x z,
@@ -386,9 +386,9 @@ private theorem compactPulseContact_continuous (q : XiZeroCopy) (a b : ℂ)
   unfold compactPulseContact
   apply ContinuousAt.div
   · have hterm (j : Fin 2) : ContinuousAt (fun u : ℝ =>
-        ((((u⁻¹:ℝ):ℂ)^2-1)*(incomingJet q true a u⁻¹ v z j).first 1+
+        ((((u⁻¹:ℝ):ℂ)^(2 : ℕ)-1)*(incomingJet q true a u⁻¹ v z j).first 1+
             (incomingJet q true a u⁻¹ v z j).first 0)*compactPulseSource q false b v u z j-
-          ((((u⁻¹:ℝ):ℂ)^2-1)*(incomingJet q false b u⁻¹ v z j).first 1+
+          ((((u⁻¹:ℝ):ℂ)^(2 : ℕ)-1)*(incomingJet q false b u⁻¹ v z j).first 1+
             (incomingJet q false b u⁻¹ v z j).first 0)*compactPulseSource q true a v u z j) 1 := by
       have hs := incomingFirst_continuous q true a v z j
       have ht := incomingFirst_continuous q false b v z j

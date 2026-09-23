@@ -55,7 +55,7 @@ theorem integrable_causalPoleVector : Integrable causalPoleVector := by
   ring_nf
 
 theorem memLp_causalPoleVector : MemLp causalPoleVector 2 volume := by
-  have hsq : Integrable (fun t : ℝ => ‖causalPoleVector t‖ ^ 2) := by
+  have hsq : Integrable (fun t : ℝ => ‖causalPoleVector t‖ ^ (2 : ℕ)) := by
     have hbase : Integrable
         (Set.indicator (Set.Ioi (0 : ℝ)) (fun s : ℝ => Real.exp (-2 * s))) := by
       rw [integrable_indicator_iff measurableSet_Ioi]
@@ -74,7 +74,7 @@ theorem memLp_causalPoleVector : MemLp causalPoleVector 2 volume := by
         rw [Complex.norm_exp]
         simp
       rw [hnorm, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-      have hsplit : Real.exp (-2 * t) = Real.exp (-t) ^ 2 := by
+      have hsplit : Real.exp (-2 * t) = Real.exp (-t) ^ (2 : ℕ) := by
         rw [sq, ← Real.exp_add]
         congr 1
         ring
@@ -116,13 +116,13 @@ theorem tendsto_integral_norm_sq_causalSource_sub
     (hmem : ∀ ω : ℝ, 0 < ω → MemLp (F ω) 2 volume)
     (htrans : ∀ ω : ℝ, 0 < ω → ∀ y : ℝ, y ≠ 0 →
       laplaceBoundary (F ω) y = mobiusCausalMultiplier ω ((y : ℂ) * Complex.I)) :
-    Tendsto (fun ω : ℝ => ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ 2)
+    Tendsto (fun ω : ℝ => ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hkey : ∀ ω : ℝ, 0 < ω →
       (∫ τ : ℝ, ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2)
-        = 2 * Real.pi * ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ 2 := by
+        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
+        = 2 * Real.pi * ∫ t : ℝ, ‖F ω t - causalPoleVector t‖ ^ (2 : ℕ) := by
     intro ω hω
     have hi : Integrable (fun u : ℝ => F ω u - causalPoleVector u) :=
       (hint ω hω).sub integrable_causalPoleVector
@@ -136,7 +136,7 @@ theorem tendsto_integral_norm_sq_causalSource_sub
   have hM := tendsto_boundary_multiplier_energy
   have hscaled : Tendsto (fun ω : ℝ => (2 * Real.pi)⁻¹ *
       ∫ τ : ℝ, ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2)
+        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
     simpa using hM.const_mul ((2 * Real.pi)⁻¹)
   refine hscaled.congr' ?_

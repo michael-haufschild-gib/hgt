@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.EulerWildProximity
 /-!
 # The dominant-constant-term case of the Euler relation
 
-When the coefficient of `(z f′)^0` carries strictly more total degree than every other coefficient,
+When the coefficient of `(z f′)^(0 : ℕ)` carries strictly more total degree than every other coefficient,
 the tame alternative of the exponent dichotomy is impossible wherever `‖f‖` is large, so the wild
 bound holds at every such point.  Integrating it over the circle bounds the characteristic by a
 logarithmic-derivative proximity:

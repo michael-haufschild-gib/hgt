@@ -13,7 +13,7 @@ whole line gives the sharp dependence
 
 Substitution in the exact finite Euler product cancels the full prime harmonic mass.  Consequently
 the squarefree `z`-smooth Möbius polynomial is bounded by a fixed multiple of
-`(log (|t| + e))^11`, independently of `z`.  Both results below are closed eventual theorems; no
+`(log (|t| + e))^(11 : ℕ)`, independently of `z`.  Both results below are closed eventual theorems; no
 frequency cutoff, analytic premise, or computation is introduced.
 -/
 
@@ -57,7 +57,7 @@ theorem eventually_mulDistSqPair_moebiusC_ge_logPower :
     rwa [Real.log_exp] at h
   have hL0 : (0 : ℝ) < L := lt_of_lt_of_le (by norm_num) hL1
   have hzLower := hzeta (1 + 1 / Real.log (z : ℝ)) t hσ1 hσ2
-  have hcdiv : (0 : ℝ) < c / L ^ 11 := by positivity
+  have hcdiv : (0 : ℝ) < c / L ^ (11 : ℕ) := by positivity
   have hpoint :
       (((1 + 1 / Real.log (z : ℝ) : ℝ) : ℂ) + (t : ℂ) * Complex.I)
         = ((1 + 1 / Real.log (z : ℝ) : ℝ) : ℂ) + Complex.I * (t : ℂ) := by
@@ -67,8 +67,8 @@ theorem eventually_mulDistSqPair_moebiusC_ge_logPower :
     (show Real.exp 2 ≤ (z : ℝ) by
       exact (Real.exp_le_exp.mpr (by norm_num)).trans hzc)
     hzLower
-  have hlogdiv : Real.log (c / L ^ 11) = Real.log c - 11 * Real.log L := by
-    rw [Real.log_div (ne_of_gt hc0) (ne_of_gt (by positivity : (0 : ℝ) < L ^ 11)),
+  have hlogdiv : Real.log (c / L ^ (11 : ℕ)) = Real.log c - 11 * Real.log L := by
+    rw [Real.log_div (ne_of_gt hc0) (ne_of_gt (by positivity : (0 : ℝ) < L ^ (11 : ℕ))),
       Real.log_pow]
     push_cast
     ring
@@ -89,9 +89,9 @@ theorem exists_norm_sum_moebius_smooth_le_logPower :
           ((1 / (n : ℝ) : ℝ) : ℂ)
             * (moebiusC n *
               Complex.exp (((-(t * Real.log (n : ℝ)) : ℝ) : ℂ) * Complex.I))‖
-        ≤ C * (Real.log (|t| + Real.exp 1)) ^ 11 := by
+        ≤ C * (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) := by
   obtain ⟨C₀, hdist⟩ := eventually_mulDistSqPair_moebiusC_ge_logPower
-  let C : ℝ := Real.exp (Real.pi ^ 2 / 6 + mertensSecondUpperConst + C₀)
+  let C : ℝ := Real.exp (Real.pi ^ (2 : ℕ) / 6 + mertensSecondUpperConst + C₀)
   refine ⟨C, by dsimp [C]; positivity, ?_⟩
   filter_upwards [hdist, eventually_ge_atTop 2] with z hz hz2
   intro t
@@ -122,22 +122,22 @@ theorem exists_norm_sum_moebius_smooth_le_logPower :
     exact Finset.sum_congr rfl fun p _ => by ring
   rw [hsplit] at hD
   have hexp :
-      (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ 2)
+      (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ (2 : ℕ))
           - ∑ p ∈ Nat.primesLE z,
               Real.cos (t * Real.log (p : ℝ)) / (p : ℝ)
-        ≤ Real.pi ^ 2 / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L := by
+        ≤ Real.pi ^ (2 : ℕ) / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L := by
     dsimp [L] at hD ⊢
     linarith
   refine hbase.trans (le_trans (Real.exp_le_exp.mpr hexp) ?_)
-  change Real.exp (Real.pi ^ 2 / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L)
-      ≤ C * L ^ 11
-  have hpow : Real.exp (11 * Real.log L) = L ^ 11 := by
+  change Real.exp (Real.pi ^ (2 : ℕ) / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L)
+      ≤ C * L ^ (11 : ℕ)
+  have hpow : Real.exp (11 * Real.log L) = L ^ (11 : ℕ) := by
     calc
-      Real.exp (11 * Real.log L) = Real.exp (Real.log L) ^ 11 := by
+      Real.exp (11 * Real.log L) = Real.exp (Real.log L) ^ (11 : ℕ) := by
         simpa only [Nat.cast_ofNat] using Real.exp_nat_mul (Real.log L) 11
-      _ = L ^ 11 := by rw [Real.exp_log hL0]
-  rw [show Real.pi ^ 2 / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L
-      = (Real.pi ^ 2 / 6 + mertensSecondUpperConst + C₀) + 11 * Real.log L by ring,
+      _ = L ^ (11 : ℕ) := by rw [Real.exp_log hL0]
+  rw [show Real.pi ^ (2 : ℕ) / 6 + mertensSecondUpperConst + C₀ + 11 * Real.log L
+      = (Real.pi ^ (2 : ℕ) / 6 + mertensSecondUpperConst + C₀) + 11 * Real.log L by ring,
     Real.exp_add, hpow]
 
 end

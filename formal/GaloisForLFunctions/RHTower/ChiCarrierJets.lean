@@ -119,7 +119,7 @@ theorem displacedLinePt_add_levinsonShift_eq (d τ v : ℝ) :
 `2|v| ≤ t`. -/
 theorem norm_chiCarrier_le {d : ℝ} (hd : 0 < d) (hdq : d ≤ 1 / 4) {v t : ℝ} (ht : 4 ≤ t)
     (hv : 2 * |v| ≤ t) :
-    ‖chiCarrier d v t‖ ≤ Real.exp 8 * ((1 + |t - v|) ^ 2 * (1 + |t + v|) ^ 2) := by
+    ‖chiCarrier d v t‖ ≤ Real.exp 8 * ((1 + |t - v|) ^ (2 : ℕ) * (1 + |t + v|) ^ (2 : ℕ)) := by
   have hv' : |v| ≤ t / 2 := by linarith
   have h1' : (2 : ℝ) ≤ |t - v| := by
     have := abs_sub_abs_le_abs_sub t v
@@ -138,9 +138,9 @@ theorem norm_chiCarrier_le {d : ℝ} (hd : 0 < d) (hdq : d ≤ 1 / 4) {v t : ℝ
     (by linarith) h2'
   calc ‖zetaChi (((-1 / 2 - d : ℝ) : ℂ) + ((t - v : ℝ) : ℂ) * I)‖
         * ‖zetaChi (((-1 / 2 - d : ℝ) : ℂ) + ((-t - v : ℝ) : ℂ) * I)‖
-      ≤ (Real.exp 4 * (1 + |t - v|) ^ 2) * (Real.exp 4 * (1 + |-t - v|) ^ 2) :=
+      ≤ (Real.exp 4 * (1 + |t - v|) ^ (2 : ℕ)) * (Real.exp 4 * (1 + |-t - v|) ^ (2 : ℕ)) :=
         mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
-    _ = Real.exp 8 * ((1 + |t - v|) ^ 2 * (1 + |t + v|) ^ 2) := by
+    _ = Real.exp 8 * ((1 + |t - v|) ^ (2 : ℕ) * (1 + |t + v|) ^ (2 : ℕ)) := by
         rw [show -t - v = -(t + v) by ring, abs_neg,
           show (8 : ℝ) = 4 + 4 by norm_num, Real.exp_add]
         ring

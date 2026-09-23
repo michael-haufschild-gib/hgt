@@ -81,15 +81,15 @@ theorem continuous_sortedTuple_eigenvalues {X : Type*} [TopologicalSpace X]
   refine continuous_iff_continuousAt.mpr fun x₀ => ?_
   refine Filter.tendsto_of_subseq_tendsto ?_
   intro ns hns
-  have htr2 : Tendsto (fun n => (((F (ns n)) ^ 2).trace).re) atTop
-      (𝓝 ((((F x₀) ^ 2).trace).re)) := ((hcontTr 2).tendsto x₀).comp hns
+  have htr2 : Tendsto (fun n => (((F (ns n)) ^ (2 : ℕ)).trace).re) atTop
+      (𝓝 ((((F x₀) ^ (2 : ℕ)).trace).re)) := ((hcontTr 2).tendsto x₀).comp hns
   obtain ⟨B₀, hB₀⟩ := htr2.bddAbove_range
   set B : ℝ := max B₀ 0 with hBdef
   have hbound : ∀ (n : ℕ) (i : Fin D),
       |sortedTuple (hHerm (ns n)).eigenvalues i| ≤ Real.sqrt B := by
     intro n i
     refine abs_sortedTuple_le (fun j => ?_) i
-    have h1 : (((F (ns n)) ^ 2).trace).re ≤ B :=
+    have h1 : (((F (ns n)) ^ (2 : ℕ)).trace).re ≤ B :=
       le_trans (hB₀ ⟨n, rfl⟩) (le_max_left _ _)
     exact le_trans (abs_eigenvalues_le_sqrt_trace_sq_re (hHerm (ns n)) j) (Real.sqrt_le_sqrt h1)
   set K : Set (Fin D → ℝ) :=

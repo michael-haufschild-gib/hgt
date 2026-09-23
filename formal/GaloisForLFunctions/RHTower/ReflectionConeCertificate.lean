@@ -75,7 +75,7 @@ theorem sinh_mul_sinh_nonneg {p q u : ℝ} (hp : 0 ≤ p) (hq : 0 ≤ q) :
 
 /-- `2 sin²(γu/2) = 1 - cos(γu)`. -/
 theorem two_sin_sq_half (gam u : ℝ) :
-    2 * Real.sin (gam * u / 2) ^ 2 = 1 - Real.cos (gam * u) := by
+    2 * Real.sin (gam * u / 2) ^ (2 : ℕ) = 1 - Real.cos (gam * u) := by
   have h := Real.cos_two_mul' (gam * u / 2)
   have e : 2 * (gam * u / 2) = gam * u := by ring
   rw [e] at h
@@ -89,7 +89,7 @@ of two manifestly nonnegative pieces. -/
 theorem master_certificate (al a gam u : ℝ) :
     Real.cosh (al * u) - Real.cosh (a * u) * Real.cos (gam * u)
       = 2 * Real.sinh (((al + a) / 2) * u) * Real.sinh (((al - a) / 2) * u)
-        + 2 * Real.cosh (a * u) * Real.sin (gam * u / 2) ^ 2 := by
+        + 2 * Real.cosh (a * u) * Real.sin (gam * u / 2) ^ (2 : ℕ) := by
   have h1 := two_sinh_mul_sinh (((al + a) / 2) * u) (((al - a) / 2) * u)
   have e1 : ((al + a) / 2) * u + ((al - a) / 2) * u = al * u := by ring
   have e2 : ((al + a) / 2) * u - ((al - a) / 2) * u = a * u := by ring
@@ -109,7 +109,7 @@ theorem master_certificate_nonneg {al a gam u : ℝ} (ha : |a| ≤ al) :
   have hfirst : 0 ≤ 2 * Real.sinh (((al + a) / 2) * u) * Real.sinh (((al - a) / 2) * u) := by
     have := sinh_mul_sinh_nonneg (p := (al + a) / 2) (q := (al - a) / 2) (u := u) hplus hminus
     linarith
-  have hsecond : 0 ≤ 2 * Real.cosh (a * u) * Real.sin (gam * u / 2) ^ 2 := by
+  have hsecond : 0 ≤ 2 * Real.cosh (a * u) * Real.sin (gam * u / 2) ^ (2 : ℕ) := by
     have hc : (0 : ℝ) < Real.cosh (a * u) := Real.cosh_pos _
     positivity
   linarith
@@ -119,7 +119,7 @@ theorem master_certificate_nonneg {al a gam u : ℝ} (ha : |a| ≤ al) :
 /-- `cosh(au)` is a sum of two Hermitian squares of exponential polynomials. -/
 theorem cosh_eq_sum_sq (a u : ℝ) :
     Real.cosh (a * u)
-      = Real.exp (a * u / 2) ^ 2 / 2 + Real.exp (-(a * u) / 2) ^ 2 / 2 := by
+      = Real.exp (a * u / 2) ^ (2 : ℕ) / 2 + Real.exp (-(a * u) / 2) ^ (2 : ℕ) / 2 := by
   rw [Real.cosh_eq, ← Real.exp_nat_mul, ← Real.exp_nat_mul]
   norm_num
   rw [show (2 : ℝ) * (a * u / 2) = a * u from by ring,
@@ -130,7 +130,7 @@ theorem cosh_eq_sum_sq (a u : ℝ) :
 explicit sum-of-squares certificate after clearing the square `e^{au}`. -/
 theorem refund_weight_sq (a u : ℝ) :
     (2 * Real.cosh (a * u) - 1) * Real.exp (a * u)
-      = (Real.exp (a * u) - 1 / 2) ^ 2 + 3 / 4 := by
+      = (Real.exp (a * u) - 1 / 2) ^ (2 : ℕ) + 3 / 4 := by
   rw [Real.cosh_eq, Real.exp_neg]
   have h0 : Real.exp (a * u) ≠ 0 := (Real.exp_pos _).ne'
   field_simp
@@ -138,7 +138,7 @@ theorem refund_weight_sq (a u : ℝ) :
 
 theorem refund_weight_pos (a u : ℝ) : 0 < 2 * Real.cosh (a * u) - 1 := by
   have h := refund_weight_sq a u
-  have hpos : (0 : ℝ) < (Real.exp (a * u) - 1 / 2) ^ 2 + 3 / 4 := by positivity
+  have hpos : (0 : ℝ) < (Real.exp (a * u) - 1 / 2) ^ (2 : ℕ) + 3 / 4 := by positivity
   have hE : (0 : ℝ) < Real.exp (a * u) := Real.exp_pos _
   nlinarith [h, hpos, hE]
 
@@ -149,7 +149,7 @@ complex quadruple splits into a hyperbolic gap and a positive multiple of `sin²
 theorem refund_certificate (a gam u : ℝ) :
     Real.cosh (u / 2) - (2 * Real.cosh (a * u) - 1) * Real.cos (gam * u)
       = (Real.cosh (u / 2) + 1 - 2 * Real.cosh (a * u))
-        + 2 * (2 * Real.cosh (a * u) - 1) * Real.sin (gam * u / 2) ^ 2 := by
+        + 2 * (2 * Real.cosh (a * u) - 1) * Real.sin (gam * u / 2) ^ (2 : ℕ) := by
   have h2 := two_sin_sq_half gam u
   linear_combination (-(2 * Real.cosh (a * u) - 1)) * h2
 
@@ -167,7 +167,7 @@ theorem refund_certificate_nonneg {a gam u : ℝ} (ha : |a| ≤ 1 / 4) :
     have hsq := cosh_half_add_one u
     nlinarith [hsq, hmono, hq]
   have hpos := refund_weight_pos a u
-  have hsin : 0 ≤ 2 * (2 * Real.cosh (a * u) - 1) * Real.sin (gam * u / 2) ^ 2 := by positivity
+  have hsin : 0 ≤ 2 * (2 * Real.cosh (a * u) - 1) * Real.sin (gam * u / 2) ^ (2 : ℕ) := by positivity
   rw [refund_certificate]
   linarith
 

@@ -368,13 +368,13 @@ theorem completedXiSameFiberPolarization_self
   simp [Complex.normSq, Complex.mul_re]
 
 /-- Exact fixed-polarization energy of the resolved coefficient.  The
-Hodge-mate coefficient contributes the positive excess `K^2`. -/
+Hodge-mate coefficient contributes the positive excess `K^(2 : ℕ)`. -/
 theorem completedXiResolvedCoefficientLift_fixedPolarization
     (q : XiZeroCopy) (K : ℝ) (c : ℂ) :
     completedXiSameFiberHodgePlanePolarization q
         (completedXiResolvedCoefficientLift q K c)
         (completedXiResolvedCoefficientLift q K c) =
-      (1 + K ^ 2) * completedXiSameFiberPolarization q c c := by
+      (1 + K ^ (2 : ℕ)) * completedXiSameFiberPolarization q c c := by
   have hweight :
       Complex.normSq (deningerXiHarmonicHodgeWeight q) = 1 := by
     rw [Complex.normSq_eq_norm_sq,
@@ -412,7 +412,7 @@ theorem completedXiResolvedCoefficientLift_fixedNorm_eq_iff
     · exact Or.inr hc
     · left
       have hpos : 0 < Complex.normSq c := Complex.normSq_pos.mpr hc
-      have hKsq : K ^ 2 = 0 := by nlinarith
+      have hKsq : K ^ (2 : ℕ) = 0 := by nlinarith
       exact sq_eq_zero_iff.mp hKsq
   · rintro (hK | hc)
     · subst K
@@ -963,7 +963,7 @@ theorem ccmRationalAdelicPrimeXiInvariantFaithfulLine_iff_re_eq_half
 
 /-- Energy-gap invariance: every polarization-preserving comparison, with no
 linearity or continuity assumption, transports the same resolved-over-physical
-energy excess `K^2 * normSq c`. -/
+energy excess `K^(2 : ℕ) * normSq c`. -/
 theorem completedXiFixedCorona_comparison_energyGap
     (q : XiZeroCopy) (K : ℝ) (c : ℂ)
     (Phi : CompletedXiSameFiberHodgePlane → PrimeDepthBVWoldFixedCoronaPlane)
@@ -974,7 +974,7 @@ theorem completedXiFixedCorona_comparison_energyGap
         (Phi (completedXiResolvedCoefficientLift q K c))
         (Phi (completedXiResolvedCoefficientLift q K c)) -
       primeDepthBVWoldFixedCoronaPolarization (Phi (c, 0)) (Phi (c, 0)) =
-      K ^ 2 * Complex.normSq c := by
+      K ^ (2 : ℕ) * Complex.normSq c := by
   have hphys :
       completedXiSameFiberHodgePlanePolarization q (c, 0) (c, 0) =
         Complex.normSq c := by

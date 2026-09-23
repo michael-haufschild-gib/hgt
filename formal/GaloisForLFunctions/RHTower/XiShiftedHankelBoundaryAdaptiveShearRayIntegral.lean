@@ -245,7 +245,7 @@ theorem exists_xiShifted_adaptiveShear_neg_on_outgoingRay_of_genuine_crossing
     rw [HTGeometry.momentInner_def, ← hseq]
     change HTGeometry.momentFunctional
       (fun k => (primeArchShiftedReciprocalMoment y k).re)
-      (X * A ^ 2) < 0 at hnegPA
+      (X * A ^ (2 : ℕ)) < 0 at hnegPA
     simpa only [pow_two, mul_assoc, mul_comm, mul_left_comm] using hnegPA
   obtain ⟨v, hv, hshear⟩ :=
     exists_xiShifted_adaptiveShear_neg_on_outgoingRay_of_oddCrossing_neg
@@ -284,7 +284,7 @@ theorem exists_xiShiftedCompletedAdaptiveSource_neg_on_outgoingRay_of_genuine_cr
     (hleft : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       ¬ (xiShiftedMomentHankelMatrix (y - u) (n + 1)).PosSemidef) :
     ∃ m : ℕ, ∃ w : ℝ,
-      1 / 2 < w ∧ y < w ^ 2 ∧
+      1 / 2 < w ∧ y < w ^ (2 : ℕ) ∧
       let A := HTGeometry.finiteHankelNullMonicPolynomial c * X ^ m
       xiShiftedBoundaryArchimedeanAggregate w 2
           (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
@@ -304,7 +304,7 @@ theorem exists_xiShiftedCompletedAdaptiveSource_neg_on_outgoingRay_of_genuine_cr
     dsimp only [w]
     apply (Real.lt_sqrt (by norm_num)).2
     nlinarith [hyquarter, hv]
-  have hwsq : w ^ 2 = v := Real.sq_sqrt hvpos.le
+  have hwsq : w ^ (2 : ℕ) = v := Real.sq_sqrt hvpos.le
   have hsource := xiShiftedCompletedAdaptiveOddPacketSource_eq_two_sourceShear hw A
   have hpair :=
     xiShiftedAperturePairGap_eq_archimedeanSourcePair_add_discrepancySourcePair

@@ -20,32 +20,32 @@ namespace RHTower
 def divisorHyperbolaSmoothRemainder (N : ℕ) : ℝ :=
   (∑ m ∈ Icc 1 N, Real.log m) -
     (2 * (N : ℝ) + 1) * ((harmonic (Nat.sqrt N) : ℚ) : ℝ) +
-      (Nat.sqrt N : ℝ)^2 + Nat.sqrt N + 2 * Real.eulerMascheroniConstant * N
+      (Nat.sqrt N : ℝ)^(2 : ℕ) + Nat.sqrt N + 2 * Real.eulerMascheroniConstant * N
 
 private theorem hyperbola_log_boundary_bounds {x s : ℝ}
-    (hs : 0 < s) (hlo : s^2 ≤ x) (hhi : x ≤ s^2+2*s) :
-    0 ≤ x * (Real.log x - 2*Real.log s) - x + s^2 ∧
-      x * (Real.log x - 2*Real.log s) - x + s^2 ≤ 4 := by
+    (hs : 0 < s) (hlo : s^(2 : ℕ) ≤ x) (hhi : x ≤ s^(2 : ℕ)+2*s) :
+    0 ≤ x * (Real.log x - 2*Real.log s) - x + s^(2 : ℕ) ∧
+      x * (Real.log x - 2*Real.log s) - x + s^(2 : ℕ) ≤ 4 := by
   have hx : 0 < x := lt_of_lt_of_le (sq_pos_of_pos hs) hlo
-  have hs2 : 0 < s^2 := sq_pos_of_pos hs
-  have hlower := Real.log_le_sub_one_of_pos (x := s^2/x) (by positivity)
-  have hupper := Real.log_le_sub_one_of_pos (x := x/s^2) (by positivity)
+  have hs2 : 0 < s^(2 : ℕ) := sq_pos_of_pos hs
+  have hlower := Real.log_le_sub_one_of_pos (x := s^(2 : ℕ)/x) (by positivity)
+  have hupper := Real.log_le_sub_one_of_pos (x := x/s^(2 : ℕ)) (by positivity)
   rw [Real.log_div (ne_of_gt hs2) hx.ne', Real.log_pow] at hlower
   rw [Real.log_div hx.ne' (ne_of_gt hs2), Real.log_pow] at hupper
   push_cast at hlower hupper
   have hlo' := mul_le_mul_of_nonneg_left hlower hx.le
   have hhi' := mul_le_mul_of_nonneg_left hupper hs2.le
-  have hcancel1 : x*(s^2/x-1)=s^2-x := by field_simp
-  have hcancel2 : s^2*(x/s^2-1)=x-s^2 := by field_simp
+  have hcancel1 : x*(s^(2 : ℕ)/x-1)=s^(2 : ℕ)-x := by field_simp
+  have hcancel2 : s^(2 : ℕ)*(x/s^(2 : ℕ)-1)=x-s^(2 : ℕ) := by field_simp
   rw [hcancel1] at hlo'
   rw [hcancel2] at hhi'
   have hlog : Real.log x - 2*Real.log s ≤ 2/s := by
-    apply (le_of_mul_le_mul_left (a := s^2) ?_ hs2)
-    have hcancel : s^2*(2/s)=2*s := by field_simp
+    apply (le_of_mul_le_mul_left (a := s^(2 : ℕ)) ?_ hs2)
+    have hcancel : s^(2 : ℕ)*(2/s)=2*s := by field_simp
     rw [hcancel]
     linarith only [hhi', hhi]
   have hdelta := mul_le_mul_of_nonneg_left hlog (sub_nonneg.mpr hlo)
-  have hprod : (x-s^2)*(2/s) ≤ 4 := by
+  have hprod : (x-s^(2 : ℕ))*(2/s) ≤ 4 := by
     rw [← mul_div_assoc, div_le_iff₀ hs]
     nlinarith only [hhi]
   constructor
@@ -60,10 +60,10 @@ theorem abs_divisorHyperbolaSmoothRemainder_le {N : ℕ} (hN : 1 ≤ N) :
   have hs : 1 ≤ s := Nat.le_sqrt.mpr (by simpa using hN)
   have hsR : (0 : ℝ) < s := by positivity
   have hNpos : (0 : ℝ) < N := by positivity
-  have hlo : (s : ℝ)^2 ≤ N := by
+  have hlo : (s : ℝ)^(2 : ℕ) ≤ N := by
     rw [pow_two]
     exact_mod_cast Nat.sqrt_le N
-  have hhi : (N : ℝ) ≤ (s : ℝ)^2+2*s := by
+  have hhi : (N : ℝ) ≤ (s : ℝ)^(2 : ℕ)+2*s := by
     have h := Nat.lt_succ_sqrt N
     change N < (s+1)*(s+1) at h
     have he : (s+1)*(s+1)=s*s+2*s+1 := by ring
@@ -111,7 +111,7 @@ theorem abs_divisorHyperbolaSmoothRemainder_le {N : ℕ} (hN : 1 ≤ N) :
   have hid : divisorHyperbolaSmoothRemainder N =
       ((∑ m ∈ Icc 1 N, Real.log m) - (N:ℝ)*Real.log N + N) -
       ((harmonic s:ℚ):ℝ) +
-      ((N:ℝ)*(Real.log N-2*Real.log s)-N+(s:ℝ)^2) +
+      ((N:ℝ)*(Real.log N-2*Real.log s)-N+(s:ℝ)^(2 : ℕ)) +
       ((s:ℝ)-2*N*(((harmonic s:ℚ):ℝ)-Real.log s-Real.eulerMascheroniConstant)) := by
     dsimp [divisorHyperbolaSmoothRemainder,s]
     ring
@@ -177,7 +177,7 @@ theorem abs_divisorHyperbolaCompleteAbel_le (M : ℕ) :
   have hE := centeredDivisorHyperbolaAbel_bounds M
   have hs : (Nat.sqrt (M-1) : ℝ) ≤ Real.sqrt M := by
     have hnat := (Nat.sqrt_le (M-1)).trans (Nat.sub_le M 1)
-    have hsq : (Nat.sqrt (M-1) : ℝ)^2 ≤ M := by
+    have hsq : (Nat.sqrt (M-1) : ℝ)^(2 : ℕ) ≤ M := by
       rw [pow_two]
       exact_mod_cast hnat
     nlinarith [Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) M),

@@ -165,8 +165,8 @@ theorem gammaMeixnerCharge_normSq_conservation
           (Real.cos (2 * Real.pi * (k : ℝ) * a) *
             Real.cos (2 * Real.pi * (k : ℝ) * a)) =
         4 * Complex.normSq lam *
-          (Real.sin (2 * Real.pi * (k : ℝ) * a) ^ 2 +
-            Real.cos (2 * Real.pi * (k : ℝ) * a) ^ 2) := by ring
+          (Real.sin (2 * Real.pi * (k : ℝ) * a) ^ (2 : ℕ) +
+            Real.cos (2 * Real.pi * (k : ℝ) * a) ^ (2 : ℕ)) := by ring
     _ = 4 * Complex.normSq lam := by rw [htrig]; ring
 
 /-- Scale-free symmetric charge. Division by `2λ` removes the arbitrary affine coordinate scale

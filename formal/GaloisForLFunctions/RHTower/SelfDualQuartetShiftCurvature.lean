@@ -35,7 +35,7 @@ open Complex
 
 /-- The centered self-dual quartet in the centered variable `z = s - 1/2`. -/
 def selfDualQuartetPoly (a gamma : ℝ) (z : ℂ) : ℂ :=
-  ((z - (a : ℂ)) ^ 2 + (gamma : ℂ) ^ 2) * ((z + (a : ℂ)) ^ 2 + (gamma : ℂ) ^ 2)
+  ((z - (a : ℂ)) ^ (2 : ℕ) + (gamma : ℂ) ^ (2 : ℕ)) * ((z + (a : ℂ)) ^ (2 : ℕ) + (gamma : ℂ) ^ (2 : ℕ))
 
 /-- The self-dual quartet as a function of the spectral parameter `s`. -/
 def selfDualQuartet (a gamma : ℝ) (s : ℂ) : ℂ :=
@@ -74,10 +74,10 @@ theorem selfDualQuartet_schwarz (a gamma : ℝ) (s : ℂ) :
 /-! ## The divisor -/
 
 private theorem block_factor (a gamma : ℝ) (z : ℂ) :
-    (z - (a : ℂ)) ^ 2 + (gamma : ℂ) ^ 2 =
+    (z - (a : ℂ)) ^ (2 : ℕ) + (gamma : ℂ) ^ (2 : ℕ) =
       (z - (a : ℂ) - I * (gamma : ℂ)) * (z - (a : ℂ) + I * (gamma : ℂ)) := by
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  linear_combination ((gamma : ℂ)) ^ 2 * hI
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  linear_combination ((gamma : ℂ)) ^ (2 : ℕ) * hI
 
 theorem selfDualQuartetPoly_factor (a gamma : ℝ) (z : ℂ) :
     selfDualQuartetPoly a gamma z =
@@ -85,10 +85,10 @@ theorem selfDualQuartetPoly_factor (a gamma : ℝ) (z : ℂ) :
         ((z + (a : ℂ) - I * (gamma : ℂ)) * (z + (a : ℂ) + I * (gamma : ℂ))) := by
   unfold selfDualQuartetPoly
   rw [block_factor a gamma z]
-  have h2 : (z + (a : ℂ)) ^ 2 + (gamma : ℂ) ^ 2 =
+  have h2 : (z + (a : ℂ)) ^ (2 : ℕ) + (gamma : ℂ) ^ (2 : ℕ) =
       (z + (a : ℂ) - I * (gamma : ℂ)) * (z + (a : ℂ) + I * (gamma : ℂ)) := by
-    have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-    linear_combination ((gamma : ℂ)) ^ 2 * hI
+    have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+    linear_combination ((gamma : ℂ)) ^ (2 : ℕ) * hI
   rw [h2]
 
 /-- **The exact zero set.**  The quartet vanishes exactly at the four points
@@ -208,30 +208,30 @@ theorem selfDualQuartetProfile_eq (a gamma : ℝ) (t : ℝ) :
 theorem selfDualQuartetCornerEnergy_eq {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
     finiteOfflineCauchyEnergy (selfDualQuartetOffsets a) (selfDualQuartetOrdinates gamma)
         selfDualQuartetMultiplicities
-      = 4 / a + 4 * a / (a ^ 2 + gamma ^ 2) := by
+      = 4 / a + 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by
   have ha0 : a ≠ 0 := ne_of_gt ha
-  have hden : a ^ 2 + gamma ^ 2 ≠ 0 := by positivity
+  have hden : a ^ (2 : ℕ) + gamma ^ (2 : ℕ) ≠ 0 := by positivity
   unfold finiteOfflineCauchyEnergy selfDualQuartetOffsets selfDualQuartetOrdinates
     selfDualQuartetMultiplicities transverseCauchyKernel
   rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Nat.cast_one, one_mul, mul_one]
-  have h1 : (a + a) ^ 2 + (gamma - gamma) ^ 2 = 4 * a ^ 2 := by ring
-  have h2 : (a + a) ^ 2 + (gamma - -gamma) ^ 2 = 4 * (a ^ 2 + gamma ^ 2) := by ring
-  have h3 : (a + a) ^ 2 + (-gamma - gamma) ^ 2 = 4 * (a ^ 2 + gamma ^ 2) := by ring
-  have h4 : (a + a) ^ 2 + (-gamma - -gamma) ^ 2 = 4 * a ^ 2 := by ring
+  have h1 : (a + a) ^ (2 : ℕ) + (gamma - gamma) ^ (2 : ℕ) = 4 * a ^ (2 : ℕ) := by ring
+  have h2 : (a + a) ^ (2 : ℕ) + (gamma - -gamma) ^ (2 : ℕ) = 4 * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by ring
+  have h3 : (a + a) ^ (2 : ℕ) + (-gamma - gamma) ^ (2 : ℕ) = 4 * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by ring
+  have h4 : (a + a) ^ (2 : ℕ) + (-gamma - -gamma) ^ (2 : ℕ) = 4 * a ^ (2 : ℕ) := by ring
   rw [h1, h2, h3, h4]
-  have e1 : (a + a) / (4 * a ^ 2) = 1 / (2 * a) := by
+  have e1 : (a + a) / (4 * a ^ (2 : ℕ)) = 1 / (2 * a) := by
     rw [div_eq_div_iff (by positivity) (by positivity)]; ring
-  have e2 : (a + a) / (4 * (a ^ 2 + gamma ^ 2)) = a / (2 * (a ^ 2 + gamma ^ 2)) := by
+  have e2 : (a + a) / (4 * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ))) = a / (2 * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ))) := by
     rw [div_eq_div_iff (by positivity) (by positivity)]; ring
   rw [e1, e2,
     div_add_div _ _ (by positivity : (2 : ℝ) * a ≠ 0)
-      (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) ≠ 0),
-    div_add_div _ _ (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) ≠ 0)
+      (by positivity : (2 : ℝ) * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) ≠ 0),
+    div_add_div _ _ (by positivity : (2 : ℝ) * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) ≠ 0)
       (by positivity : (2 : ℝ) * a ≠ 0),
-    div_add_div _ _ (by positivity : (2 : ℝ) * a * (2 * (a ^ 2 + gamma ^ 2)) ≠ 0)
-      (by positivity : (2 : ℝ) * (a ^ 2 + gamma ^ 2) * (2 * a) ≠ 0),
-    div_add_div _ _ (by positivity : a ≠ 0) (by positivity : a ^ 2 + gamma ^ 2 ≠ 0),
+    div_add_div _ _ (by positivity : (2 : ℝ) * a * (2 * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ))) ≠ 0)
+      (by positivity : (2 : ℝ) * (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) * (2 * a) ≠ 0),
+    div_add_div _ _ (by positivity : a ≠ 0) (by positivity : a ^ (2 : ℕ) + gamma ^ (2 : ℕ) ≠ 0),
     ← mul_div_assoc, div_eq_div_iff (by positivity) (by positivity)]
   ring
 
@@ -239,26 +239,26 @@ theorem selfDualQuartetCornerEnergy_eq {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
 theorem integral_norm_sq_selfDualQuartetProfile {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
     ∫ t in Set.Ioi (0 : ℝ),
         ‖finiteOfflineProfile (selfDualQuartetOffsets a) (selfDualQuartetOrdinates gamma)
-          selfDualQuartetMultiplicities t‖ ^ 2
-      = 4 / a + 4 * a / (a ^ 2 + gamma ^ 2) := by
+          selfDualQuartetMultiplicities t‖ ^ (2 : ℕ)
+      = 4 / a + 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by
   rw [integral_norm_sq_finiteOfflineProfile (a := selfDualQuartetOffsets a)
       (gamma := selfDualQuartetOrdinates gamma) selfDualQuartetMultiplicities (fun _ => ha),
     selfDualQuartetCornerEnergy_eq ha gamma]
 
 /-- **The corner exceeds the four-unit budget by more than a factor two.** -/
 theorem selfDualQuartetCornerEnergy_gt_eight {a : ℝ} (ha : 0 < a) (ha' : a < 1 / 2) (gamma : ℝ) :
-    8 < 4 / a + 4 * a / (a ^ 2 + gamma ^ 2) := by
-  have hden : (0 : ℝ) < a ^ 2 + gamma ^ 2 := by positivity
+    8 < 4 / a + 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by
+  have hden : (0 : ℝ) < a ^ (2 : ℕ) + gamma ^ (2 : ℕ) := by positivity
   have h1 : 8 < 4 / a := by
     rw [lt_div_iff₀ ha]
     linarith
-  have h2 : 0 ≤ 4 * a / (a ^ 2 + gamma ^ 2) := by positivity
+  have h2 : 0 ≤ 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by positivity
   linarith
 
 /-- **The corner is unbounded.**  As the transverse displacement tends to zero the curvature corner
 tends to infinity, so no uniform bound is available from the generic data. -/
 theorem tendsto_selfDualQuartetCornerEnergy_atTop (gamma : ℝ) :
-    Filter.Tendsto (fun a : ℝ => 4 / a + 4 * a / (a ^ 2 + gamma ^ 2))
+    Filter.Tendsto (fun a : ℝ => 4 / a + 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)))
       (nhdsWithin 0 (Set.Ioi (0 : ℝ))) Filter.atTop := by
   have hinv : Filter.Tendsto (fun a : ℝ => 4 * a⁻¹)
       (nhdsWithin 0 (Set.Ioi (0 : ℝ))) Filter.atTop :=
@@ -266,8 +266,8 @@ theorem tendsto_selfDualQuartetCornerEnergy_atTop (gamma : ℝ) :
   refine Filter.tendsto_atTop_mono' _ ?_ hinv
   filter_upwards [self_mem_nhdsWithin] with a ha
   have ha' : 0 < a := ha
-  have hden : (0 : ℝ) < a ^ 2 + gamma ^ 2 := by positivity
-  have h2 : 0 ≤ 4 * a / (a ^ 2 + gamma ^ 2) := by positivity
+  have hden : (0 : ℝ) < a ^ (2 : ℕ) + gamma ^ (2 : ℕ) := by positivity
+  have h2 : 0 ≤ 4 * a / (a ^ (2 : ℕ) + gamma ^ (2 : ℕ)) := by positivity
   rw [← div_eq_mul_inv]
   linarith
 

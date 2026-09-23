@@ -21,7 +21,7 @@ open Complex MeasureTheory Finset
 
 /-- The trivial bound on the Möbius Dirichlet polynomial. -/
 theorem normSq_logPoly_moebiusC_le (s : Finset ℕ) (w : ℝ) :
-    ‖logPoly moebiusC s w‖ ^ 2 ≤ ((s.card : ℝ)) ^ 2 := by
+    ‖logPoly moebiusC s w‖ ^ (2 : ℕ) ≤ ((s.card : ℝ)) ^ (2 : ℕ) := by
   have hbd : ‖logPoly moebiusC s w‖ ≤ (s.card : ℝ) := by
     rw [logPoly]
     refine le_trans (norm_sum_le _ _) ?_
@@ -36,10 +36,10 @@ theorem normSq_logPoly_moebiusC_le (s : Finset ℕ) (w : ℝ) :
 theorem integral_Ioc_normSq_moebius_range_le (s : Finset ℕ) (hs : ∀ n ∈ s, 0 < n)
     {L Y ε M₁ W : ℝ} (hL : 0 < L) (hY : 0 < Y) (hε : 0 ≤ ε) (hW : 0 < W) (hM₁ : 0 ≤ M₁)
     (h₁ : ∀ w : ℝ, |w| ≤ W →
-      ‖∑ n ∈ s, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ 2 ≤ M₁) (K : ℕ) :
-    (∫ x in Set.Ioc Y (Y * (1 + ε) ^ K), ‖linSum moebiusC s L x‖ ^ 2)
+      ‖∑ n ∈ s, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ (2 : ℕ) ≤ M₁) (K : ℕ) :
+    (∫ x in Set.Ioc Y (Y * (1 + ε) ^ K), ‖linSum moebiusC s L x‖ ^ (2 : ℕ))
       ≤ (Y * (1 + ε) ^ K)
-          * ((K : ℝ) * blockCost L Y ε M₁ (((s.card : ℝ)) ^ 2) W) := by
+          * ((K : ℝ) * blockCost L Y ε M₁ (((s.card : ℝ)) ^ (2 : ℕ)) W) := by
   refine integral_Ioc_normSq_linSum_range_le moebiusC s hs norm_moebiusC_le_one hL hY hε hW hM₁
     (by positivity) ?_ (fun w => normSq_logPoly_moebiusC_le s w) K
   intro w hw

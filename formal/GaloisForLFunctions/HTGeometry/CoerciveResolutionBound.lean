@@ -17,7 +17,7 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
 
 /-- **The coercive resolution bound.** -/
 theorem norm_le_of_reInner_ge {A : X → X} {c : ℝ}
-    (hcoer : ∀ v : X, c * ‖v‖ ^ 2 ≤ (inner ℂ (A v) v).re) (v : X) :
+    (hcoer : ∀ v : X, c * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ (A v) v).re) (v : X) :
     c * ‖v‖ ≤ ‖A v‖ := by
   rcases eq_or_ne v 0 with h | h
   · subst h
@@ -26,21 +26,21 @@ theorem norm_le_of_reInner_ge {A : X → X} {c : ℝ}
     have hcs : (inner ℂ (A v) v).re ≤ ‖A v‖ * ‖v‖ := by
       refine le_trans (Complex.re_le_norm _) ?_
       exact norm_inner_le_norm (𝕜 := ℂ) (A v) v
-    have hkey : c * ‖v‖ ^ 2 ≤ ‖A v‖ * ‖v‖ := le_trans (hcoer v) hcs
-    have hsq : c * ‖v‖ ^ 2 = (c * ‖v‖) * ‖v‖ := by ring
+    have hkey : c * ‖v‖ ^ (2 : ℕ) ≤ ‖A v‖ * ‖v‖ := le_trans (hcoer v) hcs
+    have hsq : c * ‖v‖ ^ (2 : ℕ) = (c * ‖v‖) * ‖v‖ := by ring
     rw [hsq] at hkey
     exact le_of_mul_le_mul_right hkey hv
 
 /-- A coercive form with a bounded perturbation stays coercive. -/
 theorem reInner_sub_ge {M R B : X → X} {c b : ℝ}
-    (hM : ∀ v : X, c * ‖v‖ ^ 2 ≤ (inner ℂ (M v) v).re)
+    (hM : ∀ v : X, c * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ (M v) v).re)
     (hR : ∀ v : X, 0 ≤ (inner ℂ (R v) v).re)
     (hB : ∀ v : X, ‖B v‖ ≤ b * ‖v‖) (v : X) :
-    (c - b) * ‖v‖ ^ 2 ≤ (inner ℂ (M v) v).re + (inner ℂ (R v) v).re - (inner ℂ (B v) v).re := by
+    (c - b) * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ (M v) v).re + (inner ℂ (R v) v).re - (inner ℂ (B v) v).re := by
   have hcs : (inner ℂ (B v) v).re ≤ ‖B v‖ * ‖v‖ := by
     refine le_trans (Complex.re_le_norm _) ?_
     exact norm_inner_le_norm (𝕜 := ℂ) (B v) v
-  have hb : ‖B v‖ * ‖v‖ ≤ b * ‖v‖ ^ 2 := by
+  have hb : ‖B v‖ * ‖v‖ ≤ b * ‖v‖ ^ (2 : ℕ) := by
     have := mul_le_mul_of_nonneg_right (hB v) (norm_nonneg v)
     nlinarith [this]
   nlinarith [hM v, hR v, hcs, hb]

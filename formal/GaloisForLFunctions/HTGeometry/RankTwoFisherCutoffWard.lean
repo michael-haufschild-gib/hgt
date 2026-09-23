@@ -7,7 +7,7 @@ import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 For an orthogonal source state and tangent, the canonical self-adjoint rank-two Fisher connection
 has cutoff-commutator energy determined by the truncated `2 x 2` Gram matrix.  Over a complex
 Hilbert space the exact law is phase-sensitive: the phase-blind real formula misses the
-nonnegative orientation defect `4 * (Im c)^2`.
+nonnegative orientation defect `4 * (Im c)^(2 : ℕ)`.
 -/
 
 open Complex
@@ -132,7 +132,7 @@ noncomputable def pointedFisherConnection
     (rankOne ℂ chi psi + rankOne ℂ psi chi)
 
 theorem invSqrtTwo_norm_sq :
-    ‖((Real.sqrt 2)⁻¹ : ℂ)‖ ^ 2 = (1 / 2 : ℝ) := by
+    ‖((Real.sqrt 2)⁻¹ : ℂ)‖ ^ (2 : ℕ) = (1 / 2 : ℝ) := by
   rw [norm_inv, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.sqrt_pos.2 (by norm_num : (0 : ℝ) < 2))]
   rw [inv_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
@@ -159,7 +159,7 @@ theorem hsNormSq_pointedFisherConnection
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (psi chi : H) :
     hsNormSq (pointedFisherConnection psi chi) =
-      ‖chi‖ ^ 2 * ‖psi‖ ^ 2 + Complex.re ((inner ℂ chi psi) ^ 2) := by
+      ‖chi‖ ^ (2 : ℕ) * ‖psi‖ ^ (2 : ℕ) + Complex.re ((inner ℂ chi psi) ^ (2 : ℕ)) := by
   rw [pointedFisherConnection,
     hsNormSq_smul
       ((isHilbertSchmidt_rankOne chi psi).add
@@ -172,7 +172,7 @@ theorem hsNormSq_pointedFisherConnection_of_orthogonal
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (psi chi : H) (horth : inner ℂ psi chi = 0) :
     hsNormSq (pointedFisherConnection psi chi) =
-      ‖chi‖ ^ 2 * ‖psi‖ ^ 2 := by
+      ‖chi‖ ^ (2 : ℕ) * ‖psi‖ ^ (2 : ℕ) := by
   have horth' : inner ℂ chi psi = 0 := by
     rw [← inner_conj_symm, horth, map_zero]
   rw [hsNormSq_pointedFisherConnection, horth']
@@ -182,7 +182,7 @@ theorem hsNormSq_pointedFisherConnection_of_orthogonal
 theorem hsNormSq_pointedFisherConnection_of_unit_of_orthogonal
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (psi chi : H) (hunit : ‖psi‖ = 1) (horth : inner ℂ psi chi = 0) :
-    hsNormSq (pointedFisherConnection psi chi) = ‖chi‖ ^ 2 := by
+    hsNormSq (pointedFisherConnection psi chi) = ‖chi‖ ^ (2 : ℕ) := by
   rw [hsNormSq_pointedFisherConnection_of_orthogonal psi chi horth, hunit]
   ring_nf
 
@@ -221,7 +221,7 @@ private theorem norm_sq_projection_add_complement
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (x : H) :
-    ‖e x‖ ^ 2 + ‖(1 - e) x‖ ^ 2 = ‖x‖ ^ 2 := by
+    ‖e x‖ ^ (2 : ℕ) + ‖(1 - e) x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
     exact ⟨he, by simpa [star_eq_adjoint] using! heAdj⟩
@@ -232,15 +232,15 @@ private theorem norm_sq_projection_add_complement
   linarith
 
 /-- **Complex rank-two cutoff Ward law.**  The commutator energy is determined by the truncated
-Gram matrix, with the complex overlap entering through `Re (c^2)`. -/
+Gram matrix, with the complex overlap entering through `Re (c^(2 : ℕ))`. -/
 theorem hsNormSq_pointedFisherConnection_cutoffCommutator
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi chi : H) (horth : inner ℂ psi chi = 0) :
     hsNormSq (cutoffCommutator e (pointedFisherConnection psi chi)) =
-      (‖chi‖ ^ 2 - ‖e chi‖ ^ 2) * ‖e psi‖ ^ 2 +
-      (‖psi‖ ^ 2 - ‖e psi‖ ^ 2) * ‖e chi‖ ^ 2 -
-      2 * Complex.re ((inner ℂ (e chi) (e psi)) ^ 2) := by
+      (‖chi‖ ^ (2 : ℕ) - ‖e chi‖ ^ (2 : ℕ)) * ‖e psi‖ ^ (2 : ℕ) +
+      (‖psi‖ ^ (2 : ℕ) - ‖e psi‖ ^ (2 : ℕ)) * ‖e chi‖ ^ (2 : ℕ) -
+      2 * Complex.re ((inner ℂ (e chi) (e psi)) ^ (2 : ℕ)) := by
   have hX := pointedFisherConnection_isHilbertSchmidt psi chi
   rw [hsNormSq_cutoffCommutator_eq_two_mul_lowerBoundary
       e (pointedFisherConnection psi chi) he heAdj
@@ -267,12 +267,12 @@ theorem hsNormSq_pointedFisherConnection_cutoffCommutator_phase
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi chi : H) (horth : inner ℂ psi chi = 0) :
     hsNormSq (cutoffCommutator e (pointedFisherConnection psi chi)) =
-      (‖chi‖ ^ 2 - ‖e chi‖ ^ 2) * ‖e psi‖ ^ 2 +
-      (‖psi‖ ^ 2 - ‖e psi‖ ^ 2) * ‖e chi‖ ^ 2 -
-      2 * ‖inner ℂ (e chi) (e psi)‖ ^ 2 +
-      4 * (inner ℂ (e chi) (e psi)).im ^ 2 := by
+      (‖chi‖ ^ (2 : ℕ) - ‖e chi‖ ^ (2 : ℕ)) * ‖e psi‖ ^ (2 : ℕ) +
+      (‖psi‖ ^ (2 : ℕ) - ‖e psi‖ ^ (2 : ℕ)) * ‖e chi‖ ^ (2 : ℕ) -
+      2 * ‖inner ℂ (e chi) (e psi)‖ ^ (2 : ℕ) +
+      4 * (inner ℂ (e chi) (e psi)).im ^ (2 : ℕ) := by
   rw [hsNormSq_pointedFisherConnection_cutoffCommutator e he heAdj psi chi horth]
-  have hphase (z : ℂ) : Complex.re (z ^ 2) = ‖z‖ ^ 2 - 2 * z.im ^ 2 := by
+  have hphase (z : ℂ) : Complex.re (z ^ (2 : ℕ)) = ‖z‖ ^ (2 : ℕ) - 2 * z.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [pow_two, Complex.mul_re]
     ring
@@ -286,9 +286,9 @@ theorem hsNormSq_pointedFisherConnection_cutoffCommutator_eq_phaseBlind_iff
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi chi : H) (horth : inner ℂ psi chi = 0) :
     hsNormSq (cutoffCommutator e (pointedFisherConnection psi chi)) =
-        (‖chi‖ ^ 2 - ‖e chi‖ ^ 2) * ‖e psi‖ ^ 2 +
-        (‖psi‖ ^ 2 - ‖e psi‖ ^ 2) * ‖e chi‖ ^ 2 -
-        2 * ‖inner ℂ (e chi) (e psi)‖ ^ 2 ↔
+        (‖chi‖ ^ (2 : ℕ) - ‖e chi‖ ^ (2 : ℕ)) * ‖e psi‖ ^ (2 : ℕ) +
+        (‖psi‖ ^ (2 : ℕ) - ‖e psi‖ ^ (2 : ℕ)) * ‖e chi‖ ^ (2 : ℕ) -
+        2 * ‖inner ℂ (e chi) (e psi)‖ ^ (2 : ℕ) ↔
       (inner ℂ (e chi) (e psi)).im = 0 := by
   rw [hsNormSq_pointedFisherConnection_cutoffCommutator_phase
     e he heAdj psi chi horth]

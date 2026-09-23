@@ -13,7 +13,7 @@ universal for additive detectors which ignore pinned affine realizations.  The F
 vanishes on the subgroup and therefore descends to the quotient.
 
 Every nonzero Fitting boundary class has nonzero quotient class, and the existing one-slot
-presentation `A=X^2`, `Delta=1` proves the quotient is genuinely nontrivial.  This is the precise,
+presentation `A=X^(2 : ℕ)`, `Delta=1` proves the quotient is genuinely nontrivial.  This is the precise,
 carrier-free local meaning of an intrinsically non-affine defect.  It does not attach the completed
 zeta datum; it supplies the universal recipient in which such an attachment would have to land.
 -/
@@ -110,7 +110,7 @@ theorem pinnedAffineClass_ne_zero_of_fittingBoundaryClass_ne_zero (m : ℕ)
 modulo every pinned affine realization. -/
 theorem exists_nonzero_pinnedAffineDefectQuotientClass :
     ∃ (A Delta : Matrix (Fin 1) (Fin 1) (Polynomial ℚ)),
-      A.det = (X : Polynomial ℚ) ^ 2 ∧
+      A.det = (X : Polynomial ℚ) ^ (2 : ℕ) ∧
         (QuotientAddGroup.mk Delta : PinnedAffineDefectQuotient 2 A) ≠ 0 := by
   obtain ⟨A, Delta, hdet, hclass⟩ := exists_nonfake_fittingBoundary
   exact ⟨A, Delta, hdet,

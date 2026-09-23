@@ -58,22 +58,22 @@ namespace RHTower
 /-- The near-diagonal second moment of the Weil kernel: `∫_0^R u²·(1/(2u)) du = R²/4` on each side,
 so `M₂ ≈ R²/2` in total. -/
 theorem near_diagonal_second_moment (R : ℝ) :
-    (∫ u in (0:ℝ)..R, u / 2) = R ^ 2 / 4 := by
+    (∫ u in (0:ℝ)..R, u / 2) = R ^ (2 : ℕ) / 4 := by
   rw [intervalIntegral.integral_div, integral_id]
   ring
 
 /-- **Scale invariance of the IMS error.**  With `κ = π/(L-η)` and `M₂ = (L+η)²/2`, the error
 `2κ²M₂` equals `π²(L+η)²/(L-η)²`, which is at least `π²` regardless of `L`. -/
 theorem ims_error_scale_invariant {L η : ℝ} (hη : 0 ≤ η) (hlt : η < L) :
-    Real.pi ^ 2 ≤ 2 * (Real.pi / (L - η)) ^ 2 * ((L + η) ^ 2 / 2) := by
+    Real.pi ^ (2 : ℕ) ≤ 2 * (Real.pi / (L - η)) ^ (2 : ℕ) * ((L + η) ^ (2 : ℕ) / 2) := by
   have hpos : (0 : ℝ) < L - η := by linarith
   have hL : (0 : ℝ) < L := by linarith
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hrw : 2 * (Real.pi / (L - η)) ^ 2 * ((L + η) ^ 2 / 2)
-      = Real.pi ^ 2 * ((L + η) ^ 2 / (L - η) ^ 2) := by
+  have hrw : 2 * (Real.pi / (L - η)) ^ (2 : ℕ) * ((L + η) ^ (2 : ℕ) / 2)
+      = Real.pi ^ (2 : ℕ) * ((L + η) ^ (2 : ℕ) / (L - η) ^ (2 : ℕ)) := by
     field_simp
   rw [hrw]
-  have hratio : (1 : ℝ) ≤ (L + η) ^ 2 / (L - η) ^ 2 := by
+  have hratio : (1 : ℝ) ≤ (L + η) ^ (2 : ℕ) / (L - η) ^ (2 : ℕ) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith [hη, hpos, hL]
   nlinarith [hratio, hpi]
@@ -81,19 +81,19 @@ theorem ims_error_scale_invariant {L η : ℝ} (hη : 0 ≤ η) (hlt : η < L) :
 /-- **The bootstrap threshold.**  The logarithmic gap `log(1/(2L)) - 1` exceeds the scale-invariant
 error `π²` only for `L < e^{-1-π²}/2`. -/
 theorem bootstrap_threshold {L : ℝ} (hL : 0 < L)
-    (hgap : Real.pi ^ 2 < Real.log (1 / (2 * L)) - 1) :
-    L < Real.exp (-1 - Real.pi ^ 2) / 2 := by
+    (hgap : Real.pi ^ (2 : ℕ) < Real.log (1 / (2 * L)) - 1) :
+    L < Real.exp (-1 - Real.pi ^ (2 : ℕ)) / 2 := by
   have h2L : (0 : ℝ) < 2 * L := by linarith
-  have hlog : Real.pi ^ 2 + 1 < Real.log (1 / (2 * L)) := by linarith
-  have hexp : Real.exp (Real.pi ^ 2 + 1) < 1 / (2 * L) := by
+  have hlog : Real.pi ^ (2 : ℕ) + 1 < Real.log (1 / (2 * L)) := by linarith
+  have hexp : Real.exp (Real.pi ^ (2 : ℕ) + 1) < 1 / (2 * L) := by
     have h := Real.exp_lt_exp.mpr hlog
     rwa [Real.exp_log (by positivity)] at h
-  have hposexp : (0 : ℝ) < Real.exp (Real.pi ^ 2 + 1) := Real.exp_pos _
-  have hstep : 2 * L < 1 / Real.exp (Real.pi ^ 2 + 1) := by
+  have hposexp : (0 : ℝ) < Real.exp (Real.pi ^ (2 : ℕ) + 1) := Real.exp_pos _
+  have hstep : 2 * L < 1 / Real.exp (Real.pi ^ (2 : ℕ) + 1) := by
     rw [lt_div_iff₀ hposexp]
     rw [lt_div_iff₀ h2L] at hexp
     linarith
-  have hinv : 1 / Real.exp (Real.pi ^ 2 + 1) = Real.exp (-1 - Real.pi ^ 2) := by
+  have hinv : 1 / Real.exp (Real.pi ^ (2 : ℕ) + 1) = Real.exp (-1 - Real.pi ^ (2 : ℕ)) := by
     rw [one_div, ← Real.exp_neg]
     congr 1
     ring
@@ -102,9 +102,9 @@ theorem bootstrap_threshold {L : ℝ} (hL : 0 < L)
 
 /-- **The threshold is far below the direct elementary one.**  `e^{-1-π²}/2 < 1/2 < 0.4994` is
 already enough: `π² > 0` gives `e^{-1-π²} < e^{-1} < 1`. -/
-theorem bootstrap_threshold_small : Real.exp (-1 - Real.pi ^ 2) / 2 < 1 / 2 := by
-  have hpi : (0 : ℝ) < Real.pi ^ 2 := by positivity
-  have h1 : Real.exp (-1 - Real.pi ^ 2) < 1 := by
+theorem bootstrap_threshold_small : Real.exp (-1 - Real.pi ^ (2 : ℕ)) / 2 < 1 / 2 := by
+  have hpi : (0 : ℝ) < Real.pi ^ (2 : ℕ) := by positivity
+  have h1 : Real.exp (-1 - Real.pi ^ (2 : ℕ)) < 1 := by
     rw [Real.exp_lt_one_iff]
     linarith
   linarith
@@ -112,7 +112,7 @@ theorem bootstrap_threshold_small : Real.exp (-1 - Real.pi ^ 2) / 2 < 1 / 2 := b
 /-- Consequently the IMS bootstrap stalls strictly inside the range the direct elementary bound
 already covers, so it never extends it. -/
 theorem ims_never_extends {L₀ : ℝ} (hL₀ : 1 / 2 ≤ L₀) {L : ℝ} (hL : 0 < L)
-    (hgap : Real.pi ^ 2 < Real.log (1 / (2 * L)) - 1) :
+    (hgap : Real.pi ^ (2 : ℕ) < Real.log (1 / (2 * L)) - 1) :
     L < L₀ := by
   have h1 := bootstrap_threshold hL hgap
   have h2 := bootstrap_threshold_small

@@ -20,7 +20,7 @@ open Finset
 theorem blockCost_mono_right {L Y ε M₁ M₂ M₂' W : ℝ} (hW : 0 < W) (h : M₂ ≤ M₂') :
     blockCost L Y ε M₁ M₂ W ≤ blockCost L Y ε M₁ M₂' W := by
   rw [blockCost, blockCost]
-  have hpos : (0 : ℝ) < 2 / (Real.pi ^ 2 * W) := by positivity
+  have hpos : (0 : ℝ) < 2 / (Real.pi ^ (2 : ℕ) * W) := by positivity
   nlinarith [h, hpos]
 
 /-- **The Möbius short-interval mean square, from the twisted contour bound alone.** -/
@@ -31,15 +31,15 @@ theorem sum_normSq_moebius_window_le_of_twist (L Y K M J : ℕ) (hM : Y + K + L 
       ‖∑ n ∈ Finset.range M, moebiusTwist τ n‖ / N ≤ B)
     (hWC : 8 * Real.pi * W + 5 ≤ C)
     (hJ : (Y : ℝ) + K = (Y : ℝ) * (1 + ε) ^ J) :
-    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ 2)
+    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ (2 : ℕ))
       ≤ ((Y : ℝ) * (1 + ε) ^ J)
-          * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B * N) ^ 2) (((M : ℝ)) ^ 2) W) := by
+          * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B * N) ^ (2 : ℕ)) (((M : ℝ)) ^ (2 : ℕ)) W) := by
   classical
   have hbase := sum_normSq_moebius_window_le L Y K M J hM hL hY hε hW
-    (by positivity : (0 : ℝ) ≤ (B * N) ^ 2)
+    (by positivity : (0 : ℝ) ≤ (B * N) ^ (2 : ℕ))
     (normSq_sum_moebiusTwist_le M hN hbound hWC) hJ
   refine le_trans hbase ?_
-  have hcard : ((((Finset.range M).erase 0).card : ℝ)) ^ 2 ≤ ((M : ℝ)) ^ 2 := by
+  have hcard : ((((Finset.range M).erase 0).card : ℝ)) ^ (2 : ℕ) ≤ ((M : ℝ)) ^ (2 : ℕ) := by
     have h : (((Finset.range M).erase 0).card : ℝ) ≤ (M : ℝ) := by
       have := Finset.card_erase_le (s := Finset.range M) (a := 0)
       rw [Finset.card_range] at this
@@ -47,7 +47,7 @@ theorem sum_normSq_moebius_window_le_of_twist (L Y K M J : ℕ) (hM : Y + K + L 
     have h0 : (0 : ℝ) ≤ (((Finset.range M).erase 0).card : ℝ) := Nat.cast_nonneg _
     nlinarith [h, h0]
   have hmono := blockCost_mono_right (L := (L : ℝ)) (Y := (Y : ℝ)) (ε := ε)
-    (M₁ := (B * N) ^ 2) hW hcard
+    (M₁ := (B * N) ^ (2 : ℕ)) hW hcard
   have hZ : (0 : ℝ) ≤ (Y : ℝ) * (1 + ε) ^ J := by positivity
   have hJ0 : (0 : ℝ) ≤ (J : ℝ) := Nat.cast_nonneg J
   exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hmono hJ0) hZ

@@ -25,17 +25,17 @@ namespace GaloisForLFunctions.RHTower
 
 theorem cos_amplitude_phase (γ a : ℝ) :
     Real.cos (γ * a) + γ * Real.sin (γ * a)
-      = Real.sqrt (1 + γ ^ 2) * Real.cos (parityPhase γ a) := by
-  have hpos : (0 : ℝ) < 1 + γ ^ 2 := by positivity
-  have hsq : (0 : ℝ) < Real.sqrt (1 + γ ^ 2) := Real.sqrt_pos.mpr hpos
+      = Real.sqrt (1 + γ ^ (2 : ℕ)) * Real.cos (parityPhase γ a) := by
+  have hpos : (0 : ℝ) < 1 + γ ^ (2 : ℕ) := by positivity
+  have hsq : (0 : ℝ) < Real.sqrt (1 + γ ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
   rw [parityPhase, Real.cos_sub, Real.cos_arctan, Real.sin_arctan]
   field_simp
 
 theorem sin_amplitude_phase (γ a : ℝ) :
     Real.sin (γ * a) - γ * Real.cos (γ * a)
-      = Real.sqrt (1 + γ ^ 2) * Real.sin (parityPhase γ a) := by
-  have hpos : (0 : ℝ) < 1 + γ ^ 2 := by positivity
-  have hsq : (0 : ℝ) < Real.sqrt (1 + γ ^ 2) := Real.sqrt_pos.mpr hpos
+      = Real.sqrt (1 + γ ^ (2 : ℕ)) * Real.sin (parityPhase γ a) := by
+  have hpos : (0 : ℝ) < 1 + γ ^ (2 : ℕ) := by positivity
+  have hsq : (0 : ℝ) < Real.sqrt (1 + γ ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
   rw [parityPhase, Real.sin_sub, Real.cos_arctan, Real.sin_arctan]
   field_simp
 
@@ -43,11 +43,11 @@ theorem sin_amplitude_phase (γ a : ℝ) :
 
 /-- The exact aperture integral of the squared phase. -/
 theorem integral_cos_sq_parityPhase {γ : ℝ} (hγ : γ ≠ 0) (A : ℝ) :
-    (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ 2)
+    (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ (2 : ℕ))
       = (A - 1) / 2
         + (Real.sin (2 * (γ * A - Real.arctan γ))
             - Real.sin (2 * (γ * 1 - Real.arctan γ))) / (4 * γ) := by
-  have hcongr : ∀ a : ℝ, Real.cos (parityPhase γ a) ^ 2
+  have hcongr : ∀ a : ℝ, Real.cos (parityPhase γ a) ^ (2 : ℕ)
       = 1 / 2 + Real.cos (2 * (γ * a - Real.arctan γ)) / 2 := by
     intro a
     rw [parityPhase, Real.cos_sq]
@@ -91,11 +91,11 @@ theorem integral_cos_sq_parityPhase {γ : ℝ} (hγ : γ ≠ 0) (A : ℝ) :
 /-- **`(359)`: the aperture Cesàro mean of the squared phase is `1/2` for every nonzero
 ordinate.** -/
 theorem tendsto_cesaro_cos_sq_parityPhase {γ : ℝ} (hγ : γ ≠ 0) :
-    Tendsto (fun A : ℝ => (1 / A) * ∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ 2)
+    Tendsto (fun A : ℝ => (1 / A) * ∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ (2 : ℕ))
       atTop (𝓝 (1 / 2)) := by
   have hγabs : (0 : ℝ) < |γ| := abs_pos.mpr hγ
   have hbound : ∀ A : ℝ, 1 ≤ A →
-      ‖(1 / A) * (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ 2) - 1 / 2‖
+      ‖(1 / A) * (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ (2 : ℕ)) - 1 / 2‖
         ≤ (1 / 2 + 2 / (4 * |γ|)) / A := by
     intro A hA
     have hApos : (0 : ℝ) < A := by linarith
@@ -133,7 +133,7 @@ theorem tendsto_cesaro_cos_sq_parityPhase {γ : ℝ} (hγ : γ ≠ 0) :
   have hrate : Tendsto (fun A : ℝ => (1 / 2 + 2 / (4 * |γ|)) / A) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_id
   have hzero : Tendsto
-      (fun A : ℝ => (1 / A) * (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ 2) - 1 / 2)
+      (fun A : ℝ => (1 / A) * (∫ a in (1 : ℝ)..A, Real.cos (parityPhase γ a) ^ (2 : ℕ)) - 1 / 2)
       atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ hrate
     filter_upwards [eventually_ge_atTop (1 : ℝ)] with A hA

@@ -10,7 +10,7 @@ The exponential envelope of `ComplementaryPacketPowerSumEnvelope` turns into uni
 bounds on the half line:
 
 ```text
-∫_0^∞ |k_ω| ≤ 2^ω ,        ∫_0^∞ k_ω^2 ≤ 4^ω .
+∫_0^∞ |k_ω| ≤ 2^ω ,        ∫_0^∞ k_ω^(2 : ℕ) ≤ 4^ω .
 ```
 
 Both constants are bounded on `0 ≤ ω ≤ ω₀`, so the general cofinal law of
@@ -156,7 +156,7 @@ theorem setIntegral_complementaryPacketKernel_sq_le (ω : ℝ) (hω : 0 ≤ ω) 
 def complementaryPacketConstant (ω : ℝ) : ℝ := 1 / (1 + ω)
 
 /-- **Cofinal affine isometry of the boundary packet.**  For every shift `ω ≥ 0` the two-point
-modulus of the complementary packet differs from `c_ω^2 a` by at most `5·4^ω + 2 c_ω 2^ω`,
+modulus of the complementary packet differs from `c_ω^(2 : ℕ) a` by at most `5·4^ω + 2 c_ω 2^ω`,
 uniformly in the separation. -/
 theorem abs_complementaryPacketModulus_sub_le (ω : ℝ) (hω : 0 ≤ ω) {a : ℝ} (ha : 0 ≤ a) :
     |packetTranslationModulus (complementaryPacketKernel ω) (complementaryPacketConstant ω) a
@@ -169,7 +169,7 @@ theorem abs_complementaryPacketModulus_sub_le (ω : ℝ) (hω : 0 ≤ ω) {a : �
     (setIntegral_complementaryPacketKernel_sq_le ω hω) ha
 
 /-- **Cofinal slope of the boundary packet.**  Its two-point modulus has affine slope
-`c_ω^2 = 1/(1+ω)^2` at infinity, so the packet path is an asymptotic affine isometry. -/
+`c_ω^(2 : ℕ) = 1/(1+ω)^(2 : ℕ)` at infinity, so the packet path is an asymptotic affine isometry. -/
 theorem tendsto_complementaryPacketModulus_div (ω : ℝ) (hω : 0 ≤ ω) :
     Filter.Tendsto (fun a : ℝ =>
         packetTranslationModulus (complementaryPacketKernel ω)

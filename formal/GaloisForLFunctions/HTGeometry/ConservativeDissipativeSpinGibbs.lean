@@ -20,7 +20,7 @@ noncomputable section
 def spinLogSeed (x phase : ℝ) : ℂ := Complex.exp ((x : ℂ) + (phase : ℂ) * Complex.I)
 
 /-- The initial phase has no effect on the chart radius. -/
-theorem spinLogSeed_norm_sq (x phase : ℝ) : ‖spinLogSeed x phase‖ ^ 2 = Real.exp (2 * x) := by
+theorem spinLogSeed_norm_sq (x phase : ℝ) : ‖spinLogSeed x phase‖ ^ (2 : ℕ) = Real.exp (2 * x) := by
   rw [spinLogSeed, Complex.norm_exp]
   simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     Complex.I_re, Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero]
@@ -32,21 +32,21 @@ theorem spinLogSeed_norm_sq (x phase : ℝ) : ‖spinLogSeed x phase‖ ^ 2 = Re
 theorem spinLatitude_exp_tanh (b : ℝ) :
     (Real.exp (2 * b) - 1) / (1 + Real.exp (2 * b)) = Real.tanh b := by
   rw [Real.tanh_eq, Real.exp_neg]
-  have he : Real.exp (2 * b) = Real.exp b ^ 2 := by
+  have he : Real.exp (2 * b) = Real.exp b ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
   rw [he]
   have hb := Real.exp_ne_zero b
-  have hd : 1 + Real.exp b ^ 2 ≠ 0 := by positivity
+  have hd : 1 + Real.exp b ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
   ring
 
 /-- Exact hyperbolic-tangent spin latitude, including zero damping and arbitrary initial phase. -/
 theorem spinSphereFlow_log_latitude (a x phase t : ℝ) :
-    spinSphereFlow a (spinLogSeed x phase) t (2 : Fin 3) = Real.tanh (x - a ^ 2 * t) := by
+    spinSphereFlow a (spinLogSeed x phase) t (2 : Fin 3) = Real.tanh (x - a ^ (2 : ℕ) * t) := by
   rw [spinSphereFlow_energy, spinLogSeed_norm_sq]
-  have he : Real.exp (-2 * a ^ 2 * t) * Real.exp (2 * x) = Real.exp (2 * (x - a ^ 2 * t)) := by
+  have he : Real.exp (-2 * a ^ (2 : ℕ) * t) * Real.exp (2 * x) = Real.exp (2 * (x - a ^ (2 : ℕ) * t)) := by
     rw [← Real.exp_add]
     congr 1
     ring
@@ -65,23 +65,23 @@ theorem qubitMean_zero_coupling (b : ℝ) : qubitMean 0 b = Real.tanh b := by
 /-- Spin latitude is the literal Z expectation of the existing zero-coupling qubit Gibbs state. -/
 theorem spinSphereFlow_gibbs_Z (a x phase t : ℝ) :
     spinSphereFlow a (spinLogSeed x phase) t (2 : Fin 3) =
-      (Matrix.trace (qubitDensity 0 (x - a ^ 2 * t) * QuantumAlg.pauliZ)).re := by
+      (Matrix.trace (qubitDensity 0 (x - a ^ (2 : ℕ) * t) * QuantumAlg.pauliZ)).re := by
   rw [spinSphereFlow_log_latitude, gomesQubitDensity_expectation_Z, qubitMean_zero_coupling]
 
 /-- The north-directed torque and latitude form the exact Euclidean spin-length decomposition. -/
 theorem spinTorqueEnergy_add_latitude_sq (m : EuclideanSpace ℝ (Fin 3)) :
-    spinTorqueEnergy m + m 2 ^ 2 = ‖m‖ ^ 2 := by
+    spinTorqueEnergy m + m 2 ^ (2 : ℕ) = ‖m‖ ^ (2 : ℕ) := by
   rw [spinTorqueEnergy_components, EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fin.sum_univ_three]
   simp [Real.norm_eq_abs, sq_abs]
 
 /-- Actual quantum Z variance in the existing zero-coupling Gibbs density. -/
 def qubitThermalZVariance (b : ℝ) : ℝ :=
   (Matrix.trace (qubitDensity 0 b * (QuantumAlg.pauliZ * QuantumAlg.pauliZ))).re -
-    (Matrix.trace (qubitDensity 0 b * QuantumAlg.pauliZ)).re ^ 2
+    (Matrix.trace (qubitDensity 0 b * QuantumAlg.pauliZ)).re ^ (2 : ℕ)
 
 /-- The Gibbs Z variance is one minus its squared signed polarization. -/
 theorem qubitThermalZVariance_eq (b : ℝ) :
-    qubitThermalZVariance b = 1 - Real.tanh b ^ 2 := by
+    qubitThermalZVariance b = 1 - Real.tanh b ^ (2 : ℕ) := by
   have hZ : QuantumAlg.pauliZ * QuantumAlg.pauliZ = (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
     simpa [qubitHamiltonian, qubitRadius] using qubitHamiltonian_sq 0 1
   rw [qubitThermalZVariance, hZ, Matrix.mul_one, gomesQubitDensity_trace_one,
@@ -91,7 +91,7 @@ theorem qubitThermalZVariance_eq (b : ℝ) :
 /-- Squared spin torque is precisely the quantum Gibbs variance at the matching bias. -/
 theorem spinTorqueEnergy_gibbs_variance (a x phase t : ℝ) :
     spinTorqueEnergy (spinSphereFlow a (spinLogSeed x phase) t) =
-      qubitThermalZVariance (x - a ^ 2 * t) := by
+      qubitThermalZVariance (x - a ^ (2 : ℕ) * t) := by
   have h := spinTorqueEnergy_add_latitude_sq (spinSphereFlow a (spinLogSeed x phase) t)
   rw [spinSphereFlow_norm, spinSphereFlow_log_latitude] at h
   rw [qubitThermalZVariance_eq]
@@ -105,13 +105,13 @@ theorem projectiveSpinFlow_one (a : ℝ) (z : ℂ) (t : ℝ) :
 /-- The paper's spin energy loss is a genuine Gibbs-variance loss along the existing qubit family. -/
 theorem hasDerivAt_spinSphereFlow_gibbs_energy (a x phase t : ℝ) :
     HasDerivAt (fun s => spinSphereFlow a (spinLogSeed x phase) s (2 : Fin 3))
-      (-a ^ 2 * qubitThermalZVariance (x - a ^ 2 * t)) t := by
+      (-a ^ (2 : ℕ) * qubitThermalZVariance (x - a ^ (2 : ℕ) * t)) t := by
   have h := hasDerivAt_projectiveSpinFlow_energy a (spinLogSeed x phase) 1 t
   simpa only [projectiveSpinFlow_one, spinTorqueEnergy_gibbs_variance] using h
 
 /-- Exact integrated Gibbs-variance interpretation of the spin energy drop. -/
 theorem spinSphereFlow_integral_gibbs_variance (a x phase s t : ℝ) :
-    (∫ v in s..t, a ^ 2 * qubitThermalZVariance (x - a ^ 2 * v)) =
+    (∫ v in s..t, a ^ (2 : ℕ) * qubitThermalZVariance (x - a ^ (2 : ℕ) * v)) =
       spinSphereFlow a (spinLogSeed x phase) s (2 : Fin 3) -
         spinSphereFlow a (spinLogSeed x phase) t (2 : Fin 3) := by
   simpa only [projectiveSpinFlow_one, spinTorqueEnergy_gibbs_variance] using
@@ -119,8 +119,8 @@ theorem spinSphereFlow_integral_gibbs_variance (a x phase s t : ℝ) :
 
 /-- The existing quantum Jeffreys divergence is elapsed damping times the spin energy drop. -/
 theorem spinSphereFlow_quantum_jeffreys (a x phase s t : ℝ) :
-    qubitQuantumJeffreys 0 (x - a ^ 2 * s) (x - a ^ 2 * t) =
-      a ^ 2 * (t - s) *
+    qubitQuantumJeffreys 0 (x - a ^ (2 : ℕ) * s) (x - a ^ (2 : ℕ) * t) =
+      a ^ (2 : ℕ) * (t - s) *
         (spinSphereFlow a (spinLogSeed x phase) s (2 : Fin 3) -
           spinSphereFlow a (spinLogSeed x phase) t (2 : Fin 3)) := by
   rw [gomesQubitJeffreys_closed, qubitMean_zero_coupling, qubitMean_zero_coupling,

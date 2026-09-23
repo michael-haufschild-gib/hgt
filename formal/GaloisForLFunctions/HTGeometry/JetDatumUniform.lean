@@ -93,7 +93,7 @@ theorem exists_uniform_datum_of_not_flat {f : ℝ → ℝ → ℂ} {M σ₀ : �
           field_simp
         rw [hEq]
         have hpj : (1 / t) ^ (j + 1) ≤ 1 / t := by
-          calc (1 / t) ^ (j + 1) ≤ (1 / t) ^ 1 := by
+          calc (1 / t) ^ (j + 1) ≤ (1 / t) ^ (1 : ℕ) := by
                 refine pow_le_pow_of_le_one (by positivity) ?_ (by omega)
                 rw [div_le_one htpos]
                 exact ht1

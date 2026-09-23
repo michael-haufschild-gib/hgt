@@ -27,7 +27,7 @@ variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {p q n : ℕ}
 
 /-- A vector as an element of the first exterior power. -/
 def exteriorι (R : Type*) [CommRing R] {M : Type*} [AddCommGroup M] [Module R M] (x : M) :
-    ⋀[R]^1 M :=
+    ⋀[R]^(1 : ℕ) M :=
   ⟨ExteriorAlgebra.ι R x, ι_mem_exteriorPower_one x⟩
 
 @[simp]

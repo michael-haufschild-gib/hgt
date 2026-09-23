@@ -248,7 +248,7 @@ theorem tendsto_squarefreeFisherScore_complexCritical
       GaloisForLFunctions.squarefreeFisherScore
         (sigma : ℂ) ((sigma - 1 : ℝ) : ℂ) u)
       (nhdsWithin 1 (Set.Ioi 1))
-      (nhds (2 * u / (1 + u) ^ 2)) := by
+      (nhds (2 * u / (1 + u) ^ (2 : ℕ))) := by
   let l := nhdsWithin (1 : ℝ) (Set.Ioi 1)
   have hoverlap := tendsto_squarefreeBoundaryOverlap_complexCritical hu
   have hbase := tendsto_sub_one_mul_squarefreeFixedCurrent_complexPath
@@ -271,7 +271,7 @@ theorem tendsto_squarefreeFisherScore_complexCritical
     (htwo.mul hoverlap).mul hdiff
   have hlimit : 2 * (1 + u)⁻¹ *
         ((1 + (0 : ℂ))⁻¹ - (1 + u)⁻¹) =
-      2 * u / (1 + u) ^ 2 := by
+      2 * u / (1 + u) ^ (2 : ℕ) := by
     have hc := one_add_ne_zero_of_re_nonneg hu
     field_simp [hc]
     ring
@@ -305,7 +305,7 @@ theorem tendsto_inner_fisherTangent_complexDamped_criticalSequence
         (infiniteMobiusCriticalComplexDampedSignedWeightLp
           (soninMobiusCriticalSigmaSequence j) u
           (soninMobiusCriticalSigmaSequence_gt_one j) hu))
-      atTop (nhds (2 * u / (1 + u) ^ 2)) := by
+      atTop (nhds (2 * u / (1 + u) ^ (2 : ℕ))) := by
   have hscore := (tendsto_squarefreeFisherScore_complexCritical hu).comp
     tendsto_soninMobiusCriticalSigmaSequence
   refine Tendsto.congr' ?_ hscore
@@ -377,7 +377,7 @@ theorem exists_soninCofinalCriticalComplexFisherScore_diagonal
       (∀ j, j < Nseq j) ∧
       Tendsto (fun j => soninCofinalCriticalComplexFisherScore
         a c d r hc hcd hr u hu j (Nseq j))
-        atTop (nhds (2 * u / (1 + u) ^ 2)) := by
+        atTop (nhds (2 * u / (1 + u) ^ (2 : ℕ))) := by
   let sourceScore : ℕ → ℂ := fun j =>
     inner ℂ
       (infiniteMobiusCriticalFisherTangentLp
@@ -403,18 +403,18 @@ theorem exists_soninCofinalCriticalComplexFisherScore_diagonal
     GaloisForLFunctions.RHTower.exists_diagonal_lt happrox
   refine ⟨Nseq, hcofinal, ?_⟩
   have hsource : Tendsto sourceScore atTop
-      (nhds (2 * u / (1 + u) ^ 2)) := by
+      (nhds (2 * u / (1 + u) ^ (2 : ℕ))) := by
     exact tendsto_inner_fisherTangent_complexDamped_criticalSequence hu
   exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hsource herror
 
 /-- Reflection-odd complex-phase Fisher profile. -/
 def soninCriticalPhaseOddFisherProfile (t : ℝ) : ℂ :=
-  4 * I * t * (1 - t ^ 2) / (1 + t ^ 2) ^ 2
+  4 * I * t * (1 - t ^ (2 : ℕ)) / (1 + t ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem soninCriticalPhaseOddFisherProfile_eq_difference (t : ℝ) :
     soninCriticalPhaseOddFisherProfile t =
-      2 * (I * t) / (1 + I * t) ^ 2 -
-        2 * (-I * t) / (1 - I * t) ^ 2 := by
+      2 * (I * t) / (1 + I * t) ^ (2 : ℕ) -
+        2 * (-I * t) / (1 - I * t) ^ (2 : ℕ) := by
   rw [soninCriticalPhaseOddFisherProfile]
   have hplus : (1 : ℂ) + I * t ≠ 0 := by
     intro h
@@ -424,8 +424,8 @@ theorem soninCriticalPhaseOddFisherProfile_eq_difference (t : ℝ) :
     intro h
     have hre := congrArg Complex.re h
     simp at hre
-  have hrealR : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
-  have hreal : (1 + (t : ℂ) ^ 2) ≠ 0 := by exact_mod_cast hrealR
+  have hrealR : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
+  have hreal : (1 + (t : ℂ) ^ (2 : ℕ)) ≠ 0 := by exact_mod_cast hrealR
   field_simp [hplus, hminus, hreal]
   ring_nf
   simp [I_sq]
@@ -437,17 +437,17 @@ theorem soninCriticalPhaseOddFisherProfile_eq_zero_iff
   constructor
   · intro hz
     rw [soninCriticalPhaseOddFisherProfile] at hz
-    have hbaseR : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
-    have hbase : (1 + (t : ℂ) ^ 2) ≠ 0 := by exact_mod_cast hbaseR
-    have hden : (1 + (t : ℂ) ^ 2) ^ 2 ≠ 0 := pow_ne_zero 2 hbase
+    have hbaseR : (1 + t ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
+    have hbase : (1 + (t : ℂ) ^ (2 : ℕ)) ≠ 0 := by exact_mod_cast hbaseR
+    have hden : (1 + (t : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hbase
     have hnum := (div_eq_zero_iff.mp hz).resolve_right hden
     simp only [mul_eq_zero, ofReal_eq_zero, I_ne_zero,
       OfNat.ofNat_ne_zero, false_or] at hnum
     rcases hnum with ht0 | hfactor
     · exact ht0
-    · have hfactorR : 1 - t ^ 2 = 0 := by exact_mod_cast hfactor
-      have hsquare : t ^ 2 = 1 := by linarith
-      have hsqlt : t ^ 2 < 1 := by
+    · have hfactorR : 1 - t ^ (2 : ℕ) = 0 := by exact_mod_cast hfactor
+      have hsquare : t ^ (2 : ℕ) = 1 := by linarith
+      have hsqlt : t ^ (2 : ℕ) < 1 := by
         nlinarith [sq_abs t, abs_nonneg t]
       linarith
   · rintro rfl
@@ -517,10 +517,10 @@ theorem exists_soninCofinalCriticalPhaseOddFisherScore_diagonal
     GaloisForLFunctions.RHTower.exists_diagonal_lt happrox
   refine ⟨Nseq, hcofinal, ?_⟩
   have hplusSource : Tendsto plusSource atTop
-      (nhds (2 * (I * t) / (1 + I * t) ^ 2)) :=
+      (nhds (2 * (I * t) / (1 + I * t) ^ (2 : ℕ))) :=
     tendsto_inner_fisherTangent_complexDamped_criticalSequence (by simp)
   have hminusSource : Tendsto minusSource atTop
-      (nhds (2 * (-I * t) / (1 - I * t) ^ 2)) := by
+      (nhds (2 * (-I * t) / (1 - I * t) ^ (2 : ℕ))) := by
     convert tendsto_inner_fisherTangent_complexDamped_criticalSequence
       (u := -I * t) (by simp) using 1
     all_goals ring_nf

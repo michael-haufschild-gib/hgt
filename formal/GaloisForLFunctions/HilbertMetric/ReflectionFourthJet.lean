@@ -18,33 +18,33 @@ noncomputable section
 
 /-- The second logarithmic jet written without taking a logarithm. -/
 def logarithmicSecondJet (f₀ f₁ f₂ : ℝ) : ℝ :=
-  f₂ / f₀ - (f₁ / f₀) ^ 2
+  f₂ / f₀ - (f₁ / f₀) ^ (2 : ℕ)
 
 /-- The fourth logarithmic jet written without taking a logarithm. -/
 def logarithmicFourthJet (f₀ f₁ f₂ f₃ f₄ : ℝ) : ℝ :=
-  f₄ / f₀ - 4 * f₃ * f₁ / f₀ ^ 2 - 3 * (f₂ / f₀) ^ 2 +
-    12 * f₂ * f₁ ^ 2 / f₀ ^ 3 - 6 * f₁ ^ 4 / f₀ ^ 4
+  f₄ / f₀ - 4 * f₃ * f₁ / f₀ ^ (2 : ℕ) - 3 * (f₂ / f₀) ^ (2 : ℕ) +
+    12 * f₂ * f₁ ^ (2 : ℕ) / f₀ ^ (3 : ℕ) - 6 * f₁ ^ (4 : ℕ) / f₀ ^ (4 : ℕ)
 
 /-- The fourth reflection curvature `L⁽⁴⁾ + 4(L'')²`, expressed in raw jets. -/
 def reflectionFourthCurvatureJet (f₀ f₁ f₂ f₃ f₄ : ℝ) : ℝ :=
   logarithmicFourthJet f₀ f₁ f₂ f₃ f₄ +
-    4 * logarithmicSecondJet f₀ f₁ f₂ ^ 2
+    4 * logarithmicSecondJet f₀ f₁ f₂ ^ (2 : ℕ)
 
 /-- The second center jet of `t ↦ f(u+t)f(u-t)`. -/
 def reflectedProductSecondJet (f₀ f₁ f₂ : ℝ) : ℝ :=
-  2 * (f₀ * f₂ - f₁ ^ 2)
+  2 * (f₀ * f₂ - f₁ ^ (2 : ℕ))
 
 /-- The fourth center jet of `t ↦ f(u+t)f(u-t)`. -/
 def reflectedProductFourthJet (f₀ f₁ f₂ f₃ f₄ : ℝ) : ℝ :=
-  2 * f₀ * f₄ - 8 * f₁ * f₃ + 6 * f₂ ^ 2
+  2 * f₀ * f₄ - 8 * f₁ * f₃ + 6 * f₂ ^ (2 : ℕ)
 
 /-- Exact conversion from logarithmic fourth reflection curvature to the fourth Hankel
 determinant of the reflected product. -/
 theorem reflectedProduct_fourthHankel_eq
     {f₀ f₁ f₂ f₃ f₄ : ℝ} (hf₀ : f₀ ≠ 0) :
-    f₀ ^ 2 * reflectedProductFourthJet f₀ f₁ f₂ f₃ f₄ -
-        reflectedProductSecondJet f₀ f₁ f₂ ^ 2 =
-      2 * f₀ ^ 4 * reflectionFourthCurvatureJet f₀ f₁ f₂ f₃ f₄ := by
+    f₀ ^ (2 : ℕ) * reflectedProductFourthJet f₀ f₁ f₂ f₃ f₄ -
+        reflectedProductSecondJet f₀ f₁ f₂ ^ (2 : ℕ) =
+      2 * f₀ ^ (4 : ℕ) * reflectionFourthCurvatureJet f₀ f₁ f₂ f₃ f₄ := by
   unfold reflectedProductFourthJet reflectedProductSecondJet
     reflectionFourthCurvatureJet logarithmicFourthJet logarithmicSecondJet
   field_simp [hf₀]
@@ -58,11 +58,11 @@ theorem reflectionFourthCurvatureJet_of_logJets
     reflectionFourthCurvatureJet
         f₀
         (f₀ * ℓ₁)
-        (f₀ * (ℓ₁ ^ 2 + ℓ₂))
-        (f₀ * (ℓ₁ ^ 3 + 3 * ℓ₁ * ℓ₂ + ℓ₃))
-        (f₀ * (ℓ₁ ^ 4 + 6 * ℓ₁ ^ 2 * ℓ₂ + 3 * ℓ₂ ^ 2 +
+        (f₀ * (ℓ₁ ^ (2 : ℕ) + ℓ₂))
+        (f₀ * (ℓ₁ ^ (3 : ℕ) + 3 * ℓ₁ * ℓ₂ + ℓ₃))
+        (f₀ * (ℓ₁ ^ (4 : ℕ) + 6 * ℓ₁ ^ (2 : ℕ) * ℓ₂ + 3 * ℓ₂ ^ (2 : ℕ) +
           4 * ℓ₁ * ℓ₃ + ℓ₄)) =
-      ℓ₄ + 4 * ℓ₂ ^ 2 := by
+      ℓ₄ + 4 * ℓ₂ ^ (2 : ℕ) := by
   unfold reflectionFourthCurvatureJet logarithmicFourthJet logarithmicSecondJet
   field_simp [hf₀]
   ring
@@ -70,16 +70,16 @@ theorem reflectionFourthCurvatureJet_of_logJets
 /-- Exact fourth reflected-product Hankel determinant in Bell-logarithmic coordinates. -/
 theorem reflectedProduct_fourthHankel_of_logJets
     {f₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : ℝ} (hf₀ : f₀ ≠ 0) :
-    f₀ ^ 2 * reflectedProductFourthJet
+    f₀ ^ (2 : ℕ) * reflectedProductFourthJet
         f₀
         (f₀ * ℓ₁)
-        (f₀ * (ℓ₁ ^ 2 + ℓ₂))
-        (f₀ * (ℓ₁ ^ 3 + 3 * ℓ₁ * ℓ₂ + ℓ₃))
-        (f₀ * (ℓ₁ ^ 4 + 6 * ℓ₁ ^ 2 * ℓ₂ + 3 * ℓ₂ ^ 2 +
+        (f₀ * (ℓ₁ ^ (2 : ℕ) + ℓ₂))
+        (f₀ * (ℓ₁ ^ (3 : ℕ) + 3 * ℓ₁ * ℓ₂ + ℓ₃))
+        (f₀ * (ℓ₁ ^ (4 : ℕ) + 6 * ℓ₁ ^ (2 : ℕ) * ℓ₂ + 3 * ℓ₂ ^ (2 : ℕ) +
           4 * ℓ₁ * ℓ₃ + ℓ₄)) -
       reflectedProductSecondJet
-        f₀ (f₀ * ℓ₁) (f₀ * (ℓ₁ ^ 2 + ℓ₂)) ^ 2 =
-      2 * f₀ ^ 4 * (ℓ₄ + 4 * ℓ₂ ^ 2) := by
+        f₀ (f₀ * ℓ₁) (f₀ * (ℓ₁ ^ (2 : ℕ) + ℓ₂)) ^ (2 : ℕ) =
+      2 * f₀ ^ (4 : ℕ) * (ℓ₄ + 4 * ℓ₂ ^ (2 : ℕ)) := by
   rw [reflectedProduct_fourthHankel_eq hf₀,
     reflectionFourthCurvatureJet_of_logJets hf₀]
 
@@ -118,9 +118,9 @@ theorem reflectionFourthCurvatureJet_mul
 theorem reflectionFourthCurvatureJet_one
     (r₁ r₂ r₃ r₄ : ℝ) :
     reflectionFourthCurvatureJet 1 r₁ r₂ r₃ r₄ =
-      r₄ - 4 * r₁ * r₃ - 3 * r₂ ^ 2 +
-        12 * r₁ ^ 2 * r₂ - 6 * r₁ ^ 4 +
-          4 * (r₂ - r₁ ^ 2) ^ 2 := by
+      r₄ - 4 * r₁ * r₃ - 3 * r₂ ^ (2 : ℕ) +
+        12 * r₁ ^ (2 : ℕ) * r₂ - 6 * r₁ ^ (4 : ℕ) +
+          4 * (r₂ - r₁ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simp [reflectionFourthCurvatureJet, logarithmicFourthJet,
     logarithmicSecondJet]
   ring
@@ -145,7 +145,7 @@ theorem reflectionFourthCurvatureJet_one_add_lower
     (hr₀ : 0 ≤ r₀) (hr₂ : 0 ≤ r₂) (hr₄ : 0 ≤ r₄)
     (hR₁ : 0 ≤ R₁) (_hR₂ : 0 ≤ R₂) (hR₃ : 0 ≤ R₃)
     (hr₁ : |r₁| ≤ R₁) (hr₂R : r₂ ≤ R₂) (hr₃ : |r₃| ≤ R₃) :
-    -(4 * R₁ * R₃ + 3 * R₂ ^ 2 + 6 * R₁ ^ 4) ≤
+    -(4 * R₁ * R₃ + 3 * R₂ ^ (2 : ℕ) + 6 * R₁ ^ (4 : ℕ)) ≤
       reflectionFourthCurvatureJet (1 + r₀) r₁ r₂ r₃ r₄ := by
   let g := 1 + r₀
   let q := g⁻¹
@@ -154,17 +154,17 @@ theorem reflectionFourthCurvatureJet_one_add_lower
   have hq1 : q ≤ 1 := by
     dsimp [q]
     exact (inv_le_one₀ hg).2 (by dsimp [g]; linarith)
-  have hq2 : q ^ 2 ≤ 1 := by nlinarith [sq_nonneg q, sq_nonneg (q - 1)]
-  have hq3 : 0 ≤ q ^ 3 := pow_nonneg hq0 3
-  have hq4 : q ^ 4 ≤ 1 := by
+  have hq2 : q ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg q, sq_nonneg (q - 1)]
+  have hq3 : 0 ≤ q ^ (3 : ℕ) := pow_nonneg hq0 3
+  have hq4 : q ^ (4 : ℕ) ≤ 1 := by
     have := pow_le_pow_left₀ hq0 hq1 4
     simpa using this
   have h13abs : |r₁ * r₃| ≤ R₁ * R₃ := by
     rw [abs_mul]
     exact mul_le_mul hr₁ hr₃ (abs_nonneg _) hR₁
-  have h13 : r₁ * r₃ * q ^ 2 ≤ R₁ * R₃ := by
+  have h13 : r₁ * r₃ * q ^ (2 : ℕ) ≤ R₁ * R₃ := by
     calc
-      r₁ * r₃ * q ^ 2 ≤ |r₁ * r₃| * q ^ 2 := by
+      r₁ * r₃ * q ^ (2 : ℕ) ≤ |r₁ * r₃| * q ^ (2 : ℕ) := by
         gcongr
         exact le_abs_self _
       _ ≤ (R₁ * R₃) * 1 := by
@@ -176,28 +176,28 @@ theorem reflectionFourthCurvatureJet_one_add_lower
       r₂ * q ≤ r₂ * 1 := mul_le_mul_of_nonneg_left hq1 hr₂
       _ = r₂ := by ring
       _ ≤ R₂ := hr₂R
-  have h2sq : (r₂ * q) ^ 2 ≤ R₂ ^ 2 := by
+  have h2sq : (r₂ * q) ^ (2 : ℕ) ≤ R₂ ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ hr₂q hr₂qR 2
-  have hr₁pow : r₁ ^ 4 ≤ R₁ ^ 4 := by
+  have hr₁pow : r₁ ^ (4 : ℕ) ≤ R₁ ^ (4 : ℕ) := by
     have habs0 : 0 ≤ |r₁| := abs_nonneg _
     have hp := pow_le_pow_left₀ habs0 hr₁ 4
     calc
-      r₁ ^ 4 = |r₁| ^ 4 := by
-        have hpow : 0 ≤ r₁ ^ 4 := by nlinarith [sq_nonneg (r₁ ^ 2)]
+      r₁ ^ (4 : ℕ) = |r₁| ^ (4 : ℕ) := by
+        have hpow : 0 ≤ r₁ ^ (4 : ℕ) := by nlinarith [sq_nonneg (r₁ ^ (2 : ℕ))]
         rw [← abs_pow, abs_of_nonneg hpow]
-      _ ≤ R₁ ^ 4 := hp
-  have h1four : r₁ ^ 4 * q ^ 4 ≤ R₁ ^ 4 := by
+      _ ≤ R₁ ^ (4 : ℕ) := hp
+  have h1four : r₁ ^ (4 : ℕ) * q ^ (4 : ℕ) ≤ R₁ ^ (4 : ℕ) := by
     calc
-      r₁ ^ 4 * q ^ 4 ≤ R₁ ^ 4 * 1 := by
+      r₁ ^ (4 : ℕ) * q ^ (4 : ℕ) ≤ R₁ ^ (4 : ℕ) * 1 := by
         exact mul_le_mul hr₁pow hq4 (pow_nonneg hq0 4) (pow_nonneg hR₁ 4)
-      _ = R₁ ^ 4 := by ring
+      _ = R₁ ^ (4 : ℕ) := by ring
   have hfour0 : 0 ≤ r₄ * q := mul_nonneg hr₄ hq0
-  have hcubic0 : 0 ≤ 12 * r₂ * r₁ ^ 2 * q ^ 3 := by positivity
-  have hsquare0 : 0 ≤ 4 * (r₂ * q - (r₁ * q) ^ 2) ^ 2 := by positivity
-  have hmain : -(4 * R₁ * R₃ + 3 * R₂ ^ 2 + 6 * R₁ ^ 4) ≤
-      r₄ * q - 4 * r₃ * r₁ * q ^ 2 - 3 * (r₂ * q) ^ 2 +
-      12 * r₂ * r₁ ^ 2 * q ^ 3 - 6 * r₁ ^ 4 * q ^ 4 +
-        4 * (r₂ * q - (r₁ * q) ^ 2) ^ 2 := by
+  have hcubic0 : 0 ≤ 12 * r₂ * r₁ ^ (2 : ℕ) * q ^ (3 : ℕ) := by positivity
+  have hsquare0 : 0 ≤ 4 * (r₂ * q - (r₁ * q) ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
+  have hmain : -(4 * R₁ * R₃ + 3 * R₂ ^ (2 : ℕ) + 6 * R₁ ^ (4 : ℕ)) ≤
+      r₄ * q - 4 * r₃ * r₁ * q ^ (2 : ℕ) - 3 * (r₂ * q) ^ (2 : ℕ) +
+      12 * r₂ * r₁ ^ (2 : ℕ) * q ^ (3 : ℕ) - 6 * r₁ ^ (4 : ℕ) * q ^ (4 : ℕ) +
+        4 * (r₂ * q - (r₁ * q) ^ (2 : ℕ)) ^ (2 : ℕ) := by
     nlinarith [h13, h2sq, h1four]
   simpa only [reflectionFourthCurvatureJet, logarithmicFourthJet,
     logarithmicSecondJet, div_eq_mul_inv, g, q, ← inv_pow] using hmain

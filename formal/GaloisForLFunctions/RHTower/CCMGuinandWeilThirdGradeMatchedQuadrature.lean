@@ -63,7 +63,7 @@ theorem abs_ccmMatchedPrimePolarQuadratureDefect_le
   let w := criticalMellinAtomWeight n
   let A := Real.exp (Real.log n / 2)
   have hrho : 0 ≤ rho := ccmActualHeadMatchedPrimePolarRadius_nonneg n
-  have hw : 0 ≤ w := criticalMellinAtomWeight_nonneg n
+  have hw : 0 ≤ w := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have hA : 0 < A := Real.exp_pos _
   have hcont : Continuous phi := hphi.continuous
   rw [ccmMatchedPrimePolarQuadratureDefect_eq_integral hcont]

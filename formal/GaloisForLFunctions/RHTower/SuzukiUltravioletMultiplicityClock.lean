@@ -72,16 +72,16 @@ def parityPhase (γ a : ℝ) : ℝ := γ * a - Real.arctan γ
 
 /-- **`(356)`: the two parity weights sum to one at every aperture.** -/
 theorem parityWeights_sum (γ a : ℝ) :
-    Real.cos (parityPhase γ a) ^ 2 + Real.sin (parityPhase γ a) ^ 2 = 1 := by
+    Real.cos (parityPhase γ a) ^ (2 : ℕ) + Real.sin (parityPhase γ a) ^ (2 : ℕ) = 1 := by
   rw [add_comm]
   exact Real.sin_sq_add_cos_sq _
 
 /-- **`(354)`: the two parity coefficients of one ordinate sum to the multiplicity weight.** -/
 theorem parityCoefficient_sum (m γ a : ℝ) :
-    4 * m * Real.cos (parityPhase γ a) ^ 2 / (1 + γ ^ 2)
-        + 4 * m * Real.sin (parityPhase γ a) ^ 2 / (1 + γ ^ 2)
-      = 4 * m / (1 + γ ^ 2) := by
-  have hden : (0 : ℝ) < 1 + γ ^ 2 := by positivity
+    4 * m * Real.cos (parityPhase γ a) ^ (2 : ℕ) / (1 + γ ^ (2 : ℕ))
+        + 4 * m * Real.sin (parityPhase γ a) ^ (2 : ℕ) / (1 + γ ^ (2 : ℕ))
+      = 4 * m / (1 + γ ^ (2 : ℕ)) := by
+  have hden : (0 : ℝ) < 1 + γ ^ (2 : ℕ) := by positivity
   have h := parityWeights_sum γ a
   field_simp
   rw [h, mul_one]

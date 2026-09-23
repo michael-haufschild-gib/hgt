@@ -12,9 +12,9 @@ after one forced local renormalization.
 For the prime power `k = p^(e+1)`, let `a_k = log(k)/2` be its entry-wall aperture, `W_k(t)` its
 Suzuki wall field, and `q_k` the CCM cubic Loewner scale.  Then
 
-`q_k exp(i t log k) = (4 / a_k^3) W_k(t)^2`.
+`q_k exp(i t log k) = (4 / a_k^(3 : ℕ)) W_k(t)^(2 : ℕ)`.
 
-At zero height this says `q_k = 4 |W_k(0)|^2 / a_k^3`.  Consequently the whole CCM cubic matrix,
+At zero height this says `q_k = 4 |W_k(0)|^(2 : ℕ) / a_k^(3 : ℕ)`.  Consequently the whole CCM cubic matrix,
 and its centered quadratic form, are exactly normalized Suzuki wall-field energy.  This is a
 phase-complete source identification, not a comparison of asymptotic orders.
 
@@ -57,7 +57,7 @@ theorem ccmGuinandWeilPrimeEntryThirdJetScale_primePower_eq_wallAmplitude_sq_div
     criticalMellinAtomWeight_primePower_eq_sq_suzukiCriticalEntryWallBareAmplitude]
 
 /-- **Cubic aperture calibration.**  Since the entry wall is at half the logarithmic delay, the
-coefficient `32 / log(k)^3` becomes exactly `4 / a_k^3`. -/
+coefficient `32 / log(k)^(3 : ℕ)` becomes exactly `4 / a_k^(3 : ℕ)`. -/
 theorem ccmGuinandWeilPrimeEntryThirdJetScale_primePower_eq_four_wallAmplitude_sq_div_aperture_cube
     (p : Nat.Primes) (e : ℕ) :
     ccmGuinandWeilPrimeEntryThirdJetScale

@@ -47,7 +47,7 @@ theorem norm_randomEulerLogArg (r x : ℝ) :
 
 /-- **The Taylor bound for one Euler factor.** -/
 theorem norm_randomEulerLogFactor_le {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) (x : ℝ) :
-    ‖randomEulerLogFactor r x‖ ≤ r ^ 2 * (1 - r)⁻¹ / 2 + r := by
+    ‖randomEulerLogFactor r x‖ ≤ r ^ (2 : ℕ) * (1 - r)⁻¹ / 2 + r := by
   set w : ℂ := (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I) with hw
   have hnw : ‖-w‖ = r := by
     rw [norm_neg, hw, norm_randomEulerLogArg, abs_of_nonneg hr0]
@@ -62,7 +62,7 @@ theorem norm_randomEulerLogFactor_le {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) (x :
 theorem norm_randomEulerLogFactor_sub_linear_le {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1) (x : ℝ) :
     ‖randomEulerLogFactor r x
         - (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I)‖
-      ≤ r ^ 2 * (1 - r)⁻¹ / 2 := by
+      ≤ r ^ (2 : ℕ) * (1 - r)⁻¹ / 2 := by
   set w : ℂ := (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I) with hw
   have hnw : ‖-w‖ = r := by
     rw [norm_neg, hw, norm_randomEulerLogArg, abs_of_nonneg hr0]
@@ -152,8 +152,8 @@ theorem cos_twoPi_le_neg_half {x : ℝ} (hx1 : 1 / 3 ≤ x) (hx2 : x ≤ 2 / 3) 
 
 /-- The squared modulus of the Euler argument. -/
 theorem normSq_one_sub_randomEulerLogArg (r x : ℝ) :
-    ‖(1 : ℂ) - (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I)‖ ^ 2
-      = 1 - 2 * r * Real.cos (2 * Real.pi * x) + r ^ 2 := by
+    ‖(1 : ℂ) - (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      = 1 - 2 * r * Real.cos (2 * Real.pi * x) + r ^ (2 : ℕ) := by
   set θ : ℝ := 2 * Real.pi * x with hθ
   have hexre : (Complex.exp ((θ : ℂ) * Complex.I)).re = Real.cos θ :=
     Complex.exp_ofReal_mul_I_re θ
@@ -178,13 +178,13 @@ theorem norm_randomEulerLogFactor_ge {r x : ℝ} (hr0 : 0 ≤ r) (hr : r ≤ 1)
     (hx : Real.cos (2 * Real.pi * x) ≤ -(1 / 2)) :
     r / 4 ≤ ‖randomEulerLogFactor r x‖ := by
   set w : ℂ := (r : ℂ) * Complex.exp (((2 * Real.pi * x : ℝ) : ℂ) * Complex.I) with hw
-  have hnormsq : ‖(1 : ℂ) - w‖ ^ 2 = 1 - 2 * r * Real.cos (2 * Real.pi * x) + r ^ 2 :=
+  have hnormsq : ‖(1 : ℂ) - w‖ ^ (2 : ℕ) = 1 - 2 * r * Real.cos (2 * Real.pi * x) + r ^ (2 : ℕ) :=
     normSq_one_sub_randomEulerLogArg r x
-  have hge : 1 + r ≤ ‖(1 : ℂ) - w‖ ^ 2 := by
+  have hge : 1 + r ≤ ‖(1 : ℂ) - w‖ ^ (2 : ℕ) := by
     rw [hnormsq]; nlinarith
   have hpos : (0 : ℝ) < ‖(1 : ℂ) - w‖ := by nlinarith [norm_nonneg ((1 : ℂ) - w)]
   have hlog : Real.log (1 + r) ≤ 2 * Real.log ‖(1 : ℂ) - w‖ := by
-    have h1 : Real.log (1 + r) ≤ Real.log (‖(1 : ℂ) - w‖ ^ 2) :=
+    have h1 : Real.log (1 + r) ≤ Real.log (‖(1 : ℂ) - w‖ ^ (2 : ℕ)) :=
       Real.log_le_log (by linarith) hge
     rwa [Real.log_pow] at h1
     

@@ -132,7 +132,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_weightedCollision
     (A B : Finset PNat) (c : ℕ → ℂ) (q : ℕ → Set.Icc (0 : ℝ) 1)
     (T : Set.Ioi (0 : ℝ)) (hc : ∀ m ∈ A, ‖c (m : ℕ)‖ ≤ 1) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) * heathBrownPositiveWeightedCollision A B q T := by
   have hdelta : (0 : ℝ) < 1 / (2 * Real.pi * (T : ℝ)) := by
     exact one_div_pos.mpr (mul_pos (by positivity) T.property)
@@ -150,7 +150,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_weightedCollision
     finiteFrequencyPoly_heathBrownBounded_eq_mul A B c q
   have hbase' :
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-          ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+          ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
         (5 / (4 * (1 / (2 * Real.pi * (T : ℝ))))) *
           finiteFrequencyCollisionWeight (heathBrownBoundedPositiveCoefficient c q)
             (A.product B) heathBrownPositiveProductFrequency
@@ -170,7 +170,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_weightedCollision
 theorem heathBrownPositiveWeightedCollision_le_cardProduct_sq
     (A B : Finset PNat) (q : ℕ → Set.Icc (0 : ℝ) 1) (T : Set.Ioi (0 : ℝ)) :
     heathBrownPositiveWeightedCollision A B q T ≤
-      ((A.card : ℝ) * (B.card : ℝ)) ^ 2 := by
+      ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) := by
   have hsubset : heathBrownPositiveStrictCollisionFinset A B ((T : ℝ)⁻¹) ⊆
       (A.product B).product (A.product B) := by
     intro z hz
@@ -181,7 +181,7 @@ theorem heathBrownPositiveWeightedCollision_le_cardProduct_sq
       heathBrownPositiveWeightedCollision_le_card_strictCollision A B q T
     _ ≤ (((A.product B).product (A.product B)).card : ℝ) := by
       exact_mod_cast Finset.card_le_card hsubset
-    _ = ((A.card : ℝ) * (B.card : ℝ)) ^ 2 := by
+    _ = ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) := by
       simp [pow_two]
 
 /-- Heath--Brown Theorem 4(iii) with arbitrary complex sparse coefficients of modulus at most
@@ -194,9 +194,9 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour_of_two_le
     {N : ℕ} (hN : 1 ≤ N) (hB : ∀ n ∈ B, (n : ℕ) ≤ N)
     {eta : ℝ} (heta : 0 < eta) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (25 * Real.pi / 4) *
-        (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
             ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
               (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *
@@ -205,11 +205,11 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour_of_two_le
       (heathBrownHalfHeight T : ℝ),
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   let J : ℝ := ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   have hforward :=
     integral_Icc_normSq_heathBrownBounded_factors_le_weightedCollision A B c q T hc
   have haggregate := heathBrownPositiveWeightedCollision_le_collisionAggregate A B q T hB
@@ -223,7 +223,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour_of_two_le
     A (heathBrownPositiveInterval N hN) (fun _ => 1) heathBrownDenseUnitWeight
       T hT hA (N := N) (fun n hn => (Finset.mem_Icc.mp hn).2) heta
   have hunit' : J ≤
-      95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
           ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
             (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *
@@ -231,7 +231,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour_of_two_le
     simpa only [J] using hunit
   calc
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) * heathBrownPositiveWeightedCollision A B q T :=
         hforward
     _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
@@ -246,7 +246,7 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour_of_two_le
       field_simp [hTne]
       ring
     _ ≤ (25 * Real.pi / 4) *
-        (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
             ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
               (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *
@@ -263,9 +263,9 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour
     {N : ℕ} (hN : 1 ≤ N) (hB : ∀ n ∈ B, (n : ℕ) ≤ N)
     {eta : ℝ} (heta : 0 < eta) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (25 * Real.pi / 4) *
-        (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
             ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
               (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *
@@ -282,46 +282,46 @@ theorem integral_Icc_normSq_heathBrownBounded_factors_le_theoremFour
     have hcard0 : 0 ≤ (A.card : ℝ) := by positivity
     have hBcard0 : 0 ≤ (B.card : ℝ) := by positivity
     have hN0 : 0 ≤ (N : ℝ) := by positivity
-    have hsquare : ((A.card : ℝ) * (B.card : ℝ)) ^ 2 ≤
-        (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 := by
+    have hsquare : ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) ≤
+        (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) := by
       have hmul : (A.card : ℝ) * (B.card : ℝ) ≤
           (A.card : ℝ) * (N : ℝ) := mul_le_mul_of_nonneg_left hBcard hcard0
       calc
-        ((A.card : ℝ) * (B.card : ℝ)) ^ 2 ≤
-            ((A.card : ℝ) * (N : ℝ)) ^ 2 :=
+        ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) ≤
+            ((A.card : ℝ) * (N : ℝ)) ^ (2 : ℕ) :=
           pow_le_pow_left₀ (mul_nonneg hcard0 hBcard0) hmul 2
-        _ = (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 := by ring
+        _ = (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) := by ring
     have hdiag :
-        (5 * Real.pi / 2) * (T : ℝ) * ((A.card : ℝ) * (B.card : ℝ)) ^ 2 ≤
+        (5 * Real.pi / 2) * (T : ℝ) * ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) ≤
           (25 * Real.pi / 4) *
-            (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2) := by
+            (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ)) := by
       have hTlt : (T : ℝ) < 2 := lt_of_not_ge htwo
       have hpi : 0 < Real.pi := Real.pi_pos
       calc
         _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
-            ((N : ℝ) ^ 2 * (A.card : ℝ) ^ 2) := by gcongr
-        _ ≤ (5 * Real.pi) * ((N : ℝ) ^ 2 * (A.card : ℝ) ^ 2) := by
+            ((N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ)) := by gcongr
+        _ ≤ (5 * Real.pi) * ((N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ)) := by
           have hcoefT : (5 * Real.pi / 2) * (T : ℝ) ≤ 5 * Real.pi := by
             nlinarith
           exact mul_le_mul_of_nonneg_right hcoefT (by positivity)
         _ ≤ (25 * Real.pi / 4) *
-            (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2) := by
-          have hmass : 0 ≤ (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 := by positivity
+            (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ)) := by
+          have hmass : 0 ≤ (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) := by positivity
           have hcoef : 5 * Real.pi ≤
               (25 * Real.pi / 4) * (95 * Real.pi / 2) := by
             nlinarith [Real.pi_gt_three]
           nlinarith
     calc
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-          ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+          ‖heathBrownBoundedSparseFactor A c t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
         (5 * Real.pi / 2) * (T : ℝ) *
           heathBrownPositiveWeightedCollision A B q T := hforward
       _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
-          ((A.card : ℝ) * (B.card : ℝ)) ^ 2 := by gcongr
+          ((A.card : ℝ) * (B.card : ℝ)) ^ (2 : ℕ) := by gcongr
       _ ≤ (25 * Real.pi / 4) *
-          (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2) := hdiag
+          (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ)) := hdiag
       _ ≤ (25 * Real.pi / 4) *
-          (95 * Real.pi / 2 * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+          (95 * Real.pi / 2 * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
             heathBrownTheoremFourCoefficient eta * (((N : ℝ) * (T : ℝ)) ^ eta) *
               ((N : ℝ) * (A.card : ℝ) * (T : ℝ) +
                 (N : ℝ) * (A.card : ℝ) ^ (7 / 4 : ℝ) *

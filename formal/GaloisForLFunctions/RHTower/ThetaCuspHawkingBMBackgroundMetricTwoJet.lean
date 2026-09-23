@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullMetricTwoJet
 # Actual massless BM background in the upper-half-plane chart
 
 The massless four-dimensional unit-radius Birmingham--Mokhtari metric is
-`diag(-(r^2-1), (r^2-1)^(-1), r^2/y^2, r^2/y^2)` in coordinates `(t,r,x,y)`.
+`diag(-(r^(2 : ℕ)-1), (r^(2 : ℕ)-1)^(-1), r^(2 : ℕ)/y^(2 : ℕ), r^(2 : ℕ)/y^(2 : ℕ))` in coordinates `(t,r,x,y)`.
 BM Eqs. (1)--(4) fix the background and cosmological convention:
 https://arxiv.org/pdf/hep-th/0609028 .
 
@@ -24,15 +24,15 @@ def metric (r y : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   Matrix.diagonal ![-(r ^ 2 - 1), (r ^ 2 - 1)⁻¹, r ^ 2 * y⁻¹ ^ 2, r ^ 2 * y⁻¹ ^ 2]
 
 private def firstDiagonal (r y : ℂ) (k : Fin 4) : Fin 4 → ℂ :=
-  if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-  else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3]
+  if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+  else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)]
   else 0
 
 private def secondDiagonal (r y : ℂ) (k l : Fin 4) : Fin 4 → ℂ :=
-  if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-    2*y⁻¹^2, 2*y⁻¹^2]
-  else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-  else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4]
+  if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+    2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+  else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+  else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)]
   else 0
 
 /-- Complete explicit background jet, including its mixed radial/horizon derivatives. -/
@@ -42,15 +42,15 @@ def jet (r y : ℂ) : CoordinateMetricTwoJet 4 ℂ where
   second k l := Matrix.diagonal (secondDiagonal r y k l)
 
 /-- Exact nondegenerate background determinant. -/
-theorem metric_det (r y : ℂ) (hf : r^2-1 ≠ 0) :
-    (metric r y).det = -(r^4 * y⁻¹^4) := by
+theorem metric_det (r y : ℂ) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    (metric r y).det = -(r^(4 : ℕ) * y⁻¹^(4 : ℕ)) := by
   simp [metric, Matrix.det_diagonal, Fin.prod_univ_succ]
   field_simp
   ring
 
 /-- Actual inverse, with every radial and horizon factor retained. -/
-theorem metric_inverse (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
-    (metric r y)⁻¹ = Matrix.diagonal ![-(r^2-1)⁻¹, r^2-1, y^2*r⁻¹^2, y^2*r⁻¹^2] := by
+theorem metric_inverse (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    (metric r y)⁻¹ = Matrix.diagonal ![-(r^(2 : ℕ)-1)⁻¹, r^(2 : ℕ)-1, y^(2 : ℕ)*r⁻¹^(2 : ℕ), y^(2 : ℕ)*r⁻¹^(2 : ℕ)] := by
   apply Matrix.inv_eq_left_inv
   rw [metric, Matrix.diagonal_mul_diagonal]
   ext i j
@@ -60,7 +60,7 @@ theorem metric_inverse (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠
 
 set_option maxHeartbeats 1600000 in
 /-- Curvature of the full background, evaluated from the literal metric-jet contractions. -/
-theorem jet_ricci (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+theorem jet_ricci (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     (jet r y).ricci i j = -3 * metric r y i j := by
   simp only [CoordinateMetricTwoJet.ricci, CoordinateMetricTwoJet.riemann,
     CoordinateMetricTwoJet.christoffelDerivative, CoordinateMetricTwoJet.christoffel,
@@ -74,7 +74,7 @@ theorem jet_ricci (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (
 
 
 /-- The scalar curvature follows from the proved Ricci tensor and actual inverse. -/
-theorem jet_scalar (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+theorem jet_scalar (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     (jet r y).scalar = -12 := by
   simp only [CoordinateMetricTwoJet.scalar, jet_ricci r y hr hy hf]
   simp only [jet, metric_inverse r y hr hy hf]
@@ -83,7 +83,7 @@ theorem jet_scalar (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) 
   ring
 
 /-- Exact cosmological vacuum identity in the corpus curvature convention. -/
-theorem jet_einstein (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+theorem jet_einstein (r y : ℂ) (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     (jet r y).einstein i j = 3 * metric r y i j := by
   rw [CoordinateMetricTwoJet.einstein, jet_ricci r y hr hy hf, jet_scalar r y hr hy hf]
   change -3 * metric r y i j - 1 / 2 * (-12) * metric r y i j = _
@@ -126,7 +126,7 @@ private theorem diagonalExpression_eval (a : Fin 4 → ℂ) (i : Fin 4) :
     ScalarTwoJet.Expression.eval, diagonalValues, pow_two, sub_eq_add_neg]
 
 private theorem diagonalExpression_regular (a : Fin 4 → ℂ) (hy : a 3 ≠ 0)
-    (hf : (a 1)^2-1 ≠ 0) (i : Fin 4) : (diagonalExpression i).Regular a := by
+    (hf : (a 1)^(2 : ℕ)-1 ≠ 0) (i : Fin 4) : (diagonalExpression i).Regular a := by
   have hf' : a 1 * a 1 + -1 ≠ 0 := by simpa [pow_two, sub_eq_add_neg] using hf
   fin_cases i <;> simp [diagonalExpression, blackening, angular, radial, height,
     ScalarTwoJet.Expression.Regular, ScalarTwoJet.Expression.eval, hy, hf']
@@ -154,7 +154,7 @@ private theorem diagonalExpression_jet (a : Fin 4 → ℂ) (hy : a 3 ≠ 0) (i :
 
 set_option maxHeartbeats 800000 in
 private theorem diagonalValues_jet (x : Fin 4 → ℝ) (hy : (x 3 : ℂ) ≠ 0)
-    (hf : (x 1 : ℂ)^2-1 ≠ 0) (i : Fin 4) :
+    (hf : (x 1 : ℂ)^(2 : ℕ)-1 ≠ 0) (i : Fin 4) :
     ScalarTwoJet.ofField (fun z : Fin 4 → ℝ => diagonalValues (z 1) (z 3) i) x =
       ⟨diagonalValues (x 1) (x 3) i, fun k => firstDiagonal (x 1) (x 3) k i,
         fun k l => secondDiagonal (x 1) (x 3) k l i⟩ := by
@@ -171,7 +171,7 @@ private theorem diagonalValues_jet (x : Fin 4 → ℝ) (hy : (x 3 : ℂ) ≠ 0)
   exact h.trans (diagonalExpression_jet _ hy i)
 
 /-- The explicit background array is its actual full coordinate metric two-jet. -/
-theorem jet_correct (x : Fin 4 → ℝ) (hy : (x 3 : ℂ) ≠ 0) (hf : (x 1 : ℂ)^2-1 ≠ 0) :
+theorem jet_correct (x : Fin 4 → ℝ) (hy : (x 3 : ℂ) ≠ 0) (hf : (x 1 : ℂ)^(2 : ℕ)-1 ≠ 0) :
     jet (x 1) (x 3) =
       D4BMMetricReconstruction.ofMetricField (fun z => metric (z 1) (z 3)) x := by
   have hfield (i j : Fin 4) :
@@ -195,10 +195,10 @@ theorem jet_correct (x : Fin 4 → ℝ) (hy : (x 3 : ℂ) ≠ 0) (hf : (x 1 : �
 abbrev ExteriorPoint := {x : Fin 4 → ℝ // 1 < x 1 ∧ 0 < x 3}
 
 private theorem exterior_factors (p : ExteriorPoint) :
-    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 3 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^2-1 ≠ 0 := by
+    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 3 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
   have hr : p.val 1 ≠ 0 := ne_of_gt (lt_trans zero_lt_one p.property.1)
   have hy : p.val 3 ≠ 0 := ne_of_gt p.property.2
-  have hf : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
   exact ⟨by exact_mod_cast hr, by exact_mod_cast hy, by exact_mod_cast hf⟩
 
 /-- Nondegeneracy is proved from the explicit determinant on the physical exterior chart. -/
@@ -214,15 +214,15 @@ theorem exterior_metric_contDiffAt (p : ExteriorPoint) (i j : Fin 4) {n : ℕ∞
   obtain ⟨_,hy,hf⟩ := exterior_factors p
   have hc (k : Fin 4) : ContDiffAt ℝ n (fun x : Fin 4 → ℝ => (x k : ℂ)) p.val :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ k)).contDiffAt
-  have hF : ContDiffAt ℝ n (fun x : Fin 4 → ℝ => (x 1 : ℂ)^2-1) p.val :=
+  have hF : ContDiffAt ℝ n (fun x : Fin 4 → ℝ => (x 1 : ℂ)^(2 : ℕ)-1) p.val :=
     ((hc 1).pow 2).sub contDiffAt_const
-  have hA : ContDiffAt ℝ n (fun x : Fin 4 → ℝ => (x 1 : ℂ)^2*(x 3 : ℂ)⁻¹^2) p.val :=
+  have hA : ContDiffAt ℝ n (fun x : Fin 4 → ℝ => (x 1 : ℂ)^(2 : ℕ)*(x 3 : ℂ)⁻¹^(2 : ℕ)) p.val :=
     ((hc 1).pow 2).mul (((hc 3).inv hy).pow 2)
   by_cases hij : i = j
   · subst j
     fin_cases i
     · simpa [metric] using hF.neg
-    · change ContDiffAt ℝ n (fun x : Fin 4 → ℝ => ((x 1 : ℂ)^2-1)⁻¹) p.val
+    · change ContDiffAt ℝ n (fun x : Fin 4 → ℝ => ((x 1 : ℂ)^(2 : ℕ)-1)⁻¹) p.val
       exact hF.inv hf
     · simpa [metric] using hA
     · simpa [metric] using hA

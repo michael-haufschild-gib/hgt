@@ -38,11 +38,11 @@ theorem volume_largeValues_pow_le_of_prime_support (k N : ℕ) (hk : 1 ≤ k) (a
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
     V ^ (2 * k) * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖}
       ≤ (T + 4 * ((N ^ k : ℕ) : ℝ) * (1 + Real.log ((N ^ k : ℕ) : ℝ)))
-          * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k) := by
+          * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ k) := by
   have hVk : (0 : ℝ) ≤ V ^ k := by positivity
   have hbase := volume_largeValues_le (N ^ k) (dirichletPowerConvolutionConvPow k N a) hT hVk
   rw [largeValues_pow_setOf k N hk a _ hV] at hbase
-  have hpow : (V ^ k) ^ 2 = V ^ (2 * k) := by
+  have hpow : (V ^ k) ^ (2 : ℕ) = V ^ (2 * k) := by
     rw [← pow_mul, mul_comm]
   rw [hpow] at hbase
   refine le_trans hbase ?_
@@ -63,11 +63,11 @@ theorem volume_largeValues_pow_symm_le_of_prime_support (k N : ℕ) (hk : 1 ≤ 
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
     V ^ (2 * k) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖}
       ≤ 2 * ((T + 4 * ((N ^ k : ℕ) : ℝ) * (1 + Real.log ((N ^ k : ℕ) : ℝ)))
-          * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ 2) ^ k)) := by
+          * ((k : ℝ) ^ k * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ k)) := by
   have hVk : (0 : ℝ) ≤ V ^ k := by positivity
   have hbase := volume_largeValues_symm_le (N ^ k) (dirichletPowerConvolutionConvPow k N a) hT hVk
   rw [largeValues_pow_setOf k N hk a (Set.Icc (-T) T) hV] at hbase
-  have hpow : (V ^ k) ^ 2 = V ^ (2 * k) := by
+  have hpow : (V ^ k) ^ (2 : ℕ) = V ^ (2 * k) := by
     rw [← pow_mul, mul_comm]
   rw [hpow] at hbase
   refine le_trans hbase ?_

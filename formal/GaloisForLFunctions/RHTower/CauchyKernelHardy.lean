@@ -165,22 +165,22 @@ theorem cauchyDatum_mem_lowerHalfLineL2 {w : ℂ} (hw : w.im < 0) :
 /-! ## The kernel itself -/
 
 theorem norm_sq_cauchyKernel (w : ℂ) (ξ : ℝ) :
-    ‖(((ξ : ℝ) : ℂ) - w)⁻¹‖ ^ 2 = ((ξ - w.re) ^ 2 + w.im ^ 2)⁻¹ := by
+    ‖(((ξ : ℝ) : ℂ) - w)⁻¹‖ ^ (2 : ℕ) = ((ξ - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ))⁻¹ := by
   rw [norm_inv, inv_pow, Complex.sq_norm, Complex.normSq_apply]
   congr 1
   simp [Complex.sub_re, Complex.sub_im]
   ring
 
 theorem integrable_cauchyKernelSq {w : ℂ} (hw : w.im ≠ 0) :
-    Integrable (fun ξ : ℝ => ((ξ - w.re) ^ 2 + w.im ^ 2)⁻¹) volume := by
+    Integrable (fun ξ : ℝ => ((ξ - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ))⁻¹) volume := by
   have hb : (w.im)⁻¹ ≠ 0 := inv_ne_zero hw
-  have h1 : Integrable (fun u : ℝ => (1 + ((w.im)⁻¹ * u) ^ 2)⁻¹) volume :=
+  have h1 : Integrable (fun u : ℝ => (1 + ((w.im)⁻¹ * u) ^ (2 : ℕ))⁻¹) volume :=
     integrable_inv_one_add_sq.comp_mul_left' hb
-  have h2 : Integrable (fun ξ : ℝ => (1 + ((w.im)⁻¹ * (ξ - w.re)) ^ 2)⁻¹) volume :=
+  have h2 : Integrable (fun ξ : ℝ => (1 + ((w.im)⁻¹ * (ξ - w.re)) ^ (2 : ℕ))⁻¹) volume :=
     h1.comp_sub_right w.re
-  refine (h2.const_mul ((w.im ^ 2)⁻¹)).congr ?_
+  refine (h2.const_mul ((w.im ^ (2 : ℕ))⁻¹)).congr ?_
   filter_upwards with ξ
-  have hi2 : (w.im) ^ 2 ≠ 0 := pow_ne_zero 2 hw
+  have hi2 : (w.im) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hw
   field_simp
   ring
 

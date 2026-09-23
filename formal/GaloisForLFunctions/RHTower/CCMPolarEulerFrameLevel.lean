@@ -33,9 +33,9 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The real part of a resolvent value. -/
 theorem re_inv_add_mul_I (A b : ℝ) :
-    (((A : ℂ) + Complex.I * (b : ℂ))⁻¹).re = A / (A ^ 2 + b ^ 2) := by
+    (((A : ℂ) + Complex.I * (b : ℂ))⁻¹).re = A / (A ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
   rw [Complex.inv_re]
-  have hns : Complex.normSq ((A : ℂ) + Complex.I * (b : ℂ)) = A ^ 2 + b ^ 2 := by
+  have hns : Complex.normSq ((A : ℂ) + Complex.I * (b : ℂ)) = A ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
       Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im]
     ring
@@ -46,15 +46,15 @@ theorem re_inv_add_mul_I (A b : ℝ) :
 /-- **Equation (3), termwise.**  Each digamma increment summand is a nonnegative resolvent
 square. -/
 theorem digamma_term_identity {A b : ℝ} (hA : 0 < A) :
-    1 / A - A / (A ^ 2 + b ^ 2) = b ^ 2 / (A * (A ^ 2 + b ^ 2)) := by
-  have hden : A ^ 2 + b ^ 2 ≠ 0 := by positivity
+    1 / A - A / (A ^ (2 : ℕ) + b ^ (2 : ℕ)) = b ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + b ^ (2 : ℕ))) := by
+  have hden : A ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
   ring
 
 /-- **Equation (2), positivity of each summand.** -/
 theorem digamma_term_nonneg {A b : ℝ} (hA : 0 < A) :
-    0 ≤ b ^ 2 / (A * (A ^ 2 + b ^ 2)) := by
-  have hden : 0 < A * (A ^ 2 + b ^ 2) := by positivity
+    0 ≤ b ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + b ^ (2 : ℕ))) := by
+  have hden : 0 < A * (A ^ (2 : ℕ) + b ^ (2 : ℕ)) := by positivity
   positivity
 
 /-! ## The prime difference square -/
@@ -66,7 +66,7 @@ theorem normSq_one_sub_exp (θ : ℝ) :
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
     Complex.one_re, Complex.one_im, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
     Complex.cos_ofReal_re, Complex.sin_ofReal_re, Complex.cos_ofReal_im, Complex.sin_ofReal_im]
-  have hpyth : Real.cos θ ^ 2 + Real.sin θ ^ 2 = 1 := Real.cos_sq_add_sin_sq θ
+  have hpyth : Real.cos θ ^ (2 : ℕ) + Real.sin θ ^ (2 : ℕ) = 1 := Real.cos_sq_add_sin_sq θ
   ring_nf
   nlinarith [hpyth]
 
@@ -94,15 +94,15 @@ theorem polar_kernel_split (x y : ℝ) :
 /-- **Equations (14) → (15).**  On an even vector the odd polar feature vanishes and the exact
 identity becomes frame minus level. -/
 theorem frame_minus_level_even {QW Bsq mu nv bminus : ℝ}
-    (h : QW = Bsq - mu * nv - bminus ^ 2) (heven : bminus = 0) :
+    (h : QW = Bsq - mu * nv - bminus ^ (2 : ℕ)) (heven : bminus = 0) :
     QW = Bsq - mu * nv := by
   rw [h, heven]
   ring
 
 /-- **Equation (16).**  On an odd vector the even polar feature drops out of the frame. -/
 theorem frame_minus_level_odd {QW Gam Prm mu nv bminus bplus : ℝ}
-    (h : QW = (Gam + Prm + bplus ^ 2) - mu * nv - bminus ^ 2) (hodd : bplus = 0) :
-    QW = Gam + Prm - mu * nv - bminus ^ 2 := by
+    (h : QW = (Gam + Prm + bplus ^ (2 : ℕ)) - mu * nv - bminus ^ (2 : ℕ)) (hodd : bplus = 0) :
+    QW = Gam + Prm - mu * nv - bminus ^ (2 : ℕ) := by
   rw [h, hodd]
   ring
 

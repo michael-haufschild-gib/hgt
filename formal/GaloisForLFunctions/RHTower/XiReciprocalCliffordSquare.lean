@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiReciprocalSquareSourceCore
 An operator need not be self-adjoint for its square to be self-adjoint.  A source architecture
 that splits an operator as `A + B`, with `A` self-adjoint, `B` skew-adjoint, and `A`, `B`
 anticommuting, forces this weaker square symmetry: the mixed terms cancel and
-`(A + B)^2 = A^2 + B^2`.
+`(A + B)^(2 : ℕ) = A^(2 : ℕ) + B^(2 : ℕ)`.
 
 Applied to the compact reciprocal Xi divisor operator, such a splitting forces RH through the
 existing reciprocal-square criterion.  The splitting predicate is also RH-equivalent, since under

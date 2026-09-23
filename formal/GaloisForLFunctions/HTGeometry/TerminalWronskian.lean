@@ -28,7 +28,7 @@ open Polynomial
 
 /-- The cleared numerator of the terminal multiplier. -/
 noncomputable def terminalNumer (Q v : Polynomial ℂ) (α : ℂ) : Polynomial ℂ :=
-  Q.derivative * v + Polynomial.C α * Q ^ 2
+  Q.derivative * v + Polynomial.C α * Q ^ (2 : ℕ)
 
 /-- The Wronskian of the numerator against the denominator. -/
 noncomputable def terminalWronskian (Q v : Polynomial ℂ) (α : ℂ) : Polynomial ℂ :=
@@ -36,8 +36,8 @@ noncomputable def terminalWronskian (Q v : Polynomial ℂ) (α : ℂ) : Polynomi
 
 theorem terminalWronskian_expand (Q v : Polynomial ℂ) (α : ℂ) :
     terminalWronskian Q v α
-      = Polynomial.C α * (Q ^ 2 * Q.derivative)
-        + ((Q.derivative * v).derivative * Q - Q.derivative ^ 2 * v) := by
+      = Polynomial.C α * (Q ^ (2 : ℕ) * Q.derivative)
+        + ((Q.derivative * v).derivative * Q - Q.derivative ^ (2 : ℕ) * v) := by
   rw [terminalWronskian, terminalNumer]
   simp only [derivative_add, derivative_mul, derivative_C, derivative_pow, zero_mul, zero_add,
     Nat.cast_ofNat, map_ofNat]
@@ -49,7 +49,7 @@ theorem terminalWronskian_ne_zero {Q v : Polynomial ℂ} {α : ℂ}
     (hα : α ≠ 0) (hQ : 1 ≤ Q.natDegree) (hv : v.natDegree ≤ 1) :
     terminalWronskian Q v α ≠ 0 := by
   have hQ0 : Q ≠ 0 := fun h => by simp [h] at hQ
-  have hmain : (Polynomial.C α * (Q ^ 2 * Q.derivative)).degree
+  have hmain : (Polynomial.C α * (Q ^ (2 : ℕ) * Q.derivative)).degree
       = ((3 * Q.natDegree - 1 : ℕ) : WithBot ℕ) := by
     rw [Polynomial.degree_mul, Polynomial.degree_C hα, zero_add, Polynomial.degree_mul,
       Polynomial.degree_pow, Polynomial.degree_derivative (p := Q) (by omega),
@@ -60,7 +60,7 @@ theorem terminalWronskian_ne_zero {Q v : Polynomial ℂ} {α : ℂ}
     rw [h2, ← Nat.cast_add]
     congr 1
     omega
-  have hrestnat : ((Q.derivative * v).derivative * Q - Q.derivative ^ 2 * v).natDegree
+  have hrestnat : ((Q.derivative * v).derivative * Q - Q.derivative ^ (2 : ℕ) * v).natDegree
       ≤ 2 * Q.natDegree - 1 := by
     refine le_trans (Polynomial.natDegree_sub_le _ _) (max_le ?_ ?_)
     · refine le_trans (Polynomial.natDegree_mul_le) ?_
@@ -73,12 +73,12 @@ theorem terminalWronskian_ne_zero {Q v : Polynomial ℂ} {α : ℂ}
         omega
       omega
     · refine le_trans (Polynomial.natDegree_mul_le) ?_
-      have h3 : (Q.derivative ^ 2).natDegree ≤ 2 * (Q.natDegree - 1) := by
+      have h3 : (Q.derivative ^ (2 : ℕ)).natDegree ≤ 2 * (Q.natDegree - 1) := by
         refine le_trans (Polynomial.natDegree_pow_le) ?_
         have := Polynomial.natDegree_derivative_le Q
         omega
       omega
-  have hrest : ((Q.derivative * v).derivative * Q - Q.derivative ^ 2 * v).degree
+  have hrest : ((Q.derivative * v).derivative * Q - Q.derivative ^ (2 : ℕ) * v).degree
       ≤ ((2 * Q.natDegree - 1 : ℕ) : WithBot ℕ) :=
     Polynomial.natDegree_le_iff_degree_le.mp hrestnat
   have hlt : ((2 * Q.natDegree - 1 : ℕ) : WithBot ℕ)
@@ -87,8 +87,8 @@ theorem terminalWronskian_ne_zero {Q v : Polynomial ℂ} {α : ℂ}
   rw [terminalWronskian_expand]
   intro h0
   have hdeg := Polynomial.degree_add_eq_left_of_degree_lt
-    (p := Polynomial.C α * (Q ^ 2 * Q.derivative))
-    (q := (Q.derivative * v).derivative * Q - Q.derivative ^ 2 * v)
+    (p := Polynomial.C α * (Q ^ (2 : ℕ) * Q.derivative))
+    (q := (Q.derivative * v).derivative * Q - Q.derivative ^ (2 : ℕ) * v)
     (by rw [hmain]; exact lt_of_le_of_lt hrest hlt)
   rw [h0, Polynomial.degree_zero, hmain] at hdeg
   exact absurd hdeg.symm (by simp)

@@ -22,16 +22,16 @@ theorem circleChordExponentialMoment_le_one
     circleChordExponentialMoment u ≤ 1 := by
   rw [circleChordExponentialMoment]
   have hfcont : Continuous (fun z : UnitAddCircle ↦
-      Real.exp (-u * ‖fourier 1 z - 1‖ ^ 2)) := by
+      Real.exp (-u * ‖fourier 1 z - 1‖ ^ (2 : ℕ))) := by
     fun_prop
   have hfint : Integrable (fun z : UnitAddCircle ↦
-      Real.exp (-u * ‖fourier 1 z - 1‖ ^ 2)) := by
+      Real.exp (-u * ‖fourier 1 z - 1‖ ^ (2 : ℕ))) := by
     rw [← integrableOn_univ]
     exact ContinuousOn.integrableOn_compact isCompact_univ hfcont.continuousOn
   have hone : Integrable (fun _z : UnitAddCircle ↦ (1 : ℝ)) := integrable_const 1
   calc
     (∫ z : UnitAddCircle,
-        Real.exp (-u * ‖fourier 1 z - 1‖ ^ 2)) ≤
+        Real.exp (-u * ‖fourier 1 z - 1‖ ^ (2 : ℕ))) ≤
         ∫ _z : UnitAddCircle, (1 : ℝ) := by
       apply integral_mono_ae hfint hone
       exact Filter.Eventually.of_forall fun z ↦

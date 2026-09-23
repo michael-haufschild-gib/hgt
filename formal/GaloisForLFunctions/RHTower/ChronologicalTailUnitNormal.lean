@@ -56,11 +56,11 @@ theorem inner_unitNormal_self {K : Submodule ℂ E} [K.HasOrthogonalProjection] 
   have hperp : (inner ℂ (v - K.starProjection v) (K.starProjection v) : ℂ) = 0 :=
     K.starProjection_inner_eq_zero v _ (K.starProjection_apply_mem v)
   have hself : (inner ℂ (v - K.starProjection v) (v - K.starProjection v) : ℂ)
-      = ((orthoDefect K v : ℝ) : ℂ) ^ 2 := by
+      = ((orthoDefect K v : ℝ) : ℂ) ^ (2 : ℕ) := by
     rw [inner_self_eq_norm_sq_to_K, orthoDefect]
     rfl
   have hkey : (inner ℂ (v - K.starProjection v) v : ℂ)
-      = ((orthoDefect K v : ℝ) : ℂ) ^ 2 := by
+      = ((orthoDefect K v : ℝ) : ℂ) ^ (2 : ℕ) := by
     have h1 : (inner ℂ (v - K.starProjection v) v : ℂ)
         = (inner ℂ (v - K.starProjection v) (v - K.starProjection v) : ℂ)
           + (inner ℂ (v - K.starProjection v) (K.starProjection v) : ℂ) := by

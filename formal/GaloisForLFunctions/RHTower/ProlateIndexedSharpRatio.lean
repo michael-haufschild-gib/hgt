@@ -30,7 +30,7 @@ def sharpCollarPhase (k : ℕ) (a : ℝ) : ℝ :=
 /-- The upper transport exponent of a rung on the window from the pair anchor to the collar. -/
 def sharpTransportUpper (m n k : ℕ) (a : ℝ) : ℝ :=
   ∫ t in pairAnchorPoint m n a..prolateLeakageCollar,
-    (sturmSharpMajorant (fun t => 1 - t ^ 2)
+    (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ))
         (prolateBandScale (signedModeRadialBandwidth a) (signedModeRadialData a k).s)
         (prolateBandScaleDeriv (signedModeRadialBandwidth a) (signedModeRadialData a k).s) t
       + prolateBandErrorMajorant (signedModeRadialBandwidth a) (signedModeRadialData a k).s
@@ -39,7 +39,7 @@ def sharpTransportUpper (m n k : ℕ) (a : ℝ) : ℝ :=
 /-- The lower transport exponent of a rung on the same window. -/
 def sharpTransportLower (m n k : ℕ) (a : ℝ) : ℝ :=
   ∫ t in pairAnchorPoint m n a..prolateLeakageCollar,
-    (sturmSharpMajorant (fun t => 1 - t ^ 2)
+    (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ))
         (prolateBandScale (signedModeRadialBandwidth a) (signedModeRadialData a k).s)
         (prolateBandScaleDeriv (signedModeRadialBandwidth a) (signedModeRadialData a k).s) t
       - prolateBandErrorMajorant (signedModeRadialBandwidth a) (signedModeRadialData a k).s
@@ -48,11 +48,11 @@ def sharpTransportLower (m n k : ℕ) (a : ℝ) : ℝ :=
 /-- **The sharp amplitude ratio, at the canonical family.** -/
 theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
     ∀ᶠ a : ℝ in atTop,
-      (signedModeRadialData a n).R (pairAnchorPoint m n a) ^ 2
-        ≤ 4050 * Real.pi ^ 3 * (sharpCollarPhase m a / sharpCollarPhase n a)
+      (signedModeRadialData a n).R (pairAnchorPoint m n a) ^ (2 : ℕ)
+        ≤ 4050 * Real.pi ^ (3 : ℕ) * (sharpCollarPhase m a / sharpCollarPhase n a)
           * Real.exp (2 * sharpCollarPhase n a - 2 * sharpCollarPhase m a
             + sharpTransportUpper m n n a - sharpTransportLower m n m a)
-          * (signedModeRadialData a m).R (pairAnchorPoint m n a) ^ 2 := by
+          * (signedModeRadialData a m).R (pairAnchorPoint m n a) ^ (2 : ℕ) := by
   set x₀ : ℝ := prolatePairAnchor m n with hx₀def
   have hx₀ : 0 < x₀ := prolatePairAnchor_pos m n
   have hα1 : prolateLeakageCollar < 1 := prolateLeakageCollar_lt_one
@@ -60,7 +60,7 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
   have hcollar : 600 * (1 - prolateLeakageCollar) ≤ 1 / 4 := prolateLeakageCollar_collar
   have hcTop := tendsto_signedModeRadialBandwidth_atTop
   have hclarge : ∀ᶠ a : ℝ in atTop,
-      x₀ ^ 2 / prolateLeakageCollar ^ 2 ≤ signedModeRadialBandwidth a :=
+      x₀ ^ (2 : ℕ) / prolateLeakageCollar ^ (2 : ℕ) ≤ signedModeRadialBandwidth a :=
     hcTop.eventually_ge_atTop _
   have hcfloor : ∀ᶠ a : ℝ in atTop, 1 / collarPhaseFloor ≤ signedModeRadialBandwidth a :=
     hcTop.eventually_ge_atTop _
@@ -79,15 +79,15 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
   have hc0 : 0 < c := by linarith
   set y₀ : ℝ := pairAnchorPoint m n a with hy₀def
   have hy₀0 : 0 < y₀ := pairAnchorPoint_pos hc0
-  have hy₀sq : y₀ ^ 2 = x₀ ^ 2 / c := pairAnchorPoint_sq hc0
+  have hy₀sq : y₀ ^ (2 : ℕ) = x₀ ^ (2 : ℕ) / c := pairAnchorPoint_sq hc0
   have hy₀α : y₀ ≤ prolateLeakageCollar := by
-    have hsq : y₀ ^ 2 ≤ prolateLeakageCollar ^ 2 := by
+    have hsq : y₀ ^ (2 : ℕ) ≤ prolateLeakageCollar ^ (2 : ℕ) := by
       rw [hy₀sq, div_le_iff₀ hc0]
-      rw [div_le_iff₀ (by positivity : (0 : ℝ) < prolateLeakageCollar ^ 2)] at hclargea
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < prolateLeakageCollar ^ (2 : ℕ))] at hclargea
       linarith [hclargea]
     nlinarith [hy₀0, hαh]
-  have hsy0n : (signedModeRadialData a n).s < y₀ ^ 2 := by nlinarith [h2sn, hsn0]
-  have hsy0m : (signedModeRadialData a m).s < y₀ ^ 2 := by
+  have hsy0n : (signedModeRadialData a n).s < y₀ ^ (2 : ℕ) := by nlinarith [h2sn, hsn0]
+  have hsy0m : (signedModeRadialData a m).s < y₀ ^ (2 : ℕ) := by
     rcases eq_or_lt_of_le hsm0 with h | h
     · rw [← h]
       positivity
@@ -105,8 +105,8 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
   have hRm1 : (signedModeRadialData a m).R 1 = 1 := hExm.2.2.2.2.2.2.2.1
   have heign : ∀ y ∈ Icc (-1 : ℝ) 1,
       prolateSLAction c (signedModeRadialData a n).R y
-        = -((signedModeRadialData a n).s * c ^ 2) * (signedModeRadialData a n).R y := by
-    have hchi : (signedModeRadialData a n).chi = -((signedModeRadialData a n).s * c ^ 2) := by
+        = -((signedModeRadialData a n).s * c ^ (2 : ℕ)) * (signedModeRadialData a n).R y := by
+    have hchi : (signedModeRadialData a n).chi = -((signedModeRadialData a n).s * c ^ (2 : ℕ)) := by
       have hs := hExn.2.2.2.2.2.2.2.2.2.2.1
       rw [← hcdef] at hs
       have hcne : c ≠ 0 := hc0.ne'
@@ -116,8 +116,8 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
     rw [hExn.2.2.2.2.2.2.2.2.2.1 y, hchi]
   have heigm : ∀ y ∈ Icc (-1 : ℝ) 1,
       prolateSLAction c (signedModeRadialData a m).R y
-        = -((signedModeRadialData a m).s * c ^ 2) * (signedModeRadialData a m).R y := by
-    have hchi : (signedModeRadialData a m).chi = -((signedModeRadialData a m).s * c ^ 2) := by
+        = -((signedModeRadialData a m).s * c ^ (2 : ℕ)) * (signedModeRadialData a m).R y := by
+    have hchi : (signedModeRadialData a m).chi = -((signedModeRadialData a m).s * c ^ (2 : ℕ)) := by
       have hs := hExm.2.2.2.2.2.2.2.2.2.2.1
       rw [← hcdef] at hs
       have hcne : c ≠ 0 := hc0.ne'
@@ -125,13 +125,13 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
       field_simp
     intro y _
     rw [hExm.2.2.2.2.2.2.2.2.2.1 y, hchi]
-  have hoden : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv (signedModeRadialData a n).R) x
+  have hoden : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv (signedModeRadialData a n).R) x
       + 2 * x * deriv (signedModeRadialData a n).R x
-      - ((signedModeRadialData a n).s * c ^ 2 - c ^ 2 * x ^ 2)
+      - ((signedModeRadialData a n).s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ))
         * (signedModeRadialData a n).R x = 0 := hExn.2.2.2.2.2.2.2.2.2.2.2.2.2
-  have hodem : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv (signedModeRadialData a m).R) x
+  have hodem : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv (signedModeRadialData a m).R) x
       + 2 * x * deriv (signedModeRadialData a m).R x
-      - ((signedModeRadialData a m).s * c ^ 2 - c ^ 2 * x ^ 2)
+      - ((signedModeRadialData a m).s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ))
         * (signedModeRadialData a m).R x = 0 := hExm.2.2.2.2.2.2.2.2.2.2.2.2.2
   -- positivity
   have hsqrtn : Real.sqrt (signedModeRadialData a n).s ≤ y₀ := by
@@ -151,12 +151,12 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
   -- barriers and defects
   have hbarn : ∀ y ∈ Icc y₀ prolateLeakageCollar,
       prolateLogDeriv (signedModeRadialData a n).R y
-        ≤ prolateAnchoredBarrier c (-((signedModeRadialData a n).s * c ^ 2)) y :=
+        ≤ prolateAnchoredBarrier c (-((signedModeRadialData a n).s * c ^ (2 : ℕ))) y :=
     prolateLogDeriv_le_anchoredBarrier_on_collar hc0 hsn1 hy₀0 hy₀α hα1 h2sn hsn0.le hsmn
       heign hRn1 hposn
   have hbarm : ∀ y ∈ Icc y₀ prolateLeakageCollar,
       prolateLogDeriv (signedModeRadialData a m).R y
-        ≤ prolateAnchoredBarrier c (-((signedModeRadialData a m).s * c ^ 2)) y :=
+        ≤ prolateAnchoredBarrier c (-((signedModeRadialData a m).s * c ^ (2 : ℕ))) y :=
     prolateLogDeriv_le_anchoredBarrier_on_collar hc0 hsm1 hy₀0 hy₀α hα1 h2sm hsm0 hsmm
       heigm hRm1 hposm
   have hδn : ∀ y ∈ Icc y₀ prolateLeakageCollar,
@@ -187,52 +187,52 @@ theorem eventually_prolateBand_sq_ratio_sharp (m n : ℕ) :
 the difference of the two logarithms at the pair anchor tends to a constant of the two indices. -/
 theorem tendsto_pairAnchor_scaleLog (m n : ℕ) :
     Tendsto (fun a : ℝ =>
-        Real.log (pairAnchorPoint m n a ^ 2 - (signedModeRadialData a m).s)
-          - Real.log (pairAnchorPoint m n a ^ 2 - (signedModeRadialData a n).s))
-      atTop (𝓝 (Real.log (prolatePairAnchor m n ^ 2 - (4 * (m : ℝ) + 1))
-        - Real.log (prolatePairAnchor m n ^ 2 - (4 * (n : ℝ) + 1)))) := by
+        Real.log (pairAnchorPoint m n a ^ (2 : ℕ) - (signedModeRadialData a m).s)
+          - Real.log (pairAnchorPoint m n a ^ (2 : ℕ) - (signedModeRadialData a n).s))
+      atTop (𝓝 (Real.log (prolatePairAnchor m n ^ (2 : ℕ) - (4 * (m : ℝ) + 1))
+        - Real.log (prolatePairAnchor m n ^ (2 : ℕ) - (4 * (n : ℝ) + 1)))) := by
   set x₀ : ℝ := prolatePairAnchor m n with hx₀def
-  have hxm : 4 * (4 * (m : ℝ) + 1) < x₀ ^ 2 := prolatePairAnchor_sq_gt m n m (Or.inl rfl)
-  have hxn : 4 * (4 * (n : ℝ) + 1) < x₀ ^ 2 := prolatePairAnchor_sq_gt m n n (Or.inr rfl)
+  have hxm : 4 * (4 * (m : ℝ) + 1) < x₀ ^ (2 : ℕ) := prolatePairAnchor_sq_gt m n m (Or.inl rfl)
+  have hxn : 4 * (4 * (n : ℝ) + 1) < x₀ ^ (2 : ℕ) := prolatePairAnchor_sq_gt m n n (Or.inr rfl)
   have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
-  have hgapm : (0 : ℝ) < x₀ ^ 2 - (4 * (m : ℝ) + 1) := by linarith
-  have hgapn : (0 : ℝ) < x₀ ^ 2 - (4 * (n : ℝ) + 1) := by linarith
+  have hgapm : (0 : ℝ) < x₀ ^ (2 : ℕ) - (4 * (m : ℝ) + 1) := by linarith
+  have hgapn : (0 : ℝ) < x₀ ^ (2 : ℕ) - (4 * (n : ℝ) + 1) := by linarith
   have hsm := tendsto_signedModeRadialBandwidth_mul_s_atTop m
   have hsn := tendsto_signedModeRadialBandwidth_mul_s_atTop n
-  have hlm : Tendsto (fun a : ℝ => Real.log (x₀ ^ 2 - signedModeRadialBandwidth a
+  have hlm : Tendsto (fun a : ℝ => Real.log (x₀ ^ (2 : ℕ) - signedModeRadialBandwidth a
       * (signedModeRadialData a m).s)) atTop
-      (𝓝 (Real.log (x₀ ^ 2 - (4 * (m : ℝ) + 1)))) := by
+      (𝓝 (Real.log (x₀ ^ (2 : ℕ) - (4 * (m : ℝ) + 1)))) := by
     refine (Real.continuousAt_log hgapm.ne').tendsto.comp ?_
     exact tendsto_const_nhds.sub hsm
-  have hln : Tendsto (fun a : ℝ => Real.log (x₀ ^ 2 - signedModeRadialBandwidth a
+  have hln : Tendsto (fun a : ℝ => Real.log (x₀ ^ (2 : ℕ) - signedModeRadialBandwidth a
       * (signedModeRadialData a n).s)) atTop
-      (𝓝 (Real.log (x₀ ^ 2 - (4 * (n : ℝ) + 1)))) := by
+      (𝓝 (Real.log (x₀ ^ (2 : ℕ) - (4 * (n : ℝ) + 1)))) := by
     refine (Real.continuousAt_log hgapn.ne').tendsto.comp ?_
     exact tendsto_const_nhds.sub hsn
   have hhm : ∀ᶠ a : ℝ in atTop,
-      signedModeRadialBandwidth a * (signedModeRadialData a m).s < x₀ ^ 2 / 2 := by
+      signedModeRadialBandwidth a * (signedModeRadialData a m).s < x₀ ^ (2 : ℕ) / 2 := by
     refine hsm.eventually (eventually_lt_nhds ?_)
     linarith
   have hhn : ∀ᶠ a : ℝ in atTop,
-      signedModeRadialBandwidth a * (signedModeRadialData a n).s < x₀ ^ 2 / 2 := by
+      signedModeRadialBandwidth a * (signedModeRadialData a n).s < x₀ ^ (2 : ℕ) / 2 := by
     refine hsn.eventually (eventually_lt_nhds ?_)
     linarith
   refine (hlm.sub hln).congr' ?_
   filter_upwards [tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop (1 : ℝ), hhm, hhn]
     with a hc1 hham hhan
   have hc0 : (0 : ℝ) < signedModeRadialBandwidth a := by linarith
-  have hsq : pairAnchorPoint m n a ^ 2 = x₀ ^ 2 / signedModeRadialBandwidth a :=
+  have hsq : pairAnchorPoint m n a ^ (2 : ℕ) = x₀ ^ (2 : ℕ) / signedModeRadialBandwidth a :=
     pairAnchorPoint_sq hc0
-  have hval : ∀ k : ℕ, pairAnchorPoint m n a ^ 2 - (signedModeRadialData a k).s
-      = (x₀ ^ 2 - signedModeRadialBandwidth a * (signedModeRadialData a k).s)
+  have hval : ∀ k : ℕ, pairAnchorPoint m n a ^ (2 : ℕ) - (signedModeRadialData a k).s
+      = (x₀ ^ (2 : ℕ) - signedModeRadialBandwidth a * (signedModeRadialData a k).s)
         / signedModeRadialBandwidth a := by
     intro k
     rw [hsq]
     field_simp
-  have hposm : (0 : ℝ) < x₀ ^ 2 - signedModeRadialBandwidth a * (signedModeRadialData a m).s := by
+  have hposm : (0 : ℝ) < x₀ ^ (2 : ℕ) - signedModeRadialBandwidth a * (signedModeRadialData a m).s := by
     nlinarith [hham, hgapm, hm0]
-  have hposn : (0 : ℝ) < x₀ ^ 2 - signedModeRadialBandwidth a * (signedModeRadialData a n).s := by
+  have hposn : (0 : ℝ) < x₀ ^ (2 : ℕ) - signedModeRadialBandwidth a * (signedModeRadialData a n).s := by
     nlinarith [hhan, hgapn, hn0]
   rw [hval m, hval n, Real.log_div hposm.ne' hc0.ne', Real.log_div hposn.ne' hc0.ne']
   ring

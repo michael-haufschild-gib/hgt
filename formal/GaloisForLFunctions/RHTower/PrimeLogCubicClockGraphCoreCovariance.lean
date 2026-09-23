@@ -10,14 +10,14 @@ cubic-clock identity on the literal finite core.
 For the feature
 
 ```text
-phi_p(t) = 2 t log(p)^2 p^(-1/2) exp(-t log(p)),
+phi_p(t) = 2 t log(p)^(2 : ℕ) p^(-1/2) exp(-t log(p)),
 ```
 
 the forced Euler differential expression `-d/dt + 1/t` has `phi_p` as an eigenfeature of
 eigenvalue `log p`.  The identity is deliberately proved as a positive-time germ: the expression
 has its genuine singular endpoint at zero, precisely where the unbounded graph problem lives.
 Consequently the third iterate on every literal finite-prime core is the unmodified
-`(log p)^3` source-clock action.
+`(log p)^(3 : ℕ)` source-clock action.
 
 This is not a theta quotient, an extension lift, a Calderón class, or a boundary-index theorem.
 It supplies the exact source graph covariance required before a theta-side cubic morphism can be
@@ -188,7 +188,7 @@ theorem primeLogCriticalLaplaceEulerIterate_clockedMass
         primeLogCriticalLaplaceEuler_clockedMass n l ht
 
 /-- **Cubic source covariance.**  The third literal Euler clock on the exact finite graph core
-is precisely the unmodified `(log p)^3` prime-clock action. -/
+is precisely the unmodified `(log p)^(3 : ℕ)` prime-clock action. -/
 theorem primeLogCriticalLaplaceEuler_cubic_clockedMass
     (l : Nat.Primes →₀ ℂ) {t : ℝ} (ht : 0 < t) :
     primeLogCriticalLaplaceEulerIterate 3

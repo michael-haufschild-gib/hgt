@@ -18,18 +18,18 @@ namespace GaloisForLFunctions.HTGeometry
 /-- **Signed value as a difference of two squares.**  If `a² c = c` (e.g. `a = ±1` wherever `c ≠ 0`)
 and `0 ≤ m`, `0 ≤ m + c`, then `c = (a√(m+c))² − (√m·a)²`. -/
 theorem signed_eq_sq_amplitude_difference {a m c : ℝ} (hm : 0 ≤ m) (hmc : 0 ≤ m + c)
-    (ha : a ^ 2 * c = c) :
-    c = (a * Real.sqrt (m + c)) ^ 2 - (Real.sqrt m * a) ^ 2 := by
+    (ha : a ^ (2 : ℕ) * c = c) :
+    c = (a * Real.sqrt (m + c)) ^ (2 : ℕ) - (Real.sqrt m * a) ^ (2 : ℕ) := by
   rw [mul_pow, mul_pow, Real.sq_sqrt hmc, Real.sq_sqrt hm]
-  have h : a ^ 2 * (m + c) - m * a ^ 2 = a ^ 2 * c := by ring
+  have h : a ^ (2 : ℕ) * (m + c) - m * a ^ (2 : ℕ) = a ^ (2 : ℕ) * c := by ring
   rw [h, ha]
 
 /-- **Signed smooth kernel as a difference of two squared amplitudes** `(17a)`.  A real kernel `w`
 with a cutoff `χ` satisfying `χ² w = w` (i.e. `χ = 1` on `supp w`) and majorant `m > ‖w‖∞` is exactly
 `w = (χ√(m+w))² − (√m·χ)²`, so it is measured by two squared-amplitude packet preparations. -/
 theorem signedKernel_eq_sq_amplitude_difference {w χ : ℝ → ℝ} {m : ℝ} (hm : 0 ≤ m)
-    (hmc : ∀ x, 0 ≤ m + w x) (hχ : ∀ x, (χ x) ^ 2 * w x = w x) (x : ℝ) :
-    w x = (χ x * Real.sqrt (m + w x)) ^ 2 - (Real.sqrt m * χ x) ^ 2 :=
+    (hmc : ∀ x, 0 ≤ m + w x) (hχ : ∀ x, (χ x) ^ (2 : ℕ) * w x = w x) (x : ℝ) :
+    w x = (χ x * Real.sqrt (m + w x)) ^ (2 : ℕ) - (Real.sqrt m * χ x) ^ (2 : ℕ) :=
   signed_eq_sq_amplitude_difference hm (hmc x) (hχ x)
 
 end GaloisForLFunctions.HTGeometry

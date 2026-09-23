@@ -92,7 +92,7 @@ theorem deningerMeyerReflectedLogGaussian_halfDensityL1 :
     norm_num
     rw [abs_of_pos (gaussReal_pos t), ← mul_assoc, ← Real.exp_add]
     rw [show t / 2 + -t / 2 = 0 by ring, Real.exp_zero, one_mul]
-  rw [hfun, show gaussReal = fun t : ℝ => Real.exp (-π * t ^ 2) by
+  rw [hfun, show gaussReal = fun t : ℝ => Real.exp (-π * t ^ (2 : ℕ)) by
       funext t
       rw [gaussReal]
       congr 1
@@ -147,7 +147,7 @@ theorem deningerMeyerReflectedGaussianCountertransport_mellin
         (deningerMeyerReflectedGaussianCountertransport c) s =
       (Complex.exp ((c : ℂ) * (s - 1 / 2)) +
         Complex.exp (-(c : ℂ) * (s - 1 / 2))) *
-        Complex.exp ((s - 1 / 2) ^ 2 / (4 * π)) := by
+        Complex.exp ((s - 1 / 2) ^ (2 : ℕ) / (4 * π)) := by
   change (deningerMeyerStrongLogMellinLM s)
       (deningerMeyerStrongLogCenteredFlow c
           deningerMeyerReflectedLogGaussianSource +
@@ -208,7 +208,7 @@ theorem deningerMeyerReflectedGaussianCountertransportClass_evaluation
         (deningerMeyerReflectedGaussianCountertransportClass c) =
       (Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) +
         Complex.exp (-(c : ℂ) * ((rho : ℂ) - 1 / 2))) *
-        Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π)) := by
+        Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π)) := by
   rw [deningerMeyerReflectedGaussianCountertransportClass,
     deningerMeyerXiSupportJetEvaluationLM_mk]
   simpa [deningerMeyerStrongLogMellin,
@@ -298,7 +298,7 @@ theorem
   constructor
   · intro hbounded
     have hz := re_eq_zero_of_bounded_reflected_exponential_pair
-      (Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π)))
+      (Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π)))
       ((rho : ℂ) - 1 / 2)
       (Complex.exp_ne_zero _)
       (by
@@ -309,7 +309,7 @@ theorem
     simp only [Complex.sub_re, Complex.div_ofNat_re, Complex.one_re] at hz
     linarith
   · intro hre
-    let A := Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π))
+    let A := Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π))
     refine ⟨2 * ‖A‖, fun c => ?_⟩
     rw [deningerMeyerReflectedGaussianCountertransportClass_evaluation,
       norm_mul]
@@ -384,7 +384,7 @@ theorem
       (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
         (rho : ℂ)).2
     have hz := re_eq_zero_of_bounded_reflected_exponential_pair
-      (Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π)))
+      (Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π)))
       ((rho : ℂ) - 1 / 2)
       (Complex.exp_ne_zero _)
       (by
@@ -401,7 +401,7 @@ theorem
       exact
         (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
           (rho : ℂ)).mp hfracture
-    let A := Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π))
+    let A := Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π))
     refine ⟨2 * ‖A‖, fun c => ?_⟩
     rw [deningerMeyerReflectedGaussianCountertransportClass_evaluation,
       norm_mul]

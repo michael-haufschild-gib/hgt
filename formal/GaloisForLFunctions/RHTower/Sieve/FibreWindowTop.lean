@@ -44,7 +44,7 @@ theorem fibre_top_le_floor {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ}
 theorem fibre_top_lt_sq {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ}
     (ha : a ∈ outerBlock x h) :
     fibreStartIdx x a + fibreLen x h a
-      < (⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1) ^ 2 := by
+      < (⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1) ^ (2 : ℕ) := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   have htop0 : (0 : ℝ) ≤ x + h * Real.sqrt x := by positivity
@@ -62,11 +62,11 @@ theorem fibre_top_lt_sq {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ}
     have hmul := mul_self_le_mul_self hsq0 hsq
     linarith [hTsq, hmul]
   have hlt : ((⌊x + h * Real.sqrt x⌋₊ : ℕ) : ℝ)
-      < (((⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1 : ℕ)) : ℝ) ^ 2 := by
+      < (((⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1 : ℕ)) : ℝ) ^ (2 : ℕ) := by
     push_cast
     nlinarith [hfl, hTle, Nat.cast_nonneg (α := ℝ) ⌈Real.sqrt (x + h * Real.sqrt x)⌉₊]
   have hnat : ⌊x + h * Real.sqrt x⌋₊
-      < (⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1) ^ 2 := by exact_mod_cast hlt
+      < (⌈Real.sqrt (x + h * Real.sqrt x)⌉₊ + 1) ^ (2 : ℕ) := by exact_mod_cast hlt
   omega
 
 end RHTower.Sieve

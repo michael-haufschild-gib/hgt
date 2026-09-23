@@ -104,7 +104,7 @@ theorem analyticAt_zetaResidueUnit (s : ℂ) : AnalyticAt ℂ zetaResidueUnit s 
 theorem logDeriv_inv_sub_one {s : ℂ} (hs : s ≠ 1) :
     logDeriv (fun z => (z - 1)⁻¹) s = -(s - 1)⁻¹ := by
   have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
-  have hd : HasDerivAt (fun z => (z - 1)⁻¹) (-1 / (s - 1) ^ 2) s :=
+  have hd : HasDerivAt (fun z => (z - 1)⁻¹) (-1 / (s - 1) ^ (2 : ℕ)) s :=
     ((hasDerivAt_id s).sub_const 1).inv hs1
   rw [logDeriv_apply, hd.deriv]
   field_simp

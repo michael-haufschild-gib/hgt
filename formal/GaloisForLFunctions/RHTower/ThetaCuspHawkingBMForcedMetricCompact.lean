@@ -14,10 +14,10 @@ def compactForcedMetric (q : XiZeroCopy) (branch : Bool) (a : ℂ) (v : ℝ) (u 
     Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
   let c := s*(s-1)/4
-  let E := compactEnvelope (2*s) (a^2) v u
+  let E := compactEnvelope (2*s) (a^(2 : ℕ)) v u
   let A := fullAngularCovector q branch
   let J := fullSquareCovector q
-  let T := fun k => E*(2*s*u*A k z+2*c*u*(1-(s+1)*u^2)*J k z)
+  let T := fun k => E*(2*s*u*A k z+2*c*u*(1-(s+1)*u^(2 : ℕ))*J k z)
   let U := fun k => E*(-2*s/(1+u)*A k z+2*c*u*(1+(s+1)*u)/(1+u)*J k z)
   !![0,0,T 0,T 1; 0,0,U 0,U 1; T 0,U 0,0,0; T 1,U 1,0,0]
 
@@ -31,12 +31,12 @@ theorem compactForcedMetric_actual (q : XiZeroCopy) (branch : Bool) (a : ℂ)
       compactForcedMetric q branch a (x 0) (x 1 : ℂ)⁻¹ (angularPoint x) := by
   have hr0 : (x 1 : ℂ) ≠ 0 := by exact_mod_cast (by linarith : x 1 ≠ 0)
   have hp : (x 1 : ℂ)+1 ≠ 0 := by exact_mod_cast (by linarith : x 1+1 ≠ 0)
-  have hf : (x 1 : ℂ)^2-1 ≠ 0 := by exact_mod_cast (by nlinarith : (x 1)^2-1 ≠ 0)
+  have hf : (x 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (by nlinarith : (x 1)^(2 : ℕ)-1 ≠ 0)
   have hu : 1+(x 1 : ℂ)⁻¹ ≠ 0 := by
     have he : 1+(x 1 : ℂ)⁻¹ = ((x 1 : ℂ)+1)/(x 1 : ℂ) := by field_simp
     rw [he]
     exact div_ne_zero hp hr0
-  have hE := envelope_staticPoint (2*physicalRate q branch) (a^2) x hr
+  have hE := envelope_staticPoint (2*physicalRate q branch) (a^(2 : ℕ)) x hr
   ext i j
   fin_cases i <;> fin_cases j
   all_goals simp [inverseRadiusPullback,inverseRadiusJacobian,pullback,jacobian,
@@ -52,7 +52,7 @@ theorem compactForcedMetric_actual (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 theorem compactForcedMetric_smooth (q : XiZeroCopy) (branch : Bool) (a : ℂ) (v : ℝ)
     (u : ℂ) (z : Point) (hu : 1+u ∈ Complex.slitPlane) (m : WithTop ℕ∞) (i j : Fin 4) :
     ContDiffAt ℂ m (fun t => compactForcedMetric q branch a v t z i j) u := by
-  have hE := compactEnvelope_contDiffAt (2*physicalRate q branch) (a^2) v u hu m
+  have hE := compactEnvelope_contDiffAt (2*physicalRate q branch) (a^(2 : ℕ)) v u hu m
   have hi : ContDiffAt ℂ m (fun t : ℂ => (1+t)⁻¹) u :=
     (contDiffAt_const.add contDiffAt_id).inv (Complex.slitPlane_ne_zero hu)
   fin_cases i <;> fin_cases j <;> simp [compactForcedMetric,div_eq_mul_inv]

@@ -392,19 +392,19 @@ theorem lbitBoundaryThresholdCount_eq_full
 
 /-- **Full-resolution quadratic boundary law.**  Resolving every one of the
 `2 ^ r` new temporal directions at coefficient threshold `δ` costs at least
-`2 * δ * (2 ^ r)^2` of diameter-weighted mass. -/
+`2 * δ * (2 ^ r)^(2 : ℕ)` of diameter-weighted mass. -/
 theorem two_mul_threshold_mul_sq_two_pow_le_weightedMass
     (r : ℕ) {δ : ℝ} (hδ : 0 < δ)
     (hfull :
       ∀ S : Finset ↥(lbitBoundaryInterior r),
         δ ≤ |lbitBoundaryCoefficient r S|) :
-    2 * δ * ((2 : ℝ) ^ r) ^ 2 ≤
+    2 * δ * ((2 : ℝ) ^ r) ^ (2 : ℕ) ≤
       quasiLocalInfiniteLBitWeightedMass := by
   have h :=
     two_pow_mul_thresholdCount_le_weightedMass r hδ
   rw [lbitBoundaryThresholdCount_eq_full r hfull] at h
   calc
-    2 * δ * ((2 : ℝ) ^ r) ^ 2 =
+    2 * δ * ((2 : ℝ) ^ r) ^ (2 : ℕ) =
         (2 : ℝ) ^ (r + 1) *
           (δ * ((2 ^ r : ℕ) : ℝ)) := by
             norm_num [pow_succ]

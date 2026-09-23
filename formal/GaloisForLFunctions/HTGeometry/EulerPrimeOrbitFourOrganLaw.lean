@@ -539,7 +539,7 @@ theorem summable_eulerPrimeCofinalMass_iff (sigma : ℝ) :
     simp only [Function.comp_apply, eulerPrimeCofinalMass, abs_of_pos hlog]
     ring_nf
 
-/-- Exact `ell^2` admission criterion for the actual complex prime-amplitude family. -/
+/-- Exact `ell^(2 : ℕ)` admission criterion for the actual complex prime-amplitude family. -/
 theorem summable_normSq_eulerPrimeSigmaAmplitude_iff (sigma : ℝ) :
     Summable (fun p : Nat.Primes => ‖eulerPrimeSigmaAmplitude sigma p‖ ^ 2) ↔
       1 / 2 < sigma := by
@@ -549,13 +549,13 @@ theorem summable_normSq_eulerPrimeSigmaAmplitude_iff (sigma : ℝ) :
     exact eulerPrimeSigmaAmplitude_norm_sq sigma p]
   exact summable_eulerPrimeCofinalMass_iff sigma
 
-/-- The critical half-density source is absent from the standard prime `ell^2` completion. -/
+/-- The critical half-density source is absent from the standard prime `ell^(2 : ℕ)` completion. -/
 theorem not_summable_eulerPrimeHalfDensityMass :
     ¬ Summable (eulerPrimeCofinalMass (1 / 2)) := by
   rw [summable_eulerPrimeCofinalMass_iff]
   norm_num
 
-/-- The compatible half-density source sequence defines no vector in standard prime `ell^2`. -/
+/-- The compatible half-density source sequence defines no vector in standard prime `ell^(2 : ℕ)`. -/
 theorem not_summable_normSq_eulerPrimeHalfDensityAmplitude :
     ¬ Summable (fun p : Nat.Primes => ‖eulerPrimeHalfDensityAmplitude p‖ ^ 2) := by
   simpa only [eulerPrimeHalfDensityAmplitude] using

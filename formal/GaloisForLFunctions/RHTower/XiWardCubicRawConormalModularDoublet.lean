@@ -8,7 +8,7 @@ The completed Xi logarithmic conormal has a source-defined raw residue.  Its rig
 radial column alone obscures functional-equation reflection: the reflected column grows on the
 positive half-line.  Place that mate on the negative half-line and pull it back by reflection.
 The result is exactly the conjugate right column.  Their bilinear modular pairing is therefore
-the positive base Cauchy-cube self-charge `1 / (4 a^3)`.
+the positive base Cauchy-cube self-charge `1 / (4 a^(3 : ℕ))`.
 
 This also separates two multiplicity questions.  Exact divisor trace uses linear multiplicity and
 would require an inverse-square-root half-density.  Excluding the first strict-right zero does
@@ -56,7 +56,7 @@ theorem integral_routePXiBaseConormalResidueFeature_mul_reflectedMate
     (∫ r : ℝ in Ioi 0,
       routePXiBaseConormalResidueFeature rho r *
         xiWardCubicReflectedConormalMateFeature rho r) =
-      (((1 : ℝ) / (4 * (rho.re - 1 / 2) ^ 3) : ℝ) : ℂ) := by
+      (((1 : ℝ) / (4 * (rho.re - 1 / 2) ^ (3 : ℕ)) : ℝ) : ℂ) := by
   rw [show (fun r : ℝ =>
       routePXiBaseConormalResidueFeature rho r *
         xiWardCubicReflectedConormalMateFeature rho r) =
@@ -74,8 +74,8 @@ theorem integral_routePXiBaseConormalResidueFeature_mul_reflectedMate
 
 /-- Raw completed-logarithmic-residue charge at one actual strict-right zero support. -/
 def xiWardCubicRawConormalCharge (q : XiRightZeroCopy) : ℝ :=
-  ((xiSupportMultiplicity (q.1.1) : ℕ) : ℝ) ^ 2 *
-    (1 / (4 * (xiRightCenteredZero q).re ^ 3))
+  ((xiSupportMultiplicity (q.1.1) : ℕ) : ℝ) ^ (2 : ℕ) *
+    (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)))
 
 /-- Raw multiplicity-squared residue already costs at least one full two-unit base quantum.
 Therefore exact inverse-square-root multiplicity normalization is unnecessary for RH exclusion. -/
@@ -83,19 +83,19 @@ theorem xiWardCubicRawConormalCharge_ge_two (q : XiRightZeroCopy) :
     2 ≤ xiWardCubicRawConormalCharge q := by
   have hm : (1 : ℝ) ≤ ((xiSupportMultiplicity (q.1.1) : ℕ) : ℝ) := by
     exact_mod_cast xiSupportMultiplicity_pos q.1.1
-  have hm2 : (1 : ℝ) ≤ ((xiSupportMultiplicity (q.1.1) : ℕ) : ℝ) ^ 2 := by
+  have hm2 : (1 : ℝ) ≤ ((xiSupportMultiplicity (q.1.1) : ℕ) : ℝ) ^ (2 : ℕ) := by
     nlinarith
   have hc := routePStrictRightZeroBaseCauchyCubicCharge_ge_two q
   rw [xiWardCubicRawConormalCharge]
   nlinarith [mul_le_mul_of_nonneg_right hm2 (by positivity :
-    0 ≤ 1 / (4 * (xiRightCenteredZero q).re ^ 3))]
+    0 ≤ 1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)))]
 
 /-- Square-root multiplicity amplitudes cannot be residues of an additive scalar logarithmic
 current.  Already multiplicities one and two contradict additivity. -/
 theorem no_additive_scalar_multiplicity_halfDensity :
     ¬ ∃ A : ℕ → ℝ,
       (∀ m n, A (m + n) = A m + A n) ∧
-      (∀ m, A m ^ 2 = m) := by
+      (∀ m, A m ^ (2 : ℕ) = m) := by
   rintro ⟨A, hadd, hsq⟩
   have h1 := hsq 1
   have h2 := hsq 2
@@ -108,12 +108,12 @@ theorem no_additive_scalar_multiplicity_halfDensity :
 /-- Double pole obtained by differentiating one logarithmic-current pole on the critical
 boundary. -/
 def xiWardCubicBoundaryDoublePole (a gamma t : ℝ) : ℂ :=
-  (((a : ℂ) + I * ((t - gamma : ℝ) : ℂ))⁻¹) ^ 2
+  (((a : ℂ) + I * ((t - gamma : ℝ) : ℂ))⁻¹) ^ (2 : ℕ)
 
 theorem normSq_xiWardCubicBoundaryDoublePole
     {a : ℝ} (ha : 0 < a) (gamma t : ℝ) :
     Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t) =
-      1 / (a ^ 2 + (t - gamma) ^ 2) ^ 2 := by
+      1 / (a ^ (2 : ℕ) + (t - gamma) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [xiWardCubicBoundaryDoublePole, pow_two, Complex.normSq_mul,
     Complex.normSq_inv, Complex.normSq_apply]
   simp [Complex.mul_re, Complex.mul_im]
@@ -123,11 +123,11 @@ theorem normSq_xiWardCubicBoundaryDoublePole
 theorem integral_normSq_xiWardCubicBoundaryDoublePole
     {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
     ∫ t : ℝ, Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t) =
-      Real.pi / (2 * a ^ 3) := by
+      Real.pi / (2 * a ^ (3 : ℕ)) := by
   rw [show (fun t : ℝ =>
       Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t)) =
-      fun t : ℝ => (1 / a ^ 2) *
-        (a / (a ^ 2 + (t + (-gamma)) ^ 2)) ^ 2 by
+      fun t : ℝ => (1 / a ^ (2 : ℕ)) *
+        (a / (a ^ (2 : ℕ) + (t + (-gamma)) ^ (2 : ℕ))) ^ (2 : ℕ) by
     funext t
     rw [normSq_xiWardCubicBoundaryDoublePole ha]
     field_simp [ha.ne']
@@ -143,7 +143,7 @@ theorem integral_normSq_xiWardCubicBoundaryDoublePole_actualZero
     ∫ t : ℝ, Complex.normSq
         (xiWardCubicBoundaryDoublePole
           (xiRightCenteredZero q).re (xiRightCenteredZero q).im t) =
-      2 * Real.pi * (1 / (4 * (xiRightCenteredZero q).re ^ 3)) := by
+      2 * Real.pi * (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ))) := by
   rw [integral_normSq_xiWardCubicBoundaryDoublePole
     (xiRightCenteredZero_re_pos q)]
   field_simp [(xiRightCenteredZero_re_pos q).ne']

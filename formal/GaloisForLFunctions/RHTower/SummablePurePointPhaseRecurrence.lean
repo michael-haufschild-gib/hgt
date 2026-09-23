@@ -20,7 +20,7 @@ def summablePhaseEnergy
     (a omega : ℕ → ℝ) (n : ℕ) : ℝ :=
   ∑' p, a p *
     ‖Complex.exp
-      (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ 2
+      (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ)
 
 private theorem phaseChord_le_two (x : ℝ) :
     ‖Complex.exp (Complex.I * (x : ℂ)) - 1‖ ≤ 2 := by
@@ -38,14 +38,14 @@ private theorem summable_phaseEnergy_term
     (hsum : Summable a) (n : ℕ) :
     Summable (fun p => a p *
       ‖Complex.exp
-        (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ 2) := by
+        (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ)) := by
   apply Summable.of_nonneg_of_le
       (fun p => mul_nonneg (ha p) (sq_nonneg _))
       (fun p => ?_) (hsum.mul_left 4)
   have hchord := phaseChord_le_two ((n : ℝ) * omega p)
   have hsq :
       ‖Complex.exp
-        (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ 2 ≤ 4 := by
+        (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ) ≤ 4 := by
     nlinarith [norm_nonneg
       (Complex.exp
         (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1)]
@@ -59,7 +59,7 @@ theorem exists_summablePhaseEnergy_recurrence_quantitative
     (hsum : Summable a) (M Q : ℕ) :
     ∃ n : ℕ, 0 < n ∧ n ≤ (Q + 1) ^ M ∧
       summablePhaseEnergy a omega n ≤
-        (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             ∑ p ∈ Finset.range M, a p +
           4 * ∑' p : {p : ℕ // p ∉ Finset.range M}, a p := by
   let omegaHead : Fin M → ℝ := fun p => omega p
@@ -69,12 +69,12 @@ theorem exists_summablePhaseEnergy_recurrence_quantitative
   refine ⟨n, hn, hnQ, ?_⟩
   let f : ℕ → ℝ := fun p => a p *
     ‖Complex.exp
-      (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ 2
+      (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ)
   have hf : Summable f := by
     simpa only [f] using summable_phaseEnergy_term a omega ha hsum n
   have hhead :
       ∑ p ∈ Finset.range M, f p ≤
-        (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           ∑ p ∈ Finset.range M, a p := by
     rw [Finset.mul_sum]
     apply Finset.sum_le_sum
@@ -101,7 +101,7 @@ theorem exists_summablePhaseEnergy_recurrence_quantitative
         have hchord := phaseChord_le_two ((n : ℝ) * omega p)
         have hsq :
             ‖Complex.exp
-              (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ 2 ≤ 4 := by
+              (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ) ≤ 4 := by
           nlinarith [norm_nonneg
             (Complex.exp
               (Complex.I * ((((n : ℝ) * omega p : ℝ) : ℂ))) - 1)]
@@ -144,7 +144,7 @@ private theorem exists_tsum_subtype_compl_range_lt
 
 private theorem exists_phaseResolution_head_lt
     (A ε : ℝ) (hA : 0 ≤ A) (hε : 0 < ε) :
-    ∃ Q : ℕ, (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 * A < ε := by
+    ∃ Q : ℕ, (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) * A < ε := by
   by_cases hAzero : A = 0
   · exact ⟨0, by simp [hAzero, hε]⟩
   have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hAzero)
@@ -171,12 +171,12 @@ private theorem exists_phaseResolution_head_lt
     positivity
   have hsqrt0 : 0 ≤ Real.sqrt (ε / A) := Real.sqrt_nonneg _
   have hδsq :
-      δ ^ 2 < (Real.sqrt (ε / A)) ^ 2 :=
+      δ ^ (2 : ℕ) < (Real.sqrt (ε / A)) ^ (2 : ℕ) :=
     (sq_lt_sq₀ hδ0 hsqrt0).2 hδ
   calc
-    (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 * A =
-        δ ^ 2 * A := rfl
-    _ < (Real.sqrt (ε / A)) ^ 2 * A :=
+    (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) * A =
+        δ ^ (2 : ℕ) * A := rfl
+    _ < (Real.sqrt (ε / A)) ^ (2 : ℕ) * A :=
       mul_lt_mul_of_pos_right hδsq hApos
     _ = (ε / A) * A := by
       rw [Real.sq_sqrt (div_nonneg hε.le hA)]
@@ -203,7 +203,7 @@ theorem exists_summablePhaseEnergy_recurrence
   refine ⟨n, hn, ?_⟩
   calc
     summablePhaseEnergy a omega n ≤
-        (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             ∑ p ∈ Finset.range M, a p +
           4 * ∑' p : {p : ℕ // p ∉ Finset.range M}, a p :=
       henergy

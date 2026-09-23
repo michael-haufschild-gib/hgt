@@ -101,7 +101,7 @@ theorem differentialIndependent_orbit_of_exact_defects (hl : LinearIndependent �
   set q1 : ℂ := Complex.exp (l 0 * ω 1) with hq1def
   have hq1 : q1 ≠ 0 := Complex.exp_ne_zero _
   set tau : Fin 2 → RatFunc (RatFunc ℂ) ≃+* RatFunc (RatFunc ℂ) :=
-    ![ratFuncScaleEquiv (algebraMap ℂ (RatFunc ℂ) q0) hq0R, cylinderCoeffScaleEquiv hq1]
+    ![ratFuncScaleEquiv_twoCylinderTranslationAction (algebraMap ℂ (RatFunc ℂ) q0) hq0R, cylinderCoeffScaleEquiv hq1]
     with htaudef
   set sigma : Fin 2 → meroField (Set.univ : Set ℂ) ≃+* meroField (Set.univ : Set ℂ) :=
     fun i => addTranslationMeroEquiv (ω i) with hsigmadef
@@ -258,7 +258,7 @@ theorem differentialIndependent_orbit_of_exact_defects (hl : LinearIndependent �
   · intro i k
     fin_cases i
     · show addTranslationMeroEquiv (ω 0) (twoCylinderEmbed hl k)
-        = twoCylinderEmbed hl (ratFuncScaleEquiv (algebraMap ℂ (RatFunc ℂ) q0) hq0R k)
+        = twoCylinderEmbed hl (ratFuncScaleEquiv_twoCylinderTranslationAction (algebraMap ℂ (RatFunc ℂ) q0) hq0R k)
       exact addTranslationMeroEquiv_twoCylinderEmbed hl (ω 0) hper0 k
     · show addTranslationMeroEquiv (ω 1) (twoCylinderEmbed hl k)
         = twoCylinderEmbed hl (cylinderCoeffScaleEquiv hq1 k)

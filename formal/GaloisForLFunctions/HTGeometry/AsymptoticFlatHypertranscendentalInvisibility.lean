@@ -93,7 +93,7 @@ theorem tendsto_pow_div_gamma (M : ℕ) :
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
     exact div_nonneg (by positivity) (Real.Gamma_pos_of_pos hx).le
   have hup : ∀ᶠ x : ℝ in atTop,
-      x ^ M / Real.Gamma x ≤ (2 : ℝ) ^ M / (x - ((M : ℝ) + 2)) ^ 2 := by
+      x ^ M / Real.Gamma x ≤ (2 : ℝ) ^ M / (x - ((M : ℝ) + 2)) ^ (2 : ℕ) := by
     filter_upwards [eventually_ge_atTop ((M : ℝ) + 4),
       eventually_ge_atTop (2 * ((M : ℝ) + 2))] with x hx hx2
     have hbase : (0 : ℝ) < x - ((M : ℝ) + 2) := by linarith
@@ -111,15 +111,15 @@ theorem tendsto_pow_div_gamma (M : ℕ) :
             pow_le_pow_left₀ (by linarith) hxle M
         _ = (2 : ℝ) ^ M * (x - ((M : ℝ) + 2)) ^ M := by rw [mul_pow]
     have hden : (x - ((M : ℝ) + 2)) ^ (M + 2)
-        = (x - ((M : ℝ) + 2)) ^ M * (x - ((M : ℝ) + 2)) ^ 2 := by
+        = (x - ((M : ℝ) + 2)) ^ M * (x - ((M : ℝ) + 2)) ^ (2 : ℕ) := by
       rw [← pow_add]
     rw [hden]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    calc x ^ M * (x - ((M : ℝ) + 2)) ^ 2
-        ≤ ((2 : ℝ) ^ M * (x - ((M : ℝ) + 2)) ^ M) * (x - ((M : ℝ) + 2)) ^ 2 :=
+    calc x ^ M * (x - ((M : ℝ) + 2)) ^ (2 : ℕ)
+        ≤ ((2 : ℝ) ^ M * (x - ((M : ℝ) + 2)) ^ M) * (x - ((M : ℝ) + 2)) ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hpow (by positivity)
-      _ = (2 : ℝ) ^ M * ((x - ((M : ℝ) + 2)) ^ M * (x - ((M : ℝ) + 2)) ^ 2) := by ring
-  have hzero : Tendsto (fun x : ℝ => (2 : ℝ) ^ M / (x - ((M : ℝ) + 2)) ^ 2) atTop (nhds 0) := by
+      _ = (2 : ℝ) ^ M * ((x - ((M : ℝ) + 2)) ^ M * (x - ((M : ℝ) + 2)) ^ (2 : ℕ)) := by ring
+  have hzero : Tendsto (fun x : ℝ => (2 : ℝ) ^ M / (x - ((M : ℝ) + 2)) ^ (2 : ℕ)) atTop (nhds 0) := by
     refine Filter.Tendsto.const_div_atTop ?_ _
     exact tendsto_pow_atTop (by norm_num) |>.comp (tendsto_atTop_add_const_right _ _ tendsto_id)
   exact squeeze_zero' hlow hup hzero

@@ -32,7 +32,7 @@ def observerTemporalMetricEnergy
     (weight : J → ℝ) (gap : J → κ → ℝ)
     (theta : κ → ℝ) : ℝ :=
   ∑ j, weight j *
-    observerTemporalCoordinateAction gap theta j ^ 2
+    observerTemporalCoordinateAction gap theta j ^ (2 : ℕ)
 
 /-- Exact trigonometric return defect associated with the same gap data. -/
 def observerReturnPhaseDefect
@@ -73,7 +73,7 @@ theorem observerReturnPhaseDefect_le_temporalMetricEnergy
   intro j _hj
   apply mul_le_mul_of_nonneg_left _ (hweight j)
   have hcos :
-      1 - observerTemporalCoordinateAction gap theta j ^ 2 / 2 ≤
+      1 - observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) / 2 ≤
         Real.cos (observerTemporalCoordinateAction gap theta j) :=
     Real.one_sub_sq_div_two_le_cos
   linarith
@@ -88,7 +88,7 @@ theorem temporalMetricEnergy_le_pi_sq_div_four_mul_returnDefect
     (hphase : ∀ j,
       |observerTemporalCoordinateAction gap theta j| ≤ Real.pi) :
     observerTemporalMetricEnergy weight gap theta ≤
-      Real.pi ^ 2 / 4 *
+      Real.pi ^ (2 : ℕ) / 4 *
         observerReturnPhaseDefect weight gap theta := by
   have hpi : 0 < Real.pi := Real.pi_pos
   rw [observerTemporalMetricEnergy, observerReturnPhaseDefect,
@@ -99,30 +99,30 @@ theorem temporalMetricEnergy_le_pi_sq_div_four_mul_returnDefect
     HTGeometry.AbstractSpectralFamily.two_div_pi_sq_mul_sq_le_one_sub_cos
       (hphase j)
   have hscalar :
-      observerTemporalCoordinateAction gap theta j ^ 2 ≤
-        Real.pi ^ 2 / 4 *
+      observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) ≤
+        Real.pi ^ (2 : ℕ) / 4 *
           (2 * (1 - Real.cos
             (observerTemporalCoordinateAction gap theta j))) := by
     calc
-      observerTemporalCoordinateAction gap theta j ^ 2 =
-          (Real.pi ^ 2 / 2) *
-            (2 / Real.pi ^ 2 *
-              observerTemporalCoordinateAction gap theta j ^ 2) := by
+      observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) =
+          (Real.pi ^ (2 : ℕ) / 2) *
+            (2 / Real.pi ^ (2 : ℕ) *
+              observerTemporalCoordinateAction gap theta j ^ (2 : ℕ)) := by
         field_simp
-      _ ≤ (Real.pi ^ 2 / 2) *
+      _ ≤ (Real.pi ^ (2 : ℕ) / 2) *
           (1 - Real.cos
             (observerTemporalCoordinateAction gap theta j)) :=
         mul_le_mul_of_nonneg_left hcos (by positivity)
-      _ = Real.pi ^ 2 / 4 *
+      _ = Real.pi ^ (2 : ℕ) / 4 *
           (2 * (1 - Real.cos
             (observerTemporalCoordinateAction gap theta j))) := by ring
   calc
-    weight j * observerTemporalCoordinateAction gap theta j ^ 2 ≤
-        weight j * (Real.pi ^ 2 / 4 *
+    weight j * observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) ≤
+        weight j * (Real.pi ^ (2 : ℕ) / 4 *
           (2 * (1 - Real.cos
             (observerTemporalCoordinateAction gap theta j)))) :=
       mul_le_mul_of_nonneg_left hscalar (hweight j)
-    _ = Real.pi ^ 2 / 4 *
+    _ = Real.pi ^ (2 : ℕ) / 4 *
         (weight j * (2 * (1 - Real.cos
           (observerTemporalCoordinateAction gap theta j)))) := by ring
 
@@ -141,7 +141,7 @@ theorem observerTemporalMetricEnergy_eq_zero_iff
     apply hnondegenerate theta
     intro j
     have hterm :
-        weight j * observerTemporalCoordinateAction gap theta j ^ 2 ≤
+        weight j * observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) ≤
           observerTemporalMetricEnergy weight gap theta := by
       rw [observerTemporalMetricEnergy]
       exact Finset.single_le_sum
@@ -149,7 +149,7 @@ theorem observerTemporalMetricEnergy_eq_zero_iff
         (Finset.mem_univ j)
     rw [hzero] at hterm
     have htermZero :
-        weight j * observerTemporalCoordinateAction gap theta j ^ 2 = 0 :=
+        weight j * observerTemporalCoordinateAction gap theta j ^ (2 : ℕ) = 0 :=
       le_antisymm hterm
         (mul_nonneg (hweight j).le (sq_nonneg _))
     rcases mul_eq_zero.mp htermZero with hw | hs

@@ -9,19 +9,19 @@ For source-free vector perturbations, Kodama--Ishibashi Eq. (117) gives
 
 In four dimensions `n=2`, and their Schrödinger master is
 `Phi = r^-1 OmegaTilde`.  On the massless topological black hole, with time dependence
-`exp(-i omega t)`, orientation `epsilon^{tr}=1`, `rho=r^-1`, and `z=1-rho^2`, the exact
+`exp(-i omega t)`, orientation `epsilon^{tr}=1`, `rho=r^-1`, and `z=1-rho^(2 : ℕ)`, the exact
 reconstruction is
 
-`F^t = rho Phi + 2 rho^3 Phi'`, `F^r = i omega Phi`,
+`F^t = rho Phi + 2 rho^(3 : ℕ) Phi'`, `F^r = i omega Phi`,
 
-`rho F_t = -z Phi - 2 rho^2 z Phi'`, `z F_r = i omega rho^2 Phi`.
+`rho F_t = -z Phi - 2 rho^(2 : ℕ) z Phi'`, `z F_r = i omega rho^(2 : ℕ) Phi`.
 
 The last two are the polynomially regularized covariant invariants and remain meaningful at both
 coordinate edges without inverse-coordinate assumptions.
 
 Combining the vector time invariant with the scalar KI invariant from the preceding module gives
 
-`rho^2 Ztilde_scalar - rho F_t_vector = Phi`
+`rho^(2 : ℕ) Ztilde_scalar - rho F_t_vector = Phi`
 
 whenever both sectors carry the same master jet.  This is an exact scalar--vector cancellation:
 all first-radial-jet terms disappear and the master field is recovered with unit coefficient.  A
@@ -63,18 +63,18 @@ def D4ComplexRadialThreeJet.toTwoJet
 /-- Exact four-dimensional vector KI reconstruction from a BM master two-jet. -/
 def d4KIVectorGaugeInvariantOrbitOfBMMaster
     (rho omega : ℂ) (J : D4ComplexRadialTwoJet) : D4KIVectorGaugeInvariantOrbit :=
-  { FtContravariant := rho * J.value + 2 * rho ^ 3 * J.first
+  { FtContravariant := rho * J.value + 2 * rho ^ (3 : ℕ) * J.first
     FrContravariant := Complex.I * omega * J.value
     rhoFtCovariant :=
-      -(1 - rho ^ 2) * J.value - 2 * rho ^ 2 * (1 - rho ^ 2) * J.first
-    zFrCovariant := Complex.I * omega * rho ^ 2 * J.value }
+      -(1 - rho ^ (2 : ℕ)) * J.value - 2 * rho ^ (2 : ℕ) * (1 - rho ^ (2 : ℕ)) * J.first
+    zFrCovariant := Complex.I * omega * rho ^ (2 : ℕ) * J.value }
 
 /-- The regularized covariant radial component is the metric-lowered contravariant component with
 the blackening denominator cleared. -/
 theorem d4KIVectorGaugeInvariantOrbitOfBMMaster_zFr_eq
     (rho omega : ℂ) (J : D4ComplexRadialTwoJet) :
     (d4KIVectorGaugeInvariantOrbitOfBMMaster rho omega J).zFrCovariant =
-      rho ^ 2 *
+      rho ^ (2 : ℕ) *
         (d4KIVectorGaugeInvariantOrbitOfBMMaster rho omega J).FrContravariant := by
   simp [d4KIVectorGaugeInvariantOrbitOfBMMaster]
   ring
@@ -83,7 +83,7 @@ theorem d4KIVectorGaugeInvariantOrbitOfBMMaster_zFr_eq
 def d4KIScalarVectorChiralCarrier
     (rho zInv omega kSq : ℂ)
     (scalarJet vectorJet : D4ComplexRadialTwoJet) : ℂ :=
-  rho ^ 2 *
+  rho ^ (2 : ℕ) *
       (d4KIScalarGaugeInvariantOrbitOfBMMaster
         rho zInv omega kSq scalarJet).Ztilde -
     (d4KIVectorGaugeInvariantOrbitOfBMMaster rho omega vectorJet).rhoFtCovariant
@@ -94,8 +94,8 @@ theorem d4KIScalarVectorChiralCarrier_eq_mismatch
     (rho zInv omega kSq : ℂ)
     (scalarJet vectorJet : D4ComplexRadialTwoJet) :
     d4KIScalarVectorChiralCarrier rho zInv omega kSq scalarJet vectorJet =
-      rho ^ 2 * scalarJet.value + (1 - rho ^ 2) * vectorJet.value +
-        2 * rho ^ 2 * (1 - rho ^ 2) * (vectorJet.first - scalarJet.first) := by
+      rho ^ (2 : ℕ) * scalarJet.value + (1 - rho ^ (2 : ℕ)) * vectorJet.value +
+        2 * rho ^ (2 : ℕ) * (1 - rho ^ (2 : ℕ)) * (vectorJet.first - scalarJet.first) := by
   simp [d4KIScalarVectorChiralCarrier,
     d4KIScalarGaugeInvariantOrbitOfBMMaster,
     d4KIScalarMasslessTopologicalZtilde,
@@ -157,7 +157,7 @@ components equals the direct Poincare pullback of the BM master two-jet. -/
 theorem d4PoincareRadialTwoJetOfKIScalarVectorChiral_eq_master
     (rho sigmaInv : ℂ) (J : D4ComplexRadialThreeJet) :
     d4PoincareRadialTwoJetOfBMInv rho sigmaInv
-        (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ 2) J) =
+        (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ (2 : ℕ)) J) =
       d4PoincareRadialTwoJetOfBMInv rho sigmaInv J.toTwoJet := by
   rw [d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet_eq_masterTwoJet]
 
@@ -169,9 +169,9 @@ theorem ads4SelfDualDeformedVertexOnKIScalarVectorChiralTwoJets_eq_master
     ads4SelfDualDeformedVertexOnTwoJets (rho⁻¹ * sigmaInv)
         xBracket q1 q2 q1w q2w
         (d4PoincareRadialTwoJetOfBMInv rho sigmaInv
-          (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ 2) P))
+          (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ (2 : ℕ)) P))
         (d4PoincareRadialTwoJetOfBMInv rho sigmaInv
-          (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ 2) Q)) =
+          (d4KIScalarVectorChiralCarrierTwoJetOfBMThreeJet (1 - rho ^ (2 : ℕ)) Q)) =
       ads4SelfDualDeformedVertexOnTwoJets (rho⁻¹ * sigmaInv)
         xBracket q1 q2 q1w q2w
         (d4PoincareRadialTwoJetOfBMInv rho sigmaInv P.toTwoJet)

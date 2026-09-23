@@ -75,22 +75,22 @@ set_option maxHeartbeats 1000000 in
 derivative. -/
 theorem tendsto_suzukiXiMovableCayley_blowup {z : ℂ}
     (hL : logDeriv xi (1 / 2 + (-Complex.I * z)) ≠ 0) :
-    Tendsto (fun c : ℝ => z ^ 2 / (c : ℂ) *
+    Tendsto (fun c : ℝ => z ^ (2 : ℕ) / (c : ℂ) *
         ((1 - suzukiXiMovableCayley c z) / (1 + suzukiXiMovableCayley c z)))
       (𝓝[>] (0 : ℝ))
-      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * z ^ 2
+      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * z ^ (2 : ℕ)
         / logDeriv xi (1 / 2 + (-Complex.I * z)))) := by
-  have hc2 : Tendsto (fun c : ℝ => c ^ 2) (𝓝[>] (0 : ℝ)) (𝓝[≥] (0 : ℝ)) := by
+  have hc2 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝[≥] (0 : ℝ)) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
-    · have hcont : ContinuousAt (fun c : ℝ => c ^ 2) 0 := by fun_prop
+    · have hcont : ContinuousAt (fun c : ℝ => c ^ (2 : ℕ)) 0 := by fun_prop
       simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
     · exact Filter.Eventually.of_forall fun c => sq_nonneg c
-  have hm0 : Tendsto (fun c : ℝ => ((xiShiftedReciprocalMoment (c ^ 2) 0).re : ℝ))
+  have hm0 : Tendsto (fun c : ℝ => ((xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re : ℝ))
       (𝓝[>] (0 : ℝ)) (𝓝 (normalizedPrimeArchMoment 0)) := by
     have h := (Complex.continuous_re.tendsto (normalizedPrimeArchMoment 0 : ℂ)).comp
       ((tendsto_xiShiftedReciprocalMoment_nhdsGE_zero 0).comp hc2)
     simpa [Function.comp_def] using h
-  have hm0C : Tendsto (fun c : ℝ => (((xiShiftedReciprocalMoment (c ^ 2) 0).re : ℝ) : ℂ))
+  have hm0C : Tendsto (fun c : ℝ => (((xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re : ℝ) : ℂ))
       (𝓝[>] (0 : ℝ)) (𝓝 ((normalizedPrimeArchMoment 0 : ℝ) : ℂ)) :=
     (Complex.continuous_ofReal.tendsto _).comp hm0
   -- the anchor value vanishes in the limit
@@ -119,10 +119,10 @@ theorem tendsto_suzukiXiMovableCayley_blowup {z : ℂ}
       rwa [add_zero] at h0
     exact h.eventually (eventually_ne_nhds hL)
   have hlim : Tendsto (fun c : ℝ =>
-      (((xiShiftedReciprocalMoment (c ^ 2) 0).re : ℝ) : ℂ) * z ^ 2
+      (((xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re : ℝ) : ℂ) * z ^ (2 : ℕ)
         / logDeriv xi (1 / 2 + (-Complex.I * z)))
       (𝓝[>] (0 : ℝ))
-      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * z ^ 2
+      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * z ^ (2 : ℕ)
         / logDeriv xi (1 / 2 + (-Complex.I * z)))) :=
     (hm0C.mul tendsto_const_nhds).div_const _
   refine hlim.congr' ?_
@@ -139,18 +139,18 @@ theorem tendsto_suzukiXiMovableCayley_blowup {z : ℂ}
 theorem tendsto_suzukiXiMovableCayley_blowup_ratio {z : ℂ}
     (hxi : xi (1 / 2 + (-Complex.I * z)) ≠ 0)
     (hderiv : deriv xi (1 / 2 + (-Complex.I * z)) ≠ 0) :
-    Tendsto (fun c : ℝ => z ^ 2 / (c : ℂ) *
+    Tendsto (fun c : ℝ => z ^ (2 : ℕ) / (c : ℂ) *
         ((1 - suzukiXiMovableCayley c z) / (1 + suzukiXiMovableCayley c z)))
       (𝓝[>] (0 : ℝ))
-      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * (z ^ 2 * xi (1 / 2 + (-Complex.I * z))
+      (𝓝 ((normalizedPrimeArchMoment 0 : ℂ) * (z ^ (2 : ℕ) * xi (1 / 2 + (-Complex.I * z))
         / deriv xi (1 / 2 + (-Complex.I * z))))) := by
   have hL : logDeriv xi (1 / 2 + (-Complex.I * z)) ≠ 0 := by
     rw [logDeriv_apply]
     exact div_ne_zero hderiv hxi
   have h := tendsto_suzukiXiMovableCayley_blowup hL
-  have hval : (normalizedPrimeArchMoment 0 : ℂ) * z ^ 2
+  have hval : (normalizedPrimeArchMoment 0 : ℂ) * z ^ (2 : ℕ)
       / logDeriv xi (1 / 2 + (-Complex.I * z))
-      = (normalizedPrimeArchMoment 0 : ℂ) * (z ^ 2 * xi (1 / 2 + (-Complex.I * z))
+      = (normalizedPrimeArchMoment 0 : ℂ) * (z ^ (2 : ℕ) * xi (1 / 2 + (-Complex.I * z))
         / deriv xi (1 / 2 + (-Complex.I * z))) := by
     rw [logDeriv_apply]
     field_simp

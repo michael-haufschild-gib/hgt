@@ -90,13 +90,13 @@ theorem memLp_modulationSlope {t : ℝ} (ht : 0 ≤ t) {w : ℂ} (hw : w.im ≠ 
     MemLp (fun x : ℝ => modulationSlope t w ((x : ℝ) : ℂ)) 2 (volume : Measure ℝ) := by
   have hne : ∀ x : ℝ, ((x : ℝ) : ℂ) ≠ w := fun x h => hw (by rw [← h]; simp)
   refine memLp_two_of_poisson_bound (a := w.re) (b := |w.im|)
-    (D := (1 + ‖modulationEntire t w‖) ^ 2) (abs_pos.mpr hw) ?_ ?_
+    (D := (1 + ‖modulationEntire t w‖) ^ (2 : ℕ)) (abs_pos.mpr hw) ?_ ?_
   · exact ((differentiable_modulationSlope t w).continuous.comp
       Complex.continuous_ofReal).aestronglyMeasurable
   · intro x
     have him : (0 : ℝ) ≤ (((x : ℝ) : ℂ)).im := by simp
     have hb := norm_modulationSlope_le ht him (hne x)
-    have hden : ‖((x : ℝ) : ℂ) - w‖ ^ 2 = (x - w.re) ^ 2 + |w.im| ^ 2 := by
+    have hden : ‖((x : ℝ) : ℂ) - w‖ ^ (2 : ℕ) = (x - w.re) ^ (2 : ℕ) + |w.im| ^ (2 : ℕ) := by
       rw [norm_sq_ofReal_sub, sq_abs]
     have hpos : (0 : ℝ) < ‖((x : ℝ) : ℂ) - w‖ :=
       norm_pos_iff.mpr (sub_ne_zero.mpr (hne x))

@@ -21,15 +21,15 @@ namespace RHTower
 `∑_{n} (1/n²)·e(nx) = 2π²·({x}² − {x} + 1/6)`, obtained from the circle expansion at `Int.fract x`
 by periodicity.  The `1/n²` coefficients are absolutely summable. -/
 theorem fourier_hasSum_bernoulli2 (x : ℝ) :
-    HasSum (fun n : ℤ => (1 / (n : ℂ) ^ 2) * fourier n (↑x : AddCircle (1 : ℝ)))
-      (2 * (π : ℂ) ^ 2 * (((Int.fract x) ^ 2 - Int.fract x + 6⁻¹ : ℝ) : ℂ)) := by
+    HasSum (fun n : ℤ => (1 / (n : ℂ) ^ (2 : ℕ)) * fourier n (↑x : AddCircle (1 : ℝ)))
+      (2 * (π : ℂ) ^ (2 : ℕ) * (((Int.fract x) ^ (2 : ℕ) - Int.fract x + 6⁻¹ : ℝ) : ℂ)) := by
   have hx : Int.fract x ∈ Set.Icc (0 : ℝ) 1 :=
     ⟨Int.fract_nonneg x, (Int.fract_lt_one x).le⟩
   have h := hasSum_one_div_pow_mul_fourier_mul_bernoulliFun (k := 2) (by norm_num) hx
   simp only [AddCircle.coe_fract, bernoulliFun_two] at h
   convert h using 2
   have h2 : ((Nat.factorial 2 : ℕ) : ℂ) = 2 := by norm_num
-  have hsq : (2 * (π : ℂ) * I) ^ 2 = -(4 * (π : ℂ) ^ 2) := by
+  have hsq : (2 * (π : ℂ) * I) ^ (2 : ℕ) = -(4 * (π : ℂ) ^ (2 : ℕ)) := by
     rw [mul_pow, Complex.I_sq]; ring
   rw [h2, hsq]; ring
 

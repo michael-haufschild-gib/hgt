@@ -37,7 +37,7 @@ def triangleSectorMatrix (a b c : ℝ) (z : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
 
 /-- Determinant margin of a scalar triangle sector. -/
 def triangleSectorMargin (a b c : ℝ) (z : ℂ) : ℝ :=
-  1 - a ^ 2 - b ^ 2 - c ^ 2 + 2 * a * b * c * z.re
+  1 - a ^ (2 : ℕ) - b ^ (2 : ℕ) - c ^ (2 : ℕ) + 2 * a * b * c * z.re
 
 theorem triangleSectorMatrix_isHermitian (a b c : ℝ) (z : ℂ) :
     Matrix.IsHermitian (triangleSectorMatrix a b c z) := by
@@ -52,7 +52,7 @@ theorem triangleSectorMatrix_det (a b c : ℝ) (z : ℂ) (
   have hnormSq : Complex.normSq z = 1 := by
     rw [Complex.normSq_eq_norm_sq, hz]
     norm_num
-  have hzsq : z.re ^ 2 + z.im ^ 2 = 1 := by
+  have hzsq : z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) = 1 := by
     rw [Complex.normSq_apply] at hnormSq
     nlinarith
   rw [Matrix.det_fin_three]
@@ -107,7 +107,7 @@ theorem triangleSectorMatrix_posSemidef_of_margin
     (hmargin : 0 ≤ triangleSectorMargin a b c z) :
     Matrix.PosSemidef (triangleSectorMatrix a b c z) := by
   by_cases ha : a < 1
-  · let A : ℝ := 1 - a ^ 2
+  · let A : ℝ := 1 - a ^ (2 : ℕ)
     let B : ℂ := b - a * c * star z
     let D : ℝ := triangleSectorMargin a b c z
     have hA : 0 < A := by
@@ -139,7 +139,7 @@ theorem triangleSectorMatrix_posSemidef_of_margin
         ring
       push_cast at hsum ⊢
       linear_combination
-        (-((c : ℂ) ^ 2) *
+        (-((c : ℂ) ^ (2 : ℕ)) *
           (starRingEnd ℂ) (x 2) * x 2) * hunit +
         ((a : ℂ) * (b : ℂ) * (c : ℂ) *
           (starRingEnd ℂ) (x 2) * x 2) * hsum
@@ -159,7 +159,7 @@ theorem triangleSectorMatrix_posSemidef_of_margin
       rw [hz] at this
       exact le_trans (le_abs_self z.re) this
     have hdecomp :
-        triangleSectorMargin 1 b c z = -(b - c) ^ 2 - 2 * b * c * (1 - z.re) := by
+        triangleSectorMargin 1 b c z = -(b - c) ^ (2 : ℕ) - 2 * b * c * (1 - z.re) := by
       simp [triangleSectorMargin]
       ring
     have hbc : b = c := by
@@ -207,7 +207,7 @@ theorem triangleSectorMatrix_posSemidef_of_margin
       have hform :
           star x ⬝ᵥ (triangleSectorMatrix 1 c c 1).mulVec x =
             ((Complex.normSq (x 0 + x 1 + c * x 2) +
-              (1 - c ^ 2) * Complex.normSq (x 2) : ℝ) : ℂ) := by
+              (1 - c ^ (2 : ℕ)) * Complex.normSq (x 2) : ℝ) : ℂ) := by
         simp [triangleSectorMatrix, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
           Complex.normSq_eq_conj_mul_self]
         ring
@@ -227,7 +227,7 @@ The amplitude interval and unit-holonomy condition are part of the datum, so the
 external premises. -/
 theorem TriangleSectorDatum.posSemidef_iff (p : TriangleSectorDatum) :
     Matrix.PosSemidef p.matrix ↔
-      (p.edge01 : ℝ) ^ 2 + (p.edge12 : ℝ) ^ 2 + (p.edge20 : ℝ) ^ 2 -
+      (p.edge01 : ℝ) ^ (2 : ℕ) + (p.edge12 : ℝ) ^ (2 : ℕ) + (p.edge20 : ℝ) ^ (2 : ℕ) -
           2 * p.edge01 * p.edge12 * p.edge20 * p.phase.val.re ≤ 1 := by
   rw [show p.matrix = triangleSectorMatrix p.edge01 p.edge12 p.edge20 p.phase.val from rfl]
   constructor

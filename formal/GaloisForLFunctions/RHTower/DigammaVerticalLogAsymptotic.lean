@@ -24,7 +24,7 @@ theorem re_digamma_vertical_sub_log_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ) :
       atTop (nhds 0) := by
   have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
   have hd : Tendsto (fun t : ℝ => 1 / t) atTop (nhds 0) := by simpa [one_div] using hinv
-  have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+  have h1 : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ)) atTop (nhds 0) := by
     apply squeeze_zero' (Filter.Eventually.of_forall (fun t => by positivity)) ?_ hd
     filter_upwards [eventually_ge_atTop (1:ℝ)] with t ht
     exact one_div_le_one_div_of_le (by linarith) (by nlinarith [ht])
@@ -36,33 +36,33 @@ theorem re_digamma_vertical_sub_log_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ) :
     rcases eq_or_ne t 0 with h | h
     · simp [h]
     · field_simp
-  have herr : Tendsto (fun t : ℝ => 1 / t ^ 2 + Real.pi / (2 * t)) atTop (nhds 0) := by
+  have herr : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ) + Real.pi / (2 * t)) atTop (nhds 0) := by
     simpa using h1.add h2
   -- (1/2)log(σ²+t²) - log t → 0
-  have hgap : Tendsto (fun t : ℝ => (1 / 2) * Real.log (σ ^ 2 + t ^ 2) - Real.log t)
+  have hgap : Tendsto (fun t : ℝ => (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) - Real.log t)
       atTop (nhds 0) := by
-    have hrat : Tendsto (fun t : ℝ => 1 + σ ^ 2 / t ^ 2) atTop (nhds 1) := by
-      have hz : Tendsto (fun t : ℝ => σ ^ 2 / t ^ 2) atTop (nhds 0) := by
-        simpa [div_eq_mul_inv] using h1.const_mul (σ ^ 2) |>.congr (fun t => by ring)
+    have hrat : Tendsto (fun t : ℝ => 1 + σ ^ (2 : ℕ) / t ^ (2 : ℕ)) atTop (nhds 1) := by
+      have hz : Tendsto (fun t : ℝ => σ ^ (2 : ℕ) / t ^ (2 : ℕ)) atTop (nhds 0) := by
+        simpa [div_eq_mul_inv] using h1.const_mul (σ ^ (2 : ℕ)) |>.congr (fun t => by ring)
       simpa using tendsto_const_nhds.add hz
-    have hlog : Tendsto (fun t : ℝ => (1 / 2) * Real.log (1 + σ ^ 2 / t ^ 2)) atTop (nhds 0) := by
-      have hc : Tendsto (fun t : ℝ => Real.log (1 + σ ^ 2 / t ^ 2)) atTop (nhds 0) := by
+    have hlog : Tendsto (fun t : ℝ => (1 / 2) * Real.log (1 + σ ^ (2 : ℕ) / t ^ (2 : ℕ))) atTop (nhds 0) := by
+      have hc : Tendsto (fun t : ℝ => Real.log (1 + σ ^ (2 : ℕ) / t ^ (2 : ℕ))) atTop (nhds 0) := by
         have hh := (Real.continuousAt_log (by norm_num : (1:ℝ) ≠ 0)).tendsto.comp hrat
         rw [Real.log_one] at hh
         simpa [Function.comp_def] using hh
       simpa using hc.const_mul (1 / 2 : ℝ)
     refine hlog.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
-    have ht2 : (0:ℝ) < t ^ 2 := by positivity
-    have hpos : (0:ℝ) < 1 + σ ^ 2 / t ^ 2 := by positivity
+    have ht2 : (0:ℝ) < t ^ (2 : ℕ) := by positivity
+    have hpos : (0:ℝ) < 1 + σ ^ (2 : ℕ) / t ^ (2 : ℕ) := by positivity
     have htne : t ≠ 0 := ne_of_gt ht
-    rw [show σ ^ 2 + t ^ 2 = (1 + σ ^ 2 / t ^ 2) * t ^ 2 by field_simp; ring,
+    rw [show σ ^ (2 : ℕ) + t ^ (2 : ℕ) = (1 + σ ^ (2 : ℕ) / t ^ (2 : ℕ)) * t ^ (2 : ℕ) by field_simp; ring,
       Real.log_mul (ne_of_gt hpos) (ne_of_gt ht2), Real.log_pow]
     have hlt : Real.log t = (2 : ℝ)⁻¹ * (2 * Real.log t) := by ring
     rw [hlt]; push_cast; ring
   -- the sharp bound error → 0
   have hb : Tendsto (fun t : ℝ =>
-      (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re - (1 / 2) * Real.log (σ ^ 2 + t ^ 2))
+      (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re - (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)))
       atTop (nhds 0) := by
     apply squeeze_zero_norm' ?_ herr
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht

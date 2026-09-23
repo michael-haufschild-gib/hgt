@@ -201,7 +201,7 @@ theorem circleComparison_first_edge {Y : ℕ → ℂ → ℂ} (hY0 : ∀ z : ℂ
       have := Real.log_le_log hK0 h2
       linarith [h1]
     have hPlog : Real.posLog ‖z‖ ≤ Real.log (1 + ‖z‖) :=
-      posLog_le_log_one_add (norm_nonneg z)
+      posLog_le_log_one_add_firstEdgeSeparation (norm_nonneg z)
     have hfinal : Real.log ‖Y 1 z‖ ≤ Real.posLog ‖Y 1 z‖ := by
       rw [Real.posLog_apply]
       exact le_max_right _ _

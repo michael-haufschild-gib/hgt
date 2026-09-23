@@ -347,7 +347,7 @@ private theorem log_first (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f) (y : ℝ) 
     (Real.hasDerivAt_log hy.ne')).deriv
   simpa only [Function.comp_def,Complex.real_smul,Complex.ofReal_inv] using! h
 private theorem log_second (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f) (y : ℝ) (hy : 0 < y) :
-    (y:ℂ)^2*deriv (deriv (fun r => f (Real.log r))) y =
+    (y:ℂ)^(2 : ℕ)*deriv (deriv (fun r => f (Real.log r))) y =
       deriv (deriv f) (Real.log y)-deriv f (Real.log y) := by
   have hf' : ContDiff ℝ ∞ (deriv f) := (contDiff_infty_iff_deriv.mp hf).2
   have hsecond := (((Complex.ofRealCLM.hasDerivAt (x := y)).inv
@@ -370,10 +370,10 @@ private theorem log_second (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f) (y : ℝ)
 original horizontal/height coordinates: F_Y Delta G-G_Y Delta F. -/
 def originalVerticalGreen (q : XiZeroCopy) (d e X Y : ℝ) : ℂ :=
   deriv (fun y => mean q d X (Real.log y)) Y*
-    ((Y:ℂ)^2*(deriv (deriv (fun x => mean q e x (Real.log Y))) X+
+    ((Y:ℂ)^(2 : ℕ)*(deriv (deriv (fun x => mean q e x (Real.log Y))) X+
       deriv (deriv (fun y => mean q e X (Real.log y))) Y))-
   deriv (fun y => mean q e X (Real.log y)) Y*
-    ((Y:ℂ)^2*(deriv (deriv (fun x => mean q d x (Real.log Y))) X+
+    ((Y:ℂ)^(2 : ℕ)*(deriv (deriv (fun x => mean q d x (Real.log Y))) X+
       deriv (deriv (fun y => mean q d X (Real.log y))) Y))
 
 /-- Exact height-coordinate dictionary for the original native angular current. -/

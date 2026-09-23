@@ -30,7 +30,7 @@ theorem
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re) ∧
     (PrimeArchSourceTraceHankelIntDegreeTwoTailNonnegative →
       PrimeArchSourceTraceHankelIntNonnegative ∧ RiemannHypothesis) := by

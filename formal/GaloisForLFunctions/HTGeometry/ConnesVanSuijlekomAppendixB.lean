@@ -56,7 +56,7 @@ def connesVanSuijlekomB2EmbedAdjoint : Matrix (Fin 2) (Fin 3) ℝ :=
 def connesVanSuijlekomB2OddEmbedAdjoint : Matrix (Fin 1) (Fin 3) ℝ :=
   !![(Real.sqrt 2)⁻¹, 0, -(Real.sqrt 2)⁻¹]
 
-private theorem connesVanSuijlekomB2_sqrt_two_sq : (Real.sqrt 2) ^ 2 = (2 : ℝ) := by
+private theorem connesVanSuijlekomB2_sqrt_two_sq : (Real.sqrt 2) ^ (2 : ℕ) = (2 : ℝ) := by
   exact Real.sq_sqrt (by norm_num)
 
 private theorem connesVanSuijlekomB2_sqrt_two_ne_zero : Real.sqrt 2 ≠ 0 := by
@@ -83,7 +83,7 @@ theorem connesVanSuijlekomB2_rho_mem_halfSpace_iff (a b c : ℝ) :
   change Real.sqrt 2 * (Real.sqrt 2 * c) ≤ a + c ↔ c ≤ a
   have hsquare : Real.sqrt 2 * Real.sqrt 2 = (2 : ℝ) := by
     calc
-      Real.sqrt 2 * Real.sqrt 2 = (Real.sqrt 2) ^ 2 := by ring
+      Real.sqrt 2 * Real.sqrt 2 = (Real.sqrt 2) ^ (2 : ℕ) := by ring
       _ = 2 := connesVanSuijlekomB2_sqrt_two_sq
   rw [← mul_assoc, hsquare]
   constructor <;> intro h <;> linarith
@@ -304,8 +304,8 @@ private theorem connesVanSuijlekomB2_sub_det_half_e00_posSemidef
       funext i
       fin_cases i <;> rfl
     rw [hv]
-    have hsq : 0 ≤ (Q 1 1 * v 1 + Q 0 1 * v 0) ^ 2 := sq_nonneg _
-    have hterm : 0 ≤ (Q.det / 2) * (v 0) ^ 2 := by
+    have hsq : 0 ≤ (Q 1 1 * v 1 + Q 0 1 * v 0) ^ (2 : ℕ) := sq_nonneg _
+    have hterm : 0 ≤ (Q.det / 2) * (v 0) ^ (2 : ℕ) := by
       exact mul_nonneg (by linarith) (sq_nonneg _)
     have hprod : 0 ≤ Q 1 1 *
         (star (![v 0, v 1] : Fin 2 → ℝ) ⬝ᵥ
@@ -315,7 +315,7 @@ private theorem connesVanSuijlekomB2_sub_det_half_e00_posSemidef
           (star (![v 0, v 1] : Fin 2 → ℝ) ⬝ᵥ
             ((Q - (Q.det / (2 * Q 1 1)) • connesVanSuijlekomB2E00) *ᵥ
               (![v 0, v 1] : Fin 2 → ℝ))) =
-          (Q 1 1 * v 1 + Q 0 1 * v 0) ^ 2 + (Q.det / 2) * (v 0) ^ 2 := by
+          (Q 1 1 * v 1 + Q 0 1 * v 0) ^ (2 : ℕ) + (Q.det / 2) * (v 0) ^ (2 : ℕ) := by
         simp [connesVanSuijlekomB2E00, dotProduct, Matrix.mulVec, Fin.sum_univ_two,
           Matrix.det_fin_two, h10]
         field_simp
@@ -450,16 +450,16 @@ private theorem connesVanSuijlekomB2_psd_summand_eq_smul_of_det_zero
     have hBrow1 := congrFun hBvec 1
     simp [w, Matrix.mulVec, dotProduct, Fin.sum_univ_two] at hBrow0 hBrow1
     rw [hB10] at hBrow1
-    have hdet' : Q 0 0 * Q 1 1 = (Q 0 1) ^ 2 := by
+    have hdet' : Q 0 0 * Q 1 1 = (Q 0 1) ^ (2 : ℕ) := by
       rw [Matrix.det_fin_two, hQ10] at hdet
       nlinarith
-    have hBsq : B 1 1 * (Q 0 0) ^ 2 = B 0 0 * (Q 0 1) ^ 2 := by
+    have hBsq : B 1 1 * (Q 0 0) ^ (2 : ℕ) = B 0 0 * (Q 0 1) ^ (2 : ℕ) := by
       linear_combination Q 0 0 * hBrow1 + Q 0 1 * hBrow0
     have hB11mul : B 1 1 * Q 0 0 = B 0 0 * Q 1 1 := by
       apply mul_right_cancel₀ hQ00
       calc
-        (B 1 1 * Q 0 0) * Q 0 0 = B 1 1 * (Q 0 0) ^ 2 := by ring
-        _ = B 0 0 * (Q 0 1) ^ 2 := hBsq
+        (B 1 1 * Q 0 0) * Q 0 0 = B 1 1 * (Q 0 0) ^ (2 : ℕ) := by ring
+        _ = B 0 0 * (Q 0 1) ^ (2 : ℕ) := hBsq
         _ = B 0 0 * (Q 0 0 * Q 1 1) := by rw [hdet']
         _ = (B 0 0 * Q 1 1) * Q 0 0 := by ring
     have hB00eq : B 0 0 = (B 0 0 / Q 0 0) * Q 0 0 := by
@@ -638,8 +638,8 @@ theorem connesVanSuijlekomB3_clause_i_counterexample :
         funext i
         fin_cases i <;> rfl
       rw [hx]
-      have hsq1 : 0 ≤ (x 0 + x 1 + x 2) ^ 2 := sq_nonneg _
-      have hsq2 : 0 ≤ (x 1) ^ 2 := sq_nonneg _
+      have hsq1 : 0 ≤ (x 0 + x 1 + x 2) ^ (2 : ℕ) := sq_nonneg _
+      have hsq2 : 0 ≤ (x 1) ^ (2 : ℕ) := sq_nonneg _
       simp [connesVanSuijlekomB2Mu, dotProduct, Matrix.mulVec, Fin.sum_univ_three]
       nlinarith
   refine ⟨hpsd, ?_, ?_⟩

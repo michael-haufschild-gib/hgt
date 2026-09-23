@@ -56,9 +56,9 @@ is divisible by `ε³`; in particular it lies in `(ε²)`, the kernel of
 the descent to the cover ring. -/
 theorem rep_eq_zero_upstairs (ε A B z a b : R)
     (hchar : (2 : R) = 0)
-    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ 3 * v)
+    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ (3 : ℕ) * v)
     (hAz : A * z = ε * a) (hBz : B * z = ε * b) :
-    ∃ v, A * b + B * a = ε ^ 2 * (ε * v) := by
+    ∃ v, A * b + B * a = ε ^ (2 : ℕ) * (ε * v) := by
   have hkill : ε * (A * b + B * a) = 0 := by
     have h1 : ε * (A * b + B * a) = A * (ε * b) + B * (ε * a) := by ring
     rw [h1, ← hAz, ← hBz]
@@ -70,10 +70,10 @@ theorem rep_eq_zero_upstairs (ε A B z a b : R)
 /-- The annihilator of `ε` in the descended ring `R ⧸ (ε²)` is `(ε)`:
 what `Ann(ε̂) = (ε̂³)` upstairs becomes downstairs. -/
 theorem ann_eps_quotient (ε : R)
-    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ 3 * v)
-    (w : R ⧸ Ideal.span {ε ^ 2})
-    (hw : Ideal.Quotient.mk (Ideal.span {ε ^ 2}) ε * w = 0) :
-    ∃ v, w = Ideal.Quotient.mk (Ideal.span {ε ^ 2}) ε * v := by
+    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ (3 : ℕ) * v)
+    (w : R ⧸ Ideal.span {ε ^ (2 : ℕ)})
+    (hw : Ideal.Quotient.mk (Ideal.span {ε ^ (2 : ℕ)}) ε * w = 0) :
+    ∃ v, w = Ideal.Quotient.mk (Ideal.span {ε ^ (2 : ℕ)}) ε * v := by
   obtain ⟨wHat, rfl⟩ := Ideal.Quotient.mk_surjective w
   rw [← map_mul, Ideal.Quotient.eq_zero_iff_mem,
     Ideal.mem_span_singleton] at hw
@@ -81,10 +81,10 @@ theorem ann_eps_quotient (ε : R)
   have hkill : ε * (wHat - ε * r) = 0 := by
     rw [mul_sub, hr]; ring
   obtain ⟨v, hv⟩ := hann _ hkill
-  have h3 : wHat = ε * (r + ε ^ 2 * v) := by
-    have h4 : wHat = ε * r + ε ^ 3 * v := by rw [← hv]; ring
+  have h3 : wHat = ε * (r + ε ^ (2 : ℕ) * v) := by
+    have h4 : wHat = ε * r + ε ^ (3 : ℕ) * v := by rw [← hv]; ring
     rw [h4]; ring
-  exact ⟨Ideal.Quotient.mk _ (r + ε ^ 2 * v), by rw [← map_mul, h3]⟩
+  exact ⟨Ideal.Quotient.mk _ (r + ε ^ (2 : ℕ) * v), by rw [← map_mul, h3]⟩
 
 /-- **Descended canonical choice.** In the cover ring `R̃ = R̂ ⧸ (ε̂²)`,
 whenever `A·z` and `B·z` are divisible by `ε`, there are `ε`-preimages
@@ -93,11 +93,11 @@ whenever `A·z` and `B·z` are divisible by `ε`, there are `ε`-preimages
 choice of the paper proof. -/
 theorem exists_vanishing_choice_in_quotient (ε A B : R)
     (hchar : (2 : R) = 0)
-    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ 3 * v)
-    (z a b : R ⧸ Ideal.span {ε ^ 2})
+    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ (3 : ℕ) * v)
+    (z a b : R ⧸ Ideal.span {ε ^ (2 : ℕ)})
     (hAz : Ideal.Quotient.mk _ A * z = Ideal.Quotient.mk _ ε * a)
     (hBz : Ideal.Quotient.mk _ B * z = Ideal.Quotient.mk _ ε * b) :
-    ∃ a₀ b₀ : R ⧸ Ideal.span {ε ^ 2},
+    ∃ a₀ b₀ : R ⧸ Ideal.span {ε ^ (2 : ℕ)},
       Ideal.Quotient.mk _ A * z = Ideal.Quotient.mk _ ε * a₀ ∧
       Ideal.Quotient.mk _ B * z = Ideal.Quotient.mk _ ε * b₀ ∧
       Ideal.Quotient.mk _ A * b₀ + Ideal.Quotient.mk _ B * a₀ = 0 := by
@@ -156,13 +156,13 @@ produces the ℤ/4-compatible choice that vanishes on the nose, and
 `ann_eps_quotient`) absorbs any other choice into `ε·(A,B)`. -/
 theorem bockstein_element_form (ε A B : R)
     (hchar : (2 : R) = 0)
-    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ 3 * v)
-    (z a b : R ⧸ Ideal.span {ε ^ 2})
+    (hann : ∀ w : R, ε * w = 0 → ∃ v, w = ε ^ (3 : ℕ) * v)
+    (z a b : R ⧸ Ideal.span {ε ^ (2 : ℕ)})
     (hAz : Ideal.Quotient.mk _ A * z = Ideal.Quotient.mk _ ε * a)
     (hBz : Ideal.Quotient.mk _ B * z = Ideal.Quotient.mk _ ε * b) :
     Ideal.Quotient.mk _ A * b + Ideal.Quotient.mk _ B * a ∈
-      Ideal.span {Ideal.Quotient.mk (Ideal.span {ε ^ 2}) ε * Ideal.Quotient.mk _ A,
-        Ideal.Quotient.mk (Ideal.span {ε ^ 2}) ε * Ideal.Quotient.mk _ B} := by
+      Ideal.span {Ideal.Quotient.mk (Ideal.span {ε ^ (2 : ℕ)}) ε * Ideal.Quotient.mk _ A,
+        Ideal.Quotient.mk (Ideal.span {ε ^ (2 : ℕ)}) ε * Ideal.Quotient.mk _ B} := by
   obtain ⟨a₀, b₀, hAz₀, hBz₀, h₀⟩ :=
     exists_vanishing_choice_in_quotient ε A B hchar hann z a b hAz hBz
   exact mem_span_of_vanishing_choice _ _ _ z a b a₀ b₀
@@ -182,7 +182,7 @@ behind the odd-undoubled-coordinate corollary. -/
 open Polynomial in
 /-- The truncated polynomial ring `F₂[X]/(X⁴)`, standing in for
 `F₂[ℤ/4]`. -/
-abbrev DeckRing := Polynomial (ZMod 2) ⧸ Ideal.span {(X : Polynomial (ZMod 2)) ^ 4}
+abbrev DeckRing := Polynomial (ZMod 2) ⧸ Ideal.span {(X : Polynomial (ZMod 2)) ^ (4 : ℕ)}
 
 open Polynomial in
 /-- `ε = X`, i.e. the deck class `1 + σ̂` in the group-algebra picture. -/
@@ -201,7 +201,7 @@ open Polynomial in
 /-- `Ann(ε) = (ε³)` in `F₂[X]/(X⁴)`: if `X·p ≡ 0 mod X⁴` then `X³ ∣ p`
 (cancel `X` in the polynomial domain). -/
 theorem deckRing_ann :
-    ∀ w : DeckRing, deckEps * w = 0 → ∃ v, w = deckEps ^ 3 * v := by
+    ∀ w : DeckRing, deckEps * w = 0 → ∃ v, w = deckEps ^ (3 : ℕ) * v := by
   haveI : NoZeroDivisors (ZMod 2) := ⟨by decide⟩
   intro w hw
   obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective w
@@ -209,11 +209,11 @@ theorem deckRing_ann :
     (map_mul (Ideal.Quotient.mk _) X p).symm
   rw [hmul, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton] at hw
   obtain ⟨r, hr⟩ := hw
-  have hXp : p = X ^ 3 * r := by
-    have hc : X * p = X * (X ^ 3 * r) := by rw [hr]; ring
+  have hXp : p = X ^ (3 : ℕ) * r := by
+    have hc : X * p = X * (X ^ (3 : ℕ) * r) := by rw [hr]; ring
     exact mul_left_cancel₀ X_ne_zero hc
   refine ⟨Ideal.Quotient.mk _ r, ?_⟩
-  have hpow : deckEps ^ 3 = Ideal.Quotient.mk _ (X ^ 3) :=
+  have hpow : deckEps ^ (3 : ℕ) = Ideal.Quotient.mk _ (X ^ (3 : ℕ)) :=
     (map_pow (Ideal.Quotient.mk _) X 3).symm
   rw [hpow, ← map_mul, hXp]
 
@@ -223,12 +223,12 @@ the Bockstein composite vanishes at the element level on the cover ring
 `bockstein_element_form`, witnessing that the theorem's hypotheses are
 satisfiable by the actual deck algebra. -/
 theorem bockstein_element_form_deck (A B : DeckRing)
-    (z a b : DeckRing ⧸ Ideal.span {deckEps ^ 2})
+    (z a b : DeckRing ⧸ Ideal.span {deckEps ^ (2 : ℕ)})
     (hAz : Ideal.Quotient.mk _ A * z = Ideal.Quotient.mk _ deckEps * a)
     (hBz : Ideal.Quotient.mk _ B * z = Ideal.Quotient.mk _ deckEps * b) :
     Ideal.Quotient.mk _ A * b + Ideal.Quotient.mk _ B * a ∈
-      Ideal.span {Ideal.Quotient.mk (Ideal.span {deckEps ^ 2}) deckEps * Ideal.Quotient.mk _ A,
-        Ideal.Quotient.mk (Ideal.span {deckEps ^ 2}) deckEps * Ideal.Quotient.mk _ B} :=
+      Ideal.span {Ideal.Quotient.mk (Ideal.span {deckEps ^ (2 : ℕ)}) deckEps * Ideal.Quotient.mk _ A,
+        Ideal.Quotient.mk (Ideal.span {deckEps ^ (2 : ℕ)}) deckEps * Ideal.Quotient.mk _ B} :=
   bockstein_element_form deckEps A B deckRing_two deckRing_ann z a b hAz hBz
 
 end BocksteinLift

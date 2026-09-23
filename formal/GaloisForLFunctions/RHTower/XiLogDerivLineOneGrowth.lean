@@ -162,7 +162,7 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower :
   set s : ℂ := 1 + 2 * t * I with hsdef
   have hs1 : s.re = 1 := by simp [hsdef]
   have hsne : xi s ≠ 0 := xi_ne_zero_of_one_le_re (by rw [hs1])
-  set m : ℝ := c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ 2) with hmdef
+  set m : ℝ := c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ (2 : ℕ)) with hmdef
   have hm0 : 0 ≤ m := by positivity
   have hterm : ∀ ρ ∈ xiSupportsWindow t (3 * t), m ≤ xiPairedSupportTerm s ρ := by
     intro ρ hρ
@@ -193,7 +193,7 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower :
     have h1β : c * Real.log (Real.log t) / Real.log (3 * t) ≤ 1 - (ρ : ℂ).re :=
       hwidth.trans hzf'
     -- the modulus bound
-    have hnormSq : normSq (s - (ρ : ℂ)) ≤ 1 + t ^ 2 := by
+    have hnormSq : normSq (s - (ρ : ℂ)) ≤ 1 + t ^ (2 : ℕ) := by
       rw [Complex.normSq_apply]
       have hre : (s - (ρ : ℂ)).re = 1 - (ρ : ℂ).re := by simp [hsdef]
       have him : (s - (ρ : ℂ)).im = 2 * t - (ρ : ℂ).im := by simp [hsdef]
@@ -205,8 +205,8 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower :
       have := congrArg Complex.re h
       simp only [Complex.sub_re, Complex.zero_re, hs1] at this
       linarith
-    calc m = c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ 2) := rfl
-      _ ≤ (1 - (ρ : ℂ).re) / (1 + t ^ 2) := div_le_div_of_nonneg_right h1β (by positivity)
+    calc m = c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ (2 : ℕ)) := rfl
+      _ ≤ (1 - (ρ : ℂ).re) / (1 + t ^ (2 : ℕ)) := div_le_div_of_nonneg_right h1β (by positivity)
       _ ≤ (1 - (ρ : ℂ).re) / normSq (s - (ρ : ℂ)) :=
           div_le_div_of_nonneg_left (by linarith) hnormSq_pos hnormSq
       _ ≤ xiPairedSupportTerm s ρ := xiPairedSupportTerm_ge hs1 ρ
@@ -270,28 +270,28 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower :
   have h2re : t * Real.log t / (2 * Real.pi) * m ≤ 2 * (logDeriv xi s).re := by
     linarith
   -- finish: m ≥ c log log t /(2 log t · 2 t²)
-  have hm_ge : c * Real.log (Real.log t) / (4 * Real.log t * t ^ 2) ≤ m := by
+  have hm_ge : c * Real.log (Real.log t) / (4 * Real.log t * t ^ (2 : ℕ)) ≤ m := by
     rw [hmdef]
-    have hden1 : 1 + t ^ 2 ≤ 2 * t ^ 2 := by nlinarith
+    have hden1 : 1 + t ^ (2 : ℕ) ≤ 2 * t ^ (2 : ℕ) := by nlinarith
     have hlogt_pos : 0 < Real.log t := by linarith
-    calc c * Real.log (Real.log t) / (4 * Real.log t * t ^ 2)
-        = c * Real.log (Real.log t) / (2 * Real.log t) / (2 * t ^ 2) := by
+    calc c * Real.log (Real.log t) / (4 * Real.log t * t ^ (2 : ℕ))
+        = c * Real.log (Real.log t) / (2 * Real.log t) / (2 * t ^ (2 : ℕ)) := by
           field_simp
           ring
-      _ ≤ c * Real.log (Real.log t) / Real.log (3 * t) / (2 * t ^ 2) :=
+      _ ≤ c * Real.log (Real.log t) / Real.log (3 * t) / (2 * t ^ (2 : ℕ)) :=
           div_le_div_of_nonneg_right
             (div_le_div_of_nonneg_left (by positivity) hlog3t_pos hlog3t) (by positivity)
-      _ ≤ c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ 2) :=
+      _ ≤ c * Real.log (Real.log t) / Real.log (3 * t) / (1 + t ^ (2 : ℕ)) :=
           div_le_div_of_nonneg_left (by positivity) (by positivity) hden1
   have hfinal : c / (16 * Real.pi) * Real.log (Real.log t) / t ≤
-      t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ 2)) / 2 := by
+      t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ (2 : ℕ))) / 2 := by
     have hlogt_pos : 0 < Real.log t := by linarith
-    have e : t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ 2)) / 2
+    have e : t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ (2 : ℕ))) / 2
         = c / (16 * Real.pi) * Real.log (Real.log t) / t := by
       field_simp
       ring
     rw [e]
-  have hchain : t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ 2)) ≤
+  have hchain : t * Real.log t / (2 * Real.pi) * (c * Real.log (Real.log t) / (4 * Real.log t * t ^ (2 : ℕ))) ≤
       t * Real.log t / (2 * Real.pi) * m :=
     mul_le_mul_of_nonneg_left hm_ge (by positivity)
   linarith

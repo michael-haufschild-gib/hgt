@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowEnergySpectrum
 # The square-sampled positive-excess exponent bounds every Xi zero
 
 The perfect-square reduction has an exact quantitative form.  If the dyadic positive excess at
-`n = m^2` is summable with weight `m^(-1-2*alpha)`, then every Xi zero lies in
+`n = m^(2 : ℕ)` is summable with weight `m^(-1-2*alpha)`, then every Xi zero lies in
 `Re rho <= 1/2 + alpha`.  Thus a specific off-line zero at transverse displacement `delta`
 forces divergence of the square-sampled energy at every exponent strictly below `1 + 2*delta`.
 

@@ -16,20 +16,20 @@ private theorem interior_path_normalized_hasDerivAt (w φ τ l ψ : ℝ) :
     ∀ u ∈ Icc (0 : ℝ) 1,
     HasDerivAt (fun x => egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
       (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeAInteriorPathRadius w φ τ ψ x) /
-        egbCoexistenceASymmetricRatio τ ^ 4)
+        egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
       (egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u) u := by
   intro u hu
   have hd := egbCoexistenceASymmetricRatio_bounds τ
   have hm := egbFixedChargeAMeanRadius_pos w φ τ
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
-  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   have hscale := (egbFixedChargeAInteriorPathScale_mapsTo τ ψ hu).1
   have hv : 0 < 1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeAInteriorPathCoordinate ψ u := by linarith [hd.2]
   have hg := egbFixedChargeA_mean_gibbs_derivative w φ τ l
     (log (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeAInteriorPathCoordinate ψ u))
   rw [exp_log hv, ← egbFixedChargeAInteriorPathRadius_mean_formula] at hg
   have h := (hg.comp u (egbFixedChargeAInteriorPathRadius_hasDerivAt w φ τ ψ u)).div_const
-    (egbCoexistenceASymmetricRatio τ ^ 4)
+    (egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
   apply h.congr_deriv
   unfold egbFixedChargeAInteriorGibbsIntegrand
   rw [egbFixedChargeAGibbsKernel_polynomial_formula]
@@ -37,12 +37,12 @@ private theorem interior_path_normalized_hasDerivAt (w φ τ l ψ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAInteriorGibbsGap_integral (w φ τ l ψ : ℝ) :
-    egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ 4 =
+    egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) =
       ∫ u in (0 : ℝ)..1, egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u := by
   have hderiv : ∀ u ∈ uIcc (0 : ℝ) 1,
       HasDerivAt (fun x => egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
         (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeAInteriorPathRadius w φ τ ψ x) /
-          egbCoexistenceASymmetricRatio τ ^ 4)
+          egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
         (egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u) u := by
     intro u hu
     apply interior_path_normalized_hasDerivAt w φ τ l ψ u
@@ -57,15 +57,15 @@ theorem egbFixedChargeAInteriorGibbsGap_integral (w φ τ l ψ : ℝ) :
 theorem egbFixedChargeAInteriorGibbsGap_reference_independent (w φ τ l₁ l₂ ψ : ℝ) :
     egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ = egbFixedChargeAInteriorGibbsGap w φ τ l₂ ψ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd4 : egbCoexistenceASymmetricRatio τ ^ 4 ≠ 0 := by positivity
+  have hd4 : egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) ≠ 0 := by positivity
   calc
-    _ = (∫ u in (0 : ℝ)..1, egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u) * egbCoexistenceASymmetricRatio τ ^ 4 :=
+    _ = (∫ u in (0 : ℝ)..1, egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) :=
       (div_eq_iff hd4).1 (egbFixedChargeAInteriorGibbsGap_integral w φ τ l₁ ψ)
     _ = _ := ((div_eq_iff hd4).1 (egbFixedChargeAInteriorGibbsGap_integral w φ τ l₂ ψ)).symm
 
 theorem egbFixedChargeAInteriorGibbsLimitIntegrand_antiderivative (w φ ψ u : ℝ) :
     HasDerivAt (fun x => egbFixedChargeAGibbsBarrierCoefficient w φ *
-      (egbFixedChargeAInteriorPathCoordinate ψ x ^ 2 - 1) ^ 2)
+      (egbFixedChargeAInteriorPathCoordinate ψ x ^ (2 : ℕ) - 1) ^ (2 : ℕ))
       (egbFixedChargeAInteriorGibbsLimitIntegrand w φ ψ u) u := by
   have h := ((((egbFixedChargeAInteriorPathCoordinate_hasDerivAt ψ u).pow 2).sub_const 1).pow 2).const_mul
     (egbFixedChargeAGibbsBarrierCoefficient w φ)
@@ -76,7 +76,7 @@ theorem egbFixedChargeAInteriorGibbsLimitIntegrand_antiderivative (w φ ψ u : �
 
 theorem egbFixedChargeAInteriorGibbsLimitIntegrand_integral (w φ ψ : ℝ) :
     (∫ u in (0 : ℝ)..1, egbFixedChargeAInteriorGibbsLimitIntegrand w φ ψ u) =
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4 := by
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ) := by
   have hint : IntervalIntegrable (egbFixedChargeAInteriorGibbsLimitIntegrand w φ ψ) volume 0 1 := by
     have hc : Continuous (egbFixedChargeAInteriorGibbsLimitIntegrand w φ ψ) := by
       unfold egbFixedChargeAInteriorGibbsLimitIntegrand egbFixedChargeAInteriorPathCoordinate
@@ -84,9 +84,9 @@ theorem egbFixedChargeAInteriorGibbsLimitIntegrand_integral (w φ ψ : ℝ) :
     exact hc.intervalIntegrable 0 1
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun u _ => egbFixedChargeAInteriorGibbsLimitIntegrand_antiderivative w φ ψ u) hint
-  have hs : sin ψ ^ 2 - 1 = -(cos ψ ^ 2) := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : sin ψ ^ (2 : ℕ) - 1 = -(cos ψ ^ (2 : ℕ)) := by linarith [sin_sq_add_cos_sq ψ]
   calc
-    _ = egbFixedChargeAGibbsBarrierCoefficient w φ * (sin ψ ^ 2 - 1) ^ 2 := by
+    _ = egbFixedChargeAGibbsBarrierCoefficient w φ * (sin ψ ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
       simpa only [egbFixedChargeAInteriorPathCoordinate_end, egbFixedChargeAInteriorPathCoordinate_start,
         one_pow, sub_self, zero_pow (by norm_num : (2 : ℕ) ≠ 0), mul_zero, sub_zero] using h
     _ = _ := by rw [hs]; ring

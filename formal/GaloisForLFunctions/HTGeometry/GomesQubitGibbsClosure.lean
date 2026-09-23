@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The only zero-radius carrier is the zero Hamiltonian, including zero coupling. -/
 theorem gomesQubitRadius_zero_iff (b t : ℝ) : qubitRadius b t = 0 ↔ b = 0 ∧ t = 0 := by
-  have hr : qubitRadius b t ^ 2 = t^2+b^2 :=
+  have hr : qubitRadius b t ^ (2 : ℕ) = t^(2 : ℕ)+b^(2 : ℕ) :=
     Real.sq_sqrt (add_nonneg (sq_nonneg t) (sq_nonneg b))
   constructor
   · intro h
@@ -41,7 +41,7 @@ theorem gomesQubitHamiltonian_exp (b t : ℝ) :
       rw [show K*K = ((qubitRadius b t : ℂ)⁻¹*(qubitRadius b t : ℂ)⁻¹) •
         (qubitHamiltonian b t * qubitHamiltonian b t) by simp [K,smul_smul]]
       rw [qubitHamiltonian_sq,smul_smul]
-      rw [show ((qubitRadius b t ^ 2 : ℝ) : ℂ) = (qubitRadius b t : ℂ)^2 by norm_cast]
+      rw [show ((qubitRadius b t ^ (2 : ℕ) : ℝ) : ℂ) = (qubitRadius b t : ℂ)^(2 : ℕ) by norm_cast]
       field_simp
       simp
     have hscale : (qubitRadius b t : ℂ) • K = qubitHamiltonian b t := by

@@ -22,7 +22,7 @@ namespace RHTower.Sieve
 open Finset MeasureTheory
 
 /-- The window mean square as a function of the integer start. -/
-noncomputable def stepWindow (c : ℕ → ℂ) (L k : ℕ) : ℝ := ‖∑ n ∈ Finset.Ioc k (k + L), c n‖ ^ 2
+noncomputable def stepWindow (c : ℕ → ℂ) (L k : ℕ) : ℝ := ‖∑ n ∈ Finset.Ioc k (k + L), c n‖ ^ (2 : ℕ)
 
 theorem stepWindow_nonneg (c : ℕ → ℂ) (L k : ℕ) : 0 ≤ stepWindow c L k := by
   rw [stepWindow]; positivity

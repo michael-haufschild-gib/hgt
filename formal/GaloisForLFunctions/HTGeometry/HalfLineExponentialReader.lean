@@ -74,7 +74,7 @@ theorem inner_expSystem_expResidual_of_ne {m n : ℕ} (hmn : m ≠ n) :
 
 theorem inner_expSystem_expResidual_self (n : ℕ) :
     inner ℂ (expSystem lam hpos n) (expResidual lam hpos n) =
-      ((‖expResidual lam hpos n‖ : ℂ)) ^ 2 := by
+      ((‖expResidual lam hpos n‖ : ℂ)) ^ (2 : ℕ) := by
   have hproj : inner ℂ ((expCoSpan lam hpos n).starProjection (expSystem lam hpos n))
       (expResidual lam hpos n) = 0 :=
     (Submodule.mem_orthogonal _ _).mp (expResidual_mem_orthogonal hpos n) _
@@ -92,7 +92,7 @@ theorem inner_expSystem_expResidual_self (n : ℕ) :
 /-- The canonical biorthogonal reader of the `n`-th rate. -/
 def expReader (lam : ℕ → ℝ) (hpos : ∀ k, 0 < lam k) (n : ℕ) :
     Lp ℂ 2 halfLineLaplaceMeasure :=
-  ((((‖expResidual lam hpos n‖ : ℝ) ^ 2 : ℝ) : ℂ))⁻¹ • expResidual lam hpos n
+  ((((‖expResidual lam hpos n‖ : ℝ) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹ • expResidual lam hpos n
 
 theorem expReader_mem_expFullSpan (n : ℕ) :
     expReader lam hpos n ∈ expFullSpan lam hpos :=
@@ -101,15 +101,15 @@ theorem expReader_mem_expFullSpan (n : ℕ) :
 /-- **Biorthogonality.**  The reader pairs with the exponential system as a Kronecker delta. -/
 theorem inner_expSystem_expReader {n : ℕ} (hne : expResidual lam hpos n ≠ 0) (m : ℕ) :
     inner ℂ (expSystem lam hpos m) (expReader lam hpos n) = if m = n then 1 else 0 := by
-  have hnorm : (((‖expResidual lam hpos n‖ : ℝ) ^ 2 : ℝ) : ℂ) ≠ 0 := by
+  have hnorm : (((‖expResidual lam hpos n‖ : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by
     have hp : (0 : ℝ) < ‖expResidual lam hpos n‖ := norm_pos_iff.mpr hne
-    have hsq : (0 : ℝ) < ‖expResidual lam hpos n‖ ^ 2 := by positivity
+    have hsq : (0 : ℝ) < ‖expResidual lam hpos n‖ ^ (2 : ℕ) := by positivity
     exact Complex.ofReal_ne_zero.mpr (ne_of_gt hsq)
   by_cases hmn : m = n
   · subst hmn
     rw [expReader, inner_smul_right, inner_expSystem_expResidual_self, if_pos rfl,
-      show (((‖expResidual lam hpos m‖ : ℂ)) ^ 2) =
-        (((‖expResidual lam hpos m‖ : ℝ) ^ 2 : ℝ) : ℂ) by push_cast; ring]
+      show (((‖expResidual lam hpos m‖ : ℂ)) ^ (2 : ℕ)) =
+        (((‖expResidual lam hpos m‖ : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
     exact inv_mul_cancel₀ hnorm
   · rw [expReader, inner_smul_right, inner_expSystem_expResidual_of_ne hpos hmn,
       mul_zero, if_neg hmn]
@@ -119,7 +119,7 @@ theorem norm_expReader {n : ℕ} (hne : expResidual lam hpos n ≠ 0) :
     ‖expReader lam hpos n‖ = ‖expResidual lam hpos n‖⁻¹ := by
   have hpos' : 0 < ‖expResidual lam hpos n‖ := norm_pos_iff.mpr hne
   rw [expReader, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity : (0:ℝ) ≤ ‖expResidual lam hpos n‖ ^ 2)]
+    abs_of_nonneg (by positivity : (0:ℝ) ≤ ‖expResidual lam hpos n‖ ^ (2 : ℕ))]
   field_simp
 
 /-- **Canonicity.**  A biorthogonal element of the closed span of the system is unique. -/

@@ -260,7 +260,7 @@ theorem summable_suzukiCriticalApertureDepthFusedCoherentMajorant (h : ℝ) :
   exact (summable_suzukiCriticalEntryWallCoherentMajorant h).mul_left
     (1 - suzukiCoherentCausalDepthRadiusCap)⁻¹
 
-/-- The valuation-fused rays are `ell^1` over all primes, uniformly in height. -/
+/-- The valuation-fused rays are `ell^(1 : ℕ)` over all primes, uniformly in height. -/
 theorem summable_norm_suzukiCriticalApertureDepthFusedAtom_allPrime
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t : ℝ) :
     Summable (fun p : Nat.Primes =>

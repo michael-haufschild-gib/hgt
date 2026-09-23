@@ -48,7 +48,7 @@ theorem chebSavingLl_le_half_log {c N : ℝ} (hc : c ≤ 1)
   have hLL : Real.log (Real.log N) ≤ Real.log N := by
     linarith [Real.log_le_sub_one_of_pos (show (0 : ℝ) < Real.log N by linarith)]
   have hLL0 : (0 : ℝ) ≤ Real.log (Real.log N) := Real.log_nonneg hN1
-  have hQ : chebQuadLl c N ≤ Real.log N ^ 2 := by
+  have hQ : chebQuadLl c N ≤ Real.log N ^ (2 : ℕ) := by
     rw [chebQuadLl]
     have hstep1 : c * (Real.log N * Real.log (Real.log N))
         ≤ 1 * (Real.log N * Real.log (Real.log N)) :=
@@ -72,13 +72,13 @@ theorem one_le_chebWidthLl {c N : ℝ} (hc : c ≤ 1) (hN0 : 0 < N)
 
 /-- The square of the smoothing ratio, as an exponential. -/
 theorem sq_chebRatioLl_le (c N : ℝ) :
-    (chebRatioLl c N + 2) ^ 2 ≤ 9 * Real.exp (chebSavingLl c N / 3) := by
+    (chebRatioLl c N + 2) ^ (2 : ℕ) ≤ 9 * Real.exp (chebSavingLl c N / 3) := by
   have h1 : (1 : ℝ) ≤ chebRatioLl c N := one_le_chebRatioLl c N
-  have hsq : chebRatioLl c N ^ 2 = Real.exp (chebSavingLl c N / 3) := by
+  have hsq : chebRatioLl c N ^ (2 : ℕ) = Real.exp (chebSavingLl c N / 3) := by
     rw [chebRatioLl, sq, ← Real.exp_add]
     ring_nf
-  calc (chebRatioLl c N + 2) ^ 2 ≤ (3 * chebRatioLl c N) ^ 2 := by nlinarith
-    _ = 9 * chebRatioLl c N ^ 2 := by ring
+  calc (chebRatioLl c N + 2) ^ (2 : ℕ) ≤ (3 * chebRatioLl c N) ^ (2 : ℕ) := by nlinarith
+    _ = 9 * chebRatioLl c N ^ (2 : ℕ) := by ring
     _ = 9 * Real.exp (chebSavingLl c N / 3) := by rw [hsq]
 
 /-- The saving grows with the cutoff. -/

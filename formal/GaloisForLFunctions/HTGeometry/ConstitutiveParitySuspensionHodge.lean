@@ -189,8 +189,8 @@ theorem paritySuspensionHodgeHamiltonian_isSelfAdjoint (J : E →L[𝕜] E) :
 theorem re_inner_paritySuspensionHodgeHamiltonian_eq_sum_normSq
     (J : E →L[𝕜] E) (psi : HilbertParityDouble (E := E)) :
     RCLike.re (inner 𝕜 psi (paritySuspensionHodgeHamiltonian J psi)) =
-      ‖hilbertParitySuspensionCharge J psi‖ ^ 2 +
-        ‖(hilbertParitySuspensionCharge J).adjoint psi‖ ^ 2 :=
+      ‖hilbertParitySuspensionCharge J psi‖ ^ (2 : ℕ) +
+        ‖(hilbertParitySuspensionCharge J).adjoint psi‖ ^ (2 : ℕ) :=
   _root_.HTGeometry.re_inner_brstHodgeHamiltonian_eq_sum_normSq
     (hilbertParitySuspensionCharge J) psi
 

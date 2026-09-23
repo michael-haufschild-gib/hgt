@@ -36,7 +36,7 @@ theorem oneOverFiftyTwoThousandEightHundredFifty_lt_exp_neg_eightySevenEighths :
     nlinarith [Real.exp_pos (-11)]
   have hsmall := thetaCuspThirtySecondExpTaylorLower_pow_le_exp 4
   have hfactor :
-      thetaCuspThirtySecondExpTaylorLower ^ 4 ≤ Real.exp (1 / 8 : ℝ) := by
+      thetaCuspThirtySecondExpTaylorLower ^ (4 : ℕ) ≤ Real.exp (1 / 8 : ℝ) := by
     convert hsmall using 1 <;> norm_num
   have hproduct : Real.exp (-(87 / 8 : ℝ)) =
       Real.exp (-11) * Real.exp (1 / 8) := by
@@ -44,15 +44,15 @@ theorem oneOverFiftyTwoThousandEightHundredFifty_lt_exp_neg_eightySevenEighths :
     congr 1
     norm_num
   rw [hproduct]
-  have hpowpos : 0 < thetaCuspThirtySecondExpTaylorLower ^ 4 := by
+  have hpowpos : 0 < thetaCuspThirtySecondExpTaylorLower ^ (4 : ℕ) := by
     norm_num [thetaCuspThirtySecondExpTaylorLower,
       thetaCuspExpTwoTaylorEightPolynomial]
-  have hlower : (1 / 59875 : ℝ) * thetaCuspThirtySecondExpTaylorLower ^ 4 <
+  have hlower : (1 / 59875 : ℝ) * thetaCuspThirtySecondExpTaylorLower ^ (4 : ℕ) <
       Real.exp (-11) * Real.exp (1 / 8) :=
     (mul_lt_mul_of_pos_right hneg11 hpowpos).trans_le
       (mul_le_mul_of_nonneg_left hfactor (Real.exp_pos _).le)
   exact (show (1 / 52850 : ℝ) <
-      (1 / 59875 : ℝ) * thetaCuspThirtySecondExpTaylorLower ^ 4 by
+      (1 / 59875 : ℝ) * thetaCuspThirtySecondExpTaylorLower ^ (4 : ℕ) by
         norm_num [thetaCuspThirtySecondExpTaylorLower,
           thetaCuspExpTwoTaylorEightPolynomial]).trans hlower
 
@@ -88,9 +88,9 @@ theorem exactFourth29Over8AffineFloor_lt_atomEnvelope
         ((1 / 52850 : ℝ) * (1 - 3 * d)) *
         thetaCuspLikelihoodFourthScale29Over8ExactDominantPolynomial d := by
   have hB : 0 < 17 / 8 + d := by linarith
-  have hmul : (17 / 8 + d) ^ 5 *
+  have hmul : (17 / 8 + d) ^ (5 : ℕ) *
       ((10000 / 9896 : ℝ) * (153 / 2 - 192 * d)) <
-    (17 / 8 + d) ^ 5 *
+    (17 / 8 + d) ^ (5 : ℕ) *
       (16 * (1694 / 1695 : ℝ) *
         ((1 / 52850 : ℝ) * (1 - 3 * d)) *
         thetaCuspLikelihoodFourthScale29Over8ExactDominantPolynomial d) := by
@@ -100,18 +100,18 @@ theorem exactFourth29Over8AffineFloor_lt_atomEnvelope
     ring_nf
     rw [← sub_pos]
     ring_nf
-    have hd2 : d ^ 2 ≤ (1 / 48 : ℝ) ^ 2 := pow_le_pow_left₀ hd hdhi 2
-    have hd3 : d ^ 3 ≤ (1 / 48 : ℝ) ^ 3 := pow_le_pow_left₀ hd hdhi 3
-    have hd4 : d ^ 4 ≤ (1 / 48 : ℝ) ^ 4 := pow_le_pow_left₀ hd hdhi 4
-    have hd5 : d ^ 5 ≤ (1 / 48 : ℝ) ^ 5 := pow_le_pow_left₀ hd hdhi 5
-    have hd6 : d ^ 6 ≤ (1 / 48 : ℝ) ^ 6 := pow_le_pow_left₀ hd hdhi 6
-    have hd7 : d ^ 7 ≤ (1 / 48 : ℝ) ^ 7 := pow_le_pow_left₀ hd hdhi 7
-    have hd8 : d ^ 8 ≤ (1 / 48 : ℝ) ^ 8 := pow_le_pow_left₀ hd hdhi 8
-    have hd9 : d ^ 9 ≤ (1 / 48 : ℝ) ^ 9 := pow_le_pow_left₀ hd hdhi 9
-    have hd10 : d ^ 10 ≤ (1 / 48 : ℝ) ^ 10 := pow_le_pow_left₀ hd hdhi 10
-    have hd11 : d ^ 11 ≤ (1 / 48 : ℝ) ^ 11 := pow_le_pow_left₀ hd hdhi 11
-    have hd12 : d ^ 12 ≤ (1 / 48 : ℝ) ^ 12 := pow_le_pow_left₀ hd hdhi 12
-    have hd13 : 0 ≤ d ^ 13 := by positivity
+    have hd2 : d ^ (2 : ℕ) ≤ (1 / 48 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hd hdhi 2
+    have hd3 : d ^ (3 : ℕ) ≤ (1 / 48 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hd hdhi 3
+    have hd4 : d ^ (4 : ℕ) ≤ (1 / 48 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hd hdhi 4
+    have hd5 : d ^ (5 : ℕ) ≤ (1 / 48 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hd hdhi 5
+    have hd6 : d ^ (6 : ℕ) ≤ (1 / 48 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hd hdhi 6
+    have hd7 : d ^ (7 : ℕ) ≤ (1 / 48 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hd hdhi 7
+    have hd8 : d ^ (8 : ℕ) ≤ (1 / 48 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hd hdhi 8
+    have hd9 : d ^ (9 : ℕ) ≤ (1 / 48 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hd hdhi 9
+    have hd10 : d ^ (10 : ℕ) ≤ (1 / 48 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hd hdhi 10
+    have hd11 : d ^ (11 : ℕ) ≤ (1 / 48 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hd hdhi 11
+    have hd12 : d ^ (12 : ℕ) ≤ (1 / 48 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hd hdhi 12
+    have hd13 : 0 ≤ d ^ (13 : ℕ) := by positivity
     norm_num at hd2 hd3 hd4 hd5 hd6 hd7 hd8 hd9 hd10 hd11 hd12 ⊢
     nlinarith
   nlinarith [pow_pos hB 5]
@@ -195,7 +195,7 @@ theorem tenThousandOverNineThousandEightHundredNinetySix_mul_fourth29Over8Affine
       have hAt : (47 / 5 : ℝ) ≤ A * t := by
         nlinarith [mul_le_mul hAlo ht (by norm_num : (0 : ℝ) ≤ 3) hA0]
       have hscore := two_fifths_mul_pow_four_le_thetaLikelihoodFourthScore hAt
-      have hbase : 0 ≤ (2 / 5 : ℝ) * (A * t) ^ 4 := by positivity
+      have hbase : 0 ≤ (2 / 5 : ℝ) * (A * t) ^ (4 : ℕ) := by positivity
       exact mul_nonneg (hbase.trans hscore) (Real.exp_pos (-(B * t))).le
     · exact hInt
   have hTotal := hAtom.trans_le hMono

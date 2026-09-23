@@ -34,7 +34,7 @@ variable {c : ℂ}
 
 /-- `sqLoop` squares the underlying `ℂ*`-value pointwise. -/
 theorem sqLoop_coe (p : Path one_cs one_cs) (s : I) :
-    ((sqLoop p s : Cs) : ℂ) = ((p s : Cs) : ℂ) ^ 2 := by
+    ((sqLoop p s : Cs) : ℂ) = ((p s : Cs) : ℂ) ^ (2 : ℕ) := by
   rw [sqLoop, Path.cast_coe, Path.map_coe]
   rfl
 
@@ -107,7 +107,7 @@ theorem sqLoop_normLoop_succ (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) {t : 
       = rho c n (t + (((2 ^ (n + 1) : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ)) :=
     rhoLoopC_trans_apply hc n ht s
   show (((rho c (n + 1) (t + (((2 ^ (n + 1) : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ))
-        : ℂ) - 0) / ((rhoLoopC hc (n + 1) ht 0 : ℂ) - 0)) ^ 2
+        : ℂ) - 0) / ((rhoLoopC hc (n + 1) ht 0 : ℂ) - 0)) ^ (2 : ℕ)
       = (((rhoLoopC hc n ht).trans (rhoLoopC hc n ht)) s - c)
         / ((((rhoLoopC hc n ht).trans (rhoLoopC hc n ht)) 0 : ℂ) - c)
   rw [e1, e2, e3, sub_zero, sub_zero, div_pow, rho_succ_sq c hc n hwmem, rho_succ_sq c hc n ht]
@@ -135,10 +135,10 @@ theorem windPt_rhoLoopC_zero_eq_one (hcM : c ∈ mandelbrot) (n : ℕ) {t : ℂ}
         = circleLoop := by
       ext s
       have e0src : (rhoLoopC hc 0 ht 0 : ℂ) = Complex.exp t := (rhoLoopC hc 0 ht).source
-      show ((Complex.exp (t + (((2 ^ 0 : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ)) : ℂ)
+      show ((Complex.exp (t + (((2 ^ (0 : ℕ) : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ)) : ℂ)
             - 0) / ((rhoLoopC hc 0 ht 0 : ℂ) - 0) = ↑(circleLoop s)
       rw [e0src, sub_zero, sub_zero]
-      show Complex.exp (t + (((2 ^ 0 : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ))
+      show Complex.exp (t + (((2 ^ (0 : ℕ) : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) * (s : ℂ))
             / Complex.exp t
           = Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * ((s : ℝ) : ℂ))
       rw [← Complex.exp_sub]

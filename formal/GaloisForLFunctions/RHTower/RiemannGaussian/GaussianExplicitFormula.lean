@@ -24,23 +24,23 @@ open scoped Topology
 formula, before its common normalization. -/
 def gaussianPrimeSummand (ε t : ℝ) (n : ℕ) : ℝ :=
   ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-    Real.exp (-(Real.log n) ^ 2 / (4 * ε)) *
+    Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)) *
       Real.cos (t * Real.log n)
 
 lemma gaussian_log_weight_le_inv_sq
     {ε x : ℝ} (hε : 0 < ε) (hx : 0 < x)
     (hlog : 8 * ε ≤ Real.log x) :
-    Real.exp (-(Real.log x) ^ 2 / (4 * ε)) ≤ 1 / x ^ 2 := by
+    Real.exp (-(Real.log x) ^ (2 : ℕ) / (4 * ε)) ≤ 1 / x ^ (2 : ℕ) := by
   have hlog0 : 0 ≤ Real.log x := by linarith
-  have hexponent : -(Real.log x) ^ 2 / (4 * ε) ≤
+  have hexponent : -(Real.log x) ^ (2 : ℕ) / (4 * ε) ≤
       -2 * Real.log x := by
     have hden : 0 < 4 * ε := mul_pos (by norm_num) hε
     rw [div_le_iff₀ hden]
     nlinarith [mul_nonneg hlog0 (sub_nonneg.mpr hlog)]
   calc
-    Real.exp (-(Real.log x) ^ 2 / (4 * ε)) ≤
+    Real.exp (-(Real.log x) ^ (2 : ℕ) / (4 * ε)) ≤
         Real.exp (-2 * Real.log x) := Real.exp_le_exp.mpr hexponent
-    _ = 1 / x ^ 2 := by
+    _ = 1 / x ^ (2 : ℕ) := by
       rw [show -2 * Real.log x = -(2 * Real.log x) by ring,
         Real.exp_neg,
         show 2 * Real.log x = Real.log x + Real.log x by ring,
@@ -76,17 +76,17 @@ theorem summable_gaussianPrimeSummand
     abs_of_nonneg hcoef0, abs_of_pos (Real.exp_pos _)]
   calc
     ArithmeticFunction.vonMangoldt n / Real.sqrt (n : ℝ) *
-          Real.exp (-(Real.log (n : ℝ)) ^ 2 / (4 * ε)) *
+          Real.exp (-(Real.log (n : ℝ)) ^ (2 : ℕ) / (4 * ε)) *
         |Real.cos (t * Real.log (n : ℝ))| ≤
         ArithmeticFunction.vonMangoldt n / Real.sqrt (n : ℝ) *
-          Real.exp (-(Real.log (n : ℝ)) ^ 2 / (4 * ε)) := by
+          Real.exp (-(Real.log (n : ℝ)) ^ (2 : ℕ) / (4 * ε)) := by
       simpa only [mul_one] using
         mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _)
           (mul_nonneg hcoef0 (Real.exp_nonneg _))
     _ ≤ ArithmeticFunction.vonMangoldt n / Real.sqrt (n : ℝ) *
-          (1 / (n : ℝ) ^ 2) :=
+          (1 / (n : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hweight hcoef0
-    _ ≤ ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ 2 := by
+    _ ≤ ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ (2 : ℕ) := by
       have hdiv : ArithmeticFunction.vonMangoldt n /
           Real.sqrt (n : ℝ) ≤ ArithmeticFunction.vonMangoldt n := by
         rw [div_eq_mul_inv]
@@ -172,7 +172,7 @@ def gaussianDigammaIntegral (ε t : ℝ) : ℝ :=
 /-- Archimedean and elementary boundary terms in the exact normalization of
 the research certificates. -/
 def gaussianArchimedeanContribution (ε t : ℝ) : ℝ :=
-  4 * Real.exp (ε / 4 - ε * t ^ 2) * Real.cos (ε * t) -
+  4 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) * Real.cos (ε * t) -
     Real.log Real.pi / Real.sqrt (Real.pi * ε) +
       gaussianDigammaIntegral ε t
 
@@ -290,7 +290,7 @@ theorem gaussianArithmeticGoodWidthsUnbounded_iff_nonnegative
     exact gaussianArithmeticExplicitFormula_nonnegative_of_larger_width
       hExplicit hε hεa ha.2 t
   · intro hAll B
-    let a : ℝ := B ^ 2 + 1
+    let a : ℝ := B ^ (2 : ℕ) + 1
     have hBa : B < a := by
       dsimp [a]
       nlinarith [sq_nonneg (B - (1 / 2 : ℝ))]

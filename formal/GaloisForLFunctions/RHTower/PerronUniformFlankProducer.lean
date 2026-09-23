@@ -34,9 +34,9 @@ theorem hasPerronCarrierFlankMassAt_of_uniform_flank
     have hnum : Continuous fun y : ℝ => ‖F (↑(-(M : ℝ)) + ↑y * I)‖ :=
       (hF.comp (by fun_prop)).norm
     exact hnum.div (by fun_prop) (fun y => by positivity)
-  have hdom : ∀ y : ℝ, ‖perronCarrierFlankWeight F M y‖ ≤ A * (1 + y ^ 2)⁻¹ := by
+  have hdom : ∀ y : ℝ, ‖perronCarrierFlankWeight F M y‖ ≤ A * (1 + y ^ (2 : ℕ))⁻¹ := by
     intro y
-    have hpos : (0 : ℝ) < 1 + y ^ 2 := by positivity
+    have hpos : (0 : ℝ) < 1 + y ^ (2 : ℕ) := by positivity
     rw [Real.norm_eq_abs, abs_of_nonneg (by unfold perronCarrierFlankWeight; positivity)]
     unfold perronCarrierFlankWeight
     rw [div_eq_mul_inv]
@@ -46,7 +46,7 @@ theorem hasPerronCarrierFlankMassAt_of_uniform_flank
       (Eventually.of_forall hdom)
   refine ⟨hint, ?_⟩
   calc (∫ y : ℝ, perronCarrierFlankWeight F M y)
-      ≤ ∫ y : ℝ, A * (1 + y ^ 2)⁻¹ := by
+      ≤ ∫ y : ℝ, A * (1 + y ^ (2 : ℕ))⁻¹ := by
         refine integral_mono hint (integrable_inv_one_add_sq.const_mul A) ?_
         intro y
         have := hdom y
@@ -77,7 +77,7 @@ theorem hasPerronHorizontalEscapeAt_of_quiet_heights
     (hbd : ∀ k, ∀ x : ℝ, -(M : ℝ) ≤ x → x ≤ c →
       ‖F (↑x + ↑(T k) * I)‖ ≤ Q k ∧ ‖F (↑x + ↑(-(T k)) * I)‖ ≤ Q k)
     (hQ0 : ∀ k, 0 ≤ Q k)
-    (hQ : Tendsto (fun k => Q k / (1 + (T k) ^ 2)) atTop (𝓝 0)) :
+    (hQ : Tendsto (fun k => Q k / (1 + (T k) ^ (2 : ℕ))) atTop (𝓝 0)) :
     HasPerronHorizontalEscapeAt F c n δ M := by
   classical
   obtain ⟨k₀, hk₀⟩ := (hT.eventually_ge_atTop (1 : ℝ)).exists_forall_of_atTop
@@ -85,7 +85,7 @@ theorem hasPerronHorizontalEscapeAt_of_quiet_heights
   have hT'ge : ∀ k, (1 : ℝ) ≤ T' k := fun k => hk₀ (k + k₀) (Nat.le_add_left _ _)
   have hT'top : Tendsto T' atTop atTop := hT.comp (tendsto_add_atTop_nat k₀)
   have hshift : Tendsto (fun k : ℕ => k + k₀) atTop atTop := tendsto_add_atTop_nat k₀
-  have hQ' : Tendsto (fun k => Q (k + k₀) / (1 + (T' k) ^ 2)) atTop (𝓝 0) := hQ.comp hshift
+  have hQ' : Tendsto (fun k => Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))) atTop (𝓝 0) := hQ.comp hshift
   set K : ℝ := perronStripKernelEnvelope n M δ c with hK
   have hK0 : 0 ≤ K := by
     dsimp [K, perronStripKernelEnvelope]
@@ -95,22 +95,22 @@ theorem hasPerronHorizontalEscapeAt_of_quiet_heights
     linarith
   have hbound : ∀ (k : ℕ) (ε : ℝ), ε = 1 ∨ ε = -1 →
       ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑(ε * T' k) * I)‖
-        ≤ (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ 2)) := by
+        ≤ (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))) := by
     intro k ε hε
     have habs : |ε * T' k| = T' k := by
       rcases hε with rfl | rfl
       · rw [one_mul, abs_of_nonneg (by linarith [hT'ge k])]
       · rw [neg_one_mul, abs_neg, abs_of_nonneg (by linarith [hT'ge k])]
-    have hsq : (ε * T' k) ^ 2 = (T' k) ^ 2 := by
+    have hsq : (ε * T' k) ^ (2 : ℕ) = (T' k) ^ (2 : ℕ) := by
       rcases hε with rfl | rfl <;> ring
     have hstep : ∀ x ∈ Set.uIoc (-(M : ℝ)) c,
         ‖perronContourIntegrand F n δ (↑x + ↑(ε * T' k) * I)‖
-          ≤ K * (Q (k + k₀) / (1 + (T' k) ^ 2)) := by
+          ≤ K * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))) := by
       intro x hx
       rw [Set.uIoc_of_le hMc] at hx
       have hxlo : -(M : ℝ) ≤ x := le_of_lt hx.1
       have hxhi : x ≤ c := hx.2
-      have hEbd : ‖perronEAt n δ (↑x + ↑(ε * T' k) * I)‖ ≤ K / (1 + (ε * T' k) ^ 2) :=
+      have hEbd : ‖perronEAt n δ (↑x + ↑(ε * T' k) * I)‖ ≤ K / (1 + (ε * T' k) ^ (2 : ℕ)) :=
         perronEAt_strip_high_norm_le hn hδ0 hδn hxlo hxhi (by rw [habs]; exact hT'ge k)
       have hFbd : ‖F (↑x + ↑(ε * T' k) * I)‖ ≤ Q (k + k₀) := by
         rcases hε with rfl | rfl
@@ -119,17 +119,17 @@ theorem hasPerronHorizontalEscapeAt_of_quiet_heights
       unfold perronContourIntegrand
       rw [norm_mul]
       calc ‖F (↑x + ↑(ε * T' k) * I)‖ * ‖perronEAt n δ (↑x + ↑(ε * T' k) * I)‖
-          ≤ Q (k + k₀) * (K / (1 + (ε * T' k) ^ 2)) := by
+          ≤ Q (k + k₀) * (K / (1 + (ε * T' k) ^ (2 : ℕ))) := by
             refine mul_le_mul hFbd hEbd (norm_nonneg _) (hQ0 _)
-        _ = K * (Q (k + k₀) / (1 + (T' k) ^ 2)) := by rw [hsq]; ring
+        _ = K * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))) := by rw [hsq]; ring
     have hlen : |c - -(M : ℝ)| = c + (M : ℝ) := by
       rw [abs_of_nonneg (by linarith)]
       ring
     calc ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑(ε * T' k) * I)‖
-        ≤ (K * (Q (k + k₀) / (1 + (T' k) ^ 2))) * |c - -(M : ℝ)| :=
+        ≤ (K * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ)))) * |c - -(M : ℝ)| :=
           intervalIntegral.norm_integral_le_of_norm_le_const hstep
-      _ = (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ 2)) := by rw [hlen]; ring
-  have hlim : Tendsto (fun k => (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ 2)))
+      _ = (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))) := by rw [hlen]; ring
+  have hlim : Tendsto (fun k => (K * (c + (M : ℝ))) * (Q (k + k₀) / (1 + (T' k) ^ (2 : ℕ))))
       atTop (𝓝 0) := by simpa using hQ'.const_mul (K * (c + (M : ℝ)))
   refine ⟨T', hT'top, fun k => by linarith [hT'ge k], ?_, ?_⟩
   · refine squeeze_zero_norm (fun k => ?_) hlim
@@ -146,7 +146,7 @@ theorem hasVariablePerronHorizontalEscape_of_quiet_uniform_flank
     (hT : Tendsto T atTop atTop)
     (hquiet : ∀ k, ∀ σ : ℝ, 1 - c ≤ σ → σ ≤ c →
       ‖F (↑σ + ↑(T k) * I)‖ ≤ q k ∧ ‖F (↑σ + ↑(-(T k)) * I)‖ ≤ q k)
-    (hq : Tendsto (fun k => q k / T k ^ 2) atTop (𝓝 0))
+    (hq : Tendsto (fun k => q k / T k ^ (2 : ℕ)) atTop (𝓝 0))
     (hflank : ∀ M : ℕ, ∀ s : ℂ, -(M : ℝ) ≤ s.re → s.re ≤ 1 - c → ‖F s‖ ≤ H M) :
     HasVariablePerronHorizontalEscape F c n := by
   have hc0 : (0 : ℝ) < c := by linarith
@@ -154,13 +154,13 @@ theorem hasVariablePerronHorizontalEscape_of_quiet_uniform_flank
   have hq0 : ∀ k, 0 ≤ q k := fun k =>
     le_trans (norm_nonneg _) ((hquiet k c hcc le_rfl)).1
   have hTpos : ∀ᶠ k : ℕ in atTop, (0 : ℝ) < T k := hT.eventually_gt_atTop 0
-  have hqw : Tendsto (fun k => q k / (1 + T k ^ 2)) atTop (𝓝 0) := by
+  have hqw : Tendsto (fun k => q k / (1 + T k ^ (2 : ℕ))) atTop (𝓝 0) := by
     refine squeeze_zero' (Eventually.of_forall fun k => div_nonneg (hq0 k) (by positivity)) ?_ hq
     filter_upwards [hTpos] with k hk
     refine div_le_div_of_nonneg_left (hq0 k) (by positivity) ?_
     nlinarith
-  have hTsq : Tendsto (fun k => 1 + T k ^ 2) atTop atTop := by
-    have h1 : Tendsto (fun k => T k ^ 2) atTop atTop := by
+  have hTsq : Tendsto (fun k => 1 + T k ^ (2 : ℕ)) atTop atTop := by
+    have h1 : Tendsto (fun k => T k ^ (2 : ℕ)) atTop atTop := by
       simpa [pow_two] using (hT.atTop_mul_atTop₀ hT)
     exact tendsto_atTop_add_const_left _ 1 h1
   intro δ hδ0 hδ1 hδn
@@ -179,7 +179,7 @@ theorem hasVariablePerronHorizontalEscape_of_quiet_uniform_flank
           (by linarith [hq0 k])
     · exact ⟨le_trans (hquiet k x hx hxhi).1 (by linarith),
         le_trans (hquiet k x hx hxhi).2 (by linarith)⟩
-  · have hHlim : Tendsto (fun k => H M / (1 + T k ^ 2)) atTop (𝓝 0) :=
+  · have hHlim : Tendsto (fun k => H M / (1 + T k ^ (2 : ℕ))) atTop (𝓝 0) :=
       Tendsto.div_atTop tendsto_const_nhds hTsq
     have := hHlim.add hqw
     simpa [add_div] using this
@@ -196,7 +196,7 @@ theorem coefficient_index_le_exact_flank_radius_of_quiet_uniform_flank
     (hT : Tendsto T atTop atTop)
     (hquiet : ∀ k, ∀ σ : ℝ, 1 - c ≤ σ → σ ≤ c →
       ‖F (↑σ + ↑(T k) * I)‖ ≤ q k ∧ ‖F (↑σ + ↑(-(T k)) * I)‖ ≤ q k)
-    (hq : Tendsto (fun k => q k / T k ^ 2) atTop (𝓝 0))
+    (hq : Tendsto (fun k => q k / T k ^ (2 : ℕ)) atTop (𝓝 0))
     (hflank : ∀ M : ℕ, ∀ s : ℂ, -(M : ℝ) ≤ s.re → s.re ≤ 1 - c → ‖F s‖ ≤ H M)
     (hR : 0 ≤ R) (hH : ∀ᶠ M : ℕ in atTop, H M ≤ C * R ^ M)
     (han : a n ≠ 0) :

@@ -28,8 +28,8 @@ theorem fzzScreeningCubicCollisionCorrection_tendsto_atBot :
   have hTlower : -b / (72 * Real.pi) ≤ T :=
     le_trans (le_max_right _ _) hT
   have hpi : 0 < 72 * Real.pi := by positivity
-  have hpow4 : 0 ≤ ((Real.exp (-T)) ^ 4)⁻¹ := by positivity
-  have hpow2 : 0 ≤ ((Real.exp (-T)) ^ 2)⁻¹ := by positivity
+  have hpow4 : 0 ≤ ((Real.exp (-T)) ^ (4 : ℕ))⁻¹ := by positivity
+  have hpow2 : 0 ≤ ((Real.exp (-T)) ^ (2 : ℕ))⁻¹ := by positivity
   have hlog : Real.log (Real.exp (-T)) = -T := Real.log_exp _
   have hprimitive :
       fzzScreeningCubicCollisionPrimitive (Real.exp (-T)) ≤ -36 * T := by

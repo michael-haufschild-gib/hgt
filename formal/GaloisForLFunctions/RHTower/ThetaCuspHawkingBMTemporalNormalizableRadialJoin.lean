@@ -36,7 +36,7 @@ theorem physicalNormalizableTemporalCurrent_full_radial_restoration_and_residue
           (𝓝[≠] physicalFundamentalFrequency q side)
           (𝓝 (physicalTemporalFundamentalRadialResidue q branch side a zang)) ∧
         (∀ᶠ u in 𝓝[≠] (physicalFundamentalFrequency q side),
-          IntegrableOn (fun t => ((tortoiseRadius t:ℂ)^2-1)*
+          IntegrableOn (fun t => ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*
             continuedPhysicalTimeAction q branch u a true t zang) (Ioo (tortoiseOf b) 0) ∧
           Tendsto (normalizableTemporalRadialCutoff q branch a zang c₀ c₁ d b u)
             (𝓝[>] (0:ℝ)) (𝓝 (normalizableTemporalRadialFinitePart q branch a zang c₀ c₁ d b u))) := by

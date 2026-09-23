@@ -32,7 +32,7 @@ theorem im_digamma_vertical_nonneg_le {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t)
 theorem im_logDeriv_xi_horizontal {x T : ℝ} (hT : 0 < T)
     (hζ : riemannZeta ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
     (logDeriv xi ((x : ℂ) + (T : ℂ) * I)).im
-      = -T / (x ^ 2 + T ^ 2) + -T / ((x - 1) ^ 2 + T ^ 2)
+      = -T / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) + -T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))
         + (Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2
         + (logDeriv riemannZeta ((x : ℂ) + (T : ℂ) * I)).im := by
   set s : ℂ := (x : ℂ) + (T : ℂ) * I with hs
@@ -46,10 +46,10 @@ theorem im_logDeriv_xi_horizontal {x T : ℝ} (hT : 0 < T)
   have hdiv2 : ∀ z : ℂ, (z / 2).im = z.im / 2 := by
     intro z
     simp
-  have hinv1 : ((1 : ℂ) / s).im = -T / (x ^ 2 + T ^ 2) := by
+  have hinv1 : ((1 : ℂ) / s).im = -T / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) := by
     rw [one_div, Complex.inv_im, Complex.normSq_apply, hre, him]
     ring
-  have hinv2 : ((1 : ℂ) / (s - 1)).im = -T / ((x - 1) ^ 2 + T ^ 2) := by
+  have hinv2 : ((1 : ℂ) / (s - 1)).im = -T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ)) := by
     have hsub : (s - 1).re = x - 1 := by rw [Complex.sub_re, hre]; norm_num
     have hsubim : (s - 1).im = T := by rw [Complex.sub_im, him]; norm_num
     rw [one_div, Complex.inv_im, Complex.normSq_apply, hsub, hsubim]
@@ -70,12 +70,12 @@ theorem abs_im_logDeriv_xi_horizontal_le {x T : ℝ} (hT : 4 ≤ T) (hx : x ∈ 
   rw [im_logDeriv_xi_horizontal hT0 hζ]
   have hx0 : (0 : ℝ) ≤ x := by linarith [hx.1]
   have hdig := im_digamma_vertical_nonneg_le (σ := x / 2) (t := T / 2) (by linarith) (by linarith)
-  have hden1 : (0 : ℝ) < x ^ 2 + T ^ 2 := by positivity
-  have hden2 : (0 : ℝ) < (x - 1) ^ 2 + T ^ 2 := by positivity
-  have hb1 : |(-T) / (x ^ 2 + T ^ 2)| ≤ 1 / 4 := by
+  have hden1 : (0 : ℝ) < x ^ (2 : ℕ) + T ^ (2 : ℕ) := by positivity
+  have hden2 : (0 : ℝ) < (x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ) := by positivity
+  have hb1 : |(-T) / (x ^ (2 : ℕ) + T ^ (2 : ℕ))| ≤ 1 / 4 := by
     rw [abs_div, abs_neg, abs_of_pos hT0, abs_of_pos hden1, div_le_div_iff₀ hden1 (by norm_num)]
     nlinarith [sq_nonneg x, hT0]
-  have hb2 : |(-T) / ((x - 1) ^ 2 + T ^ 2)| ≤ 1 / 4 := by
+  have hb2 : |(-T) / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))| ≤ 1 / 4 := by
     rw [abs_div, abs_neg, abs_of_pos hT0, abs_of_pos hden2, div_le_div_iff₀ hden2 (by norm_num)]
     nlinarith [sq_nonneg (x - 1), hT0]
   have hb3 : |(Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2|
@@ -89,20 +89,20 @@ theorem abs_im_logDeriv_xi_horizontal_le {x T : ℝ} (hT : 4 ≤ T) (hx : x ∈ 
     rw [abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
     rw [div_le_iff₀ (by norm_num : (0 : ℝ) < 2)]
     linarith
-  have hsimp : -T / (x ^ 2 + T ^ 2) + -T / ((x - 1) ^ 2 + T ^ 2)
+  have hsimp : -T / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) + -T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))
       + (Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2
       + (logDeriv riemannZeta ((x : ℂ) + (T : ℂ) * I)).im
       - (logDeriv riemannZeta ((x : ℂ) + (T : ℂ) * I)).im
-      = -T / (x ^ 2 + T ^ 2) + -T / ((x - 1) ^ 2 + T ^ 2)
+      = -T / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) + -T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))
         + (Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2 := by
     ring
   rw [hsimp]
-  calc |(-T) / (x ^ 2 + T ^ 2) + (-T) / ((x - 1) ^ 2 + T ^ 2)
+  calc |(-T) / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) + (-T) / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))
         + (Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2|
-      ≤ |(-T) / (x ^ 2 + T ^ 2) + (-T) / ((x - 1) ^ 2 + T ^ 2)|
+      ≤ |(-T) / (x ^ (2 : ℕ) + T ^ (2 : ℕ)) + (-T) / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))|
         + |(Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2| :=
         abs_add_le _ _
-    _ ≤ (|(-T) / (x ^ 2 + T ^ 2)| + |(-T) / ((x - 1) ^ 2 + T ^ 2)|)
+    _ ≤ (|(-T) / (x ^ (2 : ℕ) + T ^ (2 : ℕ))| + |(-T) / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))|)
         + |(Complex.digamma (((x / 2 : ℝ) : ℂ) + ((T / 2 : ℝ) : ℂ) * I)).im / 2| := by
         gcongr
         exact abs_add_le _ _

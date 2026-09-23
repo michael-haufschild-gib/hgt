@@ -24,7 +24,7 @@ private theorem first_symbol_lipschitz_of_second_bound (q : SchwartzMap ℝ ℂ)
 
 private theorem symbol_taylor_remainder (q : SchwartzMap ℝ ℂ) (reverse : Bool)
     (C : ℝ) (hC0 : 0 ≤ C) (hC : ∀ t x z : ℝ, ‖directSecondTimeSymbol q t x reverse z‖ ≤ C) (t s x z : ℝ) :
-    ‖directSymbol q s x reverse z-directSymbol q t x reverse z-(s-t) • directTimeSymbol q t x reverse z‖ ≤ C*‖s-t‖^2 := by
+    ‖directSymbol q s x reverse z-directSymbol q t x reverse z-(s-t) • directTimeSymbol q t x reverse z‖ ≤ C*‖s-t‖^(2 : ℕ) := by
   have hd (r : ℝ) : HasDerivAt
       (fun u => directSymbol q u x reverse z-(u-t) • directTimeSymbol q t x reverse z)
       (directTimeSymbol q r x reverse z-directTimeSymbol q t x reverse z) r := by
@@ -51,7 +51,7 @@ private theorem slope_error_symbol_bound (q : SchwartzMap ℝ ℂ) (reverse : Bo
     simp only [directTimeSlopeErrorSymbol,smul_sub,smul_smul,inv_mul_cancel₀ hst0,one_smul]
   rw [he,norm_smul,norm_inv]
   calc
-    _ ≤ ‖s-t‖⁻¹*(C*‖s-t‖^2) := mul_le_mul_of_nonneg_left
+    _ ≤ ‖s-t‖⁻¹*(C*‖s-t‖^(2 : ℕ)) := mul_le_mul_of_nonneg_left
       (symbol_taylor_remainder q reverse C hC0 hC t s x z) (inv_nonneg.mpr (norm_nonneg _))
     _ = _ := by field_simp [norm_ne_zero_iff.mpr hst0]
 

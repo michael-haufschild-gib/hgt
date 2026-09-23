@@ -32,7 +32,7 @@ theorem rat_le_exp_third : (1081 / 780 : ℝ) ≤ Real.exp (33 / 100) := by
 theorem exp_three_le : Real.exp 3 ≤ 41 / 2 := by
   have h := Real.exp_one_lt_d9
   rw [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, ← Real.exp_one_pow]
-  calc Real.exp 1 ^ 3 ≤ 2.7182818286 ^ 3 := by gcongr
+  calc Real.exp 1 ^ (3 : ℕ) ≤ 2.7182818286 ^ (3 : ℕ) := by gcongr
     _ ≤ 41 / 2 := by norm_num
 
 theorem two_div_fortyOne_le_exp : (2 / 41 : ℝ) ≤ Real.exp (-3) := by
@@ -64,18 +64,18 @@ theorem integral_phiN (n : ℕ) : ∫ x, phiN n x = 1 := integral_phi _ (by norm
 theorem support_phiN_subset (n : ℕ) : Function.support (phiN n) ⊆ Icc (-sN n) (sN n) :=
   support_phi_subset (r := 2 / 5) (by norm_num) (w := 39 / 50) (by norm_num) n
 
-theorem integrable_phiN_sq (n : ℕ) : Integrable (fun x => phiN n x ^ 2) := by
-  have hc : Continuous (fun x => phiN n x ^ 2) := (phiN_contDiff n).continuous.pow 2
-  have hcs : HasCompactSupport (fun x => phiN n x ^ 2) := by
+theorem integrable_phiN_sq (n : ℕ) : Integrable (fun x => phiN n x ^ (2 : ℕ)) := by
+  have hc : Continuous (fun x => phiN n x ^ (2 : ℕ)) := (phiN_contDiff n).continuous.pow 2
+  have hcs : HasCompactSupport (fun x => phiN n x ^ (2 : ℕ)) := by
     have h := (phiN_hasCompactSupport n).mul_right (f' := phiN n)
-    have e : (phiN n * phiN n) = fun x => phiN n x ^ 2 := by
+    have e : (phiN n * phiN n) = fun x => phiN n x ^ (2 : ℕ) := by
       funext x
       simp [sq]
     rw [← e]
     exact h
   exact hc.integrable_of_hasCompactSupport hcs
 
-theorem integral_phiN_sq_ge (n : ℕ) : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ 2 :=
+theorem integral_phiN_sq_ge (n : ℕ) : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ (2 : ℕ) :=
   integral_sq_ge_of_support (sN_pos n) (phiN_nonneg n) (support_phiN_subset n)
     (integrable_phiN n) (integral_phiN n) (integrable_phiN_sq n)
 
@@ -140,10 +140,10 @@ theorem params_ok {u₀ : ℝ} (hu18 : 18 ≤ u₀) :
 /-- The per-zero majorant of `k̂(γ)` for the scaled two-bump autocorrelation. -/
 theorem norm_paperFT_autocorr_twoBump_le (n : ℕ) {u₀ p : ℝ} (hu0 : 0 ≤ u₀)
     (hexp_half : Real.exp (u₀ / 2) = Real.sqrt p) {γ : ℂ} (hγ0 : γ ≠ 0)
-    (hγim : |γ.im| ≤ 1 / 2) (hγsq : (41 / 2 : ℝ) < ‖γ‖ ^ 2) :
+    (hγim : |γ.im| ≤ 1 / 2) (hγsq : (41 / 2 : ℝ) < ‖γ‖ ^ (2 : ℕ)) :
     ‖Zeta23.paperFT (fun x => (autocorr (twoBump (phiN n) u₀) x : ℂ)) γ‖ ≤
       (4 * Real.sqrt p * (3 / 2) * ((1081 / 780) ^ (2 * (n + 1)) * (2 / 41) ^ n)) *
-        (1 / ‖γ‖ ^ 2) := by
+        (1 / ‖γ‖ ^ (2 : ℕ)) := by
   have hsupp := support_phiN_subset n
   have hγpos : 0 < ‖γ‖ := norm_pos_iff.mpr hγ0
   set f := twoBump (phiN n) u₀ with hf
@@ -192,16 +192,16 @@ theorem norm_paperFT_autocorr_twoBump_le (n : ℕ) {u₀ p : ℝ} (hu0 : 0 ≤ u
       (1081 / 780 : ℝ) ^ (2 * (n + 1)) * (1 / ‖γ‖ ^ (2 * (n + 1))) := by
     rw [← pow_add, div_pow, mul_one_div]
     congr 2 <;> ring
-  have hnorm : 1 / ‖γ‖ ^ (2 * (n + 1)) ≤ (2 / 41) ^ n * (1 / ‖γ‖ ^ 2) := by
-    have h : ‖γ‖ ^ (2 * (n + 1)) = ‖γ‖ ^ 2 * (‖γ‖ ^ 2) ^ n := by
+  have hnorm : 1 / ‖γ‖ ^ (2 * (n + 1)) ≤ (2 / 41) ^ n * (1 / ‖γ‖ ^ (2 : ℕ)) := by
+    have h : ‖γ‖ ^ (2 * (n + 1)) = ‖γ‖ ^ (2 : ℕ) * (‖γ‖ ^ (2 : ℕ)) ^ n := by
       rw [← pow_mul, ← pow_add]
       congr 1
       ring
     rw [h, one_div, mul_inv, ← one_div, ← one_div, mul_comm]
     gcongr
     rw [div_le_iff₀ (by positivity)]
-    rw [show (2 / 41 : ℝ) ^ n * (‖γ‖ ^ 2) ^ n = ((2 / 41) * ‖γ‖ ^ 2) ^ n by rw [mul_pow]]
-    have : (1 : ℝ) ≤ (2 / 41) * ‖γ‖ ^ 2 := by nlinarith
+    rw [show (2 / 41 : ℝ) ^ n * (‖γ‖ ^ (2 : ℕ)) ^ n = ((2 / 41) * ‖γ‖ ^ (2 : ℕ)) ^ n by rw [mul_pow]]
+    have : (1 : ℝ) ≤ (2 / 41) * ‖γ‖ ^ (2 : ℕ) := by nlinarith
     exact one_le_pow₀ this
   have hstep2 : (E * (2 * Real.exp (u₀ / 4))) * (E * (2 * Real.exp (u₀ / 4))) =
       4 * Real.sqrt p * Real.exp (2 / 5) *
@@ -210,7 +210,7 @@ theorem norm_paperFT_autocorr_twoBump_le (n : ℕ) {u₀ p : ℝ} (hu0 : 0 ≤ u
     ring
   have hstep3 : 4 * Real.sqrt p * Real.exp (2 / 5) *
       ((1081 / 780) ^ (2 * (n + 1)) * (1 / ‖γ‖ ^ (2 * (n + 1)))) ≤
-      4 * Real.sqrt p * (3 / 2) * ((1081 / 780) ^ (2 * (n + 1)) * ((2 / 41) ^ n * (1 / ‖γ‖ ^ 2))) := by
+      4 * Real.sqrt p * (3 / 2) * ((1081 / 780) ^ (2 * (n + 1)) * ((2 / 41) ^ n * (1 / ‖γ‖ ^ (2 : ℕ)))) := by
     gcongr
     exact exp_two_fifths_le
   calc ‖Zeta23.paperFT (fun x => (f x : ℂ)) γ‖ * ‖Zeta23.paperFT (fun x => (f x : ℂ)) (-γ)‖
@@ -218,28 +218,28 @@ theorem norm_paperFT_autocorr_twoBump_le (n : ℕ) {u₀ p : ℝ} (hu0 : 0 ≤ u
     _ = _ := hstep2
     _ ≤ _ := hstep3
     _ = (4 * Real.sqrt p * (3 / 2) * ((1081 / 780) ^ (2 * (n + 1)) * (2 / 41) ^ n)) *
-        (1 / ‖γ‖ ^ 2) := by ring
+        (1 / ‖γ‖ ^ (2 : ℕ)) := by ring
 
 /-- The real part of the zero side is at most `C·(33/100)` whenever every term is dominated by
 `C/‖γ_ρ‖²`. -/
 theorem re_literatureRHS_le {k : ℝ → ℂ} (hk : ContDiff ℝ 2 k) (hkc : HasCompactSupport k)
     {C : ℝ} (hC : 0 ≤ C)
     (hterm : ∀ ρ : ℂ, Zeta23.IsNontrivialZero ρ →
-      ‖Zeta23.paperFT k (Zeta23.gammaOf ρ)‖ ≤ C * (1 / ‖Zeta23.gammaOf ρ‖ ^ 2)) :
+      ‖Zeta23.paperFT k (Zeta23.gammaOf ρ)‖ ≤ C * (1 / ‖Zeta23.gammaOf ρ‖ ^ (2 : ℕ))) :
     (Zeta23.EF.literatureRHS k).re ≤ C * (33 / 100) := by
   obtain ⟨hsumm, hEF⟩ := Zeta23.WeilEF.EF_lit_zeta Zeta23.zetaSeam k hk hkc
-  have hg_nonneg : ∀ q : XiZeroCopy, 0 ≤ C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ 2) := fun q => by
+  have hg_nonneg : ∀ q : XiZeroCopy, 0 ≤ C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ (2 : ℕ)) := fun q => by
     positivity
-  have hg_summ : Summable (fun q : XiZeroCopy => C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ 2)) := by
-    have : (fun q : XiZeroCopy => C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ 2)) =
-        fun q => C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+  have hg_summ : Summable (fun q : XiZeroCopy => C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ (2 : ℕ))) := by
+    have : (fun q : XiZeroCopy => C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ (2 : ℕ))) =
+        fun q => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       funext q; rw [gammaOf_eq_xiSpectralPoint]
     rw [this]
     exact xiSpectralPoint_inv_sq_summable.mul_left _
   have hterm' : ∀ ρ : (Zeta23.zetaZeros Zeta23.zetaSeam).carrier,
       ‖((Zeta23.zetaZeros Zeta23.zetaSeam).mult ρ : ℂ) * Zeta23.paperFT k (Zeta23.gammaOf ρ)‖ ≤
         ((Zeta23.zetaZeros Zeta23.zetaSeam).mult ρ : ℝ) *
-          (C * (1 / ‖Zeta23.gammaOf (ρ : ℂ)‖ ^ 2)) := by
+          (C * (1 / ‖Zeta23.gammaOf (ρ : ℂ)‖ ^ (2 : ℕ))) := by
     intro ρ
     rw [norm_mul, Complex.norm_natCast]
     exact mul_le_mul_of_nonneg_left (hterm ρ ρ.2) (Nat.cast_nonneg _)
@@ -252,10 +252,10 @@ theorem re_literatureRHS_le {k : ℝ → ℂ} (hk : ContDiff ℝ 2 k) (hkc : Has
       ≤ ∑' ρ : (Zeta23.zetaZeros Zeta23.zetaSeam).carrier,
         ‖((Zeta23.zetaZeros Zeta23.zetaSeam).mult ρ : ℂ) * Zeta23.paperFT k (Zeta23.gammaOf ρ)‖ :=
         (hsumm.mapL Complex.reCLM).tsum_le_tsum (fun ρ => Complex.re_le_norm _) hnormsumm
-    _ ≤ ∑' q : XiZeroCopy, C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ 2) :=
-        carrier_tsum_le Zeta23.zetaSeam (fun z => C * (1 / ‖Zeta23.gammaOf z‖ ^ 2)) hg_nonneg
+    _ ≤ ∑' q : XiZeroCopy, C * (1 / ‖Zeta23.gammaOf (q.1 : ℂ)‖ ^ (2 : ℕ)) :=
+        carrier_tsum_le Zeta23.zetaSeam (fun z => C * (1 / ‖Zeta23.gammaOf z‖ ^ (2 : ℕ))) hg_nonneg
           hg_summ _ hterm'
-    _ = C * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+    _ = C * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         rw [← tsum_mul_left]
         congr 1
         funext q
@@ -300,7 +300,7 @@ theorem deletedRHS_re_eq {p : ℕ} (hp : p.Prime) (φ : ℝ → ℝ) {s : ℝ} (
     (hsupp : Function.support φ ⊆ Icc (-s) s) (h2s : 2 * s < Real.log p) :
     (deletedRHS p (fun x => (autocorr (twoBump φ (Real.log p)) x : ℂ))).re =
       (Zeta23.EF.literatureRHS (fun x => (autocorr (twoBump φ (Real.log p)) x : ℂ))).re +
-        (Real.log p / Real.sqrt p) * (-2 * ∫ x, φ x ^ 2) := by
+        (Real.log p / Real.sqrt p) * (-2 * ∫ x, φ x ^ (2 : ℕ)) := by
   unfold deletedRHS
   dsimp only
   rw [ArithmeticFunction.vonMangoldt_apply_prime hp, autocorr_twoBump_apply hs hsupp h2s,
@@ -321,7 +321,7 @@ theorem deletedRHS_re_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Real.exp 18 
   have hu0 : 0 ≤ Real.log p := by linarith
   have hsqrt_pos : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp0
   have hexp_half : Real.exp (Real.log p / 2) = Real.sqrt p := by
-    have hsq : Real.exp (Real.log p / 2) ^ 2 = p := by
+    have hsq : Real.exp (Real.log p / 2) ^ (2 : ℕ) = p := by
       rw [← Real.exp_nat_mul]
       push_cast
       rw [show (2 : ℝ) * (Real.log p / 2) = Real.log p by ring, Real.exp_log hp0]
@@ -344,14 +344,14 @@ theorem deletedRHS_re_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Real.exp 18 
       (gammaOf_ne_zero_of_nontrivialZero hρ) (abs_im_gammaOf_le_half_of_nontrivialZero hρ)
       (fortyOne_div_two_lt_normSq_gammaOf_of_nontrivialZero hρ))
   rw [deletedRHS_re_eq hp (phiN n) (sN_pos n).le hsupp h2s]
-  have hint : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ 2 := integral_phiN_sq_ge n
-  have hint' : 1 / Real.log p ≤ ∫ x, phiN n x ^ 2 := by
+  have hint : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ (2 : ℕ) := integral_phiN_sq_ge n
+  have hint' : 1 / Real.log p ≤ ∫ x, phiN n x ^ (2 : ℕ) := by
     refine le_trans ?_ hint
     have := sN_pos n
     rw [div_le_div_iff₀ (by linarith) (by positivity)]
     linarith
-  have hprod : (Real.log p / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ 2) ≤ -(2 / Real.sqrt p) := by
-    have h1 : (Real.log p / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ 2) ≤
+  have hprod : (Real.log p / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ (2 : ℕ)) ≤ -(2 / Real.sqrt p) := by
+    have h1 : (Real.log p / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ (2 : ℕ)) ≤
         (Real.log p / Real.sqrt p) * (-2 * (1 / Real.log p)) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       linarith
@@ -380,7 +380,7 @@ theorem deletedRHS_re_neg_of_ge {p : ℕ} (hp : p.Prime) (hp7 : 70000000 ≤ p) 
   have h1 : Real.exp 18 < 70000000 := by
     have h := Real.exp_one_lt_d9
     rw [show (18 : ℝ) = ((18 : ℕ) : ℝ) by norm_num, ← Real.exp_one_pow]
-    calc Real.exp 1 ^ 18 < 2.7182818286 ^ 18 := by gcongr
+    calc Real.exp 1 ^ (18 : ℕ) < 2.7182818286 ^ (18 : ℕ) := by gcongr
       _ < 70000000 := by norm_num
   have h2 : (70000000 : ℝ) ≤ p := by exact_mod_cast hp7
   linarith

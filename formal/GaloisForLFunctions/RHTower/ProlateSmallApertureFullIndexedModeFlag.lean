@@ -74,7 +74,7 @@ theorem complexUnitBandValue_eq_sgVal {c : ℝ} (hc : 0 < c) (k : ℕ) :
 /-- Exact indexed Gram transfer for the full fixed-unit Slepian operator. -/
 theorem rectApproxNumber_apertureMomentSynthesis_sq_eq_scaled_bandValue
     {c : ℝ} (hc : 0 < c) (k : ℕ) :
-    indexedFullSlepianSingularValue c k ^ 2 =
+    indexedFullSlepianSingularValue c k ^ (2 : ℕ) =
       (2 * Real.pi / c) * complexUnitBandValue c k := by
   rw [indexedFullSlepianSingularValue, complexUnitBandValue,
     rectApproxNumber_sq_eq_approxNumber_adjoint_comp_self
@@ -117,8 +117,8 @@ noncomputable def indexedFullSlepianOutputMode (c : ℝ) (k : ℕ) :
 theorem norm_apertureMomentFourierSynthesis_inputMode_sq
     {c : ℝ} (hc : 0 < c) {k : ℕ}
     (hs : 0 < indexedFullSlepianSingularValue c k) :
-    ‖apertureMomentFourierSynthesis 0 c (indexedFullSlepianInputMode c k)‖ ^ 2 =
-      indexedFullSlepianSingularValue c k ^ 2 := by
+    ‖apertureMomentFourierSynthesis 0 c (indexedFullSlepianInputMode c k)‖ ^ (2 : ℕ) =
+      indexedFullSlepianSingularValue c k ^ (2 : ℕ) := by
   let T := apertureMomentFourierSynthesis 0 c
   let x := indexedFullSlepianInputMode c k
   rw [ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right]

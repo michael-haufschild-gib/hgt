@@ -82,7 +82,7 @@ private theorem binomial_circle_hasSum (alpha : ℂ) (r theta : ℝ) (hr : |r|<1
 
 private theorem diagonal_circle_integral (c : ℕ → ℂ) (hc : Summable (fun n => ‖c n‖)) :
     average (fun theta => (∑' n, c n*circlePhase (n:ℤ) theta)*
-      (∑' m, c m*circlePhase (-(m:ℤ)) theta)) = ∑' n, (c n)^2 := by
+      (∑' m, c m*circlePhase (-(m:ℤ)) theta)) = ∑' n, (c n)^(2 : ℕ) := by
   let F : ℕ × ℕ → ℝ → ℂ := fun p theta =>
     (c p.1*c p.2)*circlePhase ((p.1:ℤ)-(p.2:ℤ)) theta
   have hn (p : ℕ × ℕ) (theta : ℝ) : ‖F p theta‖=‖c p.1‖*‖c p.2‖ := by
@@ -107,7 +107,7 @@ private theorem diagonal_circle_integral (c : ℕ → ℂ) (hc : Summable (fun n
   simp only [he,average]
   rw [← integral_tsum_of_summable_integral_norm hi hs]
   have hv (p : ℕ × ℕ) : (∫ theta in Ioc (0:ℝ) (2*Real.pi), F p theta)=
-      if p.1=p.2 then (2*Real.pi:ℂ)*(c p.1)^2 else 0 := by
+      if p.1=p.2 then (2*Real.pi:ℂ)*(c p.1)^(2 : ℕ) else 0 := by
     dsimp only [F]
     rw [integral_const_mul,phase_integral]
     by_cases hp : p.1=p.2
@@ -116,8 +116,8 @@ private theorem diagonal_circle_integral (c : ℕ → ℂ) (hc : Summable (fun n
       simp [hp,hh]
   have hsum := (hasSum_integral_of_summable_integral_norm hi hs).summable
   rw [hsum.tsum_prod]
-  have hdiag (b : ℕ) : (∑' m : ℕ, if b=m then (2*Real.pi:ℂ)*(c b)^2 else 0)=
-      (2*Real.pi:ℂ)*(c b)^2 := by
+  have hdiag (b : ℕ) : (∑' m : ℕ, if b=m then (2*Real.pi:ℂ)*(c b)^(2 : ℕ) else 0)=
+      (2*Real.pi:ℂ)*(c b)^(2 : ℕ) := by
     rw [tsum_eq_single b]
     · simp
     · intro m hm
@@ -140,8 +140,8 @@ private theorem coefficient_as_gauss (alpha : ℂ) (r : ℝ) (n : ℕ) :
     FormalMultilinearSeries.ofScalars_apply_eq,neg_neg,mul_comm] using h
 
 private theorem coefficient_square (alpha : ℂ) (r : ℝ) (n : ℕ) :
-    (circleCoefficient alpha r n)^2 =
-      (ordinaryHypergeometricSeries ℂ alpha alpha 1 n fun _ => ((r:ℂ)^2)) := by
+    (circleCoefficient alpha r n)^(2 : ℕ) =
+      (ordinaryHypergeometricSeries ℂ alpha alpha 1 n fun _ => ((r:ℂ)^(2 : ℕ))) := by
   rw [coefficient_as_gauss,ordinaryHypergeometricSeries_apply_eq,
     ordinaryHypergeometricSeries_apply_eq,ascPochhammer_eval_one]
   simp only [smul_eq_mul]
@@ -153,7 +153,7 @@ private theorem binomial_product_average (alpha : ℂ) (r : ℝ) (hr : |r|<1) :
     average (fun theta =>
       (1-(r:ℂ)*Complex.exp (Complex.I*(theta:ℂ)))^(-alpha)*
       (1-(r:ℂ)*Complex.exp (-Complex.I*(theta:ℂ)))^(-alpha)) =
-      (ordinaryHypergeometricSeries ℂ alpha alpha 1).sum ((r:ℂ)^2) := by
+      (ordinaryHypergeometricSeries ℂ alpha alpha 1).sum ((r:ℂ)^(2 : ℕ)) := by
   have he (theta : ℝ) :
       (1-(r:ℂ)*Complex.exp (-Complex.I*(theta:ℂ)))^(-alpha)=
         ∑' n, circleCoefficient alpha r n*circlePhase (-(n:ℤ)) theta := by
@@ -180,7 +180,7 @@ private theorem conjugate_power_product (alpha z : ℂ) (hz : 0 < z.re) :
 private theorem paired_power_product (alpha : ℂ) (r theta : ℝ) (hr : |r|<1) :
     (1-(r:ℂ)*Complex.exp (Complex.I*(theta:ℂ)))^(-alpha)*
       (1-(r:ℂ)*Complex.exp (-Complex.I*(theta:ℂ)))^(-alpha)=
-        ((1-2*r*Real.cos theta+r^2:ℝ):ℂ)^(-alpha) := by
+        ((1-2*r*Real.cos theta+r^(2 : ℕ):ℝ):ℂ)^(-alpha) := by
   let z : ℂ := 1-(r:ℂ)*Complex.exp (Complex.I*(theta:ℂ))
   have hn : ‖(r:ℂ)*Complex.exp (Complex.I*(theta:ℂ))‖ < 1 := by
     simpa [Complex.norm_exp,Complex.norm_real,Real.norm_eq_abs] using hr
@@ -195,9 +195,9 @@ private theorem paired_power_product (alpha : ℂ) (r theta : ℝ) (hr : |r|<1) 
   rw [hc,conjugate_power_product (-alpha) z hz]
   congr 1
   rw [Complex.mul_conj]
-  have hh : Complex.normSq z=1-2*r*Real.cos theta+r^2 := by
+  have hh : Complex.normSq z=1-2*r*Real.cos theta+r^(2 : ℕ) := by
     simp [z,Complex.normSq_apply,Complex.exp_re,Complex.exp_im]
-    nlinarith [congrArg (fun v : ℝ => r^2*v) (Real.sin_sq_add_cos_sq theta)]
+    nlinarith [congrArg (fun v : ℝ => r^(2 : ℕ)*v) (Real.sin_sq_add_cos_sq theta)]
   exact congrArg Complex.ofReal hh
 
 private def diskRadius (d : ℝ) : ℝ := Real.sinh d/(Real.cosh d+1)
@@ -217,14 +217,14 @@ private theorem diskRadius_lt_one (d : ℝ) : |diskRadius d|<1 := by
   constructor <;> linarith
 
 private theorem diskRadius_sq (d : ℝ) :
-    diskRadius d^2=(Real.cosh d-1)/(Real.cosh d+1) := by
+    diskRadius d^(2 : ℕ)=(Real.cosh d-1)/(Real.cosh d+1) := by
   have hp : Real.cosh d+1 ≠ 0 := ne_of_gt (by positivity)
   unfold diskRadius
   field_simp
   nlinarith [Real.cosh_sq_sub_sinh_sq d]
 
 private theorem denominator_disk_factor (d theta : ℝ) :
-    denominator d theta=diskScale d*(1-2*diskRadius d*Real.cos theta+diskRadius d^2) := by
+    denominator d theta=diskScale d*(1-2*diskRadius d*Real.cos theta+diskRadius d^(2 : ℕ)) := by
   rw [diskRadius_sq]
   unfold denominator diskScale diskRadius
   have hp : Real.cosh d+1 ≠ 0 := ne_of_gt (by positivity)
@@ -236,7 +236,7 @@ private theorem height_power_factor (alpha : ℂ) (d theta : ℝ) :
       ((1-(diskRadius d:ℂ)*Complex.exp (Complex.I*(theta:ℂ)))^(-alpha)*
       (1-(diskRadius d:ℂ)*Complex.exp (-Complex.I*(theta:ℂ)))^(-alpha)) := by
   rw [paired_power_product alpha _ _ (diskRadius_lt_one d)]
-  have hk : 0 < 1-2*diskRadius d*Real.cos theta+diskRadius d^2 := by
+  have hk : 0 < 1-2*diskRadius d*Real.cos theta+diskRadius d^(2 : ℕ) := by
     have h := denominator_pos d theta
     rw [denominator_disk_factor] at h
     exact (mul_pos_iff_of_pos_left (diskScale_positive d)).mp h
@@ -265,7 +265,7 @@ theorem powerCircle_eq_legendre (alpha : ℂ) (d : ℝ) :
           (1-(diskRadius d:ℂ)*Complex.exp (Complex.I*(theta:ℂ)))^(-alpha)*
           (1-(diskRadius d:ℂ)*Complex.exp (-Complex.I*(theta:ℂ)))^(-alpha))) by ring,h]
   change (diskScale d:ℂ)^(-alpha)*
-      (ordinaryHypergeometricSeries ℂ alpha alpha 1).sum ((diskRadius d:ℂ)^2) =
+      (ordinaryHypergeometricSeries ℂ alpha alpha 1).sum ((diskRadius d:ℂ)^(2 : ℕ)) =
     (diskScale d:ℂ)^(-alpha)*
       (ordinaryHypergeometricSeries ℂ (- -alpha) (- -alpha) 1).sum
         (((Real.cosh d-1)/(Real.cosh d+1):ℝ):ℂ)

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ProlateRadialEndpointFlux
 The point
 
 ```text
-B(c) = 1 + 9 / (8 c^2)
+B(c) = 1 + 9 / (8 c^(2 : ℕ))
 ```
 
 lies inside the zero-free radial collar and, for `c >= 5`, already satisfies
@@ -19,25 +19,25 @@ noncomputable section
 namespace GaloisForLFunctions.RHTower
 
 /-- Deterministic matching point between the endpoint layer and the interior Dunster region. -/
-def dunsterEndpointCrossing (c : ℝ) : ℝ := 1 + 9 / (8 * c ^ 2)
+def dunsterEndpointCrossing (c : ℝ) : ℝ := 1 + 9 / (8 * c ^ (2 : ℕ))
 
 theorem dunsterEndpointCrossing_sub_one {c : ℝ} :
-    dunsterEndpointCrossing c - 1 = 9 / (8 * c ^ 2) := by
+    dunsterEndpointCrossing c - 1 = 9 / (8 * c ^ (2 : ℕ)) := by
   simp [dunsterEndpointCrossing]
 
 theorem dunsterEndpointCrossing_gt_one {c : ℝ} (hc : 0 < c) :
     1 < dunsterEndpointCrossing c := by
   rw [dunsterEndpointCrossing]
-  have : 0 < 9 / (8 * c ^ 2) := by positivity
+  have : 0 < 9 / (8 * c ^ (2 : ℕ)) := by positivity
   linarith
 
 /-- The matching point lies in the elementary `11/10` endpoint collar. -/
 theorem dunsterEndpointCrossing_le_eleven_tenths {c : ℝ} (hc : 5 ≤ c) :
     dunsterEndpointCrossing c ≤ 11 / 10 := by
   have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
-  have hc2 : 25 ≤ c ^ 2 := by nlinarith
-  have hden : 0 < 8 * c ^ 2 := by positivity
-  have hdelta : 9 / (8 * c ^ 2) ≤ (1 / 20 : ℝ) := by
+  have hc2 : 25 ≤ c ^ (2 : ℕ) := by nlinarith
+  have hden : 0 < 8 * c ^ (2 : ℕ) := by positivity
+  have hdelta : 9 / (8 * c ^ (2 : ℕ)) ≤ (1 / 20 : ℝ) := by
     rw [div_le_iff₀ hden]
     nlinarith
   rw [dunsterEndpointCrossing]
@@ -46,39 +46,39 @@ theorem dunsterEndpointCrossing_le_eleven_tenths {c : ℝ} (hc : 5 ≤ c) :
 
 /-- The matching point satisfies the quantitative zero-free collar condition exactly. -/
 theorem dunsterEndpointCrossing_short {c : ℝ} (hc : 0 < c) :
-    3 * c ^ 2 * (dunsterEndpointCrossing c - 1) < 5 := by
+    3 * c ^ (2 : ℕ) * (dunsterEndpointCrossing c - 1) < 5 := by
   rw [dunsterEndpointCrossing_sub_one]
-  have hcne : c ^ 2 ≠ 0 := pow_ne_zero 2 hc.ne'
+  have hcne : c ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hc.ne'
   field_simp [hcne]
   norm_num
 
 /-- At the matching point, the endpoint square distance is uniformly small. -/
 theorem dunsterEndpointCrossing_sq_sub_one_le {c : ℝ} (hc : 5 ≤ c) :
-    dunsterEndpointCrossing c ^ 2 - 1 ≤ 3 / 20 := by
+    dunsterEndpointCrossing c ^ (2 : ℕ) - 1 ≤ 3 / 20 := by
   have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
-  have hc2 : 25 ≤ c ^ 2 := by nlinarith
-  have hden : 0 < 8 * c ^ 2 := by positivity
-  let d : ℝ := 9 / (8 * c ^ 2)
+  have hc2 : 25 ≤ c ^ (2 : ℕ) := by nlinarith
+  have hden : 0 < 8 * c ^ (2 : ℕ) := by positivity
+  let d : ℝ := 9 / (8 * c ^ (2 : ℕ))
   have hd0 : 0 ≤ d := by dsimp [d]; positivity
   have hd1 : d ≤ 1 / 20 := by
     dsimp [d]
     rw [div_le_iff₀ hden]
     nlinarith
-  have hdsq : d ^ 2 ≤ d / 20 := by
+  have hdsq : d ^ (2 : ℕ) ≤ d / 20 := by
     have := mul_nonneg hd0 (sub_nonneg.mpr hd1)
     nlinarith
   rw [dunsterEndpointCrossing]
-  change (1 + d) ^ 2 - 1 ≤ 3 / 20
+  change (1 + d) ^ (2 : ℕ) - 1 ≤ 3 / 20
   nlinarith
 
 /-- The square-root endpoint coordinate has already reached `3/(2c)`. -/
 theorem three_div_two_c_le_sqrt_crossing_sq_sub_one {c : ℝ} (hc : 0 < c) :
-    3 / (2 * c) ≤ Real.sqrt (dunsterEndpointCrossing c ^ 2 - 1) := by
-  have hden : 0 < 8 * c ^ 2 := by positivity
-  let d : ℝ := 9 / (8 * c ^ 2)
+    3 / (2 * c) ≤ Real.sqrt (dunsterEndpointCrossing c ^ (2 : ℕ) - 1) := by
+  have hden : 0 < 8 * c ^ (2 : ℕ) := by positivity
+  let d : ℝ := 9 / (8 * c ^ (2 : ℕ))
   have hd0 : 0 < d := by dsimp [d]; positivity
   have hcross : dunsterEndpointCrossing c = 1 + d := by rfl
-  have hrad : 0 ≤ dunsterEndpointCrossing c ^ 2 - 1 := by
+  have hrad : 0 ≤ dunsterEndpointCrossing c ^ (2 : ℕ) - 1 := by
     rw [hcross]
     nlinarith
   rw [Real.le_sqrt (by positivity) hrad]
@@ -94,7 +94,7 @@ theorem one_le_c_mul_xiEndpointPhase_crossing {s c : ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) :
     1 ≤ c * xiEndpointPhase s (dunsterEndpointCrossing c) := by
   let B : ℝ := dunsterEndpointCrossing c
-  let d : ℝ := B ^ 2 - 1
+  let d : ℝ := B ^ (2 : ℕ) - 1
   have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
   have hB1 : 1 < B := dunsterEndpointCrossing_gt_one hc0
   have hd0 : 0 ≤ d := by dsimp [d]; nlinarith

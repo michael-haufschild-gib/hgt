@@ -20,7 +20,7 @@ theorem routeKRVMCanonicalZero_ne_zero (n : ℕ) :
     (routeKRVMBase_pos.trans (routeKRVMBase_lt_quantile n)).ne'
 
 theorem summable_routeKRVMCanonicalZero_inv_norm_sq :
-    Summable (fun n : ℕ => 1 / ‖routeKRVMCanonicalZero n‖ ^ 2) := by
+    Summable (fun n : ℕ => 1 / ‖routeKRVMCanonicalZero n‖ ^ (2 : ℕ)) := by
   exact summable_routeKRVMQuantile_reciprocal_sq.congr fun n => by
     rw [routeKRVMCanonicalZero, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (routeKRVMBase_pos.trans (routeKRVMBase_lt_quantile n))]
@@ -55,7 +55,7 @@ theorem routeKRVMSmoothCanonicalProduct_differentiable :
 
 theorem routeKRVMSmoothCanonicalProduct_eq_tprod (z : ℂ) :
     routeKRVMSmoothCanonicalProduct z =
-      ∏' n : ℕ, (1 - z ^ 2 / (routeKRVMQuantile n : ℂ) ^ 2) := by
+      ∏' n : ℕ, (1 - z ^ (2 : ℕ) / (routeKRVMQuantile n : ℂ) ^ (2 : ℕ)) := by
   have hmulPos : Multipliable (fun n =>
       weierstrassE1 (z / routeKRVMCanonicalZero n)) :=
     (canonicalProductE1Indexed_hasProdLocallyUniformlyOn
@@ -90,7 +90,7 @@ theorem routeKRVMSmoothCanonicalProduct_eq_tprod (z : ℂ) :
     _ = (1 - x) * (1 + x) := by
       rw [← Complex.exp_add]
       simp
-    _ = 1 - z ^ 2 / (routeKRVMQuantile n : ℂ) ^ 2 := by
+    _ = 1 - z ^ (2 : ℕ) / (routeKRVMQuantile n : ℂ) ^ (2 : ℕ) := by
       simp only [x]
       field_simp [ha]
       ring_nf
@@ -101,7 +101,7 @@ def routeKSignedPrimeRVMKernel :
 
 theorem summable_norm_routeKSignedPrimeRVMMultiplier_sq :
     Summable (fun i : RouteKSignedPrimeIndex =>
-      ‖routeKSignedPrimeRVMMultiplier i‖ ^ 2) := by
+      ‖routeKSignedPrimeRVMMultiplier i‖ ^ (2 : ℕ)) := by
   apply Summable.sum
   · simpa [Function.comp_def, routeKSignedPrimeRVMMultiplier,
       Complex.norm_real, Real.norm_eq_abs,

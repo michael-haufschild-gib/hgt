@@ -28,14 +28,14 @@ theorem horizontal_transfer_coefficients {r : ℝ} (hr : 0 < r) (theta : ℝ) :
     unfold radialNumerator
     field_simp
     ring
-  have hid : Real.sin theta ^ 2 + radialNumerator r theta ^ 2 = denominator r theta ^ 2 := by
+  have hid : Real.sin theta ^ (2 : ℕ) + radialNumerator r theta ^ (2 : ℕ) = denominator r theta ^ (2 : ℕ) := by
     unfold radialNumerator denominator
-    linear_combination (Real.cos theta ^ 2 - 1) * Real.cosh_sq_sub_sinh_sq r +
+    linear_combination (Real.cos theta ^ (2 : ℕ) - 1) * Real.cosh_sq_sub_sinh_sq r +
       Real.sin_sq_add_cos_sq theta
   rw [hb]
   constructor
   · calc
-      _ = (Real.sin theta ^ 2 + radialNumerator r theta ^ 2) / denominator r theta ^ 2 := by
+      _ = (Real.sin theta ^ (2 : ℕ) + radialNumerator r theta ^ (2 : ℕ)) / denominator r theta ^ (2 : ℕ) := by
         unfold offsetRadial offsetAngular
         field_simp
       _ = 1 := by rw [hid]; exact div_self (pow_ne_zero 2 hn)
@@ -55,21 +55,21 @@ theorem vertical_transfer_coefficients {r : ℝ} (hr : 0 < r) (theta : ℝ) :
       Real.sinh r * denominator r theta := by
     unfold radialNumerator denominator
     linear_combination -Real.cos theta * Real.cosh_sq_sub_sinh_sq r
-  have hy : -Real.cos theta * radialNumerator r theta + Real.cosh r * Real.sin theta ^ 2 =
+  have hy : -Real.cos theta * radialNumerator r theta + Real.cosh r * Real.sin theta ^ (2 : ℕ) =
       denominator r theta := by
     unfold radialNumerator denominator
     linear_combination Real.cosh r * Real.sin_sq_add_cos_sq theta
   constructor
   · calc
       _ = Real.sin theta * (Real.cos theta + Real.cosh r * radialNumerator r theta) /
-          denominator r theta ^ 2 := by
+          denominator r theta ^ (2 : ℕ) := by
         unfold offsetRadial offsetAngular
         field_simp
         ring
       _ = offset r theta := by rw [hx]; unfold offset; field_simp
   · calc
-      _ = (-Real.cos theta * radialNumerator r theta + Real.cosh r * Real.sin theta ^ 2) /
-          denominator r theta ^ 2 := by
+      _ = (-Real.cos theta * radialNumerator r theta + Real.cosh r * Real.sin theta ^ (2 : ℕ)) /
+          denominator r theta ^ (2 : ℕ) := by
         unfold heightRadial heightAngular
         field_simp
         ring

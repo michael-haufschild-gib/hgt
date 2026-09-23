@@ -67,14 +67,14 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_two_le_twelve {k : ℕ} (hk : k ≤
     |thetaCuspNativeScaledEvenJet k x-thetaCuspTwoAtomScaledEvenJet k x| ≤
       (∑ i ∈ Finset.range (2*k+1), ((2*k).choose i : ℝ)*|thetaCuspFirstAtomReflectionJet i x| *
         thetaCuspTwoAtomReflectionErrorBoundTwelve (2*k-i) x)/
-          (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k) := by
+          (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k) := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k := by positivity
+  have hd : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k := by positivity
   have he : thetaCuspNativeScaledEvenJet k x-thetaCuspTwoAtomScaledEvenJet k x =
       (-1 : ℝ)^k*((thetaCuspNativeReflectionJet (2*k) x-thetaCuspTwoAtomReflectionJet (2*k) x)/
-        (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k)) := by
+        (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k)) := by
     unfold thetaCuspNativeScaledEvenJet thetaCuspTwoAtomScaledEvenJet
     ring
   rw [he, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul, abs_div, abs_of_pos hd]
@@ -87,7 +87,7 @@ theorem abs_thetaCuspNativeScaledEvenJet_sub_two_le_on_middle_twelve {k : ℕ} (
     |thetaCuspNativeScaledEvenJet k x-thetaCuspTwoAtomScaledEvenJet k x| ≤
       (∑ i ∈ Finset.range (2*k+1), ((2*k).choose i : ℝ)*|thetaCuspFirstAtomReflectionJet i x| *
         thetaCuspTwoAtomReflectionErrorBoundTwelve (2*k-i) x)/
-          (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k) :=
+          (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k) :=
   abs_thetaCuspNativeScaledEvenJet_sub_two_le_twelve hk
     (thirtySevenTenths_le_firstAtomScale_of_energy_endpoint hx)
 

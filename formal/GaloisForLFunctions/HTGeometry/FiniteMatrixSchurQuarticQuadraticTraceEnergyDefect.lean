@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.FiniteMatrixSchurPositiveQuarticSpectralSp
 
 The root-free quadratic defect
 
-`matHSNormSq M - Re (trace (M^2))`
+`matHSNormSq M - Re (trace (M^(2 : ℕ)))`
 
 splits exactly, in Schur coordinates, into nonnormal off-diagonal energy plus twice the squared
 imaginary mass of the spectrum.  The second term quantitatively controls positive quartic charge,
@@ -28,7 +28,7 @@ noncomputable section
 /-- Root-free quadratic trace-energy defect of a finite complex matrix. -/
 def finiteMatrixQuadraticTraceEnergyDefect
     {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) : ℝ :=
-  matHSNormSq M - ((M ^ 2).trace).re
+  matHSNormSq M - ((M ^ (2 : ℕ)).trace).re
 
 /-- Schur off-diagonal energy: total matrix energy minus spectral diagonal energy. -/
 def finiteMatrixSchurNonnormalEnergy
@@ -40,13 +40,13 @@ def finiteMatrixSchurNonnormalEnergy
 def finiteMatrixSchurTransverseQuadraticEnergy
     {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ}
     (S : FiniteMatrixSchurPacket M) : ℝ :=
-  2 * ∑ i, (S.T i i).im ^ 2
+  2 * ∑ i, (S.T i i).im ^ (2 : ℕ)
 
 theorem trace_sq_re_eq_sum_schur_normSq_sub_two_im_sq
     {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ}
     (S : FiniteMatrixSchurPacket M) :
-    ((M ^ 2).trace).re =
-      ∑ i, (Complex.normSq (S.T i i) - 2 * (S.T i i).im ^ 2) := by
+    ((M ^ (2 : ℕ)).trace).re =
+      ∑ i, (Complex.normSq (S.T i i) - 2 * (S.T i i).im ^ (2 : ℕ)) := by
   rw [trace_pow_eq_sum_diag S.unitary_left S.unitary_right S.triangular
     S.conjugates_matrix 2]
   rw [Complex.re_sum]
@@ -107,27 +107,27 @@ theorem finiteMatrixSchurPositiveQuarticCharge_le_transverseQuadraticEnergy
       sum_diag_normSq_le_matHSNormSq S.unitary_right S.conjugates_matrix
   have hpoint : ∀ i,
       sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
-        2300 * matHSNormSq M * (S.T i i).im ^ 2 := by
+        2300 * matHSNormSq M * (S.T i i).im ^ (2 : ℕ) := by
     intro i
     have hsingle :
         Complex.normSq (S.T i i) ≤ ∑ j, Complex.normSq (S.T j j) :=
       Finset.single_le_sum (fun j _ => Complex.normSq_nonneg (S.T j j))
         (Finset.mem_univ i)
     have hiM := hsingle.trans hdiagSum
-    have himsq : 0 ≤ (S.T i i).im ^ 2 := sq_nonneg _
+    have himsq : 0 ≤ (S.T i i).im ^ (2 : ℕ) := sq_nonneg _
     calc
       sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
-          2300 * Complex.normSq (S.T i i) * (S.T i i).im ^ 2 :=
+          2300 * Complex.normSq (S.T i i) * (S.T i i).im ^ (2 : ℕ) :=
         sourcePairPositiveQuarticCharge_le_normSq_mul_im_sq _
-      _ ≤ 2300 * matHSNormSq M * (S.T i i).im ^ 2 := by
+      _ ≤ 2300 * matHSNormSq M * (S.T i i).im ^ (2 : ℕ) := by
         nlinarith
   unfold finiteMatrixSchurPositiveQuarticCharge finitePacketPositiveQuarticCharge
   rw [finiteMatrixSchurTransverseQuadraticEnergy]
   calc
     (∑ i, sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im) ≤
-        ∑ i, 2300 * matHSNormSq M * (S.T i i).im ^ 2 :=
+        ∑ i, 2300 * matHSNormSq M * (S.T i i).im ^ (2 : ℕ) :=
       Finset.sum_le_sum fun i _ => hpoint i
-    _ = 1150 * matHSNormSq M * (2 * ∑ i, (S.T i i).im ^ 2) := by
+    _ = 1150 * matHSNormSq M * (2 * ∑ i, (S.T i i).im ^ (2 : ℕ)) := by
       rw [← Finset.mul_sum]
       ring
 

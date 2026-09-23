@@ -7,7 +7,7 @@ Every algebraic response that factors through bounded formation and bounded reco
 sequentially closable. A constant codiagonal therefore cannot admit such a factorization on any
 complex normed space unless its coefficient vanishes. This closes the graph-gauge loophole
 sharply: the existing `(n+1)` formation loading can regularize a nonzero codiagonal only because
-that load is unbounded in the base `ell^2` gauge.
+that load is unbounded in the base `ell^(2 : ℕ)` gauge.
 
 No Xi zero, RH assumption, numerical computation, or project axiom is used.
 -/

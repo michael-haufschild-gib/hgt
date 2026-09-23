@@ -166,12 +166,12 @@ theorem finiteRoot_residualBlaschke_schwarzPick_data
 
 /-- Scalar terminal theorem for a pseudo-hyperbolic value disk.  If both the
 disk center and radius are bounded by `r < 1`, and the target value is in the
-closed unit disk, then its norm is at most `2*r/(1+r^2)`. -/
+closed unit disk, then its norm is at most `2*r/(1+r^(2 : ℕ))`. -/
 theorem norm_le_two_mul_div_one_add_sq_of_pseudoHyperbolicDisk
     {s b : ℂ} {r : ℝ} (hr : 0 ≤ r) (hrone : r < 1)
     (hsone : ‖s‖ ≤ 1) (hb : ‖b‖ ≤ r)
     (hdisk : ‖(s + b) / (1 + s * starRingEnd ℂ b)‖ ≤ r) :
-    ‖s‖ ≤ 2 * r / (1 + r ^ 2) := by
+    ‖s‖ ≤ 2 * r / (1 + r ^ (2 : ℕ)) := by
   let x := ‖s‖
   let y := ‖b‖
   let t := (s * starRingEnd ℂ b).re
@@ -198,8 +198,8 @@ theorem norm_le_two_mul_div_one_add_sq_of_pseudoHyperbolicDisk
     (div_le_iff₀ hdenNorm).mp hdisk
   have hright : 0 ≤ r * ‖1 + s * starRingEnd ℂ b‖ :=
     mul_nonneg hr (norm_nonneg _)
-  have hsq : ‖s + b‖ ^ 2 ≤
-      (r * ‖1 + s * starRingEnd ℂ b‖) ^ 2 :=
+  have hsq : ‖s + b‖ ^ (2 : ℕ) ≤
+      (r * ‖1 + s * starRingEnd ℂ b‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hright).2 hnum
   rw [Complex.sq_norm, mul_pow, Complex.sq_norm,
     Complex.normSq_add, Complex.normSq_add, Complex.normSq_one,
@@ -212,24 +212,24 @@ theorem norm_le_two_mul_div_one_add_sq_of_pseudoHyperbolicDisk
   rw [htstar] at hsq
   have htleft : (s * star b).re = t := by rfl
   rw [htleft] at hsq
-  change x ^ 2 + y ^ 2 + 2 * t ≤
-    r ^ 2 * (1 + x ^ 2 * y ^ 2 + 2 * t) at hsq
+  change x ^ (2 : ℕ) + y ^ (2 : ℕ) + 2 * t ≤
+    r ^ (2 : ℕ) * (1 + x ^ (2 : ℕ) * y ^ (2 : ℕ) + 2 * t) at hsq
   have ht : -x * y ≤ t := by
     have habs := Complex.abs_re_le_norm (s * starRingEnd ℂ b)
     rw [norm_mul, Complex.norm_conj] at habs
     change |t| ≤ x * y at habs
     simpa only [neg_mul] using (abs_le.mp habs).1
-  have hcoeff : 0 ≤ 1 - r ^ 2 := by nlinarith
+  have hcoeff : 0 ≤ 1 - r ^ (2 : ℕ) := by nlinarith
   have htadd : 0 ≤ t + x * y := by linarith
   have hnonneg := mul_nonneg hcoeff htadd
-  have hkey : (x - y) ^ 2 ≤ r ^ 2 * (1 - x * y) ^ 2 := by
+  have hkey : (x - y) ^ (2 : ℕ) ≤ r ^ (2 : ℕ) * (1 - x * y) ^ (2 : ℕ) := by
     nlinarith
-  apply (le_div_iff₀ (by positivity : 0 < 1 + r ^ 2)).2
-  change x * (1 + r ^ 2) ≤ 2 * r
+  apply (le_div_iff₀ (by positivity : 0 < 1 + r ^ (2 : ℕ))).2
+  change x * (1 + r ^ (2 : ℕ)) ≤ 2 * r
   by_cases hxy : x ≤ y
-  · have hcoef : 1 + r ^ 2 ≤ 2 := by nlinarith
+  · have hcoef : 1 + r ^ (2 : ℕ) ≤ 2 := by nlinarith
     calc
-      x * (1 + r ^ 2) = (1 + r ^ 2) * x := by ring
+      x * (1 + r ^ (2 : ℕ)) = (1 + r ^ (2 : ℕ)) * x := by ring
       _ ≤ 2 * x :=
         mul_le_mul_of_nonneg_right hcoef hx
       _ ≤ 2 * r := by linarith
@@ -265,7 +265,7 @@ theorem finiteInnerValue_at_upperRoot_le_singleBaseRootPickBound
     (halphaRoot : A.eval₂ Complex.ofRealHom alpha = 0) :
     ‖finiteInnerValue A tau z‖ ≤
       2 * upperHalfPlanePseudoHyperbolicDistance z alpha /
-        (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ 2) := by
+        (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ (2 : ℕ)) := by
   have hzIm : 0 < z.im := by
     have hz' := hz
     rw [upperRootFactor_roots, Multiset.mem_filter] at hz'
@@ -293,7 +293,7 @@ theorem
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A tau).toLinearMap).re ≤
       2 * upperHalfPlanePseudoHyperbolicDistance z alpha /
-        (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ 2) := by
+        (1 + upperHalfPlanePseudoHyperbolicDistance z alpha ^ (2 : ℕ)) := by
   exact
     (finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_le_innerValue_of_mem
       A tau hz).trans

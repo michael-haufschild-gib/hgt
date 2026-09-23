@@ -43,7 +43,7 @@ theorem exists_primeTorsion_complete_targetCap_avoidance_of_replicaBudget
     (target : Y → Fin d → ZMod p)
     (hbudget :
       (((p - 1) * Fintype.card Y : ℕ) : ℝ) * (n.factorial : ℝ) *
-          (∑ i, weight i ^ 2) ^ n < threshold ^ (2 * n)) :
+          (∑ i, weight i ^ (2 : ℕ)) ^ n < threshold ^ (2 * n)) :
     ∃ q : Fin d → ZMod p,
       ∀ a : ZMod p, a ≠ 0 → ∀ y : Y,
         (fun i => a * q i) ∉
@@ -53,7 +53,7 @@ theorem exists_primeTorsion_complete_targetCap_avoidance_of_replicaBudget
   let A : ℝ := (((p - 1) * Fintype.card Y : ℕ) : ℝ)
   let B : ℝ := ((finiteGridCoherenceCap p weight threshold).card : ℝ)
   let P : ℝ := (p : ℝ) ^ d
-  let F : ℝ := (n.factorial : ℝ) * (∑ i, weight i ^ 2) ^ n
+  let F : ℝ := (n.factorial : ℝ) * (∑ i, weight i ^ (2 : ℕ)) ^ n
   let T : ℝ := threshold ^ (2 * n)
   have hA : 0 ≤ A := by positivity
   have hP : 0 < P := by

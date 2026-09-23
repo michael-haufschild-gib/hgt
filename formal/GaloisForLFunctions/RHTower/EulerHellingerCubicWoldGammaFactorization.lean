@@ -10,7 +10,7 @@ where `P_N` is the finite prime Euler logarithm.  Closing the local third deriva
 turns that jet into an explicit positive prime-power current
 
 ```text
-L_N'''(0) = 12 ∑_{p < N} (log p)^3 ∑_{k ≥ 1} k^2 p^(-k).
+L_N'''(0) = 12 ∑_{p < N} (log p)^(3 : ℕ) ∑_{k ≥ 1} k^(2 : ℕ) p^(-k).
 ```
 
 Each local factor splits into two independent source objects: the all-positive-depth geometric
@@ -19,7 +19,7 @@ moment `M_{2,p}` of the same prime ray.  The dyadic normalization forced by the 
 is the scalar `48 log p`:
 
 ```text
-12 (log p)^3 ∑_{k ≥ 1} k^2 p^(-k) = 48 (log p) (q / (1 - q)) M_{2,p}.
+12 (log p)^(3 : ℕ) ∑_{k ≥ 1} k^(2 : ℕ) p^(-k) = 48 (log p) (q / (1 - q)) M_{2,p}.
 ```
 -/
 
@@ -237,7 +237,7 @@ def gammaSewnSynchronizedEulerHalfHeightSecondMoment (p : Nat.Primes) : ℝ :=
     gammaSewnSynchronizedEulerDepthProbability 1 p e * xiGammaEulerBoundaryHalfHeight p e ^ 2
 
 /-- **The synchronized Euler depth theorem at unit aperture.**  The complete second moment of the
-physical half-height over one prime ray is `L^2 (1 + q) / (4 (1 - q)^2)` at `q = p⁻¹`. -/
+physical half-height over one prime ray is `L^(2 : ℕ) (1 + q) / (4 (1 - q)^(2 : ℕ))` at `q = p⁻¹`. -/
 theorem gammaSewnSynchronizedEulerHalfHeightSecondMoment_eq (p : Nat.Primes) :
     gammaSewnSynchronizedEulerHalfHeightSecondMoment p =
       Real.log ((p : ℕ) : ℝ) ^ 2 * (1 + ((p : ℕ) : ℝ)⁻¹) /

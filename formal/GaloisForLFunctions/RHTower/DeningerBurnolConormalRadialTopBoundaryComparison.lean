@@ -67,7 +67,7 @@ theorem iteratedDeriv_burnolCoPoissonExpWindowZetaMellinGerm_log_nat_ne_zero
 the Deninger half-density mate gain. -/
 theorem norm_deningerBurnolActualCenteredConormalCharacter_sq
     {n : ℕ} (hn : 2 ≤ n) (rho : XiDivisorSupport) :
-    ‖deningerBurnolActualCenteredConormalCharacter n rho‖ ^ 2 =
+    ‖deningerBurnolActualCenteredConormalCharacter n rho‖ ^ (2 : ℕ) =
       deningerHalfDensityMateGain n (rho : ℂ) := by
   rw [deningerBurnolActualCenteredConormalCharacter_eq hn,
     norm_burnolCoPoissonCenteredConormalCharacter,
@@ -79,9 +79,9 @@ theorem norm_deningerBurnolActualCenteredConormalCharacter_sq
 conormal pair. -/
 def deningerBurnolActualConormalRadialReflectionDefect
     (n : ℕ) (rho : XiDivisorSupport) : ℝ :=
-  ‖deningerBurnolActualCenteredConormalCharacter n rho‖ ^ 2 -
+  ‖deningerBurnolActualCenteredConormalCharacter n rho‖ ^ (2 : ℕ) -
     ‖deningerBurnolActualCenteredConormalCharacter n
-      (xiZeroLineConjEquiv rho)‖ ^ 2
+      (xiZeroLineConjEquiv rho)‖ ^ (2 : ℕ)
 
 /-- The physical Burnol conormal radial discriminant is exactly Deninger's
 tensor-square mate curvature. -/

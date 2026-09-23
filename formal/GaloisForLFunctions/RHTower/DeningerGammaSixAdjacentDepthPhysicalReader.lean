@@ -27,7 +27,7 @@ noncomputable section
 def deningerGammaSixDeattenuatedDefect (k l M : ℕ) (w : ℂ) (ε : ℝ) : ℂ :=
   (mobiusThetaSuccessorSpectralNormalizer ⟨6, by omega⟩ M (mobiusThetaCenteredParameter w) *
     deningerOrdinaryIntegerAbelDefect ε (6 : PNat) (deningerGammaSixIntegralTailOperator k l M w) /
-      (ε : ℂ)^2) / (Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ) * ε)))
+      (ε : ℂ)^(2 : ℕ)) / (Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ) * ε)))
 
 theorem tendsto_deningerGammaSixDeattenuatedDefect
     (k l : ℕ) {w : ℂ} (hw : |w.im| < 1)
@@ -93,7 +93,7 @@ theorem deningerGammaSixAdjacentDefectQuotient_eq
   unfold deningerGammaSixSuccessorRatio
   have hfield (a b n t e x y : ℂ) (hn : n ≠ 0) (ht : t ≠ 0)
       (he : e ≠ 0) (hx : x ≠ 0) (hy : y ≠ 0) :
-      a / b = t⁻¹ * y * ((n * t * a / e^2 / (x*y)) / (n*b/e^2/x)) := by
+      a / b = t⁻¹ * y * ((n * t * a / e^(2 : ℕ) / (x*y)) / (n*b/e^(2 : ℕ)/x)) := by
     by_cases hb : b = 0
     · simp only [hb, mul_zero, zero_div, div_zero]
     · field_simp
@@ -296,7 +296,7 @@ theorem deningerGammaSixIntegralTailOperator_defect_factor
     (k l M : ℕ) (w : ℂ) {ε : ℝ} (hε : ε ≠ 0) :
     deningerOrdinaryIntegerAbelDefect ε (6 : PNat) (deningerGammaSixIntegralTailOperator k l M w) =
       (deningerGammaSixDeattenuatedDefect k l M w ε * deningerGammaSixSuccessorRatio w ^ M *
-        (ε : ℂ)^2) * Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ)*ε)) := by
+        (ε : ℂ)^(2 : ℕ)) * Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ)*ε)) := by
   have hN := deningerGammaSixSuccessorNormalizer_ne_zero M w
   have he : (ε : ℂ) ≠ 0 := by exact_mod_cast hε
   have hb : Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ)*ε)) ≠ 0 := by
@@ -306,7 +306,7 @@ theorem deningerGammaSixIntegralTailOperator_defect_factor
     rw [deningerGammaSixSuccessorRatio, inv_pow, ← deningerGammaSixSuccessorNormalizer_pow M w]
   rw [hq, deningerGammaSixDeattenuatedDefect]
   have hf (D N e b : ℂ) (hN : N ≠ 0) (he : e ≠ 0) (hb : b ≠ 0) :
-      D = ((N*D/e^2/b)*N⁻¹*e^2)*b := by field_simp
+      D = ((N*D/e^(2 : ℕ)/b)*N⁻¹*e^(2 : ℕ))*b := by field_simp
   exact hf _ _ _ _ hN he hb
 
 /-- Every actual unnormalized defect tends to zero; adjacent relative decay still carries its anchor. -/

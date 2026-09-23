@@ -124,7 +124,7 @@ def vonMangoldtAdditiveLogJetKernel (r s : ℕ) : ℝ :=
 /-- Positive density whose total is the magnitude of adjacent Hankel curvature at order `s`. -/
 def vonMangoldtAdditiveLogJetAdjacentHankelCost (s n : ℕ) : ℝ :=
   finiteVonMangoldtRealWeight n *
-    (Real.log (n + 1 : ℝ) - Real.log (n : ℝ)) ^ 2 *
+    (Real.log (n + 1 : ℝ) - Real.log (n : ℝ)) ^ (2 : ℕ) *
       (Real.log (n + 1 : ℝ) * Real.log (n : ℝ)) ^ s
 
 theorem vonMangoldtAdditiveLogJetAdjacentHankelCost_nonneg (s n : ℕ) :
@@ -157,7 +157,7 @@ theorem vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq
     (s n : ℕ) :
     vonMangoldtAdditiveLogJetFeature (s + 2) n *
           vonMangoldtAdditiveLogJetFeature s n -
-        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ 2 =
+        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ (2 : ℕ) =
       -vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
   unfold vonMangoldtAdditiveLogJetFeature
   calc
@@ -166,16 +166,16 @@ theorem vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq
         (Real.sqrt (finiteVonMangoldtRealWeight n) *
           vonMangoldtAdditiveLogJetDifference s n) -
         (Real.sqrt (finiteVonMangoldtRealWeight n) *
-          vonMangoldtAdditiveLogJetDifference (s + 1) n) ^ 2 =
+          vonMangoldtAdditiveLogJetDifference (s + 1) n) ^ (2 : ℕ) =
         (Real.sqrt (finiteVonMangoldtRealWeight n) *
           Real.sqrt (finiteVonMangoldtRealWeight n)) *
         (vonMangoldtAdditiveLogJetDifference (s + 2) n *
           vonMangoldtAdditiveLogJetDifference s n -
-          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ 2) := by ring
+          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ (2 : ℕ)) := by ring
     _ = finiteVonMangoldtRealWeight n *
         (vonMangoldtAdditiveLogJetDifference (s + 2) n *
           vonMangoldtAdditiveLogJetDifference s n -
-          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ 2) := by
+          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ (2 : ℕ)) := by
       rw [Real.mul_self_sqrt (finiteVonMangoldtRealWeight_nonneg n)]
     _ = -vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
       unfold vonMangoldtAdditiveLogJetDifference vonMangoldtAdditiveLogJet
@@ -221,7 +221,7 @@ theorem vonMangoldtAdditiveLogJetKernel_adjacentHankelCurvature_eq (s : ℕ) :
           vonMangoldtAdditiveLogJetFeature (s + 1) n =
         vonMangoldtAdditiveLogJetFeature (s + 2) n *
           vonMangoldtAdditiveLogJetFeature s n -
-        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ 2 := by ring
+        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ (2 : ℕ) := by ring
     _ = -vonMangoldtAdditiveLogJetAdjacentHankelCost s n :=
       vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq s n
 

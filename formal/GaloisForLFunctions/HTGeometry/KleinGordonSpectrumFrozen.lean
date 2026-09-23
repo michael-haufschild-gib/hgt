@@ -31,16 +31,16 @@ set_option maxHeartbeats 1000000 in
 theorem kgFieldEnergy_low_trapped (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (‖kgLowPassOp R g‖ ^ 2 + ‖kgLowPassOp R h‖ ^ 2) / ((1 + b) / (1 - b))
+    (‖kgLowPassOp R g‖ ^ (2 : ℕ) + ‖kgLowPassOp R h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
         ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
       ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
-        ≤ (1 + b) / (1 - b) * (‖kgLowPassOp R g‖ ^ 2 + ‖kgLowPassOp R h‖ ^ 2) :=
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
+        ≤ (1 + b) / (1 - b) * (‖kgLowPassOp R g‖ ^ (2 : ℕ) + ‖kgLowPassOp R h‖ ^ (2 : ℕ)) :=
   kgFieldEnergy_trapped_diagonal hφ hb0 hb1 hC hreal (kgLowPassOp R g) (kgLowPassOp R h) t
 
 set_option maxHeartbeats 1000000 in
@@ -48,16 +48,16 @@ set_option maxHeartbeats 1000000 in
 theorem kgFieldEnergy_high_trapped (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2) / ((1 + b) / (1 - b))
+    (‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
         ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
       ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
-        ≤ (1 + b) / (1 - b) * (‖g - kgLowPassOp R g‖ ^ 2 + ‖h - kgLowPassOp R h‖ ^ 2) :=
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
+        ≤ (1 + b) / (1 - b) * (‖g - kgLowPassOp R g‖ ^ (2 : ℕ) + ‖h - kgLowPassOp R h‖ ^ (2 : ℕ)) :=
   kgFieldEnergy_trapped_diagonal hφ hb0 hb1 hC hreal (g - kgLowPassOp R g)
     (h - kgLowPassOp R h) t
 
@@ -67,16 +67,16 @@ value. -/
 theorem kgFieldEnergy_annulus_trapped (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2) / ((1 + b) / (1 - b))
+    (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
         ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
       ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-        ≤ (1 + b) / (1 - b) * (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2) :=
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+        ≤ (1 + b) / (1 - b) * (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) :=
   kgFieldEnergy_trapped_diagonal hφ hb0 hb1 hC hreal (kgAnnulusOp R₁ R₂ g)
     (kgAnnulusOp R₁ R₂ h) t
 
@@ -84,16 +84,16 @@ set_option maxHeartbeats 1000000 in
 /-- The energy of a clock splits across an annulus, in the autonomous register. -/
 theorem kgFieldEnergy_annulus_split_static (hφ : Measurable φ) (hb0 : 0 ≤ b)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-        + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
+    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
       = (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
         + (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2) := by
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)) := by
   have hsplit := kgFieldEnergyT_annulus_split (w := fun _ : ℝ => φ) (fun _ => hφ) hb0
     (fun _ => hC) (fun _ => continuous_const) R₁ R₂ g h t
   simp only [kgFieldGradT_const, kgFieldVelT_const] at hsplit
@@ -106,26 +106,26 @@ total — so no band gains or loses more than the fixed factor `(1+b)/(1−b)`, 
 theorem kgFieldEnergy_spectrum_frozen (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
+    ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
         = (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
           + (‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
-      ∧ (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2) / ((1 + b) / (1 - b))
+                (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
+      ∧ (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
           ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
       ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVel (fourierMulCLM hφ hb0 hC)
-                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-          ≤ (1 + b) / (1 - b) * (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2) := by
+                (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+          ≤ (1 + b) / (1 - b) * (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) := by
   obtain ⟨hlow, hhigh⟩ := kgFieldEnergy_annulus_trapped hφ hb0 hb1 hC hreal R₁ R₂ g h t
   exact ⟨kgFieldEnergy_annulus_split_static hφ hb0 hC R₁ R₂ g h t, hlow, hhigh⟩
 

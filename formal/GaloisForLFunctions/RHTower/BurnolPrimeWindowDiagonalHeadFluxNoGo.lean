@@ -21,8 +21,8 @@ namespace RHTower
 
 /-- Prime-`p` source-window diagonal current, with retained head sizes `p-1` and `log p`. -/
 def burnolPrimeWindowDiagonalHeadFlux (p : ℕ) (rho : ℂ) : ℝ :=
-  ((p : ℝ) - 1) ^ 2 * ‖((1 : ℂ) - rho)⁻¹‖ ^ 2 -
-    (Real.log p) ^ 2 * ‖rho⁻¹‖ ^ 2
+  ((p : ℝ) - 1) ^ (2 : ℕ) * ‖((1 : ℂ) - rho)⁻¹‖ ^ (2 : ℕ) -
+    (Real.log p) ^ (2 : ℕ) * ‖rho⁻¹‖ ^ (2 : ℕ)
 
 /-- Every ordinary-prime diagonal channel has the wrong strict sign in the open right half-strip. -/
 theorem burnolPrimeWindowDiagonalHeadFlux_pos
@@ -67,7 +67,7 @@ theorem burnolPrimeWindowDiagonalHeadFlux_pos
   have hrightNonneg : 0 ≤ P * y⁻¹ := mul_nonneg hP.le (inv_pos.mpr hy).le
   unfold burnolPrimeWindowDiagonalHeadFlux
   rw [norm_inv, norm_inv]
-  change 0 < P ^ 2 * y⁻¹ ^ 2 - L ^ 2 * x⁻¹ ^ 2
+  change 0 < P ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) - L ^ (2 : ℕ) * x⁻¹ ^ (2 : ℕ)
   nlinarith [sq_nonneg (P * y⁻¹), sq_nonneg (L * x⁻¹)]
 
 /-- Any nonempty finite nonnegative diagonal prime combination remains strictly positive. -/

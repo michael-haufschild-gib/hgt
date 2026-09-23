@@ -21,7 +21,7 @@ namespace RHTower
 /-! ## The seed as a genuine `ℓ²` vector -/
 
 theorem summable_twoModeSeedFun_sq (ℓ : ℕ → ℝ) :
-    Summable fun j => twoModeSeedFun ℓ j ^ 2 := by
+    Summable fun j => twoModeSeedFun ℓ j ^ (2 : ℕ) := by
   refine summable_of_ne_finset_zero (s := ({0, 1} : Finset ℕ)) ?_
   intro j hj
   rw [twoModeSeedFun_eq_zero hj]
@@ -54,7 +54,7 @@ theorem secularLp_coeFn {d ℓ : ℕ → ℝ} {μ : ℝ} (h : Memℓp (secularVe
 theorem ccm_memℓp {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ j, A 2 ≤ C ^ j * A (j + 2))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop
       (nhds (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))) :
@@ -68,12 +68,12 @@ theorem ccm_memℓp {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 �
 theorem ccm_summable_secularVector_sq {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ j, A 2 ≤ C ^ j * A (j + 2))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop
       (nhds (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))) :
     ∀ᶠ lam in atTop, Summable fun j =>
-      secularVector (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam) j ^ 2 := by
+      secularVector (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam) j ^ (2 : ℕ) := by
   filter_upwards [ccm_struct hA hC hgrow, hsum, ccm_l0_ne_zero hl0, ccm_l1_ne_zero hl1]
     with lam hst hsm h0 h1
   obtain ⟨⟨_, h01, h12⟩, hd2⟩ := hst
@@ -83,7 +83,7 @@ theorem ccm_summable_secularVector_sq {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C
     rw [hroot]
     linarith [hrmem.2]
   exact (summable_nat_add_iff
-      (f := fun j => secularVector (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam) j ^ 2)
+      (f := fun j => secularVector (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam) j ^ (2 : ℕ))
       2).mp
     (summable_secularVector_sq_tail hd2 hsm hlt)
 
@@ -98,18 +98,18 @@ theorem ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed
     {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ j, A 2 ≤ C ^ j * A (j + 2))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop
       (nhds (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)))) :
     Tendsto (fun lam => min
         (‖(‖secularLp (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)‖)⁻¹
             • secularLp (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)
-          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularLp (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)‖)⁻¹
             • secularLp (ccmFuchsScale A lam) (ℓ lam) (ccmFuchsRoot A ℓ lam)
-          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   have ha0 : ((2 : ℝ) ^ ((1 : ℝ) / 4)) ≠ 0 := by positivity
   have ha1 : (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) ≠ 0 := by

@@ -62,7 +62,7 @@ theorem tendsto_apertureCovarianceDefect_div_sq
     Tendsto (fun c : ℝ =>
       xiWardCubicApertureCovarianceDefect T c
           (Complex.exp (-(z * (c : ℂ))))
-          (xiWardCubicRadialGeneralizedMode z) 0 / (c : ℂ) ^ 2)
+          (xiWardCubicRadialGeneralizedMode z) 0 / (c : ℂ) ^ (2 : ℕ))
       (nhdsWithin 0 ({0}ᶜ)) (nhds (2 * (w - z))) := by
   have hdiff := tendsto_exp_neg_mul_difference_div_aperture z w
   have hexp : Tendsto (fun c : ℝ => Complex.exp (-(w * (c : ℂ))))

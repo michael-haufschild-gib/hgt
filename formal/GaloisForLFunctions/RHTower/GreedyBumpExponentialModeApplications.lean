@@ -78,7 +78,7 @@ theorem GreedyBumpExponentialModeData.localizationRadius {r : ℕ}
     Matrix.trace
         (GaloisForLFunctions.HTGeometry.greedyBumpLocalizationCovariance Q data.metric *
           data.metric.matrix) =
-      ((data.modeCount + data.modeCount : ℕ) : ℝ) / (Q : ℝ) ^ 2 :=
+      ((data.modeCount + data.modeCount : ℕ) : ℝ) / (Q : ℝ) ^ (2 : ℕ) :=
   GaloisForLFunctions.HTGeometry.greedyBumpLocalizationCovariance_trace_mul Q data.metric
 
 end

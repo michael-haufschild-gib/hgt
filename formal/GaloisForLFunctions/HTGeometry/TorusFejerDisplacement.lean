@@ -35,7 +35,7 @@ def dirichletSum (N : ℕ) (x : ℝ) : ℂ :=
   ∑ k ∈ Finset.range (N + 1), Complex.exp ((((k : ℝ) * x : ℝ) : ℂ) * Complex.I)
 
 /-- The order-`N` Fejér kernel on the circle, `F_N(x) = |D_N(x)|²/(N+1)`. -/
-def torusFejer (N : ℕ) (x : ℝ) : ℝ := ‖dirichletSum N x‖ ^ 2 / ((N : ℝ) + 1)
+def torusFejer (N : ℕ) (x : ℝ) : ℝ := ‖dirichletSum N x‖ ^ (2 : ℕ) / ((N : ℝ) + 1)
 
 theorem torusFejer_nonneg (N : ℕ) (x : ℝ) : 0 ≤ torusFejer N x := by
   unfold torusFejer
@@ -57,11 +57,11 @@ theorem dirichletSum_mul_conj (N : ℕ) (x : ℝ) :
 
 /-- The squared modulus of the Dirichlet sum is a real cosine polynomial. -/
 theorem norm_dirichletSum_sq (N : ℕ) (x : ℝ) :
-    ‖dirichletSum N x‖ ^ 2
+    ‖dirichletSum N x‖ ^ (2 : ℕ)
       = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),
           Real.cos (((p : ℝ) - (q : ℝ)) * x) := by
   classical
-  have hnormSq : (‖dirichletSum N x‖ ^ 2 : ℝ)
+  have hnormSq : (‖dirichletSum N x‖ ^ (2 : ℕ) : ℝ)
       = (dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x)).re := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
   rw [hnormSq, dirichletSum_mul_conj, Complex.re_sum]
@@ -81,7 +81,7 @@ theorem torusFejer_complex (N : ℕ) (x : ℝ) :
     intro h
     apply this
     exact_mod_cast h
-  have hsq : ((‖dirichletSum N x‖ ^ 2 : ℝ) : ℂ)
+  have hsq : ((‖dirichletSum N x‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hcast : (((N : ℝ) + 1 : ℝ) : ℂ) = (N : ℂ) + 1 := by push_cast; ring
@@ -165,21 +165,21 @@ section FejerTail
 
 /-- The squared distance of a unimodular character from one. -/
 theorem norm_exp_mul_I_sub_one_sq (θ : ℝ) :
-    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 = 4 * Real.sin (θ / 2) ^ 2 := by
+    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) = 4 * Real.sin (θ / 2) ^ (2 : ℕ) := by
   have hre : (Complex.exp ((θ : ℂ) * Complex.I) - 1).re = Real.cos θ - 1 := by
     rw [Complex.sub_re, Complex.exp_ofReal_mul_I_re, Complex.one_re]
   have him : (Complex.exp ((θ : ℂ) * Complex.I) - 1).im = Real.sin θ := by
     rw [Complex.sub_im, Complex.exp_ofReal_mul_I_im, Complex.one_im, sub_zero]
-  have hnorm : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2
-      = (Real.cos θ - 1) ^ 2 + Real.sin θ ^ 2 := by
+  have hnorm : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ)
+      = (Real.cos θ - 1) ^ (2 : ℕ) + Real.sin θ ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hre, him]
     ring
-  have hpy : Real.sin θ ^ 2 + Real.cos θ ^ 2 = 1 := Real.sin_sq_add_cos_sq θ
-  have hhalf : Real.cos θ = 2 * Real.cos (θ / 2) ^ 2 - 1 := by
+  have hpy : Real.sin θ ^ (2 : ℕ) + Real.cos θ ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq θ
+  have hhalf : Real.cos θ = 2 * Real.cos (θ / 2) ^ (2 : ℕ) - 1 := by
     have := Real.cos_two_mul (θ / 2)
     rw [show 2 * (θ / 2) = θ by ring] at this
     exact this
-  have hpy2 : Real.sin (θ / 2) ^ 2 + Real.cos (θ / 2) ^ 2 = 1 := Real.sin_sq_add_cos_sq (θ / 2)
+  have hpy2 : Real.sin (θ / 2) ^ (2 : ℕ) + Real.cos (θ / 2) ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq (θ / 2)
   rw [hnorm, hhalf]
   nlinarith [hpy, hpy2]
 
@@ -264,21 +264,21 @@ theorem norm_dirichletSum_le (N : ℕ) {x : ℝ} (hx : x ≠ 0) (hxπ : |x| ≤ 
 
 /-- **`(15)`, the Fejér tail bound.**  Away from the origin the kernel decays quadratically. -/
 theorem torusFejer_le (N : ℕ) {x : ℝ} (hx : x ≠ 0) (hxπ : |x| ≤ π) :
-    torusFejer N x ≤ π ^ 2 / (((N : ℝ) + 1) * x ^ 2) := by
+    torusFejer N x ≤ π ^ (2 : ℕ) / (((N : ℝ) + 1) * x ^ (2 : ℕ)) := by
   have hxabs : (0 : ℝ) < |x| := abs_pos.mpr hx
   have hNpos : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   have hD := norm_dirichletSum_le N hx hxπ
-  have hsq : ‖dirichletSum N x‖ ^ 2 ≤ (π / |x|) ^ 2 :=
+  have hsq : ‖dirichletSum N x‖ ^ (2 : ℕ) ≤ (π / |x|) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hD 2
-  have hx2 : (π / |x|) ^ 2 = π ^ 2 / x ^ 2 := by
+  have hx2 : (π / |x|) ^ (2 : ℕ) = π ^ (2 : ℕ) / x ^ (2 : ℕ) := by
     rw [div_pow, sq_abs]
   rw [torusFejer, div_le_div_iff₀ hNpos (by positivity)]
   rw [hx2] at hsq
-  have hxx : (0 : ℝ) < x ^ 2 := by positivity
-  calc ‖dirichletSum N x‖ ^ 2 * (((N : ℝ) + 1) * x ^ 2)
-      ≤ (π ^ 2 / x ^ 2) * (((N : ℝ) + 1) * x ^ 2) := by
+  have hxx : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+  calc ‖dirichletSum N x‖ ^ (2 : ℕ) * (((N : ℝ) + 1) * x ^ (2 : ℕ))
+      ≤ (π ^ (2 : ℕ) / x ^ (2 : ℕ)) * (((N : ℝ) + 1) * x ^ (2 : ℕ)) := by
         exact mul_le_mul_of_nonneg_right hsq (by positivity)
-    _ = π ^ 2 * ((N : ℝ) + 1) := by field_simp
+    _ = π ^ (2 : ℕ) * ((N : ℝ) + 1) := by field_simp
 
 end FejerTail
 
@@ -294,12 +294,12 @@ theorem continuous_torusFejer (N : ℕ) : Continuous (torusFejer N) := by
 
 /-- The antiderivative `-x⁻¹` computes the reciprocal-square integral off the origin. -/
 theorem integral_inv_sq {a b : ℝ} (_hab : a ≤ b) (h0 : ∀ x ∈ Set.uIcc a b, x ≠ 0) :
-    (∫ x in a..b, (x ^ 2)⁻¹) = a⁻¹ - b⁻¹ := by
-  have hd : ∀ x ∈ Set.uIcc a b, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ 2)⁻¹) x := by
+    (∫ x in a..b, (x ^ (2 : ℕ))⁻¹) = a⁻¹ - b⁻¹ := by
+  have hd : ∀ x ∈ Set.uIcc a b, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ (2 : ℕ))⁻¹) x := by
     intro x hx
-    have h : HasDerivAt (fun y : ℝ => -y⁻¹) (-(-(x ^ 2)⁻¹)) x := (hasDerivAt_inv (h0 x hx)).neg
+    have h : HasDerivAt (fun y : ℝ => -y⁻¹) (-(-(x ^ (2 : ℕ))⁻¹)) x := (hasDerivAt_inv (h0 x hx)).neg
     simpa using h
-  have hcontOn : ContinuousOn (fun x : ℝ => (x ^ 2)⁻¹) (Set.uIcc a b) := by
+  have hcontOn : ContinuousOn (fun x : ℝ => (x ^ (2 : ℕ))⁻¹) (Set.uIcc a b) := by
     refine ContinuousOn.inv₀ (by fun_prop) fun x hx => ?_
     exact pow_ne_zero 2 (h0 x hx)
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd hcontOn.intervalIntegrable]
@@ -308,7 +308,7 @@ theorem integral_inv_sq {a b : ℝ} (_hab : a ≤ b) (h0 : ∀ x ∈ Set.uIcc a 
 /-- **`(14)`, the Fejér mean displacement.**  The kernel moves mass by at most `2π/√(N+1)` in
 Haar mean. -/
 theorem integral_abs_mul_torusFejer_le (N : ℕ) :
-    (∫ x in (-π)..π, |x| * torusFejer N x) ≤ 4 * π ^ 2 / Real.sqrt ((N : ℝ) + 1) := by
+    (∫ x in (-π)..π, |x| * torusFejer N x) ≤ 4 * π ^ (2 : ℕ) / Real.sqrt ((N : ℝ) + 1) := by
   have hpi : (0 : ℝ) < π := Real.pi_pos
   have hNpos : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   set s : ℝ := Real.sqrt ((N : ℝ) + 1) with hsdef
@@ -316,13 +316,13 @@ theorem integral_abs_mul_torusFejer_le (N : ℕ) :
     rw [hsdef, show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
     exact Real.sqrt_le_sqrt (by simp)
   have hspos : (0 : ℝ) < s := lt_of_lt_of_le zero_lt_one hs1
-  have hssq : s ^ 2 = (N : ℝ) + 1 := Real.sq_sqrt (le_of_lt hNpos)
+  have hssq : s ^ (2 : ℕ) = (N : ℝ) + 1 := Real.sq_sqrt (le_of_lt hNpos)
   set δ : ℝ := π / s with hδdef
   have hδpos : (0 : ℝ) < δ := by positivity
   have hδπ : δ ≤ π := by
     rw [hδdef]
     exact div_le_self (le_of_lt hpi) hs1
-  set A : ℝ := π ^ 2 / ((N : ℝ) + 1) with hAdef
+  set A : ℝ := π ^ (2 : ℕ) / ((N : ℝ) + 1) with hAdef
   have hApos : (0 : ℝ) < A := by positivity
   have hcontF : Continuous (torusFejer N) := continuous_torusFejer N
   have hcont : Continuous fun x : ℝ => |x| * torusFejer N x := continuous_abs.mul hcontF
@@ -362,19 +362,19 @@ theorem integral_abs_mul_torusFejer_le (N : ℕ) :
       _ = δ * ∫ x in (-δ)..δ, torusFejer N x := heq
       _ ≤ δ * (2 * π) := mul_le_mul_of_nonneg_left hFint (le_of_lt hδpos)
   -- the two tails use the quadratic decay
-  have hmajor : ∀ x : ℝ, x ≠ 0 → |x| ≤ π → |x| * torusFejer N x ≤ π * (A * (x ^ 2)⁻¹) := by
+  have hmajor : ∀ x : ℝ, x ≠ 0 → |x| ≤ π → |x| * torusFejer N x ≤ π * (A * (x ^ (2 : ℕ))⁻¹) := by
     intro x hx hxπ
-    have hx2 : (0 : ℝ) < x ^ 2 := by positivity
+    have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
     have hF := torusFejer_le N hx hxπ
-    have hFA : π ^ 2 / (((N : ℝ) + 1) * x ^ 2) = A * (x ^ 2)⁻¹ := by
+    have hFA : π ^ (2 : ℕ) / (((N : ℝ) + 1) * x ^ (2 : ℕ)) = A * (x ^ (2 : ℕ))⁻¹ := by
       rw [hAdef]
       field_simp
     rw [hFA] at hF
     calc |x| * torusFejer N x ≤ π * torusFejer N x :=
           mul_le_mul_of_nonneg_right hxπ (torusFejer_nonneg N x)
-      _ ≤ π * (A * (x ^ 2)⁻¹) := mul_le_mul_of_nonneg_left hF (le_of_lt hpi)
+      _ ≤ π * (A * (x ^ (2 : ℕ))⁻¹) := mul_le_mul_of_nonneg_left hF (le_of_lt hpi)
   have hcontMaj : ∀ {a b : ℝ}, (∀ x ∈ Set.uIcc a b, x ≠ 0) →
-      IntervalIntegrable (fun x : ℝ => π * (A * (x ^ 2)⁻¹)) MeasureTheory.volume a b := by
+      IntervalIntegrable (fun x : ℝ => π * (A * (x ^ (2 : ℕ))⁻¹)) MeasureTheory.volume a b := by
     intro a b h0
     refine ContinuousOn.intervalIntegrable ?_
     refine continuousOn_const.mul (continuousOn_const.mul (ContinuousOn.inv₀ (by fun_prop) ?_))
@@ -385,12 +385,12 @@ theorem integral_abs_mul_torusFejer_le (N : ℕ) :
       rw [Set.uIcc_of_le hδπ] at hx
       exact ne_of_gt (lt_of_lt_of_le hδpos hx.1)
     have hle : (∫ x in δ..π, |x| * torusFejer N x)
-        ≤ ∫ x in δ..π, π * (A * (x ^ 2)⁻¹) := by
+        ≤ ∫ x in δ..π, π * (A * (x ^ (2 : ℕ))⁻¹) := by
       refine intervalIntegral.integral_mono_on hδπ (hcont.intervalIntegrable _ _)
         (hcontMaj h0) fun x hx => ?_
       have hxne : x ≠ 0 := ne_of_gt (lt_of_lt_of_le hδpos hx.1)
       exact hmajor x hxne (by rw [abs_of_pos (lt_of_lt_of_le hδpos hx.1)]; exact hx.2)
-    have heval : (∫ x in δ..π, π * (A * (x ^ 2)⁻¹)) = π * A * (δ⁻¹ - π⁻¹) := by
+    have heval : (∫ x in δ..π, π * (A * (x ^ (2 : ℕ))⁻¹)) = π * A * (δ⁻¹ - π⁻¹) := by
       rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
         integral_inv_sq hδπ h0]
       ring
@@ -406,14 +406,14 @@ theorem integral_abs_mul_torusFejer_le (N : ℕ) :
       rw [Set.uIcc_of_le hle'] at hx
       exact ne_of_lt (lt_of_le_of_lt hx.2 (by linarith))
     have hle : (∫ x in (-π)..(-δ), |x| * torusFejer N x)
-        ≤ ∫ x in (-π)..(-δ), π * (A * (x ^ 2)⁻¹) := by
+        ≤ ∫ x in (-π)..(-δ), π * (A * (x ^ (2 : ℕ))⁻¹) := by
       refine intervalIntegral.integral_mono_on hle' (hcont.intervalIntegrable _ _)
         (hcontMaj h0) fun x hx => ?_
       have hxneg : x < 0 := lt_of_le_of_lt hx.2 (by linarith)
       refine hmajor x (ne_of_lt hxneg) ?_
       rw [abs_of_neg hxneg]
       linarith [hx.1]
-    have heval : (∫ x in (-π)..(-δ), π * (A * (x ^ 2)⁻¹)) = π * A * (δ⁻¹ - π⁻¹) := by
+    have heval : (∫ x in (-π)..(-δ), π * (A * (x ^ (2 : ℕ))⁻¹)) = π * A * (δ⁻¹ - π⁻¹) := by
       rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
         integral_inv_sq hle' h0]
       have hneg : (-π : ℝ)⁻¹ - (-δ : ℝ)⁻¹ = δ⁻¹ - π⁻¹ := by
@@ -430,16 +430,16 @@ theorem integral_abs_mul_torusFejer_le (N : ℕ) :
       ≤ π * A * δ⁻¹ + δ * (2 * π) + π * A * δ⁻¹ := by
     rw [← e2, ← e1]
     linarith
-  have hδval : δ * (2 * π) = 2 * π ^ 2 / s := by
+  have hδval : δ * (2 * π) = 2 * π ^ (2 : ℕ) / s := by
     rw [hδdef]
     field_simp
-  have hAval : π * A * δ⁻¹ = π ^ 2 / s := by
+  have hAval : π * A * δ⁻¹ = π ^ (2 : ℕ) / s := by
     rw [hAdef, hδdef, ← hssq]
     field_simp
   rw [hδval, hAval] at hsum
   calc (∫ x in (-π)..π, |x| * torusFejer N x)
-      ≤ π ^ 2 / s + 2 * π ^ 2 / s + π ^ 2 / s := hsum
-    _ = 4 * π ^ 2 / s := by ring
+      ≤ π ^ (2 : ℕ) / s + 2 * π ^ (2 : ℕ) / s + π ^ (2 : ℕ) / s := hsum
+    _ = 4 * π ^ (2 : ℕ) / s := by ring
 
 end FejerDisplacement
 
@@ -503,7 +503,7 @@ theorem abs_fejerConv_sub_le (N : ℕ) {f : ℝ → ℝ} {L : ℝ} (hL : 0 ≤ L
           mul_le_mul_of_nonneg_right h1 (torusFejer_nonneg N x)
       _ = L * (|x| * torusFejer N x) := by ring
   have hbound : |∫ x in (-π)..π, (f (θ - x) - f θ) * torusFejer N x|
-      ≤ L * (4 * π ^ 2 / Real.sqrt ((N : ℝ) + 1)) := by
+      ≤ L * (4 * π ^ (2 : ℕ) / Real.sqrt ((N : ℝ) + 1)) := by
     have hππ : (-π : ℝ) ≤ π := by linarith
     calc |∫ x in (-π)..π, (f (θ - x) - f θ) * torusFejer N x|
         ≤ ∫ x in (-π)..π, |(f (θ - x) - f θ) * torusFejer N x| :=
@@ -513,11 +513,11 @@ theorem abs_fejerConv_sub_le (N : ℕ) {f : ℝ → ℝ} {L : ℝ} (hL : 0 ≤ L
             ((hcont1.abs).intervalIntegrable _ _) (hcont2.intervalIntegrable _ _) hpointwise
       _ = L * ∫ x in (-π)..π, |x| * torusFejer N x :=
           intervalIntegral.integral_const_mul _ _
-      _ ≤ L * (4 * π ^ 2 / Real.sqrt ((N : ℝ) + 1)) :=
+      _ ≤ L * (4 * π ^ (2 : ℕ) / Real.sqrt ((N : ℝ) + 1)) :=
           mul_le_mul_of_nonneg_left (integral_abs_mul_torusFejer_le N) hL
   rw [fejerConv_sub_eq N hcontf θ, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ 1 / (2 * π))]
   calc (1 / (2 * π)) * |∫ x in (-π)..π, (f (θ - x) - f θ) * torusFejer N x|
-      ≤ (1 / (2 * π)) * (L * (4 * π ^ 2 / Real.sqrt ((N : ℝ) + 1))) :=
+      ≤ (1 / (2 * π)) * (L * (4 * π ^ (2 : ℕ) / Real.sqrt ((N : ℝ) + 1))) :=
         mul_le_mul_of_nonneg_left hbound (by positivity)
     _ = L * (2 * π / Real.sqrt ((N : ℝ) + 1)) := by
         field_simp
@@ -570,16 +570,16 @@ theorem abs_torusTent_sub_le {ρ : ℝ} (hρ : 0 < ρ) (u v : ℝ) :
     _ = (1 / ρ) * |u - v| := by ring
 
 /-- The absolute value integrates to `ρ²` over the symmetric window of radius `ρ`. -/
-theorem integral_abs_symm {ρ : ℝ} (hρ : 0 < ρ) : (∫ x in (-ρ)..ρ, |x|) = ρ ^ 2 := by
+theorem integral_abs_symm {ρ : ℝ} (hρ : 0 < ρ) : (∫ x in (-ρ)..ρ, |x|) = ρ ^ (2 : ℕ) := by
   have hcont : Continuous fun x : ℝ => |x| := continuous_abs
-  have hneg : (∫ x in (-ρ)..(0 : ℝ), |x|) = ρ ^ 2 / 2 := by
+  have hneg : (∫ x in (-ρ)..(0 : ℝ), |x|) = ρ ^ (2 : ℕ) / 2 := by
     have h : (∫ x in (-ρ)..(0 : ℝ), |x|) = ∫ x in (-ρ)..(0 : ℝ), -x := by
       refine intervalIntegral.integral_congr fun x hx => ?_
       rw [Set.uIcc_of_le (by linarith)] at hx
       exact abs_of_nonpos hx.2
     rw [h, intervalIntegral.integral_neg, integral_id]
     ring
-  have hpos : (∫ x in (0 : ℝ)..ρ, |x|) = ρ ^ 2 / 2 := by
+  have hpos : (∫ x in (0 : ℝ)..ρ, |x|) = ρ ^ (2 : ℕ) / 2 := by
     have h : (∫ x in (0 : ℝ)..ρ, |x|) = ∫ x in (0 : ℝ)..ρ, x := by
       refine intervalIntegral.integral_congr fun x hx => ?_
       rw [Set.uIcc_of_le (by linarith)] at hx

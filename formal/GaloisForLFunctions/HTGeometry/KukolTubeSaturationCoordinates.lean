@@ -17,8 +17,8 @@ variable {κ : Type*} [Fintype κ]
 
 /-- A single transverse square has an exact nonpositive imaginary Lorentz defect. -/
 theorem kukolComplex_square_defect (m : ℂˣ) (z : ℂ) :
-    (m : ℂ).im*(z^2/(m : ℂ)).im-z.im^2 =
-      -(((m : ℂ).im*z.re-(m : ℂ).re*z.im)^2/Complex.normSq (m : ℂ)) := by
+    (m : ℂ).im*(z^(2 : ℕ)/(m : ℂ)).im-z.im^(2 : ℕ) =
+      -(((m : ℂ).im*z.re-(m : ℂ).re*z.im)^(2 : ℕ)/Complex.normSq (m : ℂ)) := by
   have hm : Complex.normSq (m : ℂ) ≠ 0 := (Complex.normSq_pos.mpr m.ne_zero).ne'
   simp only [Complex.div_im,pow_two,Complex.mul_im,Complex.mul_re]
   field_simp
@@ -30,7 +30,7 @@ def kukolRegularQuotientCoordinate (x : KukolRegularPoint κ) : ℂ :=
   kukolRegularQuadratic x/(x.minus : ℂ)
 
 theorem kukolRegularQuotientCoordinate_eq (x : KukolRegularPoint κ) :
-    kukolRegularQuotientCoordinate x = x.plus-∑ k,x.transverse k^2/(x.minus : ℂ) := by
+    kukolRegularQuotientCoordinate x = x.plus-∑ k,x.transverse k^(2 : ℕ)/(x.minus : ℂ) := by
   rw [← Finset.sum_div]
   dsimp [kukolRegularQuotientCoordinate,kukolRegularQuadratic]
   field_simp
@@ -44,18 +44,18 @@ theorem kukolRegularQuotientCoordinate_action (u : κ → ℂ) (x : KukolRegular
 
 /-- The Lorentz margin of the imaginary part, in arbitrary transverse dimension. -/
 def kukolRegularImaginaryMargin (x : KukolRegularPoint κ) : ℝ :=
-  (x.minus : ℂ).im*x.plus.im-∑ k,(x.transverse k).im^2
+  (x.minus : ℂ).im*x.plus.im-∑ k,(x.transverse k).im^(2 : ℕ)
 
 /-- The imaginary-part margin is its orbit maximum minus an explicit sum of squares. -/
 theorem kukolRegularImaginaryMargin_decomposition (x : KukolRegularPoint κ) :
     kukolRegularImaginaryMargin x = (x.minus : ℂ).im*(kukolRegularQuotientCoordinate x).im-
       ∑ k,((x.minus : ℂ).im*(x.transverse k).re-
-        (x.minus : ℂ).re*(x.transverse k).im)^2/Complex.normSq (x.minus : ℂ) := by
+        (x.minus : ℂ).re*(x.transverse k).im)^(2 : ℕ)/Complex.normSq (x.minus : ℂ) := by
   have hs := congrArg (fun f : κ → ℝ => ∑ k,f k)
     (funext (fun k => kukolComplex_square_defect x.minus (x.transverse k)))
   simp only [Finset.sum_sub_distrib,Finset.sum_neg_distrib,← Finset.mul_sum] at hs
-  have hi : (∑ k,x.transverse k^2/(x.minus : ℂ)).im =
-      ∑ k,(x.transverse k^2/(x.minus : ℂ)).im :=
+  have hi : (∑ k,x.transverse k^(2 : ℕ)/(x.minus : ℂ)).im =
+      ∑ k,(x.transverse k^(2 : ℕ)/(x.minus : ℂ)).im :=
     map_sum Complex.imAddGroupHom _ _
   rw [kukolRegularQuotientCoordinate_eq,Complex.sub_im,hi]
   dsimp [kukolRegularImaginaryMargin]
@@ -96,7 +96,7 @@ theorem kukolRegularTubeSaturation_iff (x : KukolRegularPoint κ) :
   · rintro ⟨u,hm,hmargin⟩
     have hnonneg : 0 ≤ ∑ k,
         ((kukolRegularAction u x).minus.val.im*((kukolRegularAction u x).transverse k).re-
-          (kukolRegularAction u x).minus.val.re*((kukolRegularAction u x).transverse k).im)^2/
+          (kukolRegularAction u x).minus.val.re*((kukolRegularAction u x).transverse k).im)^(2 : ℕ)/
             Complex.normSq (kukolRegularAction u x).minus.val :=
       Finset.sum_nonneg fun k _ => div_nonneg (sq_nonneg _) (Complex.normSq_nonneg _)
     rw [kukolRegularImaginaryMargin_decomposition,kukolRegularQuotientCoordinate_action] at hmargin
@@ -113,7 +113,7 @@ theorem kukolRegularTubeSaturation_iff (x : KukolRegularPoint κ) :
 
 /-- Explicit coordinates on the saturated tube: two upper half-planes and a free complex transverse vector. -/
 def kukolTubeParameters (m h : UpperHalfPlane) (z : κ → ℂ) : KukolRegularPoint κ :=
-  ⟨Units.mk0 (m : ℂ) m.ne_zero,(h : ℂ)+(∑ k,z k^2)/(m : ℂ),z⟩
+  ⟨Units.mk0 (m : ℂ) m.ne_zero,(h : ℂ)+(∑ k,z k^(2 : ℕ))/(m : ℂ),z⟩
 
 theorem kukolTubeParameters_quotient (m h : UpperHalfPlane) (z : κ → ℂ) :
     kukolRegularQuotientCoordinate (kukolTubeParameters m h z)=(h : ℂ) := by

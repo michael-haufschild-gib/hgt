@@ -21,7 +21,7 @@ noncomputable section
 Gamma--Bianchi displacement chamber. -/
 def VonMangoldtGammaBoundaryDisplacementUniversalCertificate (x : ℝ) : Prop :=
   Summable (fun p : Nat.Primes =>
-    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2) ∧
+    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ)) ∧
   (∀ a : ℕ, Summable (infiniteVonMangoldtGammaRawAtom x a)) ∧
   (∀ a : ℕ, infiniteVonMangoldtGammaRawMoment x a =
     vonMangoldtLogMoment a (x + 1)) ∧

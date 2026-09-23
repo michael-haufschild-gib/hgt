@@ -127,7 +127,7 @@ theorem fpderiv_top_law_fac (n : ℕ) :
 theorem topShift_logTerm (n : ℕ) :
     E.toPairFam.topShift (n + 1) (E.toPairFam.logTerm n (n + 1))
       = (E.toPairFam.law (E.lead n) * E.cnst n - E.lead n * E.toPairFam.law (E.cnst n))
-          / (E.fac n) ^ 2 := by
+          / (E.fac n) ^ (2 : ℕ) := by
   have hne : E.fac n ≠ 0 := E.fac_ne_zero n
   have hmem : E.fac n ∈ coordField (n + 1) := E.fac_mem_coordField n
   have hlt : E.toPairFam.logTerm n (n + 1)
@@ -141,7 +141,7 @@ theorem topDegLE_topShift_logTerm (n : ℕ) :
     TopDegLE (n + 1) (-2) (E.toPairFam.topShift (n + 1) (E.toPairFam.logTerm n (n + 1))) := by
   rw [E.topShift_logTerm n]
   have hinv : TopDegLE (n + 1) (-1) ((E.fac n)⁻¹) := E.topDegLE_inv_fac n
-  have hsq : TopDegLE (n + 1) (-2) (((E.fac n) ^ 2)⁻¹) := by
+  have hsq : TopDegLE (n + 1) (-2) (((E.fac n) ^ (2 : ℕ))⁻¹) := by
     have h := TopDegLE.mul hinv hinv
     rw [← mul_inv, ← pow_two] at h
     refine TopDegLE.mono ?_ h

@@ -167,7 +167,7 @@ theorem vortexDiagonal_resonance (a b : ℕ → ℂ) :
 
 /-- A second denominator factor yields a closed Ward identity even at singular parameters. -/
 theorem vortexRatioSeries_regularized_ward (a b : ℕ → ℂ) :
-    vortexDiagonal a (vortexWard a b (vortexRatioSeries a b)) = C (a 0 ^ 2) := by
+    vortexDiagonal a (vortexWard a b (vortexRatioSeries a b)) = C (a 0 ^ (2 : ℕ)) := by
   rw [vortexRatioSeries_exact_residual]
   ext n
   rw [coeff_vortexDiagonal, map_sub, coeff_C, coeff_C]

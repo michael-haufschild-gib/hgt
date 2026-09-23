@@ -7,7 +7,7 @@ open Complex Set Filter Topology MeasureTheory D4BMLaplaceRadial GaloisForLFunct
 noncomputable section
 set_option autoImplicit false
 
-def fundamentalMomentConstant (s : ℂ) : ℂ := (5*s^2+15*s+4)/4
+def fundamentalMomentConstant (s : ℂ) : ℂ := (5*s^(2 : ℕ)+15*s+4)/4
 
 def fundamentalMomentQuadratic (w s : ℂ) : ℂ :=
   s*(s-1)*((s+2)*(2*s+3)-(w+1)*(w+2)/2)/4
@@ -37,7 +37,7 @@ theorem fundamentalJacobiDensity_intervalIntegrable (n : ℕ) (w s : ℂ)
 
 /-- Exact endpoint coefficient, including the source's quadratic term. -/
 theorem fundamentalSourceCore_zero_polynomial (w s a : ℂ) :
-    fundamentalSourceCore w s a 0 = (2:ℂ)^(2*s-w)*a^2*
+    fundamentalSourceCore w s a 0 = (2:ℂ)^(2*s-w)*a^(2 : ℕ)*
       (fundamentalMomentConstant s+fundamentalMomentQuadratic w s) := by
   simp only [fundamentalSourceCore, sourceRemainder, sub_zero, Real.sqrt_one,
     power, Complex.ofReal_zero, Complex.ofReal_one, Complex.one_cpow, one_mul, mul_one]
@@ -50,10 +50,10 @@ theorem fundamentalSourceDensity_polynomial_coordinate (w s a : ℂ) {x : ℝ}
     (hx : 0 < x) (hx1 : x ≤ 1) :
     ((2*(1-x):ℝ):ℂ) * ((x*(2-x):ℝ):ℂ)^w *
       fundamentalSourceCore w s a (x*(2-x)) =
-      2*a^2 * (fundamentalMomentConstant s*((x:ℂ)^w*fundamentalJacobiCore 2 s x)+
+      2*a^(2 : ℕ) * (fundamentalMomentConstant s*((x:ℂ)^w*fundamentalJacobiCore 2 s x)+
         fundamentalMomentQuadratic w s*((x:ℂ)^w*fundamentalJacobiCore 4 s x)) := by
   have h2 : 0 < 2-x := by linarith
-  have hr : 1-x*(2-x)=(1-x)^2 := by ring
+  have hr : 1-x*(2-x)=(1-x)^(2 : ℕ) := by ring
   have hsqrt : Real.sqrt (1-x*(2-x))=1-x := by
     rw [hr, Real.sqrt_sq (sub_nonneg.mpr hx1)]
   have hhalf : power (1/2) (1-x*(2-x))=(1-(x:ℂ)) := by
@@ -72,8 +72,8 @@ theorem fundamentalSourceDensity_polynomial_coordinate (w s a : ℂ) {x : ℝ}
   push_cast
   calc
     _ = (x:ℂ)^w * (((2-x:ℝ):ℂ)^w*((2-x:ℝ):ℂ)^(2*s-w)) *
-      (2*a^2*((5*s^2+15*s+4)/4*(1-(x:ℂ))^2+
-        s*(s-1)*((s+2)*(2*s+3)-(w+1)*(w+2)/2)/4*(1-(x:ℂ))^4)) := by
+      (2*a^(2 : ℕ)*((5*s^(2 : ℕ)+15*s+4)/4*(1-(x:ℂ))^(2 : ℕ)+
+        s*(s-1)*((s+2)*(2*s+3)-(w+1)*(w+2)/2)/4*(1-(x:ℂ))^(4 : ℕ))) := by
       push_cast
       ring
     _ = _ := by rw [hsum]; push_cast; ring
@@ -82,7 +82,7 @@ theorem fundamentalSourceDensity_polynomial_coordinate (w s a : ℂ) {x : ℝ}
 theorem fundamentalSourceMoment_polynomial_cutoff (w s a : ℂ) {e : ℝ}
     (he : 0 < e) (he1 : e ≤ 1) :
     (∫ z in (e*(2-e))..1, (z:ℂ)^w*fundamentalSourceCore w s a z) =
-      2*a^2*(fundamentalMomentConstant s*
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*
         (∫ x in e..1, (x:ℂ)^w*fundamentalJacobiCore 2 s x)+
       fundamentalMomentQuadratic w s*
         (∫ x in e..1, (x:ℂ)^w*fundamentalJacobiCore 4 s x)) := by
@@ -97,7 +97,7 @@ theorem fundamentalSourceMoment_polynomial_cutoff (w s a : ℂ) {e : ℝ}
   norm_num only [sub_self, sub_zero, mul_one, one_mul] at hi
   rw [← hi]
   calc
-    _ = ∫ x in e..1, 2*a^2*(fundamentalMomentConstant s*((x:ℂ)^w*fundamentalJacobiCore 2 s x)+
+    _ = ∫ x in e..1, 2*a^(2 : ℕ)*(fundamentalMomentConstant s*((x:ℂ)^w*fundamentalJacobiCore 2 s x)+
         fundamentalMomentQuadratic w s*((x:ℂ)^w*fundamentalJacobiCore 4 s x)) := by
       apply intervalIntegral.integral_congr
       intro x hx

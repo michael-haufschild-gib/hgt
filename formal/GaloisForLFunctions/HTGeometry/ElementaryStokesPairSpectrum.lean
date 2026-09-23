@@ -34,7 +34,7 @@ inductive ElementaryPairPresentation : (leftRamification rightRamification edge 
   | equalAiryLow {r edge : ℕ} (ramified : 1 < r) (low : edge ≤ r) :
       ElementaryPairPresentation r r edge
   | equalAiryHigh {r k : ℕ} (ramified : 1 < r) (positiveHeight : 0 < k) :
-      ElementaryPairPresentation r r (r ^ 2 * k)
+      ElementaryPairPresentation r r (r ^ (2 : ℕ) * k)
 
 /-- Arithmetic form of the exact elementary pair spectrum. -/
 def InElementaryPairSpectrum (r s edge : ℕ) : Prop :=
@@ -43,7 +43,7 @@ def InElementaryPairSpectrum (r s edge : ℕ) : Prop :=
   (1 < r ∧ s = 1 ∧ (edge = 1 ∨ ∃ k, 0 < k ∧ edge = r * k)) ∨
   (1 < r ∧ 1 < s ∧ r ≠ s ∧
     (edge = max r s ∨ ∃ k, 0 < k ∧ edge = r * s * k)) ∨
-  (1 < r ∧ r = s ∧ (edge ≤ r ∨ ∃ k, 0 < k ∧ edge = r ^ 2 * k))
+  (1 < r ∧ r = s ∧ (edge ≤ r ∨ ∃ k, 0 < k ∧ edge = r ^ (2 : ℕ) * k))
 
 /-- **Exact elementary pair-spectrum theorem.**  The arithmetic list is necessary and sufficient
 for a geometric elementary pair presentation. -/
@@ -89,7 +89,7 @@ theorem nonempty_elementaryPairPresentation_iff_spectrum (r s edge : ℕ) :
 /-- Closed form when both simple Airy circles have the same ramification. -/
 theorem equalAiry_spectrum_iff {r edge : ℕ} (hr : 1 < r) :
     InElementaryPairSpectrum r r edge ↔
-      edge ≤ r ∨ ∃ k, 0 < k ∧ edge = r ^ 2 * k := by
+      edge ≤ r ∨ ∃ k, 0 < k ∧ edge = r ^ (2 : ℕ) * k := by
   simp [InElementaryPairSpectrum, hr, (ne_of_gt hr)]
 
 /-- Closed form when two simple Airy circles have unequal ramifications. -/

@@ -46,8 +46,8 @@ theorem powerMapPoincare_functionalEquation (p : ℕ) (z : ℂ) :
 
 /-- **The Ritt relation for the power map.**  `Φ' = A(Φ)` with `A t = 1 + t`. -/
 theorem powerMapPoincare_rittForm (z : ℂ) :
-    Polynomial.eval (powerMapPoincare z) (1 : Polynomial ℂ) * deriv powerMapPoincare z ^ 1
-      = 1 * z ^ 0 * Polynomial.eval (powerMapPoincare z) (Polynomial.X + 1) := by
+    Polynomial.eval (powerMapPoincare z) (1 : Polynomial ℂ) * deriv powerMapPoincare z ^ (1 : ℕ)
+      = 1 * z ^ (0 : ℕ) * Polynomial.eval (powerMapPoincare z) (Polynomial.X + 1) := by
   rw [deriv_powerMapPoincare]
   simp [powerMapPoincare]
 
@@ -61,7 +61,7 @@ theorem differentiallyAlgebraicOn_powerMapPoincare (U : Set ℂ) :
 /-- **The Ritt cocycle for the power map** holds identically: `g'(t) A(t) = p · A(g t)` with
 `A t = 1 + t`. -/
 theorem powerMapGerm_cocycle (p : ℕ) (t : ℂ) :
-    deriv (powerMapGerm p) t ^ 1 * (1 + t) = (p : ℂ) ^ (1 + 0) * (1 + powerMapGerm p t) := by
+    deriv (powerMapGerm p) t ^ (1 : ℕ) * (1 + t) = (p : ℂ) ^ (1 + 0) * (1 + powerMapGerm p t) := by
   have hd : deriv (powerMapGerm p) t = (p : ℂ) * (1 + t) ^ (p - 1) := by
     have h : HasDerivAt (powerMapGerm p) ((p : ℂ) * (1 + t) ^ (p - 1) * 1) t := by
       show HasDerivAt (fun w : ℂ => (1 + w) ^ p - 1) _ t

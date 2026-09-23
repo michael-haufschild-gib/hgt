@@ -25,10 +25,10 @@ noncomputable section
 /-! ## Chamber coordinates of an actual Xi orbit -/
 
 /-- Transverse square `u = (Re ρ - 1/2)²` of an Xi orbit. -/
-def xiOrbitTransverse (q : XiZeroCopy) : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
+def xiOrbitTransverse (q : XiZeroCopy) : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
 
 /-- Height square `v = (Im ρ)²` of an Xi orbit. -/
-def xiOrbitHeight (q : XiZeroCopy) : ℝ := ((q.1 : ℂ).im) ^ 2
+def xiOrbitHeight (q : XiZeroCopy) : ℝ := ((q.1 : ℂ).im) ^ (2 : ℕ)
 
 /-- Shear `(Re ρ - 1/2)(Im ρ)` of an Xi orbit. -/
 def xiOrbitShear (q : XiZeroCopy) : ℝ := ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
@@ -47,7 +47,7 @@ theorem xiOrbitHeight_nonneg (q : XiZeroCopy) : 0 ≤ xiOrbitHeight q :=
 
 /-- The coupling is four times the squared shear. -/
 theorem xiOrbitCoupling_eq_four_mul_shear_sq (q : XiZeroCopy) :
-    xiOrbitCoupling q = 4 * xiOrbitShear q ^ 2 := by
+    xiOrbitCoupling q = 4 * xiOrbitShear q ^ (2 : ℕ) := by
   unfold xiOrbitCoupling xiOrbitTransverse xiOrbitHeight xiOrbitShear
   ring
 
@@ -114,19 +114,19 @@ theorem xiOrbit_normSq_centered_pos (q : XiZeroCopy) :
 
 /-- The chamber radius: `t² + c = (u + v)²`. -/
 theorem xiOrbitDetuning_sq_add_coupling (q : XiZeroCopy) :
-    xiOrbitDetuning q ^ 2 + xiOrbitCoupling q =
-      (xiOrbitTransverse q + xiOrbitHeight q) ^ 2 := by
+    xiOrbitDetuning q ^ (2 : ℕ) + xiOrbitCoupling q =
+      (xiOrbitTransverse q + xiOrbitHeight q) ^ (2 : ℕ) := by
   unfold xiOrbitDetuning xiOrbitCoupling
   ring
 
 theorem xiOrbitDetuning_sq_add_coupling_pos (q : XiZeroCopy) :
-    0 < xiOrbitDetuning q ^ 2 + xiOrbitCoupling q := by
+    0 < xiOrbitDetuning q ^ (2 : ℕ) + xiOrbitCoupling q := by
   rw [xiOrbitDetuning_sq_add_coupling]
   exact pow_pos (xiOrbit_normSq_centered_pos q) 2
 
 /-- Real part of `-(w⁻¹)²` in Cartesian coordinates. -/
 theorem neg_inv_sq_re {w : ℂ} (hw : w ≠ 0) :
-    (-(w⁻¹ ^ 2)).re = (w.im ^ 2 - w.re ^ 2) / (w.re ^ 2 + w.im ^ 2) ^ 2 := by
+    (-(w⁻¹ ^ (2 : ℕ))).re = (w.im ^ (2 : ℕ) - w.re ^ (2 : ℕ)) / (w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hN : w.re * w.re + w.im * w.im ≠ 0 := by
     have hpos := Complex.normSq_pos.mpr hw
     rw [Complex.normSq_apply] at hpos
@@ -138,7 +138,7 @@ theorem neg_inv_sq_re {w : ℂ} (hw : w ≠ 0) :
 
 /-- Imaginary part of `-(w⁻¹)²` in Cartesian coordinates. -/
 theorem neg_inv_sq_im {w : ℂ} (hw : w ≠ 0) :
-    (-(w⁻¹ ^ 2)).im = 2 * w.re * w.im / (w.re ^ 2 + w.im ^ 2) ^ 2 := by
+    (-(w⁻¹ ^ (2 : ℕ))).im = 2 * w.re * w.im / (w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hN : w.re * w.re + w.im * w.im ≠ 0 := by
     have hpos := Complex.normSq_pos.mpr hw
     rw [Complex.normSq_apply] at hpos
@@ -159,7 +159,7 @@ theorem xiOrbit_centered_im (q : XiZeroCopy) :
 /-- Real part of the reciprocal-square atom in chamber coordinates. -/
 theorem xiZeroCopyReciprocalSquare_re_eq_chamber (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).re =
-      xiOrbitDetuning q / (xiOrbitDetuning q ^ 2 + xiOrbitCoupling q) := by
+      xiOrbitDetuning q / (xiOrbitDetuning q ^ (2 : ℕ) + xiOrbitCoupling q) := by
   have hw : (q.1 : ℂ) - 1 / 2 ≠ 0 := sub_ne_zero.mpr (xi_divisor_support_ne_half q.1)
   rw [xiOrbitDetuning_sq_add_coupling, xiZeroCopyReciprocalSquare_eq,
     xiCentralReciprocalSquare, neg_inv_sq_re hw, xiOrbit_centered_re, xiOrbit_centered_im]
@@ -169,7 +169,7 @@ theorem xiZeroCopyReciprocalSquare_re_eq_chamber (q : XiZeroCopy) :
 /-- Imaginary part of the reciprocal-square atom in chamber coordinates. -/
 theorem xiZeroCopyReciprocalSquare_im_eq_chamber (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).im =
-      2 * xiOrbitShear q / (xiOrbitDetuning q ^ 2 + xiOrbitCoupling q) := by
+      2 * xiOrbitShear q / (xiOrbitDetuning q ^ (2 : ℕ) + xiOrbitCoupling q) := by
   have hw : (q.1 : ℂ) - 1 / 2 ≠ 0 := sub_ne_zero.mpr (xi_divisor_support_ne_half q.1)
   rw [xiOrbitDetuning_sq_add_coupling, xiZeroCopyReciprocalSquare_eq,
     xiCentralReciprocalSquare, neg_inv_sq_im hw, xiOrbit_centered_re, xiOrbit_centered_im]
@@ -189,19 +189,19 @@ theorem orbitH_zero_eq_xiSquaredEulerApertureOrbitMass (q : XiZeroCopy) :
 /-- First confluent derivative-Hankel minor `m₀ m₂ - m₁²` of one orbit, where
 `mₖ = Re λ^{k+1}`. -/
 def xiOrbitConfluentMinor (q : XiZeroCopy) : ℝ :=
-  (xiZeroCopyReciprocalSquare q).re * (xiZeroCopyReciprocalSquare q ^ 3).re -
-    ((xiZeroCopyReciprocalSquare q ^ 2).re) ^ 2
+  (xiZeroCopyReciprocalSquare q).re * (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re -
+    ((xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re) ^ (2 : ℕ)
 
 /-- **Exact confluent polarity identity.**  The first confluent minor of one orbit is minus the
 squared transverse part times the squared modulus. -/
 theorem xiOrbitConfluentMinor_eq (q : XiZeroCopy) :
     xiOrbitConfluentMinor q =
-      -((xiZeroCopyReciprocalSquare q).im ^ 2 *
+      -((xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) *
         Complex.normSq (xiZeroCopyReciprocalSquare q)) := by
   unfold xiOrbitConfluentMinor
   set z := xiZeroCopyReciprocalSquare q with hz
-  have h3 : z ^ 3 = z * z * z := by ring
-  have h2 : z ^ 2 = z * z := by ring
+  have h3 : z ^ (3 : ℕ) = z * z * z := by ring
+  have h2 : z ^ (2 : ℕ) = z * z := by ring
   rw [h3, h2]
   simp only [Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   ring
@@ -209,7 +209,7 @@ theorem xiOrbitConfluentMinor_eq (q : XiZeroCopy) :
 theorem xiOrbitConfluentMinor_nonpos (q : XiZeroCopy) :
     xiOrbitConfluentMinor q ≤ 0 := by
   rw [xiOrbitConfluentMinor_eq]
-  have : 0 ≤ (xiZeroCopyReciprocalSquare q).im ^ 2 *
+  have : 0 ≤ (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) *
       Complex.normSq (xiZeroCopyReciprocalSquare q) :=
     mul_nonneg (sq_nonneg _) (Complex.normSq_nonneg _)
   linarith
@@ -226,7 +226,7 @@ theorem xiOrbitConfluentMinor_neg_of_re_ne_half (q : XiZeroCopy)
   have hnorm : 0 < Complex.normSq (xiZeroCopyReciprocalSquare q) :=
     Complex.normSq_pos.mpr fun hzero => him (by rw [hzero]; rfl)
   rw [xiOrbitConfluentMinor_eq]
-  have : 0 < (xiZeroCopyReciprocalSquare q).im ^ 2 *
+  have : 0 < (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) *
       Complex.normSq (xiZeroCopyReciprocalSquare q) :=
     mul_pos (sq_pos_of_ne_zero him) hnorm
   linarith

@@ -9,7 +9,7 @@ Suzuki v2's fitted one-angle entire normalization cannot converge compact-open o
 its meromorphic target.  This module constructs the pole-compatible replacement directly from the
 literal self-adjoint characteristic functions at extension angles `0` and `π`:
 
-`Fₐ = -Wₐ^π / (c Wₐ^0 - Wₐ^π)`,
+`Fₐ = -Wₐ^π / (c Wₐ^(0 : ℕ) - Wₐ^π)`,
 
 where `c` is the unconditionally positive Xi--Donoghue scale.  No fitted gauge occurs.
 

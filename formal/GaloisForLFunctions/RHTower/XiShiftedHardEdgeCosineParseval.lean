@@ -107,9 +107,9 @@ def cosPoly (M : ℕ) (b : ℕ → ℝ) (θ : ℝ) : ℝ :=
 
 /-- **Parseval for cosine polynomials.** -/
 theorem integral_cosPoly_sq (M : ℕ) (b : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ 2)
-      = ∑ j ∈ Finset.range (M + 1), (if j = 0 then 2 * Real.pi else Real.pi) * b j ^ 2 := by
-  have hexpand : ∀ θ : ℝ, cosPoly M b θ ^ 2
+    (∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ (2 : ℕ))
+      = ∑ j ∈ Finset.range (M + 1), (if j = 0 then 2 * Real.pi else Real.pi) * b j ^ (2 : ℕ) := by
+  have hexpand : ∀ θ : ℝ, cosPoly M b θ ^ (2 : ℕ)
       = ∑ j ∈ Finset.range (M + 1), ∑ k ∈ Finset.range (M + 1),
         (b j * b k) * (Real.cos ((j : ℝ) * θ) * Real.cos ((k : ℝ) * θ)) := by
     intro θ
@@ -158,8 +158,8 @@ theorem integral_cosPoly_sq (M : ℕ) (b : ℕ → ℝ) :
 
 /-- The `ℓ²` mass of the coefficients is controlled by the `L²` norm. -/
 theorem sum_sq_le_integral_cosPoly_sq (M : ℕ) (b : ℕ → ℝ) :
-    Real.pi * ∑ j ∈ Finset.range (M + 1), b j ^ 2
-      ≤ ∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ 2 := by
+    Real.pi * ∑ j ∈ Finset.range (M + 1), b j ^ (2 : ℕ)
+      ≤ ∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ (2 : ℕ) := by
   rw [integral_cosPoly_sq, Finset.mul_sum]
   refine Finset.sum_le_sum fun j _ => ?_
   rcases eq_or_ne j 0 with rfl | hj
@@ -170,7 +170,7 @@ theorem sum_sq_le_integral_cosPoly_sq (M : ℕ) (b : ℕ → ℝ) :
 /-- The `ℓ¹` mass of the coefficients through Cauchy--Schwarz. -/
 theorem sum_abs_le_sqrt_card_mul (M : ℕ) (b : ℕ → ℝ) :
     ∑ j ∈ Finset.range (M + 1), |b j|
-      ≤ Real.sqrt ((M : ℝ) + 1) * Real.sqrt (∑ j ∈ Finset.range (M + 1), b j ^ 2) := by
+      ≤ Real.sqrt ((M : ℝ) + 1) * Real.sqrt (∑ j ∈ Finset.range (M + 1), b j ^ (2 : ℕ)) := by
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range (M + 1))
     (fun _ : ℕ => (1 : ℝ)) (fun j => |b j|)
   simp only [one_mul, one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one,
@@ -180,13 +180,13 @@ theorem sum_abs_le_sqrt_card_mul (M : ℕ) (b : ℕ → ℝ) :
   have hcard : ((M + 1 : ℕ) : ℝ) = (M : ℝ) + 1 := by push_cast; ring
   rw [hcard] at hcs
   have hsq : 0 ≤ (M : ℝ) + 1 := by positivity
-  have hsum : 0 ≤ ∑ j ∈ Finset.range (M + 1), b j ^ 2 :=
+  have hsum : 0 ≤ ∑ j ∈ Finset.range (M + 1), b j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   calc ∑ j ∈ Finset.range (M + 1), |b j|
-      = Real.sqrt ((∑ j ∈ Finset.range (M + 1), |b j|) ^ 2) := (Real.sqrt_sq hnn).symm
-    _ ≤ Real.sqrt (((M : ℝ) + 1) * ∑ j ∈ Finset.range (M + 1), b j ^ 2) :=
+      = Real.sqrt ((∑ j ∈ Finset.range (M + 1), |b j|) ^ (2 : ℕ)) := (Real.sqrt_sq hnn).symm
+    _ ≤ Real.sqrt (((M : ℝ) + 1) * ∑ j ∈ Finset.range (M + 1), b j ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hcs
-    _ = Real.sqrt ((M : ℝ) + 1) * Real.sqrt (∑ j ∈ Finset.range (M + 1), b j ^ 2) :=
+    _ = Real.sqrt ((M : ℝ) + 1) * Real.sqrt (∑ j ∈ Finset.range (M + 1), b j ^ (2 : ℕ)) :=
         Real.sqrt_mul hsq _
 
 end RHTower

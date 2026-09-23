@@ -13,7 +13,7 @@ set_option autoImplicit false
 /-- Original outer temporal-current integral with the complete normalizable left mode. -/
 def normalizableTemporalOuterIntegral (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) (T : ℝ) (u : ℂ) : ℂ :=
-  ∫ t in Ioo T 0, ((tortoiseRadius t:ℂ)^2-1) *
+  ∫ t in Ioo T 0, ((tortoiseRadius t:ℂ)^(2 : ℕ)-1) *
     continuedPhysicalTimeAction q branch u a true t zang
 
 /-- The original outer normalizable current is integrable and equals its two actual left-mode
@@ -21,7 +21,7 @@ components near the physical QNM. -/
 theorem normalizableTemporalOuterIntegral_decomposition (q : XiZeroCopy) (branch side : Bool)
     (a : ℂ) (zang : D4BMHorizon.Point) (T : ℝ) (hT : T < 0) :
     ∀ᶠ u in 𝓝[≠] (physicalFundamentalFrequency q side),
-      IntegrableOn (fun t => ((tortoiseRadius t:ℂ)^2-1) *
+      IntegrableOn (fun t => ((tortoiseRadius t:ℂ)^(2 : ℕ)-1) *
         continuedPhysicalTimeAction q branch u a true t zang) (Ioo T 0) ∧
       normalizableTemporalOuterIntegral q branch a zang T u =
         horizonRegularCoefficient u (physicalRadialFrequency q) (normalizable u (physicalRadialFrequency q))
@@ -65,11 +65,11 @@ theorem normalizableTemporalOuterIntegral_decomposition (q : XiZeroCopy) (branch
     filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
     exact hO u huO t ⟨ht.1.le, ht.2⟩
   have he (t : ℝ) (ht : t ∈ Ioo T 0) :
-      ((tortoiseRadius t:ℂ)^2-1)*continuedPhysicalTimeAction q branch u a true t zang =
+      ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*continuedPhysicalTimeAction q branch u a true t zang =
         A*(clearedTemporalDensity q branch a zang u t / D) +
           oppositeTemporalOuterDensity q branch a zang u t := by
     have hi := clearedTemporalDensity_eq_current q branch a zang u hus hcu t ht.2
-    have hji : ((tortoiseRadius t:ℂ)^2-1)*continuedPhysicalTimeAction q branch u a false t zang =
+    have hji : ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*continuedPhysicalTimeAction q branch u a false t zang =
         clearedTemporalDensity q branch a zang u t / D := by
       apply (eq_div_iff hD).mpr
       simpa only [mul_comm] using hi
@@ -147,7 +147,7 @@ theorem clearedTemporalDensity_fundamental_factor (q : XiZeroCopy) (branch side 
     clearedTemporalDensity q branch a zang (physicalFundamentalFrequency q side) t =
       physicalTemporalFundamentalAmplitude q branch side a zang *
         normalizable (physicalFundamentalFrequency q side) (physicalRadialFrequency q)
-          (horizonCoordinate t)^2 := by
+          (horizonCoordinate t)^(2 : ℕ) := by
   have hw := physicalFundamentalFrequency_strip q side
   have hf : physicalFundamentalFrequency q side = -3/2-Complex.I*physicalRadialFrequency q ∨
       physicalFundamentalFrequency q side = -3/2+Complex.I*physicalRadialFrequency q := by
@@ -170,7 +170,7 @@ theorem compactPart_fundamental_factor (q : XiZeroCopy) (branch side : Bool) (a 
       physicalTemporalFundamentalAmplitude q branch side a zang *
         (∫ t in Ioo (tortoiseOf b) 0,
           normalizable (physicalFundamentalFrequency q side) (physicalRadialFrequency q)
-            (horizonCoordinate t)^2) := by
+            (horizonCoordinate t)^(2 : ℕ)) := by
   rw [compactPart, ← integral_const_mul]
   apply setIntegral_congr_fun measurableSet_Ioo
   intro t ht

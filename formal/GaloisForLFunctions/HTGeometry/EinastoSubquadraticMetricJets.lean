@@ -28,14 +28,14 @@ theorem einastoSubquadraticShape_exponent_lt_two (k : ℝ) : exp (-einastoSubqua
   linarith [exp_pos k]
 
 theorem einastoProfilePower_inverse_scaled_exp (l a t : ℝ) :
-    exp t ^ 2 / einastoProfilePower l a (exp t) = exp ((2 - exp (-a)) * t + exp (-a) * l) := by
+    exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t) = exp ((2 - exp (-a)) * t + exp (-a) * l) := by
   rw [einastoProfilePower_exp, sq, ← exp_add, ← exp_sub]
   congr 1
   ring
 
 /-- The quadratic part is negligible compared with the actual leading profile power. -/
 theorem einastoSubquadraticWeight_inverse_limit (l k : ℝ) :
-    Tendsto (fun t => exp t ^ 2 / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) atBot (𝓝 0) := by
+    Tendsto (fun t => exp t ^ (2 : ℕ) / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) atBot (𝓝 0) := by
   simp_rw [einastoProfilePower_inverse_scaled_exp]
   have hlin : Tendsto (fun t : ℝ => (2 - exp (-einastoSubquadraticShape k)) * t) atBot atBot :=
     tendsto_id.const_mul_atBot (sub_pos.mpr (einastoSubquadraticShape_exponent_lt_two k))
@@ -44,7 +44,7 @@ theorem einastoSubquadraticWeight_inverse_limit (l k : ℝ) :
 
 /-- The inverse radial weight diverges, with its sign and growth proved analytically. -/
 theorem einastoSubquadraticWeight_tendsto_atTop (l k : ℝ) :
-    Tendsto (fun t => einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ 2) atBot atTop := by
+    Tendsto (fun t => einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ (2 : ℕ)) atBot atTop := by
   simp_rw [einastoProfilePower_scaled_exp]
   have hlin : Tendsto (fun t : ℝ => (exp (-einastoSubquadraticShape k) - 2) * t) atBot atTop :=
     tendsto_id.const_mul_atBot_of_neg (sub_neg.mpr (einastoSubquadraticShape_exponent_lt_two k))
@@ -58,8 +58,8 @@ theorem einastoSubquadraticMetric_normalized_limit (d l k σ β : ℝ) :
       (𝓝 (-β * einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k))) := by
   let a := einastoSubquadraticShape k
   have he : (fun t => (1 - einastoShapePerturbedMetric d l a σ β (exp t)) / einastoProfilePower l a (exp t)) =
-      (fun t => (exp t ^ 2 / einastoProfilePower l a (exp t)) *
-        ((1 - einastoMetric d l a (exp t)) / exp t ^ 2 - β * (einastoDefectCorrection d l a σ (exp t) / exp t ^ 2)) -
+      (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t)) *
+        ((1 - einastoMetric d l a (exp t)) / exp t ^ (2 : ℕ) - β * (einastoDefectCorrection d l a σ (exp t) / exp t ^ (2 : ℕ))) -
           β * (einastoPowerCorrection d l a (exp t) / einastoProfilePower l a (exp t))) := by
     funext t
     unfold einastoShapePerturbedMetric einastoShapeCorrection
@@ -79,7 +79,7 @@ theorem einastoSubquadraticMetric_scaled_derivative_limit (d l k σ β : ℝ) :
       (𝓝 (β * (exp (-einastoSubquadraticShape k) * einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k)))) := by
   let a := einastoSubquadraticShape k
   have he : (fun t => exp t * deriv (einastoShapePerturbedMetric d l a σ β) (exp t) / einastoProfilePower l a (exp t)) =
-      (fun t => (exp t ^ 2 / einastoProfilePower l a (exp t)) *
+      (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t)) *
         (deriv (einastoMetric d l a) (exp t) / exp t + β * (deriv (einastoDefectCorrection d l a σ) (exp t) / exp t)) +
           β * (exp t * deriv (einastoPowerCorrection d l a) (exp t) / einastoProfilePower l a (exp t))) := by
     funext t
@@ -97,21 +97,21 @@ theorem einastoSubquadraticMetric_scaled_derivative_limit (d l k σ β : ℝ) :
 
 /-- The actual second derivative has the exact power-law coefficient q(q-1). -/
 theorem einastoSubquadraticMetric_scaled_second_derivative_limit (d l k σ β : ℝ) :
-    Tendsto (fun t => exp t ^ 2 * deriv (deriv (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β)) (exp t) /
+    Tendsto (fun t => exp t ^ (2 : ℕ) * deriv (deriv (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β)) (exp t) /
       einastoProfilePower l (einastoSubquadraticShape k) (exp t)) atBot
       (𝓝 (β * (exp (-einastoSubquadraticShape k) * (exp (-einastoSubquadraticShape k) - 1) *
         einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k)))) := by
   let a := einastoSubquadraticShape k
-  have he : (fun t => exp t ^ 2 * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) =
-      (fun t => (exp t ^ 2 / einastoProfilePower l a (exp t)) *
+  have he : (fun t => exp t ^ (2 : ℕ) * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) =
+      (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t)) *
         (deriv (deriv (einastoMetric d l a)) (exp t) + β * deriv (deriv (einastoDefectCorrection d l a σ)) (exp t)) +
-          β * (exp t ^ 2 * deriv (deriv (einastoPowerCorrection d l a)) (exp t) / einastoProfilePower l a (exp t))) := by
+          β * (exp t ^ (2 : ℕ) * deriv (deriv (einastoPowerCorrection d l a)) (exp t) / einastoProfilePower l a (exp t))) := by
     funext t
     rw [(einastoShapePerturbedMetric_second_hasDerivAt d l a σ β t).deriv,
       (einastoShapeCorrection_second_hasDerivAt d l a σ t).deriv]
     field_simp [(einastoProfilePower_pos l a t).ne']
     ring
-  change Tendsto (fun t => exp t ^ 2 * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) atBot _
+  change Tendsto (fun t => exp t ^ (2 : ℕ) * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) atBot _
   rw [he]
   have hB := (einastoMetricSecondJet_core_limit d l a).add
     ((einastoDefectCorrection_second_derivative_limit d l a σ).const_mul β)

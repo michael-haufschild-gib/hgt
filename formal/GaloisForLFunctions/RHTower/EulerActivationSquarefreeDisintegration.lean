@@ -42,7 +42,7 @@ def diagonalActivationConditionalValuationMass (q : ℝ) (e : ℕ) : ℝ :=
 
 /-- Fisher information of the local occupancy bit in logarithmic scale. -/
 def diagonalActivationOccupancyFisher (q : ℝ) : ℝ :=
-  q / (1 + q) ^ 2
+  q / (1 + q) ^ (2 : ℕ)
 
 /-- The positive-depth atom factors into occupancy and conditional valuation. -/
 theorem diagonalActivationPositiveValuationMass_factorization
@@ -141,7 +141,7 @@ theorem diagonalActivationPrimeMass_eq_fisherDampedGammaValuation
 /-- The square of the prime damping is exactly occupancy Fisher information. -/
 theorem xiMobiusPrimeSchurValuationDamping_sq_eq_activationOccupancyFisher
     (p : Nat.Primes) :
-    xiMobiusPrimeSchurValuationDamping p ^ 2 =
+    xiMobiusPrimeSchurValuationDamping p ^ (2 : ℕ) =
       diagonalActivationOccupancyFisher
         (xiTransversePrimeApertureDiskNode 1 p) := by
   rw [diagonalActivationOccupancyFisher_eq_dyadicSquarefreeParityVariance]
@@ -179,7 +179,7 @@ structure EulerActivationSquarefreeDisintegrationCertificate (s : ℂ) : Prop wh
           xiTransversePrimeHalfShiftedValuationCoordinate p e
   dampingFisher :
     ∀ p : Nat.Primes,
-      xiMobiusPrimeSchurValuationDamping p ^ 2 =
+      xiMobiusPrimeSchurValuationDamping p ^ (2 : ℕ) =
         diagonalActivationOccupancyFisher
           (xiTransversePrimeApertureDiskNode 1 p)
   currentNormal :

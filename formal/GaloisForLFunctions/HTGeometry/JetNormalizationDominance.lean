@@ -51,7 +51,7 @@ theorem tendsto_vertLog_pow_div_vertical_pow (_hσ : 0 < σ) (a : ℕ) {p : ℕ}
   have hspos : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := lt_of_lt_of_le htpos hsnorm
   have hpow : t ^ p ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ^ p := pow_le_pow_left₀ htpos.le hsnorm _
   have htp : t ≤ t ^ p := by
-    calc t = t ^ 1 := (pow_one t).symm
+    calc t = t ^ (1 : ℕ) := (pow_one t).symm
       _ ≤ t ^ p := pow_le_pow_right₀ ht1 hp
   rw [norm_div, norm_pow, norm_pow]
   have hnum : ‖vertLog t‖ ^ a ≤ ((1 + Real.pi / 2) * Real.log t) ^ a :=

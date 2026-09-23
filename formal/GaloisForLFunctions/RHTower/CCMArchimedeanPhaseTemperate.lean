@@ -181,10 +181,10 @@ private theorem ccmDigammaLine_hasTemperateGrowth
         norm_mul, norm_pow, norm_I, one_pow, one_mul]
       have hpoly := GaloisForLFunctions.norm_iteratedDeriv_digamma_vertical_le
         m hsigma (hA1.trans htpos)
-      have herror : 1 / t ^ 2 + Real.pi / (2 * t) ≤ 1 + Real.pi / 2 := by
+      have herror : 1 / t ^ (2 : ℕ) + Real.pi / (2 * t) ≤ 1 + Real.pi / 2 := by
         have ht0 : 0 < t := zero_lt_one.trans_le (hA1.trans htpos)
-        have ht_sq : 1 ≤ t ^ 2 := one_le_pow₀ (hA1.trans htpos)
-        have h1 : 1 / t ^ 2 ≤ 1 := (div_le_one (sq_pos_of_pos ht0)).2 ht_sq
+        have ht_sq : 1 ≤ t ^ (2 : ℕ) := one_le_pow₀ (hA1.trans htpos)
+        have h1 : 1 / t ^ (2 : ℕ) ≤ 1 := (div_le_one (sq_pos_of_pos ht0)).2 ht_sq
         have h2 : Real.pi / (2 * t) ≤ Real.pi / 2 := by
           apply (div_le_div_iff_of_pos_left Real.pi_pos (by positivity) (by norm_num)).2
           linarith
@@ -205,10 +205,10 @@ private theorem ccmDigammaLine_hasTemperateGrowth
           norm_mul, norm_pow, norm_I, one_pow, one_mul]
         have hpoly := GaloisForLFunctions.norm_iteratedDeriv_digamma_vertical_le
           m hsigma hpos
-        have herror : 1 / (-t) ^ 2 + Real.pi / (2 * (-t)) ≤ 1 + Real.pi / 2 := by
+        have herror : 1 / (-t) ^ (2 : ℕ) + Real.pi / (2 * (-t)) ≤ 1 + Real.pi / 2 := by
           have ht0 : 0 < -t := zero_lt_one.trans_le hpos
-          have ht_sq : 1 ≤ (-t) ^ 2 := one_le_pow₀ hpos
-          have h1 : 1 / (-t) ^ 2 ≤ 1 := (div_le_one (sq_pos_of_pos ht0)).2 ht_sq
+          have ht_sq : 1 ≤ (-t) ^ (2 : ℕ) := one_le_pow₀ hpos
+          have h1 : 1 / (-t) ^ (2 : ℕ) ≤ 1 := (div_le_one (sq_pos_of_pos ht0)).2 ht_sq
           have h2 : Real.pi / (2 * (-t)) ≤ Real.pi / 2 := by
             apply (div_le_div_iff_of_pos_left Real.pi_pos (by positivity) (by norm_num)).2
             linarith

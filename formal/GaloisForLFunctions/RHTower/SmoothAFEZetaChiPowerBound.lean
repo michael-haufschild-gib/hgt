@@ -7,7 +7,7 @@ vertical digamma lower bound gives the explicit estimate
 
 `|χ(σ+it)| ≤ exp((σ-1/2)(log π-log(t/2)+E(t)))`
 
-for `1/2≤σ<1`, where `E(t)=1/(t/2)^2+π/(2(t/2))`.
+for `1/2≤σ<1`, where `E(t)=1/(t/2)^(2 : ℕ)+π/(2(t/2))`.
 -/
 import GaloisForLFunctions.RHTower.SmoothAFEZetaDualContourLimit
 

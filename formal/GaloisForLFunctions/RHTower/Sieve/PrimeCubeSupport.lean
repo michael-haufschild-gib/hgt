@@ -20,7 +20,7 @@ namespace RHTower.Sieve
 open Finset MeasureTheory
 
 /-- The part of a cube fibre whose three coordinates lie in a support. -/
-noncomputable def cubeFibreOn (N : ℕ) (S : Finset (Fin N)) (j : Fin (N ^ 3)) :
+noncomputable def cubeFibreOn (N : ℕ) (S : Finset (Fin N)) (j : Fin (N ^ (3 : ℕ))) :
     Finset (Fin N × Fin N × Fin N) :=
   (cubeFibre N j).filter (fun p => p.1 ∈ S ∧ p.2.1 ∈ S ∧ p.2.2 ∈ S)
 
@@ -29,12 +29,12 @@ three coordinates in the support of the coefficients contribute, so only their c
 Cauchy–Schwarz step. -/
 theorem sum_normSq_convCube_le_of_support (N : ℕ) (a : Fin N → ℂ) (S : Finset (Fin N))
     (hsupp : ∀ n : Fin N, a n ≠ 0 → n ∈ S) {D : ℝ}
-    (hD : ∀ j : Fin (N ^ 3), ((cubeFibreOn N S j).card : ℝ) ≤ D) (hD0 : 0 ≤ D) :
-    ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 := by
+    (hD : ∀ j : Fin (N ^ (3 : ℕ)), ((cubeFibreOn N S j).card : ℝ) ≤ D) (hD0 : 0 ≤ D) :
+    ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by
   classical
   set g : Fin N × Fin N × Fin N → ℝ := fun p => ‖a p.1 * a p.2.1 * a p.2.2‖ with hg
-  have hconv : ∀ j : Fin (N ^ 3),
+  have hconv : ∀ j : Fin (N ^ (3 : ℕ)),
       convCube N a j = ∑ p ∈ cubeFibreOn N S j, a p.1 * a p.2.1 * a p.2.2 := by
     intro j
     rw [convCube, cubeFibreOn, cubeFibre]
@@ -42,49 +42,49 @@ theorem sum_normSq_convCube_le_of_support (N : ℕ) (a : Fin N → ℂ) (S : Fin
       rcases mul_ne_zero_iff.mp hne with ⟨h12, h3⟩
       rcases mul_ne_zero_iff.mp h12 with ⟨h1, h2⟩
       exact ⟨hsupp _ h1, hsupp _ h2, hsupp _ h3⟩)).symm
-  have hfibre : ∀ j : Fin (N ^ 3),
-      ‖convCube N a j‖ ^ 2 ≤ D * ∑ p ∈ cubeFibreOn N S j, g p ^ 2 := by
+  have hfibre : ∀ j : Fin (N ^ (3 : ℕ)),
+      ‖convCube N a j‖ ^ (2 : ℕ) ≤ D * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) := by
     intro j
     have hnorm : ‖convCube N a j‖ ≤ ∑ p ∈ cubeFibreOn N S j, g p := by
       rw [hconv j]
       exact norm_sum_le _ _
-    have hsq : ‖convCube N a j‖ ^ 2 ≤ (∑ p ∈ cubeFibreOn N S j, g p) ^ 2 :=
+    have hsq : ‖convCube N a j‖ ^ (2 : ℕ) ≤ (∑ p ∈ cubeFibreOn N S j, g p) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-    have hcs : (∑ p ∈ cubeFibreOn N S j, g p) ^ 2
-        ≤ ((cubeFibreOn N S j).card : ℝ) * ∑ p ∈ cubeFibreOn N S j, g p ^ 2 :=
+    have hcs : (∑ p ∈ cubeFibreOn N S j, g p) ^ (2 : ℕ)
+        ≤ ((cubeFibreOn N S j).card : ℝ) * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
-    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ cubeFibreOn N S j, g p ^ 2 :=
+    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) :=
       Finset.sum_nonneg fun p _ => sq_nonneg _
-    have hmul : ((cubeFibreOn N S j).card : ℝ) * ∑ p ∈ cubeFibreOn N S j, g p ^ 2
-        ≤ D * ∑ p ∈ cubeFibreOn N S j, g p ^ 2 :=
+    have hmul : ((cubeFibreOn N S j).card : ℝ) * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ)
+        ≤ D * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right (hD j) hsum0
     linarith
-  have hsum : ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ ∑ j : Fin (N ^ 3), D * ∑ p ∈ cubeFibreOn N S j, g p ^ 2 :=
+  have hsum : ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ ∑ j : Fin (N ^ (3 : ℕ)), D * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) :=
     Finset.sum_le_sum fun j _ => hfibre j
   set sSet : Finset (Fin N × Fin N × Fin N) :=
     (Finset.univ : Finset (Fin N × Fin N × Fin N)).filter
       (fun p => p.1 ∈ S ∧ p.2.1 ∈ S ∧ p.2.2 ∈ S) with hsSet
-  have hfibreOn : ∀ j : Fin (N ^ 3),
+  have hfibreOn : ∀ j : Fin (N ^ (3 : ℕ)),
       cubeFibreOn N S j = sSet.filter (fun p => cubeIdx p = j) := by
     intro j
     rw [cubeFibreOn, cubeFibre, hsSet]
     exact Finset.filter_comm _ _ _
   have hfib := Finset.sum_fiberwise_of_maps_to
-    (s := sSet) (t := (Finset.univ : Finset (Fin (N ^ 3)))) (g := fun p => cubeIdx p)
-    (f := fun p : Fin N × Fin N × Fin N => g p ^ 2)
+    (s := sSet) (t := (Finset.univ : Finset (Fin (N ^ (3 : ℕ))))) (g := fun p => cubeIdx p)
+    (f := fun p : Fin N × Fin N × Fin N => g p ^ (2 : ℕ))
     (fun p _ => Finset.mem_univ _)
-  have hcollect : ∑ j : Fin (N ^ 3), D * ∑ p ∈ cubeFibreOn N S j, g p ^ 2
-      = D * ∑ p ∈ sSet, g p ^ 2 := by
+  have hcollect : ∑ j : Fin (N ^ (3 : ℕ)), D * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ)
+      = D * ∑ p ∈ sSet, g p ^ (2 : ℕ) := by
     simp only [hfibreOn]
     rw [← Finset.mul_sum, hfib]
-  have hmono : ∑ p ∈ sSet, g p ^ 2 ≤ ∑ p : Fin N × Fin N × Fin N, g p ^ 2 :=
+  have hmono : ∑ p ∈ sSet, g p ^ (2 : ℕ) ≤ ∑ p : Fin N × Fin N × Fin N, g p ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
       (fun p _ _ => sq_nonneg _)
-  have hprod : ∑ p : Fin N × Fin N × Fin N, g p ^ 2
-      = (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 := by
+  have hprod : ∑ p : Fin N × Fin N × Fin N, g p ^ (2 : ℕ)
+      = (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by
     have hpt : ∀ p : Fin N × Fin N × Fin N,
-        g p ^ 2 = ‖a p.1‖ ^ 2 * (‖a p.2.1‖ ^ 2 * ‖a p.2.2‖ ^ 2) := by
+        g p ^ (2 : ℕ) = ‖a p.1‖ ^ (2 : ℕ) * (‖a p.2.1‖ ^ (2 : ℕ) * ‖a p.2.2‖ ^ (2 : ℕ)) := by
       intro p
       rw [hg]
       simp only [norm_mul]
@@ -96,12 +96,12 @@ theorem sum_normSq_convCube_le_of_support (N : ℕ) (a : Fin N → ℂ) (S : Fin
     refine Finset.sum_congr rfl fun m _ => ?_
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
-  calc ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ ∑ j : Fin (N ^ 3), D * ∑ p ∈ cubeFibreOn N S j, g p ^ 2 := hsum
-    _ = D * ∑ p ∈ sSet, g p ^ 2 := hcollect
-    _ ≤ D * ∑ p : Fin N × Fin N × Fin N, g p ^ 2 :=
+  calc ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ ∑ j : Fin (N ^ (3 : ℕ)), D * ∑ p ∈ cubeFibreOn N S j, g p ^ (2 : ℕ) := hsum
+    _ = D * ∑ p ∈ sSet, g p ^ (2 : ℕ) := hcollect
+    _ ≤ D * ∑ p : Fin N × Fin N × Fin N, g p ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hmono hD0
-    _ = D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 := by rw [hprod]
+    _ = D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by rw [hprod]
 
 /-- The shifted-prime support inside a coefficient range. -/
 def primeSupport (N : ℕ) : Finset (Fin N) :=
@@ -119,7 +119,7 @@ theorem prime_eq_of_dvd_mul_three {p a b c : ℕ} (hp : p.Prime) (ha : a.Prime) 
 /-- **A prime-supported cube fibre has at most nine points.**  The first two coordinates of any
 fibre point lie among the at most three prime factors of the anchored product, and the third is
 determined by the product. -/
-theorem cubeFibreOn_primeSupport_card_le_nine (N : ℕ) (j : Fin (N ^ 3)) :
+theorem cubeFibreOn_primeSupport_card_le_nine (N : ℕ) (j : Fin (N ^ (3 : ℕ))) :
     ((cubeFibreOn N (primeSupport N) j).card : ℝ) ≤ 9 := by
   classical
   have hprodEq : ∀ p ∈ cubeFibreOn N (primeSupport N) j,
@@ -198,8 +198,8 @@ theorem cubeFibreOn_primeSupport_card_le_nine (N : ℕ) (j : Fin (N ^ 3)) :
 constant nine. -/
 theorem sum_normSq_convCube_le_of_prime_support (N : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1)) :
-    ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ 9 * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 :=
+    ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ 9 * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) :=
   sum_normSq_convCube_le_of_support N a (primeSupport N)
     (fun n hn => by
       rw [primeSupport, Finset.mem_filter]
@@ -211,23 +211,23 @@ is lost: the fibre constant is nine. -/
 theorem volume_largeValues_sixth_le_of_prime_support (N : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
-    V ^ 6 * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖}
-      ≤ (T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
-          * (9 * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3) := by
-  have hV3 : (0 : ℝ) ≤ V ^ 3 := by positivity
-  have hbase := volume_largeValues_le (N ^ 3) (convCube N a) hT hV3
+    V ^ (6 : ℕ) * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖}
+      ≤ (T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)))
+          * (9 * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
+  have hV3 : (0 : ℝ) ≤ V ^ (3 : ℕ) := by positivity
+  have hbase := volume_largeValues_le (N ^ (3 : ℕ)) (convCube N a) hT hV3
   rw [largeValues_cube_setOf N a _ hV] at hbase
-  have hpow : (V ^ 3) ^ 2 = V ^ 6 := by ring
+  have hpow : (V ^ (3 : ℕ)) ^ (2 : ℕ) = V ^ (6 : ℕ) := by ring
   rw [hpow] at hbase
   refine le_trans hbase ?_
-  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ 3 : ℕ) : ℝ) := by
-    rcases Nat.eq_zero_or_pos (N ^ 3) with h | h
+  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ) := by
+    rcases Nat.eq_zero_or_pos (N ^ (3 : ℕ)) with h | h
     · simp [h]
-    · have h1 : 1 ≤ N ^ 3 := h
+    · have h1 : 1 ≤ N ^ (3 : ℕ) := h
       exact Real.log_nonneg (by exact_mod_cast h1)
-  have hcast : (0 : ℝ) ≤ ((N ^ 3 : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hcast : (0 : ℝ) ≤ ((N ^ (3 : ℕ) : ℕ) : ℝ) := Nat.cast_nonneg _
   have hfactor : (0 : ℝ)
-      ≤ T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)) := by nlinarith
+      ≤ T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)) := by nlinarith
   exact mul_le_mul_of_nonneg_left
     (sum_normSq_convCube_le_of_prime_support N a hsupp) hfactor
 
@@ -235,23 +235,23 @@ theorem volume_largeValues_sixth_le_of_prime_support (N : ℕ) (a : Fin N → �
 theorem volume_largeValues_sixth_symm_le_of_prime_support (N : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
-    V ^ 6 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖}
-      ≤ 2 * ((T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
-          * (9 * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3)) := by
-  have hV3 : (0 : ℝ) ≤ V ^ 3 := by positivity
-  have hbase := volume_largeValues_symm_le (N ^ 3) (convCube N a) hT hV3
+    V ^ (6 : ℕ) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖}
+      ≤ 2 * ((T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)))
+          * (9 * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) := by
+  have hV3 : (0 : ℝ) ≤ V ^ (3 : ℕ) := by positivity
+  have hbase := volume_largeValues_symm_le (N ^ (3 : ℕ)) (convCube N a) hT hV3
   rw [largeValues_cube_setOf N a (Set.Icc (-T) T) hV] at hbase
-  have hpow : (V ^ 3) ^ 2 = V ^ 6 := by ring
+  have hpow : (V ^ (3 : ℕ)) ^ (2 : ℕ) = V ^ (6 : ℕ) := by ring
   rw [hpow] at hbase
   refine le_trans hbase ?_
-  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ 3 : ℕ) : ℝ) := by
-    rcases Nat.eq_zero_or_pos (N ^ 3) with h | h
+  have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ) := by
+    rcases Nat.eq_zero_or_pos (N ^ (3 : ℕ)) with h | h
     · simp [h]
-    · have h1 : 1 ≤ N ^ 3 := h
+    · have h1 : 1 ≤ N ^ (3 : ℕ) := h
       exact Real.log_nonneg (by exact_mod_cast h1)
-  have hcast : (0 : ℝ) ≤ ((N ^ 3 : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hcast : (0 : ℝ) ≤ ((N ^ (3 : ℕ) : ℕ) : ℝ) := Nat.cast_nonneg _
   have hfactor : (0 : ℝ)
-      ≤ T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)) := by nlinarith
+      ≤ T + 4 * ((N ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N ^ (3 : ℕ) : ℕ) : ℝ)) := by nlinarith
   have hstep := mul_le_mul_of_nonneg_left
     (sum_normSq_convCube_le_of_prime_support N a hsupp) hfactor
   linarith

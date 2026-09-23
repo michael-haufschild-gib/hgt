@@ -9,7 +9,7 @@ becomes square integrable at the origin.  The square of the principal profile is
 endpoint: the weighted current is square integrable on the unit interval precisely when
 `α ≥ 1/2`, with the critical weight included.
 
-The positive half rests on the single integrability statement `1/(x log^2 x)` on `(0, δ]`, proved
+The positive half rests on the single integrability statement `1/(x log^(2 : ℕ) x)` on `(0, δ]`, proved
 from the primitive `-1/log x`, which is continuous at the origin.  The negative half compares the
 profile with a pure power after absorbing the logarithm into an arbitrarily small power.
 -/
@@ -82,9 +82,9 @@ theorem hasDerivAt_neg_inv_log {x : ℝ} (hx : 0 < x) (hx1 : x < 1) :
   refine h.congr_deriv ?_
   field_simp
 
-/-- **The critical profile.**  `1/(x log^2 x)` is integrable at the origin: the primitive
+/-- **The critical profile.**  `1/(x log^(2 : ℕ) x)` is integrable at the origin: the primitive
 `-1/log x` extends continuously by `0`. -/
-theorem integrableOn_inv_mul_log_sq {d : ℝ} (hd1 : d < 1) :
+theorem integrableOn_inv_mul_log_sq_primeTailHalfWeightWall {d : ℝ} (hd1 : d < 1) :
     IntegrableOn (fun x : ℝ => (x * (Real.log x) ^ 2)⁻¹) (Ioc 0 d) volume := by
   have hcont : ContinuousOn (fun x : ℝ => -(Real.log x)⁻¹) (Icc 0 d) := by
     intro x hx
@@ -214,7 +214,7 @@ theorem integrableOn_wallIntegrand_lower {z : ℂ} {α : ℝ} (hα : 1 / 2 ≤ �
     IntegrableOn (wallIntegrand z α) (Ioo 0 δ) volume := by
   set C : ℝ := (2 / ‖z - 1‖) ^ 2 with hC
   have hmaj : IntegrableOn (fun x : ℝ => C * (x * (Real.log x) ^ 2)⁻¹) (Ioo 0 δ) volume :=
-    ((integrableOn_inv_mul_log_sq (by linarith : δ < 1)).mono_set
+    ((integrableOn_inv_mul_log_sq_primeTailHalfWeightWall (by linarith : δ < 1)).mono_set
       Ioo_subset_Ioc_self).const_mul C
   refine Integrable.mono' hmaj
     (aestronglyMeasurable_wallIntegrand z α (fun x hx => ⟨hx.1, by linarith [hx.2]⟩)) ?_
@@ -419,7 +419,7 @@ theorem primeTailCurrent_halfWeight_wall {z : ℂ} (hz : 1 < z.re) (α : ℝ) :
       (integrableOn_wallIntegrand_upper hz hδ (by linarith) α)
 
 /-- **Card equation (18).**  At the critical weight the current is square integrable, matching the
-elementary model integral `∫ dx/(x log^2(1/x))`. -/
+elementary model integral `∫ dx/(x log^(2 : ℕ)(1/x))`. -/
 theorem integrableOn_halfWeight_critical {z : ℂ} (hz : 1 < z.re) :
     IntegrableOn (fun x : ℝ => (x ^ (1 / 2 : ℝ) * ‖primeTailCurrent z x‖) ^ 2)
       (Ioo 0 1) volume :=

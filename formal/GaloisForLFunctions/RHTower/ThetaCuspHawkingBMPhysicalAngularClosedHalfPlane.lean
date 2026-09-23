@@ -40,7 +40,7 @@ theorem LSeries_d4BMDivisorProductArithmetic_eq_fourZetaQuotient_closed
   let f : ℝ→ℕ→ℂ := fun e => LSeries.term
     (d4BMDivisorProductArithmetic (a-(e:ℂ)) (b-(e:ℂ))) w
   let g : ℕ→ℂ := LSeries.term (d4BMDivisorProductArithmetic a b) w
-  let bound : ℕ→ℝ := fun n => ‖LSeries.term (fun k : ℕ => ((k.divisors.card^2:ℕ):ℂ)) w n‖
+  let bound : ℕ→ℝ := fun n => ‖LSeries.term (fun k : ℕ => ((k.divisors.card^(2 : ℕ):ℕ):ℂ)) w n‖
   have hsum : Summable bound := (Sieve.divisorSquareLSeriesSummable hw).norm
   have hterm (n : ℕ) : Tendsto (fun e => f e n) (𝓝[>] (0:ℝ)) (𝓝 (g n)) := by
     have hcoef : Continuous (fun e : ℝ =>
@@ -116,7 +116,7 @@ set_option autoImplicit false
 theorem nativeRamanujan_value_closedHalfPlane (q : XiZeroCopy)
     (hq : 1/2 ≤ (q.1:ℂ).re) (s : ℂ) (hs : 2 < s.re) :
     LSeries (d4BMDivisorProductArithmetic (-2*center q) (-2*center q)) (s-2*center q) =
-      riemannZeta (s-2*center q)*riemannZeta s^2*riemannZeta (s+2*center q)/riemannZeta (2*s) := by
+      riemannZeta (s-2*center q)*riemannZeta s^(2 : ℕ)*riemannZeta (s+2*center q)/riemannZeta (2*s) := by
   have ha : (-2*center q).re ≤ 0 := by
     simp [D4BMGlobalAngularResponse.center]
     linarith
@@ -133,7 +133,7 @@ theorem nativeRamanujan_value_closedHalfPlane (q : XiZeroCopy)
 
 private theorem native_archimedean_value (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.re) :
     8*Complex.Gammaℝ (2*s)*(((2*Real.pi:ℝ):ℂ)^(-s))*nativeBesselMellinFactor q s =
-      Complex.Gammaℝ (s+2*center q)*Complex.Gammaℝ s^2*Complex.Gammaℝ (s-2*center q) := by
+      Complex.Gammaℝ (s+2*center q)*Complex.Gammaℝ s^(2 : ℕ)*Complex.Gammaℝ (s-2*center q) := by
   have hg : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by linarith)
   have hpi : (Real.pi:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have h2pi : ((2:ℂ)*(Real.pi:ℂ))^(-s) = (2:ℂ)^(-s)*(Real.pi:ℂ)^(-s) := by
@@ -144,7 +144,7 @@ private theorem native_archimedean_value (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
     norm_num at h ⊢
     exact h
   have hp : (Real.pi:ℂ)^(-s)*(Real.pi:ℂ)^(-s) =
-      (Real.pi:ℂ)^(-(s+2*center q)/2)*((Real.pi:ℂ)^(-s/2))^2*(Real.pi:ℂ)^(-(s-2*center q)/2) := by
+      (Real.pi:ℂ)^(-(s+2*center q)/2)*((Real.pi:ℂ)^(-s/2))^(2 : ℕ)*(Real.pi:ℂ)^(-(s-2*center q)/2) := by
     rw [pow_two]
     repeat' rw [← Complex.cpow_add _ _ hpi]
     congr 1
@@ -157,10 +157,10 @@ private theorem native_archimedean_value (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
   calc
     _ = (8*((2:ℂ)^(-s)*(2:ℂ)^(s-3)))*
         (((Real.pi:ℂ)^(-s)*(Real.pi:ℂ)^(-s))*
-          (Complex.Gamma (s/2+center q)*Complex.Gamma (s/2)^2*Complex.Gamma (s/2-center q))) := by
+          (Complex.Gamma (s/2+center q)*Complex.Gamma (s/2)^(2 : ℕ)*Complex.Gamma (s/2-center q))) := by
       field_simp [hg]
     _ = ((Real.pi:ℂ)^(-s)*(Real.pi:ℂ)^(-s))*
-          (Complex.Gamma (s/2+center q)*Complex.Gamma (s/2)^2*Complex.Gamma (s/2-center q)) := by
+          (Complex.Gamma (s/2+center q)*Complex.Gamma (s/2)^(2 : ℕ)*Complex.Gamma (s/2-center q)) := by
       rw [h2]
       ring
     _ = _ := by rw [hp]; ring
@@ -169,17 +169,17 @@ private theorem native_archimedean_value (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
 theorem nativeDiagonalPeriod_fourLambda_closedHalfPlane (q : XiZeroCopy) (hq : 1/2 ≤ (q.1:ℂ).re)
     (s : ℂ) (hs : 2 < s.re) :
     4*reflectedCompletedLambda (2*s)*
-      (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2)) =
-        (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^2*
+      (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ))) =
+        (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^(2 : ℕ)*
           reflectedCompletedLambda (s-2*center q))/2 := by
   rw [nativeFourierMellin_lseries q s hs,nativeRamanujan_value_closedHalfPlane q hq s hs]
   have hz : riemannZeta (2*s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re (by simp; linarith)
   change 4*(Complex.Gammaℝ (2*s)*riemannZeta (2*s))*
     ((((2*Real.pi:ℝ):ℂ)^(-s)*nativeBesselMellinFactor q s)*
-      (riemannZeta (s-2*center q)*riemannZeta s^2*riemannZeta (s+2*center q)/riemannZeta (2*s))) = _
+      (riemannZeta (s-2*center q)*riemannZeta s^(2 : ℕ)*riemannZeta (s+2*center q)/riemannZeta (2*s))) = _
   calc
     _ = (8*Complex.Gammaℝ (2*s)*(((2*Real.pi:ℝ):ℂ)^(-s))*nativeBesselMellinFactor q s)*
-      (riemannZeta (s+2*center q)*riemannZeta s^2*riemannZeta (s-2*center q))/2 := by
+      (riemannZeta (s+2*center q)*riemannZeta s^(2 : ℕ)*riemannZeta (s-2*center q))/2 := by
       field_simp [hz]
       ring
     _ = _ := by
@@ -198,7 +198,7 @@ set_option autoImplicit false
 theorem scalarResidualPeriod_fourLambda_with_cutoff_closedHalfPlane (q : XiZeroCopy) (hq : 1/2 ≤ (q.1:ℂ).re)
     (s : ℂ) (hs : 2 < s.re) :
     scalarResidualPeriod q (s-1/2) =
-      (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^2*
+      (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^(2 : ℕ)*
         reflectedCompletedLambda (s-2*center q))/2+
       reflectedCompletedLambda (2*s)*(∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*nativePrincipalRemainder q y)-
       reflectedCompletedLambda (2*s-1)*(∫ y in Ioi (2:ℝ), (y:ℂ)^(-s-1)*nativeSquareCutoffHeight q y) := by
@@ -292,7 +292,7 @@ including all critical copies. All original principal corrections cancel after a
 theorem physicalSelfSourceCoefficient_fourLambda_closedHalfPlane (q : XiZeroCopy)
     (hq : 1/2 ≤ (q.1:ℂ).re) :
     physicalSelfSourceCoefficient q =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2 := by
   rw [physicalSelfSourceCoefficient,physicalPrincipalCorrection_eq_nativeMoment,
     physicalAngularParameter_eq,scalarResidualPeriod_physical_eq_continuation_closedHalfPlane q hq,

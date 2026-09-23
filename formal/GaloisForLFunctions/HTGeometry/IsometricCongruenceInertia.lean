@@ -99,7 +99,7 @@ theorem hermQuad_add (X Y : Matrix m m ℂ) (x : m → ℂ) :
 
 omit [Fintype n] [DecidableEq n] in
 theorem hermQuad_one (x : m → ℂ) :
-    hermQuad (1 : Matrix m m ℂ) x = ∑ i, ‖x i‖ ^ 2 := by
+    hermQuad (1 : Matrix m m ℂ) x = ∑ i, ‖x i‖ ^ (2 : ℕ) := by
   simp only [hermQuad, Matrix.one_mulVec, dotProduct, Pi.star_apply, RCLike.star_def]
   rw [Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -142,12 +142,12 @@ theorem isPosDefOn_top_smul_one_add_gram {c : ℝ} (hc : 0 < c) (A : Matrix m m 
 
 omit [Fintype n] [DecidableEq n] [DecidableEq m] in
 theorem hermQuad_smul_vec (H : Matrix m m ℂ) (c : ℝ) (x : m → ℂ) :
-    hermQuad H ((c : ℂ) • x) = c ^ 2 * hermQuad H x := by
+    hermQuad H ((c : ℂ) • x) = c ^ (2 : ℕ) * hermQuad H x := by
   have hstar : star ((c : ℂ) • x) = (c : ℂ) • star x := by
     funext i
     simp [Pi.star_apply, RCLike.star_def, Complex.conj_ofReal]
   simp only [hermQuad, Matrix.mulVec_smul, hstar, smul_dotProduct, dotProduct_smul, smul_eq_mul,
     ← mul_assoc]
-  rw [show ((c : ℂ) * (c : ℂ)) = (((c ^ 2 : ℝ)) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
+  rw [show ((c : ℂ) * (c : ℂ)) = (((c ^ (2 : ℕ) : ℝ)) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
 
 end GaloisForLFunctions.HTGeometry

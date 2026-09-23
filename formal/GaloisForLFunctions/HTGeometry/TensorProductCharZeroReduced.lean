@@ -97,7 +97,7 @@ theorem isReduced_tensorProduct_algebraicClosure
 /-- **In characteristic zero the tensor product of reduced algebras is reduced.**  Both factors
 become reduced over the algebraic closure, where points separate, and the original tensor product
 embeds into that base change. -/
-theorem isReduced_tensorProduct_of_charZero
+theorem isReduced_tensorProduct_of_charZero_tensorProductCharZeroReduced
     {K A B : Type*} [Field K] [CharZero K] [CommRing A] [CommRing B]
     [Algebra K A] [Algebra K B] [IsReduced A] [IsReduced B] :
     IsReduced (A ⊗[K] B) := by

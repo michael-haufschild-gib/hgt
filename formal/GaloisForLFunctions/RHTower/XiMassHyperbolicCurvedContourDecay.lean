@@ -131,7 +131,7 @@ theorem norm_cosh_sub_mul_I_le_cosh (x v : ℝ) :
 
 theorem mul_exp_neg_mul_le_two_div_sq_mul_inv
     {K y : ℝ} (hK : 0 < K) (hy : 0 < y) :
-    y * Real.exp (-(K * y)) ≤ (2 / K ^ 2) * y⁻¹ := by
+    y * Real.exp (-(K * y)) ≤ (2 / K ^ (2 : ℕ)) * y⁻¹ := by
   have hKy : 0 ≤ K * y := (mul_pos hK hy).le
   have hseries := Real.pow_div_factorial_le_exp (K * y) hKy 2
   norm_num [Nat.factorial] at hseries
@@ -141,12 +141,12 @@ theorem mul_exp_neg_mul_le_two_div_sq_mul_inv
     ring_nf
     exact Real.exp_zero
   rw [hcancel] at hmul
-  have hden : 0 < K ^ 2 * y := mul_pos (sq_pos_of_pos hK) hy
-  rw [show (2 / K ^ 2) * y⁻¹ = 2 / (K ^ 2 * y) by field_simp]
+  have hden : 0 < K ^ (2 : ℕ) * y := mul_pos (sq_pos_of_pos hK) hy
+  rw [show (2 / K ^ (2 : ℕ)) * y⁻¹ = 2 / (K ^ (2 : ℕ) * y) by field_simp]
   rw [le_div_iff₀ hden]
   calc
-    y * Real.exp (-(K * y)) * (K ^ 2 * y) =
-        2 * (((K * y) ^ 2 / 2) * Real.exp (-(K * y))) := by ring
+    y * Real.exp (-(K * y)) * (K ^ (2 : ℕ) * y) =
+        2 * (((K * y) ^ (2 : ℕ) / 2) * Real.exp (-(K * y))) := by ring
     _ ≤ 2 * 1 := by gcongr
     _ = 2 := by ring
 
@@ -192,7 +192,7 @@ theorem norm_xiMassHyperbolicEntireKernel_shift_le_exp_abs
     (hv0 : 0 ≤ v) (hvtheta : v ≤ theta) :
     ‖RHTower.xiMassHyperbolicEntireKernel a sigma u h
         ((x : ℂ) - (v : ℂ) * I)‖ ≤
-      (2 * a / (a * (sigma * Real.cos theta) / 2) ^ 2) *
+      (2 * a / (a * (sigma * Real.cos theta) / 2) ^ (2 : ℕ)) *
         Real.exp (-|x|) := by
   let m : ℝ := sigma * Real.cos theta
   let K : ℝ := a * m / 2
@@ -237,10 +237,10 @@ theorem norm_xiMassHyperbolicEntireKernel_shift_le_exp_abs
       dsimp only [K]
       nlinarith
     _ = a * (Real.exp |x| * Real.exp (-(K * Real.exp |x|))) := by ring
-    _ ≤ a * ((2 / K ^ 2) * (Real.exp |x|)⁻¹) := by
+    _ ≤ a * ((2 / K ^ (2 : ℕ)) * (Real.exp |x|)⁻¹) := by
       exact mul_le_mul_of_nonneg_left
         (mul_exp_neg_mul_le_two_div_sq_mul_inv hK (Real.exp_pos _)) ha.le
-    _ = (2 * a / (a * (sigma * Real.cos theta) / 2) ^ 2) *
+    _ = (2 * a / (a * (sigma * Real.cos theta) / 2) ^ (2 : ℕ)) *
         Real.exp (-|x|) := by
       rw [← Real.exp_neg]
       dsimp only [K, m]
@@ -254,7 +254,7 @@ theorem integral_xiMassHyperbolicEntireKernel_shift_eq
       ((x : ℂ) - (theta : ℂ) * I)) =
         ∫ x : ℝ, RHTower.xiMassHyperbolicEntireKernel a sigma u h (x : ℂ) := by
   let c : ℝ := theta / 2
-  let C : ℝ := 2 * a / (a * (sigma * Real.cos theta) / 2) ^ 2
+  let C : ℝ := 2 * a / (a * (sigma * Real.cos theta) / 2) ^ (2 : ℕ)
   let F : ℂ → ℂ := RHTower.xiMassHyperbolicEntireKernel a sigma u h
   let G : ℂ → ℂ := fun z => F (z - (c : ℂ) * I)
   have hc : 0 ≤ c := by dsimp only [c]; linarith
@@ -316,10 +316,10 @@ theorem integral_xiMassHyperbolicEntireKernel_shift_eq
 
 theorem cosh_arsinh_div_sqrt_sq_sub_sq
     {A B : ℝ} (hB : 0 ≤ B) (hBA : B < A) :
-    Real.cosh (Real.arsinh (B / Real.sqrt (A ^ 2 - B ^ 2))) =
-      A / Real.sqrt (A ^ 2 - B ^ 2) := by
-  have hD : 0 < A ^ 2 - B ^ 2 := by nlinarith
-  have hq : 0 < Real.sqrt (A ^ 2 - B ^ 2) := Real.sqrt_pos.2 hD
+    Real.cosh (Real.arsinh (B / Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ)))) =
+      A / Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ)) := by
+  have hD : 0 < A ^ (2 : ℕ) - B ^ (2 : ℕ) := by nlinarith
+  have hq : 0 < Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ)) := Real.sqrt_pos.2 hD
   have hA : 0 < A := lt_of_le_of_lt hB hBA
   rw [Real.cosh_arsinh]
   apply (sq_eq_sq₀ (Real.sqrt_nonneg _) (div_nonneg hA.le hq.le)).mp
@@ -332,12 +332,12 @@ theorem cosh_arsinh_div_sqrt_sq_sub_sq
 
 theorem hyperbolic_boost_identity
     {A B x : ℝ} (hB : 0 ≤ B) (hBA : B < A) :
-    let q := Real.sqrt (A ^ 2 - B ^ 2)
+    let q := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
     let r := Real.arsinh (B / q)
     A * Real.cosh x + B * Real.sinh x = q * Real.cosh (x + r) := by
   dsimp only
-  have hD : 0 < A ^ 2 - B ^ 2 := by nlinarith
-  have hq : 0 < Real.sqrt (A ^ 2 - B ^ 2) := Real.sqrt_pos.2 hD
+  have hD : 0 < A ^ (2 : ℕ) - B ^ (2 : ℕ) := by nlinarith
+  have hq : 0 < Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ)) := Real.sqrt_pos.2 hD
   rw [Real.cosh_add, Real.sinh_arsinh,
     cosh_arsinh_div_sqrt_sq_sub_sq hB hBA]
   field_simp
@@ -399,21 +399,21 @@ theorem integral_realBesselOrderKernel_one_full_eq
 
 theorem integral_cosh_exp_neg_hyperbolic_linear_le_bessel
     {a A B : ℝ} (ha : 0 < a) (hB : 0 ≤ B) (hBA : B < A) :
-    let q := Real.sqrt (A ^ 2 - B ^ 2)
+    let q := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
     let r := Real.arsinh (B / q)
     (∫ x : ℝ, Real.cosh x *
       Real.exp (-a * (A * Real.cosh x + B * Real.sinh x))) ≤
         2 * Real.exp r *
           GaloisForLFunctions.HTGeometry.realModifiedBesselKOrder (a * q) 1 := by
   dsimp only
-  let q : ℝ := Real.sqrt (A ^ 2 - B ^ 2)
+  let q : ℝ := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
   let r : ℝ := Real.arsinh (B / q)
   let base : ℝ → ℝ := fun y =>
     Real.exp (-(a * q) * Real.cosh y) * Real.cosh y
   let f : ℝ → ℝ := fun x => Real.cosh x *
     Real.exp (-a * (A * Real.cosh x + B * Real.sinh x))
   let g : ℝ → ℝ := fun x => Real.exp r * base (x + r)
-  have hD : 0 < A ^ 2 - B ^ 2 := by nlinarith
+  have hD : 0 < A ^ (2 : ℕ) - B ^ (2 : ℕ) := by nlinarith
   have hq : 0 < q := by exact Real.sqrt_pos.2 hD
   have hr : 0 ≤ r := by
     rw [Real.arsinh_nonneg_iff]
@@ -463,14 +463,14 @@ theorem integrable_cosh_exp_neg_hyperbolic_linear
     {a A B : ℝ} (ha : 0 < a) (hB : 0 ≤ B) (hBA : B < A) :
     Integrable (fun x : ℝ => Real.cosh x *
       Real.exp (-a * (A * Real.cosh x + B * Real.sinh x))) := by
-  let q : ℝ := Real.sqrt (A ^ 2 - B ^ 2)
+  let q : ℝ := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
   let r : ℝ := Real.arsinh (B / q)
   let base : ℝ → ℝ := fun y =>
     Real.exp (-(a * q) * Real.cosh y) * Real.cosh y
   let f : ℝ → ℝ := fun x => Real.cosh x *
     Real.exp (-a * (A * Real.cosh x + B * Real.sinh x))
   let g : ℝ → ℝ := fun x => Real.exp r * base (x + r)
-  have hD : 0 < A ^ 2 - B ^ 2 := by nlinarith
+  have hD : 0 < A ^ (2 : ℕ) - B ^ (2 : ℕ) := by nlinarith
   have hq : 0 < q := Real.sqrt_pos.2 hD
   have hr : 0 ≤ r := by
     rw [Real.arsinh_nonneg_iff]
@@ -550,7 +550,7 @@ theorem norm_stripFourier_xiMass_le_curvedBessel
     (htheta0 : 0 ≤ theta) (hthetaPi : theta < Real.pi / 2) :
     let A := sigma * Real.cos theta + h * Real.sin theta
     let B := u * Real.sin theta
-    let q := Real.sqrt (A ^ 2 - B ^ 2)
+    let q := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
     let r := Real.arsinh (B / q)
     ‖RHTower.stripFourier
       (RHTower.xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I)) (h : ℂ)‖ ≤
@@ -559,7 +559,7 @@ theorem norm_stripFourier_xiMass_le_curvedBessel
   dsimp only
   let A : ℝ := sigma * Real.cos theta + h * Real.sin theta
   let B : ℝ := u * Real.sin theta
-  let q : ℝ := Real.sqrt (A ^ 2 - B ^ 2)
+  let q : ℝ := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
   let r : ℝ := Real.arsinh (B / q)
   let F : ℂ → ℂ := RHTower.xiMassHyperbolicEntireKernel a sigma u h
   let major : ℝ → ℝ := fun x => a * (Real.cosh x *
@@ -647,11 +647,11 @@ theorem norm_stripFourier_xiMass_le_curvedBessel_full_exponent
     (htheta0 : 0 ≤ theta) (hthetaPi : theta < Real.pi / 2)
     (hq₀ : 0 < q₀)
     (hq₀q : q₀ ≤ Real.sqrt
-      ((sigma * Real.cos theta + h * Real.sin theta) ^ 2 -
-        (u * Real.sin theta) ^ 2)) :
+      ((sigma * Real.cos theta + h * Real.sin theta) ^ (2 : ℕ) -
+        (u * Real.sin theta) ^ (2 : ℕ))) :
     let A := sigma * Real.cos theta + h * Real.sin theta
     let B := u * Real.sin theta
-    let q := Real.sqrt (A ^ 2 - B ^ 2)
+    let q := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
     let r := Real.arsinh (B / q)
     ‖RHTower.stripFourier
       (RHTower.xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I)) (h : ℂ)‖ ≤
@@ -660,7 +660,7 @@ theorem norm_stripFourier_xiMass_le_curvedBessel_full_exponent
   dsimp only
   let A : ℝ := sigma * Real.cos theta + h * Real.sin theta
   let B : ℝ := u * Real.sin theta
-  let q : ℝ := Real.sqrt (A ^ 2 - B ^ 2)
+  let q : ℝ := Real.sqrt (A ^ (2 : ℕ) - B ^ (2 : ℕ))
   let r : ℝ := Real.arsinh (B / q)
   have hbase := norm_stripFourier_xiMass_le_curvedBessel
     ha hsigma hu huh htheta0 hthetaPi

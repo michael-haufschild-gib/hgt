@@ -24,7 +24,7 @@ def spinTorqueEnergy (m : EuclideanSpace ℝ (Fin 3)) : ℝ :=
   (m.ofLp ⨯₃ (![0, 0, 1] : Fin 3 → ℝ)) ⬝ᵥ (m.ofLp ⨯₃ (![0, 0, 1] : Fin 3 → ℝ))
 
 theorem spinTorqueEnergy_components (m : EuclideanSpace ℝ (Fin 3)) :
-    spinTorqueEnergy m = m 0 ^ 2 + m 1 ^ 2 := by
+    spinTorqueEnergy m = m 0 ^ (2 : ℕ) + m 1 ^ (2 : ℕ) := by
   simp [spinTorqueEnergy, cross_apply, dotProduct, Fin.sum_univ_three]
   ring
 
@@ -43,7 +43,7 @@ theorem hasDerivAt_projectiveSpinFlow_coord (a : ℝ) (N D : ℂ) (t : ℝ) (i :
 /-- Exact torque-square energy derivative along the actual global Landau–Lifshitz solution. -/
 theorem hasDerivAt_projectiveSpinFlow_energy (a : ℝ) (N D : ℂ) (t : ℝ) :
     HasDerivAt (fun s => projectiveSpinFlow a N D s (2 : Fin 3))
-      (-a ^ 2 * spinTorqueEnergy (projectiveSpinFlow a N D t)) t := by
+      (-a ^ (2 : ℕ) * spinTorqueEnergy (projectiveSpinFlow a N D t)) t := by
   apply (hasDerivAt_projectiveSpinFlow_coord a N D t 2).congr_deriv
   rw [spinSphereField_components, spinTorqueEnergy_components]
   simp
@@ -57,7 +57,7 @@ theorem projectiveSpinFlow_energy_antitone (a : ℝ) (N D : ℂ) :
 
 /-- The actual torque loss is continuous, including both homogeneous poles and the zero spin. -/
 theorem continuous_projectiveSpinFlow_loss (a : ℝ) (N D : ℂ) :
-    Continuous (fun t => a ^ 2 * spinTorqueEnergy (projectiveSpinFlow a N D t)) := by
+    Continuous (fun t => a ^ (2 : ℕ) * spinTorqueEnergy (projectiveSpinFlow a N D t)) := by
   have h0 : Continuous (fun t => projectiveSpinFlow a N D t (0 : Fin 3)) :=
     continuous_iff_continuousAt.mpr (fun t => (hasDerivAt_projectiveSpinFlow_coord a N D t 0).continuousAt)
   have h1 : Continuous (fun t => projectiveSpinFlow a N D t (1 : Fin 3)) :=
@@ -67,9 +67,9 @@ theorem continuous_projectiveSpinFlow_loss (a : ℝ) (N D : ℂ) :
 
 /-- Exact integrated energy loss for the actual spin solution, at arbitrary real endpoints. -/
 theorem projectiveSpinFlow_integral_loss (a : ℝ) (N D : ℂ) (s t : ℝ) :
-    (∫ v in s..t, a ^ 2 * spinTorqueEnergy (projectiveSpinFlow a N D v)) =
+    (∫ v in s..t, a ^ (2 : ℕ) * spinTorqueEnergy (projectiveSpinFlow a N D v)) =
       projectiveSpinFlow a N D s (2 : Fin 3) - projectiveSpinFlow a N D t (2 : Fin 3) := by
-  have hc : Continuous (fun v => -a ^ 2 * spinTorqueEnergy (projectiveSpinFlow a N D v)) := by
+  have hc : Continuous (fun v => -a ^ (2 : ℕ) * spinTorqueEnergy (projectiveSpinFlow a N D v)) := by
     convert (continuous_projectiveSpinFlow_loss a N D).neg using 1
     funext v
     simp only [Pi.neg_apply, neg_mul]
@@ -81,8 +81,8 @@ theorem projectiveSpinFlow_integral_loss (a : ℝ) (N D : ℂ) (s t : ℝ) :
 /-- Positive damping is constructed exponentially and drives every finite chart point to zero. -/
 theorem spinPlaneFlow_positive_tendsto_zero (s : ℝ) (z : ℂ) :
     Filter.Tendsto (spinPlaneFlow (Real.exp s) z) Filter.atTop (nhds 0) := by
-  have ht : Filter.Tendsto (fun t : ℝ => -(Real.exp s) ^ 2 * t) Filter.atTop Filter.atBot :=
-    Filter.Tendsto.const_mul_atTop_of_neg (r := -(Real.exp s) ^ 2)
+  have ht : Filter.Tendsto (fun t : ℝ => -(Real.exp s) ^ (2 : ℕ) * t) Filter.atTop Filter.atBot :=
+    Filter.Tendsto.const_mul_atTop_of_neg (r := -(Real.exp s) ^ (2 : ℕ))
       (neg_neg_of_pos (sq_pos_of_pos (Real.exp_pos s))) Filter.tendsto_id
   have he := (Real.tendsto_exp_atBot.comp ht).mul_const ‖z‖
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
@@ -91,7 +91,7 @@ theorem spinPlaneFlow_positive_tendsto_zero (s : ℝ) (z : ℂ) :
 /-- Quantitative spherical convergence follows from the existing chordal metric estimate. -/
 theorem spinSphereFlow_south_distance_bound (a : ℝ) (z : ℂ) (t : ℝ) :
     ‖spinSphereFlow a z t - _root_.Bottcher.stereo 0‖ ≤
-      2 * Real.exp (-a ^ 2 * t) * ‖z‖ := by
+      2 * Real.exp (-a ^ (2 : ℕ) * t) * ‖z‖ := by
   rw [spinSphereFlow, _root_.Bottcher.norm_stereo_sub]
   have h := _root_.Bottcher.chordalDist_le_norm (spinPlaneFlow a z t) 0
   rw [sub_zero, spinPlaneFlow_norm] at h
@@ -124,9 +124,9 @@ theorem projectiveSpinFlow_positive_tendsto (s : ℝ) (N D : ℂ) :
 /-- The latitude odds are exactly the decaying squared chart radius. -/
 theorem spinSphereFlow_energy_odds (a : ℝ) (z : ℂ) (t : ℝ) :
     (1 + spinSphereFlow a z t (2 : Fin 3)) / (1 - spinSphereFlow a z t (2 : Fin 3)) =
-      Real.exp (-2 * a ^ 2 * t) * ‖z‖ ^ 2 := by
+      Real.exp (-2 * a ^ (2 : ℕ) * t) * ‖z‖ ^ (2 : ℕ) := by
   rw [spinSphereFlow_energy]
-  have h : 1 + Real.exp (-2 * a ^ 2 * t) * ‖z‖ ^ 2 ≠ 0 := by positivity
+  have h : 1 + Real.exp (-2 * a ^ (2 : ℕ) * t) * ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
   ring
 
@@ -134,7 +134,7 @@ theorem spinSphereFlow_energy_odds (a : ℝ) (z : ℂ) (t : ℝ) :
 theorem spinSphereFlow_speed_bound (a : ℝ) (z : ℂ) (t : ℝ) :
     ‖spinSphereField a (spinSphereFlow a z t)‖ ≤ ‖spinPlaneRate a‖ := by
   rw [spinSphereFlow_speed, norm_mul]
-  apply (div_le_iff₀ (by positivity : 0 < 1 + ‖spinPlaneFlow a z t‖ ^ 2)).mpr
+  apply (div_le_iff₀ (by positivity : 0 < 1 + ‖spinPlaneFlow a z t‖ ^ (2 : ℕ))).mpr
   nlinarith [mul_nonneg (norm_nonneg (spinPlaneRate a)) (sq_nonneg (‖spinPlaneFlow a z t‖ - 1))]
 
 end

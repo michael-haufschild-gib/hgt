@@ -32,7 +32,7 @@ theorem case32_false {A B : Finset G} {x₀ : G} {t : ℕ}
         (dysonSmall A B z).card ≤ (dysonSmall A B x₀).card)
     (hspread : ∀ c : G, ¬ (B ⊆ c • mulStab (dysonFull A B * B)))
     (hTne : (dysonFull A B).Nonempty)
-    (hweakfail : repSum A B t + 2 * t ^ 2 + 1 ≤ t * A.card + t * B.card) :
+    (hweakfail : repSum A B t + 2 * t ^ (2 : ℕ) + 1 ≤ t * A.card + t * B.card) :
     False := by
   classical
   -- the `#T` bound
@@ -62,13 +62,13 @@ theorem case32_false {A B : Finset G} {x₀ : G} {t : ℕ}
     linarith
   have hsum : ((repSum A B t : ℕ) : ℝ)
       ≤ (t : ℝ) * ((A.card : ℝ) + (B.card : ℝ) - 2 * (t : ℝ)) := by
-    have h2 : ((repSum A B t : ℕ) : ℝ) + 2 * (t : ℝ) ^ 2 + 1
+    have h2 : ((repSum A B t : ℕ) : ℝ) + 2 * (t : ℝ) ^ (2 : ℕ) + 1
         ≤ (t : ℝ) * (A.card : ℝ) + (t : ℝ) * (B.card : ℝ) := by
       exact_mod_cast hweakfail
     nlinarith [h2]
   rcases min_cases ((t : ℝ) * ((A.card : ℝ) * (B.card : ℝ))
         / ((t : ℝ) + Real.sqrt ((t : ℝ) * ((t : ℝ) - 1))))
-      ((t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ)
+      ((t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ)
         / (((t : ℝ) - 1) * (A.card : ℝ)
             + ((dysonFull A B).card : ℝ) * ((B.card : ℝ) - ((t : ℝ) - 1))))
       with ⟨hmin, _⟩ | ⟨hmin, _⟩
@@ -87,7 +87,7 @@ theorem case32_false {A B : Finset G} {x₀ : G} {t : ℕ}
         + ((dysonFull A B).card : ℝ) * ((B.card : ℝ) - ((t : ℝ) - 1)) := by
       have h3 : (3 : ℝ) ≤ (t : ℝ) := by exact_mod_cast ht
       nlinarith [hTpos, hapos, hbbig, h3]
-    have hkey : (A.card : ℝ) ^ 2 * (B.card : ℝ)
+    have hkey : (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ)
         ≤ ((A.card : ℝ) + (B.card : ℝ) - 2 * (t : ℝ))
           * (((t : ℝ) - 1) * (A.card : ℝ)
              + ((dysonFull A B).card : ℝ) * ((B.card : ℝ) - ((t : ℝ) - 1))) := by
@@ -95,12 +95,12 @@ theorem case32_false {A B : Finset G} {x₀ : G} {t : ℕ}
       nlinarith [hlem, hsum, httpos, hdenpos]
     have hden : ((t : ℝ) - 1) * (A.card : ℝ)
         + ((dysonFull A B).card : ℝ) * ((B.card : ℝ) - ((t : ℝ) - 1))
-        ≤ (A.card : ℝ) * (B.card : ℝ) - ((B.card : ℝ) - (t : ℝ) + 1) ^ 2 := by
+        ≤ (A.card : ℝ) * (B.card : ℝ) - ((B.card : ℝ) - (t : ℝ) + 1) ^ (2 : ℕ) := by
       nlinarith [hTle, hbbig, ht1]
     have habpos : (0 : ℝ) ≤ (A.card : ℝ) + (B.card : ℝ) - 2 * (t : ℝ) := by linarith
-    have hfin : (A.card : ℝ) ^ 2 * (B.card : ℝ)
+    have hfin : (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ)
         ≤ ((A.card : ℝ) + (B.card : ℝ) - 2 * (t : ℝ))
-          * ((A.card : ℝ) * (B.card : ℝ) - ((B.card : ℝ) - (t : ℝ) + 1) ^ 2) :=
+          * ((A.card : ℝ) * (B.card : ℝ) - ((B.card : ℝ) - (t : ℝ) + 1) ^ (2 : ℕ)) :=
       le_trans hkey (mul_le_mul_of_nonneg_left hden habpos)
     have hcase := case32_key ht1 hbbig hba
     nlinarith [hfin, hcase]

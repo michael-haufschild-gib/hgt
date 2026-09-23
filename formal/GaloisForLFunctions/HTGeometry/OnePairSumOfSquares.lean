@@ -59,9 +59,9 @@ theorem IsSumHermitianSquares.add {f g : ℝ → ℝ} (hf : IsSumHermitianSquare
 
 /-- The square of a real exponential sum is a Hermitian square. -/
 theorem isSumHermitianSquares_sq {m : ℕ} (d a : Fin m → ℝ) :
-    IsSumHermitianSquares (fun t => (∑ j, d j * Real.exp (a j * t)) ^ 2) := by
+    IsSumHermitianSquares (fun t => (∑ j, d j * Real.exp (a j * t)) ^ (2 : ℕ)) := by
   refine ⟨1, m, ![fun j => ((d j : ℝ) : ℂ)], fun j => ((a j : ℝ) : ℂ), fun t => ?_⟩
-  show (∑ j, d j * Real.exp (a j * t)) ^ 2 = _
+  show (∑ j, d j * Real.exp (a j * t)) ^ (2 : ℕ) = _
   rw [Fin.sum_univ_one, Matrix.cons_val_zero]
   have hz : (∑ j, ((d j : ℝ) : ℂ) * Complex.exp (((a j : ℝ) : ℂ) * t))
       = (((∑ j, d j * Real.exp (a j * t) : ℝ)) : ℂ) := by
@@ -105,39 +105,39 @@ theorem isSumHermitianSquares_signomial (p : ℝ[X]) (ρ m : ℝ)
     · exact hp y hlt
   obtain ⟨A, B, hAB⟩ := exists_sq_add_sq_comp_sq p hp0
   have hrewrite : ∀ t : ℝ, Real.exp (-(m * t)) * p.eval (Real.exp (ρ * t))
-      = (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2
-        + (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ 2 := by
+      = (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ)
+        + (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ) := by
     intro t
-    have hy : Real.exp ((ρ / 2) * t) ^ 2 = Real.exp (ρ * t) := by
+    have hy : Real.exp ((ρ / 2) * t) ^ (2 : ℕ) = Real.exp (ρ * t) := by
       rw [← Real.exp_nat_mul]
       congr 1
       ring
-    have hex : Real.exp (-(m / 2) * t) ^ 2 = Real.exp (-(m * t)) := by
+    have hex : Real.exp (-(m / 2) * t) ^ (2 : ℕ) = Real.exp (-(m * t)) := by
       rw [← Real.exp_nat_mul]
       congr 1
       ring
     calc Real.exp (-(m * t)) * p.eval (Real.exp (ρ * t))
-        = Real.exp (-(m / 2) * t) ^ 2 * p.eval (Real.exp ((ρ / 2) * t) ^ 2) := by rw [hy, hex]
-      _ = Real.exp (-(m / 2) * t) ^ 2
-            * ((A.eval (Real.exp ((ρ / 2) * t))) ^ 2 + (B.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
+        = Real.exp (-(m / 2) * t) ^ (2 : ℕ) * p.eval (Real.exp ((ρ / 2) * t) ^ (2 : ℕ)) := by rw [hy, hex]
+      _ = Real.exp (-(m / 2) * t) ^ (2 : ℕ)
+            * ((A.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ) + (B.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ)) := by
           rw [hAB]
       _ = _ := by ring
   have hsqA : IsSumHermitianSquares
-      (fun t => (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
+      (fun t => (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ)) := by
     obtain ⟨L, m', v, μ, hv⟩ := isSumHermitianSquares_sq
       (fun j : Fin (A.natDegree + 1) => A.coeff (j : ℕ))
       (fun j : Fin (A.natDegree + 1) => ((j : ℕ) : ℝ) * (ρ / 2) + -(m / 2))
     refine ⟨L, m', v, μ, fun t => ?_⟩
-    show (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2 = _
+    show (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ) = _
     rw [polyExp_eq_expSumReal A (ρ / 2) (-(m / 2)) t]
     exact hv t
   have hsqB : IsSumHermitianSquares
-      (fun t => (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
+      (fun t => (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ)) := by
     obtain ⟨L, m', v, μ, hv⟩ := isSumHermitianSquares_sq
       (fun j : Fin (B.natDegree + 1) => B.coeff (j : ℕ))
       (fun j : Fin (B.natDegree + 1) => ((j : ℕ) : ℝ) * (ρ / 2) + -(m / 2))
     refine ⟨L, m', v, μ, fun t => ?_⟩
-    show (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ 2 = _
+    show (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ (2 : ℕ) = _
     rw [polyExp_eq_expSumReal B (ρ / 2) (-(m / 2)) t]
     exact hv t
   obtain ⟨L, m', v, μ, hv⟩ := hsqA.add hsqB

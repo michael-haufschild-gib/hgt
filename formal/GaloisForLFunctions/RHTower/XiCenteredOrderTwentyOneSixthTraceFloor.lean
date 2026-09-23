@@ -24,18 +24,18 @@ noncomputable section
 
 /-- Exact factorization of the real sixth reciprocal-trace atom. -/
 theorem xiZeroCopyReciprocalSquare_cube_re_formula (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q ^ 3).re =
-      let u := ((q.1 : ℂ).re - 1 / 2) ^ 2
-      let v := (q.1 : ℂ).im ^ 2
+    (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re =
+      let u := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+      let v := (q.1 : ℂ).im ^ (2 : ℕ)
       let w := u + v
-      ((v - u) / w) * ((v ^ 2 - 14 * u * v + u ^ 2) / w ^ 2) * (1 / w ^ 3) := by
+      ((v - u) / w) * ((v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ)) / w ^ (2 : ℕ)) * (1 / w ^ (3 : ℕ)) := by
   dsimp only
-  rw [show xiZeroCopyReciprocalSquare q ^ 3 =
-      xiZeroCopyReciprocalSquare q ^ 2 * xiZeroCopyReciprocalSquare q by ring,
+  rw [show xiZeroCopyReciprocalSquare q ^ (3 : ℕ) =
+      xiZeroCopyReciprocalSquare q ^ (2 : ℕ) * xiZeroCopyReciprocalSquare q by ring,
     Complex.mul_re, pow_two, Complex.mul_re, Complex.mul_im,
     xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
-  have hden : ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hden : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   field_simp [hden]
   ring
@@ -43,13 +43,13 @@ theorem xiZeroCopyReciprocalSquare_cube_re_formula (q : XiZeroCopy) :
 /-- Uniform sixth-trace floor on the full order-twenty-one residual height rectangle. -/
 theorem one_div_sixMillionOneHundredThousand_lt_xiSixthReciprocalTraceAtom
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 361 / 2) :
-    (1 / 6100000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 3).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 361 / 2) :
+    (1 / 6100000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   have hu0 : 0 < u := by simpa only [u] using huLower
   have huU : u < 1 / 4 := by simpa only [u] using huUpper
@@ -60,7 +60,7 @@ theorem one_div_sixMillionOneHundredThousand_lt_xiSixthReciprocalTraceAtom
   have hvw : v < w := by dsimp only [w]; linarith
   have hwU : w < 723 / 4 := by dsimp only [w]; linarith
   have hur : 591 * u < w := by dsimp only [w]; linarith
-  have huv : 591 * (u * v) < w ^ 2 := by
+  have huv : 591 * (u * v) < w ^ (2 : ℕ) := by
     have hleft : 591 * u * v < w * v :=
       mul_lt_mul_of_pos_right hur hv0
     have hright : w * v < w * w :=
@@ -71,43 +71,43 @@ theorem one_div_sixMillionOneHundredThousand_lt_xiSixthReciprocalTraceAtom
     dsimp only [w]
     nlinarith
   have hsecond : (575 / 591 : ℝ) <
-      (v ^ 2 - 14 * u * v + u ^ 2) / w ^ 2 := by
+      (v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ)) / w ^ (2 : ℕ) := by
     rw [lt_div_iff₀ (sq_pos_of_pos hw0)]
-    have hid : v ^ 2 - 14 * u * v + u ^ 2 = w ^ 2 - 16 * u * v := by
+    have hid : v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 16 * u * v := by
       dsimp only [w]
       ring
     rw [hid]
     nlinarith
-  have hthird : (4 / 723 : ℝ) ^ 3 < 1 / w ^ 3 := by
-    have hw3 : w ^ 3 < (723 / 4 : ℝ) ^ 3 :=
+  have hthird : (4 / 723 : ℝ) ^ (3 : ℕ) < 1 / w ^ (3 : ℕ) := by
+    have hw3 : w ^ (3 : ℕ) < (723 / 4 : ℝ) ^ (3 : ℕ) :=
       pow_lt_pow_left₀ hwU hw0.le (by norm_num)
     rw [one_div]
-    rw [show (4 / 723 : ℝ) ^ 3 = ((723 / 4 : ℝ) ^ 3)⁻¹ by norm_num]
+    rw [show (4 / 723 : ℝ) ^ (3 : ℕ) = ((723 / 4 : ℝ) ^ (3 : ℕ))⁻¹ by norm_num]
     simpa only [one_div] using one_div_lt_one_div_of_lt (pow_pos hw0 3) hw3
   have hfirst0 : 0 < (v - u) / w :=
     (by norm_num : (0 : ℝ) < 589 / 591).trans hfirst
-  have hsecond0 : 0 < (v ^ 2 - 14 * u * v + u ^ 2) / w ^ 2 :=
+  have hsecond0 : 0 < (v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ)) / w ^ (2 : ℕ) :=
     (by norm_num : (0 : ℝ) < 575 / 591).trans hsecond
   have hrat : (1 / 6100000 : ℝ) <
-      (589 / 591 : ℝ) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ 3 := by
+      (589 / 591 : ℝ) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ (3 : ℕ) := by
     norm_num
   rw [xiZeroCopyReciprocalSquare_cube_re_formula]
   dsimp only [u, v, w] at *
   calc
     (1 / 6100000 : ℝ) <
-        (589 / 591 : ℝ) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ 3 := hrat
-    _ < ((v - u) / w) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ 3 := by
+        (589 / 591 : ℝ) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ (3 : ℕ) := hrat
+    _ < ((v - u) / w) * (575 / 591 : ℝ) * (4 / 723 : ℝ) ^ (3 : ℕ) := by
       gcongr
     _ < ((v - u) / w) *
-        ((v ^ 2 - 14 * u * v + u ^ 2) / w ^ 2) * (4 / 723 : ℝ) ^ 3 := by
+        ((v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ)) / w ^ (2 : ℕ)) * (4 / 723 : ℝ) ^ (3 : ℕ) := by
       gcongr
     _ < ((v - u) / w) *
-        ((v ^ 2 - 14 * u * v + u ^ 2) / w ^ 2) * (1 / w ^ 3) := by
+        ((v ^ (2 : ℕ) - 14 * u * v + u ^ (2 : ℕ)) / w ^ (2 : ℕ)) * (1 / w ^ (3 : ℕ)) := by
       gcongr
 
 lemma xiSixthReciprocalTraceAtom_lineConj (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) ^ 3).re =
-      (xiZeroCopyReciprocalSquare q ^ 3).re := by
+    (xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) ^ (3 : ℕ)).re =
+      (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re := by
   have hz :
       xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) =
         (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q) := by
@@ -116,8 +116,8 @@ lemma xiSixthReciprocalTraceAtom_lineConj (q : XiZeroCopy) :
   rw [hz, ← map_pow, Complex.conj_re]
 
 lemma xiSixthReciprocalTraceAtom_conj (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ 3).re =
-      (xiZeroCopyReciprocalSquare q ^ 3).re := by
+    (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ (3 : ℕ)).re =
+      (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re := by
   have hz :
       xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) =
         (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q) := by
@@ -128,12 +128,12 @@ lemma xiSixthReciprocalTraceAtom_conj (q : XiZeroCopy) :
 
 /-- The complete sixth reciprocal trace is the second normalized source moment. -/
 theorem tsum_xiSixthReciprocalTraceAtom_eq_source :
-    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 3).re) =
+    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re) =
       normalizedPrimeArchMoment 2 := by
   have hsum := summable_xiZeroCopyReciprocalSquare_pow 2
   calc
-    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 3).re) =
-        (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ 3).re := by
+    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re) =
+        (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re := by
       rw [Complex.re_tsum hsum]
     _ = (xiCentralReciprocalMoment 2).re := by
       rw [tsum_xiZeroCopyReciprocalSquare_pow 2]
@@ -145,10 +145,10 @@ theorem tsum_xiSixthReciprocalTraceAtom_eq_source :
 /-- Four distinct FE--Schwarz copies of an off-line sixth-trace atom are bounded by the source. -/
 theorem four_mul_xiSixthReciprocalTraceAtom_le_source_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 * (xiZeroCopyReciprocalSquare q ^ 3).re ≤
+    4 * (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re ≤
       normalizedPrimeArchMoment 2 := by
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 3).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (3 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 2).mapL Complex.reCLM
   have hle := four_mul_le_tsum_of_quartet_invariant
     re_xiCentral_cube_nonneg hsum

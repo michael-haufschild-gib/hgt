@@ -158,7 +158,7 @@ def poleSelfKernelPrimitive (u : ℝ) : ℝ :=
   (u - 1) * Real.log (1 - u) + (u + 1) * Real.log (1 + u) - 2 * u
 
 theorem hasDerivAt_poleSelfKernelPrimitive {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1) :
-    HasDerivAt poleSelfKernelPrimitive (Real.log (1 - u ^ 2)) u := by
+    HasDerivAt poleSelfKernelPrimitive (Real.log (1 - u ^ (2 : ℕ))) u := by
   have h1 : HasDerivAt (fun u : ℝ => 1 - u) (-1) u := by
     simpa using (hasDerivAt_id u).const_sub (1 : ℝ)
   have h2 : HasDerivAt (fun u : ℝ => 1 + u) 1 u := by
@@ -181,7 +181,7 @@ theorem hasDerivAt_poleSelfKernelPrimitive {u : ℝ} (hu0 : 0 < u) (hu1 : u < 1)
   have hne1 : (1 - u) ≠ 0 := by linarith
   have hne2 : (1 + u) ≠ 0 := by linarith
   refine ((hA.add hB).sub hC).congr_deriv ?_
-  rw [show (1 : ℝ) - u ^ 2 = (1 - u) * (1 + u) by ring, Real.log_mul hne1 hne2]
+  rw [show (1 : ℝ) - u ^ (2 : ℕ) = (1 - u) * (1 + u) by ring, Real.log_mul hne1 hne2]
   field_simp
   ring
 
@@ -200,7 +200,7 @@ theorem hasDerivAt_poleSelfKernelAntiderivative {t : ℝ} (ht : 0 < t) :
   rw [key]
   refine hcomp.congr_deriv ?_
   unfold poleBoundaryLog
-  rw [show Real.exp (-(2 * t)) = Real.exp (-t) ^ 2 by
+  rw [show Real.exp (-(2 * t)) = Real.exp (-t) ^ (2 : ℕ) by
     rw [← Real.exp_nat_mul]; push_cast; ring_nf]
   ring
 

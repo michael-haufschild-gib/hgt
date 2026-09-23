@@ -55,18 +55,18 @@ private theorem zero_not_relativeInfCompactAction :
 /-- Exact three witnesses proving pairwise logical independence of descent, symbol
 conservativity, and relative inf-compactness. -/
 theorem nomological_three_organ_logical_independence :
-    (VerticalSymbolConservative (fun v : ℝ => v + v ^ 2) ∧
+    (VerticalSymbolConservative (fun v : ℝ => v + v ^ (2 : ℕ)) ∧
       RelativeInfCompactAction abs ∧
-      ¬ PairResponseDescentLaw (fun v : ℝ => v + v ^ 2)) ∧
+      ¬ PairResponseDescentLaw (fun v : ℝ => v + v ^ (2 : ℕ))) ∧
     (PairResponseDescentLaw (fun _ : ℝ => 0) ∧
       RelativeInfCompactAction abs ∧
       ¬ VerticalSymbolConservative (fun _ : ℝ => 0)) ∧
     (PairResponseDescentLaw id ∧
       VerticalSymbolConservative id ∧
       ¬ RelativeInfCompactAction (fun _ : ℝ => 0)) := by
-  have hquad : HasDerivAt (fun v : ℝ => v + v ^ 2) 1 0 := by
+  have hquad : HasDerivAt (fun v : ℝ => v + v ^ (2 : ℕ)) 1 0 := by
     have h := (hasDerivAt_id' (0 : ℝ)).add ((hasDerivAt_id' (0 : ℝ)).pow 2)
-    have h' : HasDerivAt ((fun x : ℝ => x) + (fun x : ℝ => x) ^ 2) 1 0 :=
+    have h' : HasDerivAt ((fun x : ℝ => x) + (fun x : ℝ => x) ^ (2 : ℕ)) 1 0 :=
       h.congr_deriv (by norm_num)
     exact h'.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   refine ⟨⟨⟨1, one_ne_zero, hquad⟩, absoluteValue_relativeInfCompactAction, ?_⟩,

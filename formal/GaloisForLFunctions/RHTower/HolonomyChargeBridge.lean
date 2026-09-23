@@ -33,12 +33,12 @@ theorem trace_holonomy_eq_carrierCharge_one {f : ℂ → ℂ} {ρ : ℂ} {r₀ r
     {G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA ρ r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA ρ r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ (2 : ℕ) = f z)
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap ρ r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap ρ r θ)) :
     U (3 * Real.pi / 2) = carrierCharge f 1 ρ * U (-(Real.pi / 2)) := by
   have hR : 0 < R := lt_of_le_of_lt h0 (lt_trans hr₀ hrR)
   have hfin : analyticOrderAt f ρ ≠ ⊤ := by

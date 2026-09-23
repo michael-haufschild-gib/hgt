@@ -32,7 +32,7 @@ theorem isStrongMarkushevichPair
 
 theorem norm_dual_sq_le_two
     (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma) (j : ℕ) (i : ↥(block j)) :
-    ‖dual rho sigma j i‖ ^ 2 ≤ 2 :=
+    ‖dual rho sigma j i‖ ^ (2 : ℕ) ≤ 2 :=
   GaloisForLFunctions.HTGeometry.FiniteMarkushevichSimplexBlock.norm_phaseDual_sq_le_two
     ↥(block j) (phase rho sigma j) (norm_phase rho hsigma j) i
 
@@ -124,7 +124,7 @@ theorem isStrongMarkushevichPair_normalized
 
 theorem norm_normalizedDual_sq_le_two
     (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
-    ‖normalizedDual rho sigma n‖ ^ 2 ≤ 2 := by
+    ‖normalizedDual rho sigma n‖ ^ (2 : ℕ) ≤ 2 := by
   classical
   by_cases h1 : n = 1
   · subst n
@@ -147,7 +147,7 @@ def IsMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization
     GaloisForLFunctions.HTGeometry.IsStrongMarkushevichPair ℂ
       (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes) dual ∧
     (∀ n, ‖RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n‖ = 1) ∧
-    ∀ n, ‖dual n‖ ^ 2 ≤ 2
+    ∀ n, ‖dual n‖ ^ (2 : ℕ) ≤ 2
 
 theorem isMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization
     (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma) (hrho : 1 / 2 < rho.re) :
@@ -172,10 +172,10 @@ theorem exists_mscPhysicalOverlapUniformStrongMarkushevichNonBesselRealization
       IsMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization
           rho sigma modes source overlap dual ∧
         ∀ B : ℝ, ∃ packet : Finset ℕ, ∃ x : H,
-          B * ‖x‖ ^ 2 <
+          B * ‖x‖ ^ (2 : ℕ) <
             ∑ n ∈ packet,
               ‖inner ℂ
-                (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n) x‖ ^ 2 := by
+                (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n) x‖ ^ (2 : ℕ) := by
   refine ⟨mode rho sigma, sourceVector rho hsigma hrho, overlapVector rho hsigma hrho,
     normalizedDual rho sigma,
     isMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization rho hsigma hrho, ?_⟩
@@ -216,10 +216,10 @@ theorem strictRightXiZero_mscUniformStrongMarkushevichSingularRouteKill
         IsMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization
             rho sigma modes source overlap dual ∧
           ∀ B : ℝ, ∃ packet : Finset ℕ, ∃ x : H,
-            B * ‖x‖ ^ 2 <
+            B * ‖x‖ ^ (2 : ℕ) <
               ∑ n ∈ packet,
                 ‖inner ℂ
-                  (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n) x‖ ^ 2 := by
+                  (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n) x‖ ^ (2 : ℕ) := by
   have hstrong :=
     isMSCPhysicalOverlapUniformStrongMarkushevichHilbertRealization rho hsigma hhalf
   have hwall :=

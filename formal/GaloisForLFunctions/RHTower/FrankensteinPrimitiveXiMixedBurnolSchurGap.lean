@@ -64,10 +64,10 @@ theorem integral_star_routePPrimitiveBurnolWindowFeature_mul_xiConormal
 theorem normSq_routePBaseCauchyCubicKernel
     {a b kappa : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Complex.normSq (routePBaseCauchyCubicKernel 1 a b kappa) =
-      4 / (((a + b) ^ 2 + kappa ^ 2) ^ 3) := by
+      4 / (((a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ)) ^ (3 : ℕ)) := by
   rw [routePBaseCauchyCubicKernel, Complex.normSq_div,
     Complex.normSq_mul]
-  rw [show routePCollisionPairFrequency 1 a b kappa ^ 3 =
+  rw [show routePCollisionPairFrequency 1 a b kappa ^ (3 : ℕ) =
       routePCollisionPairFrequency 1 a b kappa *
         routePCollisionPairFrequency 1 a b kappa *
           routePCollisionPairFrequency 1 a b kappa by ring,
@@ -80,27 +80,27 @@ theorem normSq_routePBaseCauchyCubicKernel
 /-- Squared normalized coherence of two unweighted cubic radial conormals. -/
 def routePBaseCauchyCubicNormalizedCoherenceSq
     (a b kappa : ℝ) : ℝ :=
-  64 * a ^ 3 * b ^ 3 / (((a + b) ^ 2 + kappa ^ 2) ^ 3)
+  64 * a ^ (3 : ℕ) * b ^ (3 : ℕ) / (((a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ)) ^ (3 : ℕ))
 
 /-- Normalized coherence is strict unless both radial rates and ordinates coincide. -/
 theorem routePBaseCauchyCubicNormalizedCoherenceSq_lt_one
     {a b kappa : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hne : a ≠ b ∨ kappa ≠ 0) :
     routePBaseCauchyCubicNormalizedCoherenceSq a b kappa < 1 := by
-  have hgap : 0 < (a - b) ^ 2 + kappa ^ 2 := by
+  have hgap : 0 < (a - b) ^ (2 : ℕ) + kappa ^ (2 : ℕ) := by
     rcases hne with hab | hk
-    · have hs : 0 < (a - b) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hab)
+    · have hs : 0 < (a - b) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hab)
       nlinarith [sq_nonneg kappa]
-    · have hs : 0 < kappa ^ 2 := sq_pos_of_ne_zero hk
+    · have hs : 0 < kappa ^ (2 : ℕ) := sq_pos_of_ne_zero hk
       nlinarith [sq_nonneg (a - b)]
   have hleft : 0 < 4 * a * b := by positivity
-  have hlt : 4 * a * b < (a + b) ^ 2 + kappa ^ 2 := by
+  have hlt : 4 * a * b < (a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ) := by
     nlinarith
-  have hright : 0 < (a + b) ^ 2 + kappa ^ 2 := hleft.trans hlt
-  have hcubes : (4 * a * b) ^ 3 <
-      ((a + b) ^ 2 + kappa ^ 2) ^ 3 :=
+  have hright : 0 < (a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ) := hleft.trans hlt
+  have hcubes : (4 * a * b) ^ (3 : ℕ) <
+      ((a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ)) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ hlt hleft.le (by norm_num)
-  rw [show (4 * a * b) ^ 3 = 64 * a ^ 3 * b ^ 3 by ring] at hcubes
+  rw [show (4 * a * b) ^ (3 : ℕ) = 64 * a ^ (3 : ℕ) * b ^ (3 : ℕ) by ring] at hcubes
   rw [routePBaseCauchyCubicNormalizedCoherenceSq,
     div_lt_one (pow_pos hright 3)]
   exact hcubes
@@ -145,7 +145,7 @@ theorem routePPrimitiveXiBurnolNormalizedCoherenceSq_lt_one
 /-- Real determinant of the unweighted two-node cubic conormal Gram. -/
 def routePBaseCauchyCubicTwoNodeGramDet
     (a b kappa : ℝ) : ℝ :=
-  (1 / (4 * a ^ 3)) * (1 / (4 * b ^ 3)) -
+  (1 / (4 * a ^ (3 : ℕ))) * (1 / (4 * b ^ (3 : ℕ))) -
     Complex.normSq (routePBaseCauchyCubicKernel 1 a b kappa)
 
 /-- The two-node Gram has a strict Schur residual whenever rate or ordinate differs. -/
@@ -154,13 +154,13 @@ theorem routePBaseCauchyCubicTwoNodeGramDet_pos
     (hne : a ≠ b ∨ kappa ≠ 0) :
     0 < routePBaseCauchyCubicTwoNodeGramDet a b kappa := by
   have hcoh := routePBaseCauchyCubicNormalizedCoherenceSq_lt_one ha hb hne
-  have hscale : 0 < (1 / (16 * a ^ 3 * b ^ 3) : ℝ) := by positivity
+  have hscale : 0 < (1 / (16 * a ^ (3 : ℕ) * b ^ (3 : ℕ)) : ℝ) := by positivity
   rw [routePBaseCauchyCubicTwoNodeGramDet,
     normSq_routePBaseCauchyCubicKernel ha hb]
   have hid :
-      (1 / (4 * a ^ 3)) * (1 / (4 * b ^ 3)) -
-          4 / (((a + b) ^ 2 + kappa ^ 2) ^ 3) =
-        (1 / (16 * a ^ 3 * b ^ 3)) *
+      (1 / (4 * a ^ (3 : ℕ))) * (1 / (4 * b ^ (3 : ℕ))) -
+          4 / (((a + b) ^ (2 : ℕ) + kappa ^ (2 : ℕ)) ^ (3 : ℕ)) =
+        (1 / (16 * a ^ (3 : ℕ) * b ^ (3 : ℕ))) *
           (1 - routePBaseCauchyCubicNormalizedCoherenceSq a b kappa) := by
     unfold routePBaseCauchyCubicNormalizedCoherenceSq
     field_simp [ha.ne', hb.ne']

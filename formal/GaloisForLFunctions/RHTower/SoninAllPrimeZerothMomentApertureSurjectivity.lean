@@ -77,13 +77,13 @@ theorem exists_positive_aperture_soninAllPrimeEnergyMoment_zero_eq
     positivity
   have hratio : 0 < T / (2 * R) := by positivity
   have ha₀ : 0 < a₀ := Real.sqrt_pos.2 hratio
-  have ha₀sq : a₀ ^ 2 = T / (2 * R) := by
+  have ha₀sq : a₀ ^ (2 : ℕ) = T / (2 * R) := by
     dsimp only [a₀]
     exact Real.sq_sqrt hratio.le
   let f : ℝ → ℝ := fun a => (soninAllPrimeEnergyMoment a 0).re
   have hsmall : f a₀ < T := by
     have harea := re_soninAllPrimeEnergyMoment_zero_le_area a₀ ha₀
-    have heq : (128 * a₀ ^ 2) * soninAllPrimeColumnWeightSqMass = T / 2 := by
+    have heq : (128 * a₀ ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass = T / 2 := by
       dsimp only [R, M] at hR ha₀sq
       rw [ha₀sq]
       field_simp [soninAllPrimeColumnWeightSqMass_pos.ne']

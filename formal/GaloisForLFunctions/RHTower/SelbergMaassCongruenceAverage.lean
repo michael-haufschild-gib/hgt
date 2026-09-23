@@ -53,19 +53,19 @@ theorem average_sourceVector_apply (z : ℍ) (q : Deck N) :
   rw [finiteRegularAverage_apply]
   rfl
 
-theorem sourceVector_norm_sq (z : ℍ) : ‖sourceVector N f z‖^2=density N f z := by
+theorem sourceVector_norm_sq (z : ℍ) : ‖sourceVector N f z‖^(2 : ℕ)=density N f z := by
   rw [EuclideanSpace.norm_sq_eq]
   simp only [Complex.sq_norm]
   rfl
 
 theorem average_sourceVector_norm_sq (z : ℍ) :
-    ‖finiteRegularAverage (sourceVector N f z)‖^2=
+    ‖finiteRegularAverage (sourceVector N f z)‖^(2 : ℕ)=
       (Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z) := by
   simp only [EuclideanSpace.norm_sq_eq,average_sourceVector_apply,Complex.sq_norm,
     Finset.sum_const,Finset.card_univ,nsmul_eq_mul]
 
 theorem complement_sourceVector_norm_sq (z : ℍ) :
-    ‖sourceVector N f z-finiteRegularAverage (sourceVector N f z)‖^2=
+    ‖sourceVector N f z-finiteRegularAverage (sourceVector N f z)‖^(2 : ℕ)=
       ∑ q : Deck N, normSq (centeredComponent N f q z) := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
@@ -89,7 +89,7 @@ theorem density_mean_variance (z : ℍ) :
 congruence component retained. -/
 theorem source_mixing_energy (z : ℍ) :
     (2*(Fintype.card (Deck N):ℝ))⁻¹ *
-      ∑ g : Deck N, ‖finiteRegularUnitary g (sourceVector N f z)-sourceVector N f z‖^2=
+      ∑ g : Deck N, ‖finiteRegularUnitary g (sourceVector N f z)-sourceVector N f z‖^(2 : ℕ)=
         ∑ q : Deck N, normSq (centeredComponent N f q z) := by
   rw [finiteRegularAverage_energy,sourceVector_norm_sq,average_sourceVector_norm_sq,density_mean_variance]
   ring
@@ -126,7 +126,7 @@ theorem sourceMean_eigenfunction : IsMaassEigenfunction lam (sourceMean N f) := 
   refine ⟨sourceMean_smooth N f,fun z => ?_⟩
   have hs : ContDiffAt ℝ 2 (fun w => ∑ q : Deck N, field N f q w) (z:ℂ) :=
     ContDiffAt.sum (fun q _ => field_smooth N f q z)
-  change -(z.im:ℂ)^2*(dir 1 (dir 1 (fun w => (Fintype.card (Deck N):ℂ)⁻¹ •
+  change -(z.im:ℂ)^(2 : ℕ)*(dir 1 (dir 1 (fun w => (Fintype.card (Deck N):ℂ)⁻¹ •
       ∑ q : Deck N, field N f q w)) (z:ℂ)+
     dir Complex.I (dir Complex.I (fun w => (Fintype.card (Deck N):ℂ)⁻¹ •
       ∑ q : Deck N, field N f q w)) (z:ℂ))=(lam:ℂ)*sourceMean N f z
@@ -203,11 +203,11 @@ theorem centeredComponent_eigenfunction (q : Deck N) :
   have he : positiveHyperbolicLaplacian (centeredComponent N f q) z=
       positiveHyperbolicLaplacian (quotientForm N f q).1.1 z-
         positiveHyperbolicLaplacian (sourceMean N f) z := by
-    change -(z.im:ℂ)^2*(dir 1 (dir 1 (fun w => field N f q w-(sourceMean N f ∘ ofComplex) w)) (z:ℂ)+
+    change -(z.im:ℂ)^(2 : ℕ)*(dir 1 (dir 1 (fun w => field N f q w-(sourceMean N f ∘ ofComplex) w)) (z:ℂ)+
       dir Complex.I (dir Complex.I (fun w => field N f q w-(sourceMean N f ∘ ofComplex) w)) (z:ℂ))= _
     rw [second_dir_sub hfz hmz,second_dir_sub hfz hmz]
-    change _= -(z.im:ℂ)^2*(dir 1 (dir 1 (field N f q)) (z:ℂ)+dir Complex.I (dir Complex.I (field N f q)) (z:ℂ))-
-      (-(z.im:ℂ)^2*(dir 1 (dir 1 (sourceMean N f ∘ ofComplex)) (z:ℂ)+
+    change _= -(z.im:ℂ)^(2 : ℕ)*(dir 1 (dir 1 (field N f q)) (z:ℂ)+dir Complex.I (dir Complex.I (field N f q)) (z:ℂ))-
+      (-(z.im:ℂ)^(2 : ℕ)*(dir 1 (dir 1 (sourceMean N f ∘ ofComplex)) (z:ℂ)+
         dir Complex.I (dir Complex.I (sourceMean N f ∘ ofComplex)) (z:ℂ)))
     ring
   rw [he,hq.2,hm.2]

@@ -27,7 +27,7 @@ def bernsteinCoefficientDirichletDissipation (m : ℕ → ℝ) (n : ℕ) : ℝ :
   ∑ i ∈ Finset.range (n + 1),
     ((((n + 1 - i) * (i + 1) : ℕ) : ℝ) / (n + 1 : ℝ)) *
       (bernsteinCoefficient m (n + 1) i -
-        bernsteinCoefficient m (n + 1) (i + 1)) ^ 2
+        bernsteinCoefficient m (n + 1) (i + 1)) ^ (2 : ℕ)
 
 theorem bernsteinCoefficientDirichletDissipation_nonneg
     (m : ℕ → ℝ) (n : ℕ) :
@@ -50,11 +50,11 @@ lemma bernsteinCoefficient_degree_elevation
 
 private lemma two_point_barycentric_energy_identity
     {A B D x y : ℝ} (hD : D ≠ 0) (hsum : A + B = D + 1) :
-    D * (A / D * x + B / D * y) ^ 2 +
-        (A * B / D) * (x - y) ^ 2 =
-      (D + 1) * (A / D * x ^ 2 + B / D * y ^ 2) := by
+    D * (A / D * x + B / D * y) ^ (2 : ℕ) +
+        (A * B / D) * (x - y) ^ (2 : ℕ) =
+      (D + 1) * (A / D * x ^ (2 : ℕ) + B / D * y ^ (2 : ℕ)) := by
   field_simp [hD]
-  linear_combination (A * x ^ 2 + B * y ^ 2) * hsum
+  linear_combination (A * x ^ (2 : ℕ) + B * y ^ (2 : ℕ)) * hsum
 
 /-- **Exact degree-elevation dissipation law.**  The increase of scaled purity is precisely the
 weighted adjacent Dirichlet energy of the finer packet. -/
@@ -65,12 +65,12 @@ theorem scaled_bernsteinCoefficientPurity_succ_eq_add_dirichletDissipation
         bernsteinCoefficientDirichletDissipation m n := by
   let x : ℕ → ℝ := fun i => bernsteinCoefficient m (n + 1) i
   have hrow (i : ℕ) (hi : i ≤ n) :
-      (n + 1 : ℝ) * (bernsteinCoefficient m n i) ^ 2 +
+      (n + 1 : ℝ) * (bernsteinCoefficient m n i) ^ (2 : ℕ) +
           ((((n + 1 - i) * (i + 1) : ℕ) : ℝ) / (n + 1 : ℝ)) *
-            (x i - x (i + 1)) ^ 2 =
+            (x i - x (i + 1)) ^ (2 : ℕ) =
         (n + 2 : ℝ) *
-          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ 2 +
-            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ 2) := by
+          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ (2 : ℕ) +
+            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ (2 : ℕ)) := by
     rw [bernsteinCoefficient_degree_elevation m n i hi]
     have hden : (n + 1 : ℝ) ≠ 0 := by positivity
     have hsum :
@@ -89,32 +89,32 @@ theorem scaled_bernsteinCoefficientPurity_succ_eq_add_dirichletDissipation
   calc
     (n + 2 : ℝ) *
         (∑ i ∈ Finset.range (n + 1 + 1),
-          (bernsteinCoefficient m (n + 1) i) ^ 2) =
+          (bernsteinCoefficient m (n + 1) i) ^ (2 : ℕ)) =
       (n + 2 : ℝ) *
         (∑ i ∈ Finset.range (n + 1),
-          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ 2 +
-            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ 2)) := by
+          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ (2 : ℕ) +
+            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ (2 : ℕ))) := by
         rw [show n + 1 + 1 = n + 2 by omega]
-        rw [bernstein_elevation_weighted_sum n (fun i => (x i) ^ 2)]
+        rw [bernstein_elevation_weighted_sum n (fun i => (x i) ^ (2 : ℕ))]
     _ = ∑ i ∈ Finset.range (n + 1),
         ((n + 2 : ℝ) *
-          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ 2 +
-            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ 2)) := by
+          ((((n + 1 - i : ℕ) : ℝ) / (n + 1 : ℝ)) * (x i) ^ (2 : ℕ) +
+            (((i + 1 : ℕ) : ℝ) / (n + 1 : ℝ)) * (x (i + 1)) ^ (2 : ℕ))) := by
         rw [Finset.mul_sum]
     _ = ∑ i ∈ Finset.range (n + 1),
-        ((n + 1 : ℝ) * (bernsteinCoefficient m n i) ^ 2 +
+        ((n + 1 : ℝ) * (bernsteinCoefficient m n i) ^ (2 : ℕ) +
           ((((n + 1 - i) * (i + 1) : ℕ) : ℝ) / (n + 1 : ℝ)) *
-            (x i - x (i + 1)) ^ 2) := by
+            (x i - x (i + 1)) ^ (2 : ℕ)) := by
         apply Finset.sum_congr rfl
         intro i hi
         have hil : i < n + 1 := by simpa only [Finset.mem_range] using hi
         exact (hrow i (by omega)).symm
     _ = (n + 1 : ℝ) *
           (∑ i ∈ Finset.range (n + 1),
-            (bernsteinCoefficient m n i) ^ 2) +
+            (bernsteinCoefficient m n i) ^ (2 : ℕ)) +
         ∑ i ∈ Finset.range (n + 1),
           ((((n + 1 - i) * (i + 1) : ℕ) : ℝ) / (n + 1 : ℝ)) *
-            (x i - x (i + 1)) ^ 2 := by
+            (x i - x (i + 1)) ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum]
     _ = _ := rfl
 
@@ -193,7 +193,7 @@ theorem riemannHypothesis_iff_primeArchEndpointBernsteinCofinalLinearDissipation
     RiemannHypothesis ↔ PrimeArchEndpointBernsteinCofinalLinearDissipation := by
   constructor
   · intro hRH
-    refine ⟨normalizedPrimeArchMoment 0 ^ 2, fun N => ⟨N, le_rfl, ?_⟩⟩
+    refine ⟨normalizedPrimeArchMoment 0 ^ (2 : ℕ), fun N => ⟨N, le_rfl, ?_⟩⟩
     have hbalance :=
       primeArchEndpointBernstein_scaledPurity_eq_initial_add_sum_dissipation N
     have hupper := primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis hRH N

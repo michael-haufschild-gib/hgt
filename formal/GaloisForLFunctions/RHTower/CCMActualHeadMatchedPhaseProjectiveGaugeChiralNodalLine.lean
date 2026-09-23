@@ -259,7 +259,7 @@ theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_chiralNodalLine
     ccmActualHeadMatchedPrimePolarFiniteBlock F f =
       -2 * ∫ xi : ℝ,
         ccmActualHeadMatchedPhaseProjectiveGaugeAtomNodalFiniteReporter F xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
   congr 2
   funext xi

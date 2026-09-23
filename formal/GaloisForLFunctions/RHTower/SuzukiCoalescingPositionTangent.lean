@@ -48,14 +48,14 @@ theorem tendsto_one_sub_suzukiCoalescingDefect_rate {a : ℝ} (ha : 0 < a)
     (hR : 0 < inner ℝ (apertureMonomialL2 a 0) (R (apertureMonomialL2 a 0))) :
     Tendsto (fun c : ℝ =>
         (1 - GaloisForLFunctions.RHTower.suzukiDefectAngle (suzukiCoalescingEvenEnergy a R c)
-          (suzukiCoalescingOddEnergy a R c)) / (2 * c ^ 2))
+          (suzukiCoalescingOddEnergy a R c)) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 (suzukiPositionResolventTangent a R)) := by
   have hcosh := tendsto_apertureCoshL2 (a := a) ha.le
   have hsinh := tendsto_inv_smul_apertureSinhL2 (a := a) ha.le
   have hE : Tendsto (fun c : ℝ => suzukiCoalescingEvenEnergy a R c) (𝓝[>] (0 : ℝ))
       (𝓝 (inner ℝ (apertureMonomialL2 a 0) (R (apertureMonomialL2 a 0)))) :=
     hcosh.inner ((R.continuous.tendsto _).comp hcosh)
-  have hOsq : Tendsto (fun c : ℝ => suzukiCoalescingOddEnergy a R c / c ^ 2) (𝓝[>] (0 : ℝ))
+  have hOsq : Tendsto (fun c : ℝ => suzukiCoalescingOddEnergy a R c / c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ))
       (𝓝 (inner ℝ (apertureMonomialL2 a 1) (R (apertureMonomialL2 a 1)))) := by
     have h : Tendsto
         (fun c : ℝ => inner ℝ (c⁻¹ • apertureSinhL2 a c) (R (c⁻¹ • apertureSinhL2 a c)))
@@ -68,8 +68,8 @@ theorem tendsto_one_sub_suzukiCoalescingDefect_rate {a : ℝ} (ha : 0 < a)
     rw [suzukiCoalescingOddEnergy, ContinuousLinearMap.map_smul, real_inner_smul_left,
       real_inner_smul_right]
     field_simp
-  have hc2 : Tendsto (fun c : ℝ => c ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    have h0 : Tendsto (fun c : ℝ => c ^ 2) (𝓝 (0 : ℝ)) (𝓝 0) := by
+  have hc2 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h0 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝 (0 : ℝ)) (𝓝 0) := by
       simpa using (continuous_pow 2).tendsto (0 : ℝ)
     exact h0.mono_left nhdsWithin_le_nhds
   have hO : Tendsto (fun c : ℝ => suzukiCoalescingOddEnergy a R c) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
@@ -112,11 +112,11 @@ theorem inner_apertureMonomialL2_zero_self {a : ℝ} (ha : 0 ≤ a) :
     apertureMeasure_univ_toReal ha]
 
 theorem inner_apertureMonomialL2_one_self {a : ℝ} (ha : 0 ≤ a) :
-    inner ℝ (apertureMonomialL2 a 1) (apertureMonomialL2 a 1) = 2 * a ^ 3 / 3 := by
+    inner ℝ (apertureMonomialL2 a 1) (apertureMonomialL2 a 1) = 2 * a ^ (3 : ℕ) / 3 := by
   rw [MeasureTheory.L2.inner_def]
   have hcongr : ∫ x : ℝ, inner ℝ ((apertureMonomialL2 a 1 : Lp ℝ 2 (apertureMeasure a)) x)
         ((apertureMonomialL2 a 1 : Lp ℝ 2 (apertureMeasure a)) x) ∂(apertureMeasure a)
-      = ∫ x : ℝ, x ^ 2 ∂(apertureMeasure a) := by
+      = ∫ x : ℝ, x ^ (2 : ℕ) ∂(apertureMeasure a) := by
     refine integral_congr_ae ?_
     filter_upwards [coeFn_apertureMonomialL2 a 1] with x hx
     rw [hx]
@@ -129,7 +129,7 @@ theorem inner_apertureMonomialL2_one_self {a : ℝ} (ha : 0 ≤ a) :
 position-to-constant quotient is the aperture constant `a²/3`. -/
 theorem suzukiPositionResolventTangent_id {a : ℝ} (ha : 0 < a) :
     suzukiPositionResolventTangent a
-        (ContinuousLinearMap.id ℝ (Lp ℝ 2 (apertureMeasure a))) = a ^ 2 / 3 := by
+        (ContinuousLinearMap.id ℝ (Lp ℝ 2 (apertureMeasure a))) = a ^ (2 : ℕ) / 3 := by
   rw [suzukiPositionResolventTangent, ContinuousLinearMap.id_apply,
     ContinuousLinearMap.id_apply, inner_apertureMonomialL2_zero_self ha.le,
     inner_apertureMonomialL2_one_self ha.le]

@@ -59,6 +59,7 @@ theorem exists_physicalAffineResidual_ne_zero (q : XiZeroCopy)
   rw [show physicalAffineResidual q branch side A K =
     affineResidual q branch side A K by
       funext r
+      unfold physicalAffineResidual
       rw [self_overlapInverseSquare_eq_normalForm]
       rfl]
   exact exists_affineResidual_ne_zero q branch side A K

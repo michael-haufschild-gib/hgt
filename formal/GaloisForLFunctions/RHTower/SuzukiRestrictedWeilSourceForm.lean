@@ -128,13 +128,13 @@ theorem suzukiRestrictedWeilPrimeBlock_eq_jumpForms
     weilPrimeBlock (suzukiRestrictedWeilIndices a) u u =
       (∑ n ∈ suzukiRestrictedWeilIndices a,
         primePairWeight n * jumpForm (Real.log n) u u) -
-      2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n) * pairing u u :=
+      2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n) * l2Pairing u u :=
   weilPrimeBlock_eq_jumpForms hu hu hcu _
 
 /-- Unconditional lower bound for Suzuki's entire visible-prime sector. -/
 theorem suzukiRestrictedWeilPrimeBlock_lowerBound
     {u : ℝ → ℝ} (hu : Continuous u) (hcu : HasCompactSupport u) (a : ℝ) :
-    -(2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n)) * pairing u u ≤
+    -(2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n)) * l2Pairing u u ≤
       weilPrimeBlock (suzukiRestrictedWeilIndices a) u u := by
   rw [suzukiRestrictedWeilPrimeBlock_eq_jumpForms hu hcu a]
   have henergy : 0 ≤ ∑ n ∈ suzukiRestrictedWeilIndices a,
@@ -146,7 +146,7 @@ theorem suzukiRestrictedWeilPrimeBlock_lowerBound
 /-- Closed source-core form of the visible-prime lower bound. -/
 theorem suzukiRestrictedWeilPrimeBlock_lowerBound_core
     (a : ℝ) (u : SuzukiRestrictedWeilCore a) :
-    -(2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n)) * pairing u u ≤
+    -(2 * (∑ n ∈ suzukiRestrictedWeilIndices a, primePairWeight n)) * l2Pairing u u ≤
       weilPrimeBlock (suzukiRestrictedWeilIndices a) u u :=
   suzukiRestrictedWeilPrimeBlock_lowerBound u.continuous u.hasCompactSupport a
 

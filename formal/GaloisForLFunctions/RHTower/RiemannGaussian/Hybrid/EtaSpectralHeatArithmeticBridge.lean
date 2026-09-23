@@ -72,7 +72,7 @@ theorem hermitianHeatMomentFlow_one_zero {A : Matrix n n K}
 Hermitian matrix. -/
 theorem hermitianHeatMomentFlow_two_zero {A : Matrix n n K}
     (hA : A.IsHermitian) :
-    hermitianHeatMomentFlow hA 2 0 = A ^ 2 := by
+    hermitianHeatMomentFlow hA 2 0 = A ^ (2 : ℕ) := by
   simpa using hermitianHeatMomentFlow_zeroScale_succ hA 1
 
 /-- The order-one, zero-scale moment trace is the real trace of the original
@@ -88,7 +88,7 @@ theorem hermitianHeatMomentTrace_two_zero_eq_frobSq {A : Matrix n n K}
     (hA : A.IsHermitian) :
     hermitianHeatMomentTrace hA 2 0 = frobSq A := by
   calc
-    hermitianHeatMomentTrace hA 2 0 = rtrace (A ^ 2) := by
+    hermitianHeatMomentTrace hA 2 0 = rtrace (A ^ (2 : ℕ)) := by
       simpa using hermitianHeatMomentTrace_zeroScale_succ hA 1
     _ = frobSq A := by
       unfold rtrace frobSq

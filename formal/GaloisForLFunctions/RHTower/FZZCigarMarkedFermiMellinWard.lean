@@ -80,10 +80,10 @@ private theorem fermi_deriv (t : ℝ) :
 private theorem logistic_exp_bound (t : ℝ) :
     _root_.RHTower.logisticKernel t ≤ Real.exp (-t) := by
   have he := Real.exp_pos t
-  have hc : Real.exp t * Real.exp t ≤ (1 + Real.exp t)^2 := by nlinarith
+  have hc : Real.exp t * Real.exp t ≤ (1 + Real.exp t)^(2 : ℕ) := by nlinarith
   rw [_root_.RHTower.logisticKernel, Real.exp_neg]
   calc
-    Real.exp t/(1+Real.exp t)^2 ≤ Real.exp t/(Real.exp t*Real.exp t) :=
+    Real.exp t/(1+Real.exp t)^(2 : ℕ) ≤ Real.exp t/(Real.exp t*Real.exp t) :=
       div_le_div_of_nonneg_left he.le (mul_pos he he) hc
     _ = (Real.exp t)⁻¹ := by field_simp
 
@@ -468,7 +468,7 @@ private theorem scaled_logistic_continuous (v : ℝ) : Continuous (scaledLogisti
     (continuous_const.mul continuous_id)
 
 private theorem level_delay_factor (v x : ℝ) :
-    fzzFermiMarkedLevelDelay v x = -((fzzMarkedRadialReplicaRate v*Real.exp v^2 : ℝ) : ℂ)*
+    fzzFermiMarkedLevelDelay v x = -((fzzMarkedRadialReplicaRate v*Real.exp v^(2 : ℕ) : ℝ) : ℂ)*
       (x : ℂ)*scaledLogistic v x := by
   rw [fzzFermiMarkedLevelDelay_eq]
   unfold scaledLogistic
@@ -477,7 +477,7 @@ private theorem level_delay_factor (v x : ℝ) :
 
 private theorem level_delay_continuous (v : ℝ) : Continuous (fzzFermiMarkedLevelDelay v) := by
   have he : fzzFermiMarkedLevelDelay v = fun x : ℝ =>
-      -((fzzMarkedRadialReplicaRate v*Real.exp v^2 : ℝ) : ℂ)*(x : ℂ)*scaledLogistic v x :=
+      -((fzzMarkedRadialReplicaRate v*Real.exp v^(2 : ℕ) : ℝ) : ℂ)*(x : ℂ)*scaledLogistic v x :=
     funext (level_delay_factor v)
   rw [he]
   exact (continuous_const.mul Complex.continuous_ofReal).mul (scaled_logistic_continuous v)
@@ -497,7 +497,7 @@ private theorem level_delay_top (v a : ℝ) :
     exact ⟨1, Eventually.of_forall (fun x => by simp only [Complex.norm_real, one_mul, le_refl])⟩
   have hg : scaledLogistic v =O[atTop] (fun x : ℝ => x^(-(a+1))) :=
     (scaled_logistic_exp v).trans (isLittleO_exp_neg_mul_rpow_atTop (Real.exp_pos v) _).isBigO
-  apply ((hx.mul hg).const_mul_left (-((fzzMarkedRadialReplicaRate v*Real.exp v^2 : ℝ) : ℂ))).congr'
+  apply ((hx.mul hg).const_mul_left (-((fzzMarkedRadialReplicaRate v*Real.exp v^(2 : ℕ) : ℝ) : ℂ))).congr'
   · filter_upwards with x
     rw [level_delay_factor]
     ring

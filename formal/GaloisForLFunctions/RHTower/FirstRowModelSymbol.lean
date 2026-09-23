@@ -24,9 +24,9 @@ namespace GaloisForLFunctions.RHTower
 theorem xiSpeed_le_four_thirds {s t : ℝ} (hs : 0 ≤ s) (ht : 2 ≤ t) :
     xiSpeed s t ≤ 4 / 3 := by
   have ht0 : (0 : ℝ) < t := by linarith
-  have hsq : (4 : ℝ) ≤ t ^ 2 := by nlinarith
-  have hden : (0 : ℝ) < t ^ 2 - 1 := by linarith
-  have hratio : (t ^ 2 - s) / (t ^ 2 - 1) ≤ (4 / 3 : ℝ) ^ 2 := by
+  have hsq : (4 : ℝ) ≤ t ^ (2 : ℕ) := by nlinarith
+  have hden : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by linarith
+  have hratio : (t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1) ≤ (4 / 3 : ℝ) ^ (2 : ℕ) := by
     rw [div_le_iff₀ hden]
     nlinarith
   have h := Real.sqrt_le_sqrt hratio

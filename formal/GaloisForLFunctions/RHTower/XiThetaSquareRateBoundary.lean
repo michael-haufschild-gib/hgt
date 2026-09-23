@@ -9,7 +9,7 @@ import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 The explicit square-rate reader symbol is inner on the imaginary boundary away from the removable
 origin: its sine and hyperbolic-sine terms have equal norm. Combining that identity with the exact
 nonzero node slope gives a Cauchy boundary profile. The physical-rate boundary energy is exactly
-`4 * sinh (pi*n)^2`, or `2/pi * sinh (pi*n)^2` in the standard half-plane normalization.
+`4 * sinh (pi*n)^(2 : ℕ)`, or `2/pi * sinh (pi*n)^(2 : ℕ)` in the standard half-plane normalization.
 
 This proves the predicted boundary norm directly, without a Hardy-membership proposition.
 -/

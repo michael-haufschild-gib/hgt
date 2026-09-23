@@ -40,7 +40,7 @@ theorem tendsto_div_atTop_nhds_zero_of_bounded {g : ℝ → ℝ} {Bnd : ℝ}
 /-- **The pairing of a vector with a bounded operator's image.** -/
 theorem re_inner_self_le_opNorm_mul_sq {C : evenSubspace →L[ℂ] evenSubspace} {B W : ℝ}
     (hC : ‖C‖ ≤ B) {w : evenSubspace} (hw : ‖w‖ ≤ W) (hBnn : 0 ≤ B) :
-    (⟪w, C w⟫_ℂ).re ≤ B * W ^ 2 := by
+    (⟪w, C w⟫_ℂ).re ≤ B * W ^ (2 : ℕ) := by
   have h1 : (⟪w, C w⟫_ℂ).re ≤ ‖(⟪w, C w⟫_ℂ)‖ := Complex.re_le_norm _
   have h2 : ‖(⟪w, C w⟫_ℂ)‖ ≤ ‖w‖ * ‖C w‖ := norm_inner_le_norm _ _
   have h3 : ‖C w‖ ≤ ‖C‖ * ‖w‖ := C.le_opNorm w
@@ -48,10 +48,10 @@ theorem re_inner_self_le_opNorm_mul_sq {C : evenSubspace →L[ℂ] evenSubspace}
   have hCnn : (0 : ℝ) ≤ ‖C‖ := norm_nonneg C
   calc (⟪w, C w⟫_ℂ).re ≤ ‖w‖ * ‖C w‖ := le_trans h1 h2
     _ ≤ ‖w‖ * (‖C‖ * ‖w‖) := mul_le_mul_of_nonneg_left h3 hwnn
-    _ = ‖C‖ * ‖w‖ ^ 2 := by ring
-    _ ≤ B * ‖w‖ ^ 2 := mul_le_mul_of_nonneg_right hC (sq_nonneg _)
-    _ ≤ B * W ^ 2 := by
-        have hsq : ‖w‖ ^ 2 ≤ W ^ 2 := by
+    _ = ‖C‖ * ‖w‖ ^ (2 : ℕ) := by ring
+    _ ≤ B * ‖w‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hC (sq_nonneg _)
+    _ ≤ B * W ^ (2 : ℕ) := by
+        have hsq : ‖w‖ ^ (2 : ℕ) ≤ W ^ (2 : ℕ) := by
           rw [pow_two, pow_two]
           exact mul_self_le_mul_self hwnn hw
         exact mul_le_mul_of_nonneg_left hsq hBnn

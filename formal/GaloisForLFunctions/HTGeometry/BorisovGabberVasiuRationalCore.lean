@@ -18,11 +18,11 @@ variable {K : Type*} [Field K]
 
 /-- The characteristic-power example, viewed as a rational function over any field. -/
 def bgvQuadraticRationalSource : RatFunc K :=
-  algebraMap (Polynomial K) (RatFunc K) (X + X ^ 2)
+  algebraMap (Polynomial K) (RatFunc K) (X + X ^ (2 : ℕ))
 
 /-- The source polynomial has degree two in every characteristic. -/
 theorem bgv_quadraticPolynomial_degree :
-    (X + X ^ 2 : Polynomial K).natDegree = 2 := by
+    (X + X ^ (2 : ℕ) : Polynomial K).natDegree = 2 := by
   rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt]
   · simp
   · simp
@@ -38,7 +38,7 @@ theorem bgv_quadraticRational_degree :
 theorem bgv_quadraticRational_nonconstant :
     ¬ ∃ c : K, bgvQuadraticRationalSource = RatFunc.C c := by
   rintro ⟨c, hc⟩
-  change algebraMap (Polynomial K) (RatFunc K) (X + X ^ 2) = RatFunc.C c at hc
+  change algebraMap (Polynomial K) (RatFunc K) (X + X ^ (2 : ℕ)) = RatFunc.C c at hc
   rw [← RatFunc.algebraMap_C] at hc
   have hp := RatFunc.algebraMap_injective K hc
   have h := congrArg Polynomial.natDegree hp

@@ -637,7 +637,7 @@ def evenCompactRelativeGapGrade3 (r v : ℝ) : ℝ :=
 
 /-- Exact symbolic relative-shear identity at this entire gap degree. -/
 theorem evenCompactRawGapGrade3_relative_eq (u v : ℝ) :
-    evenCompactRawGapGrade3 u (u*(1+v/4)) = evenCompactRelativeGapGrade3 (u^2) v := by
+    evenCompactRawGapGrade3 u (u*(1+v/4)) = evenCompactRelativeGapGrade3 (u^(2 : ℕ)) v := by
   unfold evenCompactRawGapGrade3 evenCompactRelativeGapGrade3 evenCompactRelativeGapGrade3Coeff0 evenCompactRelativeGapGrade3Coeff1 evenCompactRelativeGapGrade3Coeff2 evenCompactRelativeGapGrade3Coeff3 evenCompactRelativeGapGrade3Coeff4 evenCompactRelativeGapGrade3Coeff5 evenCompactRelativeGapGrade3Coeff6 evenCompactRelativeGapGrade3Coeff7 evenCompactRelativeGapGrade3Coeff8 evenCompactRelativeGapGrade3Coeff9 evenCompactRelativeGapGrade3Coeff10 evenCompactRelativeGapGrade3Coeff11 evenCompactRelativeGapGrade3Coeff12 evenCompactRelativeGapGrade3Coeff13 evenCompactRelativeGapGrade3Coeff14 evenCompactRelativeGapGrade3Coeff15 evenCompactRelativeGapGrade3Coeff16 evenCompactRelativeGapGrade3Coeff17
   ring1
 

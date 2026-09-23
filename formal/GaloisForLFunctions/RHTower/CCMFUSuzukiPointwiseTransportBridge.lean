@@ -140,7 +140,7 @@ theorem ccmFUCentralXiScrewPositiveMixture_eq_riemannXiSuzukiPsiNonnegative
     ccmFUCentralXiScrewPositiveMixture b H =
       (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         RiemannGaussian.riemannXiSuzukiPsiNonnegative t) +
-      (32 / H ^ 4) * RiemannGaussian.riemannXiSuzukiPsiNonnegative H := by
+      (32 / H ^ (4 : ℕ)) * RiemannGaussian.riemannXiSuzukiPsiNonnegative H := by
   unfold ccmFUCentralXiScrewPositiveMixture
   congr 1
   · apply intervalIntegral.integral_congr
@@ -159,7 +159,7 @@ theorem ccmFUCentralXiScrewPositiveMixture_eq_screwHingeReporter
       (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         RiemannGaussian.screwHingeModel RiemannGaussian.suzukiPointwiseArchimedean
           RiemannGaussian.suzukiPrimeLocation RiemannGaussian.suzukiPrimeWeight t) +
-      (32 / H ^ 4) *
+      (32 / H ^ (4 : ℕ)) *
         RiemannGaussian.screwHingeModel RiemannGaussian.suzukiPointwiseArchimedean
           RiemannGaussian.suzukiPrimeLocation RiemannGaussian.suzukiPrimeWeight H := by
   unfold ccmFUCentralXiScrewPositiveMixture

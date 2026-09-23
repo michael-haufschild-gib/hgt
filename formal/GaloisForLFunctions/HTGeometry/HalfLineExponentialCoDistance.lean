@@ -93,10 +93,10 @@ theorem inner_gramSchmidt_coSystem {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k)
         (gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N)
         (gramSchmidt ℂ (expSystem (fun k => lam (coIdx n N k)) (fun _ => hpos _)) N) *
         ((∏ m ∈ (Finset.range (N + 1)).erase n,
-            (((lam m : ℝ) : ℂ) + ((lam n : ℝ) : ℂ))) ^ 2 *
+            (((lam m : ℝ) : ℂ) + ((lam n : ℝ) : ℂ))) ^ (2 : ℕ) *
           (((lam n : ℝ) : ℂ) + ((lam n : ℝ) : ℂ)))
       = (∏ m ∈ (Finset.range (N + 1)).erase n,
-          (((lam m : ℝ) : ℂ) - ((lam n : ℝ) : ℂ))) ^ 2 := by
+          (((lam m : ℝ) : ℂ) - ((lam n : ℝ) : ℂ))) ^ (2 : ℕ) := by
   classical
   have hposn : ∀ k, 0 < lam (coIdx n N k) := fun _ => hpos _
   have hinjn : Function.Injective (fun k => lam (coIdx n N k)) :=

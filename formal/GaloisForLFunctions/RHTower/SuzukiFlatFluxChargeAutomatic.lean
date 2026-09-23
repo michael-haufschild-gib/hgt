@@ -33,7 +33,7 @@ theorem tendsto_natCast_mul_of_superpolynomiallyFlat
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
     have hqn := hM n hn
     calc
-      (n : ℝ) * q n ≤ (n : ℝ) * (M / (n : ℝ) ^ 2) :=
+      (n : ℝ) * q n ≤ (n : ℝ) * (M / (n : ℝ) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hqn hn0.le
       _ = M / n := by field_simp
   have hlower : ∀ n : ℕ, 0 ≤ (n : ℝ) * q n :=

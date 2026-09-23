@@ -48,20 +48,20 @@ theorem tendsto_norm_evenFourierCutoff_soninPacketEven_scaled
   have hmaj : Tendsto (fun n : ℕ =>
       3 * ((2 : ℝ)⁻¹ * (∫ η : ℝ, {η : ℝ | r n * (q - a₀) ≤ |η|}.indicator
               (soninBumpSpectralDensity b c hbc) η) +
-        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ 2 *
+        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ (2 : ℕ) *
           ∫ η : ℝ, soninBumpSpectralDensity b c hbc η)) atTop (𝓝 0) := by
     have h1 : Tendsto (fun n : ℕ => (2 : ℝ)⁻¹ *
         ∫ η : ℝ, {η : ℝ | r n * (q - a₀) ≤ |η|}.indicator
           (soninBumpSpectralDensity b c hbc) η) atTop (𝓝 0) := by
       simpa using hTail.const_mul ((2 : ℝ)⁻¹)
     have h2 : Tendsto (fun n : ℕ =>
-        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ 2 *
+        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ (2 : ℕ) *
           ∫ η : ℝ, soninBumpSpectralDensity b c hbc η) atTop (𝓝 0) := by
       simpa using (hMean.pow 2).mul_const (∫ η : ℝ, soninBumpSpectralDensity b c hbc η)
     simpa using (h1.add h2).const_mul (3 : ℝ)
   -- squeeze the squared norms
   have hsq : Tendsto (fun n : ℕ => ‖evenFourierCutoff (r n * a₀)
-      (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖ ^ 2) atTop (𝓝 0) := by
+      (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     refine squeeze_zero (fun n => sq_nonneg _) (fun n => ?_) hmaj
     have hbnd := norm_sq_evenFourierCutoff_soninPacketEven_le b c hb hbc
       (r n * a₀) (r n * q)

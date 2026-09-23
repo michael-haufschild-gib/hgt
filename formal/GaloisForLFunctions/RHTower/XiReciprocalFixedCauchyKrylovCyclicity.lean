@@ -65,7 +65,7 @@ theorem xiReciprocalSpectralSupport_injective :
   exact inv_injective h
 
 theorem xiReciprocalSpectralSupport_sq (rho : XiDivisorSupport) :
-    xiReciprocalSpectralSupport rho ^ 2 = xiCentralReciprocalSquare (rho : ℂ) := by
+    xiReciprocalSpectralSupport rho ^ (2 : ℕ) = xiCentralReciprocalSquare (rho : ℂ) := by
   have h := xiZeroCopyReciprocalSquare_eq (xiFirstZeroCopy rho)
   simpa only [xiZeroCopyReciprocalSquare, xiSpectralPoint_eq_support,
     xiFirstZeroCopy_fst, xiReciprocalSpectralSupport] using h
@@ -75,7 +75,7 @@ theorem xiReciprocalSpectralSupport_finite_norm_ge {r : ℝ} (hr : 0 < r) :
   apply (xi_central_reciprocal_square_finite_norm_ge (sq_pos_of_pos hr)).subset
   intro rho hrho
   change r ≤ ‖xiReciprocalSpectralSupport rho‖ at hrho
-  change r ^ 2 ≤ ‖xiCentralReciprocalSquare (rho : ℂ)‖
+  change r ^ (2 : ℕ) ≤ ‖xiCentralReciprocalSquare (rho : ℂ)‖
   rw [← xiReciprocalSpectralSupport_sq, norm_pow]
   nlinarith [norm_nonneg (xiReciprocalSpectralSupport rho)]
 
@@ -364,7 +364,7 @@ theorem xi_tendsto_reciprocalCauchyKrylovPolynomialVector_fiber
           (alpha := alpha) (z := beta) (c := c) halpha hinner n
         change ‖(xiComplexRadialSeparatorPolynomial F alpha c n).eval beta‖ ≤ M
         exact hb.trans (le_add_of_nonneg_left (norm_nonneg c))
-  let term : ℕ → XiZeroCopy → ℝ := fun n q => ‖V n q - I q‖ ^ 2
+  let term : ℕ → XiZeroCopy → ℝ := fun n q => ‖V n q - I q‖ ^ (2 : ℕ)
   have hpoint (q : XiZeroCopy) :
       Tendsto (fun n => term n q) atTop (nhds 0) := by
     let beta : ℂ := xiReciprocalSpectralSupport q.1
@@ -422,11 +422,11 @@ theorem xi_tendsto_reciprocalCauchyKrylovPolynomialVector_fiber
           simpa only [hVapply, hIapply, sub_zero, p, zero_mul] using hprod
         simpa [term] using hsub.norm.pow 2
   let bound : XiZeroCopy → ℝ := fun q =>
-    2 * M ^ 2 * ‖xiWeilContinuedCauchyLp z q‖ ^ 2 + 2 * ‖I q‖ ^ 2
+    2 * M ^ (2 : ℕ) * ‖xiWeilContinuedCauchyLp z q‖ ^ (2 : ℕ) + 2 * ‖I q‖ ^ (2 : ℕ)
   have hboundSum : Summable bound := by
     have hk := HilbertSchmidt.summable_coe_sq (xiWeilContinuedCauchyLp z)
     have hI := HilbertSchmidt.summable_coe_sq I
-    exact (hk.mul_left (2 * M ^ 2)).add (hI.mul_left 2)
+    exact (hk.mul_left (2 * M ^ (2 : ℕ))).add (hI.mul_left 2)
   have hdom (n : ℕ) (q : XiZeroCopy) : term n q ≤ bound q := by
     have hVnorm : ‖V n q‖ ≤ M * ‖xiWeilContinuedCauchyLp z q‖ := by
       change ‖xiReciprocalCauchyKrylovPolynomialVector z (p n) q‖ ≤ _
@@ -437,14 +437,14 @@ theorem xi_tendsto_reciprocalCauchyKrylovPolynomialVector_fiber
     have hInonneg : 0 ≤ ‖I q‖ := norm_nonneg _
     have hMkNonneg : 0 ≤ M * ‖xiWeilContinuedCauchyLp z q‖ :=
       mul_nonneg hM (norm_nonneg _)
-    have hVsq : ‖V n q‖ ^ 2 ≤
-        M ^ 2 * ‖xiWeilContinuedCauchyLp z q‖ ^ 2 := by
+    have hVsq : ‖V n q‖ ^ (2 : ℕ) ≤
+        M ^ (2 : ℕ) * ‖xiWeilContinuedCauchyLp z q‖ ^ (2 : ℕ) := by
       nlinarith
-    have hsumSq : (‖V n q‖ + ‖I q‖) ^ 2 ≤
-        2 * ‖V n q‖ ^ 2 + 2 * ‖I q‖ ^ 2 := by
+    have hsumSq : (‖V n q‖ + ‖I q‖) ^ (2 : ℕ) ≤
+        2 * ‖V n q‖ ^ (2 : ℕ) + 2 * ‖I q‖ ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (‖V n q‖ - ‖I q‖)]
-    have hsubSq : ‖V n q - I q‖ ^ 2 ≤
-        (‖V n q‖ + ‖I q‖) ^ 2 := by
+    have hsubSq : ‖V n q - I q‖ ^ (2 : ℕ) ≤
+        (‖V n q‖ + ‖I q‖) ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (V n q - I q)]
     dsimp only [term, bound]
     nlinarith
@@ -453,12 +453,12 @@ theorem xi_tendsto_reciprocalCauchyKrylovPolynomialVector_fiber
       (Eventually.of_forall fun n q => by
         rw [Real.norm_of_nonneg (sq_nonneg _)]
         exact hdom n q)
-  have hnormsq (n : ℕ) : ‖V n - I‖ ^ 2 = ∑' q, term n q := by
+  have hnormsq (n : ℕ) : ‖V n - I‖ ^ (2 : ℕ) = ∑' q, term n q := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     apply tsum_congr
     intro q
     rfl
-  have hsqzero : Tendsto (fun n => ‖V n - I‖ ^ 2) atTop (nhds 0) := by
+  have hsqzero : Tendsto (fun n => ‖V n - I‖ ^ (2 : ℕ)) atTop (nhds 0) := by
     exact htsum.congr' (Eventually.of_forall fun n => (hnormsq n).symm)
   have hnormzero : Tendsto (fun n => ‖V n - I‖) atTop (nhds 0) := by
     have hsqrt := hsqzero.sqrt
@@ -576,9 +576,9 @@ theorem xiReciprocalCauchyKrylovSourcePlusTest_squareSummable
   intro q
   symm
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) +
-    I * xiReciprocalCauchyKrylovPolynomialTest z p (xiSpectralPoint q)‖ ^ 2 = _
+    I * xiReciprocalCauchyKrylovPolynomialTest z p (xiSpectralPoint q)‖ ^ (2 : ℕ) = _
   change _ = ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) +
-    I * xiReciprocalCauchyKrylovPolynomialVector z p q‖ ^ 2
+    I * xiReciprocalCauchyKrylovPolynomialVector z p q‖ ^ (2 : ℕ)
   rw [xiReciprocalCauchyKrylovPolynomialVector_apply]
   rfl
 
@@ -592,9 +592,9 @@ theorem xiReciprocalCauchyKrylovSourceMinusTest_squareSummable
   intro q
   symm
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) -
-    I * xiReciprocalCauchyKrylovPolynomialTest z p (xiSpectralPoint q)‖ ^ 2 = _
+    I * xiReciprocalCauchyKrylovPolynomialTest z p (xiSpectralPoint q)‖ ^ (2 : ℕ) = _
   change _ = ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) -
-    I * xiReciprocalCauchyKrylovPolynomialVector z p q‖ ^ 2
+    I * xiReciprocalCauchyKrylovPolynomialVector z p q‖ ^ (2 : ℕ)
   rw [xiReciprocalCauchyKrylovPolynomialVector_apply]
   rfl
 

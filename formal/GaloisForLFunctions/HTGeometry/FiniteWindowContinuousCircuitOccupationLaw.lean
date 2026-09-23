@@ -276,11 +276,11 @@ def finiteWindowContinuousCircuitCubeRadius : ℝ :=
 
 theorem arcsin_one_fifth_lt_pi_div_eight :
     Real.arcsin (1 / 5 : ℝ) < Real.pi / 8 := by
-  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hs2nn : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
   have hs2lt : Real.sqrt 2 < 3 / 2 := by nlinarith
   have hins : 0 ≤ 2 - Real.sqrt 2 := by nlinarith
-  have hrootSq : Real.sqrt (2 - Real.sqrt 2) ^ 2 = 2 - Real.sqrt 2 :=
+  have hrootSq : Real.sqrt (2 - Real.sqrt 2) ^ (2 : ℕ) = 2 - Real.sqrt 2 :=
     Real.sq_sqrt hins
   have hrootnn : 0 ≤ Real.sqrt (2 - Real.sqrt 2) := Real.sqrt_nonneg _
   have hroot : (2 / 5 : ℝ) < Real.sqrt (2 - Real.sqrt 2) := by

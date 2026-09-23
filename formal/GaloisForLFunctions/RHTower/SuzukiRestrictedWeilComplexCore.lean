@@ -90,17 +90,17 @@ def suzukiRestrictedWeilComplexQuadraticForm
 
 def suzukiRestrictedWeilComplexIntervalEnergy
     (a : RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilComplexTest a.1) : ℝ :=
-  ∫ x in (-a.1)..a.1, ‖u x‖ ^ 2
+  ∫ x in (-a.1)..a.1, ‖u x‖ ^ (2 : ℕ)
 
 theorem suzukiRestrictedWeilComplexIntervalEnergy_eq
     (a : RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilComplexTest a.1) :
     suzukiRestrictedWeilComplexIntervalEnergy a u =
-      (∫ x in (-a.1)..a.1, (u x).re ^ 2) +
-        ∫ x in (-a.1)..a.1, (u x).im ^ 2 := by
+      (∫ x in (-a.1)..a.1, (u x).re ^ (2 : ℕ)) +
+        ∫ x in (-a.1)..a.1, (u x).im ^ (2 : ℕ) := by
   unfold suzukiRestrictedWeilComplexIntervalEnergy
-  have hre : IntervalIntegrable (fun x : ℝ => (u x).re ^ 2) volume (-a.1) a.1 :=
+  have hre : IntervalIntegrable (fun x : ℝ => (u x).re ^ (2 : ℕ)) volume (-a.1) a.1 :=
     ((Complex.continuous_re.comp u.continuous).pow 2).intervalIntegrable _ _
-  have him : IntervalIntegrable (fun x : ℝ => (u x).im ^ 2) volume (-a.1) a.1 :=
+  have him : IntervalIntegrable (fun x : ℝ => (u x).im ^ (2 : ℕ)) volume (-a.1) a.1 :=
     ((Complex.continuous_im.comp u.continuous).pow 2).intervalIntegrable _ _
   rw [← intervalIntegral.integral_add hre him]
   refine intervalIntegral.integral_congr fun x _ => ?_
@@ -118,7 +118,7 @@ theorem suzukiRestrictedWeilComplexQuadraticForm_lowerBound
   rw [suzukiRestrictedWeilComplexIntervalEnergy_eq]
   unfold suzukiRestrictedWeilComplexQuadraticForm
   change -(suzukiRestrictedWeilLowerBoundConstant a.1 *
-      ((∫ x in (-a.1)..a.1, ur x ^ 2) + ∫ x in (-a.1)..a.1, ui x ^ 2)) ≤ _
+      ((∫ x in (-a.1)..a.1, ur x ^ (2 : ℕ)) + ∫ x in (-a.1)..a.1, ui x ^ (2 : ℕ))) ≤ _
   linarith
 
 end GaloisForLFunctions.RHTower

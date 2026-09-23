@@ -128,10 +128,10 @@ theorem levinsonCriticalDetectorMollifiedFinCoeff_eq_includedArithmetic
 /-- Exact square norm of one included finite-detector coefficient. -/
 theorem norm_levinsonCriticalDetectorMollifiedFinCoeff_sq_included
     (lam : ℝ) (L : ℕ) {M : ℕ} (hM : 1 < M) (r : Fin (L * M)) :
-    ‖levinsonCriticalDetectorMollifiedFinCoeff lam L M r‖ ^ 2 =
+    ‖levinsonCriticalDetectorMollifiedFinCoeff lam L M r‖ ^ (2 : ℕ) =
       (Sieve.barbanVehovIncludedBaseCoeff L M ((r : ℕ) + 1) +
-          lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ 2 /
-        (((r : ℕ) + 1 : ℕ) : ℝ) / Real.log M ^ 2 := by
+          lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ (2 : ℕ) /
+        (((r : ℕ) + 1 : ℕ) : ℝ) / Real.log M ^ (2 : ℕ) := by
   rw [levinsonCriticalDetectorMollifiedFinCoeff_eq_includedArithmetic,
     Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_div]
   have hlog : 0 < Real.log (M : ℝ) :=
@@ -140,10 +140,10 @@ theorem norm_levinsonCriticalDetectorMollifiedFinCoeff_sq_included
   rw [abs_of_pos hlog,
     abs_of_nonneg (by positivity :
       0 ≤ (1 : ℝ) / Real.sqrt ((((r : ℕ) + 1 : ℕ) : ℝ)))]
-  have hsqrt : (Real.sqrt ((((r : ℕ) + 1 : ℕ) : ℝ))) ^ 2 =
+  have hsqrt : (Real.sqrt ((((r : ℕ) + 1 : ℕ) : ℝ))) ^ (2 : ℕ) =
       (((r : ℕ) + 1 : ℕ) : ℝ) := Real.sq_sqrt hkR.le
   have hinvsqrt :
-      ((1 : ℝ) / Real.sqrt ((((r : ℕ) + 1 : ℕ) : ℝ))) ^ 2 =
+      ((1 : ℝ) / Real.sqrt ((((r : ℕ) + 1 : ℕ) : ℝ))) ^ (2 : ℕ) =
       1 / ((((r : ℕ) + 1 : ℕ) : ℝ)) := by
     rw [div_pow, one_pow]
     congr 1
@@ -153,7 +153,7 @@ theorem norm_levinsonCriticalDetectorMollifiedFinCoeff_sq_included
 /-- Base harmonic moment retained by the finite detector head on the long range. -/
 def levinsonCriticalDetectorIncludedLongBaseMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovIncludedBaseCoeff L M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovIncludedBaseCoeff L M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- Base/differentiated cross moment retained by the finite detector head. -/
 def levinsonCriticalDetectorIncludedLongCrossMoment (L M : ℕ) : ℝ :=
@@ -164,7 +164,7 @@ def levinsonCriticalDetectorIncludedLongCrossMoment (L M : ℕ) : ℝ :=
 /-- Differentiated harmonic moment retained by the finite detector head. -/
 def levinsonCriticalDetectorIncludedLongDerivativeMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovIncludedDifferentiatedCoeff L M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovIncludedDifferentiatedCoeff L M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- Exact cancellation-preserving quadratic form for the finite detector's long energy. -/
 theorem levinsonCriticalDetectorLongEnergy_eq_includedMomentQuadratic
@@ -172,8 +172,8 @@ theorem levinsonCriticalDetectorLongEnergy_eq_includedMomentQuadratic
     levinsonCriticalDetectorLongEnergy lam L M =
       (levinsonCriticalDetectorIncludedLongBaseMoment L M +
           2 * lam * levinsonCriticalDetectorIncludedLongCrossMoment L M +
-          lam ^ 2 * levinsonCriticalDetectorIncludedLongDerivativeMoment L M) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * levinsonCriticalDetectorIncludedLongDerivativeMoment L M) /
+        Real.log M ^ (2 : ℕ) := by
   unfold levinsonCriticalDetectorLongEnergy levinsonCriticalDetectorFiniteEnergyTerm
   rw [show
       (∑ r ∈ (Finset.univ : Finset (Fin (L * M))).filter
@@ -182,8 +182,8 @@ theorem levinsonCriticalDetectorLongEnergy_eq_includedMomentQuadratic
       ∑ r ∈ (Finset.univ : Finset (Fin (L * M))).filter
           (fun r : Fin (L * M) => L < (r : ℕ) + 1),
         ((Sieve.barbanVehovIncludedBaseCoeff L M ((r : ℕ) + 1) +
-            lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ 2 /
-          ((((r : ℕ) + 1 : ℕ) : ℝ)) / Real.log M ^ 2) by
+            lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ (2 : ℕ) /
+          ((((r : ℕ) + 1 : ℕ) : ℝ)) / Real.log M ^ (2 : ℕ)) by
     apply Finset.sum_congr rfl
     intro r hr
     rw [← Complex.sq_norm,
@@ -194,16 +194,16 @@ theorem levinsonCriticalDetectorLongEnergy_eq_includedMomentQuadratic
     (∑ r ∈ (Finset.univ : Finset (Fin (L * M))).filter
         (fun r : Fin (L * M) => L < (r : ℕ) + 1),
       (Sieve.barbanVehovIncludedBaseCoeff L M ((r : ℕ) + 1) +
-          lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ 2 /
+          lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M ((r : ℕ) + 1)) ^ (2 : ℕ) /
         ((((r : ℕ) + 1 : ℕ) : ℝ))) =
       ∑ k ∈ Finset.Ioc L (L * M),
         (Sieve.barbanVehovIncludedBaseCoeff L M k +
-            lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M k) ^ 2 /
+            lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M k) ^ (2 : ℕ) /
           (k : ℝ) :=
       Sieve.sum_fin_filter_succ_gt_eq_sum_Ioc (L * M) L
         (fun k =>
           (Sieve.barbanVehovIncludedBaseCoeff L M k +
-              lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M k) ^ 2 /
+              lam * Sieve.barbanVehovIncludedDifferentiatedCoeff L M k) ^ (2 : ℕ) /
             (k : ℝ))
     _ = _ := by
       rw [levinsonCriticalDetectorIncludedLongBaseMoment,

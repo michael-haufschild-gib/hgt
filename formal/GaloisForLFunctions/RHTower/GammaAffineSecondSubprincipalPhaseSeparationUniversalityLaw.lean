@@ -31,7 +31,7 @@ def GammaScaleSeparatedAffineOrderEnergyPhase
           (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile 0
             (((MvPolynomial.pderiv (0 : Fin (n + 1))
               (constantMovingGammaSource P)).coeff 0).eval
-                (-(branch : ℂ))) m t‖ ^ 2) ≤ C
+                (-(branch : ℂ))) m t‖ ^ (2 : ℕ)) ≤ C
 
 /-- Joint native/covariant exact second-subprincipal phase on arbitrarily remote branches. -/
 def GammaSecondSubprincipalCofinalPhase

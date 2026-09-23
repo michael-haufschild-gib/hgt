@@ -49,7 +49,7 @@ theorem hasDerivAt_suzukiPointwiseLerchGapSummand
   rw [show (fun u : ℝ => suzukiPointwiseLerchGapSummand u n) =
       fun u : ℝ =>
         (1 - Real.exp (-2 * ((n : ℝ) + 1 / 4) * u)) /
-          ((n : ℝ) + 1 / 4) ^ 2 by
+          ((n : ℝ) + 1 / 4) ^ (2 : ℕ) by
     funext u
     exact suzukiPointwiseLerchGapSummand_eq u n]
   unfold suzukiPointwiseLerchGapSlopeSummand
@@ -64,7 +64,7 @@ theorem hasDerivAt_suzukiPointwiseLerchGapSummand
       (Real.exp (-2 * a * t) * (-2 * a)) t := by
     simpa only [Function.comp_def] using
       (Real.hasDerivAt_exp (-2 * a * t)).comp t hinner
-  have hquot := ((hasDerivAt_const t 1).sub hexp).div_const (a ^ 2)
+  have hquot := ((hasDerivAt_const t 1).sub hexp).div_const (a ^ (2 : ℕ))
   apply hquot.congr_deriv
   dsimp only [a] at ha ⊢
   field_simp [ha.ne']

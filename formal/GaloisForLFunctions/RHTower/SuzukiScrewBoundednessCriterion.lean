@@ -9,7 +9,7 @@ corresponding to the Riemann zeta-function* (arXiv:2206.03682).
 
 The source object is the literal multiplicity-exact zero series
 
-`Psi(t) = sum_gamma (1 - cos (gamma t)) / gamma^2`,
+`Psi(t) = sum_gamma (1 - cos (gamma t)) / gamma^(2 : ℕ)`,
 
 implemented by `xiScrewDivisor`.  Boundedness is asserted on the source half-line
 `[0, infinity)`.  Both implications are theorem-proved: RH gives the nonnegative

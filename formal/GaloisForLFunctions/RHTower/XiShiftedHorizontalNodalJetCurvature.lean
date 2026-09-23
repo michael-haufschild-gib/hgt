@@ -29,7 +29,7 @@ theorem xiShiftedHorizontalPolynomialEnergy_zero
     (w : ℝ) (P : Polynomial ℝ) :
     xiShiftedHorizontalPolynomialEnergy w P 0 =
       HTGeometry.momentFunctional
-        (fun k => (xiShiftedReciprocalMoment (Real.exp w) k).re) (P ^ 2) := by
+        (fun k => (xiShiftedReciprocalMoment (Real.exp w) k).re) (P ^ (2 : ℕ)) := by
   have h := hasFPowerSeriesAt_xiShiftedPadeNormalEnergy
     (show 0 ≤ Real.exp w by positivity) P P.natDegree
   rcases h with ⟨r, hr⟩
@@ -51,7 +51,7 @@ theorem iteratedFDeriv_xiShiftedHorizontalPolynomialEnergy_zero
         (((2 * P.natDegree + 1).ascFactorial j : ℕ) : ℝ) *
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment (Real.exp w) k).re)
-          (P ^ 2 * X ^ j) := by
+          (P ^ (2 : ℕ) * X ^ j) := by
   have h := hasFPowerSeriesAt_xiShiftedPadeNormalEnergy
     (show 0 ≤ Real.exp w by positivity) P P.natDegree
   rcases h with ⟨r, hr⟩
@@ -74,7 +74,7 @@ theorem hasDerivAt_xiShiftedHorizontalPolynomialEnergy_zero
       (-((2 * P.natDegree + 1 : ℕ) : ℝ) *
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment (Real.exp w) k).re)
-          (P ^ 2 * X)) 0 := by
+          (P ^ (2 : ℕ) * X)) 0 := by
   have h := hasFPowerSeriesAt_xiShiftedPadeNormalEnergy
     (show 0 ≤ Real.exp w by positivity) P P.natDegree
   change HasDerivAt
@@ -95,7 +95,7 @@ theorem iteratedFDeriv_xiShiftedHorizontalPolynomialEnergy_succ_zero
         (((2 * P.natDegree + 1).ascFactorial j : ℕ) : ℝ) *
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment (Real.exp w) k).re)
-          (P ^ 2 * X ^ (j + 1)) := by
+          (P ^ (2 : ℕ) * X ^ (j + 1)) := by
   rw [iteratedFDeriv_xiShiftedHorizontalPolynomialEnergy_zero]
   rw [Nat.ascFactorial_succ]
   push_cast
@@ -109,14 +109,14 @@ def xiShiftedHorizontalPolynomialCurvature (w : ℝ) (P : Polynomial ℝ) : ℝ 
         iteratedFDeriv ℝ 2 (xiShiftedHorizontalPolynomialEnergy w P) 0
           (fun _ => (1 : ℝ)) -
     ((2 * P.natDegree + 2 : ℕ) : ℝ) *
-      deriv (xiShiftedHorizontalPolynomialEnergy w P) 0 ^ 2
+      deriv (xiShiftedHorizontalPolynomialEnergy w P) 0 ^ (2 : ℕ)
 
 /-- **Horizontal curvature equals the Route U Turán minor.**  The degree factor is strictly
 positive, while no moment-positivity premise is used. -/
 theorem xiShiftedHorizontalPolynomialCurvature_eq_turan
     (w : ℝ) (P : Polynomial ℝ) :
     xiShiftedHorizontalPolynomialCurvature w P =
-      (((2 * P.natDegree + 1 : ℕ) : ℝ) ^ 2 *
+      (((2 * P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ((2 * P.natDegree + 2 : ℕ) : ℝ)) *
           xiShiftedAdaptiveMixedMomentLanding (Real.exp w) P := by
   rw [xiShiftedHorizontalPolynomialCurvature,
@@ -137,7 +137,7 @@ the admissible shift `sqrt (exp 1)`. -/
 theorem xiShiftedHorizontalPolynomialCurvature_one_eq_completedArithmeticLanding
     (P : Polynomial ℝ) :
     xiShiftedHorizontalPolynomialCurvature 1 P =
-      (((2 * P.natDegree + 1 : ℕ) : ℝ) ^ 2 *
+      (((2 * P.natDegree + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ((2 * P.natDegree + 2 : ℕ) : ℝ)) *
           xiShiftedAdaptiveMixedCompletedArithmeticLanding
             (Real.sqrt (Real.exp 1)) P := by

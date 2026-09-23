@@ -18,7 +18,7 @@ theorem fibre_step_one_ceil_le {T : ℝ} (hT : 4 ≤ T) : ⌈Real.sqrt T⌉₊ �
   have hs0 : (0 : ℝ) ≤ Real.sqrt T := Real.sqrt_nonneg T
   have hs2 : (2 : ℝ) ≤ Real.sqrt T := by
     rw [show (2 : ℝ) = Real.sqrt 4 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt hT
   have hTsq : Real.sqrt T * Real.sqrt T = T := Real.mul_self_sqrt hT0
   have hhalf : Real.sqrt T ≤ T / 2 := by nlinarith [hs2, hTsq]
@@ -49,7 +49,7 @@ theorem eventually_fibre_step_one_closed {ε : ℝ} (hε : 0 < ε) :
                 ≤ (((Finset.Ioc (fibreStartIdx x a)
                     (fibreStartIdx x a + fibreLen x (cardLength (99 / 100) x) a)).filter
                     (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-          + 1024 * ε * Real.sqrt x / squarefreeDensity ^ 2
+          + 1024 * ε * Real.sqrt x / squarefreeDensity ^ (2 : ℕ)
           + fibreTailBudget x (cardLength (99 / 100) x) 5000
               ⌈Real.sqrt (x + cardLength (99 / 100) x * Real.sqrt x)⌉₊
             / (cardLength (99 / 100) x / 100) := by
@@ -88,7 +88,7 @@ theorem eventually_fibre_step_one_closed {ε : ℝ} (hε : 0 < ε) :
     linarith [hL, hprod, hh]
   have h2 : ∀ a ∈ outerBlock x h, a ∉ Bad →
       (1 / 2) * squarefreeDensity * (fibreLen x h a : ℝ)
-        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ 2 := by
+        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ (2 : ℕ) := by
     intro a ha hnot
     have htail : windowTail (fibreStartIdx x a) (fibreLen x h a) 5000 M' ≤ θ := by
       by_contra hcon

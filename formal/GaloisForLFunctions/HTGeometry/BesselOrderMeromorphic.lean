@@ -200,16 +200,16 @@ theorem modifiedBesselOrderIntensityShiftMero_eq
 
 theorem quartic_elimination_of_two_quadratic_observations
     {R : Type*} [CommRing R] (a b y p I0 I1 : R)
-    (h0 : I0 = y ^ 2 - b * y * p)
-    (h1 : I1 = p ^ 2 + a * y * p) :
-    (1 + a * b) * y ^ 4 - ((2 + a * b) * I0 + b ^ 2 * I1) * y ^ 2 + I0 ^ 2 = 0 := by
+    (h0 : I0 = y ^ (2 : ℕ) - b * y * p)
+    (h1 : I1 = p ^ (2 : ℕ) + a * y * p) :
+    (1 + a * b) * y ^ (4 : ℕ) - ((2 + a * b) * I0 + b ^ (2 : ℕ) * I1) * y ^ (2 : ℕ) + I0 ^ (2 : ℕ) = 0 := by
   rw [h0, h1]
   ring_nf
 
 theorem modifiedBesselOrderIntensityMero_observation_zero
     (s : ℝ) (hs : 0 < s) :
     modifiedBesselOrderIntensityMero s hs =
-      modifiedBesselKOrderMero s hs ^ 2 -
+      modifiedBesselKOrderMero s hs ^ (2 : ℕ) -
         besselOrderLinearCoeffShiftMero s (-1) *
           modifiedBesselKOrderMero s hs *
             modifiedBesselKOrderShiftMero s hs (-1) := by
@@ -231,7 +231,7 @@ theorem modifiedBesselOrderIntensityMero_observation_zero
 theorem modifiedBesselOrderIntensityMero_observation_one
     (s : ℝ) (hs : 0 < s) :
     modifiedBesselOrderIntensityShiftMero s hs 1 =
-      modifiedBesselKOrderShiftMero s hs (-1) ^ 2 +
+      modifiedBesselKOrderShiftMero s hs (-1) ^ (2 : ℕ) +
         besselOrderLinearCoeffShiftMero s 0 *
           modifiedBesselKOrderMero s hs *
             modifiedBesselKOrderShiftMero s hs (-1) := by
@@ -252,7 +252,7 @@ theorem modifiedBesselOrderIntensityMero_quartic_relation
     let y := modifiedBesselKOrderMero s hs
     let I0 := modifiedBesselOrderIntensityMero s hs
     let I1 := modifiedBesselOrderIntensityShiftMero s hs 1
-    (1 + a * b) * y ^ 4 - ((2 + a * b) * I0 + b ^ 2 * I1) * y ^ 2 + I0 ^ 2 = 0 := by
+    (1 + a * b) * y ^ (4 : ℕ) - ((2 + a * b) * I0 + b ^ (2 : ℕ) * I1) * y ^ (2 : ℕ) + I0 ^ (2 : ℕ) = 0 := by
   dsimp only
   exact quartic_elimination_of_two_quadratic_observations _ _ _ _ _ _
     (modifiedBesselOrderIntensityMero_observation_zero s hs)
@@ -300,8 +300,8 @@ theorem differentiallyAlgebraic_modifiedBesselKOrder_of_intensity
   let Q : MvPolynomial (Fin 1) S :=
     MvPolynomial.monomial (Finsupp.single 0 4) (1 + aS * bS) -
       MvPolynomial.monomial (Finsupp.single 0 2)
-        ((2 + aS * bS) * I0S + bS ^ 2 * I1S) +
-      MvPolynomial.monomial 0 (I0S ^ 2)
+        ((2 + aS * bS) * I0S + bS ^ (2 : ℕ) * I1S) +
+      MvPolynomial.monomial 0 (I0S ^ (2 : ℕ))
   have hQ : Q ≠ 0 := by
     intro hzero
     have hc := congrArg

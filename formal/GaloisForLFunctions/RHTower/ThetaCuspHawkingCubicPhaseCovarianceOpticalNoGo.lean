@@ -65,7 +65,7 @@ theorem not_d4CubicPlusPlusMinusPhaseSection_im_pos_for_all_nonzero
 theorem d4CubicPlusPlusMinusModalWork_eq
     (coefficient amplitude : ℂ) :
     d4CubicPlusPlusMinusModalWork coefficient amplitude =
-      (Complex.normSq amplitude : ℂ) ^ 2 * coefficient := by
+      (Complex.normSq amplitude : ℂ) ^ (2 : ℕ) * coefficient := by
   rw [d4CubicPlusPlusMinusModalWork, d4CubicPlusPlusMinusPhaseSection]
   calc
     (starRingEnd ℂ) amplitude *
@@ -89,11 +89,11 @@ theorem d4CubicPlusPlusMinusModalWork_mul_unitPhase
 theorem d4CubicPlusPlusMinusModalWork_im
     (coefficient amplitude : ℂ) :
     (d4CubicPlusPlusMinusModalWork coefficient amplitude).im =
-      Complex.normSq amplitude ^ 2 * coefficient.im := by
+      Complex.normSq amplitude ^ (2 : ℕ) * coefficient.im := by
   rw [d4CubicPlusPlusMinusModalWork_eq]
   calc
-    ((↑(Complex.normSq amplitude) : ℂ) ^ 2 * coefficient).im =
-        ((((Complex.normSq amplitude) ^ 2 : ℝ) : ℂ) * coefficient).im := by
+    ((↑(Complex.normSq amplitude) : ℂ) ^ (2 : ℕ) * coefficient).im =
+        ((((Complex.normSq amplitude) ^ (2 : ℕ) : ℝ) : ℂ) * coefficient).im := by
       rw [Complex.ofReal_pow]
     _ = _ := by
       norm_num [Complex.normSq_apply, Complex.mul_im, pow_two]

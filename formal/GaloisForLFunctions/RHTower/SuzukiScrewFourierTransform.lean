@@ -27,7 +27,7 @@ theorem integral_suzukiPsi_mul_cexp_eq_logDeriv_xi
     {z : ℂ} (hz : 1 / 2 < z.im) :
     (∫ t : ℝ in Ioi 0,
       (suzukiPsi t : ℂ) * Complex.exp (I * z * (t : ℂ))) =
-        -(1 : ℂ) / z ^ 2 * logDeriv xi (1 / 2 - I * z) := by
+        -(1 : ℂ) / z ^ (2 : ℕ) * logDeriv xi (1 / 2 - I * z) := by
   let s : ℂ := -I * z
   have hs : 1 / 2 < s.re := by
     dsimp only [s]
@@ -55,9 +55,9 @@ theorem integral_suzukiPsi_mul_cexp_eq_logDeriv_xi
               dsimp only [s]
               ring
             rw [hexp, mul_comm]
-    _ = I / s ^ 2 * logDeriv XiC (I * s) :=
+    _ = I / s ^ (2 : ℕ) * logDeriv XiC (I * s) :=
       integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC hs
-    _ = -(1 : ℂ) / z ^ 2 * logDeriv xi (1 / 2 - I * z) := by
+    _ = -(1 : ℂ) / z ^ (2 : ℕ) * logDeriv xi (1 / 2 - I * z) := by
       rw [show I * s = z by dsimp only [s]; simp [← mul_assoc],
         logDeriv_XiC_eq_mul_I_logDeriv_xi, hreflect]
       dsimp only [s]

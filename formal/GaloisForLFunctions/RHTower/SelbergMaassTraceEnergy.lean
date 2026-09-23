@@ -30,23 +30,23 @@ theorem dir_contDiffAt {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 /-- The real directional derivative of a scalar square. -/
 theorem sq_dir {F : ℂ → ℝ} {z : ℂ} (hF : DifferentiableAt ℝ F z) (v : ℂ) :
-    dir v (fun w => F w ^ 2) z = 2 * F z * dir v F z := by
+    dir v (fun w => F w ^ (2 : ℕ)) z = 2 * F z * dir v F z := by
   have h := congrArg (fun L => L v) (hF.hasFDerivAt.fun_mul hF.hasFDerivAt).fderiv
   change dir v (fun w => F w * F w) z = F z * dir v F z + F z * dir v F z at h
   simpa only [pow_two, two_mul, add_mul] using h
 
 /-- The real second directional derivative of a scalar square. -/
 theorem sq_second_dir {F : ℂ → ℝ} {z : ℂ} (hF : ContDiffAt ℝ 2 F z) (v : ℂ) :
-    dir v (dir v (fun w => F w ^ 2)) z =
-      2 * (dir v F z ^ 2 + F z * dir v (dir v F) z) := by
-  have he : dir v (fun w => F w ^ 2) =ᶠ[𝓝 z] (fun w => 2 * F w * dir v F w) := by
+    dir v (dir v (fun w => F w ^ (2 : ℕ))) z =
+      2 * (dir v F z ^ (2 : ℕ) + F z * dir v (dir v F) z) := by
+  have he : dir v (fun w => F w ^ (2 : ℕ)) =ᶠ[𝓝 z] (fun w => 2 * F w * dir v F w) := by
     filter_upwards [hF.eventually (by norm_num)] with w hw
     exact sq_dir (hw.differentiableAt (by norm_num)) v
   have hd := (dir_contDiffAt hF v).differentiableAt (by norm_num)
   have hf := hF.differentiableAt (by norm_num : (2 : WithTop ℕ∞) ≠ 0)
   have hh := congrArg (fun L => L v) ((hf.hasFDerivAt.const_mul 2).mul hd.hasFDerivAt).fderiv
-  change dir v (dir v (fun w => F w ^ 2)) z = _
-  change fderiv ℝ (dir v (fun w => F w ^ 2)) z v = _
+  change dir v (dir v (fun w => F w ^ (2 : ℕ))) z = _
+  change fderiv ℝ (dir v (fun w => F w ^ (2 : ℕ))) z v = _
   rw [he.fderiv_eq]
   change dir v (fun w => 2 * F w * dir v F w) z = _
   change dir v (fun w => 2 * F w * dir v F w) z =
@@ -105,9 +105,9 @@ def realLaplacian (F : ℂ → ℝ) (z : ℂ) : ℝ :=
 
 /-- The scalar-square rule for the two-direction real Laplacian. -/
 theorem realLaplacian_sq {F : ℂ → ℝ} {z : ℂ} (hF : ContDiffAt ℝ 2 F z) :
-    realLaplacian (fun w => F w ^ 2) z =
+    realLaplacian (fun w => F w ^ (2 : ℕ)) z =
       2 * F z * realLaplacian F z +
-        2 * (dir 1 F z ^ 2 + dir Complex.I F z ^ 2) := by
+        2 * (dir 1 F z ^ (2 : ℕ) + dir Complex.I F z ^ (2 : ℕ)) := by
   unfold realLaplacian
   rw [sq_second_dir hF 1, sq_second_dir hF Complex.I]
   ring
@@ -149,16 +149,16 @@ theorem maass_normSq_laplacian (N : ℕ) {lam : ℝ}
     realLaplacian (fun w => Complex.normSq (f.1.1 (ofComplex w))) (z : ℂ) =
       2 * (Complex.normSq (dir 1 (f.1.1 ∘ ofComplex) (z : ℂ)) +
         Complex.normSq (dir Complex.I (f.1.1 ∘ ofComplex) (z : ℂ)) -
-          lam / z.im ^ 2 * Complex.normSq (f.1.1 z)) := by
+          lam / z.im ^ (2 : ℕ) * Complex.normSq (f.1.1 z)) := by
   let F := f.1.1 ∘ ofComplex
   have hf : ContDiffAt ℝ 2 F (z : ℂ) :=
     f.2.2.1.1.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   have hz : (z.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
   have he := f.2.2.1.2 z
-  change -(z.im : ℂ) ^ 2 * (dir 1 (dir 1 F) (z : ℂ) +
+  change -(z.im : ℂ) ^ (2 : ℕ) * (dir 1 (dir 1 F) (z : ℂ) +
     dir Complex.I (dir Complex.I F) (z : ℂ)) = (lam : ℂ) * f.1.1 z at he
   have hs : dir 1 (dir 1 F) (z : ℂ) + dir Complex.I (dir Complex.I F) (z : ℂ) =
-      ((-(lam / z.im ^ 2) : ℝ) : ℂ) * f.1.1 z := by
+      ((-(lam / z.im ^ (2 : ℕ)) : ℝ) : ℂ) * f.1.1 z := by
     apply (mul_left_cancel₀ (pow_ne_zero 2 hz))
     push_cast
     field_simp
@@ -185,7 +185,7 @@ def gradientDensity (N : ℕ) {lam : ℝ}
 theorem trace_laplacian (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (z : ℍ) :
     realLaplacian (density N f ∘ ofComplex) (z : ℂ) =
-      2 * (gradientDensity N f (z : ℂ) - lam / z.im ^ 2 * density N f z) := by
+      2 * (gradientDensity N f (z : ℂ) - lam / z.im ^ (2 : ℕ) * density N f z) := by
   have hq (q : Deck N) : ContDiffAt ℝ 2
       (fun w => Complex.normSq ((quotientForm N f q).1.1 (ofComplex w))) (z : ℂ) :=
     normSq_smooth ((quotientForm N f q).2.2.1.1.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos))
@@ -230,13 +230,13 @@ theorem trace_second_dir_continuousOn (N : ℕ) {lam : ℝ}
 /-- Actual planar gradient density minus quarter hyperbolic mass. -/
 def quarterDensity (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (z : ℍ) : ℝ :=
-  gradientDensity N f (z : ℂ) - density N f z / (4 * z.im ^ 2)
+  gradientDensity N f (z : ℂ) - density N f z / (4 * z.im ^ (2 : ℕ))
 
 /-- The actual quarter-energy density retains half the trace Laplacian and the exact spectral mass correction. -/
 theorem quarterDensity_eq_laplacian_mass (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (z : ℍ) :
     quarterDensity N f z = (1 / 2) * realLaplacian (density N f ∘ ofComplex) (z : ℂ) +
-      (lam - 1 / 4) * density N f z / z.im ^ 2 := by
+      (lam - 1 / 4) * density N f z / z.im ^ (2 : ℕ) := by
   rw [trace_laplacian, quarterDensity]
   ring
 

@@ -39,9 +39,9 @@ theorem factorial_amplitude_decay (c K : ℝ) :
     Tendsto (fun j : ℕ => (c ^ (j + 2) / (Nat.factorial (j + 2) : ℝ)) * K ^ j) atTop (nhds 0) := by
   have hbase : Tendsto (fun j : ℕ => |c * K| ^ j / (Nat.factorial j : ℝ)) atTop (nhds 0) :=
     FloorSemiring.tendsto_pow_div_factorial_atTop |c * K|
-  have hb2 : Tendsto (fun j : ℕ => |c| ^ 2 * (|c * K| ^ j / (Nat.factorial j : ℝ)))
+  have hb2 : Tendsto (fun j : ℕ => |c| ^ (2 : ℕ) * (|c * K| ^ j / (Nat.factorial j : ℝ)))
       atTop (nhds 0) := by
-    have h := hbase.const_mul (|c| ^ 2)
+    have h := hbase.const_mul (|c| ^ (2 : ℕ))
     rwa [mul_zero] at h
   refine squeeze_zero_norm ?_ hb2
   intro j
@@ -51,7 +51,7 @@ theorem factorial_amplitude_decay (c K : ℝ) :
   have hfac : (Nat.factorial j : ℝ) ≤ (Nat.factorial (j + 2) : ℝ) := by
     exact_mod_cast Nat.factorial_le (by omega)
   have heq : (c ^ (j + 2) / (Nat.factorial (j + 2) : ℝ)) * K ^ j
-      = c ^ 2 * ((c * K) ^ j / (Nat.factorial (j + 2) : ℝ)) := by
+      = c ^ (2 : ℕ) * ((c * K) ^ j / (Nat.factorial (j + 2) : ℝ)) := by
     rw [pow_add, mul_pow]
     ring
   rw [heq, Real.norm_eq_abs, abs_mul, abs_div, abs_pow, abs_pow, abs_of_pos hfac2pos]
@@ -63,8 +63,8 @@ floor `A 2 ≤ A (j+2)·K^j` is violated.  So the structural output of the growt
 for such amplitudes, not merely unavailable. -/
 theorem factorial_amplitude_no_uniform_floor {c : ℝ} (hc : 0 < c) (K : ℝ) :
     ∃ j : ℕ, (c ^ (j + 2) / (Nat.factorial (j + 2) : ℝ)) * K ^ j
-      < c ^ 2 / (Nat.factorial 2 : ℝ) := by
-  have hA2 : (0 : ℝ) < c ^ 2 / (Nat.factorial 2 : ℝ) := by
+      < c ^ (2 : ℕ) / (Nat.factorial 2 : ℝ) := by
+  have hA2 : (0 : ℝ) < c ^ (2 : ℕ) / (Nat.factorial 2 : ℝ) := by
     have : (0 : ℝ) < (Nat.factorial 2 : ℝ) := by norm_num
     positivity
   exact exists_index_below_floor (A := fun j => c ^ j / (Nat.factorial j : ℝ))

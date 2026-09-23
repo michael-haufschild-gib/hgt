@@ -60,8 +60,8 @@ theorem norm_finiteBlaschkeCausalCore_le_one (A B : FiniteBlaschke) :
   intro x
   rw [one_mul]
   have hsplit := norm_sq_finiteBlaschkeLeakageCore A B x
-  have hle : ‖finiteBlaschkeCausalCore A B x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
-    change ‖(finiteBlaschkeMul B).adjoint (finiteBlaschkeMul A x)‖ ^ 2 ≤ ‖x‖ ^ 2
+  have hle : ‖finiteBlaschkeCausalCore A B x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
+    change ‖(finiteBlaschkeMul B).adjoint (finiteBlaschkeMul A x)‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ)
     nlinarith [sq_nonneg ‖finiteBlaschkeLeakageCore A B x‖]
   nlinarith [norm_nonneg (finiteBlaschkeCausalCore A B x), norm_nonneg x]
 

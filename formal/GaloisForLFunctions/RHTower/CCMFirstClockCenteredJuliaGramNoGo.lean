@@ -72,7 +72,7 @@ theorem abs_finsetRealKernelEnergy_le_of_sum_eq_zero
     (hclose : ∀ i ∈ packet, ∀ j ∈ packet,
       |kernel i j - 1| ≤ δ) :
     |finsetRealKernelEnergy packet kernel coefficient| ≤
-      δ * (∑ i ∈ packet, |coefficient i|) ^ 2 := by
+      δ * (∑ i ∈ packet, |coefficient i|) ^ (2 : ℕ) := by
   rw [finsetRealKernelEnergy_eq_sub_one_of_sum_eq_zero
     packet kernel coefficient hcenter]
   calc
@@ -100,7 +100,7 @@ theorem abs_finsetRealKernelEnergy_le_of_sum_eq_zero
           exact mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left (hclose i hi j hj) hci) hcj
         _ = δ * (|coefficient i| * |coefficient j|) := by ring
-    _ = δ * (∑ i ∈ packet, |coefficient i|) ^ 2 := by
+    _ = δ * (∑ i ∈ packet, |coefficient i|) ^ (2 : ℕ) := by
       calc
         (∑ i ∈ packet, ∑ j ∈ packet,
             δ * (|coefficient i| * |coefficient j|)) =
@@ -114,7 +114,7 @@ theorem abs_finsetRealKernelEnergy_le_of_sum_eq_zero
         _ = δ * ((∑ i ∈ packet, |coefficient i|) *
             (∑ j ∈ packet, |coefficient j|)) := by
           rw [Finset.sum_mul_sum]
-        _ = δ * (∑ i ∈ packet, |coefficient i|) ^ 2 := by ring
+        _ = δ * (∑ i ∈ packet, |coefficient i|) ^ (2 : ℕ) := by ring
 
 /-- Centering nonnegative masses gives a zero-sum coefficient vector. -/
 theorem sum_sub_finsetMean_eq_zero
@@ -165,7 +165,7 @@ theorem sum_abs_sub_finsetMean_le_two_mul_sum
 /-- Centered Julia Gram energy of the actual pure-bad first-clock block. -/
 def ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy
     (x : ℝ) (m : ℕ) : ℝ :=
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad :=
     ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   let mean := (∑ p ∈ block, bad p) / (block.card : ℝ)
@@ -179,8 +179,8 @@ def ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy
 within `1/8` of the constant Gram. -/
 theorem eventually_juliaKernel_sub_one_abs_lt_eighth_on_every_sixthPowerBlock :
     ∀ᶠ x : ℝ in 𝓝 0, ∀ m : ℕ, 25 ≤ m →
-      ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+      ∀ q ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         |HTGeometry.juliaDefectAttenuationKernel
           (x * (Real.log (q : ℝ) - Real.log (p : ℝ))) - 1| < 1 / 8 := by
   have hkernelLimit := HTGeometry.tendsto_juliaDefectAttenuationKernel_zero
@@ -223,17 +223,17 @@ theorem eventually_juliaKernel_sub_one_abs_lt_eighth_on_every_sixthPowerBlock :
 half the squared pure-bad block mass, simultaneously on every certified block. -/
 theorem eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_le_half_badMass_sq :
     ∀ᶠ x : ℝ in 𝓝 0, ∀ m : ℕ, 25 ≤ m →
-      Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) →
+      Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) →
       ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy x m ≤
         (1 / 2 : ℝ) *
-          (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+          (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
             ccmFirstClockReducedBadNatTerm
-              (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+              (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   filter_upwards
     [eventually_juliaKernel_sub_one_abs_lt_eighth_on_every_sixthPowerBlock]
       with x hx
   intro m hm hmCheb
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad :=
     ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   let total := ∑ p ∈ block, bad p
@@ -270,7 +270,7 @@ theorem eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_le_half
           (x * (Real.log (q : ℝ) - Real.log (p : ℝ))))
       centered (1 / 8) (by norm_num) hcenter hclose
   have hl1Sq :
-      (∑ p ∈ block, |centered p|) ^ 2 ≤ (2 * total) ^ 2 :=
+      (∑ p ∈ block, |centered p|) ^ (2 : ℕ) ≤ (2 * total) ^ (2 : ℕ) :=
     (sq_le_sq₀
       (Finset.sum_nonneg fun p _ => abs_nonneg (centered p))
       (mul_nonneg (by norm_num) htotalNonneg)).2 hl1
@@ -279,24 +279,24 @@ theorem eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_le_half
         (fun p q =>
           HTGeometry.juliaDefectAttenuationKernel
             (x * (Real.log (q : ℝ) - Real.log (p : ℝ))))
-        centered| ≤ (1 / 2 : ℝ) * total ^ 2 := by
+        centered| ≤ (1 / 2 : ℝ) * total ^ (2 : ℕ) := by
     calc
       |finsetRealKernelEnergy block
           (fun p q =>
             HTGeometry.juliaDefectAttenuationKernel
               (x * (Real.log (q : ℝ) - Real.log (p : ℝ))))
           centered| ≤
-          (1 / 8 : ℝ) * (∑ p ∈ block, |centered p|) ^ 2 := habs
-      _ ≤ (1 / 8 : ℝ) * (2 * total) ^ 2 :=
+          (1 / 8 : ℝ) * (∑ p ∈ block, |centered p|) ^ (2 : ℕ) := habs
+      _ ≤ (1 / 8 : ℝ) * (2 * total) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hl1Sq (by norm_num)
-      _ = (1 / 2 : ℝ) * total ^ 2 := by ring
+      _ = (1 / 2 : ℝ) * total ^ (2 : ℕ) := by ring
   unfold ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy
   dsimp only
   change finsetRealKernelEnergy block
       (fun p q =>
         HTGeometry.juliaDefectAttenuationKernel
           (x * (Real.log (q : ℝ) - Real.log (p : ℝ))))
-      centered ≤ (1 / 2 : ℝ) * total ^ 2
+      centered ≤ (1 / 2 : ℝ) * total ^ (2 : ℕ)
   exact (le_abs_self _).trans henergyAbs
 
 /-- Every zero-scale schedule eventually makes the centered Julia Gram fail pure-bad domination. -/
@@ -304,11 +304,11 @@ theorem eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_lt_badM
     (scale : ℕ → ℝ) (hscale : Tendsto scale atTop (𝓝 0)) :
     ∀ᶠ m : ℕ in atTop,
       25 ≤ m →
-      Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) →
+      Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) →
       ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy (scale m) m <
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   have hnear :=
     hscale.eventually
       eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_le_half_badMass_sq
@@ -318,11 +318,11 @@ theorem eventually_ccmFirstClockJuliaSixthPowerBlockCenteredKernelEnergy_lt_badM
   have hmass :=
     ccmFirstClockJuliaSixthPower_block_badMass_lower hm hmCheb
   have htotalPos :
-      0 < ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      0 < ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
           (ccmFirstClockJuliaSixthPowerAperture m) p := by
     have hmPos : (0 : ℝ) < m := by positivity
-    have hlowerPos : 0 < (m : ℝ) ^ 2 / 24 := by positivity
+    have hlowerPos : 0 < (m : ℝ) ^ (2 : ℕ) / 24 := by positivity
     exact hlowerPos.trans_le hmass
   nlinarith [sq_pos_of_pos htotalPos]
 

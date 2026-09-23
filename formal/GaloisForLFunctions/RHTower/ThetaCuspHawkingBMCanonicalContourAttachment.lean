@@ -10,14 +10,14 @@ set_option autoImplicit false
 
 theorem fundamentalSourceTortoiseMoment_monodromy (w s a : ℂ)
     (hw : -2<w.re) (hw1 : w+1≠0) (hE : Complex.exp (2*Real.pi*I*w)-1≠0) :
-    (Complex.exp (2*Real.pi*I*w)-1)^2*fundamentalSourceTortoiseMoment w s a=
+    (Complex.exp (2*Real.pi*I*w)-1)^(2 : ℕ)*fundamentalSourceTortoiseMoment w s a=
       (Complex.exp (2*Real.pi*I*w)-1)*fundamentalSourceTortoiseContour w s a-
         Real.pi*I*Complex.exp (2*Real.pi*I*w)*fundamentalSourceContour w s a := by
   have h2 := fundamentalJacobiTortoiseMoment_monodromy 2 w s hw hw1 hE
   have h4 := fundamentalJacobiTortoiseMoment_monodromy 4 w s hw hw1 hE
   dsimp only [fundamentalSourceTortoiseMoment,fundamentalSourceTortoiseContour,fundamentalSourceContour]
-  linear_combination 2*a^2*fundamentalMomentConstant s*h2+
-    2*a^2*fundamentalMomentQuadratic w s*h4
+  linear_combination 2*a^(2 : ℕ)*fundamentalMomentConstant s*h2+
+    2*a^(2 : ℕ)*fundamentalMomentQuadratic w s*h4
 
 theorem fundamentalSourceForcingMoment_monodromy (w s a : ℂ)
     (hw : -2<w.re) (hw1 : w+1≠0) :
@@ -60,8 +60,8 @@ canonical action. No matching, continuation, nonvanishing or finite-part
 identification premise is supplied. -/
 theorem canonicalQNMValue_cleared_eq_fundamentalContour (q : XiZeroCopy) :
     let w := physicalFundamentalFrequency q true
-    (Complex.exp (2*Real.pi*I*w)-1)^2*(5*w+8)^2*canonicalQNMValue q true true 1=
-      -(physicalAngularParameter q^2-1/4)*physicalSelfSourceCoefficient q*
+    (Complex.exp (2*Real.pi*I*w)-1)^(2 : ℕ)*(5*w+8)^(2 : ℕ)*canonicalQNMValue q true true 1=
+      -(physicalAngularParameter q^(2 : ℕ)-1/4)*physicalSelfSourceCoefficient q*
         fundamentalCanonicalContourNumerator w := by
   let w := physicalFundamentalFrequency q true
   let s := physicalRate q true
@@ -78,7 +78,7 @@ theorem canonicalQNMValue_cleared_eq_fundamentalContour (q : XiZeroCopy) :
     simp only [↓reduceIte]
     ring
   have hgap : w-2*s=5*w+8 := by rw [hs];ring
-  have hmu : physicalAngularParameter q^2-1/4=(w+1)*(w+2) := by
+  have hmu : physicalAngularParameter q^(2 : ℕ)-1/4=(w+1)*(w+2) := by
     dsimp only [w]
     rw [physicalAngularParameter_eq,physicalFundamentalFrequency_eq]
     simp only [↓reduceIte]
@@ -93,14 +93,14 @@ theorem canonicalQNMValue_cleared_eq_fundamentalContour (q : XiZeroCopy) :
     (physicalFundamentalFrequency_monodromy_ne_zero q true)
   have hY := fundamentalSourceForcingMoment_monodromy w s 1 hwr hw1
   have hC := canonicalQNMValue_eq_source_periods q true true (1:ℂ)
-  change canonicalQNMValue q true true 1=-(physicalAngularParameter q^2-1/4)*physicalSelfSourceCoefficient q*
-    ((physicalAngularParameter q^2-1/4-2)*(deriv (continuedOnset s) w*fundamentalSourceMoment w s 1+
+  change canonicalQNMValue q true true 1=-(physicalAngularParameter q^(2 : ℕ)-1/4)*physicalSelfSourceCoefficient q*
+    ((physicalAngularParameter q^(2 : ℕ)-1/4-2)*(deriv (continuedOnset s) w*fundamentalSourceMoment w s 1+
       continuedOnset s w*fundamentalSourceTortoiseMoment w s 1)+
         continuedOnset s w*fundamentalSourceForcingMoment w s 1) at hC
   change fundamentalSourceContour w s 1=(Complex.exp (2*Real.pi*I*w)-1)*fundamentalSourceMoment w s 1 at hM
   dsimp only
-  change (Complex.exp (2*Real.pi*I*w)-1)^2*(5*w+8)^2*canonicalQNMValue q true true 1=
-    -(physicalAngularParameter q^2-1/4)*physicalSelfSourceCoefficient q*fundamentalCanonicalContourNumerator w
+  change (Complex.exp (2*Real.pi*I*w)-1)^(2 : ℕ)*(5*w+8)^(2 : ℕ)*canonicalQNMValue q true true 1=
+    -(physicalAngularParameter q^(2 : ℕ)-1/4)*physicalSelfSourceCoefficient q*fundamentalCanonicalContourNumerator w
   rw [hC,hmu,fundamentalCanonicalContourNumerator,← hs,← hX,hM,hY,← hD,hT]
   ring
 

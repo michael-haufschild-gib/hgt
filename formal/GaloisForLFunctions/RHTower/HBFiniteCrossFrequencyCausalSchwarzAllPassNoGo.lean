@@ -68,7 +68,7 @@ theorem laguerreL1_finiteAnchorPolynomial_pos
             have hxeqb : x = b := sub_eq_zero.mp hxb
             have hab : a = b := hxeqa.symm.trans hxeqb
             exact ha (by simpa [hab] using hb)
-          have hsq : 0 < ((X - C a).eval x) ^ 2 := by
+          have hsq : 0 < ((X - C a).eval x) ^ (2 : ℕ) := by
             simpa using sq_pos_of_ne_zero hxa
           exact add_pos_of_nonneg_of_pos (sq_nonneg _) (mul_pos hsq ihx)
         · exact add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero hq)
@@ -263,13 +263,13 @@ def finiteAnchorAllPassClock (s : Finset ℝ) (x : ℝ) : ℝ :=
   (logDeriv (finiteAnchorAllPass s) (x : ℂ)).im
 
 theorem rationalAllPass_logDerivative_im (p q r : ℝ)
-    (h : p ^ 2 + q ^ 2 ≠ 0) :
+    (h : p ^ (2 : ℕ) + q ^ (2 : ℕ) ≠ 0) :
     ((((-(q : ℂ) + I * (r : ℂ)) * ((p : ℂ) + I * (q : ℂ)) -
         (-((p : ℂ) - I * (q : ℂ))) * ((q : ℂ) + I * (r : ℂ))) /
-          ((p : ℂ) + I * (q : ℂ)) ^ 2) /
+          ((p : ℂ) + I * (q : ℂ)) ^ (2 : ℕ)) /
       (-((p : ℂ) - I * (q : ℂ)) /
         ((p : ℂ) + I * (q : ℂ)))).im =
-      2 * (q ^ 2 - p * r) / (p ^ 2 + q ^ 2) := by
+      2 * (q ^ (2 : ℕ) - p * r) / (p ^ (2 : ℕ) + q ^ (2 : ℕ)) := by
   have hden : (p : ℂ) + I * (q : ℂ) ≠ 0 := by
     intro hz
     have hre := congrArg Complex.re hz
@@ -286,34 +286,34 @@ theorem rationalAllPass_logDerivative_im (p q r : ℝ)
     apply h
     rw [hre, him]
     norm_num
-  have hsumC : (p : ℂ) ^ 2 + (q : ℂ) ^ 2 ≠ 0 := by
+  have hsumC : (p : ℂ) ^ (2 : ℕ) + (q : ℂ) ^ (2 : ℕ) ≠ 0 := by
     exact_mod_cast h
   have hprod :
       ((p : ℂ) + (q : ℂ) * I) * ((p : ℂ) - (q : ℂ) * I) =
-        (p : ℂ) ^ 2 + (q : ℂ) ^ 2 := by
+        (p : ℂ) ^ (2 : ℕ) + (q : ℂ) ^ (2 : ℕ) := by
     apply Complex.ext <;> norm_num [pow_two] <;> ring
   have heq :
       (((-(q : ℂ) + I * (r : ℂ)) * ((p : ℂ) + I * (q : ℂ)) -
         (-((p : ℂ) - I * (q : ℂ))) * ((q : ℂ) + I * (r : ℂ))) /
-          ((p : ℂ) + I * (q : ℂ)) ^ 2) /
+          ((p : ℂ) + I * (q : ℂ)) ^ (2 : ℕ)) /
       (-((p : ℂ) - I * (q : ℂ)) /
         ((p : ℂ) + I * (q : ℂ))) =
-        (2 : ℂ) * I * ((q : ℂ) ^ 2 - (p : ℂ) * (r : ℂ)) /
-          ((p : ℂ) ^ 2 + (q : ℂ) ^ 2) := by
+        (2 : ℂ) * I * ((q : ℂ) ^ (2 : ℕ) - (p : ℂ) * (r : ℂ)) /
+          ((p : ℂ) ^ (2 : ℕ) + (q : ℂ) ^ (2 : ℕ)) := by
     field_simp [hden, hnum, hsumC]
     rw [hprod]
     field_simp [hsumC]
     apply Complex.ext <;> norm_num [pow_two] <;> ring
   have hcast :
-      (2 : ℂ) * I * ((q : ℂ) ^ 2 - (p : ℂ) * (r : ℂ)) /
-          ((p : ℂ) ^ 2 + (q : ℂ) ^ 2) =
-        ((2 * (q ^ 2 - p * r) / (p ^ 2 + q ^ 2) : ℝ) : ℂ) * I := by
+      (2 : ℂ) * I * ((q : ℂ) ^ (2 : ℕ) - (p : ℂ) * (r : ℂ)) /
+          ((p : ℂ) ^ (2 : ℕ) + (q : ℂ) ^ (2 : ℕ)) =
+        ((2 * (q ^ (2 : ℕ) - p * r) / (p ^ (2 : ℕ) + q ^ (2 : ℕ)) : ℝ) : ℂ) * I := by
     push_cast
     field_simp [h, hsumC]
   calc
-    _ = (((2 * (q ^ 2 - p * r) / (p ^ 2 + q ^ 2) : ℝ) : ℂ) * I).im :=
+    _ = (((2 * (q ^ (2 : ℕ) - p * r) / (p ^ (2 : ℕ) + q ^ (2 : ℕ)) : ℝ) : ℂ) * I).im :=
       congrArg Complex.im (heq.trans hcast)
-    _ = 2 * (q ^ 2 - p * r) / (p ^ 2 + q ^ 2) := by
+    _ = 2 * (q ^ (2 : ℕ) - p * r) / (p ^ (2 : ℕ) + q ^ (2 : ℕ)) := by
       rw [Complex.mul_im]
       norm_num only [ofReal_re, ofReal_im, I_re, I_im, mul_one, zero_mul, sub_zero,
         add_zero]
@@ -332,7 +332,7 @@ theorem hasDerivAt_finiteAnchorAllPass
           (evalRealPolynomial (derivative (finiteAnchorPolynomial s)) z +
             I * evalRealPolynomial (derivative (derivative (finiteAnchorPolynomial s))) z)) /
         (evalRealPolynomial (finiteAnchorPolynomial s) z +
-          I * evalRealPolynomial (derivative (finiteAnchorPolynomial s)) z) ^ 2) z := by
+          I * evalRealPolynomial (derivative (finiteAnchorPolynomial s)) z) ^ (2 : ℕ)) z := by
   have hP := hasDerivAt_evalRealPolynomial (finiteAnchorPolynomial s) z
   have hQ := hasDerivAt_evalRealPolynomial (derivative (finiteAnchorPolynomial s)) z
   have hnum := (hP.sub ((hasDerivAt_const z I).mul hQ)).neg
@@ -344,13 +344,13 @@ theorem finiteAnchorAllPassClock_eq_laguerre
     (s : Finset ℝ) (hs : s.Nonempty) (x : ℝ) :
     finiteAnchorAllPassClock s x =
       2 * (laguerreL1 (finiteAnchorPolynomial s)).eval x /
-        ((finiteAnchorPolynomial s).eval x ^ 2 +
-          (derivative (finiteAnchorPolynomial s)).eval x ^ 2) := by
+        ((finiteAnchorPolynomial s).eval x ^ (2 : ℕ) +
+          (derivative (finiteAnchorPolynomial s)).eval x ^ (2 : ℕ)) := by
   let p : ℝ := (finiteAnchorPolynomial s).eval x
   let q : ℝ := (derivative (finiteAnchorPolynomial s)).eval x
   let r : ℝ := (derivative (derivative (finiteAnchorPolynomial s))).eval x
   have hden := finiteAnchorAllPass_den_ne_zero s hs x
-  have hsq : p ^ 2 + q ^ 2 ≠ 0 := by
+  have hsq : p ^ (2 : ℕ) + q ^ (2 : ℕ) ≠ 0 := by
     intro hzero
     have hp : p = 0 := by nlinarith [sq_nonneg p, sq_nonneg q]
     have hq : q = 0 := by nlinarith [sq_nonneg p, sq_nonneg q]
@@ -372,8 +372,8 @@ theorem finiteAnchorAllPassClock_pos
   apply div_pos
   · exact mul_pos (by norm_num) (laguerreL1_finiteAnchorPolynomial_pos s hs x)
   · have hden := finiteAnchorAllPass_den_ne_zero s hs x
-    have hne : (finiteAnchorPolynomial s).eval x ^ 2 +
-        (derivative (finiteAnchorPolynomial s)).eval x ^ 2 ≠ 0 := by
+    have hne : (finiteAnchorPolynomial s).eval x ^ (2 : ℕ) +
+        (derivative (finiteAnchorPolynomial s)).eval x ^ (2 : ℕ) ≠ 0 := by
       intro hzero
       have hp : (finiteAnchorPolynomial s).eval x = 0 := by
         nlinarith [sq_nonneg ((finiteAnchorPolynomial s).eval x),

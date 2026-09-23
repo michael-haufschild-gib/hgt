@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAInteriorGibbsIntegrand_integral_critical_limit (w φ ψ : ℝ) :
     Tendsto (fun τ => ∫ u in (0 : ℝ)..1, egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u)
-      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4)) := by
+      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ))) := by
   have hmeas : ∀ᶠ τ in (atBot : Filter ℝ), AEStronglyMeasurable
       (egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ) (volume.restrict (uIoc (0 : ℝ) 1)) :=
     .of_forall (fun τ => (egbFixedChargeAInteriorGibbsIntegrand_measurable w φ τ ψ).aestronglyMeasurable)
@@ -39,19 +39,19 @@ theorem egbFixedChargeAInteriorGibbsIntegrand_integral_critical_limit (w φ ψ :
   rwa [egbFixedChargeAInteriorGibbsLimitIntegrand_integral] at h
 
 theorem egbFixedChargeAInteriorGibbsGap_quartic_critical_limit (w φ l ψ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ 4)
-      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4)) := by
+    Tendsto (fun τ => egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
+      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ))) := by
   simp only [egbFixedChargeAInteriorGibbsGap_integral]
   exact egbFixedChargeAInteriorGibbsIntegrand_integral_critical_limit w φ ψ
 
 theorem egbFixedChargeAInteriorGibbsGap_barrier_ratio_limit (w φ l₁ l₂ ψ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂)
-      atBot (𝓝 (cos ψ ^ 4)) := by
+      atBot (𝓝 (cos ψ ^ (4 : ℕ))) := by
   have hB := egbFixedChargeAGibbsBarrierCoefficient_pos w φ
   have h := (egbFixedChargeAInteriorGibbsGap_quartic_critical_limit w φ l₁ ψ).div
     (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l₂) hB.ne'
-  have he : egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4 / egbFixedChargeAGibbsBarrierCoefficient w φ =
-      cos ψ ^ 4 := by field_simp
+  have he : egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ) / egbFixedChargeAGibbsBarrierCoefficient w φ =
+      cos ψ ^ (4 : ℕ) := by field_simp
   rw [he] at h
   simp only [Pi.div_def] at h
   convert h using 1
@@ -73,7 +73,7 @@ theorem egbFixedChargeAMeanGibbsGap_quartic_critical_limit (w φ l : ℝ) :
     Tendsto (fun τ => (egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
       (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeAMeanRadius w φ τ) -
       egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
-        (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / egbCoexistenceASymmetricRatio τ ^ 4)
+        (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
       atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ)) := by
   simpa only [egbFixedChargeAInteriorGibbsGap, egbFixedChargeAInteriorRadius_mean, cos_zero, one_pow, mul_one] using
     egbFixedChargeAInteriorGibbsGap_quartic_critical_limit w φ l 0

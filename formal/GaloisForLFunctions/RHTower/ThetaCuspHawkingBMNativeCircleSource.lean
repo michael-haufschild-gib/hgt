@@ -37,10 +37,10 @@ private theorem first_coordinates (q : XiZeroCopy) (p v : Point) :
 
 private theorem second_coordinates (q : XiZeroCopy) (p v a : Point) (hp : 0 < p 1) :
     fieldSecond q p v a =
-      (v 0:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) p+
+      (v 0:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) p+
       (v 0:ℂ)*(v 1:ℂ)*(coordDeriv 0 (coordDeriv 1 (fullSquarePotential q)) p+
         coordDeriv 1 (coordDeriv 0 (fullSquarePotential q)) p)+
-      (v 1:ℂ)^2*coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) p+
+      (v 1:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) p+
       (a 0:ℂ)*coordDeriv 0 (fullSquarePotential q) p+
       (a 1:ℂ)*coordDeriv 1 (fullSquarePotential q) p := by
   have hf := fullSquarePotential_smooth q p hp 2
@@ -200,23 +200,23 @@ theorem source_smooth (q : XiZeroCopy) :
   all_goals fun_prop (disch := exact (denominator_pos _ _).ne')
 
 private theorem polar_source (q : XiZeroCopy) (d theta x k : ℝ) :
-    (Real.sinh d:ℂ)^2*radialSecond q d theta x k+
+    (Real.sinh d:ℂ)^(2 : ℕ)*radialSecond q d theta x k+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*radialFirst q d theta x k+
       angularSecond q d theta x k=
-      (Real.sinh d:ℂ)^2*scalarLaplacian (fullSquarePotential q) (logCircle d theta x k) := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*scalarLaplacian (fullSquarePotential q) (logCircle d theta x k) := by
   have hp := logCircle_pos d theta x k
   obtain ⟨hxx,hxy,hyy⟩ := polar_principal d theta
   obtain ⟨hx,hy⟩ := polar_connection d theta
-  have hxxC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)^2+(offsetAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(height d theta:ℂ)^2 := by exact_mod_cast hxx
-  have hxyC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
+  have hxxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)^(2 : ℕ)+(offsetAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hxx
+  have hxyC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
       (offsetAngular d theta:ℂ)*(heightAngular d theta:ℂ)=0 := by exact_mod_cast hxy
-  have hyyC : (Real.sinh d:ℂ)^2*(heightRadial d theta:ℂ)^2+(heightAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(height d theta:ℂ)^2 := by exact_mod_cast hyy
-  have hxC : (Real.sinh d:ℂ)^2*(offsetRadialSecond d theta:ℂ)+
+  have hyyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadial d theta:ℂ)^(2 : ℕ)+(heightAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hyy
+  have hxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(offsetRadial d theta:ℂ)+(offsetAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hx
-  have hyC : (Real.sinh d:ℂ)^2*(heightRadialSecond d theta:ℂ)+
+  have hyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(heightRadial d theta:ℂ)+(heightAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hy
   dsimp [radialSecond,radialFirst,angularSecond]
@@ -229,19 +229,19 @@ private theorem polar_source (q : XiZeroCopy) (d theta x k : ℝ) :
     simp [logCircle,circle]
   rw [he]
   linear_combination
-    (Real.exp k:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hxxC+
-    (Real.exp k:ℂ)^2*(coordDeriv 0 (coordDeriv 1 (fullSquarePotential q)) (logCircle d theta x k)+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hxxC+
+    (Real.exp k:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 (fullSquarePotential q)) (logCircle d theta x k)+
       coordDeriv 1 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k))*hxyC+
-    (Real.exp k:ℂ)^2*coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle d theta x k)*hyyC+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle d theta x k)*hyyC+
     (Real.exp k:ℂ)*coordDeriv 0 (fullSquarePotential q) (logCircle d theta x k)*hxC+
     (Real.exp k:ℂ)*coordDeriv 1 (fullSquarePotential q) (logCircle d theta x k)*hyC
 
 /-- The actual theta field satisfies the polar Darboux identity with its complete angular Laplacian. -/
 theorem source_darboux_integrand (q : XiZeroCopy) (d theta x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => source q r theta x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => source q r theta x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => source q r theta x k) d+
       deriv (deriv (fun t => source q d t x k)) theta=
-      (Real.sinh d:ℂ)^2*scalarLaplacian (fullSquarePotential q) (logCircle d theta x k) := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*scalarLaplacian (fullSquarePotential q) (logCircle d theta x k) := by
   have hr : deriv (fun r => source q r theta x k)=fun r => radialFirst q r theta x k :=
     funext (fun r => (radial_first q r theta x k).deriv)
   have ha : deriv (fun t => source q d t x k)=fun t => angularFirst q d t x k :=
@@ -267,14 +267,14 @@ private theorem horizontal_angular (q : XiZeroCopy) (d theta x k : ℝ) :
   simp only [Complex.ofReal_mul,ContinuousLinearMap.flip_apply]
 
 private theorem base_source (q : XiZeroCopy) (d theta x k : ℝ) :
-    (Real.exp k:ℂ)^2*horizontalSecond q d theta x k+logHeightSecond q d theta x k-
+    (Real.exp k:ℂ)^(2 : ℕ)*horizontalSecond q d theta x k+logHeightSecond q d theta x k-
       logHeightFirst q d theta x k-
       scalarLaplacian (fullSquarePotential q) (logCircle d theta x k)=
       -2*(Real.exp k:ℂ)*horizontalAngularDerivative q d theta x k := by
   have hp := logCircle_pos d theta x k
   have hf := fullSquarePotential_smooth q _ hp 2
   obtain ⟨hx,hy⟩ := base_laplacian_coefficients d theta
-  have hxC : 1+(offset d theta:ℂ)^2-(height d theta:ℂ)^2 = -2*(offsetAngular d theta:ℂ) := by
+  have hxC : 1+(offset d theta:ℂ)^(2 : ℕ)-(height d theta:ℂ)^(2 : ℕ) = -2*(offsetAngular d theta:ℂ) := by
     exact_mod_cast hx
   have hyC : 2*(offset d theta:ℂ)*(height d theta:ℂ) = -2*(heightAngular d theta:ℂ) := by
     exact_mod_cast hy
@@ -288,13 +288,13 @@ private theorem base_source (q : XiZeroCopy) (d theta x k : ℝ) :
     simp [logCircle,circle]
   rw [he]
   linear_combination
-    (Real.exp k:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hxC+
-    (Real.exp k:ℂ)^2*coordDeriv 1 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hyC
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hxC+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 0 (fullSquarePotential q)) (logCircle d theta x k)*hyC
 
 /-- The actual base-point hyperbolic Laplacian differs from the transported source Laplacian
 by an explicit derivative around the original circle. -/
 theorem source_base_laplacian_integrand (q : XiZeroCopy) (d theta x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun t => source q d theta t k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun t => source q d theta t k)) x+
       deriv (deriv (fun t => source q d theta x t)) k-
       deriv (fun t => source q d theta x t) k-
       scalarLaplacian (fullSquarePotential q) (logCircle d theta x k)=

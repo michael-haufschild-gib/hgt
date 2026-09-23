@@ -34,7 +34,7 @@ locally-equivalent three-qubit state powers Mermin's game
 - Qubit 0 carries the Hadamard and controls the first CNOT (target
   qubit 1); qubit 1 controls the second CNOT (target qubit 2).
 - The circuit factors use the qubit groupings `1+2`, `2+1`, `1+2`; the
-  index types all reduce to `Fin (2^3)` definitionally.
+  index types all reduce to `Fin (2^(3 : ℕ))` definitionally.
 
 ## Main results
 
@@ -70,10 +70,10 @@ theorem norm_ghzVec : ‖ghzVec‖ = 1 := by
     rw [EuclideanSpace.norm_eq]
     have hsum : ∑ i,
         ‖(((ket 0 : PureState (Qubits 3)) + (ket 7 : PureState (Qubits 3))
-          : StateVector (Qubits 3)) i)‖ ^ 2 = 2 := by
-      refine (Fin.sum_univ_eight (f := fun i : Fin (2 ^ 3) =>
+          : StateVector (Qubits 3)) i)‖ ^ (2 : ℕ) = 2 := by
+      refine (Fin.sum_univ_eight (f := fun i : Fin (2 ^ (3 : ℕ)) =>
         ‖(((ket 0 : PureState (Qubits 3)) + (ket 7 : PureState (Qubits 3))
-          : StateVector (Qubits 3)) i)‖ ^ 2)).trans ?_
+          : StateVector (Qubits 3)) i)‖ ^ (2 : ℕ))).trans ?_
       simp +decide [PureState.ket_apply]
       all_goals norm_num
     rw [hsum]

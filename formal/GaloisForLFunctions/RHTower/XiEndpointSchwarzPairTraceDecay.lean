@@ -25,8 +25,8 @@ theorem xiRawReciprocalCoordinate_norm_lt_four_twentyFifths (q : XiZeroCopy) :
     ‖xiRawReciprocalCoordinate q‖ < 4 / 25 := by
   have hheight :=
     xiZeroCopy_nineThousandSevenHundredSixtyNine_div_twoHundredThirtyOne_lt_im_sq q
-  have hsq : ‖(q.1 : ℂ)‖ ^ 2 =
-      (q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hsq : ‖(q.1 : ℂ)‖ ^ (2 : ℕ) =
+      (q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
   have hlarge : (25 / 4 : ℝ) < ‖(q.1 : ℂ)‖ := by
@@ -65,10 +65,10 @@ theorem norm_xiRawReciprocalPowerTrace_add_two_le_four_twentyFifths_pow_mul_mass
         ∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q ^ (n + 2)‖ :=
       norm_tsum_le_tsum_norm hsum.norm
     _ ≤ ∑' q : XiZeroCopy,
-        (4 / 25 : ℝ) ^ n * ‖xiRawReciprocalCoordinate q‖ ^ 2 := by
+        (4 / 25 : ℝ) ^ n * ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ) := by
       exact hsum.norm.tsum_mono hmajor (fun q => by
         change ‖xiRawReciprocalCoordinate q ^ (n + 2)‖ ≤
-          (4 / 25 : ℝ) ^ n * ‖xiRawReciprocalCoordinate q‖ ^ 2
+          (4 / 25 : ℝ) ^ n * ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)
         rw [norm_pow, pow_add]
         exact mul_le_mul_of_nonneg_right
           (pow_le_pow_left₀ (norm_nonneg _)

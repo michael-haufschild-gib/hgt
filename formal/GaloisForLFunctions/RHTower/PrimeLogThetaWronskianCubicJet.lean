@@ -29,11 +29,11 @@ Combined with the literal cubic prime-log graph clock, the third theta jet is ex
 
 ```text
 W_3 W_2 W_1 (t * Theta_l(-i t))
-  = xiCent(t)^4 * sum_p l_p log(p)^3 phi_p(t).
+  = xiCent(t)^(4 : ℕ) * sum_p l_p log(p)^(3 : ℕ) phi_p(t).
 ```
 
 Every equality is a positive-time germ in the theta strip.  No zero is selected and no `Xi`
-factor is inverted.  The surviving factor `xiCent^4` identifies the relative four-level graph
+factor is inverted.  The surviving factor `xiCent^(4 : ℕ)` identifies the relative four-level graph
 that any later complex-zero extension must retain; this real-ray theorem itself makes no
 zero-evaluation claim.
 
@@ -207,7 +207,7 @@ theorem primeLogThetaWronskianIterate_thetaRay
         primeLogThetaWronskianStep_clockedMass (1 + n) n l ht
 
 /-- **Literal cubic theta covariance.**  The third denominator-free theta Wronskian jet is the
-fourth Xi-level representative of the exact `(log p)^3` finite graph core. -/
+fourth Xi-level representative of the exact `(log p)^(3 : ℕ)` finite graph core. -/
 theorem primeLogThetaWronskian_cubic_thetaRay
     (l : Nat.Primes →₀ ℂ) {t : ℝ}
     (ht : 0 < t) (htstrip : t < 1) :

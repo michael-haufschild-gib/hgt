@@ -22,35 +22,35 @@ namespace RHTower.Sieve
 
 /-- The lcm of two divisors below `M` is at most `M²`. -/
 private theorem lcm_le_sq {M q r : ℕ} (hq : 1 ≤ q) (hr : 1 ≤ r) (hqM : q ≤ M) (hrM : r ≤ M) :
-    Nat.lcm q r ≤ M ^ 2 := by
+    Nat.lcm q r ≤ M ^ (2 : ℕ) := by
   have hmul : 0 < q * r := Nat.mul_pos hq hr
   have h1 : Nat.lcm q r ≤ q * r := Nat.le_of_dvd hmul (Nat.lcm_dvd_mul q r)
   have h2 : q * r ≤ M * M := Nat.mul_le_mul hqM hrM
   calc Nat.lcm q r ≤ q * r := h1
     _ ≤ M * M := h2
-    _ = M ^ 2 := (sq M).symm
+    _ = M ^ (2 : ℕ) := (sq M).symm
 
 /-- Under the Levinson scale the rescaled endpoint clears the antitone threshold. -/
 private theorem eight_le_div_lcm {X M q r : ℕ} (hq : 1 ≤ q) (hr : 1 ≤ r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     8 ≤ X / Nat.lcm q r := by
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   rw [Nat.le_div_iff_mul_le he]
-  calc 8 * Nat.lcm q r ≤ 8 * M ^ 2 :=
+  calc 8 * Nat.lcm q r ≤ 8 * M ^ (2 : ℕ) :=
         Nat.mul_le_mul_left 8 (lcm_le_sq hq hr hqM hrM)
     _ ≤ X := hscale
 
 /-- The complementary divisor of an lcm has logarithm below the window scale. -/
 private theorem abs_log_lcm_div_le {X M q r : ℕ} (hq : 1 ≤ q) (hr : 1 ≤ r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |Real.log (((Nat.lcm q r / r : ℕ) : ℝ))| ≤ Real.log ((X + 1 : ℕ) : ℝ) := by
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have hrle : r ≤ Nat.lcm q r := Nat.le_of_dvd he (Nat.dvd_lcm_right q r)
   have hone : 1 ≤ Nat.lcm q r / r := (Nat.one_le_div_iff hr).mpr hrle
   have hupper : Nat.lcm q r / r ≤ X + 1 := by
     have h1 : Nat.lcm q r / r ≤ Nat.lcm q r := Nat.div_le_self _ _
-    have h2 : Nat.lcm q r ≤ M ^ 2 := lcm_le_sq hq hr hqM hrM
-    have h3 : M ^ 2 ≤ X := by omega
+    have h2 : Nat.lcm q r ≤ M ^ (2 : ℕ) := lcm_le_sq hq hr hqM hrM
+    have h3 : M ^ (2 : ℕ) ≤ X := by omega
     omega
   have hnn : (0 : ℝ) ≤ Real.log (((Nat.lcm q r / r : ℕ) : ℝ)) := by
     refine Real.log_nonneg ?_
@@ -82,16 +82,16 @@ def barbanVehovShortDerivativeMain (X M : ℕ) : ℝ :=
 /-- Main term of the short-range mollified detector energy. -/
 def barbanVehovShortEnergyMain (lam : ℝ) (X M : ℕ) : ℝ :=
   (barbanVehovShortBaseMain X M + 2 * lam * barbanVehovShortCrossMain X M +
-      lam ^ 2 * barbanVehovShortDerivativeMain X M) /
-    Real.log M ^ 2
+      lam ^ (2 : ℕ) * barbanVehovShortDerivativeMain X M) /
+    Real.log M ^ (2 : ℕ)
 
 theorem abs_barbanVehovShortBaseLcm_sub_main_le
-    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |barbanVehovShortBaseLcm X M - barbanVehovShortBaseMain X M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 * (1 / (X : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (1 / (X : ℝ)) := by
   classical
   have hX : 0 < X := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   have hpoint : ∀ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
       |barbanVehovLongHarmonicKernel 0 X p.1 p.2 -
@@ -114,12 +114,12 @@ theorem abs_barbanVehovShortBaseLcm_sub_main_le
     (sum_product_abs_barbanVehovWeight_le hM) (by positivity))
 
 theorem abs_barbanVehovShortCrossLcm_sub_main_le
-    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |barbanVehovShortCrossLcm X M - barbanVehovShortCrossMain X M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 * (2 * Real.log ((X + 1 : ℕ) : ℝ) / (X : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (2 * Real.log ((X + 1 : ℕ) : ℝ) / (X : ℝ)) := by
   classical
   have hX : 0 < X := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   have hlogX : (0 : ℝ) ≤ Real.log ((X + 1 : ℕ) : ℝ) := by
     refine Real.log_nonneg ?_
@@ -171,7 +171,7 @@ theorem abs_barbanVehovShortCrossLcm_sub_main_le
           RHTower.logPowDivId 1 ((X / Nat.lcm p.1 p.2 + 1 : ℕ) : ℝ) /
             (Nat.lcm p.1 p.2 : ℝ)
         ≤ Real.log ((X + 1 : ℕ) : ℝ) * (1 / (X : ℝ)) +
-            Real.log ((X + 1 : ℕ) : ℝ) ^ 1 / (X : ℝ) := by
+            Real.log ((X + 1 : ℕ) : ℝ) ^ (1 : ℕ) / (X : ℝ) := by
           gcongr
       _ = 2 * Real.log ((X + 1 : ℕ) : ℝ) / (X : ℝ) := by
           rw [pow_one]
@@ -188,18 +188,18 @@ theorem abs_barbanVehovShortCrossLcm_sub_main_le
 
 /-- The other complementary divisor of an lcm. -/
 private theorem abs_log_lcm_div_left_le {X M q r : ℕ} (hq : 1 ≤ q) (hr : 1 ≤ r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |Real.log (((Nat.lcm q r / q : ℕ) : ℝ))| ≤ Real.log ((X + 1 : ℕ) : ℝ) := by
   have h := abs_log_lcm_div_le (X := X) (M := M) (q := r) (r := q) hr hq hrM hqM hscale
   rwa [Nat.lcm_comm r q] at h
 
 theorem abs_barbanVehovShortDerivativeLcm_sub_main_le
-    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ X) :
+    {X M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |barbanVehovShortDerivativeLcm X M - barbanVehovShortDerivativeMain X M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 * (4 * Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (4 * Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ)) := by
   classical
   have hX : 0 < X := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   have hlogX : (0 : ℝ) ≤ Real.log ((X + 1 : ℕ) : ℝ) := by
     refine Real.log_nonneg ?_
@@ -208,7 +208,7 @@ theorem abs_barbanVehovShortDerivativeLcm_sub_main_le
   have hpoint : ∀ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
       |barbanVehovLongSecondLogKernel 0 X p.1 p.2 -
         barbanVehovShortSecondLogKernelMain X p.1 p.2| ≤
-          4 * Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ) := by
+          4 * Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ) := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_Icc] at hp1 hp2
@@ -238,7 +238,7 @@ theorem abs_barbanVehovShortDerivativeLcm_sub_main_le
           P2 / (Nat.lcm p.1 p.2 : ℝ) := by
       field_simp
     rw [hsplit]
-    have hab : |a * b| ≤ Real.log ((X + 1 : ℕ) : ℝ) ^ 2 := by
+    have hab : |a * b| ≤ Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
       rw [abs_mul, sq]
       exact mul_le_mul hlogq hlogr (abs_nonneg b) hlogX
     have hsum : |a + b| ≤ 2 * Real.log ((X + 1 : ℕ) : ℝ) := by
@@ -252,16 +252,16 @@ theorem abs_barbanVehovShortDerivativeLcm_sub_main_le
       exact div_nonneg (hnnP 1) heR.le
     have hXR : (0 : ℝ) < (X : ℝ) := by exact_mod_cast hX
     have hstep0 : |a * b| * (P0 / (Nat.lcm p.1 p.2 : ℝ)) ≤
-        Real.log ((X + 1 : ℕ) : ℝ) ^ 2 * (1 / (X : ℝ)) :=
+        Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (1 / (X : ℝ)) :=
       mul_le_mul hab h0 hP0nn (by positivity)
     have hstep1 : |a + b| * (P1 / (Nat.lcm p.1 p.2 : ℝ)) ≤
-        2 * Real.log ((X + 1 : ℕ) : ℝ) * (Real.log ((X + 1 : ℕ) : ℝ) ^ 1 / (X : ℝ)) :=
+        2 * Real.log ((X + 1 : ℕ) : ℝ) * (Real.log ((X + 1 : ℕ) : ℝ) ^ (1 : ℕ) / (X : ℝ)) :=
       mul_le_mul hsum h1 hP1nn (by positivity)
-    have hstep2 : P2 / (Nat.lcm p.1 p.2 : ℝ) ≤ Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ) := h2
-    have hcollect : Real.log ((X + 1 : ℕ) : ℝ) ^ 2 * (1 / (X : ℝ)) +
-        2 * Real.log ((X + 1 : ℕ) : ℝ) * (Real.log ((X + 1 : ℕ) : ℝ) ^ 1 / (X : ℝ)) +
-        Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ) =
-        4 * Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ) := by
+    have hstep2 : P2 / (Nat.lcm p.1 p.2 : ℝ) ≤ Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ) := h2
+    have hcollect : Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (1 / (X : ℝ)) +
+        2 * Real.log ((X + 1 : ℕ) : ℝ) * (Real.log ((X + 1 : ℕ) : ℝ) ^ (1 : ℕ) / (X : ℝ)) +
+        Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ) =
+        4 * Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ) := by
       rw [pow_one]
       field_simp
       ring
@@ -276,14 +276,14 @@ theorem abs_barbanVehovShortDerivativeLcm_sub_main_le
     (sum_product_abs_barbanVehovWeight_le hM) (by positivity))
 
 private theorem abs_quadCombination_sub_le (lam A B C a b c : ℝ) :
-    |(A + 2 * lam * B + lam ^ 2 * C) - (a + 2 * lam * b + lam ^ 2 * c)| ≤
-      |A - a| + 2 * |lam| * |B - b| + lam ^ 2 * |C - c| := by
-  rw [show (A + 2 * lam * B + lam ^ 2 * C) - (a + 2 * lam * b + lam ^ 2 * c) =
-      (A - a) + 2 * lam * (B - b) + lam ^ 2 * (C - c) by ring]
+    |(A + 2 * lam * B + lam ^ (2 : ℕ) * C) - (a + 2 * lam * b + lam ^ (2 : ℕ) * c)| ≤
+      |A - a| + 2 * |lam| * |B - b| + lam ^ (2 : ℕ) * |C - c| := by
+  rw [show (A + 2 * lam * B + lam ^ (2 : ℕ) * C) - (a + 2 * lam * b + lam ^ (2 : ℕ) * c) =
+      (A - a) + 2 * lam * (B - b) + lam ^ (2 : ℕ) * (C - c) by ring]
   calc
-    |(A - a) + 2 * lam * (B - b) + lam ^ 2 * (C - c)| ≤
-        |A - a| + |2 * lam * (B - b)| + |lam ^ 2 * (C - c)| :=
-      (abs_add_le ((A - a) + 2 * lam * (B - b)) (lam ^ 2 * (C - c))).trans
+    |(A - a) + 2 * lam * (B - b) + lam ^ (2 : ℕ) * (C - c)| ≤
+        |A - a| + |2 * lam * (B - b)| + |lam ^ (2 : ℕ) * (C - c)| :=
+      (abs_add_le ((A - a) + 2 * lam * (B - b)) (lam ^ (2 : ℕ) * (C - c))).trans
         (add_le_add (abs_add_le (A - a) (2 * lam * (B - b))) le_rfl)
     _ = _ := by
       rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
@@ -291,14 +291,14 @@ private theorem abs_quadCombination_sub_le (lam A B C a b c : ℝ) :
 
 /-- **The short-range energy is its main term up to an `O(M²/X)` error.** -/
 theorem abs_barbanVehovShortEnergyLcm_sub_main_le
-    (lam : ℝ) {X M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ X) :
+    (lam : ℝ) {X M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ X) :
     |barbanVehovShortEnergyLcm lam X M - barbanVehovShortEnergyMain lam X M| ≤
-      (((M : ℝ) * Real.log M) ^ 2 * (1 / (X : ℝ)) +
-          2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 *
+      (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (1 / (X : ℝ)) +
+          2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
             (2 * Real.log ((X + 1 : ℕ) : ℝ) / (X : ℝ))) +
-          lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 *
-            (4 * Real.log ((X + 1 : ℕ) : ℝ) ^ 2 / (X : ℝ)))) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+            (4 * Real.log ((X + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (X : ℝ)))) /
+        Real.log M ^ (2 : ℕ) := by
   have hM1 : 1 ≤ M := le_of_lt hM
   have hlog : 0 < Real.log M := Real.log_pos (by exact_mod_cast hM)
   rw [barbanVehovShortEnergyLcm, barbanVehovShortEnergyMain, ← sub_div, abs_div,
@@ -309,21 +309,21 @@ theorem abs_barbanVehovShortEnergyLcm_sub_main_le
   have hc := abs_barbanVehovShortCrossLcm_sub_main_le hM1 hscale
   have hd := abs_barbanVehovShortDerivativeLcm_sub_main_le hM1 hscale
   have h2 : (0 : ℝ) ≤ 2 * |lam| := by positivity
-  have h3 : (0 : ℝ) ≤ lam ^ 2 := sq_nonneg lam
+  have h3 : (0 : ℝ) ≤ lam ^ (2 : ℕ) := sq_nonneg lam
   have hcm := mul_le_mul_of_nonneg_left hc h2
   have hdm := mul_le_mul_of_nonneg_left hd h3
   linarith [hb, hcm, hdm]
 
 /-- The short-range energy error with the Levinson parameter constraint. -/
 theorem abs_barbanVehovShortEnergyLcm_sub_main_le_sq_div
-    (lam : ℝ) {X M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ X)
+    (lam : ℝ) {X M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ X)
     (hlam : |lam| * Real.log ((X + 1 : ℕ) : ℝ) ≤ 1) :
     |barbanVehovShortEnergyLcm lam X M - barbanVehovShortEnergyMain lam X M| ≤
-      9 * (M : ℝ) ^ 2 / (X : ℝ) := by
+      9 * (M : ℝ) ^ (2 : ℕ) / (X : ℝ) := by
   have hM2 : (2 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
   have hlogM : (0 : ℝ) < Real.log M := Real.log_pos (by linarith)
   have hX : 0 < X := by
-    have : 0 < 8 * M ^ 2 := by positivity
+    have : 0 < 8 * M ^ (2 : ℕ) := by positivity
     omega
   have hXR : (0 : ℝ) < (X : ℝ) := by exact_mod_cast hX
   refine (abs_barbanVehovShortEnergyLcm_sub_main_le lam hM hscale).trans ?_
@@ -333,33 +333,33 @@ theorem abs_barbanVehovShortEnergyLcm_sub_main_le_sq_div
     refine Real.log_nonneg ?_
     have : (1 : ℕ) ≤ X + 1 := Nat.succ_le_succ (Nat.zero_le _)
     exact_mod_cast this
-  have hsq : lam ^ 2 * A ^ 2 ≤ 1 := by
+  have hsq : lam ^ (2 : ℕ) * A ^ (2 : ℕ) ≤ 1 := by
     have hnn : (0 : ℝ) ≤ |lam| * A := by positivity
-    have hlamsq : lam ^ 2 = |lam| ^ 2 := (sq_abs lam).symm
+    have hlamsq : lam ^ (2 : ℕ) = |lam| ^ (2 : ℕ) := (sq_abs lam).symm
     nlinarith [hlam, hnn]
-  have hnum : ((M : ℝ) * Real.log M) ^ 2 * (1 / (X : ℝ)) +
-      2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 * (2 * A / (X : ℝ))) +
-      lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 * (4 * A ^ 2 / (X : ℝ)))
-      = (((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) *
-        (1 + 4 * (|lam| * A) + 4 * (lam ^ 2 * A ^ 2)) := by
+  have hnum : ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (1 / (X : ℝ)) +
+      2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (2 * A / (X : ℝ))) +
+      lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (4 * A ^ (2 : ℕ) / (X : ℝ)))
+      = (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) *
+        (1 + 4 * (|lam| * A) + 4 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ))) := by
     field_simp
     ring
   rw [hnum]
-  have hfac : (0 : ℝ) < ((M : ℝ) * Real.log M) ^ 2 / (X : ℝ) := by positivity
-  have hbr : (1 : ℝ) + 4 * (|lam| * A) + 4 * (lam ^ 2 * A ^ 2) ≤ 9 := by
+  have hfac : (0 : ℝ) < ((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ) := by positivity
+  have hbr : (1 : ℝ) + 4 * (|lam| * A) + 4 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)) ≤ 9 := by
     linarith [hlam, hsq]
-  have hstep : (((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) *
-      (1 + 4 * (|lam| * A) + 4 * (lam ^ 2 * A ^ 2))
-      ≤ (((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) * 9 :=
+  have hstep : (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) *
+      (1 + 4 * (|lam| * A) + 4 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)))
+      ≤ (((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) * 9 :=
     mul_le_mul_of_nonneg_left hbr hfac.le
-  have hdiv : ((((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) * 9) / Real.log M ^ 2
-      = 9 * (M : ℝ) ^ 2 / (X : ℝ) := by
+  have hdiv : ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) * 9) / Real.log M ^ (2 : ℕ)
+      = 9 * (M : ℝ) ^ (2 : ℕ) / (X : ℝ) := by
     field_simp
-  calc ((((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) *
-        (1 + 4 * (|lam| * A) + 4 * (lam ^ 2 * A ^ 2))) / Real.log M ^ 2
-      ≤ ((((M : ℝ) * Real.log M) ^ 2 / (X : ℝ)) * 9) / Real.log M ^ 2 :=
+  calc ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) *
+        (1 + 4 * (|lam| * A) + 4 * (lam ^ (2 : ℕ) * A ^ (2 : ℕ)))) / Real.log M ^ (2 : ℕ)
+      ≤ ((((M : ℝ) * Real.log M) ^ (2 : ℕ) / (X : ℝ)) * 9) / Real.log M ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right hstep (by positivity)
-    _ = 9 * (M : ℝ) ^ 2 / (X : ℝ) := hdiv
+    _ = 9 * (M : ℝ) ^ (2 : ℕ) / (X : ℝ) := hdiv
 
 end RHTower.Sieve
 

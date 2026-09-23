@@ -86,7 +86,7 @@ theorem firstDerivTestOn {a b lam : ℝ} (hab : a ≤ b) (hlam : 0 < lam)
   have hEnorm : ∀ t : ℝ, ‖E t‖ = 1 := fun t => norm_phase φ t
   set g : ℝ → ℂ := fun t => A t / (Complex.I * (φ' t : ℂ)) with hgdef
   set G : ℝ → ℂ := fun t => (A' t * (Complex.I * (φ' t : ℂ)) -
-    A t * (Complex.I * (φ'' t : ℂ))) / (Complex.I * (φ' t : ℂ)) ^ 2 with hGdef
+    A t * (Complex.I * (φ'' t : ℂ))) / (Complex.I * (φ' t : ℂ)) ^ (2 : ℕ) with hGdef
   have hIφ'd : ∀ x ∈ Icc a b,
       HasDerivAt (fun t => Complex.I * (φ' t : ℂ)) (Complex.I * (φ'' x : ℂ)) x :=
     fun x hx => ((hφ' x hx).ofReal_comp).const_mul Complex.I
@@ -137,19 +137,19 @@ theorem firstDerivTestOn {a b lam : ℝ} (hab : a ≤ b) (hlam : 0 < lam)
   have hM : ∀ x ∈ Icc a b, ‖A x‖ ≤ ‖A a‖ + ∫ t in a..b, ‖A' t‖ :=
     fun x hx => norm_le_budget_of_hasDerivAt hA hA'c hx
   -- ∫ φ''/φ'² = 1/φ'(a) − 1/φ'(b) ≤ 2/lam
-  have hint_phi2 : (∫ t in a..b, φ'' t / (φ' t) ^ 2) ≤ 2 / lam := by
-    have hderiv : ∀ x ∈ uIcc a b, HasDerivAt (fun t => (φ' t)⁻¹) (-(φ'' x) / (φ' x) ^ 2) x := by
+  have hint_phi2 : (∫ t in a..b, φ'' t / (φ' t) ^ (2 : ℕ)) ≤ 2 / lam := by
+    have hderiv : ∀ x ∈ uIcc a b, HasDerivAt (fun t => (φ' t)⁻¹) (-(φ'' x) / (φ' x) ^ (2 : ℕ)) x := by
       intro x hx
       rw [uIcc_of_le hab] at hx
       exact (hφ' x hx).inv (hφ'ne x hx)
-    have hint : IntervalIntegrable (fun t => -(φ'' t) / (φ' t) ^ 2) volume a b :=
+    have hint : IntervalIntegrable (fun t => -(φ'' t) / (φ' t) ^ (2 : ℕ)) volume a b :=
       intervalIntegrable_of_contOn_real hab
         (((hφ''c.neg).div (hφ'c.pow 2) (fun x hx => pow_ne_zero 2 (hφ'ne x hx))))
     have h1 := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
-    have hcongr : (fun t => -(φ'' t) / (φ' t) ^ 2) = fun t => -(φ'' t / (φ' t) ^ 2) :=
+    have hcongr : (fun t => -(φ'' t) / (φ' t) ^ (2 : ℕ)) = fun t => -(φ'' t / (φ' t) ^ (2 : ℕ)) :=
       funext fun t => by ring
     rw [hcongr, intervalIntegral.integral_neg] at h1
-    have h2 : (∫ t in a..b, φ'' t / (φ' t) ^ 2) = (φ' a)⁻¹ - (φ' b)⁻¹ := by linarith
+    have h2 : (∫ t in a..b, φ'' t / (φ' t) ^ (2 : ℕ)) = (φ' a)⁻¹ - (φ' b)⁻¹ := by linarith
     rw [h2]
     have h3 : |(φ' a)⁻¹| ≤ 1 / lam := by
       rw [abs_inv, inv_eq_one_div]
@@ -163,9 +163,9 @@ theorem firstDerivTestOn {a b lam : ℝ} (hab : a ≤ b) (hlam : 0 < lam)
     linarith
   -- pointwise bound on ‖G‖
   have hGnorm : ∀ x ∈ Icc a b, ‖G x‖ ≤ ‖A' x‖ / lam +
-      (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ 2) := by
+      (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ (2 : ℕ)) := by
     intro x hx
-    have hden : ‖(Complex.I * (φ' x : ℂ)) ^ 2‖ = (φ' x) ^ 2 := by
+    have hden : ‖(Complex.I * (φ' x : ℂ)) ^ (2 : ℕ)‖ = (φ' x) ^ (2 : ℕ) := by
       rw [norm_pow, norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs]
     have hnum : ‖A' x * (Complex.I * (φ' x : ℂ)) - A x * (Complex.I * (φ'' x : ℂ))‖
         ≤ ‖A' x‖ * |φ' x| + ‖A x‖ * φ'' x := by
@@ -175,30 +175,30 @@ theorem firstDerivTestOn {a b lam : ℝ} (hab : a ≤ b) (hlam : 0 < lam)
         _ = ‖A' x‖ * |φ' x| + ‖A x‖ * |φ'' x| := by
             simp only [norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
         _ = ‖A' x‖ * |φ' x| + ‖A x‖ * φ'' x := by rw [abs_of_nonneg (hnn x hx)]
-    have hb1 : ‖A' x‖ * |φ' x| / (φ' x) ^ 2 = ‖A' x‖ / |φ' x| := by
+    have hb1 : ‖A' x‖ * |φ' x| / (φ' x) ^ (2 : ℕ) = ‖A' x‖ / |φ' x| := by
       rw [← sq_abs]
       field_simp [abs_ne_zero.mpr (hφ'ne x hx)]
     have hb2 : ‖A' x‖ / |φ' x| ≤ ‖A' x‖ / lam :=
       div_le_div_of_nonneg_left (norm_nonneg _) hlam (hbound x hx)
-    have hφ2nn : 0 ≤ φ'' x / (φ' x) ^ 2 := div_nonneg (hnn x hx) (sq_nonneg _)
-    have hb3 : ‖A x‖ * φ'' x / (φ' x) ^ 2
-        ≤ (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ 2) := by
-      have hshape : ‖A x‖ * φ'' x / (φ' x) ^ 2 = ‖A x‖ * (φ'' x / (φ' x) ^ 2) := by ring
+    have hφ2nn : 0 ≤ φ'' x / (φ' x) ^ (2 : ℕ) := div_nonneg (hnn x hx) (sq_nonneg _)
+    have hb3 : ‖A x‖ * φ'' x / (φ' x) ^ (2 : ℕ)
+        ≤ (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ (2 : ℕ)) := by
+      have hshape : ‖A x‖ * φ'' x / (φ' x) ^ (2 : ℕ) = ‖A x‖ * (φ'' x / (φ' x) ^ (2 : ℕ)) := by ring
       rw [hshape]
       exact mul_le_mul_of_nonneg_right (hM x hx) hφ2nn
     calc ‖G x‖ = ‖A' x * (Complex.I * (φ' x : ℂ)) - A x * (Complex.I * (φ'' x : ℂ))‖
-          / ‖(Complex.I * (φ' x : ℂ)) ^ 2‖ := by rw [hGdef, norm_div]
-      _ ≤ (‖A' x‖ * |φ' x| + ‖A x‖ * φ'' x) / (φ' x) ^ 2 := by
+          / ‖(Complex.I * (φ' x : ℂ)) ^ (2 : ℕ)‖ := by rw [hGdef, norm_div]
+      _ ≤ (‖A' x‖ * |φ' x| + ‖A x‖ * φ'' x) / (φ' x) ^ (2 : ℕ) := by
           rw [hden]; exact div_le_div_of_nonneg_right hnum (sq_nonneg _)
-      _ = ‖A' x‖ * |φ' x| / (φ' x) ^ 2 + ‖A x‖ * φ'' x / (φ' x) ^ 2 := by rw [add_div]
-      _ ≤ ‖A' x‖ / lam + (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ 2) := by
+      _ = ‖A' x‖ * |φ' x| / (φ' x) ^ (2 : ℕ) + ‖A x‖ * φ'' x / (φ' x) ^ (2 : ℕ) := by rw [add_div]
+      _ ≤ ‖A' x‖ / lam + (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (φ'' x / (φ' x) ^ (2 : ℕ)) := by
           linarith [hb1 ▸ hb2, hb3]
   have hIntG : (∫ t in a..b, ‖G t‖) ≤ (∫ t in a..b, ‖A' t‖) / lam +
       (‖A a‖ + ∫ t in a..b, ‖A' t‖) * (2 / lam) := by
     have hii1a : IntervalIntegrable (fun t => ‖A' t‖ / lam) volume a b :=
       intervalIntegrable_of_contOn_real hab ((hA'c.norm).div_const lam)
     have hii1b : IntervalIntegrable (fun t => (‖A a‖ + ∫ t in a..b, ‖A' t‖) *
-        (φ'' t / (φ' t) ^ 2)) volume a b :=
+        (φ'' t / (φ' t) ^ (2 : ℕ))) volume a b :=
       intervalIntegrable_of_contOn_real hab
         ((hφ''c.div (hφ'c.pow 2) (fun x hx => pow_ne_zero 2 (hφ'ne x hx))).const_mul _)
     have hii0 : IntervalIntegrable (fun t => ‖G t‖) volume a b :=

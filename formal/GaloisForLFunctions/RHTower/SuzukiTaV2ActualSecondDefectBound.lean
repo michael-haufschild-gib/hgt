@@ -23,7 +23,7 @@ theorem norm_suzukiTaV2EndpointSecondTorque_le_schurSlack
     ‖suzukiTaV2EndpointSecondTorque a‖ ≤
       2 * (1 - ‖(suzukiDefectAngle
         (suzukiTaCoalescingEvenEnergy a 1)
-        (suzukiTaCoalescingOddEnergy a 1) : ℂ)‖ ^ 2) := by
+        (suzukiTaCoalescingOddEnergy a 1) : ℂ)‖ ^ (2 : ℕ)) := by
   have hbound := norm_suzukiAllAngleCarrier_secondJet_le_schurSlack
     (differentiable_suzukiTaV2CharacteristicA a)
     (differentiable_suzukiTaV2CharacteristicE a)
@@ -33,7 +33,7 @@ theorem norm_suzukiTaV2EndpointSecondTorque_le_schurSlack
     ‖iteratedDeriv 2
       (fun w => suzukiTaV2Livsic a (suzukiUpperCayleyInv w)) 0‖ ≤
       2 * (1 - ‖deriv
-        (fun w => suzukiTaV2Livsic a (suzukiUpperCayleyInv w)) 0‖ ^ 2)
+        (fun w => suzukiTaV2Livsic a (suzukiUpperCayleyInv w)) 0‖ ^ (2 : ℕ))
     at hbound
   rw [iteratedDeriv_two_suzukiTaV2Livsic_disk_zero_eq_endpointSecondTorque,
     deriv_suzukiTaV2Livsic_disk_zero_eq_coalescingDefectAngle] at hbound
@@ -47,7 +47,7 @@ theorem norm_suzukiTaV2EndpointSecondTorque_le_two
     ‖suzukiTaV2EndpointSecondTorque a‖ ≤
         2 * (1 - ‖(suzukiDefectAngle
           (suzukiTaCoalescingEvenEnergy a 1)
-          (suzukiTaCoalescingOddEnergy a 1) : ℂ)‖ ^ 2) :=
+          (suzukiTaCoalescingOddEnergy a 1) : ℂ)‖ ^ (2 : ℕ)) :=
       norm_suzukiTaV2EndpointSecondTorque_le_schurSlack a
     _ ≤ 2 := by nlinarith [sq_nonneg ‖(suzukiDefectAngle
       (suzukiTaCoalescingEvenEnergy a 1)

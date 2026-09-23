@@ -17,8 +17,8 @@ mean balance
 
 The same cubic is one composite of the adjacent weighted Turan defects
 
-`D_1 = m_1^2 - (1/3) * m_0 * m_2`,
-`D_2 = m_2^2 - (3/5) * m_1 * m_3`:
+`D_1 = m_1^(2 : ℕ) - (1/3) * m_0 * m_2`,
+`D_2 = m_2^(2 : ℕ) - (3/5) * m_1 * m_3`:
 
 `cubic = 5 * (3 * m_2 * D_1 - m_0 * D_2)`.
 
@@ -117,7 +117,7 @@ theorem hasDerivAt_thetaCuspSourceTerm_one_zero :
 /-! ### The completed-source Gaussian aperture -/
 
 /-- Even moment of the completed theta source after the Gaussian height contraction
-`exp (lambda * x^2)`.  The research aperture uses `lambda ≤ 0`; at `lambda = 0` this is the
+`exp (lambda * x^(2 : ℕ))`.  The research aperture uses `lambda ≤ 0`; at `lambda = 0` this is the
 existing completed raw moment. -/
 def thetaCuspGaussianApertureMoment (lambda : ℝ) (j : ℕ) : ℝ :=
   2 * ∫ x : ℝ in Ioi 0,
@@ -154,7 +154,7 @@ theorem thetaCuspGaussianApertureBalance_zero :
     thetaCuspGaussianApertureMoment_zero]
 
 /-- Raw sixth-seam numerator selected by the completed-source Gaussian-aperture asymptotic.
-Writing `f_k = Phi^(k)(0)`, this is `f_0^2 f_6 - 15 f_0 f_2 f_4 + 30 f_2^3`.
+Writing `f_k = Phi^(k)(0)`, this is `f_0^(2 : ℕ) f_6 - 15 f_0 f_2 f_4 + 30 f_2^(3 : ℕ)`.
 It is recorded as an exact source object; no sign is assumed. -/
 def thetaCuspGaussianApertureSixthSeamNumerator : ℝ :=
   thetaCuspFullSource 0 ^ 2 *

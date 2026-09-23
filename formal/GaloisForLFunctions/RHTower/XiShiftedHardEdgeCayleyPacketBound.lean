@@ -28,15 +28,15 @@ def hardEdgeDiskVariable (a : ℝ) (z : ℂ) : ℂ := ((a : ℂ) + z * I) / ((a 
 theorem zhukovsky_hardEdgeDiskVariable (a : ℝ) (z : ℂ)
     (h₁ : (a : ℂ) + z * I ≠ 0) (h₂ : (a : ℂ) - z * I ≠ 0) :
     (hardEdgeDiskVariable a z + (hardEdgeDiskVariable a z)⁻¹) / 2
-      = ((a : ℂ) ^ 2 - z ^ 2) / ((a : ℂ) ^ 2 + z ^ 2) := by
-  have hprod : ((a : ℂ) - z * I) * ((a : ℂ) + z * I) = (a : ℂ) ^ 2 + z ^ 2 := by
-    linear_combination (-(z ^ 2)) * Complex.I_sq
-  have hne : (a : ℂ) ^ 2 + z ^ 2 ≠ 0 := by
+      = ((a : ℂ) ^ (2 : ℕ) - z ^ (2 : ℕ)) / ((a : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)) := by
+  have hprod : ((a : ℂ) - z * I) * ((a : ℂ) + z * I) = (a : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ) := by
+    linear_combination (-(z ^ (2 : ℕ))) * Complex.I_sq
+  have hne : (a : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0 := by
     rw [← hprod]
     exact mul_ne_zero h₂ h₁
   have hnum : ((a : ℂ) + z * I) * ((a : ℂ) + z * I) + ((a : ℂ) - z * I) * ((a : ℂ) - z * I)
-      = 2 * ((a : ℂ) ^ 2 - z ^ 2) := by
-    linear_combination (2 * z ^ 2) * Complex.I_sq
+      = 2 * ((a : ℂ) ^ (2 : ℕ) - z ^ (2 : ℕ)) := by
+    linear_combination (2 * z ^ (2 : ℕ)) * Complex.I_sq
   rw [hardEdgeDiskVariable, inv_div, div_add_div _ _ h₂ h₁, hprod, hnum]
   field_simp
 
@@ -106,7 +106,7 @@ theorem ratio_pow_le_exp {a R : ℝ} (hR : 0 ≤ R) (hRa : R < a) (n : ℕ) :
 theorem norm_eval_hardEdgeCoordinate_le {a R : ℝ} (hR : 0 ≤ R) (hRa : R < a)
     (d : ℕ) (P : Polynomial ℂ) (hd : P.natDegree ≤ d) {z : ℂ} (hz : ‖z‖ ≤ R)
     (h₁ : (a : ℂ) + z * I ≠ 0) (h₂ : (a : ℂ) - z * I ≠ 0) :
-    ‖P.eval (((a : ℂ) ^ 2 - z ^ 2) / ((a : ℂ) ^ 2 + z ^ 2))‖
+    ‖P.eval (((a : ℂ) ^ (2 : ℕ) - z ^ (2 : ℕ)) / ((a : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)))‖
       ≤ Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
           * Real.exp (2 * R * (d + 2) / (a - R)) := by
   have hwne := hardEdgeDiskVariable_ne_zero a z h₁ h₂
@@ -129,15 +129,15 @@ theorem norm_eval_hardEdgeCoordinate_le {a R : ℝ} (hR : 0 ≤ R) (hRa : R < a)
 cleared substitution and passing to a square root of the variable, the packet bound applies. -/
 theorem norm_scaledCayleyNumerator_le {a : ℝ} {d : ℕ} {P : Polynomial ℂ} (hd : P.natDegree ≤ d)
     {R : ℝ} (hR : 0 ≤ R) (hsq : Real.sqrt R < a) {u : ℂ} (hu : ‖u‖ ≤ R) :
-    ‖((((a : ℝ) : ℂ) ^ 2) ^ d)⁻¹ * (cayleyNumerator a d P).eval u‖
-      ≤ (1 + R / a ^ 2) ^ d * (Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
+    ‖((((a : ℝ) : ℂ) ^ (2 : ℕ)) ^ d)⁻¹ * (cayleyNumerator a d P).eval u‖
+      ≤ (1 + R / a ^ (2 : ℕ)) ^ d * (Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
           * Real.exp (2 * Real.sqrt R * (d + 2) / (a - Real.sqrt R))) := by
   have hRs : 0 ≤ Real.sqrt R := Real.sqrt_nonneg R
   have hapos : 0 < a := lt_of_le_of_lt hRs hsq
-  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ 2 = u := IsSepClosed.exists_pow_nat_eq u 2
+  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ (2 : ℕ) = u := IsSepClosed.exists_pow_nat_eq u 2
   have hznorm : ‖z‖ ≤ Real.sqrt R := by
-    have hn : ‖z‖ ^ 2 = ‖u‖ := by rw [← hz, norm_pow]
-    have hle : ‖z‖ ^ 2 ≤ R := by rw [hn]; exact hu
+    have hn : ‖z‖ ^ (2 : ℕ) = ‖u‖ := by rw [← hz, norm_pow]
+    have hle : ‖z‖ ^ (2 : ℕ) ≤ R := by rw [hn]; exact hu
     have := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq (norm_nonneg z)] at this
   have hnorma : ‖((a : ℝ) : ℂ)‖ = a := by
@@ -153,43 +153,43 @@ theorem norm_scaledCayleyNumerator_le {a : ℝ} {d : ℕ} {P : Polynomial ℂ} (
     have h := norm_sub_norm_le (((a : ℝ) : ℂ)) (z * I)
     rw [hnorma, hzI, hcon, norm_zero] at h
     linarith
-  have hane : (((a : ℝ) : ℂ) ^ 2) ≠ 0 := by
+  have hane : (((a : ℝ) : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     intro hcon
     have := norm_ofReal_sq a
     rw [hcon, norm_zero] at this
     nlinarith
-  have hsum : (((a : ℝ) : ℂ) ^ 2 + u) ≠ 0 := by
+  have hsum : (((a : ℝ) : ℂ) ^ (2 : ℕ) + u) ≠ 0 := by
     intro hcon
-    have heq : u = -(((a : ℝ) : ℂ) ^ 2) := by linear_combination hcon
-    have hnu : ‖u‖ = a ^ 2 := by rw [heq, norm_neg, norm_ofReal_sq]
-    have hRa : R < a ^ 2 := by
+    have heq : u = -(((a : ℝ) : ℂ) ^ (2 : ℕ)) := by linear_combination hcon
+    have hnu : ‖u‖ = a ^ (2 : ℕ) := by rw [heq, norm_neg, norm_ofReal_sq]
+    have hRa : R < a ^ (2 : ℕ) := by
       have := Real.sq_sqrt hR
       nlinarith
     linarith
   have heval := eval_cayleyNumerator a d P hd u hsum
   rw [heval, ← hz]
-  have hsplit : ((((a : ℝ) : ℂ) ^ 2) ^ d)⁻¹ *
-      ((((a : ℝ) : ℂ) ^ 2 + z ^ 2) ^ d *
-        P.eval (((((a : ℝ) : ℂ) ^ 2 - z ^ 2) / (((a : ℝ) : ℂ) ^ 2 + z ^ 2))))
-      = (1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)) ^ d *
-        P.eval (((((a : ℝ) : ℂ) ^ 2 - z ^ 2) / (((a : ℝ) : ℂ) ^ 2 + z ^ 2))) := by
-    have hbase : (1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2))
-        = ((((a : ℝ) : ℂ) ^ 2)⁻¹) * (((a : ℝ) : ℂ) ^ 2 + z ^ 2) := by
+  have hsplit : ((((a : ℝ) : ℂ) ^ (2 : ℕ)) ^ d)⁻¹ *
+      ((((a : ℝ) : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)) ^ d *
+        P.eval (((((a : ℝ) : ℂ) ^ (2 : ℕ) - z ^ (2 : ℕ)) / (((a : ℝ) : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)))))
+      = (1 + z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ))) ^ d *
+        P.eval (((((a : ℝ) : ℂ) ^ (2 : ℕ) - z ^ (2 : ℕ)) / (((a : ℝ) : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)))) := by
+    have hbase : (1 + z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ)))
+        = ((((a : ℝ) : ℂ) ^ (2 : ℕ))⁻¹) * (((a : ℝ) : ℂ) ^ (2 : ℕ) + z ^ (2 : ℕ)) := by
       rw [mul_add, inv_mul_cancel₀ hane, div_eq_inv_mul]
     rw [hbase, mul_pow, inv_pow]
     ring
   rw [hsplit, norm_mul]
-  have hfac : ‖(1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)) ^ d‖ ≤ (1 + R / a ^ 2) ^ d := by
+  have hfac : ‖(1 + z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ))) ^ d‖ ≤ (1 + R / a ^ (2 : ℕ)) ^ d := by
     rw [norm_pow]
     refine pow_le_pow_left₀ (norm_nonneg _) ?_ d
-    have hbound : ‖z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖ ≤ R / a ^ 2 := by
-      have hz2 : ‖z ^ 2‖ ≤ R := by rw [hz]; exact hu
-      have ha2 : (0 : ℝ) < a ^ 2 := by positivity
+    have hbound : ‖z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ))‖ ≤ R / a ^ (2 : ℕ) := by
+      have hz2 : ‖z ^ (2 : ℕ)‖ ≤ R := by rw [hz]; exact hu
+      have ha2 : (0 : ℝ) < a ^ (2 : ℕ) := by positivity
       rw [norm_div, norm_ofReal_sq]
       gcongr
-    calc ‖(1 : ℂ) + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖
-        ≤ ‖(1 : ℂ)‖ + ‖z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖ := norm_add_le _ _
-      _ ≤ 1 + R / a ^ 2 := by rw [norm_one]; linarith
+    calc ‖(1 : ℂ) + z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ))‖
+        ≤ ‖(1 : ℂ)‖ + ‖z ^ (2 : ℕ) / (((a : ℝ) : ℂ) ^ (2 : ℕ))‖ := norm_add_le _ _
+      _ ≤ 1 + R / a ^ (2 : ℕ) := by rw [norm_one]; linarith
   have hpacket := norm_eval_hardEdgeCoordinate_le hRs hsq d P hd hznorm h₁ h₂
   have hnn : (0 : ℝ) ≤ Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
       * Real.exp (2 * Real.sqrt R * (d + 2) / (a - Real.sqrt R)) := by positivity
@@ -203,7 +203,7 @@ theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → 
     (hE : ∀ n, (2 * (d n : ℝ) + 2) * cayleyEnergy (P n) ≤ B)
     (hlarge : Tendsto a atTop atTop) (R : ℝ) (hR : 0 ≤ R) :
     ∀ᶠ n in atTop, ∀ u ∈ Metric.ball (0 : ℂ) R,
-      ‖((((a n : ℝ) : ℂ) ^ 2) ^ (d n))⁻¹ * (cayleyNumerator (a n) (d n) (P n)).eval u‖
+      ‖((((a n : ℝ) : ℂ) ^ (2 : ℕ)) ^ (d n))⁻¹ * (cayleyNumerator (a n) (d n) (P n)).eval u‖
         ≤ Real.exp (K * R) * (Real.sqrt B * Real.exp (2 * Real.sqrt R * (2 * K + 4))) := by
   have hRs : 0 ≤ Real.sqrt R := Real.sqrt_nonneg R
   filter_upwards [hdeg, hlarge.eventually_ge_atTop (max 1 (2 * Real.sqrt R + 1))]
@@ -218,23 +218,23 @@ theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → 
   have hmain := norm_scaledCayleyNumerator_le (hd n) hR hsq hunorm
   refine hmain.trans ?_
   have hapos : (0 : ℝ) < a n := by linarith
-  have ha2 : (0 : ℝ) < (a n) ^ 2 := by positivity
-  have hfac1 : (1 + R / (a n) ^ 2) ^ (d n) ≤ Real.exp (K * R) := by
-    have h1 : (1 : ℝ) + R / (a n) ^ 2 ≤ Real.exp (R / (a n) ^ 2) := by
-      have h := Real.add_one_le_exp (R / (a n) ^ 2)
+  have ha2 : (0 : ℝ) < (a n) ^ (2 : ℕ) := by positivity
+  have hfac1 : (1 + R / (a n) ^ (2 : ℕ)) ^ (d n) ≤ Real.exp (K * R) := by
+    have h1 : (1 : ℝ) + R / (a n) ^ (2 : ℕ) ≤ Real.exp (R / (a n) ^ (2 : ℕ)) := by
+      have h := Real.add_one_le_exp (R / (a n) ^ (2 : ℕ))
       linarith
-    have h2 : (1 + R / (a n) ^ 2) ^ (d n) ≤ (Real.exp (R / (a n) ^ 2)) ^ (d n) :=
+    have h2 : (1 + R / (a n) ^ (2 : ℕ)) ^ (d n) ≤ (Real.exp (R / (a n) ^ (2 : ℕ))) ^ (d n) :=
       pow_le_pow_left₀ (by positivity) h1 _
-    have h3 : (Real.exp (R / (a n) ^ 2)) ^ (d n) = Real.exp ((d n : ℝ) * (R / (a n) ^ 2)) := by
+    have h3 : (Real.exp (R / (a n) ^ (2 : ℕ))) ^ (d n) = Real.exp ((d n : ℝ) * (R / (a n) ^ (2 : ℕ))) := by
       rw [← Real.exp_nat_mul]
-    have h4 : (d n : ℝ) * (R / (a n) ^ 2) ≤ K * R := by
+    have h4 : (d n : ℝ) * (R / (a n) ^ (2 : ℕ)) ≤ K * R := by
       rw [mul_div_assoc', div_le_iff₀ ha2]
       have e1 : (d n : ℝ) * R ≤ (K * a n) * R := mul_le_mul_of_nonneg_right hdn hR
       have e2 : (0 : ℝ) ≤ K * R * (a n) * (a n - 1) :=
         mul_nonneg (mul_nonneg (mul_nonneg hK hR) hapos.le) (by linarith)
       nlinarith [e1, e2]
-    calc (1 + R / (a n) ^ 2) ^ (d n) ≤ (Real.exp (R / (a n) ^ 2)) ^ (d n) := h2
-      _ = Real.exp ((d n : ℝ) * (R / (a n) ^ 2)) := h3
+    calc (1 + R / (a n) ^ (2 : ℕ)) ^ (d n) ≤ (Real.exp (R / (a n) ^ (2 : ℕ))) ^ (d n) := h2
+      _ = Real.exp ((d n : ℝ) * (R / (a n) ^ (2 : ℕ))) := h3
       _ ≤ Real.exp (K * R) := Real.exp_le_exp.2 h4
   have hfac2 : Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n)) ≤ Real.sqrt B := by
     rw [← Real.sqrt_mul (by positivity)]
@@ -253,10 +253,10 @@ theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → 
         ≤ (2 * Real.sqrt R) * ((2 * K + 4) * (a n - Real.sqrt R)) :=
       mul_le_mul_of_nonneg_left hkey (by linarith)
     nlinarith [h2]
-  have hnn1 : (0 : ℝ) ≤ (1 + R / (a n) ^ 2) ^ (d n) := by positivity
+  have hnn1 : (0 : ℝ) ≤ (1 + R / (a n) ^ (2 : ℕ)) ^ (d n) := by positivity
   have hnn2 : (0 : ℝ) ≤ Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n)) := by
     positivity
-  calc (1 + R / (a n) ^ 2) ^ (d n) *
+  calc (1 + R / (a n) ^ (2 : ℕ)) ^ (d n) *
         (Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n))
           * Real.exp (2 * Real.sqrt R * ((d n : ℝ) + 2) / (a n - Real.sqrt R)))
       ≤ Real.exp (K * R) * (Real.sqrt B * Real.exp (2 * Real.sqrt R * (2 * K + 4))) := by
@@ -274,10 +274,10 @@ theorem exists_subseq_tendstoLocallyUniformly_scaledCayleyNumerator
     (hlarge : Tendsto a atTop atTop) :
     ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
       TendstoLocallyUniformly
-        (fun k u => ((((a (φ k) : ℝ) : ℂ) ^ 2) ^ (d (φ k)))⁻¹ *
+        (fun k u => ((((a (φ k) : ℝ) : ℂ) ^ (2 : ℕ)) ^ (d (φ k)))⁻¹ *
           (cayleyNumerator (a (φ k)) (d (φ k)) (P (φ k))).eval u) g atTop := by
   refine exists_subseq_tendstoLocallyUniformly_of_eventually_bounded
-    (F := fun n u => ((((a n : ℝ) : ℂ) ^ 2) ^ (d n))⁻¹ *
+    (F := fun n u => ((((a n : ℝ) : ℂ) ^ (2 : ℕ)) ^ (d n))⁻¹ *
       (cayleyNumerator (a n) (d n) (P n)).eval u)
     (fun n => (Polynomial.differentiable_aeval _).const_mul _) fun R => ?_
   by_cases hR : 0 ≤ R

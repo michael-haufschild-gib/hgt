@@ -24,7 +24,7 @@ def hsSqRe (X : Matrix d d ℂ) : ℝ := ((Xᴴ * X).trace).re
 
 omit [DecidableEq d] in
 theorem trace_conjTranspose_mul_self (X : Matrix d d ℂ) :
-    (Xᴴ * X).trace = ((∑ i, ∑ j, ‖X j i‖ ^ 2 : ℝ) : ℂ) := by
+    (Xᴴ * X).trace = ((∑ i, ∑ j, ‖X j i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Matrix.trace]
   push_cast
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -35,7 +35,7 @@ theorem trace_conjTranspose_mul_self (X : Matrix d d ℂ) :
   exact Complex.normSq_eq_norm_sq _
 
 omit [DecidableEq d] in
-theorem hsSqRe_eq_sum (X : Matrix d d ℂ) : hsSqRe X = ∑ i, ∑ j, ‖X j i‖ ^ 2 := by
+theorem hsSqRe_eq_sum (X : Matrix d d ℂ) : hsSqRe X = ∑ i, ∑ j, ‖X j i‖ ^ (2 : ℕ) := by
   rw [hsSqRe, trace_conjTranspose_mul_self, Complex.ofReal_re]
 
 omit [DecidableEq d] in

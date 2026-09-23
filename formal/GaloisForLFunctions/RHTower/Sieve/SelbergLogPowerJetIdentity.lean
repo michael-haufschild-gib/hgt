@@ -175,7 +175,7 @@ private def selbergLocalNumeratorJet (p i j : ℕ) : PowerSeries ℝ :=
     additiveBivariateMonomialOver 0 1 (-q) i j +
     additiveBivariateMonomialOver 2 1 (q * z) i j +
     additiveBivariateMonomialOver 1 2 (q * z) i j +
-    additiveBivariateMonomialOver 2 2 (-(z ^ 2)) i j
+    additiveBivariateMonomialOver 2 2 (-(z ^ (2 : ℕ))) i j
 
 private theorem convolution_originalJet_denominator_eq_numerator (p : ℕ) :
     additiveBivariateConvolutionOver (selbergLocalOriginalJet p)
@@ -196,7 +196,7 @@ private theorem convolution_originalJet_denominator_eq_numerator (p : ℕ) :
           (PowerSeries.C (1 / (p : ℝ)) * selbergLocalJetParameter p) i j +
         additiveBivariateMonomialOver 1 2
           (PowerSeries.C (1 / (p : ℝ)) * selbergLocalJetParameter p) i j +
-        additiveBivariateMonomialOver 2 2 (-(selbergLocalJetParameter p ^ 2)) i j
+        additiveBivariateMonomialOver 2 2 (-(selbergLocalJetParameter p ^ (2 : ℕ))) i j
   simp only [additiveBivariateConvolutionOver_sub_right,
     additiveBivariateConvolutionOver_add_left,
     additiveBivariateConvolutionOver_monomial]
@@ -210,12 +210,12 @@ private theorem coeff_succ_selbergLocalNumeratorJet
       selbergCorrectionLogPowerNumerator (k + 1) p i j /
         ((k + 1).factorial : ℝ) := by
   have hfac : ((k + 1).factorial : ℝ) ≠ 0 := by positivity
-  have htwo : exponentialJet (Real.log (p : ℝ)) ^ 2 =
+  have htwo : exponentialJet (Real.log (p : ℝ)) ^ (2 : ℕ) =
       exponentialJet (2 * Real.log (p : ℝ)) := by
     rw [← exponentialJet_nat_mul]
     norm_num
-  have hzsq : selbergLocalJetParameter p ^ 2 =
-      PowerSeries.C ((1 / (p : ℝ)) ^ 2) *
+  have hzsq : selbergLocalJetParameter p ^ (2 : ℕ) =
+      PowerSeries.C ((1 / (p : ℝ)) ^ (2 : ℕ)) *
         exponentialJet (2 * Real.log (p : ℝ)) := by
     rw [selbergLocalJetParameter, mul_pow, map_pow, htwo]
   simp only [selbergLocalNumeratorJet, additiveBivariateMonomialOver]

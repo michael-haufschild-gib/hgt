@@ -20,8 +20,8 @@ variable {ι : Type*}
 
 /-- Real two-scale Gaussian band-pass kernel. -/
 def dyadicGaussianActionKernel (action : ℝ) : ℝ :=
-  Real.exp (-(action ^ 2) / 2) -
-    Real.exp (-((2 * action) ^ 2) / 2)
+  Real.exp (-(action ^ (2 : ℕ)) / 2) -
+    Real.exp (-((2 * action) ^ (2 : ℕ)) / 2)
 
 /-- The complex Gaussian action difference is the real dyadic kernel. -/
 theorem gaussianObserverActionKernel_sub_two_eq_dyadic
@@ -44,18 +44,18 @@ theorem dyadicGaussianActionKernel_nonneg (action : ℝ) :
 /-- Large actions have the original Gaussian exponential envelope. -/
 theorem dyadicGaussianActionKernel_le_far (action : ℝ) :
     dyadicGaussianActionKernel action ≤
-      Real.exp (-(action ^ 2) / 2) := by
+      Real.exp (-(action ^ (2 : ℕ)) / 2) := by
   unfold dyadicGaussianActionKernel
-  linarith [Real.exp_nonneg (-((2 * action) ^ 2) / 2)]
+  linarith [Real.exp_nonneg (-((2 * action) ^ (2 : ℕ)) / 2)]
 
 /-- Near zero the collision-free reporter vanishes quadratically. -/
 theorem dyadicGaussianActionKernel_le_near (action : ℝ) :
-    dyadicGaussianActionKernel action ≤ 3 * action ^ 2 / 2 := by
-  let y : ℝ := 3 * action ^ 2 / 2
+    dyadicGaussianActionKernel action ≤ 3 * action ^ (2 : ℕ) / 2 := by
+  let y : ℝ := 3 * action ^ (2 : ℕ) / 2
   have hy : 0 ≤ y := by
     dsimp [y]
     nlinarith [sq_nonneg action]
-  have hfactor : Real.exp (-(action ^ 2) / 2) ≤ 1 := by
+  have hfactor : Real.exp (-(action ^ (2 : ℕ)) / 2) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     nlinarith [sq_nonneg action]
   have hsecond : 0 ≤ 1 - Real.exp (-y) := by
@@ -66,7 +66,7 @@ theorem dyadicGaussianActionKernel_le_near (action : ℝ) :
     linarith
   have hidentity :
       dyadicGaussianActionKernel action =
-        Real.exp (-(action ^ 2) / 2) *
+        Real.exp (-(action ^ (2 : ℕ)) / 2) *
           (1 - Real.exp (-y)) := by
     unfold dyadicGaussianActionKernel
     rw [mul_sub, mul_one, ← Real.exp_add]
@@ -75,9 +75,9 @@ theorem dyadicGaussianActionKernel_le_near (action : ℝ) :
     ring_nf
   rw [hidentity]
   calc
-    Real.exp (-(action ^ 2) / 2) * (1 - Real.exp (-y)) ≤
+    Real.exp (-(action ^ (2 : ℕ)) / 2) * (1 - Real.exp (-y)) ≤
         1 * y := mul_le_mul hfactor hone hsecond (by norm_num)
-    _ = 3 * action ^ 2 / 2 := by simp [y]
+    _ = 3 * action ^ (2 : ℕ) / 2 := by simp [y]
 
 /-- Exact norm of the complex two-scale kernel. -/
 theorem norm_gaussianObserverActionKernel_sub_two (action : ℝ) :
@@ -94,8 +94,8 @@ theorem norm_gaussianObserverActionKernel_sub_two_le_min
     (action : ℝ) :
     ‖gaussianObserverActionKernel action -
         gaussianObserverActionKernel (2 * action)‖ ≤
-      min (3 * action ^ 2 / 2)
-        (Real.exp (-(action ^ 2) / 2)) := by
+      min (3 * action ^ (2 : ℕ) / 2)
+        (Real.exp (-(action ^ (2 : ℕ)) / 2)) := by
   rw [norm_gaussianObserverActionKernel_sub_two]
   exact le_min (dyadicGaussianActionKernel_le_near action)
     (dyadicGaussianActionKernel_le_far action)
@@ -200,7 +200,7 @@ theorem norm_gaussianActionHeatPacket_sub_zeroAction_le
     ‖gaussianActionHeatPacket support coefficient detuning time -
         zeroActionSpectralPacket support coefficient detuning‖ ≤
       (∑ i ∈ support, ‖coefficient i‖) *
-        Real.exp (-((time * gap) ^ 2) / 2) := by
+        Real.exp (-((time * gap) ^ (2 : ℕ)) / 2) := by
   classical
   rw [gaussianActionHeatPacket_sub_zeroAction_eq_nonzero_sum]
   calc
@@ -214,7 +214,7 @@ theorem norm_gaussianActionHeatPacket_sub_zeroAction_le
               gaussianObserverActionKernel (time * detuning i)‖ :=
       norm_sum_le _ _
     _ ≤ ∑ i ∈ support,
-        ‖coefficient i‖ * Real.exp (-((time * gap) ^ 2) / 2) := by
+        ‖coefficient i‖ * Real.exp (-((time * gap) ^ (2 : ℕ)) / 2) := by
       apply Finset.sum_le_sum
       intro i hi
       by_cases hzero : detuning i = 0
@@ -225,7 +225,7 @@ theorem norm_gaussianActionHeatPacket_sub_zeroAction_le
           (norm_gaussianObserverActionKernel_mul_le
             htime hgap (hdetuning i hi hzero)) (norm_nonneg _)
     _ = (∑ i ∈ support, ‖coefficient i‖) *
-        Real.exp (-((time * gap) ^ 2) / 2) := by
+        Real.exp (-((time * gap) ^ (2 : ℕ)) / 2) := by
       rw [Finset.sum_mul]
 
 /-- **Dyadic Gaussian action-shell upper certificate.**  The complete excess
@@ -242,7 +242,7 @@ theorem norm_gaussianActionHeatPacket_sub_zeroAction_le_shells_add_tail
         ‖dyadicGaussianActionWavelet support coefficient detuning
           ((2 : ℝ) ^ j * time)‖) +
       (∑ i ∈ support, ‖coefficient i‖) *
-        Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ 2) / 2) := by
+        Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ (2 : ℕ)) / 2) := by
   have hterminalTime : 0 < (2 : ℝ) ^ levels * time :=
     mul_pos (pow_pos (by norm_num) _) htime
   have htel := sum_dyadicGaussianActionWavelet_eq_sub
@@ -280,7 +280,7 @@ theorem exists_large_dyadicGaussianActionWavelet
         zeroActionSpectralPacket support coefficient detuning‖)
     (htail :
       (∑ i ∈ support, ‖coefficient i‖) *
-          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ 2) / 2) ≤
+          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ (2 : ℕ)) / 2) ≤
         η / 2) :
     ∃ j ∈ Finset.range levels,
       η / (2 * (levels : ℝ)) ≤

@@ -25,7 +25,7 @@ open scoped Topology
 
 noncomputable section
 
-theorem sqrt_eq_exp_half_log {x : ℝ} (hx : 0 < x) :
+theorem sqrt_eq_exp_half_log_primeLeakageProductLimit {x : ℝ} (hx : 0 < x) :
     Real.sqrt x = Real.exp (Real.log x / 2) := by
   rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hx]
   congr 1
@@ -78,7 +78,7 @@ theorem prod_sqrt_one_sub_primeLeakage {f : ℝ → ℝ} {F : ℝ} (hfb : ∀ t,
     have hp2 : 2 ≤ p := (Nat.mem_primesLE.1 hp).2.two_le
     have hzF : f (Real.log p / Real.log N) ≤ F :=
       le_trans (le_abs_self _) (hfb (Real.log p / Real.log N))
-    exact sqrt_eq_exp_half_log (one_sub_primeLeakage_pos hp2 hzF)
+    exact sqrt_eq_exp_half_log_primeLeakageProductLimit (one_sub_primeLeakage_pos hp2 hzF)
   rw [Finset.prod_congr rfl hterm, ← Real.exp_sum, Finset.sum_div]
 
 /-! ## The limit -/

@@ -27,7 +27,7 @@ cutoff at the same physical horizon depth.  The synchronization
 the same collar boundary. -/
 def synchronizedStaticMetricCutoff (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (L0 T : ℝ) : ℂ :=
-  canonicalMetricCutoff q br amp w (D4BMFundamentalNorm.horizonCoordinate (-T))+
+  canonicalMetricCutoff q br amp w (horizonCoordinate (-T))+
     exteriorCutoffDifference q br amp w L0 T
 
 /-- In the genuine time-convergence chamber, the complete synchronized static
@@ -47,12 +47,15 @@ theorem synchronized_static_metric_canonical_limit (q : XiZeroCopy) (br : Bool)
     intro x
     filter_upwards [eventually_ge_atTop (-x)] with T hT
     linarith
-  have hhorizon : Tendsto (fun T : ℝ => D4BMFundamentalNorm.horizonCoordinate (-T))
+  have hhorizon : Tendsto (fun T : ℝ => horizonCoordinate (-T))
       atTop (𝓝[>] (0:ℝ)) :=
     D4BMFundamentalNorm.horizonCoordinate_tendsto_positive.comp hneg
   have hradial := (canonical_metric_cutoff_tendsto q br amp w hwi (by linarith) hc).comp hhorizon
   have hsum := hradial.add hstatic
-  simpa only [synchronizedStaticMetricCutoff,canonicalAction] using hsum
+  have hlim : Tendsto (fun T : ℝ => canonicalMetricCutoff q br amp w (horizonCoordinate (-T)) +
+      exteriorCutoffDifference q br amp w L0 T) atTop (𝓝 (canonicalAction q br amp w)) := by
+    simpa only [canonicalAction, Function.comp_def] using hsum
+  exact hlim
 
 /-- The complete static metric action from the convergence chamber has one
 explicit analytic continuation across either physical fundamental QNM.  Away

@@ -18,7 +18,7 @@ namespace RHTower
 /-- The zeroth-order Fourier budget of the literal CGL kernel is independent of `t`. -/
 theorem cglSmoothBumpHt_zeroOrderBudget (w : CGLSmoothBump) (t : ℝ) :
     cglSchwartzFourierDecayBudget (cglSmoothBumpHt w t) 0 =
-      ∫ x : ℝ, ‖w.value x‖ ^ 2 := by
+      ∫ x : ℝ, ‖w.value x‖ ^ (2 : ℕ) := by
   rw [show cglSchwartzFourierDecayBudget (cglSmoothBumpHt w t) 0 =
       ∫ x : ℝ, ‖cglSmoothBumpHt w t x‖ by
         simp [cglSchwartzFourierDecayBudget]]
@@ -26,7 +26,7 @@ theorem cglSmoothBumpHt_zeroOrderBudget (w : CGLSmoothBump) (t : ℝ) :
 
 /-- The literal `j = 0` case shared by both families of CGL Lemma 4.3. -/
 theorem cglSmoothBumpHt_zeroOrder_fourier_decay (w : CGLSmoothBump) (t ξ : ℝ) :
-    ‖𝓕 (cglSmoothBumpHt w t : ℝ → ℂ) ξ‖ ≤ ∫ x : ℝ, ‖w.value x‖ ^ 2 := by
+    ‖𝓕 (cglSmoothBumpHt w t : ℝ → ℂ) ξ‖ ≤ ∫ x : ℝ, ‖w.value x‖ ^ (2 : ℕ) := by
   have h := cglSmoothBumpHt_abs_pow_mul_norm_fourier_le w t 0 ξ
   rw [pow_zero, one_mul, cglSmoothBumpHt_zeroOrderBudget] at h
   exact h
@@ -63,7 +63,7 @@ theorem cglSmoothBumpSquare_apply (w : CGLSmoothBump) (x : ℝ) :
 
 /-- The source support interval controls the inverse factor in the phase derivative. -/
 theorem cglSmoothBump_norm_sq_mul_abs_inv_le (w : CGLSmoothBump) (x : ℝ) :
-    ‖w.value x‖ ^ 2 * |x⁻¹| ≤ ‖w.value x‖ ^ 2 := by
+    ‖w.value x‖ ^ (2 : ℕ) * |x⁻¹| ≤ ‖w.value x‖ ^ (2 : ℕ) := by
   by_cases hx : x ∈ Set.Icc (1 : ℝ) 2
   · have hxpos : 0 < x := lt_of_lt_of_le zero_lt_one hx.1
     have hinv : |x⁻¹| ≤ 1 := by
@@ -83,7 +83,7 @@ theorem norm_deriv_cglSmoothBumpHtValue_le_linear (w : CGLSmoothBump) (t x : ℝ
   calc
     ‖deriv (cglSmoothBumpHtValue w t) x‖ ≤
         2 * ‖deriv w.value x‖ * ‖w.value x‖ +
-          |t| * ‖w.value x‖ ^ 2 * |x⁻¹| :=
+          |t| * ‖w.value x‖ ^ (2 : ℕ) * |x⁻¹| :=
       norm_deriv_cglSmoothBumpHtValue_le w t x
     _ ≤ 2 * (‖deriv w.value x‖ * ‖w.value x‖) +
           |t| * (‖w.value x‖ * ‖w.value x‖) := by

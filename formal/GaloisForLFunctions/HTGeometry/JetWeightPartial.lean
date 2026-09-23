@@ -78,7 +78,7 @@ theorem weightScale_pd {lam : C} (h : lam ≠ 0) (j : ℕ) (v : JetField C Unit)
       = algebraMap C (JetField C Unit) (lam ^ j) * weightScale h (JetField.pd ((), j) v) := by
   have hquot : ∀ x y : JetField C Unit, y ≠ 0 →
       JetField.pd ((), j) (x / y)
-        = (JetField.pd ((), j) x * y - x * JetField.pd ((), j) y) / y ^ 2 := by
+        = (JetField.pd ((), j) x * y - x * JetField.pd ((), j) y) / y ^ (2 : ℕ) := by
     intro x y hy
     have hl := (JetField.pd ((), j) :
       Derivation C (JetField C Unit) (JetField C Unit)).leibniz (x / y) y
@@ -115,7 +115,7 @@ theorem weightScale_pd {lam : C} (h : lam ≠ 0) (j : ℕ) (v : JetField C Unit)
           - weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) a)
             * JetField.pd ((), j)
               (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)))
-        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ 2 := by
+        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ (2 : ℕ) := by
     rw [map_div₀]
     exact hquot _ _ hwb
   have hRHS : weightScale h (JetField.pd ((), j)
@@ -127,7 +127,7 @@ theorem weightScale_pd {lam : C} (h : lam ≠ 0) (j : ℕ) (v : JetField C Unit)
           - weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) a)
             * weightScale h (JetField.pd ((), j)
               (algebraMap (JetPoly C Unit) (JetField C Unit) b)))
-        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ 2 := by
+        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ (2 : ℕ) := by
     rw [hquot _ _ hbne, map_div₀, map_sub, map_mul, map_mul, map_pow]
   rw [← hab, hLHS, hRHS, hpoly a, hpoly b]
   field_simp

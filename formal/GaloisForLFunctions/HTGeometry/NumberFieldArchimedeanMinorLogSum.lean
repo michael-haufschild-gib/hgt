@@ -18,10 +18,10 @@ open scoped BigOperators
 theorem log_mul_sq_le_log_mul
     {a p z b y : ℝ} (ha : 0 < a) (hp : 0 < p) (hz : 0 < z)
     (hb : 0 < b) (hy : 0 < y)
-    (hlocal : a * p * z ^ 2 ≤ b * y) :
+    (hlocal : a * p * z ^ (2 : ℕ) ≤ b * y) :
     Real.log a + Real.log p + 2 * Real.log z ≤
       Real.log b + Real.log y := by
-  have hleft : 0 < a * p * z ^ 2 := mul_pos (mul_pos ha hp) (sq_pos_of_pos hz)
+  have hleft : 0 < a * p * z ^ (2 : ℕ) := mul_pos (mul_pos ha hp) (sq_pos_of_pos hz)
   have hlog := Real.log_le_log hleft hlocal
   rw [Real.log_mul (mul_ne_zero ha.ne' hp.ne') (pow_ne_zero 2 hz.ne'),
     Real.log_mul ha.ne' hp.ne', Real.log_pow, Real.log_mul hb.ne' hy.ne'] at hlog

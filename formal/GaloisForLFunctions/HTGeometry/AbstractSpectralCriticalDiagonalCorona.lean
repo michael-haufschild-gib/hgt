@@ -7,7 +7,7 @@ The open oblique chamber `4σv>1` is exponentially blind.  This module classifie
 wall `4σv=1`.  Put `A=a-1/2`, and write an original point as `R+iJ` and its mass image as `M+iK`.
 The critical real exponent obeys the large-deviation law
 
-`M(-σM+uK) ≤ -σ((A-R)^2+A)`.
+`M(-σM+uK) ≤ -σ((A-R)^(2 : ℕ)+A)`.
 
 Thus every point outside the multiplicative corona `A/2 ≤ R ≤ 2A` regains a linear exponential
 gap.  The complete mass trace equals the finite corona trace modulo an explicit exponentially
@@ -29,17 +29,17 @@ variable {ι : Type*} (F : AbstractSpectralFamily ι)
 /-- The threshold-corrected aperture and original height have an additional unit-scale joint gap. -/
 theorem sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re
     {a : ℝ} (ha : 2 ≤ a) (i : ι) :
-    (a - 1 / 2) ^ 2 + (F.pt i).re ^ 2 + (a - 1 / 2) ≤
-      ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re ^ 2 := by
+    (a - 1 / 2) ^ (2 : ℕ) + (F.pt i).re ^ (2 : ℕ) + (a - 1 / 2) ≤
+      ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re ^ (2 : ℕ) := by
   let haHalf : 1 / 2 ≤ a := by linarith
   have hJ := F.abs_im_lt i
-  have hJ2 : (F.pt i).im ^ 2 < 1 / 4 := by
+  have hJ2 : (F.pt i).im ^ (2 : ℕ) < 1 / 4 := by
     nlinarith [sq_abs (F.pt i).im, abs_nonneg ((F.pt i).im)]
   have hM2raw := re_le_sq_csqrtRe (F.massArg_re_pos haHalf i)
   rw [F.massArg_re] at hM2raw
   have hM2 :
-      (F.pt i).re ^ 2 - (F.pt i).im ^ 2 + a ^ 2 ≤
-        ((F.mass haHalf).pt i).re ^ 2 := by
+      (F.pt i).re ^ (2 : ℕ) - (F.pt i).im ^ (2 : ℕ) + a ^ (2 : ℕ) ≤
+        ((F.mass haHalf).pt i).re ^ (2 : ℕ) := by
     simpa only [F.mass_pt, csqrt_re] using hM2raw
   nlinarith
 
@@ -62,7 +62,7 @@ theorem critical_mass_phase_defect
     ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re *
         (-σ * ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re +
           u * ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).im) ≤
-      -σ * (((a - 1 / 2) - (F.pt i).re) ^ 2 + (a - 1 / 2)) := by
+      -σ * (((a - 1 / 2) - (F.pt i).re) ^ (2 : ℕ) + (a - 1 / 2)) := by
   let haHalf : 1 / 2 ≤ a := by linarith
   let A : ℝ := a - 1 / 2
   let R : ℝ := (F.pt i).re
@@ -76,7 +76,7 @@ theorem critical_mass_phase_defect
       dsimp only [R, M]
       simpa only [F.mass_pt, csqrt_re] using F.re_lt_csqrtRe_massArg haHalf i
     linarith
-  have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only using F.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha i
   have hprod := F.re_mul_im_mass haHalf i
@@ -104,9 +104,9 @@ theorem critical_mass_phase_defect
       _ = 2 * σ * (v * |u| * R) := by ring
       _ ≤ 2 * σ * (A * R) := hscaled
       _ = 2 * σ * A * R := by ring
-  have hphase : M * (-σ * M + u * K) ≤ -σ * M ^ 2 + 2 * σ * A * R := by
+  have hphase : M * (-σ * M + u * K) ≤ -σ * M ^ (2 : ℕ) + 2 * σ * A * R := by
     nlinarith
-  change M * (-σ * M + u * K) ≤ -σ * ((A - R) ^ 2 + A)
+  change M * (-σ * M + u * K) ≤ -σ * ((A - R) ^ (2 : ℕ) + A)
   nlinarith
 
 /-- Outside the critical diagonal corona, the phase defect regains a uniform linear spectral
@@ -146,7 +146,7 @@ theorem critical_mass_phase_le_outside_corona
     by_cases hlo : A / 2 ≤ R
     · exact Or.inr (lt_of_not_ge (fun hupper => hnot ⟨hlo, hupper⟩))
     · exact Or.inl (lt_of_not_ge hlo)
-  have hsqgap : (A + R) ^ 2 ≤ 9 * (A - R) ^ 2 := by
+  have hsqgap : (A + R) ^ (2 : ℕ) ≤ 9 * (A - R) ^ (2 : ℕ) := by
     rcases hout with hlo | hhi
     · have hlin : A + R ≤ 3 * (A - R) := by linarith
       have hnonneg : 0 ≤ A - R := by linarith
@@ -154,17 +154,17 @@ theorem critical_mass_phase_le_outside_corona
     · have hlin : A + R ≤ 3 * (R - A) := by linarith
       have hnonneg : 0 ≤ R - A := by linarith
       nlinarith [mul_self_le_mul_self (by positivity : 0 ≤ A + R) hlin]
-  have hratio : (A + R) * M ≤ 12 * (A - R) ^ 2 := by
+  have hratio : (A + R) * M ≤ 12 * (A - R) ^ (2 : ℕ) := by
     have hmul := mul_le_mul_of_nonneg_left hMup' (by positivity : 0 ≤ A + R)
     nlinarith
   have hdefect := F.critical_mass_phase_defect ha hσ hv hcone hcritical i
-  have hscaled : -σ * ((A - R) ^ 2 + A) ≤
+  have hscaled : -σ * ((A - R) ^ (2 : ℕ) + A) ≤
       M * (-(σ / 12) * (A + R)) := by
     have hσratio := mul_le_mul_of_nonneg_left hratio (show 0 ≤ σ / 12 by positivity)
     nlinarith
   have hmul : M * (-σ * M + u * K) ≤ M * (-(σ / 12) * (A + R)) := by
     have hdefect' : M * (-σ * M + u * K) ≤
-        -σ * ((A - R) ^ 2 + A) := by
+        -σ * ((A - R) ^ (2 : ℕ) + A) := by
       simpa only [M, K, A, R] using hdefect
     nlinarith
   have hfinal := le_of_mul_le_mul_left hmul hM
@@ -188,10 +188,10 @@ theorem norm_mass_term_le_one_of_critical
   have hdefect := F.critical_mass_phase_defect ha hσ hv hcone hcritical i
   have hexponent : -σ * M + u * K ≤ 0 := by
     have hdefect' : M * (-σ * M + u * K) ≤
-        -σ * (((A - (F.pt i).re) ^ 2) + A) := by
+        -σ * (((A - (F.pt i).re) ^ (2 : ℕ)) + A) := by
       simpa only [M, K, A] using hdefect
-    have hright : -σ * (((A - (F.pt i).re) ^ 2) + A) < 0 := by
-      have : 0 < (A - (F.pt i).re) ^ 2 + A := by positivity
+    have hright : -σ * (((A - (F.pt i).re) ^ (2 : ℕ)) + A) < 0 := by
+      have : 0 < (A - (F.pt i).re) ^ (2 : ℕ) + A := by positivity
       nlinarith
     nlinarith
   rw [(F.mass haHalf).norm_term]

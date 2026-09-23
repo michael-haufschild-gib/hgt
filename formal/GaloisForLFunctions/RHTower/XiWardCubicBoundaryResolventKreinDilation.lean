@@ -36,7 +36,7 @@ theorem normSq_kreinDilation_first_sub_second
     (h x y : ℂ) :
     Complex.normSq (xiWardCubicKreinDilation h x y).1 -
         Complex.normSq (xiWardCubicKreinDilation h x y).2 =
-      (Complex.normSq h - xiWardCubicKreinCompanion h ^ 2) *
+      (Complex.normSq h - xiWardCubicKreinCompanion h ^ (2 : ℕ)) *
         (Complex.normSq x - Complex.normSq y) := by
   simp only [xiWardCubicKreinDilation, xiWardCubicKreinCompanion,
     Complex.normSq_apply, Complex.add_re, Complex.add_im,
@@ -47,7 +47,7 @@ theorem normSq_kreinDilation_first_sub_second
 /-- The companion squared is exactly the scalar excess power gain. -/
 theorem sq_xiWardCubicKreinCompanion
     {h : ℂ} (hh : 1 ≤ Complex.normSq h) :
-    xiWardCubicKreinCompanion h ^ 2 = Complex.normSq h - 1 := by
+    xiWardCubicKreinCompanion h ^ (2 : ℕ) = Complex.normSq h - 1 := by
   rw [xiWardCubicKreinCompanion, Real.sq_sqrt]
   linarith
 
@@ -80,7 +80,7 @@ theorem normSq_kreinDilation_unit_negative
 /-- The negative channel is nontrivial for every strictly active scalar transfer. -/
 theorem xiWardCubicKreinCompanion_sq_pos
     {h : ℂ} (hh : 1 < Complex.normSq h) :
-    0 < xiWardCubicKreinCompanion h ^ 2 := by
+    0 < xiWardCubicKreinCompanion h ^ (2 : ℕ) := by
   rw [sq_xiWardCubicKreinCompanion hh.le]
   linarith
 
@@ -97,7 +97,7 @@ strictly positive rank-one negative companion charge. -/
 theorem primitive_to_strictRight_kreinCompanion_sq_pos
     (pe : Nat.Primes × ℕ) (kappa : ℝ) (q : XiRightZeroCopy) :
     0 < xiWardCubicKreinCompanion
-      (xiWardCubicPrimitiveStrictRightResonantTransfer pe kappa q) ^ 2 := by
+      (xiWardCubicPrimitiveStrictRightResonantTransfer pe kappa q) ^ (2 : ℕ) := by
   apply xiWardCubicKreinCompanion_sq_pos
   exact one_lt_normSq_primitive_to_strictRight_boundaryResolventTransfer pe kappa q
 
@@ -106,7 +106,7 @@ theorem primitive_to_strictRight_kreinCompanion_sq_pos
 theorem primitive_to_strictRight_kreinCompanion_sq_eq_excess_gain
     (pe : Nat.Primes × ℕ) (kappa : ℝ) (q : XiRightZeroCopy) :
     xiWardCubicKreinCompanion
-        (xiWardCubicPrimitiveStrictRightResonantTransfer pe kappa q) ^ 2 =
+        (xiWardCubicPrimitiveStrictRightResonantTransfer pe kappa q) ^ (2 : ℕ) =
       Complex.normSq
           (xiWardCubicPrimitiveStrictRightResonantTransfer pe kappa q) - 1 := by
   apply sq_xiWardCubicKreinCompanion

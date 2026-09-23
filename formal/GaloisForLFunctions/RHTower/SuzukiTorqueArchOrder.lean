@@ -17,7 +17,7 @@ namespace RHTower
 
 /-- **`(18)`: the archimedean layer has exponential order `3/2`.** -/
 theorem abs_suzukiFreeArchPositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
-    |suzukiFreeArchPositionTorque L| ≤ 22 * L ^ 3 * Real.exp (3 * L / 2) := by
+    |suzukiFreeArchPositionTorque L| ≤ 22 * L ^ (3 : ℕ) * Real.exp (3 * L / 2) := by
   have hL0 : (0 : ℝ) < L := by linarith
   have hE : (1 : ℝ) ≤ Real.exp (3 * L / 2) := Real.one_le_exp (by linarith)
   have hEp : (0 : ℝ) < Real.exp (3 * L / 2) := Real.exp_pos _
@@ -25,13 +25,13 @@ theorem abs_suzukiFreeArchPositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
   have he1p : (0 : ℝ) < Real.exp (-L / 2) := Real.exp_pos _
   have he3 : Real.exp (-3 * L / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
   have he3p : (0 : ℝ) < Real.exp (-3 * L / 2) := Real.exp_pos _
-  have hL3 : L ≤ L ^ 3 := by
+  have hL3 : L ≤ L ^ (3 : ℕ) := by
     nlinarith [mul_nonneg (mul_nonneg hL0.le (by linarith : (0:ℝ) ≤ L - 1))
       (by linarith : (0:ℝ) ≤ L + 1)]
-  have hL3nn : (0 : ℝ) ≤ L ^ 3 := by positivity
-  have hL3E : L ^ 3 ≤ L ^ 3 * Real.exp (3 * L / 2) := by nlinarith [hE, hL3nn]
-  have hLE : L ≤ L ^ 3 * Real.exp (3 * L / 2) := le_trans hL3 hL3E
-  have hLLE : L * Real.exp (3 * L / 2) ≤ L ^ 3 * Real.exp (3 * L / 2) :=
+  have hL3nn : (0 : ℝ) ≤ L ^ (3 : ℕ) := by positivity
+  have hL3E : L ^ (3 : ℕ) ≤ L ^ (3 : ℕ) * Real.exp (3 * L / 2) := by nlinarith [hE, hL3nn]
+  have hLE : L ≤ L ^ (3 : ℕ) * Real.exp (3 * L / 2) := le_trans hL3 hL3E
+  have hLLE : L * Real.exp (3 * L / 2) ≤ L ^ (3 : ℕ) * Real.exp (3 * L / 2) :=
     mul_le_mul_of_nonneg_right hL3 hEp.le
   rw [suzukiFreeArchPositionTorque_closedForm, abs_le]
   constructor

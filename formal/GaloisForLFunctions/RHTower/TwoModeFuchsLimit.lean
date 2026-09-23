@@ -23,9 +23,9 @@ namespace RHTower
 
 /-- The secular root normalized by the dominant leakage is an affine function of the leakage
 ratio `d₀/d₁`. -/
-theorem twoModeSecularRoot_div (d₀ d₁ ℓ₀ ℓ₁ : ℝ) (hd₁ : d₁ ≠ 0) (hl : ℓ₀ ^ 2 + ℓ₁ ^ 2 ≠ 0) :
+theorem twoModeSecularRoot_div (d₀ d₁ ℓ₀ ℓ₁ : ℝ) (hd₁ : d₁ ≠ 0) (hl : ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ) ≠ 0) :
     GaloisForLFunctions.twoModeSecularRoot d₀ d₁ ℓ₀ ℓ₁ / d₁
-      = (ℓ₀ ^ 2 + ℓ₁ ^ 2 * (d₀ / d₁)) / (ℓ₀ ^ 2 + ℓ₁ ^ 2) := by
+      = (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ) * (d₀ / d₁)) / (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ)) := by
   unfold GaloisForLFunctions.twoModeSecularRoot
   field_simp
 
@@ -57,19 +57,19 @@ theorem eventually_lt_const_mul_of_tendsto_div_zero_atTop
 Fuchs rates of strictly increasing index, the normalized secular root converges to the pure
 weight of the dominated mode: `μ/d₁ → ℓ₀²/(ℓ₀² + ℓ₁²)`. -/
 theorem twoModeSecularRoot_fuchs_ratio_tendsto {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (hA₁ : 0 < A₁)
-    (n : ℕ) {k : ℕ} (hk : k ≠ 0) {ℓ₀ ℓ₁ : ℝ} (hl : ℓ₀ ^ 2 + ℓ₁ ^ 2 ≠ 0) :
+    (n : ℕ) {k : ℕ} (hk : k ≠ 0) {ℓ₀ ℓ₁ : ℝ} (hl : ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ) ≠ 0) :
     Tendsto (fun lam : ℝ =>
         GaloisForLFunctions.twoModeSecularRoot
             (fuchsRate A₀ n lam) (fuchsRate A₁ (n + k) lam) ℓ₀ ℓ₁
           / fuchsRate A₁ (n + k) lam)
-      atTop (nhds (ℓ₀ ^ 2 / (ℓ₀ ^ 2 + ℓ₁ ^ 2))) := by
+      atTop (nhds (ℓ₀ ^ (2 : ℕ) / (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ)))) := by
   have hq := fuchsRate_div_tendsto_zero hA₁ hA₀ n hk
   have hlim : Tendsto (fun lam : ℝ =>
-      (ℓ₀ ^ 2 + ℓ₁ ^ 2 * (fuchsRate A₀ n lam / fuchsRate A₁ (n + k) lam))
-        / (ℓ₀ ^ 2 + ℓ₁ ^ 2))
-      atTop (nhds (ℓ₀ ^ 2 / (ℓ₀ ^ 2 + ℓ₁ ^ 2))) := by
-    have h1 := (hq.const_mul (ℓ₁ ^ 2)).const_add (ℓ₀ ^ 2)
-    have h2 := h1.div_const (ℓ₀ ^ 2 + ℓ₁ ^ 2)
+      (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ) * (fuchsRate A₀ n lam / fuchsRate A₁ (n + k) lam))
+        / (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ)))
+      atTop (nhds (ℓ₀ ^ (2 : ℕ) / (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ)))) := by
+    have h1 := (hq.const_mul (ℓ₁ ^ (2 : ℕ))).const_add (ℓ₀ ^ (2 : ℕ))
+    have h2 := h1.div_const (ℓ₀ ^ (2 : ℕ) + ℓ₁ ^ (2 : ℕ))
     simpa using h2
   refine hlim.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
@@ -84,8 +84,8 @@ theorem ccm_twoMode_ground_leakage_ratio {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (h
             ((2 : ℝ) ^ ((1 : ℝ) / 4)) (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4))
           / fuchsRate A₁ 4 lam)
       atTop (nhds (8 / 11)) := by
-  have hl : ((2 : ℝ) ^ ((1 : ℝ) / 4)) ^ 2
-      + (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) ^ 2 ≠ 0 := by positivity
+  have hl : ((2 : ℝ) ^ ((1 : ℝ) / 4)) ^ (2 : ℕ)
+      + (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) ^ (2 : ℕ) ≠ 0 := by positivity
   have h := twoModeSecularRoot_fuchs_ratio_tendsto hA₀ hA₁ 0 (k := 4) (by norm_num) hl
   rw [GaloisForLFunctions.ccm_groundState_weight_eq] at h
   simpa using h
@@ -139,7 +139,7 @@ theorem ccm_twoMode_ground_gap_eventually_ge
 `5`, so the lower-mode weight is exactly `8/13`.  The common scaling is immaterial to the secular
 root. -/
 theorem ccm_negativeSector_twoMode_weight_eq :
-    (Real.sqrt 8) ^ 2 / ((Real.sqrt 8) ^ 2 + (Real.sqrt 5) ^ 2) = (8 : ℝ) / 13 := by
+    (Real.sqrt 8) ^ (2 : ℕ) / ((Real.sqrt 8) ^ (2 : ℕ) + (Real.sqrt 5) ^ (2 : ℕ)) = (8 : ℝ) / 13 := by
   rw [Real.sq_sqrt (by norm_num), Real.sq_sqrt (by norm_num)]
   norm_num
 
@@ -168,7 +168,7 @@ theorem ccm_negativeSector_twoMode_ground_leakage_ratio
             (Real.sqrt 8) (Real.sqrt 5)
           / fuchsRate A₆ 6 lam)
       Filter.atTop (nhds (8 / 13)) := by
-  have hl : (Real.sqrt 8) ^ 2 + (Real.sqrt 5) ^ 2 ≠ 0 := by positivity
+  have hl : (Real.sqrt 8) ^ (2 : ℕ) + (Real.sqrt 5) ^ (2 : ℕ) ≠ 0 := by positivity
   have h := twoModeSecularRoot_fuchs_ratio_tendsto hA₂ hA₆ 2 (k := 4) (by norm_num) hl
   rw [ccm_negativeSector_twoMode_weight_eq] at h
   simpa using h
@@ -270,7 +270,7 @@ theorem ccm_twoMode_parity_floor_eventually_lt_mul
 theorem ccm_twoMode_parity_floor_scaled_ratio
     {A₀ A₂ A₄ A₆ : ℝ}
     (hA₀ : 0 < A₀) (hA₂ : 0 < A₂) (hA₄ : 0 < A₄) (hA₆ : 0 < A₆) :
-    Filter.Tendsto (fun lam : ℝ => lam ^ 4 *
+    Filter.Tendsto (fun lam : ℝ => lam ^ (4 : ℕ) *
         GaloisForLFunctions.twoModeSecularRoot
             (fuchsRate A₀ 0 lam) (fuchsRate A₄ 4 lam)
             ((2 : ℝ) ^ ((1 : ℝ) / 4)) (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) /
@@ -280,12 +280,12 @@ theorem ccm_twoMode_parity_floor_scaled_ratio
   have hp := ccm_twoMode_ground_leakage_ratio hA₀ hA₄
   have hn := ccm_negativeSector_twoMode_ground_leakage_ratio hA₂ hA₆
   have hs : Filter.Tendsto (fun lam : ℝ =>
-      lam ^ 4 * fuchsRate A₄ 4 lam / fuchsRate A₆ 6 lam)
+      lam ^ (4 : ℕ) * fuchsRate A₄ 4 lam / fuchsRate A₆ 6 lam)
       Filter.atTop (nhds (A₄ / A₆)) := by
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
     unfold fuchsRate
-    have he : Real.exp (-(4 * Real.pi * lam ^ 2)) ≠ 0 := Real.exp_ne_zero _
+    have he : Real.exp (-(4 * Real.pi * lam ^ (2 : ℕ))) ≠ 0 := Real.exp_ne_zero _
     field_simp [hA₄.ne', hA₆.ne', hlam.ne', he]
     ring
   have h := (hp.mul hs).div hn (by norm_num)
@@ -297,7 +297,7 @@ theorem ccm_twoMode_parity_floor_scaled_ratio
             (fuchsRate A₀ 0 lam) (fuchsRate A₄ 4 lam)
             ((2 : ℝ) ^ ((1 : ℝ) / 4)) (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) /
           fuchsRate A₄ 4 lam) *
-        (lam ^ 4 * fuchsRate A₄ 4 lam / fuchsRate A₆ 6 lam)) /
+        (lam ^ (4 : ℕ) * fuchsRate A₄ 4 lam / fuchsRate A₆ 6 lam)) /
         (GaloisForLFunctions.twoModeSecularRoot
             (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) /
           fuchsRate A₆ 6 lam))
@@ -315,9 +315,9 @@ theorem ccm_twoMode_parity_floor_scaled_ratio
 /-- The aggregated head coordinate and the next Hermite coordinate recover exactly the fixed-mode
 secular weight `θₖ = Qₖ/Qₖ₊₁`. -/
 theorem constrainedProlateHermiteTheta_eq_square_ratio (k : ℕ) :
-    (Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ 2 /
-        ((Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ 2 +
-          constrainedProlateHermiteCoordinate (k + 1) ^ 2) =
+    (Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ (2 : ℕ) /
+        ((Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ (2 : ℕ) +
+          constrainedProlateHermiteCoordinate (k + 1) ^ (2 : ℕ)) =
       constrainedProlateHermiteTheta k := by
   rw [Real.sq_sqrt (constrainedProlateHermiteSquareSum_pos k).le,
     constrainedProlateHermiteCoordinate_sq,
@@ -339,8 +339,8 @@ theorem constrainedProlate_fixedMode_twoMode_fuchs_ratio
             (constrainedProlateHermiteCoordinate (k + 1)) /
           fuchsRate Aₖ₁ (4 * (k + 1)) lam)
       Filter.atTop (nhds (constrainedProlateHermiteTheta k)) := by
-  have hl : (Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ 2 +
-      constrainedProlateHermiteCoordinate (k + 1) ^ 2 ≠ 0 := by
+  have hl : (Real.sqrt (constrainedProlateHermiteSquareSum k)) ^ (2 : ℕ) +
+      constrainedProlateHermiteCoordinate (k + 1) ^ (2 : ℕ) ≠ 0 := by
     exact (add_pos
       (pow_pos (Real.sqrt_pos.2 (constrainedProlateHermiteSquareSum_pos k)) 2)
       (pow_pos (constrainedProlateHermiteCoordinate_pos (k + 1)) 2)).ne'

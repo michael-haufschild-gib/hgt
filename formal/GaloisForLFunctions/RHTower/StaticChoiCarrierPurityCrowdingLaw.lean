@@ -9,7 +9,7 @@ The remaining integral is the uniform one-target spectral moment.  Combining
 this observation with covariance-compression dominance bounds every
 return-excised carrier action by
 
-`r! * d⁻ʳ + crowdingDegree * r! * d⁻ʳ + exp (-(T*δ)^2/2)`.
+`r! * d⁻ʳ + crowdingDegree * r! * d⁻ʳ + exp (-(T*δ)^(2 : ℕ)/2)`.
 
 Bound is independent of target labels, target geometry, and carrier
 orientation.  It therefore applies unchanged to complete continuous circuit
@@ -52,7 +52,7 @@ theorem integrable_gaussianPair_staticChoi_fidelity_pow
       _ = 1 := by
         rw [staticSpectralChoiVector_norm hd,
           staticSpectralChoiVector_norm hd, one_mul]
-  have hsquare : ‖inner ℂ (psi p.2) (psi p.1)‖ ^ 2 ≤ 1 := by
+  have hsquare : ‖inner ℂ (psi p.2) (psi p.1)‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [norm_nonneg (inner ℂ (psi p.2) (psi p.1))]
   simp only [finitePureStateFidelity_eq_norm_inner_sq,
     WithLp.toLp_ofLp]
@@ -71,7 +71,7 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_crowding
       (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         (replicaActionCrowdingDegree energy r δ : ℝ) *
           ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r) +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   let f : ℝ × ℝ → ℝ := fun p => finitePureStateFidelity
     (staticSpectralChoiVector d (T * p.1) energy).ofLp
     (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r
@@ -79,7 +79,7 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_crowding
     (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
       (replicaActionCrowdingDegree energy r δ : ℝ) *
         ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r) +
-      Real.exp (-((T * δ) ^ 2) / 2)
+      Real.exp (-((T * δ) ^ (2 : ℕ)) / 2)
   have hf : Integrable f
       ((gaussianReal 0 1).prod (gaussianReal 0 1)) := by
     exact integrable_gaussianPair_staticChoi_fidelity_pow hd energy T r
@@ -108,7 +108,7 @@ theorem integrable_sq_inner_staticChoiReplica
     (u : EuclideanSpace ℂ (Fin r → (Fin d × Fin d))) (R : Set ℝ) :
     Integrable
       (fun x => ‖inner ℂ u (finitePureTensorPowerEuclidean r
-        (staticSpectralChoiVector d (T * x) energy))‖ ^ 2)
+        (staticSpectralChoiVector d (T * x) energy))‖ ^ (2 : ℕ))
       ((gaussianReal 0 1).restrict R) := by
   have hcTensor := continuous_finitePureTensorPowerEuclidean_comp
     (r := r)
@@ -117,7 +117,7 @@ theorem integrable_sq_inner_staticChoiReplica
   have hc : Continuous (fun x => inner ℂ u (finitePureTensorPowerEuclidean r
       (staticSpectralChoiVector d (T * x) energy))) :=
     Continuous.inner continuous_const hcTensor
-  apply Integrable.of_bound (hc.norm.pow 2).aestronglyMeasurable (‖u‖ ^ 2)
+  apply Integrable.of_bound (hc.norm.pow 2).aestronglyMeasurable (‖u‖ ^ (2 : ℕ))
   filter_upwards with x
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
   have hinner := norm_inner_le_norm (𝕜 := ℂ) u
@@ -144,7 +144,7 @@ theorem returnExcisedReplicaCarrierIncidenceAction_staticChoi_le_crowding
       (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         (replicaActionCrowdingDegree energy r δ : ℝ) *
           ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r) +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   let f : ℝ × ℝ → ℝ := fun p => finitePureStateFidelity
     (staticSpectralChoiVector d (T * p.1) energy).ofLp
     (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r

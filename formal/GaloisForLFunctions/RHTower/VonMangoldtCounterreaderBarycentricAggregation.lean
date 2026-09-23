@@ -74,7 +74,7 @@ theorem twoEdgeCounterreaderFirstCoefficient_ne_product
     counterreaderFirstSymbolCoefficient_eq _ (ne_of_gt h13),
     counterreaderFirstSymbolCoefficient_eq _ (ne_of_gt h23)]
   intro h
-  have hcross : 0 < moment₁ 4 * moment₂ 3 ^ 2 + moment₂ 4 * moment₁ 3 ^ 2 :=
+  have hcross : 0 < moment₁ 4 * moment₂ 3 ^ (2 : ℕ) + moment₂ 4 * moment₁ 3 ^ (2 : ℕ) :=
     add_pos (mul_pos h14 (sq_pos_of_pos h23)) (mul_pos h24 (sq_pos_of_pos h13))
   field_simp at h
   nlinarith

@@ -28,10 +28,10 @@ theorem xiAmplitude_div_sqrt_phase {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hsph : 0 < Real.sqrt (xiEndpointPhase s x) := Real.sqrt_pos.mpr hph
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hP : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
-  have hroot : (0 : ℝ) < Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) :=
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hP : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hd hn
+  have hroot : (0 : ℝ) < Real.sqrt (Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hP)
   rw [xiAmplitude, ampFourth]
   field_simp
@@ -117,7 +117,7 @@ theorem hasDerivAt_neg_two_div_sqrt {x : ℝ} (hx : 0 < x) :
   have hsq : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt x)) x := Real.hasDerivAt_sqrt (ne_of_gt hx)
   have hinv := hsq.inv (ne_of_gt hs)
   have h := hinv.const_mul (-2 : ℝ)
-  have hval : (-2 : ℝ) * (-(1 / (2 * Real.sqrt x)) / Real.sqrt x ^ 2)
+  have hval : (-2 : ℝ) * (-(1 / (2 * Real.sqrt x)) / Real.sqrt x ^ (2 : ℕ))
       = 1 / (x * Real.sqrt x) := by
     rw [Real.sq_sqrt hx.le]
     field_simp
@@ -287,14 +287,14 @@ theorem radialProlateBesselProfile_eq_twoBranch {s c x : ℝ}
 /-- The exterior phase speed is bounded on the exterior range. -/
 theorem xiSpeed_le_two {s t : ℝ} (hs0 : 0 ≤ s) (ht : 2 ≤ t) : xiSpeed s t ≤ 2 := by
   have ht0 : (0 : ℝ) < t := by linarith
-  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have hq : (t ^ 2 - s) / (t ^ 2 - 1) ≤ 4 := by
+  have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have hq : (t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1) ≤ 4 := by
     rw [div_le_iff₀ hd]
     nlinarith [ht, hs0]
   rw [xiSpeed]
-  have h : Real.sqrt ((t ^ 2 - s) / (t ^ 2 - 1)) ≤ Real.sqrt 4 := Real.sqrt_le_sqrt hq
+  have h : Real.sqrt ((t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1)) ≤ Real.sqrt 4 := Real.sqrt_le_sqrt hq
   have h4 : Real.sqrt 4 = 2 := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
   rwa [h4] at h
 
 /-- The scaled dilated phase, differentiated. -/
@@ -302,7 +302,7 @@ theorem hasDerivAt_scaled_dilated_phase {s c k x : ℝ} (hs0 : 0 ≤ s) (hkx : 1
     HasDerivAt (fun y : ℝ => c * xiEndpointPhase s (k * y))
       (c * (k * xiSpeed s (k * x))) x := by
   have h := hasDerivAt_xiEndpointPhase_dilate (s := s) (r := k) (x := x) hs0 hkx
-  have hval : k * Real.sqrt ((k ^ 2 * x ^ 2 - s) / (k ^ 2 * x ^ 2 - 1))
+  have hval : k * Real.sqrt ((k ^ (2 : ℕ) * x ^ (2 : ℕ) - s) / (k ^ (2 : ℕ) * x ^ (2 : ℕ) - 1))
       = k * xiSpeed s (k * x) := by
     rw [xiSpeed]
     ring_nf
@@ -313,7 +313,7 @@ theorem hasDerivAt_scaled_dilated_phase {s c k x : ℝ} (hs0 : 0 ≤ s) (hkx : 1
 theorem hasDerivAt_besselCosCoeff_comp {s c k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hkx : 1 < k * x) :
     HasDerivAt (fun y : ℝ => besselCosCoeff (c * xiEndpointPhase s (k * y)))
-      (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+      (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
           * besselNormalForm (c * xiEndpointPhase s (k * x))
           * Real.sin (c * xiEndpointPhase s (k * x))
         * (c * (k * xiSpeed s (k * x)))) x := by
@@ -321,15 +321,15 @@ theorem hasDerivAt_besselCosCoeff_comp {s c k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s 
   have hu : 0 < c * xiEndpointPhase s (k * x) := by positivity
   exact (hasDerivAt_besselCosCoeff hu).comp x (hasDerivAt_scaled_dilated_phase hs0 hkx)
 
-/-- **The branch coefficient's drift along the dilated phase is `O(1/(c k x^2))`.** -/
+/-- **The branch coefficient's drift along the dilated phase is `O(1/(c k x^(2 : ℕ)))`.** -/
 theorem abs_deriv_besselCosCoeff_comp_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hk : 1 ≤ k) (hx : 2 ≤ x) (ha : 0 < a)
     (hau : a ≤ c * xiEndpointPhase s (k * x)) :
-    |1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+    |1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
         * besselNormalForm (c * xiEndpointPhase s (k * x))
         * Real.sin (c * xiEndpointPhase s (k * x))
       * (c * (k * xiSpeed s (k * x)))|
-      ≤ 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ 2) := by
+      ≤ 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ (2 : ℕ)) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
   have hkx2 : (2 : ℝ) ≤ k * x := by nlinarith [hk, hx]
@@ -355,24 +355,24 @@ theorem abs_deriv_besselCosCoeff_comp_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 
     rw [abs_of_nonneg (by positivity)]
     have := mul_le_mul_of_nonneg_left hspeed hk0.le
     nlinarith [this, hc.le]
-  have hstep : |1 / (4 * u ^ 2) * besselNormalForm u * Real.sin u|
+  have hstep : |1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.sin u|
       * |c * (k * xiSpeed s (k * x))|
-      ≤ (1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))))
+      ≤ (1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))))
         * (c * (k * 2)) :=
     mul_le_mul hdrift hfac (abs_nonneg _) (by positivity)
   refine le_trans hstep ?_
-  have hq : 1 / (4 * u ^ 2) ≤ 1 / (c ^ 2 * (k * x) ^ 2) := by
+  have hq : 1 / (4 * u ^ (2 : ℕ)) ≤ 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hulow, hulow0, hu]
-  have hfin : 1 / (c ^ 2 * (k * x) ^ 2)
+  have hfin : 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ))
       * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * (c * (k * 2))
-      = 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ 2) := by
+      = 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ (2 : ℕ)) := by
     field_simp
-  calc 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * (c * (k * 2))
-      ≤ 1 / (c ^ 2 * (k * x) ^ 2)
+  calc 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * (c * (k * 2))
+      ≤ 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ))
         * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * (c * (k * 2)) := by
         gcongr
-    _ = 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ 2) := hfin
+    _ = 2 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / (c * k * x ^ (2 : ℕ)) := hfin
 
 
 /-- The exact channel amplitude of the cosine branch. -/
@@ -381,10 +381,10 @@ def channelAmplitude (s c k x : ℝ) : ℝ :=
 
 /-- Its derivative. -/
 def channelAmplitudeDeriv (s c k x : ℝ) : ℝ :=
-  k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-      / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+  k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+      / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
     * besselCosCoeff (c * xiEndpointPhase s (k * x))
-  + ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+  + ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
       * besselNormalForm (c * xiEndpointPhase s (k * x))
       * Real.sin (c * xiEndpointPhase s (k * x))
     * (c * (k * xiSpeed s (k * x))))
@@ -397,13 +397,13 @@ theorem hasDerivAt_channelAmplitude {s c k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤
   have hlin : HasDerivAt (fun u : ℝ => k * u) k x := by
     simpa using (hasDerivAt_id x).const_mul k
   have hamp : HasDerivAt (fun u : ℝ => ampFourth s (k * u))
-      (k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))) x := by
+      (k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))) x := by
     have h := (hasDerivAt_ampFourth hs1 hkx).comp x hlin
-    have hv : -(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x) * k
-        = k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-          / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x)) := by ring
+    have hv : -(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x) * k
+        = k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+          / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x)) := by ring
     rwa [hv] at h
   exact hamp.mul (hasDerivAt_besselCosCoeff_comp hs0 hs1 hc hkx)
 
@@ -434,7 +434,7 @@ theorem abs_channelAmplitudeDeriv_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 : s 
     (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 2 ≤ x) (ha : 0 < a)
     (hau : a ≤ c * xiEndpointPhase s (k * x)) :
     |channelAmplitudeDeriv s c k x|
-      ≤ 36 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / k / x ^ 2 := by
+      ≤ 36 * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) / k / x ^ (2 : ℕ) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
@@ -448,37 +448,37 @@ theorem abs_channelAmplitudeDeriv_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 : s 
   have hdrift := abs_deriv_besselCosCoeff_comp_le hs0 hs1 hc0 hk hx ha hau
   rw [channelAmplitudeDeriv]
   refine le_trans (abs_add_le _ _) ?_
-  have h1 : |k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+  have h1 : |k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
       * besselCosCoeff (c * xiEndpointPhase s (k * x))|
-      ≤ 32 * M / (k * x ^ 2) := by
+      ≤ 32 * M / (k * x ^ (2 : ℕ)) := by
     rw [abs_mul]
-    calc |k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-            / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))|
+    calc |k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+            / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))|
           * |besselCosCoeff (c * xiEndpointPhase s (k * x))|
-        ≤ 32 / (k * x ^ 2) * M := mul_le_mul hampd hA (abs_nonneg _) (by positivity)
-      _ = 32 * M / (k * x ^ 2) := by ring
-  have h2 : |ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+        ≤ 32 / (k * x ^ (2 : ℕ)) * M := mul_le_mul hampd hA (abs_nonneg _) (by positivity)
+      _ = 32 * M / (k * x ^ (2 : ℕ)) := by ring
+  have h2 : |ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
         * besselNormalForm (c * xiEndpointPhase s (k * x))
         * Real.sin (c * xiEndpointPhase s (k * x))
       * (c * (k * xiSpeed s (k * x))))|
-      ≤ 4 * M / (k * x ^ 2) := by
+      ≤ 4 * M / (k * x ^ (2 : ℕ)) := by
     rw [abs_mul, abs_of_pos hamp0]
-    have hstep : ampFourth s (k * x) * |1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+    have hstep : ampFourth s (k * x) * |1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
           * besselNormalForm (c * xiEndpointPhase s (k * x))
           * Real.sin (c * xiEndpointPhase s (k * x))
         * (c * (k * xiSpeed s (k * x)))|
-        ≤ 2 / (k * x) * (2 * M / (c * k * x ^ 2)) :=
+        ≤ 2 / (k * x) * (2 * M / (c * k * x ^ (2 : ℕ))) :=
       mul_le_mul hampb hdrift (abs_nonneg _) (by positivity)
     refine le_trans hstep ?_
-    have hval : 2 / (k * x) * (2 * M / (c * k * x ^ 2)) = 4 * M / (c * k ^ 2 * x ^ 3) := by
+    have hval : 2 / (k * x) * (2 * M / (c * k * x ^ (2 : ℕ))) = 4 * M / (c * k ^ (2 : ℕ) * x ^ (3 : ℕ)) := by
       field_simp
       ring
     rw [hval, div_le_div_iff₀ (by positivity) (by positivity)]
     have hckx : (1 : ℝ) ≤ c * k * x := by nlinarith [hc, hk, hx]
     nlinarith [mul_nonneg (mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * M) hk0.le)
       (sq_nonneg x)) (by linarith : (0 : ℝ) ≤ c * k * x - 1)]
-  have hsum : 32 * M / (k * x ^ 2) + 4 * M / (k * x ^ 2) = 36 * M / k / x ^ 2 := by
+  have hsum : 32 * M / (k * x ^ (2 : ℕ)) + 4 * M / (k * x ^ (2 : ℕ)) = 36 * M / k / x ^ (2 : ℕ) := by
     field_simp
     ring
   linarith [h1, h2, hsum]
@@ -533,7 +533,7 @@ theorem abs_channelAmpDeriv_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 
   have hx0 : (0 : ℝ) < x := by linarith
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
   have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
-  have hsq2 : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx0.le
+  have hsq2 : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx0.le
   set M : ℝ := Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) with hMdef
   have hM : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
   have hamp := abs_channelAmplitude_le hs0 hs1 hk hx ha hau
@@ -550,7 +550,7 @@ theorem abs_channelAmpDeriv_le {s c k x a : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 
   have h2 : |Real.sqrt x * channelAmplitudeDeriv s c k x| ≤ 36 * M / k / (x * Real.sqrt x) := by
     rw [abs_mul, abs_of_pos hsx]
     have hstep : Real.sqrt x * |channelAmplitudeDeriv s c k x|
-        ≤ Real.sqrt x * (36 * M / k / x ^ 2) :=
+        ≤ Real.sqrt x * (36 * M / k / x ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hder hsx.le
     refine le_trans hstep (le_of_eq ?_)
     field_simp
@@ -597,25 +597,25 @@ theorem continuousOn_channelAmplitudeDeriv {s c k X : ℝ} (hs0 : 0 ≤ s) (hs1 
       (Set.uIcc (2 : ℝ) X) := hwbase.comp hphc hphmaps
   have hspc : ContinuousOn (fun x : ℝ => xiSpeed s (k * x)) (Set.uIcc (2 : ℝ) X) :=
     (continuousOn_xiSpeed s).comp hlin hmaps
-  have hratc : ContinuousOn (fun x : ℝ => -(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-      / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s)))) (Set.uIcc (2 : ℝ) X) := by
+  have hratc : ContinuousOn (fun x : ℝ => -(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+      / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s)))) (Set.uIcc (2 : ℝ) X) := by
     refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
     intro x hx
     have h1 : (1 : ℝ) < k * x := hkx x hx
-    have hd : (0 : ℝ) < (k * x) ^ 2 - 1 := by nlinarith
-    have hn : (0 : ℝ) < (k * x) ^ 2 - s := by nlinarith
+    have hd : (0 : ℝ) < (k * x) ^ (2 : ℕ) - 1 := by nlinarith
+    have hn : (0 : ℝ) < (k * x) ^ (2 : ℕ) - s := by nlinarith
     positivity
-  have hQc : ContinuousOn (fun x : ℝ => 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2))
+  have hQc : ContinuousOn (fun x : ℝ => 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ)))
       (Set.uIcc (2 : ℝ) X) := by
     refine continuousOn_const.div (continuousOn_const.mul (hphc.pow 2)) ?_
     intro x hx
     have := hphpos x hx
     positivity
   rw [show channelAmplitudeDeriv s c k = fun x : ℝ =>
-      k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+      k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
       * besselCosCoeff (c * xiEndpointPhase s (k * x))
-    + ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2)
+    + ampFourth s (k * x) * (1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ))
         * besselNormalForm (c * xiEndpointPhase s (k * x))
         * Real.sin (c * xiEndpointPhase s (k * x))
       * (c * (k * xiSpeed s (k * x)))) from rfl]
@@ -670,14 +670,14 @@ theorem channelBase_le {s c k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc :
 
 /-- **The dilated-channel oscillatory integral with the explicit Bessel amplitude.**  The
 amplitude of a single channel is `O(1/k)` and the exterior estimate contributes a further
-`1/(c k)`, so the channel integral is `O(1/(c k^2))`: summable over the channel index with room
+`1/(c k)`, so the channel integral is `O(1/(c k^(2 : ℕ)))`: summable over the channel index with room
 to spare. -/
 theorem norm_integral_channel_le {s c k X eps : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 1 ≤ c) (hk : 1 ≤ k) (hX : 2 ≤ X) (heps : |eps| = 1) :
     ‖∫ t in (2 : ℝ)..X, (((channelAmp s c k t : ℝ) : ℂ) * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ))‖
       ≤ 111 * Real.sqrt (besselEnergy (channelBase s c k)
-          * Real.exp (1 / (4 * channelBase s c k))) / (c * k ^ 2) := by
+          * Real.exp (1 / (4 * channelBase s c k))) / (c * k ^ (2 : ℕ)) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hbpos : 0 < channelBase s c k := channelBase_pos hs0 hs1 hc0 hk
@@ -714,7 +714,7 @@ theorem norm_integral_channel_le {s c k X eps : ℝ} (hs0 : 0 ≤ s) (hs1 : s �
         (channelBase_le hs0 hs1 hc0 hk (hx2 x hx))
       rw [← hMdef] at h
       simpa [div_div] using h)
-  have hval : 3 * (37 * M / k) / (c * k) = 111 * M / (c * k ^ 2) := by
+  have hval : 3 * (37 * M / k) / (c * k) = 111 * M / (c * k ^ (2 : ℕ)) := by
     field_simp
     ring
   rw [hval] at hmain
@@ -750,18 +750,18 @@ theorem channelEnergy_le {s c k : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc :
     ring_nf
   exact Real.sqrt_le_sqrt hstep
 
-/-- **(16)**, with a channel-uniform constant.  The bound `O(1/(c k^2))` has a constant that does
+/-- **(16)**, with a channel-uniform constant.  The bound `O(1/(c k^(2 : ℕ)))` has a constant that does
 not depend on the channel index, so the channels sum. -/
 theorem norm_integral_channel_uniform_le {s c k X eps : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 1 ≤ c) (hk : 1 ≤ k) (hX : 2 ≤ X) (heps : |eps| = 1) :
     ‖∫ t in (2 : ℝ)..X, (((channelAmp s c k t : ℝ) : ℂ) * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ))‖
-      ≤ 111 * channelEnergyConstant s c / (c * k ^ 2) := by
+      ≤ 111 * channelEnergyConstant s c / (c * k ^ (2 : ℕ)) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   refine le_trans (norm_integral_channel_le hs0 hs1 hc hk hX heps) ?_
   have hEle := channelEnergy_le hs0 hs1 hc0 hk
-  have hden : (0 : ℝ) < c * k ^ 2 := by positivity
+  have hden : (0 : ℝ) < c * k ^ (2 : ℕ) := by positivity
   gcongr
 
 

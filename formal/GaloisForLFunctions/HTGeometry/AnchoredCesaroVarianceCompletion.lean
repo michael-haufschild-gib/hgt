@@ -18,17 +18,17 @@ noncomputable section
 
 /-- Raw second moment for the anchored history, with the initial sample carrying weight three. -/
 def anchoredCesaroSecondMoment (a : ℕ → ℝ) (N : ℕ) : ℝ :=
-  3 * (a 2) ^ 2 + ∑ j ∈ Finset.Ico 3 (N + 1), (a j) ^ 2
+  3 * (a 2) ^ (2 : ℕ) + ∑ j ∈ Finset.Ico 3 (N + 1), (a j) ^ (2 : ℕ)
 
 /-- Unnormalised variance of the anchored formation history. -/
 def anchoredCesaroVariance (a : ℕ → ℝ) (N : ℕ) : ℝ :=
   anchoredCesaroSecondMoment a N -
-    (N + 1 : ℕ) * (anchoredCesaroPotential a N) ^ 2
+    (N + 1 : ℕ) * (anchoredCesaroPotential a N) ^ (2 : ℕ)
 
 theorem anchoredCesaroSecondMoment_succ
     (a : ℕ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
     anchoredCesaroSecondMoment a (N + 1) =
-      anchoredCesaroSecondMoment a N + (a (N + 1)) ^ 2 := by
+      anchoredCesaroSecondMoment a N + (a (N + 1)) ^ (2 : ℕ) := by
   unfold anchoredCesaroSecondMoment
   rw [show N + 1 + 1 = (N + 1) + 1 by omega,
     Finset.sum_Ico_succ_top (by omega : 3 ≤ N + 1)]
@@ -39,7 +39,7 @@ theorem anchoredCesaroVariance_succ_sub
     (a : ℕ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
     anchoredCesaroVariance a (N + 1) - anchoredCesaroVariance a N =
       ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) *
-        (anchoredCesaroHighPass a N) ^ 2 := by
+        (anchoredCesaroHighPass a N) ^ (2 : ℕ) := by
   rw [anchoredCesaroVariance, anchoredCesaroVariance,
     anchoredCesaroSecondMoment_succ a hN]
   have hm := anchoredCesaroPotential_succ_sub a hN
@@ -63,9 +63,9 @@ theorem anchoredCesaroVariance_two (a : ℕ → ℝ) :
 theorem anchoredCesaroVariance_eq_centered
     (a : ℕ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
     anchoredCesaroVariance a N =
-      3 * (a 2 - anchoredCesaroPotential a N) ^ 2 +
+      3 * (a 2 - anchoredCesaroPotential a N) ^ (2 : ℕ) +
         ∑ j ∈ Finset.Ico 3 (N + 1),
-          (a j - anchoredCesaroPotential a N) ^ 2 := by
+          (a j - anchoredCesaroPotential a N) ^ (2 : ℕ) := by
   let m := anchoredCesaroPotential a N
   have hmean : 3 * a 2 + ∑ j ∈ Finset.Ico 3 (N + 1), a j = (N + 1 : ℕ) * m := by
     dsimp only [m]
@@ -77,13 +77,13 @@ theorem anchoredCesaroVariance_eq_centered
     push_cast
     ring
   have hsum :
-      (∑ j ∈ Finset.Ico 3 (N + 1), (a j - m) ^ 2) =
-        (∑ j ∈ Finset.Ico 3 (N + 1), (a j) ^ 2) -
+      (∑ j ∈ Finset.Ico 3 (N + 1), (a j - m) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.Ico 3 (N + 1), (a j) ^ (2 : ℕ)) -
           2 * m * (∑ j ∈ Finset.Ico 3 (N + 1), a j) +
-          ((Finset.Ico 3 (N + 1)).card : ℝ) * m ^ 2 := by
+          ((Finset.Ico 3 (N + 1)).card : ℝ) * m ^ (2 : ℕ) := by
     calc
       _ = ∑ j ∈ Finset.Ico 3 (N + 1),
-          ((a j) ^ 2 - 2 * m * a j + m ^ 2) := by
+          ((a j) ^ (2 : ℕ) - 2 * m * a j + m ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro j hj
             ring
@@ -119,13 +119,13 @@ theorem anchoredCesaroVariance_add_const
 /-- Weighted Dirichlet energy along the discrete scale ray. -/
 def scaleDirichletEnergy (P : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ico 2 N,
-    ((k + 1 : ℕ) : ℝ) * ((k + 2 : ℕ) : ℝ) * (P (k + 1) - P k) ^ 2
+    ((k + 1 : ℕ) : ℝ) * ((k + 2 : ℕ) : ℝ) * (P (k + 1) - P k) ^ (2 : ℕ)
 
 theorem scaleDirichletEnergy_succ_sub
     (P : ℕ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
     scaleDirichletEnergy P (N + 1) - scaleDirichletEnergy P N =
       ((N + 1 : ℕ) : ℝ) * ((N + 2 : ℕ) : ℝ) *
-        (P (N + 1) - P N) ^ 2 := by
+        (P (N + 1) - P N) ^ (2 : ℕ) := by
   unfold scaleDirichletEnergy
   rw [Finset.sum_Ico_succ_top hN]
   ring
@@ -202,7 +202,7 @@ theorem completedScaleDirichletEnergy_succ_sub
     completedScaleDirichletEnergy a r (N + 1) -
         completedScaleDirichletEnergy a r N =
       ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) *
-        (anchoredCesaroHighPass a N + r N) ^ 2 := by
+        (anchoredCesaroHighPass a N + r N) ^ (2 : ℕ) := by
   rw [completedScaleDirichletEnergy, completedScaleDirichletEnergy,
     scaleDirichletEnergy_succ_sub _ hN]
   have hcurrent := completedScalePotential_scaled_succ_sub a r hN

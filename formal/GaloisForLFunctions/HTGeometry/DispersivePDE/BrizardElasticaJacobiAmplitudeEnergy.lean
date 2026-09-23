@@ -14,11 +14,11 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 theorem correctedJacobiAmplitudeVelocity_sq
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-  correctedJacobiAmplitudeVelocity P J v ^ 2 =
-      (P.val.q₀ : ℝ) * (1 - correctedJacobiAmplitude P J v ^ 2) *
-        (correctedJacobiAmplitude P J v ^ 4 +
-          (1 + gammaSq P.val) * correctedJacobiAmplitude P J v ^ 2 -
-          nuSq P.val) / correctedJacobiAmplitude P J v ^ 2 := by
+  correctedJacobiAmplitudeVelocity P J v ^ (2 : ℕ) =
+      (P.val.q₀ : ℝ) * (1 - correctedJacobiAmplitude P J v ^ (2 : ℕ)) *
+        (correctedJacobiAmplitude P J v ^ (4 : ℕ) +
+          (1 + gammaSq P.val) * correctedJacobiAmplitude P J v ^ (2 : ℕ) -
+          nuSq P.val) / correctedJacobiAmplitude P J v ^ (2 : ℕ) := by
   rw [correctedJacobiAmplitudeVelocity]
   have hq := jacobiSquaredCurvature_equation P.val J v
   rw [dimensionlessCurvatureRHSWithSquares,
@@ -30,11 +30,11 @@ theorem correctedJacobiAmplitudeVelocity_sq
 
 noncomputable def correctedJacobiAmplitudeEnergy
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
-  correctedJacobiAmplitudeVelocity P J v ^ 2 / 2 +
-    (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ 4 / 2 +
-    (P.val.q₀ : ℝ) * gammaSq P.val * correctedJacobiAmplitude P J v ^ 2 / 2 +
+  correctedJacobiAmplitudeVelocity P J v ^ (2 : ℕ) / 2 +
+    (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J v ^ (4 : ℕ) / 2 +
+    (P.val.q₀ : ℝ) * gammaSq P.val * correctedJacobiAmplitude P J v ^ (2 : ℕ) / 2 +
     (P.val.q₀ : ℝ) * nuSq P.val /
-      (2 * correctedJacobiAmplitude P J v ^ 2)
+      (2 * correctedJacobiAmplitude P J v ^ (2 : ℕ))
 
 /-- Energy level fixed by the centered initial condition `A(0)=1`, `A'(0)=0`. -/
 theorem correctedJacobiAmplitudeEnergy_eq

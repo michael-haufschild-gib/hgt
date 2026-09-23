@@ -29,32 +29,32 @@ noncomputable section
 
 /-- Positive atom-like action in the exact Riccati sign-architecture counterexample. -/
 def riccatiNoGoAtomAction (t : ℝ) : ℝ :=
-  201 / 100 * t ^ 2 + 21 / 100 * t ^ 4 + 101 / 100 * t ^ 6
+  201 / 100 * t ^ (2 : ℕ) + 21 / 100 * t ^ (4 : ℕ) + 101 / 100 * t ^ (6 : ℕ)
 
 def riccatiNoGoAtomJetOne (t : ℝ) : ℝ :=
-  201 / 50 * t + 21 / 25 * t ^ 3 + 303 / 50 * t ^ 5
+  201 / 50 * t + 21 / 25 * t ^ (3 : ℕ) + 303 / 50 * t ^ (5 : ℕ)
 
 def riccatiNoGoAtomJetTwo (t : ℝ) : ℝ :=
-  201 / 50 + 63 / 25 * t ^ 2 + 303 / 10 * t ^ 4
+  201 / 50 + 63 / 25 * t ^ (2 : ℕ) + 303 / 10 * t ^ (4 : ℕ)
 
 def riccatiNoGoAtomJetThree (t : ℝ) : ℝ :=
-  126 / 25 * t + 606 / 5 * t ^ 3
+  126 / 25 * t + 606 / 5 * t ^ (3 : ℕ)
 
 /-- Negative likelihood-like action in the exact Riccati sign-architecture counterexample. -/
 def riccatiNoGoLikelihoodAction (t : ℝ) : ℝ :=
-  -(t ^ 2 + t ^ 4 + t ^ 6) / 100
+  -(t ^ (2 : ℕ) + t ^ (4 : ℕ) + t ^ (6 : ℕ)) / 100
 
 def riccatiNoGoLikelihoodJetOne (t : ℝ) : ℝ :=
-  -t / 50 - t ^ 3 / 25 - 3 / 50 * t ^ 5
+  -t / 50 - t ^ (3 : ℕ) / 25 - 3 / 50 * t ^ (5 : ℕ)
 
 def riccatiNoGoLikelihoodJetTwo (t : ℝ) : ℝ :=
-  -1 / 50 - 3 / 25 * t ^ 2 - 3 / 10 * t ^ 4
+  -1 / 50 - 3 / 25 * t ^ (2 : ℕ) - 3 / 10 * t ^ (4 : ℕ)
 
 def riccatiNoGoLikelihoodJetThree (t : ℝ) : ℝ :=
-  -6 / 25 * t - 6 / 5 * t ^ 3
+  -6 / 25 * t - 6 / 5 * t ^ (3 : ℕ)
 
 def riccatiNoGoLikelihoodJetFour (t : ℝ) : ℝ :=
-  -6 / 25 - 18 / 5 * t ^ 2
+  -6 / 25 - 18 / 5 * t ^ (2 : ℕ)
 
 def riccatiNoGoLikelihoodJetFive (t : ℝ) : ℝ :=
   -36 / 5 * t
@@ -108,8 +108,8 @@ theorem hasDerivAt_riccatiNoGoLikelihoodAction (t : ℝ) :
   unfold riccatiNoGoLikelihoodAction riccatiNoGoLikelihoodJetOne
   have hraw := ((((hasDerivAt_id t).pow 2).add ((hasDerivAt_id t).pow 4)).add
     ((hasDerivAt_id t).pow 6)).neg.div_const 100
-  rw [show (fun y : ℝ => -(y ^ 2 + y ^ 4 + y ^ 6) / 100) =
-      (-((id ^ 2 + id ^ 4) + id ^ 6)) / fun _ : ℝ => 100 by
+  rw [show (fun y : ℝ => -(y ^ (2 : ℕ) + y ^ (4 : ℕ) + y ^ (6 : ℕ)) / 100) =
+      (-((id ^ (2 : ℕ) + id ^ (4 : ℕ)) + id ^ (6 : ℕ))) / fun _ : ℝ => 100 by
       funext y
       simp only [Pi.div_apply, Pi.neg_apply, Pi.add_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -122,9 +122,9 @@ theorem hasDerivAt_riccatiNoGoLikelihoodJetOne (t : ℝ) :
   have hraw := (((hasDerivAt_id t).div_const 50).neg.sub
     (((hasDerivAt_id t).pow 3).div_const 25)).sub
     (((hasDerivAt_id t).pow 5).const_mul (3 / 50 : ℝ))
-  rw [show (fun y : ℝ => -y / 50 - y ^ 3 / 25 - 3 / 50 * y ^ 5) =
-      (-(id / fun _ : ℝ => 50) - (id ^ 3) / fun _ : ℝ => 25) -
-        fun y => (3 / 50 : ℝ) * (id ^ 5) y by
+  rw [show (fun y : ℝ => -y / 50 - y ^ (3 : ℕ) / 25 - 3 / 50 * y ^ (5 : ℕ)) =
+      (-(id / fun _ : ℝ => 50) - (id ^ (3 : ℕ)) / fun _ : ℝ => 25) -
+        fun y => (3 / 50 : ℝ) * (id ^ (5 : ℕ)) y by
       funext y
       simp only [Pi.sub_apply, Pi.neg_apply, Pi.div_apply, Pi.pow_apply, id_eq]
       ring]
@@ -138,9 +138,9 @@ theorem hasDerivAt_riccatiNoGoLikelihoodJetTwo (t : ℝ) :
   have hraw := ((hasDerivAt_const t (-1 / 50 : ℝ)).sub
     (((hasDerivAt_id t).pow 2).const_mul (3 / 25 : ℝ))).sub
     (((hasDerivAt_id t).pow 4).const_mul (3 / 10 : ℝ))
-  rw [show (fun y : ℝ => -1 / 50 - 3 / 25 * y ^ 2 - 3 / 10 * y ^ 4) =
-      ((fun _ : ℝ => -1 / 50) - fun y => (3 / 25 : ℝ) * (id ^ 2) y) -
-        fun y => (3 / 10 : ℝ) * (id ^ 4) y by
+  rw [show (fun y : ℝ => -1 / 50 - 3 / 25 * y ^ (2 : ℕ) - 3 / 10 * y ^ (4 : ℕ)) =
+      ((fun _ : ℝ => -1 / 50) - fun y => (3 / 25 : ℝ) * (id ^ (2 : ℕ)) y) -
+        fun y => (3 / 10 : ℝ) * (id ^ (4 : ℕ)) y by
       funext y
       simp only [Pi.sub_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -152,8 +152,8 @@ theorem hasDerivAt_riccatiNoGoLikelihoodJetThree (t : ℝ) :
   unfold riccatiNoGoLikelihoodJetThree riccatiNoGoLikelihoodJetFour
   have hraw := ((hasDerivAt_id t).const_mul (-6 / 25 : ℝ)).sub
     (((hasDerivAt_id t).pow 3).const_mul (6 / 5 : ℝ))
-  rw [show (fun y : ℝ => -6 / 25 * y - 6 / 5 * y ^ 3) =
-      (fun y => (-6 / 25 : ℝ) * id y) - fun y => (6 / 5 : ℝ) * (id ^ 3) y by
+  rw [show (fun y : ℝ => -6 / 25 * y - 6 / 5 * y ^ (3 : ℕ)) =
+      (fun y => (-6 / 25 : ℝ) * id y) - fun y => (6 / 5 : ℝ) * (id ^ (3 : ℕ)) y by
       funext y
       simp only [Pi.sub_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -165,8 +165,8 @@ theorem hasDerivAt_riccatiNoGoLikelihoodJetFour (t : ℝ) :
   unfold riccatiNoGoLikelihoodJetFour riccatiNoGoLikelihoodJetFive
   have hraw := (hasDerivAt_const t (-6 / 25 : ℝ)).sub
     (((hasDerivAt_id t).pow 2).const_mul (18 / 5 : ℝ))
-  rw [show (fun y : ℝ => -6 / 25 - 18 / 5 * y ^ 2) =
-      (fun _ : ℝ => -6 / 25) - fun y => (18 / 5 : ℝ) * (id ^ 2) y by
+  rw [show (fun y : ℝ => -6 / 25 - 18 / 5 * y ^ (2 : ℕ)) =
+      (fun _ : ℝ => -6 / 25) - fun y => (18 / 5 : ℝ) * (id ^ (2 : ℕ)) y by
       funext y
       simp only [Pi.sub_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -245,9 +245,9 @@ theorem riccatiNoGoAtomJetTwo_pos (t : ℝ) :
 theorem riccatiNoGoLikelihoodAction_neg {t : ℝ} (ht : 0 < t) :
     riccatiNoGoLikelihoodAction t < 0 := by
   unfold riccatiNoGoLikelihoodAction
-  have : 0 < t ^ 2 := sq_pos_of_pos ht
-  have hsum : 0 < t ^ 2 + t ^ 4 + t ^ 6 := by positivity
-  have hneg : -(t ^ 2 + t ^ 4 + t ^ 6) < 0 := by linarith
+  have : 0 < t ^ (2 : ℕ) := sq_pos_of_pos ht
+  have hsum : 0 < t ^ (2 : ℕ) + t ^ (4 : ℕ) + t ^ (6 : ℕ) := by positivity
+  have hneg : -(t ^ (2 : ℕ) + t ^ (4 : ℕ) + t ^ (6 : ℕ)) < 0 := by linarith
   exact div_neg_of_neg_of_pos hneg (by norm_num)
 
 theorem riccatiNoGoLikelihoodInterference_one_lt {t : ℝ} (ht : 0 < t) :
@@ -259,19 +259,19 @@ theorem riccatiNoGoLikelihoodInterference_one_lt {t : ℝ} (ht : 0 < t) :
 theorem riccatiNoGoLikelihoodJetOne_neg {t : ℝ} (ht : 0 < t) :
     riccatiNoGoLikelihoodJetOne t < 0 := by
   unfold riccatiNoGoLikelihoodJetOne
-  have ht3 : 0 < t ^ 3 := by positivity
-  have ht5 : 0 < t ^ 5 := by positivity
+  have ht3 : 0 < t ^ (3 : ℕ) := by positivity
+  have ht5 : 0 < t ^ (5 : ℕ) := by positivity
   nlinarith
 
 theorem riccatiNoGoLikelihoodJetTwo_neg (t : ℝ) :
     riccatiNoGoLikelihoodJetTwo t < 0 := by
   unfold riccatiNoGoLikelihoodJetTwo
-  nlinarith [sq_nonneg t, sq_nonneg (t ^ 2)]
+  nlinarith [sq_nonneg t, sq_nonneg (t ^ (2 : ℕ))]
 
 theorem riccatiNoGoLikelihoodJetThree_neg {t : ℝ} (ht : 0 < t) :
     riccatiNoGoLikelihoodJetThree t < 0 := by
   unfold riccatiNoGoLikelihoodJetThree
-  have ht3 : 0 < t ^ 3 := by positivity
+  have ht3 : 0 < t ^ (3 : ℕ) := by positivity
   nlinarith
 
 theorem riccatiNoGoLikelihoodJetFour_neg (t : ℝ) :
@@ -291,7 +291,7 @@ theorem riccatiNoGoLikelihoodJetSix_neg (t : ℝ) :
 theorem riccatiNoGoLikelihoodRiccatiMargin_eq (t : ℝ) :
     riccatiNoGoLikelihoodRiccatiMargin t =
       t / 1250 *
-        (301 + 1508 * t ^ 2 + 30 * t ^ 4 + 48 * t ^ 6 + 45 * t ^ 8) := by
+        (301 + 1508 * t ^ (2 : ℕ) + 30 * t ^ (4 : ℕ) + 48 * t ^ (6 : ℕ) + 45 * t ^ (8 : ℕ)) := by
   unfold riccatiNoGoLikelihoodRiccatiMargin riccatiNoGoLikelihoodJetOne
     riccatiNoGoLikelihoodJetTwo riccatiNoGoLikelihoodJetThree
   ring
@@ -313,8 +313,8 @@ theorem riccatiNoGoAtomLikelihoodCross_neg {t : ℝ} (ht : 0 < t) :
 theorem riccatiNoGoAtomMargin_add_cross_eq (t : ℝ) :
     riccatiNoGoAtomRiccatiMargin t + riccatiNoGoAtomLikelihoodCross t =
       t / 1250 *
-        (33699 - 119508 * t ^ 2 + 364770 * t ^ 4 +
-          95952 * t ^ 6 + 449955 * t ^ 8) := by
+        (33699 - 119508 * t ^ (2 : ℕ) + 364770 * t ^ (4 : ℕ) +
+          95952 * t ^ (6 : ℕ) + 449955 * t ^ (8 : ℕ)) := by
   unfold riccatiNoGoAtomRiccatiMargin riccatiNoGoAtomLikelihoodCross
     riccatiNoGoAtomJetOne riccatiNoGoAtomJetTwo riccatiNoGoAtomJetThree
     riccatiNoGoLikelihoodJetOne riccatiNoGoLikelihoodJetTwo
@@ -323,13 +323,13 @@ theorem riccatiNoGoAtomMargin_add_cross_eq (t : ℝ) :
 theorem riccatiNoGoAtomMargin_add_cross_pos {t : ℝ} (ht : 0 < t) :
     0 < riccatiNoGoAtomRiccatiMargin t + riccatiNoGoAtomLikelihoodCross t := by
   rw [riccatiNoGoAtomMargin_add_cross_eq]
-  have hx : 0 ≤ t ^ 2 := sq_nonneg t
-  have hquad : 0 < 33699 - 119508 * t ^ 2 + 364770 * (t ^ 2) ^ 2 := by
-    nlinarith [sq_nonneg (364770 * t ^ 2 - 59754)]
+  have hx : 0 ≤ t ^ (2 : ℕ) := sq_nonneg t
+  have hquad : 0 < 33699 - 119508 * t ^ (2 : ℕ) + 364770 * (t ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (364770 * t ^ (2 : ℕ) - 59754)]
   have hbracket :
-      0 < 33699 - 119508 * t ^ 2 + 364770 * t ^ 4 +
-        95952 * t ^ 6 + 449955 * t ^ 8 := by
-    nlinarith [sq_nonneg (t ^ 3), sq_nonneg (t ^ 4)]
+      0 < 33699 - 119508 * t ^ (2 : ℕ) + 364770 * t ^ (4 : ℕ) +
+        95952 * t ^ (6 : ℕ) + 449955 * t ^ (8 : ℕ) := by
+    nlinarith [sq_nonneg (t ^ (3 : ℕ)), sq_nonneg (t ^ (4 : ℕ))]
   positivity
 
 theorem neg_riccatiNoGoAtomLikelihoodCross_lt_atomMargin {t : ℝ} (ht : 0 < t) :

@@ -18,7 +18,7 @@ mixed radial-current transport -> HB B2 decision`.
 namespace RHTower.D4BMLiteralCyclicPeierlsActionExpansion
 
 open GaloisForLFunctions.HTGeometry
-open D4BMHorizon D4BMModularCore
+open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse
 open D4BMFullSeedCapPhysicalAction D4BMLiteralCyclicPeierlsCapDefect
 
 noncomputable section
@@ -44,4 +44,5 @@ theorem cyclicPeierlsPhysicalAction_expand (q : XiZeroCopy) (branch : Bool)
     fullSquarePotential_laplacian q branch _ (Real.exp_pos k)]
   ring
 
+end
 end RHTower.D4BMLiteralCyclicPeierlsActionExpansion

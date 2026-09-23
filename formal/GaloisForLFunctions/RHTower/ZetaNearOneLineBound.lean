@@ -76,7 +76,7 @@ theorem norm_dirichletPoly_le_near_one {s : ℂ} (ht : 8 ≤ |s.im|)
     have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
     have hn0 : (0 : ℝ) < (n : ℝ) := by linarith
     have hnt : (n : ℝ) ≤ |s.im| + 1 := le_trans (by exact_mod_cast hnN) hN
-    rw [norm_natCast_cpow hn1]
+    rw [norm_natCast_cpow_zetaVerticalLineBound hn1]
     simp only [Complex.neg_re]
     have hsplit : (n : ℝ) ^ (-s.re) = (n : ℝ) ^ (1 - s.re) * ((n : ℝ))⁻¹ := by
       rw [← Real.rpow_neg_one (n : ℝ), ← Real.rpow_add hn0]
@@ -103,7 +103,7 @@ theorem norm_emPole_le_near_one {s : ℂ} (ht : 8 ≤ |s.im|)
     (hN : (N : ℝ) ≤ |s.im| + 1) :
     ‖emPole N s‖ ≤ 1 := by
   have hnum : ‖(N : ℂ) ^ (1 - s)‖ ≤ 8 := by
-    rw [norm_natCast_cpow hN1]
+    rw [norm_natCast_cpow_zetaVerticalLineBound hN1]
     have hre : (1 - s).re = 1 - s.re := by simp
     rw [hre]
     exact rpow_one_sub_le_eight ht hσ hN1 hN

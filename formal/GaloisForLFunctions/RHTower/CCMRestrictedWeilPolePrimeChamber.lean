@@ -48,7 +48,7 @@ private theorem slopeA_deriv (α β δ s : ℝ) :
   simp only [id_eq]
   ring
 
-private def bulkC (α β s : ℝ) : ℝ := α*s+2*s^2+4*Real.sinh s^2+β
+private def bulkC (α β s : ℝ) : ℝ := α*s+2*s^(2 : ℕ)+4*Real.sinh s^(2 : ℕ)+β
 private def slopeC (α s : ℝ) : ℝ := α+4*s+8*Real.sinh s*Real.cosh s
 
 private theorem bulkC_deriv (α β s : ℝ) :

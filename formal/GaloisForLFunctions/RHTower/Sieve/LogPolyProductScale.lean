@@ -49,15 +49,15 @@ theorem logPoly_restrict (a : ℕ → ℂ) {S : Finset ℕ} {N : ℕ} (hS : S �
 /-- **The mean square of a product of Gallagher polynomials, rescaled.** -/
 theorem integral_Icc_normSq_logPoly_mul_eq (a b : ℕ → ℂ) (N₁ N₂ : ℕ) {W : ℝ} (hW : 0 ≤ W) :
     (∫ w in Set.Icc (-W) W,
-        ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ 2)
+        ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ (2 : ℕ))
       = (2 * Real.pi)⁻¹ * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-          ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ 2
-            * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ 2 := by
+          ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+            * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) := by
   set g : ℝ → ℝ := fun t =>
-    ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ 2
-      * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ 2 with hgdef
+    ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+      * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) with hgdef
   have hpt : ∀ w : ℝ,
-      ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ 2
+      ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ (2 : ℕ)
         = g (2 * Real.pi * w) := by
     intro w
     rw [hgdef, norm_mul, mul_pow, logPoly_eq_dirPoly a N₁ w, logPoly_eq_dirPoly b N₂ w]
@@ -73,16 +73,16 @@ theorem integral_Icc_normSq_logPoly_mul_le_pow_prime_support (a b : ℕ → ℂ)
     (hBf : ∀ t : ℝ, ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ≤ Bf)
     (hBg : ∀ t : ℝ, ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ≤ Bg) :
     V ^ (2 * k) * (∫ w in Set.Icc (-W) W,
-        ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ 2)
+        ‖logPoly a (Finset.Icc 1 N₁) w * logPoly b (Finset.Icc 1 N₂) w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
           * (V ^ (2 * k + 2)
               * (∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-                  ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ 2)
-            + Bf ^ 2 * Bg ^ 2
+                  ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ))
+            + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
               * (2 * ((2 * Real.pi * W
                     + 4 * ((N₂ ^ k : ℕ) : ℝ) * (1 + Real.log ((N₂ ^ k : ℕ) : ℝ)))
                   * ((k : ℝ) ^ k
-                    * (∑ n : Fin N₂, ‖b ((n : ℕ) + 1)‖ ^ 2) ^ k)))) := by
+                    * (∑ n : Fin N₂, ‖b ((n : ℕ) + 1)‖ ^ (2 : ℕ)) ^ k)))) := by
   have hpi : (0 : ℝ) < (2 * Real.pi)⁻¹ := by positivity
   have hWt : (0 : ℝ) ≤ 2 * Real.pi * W := by positivity
   have hbase := integral_normSq_mul_symm_le_pow_prime_support N₁ N₂
@@ -92,12 +92,12 @@ theorem integral_Icc_normSq_logPoly_mul_le_pow_prime_support (a b : ℕ → ℂ)
   have hmul := mul_le_mul_of_nonneg_left hbase hpi.le
   calc V ^ (2 * k) * ((2 * Real.pi)⁻¹
         * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-            ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ 2
-              * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ 2)
+            ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+              * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ))
       = (2 * Real.pi)⁻¹ * (V ^ (2 * k)
           * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-              ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ 2
-                * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ 2) := by ring
+              ‖dirPoly N₁ (fun n : Fin N₁ => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)
+                * ‖dirPoly N₂ (fun n : Fin N₂ => b ((n : ℕ) + 1)) t‖ ^ (2 : ℕ)) := by ring
     _ ≤ _ := hmul
 
 end RHTower.Sieve

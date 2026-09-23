@@ -310,7 +310,7 @@ theorem log_natDiv_ge_of_pow_le {N p k : ℕ} (hk : 1 ≤ k) (hp : 2 ≤ p)
   have hlogN : 0 < Real.log N := by
     apply Real.log_pos
     have h4 : (4 : ℕ) ≤ N := by
-      calc (4 : ℕ) = 2 ^ 2 := by norm_num
+      calc (4 : ℕ) = 2 ^ (2 : ℕ) := by norm_num
         _ ≤ 2 ^ (2 * (k + 1)) := Nat.pow_le_pow_right (by norm_num) (by omega)
         _ ≤ N := hbig
     exact_mod_cast lt_of_lt_of_le (by norm_num : (1:ℕ) < 4) h4
@@ -556,7 +556,7 @@ theorem exists_squarefreeOmegaCount_one_bound :
 /-- **Global order-two Hardy--Ramanujan bound.** -/
 theorem exists_squarefreeOmegaCount_two_bound :
     ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 2 ≤ N → (squarefreeOmegaCount 2 N : ℝ) ≤
-      C * ((N : ℝ) * (logLog N + mertensUpperConst) ^ 1 / Real.log N) := by
+      C * ((N : ℝ) * (logLog N + mertensUpperConst) ^ (1 : ℕ) / Real.log N) := by
   obtain ⟨C₁, hC₁, h₁⟩ := exists_squarefreeOmegaCount_one_bound
   obtain ⟨C₂, hC₂, h₂⟩ := exists_squarefreeOmegaCount_succ_bound (k := 1) le_rfl hC₁ h₁
   exact ⟨C₂, hC₂, h₂⟩
@@ -564,7 +564,7 @@ theorem exists_squarefreeOmegaCount_two_bound :
 /-- **Global order-three Hardy--Ramanujan bound.** -/
 theorem exists_squarefreeOmegaCount_three_bound :
     ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 2 ≤ N → (squarefreeOmegaCount 3 N : ℝ) ≤
-      C * ((N : ℝ) * (logLog N + mertensUpperConst) ^ 2 / Real.log N) := by
+      C * ((N : ℝ) * (logLog N + mertensUpperConst) ^ (2 : ℕ) / Real.log N) := by
   obtain ⟨C₂, hC₂, h₂⟩ := exists_squarefreeOmegaCount_two_bound
   have h₂' : ∀ M : ℕ, 2 ≤ M → (squarefreeOmegaCount 2 M : ℝ) ≤
       C₂ * ((M : ℝ) * (logLog M + mertensUpperConst) ^ (2 - 1) / Real.log M) := by

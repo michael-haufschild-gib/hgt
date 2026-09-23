@@ -14,11 +14,11 @@ This module gives the exact two-coordinate survivor.  Put
 where `A` is accumulated product drop, `D` is endpoint decay flux, and `J = D'`.  Global angle
 concavity puts `m` in `(0, 1]`.  The ordinary divided-drop log-convexity numerator is exactly
 
-`4 A^2 (1 + m e - m^2)`,
+`4 A^(2 : ℕ) (1 + m e - m^(2 : ℕ))`,
 
 while the fifth-root C5 numerator is exactly
 
-`4 A^2 (6 - 2m - 4m^2 + 5me)`.
+`4 A^(2 : ℕ) (6 - 2m - 4m^(2 : ℕ) + 5me)`.
 
 Thus negative terminal elasticity is not itself an obstruction: it is weighted by the bounded
 cumulative endpoint ratio `m`, which tends to the small-mass chamber in the cofinal tail.  The
@@ -47,7 +47,7 @@ def thetaCuspReflectedSourceNormalizedFluxElasticity (u t : ℝ) : ℝ :=
 def thetaCuspReflectedSourceCumulativeFluxC5Balance (u t : ℝ) : ℝ :=
   let m := thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t
   let e := thetaCuspReflectedSourceNormalizedFluxElasticity u t
-  6 - 2 * m - 4 * m ^ 2 + 5 * m * e
+  6 - 2 * m - 4 * m ^ (2 : ℕ) + 5 * m * e
 
 /-- The cumulative endpoint ratio is one minus half the existing projective decrease defect. -/
 theorem thetaCuspReflectedSourceCumulativeEndpointFluxRatio_eq_one_sub_half_defect
@@ -85,10 +85,10 @@ theorem thetaCuspReflectedSourceCumulativeEndpointFluxRatio_mem_Ioc
 theorem thetaCuspReflectedSourceDividedDropLogConvexityNumerator_eq_cumulativeFluxBalance
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     thetaCuspReflectedSourceDividedDropLogConvexityNumerator u t =
-      4 * thetaCuspReflectedSourceFirstDrop u t ^ 2 *
+      4 * thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) *
         (1 + thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t *
             thetaCuspReflectedSourceNormalizedFluxElasticity u t -
-          thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ 2) := by
+          thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ (2 : ℕ)) := by
   have hA := (thetaCuspReflectedSourceFirstDrop_pos u ht).ne'
   have hD := (thetaCuspReflectedSourceDecayFlux_pos u ht).ne'
   unfold thetaCuspReflectedSourceDividedDropLogConvexityNumerator
@@ -101,13 +101,13 @@ theorem thetaCuspReflectedSourceDividedDropLogConvexityNumerator_eq_cumulativeFl
 theorem thetaCuspReflectedSourceDividedDropLogConvexityNumerator_nonneg_iff_cumulativeFluxBalance
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     0 ≤ thetaCuspReflectedSourceDividedDropLogConvexityNumerator u t ↔
-      thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ 2 ≤
+      thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ (2 : ℕ) ≤
         1 + thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t *
           thetaCuspReflectedSourceNormalizedFluxElasticity u t := by
   rw [thetaCuspReflectedSourceDividedDropLogConvexityNumerator_eq_cumulativeFluxBalance
     u ht]
   have hfactor :
-      0 < 4 * thetaCuspReflectedSourceFirstDrop u t ^ 2 :=
+      0 < 4 * thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) :=
     mul_pos (by norm_num) (sq_pos_of_pos
       (thetaCuspReflectedSourceFirstDrop_pos u ht))
   constructor
@@ -122,7 +122,7 @@ endpoint-mass/local-elasticity balance. -/
 theorem thetaCuspReflectedSourceFifthRootCurvatureNumerator_eq_cumulativeFluxC5Balance
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     thetaCuspReflectedSourceFifthRootCurvatureNumerator u t =
-      4 * thetaCuspReflectedSourceFirstDrop u t ^ 2 *
+      4 * thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) *
         thetaCuspReflectedSourceCumulativeFluxC5Balance u t := by
   have hA := (thetaCuspReflectedSourceFirstDrop_pos u ht).ne'
   have hD := (thetaCuspReflectedSourceDecayFlux_pos u ht).ne'

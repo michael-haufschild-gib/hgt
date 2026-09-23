@@ -162,7 +162,7 @@ theorem pow_mul_iteratedDeriv_comp_pow {f : ℂ → ℂ} {q : ℕ}
           + S ^ (2 * j) * (S * iteratedDeriv (j + 1) f (z ^ q)))
           = ((2 * j : ℕ) : ℂ) * S' * (S ^ (2 * j) * iteratedDeriv j f (z ^ q))
             + S ^ (2 * (j + 1)) * iteratedDeriv (j + 1) f (z ^ q) := by
-        have hpow : S ^ (2 * (j + 1)) = S ^ (2 * j) * S ^ 2 := by
+        have hpow : S ^ (2 * (j + 1)) = S ^ (2 * j) * S ^ (2 : ℕ) := by
           rw [show (2 * (j + 1)) = 2 * j + 2 by ring, pow_add]
         rw [hpow]
         linear_combination (S' * iteratedDeriv j f (z ^ q)) * hcoeff

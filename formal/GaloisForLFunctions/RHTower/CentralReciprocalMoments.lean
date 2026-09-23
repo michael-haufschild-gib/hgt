@@ -12,13 +12,13 @@ noncomputable section
 theorem xi_zero_multiplicity_centered_inv_sq_summable :
     Summable (fun ρ : ↥(MeromorphicOn.divisor xi Set.univ).support =>
       ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) /
-        ‖(ρ : ℂ) - 1 / 2‖ ^ 2) := by
+        ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ)) := by
   classical
   set D := MeromorphicOn.divisor xi Set.univ with hD
   set f : ↥D.support → ℝ := fun ρ =>
-    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ)‖ ^ 2 with hf
+    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ)‖ ^ (2 : ℕ) with hf
   set g : ↥D.support → ℝ := fun ρ =>
-    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ) - 1 / 2‖ ^ 2 with hg
+    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ) with hg
   have hf_sum : Summable f := by
     simpa only [f, hD] using xi_zero_multiplicity_inv_sq_summable
   have hdom : Summable (fun ρ => 4 * f ρ) := hf_sum.mul_left 4
@@ -44,14 +44,14 @@ theorem xi_zero_multiplicity_centered_inv_sq_summable :
     have hapos : (0 : ℝ) < ‖(ρ : ℂ) - 1 / 2‖ :=
       lt_of_lt_of_le (half_pos hbpos) hab
     have hcomp :
-        (D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ) - 1 / 2‖ ^ 2 ≤
-          4 * ((D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+        (D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ) ≤
+          4 * ((D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
       calc
-        (D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ) - 1 / 2‖ ^ 2
-            ≤ (D (ρ : ℂ) : ℝ) / (‖(ρ : ℂ)‖ / 2) ^ 2 :=
+        (D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ)
+            ≤ (D (ρ : ℂ) : ℝ) / (‖(ρ : ℂ)‖ / 2) ^ (2 : ℕ) :=
           div_le_div_of_nonneg_left hd (by positivity)
             (pow_le_pow_left₀ (by positivity) hab 2)
-        _ = 4 * ((D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+        _ = 4 * ((D (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
           field_simp
           ring
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity : 0 ≤ g ρ)]
@@ -60,7 +60,7 @@ theorem xi_zero_multiplicity_centered_inv_sq_summable :
 
 /-- The squared reciprocal spectral coordinate centered at the FE fixed point. -/
 def xiCentralReciprocalSquare (ρ : ℂ) : ℂ :=
-  -((ρ - 1 / 2)⁻¹) ^ 2
+  -((ρ - 1 / 2)⁻¹) ^ (2 : ℕ)
 
 /-- The first centered reciprocal-square divisor moment is absolutely summable. -/
 theorem xi_central_reciprocal_square_summable :
@@ -69,7 +69,7 @@ theorem xi_central_reciprocal_square_summable :
         xiCentralReciprocalSquare (ρ : ℂ)) := by
   let D := MeromorphicOn.divisor xi Set.univ
   let f : ↥D.support → ℝ := fun ρ =>
-    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ) - 1 / 2‖ ^ 2
+    ((D (ρ : ℂ) : ℝ)) / ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ)
   have hf : Summable f := by
     simpa only [D, f] using xi_zero_multiplicity_centered_inv_sq_summable
   refine Summable.of_norm_bounded hf (fun ρ => ?_)
@@ -285,10 +285,10 @@ theorem xi_divisor_support_re_mem_open_unit
     exact xi_ne_zero_of_one_le_re (not_lt.mp hlt) hzero
 
 /-- Centered at the critical line, the open strip is exactly the region where the horizontal
-square stays below `1/4`: `0 < x < 1` is equivalent to `(x - 1/2) ^ 2 < 1/4`. -/
+square stays below `1/4`: `0 < x < 1` is equivalent to `(x - 1/2) ^ (2 : ℕ) < 1/4`. -/
 theorem xi_divisor_support_centered_re_sq_lt_quarter
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :
-    ((ρ : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by
+    ((ρ : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 := by
   have hstrip := xi_divisor_support_re_mem_open_unit ρ
   nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
 
@@ -320,7 +320,7 @@ theorem xiCentralReciprocalSquare_ne_zero
 /-- Exact imaginary part of the centered reciprocal-square coordinate. -/
 theorem xiCentralReciprocalSquare_im (ρ : ℂ) :
     (xiCentralReciprocalSquare ρ).im =
-      2 * (ρ.re - 1 / 2) * ρ.im / Complex.normSq (ρ - 1 / 2) ^ 2 := by
+      2 * (ρ.re - 1 / 2) * ρ.im / Complex.normSq (ρ - 1 / 2) ^ (2 : ℕ) := by
   have hhalf : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by push_cast; ring
   rw [xiCentralReciprocalSquare, hhalf]
   simp only [neg_im, pow_two, mul_im, Complex.inv_re, Complex.inv_im,
@@ -332,7 +332,7 @@ theorem xiCentralReciprocalSquare_im_eq_zero_iff
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :
     (xiCentralReciprocalSquare (ρ : ℂ)).im = 0 ↔ (ρ : ℂ).re = 1 / 2 := by
   rw [xiCentralReciprocalSquare_im]
-  have hden : Complex.normSq ((ρ : ℂ) - 1 / 2) ^ 2 ≠ 0 := by
+  have hden : Complex.normSq ((ρ : ℂ) - 1 / 2) ^ (2 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     exact ne_of_gt (Complex.normSq_pos.mpr (sub_ne_zero.mpr
       (xi_divisor_support_ne_half ρ)))
@@ -349,7 +349,7 @@ theorem xiCentralReciprocalSquare_im_eq_zero_iff
     ring
 
 /-- On the critical line the centered reciprocal-square coordinate is the positive number
-`1 / Im(rho)^2`. -/
+`1 / Im(rho)^(2 : ℕ)`. -/
 theorem xiCentralReciprocalSquare_pos_real_of_re_eq_half
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support)
     (hre : (ρ : ℂ).re = 1 / 2) :
@@ -359,7 +359,7 @@ theorem xiCentralReciprocalSquare_pos_real_of_re_eq_half
     apply Complex.ext
     · simp [hre]
     · simp
-  refine ⟨1 / (ρ : ℂ).im ^ 2, by positivity, ?_⟩
+  refine ⟨1 / (ρ : ℂ).im ^ (2 : ℕ), by positivity, ?_⟩
   rw [xiCentralReciprocalSquare, hcoord]
   push_cast
   field_simp

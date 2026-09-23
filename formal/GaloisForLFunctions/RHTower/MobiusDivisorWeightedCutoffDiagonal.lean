@@ -20,14 +20,14 @@ law.  The mixed term retains its Möbius sign; the second term is the complete
 new-square remainder. -/
 theorem sum_weighted_mobiusDivisorDilationChannel_sq_succ_sub
     (w : ℕ → ℝ) (M : ℕ) :
-    (∑ d ∈ Icc 1 (M + 1), w d * mobiusDivisorDilationChannel (M + 1) d ^ 2) -
-      (∑ d ∈ Icc 1 M, w d * mobiusDivisorDilationChannel M d ^ 2) =
+    (∑ d ∈ Icc 1 (M + 1), w d * mobiusDivisorDilationChannel (M + 1) d ^ (2 : ℕ)) -
+      (∑ d ∈ Icc 1 M, w d * mobiusDivisorDilationChannel M d ^ (2 : ℕ)) =
     2 * (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) *
       (∑ d ∈ Icc 1 M, w d * mobiusDivisorDilationChannel M d *
         (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d))) +
-    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
+    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
       ∑ d ∈ Icc 1 M, w d *
-        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2 := by
+        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ) := by
   have hzero : mobiusDivisorDilationChannel (M + 1) (M + 1) = 0 := by
     simp [mobiusDivisorDilationChannel]
   rw [Finset.sum_Icc_succ_top (show 1 ≤ M + 1 by omega), hzero]
@@ -38,8 +38,8 @@ theorem sum_weighted_mobiusDivisorDilationChannel_sq_succ_sub
         (2 * (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) *
           (mobiusDivisorDilationChannel M d *
             (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d))) +
-        (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
-          (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2) := by
+        (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
+          (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ)) := by
       apply sum_congr rfl
       intro d hd
       rw [mobiusDivisorDilationChannel_succ_of_le
@@ -53,8 +53,8 @@ theorem sum_weighted_mobiusDivisorDilationChannel_sq_succ_sub
               (mobiusDivisorDilationChannel M d *
                 (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)))) +
           ∑ d ∈ Icc 1 M, w d *
-            ((Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
-              (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2)) := by
+            ((Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
+              (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ))) := by
               rw [Finset.sum_add_distrib]
         _ = _ := by
           rw [Finset.mul_sum, Finset.mul_sum]
@@ -76,8 +76,8 @@ the full cutoff: nonsquarefree channels and the terminal channel vanish. -/
 theorem sum_mobiusDivisorSelectionIndices_weighted_sq_eq_full
     (w : ℕ → ℝ) (M : ℕ) :
     (∑ d ∈ mobiusDivisorSelectionIndices M,
-      w d * mobiusDivisorDilationChannel M d ^ 2) =
-    ∑ d ∈ Icc 1 M, w d * mobiusDivisorDilationChannel M d ^ 2 := by
+      w d * mobiusDivisorDilationChannel M d ^ (2 : ℕ)) =
+    ∑ d ∈ Icc 1 M, w d * mobiusDivisorDilationChannel M d ^ (2 : ℕ) := by
   apply sum_subset
   · intro d hd
     obtain ⟨hdI, _⟩ := mem_filter.mp hd
@@ -109,7 +109,7 @@ source diagonal. -/
 theorem mobiusDivisorArityHeadEnergy_empty_eq_cutoffDiagonal (M : ℕ) :
     mobiusDivisorArityHeadEnergy M ∅ =
       ∑ d ∈ Icc 1 M,
-        mobiusDivisorArityHeadCutoffWeight d * mobiusDivisorDilationChannel M d ^ 2 := by
+        mobiusDivisorArityHeadCutoffWeight d * mobiusDivisorDilationChannel M d ^ (2 : ℕ) := by
   rw [mobiusDivisorArityHeadEnergy_empty_eq_diagonal]
   exact sum_mobiusDivisorSelectionIndices_weighted_sq_eq_full
     mobiusDivisorArityHeadCutoffWeight M
@@ -122,9 +122,9 @@ theorem mobiusDivisorArityHeadEnergy_empty_succ_sub (M : ℕ) :
       (∑ d ∈ Icc 1 M, mobiusDivisorArityHeadCutoffWeight d *
         mobiusDivisorDilationChannel M d *
         (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d))) +
-    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
+    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
       ∑ d ∈ Icc 1 M, mobiusDivisorArityHeadCutoffWeight d *
-        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2 := by
+        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ) := by
   rw [mobiusDivisorArityHeadEnergy_empty_eq_cutoffDiagonal,
     mobiusDivisorArityHeadEnergy_empty_eq_cutoffDiagonal]
   exact sum_weighted_mobiusDivisorDilationChannel_sq_succ_sub

@@ -82,7 +82,7 @@ theorem selbergOriginalIncludedBaseBoundary_eq_logMonomials
 private theorem selbergOriginalIncludedCrossBoundary_eq_logMonomials_raw
     (ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedCrossBoundary ell M =
-      -(ell * Real.log M - Real.log M ^ 2 / 2) *
+      -(ell * Real.log M - Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 1 M +
         (ell - Real.log M) * selbergOriginalLogMonomial 2 1 M +
         (ell - Real.log M) * selbergOriginalLogMonomial 1 2 M -
@@ -107,7 +107,7 @@ private theorem selbergOriginalIncludedCrossBoundary_eq_logMonomials_raw
 theorem selbergOriginalIncludedCrossBoundary_eq_logMonomials
     (ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedCrossBoundary ell M =
-      -(ell * Real.log M - Real.log M ^ 2 / 2) *
+      -(ell * Real.log M - Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 1 M +
         (2 * ell - Real.log M) * selbergOriginalLogMonomial 1 2 M -
         ell * selbergOriginalMinLogMonomial 1 1 1 M -
@@ -121,18 +121,18 @@ theorem selbergOriginalIncludedCrossBoundary_eq_logMonomials
 private theorem selbergOriginalIncludedDerivativeBoundary_eq_logMonomials_raw
     (ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedDerivativeBoundary ell M =
-      (Real.log M * ell ^ 2 - ell * Real.log M ^ 2 + Real.log M ^ 3 / 3) *
+      (Real.log M * ell ^ (2 : ℕ) - ell * Real.log M ^ (2 : ℕ) + Real.log M ^ (3 : ℕ) / 3) *
           selbergOriginalLogMonomial 1 1 M -
-        (ell ^ 2 - ell * Real.log M + Real.log M ^ 2 / 2) *
+        (ell ^ (2 : ℕ) - ell * Real.log M + Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 2 1 M -
-        (ell ^ 2 - ell * Real.log M + Real.log M ^ 2 / 2) *
+        (ell ^ (2 : ℕ) - ell * Real.log M + Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 2 M +
         (1 / 6 : ℝ) * selbergOriginalLogMonomial 4 1 M +
         (1 / 6 : ℝ) * selbergOriginalLogMonomial 1 4 M -
         (1 / 2 : ℝ) * selbergOriginalLogMonomial 3 2 M -
         (1 / 2 : ℝ) * selbergOriginalLogMonomial 2 3 M +
         Real.log M * selbergOriginalLogMonomial 2 2 M +
-        ell ^ 2 * selbergOriginalMinLogMonomial 1 1 1 M +
+        ell ^ (2 : ℕ) * selbergOriginalMinLogMonomial 1 1 1 M +
         ell * selbergOriginalMinLogMonomial 1 1 2 M +
         (1 / 3 : ℝ) * selbergOriginalMinLogMonomial 1 1 3 M -
         ell * selbergOriginalMinLogMonomial 2 1 1 M -
@@ -155,14 +155,14 @@ private theorem selbergOriginalIncludedDerivativeBoundary_eq_logMonomials_raw
 theorem selbergOriginalIncludedDerivativeBoundary_eq_logMonomials
     (ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedDerivativeBoundary ell M =
-      (Real.log M * ell ^ 2 - ell * Real.log M ^ 2 + Real.log M ^ 3 / 3) *
+      (Real.log M * ell ^ (2 : ℕ) - ell * Real.log M ^ (2 : ℕ) + Real.log M ^ (3 : ℕ) / 3) *
           selbergOriginalLogMonomial 1 1 M -
-        2 * (ell ^ 2 - ell * Real.log M + Real.log M ^ 2 / 2) *
+        2 * (ell ^ (2 : ℕ) - ell * Real.log M + Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 2 M +
         (1 / 3 : ℝ) * selbergOriginalLogMonomial 1 4 M -
         selbergOriginalLogMonomial 2 3 M +
         Real.log M * selbergOriginalLogMonomial 2 2 M +
-        ell ^ 2 * selbergOriginalMinLogMonomial 1 1 1 M +
+        ell ^ (2 : ℕ) * selbergOriginalMinLogMonomial 1 1 1 M +
         ell * selbergOriginalMinLogMonomial 1 1 2 M +
         (1 / 3 : ℝ) * selbergOriginalMinLogMonomial 1 1 3 M -
         2 * ell * selbergOriginalMinLogMonomial 2 1 1 M -

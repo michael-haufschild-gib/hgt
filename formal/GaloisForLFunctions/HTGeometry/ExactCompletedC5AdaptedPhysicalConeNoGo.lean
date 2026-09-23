@@ -70,7 +70,7 @@ theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_nine_
       modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial).re < 0 := by
   rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial]
   have hstate : modularThetaSourcePositiveSeamState 9 =
-      modularThetaSourcePositiveSeamState ((3 : ℝ) ^ 2) := by norm_num
+      modularThetaSourcePositiveSeamState ((3 : ℝ) ^ (2 : ℕ)) := by norm_num
   rw [hstate, eval_modularThetaSourcePositiveChartPullback_seam]
   rw [← eval_modularThetaGeneralLyapunovPullback_seam,
     modularThetaGeneralLyapunov_c5ExactCompletedSeamSlopePolynomial]

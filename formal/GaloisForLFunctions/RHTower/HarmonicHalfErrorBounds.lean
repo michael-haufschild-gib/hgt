@@ -20,7 +20,7 @@ theorem log_le_half_sub_inv {x : ℝ} (hx : 1 ≤ x) :
     Real.log x ≤ (x - x⁻¹) / 2 := by
   let f : ℝ → ℝ := fun x => (x - x⁻¹) / 2 - Real.log x
   have hd (u : ℝ) (hu : 1 ≤ u) :
-      HasDerivAt f ((1 + (u^2)⁻¹) / 2 - u⁻¹) u := by
+      HasDerivAt f ((1 + (u^(2 : ℕ))⁻¹) / 2 - u⁻¹) u := by
     have hu0 : u ≠ 0 := by linarith
     convert (((hasDerivAt_id u).sub (hasDerivAt_inv hu0)).div_const 2).sub
       (Real.hasDerivAt_log hu0) using 1 <;> first | rfl | ring

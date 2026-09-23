@@ -10,7 +10,7 @@ file integrates over the real observation center.  The ordinary Gaussian
 integral erases the ordinate exactly and leaves the positive height-only
 transform
 
-`sum_rho m(rho) * height(rho) * exp (-tau * height(rho)^2)`.
+`sum_rho m(rho) * height(rho) * exp (-tau * height(rho)^(2 : ℕ))`.
 
 All complete-series statements are proved in `ℝ≥0∞`, because finiteness of
 the unweighted total upper height is not assumed.  Tonelli gives the exact

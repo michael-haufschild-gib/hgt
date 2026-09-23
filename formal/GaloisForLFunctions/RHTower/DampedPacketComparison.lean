@@ -69,12 +69,12 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
       ‖dampedSuperluminalSymbol a lambda sigma u w - dampedModelSymbol a lambda sigma u r w‖
         ≤ ‖massGaugeDampedSymbol a lambda sigma u (-r)‖
           * Real.exp (2 * Real.pi * sigma * (w + r / (2 * Real.pi))) * beta) :
-    ‖packetDefect ha hlambda hsigma u r T‖ ^ 2
-      ≤ ‖massGaugeDampedSymbol a lambda sigma u (-r)‖ ^ 2 * beta ^ 2
-          * (Real.exp (2 * Real.pi * sigma ^ 2) * Real.sqrt 2⁻¹)
-        + (2 * Real.exp (|u| * lambda) ^ 2 * Real.exp (-(Real.pi * rho ^ 2))
-          + 2 * ‖dampedModelConst a lambda sigma u r‖ ^ 2
-            * Real.exp (-(Real.pi * (rho - sigma) ^ 2))) := by
+    ‖packetDefect ha hlambda hsigma u r T‖ ^ (2 : ℕ)
+      ≤ ‖massGaugeDampedSymbol a lambda sigma u (-r)‖ ^ (2 : ℕ) * beta ^ (2 : ℕ)
+          * (Real.exp (2 * Real.pi * sigma ^ (2 : ℕ)) * Real.sqrt 2⁻¹)
+        + (2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * Real.exp (-(Real.pi * rho ^ (2 : ℕ)))
+          + 2 * ‖dampedModelConst a lambda sigma u r‖ ^ (2 : ℕ)
+            * Real.exp (-(Real.pi * (rho - sigma) ^ (2 : ℕ)))) := by
   classical
   set R : ℝ := r / (2 * Real.pi) with hRdef
   set N : ℝ := ‖massGaugeDampedSymbol a lambda sigma u (-r)‖ with hNdef
@@ -86,44 +86,44 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
   have hmeasS : MeasurableSet S :=
     measurableSet_le ((measurable_id.add_const R).norm) measurable_const
   set D : ℝ → ℝ := fun w =>
-    ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w - K * (H : ℝ → ℂ) w‖ ^ 2
+    ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w - K * (H : ℝ → ℂ) w‖ ^ (2 : ℕ)
     with hDdef
-  have hnormsq : ‖packetDefect ha hlambda hsigma u r T‖ ^ 2 = ∫ w : ℝ, D w := by
+  have hnormsq : ‖packetDefect ha hlambda hsigma u r T‖ ^ (2 : ℕ) = ∫ w : ℝ, D w := by
     rw [norm_lpTwo_sq (μ := (volume : Measure ℝ))]
     refine integral_congr_ae ?_
     filter_upwards [coeFn_packetDefect ha hlambda hsigma u r T] with w hw
     rw [hw]
-  have hFint : Integrable (fun w : ℝ => ‖(F : ℝ → ℂ) w‖ ^ 2) :=
+  have hFint : Integrable (fun w : ℝ => ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ)) :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable F)).1 (Lp.memLp F)
-  have hHint : Integrable (fun w : ℝ => ‖(H : ℝ → ℂ) w‖ ^ 2) :=
+  have hHint : Integrable (fun w : ℝ => ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ)) :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable H)).1 (Lp.memLp H)
   have hmajint : Integrable (fun w : ℝ =>
-      2 * Real.exp (|u| * lambda) ^ 2 * ‖(F : ℝ → ℂ) w‖ ^ 2 + 2 * ‖K‖ ^ 2 * ‖(H : ℝ → ℂ) w‖ ^ 2) :=
+      2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ) + 2 * ‖K‖ ^ (2 : ℕ) * ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ)) :=
     (hFint.const_mul _).add (hHint.const_mul _)
   have hdom : ∀ w : ℝ, D w
-      ≤ 2 * Real.exp (|u| * lambda) ^ 2 * ‖(F : ℝ → ℂ) w‖ ^ 2
-        + 2 * ‖K‖ ^ 2 * ‖(H : ℝ → ℂ) w‖ ^ 2 := by
+      ≤ 2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ)
+        + 2 * ‖K‖ ^ (2 : ℕ) * ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ) := by
     intro w
     have h1 : ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w
-        - K * (H : ℝ → ℂ) w‖ ^ 2
-        ≤ 2 * ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖ ^ 2
-          + 2 * ‖K * (H : ℝ → ℂ) w‖ ^ 2 := by
+        - K * (H : ℝ → ℂ) w‖ ^ (2 : ℕ)
+        ≤ 2 * ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖ ^ (2 : ℕ)
+          + 2 * ‖K * (H : ℝ → ℂ) w‖ ^ (2 : ℕ) := by
       have hsub := norm_sub_le (dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w)
         (K * (H : ℝ → ℂ) w)
       have hsq : ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w
-          - K * (H : ℝ → ℂ) w‖ ^ 2
+          - K * (H : ℝ → ℂ) w‖ ^ (2 : ℕ)
           ≤ (‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖
-            + ‖K * (H : ℝ → ℂ) w‖) ^ 2 :=
+            + ‖K * (H : ℝ → ℂ) w‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hsub 2
       nlinarith [hsq, sq_nonneg (‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖
         - ‖K * (H : ℝ → ℂ) w‖)]
-    have h2 : ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖ ^ 2
-        ≤ Real.exp (|u| * lambda) ^ 2 * ‖(F : ℝ → ℂ) w‖ ^ 2 := by
+    have h2 : ‖dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w‖ ^ (2 : ℕ)
+        ≤ Real.exp (|u| * lambda) ^ (2 : ℕ) * ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ) := by
       rw [norm_mul, mul_pow]
       exact mul_le_mul_of_nonneg_right
         (pow_le_pow_left₀ (norm_nonneg _)
           (norm_dampedSuperluminalSymbol_abs_le ha hlambda hsigma u w) 2) (by positivity)
-    have h3 : ‖K * (H : ℝ → ℂ) w‖ ^ 2 = ‖K‖ ^ 2 * ‖(H : ℝ → ℂ) w‖ ^ 2 := by
+    have h3 : ‖K * (H : ℝ → ℂ) w‖ ^ (2 : ℕ) = ‖K‖ ^ (2 : ℕ) * ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ) := by
       rw [norm_mul, mul_pow]
     rw [hDdef]
     simp only
@@ -135,20 +135,20 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
         (Lp.aestronglyMeasurable F)).sub
         (aestronglyMeasurable_const.mul (Lp.aestronglyMeasurable H))).norm.pow 2
     · rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hDnn w),
-        abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * Real.exp (|u| * lambda) ^ 2
-          * ‖(F : ℝ → ℂ) w‖ ^ 2 + 2 * ‖K‖ ^ 2 * ‖(H : ℝ → ℂ) w‖ ^ 2)]
+        abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * Real.exp (|u| * lambda) ^ (2 : ℕ)
+          * ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ) + 2 * ‖K‖ ^ (2 : ℕ) * ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ))]
       exact hdom w
   rw [hnormsq, ← integral_add_compl hmeasS hDint]
   have hbandint : ∫ w in S, D w
-      ≤ N ^ 2 * beta ^ 2 * (Real.exp (2 * Real.pi * sigma ^ 2) * Real.sqrt 2⁻¹) := by
+      ≤ N ^ (2 : ℕ) * beta ^ (2 : ℕ) * (Real.exp (2 * Real.pi * sigma ^ (2 : ℕ)) * Real.sqrt 2⁻¹) := by
     have hmodel := coeFn_dampedModel_mul_packet a lambda sigma u r T hr
     have hFnorm := coeFn_fourierGaussPacket_norm R T
     have hFshift := coeFn_gaussLp_shift R
     have hptbound : ∀ᵐ w : ℝ, w ∈ S →
-        D w ≤ N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-          - 2 * Real.pi * (w + R) ^ 2) := by
+        D w ≤ N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+          - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := by
       filter_upwards [hmodel, hFnorm, hFshift] with w hm hn hs hmem
-      have hFval : ‖(F : ℝ → ℂ) w‖ = Real.exp (-(Real.pi * (w + R) ^ 2)) := by
+      have hFval : ‖(F : ℝ → ℂ) w‖ = Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) := by
         rw [hFdef, hn, hs, norm_gaussLp_apply]
       have hsplit : dampedSuperluminalSymbol a lambda sigma u w * (F : ℝ → ℂ) w
           - K * (H : ℝ → ℂ) w
@@ -160,47 +160,47 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
       simp only
       rw [hsplit, norm_mul, hFval, mul_pow]
       have hstep : ‖dampedSuperluminalSymbol a lambda sigma u w
-          - dampedModelSymbol a lambda sigma u r w‖ ^ 2
-          ≤ (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ 2 :=
+          - dampedModelSymbol a lambda sigma u r w‖ ^ (2 : ℕ)
+          ≤ (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hb 2
-      have e1 : Real.exp (2 * Real.pi * sigma * (w + R)) ^ 2
+      have e1 : Real.exp (2 * Real.pi * sigma * (w + R)) ^ (2 : ℕ)
           = Real.exp (4 * Real.pi * sigma * (w + R)) := by
         rw [sq, ← Real.exp_add]
         congr 1
         ring
-      have e2 : Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2
-          = Real.exp (-(2 * Real.pi * (w + R) ^ 2)) := by
+      have e2 : Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ)
+          = Real.exp (-(2 * Real.pi * (w + R) ^ (2 : ℕ))) := by
         rw [sq, ← Real.exp_add]
         congr 1
         ring
-      have hval : (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ 2
-          * Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2
-          = N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-            - 2 * Real.pi * (w + R) ^ 2) := by
-        calc (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ 2
-              * Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2
-            = N ^ 2 * beta ^ 2 * (Real.exp (2 * Real.pi * sigma * (w + R)) ^ 2
-                * Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2) := by ring
-          _ = N ^ 2 * beta ^ 2 * (Real.exp (4 * Real.pi * sigma * (w + R))
-                * Real.exp (-(2 * Real.pi * (w + R) ^ 2))) := by rw [e1, e2]
-          _ = N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-                - 2 * Real.pi * (w + R) ^ 2) := by
+      have hval : (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ (2 : ℕ)
+          * Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ)
+          = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+            - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := by
+        calc (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ (2 : ℕ)
+              * Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ)
+            = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * (Real.exp (2 * Real.pi * sigma * (w + R)) ^ (2 : ℕ)
+                * Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ)) := by ring
+          _ = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * (Real.exp (4 * Real.pi * sigma * (w + R))
+                * Real.exp (-(2 * Real.pi * (w + R) ^ (2 : ℕ)))) := by rw [e1, e2]
+          _ = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+                - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := by
               rw [← Real.exp_add]
               congr 2
       calc ‖dampedSuperluminalSymbol a lambda sigma u w
-            - dampedModelSymbol a lambda sigma u r w‖ ^ 2
-              * Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2
-          ≤ (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ 2
-              * Real.exp (-(Real.pi * (w + R) ^ 2)) ^ 2 :=
+            - dampedModelSymbol a lambda sigma u r w‖ ^ (2 : ℕ)
+              * Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ)
+          ≤ (N * Real.exp (2 * Real.pi * sigma * (w + R)) * beta) ^ (2 : ℕ)
+              * Real.exp (-(Real.pi * (w + R) ^ (2 : ℕ))) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_right hstep (by positivity)
-        _ = N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-            - 2 * Real.pi * (w + R) ^ 2) := hval
-    have hgint : Integrable (fun w : ℝ => N ^ 2 * beta ^ 2
-        * Real.exp (4 * Real.pi * sigma * (w + R) - 2 * Real.pi * (w + R) ^ 2)) := by
+        _ = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+            - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := hval
+    have hgint : Integrable (fun w : ℝ => N ^ (2 : ℕ) * beta ^ (2 : ℕ)
+        * Real.exp (4 * Real.pi * sigma * (w + R) - 2 * Real.pi * (w + R) ^ (2 : ℕ))) := by
       have hbase : Integrable (fun y : ℝ =>
-          Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ 2)) := by
-        have hpt : ∀ y : ℝ, Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ 2)
-            = Real.exp (2 * Real.pi * sigma ^ 2) * Real.exp (-(2 * Real.pi) * (y - sigma) ^ 2) := by
+          Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ (2 : ℕ))) := by
+        have hpt : ∀ y : ℝ, Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ (2 : ℕ))
+            = Real.exp (2 * Real.pi * sigma ^ (2 : ℕ)) * Real.exp (-(2 * Real.pi) * (y - sigma) ^ (2 : ℕ)) := by
           intro y
           rw [← Real.exp_add]
           congr 1
@@ -210,24 +210,24 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
           (by positivity : (0 : ℝ) < 2 * Real.pi)).comp_sub_right sigma).const_mul _
       exact ((hbase.comp_add_right R).const_mul _)
     calc ∫ w in S, D w
-        ≤ ∫ w in S, N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-            - 2 * Real.pi * (w + R) ^ 2) := by
+        ≤ ∫ w in S, N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+            - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := by
           refine setIntegral_mono_ae_restrict hDint.integrableOn hgint.integrableOn ?_
           filter_upwards [ae_restrict_of_ae hptbound, self_mem_ae_restrict hmeasS] with w h1 h2
           exact h1 h2
-      _ ≤ ∫ w : ℝ, N ^ 2 * beta ^ 2 * Real.exp (4 * Real.pi * sigma * (w + R)
-            - 2 * Real.pi * (w + R) ^ 2) := by
+      _ ≤ ∫ w : ℝ, N ^ (2 : ℕ) * beta ^ (2 : ℕ) * Real.exp (4 * Real.pi * sigma * (w + R)
+            - 2 * Real.pi * (w + R) ^ (2 : ℕ)) := by
           refine setIntegral_le_integral hgint (Filter.Eventually.of_forall fun w => ?_)
           positivity
-      _ = N ^ 2 * beta ^ 2 * (Real.exp (2 * Real.pi * sigma ^ 2) * Real.sqrt 2⁻¹) := by
+      _ = N ^ (2 : ℕ) * beta ^ (2 : ℕ) * (Real.exp (2 * Real.pi * sigma ^ (2 : ℕ)) * Real.sqrt 2⁻¹) := by
           rw [integral_const_mul]
           congr 1
           rw [integral_add_right_eq_self
-            (fun y : ℝ => Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ 2)) R]
+            (fun y : ℝ => Real.exp (4 * Real.pi * sigma * y - 2 * Real.pi * y ^ (2 : ℕ))) R]
           exact integral_exp_linear_mul_gauss sigma
   have hoffint : ∫ w in Sᶜ, D w
-      ≤ 2 * Real.exp (|u| * lambda) ^ 2 * Real.exp (-(Real.pi * rho ^ 2))
-        + 2 * ‖K‖ ^ 2 * Real.exp (-(Real.pi * (rho - sigma) ^ 2)) := by
+      ≤ 2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * Real.exp (-(Real.pi * rho ^ (2 : ℕ)))
+        + 2 * ‖K‖ ^ (2 : ℕ) * Real.exp (-(Real.pi * (rho - sigma) ^ (2 : ℕ))) := by
     have hsubF : Sᶜ ⊆ {w : ℝ | rho ≤ |w + R|} := by
       intro w hw
       rw [hSdef, Set.mem_compl_iff, Set.mem_setOf_eq, not_le] at hw
@@ -249,7 +249,7 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
       measurableSet_le measurable_const ((measurable_id.add_const R).norm)
     have hmeasH : MeasurableSet {w : ℝ | rho - sigma ≤ |w + (R - sigma)|} :=
       measurableSet_le measurable_const ((measurable_id.add_const (R - sigma)).norm)
-    have hF1 : ∫ w in Sᶜ, ‖(F : ℝ → ℂ) w‖ ^ 2 ≤ Real.exp (-(Real.pi * rho ^ 2)) := by
+    have hF1 : ∫ w in Sᶜ, ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ) ≤ Real.exp (-(Real.pi * rho ^ (2 : ℕ))) := by
       refine le_trans (setIntegral_mono_set hFint.integrableOn
         (Filter.Eventually.of_forall fun w => by positivity)
         (Filter.Eventually.of_forall hsubF)) ?_
@@ -257,25 +257,25 @@ theorem norm_packetDefect_sq_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 
       · exact fourierGaussPacket_band_defect_le (R := R) (T := T) hr0
       · exfalso
         linarith [hsigma, hrhosigma]
-    have hH1 : ∫ w in Sᶜ, ‖(H : ℝ → ℂ) w‖ ^ 2
-        ≤ Real.exp (-(Real.pi * (rho - sigma) ^ 2)) := by
+    have hH1 : ∫ w in Sᶜ, ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ)
+        ≤ Real.exp (-(Real.pi * (rho - sigma) ^ (2 : ℕ))) := by
       refine le_trans (setIntegral_mono_set hHint.integrableOn
         (Filter.Eventually.of_forall fun w => by positivity)
         (Filter.Eventually.of_forall hsubH)) ?_
       exact fourierGaussPacket_band_defect_le (R := R - sigma) (T := T - u) (by linarith)
     calc ∫ w in Sᶜ, D w
-        ≤ ∫ w in Sᶜ, (2 * Real.exp (|u| * lambda) ^ 2 * ‖(F : ℝ → ℂ) w‖ ^ 2
-            + 2 * ‖K‖ ^ 2 * ‖(H : ℝ → ℂ) w‖ ^ 2) :=
+        ≤ ∫ w in Sᶜ, (2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ)
+            + 2 * ‖K‖ ^ (2 : ℕ) * ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ)) :=
           setIntegral_mono_on hDint.integrableOn hmajint.integrableOn hmeasS.compl
             (fun w _ => hdom w)
-      _ = 2 * Real.exp (|u| * lambda) ^ 2 * (∫ w in Sᶜ, ‖(F : ℝ → ℂ) w‖ ^ 2)
-            + 2 * ‖K‖ ^ 2 * ∫ w in Sᶜ, ‖(H : ℝ → ℂ) w‖ ^ 2 := by
+      _ = 2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * (∫ w in Sᶜ, ‖(F : ℝ → ℂ) w‖ ^ (2 : ℕ))
+            + 2 * ‖K‖ ^ (2 : ℕ) * ∫ w in Sᶜ, ‖(H : ℝ → ℂ) w‖ ^ (2 : ℕ) := by
           rw [integral_add ((hFint.const_mul _).integrableOn) ((hHint.const_mul _).integrableOn),
             integral_const_mul, integral_const_mul]
-      _ ≤ 2 * Real.exp (|u| * lambda) ^ 2 * Real.exp (-(Real.pi * rho ^ 2))
-            + 2 * ‖K‖ ^ 2 * Real.exp (-(Real.pi * (rho - sigma) ^ 2)) := by
-          have hc1 : (0 : ℝ) ≤ 2 * Real.exp (|u| * lambda) ^ 2 := by positivity
-          have hc2 : (0 : ℝ) ≤ 2 * ‖K‖ ^ 2 := by positivity
+      _ ≤ 2 * Real.exp (|u| * lambda) ^ (2 : ℕ) * Real.exp (-(Real.pi * rho ^ (2 : ℕ)))
+            + 2 * ‖K‖ ^ (2 : ℕ) * Real.exp (-(Real.pi * (rho - sigma) ^ (2 : ℕ))) := by
+          have hc1 : (0 : ℝ) ≤ 2 * Real.exp (|u| * lambda) ^ (2 : ℕ) := by positivity
+          have hc2 : (0 : ℝ) ≤ 2 * ‖K‖ ^ (2 : ℕ) := by positivity
           exact add_le_add (mul_le_mul_of_nonneg_left hF1 hc1)
             (mul_le_mul_of_nonneg_left hH1 hc2)
   linarith [hbandint, hoffint]
@@ -287,13 +287,13 @@ differs from the band model by at most `‖N‖ e^{2πσ(w+R)}` times twice the 
 theorem band_comparison_of_bounds {a lambda : ℝ}
     {sigma u r rho : ℝ} (hsigma : 0 ≤ sigma) (hu : 0 ≤ u) (hr : 0 < r)
     (hband2 : 2 * Real.pi * rho ≤ r / 2)
-    (hbeta1 : (sigma + u) * (a ^ 2 * (2 * Real.pi * rho) / r ^ 2 + 3 * a ^ 4 / r ^ 3) ≤ 1) :
+    (hbeta1 : (sigma + u) * (a ^ (2 : ℕ) * (2 * Real.pi * rho) / r ^ (2 : ℕ) + 3 * a ^ (4 : ℕ) / r ^ (3 : ℕ)) ≤ 1) :
     ∀ w : ℝ, |w + r / (2 * Real.pi)| ≤ rho →
       ‖dampedSuperluminalSymbol a lambda sigma u w - dampedModelSymbol a lambda sigma u r w‖
         ≤ ‖massGaugeDampedSymbol a lambda sigma u (-r)‖
           * Real.exp (2 * Real.pi * sigma * (w + r / (2 * Real.pi)))
           * (2 * ((sigma + u)
-            * (a ^ 2 * (2 * Real.pi * rho) / r ^ 2 + 3 * a ^ 4 / r ^ 3))) := by
+            * (a ^ (2 : ℕ) * (2 * Real.pi * rho) / r ^ (2 : ℕ) + 3 * a ^ (4 : ℕ) / r ^ (3 : ℕ)))) := by
   intro w hw
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   set R : ℝ := r / (2 * Real.pi) with hRdef
@@ -311,9 +311,9 @@ theorem band_comparison_of_bounds {a lambda : ℝ}
     rw [hetadef, ← hRr]
     ring
   have hexpo := norm_dampedBandExponent_le (a := a) (lambda := lambda) hsigma hu hr hetahalf
-  have hmono : (sigma + u) * (a ^ 2 * |eta| / r ^ 2 + 3 * a ^ 4 / r ^ 3)
-      ≤ (sigma + u) * (a ^ 2 * (2 * Real.pi * rho) / r ^ 2 + 3 * a ^ 4 / r ^ 3) := by
-    have hstep : a ^ 2 * |eta| / r ^ 2 ≤ a ^ 2 * (2 * Real.pi * rho) / r ^ 2 := by
+  have hmono : (sigma + u) * (a ^ (2 : ℕ) * |eta| / r ^ (2 : ℕ) + 3 * a ^ (4 : ℕ) / r ^ (3 : ℕ))
+      ≤ (sigma + u) * (a ^ (2 : ℕ) * (2 * Real.pi * rho) / r ^ (2 : ℕ) + 3 * a ^ (4 : ℕ) / r ^ (3 : ℕ)) := by
+    have hstep : a ^ (2 : ℕ) * |eta| / r ^ (2 : ℕ) ≤ a ^ (2 : ℕ) * (2 * Real.pi * rho) / r ^ (2 : ℕ) := by
       refine div_le_div_of_nonneg_right ?_ (by positivity)
       exact mul_le_mul_of_nonneg_left hetale (by positivity)
     have hnn : (0 : ℝ) ≤ sigma + u := by linarith

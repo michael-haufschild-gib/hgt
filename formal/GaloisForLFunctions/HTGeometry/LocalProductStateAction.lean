@@ -45,14 +45,14 @@ theorem finiteLocalMatrix_mulVec_localProductState (M : σ → Matrix Bool Bool 
 
 /-- The squared length of a product state factors. -/
 theorem sum_normSq_localProductState (w : σ → Bool → ℂ) :
-    (∑ x : FiniteQubitConfiguration σ, ‖localProductState w x‖ ^ 2) =
-      ∏ s, ∑ b : Bool, ‖w s b‖ ^ 2 := by
+    (∑ x : FiniteQubitConfiguration σ, ‖localProductState w x‖ ^ (2 : ℕ)) =
+      ∏ s, ∑ b : Bool, ‖w s b‖ ^ (2 : ℕ) := by
   classical
-  have hsplit : (∏ s, ∑ b : Bool, ‖w s b‖ ^ 2) =
+  have hsplit : (∏ s, ∑ b : Bool, ‖w s b‖ ^ (2 : ℕ)) =
       ∑ y ∈ Fintype.piFinset fun _ : σ => (Finset.univ : Finset Bool),
-        ∏ s, ‖w s (y s)‖ ^ 2 :=
+        ∏ s, ‖w s (y s)‖ ^ (2 : ℕ) :=
     Finset.prod_univ_sum (fun _ : σ => (Finset.univ : Finset Bool))
-      (fun s b => ‖w s b‖ ^ 2)
+      (fun s b => ‖w s b‖ ^ (2 : ℕ))
   rw [hsplit, Fintype.piFinset_univ]
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [localProductState, norm_prod, ← Finset.prod_pow]

@@ -41,7 +41,7 @@ private theorem negativePairing_eq (f g : ℝ → ℂ) (hs : tsupport f ⊆ Iio 
 theorem principalLaplaceProfile_weak_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re)
     (ψ : 𝓢(ℝ,ℂ)) (hψ : tsupport (ψ : ℝ → ℂ) ⊆ Iio (0:ℝ)) :
-    w^2*(∫ x in Iio (0:ℝ), ψ x • principalLaplaceProfile q branch a i w hw x)-
+    w^(2 : ℕ)*(∫ x in Iio (0:ℝ), ψ x • principalLaplaceProfile q branch a i w hw x)-
       (∫ x in Iio (0:ℝ), deriv (deriv (ψ : ℝ → ℂ)) x • principalLaplaceProfile q branch a i w hw x) =
       (∫ x in Iio (0:ℝ), ψ x • (principalAmplitude q i*reducedCoefficient (physicalRate q branch) w a
         (onsetTransform (2*physicalRate q branch) w) x))+

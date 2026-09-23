@@ -95,7 +95,7 @@ theorem inv_exp_sub_one_eq_tsum {s : ℝ} (hs : 0 < s) :
 /-- **Each grade of the expansion integrates in closed form.** -/
 theorem integral_gammaSymbolTerm (η : ℝ) (n : ℕ) :
     (∫ s in Ioi (0 : ℝ), 2 * (1 - Real.cos (η * s)) * Real.exp (-(((n : ℝ) + 1) * s)))
-      = 2 * η ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η ^ 2)) := by
+      = 2 * η ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ))) := by
   have ha : (0 : ℝ) < (n : ℝ) + 1 := by positivity
   have h0 := integral_cosLaplace (a := (n : ℝ) + 1) (b := 0) ha
   have h1 := integral_cosLaplace (a := (n : ℝ) + 1) (b := η) ha
@@ -113,7 +113,7 @@ theorem integral_gammaSymbolTerm (η : ℝ) (n : ℕ) :
     ring
   rw [hrw, integral_sub ((hint0.const_mul 2)) ((hint1.const_mul 2)),
     integral_const_mul, integral_const_mul, h0, h1]
-  have hden : (((n : ℝ) + 1) ^ 2 + η ^ 2) ≠ 0 := by positivity
+  have hden : (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ)) ≠ 0 := by positivity
   field_simp
   ring
 
@@ -149,32 +149,32 @@ theorem integrableOn_gammaSymbolGrade (η : ℝ) (n : ℕ) :
 
 theorem integral_gammaSymbolGrade_norm (η : ℝ) (n : ℕ) :
     (∫ s in Ioi (0 : ℝ), ‖gammaSymbolGrade η n s‖)
-      = 2 * η ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η ^ 2)) := by
+      = 2 * η ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ))) := by
   rw [← integral_gammaSymbolTerm η n]
   refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
   rw [Real.norm_eq_abs, abs_of_nonneg (gammaSymbolGrade_nonneg η n s), gammaSymbolGrade]
 
 theorem summable_gammaSymbolTerm (η : ℝ) :
-    Summable (fun n : ℕ => 2 * η ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η ^ 2))) := by
-  have hcube : Summable (fun n : ℕ => 2 * η ^ 2 / ((n : ℝ) + 1) ^ 3) := by
-    have h0 : Summable (fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 3) := by
-      have h1 : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 3) :=
+    Summable (fun n : ℕ => 2 * η ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ)))) := by
+  have hcube : Summable (fun n : ℕ => 2 * η ^ (2 : ℕ) / ((n : ℝ) + 1) ^ (3 : ℕ)) := by
+    have h0 : Summable (fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (3 : ℕ)) := by
+      have h1 : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (3 : ℕ)) :=
         Real.summable_one_div_nat_pow.mpr (by norm_num)
       have h2 := (summable_nat_add_iff 1).mpr h1
       refine h2.congr fun n => ?_
       push_cast
       ring_nf
-    have := h0.mul_left (2 * η ^ 2)
+    have := h0.mul_left (2 * η ^ (2 : ℕ))
     refine this.congr fun n => ?_
     ring
   refine hcube.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
   have ha : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  have hd : ((n : ℝ) + 1) ^ 3 ≤ ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η ^ 2) := by nlinarith [sq_nonneg η]
+  have hd : ((n : ℝ) + 1) ^ (3 : ℕ) ≤ ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ)) := by nlinarith [sq_nonneg η]
   refine div_le_div_of_nonneg_left (by positivity) (by positivity) hd
 
 /-- **The closed series of the Gamma symbol.** -/
 theorem hasSum_suzukiGammaSymbol (η : ℝ) :
-    HasSum (fun n : ℕ => 2 * η ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η ^ 2)))
+    HasSum (fun n : ℕ => 2 * η ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ))))
       (suzukiGammaSymbol η) := by
   have hsum : Summable (fun n : ℕ => ∫ s in Ioi (0 : ℝ), ‖gammaSymbolGrade η n s‖) := by
     refine (summable_gammaSymbolTerm η).congr fun n => ?_
@@ -199,23 +199,23 @@ theorem hasSum_suzukiGammaSymbol (η : ℝ) :
 /-- **The symbol is strictly increasing on the positive ray.** -/
 theorem suzukiGammaSymbol_lt_of_lt {η₁ η₂ : ℝ} (h0 : 0 ≤ η₁) (h : η₁ < η₂) :
     suzukiGammaSymbol η₁ < suzukiGammaSymbol η₂ := by
-  have hsq : η₁ ^ 2 < η₂ ^ 2 := by nlinarith
+  have hsq : η₁ ^ (2 : ℕ) < η₂ ^ (2 : ℕ) := by nlinarith
   have hterm : ∀ n : ℕ,
-      2 * η₁ ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η₁ ^ 2))
-        ≤ 2 * η₂ ^ 2 / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η₂ ^ 2)) := by
+      2 * η₁ ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η₁ ^ (2 : ℕ)))
+        ≤ 2 * η₂ ^ (2 : ℕ) / (((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η₂ ^ (2 : ℕ))) := by
     intro n
     have ha : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-    have hd1 : (0 : ℝ) < ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η₁ ^ 2) := by positivity
-    have hd2 : (0 : ℝ) < ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + η₂ ^ 2) := by positivity
+    have hd1 : (0 : ℝ) < ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η₁ ^ (2 : ℕ)) := by positivity
+    have hd2 : (0 : ℝ) < ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ (2 : ℕ) + η₂ ^ (2 : ℕ)) := by positivity
     rw [div_le_div_iff₀ hd1 hd2]
-    have key : η₁ ^ 2 * ((n : ℝ) + 1) ^ 3 ≤ η₂ ^ 2 * ((n : ℝ) + 1) ^ 3 :=
+    have key : η₁ ^ (2 : ℕ) * ((n : ℝ) + 1) ^ (3 : ℕ) ≤ η₂ ^ (2 : ℕ) * ((n : ℝ) + 1) ^ (3 : ℕ) :=
       mul_le_mul_of_nonneg_right hsq.le (by positivity)
     nlinarith [key, ha.le, sq_nonneg η₁, sq_nonneg η₂]
   have hstrict :
-      2 * η₁ ^ 2 / ((((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ 2 + η₁ ^ 2))
-        < 2 * η₂ ^ 2 / ((((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ 2 + η₂ ^ 2)) := by
-    have hd1 : (0 : ℝ) < (((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ 2 + η₁ ^ 2) := by positivity
-    have hd2 : (0 : ℝ) < (((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ 2 + η₂ ^ 2) := by positivity
+      2 * η₁ ^ (2 : ℕ) / ((((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ (2 : ℕ) + η₁ ^ (2 : ℕ)))
+        < 2 * η₂ ^ (2 : ℕ) / ((((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ (2 : ℕ) + η₂ ^ (2 : ℕ))) := by
+    have hd1 : (0 : ℝ) < (((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ (2 : ℕ) + η₁ ^ (2 : ℕ)) := by positivity
+    have hd2 : (0 : ℝ) < (((0 : ℕ) : ℝ) + 1) * ((((0 : ℕ) : ℝ) + 1) ^ (2 : ℕ) + η₂ ^ (2 : ℕ)) := by positivity
     rw [div_lt_div_iff₀ hd1 hd2]
     push_cast
     nlinarith

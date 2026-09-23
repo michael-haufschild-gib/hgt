@@ -36,7 +36,7 @@ theorem opTrace_comp_tendsto_of_strong_tendsto_of_uniform_bound
   let g := fun i =>
     inner ℂ (adjoint U (b i)) (A (S (b i)))
   let bound := fun i =>
-    (C / 2) * (‖adjoint U (b i)‖ ^ 2 + ‖S (b i)‖ ^ 2)
+    (C / 2) * (‖adjoint U (b i)‖ ^ (2 : ℕ) + ‖S (b i)‖ ^ (2 : ℕ))
   have hboundSummable : Summable bound := by
     have hsum := (hU.adjoint.summable b).add (hS.summable b)
     have hscaled := Summable.mul_left (C / 2) hsum

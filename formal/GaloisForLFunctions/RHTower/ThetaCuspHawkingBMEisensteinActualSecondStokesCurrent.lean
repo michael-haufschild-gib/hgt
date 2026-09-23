@@ -6,15 +6,15 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualThirdJet
 Corpus conjecture C-A.9t4b closes the last pointwise analytic premise in the balanced spin-two
 coefficient.  For the actual repeated completed Poincare leg `F`, set
 
-`e = y^2 (F_x^2 + F_y^2)`.
+`e = y^(2 : ℕ) (F_x^(2 : ℕ) + F_y^(2 : ℕ))`.
 
 The genuine third jets prove the hyperbolic Bochner law
 
-`L e = 2 |Hess F|^2 + 2 (lambda - 1) e`.
+`L e = 2 |Hess F|^(2 : ℕ) + 2 (lambda - 1) e`.
 
 For the actual projecting leg `G`, the current `K = G grad e - e grad G` therefore satisfies
 
-`2 secondDefect = y^2 div K`.
+`2 secondDefect = y^(2 : ℕ) div K`.
 
 No premise, proxy moment, symbolic derivative, or boundary assumption occurs.  The RH chain is
 
@@ -31,15 +31,15 @@ noncomputable section
 def d4BMActualSecondStokesEnergy
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  (z.y : ℂ) ^ 2 *
-    (d4BMCompletedPoincareHorizontalFirstJet z P ^ 2 +
-      d4BMCompletedPoincareVerticalFirstJet z P ^ 2)
+  (z.y : ℂ) ^ (2 : ℕ) *
+    (d4BMCompletedPoincareHorizontalFirstJet z P ^ (2 : ℕ) +
+      d4BMCompletedPoincareVerticalFirstJet z P ^ (2 : ℕ))
 
 /-- Genuine horizontal derivative of the hyperbolic gradient energy. -/
 def d4BMActualSecondStokesEnergyHorizontalFirstJet
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  2 * (z.y : ℂ) ^ 2 *
+  2 * (z.y : ℂ) ^ (2 : ℕ) *
     (d4BMCompletedPoincareHorizontalFirstJet z P *
         d4BMCompletedPoincareHorizontalSecondJet z P +
       d4BMCompletedPoincareVerticalFirstJet z P *
@@ -50,9 +50,9 @@ def d4BMActualSecondStokesEnergyVerticalFirstJet
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   2 * (z.y : ℂ) *
-      (d4BMCompletedPoincareHorizontalFirstJet z P ^ 2 +
-        d4BMCompletedPoincareVerticalFirstJet z P ^ 2) +
-    2 * (z.y : ℂ) ^ 2 *
+      (d4BMCompletedPoincareHorizontalFirstJet z P ^ (2 : ℕ) +
+        d4BMCompletedPoincareVerticalFirstJet z P ^ (2 : ℕ)) +
+    2 * (z.y : ℂ) ^ (2 : ℕ) *
       (d4BMCompletedPoincareHorizontalFirstJet z P *
           d4BMCompletedPoincareMixedSecondJet z P +
         d4BMCompletedPoincareVerticalFirstJet z P *
@@ -62,11 +62,11 @@ def d4BMActualSecondStokesEnergyVerticalFirstJet
 def d4BMActualSecondStokesEnergyHorizontalSecondJet
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  2 * (z.y : ℂ) ^ 2 *
-    (d4BMCompletedPoincareHorizontalSecondJet z P ^ 2 +
+  2 * (z.y : ℂ) ^ (2 : ℕ) *
+    (d4BMCompletedPoincareHorizontalSecondJet z P ^ (2 : ℕ) +
       d4BMCompletedPoincareHorizontalFirstJet z P *
         d4BMCompletedPoincareHorizontalThirdJet z P +
-      d4BMCompletedPoincareMixedSecondJet z P ^ 2 +
+      d4BMCompletedPoincareMixedSecondJet z P ^ (2 : ℕ) +
       d4BMCompletedPoincareVerticalFirstJet z P *
         d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P)
 
@@ -75,18 +75,18 @@ def d4BMActualSecondStokesEnergyVerticalSecondJet
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   2 *
-      (d4BMCompletedPoincareHorizontalFirstJet z P ^ 2 +
-        d4BMCompletedPoincareVerticalFirstJet z P ^ 2) +
+      (d4BMCompletedPoincareHorizontalFirstJet z P ^ (2 : ℕ) +
+        d4BMCompletedPoincareVerticalFirstJet z P ^ (2 : ℕ)) +
     8 * (z.y : ℂ) *
       (d4BMCompletedPoincareHorizontalFirstJet z P *
           d4BMCompletedPoincareMixedSecondJet z P +
         d4BMCompletedPoincareVerticalFirstJet z P *
           d4BMCompletedPoincareVerticalSecondJet z P) +
-    2 * (z.y : ℂ) ^ 2 *
-      (d4BMCompletedPoincareMixedSecondJet z P ^ 2 +
+    2 * (z.y : ℂ) ^ (2 : ℕ) *
+      (d4BMCompletedPoincareMixedSecondJet z P ^ (2 : ℕ) +
         d4BMCompletedPoincareHorizontalFirstJet z P *
           d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P +
-        d4BMCompletedPoincareVerticalSecondJet z P ^ 2 +
+        d4BMCompletedPoincareVerticalSecondJet z P ^ (2 : ℕ) +
         d4BMCompletedPoincareVerticalFirstJet z P *
           d4BMCompletedPoincareVerticalThirdJet z P)
 
@@ -98,13 +98,13 @@ theorem hasDerivAt_d4BMActualSecondStokesEnergy_horizontal
       (d4BMActualSecondStokesEnergyHorizontalFirstJet z P) z.x := by
   have hFx := hasDerivAt_d4BMCompletedPoincareHorizontalFirstJet_horizontal z P
   have hFy := hasDerivAt_d4BMCompletedPoincareVerticalFirstJet_horizontal z P
-  have h := ((hFx.pow 2).add (hFy.pow 2)).const_mul ((z.y : ℂ) ^ 2)
+  have h := ((hFx.pow 2).add (hFy.pow 2)).const_mul ((z.y : ℂ) ^ (2 : ℕ))
   have hz : d4BMHorizontalCoordinate z z.x = z := by cases z; rfl
   rw [hz] at h
   have h' : HasDerivAt
-      (fun x : ℝ => (z.y : ℂ) ^ 2 *
-        (d4BMCompletedPoincareHorizontalFirstJet (d4BMHorizontalCoordinate z x) P ^ 2 +
-          d4BMCompletedPoincareVerticalFirstJet (d4BMHorizontalCoordinate z x) P ^ 2))
+      (fun x : ℝ => (z.y : ℂ) ^ (2 : ℕ) *
+        (d4BMCompletedPoincareHorizontalFirstJet (d4BMHorizontalCoordinate z x) P ^ (2 : ℕ) +
+          d4BMCompletedPoincareVerticalFirstJet (d4BMHorizontalCoordinate z x) P ^ (2 : ℕ)))
       (d4BMActualSecondStokesEnergyHorizontalFirstJet z P) z.x := by
     apply h.congr_deriv
     unfold d4BMActualSecondStokesEnergyHorizontalFirstJet
@@ -124,11 +124,11 @@ theorem hasDerivAt_d4BMActualSecondStokesEnergyHorizontalFirstJet_horizontal
   have hFy := hasDerivAt_d4BMCompletedPoincareVerticalFirstJet_horizontal z P
   have hFxy := hasDerivAt_d4BMCompletedPoincareMixedSecondJet_horizontal z P
   have h := ((hFx.mul hFxx).add (hFy.mul hFxy)).const_mul
-    (2 * (z.y : ℂ) ^ 2)
+    (2 * (z.y : ℂ) ^ (2 : ℕ))
   have hz : d4BMHorizontalCoordinate z z.x = z := by cases z; rfl
   rw [hz] at h
   have h' : HasDerivAt
-      (fun x : ℝ => 2 * (z.y : ℂ) ^ 2 *
+      (fun x : ℝ => 2 * (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMCompletedPoincareHorizontalFirstJet (d4BMHorizontalCoordinate z x) P *
             d4BMCompletedPoincareHorizontalSecondJet (d4BMHorizontalCoordinate z x) P +
           d4BMCompletedPoincareVerticalFirstJet (d4BMHorizontalCoordinate z x) P *
@@ -144,18 +144,18 @@ theorem hasDerivAt_d4BMActualSecondStokesEnergyHorizontalFirstJet_horizontal
 def d4BMActualSecondStokesEnergyVerticalSlice
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
-  (y : ℂ) ^ 2 *
-    (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y ^ 2 +
-      d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ 2)
+  (y : ℂ) ^ (2 : ℕ) *
+    (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y ^ (2 : ℕ) +
+      d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ (2 : ℕ))
 
 /-- Vertical slice of the genuine first vertical energy jet. -/
 def d4BMActualSecondStokesEnergyVerticalFirstJetSlice
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
   2 * (y : ℂ) *
-      (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y ^ 2 +
-        d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ 2) +
-    2 * (y : ℂ) ^ 2 *
+      (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y ^ (2 : ℕ) +
+        d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ (2 : ℕ)) +
+    2 * (y : ℂ) ^ (2 : ℕ) *
       (d4BMCompletedPoincareHorizontalFirstJetVerticalSlice z P y *
           d4BMCompletedPoincareMixedSecondJetVerticalSlice z P y +
         d4BMCompletedPoincareVerticalFirstJetSlice z P y *
@@ -307,7 +307,7 @@ theorem hasDerivAt_d4BMActualSecondStokesVerticalCurrentSlice
 theorem d4BM_completedPoincare_thirdJet_verticalEigenEquation
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
-    (z.y : ℂ) ^ 3 *
+    (z.y : ℂ) ^ (3 : ℕ) *
         (d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P +
           d4BMCompletedPoincareVerticalThirdJet z P) =
       P.s * (P.s - 1) * (z.y : ℂ) *
@@ -321,39 +321,39 @@ theorem d4BM_completedPoincare_thirdJet_verticalEigenEquation
 
 private theorem d4BM_secondStokes_bochner_algebra
     (y f fx fy fxx fxy fyy fxxx fxxy fxyy fyyy lambda : ℂ)
-    (htrace : y ^ 2 * (fxx + fyy) = lambda * f)
-    (hx : y ^ 2 * (fxxx + fxyy) = lambda * fx)
-    (hy : y ^ 3 * (fxxy + fyyy) = lambda * y * fy - 2 * lambda * f) :
-    y ^ 2 *
-        (2 * y ^ 2 * (fxx ^ 2 + fx * fxxx + fxy ^ 2 + fy * fxxy) +
-          (2 * (fx ^ 2 + fy ^ 2) +
+    (htrace : y ^ (2 : ℕ) * (fxx + fyy) = lambda * f)
+    (hx : y ^ (2 : ℕ) * (fxxx + fxyy) = lambda * fx)
+    (hy : y ^ (3 : ℕ) * (fxxy + fyyy) = lambda * y * fy - 2 * lambda * f) :
+    y ^ (2 : ℕ) *
+        (2 * y ^ (2 : ℕ) * (fxx ^ (2 : ℕ) + fx * fxxx + fxy ^ (2 : ℕ) + fy * fxxy) +
+          (2 * (fx ^ (2 : ℕ) + fy ^ (2 : ℕ)) +
             8 * y * (fx * fxy + fy * fyy) +
-            2 * y ^ 2 * (fxy ^ 2 + fx * fxyy + fyy ^ 2 + fy * fyyy))) =
-      2 * ((y ^ 2 * fxx - y * fy) ^ 2 +
-        2 * (y ^ 2 * fxy + y * fx) ^ 2 +
-        (y ^ 2 * fyy + y * fy) ^ 2) +
-      2 * (lambda - 1) * (y ^ 2 * (fx ^ 2 + fy ^ 2)) := by
+            2 * y ^ (2 : ℕ) * (fxy ^ (2 : ℕ) + fx * fxyy + fyy ^ (2 : ℕ) + fy * fyyy))) =
+      2 * ((y ^ (2 : ℕ) * fxx - y * fy) ^ (2 : ℕ) +
+        2 * (y ^ (2 : ℕ) * fxy + y * fx) ^ (2 : ℕ) +
+        (y ^ (2 : ℕ) * fyy + y * fy) ^ (2 : ℕ)) +
+      2 * (lambda - 1) * (y ^ (2 : ℕ) * (fx ^ (2 : ℕ) + fy ^ (2 : ℕ))) := by
   linear_combination
-    2 * y ^ 2 * fx * hx + 2 * y * fy * hy + 4 * y * fy * htrace
+    2 * y ^ (2 : ℕ) * fx * hx + 2 * y * fy * hy + 4 * y * fy * htrace
 
 /-- **C-A.9t4b actual Bochner identity.**  Genuine third jets give the exact hyperbolic
 energy-Hessian law for the actual completed Poincare series. -/
 theorem d4BM_actualSecondStokes_bochnerIdentity
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMActualSecondStokesEnergyHorizontalSecondJet z P +
           d4BMActualSecondStokesEnergyVerticalSecondJet z P) =
-      2 * (d4BMActualHyperbolicHessianXX z P ^ 2 +
-        2 * d4BMActualHyperbolicHessianXY z P ^ 2 +
-        d4BMActualHyperbolicHessianYY z P ^ 2) +
+      2 * (d4BMActualHyperbolicHessianXX z P ^ (2 : ℕ) +
+        2 * d4BMActualHyperbolicHessianXY z P ^ (2 : ℕ) +
+        d4BMActualHyperbolicHessianYY z P ^ (2 : ℕ)) +
       2 * (P.s * (P.s - 1) - 1) * d4BMActualSecondStokesEnergy z P := by
   have htrace :=
     d4BM_completedEisensteinPoincareSeries_hyperbolicLaplacian_eq_eigenvalue z P
   have hx := d4BM_completedPoincare_thirdJet_horizontalEigenEquation z P
   have hy := d4BM_completedPoincare_thirdJet_verticalEigenEquation z P
   have hy' :
-      (z.y : ℂ) ^ 3 *
+      (z.y : ℂ) ^ (3 : ℕ) *
           (d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P +
             d4BMCompletedPoincareVerticalThirdJet z P) =
         (P.s * (P.s - 1)) * (z.y : ℂ) *
@@ -386,7 +386,7 @@ theorem d4BM_actualSecondStokesDefectDensity_eq_divergence
     (z : D4BMUpperHalfPlaneCoordinate)
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) :
     2 * d4BMActualSecondStokesDefectDensity z P Q =
-      (z.y : ℂ) ^ 2 *
+      (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMActualSecondStokesHorizontalDivergence z P Q +
           d4BMActualSecondStokesVerticalDivergence z P Q) := by
   have hbochner := d4BM_actualSecondStokes_bochnerIdentity z P
@@ -400,9 +400,9 @@ theorem d4BM_actualSecondStokesDefectDensity_eq_divergence
   unfold d4BMActualSecondStokesEnergy at hbochner ⊢
   linear_combination
     -d4BMCompletedEisensteinPoincareSeries z Q * hbochner +
-      ((z.y : ℂ) ^ 2 *
-        (d4BMCompletedPoincareHorizontalFirstJet z P ^ 2 +
-          d4BMCompletedPoincareVerticalFirstJet z P ^ 2)) * hQ
+      ((z.y : ℂ) ^ (2 : ℕ) *
+        (d4BMCompletedPoincareHorizontalFirstJet z P ^ (2 : ℕ) +
+          d4BMCompletedPoincareVerticalFirstJet z P ^ (2 : ℕ))) * hQ
 
 end
 end RHTower

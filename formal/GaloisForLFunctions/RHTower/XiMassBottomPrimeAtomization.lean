@@ -210,7 +210,7 @@ theorem integrable_xiMassBottomPrimeAtomIntegrand
     {τ : ℂ} (hτ : 0 < τ.re) (n : ℕ) :
     Integrable (xiMassBottomPrimeAtomIntegrand a c τ n) := by
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs hτ).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul
       (Real.exp (|τ.im| * c) * xiMassBottomPrimeAtomWeight c n))
     (continuous_xiMassBottomPrimeAtomIntegrand hhalf hca τ n).aestronglyMeasurable
     (Filter.Eventually.of_forall fun x =>
@@ -239,7 +239,7 @@ theorem summable_integral_norm_xiMassBottomPrimeAtomIntegrand
     intro n
     have hmajor : Integrable (fun x : ℝ =>
         (E * xiMassBottomPrimeAtomWeight c n) * Real.exp (-(τ.re * |x|))) :=
-      (integrable_exp_neg_mul_abs hτ).const_mul _
+      (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul _
     calc
       (∫ x : ℝ, ‖xiMassBottomPrimeAtomIntegrand a c τ n x‖) ≤
           ∫ x : ℝ,

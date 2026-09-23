@@ -211,8 +211,8 @@ theorem suzukiNegativeSpectralNode_bareAntiResolventGap_not_nonneg
 direct completion on the negative channel, and their projective coupling. -/
 def suzukiTwoChannelKreinCompletionForm
     (positiveBlock coupling directCompletion debt x y : ℝ) : ℝ :=
-  positiveBlock * x ^ 2 + 2 * coupling * x * y +
-    (directCompletion - debt) * y ^ 2
+  positiveBlock * x ^ (2 : ℕ) + 2 * coupling * x * y +
+    (directCompletion - debt) * y ^ (2 : ℕ)
 
 /-- Exact completed-square form of the two-channel weld. -/
 theorem suzukiTwoChannelKreinCompletionForm_eq_completedSquare
@@ -220,8 +220,8 @@ theorem suzukiTwoChannelKreinCompletionForm_eq_completedSquare
     (hpositiveBlock : positiveBlock ≠ 0) :
     suzukiTwoChannelKreinCompletionForm
         positiveBlock coupling directCompletion debt x y =
-      positiveBlock * (x + coupling / positiveBlock * y) ^ 2 +
-        (directCompletion - debt - coupling ^ 2 / positiveBlock) * y ^ 2 := by
+      positiveBlock * (x + coupling / positiveBlock * y) ^ (2 : ℕ) +
+        (directCompletion - debt - coupling ^ (2 : ℕ) / positiveBlock) * y ^ (2 : ℕ) := by
   simp only [suzukiTwoChannelKreinCompletionForm]
   field_simp [hpositiveBlock]
   ring
@@ -233,7 +233,7 @@ theorem suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt
     (hpositiveBlock : 0 < positiveBlock) :
     (∀ x y : ℝ, 0 ≤ suzukiTwoChannelKreinCompletionForm
         positiveBlock coupling directCompletion debt x y) ↔
-      debt + coupling ^ 2 / positiveBlock ≤ directCompletion := by
+      debt + coupling ^ (2 : ℕ) / positiveBlock ≤ directCompletion := by
   constructor
   · intro h
     have hspecial := h (-coupling / positiveBlock) 1
@@ -248,13 +248,13 @@ theorem suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt
     rw [suzukiTwoChannelKreinCompletionForm_eq_completedSquare
       (ne_of_gt hpositiveBlock)]
     have hfirst :
-        0 ≤ positiveBlock * (x + coupling / positiveBlock * y) ^ 2 :=
+        0 ≤ positiveBlock * (x + coupling / positiveBlock * y) ^ (2 : ℕ) :=
       mul_nonneg (le_of_lt hpositiveBlock) (sq_nonneg _)
     have hresidual :
-        0 ≤ directCompletion - debt - coupling ^ 2 / positiveBlock := by
+        0 ≤ directCompletion - debt - coupling ^ (2 : ℕ) / positiveBlock := by
       linarith
     have hsecond :
-        0 ≤ (directCompletion - debt - coupling ^ 2 / positiveBlock) * y ^ 2 :=
+        0 ≤ (directCompletion - debt - coupling ^ (2 : ℕ) / positiveBlock) * y ^ (2 : ℕ) :=
       mul_nonneg hresidual (sq_nonneg _)
     linarith
 
@@ -262,9 +262,9 @@ theorem suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt
 theorem suzukiProjectiveCoupling_schurTax_strict
     {positiveBlock coupling debt : ℝ}
     (hpositiveBlock : 0 < positiveBlock) (hcoupling : coupling ≠ 0) :
-    debt < debt + coupling ^ 2 / positiveBlock := by
-  have hcouplingSq : 0 < coupling ^ 2 := sq_pos_of_ne_zero hcoupling
-  have htax : 0 < coupling ^ 2 / positiveBlock :=
+    debt < debt + coupling ^ (2 : ℕ) / positiveBlock := by
+  have hcouplingSq : 0 < coupling ^ (2 : ℕ) := sq_pos_of_ne_zero hcoupling
+  have htax : 0 < coupling ^ (2 : ℕ) / positiveBlock :=
     div_pos hcouplingSq hpositiveBlock
   linarith
 
@@ -279,7 +279,7 @@ theorem suzukiNegativeSpectralNode_twoChannelCompletionLaw
           positiveBlock coupling directCompletion
             (-suzukiAffineResolventKreinDefect alpha beta t) x y) ↔
         -suzukiAffineResolventKreinDefect alpha beta t +
-            coupling ^ 2 / positiveBlock ≤ directCompletion) := by
+            coupling ^ (2 : ℕ) / positiveBlock ≤ directCompletion) := by
   constructor
   · exact suzukiNegativeSpectralNode_compensationDeficit_pos
       hab hb0 hbt htneg
@@ -305,7 +305,7 @@ theorem no_squaredNorm_presentation_of_negativeNode
     {ι V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
     {t : ι → ℝ} {j : ι} (hbt : beta < t j) (htneg : t j < 0)
-    (B : ι → V) (hQ : ∀ i, suzukiAffineAntiResolventGap alpha beta (t i) = ‖B i‖ ^ 2) :
+    (B : ι → V) (hQ : ∀ i, suzukiAffineAntiResolventGap alpha beta (t i) = ‖B i‖ ^ (2 : ℕ)) :
     False := by
   refine suzukiNegativeSpectralNode_bareAntiResolventGap_not_nonneg hab hb0 hbt htneg ?_
   rw [hQ j]
@@ -336,16 +336,16 @@ negative nodes.  Nothing here is an estimate: each term's sign is decided by its
 
 /-- The sewn form of a finite diagonal spectral model. -/
 noncomputable def suzukiDiagonalKreinForm {ι : Type*} (s : Finset ι) (alpha beta : ℝ) (t c : ι → ℝ) : ℝ :=
-  ∑ j ∈ s, (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j)
+  ∑ j ∈ s, (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j)
 
 /-- **`(8)`, the signed split.**  The form is its positive-node part plus its negative-node part. -/
 theorem suzukiDiagonalKreinForm_split {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (alpha beta : ℝ) (t c : ι → ℝ) :
     suzukiDiagonalKreinForm s alpha beta t c
       = (∑ j ∈ s.filter (fun j => 0 < t j),
-          (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+          (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j))
         + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-          (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) :=
+          (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j) :=
   (Finset.sum_filter_add_sum_filter_not s _ _).symm
 
 /-- Every positive-node term is nonnegative. -/
@@ -353,7 +353,7 @@ theorem suzukiDiagonalKreinForm_posPart_nonneg {ι : Type*} [DecidableEq ι] (s 
     {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
     (hbt : ∀ j ∈ s, beta < t j) :
     0 ≤ ∑ j ∈ s.filter (fun j => 0 < t j),
-      (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) := by
+      (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j) := by
   refine Finset.sum_nonneg fun j hj => ?_
   rw [Finset.mem_filter] at hj
   refine mul_nonneg (sq_nonneg _) (le_of_lt ?_)
@@ -365,7 +365,7 @@ theorem suzukiDiagonalKreinForm_negPart_nonpos {ι : Type*} [DecidableEq ι] (s 
     {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
     (hbt : ∀ j ∈ s, beta < t j) (hne : ∀ j ∈ s, t j ≠ 0) :
     ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-      (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) ≤ 0 := by
+      (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j) ≤ 0 := by
   refine Finset.sum_nonpos fun j hj => ?_
   rw [Finset.mem_filter] at hj
   have htneg : t j < 0 := lt_of_le_of_ne (le_of_not_gt hj.2) (hne j hj.1)
@@ -444,9 +444,9 @@ theorem suzukiDiagonalKreinForm_negPart_eq {ι : Type*} [DecidableEq ι] (s : Fi
     {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
     (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
     (∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-        (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+        (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j))
       = -∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+          (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j) := by
   rw [← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun j hj => ?_
   rw [Finset.mem_filter] at hj
@@ -460,9 +460,9 @@ theorem suzukiDiagonalKreinForm_posPart_eq {ι : Type*} [DecidableEq ι] (s : Fi
     {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
     (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) :
     (∑ j ∈ s.filter (fun j => 0 < t j),
-        (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+        (c j) ^ (2 : ℕ) * suzukiAffineResolventKreinDefect alpha beta (t j))
       = ∑ j ∈ s.filter (fun j => 0 < t j),
-          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+          (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j) := by
   refine Finset.sum_congr rfl fun j hj => ?_
   rw [Finset.mem_filter] at hj
   rw [kreinDefect_eq_magnitude_of_pos hab (hta j hj.1) (htb j hj.1) hj.2]
@@ -474,9 +474,9 @@ theorem suzukiDiagonalKreinForm_eq_magnitude_difference {ι : Type*} [DecidableE
     (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
     suzukiDiagonalKreinForm s alpha beta t c
       = (∑ j ∈ s.filter (fun j => 0 < t j),
-          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j))
+          (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j))
         - ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+          (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j) := by
   rw [suzukiDiagonalKreinForm_split, suzukiDiagonalKreinForm_posPart_eq s hab t c hta htb,
     suzukiDiagonalKreinForm_negPart_eq s hab t c hta htb hne]
   ring
@@ -495,9 +495,9 @@ theorem suzukiDiagonalKreinForm_add_debt_eq_posPart {ι : Type*} [DecidableEq ι
     (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
     suzukiDiagonalKreinForm s alpha beta t c
         + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-            (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j)
+            (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j)
       = ∑ j ∈ s.filter (fun j => 0 < t j),
-          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+          (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j) := by
   rw [suzukiDiagonalKreinForm_eq_magnitude_difference s hab t c hta htb hne]
   ring
 
@@ -508,7 +508,7 @@ theorem suzukiDiagonalKreinForm_add_debt_nonneg {ι : Type*} [DecidableEq ι] (s
     (hbt : ∀ j ∈ s, beta < t j) (hne : ∀ j ∈ s, t j ≠ 0) :
     0 ≤ suzukiDiagonalKreinForm s alpha beta t c
         + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
-            (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+            (c j) ^ (2 : ℕ) * suzukiKreinMagnitude alpha beta (t j) := by
   have hta : ∀ j ∈ s, t j ≠ alpha := fun j hj =>
     ne_of_gt (lt_trans hab (hbt j hj))
   have htb : ∀ j ∈ s, t j ≠ beta := fun j hj => ne_of_gt (hbt j hj)

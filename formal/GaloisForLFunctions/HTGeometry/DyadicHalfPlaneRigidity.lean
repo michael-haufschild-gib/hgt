@@ -53,17 +53,17 @@ theorem complexDyadicHalfPlane_iff_nonnegativeReal (z : ℂ) :
       intro k
       have hnorm : ‖u ^ (2 ^ k)‖ = 1 := by simp [norm_pow, hunorm]
       exact (Complex.re_le_norm _).trans_eq hnorm
-    have hrec : ∀ k : ℕ, x (k + 1) = 2 * (x k) ^ 2 - 1 := by
+    have hrec : ∀ k : ℕ, x (k + 1) = 2 * (x k) ^ (2 : ℕ) - 1 := by
       intro k
       let v : ℂ := u ^ (2 ^ k)
       have hvnorm : ‖v‖ = 1 := by simp [v, norm_pow, hunorm]
-      have hvnormsq : v.re ^ 2 + v.im ^ 2 = 1 := by
+      have hvnormsq : v.re ^ (2 : ℕ) + v.im ^ (2 : ℕ) = 1 := by
         have hs := Complex.sq_norm v
         rw [hvnorm] at hs
         simpa [Complex.normSq_apply, pow_two] using hs.symm
-      change (u ^ (2 ^ (k + 1))).re = 2 * (u ^ (2 ^ k)).re ^ 2 - 1
+      change (u ^ (2 ^ (k + 1))).re = 2 * (u ^ (2 ^ k)).re ^ (2 : ℕ) - 1
       rw [pow_succ, pow_mul]
-      change (v ^ 2).re = 2 * v.re ^ 2 - 1
+      change (v ^ (2 : ℕ)).re = 2 * v.re ^ (2 : ℕ) - 1
       rw [pow_two, Complex.mul_re]
       nlinarith
     let d : ℕ → ℝ := fun k => 1 - x k

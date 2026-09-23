@@ -32,9 +32,9 @@ noncomputable section
 
 /-- The exact derivative of the exterior radial speed, as a function. -/
 def radialPSWFSpeedDeriv (sigma z : ℝ) : ℝ :=
-  z * (sigma ^ 2 - 1) / ((z ^ 2 - 1) ^ 2 * radialPSWFExteriorSpeed sigma z)
+  z * (sigma ^ (2 : ℕ) - 1) / ((z ^ (2 : ℕ) - 1) ^ (2 : ℕ) * radialPSWFExteriorSpeed sigma z)
 
-theorem continuousOn_radialPSWFSpeedDeriv {sigma a b : ℝ} (hsigma : sigma ^ 2 ≤ 1) (ha : 1 < a) :
+theorem continuousOn_radialPSWFSpeedDeriv {sigma a b : ℝ} (hsigma : sigma ^ (2 : ℕ) ≤ 1) (ha : 1 < a) :
     ContinuousOn (radialPSWFSpeedDeriv sigma) (Icc a b) := by
   have hSc : ContinuousOn (radialPSWFExteriorSpeed sigma) (Icc a b) := fun x hx =>
     (continuousAt_radialPSWFExteriorSpeed sigma (ha.trans_le hx.1)).continuousWithinAt
@@ -43,7 +43,7 @@ theorem continuousOn_radialPSWFSpeedDeriv {sigma a b : ℝ} (hsigma : sigma ^ 2 
   intro x hx
   have hx1 : 1 < x := ha.trans_le hx.1
   have hS : 0 < radialPSWFExteriorSpeed sigma x := radialPSWFExteriorSpeed_pos hsigma hx1
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   positivity
 
 /-- **The bandwidth-scaled radial phase averages a square to half.**  On every closed subinterval of
@@ -54,10 +54,10 @@ theorem abs_integral_weight_mul_cos_sq_radialPhase_sub_half_le
     (hs0 : 0 ≤ sigma) (hs1 : sigma ≤ 1)
     {w w' : ℝ → ℝ}
     (hw : ∀ x ∈ Icc a b, HasDerivAt w (w' x) x) (hw'c : ContinuousOn w' (Icc a b)) :
-    |(∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t) ^ 2)
+    |(∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t) ^ (2 : ℕ))
         - (1 / 2) * ∫ t in a..b, w t|
       ≤ (|w b| + |w a| + ∫ t in a..b, |w' t|) / c := by
-  have hsigma : sigma ^ 2 ≤ 1 := by nlinarith
+  have hsigma : sigma ^ (2 : ℕ) ≤ 1 := by nlinarith
   refine abs_integral_weight_mul_cos_sq_sub_half_le'
     (φ := fun t => c * radialPSWFExteriorPhase sigma t)
     (φ' := fun t => c * radialPSWFExteriorSpeed sigma t)
@@ -84,7 +84,7 @@ theorem quarter_integral_le_integral_weight_mul_cos_sq_radialPhase
     (hw : ∀ x ∈ Icc a b, HasDerivAt w (w' x) x) (hw'c : ContinuousOn w' (Icc a b))
     (hbudget : (|w b| + |w a| + ∫ t in a..b, |w' t|) / c ≤ (1 / 4) * ∫ t in a..b, w t) :
     (1 / 4) * (∫ t in a..b, w t)
-      ≤ ∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t) ^ 2 := by
+      ≤ ∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t) ^ (2 : ℕ) := by
   have hmain := abs_integral_weight_mul_cos_sq_radialPhase_sub_half_le hab ha hc hs0 hs1 hw hw'c
   linarith [neg_le_of_abs_le hmain]
 

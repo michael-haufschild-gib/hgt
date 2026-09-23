@@ -142,7 +142,7 @@ theorem bernsteinEllipsePhase_ne_of_distinct_maximal_xiEndpointCoordinates
     nlinarith [xiOffLineNormalizedBernsteinRadius_lt_one_fourth]
 
 /-- Distinct coordinates in one maximal Xi packet have a uniform mixed Gutzmer radius below
-`B^2`. -/
+`B^(2 : ℕ)`. -/
 theorem exists_uniform_mixedXiBernsteinProduct_gap_of_distinct_maximal_coordinates
     {q r : XiZeroCopy} {B : ℝ}
     (hB : 1 < B)
@@ -150,7 +150,7 @@ theorem exists_uniform_mixedXiBernsteinProduct_gap_of_distinct_maximal_coordinat
     (hrB : xiEndpointBernsteinAtomAmplitudeBase r = B)
     (hcoord : xiEndpointNormalizedReciprocalSquare q ≠
       xiEndpointNormalizedReciprocalSquare r) :
-    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
       ∀ w : ℂ, ‖w‖ = 1 →
         ‖reflectedBernsteinProduct
           (xiEndpointNormalizedReciprocalSquare q)
@@ -175,7 +175,7 @@ theorem exists_uniform_mixedXiBernsteinCrossMoment_gap_of_distinct_maximal_coord
     (hrB : xiEndpointBernsteinAtomAmplitudeBase r = B)
     (hcoord : xiEndpointNormalizedReciprocalSquare q ≠
       xiEndpointNormalizedReciprocalSquare r) :
-    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
       ∀ n : ℕ,
         ‖reflectedBernsteinCrossMoment
           (xiEndpointNormalizedReciprocalSquare q)

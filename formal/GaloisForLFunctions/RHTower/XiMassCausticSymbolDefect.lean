@@ -34,26 +34,26 @@ noncomputable section
 /-! ## The sharp slope -/
 
 theorem xiMassSpacelikeSharpSlope_sq {a : ℝ} (ha : 1 / 2 < a) :
-    xiMassSpacelikeSharpSlope a ^ 2 = 4 * a ^ 2 / (4 * a ^ 2 - 1) := by
+    xiMassSpacelikeSharpSlope a ^ (2 : ℕ) = 4 * a ^ (2 : ℕ) / (4 * a ^ (2 : ℕ) - 1) := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
-  have hpos : (0 : ℝ) < a ^ 2 - 1 / 4 := by nlinarith
-  have hs : Real.sqrt (a ^ 2 - 1 / 4) ^ 2 = a ^ 2 - 1 / 4 := Real.sq_sqrt hpos.le
-  have hden : (0 : ℝ) < 4 * a ^ 2 - 1 := by nlinarith
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) - 1 / 4 := by nlinarith
+  have hs : Real.sqrt (a ^ (2 : ℕ) - 1 / 4) ^ (2 : ℕ) = a ^ (2 : ℕ) - 1 / 4 := Real.sq_sqrt hpos.le
+  have hden : (0 : ℝ) < 4 * a ^ (2 : ℕ) - 1 := by nlinarith
   rw [xiMassSpacelikeSharpSlope, div_pow, hs]
   field_simp
 
 theorem xiMassSpacelikeSharpSlope_pos {a : ℝ} (ha : 1 / 2 < a) :
     0 < xiMassSpacelikeSharpSlope a := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
-  have hpos : (0 : ℝ) < a ^ 2 - 1 / 4 := by nlinarith
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) - 1 / 4 := by nlinarith
   rw [xiMassSpacelikeSharpSlope]
   exact div_pos ha0 (Real.sqrt_pos.2 hpos)
 
 /-- `κ_B² − 1 = 1/(4a²−1)`: the exterior gap of the balance slope. -/
 theorem xiMassSpacelikeSharpSlope_sq_sub_one {a : ℝ} (ha : 1 / 2 < a) :
-    xiMassSpacelikeSharpSlope a ^ 2 - 1 = 1 / (4 * a ^ 2 - 1) := by
+    xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 = 1 / (4 * a ^ (2 : ℕ) - 1) := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
-  have hden : (0 : ℝ) < 4 * a ^ 2 - 1 := by nlinarith
+  have hden : (0 : ℝ) < 4 * a ^ (2 : ℕ) - 1 := by nlinarith
   rw [xiMassSpacelikeSharpSlope_sq ha]
   field_simp
   ring
@@ -62,32 +62,32 @@ theorem xiMassSpacelikeSharpSlope_sq_sub_one {a : ℝ} (ha : 1 / 2 < a) :
 
 /-- The caustic symbol of the jet operator on the exterior Bessel carrier. -/
 def xiMassCausticSymbol (a sigma u h : ℝ) : ℂ :=
-  4 * (a : ℂ) ^ 4
-    - (a : ℂ) ^ 2 * (h : ℂ) ^ 2 / xiMassSpacelikePropagationArgument sigma u h
+  4 * (a : ℂ) ^ (4 : ℕ)
+    - (a : ℂ) ^ (2 : ℕ) * (h : ℂ) ^ (2 : ℕ) / xiMassSpacelikePropagationArgument sigma u h
 
 /-- **The closed residue of the caustic symbol.**  At the balance slope the leading `u²` terms
 cancel identically, leaving only the damping and the window displacement. -/
 theorem xiMassCausticSymbol_residue {a sigma u s : ℝ} (ha : 1 / 2 < a) :
-    4 * (a : ℂ) ^ 2
+    4 * (a : ℂ) ^ (2 : ℕ)
         * xiMassSpacelikePropagationArgument sigma u (xiMassSpacelikeSharpSlope a * u + s)
-      - ((xiMassSpacelikeSharpSlope a * u + s : ℝ) : ℂ) ^ 2
-      = 4 * (a : ℂ) ^ 2 * (sigma : ℂ) ^ 2
-        + 8 * Complex.I * (a : ℂ) ^ 2 * (sigma : ℂ) * (u : ℂ)
-        + (4 * (a : ℂ) ^ 2 - 1)
-          * (2 * ((xiMassSpacelikeSharpSlope a : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ 2) := by
+      - ((xiMassSpacelikeSharpSlope a * u + s : ℝ) : ℂ) ^ (2 : ℕ)
+      = 4 * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) ^ (2 : ℕ)
+        + 8 * Complex.I * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) * (u : ℂ)
+        + (4 * (a : ℂ) ^ (2 : ℕ) - 1)
+          * (2 * ((xiMassSpacelikeSharpSlope a : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ (2 : ℕ)) := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
-  have hden : (0 : ℝ) < 4 * a ^ 2 - 1 := by nlinarith
-  have hkey : (4 * a ^ 2 - 1) * xiMassSpacelikeSharpSlope a ^ 2 = 4 * a ^ 2 := by
+  have hden : (0 : ℝ) < 4 * a ^ (2 : ℕ) - 1 := by nlinarith
+  have hkey : (4 * a ^ (2 : ℕ) - 1) * xiMassSpacelikeSharpSlope a ^ (2 : ℕ) = 4 * a ^ (2 : ℕ) := by
     rw [xiMassSpacelikeSharpSlope_sq ha]
     field_simp
-  have hkeyC : (4 * (a : ℂ) ^ 2 - 1) * ((xiMassSpacelikeSharpSlope a : ℝ) : ℂ) ^ 2
-      = 4 * (a : ℂ) ^ 2 := by
+  have hkeyC : (4 * (a : ℂ) ^ (2 : ℕ) - 1) * ((xiMassSpacelikeSharpSlope a : ℝ) : ℂ) ^ (2 : ℕ)
+      = 4 * (a : ℂ) ^ (2 : ℕ) := by
     have := congrArg (fun t : ℝ => ((t : ℝ) : ℂ)) hkey
     push_cast at this
     linear_combination this
   rw [xiMassSpacelikePropagationArgument_eq]
   push_cast
-  linear_combination ((u : ℂ) ^ 2) * hkeyC + Complex.I_sq * (4 * (a : ℂ) ^ 2 * (u : ℂ) ^ 2)
+  linear_combination ((u : ℂ) ^ (2 : ℕ)) * hkeyC + Complex.I_sq * (4 * (a : ℂ) ^ (2 : ℕ) * (u : ℂ) ^ (2 : ℕ))
 
 set_option maxHeartbeats 1000000 in
 /-- **The caustic symbol is `O(u^{-1/2})` on the square-root window.**  One half power of the height
@@ -97,35 +97,35 @@ theorem exists_norm_xiMassCausticSymbol_le {a sigma : ℝ} (ha : 1 / 2 < a) (hsi
       ‖xiMassCausticSymbol a sigma u (xiMassSpacelikeSharpSlope a * u + s)‖
         ≤ C / Real.sqrt u := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
-  have hden : (0 : ℝ) < 4 * a ^ 2 - 1 := by nlinarith
+  have hden : (0 : ℝ) < 4 * a ^ (2 : ℕ) - 1 := by nlinarith
   set κ : ℝ := xiMassSpacelikeSharpSlope a with hκdef
   have hκ1 : 1 < κ := one_lt_xiMassSpacelikeSharpSlope ha
   have hκ0 : (0 : ℝ) < κ := by linarith
-  set q : ℝ := κ ^ 2 - 1 with hqdef
+  set q : ℝ := κ ^ (2 : ℕ) - 1 with hqdef
   have hq0 : (0 : ℝ) < q := by rw [hqdef]; nlinarith
-  set C₁ : ℝ := 12 * a ^ 2 + (4 * a ^ 2 - 1) * (2 * κ + 1) with hC₁def
+  set C₁ : ℝ := 12 * a ^ (2 : ℕ) + (4 * a ^ (2 : ℕ) - 1) * (2 * κ + 1) with hC₁def
   have hC₁0 : (0 : ℝ) < C₁ := by rw [hC₁def]; positivity
-  refine ⟨2 * a ^ 2 * C₁ / q, max (max 1 (sigma ^ 2)) ((4 * κ / q) ^ 2), by positivity,
-    le_trans (le_max_left 1 (sigma ^ 2)) (le_max_left _ _), ?_⟩
+  refine ⟨2 * a ^ (2 : ℕ) * C₁ / q, max (max 1 (sigma ^ (2 : ℕ))) ((4 * κ / q) ^ (2 : ℕ)), by positivity,
+    le_trans (le_max_left 1 (sigma ^ (2 : ℕ))) (le_max_left _ _), ?_⟩
   intro u hu s hs
-  have hu1 : (1 : ℝ) ≤ u := le_trans (le_trans (le_max_left 1 (sigma ^ 2)) (le_max_left _ _)) hu
-  have huσ : sigma ^ 2 ≤ u := le_trans (le_trans (le_max_right 1 (sigma ^ 2)) (le_max_left _ _)) hu
-  have huκ : (4 * κ / q) ^ 2 ≤ u := le_trans (le_max_right _ _) hu
+  have hu1 : (1 : ℝ) ≤ u := le_trans (le_trans (le_max_left 1 (sigma ^ (2 : ℕ))) (le_max_left _ _)) hu
+  have huσ : sigma ^ (2 : ℕ) ≤ u := le_trans (le_trans (le_max_right 1 (sigma ^ (2 : ℕ))) (le_max_left _ _)) hu
+  have huκ : (4 * κ / q) ^ (2 : ℕ) ≤ u := le_trans (le_max_right _ _) hu
   have hu0 : (0 : ℝ) < u := by linarith
   set r : ℝ := Real.sqrt u with hrdef
   have hr0 : (0 : ℝ) < r := Real.sqrt_pos.2 hu0
-  have hrsq : r ^ 2 = u := Real.sq_sqrt hu0.le
+  have hrsq : r ^ (2 : ℕ) = u := Real.sq_sqrt hu0.le
   have hr1 : (1 : ℝ) ≤ r := by nlinarith
   have hσr : sigma ≤ r := by
-    have h1 : Real.sqrt (sigma ^ 2) ≤ Real.sqrt u := Real.sqrt_le_sqrt huσ
+    have h1 : Real.sqrt (sigma ^ (2 : ℕ)) ≤ Real.sqrt u := Real.sqrt_le_sqrt huσ
     rwa [Real.sqrt_sq hsigma.le] at h1
   have hsr : |s| ≤ r := hs
-  have hs2 : s ^ 2 ≤ u := by nlinarith [abs_nonneg s, sq_abs s]
+  have hs2 : s ^ (2 : ℕ) ≤ u := by nlinarith [abs_nonneg s, sq_abs s]
   have hur : u ≤ u * r := by nlinarith
   -- the shifted height and its propagation argument
   set h : ℝ := κ * u + s with hhdef
   set z : ℂ := xiMassSpacelikePropagationArgument sigma u h with hzdef
-  have hzre : z.re = sigma ^ 2 + h ^ 2 - u ^ 2 := by
+  have hzre : z.re = sigma ^ (2 : ℕ) + h ^ (2 : ℕ) - u ^ (2 : ℕ) := by
     rw [hzdef, xiMassSpacelikePropagationArgument_re, xiMassSpacelikeTrace]
   have hqr : 4 * κ ≤ q * r := by
     have hskey : 4 * κ / q ≤ r := by
@@ -139,90 +139,90 @@ theorem exists_norm_xiMassCausticSymbol_le {a sigma : ℝ} (ha : 1 / 2 < a) (hsi
           rw [abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * κ * u)]
       _ ≤ (2 * κ * u) * r := hmul
       _ = 2 * κ * u * r := by ring
-  have hlin : 2 * κ * u * r ≤ q * u ^ 2 / 2 := by
-    have hprod : 4 * κ * r ^ 3 ≤ (q * r) * r ^ 3 :=
+  have hlin : 2 * κ * u * r ≤ q * u ^ (2 : ℕ) / 2 := by
+    have hprod : 4 * κ * r ^ (3 : ℕ) ≤ (q * r) * r ^ (3 : ℕ) :=
       mul_le_mul_of_nonneg_right hqr (by positivity)
-    have e1 : 2 * κ * u * r = 2 * κ * r ^ 3 := by rw [← hrsq]; ring
-    have e2 : q * u ^ 2 / 2 = q * r ^ 4 / 2 := by rw [← hrsq]; ring
+    have e1 : 2 * κ * u * r = 2 * κ * r ^ (3 : ℕ) := by rw [← hrsq]; ring
+    have e2 : q * u ^ (2 : ℕ) / 2 = q * r ^ (4 : ℕ) / 2 := by rw [← hrsq]; ring
     rw [e1, e2]
     nlinarith [hprod]
-  have hlow : q * u ^ 2 / 2 ≤ z.re := by
+  have hlow : q * u ^ (2 : ℕ) / 2 ≤ z.re := by
     rw [hzre, hhdef]
-    have hexp : sigma ^ 2 + (κ * u + s) ^ 2 - u ^ 2
-        = sigma ^ 2 + q * u ^ 2 + 2 * κ * u * s + s ^ 2 := by
+    have hexp : sigma ^ (2 : ℕ) + (κ * u + s) ^ (2 : ℕ) - u ^ (2 : ℕ)
+        = sigma ^ (2 : ℕ) + q * u ^ (2 : ℕ) + 2 * κ * u * s + s ^ (2 : ℕ) := by
       rw [hqdef]; ring
     rw [hexp]
     have hmid := (abs_le.mp habsmid).1
     nlinarith [sq_nonneg sigma, sq_nonneg s, hlin, hmid]
-  have hqu : (0 : ℝ) < q * u ^ 2 / 2 := by positivity
+  have hqu : (0 : ℝ) < q * u ^ (2 : ℕ) / 2 := by positivity
   have hzre0 : (0 : ℝ) < z.re := lt_of_lt_of_le hqu hlow
   have hzne : z ≠ 0 := by
     intro hcon
     rw [hcon] at hzre0
     simp at hzre0
-  have hznorm : q * u ^ 2 / 2 ≤ ‖z‖ :=
+  have hznorm : q * u ^ (2 : ℕ) / 2 ≤ ‖z‖ :=
     le_trans hlow (le_trans (le_abs_self _) (Complex.abs_re_le_norm z))
   -- the symbol as a quotient
   have hsymb : xiMassCausticSymbol a sigma u h
-      = (a : ℂ) ^ 2 * (4 * (a : ℂ) ^ 2 * z - (h : ℂ) ^ 2) / z := by
+      = (a : ℂ) ^ (2 : ℕ) * (4 * (a : ℂ) ^ (2 : ℕ) * z - (h : ℂ) ^ (2 : ℕ)) / z := by
     rw [xiMassCausticSymbol, ← hzdef]
     field_simp
   have hnum := xiMassCausticSymbol_residue (a := a) (sigma := sigma) (u := u) (s := s) ha
   rw [← hκdef, ← hhdef, ← hzdef] at hnum
   -- the numerator is `O(u·√u)`
-  have hnumbound : ‖4 * (a : ℂ) ^ 2 * z - (h : ℂ) ^ 2‖ ≤ C₁ * (u * r) := by
+  have hnumbound : ‖4 * (a : ℂ) ^ (2 : ℕ) * z - (h : ℂ) ^ (2 : ℕ)‖ ≤ C₁ * (u * r) := by
     rw [hnum]
-    have h1 : ‖4 * (a : ℂ) ^ 2 * (sigma : ℂ) ^ 2‖ = 4 * a ^ 2 * sigma ^ 2 := by
-      rw [show (4 : ℂ) * (a : ℂ) ^ 2 * (sigma : ℂ) ^ 2
-          = ((4 * a ^ 2 * sigma ^ 2 : ℝ) : ℂ) by push_cast; ring,
+    have h1 : ‖4 * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) ^ (2 : ℕ)‖ = 4 * a ^ (2 : ℕ) * sigma ^ (2 : ℕ) := by
+      rw [show (4 : ℂ) * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) ^ (2 : ℕ)
+          = ((4 * a ^ (2 : ℕ) * sigma ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring,
         Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-    have h2 : ‖8 * Complex.I * (a : ℂ) ^ 2 * (sigma : ℂ) * (u : ℂ)‖ = 8 * a ^ 2 * sigma * u := by
-      rw [show (8 : ℂ) * Complex.I * (a : ℂ) ^ 2 * (sigma : ℂ) * (u : ℂ)
-          = Complex.I * ((8 * a ^ 2 * sigma * u : ℝ) : ℂ) by push_cast; ring,
+    have h2 : ‖8 * Complex.I * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) * (u : ℂ)‖ = 8 * a ^ (2 : ℕ) * sigma * u := by
+      rw [show (8 : ℂ) * Complex.I * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) * (u : ℂ)
+          = Complex.I * ((8 * a ^ (2 : ℕ) * sigma * u : ℝ) : ℂ) by push_cast; ring,
         norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (by positivity)]
-    have h3 : ‖(4 * (a : ℂ) ^ 2 - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ 2)‖
-        = (4 * a ^ 2 - 1) * |2 * κ * u * s + s ^ 2| := by
-      rw [show ((4 : ℂ) * (a : ℂ) ^ 2 - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ 2)
-          = ((4 * a ^ 2 - 1 : ℝ) : ℂ) * ((2 * κ * u * s + s ^ 2 : ℝ) : ℂ) by push_cast; ring,
+    have h3 : ‖(4 * (a : ℂ) ^ (2 : ℕ) - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ (2 : ℕ))‖
+        = (4 * a ^ (2 : ℕ) - 1) * |2 * κ * u * s + s ^ (2 : ℕ)| := by
+      rw [show ((4 : ℂ) * (a : ℂ) ^ (2 : ℕ) - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ (2 : ℕ))
+          = ((4 * a ^ (2 : ℕ) - 1 : ℝ) : ℂ) * ((2 * κ * u * s + s ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring,
         norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
         abs_of_pos hden]
-    have habs3 : |2 * κ * u * s + s ^ 2| ≤ 2 * κ * u * r + u := by
-      have hB : |s ^ 2| ≤ u := by rw [abs_of_nonneg (sq_nonneg s)]; exact hs2
-      calc |2 * κ * u * s + s ^ 2| ≤ |2 * κ * u * s| + |s ^ 2| := abs_add_le _ _
+    have habs3 : |2 * κ * u * s + s ^ (2 : ℕ)| ≤ 2 * κ * u * r + u := by
+      have hB : |s ^ (2 : ℕ)| ≤ u := by rw [abs_of_nonneg (sq_nonneg s)]; exact hs2
+      calc |2 * κ * u * s + s ^ (2 : ℕ)| ≤ |2 * κ * u * s| + |s ^ (2 : ℕ)| := abs_add_le _ _
         _ ≤ 2 * κ * u * r + u := by linarith [habsmid, hB]
-    have htwo := norm_add_le (4 * (a : ℂ) ^ 2 * (sigma : ℂ) ^ 2)
-      (8 * Complex.I * (a : ℂ) ^ 2 * (sigma : ℂ) * (u : ℂ))
+    have htwo := norm_add_le (4 * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) ^ (2 : ℕ))
+      (8 * Complex.I * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) * (u : ℂ))
     rw [h1, h2] at htwo
-    have hmul3 : (4 * a ^ 2 - 1) * |2 * κ * u * s + s ^ 2|
-        ≤ (4 * a ^ 2 - 1) * (2 * κ * u * r + u) :=
+    have hmul3 : (4 * a ^ (2 : ℕ) - 1) * |2 * κ * u * s + s ^ (2 : ℕ)|
+        ≤ (4 * a ^ (2 : ℕ) - 1) * (2 * κ * u * r + u) :=
       mul_le_mul_of_nonneg_left habs3 (by linarith)
     have hsplit := norm_add_le
-      (4 * (a : ℂ) ^ 2 * (sigma : ℂ) ^ 2
-        + 8 * Complex.I * (a : ℂ) ^ 2 * (sigma : ℂ) * (u : ℂ))
-      ((4 * (a : ℂ) ^ 2 - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ 2))
+      (4 * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) ^ (2 : ℕ)
+        + 8 * Complex.I * (a : ℂ) ^ (2 : ℕ) * (sigma : ℂ) * (u : ℂ))
+      ((4 * (a : ℂ) ^ (2 : ℕ) - 1) * (2 * ((κ : ℝ) : ℂ) * (u : ℂ) * (s : ℂ) + (s : ℂ) ^ (2 : ℕ)))
     rw [h3] at hsplit
-    have e1 : 4 * a ^ 2 * sigma ^ 2 ≤ 4 * a ^ 2 * (u * r) :=
+    have e1 : 4 * a ^ (2 : ℕ) * sigma ^ (2 : ℕ) ≤ 4 * a ^ (2 : ℕ) * (u * r) :=
       mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-    have e2 : 8 * a ^ 2 * sigma * u ≤ 8 * a ^ 2 * (u * r) := by
+    have e2 : 8 * a ^ (2 : ℕ) * sigma * u ≤ 8 * a ^ (2 : ℕ) * (u * r) := by
       have hstep : sigma * u ≤ r * u := mul_le_mul_of_nonneg_right hσr hu0.le
       nlinarith [hstep]
     have hin : 2 * κ * u * r + u ≤ (2 * κ + 1) * (u * r) := by nlinarith [hur]
-    have e3 : (4 * a ^ 2 - 1) * (2 * κ * u * r + u)
-        ≤ (4 * a ^ 2 - 1) * (2 * κ + 1) * (u * r) := by
+    have e3 : (4 * a ^ (2 : ℕ) - 1) * (2 * κ * u * r + u)
+        ≤ (4 * a ^ (2 : ℕ) - 1) * (2 * κ + 1) * (u * r) := by
       have := mul_le_mul_of_nonneg_left hin (le_of_lt hden)
       nlinarith [this]
     rw [hC₁def]
     linarith [hsplit, htwo, hmul3, e1, e2, e3]
   -- assemble
   rw [hsymb, norm_div, norm_mul]
-  have hanorm : ‖(a : ℂ) ^ 2‖ = a ^ 2 := by
-    rw [show ((a : ℂ)) ^ 2 = ((a ^ 2 : ℝ) : ℂ) by push_cast; ring,
+  have hanorm : ‖(a : ℂ) ^ (2 : ℕ)‖ = a ^ (2 : ℕ) := by
+    rw [show ((a : ℂ)) ^ (2 : ℕ) = ((a ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring,
       Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg a)]
   rw [hanorm]
-  have hA : a ^ 2 * ‖4 * (a : ℂ) ^ 2 * z - (h : ℂ) ^ 2‖ ≤ a ^ 2 * (C₁ * (u * r)) :=
+  have hA : a ^ (2 : ℕ) * ‖4 * (a : ℂ) ^ (2 : ℕ) * z - (h : ℂ) ^ (2 : ℕ)‖ ≤ a ^ (2 : ℕ) * (C₁ * (u * r)) :=
     mul_le_mul_of_nonneg_left hnumbound (by positivity)
-  have hB : a ^ 2 * (C₁ * (u * r)) / ‖z‖ ≤ a ^ 2 * (C₁ * (u * r)) / (q * u ^ 2 / 2) :=
+  have hB : a ^ (2 : ℕ) * (C₁ * (u * r)) / ‖z‖ ≤ a ^ (2 : ℕ) * (C₁ * (u * r)) / (q * u ^ (2 : ℕ) / 2) :=
     div_le_div_of_nonneg_left (by positivity) hqu hznorm
   refine le_trans (le_trans (div_le_div_of_nonneg_right hA (norm_nonneg z)) hB) (le_of_eq ?_)
   rw [← hrsq]

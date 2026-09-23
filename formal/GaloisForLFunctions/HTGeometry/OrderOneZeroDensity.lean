@@ -71,8 +71,8 @@ theorem orderOneDensityIdx_zeroCopyPoint {f : ℂ → ℂ} {C : ℝ} (hC : 0 ≤
       rwa [Real.log_exp] at hmono
     linarith
   have hdouble : Real.log (2 + 2 * r) ≤ 2 * Real.log (2 + r) := by
-    have hsq : (2 : ℝ) + 2 * r ≤ (2 + r) ^ 2 := by nlinarith
-    calc Real.log (2 + 2 * r) ≤ Real.log ((2 + r) ^ 2) :=
+    have hsq : (2 : ℝ) + 2 * r ≤ (2 + r) ^ (2 : ℕ) := by nlinarith
+    calc Real.log (2 + 2 * r) ≤ Real.log ((2 + r) ^ (2 : ℕ)) :=
           Real.log_le_log (by linarith) hsq
       _ = 2 * Real.log (2 + r) := by
           rw [Real.log_pow]; push_cast; ring

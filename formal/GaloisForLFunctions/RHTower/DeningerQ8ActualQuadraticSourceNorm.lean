@@ -42,7 +42,7 @@ theorem q8SecondQuadraticRoot_not_mem_rat :
   intro h
   obtain ⟨q, hq⟩ := IntermediateField.mem_bot.mp h
   apply deningerQ8RootNumberNegOne_fortyOne_not_square q
-  have hs := congrArg (fun x : K2 => x ^ 2) hq
+  have hs := congrArg (fun x : K2 => x ^ (2 : ℕ)) hq
   rw [deningerQ8RootNumberNegOneSecondQuadraticRoot_sq] at hs
   exact (algebraMap ℚ K2).injective (by simpa using hs)
 
@@ -83,7 +83,7 @@ theorem q8BiquadTwoAdicU_ne_one_sub :
     (q8BiquadTwoAdicU : K2) ≠ 1 - (q8BiquadTwoAdicU : K2) := by
   intro h
   have hu := congrArg (fun x : 𝓞 K2 => (x : K2)) q8BiquadTwoAdicU_sq
-  change (q8BiquadTwoAdicU : K2) ^ 2 = (q8BiquadTwoAdicU : K2) + 1 at hu
+  change (q8BiquadTwoAdicU : K2) ^ (2 : ℕ) = (q8BiquadTwoAdicU : K2) + 1 at hu
   have hv : (q8BiquadTwoAdicU : K2) = 1 / 2 := by
     apply (eq_div_iff (by norm_num : (2 : K2) ≠ 0)).2
     linear_combination h
@@ -110,7 +110,7 @@ local notation "S" => q8BiquadQuadraticSourceField
 
 /-- Relative polynomial of the dyadic source unit over the literal quadratic source. -/
 def q8BiquadTwoAdicUMinpolyCandidate : S[X] :=
-  X ^ 2 - C 1 * X + C (-1)
+  X ^ (2 : ℕ) - C 1 * X + C (-1)
 
 theorem q8BiquadTwoAdicUMinpolyCandidate_isMonicOfDegree :
     q8BiquadTwoAdicUMinpolyCandidate.IsMonicOfDegree 2 := by
@@ -128,7 +128,7 @@ theorem q8BiquadTwoAdicUMinpolyCandidate_aeval :
     Polynomial.aeval (q8BiquadTwoAdicU : K2)
       q8BiquadTwoAdicUMinpolyCandidate = 0 := by
   have hu := congrArg (fun x : 𝓞 K2 => (x : K2)) q8BiquadTwoAdicU_sq
-  change (q8BiquadTwoAdicU : K2) ^ 2 = (q8BiquadTwoAdicU : K2) + 1 at hu
+  change (q8BiquadTwoAdicU : K2) ^ (2 : ℕ) = (q8BiquadTwoAdicU : K2) + 1 at hu
   simp only [q8BiquadTwoAdicUMinpolyCandidate, map_add, map_sub, map_mul,
     map_neg, map_pow, aeval_X, map_one]
   rw [hu]

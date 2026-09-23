@@ -13,12 +13,12 @@ projective coordinate through one exact cubic transform.
 
 For positive source rates `a,b`, put
 
-`chi = ((a-b)/(a+b))^2`.
+`chi = ((a-b)/(a+b))^(2 : ℕ)`.
 
-The Route-P squared coherence at equal ordinate is `(1-chi)^3`, hence its normalized Pluecker
+The Route-P squared coherence at equal ordinate is `(1-chi)^(3 : ℕ)`, hence its normalized Pluecker
 defect is
 
-`1 - coherenceSq = chi * (3 - 3*chi + chi^2)`.
+`1 - coherenceSq = chi * (3 - 3*chi + chi^(2 : ℕ))`.
 
 Consequently the cubic Pluecker defect lies between `chi` and `3*chi`.  This is a quantitative
 identification, not only a common vanishing locus: physical load dispersion and source Gram area
@@ -65,7 +65,7 @@ def routeETwoColumnLoadKernel (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
 
 /-- Projective two-column load coordinate. -/
 def routeETwoColumnLoadChiSquare (a b : ℝ) : ℝ :=
-  ((a - b) / (a + b)) ^ 2
+  ((a - b) / (a + b)) ^ (2 : ℕ)
 
 /-- Route E's normalized physical chi-square is exactly the projective rate gap. -/
 theorem routeETwoColumnBalanced_chiSquare_eq
@@ -106,7 +106,7 @@ theorem routePBaseCauchyCubic_coherence_defect_eq_loadChiSquare
     1 - routePBaseCauchyCubicNormalizedCoherenceSq a b 0 =
       routeETwoColumnLoadChiSquare a b *
         (3 - 3 * routeETwoColumnLoadChiSquare a b +
-          routeETwoColumnLoadChiSquare a b ^ 2) := by
+          routeETwoColumnLoadChiSquare a b ^ (2 : ℕ)) := by
   unfold routePBaseCauchyCubicNormalizedCoherenceSq
     routeETwoColumnLoadChiSquare
   field_simp [(add_pos ha hb).ne']
@@ -144,9 +144,9 @@ theorem routePBaseCauchyCubic_coherence_defect_le_three_loadChiSquare
   calc
     routeETwoColumnLoadChiSquare a b *
           (3 - 3 * routeETwoColumnLoadChiSquare a b +
-            routeETwoColumnLoadChiSquare a b ^ 2) =
+            routeETwoColumnLoadChiSquare a b ^ (2 : ℕ)) =
         3 * routeETwoColumnLoadChiSquare a b -
-          routeETwoColumnLoadChiSquare a b ^ 2 *
+          routeETwoColumnLoadChiSquare a b ^ (2 : ℕ) *
             (3 - routeETwoColumnLoadChiSquare a b) := by ring
     _ ≤ 3 * routeETwoColumnLoadChiSquare a b :=
       sub_le_self _ (mul_nonneg (sq_nonneg _) (by linarith))
@@ -156,13 +156,13 @@ diagonal scale. -/
 theorem routePBaseCauchyCubicTwoNodeGramDet_eq_loadChiSquare
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     routePBaseCauchyCubicTwoNodeGramDet a b 0 =
-      (1 / (16 * a ^ 3 * b ^ 3)) *
+      (1 / (16 * a ^ (3 : ℕ) * b ^ (3 : ℕ))) *
         routeETwoColumnLoadChiSquare a b *
           (3 - 3 * routeETwoColumnLoadChiSquare a b +
-            routeETwoColumnLoadChiSquare a b ^ 2) := by
+            routeETwoColumnLoadChiSquare a b ^ (2 : ℕ)) := by
   rw [routePBaseCauchyCubicTwoNodeGramDet]
   rw [normSq_routePBaseCauchyCubicKernel ha hb]
-  rw [show (((a + b) ^ 2 + 0 ^ 2) ^ 3) = (a + b) ^ 6 by ring]
+  rw [show (((a + b) ^ (2 : ℕ) + 0 ^ (2 : ℕ)) ^ (3 : ℕ)) = (a + b) ^ (6 : ℕ) by ring]
   unfold routeETwoColumnLoadChiSquare
   field_simp [ha.ne', hb.ne', (add_pos ha hb).ne']
   ring

@@ -108,7 +108,7 @@ theorem directionalDifferenceQuotientError_le
     exact hg.comp (contDiff_const.add (contDiff_const.mul contDiff_id))
   have hud : UniqueDiffOn ℝ (Set.Icc 0 r) := uniqueDiffOn_Icc hr
   have hpsi_two (t : ℝ) :
-      iteratedDeriv 2 psi t = (c ^ 2 : ℝ) • iteratedDeriv 2 g (y + c * t) := by
+      iteratedDeriv 2 psi t = (c ^ (2 : ℕ) : ℝ) • iteratedDeriv 2 g (y + c * t) := by
     let gy : ℝ → ℂ := fun u => g (y + u)
     have hgy : ContDiff ℝ 2 gy := hg.comp (contDiff_const.add contDiff_id)
     have hs := congrFun (iteratedDeriv_comp_const_smul hgy c) t
@@ -142,7 +142,7 @@ theorem directionalDifferenceQuotientError_le
     rw [congrFun (iteratedDeriv_comp_const_add 1 g y) 0]
     simp
   have hTaylor' :
-      ‖g (y + c * r) - (g y + r • (c • deriv g y))‖ ≤ C * r ^ 2 := by
+      ‖g (y + c * r) - (g y + r • (c • deriv g y))‖ ≤ C * r ^ (2 : ℕ) := by
     have htaylorEval : taylorWithinEval psi 1 (Set.Icc 0 r) 0 r =
         psi 0 + r • deriv psi 0 := by
       rw [show (1 : ℕ) = 0 + 1 by omega, taylorWithinEval_succ,
@@ -174,7 +174,7 @@ theorem directionalDifferenceQuotientError_le
   rw [hrabs]
   calc
     r⁻¹ * ‖g (y + c * r) - (g y + r • (c • deriv g y))‖
-        ≤ r⁻¹ * (C * r ^ 2) := by gcongr
+        ≤ r⁻¹ * (C * r ^ (2 : ℕ)) := by gcongr
     _ = C * r := by field_simp
 
 /-- Difference quotient for the real translation parameter on complex-valued Schwartz space. -/

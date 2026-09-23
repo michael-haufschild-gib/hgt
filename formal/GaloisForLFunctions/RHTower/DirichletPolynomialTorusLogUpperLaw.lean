@@ -41,7 +41,7 @@ theorem norm_steinhausAmp_le (a : ℕ → ℝ) (s : Finset ℕ) (ω : Omega) :
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun n _ => ?_)
   rw [norm_mul, norm_X, mul_one, Complex.norm_real, Real.norm_eq_abs]
 
-theorem norm_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (t : ℝ) :
+theorem norm_dpoly_le_dirichletPolynomialTorusLogUpperLaw (a : ℕ → ℝ) (s : Finset ℕ) (t : ℝ) :
     ‖dpoly a s t‖ ≤ ∑ n ∈ s, |a n| := by
   unfold dpoly cterm
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun n _ => ?_)
@@ -53,20 +53,20 @@ theorem norm_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (t : ℝ) :
   rw [hre, Real.exp_zero, mul_one]
 
 /-- The coefficient-sum bound. -/
-def coeffBound (a : ℕ → ℝ) (s : Finset ℕ) : ℝ := (∑ n ∈ s, |a n|) ^ 2
+def coeffBound (a : ℕ → ℝ) (s : Finset ℕ) : ℝ := (∑ n ∈ s, |a n|) ^ (2 : ℕ)
 
 theorem normSq_dpoly_mem (a : ℕ → ℝ) (s : Finset ℕ) (t : ℝ) :
-    ‖dpoly a s t‖ ^ 2 ∈ Set.Icc (0 : ℝ) (coeffBound a s) :=
-  ⟨by positivity, pow_le_pow_left₀ (norm_nonneg _) (norm_dpoly_le a s t) 2⟩
+    ‖dpoly a s t‖ ^ (2 : ℕ) ∈ Set.Icc (0 : ℝ) (coeffBound a s) :=
+  ⟨by positivity, pow_le_pow_left₀ (norm_nonneg _) (norm_dpoly_le_dirichletPolynomialTorusLogUpperLaw a s t) 2⟩
 
 theorem normSq_steinhausAmp_mem (a : ℕ → ℝ) (s : Finset ℕ) (ω : Omega) :
-    ‖steinhausAmp a s ω‖ ^ 2 ∈ Set.Icc (0 : ℝ) (coeffBound a s) :=
+    ‖steinhausAmp a s ω‖ ^ (2 : ℕ) ∈ Set.Icc (0 : ℝ) (coeffBound a s) :=
   ⟨by positivity, pow_le_pow_left₀ (norm_nonneg _) (norm_steinhausAmp_le a s ω) 2⟩
 
 theorem integrable_comp_normSq_steinhausAmp (a : ℕ → ℝ) (s : Finset ℕ) {ψ : ℝ → ℝ}
     (hψ : Continuous ψ) :
-    Integrable (fun ω => ψ (‖steinhausAmp a s ω‖ ^ 2)) steinhausMeasure := by
-  have hmeas : Measurable (fun ω => ψ (‖steinhausAmp a s ω‖ ^ 2)) :=
+    Integrable (fun ω => ψ (‖steinhausAmp a s ω‖ ^ (2 : ℕ))) steinhausMeasure := by
+  have hmeas : Measurable (fun ω => ψ (‖steinhausAmp a s ω‖ ^ (2 : ℕ))) :=
     hψ.measurable.comp ((measurable_steinhausAmp a s).norm.pow_const 2)
   obtain ⟨K, hK⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := coeffBound a s)).exists_bound_of_continuousOn
     hψ.continuousOn
@@ -76,7 +76,7 @@ theorem integrable_comp_normSq_steinhausAmp (a : ℕ → ℝ) (s : Finset ℕ) {
 
 /-- Polynomial evaluation as a finite power sum. -/
 theorem polynomial_eval_normSq (q : Polynomial ℝ) (x : ℂ) :
-    q.eval (‖x‖ ^ 2) = ∑ j ∈ range (q.natDegree + 1), q.coeff j * ‖x‖ ^ (2 * j) := by
+    q.eval (‖x‖ ^ (2 : ℕ)) = ∑ j ∈ range (q.natDegree + 1), q.coeff j * ‖x‖ ^ (2 * j) := by
   rw [Polynomial.eval_eq_sum_range]
   apply Finset.sum_congr rfl
   intro j _
@@ -86,8 +86,8 @@ theorem polynomial_eval_normSq (q : Polynomial ℝ) (x : ℂ) :
 `φ(‖F‖²)` converges to the Steinhaus-model expectation of `φ(‖∑ a_n X_n‖²)`. -/
 theorem tendsto_contMoment_average_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
     (φ : ℝ → ℝ) (hφ : Continuous φ) :
-    Tendsto (fun U : ℝ => U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ 2)) atTop
-      (𝓝 (∫ ω, φ (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure)) := by
+    Tendsto (fun U : ℝ => U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ (2 : ℕ))) atTop
+      (𝓝 (∫ ω, φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure)) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
   set B := coeffBound a s with hB
@@ -99,11 +99,11 @@ theorem tendsto_contMoment_average_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) 
   have hcontD : Continuous (dpoly a s) := by
     unfold dpoly cterm
     exact continuous_finset_sum _ fun n _ => by fun_prop
-  have hcontF : Continuous (fun t : ℝ => ‖dpoly a s t‖ ^ 2) := by fun_prop
+  have hcontF : Continuous (fun t : ℝ => ‖dpoly a s t‖ ^ (2 : ℕ)) := by fun_prop
   -- rewrite the polynomial moment as q evaluated at ‖·‖²
   have hrwF : ∀ U : ℝ, U⁻¹ * ∫ t in (0:ℝ)..U,
       ∑ j ∈ range (q.natDegree + 1), q.coeff j * ‖dpoly a s t‖ ^ (2 * j)
-      = U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ 2) := by
+      = U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ (2 : ℕ)) := by
     intro U
     congr 1
     apply intervalIntegral.integral_congr
@@ -120,7 +120,7 @@ theorem tendsto_contMoment_average_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) 
     rw [pow_mul]
   have hrwM : ∑ j ∈ range (q.natDegree + 1),
       q.coeff j * ∫ ω, ‖steinhausAmp a s ω‖ ^ (2 * j) ∂steinhausMeasure
-      = ∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure := by
+      = ∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure := by
     have : ∀ j : ℕ, q.coeff j * ∫ ω, ‖steinhausAmp a s ω‖ ^ (2 * j) ∂steinhausMeasure
         = ∫ ω, q.coeff j * ‖steinhausAmp a s ω‖ ^ (2 * j) ∂steinhausMeasure := by
       intro j
@@ -139,43 +139,43 @@ theorem tendsto_contMoment_average_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) 
   have hU1 := hU₀ U (le_trans (le_max_left _ _) hU)
   -- the three pieces
   have hqφ : ∀ x ∈ Set.Icc (0 : ℝ) B, |q.eval x - φ x| < ε / 4 := hq
-  have hpiece1 : |(U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ 2))
-      - (U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ 2))| ≤ ε / 4 := by
+  have hpiece1 : |(U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ (2 : ℕ)))
+      - (U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ (2 : ℕ)))| ≤ ε / 4 := by
     rw [← mul_sub]
-    have hcφ : Continuous (fun t : ℝ => φ (‖dpoly a s t‖ ^ 2)) := hφ.comp hcontF
-    have hcq : Continuous (fun t : ℝ => q.eval (‖dpoly a s t‖ ^ 2)) :=
+    have hcφ : Continuous (fun t : ℝ => φ (‖dpoly a s t‖ ^ (2 : ℕ))) := hφ.comp hcontF
+    have hcq : Continuous (fun t : ℝ => q.eval (‖dpoly a s t‖ ^ (2 : ℕ))) :=
       (Polynomial.continuous q).comp hcontF
     rw [← intervalIntegral.integral_sub (hcφ.intervalIntegrable _ _) (hcq.intervalIntegrable _ _)]
     rw [abs_mul, abs_of_pos (inv_pos.mpr hU0)]
     have hbound := intervalIntegral.norm_integral_le_of_norm_le_const
       (a := (0:ℝ)) (b := U) (C := ε / 4)
-      (f := fun t => φ (‖dpoly a s t‖ ^ 2) - q.eval (‖dpoly a s t‖ ^ 2)) (by
+      (f := fun t => φ (‖dpoly a s t‖ ^ (2 : ℕ)) - q.eval (‖dpoly a s t‖ ^ (2 : ℕ))) (by
         intro t _
         rw [Real.norm_eq_abs, abs_sub_comm]
         exact (hqφ _ (normSq_dpoly_mem a s t)).le)
     rw [Real.norm_eq_abs] at hbound
-    calc U⁻¹ * |∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ 2) - q.eval (‖dpoly a s t‖ ^ 2)|
+    calc U⁻¹ * |∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ (2 : ℕ)) - q.eval (‖dpoly a s t‖ ^ (2 : ℕ))|
         ≤ U⁻¹ * (ε / 4 * |U - 0|) := by gcongr
       _ = ε / 4 := by
           rw [sub_zero, abs_of_pos hU0]
           field_simp
-  have hpiece3 : |(∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure)
-      - (∫ ω, φ (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure)| ≤ ε / 4 := by
+  have hpiece3 : |(∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure)
+      - (∫ ω, φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure)| ≤ ε / 4 := by
     rw [← integral_sub (integrable_comp_normSq_steinhausAmp a s (Polynomial.continuous q))
       (integrable_comp_normSq_steinhausAmp a s hφ)]
     have hbound := norm_integral_le_of_norm_le_const (μ := steinhausMeasure) (C := ε / 4)
-      (f := fun ω => q.eval (‖steinhausAmp a s ω‖ ^ 2) - φ (‖steinhausAmp a s ω‖ ^ 2)) (by
+      (f := fun ω => q.eval (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) - φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ))) (by
         filter_upwards with ω
         rw [Real.norm_eq_abs]
         exact (hqφ _ (normSq_steinhausAmp_mem a s ω)).le)
     rw [Real.norm_eq_abs, measureReal_univ_eq_one, mul_one] at hbound
     exact hbound
   rw [Real.dist_eq] at hU1 ⊢
-  set IF : ℝ := U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ 2) with hIF
-  set IQ : ℝ := U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ 2) with hIQ
-  set MQ : ℝ := ∫ ω, q.eval (‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2) ∂steinhausMeasure with hMQ
-  set MF : ℝ := ∫ ω, φ (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure with hMF
-  have hMQ' : (∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure) = MQ := by
+  set IF : ℝ := U⁻¹ * ∫ t in (0:ℝ)..U, φ (‖dpoly a s t‖ ^ (2 : ℕ)) with hIF
+  set IQ : ℝ := U⁻¹ * ∫ t in (0:ℝ)..U, q.eval (‖dpoly a s t‖ ^ (2 : ℕ)) with hIQ
+  set MQ : ℝ := ∫ ω, q.eval (‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 : ℕ)) ∂steinhausMeasure with hMQ
+  set MF : ℝ := ∫ ω, φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure with hMF
+  have hMQ' : (∫ ω, q.eval (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure) = MQ := by
     rw [hMQ]; rfl
   rw [hMQ'] at hpiece3
   have h1 : |IF - IQ| ≤ ε / 4 := hpiece1
@@ -190,26 +190,26 @@ theorem tendsto_contMoment_average_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) 
 /-- **Continuous Bohr transfer on dyadic windows.** -/
 theorem tendsto_contMoment_window_steinhaus (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
     (φ : ℝ → ℝ) (hφ : Continuous φ) :
-    Tendsto (fun T : ℝ => T⁻¹ * ∫ t in T..(2 * T), φ (‖dpoly a s t‖ ^ 2)) atTop
-      (𝓝 (∫ ω, φ (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure)) := by
+    Tendsto (fun T : ℝ => T⁻¹ * ∫ t in T..(2 * T), φ (‖dpoly a s t‖ ^ (2 : ℕ))) atTop
+      (𝓝 (∫ ω, φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure)) := by
   have hcontD : Continuous (dpoly a s) := by
     unfold dpoly cterm
     exact continuous_finset_sum _ fun n _ => by fun_prop
-  have hc : Continuous (fun t : ℝ => φ (‖dpoly a s t‖ ^ 2)) := by fun_prop
+  have hc : Continuous (fun t : ℝ => φ (‖dpoly a s t‖ ^ (2 : ℕ))) := by fun_prop
   have hlim := tendsto_contMoment_average_steinhaus a s hs φ hφ
-  set L := ∫ ω, φ (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure with hL
-  have h2 : Tendsto (fun T : ℝ => (2 * T)⁻¹ * ∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ 2))
+  set L := ∫ ω, φ (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure with hL
+  have h2 : Tendsto (fun T : ℝ => (2 * T)⁻¹ * ∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ (2 : ℕ)))
       atTop (𝓝 L) :=
     hlim.comp (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 2))
   have hcomb : Tendsto (fun T : ℝ =>
-      2 * ((2 * T)⁻¹ * ∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ 2))
-        - T⁻¹ * ∫ t in (0:ℝ)..T, φ (‖dpoly a s t‖ ^ 2)) atTop (𝓝 (2 * L - L)) :=
+      2 * ((2 * T)⁻¹ * ∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ (2 : ℕ)))
+        - T⁻¹ * ∫ t in (0:ℝ)..T, φ (‖dpoly a s t‖ ^ (2 : ℕ))) atTop (𝓝 (2 * L - L)) :=
     (h2.const_mul 2).sub hlim
   rw [show 2 * L - L = L by ring] at hcomb
   refine hcomb.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-  have hsplit : (∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ 2))
-      - ∫ t in (0:ℝ)..T, φ (‖dpoly a s t‖ ^ 2) = ∫ t in T..(2 * T), φ (‖dpoly a s t‖ ^ 2) :=
+  have hsplit : (∫ t in (0:ℝ)..(2 * T), φ (‖dpoly a s t‖ ^ (2 : ℕ)))
+      - ∫ t in (0:ℝ)..T, φ (‖dpoly a s t‖ ^ (2 : ℕ)) = ∫ t in T..(2 * T), φ (‖dpoly a s t‖ ^ (2 : ℕ)) :=
     intervalIntegral.integral_interval_sub_left (hc.intervalIntegrable _ _)
       (hc.intervalIntegrable _ _)
   have h2T : (2 : ℝ) * (2 * T)⁻¹ = T⁻¹ := by
@@ -265,20 +265,20 @@ theorem intervalIntegrable_log_norm_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (hs
   rw [edPoly_ofReal_imaginaryAxis a s hs t]
 
 /-- The truncated logarithm `½ log max(x, ε²)`. -/
-def logMaxHalf (ε : ℝ) (x : ℝ) : ℝ := (1 / 2) * Real.log (max x (ε ^ 2))
+def logMaxHalf (ε : ℝ) (x : ℝ) : ℝ := (1 / 2) * Real.log (max x (ε ^ (2 : ℕ)))
 
 theorem continuous_logMaxHalf {ε : ℝ} (hε : 0 < ε) : Continuous (logMaxHalf ε) := by
   unfold logMaxHalf
   refine continuous_const.mul (Continuous.log (continuous_id.max continuous_const) ?_)
   intro x
-  have : 0 < max x (ε ^ 2) := lt_of_lt_of_le (by positivity) (le_max_right _ _)
+  have : 0 < max x (ε ^ (2 : ℕ)) := lt_of_lt_of_le (by positivity) (le_max_right _ _)
   exact this.ne'
 
 theorem log_norm_le_logMaxHalf {ε : ℝ} (hε : 0 < ε) {w : ℂ} (hw : w ≠ 0) :
-    Real.log ‖w‖ ≤ logMaxHalf ε (‖w‖ ^ 2) := by
+    Real.log ‖w‖ ≤ logMaxHalf ε (‖w‖ ^ (2 : ℕ)) := by
   unfold logMaxHalf
   have hpos : 0 < ‖w‖ := norm_pos_iff.mpr hw
-  have h1 : Real.log ‖w‖ = (1 / 2) * Real.log (‖w‖ ^ 2) := by
+  have h1 : Real.log ‖w‖ = (1 / 2) * Real.log (‖w‖ ^ (2 : ℕ)) := by
     rw [Real.log_pow]; push_cast; ring
   rw [h1]
   gcongr
@@ -289,7 +289,7 @@ theorem log_norm_le_logMaxHalf {ε : ℝ} (hε : 0 < ε) {w : ℂ} (hw : w ≠ 0
 theorem eventually_window_logMean_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
     (hne : ∃ z : ℂ, edPoly (fun n => (a n : ℂ)) s z ≠ 0) {ε η : ℝ} (hε : 0 < ε) (hη : 0 < η) :
     ∀ᶠ T in atTop, T⁻¹ * ∫ t in T..(2 * T), Real.log ‖dpoly a s t‖ ≤
-      (∫ ω, logMaxHalf ε (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure) + η := by
+      (∫ ω, logMaxHalf ε (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure) + η := by
   have hlim := tendsto_contMoment_window_steinhaus a s hs (logMaxHalf ε) (continuous_logMaxHalf hε)
   have hev := (Metric.tendsto_atTop.mp hlim) η hη
   obtain ⟨T₀, hT₀⟩ := hev
@@ -299,10 +299,10 @@ theorem eventually_window_logMean_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (h
   have hcontD : Continuous (dpoly a s) := by
     unfold dpoly cterm
     exact continuous_finset_sum _ fun n _ => by fun_prop
-  have hcφ : Continuous (fun t : ℝ => logMaxHalf ε (‖dpoly a s t‖ ^ 2)) :=
+  have hcφ : Continuous (fun t : ℝ => logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ))) :=
     (continuous_logMaxHalf hε).comp (by fun_prop)
   have hmono : (∫ t in T..(2 * T), Real.log ‖dpoly a s t‖) ≤
-      ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ 2) := by
+      ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ)) := by
     refine intervalIntegral.integral_mono_ae_restrict (by linarith : T ≤ 2 * T)
       (intervalIntegrable_log_norm_dpoly a s hs T (2 * T)) (hcφ.intervalIntegrable _ _) ?_
     have hfin := finite_window_zeros_dpoly a s hs hne T (2 * T)
@@ -313,9 +313,9 @@ theorem eventually_window_logMean_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (h
     have hne0 : dpoly a s t ≠ 0 := fun h0 => ht ⟨hmem, h0⟩
     exact log_norm_le_logMaxHalf hε hne0
   calc T⁻¹ * ∫ t in T..(2 * T), Real.log ‖dpoly a s t‖
-      ≤ T⁻¹ * ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ 2) := by
+      ≤ T⁻¹ * ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ)) := by
         gcongr
-    _ ≤ (∫ ω, logMaxHalf ε (‖steinhausAmp a s ω‖ ^ 2) ∂steinhausMeasure) + η := by
+    _ ≤ (∫ ω, logMaxHalf ε (‖steinhausAmp a s ω‖ ^ (2 : ℕ)) ∂steinhausMeasure) + η := by
         linarith [h1.2]
 
 end

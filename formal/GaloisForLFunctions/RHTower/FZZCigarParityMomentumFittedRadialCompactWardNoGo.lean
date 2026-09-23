@@ -57,7 +57,7 @@ theorem fzzTwoMarkedOppositeContact_neg (levelLog : ℝ) :
   unfold fzzTwoMarkedContact
   have hleft : fzzTwoMarkedPhysicalLevel levelLog * (-1) / 2 < 0 := by
     nlinarith
-  have hright : 0 < fzzTwoMarkedPhysicalLevel levelLog ^ 2 /
+  have hright : 0 < fzzTwoMarkedPhysicalLevel levelLog ^ (2 : ℕ) /
       (2 * (fzzTwoMarkedPhysicalLevel levelLog - 2)) := by
     positivity
   linarith

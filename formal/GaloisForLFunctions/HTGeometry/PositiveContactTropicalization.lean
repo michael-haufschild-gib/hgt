@@ -452,11 +452,11 @@ theorem analyticAt_inner {E : Type*} [NormedAddCommGroup E] [InnerProductSpace �
 theorem positiveAnalyticContact_normSq {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] {v : ℝ → E} {m : ℕ} {a : E}
     (hv : AnalyticContact v m a) :
-    PositiveAnalyticContact (fun x => ‖v x‖ ^ 2) (2 * m) (‖a‖ ^ 2) := by
+    PositiveAnalyticContact (fun x => ‖v x‖ ^ (2 : ℕ)) (2 * m) (‖a‖ ^ (2 : ℕ)) := by
   rcases hv with ⟨u, hu, hu0, ha, hvfactor⟩
   have hunit_analytic : AnalyticAt ℝ (fun x => inner ℝ (u x) (u x)) 0 :=
     analyticAt_inner hu hu
-  have hlead : 0 < ‖a‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr ha)
+  have hlead : 0 < ‖a‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr ha)
   refine ⟨?_, Eventually.of_forall (fun x => sq_nonneg ‖v x‖), hlead⟩
   refine ⟨fun x => inner ℝ (u x) (u x), hunit_analytic, ?_, ne_of_gt hlead, ?_⟩
   · simp [hu0]
@@ -465,7 +465,7 @@ theorem positiveAnalyticContact_normSq {E : Type*} [NormedAddCommGroup E]
     have hpow : x ^ (2 * m) = (x ^ m) * (x ^ m) := by
       rw [Nat.mul_comm 2 m, pow_mul, pow_two]
     rw [norm_smul, Real.norm_eq_abs, mul_pow, sq_abs, hpow]
-    change (x ^ m) ^ 2 * ‖u x‖ ^ 2 = (x ^ m * x ^ m) * ‖u x‖ ^ 2
+    change (x ^ m) ^ (2 : ℕ) * ‖u x‖ ^ (2 : ℕ) = (x ^ m * x ^ m) * ‖u x‖ ^ (2 : ℕ)
     rw [pow_two]
 
 /-- Finite positive Gram sums tropicalize to minimum doubled vector order. -/
@@ -473,10 +473,10 @@ theorem exists_positiveAnalyticContact_finset_sum_normSq {ι E : Type*}
     [DecidableEq ι] [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (s : Finset ι) (hs : s.Nonempty) (v : ι → ℝ → E) (order : ι → ℕ)
     (leading : ι → E) (hcontact : ∀ i ∈ s, AnalyticContact (v i) (order i) (leading i)) :
-    ∃ c, PositiveAnalyticContact (fun x => ∑ i ∈ s, ‖v i x‖ ^ 2)
+    ∃ c, PositiveAnalyticContact (fun x => ∑ i ∈ s, ‖v i x‖ ^ (2 : ℕ))
       (2 * s.inf' hs order) c := by
   obtain ⟨c, hc⟩ := PositiveAnalyticContact.exists_finset_sum_min s hs
-    (fun i x => ‖v i x‖ ^ 2) (fun i => 2 * order i) (fun i => ‖leading i‖ ^ 2)
+    (fun i x => ‖v i x‖ ^ (2 : ℕ)) (fun i => 2 * order i) (fun i => ‖leading i‖ ^ (2 : ℕ))
     (fun i hi => positiveAnalyticContact_normSq (hcontact i hi))
   have hinf : s.inf' hs (fun i => 2 * order i) = 2 * s.inf' hs order := by
     apply le_antisymm

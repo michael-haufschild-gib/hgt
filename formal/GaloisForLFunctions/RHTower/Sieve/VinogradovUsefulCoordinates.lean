@@ -59,13 +59,13 @@ theorem vinogradovCoordinateSavingExponent_ge
 band `200u ≤ d ≤ 240u`.  The upper cutoff is forced by simultaneous
 compatibility of logarithmic Taylor remainder and denominator transport. -/
 theorem sum_vinogradovCoordinateSavingExponent_ge (u : ℕ) :
-    40 * u ^ 2 ≤
+    40 * u ^ (2 : ℕ) ≤
       ∑ j : {j : Fin (vinogradovRouteTOrder (4 * u)) //
         vinogradovUsefulCoordinate u j},
           vinogradovCoordinateSavingExponent j.1 := by
   have hcard := card_vinogradovUsefulCoordinate_ge u
   calc
-    40 * u ^ 2 = (40 * u) * u := by ring
+    40 * u ^ (2 : ℕ) = (40 * u) * u := by ring
     _ ≤ Fintype.card
         {j : Fin (vinogradovRouteTOrder (4 * u)) //
           vinogradovUsefulCoordinate u j} * u :=
@@ -80,7 +80,7 @@ theorem sum_vinogradovCoordinateSavingExponent_ge (u : ℕ) :
 def vinogradovCoordinateEnvelope
     {k : ℕ} (U : Fin k → Prop) [DecidablePred U]
     (Q b : ℕ) (j : Fin k) : ℝ :=
-  24 * (b : ℝ) ^ 2 * ((Q : ℝ) ^ (2 * (j.val + 1))) *
+  24 * (b : ℝ) ^ (2 : ℕ) * ((Q : ℝ) ^ (2 * (j.val + 1))) *
     (if U j then ((Q : ℝ) ^ vinogradovCoordinateSavingExponent j)⁻¹ else 1)
 
 theorem vinogradovCoordinateEnvelope_nonneg
@@ -98,9 +98,9 @@ theorem vinogradovMixedCoordinateCost_le_envelope
       Q ^ (2 * vinogradovCoordinateSavingExponent j) ≤ q j)
     (hqR : ∀ j, U j →
       q j * Q ^ (2 * vinogradovCoordinateSavingExponent j) ≤
-        (Q ^ (j.val + 1)) ^ 2)
+        (Q ^ (j.val + 1)) ^ (2 : ℕ))
     (habsorb : ∀ j, U j →
-      32 * (b : ℝ) ^ 2 * (1 + Real.log ((q j : ℝ) + 1)) ≤
+      32 * (b : ℝ) ^ (2 : ℕ) * (1 + Real.log ((q j : ℝ) + 1)) ≤
         (Q : ℝ) ^ vinogradovCoordinateSavingExponent j)
     (j : Fin k) :
     vinogradovMixedCoordinateCost U Q Q b q j ≤
@@ -114,16 +114,16 @@ theorem vinogradovMixedCoordinateCost_le_envelope
     have hden : 0 < (Q : ℝ) ^ vinogradovCoordinateSavingExponent j := by
       positivity
     calc
-      _ ≤ 2 * ((Q ^ (j.val + 1) : ℕ) : ℝ) ^ 2 /
+      _ ≤ 2 * ((Q ^ (j.val + 1) : ℕ) : ℝ) ^ (2 : ℕ) /
           (Q : ℝ) ^ vinogradovCoordinateSavingExponent j := hsaving
-      _ ≤ 24 * (b : ℝ) ^ 2 * ((Q ^ (j.val + 1) : ℕ) : ℝ) ^ 2 /
+      _ ≤ 24 * (b : ℝ) ^ (2 : ℕ) * ((Q ^ (j.val + 1) : ℕ) : ℝ) ^ (2 : ℕ) /
           (Q : ℝ) ^ vinogradovCoordinateSavingExponent j := by
         apply div_le_div_of_nonneg_right _ hden.le
         have hbR : (1 : ℝ) ≤ b := by exact_mod_cast hb
-        have hcoef : (2 : ℝ) ≤ 24 * (b : ℝ) ^ 2 := by
+        have hcoef : (2 : ℝ) ≤ 24 * (b : ℝ) ^ (2 : ℕ) := by
           nlinarith [sq_nonneg ((b : ℝ) - 1)]
         exact mul_le_mul_of_nonneg_right hcoef (sq_nonneg _)
-      _ = 24 * (b : ℝ) ^ 2 * ((Q : ℝ) ^ (2 * (j.val + 1))) *
+      _ = 24 * (b : ℝ) ^ (2 : ℕ) * ((Q : ℝ) ^ (2 * (j.val + 1))) *
           ((Q : ℝ) ^ vinogradovCoordinateSavingExponent j)⁻¹ := by
         push_cast
         rw [← pow_mul]
@@ -141,9 +141,9 @@ theorem prod_vinogradovMixedCoordinateCost_le_envelope
       Q ^ (2 * vinogradovCoordinateSavingExponent j) ≤ q j)
     (hqR : ∀ j, U j →
       q j * Q ^ (2 * vinogradovCoordinateSavingExponent j) ≤
-        (Q ^ (j.val + 1)) ^ 2)
+        (Q ^ (j.val + 1)) ^ (2 : ℕ))
     (habsorb : ∀ j, U j →
-      32 * (b : ℝ) ^ 2 * (1 + Real.log ((q j : ℝ) + 1)) ≤
+      32 * (b : ℝ) ^ (2 : ℕ) * (1 + Real.log ((q j : ℝ) + 1)) ≤
         (Q : ℝ) ^ vinogradovCoordinateSavingExponent j) :
     (∏ j : Fin k, vinogradovMixedCoordinateCost U Q Q b q j) ≤
       ∏ j : Fin k, vinogradovCoordinateEnvelope U Q b j := by
@@ -162,14 +162,14 @@ def vinogradovUsefulSavingSum
 theorem prod_vinogradovCoordinateEnvelope_eq
     {Q b k : ℕ} (U : Fin k → Prop) [DecidablePred U] :
     (∏ j : Fin k, vinogradovCoordinateEnvelope U Q b j) =
-      (24 * (b : ℝ) ^ 2) ^ k *
+      (24 * (b : ℝ) ^ (2 : ℕ)) ^ k *
         (Q : ℝ) ^ (∑ j : Fin k, 2 * (j.val + 1)) *
           ((Q : ℝ) ^ vinogradovUsefulSavingSum U)⁻¹ := by
   unfold vinogradovCoordinateEnvelope
   rw [show (∏ j : Fin k,
-      24 * (b : ℝ) ^ 2 * (Q : ℝ) ^ (2 * (j.val + 1)) *
+      24 * (b : ℝ) ^ (2 : ℕ) * (Q : ℝ) ^ (2 * (j.val + 1)) *
         (if U j then ((Q : ℝ) ^ vinogradovCoordinateSavingExponent j)⁻¹ else 1)) =
-      (∏ _j : Fin k, 24 * (b : ℝ) ^ 2) *
+      (∏ _j : Fin k, 24 * (b : ℝ) ^ (2 : ℕ)) *
         (∏ j : Fin k, (Q : ℝ) ^ (2 * (j.val + 1))) *
         ∏ j : Fin k,
           (if U j then ((Q : ℝ) ^ vinogradovCoordinateSavingExponent j)⁻¹ else 1) by
@@ -228,7 +228,7 @@ theorem vinogradovUsefulSavingSum_eq_subtype_sum
     (by intro j; simp) (fun j => vinogradovCoordinateSavingExponent j)
 
 theorem vinogradovUsefulSavingSum_ge (u : ℕ) :
-    40 * u ^ 2 ≤
+    40 * u ^ (2 : ℕ) ≤
       vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) := by
   rw [vinogradovUsefulSavingSum_eq_subtype_sum]
   exact sum_vinogradovCoordinateSavingExponent_ge u
@@ -237,21 +237,21 @@ theorem prod_vinogradovUsefulCoordinateEnvelope_le
     {Q b u : ℕ} (hQ : 1 ≤ Q) :
     (∏ j : Fin (vinogradovRouteTOrder (4 * u)),
       vinogradovCoordinateEnvelope (vinogradovUsefulCoordinate u) Q b j) ≤
-      (24 * (b : ℝ) ^ 2) ^ (vinogradovRouteTOrder (4 * u)) *
+      (24 * (b : ℝ) ^ (2 : ℕ)) ^ (vinogradovRouteTOrder (4 * u)) *
         (Q : ℝ) ^
           (vinogradovRouteTOrder (4 * u) *
             (vinogradovRouteTOrder (4 * u) + 1)) *
-          ((Q : ℝ) ^ (40 * u ^ 2))⁻¹ := by
+          ((Q : ℝ) ^ (40 * u ^ (2 : ℕ)))⁻¹ := by
   rw [prod_vinogradovCoordinateEnvelope_eq]
   rw [sum_two_mul_fin_succ]
   have hQreal : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
   have hsum := vinogradovUsefulSavingSum_ge u
-  have hpow : (Q : ℝ) ^ (40 * u ^ 2) ≤
+  have hpow : (Q : ℝ) ^ (40 * u ^ (2 : ℕ)) ≤
       (Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) :=
     pow_le_pow_right₀ hQreal hsum
   have hinv :
       ((Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u))⁻¹ ≤
-        ((Q : ℝ) ^ (40 * u ^ 2))⁻¹ := by
+        ((Q : ℝ) ^ (40 * u ^ (2 : ℕ)))⁻¹ := by
     exact inv_anti₀ (by positivity) hpow
   exact mul_le_mul_of_nonneg_left hinv (by positivity)
 

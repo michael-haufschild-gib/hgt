@@ -48,7 +48,7 @@ theorem tsum_alignment_defect {ι : Type*} (c : ι → ℂ) (hc : Summable c)
     have hconj : (starRingEnd ℂ) u * ((A : ℂ) * u) = (A : ℂ) * ((starRingEnd ℂ) u * u) := by
       ring
     rw [hconj]
-    have huu : (starRingEnd ℂ) u * u = ((‖u‖ ^ 2 : ℝ) : ℂ) := by
+    have huu : (starRingEnd ℂ) u * u = ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [mul_comm]
       simpa using Complex.mul_conj' u
     rw [huu, hu]
@@ -72,14 +72,14 @@ The per-term misalignment controls the component transverse to the direction of 
 quadratically: a term that is nearly aligned is nearly a nonnegative multiple of `u`. -/
 
 /-- The square of the norm splits into real and imaginary parts. -/
-private theorem sq_norm_eq (w : ℂ) : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+private theorem sq_norm_eq (w : ℂ) : ‖w‖ ^ (2 : ℕ) = w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
   rw [Complex.norm_def, Real.sq_sqrt (Complex.normSq_nonneg w), Complex.normSq_apply]
   ring
 
 /-- **The transverse component is quadratically small.**  The imaginary part of `ū c` is at most the
 geometric mean of `2‖c‖` and the misalignment. -/
 theorem sq_im_conj_mul_le (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
-    ((starRingEnd ℂ) u * c).im ^ 2
+    ((starRingEnd ℂ) u * c).im ^ (2 : ℕ)
       ≤ 2 * ‖c‖ * (‖c‖ - ((starRingEnd ℂ) u * c).re) := by
   set w : ℂ := (starRingEnd ℂ) u * c with hw
   have hnw : ‖w‖ = ‖c‖ := by
@@ -119,7 +119,7 @@ theorem norm_sub_re_mul_eq (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
 /-- **Alignment in geometric form.**  The distance from a term to a nonnegative multiple of the
 direction of the sum is controlled by the square root of its misalignment. -/
 theorem norm_sub_re_mul_sq_le (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
-    ‖c - ((((starRingEnd ℂ) u * c).re : ℝ) : ℂ) * u‖ ^ 2
+    ‖c - ((((starRingEnd ℂ) u * c).re : ℝ) : ℂ) * u‖ ^ (2 : ℕ)
       ≤ 2 * ‖c‖ * (‖c‖ - ((starRingEnd ℂ) u * c).re) := by
   rw [norm_sub_re_mul_eq c hu, sq_abs]
   exact sq_im_conj_mul_le c hu
@@ -129,13 +129,13 @@ theorem norm_sub_re_mul_sq_le (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
 
 The weighted sum of a nearly aligned family is, up to a real multiple of the common direction,
 controlled by the square root of the total misalignment -- with the weights entering only through
-their `l^2` norm.  This is the step where the square root from the previous section is converted
+their `l^(2 : ℕ)` norm.  This is the step where the square root from the previous section is converted
 into a gain over the trivial bound. -/
 
 /-- **Weighted Cauchy--Schwarz against square roots.** -/
 theorem sum_weighted_sqrt_sq_le {ι : Type*} (s : Finset ι) (w d : ι → ℝ)
     (hd : ∀ i ∈ s, 0 ≤ d i) :
-    (∑ i ∈ s, w i * Real.sqrt (d i)) ^ 2 ≤ (∑ i ∈ s, w i ^ 2) * ∑ i ∈ s, d i := by
+    (∑ i ∈ s, w i * Real.sqrt (d i)) ^ (2 : ℕ) ≤ (∑ i ∈ s, w i ^ (2 : ℕ)) * ∑ i ∈ s, d i := by
   have h := Finset.sum_mul_sq_le_sq_mul_sq s w (fun i => Real.sqrt (d i))
   refine le_trans h (le_of_eq ?_)
   congr 1

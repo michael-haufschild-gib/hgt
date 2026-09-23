@@ -25,7 +25,7 @@ theorem meromorphicOn_ellipticThetaLogKernel_compl_zero {q : ℂ} (hq0 : q ≠ 0
   have ha1 : a < 1 := by simpa [a] using hq
   have hb0 : 0 < b := by simpa [b] using norm_pos_iff.mpr hx0
   by_cases hb1 : b < 1
-  · by_cases hwide : a ^ 2 < b
+  · by_cases hwide : a ^ (2 : ℕ) < b
     · exact meromorphicAt_ellipticThetaLogKernel_of_norm_sq_between
         hq0 (by simpa [a, b] using hwide) (by simpa [b] using hb1)
     · have hpowExists : ∃ n : ℕ, a ^ n < b := exists_pow_lt_of_lt_one hb0 ha1
@@ -51,7 +51,7 @@ theorem meromorphicOn_ellipticThetaLogKernel_compl_zero {q : ℂ} (hq0 : q ≠ 0
         by_cases heq : b = a ^ m
         · have hynorm : ‖y‖ = 1 := by rw [hnormY, heq, div_self hpowm0.ne']
           have hqynorm : ‖q * y‖ = a := by simp [hynorm, a]
-          have hqwide : ‖q‖ ^ 2 < ‖q * y‖ := by
+          have hqwide : ‖q‖ ^ (2 : ℕ) < ‖q * y‖ := by
             rw [hqynorm]
             dsimp [a]
             nlinarith
@@ -66,7 +66,7 @@ theorem meromorphicOn_ellipticThetaLogKernel_compl_zero {q : ℂ} (hq0 : q ≠ 0
           have haley : a < ‖y‖ := by
             rw [hnormY, lt_div_iff₀ hpowm0]
             simpa [pow_succ, mul_comm] using hn
-          have ha2y : ‖q‖ ^ 2 < ‖y‖ := by
+          have ha2y : ‖q‖ ^ (2 : ℕ) < ‖y‖ := by
             dsimp [a] at ha0 ha1 ⊢
             nlinarith
           exact meromorphicAt_ellipticThetaLogKernel_of_norm_sq_between hq0 ha2y hy1
@@ -97,7 +97,7 @@ theorem meromorphicOn_ellipticThetaLogKernel_compl_zero {q : ℂ} (hq0 : q ≠ 0
     let y : ℂ := q ^ (m + 1) * x
     have hynorm : ‖y‖ = a ^ (m + 1) * b := by simp [y, a, b]
     have hy1 : ‖y‖ < 1 := by simpa [hynorm] using hN
-    have ha2y : ‖q‖ ^ 2 < ‖y‖ := by
+    have ha2y : ‖q‖ ^ (2 : ℕ) < ‖y‖ := by
       have haY : a ≤ a ^ (m + 1) * b := by
         calc
           a = a * 1 := by ring

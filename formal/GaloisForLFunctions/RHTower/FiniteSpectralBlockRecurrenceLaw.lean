@@ -18,13 +18,13 @@ noncomputable section
 def finiteSpectralBlockDistanceSq
     {d : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (phase : Fin d → Fin d → ℂ) (block : Fin d → Fin d → E) : ℝ :=
-  ∑ i, ∑ j, ‖phase i j • block i j - block i j‖ ^ 2
+  ∑ i, ∑ j, ‖phase i j • block i j - block i j‖ ^ (2 : ℕ)
 
 /-- Phase energy associated with a finite array of weighted coherent blocks. -/
 def finiteSpectralBlockPhaseEnergy
     {d : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (phase : Fin d → Fin d → ℂ) (block : Fin d → Fin d → E) : ℝ :=
-  ∑ i, ∑ j, ‖block i j‖ ^ 2 * ‖phase i j - 1‖ ^ 2
+  ∑ i, ∑ j, ‖block i j‖ ^ (2 : ℕ) * ‖phase i j - 1‖ ^ (2 : ℕ)
 
 /--
 Universal finite spectral-block law: the full squared displacement is exactly
@@ -62,9 +62,9 @@ theorem finiteSpectralHamiltonianDistanceSq_eq_gapEnergy
     (t : ℝ) (energy : Fin d → ℝ) (block : Fin d → Fin d → E) :
     finiteSpectralBlockDistanceSq
         (finiteSpectralHamiltonianPhase t energy) block =
-      ∑ i, ∑ j, ‖block i j‖ ^ 2 *
+      ∑ i, ∑ j, ‖block i j‖ ^ (2 : ℕ) *
         ‖Complex.exp
-          (Complex.I * (((t * (energy i - energy j) : ℝ) : ℂ))) - 1‖ ^ 2 := by
+          (Complex.I * (((t * (energy i - energy j) : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ) := by
   rw [finiteSpectralBlockDistanceSq_eq_phaseEnergy]
   rfl
 
@@ -82,7 +82,7 @@ def finiteObserverUnionWeight
     [NormedAddCommGroup E] [NormedSpace ℂ E]
     (lam : J → ℝ) (block : J → Fin d → Fin d → E)
     (i j : Fin d) : ℝ :=
-  ∑ a, lam a * ‖block a i j‖ ^ 2
+  ∑ a, lam a * ‖block a i j‖ ^ (2 : ℕ)
 
 /--
 Observer-union law: a finite collection of quadratic records is exactly one
@@ -95,7 +95,7 @@ theorem finiteObserverBlockDistanceSq_eq_unionWeight
     (block : J → Fin d → Fin d → E) :
     finiteObserverBlockDistanceSq lam phase block =
       ∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
-        ‖phase i j - 1‖ ^ 2 := by
+        ‖phase i j - 1‖ ^ (2 : ℕ) := by
   unfold finiteObserverBlockDistanceSq finiteObserverUnionWeight
   simp_rw [finiteSpectralBlockDistanceSq_eq_phaseEnergy,
     finiteSpectralBlockPhaseEnergy, Finset.mul_sum]

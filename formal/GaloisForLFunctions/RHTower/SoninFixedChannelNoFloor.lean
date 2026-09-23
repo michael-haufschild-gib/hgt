@@ -33,7 +33,7 @@ def soninFixedChannelContribution (b c : ℝ) (hb : 0 < b) (hbc : b < c) (q : �
 theorem soninFixedChannelContribution_le (b c : ℝ) (hb : 0 < b) (hbc : b < c) (q : ℝ)
     (p : ℕ → ℝ) (T : evenSubspace →L[ℂ] evenSubspace) (i : ℕ) :
     soninFixedChannelContribution b c hb hbc q p T i ≤
-      ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 := by
+      ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) := by
   set w : evenSubspace := soninPacketEven b c hb hbc (2 * Real.pi * (p i * q)) with hw
   have hbound : ‖w‖ ≤ 2 * ‖soninBumpL2 b c hb hbc‖ :=
     norm_soninPacketL2_le b c hb hbc (2 * Real.pi * (p i * q))
@@ -41,17 +41,17 @@ theorem soninFixedChannelContribution_le (b c : ℝ) (hb : 0 < b) (hbc : b < c) 
   have hre : (⟪w, T w⟫_ℂ).re ≤ ‖(⟪w, T w⟫_ℂ)‖ := Complex.re_le_norm _
   have hinner : ‖(⟪w, T w⟫_ℂ)‖ ≤ ‖w‖ * ‖T w‖ := norm_inner_le_norm _ _
   have hop : ‖T w‖ ≤ ‖T‖ * ‖w‖ := T.le_opNorm w
-  have hstep : ‖w‖ * ‖T w‖ ≤ ‖T‖ * ‖w‖ ^ 2 := by nlinarith [norm_nonneg w, norm_nonneg (T w)]
-  have hsq : ‖w‖ ^ 2 ≤ (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 := by
+  have hstep : ‖w‖ * ‖T w‖ ≤ ‖T‖ * ‖w‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg w, norm_nonneg (T w)]
+  have hsq : ‖w‖ ^ (2 : ℕ) ≤ (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) := by
     have := norm_nonneg w
     nlinarith
-  have hfinal : ‖T‖ * ‖w‖ ^ 2 ≤ ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 :=
+  have hfinal : ‖T‖ * ‖w‖ ^ (2 : ℕ) ≤ ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq (norm_nonneg T)
   calc soninFixedChannelContribution b c hb hbc q p T i = (⟪w, T w⟫_ℂ).re := rfl
     _ ≤ ‖(⟪w, T w⟫_ℂ)‖ := hre
     _ ≤ ‖w‖ * ‖T w‖ := hinner
-    _ ≤ ‖T‖ * ‖w‖ ^ 2 := hstep
-    _ ≤ ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 := hfinal
+    _ ≤ ‖T‖ * ‖w‖ ^ (2 : ℕ) := hstep
+    _ ≤ ‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) := hfinal
 
 /-- **No fixed channel restores the floor.**  A completion given by pairing the source packets
 against one fixed bounded operator is bounded above, so it leaves the completed channel unbounded
@@ -65,7 +65,7 @@ theorem not_bddBelow_soninCompletedPacketValueVar_fixedChannel
           (soninFixedChannelContribution b c hb hbc q (soninCrossingClock a c) T) :=
   not_bddBelow_soninCompletedPacketValueVar_of_bddAbove a b c ha hb hab hbc q haq hqb
     (soninFixedChannelContribution b c hb hbc q (soninCrossingClock a c) T)
-    (‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2)
+    (‖T‖ * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ))
     (fun i => soninFixedChannelContribution_le b c hb hbc q (soninCrossingClock a c) T i)
 
 /-- **The concrete Burnol conductor channel is such a fixed operator.**  Read at one aperture and

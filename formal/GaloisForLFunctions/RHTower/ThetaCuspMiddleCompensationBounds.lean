@@ -14,8 +14,8 @@ set_option maxHeartbeats 1500000
 private theorem first_slope_eq (x : ℝ) :
     deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
       Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)*
-        (-8*thetaCuspSingleAtomReflectionScale 1 x^3+
-          30*thetaCuspSingleAtomReflectionScale 1 x^2-15*thetaCuspSingleAtomReflectionScale 1 x) := by
+        (-8*thetaCuspSingleAtomReflectionScale 1 x^(3 : ℕ)+
+          30*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-15*thetaCuspSingleAtomReflectionScale 1 x) := by
   have h := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
   rw [iteratedDeriv_one] at h
   rw [h]
@@ -29,8 +29,8 @@ private theorem first_slope_affine_lower {x : ℝ}
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hqp : 0 ≤ q := by dsimp [q]; linarith
   rw [first_slope_eq, thetaCuspSourceTerm_one_eq_scale_profile]
-  change (9/2-2*q)*(Real.exp (x/2-q)*(4*q^2-6*q)) ≤
-    Real.exp (x/2-q)*(-8*q^3+30*q^2-15*q)
+  change (9/2-2*q)*(Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q)) ≤
+    Real.exp (x/2-q)*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q)
   nlinarith only [mul_nonneg (Real.exp_pos (x/2-q)).le hqp]
 
 private theorem first_slope_lower_five {x : ℝ}
@@ -46,8 +46,8 @@ private theorem first_slope_lower_five {x : ℝ}
   have hp : 0 ≤ q*((5-q)*(8*q-9)+3/2) := mul_nonneg hqp hr
   have hm := mul_nonneg (Real.exp_pos (x/2-q)).le hp
   rw [first_slope_eq, thetaCuspSourceTerm_one_eq_scale_profile]
-  change -(19/4)*(Real.exp (x/2-q)*(4*q^2-6*q)) ≤
-    Real.exp (x/2-q)*(-8*q^3+30*q^2-15*q)
+  change -(19/4)*(Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q)) ≤
+    Real.exp (x/2-q)*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q)
   nlinarith only [hm]
 
 private theorem full_slope_transport {L x : ℝ}
@@ -119,7 +119,7 @@ theorem center_le_quarter_of_firstAtomScale_le_five {x : ℝ}
 theorem thetaCuspCenterCompensationSource_lower_on_scale_five {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 5) :
-    thetaCuspFullSource x^2/2 ≤ thetaCuspCenterCompensationSource x := by
+    thetaCuspFullSource x^(2 : ℕ)/2 ≤ thetaCuspCenterCompensationSource x := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hxu := center_le_quarter_of_firstAtomScale_le_five hqu
   have hF := thetaCuspFullSource_pos_all x
@@ -135,7 +135,7 @@ theorem thetaCuspCenterCompensationSource_pos_on_scale_five {x : ℝ}
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 5) :
     0 < thetaCuspCenterCompensationSource x := by
   have hF := thetaCuspFullSource_pos_all x
-  exact (by positivity : 0 < thetaCuspFullSource x^2/2).trans_le
+  exact (by positivity : 0 < thetaCuspFullSource x^(2 : ℕ)/2).trans_le
     (thetaCuspCenterCompensationSource_lower_on_scale_five hq hqu)
 
 /-- The complete compensation costs at most one 2500th in the Hankel normalization up to scale seven. -/
@@ -143,7 +143,7 @@ theorem thetaCuspCenterCompensationSource_middle_normalized_lower {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
     -(1 : ℝ)/2500 ≤ thetaCuspCenterCompensationSource x/
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^5) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
   let F := thetaCuspFullSource x
@@ -157,22 +157,22 @@ theorem thetaCuspCenterCompensationSource_middle_normalized_lower {x : ℝ}
   have hcoef : 0 ≤ 2*q-4 := by dsimp [q]; linarith
   have hc := mul_le_mul_of_nonneg_right (sixteen_mul_center_le_firstAtomScale hx.le)
     (mul_nonneg hcoef (sq_nonneg F))
-  have hg : (3+q/2-q^2/4)*F^2 ≤ G := by
-    change (3+q/2-q^2/4)*F^2 ≤ 3*F^2+2*x*F*deriv thetaCuspFullSource x
+  have hg : (3+q/2-q^(2 : ℕ)/4)*F^(2 : ℕ) ≤ G := by
+    change (3+q/2-q^(2 : ℕ)/4)*F^(2 : ℕ) ≤ 3*F^(2 : ℕ)+2*x*F*deriv thetaCuspFullSource x
     change 2*x*F*((4-2*q)*F) ≤ 2*x*F*deriv thetaCuspFullSource x at hs
-    change 16*x*((2*q-4)*F^2) ≤ q*((2*q-4)*F^2) at hc
+    change 16*x*((2*q-4)*F^(2 : ℕ)) ≤ q*((2*q-4)*F^(2 : ℕ)) at hc
     nlinarith only [hs, hc]
-  have hpoly : -(q^5/2592) ≤ 3+q/2-q^2/4 := by
-    have hp : 0 ≤ (q-6)^2*(q^3+12*q^2+108*q+216) := by positivity
+  have hpoly : -(q^(5 : ℕ)/2592) ≤ 3+q/2-q^(2 : ℕ)/4 := by
+    have hp : 0 ≤ (q-6)^(2 : ℕ)*(q^(3 : ℕ)+12*q^(2 : ℕ)+108*q+216) := by positivity
     nlinarith only [hp]
   have hlow := (mul_le_mul_of_nonneg_right hpoly (sq_nonneg F)).trans hg
   have hm : F ≤ (101/100)*f := (thetaCuspFullSource_mass_bounds_middle hq).2
   have hm2 := pow_le_pow_left₀ hF.le hm 2
-  have hneg := mul_le_mul_of_nonneg_left hm2 (show 0 ≤ q^5/2592 by positivity)
-  have hraw : -(1 : ℝ)/2500*(f^2*q^5) ≤ G := by
+  have hneg := mul_le_mul_of_nonneg_left hm2 (show 0 ≤ q^(5 : ℕ)/2592 by positivity)
+  have hraw : -(1 : ℝ)/2500*(f^(2 : ℕ)*q^(5 : ℕ)) ≤ G := by
     nlinarith only [hlow, hneg, mul_nonneg (sq_nonneg f) (pow_nonneg hq0.le 5)]
-  change -(1 : ℝ)/2500 ≤ G/(f^2*q^5)
-  exact (le_div_iff₀ (by positivity : 0 < f^2*q^5)).mpr hraw
+  change -(1 : ℝ)/2500 ≤ G/(f^(2 : ℕ)*q^(5 : ℕ))
+  exact (le_div_iff₀ (by positivity : 0 < f^(2 : ℕ)*q^(5 : ℕ))).mpr hraw
 
 end
 end RHTower

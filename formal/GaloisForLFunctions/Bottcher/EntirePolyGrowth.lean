@@ -67,11 +67,11 @@ argument to its proven algebraic core. -/
 theorem c_mem_of_entire_functional_eq {P : ℂ → ℂ} {C : ℝ} {n : ℕ} {c : ℂ}
     (hP : Differentiable ℂ P)
     (hgrowth : ∀ z, ‖P z‖ ≤ C * (max 1 ‖z‖) ^ n)
-    (hfe : ∀ s : ℂ, P (s ^ 2) = (P s) ^ 2 + c * s)
+    (hfe : ∀ s : ℂ, P (s ^ (2 : ℕ)) = (P s) ^ (2 : ℕ) + c * s)
     (h0 : P 0 = 1) :
     c = 0 ∨ c = -2 := by
   obtain ⟨Q, hQ⟩ := exists_polynomial_of_entire_polyGrowth hP hgrowth
-  have hpoly : Q.comp (X ^ 2) = Q ^ 2 + Polynomial.C c * X := by
+  have hpoly : Q.comp (X ^ (2 : ℕ)) = Q ^ (2 : ℕ) + Polynomial.C c * X := by
     apply Polynomial.funext
     intro s
     simp only [Polynomial.eval_comp, Polynomial.eval_pow, Polynomial.eval_X,

@@ -21,18 +21,18 @@ namespace RiemannGaussian.HermitianRankTrace.Multiplicity
 /-! ### (A) the scalar function g_c -/
 
 /-- g_c(x) = x² − cx − ((x−c)₊)²:  = x² − cx for x ≤ c,  = cx − c² for x ≥ c. -/
-def gc (c x : ℝ) : ℝ := x ^ 2 - c * x - (max (x - c) 0) ^ 2
+def gc (c x : ℝ) : ℝ := x ^ (2 : ℕ) - c * x - (max (x - c) 0) ^ (2 : ℕ)
 
-lemma gc_of_le {c x : ℝ} (h : x ≤ c) : gc c x = x ^ 2 - c * x := by
+lemma gc_of_le {c x : ℝ} (h : x ≤ c) : gc c x = x ^ (2 : ℕ) - c * x := by
   unfold gc; rw [max_eq_right (by linarith)]; ring
 
-lemma gc_of_ge {c x : ℝ} (h : c ≤ x) : gc c x = c * x - c ^ 2 := by
+lemma gc_of_ge {c x : ℝ} (h : c ≤ x) : gc c x = c * x - c ^ (2 : ℕ) := by
   unfold gc; rw [max_eq_left (by linarith)]; ring
 
 @[simp] lemma gc_zero {c : ℝ} (hc : 0 ≤ c) : gc c 0 = 0 := by
   rw [gc_of_le hc]; ring
 
-lemma gc_ge {c x : ℝ} (hc : 0 ≤ c) : -(c ^ 2 / 4) ≤ gc c x := by
+lemma gc_ge {c x : ℝ} (hc : 0 ≤ c) : -(c ^ (2 : ℕ) / 4) ≤ gc c x := by
   rcases le_or_gt x c with h | h
   · rw [gc_of_le h]; nlinarith [sq_nonneg (x - c / 2)]
   · rw [gc_of_ge h.le]
@@ -41,14 +41,14 @@ lemma gc_ge {c x : ℝ} (hc : 0 ≤ c) : -(c ^ 2 / 4) ≤ gc c x := by
 
 /-- the affine minorants: for t ∈ [0,c] and x ≥ 0, (2t − c)x − t² ≤ g_c(x). -/
 lemma affine_le_gc {c t x : ℝ} (_ht0 : 0 ≤ t) (htc : t ≤ c) (_hx : 0 ≤ x) :
-    (2 * t - c) * x - t ^ 2 ≤ gc c x := by
+    (2 * t - c) * x - t ^ (2 : ℕ) ≤ gc c x := by
   rcases le_or_gt x c with h | h
   · rw [gc_of_le h]; nlinarith [sq_nonneg (x - t)]
   · rw [gc_of_ge h.le]; nlinarith [sq_nonneg (c - t)]
 
 /-- … with equality at t = min(x, c). -/
 lemma affine_eq_gc {c x : ℝ} (_hc : 0 ≤ c) (_hx : 0 ≤ x) :
-    (2 * min x c - c) * x - (min x c) ^ 2 = gc c x := by
+    (2 * min x c - c) * x - (min x c) ^ (2 : ℕ) = gc c x := by
   rcases le_or_gt x c with h | h
   · rw [min_eq_left h, gc_of_le h]; ring
   · rw [min_eq_right h.le, gc_of_ge h.le]; ring
@@ -64,8 +64,8 @@ theorem gc_sum_le {ι : Type*} (s : Finset ι) {c : ℝ} (hc : 0 ≤ c) (w μ : 
   have htc : t ≤ c := min_le_right _ _
   rw [← affine_eq_gc hc hx0]
   -- the affine function at xbar is the w-average of its values at μ_i, each ≤ g_c(μ_i)
-  calc (2 * t - c) * xbar - t ^ 2 = (2 * t - c) * xbar - t ^ 2 * ∑ i ∈ s, w i := by rw [hw1, mul_one]
-    _ = ∑ i ∈ s, w i * ((2 * t - c) * μ i - t ^ 2) := by
+  calc (2 * t - c) * xbar - t ^ (2 : ℕ) = (2 * t - c) * xbar - t ^ (2 : ℕ) * ∑ i ∈ s, w i := by rw [hw1, mul_one]
+    _ = ∑ i ∈ s, w i * ((2 * t - c) * μ i - t ^ (2 : ℕ)) := by
         rw [hx, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
         exact Finset.sum_congr rfl fun i _ => by ring
     _ ≤ ∑ i ∈ s, w i * gc c (μ i) :=
@@ -73,14 +73,14 @@ theorem gc_sum_le {ι : Type*} (s : Finset ι) {c : ℝ} (hc : 0 ≤ c) (w μ : 
 
 /-- the termwise step replacing the rank count:  (p − n)² ≥ c·p + g_c(p) − 2c·n  for p, n ≥ 0. -/
 lemma sq_sub_ge_gc {c p n : ℝ} (_hp : 0 ≤ p) (hn : 0 ≤ n) (_hc : 0 ≤ c) :
-    c * p + gc c p - 2 * c * n ≤ (p - n) ^ 2 := by
+    c * p + gc c p - 2 * c * n ≤ (p - n) ^ (2 : ℕ) := by
   rcases le_or_gt p c with h | h
   · rw [gc_of_le h]; nlinarith [mul_nonneg hn (sub_nonneg.mpr h)]
   · rw [gc_of_ge h.le]; nlinarith [sq_nonneg (p - n - c)]
 
 lemma sum_sq_sub_ge_gc {ι : Type*} [Fintype ι] {p m : ι → ℝ} (hp : ∀ i, 0 ≤ p i) (hm : ∀ i, 0 ≤ m i)
     {c : ℝ} (hc : 0 ≤ c) :
-    c * (∑ i, p i) + (∑ i, gc c (p i)) - 2 * c * (∑ i, m i) ≤ ∑ i, (p i - m i) ^ 2 := by
+    c * (∑ i, p i) + (∑ i, gc c (p i)) - 2 * c * (∑ i, m i) ≤ ∑ i, (p i - m i) ^ (2 : ℕ) := by
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   exact Finset.sum_le_sum fun i _ => sq_sub_ge_gc (hp i) (hm i) hc
 
@@ -105,7 +105,7 @@ lemma re_diag_eq_sum_normSq_eigenvalues {M : Matrix ι ι 𝕜} (hM : M.IsHermit
   rw [hMjj, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [show U j i * (hM.eigenvalues i : 𝕜) * starRingEnd 𝕜 (U j i) = (hM.eigenvalues i : 𝕜) * (U j i * starRingEnd 𝕜 (U j i)) by ring,
-    RCLike.mul_conj, show ((hM.eigenvalues i : 𝕜) * ((‖U j i‖ : 𝕜) ^ 2) : 𝕜) = ((hM.eigenvalues i * ‖U j i‖ ^ 2 : ℝ) : 𝕜) by push_cast; ring,
+    RCLike.mul_conj, show ((hM.eigenvalues i : 𝕜) * ((‖U j i‖ : 𝕜) ^ (2 : ℕ)) : 𝕜) = ((hM.eigenvalues i * ‖U j i‖ ^ (2 : ℕ) : ℝ) : 𝕜) by push_cast; ring,
     RCLike.ofReal_re]
   simp [normSqMatrix, mul_comm]
 
@@ -217,7 +217,7 @@ def Wmat (m : ι → ℝ) (v : ι → n → 𝕜) : Matrix n ι 𝕜 := fun a j 
 def Pmat (m : ι → ℝ) (v : ι → n → 𝕜) : Matrix n n 𝕜 := Wmat m v * (Wmat m v)ᴴ
 
 /-- x_j := ‖v_j‖² = Σ_a ‖v_j a‖². -/
-def xsq (v : ι → n → 𝕜) (j : ι) : ℝ := ∑ a, ‖v j a‖ ^ 2
+def xsq (v : ι → n → 𝕜) (j : ι) : ℝ := ∑ a, ‖v j a‖ ^ (2 : ℕ)
 
 omit [Fintype n] [DecidableEq n] [DecidableEq ι] in
 lemma Pmat_apply {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n → 𝕜) (a b : n) :
@@ -251,7 +251,7 @@ lemma re_gram_diag {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n → �
   rw [show (Real.sqrt (m j) : 𝕜) * starRingEnd 𝕜 (v j a) * ((Real.sqrt (m j) : 𝕜) * v j a)
       = ((Real.sqrt (m j) : 𝕜) * (Real.sqrt (m j) : 𝕜)) * (starRingEnd 𝕜 (v j a) * v j a) by ring,
     ← RCLike.ofReal_mul, Real.mul_self_sqrt (hm j), RCLike.conj_mul,
-    show ((m j : 𝕜) * ((‖v j a‖ : 𝕜) ^ 2) : 𝕜) = ((m j * ‖v j a‖ ^ 2 : ℝ) : 𝕜) by push_cast; ring,
+    show ((m j : 𝕜) * ((‖v j a‖ : 𝕜) ^ (2 : ℕ)) : 𝕜) = ((m j * ‖v j a‖ ^ (2 : ℕ) : ℝ) : 𝕜) by push_cast; ring,
     RCLike.ofReal_re]
 
 omit [DecidableEq n] [DecidableEq ι] in
@@ -278,7 +278,7 @@ theorem sum_gc_eigenvalues_ge {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι �
 and c > 0:   c·tr P + Σ_j g_c(m_j‖v_j‖²) + 2c·tr Q − c²·b ≤ ‖P + Q‖_F². -/
 theorem rank_trace_mult {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n → 𝕜)
     {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) {c : ℝ} (hc : 0 < c) :
-    c * rtrace (Pmat m v) + (∑ j, gc c (m j * xsq v j)) + 2 * c * rtrace Q - c ^ 2 * b
+    c * rtrace (Pmat m v) + (∑ j, gc c (m j * xsq v j)) + 2 * c * rtrace Q - c ^ (2 : ℕ) * b
       ≤ frobSq (Pmat m v + Q) := by
   classical
   set P := Pmat m v with hPdef
@@ -303,11 +303,11 @@ theorem rank_trace_mult {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n �
     rw [rtrace_eq_sum_eigenvalues hP.isHermitian]; exact sum_eigenvalues_reindex hP.isHermitian id
   have htraceQm : rtrace Qm = ∑ k, mm k := by
     rw [rtrace_eq_sum_eigenvalues hQm_psd.isHermitian]; exact sum_eigenvalues_reindex hQm_psd.isHermitian id
-  have hfrobP : frobSq P = ∑ k, (p k) ^ 2 := by
-    rw [frobSq_hermitian_eq_sum_sq_eigenvalues hP.isHermitian]; exact sum_eigenvalues_reindex hP.isHermitian (· ^ 2)
-  have hfrobQm : frobSq Qm = ∑ k, (mm k) ^ 2 := by
+  have hfrobP : frobSq P = ∑ k, (p k) ^ (2 : ℕ) := by
+    rw [frobSq_hermitian_eq_sum_sq_eigenvalues hP.isHermitian]; exact sum_eigenvalues_reindex hP.isHermitian (· ^ (2 : ℕ))
+  have hfrobQm : frobSq Qm = ∑ k, (mm k) ^ (2 : ℕ) := by
     rw [frobSq_hermitian_eq_sum_sq_eigenvalues hQm_psd.isHermitian]
-    exact sum_eigenvalues_reindex hQm_psd.isHermitian (· ^ 2)
+    exact sum_eigenvalues_reindex hQm_psd.isHermitian (· ^ (2 : ℕ))
   -- Step 1: Frobenius expansion.
   have hexpand : frobSq (P + Q)
       = frobSq P + 2 * RCLike.re (P * Qp).trace - 2 * RCLike.re (P * Qm).trace + frobSq Qp + frobSq Qm := by
@@ -321,20 +321,20 @@ theorem rank_trace_mult {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n �
   have hPQp : 0 ≤ RCLike.re (P * Qp).trace := trace_mul_nonneg_of_posSemidef hP hQp_psd
   -- Step 3: von Neumann.
   have hvN : RCLike.re (P * Qm).trace ≤ ∑ k, p k * mm k := vonNeumann_trace_ineq hP.isHermitian hQm_psd.isHermitian
-  have hstep4 : ∑ k, (p k - mm k) ^ 2 ≤ frobSq P - 2 * RCLike.re (P * Qm).trace + frobSq Qm := by
-    have hsplit : ∑ k, (p k - mm k) ^ 2 = ∑ k, (p k)^2 - 2 * ∑ k, p k * mm k + ∑ k, (mm k)^2 := by
+  have hstep4 : ∑ k, (p k - mm k) ^ (2 : ℕ) ≤ frobSq P - 2 * RCLike.re (P * Qm).trace + frobSq Qm := by
+    have hsplit : ∑ k, (p k - mm k) ^ (2 : ℕ) = ∑ k, (p k)^(2 : ℕ) - 2 * ∑ k, p k * mm k + ∑ k, (mm k)^(2 : ℕ) := by
       simp only [sub_sq, Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.mul_sum, mul_assoc]
     rw [hsplit, hfrobP, hfrobQm]; linarith
   -- Step 5': the multiplicity-aware termwise estimate + Schur/transfer.
   have hgc_eig : ∑ j, gc c (m j * xsq v j) ≤ ∑ k, gc c (p k) := by
     calc ∑ j, gc c (m j * xsq v j) ≤ ∑ i, gc c (hP.1.eigenvalues i) := sum_gc_eigenvalues_ge hm v hc.le
       _ = ∑ k, gc c (p k) := sum_eigenvalues_reindex hP.isHermitian (gc c)
-  have hstep5 : c * rtrace P + (∑ j, gc c (m j * xsq v j)) - 2 * c * rtrace Qm ≤ ∑ k, (p k - mm k) ^ 2 := by
+  have hstep5 : c * rtrace P + (∑ j, gc c (m j * xsq v j)) - 2 * c * rtrace Qm ≤ ∑ k, (p k - mm k) ^ (2 : ℕ) := by
     rw [htraceP, htraceQm]
     have := sum_sq_sub_ge_gc hp_nn hm_nn hc.le
     linarith
   -- Step 6: estimate on Q₊ (verbatim).
-  have hstep6 : 2 * c * rtrace Qp - c^2 * b ≤ frobSq Qp := by
+  have hstep6 : 2 * c * rtrace Qp - c^(2 : ℕ) * b ≤ frobSq Qp := by
     rw [hQp_def, rtrace_hermPosPart, frobSq_hermPosPart]
     refine sum_sq_lower_of_card_pos_le ?_ c
     calc #{i | (hQ.eigenvalues i)⁺ ≠ 0} = #{i | 0 < hQ.eigenvalues i} := by
@@ -346,7 +346,7 @@ theorem rank_trace_mult {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n �
 /-! ### the k_c form (leak-free target) and the integer specializations -/
 
 /-- k_c(p) := c² − ((c−p)₊)²  (= 2cp − p² for p ≤ c, = c² for p ≥ c): nondecreasing, concave, k_c(0) = 0. -/
-def kc (c p : ℝ) : ℝ := c ^ 2 - (max (c - p) 0) ^ 2
+def kc (c p : ℝ) : ℝ := c ^ (2 : ℕ) - (max (c - p) 0) ^ (2 : ℕ)
 
 lemma kc_eq (c p : ℝ) : kc c p = c * p - gc c p := by
   unfold kc gc
@@ -360,13 +360,13 @@ lemma kc_mono {c p p' : ℝ} (_hc : 0 ≤ c) (hpp : p ≤ p') : kc c p ≤ kc c 
   have h2 : 0 ≤ max (c - p') 0 := le_max_right _ _
   nlinarith [mul_le_mul h1 h1 h2 (le_trans h2 h1)]
 
-lemma kc_of_le {c p : ℝ} (h : p ≤ c) : kc c p = 2 * c * p - p ^ 2 := by rw [kc_eq, gc_of_le h]; ring
-lemma kc_of_ge {c p : ℝ} (h : c ≤ p) : kc c p = c ^ 2 := by rw [kc_eq, gc_of_ge h]; ring
+lemma kc_of_le {c p : ℝ} (h : p ≤ c) : kc c p = 2 * c * p - p ^ (2 : ℕ) := by rw [kc_eq, gc_of_le h]; ring
+lemma kc_of_ge {c p : ℝ} (h : c ≤ p) : kc c p = c ^ (2 : ℕ) := by rw [kc_eq, gc_of_ge h]; ring
 
 /-- **Lemma R, k-form**:  2c·tr(P+Q) − ‖P+Q‖_F² ≤ Σ_j k_c(m_j‖v_j‖²) + c²·b. -/
 theorem rank_trace_mult_k {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n → 𝕜)
     {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) {c : ℝ} (hc : 0 < c) :
-    2 * c * rtrace (Pmat m v + Q) - frobSq (Pmat m v + Q) ≤ (∑ j, kc c (m j * xsq v j)) + c ^ 2 * b := by
+    2 * c * rtrace (Pmat m v + Q) - frobSq (Pmat m v + Q) ≤ (∑ j, kc c (m j * xsq v j)) + c ^ (2 : ℕ) * b := by
   have h := rank_trace_mult hm v hQ hb hc
   have htr : rtrace (Pmat m v) = ∑ j, m j * xsq v j := rtrace_Pmat hm v
   have hk : ∑ j, kc c (m j * xsq v j) = c * ∑ j, m j * xsq v j - ∑ j, gc c (m j * xsq v j) := by
@@ -377,7 +377,7 @@ theorem rank_trace_mult_k {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n
 /-- … and the **leak-free** form: with ‖v_j‖² ≤ 1 the right side only increases when x_j ↦ 1. -/
 theorem rank_trace_mult_k_le {m : ι → ℝ} (hm : ∀ j, 0 ≤ m j) (v : ι → n → 𝕜) (hx : ∀ j, xsq v j ≤ 1)
     {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) {c : ℝ} (hc : 0 < c) :
-    2 * c * rtrace (Pmat m v + Q) - frobSq (Pmat m v + Q) ≤ (∑ j, kc c (m j)) + c ^ 2 * b := by
+    2 * c * rtrace (Pmat m v + Q) - frobSq (Pmat m v + Q) ≤ (∑ j, kc c (m j)) + c ^ (2 : ℕ) * b := by
   have h1 := rank_trace_mult_k hm v hQ hb hc
   have h2 : ∑ j, kc c (m j * xsq v j) ≤ ∑ j, kc c (m j) :=
     Finset.sum_le_sum fun j _ => kc_mono hc.le (by nlinarith [hm j, hx j])

@@ -57,7 +57,7 @@ theorem pointedFisherConnectionCompression_eq_invSqrtTwo_smul
   simp [smul_eq_mul]
 
 private theorem inv_sqrt_two_sq :
-    (((Real.sqrt 2)⁻¹ : ℂ) ^ 2) = (1 / 2 : ℂ) := by
+    (((Real.sqrt 2)⁻¹ : ℂ) ^ (2 : ℕ)) = (1 / 2 : ℂ) := by
   rw [inv_pow, ← Complex.ofReal_pow,
     Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   norm_num
@@ -67,7 +67,7 @@ theorem det_pointedFisherConnectionCompression_eq_neg_half_projectiveEnergy_sq
     (u v : E) :
     (pointedFisherConnectionCompression u v).det =
       -(1 / 2 : ℂ) *
-        (_root_.HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ 2 := by
+        (_root_.HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ (2 : ℕ) := by
   rw [pointedFisherConnectionCompression_eq_complex_smul, Matrix.det_smul,
     Fintype.card_fin,
     _root_.HTGeometry.det_pureStateProjectorTangentCompression_eq_neg_projectiveEnergy_sq,

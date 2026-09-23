@@ -11,7 +11,7 @@ gamma-normalized adjacent ratios satisfy an autonomous discrete flow.  The bound
 difference consumed by GABTC therefore has an exact parabolic-reaction law.  At a zero of the
 curvature at level `j`, the reaction term disappears and the surviving derivative is
 
-`4 (q_j-q_(j+1))^2 + (j+7/2) q_(j+2) S_(j+1)`.
+`4 (q_j-q_(j+1))^(2 : ℕ) + (j+7/2) q_(j+2) S_(j+1)`.
 
 Thus nonnegative curvature one level higher is a forward barrier against loss of curvature at the
 current level.  This identifies the genuinely infinite part of GABTC: a first failure cannot be
@@ -1314,7 +1314,7 @@ theorem thetaCuspGaussianApertureGammaShape_pos (j : ℕ) :
   rw [thetaCuspGaussianApertureGammaShape]
   positivity
 
-/-- Differentiating the literal aperture inserts one factor `x^2`, hence advances the moment
+/-- Differentiating the literal aperture inserts one factor `x^(2 : ℕ)`, hence advances the moment
 index by one.  The open condition `lambda < 0` supplies a local integrable majorant. -/
 theorem hasDerivAt_thetaCuspGaussianApertureHalfMoment
     {lambda : ℝ} (hlambda : lambda < 0) (j : ℕ) :

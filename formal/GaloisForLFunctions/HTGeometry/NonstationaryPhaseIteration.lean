@@ -115,7 +115,7 @@ theorem norm_oscillatory_iterate_le {α β L : ℝ} (hL : L ≠ 0) (hαβ : α �
           intervalIntegral.norm_integral_le_integral_norm hαβ
       _ = ∫ η in α..β, ‖a 0 η‖ := by
           exact intervalIntegral.integral_congr fun η _ => hnorm η
-      _ = |L|⁻¹ ^ 0 * ∫ η in α..β, ‖a 0 η‖ := by rw [pow_zero, one_mul]
+      _ = |L|⁻¹ ^ (0 : ℕ) * ∫ η in α..β, ‖a 0 η‖ := by rw [pow_zero, one_mul]
   | succ N ih =>
     intro a hderiv hintg hzero
     have hstep := oscillatory_ibp (a := a 0) (a' := a 1) hL

@@ -39,12 +39,12 @@ theorem egbFixedChargeAGibbsFullCollisionCDDPhase_arctan (n : ℕ) (β θ : ℝ)
       24 * egbFixedChargeAGibbsFastModeEnergy n β E * Real.arctan ((12 / 37 : ℝ) * Real.sinh θ) := by
   have hr := cddPhaseKernel_sq (by norm_num : (0 : ℝ) < 2 / 3) θ
   have hs := cddPhaseKernel_sq (by norm_num : (0 : ℝ) < 1 / 6) θ
-  have hargR : 2 * (2 / 3 : ℝ) * Real.sinh θ / (1 + (2 / 3 : ℝ) ^ 2) =
+  have hargR : 2 * (2 / 3 : ℝ) * Real.sinh θ / (1 + (2 / 3 : ℝ) ^ (2 : ℕ)) =
       (12 / 13 : ℝ) * Real.sinh θ := by ring
-  have hargS : 2 * (1 / 6 : ℝ) * Real.sinh θ / (1 + (1 / 6 : ℝ) ^ 2) =
+  have hargS : 2 * (1 / 6 : ℝ) * Real.sinh θ / (1 + (1 / 6 : ℝ) ^ (2 : ℕ)) =
       (12 / 37 : ℝ) * Real.sinh θ := by ring
-  rw [hargR, show (2 / 3 : ℝ) ^ 2 = 4 / 9 by norm_num] at hr
-  rw [hargS, show (1 / 6 : ℝ) ^ 2 = 1 / 36 by norm_num] at hs
+  rw [hargR, show (2 / 3 : ℝ) ^ (2 : ℕ) = 4 / 9 by norm_num] at hr
+  rw [hargS, show (1 / 6 : ℝ) ^ (2 : ℕ) = 1 / 36 by norm_num] at hs
   have hr' : cddPhaseKernel (4 / 9) θ = 6 * Real.arctan ((12 / 13 : ℝ) * Real.sinh θ) := by linarith
   have hs' : cddPhaseKernel (1 / 36) θ = 24 * Real.arctan ((12 / 37 : ℝ) * Real.sinh θ) := by linarith
   rw [egbFixedChargeAGibbsFullCollisionCDDPhase_formula, hr', hs']

@@ -35,11 +35,11 @@ open GaloisForLFunctions.RHTower
 
 /-- The limit of the rescaled interior mass. -/
 def sharpInteriorLimit (n : ℕ) : ℝ :=
-  (∫ x, hermiteFun (2 * n) x ^ 2) / (hermiteFun (2 * n) 0) ^ 2
+  (∫ x, hermiteFun (2 * n) x ^ (2 : ℕ)) / (hermiteFun (2 * n) 0) ^ (2 : ℕ)
 
 theorem sharpInteriorLimit_pos (n : ℕ) : 0 < sharpInteriorLimit n := by
-  have hnum : 0 < ∫ x, hermiteFun (2 * n) x ^ 2 := integral_hermiteFun_sq_pos_line (2 * n)
-  have hden : (0 : ℝ) < (hermiteFun (2 * n) 0) ^ 2 := by
+  have hnum : 0 < ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ) := integral_hermiteFun_sq_pos_line (2 * n)
+  have hden : (0 : ℝ) < (hermiteFun (2 * n) 0) ^ (2 : ℕ) := by
     have := indexedRungAmplitude_ne_zero n
     rw [indexedRungAmplitude] at this
     positivity
@@ -51,20 +51,20 @@ squared central value. -/
 theorem indexedOscillatorTotalMass_eq (n : ℕ) (a : ProlatePositiveAperture) :
     indexedOscillatorTotalMass n a
       = Real.sqrt (indexedOscillatorBandwidth a)
-        * (∫ y in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) n).R y ^ 2)
-        / ((signedModeRadialData (a : ℝ) n).R 0) ^ 2 := by
+        * (∫ y in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) n).R y ^ (2 : ℕ))
+        / ((signedModeRadialData (a : ℝ) n).R 0) ^ (2 : ℕ) := by
   have hc : 0 < indexedOscillatorBandwidth a := indexedOscillatorBandwidth_pos a
   rw [indexedOscillatorTotalMass]
   set c : ℝ := indexedOscillatorBandwidth a with hcdef
   set R : ℝ → ℝ := (signedModeRadialData (a : ℝ) n).R with hR
-  have hfun : (fun x : ℝ => (indexedOscillatorProfile n a x) ^ 2)
-      = fun x : ℝ => (fun y : ℝ => (R y / R 0) ^ 2) (x / Real.sqrt c) := rfl
+  have hfun : (fun x : ℝ => (indexedOscillatorProfile n a x) ^ (2 : ℕ))
+      = fun x : ℝ => (fun y : ℝ => (R y / R 0) ^ (2 : ℕ)) (x / Real.sqrt c) := rfl
   have hcov : (∫ x in (-Real.sqrt c)..(Real.sqrt c),
-        (fun y : ℝ => (R y / R 0) ^ 2) (x / Real.sqrt c))
-      = Real.sqrt c * ∫ y in (-1 : ℝ)..1, (R y / R 0) ^ 2 :=
-    integral_comp_div_sqrt hc (fun y : ℝ => (R y / R 0) ^ 2)
-  have hdiv : (∫ y in (-1 : ℝ)..1, (R y / R 0) ^ 2)
-      = (∫ y in (-1 : ℝ)..1, R y ^ 2) / (R 0) ^ 2 := by
+        (fun y : ℝ => (R y / R 0) ^ (2 : ℕ)) (x / Real.sqrt c))
+      = Real.sqrt c * ∫ y in (-1 : ℝ)..1, (R y / R 0) ^ (2 : ℕ) :=
+    integral_comp_div_sqrt hc (fun y : ℝ => (R y / R 0) ^ (2 : ℕ))
+  have hdiv : (∫ y in (-1 : ℝ)..1, (R y / R 0) ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ)) / (R 0) ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_div]
     congr 1
     funext y
@@ -80,7 +80,7 @@ theorem tendsto_indexedOscillatorTotalMass (n : ℕ) :
     have := indexedRungAmplitude_ne_zero n
     rwa [indexedRungAmplitude] at this
   have hbase := tendsto_indexedRung_totalMass n
-  have hdiv := hbase.div_const ((hermiteFun (2 * n) 0) ^ 2)
+  have hdiv := hbase.div_const ((hermiteFun (2 * n) 0) ^ (2 : ℕ))
   refine hdiv.congr fun a => ?_
   rw [indexedRungAmplitude]
   field_simp
@@ -89,8 +89,8 @@ theorem tendsto_indexedOscillatorTotalMass (n : ℕ) :
 theorem tendsto_interiorMass_ratio_atTop (n : ℕ) :
     Tendsto (fun a : ℝ =>
         Real.sqrt (signedModeRadialBandwidth a)
-          * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ 2)
-          / ((signedModeRadialData a n).R 0) ^ 2)
+          * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ (2 : ℕ))
+          / ((signedModeRadialData a n).R 0) ^ (2 : ℕ))
       atTop (𝓝 (sharpInteriorLimit n)) := by
   have hmap : Filter.map (Subtype.val :
       GaloisForLFunctions.RHTower.ProlatePositiveAperture → ℝ) atTop = atTop := by
@@ -109,11 +109,11 @@ theorem eventually_signedLeakage_sharp_two_sided (n : ℕ) :
     ∀ᶠ a : ℝ in atTop,
       (signedModeRadialData a n).R 0 ≠ 0 ∧
       besselEnergyFloor / 1728 / sharpInteriorLimit n
-          / (Real.sqrt (signedModeRadialBandwidth a) * (signedModeRadialData a n).R 0 ^ 2)
+          / (Real.sqrt (signedModeRadialBandwidth a) * (signedModeRadialData a n).R 0 ^ (2 : ℕ))
         ≤ evenProlateSignedLeakage a n ∧
       evenProlateSignedLeakage a n
         ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit n
-          / (Real.sqrt (signedModeRadialBandwidth a) * (signedModeRadialData a n).R 0 ^ 2) := by
+          / (Real.sqrt (signedModeRadialBandwidth a) * (signedModeRadialData a n).R 0 ^ (2 : ℕ)) := by
   have hSIL : 0 < sharpInteriorLimit n := sharpInteriorLimit_pos n
   have hF : 0 < besselEnergyFloor := besselEnergyFloor_pos
   have hM : (0 : ℝ) ≤ radialProlateExteriorMassConstant := radialProlateExteriorMassConstant_nonneg
@@ -123,17 +123,17 @@ theorem eventually_signedLeakage_sharp_two_sided (n : ℕ) :
   have hlow : ∀ᶠ a : ℝ in atTop,
       sharpInteriorLimit n / 2
         ≤ Real.sqrt (signedModeRadialBandwidth a)
-            * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ 2)
-            / ((signedModeRadialData a n).R 0) ^ 2 :=
+            * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ (2 : ℕ))
+            / ((signedModeRadialData a n).R 0) ^ (2 : ℕ) :=
     (hlim.eventually (eventually_gt_nhds (by linarith))).mono fun a h => h.le
   have hhigh : ∀ᶠ a : ℝ in atTop,
       Real.sqrt (signedModeRadialBandwidth a)
-          * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ 2)
-          / ((signedModeRadialData a n).R 0) ^ 2
+          * (∫ y in (-1 : ℝ)..1, (signedModeRadialData a n).R y ^ (2 : ℕ))
+          / ((signedModeRadialData a n).R 0) ^ (2 : ℕ)
         ≤ 2 * sharpInteriorLimit n :=
     (hlim.eventually (eventually_lt_nhds (by linarith))).mono fun a h => h.le
   have hσlim := evenProlateSignedValue_sq_tendsto_one n
-  have hσ : ∀ᶠ a : ℝ in atTop, 1 / 2 < evenProlateSignedValue a n ^ 2 :=
+  have hσ : ∀ᶠ a : ℝ in atTop, 1 / 2 < evenProlateSignedValue a n ^ (2 : ℕ) :=
     hσlim.eventually (eventually_gt_nhds (by norm_num))
   filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_signedModeRadialData_isExact n,
     eventually_evenProlateSignedValue_ne_zero n, hlow, hhigh, hσ,
@@ -151,59 +151,59 @@ theorem eventually_signedLeakage_sharp_two_sided (n : ℕ) :
   have hc0 : (0 : ℝ) < c := by linarith
   have hsqc : (0 : ℝ) < Real.sqrt c := Real.sqrt_pos.2 hc0
   -- the central value is nonzero
-  have hM0 : R 0 ^ 2 ≠ 0 := by
+  have hM0 : R 0 ^ (2 : ℕ) ≠ 0 := by
     intro hcon
     rw [hcon, div_zero] at hlo
     linarith
-  have hM0pos : (0 : ℝ) < R 0 ^ 2 := lt_of_le_of_ne (sq_nonneg _) (Ne.symm hM0)
+  have hM0pos : (0 : ℝ) < R 0 ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg _) (Ne.symm hM0)
   have hRne : R 0 ≠ 0 := by
     intro hcon
     exact hM0 (by rw [hcon]; ring)
   -- structural data
   have hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) R := hex.2.2.2.2.2.1
   have hR1 : R 1 = 1 := hex.2.2.2.2.2.2.2.1
-  have hode : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv R) x + 2 * x * deriv R x
-      - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0 := hex.2.2.2.2.2.2.2.2.2.2.2.2.2
+  have hode : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv R) x + 2 * x * deriv R x
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0 := hex.2.2.2.2.2.2.2.2.2.2.2.2.2
   have hdiff : Differentiable ℝ R := (contDiff_infty_iff_deriv.mp hsm).1
   have hdiff2 : Differentiable ℝ (deriv R) :=
     (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hsm).2).1
   have hRd : ∀ t : ℝ, HasDerivAt R (deriv R t) t := fun t => (hdiff t).hasDerivAt
   have hDRd : ∀ t : ℝ, HasDerivAt (deriv R) (deriv (deriv R) t) t := fun t => (hdiff2 t).hasDerivAt
   -- exterior mass, two-sided
-  have hextup : (∫ x in Ioi (1 : ℝ), R x ^ 2) ≤ radialProlateExteriorMassConstant / c :=
+  have hextup : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ)) ≤ radialProlateExteriorMassConstant / c :=
     integral_Ioi_one_radialProlate_sq_le hs0.le hs2 (by linarith) hR1 hRd hDRd hode
-  have hint : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)) :=
+  have hint : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)) :=
     (integrable_sq_signedModeRadialData hapos n hvne).integrableOn
-  have hextlow2 : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (2 : ℝ), R x ^ 2 :=
+  have hextlow2 : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (2 : ℝ), R x ^ (2 : ℕ) :=
     integral_Ioi_radialProlate_sq_ge_half hs0.le hs2 hc8 hcT hR1 hRd hDRd hode
-  have hmono : (∫ x in Ioi (2 : ℝ), R x ^ 2) ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := by
+  have hmono : (∫ x in Ioi (2 : ℝ), R x ^ (2 : ℕ)) ≤ ∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ) := by
     refine setIntegral_mono_set hint ?_ ?_
     · filter_upwards with x using sq_nonneg _
     · filter_upwards with x hx using lt_trans one_lt_two hx
-  have hextlow : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := by linarith
+  have hextlow : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ) := by linarith
   -- interior mass, two-sided
-  have hintpos : (0 : ℝ) < ∫ y in (-1 : ℝ)..1, R y ^ 2 :=
+  have hintpos : (0 : ℝ) < ∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ) :=
     interval_integral_sq_pos_of_endpoint_one hsm.continuous hR1
-  have hIlo : sharpInteriorLimit n / 2 * (R 0 ^ 2) / Real.sqrt c
-      ≤ ∫ y in (-1 : ℝ)..1, R y ^ 2 := by
+  have hIlo : sharpInteriorLimit n / 2 * (R 0 ^ (2 : ℕ)) / Real.sqrt c
+      ≤ ∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ) := by
     rw [le_div_iff₀ hM0pos] at hlo
     rw [div_le_iff₀ hsqc]
     nlinarith [hlo, hM0pos, hsqc]
-  have hIhi : (∫ y in (-1 : ℝ)..1, R y ^ 2)
-      ≤ 2 * sharpInteriorLimit n * (R 0 ^ 2) / Real.sqrt c := by
+  have hIhi : (∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ))
+      ≤ 2 * sharpInteriorLimit n * (R 0 ^ (2 : ℕ)) / Real.sqrt c := by
     rw [div_le_iff₀ hM0pos] at hhi
     rw [le_div_iff₀ hsqc]
     nlinarith [hhi, hM0pos, hsqc]
   -- the mass quotient
   have hquot := evenProlateSignedLeakage_eq_mass_quotient hapos n hvne
-  have hσ1 : evenProlateSignedValue a n ^ 2 ≤ 1 := by
+  have hσ1 : evenProlateSignedValue a n ^ (2 : ℕ) ≤ 1 := by
     have := one_sub_evenProlateSignedValue_sq_nonneg a n
     linarith
-  have hσ2 : (1 : ℝ) / 2 ≤ evenProlateSignedValue a n ^ 2 := hsig.le
-  set E : ℝ := ∫ x in Ioi (1 : ℝ), R x ^ 2 with hE
-  set I : ℝ := ∫ y in (-1 : ℝ)..1, R y ^ 2 with hI
-  set V : ℝ := evenProlateSignedValue a n ^ 2 with hV
-  set Z : ℝ := R 0 ^ 2 with hZ
+  have hσ2 : (1 : ℝ) / 2 ≤ evenProlateSignedValue a n ^ (2 : ℕ) := hsig.le
+  set E : ℝ := ∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ) with hE
+  set I : ℝ := ∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ) with hI
+  set V : ℝ := evenProlateSignedValue a n ^ (2 : ℕ) with hV
+  set Z : ℝ := R 0 ^ (2 : ℕ) with hZ
   set Q : ℝ := Real.sqrt c with hQ
   have hQ2 : Q * Q = c := Real.mul_self_sqrt hc0.le
   have hQpos : (0 : ℝ) < Q := hsqc

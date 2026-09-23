@@ -137,13 +137,13 @@ theorem combinedLog_hasFDerivAt_double (c : Coefficients) :
 
 /-- Squared Euclidean norm of the actual first derivative at the imaginary unit. -/
 def firstEnergy (c : Coefficients) : ℝ :=
-  (fderiv ℝ (combinedLog c) Complex.I 1) ^ 2 +
-    (fderiv ℝ (combinedLog c) Complex.I Complex.I) ^ 2
+  (fderiv ℝ (combinedLog c) Complex.I 1) ^ (2 : ℕ) +
+    (fderiv ℝ (combinedLog c) Complex.I Complex.I) ^ (2 : ℕ)
 
 /-- Trace-free second moment of the individual logarithmic gradients. -/
 def directionalSecondMoment (c : Coefficients) : ℝ :=
-  let t := fun j => (fderiv ℝ (logChannel j) Complex.I Complex.I) ^ 2 -
-    (fderiv ℝ (logChannel j) Complex.I 1) ^ 2
+  let t := fun j => (fderiv ℝ (logChannel j) Complex.I Complex.I) ^ (2 : ℕ) -
+    (fderiv ℝ (logChannel j) Complex.I 1) ^ (2 : ℕ)
   c.atInfinity * t .infinity + c.atZero * t .zero +
     c.atOne * t .one + c.atNegOne * t .negOne
 
@@ -152,14 +152,14 @@ def totalMass (c : Coefficients) : ℝ := c.atInfinity + c.atZero + c.atOne + c.
 
 /-- Sum of the four squared coefficients. -/
 def squaredNorm (c : Coefficients) : ℝ :=
-  c.atInfinity ^ 2 + c.atZero ^ 2 + c.atOne ^ 2 + c.atNegOne ^ 2
+  c.atInfinity ^ (2 : ℕ) + c.atZero ^ (2 : ℕ) + c.atOne ^ (2 : ℕ) + c.atNegOne ^ (2 : ℕ)
 
 /-- Squared coefficient norm after removing the common coefficient channel. -/
-def centeredNorm (c : Coefficients) : ℝ := squaredNorm c - totalMass c ^ 2 / 4
+def centeredNorm (c : Coefficients) : ℝ := squaredNorm c - totalMass c ^ (2 : ℕ) / 4
 
 /-- The first-gradient energy sees only the two opposite-point differences. -/
 theorem firstEnergy_eq (c : Coefficients) :
-    firstEnergy c = ((c.atInfinity - c.atZero) ^ 2 + (c.atOne - c.atNegOne) ^ 2) / 4 := by
+    firstEnergy c = ((c.atInfinity - c.atZero) ^ (2 : ℕ) + (c.atOne - c.atNegOne) ^ (2 : ℕ)) / 4 := by
   simp [firstEnergy, (combinedLog_hasFDerivAt c).fderiv, combinedGradient]
   ring
 
@@ -171,7 +171,7 @@ theorem directionalSecondMoment_eq (c : Coefficients) :
 
 /-- Exact recovery of the centered coefficient norm from the first two moments. -/
 theorem centeredNorm_eq_moments (c : Coefficients) :
-    centeredNorm c = 2 * firstEnergy c + 4 * directionalSecondMoment c ^ 2 := by
+    centeredNorm c = 2 * firstEnergy c + 4 * directionalSecondMoment c ^ (2 : ℕ) := by
   rw [firstEnergy_eq, directionalSecondMoment_eq]
   unfold centeredNorm squaredNorm totalMass
   ring
@@ -264,7 +264,7 @@ theorem directionalSecondMoment_eq_heightDifference (c : Coefficients) :
 
 /-- Exact recovery of every centered coefficient from two heights of first derivatives. -/
 theorem centeredNorm_eq_twoHeight (c : Coefficients) :
-    centeredNorm c = 2 * firstEnergy c + (400 / 9 : ℝ) * heightDifference c ^ 2 := by
+    centeredNorm c = 2 * firstEnergy c + (400 / 9 : ℝ) * heightDifference c ^ (2 : ℕ) := by
   rw [centeredNorm_eq_moments, directionalSecondMoment_eq_heightDifference]
   ring
 

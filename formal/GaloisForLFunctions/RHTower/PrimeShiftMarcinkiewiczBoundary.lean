@@ -30,9 +30,9 @@ theorem absField_primeShiftCharacter_eq_one_on_primes
 Marcinkiewicz mass at every cutoff. -/
 theorem primeLogMass_absField_primeShiftCharacter_eq_unit
     (z : ℂ) (hz : z.re = 1 / 2) (X : ℕ) :
-    primeLogMass (absField (primeShiftCharacter z)) X =
-      primeLogMass (fun _ => (1 : ℝ)) X := by
-  unfold primeLogMass
+    primeLogMass_weightedEulerCoefficientSpaces (absField (primeShiftCharacter z)) X =
+      primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1 : ℝ)) X := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [Finset.mem_filter] at hn
   rw [absField_primeShiftCharacter_eq_one_on_primes z hz hn.2]
@@ -41,8 +41,8 @@ theorem primeLogMass_absField_primeShiftCharacter_eq_unit
 Marcinkiewicz tail mass after every finite cutoff. -/
 theorem primeLogMass_tail_absField_primeShiftCharacter_eq_unit
     (z : ℂ) (hz : z.re = 1 / 2) (P X : ℕ) :
-    primeLogMass (primeCoefficientTail (absField (primeShiftCharacter z)) P) X =
-      primeLogMass (primeCoefficientTail (fun _ => (1 : ℝ)) P) X := by
+    primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail (absField (primeShiftCharacter z)) P) X =
+      primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientTail (fun _ => (1 : ℝ)) P) X := by
   rw [primeLogMass_tail, primeLogMass_tail]
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [Finset.mem_filter] at hn

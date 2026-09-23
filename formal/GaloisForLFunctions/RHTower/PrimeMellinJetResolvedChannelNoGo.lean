@@ -77,44 +77,44 @@ theorem gammaConductorResolvedWardCapacity_lower
     (hquad : ∀ (x : ι → ℝ) (y : ℝ),
       0 ≤ (∑ i, ∑ j, K i j * x i * x j) +
         2 * y * (∑ i, gammaConductorPrimeNormalizedCross (p i) * x i) +
-          B * y ^ 2)
+          B * y ^ (2 : ℕ))
     (hcapacity : B ≤ ∑ i, gammaConductorPrimeSchurCost (p i)) :
-    2 * ((∑ i, gammaConductorPrimeSchurCost (p i)) / B - 1) ^ 2 ≤
+    2 * ((∑ i, gammaConductorPrimeSchurCost (p i)) / B - 1) ^ (2 : ℕ) ≤
       resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
   let u : ι → ℝ := fun i => gammaConductorPrimeNormalizedCross (p i)
   let S : ℝ := ∑ i, gammaConductorPrimeSchurCost (p i)
   have hSnonneg : 0 ≤ S := by
     exact Finset.sum_nonneg fun i _hi => gammaConductorPrimeSchurCost_nonneg (p i)
   have hSpos : 0 < S := lt_of_lt_of_le hB hcapacity
-  have hsumu : (∑ i, (u i) ^ 2) = S := by
+  have hsumu : (∑ i, (u i) ^ (2 : ℕ)) = S := by
     dsimp [u, S]
     apply Finset.sum_congr rfl
     intro i _hi
     exact gammaConductorPrimeNormalizedCross_sq (p i)
-  have hcoherence : S ^ 2 / B - S ≤ resolvedChannelWeightedCoherence K u := by
+  have hcoherence : S ^ (2 : ℕ) / B - S ≤ resolvedChannelWeightedCoherence K u := by
     simpa [S, u, resolvedChannelWeightedCoherence, mul_assoc] using
       gammaConductorOffDiagonalCovarianceEnergy_lower p K B hB hdiag hquad
   have hquot : 1 ≤ S / B := (le_div_iff₀ hB).2 (by
     simpa [S] using hcapacity)
-  have hL : 0 ≤ S ^ 2 / B - S := by
+  have hL : 0 ≤ S ^ (2 : ℕ) / B - S := by
     calc
       0 ≤ S * (S / B - 1) :=
         mul_nonneg hSnonneg (sub_nonneg.mpr hquot)
-      _ = S ^ 2 / B - S := by ring
+      _ = S ^ (2 : ℕ) / B - S := by ring
   have hward := resolvedChannelWardSchurCapacity_simple_lower
-    K u (S ^ 2 / B - S) hL hcoherence
+    K u (S ^ (2 : ℕ) / B - S) hL hcoherence
   rw [hsumu] at hward
-  have hfactor : S ^ 2 / B - S = S * (S / B - 1) := by ring
+  have hfactor : S ^ (2 : ℕ) / B - S = S * (S / B - 1) := by ring
   rw [hfactor] at hward
   have hcancel :
-      S ^ 2 * (2 * (S / B - 1) ^ 2) ≤
-        S ^ 2 * resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
+      S ^ (2 : ℕ) * (2 * (S / B - 1) ^ (2 : ℕ)) ≤
+        S ^ (2 : ℕ) * resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
     calc
-      S ^ 2 * (2 * (S / B - 1) ^ 2) =
-          2 * (S * (S / B - 1)) ^ 2 := by ring
-      _ ≤ resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) * S ^ 2 :=
+      S ^ (2 : ℕ) * (2 * (S / B - 1) ^ (2 : ℕ)) =
+          2 * (S * (S / B - 1)) ^ (2 : ℕ) := by ring
+      _ ≤ resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) * S ^ (2 : ℕ) :=
         hward
-      _ = S ^ 2 * resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
+      _ = S ^ (2 : ℕ) * resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
         ring
   exact le_of_mul_le_mul_left hcancel (sq_pos_of_pos hSpos)
 
@@ -128,7 +128,7 @@ theorem exists_primePacket_gammaConductor_resolvedWardEnergy_gt
         0 ≤ (∑ i, ∑ j, K i j * x i * x j) +
           2 * y * (∑ i : ↑F,
             gammaConductorPrimeNormalizedCross (i : Nat.Primes) * x i) +
-            B * y ^ 2) →
+            B * y ^ (2 : ℕ)) →
       M < resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
   obtain ⟨F, hF⟩ :=
     exists_finset_gammaConductorPrimeSchurCost_gt (B * (M + 2))
@@ -144,7 +144,7 @@ theorem exists_primePacket_gammaConductor_resolvedWardEnergy_gt
       simpa only [S] using hcapacity)
   have hquot : M + 2 < S / B := (lt_div_iff₀ hB).2 (by
     nlinarith)
-  have hstrict : M < 2 * (S / B - 1) ^ 2 := by
+  have hstrict : M < 2 * (S / B - 1) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (S / B - 1)]
   exact hstrict.trans_le (by simpa only [S] using hward)
 

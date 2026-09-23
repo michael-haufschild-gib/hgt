@@ -10,12 +10,12 @@ noncomputable section
 set_option autoImplicit false
 
 def nonstationaryWeight (P : ℂ[X]) (j : ℕ) (x : ℝ) : ℂ :=
-  P.eval (x:ℂ)/(2-(x:ℂ))^8/(2+3*(x:ℂ))^j
+  P.eval (x:ℂ)/(2-(x:ℂ))^(8 : ℕ)/(2+3*(x:ℂ))^j
 
 def nonstationaryWeightFirst (P : ℂ[X]) (j : ℕ) (x : ℝ) : ℂ :=
-  P.derivative.eval (x:ℂ)/(2-(x:ℂ))^8/(2+3*(x:ℂ))^j+
-    8*P.eval (x:ℂ)/(2-(x:ℂ))^9/(2+3*(x:ℂ))^j-
-    (j:ℂ)*3*P.eval (x:ℂ)/(2-(x:ℂ))^8/(2+3*(x:ℂ))^(j+1)
+  P.derivative.eval (x:ℂ)/(2-(x:ℂ))^(8 : ℕ)/(2+3*(x:ℂ))^j+
+    8*P.eval (x:ℂ)/(2-(x:ℂ))^(9 : ℕ)/(2+3*(x:ℂ))^j-
+    (j:ℂ)*3*P.eval (x:ℂ)/(2-(x:ℂ))^(8 : ℕ)/(2+3*(x:ℂ))^(j+1)
 
 def nonstationaryWeightStep (P : ℂ[X]) (j : ℕ) : ℂ[X] :=
   Polynomial.X*((2-Polynomial.X)*(2+3*Polynomial.X)*P.derivative+
@@ -68,7 +68,7 @@ theorem nonstationaryWeight_step (P : ℂ[X]) (j : ℕ) {x : ℝ}
     (hx : x ∈ Ioo (-(1/2):ℝ) 2) :
     nonstationaryWeight (nonstationaryWeightStep P j) (j+2) x =
       (x:ℂ)*((2-(x:ℂ))/(2+3*(x:ℂ))*nonstationaryWeightFirst P j x-
-        4*(4+3*(x:ℂ))/(2+3*(x:ℂ))^2*nonstationaryWeight P j x) := by
+        4*(4+3*(x:ℂ))/(2+3*(x:ℂ))^(2 : ℕ)*nonstationaryWeight P j x) := by
   have hb := nonstationary_bases hx
   simp only [nonstationaryWeight,nonstationaryWeightStep,nonstationaryWeightFirst,
     Polynomial.eval_mul,Polynomial.eval_sub,Polynomial.eval_add,Polynomial.eval_X,Polynomial.eval_ofNat,

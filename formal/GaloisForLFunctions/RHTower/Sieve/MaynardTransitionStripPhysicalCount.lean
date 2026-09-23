@@ -156,7 +156,7 @@ theorem eventually_routeT_selectedCell_fixedCutoff_unitCellFamily_twoAlternative
     apply routeT_two_alternative_of_reserved_height_count
       hT rfl (by norm_num : (0 : ℝ) < 1 / 200)
     right
-    have hcost' : maynardHarmonicFactor K 1 * (Real.log T) ^ 0 ≤
+    have hcost' : maynardHarmonicFactor K 1 * (Real.log T) ^ (0 : ℕ) ≤
         T ^ ((1 / 200 : ℝ) / 2) := by
       simpa only [show (1 / 200 : ℝ) / 2 = 1 / 400 by norm_num] using
         hcost K 1 hK (by norm_num)

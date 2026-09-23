@@ -33,7 +33,7 @@ theorem one_lt_norm_blaschke_of_norm_lt_one_of_one_lt_norm
     {a z : ℂ} (ha : ‖a‖ < 1) (hz : 1 < ‖z‖)
     (hden : 1 - star a * z ≠ 0) :
     1 < ‖(z - a) / (1 - star a * z)‖ := by
-  have hsq : ‖1 - star a * z‖ ^ 2 < ‖z - a‖ ^ 2 := by
+  have hsq : ‖1 - star a * z‖ ^ (2 : ℕ) < ‖z - a‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm]
     have hzsq : 1 < Complex.normSq z := by
       rw [← Complex.sq_norm]

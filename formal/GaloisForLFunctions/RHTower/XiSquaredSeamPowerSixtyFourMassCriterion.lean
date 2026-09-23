@@ -21,17 +21,17 @@ noncomputable section
 
 /-- Hermitian mass of the sixty-fourth powers of the shift-one squared-Xi seam atoms. -/
 def xiSquaredSeamPowerSixtyFourHermitianMass : ℝ :=
-  ∑' q : XiZeroCopy, ‖xiSquaredSeamOneCoordinate q ^ 64‖
+  ∑' q : XiZeroCopy, ‖xiSquaredSeamOneCoordinate q ^ (64 : ℕ)‖
 
 /-- Pointwise triangle defects at power `64`, summed over the multiplicity-exact Xi divisor. -/
 def xiSquaredSeamPowerSixtyFourDefectEnergy : ℝ :=
   ∑' q : XiZeroCopy,
-    (‖xiSquaredSeamOneCoordinate q ^ 64‖ -
-      (xiSquaredSeamOneCoordinate q ^ 64).re)
+    (‖xiSquaredSeamOneCoordinate q ^ (64 : ℕ)‖ -
+      (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re)
 
 /-- The single transverse charge hidden in the power-64 Hermitian/holomorphic gap. -/
 def xiSquaredSeamPowerThirtyTwoTransverseCharge : ℝ :=
-  ∑' q : XiZeroCopy, (xiSquaredSeamOneCoordinate q ^ 32).im ^ 2
+  ∑' q : XiZeroCopy, (xiSquaredSeamOneCoordinate q ^ (32 : ℕ)).im ^ (2 : ℕ)
 
 /-- The single reverse source inequality left by the tail-from-64 reduction. -/
 def XiSquaredSeamPowerSixtyFourSourceDominated : Prop :=
@@ -39,35 +39,35 @@ def XiSquaredSeamPowerSixtyFourSourceDominated : Prop :=
     (primeArchShiftedReciprocalMoment 1 63).re
 
 theorem summable_xiSquaredSeamOneCoordinate_pow_sixtyFour :
-    Summable (fun q : XiZeroCopy => xiSquaredSeamOneCoordinate q ^ 64) := by
+    Summable (fun q : XiZeroCopy => xiSquaredSeamOneCoordinate q ^ (64 : ℕ)) := by
   simpa only [xiShiftedReciprocalSquare_one_eq_xiSquaredSeamOneCoordinate]
     using summable_xiShiftedReciprocalSquare_pow (y := 1) (by norm_num) 63
 
 theorem summable_xiSquaredSeamOneCoordinate_pow_sixtyFour_re :
-    Summable (fun q : XiZeroCopy => (xiSquaredSeamOneCoordinate q ^ 64).re) := by
+    Summable (fun q : XiZeroCopy => (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re) := by
   exact summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.map
     Complex.reCLM Complex.reCLM.continuous
 
 theorem summable_xiSquaredSeamPowerSixtyFourDefect :
     Summable (fun q : XiZeroCopy =>
-      ‖xiSquaredSeamOneCoordinate q ^ 64‖ -
-        (xiSquaredSeamOneCoordinate q ^ 64).re) :=
+      ‖xiSquaredSeamOneCoordinate q ^ (64 : ℕ)‖ -
+        (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re) :=
   summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.norm.sub
     summable_xiSquaredSeamOneCoordinate_pow_sixtyFour_re
 
 theorem summable_xiSquaredSeamPowerThirtyTwoTransverseCharge :
     Summable (fun q : XiZeroCopy =>
-      (xiSquaredSeamOneCoordinate q ^ 32).im ^ 2) := by
+      (xiSquaredSeamOneCoordinate q ^ (32 : ℕ)).im ^ (2 : ℕ)) := by
   apply Summable.of_nonneg_of_le (fun q => sq_nonneg _)
     (fun q => ?_) summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.norm
-  let u := xiSquaredSeamOneCoordinate q ^ 32
-  have him : u.im ^ 2 ≤ ‖u‖ ^ 2 := by
+  let u := xiSquaredSeamOneCoordinate q ^ (32 : ℕ)
+  have him : u.im ^ (2 : ℕ) ≤ ‖u‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     nlinarith [sq_nonneg u.re]
   calc
-    (xiSquaredSeamOneCoordinate q ^ 32).im ^ 2 ≤ ‖u‖ ^ 2 := him
-    _ = ‖u ^ 2‖ := by simp only [u, norm_pow]
-    _ = ‖xiSquaredSeamOneCoordinate q ^ 64‖ := by
+    (xiSquaredSeamOneCoordinate q ^ (32 : ℕ)).im ^ (2 : ℕ) ≤ ‖u‖ ^ (2 : ℕ) := him
+    _ = ‖u ^ (2 : ℕ)‖ := by simp only [u, norm_pow]
+    _ = ‖xiSquaredSeamOneCoordinate q ^ (64 : ℕ)‖ := by
       congr 1
       simp only [u]
       ring
@@ -75,7 +75,7 @@ theorem summable_xiSquaredSeamPowerThirtyTwoTransverseCharge :
 /-- The holomorphic power-64 trace is exactly the explicit shift-one prime--Gamma source moment. -/
 theorem primeArchShiftedReciprocalMoment_one_sixtyThree_re_eq_powerSixtyFourTrace :
     (primeArchShiftedReciprocalMoment 1 63).re =
-      ∑' q : XiZeroCopy, (xiSquaredSeamOneCoordinate q ^ 64).re := by
+      ∑' q : XiZeroCopy, (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re := by
   rw [← xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
     (y := 1) (by norm_num) (by norm_num) 63]
   rw [xiShiftedReciprocalMoment,
@@ -98,9 +98,9 @@ theorem xiSquaredSeamPowerSixtyFourHermitianMass_sub_source_eq_defect :
 
 /-- The power-64 triangle defect is exactly twice the degree-32 transverse square. -/
 theorem norm_pow_sixtyFour_sub_re_eq_two_mul_pow_thirtyTwo_im_sq (z : ℂ) :
-    ‖z ^ 64‖ - (z ^ 64).re = 2 * (z ^ 32).im ^ 2 := by
-  let u := z ^ 32
-  rw [show z ^ 64 = u ^ 2 by simp only [u]; ring, norm_pow,
+    ‖z ^ (64 : ℕ)‖ - (z ^ (64 : ℕ)).re = 2 * (z ^ (32 : ℕ)).im ^ (2 : ℕ) := by
+  let u := z ^ (32 : ℕ)
+  rw [show z ^ (64 : ℕ) = u ^ (2 : ℕ) by simp only [u]; ring, norm_pow,
     Complex.sq_norm, Complex.normSq_apply]
   simp only [pow_two, Complex.mul_re]
   ring
@@ -122,7 +122,7 @@ theorem primeArchShiftedReciprocalMoment_one_sixtyThree_re_le_hermitianMass :
   rw [primeArchShiftedReciprocalMoment_one_sixtyThree_re_eq_powerSixtyFourTrace,
     xiSquaredSeamPowerSixtyFourHermitianMass]
   exact Summable.tsum_le_tsum
-    (fun q => Complex.re_le_norm (xiSquaredSeamOneCoordinate q ^ 64))
+    (fun q => Complex.re_le_norm (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)))
     summable_xiSquaredSeamOneCoordinate_pow_sixtyFour_re
     summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.norm
 
@@ -130,7 +130,7 @@ theorem xiSquaredSeamPowerSixtyFourDefectEnergy_nonneg :
     0 ≤ xiSquaredSeamPowerSixtyFourDefectEnergy := by
   rw [xiSquaredSeamPowerSixtyFourDefectEnergy]
   exact tsum_nonneg fun q =>
-    sub_nonneg.mpr (Complex.re_le_norm (xiSquaredSeamOneCoordinate q ^ 64))
+    sub_nonneg.mpr (Complex.re_le_norm (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)))
 
 /-- Equality in `re z ≤ ‖z‖` puts `z` on the nonnegative real ray. -/
 theorem complex_nonnegativeReal_of_norm_sub_re_eq_zero
@@ -148,11 +148,11 @@ theorem complex_nonnegativeReal_of_norm_sub_re_eq_zero
 theorem xiSquaredSeamOneCoordinate_pow_sixtyFour_nonnegativeReal_of_defect_zero
     (hzero : xiSquaredSeamPowerSixtyFourDefectEnergy = 0)
     (q : XiZeroCopy) :
-    (xiSquaredSeamOneCoordinate q ^ 64).im = 0 ∧
-      0 ≤ (xiSquaredSeamOneCoordinate q ^ 64).re := by
+    (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).im = 0 ∧
+      0 ≤ (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re := by
   let d : XiZeroCopy → ℝ := fun r =>
-    ‖xiSquaredSeamOneCoordinate r ^ 64‖ -
-      (xiSquaredSeamOneCoordinate r ^ 64).re
+    ‖xiSquaredSeamOneCoordinate r ^ (64 : ℕ)‖ -
+      (xiSquaredSeamOneCoordinate r ^ (64 : ℕ)).re
   have hdnonneg (r : XiZeroCopy) : 0 ≤ d r := by
     exact sub_nonneg.mpr (Complex.re_le_norm _)
   have hdsum : Summable d := by
@@ -177,8 +177,8 @@ theorem xiSquaredSeamDyadicTailFromSix_of_powerSixtyFourDefect_zero
   have hexp : 2 ^ k = 64 * 2 ^ (k - 6) := by
     rw [show k = 6 + (k - 6) by omega, pow_add]
     norm_num
-  have hreal : xiSquaredSeamOneCoordinate q ^ 64 =
-      (((xiSquaredSeamOneCoordinate q ^ 64).re : ℝ) : ℂ) := by
+  have hreal : xiSquaredSeamOneCoordinate q ^ (64 : ℕ) =
+      (((xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re : ℝ) : ℂ) := by
     apply Complex.ext
     · simp
     · simpa using h64.1
@@ -193,8 +193,8 @@ theorem xiSquaredSeamPowerSixtyFourDefectEnergy_eq_zero_of_riemannHypothesis
   rw [xiSquaredSeamPowerSixtyFourDefectEnergy]
   calc
     (∑' q : XiZeroCopy,
-        (‖xiSquaredSeamOneCoordinate q ^ 64‖ -
-          (xiSquaredSeamOneCoordinate q ^ 64).re)) =
+        (‖xiSquaredSeamOneCoordinate q ^ (64 : ℕ)‖ -
+          (xiSquaredSeamOneCoordinate q ^ (64 : ℕ)).re)) =
         ∑' _q : XiZeroCopy, (0 : ℝ) := by
       apply tsum_congr
       intro q

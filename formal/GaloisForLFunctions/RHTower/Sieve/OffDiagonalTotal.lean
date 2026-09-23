@@ -17,23 +17,23 @@ noncomputable section
 theorem gapCorrBound_split (T r : ℝ) (M₀ M₁ P Q h : ℕ) (hT : 0 < T) (hr : 0 < r)
     (hM₀ : 1 ≤ M₀) (hM₁ : 1 ≤ M₁) (hh : 1 ≤ h) :
     gapCorrBound T r M₀ M₁ P Q h
-      = 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) * Real.sqrt h
-        + 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ 2 / (T * r)) * Real.sqrt (((Q : ℝ)) ^ 3)
+      = 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) * Real.sqrt h
+        + 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ (2 : ℕ) / (T * r)) * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ))
             * (1 / Real.sqrt h) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hM₀0 : (0 : ℝ) < (M₀ : ℝ) := by exact_mod_cast hM₀
   have hM₁0 : (0 : ℝ) < (M₁ : ℝ) := by exact_mod_cast hM₁
   have hh0 : (0 : ℝ) < (h : ℝ) := by exact_mod_cast hh
-  have hfirst : Real.sqrt (T * (r * (h : ℝ) / (M₀ : ℝ) ^ 2) / (36 * Real.pi * P))
-      = Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) * Real.sqrt h := by
+  have hfirst : Real.sqrt (T * (r * (h : ℝ) / (M₀ : ℝ) ^ (2 : ℕ)) / (36 * Real.pi * P))
+      = Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) * Real.sqrt h := by
     rw [← Real.sqrt_mul (by positivity)]
     congr 1
     rcases Nat.eq_zero_or_pos P with hP | hP
     · simp [hP]
     · have hP0 : (0 : ℝ) < (P : ℝ) := by exact_mod_cast hP
       field_simp
-  have hsecond : Real.sqrt (36 * Real.pi / (T * (r * (h : ℝ) / (M₁ : ℝ) ^ 2)))
-      = Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ 2 / (T * r)) * (1 / Real.sqrt h) := by
+  have hsecond : Real.sqrt (36 * Real.pi / (T * (r * (h : ℝ) / (M₁ : ℝ) ^ (2 : ℕ))))
+      = Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ (2 : ℕ) / (T * r)) * (1 / Real.sqrt h) := by
     rw [one_div, ← Real.sqrt_inv, ← Real.sqrt_mul (by positivity)]
     congr 1
     field_simp
@@ -44,13 +44,13 @@ theorem gapCorrBound_split (T r : ℝ) (M₀ M₁ P Q h : ℕ) (hT : 0 < T) (hr 
 theorem sum_gapCorrBound_le (T r : ℝ) (M₀ M₁ P Q H : ℕ) (hT : 0 < T) (hr : 0 < r)
     (hM₀ : 1 ≤ M₀) (hM₁ : 1 ≤ M₁) :
     (∑ h ∈ Finset.Icc 1 H, gapCorrBound T r M₀ M₁ P Q h)
-      ≤ 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) * ((H : ℝ) * Real.sqrt H)
-        + 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ 2 / (T * r)) * Real.sqrt (((Q : ℝ)) ^ 3)
+      ≤ 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) * ((H : ℝ) * Real.sqrt H)
+        + 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ (2 : ℕ) / (T * r)) * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ))
             * (2 * Real.sqrt H) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  set C₁ : ℝ := 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ 2 * (36 * Real.pi * P))) with hC₁
-  set C₂ : ℝ := 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ 2 / (T * r))
-      * Real.sqrt (((Q : ℝ)) ^ 3) with hC₂
+  set C₁ : ℝ := 2500 * Real.sqrt (T * r / ((M₀ : ℝ) ^ (2 : ℕ) * (36 * Real.pi * P))) with hC₁
+  set C₂ : ℝ := 22 * Real.sqrt (36 * Real.pi * (M₁ : ℝ) ^ (2 : ℕ) / (T * r))
+      * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ)) with hC₂
   have hC₁0 : 0 ≤ C₁ := by rw [hC₁]; positivity
   have hC₂0 : 0 ≤ C₂ := by rw [hC₂]; positivity
   have hsplit : (∑ h ∈ Finset.Icc 1 H, gapCorrBound T r M₀ M₁ P Q h)
@@ -77,7 +77,7 @@ theorem offdiag_correlation_total_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, |b m₁| * |b m₂|
         * ‖∑ d ∈ Finset.Ico P Q,
             maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)
-      ≤ (∑ m ∈ S, |b m| ^ 2)
+      ≤ (∑ m ∈ S, |b m| ^ (2 : ℕ))
         * (2 * ∑ h ∈ Finset.Icc 1 H, gapCorrBound T r M₀ M₁ P Q h) := by
   classical
   have hterm : ∀ m₁ ∈ S, ∀ m₂ ∈ S.erase m₁,

@@ -34,7 +34,7 @@ move by at most `K`, then the quotients differ by at most `2LK/m²`. -/
 theorem norm_div_sub_div_le {A B A₀ B₀ : ℂ} {K L m : ℝ} (hm : 0 < m)
     (hB : m ≤ ‖B‖) (hB₀ : m ≤ ‖B₀‖) (hA₀ : ‖A₀‖ ≤ L) (hB₀L : ‖B₀‖ ≤ L)
     (hA : ‖A - A₀‖ ≤ K) (hBd : ‖B - B₀‖ ≤ K) (hK : 0 ≤ K) :
-    ‖A / B - A₀ / B₀‖ ≤ 2 * L * K / m ^ 2 := by
+    ‖A / B - A₀ / B₀‖ ≤ 2 * L * K / m ^ (2 : ℕ) := by
   have hB0 : B ≠ 0 := by
     intro h
     rw [h, norm_zero] at hB
@@ -54,7 +54,7 @@ theorem norm_div_sub_div_le {A B A₀ B₀ : ℂ} {K L m : ℝ} (hm : 0 < m)
       _ = ‖A - A₀‖ * ‖B₀‖ + ‖A₀‖ * ‖B - B₀‖ := by rw [norm_mul, norm_mul]
       _ ≤ K * L + L * K := by gcongr
       _ = 2 * L * K := by ring
-  have hden : m ^ 2 ≤ ‖B‖ * ‖B₀‖ := by
+  have hden : m ^ (2 : ℕ) ≤ ‖B‖ * ‖B₀‖ := by
     have := mul_le_mul hB hB₀ (le_of_lt hm) (le_trans (le_of_lt hm) hB)
     nlinarith
   have hden0 : (0 : ℝ) < ‖B‖ * ‖B₀‖ := by nlinarith

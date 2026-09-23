@@ -67,12 +67,12 @@ theorem radialProlate_ode_endpointNormalize
     {s c : ℝ} {Phi : ℝ → ℝ}
     (hPhi1 : Differentiable ℝ Phi) (hPhi2 : Differentiable ℝ (deriv Phi))
     (hradial : ∀ x : ℝ,
-      (x ^ 2 - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
-        - (s * c ^ 2 - c ^ 2 * x ^ 2) * Phi x = 0) :
+      (x ^ (2 : ℕ) - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
+        - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Phi x = 0) :
     ∀ x : ℝ,
-      (x ^ 2 - 1) * deriv (deriv (prolateEndpointNormalize Phi)) x
+      (x ^ (2 : ℕ) - 1) * deriv (deriv (prolateEndpointNormalize Phi)) x
           + 2 * x * deriv (prolateEndpointNormalize Phi) x
-        - (s * c ^ 2 - c ^ 2 * x ^ 2) * prolateEndpointNormalize Phi x = 0 := by
+        - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * prolateEndpointNormalize Phi x = 0 := by
   intro x
   simp only [prolateEndpointNormalize,
     deriv_prolateEndpointNormalize hPhi1,
@@ -83,13 +83,13 @@ theorem radialProlate_ode_endpointNormalize
 /-- The normalized endpoint derivative is fixed by the radial separation ratio. -/
 theorem two_mul_deriv_endpointNormalize_one
     {s c : ℝ} {Phi : ℝ → ℝ} (hPhi : Differentiable ℝ Phi) (hPhiOne : Phi 1 ≠ 0)
-    (hend : 2 * deriv Phi 1 = (s * c ^ 2 - c ^ 2) * Phi 1) :
-    2 * deriv (prolateEndpointNormalize Phi) 1 = s * c ^ 2 - c ^ 2 := by
+    (hend : 2 * deriv Phi 1 = (s * c ^ (2 : ℕ) - c ^ (2 : ℕ)) * Phi 1) :
+    2 * deriv (prolateEndpointNormalize Phi) 1 = s * c ^ (2 : ℕ) - c ^ (2 : ℕ) := by
   rw [deriv_prolateEndpointNormalize hPhi]
   field_simp [hPhiOne]
   calc
-    2 * deriv Phi 1 = (s * c ^ 2 - c ^ 2) * Phi 1 := hend
-    _ = Phi 1 * c ^ 2 * (s - 1) := by ring
+    2 * deriv Phi 1 = (s * c ^ (2 : ℕ) - c ^ (2 : ℕ)) * Phi 1 := hend
+    _ = Phi 1 * c ^ (2 : ℕ) * (s - 1) := by ring
 
 /-- Every live signed mode supplies an exact, smooth, even, endpoint-normalized regular radial
 solution. -/
@@ -100,17 +100,17 @@ theorem exists_endpointNormalized_radialProlate_of_signedMode
         Phi 1 ≠ 0 ∧ R = prolateEndpointNormalize Phi ∧
         ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) R ∧ Function.Even R ∧ R 1 = 1 ∧
         (∀ x : ℝ,
-          bandTransform (2 * Real.pi * a ^ 2) Phi x =
-            evenProlateSignedValue a n ^ 2 * Phi x) ∧
+          bandTransform (2 * Real.pi * a ^ (2 : ℕ)) Phi x =
+            evenProlateSignedValue a n ^ (2 : ℕ) * Phi x) ∧
         (∀ x : ℝ,
-          prolateSLAction (2 * Real.pi * a ^ 2) R x = chi * R x) ∧
-        s = radialSeparationRatio (2 * Real.pi * a ^ 2) chi ∧ 0 ≤ s ∧
-        2 * deriv R 1 = s * (2 * Real.pi * a ^ 2) ^ 2
-            - (2 * Real.pi * a ^ 2) ^ 2 ∧
+          prolateSLAction (2 * Real.pi * a ^ (2 : ℕ)) R x = chi * R x) ∧
+        s = radialSeparationRatio (2 * Real.pi * a ^ (2 : ℕ)) chi ∧ 0 ≤ s ∧
+        2 * deriv R 1 = s * (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ)
+            - (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) ∧
         (∀ x : ℝ,
-          (x ^ 2 - 1) * deriv (deriv R) x + 2 * x * deriv R x
-            - (s * (2 * Real.pi * a ^ 2) ^ 2
-                - (2 * Real.pi * a ^ 2) ^ 2 * x ^ 2) * R x = 0) := by
+          (x ^ (2 : ℕ) - 1) * deriv (deriv R) x + 2 * x * deriv R x
+            - (s * (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ)
+                - (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) := by
   obtain ⟨Phi, chi, s, hsm, hne, heven, hone, hband, heig, hs, hs0, hend, hradial⟩ :=
     exists_global_even_radialProlate_endpoint_ne_zero_of_signedMode ha n hvalue
   have hPhi1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hsm).1

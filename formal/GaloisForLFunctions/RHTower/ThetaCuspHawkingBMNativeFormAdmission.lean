@@ -96,13 +96,13 @@ theorem nativeCuspJointGraph_value_tendsto (q : XiZeroCopy) (s amplitude : ℂ) 
   let F (n : ℕ) (p : ℝ × UpperHalfPlane) := modularCuspCutoff ((n:ℝ)+1) p.2*W p
   have hw := nativeJointTimePrimitiveField_memLp q s amplitude t
   have hf (n : ℕ) := cutoff_literal_mem q s amplitude t n
-  have hl : Tendsto (fun n => ∫ p, ‖F n p-W p‖^2
+  have hl : Tendsto (fun n => ∫ p, ‖F n p-W p‖^(2 : ℕ)
       ∂radialMeasure.prod D4BMModularCore.measure) atTop (𝓝 0) := by
-    have hc := tendsto_integral_of_dominated_convergence (f := fun _ => (0:ℝ)) (fun p => 4*‖W p‖^2)
+    have hc := tendsto_integral_of_dominated_convergence (f := fun _ => (0:ℝ)) (fun p => 4*‖W p‖^(2 : ℕ))
       (fun n => ((hf n).sub hw).aestronglyMeasurable.norm.pow 2)
       (hw.norm.integrable_sq.const_mul 4)
     have hb (n : ℕ) : ∀ᵐ p ∂radialMeasure.prod D4BMModularCore.measure,
-        ‖‖F n p-W p‖^2‖ ≤ 4*‖W p‖^2 := by
+        ‖‖F n p-W p‖^(2 : ℕ)‖ ≤ 4*‖W p‖^(2 : ℕ) := by
       apply Eventually.of_forall
       intro p
       rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
@@ -116,7 +116,7 @@ theorem nativeCuspJointGraph_value_tendsto (q : XiZeroCopy) (s amplitude : ℂ) 
       have hh' := pow_le_pow_left₀ (norm_nonneg _) hh 2
       nlinarith
     have hp : ∀ᵐ p ∂radialMeasure.prod D4BMModularCore.measure,
-        Tendsto (fun n => ‖F n p-W p‖^2) atTop (𝓝 (0:ℝ)) := by
+        Tendsto (fun n => ‖F n p-W p‖^(2 : ℕ)) atTop (𝓝 (0:ℝ)) := by
       filter_upwards [Measure.quasiMeasurePreserving_snd.ae
         (ae_restrict_mem ModularGroup.isClosed_fd.measurableSet)] with p hfd
       apply tendsto_const_nhds.congr'
@@ -125,15 +125,15 @@ theorem nativeCuspJointGraph_value_tendsto (q : XiZeroCopy) (s amplitude : ℂ) 
       rw [hn.eq_of_nhds,one_mul,sub_self,norm_zero,zero_pow (Nat.succ_ne_zero 1)]
     simpa only [integral_zero,Pi.pow_apply,Pi.sub_apply,F,W] using hc hb hp
   have hn (n : ℕ) :
-      ‖nativeCuspJointGraph q s amplitude t n 0-hw.toLp W‖^2 =
-        ∫ p, ‖F n p-W p‖^2 ∂radialMeasure.prod D4BMModularCore.measure := by
+      ‖nativeCuspJointGraph q s amplitude t n 0-hw.toLp W‖^(2 : ℕ) =
+        ∫ p, ‖F n p-W p‖^(2 : ℕ) ∂radialMeasure.prod D4BMModularCore.measure := by
     rw [nativeCuspJointGraph_value,← MemLp.toLp_sub,_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [((hf n).sub hw).coeFn_toLp] with p hp
     rw [hp]
     rfl
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  have hs : Tendsto (fun n => ‖nativeCuspJointGraph q s amplitude t n 0-hw.toLp W‖^2) atTop (𝓝 0) := by
+  have hs : Tendsto (fun n => ‖nativeCuspJointGraph q s amplitude t n 0-hw.toLp W‖^(2 : ℕ)) atTop (𝓝 0) := by
     simpa only [hn] using hl
   have h := (Real.continuous_sqrt.tendsto 0).comp hs
   simpa only [Function.comp_def,Real.sqrt_zero,Real.sqrt_sq (norm_nonneg _)] using h

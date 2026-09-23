@@ -105,16 +105,16 @@ theorem analyticOrderAt_eq_one_of_deriv_ne {g : ℂ → ℂ} {z ζ : ℂ}
   set u : ℂ → ℂ := fun y => F (φ y) with hu
   have huan : AnalyticAt ℂ u z := hFan.comp_of_eq hφan hφz
   have huz0 : u z = F 0 := by show F (φ z) = F 0; rw [hφz]
-  have hfac : h =ᶠ[𝓝 z] fun y => (y - z) ^ 1 • u y := by
+  have hfac : h =ᶠ[𝓝 z] fun y => (y - z) ^ (1 : ℕ) • u y := by
     filter_upwards [htend.eventually hFeq] with y hy
     have hyz : φ y + z = y := by simp [hφ]
     rw [hyz, Finset.sum_range_one, iteratedDeriv_zero] at hy
     simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, one_smul, pow_one] at hy
     rw [show h (0 + z) = (0 : ℂ) from by rw [zero_add, hhz], zero_add] at hy
     rw [hy]
-    show φ y • F (φ y) = (y - z) ^ 1 • F (φ y)
+    show φ y • F (φ y) = (y - z) ^ (1 : ℕ) • F (φ y)
     simp only [pow_one, hφ]
-  have hHD : HasDerivAt (fun y => (y - z) ^ 1 • u y) (F 0) z := by
+  have hHD : HasDerivAt (fun y => (y - z) ^ (1 : ℕ) • u y) (F 0) z := by
     have hsub : HasDerivAt (fun y : ℂ => y - z) 1 z := (hasDerivAt_id z).sub_const z
     have hF0 : HasDerivAt F (deriv F 0) (φ z) := by rw [hφz]; exact hFan.differentiableAt.hasDerivAt
     have h2 : HasDerivAt u (deriv F 0) z := by

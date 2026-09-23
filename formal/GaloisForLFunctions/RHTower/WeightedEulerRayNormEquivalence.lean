@@ -52,7 +52,7 @@ theorem prime_rpow_neg_lt_one (hp : 2 ≤ p) (hσ : 0 < σ) :
     (by exact_mod_cast lt_of_lt_of_le one_lt_two hp) (neg_neg_of_pos hσ)
 
 /-- Ray base monotonicity: `p^{-σ} ≤ 2^{-σ}` for every prime cutoff. -/
-theorem prime_rpow_neg_le_two_rpow_neg (hp : 2 ≤ p) (hσ : 0 < σ) :
+theorem prime_rpow_neg_le_two_rpow_neg_weightedEulerRayNormEquivalence (hp : 2 ≤ p) (hσ : 0 < σ) :
     (p : ℝ) ^ (-σ) ≤ (2 : ℝ) ^ (-σ) := by
   have hp0 : (0:ℝ) < p := by exact_mod_cast lt_of_lt_of_le two_pos hp
   rw [Real.rpow_neg hp0.le, Real.rpow_neg (by norm_num : (0:ℝ) ≤ 2)]
@@ -113,7 +113,7 @@ theorem primePowerRayMass_le (hp : 2 ≤ p) (hσ : 0 < σ) (bp : ℝ) :
   have hs1 : (2 : ℝ) ^ (-σ) < 1 :=
     Real.rpow_lt_one_of_one_lt_of_neg one_lt_two (neg_neg_of_pos hσ)
   have hrs : (p : ℝ) ^ (-σ) ≤ (2 : ℝ) ^ (-σ) :=
-    prime_rpow_neg_le_two_rpow_neg hp hσ
+    prime_rpow_neg_le_two_rpow_neg_weightedEulerRayNormEquivalence hp hσ
   have hds : 0 < (1 - (2 : ℝ) ^ (-σ)) ^ 2 := pow_pos (by linarith) 2
   have hmono : (1 - (2 : ℝ) ^ (-σ)) ^ 2 ≤ (1 - (p : ℝ) ^ (-σ)) ^ 2 :=
     pow_le_pow_left₀ (by linarith) (by linarith) 2

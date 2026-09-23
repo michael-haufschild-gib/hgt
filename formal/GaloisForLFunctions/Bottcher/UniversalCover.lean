@@ -41,7 +41,7 @@ noncomputable def sqrtBranch (c : ℂ) (g : ℂ → ℂ) : ℂ → ℂ :=
 theorem sqrtBranch_spec (c : ℂ) {g : ℂ → ℂ}
     (hg : AnalyticOnNhd ℂ g (coverPlane c)) (hgne : ∀ t ∈ coverPlane c, g t ≠ 0) :
     AnalyticOnNhd ℂ (sqrtBranch c g) (coverPlane c) ∧
-      ∀ t ∈ coverPlane c, (sqrtBranch c g t) ^ 2 = g t := by
+      ∀ t ∈ coverPlane c, (sqrtBranch c g t) ^ (2 : ℕ) = g t := by
   have hcond : AnalyticOnNhd ℂ g (coverPlane c) ∧ ∀ t ∈ coverPlane c, g t ≠ 0 := ⟨hg, hgne⟩
   rw [sqrtBranch, dif_pos hcond]
   exact (exists_analyticOnNhd_pow_eq (isSimplyConnected_coverPlane c) (isOpen_coverPlane c)
@@ -73,7 +73,7 @@ theorem rho_props (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) :
       exact hc n hmem
     obtain ⟨hsan, hspow⟩ := sqrtBranch_spec c hgan hgne
     refine ⟨hsan, fun t ht => ?_⟩
-    have h2 : (rho c (n + 1) t) ^ 2 = rho c n t - c := hspow t ht
+    have h2 : (rho c (n + 1) t) ^ (2 : ℕ) = rho c n t - c := hspow t ht
     have hfs : quadratic c (rho c (n + 1) t) = rho c n t := by
       rw [quadratic_apply, h2]; ring
     show (quadratic c)^[n + 1] (rho c (n + 1) t) ∈ escapeOpen c
@@ -92,7 +92,7 @@ theorem rho_mem_escapeLevel (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c n) (n : �
 
 /-- `ρ_{n+1}² = ρ_n − c`. -/
 theorem rho_succ_sq (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) {t : ℂ}
-    (ht : t ∈ coverPlane c) : (rho c (n + 1) t) ^ 2 = rho c n t - c := by
+    (ht : t ∈ coverPlane c) : (rho c (n + 1) t) ^ (2 : ℕ) = rho c n t - c := by
   have hgan : AnalyticOnNhd ℂ (fun t => rho c n t - c) (coverPlane c) :=
     fun z hz => ((rho_analytic c hc n) z hz).sub analyticAt_const
   have hgne : ∀ t ∈ coverPlane c, (fun t => rho c n t - c) t ≠ 0 := by
@@ -143,7 +143,7 @@ theorem Lroot_props (c : ℂ) (n : ℕ) :
     obtain ⟨ihan, ihne⟩ := ih
     obtain ⟨hsan, hspow⟩ := sqrtBranch_spec c ihan ihne
     refine ⟨hsan, fun t ht => ?_⟩
-    have hsq : (Lroot c (n + 1) t) ^ 2 = Lroot c n t := hspow t ht
+    have hsq : (Lroot c (n + 1) t) ^ (2 : ℕ) = Lroot c n t := hspow t ht
     exact fun h0 => ihne t ht (by rw [← hsq, h0]; ring)
 
 theorem Lroot_analytic (c : ℂ) (n : ℕ) : AnalyticOnNhd ℂ (Lroot c n) (coverPlane c) :=
@@ -156,7 +156,7 @@ theorem Lroot_ne_zero (c : ℂ) (n : ℕ) {t : ℂ} (ht : t ∈ coverPlane c) : 
 
 /-- `L_{n+1}² = L_n` on `H` — the upstairs square relation. -/
 theorem Lroot_succ_sq (c : ℂ) (n : ℕ) {t : ℂ} (ht : t ∈ coverPlane c) :
-    (Lroot c (n + 1) t) ^ 2 = Lroot c n t :=
+    (Lroot c (n + 1) t) ^ (2 : ℕ) = Lroot c n t :=
   (sqrtBranch_spec c (Lroot_analytic c n) (fun _ hs => Lroot_ne_zero c n hs)).2 t ht
 
 end Bottcher

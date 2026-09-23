@@ -44,14 +44,14 @@ theorem kernelOne_le {o o₁ o₂ o₃ o₄ o₅ O : ℝ → ℝ} {S t : ℝ} (h
     (ho₃ : ∀ s, HasDerivAt o₃ (o₄ s) s) (ho₄ : ∀ s, HasDerivAt o₄ (o₅ s) s)
     (hO0 : O 0 = 0) (ho0 : o 0 = 0) (ho₂0 : o₂ 0 = 0) (ho₄0 : o₄ 0 = 0)
     (hS : ∀ s ∈ Icc (0 : ℝ) t, |o₅ s| ≤ S) :
-    t ^ 2 * o₁ t - 5 * t * o t + 8 * O t ≤ S * t ^ 6 / 90 := by
+    t ^ (2 : ℕ) * o₁ t - 5 * t * o t + 8 * O t ≤ S * t ^ (6 : ℕ) / 90 := by
   have hS0 : 0 ≤ S := le_trans (abs_nonneg _) (hS 0 ⟨le_rfl, ht⟩)
   have h4 : ∀ s ∈ Icc (0 : ℝ) t, |o₄ s| ≤ S * s :=
     abs_le_mul_of_abs_deriv_le ht ho₄0 (fun s _ => ho₄ s) hS
   -- level 3
   have hG₃ : ∀ s ∈ Icc (0 : ℝ) t,
-      0 ≤ 4 / 3 * S * s ^ 3 - (s ^ 2 * o₄ s + s * o₃ s - o₂ s) := by
-    refine nonneg_of_deriv_nonneg_Icc (h' := fun s => 4 * S * s ^ 2 - (s ^ 2 * o₅ s + 3 * s * o₄ s))
+      0 ≤ 4 / 3 * S * s ^ (3 : ℕ) - (s ^ (2 : ℕ) * o₄ s + s * o₃ s - o₂ s) := by
+    refine nonneg_of_deriv_nonneg_Icc (h' := fun s => 4 * S * s ^ (2 : ℕ) - (s ^ (2 : ℕ) * o₅ s + 3 * s * o₄ s))
       ht (by simp [ho₂0]) (fun s _ => ?_) (fun s hs => ?_)
     · have := ((hasDerivAt_pow 3 s).const_mul (4 / 3 * S)).sub
         ((((hasDerivAt_pow 2 s).mul (ho₄ s)).add ((hasDerivAt_id s).mul (ho₃ s))).sub (ho₂ s))
@@ -60,23 +60,23 @@ theorem kernelOne_le {o o₁ o₂ o₃ o₄ o₅ O : ℝ → ℝ} {S t : ℝ} (h
         ring)
     · have h5 := (abs_le.mp (hS s hs)).2
       have h4' := (abs_le.mp (h4 s hs)).2
-      have hs2 : 0 ≤ s ^ 2 := by positivity
+      have hs2 : 0 ≤ s ^ (2 : ℕ) := by positivity
       have := mul_le_mul_of_nonneg_left h5 hs2
       have := mul_le_mul_of_nonneg_left h4' hs.1
       nlinarith
   -- level 2
-  have hG₂ : ∀ s ∈ Icc (0 : ℝ) t, 0 ≤ S * s ^ 4 / 3 - (s ^ 2 * o₃ s - s * o₂ s) := by
+  have hG₂ : ∀ s ∈ Icc (0 : ℝ) t, 0 ≤ S * s ^ (4 : ℕ) / 3 - (s ^ (2 : ℕ) * o₃ s - s * o₂ s) := by
     refine nonneg_of_deriv_nonneg_Icc
-      (h' := fun s => 4 / 3 * S * s ^ 3 - (s ^ 2 * o₄ s + s * o₃ s - o₂ s)) ht (by simp)
+      (h' := fun s => 4 / 3 * S * s ^ (3 : ℕ) - (s ^ (2 : ℕ) * o₄ s + s * o₃ s - o₂ s)) ht (by simp)
       (fun s _ => ?_) hG₃
     have := (((hasDerivAt_pow 4 s).const_mul S).div_const 3).sub
       (((hasDerivAt_pow 2 s).mul (ho₃ s)).sub ((hasDerivAt_id s).mul (ho₂ s)))
     exact this.congr_deriv (by simp only [id_eq]; push_cast; ring)
   -- level 1
   have hG₁ : ∀ s ∈ Icc (0 : ℝ) t,
-      0 ≤ S * s ^ 5 / 15 - (s ^ 2 * o₂ s - 3 * s * o₁ s + 3 * o s) := by
+      0 ≤ S * s ^ (5 : ℕ) / 15 - (s ^ (2 : ℕ) * o₂ s - 3 * s * o₁ s + 3 * o s) := by
     refine nonneg_of_deriv_nonneg_Icc
-      (h' := fun s => S * s ^ 4 / 3 - (s ^ 2 * o₃ s - s * o₂ s)) ht (by simp [ho0])
+      (h' := fun s => S * s ^ (4 : ℕ) / 3 - (s ^ (2 : ℕ) * o₃ s - s * o₂ s)) ht (by simp [ho0])
       (fun s _ => ?_) hG₂
     have := (((hasDerivAt_pow 5 s).const_mul S).div_const 15).sub
       ((((hasDerivAt_pow 2 s).mul (ho₂ s)).sub (((hasDerivAt_id s).const_mul (3 : ℝ)).mul (ho₁ s))).add
@@ -84,9 +84,9 @@ theorem kernelOne_le {o o₁ o₂ o₃ o₄ o₅ O : ℝ → ℝ} {S t : ℝ} (h
     exact this.congr_deriv (by simp only [id_eq]; push_cast; ring)
   -- level 0
   have hG₀ : ∀ s ∈ Icc (0 : ℝ) t,
-      0 ≤ S * s ^ 6 / 90 - (s ^ 2 * o₁ s - 5 * s * o s + 8 * O s) := by
+      0 ≤ S * s ^ (6 : ℕ) / 90 - (s ^ (2 : ℕ) * o₁ s - 5 * s * o s + 8 * O s) := by
     refine nonneg_of_deriv_nonneg_Icc
-      (h' := fun s => S * s ^ 5 / 15 - (s ^ 2 * o₂ s - 3 * s * o₁ s + 3 * o s)) ht (by simp [hO0])
+      (h' := fun s => S * s ^ (5 : ℕ) / 15 - (s ^ (2 : ℕ) * o₂ s - 3 * s * o₁ s + 3 * o s)) ht (by simp [hO0])
       (fun s _ => ?_) hG₁
     have := (((hasDerivAt_pow 6 s).const_mul S).div_const 90).sub
       ((((hasDerivAt_pow 2 s).mul (ho₁ s)).sub (((hasDerivAt_id s).const_mul (5 : ℝ)).mul (ho s))).add
@@ -102,7 +102,7 @@ theorem abs_kernelOne_le {o o₁ o₂ o₃ o₄ o₅ O : ℝ → ℝ} {S t : ℝ
     (ho₃ : ∀ s, HasDerivAt o₃ (o₄ s) s) (ho₄ : ∀ s, HasDerivAt o₄ (o₅ s) s)
     (hO0 : O 0 = 0) (ho0 : o 0 = 0) (ho₂0 : o₂ 0 = 0) (ho₄0 : o₄ 0 = 0)
     (hS : ∀ s ∈ Icc (0 : ℝ) t, |o₅ s| ≤ S) :
-    |t ^ 2 * o₁ t - 5 * t * o t + 8 * O t| ≤ S * t ^ 6 / 90 := by
+    |t ^ (2 : ℕ) * o₁ t - 5 * t * o t + 8 * O t| ≤ S * t ^ (6 : ℕ) / 90 := by
   have hup := kernelOne_le ht hO ho ho₁ ho₂ ho₃ ho₄ hO0 ho0 ho₂0 ho₄0 hS
   have hlow := kernelOne_le (o := fun s => -o s) (o₁ := fun s => -o₁ s) (o₂ := fun s => -o₂ s)
     (o₃ := fun s => -o₃ s) (o₄ := fun s => -o₄ s) (o₅ := fun s => -o₅ s) (O := fun s => -O s) ht
@@ -119,14 +119,14 @@ theorem kernelTwo_ge {e e₁ e₂ e₃ e₄ E : ℝ → ℝ} {S t : ℝ} (ht : 0
     (he₃ : ∀ s, HasDerivAt e₃ (e₄ s) s)
     (hE0 : E 0 = 0) (he₁0 : e₁ 0 = 0) (he₃0 : e₃ 0 = 0)
     (hS : ∀ s ∈ Icc (0 : ℝ) t, |e₄ s| ≤ S) :
-    -(S * t ^ 5 / 15) ≤ 3 * t * e t - 3 * E t - t ^ 2 * e₁ t := by
+    -(S * t ^ (5 : ℕ) / 15) ≤ 3 * t * e t - 3 * E t - t ^ (2 : ℕ) * e₁ t := by
   have hS0 : 0 ≤ S := le_trans (abs_nonneg _) (hS 0 ⟨le_rfl, ht⟩)
   have h3 : ∀ s ∈ Icc (0 : ℝ) t, |e₃ s| ≤ S * s :=
     abs_le_mul_of_abs_deriv_le ht he₃0 (fun s _ => he₃ s) hS
   -- level 2
   have hG₂ : ∀ s ∈ Icc (0 : ℝ) t,
-      0 ≤ (e₁ s - s * e₂ s - s ^ 2 * e₃ s) + 4 / 3 * S * s ^ 3 := by
-    refine nonneg_of_deriv_nonneg_Icc (h' := fun s => -3 * s * e₃ s - s ^ 2 * e₄ s + 4 * S * s ^ 2)
+      0 ≤ (e₁ s - s * e₂ s - s ^ (2 : ℕ) * e₃ s) + 4 / 3 * S * s ^ (3 : ℕ) := by
+    refine nonneg_of_deriv_nonneg_Icc (h' := fun s => -3 * s * e₃ s - s ^ (2 : ℕ) * e₄ s + 4 * S * s ^ (2 : ℕ))
       ht (by simp [he₁0]) (fun s _ => ?_) (fun s hs => ?_)
     · have := (((he₁ s).sub ((hasDerivAt_id s).mul (he₂ s))).sub
         ((hasDerivAt_pow 2 s).mul (he₃ s))).add ((hasDerivAt_pow 3 s).const_mul (4 / 3 * S))
@@ -135,23 +135,23 @@ theorem kernelTwo_ge {e e₁ e₂ e₃ e₄ E : ℝ → ℝ} {S t : ℝ} (ht : 0
         ring)
     · have h4 := (abs_le.mp (hS s hs)).2
       have h3' := (abs_le.mp (h3 s hs)).2
-      have hs2 : 0 ≤ s ^ 2 := by positivity
+      have hs2 : 0 ≤ s ^ (2 : ℕ) := by positivity
       have := mul_le_mul_of_nonneg_left h4 hs2
       have := mul_le_mul_of_nonneg_left h3' hs.1
       nlinarith
   -- level 1
-  have hG₁ : ∀ s ∈ Icc (0 : ℝ) t, 0 ≤ (s * e₁ s - s ^ 2 * e₂ s) + S * s ^ 4 / 3 := by
+  have hG₁ : ∀ s ∈ Icc (0 : ℝ) t, 0 ≤ (s * e₁ s - s ^ (2 : ℕ) * e₂ s) + S * s ^ (4 : ℕ) / 3 := by
     refine nonneg_of_deriv_nonneg_Icc
-      (h' := fun s => (e₁ s - s * e₂ s - s ^ 2 * e₃ s) + 4 / 3 * S * s ^ 3) ht (by simp)
+      (h' := fun s => (e₁ s - s * e₂ s - s ^ (2 : ℕ) * e₃ s) + 4 / 3 * S * s ^ (3 : ℕ)) ht (by simp)
       (fun s _ => ?_) hG₂
     have := (((hasDerivAt_id s).mul (he₁ s)).sub ((hasDerivAt_pow 2 s).mul (he₂ s))).add
       (((hasDerivAt_pow 4 s).const_mul S).div_const 3)
     exact this.congr_deriv (by simp only [id_eq]; push_cast; ring)
   -- level 0
   have hG₀ : ∀ s ∈ Icc (0 : ℝ) t,
-      0 ≤ (3 * s * e s - 3 * E s - s ^ 2 * e₁ s) + S * s ^ 5 / 15 := by
+      0 ≤ (3 * s * e s - 3 * E s - s ^ (2 : ℕ) * e₁ s) + S * s ^ (5 : ℕ) / 15 := by
     refine nonneg_of_deriv_nonneg_Icc
-      (h' := fun s => (s * e₁ s - s ^ 2 * e₂ s) + S * s ^ 4 / 3) ht (by simp [hE0])
+      (h' := fun s => (s * e₁ s - s ^ (2 : ℕ) * e₂ s) + S * s ^ (4 : ℕ) / 3) ht (by simp [hE0])
       (fun s _ => ?_) hG₁
     have := (((((hasDerivAt_id s).const_mul (3 : ℝ)).mul (he s)).sub ((hE s).const_mul (3 : ℝ))).sub
       ((hasDerivAt_pow 2 s).mul (he₁ s))).add (((hasDerivAt_pow 5 s).const_mul S).div_const 15)
@@ -166,7 +166,7 @@ theorem abs_kernelTwo_le {e e₁ e₂ e₃ e₄ E : ℝ → ℝ} {S t : ℝ} (ht
     (he₃ : ∀ s, HasDerivAt e₃ (e₄ s) s)
     (hE0 : E 0 = 0) (he₁0 : e₁ 0 = 0) (he₃0 : e₃ 0 = 0)
     (hS : ∀ s ∈ Icc (0 : ℝ) t, |e₄ s| ≤ S) :
-    |3 * t * e t - 3 * E t - t ^ 2 * e₁ t| ≤ S * t ^ 5 / 15 := by
+    |3 * t * e t - 3 * E t - t ^ (2 : ℕ) * e₁ t| ≤ S * t ^ (5 : ℕ) / 15 := by
   have hlow := kernelTwo_ge ht hE he he₁ he₂ he₃ hE0 he₁0 he₃0 hS
   have hup := kernelTwo_ge (e := fun s => -e s) (e₁ := fun s => -e₁ s) (e₂ := fun s => -e₂ s)
     (e₃ := fun s => -e₃ s) (e₄ := fun s => -e₄ s) (E := fun s => -E s) ht
@@ -197,7 +197,7 @@ theorem fj_kernel_bounds_sharp {σ c c₁ c₂ c₃ c₄ c₅ : ℝ → ℝ} {S�
     (hc₂ : ∀ x, HasDerivAt c₂ (c₃ x) x) (hc₃ : ∀ x, HasDerivAt c₃ (c₄ x) x)
     (hc₄ : ∀ x, HasDerivAt c₄ (c₅ x) x)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |c₄ x| ≤ S₄) (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |c₅ x| ≤ S₅) :
-    |fjK₁ σ c c₁ u t| ≤ S₅ * t ^ 6 / 90 ∧ |fjK₂ σ c c₁ u t| ≤ S₄ * t ^ 5 / 15 := by
+    |fjK₁ σ c c₁ u t| ≤ S₅ * t ^ (6 : ℕ) / 90 ∧ |fjK₂ σ c c₁ u t| ≤ S₄ * t ^ (5 : ℕ) / 15 := by
   constructor
   · unfold fjK₁
     exact abs_kernelOne_le (o := fjOdd c u) (o₁ := fjEven c₁ u) (o₂ := fjOdd c₂ u)

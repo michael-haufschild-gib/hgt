@@ -33,10 +33,10 @@ private theorem ccmGammaPoleWallInvariant_eq_integral (s : ℝ) :
   unfold ccmGammaPoleWallIntegral
   rw [Real.cosh_eq, Real.sinh_eq, Real.exp_neg]
   rw [Real.sinh_eq (2 * s)]
-  have h2 : Real.exp (2 * s) = Real.exp s ^ 2 := by
+  have h2 : Real.exp (2 * s) = Real.exp s ^ (2 : ℕ) := by
     rw [show 2 * s = s + s by ring, Real.exp_add]
     ring
-  have hn2 : Real.exp (-(2 * s)) = (Real.exp s)⁻¹ ^ 2 := by
+  have hn2 : Real.exp (-(2 * s)) = (Real.exp s)⁻¹ ^ (2 : ℕ) := by
     rw [show -(2 * s) = (-s) + (-s) by ring, Real.exp_add, Real.exp_neg]
     ring
   rw [h2, hn2]
@@ -82,9 +82,9 @@ private theorem hasDerivAt_ccmGammaPoleWallSecondPrimitive {t : ℝ} (ht : 0 < t
   have hterm :
       (Real.exp t - (Real.exp t)⁻¹) / 2 *
           (-2 / (Real.exp t * Real.exp t - 1)) = -(Real.exp t)⁻¹ := by
-    have hden : -1 + Real.exp t ^ 2 ≠ 0 := by
+    have hden : -1 + Real.exp t ^ (2 : ℕ) ≠ 0 := by
       simpa [pow_two, sub_eq_add_neg, add_comm] using h2
-    have hden' : Real.exp t ^ 2 - 1 ≠ 0 := by
+    have hden' : Real.exp t ^ (2 : ℕ) - 1 ≠ 0 := by
       simpa [pow_two] using h2
     field_simp [h2, he]
   rw [hterm]

@@ -37,7 +37,7 @@ theorem spectralTerm_majorant (negative : Bool) (z : Fin 2 → ℝ) (hz : 0 < z 
     ∃ M : ℕ → ℝ, Summable M ∧ ∀ N u, u ∈ Metric.ball (0:ℂ) R →
       ‖term u u (1/2) 0 negative N z‖ ≤ M N := by
   let r := 3*R+1
-  let D := Real.exp (R^2/(2*z 1))*Real.sqrt (2*Real.pi/z 1)
+  let D := Real.exp (R^(2 : ℕ)/(2*z 1))*Real.sqrt (2*Real.pi/z 1)
   have hr : 0 ≤ r := by dsimp [r]; positivity
   have hD : 0 ≤ D := by dsimp [D]; positivity
   let M := fun N : ℕ => ((z 1)^(1/2:ℝ)*D)*

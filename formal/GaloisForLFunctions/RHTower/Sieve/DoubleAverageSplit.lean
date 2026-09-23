@@ -33,7 +33,7 @@ theorem filter_large_quotient_eq {N n : ℕ} (hn : 1 ≤ n) :
   · rintro ⟨⟨hp1, hple⟩, hprime⟩
     have hqn : 2 ^ n ≤ N / p := (two_pow_le_div_iff hp1).2 hple
     have h2n : (2:ℕ) ≤ 2 ^ n := by
-      calc (2:ℕ) = 2 ^ 1 := by norm_num
+      calc (2:ℕ) = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
     have hpN : p ≤ N := by
       have hdiv : N / 2 ^ n ≤ N := Nat.div_le_self N _
@@ -85,12 +85,12 @@ theorem norm_double_average_sub_initial_le (hbdd : ∀ k : ℕ, ‖f k‖ ≤ 1)
       = {p ∈ Finset.Icc 1 (N / 2 ^ n) | Nat.Prime p} := filter_large_quotient_eq hn
   rw [hhigh] at hsplit
   have hlowset : {p ∈ Finset.Icc 1 N | Nat.Prime p ∧ 2 ≤ N / p ∧ N / p < 2 ^ n}
-      = {p ∈ Finset.Icc 1 N | Nat.Prime p ∧ 2 ^ 1 ≤ N / p ∧ N / p < 2 ^ n} := by
+      = {p ∈ Finset.Icc 1 N | Nat.Prime p ∧ 2 ^ (1 : ℕ) ≤ N / p ∧ N / p < 2 ^ n} := by
     ext p
     simp only [Finset.mem_filter, Finset.mem_Icc, pow_one]
   have hdiff : (∑ p ∈ Finset.Icc 1 N with (Nat.Prime p ∧ 2 ≤ N / p), doubleAverageTerm f N p)
       - (∑ p ∈ Finset.Icc 1 (N / 2 ^ n) with Nat.Prime p, doubleAverageTerm f N p)
-      = ∑ p ∈ Finset.Icc 1 N with (Nat.Prime p ∧ 2 ^ 1 ≤ N / p ∧ N / p < 2 ^ n),
+      = ∑ p ∈ Finset.Icc 1 N with (Nat.Prime p ∧ 2 ^ (1 : ℕ) ≤ N / p ∧ N / p < 2 ^ n),
           doubleAverageTerm f N p := by
     rw [← hlowset]
     rw [hsplit]

@@ -34,29 +34,29 @@ def AutomorphicFactor.HasLatticeExponentialGrowth {d : ℕ}
 /-! ## Half a Gaussian absorbs any exponential -/
 
 theorem exp_mul_sum_natAbs_le {d : ℕ} (a : ℝ) (k : Fin d → ℤ) :
-    Real.exp (a * ∑ i, ((k i).natAbs : ℝ)) * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ 2)
-      ≤ Real.exp ((d : ℝ) * a ^ 2) * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2) := by
+    Real.exp (a * ∑ i, ((k i).natAbs : ℝ)) * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ))
+      ≤ Real.exp ((d : ℝ) * a ^ (2 : ℕ)) * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ)) := by
   rw [← Real.exp_add, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
-  have hsq : ∀ i : Fin d, ((k i).natAbs : ℝ) ^ 2 = ((k i : ℝ)) ^ 2 := by
+  have hsq : ∀ i : Fin d, ((k i).natAbs : ℝ) ^ (2 : ℕ) = ((k i : ℝ)) ^ (2 : ℕ) := by
     intro i
     have h : ((k i).natAbs : ℝ) = |(k i : ℝ)| := by
       rw [← Int.cast_abs, ← Int.natCast_natAbs, Int.cast_natCast]
     rw [h, sq_abs]
   have hterm : ∀ i : Fin d,
-      a * ((k i).natAbs : ℝ) - (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2 ≤ a ^ 2 := by
+      a * ((k i).natAbs : ℝ) - (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by
     intro i
     have h := hsq i
     nlinarith [sq_nonneg (a - ((k i).natAbs : ℝ) / 2), h]
-  have hsum : a * ∑ i, ((k i).natAbs : ℝ) - ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2
-      ≤ ∑ _i : Fin d, a ^ 2 := by
+  have hsum : a * ∑ i, ((k i).natAbs : ℝ) - ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ)
+      ≤ ∑ _i : Fin d, a ^ (2 : ℕ) := by
     rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
     exact Finset.sum_le_sum fun i _ => hterm i
-  have hcard : ∑ _i : Fin d, a ^ 2 = (d : ℝ) * a ^ 2 := by
+  have hcard : ∑ _i : Fin d, a ^ (2 : ℕ) = (d : ℝ) * a ^ (2 : ℕ) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [hcard] at hsum
-  have hhalf : ∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ 2
-      = ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2 + ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2 := by
+  have hhalf : ∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ)
+      = ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ) + ∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ) := by
     rw [← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun i _ => by ring
   rw [hhalf]
@@ -92,7 +92,7 @@ theorem gaussianMajorant_of_hasLatticeExponentialGrowth {d : ℕ}
   obtain ⟨Cf, a, hCf0, ha0, hCf⟩ := hψ K hK
   obtain ⟨Cs, hCs0, hCs⟩ := exists_norm_flatGaussianSeed_lattice_le w hdistinct target hm
     (fun _ => (1 : ℝ)) (fun _ => one_pos) P hK
-  refine ⟨Cf * Cs * Real.exp ((d : ℝ) * a ^ 2), by positivity, fun k x hx => ?_⟩
+  refine ⟨Cf * Cs * Real.exp ((d : ℝ) * a ^ (2 : ℕ)), by positivity, fun k x hx => ?_⟩
   have hfac := hCf k x hx
   have hseed := hCs k x hx
   have hval : ‖poincareTerm ψ
@@ -117,7 +117,7 @@ theorem gaussianMajorant_of_hasLatticeExponentialGrowth {d : ℕ}
       (multivariateEntireMul (gaussianFlatSeedData (fun _ => (1 : ℝ)) (w target) hm).damping
         (mvPolynomialMultivariateEntire P))).1 (x + integerCastVector k)‖
       ≤ Cs * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-        * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ 2)) := by
+        * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ))) := by
     refine le_trans hseed (le_of_eq ?_)
     rw [hweight2]
   have habs := exp_mul_sum_natAbs_le (d := d) a k
@@ -135,17 +135,17 @@ theorem gaussianMajorant_of_hasLatticeExponentialGrowth {d : ℕ}
               (gaussianFlatSeedData (fun _ => (1 : ℝ)) (w target) hm).damping
               (mvPolynomialMultivariateEntire P))).1 (x + integerCastVector k)‖
       ≤ (Cf * Real.exp (a * ∑ i, ((k i).natAbs : ℝ)))
-        * (Cs * (Pk * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ 2))) := by
+        * (Cs * (Pk * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ)))) := by
         refine mul_le_mul hfac hseed' hnorm0 ?_
         exact mul_nonneg hCf0 (Real.exp_pos _).le
     _ = Cf * Cs * Pk * (Real.exp (a * ∑ i, ((k i).natAbs : ℝ))
-        * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ 2)) := by ring
-    _ ≤ Cf * Cs * Pk * (Real.exp ((d : ℝ) * a ^ 2)
-        * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2)) := by
+        * Real.exp (-∑ i, (1 / 2 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ))) := by ring
+    _ ≤ Cf * Cs * Pk * (Real.exp ((d : ℝ) * a ^ (2 : ℕ))
+        * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ))) := by
         refine mul_le_mul_of_nonneg_left habs ?_
         positivity
-    _ = Cf * Cs * Real.exp ((d : ℝ) * a ^ 2)
-        * (Pk * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ 2)) := by ring
+    _ = Cf * Cs * Real.exp ((d : ℝ) * a ^ (2 : ℕ))
+        * (Pk * Real.exp (-∑ i, (1 / 4 : ℝ) * ((k i : ℝ)) ^ (2 : ℕ))) := by ring
 
 /-! ## The base case from a checkable condition -/
 

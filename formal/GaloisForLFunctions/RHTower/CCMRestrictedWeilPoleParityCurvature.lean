@@ -90,7 +90,7 @@ theorem ccmWeilOddPoleChamber_second_neg (a b : SuzukiPositiveAperture)
   have hA := (abs_le.mp (abs_ccmWeilPoleDiagonal_le b)).2
   rw [deriv_deriv_ccmWeilOddPoleChamber_eq a b.2,
     ← ccmWeilPoleDiagonal_eq_chamber_of_floor_eq a b hf]
-  have hexp : Real.exp (2*b.1) = Real.exp b.1^2 := by simpa using Real.exp_nat_mul b.1 2
+  have hexp : Real.exp (2*b.1) = Real.exp b.1^(2 : ℕ) := by simpa using Real.exp_nat_mul b.1 2
   rw [hexp] at hC
   have hp := Real.exp_pos b.1
   have hm := mul_le_mul_of_nonneg_right hbe hp.le
@@ -142,7 +142,7 @@ theorem ccmWeilEvenPoleChamber_second_pos (a b : SuzukiPositiveAperture)
   have hA := (abs_le.mp (abs_ccmWeilPoleDiagonal_le b)).1
   rw [deriv_deriv_ccmWeilEvenPoleChamber_eq a b hf hb,
     ← ccmWeilPoleDiagonal_eq_chamber_of_floor_eq a b hf]
-  have hexp : Real.exp (2*b.1) = Real.exp b.1^2 := by simpa using Real.exp_nat_mul b.1 2
+  have hexp : Real.exp (2*b.1) = Real.exp b.1^(2 : ℕ) := by simpa using Real.exp_nat_mul b.1 2
   rw [hexp] at hC
   have hp := Real.exp_pos b.1
   have hm := mul_le_mul_of_nonneg_right hbe hp.le

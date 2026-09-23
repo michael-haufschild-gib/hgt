@@ -212,7 +212,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
         have hval : greenFunctionDyn c₂ z = greenLimit c₂ z := by
           unfold greenFunctionDyn
           rw [if_neg hzK₂]
-        have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ 2 ≤ 1 := by
+        have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ (2 : ℕ) ≤ 1 := by
           have h3 : ‖c₂‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hesc₂)
           have h3' : (2:ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hesc₂
           rw [div_le_one (by nlinarith)]
@@ -275,7 +275,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
       have hval : greenFunctionDyn c₂ z = greenLimit c₂ z := by
         unfold greenFunctionDyn
         rw [if_neg hzK₂]
-      have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ 2 ≤ 1 := by
+      have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ (2 : ℕ) ≤ 1 := by
         have h3 : ‖c₂‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hesc₂)
         have h3' : (2:ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hesc₂
         rw [div_le_one (by nlinarith)]

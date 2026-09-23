@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.DirichletLStripBounds
 On a closed vertical strip the centered Gaussian contributes
 
 ```text
-‖exp((s-1/2)^2)‖ = exp((Re s - 1/2)^2 - (Im s)^2),
+‖exp((s-1/2)^(2 : ℕ))‖ = exp((Re s - 1/2)^(2 : ℕ) - (Im s)^(2 : ℕ)),
 ```
 
 while the reciprocal Gamma factor grows at most like `exp(π|Im s|)` — the reflection-formula bound.

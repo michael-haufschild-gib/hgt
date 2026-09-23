@@ -71,7 +71,7 @@ theorem norm_iteratedDeriv_two_le_schurSlack
     (hf0 : f 0 = 0)
     (hmap : MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 1))
     (ha : ‖deriv f 0‖ < 1) :
-    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ 2) := by
+    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ (2 : ℕ)) := by
   let g : ℂ → ℂ := dslope f 0
   let a : ℂ := deriv f 0
   let h : ℂ → ℂ :=
@@ -146,10 +146,10 @@ theorem norm_iteratedDeriv_two_le_schurSlack
       ← Complex.normSq_eq_conj_mul_self] at hq
     change HasDerivAt h
       (iteratedDeriv 2 f 0 / 2 * (1 - (Complex.normSq a : ℂ)) /
-        (1 - (Complex.normSq a : ℂ)) ^ 2) 0 at hq
+        (1 - (Complex.normSq a : ℂ)) ^ (2 : ℕ)) 0 at hq
     have hcoeff :
         iteratedDeriv 2 f 0 / 2 * (1 - (Complex.normSq a : ℂ)) /
-            (1 - (Complex.normSq a : ℂ)) ^ 2 =
+            (1 - (Complex.normSq a : ℂ)) ^ (2 : ℕ) =
           (iteratedDeriv 2 f 0 / 2) / (1 - Complex.normSq a) := by
       have hcast : (1 - (Complex.normSq a : ℂ)) ≠ 0 := by
         exact_mod_cast haSq
@@ -172,7 +172,7 @@ theorem norm_iteratedDeriv_two_le_schurSlack
   simp only [a] at hnorm hpos
   norm_num at hnorm
   have hhalf :
-      ‖iteratedDeriv 2 f 0‖ / 2 ≤ 1 - ‖deriv f 0‖ ^ 2 :=
+      ‖iteratedDeriv 2 f 0‖ / 2 ≤ 1 - ‖deriv f 0‖ ^ (2 : ℕ) :=
     (div_le_one hpos).mp hnorm
   nlinarith
 
@@ -183,7 +183,7 @@ theorem norm_iteratedDeriv_two_le_schurSlack_closed
     (hf : DifferentiableOn ℂ f (Metric.ball 0 1))
     (hf0 : f 0 = 0)
     (hmap : MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 1)) :
-    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ 2) := by
+    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ (2 : ℕ)) := by
   have hmap' : MapsTo f (Metric.ball (0 : ℂ) 1)
       (Metric.closedBall (f 0) 1) := by
     simpa only [hf0] using hmap

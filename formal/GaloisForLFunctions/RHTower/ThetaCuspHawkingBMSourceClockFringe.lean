@@ -116,7 +116,7 @@ theorem fullCokernel_eq_logIntensityEnergy (n : ℕ) (q : XiZeroCopy) :
       -((hbXiPeierlsClockDefectToFullCokernelSusceptibility n q *
         Complex.normSq (hbXiPeierlsUnitSourceFECocycle q) *
         (Real.log (Complex.normSq (leftArm 0 1 q) /
-          Complex.normSq (rightArm 0 1 q)) / 2) ^ 2 : ℝ) : ℂ) := by
+          Complex.normSq (rightArm 0 1 q)) / 2) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq_neg_clockDefectEnergy,
     normSq_hbXiPeierlsSourceFECenteredQNMClockDefectCoefficient_eq,
     logIntensityRatio_eq]

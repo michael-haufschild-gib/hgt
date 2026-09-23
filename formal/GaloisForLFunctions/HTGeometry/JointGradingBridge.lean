@@ -9,7 +9,7 @@ simultaneous scaling law is a single application of the homogeneous scaling iden
 
 Main results:
 * `eval_smul_of_isHomogeneous_general` — the scaling identity over an arbitrary variable set.
-* `eval_sumAlgEquiv` — **the iterated evaluation is the joint evaluation**.
+* `eval_sumAlgEquiv_jointGradingBridge` — **the iterated evaluation is the joint evaluation**.
 * `eval₂_smul_of_joint_isHomogeneous` — **a jointly homogeneous object scales by its degree**.
 -/
 import GaloisForLFunctions.HTGeometry.Bihomogeneous
@@ -40,7 +40,7 @@ theorem eval_smul_of_isHomogeneous_general {σ : Type*} {P : MvPolynomial σ ℝ
   ring
 
 /-- **The iterated evaluation is the joint evaluation.** -/
-theorem eval_sumAlgEquiv (θ : Fin N → ℝ) (lam : Fin D → ℝ)
+theorem eval_sumAlgEquiv_jointGradingBridge (θ : Fin N → ℝ) (lam : Fin D → ℝ)
     (B : MvPolynomial (Fin D ⊕ Fin N) ℝ) :
     MvPolynomial.eval₂ (MvPolynomial.eval θ) lam
         ((MvPolynomial.sumAlgEquiv ℝ (Fin D) (Fin N)) B)
@@ -61,7 +61,7 @@ theorem eval₂_smul_of_joint_isHomogeneous {d : ℕ} {B : MvPolynomial (Fin D �
         ((MvPolynomial.sumAlgEquiv ℝ (Fin D) (Fin N)) B)
       = t ^ d * MvPolynomial.eval₂ (MvPolynomial.eval θ) lam
           ((MvPolynomial.sumAlgEquiv ℝ (Fin D) (Fin N)) B) := by
-  rw [eval_sumAlgEquiv, eval_sumAlgEquiv]
+  rw [eval_sumAlgEquiv_jointGradingBridge, eval_sumAlgEquiv_jointGradingBridge]
   have hfun : Sum.elim (fun i => t * lam i) (fun a => t * θ a)
       = fun x => t * Sum.elim lam θ x := by
     funext x

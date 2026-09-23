@@ -28,7 +28,7 @@ theorem norm_riemannZeta_sub_le_segment {β σ' t : ℝ} (ht : 9 ≤ |t|)
     (hσ2 : σ' ≤ 3 / 2) :
     ‖riemannZeta (↑σ' + ↑t * Complex.I)
         - riemannZeta (↑β + ↑t * Complex.I)‖
-      ≤ 112 * Real.log |t| ^ 2 * (σ' - β) := by
+      ≤ 112 * Real.log |t| ^ (2 : ℕ) * (σ' - β) := by
   have htne : t ≠ 0 := by
     intro h
     rw [h] at ht
@@ -57,7 +57,7 @@ theorem norm_riemannZeta_sub_le_segment {β σ' t : ℝ} (ht : 9 ≤ |t|)
     fun u _ => (hf u).differentiableAt.differentiableWithinAt
   have hbound : ∀ u ∈ Set.Ico β σ',
       ‖derivWithin (fun v : ℝ => riemannZeta (↑v + ↑t * Complex.I))
-        (Set.Icc β σ') u‖ ≤ 112 * Real.log |t| ^ 2 := by
+        (Set.Icc β σ') u‖ ≤ 112 * Real.log |t| ^ (2 : ℕ) := by
     intro u hu
     rw [(hf u).hasDerivWithinAt.derivWithin
       ((uniqueDiffOn_Icc hβσ) u (Set.mem_Icc_of_Ico hu))]
@@ -72,8 +72,8 @@ set_option maxHeartbeats 1600000 in
 `x³/(756·log|t|) ≤ ‖ζ(1+x+it)‖⁴`. -/
 theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
     (hx0 : 0 < x) (hx1 : x ≤ 1) :
-    x ^ 3 / (756 * Real.log |t|)
-      ≤ ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ 4 := by
+    x ^ (3 : ℕ) / (756 * Real.log |t|)
+      ≤ ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ (4 : ℕ) := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   -- `log|t| > 2`
   have hexp2 := exp_two_lt_eight
@@ -109,7 +109,7 @@ theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
       (show 1 + x ≤ 2 by linarith)
     refine le_trans h1 ?_
     have h5 : Real.log |2 * t| ≤ 2 * Real.log |t| := by
-      have h6 : |2 * t| ≤ |t| ^ 2 := by
+      have h6 : |2 * t| ≤ |t| ^ (2 : ℕ) := by
         rw [abs_mul]
         simp only [abs_two]
         nlinarith
@@ -133,12 +133,12 @@ theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
   have hnn2 : (0 : ℝ) ≤ ‖riemannZeta (((1 + x : ℝ) : ℂ)
       + (t : ℂ) * Complex.I)‖ := norm_nonneg _
   have hb1 := pow_le_pow_left₀ hnn1 hpole 3
-  have hchain : ‖riemannZeta (1 + (x : ℂ))‖ ^ 3
-      * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ 4
+  have hchain : ‖riemannZeta (1 + (x : ℂ))‖ ^ (3 : ℕ)
+      * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ (4 : ℕ)
       * ‖riemannZeta (((1 + x : ℝ) : ℂ)
           + ((2 * t : ℝ) : ℂ) * Complex.I)‖
-      ≤ (3 / x) ^ 3
-        * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ 4
+      ≤ (3 / x) ^ (3 : ℕ)
+        * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ (4 : ℕ)
         * (28 * Real.log |t|) := by
     apply mul_le_mul
     · exact mul_le_mul_of_nonneg_right hb1 (by positivity)
@@ -147,14 +147,14 @@ theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
     · positivity
   have h1 := le_trans hprod hchain
   -- solve for the quartic factor
-  have hx3 : (0 : ℝ) < x ^ 3 := by positivity
-  have hK : (0 : ℝ) < (3 / x) ^ 3 * (28 * Real.log |t|) := by positivity
+  have hx3 : (0 : ℝ) < x ^ (3 : ℕ) := by positivity
+  have hK : (0 : ℝ) < (3 / x) ^ (3 : ℕ) * (28 * Real.log |t|) := by positivity
   rw [div_le_iff₀ (by positivity : (0 : ℝ) < 756 * Real.log |t|)]
-  have h2 : (3 / x) ^ 3
-      * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ 4
+  have h2 : (3 / x) ^ (3 : ℕ)
+      * ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ (4 : ℕ)
       * (28 * Real.log |t|)
-      = ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ 4
-        * (756 * Real.log |t|) / x ^ 3 := by
+      = ‖riemannZeta (((1 + x : ℝ) : ℂ) + (t : ℂ) * Complex.I)‖ ^ (4 : ℕ)
+        * (756 * Real.log |t|) / x ^ (3 : ℕ) := by
     field_simp
     ring
   rw [h2] at h1

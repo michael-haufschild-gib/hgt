@@ -23,7 +23,7 @@ def directSecondTimeSymbol (q : SchwartzMap ℝ ℂ) (t x : ℝ) (reverse : Bool
 
 /-- The second derivative is exactly the original actual symbol divided by the squared spectral coordinate. -/
 theorem directSecondTimeSymbol_eq (q : SchwartzMap ℝ ℂ) (t x : ℝ) (reverse : Bool) (z : ℝ) :
-    directSecondTimeSymbol q t x reverse z = (-1/4 : ℂ)*directSymbol q t x reverse z/(z : ℂ)^2 := by
+    directSecondTimeSymbol q t x reverse z = (-1/4 : ℂ)*directSymbol q t x reverse z/(z : ℂ)^(2 : ℕ) := by
   cases reverse <;>
     simp only [directSecondTimeSymbol, regularSecondInverseJump, regularInverseFrequencyJump,
       directSymbol, Bool.false_eq_true, ↓reduceIte, div_div, pow_two, mul_div_assoc]
@@ -94,7 +94,7 @@ theorem directSecondTimeSymbol_upper_quinticGaussianProfile_memLp (a : ℝ) (c :
 theorem continuous_directSecondTimeSymbol_parameters (q : SchwartzMap ℝ ℂ) (reverse : Bool) (z : ℝ) :
     Continuous (fun p : ℝ × ℝ => directSecondTimeSymbol q p.1 p.2 reverse z) := by
   simp only [directSecondTimeSymbol_eq]
-  exact (continuous_const.mul (continuous_directSymbol_parameters q reverse z)).div_const ((z : ℂ)^2)
+  exact (continuous_const.mul (continuous_directSymbol_parameters q reverse z)).div_const ((z : ℂ)^(2 : ℕ))
 
 end
 end RHTower.FokasLenells

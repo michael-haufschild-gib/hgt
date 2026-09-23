@@ -17,7 +17,7 @@ adaptive construction uses the current monic orthogonal flag and splits
 `K P_n = A_n + (n+1/2) P_(n+1)`,  `deg A_n <= n`.
 
 The admitted landing `A_n` depends on the current moments.  Its pairing with `X P_n` is itself a
-strictly positive Jacobi energy, while the terminal port is `(2n+1) ||P_(n+1)||^2`.  Therefore the
+strictly positive Jacobi energy, while the terminal port is `(2n+1) ||P_(n+1)||^(2 : ℕ)`.  Therefore the
 completed adaptive `P^sharp` aggregate is exactly a sum of three positive, source-first channels:
 multiplication Gram bulk, adaptive admitted landing, and terminal boundary port.  Formation occurs
 before reflection; no orientation map or fixed linear reporter enters the final identity.
@@ -128,7 +128,7 @@ completed aggregate consists exactly of visible Gram bulk, admitted half-density
 single terminal arithmetic port carrying the first excluded degree. -/
 theorem xiShiftedCompletedMomentAggregate_lowTrunc_eq_halfDensityBoundaryPort
     {w : ℝ} (hw : 1 / 2 < w) (P : Polynomial ℝ) (n : ℕ) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket
             (PolynomialTruncation.lowTrunc P (n + 1)))) =
@@ -154,7 +154,7 @@ theorem xiShiftedCompletedMomentAggregate_canonicalAdmission_eq_halfDensityBound
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
     let A := HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket A)) =
       HTGeometry.momentInner (xiShiftedRealMomentSequence w) (X * A) (X * A) +
@@ -358,7 +358,7 @@ theorem momentInner_X_monicOrtho_sq_eq_norm_mul_jacobi_below
         (X * HTGeometry.monicOrtho s n) =
       HTGeometry.monicOrthoNormSq s n *
         (HTGeometry.monicOrthoBeta s (n + 1) +
-          HTGeometry.monicOrthoAlpha s n ^ 2 +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
           HTGeometry.monicOrthoBeta s n) := by
   rw [HTGeometry.X_mul_monicOrtho_below h (by omega)]
   simp only [HTGeometry.momentInner_add_left, HTGeometry.momentInner_add_right,
@@ -402,8 +402,8 @@ theorem momentInner_X_monicOrtho_sq_eq_norm_mul_jacobi_below
 /-- Positive energy carried by the part of `K P_n` that remains inside the adaptive flag. -/
 def xiShiftedAdaptiveHalfDensityLandingEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   (∑ j ∈ Finset.range n,
-      (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2) +
-    (3 * (n : ℝ) / 4 + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ 2 +
+      (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ)) +
+    (3 * (n : ℝ) / 4 + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
     2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
     ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoBeta s n
 
@@ -430,8 +430,8 @@ theorem two_mul_momentFunctional_adaptiveOrthoSourcePolynomial_eq_halfDensityLan
     ext k
     cases k <;> simp
   linear_combination
-    (-(X ^ 2 * HTGeometry.monicOrtho s n ^ 2)) * hhalf +
-    (-(X ^ 2 * HTGeometry.monicOrtho s n ^ 2)) * htwo
+    (-(X ^ (2 : ℕ) * HTGeometry.monicOrtho s n ^ (2 : ℕ))) * hhalf +
+    (-(X ^ (2 : ℕ) * HTGeometry.monicOrtho s n ^ (2 : ℕ))) * htwo
 
 /-- Exact evaluation of the adaptive admitted landing as norm times a positive Jacobi energy. -/
 theorem momentInner_xiShiftedAdaptiveHalfDensityLanding_eq_norm_mul_energy_below
@@ -462,10 +462,10 @@ theorem xiShiftedAdaptiveHalfDensityLandingEnergy_pos_below
     0 < xiShiftedAdaptiveHalfDensityLandingEnergy s n := by
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
-        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2 :=
+        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
-      0 ≤ (3 * (n : ℝ) / 4 + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ 2 := by
+      0 ≤ (3 * (n : ℝ) / 4 + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) := by
@@ -498,7 +498,7 @@ def xiShiftedAdaptiveMonicHalfDensityLanding (s : ℕ → ℝ) (n : ℕ) : Polyn
 
 /-- Positive energy carried by the genuine monic-tangent landing. -/
 def xiShiftedAdaptiveMonicHalfDensityLandingEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
-  (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+  (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
     2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
     ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoBeta s n
 
@@ -586,16 +586,16 @@ theorem momentInner_xiShiftedAdaptiveMonicHalfDensityLanding_eq_norm_mul_energy_
     momentInner_monicOrtho_X_monicOrtho_eq_alpha_mul_norm_below h (by omega)]
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
           HTGeometry.monicOrthoAlpha s n *
             (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 / 4 := by
+          (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2 =
-          HTGeometry.monicOrthoAlpha s j ^ 2 +
+        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) =
+          HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
             HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s j +
-            HTGeometry.monicOrthoAlpha s n ^ 2 / 4 := by ring
+            HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -612,7 +612,7 @@ theorem xiShiftedAdaptiveMonicHalfDensityLandingEnergy_pos_below
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n + 2 ≤ N) :
     0 < xiShiftedAdaptiveMonicHalfDensityLandingEnergy s n := by
-  have halpha : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2 :=
+  have halpha : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbeta : 0 ≤ 2 * ∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j := by
     apply mul_nonneg (by norm_num)
@@ -696,7 +696,7 @@ theorem xiShiftedCompletedMomentAggregate_monicOrtho_eq_threePositiveHalfDensity
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w)
       (n + 2)).PosDef) :
     let A := HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket A)) =
       HTGeometry.momentInner (xiShiftedRealMomentSequence w) (X * A) (X * A) +

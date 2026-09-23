@@ -7,7 +7,7 @@ Pointwise dyadic coherence fixes the divisor coordinate before sending hard-edge
 The global divisor sum also probes the moving shell whose spectral height is quadratic in coarse
 mass.  On that shell the fine Cayley phase approaches the coarse Nyquist wall, not the central
 frequency: after subtracting one coarse alias period its exact limit is `-4 / u`.  Simultaneously,
-the mass-scaled fine resolvent tends to `4 / u ^ 2`.
+the mass-scaled fine resolvent tends to `4 / u ^ (2 : ℕ)`.
 
 These premise-free limits isolate the nonuniform ultraviolet chart that falsifies naive exchange of
 the pointwise even/odd limits with the complete Xi divisor.  The positive shell parameter is carried
@@ -25,7 +25,7 @@ abbrev RouteUPositiveParabolicScale := {u : ℝ // 0 < u}
 
 /-- Spectral height on the quadratic shell based on the coarse dyadic mass. -/
 def routeUDyadicParabolicHeight (u : RouteUPositiveParabolicScale) (k : ℕ) : ℝ :=
-  (u : ℝ) * routeUHardEdgeMass (k : ℝ) ^ 2
+  (u : ℝ) * routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)
 
 /-- Fine Cayley phase folded back by one coarse alias period. -/
 def routeUDyadicParabolicFoldedPhase
@@ -50,7 +50,7 @@ theorem routeUDyadicParabolicFoldedPhase_eq
   have hu : 0 < (u : ℝ) := u.property
   have ha : 0 < a := routeUHardEdgeMass_pos (k : ℝ)
   have hx : 0 < (u : ℝ) * a / 2 := by positivity
-  have harg : (u : ℝ) * a ^ 2 / (2 * a) = (u : ℝ) * a / 2 := by
+  have harg : (u : ℝ) * a ^ (2 : ℕ) / (2 * a) = (u : ℝ) * a / 2 := by
     field_simp [ha.ne']
   have hinv : ((u : ℝ) * a / 2)⁻¹ = 2 / ((u : ℝ) * a) := by
     field_simp [hu.ne', ha.ne']
@@ -59,7 +59,7 @@ theorem routeUDyadicParabolicFoldedPhase_eq
   rw [routeUDyadicParabolicFoldedPhase, routeUDyadicParabolicHeight,
     routeUHardEdgePhase, routeUHardEdgeAliasPeriod,
     routeUHardEdgeMass_fineIndex]
-  change 2 * a * Real.arctan ((u : ℝ) * a ^ 2 / (2 * a)) - Real.pi * a = _
+  change 2 * a * Real.arctan ((u : ℝ) * a ^ (2 : ℕ) / (2 * a)) - Real.pi * a = _
   rw [harg]
   rw [show Real.arctan ((u : ℝ) * a / 2) =
       Real.pi / 2 - Real.arctan (2 / ((u : ℝ) * a)) by linarith]
@@ -145,24 +145,24 @@ theorem tendsto_routeUDyadicParabolicComplexFoldedPhase
 
 /-- Real spectral profile of the mass-normalized hard-edge resolvent. -/
 def routeURealHardEdgeResolventWeight (r α : ℝ) : ℝ :=
-  routeUHardEdgeMass r ^ 2 /
-    (routeUHardEdgeMass r ^ 2 + α ^ 2)
+  routeUHardEdgeMass r ^ (2 : ℕ) /
+    (routeUHardEdgeMass r ^ (2 : ℕ) + α ^ (2 : ℕ))
 
 /-- Exact rational normal form of the scaled fine resolvent on the quadratic shell. -/
 theorem routeUDyadicParabolicScaledResolventWeight_eq
     (u : RouteUPositiveParabolicScale) (k : ℕ) :
-    routeUHardEdgeMass (k : ℝ) ^ 2 *
+    routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) *
         routeURealHardEdgeResolventWeight (routeUDyadicFineIndex k : ℝ)
           (routeUDyadicParabolicHeight u k) =
-      4 / (4 / routeUHardEdgeMass (k : ℝ) ^ 2 + (u : ℝ) ^ 2) := by
+      4 / (4 / routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) + (u : ℝ) ^ (2 : ℕ)) := by
   let a : ℝ := routeUHardEdgeMass (k : ℝ)
   have hu : 0 < (u : ℝ) := u.property
   have ha : 0 < a := routeUHardEdgeMass_pos (k : ℝ)
   rw [routeURealHardEdgeResolventWeight, routeUDyadicParabolicHeight,
     routeUHardEdgeMass_fineIndex]
-  change a ^ 2 * ((2 * a) ^ 2 /
-      ((2 * a) ^ 2 + ((u : ℝ) * a ^ 2) ^ 2)) =
-    4 / (4 / a ^ 2 + (u : ℝ) ^ 2)
+  change a ^ (2 : ℕ) * ((2 * a) ^ (2 : ℕ) /
+      ((2 * a) ^ (2 : ℕ) + ((u : ℝ) * a ^ (2 : ℕ)) ^ (2 : ℕ))) =
+    4 / (4 / a ^ (2 : ℕ) + (u : ℝ) ^ (2 : ℕ))
   field_simp [ha.ne', hu.ne']
   ring
 
@@ -170,26 +170,26 @@ theorem routeUDyadicParabolicScaledResolventWeight_eq
 theorem tendsto_routeUDyadicParabolicScaledResolventWeight
     (u : RouteUPositiveParabolicScale) :
     Tendsto (fun k : ℕ =>
-      routeUHardEdgeMass (k : ℝ) ^ 2 *
+      routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) *
         routeURealHardEdgeResolventWeight (routeUDyadicFineIndex k : ℝ)
           (routeUDyadicParabolicHeight u k))
-      atTop (nhds (4 / (u : ℝ) ^ 2)) := by
+      atTop (nhds (4 / (u : ℝ) ^ (2 : ℕ))) := by
   have hu : 0 < (u : ℝ) := u.property
   have hmassSq : Tendsto
-      (fun k : ℕ => routeUHardEdgeMass (k : ℝ) ^ 2) atTop atTop :=
+      (fun k : ℕ => routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (n := 2) (by norm_num)).comp
       tendsto_routeUHardEdgeMass_natCast_atTop
   have hrecip : Tendsto
-      (fun k : ℕ => 4 / routeUHardEdgeMass (k : ℝ) ^ 2)
+      (fun k : ℕ => 4 / routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       atTop (nhds 0) := tendsto_const_nhds.div_atTop hmassSq
   have hden : Tendsto
-      (fun k : ℕ => 4 / routeUHardEdgeMass (k : ℝ) ^ 2 + (u : ℝ) ^ 2)
-      atTop (nhds ((u : ℝ) ^ 2)) := by
-    simpa only [zero_add] using hrecip.add_const ((u : ℝ) ^ 2)
+      (fun k : ℕ => 4 / routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) + (u : ℝ) ^ (2 : ℕ))
+      atTop (nhds ((u : ℝ) ^ (2 : ℕ))) := by
+    simpa only [zero_add] using hrecip.add_const ((u : ℝ) ^ (2 : ℕ))
   have hquot : Tendsto
       (fun k : ℕ => 4 /
-        (4 / routeUHardEdgeMass (k : ℝ) ^ 2 + (u : ℝ) ^ 2))
-      atTop (nhds (4 / (u : ℝ) ^ 2)) :=
+        (4 / routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) + (u : ℝ) ^ (2 : ℕ)))
+      atTop (nhds (4 / (u : ℝ) ^ (2 : ℕ))) :=
     tendsto_const_nhds.div hden (pow_ne_zero 2 hu.ne')
   exact hquot.congr'
     (Eventually.of_forall fun k =>

@@ -138,7 +138,7 @@ theorem hermConv_witness (q : ℕ) (hq : 3 ≤ q) :
     simp [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X]
   rw [hmap]
   obtain ⟨m, rfl⟩ : ∃ m, q = m + 1 := ⟨q - 1, by omega⟩
-  have e1 : (X : ℂ[X]) * X = X ^ 2 := by ring
+  have e1 : (X : ℂ[X]) * X = X ^ (2 : ℕ) := by ring
   have e2 : (X : ℂ[X]) * X ^ (m + 1 - 1) = X ^ (m + 1) := by
     rw [show m + 1 - 1 = m by omega, ← pow_succ']
   have e4 : (X ^ (m + 1 - 1) : ℂ[X]) * X ^ (m + 1 - 1) = X ^ (2 * (m + 1) - 2) := by

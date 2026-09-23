@@ -25,17 +25,17 @@ open ArithmeticFunction Finset
 /-- The `G = log² + 2log` telescope over a window. -/
 theorem sum_G_inc_window (y z : ℕ) (hyz : y ≤ z) :
     ∑ m ∈ Finset.Ioc y z,
-        ((Real.log ((m : ℝ) + 1) ^ 2 + 2 * Real.log ((m : ℝ) + 1))
-          - (Real.log m ^ 2 + 2 * Real.log m))
-      = (Real.log ((z : ℝ) + 1) ^ 2 + 2 * Real.log ((z : ℝ) + 1))
-        - (Real.log ((y : ℝ) + 1) ^ 2 + 2 * Real.log ((y : ℝ) + 1)) := by
+        ((Real.log ((m : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ) + 1))
+          - (Real.log m ^ (2 : ℕ) + 2 * Real.log m))
+      = (Real.log ((z : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((z : ℝ) + 1))
+        - (Real.log ((y : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((y : ℝ) + 1)) := by
   have hcongr : ∑ m ∈ Finset.Ioc y z,
-      ((Real.log ((m : ℝ) + 1) ^ 2 + 2 * Real.log ((m : ℝ) + 1))
-        - (Real.log m ^ 2 + 2 * Real.log m))
+      ((Real.log ((m : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ) + 1))
+        - (Real.log m ^ (2 : ℕ) + 2 * Real.log m))
       = ∑ m ∈ Finset.Ioc y z,
-          ((Real.log (((m + 1 : ℕ)) : ℝ) ^ 2
+          ((Real.log (((m + 1 : ℕ)) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log (((m + 1 : ℕ)) : ℝ))
-            - (Real.log ((m : ℕ) : ℝ) ^ 2
+            - (Real.log ((m : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((m : ℕ) : ℝ))) := by
     apply Finset.sum_congr rfl
     intro m _
@@ -46,9 +46,9 @@ theorem sum_G_inc_window (y z : ℕ) (hyz : y ≤ z) :
     rw [Finset.mem_Ioc, Finset.mem_Ico]
     omega
   rw [hcongr, hIco, Finset.sum_Ico_eq_sub _ (show y + 1 ≤ z + 1 by omega),
-    Finset.sum_range_sub (fun m => Real.log ((m : ℕ) : ℝ) ^ 2
+    Finset.sum_range_sub (fun m => Real.log ((m : ℕ) : ℝ) ^ (2 : ℕ)
       + 2 * Real.log ((m : ℕ) : ℝ)) (z + 1),
-    Finset.sum_range_sub (fun m => Real.log ((m : ℕ) : ℝ) ^ 2
+    Finset.sum_range_sub (fun m => Real.log ((m : ℕ) : ℝ) ^ (2 : ℕ)
       + 2 * Real.log ((m : ℕ) : ℝ)) (y + 1)]
   push_cast
   ring
@@ -58,17 +58,17 @@ theorem sum_G_inc_window (y z : ℕ) (hyz : y ≤ z) :
    ≤ log²z + 2 log z − log²y − 2 log y + (2 log(y+1) + 6)/y`. -/
 theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
     ∑ m ∈ Finset.Ioc y z, (2 * Real.log m + 2) / m
-      ≤ (Real.log z ^ 2 + 2 * Real.log z)
-        - (Real.log y ^ 2 + 2 * Real.log y)
+      ≤ (Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+        - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
         + (2 * Real.log ((y : ℝ) + 1) + 6) / y := by
   have hy0 : (0 : ℝ) < y := by exact_mod_cast (by omega : 0 < y)
   -- per-term: `(2logm+2)/m ≤ ΔG(m−1→m) + Δ²`
   have hterm : ∀ m ∈ Finset.Ioc y z,
       (2 * Real.log m + 2) / m
-        ≤ ((Real.log ((m : ℝ)) ^ 2 + 2 * Real.log ((m : ℝ)))
-            - (Real.log ((m - 1 : ℕ) : ℝ) ^ 2
+        ≤ ((Real.log ((m : ℝ)) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ)))
+            - (Real.log ((m - 1 : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((m - 1 : ℕ) : ℝ)))
-          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2 := by
+          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     intro m hm
     rw [Finset.mem_Ioc] at hm
     have hm0 : (0 : ℝ) < m := by exact_mod_cast (by omega : 0 < m)
@@ -87,10 +87,10 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
       linarith
     have hkey : (2 * Real.log m + 2)
         * (Real.log m - Real.log ((m - 1 : ℕ) : ℝ))
-        = ((Real.log ((m : ℝ)) ^ 2 + 2 * Real.log ((m : ℝ)))
-            - (Real.log ((m - 1 : ℕ) : ℝ) ^ 2
+        = ((Real.log ((m : ℝ)) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ)))
+            - (Real.log ((m - 1 : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((m - 1 : ℕ) : ℝ)))
-          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2 := by
+          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
       ring
     calc (2 * Real.log m + 2) / m
         = (2 * Real.log m + 2) * (1 / m) := by ring
@@ -100,18 +100,18 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
       _ = _ := hkey
   -- telescope + tail
   have hteles : ∑ m ∈ Finset.Ioc y z,
-      ((Real.log ((m : ℝ)) ^ 2 + 2 * Real.log ((m : ℝ)))
-        - (Real.log ((m - 1 : ℕ) : ℝ) ^ 2
+      ((Real.log ((m : ℝ)) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ)))
+        - (Real.log ((m - 1 : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((m - 1 : ℕ) : ℝ)))
-      = (Real.log z ^ 2 + 2 * Real.log z)
-        - (Real.log y ^ 2 + 2 * Real.log y) := by
+      = (Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+        - (Real.log y ^ (2 : ℕ) + 2 * Real.log y) := by
     have hre : ∑ m ∈ Finset.Ioc y z,
-        ((Real.log ((m : ℝ)) ^ 2 + 2 * Real.log ((m : ℝ)))
-          - (Real.log ((m - 1 : ℕ) : ℝ) ^ 2
+        ((Real.log ((m : ℝ)) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ)))
+          - (Real.log ((m - 1 : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((m - 1 : ℕ) : ℝ)))
         = ∑ n ∈ Finset.Ioc (y - 1) (z - 1),
-            ((Real.log ((n : ℝ) + 1) ^ 2 + 2 * Real.log ((n : ℝ) + 1))
-              - (Real.log n ^ 2 + 2 * Real.log n)) := by
+            ((Real.log ((n : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((n : ℝ) + 1))
+              - (Real.log n ^ (2 : ℕ) + 2 * Real.log n)) := by
       apply Finset.sum_nbij' (i := fun m => m - 1) (j := fun n => n + 1)
       · intro m hm
         rw [Finset.mem_Ioc] at hm
@@ -141,10 +141,10 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
       linarith
     rw [hc1, hc2]
   have htail : ∑ m ∈ Finset.Ioc y z,
-      (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2
+      (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
       ≤ 2 / (y : ℝ) := by
     have hle : ∀ m ∈ Finset.Ioc y z,
-        (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2
+        (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
           ≤ 1 / ((m - 2 : ℕ) : ℝ) - 1 / ((m - 1 : ℕ) : ℝ) := by
       intro m hm
       rw [Finset.mem_Ioc] at hm
@@ -161,8 +161,8 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
         have := Real.log_le_log hm1R
           (show ((m - 1 : ℕ) : ℝ) ≤ m by linarith)
         linarith
-      have h1 : (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2
-          ≤ (1 / ((m - 1 : ℕ) : ℝ)) ^ 2 :=
+      have h1 : (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
+          ≤ (1 / ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ) :=
         pow_le_pow_left₀ hΔ0 hinc 2
       have hgap : ((m - 1 : ℕ) : ℝ) - ((m - 2 : ℕ) : ℝ) = 1 := by
         rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
@@ -173,7 +173,7 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
         rw [div_sub_div _ _ hm2R.ne' hm1R.ne']
         rw [show (1 : ℝ) * ((m - 1 : ℕ) : ℝ) - ((m - 2 : ℕ) : ℝ) * 1
           = ((m - 1 : ℕ) : ℝ) - ((m - 2 : ℕ) : ℝ) from by ring, hgap]
-      have h2 : (1 / ((m - 1 : ℕ) : ℝ)) ^ 2
+      have h2 : (1 / ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
           ≤ 1 / (((m - 2 : ℕ) : ℝ) * ((m - 1 : ℕ) : ℝ)) := by
         rw [div_pow, one_pow]
         apply div_le_div_of_nonneg_left one_pos.le (by positivity)
@@ -226,7 +226,7 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
       have hnn : (0 : ℝ) ≤ 1 / ((((z - 2 : ℕ)) : ℝ) + 1) := by
         positivity
       calc ∑ m ∈ Finset.Ioc y z,
-            (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2
+            (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
           ≤ ∑ m ∈ Finset.Ioc y z,
               (1 / ((m - 2 : ℕ) : ℝ) - 1 / ((m - 1 : ℕ) : ℝ)) :=
             Finset.sum_le_sum hle
@@ -240,18 +240,18 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
     linarith
   calc ∑ m ∈ Finset.Ioc y z, (2 * Real.log m + 2) / m
       ≤ ∑ m ∈ Finset.Ioc y z,
-          (((Real.log ((m : ℝ)) ^ 2 + 2 * Real.log ((m : ℝ)))
-            - (Real.log ((m - 1 : ℕ) : ℝ) ^ 2
+          (((Real.log ((m : ℝ)) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ)))
+            - (Real.log ((m - 1 : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((m - 1 : ℕ) : ℝ)))
-          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2) :=
+          + (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ)) :=
         Finset.sum_le_sum hterm
-    _ = ((Real.log z ^ 2 + 2 * Real.log z)
-          - (Real.log y ^ 2 + 2 * Real.log y))
+    _ = ((Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+          - (Real.log y ^ (2 : ℕ) + 2 * Real.log y))
         + ∑ m ∈ Finset.Ioc y z,
-            (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ 2 := by
+            (Real.log m - Real.log ((m - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, hteles]
-    _ ≤ (Real.log z ^ 2 + 2 * Real.log z)
-        - (Real.log y ^ 2 + 2 * Real.log y)
+    _ ≤ (Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+        - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
         + (2 * Real.log ((y : ℝ) + 1) + 6) / y := by
         have h1 : (2 : ℝ) / y ≤ (2 * Real.log ((y : ℝ) + 1) + 6) / y := by
           gcongr
@@ -262,17 +262,17 @@ theorem sum_log_harmonic_window_le {y z : ℕ} (hy : 2 ≤ y) (hyz : y ≤ z) :
 `∑_{y < m ≤ z} (2 log m + 2)/m
    ≥ log²z + 2 log z − log²y − 2 log y − (2 log(y+1) + 3)/y`. -/
 theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
-    (Real.log z ^ 2 + 2 * Real.log z)
-      - (Real.log y ^ 2 + 2 * Real.log y)
+    (Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+      - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
       - (2 * Real.log ((y : ℝ) + 1) + 3) / y
     ≤ ∑ m ∈ Finset.Ioc y z, (2 * Real.log m + 2) / m := by
   have hy0 : (0 : ℝ) < y := by exact_mod_cast (by omega : 0 < y)
   have hz0 : (0 : ℝ) < z := by exact_mod_cast (by omega : 0 < z)
   -- per-term lower: `(2logm+2)/m ≥ ΔG(m→m+1) − (Δ⁺)²`
   have hterm : ∀ m ∈ Finset.Ioc y z,
-      ((Real.log ((m : ℝ) + 1) ^ 2 + 2 * Real.log ((m : ℝ) + 1))
-          - (Real.log m ^ 2 + 2 * Real.log m))
-        - (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2
+      ((Real.log ((m : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ) + 1))
+          - (Real.log m ^ (2 : ℕ) + 2 * Real.log m))
+        - (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ)
       ≤ (2 * Real.log m + 2) / m := by
     intro m hm
     rw [Finset.mem_Ioc] at hm
@@ -282,13 +282,13 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
     have hinc := log_succ_sub_log_le (j := m) (by omega)
     have hkey : (2 * Real.log m + 2)
         * (Real.log ((m : ℝ) + 1) - Real.log m)
-        = ((Real.log ((m : ℝ) + 1) ^ 2 + 2 * Real.log ((m : ℝ) + 1))
-            - (Real.log m ^ 2 + 2 * Real.log m))
-          - (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2 := by
+        = ((Real.log ((m : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ) + 1))
+            - (Real.log m ^ (2 : ℕ) + 2 * Real.log m))
+          - (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ) := by
       ring
-    calc ((Real.log ((m : ℝ) + 1) ^ 2 + 2 * Real.log ((m : ℝ) + 1))
-            - (Real.log m ^ 2 + 2 * Real.log m))
-          - (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2
+    calc ((Real.log ((m : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((m : ℝ) + 1))
+            - (Real.log m ^ (2 : ℕ) + 2 * Real.log m))
+          - (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ)
         = (2 * Real.log m + 2)
           * (Real.log ((m : ℝ) + 1) - Real.log m) := hkey.symm
       _ ≤ (2 * Real.log m + 2) * (1 / m) := by
@@ -298,10 +298,10 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
   have hG := sum_G_inc_window y z hyz
   -- squared-increment tail
   have htail2 : ∑ m ∈ Finset.Ioc y z,
-      (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2 ≤ 1 / y := by
+      (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ) ≤ 1 / y := by
     rcases Nat.lt_or_ge y z with hyz' | hyz'
     · have hle : ∀ m ∈ Finset.Ioc y z,
-          (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2
+          (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ)
             ≤ 1 / ((m - 1 : ℕ) : ℝ) - 1 / ((m : ℕ) : ℝ) := by
         intro m hm
         rw [Finset.mem_Ioc] at hm
@@ -314,8 +314,8 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
           have := Real.log_le_log hmR
             (show (m : ℝ) ≤ (m : ℝ) + 1 by linarith)
           linarith
-        have h1 : (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2
-            ≤ (1 / (m : ℝ)) ^ 2 :=
+        have h1 : (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ)
+            ≤ (1 / (m : ℝ)) ^ (2 : ℕ) :=
           pow_le_pow_left₀ hΔ0 hinc 2
         have hgap : (m : ℝ) - ((m - 1 : ℕ) : ℝ) = 1 := by
           rw [Nat.cast_sub (by omega), Nat.cast_one]
@@ -325,7 +325,7 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
           rw [div_sub_div _ _ hm1R.ne' hmR.ne']
           rw [show (1 : ℝ) * (m : ℝ) - ((m - 1 : ℕ) : ℝ) * 1
             = (m : ℝ) - ((m - 1 : ℕ) : ℝ) from by ring, hgap]
-        have h2 : (1 / (m : ℝ)) ^ 2
+        have h2 : (1 / (m : ℝ)) ^ (2 : ℕ)
             ≤ 1 / (((m - 1 : ℕ) : ℝ) * (m : ℝ)) := by
           rw [div_pow, one_pow]
           apply div_le_div_of_nonneg_left one_pos.le (by positivity)
@@ -362,7 +362,7 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
       have hnn : (0 : ℝ) ≤ 1 / ((((z - 1 : ℕ)) : ℝ) + 1) := by
         positivity
       calc ∑ m ∈ Finset.Ioc y z,
-            (Real.log ((m : ℝ) + 1) - Real.log m) ^ 2
+            (Real.log ((m : ℝ) + 1) - Real.log m) ^ (2 : ℕ)
           ≤ ∑ m ∈ Finset.Ioc y z,
               (1 / ((m - 1 : ℕ) : ℝ) - 1 / ((m : ℕ) : ℝ)) :=
             Finset.sum_le_sum hle
@@ -374,23 +374,23 @@ theorem sum_log_harmonic_window_ge {y z : ℕ} (hy : 1 ≤ y) (hyz : y ≤ z) :
       rw [hzy, Finset.Ioc_self, Finset.sum_empty]
       positivity
   -- boundary reconciliation
-  have hb1 : Real.log ((z : ℝ) + 1) ^ 2 + 2 * Real.log ((z : ℝ) + 1)
-      ≥ Real.log z ^ 2 + 2 * Real.log z := by
+  have hb1 : Real.log ((z : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((z : ℝ) + 1)
+      ≥ Real.log z ^ (2 : ℕ) + 2 * Real.log z := by
     have h1 : Real.log z ≤ Real.log ((z : ℝ) + 1) :=
       Real.log_le_log hz0 (by linarith)
     have h2 : 0 ≤ Real.log z :=
       Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ z))
     nlinarith [h1, h2]
-  have hb2 : Real.log ((y : ℝ) + 1) ^ 2 + 2 * Real.log ((y : ℝ) + 1)
-      ≤ Real.log y ^ 2 + 2 * Real.log y
+  have hb2 : Real.log ((y : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((y : ℝ) + 1)
+      ≤ Real.log y ^ (2 : ℕ) + 2 * Real.log y
         + (2 * Real.log ((y : ℝ) + 1) + 2) / y := by
     have h1 := log_succ_sub_log_le hy
     have h2 : 0 ≤ Real.log y :=
       Real.log_nonneg (by exact_mod_cast hy)
     have h3 : Real.log y ≤ Real.log ((y : ℝ) + 1) :=
       Real.log_le_log hy0 (by linarith)
-    have hkey : Real.log ((y : ℝ) + 1) ^ 2 + 2 * Real.log ((y : ℝ) + 1)
-        - (Real.log y ^ 2 + 2 * Real.log y)
+    have hkey : Real.log ((y : ℝ) + 1) ^ (2 : ℕ) + 2 * Real.log ((y : ℝ) + 1)
+        - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
         = (Real.log ((y : ℝ) + 1) - Real.log y)
           * (Real.log ((y : ℝ) + 1) + Real.log y + 2) := by
       ring

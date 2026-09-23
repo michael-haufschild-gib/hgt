@@ -68,9 +68,9 @@ theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ �
     ∀ (m : ℕ) (ρ : ℝ), 0 ≤ ρ → ρ < ρ₀ → ∀ s t : ℝ, |s| ≤ T → |t| ≤ T →
       ∀ z : ℂ, |z.im| ≤ ρ →
       ‖clockIterate V m s t z‖
-        ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (|s| ^ m * |t| ^ m)
-          / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
-  set K : ℝ := 4 + Mv * ρ₀ ^ 2 / 4 with hKdef
+        ≤ (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (|s| ^ m * |t| ^ m)
+          / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
+  set K : ℝ := 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 with hKdef
   have hK0 : (0 : ℝ) ≤ K := by rw [hKdef]; positivity
   intro m
   induction m with
@@ -97,7 +97,7 @@ theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ �
       ring
     have hfacpos : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
     set c : ℝ := K ^ m * (m : ℝ) ^ (2 * m)
-      / ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) with hcdef
+      / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - σ) ^ (2 * m)) with hcdef
     have hc0 : (0 : ℝ) ≤ c := by rw [hcdef]; positivity
     have hprev : ∀ s' t' : ℝ, |s'| ≤ T → |t'| ≤ T → ∀ w : ℂ, w ∈ imStrip σ →
         ‖clockIterate V m s' t' w‖ ≤ c * |s'| ^ m * |t'| ^ m := by
@@ -119,20 +119,20 @@ theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ �
         have hpos : (0 : ℝ) < ρ₀ - σ := by rw [hrem]; positivity
         calc ‖clockIterate V m s' t' w‖
             ≤ K ^ m * (m : ℝ) ^ (2 * m) * (|s'| ^ m * |t'| ^ m)
-              / ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) := hbase
+              / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - σ) ^ (2 * m)) := hbase
           _ = c * |s'| ^ m * |t'| ^ m := by
               rw [hcdef]
               field_simp
-    have hgap2 : (0 : ℝ) < (σ - ρ) ^ 2 := by positivity
+    have hgap2 : (0 : ℝ) < (σ - ρ) ^ (2 : ℕ) := by positivity
     have hσρle : σ - ρ ≤ ρ₀ := by rw [hgap]; linarith
-    have hsq : (σ - ρ) ^ 2 ≤ ρ₀ ^ 2 := by nlinarith [hρσ, hσρle]
-    have hg2ne : (σ - ρ) ^ 2 ≠ 0 := ne_of_gt hgap2
-    have hle : 4 / (σ - ρ) ^ 2 + Mv / 4 ≤ K / (σ - ρ) ^ 2 := by
+    have hsq : (σ - ρ) ^ (2 : ℕ) ≤ ρ₀ ^ (2 : ℕ) := by nlinarith [hρσ, hσρle]
+    have hg2ne : (σ - ρ) ^ (2 : ℕ) ≠ 0 := ne_of_gt hgap2
+    have hle : 4 / (σ - ρ) ^ (2 : ℕ) + Mv / 4 ≤ K / (σ - ρ) ^ (2 : ℕ) := by
       rw [le_div_iff₀ hgap2, add_mul, div_mul_cancel₀ _ hg2ne, hKdef]
       nlinarith [hMv0, hsq]
     have hstepbound : ∀ s' t' : ℝ, |s'| ≤ T → |t'| ≤ T →
         ‖clockStripStep (V s' t') (clockIterate V m s' t') z‖
-          ≤ K / (σ - ρ) ^ 2 * c * |s'| ^ m * |t'| ^ m := by
+          ≤ K / (σ - ρ) ^ (2 : ℕ) * c * |s'| ^ m * |t'| ^ m := by
       intro s' t' hs' ht'
       obtain ⟨holo, _⟩ := clockIterate_regular hV m
       have hwσ : DifferentiableOn ℂ (clockIterate V m s' t') (imStrip σ) :=
@@ -142,23 +142,23 @@ theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ �
       have hbase := norm_clockStripStep_le hρσ hMv0 hwσ (hprev s' t' hs' ht') hMvσ hz
       have hMw0 : (0 : ℝ) ≤ c * |s'| ^ m * |t'| ^ m := by positivity
       calc ‖clockStripStep (V s' t') (clockIterate V m s' t') z‖
-          ≤ (4 / (σ - ρ) ^ 2 + Mv / 4) * (c * |s'| ^ m * |t'| ^ m) := hbase
-        _ ≤ K / (σ - ρ) ^ 2 * (c * |s'| ^ m * |t'| ^ m) :=
+          ≤ (4 / (σ - ρ) ^ (2 : ℕ) + Mv / 4) * (c * |s'| ^ m * |t'| ^ m) := hbase
+        _ ≤ K / (σ - ρ) ^ (2 : ℕ) * (c * |s'| ^ m * |t'| ^ m) :=
             mul_le_mul_of_nonneg_right hle hMw0
-        _ = K / (σ - ρ) ^ 2 * c * |s'| ^ m * |t'| ^ m := by ring
+        _ = K / (σ - ρ) ^ (2 : ℕ) * c * |s'| ^ m * |t'| ^ m := by ring
     have hFc : Continuous fun p : ℝ × ℝ =>
         clockStripStep (V p.1 p.2) (clockIterate V m p.1 p.2) z :=
       continuous_clockStripStep_slice hV m (mem_imStrip.mpr (lt_of_le_of_lt hz hρ))
-    have hint := norm_iterated_integral_le_abs (m := m) (c := K / (σ - ρ) ^ 2 * c)
+    have hint := norm_iterated_integral_le_abs (m := m) (c := K / (σ - ρ) ^ (2 : ℕ) * c)
       (x := s) (y := t) (mul_nonneg (div_nonneg hK0 (sq_nonneg _)) hc0) hFc
       (fun s' hs' t' ht' => hstepbound s' t'
         (le_trans (abs_le_abs_of_mem_uIcc_zero hs') hsT)
         (le_trans (abs_le_abs_of_mem_uIcc_zero ht') htT))
-    have hloss : K / (σ - ρ) ^ 2 = K * ((m : ℝ) + 1) ^ 2 / (ρ₀ - ρ) ^ 2 := by
+    have hloss : K / (σ - ρ) ^ (2 : ℕ) = K * ((m : ℝ) + 1) ^ (2 : ℕ) / (ρ₀ - ρ) ^ (2 : ℕ) := by
       rw [hgap]
       field_simp
     have hcval : c = K ^ m * ((m : ℝ) + 1) ^ (2 * m)
-        / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
       rcases Nat.eq_zero_or_pos m with hm | hm
       · subst hm
         rw [hcdef]
@@ -169,27 +169,27 @@ theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ �
         have hratio := sq_pow_ratio_intermediate hG m
         rw [div_eq_div_iff (ne_of_gt hd1) (ne_of_gt hd2)] at hratio
         rw [hcdef, hrem, div_eq_div_iff (by positivity) (by positivity)]
-        calc K ^ m * (m : ℝ) ^ (2 * m) * ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m))
-            = K ^ m * (m.factorial : ℝ) ^ 2 * ((m : ℝ) ^ (2 * m) * (ρ₀ - ρ) ^ (2 * m)) := by
+        calc K ^ m * (m : ℝ) ^ (2 * m) * ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m))
+            = K ^ m * (m.factorial : ℝ) ^ (2 : ℕ) * ((m : ℝ) ^ (2 * m) * (ρ₀ - ρ) ^ (2 * m)) := by
               ring
-          _ = K ^ m * (m.factorial : ℝ) ^ 2
+          _ = K ^ m * (m.factorial : ℝ) ^ (2 : ℕ)
               * (((m : ℝ) + 1) ^ (2 * m)
                 * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by rw [hratio]
           _ = K ^ m * ((m : ℝ) + 1) ^ (2 * m)
-              * ((m.factorial : ℝ) ^ 2
+              * ((m.factorial : ℝ) ^ (2 : ℕ)
                 * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by ring
     have hident := ovsyannikov_step_identity (K := K) (G := ρ₀ - ρ) (x := |s|) (y := |t|) hG m
     have hcast : (((m + 1 : ℕ) : ℝ)) = (m : ℝ) + 1 := by push_cast; ring
     rw [hcast]
     calc ‖clockIterate V (m + 1) s t z‖
-        ≤ K / (σ - ρ) ^ 2 * c * (|s| ^ (m + 1) * |t| ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := hint
-      _ = K * ((m : ℝ) + 1) ^ 2 / (ρ₀ - ρ) ^ 2
+        ≤ K / (σ - ρ) ^ (2 : ℕ) * c * (|s| ^ (m + 1) * |t| ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := hint
+      _ = K * ((m : ℝ) + 1) ^ (2 : ℕ) / (ρ₀ - ρ) ^ (2 : ℕ)
             * (K ^ m * ((m : ℝ) + 1) ^ (2 * m)
-              / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)))
-            * (|s| ^ (m + 1) * |t| ^ (m + 1) / ((m : ℝ) + 1) ^ 2) := by
+              / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)))
+            * (|s| ^ (m + 1) * |t| ^ (m + 1) / ((m : ℝ) + 1) ^ (2 : ℕ)) := by
           rw [hloss, hcval]
           ring
       _ = K ^ (m + 1) * ((m : ℝ) + 1) ^ (2 * (m + 1)) * (|s| ^ (m + 1) * |t| ^ (m + 1))
-            / (((m + 1).factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * (m + 1))) := hident
+            / (((m + 1).factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * (m + 1))) := hident
 
 end GaloisForLFunctions.HTGeometry

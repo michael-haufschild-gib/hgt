@@ -41,7 +41,7 @@ theorem terminalPauliPhaseMatrix_mem_specialUnitary (t : ℝ) :
   funext x
   have hsq : Complex.normSq (terminalPauliPhaseEigenvalue t x) = 1 := by
     have hnorm := terminalPauliPhaseEigenvalue_norm t x
-    have hnormsq : ‖terminalPauliPhaseEigenvalue t x‖ ^ 2 = 1 := by
+    have hnormsq : ‖terminalPauliPhaseEigenvalue t x‖ ^ (2 : ℕ) = 1 := by
       rw [hnorm]
       norm_num
     rw [← Complex.normSq_eq_norm_sq] at hnormsq

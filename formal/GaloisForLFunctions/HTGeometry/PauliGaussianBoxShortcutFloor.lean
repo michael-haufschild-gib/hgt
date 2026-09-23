@@ -28,7 +28,7 @@ projective trace distance `ε/2` of where it started. -/
 theorem pureStateTraceDistance_pauliEnsembleOp_le (hn : 1 ≤ n) (hq : 1 ≤ q)
     (J : (Fin n → Option (Fin 3)) → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (hJ : ∀ P, |J P - pauliEnsembleCenter n P|
-      ≤ ε ^ 2 / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ)))
+      ≤ ε ^ (2 : ℕ) / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ)))
     (t : ℝ) :
     pureStateTraceDistance
         (selfAdjointPropagator (isSelfAdjoint_pauliEnsembleOp n q J) t
@@ -47,13 +47,13 @@ theorem pureStateTraceDistance_pauliEnsembleOp_le (hn : 1 ≤ n) (hq : 1 ≤ q)
       EuclideanSpace ℂ (Fin n → Bool))‖ = 1 := by simp
   have hΔ : (0 : ℝ) < 2 * pauliNormalization n q := by linarith
   have hVnorm : ‖pauliEnsembleOp n q J - diagCLM (zProfile n q)‖
-      ≤ pauliNormalization n q * ε ^ 2 / 16 :=
+      ≤ pauliNormalization n q * ε ^ (2 : ℕ) / 16 :=
     norm_pauliEnsembleOp_sub_center_le hn hq J ε hJ
   have hmain := pureStateTraceDistance_propagator_le_of_gap (ι := Fin n → Bool)
     (diagCLM (zProfile n q)) (pauliEnsembleOp n q J - diagCLM (zProfile n q)) h0 hV
     (EuclideanSpace.single (fun _ => false) (1 : ℂ)) hΦ
     (zProfile n q (fun _ => false)) (2 * pauliNormalization n q)
-    (pauliNormalization n q * ε ^ 2 / 16) hΔ (diagCLM_zProfile_single n q)
+    (pauliNormalization n q * ε ^ (2 : ℕ) / 16) hΔ (diagCLM_zProfile_single n q)
     (fun x => reApplyInnerSelf_zProfile_le hq x) hVnorm t
   have hadd : diagCLM (zProfile n q) + (pauliEnsembleOp n q J - diagCLM (zProfile n q))
       = pauliEnsembleOp n q J := by abel
@@ -63,8 +63,8 @@ theorem pureStateTraceDistance_pauliEnsembleOp_le (hn : 1 ≤ n) (hq : 1 ≤ q)
         (EuclideanSpace.single (fun _ => false) (1 : ℂ)) := by
     rw [selfAdjointPropagator_apply, selfAdjointPropagator_apply, hadd]
   rw [hgen] at hmain
-  have harg : 2 * (pauliNormalization n q * ε ^ 2 / 16) / (2 * pauliNormalization n q)
-      = (ε / 4) ^ 2 := by
+  have harg : 2 * (pauliNormalization n q * ε ^ (2 : ℕ) / 16) / (2 * pauliNormalization n q)
+      = (ε / 4) ^ (2 : ℕ) := by
     field_simp
     ring
   rw [harg, Real.sqrt_sq (by linarith : (0 : ℝ) ≤ ε / 4)] at hmain

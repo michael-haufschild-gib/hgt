@@ -36,7 +36,7 @@ theorem ccmRestrictedWeilCanonicalGroundHead_wallAffinePhaseSignedProducer_eq_gr
         (ccmRestrictedWeilCanonicalGroundHead a n) =
       ccmRestrictedWeilGroundEnergy a *
           ‖ccmArchimedeanFormToAperture a
-            (ccmRestrictedWeilCanonicalGroundHead a n)‖ ^ 2 +
+            (ccmRestrictedWeilCanonicalGroundHead a n)‖ ^ (2 : ℕ) +
         ccmRestrictedWeilCanonicalGroundHeadDefect a n := by
   rw [ccmRestrictedWeilActualHeadWallAffinePhaseSignedProducer_eq_gammaBoundaryAutocorrelationProducer,
     ccmRestrictedWeilCanonicalGroundHead_gammaBoundaryAutocorrelationProducer_eq_ground_add_tail]

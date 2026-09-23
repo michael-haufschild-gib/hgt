@@ -144,14 +144,14 @@ theorem eventually_mobiusDivisorLatePrimePartition_exceeds_diagonal (K : ℕ) (C
     rw [mobiusDivisorSelectionEnergy_empty]
     exact sum_nonneg (fun _ _ => sq_nonneg _)
   have hQbound : C*mobiusDivisorSelectionEnergy (4*N) ∅ ≤
-      (722*|C|)*(4*N:ℕ)^2 := by
+      (722*|C|)*(4*N:ℕ)^(2 : ℕ) := by
     have h1 := mul_le_mul_of_nonneg_right (le_abs_self C) hQ
     have h2 := mul_le_mul_of_nonneg_left (sum_mobiusDivisorDilationChannel_sq_le_quadratic (4*N))
       (abs_nonneg C)
     rw [← mobiusDivisorSelectionEnergy_empty] at h2
     nlinarith only [h1,h2]
   have hcap := mobiusDivisorLatePrimeMass_le_partition_capacity (4*N) owner P
-    ((722*|C|)*(4*N:ℕ)^2) hfree (fun i =>
+    ((722*|C|)*(4*N:ℕ)^(2 : ℕ)) hfree (fun i =>
       ⟨(hbad i).1.trans hQbound,(hbad i).2.trans hQbound⟩)
   rw [Fintype.card_fin,Real.sqrt_mul (by positivity),Real.sqrt_sq_eq_abs,
     abs_of_nonneg (Nat.cast_nonneg (α := ℝ) (4*N))] at hcap

@@ -193,7 +193,7 @@ theorem maximallyProjectiveEnergy_spectralEnsemble_smul_iff
         (isHermitian_spectralEnsembleMatrix hP (fun a => t * θ a)).eigenvalues
       ↔ MaximallyProjectiveEnergy (isHermitian_spectralEnsembleMatrix hP θ).eigenvalues := by
   have hsm : (spectralEnsembleMatrix P fun a => t * θ a)
-      = ((t : ℂ)) • spectralEnsembleMatrix P θ := spectralEnsembleMatrix_smul P t θ
+      = ((t : ℂ)) • spectralEnsembleMatrix P θ := spectralEnsembleMatrix_smul_shellFamilySimpleSpectrum P t θ
   have hherm : (((t : ℂ)) • spectralEnsembleMatrix P θ).IsHermitian := by
     rw [← hsm]
     exact isHermitian_spectralEnsembleMatrix hP _

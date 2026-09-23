@@ -101,8 +101,8 @@ theorem ccmWeilPoleCrossSlope_self_eq_error (a : SuzukiPositiveAperture) :
   rw [ccmWeilPrimeChamberWeight_eq_cumulatives]
   unfold ccmReciprocalMangoldtError
   rw [Real.sinh_eq,Real.cosh_eq]
-  have he : Real.exp (2*a.1)=Real.exp a.1^2 := by simpa using Real.exp_nat_mul a.1 2
-  have hm : Real.exp (-(2*a.1))=Real.exp (-a.1)^2 := by
+  have he : Real.exp (2*a.1)=Real.exp a.1^(2 : ℕ) := by simpa using Real.exp_nat_mul a.1 2
+  have hm : Real.exp (-(2*a.1))=Real.exp (-a.1)^(2 : ℕ) := by
     rw [show -(2*a.1)=2*(-a.1) by ring]
     simpa using Real.exp_nat_mul (-a.1) 2
   rw [he,hm]

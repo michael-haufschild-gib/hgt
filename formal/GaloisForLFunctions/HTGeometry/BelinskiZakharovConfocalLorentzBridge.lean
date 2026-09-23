@@ -28,7 +28,7 @@ theorem belinskiZakharov_flatKillingBlock :
 
 /-- The flat Killing quadratic form is space squared minus time squared. -/
 theorem belinskiZakharovKillingQuadratic_flat (v : Fin 2 → ℝ) :
-    belinskiZakharovKillingQuadratic !![-1, 0; 0, 1] v = v 1 ^ 2 - v 0 ^ 2 := by
+    belinskiZakharovKillingQuadratic !![-1, 0; 0, 1] v = v 1 ^ (2 : ℕ) - v 0 ^ (2 : ℕ) := by
   simp [belinskiZakharovKillingQuadratic, dotProduct, Matrix.mulVec, Fin.sum_univ_two]
   ring
 
@@ -38,16 +38,16 @@ theorem belinskiZakharovFlatKillingCone_iff (v : Fin 2 → ℝ) :
       belinskiZakharovKillingQuadratic
         (kerrNewmanKillingBlock 0 0 0 1 (Real.pi / 2)) v ≤ 0 := by
   rw [belinskiZakharov_flatKillingBlock, belinskiZakharovKillingQuadratic_flat]
-  change |v 1| ≤ |v 0| ↔ v 1 ^ 2 - v 0 ^ 2 ≤ 0
+  change |v 1| ≤ |v 0| ↔ v 1 ^ (2 : ℕ) - v 0 ^ (2 : ℕ) ≤ 0
   constructor
   · intro h
     have htime : 0 ≤ |v 0| := abs_nonneg _
-    have hsq : v 1 ^ 2 ≤ v 0 ^ 2 := by
+    have hsq : v 1 ^ (2 : ℕ) ≤ v 0 ^ (2 : ℕ) := by
       rw [sq_le_sq]
       simpa only [abs_of_nonneg htime] using h
     linarith
   · intro h
-    have hsq : v 1 ^ 2 ≤ v 0 ^ 2 := by linarith
+    have hsq : v 1 ^ (2 : ℕ) ≤ v 0 ^ (2 : ℕ) := by linarith
     rwa [sq_le_sq] at hsq
 
 /-- A BZ congruence transports the flat Killing causal cone by its transposed dressing map. -/

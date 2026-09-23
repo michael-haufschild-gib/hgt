@@ -31,29 +31,29 @@ noncomputable section
 def chebyshevAnharmonicWTwo (s : ℂ) : ℂ := 1 / (1 - s)
 
 theorem hasDerivAt_chebyshevAnharmonicW {s : ℂ} (hs0 : s ≠ 0) :
-    HasDerivAt chebyshevAnharmonicW (1 / s ^ 2) s := by
+    HasDerivAt chebyshevAnharmonicW (1 / s ^ (2 : ℕ)) s := by
   have hnum : HasDerivAt (fun z : ℂ => z - 1) 1 s := (hasDerivAt_id s).sub_const 1
   have hden : HasDerivAt (fun z : ℂ => z) 1 s := hasDerivAt_id s
   have h : HasDerivAt (fun z : ℂ => (z - 1) / z)
-      ((1 * s - (s - 1) * 1) / s ^ 2) s := hnum.div hden hs0
-  have heq : (1 * s - (s - 1) * 1) / s ^ 2 = 1 / s ^ 2 := by ring
+      ((1 * s - (s - 1) * 1) / s ^ (2 : ℕ)) s := hnum.div hden hs0
+  have heq : (1 * s - (s - 1) * 1) / s ^ (2 : ℕ) = 1 / s ^ (2 : ℕ) := by ring
   rw [heq] at h
-  change HasDerivAt (fun z : ℂ => (z - 1) / z) (1 / s ^ 2) s
+  change HasDerivAt (fun z : ℂ => (z - 1) / z) (1 / s ^ (2 : ℕ)) s
   exact h
 
 theorem hasDerivAt_chebyshevAnharmonicWTwo {s : ℂ} (hs1 : s ≠ 1) :
-    HasDerivAt chebyshevAnharmonicWTwo (1 / (1 - s) ^ 2) s := by
+    HasDerivAt chebyshevAnharmonicWTwo (1 / (1 - s) ^ (2 : ℕ)) s := by
   have hden : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr (Ne.symm hs1)
   have hnum : HasDerivAt (fun _ : ℂ => (1 : ℂ)) 0 s :=
     hasDerivAt_const (x := s) (c := (1 : ℂ))
   have hden' : HasDerivAt (fun z : ℂ => 1 - z) (-1) s :=
     HasDerivAt.const_sub (1 : ℂ) (hasDerivAt_id s)
   have h : HasDerivAt (fun z : ℂ => 1 / (1 - z))
-      ((0 * (1 - s) - 1 * (-1)) / (1 - s) ^ 2) s := hnum.div hden' hden
-  have heq : (0 * (1 - s) - 1 * (-1)) / (1 - s) ^ 2 =
-      1 / (1 - s) ^ 2 := by ring
+      ((0 * (1 - s) - 1 * (-1)) / (1 - s) ^ (2 : ℕ)) s := hnum.div hden' hden
+  have heq : (0 * (1 - s) - 1 * (-1)) / (1 - s) ^ (2 : ℕ) =
+      1 / (1 - s) ^ (2 : ℕ) := by ring
   rw [heq] at h
-  change HasDerivAt (fun z : ℂ => 1 / (1 - z)) (1 / (1 - s) ^ 2) s
+  change HasDerivAt (fun z : ℂ => 1 / (1 - z)) (1 / (1 - s) ^ (2 : ℕ)) s
   exact h
 
 /-- Product of completed Xi over one oriented cyclic anharmonic fiber. -/
@@ -62,11 +62,11 @@ def chebyshevXiCyclicOrbitProduct (s : ℂ) : ℂ :=
 
 /-- Jacobian of the invariant quotient coordinate. -/
 def chebyshevAnharmonicQPrime (s : ℂ) : ℂ :=
-  1 + 1 / s ^ 2 + 1 / (s - 1) ^ 2
+  1 + 1 / s ^ (2 : ℕ) + 1 / (s - 1) ^ (2 : ℕ)
 
 theorem chebyshevAnharmonicQPrime_w
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
-    chebyshevAnharmonicQPrime (chebyshevAnharmonicW s) * (1 / s ^ 2) =
+    chebyshevAnharmonicQPrime (chebyshevAnharmonicW s) * (1 / s ^ (2 : ℕ)) =
       chebyshevAnharmonicQPrime s := by
   simp only [chebyshevAnharmonicQPrime, chebyshevAnharmonicW]
   field_simp [hs0, hs1]
@@ -74,7 +74,7 @@ theorem chebyshevAnharmonicQPrime_w
 
 theorem chebyshevAnharmonicQPrime_wTwo
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
-    chebyshevAnharmonicQPrime (chebyshevAnharmonicWTwo s) * (1 / (1 - s) ^ 2) =
+    chebyshevAnharmonicQPrime (chebyshevAnharmonicWTwo s) * (1 / (1 - s) ^ (2 : ℕ)) =
       chebyshevAnharmonicQPrime s := by
   simp only [chebyshevAnharmonicQPrime, chebyshevAnharmonicWTwo]
   field_simp [hs0, hs1]
@@ -83,8 +83,8 @@ theorem chebyshevAnharmonicQPrime_wTwo
 theorem chebyshevAnharmonicQPrime_sigma (s : ℂ) :
     chebyshevAnharmonicQPrime (chebyshevAnharmonicSigma s) =
       chebyshevAnharmonicQPrime s := by
-  have hleft : (1 - s) ^ 2 = (s - 1) ^ 2 := by ring
-  have hright : (1 - s - 1) ^ 2 = s ^ 2 := by ring
+  have hleft : (1 - s) ^ (2 : ℕ) = (s - 1) ^ (2 : ℕ) := by ring
+  have hright : (1 - s - 1) ^ (2 : ℕ) = s ^ (2 : ℕ) := by ring
   simp only [chebyshevAnharmonicQPrime, chebyshevAnharmonicSigma, hleft, hright]
   ring
 
@@ -125,7 +125,7 @@ theorem chebyshevXiQLogDeriv_sigma (s : ℂ) :
     chebyshevXiQLogDeriv (chebyshevAnharmonicSigma s) = -chebyshevXiQLogDeriv s := by
   simp only [chebyshevXiQLogDeriv]
   rw [show logDeriv xi (chebyshevAnharmonicSigma s) = -logDeriv xi s by
-    exact logDeriv_xi_one_sub s]
+    exact logDeriv_xi_one_sub_xiLogDerivSymmetry s]
   rw [chebyshevAnharmonicQPrime_sigma]
   ring
 
@@ -182,8 +182,8 @@ nonzero and the current uses Xi data only at the three real cyclic-orbit points.
 theorem logDeriv_chebyshevXiCyclicOrbitProduct_of_two_lt {s : ℝ} (hs : 2 < s) :
     logDeriv chebyshevXiCyclicOrbitProduct (s : ℂ) =
       logDeriv xi (s : ℂ) +
-        logDeriv xi (chebyshevAnharmonicW (s : ℂ)) / (s : ℂ) ^ 2 +
-        logDeriv xi (chebyshevAnharmonicWTwo (s : ℂ)) / (1 - (s : ℂ)) ^ 2 := by
+        logDeriv xi (chebyshevAnharmonicW (s : ℂ)) / (s : ℂ) ^ (2 : ℕ) +
+        logDeriv xi (chebyshevAnharmonicWTwo (s : ℂ)) / (1 - (s : ℂ)) ^ (2 : ℕ) := by
   have hs0R : s ≠ 0 := by linarith
   have hs1R : s ≠ 1 := by linarith
   have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs0R
@@ -227,7 +227,7 @@ theorem logDeriv_chebyshevXiCyclicOrbitProduct_of_two_lt {s : ℝ} (hs : 2 < s) 
   simp only [div_eq_mul_inv, one_mul]
 
 def chebyshevAnharmonicQPrimeReal (s : ℝ) : ℝ :=
-  1 + 1 / s ^ 2 + 1 / (s - 1) ^ 2
+  1 + 1 / s ^ (2 : ℕ) + 1 / (s - 1) ^ (2 : ℕ)
 
 theorem chebyshevAnharmonicQPrime_ofReal (s : ℝ) :
     chebyshevAnharmonicQPrime (s : ℂ) = (chebyshevAnharmonicQPrimeReal s : ℂ) := by
@@ -237,8 +237,8 @@ theorem chebyshevAnharmonicQPrime_ofReal (s : ℝ) :
 theorem chebyshevAnharmonicQPrimeReal_pos (s : ℝ) :
     0 < chebyshevAnharmonicQPrimeReal s := by
   simp only [chebyshevAnharmonicQPrimeReal]
-  have h₁ : 0 ≤ 1 / s ^ 2 := by positivity
-  have h₂ : 0 ≤ 1 / (s - 1) ^ 2 := by positivity
+  have h₁ : 0 ≤ 1 / s ^ (2 : ℕ) := by positivity
+  have h₂ : 0 ≤ 1 / (s - 1) ^ (2 : ℕ) := by positivity
   linarith
 
 theorem chebyshevAnharmonicQPrime_ofReal_ne_zero (s : ℝ) :
@@ -269,7 +269,7 @@ theorem logDeriv_chebyshevXiCyclicOrbitProduct_div_qPrime_of_two_lt
   field_simp [hq0, hs0, sub_ne_zero.mpr (Ne.symm hs1)]
 
 def chebyshevAnharmonicFiberPolynomial (Q z : ℂ) : ℂ :=
-  2 * z ^ 3 - (3 + 2 * Q) * z ^ 2 + (-3 + 2 * Q) * z + 2
+  2 * z ^ (3 : ℕ) - (3 + 2 * Q) * z ^ (2 : ℕ) + (-3 + 2 * Q) * z + 2
 
 theorem chebyshevAnharmonicFiberPolynomial_eq_zero_iff
     {Q s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
@@ -321,7 +321,7 @@ theorem chebyshevAnharmonicQ_fiber_iff
 /-- Squaring the quotient glues the cyclic fiber to its reflected cyclic fiber. -/
 theorem chebyshevAnharmonicQ_sq_fiber_iff
     {s z : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
-    chebyshevAnharmonicQ z ^ 2 = chebyshevAnharmonicQ s ^ 2 ↔
+    chebyshevAnharmonicQ z ^ (2 : ℕ) = chebyshevAnharmonicQ s ^ (2 : ℕ) ↔
       z = s ∨ z = chebyshevAnharmonicW s ∨ z = chebyshevAnharmonicWTwo s ∨
       z = chebyshevAnharmonicSigma s ∨
       z = chebyshevAnharmonicW (chebyshevAnharmonicSigma s) ∨
@@ -343,7 +343,7 @@ theorem chebyshevAnharmonicQ_sq_fiber_iff
         (chebyshevAnharmonicQ z - chebyshevAnharmonicQ s) *
           (chebyshevAnharmonicQ z + chebyshevAnharmonicQ s) = 0 := by
       calc
-        _ = chebyshevAnharmonicQ z ^ 2 - chebyshevAnharmonicQ s ^ 2 := by ring
+        _ = chebyshevAnharmonicQ z ^ (2 : ℕ) - chebyshevAnharmonicQ s ^ (2 : ℕ) := by ring
         _ = 0 := sub_eq_zero.mpr hsq
     rcases mul_eq_zero.mp hprod with heq | heq
     · rcases (chebyshevAnharmonicQ_fiber_iff hs0 hs1 hz0 hz1).mp
@@ -411,20 +411,20 @@ theorem chebyshevAnharmonic_realOrbit_ranges {s : ℝ} (hs : 2 < s) :
     · exact div_neg_of_neg_of_pos (by norm_num) hs10
 
 def chebyshevTraceRealScanCenter (Q : ℝ) : ℝ :=
-  (Real.sqrt (4 * Q ^ 2 + 27) - Real.sqrt 27) /
-    (Real.sqrt (4 * Q ^ 2 + 27) + Real.sqrt 27)
+  (Real.sqrt (4 * Q ^ (2 : ℕ) + 27) - Real.sqrt 27) /
+    (Real.sqrt (4 * Q ^ (2 : ℕ) + 27) + Real.sqrt 27)
 
 theorem chebyshevTraceRealScanCenter_mem_unitInterval {Q : ℝ} (hQ : 0 < Q) :
     0 < chebyshevTraceRealScanCenter Q ∧ chebyshevTraceRealScanCenter Q < 1 := by
-  let r := Real.sqrt (4 * Q ^ 2 + 27)
+  let r := Real.sqrt (4 * Q ^ (2 : ℕ) + 27)
   let d := Real.sqrt 27
   have hd : 0 < d := by dsimp [d]; positivity
   have hr0 : 0 ≤ r := Real.sqrt_nonneg _
-  have hdsq : d ^ 2 = 27 := by
+  have hdsq : d ^ (2 : ℕ) = 27 := by
     dsimp [d]
     rw [sq_sqrt]
     norm_num
-  have hrsq : r ^ 2 = 4 * Q ^ 2 + 27 := by
+  have hrsq : r ^ (2 : ℕ) = 4 * Q ^ (2 : ℕ) + 27 := by
     dsimp [r]
     rw [sq_sqrt]
     positivity
@@ -439,15 +439,15 @@ theorem chebyshevTraceRealScanCenter_mem_unitInterval {Q : ℝ} (hQ : 0 < Q) :
 
 theorem chebyshevTraceRealScanCenter_koebe {Q : ℝ} (hQ : 0 < Q) :
     27 * chebyshevTraceRealScanCenter Q /
-        (1 - chebyshevTraceRealScanCenter Q) ^ 2 = Q ^ 2 := by
-  let r := Real.sqrt (4 * Q ^ 2 + 27)
+        (1 - chebyshevTraceRealScanCenter Q) ^ (2 : ℕ) = Q ^ (2 : ℕ) := by
+  let r := Real.sqrt (4 * Q ^ (2 : ℕ) + 27)
   let d := Real.sqrt 27
   have hd : 0 < d := by dsimp [d]; positivity
-  have hdsq : d ^ 2 = 27 := by
+  have hdsq : d ^ (2 : ℕ) = 27 := by
     dsimp [d]
     rw [sq_sqrt]
     norm_num
-  have hrsq : r ^ 2 = 4 * Q ^ 2 + 27 := by
+  have hrsq : r ^ (2 : ℕ) = 4 * Q ^ (2 : ℕ) + 27 := by
     dsimp [r]
     rw [sq_sqrt]
     positivity
@@ -457,7 +457,7 @@ theorem chebyshevTraceRealScanCenter_koebe {Q : ℝ} (hQ : 0 < Q) :
     field_simp [hden]
     ring
   change 27 * ((r - d) / (r + d)) /
-      (1 - (r - d) / (r + d)) ^ 2 = Q ^ 2
+      (1 - (r - d) / (r + d)) ^ (2 : ℕ) = Q ^ (2 : ℕ)
   rw [honeq]
   field_simp [hden, ne_of_gt hd]
   nlinarith
@@ -469,7 +469,7 @@ theorem chebyshevAnharmonic_movingScanCenter_geometry {s : ℝ} (hs : 2 < s) :
     0 < chebyshevAnharmonicMovingScanCenter s ∧
       chebyshevAnharmonicMovingScanCenter s < 1 ∧
       chebyshevTraceKoebeMap (chebyshevAnharmonicMovingScanCenter s : ℂ) =
-        chebyshevAnharmonicQ (s : ℂ) ^ 2 := by
+        chebyshevAnharmonicQ (s : ℂ) ^ (2 : ℕ) := by
   have hQ := chebyshevAnharmonicQReal_pos hs
   obtain ⟨ha0, ha1⟩ := chebyshevTraceRealScanCenter_mem_unitInterval hQ
   refine ⟨ha0, ha1, ?_⟩

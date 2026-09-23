@@ -103,7 +103,7 @@ theorem thermalProjectiveCofinalSection_tendsto_atTop_of_not_riemannHypothesis
     have hzero : xiThermalProjectiveMoment 1 = 0 := by
       rw [xiThermalProjectiveMoment]
       have hfun : (fun q : XiZeroCopy => xiThermalNode q *
-          xiEndpointProjectiveReflectionDisplacement q ^ 1) = 0 := by
+          xiEndpointProjectiveReflectionDisplacement q ^ (1 : ℕ)) = 0 := by
         funext q
         have hd : xiEndpointProjectiveReflectionDisplacement q = 0 :=
           le_antisymm (h q) (xiEndpointProjectiveReflectionDisplacement_nonneg q)

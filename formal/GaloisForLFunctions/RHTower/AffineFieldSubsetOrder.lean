@@ -92,19 +92,19 @@ omit [DecidableEq α] in
 theorem affineField_inner_nonneg_of_transverse_product (I : Finset ι) (A D : ι → ℝ) (t u : ℝ)
     (htrans : 0≤(∑ i∈I,(A i+t*D i)*D i)*(∑ i∈I,(A i+u*D i)*D i)) :
     0≤∑ i∈I,(A i+t*D i)*(A i+u*D i) := by
-  let H := ∑ i∈I,(A i)^2
+  let H := ∑ i∈I,(A i)^(2 : ℕ)
   let C := ∑ i∈I,A i*D i
-  let Q := ∑ i∈I,(D i)^2
+  let Q := ∑ i∈I,(D i)^(2 : ℕ)
   have hH : 0≤H := sum_nonneg (fun i _ => sq_nonneg _)
   have hQ : 0≤Q := sum_nonneg (fun i _ => sq_nonneg _)
-  have hc : C^2≤H*Q := Finset.sum_mul_sq_le_sq_mul_sq I A D
+  have hc : C^(2 : ℕ)≤H*Q := Finset.sum_mul_sq_le_sq_mul_sq I A D
   have hproj (v : ℝ) : (∑ i∈I,(A i+v*D i)*D i)=C+v*Q := by
     calc
-      _ = ∑ i∈I,(A i*D i+v*(D i)^2) := sum_congr rfl (fun i _ => by ring)
+      _ = ∑ i∈I,(A i*D i+v*(D i)^(2 : ℕ)) := sum_congr rfl (fun i _ => by ring)
       _ = _ := by rw [sum_add_distrib,← mul_sum]
   have hgram : (∑ i∈I,(A i+t*D i)*(A i+u*D i))=H+(t+u)*C+t*u*Q := by
     calc
-      _ = ∑ i∈I,((A i)^2+(t+u)*(A i*D i)+t*u*(D i)^2) :=
+      _ = ∑ i∈I,((A i)^(2 : ℕ)+(t+u)*(A i*D i)+t*u*(D i)^(2 : ℕ)) :=
         sum_congr rfl (fun i _ => by ring)
       _ = _ := by rw [sum_add_distrib,sum_add_distrib,← mul_sum,← mul_sum]
   rw [hproj,hproj] at htrans

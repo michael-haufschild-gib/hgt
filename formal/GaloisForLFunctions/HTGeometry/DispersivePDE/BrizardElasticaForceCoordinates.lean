@@ -22,7 +22,7 @@ noncomputable def verticalTangentCoefficient
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (E : CenteredElasticaNormalization V) (s : ℝ) : ℝ :=
   normalizedForceScale E *
-    (-(E.frame.geometry.curvature s ^ 2 + E.frame.geometry.lagrange s))
+    (-(E.frame.geometry.curvature s ^ (2 : ℕ) + E.frame.geometry.lagrange s))
 
 /-- Normal coefficient `B` of the normalized variational force. -/
 noncomputable def verticalNormalCoefficient
@@ -43,8 +43,8 @@ theorem verticalTangentCoefficient_eq
     (E : CenteredElasticaNormalization V) (s : ℝ) :
     verticalTangentCoefficient E s =
       normalizedForceScale E *
-        (E.frame.geometry.curvature s ^ 2 +
-          E.gamma ^ 2 * E.frame.geometry.curvature 0 ^ 2 / 2) / 2 := by
+        (E.frame.geometry.curvature s ^ (2 : ℕ) +
+          E.gamma ^ (2 : ℕ) * E.frame.geometry.curvature 0 ^ (2 : ℕ) / 2) / 2 := by
   rw [verticalTangentCoefficient,
     stationaryElastica_lagrange_eq E.frame.geometry s, E.multiplier_selected]
   ring
@@ -63,7 +63,7 @@ theorem verticalBinormalCoefficient_eq
     (E : CenteredElasticaNormalization V) (s : ℝ) :
     verticalBinormalCoefficient E s =
       normalizedForceScale E *
-        (E.frame.geometry.curvature 0 ^ 2 * E.frame.geometry.torsion 0 /
+        (E.frame.geometry.curvature 0 ^ (2 : ℕ) * E.frame.geometry.torsion 0 /
           E.frame.geometry.curvature s) := by
   rw [verticalBinormalCoefficient,
     stationaryElastica_torsion_eq E.frame.geometry s]
@@ -83,7 +83,7 @@ theorem elasticaVerticalAxis_eq_frenetExpansion
       (E.frame.geometry.curvature₁ s • E.frame.geometry.normal s +
         (E.frame.geometry.curvature s * E.frame.geometry.torsion s) •
           E.frame.geometry.binormal s -
-        (E.frame.geometry.curvature s ^ 2 + E.frame.geometry.lagrange s) •
+        (E.frame.geometry.curvature s ^ (2 : ℕ) + E.frame.geometry.lagrange s) •
           E.frame.geometry.tangent s) = _
   rw [verticalTangentCoefficient, verticalNormalCoefficient,
     verticalBinormalCoefficient]
@@ -130,9 +130,9 @@ theorem inner_verticalAxis_binormal
 theorem verticalCoefficients_unitSphere
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (E : CenteredElasticaNormalization V) (s : ℝ) :
-    verticalTangentCoefficient E s ^ 2 +
-        verticalNormalCoefficient E s ^ 2 +
-        verticalBinormalCoefficient E s ^ 2 = 1 := by
+    verticalTangentCoefficient E s ^ (2 : ℕ) +
+        verticalNormalCoefficient E s ^ (2 : ℕ) +
+        verticalBinormalCoefficient E s ^ (2 : ℕ) = 1 := by
   have hsq := elasticaForce_norm_sq E.frame s
   have hconst := congrArg norm
     (stationaryElasticaForce_constant E.frame.geometry s)
@@ -140,16 +140,16 @@ theorem verticalCoefficients_unitSphere
   rw [verticalTangentCoefficient, verticalNormalCoefficient,
     verticalBinormalCoefficient, normalizedForceScale]
   calc
-    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ 2 *
-        (E.frame.geometry.curvature₁ s ^ 2 +
-          (E.frame.geometry.curvature s * E.frame.geometry.torsion s) ^ 2 +
-          (E.frame.geometry.curvature s ^ 2 + E.frame.geometry.lagrange s) ^ 2) := by
+    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ (2 : ℕ) *
+        (E.frame.geometry.curvature₁ s ^ (2 : ℕ) +
+          (E.frame.geometry.curvature s * E.frame.geometry.torsion s) ^ (2 : ℕ) +
+          (E.frame.geometry.curvature s ^ (2 : ℕ) + E.frame.geometry.lagrange s) ^ (2 : ℕ)) := by
       ring
-    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ 2 *
-        ‖elasticaForce E.frame.geometry.toFrenetElasticaData s‖ ^ 2 := by
+    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ (2 : ℕ) *
+        ‖elasticaForce E.frame.geometry.toFrenetElasticaData s‖ ^ (2 : ℕ) := by
       rw [hsq]
-    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ 2 *
-        ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ 2 := by
+    _ = ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖⁻¹ ^ (2 : ℕ) *
+        ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ (2 : ℕ) := by
       rw [hconst]
     _ = 1 := by
       field_simp [ne_of_gt hpos]

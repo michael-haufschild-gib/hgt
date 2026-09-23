@@ -22,12 +22,12 @@ noncomputable section
 
 /-- Cubic shifted harmonic tail arising from the order-two differentiated digamma recurrence. -/
 def shiftedHarmonicCubeSum (n : ℕ) (z : ℂ) : ℂ :=
-  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ 3)⁻¹
+  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ (3 : ℕ))⁻¹
 
 theorem iteratedDeriv_two_digamma_neg_nat_add_of_ne_int (z : ℂ)
     (hz : ∀ k : ℤ, z ≠ (k : ℂ)) (n : ℕ) :
     iteratedDeriv 2 Complex.digamma (-(n : ℂ) + z) =
-      iteratedDeriv 2 Complex.digamma (1 + z) - 2 * z⁻¹ ^ 3 +
+      iteratedDeriv 2 Complex.digamma (1 + z) - 2 * z⁻¹ ^ (3 : ℕ) +
         2 * shiftedHarmonicCubeSum n z := by
   have h := iteratedDeriv_digamma_neg_nat_add_of_ne_int 2 z hz n
   simp only [shiftedHarmonicCubeSum, shiftedHarmonicPowerSum, Nat.factorial, inv_pow] at h ⊢
@@ -38,12 +38,12 @@ theorem norm_shiftedHarmonicCubeSum_le {z : ℂ}
     (hz : ‖z‖ ≤ 1 / 2) (n : ℕ) :
     ‖shiftedHarmonicCubeSum n z‖ ≤ 8 * (harmonic n : ℝ) := by
   simpa [shiftedHarmonicCubeSum, shiftedHarmonicPowerSum,
-    show ((2 : ℝ)) ^ 3 = 8 from by norm_num] using
+    show ((2 : ℝ)) ^ (3 : ℕ) = 8 from by norm_num] using
     norm_shiftedHarmonicPowerSum_le hz (p := 3) (by norm_num) n
 
 /-- The order-two polygamma in the factorial microscope coordinates. -/
 def gammaFactorialScaledSecondPolygamma (n : ℕ) (x : ℂ) : ℂ :=
-  reciprocalGammaFactorialScale n ^ 3 *
+  reciprocalGammaFactorialScale n ^ (3 : ℕ) *
     iteratedDeriv 2 Complex.digamma
       (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
 
@@ -85,7 +85,7 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
     Tendsto (fun n : ℕ =>
       (gammaFactorialScaledPolygamma (m + 1) n x -
           (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
-        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
+        gammaHarmonicMicroscopeScale n ^ (2 : ℕ)) atTop (𝓝 0) := by
   let s : ℕ → ℂ := reciprocalGammaFactorialScale
   let z : ℕ → ℂ := fun n => s n * x
   have hs : Tendsto s atTop (𝓝 0) := tendsto_reciprocalGammaFactorialScale_zero
@@ -103,20 +103,20 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
     (analyticAt_iteratedDeriv_of_analyticAt (analyticAt_digamma_of_offPoles hOff1)
       (m + 1)).continuousAt.tendsto.comp hinput
   have hlocal : Tendsto (fun n : ℕ =>
-      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
         iteratedDeriv (m + 1) Complex.digamma (1 + z n)) atTop (𝓝 0) := by
     simpa using
       (tendsto_scale_pow_mul_inv_harmonic_pow m (by norm_num : 0 < 2)).mul hpsi
   have hsmall : ∀ᶠ n : ℕ in atTop, ‖z n‖ ≤ 1 / 2 :=
     (hz.norm.eventually_lt_const (by norm_num)).mono fun _ h => h.le
   have hsum : Tendsto (fun n : ℕ =>
-      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
         ((((m + 1).factorial : ℕ) : ℂ) *
           shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     have hmajor : Tendsto (fun n : ℕ =>
         ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)) *
-          ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ 1‖) atTop (𝓝 0) := by
+          ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ (1 : ℕ)‖) atTop (𝓝 0) := by
       simpa using
         ((tendsto_scale_pow_mul_inv_harmonic_pow m (by norm_num : 0 < 1)).norm.const_mul
           ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)))
@@ -133,14 +133,14 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
     rw [norm_mul, norm_mul, norm_mul, norm_pow, norm_pow, hinvnorm]
     simp only [Complex.norm_natCast]
     calc
-      ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ 2 *
+      ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ (2 : ℕ) *
           ((((m + 1).factorial : ℕ) : ℝ) *
             ‖shiftedHarmonicPowerSum (m + 2) n (z n)‖) ≤
-        ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ 2 *
+        ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ (2 : ℕ) *
           ((((m + 1).factorial : ℕ) : ℝ) *
             (2 ^ (m + 2) * (harmonic n : ℝ))) := by gcongr
       _ = ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)) *
-            ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ 1‖ := by
+            ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ (1 : ℕ)‖ := by
         rw [norm_mul, norm_pow, norm_pow, hinvnorm]
         field_simp
   have hregular : ∀ᶠ n : ℕ in atTop, ∀ j : ℤ, z n ≠ (j : ℂ) := by
@@ -155,8 +155,8 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
   have heq : ∀ᶠ n : ℕ in atTop,
       (gammaFactorialScaledPolygamma (m + 1) n x -
             (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
-          gammaHarmonicMicroscopeScale n ^ 2 =
-        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+          gammaHarmonicMicroscopeScale n ^ (2 : ℕ) =
+        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
           (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
             (((m + 1).factorial : ℕ) : ℂ) *
               shiftedHarmonicPowerSum (m + 2) n (z n)) := by
@@ -186,7 +186,7 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
     change (s n ^ (m + 1 + 1) *
         iteratedDeriv (m + 1) Complex.digamma (-(n : ℂ) + z n) -
         (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
-          (s n * (harmonic n : ℂ)) ^ 2 = _
+          (s n * (harmonic n : ℂ)) ^ (2 : ℕ) = _
     rw [hformula]
     have hnum : s n ^ (m + 1 + 1) *
           (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
@@ -205,14 +205,14 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
     rw [hnum, pow_add]
     field_simp
   have hcombined : Tendsto (fun n : ℕ =>
-      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
         (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
           (((m + 1).factorial : ℕ) : ℂ) *
             shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
     have h : Tendsto (fun n : ℕ =>
-        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
             iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
-          (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+          (s n ^ m * (harmonic n : ℂ)⁻¹ ^ (2 : ℕ)) *
             ((((m + 1).factorial : ℕ) : ℂ) *
               shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
       simpa using hlocal.add hsum
@@ -223,8 +223,8 @@ theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ
 theorem tendsto_gammaFactorialScaledTrigamma_second_harmonic
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
-      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
-        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
+      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ (2 : ℕ)) /
+        gammaHarmonicMicroscopeScale n ^ (2 : ℕ)) atTop (𝓝 0) := by
   have h := tendsto_gammaFactorialScaledPolygamma_second_harmonic 0 hx
   simpa [gammaFactorialScaledTrigamma_eq_polygamma] using h
 
@@ -232,8 +232,8 @@ theorem tendsto_gammaFactorialScaledTrigamma_second_harmonic
 theorem tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
-      (gammaFactorialScaledSecondPolygamma n x - 2 * (-x)⁻¹ ^ 3) /
-        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
+      (gammaFactorialScaledSecondPolygamma n x - 2 * (-x)⁻¹ ^ (3 : ℕ)) /
+        gammaHarmonicMicroscopeScale n ^ (2 : ℕ)) atTop (𝓝 0) := by
   have h := tendsto_gammaFactorialScaledPolygamma_second_harmonic 1 hx
   refine h.congr fun n => ?_
   rw [gammaFactorialScaledSecondPolygamma_eq_polygamma, inv_neg]
@@ -244,18 +244,18 @@ theorem tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic
 def gammaFactorialThirdJetProjectiveDefect (n : ℕ) (x : ℂ) : ℂ :=
   2 * iteratedDeriv 1 (factorialBlowUpZoom Complex.Gamma n) x *
       iteratedDeriv 3 (factorialBlowUpZoom Complex.Gamma n) x -
-    3 * iteratedDeriv 2 (factorialBlowUpZoom Complex.Gamma n) x ^ 2
+    3 * iteratedDeriv 2 (factorialBlowUpZoom Complex.Gamma n) x ^ (2 : ℕ)
 
 theorem gammaFactorialThirdJetProjectiveDefect_eq
     (n : ℕ) (x : ℂ)
     (hpole : ∀ k : ℕ,
       -(n : ℂ) + reciprocalGammaFactorialScale n * x ≠ -(k : ℂ)) :
     gammaFactorialThirdJetProjectiveDefect n x =
-      factorialBlowUpZoom Complex.Gamma n x ^ 2 *
+      factorialBlowUpZoom Complex.Gamma n x ^ (2 : ℕ) *
         (2 * gammaFactorialScaledDigamma n x *
             gammaFactorialScaledSecondPolygamma n x -
-          3 * gammaFactorialScaledTrigamma n x ^ 2 -
-          gammaFactorialScaledDigamma n x ^ 4) := by
+          3 * gammaFactorialScaledTrigamma n x ^ (2 : ℕ) -
+          gammaFactorialScaledDigamma n x ^ (4 : ℕ)) := by
   let w : ℂ := -(n : ℂ) + reciprocalGammaFactorialScale n * x
   have hBell2 := iteratedDeriv_two_Gamma_eq_logDeriv w hpole
   have hBell3 := iteratedDeriv_three_Gamma_eq_logDeriv w hpole
@@ -293,7 +293,7 @@ theorem tendsto_gammaFactorialThirdJetProjectiveDefect_div_harmonicScale_sq
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
       gammaFactorialThirdJetProjectiveDefect n x /
-        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 (-6 / x ^ 4)) := by
+        gammaHarmonicMicroscopeScale n ^ (2 : ℕ)) atTop (𝓝 (-6 / x ^ (4 : ℕ))) := by
   let g : ℕ → ℂ := fun n => factorialBlowUpZoom Complex.Gamma n x
   let q : ℕ → ℂ := fun n => gammaFactorialScaledDigamma n x
   let T : ℕ → ℂ := fun n => gammaFactorialScaledTrigamma n x
@@ -327,57 +327,57 @@ theorem tendsto_gammaFactorialThirdJetProjectiveDefect_div_harmonicScale_sq
   have hq : Tendsto q atTop (𝓝 M) := by
     have h := hqdiff.add_const M
     simpa [sub_add_cancel] using h
-  have hT2 : Tendsto (fun n => (T n - M ^ 2) / a n ^ 2) atTop (𝓝 0) := by
+  have hT2 : Tendsto (fun n => (T n - M ^ (2 : ℕ)) / a n ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa [T, M, a] using tendsto_gammaFactorialScaledTrigamma_second_harmonic hx
-  have hTdiff : Tendsto (fun n => T n - M ^ 2) atTop (𝓝 0) := by
+  have hTdiff : Tendsto (fun n => T n - M ^ (2 : ℕ)) atTop (𝓝 0) := by
     have h := hT2.mul (ha0.pow 2)
     have heq : ∀ᶠ n in atTop,
-        (T n - M ^ 2) / a n ^ 2 * a n ^ 2 = T n - M ^ 2 := by
+        (T n - M ^ (2 : ℕ)) / a n ^ (2 : ℕ) * a n ^ (2 : ℕ) = T n - M ^ (2 : ℕ) := by
       filter_upwards [hane] with n hn
       field_simp [hn]
     simpa using h.congr' heq
-  have hT : Tendsto T atTop (𝓝 (M ^ 2)) := by
-    have h := hTdiff.add_const (M ^ 2)
+  have hT : Tendsto T atTop (𝓝 (M ^ (2 : ℕ))) := by
+    have h := hTdiff.add_const (M ^ (2 : ℕ))
     simpa [sub_add_cancel] using h
-  have hU2 : Tendsto (fun n => (U n - 2 * M ^ 3) / a n ^ 2) atTop (𝓝 0) := by
+  have hU2 : Tendsto (fun n => (U n - 2 * M ^ (3 : ℕ)) / a n ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa [U, M, a] using
       tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic hx
-  have hfactor : Tendsto (fun n => q n ^ 2 + 2 * q n * M + 3 * M ^ 2)
-      atTop (𝓝 (6 * M ^ 2)) := by
+  have hfactor : Tendsto (fun n => q n ^ (2 : ℕ) + 2 * q n * M + 3 * M ^ (2 : ℕ))
+      atTop (𝓝 (6 * M ^ (2 : ℕ))) := by
     have h := ((hq.pow 2).add ((hq.mul_const M).const_mul 2)).add_const
-      (3 * M ^ 2)
+      (3 * M ^ (2 : ℕ))
     convert h using 1
     · funext n
       ring
     · ring
   have hqrem : Tendsto (fun n =>
-      (q n ^ 4 - M ^ 4 - 4 * M ^ 3 * (q n - M)) / a n ^ 2)
-      atTop (𝓝 (6 * M ^ 2)) := by
+      (q n ^ (4 : ℕ) - M ^ (4 : ℕ) - 4 * M ^ (3 : ℕ) * (q n - M)) / a n ^ (2 : ℕ))
+      atTop (𝓝 (6 * M ^ (2 : ℕ))) := by
     have h := (hqcor.pow 2).mul hfactor
     have heq : ∀ᶠ n in atTop,
-        ((q n - M) / a n) ^ 2 *
-          (q n ^ 2 + 2 * q n * M + 3 * M ^ 2) =
-        (q n ^ 4 - M ^ 4 - 4 * M ^ 3 * (q n - M)) / a n ^ 2 := by
+        ((q n - M) / a n) ^ (2 : ℕ) *
+          (q n ^ (2 : ℕ) + 2 * q n * M + 3 * M ^ (2 : ℕ)) =
+        (q n ^ (4 : ℕ) - M ^ (4 : ℕ) - 4 * M ^ (3 : ℕ) * (q n - M)) / a n ^ (2 : ℕ) := by
       filter_upwards [hane] with n hn
       field_simp [hn]
       ring
     simpa using h.congr' heq
   have hUterm : Tendsto (fun n =>
-      2 * q n * ((U n - 2 * M ^ 3) / a n ^ 2)) atTop (𝓝 0) := by
+      2 * q n * ((U n - 2 * M ^ (3 : ℕ)) / a n ^ (2 : ℕ))) atTop (𝓝 0) := by
     simpa only [mul_assoc, mul_zero] using (hq.mul hU2).const_mul 2
   have hTterm : Tendsto (fun n =>
-      3 * ((T n - M ^ 2) / a n ^ 2) * (T n + M ^ 2)) atTop (𝓝 0) := by
+      3 * ((T n - M ^ (2 : ℕ)) / a n ^ (2 : ℕ)) * (T n + M ^ (2 : ℕ))) atTop (𝓝 0) := by
     simpa only [mul_assoc, zero_mul, mul_zero] using
-      (hT2.mul (hT.add_const (M ^ 2))).const_mul 3
+      (hT2.mul (hT.add_const (M ^ (2 : ℕ)))).const_mul 3
   have hbracket : Tendsto (fun n =>
-      (2 * q n * U n - 3 * T n ^ 2 - q n ^ 4) / a n ^ 2)
-      atTop (𝓝 (-6 * M ^ 2)) := by
+      (2 * q n * U n - 3 * T n ^ (2 : ℕ) - q n ^ (4 : ℕ)) / a n ^ (2 : ℕ))
+      atTop (𝓝 (-6 * M ^ (2 : ℕ))) := by
     have h := (hUterm.sub hTterm).sub hqrem
     have heq : ∀ᶠ n in atTop,
-        2 * q n * ((U n - 2 * M ^ 3) / a n ^ 2) -
-            3 * ((T n - M ^ 2) / a n ^ 2) * (T n + M ^ 2) -
-            (q n ^ 4 - M ^ 4 - 4 * M ^ 3 * (q n - M)) / a n ^ 2 =
-          (2 * q n * U n - 3 * T n ^ 2 - q n ^ 4) / a n ^ 2 := by
+        2 * q n * ((U n - 2 * M ^ (3 : ℕ)) / a n ^ (2 : ℕ)) -
+            3 * ((T n - M ^ (2 : ℕ)) / a n ^ (2 : ℕ)) * (T n + M ^ (2 : ℕ)) -
+            (q n ^ (4 : ℕ) - M ^ (4 : ℕ) - 4 * M ^ (3 : ℕ) * (q n - M)) / a n ^ (2 : ℕ) =
+          (2 * q n * U n - 3 * T n ^ (2 : ℕ) - q n ^ (4 : ℕ)) / a n ^ (2 : ℕ) := by
       filter_upwards [hane] with n hn
       field_simp [hn]
       ring
@@ -405,14 +405,14 @@ theorem tendsto_gammaFactorialThirdJetProjectiveDefect_div_harmonicScale_sq
     push_cast
     linear_combination hpole
   have heq : ∀ᶠ n : ℕ in atTop,
-      gammaFactorialThirdJetProjectiveDefect n x / a n ^ 2 =
-        g n ^ 2 * ((2 * q n * U n - 3 * T n ^ 2 - q n ^ 4) / a n ^ 2) := by
+      gammaFactorialThirdJetProjectiveDefect n x / a n ^ (2 : ℕ) =
+        g n ^ (2 : ℕ) * ((2 * q n * U n - 3 * T n ^ (2 : ℕ) - q n ^ (4 : ℕ)) / a n ^ (2 : ℕ)) := by
     filter_upwards [hregular] with n hn
     rw [gammaFactorialThirdJetProjectiveDefect_eq n x hn]
     simp only [g, q, T, U]
     ring
   have hfinal := hproduct.congr' (heq.mono fun _ h => h.symm)
-  have hlimval : M ^ 2 * (-6 * M ^ 2) = -6 / x ^ 4 := by
+  have hlimval : M ^ (2 : ℕ) * (-6 * M ^ (2 : ℕ)) = -6 / x ^ (4 : ℕ) := by
     dsimp [M]
     field_simp [hx]
   rw [hlimval] at hfinal

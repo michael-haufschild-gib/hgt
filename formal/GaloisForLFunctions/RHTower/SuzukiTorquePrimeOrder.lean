@@ -53,7 +53,7 @@ theorem continuous_suzukiFreePrimePositionTorque :
 
 /-- **`(17)`: the layer's exponential order.** -/
 theorem suzukiFreePrimePositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
-    suzukiFreePrimePositionTorque L ≤ 1 / 2 * L ^ 3 * Real.exp (3 * L / 2) := by
+    suzukiFreePrimePositionTorque L ≤ 1 / 2 * L ^ (3 : ℕ) * Real.exp (3 * L / 2) := by
   have hL0 : (0 : ℝ) < L := lt_of_lt_of_le zero_lt_one hL
   have hsqrtexp : Real.sqrt (Real.exp L) = Real.exp (L / 2) := by
     have hmul : Real.exp (L / 2) * Real.exp (L / 2) = Real.exp L := by
@@ -64,7 +64,7 @@ theorem suzukiFreePrimePositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
   have hbound : ∀ n ∈ suzukiVisibleWeilIndices L,
       (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * Real.log n * (L - Real.log n)
           * Real.sinh (Real.log n)
-        ≤ 1 / 2 * L ^ 3 * Real.exp (L / 2) := by
+        ≤ 1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2) := by
     intro n hn
     rw [suzukiVisibleWeilIndices, Finset.mem_Icc] at hn
     have hn2 : 2 ≤ n := hn.1
@@ -125,7 +125,7 @@ theorem suzukiFreePrimePositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
       _ ≤ (L * L) * (L * Real.exp (L / 2) / 2) := by
           refine mul_le_mul hfront ?_ hbacknn (by positivity)
           exact hpair.trans (le_of_eq hns) |>.trans hback
-      _ = 1 / 2 * L ^ 3 * Real.exp (L / 2) := by ring
+      _ = 1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2) := by ring
   have hsum := Finset.sum_le_card_nsmul _ _ _ hbound
   rw [suzukiFreePrimePositionTorque_eq]
   refine hsum.trans ?_
@@ -138,15 +138,15 @@ theorem suzukiFreePrimePositionTorque_le {L : ℝ} (hL : 1 ≤ L) :
     have h2 : (⌊Real.exp L⌋₊ : ℝ) ≤ Real.exp L := Nat.floor_le (Real.exp_pos L).le
     linarith
   rw [nsmul_eq_mul]
-  have hpos : (0 : ℝ) ≤ 1 / 2 * L ^ 3 * Real.exp (L / 2) := by positivity
-  have hexp : Real.exp L * (1 / 2 * L ^ 3 * Real.exp (L / 2))
-      = 1 / 2 * L ^ 3 * Real.exp (3 * L / 2) := by
+  have hpos : (0 : ℝ) ≤ 1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2) := by positivity
+  have hexp : Real.exp L * (1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2))
+      = 1 / 2 * L ^ (3 : ℕ) * Real.exp (3 * L / 2) := by
     rw [show Real.exp (3 * L / 2) = Real.exp L * Real.exp (L / 2) by
       rw [← Real.exp_add]; congr 1; ring]
     ring
-  calc ((suzukiVisibleWeilIndices L).card : ℝ) * (1 / 2 * L ^ 3 * Real.exp (L / 2))
-      ≤ Real.exp L * (1 / 2 * L ^ 3 * Real.exp (L / 2)) :=
+  calc ((suzukiVisibleWeilIndices L).card : ℝ) * (1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2))
+      ≤ Real.exp L * (1 / 2 * L ^ (3 : ℕ) * Real.exp (L / 2)) :=
         mul_le_mul_of_nonneg_right hcard hpos
-    _ = 1 / 2 * L ^ 3 * Real.exp (3 * L / 2) := hexp
+    _ = 1 / 2 * L ^ (3 : ℕ) * Real.exp (3 * L / 2) := hexp
 
 end RHTower

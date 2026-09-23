@@ -48,13 +48,13 @@ theorem measurableSet_goodGaussianCoefficients :
 theorem tendsto_pow_div_sqrt_factorial (t : ℝ) (ht : 0 ≤ t) :
     Tendsto (fun n : ℕ => t ^ n / Real.sqrt ((Nat.factorial n : ℕ) : ℝ)) atTop (nhds 0) := by
   have hsq : ∀ n : ℕ, t ^ n / Real.sqrt ((Nat.factorial n : ℕ) : ℝ)
-      = Real.sqrt ((t ^ 2) ^ n / ((Nat.factorial n : ℕ) : ℝ)) := by
+      = Real.sqrt ((t ^ (2 : ℕ)) ^ n / ((Nat.factorial n : ℕ) : ℝ)) := by
     intro n
-    have h1 : ((t ^ 2) ^ n : ℝ) = (t ^ n) ^ 2 := by
+    have h1 : ((t ^ (2 : ℕ)) ^ n : ℝ) = (t ^ n) ^ (2 : ℕ) := by
       rw [← pow_mul, ← pow_mul, Nat.mul_comm]
     rw [h1, Real.sqrt_div (by positivity), Real.sqrt_sq (pow_nonneg ht n)]
-  have hlim : Tendsto (fun n : ℕ => (t ^ 2) ^ n / ((Nat.factorial n : ℕ) : ℝ)) atTop (nhds 0) :=
-    FloorSemiring.tendsto_pow_div_factorial_atTop (t ^ 2)
+  have hlim : Tendsto (fun n : ℕ => (t ^ (2 : ℕ)) ^ n / ((Nat.factorial n : ℕ) : ℝ)) atTop (nhds 0) :=
+    FloorSemiring.tendsto_pow_div_factorial_atTop (t ^ (2 : ℕ))
   have hcomp := (Real.continuous_sqrt.tendsto 0).comp hlim
   rw [Real.sqrt_zero] at hcomp
   exact hcomp.congr fun n => (hsq n).symm

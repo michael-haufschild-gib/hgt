@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelDifferentialSystemCouple
 /-!
 # Analytic infinite-row Borel reflection no-go for Parikh--Wilczek
 
-The first-winding PW grades are `Gamma(s+2k)/(k!)^2`.  A source-independent countable grade row
+The first-winding PW grades are `Gamma(s+2k)/(k!)^(2 : ℕ)`.  A source-independent countable grade row
 whose generating kernel is regular at zero has critical-line logarithmic profile
 
 `g_A(u) = exp(u/2-exp(u)) A(exp(2u))`.
@@ -18,11 +18,11 @@ same Fourier transform as
 
 `g_R(u) = exp(-u/2-exp(-u))`.
 
-`L^1` Fourier uniqueness and continuity classify the kernel pointwise:
+`L^(1 : ℕ)` Fourier uniqueness and continuity classify the kernel pointwise:
 
-`x exp(-x) A(x^2) = exp(-1/x)`.
+`x exp(-x) A(x^(2 : ℕ)) = exp(-1/x)`.
 
-Thus the germ `F(z)=z exp(-z) A(z^2)` is forced to equal `exp(-1/x)` on the positive ray.  Its
+Thus the germ `F(z)=z exp(-z) A(z^(2 : ℕ))` is forced to equal `exp(-1/x)` on the positive ray.  Its
 values on `x=exp(-h)` are `exp(-exp(h))`, flat beyond every perturbative grade.  Analytic Rees
 quasianalyticity forces an analytic germ with those samples to vanish locally, contradicting their
 strict positivity.
@@ -159,16 +159,16 @@ theorem PWAnalyticInfiniteBorelReflectionData.forced_kernel
 exponential. -/
 def schwarzschildParikhWilczekForcedFlatBorelGerm
     (A : ℂ → ℂ) (z : ℂ) : ℂ :=
-  z * Complex.exp (-z) * A (z ^ 2)
+  z * Complex.exp (-z) * A (z ^ (2 : ℕ))
 
 theorem PWAnalyticInfiniteBorelReflectionData.analyticAt_forcedFlatBorelGerm
     (D : PWAnalyticInfiniteBorelReflectionData) :
     AnalyticAt ℂ (schwarzschildParikhWilczekForcedFlatBorelGerm D.multiplier) 0 := by
   unfold schwarzschildParikhWilczekForcedFlatBorelGerm
-  have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ 2) 0 := by fun_prop
-  have houter : AnalyticAt ℂ D.multiplier ((fun z : ℂ => z ^ 2) 0) := by
+  have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) 0 := by fun_prop
+  have houter : AnalyticAt ℂ D.multiplier ((fun z : ℂ => z ^ (2 : ℕ)) 0) := by
     simpa using D.analyticAt_zero
-  have hcomp : AnalyticAt ℂ (fun z : ℂ => D.multiplier (z ^ 2)) 0 := by
+  have hcomp : AnalyticAt ℂ (fun z : ℂ => D.multiplier (z ^ (2 : ℕ))) 0 := by
     exact AnalyticAt.comp (x := (0 : ℂ)) houter hsq
   exact (analyticAt_id.mul analyticAt_id.neg.cexp').mul hcomp
 
@@ -181,7 +181,7 @@ theorem PWAnalyticInfiniteBorelReflectionData.forcedFlatBorelGerm_exp_neg
   have hk := D.forced_kernel (-h)
   rw [schwarzschildParikhWilczekForcedFlatBorelGerm]
   norm_num at hk ⊢
-  have hpow : Complex.exp (-(h : ℂ)) ^ 2 = Complex.exp (-(2 * (h : ℂ))) := by
+  have hpow : Complex.exp (-(h : ℂ)) ^ (2 : ℕ) = Complex.exp (-(2 * (h : ℂ))) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     ring

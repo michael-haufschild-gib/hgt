@@ -10,7 +10,7 @@ length is `2K-1` for every state.
 Main results:
 * `rotAct`, `phaseAct` — the two gate families, and their isometry.
 * `absState`, `rotStep`, `absState_of_le` — the amplitude pass.
-* `phState`, `phaseStep`, `phState_top` — the phase pass.
+* `phState`, `phaseStep_twoLevelStateSynthesis`, `phState_top` — the phase pass.
 -/
 import GaloisForLFunctions.HTGeometry.PhaseGridApproximation
 
@@ -64,12 +64,12 @@ theorem sum_split_pair {i j : Fin K} (hij : i ≠ j) (f : Fin K → ℝ) :
 
 /-- **The two-level rotation preserves the norm.** -/
 theorem sum_normSq_rotAct {i j : Fin K} (hij : i ≠ j) (θ : ℝ) (v : Fin K → ℂ) :
-    ∑ r, ‖rotAct i j θ v r‖ ^ 2 = ∑ r, ‖v r‖ ^ 2 := by
+    ∑ r, ‖rotAct i j θ v r‖ ^ (2 : ℕ) = ∑ r, ‖v r‖ ^ (2 : ℕ) := by
   classical
-  rw [sum_split_pair hij (fun r => ‖rotAct i j θ v r‖ ^ 2),
-    sum_split_pair hij (fun r => ‖v r‖ ^ 2)]
+  rw [sum_split_pair hij (fun r => ‖rotAct i j θ v r‖ ^ (2 : ℕ)),
+    sum_split_pair hij (fun r => ‖v r‖ ^ (2 : ℕ))]
   have hrest : ∀ r ∈ (Finset.univ.erase i).erase j,
-      ‖rotAct i j θ v r‖ ^ 2 = ‖v r‖ ^ 2 := by
+      ‖rotAct i j θ v r‖ ^ (2 : ℕ) = ‖v r‖ ^ (2 : ℕ) := by
     intro r hr
     rw [rotAct_apply_ne i j θ v (Finset.mem_erase.mp (Finset.mem_of_mem_erase hr)).1
       (Finset.mem_erase.mp hr).1]
@@ -79,12 +79,12 @@ theorem sum_normSq_rotAct {i j : Fin K} (hij : i ≠ j) (θ : ℝ) (v : Fin K �
     Complex.sq_norm, Complex.sq_norm]
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
     Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
-  linear_combination ((v i).re ^ 2 + (v i).im ^ 2 + (v j).re ^ 2 + (v j).im ^ 2) *
+  linear_combination ((v i).re ^ (2 : ℕ) + (v i).im ^ (2 : ℕ) + (v j).re ^ (2 : ℕ) + (v j).im ^ (2 : ℕ)) *
     Real.sin_sq_add_cos_sq θ
 
 /-- **The phase gate preserves the norm.** -/
 theorem sum_normSq_phaseAct (i : Fin K) (θ : ℝ) (v : Fin K → ℂ) :
-    ∑ r, ‖phaseAct i θ v r‖ ^ 2 = ∑ r, ‖v r‖ ^ 2 := by
+    ∑ r, ‖phaseAct i θ v r‖ ^ (2 : ℕ) = ∑ r, ‖v r‖ ^ (2 : ℕ) := by
   classical
   refine Finset.sum_congr rfl fun r _ => ?_
   by_cases hr : r = i
@@ -96,7 +96,7 @@ theorem sum_normSq_phaseAct (i : Fin K) (θ : ℝ) (v : Fin K → ℂ) :
 /-! ## The amplitude pass -/
 
 /-- The tail weight of a state beyond a coordinate index. -/
-def tailSq (ψ : Fin K → ℂ) (p : ℕ) : ℝ := ∑ r : Fin K, if p ≤ (r : ℕ) then ‖ψ r‖ ^ 2 else 0
+def tailSq (ψ : Fin K → ℂ) (p : ℕ) : ℝ := ∑ r : Fin K, if p ≤ (r : ℕ) then ‖ψ r‖ ^ (2 : ℕ) else 0
 
 theorem tailSq_nonneg (ψ : Fin K → ℂ) (p : ℕ) : 0 ≤ tailSq ψ p :=
   Finset.sum_nonneg fun r _ => by
@@ -110,16 +110,16 @@ def tailv (ψ : Fin K → ℂ) (p : ℕ) : ℝ := Real.sqrt (tailSq ψ p)
 
 theorem tailv_nonneg (ψ : Fin K → ℂ) (p : ℕ) : 0 ≤ tailv ψ p := Real.sqrt_nonneg _
 
-theorem sq_tailv (ψ : Fin K → ℂ) (p : ℕ) : (tailv ψ p) ^ 2 = tailSq ψ p :=
+theorem sq_tailv (ψ : Fin K → ℂ) (p : ℕ) : (tailv ψ p) ^ (2 : ℕ) = tailSq ψ p :=
   Real.sq_sqrt (tailSq_nonneg ψ p)
 
 theorem tailSq_succ (ψ : Fin K → ℂ) (i : Fin K) :
-    tailSq ψ (i : ℕ) = ‖ψ i‖ ^ 2 + tailSq ψ ((i : ℕ) + 1) := by
+    tailSq ψ (i : ℕ) = ‖ψ i‖ ^ (2 : ℕ) + tailSq ψ ((i : ℕ) + 1) := by
   classical
   rw [tailSq, tailSq, ← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
   rw [if_pos (le_refl (i : ℕ))]
   congr 1
-  rw [← Finset.add_sum_erase _ (fun r : Fin K => if (i : ℕ) + 1 ≤ (r : ℕ) then ‖ψ r‖ ^ 2 else 0)
+  rw [← Finset.add_sum_erase _ (fun r : Fin K => if (i : ℕ) + 1 ≤ (r : ℕ) then ‖ψ r‖ ^ (2 : ℕ) else 0)
     (Finset.mem_univ i)]
   rw [if_neg (by omega), zero_add]
   refine Finset.sum_congr rfl fun x hx => ?_
@@ -149,7 +149,7 @@ theorem cos_rotAngle_mul {ψ : Fin K → ℂ} (i : Fin K) :
       have := sq_tailv ψ (i : ℕ)
       rw [h0] at this
       simpa using this.symm
-    have : ‖ψ i‖ ^ 2 = 0 := by
+    have : ‖ψ i‖ ^ (2 : ℕ) = 0 := by
       have hstep := tailSq_succ ψ i
       rw [hsq] at hstep
       nlinarith [tailSq_nonneg ψ ((i : ℕ) + 1), sq_nonneg ‖ψ i‖]
@@ -159,7 +159,7 @@ theorem cos_rotAngle_mul {ψ : Fin K → ℂ} (i : Fin K) :
     have hle : ‖ψ i‖ / tailv ψ (i : ℕ) ≤ 1 := by
       rw [div_le_one hpos]
       have hstep := tailSq_succ ψ i
-      have h2 : ‖ψ i‖ ^ 2 ≤ (tailv ψ (i : ℕ)) ^ 2 := by
+      have h2 : ‖ψ i‖ ^ (2 : ℕ) ≤ (tailv ψ (i : ℕ)) ^ (2 : ℕ) := by
         rw [sq_tailv, hstep]
         nlinarith [tailSq_nonneg ψ ((i : ℕ) + 1)]
       nlinarith [norm_nonneg (ψ i), hpos, h2]
@@ -185,7 +185,7 @@ theorem sin_rotAngle_mul {ψ : Fin K → ℂ} (i : Fin K) :
     have hle : ‖ψ i‖ / tailv ψ (i : ℕ) ≤ 1 := by
       rw [div_le_one hpos]
       have hstep := tailSq_succ ψ i
-      have h2 : ‖ψ i‖ ^ 2 ≤ (tailv ψ (i : ℕ)) ^ 2 := by
+      have h2 : ‖ψ i‖ ^ (2 : ℕ) ≤ (tailv ψ (i : ℕ)) ^ (2 : ℕ) := by
         rw [sq_tailv, hstep]
         nlinarith [tailSq_nonneg ψ ((i : ℕ) + 1)]
       nlinarith [norm_nonneg (ψ i), hpos, h2]
@@ -193,19 +193,19 @@ theorem sin_rotAngle_mul {ψ : Fin K → ℂ} (i : Fin K) :
       have : 0 ≤ ‖ψ i‖ / tailv ψ (i : ℕ) := by positivity
       linarith
     rw [rotAngle, Real.sin_arccos]
-    have hden : ‖ψ i‖ ^ 2 + tailSq ψ ((i : ℕ) + 1) ≠ 0 := by
+    have hden : ‖ψ i‖ ^ (2 : ℕ) + tailSq ψ ((i : ℕ) + 1) ≠ 0 := by
       have hsq := sq_tailv ψ (i : ℕ)
       rw [tailSq_succ ψ i] at hsq
       intro h
       rw [h] at hsq
       exact h0 (by nlinarith [hsq, tailv_nonneg ψ (i : ℕ)])
-    have hid : 1 - (‖ψ i‖ / tailv ψ (i : ℕ)) ^ 2
-        = (tailv ψ ((i : ℕ) + 1)) ^ 2 / (tailv ψ (i : ℕ)) ^ 2 := by
+    have hid : 1 - (‖ψ i‖ / tailv ψ (i : ℕ)) ^ (2 : ℕ)
+        = (tailv ψ ((i : ℕ) + 1)) ^ (2 : ℕ) / (tailv ψ (i : ℕ)) ^ (2 : ℕ) := by
       rw [div_pow, sq_tailv, sq_tailv, tailSq_succ ψ i]
       field_simp
       ring
-    have hsq : (tailv ψ ((i : ℕ) + 1)) ^ 2 / (tailv ψ (i : ℕ)) ^ 2
-        = (tailv ψ ((i : ℕ) + 1) / tailv ψ (i : ℕ)) ^ 2 := (div_pow _ _ _).symm
+    have hsq : (tailv ψ ((i : ℕ) + 1)) ^ (2 : ℕ) / (tailv ψ (i : ℕ)) ^ (2 : ℕ)
+        = (tailv ψ ((i : ℕ) + 1) / tailv ψ (i : ℕ)) ^ (2 : ℕ) := (div_pow _ _ _).symm
     rw [hid, hsq, Real.sqrt_sq (div_nonneg (tailv_nonneg ψ _) (tailv_nonneg ψ _))]
     field_simp
 
@@ -242,13 +242,13 @@ theorem rotStep (ψ : Fin K → ℂ) {i j : Fin K} (hj : (j : ℕ) = (i : ℕ) +
       · rw [if_neg hlt, if_neg hne1, if_neg (by omega : ¬ (r : ℕ) < (i : ℕ) + 1),
           if_neg (by omega : ¬ (r : ℕ) = (i : ℕ) + 1)]
 
-theorem absState_zero (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) :
+theorem absState_zero (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) :
     absState ψ 0 = fun r : Fin K => if (r : ℕ) = 0 then (1 : ℂ) else 0 := by
   funext r
   rw [absState, if_neg (by omega : ¬ (r : ℕ) < 0)]
   by_cases h : (r : ℕ) = 0
   · rw [if_pos h, if_pos h, tailv, tailSq]
-    have : (∑ x : Fin K, if (0 : ℕ) ≤ (x : ℕ) then ‖ψ x‖ ^ 2 else 0) = 1 := by
+    have : (∑ x : Fin K, if (0 : ℕ) ≤ (x : ℕ) then ‖ψ x‖ ^ (2 : ℕ) else 0) = 1 := by
       rw [← hunit]
       exact Finset.sum_congr rfl fun x _ => by rw [if_pos (Nat.zero_le _)]
     rw [this, Real.sqrt_one]
@@ -267,7 +267,7 @@ theorem absState_last (ψ : Fin K → ℂ) (hK : 0 < K) :
     rw [if_neg h, if_pos hEq]
     congr 1
     rw [tailv, tailSq]
-    have hsum : (∑ x : Fin K, if K - 1 ≤ (x : ℕ) then ‖ψ x‖ ^ 2 else 0) = ‖ψ r‖ ^ 2 := by
+    have hsum : (∑ x : Fin K, if K - 1 ≤ (x : ℕ) then ‖ψ x‖ ^ (2 : ℕ) else 0) = ‖ψ r‖ ^ (2 : ℕ) := by
       rw [Finset.sum_eq_single r]
       · rw [if_pos (by omega)]
       · intro x _ hxr
@@ -286,7 +286,7 @@ theorem absState_last (ψ : Fin K → ℂ) (hK : 0 < K) :
 def phState (ψ : Fin K → ℂ) (q : ℕ) : Fin K → ℂ :=
   fun r => if (r : ℕ) < q then ψ r else ((‖ψ r‖ : ℝ) : ℂ)
 
-theorem phaseStep (ψ : Fin K → ℂ) (i : Fin K) :
+theorem phaseStep_twoLevelStateSynthesis (ψ : Fin K → ℂ) (i : Fin K) :
     phaseAct i (Complex.arg (ψ i)) (phState ψ (i : ℕ)) = phState ψ ((i : ℕ) + 1) := by
   funext r
   by_cases hri : r = i
@@ -343,19 +343,19 @@ theorem norm_ofReal_mul_add_le (c s : ℝ) (x y : ℂ) :
     Real.norm_eq_abs]
 
 theorem coord_le_l2 (v : Fin K → ℂ) (x : Fin K) :
-    ‖v x‖ ≤ Real.sqrt (∑ r, ‖v r‖ ^ 2) := by
-  rw [show ‖v x‖ = Real.sqrt (‖v x‖ ^ 2) from (Real.sqrt_sq (norm_nonneg _)).symm]
+    ‖v x‖ ≤ Real.sqrt (∑ r, ‖v r‖ ^ (2 : ℕ)) := by
+  rw [show ‖v x‖ = Real.sqrt (‖v x‖ ^ (2 : ℕ)) from (Real.sqrt_sq (norm_nonneg _)).symm]
   refine Real.sqrt_le_sqrt ?_
-  exact Finset.single_le_sum (f := fun r => ‖v r‖ ^ 2) (fun r _ => by positivity)
+  exact Finset.single_le_sum (f := fun r => ‖v r‖ ^ (2 : ℕ)) (fun r _ => by positivity)
     (Finset.mem_univ x)
 
 /-- **The two-level rotation moves with its trigonometric parameters.** -/
 theorem norm_rotAct_sub_le (i j : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r : Fin K) :
     ‖rotAct i j θ v r - rotAct i j θ' v r‖
       ≤ (|Real.cos θ - Real.cos θ'| + |Real.sin θ - Real.sin θ'|) *
-          Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
+          Real.sqrt (∑ x, ‖v x‖ ^ (2 : ℕ)) := by
   classical
-  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = Real.sqrt (∑ x, ‖v x‖ ^ 2) := ⟨_, rfl⟩
+  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = Real.sqrt (∑ x, ‖v x‖ ^ (2 : ℕ)) := ⟨_, rfl⟩
   have hM0 : 0 ≤ M := by rw [hMdef]; exact Real.sqrt_nonneg _
   have hvi : ∀ x : Fin K, ‖v x‖ ≤ M := by
     intro x
@@ -388,7 +388,7 @@ theorem norm_rotAct_sub_le (i j : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r :
 theorem norm_phaseAct_sub_le (i : Fin K) (θ θ' : ℝ) (v : Fin K → ℂ) (r : Fin K) :
     ‖phaseAct i θ v r - phaseAct i θ' v r‖
       ≤ ‖Complex.exp ((θ : ℝ) * Complex.I) - Complex.exp ((θ' : ℝ) * Complex.I)‖ *
-          Real.sqrt (∑ x, ‖v x‖ ^ 2) := by
+          Real.sqrt (∑ x, ‖v x‖ ^ (2 : ℕ)) := by
   classical
   by_cases hri : r = i
   · subst hri

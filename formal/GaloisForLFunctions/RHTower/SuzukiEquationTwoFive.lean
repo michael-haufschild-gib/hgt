@@ -103,7 +103,7 @@ theorem suzuki_abs_derivativeCorrelation
     (u : SuzukiRestrictedWeilCore A.1) :
     (∫ t in (-(2 * A.1))..(2 * A.1),
       |t| * screwCrossCorr (deriv u) (deriv u) t) =
-      -2 * ∫ x : ℝ, u x ^ 2 := by
+      -2 * ∫ x : ℝ, u x ^ (2 : ℕ) := by
   let R := 2 * A.1
   let c := suzukiCoreAutocorrelation u
   let c' := fun t => screwCrossCorr u (deriv u) t
@@ -133,15 +133,15 @@ theorem suzuki_abs_derivativeCorrelation
 
 private theorem primePairing_eq_autocorrelation
     {a : ℝ} (u : SuzukiRestrictedWeilCore a) (ell : ℝ) :
-    pairing (fun x => u (x + ell)) u = suzukiCoreAutocorrelation u ell ∧
-      pairing (fun x => u (x - ell)) u = suzukiCoreAutocorrelation u (-ell) := by
+    l2Pairing (fun x => u (x + ell)) u = suzukiCoreAutocorrelation u ell ∧
+      l2Pairing (fun x => u (x - ell)) u = suzukiCoreAutocorrelation u (-ell) := by
   constructor
-  · unfold pairing suzukiCoreAutocorrelation screwCrossCorr
+  · unfold l2Pairing suzukiCoreAutocorrelation screwCrossCorr
     apply MeasureTheory.integral_congr_ae
     exact ae_of_all _ fun x => by
       change u (x + ell) * u x = u x * u (ell + x)
       rw [add_comm x ell, mul_comm]
-  · unfold pairing suzukiCoreAutocorrelation screwCrossCorr
+  · unfold l2Pairing suzukiCoreAutocorrelation screwCrossCorr
     apply MeasureTheory.integral_congr_ae
     exact ae_of_all _ fun x => by
       change u (x - ell) * u x = u x * u (-ell + x)
@@ -174,8 +174,8 @@ theorem suzuki_primeHinge_derivativeCorrelation
         screwPrimeWeight n * max 0 (|t| - Real.log n) *
           screwCrossCorr (deriv u) (deriv u) t) =
         -primePairWeight n *
-          (pairing (fun x => u (x + Real.log n)) u +
-            pairing (fun x => u (x - Real.log n)) u) := by
+          (l2Pairing (fun x => u (x + Real.log n)) u +
+            l2Pairing (fun x => u (x - Real.log n)) u) := by
     intro n hn
     have hnIcc : n ∈ Finset.Icc 2 ⌊Real.exp R⌋₊ := by
       simpa only [suzukiRestrictedWeilIndices, RHTower.suzukiVisibleWeilIndices, R] using hn
@@ -221,8 +221,8 @@ theorem suzuki_primeHinge_derivativeCorrelation
       _ = screwPrimeWeight n * (-(c (Real.log n) + c (-Real.log n))) := by
         rw [hcorr]
       _ = -primePairWeight n *
-          (pairing (fun x => u (x + Real.log n)) u +
-            pairing (fun x => u (x - Real.log n)) u) := by
+          (l2Pairing (fun x => u (x + Real.log n)) u +
+            l2Pairing (fun x => u (x - Real.log n)) u) := by
             dsimp only [c]
             rw [← hpair, ← hpairNeg]
             unfold screwPrimeWeight primePairWeight
@@ -302,7 +302,7 @@ theorem suzuki_remainder_derivativeCorrelation
 private theorem suzukiCore_intervalSquare_eq_integral
     (A : _root_.RHTower.SuzukiPositiveAperture)
     (u : SuzukiRestrictedWeilCore A.1) :
-    (∫ x in (-A.1)..A.1, u x ^ 2) = ∫ x : ℝ, u x ^ 2 := by
+    (∫ x in (-A.1)..A.1, u x ^ (2 : ℕ)) = ∫ x : ℝ, u x ^ (2 : ℕ) := by
   apply intervalIntegral.integral_eq_integral_of_support_subset
   intro x hx
   have hux : u x ≠ 0 := by
@@ -370,7 +370,7 @@ theorem suzuki_equation_two_five_correlation
   have hremEval := suzuki_remainder_derivativeCorrelation A u
   have hfinite := suzukiWeilFinitePartBlock_eq_energy A u
   have hmass := suzukiCore_intervalSquare_eq_integral A u
-  have hmassMul : (∫ x in (-A.1)..A.1, u x * u x) = ∫ x : ℝ, u x ^ 2 := by
+  have hmassMul : (∫ x in (-A.1)..A.1, u x * u x) = ∫ x : ℝ, u x ^ (2 : ℕ) := by
     simpa only [pow_two] using hmass
   have hcoeff : suzukiOriginLinearCoeff = suzukiWeilArchimedeanConstant := rfl
   rw [suzukiRestrictedWeilForm_eq_originRemainderFourBlocks, hfinite]

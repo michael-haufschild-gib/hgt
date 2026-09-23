@@ -26,14 +26,14 @@ open _root_.RHTower
 
 /-- The squared `L²` norm as an integral of squared norms. -/
 theorem lp_norm_sq_eq_integral (f : Lp ℂ 2 (volume : Measure ℝ)) :
-    ‖f‖ ^ 2 = ∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ 2 := by
+    ‖f‖ ^ (2 : ℕ) = ∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
   have h1 : (inner ℂ f f : ℂ) = ∫ x : ℝ, (inner ℂ ((f : ℝ → ℂ) x) ((f : ℝ → ℂ) x) : ℂ) :=
     L2.inner_def f f
-  have h2 : ∀ z : ℂ, (inner ℂ z z : ℂ) = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  have h2 : ∀ z : ℂ, (inner ℂ z z : ℂ) = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro z
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
-  have h3 : (inner ℂ f f : ℂ) = ((‖f‖ ^ 2 : ℝ) : ℂ) := by
+  have h3 : (inner ℂ f f : ℂ) = ((‖f‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   rw [h3] at h1
@@ -68,14 +68,14 @@ theorem continuous_fourier_of_integrable {f : ℝ → ℂ} (hf : Integrable f) :
 /-- **Plancherel for the classical Fourier integral.** -/
 theorem integral_norm_sq_fourier_eq {f : ℝ → ℂ} (hf1 : Integrable f)
     (hf2 : MemLp f 2 (volume : Measure ℝ)) :
-    (∫ ξ : ℝ, ‖𝓕 f ξ‖ ^ 2) = ∫ x : ℝ, ‖f x‖ ^ 2 := by
-  have hlhs : (∫ ξ : ℝ, ‖𝓕 f ξ‖ ^ 2)
-      = ‖(𝓕 (hf2.toLp f) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2 := by
+    (∫ ξ : ℝ, ‖𝓕 f ξ‖ ^ (2 : ℕ)) = ∫ x : ℝ, ‖f x‖ ^ (2 : ℕ) := by
+  have hlhs : (∫ ξ : ℝ, ‖𝓕 f ξ‖ ^ (2 : ℕ))
+      = ‖(𝓕 (hf2.toLp f) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ) := by
     rw [lp_norm_sq_eq_integral]
     refine integral_congr_ae ?_
     filter_upwards [coeFn_fourier_toLp hf1 hf2] with ξ hξ
     rw [hξ]
-  have hrhs : (∫ x : ℝ, ‖f x‖ ^ 2) = ‖(hf2.toLp f : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2 := by
+  have hrhs : (∫ x : ℝ, ‖f x‖ ^ (2 : ℕ)) = ‖(hf2.toLp f : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ) := by
     rw [lp_norm_sq_eq_integral]
     refine integral_congr_ae ?_
     filter_upwards [hf2.coeFn_toLp] with x hx
@@ -85,10 +85,10 @@ theorem integral_norm_sq_fourier_eq {f : ℝ → ℂ} (hf1 : Integrable f)
 /-- The spectral density of an integrable square-integrable function is integrable. -/
 theorem integrable_norm_sq_fourier {f : ℝ → ℂ} (hf1 : Integrable f)
     (hf2 : MemLp f 2 (volume : Measure ℝ)) :
-    Integrable (fun ξ : ℝ => ‖𝓕 f ξ‖ ^ 2) (volume : Measure ℝ) := by
+    Integrable (fun ξ : ℝ => ‖𝓕 f ξ‖ ^ (2 : ℕ)) (volume : Measure ℝ) := by
   have hmem := Lp.memLp (𝓕 (hf2.toLp f) : Lp ℂ 2 (volume : Measure ℝ))
   have hsq : Integrable (fun ξ : ℝ =>
-      ‖((𝓕 (hf2.toLp f) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ‖ ^ 2)
+      ‖((𝓕 (hf2.toLp f) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ‖ ^ (2 : ℕ))
       (volume : Measure ℝ) :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable _)).mp hmem
   refine hsq.congr ?_

@@ -30,11 +30,11 @@ theorem measurable_complex_sqrt : Measurable (fun z : ℂ => Complex.sqrt z) := 
   exact hf
 
 /-- The principal complex square root squares back everywhere. -/
-theorem complex_sqrt_sq_measurable (z : ℂ) : Complex.sqrt z ^ 2 = z := by
+theorem complex_sqrt_sq_measurable (z : ℂ) : Complex.sqrt z ^ (2 : ℕ) = z := by
   by_cases hz : z = 0
   · simp [hz]
   · calc
-      Complex.sqrt z ^ 2 = Complex.exp (Complex.log z / 2) ^ 2 := by
+      Complex.sqrt z ^ (2 : ℕ) = Complex.exp (Complex.log z / 2) ^ (2 : ℕ) := by
         rw [sqrt_eq_exp hz]
       _ = Complex.exp (Complex.log z) := by
         rw [pow_two, ← Complex.exp_add]
@@ -48,8 +48,8 @@ theorem exists_measurable_analyticAt_sq_eq
     {g : ℂ → ℂ} {z₀ : ℂ} (hgMeas : Measurable g)
     (hg : AnalyticAt ℂ g z₀) (hg0 : g z₀ ≠ 0) :
     ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h z₀ ∧ h z₀ ≠ 0 ∧
-      ∀ᶠ z in nhds z₀, h z ^ 2 = g z := by
-  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ 2 = g z₀ :=
+      ∀ᶠ z in nhds z₀, h z ^ (2 : ℕ) = g z := by
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ (2 : ℕ) = g z₀ :=
     IsAlgClosed.exists_pow_nat_eq (g z₀) (by norm_num)
   have hsne : s ≠ 0 := by
     intro h
@@ -100,7 +100,7 @@ theorem exists_measurable_analyticAt_sq_eq
       rw [hz0, Metric.mem_ball, dist_eq_norm] at hz
       simp at hz
     have hqval : q z = g z / g z₀ := rfl
-    change (s * Complex.exp ((2 : ℂ)⁻¹ * Complex.log (q z))) ^ 2 = g z
+    change (s * Complex.exp ((2 : ℂ)⁻¹ * Complex.log (q z))) ^ (2 : ℕ) = g z
     rw [mul_pow, pow_two (Complex.exp ((2 : ℂ)⁻¹ * Complex.log (q z))),
       ← Complex.exp_add,
       show (2 : ℂ)⁻¹ * Complex.log (q z) + (2 : ℂ)⁻¹ * Complex.log (q z) =
@@ -112,17 +112,17 @@ theorem exists_measurable_analyticAt_sq_eq
 analytic branch. -/
 theorem exists_measurable_analyticAt_sq_eq_of_value
     {g : ℂ → ℂ} {z₀ s : ℂ} (hgMeas : Measurable g)
-    (hg : AnalyticAt ℂ g z₀) (hs : s ^ 2 = g z₀) (hs0 : s ≠ 0) :
+    (hg : AnalyticAt ℂ g z₀) (hs : s ^ (2 : ℕ) = g z₀) (hs0 : s ≠ 0) :
     ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h z₀ ∧ h z₀ = s ∧
-      ∀ᶠ z in nhds z₀, h z ^ 2 = g z := by
+      ∀ᶠ z in nhds z₀, h z ^ (2 : ℕ) = g z := by
   have hg0 : g z₀ ≠ 0 := by
     rw [← hs]
     exact pow_ne_zero 2 hs0
   obtain ⟨h, hhMeas, hhan, hh0, hhsq⟩ :=
     exists_measurable_analyticAt_sq_eq hgMeas hg hg0
-  have hh0sq : h z₀ ^ 2 = g z₀ := hhsq.self_of_nhds
+  have hh0sq : h z₀ ^ (2 : ℕ) = g z₀ := hhsq.self_of_nhds
   let c : ℂ := s / h z₀
-  have hc2 : c ^ 2 = 1 := by
+  have hc2 : c ^ (2 : ℕ) = 1 := by
     dsimp [c]
     rw [div_pow, hh0sq, hs]
     exact div_self hg0
@@ -139,9 +139,9 @@ theorem exists_measurable_analyticAt_sq_eq_of_value
 square identity at every complex point. -/
 theorem exists_measurable_analyticAt_sq_eq_of_value_global
     {g : ℂ → ℂ} {z₀ s : ℂ} (hgMeas : Measurable g)
-    (hg : AnalyticAt ℂ g z₀) (hs : s ^ 2 = g z₀) (hs0 : s ≠ 0) :
+    (hg : AnalyticAt ℂ g z₀) (hs : s ^ (2 : ℕ) = g z₀) (hs0 : s ≠ 0) :
     ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h z₀ ∧ h z₀ = s ∧
-      ∀ z : ℂ, h z ^ 2 = g z := by
+      ∀ z : ℂ, h z ^ (2 : ℕ) = g z := by
   classical
   obtain ⟨h, hhMeas, hhan, hh0, hhsq⟩ :=
     exists_measurable_analyticAt_sq_eq_of_value hgMeas hg hs hs0

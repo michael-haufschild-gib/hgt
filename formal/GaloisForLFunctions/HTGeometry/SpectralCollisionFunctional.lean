@@ -89,7 +89,7 @@ theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
 
 /-- The spectral weight of a state on one eigenvector. -/
 def eigenWeight (e : α → α → ℂ) (ψ : α → ℂ) (j : α) : ℝ :=
-  ‖finiteComplexInner (e j) ψ‖ ^ 2
+  ‖finiteComplexInner (e j) ψ‖ ^ (2 : ℕ)
 
 theorem eigenWeight_nonneg (e : α → α → ℂ) (ψ : α → ℂ) (j : α) : 0 ≤ eigenWeight e ψ j :=
   sq_nonneg _
@@ -123,7 +123,7 @@ theorem stateMoment_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α 
   have hconj : finiteComplexInner ψ (e j) = (starRingEnd ℂ) (finiteComplexInner (e j) ψ) :=
     finiteComplexInner_conj_symm _ _
   rw [hconj]
-  have hnorm : ((‖finiteComplexInner (e j) ψ‖ ^ 2 : ℝ) : ℂ) =
+  have hnorm : ((‖finiteComplexInner (e j) ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       finiteComplexInner (e j) ψ * (starRingEnd ℂ) (finiteComplexInner (e j) ψ) := by
     rw [Complex.mul_conj, Complex.sq_norm]
   rw [hnorm]
@@ -184,7 +184,7 @@ theorem regCollisionC_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : �
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) (c : ℝ) (m : ℕ) :
     regCollisionC c m H ψ =
       ∑ j, ∑ k, ((eigenWeight e ψ j * eigenWeight e ψ k : ℝ) : ℂ) *
-        (((1 - (lam j - lam k) ^ 2 / c : ℝ) : ℂ)) ^ m := by
+        (((1 - (lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ)) ^ m := by
   classical
   rw [regCollisionC]
   have hL : (∑ l ∈ Finset.range (m + 1), (m.choose l : ℂ) * (-(1 : ℂ) / (c : ℂ)) ^ l *
@@ -192,7 +192,7 @@ theorem regCollisionC_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : �
           (stateMoment H ψ (2 * l - i) * stateMoment H ψ i)) =
       ∑ l ∈ Finset.range (m + 1), ∑ j, ∑ k,
         ((eigenWeight e ψ j * eigenWeight e ψ k : ℝ) : ℂ) *
-          ((-((((lam j - lam k) ^ 2 / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
+          ((-((((lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
             ((m.choose l : ℕ) : ℂ)) := by
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [sum_gap_pow hb ψ l, Finset.mul_sum]
@@ -200,27 +200,27 @@ theorem regCollisionC_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : �
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     have hpow : (((lam j - lam k : ℝ) : ℂ)) ^ (2 * l) =
-        ((((lam j - lam k) ^ 2 : ℝ) : ℂ)) ^ l := by
+        ((((lam j - lam k) ^ (2 : ℕ) : ℝ) : ℂ)) ^ l := by
       push_cast
       exact pow_mul _ 2 l
     rw [hpow, one_pow, Complex.ofReal_div,
-      show (-(((((lam j - lam k) ^ 2 : ℝ) : ℂ)) / (c : ℂ))) =
-        (-(1 : ℂ) / (c : ℂ)) * ((((lam j - lam k) ^ 2 : ℝ) : ℂ)) from by ring,
+      show (-(((((lam j - lam k) ^ (2 : ℕ) : ℝ) : ℂ)) / (c : ℂ))) =
+        (-(1 : ℂ) / (c : ℂ)) * ((((lam j - lam k) ^ (2 : ℕ) : ℝ) : ℂ)) from by ring,
       mul_pow]
     ring
   have hR : (∑ j, ∑ k, ((eigenWeight e ψ j * eigenWeight e ψ k : ℝ) : ℂ) *
-        (((1 - (lam j - lam k) ^ 2 / c : ℝ) : ℂ)) ^ m) =
+        (((1 - (lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ)) ^ m) =
       ∑ j, ∑ k, ∑ l ∈ Finset.range (m + 1),
         ((eigenWeight e ψ j * eigenWeight e ψ k : ℝ) : ℂ) *
-          ((-((((lam j - lam k) ^ 2 / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
+          ((-((((lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
             ((m.choose l : ℕ) : ℂ)) := by
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-    have hbin : (((1 - (lam j - lam k) ^ 2 / c : ℝ) : ℂ)) ^ m =
+    have hbin : (((1 - (lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ)) ^ m =
         ∑ l ∈ Finset.range (m + 1),
-          (-((((lam j - lam k) ^ 2 / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
+          (-((((lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ))) ^ l * (1 : ℂ) ^ (m - l) *
             ((m.choose l : ℕ) : ℂ) := by
-      rw [show (((1 - (lam j - lam k) ^ 2 / c : ℝ) : ℂ)) =
-          -((((lam j - lam k) ^ 2 / c : ℝ) : ℂ)) + 1 by push_cast; ring]
+      rw [show (((1 - (lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ)) =
+          -((((lam j - lam k) ^ (2 : ℕ) / c : ℝ) : ℂ)) + 1 by push_cast; ring]
       exact add_pow _ _ _
     rw [hbin, Finset.mul_sum]
   rw [hL, hR, Finset.sum_comm]
@@ -229,7 +229,7 @@ theorem regCollisionC_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : �
 
 /-- The gap kernel of the regularization. -/
 def collisionKernel (lam : α → ℝ) (c : ℝ) (m : ℕ) (j k : α) : ℝ :=
-  (1 - (lam j - lam k) ^ 2 / c) ^ m
+  (1 - (lam j - lam k) ^ (2 : ℕ) / c) ^ m
 
 /-- The real gap-regularized collision. -/
 def regCollision (c : ℝ) (m : ℕ) (H : Matrix α α ℂ) (ψ : α → ℂ) : ℝ :=
@@ -251,29 +251,29 @@ theorem collisionKernel_diag (lam : α → ℝ) (c : ℝ) (m : ℕ) (j : α) :
   norm_num
 
 theorem collisionKernel_nonneg {lam : α → ℝ} {c : ℝ} (hc : 0 < c)
-    (hle : ∀ j k, (lam j - lam k) ^ 2 ≤ c) (m : ℕ) (j k : α) :
+    (hle : ∀ j k, (lam j - lam k) ^ (2 : ℕ) ≤ c) (m : ℕ) (j k : α) :
     0 ≤ collisionKernel lam c m j k := by
   refine pow_nonneg ?_ m
   rw [sub_nonneg, div_le_one hc]
   exact hle j k
 
 theorem collisionKernel_le_one {lam : α → ℝ} {c : ℝ} (hc : 0 < c)
-    (hle : ∀ j k, (lam j - lam k) ^ 2 ≤ c) (m : ℕ) (j k : α) :
+    (hle : ∀ j k, (lam j - lam k) ^ (2 : ℕ) ≤ c) (m : ℕ) (j k : α) :
     collisionKernel lam c m j k ≤ 1 := by
   refine pow_le_one₀ ?_ ?_
   · rw [sub_nonneg, div_le_one hc]
     exact hle j k
-  · have : (0 : ℝ) ≤ (lam j - lam k) ^ 2 / c := by positivity
+  · have : (0 : ℝ) ≤ (lam j - lam k) ^ (2 : ℕ) / c := by positivity
     linarith
 
 /-- **The regularization dominates the collision.** -/
 theorem sum_eigenWeight_sq_le_regCollision {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) {c : ℝ} (hc : 0 < c)
-    (hle : ∀ j k, (lam j - lam k) ^ 2 ≤ c) (m : ℕ) :
-    (∑ j, eigenWeight e ψ j ^ 2) ≤ regCollision c m H ψ := by
+    (hle : ∀ j k, (lam j - lam k) ^ (2 : ℕ) ≤ c) (m : ℕ) :
+    (∑ j, eigenWeight e ψ j ^ (2 : ℕ)) ≤ regCollision c m H ψ := by
   rw [regCollision_eq hb ψ c m]
   refine Finset.sum_le_sum fun j _ => ?_
-  have hdiag : eigenWeight e ψ j ^ 2 =
+  have hdiag : eigenWeight e ψ j ^ (2 : ℕ) =
       eigenWeight e ψ j * eigenWeight e ψ j * collisionKernel lam c m j j := by
     rw [collisionKernel_diag, mul_one, sq]
   rw [hdiag]
@@ -285,8 +285,8 @@ theorem sum_eigenWeight_sq_le_regCollision {H : Matrix α α ℂ} {e : α → α
 
 theorem regCollision_le_sq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) {c : ℝ} (hc : 0 < c)
-    (hle : ∀ j k, (lam j - lam k) ^ 2 ≤ c) (m : ℕ) :
-    regCollision c m H ψ ≤ (∑ j, eigenWeight e ψ j) ^ 2 := by
+    (hle : ∀ j k, (lam j - lam k) ^ (2 : ℕ) ≤ c) (m : ℕ) :
+    regCollision c m H ψ ≤ (∑ j, eigenWeight e ψ j) ^ (2 : ℕ) := by
   rw [regCollision_eq hb ψ c m, sq, Finset.sum_mul_sum]
   refine Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun k _ => ?_
   calc eigenWeight e ψ j * eigenWeight e ψ k * collisionKernel lam c m j k
@@ -298,15 +298,15 @@ theorem regCollision_le_sq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam :
 /-- **The regularization converges to the collision at a simple spectrum.** -/
 theorem tendsto_regCollision {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) {c : ℝ} (hc : 0 < c)
-    (hlt : ∀ j k, j ≠ k → (lam j - lam k) ^ 2 < c) (hinj : Function.Injective lam) :
+    (hlt : ∀ j k, j ≠ k → (lam j - lam k) ^ (2 : ℕ) < c) (hinj : Function.Injective lam) :
     Filter.Tendsto (fun m => regCollision c m H ψ) Filter.atTop
-      (nhds (∑ j, eigenWeight e ψ j ^ 2)) := by
+      (nhds (∑ j, eigenWeight e ψ j ^ (2 : ℕ))) := by
   classical
   have hrw : (fun m => regCollision c m H ψ) =
       fun m => ∑ j, ∑ k, eigenWeight e ψ j * eigenWeight e ψ k * collisionKernel lam c m j k :=
     funext fun m => regCollision_eq hb ψ c m
   rw [hrw]
-  have htarget : (∑ j, eigenWeight e ψ j ^ 2) =
+  have htarget : (∑ j, eigenWeight e ψ j ^ (2 : ℕ)) =
       ∑ j, ∑ k, (if j = k then eigenWeight e ψ j * eigenWeight e ψ k else 0) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.sum_ite_eq (Finset.univ : Finset α) j
@@ -321,12 +321,12 @@ theorem tendsto_regCollision {H : Matrix α α ℂ} {e : α → α → ℂ} {lam
       rw [collisionKernel_diag, mul_one]
     rw [hconst, if_pos rfl]
     exact tendsto_const_nhds
-  · have hgap : 0 < (lam j - lam k) ^ 2 := by
+  · have hgap : 0 < (lam j - lam k) ^ (2 : ℕ) := by
       have hne : lam j - lam k ≠ 0 := sub_ne_zero.mpr fun hcon => hjk (hinj hcon)
       positivity
-    have hbase : |1 - (lam j - lam k) ^ 2 / c| < 1 := by
-      have h1 : 0 < (lam j - lam k) ^ 2 / c := div_pos hgap hc
-      have h2 : (lam j - lam k) ^ 2 / c < 1 := (div_lt_one hc).mpr (hlt j k hjk)
+    have hbase : |1 - (lam j - lam k) ^ (2 : ℕ) / c| < 1 := by
+      have h1 : 0 < (lam j - lam k) ^ (2 : ℕ) / c := div_pos hgap hc
+      have h2 : (lam j - lam k) ^ (2 : ℕ) / c < 1 := (div_lt_one hc).mpr (hlt j k hjk)
       rw [abs_lt]
       constructor <;> linarith
     have hzero : Filter.Tendsto (fun m => collisionKernel lam c m j k) Filter.atTop (nhds 0) := by
@@ -369,7 +369,7 @@ theorem continuous_stateMoment (ψ : α → ℂ) (r : ℕ) :
   exact continuous_finsetSum _ fun y _ => (continuous_matrixPow_entry r x y).mul continuous_const
 
 /-- The squared Frobenius size of a matrix. -/
-def frobSq (H : Matrix α α ℂ) : ℝ := ∑ a, ∑ b, ‖H a b‖ ^ 2
+def frobSq (H : Matrix α α ℂ) : ℝ := ∑ a, ∑ b, ‖H a b‖ ^ (2 : ℕ)
 
 theorem frobSq_nonneg (H : Matrix α α ℂ) : 0 ≤ frobSq H :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
@@ -390,10 +390,10 @@ theorem continuous_capC : Continuous (capC (α := α)) :=
   continuous_const.add (continuous_const.mul continuous_frobSq)
 
 theorem sum_normSq_eigenvector {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) (j : α) : (∑ b, ‖e j b‖ ^ 2) = 1 := by
+    (hb : IsOrthoEigenBasis H e lam) (j : α) : (∑ b, ‖e j b‖ ^ (2 : ℕ)) = 1 := by
   have h := hb.orth j j
   rw [if_pos rfl, finiteComplexInner] at h
-  have hre : (∑ b, ((‖e j b‖ ^ 2 : ℝ) : ℂ)) = (1 : ℂ) := by
+  have hre : (∑ b, ((‖e j b‖ ^ (2 : ℕ) : ℝ) : ℂ)) = (1 : ℂ) := by
     rw [← h]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [Complex.sq_norm, ← Complex.mul_conj]
@@ -402,40 +402,40 @@ theorem sum_normSq_eigenvector {H : Matrix α α ℂ} {e : α → α → ℂ} {l
   exact_mod_cast hre
 
 theorem sq_lam_le_frobSq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) (j : α) : (lam j) ^ 2 ≤ frobSq H := by
+    (hb : IsOrthoEigenBasis H e lam) (j : α) : (lam j) ^ (2 : ℕ) ≤ frobSq H := by
   classical
   have hunit := sum_normSq_eigenvector hb j
-  have hrow : ∀ a : α, ‖(H *ᵥ e j) a‖ ^ 2 ≤ ∑ b, ‖H a b‖ ^ 2 := by
+  have hrow : ∀ a : α, ‖(H *ᵥ e j) a‖ ^ (2 : ℕ) ≤ ∑ b, ‖H a b‖ ^ (2 : ℕ) := by
     intro a
-    have hcs : (∑ b, ‖H a b‖ * ‖e j b‖) ^ 2 ≤
-        (∑ b, ‖H a b‖ ^ 2) * ∑ b, ‖e j b‖ ^ 2 :=
+    have hcs : (∑ b, ‖H a b‖ * ‖e j b‖) ^ (2 : ℕ) ≤
+        (∑ b, ‖H a b‖ ^ (2 : ℕ)) * ∑ b, ‖e j b‖ ^ (2 : ℕ) :=
       Finset.sum_mul_sq_le_sq_mul_sq _ _ _
     rw [hunit, mul_one] at hcs
     have hbound : ‖(H *ᵥ e j) a‖ ≤ ∑ b, ‖H a b‖ * ‖e j b‖ := by
       refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun b _ => ?_)
       rw [norm_mul]
     refine le_trans (pow_le_pow_left₀ (norm_nonneg _) hbound 2) hcs
-  have heig : ∀ a : α, ‖(H *ᵥ e j) a‖ ^ 2 = (lam j) ^ 2 * ‖e j a‖ ^ 2 := by
+  have heig : ∀ a : α, ‖(H *ᵥ e j) a‖ ^ (2 : ℕ) = (lam j) ^ (2 : ℕ) * ‖e j a‖ ^ (2 : ℕ) := by
     intro a
     rw [hb.eigen j]
     simp only [Pi.smul_apply, smul_eq_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs]
     rw [mul_pow, sq_abs]
-  have hsum : (lam j) ^ 2 = ∑ a, ‖(H *ᵥ e j) a‖ ^ 2 := by
+  have hsum : (lam j) ^ (2 : ℕ) = ∑ a, ‖(H *ᵥ e j) a‖ ^ (2 : ℕ) := by
     rw [Finset.sum_congr rfl fun a _ => heig a, ← Finset.mul_sum, hunit, mul_one]
   rw [hsum, frobSq]
   exact Finset.sum_le_sum fun a _ => hrow a
 
 theorem sq_gap_lt_capC {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) (j k : α) : (lam j - lam k) ^ 2 < capC H := by
+    (hb : IsOrthoEigenBasis H e lam) (j k : α) : (lam j - lam k) ^ (2 : ℕ) < capC H := by
   have hj := sq_lam_le_frobSq hb j
   have hk := sq_lam_le_frobSq hb k
-  have hexp : (lam j - lam k) ^ 2 ≤ 2 * (lam j) ^ 2 + 2 * (lam k) ^ 2 := by
+  have hexp : (lam j - lam k) ^ (2 : ℕ) ≤ 2 * (lam j) ^ (2 : ℕ) + 2 * (lam k) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (lam j + lam k)]
   rw [capC]
   linarith
 
 theorem sq_gap_le_capC {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) (j k : α) : (lam j - lam k) ^ 2 ≤ capC H :=
+    (hb : IsOrthoEigenBasis H e lam) (j k : α) : (lam j - lam k) ^ (2 : ℕ) ≤ capC H :=
   le_of_lt (sq_gap_lt_capC hb j k)
 
 /-- The gap-capped regularization of the collision: a continuous function of the matrix. -/
@@ -461,19 +461,19 @@ theorem continuous_cappedRegCollision (m : ℕ) (ψ : α → ℂ) :
 /-- **The capped regularization dominates the collision.** -/
 theorem sum_eigenWeight_sq_le_cappedRegCollision {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) (m : ℕ) :
-    (∑ j, eigenWeight e ψ j ^ 2) ≤ cappedRegCollision m H ψ :=
+    (∑ j, eigenWeight e ψ j ^ (2 : ℕ)) ≤ cappedRegCollision m H ψ :=
   sum_eigenWeight_sq_le_regCollision hb ψ (capC_pos H) (fun j k => sq_gap_le_capC hb j k) m
 
 theorem cappedRegCollision_le_sq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) (m : ℕ) :
-    cappedRegCollision m H ψ ≤ (∑ j, eigenWeight e ψ j) ^ 2 :=
+    cappedRegCollision m H ψ ≤ (∑ j, eigenWeight e ψ j) ^ (2 : ℕ) :=
   regCollision_le_sq hb ψ (capC_pos H) (fun j k => sq_gap_le_capC hb j k) m
 
 /-- **The capped regularization converges to the collision at a simple spectrum.** -/
 theorem tendsto_cappedRegCollision {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) (hinj : Function.Injective lam) :
     Filter.Tendsto (fun m => cappedRegCollision m H ψ) Filter.atTop
-      (nhds (∑ j, eigenWeight e ψ j ^ 2)) :=
+      (nhds (∑ j, eigenWeight e ψ j ^ (2 : ℕ))) :=
   tendsto_regCollision hb ψ (capC_pos H) (fun j k _ => sq_gap_lt_capC hb j k) hinj
 
 end Continuity

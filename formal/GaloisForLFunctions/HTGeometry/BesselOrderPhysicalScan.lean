@@ -38,11 +38,11 @@ def extremalBesselOrderSlope (kappa : ℝ) : ℂ :=
 /-- The quadratic part of Good's exact fixed-argument prefactor, including its constant
 normalization.  Its value is
 
-`(pi^2 kappa^2)^-1 * (1 - 4 omega^2 / (kappa^2 s^2))`.
+`(pi^(2 : ℕ) kappa^(2 : ℕ))^-1 * (1 - 4 omega^(2 : ℕ) / (kappa^(2 : ℕ) s^(2 : ℕ)))`.
 -/
 def extremalBesselIntensityPrefactorPolynomial (kappa s : ℝ) : Polynomial ℂ :=
-  Polynomial.C (((Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2)⁻¹) *
-    (1 - Polynomial.C (4 / ((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2)) * Polynomial.X ^ 2)
+  Polynomial.C (((Real.pi : ℂ) ^ (2 : ℕ) * (kappa : ℂ) ^ (2 : ℕ))⁻¹) *
+    (1 - Polynomial.C (4 / ((kappa : ℂ) ^ (2 : ℕ) * (s : ℂ) ^ (2 : ℕ))) * Polynomial.X ^ (2 : ℕ))
 
 /-- Entire continuation of the elementary physical prefactor in equation (13) of the card. -/
 def extremalBesselIntensityPrefactor (kappa s : ℝ) (omega : ℂ) : ℂ :=
@@ -72,9 +72,9 @@ theorem extremalBesselIntensityPrefactorPolynomial_ne_zero
   have hval := congrArg (Polynomial.eval 0) hzero
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   have hkappaC : (kappa : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hkappa
-  have hden : (Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2 ≠ 0 :=
+  have hden : (Real.pi : ℂ) ^ (2 : ℕ) * (kappa : ℂ) ^ (2 : ℕ) ≠ 0 :=
     mul_ne_zero (pow_ne_zero _ hpi) (pow_ne_zero _ hkappaC)
-  have hinv : (((Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2)⁻¹) = 0 := by
+  have hinv : (((Real.pi : ℂ) ^ (2 : ℕ) * (kappa : ℂ) ^ (2 : ℕ))⁻¹) = 0 := by
     simpa [extremalBesselIntensityPrefactorPolynomial] using hval
   exact (inv_ne_zero hden) hinv
 
@@ -88,8 +88,8 @@ theorem analyticOnNhd_extremalBesselIntensityPrefactor (kappa s : ℝ) :
         (extremalBesselIntensityPrefactorPolynomial kappa s).eval omega) Set.univ := by
     have h : AnalyticOnNhd ℂ
         (fun omega : ℂ =>
-          (((Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2)⁻¹) *
-            (1 - (4 / ((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2)) * omega ^ 2)) Set.univ :=
+          (((Real.pi : ℂ) ^ (2 : ℕ) * (kappa : ℂ) ^ (2 : ℕ))⁻¹) *
+            (1 - (4 / ((kappa : ℂ) ^ (2 : ℕ) * (s : ℂ) ^ (2 : ℕ))) * omega ^ (2 : ℕ))) Set.univ :=
       analyticOnNhd_const.mul
         (analyticOnNhd_const.sub (analyticOnNhd_const.mul (analyticOnNhd_id.pow 2)))
     simpa [extremalBesselIntensityPrefactorPolynomial] using h
@@ -212,9 +212,9 @@ theorem extremalBesselIntensityPrefactor_eq_good
     {omega : ℂ} (homega : omega ≠ 0) :
     extremalBesselIntensityPrefactor kappa s omega =
       Complex.exp ((-2 * (Real.pi : ℂ) / (kappa : ℂ)) * omega) *
-        (((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2 / (4 * omega) - omega) /
-          ((Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2 *
-            ((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2 / (4 * omega)))) := by
+        (((kappa : ℂ) ^ (2 : ℕ) * (s : ℂ) ^ (2 : ℕ) / (4 * omega) - omega) /
+          ((Real.pi : ℂ) ^ (2 : ℕ) * (kappa : ℂ) ^ (2 : ℕ) *
+            ((kappa : ℂ) ^ (2 : ℕ) * (s : ℂ) ^ (2 : ℕ) / (4 * omega)))) := by
   have hkappaC : (kappa : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hkappa
   have hsC : (s : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hs
   unfold extremalBesselIntensityPrefactor

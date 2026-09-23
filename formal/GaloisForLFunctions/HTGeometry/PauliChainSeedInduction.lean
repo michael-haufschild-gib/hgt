@@ -40,7 +40,7 @@ instance seedIndexNonempty (k : ℕ) : Nonempty (seedIndex k) := ⟨default⟩
 
 theorem card_seedIndex : ∀ k : ℕ, Fintype.card (seedIndex k) = 2 ^ (k + 2)
   | 0 => by
-      show Fintype.card (Bool × Bool) = 2 ^ 2
+      show Fintype.card (Bool × Bool) = 2 ^ (2 : ℕ)
       simp
   | k + 1 => by
       show Fintype.card (seedIndex k × Bool) = 2 ^ (k + 3)
@@ -49,7 +49,7 @@ theorem card_seedIndex : ∀ k : ℕ, Fintype.card (seedIndex k) = 2 ^ (k + 2)
 
 theorem three_le_card_seedIndex (k : ℕ) : 3 ≤ Fintype.card (seedIndex k) := by
   rw [card_seedIndex k]
-  calc (3 : ℕ) ≤ 2 ^ 2 := by norm_num
+  calc (3 : ℕ) ≤ 2 ^ (2 : ℕ) := by norm_num
     _ ≤ 2 ^ (k + 2) := Nat.pow_le_pow_right (by norm_num) (by omega)
 
 /-- **The endpoint-complete nearest-neighbour Pauli seed at every size.** -/

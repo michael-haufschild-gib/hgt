@@ -88,10 +88,10 @@ private theorem half_norm_sub_lt_norm_sub_of_mem_differentiationBall
 private theorem hasDerivAt_xiRelativeResolventTerm
     (q : XiZeroCopy) {u : ℂ} (hqu : xiSpectralPoint q ≠ u) :
     HasDerivAt (fun v => xiRelativeResolventTerm v q)
-      (-((xiSpectralPoint q - u)⁻¹ ^ 2)) u := by
+      (-((xiSpectralPoint q - u)⁻¹ ^ (2 : ℕ))) u := by
   change HasDerivAt
     (fun v => (xiSpectralPoint q)⁻¹ - (xiSpectralPoint q - v)⁻¹)
-    (-((xiSpectralPoint q - u)⁻¹ ^ 2)) u
+    (-((xiSpectralPoint q - u)⁻¹ ^ (2 : ℕ))) u
   have hsub : xiSpectralPoint q - u ≠ 0 := sub_ne_zero.mpr hqu
   convert! (hasDerivAt_const (x := u) (c := (xiSpectralPoint q)⁻¹)).sub
     (((hasDerivAt_const (x := u) (c := xiSpectralPoint q)).sub
@@ -102,8 +102,8 @@ private theorem norm_xiRelativeResolventTerm_deriv_le
     (z : DeningerPrimeGammaLowerPoint) (q : XiZeroCopy) {u : ℂ}
     (hu : u ∈ Metric.ball (z : ℂ)
       (deningerPrimeGammaDifferentiationRadius z)) :
-    ‖-((xiSpectralPoint q - u)⁻¹ ^ 2)‖ ≤
-      4 * ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q)‖ ^ 2 := by
+    ‖-((xiSpectralPoint q - u)⁻¹ ^ (2 : ℕ))‖ ≤
+      4 * ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
   have hhalf :=
     (half_norm_sub_lt_norm_sub_of_mem_differentiationBall z q hu).le
   have haz : 0 < ‖xiSpectralPoint q - (z : ℂ)‖ := by
@@ -120,20 +120,20 @@ private theorem norm_xiRelativeResolventTerm_deriv_le
     simpa [mul_comm] using! h
   rw [norm_neg, norm_pow, norm_inv, xiWeilCauchyTest, norm_inv]
   calc
-    ‖xiSpectralPoint q - u‖⁻¹ ^ 2 ≤
-        (2 * ‖xiSpectralPoint q - (z : ℂ)‖⁻¹) ^ 2 := by
+    ‖xiSpectralPoint q - u‖⁻¹ ^ (2 : ℕ) ≤
+        (2 * ‖xiSpectralPoint q - (z : ℂ)‖⁻¹) ^ (2 : ℕ) := by
       gcongr
-    _ = 4 * ‖xiSpectralPoint q - (z : ℂ)‖⁻¹ ^ 2 := by ring
+    _ = 4 * ‖xiSpectralPoint q - (z : ℂ)‖⁻¹ ^ (2 : ℕ) := by ring
 
 /-- The relative-resolvent trace is locally termwise differentiable below the Xi strip. -/
 theorem hasDerivAt_xiRelativeResolventTrace_of_eulerPoint
     (z : DeningerPrimeGammaLowerPoint) :
     HasDerivAt xiRelativeResolventTrace
-      (∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ 2))
+      (∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ (2 : ℕ)))
       (z : ℂ) := by
   let r := deningerPrimeGammaDifferentiationRadius z
   let majorant : XiZeroCopy → ℝ := fun q =>
-    4 * ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q)‖ ^ 2
+    4 * ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)
   have hr : 0 < r := deningerPrimeGammaDifferentiationRadius_pos z
   have hmajorant : Summable majorant :=
     (XiWeilSquareSummable_cauchy (z : ℂ)).mul_left 4
@@ -144,7 +144,7 @@ theorem hasDerivAt_xiRelativeResolventTrace_of_eulerPoint
   have hderiv :
       ∀ q : XiZeroCopy, ∀ u ∈ Metric.ball (z : ℂ) r,
         HasDerivAt (fun v => xiRelativeResolventTerm v q)
-          (-((xiSpectralPoint q - u)⁻¹ ^ 2)) u := by
+          (-((xiSpectralPoint q - u)⁻¹ ^ (2 : ℕ))) u := by
     intro q u hu
     apply hasDerivAt_xiRelativeResolventTerm
     exact sub_ne_zero.mp (norm_ne_zero_iff.mp
@@ -155,12 +155,12 @@ theorem hasDerivAt_xiRelativeResolventTrace_of_eulerPoint
         (half_norm_sub_lt_norm_sub_of_mem_differentiationBall z q hu).le)))
   have hbound :
       ∀ q : XiZeroCopy, ∀ u ∈ Metric.ball (z : ℂ) r,
-        ‖-((xiSpectralPoint q - u)⁻¹ ^ 2)‖ ≤ majorant q := by
+        ‖-((xiSpectralPoint q - u)⁻¹ ^ (2 : ℕ))‖ ≤ majorant q := by
     intro q u hu
     exact norm_xiRelativeResolventTerm_deriv_le z q hu
   change HasDerivAt
     (fun u => ∑' q : XiZeroCopy, xiRelativeResolventTerm u q)
-    (∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ 2))
+    (∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ (2 : ℕ)))
     (z : ℂ)
   exact hasDerivAt_tsum_of_isPreconnected hmajorant Metric.isOpen_ball
     (convex_ball (z : ℂ) r).isPreconnected hderiv hbound
@@ -182,8 +182,8 @@ theorem deningerPrimeGammaSourceKernel_eq_xiWeilPolarization_reflectedDiagonal
     (hasDerivAt_xiRelativeResolventTrace_of_eulerPoint z).deriv]
   rw [xiWeilPolarization]
   calc
-    -(∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ 2)) =
-        ∑' q : XiZeroCopy, (xiSpectralPoint q - (z : ℂ))⁻¹ ^ 2 := by
+    -(∑' q : XiZeroCopy, -((xiSpectralPoint q - (z : ℂ))⁻¹ ^ (2 : ℕ))) =
+        ∑' q : XiZeroCopy, (xiSpectralPoint q - (z : ℂ))⁻¹ ^ (2 : ℕ) := by
       rw [← tsum_neg]
       simp
     _ = ∑' q : XiZeroCopy,

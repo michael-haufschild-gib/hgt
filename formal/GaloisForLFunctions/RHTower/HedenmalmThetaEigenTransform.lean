@@ -330,7 +330,7 @@ theorem hedenmalmThetaEigenTransform_eq_xiThetaEigenFourier {α : ℂ} (hα : |�
   have hkey := mul_hedenmalmThetaEigenTransform hα h0 hz
   rw [xiThetaEigenFourier_eq_div hzero hne]
   have hden : (-α - z) ≠ 0 := fun hcon => hsum (by linear_combination -hcon)
-  have hI2 : I ^ 2 = -1 := Complex.I_sq
+  have hI2 : I ^ (2 : ℕ) = -1 := Complex.I_sq
   field_simp
   linear_combination -hkey + XiC z * hI2
 

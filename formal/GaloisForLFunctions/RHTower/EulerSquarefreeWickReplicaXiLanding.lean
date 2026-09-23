@@ -30,7 +30,7 @@ noncomputable section
 
 /-- The literal EWQ prime coefficient is an involution at every prime label. -/
 theorem quadraticResidueProductPrimeCoefficient_sq (p : Nat.Primes) :
-    quadraticResidueProductPrimeCoefficient p ^ 2 = 1 := by
+    quadraticResidueProductPrimeCoefficient p ^ (2 : ℕ) = 1 := by
   rw [quadraticResidueProductPrimeCoefficient,
     quadraticResidueFstObservable, quadraticResidueSndObservable, mul_pow,
     quadraticCharacterThreeUnit_sq, quadraticCharacterFourUnit_sq, one_mul]
@@ -67,7 +67,7 @@ theorem eulerWickQuadraticReplicaDiagonalCoefficient_eq_eulerLog
   rw [div_eq_mul_inv]
   let c := quadraticResidueProductPrimeCoefficient x.1
   let n := x.2 + 1
-  have hc : c ^ 2 = 1 := quadraticResidueProductPrimeCoefficient_sq x.1
+  have hc : c ^ (2 : ℕ) = 1 := quadraticResidueProductPrimeCoefficient_sq x.1
   change c ^ n * (c ^ n * (((n : ℕ) : ℂ))⁻¹) = eulerLogValuationProfile x.2
   calc
     c ^ n * (c ^ n * (((n : ℕ) : ℂ))⁻¹) =
@@ -75,7 +75,7 @@ theorem eulerWickQuadraticReplicaDiagonalCoefficient_eq_eulerLog
       rw [pow_add]
       ring
     _ = c ^ (2 * n) * (((n : ℕ) : ℂ))⁻¹ := by rw [two_mul]
-    _ = (c ^ 2) ^ n * (((n : ℕ) : ℂ))⁻¹ := by rw [pow_mul]
+    _ = (c ^ (2 : ℕ)) ^ n * (((n : ℕ) : ℂ))⁻¹ := by rw [pow_mul]
     _ = (((n : ℕ) : ℂ))⁻¹ := by rw [hc, one_pow, one_mul]
     _ = eulerLogValuationProfile x.2 := by
       simp [eulerLogValuationProfile, n]

@@ -47,7 +47,7 @@ theorem MRBilinear_of_averaged {f : ℕ → ℝ} {hh : ℝ → ℝ} (hf : ∀ n,
     (hpos : ∀ᶠ x in atTop, 0 < hh x * Real.sqrt x * Real.log 2) :
     MRBilinear f hh := by
   have hpair := tendsto_pairSum_of_averaged hf havg hpos
-  have hsq : Tendsto (fun x => (blockMean f x) ^ 2) atTop (𝓝 0) := by
+  have hsq : Tendsto (fun x => (blockMean f x) ^ (2 : ℕ)) atTop (𝓝 0) := by
     have := hmean.pow 2
     simpa using this
   have := hpair.sub hsq

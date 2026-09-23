@@ -33,10 +33,10 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Derivative-order drift of a coherent Cayley mode. -/
-def cayleyFockDrift (b : ℂ) : ℝ := ‖b‖ ^ 2
+def cayleyFockDrift (b : ℂ) : ℝ := ‖b‖ ^ (2 : ℕ)
 
 /-- Total Fock growth exponent of the Cayley mode `1 + b`. -/
-def cayleyFockExponent (b : ℂ) : ℝ := ‖1 + b‖ ^ 2 - 1
+def cayleyFockExponent (b : ℂ) : ℝ := ‖1 + b‖ ^ (2 : ℕ) - 1
 
 /-- Real Poisson weight, algebraically meaningful for every real parameter. -/
 def poissonOrderWeight (lam : ℝ) (r : ℕ) : ℝ :=
@@ -57,8 +57,8 @@ theorem cayleyFockExponent_eq (b : ℂ) :
 
 /-- Exact squared norm of one coherent exponential jet. -/
 theorem norm_coherentExponentialJet_sq (c b : ℂ) (x : ℝ) (r : ℕ) :
-    ‖coherentExponentialJet c b x r‖ ^ 2 =
-      ‖c‖ ^ 2 * (‖b‖ ^ 2) ^ r * Real.exp (2 * b.re * x) := by
+    ‖coherentExponentialJet c b x r‖ ^ (2 : ℕ) =
+      ‖c‖ ^ (2 : ℕ) * (‖b‖ ^ (2 : ℕ)) ^ r * Real.exp (2 * b.re * x) := by
   rw [coherentExponentialJet, norm_mul, norm_mul, norm_pow, Complex.norm_exp]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
     sub_zero]
@@ -72,24 +72,24 @@ theorem norm_coherentExponentialJet_sq (c b : ℂ) (x : ℝ) (r : ℕ) :
 Poisson packet of mean `d x`, multiplied by the total Cayley instability `exp (κ x)`. -/
 theorem coherentExponentialJet_poisson_conservation
     (c b : ℂ) (x : ℝ) (r : ℕ) :
-    x ^ r / r.factorial * ‖coherentExponentialJet c b x r‖ ^ 2 =
-      ‖c‖ ^ 2 * Real.exp (cayleyFockExponent b * x) *
+    x ^ r / r.factorial * ‖coherentExponentialJet c b x r‖ ^ (2 : ℕ) =
+      ‖c‖ ^ (2 : ℕ) * Real.exp (cayleyFockExponent b * x) *
         poissonOrderWeight (cayleyFockDrift b * x) r := by
   rw [norm_coherentExponentialJet_sq, poissonOrderWeight, cayleyFockExponent_eq,
     cayleyFockDrift]
-  rw [show (‖b‖ ^ 2 * x) ^ r = (‖b‖ ^ 2) ^ r * x ^ r by
+  rw [show (‖b‖ ^ (2 : ℕ) * x) ^ r = (‖b‖ ^ (2 : ℕ)) ^ r * x ^ r by
     rw [mul_pow]]
   have hexp :
       Real.exp (2 * b.re * x) =
-        Real.exp ((2 * b.re + ‖b‖ ^ 2) * x) *
-          Real.exp (-(‖b‖ ^ 2 * x)) := by
+        Real.exp ((2 * b.re + ‖b‖ ^ (2 : ℕ)) * x) *
+          Real.exp (-(‖b‖ ^ (2 : ℕ) * x)) := by
     rw [← Real.exp_add]
     congr 1
     ring
   rw [show
     x ^ r / r.factorial *
-        (‖c‖ ^ 2 * (‖b‖ ^ 2) ^ r * Real.exp (2 * b.re * x)) =
-      ‖c‖ ^ 2 * (‖b‖ ^ 2) ^ r * x ^ r / r.factorial *
+        (‖c‖ ^ (2 : ℕ) * (‖b‖ ^ (2 : ℕ)) ^ r * Real.exp (2 * b.re * x)) =
+      ‖c‖ ^ (2 : ℕ) * (‖b‖ ^ (2 : ℕ)) ^ r * x ^ r / r.factorial *
         Real.exp (2 * b.re * x) by ring]
   rw [hexp]
   ring
@@ -219,8 +219,8 @@ theorem coherentGenerator_poisson_conservation
     (c b : ℂ) (tau : ℝ) (r : ℕ) (hb : b ≠ 0) :
     coherentGeneratorObservationTime b tau ^ r / r.factorial *
         ‖coherentExponentialJet c b
-          (coherentGeneratorObservationTime b tau) r‖ ^ 2 =
-      ‖c‖ ^ 2 *
+          (coherentGeneratorObservationTime b tau) r‖ ^ (2 : ℕ) =
+      ‖c‖ ^ (2 : ℕ) *
         Real.exp (coherentGeneratorDualRate b * tau) *
           poissonOrderWeight tau r := by
   rw [coherentExponentialJet_poisson_conservation]
@@ -235,14 +235,14 @@ def twoModeCoherentJet (c d b e : ℂ) (x : ℝ) (r : ℕ) : ℂ :=
 /-- Adjacent-order exterior curvature of a two-mode jet. -/
 def twoModeCoherentExterior (c d b e : ℂ) (x : ℝ) (r : ℕ) : ℂ :=
   twoModeCoherentJet c d b e x r * twoModeCoherentJet c d b e x (r + 2) -
-    twoModeCoherentJet c d b e x (r + 1) ^ 2
+    twoModeCoherentJet c d b e x (r + 1) ^ (2 : ℕ)
 
 /-- The exterior curvature deletes both diagonal modes and retains exactly their squared
 separation. -/
 theorem twoModeCoherentExterior_eq
     (c d b e : ℂ) (x : ℝ) (r : ℕ) :
     twoModeCoherentExterior c d b e x r =
-      c * d * (b - e) ^ 2 * (b * e) ^ r *
+      c * d * (b - e) ^ (2 : ℕ) * (b * e) ^ r *
         Complex.exp ((b + e) * (x : ℂ)) := by
   rw [twoModeCoherentExterior, twoModeCoherentJet, twoModeCoherentJet,
     twoModeCoherentJet]
@@ -261,10 +261,10 @@ theorem twoModeCoherentExterior_eq
 theorem twoModeCoherentExterior_conj_eq
     (m : ℝ) (b : ℂ) (x : ℝ) (r : ℕ) :
     twoModeCoherentExterior (m : ℂ) (m : ℂ) b (starRingEnd ℂ b) x r =
-      ((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+      ((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
         ((‖b‖ ^ (2 * r) * Real.exp (2 * b.re * x) : ℝ) : ℂ) := by
   rw [twoModeCoherentExterior_eq]
-  rw [show b * (starRingEnd ℂ b) = ((‖b‖ ^ 2 : ℝ) : ℂ) by
+  rw [show b * (starRingEnd ℂ b) = ((‖b‖ ^ (2 : ℕ) : ℝ) : ℂ) by
     rw [Complex.mul_conj, Complex.sq_norm]]
   have hexp :
       Complex.exp ((b + (starRingEnd ℂ b)) * (x : ℂ)) =
@@ -275,10 +275,10 @@ theorem twoModeCoherentExterior_conj_eq
     push_cast
     ring
   rw [hexp]
-  rw [show (m : ℂ) * (m : ℂ) = (((m ^ 2 : ℝ) : ℂ)) by
+  rw [show (m : ℂ) * (m : ℂ) = (((m ^ (2 : ℕ) : ℝ) : ℂ)) by
     push_cast
     ring]
-  rw [show ((((‖b‖ ^ 2 : ℝ) : ℂ)) ^ r) =
+  rw [show ((((‖b‖ ^ (2 : ℕ) : ℝ) : ℂ)) ^ r) =
       (((‖b‖ ^ (2 * r) : ℝ) : ℂ)) by
     rw [← Complex.ofReal_pow, pow_mul]]
   rw [Complex.ofReal_mul]
@@ -291,24 +291,24 @@ theorem neg_re_twoModeCoherentExterior_conj_poisson_conservation
     x ^ r / r.factorial *
         (-(twoModeCoherentExterior (m : ℂ) (m : ℂ) b
           (starRingEnd ℂ b) x r).re) =
-      4 * m ^ 2 * b.im ^ 2 *
+      4 * m ^ (2 : ℕ) * b.im ^ (2 : ℕ) *
         Real.exp (cayleyFockExponent b * x) *
           poissonOrderWeight (cayleyFockDrift b * x) r := by
   rw [twoModeCoherentExterior_conj_eq]
-  rw [show (b - (starRingEnd ℂ b)) ^ 2 =
-      (((-4 * b.im ^ 2 : ℝ) : ℂ)) by
+  rw [show (b - (starRingEnd ℂ b)) ^ (2 : ℕ) =
+      (((-4 * b.im ^ (2 : ℕ) : ℝ) : ℂ)) by
     rw [Complex.sub_conj, mul_pow, Complex.I_sq]
     push_cast
     ring]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
     sub_zero]
   rw [poissonOrderWeight, cayleyFockExponent_eq, cayleyFockDrift]
-  rw [show (‖b‖ ^ 2 * x) ^ r = (‖b‖ ^ 2) ^ r * x ^ r by
+  rw [show (‖b‖ ^ (2 : ℕ) * x) ^ r = (‖b‖ ^ (2 : ℕ)) ^ r * x ^ r by
     rw [mul_pow]]
   have hexp :
       Real.exp (2 * b.re * x) =
-        Real.exp ((2 * b.re + ‖b‖ ^ 2) * x) *
-          Real.exp (-(‖b‖ ^ 2 * x)) := by
+        Real.exp ((2 * b.re + ‖b‖ ^ (2 : ℕ)) * x) *
+          Real.exp (-(‖b‖ ^ (2 : ℕ) * x)) := by
     rw [← Real.exp_add]
     congr 1
     ring
@@ -321,18 +321,18 @@ theorem tsum_twoModeCoherentExterior_conj
     ∑' r : ℕ, ((x : ℂ) ^ r / r.factorial) *
         twoModeCoherentExterior (m : ℂ) (m : ℂ) b
           (starRingEnd ℂ b) x r =
-      ((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+      ((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
         Complex.exp ((cayleyFockExponent b * x : ℝ) : ℂ) := by
   have hsum :=
     (NormedSpace.expSeries_div_hasSum_exp
-      (((‖b‖ ^ 2 * x : ℝ) : ℂ))).mul_left
-        (((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+      (((‖b‖ ^ (2 : ℕ) * x : ℝ) : ℂ))).mul_left
+        (((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
           Complex.exp ((2 * b.re * x : ℝ) : ℂ))
   rw [show
-    (fun r : ℕ => (((m ^ 2 : ℝ) : ℂ) *
-        (b - (starRingEnd ℂ b)) ^ 2 *
+    (fun r : ℕ => (((m ^ (2 : ℕ) : ℝ) : ℂ) *
+        (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
         Complex.exp ((2 * b.re * x : ℝ) : ℂ)) *
-          (((‖b‖ ^ 2 * x : ℝ) : ℂ) ^ r / r.factorial)) =
+          (((‖b‖ ^ (2 : ℕ) * x : ℝ) : ℂ) ^ r / r.factorial)) =
       (fun r : ℕ => ((x : ℂ) ^ r / r.factorial) *
         twoModeCoherentExterior (m : ℂ) (m : ℂ) b
           (starRingEnd ℂ b) x r) by
@@ -346,7 +346,7 @@ theorem tsum_twoModeCoherentExterior_conj
   rw [← Complex.exp_eq_exp_ℂ]
   have hexp :
       Complex.exp ((2 * b.re * x : ℝ) : ℂ) *
-          Complex.exp ((‖b‖ ^ 2 * x : ℝ) : ℂ) =
+          Complex.exp ((‖b‖ ^ (2 : ℕ) * x : ℝ) : ℂ) =
         Complex.exp ((cayleyFockExponent b * x : ℝ) : ℂ) := by
     rw [← Complex.exp_add]
     congr 1
@@ -354,13 +354,13 @@ theorem tsum_twoModeCoherentExterior_conj
     push_cast
     ring
   calc
-    ((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+    ((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
           Complex.exp ((2 * b.re * x : ℝ) : ℂ) *
-          Complex.exp ((‖b‖ ^ 2 * x : ℝ) : ℂ) =
-        ((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+          Complex.exp ((‖b‖ ^ (2 : ℕ) * x : ℝ) : ℂ) =
+        ((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
           (Complex.exp ((2 * b.re * x : ℝ) : ℂ) *
-            Complex.exp ((‖b‖ ^ 2 * x : ℝ) : ℂ)) := by ring
-    _ = ((m ^ 2 : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ 2 *
+            Complex.exp ((‖b‖ ^ (2 : ℕ) * x : ℝ) : ℂ)) := by ring
+    _ = ((m ^ (2 : ℕ) : ℝ) : ℂ) * (b - (starRingEnd ℂ b)) ^ (2 : ℕ) *
           Complex.exp ((cayleyFockExponent b * x : ℝ) : ℂ) := by
       rw [hexp]
 
@@ -403,20 +403,20 @@ theorem rho_re_from_cayleyFock_ridge
 /-- Ridge position and exponential growth recover the squared height of the spectral point. -/
 theorem rho_im_sq_from_cayleyFock_ridge
     {rho : ℂ} (h : rho ≠ 1) :
-    rho.im ^ 2 =
+    rho.im ^ (2 : ℕ) =
       1 / cayleyFockDrift ((rho - 1)⁻¹) -
         1 / 4 * (1 -
           cayleyFockExponent ((rho - 1)⁻¹) /
-            cayleyFockDrift ((rho - 1)⁻¹)) ^ 2 := by
+            cayleyFockDrift ((rho - 1)⁻¹)) ^ (2 : ℕ) := by
   let d := cayleyFockDrift ((rho - 1)⁻¹)
   have hd : d ≠ 0 := by
     dsimp only [d]
     exact pow_ne_zero 2
       (norm_ne_zero_iff.mpr (inv_ne_zero (sub_ne_zero.mpr h)))
   have hnorm :
-      d⁻¹ = (rho.re - 1) ^ 2 + rho.im ^ 2 := by
+      d⁻¹ = (rho.re - 1) ^ (2 : ℕ) + rho.im ^ (2 : ℕ) := by
     change (cayleyFockDrift ((rho - 1)⁻¹))⁻¹ =
-      (rho.re - 1) ^ 2 + rho.im ^ 2
+      (rho.re - 1) ^ (2 : ℕ) + rho.im ^ (2 : ℕ)
     rw [cayleyFockDrift_of_rho h, inv_inv, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
       sub_zero]
@@ -429,9 +429,9 @@ theorem rho_im_sq_from_cayleyFock_ridge
         2 * rho.re - 1 := by
     rw [hk]
     field_simp
-  change rho.im ^ 2 =
+  change rho.im ^ (2 : ℕ) =
     1 / d - 1 / 4 *
-      (1 - cayleyFockExponent ((rho - 1)⁻¹) / d) ^ 2
+      (1 - cayleyFockExponent ((rho - 1)⁻¹) / d) ^ (2 : ℕ)
   rw [hratio, one_div, hnorm]
   ring
 

@@ -80,7 +80,7 @@ theorem physicalLeftModeStream_ingoing (q : XiZeroCopy) (side outer : Bool)
 
 /-- The original angular action eigenvalue in the left fundamental frequency. -/
 theorem physical_angular_eigenvalue (q : XiZeroCopy) (side : Bool) :
-    physicalAngularParameter q^2-1/4-2=
+    physicalAngularParameter q^(2 : ℕ)-1/4-2=
       physicalFundamentalFrequency q side*(physicalFundamentalFrequency q side+3) := by
   rw [physicalFundamentalFrequency_connection_root,physicalRadialFrequency]
   cases side <;> simp only [Bool.false_eq_true,ite_true,ite_false]

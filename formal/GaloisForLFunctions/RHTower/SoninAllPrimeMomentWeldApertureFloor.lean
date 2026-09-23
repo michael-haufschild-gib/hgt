@@ -41,17 +41,17 @@ theorem hsNormSqRect_soninAllPrimeColumnKernel_eq_tsum_block
     fun pji =>
       ‖inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.2)
         (centralSoninWeightedPrimePowerResidual a pji.1
-          (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.1))‖ ^ 2
+          (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.1))‖ ^ (2 : ℕ)
   have hF : Summable F := by
     simpa only [F] using summable_all_prime_residual_matrix_entries a ha
   calc
     (∑' z : SoninAllPrimeIndex × SoninHilbertIndex,
-        ‖soninAllPrimeColumnKernel a z‖ ^ 2) =
+        ‖soninAllPrimeColumnKernel a z‖ ^ (2 : ℕ)) =
         ∑' pji : (Nat.Primes × ℕ) ×
             (SoninHilbertIndex × SoninHilbertIndex), F pji := by
       symm
       exact soninColumnEnergyEquiv.tsum_eq
-        (fun z => ‖soninAllPrimeColumnKernel a z‖ ^ 2)
+        (fun z => ‖soninAllPrimeColumnKernel a z‖ ^ (2 : ℕ))
     _ = ∑' pk : Nat.Primes × ℕ,
         ∑' ji : SoninHilbertIndex × SoninHilbertIndex, F (pk, ji) :=
       hF.tsum_prod
@@ -83,7 +83,7 @@ theorem hsNormSqRect_soninAllPrimeColumnKernel_eq_tsum_block
 theorem re_soninAllPrimeEnergyMoment_zero_le_area
     (a : ℝ) (ha : 0 < a) :
     (soninAllPrimeEnergyMoment a 0).re ≤
-      (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass := by
+      (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass := by
   rw [soninAllPrimeEnergyMoment, HilbertSchmidt.hsPow,
     trace_soninAllPrimeResidualEnergyKernel a ha, Complex.ofReal_re]
   rw [← hsNormSqRect_soninAllPrimeColumnKernel_eq_residualKernel a ha,
@@ -123,15 +123,15 @@ theorem soninPrimeArchSingleMomentCoupling_eventually_aperture_boundedBelow
   refine ⟨δ, hδ, hevent.mono fun j hj => ?_⟩
   have harea := re_soninAllPrimeEnergyMoment_zero_le_area
     (aperture j) (h.1 j)
-  have hbound : (1 / 50 : ℝ) < R * aperture j ^ 2 := by
+  have hbound : (1 / 50 : ℝ) < R * aperture j ^ (2 : ℕ) := by
     have hraw := hj.trans_le harea
     dsimp only [R, M]
     nlinarith
-  have hδsq : δ ^ 2 = (1 / 50 : ℝ) / R := by
+  have hδsq : δ ^ (2 : ℕ) = (1 / 50 : ℝ) / R := by
     dsimp only [δ]
     exact Real.sq_sqrt hratio.le
   have ha : 0 < aperture j := h.1 j
-  have hscaled : δ ^ 2 < aperture j ^ 2 := by
+  have hscaled : δ ^ (2 : ℕ) < aperture j ^ (2 : ℕ) := by
     rw [hδsq]
     rw [div_lt_iff₀ hR]
     simpa [mul_comm] using hbound

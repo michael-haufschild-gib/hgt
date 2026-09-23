@@ -60,7 +60,7 @@ theorem thetaTailPositiveConeExtensionNoGoKernel_quadraticForm_eq_sq
     {n : ℕ} (x : Fin n → ℝ) (hx : ∀ i, 0 ≤ x i) (a : Fin n → ℝ) :
     (∑ i, ∑ j, a i * a j *
         thetaTailPositiveConeExtensionNoGoKernel (x i) (x j)) =
-      (∑ i, a i) ^ 2 := by
+      (∑ i, a i) ^ (2 : ℕ) := by
   simp_rw [thetaTailPositiveConeExtensionNoGoKernel_eq_one (hx _) (hx _)]
   rw [sq, Finset.sum_mul_sum]
   apply Finset.sum_congr rfl

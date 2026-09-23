@@ -18,7 +18,7 @@ needed by Route R:
   that nonzero class and is therefore coefficient-faithful.
 
 The quotient is deliberately algebraic and non-Hausdorff with respect to the
-ambient `ell^2` topology.  This is forced by the existing closed-relation
+ambient `ell^(2 : ℕ)` topology.  This is forced by the existing closed-relation
 no-go: no continuous Hausdorff quotient can both kill the dense arithmetic
 core and retain the horizon.
 -/
@@ -29,8 +29,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
-    DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
+noncomputable local instance deningerCalderonWittCrossPrimeSingularCoronaInst1 : DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 
 private def crossPrimePacketIndexOfPrime (p : Nat.Primes) :
@@ -55,8 +54,7 @@ private theorem crossPrimePacketIndexOfPrime_injective :
     (fun i : DeningerCalderonWittCrossPrimePacketIndex => i.1.1) h
   simpa [crossPrimePacketIndexOfPrime_first] using hval
 
-noncomputable local instance :
-    Infinite DeningerCalderonWittCrossPrimePacketIndex :=
+noncomputable local instance deningerCalderonWittCrossPrimeSingularCoronaInst2 : Infinite DeningerCalderonWittCrossPrimePacketIndex :=
   Infinite.of_injective crossPrimePacketIndexOfPrime
     crossPrimePacketIndexOfPrime_injective
 

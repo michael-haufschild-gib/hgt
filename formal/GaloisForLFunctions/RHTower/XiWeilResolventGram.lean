@@ -63,10 +63,10 @@ theorem xiCauchyRegularizedKernel_mul {z z' w : ℂ} (hz : z ≠ 0) (hz' : z' �
   ring
 
 /-- The second inverse moment of the centered divisor. -/
-def xiSecondInverseMoment : ℂ := ∑' q : XiZeroCopy, (xiSpectralPoint q)⁻¹ ^ 2
+def xiSecondInverseMoment : ℂ := ∑' q : XiZeroCopy, (xiSpectralPoint q)⁻¹ ^ (2 : ℕ)
 
 theorem summable_xiSpectralPoint_inv_sq :
-    Summable (fun q : XiZeroCopy => (xiSpectralPoint q)⁻¹ ^ 2) := by
+    Summable (fun q : XiZeroCopy => (xiSpectralPoint q)⁻¹ ^ (2 : ℕ)) := by
   refine Summable.of_norm_bounded xiSpectralPoint_inv_sq_summable (fun q => ?_)
   have hne : xiSpectralPoint q ≠ 0 := xiSpectralPoint_ne_zero q
   rw [norm_pow, norm_inv, one_div, ← inv_pow]
@@ -102,7 +102,7 @@ theorem xiWeilGramEntry_eq {z z' : ℂ} (hz : XiC z ≠ 0) (hz' : XiC z' ≠ 0)
   have hpoint : ∀ q : XiZeroCopy,
       xiCauchyRegularizedKernel z (xiSpectralPoint q) *
         xiCauchyRegularizedKernel z' (xiSpectralPoint q) =
-      (xiSpectralPoint q)⁻¹ ^ 2 -
+      (xiSpectralPoint q)⁻¹ ^ (2 : ℕ) -
         (z' / (z * (z - z'))) * xiRelativeResolventTerm z q +
         (z / (z' * (z - z'))) * xiRelativeResolventTerm z' q := by
     intro q

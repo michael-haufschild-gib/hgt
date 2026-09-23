@@ -117,7 +117,7 @@ theorem period_logDeriv_double (c : ℂ) (ℓ : C1Loop) (n : ℕ)
         exact (hquad_an n z).continuousAt
       exact (isOpen_escapeOpen c).preimage h1
     have hev : (fun z => bottcherCoord c ((quadratic c)^[n+1] z))
-        =ᶠ[nhds (ℓ.γ θ)] (fun z => bottcherCoord c ((quadratic c)^[n] z) ^ 2) := by
+        =ᶠ[nhds (ℓ.γ θ)] (fun z => bottcherCoord c ((quadratic c)^[n] z) ^ (2 : ℕ)) := by
       filter_upwards [hopen.mem_nhds (hfar θ)] with z hz
       have h1 : (quadratic c)^[n+1] z = quadratic c ((quadratic c)^[n] z) := by
         rw [Function.iterate_succ_apply']
@@ -532,7 +532,7 @@ theorem green_far_compare (c₁ c₂ : ℂ) {z : ℂ}
   have hval : greenFunctionDyn c₂ z = greenLimit c₂ z := by
     unfold greenFunctionDyn
     rw [if_neg hzK₂]
-  have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ 2 ≤ 1 := by
+  have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ (2 : ℕ) ≤ 1 := by
     have h3 : ‖c₂‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) h2)
     rw [div_le_one (by positivity)]
     nlinarith

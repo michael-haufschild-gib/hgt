@@ -43,14 +43,14 @@ theorem exists_dual_vector {α β : V →ₗ[ℂ] ℂ} {z : V} (hz : β z = 1)
 
 /-- The positive definite bulk form realizing prescribed dual energies. -/
 def boundaryBulkForm (α β : V →ₗ[ℂ] ℂ) (u w : V) (ra rb : ℝ) (v : V) : ℝ :=
-  ‖α v‖ ^ 2 / ra + ‖β v‖ ^ 2 / rb + ‖v - (α v) • u - (β v) • w‖ ^ 2
+  ‖α v‖ ^ (2 : ℕ) / ra + ‖β v‖ ^ (2 : ℕ) / rb + ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ)
 
 theorem boundaryBulkForm_nonneg (α β : V →ₗ[ℂ] ℂ) (u w : V) {ra rb : ℝ}
     (hra : 0 < ra) (hrb : 0 < rb) (v : V) : 0 ≤ boundaryBulkForm α β u w ra rb v := by
   unfold boundaryBulkForm
-  have h1 : 0 ≤ ‖α v‖ ^ 2 / ra := by positivity
-  have h2 : 0 ≤ ‖β v‖ ^ 2 / rb := by positivity
-  have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ 2 := sq_nonneg _
+  have h1 : 0 ≤ ‖α v‖ ^ (2 : ℕ) / ra := by positivity
+  have h2 : 0 ≤ ‖β v‖ ^ (2 : ℕ) / rb := by positivity
+  have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) := sq_nonneg _
   linarith
 
 /-- **Positive definiteness.** -/
@@ -60,23 +60,23 @@ theorem boundaryBulkForm_pos (α β : V →ₗ[ℂ] ℂ) (u w : V) {ra rb : ℝ}
   rcases lt_or_eq_of_le (boundaryBulkForm_nonneg α β u w hra hrb v) with h | h
   · exact h
   · exfalso
-    have h1 : 0 ≤ ‖α v‖ ^ 2 / ra := by positivity
-    have h2 : 0 ≤ ‖β v‖ ^ 2 / rb := by positivity
-    have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ 2 := sq_nonneg _
-    have hsum : ‖α v‖ ^ 2 / ra + ‖β v‖ ^ 2 / rb + ‖v - (α v) • u - (β v) • w‖ ^ 2 = 0 := by
+    have h1 : 0 ≤ ‖α v‖ ^ (2 : ℕ) / ra := by positivity
+    have h2 : 0 ≤ ‖β v‖ ^ (2 : ℕ) / rb := by positivity
+    have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) := sq_nonneg _
+    have hsum : ‖α v‖ ^ (2 : ℕ) / ra + ‖β v‖ ^ (2 : ℕ) / rb + ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) = 0 := by
       unfold boundaryBulkForm at h
       linarith
-    have hA : ‖α v‖ ^ 2 / ra = 0 := by linarith
-    have hB : ‖β v‖ ^ 2 / rb = 0 := by linarith
-    have hC : ‖v - (α v) • u - (β v) • w‖ ^ 2 = 0 := by linarith
+    have hA : ‖α v‖ ^ (2 : ℕ) / ra = 0 := by linarith
+    have hB : ‖β v‖ ^ (2 : ℕ) / rb = 0 := by linarith
+    have hC : ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) = 0 := by linarith
     have hαv : α v = 0 := by
-      have hsq : ‖α v‖ ^ 2 = 0 := by
+      have hsq : ‖α v‖ ^ (2 : ℕ) = 0 := by
         field_simp at hA
         linarith [hA]
       have : ‖α v‖ = 0 := by nlinarith [norm_nonneg (α v)]
       exact norm_eq_zero.mp this
     have hβv : β v = 0 := by
-      have hsq : ‖β v‖ ^ 2 = 0 := by
+      have hsq : ‖β v‖ ^ (2 : ℕ) = 0 := by
         field_simp at hB
         linarith [hB]
       have : ‖β v‖ = 0 := by nlinarith [norm_nonneg (β v)]
@@ -105,39 +105,39 @@ theorem boundaryBulkForm_at_w (α β : V →ₗ[ℂ] ℂ) {u w : V} (hαw : α w
 semidefinite exactly for `t ≤ 1 / r_α`. -/
 theorem boundaryThreshold_alpha (α β : V →ₗ[ℂ] ℂ) {u w : V} (hαu : α u = 1) (hβu : β u = 0)
     {ra rb : ℝ} (hrb : 0 < rb) (t : ℝ) :
-    (∀ v : V, t * ‖α v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / ra := by
+    (∀ v : V, t * ‖α v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / ra := by
   constructor
   · intro h
     have hu := h u
     rw [boundaryBulkForm_at_u α β hαu hβu ra rb, hαu] at hu
     simpa using hu
   · intro ht v
-    have hstep : t * ‖α v‖ ^ 2 ≤ (1 / ra) * ‖α v‖ ^ 2 :=
+    have hstep : t * ‖α v‖ ^ (2 : ℕ) ≤ (1 / ra) * ‖α v‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right ht (sq_nonneg _)
-    have hrest : (1 / ra) * ‖α v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v := by
+    have hrest : (1 / ra) * ‖α v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v := by
       unfold boundaryBulkForm
-      have h2 : 0 ≤ ‖β v‖ ^ 2 / rb := by positivity
-      have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ 2 := sq_nonneg _
-      have heq : (1 / ra) * ‖α v‖ ^ 2 = ‖α v‖ ^ 2 / ra := by ring
+      have h2 : 0 ≤ ‖β v‖ ^ (2 : ℕ) / rb := by positivity
+      have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) := sq_nonneg _
+      have heq : (1 / ra) * ‖α v‖ ^ (2 : ℕ) = ‖α v‖ ^ (2 : ℕ) / ra := by ring
       linarith [heq]
     linarith
 
 theorem boundaryThreshold_beta (α β : V →ₗ[ℂ] ℂ) {u w : V} (hαw : α w = 0) (hβw : β w = 1)
     {ra rb : ℝ} (hra : 0 < ra) (t : ℝ) :
-    (∀ v : V, t * ‖β v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / rb := by
+    (∀ v : V, t * ‖β v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / rb := by
   constructor
   · intro h
     have hw := h w
     rw [boundaryBulkForm_at_w α β hαw hβw ra rb, hβw] at hw
     simpa using hw
   · intro ht v
-    have hstep : t * ‖β v‖ ^ 2 ≤ (1 / rb) * ‖β v‖ ^ 2 :=
+    have hstep : t * ‖β v‖ ^ (2 : ℕ) ≤ (1 / rb) * ‖β v‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right ht (sq_nonneg _)
-    have hrest : (1 / rb) * ‖β v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v := by
+    have hrest : (1 / rb) * ‖β v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v := by
       unfold boundaryBulkForm
-      have h1 : 0 ≤ ‖α v‖ ^ 2 / ra := by positivity
-      have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ 2 := sq_nonneg _
-      have heq : (1 / rb) * ‖β v‖ ^ 2 = ‖β v‖ ^ 2 / rb := by ring
+      have h1 : 0 ≤ ‖α v‖ ^ (2 : ℕ) / ra := by positivity
+      have h3 : 0 ≤ ‖v - (α v) • u - (β v) • w‖ ^ (2 : ℕ) := sq_nonneg _
+      have heq : (1 / rb) * ‖β v‖ ^ (2 : ℕ) = ‖β v‖ ^ (2 : ℕ) / rb := by ring
       linarith [heq]
     linarith
 
@@ -147,8 +147,8 @@ theorem boundaryWeylThreshold_not_monotone (α β : V →ₗ[ℂ] ℂ) {u w : V}
     (hαu : α u = 1) (hβu : β u = 0) (hαw : α w = 0) (hβw : β w = 1)
     (ra rb : ℝ) (hra : 0 < ra) (hrb : 0 < rb) :
     (∀ v : V, v ≠ 0 → 0 < boundaryBulkForm α β u w ra rb v) ∧
-      (∀ t : ℝ, (∀ v : V, t * ‖α v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / ra) ∧
-      (∀ t : ℝ, (∀ v : V, t * ‖β v‖ ^ 2 ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / rb) :=
+      (∀ t : ℝ, (∀ v : V, t * ‖α v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / ra) ∧
+      (∀ t : ℝ, (∀ v : V, t * ‖β v‖ ^ (2 : ℕ) ≤ boundaryBulkForm α β u w ra rb v) ↔ t ≤ 1 / rb) :=
   ⟨fun _ hv => boundaryBulkForm_pos α β u w hra hrb hv,
     boundaryThreshold_alpha α β hαu hβu hrb,
     boundaryThreshold_beta α β hαw hβw hra⟩

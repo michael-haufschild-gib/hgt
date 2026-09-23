@@ -17,14 +17,14 @@ def rawThirdIntegrand (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (
     rawCubicOperator q k x (rawInteractionSolution q k v x)
 
 def rawThirdDensity (q : SchwartzMap ℝ ℂ) (k x : ℝ) : ℝ :=
-  (rawInteractionMass q^2+|k| * rawCubicMass q)*rawInteractionDensity q x+rawCubicDensity q x
+  (rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawInteractionDensity q x+rawCubicDensity q x
 
 theorem rawThirdDensity_nonneg (q : SchwartzMap ℝ ℂ) (k x : ℝ) : 0 ≤ rawThirdDensity q k x :=
   add_nonneg (mul_nonneg (add_nonneg (sq_nonneg _) (mul_nonneg (abs_nonneg k) (rawCubicMass_nonneg q)))
     (rawInteractionDensity_nonneg q x)) (rawCubicDensity_nonneg q x)
 
 theorem rawThirdDensity_integrable (q : SchwartzMap ℝ ℂ) (k : ℝ) : Integrable (rawThirdDensity q k) :=
-  ((rawInteractionDensity_integrable q).const_mul (rawInteractionMass q^2+|k| * rawCubicMass q)).add
+  ((rawInteractionDensity_integrable q).const_mul (rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)).add
     (rawCubicDensity_integrable q)
 
 theorem continuous_rawThirdIntegrand (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) :
@@ -79,15 +79,15 @@ theorem rawSecondSlope_third_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : Spe
 /-- A cubic expansion with an explicitly constructed remainder, exact for every real frequency. -/
 theorem rawInteractionSolution_third_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (x : ℝ) :
     rawInteractionSolution q k v x = v+(k : ℂ) • rawLinearCoefficient q v x+
-      (k : ℂ)^2 • rawSecondSlope q 0 v x+(k : ℂ)^3 • rawThirdSlope q k v x := by
+      (k : ℂ)^(2 : ℕ) • rawSecondSlope q 0 v x+(k : ℂ)^(3 : ℕ) • rawThirdSlope q k v x := by
   rw [rawInteractionSolution_second_factor,rawSecondSlope_third_factor,smul_add,smul_smul]
-  have he : (k : ℂ)^2*(k : ℂ) = (k : ℂ)^3 := by ring
+  have he : (k : ℂ)^(2 : ℕ)*(k : ℂ) = (k : ℂ)^(3 : ℕ) := by ring
   rw [he]
   simp only [add_assoc]
 
 theorem rawThirdSlope_bound (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (x : ℝ) :
     ‖rawThirdSlope q k v x‖ ≤ (‖v‖*Real.exp (|k| * rawInteractionMass q))*
-      ((rawInteractionMass q^2+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q) := by
+      ((rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q) := by
   have h1 : ‖rawThirdSlope q k v x‖ ≤ ∫ s : ℝ, ‖rawThirdIntegrand q k v s‖ :=
     intervalIntegral.norm_integral_le_integral_norm_uIoc.trans
       (setIntegral_le_integral (rawThirdIntegrand_integrable q k v).norm
@@ -96,9 +96,9 @@ theorem rawThirdSlope_bound (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVec
     ((rawThirdDensity_integrable q k).const_mul (‖v‖*Real.exp (|k| * rawInteractionMass q)))
     (rawThirdIntegrand_bound q k v)
   have he : (∫ s : ℝ, rawThirdDensity q k s) =
-      (rawInteractionMass q^2+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q := by
+      (rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q := by
     rw [show (fun s => rawThirdDensity q k s) = fun s =>
-      (rawInteractionMass q^2+|k| * rawCubicMass q)*rawInteractionDensity q s+rawCubicDensity q s from rfl]
+      (rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawInteractionDensity q s+rawCubicDensity q s from rfl]
     rw [integral_add ((rawInteractionDensity_integrable q).const_mul _)
       (rawCubicDensity_integrable q),integral_const_mul]
     rfl

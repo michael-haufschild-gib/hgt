@@ -765,7 +765,7 @@ theorem sourceHorizontalWoldPrimeClockUniversalProfile_mul_rate_neg_iff
 sign, so the complete source profile lies below its cubic term on the positive ray. -/
 theorem sourceHorizontalWoldPrimeClockUniversalProfile_le_neg_cubic
     {u : ℝ} (hu : 0 ≤ u) :
-    sourceHorizontalWoldPrimeClockUniversalProfile u ≤ -(u ^ 3 / 9) := by
+    sourceHorizontalWoldPrimeClockUniversalProfile u ≤ -(u ^ (3 : ℕ) / 9) := by
   let g : ℕ → ℝ := fun k =>
     u ^ (2 * k + 1) / (2 * k + 1).factorial *
       (1 - (1 / (2 * k + 1 : ℕ) : ℝ))
@@ -780,7 +780,7 @@ theorem sourceHorizontalWoldPrimeClockUniversalProfile_le_neg_cubic
       (div_le_one hden0).2 hden
     exact mul_nonneg (by positivity) (by linarith)
   have hterm : g 1 ≤ ∑' k : ℕ, g k := hsum.le_tsum 1 (fun k _ => hg0 k)
-  have hg1 : g 1 = u ^ 3 / 9 := by
+  have hg1 : g 1 = u ^ (3 : ℕ) / 9 := by
     dsimp [g]
     norm_num
     ring
@@ -811,7 +811,7 @@ def sourceHorizontalWoldPrimeClockPolarRateWork (u : ℝ) : ℝ :=
 /-- Positive-ray quantitative source properness. -/
 theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg
     {u : ℝ} (hu : 0 ≤ u) :
-    Real.log 2 / 18 * u ^ 4 ≤
+    Real.log 2 / 18 * u ^ (4 : ℕ) ≤
       sourceHorizontalWoldPrimeClockPolarRateWork u := by
   have hcubic :=
     sourceHorizontalWoldPrimeClockUniversalProfile_le_neg_cubic hu
@@ -819,8 +819,8 @@ theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg
   have hmul := mul_le_mul_of_nonneg_left hcubic hfactor
   rw [sourceHorizontalWoldPrimeClockPolarRateWork]
   calc
-    Real.log 2 / 18 * u ^ 4 =
-        -((Real.log 2 / 2 * u) * (-(u ^ 3 / 9))) := by ring
+    Real.log 2 / 18 * u ^ (4 : ℕ) =
+        -((Real.log 2 / 2 * u) * (-(u ^ (3 : ℕ) / 9))) := by ring
     _ ≤ -((Real.log 2 / 2 * u) *
         sourceHorizontalWoldPrimeClockUniversalProfile u) := neg_le_neg hmul
     _ = -(Real.log 2 / 2) * u *
@@ -829,7 +829,7 @@ theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg
 /-- Quantitative source properness: polar work dominates a universal quartic.  The quartic is the
 product of the complete-resolution linear tail and the first retained nonlinear Wold mode. -/
 theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower (u : ℝ) :
-    Real.log 2 / 18 * u ^ 4 ≤
+    Real.log 2 / 18 * u ^ (4 : ℕ) ≤
       sourceHorizontalWoldPrimeClockPolarRateWork u := by
   by_cases hu : 0 ≤ u
   · exact sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg hu
@@ -837,7 +837,7 @@ theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower (u : ℝ) :
     have h :=
       sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg hneg
     calc
-      Real.log 2 / 18 * u ^ 4 = Real.log 2 / 18 * (-u) ^ 4 := by ring
+      Real.log 2 / 18 * u ^ (4 : ℕ) = Real.log 2 / 18 * (-u) ^ (4 : ℕ) := by ring
       _ ≤ sourceHorizontalWoldPrimeClockPolarRateWork (-u) := h
       _ = sourceHorizontalWoldPrimeClockPolarRateWork u :=
         sourceHorizontalWoldPrimeClockPolarRateWork_neg u
@@ -848,19 +848,19 @@ theorem sourceHorizontalWoldPrimeClockPolarRateWork_scale_tendsto
     {d u : ℝ} (hd : 1 < d) (hu : u ≠ 0) :
     Tendsto (fun n : ℕ =>
       sourceHorizontalWoldPrimeClockPolarRateWork (d ^ n * u)) atTop atTop := by
-  have hbase : (1 : ℝ) < d ^ 4 := one_lt_pow₀ hd (by norm_num)
-  have hpow : Tendsto (fun n : ℕ => (d ^ 4) ^ n) atTop atTop :=
+  have hbase : (1 : ℝ) < d ^ (4 : ℕ) := one_lt_pow₀ hd (by norm_num)
+  have hpow : Tendsto (fun n : ℕ => (d ^ (4 : ℕ)) ^ n) atTop atTop :=
     tendsto_pow_atTop_atTop_of_one_lt hbase
-  have hu4 : 0 < u ^ 4 := by positivity
-  have hc : 0 < Real.log 2 / 18 * u ^ 4 := by positivity
+  have hu4 : 0 < u ^ (4 : ℕ) := by positivity
+  have hc : 0 < Real.log 2 / 18 * u ^ (4 : ℕ) := by positivity
   have hlower : Tendsto (fun n : ℕ =>
-      (Real.log 2 / 18 * u ^ 4) * (d ^ 4) ^ n) atTop atTop :=
+      (Real.log 2 / 18 * u ^ (4 : ℕ)) * (d ^ (4 : ℕ)) ^ n) atTop atTop :=
     hpow.const_mul_atTop hc
   refine tendsto_atTop_mono' atTop ?_ hlower
   filter_upwards with n
   calc
-    (Real.log 2 / 18 * u ^ 4) * (d ^ 4) ^ n =
-        Real.log 2 / 18 * (d ^ n * u) ^ 4 := by
+    (Real.log 2 / 18 * u ^ (4 : ℕ)) * (d ^ (4 : ℕ)) ^ n =
+        Real.log 2 / 18 * (d ^ n * u) ^ (4 : ℕ) := by
           rw [mul_pow, ← pow_mul, ← pow_mul]
           rw [Nat.mul_comm 4 n]
           ring
@@ -942,9 +942,9 @@ the common value is positive exactly for an off-line divisor class. -/
 theorem sourceZeroHorizontalWoldPrimeClockProfileReflectionSquare
     (q : XiZeroCopy) :
     sourceHorizontalWoldPrimeClockUniversalProfile
-          (primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1) ^ 2 =
+          (primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1) ^ (2 : ℕ) =
         sourceHorizontalWoldPrimeClockUniversalProfile
-          (primeDepthBVWoldXiCenteredRate q.1) ^ 2 := by
+          (primeDepthBVWoldXiCenteredRate q.1) ^ (2 : ℕ) := by
   have hrate :
       primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1 =
         -primeDepthBVWoldXiCenteredRate q.1 := by
@@ -957,7 +957,7 @@ theorem sourceZeroHorizontalWoldPrimeClockProfileReflectionSquare
 theorem sourceZeroHorizontalWoldPrimeClockProfileSquare_pos_iff
     (q : XiZeroCopy) :
     0 < sourceHorizontalWoldPrimeClockUniversalProfile
-        (primeDepthBVWoldXiCenteredRate q.1) ^ 2 ↔
+        (primeDepthBVWoldXiCenteredRate q.1) ^ (2 : ℕ) ↔
       (q.1 : ℂ).re ≠ 1 / 2 := by
   rw [sq_pos_iff]
   rw [Ne, sourceZeroHorizontalWoldPrimeClockProfileLimit_eq_zero_iff]

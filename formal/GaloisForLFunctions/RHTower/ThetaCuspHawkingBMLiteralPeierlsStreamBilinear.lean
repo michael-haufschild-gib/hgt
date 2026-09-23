@@ -103,7 +103,7 @@ def streamMetricBilinear (w : ℂ) (square : Bool) (V : Covector) :
 /-- The polarization's diagonal is precisely the original squared-amplitude stream response. -/
 theorem streamMetricBilinear_diag (w a : ℂ) (square : Bool) (V : Covector)
     (x : Fin 4 → ℝ) :
-    streamMetricBilinear w square V a a x = streamMetricField w (a ^ 2) square V x := by
+    streamMetricBilinear w square V a a x = streamMetricField w (a ^ (2 : ℕ)) square V x := by
   simp only [streamMetricBilinear, LinearMap.mk₂_apply, pow_two]
 
 /-- The literal polarized stream residual is symmetric in its two physical input amplitudes. -/
@@ -141,10 +141,10 @@ theorem forcedMetricBilinear_symm (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
 theorem forcedMetricBilinear_diag (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (x : Fin 4 → ℝ) :
     forcedMetricBilinear q branch a a x =
-      streamMetricField (2 * physicalRate q branch) (a ^ 2) false
+      streamMetricField (2 * physicalRate q branch) (a ^ (2 : ℕ)) false
           (fullAngularCovector q branch) x -
         (physicalRate q branch * (physicalRate q branch - 1) / 4) •
-          streamMetricField (2 * physicalRate q branch) (a ^ 2) true
+          streamMetricField (2 * physicalRate q branch) (a ^ (2 : ℕ)) true
             (fullSquareCovector q) x := by
   change
     streamMetricBilinear (2 * physicalRate q branch) false (fullAngularCovector q branch) a a x -

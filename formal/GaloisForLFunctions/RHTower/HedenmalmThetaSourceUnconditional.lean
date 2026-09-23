@@ -86,7 +86,7 @@ theorem abs_thetaCuspFullSource_le (x : ℝ) :
 theorem hasShiftedTail_thetaSource {z : ℂ} (hz : |z.im| < 1) : HasShiftedTail thetaSource z := by
   have hcpos : 0 < 1 - |z.im| := by linarith
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs hcpos).const_mul (thetaCuspDerivativeExpConstant 0)) ?_ ?_
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hcpos).const_mul (thetaCuspDerivativeExpConstant 0)) ?_ ?_
   · refine (contDiff_thetaCuspFullSource.continuous.mul ?_).aestronglyMeasurable
     exact Real.continuous_exp.comp (continuous_const.mul continuous_id)
   · filter_upwards with x
@@ -191,7 +191,7 @@ theorem not_boundedBelow_thetaMetricOperator :
 theorem inner_thetaMetricOperator_quantileUnitary (f : SourceSpace thetaSource) :
     (inner ℂ (thetaMetricOperator (quantileUnitary thetaSource f))
       (quantileUnitary thetaSource f) : ℂ)
-      = (((∫ x, ‖(f x : ℂ)‖ ^ 2) / thetaSource.mass : ℝ) : ℂ) :=
+      = (((∫ x, ‖(f x : ℂ)‖ ^ (2 : ℕ)) / thetaSource.mass : ℝ) : ℂ) :=
   inner_metricOperator_quantileUnitary thetaSource thetaMetricBound_nonneg
     norm_metricSymbol_thetaSource_le f
 

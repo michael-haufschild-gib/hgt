@@ -98,7 +98,7 @@ theorem area_stokes_flux {Y : ℝ} (hY : 1 ≤ Y) :
 
 /-- Actual core hyperbolic trace mass with standard two-dimensional area measure. -/
 def coreMass (Y : ℝ) : ℝ :=
-  ∫ p in domain Y, density N f (ofComplex (point p.1 p.2)) / p.2 ^ 2
+  ∫ p in domain Y, density N f (ofComplex (point p.1 p.2)) / p.2 ^ (2 : ℕ)
 
 /-- Actual core gradient energy minus one quarter of its hyperbolic trace mass. -/
 def coreQuarter (Y : ℝ) : ℝ :=
@@ -106,7 +106,7 @@ def coreQuarter (Y : ℝ) : ℝ :=
 
 /-- The actual hyperbolic trace density is integrable on every compact core. -/
 theorem core_mass_integrable (Y : ℝ) :
-    IntegrableOn (fun p : ℝ × ℝ => density N f (ofComplex (point p.1 p.2)) / p.2 ^ 2)
+    IntegrableOn (fun p : ℝ × ℝ => density N f (ofComplex (point p.1 p.2)) / p.2 ^ (2 : ℕ))
       (domain Y) := by
   have hc : ContinuousOn (fun p : ℝ × ℝ => density N f (ofComplex (point p.1 p.2))) (cell Y) := by
     apply (density_contDiffOn N f).continuousOn.comp
@@ -128,7 +128,7 @@ theorem core_quarter_identity {Y : ℝ} (hY : 1 ≤ Y) :
       (lam - 1 / 4) * coreMass N f Y := by
   have he : coreQuarter N f Y =
       ∫ p in domain Y, (1 / 2) * realLaplacian (density N f ∘ ofComplex) (point p.1 p.2) +
-        (lam - 1 / 4) * (density N f (ofComplex (point p.1 p.2)) / p.2 ^ 2) := by
+        (lam - 1 / 4) * (density N f (ofComplex (point p.1 p.2)) / p.2 ^ (2 : ℕ)) := by
     unfold coreQuarter
     apply setIntegral_congr_fun (isCompact_domain Y).measurableSet
     intro p hp

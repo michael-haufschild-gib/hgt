@@ -48,7 +48,7 @@ theorem iteratedDeriv_inv_sub (ζ : ℂ) (m : ℕ) {w : ℂ} (hw : w ≠ ζ) :
             (((m + 1 : ℕ) : ℂ) * (w - ζ) ^ (m + 1 - 1) * 1) w := h1.pow (m + 1)
         simpa using h2
       have hinv : HasDerivAt (fun x : ℂ => ((x - ζ) ^ (m + 1))⁻¹)
-          (-(((m : ℂ) + 1) * (w - ζ) ^ m) / ((w - ζ) ^ (m + 1)) ^ 2) w := hbase.inv hpow
+          (-(((m : ℂ) + 1) * (w - ζ) ^ m) / ((w - ζ) ^ (m + 1)) ^ (2 : ℕ)) w := hbase.inv hpow
       have hmul := hinv.const_mul ((-1 : ℂ) ^ m * (m.factorial : ℂ))
       have hfun : (fun x : ℂ => (-1 : ℂ) ^ m * (m.factorial : ℂ) / (x - ζ) ^ (m + 1))
           = fun x : ℂ => (-1 : ℂ) ^ m * (m.factorial : ℂ) * ((x - ζ) ^ (m + 1))⁻¹ := by

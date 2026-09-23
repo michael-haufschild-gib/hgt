@@ -68,8 +68,8 @@ lemma shell_term_bound_three_halves
   have hsqrt_half : Real.sqrt b / 2 ≤ Real.sqrt (b / 2) := by
     have hb0 : 0 ≤ b := hbpos.le
     have hbh0 : 0 ≤ b / 2 := by positivity
-    have hsqb : (Real.sqrt b) ^ 2 = b := Real.sq_sqrt hb0
-    have hsqbh : (Real.sqrt (b / 2)) ^ 2 = b / 2 := Real.sq_sqrt hbh0
+    have hsqb : (Real.sqrt b) ^ (2 : ℕ) = b := Real.sq_sqrt hb0
+    have hsqbh : (Real.sqrt (b / 2)) ^ (2 : ℕ) = b / 2 := Real.sq_sqrt hbh0
     have hsqrtb0 := Real.sqrt_nonneg b
     have hsqrtbh0 := Real.sqrt_nonneg (b / 2)
     nlinarith
@@ -79,8 +79,8 @@ lemma shell_term_bound_three_halves
       _ ≤ (b / 2) * Real.sqrt (b / 2) := by gcongr
       _ ≤ a * Real.sqrt a := hdenom
   have hsqrt_pow : Real.sqrt ((4 : ℝ) ^ s) = (2 : ℝ) ^ s := by
-    have hsq : ((4 : ℝ) ^ s) = ((2 : ℝ) ^ s) ^ 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul, mul_comm, pow_mul]
+    have hsq : ((4 : ℝ) ^ s) = ((2 : ℝ) ^ s) ^ (2 : ℕ) := by
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul, mul_comm, pow_mul]
     rw [hsq, Real.sqrt_sq_eq_abs, abs_of_nonneg]
     positivity
   have hsqrt_lower : (2 : ℝ) ^ s ≤ Real.sqrt b := by

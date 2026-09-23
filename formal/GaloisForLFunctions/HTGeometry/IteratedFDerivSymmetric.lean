@@ -5,7 +5,7 @@ import Mathlib.GroupTheory.Perm.Sign
 /-!
 # Symmetry of the iterated Fréchet derivative of a `C^n` map
 
-Mathlib proves that the second derivative of a `C^2` map is symmetric
+Mathlib proves that the second derivative of a `C^(2 : ℕ)` map is symmetric
 (`ContDiffAt.isSymmSndFDerivAt`), and that all iterated derivatives of an analytic map are
 symmetric, but not that the `n`-th derivative of a `C^n` map is symmetric.  That is proved here.
 

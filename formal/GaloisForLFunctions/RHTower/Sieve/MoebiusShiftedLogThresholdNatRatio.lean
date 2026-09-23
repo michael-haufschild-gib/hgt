@@ -47,7 +47,7 @@ theorem sum_moebius_log_sq_threshold_nat_ratio_eq_shifted
     (t : ℝ) (ht : 0 ≤ t) :
     (∑ u ∈ Finset.Icc 1 (N / q),
       (selbergMoebiusReciprocalCoeff u *
-        Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ)) ^ 2) *
+        Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ)) ^ (2 : ℕ)) *
           (if t ≤ Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ)) then
             (1 : ℝ) else 0)) =
       moebiusShiftedLogSqKernelReal t

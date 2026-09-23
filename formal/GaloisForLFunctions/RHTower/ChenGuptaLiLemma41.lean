@@ -68,7 +68,7 @@ theorem cglLemma41_largeValues_eq_univ (P : CGLLemma41Packet) :
     exact P.large r
 
 /-- **CGL Lemma 4.1.** For the source matrix and every certified source
-large-value packet, `|W| ≤ 36 N^(1-2σ) s₁(M)^2`. -/
+large-value packet, `|W| ≤ 36 N^(1-2σ) s₁(M)^(2 : ℕ)`. -/
 theorem cglLemma41_source_bound (P : CGLLemma41Packet) :
     (P.rowCount : ℝ) ≤ 36 * (P.length.value : ℝ) ^ (1 - 2 * P.sigma) *
       ‖cglCharacterDyadicWeightedEvaluationOperator P.length.value P.modulus.value P.rowCount

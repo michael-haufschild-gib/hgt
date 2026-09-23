@@ -93,11 +93,11 @@ private theorem separated_second (a b : ℝ → ℂ) (ha : ContDiff ℝ ∞ a)
 /-- The actual planar generator's full hyperbolic Laplacian, with its
 horizontal window derivative explicitly retained before periodization. -/
 theorem PositiveHeightTest.laplaceTest_field (h : PositiveHeightTest) (z : ℂ) :
-    h.planarTest.laplaceTest.field z = (z.im:ℂ)^2*
+    h.planarTest.laplaceTest.field z = (z.im:ℂ)^(2 : ℕ)*
       (deriv (deriv complexCuspWindow) z.re*h.field z.im+
         (cuspWindow z.re:ℂ)*deriv (deriv h.field) z.im) := by
   rw [PlanarChartTest.laplaceTest_field]
-  change (z.im:ℂ)^2*(∑ i : Fin 2, fderiv ℝ
+  change (z.im:ℂ)^(2 : ℕ)*(∑ i : Fin 2, fderiv ℝ
     (fun w => fderiv ℝ (fun q : ℂ => complexCuspWindow q.re*h.field q.im) w
       (direction i)) z (direction i)) = _
   rw [separated_second _ _ complexCuspWindow_smooth h.smooth]
@@ -154,15 +154,15 @@ private theorem second_translation_finite (x : ℝ) :
 private theorem PositiveHeightTest.laplace_translation (h : PositiveHeightTest)
     (v : gammaSetHalf) (z : UpperHalfPlane) :
     (∑' n : ℤ, h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv (v,n) • z)) =
-      ((gammaSetMatrix v.1 • z).im:ℂ)^2*deriv (deriv h.field) (gammaSetMatrix v.1 • z).im := by
+      ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*deriv (deriv h.field) (gammaSetMatrix v.1 • z).im := by
   have ht (n : ℤ) : h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv (v,n) • z) =
-      ((gammaSetMatrix v.1 • z).im:ℂ)^2*
+      ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
         (deriv (deriv complexCuspWindow) ((gammaSetMatrix v.1 • z).re+n)*h.field (gammaSetMatrix v.1 • z).im+
          (cuspWindow ((gammaSetMatrix v.1 • z).re+n):ℂ)*deriv (deriv h.field) (gammaSetMatrix v.1 • z).im) := by
     rw [cuspOrbitEquiv_smul]
     change h.planarTest.laplaceTest.field ((T^n • (gammaSetMatrix v.1 • z):UpperHalfPlane):ℂ) = _
     rw [h.laplaceTest_field]
-    change ((T^n • (gammaSetMatrix v.1 • z)).im:ℂ)^2 *
+    change ((T^n • (gammaSetMatrix v.1 • z)).im:ℂ)^(2 : ℕ) *
       (deriv (deriv complexCuspWindow) (T^n • (gammaSetMatrix v.1 • z)).re *
        h.field (T^n • (gammaSetMatrix v.1 • z)).im +
        (cuspWindow (T^n • (gammaSetMatrix v.1 • z)).re:ℂ) *
@@ -182,7 +182,7 @@ set_option maxHeartbeats 800000 in
 /-- Full compact positive-height periodization retains every nonparabolic height derivative. -/
 theorem PositiveHeightTest.periodize_laplace_rows (h : PositiveHeightTest) (z : UpperHalfPlane) :
     periodize h.planarTest.laplaceTest.toChartTest.field z =
-      ∑' v : gammaSetHalf, ((gammaSetMatrix v.1 • z).im:ℂ)^2*
+      ∑' v : gammaSetHalf, ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
         deriv (deriv h.field) (gammaSetMatrix v.1 • z).im := by
   have hp : Summable (fun p : gammaSetHalf × ℤ => h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv p • z)) :=
     cuspOrbitEquiv.summable_iff.mpr (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
@@ -192,7 +192,7 @@ theorem PositiveHeightTest.periodize_laplace_rows (h : PositiveHeightTest) (z : 
 set_option maxHeartbeats 800000 in
 /-- All Laplacian rows are absolutely admitted by the constructed compact seed. -/
 theorem PositiveHeightTest.laplace_rows_summable (h : PositiveHeightTest) (z : UpperHalfPlane) :
-    Summable (fun v : gammaSetHalf => ((gammaSetMatrix v.1 • z).im:ℂ)^2*
+    Summable (fun v : gammaSetHalf => ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
       deriv (deriv h.field) (gammaSetMatrix v.1 • z).im) := by
   have hp : Summable (fun p : gammaSetHalf × ℤ => h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv p • z)) :=
     cuspOrbitEquiv.summable_iff.mpr (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
@@ -213,7 +213,7 @@ theorem PositiveHeightTest.operatorVector_coe (h : PositiveHeightTest) :
 theorem PositiveHeightTest.energyOperator_coe (h : PositiveHeightTest) :
     (energyOperator h.operatorVector : UpperHalfPlane → ℂ) =ᵐ[measure]
       (fun z => (∑' v : gammaSetHalf, h.field (gammaSetMatrix v.1 • z).im)-
-        ∑' v : gammaSetHalf, ((gammaSetMatrix v.1 • z).im:ℂ)^2*
+        ∑' v : gammaSetHalf, ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
           deriv (deriv h.field) (gammaSetMatrix v.1 • z).im) := by
   rw [show energyOperator h.operatorVector =
       embedding h.planarTest.toChartTest.energyTest-h.planarTest.laplaceVector from

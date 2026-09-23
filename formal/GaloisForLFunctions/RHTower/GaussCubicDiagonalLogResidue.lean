@@ -21,7 +21,7 @@ set_option maxRecDepth 4000
 theorem inner_one_gaussMovingAmplitude_cube_eq_segment
     {p : ℝ} (hp : 1 < p) {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s < 1) :
     (inner ℂ (fourierLp 2 0)
-        ((gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ 3)
+        ((gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ (3 : ℕ))
           (fourierLp 2 0)) : ℂ) =
       ((gaussAmplitudeSegment p 3 s : ℝ) : ℂ) := by
   rw [GaloisForLFunctions.inner_fourierLp_eq_fourierCoeff,
@@ -31,7 +31,7 @@ theorem inner_one_gaussMovingAmplitude_cube_eq_segment
 def gaussCubicRelativeFactor (k : Fin 3) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) : ℝ :=
   ‖(inner ℂ (fourierLp 2 0)
-        ((gaussPrincipalStepBlock (by omega : 1 ≤ 3) k p hp i ^ 3)
+        ((gaussPrincipalStepBlock (by omega : 1 ≤ 3) k p hp i ^ (3 : ℕ))
           (fourierLp 2 0)) : ℂ) -
     ((gaussAmplitudeSegment (p : ℝ) 3
       (Int.fract (gaussSamplePhase 3 p i)) : ℝ) : ℂ)‖
@@ -43,7 +43,7 @@ theorem gaussCubicRelativeFactor_nonneg (k : Fin 3) (p : Nat.Primes)
 theorem norm_inner_one_gaussPrincipalStep_cube_sub_segment_le
     (k : Fin 3) (p : Nat.Primes) (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) :
     ‖(inner ℂ (fourierLp 2 0)
-          ((gaussPrincipalStepBlock (by omega : 1 ≤ 3) k p hp i ^ 3)
+          ((gaussPrincipalStepBlock (by omega : 1 ≤ 3) k p hp i ^ (3 : ℕ))
             (fourierLp 2 0)) : ℂ) -
       ((gaussAmplitudeSegment (p : ℝ) 3
         (Int.fract (gaussSamplePhase 3 p i)) : ℝ) : ℂ)‖ ≤
@@ -71,11 +71,11 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N,
         ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-            ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ 3) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+            ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ (3 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
           inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-            ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ 3)
+            ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ (3 : ℕ))
               (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ))
-      atTop (nhds ((2 * ((p : ℝ) ^ 3 - 1) ^ 2 / (9 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
+      atTop (nhds ((2 * ((p : ℝ) ^ (3 : ℕ) - 1) ^ (2 : ℕ) / (9 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
   have hm : (1 : ℕ) ≤ 3 := by omega
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hppos : (0 : ℝ) < (p : ℝ) := lt_trans zero_lt_one hp
@@ -96,25 +96,25 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
     tendsto_gaussCubicRelativeFactor k p hp hιm
   set S : ℕ → ℂ := fun n =>
     (inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-        ((gaussQuasiInnerGFull hm k p ^ 3) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+        ((gaussQuasiInnerGFull hm k p ^ (3 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
       inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-        ((gaussQuasiInnerGFull hm k p ^ 3) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
+        ((gaussQuasiInnerGFull hm k p ^ (3 : ℕ)) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
   set err : ℕ → ℂ := fun n => S n - gaussPrincipalDiagonalTerm k p n with herrdef
   -- the diagonal of `G³` at a nonzero frequency is the cubed step scalar times `⟨1, R³·1⟩`
   have hdiag : ∀ i : ℤ, i ≠ 0 →
       (inner ℂ (fourierLp 2 i)
-          ((gaussQuasiInnerG hm k p ^ 3) (fourierLp 2 i)) : ℂ)
+          ((gaussQuasiInnerG hm k p ^ (3 : ℕ)) (fourierLp 2 i)) : ℂ)
         = ((((p : ℝ) : ℂ) *
-              (starRingEnd ℂ (gaussSampleValue k p i) * gaussSampleValue k p i)) ^ 3) *
+              (starRingEnd ℂ (gaussSampleValue k p i) * gaussSampleValue k p i)) ^ (3 : ℕ)) *
             inner ℂ (fourierLp 2 0)
-              ((gaussPrincipalStepBlock hm k p hp i ^ 3) (fourierLp 2 0)) := by
+              ((gaussPrincipalStepBlock hm k p hp i ^ (3 : ℕ)) (fourierLp 2 0)) := by
     intro i hi
     have hblock := gaussQuasiInnerG_pow_fourierMulBlock hm k p hp hi (fourierLp 2 0) 3
     rw [← fourierMulBlock_fourierLp_zero i, hblock, inner_smul_right,
       fourierMulBlock_inner]
   -- the pointwise relative bound
   have hbound : ∀ n : ℕ, ((n : ℝ) + 1) * ‖err n‖
-      ≤ gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ 3 * C) *
+      ≤ gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ (3 : ℕ) * C) *
         (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by
     intro n
     have hip : ((n : ℤ) + 1) ≠ 0 := by omega
@@ -124,14 +124,14 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
       (starRingEnd ℂ (gaussSampleValue k p ((n : ℤ) + 1)) *
         gaussSampleValue k p ((n : ℤ) + 1)) with hσ
     set X : ℂ := (inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-        ((gaussQuasiInnerG hm k p ^ 3) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) -
-      σ ^ 3 * ((gaussAmplitudeSegment (p : ℝ) 3
+        ((gaussQuasiInnerG hm k p ^ (3 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) -
+      σ ^ (3 : ℕ) * ((gaussAmplitudeSegment (p : ℝ) 3
           (Int.fract (gaussSamplePhase 3 p ((n : ℤ) + 1))) : ℝ) : ℂ) with hX
     set Y : ℂ := (inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-        ((gaussQuasiInnerG hm k p ^ 3) (fourierLp 2 (-((n : ℤ) + 1)))) : ℂ) -
+        ((gaussQuasiInnerG hm k p ^ (3 : ℕ)) (fourierLp 2 (-((n : ℤ) + 1)))) : ℂ) -
       (((p : ℝ) : ℂ) *
           (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-            gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 3 *
+            gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (3 : ℕ) *
         ((gaussAmplitudeSegment (p : ℝ) 3
           (Int.fract (gaussSamplePhase 3 p (-((n : ℤ) + 1)))) : ℝ) : ℂ) with hY
     have hsplit : err n = ((gaussArchScale 3 ^ (2 * 3) : ℝ) : ℂ) * (X + Y) := by
@@ -148,56 +148,56 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
       simp only [hX, hY, hσ, hphase]
       rw [gaussSampleValue_neg, Complex.conj_conj]
       ring
-    have hscalar : ‖σ ^ 3‖ * ((n : ℝ) + 1) ≤ (p : ℝ) ^ 3 * C := by
-      have hnormσ : ‖σ‖ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 := by
+    have hscalar : ‖σ ^ (3 : ℕ)‖ * ((n : ℝ) + 1) ≤ (p : ℝ) ^ (3 : ℕ) * C := by
+      have hnormσ : ‖σ‖ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) := by
         rw [hσ, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
           abs_of_pos hppos, RCLike.norm_conj]
         ring
       have hCn := hCb n
       rw [norm_pow, hnormσ]
-      calc ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2) ^ 3 * ((n : ℝ) + 1)
-          = (p : ℝ) ^ 3 *
+      calc ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ)) ^ (3 : ℕ) * ((n : ℝ) + 1)
+          = (p : ℝ) ^ (3 : ℕ) *
             (‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 * 3) * ((n : ℝ) + 1)) := by
             ring
-        _ ≤ (p : ℝ) ^ 3 * C := by
+        _ ≤ (p : ℝ) ^ (3 : ℕ) * C := by
             exact mul_le_mul_of_nonneg_left hCn (by positivity)
-    have hXbound : ‖X‖ ≤ ‖σ ^ 3‖ * F ((n : ℤ) + 1) := by
+    have hXbound : ‖X‖ ≤ ‖σ ^ (3 : ℕ)‖ * F ((n : ℤ) + 1) := by
       have hd := hdiag ((n : ℤ) + 1) hip
       have hrel := norm_inner_one_gaussPrincipalStep_cube_sub_segment_le k p hp ((n : ℤ) + 1)
-      calc ‖X‖ = ‖σ ^ 3 *
+      calc ‖X‖ = ‖σ ^ (3 : ℕ) *
             ((inner ℂ (fourierLp 2 0)
-                ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ 3)
+                ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ (3 : ℕ))
                   (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 3
                 (Int.fract (gaussSamplePhase 3 p ((n : ℤ) + 1))) : ℝ) : ℂ))‖ := by
             rw [hX, hd, hσ, mul_sub]
-        _ = ‖σ ^ 3‖ * ‖(inner ℂ (fourierLp 2 0)
-              ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ 3)
+        _ = ‖σ ^ (3 : ℕ)‖ * ‖(inner ℂ (fourierLp 2 0)
+              ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ (3 : ℕ))
                 (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 3
                 (Int.fract (gaussSamplePhase 3 p ((n : ℤ) + 1))) : ℝ) : ℂ)‖ := norm_mul _ _
-        _ ≤ ‖σ ^ 3‖ * F ((n : ℤ) + 1) :=
+        _ ≤ ‖σ ^ (3 : ℕ)‖ * F ((n : ℤ) + 1) :=
             mul_le_mul_of_nonneg_left hrel (norm_nonneg _)
     have hσm : ‖(((p : ℝ) : ℂ) *
         (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-          gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 3‖ = ‖σ ^ 3‖ := by
+          gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (3 : ℕ)‖ = ‖σ ^ (3 : ℕ)‖ := by
       rw [norm_pow, norm_pow]
       congr 1
       rw [hσ, norm_mul, norm_mul, norm_mul, norm_mul, RCLike.norm_conj, RCLike.norm_conj,
         gaussSampleValue_neg, RCLike.norm_conj]
-    have hYbound : ‖Y‖ ≤ ‖σ ^ 3‖ * F (-((n : ℤ) + 1)) := by
+    have hYbound : ‖Y‖ ≤ ‖σ ^ (3 : ℕ)‖ * F (-((n : ℤ) + 1)) := by
       have hd := hdiag (-((n : ℤ) + 1)) him
       have hrel := norm_inner_one_gaussPrincipalStep_cube_sub_segment_le k p hp (-((n : ℤ) + 1))
       calc ‖Y‖ = ‖(((p : ℝ) : ℂ) *
             (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-              gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 3‖ *
+              gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (3 : ℕ)‖ *
             ‖(inner ℂ (fourierLp 2 0)
-                ((gaussPrincipalStepBlock hm k p hp (-((n : ℤ) + 1)) ^ 3)
+                ((gaussPrincipalStepBlock hm k p hp (-((n : ℤ) + 1)) ^ (3 : ℕ))
                   (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 3
                 (Int.fract (gaussSamplePhase 3 p (-((n : ℤ) + 1)))) : ℝ) : ℂ)‖ := by
             rw [hY, hd, ← mul_sub, norm_mul]
-        _ ≤ ‖σ ^ 3‖ * F (-((n : ℤ) + 1)) := by
+        _ ≤ ‖σ ^ (3 : ℕ)‖ * F (-((n : ℤ) + 1)) := by
             rw [hσm]
             exact mul_le_mul_of_nonneg_left hrel (norm_nonneg _)
     have hFsum : (0 : ℝ) ≤ F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)) :=
@@ -208,24 +208,24 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
           rw [hsplit, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg harch]
           exact mul_le_mul_of_nonneg_left (norm_add_le _ _) harch
       _ ≤ ((n : ℝ) + 1) * (gaussArchScale 3 ^ (2 * 3) *
-            (‖σ ^ 3‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))))) := by
+            (‖σ ^ (3 : ℕ)‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ harch) hnn
-          calc ‖X‖ + ‖Y‖ ≤ ‖σ ^ 3‖ * F ((n : ℤ) + 1) + ‖σ ^ 3‖ * F (-((n : ℤ) + 1)) :=
+          calc ‖X‖ + ‖Y‖ ≤ ‖σ ^ (3 : ℕ)‖ * F ((n : ℤ) + 1) + ‖σ ^ (3 : ℕ)‖ * F (-((n : ℤ) + 1)) :=
                 add_le_add hXbound hYbound
-            _ = ‖σ ^ 3‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
-      _ = gaussArchScale 3 ^ (2 * 3) * (‖σ ^ 3‖ * ((n : ℝ) + 1)) *
+            _ = ‖σ ^ (3 : ℕ)‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
+      _ = gaussArchScale 3 ^ (2 * 3) * (‖σ ^ (3 : ℕ)‖ * ((n : ℝ) + 1)) *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
-      _ ≤ gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ 3 * C) *
+      _ ≤ gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ (3 : ℕ) * C) *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by
           refine mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hscalar harch) hFsum
   -- the weighted error vanishes, and the model supplies the residue
   have hbig : Tendsto (fun n : ℕ =>
-      gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ 3 * C) *
+      gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ (3 : ℕ) * C) *
         (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)))) atTop (nhds 0) := by
     have hsum := hFp.add hFm
     rw [add_zero] at hsum
-    have := hsum.const_mul (gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ 3 * C))
+    have := hsum.const_mul (gaussArchScale 3 ^ (2 * 3) * ((p : ℝ) ^ (3 : ℕ) * C))
     simpa using this
   have hscaled : Tendsto (fun n : ℕ => (((n : ℝ) + 1) : ℝ) • err n) atTop (nhds 0) := by
     refine squeeze_zero_norm (fun n => ?_) hbig
@@ -242,9 +242,9 @@ theorem tendsto_gaussCubicFourierDiagonal_logResidue (k : Fin 3) (p : Nat.Primes
     rw [Finset.sum_congr rfl fun n _ => hinner n, Complex.real_smul,
       Complex.ofReal_inv, div_eq_mul_inv, mul_comm]
   have hPDT := gaussPrincipalDiagonalTerm_logResidue hm k p
-  have hval : ((2 * ((p : ℝ) ^ (3 : ℕ) - 1) ^ 2 /
-      (((3 : ℕ) : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)
-      = ((2 * ((p : ℝ) ^ 3 - 1) ^ 2 / (9 * Real.log (p : ℝ)) : ℝ) : ℂ) := by
+  have hval : ((2 * ((p : ℝ) ^ (3 : ℕ) - 1) ^ (2 : ℕ) /
+      (((3 : ℕ) : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)
+      = ((2 * ((p : ℝ) ^ (3 : ℕ) - 1) ^ (2 : ℕ) / (9 * Real.log (p : ℝ)) : ℝ) : ℂ) := by
     norm_num
   rw [hval] at hPDT
   have hsum := hPDT.add herr
@@ -265,16 +265,16 @@ theorem tendsto_gaussCubicLocalDiagonal_logResidue (k : Fin 3) (p : Nat.Primes) 
       ((gaussLocalFactorWeight 3 p : ℝ) : ℂ) *
         ((∑ n ∈ Finset.range N,
           ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-              ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ 3)
+              ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ (3 : ℕ))
                 (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
             inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-              ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ 3)
+              ((gaussQuasiInnerGFull (by omega : 1 ≤ 3) k p ^ (3 : ℕ))
                 (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ)))
       atTop (nhds ((gaussChannelResidue 3 p : ℝ) : ℂ)) := by
   have hbase := (tendsto_gaussCubicFourierDiagonal_logResidue k p).const_mul
     ((gaussLocalFactorWeight 3 p : ℝ) : ℂ)
   have hval : ((gaussLocalFactorWeight 3 p : ℝ) : ℂ) *
-      ((2 * ((p : ℝ) ^ 3 - 1) ^ 2 / (9 * Real.log (p : ℝ)) : ℝ) : ℂ) =
+      ((2 * ((p : ℝ) ^ (3 : ℕ) - 1) ^ (2 : ℕ) / (9 * Real.log (p : ℝ)) : ℝ) : ℂ) =
       ((gaussChannelResidue 3 p : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul]
     have h := gaussLocalFactorWeight_mul_principalResidue (by omega : 1 ≤ 3) p

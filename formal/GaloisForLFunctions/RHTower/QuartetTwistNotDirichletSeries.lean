@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.PolePlaneIndexBlindnessNoGo
 The quartet twist `ζ_Q(s) = ζ(s) Q(s)/Q(0)` shares the functional equation, the Gamma factor and the
 polar part of `ζ`, and carries an off-line quartet.  It is not an absolutely convergent Dirichlet
 series `Σ c_n (n+1)^{-s}` on the line `Re s = 2`: such a series is bounded there by
-`Σ ‖c_n‖ (n+1)^{-2}`, whereas `‖ζ_Q(2 + it)‖ ≥ (2 - π²/6) (t - |γ|)^4 / ‖Q(0)‖` is unbounded.
+`Σ ‖c_n‖ (n+1)^{-2}`, whereas `‖ζ_Q(2 + it)‖ ≥ (2 - π²/6) (t - |γ|)^(4 : ℕ) / ‖Q(0)‖` is unbounded.
 
 So the boundary-preserving twist leaves the exact-occurrence class: the only datum separating `ζ`
 from the twist is that `ζ` is a Dirichlet series over the integers, and that datum acts on the
@@ -91,7 +91,7 @@ theorem norm_line_sub_root_ge' {t g x : ℝ} (ht : 0 ≤ t) :
     ring
   rwa [hcast] at h
 
-/-- On the line `Re s = 2`, `‖Q(2 + it)‖ ≥ (t - |γ|)^4` for `t ≥ |γ|`. -/
+/-- On the line `Re s = 2`, `‖Q(2 + it)‖ ≥ (t - |γ|)^(4 : ℕ)` for `t ≥ |γ|`. -/
 theorem norm_offLineQuartet_ge (a0 gam : ℝ) {t : ℝ} (ht : |gam| ≤ t) :
     (t - |gam|) ^ 4 ≤ ‖offLineQuartet a0 gam (2 + (t : ℂ) * I)‖ := by
   have ht0 : 0 ≤ t := le_trans (abs_nonneg _) ht

@@ -101,14 +101,14 @@ theorem four_re_inv_gceOffLineZero_nonneg (q : XiRightUpperZeroCopy) :
 
 /-- The share of one strict-right zero exceeds `2/|ρ|²`. -/
 theorem two_div_norm_sq_lt_share (q : XiRightUpperZeroCopy) :
-    2 / ‖gceOffLineZero q‖ ^ 2 < 4 * ((gceOffLineZero q)⁻¹).re := by
+    2 / ‖gceOffLineZero q‖ ^ (2 : ℕ) < 4 * ((gceOffLineZero q)⁻¹).re := by
   rw [Complex.inv_re, Complex.normSq_eq_norm_sq]
-  have hnorm : 0 < ‖gceOffLineZero q‖ ^ 2 := by
+  have hnorm : 0 < ‖gceOffLineZero q‖ ^ (2 : ℕ) := by
     have := norm_pos_iff.mpr (gceOffLineZero_ne_zero q)
     positivity
   have hre := gceOffLineZero_re_gt_half q
   rw [div_lt_iff₀ hnorm]
-  have hcancel : 4 * ((gceOffLineZero q).re / ‖gceOffLineZero q‖ ^ 2) * ‖gceOffLineZero q‖ ^ 2
+  have hcancel : 4 * ((gceOffLineZero q).re / ‖gceOffLineZero q‖ ^ (2 : ℕ)) * ‖gceOffLineZero q‖ ^ (2 : ℕ)
       = 4 * (gceOffLineZero q).re := by
     rw [mul_assoc, div_mul_cancel₀ _ hnorm.ne']
   rw [hcancel]
@@ -127,13 +127,13 @@ coefficient leaves every strict-right zero with `|ρ|² > 2/ε`; it excludes onl
 height and can never certify the absence of all of them. -/
 theorem gceCriticalCoefficient_le_excludes_low_zeros {ε : ℝ}
     (hε : (continuedXiAntiCausalWardResponse (1 / 2 : ℂ)).re ≤ ε) (q : XiRightUpperZeroCopy) :
-    2 / ε < ‖gceOffLineZero q‖ ^ 2 := by
+    2 / ε < ‖gceOffLineZero q‖ ^ (2 : ℕ) := by
   have hshare := two_div_norm_sq_lt_share q
   have hterm := share_le_re_gceCriticalCoefficient q
-  have hnorm : 0 < ‖gceOffLineZero q‖ ^ 2 := by
+  have hnorm : 0 < ‖gceOffLineZero q‖ ^ (2 : ℕ) := by
     have := norm_pos_iff.mpr (gceOffLineZero_ne_zero q)
     positivity
-  have h2 : 2 / ‖gceOffLineZero q‖ ^ 2 < ε := by linarith
+  have h2 : 2 / ‖gceOffLineZero q‖ ^ (2 : ℕ) < ε := by linarith
   have hεpos : 0 < ε := lt_trans (by positivity) h2
   rw [div_lt_iff₀ hnorm] at h2
   rw [div_lt_iff₀ hεpos]

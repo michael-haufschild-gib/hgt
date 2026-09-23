@@ -669,7 +669,7 @@ theorem finiteSquarefreeCurvature_eq_variance
   exact sum_squarefreeBitWeight_mul_centeredEnergy_sq S
     (squarefreePrimeOccupation sigma) squarefreePrimeEnergy
 
-/-- Calibrated tangent norm is exactly `4 (sigma-1)^2 V_S`. -/
+/-- Calibrated tangent norm is exactly `4 (sigma-1)^(2 : ℕ) V_S`. -/
 theorem norm_finiteSquarefreeTangent_sq
     (S : Finset Nat.Primes) (sigma : ℝ) :
     ‖finiteSquarefreeTangent S sigma‖ ^ 2 =

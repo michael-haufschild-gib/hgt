@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHeathBrownCaseIIReceiver
 /-!
 # Exhaustive height split for Menon's selected Case-II factor
 
-The polynomial frequency horizon is `N^24`.  At sufficiently late dyadic factor scales, fixed
+The polynomial frequency horizon is `N^(24 : ℕ)`.  At sufficiently late dyadic factor scales, fixed
 derivative order `26` covers that entire horizon whenever the factor is not itself above height.
 -/
 
@@ -139,7 +139,7 @@ theorem pow_twentyFour_le_derivativeOrderTwentySix_upper
       ring
 
 /-- Above the ready factor scale, failure of the over-height branch forces the derivative-test
-lower edge; the `N^24` horizon supplies the fixed-order upper edge. -/
+lower edge; the `N^(24 : ℕ)` horizon supplies the fixed-order upper edge. -/
 theorem derivativeOrderTwentySix_range_of_not_overHeight
     {N T lam : ℝ}
     (hN : 1 ≤ N)

@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodModularSeam
 The negative-imaginary Fourier--Laplace trace is written first as a full-line inward Esscher
 partition.  Reflection of the even theta-cusp source then turns its value and logarithmic flux
 into strictly positive half-line `cosh` and `sinh` integrals.  The resulting ratio is the genuine
-Cassini boundary response on `u = 1 - t^2`.
+Cassini boundary response on `u = 1 - t^(2 : ℕ)`.
 
 This construction is unconditional and source-built.  It does not assert the still-open
 all-order claim that the moving hyperbolic carrier collapses to one fixed compact Markov measure.
@@ -315,12 +315,12 @@ private theorem thetaCuspSourceTerm_one_zero_pos_for_carrier :
     0 < thetaCuspSourceTerm 0 1 := by
   let u : ℝ := Real.exp 0
   have hu : 1 ≤ u := by dsimp [u]; exact Real.one_le_exp le_rfl
-  have hcore : 0 < 2 * Real.pi * u ^ 2 - 3 := by
+  have hcore : 0 < 2 * Real.pi * u ^ (2 : ℕ) - 3 := by
     nlinarith [Real.pi_gt_three, sq_nonneg u]
   rw [thetaCuspSourceTerm, thetaCuspSeed]
   simp only [Nat.cast_one, one_mul]
-  rw [show 2 * Real.pi * u ^ 4 - 3 * u ^ 2 =
-    u ^ 2 * (2 * Real.pi * u ^ 2 - 3) by ring]
+  rw [show 2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ) =
+    u ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 3) by ring]
   positivity
 
 private theorem thetaCuspFullSource_zero_pos_for_carrier :
@@ -417,12 +417,12 @@ theorem deriv_thetaCuspFourierLaplace_neg_mul_I_eq_inwardFlux
 
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_inwardFluxRatio
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
       ((thetaCuspInwardFlux t /
         (t * thetaCuspInwardPartition t) : ℝ) : ℂ) := by
   have ht : |t| < 1 := by rw [abs_of_pos ht0]; exact ht1
-  have hsqrt : Real.sqrt (1 - (1 - t ^ 2)) = t := by
-    rw [show 1 - (1 - t ^ 2) = t ^ 2 by ring, Real.sqrt_sq_eq_abs,
+  have hsqrt : Real.sqrt (1 - (1 - t ^ (2 : ℕ))) = t := by
+    rw [show 1 - (1 - t ^ (2 : ℕ)) = t ^ (2 : ℕ) by ring, Real.sqrt_sq_eq_abs,
       abs_of_pos ht0]
   have hvalue := thetaCuspFourierLaplace_neg_mul_I_eq_inwardPartition t
   have hderiv := deriv_thetaCuspFourierLaplace_neg_mul_I_eq_inwardFlux ht
@@ -443,7 +443,7 @@ theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_inwardFluxRatio
 
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicFluxRatio
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
       ((thetaCuspHyperbolicFlux t /
         (t * thetaCuspHyperbolicPartition t) : ℝ) : ℂ) := by
   have ht : |t| < 1 := by rw [abs_of_pos ht0]; exact ht1
@@ -453,7 +453,7 @@ theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicFluxRat
 
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicExpectation
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
       (thetaCuspHyperbolicExpectation t
         (thetaCuspHyperbolicFluxObservable t) : ℂ) := by
   rw [thetaCuspHyperbolicExpectation_fluxObservable ht0 ht1]
@@ -461,7 +461,7 @@ theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicExpecta
 
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_re_pos
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).re := by
+    0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).re := by
   rw [thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicFluxRatio ht0 ht1]
   simp only [ofReal_re]
   exact div_pos (thetaCuspHyperbolicFlux_pos ht0 ht1)
@@ -471,7 +471,7 @@ theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_re_pos
 
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_im_eq_zero
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).im = 0 := by
+    (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).im = 0 := by
   rw [thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_hyperbolicFluxRatio ht0 ht1]
   exact ofReal_im _
 
@@ -570,7 +570,7 @@ theorem thetaCuspCassiniLikelihoodFlux_eq_hyperbolicFlux
 of the explicit aperture-independent likelihood carrier. -/
 theorem thetaCuspCassiniInwardCoordinateResponse_one_sub_sq_eq_likelihoodCarrierRatio
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) :
-    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+    thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
       ((thetaCuspCassiniLikelihoodFlux t /
         (t * thetaCuspCassiniLikelihoodPartition t) : ℝ) : ℂ) := by
   rw [thetaCuspCassiniLikelihoodFlux_eq_hyperbolicFlux,

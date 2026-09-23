@@ -44,10 +44,10 @@ theorem fourierUnitary_soninPacketL2_coeFn (b c : ℝ) (hb : 0 < b) (hbc : b < c
 /-- The squared Fourier-band energy of the wavepacket as an explicit integral. -/
 theorem norm_sq_evenFourierCutoff_soninPacketEven
     (b c : ℝ) (hb : 0 < b) (hbc : b < c) (t κ : ℝ) :
-    ‖evenFourierCutoff t (soninPacketEven b c hb hbc κ)‖ ^ 2 =
+    ‖evenFourierCutoff t (soninPacketEven b c hb hbc κ)‖ ^ (2 : ℕ) =
       ∫ ξ : ℝ, ‖(centralInterval t).indicator
         (fun η : ℝ => ((fourierUnitary (soninPacketL2 b c hb hbc κ) : SoninL2) : ℝ → ℂ) η)
-        ξ‖ ^ 2 := by
+        ξ‖ ^ (2 : ℕ) := by
   have hcoe : ((evenFourierCutoff t (soninPacketEven b c hb hbc κ) : evenSubspace) : SoninL2) =
       fourierUnitary.symm (indicatorCutoff (centralInterval t)
         (measurableSet_centralInterval t) (fourierUnitary (soninPacketL2 b c hb hbc κ))) := rfl
@@ -75,7 +75,7 @@ theorem tendsto_norm_evenFourierCutoff_soninPacketEven
   set G : ℕ → ℝ → ℂ := fun n ξ =>
     ((fourierUnitary (soninPacketL2 b c hb hbc (κ n)) : SoninL2) : ℝ → ℂ) ξ with hG
   set F : ℕ → ℝ → ℝ := fun n ξ =>
-    ‖(centralInterval t).indicator (fun η : ℝ => G n η) ξ‖ ^ 2 with hF
+    ‖(centralInterval t).indicator (fun η : ℝ => G n η) ξ‖ ^ (2 : ℕ) with hF
   have hae : ∀ᵐ ξ : ℝ, ∀ n : ℕ,
       G n ξ = 𝓕 (fun x : ℝ => (soninPacket b c hbc (κ n) x : ℂ)) ξ := by
     rw [MeasureTheory.ae_all_iff]
@@ -87,7 +87,7 @@ theorem tendsto_norm_evenFourierCutoff_soninPacketEven
       (fourierUnitary (soninPacketL2 b c hb hbc (κ n)))).indicator
         (measurableSet_centralInterval t)).norm.pow 2
   have hbound : ∀ n : ℕ, ∀ᵐ ξ : ℝ,
-      ‖F n ξ‖ ≤ (centralInterval t).indicator (fun _ : ℝ => M ^ 2) ξ := by
+      ‖F n ξ‖ ≤ (centralInterval t).indicator (fun _ : ℝ => M ^ (2 : ℕ)) ξ := by
     intro n
     filter_upwards [fourierUnitary_soninPacketL2_coeFn b c hb hbc (κ n)] with ξ hξ
     by_cases hmem : ξ ∈ centralInterval t
@@ -114,16 +114,16 @@ theorem tendsto_norm_evenFourierCutoff_soninPacketEven
       have := (hGtend.norm).pow 2
       simpa [hF, Set.indicator_of_mem hmem] using this
     · simp [hF, Set.indicator_of_notMem hmem]
-  have hboundInt : Integrable ((centralInterval t).indicator (fun _ : ℝ => M ^ 2)) volume := by
+  have hboundInt : Integrable ((centralInterval t).indicator (fun _ : ℝ => M ^ (2 : ℕ))) volume := by
     refine (integrable_indicator_iff (measurableSet_centralInterval t)).mpr ?_
     have hfin : volume (centralInterval t) ≠ ⊤ := by
       rw [centralInterval]
       exact measure_Icc_lt_top.ne
     exact integrableOn_const hfin
   have hdct := MeasureTheory.tendsto_integral_of_dominated_convergence
-    ((centralInterval t).indicator (fun _ : ℝ => M ^ 2)) hmeas hboundInt hbound hlim
+    ((centralInterval t).indicator (fun _ : ℝ => M ^ (2 : ℕ))) hmeas hboundInt hbound hlim
   have hsq : Tendsto (fun n : ℕ =>
-      ‖evenFourierCutoff t (soninPacketEven b c hb hbc (κ n))‖ ^ 2) atTop (𝓝 0) := by
+      ‖evenFourierCutoff t (soninPacketEven b c hb hbc (κ n))‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hzero : ∫ _ : ℝ, (0 : ℝ) = 0 := integral_zero _ _
     rw [hzero] at hdct
     refine hdct.congr fun n => ?_

@@ -43,7 +43,7 @@ theorem bottcher_not_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
     (hncc : 0 < p.natDegree ∨ 0 < q.natDegree)
     (hrep : ∀ z ∈ escapeOpen c, q.eval z ≠ 0 → bottcherCoord c z = p.eval z / q.eval z) :
     False := by
-  set σ : ℂ[X] := X ^ 2 + C c with hσ
+  set σ : ℂ[X] := X ^ (2 : ℕ) + C c with hσ
   have hσ_ne : q.comp σ ≠ 0 := by
     intro h
     rw [comp_eq_zero_iff] at h
@@ -52,12 +52,12 @@ theorem bottcher_not_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
     · have hd : σ.natDegree = 2 := by rw [hσ]; compute_degree!
       rw [h2, natDegree_C] at hd; exact absurd hd (by norm_num)
   -- The polynomial cross-equation, proved by the identity theorem.
-  have hcross : p.comp σ * q ^ 2 = p ^ 2 * q.comp σ := by
+  have hcross : p.comp σ * q ^ (2 : ℕ) = p ^ (2 : ℕ) * q.comp σ := by
     apply eq_of_infinite_eval_eq
     have hqfin : {z : ℂ | q.IsRoot z}.Finite := finite_setOf_isRoot hq
     have hqσfin : {z : ℂ | (q.comp σ).IsRoot z}.Finite := finite_setOf_isRoot hσ_ne
     have hgood : (escapeOpen c \ ({z | q.IsRoot z} ∪ {z | (q.comp σ).IsRoot z}))
-        ⊆ {x : ℂ | eval x (p.comp σ * q ^ 2) = eval x (p ^ 2 * q.comp σ)} := by
+        ⊆ {x : ℂ | eval x (p.comp σ * q ^ (2 : ℕ)) = eval x (p ^ (2 : ℕ) * q.comp σ)} := by
       rintro z ⟨hzesc, hznot⟩
       simp only [Set.mem_union, Set.mem_setOf_eq, not_or] at hznot
       obtain ⟨hqz, hqσz⟩ := hznot
@@ -71,11 +71,11 @@ theorem bottcher_not_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
       have hφσz : bottcherCoord c (quadratic c z)
           = p.eval (quadratic c z) / q.eval (quadratic c z) := hrep _ hσz_esc hqAt
       obtain ⟨hcle, hz2⟩ := mem_escapeOpen_regime hzesc
-      have hfe : bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ 2 :=
+      have hfe : bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ (2 : ℕ) :=
         bottcherCoord_quadratic hcle hz2
       rw [hφσz, hφz] at hfe
-      have hcrossval : p.eval (quadratic c z) * (q.eval z) ^ 2
-          = (p.eval z) ^ 2 * q.eval (quadratic c z) := by
+      have hcrossval : p.eval (quadratic c z) * (q.eval z) ^ (2 : ℕ)
+          = (p.eval z) ^ (2 : ℕ) * q.eval (quadratic c z) := by
         field_simp at hfe
         linear_combination hfe
       simp only [Set.mem_setOf_eq, eval_mul, eval_pow, eval_comp, hσz]

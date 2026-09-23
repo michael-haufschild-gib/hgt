@@ -110,9 +110,9 @@ theorem eulerPrimitiveBoundaryHellingerDensity_eq_KMSWightman
       0 ≤ eulerPrimitiveBoundaryOccupationHellingerDensity t :=
     Real.sqrt_nonneg _
   have hsq :
-      eulerPrimitiveBoundaryOccupationHellingerDensity t ^ 2 =
+      eulerPrimitiveBoundaryOccupationHellingerDensity t ^ (2 : ℕ) =
         HTGeometry.finiteKMSWightmanWeight 1
-          (eulerPrimitiveBoundaryOccupationEnergy t) false true ^ 2 := by
+          (eulerPrimitiveBoundaryOccupationEnergy t) false true ^ (2 : ℕ) := by
     rw [HTGeometry.finiteKMSWightmanWeight_sq,
       eulerPrimitiveBoundaryOccupationGibbsStateWeight_head ht,
       eulerPrimitiveBoundaryOccupationGibbsStateWeight_tail ht,
@@ -224,7 +224,7 @@ theorem tendsto_reflectionOrientationKMSOffDiagonalMass (a : ℝ) :
       (fun k : ℕ =>
         ∑ b : Bool, ∑ c ∈ Finset.univ.erase b,
           HTGeometry.finiteKMSWightmanWeight (k : ℝ)
-            (fun d : Bool => -reflectionOrientationEnergy a d) b c ^ 2)
+            (fun d : Bool => -reflectionOrientationEnergy a d) b c ^ (2 : ℕ))
       atTop
       (nhds (if a = 0 then (1 / 2 : ℝ) else 0)) := by
   have h :=

@@ -25,7 +25,7 @@ open Finset ArithmeticFunction
 
 /-- The inverse-square sum over a finite set of positive integers is at most `2`. -/
 theorem sum_inv_sq_le_two_of_pos {P : Finset ℕ} (hP : ∀ p ∈ P, 0 < p) :
-    ∑ p ∈ P, 1 / (p : ℝ) ^ 2 ≤ 2 := by
+    ∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ) ≤ 2 := by
   classical
   have hsub : P ⊆ Finset.Icc 1 (P.sup id) := by
     intro p hp

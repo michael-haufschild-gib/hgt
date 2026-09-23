@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaStokesPrimeGammaWall
 # Wold-coordinate third/fifth Malgrange separation
 
 The complete source-horizontal Wold profile begins with the fixed odd coefficients
-`-z^3 / 9 - z^5 / 150`. Treating it as a source-defined spectral coordinate for the cold
+`-z^(3 : ℕ) / 9 - z^(5 : ℕ) / 150`. Treating it as a source-defined spectral coordinate for the cold
 prime/Gamma wall preserves the calibrated first and quadratic jets. Cubic calibration then forces
 the fifth coordinate contribution to be
 
@@ -25,12 +25,12 @@ noncomputable section
 
 /-- Candidate fifth logarithmic-jet correction forced by the cubic Wold-coordinate calculation. -/
 def routePPrimitiveGammaJuliaStokesPrimeGammaWallWoldCoordinateFifthPrediction : ℝ :=
-  ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ 2) *
-    (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4)
+  ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ (2 : ℕ)) *
+    (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)
 
 /-- Literal fifth cold Malgrange correction after forced first-jet normalization. -/
 def routePPrimitiveGammaJuliaStokesPrimeGammaWallColdFifthMalgrangeTarget : ℝ :=
-  12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ 5 / 16)
+  12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ (5 : ℕ) / 16)
 
 /-- **Wold-coordinate third/fifth separation.** The candidate fifth correction forced by cubic
 Wold calibration is strictly more negative than the literal completed prime--archimedean fifth
@@ -53,49 +53,49 @@ theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallWoldCoordinateFifthPredicti
     nlinarith
   have hm4abs := abs_normalizedPrimeArchMoment_add_le_secondMomentRadius 1 3
   have hm4lower :
-      -(((42 / 41 : ℝ) * (17 / 200000 : ℝ)) / 150 ^ 3) <
+      -(((42 / 41 : ℝ) * (17 / 200000 : ℝ)) / 150 ^ (3 : ℕ)) <
         normalizedPrimeArchMoment 4 := by
-    have hscale : 0 < (1 / 150 : ℝ) ^ 3 := by positivity
-    have hbound : (1 / 150 : ℝ) ^ 3 * xiShiftAbsoluteMass 1 <
-        (1 / 150 : ℝ) ^ 3 * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) :=
+    have hscale : 0 < (1 / 150 : ℝ) ^ (3 : ℕ) := by positivity
+    have hbound : (1 / 150 : ℝ) ^ (3 : ℕ) * xiShiftAbsoluteMass 1 <
+        (1 / 150 : ℝ) ^ (3 : ℕ) * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) :=
       mul_lt_mul_of_pos_left hmass hscale
     norm_num at hm4abs ⊢
     nlinarith [neg_abs_le (normalizedPrimeArchMoment 4)]
-  have hm0cube : (1 / 25 : ℝ) ^ 3 < normalizedPrimeArchMoment 0 ^ 3 :=
+  have hm0cube : (1 / 25 : ℝ) ^ (3 : ℕ) < normalizedPrimeArchMoment 0 ^ (3 : ℕ) :=
     pow_lt_pow_left₀ hm0low (by norm_num) (by norm_num)
-  have hm0fifth : normalizedPrimeArchMoment 0 ^ 5 <
-      (29 / 625 : ℝ) ^ 5 :=
+  have hm0fifth : normalizedPrimeArchMoment 0 ^ (5 : ℕ) <
+      (29 / 625 : ℝ) ^ (5 : ℕ) :=
     pow_lt_pow_left₀ hm0high hm0pos.le (by norm_num)
   have hdelta : normalizedPrimeArchMoment 2 -
-      normalizedPrimeArchMoment 0 ^ 3 / 4 < -(1 / 100000 : ℝ) := by
+      normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 < -(1 / 100000 : ℝ) := by
     have hrat :
         ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) / 150 -
-          (1 / 25 : ℝ) ^ 3 / 4 < -(1 / 100000 : ℝ) := by norm_num
+          (1 / 25 : ℝ) ^ (3 : ℕ) / 4 < -(1 / 100000 : ℝ) := by norm_num
     nlinarith
   have htarget : -(1 / 1000000 : ℝ) <
-      12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ 5 / 16) := by
+      12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ (5 : ℕ) / 16) := by
     have hrat : -(1 / 1000000 : ℝ) <
-        12 * (-(((42 / 41 : ℝ) * (17 / 200000 : ℝ)) / 150 ^ 3) -
-          (29 / 625 : ℝ) ^ 5 / 16) := by norm_num
+        12 * (-(((42 / 41 : ℝ) * (17 / 200000 : ℝ)) / 150 ^ (3 : ℕ)) -
+          (29 / 625 : ℝ) ^ (5 : ℕ) / 16) := by norm_num
     nlinarith
   have hfactor : (6 / 5 : ℝ) <
-      (6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ 2 := by
-    have hsq : 0 < normalizedPrimeArchMoment 0 ^ 2 := sq_pos_of_pos hm0pos
+      (6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by
+    have hsq : 0 < normalizedPrimeArchMoment 0 ^ (2 : ℕ) := sq_pos_of_pos hm0pos
     nlinarith
   have hfactorPos : 0 <
-      (6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ 2 := by positivity
+      (6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by positivity
   unfold routePPrimitiveGammaJuliaStokesPrimeGammaWallWoldCoordinateFifthPrediction
     routePPrimitiveGammaJuliaStokesPrimeGammaWallColdFifthMalgrangeTarget
   calc
-    ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ 2) *
-        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) <
-        ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ 2) *
+    ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ (2 : ℕ)) *
+        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) <
+        ((6 / 5 : ℝ) + 5 * normalizedPrimeArchMoment 0 ^ (2 : ℕ)) *
           (-(1 / 100000 : ℝ)) :=
       mul_lt_mul_of_pos_left hdelta hfactorPos
     _ < (6 / 5 : ℝ) * (-(1 / 100000 : ℝ)) :=
       mul_lt_mul_of_neg_right hfactor (by norm_num)
     _ < -(1 / 1000000 : ℝ) := by norm_num
-    _ < 12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ 5 / 16) := htarget
+    _ < 12 * (normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ (5 : ℕ) / 16) := htarget
 
 end
 

@@ -223,10 +223,10 @@ theorem gallagher_separated {f f' : ℝ → ℂ} {A B δ : ℝ} (hδ : 0 < δ) (
     (hPsep : ∀ x ∈ P, ∀ z ∈ P, x ≠ z → δ ≤ |x - z|)
     (hf : ∀ y ∈ Set.Icc A (B + δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (B + δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (B + δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (B + δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (B + δ)) :
-    ∑ x ∈ P, ‖f x‖ ^ 2
-      ≤ (1 / δ) * (∫ u in A..B + δ, ‖f u‖ ^ 2)
+    ∑ x ∈ P, ‖f x‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ))
         + ∫ u in A..B + δ, 2 * (‖f u‖ * ‖f' u‖) := by
   classical
   have hABδ : A ≤ B + δ := by linarith
@@ -239,8 +239,8 @@ theorem gallagher_separated {f f' : ℝ → ℂ} {A B δ : ℝ} (hδ : 0 < δ) (
     rw [Set.uIcc_of_le (by linarith), Set.uIcc_of_le hABδ]
     exact hcellIcc x hx
   -- per-cell Sobolev bound at the left endpoint
-  have hper : ∀ x ∈ P, ‖f x‖ ^ 2
-      ≤ (1 / δ) * (∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ 2)
+  have hper : ∀ x ∈ P, ‖f x‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ (2 : ℕ))
         + ∫ u in Set.Ioc x (x + δ), 2 * (‖f u‖ * ‖f' u‖) := by
     intro x hx
     have hsub := hcellIcc x hx
@@ -252,26 +252,26 @@ theorem gallagher_separated {f f' : ℝ → ℂ} {A B δ : ℝ} (hδ : 0 < δ) (
     rwa [intervalIntegral.integral_of_le (by linarith : x ≤ x + δ),
       intervalIntegral.integral_of_le (by linarith : x ≤ x + δ)] at h
   -- nonnegativity and integrability of the two densities
-  have hsq0 : ∀ u : ℝ, 0 ≤ ‖f u‖ ^ 2 := fun u => sq_nonneg _
+  have hsq0 : ∀ u : ℝ, 0 ≤ ‖f u‖ ^ (2 : ℕ) := fun u => sq_nonneg _
   have hcr0 : ∀ u : ℝ, 0 ≤ 2 * (‖f u‖ * ‖f' u‖) := fun u => by positivity
-  have hsqOn : IntegrableOn (fun u => ‖f u‖ ^ 2) (Set.Ioc A (B + δ)) :=
+  have hsqOn : IntegrableOn (fun u => ‖f u‖ ^ (2 : ℕ)) (Set.Ioc A (B + δ)) :=
     (intervalIntegrable_iff_integrableOn_Ioc_of_le hABδ).mp hgint
   have hcrOn : IntegrableOn (fun u => 2 * (‖f u‖ * ‖f' u‖)) (Set.Ioc A (B + δ)) :=
     (intervalIntegrable_iff_integrableOn_Ioc_of_le hABδ).mp hcrossint
-  have hA1 := sum_integral_cells_le (g := fun u => ‖f u‖ ^ 2) hδ hsq0 hsqOn hPmem hPsep
+  have hA1 := sum_integral_cells_le (g := fun u => ‖f u‖ ^ (2 : ℕ)) hδ hsq0 hsqOn hPmem hPsep
   have hA2 := sum_integral_cells_le (g := fun u => 2 * (‖f u‖ * ‖f' u‖)) hδ hcr0 hcrOn hPmem hPsep
   have hδ0 : (0 : ℝ) ≤ 1 / δ := by positivity
-  calc ∑ x ∈ P, ‖f x‖ ^ 2
-      ≤ ∑ x ∈ P, ((1 / δ) * (∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ 2)
+  calc ∑ x ∈ P, ‖f x‖ ^ (2 : ℕ)
+      ≤ ∑ x ∈ P, ((1 / δ) * (∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ (2 : ℕ))
           + ∫ u in Set.Ioc x (x + δ), 2 * (‖f u‖ * ‖f' u‖)) := Finset.sum_le_sum hper
-    _ = (1 / δ) * (∑ x ∈ P, ∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ 2)
+    _ = (1 / δ) * (∑ x ∈ P, ∫ u in Set.Ioc x (x + δ), ‖f u‖ ^ (2 : ℕ))
           + ∑ x ∈ P, ∫ u in Set.Ioc x (x + δ), 2 * (‖f u‖ * ‖f' u‖) := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum]
-    _ ≤ (1 / δ) * (∫ u in Set.Ioc A (B + δ), ‖f u‖ ^ 2)
+    _ ≤ (1 / δ) * (∫ u in Set.Ioc A (B + δ), ‖f u‖ ^ (2 : ℕ))
           + ∫ u in Set.Ioc A (B + δ), 2 * (‖f u‖ * ‖f' u‖) := by
         have := mul_le_mul_of_nonneg_left hA1 hδ0
         linarith
-    _ = (1 / δ) * (∫ u in A..B + δ, ‖f u‖ ^ 2)
+    _ = (1 / δ) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ))
           + ∫ u in A..B + δ, 2 * (‖f u‖ * ‖f' u‖) := by
         rw [intervalIntegral.integral_of_le hABδ, intervalIntegral.integral_of_le hABδ]
 
@@ -287,28 +287,28 @@ theorem large_values_separated {f f' : ℝ → ℂ} {A B δ V η : ℝ}
     (hPsep : ∀ x ∈ P, ∀ z ∈ P, x ≠ z → δ ≤ |x - z|)
     (hf : ∀ y ∈ Set.Icc A (B + δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (B + δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (B + δ))
-    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume A (B + δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (B + δ))
+    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume A (B + δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (B + δ))
     (hV : ∀ x ∈ P, V ≤ ‖f x‖) :
-    (P.card : ℝ) * V ^ 2 ≤ (1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ 2)
-      + η * (∫ u in A..B + δ, ‖f' u‖ ^ 2) := by
+    (P.card : ℝ) * V ^ (2 : ℕ) ≤ (1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ))
+      + η * (∫ u in A..B + δ, ‖f' u‖ ^ (2 : ℕ)) := by
   have hABδ : A ≤ B + δ := by linarith
-  have hlow : (P.card : ℝ) * V ^ 2 ≤ ∑ x ∈ P, ‖f x‖ ^ 2 := by
-    calc (P.card : ℝ) * V ^ 2 = ∑ _x ∈ P, V ^ 2 := by
+  have hlow : (P.card : ℝ) * V ^ (2 : ℕ) ≤ ∑ x ∈ P, ‖f x‖ ^ (2 : ℕ) := by
+    calc (P.card : ℝ) * V ^ (2 : ℕ) = ∑ _x ∈ P, V ^ (2 : ℕ) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ∑ x ∈ P, ‖f x‖ ^ 2 :=
+      _ ≤ ∑ x ∈ P, ‖f x‖ ^ (2 : ℕ) :=
           Finset.sum_le_sum fun x hx => pow_le_pow_left₀ hV0 (hV x hx) 2
   have hgal := gallagher_separated hδ hAB hPmem hPsep hf hg'int hgint hcrossint
   have hamgm : ∫ u in A..B + δ, 2 * (‖f u‖ * ‖f' u‖)
-      ≤ ∫ u in A..B + δ, (‖f u‖ ^ 2 / η + η * ‖f' u‖ ^ 2) := by
+      ≤ ∫ u in A..B + δ, (‖f u‖ ^ (2 : ℕ) / η + η * ‖f' u‖ ^ (2 : ℕ)) := by
     refine intervalIntegral.integral_mono_on hABδ hcrossint
       ((hgint.div_const η).add (hsqf'int.const_mul η)) ?_
     intro u _
     have h := two_mul_le_div_add_mul (a := ‖f u‖) (b := ‖f' u‖) hη
     linarith
-  have hsplit : ∫ u in A..B + δ, (‖f u‖ ^ 2 / η + η * ‖f' u‖ ^ 2)
-      = (1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ 2) + η * (∫ u in A..B + δ, ‖f' u‖ ^ 2) := by
+  have hsplit : ∫ u in A..B + δ, (‖f u‖ ^ (2 : ℕ) / η + η * ‖f' u‖ ^ (2 : ℕ))
+      = (1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ)) + η * (∫ u in A..B + δ, ‖f' u‖ ^ (2 : ℕ)) := by
     rw [intervalIntegral.integral_add (hgint.div_const η) (hsqf'int.const_mul η),
       intervalIntegral.integral_div, intervalIntegral.integral_const_mul]
     ring
@@ -335,25 +335,25 @@ theorem card_le_of_large_values {f f' : ℝ → ℂ} {A B δ V η : ℝ} {K : �
     (hdet : ∀ x ∈ Z, V ≤ ‖f x‖)
     (hf : ∀ y ∈ Set.Icc A (B + δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (B + δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (B + δ))
-    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume A (B + δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (B + δ))
+    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume A (B + δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (B + δ)) :
-    (Z.card : ℝ) * V ^ 2 ≤ 2 * K *
-      ((1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ 2)
-        + η * (∫ u in A..B + δ, ‖f' u‖ ^ 2)) := by
+    (Z.card : ℝ) * V ^ (2 : ℕ) ≤ 2 * K *
+      ((1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ))
+        + η * (∫ u in A..B + δ, ‖f' u‖ ^ (2 : ℕ))) := by
   obtain ⟨P, hPZ, hPcard, hPsep⟩ := exists_wellSpaced_subset hδ Z hloc
   have hPmem : ∀ x ∈ P, A ≤ x ∧ x ≤ B := fun x hx => hZmem x (hPZ hx)
   have hPdet : ∀ x ∈ P, V ≤ ‖f x‖ := fun x hx => hdet x (hPZ hx)
   have hcount := large_values_separated hδ hη hV0 hAB hPmem hPsep hf hg'int hgint hsqf'int
     hcrossint hPdet
   have hcast : (Z.card : ℝ) ≤ 2 * K * P.card := by exact_mod_cast hPcard
-  have hsq : (0 : ℝ) ≤ V ^ 2 := sq_nonneg V
+  have hsq : (0 : ℝ) ≤ V ^ (2 : ℕ) := sq_nonneg V
   have hKnn : (0 : ℝ) ≤ 2 * K := by positivity
-  calc (Z.card : ℝ) * V ^ 2 ≤ (2 * K * P.card) * V ^ 2 :=
+  calc (Z.card : ℝ) * V ^ (2 : ℕ) ≤ (2 * K * P.card) * V ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hcast hsq
-    _ = 2 * K * ((P.card : ℝ) * V ^ 2) := by ring
-    _ ≤ 2 * K * ((1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ 2)
-          + η * (∫ u in A..B + δ, ‖f' u‖ ^ 2)) :=
+    _ = 2 * K * ((P.card : ℝ) * V ^ (2 : ℕ)) := by ring
+    _ ≤ 2 * K * ((1 / δ + 1 / η) * (∫ u in A..B + δ, ‖f u‖ ^ (2 : ℕ))
+          + η * (∫ u in A..B + δ, ‖f' u‖ ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hcount hKnn
 
 

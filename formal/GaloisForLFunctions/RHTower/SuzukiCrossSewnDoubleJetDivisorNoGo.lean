@@ -33,7 +33,7 @@ private theorem meromorphicAt_suzukiShiftedXiTarget
     (eta w : ℂ) : MeromorphicAt (suzukiShiftedXiTarget eta) w := by
   unfold suzukiShiftedXiTarget
   apply MeromorphicAt.div
-  · exact ((by fun_prop : AnalyticAt ℂ (fun u : ℂ => u ^ 2) w).mul
+  · exact ((by fun_prop : AnalyticAt ℂ (fun u : ℂ => u ^ (2 : ℕ)) w).mul
       (XiC_analytic w (Set.mem_univ w))).meromorphicAt
   · exact (((XiC_analytic w (Set.mem_univ w)).deriv.sub
       (analyticAt_const.mul (XiC_analytic w (Set.mem_univ w)))).meromorphicAt)
@@ -121,7 +121,7 @@ derivative is `z² / m`; in particular the jet is independent of the shift param
 theorem deriv_suzukiShiftedXiTarget_of_XiC_zero
     {eta z : ℂ} (hz : XiC z = 0) :
     deriv (suzukiShiftedXiTarget eta) z =
-      z ^ 2 / ((analyticOrderAt XiC z).toNat : ℂ) := by
+      z ^ (2 : ℕ) / ((analyticOrderAt XiC z).toNat : ℂ) := by
   let T : ℂ → ℂ := suzukiShiftedXiTarget eta
   have hT : AnalyticAt ℂ T z :=
     analyticAt_suzukiShiftedXiTarget_of_XiC_zero (eta := eta) hz

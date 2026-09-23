@@ -24,8 +24,8 @@ theorem sum_normSq_window_le_of_unweighted {a : ℕ → ℂ} {X L : ℕ} {ε : �
     (hcorr : ∀ h ∈ Finset.Ico 1 L,
       |∑ n ∈ (Finset.range (X + L + 1 - h)).filter (fun n => L ≤ n ∧ n + h ≤ X),
         (a n * (starRingEnd ℂ) (a (n + h))).re| ≤ ε) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ)
         + 2 * (L : ℝ) * ((L : ℝ) * ε + ((2 * L + 1 : ℕ) : ℝ) * (L : ℝ)) := by
   classical
   have hc : ∀ h n : ℕ, |(a n * (starRingEnd ℂ) (a (n + h))).re| ≤ 1 := by
@@ -34,8 +34,8 @@ theorem sum_normSq_window_le_of_unweighted {a : ℕ → ℂ} {X L : ℕ} {ε : �
     rw [norm_mul, RCLike.norm_conj]
     exact mul_le_one₀ (ha n) (norm_nonneg _) (ha (n + h))
   rw [sum_normSq_window_eq_autocorrelation_lt a X L]
-  have hdiag : ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2 := by
+  have hdiag : ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun n _ => ?_
     have hK : ((windowOverlap X L n n : ℕ) : ℝ) ≤ (L : ℝ) := by

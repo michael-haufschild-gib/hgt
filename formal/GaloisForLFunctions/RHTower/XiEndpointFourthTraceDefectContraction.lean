@@ -28,19 +28,19 @@ times its positive endpoint cross charge. -/
 theorem endpoint_defect_term_le_inv_height_mul_cross_of_offLine
     {K : ℝ} (hK : 0 < K) (q : XiZeroCopy)
     (_hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hheight : K ≤ (q.1 : ℂ).im ^ 2) :
+    (hheight : K ≤ (q.1 : ℂ).im ^ (2 : ℕ)) :
     ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 ≤
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) ≤
       (1 / K) * xiEndpointCrossCharge q := by
   rw [endpoint_defect_term_eq, xiEndpointCrossCharge, endpoint_cross_term_re_eq]
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hApos : 0 < (q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hApos : 0 < (q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
-  have hBpos : 0 < (1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hBpos : 0 < (1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   have hdenpos : 0 <
-      ((q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2) *
-        ((1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2) :=
+      ((q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) *
+        ((1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) :=
     mul_pos hApos hBpos
   rw [div_le_iff₀ hdenpos]
   field_simp [ne_of_gt hK]
@@ -52,18 +52,18 @@ coefficient `16 / 2365` for every Xi copy. -/
 theorem endpoint_defect_term_le_sixteen_over_twoThousandThreeHundredSixtyFive_mul_cross
     (q : XiZeroCopy) :
     ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 ≤
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) ≤
       (16 / 2365 : ℝ) * xiEndpointCrossCharge q := by
   by_cases hon : (q.1 : ℂ).re = 1 / 2
   · have hzero :
         ‖xiRawReciprocalCoordinate q -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 = 0 := by
+          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) = 0 := by
       rw [endpoint_defect_term_eq, hon]
       norm_num
     rw [hzero]
     exact mul_nonneg (by norm_num)
       (by simpa only [xiEndpointCrossCharge] using endpoint_cross_term_re_nonneg q)
-  · have hheight : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ 2 := by
+  · have hheight : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ (2 : ℕ) := by
       apply le_of_not_gt
       intro hlt
       exact hon (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hlt)

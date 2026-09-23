@@ -37,7 +37,7 @@ noncomputable def spectralHeatKernel (lam : ℕ → ℝ) (φ : ℕ → X → ℂ
 
 /-- The diagonal profile of the heat kernel: a nonnegative real spectral sum. -/
 noncomputable def spectralHeatDiag (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) (t : ℝ) (x : X) : ℝ :=
-  ∑' n, Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2
+  ∑' n, Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)
 
 theorem spectralHeatDiag_nonneg (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) (t : ℝ) (x : X) :
     0 ≤ spectralHeatDiag lam φ t x :=
@@ -48,7 +48,7 @@ theorem spectralHeatKernel_diag (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) (t 
     spectralHeatKernel lam φ t x x = ((spectralHeatDiag lam φ t x : ℝ) : ℂ) := by
   rw [spectralHeatKernel, spectralHeatDiag, Complex.ofReal_tsum]
   refine tsum_congr fun n => ?_
-  have hmc : φ n x * (starRingEnd ℂ) (φ n x) = ((‖φ n x‖ ^ 2 : ℝ) : ℂ) := by
+  have hmc : φ n x * (starRingEnd ℂ) (φ n x) = ((‖φ n x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hmc]
   push_cast
@@ -67,21 +67,21 @@ theorem spectralHeatKernel_conj (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) (t 
 
 `|K(t,x,y)| ≤ K(t,x,x)^{1/2} K(t,y,y)^{1/2}`. -/
 theorem norm_spectralHeatKernel_le (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) {t : ℝ} {x y : X}
-    (hx : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2)
-    (hy : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n y‖ ^ 2) :
+    (hx : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ))
+    (hy : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n y‖ ^ (2 : ℕ)) :
     ‖spectralHeatKernel lam φ t x y‖
       ≤ Real.sqrt (spectralHeatDiag lam φ t x) * Real.sqrt (spectralHeatDiag lam φ t y) := by
   set u : ℕ → ℝ := fun n => Real.sqrt (Real.exp (-(t * lam n))) * ‖φ n x‖ with hu
   set v : ℕ → ℝ := fun n => Real.sqrt (Real.exp (-(t * lam n))) * ‖φ n y‖ with hv
   have hsq : ∀ (z : X) (n : ℕ),
-      (Real.sqrt (Real.exp (-(t * lam n))) * ‖φ n z‖) ^ 2
-        = Real.exp (-(t * lam n)) * ‖φ n z‖ ^ 2 := by
+      (Real.sqrt (Real.exp (-(t * lam n))) * ‖φ n z‖) ^ (2 : ℕ)
+        = Real.exp (-(t * lam n)) * ‖φ n z‖ ^ (2 : ℕ) := by
     intro z n
     rw [mul_pow, Real.sq_sqrt (Real.exp_nonneg _)]
-  have hu2 : Summable fun n => u n ^ 2 := by
+  have hu2 : Summable fun n => u n ^ (2 : ℕ) := by
     refine hx.congr fun n => ?_
     rw [hu, hsq]
-  have hv2 : Summable fun n => v n ^ 2 := by
+  have hv2 : Summable fun n => v n ^ (2 : ℕ) := by
     refine hy.congr fun n => ?_
     rw [hv, hsq]
   have hterm : ∀ n, ‖(Real.exp (-(t * lam n)) : ℂ) * (φ n x * (starRingEnd ℂ) (φ n y))‖
@@ -119,32 +119,32 @@ theorem norm_spectralHeatKernel_le (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) 
 trace `Σₙ e^{−tλₙ}`. -/
 theorem integral_spectralHeatDiag [MeasurableSpace X] {μ : Measure X}
     (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) {t : ℝ}
-    (hint : ∀ n, Integrable (fun x => ‖φ n x‖ ^ 2) μ)
-    (hnorm : ∀ n, ∫ x, ‖φ n x‖ ^ 2 ∂μ = 1)
+    (hint : ∀ n, Integrable (fun x => ‖φ n x‖ ^ (2 : ℕ)) μ)
+    (hnorm : ∀ n, ∫ x, ‖φ n x‖ ^ (2 : ℕ) ∂μ = 1)
     (hsum : Summable fun n => Real.exp (-(t * lam n))) :
     ∫ x, spectralHeatDiag lam φ t x ∂μ = ∑' n, Real.exp (-(t * lam n)) := by
-  have hIint : ∀ n, Integrable (fun x => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2) μ := fun n =>
+  have hIint : ∀ n, Integrable (fun x => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)) μ := fun n =>
     (hint n).const_mul _
   have hnormsum : Summable fun n =>
-      ∫ x, ‖Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2‖ ∂μ := by
+      ∫ x, ‖Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)‖ ∂μ := by
     refine hsum.congr fun n => ?_
-    have hcongr : ∀ x, ‖Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2‖
-        = Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2 := by
+    have hcongr : ∀ x, ‖Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)‖
+        = Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ) := by
       intro x
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     simp only [hcongr]
     rw [MeasureTheory.integral_const_mul, hnorm n, mul_one]
   have hswap := MeasureTheory.integral_tsum_of_summable_integral_norm
-    (F := fun n x => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2) hIint hnormsum
+    (F := fun n x => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)) hIint hnormsum
   simp only [spectralHeatDiag]
-  rw [show (∫ x, ∑' n, Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2 ∂μ) = _ from hswap.symm]
+  rw [show (∫ x, ∑' n, Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ) ∂μ) = _ from hswap.symm]
   refine tsum_congr fun n => ?_
   rw [MeasureTheory.integral_const_mul, hnorm n, mul_one]
 
 /-- **The diagonal is antitone in the time.** -/
 theorem antitoneOn_spectralHeatDiag (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) (x : X)
     (hlam : ∀ n, 0 ≤ lam n)
-    (hsum : ∀ t ∈ Ioi (0 : ℝ), Summable fun n => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ 2) :
+    (hsum : ∀ t ∈ Ioi (0 : ℝ), Summable fun n => Real.exp (-(t * lam n)) * ‖φ n x‖ ^ (2 : ℕ)) :
     AntitoneOn (fun t => spectralHeatDiag lam φ t x) (Ioi (0 : ℝ)) := by
   intro t₁ ht₁ t₂ ht₂ hle
   refine (hsum t₂ ht₂).tsum_le_tsum (fun n => ?_) (hsum t₁ ht₁)

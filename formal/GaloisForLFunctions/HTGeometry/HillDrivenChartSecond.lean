@@ -50,27 +50,27 @@ theorem norm_hillDrivenDensitySecond_le_weight (a : HillSpeed)
     (ξ : EuclideanSpace ℝ (Fin d)) :
     ‖hillDrivenDensitySecond a b G₀ t ξ‖
       ≤ (kgFreq ξ ^ K)⁻¹ *
-        ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T) := by
+        ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T) := by
   have hbase := norm_kgChar_mul_hillDrivenDensitySecond_le a b G₀ hT ht 0 ξ
   have hchar : ‖kgChar (0 : EuclideanSpace ℝ (Fin d)) ξ * hillDrivenDensitySecond a b G₀ t ξ‖
       = ‖hillDrivenDensitySecond a b G₀ t ξ‖ := by
     rw [norm_mul, norm_kgChar, one_mul]
   rw [hchar] at hbase
   refine hbase.trans ?_
-  have h1 : kgFreq ξ ^ 2 * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
+  have h1 : kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
     kgFreq_pow_mul_inv_pow_le (j := 2) (by omega) ξ
   have h2 : (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ := inv_pow_le_inv_pow (by omega) ξ
-  have hA : (0 : ℝ) ≤ (a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T :=
+  have hA : (0 : ℝ) ≤ (a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T :=
     mul_nonneg (by positivity) (hillFlowSize_nonneg a b G₀ T)
   have hB : (0 : ℝ) ≤ hillSourceSize a b G₀ T := hillSourceSize_nonneg a b G₀ T
-  calc kgFreq ξ ^ 2 * (kgFreq ξ ^ (K + 2))⁻¹ *
-          ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T) +
+  calc kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹ *
+          ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T) +
         (kgFreq ξ ^ (K + 2))⁻¹ * hillSourceSize a b G₀ T
-      ≤ (kgFreq ξ ^ K)⁻¹ * ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T) +
+      ≤ (kgFreq ξ ^ K)⁻¹ * ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T) +
         (kgFreq ξ ^ K)⁻¹ * hillSourceSize a b G₀ T :=
         add_le_add (mul_le_mul_of_nonneg_right h1 hA) (mul_le_mul_of_nonneg_right h2 hB)
     _ = (kgFreq ξ ^ K)⁻¹ *
-        ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T) := by
+        ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T) := by
         ring
 
 theorem norm_kgDirDensity_hillDrivenDeriv_le_weight (a : HillSpeed)
@@ -85,7 +85,7 @@ theorem norm_kgDirDensity_hillDrivenDeriv_le_weight (a : HillSpeed)
       ≤ kgFreq ξ * (hillVelocitySize a b G₀ T * (kgFreq ξ ^ (K + 2))⁻¹) :=
     mul_le_mul_of_nonneg_left (norm_hillDrivenDensityDeriv_le_weight a b G₀ hT ht ξ)
       (le_of_lt (kgFreq_pos ξ))
-  have hweight : kgFreq ξ ^ 1 * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
+  have hweight : kgFreq ξ ^ (1 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
     kgFreq_pow_mul_inv_pow_le (j := 1) (by omega) ξ
   rw [pow_one] at hweight
   have hV : (0 : ℝ) ≤ hillVelocitySize a b G₀ T := by
@@ -116,7 +116,7 @@ theorem norm_kgDirDensity_two_hillDriven_le_weight (a : HillSpeed)
       (mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left (norm_hillDrivenDensity_le_weight a b G₀ hT ht ξ) hfreqnn)
         hpiv)
-  have hweight : kgFreq ξ ^ 2 * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
+  have hweight : kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
     kgFreq_pow_mul_inv_pow_le (j := 2) (by omega) ξ
   have hS : (0 : ℝ) ≤ hillFlowSize a b G₀ T := hillFlowSize_nonneg a b G₀ T
   calc ‖kgDirDensity w (kgDirDensity v (hillDrivenDensity a b G₀ t)) ξ‖
@@ -127,7 +127,7 @@ theorem norm_kgDirDensity_two_hillDriven_le_weight (a : HillSpeed)
             (kgFreq ξ * (hillFlowSize a b G₀ T * (kgFreq ξ ^ (K + 2))⁻¹)))) :=
         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hinner hfreqnn) hpiw
     _ = 2 * Real.pi * ‖w‖ * (2 * Real.pi * ‖v‖) * hillFlowSize a b G₀ T *
-          (kgFreq ξ ^ 2 * (kgFreq ξ ^ (K + 2))⁻¹) := by ring
+          (kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹) := by ring
     _ ≤ 2 * Real.pi * ‖w‖ * (2 * Real.pi * ‖v‖) * hillFlowSize a b G₀ T *
           (kgFreq ξ ^ K)⁻¹ := mul_le_mul_of_nonneg_left hweight (by positivity)
     _ = (kgFreq ξ ^ K)⁻¹ *
@@ -171,7 +171,7 @@ theorem integrable_kgFreq_mul_hillDrivenDensityDeriv
       (aestronglyMeasurable_hillDrivenDensityDeriv a b G₀ t).norm) ?_
   filter_upwards with ξ
   have hb := norm_hillDrivenDensityDeriv_le_weight a b G₀ hT (le_refl |t|) ξ
-  have hweight : kgFreq ξ ^ 1 * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
+  have hweight : kgFreq ξ ^ (1 : ℕ) * (kgFreq ξ ^ (K + 2))⁻¹ ≤ (kgFreq ξ ^ K)⁻¹ :=
     kgFreq_pow_mul_inv_pow_le (j := 1) (by omega) ξ
   rw [pow_one] at hweight
   have hnn : (0 : ℝ) ≤ kgFreq ξ * ‖hillDrivenDensityDeriv a b G₀ t ξ‖ :=
@@ -255,7 +255,7 @@ theorem integrable_kgFreq_mul_kgDirDensity_hillDriven
     push_cast
     linarith
   have h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) =>
-      kgFreq ξ ^ 2 * ‖hillDrivenDensity a b G₀ t ξ‖) (volume) :=
+      kgFreq ξ ^ (2 : ℕ) * ‖hillDrivenDensity a b G₀ t ξ‖) (volume) :=
     integrable_kgFreq_pow_mul_kgWeighted' (E := EuclideanSpace ℝ (Fin d)) (j := 2) hdim2
       (hillPotentialFlow a b G₀ t)
   exact integrable_kgFreq_mul_kgDirDensity h2 v
@@ -286,7 +286,7 @@ theorem hasDerivAt_hillDrivenChartTimePartial_zero
     (fun t => integrable_hillDrivenDensityDeriv hK a b G₀ t) y
   intro T
   rcases le_or_gt 0 T with hT | hT
-  · exact ⟨(a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T,
+  · exact ⟨(a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T,
       fun r hr ξ => norm_hillDrivenDensitySecond_le_weight a b G₀ hT hr ξ⟩
   · refine ⟨0, fun r hr ξ => ?_⟩
     exact absurd (le_trans (abs_nonneg r) hr) (not_le.mpr hT)
@@ -352,13 +352,13 @@ theorem continuous_hillDrivenChartTimeSecond
       (integrable_kgFreq_inv_pow (E := EuclideanSpace ℝ (Fin d)) hK)
     intro T
     rcases le_or_gt 0 T with hT | hT
-    · refine ⟨(a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T,
+    · refine ⟨(a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T + hillSourceSize a b G₀ T,
         fun r hr ξ => ?_⟩
       have h := norm_hillDrivenDensitySecond_le_weight a b G₀ hT hr ξ
       calc ‖hillDrivenDensitySecond a b G₀ r ξ‖
-          ≤ (kgFreq ξ ^ K)⁻¹ * ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T +
+          ≤ (kgFreq ξ ^ K)⁻¹ * ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T +
             hillSourceSize a b G₀ T) := h
-        _ = ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T +
+        _ = ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T +
             hillSourceSize a b G₀ T) * (kgFreq ξ ^ K)⁻¹ := by ring
     · refine ⟨0, fun r hr ξ => ?_⟩
       exact absurd (le_trans (abs_nonneg r) hr) (not_le.mpr hT)

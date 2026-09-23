@@ -110,13 +110,13 @@ theorem mobius_coefficients_unique {u w : E} (htu : Transcendental C u)
       = algebraMap C E a' * u + algebraMap C E b') :
     ∃ t : C, t ≠ 0 ∧ a' = t * a ∧ b' = t * b ∧ c' = t * c ∧ d' = t * d := by
   classical
-  have hpoly : algebraMap C E (a * c' - a' * c) * u ^ 2
+  have hpoly : algebraMap C E (a * c' - a' * c) * u ^ (2 : ℕ)
       + algebraMap C E (a * d' + b * c' - a' * d - b' * c) * u
       + algebraMap C E (b * d' - b' * d) = 0 := by
     simp only [map_sub, map_add, map_mul]
     linear_combination (algebraMap C E c * u + algebraMap C E d) * h'
       - (algebraMap C E c' * u + algebraMap C E d') * h
-  have hP : (Polynomial.C (a * c' - a' * c) * Polynomial.X ^ 2
+  have hP : (Polynomial.C (a * c' - a' * c) * Polynomial.X ^ (2 : ℕ)
       + Polynomial.C (a * d' + b * c' - a' * d - b' * c) * Polynomial.X
       + Polynomial.C (b * d' - b' * d) : Polynomial C) = 0 := by
     by_contra hne

@@ -32,7 +32,7 @@ def finitePhaseOverlap {ι : Type*} [Fintype ι]
 /-- Mean squared pairwise separation of a finite phase packet. -/
 def finitePhasePairwiseDispersion {ι : Type*} [Fintype ι]
     (weight : ι → ℝ) (phase : ι → ℂ) : ℝ :=
-  ∑ i, ∑ j, weight i * weight j * ‖phase i - phase j‖ ^ 2
+  ∑ i, ∑ j, weight i * weight j * ‖phase i - phase j‖ ^ (2 : ℕ)
 
 /-- **Phase-dispersion/fidelity identity.**  Pairwise phase dispersion is twice the fidelity
 deficit of the weighted overlap. -/
@@ -40,26 +40,26 @@ theorem finitePhasePairwiseDispersion_eq_two_mul_fidelityDeficit
     {ι : Type*} [Fintype ι] (weight : ι → ℝ) (phase : ι → ℂ)
     (hweight : ∑ i, weight i = 1) (hphase : ∀ i, ‖phase i‖ = 1) :
     finitePhasePairwiseDispersion weight phase =
-      2 * (1 - ‖finitePhaseOverlap weight phase‖ ^ 2) := by
+      2 * (1 - ‖finitePhaseOverlap weight phase‖ ^ (2 : ℕ)) := by
   have hre := normalizedWeight_pairwiseSqGap_eq_two_mul_variance
     weight (fun i => (phase i).re) hweight
   have him := normalizedWeight_pairwiseSqGap_eq_two_mul_variance
     weight (fun i => (phase i).im) hweight
-  have hnorm : ∀ i, (phase i).re ^ 2 + (phase i).im ^ 2 = 1 := by
+  have hnorm : ∀ i, (phase i).re ^ (2 : ℕ) + (phase i).im ^ (2 : ℕ) = 1 := by
     intro i
     calc
-      (phase i).re ^ 2 + (phase i).im ^ 2 = ‖phase i‖ ^ 2 := by
+      (phase i).re ^ (2 : ℕ) + (phase i).im ^ (2 : ℕ) = ‖phase i‖ ^ (2 : ℕ) := by
         rw [Complex.sq_norm, Complex.normSq_apply]
         ring
       _ = 1 := by rw [hphase i]; norm_num
   have hsecond :
-      (∑ i, weight i * (phase i).re ^ 2) +
-        (∑ i, weight i * (phase i).im ^ 2) = 1 := by
+      (∑ i, weight i * (phase i).re ^ (2 : ℕ)) +
+        (∑ i, weight i * (phase i).im ^ (2 : ℕ)) = 1 := by
     rw [← Finset.sum_add_distrib]
     calc
-      ∑ i, (weight i * (phase i).re ^ 2 +
-          weight i * (phase i).im ^ 2) =
-          ∑ i, weight i * ((phase i).re ^ 2 + (phase i).im ^ 2) := by
+      ∑ i, (weight i * (phase i).re ^ (2 : ℕ) +
+          weight i * (phase i).im ^ (2 : ℕ)) =
+          ∑ i, weight i * ((phase i).re ^ (2 : ℕ) + (phase i).im ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i hi
             ring
@@ -88,7 +88,7 @@ theorem finitePhase_fidelityDeficit_nonneg
     {ι : Type*} [Fintype ι] (weight : ι → ℝ) (phase : ι → ℂ)
     (hweight : ∑ i, weight i = 1) (hweightNonneg : ∀ i, 0 ≤ weight i)
     (hphase : ∀ i, ‖phase i‖ = 1) :
-    0 ≤ 1 - ‖finitePhaseOverlap weight phase‖ ^ 2 := by
+    0 ≤ 1 - ‖finitePhaseOverlap weight phase‖ ^ (2 : ℕ) := by
   have hdisp : 0 ≤ finitePhasePairwiseDispersion weight phase := by
     unfold finitePhasePairwiseDispersion
     apply Finset.sum_nonneg
@@ -107,7 +107,7 @@ theorem finitePhase_fidelityDeficit_eq_zero_iff
     {ι : Type*} [Fintype ι] (weight : ι → ℝ) (phase : ι → ℂ)
     (hweight : ∑ i, weight i = 1) (hweightPos : ∀ i, 0 < weight i)
     (hphase : ∀ i, ‖phase i‖ = 1) :
-    1 - ‖finitePhaseOverlap weight phase‖ ^ 2 = 0 ↔
+    1 - ‖finitePhaseOverlap weight phase‖ ^ (2 : ℕ) = 0 ↔
       ∀ i j, phase i = phase j := by
   constructor
   · intro hzero
@@ -116,7 +116,7 @@ theorem finitePhase_fidelityDeficit_eq_zero_iff
         weight phase hweight hphase, hzero, mul_zero]
     unfold finitePhasePairwiseDispersion at hdisp
     have houterNonneg : ∀ i ∈ (Finset.univ : Finset ι),
-        0 ≤ ∑ j, weight i * weight j * ‖phase i - phase j‖ ^ 2 := by
+        0 ≤ ∑ j, weight i * weight j * ‖phase i - phase j‖ ^ (2 : ℕ) := by
       intro i hi
       apply Finset.sum_nonneg
       intro j hj
@@ -126,7 +126,7 @@ theorem finitePhase_fidelityDeficit_eq_zero_iff
     have hi := (Finset.sum_eq_zero_iff_of_nonneg houterNonneg).mp hdisp i
       (Finset.mem_univ i)
     have hinnerNonneg : ∀ j ∈ (Finset.univ : Finset ι),
-        0 ≤ weight i * weight j * ‖phase i - phase j‖ ^ 2 := by
+        0 ≤ weight i * weight j * ‖phase i - phase j‖ ^ (2 : ℕ) := by
       intro k hk
       exact mul_nonneg (mul_nonneg (hweightPos i).le (hweightPos k).le)
         (sq_nonneg _)
@@ -134,7 +134,7 @@ theorem finitePhase_fidelityDeficit_eq_zero_iff
       (Finset.mem_univ j)
     have hcoeff : weight i * weight j ≠ 0 :=
       (mul_pos (hweightPos i) (hweightPos j)).ne'
-    have hnormSq : ‖phase i - phase j‖ ^ 2 = 0 :=
+    have hnormSq : ‖phase i - phase j‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hij).resolve_left hcoeff
     have hnorm : ‖phase i - phase j‖ = 0 := sq_eq_zero_iff.mp hnormSq
     exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)

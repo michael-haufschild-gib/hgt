@@ -18,10 +18,10 @@ nonvanishing completion unit times `xi`. Consequently its exact reflected-Fermi 
 velocity has a unique meromorphic continuation. At every Xi zero `ρ` of multiplicity `m`,
 that velocity is
 
-`2 * m * (2 * ρ - 1) / (s - ρ)^2`
+`2 * m * (2 * ρ - 1) / (s - ρ)^(2 : ℕ)`
 
 plus an analytic remainder: all possible simple-pole terms cancel. The coefficient is nonzero.
-An identity-theorem argument after clearing the denominator by `xi^2` then rules out every
+An identity-theorem argument after clearing the denominator by `xi^(2 : ℕ)` then rules out every
 holomorphic function on the full strip agreeing with the velocity only on the physical real slice.
 This kills FZZ-P-D2 without RH, zero simplicity, or any off-axis restriction on the candidate flow.
 -/
@@ -379,7 +379,7 @@ theorem exists_xi_logDeriv_curvature_principalParts (ρ : ℂ) :
       logDeriv xi =ᶠ[nhdsWithin ρ {ρ}ᶜ]
         (fun z => ((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) + logDeriv h z) ∧
       deriv (logDeriv xi) =ᶠ[nhdsWithin ρ {ρ}ᶜ]
-        (fun z => -((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ 2 +
+        (fun z => -((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ (2 : ℕ) +
           deriv (logDeriv h) z) := by
   obtain ⟨R, hR, h, hhan, hh0, hlocal⟩ :=
     exists_xi_normalizedLogDeriv_factorization ρ
@@ -399,7 +399,7 @@ theorem exists_xi_logDeriv_curvature_principalParts (ρ : ℂ) :
   have hQraw := GaloisForLFunctions.EventuallyEq.nhdsNE_iteratedDeriv hL 1
   simp only [iteratedDeriv_one] at hQraw
   have hQ : deriv (logDeriv xi) =ᶠ[nhdsWithin ρ {ρ}ᶜ]
-      (fun z => -((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ 2 +
+      (fun z => -((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ (2 : ℕ) +
         deriv (logDeriv h) z) := by
     filter_upwards [hQraw, nhdsWithin_le_nhds hball, self_mem_nhdsWithin] with
         z hzQ hzball hzne
@@ -407,7 +407,7 @@ theorem exists_xi_logDeriv_curvature_principalParts (ρ : ℂ) :
     have hzsub : z - ρ ≠ 0 := sub_ne_zero.mpr hzne
     have hp : HasDerivAt
         (fun w : ℂ => ((analyticOrderAt xi ρ).toNat : ℂ) / (w - ρ))
-        (-((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ 2) z := by
+        (-((analyticOrderAt xi ρ).toNat : ℂ) / (z - ρ) ^ (2 : ℕ)) z := by
       have hden := (hasDerivAt_id z).sub_const ρ
       have hinv := hden.inv hzsub
       have hmul := HasDerivAt.const_mul
@@ -432,7 +432,7 @@ theorem exists_fzzCigarParityMeromorphicInformationVelocity_principalPart
       2 * ((analyticOrderAt xi ρ).toNat : ℂ) * (2 * ρ - 1) ≠ 0 ∧
       fzzCigarParityMeromorphicInformationVelocity =ᶠ[nhdsWithin ρ {ρ}ᶜ]
         fun z =>
-          2 * ((analyticOrderAt xi ρ).toNat : ℂ) * (2 * ρ - 1) / (z - ρ) ^ 2 +
+          2 * ((analyticOrderAt xi ρ).toNat : ℂ) * (2 * ρ - 1) / (z - ρ) ^ (2 : ℕ) +
             remainder z := by
   obtain ⟨h, hlog, hcurv, hL, hQ⟩ :=
     exists_xi_logDeriv_curvature_principalParts ρ
@@ -514,7 +514,7 @@ theorem fzzCigarParityMeromorphicInformationForce_ofReal
               deriv (logDeriv fzzCigarParityMellin) r) := by
       rw [fzzCigarParityMeromorphicInformationForce]
       rw [hLs, hLr, hQs, hQr]
-      rw [show r = 1 - s by rfl, logDeriv_xi_one_sub,
+      rw [show r = 1 - s by rfl, logDeriv_xi_one_sub_xiLogDerivSymmetry,
         deriv_logDeriv_xi_one_sub]
       ring
     _ = (fzzCigarParityReflectedFermiInformationForce sigma : ℂ) := by
@@ -542,11 +542,11 @@ Fermi information velocity. -/
 def fzzCigarParityInformationVelocityPoleCleared (s : ℂ) : ℂ :=
   -(4 * deriv xi s * xi s +
     2 * (fzzCigarParityXiCompletionConnection s -
-      fzzCigarParityXiCompletionConnection (1 - s)) * xi s ^ 2 +
+      fzzCigarParityXiCompletionConnection (1 - s)) * xi s ^ (2 : ℕ) +
     (2 * s - 1) *
-      (2 * (deriv (deriv xi) s * xi s - deriv xi s ^ 2) +
+      (2 * (deriv (deriv xi) s * xi s - deriv xi s ^ (2 : ℕ)) +
         (deriv fzzCigarParityXiCompletionConnection s +
-          deriv fzzCigarParityXiCompletionConnection (1 - s)) * xi s ^ 2))
+          deriv fzzCigarParityXiCompletionConnection (1 - s)) * xi s ^ (2 : ℕ)))
 
 theorem analyticAt_fzzCigarParityInformationVelocityPoleCleared
     {s : ℂ} (hs : s ∈ fzzD2OpenStrip) :
@@ -569,22 +569,22 @@ theorem analyticAt_fzzCigarParityInformationVelocityPoleCleared
     (fun z : ℂ =>
       -(4 * deriv xi z * xi z +
         2 * (fzzCigarParityXiCompletionConnection z -
-          fzzCigarParityXiCompletionConnection (1 - z)) * xi z ^ 2 +
+          fzzCigarParityXiCompletionConnection (1 - z)) * xi z ^ (2 : ℕ) +
         (2 * z - 1) *
-          (2 * (deriv (deriv xi) z * xi z - deriv xi z ^ 2) +
+          (2 * (deriv (deriv xi) z * xi z - deriv xi z ^ (2 : ℕ)) +
             (deriv fzzCigarParityXiCompletionConnection z +
-              deriv fzzCigarParityXiCompletionConnection (1 - z)) * xi z ^ 2))) s
+              deriv fzzCigarParityXiCompletionConnection (1 - z)) * xi z ^ (2 : ℕ)))) s
   fun_prop
 
 theorem fzzCigarParityInformationVelocityPoleCleared_eq
     {s : ℂ} (hxi : xi s ≠ 0) :
     fzzCigarParityInformationVelocityPoleCleared s =
-      xi s ^ 2 * fzzCigarParityMeromorphicInformationVelocity s := by
+      xi s ^ (2 : ℕ) * fzzCigarParityMeromorphicInformationVelocity s := by
   have hxian : AnalyticAt ℂ xi s := xi_analyticOnNhd_univ s (Set.mem_univ s)
   have hquot := hxian.deriv.differentiableAt.hasDerivAt.div
     hxian.differentiableAt.hasDerivAt hxi
   have hQ : deriv (logDeriv xi) s =
-      (deriv (deriv xi) s * xi s - deriv xi s * deriv xi s) / xi s ^ 2 := by
+      (deriv (deriv xi) s * xi s - deriv xi s * deriv xi s) / xi s ^ (2 : ℕ) := by
     change deriv (deriv xi / xi) s = _
     exact hquot.deriv
   rw [fzzCigarParityInformationVelocityPoleCleared,
@@ -606,7 +606,7 @@ theorem not_FZZCigarParityRealSliceHolomorphicFermiGeneratorExists :
     ¬ FZZCigarParityRealSliceHolomorphicFermiGeneratorExists := by
   rintro ⟨G, hG, hreal⟩
   let H : ℂ → ℂ := fun s =>
-    xi s ^ 2 * G s - fzzCigarParityInformationVelocityPoleCleared s
+    xi s ^ (2 : ℕ) * G s - fzzCigarParityInformationVelocityPoleCleared s
   have hH : AnalyticOnNhd ℂ H fzzD2OpenStrip := by
     intro s hs
     have hxi : AnalyticAt ℂ xi s := xi_analyticOnNhd_univ s (Set.mem_univ s)
@@ -661,7 +661,7 @@ theorem not_FZZCigarParityRealSliceHolomorphicFermiGeneratorExists :
           (show ((x n : ℝ) : ℂ) ∈ fzzD2OpenStrip by
             exact ⟨by simpa using hx0, by simpa using hx1⟩), hz, mul_zero]
       rw [show H ((x n : ℝ) : ℂ) =
-          xi ((x n : ℝ) : ℂ) ^ 2 * G ((x n : ℝ) : ℂ) -
+          xi ((x n : ℝ) : ℂ) ^ (2 : ℕ) * G ((x n : ℝ) : ℂ) -
             fzzCigarParityInformationVelocityPoleCleared ((x n : ℝ) : ℂ) by rfl,
         fzzCigarParityInformationVelocityPoleCleared_eq hxi,
         hreal (x n) hx0 hx1,
@@ -683,10 +683,10 @@ theorem not_FZZCigarParityRealSliceHolomorphicFermiGeneratorExists :
     filter_upwards [nhdsWithin_le_nhds
         (isOpen_fzzD2OpenStrip.mem_nhds hρstrip), hxiPunc] with z hzstrip hxiz
     have hzero := hHzero hzstrip
-    rw [show H z = xi z ^ 2 * G z -
+    rw [show H z = xi z ^ (2 : ℕ) * G z -
         fzzCigarParityInformationVelocityPoleCleared z by rfl,
       fzzCigarParityInformationVelocityPoleCleared_eq hxiz] at hzero
-    have hxi2 : xi z ^ 2 ≠ 0 := pow_ne_zero 2 hxiz
+    have hxi2 : xi z ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hxiz
     apply mul_left_cancel₀ hxi2
     exact sub_eq_zero.mp hzero
   have horder := meromorphicOrderAt_congr hGV

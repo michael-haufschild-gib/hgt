@@ -43,9 +43,9 @@ private theorem localTerminalEnergy_le_globalReesPositiveForm
 
 private theorem localRank_sq_le_terminalEnergy_mul_ramificationCapacity
     {r s A B : ℕ} (d : PuiseuxOrbitCoareaDatum r s A B) (x : Fin r → ℝ) :
-    localRankLinear d x ^ 2 ≤
+    localRankLinear d x ^ (2 : ℕ) ≤
       d.toOrbitCoareaDatum.terminalEnergy x *
-        ∑ i, (d.toOrbitCoareaDatum.ramification i : ℝ) ^ 2 := by
+        ∑ i, (d.toOrbitCoareaDatum.ramification i : ℝ) ^ (2 : ℕ) := by
   rw [localRankLinear_apply, d.toOrbitCoareaDatum.physicalRank_eq_ramification_sum]
   simpa only [OrbitCoareaDatum.terminalEnergy] using
     (Finset.sum_mul_sq_le_sq_mul_sq Finset.univ x
@@ -60,7 +60,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_localRamificat
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber genus d parameter)
     (a : Fin (p + 1)) :
     1 < -globalRankCoefficient genus d *
-      ∑ i, ((d a).toOrbitCoareaDatum.ramification i : ℝ) ^ 2 := by
+      ∑ i, ((d a).toOrbitCoareaDatum.ramification i : ℝ) ^ (2 : ℕ) := by
   have hpositive : 0 < globalReesPositiveForm d parameter x.1 :=
     globalReesPositiveForm_pos d parameter hparameter
       (routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_charge_ne_zero x)
@@ -76,7 +76,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_localRamificat
   have hterminal :=
     localTerminalEnergy_le_globalReesPositiveForm d parameter hparameter x.1 a
   have hcapacity :
-      0 ≤ ∑ i, ((d a).toOrbitCoareaDatum.ramification i : ℝ) ^ 2 :=
+      0 ≤ ∑ i, ((d a).toOrbitCoareaDatum.ramification i : ℝ) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hrankBound := mul_le_mul_of_nonneg_left hcauchy hcoefficient.le
   have hterminalBound := mul_le_mul_of_nonneg_left hterminal
@@ -90,10 +90,10 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_sphereOnePunct
     {d : LocalData 0 n m K N} {parameter : ReesParameter d}
     (hparameter : ∀ a edge, 0 ≤ parameter a edge)
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber 0 d parameter) :
-    1 + 1 / (∑ i, ((d 0).toOrbitCoareaDatum.ramification i : ℝ) ^ 2) <
+    1 + 1 / (∑ i, ((d 0).toOrbitCoareaDatum.ramification i : ℝ) ^ (2 : ℕ)) <
       (((K 0 + 1 : ℕ) : ℝ) / N 0) := by
   let capacity : ℝ :=
-    ∑ i, ((d 0).toOrbitCoareaDatum.ramification i : ℝ) ^ 2
+    ∑ i, ((d 0).toOrbitCoareaDatum.ramification i : ℝ) ^ (2 : ℕ)
   have hcapacity : 1 < -globalRankCoefficient 0 d * capacity := by
     simpa only [capacity] using
       routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_localRamificationCapacity_gt_one

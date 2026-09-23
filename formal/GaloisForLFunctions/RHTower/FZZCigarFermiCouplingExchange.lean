@@ -12,7 +12,7 @@ to a scaled logistic density. Absolute integrability justifies the Fourier Fubin
 
 The integrated first marked operator has normalized response
 `c * (digamma (1-i*q) - digamma (1+i*q))`, where `q=p/exp(v)` and
-`c=(2+exp(v)^2)/exp(v)^2`. It is purely imaginary and vanishes exactly at `p=0`.
+`c=(2+exp(v)^(2 : ℕ))/exp(v)^(2 : ℕ)`. It is purely imaginary and vanishes exactly at `p=0`.
 Two independently integrated, momentum-reflected factors have zero paired insertion
 at every momentum. A pair integrated with one shared coupling instead retains the
 strict mixed response of the radial source, with coupling replaced by `Re digamma(1)`.
@@ -94,19 +94,19 @@ private theorem gamma_two_log_mass : (∫ u : ℝ, gammaTwoLogDensity u) = 1 := 
 
 private theorem coupling_density_integrand (v x u : ℝ) :
     fzzExponentialLogCouplingDensity u * fzzRadialCouplingDensity u v x =
-      (Real.exp v * Real.exp (Real.exp v * x) / (1 + Real.exp (Real.exp v * x))^2) *
+      (Real.exp v * Real.exp (Real.exp v * x) / (1 + Real.exp (Real.exp v * x))^(2 : ℕ)) *
         gammaTwoLogDensity (Real.log (1 + Real.exp (Real.exp v * x)) + u) := by
   let C := 1 + Real.exp (Real.exp v * x)
   have hC : 0 < C := by dsimp [C]; positivity
   have he : Real.exp (Real.log C + u) = C * Real.exp u := by
     rw [Real.exp_add, Real.exp_log hC]
-  have h2 : Real.exp (2 * (Real.log C + u)) = C^2 * Real.exp u ^ 2 := by
+  have h2 : Real.exp (2 * (Real.log C + u)) = C^(2 : ℕ) * Real.exp u ^ (2 : ℕ) := by
     rw [show 2*(Real.log C+u) = (Real.log C+u)+(Real.log C+u) by ring,
       Real.exp_add, he]
     ring
   change fzzExponentialLogCouplingDensity u *
       (Real.exp v * Real.exp (u + Real.exp v * x) * Real.exp (-Real.exp (u + Real.exp v * x))) =
-    (Real.exp v * Real.exp (Real.exp v * x) / C^2) * gammaTwoLogDensity (Real.log C + u)
+    (Real.exp v * Real.exp (Real.exp v * x) / C^(2 : ℕ)) * gammaTwoLogDensity (Real.log C + u)
   rw [log_density_eq, gammaTwoLogDensity, Real.exp_sub, h2, he, Real.exp_add u]
   have hx : Real.exp (-Real.exp u) * Real.exp (-(Real.exp u * Real.exp (Real.exp v * x))) =
       (Real.exp (C*Real.exp u))⁻¹ := by
@@ -115,7 +115,7 @@ private theorem coupling_density_integrand (v x u : ℝ) :
     dsimp [C]
     ring
   calc
-    _ = (Real.exp v * Real.exp (Real.exp v*x) * Real.exp u^2) *
+    _ = (Real.exp v * Real.exp (Real.exp v*x) * Real.exp u^(2 : ℕ)) *
         (Real.exp (-Real.exp u) * Real.exp (-(Real.exp u * Real.exp (Real.exp v*x)))) := by ring
     _ = _ := by rw [hx]; field_simp
 

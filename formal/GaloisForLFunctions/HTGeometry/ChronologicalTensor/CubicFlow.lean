@@ -38,10 +38,10 @@ theorem cubicFlow_retained (q B C D : ℝ) :
   cubicCollapse_retained (1-q) B C D
 
 def cubicDecayReadout (A E F : ℝ) (g : Fin 5 → ℝ) : ℝ :=
-  A*g 0*g 2*g 4+E*(g 2)^2+F*(g 2)^3
+  A*g 0*g 2*g 4+E*(g 2)^(2 : ℕ)+F*(g 2)^(3 : ℕ)
 
 def cubicDecayMode : Fin 3 → (Fin 5 → ℝ) → ℝ :=
-  ![fun g => g 2*(1-(g 0-g 4)^2)/4,fun g => (g 2)^2,fun g => (g 2)^3]
+  ![fun g => g 2*(1-(g 0-g 4)^(2 : ℕ))/4,fun g => (g 2)^(2 : ℕ),fun g => (g 2)^(3 : ℕ)]
 
 theorem cubicDecayReadout_pairing (A E : ℝ) :
     EqOn (cubicReadout A 0 0 0 E) (cubicDecayReadout A E 0) cubicProbeSection := by
@@ -57,8 +57,8 @@ theorem cubicDecayReadout_pairing (A E : ℝ) :
 
 theorem cubicDecayReadout_flow (q A E F : ℝ) :
     EqOn (fun g => cubicDecayReadout A E F (cubicFlow q g))
-      (cubicDecayReadout (q*A) (q^2*E+q*(1-q)*A/2)
-        (q^3*F-q*(1-q^2)*A/4)) cubicProbeSection := by
+      (cubicDecayReadout (q*A) (q^(2 : ℕ)*E+q*(1-q)*A/2)
+        (q^(3 : ℕ)*F-q*(1-q^(2 : ℕ))*A/4)) cubicProbeSection := by
   intro g hg
   change cubicDecayReadout A E F (cubicFlow q g)=_
   by_cases hc : g 2=0
@@ -67,14 +67,14 @@ theorem cubicDecayReadout_flow (q A E F : ℝ) :
   have hd : g 3=0 := (mul_eq_zero.mp hg.2.2.2.2.1).resolve_left hc
   have hs : g 0+g 2+g 4=1 := by simpa [hb,hd] using hg.2.1
   simp [cubicDecayReadout,cubicFlow,cubicCollapse]
-  linear_combination (A*q*(1-q)*(g 2)^2/2)*hs
+  linear_combination (A*q*(1-q)*(g 2)^(2 : ℕ)/2)*hs
 
 theorem cubicDecayMode_spectrum (q : ℝ) (j : Fin 3) (g : Fin 5 → ℝ) :
     cubicDecayMode j (cubicFlow q g)=q^(j.val+1)*cubicDecayMode j g := by
   fin_cases j <;> simp [cubicDecayMode,cubicFlow,cubicCollapse] <;> ring
 
 theorem cubicDecayMode_cusp (g : Fin 5 → ℝ) :
-    (cubicDecayMode 2 g)^2=(cubicDecayMode 1 g)^3 := by
+    (cubicDecayMode 2 g)^(2 : ℕ)=(cubicDecayMode 1 g)^(3 : ℕ) := by
   simp [cubicDecayMode]
   ring
 

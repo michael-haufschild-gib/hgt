@@ -58,11 +58,11 @@ theorem upperEndRatfunc_deriv_closed (r : RatFunc ℂ) :
       let qR : RatFunc ℂ := algebraMap (Polynomial ℂ) (RatFunc ℂ) q
       let pR' : RatFunc ℂ := algebraMap (Polynomial ℂ) (RatFunc ℂ) p.derivative
       let qR' : RatFunc ℂ := algebraMap (Polynomial ℂ) (RatFunc ℂ) q.derivative
-      refine ⟨qR⁻¹ ^ 2 * (qR * pR' - pR * qR'), ?_⟩
+      refine ⟨qR⁻¹ ^ (2 : ℕ) * (qR * pR' - pR * qR'), ?_⟩
       change (upperEndRatfuncToMero (pR / qR))′ = upperEndRatfuncToMero _
       rw [map_div₀ upperEndRatfuncToMero, Derivation.leibniz_div]
       simp only [map_mul, map_sub, map_pow, map_inv₀]
-      change (upperEndRatfuncToMero qR)⁻¹ ^ 2 *
+      change (upperEndRatfuncToMero qR)⁻¹ ^ (2 : ℕ) *
           (upperEndRatfuncToMero qR * (upperEndRatfuncToMero pR)′ -
             upperEndRatfuncToMero pR * (upperEndRatfuncToMero qR)′) = _
       rw [show upperEndRatfuncToMero pR = upperEndPolyToMero p by

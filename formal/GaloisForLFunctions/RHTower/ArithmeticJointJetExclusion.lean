@@ -30,59 +30,59 @@ theorem norm_reflectionTargetQuadraticCorrection_le_four {s : ℂ}
   let u := |s.im|
   have hu : 0 < u := by dsimp [u]; linarith
   have hu1 : 1 ≤ u := ht
-  have hu3 : 0 ≤ u^3 := by positivity
-  have hu4 : 1 ≤ u^4 := one_le_pow₀ hu1
-  have hu5 : 1 ≤ u^5 := one_le_pow₀ hu1
-  have hC : u^4 ≤ C := reflection_target_normSq_lower s
-  have hC₀ : u^4 ≤ C₀ := by
+  have hu3 : 0 ≤ u^(3 : ℕ) := by positivity
+  have hu4 : 1 ≤ u^(4 : ℕ) := one_le_pow₀ hu1
+  have hu5 : 1 ≤ u^(5 : ℕ) := one_le_pow₀ hu1
+  have hC : u^(4 : ℕ) ≤ C := reflection_target_normSq_lower s
+  have hC₀ : u^(4 : ℕ) ≤ C₀ := by
     simpa only [show c.im=s.im by simp [c,criticalResponsePoint]] using reflection_target_normSq_lower c
   have hCpos : 0 < C := lt_of_lt_of_le (pow_pos hu 4) hC
   have hC₀pos : 0 < C₀ := lt_of_lt_of_le (pow_pos hu 4) hC₀
-  have hprod : u^8 ≤ C*C₀ := by
+  have hprod : u^(8 : ℕ) ≤ C*C₀ := by
     calc
-      u^8 = u^4*u^4 := by ring
+      u^(8 : ℕ) = u^(4 : ℕ)*u^(4 : ℕ) := by ring
       _ ≤ C*C₀ := mul_le_mul hC hC₀ (by positivity) hCpos.le
-  have h38 : u^3 ≤ u^8 := by
-    calc u^3 ≤ u^3*u^5 := by nlinarith [mul_le_mul_of_nonneg_left hu5 hu3]
-         _ = u^8 := by ring
-  have hδ : (s.re-1/2)^2 ≤ 1/4 := by
+  have h38 : u^(3 : ℕ) ≤ u^(8 : ℕ) := by
+    calc u^(3 : ℕ) ≤ u^(3 : ℕ)*u^(5 : ℕ) := by nlinarith [mul_le_mul_of_nonneg_left hu5 hu3]
+         _ = u^(8 : ℕ) := by ring
+  have hδ : (s.re-1/2)^(2 : ℕ) ≤ 1/4 := by
     have hd : |s.re-1/2| ≤ 1/2 := abs_le.mpr ⟨by linarith [hs.1],by linarith [hs.2]⟩
     have h := mul_self_le_mul_self (abs_nonneg _) hd
     rw [←pow_two,←pow_two,sq_abs] at h
     norm_num at h
     exact h
-  have harg : 0 ≤ 2*s.im^2-1/2+(s.re-1/2)^2 ∧
-      2*s.im^2-1/2+(s.re-1/2)^2 ≤ 3*u^2 := by
-    have hu2 : 1 ≤ u^2 := one_le_pow₀ hu1
-    have hsq : s.im^2=u^2 := by simp [u]
+  have harg : 0 ≤ 2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ) ∧
+      2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ) ≤ 3*u^(2 : ℕ) := by
+    have hu2 : 1 ≤ u^(2 : ℕ) := one_le_pow₀ hu1
+    have hsq : s.im^(2 : ℕ)=u^(2 : ℕ) := by simp [u]
     rw [hsq]
     constructor <;> nlinarith [sq_nonneg (s.re-1/2)]
-  have hfirst : ‖((s.im*(2*s.im^2-1/2+(s.re-1/2)^2)/(C*C₀):ℝ):ℂ)*I‖ ≤ 3 := by
+  have hfirst : ‖((s.im*(2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ))/(C*C₀):ℝ):ℂ)*I‖ ≤ 3 := by
     rw [norm_mul,Complex.norm_I,mul_one,Complex.norm_real,Real.norm_eq_abs,
       abs_div,abs_mul,abs_of_nonneg harg.1,abs_of_pos (mul_pos hCpos hC₀pos)]
     apply (div_le_iff₀ (mul_pos hCpos hC₀pos)).mpr
     have h := mul_le_mul_of_nonneg_left harg.2 hu.le
-    change u*(2*s.im^2-1/2+(s.re-1/2)^2) ≤ _
+    change u*(2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ)) ≤ _
     nlinarith
   have hc : u ≤ ‖star c+1‖ := by
     simpa [u,c,criticalResponsePoint] using Complex.abs_im_le_norm (star c+1)
-  have hq : u^2 ≤ ‖(star c+1)^2‖ := by
+  have hq : u^(2 : ℕ) ≤ ‖(star c+1)^(2 : ℕ)‖ := by
     rw [norm_pow]
     exact pow_le_pow_left₀ hu.le hc 2
   have hm := reflection_target_mean_norm_lower s
-  have hden : 12 ≤ ‖12*(star c+1)^2*((star c+1)^2-(((s.re-1/2)^2:ℝ):ℂ))‖ := by
-    rw [show (star c+1)^2-(((s.re-1/2)^2:ℝ):ℂ)=(star s+1)*(2-s) by
+  have hden : 12 ≤ ‖12*(star c+1)^(2 : ℕ)*((star c+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ))‖ := by
+    rw [show (star c+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)=(star s+1)*(2-s) by
       exact reflection_mean_quadratic_difference s]
-    rw [show (12:ℂ)*(star c+1)^2*((star s+1)*(2-s))=
-      (star c+1)^2*(12*(star s+1)*(2-s)) by ring,norm_mul]
+    rw [show (12:ℂ)*(star c+1)^(2 : ℕ)*((star s+1)*(2-s))=
+      (star c+1)^(2 : ℕ)*(12*(star s+1)*(2-s)) by ring,norm_mul]
     have h := mul_le_mul hq hm (by positivity) (norm_nonneg _)
-    change u^2*(12*u^2) ≤ _ at h
+    change u^(2 : ℕ)*(12*u^(2 : ℕ)) ≤ _ at h
     nlinarith
-  have hmean : ‖1/(12*(star c+1)^2*((star c+1)^2-(((s.re-1/2)^2:ℝ):ℂ)))‖ ≤ 1/12 := by
+  have hmean : ‖1/(12*(star c+1)^(2 : ℕ)*((star c+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)))‖ ≤ 1/12 := by
     rw [norm_div,norm_one]
     exact one_div_le_one_div_of_le (by norm_num) hden
-  change ‖((s.im*(2*s.im^2-1/2+(s.re-1/2)^2)/(C*C₀):ℝ):ℂ)*I+
-    1/(12*(star c+1)^2*((star c+1)^2-(((s.re-1/2)^2:ℝ):ℂ)))‖ ≤ _
+  change ‖((s.im*(2*s.im^(2 : ℕ)-1/2+(s.re-1/2)^(2 : ℕ))/(C*C₀):ℝ):ℂ)*I+
+    1/(12*(star c+1)^(2 : ℕ)*((star c+1)^(2 : ℕ)-(((s.re-1/2)^(2 : ℕ):ℝ):ℂ)))‖ ≤ _
   exact (norm_add_le _ _).trans (by linarith)
 
 /-- The fixed normalization cannot amplify the Hardy amplitude correction beyond two. -/
@@ -107,23 +107,23 @@ theorem abs_hardyResponseNormalizationRate_im_le_two {t : ℝ} (ht : 1 ≤ |t|) 
 /-- Both arithmetic constraints force the full Hardy first jet to be quadratically small at an off-line zero. -/
 theorem hardy_first_jet_at_offline_zero_le {s : ℂ} (hs : s ∈ minimumStrip)
     (ht : 1 ≤ |s.im|) (hd : s.re ≠ 1/2) (hz : riemannZeta s=0) :
-    |hardyZ s.im|+|deriv hardyZ s.im| ≤ 48*s.im^2*(s.re-1/2)^2 := by
+    |hardyZ s.im|+|deriv hardyZ s.im| ≤ 48*s.im^(2 : ℕ)*(s.re-1/2)^(2 : ℕ) := by
   have hR := norm_reflectionTargetQuadraticCorrection_le_four hs ht
   have hD := normalized_derivative_constraint_at_offline_zero hs hd hz
-  have hnorm : ‖deriv normalizedMinimumZeta (criticalResponsePoint s.im)‖ ≤ 49*(s.re-1/2)^2/12 := by
+  have hnorm : ‖deriv normalizedMinimumZeta (criticalResponsePoint s.im)‖ ≤ 49*(s.re-1/2)^(2 : ℕ)/12 := by
     have h := norm_add_le
       (star (deriv normalizedMinimumZeta (criticalResponsePoint s.im))-
-        (((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s)
-      ((((s.re-1/2)^2:ℝ):ℂ)*reflectionTargetQuadraticCorrection s)
+        (((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s)
+      ((((s.re-1/2)^(2 : ℕ):ℝ):ℂ)*reflectionTargetQuadraticCorrection s)
     rw [sub_add_cancel,norm_star,norm_mul,Complex.norm_real,Real.norm_eq_abs,
       abs_of_nonneg (sq_nonneg _)] at h
     nlinarith [mul_le_mul_of_nonneg_left hR (sq_nonneg (s.re-1/2))]
   have hJ := (hardy_response_component_bounds s.im).2
   rw [criticalFullLogResponse_add_target_eq_derivative,norm_star] at hJ
   have hp := hardyResponseDenominator_norm_le ht
-  have hJ' : |hardyResponseSlope s.im| ≤ 49/2*s.im^2*(s.re-1/2)^2 := by
+  have hJ' : |hardyResponseSlope s.im| ≤ 49/2*s.im^(2 : ℕ)*(s.re-1/2)^(2 : ℕ) := by
     apply hJ.trans
-    have h := mul_le_mul hp hnorm (norm_nonneg _) (by positivity : 0 ≤ 6*s.im^2)
+    have h := mul_le_mul hp hnorm (norm_nonneg _) (by positivity : 0 ≤ 6*s.im^(2 : ℕ))
     convert h using 1
     ring
   have hH := hardy_amplitude_at_zero_le hs ht hz
@@ -138,7 +138,7 @@ theorem hardy_first_jet_at_offline_zero_le {s : ℂ} (hs : s ∈ minimumStrip)
 def hardyFirstJetSize (t : ℝ) : ℝ := |hardyZ t|+|deriv hardyZ t|
 
 /-- The source-defined horizontal radius retaining a strict factor-two comparison reserve. -/
-def hardyFirstJetRadius (t : ℝ) : ℝ := Real.sqrt (hardyFirstJetSize t/(96*t^2))
+def hardyFirstJetRadius (t : ℝ) : ℝ := Real.sqrt (hardyFirstJetSize t/(96*t^(2 : ℕ)))
 
 /-- A nonzero actual first jet gives a positive radius at nonzero height. -/
 theorem hardyFirstJetRadius_pos {t : ℝ} (ht : t ≠ 0) (hJ : 0 < hardyFirstJetSize t) :
@@ -156,7 +156,7 @@ theorem zero_in_hardyFirstJetRadius_is_critical {s : ℂ} (hs : s ∈ minimumStr
   have hu : s.im ≠ 0 := abs_pos.mp (by linarith : 0 < |s.im|)
   have hsq := mul_self_le_mul_self (abs_nonneg (s.re-1/2)) hδ
   rw [←pow_two,←pow_two,sq_abs,hardyFirstJetRadius,Real.sq_sqrt (by positivity)] at hsq
-  have hd2 := (le_div_iff₀ (by positivity : 0 < 96*s.im^2)).mp hsq
+  have hd2 := (le_div_iff₀ (by positivity : 0 < 96*s.im^(2 : ℕ))).mp hsq
   nlinarith
 
 /-- The current unconditional superlinear census supplies simple critical Xi zeros above every height. -/

@@ -141,18 +141,18 @@ theorem cauchyPowerSeries_sub {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f (Met
   exact h1.hasFPowerSeriesAt.eq_formalMultilinearSeries h2.hasFPowerSeriesAt
 
 /-- The truncation of a formal power series after `N` terms. -/
-def truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) : FormalMultilinearSeries ℂ ℂ ℂ :=
+def truncSeries_hardyTwoMultiplier (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) : FormalMultilinearSeries ℂ ℂ ℂ :=
   fun n => if n < N then P n else 0
 
 theorem truncSeries_radius (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) :
-    (truncSeries P N).radius = ⊤ := by
+    (truncSeries_hardyTwoMultiplier P N).radius = ⊤ := by
   refine FormalMultilinearSeries.radius_eq_top_of_eventually_eq_zero _ ?_
   filter_upwards [eventually_ge_atTop N] with n hn
-  rw [truncSeries, if_neg (Nat.not_lt.mpr hn)]
+  rw [truncSeries_hardyTwoMultiplier, if_neg (Nat.not_lt.mpr hn)]
 
 theorem coeff_truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N k : ℕ) :
-    (truncSeries P N).coeff k = if k < N then P.coeff k else 0 := by
-  rw [FormalMultilinearSeries.coeff, truncSeries]
+    (truncSeries_hardyTwoMultiplier P N).coeff k = if k < N then P.coeff k else 0 := by
+  rw [FormalMultilinearSeries.coeff, truncSeries_hardyTwoMultiplier]
   by_cases h : k < N
   · rw [if_pos h, if_pos h]
     rfl
@@ -161,28 +161,28 @@ theorem coeff_truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N k : ℕ) 
 
 /-- The partial sums of a power series are its own truncations. -/
 theorem hasFPowerSeriesOnBall_partialSum_truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) :
-    HasFPowerSeriesOnBall (fun z => P.partialSum N z) (truncSeries P N) 0 ⊤ where
+    HasFPowerSeriesOnBall (fun z => P.partialSum N z) (truncSeries_hardyTwoMultiplier P N) 0 ⊤ where
   r_le := by rw [truncSeries_radius]
   r_pos := by simp
   hasSum := by
     intro y _
-    have hzero : ∀ n ∉ Finset.range N, (truncSeries P N) n (fun _ => y) = 0 := by
+    have hzero : ∀ n ∉ Finset.range N, (truncSeries_hardyTwoMultiplier P N) n (fun _ => y) = 0 := by
       intro n hn
       rw [Finset.mem_range] at hn
-      rw [truncSeries, if_neg hn]
+      rw [truncSeries_hardyTwoMultiplier, if_neg hn]
       rfl
     have hval : P.partialSum N (0 + y)
-        = ∑ n ∈ Finset.range N, (truncSeries P N) n (fun _ => y) := by
+        = ∑ n ∈ Finset.range N, (truncSeries_hardyTwoMultiplier P N) n (fun _ => y) := by
       rw [zero_add, FormalMultilinearSeries.partialSum]
       refine Finset.sum_congr rfl fun n hn => ?_
-      rw [truncSeries, if_pos (Finset.mem_range.mp hn)]
+      rw [truncSeries_hardyTwoMultiplier, if_pos (Finset.mem_range.mp hn)]
     rw [hval]
     exact hasSum_sum_of_ne_finset_zero hzero
 
 theorem cauchyPowerSeries_partialSum {f : ℂ → ℂ} {R : NNReal} (N : ℕ) (hR0 : 0 < R)
     (hR1 : (R : ℝ) < 1) :
     cauchyPowerSeries (fun z => (cauchyPowerSeries f 0 R).partialSum N z) 0 R
-      = truncSeries (cauchyPowerSeries f 0 R) N := by
+      = truncSeries_hardyTwoMultiplier (cauchyPowerSeries f 0 R) N := by
   have hana : AnalyticOnNhd ℂ (fun z => (cauchyPowerSeries f 0 R).partialSum N z)
       (Metric.ball 0 1) := by
     intro z _

@@ -56,14 +56,14 @@ entries. -/
 theorem hilbertQuadraticForm_nonneg (a : ℕ →₀ ℝ) :
     0 ≤ ∑ m ∈ a.support, ∑ n ∈ a.support,
       a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)) := by
-  have hexp : ∀ t : ℝ, (∑ m ∈ a.support, a m * t ^ m) ^ 2
+  have hexp : ∀ t : ℝ, (∑ m ∈ a.support, a m * t ^ m) ^ (2 : ℕ)
       = ∑ m ∈ a.support, ∑ n ∈ a.support, a m * a n * t ^ (m + n) := by
     intro t
     rw [pow_two, Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => ?_
     rw [pow_add]
     ring
-  have hint : (∫ t in (0:ℝ)..1, (∑ m ∈ a.support, a m * t ^ m) ^ 2)
+  have hint : (∫ t in (0:ℝ)..1, (∑ m ∈ a.support, a m * t ^ m) ^ (2 : ℕ))
       = ∑ m ∈ a.support, ∑ n ∈ a.support,
         a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)) := by
     rw [intervalIntegral.integral_congr (g := fun t => ∑ m ∈ a.support, ∑ n ∈ a.support,
@@ -86,7 +86,7 @@ reading of the entries, the upper bound from the weighted Schur test with weight
 theorem hilbertQuadraticForm_mem_Icc (a : ℕ →₀ ℝ) :
     0 ≤ (∑ m ∈ a.support, ∑ n ∈ a.support, a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)))
       ∧ (∑ m ∈ a.support, ∑ n ∈ a.support, a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)))
-          ≤ Real.pi * ∑ m ∈ a.support, (a m) ^ 2 :=
+          ≤ Real.pi * ∑ m ∈ a.support, (a m) ^ (2 : ℕ) :=
   ⟨hilbertQuadraticForm_nonneg a, le_trans (le_abs_self _) (hilbertQuadraticForm_abs_le_pi a)⟩
 
 

@@ -122,7 +122,7 @@ theorem total_coord_pow_eq_zero (f₁ : PrimeTangent →L[ℝ] ℝ)
       linarith
     rw [h2, Complex.ofReal_zero]
   have hdual : ∀ p : ℕ, p.Prime →
-      ‖lam p‖ ≤ (2 * ‖f₁‖) * criticalNorm (primeCoordinateField p) := by
+      ‖lam p‖ ≤ (2 * ‖f₁‖) * criticalNorm_weightedEulerDualReduction (primeCoordinateField p) := by
     intro p hp
     rw [hlam]
     simp only [dif_pos hp, Complex.norm_real, Real.norm_eq_abs, criticalNorm_coordinate hp]

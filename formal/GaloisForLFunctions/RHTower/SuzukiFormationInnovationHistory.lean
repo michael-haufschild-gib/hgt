@@ -29,7 +29,7 @@ def suzukiCompletedFormationInnovationHistory : ℕ → ℝ :=
 /-- Weighted squared norm of the next completed Suzuki history innovation. -/
 def suzukiCompletedFormationInnovationEnergy (N : ℕ) : ℝ :=
   ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) *
-    (anchoredCesaroHighPass suzukiCompletedFormationInnovationHistory N) ^ 2
+    (anchoredCesaroHighPass suzukiCompletedFormationInnovationHistory N) ^ (2 : ℕ)
 
 /-- Scalar projection of completed innovation history is the completed formation potential. -/
 theorem suzukiCompletedFormationInnovationHistory_potential
@@ -75,7 +75,7 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_innovationEnergy
     (hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
       (suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) /
-          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) *
+          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) *
         (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
         suzukiCompletedFormationInnovationEnergy N := by
   rw [suzukiCompletedFormationInnovationEnergy_eq_energyProduction hN]

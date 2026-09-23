@@ -62,7 +62,7 @@ theorem deningerExtGe_mul_le (i j : ℕ) :
     exact Submodule.add_mem _ hu hv
 
 /-- A single vector lies in degree one. -/
-theorem deningerIota_mem_one (v : V) : ExteriorAlgebra.ι k v ∈ (⋀[k]^1 V) := by
+theorem deningerIota_mem_one (v : V) : ExteriorAlgebra.ι k v ∈ (⋀[k]^(1 : ℕ) V) := by
   rw [← exteriorPower.ιMulti_span_fixedDegree]
   refine Submodule.subset_span ⟨fun _ => v, ?_⟩
   rw [ExteriorAlgebra.ιMulti_succ_apply, ExteriorAlgebra.ιMulti_zero_apply, mul_one]
@@ -105,7 +105,7 @@ theorem deningerProj_two_of_ge_three {x : ExteriorAlgebra k V} (hx : x ∈ denin
 
 /-- **The degree-two part meets the higher part trivially.** -/
 theorem deningerExtSquare_inf_ge_three :
-    (⋀[k]^2 V) ⊓ deningerExtGe k V 3 = ⊥ := by
+    (⋀[k]^(2 : ℕ) V) ⊓ deningerExtGe k V 3 = ⊥ := by
   refine le_antisymm ?_ bot_le
   rintro x ⟨hx2, hx3⟩
   have h2 : GradedRing.proj (fun n => (⋀[k]^n V : Submodule k (ExteriorAlgebra k V))) 2 x = x := by
@@ -119,11 +119,11 @@ theorem deningerExtSquare_inf_ge_three :
 /-- **The degree-`≥2` part splits as the degree-two part plus the degree-`≥3` part**, so the
 quotient `I/mI` is the second exterior power. -/
 theorem deningerExtGe_two_eq_sup :
-    deningerExtGe k V 2 = (⋀[k]^2 V) ⊔ deningerExtGe k V 3 := by
+    deningerExtGe k V 2 = (⋀[k]^(2 : ℕ) V) ⊔ deningerExtGe k V 3 := by
   refine le_antisymm ?_ ?_
   · refine iSup_le fun n => ?_
     rcases eq_or_lt_of_le n.2 with h | h
-    · have : (⋀[k]^(n : ℕ) V) = (⋀[k]^2 V) := by rw [← h]
+    · have : (⋀[k]^(n : ℕ) V) = (⋀[k]^(2 : ℕ) V) := by rw [← h]
       rw [this]
       exact le_sup_left
     · exact le_trans (deningerExtPow_le_extGe k V (by omega)) le_sup_right
@@ -140,19 +140,19 @@ theorem deningerExtGe_three_map_mkQ :
 /-- **`I/mI` is the image of the second exterior power.** -/
 theorem deningerTor_map_eq :
     (deningerExtGe k V 2).map (deningerExtGe k V 3).mkQ
-      = (⋀[k]^2 V).map (deningerExtGe k V 3).mkQ := by
+      = (⋀[k]^(2 : ℕ) V).map (deningerExtGe k V 3).mkQ := by
   rw [deningerExtGe_two_eq_sup, Submodule.map_sup, deningerExtGe_three_map_mkQ, sup_bot_eq]
 
 /-- **The second exterior power injects into `I/mI`.**  Together with `deningerTor_map_eq` this is
 the identification `Tor₁ ≅ I/mI ≅ Λ²V`. -/
 theorem deningerTor_injective :
     Function.Injective
-      (fun x : (⋀[k]^2 V) => (deningerExtGe k V 3).mkQ (x : ExteriorAlgebra k V)) := by
+      (fun x : (⋀[k]^(2 : ℕ) V) => (deningerExtGe k V 3).mkQ (x : ExteriorAlgebra k V)) := by
   intro x y hxy
   have hsub : ((x : ExteriorAlgebra k V) - y) ∈ deningerExtGe k V 3 := by
     rw [← Submodule.Quotient.eq]
     exact hxy
-  have hmem : ((x : ExteriorAlgebra k V) - y) ∈ (⋀[k]^2 V) ⊓ deningerExtGe k V 3 :=
+  have hmem : ((x : ExteriorAlgebra k V) - y) ∈ (⋀[k]^(2 : ℕ) V) ⊓ deningerExtGe k V 3 :=
     ⟨Submodule.sub_mem _ x.2 y.2, hsub⟩
   rw [deningerExtSquare_inf_ge_three] at hmem
   have : (x : ExteriorAlgebra k V) - y = 0 := hmem
@@ -161,12 +161,12 @@ theorem deningerTor_injective :
 /-- **The stalk Tor obstruction.**  If the second exterior power is nonzero then the degree-`≥2`
 part is strictly larger than `m` times itself, so the first Tor group of the augmentation base
 change of `E/I` does not vanish. -/
-theorem deningerStalkTor_ne (h : (⋀[k]^2 V) ≠ ⊥) :
+theorem deningerStalkTor_ne (h : (⋀[k]^(2 : ℕ) V) ≠ ⊥) :
     deningerExtGe k V 2 ≠ deningerExtGe k V 1 * deningerExtGe k V 2 := by
   rw [deningerExtGe_one_mul k V 2 (by omega)]
   intro hcon
   refine h ?_
-  have hle : (⋀[k]^2 V) ≤ deningerExtGe k V 3 := by
+  have hle : (⋀[k]^(2 : ℕ) V) ≤ deningerExtGe k V 3 := by
     rw [← hcon]
     exact deningerExtPow_le_extGe k V le_rfl
   have := deningerExtSquare_inf_ge_three k V

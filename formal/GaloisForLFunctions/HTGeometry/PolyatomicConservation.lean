@@ -22,11 +22,11 @@ def collisionExchange (b : ℝ) (x : ℝ × ℝ) : ℝ := x.2 - b * x.1
 
 /-- Orthogonal removal of the invariant direction, retaining energy exchange. -/
 def collisionConservationProject (b : ℝ) (x : ℝ × ℝ) : ℝ × ℝ :=
-  (-b * collisionExchange b x / (1 + b ^ 2),
-    collisionExchange b x / (1 + b ^ 2))
+  (-b * collisionExchange b x / (1 + b ^ (2 : ℕ)),
+    collisionExchange b x / (1 + b ^ (2 : ℕ)))
 
 /-- The denominator never degenerates, including at zero internal weight. -/
-theorem collisionModeDenominator_pos (b : ℝ) : 0 < 1 + b ^ 2 := by positivity
+theorem collisionModeDenominator_pos (b : ℝ) : 0 < 1 + b ^ (2 : ℕ) := by positivity
 
 /-- Every corrected collision column conserves the prescribed total energy. -/
 @[simp] theorem collisionInvariant_project (b : ℝ) (x : ℝ × ℝ) :
@@ -46,15 +46,15 @@ theorem collisionModeDenominator_pos (b : ℝ) : 0 < 1 + b ^ 2 := by positivity
 @[simp] theorem collisionConservationProject_idempotent (b : ℝ) (x : ℝ × ℝ) :
     collisionConservationProject b (collisionConservationProject b x) =
       collisionConservationProject b x := by
-  change (-b * collisionExchange b (collisionConservationProject b x) / (1 + b ^ 2),
-    collisionExchange b (collisionConservationProject b x) / (1 + b ^ 2)) = _
+  change (-b * collisionExchange b (collisionConservationProject b x) / (1 + b ^ (2 : ℕ)),
+    collisionExchange b (collisionConservationProject b x) / (1 + b ^ (2 : ℕ))) = _
   rw [collisionExchange_project]
   rfl
 
 /-- Exact invariant/exchange reconstruction of an arbitrary row pair. -/
 theorem collisionMode_reconstruction (b : ℝ) (x : ℝ × ℝ) :
-    x = ((collisionInvariant b x - b * collisionExchange b x) / (1 + b ^ 2),
-      (b * collisionInvariant b x + collisionExchange b x) / (1 + b ^ 2)) := by
+    x = ((collisionInvariant b x - b * collisionExchange b x) / (1 + b ^ (2 : ℕ)),
+      (b * collisionInvariant b x + collisionExchange b x) / (1 + b ^ (2 : ℕ))) := by
   have hd := ne_of_gt (collisionModeDenominator_pos b)
   apply Prod.ext <;> simp only [collisionInvariant, collisionExchange] <;>
     field_simp <;> ring
@@ -62,8 +62,8 @@ theorem collisionMode_reconstruction (b : ℝ) (x : ℝ × ℝ) :
 /-- The correction is exactly identity minus the rank-one invariant projector. -/
 theorem collisionConservationProject_eq_sub (b : ℝ) (x : ℝ × ℝ) :
     collisionConservationProject b x =
-      (x.1 - collisionInvariant b x / (1 + b ^ 2),
-       x.2 - b * collisionInvariant b x / (1 + b ^ 2)) := by
+      (x.1 - collisionInvariant b x / (1 + b ^ (2 : ℕ)),
+       x.2 - b * collisionInvariant b x / (1 + b ^ (2 : ℕ))) := by
   have hd := ne_of_gt (collisionModeDenominator_pos b)
   apply Prod.ext <;>
     simp only [collisionConservationProject, collisionInvariant, collisionExchange] <;>
@@ -91,16 +91,16 @@ theorem collisionConservationProject_zero_iff (b : ℝ) (x : ℝ × ℝ) :
 
 /-- Invariant and exchange coordinates account for the entire Euclidean energy. -/
 theorem collisionMode_pythagoras (b : ℝ) (x : ℝ × ℝ) :
-    collisionInvariant b x ^ 2 + collisionExchange b x ^ 2 =
-      (1 + b ^ 2) * (x.1 ^ 2 + x.2 ^ 2) := by
+    collisionInvariant b x ^ (2 : ℕ) + collisionExchange b x ^ (2 : ℕ) =
+      (1 + b ^ (2 : ℕ)) * (x.1 ^ (2 : ℕ) + x.2 ^ (2 : ℕ)) := by
   simp only [collisionInvariant, collisionExchange]
   ring
 
 /-- Exact energy removed by conservation correction. -/
 theorem collisionConservationProject_energy (b : ℝ) (x : ℝ × ℝ) :
-    (collisionConservationProject b x).1 ^ 2 +
-      (collisionConservationProject b x).2 ^ 2 +
-      collisionInvariant b x ^ 2 / (1 + b ^ 2) = x.1 ^ 2 + x.2 ^ 2 := by
+    (collisionConservationProject b x).1 ^ (2 : ℕ) +
+      (collisionConservationProject b x).2 ^ (2 : ℕ) +
+      collisionInvariant b x ^ (2 : ℕ) / (1 + b ^ (2 : ℕ)) = x.1 ^ (2 : ℕ) + x.2 ^ (2 : ℕ) := by
   have hd := ne_of_gt (collisionModeDenominator_pos b)
   simp only [collisionConservationProject, collisionInvariant, collisionExchange]
   field_simp
@@ -108,9 +108,9 @@ theorem collisionConservationProject_energy (b : ℝ) (x : ℝ × ℝ) :
 
 /-- Correction cannot increase the squared Euclidean norm. -/
 theorem collisionConservationProject_contractive (b : ℝ) (x : ℝ × ℝ) :
-    (collisionConservationProject b x).1 ^ 2 +
-      (collisionConservationProject b x).2 ^ 2 ≤ x.1 ^ 2 + x.2 ^ 2 := by
-  have hp : 0 ≤ collisionInvariant b x ^ 2 / (1 + b ^ 2) := by positivity
+    (collisionConservationProject b x).1 ^ (2 : ℕ) +
+      (collisionConservationProject b x).2 ^ (2 : ℕ) ≤ x.1 ^ (2 : ℕ) + x.2 ^ (2 : ℕ) := by
+  have hp : 0 ≤ collisionInvariant b x ^ (2 : ℕ) / (1 + b ^ (2 : ℕ)) := by positivity
   linarith [collisionConservationProject_energy b x]
 
 /-- Scalar multiplication commutes with correction. -/
@@ -143,7 +143,7 @@ theorem collisionConservationProject_invariantVector (b c : ℝ) :
 
 /-- Exact relaxation preserving the invariant and damping the exchange direction. -/
 def collisionRelaxation (b r t : ℝ) (x : ℝ × ℝ) : ℝ × ℝ :=
-  x + (Real.exp (-r ^ 2 * t) - 1) • collisionConservationProject b x
+  x + (Real.exp (-r ^ (2 : ℕ) * t) - 1) • collisionConservationProject b x
 
 /-- Total energy is constant along the relaxation at every real time. -/
 theorem collisionRelaxation_invariant (b r t : ℝ) (x : ℝ × ℝ) :
@@ -155,7 +155,7 @@ theorem collisionRelaxation_invariant (b r t : ℝ) (x : ℝ × ℝ) :
 /-- The exchange mode obeys the exact Landau--Teller exponential law. -/
 theorem collisionRelaxation_exchange (b r t : ℝ) (x : ℝ × ℝ) :
     collisionExchange b (collisionRelaxation b r t x) =
-      Real.exp (-r ^ 2 * t) * collisionExchange b x := by
+      Real.exp (-r ^ (2 : ℕ) * t) * collisionExchange b x := by
   have hd := ne_of_gt (collisionModeDenominator_pos b)
   simp only [collisionExchange, collisionRelaxation, collisionConservationProject,
     Prod.fst_add, Prod.snd_add, Prod.smul_fst, Prod.smul_snd, smul_eq_mul]
@@ -166,8 +166,8 @@ theorem collisionRelaxation_exchange (b r t : ℝ) (x : ℝ × ℝ) :
 theorem collisionRelaxation_add_time (b r s t : ℝ) (x : ℝ × ℝ) :
     collisionRelaxation b r (s + t) x =
       collisionRelaxation b r s (collisionRelaxation b r t x) := by
-  have he : Real.exp (-r ^ 2 * (s + t)) =
-      Real.exp (-r ^ 2 * s) * Real.exp (-r ^ 2 * t) := by
+  have he : Real.exp (-r ^ (2 : ℕ) * (s + t)) =
+      Real.exp (-r ^ (2 : ℕ) * s) * Real.exp (-r ^ (2 : ℕ) * t) := by
     rw [← Real.exp_add]
     congr 1
     ring

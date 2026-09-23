@@ -33,7 +33,7 @@ def fzzCigarParityUpperLeftUnitSquareRoot (z : ℂ) : ℂ :=
 theorem norm_fzzCigarParityUpperLeftUnitSquareRoot
     {z : ℂ} (hnorm : ‖z‖ = 1) :
     ‖fzzCigarParityUpperLeftUnitSquareRoot z‖ = 1 := by
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
   have hreLower : -1 ≤ z.re := by nlinarith [sq_nonneg z.im]
   have hreUpper : z.re ≤ 1 := by nlinarith [sq_nonneg z.im]
@@ -48,9 +48,9 @@ theorem norm_fzzCigarParityUpperLeftUnitSquareRoot
 theorem fzzCigarParityUpperLeftUnitSquareRoot_re_neg
     {z : ℂ} (hnorm : ‖z‖ = 1) (him : z.im ≠ 0) :
     (fzzCigarParityUpperLeftUnitSquareRoot z).re < 0 := by
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
-  have himsq : 0 < z.im ^ 2 := sq_pos_of_ne_zero him
+  have himsq : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero him
   have hplus : 0 < (1 + z.re) / 2 := by nlinarith
   simp only [fzzCigarParityUpperLeftUnitSquareRoot]
   exact neg_neg_of_pos (Real.sqrt_pos.2 hplus)
@@ -58,9 +58,9 @@ theorem fzzCigarParityUpperLeftUnitSquareRoot_re_neg
 theorem fzzCigarParityUpperLeftUnitSquareRoot_im_pos
     {z : ℂ} (hnorm : ‖z‖ = 1) (him : z.im ≠ 0) :
     0 < (fzzCigarParityUpperLeftUnitSquareRoot z).im := by
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
-  have himsq : 0 < z.im ^ 2 := sq_pos_of_ne_zero him
+  have himsq : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero him
   have hminus : 0 < (1 - z.re) / 2 := by nlinarith
   simp only [fzzCigarParityUpperLeftUnitSquareRoot]
   exact Real.sqrt_pos.2 hminus
@@ -68,28 +68,28 @@ theorem fzzCigarParityUpperLeftUnitSquareRoot_im_pos
 /-- Lower-half unit phases are squares of their algebraic upper-left roots. -/
 theorem fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_neg
     {z : ℂ} (hnorm : ‖z‖ = 1) (him : z.im < 0) :
-    fzzCigarParityUpperLeftUnitSquareRoot z ^ 2 = z := by
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+    fzzCigarParityUpperLeftUnitSquareRoot z ^ (2 : ℕ) = z := by
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
   have himne : z.im ≠ 0 := ne_of_lt him
-  have himsq : 0 < z.im ^ 2 := sq_pos_of_ne_zero himne
+  have himsq : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero himne
   have hplus : 0 < (1 + z.re) / 2 := by nlinarith
   have hminus : 0 < (1 - z.re) / 2 := by nlinarith
   apply Complex.ext
   · simp only [fzzCigarParityUpperLeftUnitSquareRoot, pow_two, mul_re]
     rw [show -Real.sqrt ((1 + z.re) / 2) *
           -Real.sqrt ((1 + z.re) / 2) =
-        Real.sqrt ((1 + z.re) / 2) ^ 2 by ring,
+        Real.sqrt ((1 + z.re) / 2) ^ (2 : ℕ) by ring,
       show Real.sqrt ((1 - z.re) / 2) *
           Real.sqrt ((1 - z.re) / 2) =
-        Real.sqrt ((1 - z.re) / 2) ^ 2 by ring,
+        Real.sqrt ((1 - z.re) / 2) ^ (2 : ℕ) by ring,
       Real.sq_sqrt hplus.le, Real.sq_sqrt hminus.le]
     ring
   · simp only [fzzCigarParityUpperLeftUnitSquareRoot, pow_two, mul_im]
     have hsquare :
         (-Real.sqrt ((1 + z.re) / 2) * Real.sqrt ((1 - z.re) / 2) +
           Real.sqrt ((1 - z.re) / 2) *
-            -Real.sqrt ((1 + z.re) / 2)) ^ 2 = z.im ^ 2 := by
+            -Real.sqrt ((1 + z.re) / 2)) ^ (2 : ℕ) = z.im ^ (2 : ℕ) := by
       rw [show
           -Real.sqrt ((1 + z.re) / 2) * Real.sqrt ((1 - z.re) / 2) +
               Real.sqrt ((1 - z.re) / 2) *
@@ -110,7 +110,7 @@ theorem fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_neg
 /-- Upper-half unit phases are squares of conjugate algebraic upper-left roots. -/
 theorem star_fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_pos
     {z : ℂ} (hnorm : ‖z‖ = 1) (him : 0 < z.im) :
-    star (fzzCigarParityUpperLeftUnitSquareRoot z) ^ 2 = z := by
+    star (fzzCigarParityUpperLeftUnitSquareRoot z) ^ (2 : ℕ) = z := by
   have hsq := fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_neg
     (z := star z) (by simpa using hnorm) (by simpa using him)
   have hroot : fzzCigarParityUpperLeftUnitSquareRoot (star z) =
@@ -122,7 +122,7 @@ theorem star_fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_pos
   have hzz : (starRingEnd ℂ) (star z) = z := by
     exact star_star z
   rw [map_pow, hzz] at hstar
-  change (starRingEnd ℂ) (fzzCigarParityUpperLeftUnitSquareRoot z) ^ 2 = z
+  change (starRingEnd ℂ) (fzzCigarParityUpperLeftUnitSquareRoot z) ^ (2 : ℕ) = z
   exact hstar
 
 /-- Four quadratic interaction channels of the literal conjugate source eigenpair. -/
@@ -137,9 +137,9 @@ inductive FZZCigarParityQuadraticEigenphaseChannel
 def fzzCigarParityQuadraticEigenphase
     (beta : ℝ) : FZZCigarParityQuadraticEigenphaseChannel → ℂ
   | .positiveSquare =>
-      fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 2
+      fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (2 : ℕ)
   | .conjugateSquare =>
-      star (fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta) ^ 2
+      star (fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta) ^ (2 : ℕ)
   | .product =>
       fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta *
         star (fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta)
@@ -178,9 +178,9 @@ theorem exists_pos_fzzCigarParityQuadraticEigenphase_eq_of_norm_one
     refine ⟨beta, hbeta, .positiveSquare, ?_⟩
     rw [fzzCigarParityQuadraticEigenphase, hy]
     exact fzzCigarParityUpperLeftUnitSquareRoot_sq_eq_of_im_neg hnorm himneg
-  · have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  · have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
     rw [Complex.sq_norm, Complex.normSq_apply, himzero] at hnormsq
-    have hreSq : z.re ^ 2 = 1 := by nlinarith
+    have hreSq : z.re ^ (2 : ℕ) = 1 := by nlinarith
     rcases sq_eq_one_iff.mp hreSq with hre | hre
     · refine ⟨1, by norm_num, .product, ?_⟩
       rw [fzzCigarParityQuadraticEigenphase_product_eq_one (by norm_num)]

@@ -65,7 +65,7 @@ theorem norm_sourceQuadratic_terminalBlock_succ_le_lcmParsevalSchurPairBudget
         (n : ZMod (q + 1)) (k : ZMod (r + 1))‖ =
       Real.sqrt (‖∑ n ∈ B, star (b n) * ∑ k ∈ B, b k *
         kloostermanNaturalCrossIntervalTerminalBlock M (q + 1) (r + 1)
-          (n : ZMod (q + 1)) (k : ZMod (r + 1))‖ ^ 2) by
+          (n : ZMod (q + 1)) (k : ZMod (r + 1))‖ ^ (2 : ℕ)) by
     rw [Real.sqrt_sq (norm_nonneg _)]]
   exact Real.sqrt_le_sqrt
     (norm_sourceQuadratic_terminalBlock_succ_sq_le_residue_lcmParseval
@@ -86,7 +86,7 @@ def kloostermanTerminalLcmParsevalSchurRowBudget
 def kloostermanTerminalLcmParsevalSchurWeightEnergy
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
-  ∑ q ∈ Q, ‖w q‖ ^ 2 *
+  ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
     kloostermanTerminalLcmParsevalSchurRowBudget M Q B b q
 
 private theorem kloostermanTerminalLcmParsevalSchurKernel_comm
@@ -113,19 +113,19 @@ private theorem symmetric_schur_rows_lcmParseval
     (hKsymm : ∀ i j, K i j = K j i)
     (hKnn : ∀ i j, 0 ≤ K i j) :
     (∑ i ∈ S, ∑ j ∈ S, |a i| * |a j| * K i j) ≤
-      ∑ i ∈ S, (a i) ^ 2 * ∑ j ∈ S, K i j := by
+      ∑ i ∈ S, (a i) ^ (2 : ℕ) * ∑ j ∈ S, K i j := by
   have hamgm : ∀ i j, |a i| * |a j| * K i j ≤
-      ((a i) ^ 2 / 2 + (a j) ^ 2 / 2) * K i j := by
+      ((a i) ^ (2 : ℕ) / 2 + (a j) ^ (2 : ℕ) / 2) * K i j := by
     intro i j
     apply mul_le_mul_of_nonneg_right _ (hKnn i j)
     nlinarith [sq_nonneg (|a i| - |a j|), sq_abs (a i), sq_abs (a j)]
   calc
     _ ≤ ∑ i ∈ S, ∑ j ∈ S,
-        ((a i) ^ 2 / 2 + (a j) ^ 2 / 2) * K i j := by
+        ((a i) ^ (2 : ℕ) / 2 + (a j) ^ (2 : ℕ) / 2) * K i j := by
       exact Finset.sum_le_sum fun i hi =>
         Finset.sum_le_sum fun j hj => hamgm i j
-    _ = (∑ i ∈ S, (a i) ^ 2 / 2 * ∑ j ∈ S, K i j) +
-        ∑ i ∈ S, ∑ j ∈ S, (a j) ^ 2 / 2 * K i j := by
+    _ = (∑ i ∈ S, (a i) ^ (2 : ℕ) / 2 * ∑ j ∈ S, K i j) +
+        ∑ i ∈ S, ∑ j ∈ S, (a j) ^ (2 : ℕ) / 2 * K i j := by
       rw [← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
       intro i hi
@@ -133,8 +133,8 @@ private theorem symmetric_schur_rows_lcmParseval
       apply Finset.sum_congr rfl
       intro j hj
       ring
-    _ = (∑ i ∈ S, (a i) ^ 2 / 2 * ∑ j ∈ S, K i j) +
-        ∑ j ∈ S, (a j) ^ 2 / 2 * ∑ i ∈ S, K j i := by
+    _ = (∑ i ∈ S, (a i) ^ (2 : ℕ) / 2 * ∑ j ∈ S, K i j) +
+        ∑ j ∈ S, (a j) ^ (2 : ℕ) / 2 * ∑ i ∈ S, K j i := by
       congr 1
       rw [Finset.sum_comm]
       apply Finset.sum_congr rfl
@@ -143,7 +143,7 @@ private theorem symmetric_schur_rows_lcmParseval
       apply Finset.sum_congr rfl
       intro i hi
       rw [hKsymm i j]
-    _ = ∑ i ∈ S, (a i) ^ 2 * ∑ j ∈ S, K i j := by
+    _ = ∑ i ∈ S, (a i) ^ (2 : ℕ) * ∑ j ∈ S, K i j := by
       rw [← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
       intro i hi
@@ -205,7 +205,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_le_lcmParsevalSchur
       have hrq : r ≠ q := (Finset.mem_erase.mp hr).1
       simp only [f, kloostermanTerminalLcmParsevalSchurKernel,
         if_neg (Ne.symm hrq)]
-    _ ≤ ∑ q ∈ Q, ‖w q‖ ^ 2 * ∑ r ∈ Q,
+    _ ≤ ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ∑ r ∈ Q,
         kloostermanTerminalLcmParsevalSchurKernel M B b q r := by
       simpa only [abs_norm] using
         symmetric_schur_rows_lcmParseval Q (fun q => ‖w q‖)
@@ -237,7 +237,7 @@ def kloostermanIntervalTerminalLcmParsevalSchurRowBudget
 /-- Squared modulus weights charged against their own literal-interval lcm-Parseval rows. -/
 def kloostermanIntervalTerminalLcmParsevalSchurWeightEnergy
     (M N : ℕ) (Q : Finset ℕ) (w b : ℕ → ℂ) : ℝ :=
-  ∑ q ∈ Q, ‖w q‖ ^ 2 *
+  ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
     kloostermanIntervalTerminalLcmParsevalSchurRowBudget M N Q b q
 
 private theorem kloostermanIntervalSourceEnergyBudget_nonneg_lcmParseval

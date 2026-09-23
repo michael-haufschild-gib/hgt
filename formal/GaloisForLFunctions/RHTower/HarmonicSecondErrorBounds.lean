@@ -15,10 +15,10 @@ namespace RHTower
 
 /-- Cubic correction to the rational trapezoid upper bound for logarithm. -/
 theorem log_le_half_sub_inv_cubic {x : ℝ} (hx : 1 ≤ x) :
-    Real.log x ≤ (x-x⁻¹)/2 - 4/3*((x-1)/(x+1))^3 := by
-  let f : ℝ → ℝ := fun x => (x-x⁻¹)/2 - 4/3*((x-1)/(x+1))^3 - Real.log x
+    Real.log x ≤ (x-x⁻¹)/2 - 4/3*((x-1)/(x+1))^(3 : ℕ) := by
+  let f : ℝ → ℝ := fun x => (x-x⁻¹)/2 - 4/3*((x-1)/(x+1))^(3 : ℕ) - Real.log x
   have hd (u : ℝ) (hu : 1 ≤ u) :
-      HasDerivAt f ((1+(u^2)⁻¹)/2 - 4*((u-1)/(u+1))^2*(2/(u+1)^2) - u⁻¹) u := by
+      HasDerivAt f ((1+(u^(2 : ℕ))⁻¹)/2 - 4*((u-1)/(u+1))^(2 : ℕ)*(2/(u+1)^(2 : ℕ)) - u⁻¹) u := by
     have hu0 : u ≠ 0 := by linarith
     have hu1 : u+1 ≠ 0 := by linarith
     have hq := ((hasDerivAt_id u).sub_const 1).div ((hasDerivAt_id u).add_const 1) hu1
@@ -34,8 +34,8 @@ theorem log_le_half_sub_inv_cubic {x : ℝ} (hx : 1 ≤ x) :
       have hu0 : u ≠ 0 := by linarith
       have hu2 : u+1 ≠ 0 := by linarith
       rw [(hd u hu1).deriv]
-      have heq : (1+(u^2)⁻¹)/2 - 4*((u-1)/(u+1))^2*(2/(u+1)^2) - u⁻¹ =
-          (u-1)^4*(u^2+6*u+1)/(2*u^2*(u+1)^4) := by field_simp; ring
+      have heq : (1+(u^(2 : ℕ))⁻¹)/2 - 4*((u-1)/(u+1))^(2 : ℕ)*(2/(u+1)^(2 : ℕ)) - u⁻¹ =
+          (u-1)^(4 : ℕ)*(u^(2 : ℕ)+6*u+1)/(2*u^(2 : ℕ)*(u+1)^(4 : ℕ)) := by field_simp; ring
       rw [heq]
       positivity
   have h := hmono (show (1:ℝ) ∈ Set.Ici 1 from by simp) hx hx
@@ -43,24 +43,24 @@ theorem log_le_half_sub_inv_cubic {x : ℝ} (hx : 1 ≤ x) :
 
 private theorem harmonic_correction_step {x : ℝ} (hx : 0 < x) :
     Real.log (x+1)-Real.log x ≤
-      1/(2*x)+1/(2*(x+1))-1/(12*(x+1)^2)+1/(12*(x+2)^2) := by
+      1/(2*x)+1/(2*(x+1))-1/(12*(x+1)^(2 : ℕ))+1/(12*(x+2)^(2 : ℕ)) := by
   have hratio : 1 ≤ (x+1)/x := by rw [le_div_iff₀ hx]; linarith
   have hlog := log_le_half_sub_inv_cubic hratio
   rw [Real.log_div (by positivity) hx.ne'] at hlog
-  have hrewrite : ((x+1)/x-((x+1)/x)⁻¹)/2 - 4/3*(((x+1)/x-1)/((x+1)/x+1))^3 =
-      1/(2*x)+1/(2*(x+1))-4/(3*(2*x+1)^3) := by field_simp; ring
+  have hrewrite : ((x+1)/x-((x+1)/x)⁻¹)/2 - 4/3*(((x+1)/x-1)/((x+1)/x+1))^(3 : ℕ) =
+      1/(2*x)+1/(2*(x+1))-4/(3*(2*x+1)^(3 : ℕ)) := by field_simp; ring
   rw [hrewrite] at hlog
-  have hcorr : 1/(12*(x+1)^2)-1/(12*(x+2)^2) ≤ 4/(3*(2*x+1)^3) := by
+  have hcorr : 1/(12*(x+1)^(2 : ℕ))-1/(12*(x+2)^(2 : ℕ)) ≤ 4/(3*(2*x+1)^(3 : ℕ)) := by
     field_simp
-    nlinarith [sq_nonneg x,sq_nonneg (x^2)]
+    nlinarith [sq_nonneg x,sq_nonneg (x^(2 : ℕ))]
   linarith
 
 /-- A second-order harmonic correction with a neighboring-index denominator. -/
 theorem harmonic_mascheroni_le_half_sub_twelfth {n : ℕ} (hn : 1 ≤ n) :
     ((harmonic n : ℚ) : ℝ)-Real.log n-Real.eulerMascheroniConstant ≤
-      1/(2*(n : ℝ))-1/(12*((n : ℝ)+1)^2) := by
+      1/(2*(n : ℝ))-1/(12*((n : ℝ)+1)^(2 : ℕ)) := by
   let f : ℕ → ℝ := fun k => ((harmonic (k+1) : ℚ) : ℝ)-Real.log (k+1 : ℕ)-
-    1/(2*(k+1 : ℕ))+1/(12*((k+1 : ℕ)+1 : ℝ)^2)
+    1/(2*(k+1 : ℕ))+1/(12*((k+1 : ℕ)+1 : ℝ)^(2 : ℕ))
   have hmono : Monotone f := by
     apply monotone_nat_of_le_succ
     intro k
@@ -77,11 +77,11 @@ theorem harmonic_mascheroni_le_half_sub_twelfth {n : ℕ} (hn : 1 ≤ n) :
     (tendsto_natCast_atTop_atTop.comp hnat).const_mul_atTop (by norm_num)
   have hcorr1 : Tendsto (fun k : ℕ => (1:ℝ)/(2*(k+1 : ℕ))) atTop (nhds (0:ℝ)) :=
     tendsto_const_nhds.div_atTop hden1
-  have hden2 : Tendsto (fun k : ℕ => 12*((k+1 : ℕ)+1 : ℝ)^2) atTop atTop := by
+  have hden2 : Tendsto (fun k : ℕ => 12*((k+1 : ℕ)+1 : ℝ)^(2 : ℕ)) atTop atTop := by
     apply Filter.Tendsto.const_mul_atTop (by norm_num)
     exact (tendsto_pow_atTop (by norm_num : (2:ℕ) ≠ 0)).comp
       ((tendsto_natCast_atTop_atTop.comp hnat).atTop_add tendsto_const_nhds)
-  have hcorr2 : Tendsto (fun k : ℕ => 1/(12*((k+1 : ℕ)+1 : ℝ)^2)) atTop (nhds (0:ℝ)) :=
+  have hcorr2 : Tendsto (fun k : ℕ => 1/(12*((k+1 : ℕ)+1 : ℝ)^(2 : ℕ))) atTop (nhds (0:ℝ)) :=
     tendsto_const_nhds.div_atTop hden2
   have hf : Tendsto f atTop (nhds Real.eulerMascheroniConstant) := by
     simpa only [f,Function.comp_def,sub_zero,add_zero] using (hmain.sub hcorr1).add hcorr2

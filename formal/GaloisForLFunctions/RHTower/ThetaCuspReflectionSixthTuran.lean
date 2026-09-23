@@ -44,12 +44,12 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodLogJetFour
 
 /-- Fifth ordinary derivative of an atom-to-first-atom likelihood ratio. -/
 def thetaCuspAtomLikelihoodRatioJetFive (n : ℕ) (x : ℝ) : ℝ :=
-  (thetaCuspAtomLikelihoodLogJetZero n x ^ 5 +
-      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ 3 *
+  (thetaCuspAtomLikelihoodLogJetZero n x ^ (5 : ℕ) +
+      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) *
         thetaCuspAtomLikelihoodLogJetOne n x +
       15 * thetaCuspAtomLikelihoodLogJetZero n x *
-        thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
-      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+        thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
+      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
         thetaCuspAtomLikelihoodLogJetTwo n x +
       10 * thetaCuspAtomLikelihoodLogJetOne n x *
         thetaCuspAtomLikelihoodLogJetTwo n x +
@@ -78,19 +78,19 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFour
       ((h0.mul h2).const_mul 4)).add h3
   norm_num at hcoeff
   have hcoeff' : HasDerivAt
-      (fun y : ℝ => thetaCuspAtomLikelihoodLogJetZero n y ^ 4 +
-        6 * thetaCuspAtomLikelihoodLogJetZero n y ^ 2 *
+      (fun y : ℝ => thetaCuspAtomLikelihoodLogJetZero n y ^ (4 : ℕ) +
+        6 * thetaCuspAtomLikelihoodLogJetZero n y ^ (2 : ℕ) *
           thetaCuspAtomLikelihoodLogJetOne n y +
-        3 * thetaCuspAtomLikelihoodLogJetOne n y ^ 2 +
+        3 * thetaCuspAtomLikelihoodLogJetOne n y ^ (2 : ℕ) +
         4 * thetaCuspAtomLikelihoodLogJetZero n y *
           thetaCuspAtomLikelihoodLogJetTwo n y +
         thetaCuspAtomLikelihoodLogJetThree n y)
-      (4 * thetaCuspAtomLikelihoodLogJetZero n x ^ 3 *
+      (4 * thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) *
           thetaCuspAtomLikelihoodLogJetOne n x +
         6 * (2 * thetaCuspAtomLikelihoodLogJetZero n x *
             thetaCuspAtomLikelihoodLogJetOne n x *
               thetaCuspAtomLikelihoodLogJetOne n x +
-          thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+          thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetTwo n x) +
         3 * (2 * thetaCuspAtomLikelihoodLogJetOne n x *
           thetaCuspAtomLikelihoodLogJetTwo n x) +
@@ -105,10 +105,10 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFour
     ring
   have hsource : thetaCuspAtomLikelihoodRatioJetFour n =ᶠ[nhds x]
       (fun y : ℝ =>
-        (thetaCuspAtomLikelihoodLogJetZero n y ^ 4 +
-          6 * thetaCuspAtomLikelihoodLogJetZero n y ^ 2 *
+        (thetaCuspAtomLikelihoodLogJetZero n y ^ (4 : ℕ) +
+          6 * thetaCuspAtomLikelihoodLogJetZero n y ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetOne n y +
-          3 * thetaCuspAtomLikelihoodLogJetOne n y ^ 2 +
+          3 * thetaCuspAtomLikelihoodLogJetOne n y ^ (2 : ℕ) +
           4 * thetaCuspAtomLikelihoodLogJetZero n y *
             thetaCuspAtomLikelihoodLogJetTwo n y +
           thetaCuspAtomLikelihoodLogJetThree n y) *
@@ -122,19 +122,19 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFour
 
 /-- Sixth ordinary derivative of an atom-to-first-atom likelihood ratio. -/
 def thetaCuspAtomLikelihoodRatioJetSix (n : ℕ) (x : ℝ) : ℝ :=
-  (thetaCuspAtomLikelihoodLogJetZero n x ^ 6 +
-      15 * thetaCuspAtomLikelihoodLogJetZero n x ^ 4 *
+  (thetaCuspAtomLikelihoodLogJetZero n x ^ (6 : ℕ) +
+      15 * thetaCuspAtomLikelihoodLogJetZero n x ^ (4 : ℕ) *
         thetaCuspAtomLikelihoodLogJetOne n x +
-      45 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
-        thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
-      15 * thetaCuspAtomLikelihoodLogJetOne n x ^ 3 +
-      20 * thetaCuspAtomLikelihoodLogJetZero n x ^ 3 *
+      45 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
+        thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
+      15 * thetaCuspAtomLikelihoodLogJetOne n x ^ (3 : ℕ) +
+      20 * thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) *
         thetaCuspAtomLikelihoodLogJetTwo n x +
       60 * thetaCuspAtomLikelihoodLogJetZero n x *
         thetaCuspAtomLikelihoodLogJetOne n x *
           thetaCuspAtomLikelihoodLogJetTwo n x +
-      10 * thetaCuspAtomLikelihoodLogJetTwo n x ^ 2 +
-      15 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+      10 * thetaCuspAtomLikelihoodLogJetTwo n x ^ (2 : ℕ) +
+      15 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
         thetaCuspAtomLikelihoodLogJetThree n x +
       15 * thetaCuspAtomLikelihoodLogJetOne n x *
         thetaCuspAtomLikelihoodLogJetThree n x +
@@ -166,34 +166,34 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFive
       ((h0.mul h3).const_mul 5)).add h4)
   norm_num at hcoeff
   have hcoeff' : HasDerivAt
-      (fun y : ℝ => thetaCuspAtomLikelihoodLogJetZero n y ^ 5 +
-        10 * thetaCuspAtomLikelihoodLogJetZero n y ^ 3 *
+      (fun y : ℝ => thetaCuspAtomLikelihoodLogJetZero n y ^ (5 : ℕ) +
+        10 * thetaCuspAtomLikelihoodLogJetZero n y ^ (3 : ℕ) *
           thetaCuspAtomLikelihoodLogJetOne n y +
         15 * thetaCuspAtomLikelihoodLogJetZero n y *
-          thetaCuspAtomLikelihoodLogJetOne n y ^ 2 +
-        10 * thetaCuspAtomLikelihoodLogJetZero n y ^ 2 *
+          thetaCuspAtomLikelihoodLogJetOne n y ^ (2 : ℕ) +
+        10 * thetaCuspAtomLikelihoodLogJetZero n y ^ (2 : ℕ) *
           thetaCuspAtomLikelihoodLogJetTwo n y +
         10 * thetaCuspAtomLikelihoodLogJetOne n y *
           thetaCuspAtomLikelihoodLogJetTwo n y +
         5 * thetaCuspAtomLikelihoodLogJetZero n y *
           thetaCuspAtomLikelihoodLogJetThree n y +
         thetaCuspAtomLikelihoodLogJetFour n y)
-      (5 * thetaCuspAtomLikelihoodLogJetZero n x ^ 4 *
+      (5 * thetaCuspAtomLikelihoodLogJetZero n x ^ (4 : ℕ) *
           thetaCuspAtomLikelihoodLogJetOne n x +
-        10 * (3 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+        10 * (3 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetOne n x *
               thetaCuspAtomLikelihoodLogJetOne n x +
-          thetaCuspAtomLikelihoodLogJetZero n x ^ 3 *
+          thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) *
             thetaCuspAtomLikelihoodLogJetTwo n x) +
         15 * (thetaCuspAtomLikelihoodLogJetOne n x *
-            thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
+            thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
           thetaCuspAtomLikelihoodLogJetZero n x *
             (2 * thetaCuspAtomLikelihoodLogJetOne n x *
               thetaCuspAtomLikelihoodLogJetTwo n x)) +
         10 * (2 * thetaCuspAtomLikelihoodLogJetZero n x *
             thetaCuspAtomLikelihoodLogJetOne n x *
               thetaCuspAtomLikelihoodLogJetTwo n x +
-          thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+          thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetThree n x) +
         10 * (thetaCuspAtomLikelihoodLogJetTwo n x *
             thetaCuspAtomLikelihoodLogJetTwo n x +
@@ -210,12 +210,12 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFive
     ring
   have hsource : thetaCuspAtomLikelihoodRatioJetFive n =ᶠ[nhds x]
       (fun y : ℝ =>
-        (thetaCuspAtomLikelihoodLogJetZero n y ^ 5 +
-          10 * thetaCuspAtomLikelihoodLogJetZero n y ^ 3 *
+        (thetaCuspAtomLikelihoodLogJetZero n y ^ (5 : ℕ) +
+          10 * thetaCuspAtomLikelihoodLogJetZero n y ^ (3 : ℕ) *
             thetaCuspAtomLikelihoodLogJetOne n y +
           15 * thetaCuspAtomLikelihoodLogJetZero n y *
-            thetaCuspAtomLikelihoodLogJetOne n y ^ 2 +
-          10 * thetaCuspAtomLikelihoodLogJetZero n y ^ 2 *
+            thetaCuspAtomLikelihoodLogJetOne n y ^ (2 : ℕ) +
+          10 * thetaCuspAtomLikelihoodLogJetZero n y ^ (2 : ℕ) *
             thetaCuspAtomLikelihoodLogJetTwo n y +
           10 * thetaCuspAtomLikelihoodLogJetOne n y *
             thetaCuspAtomLikelihoodLogJetTwo n y +
@@ -232,117 +232,117 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetFive
 
 private theorem scale_div_sub_fifth_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
-    T / (T - 3 / 2) ^ 5 < A / (A - 3 / 2) ^ 5 := by
+    T / (T - 3 / 2) ^ (5 : ℕ) < A / (A - 3 / 2) ^ (5 : ℕ) := by
   have hAden : 0 < A - 3 / 2 := by linarith
   have hTden : 0 < T - 3 / 2 := by linarith
-  have hfour : T / (T - 3 / 2) ^ 4 < A / (A - 3 / 2) ^ 4 := by
-    have hsq : T / (T - 3 / 2) ^ 2 < A / (A - 3 / 2) ^ 2 := by
+  have hfour : T / (T - 3 / 2) ^ (4 : ℕ) < A / (A - 3 / 2) ^ (4 : ℕ) := by
+    have hsq : T / (T - 3 / 2) ^ (2 : ℕ) < A / (A - 3 / 2) ^ (2 : ℕ) := by
       apply (div_lt_div_iff₀ (sq_pos_of_pos hTden) (sq_pos_of_pos hAden)).2
-      have hfactor : 0 < A * T - (3 / 2 : ℝ) ^ 2 := by nlinarith
+      have hfactor : 0 < A * T - (3 / 2 : ℝ) ^ (2 : ℕ) := by nlinarith
       nlinarith [mul_pos (sub_pos.mpr hAT) hfactor]
     have hinv : (T - 3 / 2)⁻¹ < (A - 3 / 2)⁻¹ :=
       (inv_lt_inv₀ hTden hAden).2 (by linarith)
-    have hcube : T / (T - 3 / 2) ^ 3 < A / (A - 3 / 2) ^ 3 := by
-      rw [show T / (T - 3 / 2) ^ 3 =
-          (T / (T - 3 / 2) ^ 2) * (T - 3 / 2)⁻¹ by
+    have hcube : T / (T - 3 / 2) ^ (3 : ℕ) < A / (A - 3 / 2) ^ (3 : ℕ) := by
+      rw [show T / (T - 3 / 2) ^ (3 : ℕ) =
+          (T / (T - 3 / 2) ^ (2 : ℕ)) * (T - 3 / 2)⁻¹ by
         field_simp [hTden.ne'],
-        show A / (A - 3 / 2) ^ 3 =
-          (A / (A - 3 / 2) ^ 2) * (A - 3 / 2)⁻¹ by
+        show A / (A - 3 / 2) ^ (3 : ℕ) =
+          (A / (A - 3 / 2) ^ (2 : ℕ)) * (A - 3 / 2)⁻¹ by
         field_simp [hAden.ne']]
       calc
-        T / (T - 3 / 2) ^ 2 * (T - 3 / 2)⁻¹ <
-            A / (A - 3 / 2) ^ 2 * (T - 3 / 2)⁻¹ :=
+        T / (T - 3 / 2) ^ (2 : ℕ) * (T - 3 / 2)⁻¹ <
+            A / (A - 3 / 2) ^ (2 : ℕ) * (T - 3 / 2)⁻¹ :=
           mul_lt_mul_of_pos_right hsq (by positivity)
-        _ < A / (A - 3 / 2) ^ 2 * (A - 3 / 2)⁻¹ :=
+        _ < A / (A - 3 / 2) ^ (2 : ℕ) * (A - 3 / 2)⁻¹ :=
           mul_lt_mul_of_pos_left hinv (by positivity)
-    rw [show T / (T - 3 / 2) ^ 4 =
-        (T / (T - 3 / 2) ^ 3) * (T - 3 / 2)⁻¹ by
+    rw [show T / (T - 3 / 2) ^ (4 : ℕ) =
+        (T / (T - 3 / 2) ^ (3 : ℕ)) * (T - 3 / 2)⁻¹ by
       field_simp [hTden.ne'],
-      show A / (A - 3 / 2) ^ 4 =
-        (A / (A - 3 / 2) ^ 3) * (A - 3 / 2)⁻¹ by
+      show A / (A - 3 / 2) ^ (4 : ℕ) =
+        (A / (A - 3 / 2) ^ (3 : ℕ)) * (A - 3 / 2)⁻¹ by
       field_simp [hAden.ne']]
     calc
-      T / (T - 3 / 2) ^ 3 * (T - 3 / 2)⁻¹ <
-          A / (A - 3 / 2) ^ 3 * (T - 3 / 2)⁻¹ :=
+      T / (T - 3 / 2) ^ (3 : ℕ) * (T - 3 / 2)⁻¹ <
+          A / (A - 3 / 2) ^ (3 : ℕ) * (T - 3 / 2)⁻¹ :=
         mul_lt_mul_of_pos_right hcube (by positivity)
-      _ < A / (A - 3 / 2) ^ 3 * (A - 3 / 2)⁻¹ :=
+      _ < A / (A - 3 / 2) ^ (3 : ℕ) * (A - 3 / 2)⁻¹ :=
         mul_lt_mul_of_pos_left hinv (by positivity)
   have hinv : (T - 3 / 2)⁻¹ < (A - 3 / 2)⁻¹ :=
     (inv_lt_inv₀ hTden hAden).2 (by linarith)
   have hTinvpos : 0 < (T - 3 / 2)⁻¹ := inv_pos.mpr hTden
-  have hAquotpos : 0 < A / (A - 3 / 2) ^ 5 :=
+  have hAquotpos : 0 < A / (A - 3 / 2) ^ (5 : ℕ) :=
     div_pos (by linarith) (pow_pos hAden 5)
-  rw [show T / (T - 3 / 2) ^ 5 =
-      (T / (T - 3 / 2) ^ 4) * (T - 3 / 2)⁻¹ by
+  rw [show T / (T - 3 / 2) ^ (5 : ℕ) =
+      (T / (T - 3 / 2) ^ (4 : ℕ)) * (T - 3 / 2)⁻¹ by
     field_simp [hTden.ne'],
-    show A / (A - 3 / 2) ^ 5 =
-      (A / (A - 3 / 2) ^ 4) * (A - 3 / 2)⁻¹ by
+    show A / (A - 3 / 2) ^ (5 : ℕ) =
+      (A / (A - 3 / 2) ^ (4 : ℕ)) * (A - 3 / 2)⁻¹ by
     field_simp [hAden.ne']]
   calc
-    T / (T - 3 / 2) ^ 4 * (T - 3 / 2)⁻¹ <
-        A / (A - 3 / 2) ^ 4 * (T - 3 / 2)⁻¹ :=
+    T / (T - 3 / 2) ^ (4 : ℕ) * (T - 3 / 2)⁻¹ <
+        A / (A - 3 / 2) ^ (4 : ℕ) * (T - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_right hfour hTinvpos
-    _ < A / (A - 3 / 2) ^ 4 * (A - 3 / 2)⁻¹ :=
+    _ < A / (A - 3 / 2) ^ (4 : ℕ) * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv (by positivity)
 
 private theorem scale_div_sub_five_lt_thirtytwo_eightyfirsts
     {A : ℝ} (hA : 3 < A) :
-    A / (A - 3 / 2) ^ 5 < (32 / 81 : ℝ) := by
-  have hden : 0 < (A - 3 / 2) ^ 5 := pow_pos (by linarith) 5
+    A / (A - 3 / 2) ^ (5 : ℕ) < (32 / 81 : ℝ) := by
+  have hden : 0 < (A - 3 / 2) ^ (5 : ℕ) := pow_pos (by linarith) 5
   apply (div_lt_iff₀ hden).2
   let y := A - 3
   have hy : 0 < y := by dsimp [y]; linarith
   apply sub_pos.mp
-  rw [show (32 / 81 : ℝ) * (A - 3 / 2) ^ 5 - A =
-      (32 / 81) * y ^ 5 + (80 / 27) * y ^ 4 + (80 / 9) * y ^ 3 +
-        (40 / 3) * y ^ 2 + 9 * y by dsimp [y]; ring]
+  rw [show (32 / 81 : ℝ) * (A - 3 / 2) ^ (5 : ℕ) - A =
+      (32 / 81) * y ^ (5 : ℕ) + (80 / 27) * y ^ (4 : ℕ) + (80 / 9) * y ^ (3 : ℕ) +
+        (40 / 3) * y ^ (2 : ℕ) + 9 * y by dsimp [y]; ring]
   positivity
 
 private theorem scale_div_sub_sixth_strictAnti
     {A T : ℝ} (hA : 3 < A) (hAT : A < T) :
-    T / (T - 3 / 2) ^ 6 < A / (A - 3 / 2) ^ 6 := by
+    T / (T - 3 / 2) ^ (6 : ℕ) < A / (A - 3 / 2) ^ (6 : ℕ) := by
   have hAden : 0 < A - 3 / 2 := by linarith
   have hTden : 0 < T - 3 / 2 := by linarith
   have hfive := scale_div_sub_fifth_strictAnti hA hAT
   have hinv : (T - 3 / 2)⁻¹ < (A - 3 / 2)⁻¹ :=
     (inv_lt_inv₀ hTden hAden).2 (by linarith)
   have hTinvpos : 0 < (T - 3 / 2)⁻¹ := inv_pos.mpr hTden
-  have hAquotpos : 0 < A / (A - 3 / 2) ^ 5 :=
+  have hAquotpos : 0 < A / (A - 3 / 2) ^ (5 : ℕ) :=
     div_pos (by linarith) (pow_pos hAden 5)
-  rw [show T / (T - 3 / 2) ^ 6 =
-      (T / (T - 3 / 2) ^ 5) * (T - 3 / 2)⁻¹ by
+  rw [show T / (T - 3 / 2) ^ (6 : ℕ) =
+      (T / (T - 3 / 2) ^ (5 : ℕ)) * (T - 3 / 2)⁻¹ by
     field_simp [hTden.ne'],
-    show A / (A - 3 / 2) ^ 6 =
-      (A / (A - 3 / 2) ^ 5) * (A - 3 / 2)⁻¹ by
+    show A / (A - 3 / 2) ^ (6 : ℕ) =
+      (A / (A - 3 / 2) ^ (5 : ℕ)) * (A - 3 / 2)⁻¹ by
     field_simp [hAden.ne']]
   calc
-    T / (T - 3 / 2) ^ 5 * (T - 3 / 2)⁻¹ <
-        A / (A - 3 / 2) ^ 5 * (T - 3 / 2)⁻¹ :=
+    T / (T - 3 / 2) ^ (5 : ℕ) * (T - 3 / 2)⁻¹ <
+        A / (A - 3 / 2) ^ (5 : ℕ) * (T - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_right hfive hTinvpos
-    _ < A / (A - 3 / 2) ^ 5 * (A - 3 / 2)⁻¹ :=
+    _ < A / (A - 3 / 2) ^ (5 : ℕ) * (A - 3 / 2)⁻¹ :=
       mul_lt_mul_of_pos_left hinv hAquotpos
 
 private theorem scale_div_sub_six_lt_sixtyfour_twofortythirds
     {A : ℝ} (hA : 3 < A) :
-    A / (A - 3 / 2) ^ 6 < (64 / 243 : ℝ) := by
-  have hden : 0 < (A - 3 / 2) ^ 6 := pow_pos (by linarith) 6
+    A / (A - 3 / 2) ^ (6 : ℕ) < (64 / 243 : ℝ) := by
+  have hden : 0 < (A - 3 / 2) ^ (6 : ℕ) := pow_pos (by linarith) 6
   apply (div_lt_iff₀ hden).2
   let y := A - 3
   have hy : 0 < y := by dsimp [y]; linarith
   apply sub_pos.mp
-  rw [show (64 / 243 : ℝ) * (A - 3 / 2) ^ 6 - A =
-      (64 / 243) * y ^ 6 + (64 / 27) * y ^ 5 + (80 / 9) * y ^ 4 +
-        (160 / 9) * y ^ 3 + 20 * y ^ 2 + 11 * y by dsimp [y]; ring]
+  rw [show (64 / 243 : ℝ) * (A - 3 / 2) ^ (6 : ℕ) - A =
+      (64 / 243) * y ^ (6 : ℕ) + (64 / 27) * y ^ (5 : ℕ) + (80 / 9) * y ^ (4 : ℕ) +
+        (160 / 9) * y ^ (3 : ℕ) + 20 * y ^ (2 : ℕ) + 11 * y by dsimp [y]; ring]
   positivity
 
 /-- The fifth atom likelihood log jet is strictly negative, with a leading source scale gap. -/
 theorem thetaCuspAtomLikelihoodLogJetFour_neg
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     thetaCuspAtomLikelihoodLogJetFour n x <
-      -32 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+      -32 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, _hz, hAT⟩
@@ -358,10 +358,10 @@ theorem thetaCuspAtomLikelihoodLogJetFour_neg
   have hanti5 := scale_div_sub_fifth_strictAnti hA hAT
   have hvalue : thetaCuspAtomLikelihoodLogJetFour n x =
       -32 * z -
-        48 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) -
-        1008 * (A / (A - 3 / 2) ^ 3 - T / (T - 3 / 2) ^ 3) -
-        3888 * (A / (A - 3 / 2) ^ 4 - T / (T - 3 / 2) ^ 4) -
-        3888 * (A / (A - 3 / 2) ^ 5 - T / (T - 3 / 2) ^ 5) := by
+        48 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) -
+        1008 * (A / (A - 3 / 2) ^ (3 : ℕ) - T / (T - 3 / 2) ^ (3 : ℕ)) -
+        3888 * (A / (A - 3 / 2) ^ (4 : ℕ) - T / (T - 3 / 2) ^ (4 : ℕ)) -
+        3888 * (A / (A - 3 / 2) ^ (5 : ℕ) - T / (T - 3 / 2) ^ (5 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetFour
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -374,10 +374,10 @@ theorem thetaCuspAtomLikelihoodLogJetFour_neg
 theorem thetaCuspAtomLikelihoodLogJetFour_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodLogJetFour n x| ≤
-      600 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+      600 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, hz, hAT⟩
@@ -395,20 +395,20 @@ theorem thetaCuspAtomLikelihoodLogJetFour_abs_le
   have hA3 := scale_div_sub_cube_lt_eight_ninths hA
   have hA4 := scale_div_sub_four_lt_sixteen_twentysevenths hA
   have hA5 := scale_div_sub_five_lt_thirtytwo_eightyfirsts hA
-  have hT2 : 0 < T / (T - 3 / 2) ^ 2 :=
+  have hT2 : 0 < T / (T - 3 / 2) ^ (2 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (sq_pos_of_pos (by linarith))
-  have hT3 : 0 < T / (T - 3 / 2) ^ 3 :=
+  have hT3 : 0 < T / (T - 3 / 2) ^ (3 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 3)
-  have hT4 : 0 < T / (T - 3 / 2) ^ 4 :=
+  have hT4 : 0 < T / (T - 3 / 2) ^ (4 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 4)
-  have hT5 : 0 < T / (T - 3 / 2) ^ 5 :=
+  have hT5 : 0 < T / (T - 3 / 2) ^ (5 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 5)
   have hvalue : thetaCuspAtomLikelihoodLogJetFour n x =
       -32 * z -
-        48 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) -
-        1008 * (A / (A - 3 / 2) ^ 3 - T / (T - 3 / 2) ^ 3) -
-        3888 * (A / (A - 3 / 2) ^ 4 - T / (T - 3 / 2) ^ 4) -
-        3888 * (A / (A - 3 / 2) ^ 5 - T / (T - 3 / 2) ^ 5) := by
+        48 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) -
+        1008 * (A / (A - 3 / 2) ^ (3 : ℕ) - T / (T - 3 / 2) ^ (3 : ℕ)) -
+        3888 * (A / (A - 3 / 2) ^ (4 : ℕ) - T / (T - 3 / 2) ^ (4 : ℕ)) -
+        3888 * (A / (A - 3 / 2) ^ (5 : ℕ) - T / (T - 3 / 2) ^ (5 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetFour
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -421,10 +421,10 @@ theorem thetaCuspAtomLikelihoodLogJetFour_abs_le
 theorem thetaCuspAtomLikelihoodLogJetFive_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodLogJetFive n x| ≤
-      8000 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) := by
+      8000 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
   let A := thetaCuspLogConcavityScale x
-  let T := A * (n : ℝ) ^ 2
-  let z := A * ((n : ℝ) ^ 2 - 1)
+  let T := A * (n : ℝ) ^ (2 : ℕ)
+  let z := A * ((n : ℝ) ^ (2 : ℕ) - 1)
   have hfacts := thetaCuspLikelihoodScaleFacts hn hx.le
   dsimp only at hfacts
   rcases hfacts with ⟨hA, _hd, hz, hAT⟩
@@ -444,23 +444,23 @@ theorem thetaCuspAtomLikelihoodLogJetFive_abs_le
   have hA4 := scale_div_sub_four_lt_sixteen_twentysevenths hA
   have hA5 := scale_div_sub_five_lt_thirtytwo_eightyfirsts hA
   have hA6 := scale_div_sub_six_lt_sixtyfour_twofortythirds hA
-  have hT2 : 0 < T / (T - 3 / 2) ^ 2 :=
+  have hT2 : 0 < T / (T - 3 / 2) ^ (2 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (sq_pos_of_pos (by linarith))
-  have hT3 : 0 < T / (T - 3 / 2) ^ 3 :=
+  have hT3 : 0 < T / (T - 3 / 2) ^ (3 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 3)
-  have hT4 : 0 < T / (T - 3 / 2) ^ 4 :=
+  have hT4 : 0 < T / (T - 3 / 2) ^ (4 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 4)
-  have hT5 : 0 < T / (T - 3 / 2) ^ 5 :=
+  have hT5 : 0 < T / (T - 3 / 2) ^ (5 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 5)
-  have hT6 : 0 < T / (T - 3 / 2) ^ 6 :=
+  have hT6 : 0 < T / (T - 3 / 2) ^ (6 : ℕ) :=
     div_pos (lt_trans (by linarith) hAT) (pow_pos (by linarith) 6)
   have hvalue : thetaCuspAtomLikelihoodLogJetFive n x =
       -64 * z +
-        96 * (A / (A - 3 / 2) ^ 2 - T / (T - 3 / 2) ^ 2) +
-        4320 * (A / (A - 3 / 2) ^ 3 - T / (T - 3 / 2) ^ 3) +
-        32400 * (A / (A - 3 / 2) ^ 4 - T / (T - 3 / 2) ^ 4) +
-        77760 * (A / (A - 3 / 2) ^ 5 - T / (T - 3 / 2) ^ 5) +
-        58320 * (A / (A - 3 / 2) ^ 6 - T / (T - 3 / 2) ^ 6) := by
+        96 * (A / (A - 3 / 2) ^ (2 : ℕ) - T / (T - 3 / 2) ^ (2 : ℕ)) +
+        4320 * (A / (A - 3 / 2) ^ (3 : ℕ) - T / (T - 3 / 2) ^ (3 : ℕ)) +
+        32400 * (A / (A - 3 / 2) ^ (4 : ℕ) - T / (T - 3 / 2) ^ (4 : ℕ)) +
+        77760 * (A / (A - 3 / 2) ^ (5 : ℕ) - T / (T - 3 / 2) ^ (5 : ℕ)) +
+        58320 * (A / (A - 3 / 2) ^ (6 : ℕ) - T / (T - 3 / 2) ^ (6 : ℕ)) := by
     unfold thetaCuspAtomLikelihoodLogJetFive
     rw [hprofileN, hprofile1]
     dsimp [z, T, A]
@@ -473,9 +473,9 @@ theorem thetaCuspAtomLikelihoodLogJetFive_abs_le
 theorem thetaCuspAtomLikelihoodRatioJetFive_abs_le
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 < x) :
     |thetaCuspAtomLikelihoodRatioJetFive n x| ≤
-      5000 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)) ^ 5 *
+      5000 * (thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)) ^ (5 : ℕ) *
         thetaCuspAtomLikelihoodRatio n x := by
-  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ 2 - 1)
+  let z := thetaCuspLogConcavityScale x * ((n : ℝ) ^ (2 : ℕ) - 1)
   let p := -thetaCuspAtomLikelihoodLogJetZero n x
   let alpha := -thetaCuspAtomLikelihoodLogJetOne n x
   let beta := -thetaCuspAtomLikelihoodLogJetTwo n x
@@ -498,142 +498,142 @@ theorem thetaCuspAtomLikelihoodRatioJetFive_abs_le
   have hdelta : |delta| ≤ 600 * z := by simpa only [delta, z] using hq4
   have hz0 : 0 ≤ z := by linarith
   have hz1 : 1 ≤ z := by linarith
-  have hp2 : p ^ 2 ≤ 9 * z ^ 2 := by
+  have hp2 : p ^ (2 : ℕ) ≤ 9 * z ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 2
     nlinarith
-  have hp3 : p ^ 3 ≤ 27 * z ^ 3 := by
+  have hp3 : p ^ (3 : ℕ) ≤ 27 * z ^ (3 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 3
     nlinarith
-  have hp5 : p ^ 5 ≤ 243 * z ^ 5 := by
+  have hp5 : p ^ (5 : ℕ) ≤ 243 * z ^ (5 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 5
     nlinarith
-  have ha2 : alpha ^ 2 ≤ 16 * z ^ 2 := by
+  have ha2 : alpha ^ (2 : ℕ) ≤ 16 * z ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ ha0 ha 2
     nlinarith
-  have hz2one : 1 ≤ z ^ 2 := one_le_pow₀ hz1
-  have hz3one : 1 ≤ z ^ 3 := one_le_pow₀ hz1
-  have hz4one : 1 ≤ z ^ 4 := one_le_pow₀ hz1
-  have hz2 : z ^ 2 ≤ z ^ 5 := by
+  have hz2one : 1 ≤ z ^ (2 : ℕ) := one_le_pow₀ hz1
+  have hz3one : 1 ≤ z ^ (3 : ℕ) := one_le_pow₀ hz1
+  have hz4one : 1 ≤ z ^ (4 : ℕ) := one_le_pow₀ hz1
+  have hz2 : z ^ (2 : ℕ) ≤ z ^ (5 : ℕ) := by
     calc
-      z ^ 2 = z ^ 2 * 1 := by ring
-      _ ≤ z ^ 2 * z ^ 3 := by gcongr
-      _ = z ^ 5 := by ring
-  have hz3 : z ^ 3 ≤ z ^ 5 := by
+      z ^ (2 : ℕ) = z ^ (2 : ℕ) * 1 := by ring
+      _ ≤ z ^ (2 : ℕ) * z ^ (3 : ℕ) := by gcongr
+      _ = z ^ (5 : ℕ) := by ring
+  have hz3 : z ^ (3 : ℕ) ≤ z ^ (5 : ℕ) := by
     calc
-      z ^ 3 = z ^ 3 * 1 := by ring
-      _ ≤ z ^ 3 * z ^ 2 := by gcongr
-      _ = z ^ 5 := by ring
-  have hz4 : z ^ 4 ≤ z ^ 5 := by
+      z ^ (3 : ℕ) = z ^ (3 : ℕ) * 1 := by ring
+      _ ≤ z ^ (3 : ℕ) * z ^ (2 : ℕ) := by gcongr
+      _ = z ^ (5 : ℕ) := by ring
+  have hz4 : z ^ (4 : ℕ) ≤ z ^ (5 : ℕ) := by
     calc
-      z ^ 4 = z ^ 4 * 1 := by ring
-      _ ≤ z ^ 4 * z := by gcongr
-      _ = z ^ 5 := by ring
-  have hz1to5 : z ≤ z ^ 5 := by
+      z ^ (4 : ℕ) = z ^ (4 : ℕ) * 1 := by ring
+      _ ≤ z ^ (4 : ℕ) * z := by gcongr
+      _ = z ^ (5 : ℕ) := by ring
+  have hz1to5 : z ≤ z ^ (5 : ℕ) := by
     calc
       z = z * 1 := by ring
-      _ ≤ z * z ^ 4 := by gcongr
-      _ = z ^ 5 := by ring
-  have hterm1 : |-p ^ 5| ≤ 243 * z ^ 5 := by
+      _ ≤ z * z ^ (4 : ℕ) := by gcongr
+      _ = z ^ (5 : ℕ) := by ring
+  have hterm1 : |-p ^ (5 : ℕ)| ≤ 243 * z ^ (5 : ℕ) := by
     rw [abs_neg, abs_of_nonneg (pow_nonneg hp0 _)]
     exact hp5
-  have hterm2 : |10 * p ^ 3 * alpha| ≤ 1080 * z ^ 5 := by
-    have hbound : 10 * p ^ 3 * alpha ≤ 1080 * z ^ 4 := by
+  have hterm2 : |10 * p ^ (3 : ℕ) * alpha| ≤ 1080 * z ^ (5 : ℕ) := by
+    have hbound : 10 * p ^ (3 : ℕ) * alpha ≤ 1080 * z ^ (4 : ℕ) := by
       calc
-        10 * p ^ 3 * alpha ≤ 10 * (27 * z ^ 3) * (4 * z) := by gcongr
-        _ = 1080 * z ^ 4 := by ring
+        10 * p ^ (3 : ℕ) * alpha ≤ 10 * (27 * z ^ (3 : ℕ)) * (4 * z) := by gcongr
+        _ = 1080 * z ^ (4 : ℕ) := by ring
     rw [abs_of_nonneg (by positivity)]
     exact hbound.trans (by gcongr)
-  have hterm3 : |-15 * p * alpha ^ 2| ≤ 720 * z ^ 5 := by
-    have hbound : 15 * p * alpha ^ 2 ≤ 720 * z ^ 3 := by
+  have hterm3 : |-15 * p * alpha ^ (2 : ℕ)| ≤ 720 * z ^ (5 : ℕ) := by
+    have hbound : 15 * p * alpha ^ (2 : ℕ) ≤ 720 * z ^ (3 : ℕ) := by
       calc
-        15 * p * alpha ^ 2 ≤ 15 * (3 * z) * (16 * z ^ 2) := by gcongr
-        _ = 720 * z ^ 3 := by ring
+        15 * p * alpha ^ (2 : ℕ) ≤ 15 * (3 * z) * (16 * z ^ (2 : ℕ)) := by gcongr
+        _ = 720 * z ^ (3 : ℕ) := by ring
     rw [abs_mul, abs_mul, abs_of_neg (by norm_num),
       abs_of_nonneg hp0, abs_of_nonneg (pow_nonneg ha0 _)]
     norm_num
     exact hbound.trans (by gcongr)
-  have hterm4 : |-10 * p ^ 2 * beta| ≤ 1260 * z ^ 5 := by
-    have hbound : 10 * p ^ 2 * beta ≤ 1260 * z ^ 3 := by
+  have hterm4 : |-10 * p ^ (2 : ℕ) * beta| ≤ 1260 * z ^ (5 : ℕ) := by
+    have hbound : 10 * p ^ (2 : ℕ) * beta ≤ 1260 * z ^ (3 : ℕ) := by
       calc
-        10 * p ^ 2 * beta ≤ 10 * (9 * z ^ 2) * (14 * z) := by gcongr
-        _ = 1260 * z ^ 3 := by ring
+        10 * p ^ (2 : ℕ) * beta ≤ 10 * (9 * z ^ (2 : ℕ)) * (14 * z) := by gcongr
+        _ = 1260 * z ^ (3 : ℕ) := by ring
     rw [abs_mul, abs_mul, abs_of_neg (by norm_num),
       abs_of_nonneg (pow_nonneg hp0 _), abs_of_nonneg hb0]
     norm_num
     exact hbound.trans (by gcongr)
-  have hterm5 : |10 * alpha * beta| ≤ 560 * z ^ 5 := by
-    have hbound : 10 * alpha * beta ≤ 560 * z ^ 2 := by
+  have hterm5 : |10 * alpha * beta| ≤ 560 * z ^ (5 : ℕ) := by
+    have hbound : 10 * alpha * beta ≤ 560 * z ^ (2 : ℕ) := by
       calc
         10 * alpha * beta ≤ 10 * (4 * z) * (14 * z) := by gcongr
-        _ = 560 * z ^ 2 := by ring
+        _ = 560 * z ^ (2 : ℕ) := by ring
     rw [abs_of_nonneg (by positivity)]
     exact hbound.trans (by gcongr)
-  have hterm6 : |-5 * p * gamma| ≤ 480 * z ^ 5 := by
-    have hbound : 5 * p * |gamma| ≤ 480 * z ^ 2 := by
+  have hterm6 : |-5 * p * gamma| ≤ 480 * z ^ (5 : ℕ) := by
+    have hbound : 5 * p * |gamma| ≤ 480 * z ^ (2 : ℕ) := by
       calc
         5 * p * |gamma| ≤ 5 * (3 * z) * (32 * z) := by gcongr
-        _ = 480 * z ^ 2 := by ring
+        _ = 480 * z ^ (2 : ℕ) := by ring
     rw [abs_mul, abs_mul, abs_of_neg (by norm_num), abs_of_nonneg hp0]
     norm_num
     exact hbound.trans (by gcongr)
-  have hterm7 : |delta| ≤ 600 * z ^ 5 :=
+  have hterm7 : |delta| ≤ 600 * z ^ (5 : ℕ) :=
     hdelta.trans (by gcongr)
   have hcoeff :
-      |-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-          10 * p ^ 2 * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
-        5000 * z ^ 5 := by
+      |-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+          10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
+        5000 * z ^ (5 : ℕ) := by
     calc
-      |-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-            10 * p ^ 2 * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
-          |-p ^ 5| + |10 * p ^ 3 * alpha| + |-15 * p * alpha ^ 2| +
-            |-10 * p ^ 2 * beta| + |10 * alpha * beta| + |-5 * p * gamma| + |delta| := by
+      |-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+            10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
+          |-p ^ (5 : ℕ)| + |10 * p ^ (3 : ℕ) * alpha| + |-15 * p * alpha ^ (2 : ℕ)| +
+            |-10 * p ^ (2 : ℕ) * beta| + |10 * alpha * beta| + |-5 * p * gamma| + |delta| := by
         calc
-          |-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-              10 * p ^ 2 * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
-              |-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-                10 * p ^ 2 * beta + 10 * alpha * beta - 5 * p * gamma| + |delta| :=
+          |-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+              10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta - 5 * p * gamma + delta| ≤
+              |-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+                10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta - 5 * p * gamma| + |delta| :=
             abs_add_le _ _
-          _ ≤ (|-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-                10 * p ^ 2 * beta + 10 * alpha * beta| + |-5 * p * gamma|) + |delta| := by
+          _ ≤ (|-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+                10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta| + |-5 * p * gamma|) + |delta| := by
             gcongr
             rw [show -5 * p * gamma = -(5 * p * gamma) by ring, abs_neg]
             exact abs_sub _ _
-          _ ≤ ((|-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-                10 * p ^ 2 * beta| + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
+          _ ≤ ((|-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+                10 * p ^ (2 : ℕ) * beta| + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
             gcongr
             exact abs_add_le _ _
-          _ ≤ (((|-p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2| +
-                |-10 * p ^ 2 * beta|) + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
+          _ ≤ (((|-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ)| +
+                |-10 * p ^ (2 : ℕ) * beta|) + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
             gcongr
-            rw [show -10 * p ^ 2 * beta = -(10 * p ^ 2 * beta) by ring, abs_neg]
+            rw [show -10 * p ^ (2 : ℕ) * beta = -(10 * p ^ (2 : ℕ) * beta) by ring, abs_neg]
             exact abs_sub _ _
-          _ ≤ ((((|-p ^ 5 + 10 * p ^ 3 * alpha| + |-15 * p * alpha ^ 2|) +
-                |-10 * p ^ 2 * beta|) + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
+          _ ≤ ((((|-p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha| + |-15 * p * alpha ^ (2 : ℕ)|) +
+                |-10 * p ^ (2 : ℕ) * beta|) + |10 * alpha * beta|) + |-5 * p * gamma|) + |delta| := by
             gcongr
-            rw [show -15 * p * alpha ^ 2 = -(15 * p * alpha ^ 2) by ring, abs_neg]
+            rw [show -15 * p * alpha ^ (2 : ℕ) = -(15 * p * alpha ^ (2 : ℕ)) by ring, abs_neg]
             exact abs_sub _ _
-          _ ≤ (((|-p ^ 5| + |10 * p ^ 3 * alpha|) + |-15 * p * alpha ^ 2| +
-                |-10 * p ^ 2 * beta| + |10 * alpha * beta| + |-5 * p * gamma| + |delta|)) := by
+          _ ≤ (((|-p ^ (5 : ℕ)| + |10 * p ^ (3 : ℕ) * alpha|) + |-15 * p * alpha ^ (2 : ℕ)| +
+                |-10 * p ^ (2 : ℕ) * beta| + |10 * alpha * beta| + |-5 * p * gamma| + |delta|)) := by
             gcongr
             exact abs_add_le _ _
-      _ ≤ 5000 * z ^ 5 := by nlinarith
+      _ ≤ 5000 * z ^ (5 : ℕ) := by nlinarith
   unfold thetaCuspAtomLikelihoodRatioJetFive
   rw [abs_mul, abs_of_pos hr]
   apply mul_le_mul_of_nonneg_right _ hr.le
-  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ 5 +
-      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ 3 *
+  rw [show thetaCuspAtomLikelihoodLogJetZero n x ^ (5 : ℕ) +
+      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ (3 : ℕ) *
         thetaCuspAtomLikelihoodLogJetOne n x +
       15 * thetaCuspAtomLikelihoodLogJetZero n x *
-        thetaCuspAtomLikelihoodLogJetOne n x ^ 2 +
-      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ 2 *
+        thetaCuspAtomLikelihoodLogJetOne n x ^ (2 : ℕ) +
+      10 * thetaCuspAtomLikelihoodLogJetZero n x ^ (2 : ℕ) *
         thetaCuspAtomLikelihoodLogJetTwo n x +
       10 * thetaCuspAtomLikelihoodLogJetOne n x *
         thetaCuspAtomLikelihoodLogJetTwo n x +
       5 * thetaCuspAtomLikelihoodLogJetZero n x *
         thetaCuspAtomLikelihoodLogJetThree n x +
       thetaCuspAtomLikelihoodLogJetFour n x =
-      -p ^ 5 + 10 * p ^ 3 * alpha - 15 * p * alpha ^ 2 -
-        10 * p ^ 2 * beta + 10 * alpha * beta - 5 * p * gamma + delta by
+      -p ^ (5 : ℕ) + 10 * p ^ (3 : ℕ) * alpha - 15 * p * alpha ^ (2 : ℕ) -
+        10 * p ^ (2 : ℕ) * beta + 10 * alpha * beta - 5 * p * gamma + delta by
     dsimp [p, alpha, beta, gamma, delta]
     ring]
   exact hcoeff

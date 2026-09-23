@@ -152,7 +152,7 @@ theorem integrable_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz :
     Integrable (fun x => windowFun L x * sourceChar z x) (volume : Measure ℝ) := by
   have hcpos : (0 : ℝ) < 1 - |z.im| := by linarith
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs hcpos).const_mul (L * (thetaBound * Real.exp L))) ?_ ?_
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hcpos).const_mul (L * (thetaBound * Real.exp L))) ?_ ?_
   · exact ((continuous_windowFun hL).mul (continuous_sourceChar z)).aestronglyMeasurable
   · filter_upwards with x
     exact norm_windowFun_sourceChar_le hL hz x

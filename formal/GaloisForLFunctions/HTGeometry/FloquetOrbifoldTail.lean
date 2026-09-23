@@ -15,9 +15,9 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
-def floquetR₁ {K : Type*} [Field K] (x : K) : K := x ^ 2 + 1
+def floquetR₁ {K : Type*} [Field K] (x : K) : K := x ^ (2 : ℕ) + 1
 
-def floquetR₂ {K : Type*} [Field K] (x : K) : K := (x - 1) ^ 2
+def floquetR₂ {K : Type*} [Field K] (x : K) : K := (x - 1) ^ (2 : ℕ)
 
 def phaseZeroCurrent {K : Type*} [Field K] [Differential K] (x : K) : K := x′ / x
 
@@ -28,13 +28,13 @@ private theorem deriv_one {K : Type*} [Field K] [Differential K] : (1 : K)′ = 
 
 /-- The phase-zero period map is the fourth-power map. -/
 theorem floquetR₂_comp_R₁ {K : Type*} [Field K] (x : K) :
-    floquetR₂ (floquetR₁ x) = x ^ 4 := by
+    floquetR₂ (floquetR₁ x) = x ^ (4 : ℕ) := by
   simp [floquetR₁, floquetR₂]
   ring
 
 /-- The rotated phase-one period map is the translate-conjugate fourth-power map. -/
 theorem floquetR₁_comp_R₂ {K : Type*} [Field K] (x : K) :
-    floquetR₁ (floquetR₂ x) = (x - 1) ^ 4 + 1 := by
+    floquetR₁ (floquetR₂ x) = (x - 1) ^ (4 : ℕ) + 1 := by
   simp [floquetR₁, floquetR₂]
   ring
 

@@ -11,7 +11,7 @@ The continued Guinand--Weil source trace already recovers the multiplicity-weigh
 entire test on the Xi divisor inside an admissible rectangle.  This module chooses cofinal rectangles
 symmetric about both axes and tests them with the translated Hermite polynomial
 
-`z ↦ (R + 1 + z) * P(R + 1 + z)^2`.
+`z ↦ (R + 1 + z) * P(R + 1 + z)^(2 : ℕ)`.
 
 Translation by `R + 1` puts every real point of the packet on the positive real axis.  The finite
 trace--Hankel converse then shows that nonnegativity of all these source-contour values forces every
@@ -34,7 +34,7 @@ theorem finite_shifted_traceHankel_nonneg_implies_real
     (hconj : ∀ z ∈ F, (starRingEnd ℂ) z ∈ F)
     (hpos : ∀ p : Polynomial ℝ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-        evalRealPolynomial p ((A : ℂ) + z) ^ 2).re) :
+        evalRealPolynomial p ((A : ℂ) + z) ^ (2 : ℕ)).re) :
     ∀ z ∈ F, z.im = 0 := by
   let shift : ℂ → ℂ := fun z => (A : ℂ) + z
   let F' : Finset ℂ := F.image shift
@@ -55,10 +55,10 @@ theorem finite_shifted_traceHankel_nonneg_implies_real
     simp [shift]
   have hpos' : ∀ p : Polynomial ℝ,
       0 ≤ (∑ u ∈ F', ((w' u : ℝ) : ℂ) * u *
-        evalRealPolynomial p u ^ 2).re := by
+        evalRealPolynomial p u ^ (2 : ℕ)).re := by
     intro p
     change 0 ≤ (∑ u ∈ F.image shift, ((w' u : ℝ) : ℂ) * u *
-      evalRealPolynomial p u ^ 2).re
+      evalRealPolynomial p u ^ (2 : ℕ)).re
     rw [Finset.sum_image hshift_inj]
     simpa [w', shift] using hpos p
   have hreal := finite_traceHankel_nonneg_implies_real F' w' hw' hconj' hpos'
@@ -72,7 +72,7 @@ vector. -/
 def finiteShiftedTraceHankelVector (F : Finset ℂ) (w : ℂ → ℝ) (A : ℝ)
     (n : ℕ) (a : Fin n → ℝ) : ℝ :=
   (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-    evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z) ^ 2).re
+    evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z) ^ (2 : ℕ)).re
 
 private theorem evalRealPolynomial_ofFn_eq_sum (n : ℕ) (a : Fin n → ℝ) (z : ℂ) :
     evalRealPolynomial (Polynomial.ofFn n a) z =
@@ -87,7 +87,7 @@ theorem continuous_finiteShiftedTraceHankelVector
     Continuous (finiteShiftedTraceHankelVector F w A n) := by
   rw [show finiteShiftedTraceHankelVector F w A n = fun a : Fin n → ℝ =>
       (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-        (∑ i : Fin n, ((a i : ℝ) : ℂ) * ((A : ℂ) + z) ^ (i : ℕ)) ^ 2).re by
+        (∑ i : Fin n, ((a i : ℝ) : ℂ) * ((A : ℂ) + z) ^ (i : ℕ)) ^ (2 : ℕ)).re by
     funext a
     simp only [finiteShiftedTraceHankelVector, evalRealPolynomial_ofFn_eq_sum]]
   fun_prop
@@ -97,7 +97,7 @@ theorem finiteShiftedTraceHankelVector_smul
     (F : Finset ℂ) (w : ℂ → ℝ) (A : ℝ)
     (n : ℕ) (c : ℝ) (a : Fin n → ℝ) :
     finiteShiftedTraceHankelVector F w A n (c • a) =
-      c ^ 2 * finiteShiftedTraceHankelVector F w A n a := by
+      c ^ (2 : ℕ) * finiteShiftedTraceHankelVector F w A n a := by
   have heval (z : ℂ) :
       evalRealPolynomial (Polynomial.ofFn n (c • a)) z =
         (c : ℂ) * evalRealPolynomial (Polynomial.ofFn n a) z := by
@@ -111,10 +111,10 @@ theorem finiteShiftedTraceHankelVector_smul
   simp only [finiteShiftedTraceHankelVector, heval]
   have hcomplex :
       (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-          ((c : ℂ) * evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z)) ^ 2) =
-        (((c ^ 2 : ℝ) : ℂ) *
+          ((c : ℂ) * evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z)) ^ (2 : ℕ)) =
+        (((c ^ (2 : ℕ) : ℝ) : ℂ) *
           ∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-            evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z) ^ 2) := by
+            evalRealPolynomial (Polynomial.ofFn n a) ((A : ℂ) + z) ^ (2 : ℕ)) := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro z hz
@@ -134,10 +134,10 @@ theorem finite_shifted_traceHankel_nonnegative_of_int
     (F : Finset ℂ) (w : ℂ → ℝ) (A : ℝ)
     (hint : ∀ p : Polynomial ℤ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-        evalRealPolynomial (p.map (Int.castRingHom ℝ)) ((A : ℂ) + z) ^ 2).re) :
+        evalRealPolynomial (p.map (Int.castRingHom ℝ)) ((A : ℂ) + z) ^ (2 : ℕ)).re) :
     ∀ p : Polynomial ℝ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-        evalRealPolynomial p ((A : ℂ) + z) ^ 2).re := by
+        evalRealPolynomial p ((A : ℂ) + z) ^ (2 : ℕ)).re := by
   intro p
   let n := p.natDegree + 1
   let a : Fin n → ℝ := Polynomial.toFn n p
@@ -167,7 +167,7 @@ theorem finite_shifted_traceHankel_nonnegative_of_int
     rw [hzreal, show (fun i => (D : ℝ) * (q i : ℝ)) =
         (D : ℝ) • (fun i => (q i : ℝ)) by rfl,
       finiteShiftedTraceHankelVector_smul] at hscaled
-    have hDsq : 0 < (D : ℝ) ^ 2 := sq_pos_of_pos (by exact_mod_cast hDpos)
+    have hDsq : 0 < (D : ℝ) ^ (2 : ℕ) := sq_pos_of_pos (by exact_mod_cast hDpos)
     exact nonneg_of_mul_nonneg_right hscaled hDsq
   have hall : ∀ x : Fin n → ℝ,
       0 ≤ finiteShiftedTraceHankelVector F w A n x := by
@@ -185,7 +185,7 @@ theorem finite_shifted_traceHankel_int_nonneg_implies_real
     (hconj : ∀ z ∈ F, (starRingEnd ℂ) z ∈ F)
     (hpos : ∀ p : Polynomial ℤ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((A : ℂ) + z) *
-        evalRealPolynomial (p.map (Int.castRingHom ℝ)) ((A : ℂ) + z) ^ 2).re) :
+        evalRealPolynomial (p.map (Int.castRingHom ℝ)) ((A : ℂ) + z) ^ (2 : ℕ)).re) :
     ∀ z ∈ F, z.im = 0 :=
   finite_shifted_traceHankel_nonneg_implies_real F w A hw hconj
     (finite_shifted_traceHankel_nonnegative_of_int F w A hpos)
@@ -458,7 +458,7 @@ theorem exists_admissible_rational_symmetric_rectangle_containing_xiZeroCopy
 /-- Entire Hermite test translated to the positive side of a symmetric rectangle. -/
 def xiSymmetricRectangleHermiteTest (R : ℝ) (p : Polynomial ℝ) (z : ℂ) : ℂ :=
   ((((R + 1 : ℝ) : ℂ) + z) *
-    evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ 2)
+    evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ (2 : ℕ))
 
 /-- The translated Hermite test is entire. -/
 theorem xiSymmetricRectangleHermiteTest_analyticOnNhd (R : ℝ) (p : Polynomial ℝ) :
@@ -483,7 +483,7 @@ theorem normalized_symmetricPrimeArchHermiteContour_eq_closedRectangleTraceHanke
       ∑ z ∈ xiCClosedRectangleZeros (symmetricRectangleLower R c)
           (symmetricRectangleUpper R c),
         ((analyticOrderAt XiC z).toNat : ℂ) * (((R + 1 : ℝ) : ℂ) + z) *
-          evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ 2 := by
+          evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ (2 : ℕ) := by
   let z₁ := symmetricRectangleLower R c
   let z₂ := symmetricRectangleUpper R c
   have hzre : z₁.re < z₂.re := by
@@ -656,7 +656,7 @@ theorem riemannHypothesis_of_symmetricPrimeArchTraceHankelNonnegative
     simpa [z₁, symmetricRectangleLower] using hadm.2.2.2 y hy'
   have hpos : ∀ p : Polynomial ℝ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * (((R + 1 : ℝ) : ℂ) + z) *
-        evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ 2).re := by
+        evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ (2 : ℕ)).re := by
     intro p
     have hcontour :=
       rectIntegral_continuedPrimeArchSourceRelativeTrace_eq_closedRectangleZeroSum
@@ -674,7 +674,7 @@ theorem riemannHypothesis_of_symmetricPrimeArchTraceHankelNonnegative
               (fun z => xiSymmetricRectangleHermiteTest R p z *
                 continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =
           ∑ z ∈ F, ((w z : ℝ) : ℂ) * (((R + 1 : ℝ) : ℂ) + z) *
-            evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ 2 := by
+            evalRealPolynomial p (((R + 1 : ℝ) : ℂ) + z) ^ (2 : ℕ) := by
       rw [hcontour]
       rw [← mul_assoc, inv_mul_cancel₀ hC, one_mul]
       apply Finset.sum_congr rfl
@@ -737,7 +737,7 @@ theorem riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative
   have hpos : ∀ p : Polynomial ℤ,
       0 ≤ (∑ z ∈ F, ((w z : ℝ) : ℂ) * ((((R : ℝ) + 1 : ℝ) : ℂ) + z) *
         evalRealPolynomial (p.map (Int.castRingHom ℝ))
-          (((((R : ℝ) + 1 : ℝ) : ℂ) + z)) ^ 2).re := by
+          (((((R : ℝ) + 1 : ℝ) : ℂ) + z)) ^ (2 : ℕ)).re := by
     intro p
     have hs := hsource R c hR hc hchalf hadm p
     have heq :=
@@ -803,9 +803,9 @@ theorem symmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis
   have hterm :
       ((analyticOrderAt XiC (z.re : ℂ)).toNat : ℂ) *
           ((R + 1 + z.re : ℝ) : ℂ) *
-          (((Polynomial.eval (R + 1 + z.re) p : ℝ) : ℂ)) ^ 2 =
+          (((Polynomial.eval (R + 1 + z.re) p : ℝ) : ℂ)) ^ (2 : ℕ) =
         (((analyticOrderAt XiC (z.re : ℂ)).toNat : ℝ) *
-          (R + 1 + z.re) * (Polynomial.eval (R + 1 + z.re) p) ^ 2 : ℝ) := by
+          (R + 1 + z.re) * (Polynomial.eval (R + 1 + z.re) p) ^ (2 : ℕ) : ℝ) := by
     push_cast
     ring
   rw [hterm]

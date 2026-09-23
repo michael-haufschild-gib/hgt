@@ -68,7 +68,7 @@ theorem riemannHypothesis_of_completedErrorBackwardPositiveVariationSquareEnergy
     (h2 : ∀ epsilon : ℝ, 0 < epsilon →
       Summable
         (realDirichletWeightedTerm
-          (fun n => (dyadicCompletedErrorBackwardPositiveVariation n) ^ 2)
+          (fun n => (dyadicCompletedErrorBackwardPositiveVariation n) ^ (2 : ℕ))
           (1 + epsilon))) :
     RiemannHypothesis := by
   apply riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcessSquareEnergy

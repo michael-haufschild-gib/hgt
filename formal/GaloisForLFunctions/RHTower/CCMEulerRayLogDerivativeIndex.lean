@@ -9,10 +9,10 @@ Each paired zero `lambda` of the centred completed function contributes to
 J (x, y) = (Q x + Q y)/(x + y)
 ```
 
-the packet `2 (x y - lambda^2)/((x^2 - lambda^2)(y^2 - lambda^2))`.  On the critical line
+the packet `2 (x y - lambda^(2 : ℕ))/((x^(2 : ℕ) - lambda^(2 : ℕ))(y^(2 : ℕ) - lambda^(2 : ℕ)))`.  On the critical line
 (`lambda = i gamma`) this is a *sum* of two rank-one Gram kernels, hence positive semidefinite; off
 the line (`lambda = a` real, the model case of a conjugate quartet) it is a *difference* of two
-rank-one Gram kernels, and its two-point minor is `-4 a^2 (x - y)^2/(...)^2 < 0`, so it carries a
+rank-one Gram kernels, and its two-point minor is `-4 a^(2 : ℕ) (x - y)^(2 : ℕ)/(...)^(2 : ℕ) < 0`, so it carries a
 genuine negative square.
 
 Also proved here: the causal/anti-causal polarization
@@ -40,7 +40,7 @@ theorem posSemidef_rankOneMatrix {n : ℕ} (u : Fin n → ℝ) : (rankOneMatrix 
     ring
   · intro α
     have hval : (α.sum fun i xi => α.sum fun j xj => star xi * rankOneMatrix u i j * xj)
-        = (α.sum fun i xi => xi * u i) ^ 2 := by
+        = (α.sum fun i xi => xi * u i) ^ (2 : ℕ) := by
       rw [Finsupp.sum_fintype _ _ (by intro i; simp)]
       have hinner : ∀ i : Fin n, (α.sum fun j xj => star (α i) * rankOneMatrix u i j * xj)
           = (α i * u i) * ∑ j, α j * u j := by
@@ -57,23 +57,23 @@ theorem posSemidef_rankOneMatrix {n : ℕ} (u : Fin n → ℝ) : (rankOneMatrix 
 /-! ## The critical-line packet -/
 
 /-- The packet kernel of a critical-line zero at height `gamma`, equation `(9)`. -/
-def imagPacketKernel (γ x y : ℝ) : ℝ := 2 * (x * y + γ ^ 2) / ((x ^ 2 + γ ^ 2) * (y ^ 2 + γ ^ 2))
+def imagPacketKernel (γ x y : ℝ) : ℝ := 2 * (x * y + γ ^ (2 : ℕ)) / ((x ^ (2 : ℕ) + γ ^ (2 : ℕ)) * (y ^ (2 : ℕ) + γ ^ (2 : ℕ)))
 
 /-- **Equation (9).**  A critical-line packet is the sum of two rank-one Gram kernels. -/
-theorem imagPacketKernel_eq {γ x y : ℝ} (hx : x ^ 2 + γ ^ 2 ≠ 0) (hy : y ^ 2 + γ ^ 2 ≠ 0) :
+theorem imagPacketKernel_eq {γ x y : ℝ} (hx : x ^ (2 : ℕ) + γ ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) + γ ^ (2 : ℕ) ≠ 0) :
     imagPacketKernel γ x y
-      = 2 * (x / (x ^ 2 + γ ^ 2)) * (y / (y ^ 2 + γ ^ 2))
-        + 2 * (γ / (x ^ 2 + γ ^ 2)) * (γ / (y ^ 2 + γ ^ 2)) := by
+      = 2 * (x / (x ^ (2 : ℕ) + γ ^ (2 : ℕ))) * (y / (y ^ (2 : ℕ) + γ ^ (2 : ℕ)))
+        + 2 * (γ / (x ^ (2 : ℕ) + γ ^ (2 : ℕ))) * (γ / (y ^ (2 : ℕ) + γ ^ (2 : ℕ))) := by
   unfold imagPacketKernel
   field_simp
 
 /-- **Equation (9), positivity.**  Hence every critical-line packet is positive semidefinite. -/
 theorem posSemidef_imagPacketMatrix {n : ℕ} {γ : ℝ} {x : Fin n → ℝ}
-    (hx : ∀ i, x i ^ 2 + γ ^ 2 ≠ 0) :
+    (hx : ∀ i, x i ^ (2 : ℕ) + γ ^ (2 : ℕ) ≠ 0) :
     (kernelMatrix (imagPacketKernel γ) x).PosSemidef := by
   have hsum : kernelMatrix (imagPacketKernel γ) x
-      = (2 : ℝ) • rankOneMatrix (fun i => x i / (x i ^ 2 + γ ^ 2))
-        + (2 : ℝ) • rankOneMatrix (fun i => γ / (x i ^ 2 + γ ^ 2)) := by
+      = (2 : ℝ) • rankOneMatrix (fun i => x i / (x i ^ (2 : ℕ) + γ ^ (2 : ℕ)))
+        + (2 : ℝ) • rankOneMatrix (fun i => γ / (x i ^ (2 : ℕ) + γ ^ (2 : ℕ))) := by
     ext i j
     simp only [Matrix.add_apply, Matrix.smul_apply, rankOneMatrix, Matrix.of_apply,
       kernelMatrix_apply, smul_eq_mul]
@@ -86,21 +86,21 @@ theorem posSemidef_imagPacketMatrix {n : ℕ} {γ : ℝ} {x : Fin n → ℝ}
 /-! ## The off-line packet -/
 
 /-- The packet kernel of a real off-line parameter `a`, equation `(10)`. -/
-def realPacketKernel (a x y : ℝ) : ℝ := 2 * (x * y - a ^ 2) / ((x ^ 2 - a ^ 2) * (y ^ 2 - a ^ 2))
+def realPacketKernel (a x y : ℝ) : ℝ := 2 * (x * y - a ^ (2 : ℕ)) / ((x ^ (2 : ℕ) - a ^ (2 : ℕ)) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)))
 
 /-- **Equation (10).**  An off-line packet is a *difference* of two rank-one Gram kernels. -/
-theorem realPacketKernel_eq {a x y : ℝ} (hx : x ^ 2 - a ^ 2 ≠ 0) (hy : y ^ 2 - a ^ 2 ≠ 0) :
+theorem realPacketKernel_eq {a x y : ℝ} (hx : x ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     realPacketKernel a x y
-      = 2 * (x / (x ^ 2 - a ^ 2)) * (y / (y ^ 2 - a ^ 2))
-        - 2 * (a / (x ^ 2 - a ^ 2)) * (a / (y ^ 2 - a ^ 2)) := by
+      = 2 * (x / (x ^ (2 : ℕ) - a ^ (2 : ℕ))) * (y / (y ^ (2 : ℕ) - a ^ (2 : ℕ)))
+        - 2 * (a / (x ^ (2 : ℕ) - a ^ (2 : ℕ))) * (a / (y ^ (2 : ℕ) - a ^ (2 : ℕ))) := by
   unfold realPacketKernel
   field_simp
 
 /-- The two-point minor of an off-line packet. -/
-theorem det_realPacket_two_point {a x y : ℝ} (hx : x ^ 2 - a ^ 2 ≠ 0) (hy : y ^ 2 - a ^ 2 ≠ 0) :
+theorem det_realPacket_two_point {a x y : ℝ} (hx : x ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     realPacketKernel a x x * realPacketKernel a y y
         - realPacketKernel a x y * realPacketKernel a y x
-      = -(4 * a ^ 2 * (x - y) ^ 2) / ((x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2) := by
+      = -(4 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ)) / ((x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   unfold realPacketKernel
   field_simp
   ring
@@ -108,17 +108,17 @@ theorem det_realPacket_two_point {a x y : ℝ} (hx : x ^ 2 - a ^ 2 ≠ 0) (hy : 
 /-- **Equation (10), negative square.**  The two-point minor of a genuine off-line packet is
 strictly negative, so the packet is not positive semidefinite. -/
 theorem det_realPacket_two_point_neg {a x y : ℝ} (ha : a ≠ 0) (hne : x ≠ y)
-    (hx : x ^ 2 - a ^ 2 ≠ 0) (hy : y ^ 2 - a ^ 2 ≠ 0) :
+    (hx : x ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     realPacketKernel a x x * realPacketKernel a y y
         - realPacketKernel a x y * realPacketKernel a y x < 0 := by
   rw [det_realPacket_two_point hx hy]
-  have hnum : 0 < 4 * a ^ 2 * (x - y) ^ 2 := by
-    have h1 : 0 < a ^ 2 := by positivity
-    have h2 : 0 < (x - y) ^ 2 := by
+  have hnum : 0 < 4 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) := by
+    have h1 : 0 < a ^ (2 : ℕ) := by positivity
+    have h2 : 0 < (x - y) ^ (2 : ℕ) := by
       have : x - y ≠ 0 := sub_ne_zero.2 hne
       positivity
     positivity
-  have hden : 0 < (x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2 := by positivity
+  have hden : 0 < (x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
   rw [neg_div, neg_lt_zero]
   positivity
 
@@ -128,7 +128,7 @@ def realPacketMatrix (a x y : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
      realPacketKernel a y x, realPacketKernel a y y]
 
 theorem not_posSemidef_realPacketMatrix {a x y : ℝ} (ha : a ≠ 0) (hne : x ≠ y)
-    (hx : x ^ 2 - a ^ 2 ≠ 0) (hy : y ^ 2 - a ^ 2 ≠ 0) :
+    (hx : x ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     ¬ (realPacketMatrix a x y).PosSemidef := by
   intro hpos
   have hdet := hpos.det_nonneg
@@ -143,7 +143,7 @@ theorem quartet_polarization (f g : ℂ) :
     f * (starRingEnd ℂ) g + g * (starRingEnd ℂ) f
       = ((f + g) / Real.sqrt 2) * (starRingEnd ℂ) ((f + g) / Real.sqrt 2)
         - ((f - g) / Real.sqrt 2) * (starRingEnd ℂ) ((f - g) / Real.sqrt 2) := by
-  have h2 : ((Real.sqrt 2 : ℝ) : ℂ) ^ 2 = 2 := by
+  have h2 : ((Real.sqrt 2 : ℝ) : ℂ) ^ (2 : ℕ) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)]
     norm_num
   have hne : ((Real.sqrt 2 : ℝ) : ℂ) ≠ 0 := by
@@ -159,17 +159,17 @@ theorem quartet_polarization (f g : ℂ) :
 
 /-- **Equation (7).**  The paired zero packet. -/
 theorem qPacket_eq {z lam : ℂ} (h1 : z - lam ≠ 0) (h2 : z + lam ≠ 0) :
-    (z - lam)⁻¹ + (z + lam)⁻¹ = 2 * z / (z ^ 2 - lam ^ 2) := by
-  have hprod : z ^ 2 - lam ^ 2 = (z - lam) * (z + lam) := by ring
+    (z - lam)⁻¹ + (z + lam)⁻¹ = 2 * z / (z ^ (2 : ℕ) - lam ^ (2 : ℕ)) := by
+  have hprod : z ^ (2 : ℕ) - lam ^ (2 : ℕ) = (z - lam) * (z + lam) := by ring
   rw [hprod]
   field_simp
   ring
 
 /-- **Equation (8).**  The packet's contribution to the Euler-ray kernel. -/
-theorem packet_contribution {x y lam : ℝ} (hx : x ^ 2 - lam ^ 2 ≠ 0) (hy : y ^ 2 - lam ^ 2 ≠ 0)
+theorem packet_contribution {x y lam : ℝ} (hx : x ^ (2 : ℕ) - lam ^ (2 : ℕ) ≠ 0) (hy : y ^ (2 : ℕ) - lam ^ (2 : ℕ) ≠ 0)
     (hxy : x + y ≠ 0) :
-    (2 * x / (x ^ 2 - lam ^ 2) + 2 * y / (y ^ 2 - lam ^ 2)) / (x + y)
-      = 2 * (x * y - lam ^ 2) / ((x ^ 2 - lam ^ 2) * (y ^ 2 - lam ^ 2)) := by
+    (2 * x / (x ^ (2 : ℕ) - lam ^ (2 : ℕ)) + 2 * y / (y ^ (2 : ℕ) - lam ^ (2 : ℕ))) / (x + y)
+      = 2 * (x * y - lam ^ (2 : ℕ)) / ((x ^ (2 : ℕ) - lam ^ (2 : ℕ)) * (y ^ (2 : ℕ) - lam ^ (2 : ℕ))) := by
   field_simp
   ring
 

@@ -27,19 +27,19 @@ prime-field elliptic-curve discrete-logarithm setup used by Proos--Zalka
 namespace QuantumAlg
 namespace EllipticCurve
 
-/-- A short-Weierstrass curve `y^2 = x^3 + ax + b` over `ZMod p`, with the
+/-- A short-Weierstrass curve `y^(2 : ℕ) = x^(3 : ℕ) + ax + b` over `ZMod p`, with the
 prime-field and nonsingularity assumptions kept explicit. -/
 structure PrimeFieldShortWeierstrass (p : ℕ) where
   /-- The field characteristic is prime. -/
   prime : p.Prime
   /-- Circuit targets use the short-Weierstrass form away from characteristics 2 and 3. -/
   three_lt : 3 < p
-  /-- The `x` coefficient in `y^2 = x^3 + ax + b`. -/
+  /-- The `x` coefficient in `y^(2 : ℕ) = x^(3 : ℕ) + ax + b`. -/
   a : ZMod p
-  /-- The constant coefficient in `y^2 = x^3 + ax + b`. -/
+  /-- The constant coefficient in `y^(2 : ℕ) = x^(3 : ℕ) + ax + b`. -/
   b : ZMod p
   /-- Nonsingularity for the short-Weierstrass model. -/
-  nonsingular : (4 : ZMod p) * a ^ 3 + (27 : ZMod p) * b ^ 2 ≠ 0
+  nonsingular : (4 : ZMod p) * a ^ (3 : ℕ) + (27 : ZMod p) * b ^ (2 : ℕ) ≠ 0
 
 namespace PrimeFieldShortWeierstrass
 
@@ -56,7 +56,7 @@ def toWeierstrassCurve : WeierstrassCurve (ZMod p) where
 
 /-- The affine equation for finite points on the short-Weierstrass curve. -/
 def AffineEquation (x y : ZMod p) : Prop :=
-  y ^ 2 = x ^ 3 + E.a * x + E.b
+  y ^ (2 : ℕ) = x ^ (3 : ℕ) + E.a * x + E.b
 
 /-- The local affine equation agrees with Mathlib's Weierstrass equation for
 the associated short-form curve. -/

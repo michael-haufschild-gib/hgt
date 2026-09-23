@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.FiniteMatrixSchurQuarticQuadraticTraceEner
 
 The quadratic trace-energy defect has the coefficient-only normal form
 
-`matHSNormSq M - Re (trace (M^2)) = (1/2) * matHSNormSq (M - Mᴴ)`.
+`matHSNormSq M - Re (trace (M^(2 : ℕ))) = (1/2) * matHSNormSq (M - Mᴴ)`.
 
 Thus positive Schur quartic charge is controlled by squared Hilbert--Schmidt distance to the
 Hermitian locus:
@@ -29,8 +29,8 @@ def finiteMatrixSkewAdjointEnergy
   matHSNormSq (M - Mᴴ)
 
 private theorem norm_sub_conj_sq (a b : ℂ) :
-    ‖a - (starRingEnd ℂ) b‖ ^ 2 =
-      ‖a‖ ^ 2 + ‖b‖ ^ 2 - 2 * (a * b).re := by
+    ‖a - (starRingEnd ℂ) b‖ ^ (2 : ℕ) =
+      ‖a‖ ^ (2 : ℕ) + ‖b‖ ^ (2 : ℕ) - 2 * (a * b).re := by
   simp only [← Complex.normSq_eq_norm_sq]
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
     Complex.conj_re, Complex.conj_im, Complex.mul_re]
@@ -42,8 +42,8 @@ theorem finiteMatrixQuadraticTraceEnergyDefect_eq_half_skewAdjointEnergy
     finiteMatrixQuadraticTraceEnergyDefect M =
       (1 / 2 : ℝ) * finiteMatrixSkewAdjointEnergy M := by
   have hswap :
-      (∑ i : Fin n, ∑ j : Fin n, ‖M j i‖ ^ 2) =
-        ∑ i : Fin n, ∑ j : Fin n, ‖M i j‖ ^ 2 := by
+      (∑ i : Fin n, ∑ j : Fin n, ‖M j i‖ ^ (2 : ℕ)) =
+        ∑ i : Fin n, ∑ j : Fin n, ‖M i j‖ ^ (2 : ℕ) := by
     rw [Finset.sum_comm]
   have hmul :
       (∑ i : Fin n, ∑ j : Fin n, 2 * (M i j * M j i).re) =

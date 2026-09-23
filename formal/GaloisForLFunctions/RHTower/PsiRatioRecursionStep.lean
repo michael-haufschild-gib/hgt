@@ -37,12 +37,12 @@ theorem psi_ratio_recursion_step {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
     (hcx₁N : c * x₁ ≤ N)
     (hjunkc : ∀ t : ℕ, (c : ℝ) / (2 * Q) - 1 ≤ (t : ℝ) →
       Real.log N + 1 + 2 * Real.sqrt t * Real.log t ≤ κ * t) :
-    |psiRemainder N| * Real.log N ^ 2
+    |psiRemainder N| * Real.log N ^ (2 : ℕ)
       ≤ (a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * ρ
             / (8 * Real.log ((2 * Q : ℕ) : ℝ)) + 12 * a / x₁)
-          * N * Real.log N ^ 2
+          * N * Real.log N ^ (2 : ℕ)
         + (80 * a + 32 * Real.log c
-            + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466)
+            + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466)
           * N * Real.log N := by
   set ε' : ℝ := δ + ρ * (Real.log (1 / ρ) + 3) + κ with hε'
   set L : ℝ := Real.log ((2 * Q : ℕ) : ℝ) with hL
@@ -92,7 +92,7 @@ theorem psi_ratio_recursion_step {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
   have hlogN0 : 0 ≤ Real.log N := by linarith
   have hlogx₁0 : 0 ≤ Real.log x₁ :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ x₁))
-  have hGx₁0 : 0 ≤ Real.log x₁ ^ 2 + 2 * Real.log x₁ := by positivity
+  have hGx₁0 : 0 ≤ Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁ := by positivity
   have hlogc0 : 0 ≤ Real.log c :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ c))
   -- the two inputs
@@ -101,32 +101,32 @@ theorem psi_ratio_recursion_step {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
     hx₁ρ hx₁Q hε'a hratio hc8 hρc hx₀c hcx₁N hjunkc
   rw [← hε', ← hL, ← hθ] at hsft
   -- fold every sub-`log²N` term into `C·log N`
-  have hfold : (a - θ) * ((Real.log N ^ 2 + 2 * Real.log N)
-        - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+  have hfold : (a - θ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+        - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
       + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
       + 8 * ((2 * Real.log N + 8) / x₁)
       + 8 * Real.log c * (2 * Real.log N + 2)
-      + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
+      + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
       + 840 * Real.log N + 3780
       + 800 * Real.log N + 2900
-      ≤ (a - θ + 12 * a / x₁) * Real.log N ^ 2
+      ≤ (a - θ + 12 * a / x₁) * Real.log N ^ (2 : ℕ)
         + (80 * a + 32 * Real.log c
-            + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466)
+            + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466)
           * Real.log N := by
-    have h1 : (a - θ) * ((Real.log N ^ 2 + 2 * Real.log N)
-          - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
-        ≤ (a - θ) * Real.log N ^ 2 + 2 * a * Real.log N := by
-      have ha1 : (a - θ) * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
-          ≤ (a - θ) * (Real.log N ^ 2 + 2 * Real.log N) := by
+    have h1 : (a - θ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+          - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
+        ≤ (a - θ) * Real.log N ^ (2 : ℕ) + 2 * a * Real.log N := by
+      have ha1 : (a - θ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
+          ≤ (a - θ) * (Real.log N ^ (2 : ℕ) + 2 * Real.log N) := by
         apply mul_le_mul_of_nonneg_left (by linarith) (by linarith)
       have ha2 : (a - θ) * (2 * Real.log N) ≤ a * (2 * Real.log N) := by
         apply mul_le_mul_of_nonneg_right (by linarith) (by linarith)
       nlinarith [ha1, ha2]
     have h2 : (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
-        ≤ 12 * a / x₁ * Real.log N ^ 2 + 78 * a * Real.log N := by
+        ≤ 12 * a / x₁ * Real.log N ^ (2 : ℕ) + 78 * a * Real.log N := by
       have hexp : (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
-          = 12 * a / x₁ * Real.log N ^ 2
+          = 12 * a / x₁ * Real.log N ^ (2 : ℕ)
             + (54 * a * Real.log N + 24 * a) / x₁ := by
         field_simp
         ring
@@ -148,8 +148,8 @@ theorem psi_ratio_recursion_step {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
     have h4 : 8 * Real.log c * (2 * Real.log N + 2)
         ≤ 32 * Real.log c * Real.log N := by
       nlinarith [hlogc0, hlogN1]
-    have h5 : 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
-        ≤ (8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66) * Real.log N := by
+    have h5 : 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
+        ≤ (8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66) * Real.log N := by
       nlinarith [hGx₁0, hlogN1]
     have h6 : 840 * Real.log N + 3780 + 800 * Real.log N + 2900
         ≤ 8320 * Real.log N := by
@@ -157,36 +157,36 @@ theorem psi_ratio_recursion_step {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
     nlinarith [h1, h2, h3, h4, h5, h6]
   -- assemble
   have hmul := mul_le_mul_of_nonneg_left hfold hNR.le
-  calc |psiRemainder N| * Real.log N ^ 2
+  calc |psiRemainder N| * Real.log N ^ (2 : ℕ)
       ≤ (∑ m ∈ Finset.Icc 1 N,
           (vonMangoldt m * Real.log m + (vonMangoldt * vonMangoldt) m)
             * |psiRemainder (N / m)|)
         + 800 * N * Real.log N + 2900 * N := hssi
     _ ≤ (N : ℝ) * ((a - θ)
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)
-        + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
+        + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
         + 840 * Real.log N + 3780)
         + 800 * N * Real.log N + 2900 * N := by linarith [hsft]
     _ = (N : ℝ) * ((a - θ)
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)
-        + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 66
+        + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 66
         + 840 * Real.log N + 3780
         + 800 * Real.log N + 2900) := by ring
-    _ ≤ (N : ℝ) * ((a - θ + 12 * a / x₁) * Real.log N ^ 2
+    _ ≤ (N : ℝ) * ((a - θ + 12 * a / x₁) * Real.log N ^ (2 : ℕ)
         + (80 * a + 32 * Real.log c
-            + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466)
+            + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466)
           * Real.log N) := hmul
-    _ = (a - θ + 12 * a / x₁) * N * Real.log N ^ 2
+    _ = (a - θ + 12 * a / x₁) * N * Real.log N ^ (2 : ℕ)
         + (80 * a + 32 * Real.log c
-            + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466)
+            + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466)
           * N * Real.log N := by ring
 
 end RHTower

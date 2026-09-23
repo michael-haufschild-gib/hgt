@@ -38,10 +38,10 @@ def xiMassHyperbolicCosineKernel
 
 theorem sqrt_sq_sinh_add_sq_eq_mul_cosh
     {a t : ℝ} (ha : 0 < a) :
-    Real.sqrt ((a * Real.sinh t) ^ 2 + a ^ 2) = a * Real.cosh t := by
+    Real.sqrt ((a * Real.sinh t) ^ (2 : ℕ) + a ^ (2 : ℕ)) = a * Real.cosh t := by
   have hcosh : 0 < Real.cosh t := Real.cosh_pos t
   have hrhs : 0 ≤ a * Real.cosh t := (mul_pos ha hcosh).le
-  have hsq : (a * Real.sinh t) ^ 2 + a ^ 2 = (a * Real.cosh t) ^ 2 := by
+  have hsq : (a * Real.sinh t) ^ (2 : ℕ) + a ^ (2 : ℕ) = (a * Real.cosh t) ^ (2 : ℕ) := by
     nlinarith [Real.cosh_sq_sub_sinh_sq t]
   rw [hsq, Real.sqrt_sq hrhs]
 
@@ -103,7 +103,7 @@ private theorem integrable_xiMassRealFourierKernel
     Integrable (fun x : ℝ =>
       xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I) (x : ℂ) *
         Complex.exp (-(I * (h : ℂ) * (x : ℂ)))) := by
-  apply (integrable_exp_neg_mul_abs hsigma).mono'
+  apply (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hsigma).mono'
   · have hcont : Continuous (fun x : ℝ =>
         xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I) (x : ℂ) *
           Complex.exp (-(I * (h : ℂ) * (x : ℂ)))) := by

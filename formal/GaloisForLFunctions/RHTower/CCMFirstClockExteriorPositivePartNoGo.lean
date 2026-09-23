@@ -26,9 +26,9 @@ namespace RHTower
 /-- Square of the unique positive eigenvalue of the Hermitian rank-two exterior matrix. -/
 def sourceExteriorSpectralVariance
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ) : ℝ :=
-  (∑ i ∈ packet, amplitude i ^ 2) *
-      (∑ i ∈ packet, (amplitude i * height i) ^ 2) -
-    (∑ i ∈ packet, amplitude i * (amplitude i * height i)) ^ 2
+  (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) *
+      (∑ i ∈ packet, (amplitude i * height i) ^ (2 : ℕ)) -
+    (∑ i ∈ packet, amplitude i * (amplitude i * height i)) ^ (2 : ℕ)
 
 theorem sourceExteriorSpectralVariance_nonneg
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ) :
@@ -45,8 +45,8 @@ theorem sourceExteriorSpectralVariance_nonneg
 subtype. -/
 def sourceExteriorFintypeSpectralVariance
     {ι : Type*} [Fintype ι] (amplitude height : ι → ℝ) : ℝ :=
-  (∑ i, amplitude i ^ 2) * (∑ i, (amplitude i * height i) ^ 2) -
-    (∑ i, amplitude i * (amplitude i * height i)) ^ 2
+  (∑ i, amplitude i ^ (2 : ℕ)) * (∑ i, (amplitude i * height i) ^ (2 : ℕ)) -
+    (∑ i, amplitude i * (amplitude i * height i)) ^ (2 : ℕ)
 
 theorem sourceExteriorFintypeSpectralVariance_nonneg
     {ι : Type*} [Fintype ι] (amplitude height : ι → ℝ) :
@@ -69,7 +69,7 @@ theorem sourceExteriorAlternatingOuterMatrix_cubic
     sourceExteriorAlternatingOuterMatrix u v *
         sourceExteriorAlternatingOuterMatrix u v *
         sourceExteriorAlternatingOuterMatrix u v =
-      -((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2) •
+      -((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ)) •
         sourceExteriorAlternatingOuterMatrix u v := by
   unfold sourceExteriorAlternatingOuterMatrix
   simp only [sub_mul, mul_sub, Matrix.vecMulVec_mul_vecMulVec]
@@ -136,7 +136,7 @@ theorem sourceExteriorHermitianMatrix_cubic
     (Complex.I • sourceExteriorAlternatingOuterMatrix u v) *
           (Complex.I • sourceExteriorAlternatingOuterMatrix u v) *
           (Complex.I • sourceExteriorAlternatingOuterMatrix u v) =
-        (Complex.I ^ 3) •
+        (Complex.I ^ (3 : ℕ)) •
           (sourceExteriorAlternatingOuterMatrix u v *
             sourceExteriorAlternatingOuterMatrix u v *
             sourceExteriorAlternatingOuterMatrix u v) := by
@@ -149,8 +149,8 @@ theorem sourceExteriorHermitianMatrix_cubic
       simp only [Matrix.smul_apply, smul_eq_mul]
       unfold sourceExteriorFintypeSpectralVariance dotProduct u v
       push_cast
-      have hI3 : Complex.I ^ 3 = -Complex.I := by
-        rw [show Complex.I ^ 3 = Complex.I ^ 2 * Complex.I by ring,
+      have hI3 : Complex.I ^ (3 : ℕ) = -Complex.I := by
+        rw [show Complex.I ^ (3 : ℕ) = Complex.I ^ (2 : ℕ) * Complex.I by ring,
           Complex.I_sq]
         ring
       rw [hI3]
@@ -172,11 +172,11 @@ theorem norm_sourceExteriorHermitianMatrix_le_sqrt_variance
     simpa [K] using
       sourceExteriorHermitianMatrix_cubic amplitude height
   have hfour :
-      K ^ 4 =
+      K ^ (4 : ℕ) =
         (sourceExteriorFintypeSpectralVariance amplitude height : ℂ) •
           (K * K) := by
     calc
-      K ^ 4 = (K * K * K) * K := by noncomm_ring
+      K ^ (4 : ℕ) = (K * K * K) * K := by noncomm_ring
       _ = ((sourceExteriorFintypeSpectralVariance amplitude height : ℂ) • K) *
           K := by rw [hcubic]
       _ = (sourceExteriorFintypeSpectralVariance amplitude height : ℂ) •
@@ -185,12 +185,12 @@ theorem norm_sourceExteriorHermitianMatrix_le_sqrt_variance
   have hvariance :
       0 ≤ sourceExteriorFintypeSpectralVariance amplitude height :=
     sourceExteriorFintypeSpectralVariance_nonneg amplitude height
-  have hpow : ‖K ^ 4‖ = ‖K‖ ^ 4 := by
+  have hpow : ‖K ^ (4 : ℕ)‖ = ‖K‖ ^ (4 : ℕ) := by
     simpa using hK.norm_pow_two_pow 2
   rw [hpow, norm_smul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg hvariance, hK.norm_mul_self] at hnorm
   have hsq :
-      ‖K‖ ^ 2 ≤ sourceExteriorFintypeSpectralVariance amplitude height := by
+      ‖K‖ ^ (2 : ℕ) ≤ sourceExteriorFintypeSpectralVariance amplitude height := by
     nlinarith [sq_nonneg ‖K‖]
   have hsqrt := Real.sqrt_le_sqrt hsq
   simpa [Real.sqrt_sq (norm_nonneg K)] using hsqrt
@@ -231,7 +231,7 @@ theorem norm_sourceExteriorJordanPositivePartEnergy_le
     (amplitude height : ι → ℝ) (z : EuclideanSpace ℂ ι) :
     ‖sourceExteriorJordanPositivePartEnergy amplitude height z‖ ≤
       Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-        ‖z‖ ^ 2 := by
+        ‖z‖ ^ (2 : ℕ) := by
   have hmul :=
     Matrix.l2_opNorm_mulVec
       (sourceExteriorJordanPositivePart amplitude height) z
@@ -256,7 +256,7 @@ theorem norm_sourceExteriorJordanPositivePartEnergy_le
           ‖z‖) := by
       gcongr
     _ = Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-        ‖z‖ ^ 2 := by ring
+        ‖z‖ ^ (2 : ℕ) := by ring
 
 theorem norm_sourceExteriorJordanPositivePartEnergy_le_card_mul
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -265,26 +265,26 @@ theorem norm_sourceExteriorJordanPositivePartEnergy_le_card_mul
     ‖sourceExteriorJordanPositivePartEnergy amplitude height z‖ ≤
       (Fintype.card ι : ℝ) *
         Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-        B ^ 2 := by
-  have hzsq : ‖z‖ ^ 2 ≤ (Fintype.card ι : ℝ) * B ^ 2 := by
+        B ^ (2 : ℕ) := by
+  have hzsq : ‖z‖ ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) * B ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     calc
-      (∑ i, ‖z i‖ ^ 2) ≤ ∑ _i : ι, B ^ 2 := by
+      (∑ i, ‖z i‖ ^ (2 : ℕ)) ≤ ∑ _i : ι, B ^ (2 : ℕ) := by
         apply Finset.sum_le_sum
         intro i hi
         exact (sq_le_sq₀ (norm_nonneg _) hB).2 (hz i)
-      _ = (Fintype.card ι : ℝ) * B ^ 2 := by simp
+      _ = (Fintype.card ι : ℝ) * B ^ (2 : ℕ) := by simp
   calc
     ‖sourceExteriorJordanPositivePartEnergy amplitude height z‖ ≤
         Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-          ‖z‖ ^ 2 :=
+          ‖z‖ ^ (2 : ℕ) :=
       norm_sourceExteriorJordanPositivePartEnergy_le amplitude height z
     _ ≤ Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-        ((Fintype.card ι : ℝ) * B ^ 2) :=
+        ((Fintype.card ι : ℝ) * B ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hzsq (Real.sqrt_nonneg _)
     _ = (Fintype.card ι : ℝ) *
         Real.sqrt (sourceExteriorFintypeSpectralVariance amplitude height) *
-        B ^ 2 := by ring
+        B ^ (2 : ℕ) := by ring
 
 theorem sourceExteriorFintypeSpectralVariance_subtype_eq
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ) :
@@ -294,9 +294,9 @@ theorem sourceExteriorFintypeSpectralVariance_subtype_eq
   have hatt : packet.attach = Finset.univ := by
     ext i
     simp
-  have hsA := Finset.sum_attach packet (fun i => amplitude i ^ 2)
+  have hsA := Finset.sum_attach packet (fun i => amplitude i ^ (2 : ℕ))
   have hsC := Finset.sum_attach packet
-    (fun i => (amplitude i * height i) ^ 2)
+    (fun i => (amplitude i * height i) ^ (2 : ℕ))
   have hsB := Finset.sum_attach packet
     (fun i => amplitude i * (amplitude i * height i))
   rw [hatt] at hsA hsC hsB
@@ -308,9 +308,9 @@ theorem sourceExteriorSpectralVariance_sub_const
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ) (c : ℝ) :
     sourceExteriorSpectralVariance packet amplitude (fun i => height i - c) =
       sourceExteriorSpectralVariance packet amplitude height := by
-  let A := ∑ i ∈ packet, amplitude i ^ 2
+  let A := ∑ i ∈ packet, amplitude i ^ (2 : ℕ)
   let B := ∑ i ∈ packet, amplitude i * (amplitude i * height i)
-  let C := ∑ i ∈ packet, (amplitude i * height i) ^ 2
+  let C := ∑ i ∈ packet, (amplitude i * height i) ^ (2 : ℕ)
   have hB :
       (∑ i ∈ packet,
         amplitude i * (amplitude i * (height i - c))) = B - c * A := by
@@ -319,38 +319,38 @@ theorem sourceExteriorSpectralVariance_sub_const
       (∑ i ∈ packet, amplitude i * (amplitude i * (height i - c))) =
           ∑ i ∈ packet,
             (amplitude i * (amplitude i * height i) -
-              c * amplitude i ^ 2) := by
+              c * amplitude i ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i hi
             ring
       _ = (∑ i ∈ packet, amplitude i * (amplitude i * height i)) -
-          ∑ i ∈ packet, c * amplitude i ^ 2 := by
+          ∑ i ∈ packet, c * amplitude i ^ (2 : ℕ) := by
             rw [Finset.sum_sub_distrib]
       _ = (∑ i ∈ packet, amplitude i * (amplitude i * height i)) -
-          c * ∑ i ∈ packet, amplitude i ^ 2 := by
+          c * ∑ i ∈ packet, amplitude i ^ (2 : ℕ) := by
             rw [Finset.mul_sum]
   have hC :
-      (∑ i ∈ packet, (amplitude i * (height i - c)) ^ 2) =
-        C - 2 * c * B + c ^ 2 * A := by
+      (∑ i ∈ packet, (amplitude i * (height i - c)) ^ (2 : ℕ)) =
+        C - 2 * c * B + c ^ (2 : ℕ) * A := by
     dsimp only [A, B, C]
     calc
-      (∑ i ∈ packet, (amplitude i * (height i - c)) ^ 2) =
+      (∑ i ∈ packet, (amplitude i * (height i - c)) ^ (2 : ℕ)) =
           ∑ i ∈ packet,
-            ((amplitude i * height i) ^ 2 -
+            ((amplitude i * height i) ^ (2 : ℕ) -
               2 * c * (amplitude i * (amplitude i * height i)) +
-              c ^ 2 * amplitude i ^ 2) := by
+              c ^ (2 : ℕ) * amplitude i ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i hi
             ring
-      _ = (∑ i ∈ packet, (amplitude i * height i) ^ 2) -
+      _ = (∑ i ∈ packet, (amplitude i * height i) ^ (2 : ℕ)) -
             ∑ i ∈ packet,
               2 * c * (amplitude i * (amplitude i * height i)) +
-          ∑ i ∈ packet, c ^ 2 * amplitude i ^ 2 := by
+          ∑ i ∈ packet, c ^ (2 : ℕ) * amplitude i ^ (2 : ℕ) := by
             rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-      _ = (∑ i ∈ packet, (amplitude i * height i) ^ 2) -
+      _ = (∑ i ∈ packet, (amplitude i * height i) ^ (2 : ℕ)) -
             2 * c *
               ∑ i ∈ packet, amplitude i * (amplitude i * height i) +
-          c ^ 2 * ∑ i ∈ packet, amplitude i ^ 2 := by
+          c ^ (2 : ℕ) * ∑ i ∈ packet, amplitude i ^ (2 : ℕ) := by
             rw [Finset.mul_sum, Finset.mul_sum]
   unfold sourceExteriorSpectralVariance
   rw [hB, hC]
@@ -362,7 +362,7 @@ theorem sourceExteriorSpectralVariance_le_of_diameter
     {D : ℝ} (hD : 0 ≤ D)
     (hdiameter : ∀ i ∈ packet, ∀ j ∈ packet, |height i - height j| ≤ D) :
     sourceExteriorSpectralVariance packet amplitude height ≤
-      D ^ 2 * (∑ i ∈ packet, amplitude i ^ 2) ^ 2 := by
+      D ^ (2 : ℕ) * (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) ^ (2 : ℕ) := by
   by_cases hpacket : packet = ∅
   · simp [hpacket, sourceExteriorSpectralVariance]
   · obtain ⟨anchor, hanchor⟩ := Finset.nonempty_iff_ne_empty.mpr hpacket
@@ -372,41 +372,41 @@ theorem sourceExteriorSpectralVariance_le_of_diameter
           sourceExteriorSpectralVariance packet amplitude height :=
       sourceExteriorSpectralVariance_sub_const packet amplitude height (height anchor)
     have hcenterSq :
-        (∑ i ∈ packet, (amplitude i * centered i) ^ 2) ≤
-          D ^ 2 * ∑ i ∈ packet, amplitude i ^ 2 := by
+        (∑ i ∈ packet, (amplitude i * centered i) ^ (2 : ℕ)) ≤
+          D ^ (2 : ℕ) * ∑ i ∈ packet, amplitude i ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       apply Finset.sum_le_sum
       intro i hi
-      have habsSq : |centered i| ^ 2 ≤ D ^ 2 :=
+      have habsSq : |centered i| ^ (2 : ℕ) ≤ D ^ (2 : ℕ) :=
         (sq_le_sq₀ (abs_nonneg _) hD).2
           (by simpa [centered] using hdiameter i hi anchor hanchor)
-      have hsq : centered i ^ 2 ≤ D ^ 2 := by
+      have hsq : centered i ^ (2 : ℕ) ≤ D ^ (2 : ℕ) := by
         simpa [sq_abs] using habsSq
       calc
-        (amplitude i * centered i) ^ 2 =
-            amplitude i ^ 2 * centered i ^ 2 := by ring
-        _ ≤ amplitude i ^ 2 * D ^ 2 :=
+        (amplitude i * centered i) ^ (2 : ℕ) =
+            amplitude i ^ (2 : ℕ) * centered i ^ (2 : ℕ) := by ring
+        _ ≤ amplitude i ^ (2 : ℕ) * D ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
-        _ = D ^ 2 * amplitude i ^ 2 := by ring
+        _ = D ^ (2 : ℕ) * amplitude i ^ (2 : ℕ) := by ring
     have hA :
-        0 ≤ ∑ i ∈ packet, amplitude i ^ 2 :=
+        0 ≤ ∑ i ∈ packet, amplitude i ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i hi => sq_nonneg _
     have hcenterUpper :
         sourceExteriorSpectralVariance packet amplitude centered ≤
-          (∑ i ∈ packet, amplitude i ^ 2) *
-            (∑ i ∈ packet, (amplitude i * centered i) ^ 2) := by
+          (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) *
+            (∑ i ∈ packet, (amplitude i * centered i) ^ (2 : ℕ)) := by
       unfold sourceExteriorSpectralVariance
       nlinarith [sq_nonneg
         (∑ i ∈ packet, amplitude i * (amplitude i * centered i))]
     rw [← hcenter]
     calc
       sourceExteriorSpectralVariance packet amplitude centered ≤
-          (∑ i ∈ packet, amplitude i ^ 2) *
-            (∑ i ∈ packet, (amplitude i * centered i) ^ 2) := hcenterUpper
-      _ ≤ (∑ i ∈ packet, amplitude i ^ 2) *
-            (D ^ 2 * ∑ i ∈ packet, amplitude i ^ 2) :=
+          (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) *
+            (∑ i ∈ packet, (amplitude i * centered i) ^ (2 : ℕ)) := hcenterUpper
+      _ ≤ (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) *
+            (D ^ (2 : ℕ) * ∑ i ∈ packet, amplitude i ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hcenterSq hA
-      _ = D ^ 2 * (∑ i ∈ packet, amplitude i ^ 2) ^ 2 := by ring
+      _ = D ^ (2 : ℕ) * (∑ i ∈ packet, amplitude i ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
 
 /-- Natural maximal bounded-coordinate envelope of the Jordan positive part. -/
 def sourceExteriorPositivePartEnvelope
@@ -439,7 +439,7 @@ theorem norm_sourceExteriorPacketJordanPositivePartEnergy_le
     (hB : 0 ≤ B) (hz : ∀ i, ‖z i‖ ≤ B) :
     ‖sourceExteriorPacketJordanPositivePartEnergy
         packet amplitude height z‖ ≤
-      sourceExteriorPositivePartEnvelope packet amplitude height * B ^ 2 := by
+      sourceExteriorPositivePartEnvelope packet amplitude height * B ^ (2 : ℕ) := by
   classical
   have hbound :=
     norm_sourceExteriorJordanPositivePartEnergy_le_card_mul
@@ -454,16 +454,16 @@ theorem sourceExteriorPositivePartEnvelope_le_of_diameter_one
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ)
     (hdiameter : ∀ i ∈ packet, ∀ j ∈ packet, |height i - height j| ≤ 1) :
     sourceExteriorPositivePartEnvelope packet amplitude height ≤
-      (packet.card : ℝ) * ∑ i ∈ packet, amplitude i ^ 2 := by
+      (packet.card : ℝ) * ∑ i ∈ packet, amplitude i ^ (2 : ℕ) := by
   have hvar :=
     sourceExteriorSpectralVariance_le_of_diameter packet amplitude height
       (D := 1) (by norm_num) hdiameter
   have hsumNonneg :
-      0 ≤ ∑ i ∈ packet, amplitude i ^ 2 :=
+      0 ≤ ∑ i ∈ packet, amplitude i ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i hi => sq_nonneg _
   have hsqrt :
       Real.sqrt (sourceExteriorSpectralVariance packet amplitude height) ≤
-        ∑ i ∈ packet, amplitude i ^ 2 := by
+        ∑ i ∈ packet, amplitude i ^ (2 : ℕ) := by
     rw [Real.sqrt_le_iff]
     constructor
     · exact hsumNonneg
@@ -474,7 +474,7 @@ theorem sourceExteriorPositivePartEnvelope_le_of_diameter_one
 /-- Actual first-clock block envelope for the spectral positive part. -/
 def ccmFirstClockEulerDepthZeroPositivePartEnvelope (m : ℕ) : ℝ :=
   sourceExteriorPositivePartEnvelope
-    (suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     ccmFirstClockEulerDepthZeroExteriorAmplitude
     ccmFirstClockEulerDepthZeroExteriorHeight
 
@@ -482,93 +482,93 @@ def ccmFirstClockEulerDepthZeroPositivePartEnvelope (m : ℕ) : ℝ :=
 first-clock prime block. -/
 def ccmFirstClockEulerDepthZeroJordanPositivePartEnergy
     (m : ℕ)
-    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ 4))) : ℂ :=
+    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))) : ℂ :=
   sourceExteriorPacketJordanPositivePartEnergy
-    (suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     ccmFirstClockEulerDepthZeroExteriorAmplitude
     ccmFirstClockEulerDepthZeroExteriorHeight z
 
 theorem ccmFirstClockEulerDepthZeroJordanPositivePartEnergy_nonneg
     (m : ℕ)
-    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ 4))) :
+    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))) :
     0 ≤ ccmFirstClockEulerDepthZeroJordanPositivePartEnergy m z :=
   sourceExteriorPacketJordanPositivePartEnergy_nonneg
-    (suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     ccmFirstClockEulerDepthZeroExteriorAmplitude
     ccmFirstClockEulerDepthZeroExteriorHeight z
 
 theorem ccmFirstClockEulerDepthZeroPositivePartEnvelope_le
     {m : ℕ} (hm : 25 ≤ m) :
     ccmFirstClockEulerDepthZeroPositivePartEnvelope m ≤
-      (25 / 2 : ℝ) * Real.log 4 ^ 2 *
-        ((m ^ 4 : ℕ) : ℝ) / Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
-  have hmOne : 1 ≤ m ^ 4 := one_le_pow₀ (by omega : 1 ≤ m)
+      (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) / Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
+  have hmOne : 1 ≤ m ^ (4 : ℕ) := one_le_pow₀ (by omega : 1 ≤ m)
   have hbase :=
     sourceExteriorPositivePartEnvelope_le_of_diameter_one
-      (suzukiMangoldtFivePrimeBlock (m ^ 4))
+      (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
       ccmFirstClockEulerDepthZeroExteriorAmplitude
       ccmFirstClockEulerDepthZeroExteriorHeight
       (fun p hp q hq =>
         ccmFirstClockEulerDepthZeroExteriorHeight_diameter_le_one hm hp hq)
-  have hlogTwoN : 0 < Real.log (2 * (((m ^ 4 : ℕ) : ℝ))) := by
+  have hlogTwoN : 0 < Real.log (2 * (((m ^ (4 : ℕ) : ℕ) : ℝ))) := by
     apply Real.log_pos
-    exact_mod_cast (show 1 < 2 * m ^ 4 by omega)
+    exact_mod_cast (show 1 < 2 * m ^ (4 : ℕ) by omega)
   have hcardMass :=
     card_mul_log_two_mul_le_suzukiMangoldtFivePrimeBlock_logMass hmOne
   have hmassUpper :=
-    suzukiMangoldtFivePrimeBlock_logMass_upper (n := m ^ 4)
+    suzukiMangoldtFivePrimeBlock_logMass_upper (n := m ^ (4 : ℕ))
   have hcard :
-      ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) ≤
-        5 * ((m ^ 4 : ℕ) : ℝ) * Real.log 4 /
-          Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
+      ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) ≤
+        5 * ((m ^ (4 : ℕ) : ℕ) : ℝ) * Real.log 4 /
+          Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
     apply (le_div_iff₀ hlogTwoN).2
     exact hcardMass.trans hmassUpper
   have hsq :=
     sum_sq_ccmFirstClockEulerDepthZeroExteriorAmplitude_le hmOne
   have hsumNonneg :
-      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 :=
+      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) :=
     Finset.sum_nonneg fun p hp => sq_nonneg _
   calc
     ccmFirstClockEulerDepthZeroPositivePartEnvelope m
-        ≤ ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) *
-          ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
-            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 := hbase
-    _ ≤ (5 * ((m ^ 4 : ℕ) : ℝ) * Real.log 4 /
-          Real.log (2 * ((m ^ 4 : ℕ) : ℝ))) *
+        ≤ ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) *
+          ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
+            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) := hbase
+    _ ≤ (5 * ((m ^ (4 : ℕ) : ℕ) : ℝ) * Real.log 4 /
+          Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ))) *
         ((5 / 2 : ℝ) * Real.log 4) :=
       mul_le_mul hcard hsq hsumNonneg (by positivity)
-    _ = (25 / 2 : ℝ) * Real.log 4 ^ 2 *
-        ((m ^ 4 : ℕ) : ℝ) / Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by ring
+    _ = (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) / Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by ring
 
 /-- The full Jordan-positive-part envelope of the actual rank-two exterior matrix is still
 strictly smaller than the certified first-clock bad-mass square. -/
 theorem ccmFirstClockEulerDepthZeroPositivePartEnvelope_lt_badMass_sq
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ)) :
     ccmFirstClockEulerDepthZeroPositivePartEnvelope m <
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   have hmPos : (0 : ℝ) < m := (Real.exp_pos 7201).trans hmLarge
   have hm25 : 25 ≤ m := by
     have hexp := Real.add_one_le_exp (7201 : ℝ)
     exact_mod_cast (show (25 : ℝ) ≤ m by linarith)
-  have hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) := by
+  have hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) := by
     have h20 : Real.exp 20 < Real.exp 7201 :=
       Real.exp_lt_exp.mpr (by norm_num)
-    have hmLePow : m ≤ m ^ 4 := by
+    have hmLePow : m ≤ m ^ (4 : ℕ) := by
       have hmNatPos : 0 < m := by exact_mod_cast hmPos
       simpa using
         (Nat.pow_le_pow_right hmNatPos (show 1 ≤ 4 by omega) :
-          m ^ 1 ≤ m ^ 4)
+          m ^ (1 : ℕ) ≤ m ^ (4 : ℕ))
     exact (h20.trans hmLarge).le.trans (by exact_mod_cast hmLePow)
   have hlogm : 7201 < Real.log (m : ℝ) := by
     have h := Real.log_lt_log (Real.exp_pos 7201) hmLarge
     rwa [Real.log_exp] at h
   have hlogDen :
-      28800 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
+      28800 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
     have hmNe : (m : ℝ) ≠ 0 := ne_of_gt hmPos
-    rw [show ((m ^ 4 : ℕ) : ℝ) = (m : ℝ) ^ 4 by norm_num,
+    rw [show ((m ^ (4 : ℕ) : ℕ) : ℝ) = (m : ℝ) ^ (4 : ℕ) by norm_num,
       Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (pow_ne_zero 4 hmNe),
       Real.log_pow]
     norm_num
@@ -580,22 +580,22 @@ theorem ccmFirstClockEulerDepthZeroPositivePartEnvelope_lt_badMass_sq
     nlinarith [Real.log_two_lt_d9]
   have hlogFour0 : 0 ≤ Real.log 4 :=
     (Real.log_pos (by norm_num)).le
-  have hmPowPos : (0 : ℝ) < ((m ^ 4 : ℕ) : ℝ) := by positivity
-  have hdenPos : 0 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by linarith
+  have hmPowPos : (0 : ℝ) < ((m ^ (4 : ℕ) : ℕ) : ℝ) := by positivity
+  have hdenPos : 0 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by linarith
   have hcoarse :
-      (25 / 2 : ℝ) * Real.log 4 ^ 2 *
-          ((m ^ 4 : ℕ) : ℝ) / Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) <
-        ((m ^ 4 : ℕ) : ℝ) / 576 := by
-    have hlogSq : Real.log 4 ^ 2 < 4 := by nlinarith
+      (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
+          ((m ^ (4 : ℕ) : ℕ) : ℝ) / Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) <
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) / 576 := by
+    have hlogSq : Real.log 4 ^ (2 : ℕ) < 4 := by nlinarith
     apply (div_lt_iff₀ hdenPos).2
-    have hdenScaled : 50 * 576 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
+    have hdenScaled : 50 * 576 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
       norm_num
       simpa only [Nat.cast_pow] using hlogDen
     nlinarith
   have hbadMass :=
     ccmFirstClockJuliaSixthPower_block_badMass_lower hm25 hmCheb
   have hbadNonneg :
-      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
           (ccmFirstClockJuliaSixthPowerAperture m) p := by
     apply Finset.sum_nonneg
@@ -604,12 +604,12 @@ theorem ccmFirstClockEulerDepthZeroPositivePartEnvelope_lt_badMass_sq
     rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime]
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm25 hp).le
   have hbadSq :
-      ((m ^ 4 : ℕ) : ℝ) / 576 ≤
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ((m ^ (4 : ℕ) : ℕ) : ℝ) / 576 ≤
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
     have hmassSq :=
-      (sq_le_sq₀ (by positivity : 0 ≤ (m : ℝ) ^ 2 / 24) hbadNonneg).2 hbadMass
+      (sq_le_sq₀ (by positivity : 0 ≤ (m : ℝ) ^ (2 : ℕ) / 24) hbadNonneg).2 hbadMass
     push_cast at hmassSq ⊢
     nlinarith
   exact henvelope.trans_lt (hcoarse.trans_le hbadSq)
@@ -618,15 +618,15 @@ theorem ccmFirstClockEulerDepthZeroPositivePartEnvelope_lt_badMass_sq
 the literal first-clock exterior matrix has energy strictly below the certified bad-mass square. -/
 theorem norm_ccmFirstClockEulerDepthZeroJordanPositivePartEnergy_lt_badMass_sq
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ))
-    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ 4)))
+    (z : EuclideanSpace ℂ ↥(suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))))
     (hz : ∀ i, ‖z i‖ ≤ 1) :
     ‖ccmFirstClockEulerDepthZeroJordanPositivePartEnergy m z‖ <
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   have hoperator :=
     norm_sourceExteriorPacketJordanPositivePartEnergy_le
-      (suzukiMangoldtFivePrimeBlock (m ^ 4))
+      (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
       ccmFirstClockEulerDepthZeroExteriorAmplitude
       ccmFirstClockEulerDepthZeroExteriorHeight z (B := 1)
       (by norm_num) hz
@@ -635,25 +635,25 @@ theorem norm_ccmFirstClockEulerDepthZeroJordanPositivePartEnergy_lt_badMass_sq
   change
     ‖ccmFirstClockEulerDepthZeroJordanPositivePartEnergy m z‖ ≤
       sourceExteriorPositivePartEnvelope
-        (suzukiMangoldtFivePrimeBlock (m ^ 4))
+        (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
         ccmFirstClockEulerDepthZeroExteriorAmplitude
-        ccmFirstClockEulerDepthZeroExteriorHeight * 1 ^ 2
+        ccmFirstClockEulerDepthZeroExteriorHeight * 1 ^ (2 : ℕ)
     at hoperator
   have hoperator' :
       ‖ccmFirstClockEulerDepthZeroJordanPositivePartEnergy m z‖ ≤
         sourceExteriorPositivePartEnvelope
-          (suzukiMangoldtFivePrimeBlock (m ^ 4))
+          (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
           ccmFirstClockEulerDepthZeroExteriorAmplitude
           ccmFirstClockEulerDepthZeroExteriorHeight := by
     simpa using hoperator
   change
     sourceExteriorPositivePartEnvelope
-        (suzukiMangoldtFivePrimeBlock (m ^ 4))
+        (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
         ccmFirstClockEulerDepthZeroExteriorAmplitude
         ccmFirstClockEulerDepthZeroExteriorHeight <
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ)
     at henvelope
   exact lt_of_le_of_lt hoperator' (by exact henvelope)
 

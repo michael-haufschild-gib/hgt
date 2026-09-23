@@ -107,7 +107,7 @@ private theorem jointAngularTest_slice (F : Target → ℂ) (hF : ContDiff ℝ �
 /-- Full reduced weak test operator in time, radius, horizontal position and log-height. -/
 def weakWaveTest (F : Target → ℂ) (p : Target) : ℂ :=
   (Real.exp (-p.2.im):ℂ)*eventWave (fun r => F (r,p.2)) p.1-
-    angularTestAction (fun z => F (p.1,z)) p.2/(Real.cosh p.1.2:ℂ)^2
+    angularTestAction (fun z => F (p.1,z)) p.2/(Real.cosh p.1.2:ℂ)^(2 : ℕ)
 
 private theorem joint_regular (F : Target → ℂ) (hF : ContDiff ℝ ∞ F)
     (hc : HasCompactSupport F) : ContDiff ℝ ∞ (jointWave F) ∧ HasCompactSupport (jointWave F) ∧
@@ -139,7 +139,7 @@ theorem weakWaveTest_regular (F : Target → ℂ) (hF : ContDiff ℝ ∞ F)
     (hc : HasCompactSupport F) : Continuous (weakWaveTest F) ∧ HasCompactSupport (weakWaveTest F) := by
   obtain ⟨hw,hcw,ht,hct⟩ := joint_regular F hF hc
   have he : weakWaveTest F = fun p =>
-      (Real.exp (-p.2.im):ℂ)*jointWave F p-jointAngularTest F p/(Real.cosh p.1.2:ℂ)^2 := by
+      (Real.exp (-p.2.im):ℂ)*jointWave F p-jointAngularTest F p/(Real.cosh p.1.2:ℂ)^(2 : ℕ) := by
     funext p
     rw [jointWave_slice F hF,jointAngularTest_slice F hF]
     rfl
@@ -147,7 +147,7 @@ theorem weakWaveTest_regular (F : Target → ℂ) (hF : ContDiff ℝ ∞ F)
   constructor
   · exact ((by fun_prop : Continuous (fun p : Target => (Real.exp (-p.2.im):ℂ))).mul hw.continuous).sub
       (ht.continuous.div (by fun_prop) (fun p => pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne')))
-  · have hd : HasCompactSupport (fun p => jointAngularTest F p/(Real.cosh p.1.2:ℂ)^2) := by
+  · have hd : HasCompactSupport (fun p => jointAngularTest F p/(Real.cosh p.1.2:ℂ)^(2 : ℕ)) := by
       simp only [div_eq_mul_inv]
       exact hct.mul_right
     exact hcw.mul_left.sub hd
@@ -195,7 +195,7 @@ private theorem laplace_circle_joint_continuous (q : XiZeroCopy) :
         ((Real.continuous_exp.comp (Complex.continuous_im.comp continuous_fst.snd)).mul ho)
     · exact (Real.continuous_exp.comp (Complex.continuous_im.comp continuous_fst.snd)).mul hh
   have he : (fun r : (ℝ × ℂ) × ℝ => scalarLaplacian (fullSquarePotential q) (Z r)) =
-      fun r => (Z r 1:ℂ)^2 *
+      fun r => (Z r 1:ℂ)^(2 : ℕ) *
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (Z r)+
           coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (Z r)) :=
     funext (fun r => scalarLaplacian_eq _ _ (hp r))
@@ -381,19 +381,19 @@ private theorem angularAt_pair (q : XiZeroCopy) (s y : ℝ) (p : ℝ × ℝ)
 private theorem local_angular_transfer (q : XiZeroCopy) (s y : ℝ) (F : Target → ℂ)
     (hF : ContDiff ℝ ∞ F) (hc : HasCompactSupport F) (p : ℝ × ℝ) :
     (∫ z : ℂ, kernelAt q s y (p,z)*
-      (jointAngularTest F (p,z)/(Real.cosh p.2:ℂ)^2)) =
+      (jointAngularTest F (p,z)/(Real.cosh p.2:ℂ)^(2 : ℕ))) =
     ∫ z : ℂ, angularAt q s y (p,z)*
-      ((Real.exp (-z.im):ℂ)*F (p,z)/(Real.cosh p.2:ℂ)^2) := by
+      ((Real.exp (-z.im):ℂ)*F (p,z)/(Real.cosh p.2:ℂ)^(2 : ℕ)) := by
   let phi : ℂ → ℂ := fun z => F (p,z)
   have hp : ContDiff ℝ ∞ phi := hF.comp (contDiff_const.prodMk contDiff_id)
   have hcp : HasCompactSupport phi := angular_slice_compact hc p
   have h := dirichlet_angular_transposition q phi hp hcp (s-p.1) p.2 y
   have ha := angularAt_pair q s y p phi hp.continuous hcp
-  have he (z : ℂ) : kernelAt q s y (p,z)*(jointAngularTest F (p,z)/(Real.cosh p.2:ℂ)^2) =
+  have he (z : ℂ) : kernelAt q s y (p,z)*(jointAngularTest F (p,z)/(Real.cosh p.2:ℂ)^(2 : ℕ)) =
       (angularTestAction phi z*nativeDirichletCausalKernel q (s-p.1) p.2 y z.re z.im)/
-        (Real.cosh p.2:ℂ)^2 := by
+        (Real.cosh p.2:ℂ)^(2 : ℕ) := by
     rw [jointAngularTest_slice F hF]
-    change kernelAt q s y (p,z)*(angularTestAction phi z/(Real.cosh p.2:ℂ)^2) = _
+    change kernelAt q s y (p,z)*(angularTestAction phi z/(Real.cosh p.2:ℂ)^(2 : ℕ)) = _
     unfold kernelAt
     ring
   simp_rw [he]
@@ -413,8 +413,8 @@ theorem kernel_joint_transposition (q : XiZeroCopy) (s y : ℝ) (hy : y < 0)
       ∫ z : ℂ, (Real.exp (-z.im):ℂ)*fullSquarePotential q ![z.re,Real.exp z.im]*F ((s,y),z) := by
   obtain ⟨hw,hcw,ht,hct⟩ := joint_regular F hF hc
   let W := fun p : Target => (Real.exp (-p.2.im):ℂ)*jointWave F p
-  let A := fun p : Target => jointAngularTest F p/(Real.cosh p.1.2:ℂ)^2
-  let B := fun p : Target => (Real.exp (-p.2.im):ℂ)*F p/(Real.cosh p.1.2:ℂ)^2
+  let A := fun p : Target => jointAngularTest F p/(Real.cosh p.1.2:ℂ)^(2 : ℕ)
+  let B := fun p : Target => (Real.exp (-p.2.im):ℂ)*F p/(Real.cosh p.1.2:ℂ)^(2 : ℕ)
   have hW : Continuous W := (by fun_prop : Continuous (fun p : Target => (Real.exp (-p.2.im):ℂ))).mul hw.continuous
   have hcW : HasCompactSupport W := hcw.mul_left
   have hA : Continuous A := ht.continuous.div (by fun_prop)

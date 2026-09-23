@@ -47,7 +47,7 @@ theorem suzukiAffineSewnIntervalPart_finiteCommonChannels_factorization
 
 /-! ## Sewn causal Weil--Robin identity -/
 
-/-- Robin boundary current left after `z^2` cancels the screw primitive. -/
+/-- Robin boundary current left after `z^(2 : ℕ)` cancels the screw primitive. -/
 def suzukiCausalWeilRobinBoundaryCurrent
     (a : ℝ) (U Uprime z : ℂ) : ℂ :=
   Complex.exp (Complex.I * z * (a : ℂ)) *
@@ -67,7 +67,7 @@ theorem z_sq_mul_suzukiAffineSewnIntervalPart_weilRobinReconstruction
     (WAlpha WBeta UAlpha UprimeAlpha EAlpha
       UBeta UprimeBeta EBeta : ℂ → ℂ)
     (z : ℂ) (hz : z ≠ 0) :
-    z ^ 2 *
+    z ^ (2 : ℕ) *
         suzukiAffineSewnIntervalPart alpha beta gamma WAlpha WBeta
           (fun u => suzukiCausalWeilRobinReconstruction a
             (UAlpha u) (UprimeAlpha u) (EAlpha u) u)

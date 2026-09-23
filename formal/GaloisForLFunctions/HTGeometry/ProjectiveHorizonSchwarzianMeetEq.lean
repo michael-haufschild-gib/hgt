@@ -50,11 +50,11 @@ theorem mem_schwarzianDifferentialField_of_currents {f : FreeScalarJetField C}
   rw [hF, map_zero, sum_three_eq, freeJetFZero_freeCoordinate', freeJetFZero_freeCoordinate',
     freeJetFZero_freeCoordinate', squareJet_zero, squareJet_one, squareJet_two] at hFeq
   simp only [map_neg, map_mul, map_add, map_pow, map_ofNat] at hHeq hFeq
-  have hcc : (schwarzianBasisEquiv C).symm (freeCoordinate C ℕ 1) ^ 2 *
+  have hcc : (schwarzianBasisEquiv C).symm (freeCoordinate C ℕ 1) ^ (2 : ℕ) *
       freeCoordinateDerivation C ℕ 2 ((schwarzianBasisEquiv C).symm f) = 0 := by
     linear_combination (-((schwarzianBasisEquiv C).symm (freeCoordinate C ℕ 0)) / 2) * hHeq +
       ((1 : FreeCoordinateRationalField C ℕ) / 2) * hFeq +
-      ((schwarzianBasisEquiv C).symm (freeCoordinate C ℕ 0) ^ 2 / 2) * ha
+      ((schwarzianBasisEquiv C).symm (freeCoordinate C ℕ 0) ^ (2 : ℕ) / 2) * ha
   have hc0 : freeCoordinateDerivation C ℕ 2 ((schwarzianBasisEquiv C).symm f) = 0 := by
     rcases mul_eq_zero.1 hcc with h | h
     · exact absurd (pow_eq_zero_iff (n := 2) (by omega) |>.1 h) hX1

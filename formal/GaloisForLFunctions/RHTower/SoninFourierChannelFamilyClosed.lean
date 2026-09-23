@@ -74,7 +74,7 @@ theorem not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily
     rw [add_zero] at h2
     exact h2.congr fun r => by ring
   have hBsub : Tendsto (fun r : ℝ => Real.sqrt
-      ((|Real.log a₀| + Real.log (max a₀ (2 * r₀ * Q * r))) ^ 2 * W ^ 2 +
+      ((|Real.log a₀| + Real.log (max a₀ (2 * r₀ * Q * r))) ^ (2 : ℕ) * W ^ (2 : ℕ) +
         8 * Kc / (((2 * Nd : ℝ) - 1) * (1 - (r₀ ^ (2 * Nd - 2))⁻¹)) /
           c₀ ^ (2 * Nd - 2)) / r) atTop (𝓝 0) :=
     GaloisForLFunctions.HTGeometry.tendsto_sqrt_sq_mul_add_div_atTop hF0 hFsub hW hCconst0
@@ -114,18 +114,18 @@ theorem not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily
     linarith
   have hLnn : (0 : ℝ) ≤ max |Real.log a₀| |Real.log (max a₀ (r₀ * (2 * w i)))| :=
     le_trans (abs_nonneg _) (le_max_left _ _)
-  have hsq₁ : max |Real.log a₀| |Real.log (max a₀ (r₀ * (2 * w i)))| ^ 2 ≤
+  have hsq₁ : max |Real.log a₀| |Real.log (max a₀ (r₀ * (2 * w i)))| ^ (2 : ℕ) ≤
       (|Real.log a₀| +
-        Real.log (max a₀ (2 * r₀ * Q * soninShellCutScale b c (Nstart + i) κ))) ^ 2 := by
+        Real.log (max a₀ (2 * r₀ * Q * soninShellCutScale b c (Nstart + i) κ))) ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self hLnn hLle
-  have hsq₂ : ‖soninScaledPacketEven (m i) (δ i) (2 * Real.pi * w i) (hδ i)‖ ^ 2 ≤ W ^ 2 := by
+  have hsq₂ : ‖soninScaledPacketEven (m i) (δ i) (2 * Real.pi * w i) (hδ i)‖ ^ (2 : ℕ) ≤ W ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self (norm_nonneg _) (hnorm i)
-  have hpartA : max |Real.log a₀| |Real.log (max a₀ (r₀ * (2 * w i)))| ^ 2 *
-      ‖soninScaledPacketEven (m i) (δ i) (2 * Real.pi * w i) (hδ i)‖ ^ 2 ≤
+  have hpartA : max |Real.log a₀| |Real.log (max a₀ (r₀ * (2 * w i)))| ^ (2 : ℕ) *
+      ‖soninScaledPacketEven (m i) (δ i) (2 * Real.pi * w i) (hδ i)‖ ^ (2 : ℕ) ≤
       (|Real.log a₀| +
-        Real.log (max a₀ (2 * r₀ * Q * soninShellCutScale b c (Nstart + i) κ))) ^ 2 * W ^ 2 :=
+        Real.log (max a₀ (2 * r₀ * Q * soninShellCutScale b c (Nstart + i) κ))) ^ (2 : ℕ) * W ^ (2 : ℕ) :=
     mul_le_mul hsq₁ hsq₂ (sq_nonneg _) (sq_nonneg _)
   -- the constant slot
   have hc₀p : (0 : ℝ) < c₀ ^ (2 * Nd - 2) := pow_pos hc₀ (2 * Nd - 2)

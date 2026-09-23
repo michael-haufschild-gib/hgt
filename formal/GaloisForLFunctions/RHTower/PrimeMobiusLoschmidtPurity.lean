@@ -16,7 +16,7 @@ their time-one unitary phases.  The existing finite exponential-pencil mean-squa
 identifies the long-time Loschmidt echo with the collision probability, or equivalently the purity
 of the dephased squarefree Bernoulli state:
 
-`Cesaro_n |L_S(I n)|^2 -> sum_T P_sigma(T)^2 > 0`.
+`Cesaro_n |L_S(I n)|^(2 : ℕ) -> sum_T P_sigma(T)^(2 : ℕ) > 0`.
 
 The physics identity is standard finite-spectrum quantum dynamics; see G. Styliaris, N. Anand,
 L. Campos Venuti, and P. Zanardi, *Quantum coherence and the localization transition*, Phys. Rev. B
@@ -170,8 +170,8 @@ lemma finitePrimeSignedSquarefreeTerm_imaginaryNat
 /-- Squared magnitude of a Loschmidt coefficient is the square of its Bernoulli probability. -/
 lemma norm_finitePrimeSquarefreeLoschmidtCoefficient_sq
     (S : Finset Nat.Primes) (sigma : ℝ) (T : Finset Nat.Primes) :
-    ‖finitePrimeSquarefreeLoschmidtCoefficient S sigma T‖ ^ 2 =
-      finitePrimeSquarefreeProbability S sigma T ^ 2 := by
+    ‖finitePrimeSquarefreeLoschmidtCoefficient S sigma T‖ ^ (2 : ℕ) =
+      finitePrimeSquarefreeProbability S sigma T ^ (2 : ℕ) := by
   have hP := finitePrimeSquarefreeProbability_nonneg S sigma T
   rw [finitePrimeSquarefreeLoschmidtCoefficient, norm_mul, norm_pow,
     norm_neg, norm_one, one_pow, one_mul, Complex.norm_real,
@@ -199,31 +199,31 @@ theorem finitePrimeSignedSchurTransfer_imaginaryNat_eq_exponentialPencil
 /-- Purity of the dephased squarefree Bernoulli state underlying the signed prime transfer. -/
 def finitePrimeSquarefreeLoschmidtPurity
     (S : Finset Nat.Primes) (sigma : ℝ) : ℝ :=
-  ∑ T : ↥S.powerset, ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 4
+  ∑ T : ↥S.powerset, ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (4 : ℕ)
 
 /-- The dephased-state purity is the squarefree Bernoulli collision probability. -/
 theorem finitePrimeSquarefreeLoschmidtPurity_eq_probability_sq
     (S : Finset Nat.Primes) (sigma : ℝ) :
     finitePrimeSquarefreeLoschmidtPurity S sigma =
-      ∑ T ∈ S.powerset, finitePrimeSquarefreeProbability S sigma T ^ 2 := by
+      ∑ T ∈ S.powerset, finitePrimeSquarefreeProbability S sigma T ^ (2 : ℕ) := by
   classical
   rw [finitePrimeSquarefreeLoschmidtPurity, Finset.univ_eq_attach]
   calc
     (∑ T ∈ S.powerset.attach,
-        ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 4) =
+        ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (4 : ℕ)) =
         ∑ T ∈ S.powerset.attach,
-          finitePrimeSquarefreeProbability S sigma T.1 ^ 2 := by
+          finitePrimeSquarefreeProbability S sigma T.1 ^ (2 : ℕ) := by
             apply Finset.sum_congr rfl
             intro T hT
             have h := norm_finitePrimeSquarefreeAmplitude_sq S sigma T
             calc
-              ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 4 =
-                  (‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 2) ^ 2 := by ring
-              _ = finitePrimeSquarefreeProbability S sigma T.1 ^ 2 := by rw [h]
+              ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (4 : ℕ) =
+                  (‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+              _ = finitePrimeSquarefreeProbability S sigma T.1 ^ (2 : ℕ) := by rw [h]
     _ = ∑ T ∈ S.powerset,
-        finitePrimeSquarefreeProbability S sigma T ^ 2 := by
+        finitePrimeSquarefreeProbability S sigma T ^ (2 : ℕ) := by
           exact Finset.sum_attach S.powerset
-            (fun T => finitePrimeSquarefreeProbability S sigma T ^ 2)
+            (fun T => finitePrimeSquarefreeProbability S sigma T ^ (2 : ℕ))
 
 /-- Every finite squarefree Loschmidt state has strictly positive purity. -/
 theorem finitePrimeSquarefreeLoschmidtPurity_pos
@@ -244,28 +244,28 @@ theorem finitePrimeSquarefreeLoschmidtPurity_eq_prod
     (S : Finset Nat.Primes) (sigma : ℝ) :
     finitePrimeSquarefreeLoschmidtPurity S sigma =
       ∏ p ∈ S,
-        (1 + primeSchurWeight sigma p ^ 2) /
-          (1 + primeSchurWeight sigma p) ^ 2 := by
+        (1 + primeSchurWeight sigma p ^ (2 : ℕ)) /
+          (1 + primeSchurWeight sigma p) ^ (2 : ℕ) := by
   classical
   rw [finitePrimeSquarefreeLoschmidtPurity_eq_probability_sq]
   let D : ℝ := ∏ p ∈ S, (1 + primeSchurWeight sigma p)
   calc
-    (∑ T ∈ S.powerset, finitePrimeSquarefreeProbability S sigma T ^ 2) =
+    (∑ T ∈ S.powerset, finitePrimeSquarefreeProbability S sigma T ^ (2 : ℕ)) =
         (∑ T ∈ S.powerset,
-          ∏ p ∈ T, primeSchurWeight sigma p ^ 2) / D ^ 2 := by
+          ∏ p ∈ T, primeSchurWeight sigma p ^ (2 : ℕ)) / D ^ (2 : ℕ) := by
             rw [Finset.sum_div]
             apply Finset.sum_congr rfl
             intro T hT
             rw [finitePrimeSquarefreeProbability, div_pow, Finset.prod_pow]
-    _ = (∏ p ∈ S, (1 + primeSchurWeight sigma p ^ 2)) / D ^ 2 := by
+    _ = (∏ p ∈ S, (1 + primeSchurWeight sigma p ^ (2 : ℕ))) / D ^ (2 : ℕ) := by
           congr 1
           simpa [GaloisForLFunctions.RHProofLab.finiteLocalEulerProduct,
             GaloisForLFunctions.RHProofLab.squarefreeMonomial] using
               (GaloisForLFunctions.RHProofLab.finiteLocalEulerProduct_subsetExpansion
-                S (fun p : Nat.Primes => primeSchurWeight sigma p ^ 2)).symm
+                S (fun p : Nat.Primes => primeSchurWeight sigma p ^ (2 : ℕ))).symm
     _ = ∏ p ∈ S,
-        (1 + primeSchurWeight sigma p ^ 2) /
-          (1 + primeSchurWeight sigma p) ^ 2 := by
+        (1 + primeSchurWeight sigma p ^ (2 : ℕ)) /
+          (1 + primeSchurWeight sigma p) ^ (2 : ℕ) := by
           rw [Finset.prod_div_distrib, Finset.prod_pow]
 
 /-- The Cesaro mean Loschmidt echo of the finite signed prime transfer converges exactly to the
@@ -275,7 +275,7 @@ theorem tendsto_finitePrimeSignedSchurTransfer_imaginaryNat_cesaro_norm_sq
     Tendsto
       (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
         ‖finitePrimeSignedSchurTransfer S sigma
-          (((n : ℕ) : ℂ) * Complex.I)‖ ^ 2)
+          (((n : ℕ) : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       atTop (nhds (finitePrimeSquarefreeLoschmidtPurity S sigma)) := by
   classical
   have h := tendsto_finiteExponentialPencil_cesaro_norm_sq S.powerset

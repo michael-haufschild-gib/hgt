@@ -35,7 +35,7 @@ private theorem intDegree_orderShiftCoeff {c : F} (hc : c ≠ 0) : (orderShiftCo
   rfl
 
 /-- **The Bessel order recurrence has no rational compatible derivation.** -/
-theorem besselOrder_no_rational_delta_structure {c : F} (hc : c ≠ 0) (P Q : RatFunc F)
+theorem besselOrder_no_rational_delta_structure_besselOrderFieldObstruction {c : F} (hc : c ≠ 0) (P Q : RatFunc F)
     (hA : ratShift (ratShift P) + ratShift (orderShiftCoeff c) * ratShift (ratShift Q)
         = P + orderShiftCoeff c * ratShift Q)
     (hB : ratShift (ratShift Q) + orderShiftCoeff c * ratShift (ratShift P)
@@ -155,7 +155,7 @@ theorem orderBessel_no_rational_delta_structure {c : F} (hc : c ≠ 0) :
         = Q + algebraMap F (RatFunc F) c + orderShiftCoeff c * ratShift P
           + orderShiftCoeff c * orderShiftCoeff c * ratShift Q) := by
   rintro ⟨P, Q, hA, hB⟩
-  exact besselOrder_no_rational_delta_structure hc P Q hA hB
+  exact besselOrder_no_rational_delta_structure_besselOrderFieldObstruction hc P Q hA hB
 
 
 /-- The companion matrix of the Bessel order recurrence. -/
@@ -163,22 +163,22 @@ private def besselOrderCompanion (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
   !![0, 1; 1, orderShiftCoeff c]
 
 /-- Its entrywise derivative. -/
-def besselOrderCompanionDeriv (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
+def besselOrderCompanionDeriv_besselOrderFieldObstruction (c : F) : Matrix (Fin 2) (Fin 2) (RatFunc F) :=
   !![0, 0; 0, algebraMap F (RatFunc F) c]
 
 /-- **The Bessel order module carries no rational connection.** -/
-theorem besselOrder_no_matrix_delta_structure {c : F} (hc : c ≠ 0)
+theorem besselOrder_no_matrix_delta_structure_besselOrderFieldObstruction {c : F} (hc : c ≠ 0)
     (B : Matrix (Fin 2) (Fin 2) (RatFunc F))
     (hB : B.map ratShift * besselOrderCompanion c - besselOrderCompanion c * B
-      = besselOrderCompanionDeriv c) : False := by
+      = besselOrderCompanionDeriv_besselOrderFieldObstruction c) : False := by
   have hentry : ∀ i j : Fin 2,
       (B.map ratShift * besselOrderCompanion c - besselOrderCompanion c * B) i j
-        = besselOrderCompanionDeriv c i j := fun i j => by rw [hB]
+        = besselOrderCompanionDeriv_besselOrderFieldObstruction c i j := fun i j => by rw [hB]
   have h00 := hentry 0 0
   have h01 := hentry 0 1
   have h10 := hentry 1 0
   have h11 := hentry 1 1
-  simp [besselOrderCompanion, besselOrderCompanionDeriv, Matrix.sub_apply,
+  simp [besselOrderCompanion, besselOrderCompanionDeriv_besselOrderFieldObstruction, Matrix.sub_apply,
     Matrix.mul_apply, Fin.sum_univ_two, Matrix.map_apply, Matrix.vecMul, dotProduct]
     at h00 h01 h10 h11
   have hr : ratShift (B 0 1) = B 1 0 := by linear_combination h00
@@ -191,7 +191,7 @@ theorem besselOrder_no_matrix_delta_structure {c : F} (hc : c ≠ 0)
     rw [hCeq]; linear_combination h11
   rw [← hr, ← ht] at h3 h4
   simp only [map_add, map_mul] at h3 h4
-  exact besselOrder_no_rational_delta_structure hc (B 0 0) (B 0 1)
+  exact besselOrder_no_rational_delta_structure_besselOrderFieldObstruction hc (B 0 0) (B 0 1)
     (by linear_combination h3) (by linear_combination h4)
 
 

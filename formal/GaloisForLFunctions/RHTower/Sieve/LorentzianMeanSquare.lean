@@ -37,15 +37,15 @@ theorem logNeighbourCount_mono (s : Finset ℕ) {δ₁ δ₂ : ℝ} (h : δ₁ �
 
 /-- The squared modulus of the polynomial is continuous. -/
 theorem continuous_normSq_logPoly (a : ℕ → ℂ) (s : Finset ℕ) :
-    Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+    Continuous fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) :=
   ((continuous_logPoly a s).norm).pow 2
 
 /-- **The mean square over a symmetric block, against the unit-scale count.**  The mean value theorem
 at the matching window length `δ = 1/(2πT)`, with the count relaxed to window length `1/(2π)`. -/
 theorem integral_Icc_normSq_logPoly_le_unit_count (a : ℕ → ℂ) (s : Finset ℕ) {T : ℝ} (hT : 1 ≤ T) :
-    (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2)
+    (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2) * T
-          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 := by
+          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hT0 : (0 : ℝ) < T := lt_of_lt_of_le zero_lt_one hT
   have hδ : 0 < 1 / (2 * Real.pi * T) := by positivity
@@ -71,30 +71,30 @@ theorem integral_Icc_normSq_logPoly_le_unit_count (a : ℕ → ℂ) (s : Finset 
 
 /-- The Lorentzian-weighted mean square is integrable: the polynomial is bounded. -/
 theorem integrable_lorentz_normSq_logPoly (a : ℕ → ℂ) (s : Finset ℕ) :
-    Integrable fun w : ℝ => ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2) := by
-  have hM : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 ≤ (∑ n ∈ s, ‖a n‖) ^ 2 := fun w =>
+    Integrable fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)) := by
+  have hM : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) := fun w =>
     pow_le_pow_left₀ (norm_nonneg _) (norm_logPoly_le a s w) 2
-  refine Integrable.mono' (integrable_inv_one_add_sq.const_mul ((∑ n ∈ s, ‖a n‖) ^ 2)) ?_ ?_
+  refine Integrable.mono' (integrable_inv_one_add_sq.const_mul ((∑ n ∈ s, ‖a n‖) ^ (2 : ℕ))) ?_ ?_
   · refine Continuous.aestronglyMeasurable ?_
     exact (continuous_normSq_logPoly a s).div (by fun_prop) fun w => by positivity
   · filter_upwards with w
-    have hden : (0 : ℝ) < 1 + w ^ 2 := by positivity
+    have hden : (0 : ℝ) < 1 + w ^ (2 : ℕ) := by positivity
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), div_le_iff₀ hden]
-    have hcalc : (∑ n ∈ s, ‖a n‖) ^ 2 * (1 + w ^ 2)⁻¹ * (1 + w ^ 2)
-        = (∑ n ∈ s, ‖a n‖) ^ 2 := by
+    have hcalc : (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) * (1 + w ^ (2 : ℕ))⁻¹ * (1 + w ^ (2 : ℕ))
+        = (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) := by
       field_simp
     rw [hcalc]
     exact hM w
 
 /-- Each dyadic annulus of frequencies is paid geometrically. -/
 theorem integral_dyadicAnnulus_lorentz_le (a : ℕ → ℂ) (s : Finset ℕ) (k : ℕ) :
-    (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ 5 * Real.pi
-          * (∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2)
+          * (∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ))
           * (1 / 2) ^ k := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hint := integrable_lorentz_normSq_logPoly a s
-  have hcontI : IntegrableOn (fun w : ℝ => ‖logPoly a s w‖ ^ 2)
+  have hcontI : IntegrableOn (fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ))
       (Set.Icc (-(2 ^ (k + 1) : ℝ)) (2 ^ (k + 1) : ℝ)) :=
     (continuous_normSq_logPoly a s).continuousOn.integrableOn_compact isCompact_Icc
   have hsub : dyadicAnnulus 1 k ⊆ Set.Icc (-(2 ^ (k + 1) : ℝ)) (2 ^ (k + 1) : ℝ) := by
@@ -107,36 +107,36 @@ theorem integral_dyadicAnnulus_lorentz_le (a : ℕ → ℂ) (s : Finset ℕ) (k 
   have h4pos : (0 : ℝ) < (4 : ℝ) ^ k := by positivity
   -- the weight is at most `4^{-k}` on the annulus
   have hweight : ∀ w ∈ dyadicAnnulus 1 k,
-      ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2)
-        ≤ ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ 2 := by
+      ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ))
+        ≤ ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ) := by
     intro w hw
     have hlow : (2 : ℝ) ^ k * 1 ≤ |w| := hw.1
     rw [mul_one] at hlow
     have h0 : (0 : ℝ) ≤ (2 : ℝ) ^ k := by positivity
-    have hsq : ((2 : ℝ) ^ k) ^ 2 ≤ w ^ 2 := by
-      calc ((2 : ℝ) ^ k) ^ 2 ≤ |w| ^ 2 := by nlinarith [hlow, h0, abs_nonneg w]
-        _ = w ^ 2 := sq_abs w
-    have hpow : ((2 : ℝ) ^ k) ^ 2 = (4 : ℝ) ^ k := by
+    have hsq : ((2 : ℝ) ^ k) ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := by
+      calc ((2 : ℝ) ^ k) ^ (2 : ℕ) ≤ |w| ^ (2 : ℕ) := by nlinarith [hlow, h0, abs_nonneg w]
+        _ = w ^ (2 : ℕ) := sq_abs w
+    have hpow : ((2 : ℝ) ^ k) ^ (2 : ℕ) = (4 : ℝ) ^ k := by
       rw [← pow_mul, show k * 2 = 2 * k by ring, pow_mul]
       norm_num
-    have h4 : ((4 : ℝ) ^ k) ≤ 1 + w ^ 2 := by nlinarith [hsq, hpow]
-    have hnum : (0 : ℝ) ≤ ‖logPoly a s w‖ ^ 2 := by positivity
-    have hden : (0 : ℝ) < 1 + w ^ 2 := by positivity
+    have h4 : ((4 : ℝ) ^ k) ≤ 1 + w ^ (2 : ℕ) := by nlinarith [hsq, hpow]
+    have hnum : (0 : ℝ) ≤ ‖logPoly a s w‖ ^ (2 : ℕ) := by positivity
+    have hden : (0 : ℝ) < 1 + w ^ (2 : ℕ) := by positivity
     rw [div_le_iff₀ hden]
-    have hstep : ‖logPoly a s w‖ ^ 2
-        = (1 / 4 ^ k) * ‖logPoly a s w‖ ^ 2 * (4 ^ k) := by
+    have hstep : ‖logPoly a s w‖ ^ (2 : ℕ)
+        = (1 / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ) * (4 ^ k) := by
       field_simp
-    calc ‖logPoly a s w‖ ^ 2
-        = (1 / 4 ^ k) * ‖logPoly a s w‖ ^ 2 * (4 ^ k) := hstep
-      _ ≤ (1 / 4 ^ k) * ‖logPoly a s w‖ ^ 2 * (1 + w ^ 2) :=
+    calc ‖logPoly a s w‖ ^ (2 : ℕ)
+        = (1 / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ) * (4 ^ k) := hstep
+      _ ≤ (1 / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ) * (1 + w ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left h4 (by positivity)
-  have hstep1 : (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
-      ≤ ∫ w in dyadicAnnulus 1 k, ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ 2 := by
+  have hstep1 : (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
+      ≤ ∫ w in dyadicAnnulus 1 k, ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ) := by
     refine setIntegral_mono_on hint.integrableOn ?_ (measurableSet_dyadicAnnulus 1 k) hweight
     exact ((hcontI.mono_set hsub).const_mul _)
-  have hstep2 : (∫ w in dyadicAnnulus 1 k, ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ 2)
+  have hstep2 : (∫ w in dyadicAnnulus 1 k, ((1 : ℝ) / 4 ^ k) * ‖logPoly a s w‖ ^ (2 : ℕ))
       ≤ ((1 : ℝ) / 4 ^ k) * ∫ w in Set.Icc (-(2 ^ (k + 1) : ℝ)) (2 ^ (k + 1) : ℝ),
-          ‖logPoly a s w‖ ^ 2 := by
+          ‖logPoly a s w‖ ^ (2 : ℕ) := by
     rw [MeasureTheory.integral_const_mul]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
     refine setIntegral_mono_set hcontI ?_ ?_
@@ -145,11 +145,11 @@ theorem integral_dyadicAnnulus_lorentz_le (a : ℕ → ℂ) (s : Finset ℕ) (k 
     · exact LE.le.eventuallyLE hsub
   have hTge : (1 : ℝ) ≤ (2 : ℝ) ^ (k + 1) := one_le_pow₀ one_le_two
   have hblock := integral_Icc_normSq_logPoly_le_unit_count a s hTge
-  have hCnn : (0 : ℝ) ≤ ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 :=
+  have hCnn : (0 : ℝ) ≤ ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun n _ => by positivity
-  have hchain : (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+  have hchain : (∫ w in dyadicAnnulus 1 k, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ ((1 : ℝ) / 4 ^ k) * ((5 * Real.pi / 2) * (2 : ℝ) ^ (k + 1)
-          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2) := by
+          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ)) := by
     refine le_trans (le_trans hstep1 hstep2) ?_
     exact mul_le_mul_of_nonneg_left hblock (by positivity)
   refine hchain.trans (le_of_eq ?_)
@@ -161,36 +161,36 @@ theorem integral_dyadicAnnulus_lorentz_le (a : ℕ → ℂ) (s : Finset ℕ) (k 
     have h2 : ((2 : ℝ) ^ k) ≠ 0 := by positivity
     field_simp
   calc ((1 : ℝ) / 4 ^ k) * ((5 * Real.pi / 2) * (2 : ℝ) ^ (k + 1)
-        * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2)
+        * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ))
       = (((1 : ℝ) / 4 ^ k) * ((5 * Real.pi / 2) * (2 : ℝ) ^ (k + 1)))
-          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 := by ring
+          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) := by ring
     _ = 5 * Real.pi
-          * (∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2)
+          * (∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ))
           * (1 / 2) ^ k := by rw [hval]; ring
 
 /-- **The Lorentzian-weighted mean value theorem.**  No parameters: the whole frequency line is paid by
 the unit-scale neighbour count of the support. -/
 theorem integral_lorentz_normSq_logPoly_le_count (a : ℕ → ℂ) (s : Finset ℕ) :
-    (∫ w : ℝ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    (∫ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ (25 * Real.pi / 2)
-          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 := by
+          * ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  set C : ℝ := ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ 2 with hCdef
+  set C : ℝ := ∑ n ∈ s, (logNeighbourCount s (1 / (2 * Real.pi)) n : ℝ) * ‖a n‖ ^ (2 : ℕ) with hCdef
   have hC0 : 0 ≤ C := by
     rw [hCdef]
     exact Finset.sum_nonneg fun n _ => by positivity
   have hint := integrable_lorentz_normSq_logPoly a s
-  have hfnn : ∀ w : ℝ, 0 ≤ ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2) := fun w => by positivity
+  have hfnn : ∀ w : ℝ, 0 ≤ ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)) := fun w => by positivity
   -- split at the unit block
   have hmeas : MeasurableSet {w : ℝ | (1 : ℝ) ≤ |w|} :=
     measurableSet_le measurable_const continuous_abs.measurable
   have hsplit := integral_add_compl hmeas hint
   -- the far region, dyadically
-  have hfar : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+  have hfar : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ 10 * Real.pi * C := by
     have hunion : {w : ℝ | (1 : ℝ) ≤ |w|} = ⋃ k : ℕ, dyadicAnnulus 1 k :=
       (iUnion_dyadicAnnulus one_pos).symm
-    have hsum := hasSum_integral_iUnion (f := fun w : ℝ => ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    have hsum := hasSum_integral_iUnion (f := fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       (measurableSet_dyadicAnnulus 1) (pairwise_disjoint_dyadicAnnulus one_pos)
       (by rw [← hunion]; exact hint.integrableOn)
     have hgeo : HasSum (fun k : ℕ => 5 * Real.pi * C * (1 / 2 : ℝ) ^ k) (10 * Real.pi * C) := by
@@ -207,7 +207,7 @@ theorem integral_lorentz_normSq_logPoly_le_count (a : ℕ → ℂ) (s : Finset �
       (fun k => integral_dyadicAnnulus_lorentz_le a s k)) ?_
     exact le_of_eq hgeo.tsum_eq
   -- the central block
-  have hcentral : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}ᶜ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+  have hcentral : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}ᶜ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
       ≤ (5 * Real.pi / 2) * C := by
     have hsub : {w : ℝ | (1 : ℝ) ≤ |w|}ᶜ ⊆ Set.Icc (-1 : ℝ) 1 := by
       intro w hw
@@ -215,21 +215,21 @@ theorem integral_lorentz_normSq_logPoly_le_count (a : ℕ → ℂ) (s : Finset �
       rw [Set.mem_Icc]
       have habs := abs_lt.mp hw
       exact ⟨habs.1.le, habs.2.le⟩
-    have hIcc : IntegrableOn (fun w : ℝ => ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
+    have hIcc : IntegrableOn (fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
         (Set.Icc (-1 : ℝ) 1) := hint.integrableOn
-    have hmono : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}ᶜ, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
-        ≤ ∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2) := by
+    have hmono : (∫ w in {w : ℝ | (1 : ℝ) ≤ |w|}ᶜ, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
+        ≤ ∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)) := by
       refine setIntegral_mono_set hIcc ?_ (LE.le.eventuallyLE hsub)
       filter_upwards with w
       exact hfnn w
-    have hdrop : (∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ 2 / (1 + w ^ 2))
-        ≤ ∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ 2 := by
+    have hdrop : (∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ (2 : ℕ) / (1 + w ^ (2 : ℕ)))
+        ≤ ∫ w in Set.Icc (-1 : ℝ) 1, ‖logPoly a s w‖ ^ (2 : ℕ) := by
       refine setIntegral_mono_on hIcc
         ((continuous_normSq_logPoly a s).continuousOn.integrableOn_compact isCompact_Icc)
         measurableSet_Icc fun w _ => ?_
-      have hden : (1 : ℝ) ≤ 1 + w ^ 2 := by nlinarith [sq_nonneg w]
-      have hnum : (0 : ℝ) ≤ ‖logPoly a s w‖ ^ 2 := by positivity
-      rw [div_le_iff₀ (by positivity : (0 : ℝ) < 1 + w ^ 2)]
+      have hden : (1 : ℝ) ≤ 1 + w ^ (2 : ℕ) := by nlinarith [sq_nonneg w]
+      have hnum : (0 : ℝ) ≤ ‖logPoly a s w‖ ^ (2 : ℕ) := by positivity
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < 1 + w ^ (2 : ℕ))]
       nlinarith [hnum, hden]
     have hb := integral_Icc_normSq_logPoly_le_unit_count a s (le_refl (1 : ℝ))
     rw [mul_one] at hb

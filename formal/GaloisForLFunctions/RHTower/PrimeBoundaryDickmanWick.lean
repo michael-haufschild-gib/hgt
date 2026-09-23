@@ -116,7 +116,7 @@ theorem primeClockCutoffEnergy_half_eq_cosh (N : ℕ) (r : ℝ) :
   let x : ℝ := r * Real.log p / 2
   have hx : r * Real.log p = 2 * x := by dsimp [x]; ring
   have hxhalf : r / 2 * Real.log p = x := by dsimp [x]; ring
-  have htrig : 4 * Real.sinh x ^ 2 = 2 * (Real.cosh (2 * x) - 1) := by
+  have htrig : 4 * Real.sinh x ^ (2 : ℕ) = 2 * (Real.cosh (2 * x) - 1) := by
     rw [Real.cosh_two_mul]
     nlinarith [Real.cosh_sq_sub_sinh_sq x]
   rw [hxhalf, hx, htrig]

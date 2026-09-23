@@ -47,8 +47,8 @@ theorem azimuthalAxis_frenetExpansion (α β : ℝ) :
   · simp [azimuthalAxis, frameLinearCombination, tangentCoordinates,
       normalCoordinates, binormalCoordinates]
     calc
-      1 = Real.sin β ^ 2 *
-            (Real.sin α ^ 2 + Real.cos α ^ 2) + Real.cos β ^ 2 := by
+      1 = Real.sin β ^ (2 : ℕ) *
+            (Real.sin α ^ (2 : ℕ) + Real.cos α ^ (2 : ℕ)) + Real.cos β ^ (2 : ℕ) := by
               rw [Real.sin_sq_add_cos_sq α]
               nlinarith [Real.sin_sq_add_cos_sq β]
       _ = _ := by ring
@@ -57,9 +57,9 @@ theorem azimuthalAxis_frenetExpansion (α β : ℝ) :
     symm
     calc
       _ = Real.sin β * Real.cos β *
-          (Real.cos α ^ 2 + Real.sin α ^ 2 - 1) := by ring
+          (Real.cos α ^ (2 : ℕ) + Real.sin α ^ (2 : ℕ) - 1) := by ring
       _ = 0 := by
-        rw [show Real.cos α ^ 2 + Real.sin α ^ 2 = 1 by
+        rw [show Real.cos α ^ (2 : ℕ) + Real.sin α ^ (2 : ℕ) = 1 by
           nlinarith [Real.sin_sq_add_cos_sq α]]
         ring
 
@@ -78,16 +78,16 @@ theorem verticalAxis_frenetExpansion (α β : ℝ) :
     symm
     calc
       _ = Real.cos β * Real.sin β *
-          (Real.cos α ^ 2 + Real.sin α ^ 2 - 1) := by ring
+          (Real.cos α ^ (2 : ℕ) + Real.sin α ^ (2 : ℕ) - 1) := by ring
       _ = 0 := by
-        rw [show Real.cos α ^ 2 + Real.sin α ^ 2 = 1 by
+        rw [show Real.cos α ^ (2 : ℕ) + Real.sin α ^ (2 : ℕ) = 1 by
           nlinarith [Real.sin_sq_add_cos_sq α]]
         ring
   · simp [verticalAxis, frameLinearCombination, tangentCoordinates,
       normalCoordinates, binormalCoordinates]
     calc
-      1 = Real.cos β ^ 2 *
-            (Real.sin α ^ 2 + Real.cos α ^ 2) + Real.sin β ^ 2 := by
+      1 = Real.cos β ^ (2 : ℕ) *
+            (Real.sin α ^ (2 : ℕ) + Real.cos α ^ (2 : ℕ)) + Real.sin β ^ (2 : ℕ) := by
               rw [Real.sin_sq_add_cos_sq α]
               nlinarith [Real.sin_sq_add_cos_sq β]
       _ = _ := by ring

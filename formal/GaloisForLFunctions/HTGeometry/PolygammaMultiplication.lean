@@ -133,7 +133,7 @@ Gamma pole lattice. -/
 theorem trigamma_multiplication {n : ℕ} (hn : 0 < n) {s : ℂ}
     (hs : ∀ m : ℕ, s ≠ -(m : ℂ)) :
     (∑ k ∈ Finset.range n, deriv Complex.digamma ((s + k) / n)) =
-      (n : ℂ) ^ 2 * deriv Complex.digamma s := by
+      (n : ℂ) ^ (2 : ℕ) * deriv Complex.digamma s := by
   have hnne : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
   have harg (k : ℕ) : ∀ m : ℕ, (s + (k : ℂ)) / (n : ℂ) ≠ -(m : ℂ) := by
     intro m hm
@@ -313,7 +313,7 @@ theorem digamma_multiplication_rescaled {n : ℕ} (hn : 0 < n) {z : ℂ}
 theorem trigamma_multiplication_rescaled {n : ℕ} (hn : 0 < n) {z : ℂ}
     (hz : ∀ m : ℕ, (n : ℂ) * z ≠ -(m : ℂ)) :
     (∑ k ∈ Finset.range n, deriv Complex.digamma (z + (k : ℂ) / (n : ℂ))) =
-      (n : ℂ) ^ 2 * deriv Complex.digamma ((n : ℂ) * z) := by
+      (n : ℂ) ^ (2 : ℕ) * deriv Complex.digamma ((n : ℂ) * z) := by
   have h := trigamma_multiplication hn hz
   convert h using 1
   apply Finset.sum_congr rfl

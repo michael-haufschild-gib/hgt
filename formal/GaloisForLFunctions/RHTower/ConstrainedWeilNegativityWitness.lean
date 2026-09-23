@@ -143,13 +143,13 @@ theorem norm_twistedPairMoment_le {a : ℝ} (ψ : OddSmoothProfile a) (ha : 0 �
 
 /-- The ray term of the twisted odd test at a copy. -/
 def twistedRayTerm {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) (q : XiZeroCopy) : ℂ :=
-  -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ 2 / xiSpectralPoint q ^ 2
+  -(1 / 4 : ℂ) * twistedPairMoment ψ γ q ^ (2 : ℕ) / xiSpectralPoint q ^ (2 : ℕ)
 
 theorem norm_twistedRayTerm_le {a : ℝ} (ψ : OddSmoothProfile a) (ha : 0 ≤ a) (γ : ℝ)
     (q : XiZeroCopy) :
     ‖twistedRayTerm ψ γ q‖
-      ≤ Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      ≤ Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   unfold twistedRayTerm
   rw [norm_div, norm_mul, norm_pow, norm_pow, norm_neg, norm_div, norm_one, Complex.norm_ofNat]
   have hz : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
@@ -157,20 +157,20 @@ theorem norm_twistedRayTerm_le {a : ℝ} (ψ : OddSmoothProfile a) (ha : 0 ≤ a
   have hP0 : 0 ≤ ‖twistedPairMoment ψ γ q‖ := norm_nonneg _
   have hE : 0 ≤ Real.exp (a * |(xiSpectralPoint q).im|) := (Real.exp_pos _).le
   have hM : 0 ≤ profileMass ψ := profileMass_nonneg ψ
-  have hsq : ‖twistedPairMoment ψ γ q‖ ^ 2
-      ≤ (2 * Real.exp (a * |(xiSpectralPoint q).im|) * profileMass ψ) ^ 2 :=
+  have hsq : ‖twistedPairMoment ψ γ q‖ ^ (2 : ℕ)
+      ≤ (2 * Real.exp (a * |(xiSpectralPoint q).im|) * profileMass ψ) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hP0 hP 2
-  have hexp : (2 * Real.exp (a * |(xiSpectralPoint q).im|) * profileMass ψ) ^ 2
-      = 4 * Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ 2 := by
+  have hexp : (2 * Real.exp (a * |(xiSpectralPoint q).im|) * profileMass ψ) ^ (2 : ℕ)
+      = 4 * Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ (2 : ℕ) := by
     rw [mul_pow, mul_pow, ← Real.exp_nat_mul]
     push_cast
     ring_nf
   rw [div_le_iff₀ (by positivity)]
-  calc 1 / 4 * ‖twistedPairMoment ψ γ q‖ ^ 2
-      ≤ 1 / 4 * (4 * Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ 2) := by
+  calc 1 / 4 * ‖twistedPairMoment ψ γ q‖ ^ (2 : ℕ)
+      ≤ 1 / 4 * (4 * Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ (2 : ℕ)) := by
         rw [← hexp]; exact mul_le_mul_of_nonneg_left hsq (by norm_num)
-    _ = Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) * ‖xiSpectralPoint q‖ ^ 2 := by
+    _ = Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         field_simp
 
 theorem summable_twistedRayTerm {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) :
@@ -213,17 +213,17 @@ theorem twistedRayTerm_of_conj {a : ℝ} (ψ : OddSmoothProfile a) (γ : ℝ) {q
 `Re z ≥ 2`. -/
 theorem re_sq_div_sq_ge {z : ℂ} (hre : 2 ≤ z.re) (him : |z.im| ≤ z.re / 32) {Φ : ℝ} (hΦ : 0 ≤ Φ)
     {E : ℂ} (hE : ‖E‖ ≤ Φ / 8) :
-    (18 / 25 : ℝ) * Φ ^ 2 / z.re ^ 2 ≤ ((((Φ : ℂ) + E) ^ 2) / z ^ 2).re := by
+    (18 / 25 : ℝ) * Φ ^ (2 : ℕ) / z.re ^ (2 : ℕ) ≤ ((((Φ : ℂ) + E) ^ (2 : ℕ)) / z ^ (2 : ℕ)).re := by
   have hz0 : z ≠ 0 := by
     intro h0
     rw [h0, Complex.zero_re] at hre
     linarith
   have hre0 : 0 < z.re := by linarith
-  set w : ℂ := (z ^ 2)⁻¹ with hw
-  have hnorm2 : Complex.normSq (z ^ 2) = Complex.normSq z ^ 2 := by rw [map_pow]
-  have hnsq : Complex.normSq z = z.re ^ 2 + z.im ^ 2 := by rw [Complex.normSq_apply]; ring
+  set w : ℂ := (z ^ (2 : ℕ))⁻¹ with hw
+  have hnorm2 : Complex.normSq (z ^ (2 : ℕ)) = Complex.normSq z ^ (2 : ℕ) := by rw [map_pow]
+  have hnsq : Complex.normSq z = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by rw [Complex.normSq_apply]; ring
   have hnsq_pos : 0 < Complex.normSq z := by rw [hnsq]; positivity
-  have hwre : w.re = (z.re ^ 2 - z.im ^ 2) / Complex.normSq z ^ 2 := by
+  have hwre : w.re = (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) / Complex.normSq z ^ (2 : ℕ) := by
     rw [hw, Complex.inv_re, hnorm2]
     congr 1
     rw [pow_two, Complex.mul_re]
@@ -232,57 +232,57 @@ theorem re_sq_div_sq_ge {z : ℂ} (hre : 2 ≤ z.re) (him : |z.im| ≤ z.re / 32
     rw [hw, norm_inv, norm_pow, Complex.sq_norm]
     ring
   -- bounds on the pieces
-  have him2 : z.im ^ 2 ≤ z.re ^ 2 / 1024 := by
-    have h1 : z.im ^ 2 = |z.im| ^ 2 := (sq_abs _).symm
+  have him2 : z.im ^ (2 : ℕ) ≤ z.re ^ (2 : ℕ) / 1024 := by
+    have h1 : z.im ^ (2 : ℕ) = |z.im| ^ (2 : ℕ) := (sq_abs _).symm
     rw [h1]
     have := pow_le_pow_left₀ (abs_nonneg _) him 2
-    calc |z.im| ^ 2 ≤ (z.re / 32) ^ 2 := this
-      _ = z.re ^ 2 / 1024 := by ring
-  have hnsq_le : Complex.normSq z ≤ z.re ^ 2 * (1025 / 1024) := by
+    calc |z.im| ^ (2 : ℕ) ≤ (z.re / 32) ^ (2 : ℕ) := this
+      _ = z.re ^ (2 : ℕ) / 1024 := by ring
+  have hnsq_le : Complex.normSq z ≤ z.re ^ (2 : ℕ) * (1025 / 1024) := by
     rw [hnsq]; linarith
   have hwre_ge : (1023 / 1025) * ‖w‖ ≤ w.re := by
     rw [hwre, hwnorm]
     have hL : (1023 / 1025 : ℝ) * (1 / Complex.normSq z) = (1023 / 1025) / Complex.normSq z := by
       ring
     rw [hL, div_le_div_iff₀ hnsq_pos (by positivity)]
-    have hpos : 0 ≤ (2 / 1025 : ℝ) * z.re ^ 2 - (2048 / 1025) * z.im ^ 2 := by
+    have hpos : 0 ≤ (2 / 1025 : ℝ) * z.re ^ (2 : ℕ) - (2048 / 1025) * z.im ^ (2 : ℕ) := by
       nlinarith [him2]
     nlinarith [mul_nonneg hnsq_pos.le hpos, hnsq]
   -- the expansion
-  have hexp : (((Φ : ℂ) + E) ^ 2) / z ^ 2 = (Φ : ℂ) ^ 2 * w + (2 * (Φ : ℂ) * E + E ^ 2) * w := by
+  have hexp : (((Φ : ℂ) + E) ^ (2 : ℕ)) / z ^ (2 : ℕ) = (Φ : ℂ) ^ (2 : ℕ) * w + (2 * (Φ : ℂ) * E + E ^ (2 : ℕ)) * w := by
     rw [hw, div_eq_mul_inv]; ring
   rw [hexp, Complex.add_re]
-  have h1 : ((Φ : ℂ) ^ 2 * w).re = Φ ^ 2 * w.re := by
+  have h1 : ((Φ : ℂ) ^ (2 : ℕ) * w).re = Φ ^ (2 : ℕ) * w.re := by
     rw [← Complex.ofReal_pow, Complex.re_ofReal_mul]
-  have h2 : -(‖2 * (Φ : ℂ) * E + E ^ 2‖ * ‖w‖) ≤ ((2 * (Φ : ℂ) * E + E ^ 2) * w).re := by
-    have := Complex.abs_re_le_norm ((2 * (Φ : ℂ) * E + E ^ 2) * w)
+  have h2 : -(‖2 * (Φ : ℂ) * E + E ^ (2 : ℕ)‖ * ‖w‖) ≤ ((2 * (Φ : ℂ) * E + E ^ (2 : ℕ)) * w).re := by
+    have := Complex.abs_re_le_norm ((2 * (Φ : ℂ) * E + E ^ (2 : ℕ)) * w)
     rw [norm_mul] at this
     linarith [(abs_le.mp this).1]
-  have h3 : ‖2 * (Φ : ℂ) * E + E ^ 2‖ ≤ (17 / 64) * Φ ^ 2 := by
+  have h3 : ‖2 * (Φ : ℂ) * E + E ^ (2 : ℕ)‖ ≤ (17 / 64) * Φ ^ (2 : ℕ) := by
     refine le_trans (norm_add_le _ _) ?_
     rw [norm_mul, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hΦ,
       Complex.norm_ofNat]
-    have hE2 : ‖E‖ ^ 2 ≤ (Φ / 8) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hE 2
+    have hE2 : ‖E‖ ^ (2 : ℕ) ≤ (Φ / 8) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) hE 2
     nlinarith [mul_le_mul_of_nonneg_left hE hΦ]
   have hw0 : 0 ≤ ‖w‖ := norm_nonneg _
-  have hwnorm_ge : 1 / (z.re ^ 2 * (1025 / 1024)) ≤ ‖w‖ := by
+  have hwnorm_ge : 1 / (z.re ^ (2 : ℕ) * (1025 / 1024)) ≤ ‖w‖ := by
     rw [hwnorm]
     exact one_div_le_one_div_of_le hnsq_pos hnsq_le
   rw [h1]
-  have key : (18 / 25 : ℝ) * Φ ^ 2 / z.re ^ 2 ≤ Φ ^ 2 * w.re - (17 / 64) * Φ ^ 2 * ‖w‖ := by
-    have hΦ2 : 0 ≤ Φ ^ 2 := sq_nonneg _
-    have : (18 / 25 : ℝ) / z.re ^ 2 ≤ (1023 / 1025 - 17 / 64) * ‖w‖ := by
-      calc (18 / 25 : ℝ) / z.re ^ 2
-          ≤ (1023 / 1025 - 17 / 64) * (1 / (z.re ^ 2 * (1025 / 1024))) := by
-            have hrw : (1023 / 1025 - 17 / 64 : ℝ) * (1 / (z.re ^ 2 * (1025 / 1024)))
-                = ((1023 / 1025 - 17 / 64) * (1024 / 1025)) / z.re ^ 2 := by
+  have key : (18 / 25 : ℝ) * Φ ^ (2 : ℕ) / z.re ^ (2 : ℕ) ≤ Φ ^ (2 : ℕ) * w.re - (17 / 64) * Φ ^ (2 : ℕ) * ‖w‖ := by
+    have hΦ2 : 0 ≤ Φ ^ (2 : ℕ) := sq_nonneg _
+    have : (18 / 25 : ℝ) / z.re ^ (2 : ℕ) ≤ (1023 / 1025 - 17 / 64) * ‖w‖ := by
+      calc (18 / 25 : ℝ) / z.re ^ (2 : ℕ)
+          ≤ (1023 / 1025 - 17 / 64) * (1 / (z.re ^ (2 : ℕ) * (1025 / 1024))) := by
+            have hrw : (1023 / 1025 - 17 / 64 : ℝ) * (1 / (z.re ^ (2 : ℕ) * (1025 / 1024)))
+                = ((1023 / 1025 - 17 / 64) * (1024 / 1025)) / z.re ^ (2 : ℕ) := by
               field_simp
             rw [hrw]
             exact div_le_div_of_nonneg_right (by norm_num) (by positivity)
         _ ≤ (1023 / 1025 - 17 / 64) * ‖w‖ := by gcongr
-    calc (18 / 25 : ℝ) * Φ ^ 2 / z.re ^ 2 = Φ ^ 2 * ((18 / 25) / z.re ^ 2) := by ring
-      _ ≤ Φ ^ 2 * ((1023 / 1025 - 17 / 64) * ‖w‖) := mul_le_mul_of_nonneg_left this hΦ2
-      _ ≤ Φ ^ 2 * w.re - (17 / 64) * Φ ^ 2 * ‖w‖ := by nlinarith
+    calc (18 / 25 : ℝ) * Φ ^ (2 : ℕ) / z.re ^ (2 : ℕ) = Φ ^ (2 : ℕ) * ((18 / 25) / z.re ^ (2 : ℕ)) := by ring
+      _ ≤ Φ ^ (2 : ℕ) * ((1023 / 1025 - 17 / 64) * ‖w‖) := mul_le_mul_of_nonneg_left this hΦ2
+      _ ≤ Φ ^ (2 : ℕ) * w.re - (17 / 64) * Φ ^ (2 : ℕ) * ‖w‖ := by nlinarith
   linarith [mul_le_mul_of_nonneg_right h3 hw0]
 
 /-- **The centred ray term of a top copy is negative**: with `Φ₊ = ∫ e^{a₀u}ψ` and the second
@@ -295,8 +295,8 @@ theorem re_twistedRayTerm_centre_le {a : ℝ} (ψ : OddSmoothProfile a) (q₀ : 
     (hA' : ‖twistedMoment ψ (-(xiSpectralPoint q₀).im) (2 * (xiSpectralPoint q₀).re)‖
       ≤ (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re / 8) :
     (twistedRayTerm ψ (xiSpectralPoint q₀).re q₀).re
-      ≤ -((9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ 2
-          / (xiSpectralPoint q₀).re ^ 2) := by
+      ≤ -((9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ (2 : ℕ)
+          / (xiSpectralPoint q₀).re ^ (2 : ℕ)) := by
   set Φ : ℝ := (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re with hΦdef
   have hreal : twistedMoment ψ (-(xiSpectralPoint q₀).im) 0 = (Φ : ℂ) := by
     apply Complex.ext
@@ -309,21 +309,21 @@ theorem re_twistedRayTerm_centre_le {a : ℝ} (ψ : OddSmoothProfile a) (q₀ : 
   rw [hpair]
   have hkey := re_sq_div_sq_ge hre him hΦ hA'
   have hsplit : (-(1 / 4 : ℂ) * ((Φ : ℂ) + twistedMoment ψ (-(xiSpectralPoint q₀).im)
-      (2 * (xiSpectralPoint q₀).re)) ^ 2 / xiSpectralPoint q₀ ^ 2).re
+      (2 * (xiSpectralPoint q₀).re)) ^ (2 : ℕ) / xiSpectralPoint q₀ ^ (2 : ℕ)).re
       = -(1 / 4 : ℝ) * ((((Φ : ℂ) + twistedMoment ψ (-(xiSpectralPoint q₀).im)
-          (2 * (xiSpectralPoint q₀).re)) ^ 2) / xiSpectralPoint q₀ ^ 2).re := by
+          (2 * (xiSpectralPoint q₀).re)) ^ (2 : ℕ)) / xiSpectralPoint q₀ ^ (2 : ℕ)).re := by
     rw [mul_div_assoc, show (-(1 / 4 : ℂ)) = ((-(1 / 4 : ℝ) : ℝ) : ℂ) by push_cast; ring,
       Complex.re_ofReal_mul]
   rw [hsplit]
-  have hq : (9 / 50 : ℝ) * Φ ^ 2 / (xiSpectralPoint q₀).re ^ 2
-      = (1 / 4 : ℝ) * ((18 / 25 : ℝ) * Φ ^ 2 / (xiSpectralPoint q₀).re ^ 2) := by ring
+  have hq : (9 / 50 : ℝ) * Φ ^ (2 : ℕ) / (xiSpectralPoint q₀).re ^ (2 : ℕ)
+      = (1 / 4 : ℝ) * ((18 / 25 : ℝ) * Φ ^ (2 : ℕ) / (xiSpectralPoint q₀).re ^ (2 : ℕ)) := by ring
   rw [hq]
   linarith
 
 /-! ## Assembly -/
 
 /-- The universal sum `Σ_q |z_q|^{−2}` over the Xi zero copies. -/
-def xiSpectralInvSqTotal : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+def xiSpectralInvSqTotal : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
 
 /-- **Negativity witness.**  If the copy `q₀` has spectral point `z₀ = γ₀ − i a₀` with
 `γ₀ ≥ 2`, `|a₀| ≤ γ₀/32`, the second-frequency moment is at most `Φ₊/8`, and every copy whose spectral
@@ -342,9 +342,9 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
       |(xiSpectralPoint q).im| ≤ -(xiSpectralPoint q₀).im - δ) :
     (suzukiScrewSmoothForm (twistedOddTest ψ (xiSpectralPoint q₀).re)
         (twistedOddTest ψ (xiSpectralPoint q₀).re)).re
-      ≤ -((9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ 2
-            / (xiSpectralPoint q₀).re ^ 2)
-        + Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2
+      ≤ -((9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ (2 : ℕ)
+            / (xiSpectralPoint q₀).re ^ (2 : ℕ))
+        + Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)
             * xiSpectralInvSqTotal := by
   classical
   set γ₀ : ℝ := (xiSpectralPoint q₀).re with hγ₀
@@ -359,8 +359,8 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
   set g : XiZeroCopy → ℝ := fun q =>
     if xiSpectralPoint q = xiSpectralPoint q₀ ∨ xiSpectralPoint q = (starRingEnd ℂ) (xiSpectralPoint q₀)
     then 0
-    else Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2
-      * (1 / ‖xiSpectralPoint q‖ ^ 2) with hg
+    else Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)
+      * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) with hg
   have hg_nonneg : ∀ q, 0 ≤ g q := by
     intro q
     simp only [hg]
@@ -371,7 +371,7 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
   have hg_summable : Summable g := by
     refine Summable.of_nonneg_of_le hg_nonneg (fun q => ?_)
       (xiSpectralPoint_inv_sq_summable.mul_left
-        (Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2))
+        (Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)))
     simp only [hg]
     split_ifs
     · have := profileMass_nonneg ψ
@@ -383,12 +383,12 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
     split_ifs with hcase
     · rcases hcase with hcase | hcase
       · rw [twistedRayTerm_congr ψ γ₀ hcase]
-        have : 0 ≤ (9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ 2
-            / (xiSpectralPoint q₀).re ^ 2 := by positivity
+        have : 0 ≤ (9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ (2 : ℕ)
+            / (xiSpectralPoint q₀).re ^ (2 : ℕ) := by positivity
         linarith
       · rw [twistedRayTerm_of_conj ψ γ₀ hcase, Complex.conj_re]
-        have : 0 ≤ (9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ 2
-            / (xiSpectralPoint q₀).re ^ 2 := by positivity
+        have : 0 ≤ (9 / 50 : ℝ) * (twistedMoment ψ (-(xiSpectralPoint q₀).im) 0).re ^ (2 : ℕ)
+            / (xiSpectralPoint q₀).re ^ (2 : ℕ) := by positivity
         linarith
     · push Not at hcase
       have hgapq := hgap q hcase.1 hcase.2
@@ -399,16 +399,16 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
           ≤ Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) := by
         apply Real.exp_le_exp.mpr
         exact mul_le_mul_of_nonneg_left hgapq (by linarith)
-      have hM : 0 ≤ profileMass ψ ^ 2 := sq_nonneg _
-      have hz : 0 ≤ 1 / ‖xiSpectralPoint q‖ ^ 2 := by positivity
+      have hM : 0 ≤ profileMass ψ ^ (2 : ℕ) := sq_nonneg _
+      have hz : 0 ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by positivity
       calc (twistedRayTerm ψ γ₀ q).re ≤ ‖twistedRayTerm ψ γ₀ q‖ := hre_le
-        _ ≤ Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ 2
-            * (1 / ‖xiSpectralPoint q‖ ^ 2) := hb
-        _ ≤ Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2
-            * (1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+        _ ≤ Real.exp (2 * a * |(xiSpectralPoint q).im|) * profileMass ψ ^ (2 : ℕ)
+            * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := hb
+        _ ≤ Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)
+            * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
   have hrest : ∑' q : ↥((({q₀} : Finset XiZeroCopy) : Set XiZeroCopy)ᶜ),
       (twistedRayTerm ψ γ₀ (q : XiZeroCopy)).re
-      ≤ Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2
+      ≤ Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)
           * xiSpectralInvSqTotal := by
     have hsub : Summable fun q : ↥((({q₀} : Finset XiZeroCopy) : Set XiZeroCopy)ᶜ) =>
         (twistedRayTerm ψ γ₀ (q : XiZeroCopy)).re :=
@@ -427,7 +427,7 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
           Summable.tsum_subtype_le g ((({q₀} : Finset XiZeroCopy) : Set XiZeroCopy)ᶜ) hg_nonneg
             hg_summable
       _ ≤ ∑' q : XiZeroCopy, Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ))
-            * profileMass ψ ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+            * profileMass ψ ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
           refine hg_summable.tsum_le_tsum (fun q => ?_)
             (xiSpectralPoint_inv_sq_summable.mul_left _)
           simp only [hg]
@@ -435,7 +435,7 @@ theorem re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess {a : ℝ} (ψ : 
           · have := profileMass_nonneg ψ
             positivity
           · exact le_rfl
-      _ = Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ 2
+      _ = Real.exp (2 * a * (-(xiSpectralPoint q₀).im - δ)) * profileMass ψ ^ (2 : ℕ)
             * xiSpectralInvSqTotal := by
           unfold xiSpectralInvSqTotal
           rw [tsum_mul_left]

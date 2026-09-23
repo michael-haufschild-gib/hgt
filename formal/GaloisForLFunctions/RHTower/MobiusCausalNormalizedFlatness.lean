@@ -32,7 +32,7 @@ def invSquarefreeNorm (ω : ℝ) : ℂ :=
 def invSquarefreeNormDeriv (ω : ℝ) : ℂ :=
   (4 * deriv riemannZeta (2 + 4 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ)) -
       riemannZeta (2 + 4 * (ω : ℂ)) * (2 * deriv riemannZeta (1 + 2 * (ω : ℂ)))) /
-    riemannZeta (1 + 2 * (ω : ℂ)) ^ 2
+    riemannZeta (1 + 2 * (ω : ℂ)) ^ (2 : ℕ)
 
 theorem two_add_four_mul_ne_one (ω : ℝ) (hω : 0 < ω) : (2 : ℂ) + 4 * (ω : ℂ) ≠ 1 := by
   intro h
@@ -129,7 +129,7 @@ theorem tendsto_invSquarefreeNormDeriv :
     rw [mul_zero] at h
     exact h
   -- the second summand
-  have hden : Tendsto (fun ω : ℝ => ((2 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)
+  have hden : Tendsto (fun ω : ℝ => ((2 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 1) := by
     have := hP.pow 2
     simpa using this
@@ -208,8 +208,8 @@ theorem exists_normalization_bound :
 
 /-- **The card's `(14)`: the normalized signed-coisometry form is Fisher-flat.** -/
 theorem tendsto_fisher_scaled_normalized_energy :
-    Tendsto (fun ω : ℝ => (4 * ω) ^ 2 *
-        ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2)
+    Tendsto (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) *
+        ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₁, K₁, hω₁, hK₁, hbound₁⟩ := exists_uniform_boundary_bound
   obtain ⟨ω₂, K₂, hω₂, hK₂, hbound₂⟩ := exists_uniform_multiplier_bound
@@ -254,7 +254,7 @@ theorem tendsto_fisher_scaled_normalized_energy :
   -- measurability
   have hmeasfun : ∀ ω : ℝ, 0 < ω →
       AEStronglyMeasurable (fun τ : ℝ =>
-        ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2) volume := by
+        ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) volume := by
     intro ω hω
     have h1 := aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_mobiusCausalMultiplierDeriv_line hω)
@@ -268,39 +268,39 @@ theorem tendsto_fisher_scaled_normalized_energy :
     exact (h3.norm.pow 2)
   -- the integral bound
   have hint : ∀ ω : ℝ, 0 < ω → ω ≤ ω₀ →
-      (∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2)
-        ≤ (2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ := by
+      (∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
+        ≤ (2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ := by
     intro ω hω hωle
-    have hdom : ∀ᵐ τ : ℝ, ‖‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2‖
-        ≤ ((2 * M) ^ 2 * boundaryBound K τ) := by
+    have hdom : ∀ᵐ τ : ℝ, ‖‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)‖
+        ≤ ((2 * M) ^ (2 : ℕ) * boundaryBound K τ) := by
       filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
       have hτ : τ ≠ 0 := hτmem
       have h1 := hmaj ω hω hωle τ hτ
       have h2 : (0 : ℝ) ≤ ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ := norm_nonneg _
-      have hsq : ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-          ≤ ((2 * M) * boundaryMajorant K τ) ^ 2 := pow_le_pow_left₀ h2 h1 2
+      have hsq : ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+          ≤ ((2 * M) * boundaryMajorant K τ) ^ (2 : ℕ) := pow_le_pow_left₀ h2 h1 2
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), boundaryBound_eq K τ]
       nlinarith [sq_nonneg (boundaryMajorant K τ), sq_nonneg (2 * M)]
     have hintegrable : Integrable (fun τ : ℝ =>
-        ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2) := by
-      refine Integrable.mono (((integrable_boundaryBound K).const_mul ((2 * M) ^ 2)))
+        ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) := by
+      refine Integrable.mono (((integrable_boundaryBound K).const_mul ((2 * M) ^ (2 : ℕ))))
         (hmeasfun ω hω) ?_
       filter_upwards [hdom] with τ hτ
-      have hnn : (0 : ℝ) ≤ (2 * M) ^ 2 * boundaryBound K τ := by
+      have hnn : (0 : ℝ) ≤ (2 * M) ^ (2 : ℕ) * boundaryBound K τ := by
         have hbn := boundaryBound_nonneg K τ
         positivity
-      have hrhs : ‖(2 * M) ^ 2 * boundaryBound K τ‖ = (2 * M) ^ 2 * boundaryBound K τ := by
+      have hrhs : ‖(2 * M) ^ (2 : ℕ) * boundaryBound K τ‖ = (2 * M) ^ (2 : ℕ) * boundaryBound K τ := by
         rw [Real.norm_eq_abs, abs_of_nonneg hnn]
       rw [hrhs]
       exact hτ
     have hmono := integral_mono_ae hintegrable
-      ((integrable_boundaryBound K).const_mul ((2 * M) ^ 2)) ?_
-    · calc (∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2)
-          ≤ ∫ τ : ℝ, (2 * M) ^ 2 * boundaryBound K τ := hmono
-        _ = (2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ := by
+      ((integrable_boundaryBound K).const_mul ((2 * M) ^ (2 : ℕ))) ?_
+    · calc (∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
+          ≤ ∫ τ : ℝ, (2 * M) ^ (2 : ℕ) * boundaryBound K τ := hmono
+        _ = (2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ := by
             rw [integral_const_mul]
     · filter_upwards [hdom] with τ hτ
-      have hnn : (0 : ℝ) ≤ ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 := by
+      have hnn : (0 : ℝ) ≤ ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
         positivity
       rw [Real.norm_eq_abs, abs_of_nonneg hnn] at hτ
       exact hτ
@@ -309,23 +309,23 @@ theorem tendsto_fisher_scaled_normalized_energy :
     filter_upwards [Ioc_mem_nhdsGT hω₀] with ω hω
     exact ⟨hω.1, hω.2⟩
   have hupper : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (4 * ω) ^ 2 * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (4 * ω) ^ 2 * ((2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ) := by
+      (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (4 * ω) ^ (2 : ℕ) * ((2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ) := by
     filter_upwards [hev] with ω hω
     exact mul_le_mul_of_nonneg_left (hint ω hω.1 hω.2) (by positivity)
   have hlower : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (0 : ℝ) ≤ (4 * ω) ^ 2 *
-        ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 := by
+      (0 : ℝ) ≤ (4 * ω) ^ (2 : ℕ) *
+        ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
     filter_upwards [hev] with ω hω
-    have hnn : (0 : ℝ) ≤ ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 :=
+    have hnn : (0 : ℝ) ≤ ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) :=
       integral_nonneg fun τ => by positivity
     positivity
-  have hzero : Tendsto (fun ω : ℝ => (4 * ω) ^ 2 * ((2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ))
+  have hzero : Tendsto (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) * ((2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
-    have hc : Continuous (fun ω : ℝ => (4 * ω) ^ 2 * ((2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ)) :=
+    have hc : Continuous (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) * ((2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ)) :=
       by continuity
     have h := hc.tendsto (0 : ℝ)
-    have h0 : (4 * (0 : ℝ)) ^ 2 * ((2 * M) ^ 2 * ∫ τ : ℝ, boundaryBound K τ) = 0 := by norm_num
+    have h0 : (4 * (0 : ℝ)) ^ (2 : ℕ) * ((2 * M) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ) = 0 := by norm_num
     rw [h0] at h
     exact h.mono_left nhdsWithin_le_nhds
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hzero hlower hupper
@@ -336,11 +336,11 @@ theorem tendsto_fisher_scaled_normalized_energy :
 cannot stay above any positive threshold: identifying a nonzero completed contact tangent with the
 critical parameter derivative of the coupled causal source is impossible. -/
 theorem not_eventually_fisher_energy_ge {c : ℝ} (hc : 0 < c)
-    (h : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ (4 * ω) ^ 2 *
-      ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2) : False := by
+    (h : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ (4 * ω) ^ (2 : ℕ) *
+      ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) : False := by
   have hlim := tendsto_fisher_scaled_boundary_energy
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (4 * ω) ^ 2 * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
+      (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
         ∈ Metric.ball (0 : ℝ) c :=
     hlim.eventually (Metric.ball_mem_nhds (0 : ℝ) hc)
   have hboth := hev.and h
@@ -348,18 +348,18 @@ theorem not_eventually_fisher_energy_ge {c : ℝ} (hc : 0 < c)
   rw [Metric.mem_ball, Real.dist_eq, sub_zero] at hω
   have h1 := hω.1
   have h2 := hω.2
-  have h3 : (4 * ω) ^ 2 * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-      ≤ |(4 * ω) ^ 2 * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2| :=
+  have h3 : (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ |(4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)| :=
     le_abs_self _
   linarith
 
 /-- The same no-go for the normalized signed-coisometry form. -/
 theorem not_eventually_normalized_fisher_energy_ge {c : ℝ} (hc : 0 < c)
-    (h : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ (4 * ω) ^ 2 *
-      ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2) : False := by
+    (h : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ (4 * ω) ^ (2 : ℕ) *
+      ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) : False := by
   have hlim := tendsto_fisher_scaled_normalized_energy
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (4 * ω) ^ 2 * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
+      (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
         ∈ Metric.ball (0 : ℝ) c :=
     hlim.eventually (Metric.ball_mem_nhds (0 : ℝ) hc)
   have hboth := hev.and h
@@ -367,8 +367,8 @@ theorem not_eventually_normalized_fisher_energy_ge {c : ℝ} (hc : 0 < c)
   rw [Metric.mem_ball, Real.dist_eq, sub_zero] at hω
   have h1 := hω.1
   have h2 := hω.2
-  have h3 : (4 * ω) ^ 2 * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-      ≤ |(4 * ω) ^ 2 * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2| :=
+  have h3 : (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ |(4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖normalizedMobiusCausalDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)| :=
     le_abs_self _
   linarith
 

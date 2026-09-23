@@ -146,7 +146,7 @@ theorem abs_ccmActualHeadMatchedSuzukiCurrent_le_quadratic
     ccmActualHeadTranslationSineCurrent (Real.log n) r f
   have hρ : 0 ≤ ρ := ccmActualHeadMatchedPrimePolarRadius_nonneg n
   have hA : 0 < A := Real.exp_pos _
-  have hw : 0 ≤ w := criticalMellinAtomWeight_nonneg n
+  have hw : 0 ≤ w := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have hScont : Continuous S :=
     continuous_ccmActualHeadTranslationSineCurrent_right (Real.log n) f
   have hcoeffcont : Continuous fun r : ℝ => A * Real.sinh (r / 2) := by fun_prop

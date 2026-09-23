@@ -97,7 +97,7 @@ def fourierToChebyshevPoly (d : ℕ) (A : ℂ[X]) : ℂ[X] :=
 def ChebyshevCosNormalization (P Q : ℂ[X]) : Prop :=
   ∀ θ : ℝ,
     P.eval (Real.cos θ : ℂ) * starRingEnd ℂ (P.eval (Real.cos θ : ℂ))
-      + (1 - (Real.cos θ : ℂ) ^ 2) *
+      + (1 - (Real.cos θ : ℂ) ^ (2 : ℕ)) *
         (Q.eval (Real.cos θ : ℂ) * starRingEnd ℂ (Q.eval (Real.cos θ : ℂ))) = 1
 
 /-- Pointwise Fourier/Laurent normalization on the unit circle. -/
@@ -146,14 +146,14 @@ theorem chebyshev_fourier_pointwise_normalization_iff {d : ℕ}
   constructor
   · intro h θ
     have hs :
-        (Real.sin θ : ℂ) * (Real.sin θ : ℂ) = 1 - (Real.cos θ : ℂ) ^ 2 := by
+        (Real.sin θ : ℂ) * (Real.sin θ : ℂ) = 1 - (Real.cos θ : ℂ) ^ (2 : ℕ) := by
       have htrig := ofReal_sin_sq_add_cos_sq θ
       linear_combination htrig
     have hterm :
         (Real.sin θ : ℂ) * Q.eval (Real.cos θ : ℂ) *
             ((Real.sin θ : ℂ) *
               starRingEnd ℂ (Q.eval (Real.cos θ : ℂ))) =
-          (1 - (Real.cos θ : ℂ) ^ 2) *
+          (1 - (Real.cos θ : ℂ) ^ (2 : ℕ)) *
             (Q.eval (Real.cos θ : ℂ) *
               starRingEnd ℂ (Q.eval (Real.cos θ : ℂ))) := by
       rw [← hs]
@@ -164,14 +164,14 @@ theorem chebyshev_fourier_pointwise_normalization_iff {d : ℕ}
     exact hθ
   · intro h θ
     have hs :
-        (Real.sin θ : ℂ) * (Real.sin θ : ℂ) = 1 - (Real.cos θ : ℂ) ^ 2 := by
+        (Real.sin θ : ℂ) * (Real.sin θ : ℂ) = 1 - (Real.cos θ : ℂ) ^ (2 : ℕ) := by
       have htrig := ofReal_sin_sq_add_cos_sq θ
       linear_combination htrig
     have hterm :
         (Real.sin θ : ℂ) * Q.eval (Real.cos θ : ℂ) *
             ((Real.sin θ : ℂ) *
               starRingEnd ℂ (Q.eval (Real.cos θ : ℂ))) =
-          (1 - (Real.cos θ : ℂ) ^ 2) *
+          (1 - (Real.cos θ : ℂ) ^ (2 : ℕ)) *
             (Q.eval (Real.cos θ : ℂ) *
               starRingEnd ℂ (Q.eval (Real.cos θ : ℂ))) := by
       rw [← hs]

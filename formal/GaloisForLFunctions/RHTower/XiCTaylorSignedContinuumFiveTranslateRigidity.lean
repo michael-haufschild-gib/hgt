@@ -22,11 +22,11 @@ noncomputable section
 
 /-- Value row of a five-tap translate-mask symbol. -/
 def routeJFiveCoeffValue (a : Fin 5 → ℝ) (x : ℝ) : ℝ :=
-  a 0 + a 1 * x + a 2 * x ^ 2 + a 3 * x ^ 3 + a 4 * x ^ 4
+  a 0 + a 1 * x + a 2 * x ^ (2 : ℕ) + a 3 * x ^ (3 : ℕ) + a 4 * x ^ (4 : ℕ)
 
 /-- Dilation-derivative row `x A'(x)` of a five-tap translate-mask symbol. -/
 def routeJFiveCoeffDilationDerivative (a : Fin 5 → ℝ) (x : ℝ) : ℝ :=
-  a 1 * x + 2 * a 2 * x ^ 2 + 3 * a 3 * x ^ 3 + 4 * a 4 * x ^ 4
+  a 1 * x + 2 * a 2 * x ^ (2 : ℕ) + 3 * a 3 * x ^ (3 : ℕ) + 4 * a 4 * x ^ (4 : ℕ)
 
 /-- Simultaneous value and first-moment cancellation at `r` and `r⁻¹`. -/
 def routeJFiveCoeffReflectedRows (a : Fin 5 → ℝ) (r : ℝ) : Prop :=
@@ -58,10 +58,10 @@ theorem routeJFiveCoeffReflectedRows_classification
     · nlinarith
   let x : ℝ := r + r⁻¹
   have hxgt : 2 < x := by
-    have hsq : 0 < (r - 1) ^ 2 :=
+    have hsq : 0 < (r - 1) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (sub_ne_zero.mpr hr1)
-    have hquot : 0 < (r - 1) ^ 2 / r := div_pos hsq hr
-    have hid : (r - 1) ^ 2 / r = r + r⁻¹ - 2 := by
+    have hquot : 0 < (r - 1) ^ (2 : ℕ) / r := div_pos hsq hr
+    have hid : (r - 1) ^ (2 : ℕ) / r = r + r⁻¹ - 2 := by
       field_simp [hr0]
       ring
     rw [hid] at hquot
@@ -79,40 +79,40 @@ theorem routeJFiveCoeffReflectedRows_classification
   have hcVi := routeJReciprocalDoubleRootCoeff_value_at_inv hr0
   have hcDi := routeJReciprocalDoubleRootCoeff_deriv_at_inv hr0
   simp only [routeJReciprocalDoubleRootCoeff_four] at hcVr hcDr hcVi hcDi
-  have hbVr : b0 + b1 * r + b2 * r ^ 2 + b3 * r ^ 3 = 0 := by
+  have hbVr : b0 + b1 * r + b2 * r ^ (2 : ℕ) + b3 * r ^ (3 : ℕ) = 0 := by
     dsimp [b0, b1, b2, b3]
     linear_combination hVr - a 4 * hcVr
-  have hbDr : b1 * r + 2 * b2 * r ^ 2 + 3 * b3 * r ^ 3 = 0 := by
+  have hbDr : b1 * r + 2 * b2 * r ^ (2 : ℕ) + 3 * b3 * r ^ (3 : ℕ) = 0 := by
     dsimp [b1, b2, b3]
     linear_combination hDr - a 4 * hcDr
   have hbVi :
-      b0 + b1 * r⁻¹ + b2 * r⁻¹ ^ 2 + b3 * r⁻¹ ^ 3 = 0 := by
+      b0 + b1 * r⁻¹ + b2 * r⁻¹ ^ (2 : ℕ) + b3 * r⁻¹ ^ (3 : ℕ) = 0 := by
     dsimp [b0, b1, b2, b3]
     linear_combination hVi - a 4 * hcVi
   have hbDi :
-      b1 * r⁻¹ + 2 * b2 * r⁻¹ ^ 2 + 3 * b3 * r⁻¹ ^ 3 = 0 := by
+      b1 * r⁻¹ + 2 * b2 * r⁻¹ ^ (2 : ℕ) + 3 * b3 * r⁻¹ ^ (3 : ℕ) = 0 := by
     dsimp [b1, b2, b3]
     linear_combination hDi - a 4 * hcDi
-  have hbDr' : b1 + 2 * b2 * r + 3 * b3 * r ^ 2 = 0 := by
-    have hfac : r * (b1 + 2 * b2 * r + 3 * b3 * r ^ 2) = 0 := by
+  have hbDr' : b1 + 2 * b2 * r + 3 * b3 * r ^ (2 : ℕ) = 0 := by
+    have hfac : r * (b1 + 2 * b2 * r + 3 * b3 * r ^ (2 : ℕ)) = 0 := by
       calc
-        _ = b1 * r + 2 * b2 * r ^ 2 + 3 * b3 * r ^ 3 := by ring
+        _ = b1 * r + 2 * b2 * r ^ (2 : ℕ) + 3 * b3 * r ^ (3 : ℕ) := by ring
         _ = 0 := hbDr
     exact (mul_eq_zero.mp hfac).resolve_left hr0
   have hbDi' :
-      b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ 2 = 0 := by
+      b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ (2 : ℕ) = 0 := by
     have hfac :
-        r⁻¹ * (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ 2) = 0 := by
+        r⁻¹ * (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ (2 : ℕ)) = 0 := by
       calc
-        _ = b1 * r⁻¹ + 2 * b2 * r⁻¹ ^ 2 + 3 * b3 * r⁻¹ ^ 3 := by ring
+        _ = b1 * r⁻¹ + 2 * b2 * r⁻¹ ^ (2 : ℕ) + 3 * b3 * r⁻¹ ^ (3 : ℕ) := by ring
         _ = 0 := hbDi
     exact (mul_eq_zero.mp hfac).resolve_left hrInv0
   have hbDelta : 2 * b2 + 3 * x * b3 = 0 := by
     have hfac : (r - r⁻¹) * (2 * b2 + 3 * x * b3) = 0 := by
       calc
         _ =
-            (b1 + 2 * b2 * r + 3 * b3 * r ^ 2) -
-              (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ 2) := by
+            (b1 + 2 * b2 * r + 3 * b3 * r ^ (2 : ℕ)) -
+              (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ (2 : ℕ)) := by
                 dsimp [x]
                 field_simp [hr0]
                 ring
@@ -120,23 +120,23 @@ theorem routeJFiveCoeffReflectedRows_classification
     exact (mul_eq_zero.mp hfac).resolve_left
       (sub_ne_zero.mpr hrInv)
   have hbSum :
-      2 * b1 + 2 * x * b2 + 3 * (x ^ 2 - 2) * b3 = 0 := by
+      2 * b1 + 2 * x * b2 + 3 * (x ^ (2 : ℕ) - 2) * b3 = 0 := by
     calc
       _ =
-          (b1 + 2 * b2 * r + 3 * b3 * r ^ 2) +
-            (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ 2) := by
+          (b1 + 2 * b2 * r + 3 * b3 * r ^ (2 : ℕ)) +
+            (b1 + 2 * b2 * r⁻¹ + 3 * b3 * r⁻¹ ^ (2 : ℕ)) := by
               dsimp [x]
               field_simp [hr0]
               ring
       _ = 0 := by rw [hbDr', hbDi', add_zero]
   have hbValueDelta :
-      b1 + x * b2 + (x ^ 2 - 1) * b3 = 0 := by
+      b1 + x * b2 + (x ^ (2 : ℕ) - 1) * b3 = 0 := by
     have hfac :
-        (r - r⁻¹) * (b1 + x * b2 + (x ^ 2 - 1) * b3) = 0 := by
+        (r - r⁻¹) * (b1 + x * b2 + (x ^ (2 : ℕ) - 1) * b3) = 0 := by
       calc
         _ =
-            (b0 + b1 * r + b2 * r ^ 2 + b3 * r ^ 3) -
-              (b0 + b1 * r⁻¹ + b2 * r⁻¹ ^ 2 + b3 * r⁻¹ ^ 3) := by
+            (b0 + b1 * r + b2 * r ^ (2 : ℕ) + b3 * r ^ (3 : ℕ)) -
+              (b0 + b1 * r⁻¹ + b2 * r⁻¹ ^ (2 : ℕ) + b3 * r⁻¹ ^ (3 : ℕ)) := by
                 dsimp [x]
                 field_simp [hr0]
                 ring
@@ -145,10 +145,10 @@ theorem routeJFiveCoeffReflectedRows_classification
       (sub_ne_zero.mpr hrInv)
   have hbOne : b1 - 3 * b3 = 0 := by
     linear_combination (1 / 2 : ℝ) * hbSum - (x / 2) * hbDelta
-  have hbMaster : (4 - x ^ 2) * b3 = 0 := by
+  have hbMaster : (4 - x ^ (2 : ℕ)) * b3 = 0 := by
     linear_combination
       2 * hbValueDelta - 2 * hbOne - x * hbDelta
-  have hxcoef : 4 - x ^ 2 ≠ 0 := by
+  have hxcoef : 4 - x ^ (2 : ℕ) ≠ 0 := by
     nlinarith
   have hb3zero : b3 = 0 :=
     (mul_eq_zero.mp hbMaster).resolve_left hxcoef
@@ -191,26 +191,26 @@ theorem routeJFiveCoeffReflectedRows_iff
     have hcVr' :
         routeJReciprocalDoubleRootCoeff r 0 +
             routeJReciprocalDoubleRootCoeff r 1 * r +
-            routeJReciprocalDoubleRootCoeff r 2 * r ^ 2 +
-            routeJReciprocalDoubleRootCoeff r 3 * r ^ 3 + r ^ 4 = 0 := by
+            routeJReciprocalDoubleRootCoeff r 2 * r ^ (2 : ℕ) +
+            routeJReciprocalDoubleRootCoeff r 3 * r ^ (3 : ℕ) + r ^ (4 : ℕ) = 0 := by
       simpa using hcVr
     have hcDr' :
         routeJReciprocalDoubleRootCoeff r 1 * r +
-            2 * routeJReciprocalDoubleRootCoeff r 2 * r ^ 2 +
-            3 * routeJReciprocalDoubleRootCoeff r 3 * r ^ 3 +
-            4 * r ^ 4 = 0 := by
+            2 * routeJReciprocalDoubleRootCoeff r 2 * r ^ (2 : ℕ) +
+            3 * routeJReciprocalDoubleRootCoeff r 3 * r ^ (3 : ℕ) +
+            4 * r ^ (4 : ℕ) = 0 := by
       simpa using hcDr
     have hcVi' :
         routeJReciprocalDoubleRootCoeff r 0 +
             routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-            routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ 2 +
-            routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ 3 + r⁻¹ ^ 4 = 0 := by
+            routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ (2 : ℕ) +
+            routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ (3 : ℕ) + r⁻¹ ^ (4 : ℕ) = 0 := by
       simpa using hcVi
     have hcDi' :
         routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-            2 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ 2 +
-            3 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ 3 +
-            4 * r⁻¹ ^ 4 = 0 := by
+            2 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ (2 : ℕ) +
+            3 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ (3 : ℕ) +
+            4 * r⁻¹ ^ (4 : ℕ) = 0 := by
       simpa using hcDi
     unfold routeJFiveCoeffReflectedRows
     unfold routeJFiveCoeffValue routeJFiveCoeffDilationDerivative
@@ -219,55 +219,55 @@ theorem routeJFiveCoeffReflectedRows_iff
       calc
           a 4 * routeJReciprocalDoubleRootCoeff r 0 +
               a 4 * routeJReciprocalDoubleRootCoeff r 1 * r +
-              a 4 * routeJReciprocalDoubleRootCoeff r 2 * r ^ 2 +
-              a 4 * routeJReciprocalDoubleRootCoeff r 3 * r ^ 3 +
-              a 4 * r ^ 4 =
+              a 4 * routeJReciprocalDoubleRootCoeff r 2 * r ^ (2 : ℕ) +
+              a 4 * routeJReciprocalDoubleRootCoeff r 3 * r ^ (3 : ℕ) +
+              a 4 * r ^ (4 : ℕ) =
             a 4 *
               (routeJReciprocalDoubleRootCoeff r 0 +
                 routeJReciprocalDoubleRootCoeff r 1 * r +
-                routeJReciprocalDoubleRootCoeff r 2 * r ^ 2 +
-                routeJReciprocalDoubleRootCoeff r 3 * r ^ 3 +
-                r ^ 4) := by ring
+                routeJReciprocalDoubleRootCoeff r 2 * r ^ (2 : ℕ) +
+                routeJReciprocalDoubleRootCoeff r 3 * r ^ (3 : ℕ) +
+                r ^ (4 : ℕ)) := by ring
           _ = 0 := by rw [hcVr', mul_zero]
     constructor
     · rw [h 1, h 2, h 3]
       calc
           a 4 * routeJReciprocalDoubleRootCoeff r 1 * r +
-              2 * (a 4 * routeJReciprocalDoubleRootCoeff r 2) * r ^ 2 +
-              3 * (a 4 * routeJReciprocalDoubleRootCoeff r 3) * r ^ 3 +
-              4 * a 4 * r ^ 4 =
+              2 * (a 4 * routeJReciprocalDoubleRootCoeff r 2) * r ^ (2 : ℕ) +
+              3 * (a 4 * routeJReciprocalDoubleRootCoeff r 3) * r ^ (3 : ℕ) +
+              4 * a 4 * r ^ (4 : ℕ) =
             a 4 *
               (routeJReciprocalDoubleRootCoeff r 1 * r +
-                2 * routeJReciprocalDoubleRootCoeff r 2 * r ^ 2 +
-                3 * routeJReciprocalDoubleRootCoeff r 3 * r ^ 3 +
-                4 * r ^ 4) := by ring
+                2 * routeJReciprocalDoubleRootCoeff r 2 * r ^ (2 : ℕ) +
+                3 * routeJReciprocalDoubleRootCoeff r 3 * r ^ (3 : ℕ) +
+                4 * r ^ (4 : ℕ)) := by ring
           _ = 0 := by rw [hcDr', mul_zero]
     constructor
     · rw [h 0, h 1, h 2, h 3]
       calc
           a 4 * routeJReciprocalDoubleRootCoeff r 0 +
               a 4 * routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-              a 4 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ 2 +
-              a 4 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ 3 +
-              a 4 * r⁻¹ ^ 4 =
+              a 4 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ (2 : ℕ) +
+              a 4 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ (3 : ℕ) +
+              a 4 * r⁻¹ ^ (4 : ℕ) =
             a 4 *
               (routeJReciprocalDoubleRootCoeff r 0 +
                 routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-                routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ 2 +
-                routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ 3 +
-                r⁻¹ ^ 4) := by ring
+                routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ (2 : ℕ) +
+                routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ (3 : ℕ) +
+                r⁻¹ ^ (4 : ℕ)) := by ring
           _ = 0 := by rw [hcVi', mul_zero]
     · rw [h 1, h 2, h 3]
       calc
           a 4 * routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-              2 * (a 4 * routeJReciprocalDoubleRootCoeff r 2) * r⁻¹ ^ 2 +
-              3 * (a 4 * routeJReciprocalDoubleRootCoeff r 3) * r⁻¹ ^ 3 +
-              4 * a 4 * r⁻¹ ^ 4 =
+              2 * (a 4 * routeJReciprocalDoubleRootCoeff r 2) * r⁻¹ ^ (2 : ℕ) +
+              3 * (a 4 * routeJReciprocalDoubleRootCoeff r 3) * r⁻¹ ^ (3 : ℕ) +
+              4 * a 4 * r⁻¹ ^ (4 : ℕ) =
             a 4 *
               (routeJReciprocalDoubleRootCoeff r 1 * r⁻¹ +
-                2 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ 2 +
-                3 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ 3 +
-                4 * r⁻¹ ^ 4) := by ring
+                2 * routeJReciprocalDoubleRootCoeff r 2 * r⁻¹ ^ (2 : ℕ) +
+                3 * routeJReciprocalDoubleRootCoeff r 3 * r⁻¹ ^ (3 : ℕ) +
+                4 * r⁻¹ ^ (4 : ℕ)) := by ring
           _ = 0 := by rw [hcDi', mul_zero]
 
 /-- A nonzero five-tap mask can serve two radii only on one reciprocal orbit. -/

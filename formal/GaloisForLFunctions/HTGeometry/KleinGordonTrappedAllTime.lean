@@ -32,10 +32,10 @@ set_option maxHeartbeats 1000000 in
 theorem kgFieldEnergy_trapped_all_time (hb0 : 0 ≤ b) (hb1 : b < 1) (hW : ‖W₀‖ ≤ b)
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (W₀ x) y : ℂ) = inner ℂ x (W₀ y))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (‖g‖ ^ 2 + ‖h‖ ^ 2) / ((1 + b) / (1 - b))
-        ≤ ‖kgFieldGrad W₀ g h t‖ ^ 2 + ‖kgFieldVel W₀ g h t‖ ^ 2
-      ∧ ‖kgFieldGrad W₀ g h t‖ ^ 2 + ‖kgFieldVel W₀ g h t‖ ^ 2
-        ≤ (1 + b) / (1 - b) * (‖g‖ ^ 2 + ‖h‖ ^ 2) := by
+    (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
+        ≤ ‖kgFieldGrad W₀ g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g h t‖ ^ (2 : ℕ)
+      ∧ ‖kgFieldGrad W₀ g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g h t‖ ^ (2 : ℕ)
+        ≤ (1 + b) / (1 - b) * (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) := by
   have hWb : ∀ r : ℝ, ‖(fun _ : ℝ => W₀) r‖ ≤ b := fun _ => hW
   have hWs : ∀ x : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fun _ : ℝ => W₀) r x := fun _ => continuous_const

@@ -27,8 +27,8 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- The quadratic defect of a bounded operator is continuous. -/
 theorem continuous_contractionDefect (K : H →L[ℂ] H) :
-    Continuous fun y : H => ‖y‖ ^ 2 - (inner ℂ (K y) y : ℂ).re := by
-  have hnorm : Continuous fun y : H => ‖y‖ ^ 2 := (continuous_norm (E := H)).pow 2
+    Continuous fun y : H => ‖y‖ ^ (2 : ℕ) - (inner ℂ (K y) y : ℂ).re := by
+  have hnorm : Continuous fun y : H => ‖y‖ ^ (2 : ℕ) := (continuous_norm (E := H)).pow 2
   have hpair : Continuous fun y : H => ((K y : H), (y : H)) :=
     K.continuous.prodMk continuous_id
   have hinner : Continuous fun y : H => (inner ℂ (K y) y : ℂ) :=
@@ -38,9 +38,9 @@ theorem continuous_contractionDefect (K : H →L[ℂ] H) :
 /-- **Dense exhaustion.**  A bounded operator whose quadratic form is a contraction on a dense set
 is a contraction everywhere. -/
 theorem re_inner_le_norm_sq_of_dense (K : H →L[ℂ] H) {S : Set H} (hS : Dense S)
-    (h : ∀ v ∈ S, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2) (x : H) :
-    (inner ℂ (K x) x : ℂ).re ≤ ‖x‖ ^ 2 := by
-  set T : Set H := {y : H | 0 ≤ ‖y‖ ^ 2 - (inner ℂ (K y) y : ℂ).re} with hT
+    (h : ∀ v ∈ S, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) (x : H) :
+    (inner ℂ (K x) x : ℂ).re ≤ ‖x‖ ^ (2 : ℕ) := by
+  set T : Set H := {y : H | 0 ≤ ‖y‖ ^ (2 : ℕ) - (inner ℂ (K y) y : ℂ).re} with hT
   have hclosed : IsClosed T := isClosed_le continuous_const (continuous_contractionDefect K)
   have hsub : S ⊆ T := by
     intro v hv
@@ -59,12 +59,12 @@ contraction inequality, the family of subspace inequalities, and the dense-domai
 agree. -/
 theorem contraction_iff_forall_subspace (K : H →L[ℂ] H) (E : ℕ → Submodule ℂ H)
     (hdense : Dense (⋃ d, (E d : Set H))) :
-    ((∀ h : H, (inner ℂ (K h) h : ℂ).re ≤ ‖h‖ ^ 2) ↔
-        ∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2) ∧
-      ((∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2) ↔
-        ∀ v ∈ ⋃ d, (E d : Set H), (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2) := by
-  have hsecond : (∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2) ↔
-      ∀ v ∈ ⋃ d, (E d : Set H), (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ 2 := by
+    ((∀ h : H, (inner ℂ (K h) h : ℂ).re ≤ ‖h‖ ^ (2 : ℕ)) ↔
+        ∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) ∧
+      ((∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) ↔
+        ∀ v ∈ ⋃ d, (E d : Set H), (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) := by
+  have hsecond : (∀ d : ℕ, ∀ v ∈ E d, (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) ↔
+      ∀ v ∈ ⋃ d, (E d : Set H), (inner ℂ (K v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ) := by
     constructor
     · rintro h v hv
       obtain ⟨d, hvs⟩ := Set.mem_iUnion.mp hv
@@ -85,7 +85,7 @@ theorem rankOneOp_apply (u v : H) : rankOneOp u v = (inner ℂ u v : ℂ) • u 
   simp [rankOneOp, innerSL_apply_apply]
 
 theorem re_inner_rankOneOp (c : ℝ) (u v : H) :
-    (inner ℂ (((c : ℂ) • rankOneOp u) v) v : ℂ).re = c * ‖(inner ℂ u v : ℂ)‖ ^ 2 := by
+    (inner ℂ (((c : ℂ) • rankOneOp u) v) v : ℂ).re = c * ‖(inner ℂ u v : ℂ)‖ ^ (2 : ℕ) := by
   have hval : ((c : ℂ) • rankOneOp u) v = ((c : ℂ) * (inner ℂ u v : ℂ)) • u := by
     rw [smul_apply, rankOneOp_apply, smul_smul]
   rw [hval, inner_smul_left, map_mul, Complex.conj_ofReal]
@@ -97,8 +97,8 @@ theorem re_inner_rankOneOp (c : ℝ) (u v : H) :
 vanishing compression on that subspace while failing the contraction inequality. -/
 theorem rankOneOp_finiteDepth_blind {u : H} (hu : ‖u‖ = 1) {c : ℝ} (hc : 1 < c)
     (F : Submodule ℂ H) (hperp : ∀ v ∈ F, (inner ℂ u v : ℂ) = 0) :
-    (∀ v ∈ F, (inner ℂ (((c : ℂ) • rankOneOp u) v) v : ℂ).re ≤ ‖v‖ ^ 2) ∧
-      ¬ (∀ h : H, (inner ℂ (((c : ℂ) • rankOneOp u) h) h : ℂ).re ≤ ‖h‖ ^ 2) := by
+    (∀ v ∈ F, (inner ℂ (((c : ℂ) • rankOneOp u) v) v : ℂ).re ≤ ‖v‖ ^ (2 : ℕ)) ∧
+      ¬ (∀ h : H, (inner ℂ (((c : ℂ) • rankOneOp u) h) h : ℂ).re ≤ ‖h‖ ^ (2 : ℕ)) := by
   constructor
   · intro v hv
     rw [re_inner_rankOneOp, hperp v hv]
@@ -106,7 +106,7 @@ theorem rankOneOp_finiteDepth_blind {u : H} (hu : ‖u‖ = 1) {c : ℝ} (hc : 1
   · intro hcon
     have hval := hcon u
     rw [re_inner_rankOneOp] at hval
-    have hself : (inner ℂ u u : ℂ) = ((‖u‖ ^ 2 : ℝ) : ℂ) := by
+    have hself : (inner ℂ u u : ℂ) = ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [inner_self_eq_norm_sq_to_K]
       norm_cast
     rw [hself, hu] at hval

@@ -183,10 +183,10 @@ theorem divisorDilationClippedAbelWeight_eq_triangular
     positivity
   rw [divisorDilationClippedAbelWeight, hendpoint]
   apply (eq_div_iff hden).2
-  have hsqA : Real.sqrt (min M ((q + 1) * d) : ℕ) ^ 2 =
+  have hsqA : Real.sqrt (min M ((q + 1) * d) : ℕ) ^ (2 : ℕ) =
       (min M ((q + 1) * d) : ℕ) :=
     Real.sq_sqrt (by positivity)
-  have hsqB : Real.sqrt (q * d : ℕ) ^ 2 = (q * d : ℕ) :=
+  have hsqB : Real.sqrt (q * d : ℕ) ^ (2 : ℕ) = (q * d : ℕ) :=
     Real.sq_sqrt (by positivity)
   have hcast :
       (divisorDilationTriangularLength M d q : ℝ) =

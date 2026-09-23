@@ -12,12 +12,12 @@ noncomputable section
 theorem tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop :
     Tendsto pairQubitWeakTwoLocalGrowthFailureBudget atTop (nhds 0) := by
   have hmajorReal : Tendsto
-      (fun y : ℝ => 144 * (y ^ 2 * Real.exp (-(1 * y))))
+      (fun y : ℝ => 144 * (y ^ (2 : ℕ) * Real.exp (-(1 * y))))
       atTop (nhds 0) := by
     simpa using
       (tendsto_pow_mul_exp_neg_scaled 2 (by norm_num : (0 : ℝ) < 1)).const_mul 144
   have hmajor : Tendsto
-      (fun L : ℕ => 144 * ((L : ℝ) ^ 2 * Real.exp (-(L : ℝ))))
+      (fun L : ℕ => 144 * ((L : ℝ) ^ (2 : ℕ) * Real.exp (-(L : ℝ))))
       atTop (nhds 0) := by
     convert hmajorReal.comp tendsto_natCast_atTop_atTop using 1
     ext L
@@ -29,10 +29,10 @@ theorem tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop :
   filter_upwards [Filter.eventually_ge_atTop 1] with L hL
   have hn : 1 ≤ L * 2 := by omega
   have hcard : Fintype.card (PauliTracelessLabel (L * 2) 2) ≤
-      18 * (L * 2) ^ 2 := by
+      18 * (L * 2) ^ (2 : ℕ) := by
     rw [card_pauliTracelessLabel]
     simpa using Quantum.nonidentityPauliWeightCount_le (L * 2) 2 hn
-  have hexp : Real.exp (-((L * 2 : ℕ) : ℝ) ^ 2 / 2) ≤
+  have hexp : Real.exp (-((L * 2 : ℕ) : ℝ) ^ (2 : ℕ) / 2) ≤
       Real.exp (-(L : ℝ)) := by
     apply Real.exp_le_exp.mpr
     have hLR : (1 : ℝ) ≤ L := by exact_mod_cast hL
@@ -41,23 +41,23 @@ theorem tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop :
   unfold pairQubitWeakTwoLocalGrowthFailureBudget
   calc
     (Fintype.card (PauliTracelessLabel (L * 2) 2) : ℝ) *
-          (2 * Real.exp (-((L * 2 : ℕ) : ℝ) ^ 2 / 2)) ≤
-        ((18 * (L * 2) ^ 2 : ℕ) : ℝ) *
+          (2 * Real.exp (-((L * 2 : ℕ) : ℝ) ^ (2 : ℕ) / 2)) ≤
+        ((18 * (L * 2) ^ (2 : ℕ) : ℕ) : ℝ) *
           (2 * Real.exp (-(L : ℝ))) := by
       gcongr
-    _ = 144 * ((L : ℝ) ^ 2 * Real.exp (-(L : ℝ))) := by
+    _ = 144 * ((L : ℝ) ^ (2 : ℕ) * Real.exp (-(L : ℝ))) := by
       push_cast
       ring
 
 def pairQubitWeakTwoLocalUniformCarrierBudget (L : ℕ) (η κ : ℝ) : ℝ :=
-  Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+  Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
     (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) / κ
 
 theorem tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop
     {η κ : ℝ} (hη : 0 < η) (hκ : 0 < κ) :
     Tendsto (fun L => pairQubitWeakTwoLocalUniformCarrierBudget L η κ)
       atTop (nhds 0) := by
-  let a := gaussianIntervalActivationMass ^ 2 / 2
+  let a := gaussianIntervalActivationMass ^ (2 : ℕ) / 2
   let b := 8 * a * η
   have ha : 0 < a := by
     dsimp [a]
@@ -86,7 +86,7 @@ theorem tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop
     exact mul_le_mul_of_nonneg_left
       (mul_le_mul_of_nonneg_right hKreal hη.le) ha.le
   calc
-    -(gaussianIntervalActivationMass ^ 2 / 2) *
+    -(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * (L * 2) - 4 : ℕ) : ℝ) * η) =
         -(a * (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) := by
       dsimp [a]

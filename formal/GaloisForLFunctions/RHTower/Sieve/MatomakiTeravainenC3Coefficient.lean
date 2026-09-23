@@ -228,7 +228,7 @@ def ternaryDivisorCount (n : ℕ) : ℕ :=
 
 /-- Elementary pointwise comparison `d₃(n) ≤ d(n)²`. -/
 theorem ternaryDivisorCount_le_sq {n : ℕ} (hn : 0 < n) :
-    ternaryDivisorCount n ≤ n.divisors.card ^ 2 := by
+    ternaryDivisorCount n ≤ n.divisors.card ^ (2 : ℕ) := by
   unfold ternaryDivisorCount
   calc
     ∑ d ∈ n.divisors, (n / d).divisors.card ≤
@@ -240,7 +240,7 @@ theorem ternaryDivisorCount_le_sq {n : ℕ} (hn : 0 < n) :
         refine ⟨d, ?_⟩
         exact (Nat.div_mul_cancel hdDvd).symm
       exact card_divisors_mono_of_dvd hquot hn.ne'
-    _ = n.divisors.card ^ 2 := by
+    _ = n.divisors.card ^ (2 : ℕ) := by
       simp [Finset.sum_const, pow_two]
 
 /-- The source weight `d₃(n)|c₃,n|` is bounded by the cube-weighted pair count. -/
@@ -252,14 +252,14 @@ theorem ternaryDivisorCount_mul_norm_mtC3Coefficient_le
       B * weightedPrimePairDivisorCount 3 S (fun q => primesIco (lower q) q) n := by
   have hc3 := norm_mtC3Coefficient_le_divisor_mul_pairDivisorCount
     α S lower hn hS hlower hB hα
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hpair : 0 ≤ primePairDivisorCount S (fun q => primesIco (lower q) q) n := by
     unfold primePairDivisorCount
     positivity
   calc
     (ternaryDivisorCount n : ℝ) * ‖mtC3Coefficient α S lower n‖ ≤
-        ((n.divisors.card : ℝ) ^ 2) *
+        ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
           (B * (n.divisors.card : ℝ) *
             primePairDivisorCount S (fun q => primesIco (lower q) q) n) := by
       exact mul_le_mul hd3 hc3 (norm_nonneg _) (by positivity)
@@ -275,8 +275,8 @@ theorem sum_ternaryDivisorCount_mul_norm_mtC3Coefficient_le
     (hmass : ∀ q ∈ S, ∑ p ∈ primesIco (lower q) q, 1 / (p : ℝ) ≤ η) :
     ∑ n ∈ Finset.Icc 1 Y,
         (ternaryDivisorCount n : ℝ) * ‖mtC3Coefficient α S lower n‖ ≤
-      B * ((4 : ℝ) ^ 3 * (Y : ℝ) *
-        (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) * η *
+      B * ((4 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+        (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) * η *
           ∑ q ∈ S, 1 / (q : ℝ)) := by
   have hbase := sum_weightedPrimePairDivisorCount_le_of_fibreMass
     3 Y hY S (fun q => primesIco (lower q) q) hS
@@ -296,8 +296,8 @@ theorem sum_ternaryDivisorCount_mul_norm_mtC3Coefficient_le
     _ = B * ∑ n ∈ Finset.Icc 1 Y,
         weightedPrimePairDivisorCount 3 S (fun q => primesIco (lower q) q) n := by
       rw [Finset.mul_sum]
-    _ ≤ B * ((4 : ℝ) ^ 3 * (Y : ℝ) *
-        (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) * η *
+    _ ≤ B * ((4 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+        (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) * η *
           ∑ q ∈ S, 1 / (q : ℝ)) := by
       exact mul_le_mul_of_nonneg_left hbase hB
 

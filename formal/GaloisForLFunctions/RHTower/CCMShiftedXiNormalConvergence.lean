@@ -27,14 +27,14 @@ lemma sqrt_le_two_mul_sqrt_rectangular {x y : ℝ}
     Real.sqrt y ≤ 2 * Real.sqrt x := by
   have hsx := Real.sqrt_nonneg x
   have hsy := Real.sqrt_nonneg y
-  have hsx_sq : (Real.sqrt x) ^ 2 = x := Real.sq_sqrt hx
-  have hsy_sq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy
+  have hsx_sq : (Real.sqrt x) ^ (2 : ℕ) = x := Real.sq_sqrt hx
+  have hsy_sq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy
   nlinarith
 
 lemma inv_sq_mul_sqrt_rectangular {x : ℝ} (hx : 0 < x) :
-    (1 / x ^ 2) * Real.sqrt x = 1 / (x * Real.sqrt x) := by
+    (1 / x ^ (2 : ℕ)) * Real.sqrt x = 1 / (x * Real.sqrt x) := by
   have hsqrtpos : 0 < Real.sqrt x := Real.sqrt_pos.2 hx
-  have hsqrt_sq : (Real.sqrt x) ^ 2 = x := Real.sq_sqrt hx.le
+  have hsqrt_sq : (Real.sqrt x) ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   field_simp
   nlinarith
 
@@ -42,16 +42,16 @@ lemma inv_sq_mul_sqrt_rectangular {x : ℝ} (hx : 0 < x) :
 private theorem eventually_cofinite_le_norm_xiSpectralPoint (S : ℝ) (hS : 0 < S) :
     ∀ᶠ q : XiRightZeroCopy in Filter.cofinite, S ≤ ‖xiSpectralPoint q.1‖ := by
   have hbase : Summable (fun q : XiRightZeroCopy =>
-      1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
+      1 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable.subtype _
   have htend := hbase.tendsto_cofinite_zero
   have hlt : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
-      1 / ‖xiSpectralPoint q.1‖ ^ 2 < 1 / S ^ 2 :=
+      1 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
     htend.eventually_lt_const (by positivity)
   filter_upwards [hlt] with q hq
   have hqpos : 0 < ‖xiSpectralPoint q.1‖ :=
     norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1)
-  have hsq : S ^ 2 < ‖xiSpectralPoint q.1‖ ^ 2 :=
+  have hsq : S ^ (2 : ℕ) < ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) :=
     lt_of_one_div_lt_one_div (pow_pos hqpos 2) hq
   exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
 
@@ -67,10 +67,10 @@ private theorem norm_xiRectangularRightCoefficient_mul_riemannZeta_le
     s ≠ xiRightShiftedPole q ∧
       ‖xiRectangularRightCoefficient L q‖ *
           ‖riemannZeta (s - xiRightCenteredZero q)‖ ≤
-        (10 * (1 + Real.exp (|L| / 2)) ^ 2) *
+        (10 * (1 + Real.exp (|L| / 2)) ^ (2 : ℕ)) *
           (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) := by
   have hR0nonneg : 0 ≤ R0 := (norm_nonneg s).trans hsNorm
-  set C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2 with hC0
+  set C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ (2 : ℕ) with hC0
   set w : ℂ := xiRightCenteredZero q with hw
   have hwNorm : ‖w‖ = ‖xiSpectralPoint q.1‖ := by
     simp [hw, xiRightCenteredZero]
@@ -118,10 +118,10 @@ private theorem norm_xiRectangularRightCoefficient_mul_riemannZeta_le
   have hcoeff := norm_xiRectangularRightCoefficient_le L q
   calc
     ‖xiRectangularRightCoefficient L q‖ * ‖riemannZeta (s - w)‖ ≤
-        (C0 / ‖xiSpectralPoint q.1‖ ^ 2) * (10 * Real.sqrt ‖w‖) := by
+        (C0 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) * (10 * Real.sqrt ‖w‖) := by
           gcongr
     _ = (10 * C0) *
-        ((1 / ‖xiSpectralPoint q.1‖ ^ 2) * Real.sqrt ‖xiSpectralPoint q.1‖) := by
+        ((1 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) * Real.sqrt ‖xiSpectralPoint q.1‖) := by
       rw [hwNorm]
       ring
     _ = (10 * C0) *
@@ -142,7 +142,7 @@ theorem summableLocallyUniformlyOn_xiRectangularCancelledTerm_rightOne :
   obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn
     (xi_differentiable.continuous.comp
       (continuous_id.sub continuous_const)).continuousOn
-  let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2
+  let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ (2 : ℕ)
   let R0 : ℝ := max R 0
   let M0 : ℝ := max M 0
   have hthree : Summable (fun q : XiRightZeroCopy =>
@@ -220,7 +220,7 @@ theorem summableLocallyUniformlyOn_xiRectangularRawShiftedTerm_rightOne
     (isOpen_lt continuous_const Complex.continuous_re)
   intro K hKsub hK
   obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
-  let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2
+  let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ (2 : ℕ)
   let R0 : ℝ := max R 0
   have hthree : Summable (fun q : XiRightZeroCopy =>
       1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) :=

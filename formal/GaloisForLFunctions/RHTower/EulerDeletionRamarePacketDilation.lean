@@ -20,8 +20,8 @@ open RHTower.DeletionRamareDilation
 private theorem integral_Ioi_eq_integral_Ici_one_of_zero_on_Ioo
     (a : ℝ) (ha0 : 0 < a) (ha1 : a ≤ 1) (f : ℝ → ℝ)
     (hf : ∀ x ∈ Ioo (0 : ℝ) 1, f x = 0) :
-    (∫ x in Ioi a, f x ^ 2) = ∫ x in Ici (1 : ℝ), f x ^ 2 := by
-  let g : ℝ → ℝ := (Ioi a).indicator (fun x => f x ^ 2)
+    (∫ x in Ioi a, f x ^ (2 : ℕ)) = ∫ x in Ici (1 : ℝ), f x ^ (2 : ℕ) := by
+  let g : ℝ → ℝ := (Ioi a).indicator (fun x => f x ^ (2 : ℕ))
   have hsupp : Function.support g ⊆ Ici (1 : ℝ) := by
     intro x hx
     change g x ≠ 0 at hx
@@ -32,17 +32,17 @@ private theorem integral_Ioi_eq_integral_Ici_one_of_zero_on_Ioo
       exact hx (by simp [g, hxa, hf x hx0])
     · simp [g, hxa] at hx
   calc
-    (∫ x in Ioi a, f x ^ 2) = ∫ x, g x := by
+    (∫ x in Ioi a, f x ^ (2 : ℕ)) = ∫ x, g x := by
       symm
       simpa [g] using
-        (integral_indicator (μ := volume) (f := fun x => f x ^ 2) measurableSet_Ioi)
+        (integral_indicator (μ := volume) (f := fun x => f x ^ (2 : ℕ)) measurableSet_Ioi)
     _ = ∫ x in Ici (1 : ℝ), g x := by
       simpa only [setIntegral_univ, univ_inter] using
         (SetIntegral.integral_eq_integral_inter_of_support_subset
           (s := univ) (t := Ici (1 : ℝ)) (f := g) (μ := volume) hsupp measurableSet_Ici)
-    _ = ∫ x in Ici (1 : ℝ) ∩ Ioi a, f x ^ 2 := by
+    _ = ∫ x in Ici (1 : ℝ) ∩ Ioi a, f x ^ (2 : ℕ) := by
       rw [setIntegral_indicator measurableSet_Ioi]
-    _ = ∫ x in Ici (1 : ℝ), f x ^ 2 := by
+    _ = ∫ x in Ici (1 : ℝ), f x ^ (2 : ℕ) := by
       by_cases ha : a < 1
       · have hinter : Ici (1 : ℝ) ∩ Ioi a = Ici (1 : ℝ) := by
           ext x
@@ -60,8 +60,8 @@ private theorem integral_Ioi_eq_integral_Ici_one_of_zero_on_Ioo
           · exact fun hx => hx.2
           · exact fun hx => ⟨show (1 : ℝ) ≤ x from le_of_lt hx, hx⟩
         rw [hinter]
-        change (∫ x, f x ^ 2 ∂volume.restrict (Ioi (1 : ℝ))) =
-          ∫ x, f x ^ 2 ∂volume.restrict (Ici (1 : ℝ))
+        change (∫ x, f x ^ (2 : ℕ) ∂volume.restrict (Ioi (1 : ℝ))) =
+          ∫ x, f x ^ (2 : ℕ) ∂volume.restrict (Ici (1 : ℝ))
         rw [restrict_Ioi_eq_restrict_Ici]
 
 private theorem integral_Ioi_eq_integral_Ici_of_zero_on_Ioo
@@ -113,8 +113,8 @@ private theorem integral_Ioi_eq_integral_Ici_of_zero_on_Ioo
 /-- A Ramaré cofactor's reciprocal dilation has its exact `1 / p` physical
 energy factor: the portion below `1` vanishes identically. -/
 theorem integral_dilate_cofactor_sq (P : Finset ℕ) (M p : ℕ) (hp : 0 < p) :
-    (∫ u in Ioi (1 : ℝ), dilate p (cofactor P M p) u ^ 2) =
-      (1 / (p : ℝ)) * ∫ v in Ioi (1 : ℝ), cofactor P M p v ^ 2 := by
+    (∫ u in Ioi (1 : ℝ), dilate p (cofactor P M p) u ^ (2 : ℕ)) =
+      (1 / (p : ℝ)) * ∫ v in Ioi (1 : ℝ), cofactor P M p v ^ (2 : ℕ) := by
   rw [integral_dilate_sq p hp]
   have hpR : 0 < (p : ℝ) := by exact_mod_cast hp
   have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hp.ne'
@@ -122,7 +122,7 @@ theorem integral_dilate_cofactor_sq (P : Finset ℕ) (M p : ℕ) (hp : 0 < p) :
   have ha1 : 1 / (p : ℝ) ≤ 1 := (div_le_one hpR).mpr hp1
   rw [integral_Ioi_eq_integral_Ici_one_of_zero_on_Ioo (1 / (p : ℝ)) ha0 ha1
     (cofactor P M p) (fun x hx => cofactor_eq_zero_of_mem_Ioo_one P M p hp hx)]
-  change (1 / (p : ℝ)) * (∫ v, cofactor P M p v ^ 2 ∂volume.restrict (Ici (1 : ℝ))) = _
+  change (1 / (p : ℝ)) * (∫ v, cofactor P M p v ^ (2 : ℕ) ∂volume.restrict (Ici (1 : ℝ))) = _
   rw [← restrict_Ioi_eq_restrict_Ici]
 
 /-- Exact off-diagonal covariance of two physical Ramaré cofactor dilations.

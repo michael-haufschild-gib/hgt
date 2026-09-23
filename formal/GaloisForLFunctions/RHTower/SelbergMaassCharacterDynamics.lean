@@ -54,7 +54,7 @@ theorem source_readout_second_dir (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ
 theorem sourceVector_laplacian (z : ℍ) :
     dir 1 (dir 1 (fun w => sourceVector N f (ofComplex w))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w => sourceVector N f (ofComplex w))) (z : ℂ) =
-      ((-(lam/z.im^2) : ℝ) : ℂ) • sourceVector N f z := by
+      ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ) • sourceVector N f z := by
   ext q
   have h1 := source_readout_second_dir N f (EuclideanSpace.proj q) 1 z
   have hi := source_readout_second_dir N f (EuclideanSpace.proj q) Complex.I z
@@ -64,16 +64,16 @@ theorem sourceVector_laplacian (z : ℍ) :
     (dir Complex.I (dir Complex.I (fun w => sourceVector N f (ofComplex w))) (z : ℂ)) q at hi
   change (dir 1 (dir 1 (fun w => sourceVector N f (ofComplex w))) (z : ℂ)) q +
     (dir Complex.I (dir Complex.I (fun w => sourceVector N f (ofComplex w))) (z : ℂ)) q =
-    ((-(lam/z.im^2) : ℝ) : ℂ)*sourceVector N f z q
+    ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*sourceVector N f z q
   rw [← h1,← hi]
-  change _ = ((-(lam/z.im^2) : ℝ) : ℂ)*(quotientForm N f q).1.1 z
+  change _ = ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*(quotientForm N f q).1.1 z
   simpa only [field,Function.comp_apply,ofComplex_apply] using field_laplacian N f q z
 
 /-- Every fixed observation retains the original Maass equation, even when it vanishes. -/
 theorem source_readout_laplacian (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) (z : ℍ) :
     dir 1 (dir 1 (fun w => L (sourceVector N f (ofComplex w)))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w => L (sourceVector N f (ofComplex w)))) (z : ℂ) =
-      ((-(lam/z.im^2) : ℝ) : ℂ)*L (sourceVector N f z) := by
+      ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*L (sourceVector N f z) := by
   rw [source_readout_second_dir,source_readout_second_dir,← map_add,sourceVector_laplacian,map_smul,smul_eq_mul]
 
 /-- Actual projected source components retain C² regularity. -/
@@ -87,12 +87,12 @@ theorem characterField_laplacian (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) (q : Deck N) (z : ℍ) :
     dir 1 (dir 1 (characterField N f p r q)) (z : ℂ) +
       dir Complex.I (dir Complex.I (characterField N f p r q)) (z : ℂ) =
-      ((-(lam/z.im^2) : ℝ) : ℂ)*characterField N f p r q (z : ℂ) := by
+      ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*characterField N f p r q (z : ℂ) := by
   have h := source_readout_laplacian N f
     ((EuclideanSpace.proj q).comp (characterProjection N p r).toContinuousLinearMap) z
   change dir 1 (dir 1 (characterField N f p r q)) (z : ℂ) +
     dir Complex.I (dir Complex.I (characterField N f p r q)) (z : ℂ) =
-      ((-(lam/z.im^2) : ℝ) : ℂ)*(characterProjection N p r (sourceVector N f z)) q at h
+      ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*(characterProjection N p r (sourceVector N f z)) q at h
   simpa only [characterField,ofComplex_apply] using h
 
 /-- The physical derivative of each projected field is the projected original derivative. -/
@@ -105,12 +105,12 @@ theorem characterField_dir (p : Multiplicative (ZMod (N+1)) →* Deck N)
 
 /-- Literal mass of a projected original source in its real chart. -/
 def characterMass (p : Multiplicative (ZMod (N+1)) →* Deck N) (r : ZMod (N+1)) (w : ℂ) : ℝ :=
-  ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^2
+  ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^(2 : ℕ)
 
 /-- Literal physical gradient energy in one original character channel. -/
 def characterGradient (p : Multiplicative (ZMod (N+1)) →* Deck N) (r : ZMod (N+1)) (z : ℍ) : ℝ :=
-  ‖characterProjection N p r (sourceDerivative N f 1 z)‖^2+
-    ‖characterProjection N p r (sourceDerivative N f Complex.I z)‖^2
+  ‖characterProjection N p r (sourceDerivative N f 1 z)‖^(2 : ℕ)+
+    ‖characterProjection N p r (sourceDerivative N f Complex.I z)‖^(2 : ℕ)
 
 theorem characterMass_eq_sum (p : Multiplicative (ZMod (N+1)) →* Deck N) (r : ZMod (N+1)) (w : ℂ) :
     characterMass N f p r w = ∑ q : Deck N, normSq (characterField N f p r q w) := by
@@ -129,7 +129,7 @@ theorem characterField_normSq_laplacian (p : Multiplicative (ZMod (N+1)) →* De
     realLaplacian (fun w => normSq (characterField N f p r q w)) (z : ℂ) =
       2*(normSq (dir 1 (characterField N f p r q) (z : ℂ))+
         normSq (dir Complex.I (characterField N f p r q) (z : ℂ))-
-        (lam/z.im^2)*normSq (characterField N f p r q (z : ℂ))) := by
+        (lam/z.im^(2 : ℕ))*normSq (characterField N f p r q (z : ℂ))) := by
   have hf := (characterField_contDiffOn N f p r q).contDiffAt
     (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   have h := characterField_laplacian N f p r q z
@@ -142,7 +142,7 @@ theorem characterField_normSq_laplacian (p : Multiplicative (ZMod (N+1)) →* De
 theorem characterMass_laplacian (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) (z : ℍ) :
     realLaplacian (characterMass N f p r) (z : ℂ) =
-      2*(characterGradient N f p r z-(lam/z.im^2)*characterMass N f p r (z : ℂ)) := by
+      2*(characterGradient N f p r z-(lam/z.im^(2 : ℕ))*characterMass N f p r (z : ℂ)) := by
   have he : characterMass N f p r = (fun w => ∑ q : Deck N, normSq (characterField N f p r q w)) :=
     funext (characterMass_eq_sum N f p r)
   have hq (q : Deck N) : ContDiffAt ℝ 2 (fun w => normSq (characterField N f p r q w)) (z : ℂ) := by
@@ -190,9 +190,9 @@ theorem characterMass_current_translation (r : ZMod (N+1)) (v : ℂ) (z : ℍ) :
       finiteRegularUnitary (QuotientGroup.mk T : Deck N) (sourceDerivative N f v z) := by
     have h := sourceDerivative_modular N f T z v
     simpa [denom,ModularGroup.T] using h
-  change dir v (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^2)
+  change dir v (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^(2 : ℕ))
       ((T • z : ℍ) : ℂ) =
-    dir v (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^2) (z : ℂ)
+    dir v (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^(2 : ℕ)) (z : ℂ)
   rw [character_mass_dir,character_mass_dir,sourceVector_pullback,hd,← upperBlock_one_eq_T,
     characterProjection_commute_block,LinearIsometryEquiv.inner_map_map]
 

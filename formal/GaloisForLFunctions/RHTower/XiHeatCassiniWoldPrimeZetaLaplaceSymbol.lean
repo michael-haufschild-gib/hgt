@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.SquarefreeCarlemanLogExpansion
 /-!
 # Prime-zeta symbol of the Route-T Wold Laplace current
 
-The depth-one Wold Euler factor is the cubic finite difference `(1-p⁻¹)^3`.  After Laplace
+The depth-one Wold Euler factor is the cubic finite difference `(1-p⁻¹)^(3 : ℕ)`.  After Laplace
 rotation, its complete prime current is therefore exactly the four-shift finite difference of the
 first prime-zeta trace.  Combined with the residual renormalization theorem, this identifies the
 safe Route-T carrier as

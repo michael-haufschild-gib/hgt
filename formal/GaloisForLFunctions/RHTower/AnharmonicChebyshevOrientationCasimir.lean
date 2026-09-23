@@ -57,20 +57,20 @@ theorem chebyshevAnharmonicQ_sigma
 /-- Exact quotient identity with the unique nonzero finite critical value `27/4`. -/
 theorem chebyshevAnharmonicQ_sq_add_criticalValue
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
-    chebyshevAnharmonicQ s ^ 2 + 27 / 4 =
-      (s ^ 2 - s + 1) ^ 3 / (s ^ 2 * (s - 1) ^ 2) := by
+    chebyshevAnharmonicQ s ^ (2 : ℕ) + 27 / 4 =
+      (s ^ (2 : ℕ) - s + 1) ^ (3 : ℕ) / (s ^ (2 : ℕ) * (s - 1) ^ (2 : ℕ)) := by
   simp only [chebyshevAnharmonicQ]
   field_simp [hs0, hs1]
   ring
 
 /-- Endpoint-scaled Koebe map used by the trace generating function. -/
-def chebyshevTraceKoebeMap (v : ℂ) : ℂ := 27 * v / (1 - v) ^ 2
+def chebyshevTraceKoebeMap (v : ℂ) : ℂ := 27 * v / (1 - v) ^ (2 : ℕ)
 
 /-- One-node Koebe factorization: denominator poles are exactly preimages of descended zeros. -/
 theorem chebyshevTraceKoebe_oneNode_factorization
     {v x : ℂ} (hv : v ≠ 1) (hx : x ≠ 0) :
-    1 - 2 * v * (1 + 2 * (27 / 4) / x) + v ^ 2 =
-      (1 - v) ^ 2 * (1 - chebyshevTraceKoebeMap v / x) := by
+    1 - 2 * v * (1 + 2 * (27 / 4) / x) + v ^ (2 : ℕ) =
+      (1 - v) ^ (2 : ℕ) * (1 - chebyshevTraceKoebeMap v / x) := by
   simp only [chebyshevTraceKoebeMap]
   field_simp [hv, hx]
   ring
@@ -88,7 +88,7 @@ def anharmonicOrbitSecondDifference (b c : ℂ) : ℂ := b - c
 def anharmonicOrbitHolomorphicCasimir (a b c : ℂ) : ℂ :=
   let p := anharmonicOrbitFirstDifference a b
   let q := anharmonicOrbitSecondDifference b c
-  p ^ 2 + p * q + q ^ 2
+  p ^ (2 : ℕ) + p * q + q ^ (2 : ℕ)
 
 /-- Cubic cyclic orientation: invariant under the cycle and odd under reflection. -/
 def anharmonicOrbitChirality (a b c : ℂ) : ℂ :=
@@ -98,7 +98,7 @@ def anharmonicOrbitChirality (a b c : ℂ) : ℂ :=
 
 /-- A general holomorphic quadratic form on the two standard difference coordinates. -/
 def anharmonicStandardQuadratic (A B C p q : ℂ) : ℂ :=
-  A * p ^ 2 + B * p * q + C * q ^ 2
+  A * p ^ (2 : ℕ) + B * p * q + C * q ^ (2 : ℕ)
 
 /-- Cyclic invariance classifies every holomorphic quadratic form on the standard sector:
 its three coefficients must coincide. -/
@@ -123,7 +123,7 @@ theorem anharmonicStandardQuadratic_eq_casimir_of_cyclic
       anharmonicStandardQuadratic A B C q (-p - q) =
         anharmonicStandardQuadratic A B C p q)
     (p q : ℂ) :
-    anharmonicStandardQuadratic A B C p q = A * (p ^ 2 + p * q + q ^ 2) := by
+    anharmonicStandardQuadratic A B C p q = A * (p ^ (2 : ℕ) + p * q + q ^ (2 : ℕ)) := by
   obtain ⟨hAB, hBC⟩ := anharmonicStandardQuadratic_coefficients_of_cyclic hcycle
   subst B
   subst C
@@ -183,7 +183,7 @@ theorem anharmonicOrbit_reconstruct_third (a b c : ℂ) :
 /-- Positive doubled-sector energy, retaining conjugate information discarded by holomorphic
 scalar compression. -/
 def anharmonicOrbitHermitianEnergy (a b c : ℂ) : ℝ :=
-  ‖a - b‖ ^ 2 + ‖b - c‖ ^ 2 + ‖c - a‖ ^ 2
+  ‖a - b‖ ^ (2 : ℕ) + ‖b - c‖ ^ (2 : ℕ) + ‖c - a‖ ^ (2 : ℕ)
 
 theorem anharmonicOrbitHermitianEnergy_cyclic (a b c : ℂ) :
     anharmonicOrbitHermitianEnergy b c a = anharmonicOrbitHermitianEnergy a b c := by
@@ -204,10 +204,10 @@ theorem anharmonicOrbitHermitianEnergy_eq_zero_iff (a b c : ℂ) :
     anharmonicOrbitHermitianEnergy a b c = 0 ↔ a = b ∧ b = c := by
   constructor
   · intro h
-    have hab : ‖a - b‖ ^ 2 = 0 := by
+    have hab : ‖a - b‖ ^ (2 : ℕ) = 0 := by
       simp only [anharmonicOrbitHermitianEnergy] at h
       nlinarith [sq_nonneg ‖b - c‖, sq_nonneg ‖c - a‖]
-    have hbc : ‖b - c‖ ^ 2 = 0 := by
+    have hbc : ‖b - c‖ ^ (2 : ℕ) = 0 := by
       simp only [anharmonicOrbitHermitianEnergy] at h
       nlinarith [sq_nonneg ‖a - b‖, sq_nonneg ‖c - a‖]
     constructor
@@ -220,12 +220,12 @@ theorem anharmonicOrbitHermitianEnergy_eq_zero_iff (a b c : ℂ) :
 def anharmonicIsotropicRoot : ℂ := (-1 + Complex.I * Real.sqrt 3) / 2
 
 theorem anharmonicIsotropicRoot_sq_add_self_add_one :
-    anharmonicIsotropicRoot ^ 2 + anharmonicIsotropicRoot + 1 = 0 := by
-  have hsqrt : (Real.sqrt 3) ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    anharmonicIsotropicRoot ^ (2 : ℕ) + anharmonicIsotropicRoot + 1 = 0 := by
+  have hsqrt : (Real.sqrt 3) ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   rw [anharmonicIsotropicRoot]
   field_simp
   ring_nf
-  have hsqrtC : ((Real.sqrt 3 : ℂ) ^ 2) = 3 := by exact_mod_cast hsqrt
+  have hsqrtC : ((Real.sqrt 3 : ℂ) ^ (2 : ℕ)) = 3 := by exact_mod_cast hsqrt
   all_goals rw [hsqrtC]
   all_goals norm_num
 
@@ -244,7 +244,7 @@ theorem exists_nonzero_standardPair_anharmonicStandardQuadratic_eq_zero
     ∃ p q : ℂ, (p ≠ 0 ∨ q ≠ 0) ∧ anharmonicStandardQuadratic A B C p q = 0 := by
   refine ⟨anharmonicIsotropicRoot, 1, Or.inr one_ne_zero, ?_⟩
   rw [anharmonicStandardQuadratic_eq_casimir_of_cyclic hcycle]
-  rw [show anharmonicIsotropicRoot ^ 2 + anharmonicIsotropicRoot * 1 + 1 ^ 2 = 0 by
+  rw [show anharmonicIsotropicRoot ^ (2 : ℕ) + anharmonicIsotropicRoot * 1 + 1 ^ (2 : ℕ) = 0 by
     simpa using anharmonicIsotropicRoot_sq_add_self_add_one]
   simp
 

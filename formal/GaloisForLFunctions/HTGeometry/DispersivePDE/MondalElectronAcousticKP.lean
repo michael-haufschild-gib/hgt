@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE
 
 /-- Pointwise residual of generalized KP. -/
 def generalKPResidual (α δ ρ : ℝ) (J : RealEvolutionJetKP) (t x y : ℝ) : ℝ :=
-  J.utx t x y + α * (J.ux t x y ^ 2 + J.u t x y * J.uxx t x y)
+  J.utx t x y + α * (J.ux t x y ^ (2 : ℕ) + J.u t x y * J.uxx t x y)
     + δ * J.uxxxx t x y + ρ * J.uyy t x y
 
 /-- Expanded generalized KP equation
@@ -26,7 +26,7 @@ def SolvesGeneralKP (α δ ρ : ℝ) (J : RealEvolutionJetKP) : Prop :=
 
 /-- Division-free dispersion relation, with transverse wave number `k * slope`. -/
 def mondalFrequency (δ ρ k slope : ℝ) : ℝ :=
-  δ * k ^ 3 + ρ * k * slope ^ 2
+  δ * k ^ (3 : ℕ) + ρ * k * slope ^ (2 : ℕ)
 
 /-- Half-phase used by the `sech²` form of the one-soliton. -/
 noncomputable def mondalPhase (δ ρ k slope shift t x y : ℝ) : ℝ :=
@@ -34,7 +34,7 @@ noncomputable def mondalPhase (δ ρ k slope shift t x y : ℝ) : ℝ :=
 
 /-- Corrected affine-phase one-soliton obtained from the paper's Hirota ansatz. -/
 noncomputable def mondalSoliton (α δ ρ k slope shift t x y : ℝ) : ℝ :=
-  (3 * δ / α) * k ^ 2 * solitonQ (mondalPhase δ ρ k slope shift t x y)
+  (3 * δ / α) * k ^ (2 : ℕ) * solitonQ (mondalPhase δ ρ k slope shift t x y)
 
 private theorem hasDerivAt_mondalPhase_time
     (δ ρ k slope shift t x y : ℝ) :
@@ -77,69 +77,69 @@ private theorem hasDerivAt_const_mul_comp
 /-- Certified derivative jet of the corrected affine-phase one-soliton. -/
 noncomputable def mondalSolitonJet (α δ ρ k slope shift : ℝ) : RealEvolutionJetKP where
   u := mondalSoliton α δ ρ k slope shift
-  ut := fun t x y => ((3 * δ / α) * k ^ 2
+  ut := fun t x y => ((3 * δ / α) * k ^ (2 : ℕ)
     * ((1 / 2 : ℝ) * (-mondalFrequency δ ρ k slope)))
     * solitonQ1 (mondalPhase δ ρ k slope shift t x y)
-  ux := fun t x y => ((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k))
+  ux := fun t x y => ((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k))
     * solitonQ1 (mondalPhase δ ρ k slope shift t x y)
-  uxx := fun t x y => (((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k))
+  uxx := fun t x y => (((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k))
     * ((1 / 2 : ℝ) * k))
     * solitonQ2 (mondalPhase δ ρ k slope shift t x y)
-  uxxx := fun t x y => ((((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k))
+  uxxx := fun t x y => ((((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k))
     * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
     * solitonQ3 (mondalPhase δ ρ k slope shift t x y)
-  uxxxx := fun t x y => (((((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k))
+  uxxxx := fun t x y => (((((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k))
     * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
       * solitonQ4 (mondalPhase δ ρ k slope shift t x y)
-  utx := fun t x y => (((3 * δ / α) * k ^ 2
+  utx := fun t x y => (((3 * δ / α) * k ^ (2 : ℕ)
     * ((1 / 2 : ℝ) * (-mondalFrequency δ ρ k slope))) * ((1 / 2 : ℝ) * k))
       * solitonQ2 (mondalPhase δ ρ k slope shift t x y)
-  uy := fun t x y => ((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * (k * slope)))
+  uy := fun t x y => ((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * (k * slope)))
     * solitonQ1 (mondalPhase δ ρ k slope shift t x y)
-  uyy := fun t x y => (((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * (k * slope)))
+  uyy := fun t x y => (((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * (k * slope)))
     * ((1 / 2 : ℝ) * (k * slope))) * solitonQ2 (mondalPhase δ ρ k slope shift t x y)
   hasDerivAt_time := by
     intro t x y
     simpa [mondalSoliton] using hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2) (hasDerivAt_solitonQ _)
+      (c := (3 * δ / α) * k ^ (2 : ℕ)) (hasDerivAt_solitonQ _)
       (hasDerivAt_mondalPhase_time δ ρ k slope shift t x y)
   hasDerivAt_space := by
     intro t x y
     simpa [mondalSoliton] using hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2) (hasDerivAt_solitonQ _)
+      (c := (3 * δ / α) * k ^ (2 : ℕ)) (hasDerivAt_solitonQ _)
       (hasDerivAt_mondalPhase_space δ ρ k slope shift t x y)
   hasDerivAt_space_one := by
     intro t x y
     exact hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k)) (hasDerivAt_solitonQ1 _)
+      (c := (3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k)) (hasDerivAt_solitonQ1 _)
       (hasDerivAt_mondalPhase_space δ ρ k slope shift t x y)
   hasDerivAt_space_two := by
     intro t x y
     exact hasDerivAt_const_mul_comp
-      (c := ((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
+      (c := ((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
       (hasDerivAt_solitonQ2 _)
       (hasDerivAt_mondalPhase_space δ ρ k slope shift t x y)
   hasDerivAt_space_three := by
     intro t x y
     exact hasDerivAt_const_mul_comp
-      (c := (((3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
+      (c := (((3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * k)) * ((1 / 2 : ℝ) * k))
         * ((1 / 2 : ℝ) * k)) (hasDerivAt_solitonQ3 _)
       (hasDerivAt_mondalPhase_space δ ρ k slope shift t x y)
   hasDerivAt_time_space := by
     intro t x y
     exact hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * (-mondalFrequency δ ρ k slope)))
+      (c := (3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * (-mondalFrequency δ ρ k slope)))
       (hasDerivAt_solitonQ1 _)
       (hasDerivAt_mondalPhase_space δ ρ k slope shift t x y)
   hasDerivAt_transverse := by
     intro t x y
     simpa [mondalSoliton] using hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2) (hasDerivAt_solitonQ _)
+      (c := (3 * δ / α) * k ^ (2 : ℕ)) (hasDerivAt_solitonQ _)
       (hasDerivAt_mondalPhase_transverse δ ρ k slope shift t x y)
   hasDerivAt_transverse_one := by
     intro t x y
     exact hasDerivAt_const_mul_comp
-      (c := (3 * δ / α) * k ^ 2 * ((1 / 2 : ℝ) * (k * slope)))
+      (c := (3 * δ / α) * k ^ (2 : ℕ) * ((1 / 2 : ℝ) * (k * slope)))
       (hasDerivAt_solitonQ1 _)
       (hasDerivAt_mondalPhase_transverse δ ρ k slope shift t x y)
 
@@ -171,7 +171,7 @@ theorem mondalCanonical_eq_kpLineSoliton :
     mondalSoliton 6 1 3 2 0 0 = kpLineSoliton := by
   funext t x y
   simp only [mondalSoliton, mondalPhase, mondalFrequency, kpLineSoliton, kdvSoliton]
-  rw [show (3 * 1 / 6 : ℝ) * 2 ^ 2 = 2 by ring]
+  rw [show (3 * 1 / 6 : ℝ) * 2 ^ (2 : ℕ) = 2 by ring]
   apply congrArg (fun z => 2 * solitonQ z)
   ring
 
@@ -286,7 +286,7 @@ theorem hasDerivAt_mondalOneTauLog (k shift x : ℝ) :
 
 theorem hasDerivAt_mondalOneTauLogSlope (k shift x : ℝ) :
     HasDerivAt (mondalOneTauLogSlope k shift)
-      ((k ^ 2 / 4) * solitonQ ((k * x + shift) / 2)) x := by
+      ((k ^ (2 : ℕ) / 4) * solitonQ ((k * x + shift) / 2)) x := by
   have hphase : HasDerivAt (fun z : ℝ => (k * z + shift) / 2) (k / 2) x := by
     have h := ((hasDerivAt_id x).const_mul k).add_const shift
     simpa [id_eq] using h.div_const 2
@@ -299,18 +299,18 @@ theorem hasDerivAt_mondalOneTauLogSlope (k shift x : ℝ) :
 
 theorem mondalHirotaCurvature_eq_soliton
     (α δ ρ k slope shift t x y : ℝ) :
-    (12 * δ / α) * ((k ^ 2 / 4) * solitonQ (mondalPhase δ ρ k slope shift t x y)) =
+    (12 * δ / α) * ((k ^ (2 : ℕ) / 4) * solitonQ (mondalPhase δ ρ k slope shift t x y)) =
       mondalSoliton α δ ρ k slope shift t x y := by
   unfold mondalSoliton
   ring
 
 /-- Paper's right-moving frequency (24), expressed without division via `l = k * slope`. -/
 def mondalPrintedRightFrequency (β γ k slope : ℝ) : ℝ :=
-  β * k ^ 3 - γ * k * slope ^ 2
+  β * k ^ (3 : ℕ) - γ * k * slope ^ (2 : ℕ)
 
 /-- Paper's left-moving frequency (36), expressed without division via `L = K * slope`. -/
 def mondalPrintedLeftFrequency (β γ k slope : ℝ) : ℝ :=
-  -β * k ^ 3 + γ * k * slope ^ 2
+  -β * k ^ (3 : ℕ) + γ * k * slope ^ (2 : ℕ)
 
 theorem mondalPrintedRightFrequency_eq_neg_correct (β γ k slope : ℝ) :
     mondalPrintedRightFrequency β γ k slope = -mondalFrequency (-β) γ k slope := by
@@ -323,17 +323,17 @@ theorem mondalPrintedLeftFrequency_eq_neg_correct (β γ k slope : ℝ) :
   ring
 
 theorem mondalPrintedRightAmplitude_eq_neg_four_mul_correct (α β k : ℝ) :
-    (12 * β / α) * k ^ 2 = -4 * ((3 * (-β) / α) * k ^ 2) := by
+    (12 * β / α) * k ^ (2 : ℕ) = -4 * ((3 * (-β) / α) * k ^ (2 : ℕ)) := by
   ring
 
 theorem mondalPrintedLeftAmplitude_eq_four_mul_correct (α β k : ℝ) :
-    (12 * β / α) * k ^ 2 = 4 * ((3 * β / α) * k ^ 2) := by
+    (12 * β / α) * k ^ (2 : ℕ) = 4 * ((3 * β / α) * k ^ (2 : ℕ)) := by
   ring
 
 /-! ## Conjugate-pair breather algebra -/
 
 noncomputable def mondalComplexDispersion (δ ρ : ℝ) (k l : ℂ) : ℂ :=
-  (δ : ℂ) * k ^ 3 + (ρ : ℂ) * l ^ 2 / k
+  (δ : ℂ) * k ^ (3 : ℕ) + (ρ : ℂ) * l ^ (2 : ℕ) / k
 
 theorem mondalComplexDispersion_conj (δ ρ : ℝ) (k l : ℂ) :
     starRingEnd ℂ (mondalComplexDispersion δ ρ k l) =
@@ -390,8 +390,8 @@ theorem mondalComplexBreatherTau_im (interaction : ℝ) (z : ℂ) :
 def hirotaKPResidual (δ ρ : ℝ) (J : RealEvolutionJetKP) (t x y : ℝ) : ℝ :=
   2 * (J.u t x y * J.utx t x y - J.ut t x y * J.ux t x y)
     + 2 * δ * (J.u t x y * J.uxxxx t x y
-      - 4 * J.ux t x y * J.uxxx t x y + 3 * J.uxx t x y ^ 2)
-    + 2 * ρ * (J.u t x y * J.uyy t x y - J.uy t x y ^ 2)
+      - 4 * J.ux t x y * J.uxxx t x y + 3 * J.uxx t x y ^ (2 : ℕ))
+    + 2 * ρ * (J.u t x y * J.uyy t x y - J.uy t x y ^ (2 : ℕ))
 
 def SolvesHirotaKP (δ ρ : ℝ) (J : RealEvolutionJetKP) : Prop :=
   ∀ t x y, hirotaKPResidual δ ρ J t x y = 0
@@ -401,8 +401,8 @@ def hirotaKPTimeReversedResidual
     (δ ρ : ℝ) (J : RealEvolutionJetKP) (t x y : ℝ) : ℝ :=
   -2 * (J.u t x y * J.utx t x y - J.ut t x y * J.ux t x y)
     + 2 * δ * (J.u t x y * J.uxxxx t x y
-      - 4 * J.ux t x y * J.uxxx t x y + 3 * J.uxx t x y ^ 2)
-    + 2 * ρ * (J.u t x y * J.uyy t x y - J.uy t x y ^ 2)
+      - 4 * J.ux t x y * J.uxxx t x y + 3 * J.uxx t x y ^ (2 : ℕ))
+    + 2 * ρ * (J.u t x y * J.uyy t x y - J.uy t x y ^ (2 : ℕ))
 
 def SolvesHirotaKPTimeReversed (δ ρ : ℝ) (J : RealEvolutionJetKP) : Prop :=
   ∀ t x y, hirotaKPTimeReversedResidual δ ρ J t x y = 0
@@ -482,12 +482,12 @@ noncomputable def mondalOneExponentialTauJet
   u := fun t x y => 1 + mondalExpWave omega k l shift t x y
   ut := fun t x y => (-omega) * mondalExpWave omega k l shift t x y
   ux := fun t x y => k * mondalExpWave omega k l shift t x y
-  uxx := fun t x y => k ^ 2 * mondalExpWave omega k l shift t x y
-  uxxx := fun t x y => k ^ 3 * mondalExpWave omega k l shift t x y
-  uxxxx := fun t x y => k ^ 4 * mondalExpWave omega k l shift t x y
+  uxx := fun t x y => k ^ (2 : ℕ) * mondalExpWave omega k l shift t x y
+  uxxx := fun t x y => k ^ (3 : ℕ) * mondalExpWave omega k l shift t x y
+  uxxxx := fun t x y => k ^ (4 : ℕ) * mondalExpWave omega k l shift t x y
   utx := fun t x y => (-omega) * k * mondalExpWave omega k l shift t x y
   uy := fun t x y => l * mondalExpWave omega k l shift t x y
-  uyy := fun t x y => l ^ 2 * mondalExpWave omega k l shift t x y
+  uyy := fun t x y => l ^ (2 : ℕ) * mondalExpWave omega k l shift t x y
   hasDerivAt_time := by
     intro t x y
     have h := (hasDerivAt_const t (1 : ℝ)).add
@@ -506,11 +506,11 @@ noncomputable def mondalOneExponentialTauJet
     all_goals ring
   hasDerivAt_space_two := by
     intro t x y
-    convert hasDerivAt_const_mul_mondalExpWave_space (k ^ 2) omega k l shift t x y using 1
+    convert hasDerivAt_const_mul_mondalExpWave_space (k ^ (2 : ℕ)) omega k l shift t x y using 1
     all_goals ring
   hasDerivAt_space_three := by
     intro t x y
-    convert hasDerivAt_const_mul_mondalExpWave_space (k ^ 3) omega k l shift t x y using 1
+    convert hasDerivAt_const_mul_mondalExpWave_space (k ^ (3 : ℕ)) omega k l shift t x y using 1
     all_goals ring
   hasDerivAt_time_space := by
     intro t x y
@@ -527,10 +527,10 @@ noncomputable def mondalOneExponentialTauJet
     all_goals ring
 
 def mondalHirotaSymbol (δ ρ omega k l : ℝ) : ℝ :=
-  -omega * k + δ * k ^ 4 + ρ * l ^ 2
+  -omega * k + δ * k ^ (4 : ℕ) + ρ * l ^ (2 : ℕ)
 
 def mondalTimeReversedHirotaSymbol (δ ρ omega k l : ℝ) : ℝ :=
-  omega * k + δ * k ^ 4 + ρ * l ^ 2
+  omega * k + δ * k ^ (4 : ℕ) + ρ * l ^ (2 : ℕ)
 
 theorem mondalTimeReversedHirotaSymbol_eq
     (δ ρ omega k l : ℝ) :
@@ -570,13 +570,13 @@ theorem mondalOneExponentialTau_corrected_solvesHirota
 
 theorem mondalPrintedRightFrequency_symbol (β γ k slope : ℝ) :
     mondalHirotaSymbol (-β) γ (mondalPrintedRightFrequency β γ k slope) k (k * slope) =
-      2 * k ^ 2 * (-β * k ^ 2 + γ * slope ^ 2) := by
+      2 * k ^ (2 : ℕ) * (-β * k ^ (2 : ℕ) + γ * slope ^ (2 : ℕ)) := by
   unfold mondalHirotaSymbol mondalPrintedRightFrequency
   ring
 
 theorem mondalPrintedLeftFrequency_symbol (β γ k slope : ℝ) :
     mondalHirotaSymbol β (-γ) (mondalPrintedLeftFrequency β γ k slope) k (k * slope) =
-      2 * k ^ 2 * (β * k ^ 2 - γ * slope ^ 2) := by
+      2 * k ^ (2 : ℕ) * (β * k ^ (2 : ℕ) - γ * slope ^ (2 : ℕ)) := by
   unfold mondalHirotaSymbol mondalPrintedLeftFrequency
   ring
 
@@ -759,14 +759,14 @@ theorem mondalTwoExponentialTau_hirotaResidual
     hirotaKPResidual δ ρ
         (mondalTwoExponentialTauJet d n
           omega₁ k₁ l₁ shift₁ omega₂ k₂ l₂ shift₂) t x y =
-      2 * d ^ 2 * mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
+      2 * d ^ (2 : ℕ) * mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
           mondalHirotaSymbol δ ρ omega₁ k₁ l₁
-        + 2 * d ^ 2 * mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
+        + 2 * d ^ (2 : ℕ) * mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
           mondalHirotaSymbol δ ρ omega₂ k₂ l₂
         + 2 * d * n *
           mondalExpWave (omega₁ + omega₂) (k₁ + k₂) (l₁ + l₂) (shift₁ + shift₂) t x y *
           mondalHirotaSymbol δ ρ (omega₁ + omega₂) (k₁ + k₂) (l₁ + l₂)
-        + 2 * d ^ 2 *
+        + 2 * d ^ (2 : ℕ) *
           mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
           mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
           mondalHirotaSymbol δ ρ (omega₁ - omega₂) (k₁ - k₂) (l₁ - l₂)
@@ -789,14 +789,14 @@ theorem mondalTwoExponentialTau_timeReversedHirotaResidual
     hirotaKPTimeReversedResidual δ ρ
         (mondalTwoExponentialTauJet d n
           omega₁ k₁ l₁ shift₁ omega₂ k₂ l₂ shift₂) t x y =
-      2 * d ^ 2 * mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
+      2 * d ^ (2 : ℕ) * mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
           mondalTimeReversedHirotaSymbol δ ρ omega₁ k₁ l₁
-        + 2 * d ^ 2 * mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
+        + 2 * d ^ (2 : ℕ) * mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
           mondalTimeReversedHirotaSymbol δ ρ omega₂ k₂ l₂
         + 2 * d * n *
           mondalExpWave (omega₁ + omega₂) (k₁ + k₂) (l₁ + l₂) (shift₁ + shift₂) t x y *
           mondalTimeReversedHirotaSymbol δ ρ (omega₁ + omega₂) (k₁ + k₂) (l₁ + l₂)
-        + 2 * d ^ 2 *
+        + 2 * d ^ (2 : ℕ) *
           mondalExpWave omega₁ k₁ l₁ shift₁ t x y *
           mondalExpWave omega₂ k₂ l₂ shift₂ t x y *
           mondalTimeReversedHirotaSymbol δ ρ (omega₁ - omega₂) (k₁ - k₂) (l₁ - l₂)
@@ -854,24 +854,24 @@ theorem mondalCorrectedTwoExponentialTau_solvesHirota
 def mondalPrintedRightA12Numerator (β γ k₁ slope₁ k₂ slope₂ : ℝ) : ℝ :=
   k₁ * mondalPrintedRightFrequency β γ k₂ slope₂
     + k₂ * mondalPrintedRightFrequency β γ k₁ slope₁
-    - β * (4 * k₁ ^ 3 * k₂ + 4 * k₁ * k₂ ^ 3 - 6 * k₁ ^ 2 * k₂ ^ 2)
+    - β * (4 * k₁ ^ (3 : ℕ) * k₂ + 4 * k₁ * k₂ ^ (3 : ℕ) - 6 * k₁ ^ (2 : ℕ) * k₂ ^ (2 : ℕ))
     + 2 * γ * (k₁ * slope₁) * (k₂ * slope₂)
 
 def mondalPrintedRightA12Denominator (β γ k₁ slope₁ k₂ slope₂ : ℝ) : ℝ :=
   k₁ * mondalPrintedRightFrequency β γ k₂ slope₂
     + k₂ * mondalPrintedRightFrequency β γ k₁ slope₁
-    - β * (4 * k₁ ^ 3 * k₂ + 4 * k₁ * k₂ ^ 3 + 6 * k₁ ^ 2 * k₂ ^ 2)
+    - β * (4 * k₁ ^ (3 : ℕ) * k₂ + 4 * k₁ * k₂ ^ (3 : ℕ) + 6 * k₁ ^ (2 : ℕ) * k₂ ^ (2 : ℕ))
     + 2 * γ * (k₁ * slope₁) * (k₂ * slope₂)
 
 theorem mondalPrintedRightA12Numerator_factor (β γ k₁ slope₁ k₂ slope₂ : ℝ) :
     mondalPrintedRightA12Numerator β γ k₁ slope₁ k₂ slope₂ =
-      -k₁ * k₂ * (3 * β * (k₁ - k₂) ^ 2 + γ * (slope₁ - slope₂) ^ 2) := by
+      -k₁ * k₂ * (3 * β * (k₁ - k₂) ^ (2 : ℕ) + γ * (slope₁ - slope₂) ^ (2 : ℕ)) := by
   unfold mondalPrintedRightA12Numerator mondalPrintedRightFrequency
   ring
 
 theorem mondalPrintedRightA12Denominator_factor (β γ k₁ slope₁ k₂ slope₂ : ℝ) :
     mondalPrintedRightA12Denominator β γ k₁ slope₁ k₂ slope₂ =
-      -k₁ * k₂ * (3 * β * (k₁ + k₂) ^ 2 + γ * (slope₁ - slope₂) ^ 2) := by
+      -k₁ * k₂ * (3 * β * (k₁ + k₂) ^ (2 : ℕ) + γ * (slope₁ - slope₂) ^ (2 : ℕ)) := by
   unfold mondalPrintedRightA12Denominator mondalPrintedRightFrequency
   ring
 
@@ -921,24 +921,24 @@ theorem mondalPrintedRightTwoTau_solvesTimeReversedHirota
 def mondalPrintedLeftB12Numerator (β γ k₁ slope₁ k₂ slope₂ : ℝ) : ℝ :=
   k₁ * mondalPrintedLeftFrequency β γ k₂ slope₂
     + k₂ * mondalPrintedLeftFrequency β γ k₁ slope₁
-    + β * (4 * k₁ ^ 3 * k₂ + 4 * k₁ * k₂ ^ 3 - 6 * k₁ ^ 2 * k₂ ^ 2)
+    + β * (4 * k₁ ^ (3 : ℕ) * k₂ + 4 * k₁ * k₂ ^ (3 : ℕ) - 6 * k₁ ^ (2 : ℕ) * k₂ ^ (2 : ℕ))
     - 2 * γ * (k₁ * slope₁) * (k₂ * slope₂)
 
 def mondalPrintedLeftB12Denominator (β γ k₁ slope₁ k₂ slope₂ : ℝ) : ℝ :=
   k₁ * mondalPrintedLeftFrequency β γ k₂ slope₂
     + k₂ * mondalPrintedLeftFrequency β γ k₁ slope₁
-    + β * (4 * k₁ ^ 3 * k₂ + 4 * k₁ * k₂ ^ 3 + 6 * k₁ ^ 2 * k₂ ^ 2)
+    + β * (4 * k₁ ^ (3 : ℕ) * k₂ + 4 * k₁ * k₂ ^ (3 : ℕ) + 6 * k₁ ^ (2 : ℕ) * k₂ ^ (2 : ℕ))
     - 2 * γ * (k₁ * slope₁) * (k₂ * slope₂)
 
 theorem mondalPrintedLeftB12Numerator_factor (β γ k₁ slope₁ k₂ slope₂ : ℝ) :
     mondalPrintedLeftB12Numerator β γ k₁ slope₁ k₂ slope₂ =
-      k₁ * k₂ * (3 * β * (k₁ - k₂) ^ 2 + γ * (slope₁ - slope₂) ^ 2) := by
+      k₁ * k₂ * (3 * β * (k₁ - k₂) ^ (2 : ℕ) + γ * (slope₁ - slope₂) ^ (2 : ℕ)) := by
   unfold mondalPrintedLeftB12Numerator mondalPrintedLeftFrequency
   ring
 
 theorem mondalPrintedLeftB12Denominator_factor (β γ k₁ slope₁ k₂ slope₂ : ℝ) :
     mondalPrintedLeftB12Denominator β γ k₁ slope₁ k₂ slope₂ =
-      k₁ * k₂ * (3 * β * (k₁ + k₂) ^ 2 + γ * (slope₁ - slope₂) ^ 2) := by
+      k₁ * k₂ * (3 * β * (k₁ + k₂) ^ (2 : ℕ) + γ * (slope₁ - slope₂) ^ (2 : ℕ)) := by
   unfold mondalPrintedLeftB12Denominator mondalPrintedLeftFrequency
   ring
 
@@ -989,7 +989,7 @@ theorem mondalPrintedLeftTwoTau_solvesTimeReversedHirota
 
 def mondalQuadraticTau
     (a b c d e h j m offset t x y : ℝ) : ℝ :=
-  mondalAffineForm a b c d t x y ^ 2 + mondalAffineForm e h j m t x y ^ 2 + offset
+  mondalAffineForm a b c d t x y ^ (2 : ℕ) + mondalAffineForm e h j m t x y ^ (2 : ℕ) + offset
 
 private theorem hasDerivAt_mondalAffineForm_time
     (a b c d t x y : ℝ) :
@@ -1025,13 +1025,13 @@ noncomputable def mondalQuadraticTauJet
     + j * mondalAffineForm e h j m t x y)
   ux := fun t x y => 2 * (a * mondalAffineForm a b c d t x y
     + e * mondalAffineForm e h j m t x y)
-  uxx := fun _ _ _ => 2 * (a ^ 2 + e ^ 2)
+  uxx := fun _ _ _ => 2 * (a ^ (2 : ℕ) + e ^ (2 : ℕ))
   uxxx := fun _ _ _ => 0
   uxxxx := fun _ _ _ => 0
   utx := fun _ _ _ => 2 * (c * a + j * e)
   uy := fun t x y => 2 * (b * mondalAffineForm a b c d t x y
     + h * mondalAffineForm e h j m t x y)
-  uyy := fun _ _ _ => 2 * (b ^ 2 + h ^ 2)
+  uyy := fun _ _ _ => 2 * (b ^ (2 : ℕ) + h ^ (2 : ℕ))
   hasDerivAt_time := by
     intro t x y
     have hf := hasDerivAt_mondalAffineForm_time a b c d t x y
@@ -1055,7 +1055,7 @@ noncomputable def mondalQuadraticTauJet
     exact Filter.Eventually.of_forall fun z => by simp
   hasDerivAt_space_two := by
     intro t x y
-    exact hasDerivAt_const x (2 * (a ^ 2 + e ^ 2))
+    exact hasDerivAt_const x (2 * (a ^ (2 : ℕ) + e ^ (2 : ℕ)))
   hasDerivAt_space_three := by
     intro t x y
     exact hasDerivAt_const x 0
@@ -1083,27 +1083,27 @@ noncomputable def mondalQuadraticTauJet
 
 /-- Determinant-one parameterization of paper's lump spatial affine forms. -/
 def mondalLumpH (r b : ℝ) : ℝ := 1 + r * b
-def mondalLumpNormSq (r : ℝ) : ℝ := 1 + r ^ 2
+def mondalLumpNormSq (r : ℝ) : ℝ := 1 + r ^ (2 : ℕ)
 
 noncomputable def mondalLumpVelocityF (gammaLog r b : ℝ) : ℝ :=
   Real.exp gammaLog *
-    (b ^ 2 - mondalLumpH r b ^ 2 + 2 * r * b * mondalLumpH r b) /
+    (b ^ (2 : ℕ) - mondalLumpH r b ^ (2 : ℕ) + 2 * r * b * mondalLumpH r b) /
       mondalLumpNormSq r
 
 /-- Corrected `b₇`: final `b₅ b₆²` term has positive sign. -/
 noncomputable def mondalLumpVelocityG (gammaLog r b : ℝ) : ℝ :=
   Real.exp gammaLog *
-    (2 * b * mondalLumpH r b - r * b ^ 2 + r * mondalLumpH r b ^ 2) /
+    (2 * b * mondalLumpH r b - r * b ^ (2 : ℕ) + r * mondalLumpH r b ^ (2 : ℕ)) /
       mondalLumpNormSq r
 
 /-- Printed `b₇` from equation (45), with the erroneous negative final term. -/
 noncomputable def mondalPrintedLumpVelocityG (gammaLog r b : ℝ) : ℝ :=
   Real.exp gammaLog *
-    (2 * b * mondalLumpH r b - r * b ^ 2 - r * mondalLumpH r b ^ 2) /
+    (2 * b * mondalLumpH r b - r * b ^ (2 : ℕ) - r * mondalLumpH r b ^ (2 : ℕ)) /
       mondalLumpNormSq r
 
 noncomputable def mondalLumpOffset (beta gammaLog r : ℝ) : ℝ :=
-  3 * beta / Real.exp gammaLog * mondalLumpNormSq r ^ 3
+  3 * beta / Real.exp gammaLog * mondalLumpNormSq r ^ (3 : ℕ)
 
 noncomputable def mondalCorrectedLumpTauJet
     (beta gammaLog r b d m : ℝ) : RealEvolutionJetKP :=
@@ -1128,7 +1128,7 @@ theorem mondalCorrectedLumpTau_solvesHirota
 
 theorem mondalPrintedLumpVelocityG_error (gammaLog r b : ℝ) :
     mondalLumpVelocityG gammaLog r b - mondalPrintedLumpVelocityG gammaLog r b =
-      2 * Real.exp gammaLog * r * mondalLumpH r b ^ 2 / mondalLumpNormSq r := by
+      2 * Real.exp gammaLog * r * mondalLumpH r b ^ (2 : ℕ) / mondalLumpNormSq r := by
   have hnorm : mondalLumpNormSq r ≠ 0 := by
     unfold mondalLumpNormSq
     nlinarith [sq_nonneg r]
@@ -1137,20 +1137,20 @@ theorem mondalPrintedLumpVelocityG_error (gammaLog r b : ℝ) :
   ring
 
 noncomputable def mondalLumpCurvatureCore (a e f g offset : ℝ) : ℝ :=
-  let tau := f ^ 2 + g ^ 2 + offset
+  let tau := f ^ (2 : ℕ) + g ^ (2 : ℕ) + offset
   let q := a * f + e * g
-  (2 * (a ^ 2 + e ^ 2) * tau - 4 * q ^ 2) / tau ^ 2
+  (2 * (a ^ (2 : ℕ) + e ^ (2 : ℕ)) * tau - 4 * q ^ (2 : ℕ)) / tau ^ (2 : ℕ)
 
 noncomputable def mondalPrintedLumpCurvatureCore (a e f g offset : ℝ) : ℝ :=
-  let tau := f ^ 2 + g ^ 2 + offset
+  let tau := f ^ (2 : ℕ) + g ^ (2 : ℕ) + offset
   let q := a * f + e * g
-  (2 * (a ^ 2 + e ^ 2) * tau - 4 * q) / tau ^ 2
+  (2 * (a ^ (2 : ℕ) + e ^ (2 : ℕ)) * tau - 4 * q) / tau ^ (2 : ℕ)
 
 theorem mondalPrintedLumpCurvature_error (a e f g offset : ℝ) :
     mondalPrintedLumpCurvatureCore a e f g offset -
         mondalLumpCurvatureCore a e f g offset =
-      4 * ((a * f + e * g) ^ 2 - (a * f + e * g)) /
-        (f ^ 2 + g ^ 2 + offset) ^ 2 := by
+      4 * ((a * f + e * g) ^ (2 : ℕ) - (a * f + e * g)) /
+        (f ^ (2 : ℕ) + g ^ (2 : ℕ) + offset) ^ (2 : ℕ) := by
   unfold mondalPrintedLumpCurvatureCore mondalLumpCurvatureCore
   ring
 
@@ -1205,13 +1205,13 @@ theorem hasDerivAt_mondalPositiveQuadraticTauLogSlope
 
 noncomputable def mondalKappa (q : ℝ) : ℝ := 3 / 2 + Real.exp q
 noncomputable def mondalHotConcentration (p : ℝ) : ℝ := Real.exp p
-def mondalTemperatureRatio (s : ℝ) : ℝ := s ^ 2
+def mondalTemperatureRatio (s : ℝ) : ℝ := s ^ (2 : ℕ)
 
 noncomputable def mondalA1 (q : ℝ) : ℝ :=
   (mondalKappa q - 1 / 2) / (mondalKappa q - 3 / 2)
 
 noncomputable def mondalB1 (q : ℝ) : ℝ :=
-  (mondalKappa q ^ 2 - 1 / 4) / (2 * (mondalKappa q - 3 / 2) ^ 2)
+  (mondalKappa q ^ (2 : ℕ) - 1 / 4) / (2 * (mondalKappa q - 3 / 2) ^ (2 : ℕ))
 
 noncomputable def mondalPhaseSpeedSq (q p s : ℝ) : ℝ :=
   1 / mondalA1 q + mondalHotConcentration p * mondalTemperatureRatio s
@@ -1224,8 +1224,8 @@ noncomputable def mondalA (q p s : ℝ) : ℝ :=
 
 noncomputable def mondalB (q p s : ℝ) : ℝ :=
   2 * mondalB1 q / mondalA1 q
-    + 2 * mondalPhaseSpeedSq q p s * mondalA1 q ^ 2 * mondalHotConcentration p ^ 2
-    + mondalHotConcentration p ^ 2 * mondalA1 q
+    + 2 * mondalPhaseSpeedSq q p s * mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (2 : ℕ)
+    + mondalHotConcentration p ^ (2 : ℕ) * mondalA1 q
 
 noncomputable def mondalC (q p : ℝ) : ℝ := mondalHotConcentration p / mondalA1 q
 noncomputable def mondalD (q p s : ℝ) : ℝ :=
@@ -1253,10 +1253,10 @@ theorem mondalA1_pos (q : ℝ) : 0 < mondalA1 q := by
 
 theorem mondalB1_pos (q : ℝ) : 0 < mondalB1 q := by
   have h := Real.exp_pos q
-  have hnum : 0 < mondalKappa q ^ 2 - 1 / 4 := by
+  have hnum : 0 < mondalKappa q ^ (2 : ℕ) - 1 / 4 := by
     unfold mondalKappa
     nlinarith [sq_nonneg (Real.exp q)]
-  have hden : 0 < 2 * (mondalKappa q - 3 / 2) ^ 2 := by
+  have hden : 0 < 2 * (mondalKappa q - 3 / 2) ^ (2 : ℕ) := by
     have heq : mondalKappa q - 3 / 2 = Real.exp q := by
       unfold mondalKappa
       ring
@@ -1322,13 +1322,13 @@ theorem mondalA1_gt_one (q : ℝ) : 1 < mondalA1 q := by
   linarith
 
 theorem mondalPhaseSpeed_sq (q p s : ℝ) :
-    mondalPhaseSpeed q p s ^ 2 = mondalPhaseSpeedSq q p s := by
+    mondalPhaseSpeed q p s ^ (2 : ℕ) = mondalPhaseSpeedSq q p s := by
   unfold mondalPhaseSpeed
   exact Real.sq_sqrt (le_of_lt (mondalPhaseSpeedSq_pos q p s))
 
 theorem mondalBeta_div_gamma (q p s : ℝ) :
     mondalBeta q p s / mondalGamma q p s =
-      -1 / (mondalPhaseSpeedSq q p s * mondalA1 q ^ 2) := by
+      -1 / (mondalPhaseSpeedSq q p s * mondalA1 q ^ (2 : ℕ)) := by
   have hA : mondalA q p s ≠ 0 := ne_of_gt (mondalA_pos q p s)
   have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
   have hp : mondalHotConcentration p ≠ 0 := by
@@ -1367,7 +1367,7 @@ theorem mondalPhysicalLumpOffset_neg (q p s : ℝ) :
     (mondalGamma_pos q p s)
 
 noncomputable def mondalPhysicalLumpTau (q p s t x y : ℝ) : ℝ :=
-  (x - mondalGamma q p s * t) ^ 2 + y ^ 2 + mondalPhysicalLumpOffset q p s
+  (x - mondalGamma q p s * t) ^ (2 : ℕ) + y ^ (2 : ℕ) + mondalPhysicalLumpOffset q p s
 
 theorem mondalPhysicalLumpTau_origin_neg (q p s : ℝ) :
     mondalPhysicalLumpTau q p s 0 0 0 < 0 := by

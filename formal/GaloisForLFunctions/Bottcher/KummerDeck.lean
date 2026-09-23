@@ -318,7 +318,7 @@ theorem gen_not_isSquare {K : Type*} [Field K] {E : Type*} [Field E] [Algebra K 
 /-- **[K3] Capelli for `p = 2`: `X^{2^k} − C a` is irreducible over any field containing `ℂ` (so `−1`
 is a square) when `a` is not a square.** Mathlib only has the odd / odd-prime-power cases (it TODOs
 `p=2`); this closes it for `−1`-square fields, where the `−4` Capelli obstruction collapses
-(`−4 = (1+i)^4`). Induction on `k` via `X_pow_mul_sub_C_irreducible`, with `gen_not_isSquare`
+(`−4 = (1+i)^(4 : ℕ)`). Induction on `k` via `X_pow_mul_sub_C_irreducible`, with `gen_not_isSquare`
 discharging the side condition at each level. THE algebraic input that turns "`a = φ_{c₁}∘f^[k]` not a
 square in `meroField(Ext)`" into the field carrier `M = B[w]/(X^{2^k}−a)` of the Kummer route. -/
 theorem kummer_irreducible {K : Type*} [Field K] (hneg : ∃ i : K, i ^ 2 = -1) (a : K)
@@ -426,7 +426,7 @@ end Bottcher
 namespace Bottcher
 
 /-- A dyadic Kummer polynomial can be irreducible only when its radicand is not a square. If
-`a = b^2` and `k ≥ 1`, then `X^(2^k) - C a` factors as a difference of squares. -/
+`a = b^(2 : ℕ)` and `k ≥ 1`, then `X^(2^k) - C a` factors as a difference of squares. -/
 theorem not_square_of_irreducible_X_pow_two_pow_sub_C {K : Type*} [Field K] {a : K} {k : ℕ}
     (hk : 1 ≤ k) (hirr : Irreducible ((X : Polynomial K) ^ (2 ^ k) - C a)) :
     ∀ b : K, b ^ 2 ≠ a := by

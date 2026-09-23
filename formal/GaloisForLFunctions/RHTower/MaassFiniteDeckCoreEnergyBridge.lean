@@ -21,7 +21,7 @@ theorem retractedDeckEnergyX_eq_chartDeriv_normSq {N : ℕ} {ε x y : ℝ}
     (hε : 0 < ε) (hy : ε < y) (F : formPreDomain N) :
     retractedDeckEnergyX ε F (x, y) =
       ‖chartDeriv (F : ℍ → DeckSpace N) 1
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 := by
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) := by
   exact sum_retractedDeckComponentX_normSq_eq hε hy F
 
 /-- Above the retraction cutoff, the finite-deck vertical coordinate energy
@@ -30,7 +30,7 @@ theorem retractedDeckEnergyY_eq_chartDeriv_normSq {N : ℕ} {ε x y : ℝ}
     (hε : 0 < ε) (hy : ε < y) (F : formPreDomain N) :
     retractedDeckEnergyY ε F (x, y) =
       ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I
-        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ 2 := by
+        (ofComplex ((x : ℂ) + (y : ℂ) * Complex.I))‖ ^ (2 : ℕ) := by
   exact sum_retractedDeckComponentY_normSq_eq hε hy F
 
 /-- The two retracted coordinate energies reconstruct the full chart-gradient

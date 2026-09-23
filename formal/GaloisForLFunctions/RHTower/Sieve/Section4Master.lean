@@ -25,11 +25,11 @@ theorem integral_normSq_jointOmegaPoly_le_master {P Q : Finset ℕ} {B₀ : ℕ}
     (u : ℕ → ℝ) (hu : ∀ j ∈ Finset.range LP, 0 < u j) (J : ℕ → ℝ) (Dshort : ℝ)
     (hJ : ∀ j ∈ Finset.range LP,
       (∫ w in Set.Icc (-W) W,
-          ‖primeBlockPoly (geomBlock P RP (1 + ηP) j) w‖ ^ 2
-            * ‖omegaWeightedMoebiusPoly Q (geomCofactorBlockAt 1 B₀ RP ηP j) w‖ ^ 2) ≤ J j)
+          ‖primeBlockPoly (geomBlock P RP (1 + ηP) j) w‖ ^ (2 : ℕ)
+            * ‖omegaWeightedMoebiusPoly Q (geomCofactorBlockAt 1 B₀ RP ηP j) w‖ ^ (2 : ℕ)) ≤ J j)
     (hDshort : (∫ w in Set.Icc (-W) W,
-        ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ 2) ≤ Dshort) :
-    (∫ w in Set.Icc (-W) W, ‖jointOmegaPoly P Q (Finset.Icc 1 B₀) w‖ ^ 2)
+        ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ (2 : ℕ)) ≤ Dshort) :
+    (∫ w in Set.Icc (-W) W, ‖jointOmegaPoly P Q (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range LP, 1 / u j) * ∑ j ∈ Finset.range LP, u j * J j)
         + 2 * Dshort := by
   classical

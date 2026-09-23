@@ -285,13 +285,13 @@ private theorem higher_counterterm_analytic_left (α β : ℝ) (ha : -8 < α) :
 
 
 private theorem factor_deriv_all (α : ℝ) :
-    HasDerivAt fzzScreeningHigherPoleFactor (3*α^2+24*α+44) α := by
+    HasDerivAt fzzScreeningHigherPoleFactor (3*α^(2 : ℕ)+24*α+44) α := by
   have h := ((((hasDerivAt_id' α).add_const 2).fun_mul
     ((hasDerivAt_id' α).add_const 4)).fun_mul ((hasDerivAt_id' α).add_const 6))
   exact h.congr_deriv (by ring)
 
 private theorem factor_second : deriv (deriv fzzScreeningHigherPoleFactor) (-6) = -12 := by
-  have he : deriv fzzScreeningHigherPoleFactor = fun α : ℝ => 3*α^2+24*α+44 :=
+  have he : deriv fzzScreeningHigherPoleFactor = fun α : ℝ => 3*α^(2 : ℕ)+24*α+44 :=
     funext (fun α => (factor_deriv_all α).deriv)
   rw [he]
   have h := (((((hasDerivAt_id' (-6:ℝ)).fun_pow 2).const_mul 3).fun_add
@@ -301,7 +301,7 @@ private theorem factor_second : deriv (deriv fzzScreeningHigherPoleFactor) (-6) 
 
 private theorem half_power_second (α c : ℝ) :
     deriv (deriv (fun s : ℝ => (1/2:ℝ)^(s+c))) α =
-      (Real.log (1/2))^2*(1/2:ℝ)^(α+c) := by
+      (Real.log (1/2))^(2 : ℕ)*(1/2:ℝ)^(α+c) := by
   have he : deriv (fun s : ℝ => (1/2:ℝ)^(s+c)) =
       fun s : ℝ => Real.log (1/2)*(1/2:ℝ)^(s+c) :=
     funext (fun s => (half_power_deriv s c).deriv)
@@ -322,7 +322,7 @@ private theorem quad_second (α c d : ℝ) :
 
 private theorem quad_power_second (c d e : ℝ) :
     deriv (deriv (fun α : ℝ => (α+c)*(α+d)*(1/2:ℝ)^(α+e))) (-6) =
-      (2+2*Real.log (1/2)*(-12+c+d)+(Real.log (1/2))^2*((-6+c)*(-6+d)))*
+      (2+2*Real.log (1/2)*(-12+c+d)+(Real.log (1/2))^(2 : ℕ)*((-6+c)*(-6+d)))*
         (1/2:ℝ)^(-6+e) := by
   rw [second_mul (fun α : ℝ => (α+c)*(α+d)) (fun α : ℝ => (1/2:ℝ)^(α+e)) (-6)
     (by fun_prop) (half_power_analytic (-6) e),quad_second,
@@ -339,7 +339,7 @@ private theorem tailQuot_value (d : ℝ) : tailQuot d (-6) = (1/2:ℝ)^d/d := by
   rw [show (-6:ℝ)+(6+d)=d by ring]
 
 private theorem tailQuot_deriv (d : ℝ) (hd : 0 < d) :
-    HasDerivAt (tailQuot d) ((1/2:ℝ)^d*(Real.log (1/2)/d-1/d^2)) (-6) := by
+    HasDerivAt (tailQuot d) ((1/2:ℝ)^d*(Real.log (1/2)/d-1/d^(2 : ℕ))) (-6) := by
   have h := (half_power_deriv (-6) (6+d)).fun_div
     ((hasDerivAt_id' (-6:ℝ)).add_const (6+d)) (by linarith)
   exact h.congr_deriv (by
@@ -348,7 +348,7 @@ private theorem tailQuot_deriv (d : ℝ) (hd : 0 < d) :
 
 private theorem tail_radial_second (d : ℝ) (hd : 0 < d) :
     deriv (deriv (fun α => fzzScreeningHigherPoleFactor α*tailQuot d α)) (-6) =
-      (1/2:ℝ)^d*(-12/d-16/d^2+16*Real.log (1/2)/d) := by
+      (1/2:ℝ)^d*(-12/d-16/d^(2 : ℕ)+16*Real.log (1/2)/d) := by
   rw [second_mul _ _ (-6) (higher_factor_analytic (-6)) (tailQuot_analytic d hd),
     factor_second,factor_deriv.deriv,factor_zero,zero_mul,add_zero,
     (tailQuot_deriv d hd).deriv,tailQuot_value]
@@ -357,10 +357,10 @@ private theorem tail_radial_second (d : ℝ) (hd : 0 < d) :
 private def radialSecond : ℕ → ℝ
   | 0 => 32-64*Real.log (1/2)
   | 1 => 8-32*Real.log (1/2)
-  | 2 => 2-12*Real.log (1/2)+8*(Real.log (1/2))^2
+  | 2 => 2-12*Real.log (1/2)+8*(Real.log (1/2))^(2 : ℕ)
   | n+3 =>
     let d : ℝ := 2*((n+3:ℕ):ℝ)-4
-    (1/2:ℝ)^d*(-12/d-16/d^2+16*Real.log (1/2)/d)
+    (1/2:ℝ)^d*(-12/d-16/d^(2 : ℕ)+16*Real.log (1/2)/d)
 
 private theorem radial_second (k : ℕ) :
     deriv (deriv (fun α => fzzScreeningHigherClearedRadial α k)) (-6) = radialSecond k := by
@@ -390,7 +390,7 @@ private theorem radial_second (k : ℕ) :
 
 private theorem counterterm_second :
     deriv (deriv (fun α => fzzScreeningHigherClearedCounterterm α (-6))) (-6) =
-      Real.pi*(137093/48-(14449/4)*Real.log (1/2)+576*(Real.log (1/2))^2) := by
+      Real.pi*(137093/48-(14449/4)*Real.log (1/2)+576*(Real.log (1/2))^(2 : ℕ)) := by
   have hsum := iteratedDeriv_fun_sum (n := 2) (x := (-6:ℝ)) (I := Finset.range 6)
     (f := fun k α => fzzScreeningFifthAngularCoefficient (-6) k*fzzScreeningHigherClearedRadial α k)
     (fun k _ => (analyticAt_const.mul (higher_radial_analytic (-6) (by norm_num) k)).contDiffAt)
@@ -481,7 +481,7 @@ private theorem originalRegularPart_value :
 
 private theorem originalRegularPart_derivative :
     deriv (fun α => originalRegularPart α (-6)) (-6) = fzzScreeningCubicMarkedPlaneFinitePart-
-      Real.pi*(36*(Real.log (1/2))^2-(13681/64)*Real.log (1/2)+962749/7680) := by
+      Real.pi*(36*(Real.log (1/2))^(2 : ℕ)-(13681/64)*Real.log (1/2)+962749/7680) := by
   change deriv (fun α =>
     (∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted α (-6) z)+
     (∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted (-6) α z)+

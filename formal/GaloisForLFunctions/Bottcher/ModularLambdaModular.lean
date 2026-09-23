@@ -26,7 +26,7 @@ open scoped Real
 namespace Bottcher
 
 /-- `exp(πi/4)⁴ = exp(πi) = −1`. -/
-private theorem exp_pi_I_quarter_pow_four : (Complex.exp ((Real.pi : ℂ) * I / 4)) ^ 4 = -1 := by
+private theorem exp_pi_I_quarter_pow_four : (Complex.exp ((Real.pi : ℂ) * I / 4)) ^ (4 : ℕ) = -1 := by
   rw [← Complex.exp_nat_mul,
     show ((4 : ℕ) : ℂ) * ((Real.pi : ℂ) * I / 4) = (Real.pi : ℂ) * I by push_cast; ring]
   exact Complex.exp_pi_mul_I
@@ -34,7 +34,7 @@ private theorem exp_pi_I_quarter_pow_four : (Complex.exp ((Real.pi : ℂ) * I / 
 /-- **`λ(τ+2) = λ(τ)`** — the `T²` (Γ(2)) translation invariance of the modular lambda function.
 Unconditional. -/
 theorem modularLambda_add_two (τ : ℂ) : modularLambda (τ + 2) = modularLambda τ := by
-  have key : modularLambda (τ + 1 + 1) = -(thetaTwo (τ + 1) / thetaFour (τ + 1)) ^ 4 :=
+  have key : modularLambda (τ + 1 + 1) = -(thetaTwo (τ + 1) / thetaFour (τ + 1)) ^ (4 : ℕ) :=
     modularLambda_T (τ + 1)
   rw [thetaTwo_add_one, thetaFour_add_one] at key
   rw [show τ + 2 = τ + 1 + 1 by ring, key]
@@ -48,7 +48,7 @@ into "λ omits 1". -/
 theorem modularLambda_S_eq_one_sub {τ : ℂ} (hτ : 0 < τ.im) (hF : quarticDefect τ = 0) :
     modularLambda (-1 / τ) = 1 - modularLambda τ := by
   have h3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
-  have h3' : thetaThree τ ^ 4 ≠ 0 := pow_ne_zero 4 h3
+  have h3' : thetaThree τ ^ (4 : ℕ) ≠ 0 := pow_ne_zero 4 h3
   rw [modularLambda_S hτ]
   unfold modularLambda
   rw [quarticDefect] at hF
@@ -78,7 +78,7 @@ theorem modularLambda_T_mul {τ : ℂ} (hτ : 0 < τ.im) (hF : quarticDefect τ 
   rw [modularLambda_T, modularLambda]
   rw [quarticDefect] at hF
   field_simp
-  linear_combination (thetaTwo τ ^ 4) * hF
+  linear_combination (thetaTwo τ ^ (4 : ℕ)) * hF
 
 /-- **`λ(τ+1) = λ(τ)/(λ(τ)−1)`** — the divided form of `modularLambda_T_mul` (`λ ≠ 1` under the
 quartic identity makes the denominator nonzero). -/
@@ -156,7 +156,7 @@ and `quarticDefect_add_two`, via `τ/(2τ+1) = S⁻¹T⁻²S·τ`:
 `w=σ−2`. Together with `quarticDefect_add_two` these are the two weight-2 generator transformations
 exhibiting `F` as a weight-2 modular form for `Γ(2)` (the SlashInvariantForm framework prerequisites). -/
 theorem quarticDefect_lowerTri {τ : ℂ} (hτ : 0 < τ.im) :
-    quarticDefect (τ / (2 * τ + 1)) = (2 * τ + 1) ^ 2 * quarticDefect τ := by
+    quarticDefect (τ / (2 * τ + 1)) = (2 * τ + 1) ^ (2 : ℕ) * quarticDefect τ := by
   have hτ0 : τ ≠ 0 := by rintro rfl; simp at hτ
   have h2 : 2 * τ + 1 ≠ 0 := by
     intro h; apply absurd hτ; rw [show τ = -1/2 by linear_combination h / 2]; norm_num
@@ -171,7 +171,7 @@ theorem quarticDefect_lowerTri {τ : ℂ} (hτ : 0 < τ.im) :
     have hp := quarticDefect_add_two (σ - 2)
     rw [show σ - 2 + 2 = σ by ring] at hp
     rw [hw]; exact hp.symm
-  have e3 : quarticDefect σ = -τ ^ 2 * quarticDefect τ := by rw [hσ]; exact quarticDefect_S hτ
+  have e3 : quarticDefect σ = -τ ^ (2 : ℕ) * quarticDefect τ := by rw [hσ]; exact quarticDefect_S hτ
   rw [heq, quarticDefect_S hwim, e2, e3, hw, hσ]
   field_simp
   ring
@@ -185,7 +185,7 @@ namespace Bottcher
 structure on the quartic defect. -/
 theorem differentiableAt_quarticDefect {τ : ℂ} (hτ : 0 < τ.im) :
     DifferentiableAt ℂ quarticDefect τ := by
-  have h : quarticDefect = fun z => thetaThree z ^ 4 - thetaTwo z ^ 4 - thetaFour z ^ 4 := by
+  have h : quarticDefect = fun z => thetaThree z ^ (4 : ℕ) - thetaTwo z ^ (4 : ℕ) - thetaFour z ^ (4 : ℕ) := by
     funext z; rw [quarticDefect]
   rw [h]
   exact (((differentiableAt_thetaThree hτ).pow 4).sub

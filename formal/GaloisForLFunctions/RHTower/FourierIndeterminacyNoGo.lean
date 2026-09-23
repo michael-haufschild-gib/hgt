@@ -57,7 +57,7 @@ theorem no_band_interior_signal_with_zero_spectral_tail :
     ¬ ∃ (c : ℝ) (Φ : ℝ → ℝ) (x : ℝ),
       0 < c ∧ Continuous Φ ∧ x ∈ Ioo (-1 : ℝ) 1 ∧ Φ x ≠ 0 ∧
         (∫ ξ in (Icc (-(c / (2 * Real.pi))) (c / (2 * Real.pi)))ᶜ,
-          ‖𝓕 (bandTrunc Φ) ξ‖ ^ 2) = 0 := by
+          ‖𝓕 (bandTrunc Φ) ξ‖ ^ (2 : ℕ)) = 0 := by
   rintro ⟨c, Φ, x, hc, hΦ, hx, hne, htail⟩
   exact hne (eqOn_zero_of_spectral_tail_eq_zero hc hΦ htail x hx)
 

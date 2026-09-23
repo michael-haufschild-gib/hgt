@@ -304,7 +304,7 @@ theorem fzzScreeningPlaneMarkedMoment_second_pos (x y : ℝ) :
     0 < fzzScreeningPlaneMarkedMoment x y 2 0 := by
   let a := fzzScreeningBetaA x y
   let b := fzzScreeningBetaB x y
-  let f : ℂ → ℝ := fun z => fzzScreeningPlaneLogMark z^2*planeWeight a b z
+  let f : ℂ → ℝ := fun z => fzzScreeningPlaneLogMark z^(2 : ℕ)*planeWeight a b z
   have hi : Integrable f := fzzScreeningPlaneMarkedMoment_integrable x y 2
   have hn : 0 ≤ f := by
     intro z
@@ -318,7 +318,7 @@ theorem fzzScreeningPlaneMarkedMoment_second_pos (x y : ℝ) :
     norm_num only [show (2 : ℂ)-1 = 1 by norm_num, norm_one, Real.one_rpow,
       Complex.norm_ofNat, mul_one]
     exact mul_pos (sq_pos_of_ne_zero (by nlinarith)) (Real.rpow_pos_of_pos (by norm_num) _)
-  change 0 < ∫ z : ℂ, fzzScreeningPlaneLogMark z^2 *
+  change 0 < ∫ z : ℂ, fzzScreeningPlaneLogMark z^(2 : ℕ) *
     (‖z‖^(-2*(a+0))*‖z-1‖^(-2*b))
   simp only [add_zero]
   change 0 < ∫ z : ℂ, f z

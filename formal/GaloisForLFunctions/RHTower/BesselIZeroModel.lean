@@ -38,7 +38,7 @@ def besselIModelDeriv (c : ℝ) (ξ ξ' : ℝ → ℝ) (x : ℝ) : ℝ :=
 
 /-- Its second derivative. -/
 def besselIModelSecondDeriv (c : ℝ) (ξ ξ' ξ'' : ℝ → ℝ) (x : ℝ) : ℝ :=
-  besselI0SecondDeriv (c * ξ x) * (c * ξ' x) ^ 2 + besselI0Deriv (c * ξ x) * (c * ξ'' x)
+  besselI0SecondDeriv (c * ξ x) * (c * ξ' x) ^ (2 : ℕ) + besselI0Deriv (c * ξ x) * (c * ξ'' x)
 
 theorem hasDerivAt_besselIModel {c x : ℝ} {ξ ξ' : ℝ → ℝ}
     (hξ : HasDerivAt ξ (ξ' x) x) :
@@ -63,7 +63,7 @@ theorem besselIModel_ode {c x : ℝ} {ξ ξ' ξ'' : ℝ → ℝ}
     (hcξ : c * ξ x ≠ 0) (hξ'0 : ξ' x ≠ 0) (hξ0 : ξ x ≠ 0) :
     besselIModelSecondDeriv c ξ ξ' ξ'' x
         + (ξ' x / ξ x - ξ'' x / ξ' x) * besselIModelDeriv c ξ ξ' x
-        - c ^ 2 * ξ' x ^ 2 * besselIModel c ξ x = 0 := by
+        - c ^ (2 : ℕ) * ξ' x ^ (2 : ℕ) * besselIModel c ξ x = 0 := by
   have hode := besselI0_ode hcξ
   have hsecond : besselI0SecondDeriv (c * ξ x)
       = besselI0 (c * ξ x) - besselI0Deriv (c * ξ x) / (c * ξ x) := by linarith

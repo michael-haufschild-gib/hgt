@@ -74,7 +74,7 @@ theorem hasCompactSupport_carlemanConjugate {σ : ℝ} {u : ℝ → ℂ} (hc : H
 
 /-- The squared norm of the conjugated profile is the weighted squared norm. -/
 theorem normSq_carlemanConjugate (σ : ℝ) (u : ℝ → ℂ) (t : ℝ) :
-    ‖carlemanConjugate σ u t‖ ^ 2 = Real.exp (2 * σ * t) * ‖u t‖ ^ 2 := by
+    ‖carlemanConjugate σ u t‖ ^ (2 : ℕ) = Real.exp (2 * σ * t) * ‖u t‖ ^ (2 : ℕ) := by
   unfold carlemanConjugate
   rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul]
@@ -86,8 +86,8 @@ supported `C¹` profile is controlled by the weighted mass of its derivative, wi
 uniform in the weight. -/
 theorem carleman_weighted_estimate (σ : ℝ) {u : ℝ → ℂ} (hdiff : Differentiable ℝ u)
     (hcont : Continuous (deriv u)) (hc : HasCompactSupport u) :
-    σ ^ 2 * (∫ t, Real.exp (2 * σ * t) * ‖u t‖ ^ 2)
-      ≤ ∫ t, Real.exp (2 * σ * t) * ‖deriv u t‖ ^ 2 := by
+    σ ^ (2 : ℕ) * (∫ t, Real.exp (2 * σ * t) * ‖u t‖ ^ (2 : ℕ))
+      ≤ ∫ t, Real.exp (2 * σ * t) * ‖deriv u t‖ ^ (2 : ℕ) := by
   have hYdiff : Differentiable ℝ (carlemanConjugate σ u) := differentiable_carlemanConjugate hdiff
   have hYderiv : deriv (carlemanConjugate σ u)
       = fun t => ((σ * Real.exp (σ * t) : ℝ) : ℂ) * u t
@@ -100,14 +100,14 @@ theorem carleman_weighted_estimate (σ : ℝ) {u : ℝ → ℂ} (hdiff : Differe
       ((Complex.continuous_ofReal.comp (by fun_prop)).mul hcont)
   have hYc : HasCompactSupport (carlemanConjugate σ u) := hasCompactSupport_carlemanConjugate hc
   have hkey := sq_mul_integral_normSq_le σ hYdiff hYcont hYc
-  have hL : (∫ t, ‖carlemanConjugate σ u t‖ ^ 2)
-      = ∫ t, Real.exp (2 * σ * t) * ‖u t‖ ^ 2 :=
+  have hL : (∫ t, ‖carlemanConjugate σ u t‖ ^ (2 : ℕ))
+      = ∫ t, Real.exp (2 * σ * t) * ‖u t‖ ^ (2 : ℕ) :=
     integral_congr_ae (Filter.Eventually.of_forall fun t => normSq_carlemanConjugate σ u t)
-  have hR : (∫ t, ‖deriv (carlemanConjugate σ u) t - (σ : ℂ) * carlemanConjugate σ u t‖ ^ 2)
-      = ∫ t, Real.exp (2 * σ * t) * ‖deriv u t‖ ^ 2 := by
+  have hR : (∫ t, ‖deriv (carlemanConjugate σ u) t - (σ : ℂ) * carlemanConjugate σ u t‖ ^ (2 : ℕ))
+      = ∫ t, Real.exp (2 * σ * t) * ‖deriv u t‖ ^ (2 : ℕ) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    show ‖deriv (carlemanConjugate σ u) t - (σ : ℂ) * carlemanConjugate σ u t‖ ^ 2
-      = Real.exp (2 * σ * t) * ‖deriv u t‖ ^ 2
+    show ‖deriv (carlemanConjugate σ u) t - (σ : ℂ) * carlemanConjugate σ u t‖ ^ (2 : ℕ)
+      = Real.exp (2 * σ * t) * ‖deriv u t‖ ^ (2 : ℕ)
     rw [deriv_carlemanConjugate_sub hdiff t, norm_mul, mul_pow, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul]
     congr 2

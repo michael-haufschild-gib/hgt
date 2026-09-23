@@ -142,7 +142,7 @@ def cellWeightedNonlocalAlternating
 /-- Exterior linearization of the ordered-cell cross-effect. -/
 def cellWeightedNonlocalExterior
     (c : ℂ) (pe qe : XiGammaEulerCalderonWittCell) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
       DeningerCalderonWittAlgebraicDegreeTwo qe.1 :=
   exteriorPower.alternatingMapLinearEquiv
     (cellWeightedNonlocalAlternating c pe qe)
@@ -165,7 +165,7 @@ coefficient identified by the polarized boundary comparison.
 -/
 def cellReflectionOddBoundaryCoordinate
     (a : ℝ) (pe qe : XiGammaEulerCalderonWittCell) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
   (deningerCalderonWittAlgebraicCenterTrace qe.1).comp
     (cellWeightedNonlocalExterior
       (xiGammaEulerPrimitiveReflectionOddExterior a pe qe : ℂ) pe qe)
@@ -358,7 +358,7 @@ def canonicalCellPacketGenerator
 /-- Canonical defect-at-`i`, packet-at-`j` exterior carrier. -/
 def canonicalDistinctCellCarrier
     (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
-    ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne :=
   exteriorPower.ιMulti ℂ 2
     ![canonicalCellDefectGenerator ij.1.1,
       canonicalCellPacketGenerator ij.1.2]
@@ -390,7 +390,7 @@ def cellPacketCoordinate
 after the vector-valued nonlocal cross-effect. -/
 def cellScalarExterior
     (pe qe : XiGammaEulerCalderonWittCell) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
   (deningerCalderonWittAlgebraicCenterTrace qe.1).comp
     (cellWeightedNonlocalExterior 1 pe qe)
 

@@ -39,7 +39,7 @@ theorem suzukiFourierLivsic_disk_eq
 
 theorem deriv_suzukiUpperCayleyInv_source {w : ℂ} (hw : w ≠ 1) :
     deriv GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w =
-      2 * I / (1 - w) ^ 2 := by
+      2 * I / (1 - w) ^ (2 : ℕ) := by
   have hfun :
       GaloisForLFunctions.RHTower.suzukiUpperCayleyInv =
         GaloisForLFunctions.RHTower.herglotzOfCayley := by
@@ -60,10 +60,10 @@ theorem iteratedDeriv_two_suzukiUpperCayleyInv_zero :
   have hbase : HasDerivAt (fun w : ℂ => 1 - w) (-1) 0 := by
     simpa using! (hasDerivAt_const 0 (1 : ℂ)).sub (hasDerivAt_id 0)
   have hden := hbase.pow 2
-  have hne : ((1 : ℂ) - 0) ^ 2 ≠ 0 := by norm_num
+  have hne : ((1 : ℂ) - 0) ^ (2 : ℕ) ≠ 0 := by norm_num
   have hrhs := (hasDerivAt_const 0 (2 * I)).div hden hne
   have heq : deriv GaloisForLFunctions.RHTower.suzukiUpperCayleyInv =ᶠ[nhds 0]
-      fun w : ℂ => 2 * I / (1 - w) ^ 2 := by
+      fun w : ℂ => 2 * I / (1 - w) ^ (2 : ℕ) := by
     filter_upwards [eventually_ne_nhds (by norm_num : (0 : ℂ) ≠ 1)] with w hw
     exact deriv_suzukiUpperCayleyInv_source hw
   rw [show
@@ -93,7 +93,7 @@ theorem iteratedDeriv_two_suzukiFourierLivsic_disk_zero
           (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)) 0 =
       4 * I *
         (deriv F I * F (-I) + F I * deriv F (-I)) /
-          F (-I) ^ 2 := by
+          F (-I) ^ (2 : ℕ) := by
   let zfun := GaloisForLFunctions.RHTower.suzukiUpperCayleyInv
   let R : ℂ → ℂ := fun w => F (zfun w) / F (-zfun w)
   have hz0 : zfun 0 = I := by
@@ -134,14 +134,14 @@ theorem iteratedDeriv_two_suzukiFourierLivsic_disk_zero
     exact hcomp
   have hRHas : HasDerivAt R
       ((deriv F I * (2 * I) * F (-I) -
-          F I * (deriv F (-I) * (-(2 * I)))) / F (-I) ^ 2) 0 := by
+          F I * (deriv F (-I) * (-(2 * I)))) / F (-I) ^ (2 : ℕ)) 0 := by
     have hquot := hnumHas.div hdenHas hden0
     rw [hz0] at hquot
     exact hquot
   have hRDeriv :
       deriv R 0 =
         2 * I * (deriv F I * F (-I) + F I * deriv F (-I)) /
-          F (-I) ^ 2 := by
+          F (-I) ^ (2 : ℕ) := by
     rw [hRHas.deriv]
     ring
   have heq :

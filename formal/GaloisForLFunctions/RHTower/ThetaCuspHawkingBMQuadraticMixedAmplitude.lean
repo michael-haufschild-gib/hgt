@@ -68,7 +68,7 @@ def amplitudeCut (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) (i j : Fin 4) : ℂ :
 
 /-- All sixteen components of the literal amplitude cut equal the derived full tensor. -/
 theorem amplitudeCut_eq (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     amplitudeCut s r y B S Sx Sy Sxx Sxy Sxxx Sxxy i j =
       tensor s r y B S Sx Sy Sxx Sxy i j := by
   have hJ : (D4BMBackground.jet r y).metric.det ≠ 0 := by

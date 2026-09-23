@@ -22,10 +22,10 @@ noncomputable def finiteTiltMean (w r : Fin n → ℝ) (t : ℝ) : ℝ :=
   ∑ x, finiteExponentialTilt w r t x * r x
 
 noncomputable def finiteTiltVariance (w r : Fin n → ℝ) (t : ℝ) : ℝ :=
-  ∑ x, finiteExponentialTilt w r t x * (r x - finiteTiltMean w r t) ^ 2
+  ∑ x, finiteExponentialTilt w r t x * (r x - finiteTiltMean w r t) ^ (2 : ℕ)
 
 noncomputable def finiteTiltSecondMoment (w r : Fin n → ℝ) (t : ℝ) : ℝ :=
-  ∑ x, finiteExponentialTilt w r t x * r x ^ 2
+  ∑ x, finiteExponentialTilt w r t x * r x ^ (2 : ℕ)
 
 lemma finiteExponentialTilt_nonneg {w r : Fin n → ℝ} (hw : ∀ x, 0 ≤ w x)
     (hsum : ∑ x, w x = 1) (t : ℝ) (x : Fin n) :
@@ -48,11 +48,11 @@ lemma finiteTiltMean_eq_div {w r : Fin n → ℝ} (t : ℝ) :
 
 lemma finiteTiltSecondMoment_eq_div {w r : Fin n → ℝ} (t : ℝ) :
     finiteTiltSecondMoment w r t =
-      (∑ x, w x * r x ^ 2 * Real.exp (t * r x)) / finiteExpPartition w r t := by
+      (∑ x, w x * r x ^ (2 : ℕ) * Real.exp (t * r x)) / finiteExpPartition w r t := by
   unfold finiteTiltSecondMoment finiteExponentialTilt
   calc
-    ∑ x, w x * Real.exp (t * r x) / finiteExpPartition w r t * r x ^ 2 =
-        ∑ x, (w x * r x ^ 2 * Real.exp (t * r x)) / finiteExpPartition w r t := by
+    ∑ x, w x * Real.exp (t * r x) / finiteExpPartition w r t * r x ^ (2 : ℕ) =
+        ∑ x, (w x * r x ^ (2 : ℕ) * Real.exp (t * r x)) / finiteExpPartition w r t := by
       apply Finset.sum_congr rfl
       intro x _
       ring
@@ -61,14 +61,14 @@ lemma finiteTiltSecondMoment_eq_div {w r : Fin n → ℝ} (t : ℝ) :
 lemma finiteTiltVariance_eq_second_sub_sq {w r : Fin n → ℝ}
     (hw : ∀ x, 0 ≤ w x) (hsum : ∑ x, w x = 1) (t : ℝ) :
     finiteTiltVariance w r t =
-      finiteTiltSecondMoment w r t - finiteTiltMean w r t ^ 2 := by
+      finiteTiltSecondMoment w r t - finiteTiltMean w r t ^ (2 : ℕ) := by
   unfold finiteTiltVariance finiteTiltSecondMoment finiteTiltMean
   simp_rw [show ∀ x, finiteExponentialTilt w r t x *
-      (r x - ∑ y, finiteExponentialTilt w r t y * r y) ^ 2 =
-      finiteExponentialTilt w r t x * r x ^ 2 -
+      (r x - ∑ y, finiteExponentialTilt w r t y * r y) ^ (2 : ℕ) =
+      finiteExponentialTilt w r t x * r x ^ (2 : ℕ) -
         2 * (∑ y, finiteExponentialTilt w r t y * r y) *
           (finiteExponentialTilt w r t x * r x) +
-        (∑ y, finiteExponentialTilt w r t y * r y) ^ 2 *
+        (∑ y, finiteExponentialTilt w r t y * r y) ^ (2 : ℕ) *
           finiteExponentialTilt w r t x by intro x; ring]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [finiteExponentialTilt_sum hw hsum]
@@ -80,7 +80,7 @@ lemma hasDerivAt_finiteTiltMean {w r : Fin n → ℝ}
   have hden := hasDerivAt_finiteExpPartition w r t
   have hnum : HasDerivAt
       (fun s : ℝ => ∑ x, w x * r x * Real.exp (s * r x))
-      (∑ x, w x * r x ^ 2 * Real.exp (t * r x)) t := by
+      (∑ x, w x * r x ^ (2 : ℕ) * Real.exp (t * r x)) t := by
     refine HasDerivAt.fun_sum fun x _ => ?_
     have hinner : HasDerivAt (fun s : ℝ => s * r x) (r x) t := by
       simpa using (hasDerivAt_id t).mul_const (r x)
@@ -97,8 +97,8 @@ lemma hasDerivAt_finiteTiltMean {w r : Fin n → ℝ}
   · rw [finiteTiltVariance_eq_second_sub_sq hw hsum,
       finiteTiltSecondMoment_eq_div, finiteTiltMean_eq_div]
     field_simp [hZ]
-    have hsumexp : (∑ x, w x * r x ^ 2 * Real.exp (r x * t)) =
-        ∑ x, w x * r x ^ 2 * Real.exp (t * r x) := by
+    have hsumexp : (∑ x, w x * r x ^ (2 : ℕ) * Real.exp (r x * t)) =
+        ∑ x, w x * r x ^ (2 : ℕ) * Real.exp (t * r x) := by
       apply Finset.sum_congr rfl
       intro x _
       rw [mul_comm (r x) t]

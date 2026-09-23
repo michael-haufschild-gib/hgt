@@ -45,7 +45,7 @@ theorem hasDerivAt_qIncrFun (q : RealEulerNome) (j : ℕ) {z : ℂ} (hz : z ∈ 
     (hcp.const_sub (1 : ℂ)).pow (j + 1)
   have hval : ((Polynomial.derivative (qIncrNum q j)).eval u * (u * qLog q) * (1 - u) ^ (j + 1)
         - (qIncrNum q j).eval u * (((j + 1 : ℕ) : ℂ) * (1 - u) ^ j * (-(u * qLog q))))
-        / ((1 - u) ^ (j + 1)) ^ 2
+        / ((1 - u) ^ (j + 1)) ^ (2 : ℕ)
       = qIncrFun q (j + 1) z := by
     rw [qIncrFun, qIncrNum_succ, ← hu_def]
     simp only [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_C,

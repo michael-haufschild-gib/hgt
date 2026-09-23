@@ -267,8 +267,8 @@ theorem annulus_mono {a a' b' b : ℝ} (ha : a ≤ a') (hb : b' ≤ b) :
 
 /-- The squared norm on the plane is smooth. -/
 theorem contDiff_normSq_complex :
-    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun t : ℂ => ‖t‖ ^ 2) := by
-  have h : (fun t : ℂ => ‖t‖ ^ 2) = fun t : ℂ => t.re ^ 2 + t.im ^ 2 := by
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun t : ℂ => ‖t‖ ^ (2 : ℕ)) := by
+  have h : (fun t : ℂ => ‖t‖ ^ (2 : ℕ)) = fun t : ℂ => t.re ^ (2 : ℕ) + t.im ^ (2 : ℕ) := by
     funext t
     rw [Complex.norm_def, Real.sq_sqrt (Complex.normSq_nonneg t), Complex.normSq_apply]
     ring
@@ -285,16 +285,16 @@ theorem exists_annulus_cutoff {a a' b' b : ℝ} (ha : 0 ≤ a) (haa' : a < a') (
   have ha'0 : 0 < a' := lt_of_le_of_lt ha haa'
   have hb'0 : 0 < b' := lt_trans ha'0 ha'b'
   have hb0 : 0 < b := lt_trans hb'0 hb'b
-  set c : ℝ := (a' ^ 2 + b' ^ 2) / 2 with hc
-  set rIn : ℝ := (b' ^ 2 - a' ^ 2) / 2 with hrIn
+  set c : ℝ := (a' ^ (2 : ℕ) + b' ^ (2 : ℕ)) / 2 with hc
+  set rIn : ℝ := (b' ^ (2 : ℕ) - a' ^ (2 : ℕ)) / 2 with hrIn
   have hrInpos : 0 < rIn := by
     rw [hrIn]
     nlinarith
-  set rOut : ℝ := min (c - a ^ 2) (b ^ 2 - c) with hrOut
-  have hca : a ^ 2 < c := by
+  set rOut : ℝ := min (c - a ^ (2 : ℕ)) (b ^ (2 : ℕ) - c) with hrOut
+  have hca : a ^ (2 : ℕ) < c := by
     rw [hc]
     nlinarith
-  have hcb : c < b ^ 2 := by
+  have hcb : c < b ^ (2 : ℕ) := by
     rw [hc]
     nlinarith
   have hrOutpos : rIn < rOut := by
@@ -305,17 +305,17 @@ theorem exists_annulus_cutoff {a a' b' b : ℝ} (ha : 0 ≤ a) (haa' : a < a') (
     · rw [hrIn, hc]
       nlinarith
   let bump : ContDiffBump c := ⟨rIn, rOut, hrInpos, hrOutpos⟩
-  refine ⟨fun t => bump (‖t‖ ^ 2), bump.contDiff.comp contDiff_normSq_complex, ?_, ?_⟩
+  refine ⟨fun t => bump (‖t‖ ^ (2 : ℕ)), bump.contDiff.comp contDiff_normSq_complex, ?_, ?_⟩
   · intro t ht
-    have hsupp : ‖t‖ ^ 2 ∈ Function.support (bump : ℝ → ℝ) := ht
+    have hsupp : ‖t‖ ^ (2 : ℕ) ∈ Function.support (bump : ℝ → ℝ) := ht
     rw [bump.support_eq, Metric.mem_ball, Real.dist_eq, abs_lt] at hsupp
-    have h1 : a ^ 2 < ‖t‖ ^ 2 := by
+    have h1 : a ^ (2 : ℕ) < ‖t‖ ^ (2 : ℕ) := by
       have := hsupp.1
-      have hle : rOut ≤ c - a ^ 2 := min_le_left _ _
+      have hle : rOut ≤ c - a ^ (2 : ℕ) := min_le_left _ _
       linarith
-    have h2 : ‖t‖ ^ 2 < b ^ 2 := by
+    have h2 : ‖t‖ ^ (2 : ℕ) < b ^ (2 : ℕ) := by
       have := hsupp.2
-      have hle : rOut ≤ b ^ 2 - c := min_le_right _ _
+      have hle : rOut ≤ b ^ (2 : ℕ) - c := min_le_right _ _
       linarith
     refine ⟨?_, ?_⟩
     · nlinarith [norm_nonneg t]
@@ -323,8 +323,8 @@ theorem exists_annulus_cutoff {a a' b' b : ℝ} (ha : 0 ≤ a) (haa' : a < a') (
   · intro t ht
     refine bump.one_of_mem_closedBall ?_
     rw [Metric.mem_closedBall, Real.dist_eq, abs_le]
-    have h1 : a' ^ 2 < ‖t‖ ^ 2 := by nlinarith [ht.1, ha'0]
-    have h2 : ‖t‖ ^ 2 < b' ^ 2 := by nlinarith [ht.2, norm_nonneg t, hb'0]
+    have h1 : a' ^ (2 : ℕ) < ‖t‖ ^ (2 : ℕ) := by nlinarith [ht.1, ha'0]
+    have h2 : ‖t‖ ^ (2 : ℕ) < b' ^ (2 : ℕ) := by nlinarith [ht.2, norm_nonneg t, hb'0]
     have hbin : bump.rIn = rIn := rfl
     rw [hbin, hrIn, hc]
     constructor

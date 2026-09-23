@@ -14,10 +14,10 @@ def staticPoint (x : Fin 4 → ℝ) : Fin 4 → ℝ :=
 
 /-- Actual first derivative of the tortoise function. -/
 theorem tortoise_hasDerivAt (r : ℝ) (hr : 1 < r) :
-    HasDerivAt tortoise ((r^2-1)⁻¹) r := by
+    HasDerivAt tortoise ((r^(2 : ℕ)-1)⁻¹) r := by
   have hm : r-1 ≠ 0 := by linarith
   have hp : r+1 ≠ 0 := by linarith
-  have hf : r^2-1 ≠ 0 := by nlinarith
+  have hf : r^(2 : ℕ)-1 ≠ 0 := by nlinarith
   convert! (((hasDerivAt_id r).sub_const 1).log hm).sub
     (((hasDerivAt_id r).add_const 1).log hp) |>.div_const 2 using 1
   dsimp
@@ -27,7 +27,7 @@ theorem tortoise_hasDerivAt (r : ℝ) (hr : 1 < r) :
 /-- The real differential of the ingoing-to-static coordinate map. -/
 def differential (r : ℝ) : (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ) :=
   ContinuousLinearMap.pi ![
-    ContinuousLinearMap.proj 0-(r^2-1)⁻¹ • ContinuousLinearMap.proj 1,
+    ContinuousLinearMap.proj 0-(r^(2 : ℕ)-1)⁻¹ • ContinuousLinearMap.proj 1,
     ContinuousLinearMap.proj 1, ContinuousLinearMap.proj 2, ContinuousLinearMap.proj 3]
 
 /-- The displayed triangular coordinate matrix is obtained by differentiation. -/
@@ -47,7 +47,7 @@ theorem staticPoint_hasFDerivAt (x : Fin 4 → ℝ) (hr : 1 < x 1) :
 
 /-- Complex matrix of the actual coordinate differential. -/
 def jacobian (r : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  !![1,-(r^2-1)⁻¹,0,0; 0,1,0,0; 0,0,1,0; 0,0,0,1]
+  !![1,-(r^(2 : ℕ)-1)⁻¹,0,0; 0,1,0,0; 0,0,1,0; 0,0,0,1]
 
 /-- Complexification of the actual real differential agrees entrywise. -/
 theorem differential_matrix (r : ℝ) (i j : Fin 4) :
@@ -63,11 +63,11 @@ def compactEnvelope (s a : ℂ) (v : ℝ) (u : ℂ) : ℂ :=
   a*Complex.exp (s*((v : ℂ)+Complex.log (1+u)))
 
 private theorem log_radial (r : ℝ) (hr : 1 < r) :
-    Real.log (1-r⁻¹^2) = Real.log (r-1)+Real.log (r+1)-2*Real.log r := by
+    Real.log (1-r⁻¹^(2 : ℕ)) = Real.log (r-1)+Real.log (r+1)-2*Real.log r := by
   have h0 : r ≠ 0 := by linarith
   have hm : r-1 ≠ 0 := by linarith
   have hp : r+1 ≠ 0 := by linarith
-  rw [show 1-r⁻¹^2 = (r-1)*(r+1)/r^2 by field_simp; ring,
+  rw [show 1-r⁻¹^(2 : ℕ) = (r-1)*(r+1)/r^(2 : ℕ) by field_simp; ring,
     Real.log_div (mul_ne_zero hm hp) (pow_ne_zero 2 h0), Real.log_mul hm hp,
     Real.log_pow]
   ring
@@ -78,14 +78,14 @@ theorem envelope_staticPoint (s a : ℂ) (x : Fin 4 → ℝ) (hr : 1 < x 1) :
       compactEnvelope s a (x 0) (x 1 : ℂ)⁻¹ := by
   have h0 : x 1 ≠ 0 := by linarith
   have hp : x 1+1 ≠ 0 := by linarith
-  have hz : 0 < 1-(x 1)⁻¹^2 := by
+  have hz : 0 < 1-(x 1)⁻¹^(2 : ℕ) := by
     have h : (x 1)⁻¹ < 1 := (inv_lt_one₀ (by linarith)).mpr hr
     have h' : 0 < (x 1)⁻¹ := inv_pos.mpr (by linarith)
     nlinarith
   have hu : 0 < 1+(x 1)⁻¹ := by positivity
   rw [D4BMFundamentalScalarMetric.envelope_eq_exp]
   dsimp [staticPoint, D4BMMetricReconstruction.bmCoordinate, compactEnvelope]
-  rw [show 1-(x 1 : ℂ)⁻¹^2 = ((1-(x 1)⁻¹^2 : ℝ) : ℂ) by push_cast; rfl,
+  rw [show 1-(x 1 : ℂ)⁻¹^(2 : ℕ) = ((1-(x 1)⁻¹^(2 : ℕ) : ℝ) : ℂ) by push_cast; rfl,
     show 1+(x 1 : ℂ)⁻¹ = ((1+(x 1)⁻¹ : ℝ) : ℂ) by push_cast; rfl,
     ← Complex.ofReal_log hz.le, ← Complex.ofReal_log hu.le, log_radial _ hr,
     show 1+(x 1)⁻¹ = (x 1+1)/(x 1) by field_simp,

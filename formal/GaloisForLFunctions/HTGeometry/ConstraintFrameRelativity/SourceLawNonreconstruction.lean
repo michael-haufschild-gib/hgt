@@ -113,17 +113,17 @@ theorem jet_law_nonreconstruction (m : ℕ) :
 /-! ## The Stokes contact form and its cluster-split intervention -/
 
 /-- The exact contact form of two branches at contact `j`. -/
-noncomputable def contactForm (j z t : ℝ) : ℝ := (1 + j) / 2 * z ^ 2 + (3 - j) / 2 * t ^ 2
+noncomputable def contactForm (j z t : ℝ) : ℝ := (1 + j) / 2 * z ^ (2 : ℕ) + (3 - j) / 2 * t ^ (2 : ℕ)
 
 /-- At contact one the form is positive definite. -/
 theorem contactForm_pos {z t : ℝ} (h : z ≠ 0 ∨ t ≠ 0) : 0 < contactForm 1 z t := by
   rw [contactForm]
   rcases h with h | h
-  · have hz : 0 < z ^ 2 := by positivity
-    have ht : (0 : ℝ) ≤ t ^ 2 := sq_nonneg t
+  · have hz : 0 < z ^ (2 : ℕ) := by positivity
+    have ht : (0 : ℝ) ≤ t ^ (2 : ℕ) := sq_nonneg t
     nlinarith
-  · have ht : 0 < t ^ 2 := by positivity
-    have hz : (0 : ℝ) ≤ z ^ 2 := sq_nonneg z
+  · have ht : 0 < t ^ (2 : ℕ) := by positivity
+    have hz : (0 : ℝ) ≤ z ^ (2 : ℕ) := sq_nonneg z
     nlinarith
 
 /-- At contact four the form takes a negative value, so its negative index is one. -/
@@ -132,7 +132,7 @@ theorem contactForm_neg : contactForm 4 0 1 < 0 := by
   norm_num
 
 /-- The port direction is unchanged: the form restricted to `z = 0` is the port coefficient. -/
-theorem contactForm_port (j t : ℝ) : contactForm j 0 t = (3 - j) / 2 * t ^ 2 := by
+theorem contactForm_port (j t : ℝ) : contactForm j 0 t = (3 - j) / 2 * t ^ (2 : ℕ) := by
   rw [contactForm]
   ring
 
@@ -140,7 +140,7 @@ theorem contactForm_port (j t : ℝ) : contactForm j 0 t = (3 - j) / 2 * t ^ 2 :
 the Stokes form by `-2(k-ℓ) X_U X_V`, equivalently by `((k-ℓ)/2)((X_U - X_V)² - M²)` where
 `M = X_U + X_V` is the physical-rank port. -/
 theorem cluster_split (k l xU xV : ℝ) :
-    -2 * (k - l) * xU * xV = (k - l) / 2 * ((xU - xV) ^ 2 - (xU + xV) ^ 2) := by
+    -2 * (k - l) * xU * xV = (k - l) / 2 * ((xU - xV) ^ (2 : ℕ) - (xU + xV) ^ (2 : ℕ)) := by
   ring
 
 end HTGeometry.ConstraintFrameRelativity

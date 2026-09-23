@@ -31,14 +31,14 @@ theorem exists_carried_of_momentInner_eq_zero {nu : Measure ℝ}
   have hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂nu := fun k => (hnu k).2.symm
   have hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) nu := fun k => (hnu k).1
   -- the square integrates to zero
-  have hsq : ∫ x, (Polynomial.eval x p) ^ 2 ∂nu = 0 := by
+  have hsq : ∫ x, (Polynomial.eval x p) ^ (2 : ℕ) ∂nu = 0 := by
     rw [← momentFunctional_pow_two_eq_integral_sq s hs hint p, pow_two, ← momentInner_def]
     exact hzero
-  have hintsq : Integrable (fun x : ℝ => (Polynomial.eval x p) ^ 2) nu := by
-    have hpe := integrable_eval hint (p ^ 2)
+  have hintsq : Integrable (fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ)) nu := by
+    have hpe := integrable_eval hint (p ^ (2 : ℕ))
     refine hpe.congr (Filter.Eventually.of_forall fun x => ?_)
     simp [eval_pow]
-  have hae : (fun x : ℝ => (Polynomial.eval x p) ^ 2) =ᵐ[nu] 0 :=
+  have hae : (fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ)) =ᵐ[nu] 0 :=
     (integral_eq_zero_iff_of_nonneg_ae
       (Filter.Eventually.of_forall fun x => sq_nonneg _) hintsq).mp hsq
   -- so the measure lives on the roots of `p`

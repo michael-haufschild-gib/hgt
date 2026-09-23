@@ -17,16 +17,16 @@ def blaschkeReturnDefectLinearConstant (a : ℝ) : ℝ :=
   1 +
     (1 + |blaschkeSpectralOffset a|) /
       blaschkeSpectralSlope a +
-    2 / (1 - a ^ 2)
+    2 / (1 - a ^ (2 : ℕ))
 
 theorem blaschkeActiveWaterTail_le_exp_neg_div
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
     {L : ℝ} (hLtail : blaschkeSpectralOffset a ≤ L) :
-    (1 - a ^ 2) *
-        (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1) ≤
-      Real.exp (-L) / (1 - a ^ 2) := by
+    (1 - a ^ (2 : ℕ)) *
+        (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1) ≤
+      Real.exp (-L) / (1 - a ^ (2 : ℕ)) := by
   let R := blaschkeActiveTailRadius a L
-  have hbase : 0 < 1 - a ^ 2 := by nlinarith
+  have hbase : 0 < 1 - a ^ (2 : ℕ) := by nlinarith
   have hpositive :
       0 < blaschkeLocalizedWeight a ((R + 1) + 1) :=
     blaschkeLocalizedWeight_succ_pos a ha0 ha1 (R + 1)
@@ -51,9 +51,9 @@ theorem blaschkeActiveWaterTail_le_exp_neg_div
       _ < Real.exp (-L) := by
         exact Real.exp_lt_exp.mpr (by linarith)
   have htailIdentity :
-      (1 - a ^ 2) * (a ^ 2) ^ (R + 1) =
+      (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (R + 1) =
         blaschkeLocalizedWeight a ((R + 1) + 1) /
-          (1 - a ^ 2) := by
+          (1 - a ^ (2 : ℕ)) := by
     rw [blaschkeLocalizedWeight_succ]
     field_simp [hbase.ne']
   rw [htailIdentity]
@@ -72,7 +72,7 @@ theorem blaschkeActiveWaterReturnDefect_linear_exp_bound
   let R : ℝ := (blaschkeActiveTailRadius a L : ℝ)
   have hrho : 0 < rho := by
     simpa only [rho] using blaschkeSpectralSlope_pos a ha0 ha1
-  have hbase : 0 < 1 - a ^ 2 := by nlinarith
+  have hbase : 0 < 1 - a ^ (2 : ℕ) := by nlinarith
   have hR :=
     (blaschkeActiveTailRadius_bracket
       a ha0 ha1 hLtail).1
@@ -116,27 +116,27 @@ theorem blaschkeActiveWaterReturnDefect_linear_exp_bound
     blaschkeActiveWaterTail_le_exp_neg_div
       a ha0 ha1 hLtail
   have htailScaled :
-      2 * ((1 - a ^ 2) *
-          (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1)) ≤
-        (2 / (1 - a ^ 2)) * (1 + L) *
+      2 * ((1 - a ^ (2 : ℕ)) *
+          (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1)) ≤
+        (2 / (1 - a ^ (2 : ℕ))) * (1 + L) *
           Real.exp (-L) := by
     have htwo := mul_le_mul_of_nonneg_left htail
       (by norm_num : (0 : ℝ) ≤ 2)
     have hone : 1 ≤ 1 + L := by linarith
     calc
-      2 * ((1 - a ^ 2) *
-          (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1)) ≤
-          2 * (Real.exp (-L) / (1 - a ^ 2)) := htwo
-      _ ≤ (2 / (1 - a ^ 2)) * (1 + L) *
+      2 * ((1 - a ^ (2 : ℕ)) *
+          (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1)) ≤
+          2 * (Real.exp (-L) / (1 - a ^ (2 : ℕ))) := htwo
+      _ ≤ (2 / (1 - a ^ (2 : ℕ))) * (1 + L) *
           Real.exp (-L) := by
-        have hcoef : 0 ≤ 2 / (1 - a ^ 2) := by positivity
+        have hcoef : 0 ≤ 2 / (1 - a ^ (2 : ℕ)) := by positivity
         have hfactor :=
           mul_le_mul_of_nonneg_left hone hcoef
         calc
-          2 * (Real.exp (-L) / (1 - a ^ 2)) =
-              (2 / (1 - a ^ 2)) * 1 * Real.exp (-L) := by
+          2 * (Real.exp (-L) / (1 - a ^ (2 : ℕ))) =
+              (2 / (1 - a ^ (2 : ℕ))) * 1 * Real.exp (-L) := by
             ring
-          _ ≤ (2 / (1 - a ^ 2)) * (1 + L) *
+          _ ≤ (2 / (1 - a ^ (2 : ℕ))) * (1 + L) *
               Real.exp (-L) :=
             mul_le_mul_of_nonneg_right hfactor (Real.exp_pos _).le
   have hactive' :
@@ -151,18 +151,18 @@ theorem blaschkeActiveWaterReturnDefect_linear_exp_bound
   calc
     (((blaschkeActiveTailRadius a L + 1 : ℕ) : ℝ)) *
         Real.exp (-L) +
-        2 * ((1 - a ^ 2) *
-          (a ^ 2) ^ (blaschkeActiveTailRadius a L + 1)) ≤
+        2 * ((1 - a ^ (2 : ℕ)) *
+          (a ^ (2 : ℕ)) ^ (blaschkeActiveTailRadius a L + 1)) ≤
       (1 + (1 + |blaschkeSpectralOffset a|) /
           blaschkeSpectralSlope a) * (1 + L) *
           Real.exp (-L) +
-        (2 / (1 - a ^ 2)) * (1 + L) *
+        (2 / (1 - a ^ (2 : ℕ))) * (1 + L) *
           Real.exp (-L) :=
       add_le_add hactive' htailScaled
     _ =
       (1 + (1 + |blaschkeSpectralOffset a|) /
           blaschkeSpectralSlope a +
-        2 / (1 - a ^ 2)) *
+        2 / (1 - a ^ (2 : ℕ))) *
           (1 + L) * Real.exp (-L) := by ring
 
 end RHTower

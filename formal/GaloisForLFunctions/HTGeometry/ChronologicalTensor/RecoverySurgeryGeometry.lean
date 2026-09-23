@@ -42,15 +42,15 @@ theorem recoverySurgery_full_geometric_theorem (j : ℕ) :
     (∀ k : Fin N, recoverySurgeryGap n k.val=recoveryWedgeActualGap k.val) ∧
     (recoverySurgeryCorePower n*recoveryWedgeActualGap N ≤ recoverySurgeryGap n N ∧
       recoverySurgeryGap n N ≤ recoverySurgeryHeight n*recoveryWedgeActualGap N) ∧
-    (∀ k : Fin n, (recoverySurgeryGap n (k.val+1))^2 <
+    (∀ k : Fin n, (recoverySurgeryGap n (k.val+1))^(2 : ℕ) <
       recoverySurgeryGap n k.val*recoverySurgeryGap n (k.val+2)) ∧
-    (∃ P : ℝ[X], P.natDegree=d ∧ momentFunctional (recoverySurgeryMoment n) (P^2) < 0 ∧
-      ∀ Q : ℝ[X], Q ≠ 0 → Q.natDegree < d → 0 < momentFunctional (recoverySurgeryMoment n) (Q^2)) ∧
+    (∃ P : ℝ[X], P.natDegree=d ∧ momentFunctional (recoverySurgeryMoment n) (P^(2 : ℕ)) < 0 ∧
+      ∀ Q : ℝ[X], Q ≠ 0 → Q.natDegree < d → 0 < momentFunctional (recoverySurgeryMoment n) (Q^(2 : ℕ))) ∧
     (sigPos (recoveryHankelForm n d)=d ∧ sigNeg (recoveryHankelForm n d)=1 ∧
       Module.finrank ℝ (recoveryHankelForm n d).radical=0) ∧
     (¬ ∃ μ : Measure ℝ, (∀ k : ℕ, Integrable (fun x : ℝ => x^k) μ) ∧
       ∀ k : ℕ, recoverySurgeryMoment n k=∫ x, x^k ∂μ) ∧
-    (Metric.hausdorffDist (recoverySurgeryDomain n) recoveryWedge ≤ 33/(32*(n+2 : ℝ)^2)) ∧
+    (Metric.hausdorffDist (recoverySurgeryDomain n) recoveryWedge ≤ 33/(32*(n+2 : ℝ)^(2 : ℕ))) ∧
     EqOn (mellin (recoverySurgeryResponseKernel n)) (fun s => -Complex.Gamma s*riemannZeta s)
       fusionMellinStrip ∧
     EqOn (analyticOrderAt (mellin (recoverySurgeryResponseKernel n)))
@@ -79,7 +79,7 @@ theorem recoverySurgery_arbitrarily_close_delayed_obstruction (r : ℕ) (ε : Io
     ∃ j : ℕ,
       Metric.hausdorffDist (recoverySurgeryDomain ((2 : ℕ)^(j+4)-1)) recoveryWedge < ε.val ∧
       (∀ P : ℝ[X], P ≠ 0 → P.natDegree ≤ r →
-        0 < momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (P^2)) ∧
+        0 < momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (P^(2 : ℕ))) ∧
       ¬ ∃ μ : Measure ℝ, (∀ k : ℕ, Integrable (fun x : ℝ => x^k) μ) ∧
         ∀ k : ℕ, recoverySurgeryMoment ((2 : ℕ)^(j+4)-1) k=∫ x, x^k ∂μ := by
   have hε := (tendsto_order.mp recoverySurgeryFamily_hausdorff_tendsto).2 ε.val ε.property

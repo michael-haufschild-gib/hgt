@@ -26,8 +26,8 @@ noncomputable section
 /-- Exact algebraic value of the two reciprocal reflection quadratures. -/
 theorem reciprocalPhaseQuadraturePort_eq_normSq
     {z : ℂ} (hz : z ≠ 0) :
-    (z + z⁻¹).im ^ 2 + (I * (z - z⁻¹)).im ^ 2 =
-      (Complex.normSq z - 1) ^ 2 / Complex.normSq z := by
+    (z + z⁻¹).im ^ (2 : ℕ) + (I * (z - z⁻¹)).im ^ (2 : ℕ) =
+      (Complex.normSq z - 1) ^ (2 : ℕ) / Complex.normSq z := by
   have hN : Complex.normSq z ≠ 0 := (Complex.normSq_pos.mpr hz).ne'
   rw [Complex.add_im, Complex.inv_im, Complex.mul_im,
     Complex.I_re, Complex.I_im, zero_mul, one_mul,
@@ -38,8 +38,8 @@ theorem reciprocalPhaseQuadraturePort_eq_normSq
 
 theorem reciprocalPhaseQuadraturePort_eq_norm_sub_inv_sq
     {z : ℂ} (hz : z ≠ 0) :
-    (z + z⁻¹).im ^ 2 + (I * (z - z⁻¹)).im ^ 2 =
-      (‖z‖ - ‖z⁻¹‖) ^ 2 := by
+    (z + z⁻¹).im ^ (2 : ℕ) + (I * (z - z⁻¹)).im ^ (2 : ℕ) =
+      (‖z‖ - ‖z⁻¹‖) ^ (2 : ℕ) := by
   have hn : ‖z‖ ≠ 0 := norm_ne_zero_iff.mpr hz
   rw [reciprocalPhaseQuadraturePort_eq_normSq hz, norm_inv,
     Complex.normSq_eq_norm_sq]
@@ -47,7 +47,7 @@ theorem reciprocalPhaseQuadraturePort_eq_norm_sub_inv_sq
 
 theorem reciprocalPhaseQuadraturePort_eq_zero_iff_norm_eq_one
     {z : ℂ} (hz : z ≠ 0) :
-    (z + z⁻¹).im ^ 2 + (I * (z - z⁻¹)).im ^ 2 = 0 ↔
+    (z + z⁻¹).im ^ (2 : ℕ) + (I * (z - z⁻¹)).im ^ (2 : ℕ) = 0 ↔
       ‖z‖ = 1 := by
   rw [reciprocalPhaseQuadraturePort_eq_normSq hz]
   have hN : Complex.normSq z ≠ 0 := (Complex.normSq_pos.mpr hz).ne'
@@ -95,14 +95,14 @@ theorem ccmRationalAdelicPrimeXiReflectedSourceOddPhaseMoment_im_eq_zero
 /-- Positive one-prime port containing both reflection quadratures. -/
 def ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort
     (p : Nat.Primes) (rho : XiDivisorSupport) : ℝ :=
-  (ccmRationalAdelicPrimeXiReflectedPhysicalPhaseMoment p rho).im ^ 2 +
-    (ccmRationalAdelicPrimeXiReflectedPhysicalOddPhaseMoment p rho).im ^ 2
+  (ccmRationalAdelicPrimeXiReflectedPhysicalPhaseMoment p rho).im ^ (2 : ℕ) +
+    (ccmRationalAdelicPrimeXiReflectedPhysicalOddPhaseMoment p rho).im ^ (2 : ℕ)
 
 /-- Corresponding source-height quadrature port. -/
 def ccmRationalAdelicPrimeXiReflectedSourcePhaseQuadraturePort
     (p : Nat.Primes) (rho : XiDivisorSupport) : ℝ :=
-  (ccmRationalAdelicPrimeXiReflectedSourcePhaseMoment p rho).im ^ 2 +
-    (ccmRationalAdelicPrimeXiReflectedSourceOddPhaseMoment p rho).im ^ 2
+  (ccmRationalAdelicPrimeXiReflectedSourcePhaseMoment p rho).im ^ (2 : ℕ) +
+    (ccmRationalAdelicPrimeXiReflectedSourceOddPhaseMoment p rho).im ^ (2 : ℕ)
 
 theorem ccmRationalAdelicPrimeXiReflectedSourcePhaseQuadraturePort_eq_zero
     (p : Nat.Primes) (rho : XiDivisorSupport) :
@@ -118,7 +118,7 @@ theorem ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort_eq_normMism
     ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort p rho =
       (‖bilateralHalfDensityCharacter (p : ℕ) (rho : ℂ)‖ -
         ‖bilateralHalfDensityCharacter (p : ℕ)
-          (xiZeroReflectEquiv rho : ℂ)‖) ^ 2 := by
+          (xiZeroReflectEquiv rho : ℂ)‖) ^ (2 : ℕ) := by
   rw [ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort,
     ccmRationalAdelicPrimeXiReflectedPhysicalPhaseMoment,
     ccmRationalAdelicPrimeXiReflectedPhysicalOddPhaseMoment,
@@ -132,7 +132,7 @@ direct scalar bridge from reflection quadratures to the singular Bockstein chann
 theorem ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort_eq_mateGainDefect
     (p : Nat.Primes) (rho : XiDivisorSupport) :
     ccmRationalAdelicPrimeXiReflectedPhysicalPhaseQuadraturePort p rho =
-      (deningerHalfDensityMateGain (p : ℕ) (rho : ℂ) - 1) ^ 2 /
+      (deningerHalfDensityMateGain (p : ℕ) (rho : ℂ) - 1) ^ (2 : ℕ) /
         deningerHalfDensityMateGain (p : ℕ) (rho : ℂ) := by
   have hz : bilateralHalfDensityCharacter (p : ℕ) (rho : ℂ) ≠ 0 :=
     Complex.cpow_ne_zero_iff.mpr

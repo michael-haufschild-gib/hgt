@@ -10,7 +10,7 @@ off-diagonal instead gives a global entire matrix without any reciprocal auxilia
 
 `T(s) = [[Xi(s), J_12(s)], [0, Xi(s)]]`.
 
-Its determinant is exactly `Xi(s)^2`, and `T(s)^2 = 0` is exactly the Xi-divisor condition.  The
+Its determinant is exactly `Xi(s)^(2 : ℕ)`, and `T(s)^(2 : ℕ) = 0` is exactly the Xi-divisor condition.  The
 same free-orbit grading used by the literal crossed-product source extracts `-2 J_12(s)` from its
 commutator.  Thus orientation survives globally, but normality holds exactly where that completed
 joint channel vanishes.  This is the sharp analytic orientation--normality tradeoff: a triangular
@@ -58,7 +58,7 @@ theorem eulerWickTriangularCompletedExtension_entry_differentiable (i j : Fin 2)
 /-- The global triangular landing is coefficient-faithful on the Xi divisor: its determinant is
 exactly Xi squared, with no auxiliary inverse or denominator. -/
 theorem det_eulerWickTriangularCompletedExtension (s : ℂ) :
-    (eulerWickTriangularCompletedExtension s).det = _root_.RHTower.xi s ^ 2 := by
+    (eulerWickTriangularCompletedExtension s).det = _root_.RHTower.xi s ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two]
   simp [eulerWickTriangularCompletedExtension, pow_two]
 

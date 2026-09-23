@@ -33,11 +33,11 @@ open Matrix Finset
 
 /-! ### The FID moment data -/
 
-/-- The FID node `x_n = (1/(n+1))^2`. -/
-noncomputable def fidNode (n : ℕ) : ℝ := (1 / ((n : ℝ) + 1)) ^ 2
+/-- The FID node `x_n = (1/(n+1))^(2 : ℕ)`. -/
+noncomputable def fidNode (n : ℕ) : ℝ := (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)
 
-/-- The FID weight `w_n = (1/(n+1))^3`. -/
-noncomputable def fidWeight (n : ℕ) : ℝ := (1 / ((n : ℝ) + 1)) ^ 3
+/-- The FID weight `w_n = (1/(n+1))^(3 : ℕ)`. -/
+noncomputable def fidWeight (n : ℕ) : ℝ := (1 / ((n : ℝ) + 1)) ^ (3 : ℕ)
 
 theorem fidNode_pos (n : ℕ) : 0 < fidNode n := by
   rw [fidNode]

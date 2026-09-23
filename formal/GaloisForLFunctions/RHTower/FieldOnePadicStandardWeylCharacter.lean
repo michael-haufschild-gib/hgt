@@ -168,7 +168,7 @@ theorem fieldOnePadic_exists_denominatorStage (x : ℚ_[p]) :
   · exact ⟨0, by simp [hx, fieldOnePadicDenominatorStage]⟩
   by_cases hv : 0 ≤ x.valuation
   · refine ⟨0, ?_⟩
-    change ‖(p : ℚ_[p]) ^ 0 * x‖ ≤ 1
+    change ‖(p : ℚ_[p]) ^ (0 : ℕ) * x‖ ≤ 1
     simpa only [pow_zero, one_mul] using
       (Padic.norm_le_one_iff_val_nonneg x).2 hv
   · let n := Int.toNat (-x.valuation)
@@ -309,7 +309,7 @@ theorem fieldOnePadicStandardUnitAddCircleCharacter_vanishes_on_integers
   have hstage : x ∈ fieldOnePadicDenominatorStage p 0 := by
     simpa [fieldOnePadicDenominatorStage] using hx
   rw [fieldOnePadicStandardUnitAddCircleCharacter_eq_stage p hstage]
-  letI : Subsingleton (ZMod (p ^ 0)) :=
+  letI : Subsingleton (ZMod (p ^ (0 : ℕ))) :=
     ZMod.subsingleton_iff.mpr (by simp)
   change ZMod.toAddCircle
       (PadicInt.toZModPow 0
@@ -388,14 +388,14 @@ theorem fieldOnePadicStandardUnitAddCircleCharacter_inv_p_ne_zero :
     fieldOnePadicStandardUnitAddCircleCharacter p
       (p : ℚ_[p])⁻¹ ≠ 0 := by
   letI : NeZero p := ⟨(Fact.out : Nat.Prime p).ne_zero⟩
-  letI : NeZero (p ^ 1) := ⟨pow_ne_zero 1 (Fact.out : Nat.Prime p).ne_zero⟩
-  letI : Fact (1 < p ^ 1) := ⟨by
+  letI : NeZero (p ^ (1 : ℕ)) := ⟨pow_ne_zero 1 (Fact.out : Nat.Prime p).ne_zero⟩
+  letI : Fact (1 < p ^ (1 : ℕ)) := ⟨by
     simpa using (Fact.out : Nat.Prime p).one_lt⟩
-  rw [show (p : ℚ_[p])⁻¹ = ((p : ℚ_[p]) ^ 1)⁻¹ by simp,
+  rw [show (p : ℚ_[p])⁻¹ = ((p : ℚ_[p]) ^ (1 : ℕ))⁻¹ by simp,
     fieldOnePadicStandardUnitAddCircleCharacter_inv_pow]
   intro h
-  apply (one_ne_zero : (1 : ZMod (p ^ 1)) ≠ 0)
-  apply ZMod.toAddCircle_injective (p ^ 1)
+  apply (one_ne_zero : (1 : ZMod (p ^ (1 : ℕ))) ≠ 0)
+  apply ZMod.toAddCircle_injective (p ^ (1 : ℕ))
   simpa only [map_zero] using h
 
 theorem fieldOnePadicStandardAddChar_inv_p_ne_one :

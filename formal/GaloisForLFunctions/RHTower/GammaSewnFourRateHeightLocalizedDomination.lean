@@ -13,7 +13,7 @@ the prime-only Fisher clock unchanged, while multiplying every selected prime-lo
 This gives an exact local transition law.  If `D` is the strictly positive base prime-log
 dispersion and `F` is the strictly positive complementary Fisher mass, then
 
-`dispersion(e) - correctedFisher(e) = (e + 1/2)^2 D - F`.
+`dispersion(e) - correctedFisher(e) = (e + 1/2)^(2 : ℕ) D - F`.
 
 Consequently the *Rees-boundary coordinate packet* crosses the finite scale `sqrt(F / D)`.  This
 does **not** give a physical height-localized contraction.  The literal Euler amplitude depends on
@@ -84,7 +84,7 @@ theorem gammaSewnFourRateCommonDepth_dispersion_eq
           (gammaSewnFourRateCommonDepthCell prime e))
         (gammaSewnFourRateSelectedHeight
           (gammaSewnFourRateCommonDepthCell prime e)) =
-      ((e : ℝ) + 1 / 2) ^ 2 *
+      ((e : ℝ) + 1 / 2) ^ (2 : ℕ) *
         gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime := by
   simp only [gammaSewnFourRateBoundaryPrimeLogDispersion,
     normalizedFinitePairDispersion]
@@ -119,7 +119,7 @@ theorem gammaSewnFourRateSchurCorrectedFisher_commonDepth_eq
 theorem gammaSewnFourRateBoundaryComplementaryFisherMass_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < gammaSewnFourRateBoundaryComplementaryFisherMass a rate prime := by
   unfold gammaSewnFourRateBoundaryComplementaryFisherMass complementaryFisherMean
   apply Finset.sum_pos
@@ -152,7 +152,7 @@ private theorem gammaSewnFourRate_primeLog_one_ne_two
 theorem gammaSewnFourRateBoundaryPrimeLogDispersion_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     0 < gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime := by
   unfold gammaSewnFourRateBoundaryPrimeLogDispersion
@@ -202,7 +202,7 @@ theorem gammaSewnFourRateCommonDepth_dispersion_sub_correctedFisher_eq
           (gammaSewnFourRateCommonDepthCell prime e)) -
       gammaSewnFourRateSchurCorrectedFisher a rate
         (gammaSewnFourRateCommonDepthCell prime e) =
-      ((e : ℝ) + 1 / 2) ^ 2 *
+      ((e : ℝ) + 1 / 2) ^ (2 : ℕ) *
           gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime -
         gammaSewnFourRateBoundaryComplementaryFisherMass a rate prime := by
   rw [gammaSewnFourRateCommonDepth_dispersion_eq,
@@ -212,7 +212,7 @@ theorem gammaSewnFourRateCommonDepth_dispersion_sub_correctedFisher_eq
 theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion_iff
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes} (e : ℕ)
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     gammaSewnFourRateSchurCorrectedFisher a rate
           (gammaSewnFourRateCommonDepthCell prime e) <
@@ -235,14 +235,14 @@ theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion_iff
     (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary
   rw [gammaSewnFourRateSchurCorrectedFisher_commonDepth_eq e hpartition.ne',
     gammaSewnFourRateCommonDepth_dispersion_eq]
-  change F < ((e : ℝ) + 1 / 2) ^ 2 * D ↔ Real.sqrt (F / D) < (e : ℝ) + 1 / 2
+  change F < ((e : ℝ) + 1 / 2) ^ (2 : ℕ) * D ↔ Real.sqrt (F / D) < (e : ℝ) + 1 / 2
   have hquot : 0 ≤ F / D := div_nonneg hF.le hD.le
-  have hsqrt : Real.sqrt (F / D) ^ 2 = F / D := Real.sq_sqrt hquot
+  have hsqrt : Real.sqrt (F / D) ^ (2 : ℕ) = F / D := Real.sq_sqrt hquot
   have hsqrt0 := Real.sqrt_nonneg (F / D)
   have hdepth : 0 < (e : ℝ) + 1 / 2 := by positivity
   constructor
   · intro hdom
-    have hsquare : F / D < ((e : ℝ) + 1 / 2) ^ 2 :=
+    have hsquare : F / D < ((e : ℝ) + 1 / 2) ^ (2 : ℕ) :=
       (div_lt_iff₀ hD).2 hdom
     nlinarith
   · intro hscale
@@ -256,7 +256,7 @@ amplitudes invalidate selected-depth transfer. -/
 theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     ∃ e : ℕ,
       gammaSewnFourRateSchurCorrectedFisher a rate
@@ -275,12 +275,12 @@ theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion
   obtain ⟨e, he⟩ := exists_nat_gt (Real.sqrt (F / D))
   refine ⟨e, ?_⟩
   have hquot : 0 ≤ F / D := div_nonneg hF.le hD.le
-  have hsqrt : Real.sqrt (F / D) ^ 2 = F / D := Real.sq_sqrt hquot
+  have hsqrt : Real.sqrt (F / D) ^ (2 : ℕ) = F / D := Real.sq_sqrt hquot
   have hscale : Real.sqrt (F / D) < (e : ℝ) + 1 / 2 := by
     exact he.trans (by norm_num)
-  have hsquare : F / D < ((e : ℝ) + 1 / 2) ^ 2 := by
+  have hsquare : F / D < ((e : ℝ) + 1 / 2) ^ (2 : ℕ) := by
     nlinarith [Real.sqrt_nonneg (F / D)]
-  have hdom : F < ((e : ℝ) + 1 / 2) ^ 2 * D :=
+  have hdom : F < ((e : ℝ) + 1 / 2) ^ (2 : ℕ) * D :=
     (div_lt_iff₀ hD).mp hsquare
   have hpartition := gammaSewnFourRateBoundaryPairPartition_pos
     (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary
@@ -311,7 +311,7 @@ theorem gammaSewnFourRateCommonDepth_eulerDispersion_eq
         (gammaSewnFourRateBoundaryPairProbability a rate
           (gammaSewnFourRateCommonDepthCell prime e))
         (gammaSewnFourRateSelectedEulerHeight prime e) =
-      (((e : ℝ) + 1) / 2) ^ 2 *
+      (((e : ℝ) + 1) / 2) ^ (2 : ℕ) *
         gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime := by
   simp only [gammaSewnFourRateBoundaryPrimeLogDispersion,
     normalizedFinitePairDispersion]
@@ -339,7 +339,7 @@ theorem gammaSewnFourRateCommonDepth_eulerDispersion_sub_correctedFisher_eq
         (gammaSewnFourRateSelectedEulerHeight prime e) -
       gammaSewnFourRateSchurCorrectedFisher a rate
         (gammaSewnFourRateCommonDepthCell prime e) =
-      (((e : ℝ) + 1) / 2) ^ 2 *
+      (((e : ℝ) + 1) / 2) ^ (2 : ℕ) *
           gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime -
         gammaSewnFourRateBoundaryComplementaryFisherMass a rate prime := by
   rw [gammaSewnFourRateCommonDepth_eulerDispersion_eq,
@@ -350,7 +350,7 @@ source-computable critical valuation scale. -/
 theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion_iff
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes} (e : ℕ)
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     gammaSewnFourRateSchurCorrectedFisher a rate
           (gammaSewnFourRateCommonDepthCell prime e) <
@@ -372,15 +372,15 @@ theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion_iff
     (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary
   rw [gammaSewnFourRateSchurCorrectedFisher_commonDepth_eq e hpartition.ne',
     gammaSewnFourRateCommonDepth_eulerDispersion_eq]
-  change F < (((e : ℝ) + 1) / 2) ^ 2 * D ↔
+  change F < (((e : ℝ) + 1) / 2) ^ (2 : ℕ) * D ↔
     Real.sqrt (F / D) < ((e : ℝ) + 1) / 2
   have hquot : 0 ≤ F / D := div_nonneg hF.le hD.le
-  have hsqrt : Real.sqrt (F / D) ^ 2 = F / D := Real.sq_sqrt hquot
+  have hsqrt : Real.sqrt (F / D) ^ (2 : ℕ) = F / D := Real.sq_sqrt hquot
   have hsqrt0 := Real.sqrt_nonneg (F / D)
   have hdepth : 0 < ((e : ℝ) + 1) / 2 := by positivity
   constructor
   · intro hdom
-    have hsquare : F / D < (((e : ℝ) + 1) / 2) ^ 2 :=
+    have hsquare : F / D < (((e : ℝ) + 1) / 2) ^ (2 : ℕ) :=
       (div_lt_iff₀ hD).2 hdom
     nlinarith
   · intro hscale
@@ -393,7 +393,7 @@ amplitudes do not preserve that probability at large depth, so this is not the p
 theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     ∃ e : ℕ,
       gammaSewnFourRateSchurCorrectedFisher a rate
@@ -411,13 +411,13 @@ theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
   obtain ⟨e, he⟩ := exists_nat_gt (2 * Real.sqrt (F / D))
   refine ⟨e, ?_⟩
   have hquot : 0 ≤ F / D := div_nonneg hF.le hD.le
-  have hsqrt : Real.sqrt (F / D) ^ 2 = F / D := Real.sq_sqrt hquot
+  have hsqrt : Real.sqrt (F / D) ^ (2 : ℕ) = F / D := Real.sq_sqrt hquot
   have hsqrt0 := Real.sqrt_nonneg (F / D)
   have hscale : Real.sqrt (F / D) < ((e : ℝ) + 1) / 2 := by
     nlinarith
-  have hsquare : F / D < (((e : ℝ) + 1) / 2) ^ 2 := by
+  have hsquare : F / D < (((e : ℝ) + 1) / 2) ^ (2 : ℕ) := by
     nlinarith
-  have hdom : F < (((e : ℝ) + 1) / 2) ^ 2 * D :=
+  have hdom : F < (((e : ℝ) + 1) / 2) ^ (2 : ℕ) * D :=
     (div_lt_iff₀ hD).mp hsquare
   have hpartition := gammaSewnFourRateBoundaryPairPartition_pos
     (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary

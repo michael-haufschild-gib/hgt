@@ -25,9 +25,9 @@ theorem integral_Ioc_normSq_linSum_range_le (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ n ∈ s, 0 < n) (ha : ∀ n : ℕ, ‖a n‖ ≤ 1)
     {L Y ε M₁ M₂ W : ℝ} (hL : 0 < L) (hY : 0 < Y) (hε : 0 ≤ ε) (hW : 0 < W)
     (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
-    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2 ≤ M₁)
-    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 ≤ M₂) (K : ℕ) :
-    (∫ x in Set.Ioc Y (Y * (1 + ε) ^ K), ‖linSum a s L x‖ ^ 2)
+    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₁)
+    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₂) (K : ℕ) :
+    (∫ x in Set.Ioc Y (Y * (1 + ε) ^ K), ‖linSum a s L x‖ ^ (2 : ℕ))
       ≤ (Y * (1 + ε) ^ K) * ((K : ℝ) * blockCost L Y ε M₁ M₂ W) := by
   have hone : (0 : ℝ) < 1 + ε := by linarith
   have hZ0 : (0 : ℝ) < Y * (1 + ε) ^ K := by positivity

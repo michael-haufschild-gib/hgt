@@ -37,7 +37,7 @@ theorem summable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
 
 /-- The uniform majorant of the off-centre bumps. -/
 noncomputable def heatTailMajorant (n : ℤ) : ℝ :=
-  if n = 0 then 0 else Real.exp (-(Real.pi * ((n : ℝ) ^ 2 - 1) / 4))
+  if n = 0 then 0 else Real.exp (-(Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4))
 
 theorem heatTailMajorant_nonneg (n : ℤ) : 0 ≤ heatTailMajorant n := by
   rw [heatTailMajorant]
@@ -51,7 +51,7 @@ theorem summable_heatTailMajorant : Summable heatTailMajorant := by
     (fun n => ?_) ((summable_exp_neg_mul_abs (c := Real.pi / 4) (by positivity)).mul_left
       (Real.exp (Real.pi / 4)))
   rw [heatTailMajorant]
-  have hsq : |(n : ℝ)| ≤ (n : ℝ) ^ 2 := by
+  have hsq : |(n : ℝ)| ≤ (n : ℝ) ^ (2 : ℕ) := by
     rcases eq_or_ne n 0 with h | h
     · simp [h]
     · have h1 : (1 : ℝ) ≤ |(n : ℝ)| := by
@@ -60,7 +60,7 @@ theorem summable_heatTailMajorant : Summable heatTailMajorant := by
           _ ≤ ((|n| : ℤ) : ℝ) := by exact_mod_cast this
           _ = |(n : ℝ)| := by push_cast [Int.cast_abs]; ring
       nlinarith [sq_abs ((n : ℝ))]
-  have hbound : Real.exp (-(Real.pi * ((n : ℝ) ^ 2 - 1) / 4))
+  have hbound : Real.exp (-(Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4))
       ≤ Real.exp (Real.pi / 4) * Real.exp (-(Real.pi / 4) * |(n : ℝ)|) := by
     rw [← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
@@ -90,24 +90,24 @@ theorem heatGauss_le_majorant {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) {θ : ℝ} 
       rw [h2, h3] at h1
       linarith
     nlinarith
-  have hsq : Real.pi ^ 2 * (n : ℝ) ^ 2 ≤ (θ - 2 * Real.pi * (n : ℝ)) ^ 2 := by
-    have habs : |θ - 2 * Real.pi * (n : ℝ)| ^ 2 = (θ - 2 * Real.pi * (n : ℝ)) ^ 2 := sq_abs _
+  have hsq : Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (2 : ℕ) ≤ (θ - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) := by
+    have habs : |θ - 2 * Real.pi * (n : ℝ)| ^ (2 : ℕ) = (θ - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) := sq_abs _
     have hnn : (0 : ℝ) ≤ Real.pi * |(n : ℝ)| := by positivity
     nlinarith [sq_abs ((n : ℝ))]
   rw [heatGauss, heatTailMajorant, if_neg hn, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
-  have hstep : Real.pi * ((n : ℝ) ^ 2) / (4 * x)
-      ≤ (θ - 2 * Real.pi * (n : ℝ)) ^ 2 / (4 * Real.pi * x) := by
+  have hstep : Real.pi * ((n : ℝ) ^ (2 : ℕ)) / (4 * x)
+      ≤ (θ - 2 * Real.pi * (n : ℝ)) ^ (2 : ℕ) / (4 * Real.pi * x) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith
-  have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith [sq_abs ((n : ℝ))]
-  have hsplit : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ 2 - 1) / 4
-      ≤ Real.pi * ((n : ℝ) ^ 2) / (4 * x) := by
-    have hA : Real.pi * ((n : ℝ) ^ 2 - 1) / 4 ≤ Real.pi * ((n : ℝ) ^ 2 - 1) / (4 * x) := by
+  have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith [sq_abs ((n : ℝ))]
+  have hsplit : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4
+      ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ)) / (4 * x) := by
+    have hA : Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / 4 ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / (4 * x) := by
       rw [div_le_div_iff₀ (by norm_num) (by positivity)]
       nlinarith [mul_nonneg (mul_nonneg hpi.le (sub_nonneg.mpr hn2)) (sub_nonneg.mpr hx1)]
-    have hB : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ 2 - 1) / (4 * x)
-        = Real.pi * ((n : ℝ) ^ 2) / (4 * x) := by
+    have hB : Real.pi / (4 * x) + Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) / (4 * x)
+        = Real.pi * ((n : ℝ) ^ (2 : ℕ)) / (4 * x) := by
       field_simp
       ring
     linarith

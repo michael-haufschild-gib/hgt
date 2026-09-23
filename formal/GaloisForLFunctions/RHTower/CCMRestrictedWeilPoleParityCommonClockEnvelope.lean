@@ -249,7 +249,7 @@ theorem ccmWeilWallMode_weightedEntryTransport_nonpos
       Real.sinh t * ccmWeilWallAgeMode n t) ≤ 0 := by
     linarith
   exact mul_nonpos_of_nonneg_of_nonpos
-    (mul_nonneg (by norm_num) (criticalMellinAtomWeight_nonneg n)) hint
+    (mul_nonneg (by norm_num) (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)) hint
 
 /-- A finite entering collar is nonpositive before any source term is estimated. -/
 theorem ccmWeilParityHead_union_commonClock_collar_nonpos
@@ -467,7 +467,7 @@ theorem ccmWeilParityCutoff_commonClock_le_smooth
         rw [Real.log_le_iff_le_exp hnpos]
         exact hnexp
       linarith
-    exact mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg n)
+    exact mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
       (ccmWeilWallMode_commonClock_from_entry_nonpos n hn2 s.1 hentry)
   change (-4 * ccmWeilPoleCrossSmooth s.1 +
       ∑ n ∈ S, criticalMellinAtomWeight n * ccmWeilWallClockMode n s.1) +

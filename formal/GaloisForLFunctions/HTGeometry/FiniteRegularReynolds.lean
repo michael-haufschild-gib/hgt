@@ -46,8 +46,8 @@ theorem finiteRegularAverage_apply (v : EuclideanSpace ℂ G) (q : G) :
   exact Equiv.sum_comp (Equiv.mulLeft q) v
 
 theorem finiteRegularAverage_energy (v : EuclideanSpace ℂ G) :
-    (2*(Fintype.card G:ℝ))⁻¹*∑ g : G, ‖finiteRegularUnitary g v-v‖^2=
-      ‖v‖^2-‖finiteRegularAverage v‖^2 := by
+    (2*(Fintype.card G:ℝ))⁻¹*∑ g : G, ‖finiteRegularUnitary g v-v‖^(2 : ℕ)=
+      ‖v‖^(2 : ℕ)-‖finiteRegularAverage v‖^(2 : ℕ) := by
   have hU : ∀ g h : G, finiteRegularUnitary (g*h)=
       (finiteRegularUnitary h).trans (finiteRegularUnitary g) := finiteRegularUnitary_mul
   have h := reynolds_energy (S := EuclideanSpace ℂ G) finiteRegularUnitary hU v
@@ -74,10 +74,10 @@ theorem finiteRegularAverage_fixed_iff (v : EuclideanSpace ℂ G) :
       inv_mul_cancel₀ (by exact_mod_cast Fintype.card_ne_zero : (Fintype.card G:ℂ)≠0),one_smul]
 
 theorem finiteRegularAverage_norm_decomposition (v : EuclideanSpace ℂ G) :
-    ‖finiteRegularAverage v‖^2+‖v-finiteRegularAverage v‖^2=‖v‖^2 := by
+    ‖finiteRegularAverage v‖^(2 : ℕ)+‖v-finiteRegularAverage v‖^(2 : ℕ)=‖v‖^(2 : ℕ) := by
   have h := inner_reynolds_self finiteRegularUnitary finiteRegularUnitary_mul v
   rw [← finiteRegularAverage_eq_reynolds] at h
-  have hr : ‖finiteRegularAverage v‖^2=(inner ℂ (finiteRegularAverage v) v).re := by
+  have hr : ‖finiteRegularAverage v‖^(2 : ℕ)=(inner ℂ (finiteRegularAverage v) v).re := by
     rw [← h]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) _).symm
   have hn := norm_sub_sq (𝕜 := ℂ) (finiteRegularAverage v) v

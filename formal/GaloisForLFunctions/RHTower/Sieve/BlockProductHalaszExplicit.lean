@@ -34,7 +34,7 @@ def halaszBlockBound (a : ℕ → ℂ) (M : ℕ) (G U : ℝ) (i : ℕ) (C : ℝ)
       + (12 * Real.pi * ((2 ^ i : ℕ) : ℝ) / (2 * Real.pi)) * (1 + Real.log C)
       + C * (1 + 214 * Real.sqrt (4 * Real.pi * G)
           + 1536 * (((2 ^ i : ℕ) : ℝ) / Real.sqrt U)))
-    * ‖blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0‖ ^ 2
+    * ‖blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0‖ ^ (2 : ℕ)
 
 /-- Monotonicity of the block bound in the frequency count. -/
 theorem halaszBlockBound_mono (a : ℕ → ℂ) (M : ℕ) {G U : ℝ} (hG : 0 ≤ G) (hU : 0 < U) (i : ℕ)
@@ -70,9 +70,9 @@ theorem integral_normSq_blockProduct_le_halaszMontgomery
     (C : ℕ → ℝ) (hC1 : ∀ j, 1 ≤ C j)
     (hC : ∀ (j : ℕ) (P : Finset ℝ), (∀ x ∈ P, ∀ y ∈ P, x ≠ y → (1 : ℝ) ≤ |x - y|) →
       (∀ x ∈ P, x ∈ primeBlockLevelSet B G (2 ^ j * V₀)) → (P.card : ℝ) ≤ C j) :
-    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ V₀ ^ 2 * (∫ w in Set.Icc (-G) G, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-        + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
+    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * (∫ w in Set.Icc (-G) G, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+        + ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
             (2 * (((Nat.log 2 M + 1 : ℕ) : ℝ) *
               ∑ i ∈ Finset.range (Nat.log 2 M + 1),
                 halaszBlockBound a M G U i (C j))) := by
@@ -83,7 +83,7 @@ theorem integral_normSq_blockProduct_le_halaszMontgomery
   have hfam : ∀ (j : ℕ) (P : Finset ℝ),
       (∀ w ∈ P, w ∈ primeBlockLevelSet B G (2 ^ j * V₀)) →
       (∀ w ∈ P, ∀ u ∈ P, w ≠ u → (1 : ℝ) ≤ |w - u|) →
-      ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+      ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
         ≤ ((Nat.log 2 M + 1 : ℕ) : ℝ) *
             ∑ i ∈ Finset.range (Nat.log 2 M + 1), halaszBlockBound a M G U i (C j) := by
     intro j P hPmem hPsep
@@ -101,18 +101,18 @@ theorem integral_normSq_blockProduct_le_halaszMontgomery
     exact halaszBlockBound_mono a M hG hU i (Nat.cast_nonneg _) (hC1 j)
       (hC j P hPsep hPmem)
   have hstep : ∀ j : ℕ,
-      (∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-        + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+      (∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+        + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
       ≤ 2 * (((Nat.log 2 M + 1 : ℕ) : ℝ) *
           ∑ i ∈ Finset.range (Nat.log 2 M + 1), halaszBlockBound a M G U i (C j)) := by
     intro j
     have hA := hfam j (P₁ j) (h₁mem j) (h₁sep j)
     have hB := hfam j (P₂ j) (h₂mem j) (h₂sep j)
     linarith
-  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
-        ((∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ 2 *
+  have hsum : ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
+        ((∑ w ∈ P₁ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+          + ∑ w ∈ P₂ j, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ ∑ j ∈ Finset.range J, (2 ^ (j + 1) * V₀) ^ (2 : ℕ) *
         (2 * (((Nat.log 2 M + 1 : ℕ) : ℝ) *
           ∑ i ∈ Finset.range (Nat.log 2 M + 1), halaszBlockBound a M G U i (C j))) :=
     Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hstep j) (sq_nonneg _)

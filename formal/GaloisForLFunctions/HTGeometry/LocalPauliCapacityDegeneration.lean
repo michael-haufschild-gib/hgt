@@ -39,7 +39,7 @@ theorem outerSelf_apply {n : Type*} (v : n → ℂ) (i j : n) :
 
 /-- **A symmetric arrow matrix with dominated corner is positive semidefinite.**  Its rank-one
 decomposition uses only the two arrow rows and the corner remainder, so no square root appears. -/
-theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^ 2) :
+theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^ (2 : ℕ)) :
     (!![(a : ℂ), 0, (b : ℂ); 0, (a : ℂ), (b : ℂ); (b : ℂ), (b : ℂ), (c : ℂ)]).PosSemidef := by
   have hane : (a : ℝ) ≠ 0 := ne_of_gt ha
   set v₁ : Fin 3 → ℂ := ![(a : ℂ), 0, (b : ℂ)] with hv₁
@@ -47,7 +47,7 @@ theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^
   set v₃ : Fin 3 → ℂ := ![0, 0, 1] with hv₃
   have hdecomp : !![(a : ℂ), 0, (b : ℂ); 0, (a : ℂ), (b : ℂ); (b : ℂ), (b : ℂ), (c : ℂ)]
       = ((a⁻¹ : ℝ) : ℂ) • outerSelf v₁ + ((a⁻¹ : ℝ) : ℂ) • outerSelf v₂
-        + (((c * a - 2 * b ^ 2) / a : ℝ) : ℂ) • outerSelf v₃ := by
+        + (((c * a - 2 * b ^ (2 : ℕ)) / a : ℝ) : ℂ) • outerSelf v₃ := by
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [outerSelf_apply, hv₁, hv₂, hv₃, Complex.conj_ofReal]
@@ -62,7 +62,7 @@ theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^
 /-- The determinant of a symmetric arrow matrix. -/
 theorem det_arrow3 (a b c : ℝ) :
     (!![(a : ℂ), 0, (b : ℂ); 0, (a : ℂ), (b : ℂ); (b : ℂ), (b : ℂ), (c : ℂ)]).det
-      = ((a * (a * c - 2 * b ^ 2) : ℝ) : ℂ) := by
+      = ((a * (a * c - 2 * b ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [Matrix.det_fin_three]
   norm_num
   push_cast
@@ -105,7 +105,7 @@ def hallSeedFrame (ε : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
 /-- The frame operator in closed form. -/
 theorem hallSeedFrame_eq (ε : ℝ) :
     hallSeedFrame ε
-      = !![1 + (ε : ℂ) ^ 2, 0, (ε : ℂ); 0, 1 + (ε : ℂ) ^ 2, (ε : ℂ); (ε : ℂ), (ε : ℂ), 2] := by
+      = !![1 + (ε : ℂ) ^ (2 : ℕ), 0, (ε : ℂ); 0, 1 + (ε : ℂ) ^ (2 : ℕ), (ε : ℂ); (ε : ℂ), (ε : ℂ), 2] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [hallSeedFrame, hallSeedA₁, hallSeedA₂] <;> ring
@@ -114,8 +114,8 @@ theorem hallSeedFrame_eq (ε : ℝ) :
 theorem hallSeedFrame_lower {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
     (hallSeedFrame ε - ((1 / 2 : ℝ) : ℂ) • (1 : Matrix (Fin 3) (Fin 3) ℂ)).PosSemidef := by
   have hshift : hallSeedFrame ε - ((1 / 2 : ℝ) : ℂ) • (1 : Matrix (Fin 3) (Fin 3) ℂ)
-      = !![((1 / 2 + ε ^ 2 : ℝ) : ℂ), 0, ((ε : ℝ) : ℂ);
-           0, ((1 / 2 + ε ^ 2 : ℝ) : ℂ), ((ε : ℝ) : ℂ);
+      = !![((1 / 2 + ε ^ (2 : ℕ) : ℝ) : ℂ), 0, ((ε : ℝ) : ℂ);
+           0, ((1 / 2 + ε ^ (2 : ℕ) : ℝ) : ℂ), ((ε : ℝ) : ℂ);
            ((ε : ℝ) : ℂ), ((ε : ℝ) : ℂ), ((3 / 2 : ℝ) : ℂ)] := by
     rw [hallSeedFrame_eq]
     ext i j
@@ -128,8 +128,8 @@ theorem hallSeedFrame_lower {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
 theorem hallSeedFrame_upper {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
     (((4 : ℝ) : ℂ) • (1 : Matrix (Fin 3) (Fin 3) ℂ) - hallSeedFrame ε).PosSemidef := by
   have hshift : ((4 : ℝ) : ℂ) • (1 : Matrix (Fin 3) (Fin 3) ℂ) - hallSeedFrame ε
-      = !![((3 - ε ^ 2 : ℝ) : ℂ), 0, ((-ε : ℝ) : ℂ);
-           0, ((3 - ε ^ 2 : ℝ) : ℂ), ((-ε : ℝ) : ℂ);
+      = !![((3 - ε ^ (2 : ℕ) : ℝ) : ℂ), 0, ((-ε : ℝ) : ℂ);
+           0, ((3 - ε ^ (2 : ℕ) : ℝ) : ℂ), ((-ε : ℝ) : ℂ);
            ((-ε : ℝ) : ℂ), ((-ε : ℝ) : ℂ), ((2 : ℝ) : ℂ)] := by
     rw [hallSeedFrame_eq]
     ext i j
@@ -150,7 +150,7 @@ theorem hallSeedTuple_pencil (ε : ℝ) :
     (∑ i, hallSeedCoeff i • hallSeedTuple ε i) = hallSeedA₁ ε + hallSeedA₂ ε := by
   simp [Fin.sum_univ_two, hallSeedCoeff, hallSeedTuple]
 
-theorem hallSeedCoeff_normSq : (∑ i, ‖hallSeedCoeff i‖ ^ 2) = 2 := by
+theorem hallSeedCoeff_normSq : (∑ i, ‖hallSeedCoeff i‖ ^ (2 : ℕ)) = 2 := by
   simp [Fin.sum_univ_two, hallSeedCoeff]
   norm_num
 
@@ -164,30 +164,30 @@ theorem hallSeedKraus_eq (ε : ℝ) (X : Matrix (Fin 3) (Fin 3) ℂ) :
 /-- **The capacity lower bound `ε²/2 ≤ cap`.** -/
 theorem hallSeedCapacity_lower {ε : ℝ} (hε0 : 0 < ε) {X : Matrix (Fin 3) (Fin 3) ℂ}
     (hX : X.PosDef) (hXdet : X.det = 1) :
-    ((ε ^ 2 / 2 : ℝ) : ℂ)
+    ((ε ^ (2 : ℕ) / 2 : ℝ) : ℂ)
       ≤ (hallSeedA₁ ε * X * hallSeedA₁ ε + hallSeedA₂ ε * X * hallSeedA₂ ε).det := by
-  have hc : 0 < ∑ i, ‖hallSeedCoeff i‖ ^ 2 := by rw [hallSeedCoeff_normSq]; norm_num
+  have hc : 0 < ∑ i, ‖hallSeedCoeff i‖ ^ (2 : ℕ) := by rw [hallSeedCoeff_normSq]; norm_num
   have hbound := pencil_capacity_bound hX hXdet hallSeedCoeff (hallSeedTuple ε) hc
   rw [hallSeedKraus_eq] at hbound
   rw [hallSeedTuple_pencil, hallSeedSum_det, hallSeedCoeff_normSq] at hbound
-  have hnorm : ‖(-2 * (ε : ℂ))‖ ^ 2 = 4 * ε ^ 2 := by
+  have hnorm : ‖(-2 * (ε : ℂ))‖ ^ (2 : ℕ) = 4 * ε ^ (2 : ℕ) := by
     rw [norm_mul]
     simp [Complex.norm_real, abs_of_pos hε0]
     ring
   rw [hnorm] at hbound
   have hcard : Fintype.card (Fin 3) = 3 := by simp
   rw [hcard] at hbound
-  have hval : (4 * ε ^ 2 / (2 : ℝ) ^ 3 : ℝ) = ε ^ 2 / 2 := by ring
+  have hval : (4 * ε ^ (2 : ℕ) / (2 : ℝ) ^ (3 : ℕ) : ℝ) = ε ^ (2 : ℕ) / 2 := by ring
   rwa [hval] at hbound
 
 /-! ## The degenerating family -/
 
 /-- The competitor states `diag(t, t, t⁻²)`. -/
 noncomputable def hallSeedState (t : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  !![((t : ℝ) : ℂ), 0, 0; 0, ((t : ℝ) : ℂ), 0; 0, 0, ((t⁻¹ ^ 2 : ℝ) : ℂ)]
+  !![((t : ℝ) : ℂ), 0, 0; 0, ((t : ℝ) : ℂ), 0; 0, 0, ((t⁻¹ ^ (2 : ℕ) : ℝ) : ℂ)]
 
 theorem hallSeedState_eq_diagonal (t : ℝ) :
-    hallSeedState t = Matrix.diagonal ![((t : ℝ) : ℂ), ((t : ℝ) : ℂ), ((t⁻¹ ^ 2 : ℝ) : ℂ)] := by
+    hallSeedState t = Matrix.diagonal ![((t : ℝ) : ℂ), ((t : ℝ) : ℂ), ((t⁻¹ ^ (2 : ℕ) : ℝ) : ℂ)] := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [hallSeedState]
 
@@ -210,12 +210,12 @@ theorem hallSeedState_det {t : ℝ} (ht : 0 < t) : (hallSeedState t).det = 1 := 
 theorem hallSeedKraus_det {ε t : ℝ} (ht : 0 < t) :
     (hallSeedA₁ ε * hallSeedState t * hallSeedA₁ ε
       + hallSeedA₂ ε * hallSeedState t * hallSeedA₂ ε).det
-      = ((2 * (ε ^ 2 + t⁻¹ ^ 3) : ℝ) : ℂ) := by
+      = ((2 * (ε ^ (2 : ℕ) + t⁻¹ ^ (3 : ℕ)) : ℝ) : ℂ) := by
   have htne : (t : ℝ) ≠ 0 := ne_of_gt ht
   have hmat : hallSeedA₁ ε * hallSeedState t * hallSeedA₁ ε
       + hallSeedA₂ ε * hallSeedState t * hallSeedA₂ ε
-      = !![((ε ^ 2 * t + t⁻¹ ^ 2 : ℝ) : ℂ), 0, ((ε * t : ℝ) : ℂ);
-           0, ((ε ^ 2 * t + t⁻¹ ^ 2 : ℝ) : ℂ), ((ε * t : ℝ) : ℂ);
+      = !![((ε ^ (2 : ℕ) * t + t⁻¹ ^ (2 : ℕ) : ℝ) : ℂ), 0, ((ε * t : ℝ) : ℂ);
+           0, ((ε ^ (2 : ℕ) * t + t⁻¹ ^ (2 : ℕ) : ℝ) : ℂ), ((ε * t : ℝ) : ℂ);
            ((ε * t : ℝ) : ℂ), ((ε * t : ℝ) : ℂ), ((2 * t : ℝ) : ℂ)] := by
     ext i j
     fin_cases i <;> fin_cases j <;>
@@ -231,7 +231,7 @@ theorem hallSeedCapacity_upper (ε : ℝ) {δ : ℝ} (hδ : 0 < δ) :
     ∃ X : Matrix (Fin 3) (Fin 3) ℂ, X.PosDef ∧ X.det = 1 ∧
       ∃ s : ℝ, 0 < s ∧ s < δ ∧
         (hallSeedA₁ ε * X * hallSeedA₁ ε + hallSeedA₂ ε * X * hallSeedA₂ ε).det
-          = ((2 * ε ^ 2 + s : ℝ) : ℂ) := by
+          = ((2 * ε ^ (2 : ℕ) + s : ℝ) : ℂ) := by
   set t : ℝ := max 1 (3 / δ) with hT
   have ht1 : (1 : ℝ) ≤ t := le_max_left _ _
   have ht : 0 < t := lt_of_lt_of_le one_pos ht1
@@ -246,9 +246,9 @@ theorem hallSeedCapacity_upper (ε : ℝ) {δ : ℝ} (hδ : 0 < δ) :
     have hprod : 0 ≤ (t * δ - 3) * t⁻¹ := mul_nonneg (by linarith) (le_of_lt hinv0)
     nlinarith [hprod, hti]
   refine ⟨hallSeedState t, hallSeedState_posDef ht, hallSeedState_det ht,
-    2 * t⁻¹ ^ 3, by positivity, ?_, ?_⟩
-  · have hsq : t⁻¹ ^ 2 ≤ 1 := by nlinarith [hinv0, hinv1]
-    have hcube : t⁻¹ ^ 3 ≤ t⁻¹ := by
+    2 * t⁻¹ ^ (3 : ℕ), by positivity, ?_, ?_⟩
+  · have hsq : t⁻¹ ^ (2 : ℕ) ≤ 1 := by nlinarith [hinv0, hinv1]
+    have hcube : t⁻¹ ^ (3 : ℕ) ≤ t⁻¹ := by
       nlinarith [mul_nonneg (le_of_lt hinv0) (sub_nonneg.mpr hsq)]
     linarith [hcube, hinvδ, hδ]
   · rw [hallSeedKraus_det ht]

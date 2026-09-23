@@ -37,7 +37,7 @@ theorem depthSecular_depthSecularRoot_eq_zero
 /-- **The eigenvector at the depth-`k` root satisfies the constraint exactly.**  The existence of
 the root is the only input beyond the scale floor and summability. -/
 theorem tsum_mul_secularVector_depthSecularRoot_eq_zero {B : ℝ}
-    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ 2)
+    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hμB : depthSecularRoot d ℓ k < B)
     (h : ∃ μ ∈ Ioo (d k) (d (k + 1)), depthSecular d ℓ k μ = 0) :
     ∑' j : ℕ, ℓ j * secularVector d ℓ (depthSecularRoot d ℓ k) j = 0 :=
@@ -47,15 +47,15 @@ theorem tsum_mul_secularVector_depthSecularRoot_eq_zero {B : ℝ}
 /-- **The normalized head defect at the exact depth-`k` root.**  Every hypothesis is either a
 scale condition or the existence of the root; the head coordinate ordering supplies `d_0 < μ`. -/
 theorem abs_sum_range_mul_secularVector_depthSecularRoot_div_le {B : ℝ}
-    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ 2)
+    (hB : ∀ j, B ≤ d (j + (k + 2))) (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hμB : depthSecularRoot d ℓ k < B)
     (hhead : ∀ j, j ≤ k → d j ≤ d k) (hℓ0 : ℓ 0 ≠ 0)
     (h : ∃ μ ∈ Ioo (d k) (d (k + 1)), depthSecular d ℓ k μ = 0) :
     |∑ j ∈ Finset.range (k + 2),
         ℓ j * secularVector d ℓ (depthSecularRoot d ℓ k) j|
         / |secularVector d ℓ (depthSecularRoot d ℓ k) 0 * ℓ 0|
-      ≤ (∑' j : ℕ, ℓ (j + (k + 2)) ^ 2) * (depthSecularRoot d ℓ k - d 0)
-          / ((B - depthSecularRoot d ℓ k) * ℓ 0 ^ 2) := by
+      ≤ (∑' j : ℕ, ℓ (j + (k + 2)) ^ (2 : ℕ)) * (depthSecularRoot d ℓ k - d 0)
+          / ((B - depthSecularRoot d ℓ k) * ℓ 0 ^ (2 : ℕ)) := by
   have hmem := depthSecularRoot_mem_Ioo h
   have hd0 : d 0 < depthSecularRoot d ℓ k :=
     lt_of_le_of_lt (hhead 0 (Nat.zero_le k)) hmem.1
@@ -74,7 +74,7 @@ theorem exists_depthSecular_root
     (hk01 : d k < d (k + 1)) (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → 0 ≤ d j ∧ d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2)
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hS : flattenedCoords ℓ k 0 ≠ 0) (hℓk1 : ℓ (k + 1) ≠ 0)
     (hbr : d k < infiniteSecularRoot (flattenedScales d k 0) (flattenedCoords ℓ k)) :
     ∃ μ ∈ Ioo (d k) (d (k + 1)), depthSecular d ℓ k μ = 0 := by
@@ -88,15 +88,15 @@ theorem abs_sum_range_mul_secularVector_depthSecularRoot_div_le' {B : ℝ}
     (hk01 : d k < d (k + 1)) (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → 0 ≤ d j ∧ d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2)
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hS : flattenedCoords ℓ k 0 ≠ 0) (hℓk1 : ℓ (k + 1) ≠ 0)
     (hbr : d k < infiniteSecularRoot (flattenedScales d k 0) (flattenedCoords ℓ k))
     (hB : ∀ j, B ≤ d (j + (k + 2))) (hμB : depthSecularRoot d ℓ k < B) (hℓ0 : ℓ 0 ≠ 0) :
     |∑ j ∈ Finset.range (k + 2),
         ℓ j * secularVector d ℓ (depthSecularRoot d ℓ k) j|
         / |secularVector d ℓ (depthSecularRoot d ℓ k) 0 * ℓ 0|
-      ≤ (∑' j : ℕ, ℓ (j + (k + 2)) ^ 2) * (depthSecularRoot d ℓ k - d 0)
-          / ((B - depthSecularRoot d ℓ k) * ℓ 0 ^ 2) :=
+      ≤ (∑' j : ℕ, ℓ (j + (k + 2)) ^ (2 : ℕ)) * (depthSecularRoot d ℓ k - d 0)
+          / ((B - depthSecularRoot d ℓ k) * ℓ 0 ^ (2 : ℕ)) :=
   abs_sum_range_mul_secularVector_depthSecularRoot_div_le hB hsum hμB
     (fun j hj => (hhead j hj).2) hℓ0
     (exists_depthSecular_root hk01 hk12 hkfloor hhead hsum hS hℓk1 hbr)

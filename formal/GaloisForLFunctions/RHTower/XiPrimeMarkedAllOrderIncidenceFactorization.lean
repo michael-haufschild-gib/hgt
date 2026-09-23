@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence
 import GaloisForLFunctions.RHTower.PrimeArchReflectionPositiveHankelRH
 import GaloisForLFunctions.RHTower.PrimeArchXiCompactThorinRH
+import GaloisForLFunctions.RHTower.ThetaGibbsSteinSourceMinor
+import GaloisForLFunctions.HTGeometry.QuantumReplicaHausdorff
 
 /-!
 # Route K all-order incidence factors through the Route P moment cone
@@ -38,6 +40,49 @@ theorem isSelfAdjoint_pow
   change star T = T at hT
   change star (T ^ n) = T ^ n
   rw [star_pow, hT]
+
+/-- A self-adjoint Hilbert--Schmidt carrier has a sixth-energy ceiling fixed
+by its fourth energy.  This is the first spectral constraint beyond Hankel
+positivity that any finite or infinite Route K realization must satisfy. -/
+theorem hsNormSq_cube_sq_le_hsNormSq_sq_cube
+    (T : H →L[ℂ] H) (hT : T.IsHilbertSchmidt)
+    (hself : IsSelfAdjoint T) :
+    hsNormSq (T ^ (3 : ℕ)) ^ (2 : ℕ) ≤ hsNormSq (T ^ (2 : ℕ)) ^ (3 : ℕ) := by
+  have hT2 : (T ^ (2 : ℕ)).IsHilbertSchmidt :=
+    isHilbertSchmidt_pow_succ T hT 1
+  have hcomp := HTGeometry.hsNormSq_comp_left_le_opNorm hT2 T
+  have hcomp' : hsNormSq (T ^ (3 : ℕ)) ≤ ‖T‖ ^ (2 : ℕ) * hsNormSq (T ^ (2 : ℕ)) := by
+    rw [show T ^ (3 : ℕ) = T ∘L T ^ (2 : ℕ) by
+      change T ^ (3 : ℕ) = T * T ^ (2 : ℕ)
+      noncomm_ring]
+    exact hcomp
+  have hnormId : ‖T‖ ^ (2 : ℕ) = ‖T ^ (2 : ℕ)‖ := by
+    rw [show ‖T‖ ^ (2 : ℕ) = ‖T‖ * ‖T‖ by ring,
+      ← CStarRing.norm_star_mul_self, hself.star_eq]
+    rfl
+  have hnormSq : ‖T‖ ^ (4 : ℕ) ≤ hsNormSq (T ^ (2 : ℕ)) := by
+    have hop := ContinuousLinearMap.opNorm_le_hsNorm hT2
+    have hsquare : ‖T ^ (2 : ℕ)‖ ^ (2 : ℕ) ≤ hsNorm (T ^ (2 : ℕ)) ^ (2 : ℕ) := by
+      nlinarith [norm_nonneg (T ^ (2 : ℕ)), ContinuousLinearMap.hsNorm_nonneg (T ^ (2 : ℕ))]
+    calc
+      ‖T‖ ^ (4 : ℕ) = (‖T‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = ‖T ^ (2 : ℕ)‖ ^ (2 : ℕ) := by rw [hnormId]
+      _ ≤ hsNorm (T ^ (2 : ℕ)) ^ (2 : ℕ) := hsquare
+      _ = hsNormSq (T ^ (2 : ℕ)) := by
+        rw [ContinuousLinearMap.hsNorm,
+          Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg _)]
+  have hcompSq : hsNormSq (T ^ (3 : ℕ)) ^ (2 : ℕ) ≤
+      (‖T‖ ^ (2 : ℕ) * hsNormSq (T ^ (2 : ℕ))) ^ (2 : ℕ) := by
+    nlinarith [ContinuousLinearMap.hsNormSq_nonneg (T ^ (3 : ℕ)),
+      mul_nonneg (sq_nonneg ‖T‖) (ContinuousLinearMap.hsNormSq_nonneg (T ^ (2 : ℕ)))]
+  calc
+    hsNormSq (T ^ (3 : ℕ)) ^ (2 : ℕ) ≤
+        (‖T‖ ^ (2 : ℕ) * hsNormSq (T ^ (2 : ℕ))) ^ (2 : ℕ) := hcompSq
+    _ = ‖T‖ ^ (4 : ℕ) * hsNormSq (T ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+    _ ≤ hsNormSq (T ^ (2 : ℕ)) * hsNormSq (T ^ (2 : ℕ)) ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right hnormSq
+        (sq_nonneg (hsNormSq (T ^ (2 : ℕ))))
+    _ = hsNormSq (T ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
 
 theorem isHilbertSchmidt_finset_sum
     {κ : Type*} (s : Finset κ) (A : κ → H →L[ℂ] H)
@@ -109,9 +154,9 @@ theorem hsInner_odd_powers_eq_hsNormSq_power
   rw [htrace, hadjI]
   have hcomp :
       (T ^ (2 * i + 1)) ∘L (T ^ (2 * j + 1)) =
-        (T ^ (i + j + 1)) ^ 2 := by
+        (T ^ (i + j + 1)) ^ (2 : ℕ) := by
     change T ^ (2 * i + 1) * T ^ (2 * j + 1) =
-      (T ^ (i + j + 1)) ^ 2
+      (T ^ (i + j + 1)) ^ (2 : ℕ)
     rw [← pow_add, ← pow_mul]
     congr 1
     omega
@@ -119,6 +164,34 @@ theorem hsInner_odd_powers_eq_hsNormSq_power
   have hpowSelf := isSelfAdjoint_pow T hself (i + j + 1)
   rw [ContinuousLinearMap.isSelfAdjoint_iff'] at hpowSelf
   exact HTGeometry.opTrace_sq_eq_ofReal_hsNormSq hpow hpowSelf
+
+/-- The first nontrivial Hankel minor of any self-adjoint Hilbert--Schmidt power-energy
+sequence is nonnegative.  This is the lower counterpart to the sixth-energy ceiling. -/
+theorem hsNormSq_sq_sq_le_mul_hsNormSq_hsNormSq_cube
+    (T : H →L[ℂ] H) (hT : T.IsHilbertSchmidt)
+    (hself : IsSelfAdjoint T) :
+    hsNormSq (T ^ (2 : ℕ)) ^ (2 : ℕ) ≤ hsNormSq T * hsNormSq (T ^ (3 : ℕ)) := by
+  have hT3 : (T ^ (3 : ℕ)).IsHilbertSchmidt :=
+    isHilbertSchmidt_pow_succ T hT 2
+  have hinner : hsInner T (T ^ (3 : ℕ)) = (hsNormSq (T ^ (2 : ℕ)) : ℂ) := by
+    simpa using hsInner_odd_powers_eq_hsNormSq_power T hT hself 0 1
+  have hcs := norm_hsInner_le hT hT3
+  have hleft : ‖hsInner T (T ^ (3 : ℕ))‖ = hsNormSq (T ^ (2 : ℕ)) := by
+    rw [hinner, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (hsNormSq_nonneg _)]
+  rw [hleft] at hcs
+  have hTsq : hsNorm T ^ (2 : ℕ) = hsNormSq T := by
+    rw [ContinuousLinearMap.hsNorm,
+      Real.sq_sqrt (hsNormSq_nonneg _)]
+  have hT3sq : hsNorm (T ^ (3 : ℕ)) ^ (2 : ℕ) = hsNormSq (T ^ (3 : ℕ)) := by
+    rw [ContinuousLinearMap.hsNorm,
+      Real.sq_sqrt (hsNormSq_nonneg _)]
+  have hprod : (hsNorm T * hsNorm (T ^ (3 : ℕ))) ^ (2 : ℕ) =
+      hsNormSq T * hsNormSq (T ^ (3 : ℕ)) := by
+    rw [mul_pow, hTsq, hT3sq]
+  nlinarith [hsNormSq_nonneg (T ^ (2 : ℕ)),
+    mul_nonneg (ContinuousLinearMap.hsNorm_nonneg T)
+      (ContinuousLinearMap.hsNorm_nonneg (T ^ (3 : ℕ)))]
 
 def routeKOddPowerProbe
     (T : H →L[ℂ] H) (p : Polynomial ℝ) :
@@ -233,7 +306,7 @@ theorem momentFunctional_pow_two_eq_hsNormSq_oddPowerProbe
     (hself : IsSelfAdjoint T) (m : ℕ → ℝ)
     (hmom : ∀ n, m n = hsNormSq (T ^ (n + 1)))
     (p : Polynomial ℝ) :
-    HTGeometry.momentFunctional m (p ^ 2) =
+    HTGeometry.momentFunctional m (p ^ (2 : ℕ)) =
       hsNormSq (routeKOddPowerFinProbe T p) := by
   let v : Fin (p.natDegree + 1) → ℝ :=
     Polynomial.toFn (p.natDegree + 1) p
@@ -242,10 +315,10 @@ theorem momentFunctional_pow_two_eq_hsNormSq_oddPowerProbe
         v i • Polynomial.X ^ (i : ℕ)) = p :=
     sum_toFn_smul_X_pow_eq p
   calc
-    HTGeometry.momentFunctional m (p ^ 2) =
+    HTGeometry.momentFunctional m (p ^ (2 : ℕ)) =
         HTGeometry.momentFunctional m
           ((∑ i : Fin (p.natDegree + 1),
-            v i • Polynomial.X ^ (i : ℕ)) ^ 2) := by rw [hp]
+            v i • Polynomial.X ^ (i : ℕ)) ^ (2 : ℕ)) := by rw [hp]
     _ = ∑ i : Fin (p.natDegree + 1),
           ∑ j : Fin (p.natDegree + 1),
             v i * v j * m ((i : ℕ) + (j : ℕ)) :=
@@ -293,6 +366,40 @@ def RouteKAllOrderReflectedEnergyIncidence
   T.IsHilbertSchmidt ∧ IsSelfAdjoint T ∧
     ∀ n : ℕ,
       2 * hsNormSq (T ^ (n + 1)) = normalizedPrimeArchMoment n
+
+/-- The source already satisfies the first nonconstant spectral feasibility condition. -/
+theorem normalizedPrimeArch_firstHankelMinor_nonneg :
+    0 ≤ normalizedPrimeArchMoment 0 * normalizedPrimeArchMoment 2 -
+      normalizedPrimeArchMoment 1 ^ (2 : ℕ) := by
+  rw [← forall_primeArchSourceTraceHankel_linear_nonneg_iff_firstMinor]
+  exact forall_primeArchSourceTraceHankel_linear_nonneg_stein
+
+/-- Full reflected Route K incidence forces the source's first nonconstant Hankel minor to be
+nonnegative.  Consequently, a sixth-moment extension cannot bypass this source condition. -/
+theorem normalizedPrimeArch_firstHankelMinor_nonneg_of_routeKAllOrderIncidence
+    (T : H →L[ℂ] H)
+    (hinc : RouteKAllOrderReflectedEnergyIncidence T) :
+    0 ≤ normalizedPrimeArchMoment 0 * normalizedPrimeArchMoment 2 -
+      normalizedPrimeArchMoment 1 ^ (2 : ℕ) := by
+  rcases hinc with ⟨hT, hself, hmom⟩
+  have henergy := hsNormSq_sq_sq_le_mul_hsNormSq_hsNormSq_cube T hT hself
+  have hzero : 2 * hsNormSq T = normalizedPrimeArchMoment 0 := by
+    simpa using hmom 0
+  have htwo : 2 * hsNormSq (T ^ (2 : ℕ)) = normalizedPrimeArchMoment 1 := by
+    simpa using hmom 1
+  have hsix : 2 * hsNormSq (T ^ (3 : ℕ)) = normalizedPrimeArchMoment 2 := by
+    simpa using hmom 2
+  have hscaled : normalizedPrimeArchMoment 1 ^ (2 : ℕ) ≤
+      normalizedPrimeArchMoment 0 * normalizedPrimeArchMoment 2 := by
+    calc
+      normalizedPrimeArchMoment 1 ^ (2 : ℕ) = (2 * hsNormSq (T ^ (2 : ℕ))) ^ (2 : ℕ) := by rw [htwo]
+      _ = 4 * hsNormSq (T ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ ≤ 4 * (hsNormSq T * hsNormSq (T ^ (3 : ℕ))) := by
+        exact mul_le_mul_of_nonneg_left henergy (by norm_num)
+      _ = (2 * hsNormSq T) * (2 * hsNormSq (T ^ (3 : ℕ))) := by ring
+      _ = normalizedPrimeArchMoment 0 * normalizedPrimeArchMoment 2 := by
+        rw [hzero, hsix]
+  linarith
 
 /-- **All-order frontier factorization.**  Any self-adjoint Hilbert--Schmidt Route K operator
 matching the complete reflected source-energy tower proves RH before a Fredholm determinant is

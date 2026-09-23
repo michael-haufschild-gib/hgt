@@ -40,7 +40,7 @@ theorem eventually_sub_one_le_hsNormSq_of_disjointAnnuli
   set w : Fin N → ℕ → evenSubspace :=
     fun j n => soninPacketEven (β j) (γ j) (hβ j) (hβγ j) (κ n) with hw
   set L : Fin N → ℝ :=
-    fun j => Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump (β j) (γ j) (hβγ j) x ^ 2) with hL
+    fun j => Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump (β j) (γ j) (hβγ j) x ^ (2 : ℕ)) with hL
   have hLpos : ∀ j, 0 < L j := fun j => sqrt_half_energy_pos (β j) (γ j) (hβ j) (hβγ j)
   have hfreq : Tendsto κ atTop atTop := by
     have hq : 0 < q := ha.trans haq
@@ -59,7 +59,7 @@ theorem eventually_sub_one_le_hsNormSq_of_disjointAnnuli
   -- the normalised ratios tend to one
   have hratio : ∀ j, Tendsto (fun n =>
       (‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
-        ‖w j n‖) ^ 2) atTop (𝓝 1) := by
+        ‖w j n‖) ^ (2 : ℕ)) atTop (𝓝 1) := by
     intro j
     have hdiv : Tendsto (fun n =>
         ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
@@ -69,7 +69,7 @@ theorem eventually_sub_one_le_hsNormSq_of_disjointAnnuli
     simpa using hdiv.pow 2
   have hsum : Tendsto (fun n => ∑ j : Fin N,
       (‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
-        ‖w j n‖) ^ 2) atTop (𝓝 (N : ℝ)) := by
+        ‖w j n‖) ^ (2 : ℕ)) atTop (𝓝 (N : ℝ)) := by
     have h := tendsto_finsetSum (Finset.univ : Finset (Fin N))
       (fun j _ => hratio j)
     simpa using h
@@ -82,7 +82,7 @@ theorem eventually_sub_one_le_hsNormSq_of_disjointAnnuli
   have hall : ∀ᶠ n : ℕ in atTop, ∀ j, ‖w j n‖ ≠ 0 := Filter.eventually_all.mpr hne
   have hbig : ∀ᶠ n : ℕ in atTop, (N : ℝ) - 1 < ∑ j : Fin N,
       (‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
-        ‖w j n‖) ^ 2 :=
+        ‖w j n‖) ^ (2 : ℕ) :=
     hsum.eventually_const_lt (by linarith)
   filter_upwards [hall, hbig] with n hnz hgt
   -- the normalised packets form an orthonormal family
@@ -110,15 +110,15 @@ theorem eventually_sub_one_le_hsNormSq_of_disjointAnnuli
     evenSoninApertureSuccessiveLayerTransition_isHilbertSchmidt ha hab hbc (hrgt n) (hcr n)
   have hdom := sum_norm_sq_apply_le_hsNormSq hHS hortho
   have hterm : ∀ j : Fin N,
-      ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (e j)‖ ^ 2 =
+      ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (e j)‖ ^ (2 : ℕ) =
       (‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
-        ‖w j n‖) ^ 2 := by
+        ‖w j n‖) ^ (2 : ℕ) := by
     intro j
     have hpos : 0 < ‖w j n‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm (hnz j))
     show ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
-        (((‖w j n‖ : ℝ) : ℂ)⁻¹ • w j n)‖ ^ 2 =
+        (((‖w j n‖ : ℝ) : ℂ)⁻¹ • w j n)‖ ^ (2 : ℕ) =
       (‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n) (w j n)‖ /
-        ‖w j n‖) ^ 2
+        ‖w j n‖) ^ (2 : ℕ)
     rw [map_smul, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpos,
       div_eq_inv_mul]
   rw [Finset.sum_congr rfl fun j _ => hterm j] at hdom

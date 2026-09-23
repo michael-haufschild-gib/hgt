@@ -41,7 +41,7 @@ theorem spinChartSpinor_normalized (z : ℂ) : FinitePureStateNormalized (spinCh
 
 /-- Complex overlap plus chart separation has its exact two-coordinate Gram identity. -/
 theorem spinChartOverlap_identity (z w : ℂ) :
-    ‖1 + conj z * w‖ ^ 2 + ‖z - w‖ ^ 2 = (1 + ‖z‖ ^ 2) * (1 + ‖w‖ ^ 2) := by
+    ‖1 + conj z * w‖ ^ (2 : ℕ) + ‖z - w‖ ^ (2 : ℕ) = (1 + ‖z‖ ^ (2 : ℕ)) * (1 + ‖w‖ ^ (2 : ℕ)) := by
   simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
     Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
     Complex.conj_re, Complex.conj_im, Complex.sub_re, Complex.sub_im,
@@ -51,9 +51,9 @@ theorem spinChartOverlap_identity (z w : ℂ) :
 /-- Quantum pure-state fidelity is precisely complementary Böttcher chordal separation. -/
 theorem spinChartSpinor_fidelity (z w : ℂ) :
     finitePureStateFidelity (spinChartSpinor z) (spinChartSpinor w) =
-      1 - _root_.Bottcher.chordalDist z w ^ 2 := by
-  have hz : 1 + ‖z‖ ^ 2 ≠ 0 := by positivity
-  have hw : 1 + ‖w‖ ^ 2 ≠ 0 := by positivity
+      1 - _root_.Bottcher.chordalDist z w ^ (2 : ℕ) := by
+  have hz : 1 + ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
+  have hw : 1 + ‖w‖ ^ (2 : ℕ) ≠ 0 := by positivity
   rw [finitePureStateFidelity, finiteComplexInner_spinChartSpinor,
     norm_mul, norm_mul, mul_pow, mul_pow]
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, spinChartScale_sq]
@@ -65,8 +65,8 @@ theorem spinChartSpinor_fidelity (z w : ℂ) :
 /-- Hilbert–Schmidt distance of the actual pure projectors is twice squared chordal distance. -/
 theorem spinChartSpinor_projector_distance (z w : ℂ) :
     ‖finitePureProjectorEuclidean (spinChartSpinor z) -
-      finitePureProjectorEuclidean (spinChartSpinor w)‖ ^ 2 =
-        2 * _root_.Bottcher.chordalDist z w ^ 2 := by
+      finitePureProjectorEuclidean (spinChartSpinor w)‖ ^ (2 : ℕ) =
+        2 * _root_.Bottcher.chordalDist z w ^ (2 : ℕ) := by
   rw [norm_finitePureProjectorEuclidean_sub_sq (spinChartSpinor_normalized z)
     (spinChartSpinor_normalized w), spinChartSpinor_fidelity]
   ring
@@ -75,7 +75,7 @@ theorem spinChartSpinor_projector_distance (z w : ℂ) :
 theorem spinChartSpinor_replica_fidelity (r : ℕ) (z w : ℂ) :
     finitePureStateFidelity (finitePureTensorPower r (spinChartSpinor z))
       (finitePureTensorPower r (spinChartSpinor w)) =
-        (1 - _root_.Bottcher.chordalDist z w ^ 2) ^ r := by
+        (1 - _root_.Bottcher.chordalDist z w ^ (2 : ℕ)) ^ r := by
   rw [finitePureStateFidelity_tensorPower, spinChartSpinor_fidelity]
 
 /-- All replica chart states retain exact pure-state normalization. -/
@@ -90,17 +90,17 @@ theorem spinChartSpinor_replica_normalized (r : ℕ) (z : ℂ) :
 /-- Replica-projector distance has an exact formula in the original stereographic metric. -/
 theorem spinChartSpinor_replica_projector_distance (r : ℕ) (z w : ℂ) :
     ‖finitePureProjectorEuclidean (finitePureTensorPower r (spinChartSpinor z)) -
-      finitePureProjectorEuclidean (finitePureTensorPower r (spinChartSpinor w))‖ ^ 2 =
-        2 - 2 * (1 - _root_.Bottcher.chordalDist z w ^ 2) ^ r := by
+      finitePureProjectorEuclidean (finitePureTensorPower r (spinChartSpinor w))‖ ^ (2 : ℕ) =
+        2 - 2 * (1 - _root_.Bottcher.chordalDist z w ^ (2 : ℕ)) ^ r := by
   rw [norm_finitePureProjectorEuclidean_sub_sq (spinChartSpinor_replica_normalized r z)
     (spinChartSpinor_replica_normalized r w), spinChartSpinor_replica_fidelity]
 
 /-- Pairwise fidelity along the actual damped spin evolution, with both initial coordinates free. -/
 theorem spinSpinorFlow_fidelity (a : ℝ) (z w : ℂ) (t : ℝ) :
     finitePureStateFidelity (spinSpinorFlow a z t) (spinSpinorFlow a w t) =
-      1 - Real.exp (-2 * a ^ 2 * t) * ‖z - w‖ ^ 2 /
-        ((1 + Real.exp (-2 * a ^ 2 * t) * ‖z‖ ^ 2) *
-          (1 + Real.exp (-2 * a ^ 2 * t) * ‖w‖ ^ 2)) := by
+      1 - Real.exp (-2 * a ^ (2 : ℕ) * t) * ‖z - w‖ ^ (2 : ℕ) /
+        ((1 + Real.exp (-2 * a ^ (2 : ℕ) * t) * ‖z‖ ^ (2 : ℕ)) *
+          (1 + Real.exp (-2 * a ^ (2 : ℕ) * t) * ‖w‖ ^ (2 : ℕ))) := by
   have hd : spinPlaneFlow a z t - spinPlaneFlow a w t = spinPlaneFlow a (z - w) t := by
     simp [spinPlaneFlow, mul_sub]
   rw [spinSpinorFlow, spinSpinorFlow, spinChartSpinor_fidelity, _root_.Bottcher.chordalDist_sq,
@@ -109,10 +109,10 @@ theorem spinSpinorFlow_fidelity (a : ℝ) (z w : ℂ) (t : ℝ) :
 /-- Opposite chart coordinates have a simple latitude-square fidelity. -/
 theorem spinChartSpinor_opposite_fidelity (z : ℂ) :
     finitePureStateFidelity (spinChartSpinor z) (spinChartSpinor (-z)) =
-      ((‖z‖ ^ 2 - 1) / (1 + ‖z‖ ^ 2)) ^ 2 := by
+      ((‖z‖ ^ (2 : ℕ) - 1) / (1 + ‖z‖ ^ (2 : ℕ))) ^ (2 : ℕ) := by
   rw [spinChartSpinor_fidelity, _root_.Bottcher.chordalDist_sq, norm_neg]
-  have hd : 1 + ‖z‖ ^ 2 ≠ 0 := by positivity
-  have hn : ‖z - -z‖ ^ 2 = 4 * ‖z‖ ^ 2 := by
+  have hd : 1 + ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
+  have hn : ‖z - -z‖ ^ (2 : ℕ) = 4 * ‖z‖ ^ (2 : ℕ) := by
     rw [sub_neg_eq_add, ← two_mul, norm_mul, mul_pow, show ‖(2 : ℂ)‖ = (2 : ℝ) by simp]
     ring
   rw [hn]
@@ -123,7 +123,7 @@ theorem spinChartSpinor_opposite_fidelity (z : ℂ) :
 def spinSeparationSeed (x : ℝ) : ℂ := (Real.exp (Real.exp x) : ℂ)
 
 /-- Positive finite time at which this pair reaches the equator. -/
-def spinSeparationTime (s x : ℝ) : ℝ := Real.exp x / (Real.exp s) ^ 2
+def spinSeparationTime (s x : ℝ) : ℝ := Real.exp x / (Real.exp s) ^ (2 : ℕ)
 
 theorem spinSeparationTime_pos (s x : ℝ) : 0 < spinSeparationTime s x := by
   unfold spinSeparationTime
@@ -134,7 +134,7 @@ theorem spinSeparation_norm (s x : ℝ) :
     ‖spinPlaneFlow (Real.exp s) (spinSeparationSeed x) (spinSeparationTime s x)‖ = 1 := by
   rw [spinPlaneFlow_norm, spinSeparationSeed, Complex.norm_real,
     Real.norm_of_nonneg (Real.exp_pos _).le, ← Real.exp_add]
-  have he : -(Real.exp s) ^ 2 * spinSeparationTime s x + Real.exp (x) = 0 := by
+  have he : -(Real.exp s) ^ (2 : ℕ) * spinSeparationTime s x + Real.exp (x) = 0 := by
     unfold spinSeparationTime
     field_simp
     ring
@@ -149,7 +149,7 @@ theorem spinSeparation_initial_fidelity_pos (x : ℝ) :
     rw [spinSeparationSeed, Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le]
   rw [hn]
   have h := Real.one_lt_exp_iff.mpr (Real.exp_pos x)
-  have hp : 0 < Real.exp (Real.exp x) ^ 2 - 1 := by nlinarith
+  have hp : 0 < Real.exp (Real.exp x) ^ (2 : ℕ) - 1 := by nlinarith
   positivity
 
 /-- Two initially nonorthogonal states become exactly orthogonal at a positive finite time. -/

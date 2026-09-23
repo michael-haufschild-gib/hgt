@@ -17,23 +17,23 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry.Liang
 
 theorem densityMatrix_trace_sq_le_one {d : ℕ} (ρ : _root_.RHTower.DensityMatrix d) :
-    ((ρ.1 ^ 2).trace).re ≤ 1 := by
+    ((ρ.1 ^ (2 : ℕ)).trace).re ≤ 1 := by
   have htrace : ρ.1.trace.re = 1 := by
     rw [ρ.property.2]
     norm_num
   calc
-    ((ρ.1 ^ 2).trace).re ≤ ρ.1.trace.re ^ 2 :=
+    ((ρ.1 ^ (2 : ℕ)).trace).re ≤ ρ.1.trace.re ^ (2 : ℕ) :=
       posSemidef_trace_sq_le_sq_trace ρ.property.1
     _ = 1 := by rw [htrace]; norm_num
 
 theorem densityMatrix_sqrt_trace_sq_le_one
     {d : ℕ} (ρ : _root_.RHTower.DensityMatrix d) :
-    Real.sqrt ((ρ.1 ^ 2).trace).re ≤ 1 := by
+    Real.sqrt ((ρ.1 ^ (2 : ℕ)).trace).re ≤ 1 := by
   have htrace : ρ.1.trace.re = 1 := by
     rw [ρ.property.2]
     norm_num
   calc
-    Real.sqrt ((ρ.1 ^ 2).trace).re ≤ ρ.1.trace.re :=
+    Real.sqrt ((ρ.1 ^ (2 : ℕ)).trace).re ≤ ρ.1.trace.re :=
       posSemidef_sqrt_trace_sq_le_trace ρ.property.1
     _ = 1 := htrace
 
@@ -41,7 +41,7 @@ theorem densityMatrix_sqrt_trace_sq_le_one
 the second and third spectral moments. -/
 theorem densityMatrix_sq_trace_sq_le_trace_cubic
     {d : ℕ} (ρ : _root_.RHTower.DensityMatrix d) :
-    ((ρ.1 ^ 2).trace).re ^ 2 ≤ ((ρ.1 ^ 3).trace).re := by
+    ((ρ.1 ^ (2 : ℕ)).trace).re ^ (2 : ℕ) ≤ ((ρ.1 ^ (3 : ℕ)).trace).re := by
   have hcomm := posSemidef_trace_cubic_commutator_nonneg ρ.property.1
   have htrace : ρ.1.trace.re = 1 := by
     rw [ρ.property.2]
@@ -51,7 +51,7 @@ theorem densityMatrix_sq_trace_sq_le_trace_cubic
 
 theorem densityMatrix_cubic_purity_defect_eq_pairDifferenceEnergy
     {d : ℕ} (ρ : _root_.RHTower.DensityMatrix d) :
-    ((ρ.1 ^ 3).trace).re - ((ρ.1 ^ 2).trace).re ^ 2 =
+    ((ρ.1 ^ (3 : ℕ)).trace).re - ((ρ.1 ^ (2 : ℕ)).trace).re ^ (2 : ℕ) =
       pairDifferenceEnergy ρ.property.1.isHermitian.eigenvalues := by
   have hid := hermitian_curvatureCommutator_trace_identity ρ.property.1.isHermitian
   have htrace : ρ.1.trace.re = 1 := by
@@ -73,7 +73,7 @@ theorem densityMatrix_newton_weight_bound
 
 theorem densityMatrix_purity_interval
     {d : ℕ} [Nonempty (Fin d)] (ρ : _root_.RHTower.DensityMatrix d) :
-    1 / (d : ℝ) ≤ ((ρ.1 ^ 2).trace).re ∧ ((ρ.1 ^ 2).trace).re ≤ 1 := by
+    1 / (d : ℝ) ≤ ((ρ.1 ^ (2 : ℕ)).trace).re ∧ ((ρ.1 ^ (2 : ℕ)).trace).re ≤ 1 := by
   have h₁ := sum_pow_eigenvalues_eq_trace_pow_re' ρ.property.1.isHermitian 1
   have hsum : ∑ i, ρ.property.1.isHermitian.eigenvalues i = 1 := by
     calc
@@ -82,9 +82,9 @@ theorem densityMatrix_purity_interval
   constructor
   · calc
       1 / (d : ℝ) = 1 / (Fintype.card (Fin d) : ℝ) := by simp
-      _ ≤ ∑ i, ρ.property.1.isHermitian.eigenvalues i ^ 2 :=
+      _ ≤ ∑ i, ρ.property.1.isHermitian.eigenvalues i ^ (2 : ℕ) :=
         inv_card_le_sum_sq _ hsum
-      _ = ((ρ.1 ^ 2).trace).re :=
+      _ = ((ρ.1 ^ (2 : ℕ)).trace).re :=
         sum_sq_eigenvalues_eq_trace_sq_re ρ.property.1.isHermitian
   · exact densityMatrix_trace_sq_le_one ρ
 

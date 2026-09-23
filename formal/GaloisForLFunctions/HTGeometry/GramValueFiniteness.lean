@@ -91,7 +91,7 @@ theorem finite_intGram_values {A : Matrix (Fin N) (Fin N) ℝ} (hA : A.PosDef) (
     refine le_trans (mul_le_mul_of_nonneg_right (min_le_left lam₀ 1) ?_) (hell v)
     exact Finset.sum_nonneg fun i _ => mul_self_nonneg _
   set Dmax : ℝ := max 1 (2 ^ (k * k) * B / lam ^ k) with hDmax
-  set Bcol : ℝ := (k : ℝ) * 1 ^ 2 * 2 ^ k * Dmax with hBcol
+  set Bcol : ℝ := (k : ℝ) * 1 ^ (2 : ℕ) * 2 ^ k * Dmax with hBcol
   have hSfin : {w : Fin N → ℤ | quadForm P (intVec w) ≤ Bcol}.Finite :=
     finite_latticePoints_le P hN Bcol
   have hpi : {W : Fin k → (Fin N → ℤ) | ∀ i, quadForm P (intVec (W i)) ≤ Bcol}.Finite := by

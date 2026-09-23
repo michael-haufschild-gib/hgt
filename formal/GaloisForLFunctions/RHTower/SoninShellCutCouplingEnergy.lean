@@ -78,7 +78,7 @@ theorem card_sub_le_hsNormSq_soninApertureCoupling_shellCut
             (soninShellCutUnit b c hbc hN w i))‖) +
         ‖evenFourierCutoff b (soninShellCutUnit b c hbc hN w i)‖ ≤ β) :
     ((N : ℝ) - ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b r⁻¹
-        (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ 2) * (1 - η) ^ 2 ≤
+        (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤
       hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c r hr) := by
   have hc : 0 < c := hb.trans hbc
   have hmain := card_sub_le_hsNormSq_soninApertureCoupling ha hb hc hab hbc.le hr hcr

@@ -27,20 +27,20 @@ namespace RHTower.HedenmalmThetaSource
 
 theorem sourceHorizontalHolonomyVirial_le_cubic_exp
     {u : ℝ} (hu : 0 ≤ u) :
-    sourceHorizontalHolonomyVirial u ≤ u ^ 3 * Real.exp u / 3 := by
-  let F : ℝ → ℝ := fun x => x ^ 3 * Real.exp x / 3 -
+    sourceHorizontalHolonomyVirial u ≤ u ^ (3 : ℕ) * Real.exp u / 3 := by
+  let F : ℝ → ℝ := fun x => x ^ (3 : ℕ) * Real.exp x / 3 -
     sourceHorizontalHolonomyVirial x
   have hderiv : ∀ x : ℝ, HasDerivAt F
-      ((3 * x ^ 2 * Real.exp x + x ^ 3 * Real.exp x) / 3 -
+      ((3 * x ^ (2 : ℕ) * Real.exp x + x ^ (3 : ℕ) * Real.exp x) / 3 -
         x * Real.sinh x) x := by
     intro x
-    have hpow : HasDerivAt (fun y : ℝ => y ^ 3) (3 * x ^ 2) x :=
+    have hpow : HasDerivAt (fun y : ℝ => y ^ (3 : ℕ)) (3 * x ^ (2 : ℕ)) x :=
       hasDerivAt_pow 3 x
     have hmain := (hpow.mul (Real.hasDerivAt_exp x)).div_const 3
     have hvirial := hasDerivAt_sourceHorizontalHolonomyVirial x
     have h := hmain.sub hvirial
     change HasDerivAt
-      (fun y : ℝ => y ^ 3 * Real.exp y / 3 - sourceHorizontalHolonomyVirial y)
+      (fun y : ℝ => y ^ (3 : ℕ) * Real.exp y / 3 - sourceHorizontalHolonomyVirial y)
       _ x at h
     exact h.congr_deriv (by ring)
   have hmono : MonotoneOn F (Set.Ici 0) := by
@@ -53,12 +53,12 @@ theorem sourceHorizontalHolonomyVirial_le_cubic_exp
     have hx0 : 0 ≤ x := hx.le
     have hsinh := HTGeometry.sinh_le_self_mul_cosh hx0
     have hcosh := HTGeometry.cosh_le_exp_of_nonneg hx0
-    have hxsinh : x * Real.sinh x ≤ x ^ 2 * Real.exp x := by
+    have hxsinh : x * Real.sinh x ≤ x ^ (2 : ℕ) * Real.exp x := by
       calc
         x * Real.sinh x ≤ x * (x * Real.cosh x) :=
           mul_le_mul_of_nonneg_left hsinh hx0
-        _ = x ^ 2 * Real.cosh x := by ring
-        _ ≤ x ^ 2 * Real.exp x :=
+        _ = x ^ (2 : ℕ) * Real.cosh x := by ring
+        _ ≤ x ^ (2 : ℕ) * Real.exp x :=
           mul_le_mul_of_nonneg_left hcosh (sq_nonneg x)
     nlinarith [mul_nonneg (pow_nonneg hx0 3) (Real.exp_pos x).le]
   have h := hmono Set.self_mem_Ici hu hu
@@ -83,10 +83,10 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_eq
 private theorem two_mul_lt_exp_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
     2 * u < Real.exp u := by
   have hTaylor0 := Real.sum_le_exp_of_nonneg hu 3
-  have hTaylor : 1 + u + u ^ 2 / 2 ≤ Real.exp u := by
+  have hTaylor : 1 + u + u ^ (2 : ℕ) / 2 ≤ Real.exp u := by
     norm_num [Finset.sum_range_succ] at hTaylor0 ⊢
     exact hTaylor0
-  have hstrict : 2 * u < 1 + u + u ^ 2 / 2 := by
+  have hstrict : 2 * u < 1 + u + u ^ (2 : ℕ) / 2 := by
     nlinarith [sq_nonneg (u - 1)]
   exact hstrict.trans_le hTaylor
 
@@ -111,8 +111,8 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_lt_two
   have htwo := two_mul_lt_exp_of_nonneg hu.le
   have hvirial := sourceHorizontalHolonomyVirial_le_mul_exp hu.le
   have hvirialStrict :
-      sourceHorizontalHolonomyVirial u < Real.exp u ^ 2 / 2 := by
-    have hmul : u * Real.exp u < Real.exp u ^ 2 / 2 := by
+      sourceHorizontalHolonomyVirial u < Real.exp u ^ (2 : ℕ) / 2 := by
+    have hmul : u * Real.exp u < Real.exp u ^ (2 : ℕ) / 2 := by
       nlinarith [Real.exp_pos u]
     exact hvirial.trans_lt hmul
   rw [gammaSewnMobiusApertureStokesCriticalInformationFactor_eq]
@@ -125,16 +125,16 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_lt_two
   have hcoeff : 0 < 4 * Real.exp (-2 * u) / k := by positivity
   calc
     4 * Real.exp (-2 * u) / k * sourceHorizontalHolonomyVirial u <
-        4 * Real.exp (-2 * u) / k * (Real.exp u ^ 2 / 2) :=
+        4 * Real.exp (-2 * u) / k * (Real.exp u ^ (2 : ℕ) / 2) :=
       mul_lt_mul_of_pos_left hvirialStrict hcoeff
     _ = 2 / k := by
-      have hexpone : Real.exp (-2 * u) * Real.exp u ^ 2 = 1 := by
+      have hexpone : Real.exp (-2 * u) * Real.exp u ^ (2 : ℕ) = 1 := by
         rw [sq, ← Real.exp_add, ← Real.exp_add]
         convert Real.exp_zero using 1
         · congr 1
           ring
-      rw [show 4 * Real.exp (-2 * u) / k * (Real.exp u ^ 2 / 2) =
-        (2 / k) * (Real.exp (-2 * u) * Real.exp u ^ 2) by ring,
+      rw [show 4 * Real.exp (-2 * u) / k * (Real.exp u ^ (2 : ℕ) / 2) =
+        (2 / k) * (Real.exp (-2 * u) * Real.exp u ^ (2 : ℕ)) by ring,
         hexpone, mul_one]
     _ ≤ 2 := by
       exact div_le_self (by norm_num) hk
@@ -143,7 +143,7 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_le_cubic
     (p : Nat.Primes) (e : ℕ) :
     gammaSewnMobiusApertureStokesCriticalInformationFactor (p, e) ≤
       4 / (3 * (e + 1 : ℝ)) *
-        (((e + 1 : ℝ) * Real.log (p : ℝ) / 2) ^ 3 *
+        (((e + 1 : ℝ) * Real.log (p : ℝ) / 2) ^ (3 : ℕ) *
           Real.exp (-((e + 1 : ℝ) * Real.log (p : ℝ) / 2))) := by
   let k : ℝ := e + 1
   let u : ℝ := k * Real.log (p : ℝ) / 2
@@ -155,15 +155,15 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_le_cubic
   rw [gammaSewnMobiusApertureStokesCriticalInformationFactor_eq]
   change 4 * Real.exp (-Real.log (p : ℝ) * k) / k *
       sourceHorizontalHolonomyVirial u ≤
-    4 / (3 * k) * (u ^ 3 * Real.exp (-u))
+    4 / (3 * k) * (u ^ (3 : ℕ) * Real.exp (-u))
   have hcoeff : 0 ≤ 4 * Real.exp (-Real.log (p : ℝ) * k) / k := by positivity
   calc
     4 * Real.exp (-Real.log (p : ℝ) * k) / k *
         sourceHorizontalHolonomyVirial u ≤
       4 * Real.exp (-Real.log (p : ℝ) * k) / k *
-        (u ^ 3 * Real.exp u / 3) :=
+        (u ^ (3 : ℕ) * Real.exp u / 3) :=
       mul_le_mul_of_nonneg_left hvirial hcoeff
-    _ = 4 / (3 * k) * (u ^ 3 * Real.exp (-u)) := by
+    _ = 4 / (3 * k) * (u ^ (3 : ℕ) * Real.exp (-u)) := by
       have hcoord : -Real.log (p : ℝ) * k = -2 * u := by
         dsimp [u]
         ring
@@ -172,8 +172,8 @@ theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_le_cubic
         rw [← Real.exp_add]
         congr 1
         ring
-      rw [show 4 * Real.exp (-2 * u) / k * (u ^ 3 * Real.exp u / 3) =
-        4 / (3 * k) * u ^ 3 *
+      rw [show 4 * Real.exp (-2 * u) / k * (u ^ (3 : ℕ) * Real.exp u / 3) =
+        4 / (3 * k) * u ^ (3 : ℕ) *
           (Real.exp (-2 * u) * Real.exp u) by ring, hexp]
       ring
 
@@ -192,9 +192,9 @@ private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_two_zero_
   calc
     gammaSewnMobiusApertureStokesCriticalInformationFactor
         (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) ≤
-      4 / 3 * ((Real.log 2 / 2) ^ 3 * Real.exp (-(Real.log 2 / 2))) := h
-    _ < 4 / 3 * ((7 / 20 : ℝ) ^ 3 * Real.exp (-(Real.log 2 / 2))) := by gcongr
-    _ ≤ 4 / 3 * ((7 / 20 : ℝ) ^ 3 * 1) := by gcongr
+      4 / 3 * ((Real.log 2 / 2) ^ (3 : ℕ) * Real.exp (-(Real.log 2 / 2))) := h
+    _ < 4 / 3 * ((7 / 20 : ℝ) ^ (3 : ℕ) * Real.exp (-(Real.log 2 / 2))) := by gcongr
+    _ ≤ 4 / 3 * ((7 / 20 : ℝ) ^ (3 : ℕ) * 1) := by gcongr
     _ < 3 / 10 := by norm_num
 
 private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_two_one_lt :
@@ -212,9 +212,9 @@ private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_two_one_l
   calc
     gammaSewnMobiusApertureStokesCriticalInformationFactor
         (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 1) ≤
-      2 / 3 * (Real.log 2 ^ 3 * Real.exp (-Real.log 2)) := by simpa using h
-    _ < 2 / 3 * ((7 / 10 : ℝ) ^ 3 * Real.exp (-Real.log 2)) := by gcongr
-    _ ≤ 2 / 3 * ((7 / 10 : ℝ) ^ 3 * 1) := by gcongr
+      2 / 3 * (Real.log 2 ^ (3 : ℕ) * Real.exp (-Real.log 2)) := by simpa using h
+    _ < 2 / 3 * ((7 / 10 : ℝ) ^ (3 : ℕ) * Real.exp (-Real.log 2)) := by gcongr
+    _ ≤ 2 / 3 * ((7 / 10 : ℝ) ^ (3 : ℕ) * 1) := by gcongr
     _ < 3 / 10 := by norm_num
 
 private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_three_zero_lt :
@@ -232,9 +232,9 @@ private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_three_zer
   calc
     gammaSewnMobiusApertureStokesCriticalInformationFactor
         (RHTower.gammaSewnMobiusApertureStokesPrimeThree, 0) ≤
-      4 / 3 * ((Real.log 3 / 2) ^ 3 * Real.exp (-(Real.log 3 / 2))) := h
-    _ < 4 / 3 * ((11 / 20 : ℝ) ^ 3 * Real.exp (-(Real.log 3 / 2))) := by gcongr
-    _ ≤ 4 / 3 * ((11 / 20 : ℝ) ^ 3 * 1) := by gcongr
+      4 / 3 * ((Real.log 3 / 2) ^ (3 : ℕ) * Real.exp (-(Real.log 3 / 2))) := h
+    _ < 4 / 3 * ((11 / 20 : ℝ) ^ (3 : ℕ) * Real.exp (-(Real.log 3 / 2))) := by gcongr
+    _ ≤ 4 / 3 * ((11 / 20 : ℝ) ^ (3 : ℕ) * 1) := by gcongr
     _ < 3 / 10 := by norm_num
 
 private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_three_one_lt :
@@ -252,9 +252,9 @@ private theorem gammaSewnMobiusApertureStokesCriticalInformationFactor_three_one
   calc
     gammaSewnMobiusApertureStokesCriticalInformationFactor
         (RHTower.gammaSewnMobiusApertureStokesPrimeThree, 1) ≤
-      2 / 3 * (Real.log 3 ^ 3 * Real.exp (-Real.log 3)) := by simpa using h
-    _ = 2 / 3 * (Real.log 3 ^ 3 * (1 / 3)) := by rw [hexp]
-    _ < 2 / 3 * ((11 / 10 : ℝ) ^ 3 * (1 / 3)) := by gcongr
+      2 / 3 * (Real.log 3 ^ (3 : ℕ) * Real.exp (-Real.log 3)) := by simpa using h
+    _ = 2 / 3 * (Real.log 3 ^ (3 : ℕ) * (1 / 3)) := by rw [hexp]
+    _ < 2 / 3 * ((11 / 10 : ℝ) ^ (3 : ℕ) * (1 / 3)) := by gcongr
     _ < 3 / 10 := by norm_num
 
 private theorem criticalPrimeTwoHalfNode_strongBounds :
@@ -264,7 +264,7 @@ private theorem criticalPrimeTwoHalfNode_strongBounds :
   let r := RHTower.xiMobiusContinuousApertureDiskNode (1 / 2)
     RHTower.gammaSewnMobiusApertureStokesPrimeTwo
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
-  have hr2 : r ^ 2 = 1 / 2 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 2 := by
     simpa [r, RHTower.xiTransversePrimeApertureDiskNode_one_eq_inv] using
       RHTower.xiMobiusContinuousApertureDiskNode_half_sq
         RHTower.gammaSewnMobiusApertureStokesPrimeTwo
@@ -283,7 +283,7 @@ private theorem criticalPrimeThreeHalfNode_strongBounds :
   let r := RHTower.xiMobiusContinuousApertureDiskNode (1 / 2)
     RHTower.gammaSewnMobiusApertureStokesPrimeThree
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
-  have hr2 : r ^ 2 = 1 / 3 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 3 := by
     simpa [r, RHTower.xiTransversePrimeApertureDiskNode_one_eq_inv] using
       RHTower.xiMobiusContinuousApertureDiskNode_half_sq
         RHTower.gammaSewnMobiusApertureStokesPrimeThree
@@ -306,23 +306,23 @@ private theorem nineteen_twentieths_lt_criticalPrimeTwoContraction :
     simpa only [r, p] using criticalPrimeTwoHalfNode_strongBounds
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
   have hc0 : 0 < c := RHTower.gammaSewnMobiusValuationContractionMultiplier_pos _ _
-  have hden : 0 < 8 * (1 + r ^ 4) := by positivity
-  have hnum : (17 / 10 : ℝ) ^ 4 < (1 + r) ^ 4 :=
+  have hden : 0 < 8 * (1 + r ^ (4 : ℕ)) := by positivity
+  have hnum : (17 / 10 : ℝ) ^ (4 : ℕ) < (1 + r) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ (by linarith [hr.1]) (by norm_num) (by norm_num)
-  have hr4 : r ^ 4 < (5 / 7 : ℝ) ^ 4 :=
+  have hr4 : r ^ (4 : ℕ) < (5 / 7 : ℝ) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hr.2 hr0.le (by norm_num)
-  have hc4 : (19 / 20 : ℝ) ^ 4 < c ^ 4 := by
+  have hc4 : (19 / 20 : ℝ) ^ (4 : ℕ) < c ^ (4 : ℕ) := by
     rw [RHTower.gammaSewnMobiusValuationContractionMultiplier_pow_four]
-    change (19 / 20 : ℝ) ^ 4 < (1 + r) ^ 4 / (8 * (1 + r ^ 4))
+    change (19 / 20 : ℝ) ^ (4 : ℕ) < (1 + r) ^ (4 : ℕ) / (8 * (1 + r ^ (4 : ℕ)))
     rw [lt_div_iff₀ hden]
     norm_num at hnum hr4 ⊢
     nlinarith
   by_contra h
   have hc : c ≤ 19 / 20 := le_of_not_gt h
-  have hc2 : c ^ 2 ≤ (19 / 20 : ℝ) ^ 2 := by
+  have hc2 : c ^ (2 : ℕ) ≤ (19 / 20 : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc)
       (add_nonneg hc0.le (by norm_num : (0 : ℝ) ≤ 19 / 20))]
-  have hc4le : c ^ 4 ≤ (19 / 20 : ℝ) ^ 4 := by
+  have hc4le : c ^ (4 : ℕ) ≤ (19 / 20 : ℝ) ^ (4 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc2)
       (add_nonneg (sq_nonneg c) (sq_nonneg (19 / 20 : ℝ)))]
   linarith
@@ -338,23 +338,23 @@ private theorem nine_tenths_lt_criticalPrimeThreeContraction :
     simpa only [r, p] using criticalPrimeThreeHalfNode_strongBounds
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
   have hc0 : 0 < c := RHTower.gammaSewnMobiusValuationContractionMultiplier_pos _ _
-  have hden : 0 < 8 * (1 + r ^ 4) := by positivity
-  have hnum : (11 / 7 : ℝ) ^ 4 < (1 + r) ^ 4 :=
+  have hden : 0 < 8 * (1 + r ^ (4 : ℕ)) := by positivity
+  have hnum : (11 / 7 : ℝ) ^ (4 : ℕ) < (1 + r) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ (by linarith [hr.1]) (by norm_num) (by norm_num)
-  have hr4 : r ^ 4 < (3 / 5 : ℝ) ^ 4 :=
+  have hr4 : r ^ (4 : ℕ) < (3 / 5 : ℝ) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hr.2 hr0.le (by norm_num)
-  have hc4 : (9 / 10 : ℝ) ^ 4 < c ^ 4 := by
+  have hc4 : (9 / 10 : ℝ) ^ (4 : ℕ) < c ^ (4 : ℕ) := by
     rw [RHTower.gammaSewnMobiusValuationContractionMultiplier_pow_four]
-    change (9 / 10 : ℝ) ^ 4 < (1 + r) ^ 4 / (8 * (1 + r ^ 4))
+    change (9 / 10 : ℝ) ^ (4 : ℕ) < (1 + r) ^ (4 : ℕ) / (8 * (1 + r ^ (4 : ℕ)))
     rw [lt_div_iff₀ hden]
     norm_num at hnum hr4 ⊢
     nlinarith
   by_contra h
   have hc : c ≤ 9 / 10 := le_of_not_gt h
-  have hc2 : c ^ 2 ≤ (9 / 10 : ℝ) ^ 2 := by
+  have hc2 : c ^ (2 : ℕ) ≤ (9 / 10 : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc)
       (add_nonneg hc0.le (by norm_num : (0 : ℝ) ≤ 9 / 10))]
-  have hc4le : c ^ 4 ≤ (9 / 10 : ℝ) ^ 4 := by
+  have hc4le : c ^ (4 : ℕ) ≤ (9 / 10 : ℝ) ^ (4 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc2)
       (add_nonneg (sq_nonneg c) (sq_nonneg (9 / 10 : ℝ)))]
   linarith
@@ -369,9 +369,9 @@ private theorem criticalPrimeTwoDepthZero_strongWeightLower :
   have hr : (7 / 10 : ℝ) < r ∧ r < 5 / 7 := by
     simpa only [r, p] using criticalPrimeTwoHalfNode_strongBounds
   have hc : (19 / 20 : ℝ) < c := nineteen_twentieths_lt_criticalPrimeTwoContraction
-  have hc2 : (361 / 400 : ℝ) < c ^ 2 := by nlinarith [sq_nonneg (c - 19 / 20)]
-  have hgap : (4 / 49 : ℝ) < (1 - r) ^ 2 := by nlinarith [sq_nonneg (r - 5 / 7)]
-  have hprod : (361 / 4900 : ℝ) < c ^ 2 * (1 - r) ^ 2 := by
+  have hc2 : (361 / 400 : ℝ) < c ^ (2 : ℕ) := by nlinarith [sq_nonneg (c - 19 / 20)]
+  have hgap : (4 / 49 : ℝ) < (1 - r) ^ (2 : ℕ) := by nlinarith [sq_nonneg (r - 5 / 7)]
+  have hprod : (361 / 4900 : ℝ) < c ^ (2 : ℕ) * (1 - r) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hc2) (sub_pos.mpr hgap)]
   have hdenpos : 0 < Real.log 2 * r :=
     mul_pos (Real.log_pos (by norm_num)) (lt_trans (by norm_num) hr.1)
@@ -390,11 +390,11 @@ private theorem criticalPrimeTwoDepthZero_strongWeightLower :
   norm_num only [Nat.cast_ofNat, invOf_eq_inv, pow_zero, mul_one, Nat.reduceAdd,
     Nat.cast_one, one_pow]
   change (4 / 125 : ℝ) <
-    2 * (c ^ 2 * (1 / 9) * (1 - r) ^ 2 /
+    2 * (c ^ (2 : ℕ) * (1 / 9) * (1 - r) ^ (2 : ℕ) /
       (1 * Real.log 2 * r))
   norm_num only [one_mul]
-  rw [show 2 * (c ^ 2 * (1 / 9) * (1 - r) ^ 2 / (Real.log 2 * r)) =
-    (2 * c ^ 2 * (1 / 9) * (1 - r) ^ 2) / (Real.log 2 * r) by ring]
+  rw [show 2 * (c ^ (2 : ℕ) * (1 / 9) * (1 - r) ^ (2 : ℕ) / (Real.log 2 * r)) =
+    (2 * c ^ (2 : ℕ) * (1 / 9) * (1 - r) ^ (2 : ℕ)) / (Real.log 2 * r) by ring]
   rw [lt_div_iff₀ hdenpos]
   nlinarith
 
@@ -408,9 +408,9 @@ private theorem criticalPrimeThreeDepthZero_strongWeightLower :
   have hr : (4 / 7 : ℝ) < r ∧ r < 3 / 5 := by
     simpa only [r, p] using criticalPrimeThreeHalfNode_strongBounds
   have hc : (9 / 10 : ℝ) < c := nine_tenths_lt_criticalPrimeThreeContraction
-  have hc2 : (81 / 100 : ℝ) < c ^ 2 := by nlinarith [sq_nonneg (c - 9 / 10)]
-  have hgap : (4 / 25 : ℝ) < (1 - r) ^ 2 := by nlinarith [sq_nonneg (r - 3 / 5)]
-  have hprod : (81 / 625 : ℝ) < c ^ 2 * (1 - r) ^ 2 := by
+  have hc2 : (81 / 100 : ℝ) < c ^ (2 : ℕ) := by nlinarith [sq_nonneg (c - 9 / 10)]
+  have hgap : (4 / 25 : ℝ) < (1 - r) ^ (2 : ℕ) := by nlinarith [sq_nonneg (r - 3 / 5)]
+  have hprod : (81 / 625 : ℝ) < c ^ (2 : ℕ) * (1 - r) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hc2) (sub_pos.mpr hgap)]
   have hdenpos : 0 < Real.log 3 * r :=
     mul_pos (Real.log_pos (by norm_num)) (lt_trans (by norm_num) hr.1)
@@ -429,11 +429,11 @@ private theorem criticalPrimeThreeDepthZero_strongWeightLower :
   norm_num only [Nat.cast_ofNat, invOf_eq_inv, pow_zero, mul_one, Nat.reduceAdd,
     Nat.cast_one, one_pow]
   change (3 / 125 : ℝ) <
-    2 * (c ^ 2 * (1 / 16) * (1 - r) ^ 2 /
+    2 * (c ^ (2 : ℕ) * (1 / 16) * (1 - r) ^ (2 : ℕ) /
       (1 * Real.log 3 * r))
   norm_num only [one_mul]
-  rw [show 2 * (c ^ 2 * (1 / 16) * (1 - r) ^ 2 / (Real.log 3 * r)) =
-    (2 * c ^ 2 * (1 / 16) * (1 - r) ^ 2) / (Real.log 3 * r) by ring]
+  rw [show 2 * (c ^ (2 : ℕ) * (1 / 16) * (1 - r) ^ (2 : ℕ) / (Real.log 3 * r)) =
+    (2 * c ^ (2 : ℕ) * (1 / 16) * (1 - r) ^ (2 : ℕ)) / (Real.log 3 * r) by ring]
   rw [lt_div_iff₀ hdenpos]
   nlinarith
 

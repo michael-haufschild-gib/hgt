@@ -10,7 +10,7 @@ half-line cone to RBH, including the missing converse that a continuous quadrati
 `(1,∞)` must have one strict sign there.
 
 The resulting semialgebraic cone is exact.  It contains the genuinely signed boundary receiver
-`sinh(3t) - 3 sinh(t) = 4 sinh(t)^3`, and every cone point gives an RH-equivalent physical
+`sinh(3t) - 3 sinh(t) = 4 sinh(t)^(3 : ℕ)`, and every cone point gives an RH-equivalent physical
 three-aperture leading-jet balance.
 
 `[NEW] [CROSS-ROUTE TRANSFER] [SIGNED RECEIVER CONE] [EXACT CLASSIFICATION] [LEAN-PROVED]`
@@ -248,7 +248,7 @@ theorem riemannHypothesis_iff_reflectedBiHeatSignedThreeApertureGap_eq_zero
     exact riemannHypothesis_of_forall_xiDivisorSupport_re_eq_half fun rho =>
       (reflectedBiHeatSignedThreeApertureGap_eq_zero_iff hcone hx rho).mp (h rho)
 
-/-- Cubic boundary receiver `sinh(3t)-3sinh(t)=4sinh(t)^3`. -/
+/-- Cubic boundary receiver `sinh(3t)-3sinh(t)=4sinh(t)^(3 : ℕ)`. -/
 theorem reflectedBiHeatSignedThreeScaleWallSelective_neg_three_zero_one :
     ReflectedBiHeatSignedThreeScaleWallSelective (-3) 0 1 := by
   left

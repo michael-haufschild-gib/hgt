@@ -163,7 +163,7 @@ theorem staticSpectralChoiTraceDistance_sq_eq_survivalDeviation
     {d : ℕ} (hd : 0 < d) (t : ℝ) (energy : Fin d → ℝ) :
     pureStateTraceDistance
         (staticSpectralChoiVector d 0 energy)
-        (staticSpectralChoiVector d t energy) ^ 2 =
+        (staticSpectralChoiVector d t energy) ^ (2 : ℕ) =
       finiteSpectralSurvivalDeviation (uniformSurvivalWeight d)
         (finiteObserverHamiltonianVertexPhase t energy) := by
   have hprob :
@@ -179,7 +179,7 @@ theorem staticSpectralChoiTraceDistance_sq_eq_survivalDeviation
       0 ≤ 1 -
         ‖inner ℂ
           (staticSpectralChoiVector d 0 energy)
-          (staticSpectralChoiVector d t energy)‖ ^ 2 := by
+          (staticSpectralChoiVector d t energy)‖ ^ (2 : ℕ) := by
     rw [inner_staticSpectralChoiVector_zero hd]
     rw [← Complex.normSq_eq_norm_sq]
     exact sub_nonneg.mpr hprob
@@ -209,8 +209,8 @@ theorem exists_staticSpectralChoi_recurrence_after
       n ≤ (M + 1) * (Q + 1) ^ (d - 1) ∧
       pureStateTraceDistance
           (staticSpectralChoiVector d 0 energy)
-          (staticSpectralChoiVector d ((n : ℝ) * tick) energy) ^ 2 ≤
-        2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+          (staticSpectralChoiVector d ((n : ℝ) * tick) energy) ^ (2 : ℕ) ≤
+        2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   let scaledEnergy : Fin d → ℝ :=
     fun i ↦ (M + 1 : ℕ) * tick * energy i
   obtain ⟨q, hq0, hqQ, hreturn⟩ :=

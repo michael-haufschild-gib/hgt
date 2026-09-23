@@ -75,11 +75,11 @@ theorem finrank_range_finiteBlaschkeLeakageCore_of_coprime (A B : FiniteBlaschke
 
 /-- Leakage-core norm is exactly the anti-causal Schur energy of the inner quotient. -/
 theorem norm_sq_finiteBlaschkeLeakageCore (A B : FiniteBlaschke) (f : HardyDisk) :
-    ‖finiteBlaschkeLeakageCore A B f‖ ^ 2 =
-      ‖f‖ ^ 2 - ‖(finiteBlaschkeMul B).adjoint (finiteBlaschkeMul A f)‖ ^ 2 := by
+    ‖finiteBlaschkeLeakageCore A B f‖ ^ (2 : ℕ) =
+      ‖f‖ ^ (2 : ℕ) - ‖(finiteBlaschkeMul B).adjoint (finiteBlaschkeMul A f)‖ ^ (2 : ℕ) := by
   have hB := norm_sq_adjoint_finiteBlaschkeMul B (finiteBlaschkeMul A f)
   have hA := norm_finiteBlaschkeMul A f
-  change ‖(finiteBlaschkeModelSpace B).starProjection (finiteBlaschkeMul A f)‖ ^ 2 = _
+  change ‖(finiteBlaschkeModelSpace B).starProjection (finiteBlaschkeMul A f)‖ ^ (2 : ℕ) = _
   rw [hA] at hB
   linarith
 

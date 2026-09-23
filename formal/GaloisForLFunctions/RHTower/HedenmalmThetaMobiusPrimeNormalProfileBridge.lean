@@ -9,8 +9,8 @@ orientation that survives every bounded-reader no-go.  This file identifies its 
 energy exactly with the Route P Kakutani polarization.
 
 For centered grade `a`, the raw source reflection profile is `p^a - p^-a`.  Its square, divided by
-the forced positive gauge `p (1 + p^|a|)^2`, is precisely
-`p^-1 (1 - p^-|a|)^2`.  Thus the unrenormalized Route P harmonic class is not an abstract product
+the forced positive gauge `p (1 + p^|a|)^(2 : ℕ)`, is precisely
+`p^-1 (1 - p^-|a|)^(2 : ℕ)`.  Thus the unrenormalized Route P harmonic class is not an abstract product
 measure artifact: it is the normalized square of a literal target-free singular source profile.
 -/
 

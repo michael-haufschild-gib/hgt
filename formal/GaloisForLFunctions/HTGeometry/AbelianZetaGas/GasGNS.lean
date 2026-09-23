@@ -82,7 +82,7 @@ theorem inner_def (a b : GasPreGNS θ) :
     ⟪a, b⟫_ℂ = gasGibbs θ (gasAdjoint (toGas θ a) * toGas θ b) := rfl
 
 theorem norm_sq (a : GasPreGNS θ) :
-    (‖a‖ : ℂ) ^ 2 = gasGibbs θ (gasAdjoint (toGas θ a) * toGas θ a) := by
+    (‖a‖ : ℂ) ^ (2 : ℕ) = gasGibbs θ (gasAdjoint (toGas θ a) * toGas θ a) := by
   have hnn : 0 ≤ gasGibbs θ (gasAdjoint (toGas θ a) * toGas θ a) :=
     gasGibbs_adjoint_mul_self_nonneg θ (toGas θ a)
   have hre : ‖a‖ = Real.sqrt (gasGibbs θ (gasAdjoint (toGas θ a) * toGas θ a)).re := rfl

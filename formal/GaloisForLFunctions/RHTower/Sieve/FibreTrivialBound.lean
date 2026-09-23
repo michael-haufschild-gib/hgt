@@ -51,14 +51,14 @@ theorem abs_fibre_sum_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ}
 /-- **The trivial size of the fibre mean square.** -/
 theorem sum_fibreSq_trivial_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ}
     (hx : 0 ≤ x) (hh : 0 ≤ h) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
-      ≤ ((outerBlock x h).card : ℝ) * (h + 1) ^ 2 := by
-  refine le_trans (Finset.sum_le_card_nsmul _ _ ((h + 1) ^ 2) fun a ha => ?_) ?_
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+      ≤ ((outerBlock x h).card : ℝ) * (h + 1) ^ (2 : ℕ) := by
+  refine le_trans (Finset.sum_le_card_nsmul _ _ ((h + 1) ^ (2 : ℕ)) fun a ha => ?_) ?_
   · have habs := abs_fibre_sum_le hf hx hh ha
     have h0 : (0 : ℝ) ≤ h + 1 := by linarith
-    calc (∑ b ∈ innerFibre x h a, f b) ^ 2
-        = |∑ b ∈ innerFibre x h a, f b| ^ 2 := (sq_abs _).symm
-      _ ≤ (h + 1) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) habs 2
+    calc (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+        = |∑ b ∈ innerFibre x h a, f b| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ (h + 1) ^ (2 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) habs 2
   · rw [nsmul_eq_mul]
 
 end RHTower.Sieve

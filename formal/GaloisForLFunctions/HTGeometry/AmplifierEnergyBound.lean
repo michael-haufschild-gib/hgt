@@ -23,10 +23,10 @@ namespace HTGeometry
 `K ≥ 0`, one gets `B ≤ 2K²/c²` — no dependence on `P`. -/
 theorem energy_le_of_amplifier {A B K P c : ℝ} (hP : 0 < P) (hc : 0 < c) (hB : 0 ≤ B)
     (hA : A = c * P * B) (hbound : A ≤ K * Real.sqrt (2 * P) * Real.sqrt (P * B)) :
-    B ≤ 2 * K ^ 2 / c ^ 2 := by
+    B ≤ 2 * K ^ (2 : ℕ) / c ^ (2 : ℕ) := by
   have hsq : Real.sqrt (2 * P) * Real.sqrt (P * B) = Real.sqrt 2 * P * Real.sqrt B := by
     rw [← Real.sqrt_mul (by positivity : (0:ℝ) ≤ 2 * P)]
-    have h : 2 * P * (P * B) = (Real.sqrt 2 * P) ^ 2 * B := by
+    have h : 2 * P * (P * B) = (Real.sqrt 2 * P) ^ (2 : ℕ) * B := by
       rw [mul_pow, Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)]; ring
     rw [h, Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)]
   have hb2 : c * P * B ≤ K * (Real.sqrt 2 * P * Real.sqrt B) := by
@@ -35,7 +35,7 @@ theorem energy_le_of_amplifier {A B K P c : ℝ} (hP : 0 < P) (hc : 0 < c) (hB :
     calc c * P * B ≤ K * Real.sqrt (2 * P) * Real.sqrt (P * B) := h
       _ = K * (Real.sqrt (2 * P) * Real.sqrt (P * B)) := by ring
       _ = K * (Real.sqrt 2 * P * Real.sqrt B) := by rw [hsq]
-  have hBsq : B = Real.sqrt B ^ 2 := (Real.sq_sqrt hB).symm
+  have hBsq : B = Real.sqrt B ^ (2 : ℕ) := (Real.sq_sqrt hB).symm
   rcases eq_or_lt_of_le (Real.sqrt_nonneg B) with hz | hpos
   · have hb0 : B = 0 := by rw [hBsq, ← hz]; ring
     rw [hb0]; positivity
@@ -45,22 +45,22 @@ theorem energy_le_of_amplifier {A B K P c : ℝ} (hP : 0 < P) (hc : 0 < c) (hB :
       nlinarith [hdiv, hBsq, hpos]
     have hsB : Real.sqrt B ≤ K * Real.sqrt 2 / c := by
       rw [le_div_iff₀ hc]; linarith [hstep]
-    calc B = Real.sqrt B ^ 2 := hBsq
-      _ ≤ (K * Real.sqrt 2 / c) ^ 2 := by
+    calc B = Real.sqrt B ^ (2 : ℕ) := hBsq
+      _ ≤ (K * Real.sqrt 2 / c) ^ (2 : ℕ) := by
           apply pow_le_pow_left₀ (Real.sqrt_nonneg B) hsB
-      _ = 2 * K ^ 2 / c ^ 2 := by
+      _ = 2 * K ^ (2 : ℕ) / c ^ (2 : ℕ) := by
           rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)]; ring
 
 /-- Specialisation with `c = 1/(2π)`: the constant is `8π²K²`. -/
 theorem energy_le_of_amplifier_twopi {A B K P : ℝ} (hP : 0 < P) (hB : 0 ≤ B)
     (hA : A = P * B / (2 * Real.pi))
     (hbound : A ≤ K * Real.sqrt (2 * P) * Real.sqrt (P * B)) :
-    B ≤ 8 * Real.pi ^ 2 * K ^ 2 := by
+    B ≤ 8 * Real.pi ^ (2 : ℕ) * K ^ (2 : ℕ) := by
   have hpi : (0:ℝ) < 1 / (2 * Real.pi) := by positivity
   have hA' : A = (1 / (2 * Real.pi)) * P * B := by rw [hA]; ring
   have := energy_le_of_amplifier hP hpi hB hA' hbound
   have hne : (2 * Real.pi) ≠ 0 := by positivity
-  calc B ≤ 2 * K ^ 2 / (1 / (2 * Real.pi)) ^ 2 := this
-    _ = 8 * Real.pi ^ 2 * K ^ 2 := by field_simp; ring
+  calc B ≤ 2 * K ^ (2 : ℕ) / (1 / (2 * Real.pi)) ^ (2 : ℕ) := this
+    _ = 8 * Real.pi ^ (2 : ℕ) * K ^ (2 : ℕ) := by field_simp; ring
 
 end HTGeometry

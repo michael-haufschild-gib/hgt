@@ -107,13 +107,13 @@ theorem xiShiftedApertureShearedEvaluation_lineConj
 def xiShiftedApertureHilbertTerm
     (y : ℝ) (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiShiftedReciprocalSquare y q
-  lam.re * (xiShiftedApertureShearedEvaluation y p q) ^ 2
+  lam.re * (xiShiftedApertureShearedEvaluation y p q) ^ (2 : ℕ)
 
 /-- Transverse charge channel of one shifted reciprocal-square atom. -/
 def xiShiftedApertureTransverseTerm
     (y : ℝ) (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiShiftedReciprocalSquare y q
-  Complex.normSq lam / lam.re * (evalRealPolynomial p lam).im ^ 2
+  Complex.normSq lam / lam.re * (evalRealPolynomial p lam).im ^ (2 : ℕ)
 
 /-- Mixed longitudinal/transverse feature product for two real polynomial probes. -/
 def xiShiftedApertureMixedPairTerm
@@ -167,8 +167,8 @@ open sector `|Im lam| < Re lam`. -/
 def xiShiftedApertureLorentzLongitudinalTerm
     (y : ℝ) (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiShiftedReciprocalSquare y q
-  (lam.re ^ 2 - lam.im ^ 2) *
-    (xiShiftedApertureShearedEvaluation y p q) ^ 2
+  (lam.re ^ (2 : ℕ) - lam.im ^ (2 : ℕ)) *
+    (xiShiftedApertureShearedEvaluation y p q) ^ (2 : ℕ)
 
 /-- Phase-weighted shear created by multiplication by `X`.  Unlike the unweighted mixed channel,
 this term is even under line conjugation and therefore survives orbit summation. -/
@@ -183,8 +183,8 @@ def xiShiftedApertureLorentzShearTerm
 def xiShiftedApertureLorentzTransverseTerm
     (y : ℝ) (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiShiftedReciprocalSquare y q
-  (Complex.normSq lam / lam.re) ^ 2 *
-    (evalRealPolynomial p lam).im ^ 2
+  (Complex.normSq lam / lam.re) ^ (2 : ℕ) *
+    (evalRealPolynomial p lam).im ^ (2 : ℕ)
 
 /-- Multiplication by `X` acts on the sheared longitudinal and imaginary coordinates by an exact
 Lorentz-type transfer.  Its oriented crossing is longitudinal transport minus the phase-weighted
@@ -207,11 +207,11 @@ theorem xiShiftedApertureHankelPairTerm_X_mul_eq_lorentzTransport
     rw [hx]
   rw [xiShiftedApertureHankelPairTerm, hX]
   change (lam * w * (lam * w)).re =
-    (lam.re ^ 2 - lam.im ^ 2) *
-          (w.re - lam.im / lam.re * w.im) ^ 2 -
+    (lam.re ^ (2 : ℕ) - lam.im ^ (2 : ℕ)) *
+          (w.re - lam.im / lam.re * w.im) ^ (2 : ℕ) -
         2 * lam.im * Complex.normSq lam / lam.re *
           (w.re - lam.im / lam.re * w.im) * w.im -
-      (Complex.normSq lam / lam.re) ^ 2 * w.im ^ 2
+      (Complex.normSq lam / lam.re) ^ (2 : ℕ) * w.im ^ (2 : ℕ)
   rw [Complex.mul_re, Complex.mul_re, Complex.mul_im,
     Complex.normSq_apply]
   field_simp [hlam]
@@ -245,9 +245,9 @@ theorem xiShiftedApertureLorentzLongitudinalTerm_eq_slope_mul_hilbert
       (xiShiftedResponseMass_pos hy q).ne'
   unfold xiShiftedApertureLorentzLongitudinalTerm xiShiftedResponseSlope
     xiShiftedResponseMass xiShiftedApertureHilbertTerm
-  change (lam.re ^ 2 - lam.im ^ 2) * _ = (lam ^ 2).re / lam.re * (lam.re * _)
-  have hsquare : (lam ^ 2).re = lam.re ^ 2 - lam.im ^ 2 := by
-    rw [show lam ^ 2 = lam * lam by ring, Complex.mul_re]
+  change (lam.re ^ (2 : ℕ) - lam.im ^ (2 : ℕ)) * _ = (lam ^ (2 : ℕ)).re / lam.re * (lam.re * _)
+  have hsquare : (lam ^ (2 : ℕ)).re = lam.re ^ (2 : ℕ) - lam.im ^ (2 : ℕ) := by
+    rw [show lam ^ (2 : ℕ) = lam * lam by ring, Complex.mul_re]
     ring
   rw [hsquare]
   field_simp [hlam]
@@ -344,7 +344,7 @@ theorem xiShiftedReciprocalSquare_normSq_div_re_lt_two_mul_re
   have hz : 0 < z.re := by
     simpa only [z, xiShiftedResponseMass, pow_one] using
       xiShiftedResponseMass_pos hy q
-  have hsector : z.im ^ 2 < z.re ^ 2 := by
+  have hsector : z.im ^ (2 : ℕ) < z.re ^ (2 : ℕ) := by
     simpa only [z] using xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q
   apply (div_lt_iff₀ hz).2
   rw [Complex.normSq_apply]
@@ -385,8 +385,8 @@ theorem summable_xiShiftedApertureTransverseTerm
       (summable_xiShiftedReciprocalSquare_pow hy.le 0)
     exact hs.congr (fun q => by simp)
   have hbound : Summable (fun q : XiZeroCopy =>
-      (2 * C ^ 2) * (xiShiftedReciprocalSquare y q).re) :=
-    hre.mul_left (2 * C ^ 2)
+      (2 * C ^ (2 : ℕ)) * (xiShiftedReciprocalSquare y q).re) :=
+    hre.mul_left (2 * C ^ (2 : ℕ))
   apply Summable.of_nonneg_of_le
     (fun q => xiShiftedApertureTransverseTerm_nonneg hy p q)
     (fun q => ?_) hbound
@@ -396,7 +396,7 @@ theorem summable_xiShiftedApertureTransverseTerm
     apply norm_evalRealPolynomial_le p
     exact (norm_xiShiftedReciprocalSquare_le hy.le q).trans (by
       simpa only [xiZeroCopyReciprocalSquare_eq] using hM q.1)
-  have him : w.im ^ 2 ≤ C ^ 2 := by
+  have him : w.im ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     have hi := Complex.abs_im_le_norm w
     have habs : |w.im| ≤ C := hi.trans hw
     have hprod : 0 ≤ (C - |w.im|) * (C + |w.im|) :=
@@ -409,12 +409,12 @@ theorem summable_xiShiftedApertureTransverseTerm
         simpa only [z, xiShiftedResponseMass, pow_one] using
           (xiShiftedResponseMass_pos hy q).le)
   unfold xiShiftedApertureTransverseTerm
-  change Complex.normSq z / z.re * w.im ^ 2 ≤ (2 * C ^ 2) * z.re
+  change Complex.normSq z / z.re * w.im ^ (2 : ℕ) ≤ (2 * C ^ (2 : ℕ)) * z.re
   calc
-    Complex.normSq z / z.re * w.im ^ 2 ≤
-        Complex.normSq z / z.re * C ^ 2 := by gcongr
-    _ ≤ (2 * z.re) * C ^ 2 := by gcongr
-    _ = (2 * C ^ 2) * z.re := by ring
+    Complex.normSq z / z.re * w.im ^ (2 : ℕ) ≤
+        Complex.normSq z / z.re * C ^ (2 : ℕ) := by gcongr
+    _ ≤ (2 * z.re) * C ^ (2 : ℕ) := by gcongr
+    _ = (2 * C ^ (2 : ℕ)) * z.re := by ring
 
 /-- Real shifted trace-Hankel atoms are summable. -/
 theorem summable_xiShiftedApertureHankelTerm
@@ -448,15 +448,15 @@ theorem norm_xiShiftedApertureMixedPairTerm_le
   have ha : 0 < lam.re := by
     simpa only [lam, xiShiftedResponseMass] using xiShiftedResponseMass_pos hy q
   have hn : 0 ≤ n := norm_nonneg _
-  have hsquare : 0 ≤ (lam.re * |s| - n * |v|) ^ 2 := sq_nonneg _
-  have hnormsq : Complex.normSq lam = n ^ 2 := Complex.normSq_eq_norm_sq lam
+  have hsquare : 0 ≤ (lam.re * |s| - n * |v|) ^ (2 : ℕ) := sq_nonneg _
+  have hnormsq : Complex.normSq lam = n ^ (2 : ℕ) := Complex.normSq_eq_norm_sq lam
   unfold xiShiftedApertureMixedPairTerm xiShiftedApertureHilbertTerm
     xiShiftedApertureTransverseTerm
-  change |s * n * v| ≤ (lam.re * s ^ 2 + Complex.normSq lam / lam.re * v ^ 2) / 2
+  change |s * n * v| ≤ (lam.re * s ^ (2 : ℕ) + Complex.normSq lam / lam.re * v ^ (2 : ℕ)) / 2
   rw [abs_mul, abs_mul, abs_of_nonneg hn, hnormsq]
   apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 2)).2
-  rw [show lam.re * s ^ 2 + n ^ 2 / lam.re * v ^ 2 =
-      (lam.re ^ 2 * s ^ 2 + n ^ 2 * v ^ 2) / lam.re by
+  rw [show lam.re * s ^ (2 : ℕ) + n ^ (2 : ℕ) / lam.re * v ^ (2 : ℕ) =
+      (lam.re ^ (2 : ℕ) * s ^ (2 : ℕ) + n ^ (2 : ℕ) * v ^ (2 : ℕ)) / lam.re by
     field_simp]
   apply (le_div_iff₀ ha).2
   nlinarith [sq_abs s, sq_abs v]
@@ -715,13 +715,13 @@ Chebyshev-discrepancy source pairings.  This is a pairing-level strengthening of
 source-jet split: it retains every probe in the polynomial flag. -/
 theorem xiShiftedAperturePairGap_eq_archimedeanSourcePair_add_discrepancySourcePair
     {w : ℝ} (hw : 1 / 2 < w) (p r : Polynomial ℝ) :
-    xiShiftedAperturePairGap (w ^ 2) p r =
+    xiShiftedAperturePairGap (w ^ (2 : ℕ)) p r =
       xiShiftedApertureArchimedeanSourcePair w p r +
         xiShiftedApertureDiscrepancySourcePair w p r := by
   rw [xiShiftedAperturePairGap_eq_momentInner
     (sq_pos_of_pos (by linarith : 0 < w))]
   have hseq : ∀ k : ℕ,
-      (xiShiftedReciprocalMoment (w ^ 2) k).re =
+      (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re =
         normalizedArchimedeanSourceMoment k w +
           normalizedChebyshevDiscrepancyMoment k w := by
     intro k
@@ -737,7 +737,7 @@ theorem xiShiftedAperturePairGap_eq_archimedeanSourcePair_add_discrepancySourceP
 two source channels into the exact marked Lorentz crossing. -/
 theorem xiShiftedApertureLorentzCrossingEnergy_eq_archimedeanSourcePair_add_discrepancySourcePair
     {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) :
-    xiShiftedApertureLorentzCrossingEnergy (w ^ 2) p =
+    xiShiftedApertureLorentzCrossingEnergy (w ^ (2 : ℕ)) p =
       xiShiftedApertureArchimedeanSourcePair w p (X * p) +
         xiShiftedApertureDiscrepancySourcePair w p (X * p) := by
   rw [← xiShiftedAperturePairGap_X_mul_eq_lorentzCrossingEnergy
@@ -805,7 +805,7 @@ against every probe in the completed finite flag.  Hence none of the visible fla
 orient the face; the first transverse extension is the only remaining source coordinate. -/
 theorem xiShiftedHankelNull_archimedeanSourcePair_eq_neg_discrepancySourcePair_of_natDegree_lt
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     {r : Polynomial ℝ} (hr : r.natDegree < n + 1) :
     xiShiftedApertureArchimedeanSourcePair w
         (HTGeometry.finiteHankelNullMonicPolynomial c) r =
@@ -859,10 +859,10 @@ theorem xiShiftedHankelBoundaryNullCrossingForm_eq_lorentzCrossingEnergy
 the net Lorentz transport is exactly the normalized completed prime--Gamma boundary jet. -/
 theorem xiShiftedHankel_terminal_mul_lorentzCrossingEnergy_eq_sourceJet
     {w : ℝ} (hw : 0 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) *
-        xiShiftedApertureLorentzCrossingEnergy (w ^ 2)
+        xiShiftedApertureLorentzCrossingEnergy (w ^ (2 : ℕ))
           (HTGeometry.finiteHankelNullMonicPolynomial c) =
       xiShiftedHankelBoundarySourceJet w (n + 1) c := by
   rw [← xiShiftedHankelBoundaryNullCrossingForm_eq_lorentzCrossingEnergy
@@ -876,7 +876,7 @@ source channels are therefore not independent marginals: their marked transverse
 intrinsic face coordinate. -/
 theorem xiShiftedHankel_terminal_mul_sourcePairExtension_eq_sourceJet
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) *
         (xiShiftedApertureArchimedeanSourcePair w
@@ -950,11 +950,11 @@ theorem hasDerivAt_xiShiftedApertureEnergyGap_ofFn_of_kernel
 null channel gap is the terminal coefficient paired with the exact completed prime--Gamma jet. -/
 theorem hasDerivAt_xiShiftedApertureEnergyGap_ofFn_eq_sourceJet
     {w : ℝ} (hw : 0 < w) (n : ℕ) (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0) :
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0) :
     HasDerivAt
       (fun t => xiShiftedApertureEnergyGap t (Polynomial.ofFn (n + 1) c))
       (-(2 * (n : ℝ) + 1) * c (Fin.last n) *
-        xiShiftedHankelBoundarySourceJet w (n + 1) c) (w ^ 2) := by
+        xiShiftedHankelBoundarySourceJet w (n + 1) c) (w ^ (2 : ℕ)) := by
   have hd := hasDerivAt_xiShiftedApertureEnergyGap_ofFn_of_kernel
     (sq_pos_of_pos hw) n c hc
   rw [xiShiftedHankelBoundarySourceJet_eq hw]
@@ -968,7 +968,7 @@ theorem hasDerivAt_xiShiftedApertureEnergyGap_ofFn_eq_kreinCrossing
     (hlast : c (Fin.last n) ≠ 0) :
     HasDerivAt
       (fun t => xiShiftedApertureEnergyGap t (Polynomial.ofFn (n + 1) c))
-      (-(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+      (-(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
         xiShiftedHankelBoundaryNullCrossingForm y c) y := by
   have hd := hasDerivAt_xiShiftedApertureEnergyGap_ofFn_of_kernel hy n c hc
   apply hd.congr_deriv
@@ -986,11 +986,11 @@ theorem xiShiftedHankelFirstCrossing_energyGap_deriv_nonneg
     (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
     (hmin : IsLocalMinOn
       (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c) (Ici y) y) :
-    0 ≤ -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+    0 ≤ -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
       xiShiftedHankelBoundaryNullCrossingForm y c := by
   have hcross := xiShiftedHankelFirstCrossing_nullCrossingForm_nonpos
     hy n c hhead hcne hc hmin
-  have hfactor : 0 < (2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 := by
+  have hfactor : 0 < (2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) := by
     have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
       y n c hhead hcne hc
     positivity
@@ -1000,10 +1000,10 @@ theorem xiShiftedHankelFirstCrossing_energyGap_deriv_nonneg
 theorem xiShiftedHankelNull_energyGapSlope_neg_iff_nullCrossingForm_pos
     {y : ℝ} {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
-    -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+    -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
           xiShiftedHankelBoundaryNullCrossingForm y c < 0 ↔
       0 < xiShiftedHankelBoundaryNullCrossingForm y c := by
-  have hfactor : 0 < (2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 := by
+  have hfactor : 0 < (2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) := by
     positivity
   constructor <;> intro h <;> nlinarith
 
@@ -1013,7 +1013,7 @@ theorem xiShiftedHankelNull_energyGapSlope_neg_iff_primeArchPair_pos
     {y : ℝ} (hy : 0 < y) (hymax : y < 41 / 2)
     {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
-    -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+    -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
           xiShiftedHankelBoundaryNullCrossingForm y c < 0 ↔
       0 < HTGeometry.momentInner
         (fun k => (primeArchShiftedReciprocalMoment y k).re)
@@ -1044,7 +1044,7 @@ theorem not_xiShiftedHankelFirstCrossing_of_energyGapSlope_neg
     (hcne : c ≠ 0)
     (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
     (hdecay :
-      -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+      -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
         xiShiftedHankelBoundaryNullCrossingForm y c < 0) :
     ¬ IsLocalMinOn
       (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c) (Ici y) y := by

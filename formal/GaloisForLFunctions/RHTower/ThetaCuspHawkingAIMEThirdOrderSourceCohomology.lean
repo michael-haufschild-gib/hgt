@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEPerturbativeGradeSeparati
 
 Write the Taylor expansion of a gauge-fixed Einstein operator as
 
-`E(g + h) = L h + (1/2) B(h,h) + (1/6) C(h,h,h) + O(h^4)`.
+`E(g + h) = L h + (1/2) B(h,h) + (1/6) C(h,h,h) + O(h^(4 : ℕ))`.
 
 For a real one-mode perturbation, let `h₊, h₋` be the two linear frequency branches and let
 `h₊₊, h₊₋, h₋₋` be the three second-order coefficients. Exact expansion shows that the cubic
@@ -39,7 +39,7 @@ def d4EinsteinThirdOrderQuadraticCascade
     (B : V →ₗ[ℂ] V →ₗ[ℂ] V)
     (hPlus hMinus hPlusPlus hPlusMinus hMinusMinus : V) (x y : ℂ) : V :=
   B (x • hPlus + y • hMinus)
-    (x ^ 2 • hPlusPlus + (x * y) • hPlusMinus + y ^ 2 • hMinusMinus)
+    (x ^ (2 : ℕ) • hPlusPlus + (x * y) • hPlusMinus + y ^ (2 : ℕ) • hMinusMinus)
 
 /-- Exact four-grade expansion of the Hessian contribution at third perturbative order. -/
 theorem d4EinsteinThirdOrderQuadraticCascade_eq
@@ -47,10 +47,10 @@ theorem d4EinsteinThirdOrderQuadraticCascade_eq
     (hPlus hMinus hPlusPlus hPlusMinus hMinusMinus : V) (x y : ℂ) :
     d4EinsteinThirdOrderQuadraticCascade B hPlus hMinus hPlusPlus hPlusMinus
         hMinusMinus x y =
-      x ^ 3 • B hPlus hPlusPlus +
-      (x ^ 2 * y) • (B hPlus hPlusMinus + B hMinus hPlusPlus) +
-      (x * y ^ 2) • (B hPlus hMinusMinus + B hMinus hPlusMinus) +
-      y ^ 3 • B hMinus hMinusMinus := by
+      x ^ (3 : ℕ) • B hPlus hPlusPlus +
+      (x ^ (2 : ℕ) * y) • (B hPlus hPlusMinus + B hMinus hPlusPlus) +
+      (x * y ^ (2 : ℕ)) • (B hPlus hMinusMinus + B hMinus hPlusMinus) +
+      y ^ (3 : ℕ) • B hMinus hMinusMinus := by
   simp [d4EinsteinThirdOrderQuadraticCascade, map_add, map_smul]
   module
 
@@ -76,12 +76,12 @@ theorem d4EinsteinDirectThirdVariation_eq
     (hPlus hMinus : V) (x y : ℂ) :
     d4EinsteinDirectThirdVariation C hPlus hMinus x y =
       (1 / 6 : ℂ) •
-        (x ^ 3 • C hPlus hPlus hPlus +
-        (x ^ 2 * y) •
+        (x ^ (3 : ℕ) • C hPlus hPlus hPlus +
+        (x ^ (2 : ℕ) * y) •
           (C hPlus hPlus hMinus + C hPlus hMinus hPlus + C hMinus hPlus hPlus) +
-        (x * y ^ 2) •
+        (x * y ^ (2 : ℕ)) •
           (C hPlus hMinus hMinus + C hMinus hPlus hMinus + C hMinus hMinus hPlus) +
-        y ^ 3 • C hMinus hMinus hMinus) := by
+        y ^ (3 : ℕ) • C hMinus hMinus hMinus) := by
   simp [d4EinsteinDirectThirdVariation, map_add, map_smul]
   module
 
@@ -144,12 +144,12 @@ theorem d4EinsteinThirdOrderNonlinearSource_eq
     (hPlus hMinus hPlusPlus hPlusMinus hMinusMinus : V) (x y : ℂ) :
     d4EinsteinThirdOrderNonlinearSource B C hPlus hMinus hPlusPlus hPlusMinus
         hMinusMinus x y =
-      x ^ 3 • d4EinsteinThirdOrderPurePlusSource B C hPlus hPlusPlus +
-      (x ^ 2 * y) •
+      x ^ (3 : ℕ) • d4EinsteinThirdOrderPurePlusSource B C hPlus hPlusPlus +
+      (x ^ (2 : ℕ) * y) •
         d4EinsteinThirdOrderPlusPlusMinusSource B C hPlus hMinus hPlusPlus hPlusMinus +
-      (x * y ^ 2) •
+      (x * y ^ (2 : ℕ)) •
         d4EinsteinThirdOrderPlusMinusMinusSource B C hPlus hMinus hPlusMinus hMinusMinus +
-      y ^ 3 • d4EinsteinThirdOrderPureMinusSource B C hMinus hMinusMinus := by
+      y ^ (3 : ℕ) • d4EinsteinThirdOrderPureMinusSource B C hMinus hMinusMinus := by
   rw [d4EinsteinThirdOrderNonlinearSource, d4EinsteinThirdOrderQuadraticCascade_eq,
     d4EinsteinDirectThirdVariation_eq]
   simp [d4EinsteinThirdOrderPurePlusSource, d4EinsteinThirdOrderPlusPlusMinusSource,

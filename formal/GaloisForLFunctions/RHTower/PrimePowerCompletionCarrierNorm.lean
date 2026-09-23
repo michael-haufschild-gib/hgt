@@ -40,7 +40,7 @@ theorem primePowerWeight_fiber_le_tsum (p : Nat.Primes) (S : Finset (Nat.Primes 
   have hp0 : (0 : ℝ) < (p : ℕ) := by linarith
   have hsummable : Summable (fun r : ℕ => Real.log (p : ℕ) / (p : ℕ) ^ (2 + r)) := by
     have heq : (fun r : ℕ => Real.log (p : ℕ) / (p : ℕ) ^ (2 + r))
-        = fun r : ℕ => (Real.log (p : ℕ) / (p : ℕ) ^ 2) * (1 / (p : ℕ)) ^ r := by
+        = fun r : ℕ => (Real.log (p : ℕ) / (p : ℕ) ^ (2 : ℕ)) * (1 / (p : ℕ)) ^ r := by
       funext r; rw [pow_add, one_div, inv_pow]; field_simp
     rw [heq]
     exact (summable_geometric_of_lt_one (by positivity) (by rw [div_lt_one hp0]; linarith)).mul_left _
@@ -97,8 +97,8 @@ theorem norm_primePowerCompletionCarrier_le_tail {A : ℝ} (hA : 0 < A) (m k : �
 theorem normSq_primePowerCompletionCarrier_le_tail {A : ℝ} (hA : 0 < A) (m k : ℝ)
     {N₀ : ℕ} (hN₀ : 3 ≤ N₀) (S : Finset (Nat.Primes × ℕ)) (hS : ∀ x ∈ S, N₀ < (x.1 : ℕ)) :
     ‖∑ x ∈ S, (Real.log (x.1 : ℕ) / (x.1 : ℕ) ^ (2 + x.2)) •
-        centeredApertureCarrierAt A m k ((2 + x.2 : ℕ) * Real.log (x.1 : ℕ))‖ ^ 2
-      ≤ A * (2 * ((Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ))) ^ 2 := by
+        centeredApertureCarrierAt A m k ((2 + x.2 : ℕ) * Real.log (x.1 : ℕ))‖ ^ (2 : ℕ)
+      ≤ A * (2 * ((Real.log (N₀ : ℝ) + 1) / (N₀ : ℝ))) ^ (2 : ℕ) := by
   have h2 := pow_le_pow_left₀ (norm_nonneg _)
     (norm_primePowerCompletionCarrier_le_tail hA m k hN₀ S hS) 2
   rwa [mul_pow, Real.sq_sqrt hA.le] at h2

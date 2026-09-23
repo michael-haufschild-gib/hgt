@@ -53,14 +53,14 @@ theorem isClosed_ccmPolarConstraintSubmodule (a : SuzukiPositiveAperture) :
 theorem ccmRestrictedWeil_shifted_diagonal (a : SuzukiPositiveAperture) (E : ℝ)
     (u : CCMArchimedeanFormDomain a) :
     (inner ℂ u (u - ccmRestrictedWeilFormBirmanSchwinger a E u)).re =
-      ccmRestrictedWeilSourceQuadratic a u - E * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+      ccmRestrictedWeilSourceQuadratic a u - E * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
   have hmass : (inner ℂ ((E : ℂ) • ccmArchimedeanFormToAperture a u)
       (ccmArchimedeanFormToAperture a u)).re =
-      E * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+      E * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
     rw [inner_smul_left (ccmArchimedeanFormToAperture a u)
       (ccmArchimedeanFormToAperture a u) (E : ℂ), Complex.conj_ofReal,
       inner_self_eq_norm_sq_to_K]
-    change (((E : ℂ) * (‖ccmArchimedeanFormToAperture a u‖ : ℂ) ^ 2).re) = _
+    change (((E : ℂ) * (‖ccmArchimedeanFormToAperture a u‖ : ℂ) ^ (2 : ℕ)).re) = _
     rw [← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re]
   have hid := congrArg Complex.re
     (ccmRestrictedWeilForm_sub_groundMass_eq_inner_one_sub_birmanSchwinger a E u u)
@@ -190,7 +190,7 @@ theorem polarSmoothSource_strict_ground_floor (a : SuzukiPositiveAperture)
     (f : CCMComplexSmoothInteriorSource a) (hf : IsPolarConstrained a f.toCCMFormVector)
     (hne : ccmArchimedeanFormToAperture a f.toCCMFormVector ≠ 0) :
     ccmRestrictedWeilPolarGroundEnergy a *
-      ‖ccmArchimedeanFormToAperture a f.toCCMFormVector‖ ^ 2 <
+      ‖ccmArchimedeanFormToAperture a f.toCCMFormVector‖ ^ (2 : ℕ) <
         ccmRestrictedWeilSourceQuadratic a f.toCCMFormVector := by
   obtain ⟨b, hba, hs⟩ := exists_strict_smaller_aperture_of_compact_tsupport a f
   let fb := f.restrictAperture b hs
@@ -199,7 +199,7 @@ theorem polarSmoothSource_strict_ground_floor (a : SuzukiPositiveAperture)
   have hfb : IsPolarConstrained b fb.toCCMFormVector :=
     (isPolarConstrained_iff_of_val_eq hba.le hval).mp hf
   have hnorm := norm_ccmArchimedeanFormToAperture_eq_of_val_eq hval
-  have hbmass : 0 < ‖ccmArchimedeanFormToAperture b fb.toCCMFormVector‖ ^ 2 := by
+  have hbmass : 0 < ‖ccmArchimedeanFormToAperture b fb.toCCMFormVector‖ ^ (2 : ℕ) := by
     rw [← hnorm]
     exact pow_pos (norm_pos_iff.mpr hne) 2
   rw [ccmRestrictedWeilSourceQuadratic_eq_of_val_eq hba.le hval, hnorm]

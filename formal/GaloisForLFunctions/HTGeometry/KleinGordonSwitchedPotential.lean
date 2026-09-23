@@ -74,7 +74,7 @@ energy of the field. -/
 theorem re_inner_kgSwitchedPotential (hV : Measurable V) (hbV0 : 0 ≤ bV)
     (hbV : ∀ a : E, |V a| ≤ bV) (s : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     RCLike.re (inner ℂ (kgSwitchedPotential hV hbV0 hbV φ s x) x)
-      = φ s * RCLike.re ((∫ a : E, ((V a * ‖(x : E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+      = φ s * RCLike.re ((∫ a : E, ((V a * ‖(x : E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   rw [kgSwitchedPotential, re_inner_kgScaledPotential, re_inner_kgMulOp hV hbV0 hbV x]
 
 /-- **The adiabatic estimate for a real potential of varying strength.** Every constant is read off
@@ -104,7 +104,7 @@ theorem kgSwitchedPotential_work (hV : Measurable V) (hbV0 : 0 ≤ bV)
         - kgAdiabaticEnergy (kgSwitchedPotential hV hbV0 hbV φ) g h 0
       = -∫ s in (0 : ℝ)..t, φ' s * RCLike.re ((∫ a : E,
           ((V a * ‖(kgFieldMildT (kgSwitchedPotential hV hbV0 hbV φ) (kgFreqInvOp g) h s :
-            E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+            E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   have hφb' : ∀ r : ℝ, ‖kgSwitchedPotential hV hbV0 hbV φ r‖ ≤ b := fun r =>
     le_trans (norm_kgSwitchedPotential_le hV hbV0 hbV r) (hφb r)
   have hφL' : ∀ r : ℝ, ‖kgSwitchedPotential hV hbV0 hbV φ' r‖ ≤ L := fun r =>

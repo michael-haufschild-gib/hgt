@@ -26,7 +26,7 @@ namespace RHTower
 /-- Full retained square energy weighted by the number of unprocessed primes in each label. -/
 def mobiusDivisorArityEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
   ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (R.card : ℝ)*(mobiusDivisorSelectionFibre M P R)^2
+    (R.card : ℝ)*(mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
 
 private theorem mobiusDivisorSelectionPrimeFactors_subset (M : ℕ) :
     ∀ d ∈ mobiusDivisorSelectionIndices M,
@@ -69,7 +69,7 @@ theorem mobiusDivisorNonemptyEnergy_le_arity (M : ℕ) (P : Finset ℕ) :
   rw [mobiusDivisorNonemptyEnergy_eq_sum]
   unfold mobiusDivisorArityEnergy
   have hs := sum_erase_add (s := (mobiusDivisorSelectionPrimes M).powerset)
-    (f := fun R => (R.card : ℝ)*(mobiusDivisorSelectionFibre M P R)^2)
+    (f := fun R => (R.card : ℝ)*(mobiusDivisorSelectionFibre M P R)^(2 : ℕ))
     (a := ∅) (by simp)
   simp only [card_empty,Nat.cast_zero,zero_mul,add_zero] at hs
   rw [← hs]
@@ -100,8 +100,8 @@ theorem mobiusDivisorArityEnergy_le_log_mul_energy (M : ℕ) (P : Finset ℕ) :
   rw [mul_sum]
   apply sum_le_sum
   intro R hR
-  change (R.card:ℝ)*(mobiusDivisorSelectionFibre M P R)^2 ≤
-    (Nat.log 2 M:ℝ)*(mobiusDivisorSelectionFibre M P R)^2
+  change (R.card:ℝ)*(mobiusDivisorSelectionFibre M P R)^(2 : ℕ) ≤
+    (Nat.log 2 M:ℝ)*(mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
   by_cases hF : mobiusDivisorSelectionFibre M P R=0
   · simp [hF]
   · exact mul_le_mul_of_nonneg_right (by exact_mod_cast
@@ -109,7 +109,7 @@ theorem mobiusDivisorArityEnergy_le_log_mul_energy (M : ℕ) (P : Finset ℕ) :
 
 /-- The original actual arity budget has an unconditional quadratic-logarithmic ceiling. -/
 theorem mobiusDivisorArityEnergy_initial_le (M : ℕ) :
-    mobiusDivisorArityEnergy M ∅ ≤ 722*(Nat.log 2 M : ℝ)*(M:ℝ)^2 := by
+    mobiusDivisorArityEnergy M ∅ ≤ 722*(Nat.log 2 M : ℝ)*(M:ℝ)^(2 : ℕ) := by
   have h := mobiusDivisorArityEnergy_le_log_mul_energy M ∅
   rw [mobiusDivisorSelectionEnergy_empty] at h
   have hb := mul_le_mul_of_nonneg_left (sum_mobiusDivisorDilationChannel_sq_le_quadratic M)
@@ -122,7 +122,7 @@ theorem mobiusDivisorArityEnergy_insert (M : ℕ) (P : Finset ℕ) {p : ℕ}
     mobiusDivisorArityEnergy M (insert p P)-mobiusDivisorArityEnergy M P =
       mobiusDivisorArityCharge M P p-
         ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase p).powerset,
-          (mobiusDivisorSelectionFibre M P (insert p R))^2 := by
+          (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ) := by
   let U := mobiusDivisorSelectionPrimes M
   have split (f : Finset ℕ → ℝ) : (∑ R ∈ U.powerset,f R)=
       (∑ R ∈ (U.erase p).powerset,f R)+(∑ R ∈ (U.erase p).powerset,f (insert p R)) := by
@@ -136,7 +136,7 @@ theorem mobiusDivisorArityEnergy_insert (M : ℕ) (P : Finset ℕ) {p : ℕ}
   change (∑ R ∈ U.powerset, _)-(∑ R ∈ U.powerset, _)=_
   rw [split,split]
   have hz : (∑ R ∈ (U.erase p).powerset,
-      ((insert p R).card:ℝ)*(mobiusDivisorSelectionFibre M (insert p P) (insert p R))^2)=0 := by
+      ((insert p R).card:ℝ)*(mobiusDivisorSelectionFibre M (insert p P) (insert p R))^(2 : ℕ))=0 := by
     apply sum_eq_zero
     intro R _
     simp [mobiusDivisorSelectionFibre_insert]
@@ -158,7 +158,7 @@ def mobiusDivisorArityHistory (P : Finset ℕ) (q : ℕ → ℕ) : ℕ → Finse
 theorem mobiusDivisorArityEnergy_history_balance (M : ℕ) (P : Finset ℕ)
     (q : ℕ → ℕ) (n : ℕ) (hq : ∀ k<n,q k ∈ mobiusDivisorSelectionPrimes M) :
     (∑ k ∈ range n, ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset,
-      (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^2) =
+      (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^(2 : ℕ)) =
       mobiusDivisorArityEnergy M P-mobiusDivisorArityEnergy M (mobiusDivisorArityHistory P q n)+
         ∑ k ∈ range n,mobiusDivisorArityCharge M (mobiusDivisorArityHistory P q k) (q k) := by
   have h := Finset.sum_range_sub (fun k => mobiusDivisorArityEnergy M (mobiusDivisorArityHistory P q k)) n
@@ -166,7 +166,7 @@ theorem mobiusDivisorArityEnergy_history_balance (M : ℕ) (P : Finset ℕ)
       mobiusDivisorArityEnergy M (mobiusDivisorArityHistory P q k))) =
       (∑ k ∈ range n,mobiusDivisorArityCharge M (mobiusDivisorArityHistory P q k) (q k))-
       ∑ k ∈ range n, ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset,
-        (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^2 := by
+        (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^(2 : ℕ) := by
     rw [← sum_sub_distrib]
     apply sum_congr rfl
     intro k hk
@@ -179,7 +179,7 @@ theorem mobiusDivisorArityEnergy_history_balance (M : ℕ) (P : Finset ℕ)
 theorem mobiusDivisorArityEnergy_history_copied_budget (M : ℕ) (P : Finset ℕ)
     (q : ℕ → ℕ) (n : ℕ) (hq : ∀ k<n,q k ∈ mobiusDivisorSelectionPrimes M) :
     (∑ k ∈ range n, ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset,
-      (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^2) ≤
+      (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k) (insert (q k) R))^(2 : ℕ)) ≤
       mobiusDivisorArityEnergy M P+
         ∑ k ∈ range n,mobiusDivisorArityCharge M (mobiusDivisorArityHistory P q k) (q k) := by
   rw [mobiusDivisorArityEnergy_history_balance M P q n hq]
@@ -196,33 +196,33 @@ theorem mobiusDivisorArityEnergy_of_complete (M : ℕ) (P : Finset ℕ)
 
 /-- Exact two-coordinate deficit from twice the current arity energy. -/
 theorem twoCoordinateArity_next_sum (a b c : ℝ) :
-    (a+c)^2+(b+c)^2=2*(a^2+b^2+2*c^2)-((a-c)^2+(b-c)^2) := by ring
+    (a+c)^(2 : ℕ)+(b+c)^(2 : ℕ)=2*(a^(2 : ℕ)+b^(2 : ℕ)+2*c^(2 : ℕ))-((a-c)^(2 : ℕ)+(b-c)^(2 : ℕ)) := by ring
 
 /-- Every signed two-coordinate field admits a nonincreasing next arity energy. -/
 theorem twoCoordinateArity_min_le (a b c : ℝ) :
-    min ((a+c)^2) ((b+c)^2) ≤ a^2+b^2+2*c^2 := by
+    min ((a+c)^(2 : ℕ)) ((b+c)^(2 : ℕ)) ≤ a^(2 : ℕ)+b^(2 : ℕ)+2*c^(2 : ℕ) := by
   have h := twoCoordinateArity_next_sum a b c
-  have hl := min_le_left ((a+c)^2) ((b+c)^2)
-  have hr := min_le_right ((a+c)^2) ((b+c)^2)
+  have hl := min_le_left ((a+c)^(2 : ℕ)) ((b+c)^(2 : ℕ))
+  have hr := min_le_right ((a+c)^(2 : ℕ)) ((b+c)^(2 : ℕ))
   nlinarith only [h,hl,hr,sq_nonneg (a-c),sq_nonneg (b-c)]
 
 /-- Arity energy of three singleton, three pair, and one triple coefficient. -/
 def threeCoordinateArityEnergy (a b c d e f g : ℝ) : ℝ :=
-  a^2+b^2+c^2+2*(d^2+e^2+f^2)+3*g^2
+  a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+2*(d^(2 : ℕ)+e^(2 : ℕ)+f^(2 : ℕ))+3*g^(2 : ℕ)
 
 /-- Least arity energy among the three literal next coordinate mergers. -/
 def threeCoordinateArityNextMinimum (a b c d e f g : ℝ) : ℝ :=
-  min ((b+d)^2+(c+e)^2+2*(f+g)^2)
-    (min ((a+d)^2+(c+f)^2+2*(e+g)^2) ((a+e)^2+(b+f)^2+2*(d+g)^2))
+  min ((b+d)^(2 : ℕ)+(c+e)^(2 : ℕ)+2*(f+g)^(2 : ℕ))
+    (min ((a+d)^(2 : ℕ)+(c+f)^(2 : ℕ)+2*(e+g)^(2 : ℕ)) ((a+e)^(2 : ℕ)+(b+f)^(2 : ℕ)+2*(d+g)^(2 : ℕ)))
 
 /-- Exact three-coordinate deficit as weighted squares of adjacent-label differences. -/
 theorem threeCoordinateArity_next_sum (a b c d e f g : ℝ) :
-    ((b+d)^2+(c+e)^2+2*(f+g)^2)+
-      ((a+d)^2+(c+f)^2+2*(e+g)^2)+
-      ((a+e)^2+(b+f)^2+2*(d+g)^2) =
+    ((b+d)^(2 : ℕ)+(c+e)^(2 : ℕ)+2*(f+g)^(2 : ℕ))+
+      ((a+d)^(2 : ℕ)+(c+f)^(2 : ℕ)+2*(e+g)^(2 : ℕ))+
+      ((a+e)^(2 : ℕ)+(b+f)^(2 : ℕ)+2*(d+g)^(2 : ℕ)) =
     4*threeCoordinateArityEnergy a b c d e f g-
-      ((a-d)^2+(a-e)^2+(b-d)^2+(b-f)^2+(c-e)^2+(c-f)^2+
-        2*((d-g)^2+(e-g)^2+(f-g)^2)) := by
+      ((a-d)^(2 : ℕ)+(a-e)^(2 : ℕ)+(b-d)^(2 : ℕ)+(b-f)^(2 : ℕ)+(c-e)^(2 : ℕ)+(c-f)^(2 : ℕ)+
+        2*((d-g)^(2 : ℕ)+(e-g)^(2 : ℕ)+(f-g)^(2 : ℕ))) := by
   unfold threeCoordinateArityEnergy
   ring
 
@@ -230,12 +230,12 @@ theorem threeCoordinateArity_next_sum (a b c d e f g : ℝ) :
 theorem threeCoordinateArity_min_le (a b c d e f g : ℝ) :
     threeCoordinateArityNextMinimum a b c d e f g ≤ (4/3)*threeCoordinateArityEnergy a b c d e f g := by
   have h := threeCoordinateArity_next_sum a b c d e f g
-  have h1 := min_le_left ((b+d)^2+(c+e)^2+2*(f+g)^2)
-    (min ((a+d)^2+(c+f)^2+2*(e+g)^2) ((a+e)^2+(b+f)^2+2*(d+g)^2))
-  have h2 := (min_le_right ((b+d)^2+(c+e)^2+2*(f+g)^2)
-    (min ((a+d)^2+(c+f)^2+2*(e+g)^2) ((a+e)^2+(b+f)^2+2*(d+g)^2))).trans (min_le_left _ _)
-  have h3 := (min_le_right ((b+d)^2+(c+e)^2+2*(f+g)^2)
-    (min ((a+d)^2+(c+f)^2+2*(e+g)^2) ((a+e)^2+(b+f)^2+2*(d+g)^2))).trans (min_le_right _ _)
+  have h1 := min_le_left ((b+d)^(2 : ℕ)+(c+e)^(2 : ℕ)+2*(f+g)^(2 : ℕ))
+    (min ((a+d)^(2 : ℕ)+(c+f)^(2 : ℕ)+2*(e+g)^(2 : ℕ)) ((a+e)^(2 : ℕ)+(b+f)^(2 : ℕ)+2*(d+g)^(2 : ℕ)))
+  have h2 := (min_le_right ((b+d)^(2 : ℕ)+(c+e)^(2 : ℕ)+2*(f+g)^(2 : ℕ))
+    (min ((a+d)^(2 : ℕ)+(c+f)^(2 : ℕ)+2*(e+g)^(2 : ℕ)) ((a+e)^(2 : ℕ)+(b+f)^(2 : ℕ)+2*(d+g)^(2 : ℕ)))).trans (min_le_left _ _)
+  have h3 := (min_le_right ((b+d)^(2 : ℕ)+(c+e)^(2 : ℕ)+2*(f+g)^(2 : ℕ))
+    (min ((a+d)^(2 : ℕ)+(c+f)^(2 : ℕ)+2*(e+g)^(2 : ℕ)) ((a+e)^(2 : ℕ)+(b+f)^(2 : ℕ)+2*(d+g)^(2 : ℕ)))).trans (min_le_right _ _)
   unfold threeCoordinateArityNextMinimum
   nlinarith only [h,h1,h2,h3,sq_nonneg (a-d),sq_nonneg (a-e),sq_nonneg (b-d),
     sq_nonneg (b-f),sq_nonneg (c-e),sq_nonneg (c-f),sq_nonneg (d-g),sq_nonneg (e-g),sq_nonneg (f-g)]

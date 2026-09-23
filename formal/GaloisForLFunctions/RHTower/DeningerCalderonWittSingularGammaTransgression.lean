@@ -171,7 +171,7 @@ def deningerCalderonWittWeightedNonlocalAlternating
 /-- Linearized weighted nonlocal operation on the exterior square. -/
 def deningerCalderonWittWeightedNonlocalExterior
     (c : ℂ) (p q : Nat.Primes) :
-    (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
       DeningerCalderonWittAlgebraicDegreeTwo q :=
   exteriorPower.alternatingMapLinearEquiv
     (deningerCalderonWittWeightedNonlocalAlternating c p q)
@@ -735,7 +735,7 @@ Relative source class for the concrete reflection-balanced Gamma sector.
 -/
 def deningerCalderonWittGammaRelativeBoundaryClass
     (a : ℝ)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
   deningerCalderonWittGlobalRelativeBoundaryClass
     (deningerCalderonWittGammaAdmittedHodgeSector a) w
 
@@ -745,7 +745,7 @@ canonical Green primitive has zero singular reflection-odd Gamma transport.
 -/
 theorem deningerCalderonWittGammaRelativeBoundaryClass_eq_zero_iff
     (a : ℝ)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle :
       deningerCalderonWittAlgebraicGlobalExteriorCup w = 0) :
     deningerCalderonWittGammaRelativeBoundaryClass a w = 0 ↔

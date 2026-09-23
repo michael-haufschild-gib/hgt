@@ -36,7 +36,7 @@ def gammaSewnMobiusContinuousApertureCubicDefectMetric
 theorem gammaSewnMobiusCubicDefectRadialGain_eq_sq_mul_gain
     (x : ℝ) (p : Nat.Primes) :
     gammaSewnMobiusCubicDefectRadialGain x p =
-      (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 *
+      (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) *
         gammaSewnMobiusValuationQuadraticDefectGain x p := by
   exact one_sub_gammaSewnMobiusValuationContractionMultiplier_eq_sq_mul_gain x p
 
@@ -104,7 +104,7 @@ theorem gammaSewnMobiusContinuousApertureCubicDefectMetric_self_pos
 radial masses: every normalized aperture correlation is exactly preserved. -/
 theorem gammaSewnMobiusContinuousApertureCubicDefect_metricRatio_eq_correlation
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (p : Nat.Primes) :
-    gammaSewnMobiusContinuousApertureCubicDefectMetric a b p ^ 2 /
+    gammaSewnMobiusContinuousApertureCubicDefectMetric a b p ^ (2 : ℕ) /
         (gammaSewnMobiusContinuousApertureCubicDefectMetric a a p *
           gammaSewnMobiusContinuousApertureCubicDefectMetric b b p) =
       xiMobiusPrimeContinuousApertureNormalizedCorrelationSq a b p := by
@@ -123,13 +123,13 @@ squared. -/
 theorem one_sub_gammaSewnMobiusContinuousApertureCubicDefect_metricRatio
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (p : Nat.Primes) :
     1 -
-        gammaSewnMobiusContinuousApertureCubicDefectMetric a b p ^ 2 /
+        gammaSewnMobiusContinuousApertureCubicDefectMetric a b p ^ (2 : ℕ) /
           (gammaSewnMobiusContinuousApertureCubicDefectMetric a a p *
             gammaSewnMobiusContinuousApertureCubicDefectMetric b b p) =
       ((xiMobiusContinuousApertureDiskNode a p -
           xiMobiusContinuousApertureDiskNode b p) /
         (1 - xiMobiusContinuousApertureDiskNode a p *
-          xiMobiusContinuousApertureDiskNode b p)) ^ 2 := by
+          xiMobiusContinuousApertureDiskNode b p)) ^ (2 : ℕ) := by
   rw [gammaSewnMobiusContinuousApertureCubicDefect_metricRatio_eq_correlation ha hb,
     one_sub_xiMobiusPrimeContinuousApertureNormalizedCorrelationSq ha hb]
 

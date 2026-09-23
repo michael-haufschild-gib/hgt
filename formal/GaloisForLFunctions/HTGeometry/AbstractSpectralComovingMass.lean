@@ -32,7 +32,7 @@ theorem lt_re_mass_of_base_half {a : ℝ} (ha : 1 / 2 ≤ a)
     a < ((F.mass ha).pt i).re := by
   have hR : 1 / 2 ≤ (F.pt i).re := hbase.trans (F.base_le i)
   have hJ := F.abs_im_lt i
-  have hgap : 0 < (F.pt i).re ^ 2 - (F.pt i).im ^ 2 := by
+  have hgap : 0 < (F.pt i).re ^ (2 : ℕ) - (F.pt i).im ^ (2 : ℕ) := by
     nlinarith [sq_abs (F.pt i).im, abs_nonneg ((F.pt i).im)]
   have harg := F.massArg_re a i
   have hle := re_le_sq_csqrtRe (F.massArg_re_pos ha i)

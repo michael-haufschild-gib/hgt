@@ -406,7 +406,7 @@ def endpointCanonicalPathReturnProbability
     {T : ℝ} (hT : 0 < T) (q : ℕ)
     (c : ℂ) (x : ClockSpace (endpointN q)) : ℝ :=
   ‖inner ℂ (fixedClock (endpointN q))
-      (endpointCanonicalPathState hT q c x)‖ ^ 2
+      (endpointCanonicalPathState hT q c x)‖ ^ (2 : ℕ)
 
 theorem endpointCanonicalPathReturnProbability_eq
     {T : ℝ} (hT : 0 < T) (q : ℕ)
@@ -416,7 +416,7 @@ theorem endpointCanonicalPathReturnProbability_eq
       endpointCanonicalKrylovUnitary hT q
           (fixedClock (endpointN q)) = c • x₀) :
     endpointCanonicalPathReturnProbability hT q c x =
-      ‖inner ℂ x₀ x‖ ^ 2 := by
+      ‖inner ℂ x₀ x‖ ^ (2 : ℕ) := by
   let U := endpointCanonicalKrylovUnitary hT q
   have hcc : star c * c = 1 := by
     change (starRingEnd ℂ) c * c = 1
@@ -636,7 +636,7 @@ def FixedEndpointPathModel.stateAt
 def FixedEndpointPathModel.returnProbability
     {T : ℝ} {n : ℕ} {θ : ℝ}
     (M : FixedEndpointPathModel T n θ) (t : ℝ) : ℝ :=
-  ‖inner ℂ (fixedClock n) (M.stateAt t)‖ ^ 2
+  ‖inner ℂ (fixedClock n) (M.stateAt t)‖ ^ (2 : ℕ)
 
 theorem FixedEndpointPathModel.selfAdjoint
     {T : ℝ} {n : ℕ} {θ : ℝ}

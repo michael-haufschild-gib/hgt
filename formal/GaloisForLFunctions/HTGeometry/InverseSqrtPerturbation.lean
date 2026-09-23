@@ -30,7 +30,7 @@ theorem abs_inv_sqrt_one_sub_sub_one_le {y : ℝ} (hy : |y| ≤ 1 / 2) :
   have hy2 : y ≤ 1 / 2 := (abs_le.mp hy).2
   have hpos : (1:ℝ) / 2 ≤ 1 - y := by linarith
   have hspos : 0 < Real.sqrt (1 - y) := Real.sqrt_pos.mpr (by linarith)
-  have hsq : Real.sqrt (1 - y) ^ 2 = 1 - y := Real.sq_sqrt (by linarith)
+  have hsq : Real.sqrt (1 - y) ^ (2 : ℕ) = 1 - y := Real.sq_sqrt (by linarith)
   have hslow : (1:ℝ) / 2 ≤ Real.sqrt (1 - y) := by
     nlinarith [hsq, hspos, hpos]
   have hprod : (1:ℝ) ≤ Real.sqrt (1 - y) * (1 + Real.sqrt (1 - y)) := by

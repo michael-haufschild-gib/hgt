@@ -19,7 +19,7 @@ noncomputable section
 /-- Explicit Stirling main term for the real archimedean logarithmic derivative. -/
 def primeArchHighFrequencyMainTerm (s : ℂ) : ℝ :=
   -Real.log Real.pi / 2 +
-    (1 / 4) * Real.log ((s.re / 2) ^ 2 + (s.im / 2) ^ 2)
+    (1 / 4) * Real.log ((s.re / 2) ^ (2 : ℕ) + (s.im / 2) ^ (2 : ℕ))
 
 /-- On the fourth-trace tail, the real archimedean logarithmic derivative stays within four
 of its explicit Stirling main term, uniformly across the open left critical half-strip. -/
@@ -37,15 +37,15 @@ theorem abs_re_logDeriv_archFactor_sub_primeArchHighFrequencyMainTerm_le_four
       simp [σ, t, Complex.mul_re, Complex.mul_im]
   have hdig := re_digamma_vertical_bound_uncond hσ ht
   rw [← hcoord] at hdig
-  have htSq : 1 ≤ t ^ 2 := one_le_pow₀ ht1
-  have htTerm : 1 / t ^ 2 ≤ 1 :=
+  have htSq : 1 ≤ t ^ (2 : ℕ) := one_le_pow₀ ht1
+  have htTerm : 1 / t ^ (2 : ℕ) ≤ 1 :=
     (div_le_one (sq_pos_of_pos ht)).2 htSq
   have hpiTerm : Real.pi / (2 * t) ≤ 2 := by
     apply (div_le_iff₀ (mul_pos (by norm_num) ht)).2
     nlinarith [Real.pi_lt_four]
   have hdigThree :
       |(Complex.digamma (s / 2)).re -
-          (1 / 2) * Real.log (σ ^ 2 + t ^ 2)| ≤ 3 :=
+          (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ))| ≤ 3 :=
     hdig.trans (by linarith)
   have hsImOne : 1 ≤ s.im := by linarith
   have hsNorm : 1 ≤ ‖s‖ := by
@@ -79,7 +79,7 @@ theorem abs_re_logDeriv_archFactor_sub_primeArchHighFrequencyMainTerm_le_four
       (logDeriv archFactor s).re - primeArchHighFrequencyMainTerm s =
         (1 / s).re + (1 / (s - 1)).re +
           (1 / 2) * ((Complex.digamma (s / 2)).re -
-            (1 / 2) * Real.log (σ ^ 2 + t ^ 2)) := by
+            (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ))) := by
     rw [logDeriv_archFactor_closed hsRe hs0 hs1]
     rw [GaloisForLFunctions.gammaRealLogConnection]
     dsimp [primeArchHighFrequencyMainTerm, σ, t]
@@ -91,14 +91,14 @@ theorem abs_re_logDeriv_archFactor_sub_primeArchHighFrequencyMainTerm_le_four
   calc
     |(1 / s).re + (1 / (s - 1)).re +
         (1 / 2) * ((Complex.digamma (s / 2)).re -
-          (1 / 2) * Real.log (σ ^ 2 + t ^ 2))| ≤
+          (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)))| ≤
         |(1 / s).re| + |(1 / (s - 1)).re| +
           |(1 / 2) * ((Complex.digamma (s / 2)).re -
-            (1 / 2) * Real.log (σ ^ 2 + t ^ 2))| := by
+            (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)))| := by
       exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     _ = |(1 / s).re| + |(1 / (s - 1)).re| +
         (1 / 2) * |(Complex.digamma (s / 2)).re -
-          (1 / 2) * Real.log (σ ^ 2 + t ^ 2)| := by
+          (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ))| := by
       rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)]
     _ ≤ 1 + 1 + (1 / 2) * 3 := by
       gcongr
@@ -175,7 +175,7 @@ theorem exists_gaussianRat_infinitePrimeFlux_re_lt_archMain_add_of_not_rh
 /-- Height-only Stirling allowance.  Dependence on the horizontal coordinate is uniformly
 bounded on the fourth-trace tail and is therefore unnecessary in the canonical endpoint. -/
 def primeArchHighFrequencyHeightMainTerm (t : ℝ) : ℝ :=
-  -Real.log Real.pi / 2 + (1 / 4) * Real.log ((t / 2) ^ 2)
+  -Real.log Real.pi / 2 + (1 / 4) * Real.log ((t / 2) ^ (2 : ℕ))
 
 /-- The full two-variable Stirling term exceeds its height-only part by at most one throughout
 the relevant strip. -/
@@ -191,15 +191,15 @@ theorem primeArchHighFrequencyMainTerm_sub_heightMainTerm_nonneg_le_one
   have hx : 0 ≤ x := by dsimp [x]; linarith
   have hy : 0 < y := by dsimp [y]; linarith
   have hxy : x ≤ y := by dsimp [x, y]; linarith
-  have hsq : x ^ 2 ≤ y ^ 2 := by
+  have hsq : x ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hxy) (add_nonneg hx hy.le)]
-  have hySq : 0 < y ^ 2 := sq_pos_of_pos hy
-  have hsumPos : 0 < x ^ 2 + y ^ 2 := by positivity
-  have hlower : y ^ 2 ≤ x ^ 2 + y ^ 2 := by nlinarith [sq_nonneg x]
-  have hupper : x ^ 2 + y ^ 2 ≤ 2 * y ^ 2 := by linarith
-  have hlogLower : Real.log (y ^ 2) ≤ Real.log (x ^ 2 + y ^ 2) :=
+  have hySq : 0 < y ^ (2 : ℕ) := sq_pos_of_pos hy
+  have hsumPos : 0 < x ^ (2 : ℕ) + y ^ (2 : ℕ) := by positivity
+  have hlower : y ^ (2 : ℕ) ≤ x ^ (2 : ℕ) + y ^ (2 : ℕ) := by nlinarith [sq_nonneg x]
+  have hupper : x ^ (2 : ℕ) + y ^ (2 : ℕ) ≤ 2 * y ^ (2 : ℕ) := by linarith
+  have hlogLower : Real.log (y ^ (2 : ℕ)) ≤ Real.log (x ^ (2 : ℕ) + y ^ (2 : ℕ)) :=
     Real.strictMonoOn_log.monotoneOn hySq hsumPos hlower
-  have hlogUpper : Real.log (x ^ 2 + y ^ 2) ≤ Real.log (2 * y ^ 2) :=
+  have hlogUpper : Real.log (x ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ Real.log (2 * y ^ (2 : ℕ)) :=
     Real.strictMonoOn_log.monotoneOn hsumPos (mul_pos (by norm_num) hySq) hupper
   rw [Real.log_mul (by norm_num) (ne_of_gt hySq)] at hlogUpper
   have hlogTwo : Real.log 2 ≤ 1 := by

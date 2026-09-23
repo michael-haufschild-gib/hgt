@@ -26,7 +26,7 @@ namespace GaloisForLFunctions.HTGeometry
 def einastoLogCompactness (l a t : ℝ) : ℝ := 2 * einastoMass 0 l a (exp t) / exp t
 
 theorem einastoLogCompactness_core (l a t : ℝ) :
-    einastoLogCompactness l a t = 2 * exp t ^ 2 * einastoCore 0 l a (exp t) := by
+    einastoLogCompactness l a t = 2 * exp t ^ (2 : ℕ) * einastoCore 0 l a (exp t) := by
   rw [einastoLogCompactness, einastoMass_core]
   field_simp
 
@@ -288,7 +288,7 @@ theorem einastoCore_at_compactness_peak (l a : ℝ) :
   let z := einastoBalanceZeroLogRadius 0 l a
   have hq := einastoBalanceZeroLogRadius_eq 0 l a
   rw [einastoHorizonBalance, einastoMass_core] at hq
-  have he : exp z ^ 3 * (4 * Real.pi * einastoDensity 0 l a (exp z) - einastoCore 0 l a (exp z)) = 0 := by
+  have he : exp z ^ (3 : ℕ) * (4 * Real.pi * einastoDensity 0 l a (exp z) - einastoCore 0 l a (exp z)) = 0 := by
     dsimp [z]
     nlinarith [hq]
   have hr := (mul_eq_zero.mp he).resolve_left (pow_ne_zero 3 (exp_ne_zero z))
@@ -307,7 +307,7 @@ theorem einastoMetric_critical_second_derivative_pos (l a : ℝ) :
     rw [show einastoBalanceCriticalLogRadius l a + (z - einastoBalanceCriticalLogRadius l a) = z by ring] at h
     exact h
   have he : deriv (deriv (einastoMetric d l a)) (exp z) =
-      -2 * exp d * deriv (einastoHorizonBalance 0 l a) (exp z) / exp z ^ 2 := by
+      -2 * exp d * deriv (einastoHorizonBalance 0 l a) (exp z) / exp z ^ (2 : ℕ) := by
     rw [(einastoMetric_second_derivative d l a z).deriv,
       einastoCore_amplitude, einastoCore_at_compactness_peak,
       einastoSlope, einastoDensity_amplitude d l a (exp z),

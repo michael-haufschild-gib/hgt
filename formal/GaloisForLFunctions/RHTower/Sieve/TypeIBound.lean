@@ -28,7 +28,7 @@ theorem norm_sum_ndExp_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {d : ℕ} (hd : 
     (hlam : nearDiagonalLambda T (r / d) (A : ℝ) ≤ 1) :
     ‖∑ m ∈ Finset.Ico A B, ndExp T r m d‖
       ≤ 2500 * Real.sqrt (T * (r / d) / (36 * Real.pi * A))
-        + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ 3) := by
+        + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
   have hd0 : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd
   rw [sum_ndExp_eq_dilated]
   exact norm_dilated_nearDiagonalSum_le hT hr hd0 A B hA hrA hlam
@@ -40,7 +40,7 @@ theorem norm_typeI_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) (Ds : Finset ℕ) (a
     ‖∑ d ∈ Ds, a d * ∑ m ∈ Finset.Ico A B, ndExp T r m d‖
       ≤ ∑ d ∈ Ds, ‖a d‖
           * (2500 * Real.sqrt (T * (r / d) / (36 * Real.pi * A))
-              + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ 3)) := by
+              + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ))) := by
   refine (norm_sum_le _ _).trans ?_
   refine Finset.sum_le_sum fun d hdmem => ?_
   obtain ⟨hd1, hrA, hlam⟩ := hd d hdmem

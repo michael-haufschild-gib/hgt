@@ -19,7 +19,7 @@ def thetaCuspNativeEvenFourSchur (x : ℝ) : ℝ :=
 
 /-- Fixed source-selected positive coefficient; it has no aperture or sample dependence. -/
 def thetaCuspNativeEvenCompensationCoefficient : ℝ :=
-  (|thetaCuspNativeEvenFourSchur 0| + thetaCuspFullSource 0^2) / thetaCuspFullSource 0^2
+  (|thetaCuspNativeEvenFourSchur 0| + thetaCuspFullSource 0^(2 : ℕ)) / thetaCuspFullSource 0^(2 : ℕ)
 
 /-- The exact corrected source matrix is strict precisely when its one remaining scalar is. -/
 theorem thetaCuspNativeEvenFourCompensated_posDef_iff
@@ -61,7 +61,7 @@ theorem thetaCuspNativeEvenFourCompensated_zero_posDef :
   rw [thetaCuspNativeEvenFourCompensated_posDef_iff le_rfl]
   have hp := sq_pos_of_pos (thetaCuspFullSource_pos_all 0)
   have he : thetaCuspNativeEvenCompensationCoefficient*thetaCuspCenterCompensationSource 0 =
-      3*|thetaCuspNativeEvenFourSchur 0|+3*thetaCuspFullSource 0^2 := by
+      3*|thetaCuspNativeEvenFourSchur 0|+3*thetaCuspFullSource 0^(2 : ℕ) := by
     unfold thetaCuspNativeEvenCompensationCoefficient thetaCuspCenterCompensationSource
     simp only [mul_zero, zero_mul, add_zero]
     field_simp [(thetaCuspFullSource_pos_all 0).ne']

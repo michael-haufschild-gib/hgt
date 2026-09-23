@@ -10,7 +10,7 @@ for any entire `g` and any finite packet of divisor copies there is an admissibl
 
 `rectIntegral (g * continuedPrimeArchSourceRelativeTrace) = 2 pi i * sum over enclosed copies of g`.
 
-Instantiating it at the centered Gaussian--Hermite test `z ^ (2n) * exp (-t z^2)` turns the
+Instantiating it at the centered Gaussian--Hermite test `z ^ (2n) * exp (-t z^(2 : ℕ))` turns the
 right-hand side into a partial sum of `xiGaussianHeatMoment n t`, whose summability is already in
 the corpus.  Cofinality of admissible rectangles then gives: **the normalized prime--archimedean
 contour of the Gaussian test approximates the Gaussian heat moment to arbitrary accuracy.**
@@ -30,7 +30,7 @@ noncomputable section
 
 /-- The centered Gaussian–Hermite test: the coordinate in which the Xi divisor lives. -/
 def xiGaussianTestC (t : ℝ) (n : ℕ) (z : ℂ) : ℂ :=
-  z ^ (2 * n) * Complex.exp (-(t : ℂ) * z ^ 2)
+  z ^ (2 * n) * Complex.exp (-(t : ℂ) * z ^ (2 : ℕ))
 
 theorem differentiable_xiGaussianTestC (t : ℝ) (n : ℕ) :
     Differentiable ℂ (xiGaussianTestC t n) := by
@@ -45,7 +45,7 @@ theorem analyticOnNhd_xiGaussianTestC (t : ℝ) (n : ℕ) :
 /-- On the divisor the centered test is exactly the Gaussian heat monomial. -/
 theorem xiGaussianTestC_spectralPoint (t : ℝ) (n : ℕ) (q : XiZeroCopy) :
     xiGaussianTestC t n (xiSpectralPoint q) =
-      (xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm t q := by
+      (xiSpectralPoint q ^ (2 : ℕ)) ^ n * xiGaussianHeatTerm t q := by
   rw [xiGaussianTestC, xiGaussianHeatTerm, pow_mul]
 
 /-- **The Gaussian source contour reproduces the enclosed divisor values.**  Instantiation of the
@@ -75,7 +75,7 @@ theorem exists_admissible_gaussianSource_contour_approximates_heatMoment
         (xiGaussianHeatMoment n t) < epsilon := by
   classical
   set f : XiZeroCopy → ℂ := fun q =>
-    (xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm t q with hf
+    (xiSpectralPoint q ^ (2 : ℕ)) ^ n * xiGaussianHeatTerm t q with hf
   have hsum : Summable f := summable_xiGaussianHeatMonomialTerm ht n
   have hball : Metric.ball (∑' q, f q) epsilon ∈ nhds (∑' q, f q) :=
     Metric.ball_mem_nhds _ hepsilon

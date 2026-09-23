@@ -27,13 +27,13 @@ theorem sum_log_weight_sqrt_floor_le (N : ℕ) (hN : 1 ≤ N) :
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   set q : ℝ := Real.sqrt (Real.sqrt (N : ℝ)) with hq
   have hq0 : 0 ≤ q := Real.sqrt_nonneg _
-  have hq4 : q ^ 4 = (N : ℝ) := by
-    rw [hq, show (Real.sqrt (Real.sqrt (N : ℝ))) ^ 4
-      = ((Real.sqrt (Real.sqrt (N : ℝ))) ^ 2) ^ 2 from by ring,
+  have hq4 : q ^ (4 : ℕ) = (N : ℝ) := by
+    rw [hq, show (Real.sqrt (Real.sqrt (N : ℝ))) ^ (4 : ℕ)
+      = ((Real.sqrt (Real.sqrt (N : ℝ))) ^ (2 : ℕ)) ^ (2 : ℕ) from by ring,
       Real.sq_sqrt (Real.sqrt_nonneg _), Real.sq_sqrt hN0.le]
   have hterm : ∀ n ∈ Finset.Icc 1 N,
       (Real.log N - Real.log n) * Real.sqrt ((N / n : ℕ) : ℝ)
-        ≤ 4 * q ^ 3 * (1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3) := by
+        ≤ 4 * q ^ (3 : ℕ) * (1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ)) := by
     intro n hn
     rw [Finset.mem_Icc] at hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
@@ -63,11 +63,11 @@ theorem sum_log_weight_sqrt_floor_le (N : ℕ) (hN : 1 ≤ N) :
       exact_mod_cast Nat.div_mul_le_self N n
     have hfloor : Real.sqrt ((N / n : ℕ) : ℝ) ≤ Real.sqrt ((N : ℝ) / n) :=
       Real.sqrt_le_sqrt hfloorle
-    have hsq : Real.sqrt ((N : ℝ) / n) = r ^ 2 := by
+    have hsq : Real.sqrt ((N : ℝ) / n) = r ^ (2 : ℕ) := by
       rw [hr, Real.sq_sqrt (Real.sqrt_nonneg _)]
     -- product bound
     have hprod : (Real.log N - Real.log n) * Real.sqrt ((N / n : ℕ) : ℝ)
-        ≤ 4 * r * r ^ 2 := by
+        ≤ 4 * r * r ^ (2 : ℕ) := by
       have := mul_le_mul hlog hfloor (Real.sqrt_nonneg _)
         (by positivity : (0 : ℝ) ≤ 4 * r)
       rw [hsq] at this
@@ -75,7 +75,7 @@ theorem sum_log_weight_sqrt_floor_le (N : ℕ) (hN : 1 ≤ N) :
     -- split the quarter root of the quotient
     have hrdiv : r = q / qn := by
       rw [hr, hq, hqn, Real.sqrt_div hN0.le, Real.sqrt_div (Real.sqrt_nonneg _)]
-    have hfin : 4 * r * r ^ 2 = 4 * q ^ 3 * (1 / qn ^ 3) := by
+    have hfin : 4 * r * r ^ (2 : ℕ) = 4 * q ^ (3 : ℕ) * (1 / qn ^ (3 : ℕ)) := by
       rw [hrdiv]
       field_simp
     rw [hfin] at hprod
@@ -83,17 +83,17 @@ theorem sum_log_weight_sqrt_floor_le (N : ℕ) (hN : 1 ≤ N) :
   calc ∑ n ∈ Finset.Icc 1 N,
         (Real.log N - Real.log n) * Real.sqrt ((N / n : ℕ) : ℝ)
       ≤ ∑ n ∈ Finset.Icc 1 N,
-          4 * q ^ 3 * (1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3) :=
+          4 * q ^ (3 : ℕ) * (1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ)) :=
         Finset.sum_le_sum hterm
-    _ = 4 * q ^ 3 * ∑ n ∈ Finset.Icc 1 N,
-          1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3 := by
+    _ = 4 * q ^ (3 : ℕ) * ∑ n ∈ Finset.Icc 1 N,
+          1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ) := by
         rw [Finset.mul_sum]
-    _ ≤ 4 * q ^ 3 * (4 * q) := by
+    _ ≤ 4 * q ^ (3 : ℕ) * (4 * q) := by
         apply mul_le_mul_of_nonneg_left _ (by positivity)
         have := HTGeometry.sum_inv_quarter_root_cube_le N
         rw [← hq] at this
         exact this
     _ = 16 * N := by
-        rw [show (4 : ℝ) * q ^ 3 * (4 * q) = 16 * q ^ 4 from by ring, hq4]
+        rw [show (4 : ℝ) * q ^ (3 : ℕ) * (4 * q) = 16 * q ^ (4 : ℕ) from by ring, hq4]
 
 end RHTower

@@ -31,26 +31,26 @@ theorem reApplyInnerSelf_sub (A B : E →L[𝕜] E) (x : E) :
     inner_sub_left, map_sub]
 
 theorem abs_reApplyInnerSelf_le (D : E →L[𝕜] E) (x : E) :
-    |D.reApplyInnerSelf x| ≤ ‖D‖ * ‖x‖ ^ 2 := by
+    |D.reApplyInnerSelf x| ≤ ‖D‖ * ‖x‖ ^ (2 : ℕ) := by
   rw [ContinuousLinearMap.reApplyInnerSelf_apply]
   calc |RCLike.re (inner 𝕜 (D x) x)| ≤ ‖inner 𝕜 (D x) x‖ := RCLike.abs_re_le_norm _
     _ ≤ ‖D x‖ * ‖x‖ := norm_inner_le_norm _ _
     _ ≤ (‖D‖ * ‖x‖) * ‖x‖ := mul_le_mul_of_nonneg_right (D.le_opNorm x) (norm_nonneg x)
-    _ = ‖D‖ * ‖x‖ ^ 2 := by ring
+    _ = ‖D‖ * ‖x‖ ^ (2 : ℕ) := by ring
 
 /-! ## Positivity survives a small perturbation -/
 
 /-- **Equation (8), operator form.**  A uniformly positive operator stays positive definite under
 both perturbations by an operator of smaller norm. -/
 theorem reApplyInnerSelf_pos_of_perturb {W₀ D : E →L[𝕜] E} {c : ℝ}
-    (hW₀ : ∀ x : E, c * ‖x‖ ^ 2 ≤ W₀.reApplyInnerSelf x) (hlt : ‖D‖ < c)
+    (hW₀ : ∀ x : E, c * ‖x‖ ^ (2 : ℕ) ≤ W₀.reApplyInnerSelf x) (hlt : ‖D‖ < c)
     {x : E} (hx : x ≠ 0) :
     0 < (W₀ + D).reApplyInnerSelf x ∧ 0 < (W₀ - D).reApplyInnerSelf x := by
   have hxn : 0 < ‖x‖ := norm_pos_iff.mpr hx
-  have hxsq : 0 < ‖x‖ ^ 2 := by positivity
+  have hxsq : 0 < ‖x‖ ^ (2 : ℕ) := by positivity
   have h1 := hW₀ x
   have habs := abs_le.mp (abs_reApplyInnerSelf_le D x)
-  have hgap : ‖D‖ * ‖x‖ ^ 2 < c * ‖x‖ ^ 2 := by
+  have hgap : ‖D‖ * ‖x‖ ^ (2 : ℕ) < c * ‖x‖ ^ (2 : ℕ) := by
     exact mul_lt_mul_of_pos_right hlt hxsq
   constructor
   · rw [reApplyInnerSelf_add]
@@ -61,7 +61,7 @@ theorem reApplyInnerSelf_pos_of_perturb {W₀ D : E →L[𝕜] E} {c : ℝ}
 /-- **Equation (8).**  Both `W₀ ± εΔ` are positive definite once `ε‖Δ‖` is below the positivity
 constant of `W₀`. -/
 theorem reApplyInnerSelf_pos_of_smul_perturb {W₀ Δ : E →L[𝕜] E} {c ε : ℝ}
-    (hW₀ : ∀ x : E, c * ‖x‖ ^ 2 ≤ W₀.reApplyInnerSelf x) (hε : 0 < ε) (hlt : ε * ‖Δ‖ < c)
+    (hW₀ : ∀ x : E, c * ‖x‖ ^ (2 : ℕ) ≤ W₀.reApplyInnerSelf x) (hε : 0 < ε) (hlt : ε * ‖Δ‖ < c)
     {x : E} (hx : x ≠ 0) :
     0 < (W₀ + (ε : 𝕜) • Δ).reApplyInnerSelf x
       ∧ 0 < (W₀ - (ε : 𝕜) • Δ).reApplyInnerSelf x := by
@@ -108,7 +108,7 @@ theorem continuous_reApplyInnerSelf (W : E →L[𝕜] E) :
 positive definite operator dominates a positive multiple of the squared norm. -/
 theorem exists_uniform_positive [FiniteDimensional 𝕜 E] {W : E →L[𝕜] E}
     (hW : ∀ x : E, x ≠ 0 → 0 < W.reApplyInnerSelf x) :
-    ∃ c : ℝ, 0 < c ∧ ∀ x : E, c * ‖x‖ ^ 2 ≤ W.reApplyInnerSelf x := by
+    ∃ c : ℝ, 0 < c ∧ ∀ x : E, c * ‖x‖ ^ (2 : ℕ) ≤ W.reApplyInnerSelf x := by
   rcases subsingleton_or_nontrivial E with hs | hn
   · refine ⟨1, one_pos, fun x => ?_⟩
     have hx : x = 0 := Subsingleton.elim x 0
@@ -140,12 +140,12 @@ theorem exists_uniform_positive [FiniteDimensional 𝕜 E] {W : E →L[𝕜] E}
       have hymem : y ∈ Metric.sphere (0 : E) 1 := by
         simpa using hynorm
       have hmin : W.reApplyInnerSelf x₀ ≤ W.reApplyInnerSelf y := hx₀ hymem
-      have hscale : W.reApplyInnerSelf y = ‖x‖⁻¹ ^ 2 * W.reApplyInnerSelf x := by
+      have hscale : W.reApplyInnerSelf y = ‖x‖⁻¹ ^ (2 : ℕ) * W.reApplyInnerSelf x := by
         rw [hy, ContinuousLinearMap.reApplyInnerSelf_smul, hcoe]
       rw [hscale] at hmin
-      have hsq : 0 < ‖x‖ ^ 2 := by positivity
+      have hsq : 0 < ‖x‖ ^ (2 : ℕ) := by positivity
       have hmul := mul_le_mul_of_nonneg_right hmin hsq.le
-      have hcancel : ‖x‖⁻¹ ^ 2 * W.reApplyInnerSelf x * ‖x‖ ^ 2 = W.reApplyInnerSelf x := by
+      have hcancel : ‖x‖⁻¹ ^ (2 : ℕ) * W.reApplyInnerSelf x * ‖x‖ ^ (2 : ℕ) = W.reApplyInnerSelf x := by
         field_simp
       rw [hcancel] at hmul
       exact hmul

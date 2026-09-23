@@ -193,10 +193,10 @@ def symmetricFockAnnihilation (n : ℕ) (i : I) :
 /-- Exact Parseval identity for the family of canonical lowering operators. -/
 theorem symmetricFockAnnihilation_energy (n : ℕ)
     (x : EuclideanSpace ℝ (Sym I (n + 1))) :
-    ∑ i, ‖symmetricFockAnnihilation n i x‖ ^ 2 = (n + 1 : ℝ) * ‖x‖ ^ 2 := by
+    ∑ i, ‖symmetricFockAnnihilation n i x‖ ^ (2 : ℕ) = (n + 1 : ℝ) * ‖x‖ ^ (2 : ℕ) := by
   classical
   calc
-    ∑ i, ‖symmetricFockAnnihilation n i x‖ ^ 2 =
+    ∑ i, ‖symmetricFockAnnihilation n i x‖ ^ (2 : ℕ) =
         ∑ i, inner ℝ x (Matrix.toEuclideanLin
           ((symmetricFockAnnihilationMatrix n i).transpose *
             symmetricFockAnnihilationMatrix n i) x) := by
@@ -215,7 +215,7 @@ theorem symmetricFockAnnihilation_energy (n : ℕ)
         (∑ i, (symmetricFockAnnihilationMatrix n i).transpose *
           symmetricFockAnnihilationMatrix n i) x) := by
           rw [map_sum]
-    _ = (n + 1 : ℝ) * ‖x‖ ^ 2 := by
+    _ = (n + 1 : ℝ) * ‖x‖ ^ (2 : ℕ) := by
           rw [sum_symmetricFockAnnihilationMatrix_transpose_mul]
           simp only [map_smul, LinearMap.smul_apply]
           rw [show Matrix.toEuclideanLin
@@ -226,11 +226,11 @@ theorem symmetricFockAnnihilation_energy (n : ℕ)
 /-- Exact Parseval identity for the adjoints of the canonical lowering operators. -/
 theorem symmetricFockAnnihilation_adjoint_energy (n : ℕ)
     (y : EuclideanSpace ℝ (Sym I n)) :
-    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ 2 =
-      (n + Fintype.card I : ℝ) * ‖y‖ ^ 2 := by
+    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ (2 : ℕ) =
+      (n + Fintype.card I : ℝ) * ‖y‖ ^ (2 : ℕ) := by
   classical
   calc
-    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ 2 =
+    ∑ i, ‖(symmetricFockAnnihilation n i).adjoint y‖ ^ (2 : ℕ) =
         ∑ i, inner ℝ y (Matrix.toEuclideanLin
           (symmetricFockAnnihilationMatrix n i *
             (symmetricFockAnnihilationMatrix n i).transpose) y) := by
@@ -249,7 +249,7 @@ theorem symmetricFockAnnihilation_adjoint_energy (n : ℕ)
         (∑ i, symmetricFockAnnihilationMatrix n i *
           (symmetricFockAnnihilationMatrix n i).transpose) y) := by
           rw [map_sum]
-    _ = (n + Fintype.card I : ℝ) * ‖y‖ ^ 2 := by
+    _ = (n + Fintype.card I : ℝ) * ‖y‖ ^ (2 : ℕ) := by
           rw [sum_symmetricFockAnnihilationMatrix_mul_transpose]
           simp only [map_smul, LinearMap.smul_apply]
           rw [show Matrix.toEuclideanLin
@@ -265,8 +265,8 @@ theorem tightOperatorFamily_subspace_finrank
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y]
     [Fintype J]
     (T : J → X →ₗ[ℝ] Y) (a b : ℝ)
-    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ 2 = a * ‖x‖ ^ 2)
-    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ 2 = b * ‖y‖ ^ 2)
+    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ (2 : ℕ) = a * ‖x‖ ^ (2 : ℕ))
+    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ (2 : ℕ) = b * ‖y‖ ^ (2 : ℕ))
     (U : Submodule ℝ X) (V : Submodule ℝ Y)
     (hUV : ∀ j x, x ∈ U → T j x ∈ V) :
     a * (Module.finrank ℝ U : ℝ) ≤ b * (Module.finrank ℝ V : ℝ) := by
@@ -280,30 +280,30 @@ theorem tightOperatorFamily_subspace_finrank
     · intro p q hpq
       change inner ℝ (u p) (u q) = 0
       exact u.orthonormal.2 hpq
-  have hvnorm (q) : ‖((v q : V) : Y)‖ ^ 2 = 1 := by
-    change ‖v q‖ ^ 2 = 1
+  have hvnorm (q) : ‖((v q : V) : Y)‖ ^ (2 : ℕ) = 1 := by
+    change ‖v q‖ ^ (2 : ℕ) = 1
     rw [v.orthonormal.1 q]
     norm_num
-  have hunorm (p) : ‖((u p : U) : X)‖ ^ 2 = 1 := by
-    change ‖u p‖ ^ 2 = 1
+  have hunorm (p) : ‖((u p : U) : X)‖ ^ (2 : ℕ) = 1 := by
+    change ‖u p‖ ^ (2 : ℕ) = 1
     rw [u.orthonormal.1 p]
     norm_num
   rw [show a * (Module.finrank ℝ U : ℝ) =
-      ∑ p, a * ‖((u p : U) : X)‖ ^ 2 by
+      ∑ p, a * ‖((u p : U) : X)‖ ^ (2 : ℕ) by
         simp [hunorm, mul_comm],
     show b * (Module.finrank ℝ V : ℝ) =
-      ∑ q, b * ‖((v q : V) : Y)‖ ^ 2 by
+      ∑ q, b * ‖((v q : V) : Y)‖ ^ (2 : ℕ) by
         simp [hvnorm, mul_comm]]
-  rw [show (∑ p, a * ‖((u p : U) : X)‖ ^ 2) =
-      ∑ p, ∑ j, ‖T j ((u p : U) : X)‖ ^ 2 by
+  rw [show (∑ p, a * ‖((u p : U) : X)‖ ^ (2 : ℕ)) =
+      ∑ p, ∑ j, ‖T j ((u p : U) : X)‖ ^ (2 : ℕ) by
         apply Finset.sum_congr rfl
         intro p _
         exact (hleft _).symm]
   rw [Finset.sum_comm]
   calc
-    ∑ j, ∑ p, ‖T j ((u p : U) : X)‖ ^ 2 =
+    ∑ j, ∑ p, ‖T j ((u p : U) : X)‖ ^ (2 : ℕ) =
         ∑ j, ∑ p, ∑ q,
-          inner ℝ ((v q : V) : Y) (T j ((u p : U) : X)) ^ 2 := by
+          inner ℝ ((v q : V) : Y) (T j ((u p : U) : X)) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro j _
           apply Finset.sum_congr rfl
@@ -311,7 +311,7 @@ theorem tightOperatorFamily_subspace_finrank
           let z : V := ⟨T j ((u p : U) : X), hUV j _ (u p).property⟩
           simpa [z] using (v.sum_sq_inner_right z).symm
     _ = ∑ j, ∑ q, ∑ p,
-        inner ℝ ((u p : U) : X) ((T j).adjoint ((v q : V) : Y)) ^ 2 := by
+        inner ℝ ((u p : U) : X) ((T j).adjoint ((v q : V) : Y)) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro j _
           rw [Finset.sum_comm]
@@ -320,16 +320,16 @@ theorem tightOperatorFamily_subspace_finrank
           apply Finset.sum_congr rfl
           intro p _
           rw [← (T j).adjoint_inner_left, real_inner_comm]
-    _ ≤ ∑ j, ∑ q, ‖(T j).adjoint ((v q : V) : Y)‖ ^ 2 := by
+    _ ≤ ∑ j, ∑ q, ‖(T j).adjoint ((v q : V) : Y)‖ ^ (2 : ℕ) := by
           apply Finset.sum_le_sum
           intro j _
           apply Finset.sum_le_sum
           intro q _
           simpa using (hu.sum_inner_products_le
             ((T j).adjoint ((v q : V) : Y)) (s := Finset.univ))
-    _ = ∑ q, ∑ j, ‖(T j).adjoint ((v q : V) : Y)‖ ^ 2 := by
+    _ = ∑ q, ∑ j, ‖(T j).adjoint ((v q : V) : Y)‖ ^ (2 : ℕ) := by
           rw [Finset.sum_comm]
-    _ = ∑ q, b * ‖((v q : V) : Y)‖ ^ 2 := by
+    _ = ∑ q, b * ‖((v q : V) : Y)‖ ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro q _
           exact hright _

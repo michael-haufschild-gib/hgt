@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 The raw endpoint reciprocal coordinate `z = 1/rho` and the centered reciprocal-square coordinate
 are related by the exact rational substitution
 
-`-1 / (rho - 1/2)^2 = -z^2 / (1 - z/2)^2`.
+`-1 / (rho - 1/2)^(2 : ℕ) = -z^(2 : ℕ) / (1 - z/2)^(2 : ℕ)`.
 
 The endpoint disk bound makes the negative-binomial expansion of every power of this substitution
 absolutely summable over both expansion order and the multiplicity-exact Xi divisor.  Consequently
@@ -25,8 +25,8 @@ noncomputable section
 coordinate. -/
 theorem xiZeroCopyReciprocalSquare_eq_rawDyadicMobius (q : XiZeroCopy) :
     xiZeroCopyReciprocalSquare q =
-      -(xiRawReciprocalCoordinate q ^ 2) /
-        (1 - xiRawReciprocalCoordinate q / 2) ^ 2 := by
+      -(xiRawReciprocalCoordinate q ^ (2 : ℕ)) /
+        (1 - xiRawReciprocalCoordinate q / 2) ^ (2 : ℕ) := by
   have hrho : (q.1 : ℂ) ≠ 0 := by
     intro hzero
     have him := congrArg Complex.im hzero
@@ -64,9 +64,9 @@ theorem hasSum_xiZeroCopyReciprocalSquare_pow_rawDyadicTraces
       (-1 : ℂ) ^ (m + 1) *
         ((n + (2 * m + 1)).choose (2 * m + 1) : ℂ) *
           (2 : ℂ)⁻¹ ^ n * z ^ (n + (2 * m + 2)))
-    ((-(z ^ 2) / (1 - z / 2) ^ 2) ^ (m + 1))
+    ((-(z ^ (2 : ℕ)) / (1 - z / 2) ^ (2 : ℕ)) ^ (m + 1))
   have hvalue :
-      ((-(z ^ 2) / (1 - z / 2) ^ 2) ^ (m + 1)) =
+      ((-(z ^ (2 : ℕ)) / (1 - z / 2) ^ (2 : ℕ)) ^ (m + 1)) =
         (-1 : ℂ) ^ (m + 1) * z ^ (2 * m + 2) *
           (1 / (1 - z / 2) ^ (2 * m + 1 + 1)) := by
     have hexp : 2 * m + 1 + 1 = 2 * (m + 1) := by omega

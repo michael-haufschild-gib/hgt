@@ -7,9 +7,9 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 /-!
 # Geometric interpolation of two hyperbolic quarter eigenfunctions
 
-The positive fields `y^(1 / 2)` and `y^(1 / 2)/sqrt(x^2+y^2)` have hyperbolic
+The positive fields `y^(1 / 2)` and `y^(1 / 2)/sqrt(x^(2 : ℕ)+y^(2 : ℕ))` have hyperbolic
 Laplacian eigenvalue one quarter. Their geometric interpolation has the exact
-additional potential `a*(1 - a)*y^2/(x^2+y^2)`. At the symmetric interpolation this
+additional potential `a*(1 - a)*y^(2 : ℕ)/(x^(2 : ℕ)+y^(2 : ℕ))`. At the symmetric interpolation this
 potential is strictly positive, but every positive integer translation changes
 the field. The differential identity therefore gives a local supersolution,
 with an explicit obstruction to descending it by translation invariance.
@@ -26,7 +26,7 @@ noncomputable section
 
 
 /-- Squared Euclidean radius in the complex chart. -/
-def radiusSq (w : ℂ) : ℝ := w.re ^ 2 + w.im ^ 2
+def radiusSq (w : ℂ) : ℝ := w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ)
 
 /-- Geometric interpolation of the positive half-densities at infinity and zero. -/
 def realField (a : ℝ) (w : ℂ) : ℝ :=
@@ -79,13 +79,13 @@ theorem log_realField_hasFDerivAt (a : ℝ) (z : ℍ) :
 
 private theorem radiusInv_hasFDerivAt (w : ℂ) (hw : 0 < w.im) :
     HasFDerivAt (fun z => (radiusSq z)⁻¹)
-      (-(radiusSq w ^ 2)⁻¹ •
+      (-(radiusSq w ^ (2 : ℕ))⁻¹ •
         ((2 * w.re) • Complex.reCLM + (2 * w.im) • Complex.imCLM)) w := by
   exact (hasDerivAt_inv (radiusSq_pos hw).ne').comp_hasFDerivAt w (radiusSq_hasFDerivAt w)
 
 private theorem logX_hasFDerivAt (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
     HasFDerivAt (logX a)
-      ((-a / radiusSq w) • Complex.reCLM + (a * w.re / radiusSq w ^ 2) •
+      ((-a / radiusSq w) • Complex.reCLM + (a * w.re / radiusSq w ^ (2 : ℕ)) •
         ((2 * w.re) • Complex.reCLM + (2 * w.im) • Complex.imCLM)) w := by
   have hx : HasFDerivAt (fun z : ℂ => z.re) Complex.reCLM w := Complex.reCLM.hasFDerivAt
   have h := (hx.const_mul (-a)).fun_mul (radiusInv_hasFDerivAt w hw)
@@ -97,8 +97,8 @@ private theorem logX_hasFDerivAt (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
 
 private theorem logY_hasFDerivAt (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
     HasFDerivAt (logY a)
-      ((-(1 / (2 * w.im ^ 2)) - a / radiusSq w) • Complex.imCLM +
-        (a * w.im / radiusSq w ^ 2) •
+      ((-(1 / (2 * w.im ^ (2 : ℕ))) - a / radiusSq w) • Complex.imCLM +
+        (a * w.im / radiusSq w ^ (2 : ℕ)) •
           ((2 * w.re) • Complex.reCLM + (2 * w.im) • Complex.imCLM)) w := by
   have hy : HasFDerivAt (fun z : ℂ => z.im) Complex.imCLM w := Complex.imCLM.hasFDerivAt
   have hi := (hasDerivAt_inv hw.ne').comp_hasFDerivAt w hy
@@ -137,8 +137,8 @@ private theorem field_first_y (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
 
 private theorem field_second_x (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
     fderiv ℝ (fun z => fderiv ℝ (field a ∘ UpperHalfPlane.ofComplex) z 1) w 1 =
-      (realField a w * (logX a w ^ 2 - a / radiusSq w +
-        2 * a * w.re ^ 2 / radiusSq w ^ 2) : ℝ) := by
+      (realField a w * (logX a w ^ (2 : ℕ) - a / radiusSq w +
+        2 * a * w.re ^ (2 : ℕ) / radiusSq w ^ (2 : ℕ)) : ℝ) := by
   have he : (fun z => fderiv ℝ (field a ∘ UpperHalfPlane.ofComplex) z 1) =ᶠ[𝓝 w]
       (fun z : ℂ => ((realField a z * logX a z : ℝ) : ℂ)) := by
     filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds hw] with z hz
@@ -153,8 +153,8 @@ private theorem field_second_x (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
 private theorem field_second_y (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
     fderiv ℝ (fun z => fderiv ℝ (field a ∘ UpperHalfPlane.ofComplex) z Complex.I)
       w Complex.I =
-      (realField a w * (logY a w ^ 2 - 1 / (2 * w.im ^ 2) - a / radiusSq w +
-        2 * a * w.im ^ 2 / radiusSq w ^ 2) : ℝ) := by
+      (realField a w * (logY a w ^ (2 : ℕ) - 1 / (2 * w.im ^ (2 : ℕ)) - a / radiusSq w +
+        2 * a * w.im ^ (2 : ℕ) / radiusSq w ^ (2 : ℕ)) : ℝ) := by
   have he : (fun z => fderiv ℝ (field a ∘ UpperHalfPlane.ofComplex) z Complex.I) =ᶠ[𝓝 w]
       (fun z : ℂ => ((realField a z * logY a z : ℝ) : ℂ)) := by
     filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds hw] with z hz
@@ -169,14 +169,14 @@ private theorem field_second_y (a : ℝ) {w : ℂ} (hw : 0 < w.im) :
 /-- Exact hyperbolic equation, including the potential created by geometric interpolation. -/
 theorem positiveHyperbolicLaplacian_field (a : ℝ) (z : ℍ) :
     positiveHyperbolicLaplacian (field a) z =
-      (((1 / 4 : ℝ) + a * (1 - a) * z.im ^ 2 / (z.re ^ 2 + z.im ^ 2) : ℝ) : ℂ) * field a z := by
+      (((1 / 4 : ℝ) + a * (1 - a) * z.im ^ (2 : ℕ) / (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) : ℝ) : ℂ) * field a z := by
   have hcoeff :
-      -(z.im ^ 2) *
-        (logX a (z:ℂ) ^ 2 - a / radiusSq (z:ℂ) +
-          2 * a * z.re ^ 2 / radiusSq (z:ℂ) ^ 2 +
-         (logY a (z:ℂ) ^ 2 - 1 / (2 * z.im ^ 2) - a / radiusSq (z:ℂ) +
-          2 * a * z.im ^ 2 / radiusSq (z:ℂ) ^ 2)) =
-        (1 / 4 : ℝ) + a * (1 - a) * z.im ^ 2 / (z.re ^ 2 + z.im ^ 2) := by
+      -(z.im ^ (2 : ℕ)) *
+        (logX a (z:ℂ) ^ (2 : ℕ) - a / radiusSq (z:ℂ) +
+          2 * a * z.re ^ (2 : ℕ) / radiusSq (z:ℂ) ^ (2 : ℕ) +
+         (logY a (z:ℂ) ^ (2 : ℕ) - 1 / (2 * z.im ^ (2 : ℕ)) - a / radiusSq (z:ℂ) +
+          2 * a * z.im ^ (2 : ℕ) / radiusSq (z:ℂ) ^ (2 : ℕ))) =
+        (1 / 4 : ℝ) + a * (1 - a) * z.im ^ (2 : ℕ) / (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
     have hd := (radiusSq_pos z.im_pos).ne'
     simp only [logX, logY, UpperHalfPlane.coe_re, UpperHalfPlane.coe_im]
     field_simp [hd, z.im_ne_zero]
@@ -211,13 +211,13 @@ theorem field_smooth (a : ℝ) : IsRealSmoothUpperHalfPlane (field a) := by
     simp [field, Function.comp_apply, UpperHalfPlane.ofComplex_apply_of_im_pos hz]
   exact (hc.congr_of_eventuallyEq he).contDiffWithinAt
 
-/-- The symmetric interpolation has the explicit additional potential `y^2/(4*(x^2+y^2))`. -/
+/-- The symmetric interpolation has the explicit additional potential `y^(2 : ℕ)/(4*(x^(2 : ℕ)+y^(2 : ℕ)))`. -/
 theorem half_laplacian (z : ℍ) :
     (positiveHyperbolicLaplacian (field (1 / 2)) z).re =
-      ((1 / 4 : ℝ) + z.im ^ 2 / (4 * (z.re ^ 2 + z.im ^ 2))) * (field (1 / 2) z).re := by
+      ((1 / 4 : ℝ) + z.im ^ (2 : ℕ) / (4 * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)))) * (field (1 / 2) z).re := by
   rw [positiveHyperbolicLaplacian_field]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
-  have hd : z.re ^ 2 + z.im ^ 2 ≠ 0 := (radiusSq_pos z.im_pos).ne'
+  have hd : z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) ≠ 0 := (radiusSq_pos z.im_pos).ne'
   field_simp [hd]
   ring
 
@@ -226,7 +226,7 @@ theorem half_strict_quarter (z : ℍ) :
     (1 / 4 : ℝ) * (field (1 / 2) z).re <
       (positiveHyperbolicLaplacian (field (1 / 2)) z).re := by
   rw [half_laplacian]
-  have hgain : 0 < z.im ^ 2 / (4 * (z.re ^ 2 + z.im ^ 2)) := by
+  have hgain : 0 < z.im ^ (2 : ℕ) / (4 * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ))) := by
     have hy := z.im_pos
     positivity
   nlinarith [mul_pos hgain (field_re_pos (1 / 2) z)]
@@ -252,7 +252,7 @@ theorem half_translatedBasePoint_lt (n : ℕ) :
     add_zero, zero_add, one_pow, Real.log_one, mul_zero, zero_sub, Complex.one_re]
   apply Real.exp_lt_one_iff.mpr
   have hn : 0 < ((n + 1 : ℕ) : ℝ) := by positivity
-  have hlog : 0 < Real.log (((n + 1 : ℕ) : ℝ) ^ 2 + 1) :=
+  have hlog : 0 < Real.log (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) + 1) :=
     Real.log_pos (by nlinarith [sq_pos_of_pos hn])
   nlinarith
 
@@ -264,8 +264,8 @@ theorem half_translatedBasePoint_ne (n : ℕ) :
 
 /-- The symmetric field is exactly the positive geometric mean of the two endpoint fields. -/
 theorem half_sq_eq_endpoints (z : ℍ) :
-    field (1 / 2) z ^ 2 = field 0 z * field 1 z := by
-  have h : realField (1 / 2) (z:ℂ) ^ 2 = realField 0 (z:ℂ) * realField 1 (z:ℂ) := by
+    field (1 / 2) z ^ (2 : ℕ) = field 0 z * field 1 z := by
+  have h : realField (1 / 2) (z:ℂ) ^ (2 : ℕ) = realField 0 (z:ℂ) * realField 1 (z:ℂ) := by
     unfold realField
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1

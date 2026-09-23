@@ -23,9 +23,9 @@ theorem setIntegral_normSq_mul_normSq_le_amplified
     {T K : ℝ} (hK : 0 ≤ K) (hEmeas : MeasurableSet E)
     (hE : E ⊆ Set.Icc (T / 2) T)
     (hlarge : ∀ t ∈ E, 1 ≤ K * ‖amp t‖) :
-    (∫ t in E, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2) ≤
-      K * Real.sqrt (∫ t in E, ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2) *
-        Real.sqrt (∫ t in E, ‖long t‖ ^ 4) := by
+    (∫ t in E, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ)) ≤
+      K * Real.sqrt (∫ t in E, ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ)) *
+        Real.sqrt (∫ t in E, ‖long t‖ ^ (4 : ℕ)) := by
   let μ : Measure ℝ := volume.restrict E
   let F : ℝ → ℂ := fun t => unit t * unit t * amp t
   let G : ℝ → ℂ := fun t => long t * long t
@@ -35,21 +35,21 @@ theorem setIntegral_normSq_mul_normSq_le_amplified
     Measure.restrict_mono hE le_rfl
   have hFfull :=
     (hF.norm.pow 2).integrableOn_Icc (μ := volume) (a := T / 2) (b := T)
-  change Integrable (fun t => ‖F t‖ ^ 2)
+  change Integrable (fun t => ‖F t‖ ^ (2 : ℕ))
     (volume.restrict (Set.Icc (T / 2) T)) at hFfull
   have hGfull :=
     (hG.norm.pow 2).integrableOn_Icc (μ := volume) (a := T / 2) (b := T)
-  change Integrable (fun t => ‖G t‖ ^ 2)
+  change Integrable (fun t => ‖G t‖ ^ (2 : ℕ))
     (volume.restrict (Set.Icc (T / 2) T)) at hGfull
-  have hFint : Integrable (fun t => ‖F t‖ ^ 2) μ := hFfull.mono_measure hμ
-  have hGint : Integrable (fun t => ‖G t‖ ^ 2) μ := hGfull.mono_measure hμ
+  have hFint : Integrable (fun t => ‖F t‖ ^ (2 : ℕ)) μ := hFfull.mono_measure hμ
+  have hGint : Integrable (fun t => ‖G t‖ ^ (2 : ℕ)) μ := hGfull.mono_measure hμ
   have hcross :=
     GaloisForLFunctions.HTGeometry.integrable_mul_norm_of_integrable_sq
       (μ := μ) hF.aestronglyMeasurable hG.aestronglyMeasurable hFint hGint
   have hpoint : ∀ᵐ t ∂μ,
-      ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 ≤ K * (‖F t‖ * ‖G t‖) := by
+      ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) ≤ K * (‖F t‖ * ‖G t‖) := by
     filter_upwards [ae_restrict_mem hEmeas] with t ht
-    have hbase : 0 ≤ ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 := by positivity
+    have hbase : 0 ≤ ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) := by positivity
     have hmul := mul_le_mul_of_nonneg_left (hlarge t ht) hbase
     dsimp only [F, G]
     simp only [norm_mul]
@@ -57,39 +57,39 @@ theorem setIntegral_normSq_mul_normSq_le_amplified
   have hleftFull :=
     ((hlong.norm.pow 2).mul (hunit.norm.pow 2)).integrableOn_Icc
       (μ := volume) (a := T / 2) (b := T)
-  change Integrable (fun t => ‖long t‖ ^ 2 * ‖unit t‖ ^ 2)
+  change Integrable (fun t => ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ))
     (volume.restrict (Set.Icc (T / 2) T)) at hleftFull
-  have hleft : Integrable (fun t => ‖long t‖ ^ 2 * ‖unit t‖ ^ 2) μ :=
+  have hleft : Integrable (fun t => ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ)) μ :=
     hleftFull.mono_measure hμ
-  have hmono : (∫ t, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 ∂μ) ≤
+  have hmono : (∫ t, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) ∂μ) ≤
       ∫ t, K * (‖F t‖ * ‖G t‖) ∂μ :=
     integral_mono_ae hleft (hcross.const_mul K) hpoint
   rw [integral_const_mul] at hmono
   have hcs := GaloisForLFunctions.HTGeometry.integral_mul_le_sqrt_mul_sqrt_measure
     (μ := μ) hF.aestronglyMeasurable hG.aestronglyMeasurable hFint hGint
   have hscaled := mul_le_mul_of_nonneg_left hcs hK
-  have hFeq : (∫ t, ‖F t‖ ^ 2 ∂μ) =
-      ∫ t in E, ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2 := by
+  have hFeq : (∫ t, ‖F t‖ ^ (2 : ℕ) ∂μ) =
+      ∫ t in E, ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ) := by
     apply integral_congr_ae
     filter_upwards with t
     dsimp only [F, μ]
     simp only [norm_mul]
     ring
-  have hGeq : (∫ t, ‖G t‖ ^ 2 ∂μ) =
-      ∫ t in E, ‖long t‖ ^ 4 := by
+  have hGeq : (∫ t, ‖G t‖ ^ (2 : ℕ) ∂μ) =
+      ∫ t in E, ‖long t‖ ^ (4 : ℕ) := by
     apply integral_congr_ae
     filter_upwards with t
     dsimp only [G, μ]
     simp only [norm_mul]
     ring
-  change (∫ t, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 ∂μ) ≤ _
+  change (∫ t, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) ∂μ) ≤ _
   calc
-    (∫ t, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 ∂μ) ≤
+    (∫ t, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) ∂μ) ≤
         K * ∫ t, ‖F t‖ * ‖G t‖ ∂μ := hmono
-    _ ≤ K * (Real.sqrt (∫ t, ‖F t‖ ^ 2 ∂μ) *
-        Real.sqrt (∫ t, ‖G t‖ ^ 2 ∂μ)) := hscaled
-    _ = K * Real.sqrt (∫ t in E, ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2) *
-        Real.sqrt (∫ t in E, ‖long t‖ ^ 4) := by
+    _ ≤ K * (Real.sqrt (∫ t, ‖F t‖ ^ (2 : ℕ) ∂μ) *
+        Real.sqrt (∫ t, ‖G t‖ ^ (2 : ℕ) ∂μ)) := hscaled
+    _ = K * Real.sqrt (∫ t in E, ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ)) *
+        Real.sqrt (∫ t in E, ‖long t‖ ^ (4 : ℕ)) := by
       rw [hFeq, hGeq]
       ring
 
@@ -123,16 +123,16 @@ theorem exists_setIntegral_mtTypeI_amplified_coveredRange
       0 ≤ K → MeasurableSet E → E ⊆ Set.Icc (T / 2) T →
       (∀ t ∈ E, 1 ≤ K * ‖mtWattCoefficientBlock b B t‖) →
       (∫ t in E,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         K * Real.sqrt
           (C * T ^ ε *
-            (((T + (B : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (B : ℝ)) +
-                (T + (B : ℝ)) / (T ^ 4 * (B : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (B : ℝ)) +
+                (T + (B : ℝ)) / (T ^ (4 : ℕ) * (B : ℝ))) *
               (1 / (B : ℝ)) *
-              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2))) *
+              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)))) *
           Real.sqrt
             (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
                 (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -150,17 +150,17 @@ theorem exists_setIntegral_mtTypeI_amplified_coveredRange
     (continuous_perronPoly _ _ _)
     hK hEmeas hE hlarge
   have hmixedSet : (∫ t in E,
-      ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+      ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
       ∫ t in (T / 2)..T,
-        ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2 :=
+        ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ) :=
     setIntegral_le_intervalIntegral_of_subset_Icc
       (((continuous_perronPoly _ _ _).norm.pow 4).mul
         ((continuous_perronPoly _ _ _).norm.pow 2))
       (by linarith) hE (fun t =>
         mul_nonneg (pow_nonneg (norm_nonneg (mtWattUnitBlock N N' t)) 4)
           (sq_nonneg ‖mtWattCoefficientBlock b B t‖))
-  have hfourthSet : (∫ t in E, ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
-      ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4 :=
+  have hfourthSet : (∫ t in E, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
+      ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) :=
     setIntegral_le_intervalIntegral_of_subset_Icc
       ((continuous_perronPoly _ _ _).norm.pow 4)
       (by linarith) hE (fun t =>
@@ -211,16 +211,16 @@ theorem exists_setIntegral_mtTypeI_amplifierLargeSet_coveredRange
             (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)))) →
       0 ≤ K →
       (∫ t in mtTypeIAmplifierLargeSet b B T K,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         K * Real.sqrt
           (C * T ^ ε *
-            (((T + (B : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (B : ℝ)) +
-                (T + (B : ℝ)) / (T ^ 4 * (B : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (B : ℝ)) +
+                (T + (B : ℝ)) / (T ^ (4 : ℕ) * (B : ℝ))) *
               (1 / (B : ℝ)) *
-              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2))) *
+              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)))) *
           Real.sqrt
             (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
                 (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +

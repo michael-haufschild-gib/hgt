@@ -27,7 +27,7 @@ noncomputable section
 
 /-- **`(13ac)`: the reflection anomaly of the defect density.** -/
 theorem reflectionAnomaly_eq (x : ℝ) :
-    (Real.exp x - 1) ^ 2 - (Real.exp (-x) - 1) ^ 2
+    (Real.exp x - 1) ^ (2 : ℕ) - (Real.exp (-x) - 1) ^ (2 : ℕ)
       = 4 * Real.sinh x * (Real.cosh x - 1) := by
   rw [Real.sinh_eq, Real.cosh_eq, Real.exp_neg]
   have hx : Real.exp x ≠ 0 := Real.exp_ne_zero x
@@ -36,10 +36,10 @@ theorem reflectionAnomaly_eq (x : ℝ) :
 
 /-- **`(13ac)`: the anomaly vanishes exactly at the critical source.** -/
 theorem reflectionAnomaly_eq_zero_iff (x : ℝ) :
-    (Real.exp x - 1) ^ 2 = (Real.exp (-x) - 1) ^ 2 ↔ x = 0 := by
+    (Real.exp x - 1) ^ (2 : ℕ) = (Real.exp (-x) - 1) ^ (2 : ℕ) ↔ x = 0 := by
   constructor
   · intro h
-    have h0 : (Real.exp x - 1) ^ 2 - (Real.exp (-x) - 1) ^ 2 = 0 := by rw [h]; ring
+    have h0 : (Real.exp x - 1) ^ (2 : ℕ) - (Real.exp (-x) - 1) ^ (2 : ℕ) = 0 := by rw [h]; ring
     rw [reflectionAnomaly_eq] at h0
     rcases mul_eq_zero.mp h0 with h1 | h2
     · rcases mul_eq_zero.mp h1 with h3 | h4
@@ -55,7 +55,7 @@ theorem reflectionAnomaly_eq_zero_iff (x : ℝ) :
 /-- **`(13ab)`: reflection rigidity of the prime-scale defect measure.**  If the two reflected
 defect densities agree at every prime scale then the profile is identically zero. -/
 theorem profileReflection_rigid {f : ℝ → ℝ}
-    (h : ∀ t, (Real.exp (f t) - 1) ^ 2 = (Real.exp (-(f t)) - 1) ^ 2) : ∀ t, f t = 0 :=
+    (h : ∀ t, (Real.exp (f t) - 1) ^ (2 : ℕ) = (Real.exp (-(f t)) - 1) ^ (2 : ℕ)) : ∀ t, f t = 0 :=
   fun t => (reflectionAnomaly_eq_zero_iff (f t)).mp (h t)
 
 /-- The reflection-odd anomaly density on the radial line, strictly positive off the origin. -/
@@ -63,7 +63,7 @@ theorem radialAnomaly_pos {u t : ℝ} (hu : 0 < u) (ht : 0 < t) :
     0 < divProfile (coherentProfile u 0) t - divProfile (coherentProfile (-u) 0) t := by
   have hne : t ≠ 0 := ne_of_gt ht
   have hval : divProfile (coherentProfile u 0) t - divProfile (coherentProfile (-u) 0) t
-      = ((Real.exp (u * t) - 1) ^ 2 - (Real.exp (-(u * t)) - 1) ^ 2) / t := by
+      = ((Real.exp (u * t) - 1) ^ (2 : ℕ) - (Real.exp (-(u * t)) - 1) ^ (2 : ℕ)) / t := by
     rw [divProfile, divProfile, if_neg hne, if_neg hne, coherentProfile, coherentProfile]
     rw [show (0 : ℝ) * t = 0 by ring, Real.exp_zero]
     rw [show -u * t = -(u * t) by ring]

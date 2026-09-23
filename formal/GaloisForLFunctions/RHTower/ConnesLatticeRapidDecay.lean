@@ -45,7 +45,7 @@ theorem connes_latticeSum_rapidDecay (f : SchwartzMap ℝ ℂ) {c : ℝ} (hc : 0
   have hS0 : (0 : ℝ) ≤ S := apply_nonneg _ f
   have hpowm : ∀ n : ℤ, (0 : ℝ) ≤ (n : ℝ) ^ m := by
     intro n
-    have he : (n : ℝ) ^ m = ((n : ℝ) ^ (k + 1)) ^ 2 := by
+    have he : (n : ℝ) ^ m = ((n : ℝ) ^ (k + 1)) ^ (2 : ℕ) := by
       rw [← pow_mul]; congr 1; omega
     rw [he]; positivity
   have hZsummable : Summable fun n : ℤ => (if n = 0 then 0 else 1 / ((n : ℝ) ^ m)) := by
@@ -91,11 +91,11 @@ theorem connes_latticeSum_rapidDecay (f : SchwartzMap ℝ ℂ) {c : ℝ} (hc : 0
         have hnorm : ‖lam * c * (n : ℝ)‖ ^ m = (lam * c) ^ m * (n : ℝ) ^ m := by
           rw [Real.norm_eq_abs, abs_mul, mul_pow, abs_of_pos (by positivity : (0:ℝ) < lam * c)]
           congr 1
-          have : |(n : ℝ)| ^ m = ((|(n : ℝ)|) ^ (k + 1)) ^ 2 := by
+          have : |(n : ℝ)| ^ m = ((|(n : ℝ)|) ^ (k + 1)) ^ (2 : ℕ) := by
             rw [← pow_mul]; congr 1; omega
           rw [this, ← pow_mul]
           rw [show (k + 1) * 2 = m by omega, ← abs_pow, abs_of_nonneg]
-          have h2 : (n : ℝ) ^ m = ((n : ℝ) ^ (k + 1)) ^ 2 := by
+          have h2 : (n : ℝ) ^ m = ((n : ℝ) ^ (k + 1)) ^ (2 : ℕ) := by
             rw [← pow_mul]; congr 1; omega
           rw [h2]
           positivity

@@ -20,7 +20,7 @@ noncomputable section
 /-- **The diagonal quadratic form is the weighted sum of squared moduli.** -/
 theorem quadForm_diagonal_eq {n : ℕ} (c : Fin n → ℝ) (x : Fin n → ℂ) :
     star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x
-      = ((∑ j, c j * ‖x j‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∑ j, c j * ‖x j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   rw [dotProduct]
   push_cast
@@ -39,7 +39,7 @@ theorem quadForm_diagonal_eq {n : ℕ} (c : Fin n → ℝ) (x : Fin n → ℂ) :
 /-- The real part of the diagonal form is the weighted sum of squared moduli. -/
 theorem re_quadForm_diagonal {n : ℕ} (c : Fin n → ℝ) (x : Fin n → ℂ) :
     (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re
-      = ∑ j, c j * ‖x j‖ ^ 2 := by
+      = ∑ j, c j * ‖x j‖ ^ (2 : ℕ) := by
   rw [quadForm_diagonal_eq]
   exact Complex.ofReal_re _
 
@@ -54,16 +54,16 @@ theorem re_quadForm_diagonal_neg {n : ℕ} (c : Fin n → ℝ) (hc : ∀ j, c j 
     by_contra hcon
     push Not at hcon
     exact hx (funext hcon)
-  have hpos : 0 < ‖x j₀‖ ^ 2 := by
+  have hpos : 0 < ‖x j₀‖ ^ (2 : ℕ) := by
     have : 0 < ‖x j₀‖ := norm_pos_iff.2 hj₀
     positivity
-  have hterm : ∀ j, c j * ‖x j‖ ^ 2 ≤ 0 := by
+  have hterm : ∀ j, c j * ‖x j‖ ^ (2 : ℕ) ≤ 0 := by
     intro j
     exact mul_nonpos_of_nonpos_of_nonneg (le_of_lt (hc j)) (by positivity)
-  have hj0 : c j₀ * ‖x j₀‖ ^ 2 < 0 := mul_neg_of_neg_of_pos (hc j₀) hpos
-  have hsplit := Finset.add_sum_erase Finset.univ (fun j => c j * ‖x j‖ ^ 2)
+  have hj0 : c j₀ * ‖x j₀‖ ^ (2 : ℕ) < 0 := mul_neg_of_neg_of_pos (hc j₀) hpos
+  have hsplit := Finset.add_sum_erase Finset.univ (fun j => c j * ‖x j‖ ^ (2 : ℕ))
     (Finset.mem_univ j₀)
-  have hrest : ∑ j ∈ Finset.univ.erase j₀, c j * ‖x j‖ ^ 2 ≤ 0 :=
+  have hrest : ∑ j ∈ Finset.univ.erase j₀, c j * ‖x j‖ ^ (2 : ℕ) ≤ 0 :=
     Finset.sum_nonpos fun j _ => hterm j
   rw [← hsplit]
   linarith

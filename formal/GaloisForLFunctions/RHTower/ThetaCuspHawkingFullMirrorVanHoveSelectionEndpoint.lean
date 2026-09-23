@@ -10,9 +10,9 @@ multi-step effect behind the full-mirror order-jump no-go.
 
 The weak-coupling clock distinguishes direct and indirect channels.  For the exact eikonal-fed
 Cayley collision, let `T(lambda)` be its transition amplitude and divide the one-collision
-probability by `lambda^2`.  This is the standard van Hove/Davies collision rate.  The exact limit is
+probability by `lambda^(2 : ℕ)`.  This is the standard van Hove/Davies collision rate.  The exact limit is
 
-`|T(lambda)|^2 / lambda^2  ->  (omega^4 / 4) |XiC(omega + a i)|^2`.
+`|T(lambda)|^(2 : ℕ) / lambda^(2 : ℕ)  ->  (omega^(4 : ℕ) / 4) |XiC(omega + a i)|^(2 : ℕ)`.
 
 Thus the Cayley denominator and every nonlinear eikonal channel disappear only after the full
 finite-coupling collision has been built.  A sector whose first nonzero coherent path has order

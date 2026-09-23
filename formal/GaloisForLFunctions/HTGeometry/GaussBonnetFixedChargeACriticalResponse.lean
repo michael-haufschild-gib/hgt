@@ -13,15 +13,15 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeACritical_coupling_scaling (w φ : ℝ) :
-    (exp w * sin φ) ^ 2 = egbFixedChargeACriticalRadius w φ ^ 2 * egbFixedChargeACriticalCouplingWeight φ := by
+    (exp w * sin φ) ^ (2 : ℕ) = egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * egbFixedChargeACriticalCouplingWeight φ := by
   have h := egbCriticalA_coupling_square (egbFixedChargeACriticalLogScale w φ) (egbFixedChargeACriticalAngle φ)
   rw [egbFixedChargeACritical_coupling_square, egbFixedChargeACriticalLogScale_exp,
     egbFixedChargeACriticalAngle_shape] at h
   exact h
 
 theorem egbFixedChargeACritical_charge_scaling (w φ : ℝ) :
-    (exp w * cos φ) ^ 2 + (exp w * sin φ) ^ 2 =
-      egbFixedChargeACriticalRadius w φ ^ 2 * egbFixedChargeACriticalWeight φ := by
+    (exp w * cos φ) ^ (2 : ℕ) + (exp w * sin φ) ^ (2 : ℕ) =
+      egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * egbFixedChargeACriticalWeight φ := by
   rw [egbFixedChargeA_conserved_scale, egbFixedChargeACritical_effective_scale]
 
 theorem egbFixedChargeACritical_radial_slope_zero (w φ : ℝ) :

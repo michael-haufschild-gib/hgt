@@ -21,7 +21,7 @@ noncomputable def vonMangoldtRpowTailConstant (δ : ℝ) : ℝ :=
 theorem vonMangoldtRpowTailConstant_nonneg {δ : ℝ} (hδ : 0 < δ) :
     0 ≤ vonMangoldtRpowTailConstant δ := by
   rw [vonMangoldtRpowTailConstant]
-  have h1 : (2 : ℝ) ^ (-δ) < 1 := two_rpow_neg_lt_one hδ
+  have h1 : (2 : ℝ) ^ (-δ) < 1 := two_rpow_neg_lt_one_primeLogRpowTail hδ
   have : (0 : ℝ) < 1 - (2 : ℝ) ^ (-δ) := by linarith
   positivity
 
@@ -106,7 +106,7 @@ theorem sum_vonMangoldt_rpow_dyadic_tail_le {δ : ℝ} (hδ : 0 < δ) (m N : ℕ
   classical
   set r : ℝ := (2 : ℝ) ^ (-δ) with hr
   have hr0 : 0 < r := two_rpow_neg_pos δ
-  have hr1 : r < 1 := two_rpow_neg_lt_one hδ
+  have hr1 : r < 1 := two_rpow_neg_lt_one_primeLogRpowTail hδ
   set S := {n ∈ Finset.Icc 1 N | 2 ^ m ≤ n} with hS
   by_cases hmN : m ≤ Nat.log 2 N
   · have hmaps : ∀ n ∈ S, Nat.log 2 n ∈ Finset.Icc m (Nat.log 2 N) := by

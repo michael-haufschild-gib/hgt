@@ -46,12 +46,12 @@ theorem twistedDiagonalSqrtWeight {h k : ℕ} (hh : 0 < h) (hk : 0 < k) {d : ℕ
   have hgkR : (Nat.gcd h k : ℝ) * (((k / Nat.gcd h k : ℕ)) : ℝ) = (k : ℝ) := by
     exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) hgk
   have hprod : (((k / Nat.gcd h k) * d : ℕ) : ℝ) * (((h / Nat.gcd h k) * d : ℕ) : ℝ) =
-      ((h : ℝ) * (k : ℝ) / (Nat.gcd h k : ℝ) ^ 2) * (d : ℝ) ^ 2 := by
+      ((h : ℝ) * (k : ℝ) / (Nat.gcd h k : ℝ) ^ (2 : ℕ)) * (d : ℝ) ^ (2 : ℕ) := by
     push_cast
     field_simp
     nlinarith [hghR, hgkR]
   rw [hprod]
-  have hpos : (0 : ℝ) < (h : ℝ) * (k : ℝ) / (Nat.gcd h k : ℝ) ^ 2 := by positivity
+  have hpos : (0 : ℝ) < (h : ℝ) * (k : ℝ) / (Nat.gcd h k : ℝ) ^ (2 : ℕ) := by positivity
   rw [Real.sqrt_mul hpos.le, Real.sqrt_sq hdR.le,
     Real.sqrt_div' _ (by positivity), Real.sqrt_sq hgR.le]
   have hsqrt : (0 : ℝ) < Real.sqrt ((h : ℝ) * (k : ℝ)) :=

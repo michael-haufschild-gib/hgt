@@ -5,11 +5,11 @@ import Mathlib
 
 The theta Wigner current naturally carries the fourth-order dilation polynomial
 
-`((D - 1/2)^2 + b^2) ((D + 1/2)^2 + b^2)`.
+`((D - 1/2)^(2 : ℕ) + b^(2 : ℕ)) ((D + 1/2)^(2 : ℕ) + b^(2 : ℕ))`.
 
 On the Fourier frequency `τ` of the logarithmic dilation variable, its symbol is the norm square
 
-`(b^2 + 1/4 - τ^2)^2 + τ^2`.
+`(b^(2 : ℕ) + 1/4 - τ^(2 : ℕ))^(2 : ℕ) + τ^(2 : ℕ)`.
 
 This file proves its exact sharp positive floor.  It contains no zeta-zero hypothesis and makes no
 positivity assertion about the separate arithmetic/radial pairing in the Xi Bezoutian.
@@ -23,21 +23,21 @@ noncomputable section
 
 /-- The scalar Fourier symbol of the Wigner--Eisenstein archimedean fourth-order operator. -/
 def thetaWignerEisensteinSymbol (b τ : ℝ) : ℝ :=
-  (b ^ 2 + 1 / 4 - τ ^ 2) ^ 2 + τ ^ 2
+  (b ^ (2 : ℕ) + 1 / 4 - τ ^ (2 : ℕ)) ^ (2 : ℕ) + τ ^ (2 : ℕ)
 
 /-- The exact lower spectral edge of `thetaWignerEisensteinSymbol b`. -/
 def thetaWignerEisensteinFloor (b : ℝ) : ℝ :=
-  if b ^ 2 ≤ 1 / 4 then (b ^ 2 + 1 / 4) ^ 2 else b ^ 2
+  if b ^ (2 : ℕ) ≤ 1 / 4 then (b ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ) else b ^ (2 : ℕ)
 
 /-- The squared modulus of the elementary centered completion polynomial on the radial line
 `w = a + i b`. -/
 def thetaXiCompletionRadialWeight (b a : ℝ) : ℝ :=
-  ((a - 1 / 2) ^ 2 + b ^ 2) * ((a + 1 / 2) ^ 2 + b ^ 2)
+  ((a - 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ)) * ((a + 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ))
 
 /-- The fourth-order symbol is the norm square of either conjugate second-order factor. -/
 theorem thetaWignerEisensteinSymbol_eq_normSq (b τ : ℝ) :
     thetaWignerEisensteinSymbol b τ =
-      Complex.normSq ((((τ : ℂ) * I - (1 / 2 : ℂ)) ^ 2) + (b : ℂ) ^ 2) := by
+      Complex.normSq ((((τ : ℂ) * I - (1 / 2 : ℂ)) ^ (2 : ℕ)) + (b : ℂ) ^ (2 : ℕ)) := by
   rw [Complex.normSq_apply]
   norm_num [thetaWignerEisensteinSymbol, pow_two]
   ring
@@ -47,56 +47,56 @@ theorem thetaWignerEisensteinSymbol_neg (b τ : ℝ) :
     thetaWignerEisensteinSymbol b (-τ) = thetaWignerEisensteinSymbol b τ := by
   simp [thetaWignerEisensteinSymbol]
 
-/-- Characteristic-shell normal form.  The excess over `b^2` is exactly the squared distance, in
-the variable `τ^2`, from the moving shell `τ^2=b^2-1/4`. -/
+/-- Characteristic-shell normal form.  The excess over `b^(2 : ℕ)` is exactly the squared distance, in
+the variable `τ^(2 : ℕ)`, from the moving shell `τ^(2 : ℕ)=b^(2 : ℕ)-1/4`. -/
 theorem thetaWignerEisensteinSymbol_eq_height_add_shellSq (b τ : ℝ) :
     thetaWignerEisensteinSymbol b τ =
-      b ^ 2 + (τ ^ 2 - (b ^ 2 - 1 / 4)) ^ 2 := by
+      b ^ (2 : ℕ) + (τ ^ (2 : ℕ) - (b ^ (2 : ℕ) - 1 / 4)) ^ (2 : ℕ) := by
   unfold thetaWignerEisensteinSymbol
   ring
 
 /-- Exact localization of every bounded-excess state around the moving characteristic shell. -/
 theorem thetaWignerEisensteinSymbol_sublevel_iff {b τ R : ℝ} (hR : 0 ≤ R) :
-    thetaWignerEisensteinSymbol b τ ≤ b ^ 2 + R ^ 2 ↔
-      |τ ^ 2 - (b ^ 2 - 1 / 4)| ≤ R := by
+    thetaWignerEisensteinSymbol b τ ≤ b ^ (2 : ℕ) + R ^ (2 : ℕ) ↔
+      |τ ^ (2 : ℕ) - (b ^ (2 : ℕ) - 1 / 4)| ≤ R := by
   rw [thetaWignerEisensteinSymbol_eq_height_add_shellSq]
-  let δ := τ ^ 2 - (b ^ 2 - 1 / 4)
+  let δ := τ ^ (2 : ℕ) - (b ^ (2 : ℕ) - 1 / 4)
   have hδ : 0 ≤ |δ| := abs_nonneg δ
   constructor
   · intro h
-    change b ^ 2 + δ ^ 2 ≤ b ^ 2 + R ^ 2 at h
+    change b ^ (2 : ℕ) + δ ^ (2 : ℕ) ≤ b ^ (2 : ℕ) + R ^ (2 : ℕ) at h
     apply (sq_le_sq₀ hδ hR).1
-    simpa [sq_abs] using (show δ ^ 2 ≤ R ^ 2 by linarith)
+    simpa [sq_abs] using (show δ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) by linarith)
   · intro h
     change |δ| ≤ R at h
     have hsquare := (sq_le_sq₀ hδ hR).2 h
-    change b ^ 2 + δ ^ 2 ≤ b ^ 2 + R ^ 2
-    simpa [sq_abs] using (show b ^ 2 + |δ| ^ 2 ≤ b ^ 2 + R ^ 2 by linarith)
+    change b ^ (2 : ℕ) + δ ^ (2 : ℕ) ≤ b ^ (2 : ℕ) + R ^ (2 : ℕ)
+    simpa [sq_abs] using (show b ^ (2 : ℕ) + |δ| ^ (2 : ℕ) ≤ b ^ (2 : ℕ) + R ^ (2 : ℕ) by linarith)
 
 /-- The exact spectral edge is strictly positive at every real Eisenstein frequency. -/
 theorem thetaWignerEisensteinFloor_pos (b : ℝ) :
     0 < thetaWignerEisensteinFloor b := by
   rw [thetaWignerEisensteinFloor]
   split_ifs with h
-  · have hb : 0 < b ^ 2 + 1 / 4 := by nlinarith [sq_nonneg b]
+  · have hb : 0 < b ^ (2 : ℕ) + 1 / 4 := by nlinarith [sq_nonneg b]
     positivity
-  · have hb : 1 / 4 < b ^ 2 := lt_of_not_ge h
+  · have hb : 1 / 4 < b ^ (2 : ℕ) := lt_of_not_ge h
     positivity
 
 /-- **Sharp coercivity.**  Every dilation frequency lies above the exact positive spectral edge. -/
 theorem thetaWignerEisensteinFloor_le_symbol (b τ : ℝ) :
     thetaWignerEisensteinFloor b ≤ thetaWignerEisensteinSymbol b τ := by
-  by_cases h : b ^ 2 ≤ 1 / 4
+  by_cases h : b ^ (2 : ℕ) ≤ 1 / 4
   · rw [thetaWignerEisensteinFloor, if_pos h]
-    have hτ : 0 ≤ τ ^ 2 := sq_nonneg τ
-    have hsecond : 0 ≤ τ ^ 2 + 1 / 2 - 2 * b ^ 2 := by
+    have hτ : 0 ≤ τ ^ (2 : ℕ) := sq_nonneg τ
+    have hsecond : 0 ≤ τ ^ (2 : ℕ) + 1 / 2 - 2 * b ^ (2 : ℕ) := by
       nlinarith
-    have hprod : 0 ≤ τ ^ 2 * (τ ^ 2 + 1 / 2 - 2 * b ^ 2) :=
+    have hprod : 0 ≤ τ ^ (2 : ℕ) * (τ ^ (2 : ℕ) + 1 / 2 - 2 * b ^ (2 : ℕ)) :=
       mul_nonneg hτ hsecond
     unfold thetaWignerEisensteinSymbol
     nlinarith
   · rw [thetaWignerEisensteinFloor, if_neg h]
-    have hsquare : 0 ≤ (τ ^ 2 - (b ^ 2 - 1 / 4)) ^ 2 := sq_nonneg _
+    have hsquare : 0 ≤ (τ ^ (2 : ℕ) - (b ^ (2 : ℕ) - 1 / 4)) ^ (2 : ℕ) := sq_nonneg _
     unfold thetaWignerEisensteinSymbol
     nlinarith
 
@@ -107,19 +107,19 @@ theorem thetaWignerEisensteinSymbol_pos (b τ : ℝ) :
     (thetaWignerEisensteinFloor_le_symbol b τ)
 
 /-- The lower edge is attained: at frequency zero below the transition, and at the two displaced
-frequencies `±sqrt (b^2 - 1/4)` above it. -/
+frequencies `±sqrt (b^(2 : ℕ) - 1/4)` above it. -/
 theorem exists_thetaWignerEisensteinSymbol_eq_floor (b : ℝ) :
     ∃ τ : ℝ,
       thetaWignerEisensteinSymbol b τ = thetaWignerEisensteinFloor b := by
-  by_cases h : b ^ 2 ≤ 1 / 4
+  by_cases h : b ^ (2 : ℕ) ≤ 1 / 4
   · refine ⟨0, ?_⟩
     rw [thetaWignerEisensteinFloor, if_pos h]
     norm_num [thetaWignerEisensteinSymbol]
-  · let τ : ℝ := Real.sqrt (b ^ 2 - 1 / 4)
-    have hrad : 0 ≤ b ^ 2 - 1 / 4 := by
-      have : 1 / 4 < b ^ 2 := lt_of_not_ge h
+  · let τ : ℝ := Real.sqrt (b ^ (2 : ℕ) - 1 / 4)
+    have hrad : 0 ≤ b ^ (2 : ℕ) - 1 / 4 := by
+      have : 1 / 4 < b ^ (2 : ℕ) := lt_of_not_ge h
       linarith
-    have hτ : τ ^ 2 = b ^ 2 - 1 / 4 := by
+    have hτ : τ ^ (2 : ℕ) = b ^ (2 : ℕ) - 1 / 4 := by
       exact Real.sq_sqrt hrad
     refine ⟨τ, ?_⟩
     rw [thetaWignerEisensteinFloor, if_neg h]
@@ -130,8 +130,8 @@ theorem exists_thetaWignerEisensteinSymbol_eq_floor (b : ℝ) :
 /-- The sharp floor changes formula only at the critical frequency `|b|=1/2`. -/
 theorem thetaWignerEisensteinFloor_eq (b : ℝ) :
     thetaWignerEisensteinFloor b =
-      if |b| ≤ 1 / 2 then (b ^ 2 + 1 / 4) ^ 2 else b ^ 2 := by
-  have hiff : b ^ 2 ≤ 1 / 4 ↔ |b| ≤ 1 / 2 := by
+      if |b| ≤ 1 / 2 then (b ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ) else b ^ (2 : ℕ) := by
+  have hiff : b ^ (2 : ℕ) ≤ 1 / 4 ↔ |b| ≤ 1 / 2 := by
     constructor
     · intro h
       apply (sq_le_sq₀ (abs_nonneg b) (by norm_num)).1
@@ -144,10 +144,10 @@ theorem thetaWignerEisensteinFloor_eq (b : ℝ) :
       simpa [sq_abs] using hsq
   simp only [thetaWignerEisensteinFloor, hiff]
 
-/-- The radial completion weight is exactly `|(a+i b)^2-1/4|^2`. -/
+/-- The radial completion weight is exactly `|(a+i b)^(2 : ℕ)-1/4|^(2 : ℕ)`. -/
 theorem thetaXiCompletionRadialWeight_eq_normSq (b a : ℝ) :
     thetaXiCompletionRadialWeight b a =
-      Complex.normSq ((((a : ℂ) + (b : ℂ) * I) ^ 2) - (1 / 4 : ℂ)) := by
+      Complex.normSq ((((a : ℂ) + (b : ℂ) * I) ^ (2 : ℕ)) - (1 / 4 : ℂ)) := by
   rw [Complex.normSq_apply]
   norm_num [thetaXiCompletionRadialWeight, pow_two]
   ring
@@ -155,33 +155,33 @@ theorem thetaXiCompletionRadialWeight_eq_normSq (b a : ℝ) :
 /-- Exact radial derivative of the elementary Xi completion weight. -/
 theorem hasDerivAt_thetaXiCompletionRadialWeight (b a : ℝ) :
     HasDerivAt (thetaXiCompletionRadialWeight b)
-      (4 * a * (a ^ 2 + b ^ 2 - 1 / 4)) a := by
-  have hminus : HasDerivAt (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2)
+      (4 * a * (a ^ (2 : ℕ) + b ^ (2 : ℕ) - 1 / 4)) a := by
+  have hminus : HasDerivAt (fun x : ℝ => (x - 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ))
       (2 * (a - 1 / 2)) a := by
     have hraw := (((hasDerivAt_id a).sub_const (1 / 2)).pow 2).add
-      (hasDerivAt_const (x := a) (c := b ^ 2))
+      (hasDerivAt_const (x := a) (c := b ^ (2 : ℕ)))
     have hfun :
-        (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2) =
-          (fun x : ℝ => id x - 1 / 2) ^ 2 + fun _ => b ^ 2 := by
+        (fun x : ℝ => (x - 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ)) =
+          (fun x : ℝ => id x - 1 / 2) ^ (2 : ℕ) + fun _ => b ^ (2 : ℕ) := by
       funext x
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
     rw [hfun]
     exact hraw.congr_deriv (by norm_num [id_eq])
-  have hplus : HasDerivAt (fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2)
+  have hplus : HasDerivAt (fun x : ℝ => (x + 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ))
       (2 * (a + 1 / 2)) a := by
     have hraw := (((hasDerivAt_id a).add_const (1 / 2)).pow 2).add
-      (hasDerivAt_const (x := a) (c := b ^ 2))
+      (hasDerivAt_const (x := a) (c := b ^ (2 : ℕ)))
     have hfun :
-        (fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2) =
-          (fun x : ℝ => id x + 1 / 2) ^ 2 + fun _ => b ^ 2 := by
+        (fun x : ℝ => (x + 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ)) =
+          (fun x : ℝ => id x + 1 / 2) ^ (2 : ℕ) + fun _ => b ^ (2 : ℕ) := by
       funext x
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
     rw [hfun]
     exact hraw.congr_deriv (by norm_num [id_eq])
   have hfun :
       thetaXiCompletionRadialWeight b =
-        (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2) *
-          fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2 := by
+        (fun x : ℝ => (x - 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ)) *
+          fun x : ℝ => (x + 1 / 2) ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     funext x
     rfl
   rw [hfun]
@@ -189,13 +189,13 @@ theorem hasDerivAt_thetaXiCompletionRadialWeight (b a : ℝ) :
 
 theorem deriv_thetaXiCompletionRadialWeight (b a : ℝ) :
     deriv (thetaXiCompletionRadialWeight b) a =
-      4 * a * (a ^ 2 + b ^ 2 - 1 / 4) :=
+      4 * a * (a ^ (2 : ℕ) + b ^ (2 : ℕ) - 1 / 4) :=
   (hasDerivAt_thetaXiCompletionRadialWeight b a).deriv
 
 /-- Outside the radius-`1/2` central disk, the elementary completion weight points strictly toward
 the Euler half-plane. -/
 theorem deriv_thetaXiCompletionRadialWeight_pos {b a : ℝ} (ha : 0 < a)
-    (hout : 1 / 4 < a ^ 2 + b ^ 2) :
+    (hout : 1 / 4 < a ^ (2 : ℕ) + b ^ (2 : ℕ)) :
     0 < deriv (thetaXiCompletionRadialWeight b) a := by
   rw [deriv_thetaXiCompletionRadialWeight]
   positivity
@@ -203,19 +203,19 @@ theorem deriv_thetaXiCompletionRadialWeight_pos {b a : ℝ} (ha : 0 < a)
 /-- Inside the radius-`1/2` central disk, the elementary completion weight points in the opposite
 radial direction. -/
 theorem deriv_thetaXiCompletionRadialWeight_neg {b a : ℝ} (ha : 0 < a)
-    (hin : a ^ 2 + b ^ 2 < 1 / 4) :
+    (hin : a ^ (2 : ℕ) + b ^ (2 : ℕ) < 1 / 4) :
     deriv (thetaXiCompletionRadialWeight b) a < 0 := by
   rw [deriv_thetaXiCompletionRadialWeight]
-  have hfactor : a ^ 2 + b ^ 2 - 1 / 4 < 0 := by linarith
+  have hfactor : a ^ (2 : ℕ) + b ^ (2 : ℕ) - 1 / 4 < 0 := by linarith
   exact mul_neg_of_pos_of_neg (mul_pos (by norm_num) ha) hfactor
 
 /-- Exact ordered-pair polynomial collapse in the theta Wigner transform.  After recentering an
 ordered theta-index pair, every dependence on the ratio of the indices leaves the Gaussian
 polynomial and survives only in the separate Fourier phase. -/
 theorem thetaWignerAtomPair_polynomial (c v : ℝ) :
-    (c ^ 2 * Real.exp (4 * v) - 3 * c * Real.exp (2 * v)) *
-        (c ^ 2 * Real.exp (-4 * v) - 3 * c * Real.exp (-2 * v)) =
-      c ^ 4 - 6 * c ^ 3 * Real.cosh (2 * v) + 9 * c ^ 2 := by
+    (c ^ (2 : ℕ) * Real.exp (4 * v) - 3 * c * Real.exp (2 * v)) *
+        (c ^ (2 : ℕ) * Real.exp (-4 * v) - 3 * c * Real.exp (-2 * v)) =
+      c ^ (4 : ℕ) - 6 * c ^ (3 : ℕ) * Real.cosh (2 * v) + 9 * c ^ (2 : ℕ) := by
   rw [Real.cosh_eq]
   have h44 : Real.exp (4 * v) * Real.exp (-4 * v) = 1 := by
     rw [← Real.exp_add]
@@ -232,10 +232,10 @@ theorem thetaWignerAtomPair_polynomial (c v : ℝ) :
     congr 1
     ring
   calc
-    _ = c ^ 4 * (Real.exp (4 * v) * Real.exp (-4 * v))
-        - 3 * c ^ 3 * (Real.exp (4 * v) * Real.exp (-2 * v))
-        - 3 * c ^ 3 * (Real.exp (2 * v) * Real.exp (-4 * v))
-        + 9 * c ^ 2 * (Real.exp (2 * v) * Real.exp (-2 * v)) := by ring
+    _ = c ^ (4 : ℕ) * (Real.exp (4 * v) * Real.exp (-4 * v))
+        - 3 * c ^ (3 : ℕ) * (Real.exp (4 * v) * Real.exp (-2 * v))
+        - 3 * c ^ (3 : ℕ) * (Real.exp (2 * v) * Real.exp (-4 * v))
+        + 9 * c ^ (2 : ℕ) * (Real.exp (2 * v) * Real.exp (-2 * v)) := by ring
     _ = _ := by rw [h44, h22, h42, h24]; ring
 
 end

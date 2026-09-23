@@ -86,7 +86,7 @@ def inputZeroAmplitude (f : Oracle n) : ℂ := finalState f 0
 scalar multiple of the input-register `|0^n⟩` amplitude because the target
 qubit remains `|−⟩`. -/
 def circuitZeroAmplitude (f : Oracle n) : ℂ :=
-  finalJointState f (prodEquiv (0, (0 : Fin (2 ^ 1))))
+  finalJointState f (prodEquiv (0, (0 : Fin (2 ^ (1 : ℕ)))))
 
 /-- The numerator of the final `|0^n⟩` amplitude after the second Hadamard
 layer: `∑ x, (-1)^{f x}`. -/
@@ -236,7 +236,7 @@ def circuit (n : ℕ) : Circuit (Qubits (n + 1)) :=
 theorem reportsConstant_iff_timedFinalJointState
     (f : WalshHadamard.Oracle n) :
     ReportsConstant f ↔
-      (timedFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ 1)))) ≠ 0 := by
+      (timedFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ (1 : ℕ))))) ≠ 0 := by
   rfl
 
 /-- One Deutsch-Jozsa oracle query with the target qubit in `|-⟩` is the
@@ -267,7 +267,7 @@ theorem main (f : WalshHadamard.Oracle n)
 /-- Deutsch-Jozsa correctness, phrased through the TimeM return value. -/
 theorem timedFinalJointState_correct
     (f : WalshHadamard.Oracle n) (hf : Promise f) :
-    (timedFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ 1)))) ≠ 0 ↔
+    (timedFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ (1 : ℕ))))) ≠ 0 ↔
       IsConstant f := by
   rw [← reportsConstant_iff_timedFinalJointState f]
   exact main f hf
@@ -277,7 +277,7 @@ constant/balanced promise, the profiled circuit decides the constant side
 exactly and records the accepted exact resource counts. -/
 theorem main_with_resources
     (f : WalshHadamard.Oracle n) (hf : Promise f) :
-    ((profiledFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ 1)))) ≠ 0 ↔
+    ((profiledFinalJointState f).ret (prodEquiv (0, (0 : Fin (2 ^ (1 : ℕ))))) ≠ 0 ↔
       IsConstant f) ∧
       ResourceProfile.HasExactCounts (profiledFinalJointState f).resources
         1 (2 * n + 1) (2 * n + 1) 0 := by

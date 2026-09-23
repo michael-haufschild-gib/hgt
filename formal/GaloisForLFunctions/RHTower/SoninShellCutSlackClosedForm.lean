@@ -23,10 +23,10 @@ open scoped FourierTransform
 /-- The quotient of a band root by the floor root, in closed form. -/
 theorem sqrt_band_div_sqrt_floor (t X δ I : ℝ) (ht : 0 ≤ t) (hX : 0 ≤ X) (hδ : 0 < δ)
     (hI : 0 < I) :
-    Real.sqrt (2 * t * X ^ 2) / Real.sqrt (δ * I / 2) = 2 * X * Real.sqrt (t / (δ * I)) := by
+    Real.sqrt (2 * t * X ^ (2 : ℕ)) / Real.sqrt (δ * I / 2) = 2 * X * Real.sqrt (t / (δ * I)) := by
   have hfloor : (0 : ℝ) < δ * I / 2 := by positivity
   have hne : Real.sqrt (δ * I / 2) ≠ 0 := (Real.sqrt_pos.mpr hfloor).ne'
-  have h1 : Real.sqrt (2 * t * X ^ 2) = Real.sqrt (2 * t) * X := by
+  have h1 : Real.sqrt (2 * t * X ^ (2 : ℕ)) = Real.sqrt (2 * t) * X := by
     rw [Real.sqrt_mul (by positivity : (0 : ℝ) ≤ 2 * t), Real.sqrt_sq hX]
   have h3 : Real.sqrt (t / (δ * I)) * Real.sqrt (δ * I / 2) = Real.sqrt (t / 2) := by
     rw [← Real.sqrt_mul (by positivity : (0 : ℝ) ≤ t / (δ * I))]
@@ -34,7 +34,7 @@ theorem sqrt_band_div_sqrt_floor (t X δ I : ℝ) (ht : 0 ≤ t) (hX : 0 ≤ X) 
     field_simp
   have h4 : Real.sqrt (2 * t) = 2 * Real.sqrt (t / 2) := by
     rw [show (2 : ℝ) * Real.sqrt (t / 2) = Real.sqrt 4 * Real.sqrt (t / 2) by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)],
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)],
       ← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 4)]
     congr 1
     ring

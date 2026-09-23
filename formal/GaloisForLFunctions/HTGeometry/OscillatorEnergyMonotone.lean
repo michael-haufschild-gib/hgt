@@ -24,30 +24,30 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Energy of a solution of the oscillator equation. -/
 noncomputable def oscillatorMonotoneEnergy (mu : ℝ) (v v' : ℝ → ℝ) (xi : ℝ) : ℝ :=
-  v' xi ^ 2 - (xi ^ 2 - mu) * v xi ^ 2
+  v' xi ^ (2 : ℕ) - (xi ^ (2 : ℕ) - mu) * v xi ^ (2 : ℕ)
 
 /-- Normalized energy deficit, monotone past the turning point. -/
 noncomputable def oscRatio (mu : ℝ) (v v' : ℝ → ℝ) (xi : ℝ) : ℝ :=
-  -oscillatorMonotoneEnergy mu v v' xi / (xi ^ 2 - mu)
+  -oscillatorMonotoneEnergy mu v v' xi / (xi ^ (2 : ℕ) - mu)
 
 /-- **Energy derivative.**  The oscillator energy has derivative `−2ξv²`. -/
 theorem hasDerivAt_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) (xi : ℝ) :
-    HasDerivAt (oscillatorMonotoneEnergy mu v v') (-(2 * xi * v xi ^ 2)) xi := by
-  have h1 : HasDerivAt (fun x => v' x ^ 2) (2 * v' xi * ((xi ^ 2 - mu) * v xi)) xi := by
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) (xi : ℝ) :
+    HasDerivAt (oscillatorMonotoneEnergy mu v v') (-(2 * xi * v xi ^ (2 : ℕ))) xi := by
+  have h1 : HasDerivAt (fun x => v' x ^ (2 : ℕ)) (2 * v' xi * ((xi ^ (2 : ℕ) - mu) * v xi)) xi := by
     refine ((hv' xi).pow 2).congr_deriv ?_
     push_cast
     ring
-  have ha : HasDerivAt (fun x : ℝ => x ^ 2 - mu) (2 * xi) xi := by
+  have ha : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) - mu) (2 * xi) xi := by
     have := (hasDerivAt_pow 2 xi).sub_const mu
     simpa using this
-  have hb : HasDerivAt (fun x => v x ^ 2) (2 * v xi * v' xi) xi := by
+  have hb : HasDerivAt (fun x => v x ^ (2 : ℕ)) (2 * v xi * v' xi) xi := by
     refine ((hv xi).pow 2).congr_deriv ?_
     push_cast
     ring
-  have h2 : HasDerivAt (fun x => (x ^ 2 - mu) * v x ^ 2)
-      (2 * xi * v xi ^ 2 + (xi ^ 2 - mu) * (2 * v xi * v' xi)) xi := ha.mul hb
+  have h2 : HasDerivAt (fun x => (x ^ (2 : ℕ) - mu) * v x ^ (2 : ℕ))
+      (2 * xi * v xi ^ (2 : ℕ) + (xi ^ (2 : ℕ) - mu) * (2 * v xi * v' xi)) xi := ha.mul hb
   have h3 := h1.sub h2
   refine h3.congr_deriv ?_
   ring
@@ -55,7 +55,7 @@ theorem hasDerivAt_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ}
 /-- The oscillator energy is nonincreasing on any interval in the positive axis. -/
 theorem antitoneOn_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 ≤ a)
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) :
     AntitoneOn (oscillatorMonotoneEnergy mu v v') (Ici a) := by
   refine antitoneOn_of_deriv_nonpos (convex_Ici a) ?_ ?_ ?_
   · exact fun x _ => ((hasDerivAt_oscillatorMonotoneEnergy hv hv' x).continuousAt).continuousWithinAt
@@ -69,33 +69,33 @@ theorem antitoneOn_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ} {a :
 
 /-- **Ratio derivative.**  Past the turning point the normalized energy deficit has derivative
 `2ξ v′²/(ξ² − μ)²`. -/
-theorem hasDerivAt_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : xi ^ 2 - mu ≠ 0)
+theorem hasDerivAt_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : xi ^ (2 : ℕ) - mu ≠ 0)
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
-    HasDerivAt (oscRatio mu v v') (2 * xi * v' xi ^ 2 / (xi ^ 2 - mu) ^ 2) xi := by
-  have hE : HasDerivAt (fun x => -oscillatorMonotoneEnergy mu v v' x) (2 * xi * v xi ^ 2) xi := by
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) :
+    HasDerivAt (oscRatio mu v v') (2 * xi * v' xi ^ (2 : ℕ) / (xi ^ (2 : ℕ) - mu) ^ (2 : ℕ)) xi := by
+  have hE : HasDerivAt (fun x => -oscillatorMonotoneEnergy mu v v' x) (2 * xi * v xi ^ (2 : ℕ)) xi := by
     refine ((hasDerivAt_oscillatorMonotoneEnergy hv hv' xi).neg).congr_deriv ?_
     ring
-  have hd : HasDerivAt (fun x : ℝ => x ^ 2 - mu) (2 * xi) xi := by
+  have hd : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) - mu) (2 * xi) xi := by
     have := (hasDerivAt_pow 2 xi).sub_const mu
     simpa using this
   have hq := hE.div hd hxi
   refine hq.congr_deriv ?_
-  have hne : (xi ^ 2 - mu) ≠ 0 := hxi
+  have hne : (xi ^ (2 : ℕ) - mu) ≠ 0 := hxi
   simp only [oscillatorMonotoneEnergy]
   field_simp
   ring
 
 /-- The normalized energy deficit is nondecreasing past the turning point. -/
 theorem monotoneOn_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 < a)
-    (hmu : mu < a ^ 2)
+    (hmu : mu < a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) :
     MonotoneOn (oscRatio mu v v') (Ici a) := by
-  have hpos : ∀ x ∈ Ici a, 0 < x ^ 2 - mu := by
+  have hpos : ∀ x ∈ Ici a, 0 < x ^ (2 : ℕ) - mu := by
     intro x hx
     have hax : a ≤ x := hx
-    have : a ^ 2 ≤ x ^ 2 := by nlinarith
+    have : a ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by nlinarith
     linarith
   refine monotoneOn_of_deriv_nonneg (convex_Ici a) ?_ ?_ ?_
   · intro x hx
@@ -113,13 +113,13 @@ theorem monotoneOn_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 < 
 
 /-- Past the turning point the normalized energy deficit is dominated by the square of the
 solution, the difference being `v′²/(ξ² − μ)`. -/
-theorem oscRatio_le_sq {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : 0 < xi ^ 2 - mu) :
-    oscRatio mu v v' xi ≤ v xi ^ 2 := by
-  have hid : v xi ^ 2 - oscRatio mu v v' xi = v' xi ^ 2 / (xi ^ 2 - mu) := by
+theorem oscRatio_le_sq {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : 0 < xi ^ (2 : ℕ) - mu) :
+    oscRatio mu v v' xi ≤ v xi ^ (2 : ℕ) := by
+  have hid : v xi ^ (2 : ℕ) - oscRatio mu v v' xi = v' xi ^ (2 : ℕ) / (xi ^ (2 : ℕ) - mu) := by
     rw [oscRatio, oscillatorMonotoneEnergy]
     field_simp
     ring
-  have hnn : (0 : ℝ) ≤ v' xi ^ 2 / (xi ^ 2 - mu) := by positivity
+  have hnn : (0 : ℝ) ≤ v' xi ^ (2 : ℕ) / (xi ^ (2 : ℕ) - mu) := by positivity
   linarith
 
 end GaloisForLFunctions.HTGeometry

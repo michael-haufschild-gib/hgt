@@ -87,7 +87,7 @@ theorem exists_upper_bound_of_isCompact {K : Set (posDefCone n)} (hK : IsCompact
   exact hmax ⟨hA, Set.mem_univ _⟩ (a := (A, ⟨x, mem_sphere_zero_iff_norm.mpr hx⟩))
 
 theorem quadForm_smul (A : posDefCone n) (c : ℝ) (x : Fin n → ℝ) :
-    quadForm A (c • x) = c ^ 2 * quadForm A x := by
+    quadForm A (c • x) = c ^ (2 : ℕ) * quadForm A x := by
   unfold quadForm
   rw [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul,
     ← mul_assoc, ← pow_two]
@@ -99,7 +99,7 @@ theorem quadForm_zero (A : posDefCone n) : quadForm A 0 = 0 := by
 /-- A uniform lower bound on the sphere is a uniform lower bound for the quadratic form. -/
 theorem quadForm_ge_of_sphere_bound {A : posDefCone n} {m : ℝ}
     (h : ∀ x : Fin n → ℝ, ‖x‖ = 1 → m ≤ quadForm A x) (y : Fin n → ℝ) :
-    m * ‖y‖ ^ 2 ≤ quadForm A y := by
+    m * ‖y‖ ^ (2 : ℕ) ≤ quadForm A y := by
   by_cases hy : y = 0
   · subst hy
     rw [quadForm_zero, norm_zero]
@@ -109,12 +109,12 @@ theorem quadForm_ge_of_sphere_bound {A : posDefCone n} {m : ℝ}
       rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnorm]
     have hb := h _ hunit
     rw [quadForm_smul] at hb
-    have hsq : (0 : ℝ) < ‖y‖ ^ 2 := by positivity
-    have hinv : (‖y‖⁻¹) ^ 2 * ‖y‖ ^ 2 = 1 := by
+    have hsq : (0 : ℝ) < ‖y‖ ^ (2 : ℕ) := by positivity
+    have hinv : (‖y‖⁻¹) ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) = 1 := by
       rw [← mul_pow, inv_mul_cancel₀ hnorm, one_pow]
-    calc m * ‖y‖ ^ 2 ≤ ((‖y‖⁻¹) ^ 2 * quadForm A y) * ‖y‖ ^ 2 :=
+    calc m * ‖y‖ ^ (2 : ℕ) ≤ ((‖y‖⁻¹) ^ (2 : ℕ) * quadForm A y) * ‖y‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hb (le_of_lt hsq)
-      _ = ((‖y‖⁻¹) ^ 2 * ‖y‖ ^ 2) * quadForm A y := by ring
+      _ = ((‖y‖⁻¹) ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ)) * quadForm A y := by ring
       _ = quadForm A y := by rw [hinv, one_mul]
 
 /-- The quadratic form of a congruent matrix. -/
@@ -148,8 +148,8 @@ theorem entry_bound {K : Set (posDefCone n)} {m M : ℝ} (hm : 0 < m)
   have hle : quadForm A ((slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))) ≤ M := by
     rw [← quadForm_smul_group]
     exact hup _ hgA _ hx
-  have hbound : m * ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ 2 ≤ M := le_trans hge hle
-  have hnormsq : ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ 2 ≤ M / m := by
+  have hbound : m * ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ (2 : ℕ) ≤ M := le_trans hge hle
+  have hnormsq : ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ (2 : ℕ) ≤ M / m := by
     rw [le_div_iff₀ hm, mul_comm]
     exact hbound
   have hentry : |slReal g j i| ≤ ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ := by
@@ -161,7 +161,7 @@ theorem entry_bound {K : Set (posDefCone n)} {m M : ℝ} (hm : 0 < m)
   have hnn : (0 : ℝ) ≤ ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ := norm_nonneg _
   refine le_trans hentry ?_
   rw [show ‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖
-      = Real.sqrt (‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ 2) from
+      = Real.sqrt (‖(slReal g)ᵀ *ᵥ (Pi.single j (1 : ℝ))‖ ^ (2 : ℕ)) from
     (Real.sqrt_sq hnn).symm]
   exact Real.sqrt_le_sqrt hnormsq
 

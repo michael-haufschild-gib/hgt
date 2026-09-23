@@ -84,7 +84,7 @@ theorem explicitBranch_isRootOfUnity_smul (c : ℂ) (n : ℕ) {z : ℂ} (hz : z 
 The level-`n` branch at `f_c z` is the square of the level-`(n+1)` branch at `z` — the explicit-branch
 form of `φ_c(z²+c) = φ_c(z)²`, the consistency that threads the levels into one continuation. -/
 theorem explicitBranch_quadratic (c : ℂ) (n : ℕ) (z : ℂ) :
-    explicitBranch c n (quadratic c z) = (explicitBranch c (n + 1) z) ^ 2 := by
+    explicitBranch c n (quadratic c z) = (explicitBranch c (n + 1) z) ^ (2 : ℕ) := by
   rw [explicitBranch, explicitBranch, ← Complex.exp_nat_mul]
   congr 1
   rw [show (quadratic c)^[n] (quadratic c z) = (quadratic c)^[n + 1] z from

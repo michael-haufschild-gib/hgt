@@ -61,12 +61,12 @@ theorem gaussianPrimeEnergyMainTerm_pi_div
     {ε : ℝ} (hε : 0 < ε) :
     gaussianPrimeEnergyMainTerm ε (Real.pi / ε) =
       4 * Real.exp (ε / 4) +
-        4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) := by
+        4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) := by
   rw [gaussianPrimeEnergyMainTerm_eq]
   have hεne : ε ≠ 0 := hε.ne'
   have hphase : ε * (Real.pi / ε) = Real.pi := by
     field_simp [hεne]
-  have hsq : ε * (Real.pi / ε) ^ 2 = Real.pi ^ 2 / ε := by
+  have hsq : ε * (Real.pi / ε) ^ (2 : ℕ) = Real.pi ^ (2 : ℕ) / ε := by
     field_simp [hεne]
   rw [hphase, hsq, Real.cos_pi]
   ring
@@ -78,7 +78,7 @@ theorem GaussianArithmeticWidthCertificate.phaseFlipPeak_le_digammaGain_add_part
     {ε : ℝ} (certificate : GaussianArithmeticWidthCertificate ε)
     (hphaseRadius : Real.pi / ε ≤ certificate.compactRadius) :
     4 * Real.exp (ε / 4) +
-        4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) ≤
+        4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) ≤
       gaussianDigammaGain ε (Real.pi / ε) +
         gaussianPrimePartialOscillationEnergy ε (Real.pi / ε)
           (Finset.range certificate.cutoff) := by

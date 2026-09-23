@@ -50,7 +50,7 @@ positive real part in the causal half-plane. -/
 theorem thetaCuspHawkingJaekelReynaudSpectralKernel_re
     (rho : ℝ) {p : ℂ} (hp : 0 < p.re) :
     (thetaCuspHawkingJaekelReynaudSpectralKernel rho p).re =
-      p.re * (1 + rho ^ 2) /
+      p.re * (1 + rho ^ (2 : ℕ)) /
         Complex.normSq (p - Complex.I * (rho : ℂ)) := by
   have hden : p - Complex.I * (rho : ℂ) ≠ 0 := by
     intro h
@@ -64,7 +64,7 @@ theorem thetaCuspHawkingJaekelReynaudSpectralKernel_re
     Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
     Complex.one_re, Complex.one_im, zero_mul, one_mul, sub_zero, zero_sub]
   rw [show Complex.normSq (p - Complex.I * (rho : ℂ)) =
-      p.re ^ 2 + (p.im - rho) ^ 2 by
+      p.re ^ (2 : ℕ) + (p.im - rho) ^ (2 : ℕ) by
     rw [Complex.normSq_apply]
     simp [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im]
     ring]
@@ -308,7 +308,7 @@ theorem not_nonempty_thetaCuspHawkingUVTransparentKMSFDTImpedanceLimit :
     Xi_nonneg_of_thetaCuspHawkingUVTransparentKMSFDTImpedanceLimit
       model (4 * Real.pi * w)
   rw [neg_one_mul, neg_nonneg, hardyXiDensity]
-  have hden : 0 ≤ (4 * Real.pi * w) ^ 2 + 1 / 4 := by positivity
+  have hden : 0 ≤ (4 * Real.pi * w) ^ (2 : ℕ) + 1 / 4 := by positivity
   exact div_nonpos_of_nonpos_of_nonneg (by nlinarith [hXi]) hden
 
 /-- **[LEAN-PROVED] UV stability excludes positive horizon charge.**  A positive-charge theta

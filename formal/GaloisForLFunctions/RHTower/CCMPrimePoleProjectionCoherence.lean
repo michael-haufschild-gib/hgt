@@ -51,8 +51,8 @@ theorem exists_fin_ccmPrimePole_projection_common_coherence
     {δ : ℝ} (hδ : 0 < δ) :
     ∃ v : CCMPrimePoleHilbert, ‖v‖ = 1 ∧
       v ∈ ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
-      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ 2 ≤
-        2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ (2 : ℕ) ≤
+        2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) := by
   obtain ⟨n, hn, r, hcoh⟩ :=
     exists_fin_ccmPrimePole_common_coherence (δ := δ) href L hL hδ
   let v : CCMPrimePoleHilbert := ccmNormalizedPrimePoleVector Lref href n
@@ -67,12 +67,12 @@ theorem exists_fin_ccmPrimePole_projection_common_coherence
         ‖v - u‖ := norm_sub_ccmPrimePoleProjection_le (hL i) v hu
   have hsq := (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hmin
   calc
-    ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ 2 =
-        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ 2 := by
+    ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v - v‖ ^ (2 : ℕ) =
+        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ (2 : ℕ) := by
       rw [norm_sub_rev]
-    _ ≤ ‖v - u‖ ^ 2 := hsq
-    _ = ‖u - v‖ ^ 2 := by rw [norm_sub_rev]
-    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := hcoh i
+    _ ≤ ‖v - u‖ ^ (2 : ℕ) := hsq
+    _ = ‖u - v‖ ^ (2 : ℕ) := by rw [norm_sub_rev]
+    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) := hcoh i
 
 set_option maxHeartbeats 1000000 in
 /-- The same common vector has a quantitative projective-measurement interpretation: at every
@@ -84,13 +84,13 @@ theorem exists_fin_ccmPrimePole_projection_common_born_survival
     {δ : ℝ} (hδ : 0 < δ) :
     ∃ v : CCMPrimePoleHilbert, ‖v‖ = 1 ∧
       v ∈ ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
-      1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+      1 - 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) ≤
         Complex.re (inner ℂ v
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v)) := by
   obtain ⟨v, hv, hvref, hdefect⟩ :=
     exists_fin_ccmPrimePole_projection_common_coherence (δ := δ) href L hL hδ
   refine ⟨v, hv, hvref, fun i => ?_⟩
-  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) ≤
     RCLike.re (inner ℂ v
       ((ccmPrimePoleClosedSubspace (L i) (hL i) :
         Submodule ℂ CCMPrimePoleHilbert).starProjection v))
@@ -112,8 +112,8 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
         ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
       ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
           (ccmNormalizedPrimePoleVector Lref href n) -
-        ccmNormalizedPrimePoleVector Lref href n‖ ^ 2 ≤
-        2 * (2 * Real.pi * (δ / L i)) ^ 2 := by
+        ccmNormalizedPrimePoleVector Lref href n‖ ^ (2 : ℕ) ≤
+        2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) := by
   obtain ⟨n, hn, r, hcoh⟩ :=
     exists_fin_ccmPrimePole_cofinal_common_coherence (δ := δ) href L hL hδ B
   let v : CCMPrimePoleHilbert := ccmNormalizedPrimePoleVector Lref href n
@@ -130,12 +130,12 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_coherence
   calc
     ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
           (ccmNormalizedPrimePoleVector Lref href n) -
-        ccmNormalizedPrimePoleVector Lref href n‖ ^ 2 =
-        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ 2 := by
+        ccmNormalizedPrimePoleVector Lref href n‖ ^ (2 : ℕ) =
+        ‖v - (ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection v‖ ^ (2 : ℕ) := by
       rw [norm_sub_rev]
-    _ ≤ ‖v - u‖ ^ 2 := hsq
-    _ = ‖u - v‖ ^ 2 := by rw [norm_sub_rev]
-    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ 2 := hcoh i
+    _ ≤ ‖v - u‖ ^ (2 : ℕ) := hsq
+    _ = ‖u - v‖ ^ (2 : ℕ) := by rw [norm_sub_rev]
+    _ ≤ 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) := hcoh i
 
 set_option maxHeartbeats 1000000 in
 /-- Cofinal Born survival: the high-index pole witness may be chosen beyond every prescribed
@@ -148,7 +148,7 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_born_survival
       ‖ccmNormalizedPrimePoleVector Lref href n‖ = 1 ∧
       ccmNormalizedPrimePoleVector Lref href n ∈
         ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
-      1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+      1 - 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) ≤
         Complex.re (inner ℂ (ccmNormalizedPrimePoleVector Lref href n)
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
             (ccmNormalizedPrimePoleVector Lref href n))) := by
@@ -156,7 +156,7 @@ theorem exists_fin_ccmPrimePole_projection_cofinal_common_born_survival
     exists_fin_ccmPrimePole_projection_cofinal_common_coherence
       (δ := δ) href L hL hδ B
   refine ⟨n, hn, hv, hvref, fun i => ?_⟩
-  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ 2 ≤
+  change 1 - 2 * (2 * Real.pi * (δ / L i)) ^ (2 : ℕ) ≤
     RCLike.re (inner ℂ (ccmNormalizedPrimePoleVector Lref href n)
       ((ccmPrimePoleClosedSubspace (L i) (hL i) :
         Submodule ℂ CCMPrimePoleHilbert).starProjection
@@ -179,8 +179,8 @@ theorem exists_fin_prime_ccmPrimePole_projection_common_coherence
       v ∈ ccmPrimePoleClosedSubspace (Real.log pref)
         (Real.log_pos (by exact_mod_cast hpref.one_lt)) ∧ ∀ i,
       ‖(ccmPrimePoleClosedSubspace (Real.log (p i))
-          (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v - v‖ ^ 2 ≤
-        2 * (2 * Real.pi * (δ / Real.log (p i))) ^ 2 := by
+          (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v - v‖ ^ (2 : ℕ) ≤
+        2 * (2 * Real.pi * (δ / Real.log (p i))) ^ (2 : ℕ) := by
   exact exists_fin_ccmPrimePole_projection_common_coherence
     (δ := δ)
     (Real.log_pos (by exact_mod_cast hpref.one_lt))
@@ -196,7 +196,7 @@ theorem exists_fin_prime_ccmPrimePole_projection_common_born_survival
     ∃ v : CCMPrimePoleHilbert, ‖v‖ = 1 ∧
       v ∈ ccmPrimePoleClosedSubspace (Real.log pref)
         (Real.log_pos (by exact_mod_cast hpref.one_lt)) ∧ ∀ i,
-      1 - 2 * (2 * Real.pi * (δ / Real.log (p i))) ^ 2 ≤
+      1 - 2 * (2 * Real.pi * (δ / Real.log (p i))) ^ (2 : ℕ) ≤
         Complex.re (inner ℂ v
           ((ccmPrimePoleClosedSubspace (Real.log (p i))
             (Real.log_pos (by exact_mod_cast (hp i).one_lt))).starProjection v)) := by

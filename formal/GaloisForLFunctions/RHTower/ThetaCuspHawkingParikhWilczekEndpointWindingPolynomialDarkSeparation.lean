@@ -121,7 +121,7 @@ def schwarzschildParikhWilczekPolynomialDarkEndpointWindingEnergy
 theorem schwarzschildParikhWilczekPolynomialDarkEndpointWindingEnergy_eq_sq
     (d : ℕ) (epsilon : ℝ) :
     schwarzschildParikhWilczekPolynomialDarkEndpointWindingEnergy d epsilon =
-      schwarzschildParikhWilczekPolynomialDarkEndpointWindingResponse d epsilon ^ 2 := by
+      schwarzschildParikhWilczekPolynomialDarkEndpointWindingResponse d epsilon ^ (2 : ℕ) := by
   rw [schwarzschildParikhWilczekPolynomialDarkEndpointWindingEnergy,
     schwarzschildParikhWilczekPolynomialDarkEndpointWindingResponse, pow_two,
     Finset.sum_mul_sum]

@@ -64,7 +64,7 @@ theorem tInner_self_add_smul {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (u v : E
 discriminant to be nonpositive.  No definiteness or completeness is used. -/
 theorem tInner_sq_le_of_nonneg {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     (hpos : ∀ w : E, 0 ≤ tInner T w w) (u v : E) :
-    (tInner T u v) ^ 2 ≤ tInner T u u * tInner T v v := by
+    (tInner T u v) ^ (2 : ℕ) ≤ tInner T u u * tInner T v v := by
   have hquad : ∀ t : ℝ,
       0 ≤ tInner T v v * (t * t) + 2 * tInner T u v * t + tInner T u u := by
     intro t
@@ -95,8 +95,8 @@ theorem tInner_smul_smul {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (c d : ℝ) 
 /-- **The normalized mass.**  The squared pairing of the normalizations of `v` and `w` is the squared
 pairing divided by the two squared norms — and this holds unconditionally. -/
 theorem inner_normalize_sq (v w : E) :
-    (inner ℝ (‖v‖⁻¹ • v) (‖w‖⁻¹ • w)) ^ 2
-      = (inner ℝ v w) ^ 2 / (‖v‖ ^ 2 * ‖w‖ ^ 2) := by
+    (inner ℝ (‖v‖⁻¹ • v) (‖w‖⁻¹ • w)) ^ (2 : ℕ)
+      = (inner ℝ v w) ^ (2 : ℕ) / (‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ)) := by
   rw [real_inner_smul_left, real_inner_smul_right]
   rcases eq_or_ne ‖v‖ 0 with hv | hv
   · rw [hv]
@@ -108,7 +108,7 @@ theorem inner_normalize_sq (v w : E) :
 
 /-- The same for the induced form: the mass of the `T`-normalizations. -/
 theorem tInner_normalize_sq {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (nv nw : ℝ) (v w : E) :
-    (tInner T (nv • v) (nw • w)) ^ 2 = nv ^ 2 * nw ^ 2 * (tInner T v w) ^ 2 := by
+    (tInner T (nv • v) (nw • w)) ^ (2 : ℕ) = nv ^ (2 : ℕ) * nw ^ (2 : ℕ) * (tInner T v w) ^ (2 : ℕ) := by
   rw [tInner_smul_smul hT]
   ring
 
@@ -126,7 +126,7 @@ noncomputable def oddPart (vp vm : E) : E := (2 : ℝ)⁻¹ • (vp - vm)
 
 /-- **The pairing is the energy difference.** -/
 theorem inner_eq_evenPart_sq_sub_oddPart_sq (vp vm : E) :
-    (inner ℝ vm vp : ℝ) = ‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2 := by
+    (inner ℝ vm vp : ℝ) = ‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ) := by
   rw [evenPart, oddPart, norm_smul, norm_smul]
   simp only [Real.norm_eq_abs]
   rw [mul_pow, mul_pow, norm_add_sq_real, norm_sub_sq_real, real_inner_comm]
@@ -136,7 +136,7 @@ theorem inner_eq_evenPart_sq_sub_oddPart_sq (vp vm : E) :
 /-- **Equal norms make the sum the common energy.**  This is where parity of the defect pair
 enters. -/
 theorem norm_sq_eq_evenPart_sq_add_oddPart_sq {vp vm : E} (hnorm : ‖vm‖ = ‖vp‖) :
-    ‖vp‖ ^ 2 = ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2 := by
+    ‖vp‖ ^ (2 : ℕ) = ‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ) := by
   rw [evenPart, oddPart, norm_smul, norm_smul]
   simp only [Real.norm_eq_abs]
   rw [mul_pow, mul_pow, norm_add_sq_real, norm_sub_sq_real, hnorm]
@@ -146,19 +146,19 @@ theorem norm_sq_eq_evenPart_sq_add_oddPart_sq {vp vm : E} (hnorm : ‖vm‖ = �
 /-- **`(8)`, the normalized even–odd imbalance.**  The anchored jet is the imbalance of the two
 defect energies. -/
 theorem inner_div_norm_sq_eq_imbalance {vp vm : E} (hnorm : ‖vm‖ = ‖vp‖) :
-    (inner ℝ vm vp : ℝ) / ‖vp‖ ^ 2
-      = (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
-        / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) := by
+    (inner ℝ vm vp : ℝ) / ‖vp‖ ^ (2 : ℕ)
+      = (‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ))
+        / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) := by
   rw [inner_eq_evenPart_sq_sub_oddPart_sq, norm_sq_eq_evenPart_sq_add_oddPart_sq hnorm]
 
 /-- **It is a strict contraction exactly when both parts survive.**  A nonzero odd part alone is not
 enough: if the even part vanishes the imbalance is `-1`.  Both energies must be positive. -/
 theorem abs_imbalance_lt_one {vp vm : E} (heven : evenPart vp vm ≠ 0) (hodd : oddPart vp vm ≠ 0) :
-    |(‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
-      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2)| < 1 := by
-  have hop : 0 < ‖oddPart vp vm‖ ^ 2 := by positivity
-  have hep : 0 < ‖evenPart vp vm‖ ^ 2 := by positivity
-  have hsum : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2 := by linarith
+    |(‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ))
+      / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ))| < 1 := by
+  have hop : 0 < ‖oddPart vp vm‖ ^ (2 : ℕ) := by positivity
+  have hep : 0 < ‖evenPart vp vm‖ ^ (2 : ℕ) := by positivity
+  have hsum : 0 < ‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ) := by linarith
   rw [abs_div, abs_of_pos hsum, div_lt_one hsum, abs_lt]
   constructor <;> linarith
 
@@ -166,18 +166,18 @@ theorem abs_imbalance_lt_one {vp vm : E} (heven : evenPart vp vm ≠ 0) (hodd : 
 `-1`; so the strict bound is exactly the statement that both defect components survive. -/
 theorem imbalance_eq_one_of_oddPart_eq_zero {vp vm : E} (heven : evenPart vp vm ≠ 0)
     (hodd : oddPart vp vm = 0) :
-    (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
-      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) = 1 := by
-  have hep : 0 < ‖evenPart vp vm‖ ^ 2 := by positivity
+    (‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ))
+      / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) = 1 := by
+  have hep : 0 < ‖evenPart vp vm‖ ^ (2 : ℕ) := by positivity
   rw [hodd, norm_zero]
   norm_num
   exact heven
 
 theorem imbalance_eq_neg_one_of_evenPart_eq_zero {vp vm : E} (heven : evenPart vp vm = 0)
     (hodd : oddPart vp vm ≠ 0) :
-    (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
-      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) = -1 := by
-  have hop : 0 < ‖oddPart vp vm‖ ^ 2 := by positivity
+    (‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ))
+      / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) = -1 := by
+  have hop : 0 < ‖oddPart vp vm‖ ^ (2 : ℕ) := by positivity
   rw [heven, norm_zero]
   norm_num
   rw [neg_div, div_self (ne_of_gt hop)]
@@ -203,17 +203,17 @@ theorem parity_weights (e o : ℝ) (h : 0 < e + o) :
 
 /-- The parity weights of a defect pair: each component's share of the total defect energy. -/
 theorem parity_weights_of_defect {vp vm : E}
-    (h : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :
-    (1 + (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
-        / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2)) / 2
-      = ‖evenPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :=
+    (h : 0 < ‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) :
+    (1 + (‖evenPart vp vm‖ ^ (2 : ℕ) - ‖oddPart vp vm‖ ^ (2 : ℕ))
+        / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ))) / 2
+      = ‖evenPart vp vm‖ ^ (2 : ℕ) / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) :=
   (parity_weights _ _ h).1
 
 /-- Both weights are nonnegative, so the polarization really is a two-state probability. -/
 theorem parity_weight_nonneg {vp vm : E}
-    (h : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :
-    0 ≤ ‖evenPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) ∧
-      0 ≤ ‖oddPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :=
+    (h : 0 < ‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) :
+    0 ≤ ‖evenPart vp vm‖ ^ (2 : ℕ) / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) ∧
+      0 ≤ ‖oddPart vp vm‖ ^ (2 : ℕ) / (‖evenPart vp vm‖ ^ (2 : ℕ) + ‖oddPart vp vm‖ ^ (2 : ℕ)) :=
   ⟨div_nonneg (sq_nonneg _) h.le, div_nonneg (sq_nonneg _) h.le⟩
 
 /-! ## The two-defect Gram state
@@ -262,15 +262,15 @@ value, with no reference to an absolute scale. -/
 
 /-- The induced form of a shifted operator. -/
 theorem tInner_add_smul_id (T : E →ₗ[ℝ] E) (c : ℝ) (v : E) :
-    tInner (T + c • LinearMap.id) v v = tInner T v v + c * ‖v‖ ^ 2 := by
+    tInner (T + c • LinearMap.id) v v = tInner T v v + c * ‖v‖ ^ (2 : ℕ) := by
   rw [tInner_def, tInner_def, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.id_apply,
     inner_add_left, real_inner_smul_left, real_inner_self_eq_norm_sq]
 
 /-- **`(13)`, the shifted floor.**  A lower bound for the form shifts by exactly the added
 multiple. -/
 theorem tInner_shift_lower_bound {T : E →ₗ[ℝ] E} {floor : ℝ}
-    (h : ∀ v : E, floor * ‖v‖ ^ 2 ≤ tInner T v v) (c : ℝ) (v : E) :
-    (floor + c) * ‖v‖ ^ 2 ≤ tInner (T + c • LinearMap.id) v v := by
+    (h : ∀ v : E, floor * ‖v‖ ^ (2 : ℕ) ≤ tInner T v v) (c : ℝ) (v : E) :
+    (floor + c) * ‖v‖ ^ (2 : ℕ) ≤ tInner (T + c • LinearMap.id) v v := by
   rw [tInner_add_smul_id]
   have := h v
   nlinarith [this]
@@ -279,7 +279,7 @@ theorem tInner_shift_lower_bound {T : E →ₗ[ℝ] E} {floor : ℝ}
 source normalized to its own bottom — then shifting by `c` makes `c` a lower bound. -/
 theorem tInner_shift_floor_eq_shift {T : E →ₗ[ℝ] E}
     (h : ∀ v : E, 0 ≤ tInner T v v) (c : ℝ) (v : E) :
-    c * ‖v‖ ^ 2 ≤ tInner (T + c • LinearMap.id) v v := by
+    c * ‖v‖ ^ (2 : ℕ) ≤ tInner (T + c • LinearMap.id) v v := by
   have := tInner_shift_lower_bound (floor := 0) (fun w => by simpa using h w) c v
   simpa using this
 

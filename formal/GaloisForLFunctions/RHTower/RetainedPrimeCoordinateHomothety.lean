@@ -125,7 +125,7 @@ theorem mobiusDivisorSelectionEnergy_eq_coprimeHead_scales
     mobiusDivisorSelectionEnergy M P = ∑ R : retainedPrimeFieldIndex Q,
       let r := ∏ p ∈ R.1, p
       (r:ℝ) * ((1-divisorPrimeClipWeight M r)*mobiusDivisorCoprimeHead s (M/r) +
-        divisorPrimeClipWeight M r*mobiusDivisorCoprimeHead s (M/r+1))^2 := by
+        divisorPrimeClipWeight M r*mobiusDivisorCoprimeHead s (M/r+1))^(2 : ℕ) := by
   intro s
   let S := Q.image (fun p : Nat.Primes => (p : ℕ))
   have hS : ∀ p ∈ S, p.Prime := by
@@ -135,13 +135,13 @@ theorem mobiusDivisorSelectionEnergy_eq_coprimeHead_scales
   have hsub : S.powerset ⊆ (mobiusDivisorSelectionPrimes M).powerset := by
     intro R hR
     exact mem_powerset.mpr ((mem_powerset.mp hR).trans hQM)
-  have he := sum_subset hsub (f := fun R => (mobiusDivisorSelectionFibre M P R)^2) (by
+  have he := sum_subset hsub (f := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) (by
     intro R hR hn
     rw [mobiusDivisorSelectionFibre_eq_zero_of_not_subset_retained M P S R hcore
       (fun h => hn (mem_powerset.mpr h))]
     ring)
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2) = _
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) = _
   rw [← he, ← sum_coe_sort S.powerset]
   apply sum_congr rfl
   intro R hR
@@ -150,7 +150,7 @@ theorem mobiusDivisorSelectionEnergy_eq_coprimeHead_scales
   dsimp only
   have hsq := GibbsGas.squarefree_prod_primes
     (fun p hp => hS p ((mem_powerset.mp R.2) hp))
-  have hmu : (((ArithmeticFunction.moebius (∏ p ∈ R.1, p) : ℤ) : ℝ))^2 = 1 := by
+  have hmu : (((ArithmeticFunction.moebius (∏ p ∈ R.1, p) : ℤ) : ℝ))^(2 : ℕ) = 1 := by
     exact_mod_cast (ArithmeticFunction.moebius_sq_eq_one_of_squarefree hsq)
   rw [mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _), hmu, mul_one]
 

@@ -111,25 +111,25 @@ theorem deningerMeyerFiniteXiZerothGraphNullAtom_tendsto_zero
   have hrate : deningerMeyerHalfDensityXiHorizontalRate rho.1 ≠ 0 := by
     rw [deningerMeyerHalfDensityXiHorizontalRate]
     exact sub_ne_zero.mpr hrho
-  have hrateSq : 0 < deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ 2 :=
+  have hrateSq : 0 < deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hrate
   have htop :
       Tendsto
         (fun n : ℕ =>
-          (n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ 2)
+          (n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ (2 : ℕ))
         atTop atTop :=
     tendsto_natCast_atTop_atTop.atTop_mul_const hrateSq
   have hdecay :
       Tendsto
         (fun n : ℕ => Real.exp
-          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ 2)))
+          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ (2 : ℕ))))
         atTop (𝓝 0) :=
     Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp htop)
   have hnorm :
       (fun n => ‖deningerMeyerHalfDensityCompletionMk
         (deningerMeyerFiniteXiZerothGraphNullAtom S rho n)‖) =
       (fun n : ℕ => Real.exp
-          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ 2)) *
+          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho.1 ^ (2 : ℕ))) *
         ‖deningerMeyerHalfDensityCompletionMk
           (deningerMeyerFiniteXiZerothBasisClass S rho)‖) := by
     funext n

@@ -68,7 +68,7 @@ theorem incrementEnergy_eq_signed_pair_kernel (N : ℕ) :
     simp only [Finset.mem_filter, Finset.mem_Ioc]
     omega
   have hexpand (n : ℕ) (hn : n ∈ S) :
-      (∑ m ∈ Finset.Ioc N n, c m) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
+      (∑ m ∈ Finset.Ioc N n, c m) ^ (2 : ℕ) / ((n : ℝ) * ((n : ℝ) + 1)) =
         ∑ a ∈ S, ∑ b ∈ S,
           (if max a b ≤ n then c a * c b else 0) / ((n : ℝ) * ((n : ℝ) + 1)) := by
     rw [hprefix n hn, pow_two, Finset.sum_mul]
@@ -129,7 +129,7 @@ theorem incrementEnergy_eq_signed_pair_kernel (N : ℕ) :
         push_cast
         ring
   unfold incrementEnergy
-  change (∑ n ∈ S, (Sieve.mertensM n - Sieve.mertensM N) ^ 2 /
+  change (∑ n ∈ S, (Sieve.mertensM n - Sieve.mertensM N) ^ (2 : ℕ) /
     ((n : ℝ) * ((n : ℝ) + 1)) ) = _
   have hinc (n : ℕ) (hn : n ∈ S) :
       Sieve.mertensM n - Sieve.mertensM N = ∑ m ∈ Finset.Ioc N n, c m := by
@@ -138,7 +138,7 @@ theorem incrementEnergy_eq_signed_pair_kernel (N : ℕ) :
     rw [show Finset.Ioc N n = Finset.Ico (N + 1) (n + 1) by ext m; simp]
     rw [Finset.sum_Ico_eq_sub _ (by omega)]
   calc
-    (∑ n ∈ S, (Sieve.mertensM n - Sieve.mertensM N) ^ 2 /
+    (∑ n ∈ S, (Sieve.mertensM n - Sieve.mertensM N) ^ (2 : ℕ) /
       ((n : ℝ) * ((n : ℝ) + 1))) =
         ∑ n ∈ S, ∑ a ∈ S, ∑ b ∈ S,
           (if max a b ≤ n then c a * c b else 0) /
@@ -307,7 +307,7 @@ predictable drift.  Hence a cofinal EDQ ceiling must establish its one-sided
 signed cancellation without changing any endpoint or source. -/
 theorem strictOffDiagonalPairKernel_le_twelve_drift_sq_add_thirty (N : ℕ) :
     strictOffDiagonalPairKernel N ≤
-      12 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 30 := by
+      12 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 30 := by
   have hsplit := incrementEnergy_eq_diagonal_add_two_mul_strictOffDiagonal N
   have hdiag := diagonalPairKernel_nonneg N
   have henergy :=

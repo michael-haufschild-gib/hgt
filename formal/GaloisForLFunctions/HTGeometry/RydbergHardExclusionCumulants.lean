@@ -70,7 +70,7 @@ omit [DecidableRel G.Adj] in
 theorem sitePointCountLaw_factorialCumulantTwo
     (law : RydbergOutcomeLaw G) (v : V) :
     (law.sitePointCountLaw v).factorialCumulantTwo =
-      -(law.meanOccupation v) ^ 2 := by
+      -(law.meanOccupation v) ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.HTGeometry.FinitePointCountLaw.factorialCumulantTwo,
     law.sitePointCountLaw_factorialMoment_one v,
     show (law.sitePointCountLaw v).factorialMoment 2 = 0 by
@@ -82,7 +82,7 @@ omit [DecidableRel G.Adj] in
 theorem sitePointCountLaw_factorialCumulantThree
     (law : RydbergOutcomeLaw G) (v : V) :
     (law.sitePointCountLaw v).factorialCumulantThree =
-      2 * (law.meanOccupation v) ^ 3 := by
+      2 * (law.meanOccupation v) ^ (3 : ℕ) := by
   rw [GaloisForLFunctions.HTGeometry.FinitePointCountLaw.factorialCumulantThree,
     law.sitePointCountLaw_factorialMoment_one v,
     show (law.sitePointCountLaw v).factorialMoment 2 = 0 by

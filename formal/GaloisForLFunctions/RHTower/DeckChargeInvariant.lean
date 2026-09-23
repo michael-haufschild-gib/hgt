@@ -66,7 +66,7 @@ theorem deckCharge_pow (f : ℂ → ℂ) (k : ℕ) (ρ : ℂ) : deckCharge f k �
 /-- **Dyadic coherence.**  Squaring the level-`k+1` charge gives the level-`k` charge:
 `w_{k+1}² = w_k`.  This is the tower structure of the deck classes at every function. -/
 theorem deckCharge_succ_sq (f : ℂ → ℂ) (k : ℕ) (ρ : ℂ) :
-    deckCharge f (k + 1) ρ ^ 2 = deckCharge f k ρ := by
+    deckCharge f (k + 1) ρ ^ (2 : ℕ) = deckCharge f k ρ := by
   unfold deckCharge
   rw [← exp_nat_mul]
   congr 1

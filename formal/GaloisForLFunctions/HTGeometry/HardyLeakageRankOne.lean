@@ -86,8 +86,8 @@ theorem starProjection_modelSpace_blaschkeMul (ha : ‖α‖ < 1) (hb : ‖β‖
 
 /-- **The adjoint of a Blaschke multiplier loses exactly the model-space component.** -/
 theorem norm_sq_adjoint_blaschkeMul (hb : ‖β‖ < 1) (g : HardyDisk) :
-    ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) g‖ ^ 2
-      = ‖g‖ ^ 2 - ‖(modelSpace hb).starProjection g‖ ^ 2 := by
+    ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) g‖ ^ (2 : ℕ)
+      = ‖g‖ ^ (2 : ℕ) - ‖(modelSpace hb).starProjection g‖ ^ (2 : ℕ) := by
   classical
   set K : Submodule ℂ HardyDisk := modelSpace hb with hK
   set u : HardyDisk := K.starProjection g with hu
@@ -112,7 +112,7 @@ theorem norm_sq_adjoint_blaschkeMul (hb : ‖β‖ < 1) (g : HardyDisk) :
   have hadj : (ContinuousLinearMap.adjoint (blaschkeMul hb)) g = h := by
     rw [hsplit, map_add, hadjU, zero_add, ← hh, adjoint_blaschkeMul_comp]
   have hperp : (inner ℂ u v : ℂ) = 0 := (K.mem_orthogonal _).1 hvmem u humem
-  have hpyth : ‖g‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 := by
+  have hpyth : ‖g‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ) := by
     rw [hsplit]
     simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero u v hperp
   have hnh : ‖h‖ = ‖v‖ := by rw [← hh, norm_blaschkeMul]
@@ -122,9 +122,9 @@ theorem norm_sq_adjoint_blaschkeMul (hb : ‖β‖ < 1) (g : HardyDisk) :
 /-- **The exact Schur defect of the shifted-quotient Toeplitz compression.**  The leakage energy of
 `f` is `|b_α(β)|²` times the squared model-space component of `f`. -/
 theorem hardyLeakage_sq (ha : ‖α‖ < 1) (hb : ‖β‖ < 1) (f : HardyDisk) :
-    ‖f‖ ^ 2
-      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ 2
-      = ‖blaschkeFactor α β‖ ^ 2 * ‖(modelSpace hb).starProjection f‖ ^ 2 := by
+    ‖f‖ ^ (2 : ℕ)
+      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ (2 : ℕ)
+      = ‖blaschkeFactor α β‖ ^ (2 : ℕ) * ‖(modelSpace hb).starProjection f‖ ^ (2 : ℕ) := by
   rw [norm_sq_adjoint_blaschkeMul hb, norm_blaschkeMul ha,
     starProjection_modelSpace_blaschkeMul ha hb, norm_smul]
   ring
@@ -133,13 +133,13 @@ theorem hardyLeakage_sq (ha : ‖α‖ < 1) (hb : ‖β‖ < 1) (f : HardyDisk) 
 one-dimensional model space, whenever the two Blaschke zeros are distinct. -/
 theorem hardyLeakage_eq_zero_iff (ha : ‖α‖ < 1) (hb : ‖β‖ < 1)
     (hne : blaschkeFactor α β ≠ 0) (f : HardyDisk) :
-    ‖f‖ ^ 2
-      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ 2 = 0
+    ‖f‖ ^ (2 : ℕ)
+      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ (2 : ℕ) = 0
       ↔ (modelSpace hb).starProjection f = 0 := by
   rw [hardyLeakage_sq ha hb]
   constructor
   · intro h
-    have hc : ‖blaschkeFactor α β‖ ^ 2 ≠ 0 := by positivity
+    have hc : ‖blaschkeFactor α β‖ ^ (2 : ℕ) ≠ 0 := by positivity
     have := mul_eq_zero.1 h
     rcases this with h1 | h2
     · exact absurd h1 hc
@@ -150,23 +150,23 @@ theorem hardyLeakage_eq_zero_iff (ha : ‖α‖ < 1) (hb : ‖β‖ < 1)
 
 /-- **The leakage norm bound.** -/
 theorem hardyLeakage_le (ha : ‖α‖ < 1) (hb : ‖β‖ < 1) (f : HardyDisk) :
-    ‖f‖ ^ 2
-      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ 2
-      ≤ ‖blaschkeFactor α β‖ ^ 2 * ‖f‖ ^ 2 := by
+    ‖f‖ ^ (2 : ℕ)
+      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha f)‖ ^ (2 : ℕ)
+      ≤ ‖blaschkeFactor α β‖ ^ (2 : ℕ) * ‖f‖ ^ (2 : ℕ) := by
   rw [hardyLeakage_sq ha hb]
   have hle : ‖(modelSpace hb).starProjection f‖ ≤ ‖f‖ :=
     (modelSpace hb).norm_starProjection_apply_le f
   have hnn : (0 : ℝ) ≤ ‖(modelSpace hb).starProjection f‖ := norm_nonneg _
-  have h1 : ‖(modelSpace hb).starProjection f‖ ^ 2 ≤ ‖f‖ ^ 2 := by nlinarith
-  have h0 : (0 : ℝ) ≤ ‖blaschkeFactor α β‖ ^ 2 := by positivity
+  have h1 : ‖(modelSpace hb).starProjection f‖ ^ (2 : ℕ) ≤ ‖f‖ ^ (2 : ℕ) := by nlinarith
+  have h0 : (0 : ℝ) ≤ ‖blaschkeFactor α β‖ ^ (2 : ℕ) := by positivity
   exact mul_le_mul_of_nonneg_left h1 h0
 
 /-- **The bound is attained at the reproducing kernel**, so the leakage norm is exactly
 `|b_α(β)|`. -/
 theorem hardyLeakage_kernel (ha : ‖α‖ < 1) (hb : ‖β‖ < 1) :
-    ‖hardyKernel hb‖ ^ 2
-      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha (hardyKernel hb))‖ ^ 2
-      = ‖blaschkeFactor α β‖ ^ 2 * ‖hardyKernel hb‖ ^ 2 := by
+    ‖hardyKernel hb‖ ^ (2 : ℕ)
+      - ‖(ContinuousLinearMap.adjoint (blaschkeMul hb)) (blaschkeMul ha (hardyKernel hb))‖ ^ (2 : ℕ)
+      = ‖blaschkeFactor α β‖ ^ (2 : ℕ) * ‖hardyKernel hb‖ ^ (2 : ℕ) := by
   rw [hardyLeakage_sq ha hb]
   congr 1
   have hmem : hardyKernel hb ∈ modelSpace hb := Submodule.mem_span_singleton_self _

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardSelectionLabels
 The apparent long-Möbius branch in Route T is absent from the literal finite Heath--Brown packet.
 At packet degree `60`, choose the Möbius cutoff at the all-short boundary
 `L = floor (T0^(2t))`.  If the ambient analytic cutoff satisfies `X <= T0^(120t)`, this one choice
-both reaches the exact Heath--Brown identity range `X < (L+1)^60` and makes every Möbius dyadic
+both reaches the exact Heath--Brown identity range `X < (L+1)^(60 : ℕ)` and makes every Möbius dyadic
 atom have logarithmic length at most `2t`.
 
 This is an algebraic classification, not a Möbius-cancellation estimate.  Consequently every

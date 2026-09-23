@@ -17,7 +17,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalLaplaceDerivativeInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Every positive-time damped maximal-domain orbit has its literal shifted derivative. -/
 theorem causalLaplaceOrbit_hasDerivAt (a b : ℝ) (u : causalGeneratorDomain) :

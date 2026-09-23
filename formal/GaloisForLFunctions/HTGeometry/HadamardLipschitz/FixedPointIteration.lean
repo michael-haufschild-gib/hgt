@@ -29,9 +29,9 @@ theorem tendsto_iterate_of_quasiFirmAt [ProperSpace X] (T : X → X)
   set u : ℕ → X := fun n => T^[n] x₀ with hu
   have hsucc : ∀ n, u (n + 1) = T (u n) := by
     intro n; simp [hu, Function.iterate_succ_apply']
-  set a : ℕ → ℝ := fun n => dist (u n) p ^ 2 with ha
+  set a : ℕ → ℝ := fun n => dist (u n) p ^ (2 : ℕ) with ha
   set e : ℕ → ℝ := fun n => dist (u (n + 1)) (u n) with he
-  have hastep : ∀ n, a (n + 1) ≤ a n - ξ * e n ^ 2 := by
+  have hastep : ∀ n, a (n + 1) ≤ a n - ξ * e n ^ (2 : ℕ) := by
     intro n
     have := hqf (u n)
     simpa [ha, he, hsucc n] using this
@@ -47,12 +47,12 @@ theorem tendsto_iterate_of_quasiFirmAt [ProperSpace X] (T : X → X)
     have h2 : Tendsto (fun n => a n - a (n + 1)) atTop (𝓝 0) := by
       simpa using hatend.sub h1
     simpa using h2.div_const ξ
-  have hesq : Tendsto (fun n => e n ^ 2) atTop (𝓝 0) := by
+  have hesq : Tendsto (fun n => e n ^ (2 : ℕ)) atTop (𝓝 0) := by
     refine squeeze_zero (fun n => sq_nonneg _) (fun n => ?_) hdiff
     rw [le_div_iff₀ hξ]
     nlinarith [hastep n]
   have hetend : Tendsto e atTop (𝓝 0) := by
-    have hc : Tendsto (fun n => Real.sqrt (e n ^ 2)) atTop (𝓝 (Real.sqrt 0)) :=
+    have hc : Tendsto (fun n => Real.sqrt (e n ^ (2 : ℕ))) atTop (𝓝 (Real.sqrt 0)) :=
       (Real.continuous_sqrt.tendsto 0).comp hesq
     rw [Real.sqrt_zero] at hc
     refine hc.congr fun n => ?_

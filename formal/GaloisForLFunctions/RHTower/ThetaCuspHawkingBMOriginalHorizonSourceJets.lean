@@ -117,7 +117,7 @@ theorem unitRadius_hasDerivAt (image : Bool) (p rho alpha beta : ℝ)
     (ha : alpha ≤ 1) (hb0 : 0 ≤ beta) (hb1 : beta ≤ 1) :
     let t := Real.sqrt ((1-alpha)*beta)*Real.sqrt (horizonFactor image p rho alpha beta)
     HasDerivAt (fun r => unitRadius image p r alpha beta)
-      (-t/Real.sqrt (1+t^2)*factorLogRate image p rho alpha beta) rho := by
+      (-t/Real.sqrt (1+t^(2 : ℕ))*factorLogRate image p rho alpha beta) rho := by
   rcases hp.eq_or_lt with h | hp
   · subst p
     simpa [unitRadius,horizonFactor] using (hasDerivAt_const rho (0:ℝ))
@@ -142,13 +142,13 @@ theorem unitRadius_horizon_derivative_bound (image : Bool) (p rho alpha beta : �
   rw [(unitRadius_hasDerivAt image p rho alpha beta hp hr0 hr1 ha hb0 hb1).deriv]
   let t := Real.sqrt ((1-alpha)*beta)*Real.sqrt (horizonFactor image p rho alpha beta)
   have ht : 0 ≤ t := by positivity
-  have hs : 0 < Real.sqrt (1+t^2) := Real.sqrt_pos.mpr (by positivity)
-  have hts : t ≤ Real.sqrt (1+t^2) := by nlinarith [Real.sq_sqrt (show 0 ≤ 1+t^2 by positivity)]
-  have hq0 : 0 ≤ t/Real.sqrt (1+t^2) := div_nonneg ht hs.le
-  have hq1 : t/Real.sqrt (1+t^2) ≤ 1 := (div_le_one hs).mpr hts
+  have hs : 0 < Real.sqrt (1+t^(2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
+  have hts : t ≤ Real.sqrt (1+t^(2 : ℕ)) := by nlinarith [Real.sq_sqrt (show 0 ≤ 1+t^(2 : ℕ) by positivity)]
+  have hq0 : 0 ≤ t/Real.sqrt (1+t^(2 : ℕ)) := div_nonneg ht hs.le
+  have hq1 : t/Real.sqrt (1+t^(2 : ℕ)) ≤ 1 := (div_le_one hs).mpr hts
   have hL := factorLogRate_bounds image p rho alpha beta hp hr0 hr1 ha hb0 hb1
-  change -t/Real.sqrt (1+t^2)*factorLogRate image p rho alpha beta ≤ 0 ∧
-    |-t/Real.sqrt (1+t^2)*factorLogRate image p rho alpha beta| ≤ 4
+  change -t/Real.sqrt (1+t^(2 : ℕ))*factorLogRate image p rho alpha beta ≤ 0 ∧
+    |-t/Real.sqrt (1+t^(2 : ℕ))*factorLogRate image p rho alpha beta| ≤ 4
   rw [neg_div,neg_mul,abs_neg,abs_of_nonneg (mul_nonneg hq0 hL.1)]
   constructor
   · exact neg_nonpos.mpr (mul_nonneg hq0 hL.1)
@@ -169,7 +169,7 @@ theorem unitRadius_growth (image : Bool) (p rho alpha beta : ℝ)
   have hF := D4BMNativeSourceJetGrowth.horizonFactor_uniform_bounds image p rho alpha beta
     hp hr0 hr1 ha0 ha1 hb0 hb1
   have he : p ≤ Real.exp p := by linarith [Real.add_one_le_exp p]
-  have hFhi : F ≤ 4*(Real.exp p)^2 := by
+  have hFhi : F ≤ 4*(Real.exp p)^(2 : ℕ) := by
     have hm := mul_le_mul_of_nonneg_right he (Real.exp_nonneg p)
     dsimp [F]
     nlinarith [hF.2]
@@ -179,13 +179,13 @@ theorem unitRadius_growth (image : Bool) (p rho alpha beta : ℝ)
   have ht0 : 0 ≤ t := mul_nonneg hA0 (Real.sqrt_nonneg F)
   have ht : t ≤ 2*Real.exp p :=
     (mul_le_mul_of_nonneg_right hA1 (Real.sqrt_nonneg F)).trans (by simpa using hroot)
-  have hS : Real.sqrt (1+t^2) ≤ 1+t := by
-    nlinarith [Real.sq_sqrt (show 0 ≤ 1+t^2 by positivity),Real.sqrt_nonneg (1+t^2)]
+  have hS : Real.sqrt (1+t^(2 : ℕ)) ≤ 1+t := by
+    nlinarith [Real.sq_sqrt (show 0 ≤ 1+t^(2 : ℕ) by positivity),Real.sqrt_nonneg (1+t^(2 : ℕ))]
   have he1 : 1 ≤ Real.exp p := Real.one_le_exp_iff.mpr hp
   have he3 : (5:ℝ) ≤ Real.exp 3 := by
     have h1 : (2:ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp 1]
     have h3 := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2) h1 3
-    have hE : Real.exp (3:ℝ)=(Real.exp 1)^3 := by simp [← Real.exp_nat_mul]
+    have hE : Real.exp (3:ℝ)=(Real.exp 1)^(3 : ℕ) := by simp [← Real.exp_nat_mul]
     rw [hE]
     norm_num at h3
     linarith
@@ -227,9 +227,9 @@ theorem sample_eq_original (f : P → ℂ) (image : Bool) {p rho alpha beta : �
 private theorem radial_coefficients (d theta : ℝ) (hd : 0 ≤ d) :
     |offsetRadial d theta| ≤ Real.exp d ∧ |heightRadial d theta| ≤ Real.exp d := by
   have hD := denominator_pos d theta
-  have hid : (denominator d theta)^2-(radialNumerator d theta)^2=(Real.sin theta)^2 := by
+  have hid : (denominator d theta)^(2 : ℕ)-(radialNumerator d theta)^(2 : ℕ)=(Real.sin theta)^(2 : ℕ) := by
     calc
-      _ = (Real.cosh d^2-Real.sinh d^2)*(1-Real.cos theta^2) := by
+      _ = (Real.cosh d^(2 : ℕ)-Real.sinh d^(2 : ℕ))*(1-Real.cos theta^(2 : ℕ)) := by
         unfold denominator radialNumerator
         ring
       _ = _ := by rw [Real.cosh_sq_sub_sinh_sq]; nlinarith [Real.sin_sq_add_cos_sq theta]
@@ -245,10 +245,10 @@ private theorem radial_coefficients (d theta : ℝ) (hd : 0 ≤ d) :
     calc
       _ ≤ 1/Real.exp (-d) := one_div_le_one_div_of_le (Real.exp_pos _) hlo
       _ = _ := by rw [Real.exp_neg]; field_simp
-  have bound (a : ℝ) (ha : |a| ≤ denominator d theta) : |a/(denominator d theta)^2| ≤ Real.exp d := by
+  have bound (a : ℝ) (ha : |a| ≤ denominator d theta) : |a/(denominator d theta)^(2 : ℕ)| ≤ Real.exp d := by
     rw [abs_div,abs_of_pos (sq_pos_of_pos hD)]
     calc
-      _ ≤ denominator d theta/(denominator d theta)^2 := div_le_div_of_nonneg_right ha (sq_nonneg _)
+      _ ≤ denominator d theta/(denominator d theta)^(2 : ℕ) := div_le_div_of_nonneg_right ha (sq_nonneg _)
       _ = 1/denominator d theta := by field_simp
       _ ≤ _ := hh
   exact ⟨bound _ hS,bound _ (by simpa only [abs_neg] using hN)⟩

@@ -46,7 +46,7 @@ open scoped UnivMeroFieldInstances
 /-- Squared effective `AdS₂` gap of a neutral scalar mode after spherical-harmonic reduction. -/
 def scalarCurvatureThroatGapSquared
     (ell : ℕ) (radius massSquared : ℂ) : ℂ :=
-  (2 * (ell : ℂ) + 1) ^ 2 + 4 * radius ^ 2 * massSquared
+  (2 * (ell : ℂ) + 1) ^ (2 : ℕ) + 4 * radius ^ (2 : ℕ) * massSquared
 
 /-- Scalaron mass squared in `f(R) = R + alpha*R²`. -/
 def starobinskyScalaronMassSquared (alpha : ℂ) : ℂ :=
@@ -62,7 +62,7 @@ def starobinskyScalaronThroatGapSquared
 theorem starobinskyScalaronThroatGapSquared_eq
     (ell : ℕ) (radius alpha : ℂ) :
     starobinskyScalaronThroatGapSquared ell radius alpha =
-      (2 * (ell : ℂ) + 1) ^ 2 + 2 * radius ^ 2 / (3 * alpha) := by
+      (2 * (ell : ℂ) + 1) ^ (2 : ℕ) + 2 * radius ^ (2 : ℕ) / (3 * alpha) := by
   unfold starobinskyScalaronThroatGapSquared scalarCurvatureThroatGapSquared
     starobinskyScalaronMassSquared
   ring
@@ -70,14 +70,14 @@ theorem starobinskyScalaronThroatGapSquared_eq
 /-- Integer-gap resonance equation for the scalaron channel. -/
 def IsStarobinskyScalaronGapResonance
     (ell : ℕ) (radius alpha : ℂ) (k : ℤ) : Prop :=
-  3 * alpha * ((k : ℂ) ^ 2 - (2 * (ell : ℂ) + 1) ^ 2) =
-    2 * radius ^ 2
+  3 * alpha * ((k : ℂ) ^ (2 : ℕ) - (2 * (ell : ℂ) + 1) ^ (2 : ℕ)) =
+    2 * radius ^ (2 : ℕ)
 
 /-- For nonzero `alpha`, landing on an integer squared gap is exactly the displayed discrete
 resonance equation. -/
 theorem starobinskyScalaronThroatGapSquared_eq_intSquare_iff_resonance
     (ell : ℕ) (radius alpha : ℂ) (k : ℤ) (halpha : alpha ≠ 0) :
-    starobinskyScalaronThroatGapSquared ell radius alpha = (k : ℂ) ^ 2 ↔
+    starobinskyScalaronThroatGapSquared ell radius alpha = (k : ℂ) ^ (2 : ℕ) ↔
       IsStarobinskyScalaronGapResonance ell radius alpha k := by
   rw [starobinskyScalaronThroatGapSquared_eq]
   unfold IsStarobinskyScalaronGapResonance
@@ -87,8 +87,8 @@ theorem starobinskyScalaronThroatGapSquared_eq_intSquare_iff_resonance
   · have hden : (3 : ℂ) * alpha ≠ 0 :=
       mul_ne_zero (by norm_num) halpha
     have hquot :
-        2 * radius ^ 2 / (3 * alpha) =
-          (k : ℂ) ^ 2 - (2 * (ell : ℂ) + 1) ^ 2 := by
+        2 * radius ^ (2 : ℕ) / (3 * alpha) =
+          (k : ℂ) ^ (2 : ℕ) - (2 * (ell : ℂ) + 1) ^ (2 : ℕ) := by
       apply (div_eq_iff hden).2
       simpa [mul_comm] using h.symm
     rw [hquot]
@@ -140,7 +140,7 @@ theorem hypertranscendentalOver_scalaronThroatGammaResponseMero_iff_nonintegerGa
 discrete coupling-radius resonances. -/
 theorem exists_resonance_of_differentialAlgebraicOver_scalaronThroatGammaResponseMero
     (ell : ℕ) (radius alpha gap : ℂ) (halpha : alpha ≠ 0)
-    (hgap : gap ^ 2 =
+    (hgap : gap ^ (2 : ℕ) =
       starobinskyScalaronThroatGapSquared ell radius alpha)
     (hDA : DifferentialAlgebraicOver (RatFunc ℂ)
       (scalaronThroatGammaResponseMero gap)) :
@@ -155,7 +155,7 @@ theorem exists_resonance_of_differentialAlgebraicOver_scalaronThroatGammaRespons
 /-- Absence of every integer resonance forces HT of any gap satisfying the scalaron throat law. -/
 theorem hypertranscendentalOver_scalaronThroatGammaResponseMero_of_no_resonance
     (ell : ℕ) (radius alpha gap : ℂ) (halpha : alpha ≠ 0)
-    (hgap : gap ^ 2 =
+    (hgap : gap ^ (2 : ℕ) =
       starobinskyScalaronThroatGapSquared ell radius alpha)
     (hno : ∀ k : ℤ,
       ¬ IsStarobinskyScalaronGapResonance ell radius alpha k) :

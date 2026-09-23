@@ -95,11 +95,11 @@ theorem posDef_iff_sphere {A : Matrix (Fin n) (Fin n) ℝ} (hA : A.IsHermitian) 
       rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnorm]
     have hpos := hsph _ hy
     have hscale : ((‖x‖⁻¹ : ℝ) • x) ⬝ᵥ (A *ᵥ ((‖x‖⁻¹ : ℝ) • x))
-        = (‖x‖⁻¹) ^ 2 * (x ⬝ᵥ (A *ᵥ x)) := by
+        = (‖x‖⁻¹) ^ (2 : ℕ) * (x ⬝ᵥ (A *ᵥ x)) := by
       rw [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul,
         smul_eq_mul, ← mul_assoc, ← pow_two]
     rw [hscale] at hpos
-    have hsq : (0 : ℝ) < (‖x‖⁻¹) ^ 2 := by positivity
+    have hsq : (0 : ℝ) < (‖x‖⁻¹) ^ (2 : ℕ) := by positivity
     nlinarith [hpos, hsq]
 
 /-- **The positive definite cone is open.** -/

@@ -14,7 +14,7 @@ choice.
 
 The global reporter budget simplifies exactly to
 
-`(σ - 1)^3 (M₃(σ) - M₁(σ) M₂(σ))`,
+`(σ - 1)^(3 : ℕ) (M₃(σ) - M₁(σ) M₂(σ))`,
 
 and tends to four at the critical Euler boundary.  Thus countable completion
 does not lose the sharp one-corner four-unit budget.

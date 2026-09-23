@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiOrderEighteenEdgeCorner
 
 The order-nineteen sector can fail only in
 
-`7/50 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 147`.
+`7/50 < (Re rho - 1/2)^(2 : ℕ) < 1/4`, `85 < (Im rho)^(2 : ℕ) < 147`.
 
 The sharpened seven-interval theta floor bounds the complete nonnegative fourth reciprocal trace
 below `9/50000`. Four FE--Schwarz copies of any zero in this corner would contribute more than
@@ -23,11 +23,11 @@ noncomputable section
 quarter of the global source threshold. -/
 theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderEighteen_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 147) :
-    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re :=
+    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 147) :
+    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re :=
   nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_over_16 q
     (by linarith) huUpper hvLower (by linarith)
 
@@ -35,15 +35,15 @@ theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderEigh
 fourth reciprocal trace. -/
 theorem nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 147) :
+    (huLower : (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 147) :
     (9 / 50000 : ℝ) < normalizedPrimeArchMoment 1 := by
   have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
     re_ne_half_of_pos_centered_sq (by linarith)
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (2 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
   have hle := four_mul_le_tsum_of_quartet_invariant
     xiFourthReciprocalTraceAtom_nonneg hsum
@@ -57,10 +57,10 @@ theorem nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
 /-- **Unconditional order-eighteen compact-corner exclusion.** -/
 theorem not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner :
     ¬ ∃ q : XiZeroCopy,
-      (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 147 := by
+      (7 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 147 := by
   rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
   have hlower := nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
     q huLower huUpper hvLower hvUpper
@@ -70,9 +70,9 @@ theorem not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner :
 /-- The order-eighteen squared-seam source has strict positive atomwise sign everywhere. -/
 theorem xiOrderNineteenReciprocalPower_re_pos
     (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
-    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let A : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 19).re :=
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (19 : ℕ)).re :=
   xiZeroCopy_reciprocalPower_re_pos_of_window_empty q hy
     (fun _ _ hA h => orderNineteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hnonpos => xiOrderNineteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy hnonpos)

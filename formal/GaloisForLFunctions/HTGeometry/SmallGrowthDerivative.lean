@@ -68,34 +68,34 @@ theorem smallGrowth_circleAverage_posLog_inv_sub_le_all (a : ℂ) {r : ℝ} (hr 
 
 theorem smallGrowth_norm_reflectedKernel_le_two {u w : ℂ} {R r : ℝ}
     (hr : 1 ≤ r) (hR : 2 * r ≤ R) (hu : ‖u‖ ≤ R) (hw : ‖w‖ ≤ r) :
-    ‖(starRingEnd ℂ) u / ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ ≤ 2 := by
+    ‖(starRingEnd ℂ) u / ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ ≤ 2 := by
   have hr0 : 0 ≤ r := zero_le_one.trans hr
   have hR0 : 0 ≤ R := le_trans (mul_nonneg (by norm_num) hr0) hR
   have hprod : ‖(starRingEnd ℂ) u * w‖ ≤ R * r := by
     rw [norm_mul, RCLike.norm_conj]
     exact mul_le_mul hu hw (norm_nonneg w) hR0
-  have hden : R ^ 2 - R * r ≤
-      ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ := by
+  have hden : R ^ (2 : ℕ) - R * r ≤
+      ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ := by
     calc
-      R ^ 2 - R * r ≤ ‖((R : ℂ) ^ 2)‖ - ‖(starRingEnd ℂ) u * w‖ := by
+      R ^ (2 : ℕ) - R * r ≤ ‖((R : ℂ) ^ (2 : ℕ))‖ - ‖(starRingEnd ℂ) u * w‖ := by
         rw [norm_pow, Complex.norm_real, Real.norm_of_nonneg hR0]
         linarith
-      _ ≤ ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ :=
+      _ ≤ ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ :=
         norm_sub_norm_le _ _
-  have hRr : R * r ≤ R ^ 2 / 2 := by
+  have hRr : R * r ≤ R ^ (2 : ℕ) / 2 := by
     nlinarith
   have hRpos : 0 < R := by nlinarith
-  have hdenpos : 0 < ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ := by
-    have : 0 < R ^ 2 - R * r := by
+  have hdenpos : 0 < ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ := by
+    have : 0 < R ^ (2 : ℕ) - R * r := by
       nlinarith
     exact this.trans_le hden
   rw [norm_div, RCLike.norm_conj, div_le_iff₀ hdenpos]
   calc
     ‖u‖ ≤ R := hu
-    _ ≤ 2 * (R ^ 2 - R * r) := by
+    _ ≤ 2 * (R ^ (2 : ℕ) - R * r) := by
       have hRone : 1 ≤ R := by nlinarith
       nlinarith
-    _ ≤ 2 * ‖((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ := by gcongr
+    _ ≤ 2 * ‖((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ := by gcongr
 
 private theorem smallGrowth_posLog_le_self_of_nonneg {x : ℝ} (hx : 0 ≤ x) :
     Real.posLog x ≤ x := by
@@ -109,12 +109,12 @@ theorem smallGrowth_circleAverage_posLog_divisorKernel_le
     Real.circleAverage
         (fun w => Real.posLog ‖∑ u ∈ T, (D u : ℂ) *
           (1 / (w - u) + (starRingEnd ℂ) u /
-            ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))‖) 0 r ≤
+            ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))‖) 0 r ≤
       5 * ∑ u ∈ T, |(D u : ℝ)| := by
   classical
   let K : ℂ → ℂ → ℂ := fun u w =>
     1 / (w - u) + (starRingEnd ℂ) u /
-      ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)
+      ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)
   have hmeroK : ∀ u : ℂ, Meromorphic (K u) := by
     intro u z
     apply MeromorphicAt.add
@@ -172,10 +172,10 @@ theorem smallGrowth_circleAverage_posLog_divisorKernel_le
       dsimp [K]
       calc
         ‖1 / (w - u) + (starRingEnd ℂ) u /
-            ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ ≤
+            ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ ≤
             ‖1 / (w - u)‖ +
               ‖(starRingEnd ℂ) u /
-                ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w)‖ := norm_add_le _ _
+                ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w)‖ := norm_add_le _ _
         _ ≤ ‖w - u‖⁻¹ + 2 := by
           rw [norm_div, norm_one, one_div]
           gcongr
@@ -262,7 +262,7 @@ theorem smallGrowth_circleAverage_posLog_divisorKernel_le
     Real.circleAverage
         (fun w => Real.posLog ‖∑ u ∈ T, (D u : ℂ) *
           (1 / (w - u) + (starRingEnd ℂ) u /
-            ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))‖) 0 r =
+            ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))‖) 0 r =
         Real.circleAverage
           (fun w => Real.posLog ‖∑ u ∈ T, (D u : ℂ) * K u w‖) 0 r := by rfl
     _ ≤ (T.card : ℝ) + ∑ u ∈ T, (|(D u : ℝ)| + 3 * Real.log 2) :=
@@ -406,7 +406,7 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
   let T := smallGrowth_divisorSupportFinset p.function R
   let S : ℂ → ℂ := fun w => ∑ u ∈ T, (D u : ℂ) *
     (1 / (w - u) + (starRingEnd ℂ) u /
-      ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))
+      ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))
   let C : ℝ := max |Real.log ‖p.function 0‖|
     |Real.log ‖meromorphicTrailingCoeffAt p.function 0‖|
   have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
@@ -428,7 +428,7 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
     simpa [T, smallGrowth_divisorSupportFinset, D, Function.mem_support] using hu
   have hfinsum (w : ℂ) : (∑ᶠ u : ℂ, (D u : ℂ) *
       (1 / (w - u) + (starRingEnd ℂ) u /
-        ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))) = S w := by
+        ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))) = S w := by
     dsimp only [S]
     apply finsum_eq_sum_of_support_subset
     intro u hu
@@ -437,21 +437,21 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
     intro hDu
     apply hu
     simp [hDu]
-  have hcoeff0 : 0 ≤ 2 * R / (R - r) ^ 2 := by positivity
-  have hcoeff4 : 2 * R / (R - r) ^ 2 ≤ 4 := by
+  have hcoeff0 : 0 ≤ 2 * R / (R - r) ^ (2 : ℕ) := by positivity
+  have hcoeff4 : 2 * R / (R - r) ^ (2 : ℕ) ≤ 4 := by
     have hgap : 0 < R - r := by nlinarith
     rw [div_le_iff₀ (sq_pos_of_pos hgap)]
     nlinarith
   have hchar0 : 0 ≤ characteristic p.function ⊤ R :=
     characteristic_nonneg hRone
   have hC0 : 0 ≤ C := (abs_nonneg _).trans (le_max_left _ _)
-  let B : ℝ := 2 * R / (R - r) ^ 2 *
+  let B : ℝ := 2 * R / (R - r) ^ (2 : ℕ) *
     (2 * characteristic p.function ⊤ R + C)
   have hB0 : 0 ≤ B := mul_nonneg hcoeff0 (add_nonneg (mul_nonneg (by norm_num) hchar0) hC0)
   have hBbound : B ≤ 8 * characteristic p.function ⊤ R + 4 * C := by
     dsimp [B]
     calc
-      2 * R / (R - r) ^ 2 * (2 * characteristic p.function ⊤ R + C) ≤
+      2 * R / (R - r) ^ (2 : ℕ) * (2 * characteristic p.function ⊤ R + C) ≤
           4 * (2 * characteristic p.function ⊤ R + C) := by gcongr
       _ = 8 * characteristic p.function ⊤ R + 4 * C := by ring
   have hpoint : ∀ w ∈ sphere (0 : ℂ) |r|,
@@ -492,7 +492,7 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
       change ‖deriv p.function w / p.function w‖ ≤
         ‖∑ᶠ u : ℂ, (D u : ℂ) *
           (1 / (w - u) + (starRingEnd ℂ) u /
-            ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))‖ + B at hnorm
+            ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))‖ + B at hnorm
       rw [hfinsum w] at hnorm
       calc
         Real.posLog ‖deriv p.function w / p.function w‖ ≤
@@ -511,7 +511,7 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
     | @insert u U hu ih =>
         have hterm : MeromorphicAt (fun w => (D u : ℂ) *
             (1 / (w - u) + (starRingEnd ℂ) u /
-              ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))) z := by
+              ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))) z := by
           apply analyticAt_const.meromorphicAt.mul
           apply MeromorphicAt.add
           · exact analyticAt_const.meromorphicAt.div
@@ -520,13 +520,13 @@ theorem smallGrowth_proximity_logDeriv_le {x : EntireField ℂ}
               (analyticAt_const.sub (analyticAt_const.mul analyticAt_id)).meromorphicAt
         have hsplit : (fun w : ℂ => ∑ v ∈ insert u U, (D v : ℂ) *
             (1 / (w - v) + (starRingEnd ℂ) v /
-              ((R : ℂ) ^ 2 - (starRingEnd ℂ) v * w))) =
+              ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) v * w))) =
             (fun w => (D u : ℂ) *
               (1 / (w - u) + (starRingEnd ℂ) u /
-                ((R : ℂ) ^ 2 - (starRingEnd ℂ) u * w))) +
+                ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) u * w))) +
             fun w => ∑ v ∈ U, (D v : ℂ) *
               (1 / (w - v) + (starRingEnd ℂ) v /
-                ((R : ℂ) ^ 2 - (starRingEnd ℂ) v * w)) := by
+                ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) v * w)) := by
           funext w
           rw [Finset.sum_insert hu]
           rfl
@@ -941,7 +941,7 @@ noncomputable def smallGrowth_derivPresentation {x : EntireField ℂ}
     EntireFractionPresentation (fieldDirDerivation (1 : ℂ) x) where
   numerator := entireDirDeriv (1 : ℂ) p.numerator * p.denominator -
     p.numerator * entireDirDeriv (1 : ℂ) p.denominator
-  denominator := p.denominator ^ 2
+  denominator := p.denominator ^ (2 : ℕ)
   denominator_ne_zero := pow_ne_zero 2 p.denominator_ne_zero
   eq_div := by
     calc
@@ -953,7 +953,7 @@ noncomputable def smallGrowth_derivPresentation {x : EntireField ℂ}
       _ = algebraMap (entireSubring ℂ) (EntireField ℂ)
             (entireDirDeriv (1 : ℂ) p.numerator * p.denominator -
               p.numerator * entireDirDeriv (1 : ℂ) p.denominator) /
-          algebraMap (entireSubring ℂ) (EntireField ℂ) (p.denominator ^ 2) := by
+          algebraMap (entireSubring ℂ) (EntireField ℂ) (p.denominator ^ (2 : ℕ)) := by
         rw [Derivation.leibniz_div]
         rw [smallGrowth_fieldDirDerivation_algebraMap,
           smallGrowth_fieldDirDerivation_algebraMap]
@@ -977,7 +977,7 @@ theorem smallGrowth_derivPresentation_function_eventuallyEq {x : EntireField ℂ
           (p.denominator : ℂ → ℂ) z -
         (p.numerator : ℂ → ℂ) z *
           ((entireDirDeriv (1 : ℂ) p.denominator : entireSubring ℂ) : ℂ → ℂ) z) /
-        ((p.denominator : ℂ → ℂ) z ^ 2) =
+        ((p.denominator : ℂ → ℂ) z ^ (2 : ℕ)) =
       deriv ((p.numerator : ℂ → ℂ) / (p.denominator : ℂ → ℂ)) z
   rw [deriv_div (hnumDiff z) (hdenDiff z) hz]
   rw [entireDirDeriv_coe, entireDirDeriv_coe,

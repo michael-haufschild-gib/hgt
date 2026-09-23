@@ -22,9 +22,9 @@ noncomputable section
 
 /-- Exact denominator-sector factorization on the spectral strip of half-width `1/5`. -/
 theorem criticalFeatureDenominator_shallow_sector_factorization (x y : ℝ) :
-    (1 + x ^ 2 - y ^ 2) ^ 2 - 24 * (2 * x * y) ^ 2 =
-      (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-        4 * x ^ 2 * (1 - 25 * y ^ 2) := by
+    (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) - 24 * (2 * x * y) ^ (2 : ℕ) =
+      (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+        4 * x ^ (2 : ℕ) * (1 - 25 * y ^ (2 : ℕ)) := by
   ring
 
 /-- **Shallow-strip sector coercivity.**  If the transverse displacement is at most `1/5`, the
@@ -33,29 +33,29 @@ Hermitian energy. -/
 theorem twentyThree_twentyFive_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
     (t : ℝ) {z : ℂ} (hy : |z.im| ≤ 1 / 5) :
     (23 / 25 : ℝ) * Complex.normSq (criticalFeatureCauchyKernelTest t z) ≤
-      ((criticalFeatureCauchyKernelTest t z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re := by
   have hz : |z.im| < 1 / 2 := by linarith
   let x : ℝ := z.re - t
   let y : ℝ := z.im
-  let A : ℝ := 1 + x ^ 2 - y ^ 2
+  let A : ℝ := 1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)
   let B : ℝ := 2 * x * y
-  let D : ℝ := A ^ 2 + B ^ 2
-  have hy2 : y ^ 2 ≤ 1 / 25 := by
+  let D : ℝ := A ^ (2 : ℕ) + B ^ (2 : ℕ)
+  have hy2 : y ^ (2 : ℕ) ≤ 1 / 25 := by
     have hsq := (sq_le_sq₀ (abs_nonneg y)
       (by norm_num : (0 : ℝ) ≤ 1 / 5)).2 (by simpa [y] using hy)
     rw [sq_abs] at hsq
     norm_num at hsq ⊢
     exact hsq
-  have htwentyFive : 0 ≤ 1 - 25 * y ^ 2 := by linarith
-  have hsector : 24 * B ^ 2 ≤ A ^ 2 := by
-    have hid : A ^ 2 - 24 * B ^ 2 =
-        (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-          4 * x ^ 2 * (1 - 25 * y ^ 2) := by
+  have htwentyFive : 0 ≤ 1 - 25 * y ^ (2 : ℕ) := by linarith
+  have hsector : 24 * B ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := by
+    have hid : A ^ (2 : ℕ) - 24 * B ^ (2 : ℕ) =
+        (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+          4 * x ^ (2 : ℕ) * (1 - 25 * y ^ (2 : ℕ)) := by
       simpa only [A, B] using
         criticalFeatureDenominator_shallow_sector_factorization x y
     have hright : 0 ≤
-        (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-          4 * x ^ 2 * (1 - 25 * y ^ 2) := by positivity
+        (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+          4 * x ^ (2 : ℕ) * (1 - 25 * y ^ (2 : ℕ)) := by positivity
     linarith
   have hApos : 0 < A := by
     dsimp [A]
@@ -63,22 +63,22 @@ theorem twentyThree_twentyFive_mul_normSq_criticalFeatureCauchyKernelTest_le_re_
   have hDpos : 0 < D := by
     dsimp [D]
     nlinarith [sq_pos_of_pos hApos, sq_nonneg B]
-  have hden : Complex.normSq (1 + (z - (t : ℂ)) ^ 2) = D := by
+  have hden : Complex.normSq (1 + (z - (t : ℂ)) ^ (2 : ℕ)) = D := by
     dsimp [D, A, B, x, y]
     rw [Complex.normSq_apply]
     simp [pow_two, Complex.mul_re]
     ring
   have hre :
-      ((2 / (1 + (z - (t : ℂ)) ^ 2)) ^ 2).re =
-        4 * (A ^ 2 - B ^ 2) / D ^ 2 := by
+      ((2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ))) ^ (2 : ℕ)).re =
+        4 * (A ^ (2 : ℕ) - B ^ (2 : ℕ)) / D ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re, Complex.div_re, Complex.div_im]
     norm_num
     rw [hden]
-    have hreDen : ((z - (t : ℂ)) ^ 2).re = A - 1 := by
+    have hreDen : ((z - (t : ℂ)) ^ (2 : ℕ)).re = A - 1 := by
       dsimp [A, x, y]
       simp [pow_two, Complex.mul_re]
       ring
-    have himDen : ((z - (t : ℂ)) ^ 2).im = B := by
+    have himDen : ((z - (t : ℂ)) ^ (2 : ℕ)).im = B := by
       dsimp [B, x, y]
       simp [pow_two, Complex.mul_im]
       ring
@@ -86,14 +86,14 @@ theorem twentyThree_twentyFive_mul_normSq_criticalFeatureCauchyKernelTest_le_re_
     field_simp [ne_of_gt hDpos]
     ring
   have hnorm :
-      Complex.normSq (2 / (1 + (z - (t : ℂ)) ^ 2)) = 4 / D := by
+      Complex.normSq (2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ))) = 4 / D := by
     rw [Complex.normSq_div]
     norm_num [Complex.normSq_apply]
-    have hreDen : ((z - (t : ℂ)) ^ 2).re = A - 1 := by
+    have hreDen : ((z - (t : ℂ)) ^ (2 : ℕ)).re = A - 1 := by
       dsimp [A, x, y]
       simp [pow_two, Complex.mul_re]
       ring
-    have himDen : ((z - (t : ℂ)) ^ 2).im = B := by
+    have himDen : ((z - (t : ℂ)) ^ (2 : ℕ)).im = B := by
       dsimp [B, x, y]
       simp [pow_two, Complex.mul_im]
       ring
@@ -110,11 +110,11 @@ theorem shallowDirectFiveCenterCriticalFeatureHolomorphicCharge_lower
     {t : ℝ} {z : ℂ} (hy : |z.im| ≤ 1 / 5)
     (ht : |z.re - t| ≤ 1 / 2) :
     (23 / 25 : ℝ) * (23232 / 4225 + 32 / 221 : ℝ) ≤
-      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t - 1) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest t z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t + 2) z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t - 1) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t + 2) z) ^ (2 : ℕ)).re := by
   have hz : |z.im| < 1 / 2 := by linarith
   have hthree := sharp_threeCenterCriticalFeatureEnergy_lower hz ht
   have hmDist : |z.re - (t - 2)| ≤ 5 / 2 := by

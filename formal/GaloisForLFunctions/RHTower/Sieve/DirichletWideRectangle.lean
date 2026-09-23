@@ -14,12 +14,12 @@ L < 120·2^K·(log L)²      and      100·2^K ≤ L ,
 pin the order to `≍ log₂ L` and make the estimate polylogarithmic on the whole strip:
 
 ```text
-‖∑_{n < 2^(topExponent t + 1)} n^(-σ - it)‖  ≤  L^34 .
+‖∑_{n < 2^(topExponent t + 1)} n^(-σ - it)‖  ≤  L^(34 : ℕ) .
 ```
 
 The mechanism is that the lower bound on `2^K` forces `√L ≤ 2^K`, hence `log L ≤ 2K log 2`, so the
 trade-off exponent `θ = S/(6·2^K)` with `S ≤ L/((K - 4/3) log 2) + 1` is only `O(log L)` — a single
-logarithm, although the strip is `(log L)²/L` wide.  The head is then `2^θ·S·log 2 ≤ L^33` and the
+logarithm, although the strip is `(log L)²/L` wide.  The head is then `2^θ·S·log 2 ≤ L^(33 : ℕ)` and the
 tail `(T + 1 - S)·2560·2^(-θ) ≤ 12800 L`.
 
 Both hypotheses hold at the wide order, giving the estimate as a function of `t` alone; stating them

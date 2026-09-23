@@ -69,9 +69,9 @@ theorem exists_late_recurrence_depthHard [NeZero k] (hk : k.Prime)
     (dict : ℕ → Finset (EuclideanSpace ℂ (Fin (d + 1)))) (hmono : Monotone dict)
     (s M Δ : ℕ) (hunit : ∀ y ∈ dict s, ‖y‖ = 1)
     (hcap : (dict s).card ≤ (s + 1) * (M + s - 1).choose s * 2 ^ (Δ * s))
-    {δ : ℝ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1)
+    {δ : ℝ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h24 : 4 * ((k : ℝ) - 1) * (((s + 1) * (M + s - 1).choose s * 2 ^ (Δ * s) : ℕ) : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1)
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1)
     {ρ : ℝ} (hρ : 0 < ρ) (A : ℝ) :
     ∃ R : ℝ, A < R ∧
       pureStateTraceDistance (flowRay E R) (flowRay E 0) < ρ ∧
@@ -81,20 +81,20 @@ theorem exists_late_recurrence_depthHard [NeZero k] (hk : k.Prime)
   have hcapR : ((dict s).card : ℝ)
       ≤ (((s + 1) * (M + s - 1).choose s * 2 ^ (Δ * s) : ℕ) : ℝ) := by exact_mod_cast hcap
   have h13 : 4 * ((k : ℝ) - 1) * ((dict s).card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1 := by
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1 := by
     refine lt_of_le_of_lt ?_ h24
-    have hc : (0 : ℝ) ≤ 4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) := by
+    have hc : (0 : ℝ) ≤ 4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) := by
       have : (0 : ℝ) ≤ (k : ℝ) - 1 := by linarith
       positivity
     calc 4 * ((k : ℝ) - 1) * ((dict s).card : ℝ)
-          * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))
-        = (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)))
+          * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))
+        = (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)))
             * ((dict s).card : ℝ) := by ring
-      _ ≤ (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)))
+      _ ≤ (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)))
             * (((s + 1) * (M + s - 1).choose s * 2 ^ (Δ * s) : ℕ) : ℝ) :=
           mul_le_mul_of_nonneg_left hcapR hc
       _ = 4 * ((k : ℝ) - 1) * (((s + 1) * (M + s - 1).choose s * 2 ^ (Δ * s) : ℕ) : ℝ)
-            * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) := by ring
+            * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) := by ring
   obtain ⟨R, hRA, hrec, hhard⟩ :=
     exists_late_recurrence_hard_polygon_of_cap hk E hind (dict s) hunit hδ hδ2 h13 hρ A
   exact ⟨R, hRA, hrec, fun j hj1 hj2 =>

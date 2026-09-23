@@ -26,7 +26,7 @@ theorem conservative_spectrum (A : E →L[ℂ] E) :
   have hp := conservative_power A x
   have he : conservative A x = z • x := hx.apply_eq_smul
   rw [he, inner_smul_right, inner_self_eq_norm_sq_to_K] at hp
-  have hp' : z.re * ‖x‖ ^ 2 = 0 := by simpa [pow_two] using hp
+  have hp' : z.re * ‖x‖ ^ (2 : ℕ) = 0 := by simpa [pow_two] using hp
   exact (mul_eq_zero.mp hp').resolve_right (ne_of_gt (sq_pos_of_pos (norm_pos_iff.mpr hx.2)))
 
 /-- Proposition 3(ii): the damping spectrum is real and nonnegative. -/
@@ -35,12 +35,12 @@ theorem damping_spectrum (B : E →L[ℂ] F) :
   intro z hz
   obtain ⟨x, hx⟩ := (Module.End.hasEigenvalue_iff_mem_spectrum.mpr hz).exists_hasEigenvector
   have he : damping B x = z • x := hx.apply_eq_smul
-  have hp : ⟪x, damping B x⟫_ℂ = (‖B x‖ : ℂ) ^ 2 := by
+  have hp : ⟪x, damping B x⟫_ℂ = (‖B x‖ : ℂ) ^ (2 : ℕ) := by
     simp [damping, ContinuousLinearMap.adjoint_inner_right]
   rw [he, inner_smul_right, inner_self_eq_norm_sq_to_K] at hp
-  have hr : z.re * ‖x‖ ^ 2 = ‖B x‖ ^ 2 := by simpa [pow_two] using congrArg Complex.re hp
-  have hi : z.im * ‖x‖ ^ 2 = 0 := by simpa [pow_two] using congrArg Complex.im hp
-  have hn : 0 < ‖x‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hx.2)
+  have hr : z.re * ‖x‖ ^ (2 : ℕ) = ‖B x‖ ^ (2 : ℕ) := by simpa [pow_two] using congrArg Complex.re hp
+  have hi : z.im * ‖x‖ ^ (2 : ℕ) = 0 := by simpa [pow_two] using congrArg Complex.im hp
+  have hn : 0 < ‖x‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hx.2)
   refine ⟨(mul_eq_zero.mp hi).resolve_right (ne_of_gt hn), ?_⟩
   exact nonneg_of_mul_nonneg_left (hr.symm ▸ sq_nonneg ‖B x‖) hn
 
@@ -52,7 +52,7 @@ theorem generator_spectrum (A : E →L[ℂ] E) (B : E →L[ℂ] F) :
   have hp := generator_power_nonpos A B x
   have he : generator A B x = z • x := hx.apply_eq_smul
   rw [he, inner_smul_right, inner_self_eq_norm_sq_to_K] at hp
-  have hp' : z.re * ‖x‖ ^ 2 ≤ 0 := by simpa [pow_two] using hp
+  have hp' : z.re * ‖x‖ ^ (2 : ℕ) ≤ 0 := by simpa [pow_two] using hp
   exact nonpos_of_mul_nonpos_left hp' (sq_pos_of_pos (norm_pos_iff.mpr hx.2))
 
 /-- Unit damping opens a uniform spectral gap, independent of the conservative operator. -/
@@ -63,9 +63,9 @@ theorem regularized_spectrum (A : E →L[ℂ] E) (B : E →L[ℂ] F) :
   have hp := regularized_power A B x
   have he : regularized A B x = z • x := hx.apply_eq_smul
   rw [he, inner_smul_right, inner_self_eq_norm_sq_to_K] at hp
-  have hp' : z.re * ‖x‖ ^ 2 = -‖B x‖ ^ 2 - ‖x‖ ^ 2 := by simpa [pow_two] using hp
-  have hn : 0 < ‖x‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hx.2)
-  have h : (z.re + 1) * ‖x‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖B x‖]
+  have hp' : z.re * ‖x‖ ^ (2 : ℕ) = -‖B x‖ ^ (2 : ℕ) - ‖x‖ ^ (2 : ℕ) := by simpa [pow_two] using hp
+  have hn : 0 < ‖x‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hx.2)
+  have h : (z.re + 1) * ‖x‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [sq_nonneg ‖B x‖]
   have := nonpos_of_mul_nonpos_left h hn
   change z.re ≤ -1
   linarith

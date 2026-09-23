@@ -42,16 +42,16 @@ theorem xiWardCubicPrimitiveLowerSecantReflectionDefect_abs_le_linear_of_eulerRa
   have hden34 : lambda * (lambda + c) ≤
       (lambda + a) * (lambda + c + a) := by
     exact mul_le_mul hlpa hlcpa hlc0 (by positivity)
-  have hden : lambda ^ 2 * (lambda + c) ^ 2 / 4 ≤
+  have hden : lambda ^ (2 : ℕ) * (lambda + c) ^ (2 : ℕ) / 4 ≤
       (lambda - a) * (lambda + c - a) * (lambda + a) * (lambda + c + a) := by
     calc
-      lambda ^ 2 * (lambda + c) ^ 2 / 4 =
+      lambda ^ (2 : ℕ) * (lambda + c) ^ (2 : ℕ) / 4 =
           ((lambda / 2) * ((lambda + c) / 2)) * (lambda * (lambda + c)) := by ring
       _ ≤ ((lambda - a) * (lambda + c - a)) *
           ((lambda + a) * (lambda + c + a)) :=
         mul_le_mul hden12 hden34 (by positivity) (by positivity)
       _ = _ := by ring
-  have hsum : lambda + (lambda + c) ≤ 16 * lambda ^ 2 * (lambda + c) ^ 2 := by
+  have hsum : lambda + (lambda + c) ≤ 16 * lambda ^ (2 : ℕ) * (lambda + c) ^ (2 : ℕ) := by
     have hx : 0 ≤ 2 * lambda - 1 := by linarith
     have hy : 0 ≤ 2 * (lambda + c) - 1 := by linarith
     have hxy : 0 ≤ (2 * lambda - 1) * (2 * (lambda + c) - 1) :=
@@ -88,7 +88,7 @@ theorem not_exists_uniform_cubicHellinger_domination_by_adaptivePrimitiveLowerSe
     ¬ ∃ C : ℝ, ∀ a : ℝ, 0 < a → a < 1 / 4 →
       cubicLogMomentHellingerHorizontalKernel a a ≤
         C * xiWardCubicPrimitiveLowerSecantReflectionDefect
-          (rate a) (aperture a) a ^ 2 := by
+          (rate a) (aperture a) a ^ (2 : ℕ) := by
   rintro ⟨C, hC⟩
   by_cases hCnonpos : C ≤ 0
   · let a : ℝ := 1 / 8
@@ -99,7 +99,7 @@ theorem not_exists_uniform_cubicHellinger_domination_by_adaptivePrimitiveLowerSe
       have hlow := cubicLogMomentHellingerHorizontalKernel_self_ge ha hhalf
       linarith
     have hright : C * xiWardCubicPrimitiveLowerSecantReflectionDefect
-        (rate a) (aperture a) a ^ 2 ≤ 0 :=
+        (rate a) (aperture a) a ^ (2 : ℕ) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hCnonpos (sq_nonneg _)
     exact (not_le_of_gt hquant) (le_trans (hC a ha haquarter) hright)
   · have hCpos : 0 < C := lt_of_not_ge hCnonpos
@@ -112,28 +112,28 @@ theorem not_exists_uniform_cubicHellinger_domination_by_adaptivePrimitiveLowerSe
       change 1 / (512 * (C + 1)) < 1 / 4
       rw [div_lt_iff₀ hden]
       nlinarith
-    have hCratio : C / (C + 1) ^ 2 ≤ 1 := by
+    have hCratio : C / (C + 1) ^ (2 : ℕ) ≤ 1 := by
       rw [div_le_one (sq_pos_of_pos hCplus)]
       nlinarith [sq_nonneg C]
-    have hmajor : C * (128 * a) ^ 2 ≤ 1 := by
-      have heq : C * (128 * a) ^ 2 =
-          (1 / 16 : ℝ) * (C / (C + 1) ^ 2) := by
+    have hmajor : C * (128 * a) ^ (2 : ℕ) ≤ 1 := by
+      have heq : C * (128 * a) ^ (2 : ℕ) =
+          (1 / 16 : ℝ) * (C / (C + 1) ^ (2 : ℕ)) := by
         dsimp [a]
         field_simp [hCplus.ne']
         ring
       rw [heq]
       calc
-        (1 / 16 : ℝ) * (C / (C + 1) ^ 2) ≤ (1 / 16 : ℝ) * 1 :=
+        (1 / 16 : ℝ) * (C / (C + 1) ^ (2 : ℕ)) ≤ (1 / 16 : ℝ) * 1 :=
           mul_le_mul_of_nonneg_left hCratio (by norm_num)
         _ ≤ 1 := by norm_num
     have hdef := xiWardCubicPrimitiveLowerSecantReflectionDefect_abs_le_linear_of_eulerRate
       (hrate a) (haperture a) ha.le haquarter.le
     have hdefsq : xiWardCubicPrimitiveLowerSecantReflectionDefect
-        (rate a) (aperture a) a ^ 2 ≤ (128 * a) ^ 2 := by
+        (rate a) (aperture a) a ^ (2 : ℕ) ≤ (128 * a) ^ (2 : ℕ) := by
       rw [← sq_abs]
       exact (sq_le_sq₀ (abs_nonneg _) (by positivity)).2 hdef
     have hsource : C * xiWardCubicPrimitiveLowerSecantReflectionDefect
-        (rate a) (aperture a) a ^ 2 ≤ 1 :=
+        (rate a) (aperture a) a ^ (2 : ℕ) ≤ 1 :=
       le_trans (mul_le_mul_of_nonneg_left hdefsq hCpos.le) hmajor
     have hhalf : a ≤ 1 / 2 := by linarith
     have hquant := cubicLogMomentHellingerHorizontalKernel_self_ge ha hhalf

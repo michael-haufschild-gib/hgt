@@ -218,7 +218,7 @@ theorem tendsto_scaled_re_xiShiftedReciprocalMoment_squareParam (n : ℕ) :
     Tendsto
       (fun w : ℝ =>
         2 * w ^ (2 * n + 1) / Real.log w *
-          (xiShiftedReciprocalMoment (w ^ 2) n).re)
+          (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) n).re)
       atTop
       (nhds (GaloisForLFunctions.HTGeometry.normalizedCentralBinom n)) := by
   have hsource := tendsto_completedSourceJet_div_log n

@@ -44,9 +44,9 @@ theorem tileM_dvd (K₀ u : ℕ) : 2 ^ (K₀ + 1) ∣ tileM K₀ u := dvd_pow_mu
 theorem tile_start_two {K₀ u k : ℕ} (hu : 0 < u) (hk : k ≤ K₀) : 2 ≤ freeStart (tileM K₀ u) k := by
   rw [tileM, freeStart_pow_mul (by omega)]
   have h1 : 1 ≤ K₀ + 1 - k := by omega
-  have h2 : (2 : ℕ) ^ 1 ≤ 2 ^ (K₀ + 1 - k) := Nat.pow_le_pow_right (by norm_num) h1
+  have h2 : (2 : ℕ) ^ (1 : ℕ) ≤ 2 ^ (K₀ + 1 - k) := Nat.pow_le_pow_right (by norm_num) h1
   have h3 : 1 ≤ u := hu
-  calc (2 : ℕ) = 2 ^ 1 * 1 := by norm_num
+  calc (2 : ℕ) = 2 ^ (1 : ℕ) * 1 := by norm_num
     _ ≤ 2 ^ (K₀ + 1 - k) * u := Nat.mul_le_mul h2 h3
 
 /-- **The smallest start is positive.** -/

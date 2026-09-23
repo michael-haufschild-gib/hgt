@@ -29,9 +29,9 @@ then the residual energy is exactly the sum of the two sector energies. -/
 theorem orthogonalBoundaryResidualEnergy_eq
     (e o b : ι → H) (c : ι → 𝕜)
     (horth : ∀ i j, inner 𝕜 (e i - b i) (o j) = 0) :
-    ‖∑ i, c i • ((e i + o i) - b i)‖ ^ 2 =
-      ‖∑ i, c i • (e i - b i)‖ ^ 2 +
-        ‖∑ i, c i • o i‖ ^ 2 := by
+    ‖∑ i, c i • ((e i + o i) - b i)‖ ^ (2 : ℕ) =
+      ‖∑ i, c i • (e i - b i)‖ ^ (2 : ℕ) +
+        ‖∑ i, c i • o i‖ ^ (2 : ℕ) := by
   let E : H := ∑ i, c i • (e i - b i)
   let O : H := ∑ i, c i • o i
   have hsum : (∑ i, c i • ((e i + o i) - b i)) = E + O := by
@@ -58,8 +58,8 @@ theorem orthogonalBoundaryResidualEnergy_eq
 theorem orthogonalBoundaryResidualEnergy_lower
     (e o b : ι → H) (c : ι → 𝕜)
     (horth : ∀ i j, inner 𝕜 (e i - b i) (o j) = 0) :
-    ‖∑ i, c i • o i‖ ^ 2 ≤
-      ‖∑ i, c i • ((e i + o i) - b i)‖ ^ 2 := by
+    ‖∑ i, c i • o i‖ ^ (2 : ℕ) ≤
+      ‖∑ i, c i • ((e i + o i) - b i)‖ ^ (2 : ℕ) := by
   rw [orthogonalBoundaryResidualEnergy_eq e o b c horth]
   exact le_add_of_nonneg_left (sq_nonneg _)
 
@@ -85,7 +85,7 @@ theorem inner_eq_zero_of_selfAdjointParity_even_odd
 theorem parityBoundaryResidualNormSq_eq
     (J : H →L[𝕜] H) (hJ : IsSelfAdjoint J)
     (e o b : H) (he : J e = e) (ho : J o = -o) (hb : J b = b) :
-    ‖(e + o) - b‖ ^ 2 = ‖e - b‖ ^ 2 + ‖o‖ ^ 2 := by
+    ‖(e + o) - b‖ ^ (2 : ℕ) = ‖e - b‖ ^ (2 : ℕ) + ‖o‖ ^ (2 : ℕ) := by
   have heven : J (e - b) = e - b := by rw [map_sub, he, hb]
   have horth := inner_eq_zero_of_selfAdjointParity_even_odd J hJ heven ho
   have hsum : (e + o) - b = (e - b) + o := by module
@@ -103,9 +103,9 @@ theorem parityBoundaryResidualEnergy_eq
     (he : ∀ i, J (e i) = e i)
     (ho : ∀ i, J (o i) = -o i)
     (hb : ∀ i, J (b i) = b i) :
-    ‖∑ i, c i • ((e i + o i) - b i)‖ ^ 2 =
-      ‖∑ i, c i • (e i - b i)‖ ^ 2 +
-        ‖∑ i, c i • o i‖ ^ 2 := by
+    ‖∑ i, c i • ((e i + o i) - b i)‖ ^ (2 : ℕ) =
+      ‖∑ i, c i • (e i - b i)‖ ^ (2 : ℕ) +
+        ‖∑ i, c i • o i‖ ^ (2 : ℕ) := by
   apply orthogonalBoundaryResidualEnergy_eq e o b c
   intro i j
   apply inner_eq_zero_of_selfAdjointParity_even_odd J hJ
@@ -119,8 +119,8 @@ theorem parityBoundaryResidualEnergy_lower
     (he : ∀ i, J (e i) = e i)
     (ho : ∀ i, J (o i) = -o i)
     (hb : ∀ i, J (b i) = b i) :
-    ‖∑ i, c i • o i‖ ^ 2 ≤
-      ‖∑ i, c i • ((e i + o i) - b i)‖ ^ 2 := by
+    ‖∑ i, c i • o i‖ ^ (2 : ℕ) ≤
+      ‖∑ i, c i • ((e i + o i) - b i)‖ ^ (2 : ℕ) := by
   rw [parityBoundaryResidualEnergy_eq J hJ e o b c he ho hb]
   exact le_add_of_nonneg_left (sq_nonneg _)
 

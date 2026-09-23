@@ -4,8 +4,8 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAAlignedForceUniform
 # Uniform energy and derivative control of the aligned Gibbs profile
 
 The actual barrier-normalized potential and its angle derivative have
-uniformly vanishing first corrections to cos(psi)^4 and
--4*sin(psi)*cos(psi)^3. The derivative estimate also holds along
+uniformly vanishing first corrections to cos(psi)^(4 : ℕ) and
+-4*sin(psi)*cos(psi)^(3 : ℕ). The derivative estimate also holds along
 arbitrary moving angle trajectories, without regularity assumptions.
 -/
 noncomputable section
@@ -14,19 +14,19 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAPeakNormalizedGibbs_uniform_first_zero_limit (w φ l₁ l₂ : ℝ) :
-    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ ψ - cos ψ ^ 4) /
+    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ ψ - cos ψ ^ (4 : ℕ)) /
       egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot :=
   egbFixedChargeAPeakAlignedGibbsGap_uniform_first_zero_limit w φ l₁ l₂
 
 theorem egbFixedChargeAPeakNormalizedGibbs_derivative_uniform_first_zero_limit (w φ l₁ l₂ : ℝ) :
-    TendstoUniformly (fun τ ψ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ 3) /
+    TendstoUniformly (fun τ ψ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ (3 : ℕ)) /
       egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
   simpa only [egbFixedChargeAPeakNormalizedGibbs_derivative] using
     egbFixedChargeAPeakNormalizedGibbsForce_uniform_first_zero_limit w φ l₂
 
 theorem egbFixedChargeAPeakNormalizedGibbs_derivative_uniform_limit (w φ l₁ l₂ : ℝ) :
     TendstoUniformly (fun τ ψ => deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ)
-      (fun ψ => -4 * sin ψ * cos ψ ^ 3) atBot := by
+      (fun ψ => -4 * sin ψ * cos ψ ^ (3 : ℕ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have he := (Metric.tendstoUniformly_iff.mp
@@ -40,13 +40,13 @@ theorem egbFixedChargeAPeakNormalizedGibbs_derivative_uniform_limit (w φ l₁ l
   have hx := (div_lt_iff₀ hp).mp h
   simp only [one_mul] at hx
   rw [dist_comm, Real.dist_eq]
-  have heq : deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ - (-4 * sin ψ * cos ψ ^ 3) =
-      deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ 3 := by ring
+  have heq : deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ - (-4 * sin ψ * cos ψ ^ (3 : ℕ)) =
+      deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ (3 : ℕ) := by ring
   rw [heq]
   exact hx.trans hδ
 
 theorem egbFixedChargeAPeakNormalizedGibbs_derivative_moving_first_zero_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
-    Tendsto (fun τ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ 3) /
+    Tendsto (fun τ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ (3 : ℕ)) /
       egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
@@ -56,7 +56,7 @@ theorem egbFixedChargeAPeakNormalizedGibbs_derivative_moving_first_zero_limit (w
   simpa only [dist_comm] using hτ (ψ τ)
 
 theorem egbFixedChargeAPeakNormalizedGibbs_derivative_moving_peak_zero_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
-    Tendsto (fun τ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ 3) /
+    Tendsto (fun τ => (deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ (3 : ℕ)) /
       egbFixedChargeAMiddleGapCoordinate τ φ) atBot (𝓝 (0 : ℝ)) := by
   have hc := egbFixedChargeAMiddleMeanCorrection_neg φ
   have h := (egbFixedChargeAPeakNormalizedGibbs_derivative_moving_first_zero_limit w φ l₁ l₂ ψ).div
@@ -69,8 +69,8 @@ theorem egbFixedChargeAPeakNormalizedGibbs_derivative_moving_peak_zero_limit (w 
 
 theorem egbFixedChargeAPeakNormalizedGibbs_uniform_C1_error_limit (w φ l₁ l₂ : ℝ) :
     TendstoUniformly (fun τ ψ =>
-      |(egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ| +
-      |(deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ 3) /
+      |(egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ| +
+      |(deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ + 4 * sin ψ * cos ψ ^ (3 : ℕ)) /
         egbCoexistenceASymmetricRatio τ|) (fun _ => (0 : ℝ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
@@ -88,8 +88,8 @@ theorem egbFixedChargeAPeakNormalizedGibbs_uniform_C1_error_limit (w φ l₁ l�
 
 theorem egbFixedChargeAPeakNormalizedGibbs_moving_C1_error_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ =>
-      |(egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ (ψ τ) - cos (ψ τ) ^ 4) / egbCoexistenceASymmetricRatio τ| +
-      |(deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ 3) /
+      |(egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂ (ψ τ) - cos (ψ τ) ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ| +
+      |(deriv (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) + 4 * sin (ψ τ) * cos (ψ τ) ^ (3 : ℕ)) /
         egbCoexistenceASymmetricRatio τ|) atBot (𝓝 (0 : ℝ)) := by
   have hv := (egbFixedChargeAPeakAlignedGibbsGap_moving_first_zero_limit w φ l₁ l₂ ψ).abs
   have hd := (egbFixedChargeAPeakNormalizedGibbs_derivative_moving_first_zero_limit w φ l₁ l₂ ψ).abs

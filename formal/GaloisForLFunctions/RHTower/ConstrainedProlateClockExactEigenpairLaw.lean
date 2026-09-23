@@ -24,8 +24,8 @@ universal ratio rules out the junk branch of `depthSecularRoot`. -/
 theorem LadderEnvelope.ccm_depth_ratio_and_exactEigenpair_eventually
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun lam => depthSecularRoot (D lam) (ℓ lam) k / D lam (k + 1)) atTop

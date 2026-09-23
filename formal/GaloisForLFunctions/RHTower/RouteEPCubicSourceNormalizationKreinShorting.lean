@@ -33,11 +33,11 @@ noncomputable section
 
 /-- Fourth-depth energy after shorting through a positive parent pivot. -/
 def routeEPCubicPositivePivotShortedFourthDepthEnergy (w cross : ℝ) : ℝ :=
-  w / 64 - cross ^ 2 / w
+  w / 64 - cross ^ (2 : ℕ) / w
 
 /-- Fourth-depth energy after shorting through an oriented negative polar pivot. -/
 def routeEPCubicPolarPivotShortedFourthDepthEnergy (w cross : ℝ) : ℝ :=
-  w / 64 - cross ^ 2 / (-w)
+  w / 64 - cross ^ (2 : ℕ) / (-w)
 
 /-- Unique nonnegative cross-coupling scale predicted by the `63/64` trace debt. -/
 def routeEPCubicFourthDepthQuantizedPolarCross (w : ℝ) : ℝ :=
@@ -48,7 +48,7 @@ theorem routeEPCubicPositivePivotShortedFourthDepthEnergy_le
     (w cross : ℝ) (hw : 0 < w) :
     routeEPCubicPositivePivotShortedFourthDepthEnergy w cross ≤ w / 64 := by
   unfold routeEPCubicPositivePivotShortedFourthDepthEnergy
-  have hnonneg : 0 ≤ cross ^ 2 / w := div_nonneg (sq_nonneg cross) hw.le
+  have hnonneg : 0 ≤ cross ^ (2 : ℕ) / w := div_nonneg (sq_nonneg cross) hw.le
   linarith
 
 /-- No positive-pivot Schur complement can restore the parent energy. -/
@@ -64,7 +64,7 @@ theorem routeEPCubicPositivePivotShortedFourthDepthEnergy_ne_parent
 theorem routeEPCubicPolarPivotShortedFourthDepthEnergy_eq_parent_iff
     (w cross : ℝ) (hw : 0 < w) :
     routeEPCubicPolarPivotShortedFourthDepthEnergy w cross = w ↔
-      cross ^ 2 = 63 / 64 * w ^ 2 := by
+      cross ^ (2 : ℕ) = 63 / 64 * w ^ (2 : ℕ) := by
   unfold routeEPCubicPolarPivotShortedFourthDepthEnergy
   constructor <;> intro h
   · field_simp [hw.ne'] at h
@@ -74,9 +74,9 @@ theorem routeEPCubicPolarPivotShortedFourthDepthEnergy_eq_parent_iff
 
 /-- The quantized polar cross has exactly debt-matching square. -/
 theorem routeEPCubicFourthDepthQuantizedPolarCross_sq (w : ℝ) :
-    routeEPCubicFourthDepthQuantizedPolarCross w ^ 2 =
-      63 / 64 * w ^ 2 := by
-  have hsqrt : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
+    routeEPCubicFourthDepthQuantizedPolarCross w ^ (2 : ℕ) =
+      63 / 64 * w ^ (2 : ℕ) := by
+  have hsqrt : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
   unfold routeEPCubicFourthDepthQuantizedPolarCross
   nlinarith
 
@@ -105,8 +105,8 @@ theorem routeEPCubicFourthDepthQuantizedPolarCross_unique
 
 /-- Debt-matching two-channel block has determinant exactly `-w²`. -/
 theorem routeEPCubicPolarBlockDet_quantized (w : ℝ) :
-    (-w) * (w / 64) - routeEPCubicFourthDepthQuantizedPolarCross w ^ 2 =
-      -w ^ 2 := by
+    (-w) * (w / 64) - routeEPCubicFourthDepthQuantizedPolarCross w ^ (2 : ℕ) =
+      -w ^ (2 : ℕ) := by
   rw [routeEPCubicFourthDepthQuantizedPolarCross_sq]
   ring
 
@@ -124,7 +124,7 @@ theorem routePPrimitiveFourthDepth_sourceFaithful_pairTrace_eq_fullPolarShort
     (pe : Nat.Primes × ℕ) :
     routePPrimitiveBaseCauchyCubicWeight pe +
         routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-          routePPrimitiveFourthDepthModularGain pe ^ 2 =
+          routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ) =
       routeEPCubicPolarPivotShortedFourthDepthEnergy
         (routePPrimitiveBaseCauchyCubicWeight pe)
         (routePPrimitiveBaseCauchyCubicWeight pe) := by
@@ -141,8 +141,8 @@ theorem routePPrimitiveFourthDepth_sourceNormalizationKreinShorting_classificati
     routeEPCubicPositivePivotShortedFourthDepthEnergy w 0 ≠ w ∧
       routeEPCubicPolarPivotShortedFourthDepthEnergy w
           (routeEPCubicFourthDepthQuantizedPolarCross w) = w ∧
-      (-w) * (w / 64) - routeEPCubicFourthDepthQuantizedPolarCross w ^ 2 = -w ^ 2 ∧
-      -w ^ 2 < 0 := by
+      (-w) * (w / 64) - routeEPCubicFourthDepthQuantizedPolarCross w ^ (2 : ℕ) = -w ^ (2 : ℕ) ∧
+      -w ^ (2 : ℕ) < 0 := by
   dsimp
   have hw := routePPrimitiveBaseCauchyCubicWeight_pos pe
   exact

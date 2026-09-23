@@ -39,7 +39,7 @@ theorem collisionProject_transportJet_gram_det (i j : ℕ) (t : ℝ) :
     let u := collisionConservationProject 1 (HTGeometry.transportDiracJet i t)
     let v := collisionConservationProject 1 (HTGeometry.transportDiracJet j t)
     HTGeometry.exchangePair u u * HTGeometry.exchangePair v v -
-      HTGeometry.exchangePair u v ^ 2 = 0 := by
+      HTGeometry.exchangePair u v ^ (2 : ℕ) = 0 := by
   dsimp only
   rw [collisionProject_exchangePair, collisionProject_exchangePair,
     collisionProject_exchangePair]
@@ -47,8 +47,8 @@ theorem collisionProject_transportJet_gram_det (i j : ℕ) (t : ℝ) :
 
 /-- The retained transport energy never exceeds the existing positive Dirac majorant. -/
 theorem collisionProject_transportJet_majorant (b : ℝ) (i : ℕ) (t : ℝ) :
-    (collisionConservationProject b (HTGeometry.transportDiracJet i t)).1 ^ 2 +
-      (collisionConservationProject b (HTGeometry.transportDiracJet i t)).2 ^ 2 ≤
+    (collisionConservationProject b (HTGeometry.transportDiracJet i t)).1 ^ (2 : ℕ) +
+      (collisionConservationProject b (HTGeometry.transportDiracJet i t)).2 ^ (2 : ℕ) ≤
       HTGeometry.transportDiracMajorant i t := by
   convert collisionConservationProject_contractive b (HTGeometry.transportDiracJet i t) using 1
   simp only [HTGeometry.transportDiracJet, HTGeometry.transportDiracMajorant,
@@ -98,7 +98,7 @@ theorem pauliCollisionGenerator_eq
   rw [pauliCollisionGenerator, sum_finitePauliMatrix_conj, smul_smul]
   congr 2
   have h2 : (2 : ℂ) ^ Fintype.card σ ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hp : (4 : ℂ) ^ Fintype.card σ = ((2 : ℂ) ^ Fintype.card σ) ^ 2 := by
+  have hp : (4 : ℂ) ^ Fintype.card σ = ((2 : ℂ) ^ Fintype.card σ) ^ (2 : ℕ) := by
     rw [← pow_mul, mul_comm (Fintype.card σ) 2, pow_mul]
     congr 1
     ring

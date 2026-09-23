@@ -25,17 +25,17 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The spherical-lapse expression extracted from the actual time-time metric entry. -/
 def schwarzschildInformationCurvature (M r polar : ℝ) : ℝ :=
-  (1 + schwarzschildBoyerLindquistMetric M r polar 0 0) / r ^ 2
+  (1 + schwarzschildBoyerLindquistMetric M r polar 0 0) / r ^ (2 : ℕ)
 
 def massPowerInformation (c p m : ℝ) : ℝ := exp (c + p * m)
 
 def calibratedInformationCurvature (c p m t : ℝ) : ℝ :=
-  2 * exp (-c) * massPowerInformation c p m / exp t ^ 3
+  2 * exp (-c) * massPowerInformation c p m / exp t ^ (3 : ℕ)
 
 theorem schwarzschildInformationCurvature_eq (M t polar : ℝ) :
-    schwarzschildInformationCurvature M (exp t) polar = 2 * M / exp t ^ 3 := by
+    schwarzschildInformationCurvature M (exp t) polar = 2 * M / exp t ^ (3 : ℕ) := by
   rw [schwarzschildInformationCurvature, schwarzschildBoyerLindquistMetric_explicit]
-  change (1 + -(exp t ^ 2 - 2 * M * exp t) / exp t ^ 2) / exp t ^ 2 = _
+  change (1 + -(exp t ^ (2 : ℕ) - 2 * M * exp t) / exp t ^ (2 : ℕ)) / exp t ^ (2 : ℕ) = _
   field_simp
   ring
 
@@ -50,7 +50,7 @@ theorem schwarzschildInformationCurvature_angle_independent (M t polar other : �
   simp only [schwarzschildInformationCurvature_eq]
 
 theorem schwarzschildInformationCurvature_horizon (m polar : ℝ) :
-    schwarzschildInformationCurvature (exp m) (2 * exp m) polar = 1 / (4 * exp m ^ 2) := by
+    schwarzschildInformationCurvature (exp m) (2 * exp m) polar = 1 / (4 * exp m ^ (2 : ℕ)) := by
   have h := schwarzschildInformationCurvature_eq (exp m) (log 2 + m) polar
   rw [exp_add, exp_log (by norm_num : (0 : ℝ) < 2)] at h
   rw [h]
@@ -65,13 +65,13 @@ theorem schwarzschildInformationCurvature_entropy_product (m polar : ℝ) :
 
 theorem schwarzschildInformationCurvature_horizon_slope (m polar : ℝ) :
     schwarzschildInformationCurvature (exp m) (2 * exp m) polar =
-      4 * (deriv (CPV.schwarzschildPotential 0 m) 0) ^ 2 := by
+      4 * (deriv (CPV.schwarzschildPotential 0 m) 0) ^ (2 : ℕ) := by
   rw [schwarzschildInformationCurvature_horizon, (CPV.schwarzschildPotential_hasDerivAt_zero 0 m).deriv,
     exp_zero]
   field_simp
 
 theorem calibratedInformationCurvature_eq (c p m t : ℝ) :
-    calibratedInformationCurvature c p m t = 2 * exp (p * m) / exp t ^ 3 := by
+    calibratedInformationCurvature c p m t = 2 * exp (p * m) / exp t ^ (3 : ℕ) := by
   unfold calibratedInformationCurvature massPowerInformation
   rw [exp_add, exp_neg]
   field_simp
@@ -81,7 +81,7 @@ theorem calibratedInformationCurvature_matches_iff (c p m t polar : ℝ) :
     calibratedInformationCurvature c p m t =
       schwarzschildInformationCurvature (exp m) (exp t) polar ↔ p = 1 ∨ m = 0 := by
   rw [calibratedInformationCurvature_eq, schwarzschildInformationCurvature_eq,
-    div_left_inj' (by positivity : exp t ^ 3 ≠ 0), mul_right_inj' (by norm_num : (2 : ℝ) ≠ 0),
+    div_left_inj' (by positivity : exp t ^ (3 : ℕ) ≠ 0), mul_right_inj' (by norm_num : (2 : ℝ) ≠ 0),
     exp_eq_exp]
   constructor
   · intro h
@@ -108,15 +108,15 @@ theorem quadraticInformationCurvature_mismatch (c t polar u : ℝ) :
   simp only [OfNat.ofNat_ne_one, exp_ne_zero, or_self, not_false_eq_true]
 
 theorem schwarzschildInformationCurvature_inverseTemperature (m polar : ℝ) :
-    RHTower.schwarzschildHawkingInverseTemperature (2 * exp m) ^ 2 *
-      schwarzschildInformationCurvature (exp m) (2 * exp m) polar = 16 * Real.pi ^ 2 := by
+    RHTower.schwarzschildHawkingInverseTemperature (2 * exp m) ^ (2 : ℕ) *
+      schwarzschildInformationCurvature (exp m) (2 * exp m) polar = 16 * Real.pi ^ (2 : ℕ) := by
   rw [schwarzschildInformationCurvature_horizon, RHTower.schwarzschildHawkingInverseTemperature]
   field_simp
   ring
 
 theorem schwarzschildInformationCurvature_matsubara (m polar : ℝ) (n : ℕ) :
-    RHTower.schwarzschildHawkingMatsubaraRate (2 * exp m) n ^ 2 =
-      (n : ℝ) ^ 2 / 4 * schwarzschildInformationCurvature (exp m) (2 * exp m) polar := by
+    RHTower.schwarzschildHawkingMatsubaraRate (2 * exp m) n ^ (2 : ℕ) =
+      (n : ℝ) ^ (2 : ℕ) / 4 * schwarzschildInformationCurvature (exp m) (2 * exp m) polar := by
   rw [schwarzschildInformationCurvature_horizon, RHTower.schwarzschildHawkingMatsubaraRate,
     RHTower.schwarzschildHawkingInverseTemperature]
   field_simp
@@ -125,7 +125,7 @@ theorem schwarzschildInformationCurvature_matsubara (m polar : ℝ) (n : ℕ) :
 theorem schwarzschildInformationCurvature_areaEntropy (m t polar : ℝ) :
     schwarzschildInformationCurvature (exp m) (exp t) polar =
       RHTower.schwarzschildBekensteinHawkingEntropy (exp m) /
-        (2 * Real.pi * exp m * exp t ^ 3) := by
+        (2 * Real.pi * exp m * exp t ^ (3 : ℕ)) := by
   rw [schwarzschildInformationCurvature_eq, RHTower.schwarzschildBekensteinHawkingEntropy]
   field_simp
   ring
@@ -134,7 +134,7 @@ theorem schwarzschildInformationCurvature_exponential (m t polar : ℝ) :
     schwarzschildInformationCurvature (exp m) (exp t) polar = exp (log 2 + m - 3 * t) := by
   rw [schwarzschildInformationCurvature_eq, exp_sub, exp_add,
     exp_log (by norm_num : (0 : ℝ) < 2)]
-  have he : exp (3 * t) = exp t ^ 3 := exp_nat_mul t 3
+  have he : exp (3 * t) = exp t ^ (3 : ℕ) := exp_nat_mul t 3
   rw [he]
 
 /-- The exact radius boundary exposed by an imposed positive curvature ceiling. -/

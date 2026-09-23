@@ -43,7 +43,7 @@ its diagonal. -/
 theorem hsNorm_toCLM_diagonal (b : OrthonormalBasis (Fin n) ℂ E) {f : E →ₗ[ℂ] E} {d : Fin n → ℂ}
     (hd : ∀ i, f (b i) = d i • b i) :
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap f)
-      = Real.sqrt (∑ i, ‖d i‖ ^ 2) := by
+      = Real.sqrt (∑ i, ‖d i‖ ^ (2 : ℕ)) := by
   classical
   rw [ContinuousLinearMap.hsNorm,
     ContinuousLinearMap.hsNormSq_eq (isHilbertSchmidt_toCLM f) b.toHilbertBasis, tsum_fintype]
@@ -59,7 +59,7 @@ theorem hsNorm_toCLM_diagonal (b : OrthonormalBasis (Fin n) ℂ E) {f : E →ₗ
 /-- **The tangent norm of a Hermitian direction is the Euclidean norm of its eigenvalues.** -/
 theorem hsNorm_toCLM_eq_sqrt (hT : T.IsSymmetric) (hn : finrank ℂ E = n) :
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap T)
-      = Real.sqrt (∑ i, hT.eigenvalues hn i ^ 2) := by
+      = Real.sqrt (∑ i, hT.eigenvalues hn i ^ (2 : ℕ)) := by
   rw [hsNorm_toCLM_diagonal (hT.eigenvectorBasis hn) (hT.apply_eigenvectorBasis hn)]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_

@@ -11,7 +11,7 @@ noncomputable section
 
 /-- The actual width-one response mean obeys the sharp Cauchy-Schwarz contraction. -/
 theorem responseMean_norm_sq_le (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 0 < y) :
-    ‖responseMean q branch y‖^2 ≤ responseMeanSquare q branch y := by
+    ‖responseMean q branch y‖^(2 : ℕ) ≤ responseMeanSquare q branch y := by
   have hf := slice_continuous (responsePlanar q branch) (responsePlanar_smooth q branch) hy
   have h := integral_norm_le_sqrt_length_mul_sqrt_meanSquare hf
     (a := (-1/2:ℝ)) (b := (1/2:ℝ)) (by norm_num)
@@ -24,14 +24,14 @@ theorem responseMean_norm_sq_le (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy :
     hn.trans (by simpa only [responseMeanSquare,neg_div] using h)
   have hs : 0 ≤ responseMeanSquare q branch y := integral_nonneg (fun x => sq_nonneg _)
   calc
-    ‖responseMean q branch y‖^2 ≤ (Real.sqrt (responseMeanSquare q branch y))^2 :=
+    ‖responseMean q branch y‖^(2 : ℕ) ≤ (Real.sqrt (responseMeanSquare q branch y))^(2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _) (Real.sqrt_nonneg _)).mpr hm
     _ = responseMeanSquare q branch y := Real.sq_sqrt hs
 
 /-- The original native Hilbert norm forces square-integrability of the actual cusp mean. -/
 theorem responseMean_density_integrable (q : XiZeroCopy) (branch : Bool) :
-    IntegrableOn (fun y : ℝ => ‖responseMean q branch y‖^2/y^2) (Ioi (2:ℝ)) := by
-  have hc : ContinuousOn (fun y : ℝ => ‖responseMean q branch y‖^2/y^2) (Ioi (2:ℝ)) := by
+    IntegrableOn (fun y : ℝ => ‖responseMean q branch y‖^(2 : ℕ)/y^(2 : ℕ)) (Ioi (2:ℝ)) := by
+  have hc : ContinuousOn (fun y : ℝ => ‖responseMean q branch y‖^(2 : ℕ)/y^(2 : ℕ)) (Ioi (2:ℝ)) := by
     intro y hy
     have hp : 0 < y := by change 2 < y at hy; linarith
     exact (((average_hasDerivAt (responsePlanar q branch) (responsePlanar_smooth q branch) hp).continuousAt.norm.pow 2).div

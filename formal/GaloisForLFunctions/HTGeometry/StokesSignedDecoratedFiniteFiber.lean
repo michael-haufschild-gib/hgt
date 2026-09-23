@@ -23,7 +23,7 @@ structure SignedDecoratedDiagram (n : ℕ) where
 namespace SignedDecoratedDiagram
 
 def localWeight {n : ℕ} (d : SignedDecoratedDiagram n) (i : Fin n) : ℤ :=
-  d.diagonal i + d.ramification i ^ 2 - 1
+  d.diagonal i + d.ramification i ^ (2 : ℕ) - 1
 
 /-- Nonnegative shadow used only for off-diagonal pair data.  Its diagonal is a conservative bound
 for prefix encodings; the exact signed local equation remains in `FixedSignedWeightedCharacteristic`. -/

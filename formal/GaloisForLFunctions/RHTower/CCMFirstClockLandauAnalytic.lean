@@ -66,15 +66,15 @@ private theorem norm_inv_add_le_twenty_div
 
 private theorem hasDerivAt_inv_sub_cube
     {a s : ℂ} (hne : s - a ≠ 0) :
-    HasDerivAt (fun w : ℂ => 1 / (w - a) ^ 3)
-      (-3 / (s - a) ^ 4) s := by
+    HasDerivAt (fun w : ℂ => 1 / (w - a) ^ (3 : ℕ))
+      (-3 / (s - a) ^ (4 : ℕ)) s := by
   have hp := ((hasDerivAt_id s).sub_const a).pow 3
   have hi := hp.inv (pow_ne_zero 3 hne)
   have hi' : HasDerivAt
-      (fun w : ℂ => 1 / (w - a) ^ 3)
-      (-(3 * (s - a) ^ 2) / ((s - a) ^ 3) ^ 2) s := by
-    have hfun : (fun w : ℂ => 1 / (w - a) ^ 3) =
-        fun w : ℂ => ((w - a) ^ 3)⁻¹ := by
+      (fun w : ℂ => 1 / (w - a) ^ (3 : ℕ))
+      (-(3 * (s - a) ^ (2 : ℕ)) / ((s - a) ^ (3 : ℕ)) ^ (2 : ℕ)) s := by
+    have hfun : (fun w : ℂ => 1 / (w - a) ^ (3 : ℕ)) =
+        fun w : ℂ => ((w - a) ^ (3 : ℕ))⁻¹ := by
       funext w
       rw [one_div]
     rw [hfun]
@@ -96,13 +96,13 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
   let z : ℂ := xiSpectralPoint q
   let F : ℂ → ℝ → ℂ := fun w u =>
     Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
-      (1 / (w - I * z * (u : ℂ)) ^ 3 +
-        1 / (w + I * z * (u : ℂ)) ^ 3)
+      (1 / (w - I * z * (u : ℂ)) ^ (3 : ℕ) +
+        1 / (w + I * z * (u : ℂ)) ^ (3 : ℕ))
   let F' : ℂ → ℝ → ℂ := fun w u =>
     Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
-      (-3 / (w - I * z * (u : ℂ)) ^ 4 +
-        -3 / (w + I * z * (u : ℂ)) ^ 4)
-  let bound : ℝ → ℝ := fun _ => 6 * (20 / r) ^ 4
+      (-3 / (w - I * z * (u : ℂ)) ^ (4 : ℕ) +
+        -3 / (w + I * z * (u : ℂ)) ^ (4 : ℕ))
+  let bound : ℝ → ℝ := fun _ => 6 * (20 / r) ^ (4 : ℕ)
   have hdenSub : ∀ w ∈ Metric.ball (r : ℂ) (r / 2),
       ∀ u : ℝ, u ∈ Set.uIcc (0 : ℝ) 1 →
         w - I * z * (u : ℂ) ≠ 0 := by
@@ -127,12 +127,12 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
       (((by fun_prop : Continuous
           (fun u : ℝ => (1 : ℂ))) |>.continuousOn.div
         (by fun_prop : Continuous
-          (fun u : ℝ => (w - I * z * (u : ℂ)) ^ 3)).continuousOn
+          (fun u : ℝ => (w - I * z * (u : ℂ)) ^ (3 : ℕ))).continuousOn
         (fun u hu => pow_ne_zero 3 (hdenSub w hw u (by simpa using hu)))).add
        ((by fun_prop : Continuous
           (fun u : ℝ => (1 : ℂ))) |>.continuousOn.div
         (by fun_prop : Continuous
-          (fun u : ℝ => (w + I * z * (u : ℂ)) ^ 3)).continuousOn
+          (fun u : ℝ => (w + I * z * (u : ℂ)) ^ (3 : ℕ))).continuousOn
         (fun u hu => pow_ne_zero 3 (hdenAdd w hw u (by simpa using hu)))))
   have hFmeas : ∀ᶠ w in 𝓝 s,
       AEStronglyMeasurable (F w)
@@ -147,12 +147,12 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
       (((by fun_prop : Continuous
           (fun u : ℝ => (-3 : ℂ))) |>.continuousOn.div
         (by fun_prop : Continuous
-          (fun u : ℝ => (s - I * z * (u : ℂ)) ^ 4)).continuousOn
+          (fun u : ℝ => (s - I * z * (u : ℂ)) ^ (4 : ℕ))).continuousOn
         (fun u hu => pow_ne_zero 4 (hdenSub s hs u (by simpa using hu)))).add
        ((by fun_prop : Continuous
           (fun u : ℝ => (-3 : ℂ))) |>.continuousOn.div
         (by fun_prop : Continuous
-          (fun u : ℝ => (s + I * z * (u : ℂ)) ^ 4)).continuousOn
+          (fun u : ℝ => (s + I * z * (u : ℂ)) ^ (4 : ℕ))).continuousOn
         (fun u hu => pow_ne_zero 4 (hdenAdd s hs u (by simpa using hu)))))
   have hbound : ∀ᵐ u ∂volume, u ∈ Set.uIoc (0 : ℝ) 1 →
       ∀ w ∈ Metric.ball (r : ℂ) (r / 2),
@@ -173,36 +173,36 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
     have hsub := norm_inv_sub_le_twenty_div hr hw q hu0
     have hadd := norm_inv_add_le_twenty_div hr hw q hu0
     have hsub4 :
-        ‖(-3 : ℂ) / (w - I * z * (u : ℂ)) ^ 4‖ ≤
-          3 * (20 / r) ^ 4 := by
+        ‖(-3 : ℂ) / (w - I * z * (u : ℂ)) ^ (4 : ℕ)‖ ≤
+          3 * (20 / r) ^ (4 : ℕ) := by
       rw [norm_div, norm_neg, norm_ofNat, norm_pow]
       calc
-        3 / ‖w - I * z * (u : ℂ)‖ ^ 4 =
-            3 * ‖1 / (w - I * z * (u : ℂ))‖ ^ 4 := by
+        3 / ‖w - I * z * (u : ℂ)‖ ^ (4 : ℕ) =
+            3 * ‖1 / (w - I * z * (u : ℂ))‖ ^ (4 : ℕ) := by
           rw [one_div, norm_inv, inv_pow]
           ring
-        _ ≤ 3 * (20 / r) ^ 4 := by gcongr
+        _ ≤ 3 * (20 / r) ^ (4 : ℕ) := by gcongr
     have hadd4 :
-        ‖(-3 : ℂ) / (w + I * z * (u : ℂ)) ^ 4‖ ≤
-          3 * (20 / r) ^ 4 := by
+        ‖(-3 : ℂ) / (w + I * z * (u : ℂ)) ^ (4 : ℕ)‖ ≤
+          3 * (20 / r) ^ (4 : ℕ) := by
       rw [norm_div, norm_neg, norm_ofNat, norm_pow]
       calc
-        3 / ‖w + I * z * (u : ℂ)‖ ^ 4 =
-            3 * ‖1 / (w + I * z * (u : ℂ))‖ ^ 4 := by
+        3 / ‖w + I * z * (u : ℂ)‖ ^ (4 : ℕ) =
+            3 * ‖1 / (w + I * z * (u : ℂ))‖ ^ (4 : ℕ) := by
           rw [one_div, norm_inv, inv_pow]
           ring
-        _ ≤ 3 * (20 / r) ^ 4 := by
+        _ ≤ 3 * (20 / r) ^ (4 : ℕ) := by
           gcongr
     dsimp only [F', bound]
     rw [norm_mul]
     calc
       ‖Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ))‖ *
-          ‖-3 / (w - I * z * (u : ℂ)) ^ 4 +
-            -3 / (w + I * z * (u : ℂ)) ^ 4‖ ≤
-          1 * (3 * (20 / r) ^ 4 + 3 * (20 / r) ^ 4) := by
+          ‖-3 / (w - I * z * (u : ℂ)) ^ (4 : ℕ) +
+            -3 / (w + I * z * (u : ℂ)) ^ (4 : ℕ)‖ ≤
+          1 * (3 * (20 / r) ^ (4 : ℕ) + 3 * (20 / r) ^ (4 : ℕ)) := by
         gcongr
         exact (norm_add_le _ _).trans (add_le_add hsub4 hadd4)
-      _ = 6 * (20 / r) ^ 4 := by ring
+      _ = 6 * (20 / r) ^ (4 : ℕ) := by ring
   have hboundInt : IntervalIntegrable bound volume 0 1 := by
     exact continuous_const.intervalIntegrable 0 1
   have hdiff : ∀ᵐ u ∂volume, u ∈ Set.uIoc (0 : ℝ) 1 →
@@ -221,8 +221,8 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
     have hsub := hasDerivAt_inv_sub_cube
       (a := I * z * (u : ℂ)) hsubNe
     have hadd : HasDerivAt
-        (fun y : ℂ => 1 / (y + I * z * (u : ℂ)) ^ 3)
-        (-3 / (w + I * z * (u : ℂ)) ^ 4) w := by
+        (fun y : ℂ => 1 / (y + I * z * (u : ℂ)) ^ (3 : ℕ))
+        (-3 / (w + I * z * (u : ℂ)) ^ (4 : ℕ)) w := by
       have h := hasDerivAt_inv_sub_cube
         (a := -(I * z * (u : ℂ))) (by simpa only [sub_neg_eq_add] using haddNe)
       simpa only [sub_neg_eq_add] using h
@@ -245,7 +245,7 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball
 def ccmFirstClockBallMajorantConstant (r : ℝ) : ℝ :=
   ‖1 / (4 * (Real.pi : ℂ))‖ *
     (‖(2 * (Real.pi : ℂ))‖ * (44 / r) +
-      ‖(2 * (Real.pi : ℂ)) ^ 2‖ * (40 / r))
+      ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ * (40 / r))
 
 /-- The reciprocal-square atom bound is uniform on a full positive-axis disk. -/
 theorem norm_ccmFirstClockLaplaceContinuationAtom_le_ball
@@ -254,7 +254,7 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le_ball
     (q : XiZeroCopy) :
     ‖ccmFirstClockLaplaceContinuationAtom s (xiSpectralPoint q)‖ ≤
       ccmFirstClockBallMajorantConstant r *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hcone := mem_firstClock_cone_of_mem_ball hr hs
   have h := norm_ccmFirstClockLaplaceContinuationAtom_le
     hcone.1 hcone.2 q
@@ -267,10 +267,10 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le_ball
     ‖ccmFirstClockLaplaceContinuationAtom s (xiSpectralPoint q)‖ ≤
         (‖1 / (4 * (Real.pi : ℂ))‖ *
           (‖(2 * (Real.pi : ℂ))‖ * (22 / s.re) +
-            ‖(2 * (Real.pi : ℂ)) ^ 2‖ * (20 / s.re))) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := h
+            ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ * (20 / s.re))) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := h
     _ ≤ ccmFirstClockBallMajorantConstant r *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       dsimp only [ccmFirstClockBallMajorantConstant]
       gcongr
 
@@ -290,7 +290,7 @@ theorem differentiableOn_ccmFirstClockLaplaceContinuation_ball
   apply Complex.differentiableOn_tsum_of_summable_norm
     (u := fun q : XiZeroCopy =>
       ccmFirstClockBallMajorantConstant r *
-        (1 / ‖xiSpectralPoint q‖ ^ 2))
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
   · exact xiSpectralPoint_inv_sq_summable.mul_left
       (ccmFirstClockBallMajorantConstant r)
   · exact differentiableOn_ccmFirstClockLaplaceContinuationAtom_ball hr

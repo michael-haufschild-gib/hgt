@@ -34,7 +34,7 @@ omit [Nontrivial X] in
 /-- **The transport cancels at the moving endpoint.**  The boundary terms of the expansion, once
 propagated, carry no transport factor at all: only the phase and the resolvent survive. -/
 theorem stripPropagator_mul_wallPhaseMap
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L x : ℝ) :
     stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) * wallPhaseMap E T σ L x
       = Complex.exp (-(Complex.I) * (L : ℂ) * (x : ℂ)) • (1 : X →L[ℂ] X) := by
@@ -50,7 +50,7 @@ omit [Nontrivial X] in
 after the phase map at the moving endpoint survives multiplication by the propagator unchanged, up to
 the pure phase. -/
 theorem stripPropagator_mul_wallPhaseMap_mul
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L x : ℝ) (A : X →L[ℂ] X) :
     stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) * (wallPhaseMap E T σ L x * A)
       = Complex.exp (-(Complex.I) * (L : ℂ) * (x : ℂ)) • A := by
@@ -59,7 +59,7 @@ theorem stripPropagator_mul_wallPhaseMap_mul
 omit [Nontrivial X] in
 /-- The propagated boundary term has exactly the norm of the resolvent factor. -/
 theorem norm_stripPropagator_mul_wallPhaseMap_mul
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L x : ℝ) (A : X →L[ℂ] X) :
     ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) * (wallPhaseMap E T σ L x * A)‖
       = ‖A‖ := by

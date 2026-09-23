@@ -45,7 +45,7 @@ def modularThetaLyapunovChartCoordinate :
       MvPolynomial.C (1 / 3 : ℂ) * MvPolynomial.X .S
   | .B => MvPolynomial.C (-(1 / 3 : ℂ)) * MvPolynomial.X .S
   | .Q => MvPolynomial.C (1 / 16 : ℂ) * MvPolynomial.X .A +
-      MvPolynomial.C (1 / 24 : ℂ) * MvPolynomial.X .S ^ 2 -
+      MvPolynomial.C (1 / 24 : ℂ) * MvPolynomial.X .S ^ (2 : ℕ) -
       MvPolynomial.C (3 / 8 : ℂ)
 
 def modularThetaSourcePositiveChartInverse :

@@ -32,8 +32,8 @@ theorem cpow_mul_conj_cpow {r : ℝ} (hr : 0 < r) (w : ℂ) :
 /-- **The four-term expansion of the squared principal part.** -/
 theorem germPrincipal_mul_conj (s : ℂ) {θ : ℝ} (hne : θ ≠ 0) :
     germPrincipal s θ * (starRingEnd ℂ) (germPrincipal s θ)
-      = (if 0 < θ then ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-            else ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ))
+      = (if 0 < θ then ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+            else ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ))
           * ((|θ| : ℝ) : ℂ) ^ (((2 * s.re - 2 : ℝ)) : ℂ)
         + (if 0 < θ then jonquiereLead s * (starRingEnd ℂ) (riemannZeta s)
             else jonquiereLeadNeg s * (starRingEnd ℂ) (riemannZeta s))
@@ -41,7 +41,7 @@ theorem germPrincipal_mul_conj (s : ℂ) {θ : ℝ} (hne : θ ≠ 0) :
         + (if 0 < θ then (starRingEnd ℂ) (jonquiereLead s) * riemannZeta s
             else (starRingEnd ℂ) (jonquiereLeadNeg s) * riemannZeta s)
           * ((|θ| : ℝ) : ℂ) ^ ((starRingEnd ℂ) s - 1)
-        + ((‖riemannZeta s‖ ^ 2 : ℝ) : ℂ) * ((|θ| : ℝ) : ℂ) ^ (0 : ℂ) := by
+        + ((‖riemannZeta s‖ ^ (2 : ℕ) : ℝ) : ℂ) * ((|θ| : ℝ) : ℂ) ^ (0 : ℂ) := by
   have hpos : (0 : ℝ) < |θ| := abs_pos.mpr hne
   have hne' : (((|θ| : ℝ)) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hpos.ne'
   have hsq := cpow_mul_conj_cpow hpos (s - 1)
@@ -54,7 +54,7 @@ theorem germPrincipal_mul_conj (s : ℂ) {θ : ℝ} (hne : θ ≠ 0) :
     rw [map_sub, map_one]
   rw [hcs] at hconj
 
-  have habs : ∀ z : ℂ, z * (starRingEnd ℂ) z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  have habs : ∀ z : ℂ, z * (starRingEnd ℂ) z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro z
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hsq2 : ((|θ| : ℝ) : ℂ) ^ (s - 1) * ((|θ| : ℝ) : ℂ) ^ ((starRingEnd ℂ) s - 1)

@@ -26,33 +26,33 @@ theorem egbFixedChargeA_latent_heat_temperature_cold_limit (w φ : ℝ) :
   rwa [hf] at h
 
 theorem egbFixedChargeA_entropy_jump_temperature_square_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ 2)) atTop (𝓝 (1 / Real.pi)) := by
+    Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ (2 : ℕ))) atTop (𝓝 (1 / Real.pi)) := by
   have h := (egbFixedChargeAEntropyJump_radius_square_cold_limit w φ).mul ((egbFixedChargeATemperature_radius_cold_limit w φ).pow 2)
-  have he : Real.pi * (1 / Real.pi) ^ 2 = 1 / Real.pi := by field_simp <;> ring
+  have he : Real.pi * (1 / Real.pi) ^ (2 : ℕ) = 1 / Real.pi := by field_simp <;> ring
   rw [he] at h
-  have hf : (fun τ => (egbFixedChargeAEntropyJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ 2) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ 2) = (fun τ => (egbFixedChargeAEntropyJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ 2)) := by
+  have hf : (fun τ => (egbFixedChargeAEntropyJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ)) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ (2 : ℕ)) = (fun τ => (egbFixedChargeAEntropyJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ (2 : ℕ))) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     field_simp <;> ring
   rwa [hf] at h
 
 theorem egbFixedChargeA_volume_jump_temperature_cube_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ 3)) atTop (𝓝 (4 / (3 * Real.pi ^ 2))) := by
+    Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ (3 : ℕ))) atTop (𝓝 (4 / (3 * Real.pi ^ (2 : ℕ)))) := by
   have h := (egbFixedChargeAVolumeJump_radius_cube_cold_limit w φ).mul ((egbFixedChargeATemperature_radius_cold_limit w φ).pow 3)
-  have he : (4 * Real.pi / 3) * (1 / Real.pi) ^ 3 = 4 / (3 * Real.pi ^ 2) := by field_simp <;> ring
+  have he : (4 * Real.pi / 3) * (1 / Real.pi) ^ (3 : ℕ) = 4 / (3 * Real.pi ^ (2 : ℕ)) := by field_simp <;> ring
   rw [he] at h
-  have hf : (fun τ => (egbFixedChargeAVolumeJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ 3) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ 3) = (fun τ => (egbFixedChargeAVolumeJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ 3)) := by
+  have hf : (fun τ => (egbFixedChargeAVolumeJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ (3 : ℕ)) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ (3 : ℕ)) = (fun τ => (egbFixedChargeAVolumeJump w φ τ) * ((egbFixedChargeATemperature w φ τ) ^ (3 : ℕ))) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     field_simp <;> ring
   rwa [hf] at h
 
 theorem egbFixedChargeA_large_heat_capacity_temperature_square_cold_limit (w φ l : ℝ) :
-    Tendsto (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * ((egbFixedChargeATemperature w φ τ) ^ 2)) atTop (𝓝 (4 / Real.pi)) := by
+    Tendsto (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * ((egbFixedChargeATemperature w φ τ) ^ (2 : ℕ))) atTop (𝓝 (4 / Real.pi)) := by
   have h := (egbFixedChargeA_large_heat_capacity_radius_square_cold_limit w φ l).mul ((egbFixedChargeATemperature_radius_cold_limit w φ).pow 2)
-  have he : (4 * Real.pi) * (1 / Real.pi) ^ 2 = 4 / Real.pi := by field_simp <;> ring
+  have he : (4 * Real.pi) * (1 / Real.pi) ^ (2 : ℕ) = 4 / Real.pi := by field_simp <;> ring
   rw [he] at h
-  have hf : (fun τ => ((egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / (egbFixedChargeALargeRadius w φ τ) ^ 2) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ 2) = (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * ((egbFixedChargeATemperature w φ τ) ^ 2)) := by
+  have hf : (fun τ => ((egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ)) * (egbFixedChargeATemperature w φ τ * (egbFixedChargeALargeRadius w φ τ)) ^ (2 : ℕ)) = (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * ((egbFixedChargeATemperature w φ τ) ^ (2 : ℕ))) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     field_simp <;> ring
@@ -63,7 +63,7 @@ theorem egbFixedChargeA_large_heat_capacity_pressure_cold_limit (w φ l : ℝ) :
   have h := (egbFixedChargeA_large_heat_capacity_radius_square_cold_limit w φ l).mul (egbFixedChargeAPressure_radius_cold_limit w φ)
   have he : (4 * Real.pi) * (3 / (8 * Real.pi)) = (3 : ℝ) / 2 := by field_simp <;> ring
   rw [he] at h
-  have hf : (fun τ => ((egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / (egbFixedChargeALargeRadius w φ τ) ^ 2) * (egbFixedChargeAPressure w φ τ * (egbFixedChargeALargeRadius w φ τ) ^ 2)) = (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * (egbFixedChargeAPressure w φ τ)) := by
+  have hf : (fun τ => ((egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) / (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ)) * (egbFixedChargeAPressure w φ τ * (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ))) = (fun τ => (egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) * (egbFixedChargeAPressure w φ τ)) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     field_simp <;> ring
@@ -74,7 +74,7 @@ theorem egbFixedChargeA_entropy_jump_pressure_cold_limit (w φ : ℝ) :
   have h := (egbFixedChargeAEntropyJump_radius_square_cold_limit w φ).mul (egbFixedChargeAPressure_radius_cold_limit w φ)
   have he : Real.pi * (3 / (8 * Real.pi)) = (3 : ℝ) / 8 := by field_simp <;> ring
   rw [he] at h
-  have hf : (fun τ => (egbFixedChargeAEntropyJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ 2) * (egbFixedChargeAPressure w φ τ * (egbFixedChargeALargeRadius w φ τ) ^ 2)) = (fun τ => (egbFixedChargeAEntropyJump w φ τ) * (egbFixedChargeAPressure w φ τ)) := by
+  have hf : (fun τ => (egbFixedChargeAEntropyJump w φ τ / (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ)) * (egbFixedChargeAPressure w φ τ * (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ))) = (fun τ => (egbFixedChargeAEntropyJump w φ τ) * (egbFixedChargeAPressure w φ τ)) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     field_simp <;> ring

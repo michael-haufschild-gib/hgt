@@ -110,7 +110,7 @@ theorem trueApertureMuntzMap_ae (a b : ℝ) (N : ℕ) (f : SoninL2) :
 support makes the universal cutoff `floor(lambda²)` exact on `[lambda⁻¹,lambda]`. -/
 def constrainedProlateTrueApertureMap (lambda : ℝ) :
     constrainedProlateSubspace lambda →L[ℂ] SoninL2 :=
-  trueApertureMuntzMap lambda⁻¹ lambda ⌊lambda ^ 2⌋₊ ∘L
+  trueApertureMuntzMap lambda⁻¹ lambda ⌊lambda ^ (2 : ℕ)⌋₊ ∘L
     (evenSubspace.subtypeL ∘L (constrainedProlateSubspace lambda).subtypeL)
 
 /-- The pullback Hilbert Gram of two true aperture vectors. -/
@@ -189,7 +189,7 @@ theorem finiteApertureMobiusReconstruction_eq {N : ℕ} (hN : 1 ≤ N) (a : ℕ 
 
 /-- The finite ray energy whose continuum integral is the true aperture Hilbert metric. -/
 def finiteApertureRayEnergy (N : ℕ) (a : ℕ → ℂ) : ℝ :=
-  ∑ n ∈ Finset.Icc 1 N, ‖finiteApertureRaySum N a n‖ ^ 2
+  ∑ n ∈ Finset.Icc 1 N, ‖finiteApertureRaySum N a n‖ ^ (2 : ℕ)
 
 theorem finiteApertureRayEnergy_nonneg (N : ℕ) (a : ℕ → ℂ) :
     0 ≤ finiteApertureRayEnergy N a := by
@@ -199,7 +199,7 @@ theorem finiteApertureRayEnergy_nonneg (N : ℕ) (a : ℕ → ℂ) :
 fixed source interval gives the paper's `lambda⁻¹` local frame floor. -/
 theorem norm_base_sq_le_card_mul_finiteApertureRayEnergy
     {N : ℕ} (hN : 1 ≤ N) (a : ℕ → ℂ) :
-    ‖a 1‖ ^ 2 ≤ ((Finset.Icc 1 N).card : ℝ) * finiteApertureRayEnergy N a := by
+    ‖a 1‖ ^ (2 : ℕ) ≤ ((Finset.Icc 1 N).card : ℝ) * finiteApertureRayEnergy N a := by
   have hnorm : ‖a 1‖ ≤
       ∑ n ∈ Finset.Icc 1 N, ‖finiteApertureRaySum N a n‖ := by
     rw [← finiteApertureMobiusReconstruction_eq hN a]
@@ -215,8 +215,8 @@ theorem norm_base_sq_le_card_mul_finiteApertureRayEnergy
         have hmu : ‖(ArithmeticFunction.moebius n : ℂ)‖ ≤ 1 := by
           exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := n)
         exact mul_le_of_le_one_left (norm_nonneg _) hmu
-  have hsq : ‖a 1‖ ^ 2 ≤
-      (∑ n ∈ Finset.Icc 1 N, ‖finiteApertureRaySum N a n‖) ^ 2 := by
+  have hsq : ‖a 1‖ ^ (2 : ℕ) ≤
+      (∑ n ∈ Finset.Icc 1 N, ‖finiteApertureRaySum N a n‖) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (a 1),
       Finset.sum_nonneg (s := Finset.Icc 1 N)
         (fun n _ => norm_nonneg (finiteApertureRaySum N a n))]

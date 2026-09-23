@@ -29,11 +29,11 @@ open GaloisForLFunctions.HTGeometry
 /-! ## The exact shape of the prolate Jacobi radii -/
 
 /-- The quadratic `t_n` for which the prolate Jacobi radius is `¼√(t_n² − 1)`. -/
-def prolateBase (β γ : ℝ) (n : ℕ) : ℝ := 16 * (n : ℝ) ^ 2 + β * (n : ℝ) + γ
+def prolateBase (β γ : ℝ) (n : ℕ) : ℝ := 16 * (n : ℝ) ^ (2 : ℕ) + β * (n : ℝ) + γ
 
 /-- The prolate Jacobi radius. -/
 noncomputable def prolateRho (β γ : ℝ) (n : ℕ) : ℝ :=
-  Real.sqrt (prolateBase β γ n ^ 2 - 1) / 4
+  Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) / 4
 
 /-- The defect `t_n/4 − ρ_n`. -/
 noncomputable def prolateDefect (β γ : ℝ) (n : ℕ) : ℝ :=
@@ -53,13 +53,13 @@ theorem prolateRho_eq_sub (β γ : ℝ) (n : ℕ) :
 
 theorem prolateDefect_mul (hβ : 0 ≤ β) (hγ : 2 ≤ γ) :
     (4 * prolateDefect β γ n) * (prolateBase β γ n
-      + Real.sqrt (prolateBase β γ n ^ 2 - 1)) = 1 := by
+      + Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1)) = 1 := by
   have hb := prolateBase_ge (β := β) (γ := γ) (n := n) hβ hγ
-  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ 2 - 1 := by nlinarith
-  have hs : Real.sqrt (prolateBase β γ n ^ 2 - 1) ^ 2 = prolateBase β γ n ^ 2 - 1 :=
+  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ (2 : ℕ) - 1 := by nlinarith
+  have hs : Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) ^ (2 : ℕ) = prolateBase β γ n ^ (2 : ℕ) - 1 :=
     Real.sq_sqrt hsq
   have hrw : 4 * prolateDefect β γ n
-      = prolateBase β γ n - Real.sqrt (prolateBase β γ n ^ 2 - 1) := by
+      = prolateBase β γ n - Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) := by
     unfold prolateDefect prolateRho
     ring
   rw [hrw]
@@ -67,17 +67,17 @@ theorem prolateDefect_mul (hβ : 0 ≤ β) (hγ : 2 ≤ γ) :
 
 theorem prolateDefect_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) : 0 < prolateDefect β γ n := by
   have hb := prolateBase_ge (β := β) (γ := γ) (n := n) hβ hγ
-  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ 2 - 1 := by nlinarith
-  have hs0 : (0:ℝ) ≤ Real.sqrt (prolateBase β γ n ^ 2 - 1) := Real.sqrt_nonneg _
+  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ (2 : ℕ) - 1 := by nlinarith
+  have hs0 : (0:ℝ) ≤ Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) := Real.sqrt_nonneg _
   have hm := prolateDefect_mul (β := β) (γ := γ) (n := n) hβ hγ
-  have hpos : (0:ℝ) < prolateBase β γ n + Real.sqrt (prolateBase β γ n ^ 2 - 1) := by linarith
+  have hpos : (0:ℝ) < prolateBase β γ n + Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) := by linarith
   nlinarith [hm, hpos]
 
 theorem prolateDefect_le (hβ : 0 ≤ β) (hγ : 2 ≤ γ) :
     prolateDefect β γ n * (4 * prolateBase β γ n) ≤ 1 := by
   have hb := prolateBase_ge (β := β) (γ := γ) (n := n) hβ hγ
-  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ 2 - 1 := by nlinarith
-  have hs0 : (0:ℝ) ≤ Real.sqrt (prolateBase β γ n ^ 2 - 1) := Real.sqrt_nonneg _
+  have hsq : (0:ℝ) ≤ prolateBase β γ n ^ (2 : ℕ) - 1 := by nlinarith
+  have hs0 : (0:ℝ) ≤ Real.sqrt (prolateBase β γ n ^ (2 : ℕ) - 1) := Real.sqrt_nonneg _
   have hd := prolateDefect_pos (β := β) (γ := γ) (n := n) hβ hγ
   have hm := prolateDefect_mul (β := β) (γ := γ) (n := n) hβ hγ
   nlinarith [hm, hd, hs0]
@@ -90,7 +90,7 @@ theorem prolateDefect_lt_quarter (hβ : 0 ≤ β) (hγ : 2 ≤ γ) : prolateDefe
 
 /-- **Lower bound on the prolate Jacobi radius.** -/
 theorem four_sq_le_prolateRho (hβ : 0 ≤ β) (hγ : 2 ≤ γ) :
-    4 * (n : ℝ) ^ 2 ≤ prolateRho β γ n := by
+    4 * (n : ℝ) ^ (2 : ℕ) ≤ prolateRho β γ n := by
   have hn : (0:ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have hd := prolateDefect_lt_quarter (β := β) (γ := γ) (n := n) hβ hγ
   rw [prolateRho_eq_sub]
@@ -110,19 +110,19 @@ theorem prolateRho_pos (hβ : 0 ≤ β) (hγ : 2 ≤ γ) : 0 < prolateRho β γ 
 /-- The exact Sturm--Liouville potential of a prolate block. -/
 noncomputable def prolatePotential (β γ c lam z : ℝ) : ℕ → ℝ
   | 0 => 1
-  | (n + 1) => 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + c) - z
+  | (n + 1) => 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + c) - z
       - prolateDefect β γ (n + 1) - prolateDefect β γ n
 
 theorem prolatePotential_succ (β γ c lam z : ℝ) (n : ℕ) :
     prolatePotential β γ c lam z (n + 1)
-      = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + c) - z
+      = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + c) - z
         - prolateDefect β γ (n + 1) - prolateDefect β γ n := rfl
 
 variable {c lam z : ℝ} {q : ℕ → ℝ}
 
 theorem prolatePotential_eq
     (hq : ∀ n : ℕ, (prolateBase β γ (n + 1) + prolateBase β γ n) / 4 + q (n + 1)
-        = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + c)) (n : ℕ) :
+        = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + c)) (n : ℕ) :
     prolatePotential β γ c lam z (n + 1)
       = prolateRho β γ (n + 1) + prolateRho β γ n + q (n + 1) - z := by
   rw [prolatePotential_succ, prolateRho_eq_sub, prolateRho_eq_sub]
@@ -158,7 +158,7 @@ theorem prolate_jacobiDeficiency_eq_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
   rw [jacobiDeficiency, Submodule.mem_inf] at hx
   obtain ⟨hsol, hsum⟩ := hx
   have hjs : IsJacobiSolution (prolateRho β γ) q Z x := hsol
-  have hx2 : Summable fun n => ‖x n‖ ^ 2 := (mem_sqSummable_iff x).mp hsum
+  have hx2 : Summable fun n => ‖x n‖ ^ (2 : ℕ) := (mem_sqSummable_iff x).mp hsum
   by_contra hne
   have hx0 : x 0 ≠ 0 := by
     intro h0
@@ -214,11 +214,11 @@ theorem prolate_jacobiDeficiency_eq_bot (hβ : 0 ≤ β) (hγ : 2 ≤ γ)
 
 /-- The even-parity prolate diagonal. -/
 noncomputable def prolateDiagEven (lam : ℝ) (n : ℕ) : ℝ :=
-  -8 * (n : ℝ) ^ 2 - 2 * (n : ℝ) - 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * (n : ℝ) + 1)
+  -8 * (n : ℝ) ^ (2 : ℕ) - 2 * (n : ℝ) - 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * (n : ℝ) + 1)
 
 /-- The odd-parity prolate diagonal. -/
 noncomputable def prolateDiagOdd (lam : ℝ) (n : ℕ) : ℝ :=
-  -8 * (n : ℝ) ^ 2 - 10 * (n : ℝ) - 15 / 4 + 2 * Real.pi * lam ^ 2 * (8 * (n : ℝ) + 5)
+  -8 * (n : ℝ) ^ (2 : ℕ) - 10 * (n : ℝ) - 15 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * (n : ℝ) + 5)
 
 /-- **The even-parity radius is the parent paper's `ρ_n^+`.** -/
 theorem prolateRho_even (n : ℕ) :
@@ -226,7 +226,7 @@ theorem prolateRho_even (n : ℕ) :
       = Real.sqrt ((4 * (n : ℝ) + 1) * (4 * (n : ℝ) + 2) * (4 * (n : ℝ) + 3)
           * (4 * (n : ℝ) + 4)) / 4 := by
   unfold prolateRho prolateBase
-  rw [show (16 * (n : ℝ) ^ 2 + 20 * (n : ℝ) + 5) ^ 2 - 1
+  rw [show (16 * (n : ℝ) ^ (2 : ℕ) + 20 * (n : ℝ) + 5) ^ (2 : ℕ) - 1
       = (4 * (n : ℝ) + 1) * (4 * (n : ℝ) + 2) * (4 * (n : ℝ) + 3) * (4 * (n : ℝ) + 4) from by
     ring]
 
@@ -236,14 +236,14 @@ theorem prolateRho_odd (n : ℕ) :
       = Real.sqrt ((4 * (n : ℝ) + 3) * (4 * (n : ℝ) + 4) * (4 * (n : ℝ) + 5)
           * (4 * (n : ℝ) + 6)) / 4 := by
   unfold prolateRho prolateBase
-  rw [show (16 * (n : ℝ) ^ 2 + 36 * (n : ℝ) + 19) ^ 2 - 1
+  rw [show (16 * (n : ℝ) ^ (2 : ℕ) + 36 * (n : ℝ) + 19) ^ (2 : ℕ) - 1
       = (4 * (n : ℝ) + 3) * (4 * (n : ℝ) + 4) * (4 * (n : ℝ) + 5) * (4 * (n : ℝ) + 6) from by
     ring]
 
 /-- **The exact even-parity potential identity.** -/
 theorem prolateEven_key (lam : ℝ) (n : ℕ) :
     (prolateBase 20 5 (n + 1) + prolateBase 20 5 n) / 4 + prolateDiagEven lam (n + 1)
-      = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + 1) := by
+      = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + 1) := by
   unfold prolateBase prolateDiagEven
   push_cast
   ring
@@ -251,7 +251,7 @@ theorem prolateEven_key (lam : ℝ) (n : ℕ) :
 /-- **The exact odd-parity potential identity.** -/
 theorem prolateOdd_key (lam : ℝ) (n : ℕ) :
     (prolateBase 36 19 (n + 1) + prolateBase 36 19 n) / 4 + prolateDiagOdd lam (n + 1)
-      = 3 / 4 + 2 * Real.pi * lam ^ 2 * (8 * ((n : ℝ) + 1) + 5) := by
+      = 3 / 4 + 2 * Real.pi * lam ^ (2 : ℕ) * (8 * ((n : ℝ) + 1) + 5) := by
   unfold prolateBase prolateDiagOdd
   push_cast
   ring

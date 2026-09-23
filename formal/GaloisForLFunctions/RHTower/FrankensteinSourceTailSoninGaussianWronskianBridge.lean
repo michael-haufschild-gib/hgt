@@ -47,9 +47,9 @@ private theorem deningerMeyerReflectedGaussianLineWronskian_eq_rate_mul_pairScal
 /-- Positive source normalization converting the squared reflected-Gaussian
 Wronskian into the complete-source Sonin work. -/
 def sourceTailSoninGaussianWronskianGain (q : XiZeroCopy) : ℝ :=
-  Real.log 2 ^ 2 * (1 - primeDepthBVWoldXiCenteredRate q.1 ^ 2) /
-    (4 * (1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2) ^ 2 *
-      (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale q).re ^ 2)
+  Real.log 2 ^ (2 : ℕ) * (1 - primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) /
+    (4 * (1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) ^ (2 : ℕ) *
+      (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale q).re ^ (2 : ℕ))
 
 /-- The source normalization is positive throughout the unconditional Xi
 strip; it introduces neither a new zero nor a chosen prime label. -/
@@ -57,18 +57,18 @@ theorem sourceTailSoninGaussianWronskianGain_pos (q : XiZeroCopy) :
     0 < sourceTailSoninGaussianWronskianGain q := by
   rw [sourceTailSoninGaussianWronskianGain]
   have hstrip := sourceHorizontalXiCenteredRate_abs_lt_one q
-  have hsq : primeDepthBVWoldXiCenteredRate q.1 ^ 2 < 1 := by
-    have habsSq : |primeDepthBVWoldXiCenteredRate q.1| ^ 2 < (1 : ℝ) ^ 2 :=
+  have hsq : primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) < 1 := by
+    have habsSq : |primeDepthBVWoldXiCenteredRate q.1| ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ (abs_nonneg _) zero_le_one).2 hstrip
     calc
-      primeDepthBVWoldXiCenteredRate q.1 ^ 2 =
-          |primeDepthBVWoldXiCenteredRate q.1| ^ 2 := (sq_abs _).symm
-      _ < (1 : ℝ) ^ 2 := habsSq
+      primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) =
+          |primeDepthBVWoldXiCenteredRate q.1| ^ (2 : ℕ) := (sq_abs _).symm
+      _ < (1 : ℝ) ^ (2 : ℕ) := habsSq
       _ = 1 := by norm_num
-  have hnum : 0 < Real.log 2 ^ 2 * (1 - primeDepthBVWoldXiCenteredRate q.1 ^ 2) := by
+  have hnum : 0 < Real.log 2 ^ (2 : ℕ) * (1 - primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) := by
     exact mul_pos (sq_pos_of_pos (Real.log_pos one_lt_two)) (by linarith)
-  have hden : 0 < 4 * (1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2) ^ 2 *
-      (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale q).re ^ 2 := by
+  have hden : 0 < 4 * (1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) ^ (2 : ℕ) *
+      (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale q).re ^ (2 : ℕ) := by
     have hscale :=
       DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale_re_pos q
     exact mul_pos
@@ -100,7 +100,7 @@ theorem sourceTailSoninPhaseWork_eq_gaussianWronskianGain_normSq
   have hscale_ne :
       (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale q).re ≠ 0 :=
     ne_of_gt (DeningerMeyerGaussianGreen.deningerMeyerReflectedGaussianLinePairScale_re_pos q)
-  have hden_ne : 1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2 ≠ 0 := by
+  have hden_ne : 1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_nonneg (primeDepthBVWoldXiCenteredRate q.1)]
   field_simp [hscale_ne, hden_ne]
 

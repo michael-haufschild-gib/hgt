@@ -95,7 +95,7 @@ theorem d4HBGlobalAIMESourcePacket_neg (amplitude : ℂ) (q : XiZeroCopy) :
 theorem d4HBGlobalAIMESourcePacket_realScale
     (scale : ℝ) (amplitude : ℂ) (q : XiZeroCopy) :
     d4HBGlobalAIMESourcePacket ((scale : ℂ) * amplitude) q =
-      ((scale ^ 3 : ℝ) : ℂ) • d4HBGlobalAIMESourcePacket amplitude q := by
+      ((scale ^ (3 : ℕ) : ℝ) : ℂ) • d4HBGlobalAIMESourcePacket amplitude q := by
   classical
   simp [d4HBGlobalAIMESourcePacket,
     d4FundamentalQNMCrossBranchAIMENumerator_realScale]
@@ -126,7 +126,7 @@ theorem d4HBGlobalAIMESourceResponseFullPoleNumerator_realScale
     (scale : ℝ) (amplitude : ℂ) (q : XiZeroCopy) :
     d4HBGlobalAIMESourceResponseFullPoleNumerator Delta
         ((scale : ℂ) * amplitude) q =
-      ((scale ^ 3 : ℝ) : ℂ) *
+      ((scale ^ (3 : ℕ) : ℝ) : ℂ) *
         d4HBGlobalAIMESourceResponseFullPoleNumerator Delta amplitude q := by
   unfold d4HBGlobalAIMESourceResponseFullPoleNumerator
   rw [d4FundamentalQNMCrossBranchAIMENumerator_realScale,

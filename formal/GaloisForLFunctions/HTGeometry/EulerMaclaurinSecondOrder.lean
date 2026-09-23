@@ -24,7 +24,7 @@ noncomputable section
 /-! ## The periodic second Bernoulli half -/
 
 /-- The periodic second Bernoulli half `({x}² − {x})/2`. -/
-def bernoulliHalfPer (x : ℝ) : ℝ := (Int.fract x ^ 2 - Int.fract x) / 2
+def bernoulliHalfPer (x : ℝ) : ℝ := (Int.fract x ^ (2 : ℕ) - Int.fract x) / 2
 
 theorem bernoulliHalfPer_intCast (m : ℤ) : bernoulliHalfPer (m : ℝ) = 0 := by
   rw [bernoulliHalfPer, Int.fract_intCast]
@@ -46,20 +46,20 @@ theorem measurable_bernoulliHalfPer : Measurable bernoulliHalfPer := by
 
 /-- On a unit cell the periodic kernel is the local quadratic. -/
 theorem bernoulliHalfPer_eq_of_mem_Ico {m : ℤ} {x : ℝ} (hx : x ∈ Ico ((m : ℝ)) ((m : ℝ) + 1)) :
-    bernoulliHalfPer x = ((x - (m : ℝ)) ^ 2 - (x - (m : ℝ))) / 2 := by
+    bernoulliHalfPer x = ((x - (m : ℝ)) ^ (2 : ℕ) - (x - (m : ℝ))) / 2 := by
   have hfl : ⌊x⌋ = m := by
     rw [Int.floor_eq_iff]
     exact ⟨hx.1, hx.2⟩
   rw [bernoulliHalfPer, Int.fract, hfl]
 
 /-- The local quadratic on the cell `[c, c+1]`. -/
-def cellBernoulli (c : ℝ) (x : ℝ) : ℝ := ((x - c) ^ 2 - (x - c)) / 2
+def cellBernoulli (c : ℝ) (x : ℝ) : ℝ := ((x - c) ^ (2 : ℕ) - (x - c)) / 2
 
 theorem hasDerivAt_cellBernoulli (c : ℝ) (x : ℝ) :
     HasDerivAt (cellBernoulli c) (x - c - 1 / 2) x := by
   have h1 : HasDerivAt (fun z : ℝ => z - c) 1 x := (hasDerivAt_id x).sub_const _
   have hraw := ((h1.pow 2).sub h1).div_const 2
-  have hfun : (fun y : ℝ => ((fun z : ℝ => z - c) ^ 2 - fun z : ℝ => z - c) y / 2)
+  have hfun : (fun y : ℝ => ((fun z : ℝ => z - c) ^ (2 : ℕ) - fun z : ℝ => z - c) y / 2)
       = cellBernoulli c := by
     funext z
     simp [cellBernoulli, Pi.sub_apply, Pi.pow_apply]

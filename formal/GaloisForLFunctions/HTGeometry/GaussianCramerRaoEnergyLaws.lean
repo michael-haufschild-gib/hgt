@@ -19,7 +19,7 @@ def gaussianOptimalProbeSqueezing (r : ℝ) : ℝ :=
 
 /-- Energy consumed by the squeezing part of the claimed optimal probe. -/
 def gaussianOptimalProbeSqueezingEnergy (r : ℝ) : ℝ :=
-  Real.sinh (gaussianOptimalProbeSqueezing r) ^ 2
+  Real.sinh (gaussianOptimalProbeSqueezing r) ^ (2 : ℕ)
 
 /-- Eq. (10), obtained in the paper by imposing `C_opt >= 1`. -/
 def gaussianPublishedMinimumEnergy (r : ℝ) : ℝ :=
@@ -64,7 +64,7 @@ theorem gaussianOptimalProbeSqueezing_at_auditEncoding :
   rw [gaussianOptimalProbeSqueezing, gaussianEnergyAuditEncoding]
   rw [show 4 * (Real.log 5 / 4) = Real.log 5 by ring,
     Real.exp_log (by norm_num : (0 : ℝ) < 5)]
-  rw [show (2 : ℝ) * 5 - 1 = 3 ^ 2 by norm_num, Real.log_pow]
+  rw [show (2 : ℝ) * 5 - 1 = 3 ^ (2 : ℕ) by norm_num, Real.log_pow]
   ring
 
 /-- Preparing the stated optimal squeezing at the audit point costs exactly `1/3`. -/
@@ -89,7 +89,7 @@ theorem gaussianPublishedMinimumEnergy_at_auditEncoding :
   have hsqrt_term : Real.sqrt (2 - (5 : ℝ)⁻¹) = 3 / Real.sqrt 5 := by
     rw [show (2 : ℝ) - 5⁻¹ = 9 / 5 by norm_num,
       Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 9),
-      show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq_eq_abs]
+      show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.sqrt_sq_eq_abs]
     norm_num
   rw [hsqrt_term]
   field_simp [ne_of_gt hsqrt5_pos]
@@ -101,7 +101,7 @@ theorem gaussianPublishedMinimumEnergy_lt_optimalProbeSqueezingEnergy_at_auditEn
       gaussianOptimalProbeSqueezingEnergy gaussianEnergyAuditEncoding := by
   rw [gaussianPublishedMinimumEnergy_at_auditEncoding,
     gaussianOptimalProbeSqueezingEnergy_at_auditEncoding]
-  have hsqrt5_sq : Real.sqrt 5 ^ 2 = 5 :=
+  have hsqrt5_sq : Real.sqrt 5 ^ (2 : ℕ) = 5 :=
     Real.sq_sqrt (by norm_num)
   have hsqrt5_nonneg : 0 ≤ Real.sqrt 5 := Real.sqrt_nonneg 5
   nlinarith

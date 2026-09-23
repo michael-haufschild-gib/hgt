@@ -37,9 +37,9 @@ theorem kgFlip_apply (v : KGEnergy E) : kgFlip E v = kgPair E (v.fst, -v.snd) :=
 
 /-- The velocity flip is an isometry. -/
 theorem norm_kgFlip_apply (v : KGEnergy E) : ‖kgFlip E v‖ = ‖v‖ := by
-  have hL : ‖kgFlip E v‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := by
+  have hL : ‖kgFlip E v‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := by
     rw [kgFlip_apply, norm_kgPair_sq, norm_neg]
-  have hR : ‖v‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := by
+  have hR : ‖v‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := by
     rw [← kgPair_fst_snd v, norm_kgPair_sq, kgPair_fst, kgPair_snd]
   have h1 : (0 : ℝ) ≤ ‖kgFlip E v‖ := norm_nonneg _
   have h2 : (0 : ℝ) ≤ ‖v‖ := norm_nonneg _

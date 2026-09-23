@@ -168,7 +168,7 @@ theorem deningerTimeTestLaplace_criticalLine_eq_fourier
 
 theorem fourier_ccmFuAutocorrelationProfile (ξ : ℝ) :
     𝓕 (fun x : ℝ => (ccmFuAutocorrelationProfile x : ℂ)) ξ =
-      ((‖𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ) ξ‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ) ξ‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [show (fun x : ℝ => (ccmFuAutocorrelationProfile x : ℂ)) =
       (ccmFuAutocorrelationTest : ℝ → ℂ) by
     funext x
@@ -183,7 +183,7 @@ theorem deningerTimeTestLaplace_ccmFuDeningerTest_criticalLine
       Complex.exp (((t * y : ℝ) : ℂ) * I) *
         (δ : ℂ) *
           ((‖𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ)
-              (-δ * y / (2 * Real.pi))‖ ^ 2 : ℝ) : ℂ) := by
+              (-δ * y / (2 * Real.pi))‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerTimeTestLaplace_criticalLine_eq_fourier]
   have htilt : (fun x : ℝ =>
       ((Real.exp (x / 2) * ccmFuDeningerTest δ t hδ ht x : ℝ) : ℂ)) =
@@ -219,7 +219,7 @@ theorem deningerTimeTestLaplace_ccmFuDeningerTest_rawTheta
       Complex.exp (((t * (q.1 : ℂ).im : ℝ) : ℂ) * I) *
         (δ : ℂ) *
           ((‖𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ)
-              (-δ * (q.1 : ℂ).im / (2 * Real.pi))‖ ^ 2 : ℝ) : ℂ) := by
+              (-δ * (q.1 : ℂ).im / (2 * Real.pi))‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hre : (q.1 : ℂ).re = 1 / 2 :=
     (riemannHypothesis_iff_xi_zero_re_eq_half.mp hRH) (q.1 : ℂ)
       (xi_eq_zero_of_mem_divisor_support q.1)
@@ -233,7 +233,7 @@ theorem deningerTimeTestLaplace_ccmFuDeningerTest_rawTheta
 
 def ccmFuDeningerWeight (δ : ℝ) (q : XiZeroCopy) : ℝ :=
   δ * ‖𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ)
-    (-δ * (q.1 : ℂ).im / (2 * Real.pi))‖ ^ 2
+    (-δ * (q.1 : ℂ).im / (2 * Real.pi))‖ ^ (2 : ℕ)
 
 def ccmFuBaseFourier (ξ : ℝ) : ℂ :=
   𝓕 (suzukiRestrictedWeilCoreSchwartz ccmFuBumpCore : ℝ → ℂ) ξ
@@ -250,7 +250,7 @@ theorem continuous_ccmFuBaseFourier : Continuous ccmFuBaseFourier := by
 
 theorem exists_ccmFuBaseFourier_norm_sq_lower_near_zero :
     ∃ η : ℝ, 0 < η ∧ ∀ ξ : ℝ, |ξ| < η →
-      (1 / 4 : ℝ) < ‖ccmFuBaseFourier ξ‖ ^ 2 := by
+      (1 / 4 : ℝ) < ‖ccmFuBaseFourier ξ‖ ^ (2 : ℕ) := by
   have hcont : ContinuousAt ccmFuBaseFourier 0 :=
     continuous_ccmFuBaseFourier.continuousAt
   rw [Metric.continuousAt_iff] at hcont
@@ -312,7 +312,7 @@ theorem exists_eventually_ccmFuDeningerDyadicMass_log_lower :
       ccmFuDeningerDyadicScale η T *
         ‖ccmFuBaseFourier
           (-ccmFuDeningerDyadicScale η T * (q.1 : ℂ).im /
-            (2 * Real.pi))‖ ^ 2
+            (2 * Real.pi))‖ ^ (2 : ℕ)
     calc
       ccmFuDeningerDyadicScale η T / 4 =
           ccmFuDeningerDyadicScale η T * (1 / 4) := by ring

@@ -88,7 +88,7 @@ theorem integral_xiHeatCassiniPhaseClockAtom_eq_orientationTerm
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := add_pos hy (xiSquaredNode_re_pos q)
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   have hExp : IntegrableOn (fun u : ℝ => Real.exp (-(A * u))) (Ioi 0) :=
     by simpa [neg_mul] using exp_neg_integrableOn_Ioi 0 hA
@@ -104,8 +104,8 @@ theorem integral_xiHeatCassiniPhaseClockAtom_eq_orientationTerm
       Real.exp (-(A * u)) - Real.exp (-(A * u)) * Real.cos (B * u)) = _
   rw [MeasureTheory.integral_sub hExp hCos,
     integral_Ioi_exp_neg_mul hA, integral_Ioi_exp_neg_mul_cos hA]
-  change 1 / A - A / (A ^ 2 + B ^ 2) =
-    B ^ 2 / (A * (A ^ 2 + B ^ 2))
+  change 1 / A - A / (A ^ (2 : ℕ) + B ^ (2 : ℕ)) =
+    B ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ)))
   field_simp [hA.ne', hD.ne']
   ring
 

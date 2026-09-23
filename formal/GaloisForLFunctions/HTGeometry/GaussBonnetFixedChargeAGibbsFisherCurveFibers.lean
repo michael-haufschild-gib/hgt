@@ -9,10 +9,10 @@ noncomputable section
 /-- The entire one-reading ambiguity follows from this exact factored difference. -/
 theorem egbFixedChargeAGibbsTunableFisherCurve_difference (t u : ℝ) :
     egbFixedChargeAGibbsTunableFisherCurve t - egbFixedChargeAGibbsTunableFisherCurve u =
-      (25 / 36 : ℝ) * (t ^ 2 - u ^ 2) * (1 - t ^ 2 * u ^ 2) /
-        ((1 + t ^ 2) ^ 2 * (1 + u ^ 2) ^ 2) := by
-  have ht : 1 + t ^ 2 ≠ 0 := (show 0 < 1 + t ^ 2 by positivity).ne'
-  have hu : 1 + u ^ 2 ≠ 0 := (show 0 < 1 + u ^ 2 by positivity).ne'
+      (25 / 36 : ℝ) * (t ^ (2 : ℕ) - u ^ (2 : ℕ)) * (1 - t ^ (2 : ℕ) * u ^ (2 : ℕ)) /
+        ((1 + t ^ (2 : ℕ)) ^ (2 : ℕ) * (1 + u ^ (2 : ℕ)) ^ (2 : ℕ)) := by
+  have ht : 1 + t ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + t ^ (2 : ℕ) by positivity).ne'
+  have hu : 1 + u ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + u ^ (2 : ℕ) by positivity).ne'
   unfold egbFixedChargeAGibbsTunableFisherCurve
   field_simp
   <;> ring
@@ -20,8 +20,8 @@ theorem egbFixedChargeAGibbsTunableFisherCurve_difference (t u : ℝ) :
 /-- A single Fisher value identifies the squared ratio only up to reciprocation. -/
 theorem egbFixedChargeAGibbsTunableFisherCurve_eq_iff (t u : ℝ) :
     egbFixedChargeAGibbsTunableFisherCurve t = egbFixedChargeAGibbsTunableFisherCurve u ↔
-      t ^ 2 = u ^ 2 ∨ t ^ 2 * u ^ 2 = 1 := by
-  have hd : (1 + t ^ 2) ^ 2 * (1 + u ^ 2) ^ 2 ≠ 0 := by positivity
+      t ^ (2 : ℕ) = u ^ (2 : ℕ) ∨ t ^ (2 : ℕ) * u ^ (2 : ℕ) = 1 := by
+  have hd : (1 + t ^ (2 : ℕ)) ^ (2 : ℕ) * (1 + u ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0 := by positivity
   rw [← sub_eq_zero, egbFixedChargeAGibbsTunableFisherCurve_difference,
     div_eq_zero_iff]
   simp only [hd, or_false, mul_eq_zero]
@@ -46,7 +46,7 @@ theorem egbFixedChargeAGibbsTunableFisherCurve_zero_iff (t : ℝ) :
 theorem egbFixedChargeAGibbsTunableFisherCurve_pair_eq_iff (t u : ℝ) :
     (egbFixedChargeAGibbsTunableFisherCurve t = egbFixedChargeAGibbsTunableFisherCurve u ∧
       egbFixedChargeAGibbsTunableFisherCurve (t / 4) =
-        egbFixedChargeAGibbsTunableFisherCurve (u / 4)) ↔ t ^ 2 = u ^ 2 := by
+        egbFixedChargeAGibbsTunableFisherCurve (u / 4)) ↔ t ^ (2 : ℕ) = u ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsTunableFisherCurve_eq_iff,
     egbFixedChargeAGibbsTunableFisherCurve_eq_iff]
   constructor
@@ -55,7 +55,7 @@ theorem egbFixedChargeAGibbsTunableFisherCurve_pair_eq_iff (t u : ℝ) :
     · exact h
     · rcases hnext with hnext | hnext
       · nlinarith
-      · have he : (t / 4) ^ 2 * (u / 4) ^ 2 = t ^ 2 * u ^ 2 / 256 := by ring
+      · have he : (t / 4) ^ (2 : ℕ) * (u / 4) ^ (2 : ℕ) = t ^ (2 : ℕ) * u ^ (2 : ℕ) / 256 := by ring
         rw [he, h] at hnext
         norm_num at hnext
   · intro h
@@ -63,7 +63,7 @@ theorem egbFixedChargeAGibbsTunableFisherCurve_pair_eq_iff (t u : ℝ) :
 
 /-- One reading really is non-injective even among distinct positive source ratios. -/
 theorem egbFixedChargeAGibbsTunableFisherCurve_reciprocal_ambiguity :
-    ∃ t u : ℝ, 0 < t ∧ 0 < u ∧ t ^ 2 ≠ u ^ 2 ∧
+    ∃ t u : ℝ, 0 < t ∧ 0 < u ∧ t ^ (2 : ℕ) ≠ u ^ (2 : ℕ) ∧
       egbFixedChargeAGibbsTunableFisherCurve t = egbFixedChargeAGibbsTunableFisherCurve u := by
   refine ⟨2, 1 / 2, by norm_num, by norm_num, by norm_num, ?_⟩
   exact (egbFixedChargeAGibbsTunableFisherCurve_eq_iff _ _).2 (Or.inr (by norm_num))

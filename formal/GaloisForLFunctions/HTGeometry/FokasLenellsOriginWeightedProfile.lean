@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
 def originWeightedReflection (q : SchwartzMap ℝ ℂ) (z : ℝ) : ℂ :=
-  reflectionAmplitude q (Real.log (Real.sqrt z))/(Real.sqrt z : ℂ)^5
+  reflectionAmplitude q (Real.log (Real.sqrt z))/(Real.sqrt z : ℂ)^(5 : ℕ)
 
 theorem originWeightedReflection_measurable (q : SchwartzMap ℝ ℂ) : Measurable (originWeightedReflection q) := by
   have hS := continuous_scatteringMatrix q
@@ -27,7 +27,7 @@ theorem originWeightedReflection_measurable (q : SchwartzMap ℝ ℂ) : Measurab
   exact hN.div hD
 
 private theorem originWeightedReflection_raw (q : SchwartzMap ℝ ℂ) (z : ℝ) (hz : 0 < z) :
-    originWeightedReflection q z = rawScatteringMatrix q (Real.sqrt z) 1 0/(Real.sqrt z : ℂ)^5 := by
+    originWeightedReflection q z = rawScatteringMatrix q (Real.sqrt z) 1 0/(Real.sqrt z : ℂ)^(5 : ℕ) := by
   have hh := rawScatteringMatrix_exp_eq q (Real.log (Real.sqrt z))
   rw [Real.exp_log (Real.sqrt_pos.mpr hz)] at hh
   rw [hh]
@@ -35,14 +35,14 @@ private theorem originWeightedReflection_raw (q : SchwartzMap ℝ ℂ) (z : ℝ)
 
 /-- On the positive ray this is exactly the paper's weighted original scattering amplitude. -/
 theorem originWeightedReflection_exp (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    originWeightedReflection q ((Real.exp κ)^2) = reflectionAmplitude q κ/(Real.exp κ : ℂ)^5 := by
+    originWeightedReflection q ((Real.exp κ)^(2 : ℕ)) = reflectionAmplitude q κ/(Real.exp κ : ℂ)^(5 : ℕ) := by
   simp only [originWeightedReflection,Real.sqrt_sq_eq_abs,abs_of_pos (Real.exp_pos κ),Real.log_exp]
 
 private theorem originWeightedReflection_decomposition (q : SchwartzMap ℝ ℂ) (z : ℝ) (hz : 0 < z) :
     originWeightedReflection q z = 2*compatibilityMoment q/(z : ℂ)+
       rawScatteringFifthRemainder q (Real.sqrt z) 1 0 := by
   have hsqrt : (Real.sqrt z : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.sqrt_pos.mpr hz))
-  have hs : (Real.sqrt z : ℂ)^2 = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
+  have hs : (Real.sqrt z : ℂ)^(2 : ℕ) = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
   rw [originWeightedReflection_raw q z hz,rawReflection_fifth_factor,← hs]
   field_simp
 

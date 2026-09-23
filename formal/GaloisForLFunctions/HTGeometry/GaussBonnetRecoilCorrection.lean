@@ -22,7 +22,7 @@ namespace RHTower
 open GaloisForLFunctions.HTGeometry
 
 def gaussBonnetRecoilLogRatio (x y : ℝ) : ℝ :=
-  Real.log ((Real.exp x + Real.exp y) ^ 2 / (4 * Real.exp x * Real.exp y))
+  Real.log ((Real.exp x + Real.exp y) ^ (2 : ℕ) / (4 * Real.exp x * Real.exp y))
 
 def gaussBonnetRecoilAction (a l x y : ℝ) : ℝ :=
   egbEntropyA a l (Real.exp x + Real.exp y) -
@@ -45,8 +45,8 @@ theorem gaussBonnetRecoilLogRatio_expansion (x y : ℝ) :
   ring
 
 theorem gaussBonnetRecoilAction_decomposition (a l x y : ℝ) :
-    gaussBonnetRecoilAction a l x y = -Real.pi * (Real.exp x - Real.exp y) ^ 2 +
-      2 * Real.pi * a ^ 2 * gaussBonnetRecoilLogRatio x y := by
+    gaussBonnetRecoilAction a l x y = -Real.pi * (Real.exp x - Real.exp y) ^ (2 : ℕ) +
+      2 * Real.pi * a ^ (2 : ℕ) * gaussBonnetRecoilLogRatio x y := by
   have hs : Real.exp x + Real.exp y ≠ 0 := by positivity
   have hx : 2 * Real.exp x ≠ 0 := by positivity
   have hy : 2 * Real.exp y ≠ 0 := by positivity
@@ -63,17 +63,17 @@ theorem gaussBonnetRecoilCoherence_factorization (a l x y : ℝ) :
     gaussBonnetRecoilCoherence a l x y =
       schwarzschildNormalizedTwoEmissionRecoilCoherence (Real.exp x + Real.exp y)
         (Real.exp x / 2) (Real.exp y / 2) *
-      Real.exp (2 * Real.pi * a ^ 2 * gaussBonnetRecoilLogRatio x y) := by
+      Real.exp (2 * Real.pi * a ^ (2 : ℕ) * gaussBonnetRecoilLogRatio x y) := by
   rw [gaussBonnetRecoilCoherence, gaussBonnetRecoilAction_decomposition, Real.exp_add,
     schwarzschildNormalizedTwoEmissionRecoilCoherence_eq]
   congr 2
   ring
 
 theorem gaussBonnetRecoilLogRatio_lower_bound (x y : ℝ) :
-    (Real.exp x - Real.exp y) ^ 2 / (Real.exp x + Real.exp y) ^ 2 ≤
+    (Real.exp x - Real.exp y) ^ (2 : ℕ) / (Real.exp x + Real.exp y) ^ (2 : ℕ) ≤
       gaussBonnetRecoilLogRatio x y := by
   have hs : Real.exp x + Real.exp y ≠ 0 := by positivity
-  have hp : 0 < (Real.exp x + Real.exp y) ^ 2 / (4 * Real.exp x * Real.exp y) := by positivity
+  have hp : 0 < (Real.exp x + Real.exp y) ^ (2 : ℕ) / (4 * Real.exp x * Real.exp y) := by positivity
   have h := Real.one_sub_inv_le_log_of_pos hp
   change _ ≤ Real.log _
   convert h using 1
@@ -87,10 +87,10 @@ theorem gaussBonnetRecoilCoherence_ge_schwarzschild (a l x y : ℝ) :
     schwarzschildNormalizedTwoEmissionRecoilCoherence (Real.exp x + Real.exp y)
       (Real.exp x / 2) (Real.exp y / 2) ≤ gaussBonnetRecoilCoherence a l x y := by
   rw [gaussBonnetRecoilCoherence_factorization]
-  have h : 1 ≤ Real.exp (2 * Real.pi * a ^ 2 * gaussBonnetRecoilLogRatio x y) :=
+  have h : 1 ≤ Real.exp (2 * Real.pi * a ^ (2 : ℕ) * gaussBonnetRecoilLogRatio x y) :=
     Real.one_le_exp_iff.mpr (by positivity [gaussBonnetRecoilLogRatio_nonneg x y])
   simpa only [schwarzschildNormalizedTwoEmissionRecoilCoherence_eq, mul_one] using mul_le_mul_of_nonneg_left h
-    (Real.exp_pos (-4 * Real.pi * (Real.exp x / 2 - Real.exp y / 2) ^ 2)).le
+    (Real.exp_pos (-4 * Real.pi * (Real.exp x / 2 - Real.exp y / 2) ^ (2 : ℕ))).le
 
 theorem gaussBonnetRecoilCoherence_reference_independent (a l k x y : ℝ) :
     gaussBonnetRecoilCoherence a l x y = gaussBonnetRecoilCoherence a k x y := by
@@ -109,11 +109,11 @@ theorem gaussBonnetRecoilCoherence_diagonal (a l x : ℝ) : gaussBonnetRecoilCoh
   ring
 
 theorem gaussBonnetRecoil_highCoupling_lower_bound (l x y : ℝ) :
-    Real.exp (Real.pi * (Real.exp x - Real.exp y) ^ 2) ≤
+    Real.exp (Real.pi * (Real.exp x - Real.exp y) ^ (2 : ℕ)) ≤
       gaussBonnetRecoilCoherence (Real.exp x + Real.exp y) l x y := by
   rw [gaussBonnetRecoilCoherence, gaussBonnetRecoilAction_decomposition]
   apply Real.exp_le_exp.mpr
-  have hs : 0 < (Real.exp x + Real.exp y) ^ 2 := by positivity
+  have hs : 0 < (Real.exp x + Real.exp y) ^ (2 : ℕ) := by positivity
   have h := (div_le_iff₀ hs).mp (gaussBonnetRecoilLogRatio_lower_bound x y)
   have hp := mul_le_mul_of_nonneg_left h (by positivity : 0 ≤ 2 * Real.pi)
   nlinarith
@@ -127,14 +127,14 @@ theorem gaussBonnetRecoil_highCoupling_amplification_iff (l x y : ℝ) :
     exact lt_irrefl _ h
   · intro h
     have he : Real.exp x - Real.exp y ≠ 0 := fun he => h (Real.exp_injective (sub_eq_zero.mp he))
-    have hp : 0 < Real.pi * (Real.exp x - Real.exp y) ^ 2 :=
+    have hp : 0 < Real.pi * (Real.exp x - Real.exp y) ^ (2 : ℕ) :=
       mul_pos Real.pi_pos (sq_pos_of_ne_zero he)
     exact lt_of_lt_of_le (Real.one_lt_exp_iff.mpr hp) (gaussBonnetRecoil_highCoupling_lower_bound l x y)
 
 /-- An explicit positive-coupling covariance candidate has negative two-point determinant. -/
 theorem gaussBonnetRecoil_highCoupling_negative_determinant (l x u : ℝ) :
     1 - gaussBonnetRecoilCoherence (Real.exp x + Real.exp (x + Real.exp u))
-      l x (x + Real.exp u) ^ 2 < 0 := by
+      l x (x + Real.exp u) ^ (2 : ℕ) < 0 := by
   have h := (gaussBonnetRecoil_highCoupling_amplification_iff l x (x + Real.exp u)).mpr
     (by linarith [Real.exp_pos u])
   nlinarith
@@ -142,7 +142,7 @@ theorem gaussBonnetRecoil_highCoupling_negative_determinant (l x u : ℝ) :
 /-- The exact coupling boundary for a normalized two-point correlation bound. -/
 theorem gaussBonnetRecoilCoherence_le_one_iff (a l x y : ℝ) :
     gaussBonnetRecoilCoherence a l x y ≤ 1 ↔
-      2 * a ^ 2 * gaussBonnetRecoilLogRatio x y ≤ (Real.exp x - Real.exp y) ^ 2 := by
+      2 * a ^ (2 : ℕ) * gaussBonnetRecoilLogRatio x y ≤ (Real.exp x - Real.exp y) ^ (2 : ℕ) := by
   rw [gaussBonnetRecoilCoherence, Real.exp_le_one_iff, gaussBonnetRecoilAction_decomposition]
   have hp := Real.pi_pos
   constructor <;> intro h
@@ -163,7 +163,7 @@ theorem gaussBonnetRecoilLogRatio_fixedGap (u t : ℝ) :
 
 theorem gaussBonnetFixedGapCoherence_eq (a l u t : ℝ) :
     gaussBonnetFixedGapCoherence a l u t =
-      Real.exp (-4 * Real.pi * Real.exp u ^ 2 + 2 * Real.pi * a ^ 2 *
+      Real.exp (-4 * Real.pi * Real.exp u ^ (2 : ℕ) + 2 * Real.pi * a ^ (2 : ℕ) *
         (2 * Real.log (Real.exp t + Real.exp u) - t - Real.log (Real.exp t + 2 * Real.exp u))) := by
   rw [gaussBonnetFixedGapCoherence, gaussBonnetRecoilCoherence,
     gaussBonnetRecoilAction_decomposition, gaussBonnetRecoilLogRatio_fixedGap,
@@ -174,7 +174,7 @@ theorem gaussBonnetFixedGapCoherence_eq (a l u t : ℝ) :
 theorem gaussBonnetFixedGapCoherence_schwarzschild_factor (a l u t : ℝ) :
     gaussBonnetFixedGapCoherence a l u t =
       schwarzschildNormalizedTwoEmissionRecoilCoherence (Real.exp t + 2 * Real.exp u) 0 (Real.exp u) *
-      Real.exp (2 * Real.pi * a ^ 2 * gaussBonnetRecoilLogRatio t
+      Real.exp (2 * Real.pi * a ^ (2 : ℕ) * gaussBonnetRecoilLogRatio t
         (Real.log (Real.exp t + 2 * Real.exp u))) := by
   rw [gaussBonnetFixedGapCoherence_eq, schwarzschildNormalizedTwoEmissionRecoilCoherence_eq,
     gaussBonnetRecoilLogRatio_fixedGap, Real.exp_add]
@@ -182,15 +182,15 @@ theorem gaussBonnetFixedGapCoherence_schwarzschild_factor (a l u t : ℝ) :
 
 theorem gaussBonnetFixedGapCoherence_derivative (a l u t : ℝ) :
     HasDerivAt (gaussBonnetFixedGapCoherence a l u)
-      (-4 * Real.pi * a ^ 2 * Real.exp u ^ 2 /
+      (-4 * Real.pi * a ^ (2 : ℕ) * Real.exp u ^ (2 : ℕ) /
         ((Real.exp t + Real.exp u) * (Real.exp t + 2 * Real.exp u)) *
         gaussBonnetFixedGapCoherence a l u t) t := by
   have hx : Real.exp t + Real.exp u ≠ 0 := by positivity
   have hy : Real.exp t + 2 * Real.exp u ≠ 0 := by positivity
   have hlog := (((((Real.hasDerivAt_exp t).add_const (Real.exp u)).log hx).const_mul 2).sub
     (hasDerivAt_id t)).sub (((Real.hasDerivAt_exp t).add_const (2 * Real.exp u)).log hy)
-  have h := (((hlog.const_mul (2 * Real.pi * a ^ 2)).const_add
-    (-4 * Real.pi * Real.exp u ^ 2)).exp)
+  have h := (((hlog.const_mul (2 * Real.pi * a ^ (2 : ℕ))).const_add
+    (-4 * Real.pi * Real.exp u ^ (2 : ℕ))).exp)
   rw [show gaussBonnetFixedGapCoherence a l u = _ from funext (gaussBonnetFixedGapCoherence_eq a l u)]
   apply h.congr_deriv
   dsimp
@@ -206,7 +206,7 @@ theorem gaussBonnetFixedGapCoherence_strictAnti (k l u : ℝ) :
   have hc : 0 < gaussBonnetFixedGapCoherence (Real.exp k) l u t := by
     rw [gaussBonnetFixedGapCoherence_eq]
     positivity
-  have hp : 0 < 4 * Real.pi * Real.exp k ^ 2 * Real.exp u ^ 2 := by positivity
+  have hp : 0 < 4 * Real.pi * Real.exp k ^ (2 : ℕ) * Real.exp u ^ (2 : ℕ) := by positivity
   exact mul_neg_of_neg_of_pos (div_neg_of_neg_of_pos (by nlinarith) (by positivity)) hc
 
 end RHTower

@@ -39,7 +39,7 @@ theorem card_le_good_add_correlation_explicit {X L R M : ℕ} {ε : ℝ} (hR : 1
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
         + ((L : ℝ) * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ)
             + 2 * (L : ℝ) * ((L : ℝ) * ε + ((2 * L + 1 : ℕ) : ℝ) * (L : ℝ)))
-          / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ 2
+          / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ (2 : ℕ)
         + ((L : ℝ) * (((X : ℝ) + (L : ℝ)) / (R : ℝ) + (M : ℝ)))
           / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) := by
   refine card_le_good_add_correlation hR hM hδ hθ hε hcorr ?_
@@ -55,14 +55,14 @@ theorem card_le_good_add_meanSquare_explicit {A B L R M : ℕ} {V : ℝ} (hR : 1
     (hδ : 0 < (1 / 8) * squarefreeDensity * (L : ℝ))
     (hθ : 0 < (1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ)))
     (hms : ∑ t ∈ Finset.Ico A B,
-      (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V) :
+      (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V) :
     ((Finset.Ico A B).card : ℝ)
       ≤ (((Finset.Ico A B).filter (fun t =>
           (3 / 16) * squarefreeDensity * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = 1)).card : ℝ)
             ∧ (3 / 16) * squarefreeDensity * (L : ℝ)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ 2
+        + V / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ (2 : ℕ)
         + ((L : ℝ) * (((B : ℝ) + (L : ℝ) - (A : ℝ)) / (R : ℝ) + (M : ℝ)))
           / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) := by
   refine card_le_good_add_explicit hR hM hδ hθ hms ?_

@@ -213,10 +213,10 @@ theorem unitRieszStirlingConvolution_nonpos {t : ℝ} (ht : 0 ≤ t) :
   nlinarith
 
 theorem integral_Ioc_linear (t : ℝ) (ht : 0 ≤ t) :
-    (∫ s in Ioc (0 : ℝ) t, (s + 4)) = t ^ 2 / 2 + 4 * t := by
-  have hd : ∀ x ∈ Set.uIcc (0 : ℝ) t, HasDerivAt (fun y : ℝ => y ^ 2 / 2 + 4 * y) (x + 4) x := by
+    (∫ s in Ioc (0 : ℝ) t, (s + 4)) = t ^ (2 : ℕ) / 2 + 4 * t := by
+  have hd : ∀ x ∈ Set.uIcc (0 : ℝ) t, HasDerivAt (fun y : ℝ => y ^ (2 : ℕ) / 2 + 4 * y) (x + 4) x := by
     intro x _
-    have h1 : HasDerivAt (fun y : ℝ => y ^ 2) ((2 : ℕ) * x ^ (2 - 1)) x := hasDerivAt_pow 2 x
+    have h1 : HasDerivAt (fun y : ℝ => y ^ (2 : ℕ)) ((2 : ℕ) * x ^ (2 - 1)) x := hasDerivAt_pow 2 x
     have h2 := h1.div_const 2
     have h3 := (hasDerivAt_id x).const_mul (4 : ℝ)
     exact (h2.add h3).congr_deriv (by push_cast; ring)
@@ -228,7 +228,7 @@ theorem integral_Ioc_linear (t : ℝ) (ht : 0 ≤ t) :
 /-- **Equation (23).**  Exact polynomial-times-exponential bound for the Stirling
 convolution. -/
 theorem abs_unitRieszStirlingConvolution_le {t : ℝ} (ht : 0 ≤ t) :
-    |unitRieszStirlingConvolution t| ≤ 3 * Real.exp (-t) * (t ^ 2 / 2 + 4 * t) := by
+    |unitRieszStirlingConvolution t| ≤ 3 * Real.exp (-t) * (t ^ (2 : ℕ) / 2 + 4 * t) := by
   have hnonpos := unitRieszStirlingConvolution_nonpos ht
   have hkint : IntegrableOn
       (fun s : ℝ => unitRieszCompletedSourceKernel (t - s) * unitRieszStirlingCorrection s)
@@ -302,13 +302,13 @@ theorem abs_unitRieszStirlingConvolution_le_exp {t : ℝ} (ht : 0 ≤ t) :
   have hh' : t * Real.exp (-t / 2) ≤ 2 := by
     rw [hhrw] at hh; norm_num at hh; linarith
   have hq0 : (0 : ℝ) ≤ t * Real.exp (-(1 / 4 * t)) := by positivity
-  have hsq : t ^ 2 * Real.exp (-t / 2) ≤ 16 := by
-    have hrw : t ^ 2 * Real.exp (-t / 2) = (t * Real.exp (-(1 / 4 * t))) ^ 2 := by
+  have hsq : t ^ (2 : ℕ) * Real.exp (-t / 2) ≤ 16 := by
+    have hrw : t ^ (2 : ℕ) * Real.exp (-t / 2) = (t * Real.exp (-(1 / 4 * t))) ^ (2 : ℕ) := by
       rw [← e4]; ring
     rw [hrw]
     nlinarith [hq4, hq0]
   have hpos : (0 : ℝ) < Real.exp (-t / 2) := Real.exp_pos _
-  have hfinal : 3 * Real.exp (-t) * (t ^ 2 / 2 + 4 * t) ≤ 48 * Real.exp (-t / 2) := by
+  have hfinal : 3 * Real.exp (-t) * (t ^ (2 : ℕ) / 2 + 4 * t) ≤ 48 * Real.exp (-t / 2) := by
     rw [← e2]
     nlinarith [hsq, hh', hpos]
   linarith
@@ -391,7 +391,7 @@ theorem regularizedCriticalMellinDefect_eq_explicit {z : ℂ} (hz : 0 < z.re) :
 theorem unitRieszCompletedSourceCorrection_eq {z : ℂ} (hz : 0 < z.re) :
     unitRieszCompletedSourceCorrection z =
       unitRieszCompletedSourceMultiplier z *
-        (riemannZeta (z + 1) / (z + 1) ^ 2 - 1 / z - 1 / (z + 1)) := by
+        (riemannZeta (z + 1) / (z + 1) ^ (2 : ℕ) - 1 / z - 1 / (z + 1)) := by
   have h1 := unitRieszPoleFilledCoefficient_eq_original hz
   rw [show (1 : ℂ) + z = z + 1 from by ring] at h1
   have h2 := unitRieszPoleFilledCoefficient_eq_completedSource z

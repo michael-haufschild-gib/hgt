@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardRouteTSecondAlternativeBarrier
 # Diagonal-energy transfer from Maynard's third alternative
 
 The sign barrier for Maynard's second alternative is also the exact point where the diagonal
-inequality `R^2 ≤ R*` converts the third alternative into the first.  Thus the two count mechanisms
+inequality `R^(2 : ℕ) ≤ R*` converts the third alternative into the first.  Thus the two count mechanisms
 meet without an exponent gap: below the barrier one needs the genuine second/fourth-moment
 large-values analysis, while above it every third-alternative estimate is already a first-
 alternative estimate.

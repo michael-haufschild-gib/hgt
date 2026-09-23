@@ -51,13 +51,13 @@ theorem div_sinh_strictAntiOn :
     have hyp : (0:ℝ) < y := hy
     have hsp : 0 < Real.sinh y := Real.sinh_pos_iff.mpr hyp
     have hderiv : HasDerivAt (fun y : ℝ => y / Real.sinh y)
-        ((1 * Real.sinh y - y * Real.cosh y) / (Real.sinh y)^2) y :=
+        ((1 * Real.sinh y - y * Real.cosh y) / (Real.sinh y)^(2 : ℕ)) y :=
       (hasDerivAt_id y).div (Real.hasDerivAt_sinh y) (ne_of_gt hsp)
     rw [hderiv.deriv]
     have hnum : 1 * Real.sinh y - y * Real.cosh y < 0 := by
       have := sinh_lt_mul_cosh hyp
       linarith
-    have hden : 0 < (Real.sinh y)^2 := by positivity
+    have hden : 0 < (Real.sinh y)^(2 : ℕ) := by positivity
     exact div_neg_of_neg_of_pos hnum hden
 
 /-- **(C)** For `0 < a < b`, the ratio `c ↦ tanh(ca)/tanh(cb)` is monotone on `(0,∞)`.
@@ -206,18 +206,18 @@ theorem tanh_half_le_tanh_log_cosh_div_tanh
     field_simp [hhalfC.ne']
     nlinarith
   have htanhLog :
-      Real.tanh (Real.log C) = (C ^ 2 - 1) / (C ^ 2 + 1) := by
+      Real.tanh (Real.log C) = (C ^ (2 : ℕ) - 1) / (C ^ (2 : ℕ) + 1) := by
     rw [Real.tanh_eq_sinh_div_cosh, Real.sinh_log hCpos,
       Real.cosh_log hCpos]
     field_simp [hCpos.ne']
   have htanhM : Real.tanh m = S / C := by
     rw [Real.tanh_eq_sinh_div_cosh]
-  have hhyper : C ^ 2 - S ^ 2 = 1 := by
+  have hhyper : C ^ (2 : ℕ) - S ^ (2 : ℕ) = 1 := by
     dsimp [C, S]
     exact Real.cosh_sq_sub_sinh_sq m
   rw [htanhHalf, htanhLog, htanhM]
   have hden1 : 0 < C + 1 := by linarith
-  have hden2 : 0 < C ^ 2 + 1 := by positivity
+  have hden2 : 0 < C ^ (2 : ℕ) + 1 := by positivity
   have hSC : 0 < S / C := div_pos hSpos hCpos
   rw [div_div]
   apply (div_le_div_iff₀ hden1 (mul_pos hden2 hSC)).2

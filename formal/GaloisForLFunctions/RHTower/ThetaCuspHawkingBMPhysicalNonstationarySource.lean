@@ -47,26 +47,26 @@ theorem fundamentalJacobiMoment_nonstationary (n : ℕ) (w : ℂ) :
 theorem physicalFundamentalSourceMoment_nonstationary (q : XiZeroCopy) (a : ℂ) :
     let w := physicalFundamentalFrequency q true
     fundamentalSourceMoment w (D4BMModularCore.physicalRate q true) a =
-      2*a^2*(fundamentalMomentConstant (-2*w-4)*nonstationaryMoment ((1-Polynomial.X)^2) 0 w+
-        fundamentalMomentQuadratic w (-2*w-4)*nonstationaryMoment ((1-Polynomial.X)^4) 0 w) := by
+      2*a^(2 : ℕ)*(fundamentalMomentConstant (-2*w-4)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 w+
+        fundamentalMomentQuadratic w (-2*w-4)*nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 w) := by
   dsimp only
   rw [physicalFundamentalSourceMoment_polynomial q true true a,physicalNonstationaryRate]
   simp only [fundamentalJacobiMoment_nonstationary]
 
 theorem nonstationarySourceConstant (w : ℂ) :
-    fundamentalMomentConstant (-2*w-4) = 5*(w+1)^2+(5/2:ℂ)*(w+1)-3/2 := by
+    fundamentalMomentConstant (-2*w-4) = 5*(w+1)^(2 : ℕ)+(5/2:ℂ)*(w+1)-3/2 := by
   unfold fundamentalMomentConstant
   ring
 
 theorem nonstationarySourceQuadratic (w : ℂ) :
     fundamentalMomentQuadratic w (-2*w-4) =
-      (15/2:ℂ)*(w+1)^4+(81/4:ℂ)*(w+1)^3+15*(w+1)^2+(9/4:ℂ)*(w+1) := by
+      (15/2:ℂ)*(w+1)^(4 : ℕ)+(81/4:ℂ)*(w+1)^(3 : ℕ)+15*(w+1)^(2 : ℕ)+(9/4:ℂ)*(w+1) := by
   unfold fundamentalMomentQuadratic
   ring
 
 theorem physicalFundamentalSourceMoment_amplitude (q : XiZeroCopy) (a : ℂ) :
     fundamentalSourceMoment (physicalFundamentalFrequency q true) (D4BMModularCore.physicalRate q true) a =
-      a^2*fundamentalSourceMoment (physicalFundamentalFrequency q true) (D4BMModularCore.physicalRate q true) 1 := by
+      a^(2 : ℕ)*fundamentalSourceMoment (physicalFundamentalFrequency q true) (D4BMModularCore.physicalRate q true) 1 := by
   rw [physicalFundamentalSourceMoment_nonstationary q a,physicalFundamentalSourceMoment_nonstationary q 1]
   ring
 

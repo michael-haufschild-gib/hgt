@@ -35,7 +35,7 @@ noncomputable def hillDrivenDensityDeriv (a : HillSpeed) (b : WienerFamily E N) 
 noncomputable def hillDrivenDensitySecond (a : HillSpeed) (b : WienerFamily E N) (G₀ : E →ᵇ ℂ)
     (t : ℝ) (ξ : E) : ℂ :=
   ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ *
-    (-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ + hillFlowSource a b G₀ ξ t)
+    (-(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ + hillFlowSource a b G₀ ξ t)
 
 /-- **The field**: the synthesis of the driven evolution against the character. -/
 noncomputable def hillDrivenField (a : HillSpeed) (b : WienerFamily E N) (G₀ : E →ᵇ ℂ) (t : ℝ)
@@ -78,12 +78,12 @@ theorem continuous_hillDrivenDensitySecond (a : HillSpeed) (b : WienerFamily E N
   have hinv : Continuous fun ξ : E => ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ := by
     refine Continuous.inv₀ (Complex.continuous_ofReal.comp (continuous_kgFreq.pow N)) fun ξ => ?_
     exact Complex.ofReal_ne_zero.mpr (pow_pos (kgFreq_pos ξ) N).ne'
-  have hfreq : Continuous fun ξ : E => ((a.freq ξ t ^ 2 : ℝ) : ℂ) :=
+  have hfreq : Continuous fun ξ : E => ((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ) :=
     Complex.continuous_ofReal.comp ((continuous_massiveFreq_freq a.mass a.speed t).pow 2)
   have hsrc : Continuous fun ξ : E => hillFlowSource a b G₀ ξ t :=
     continuous_kgConv (b.density t) (hillPotentialFlow a b G₀ t)
   have hprod : Continuous fun ξ : E =>
-      -(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
+      -(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
         hillFlowSource a b G₀ ξ t :=
     (hfreq.neg.mul (hillPotentialFlow a b G₀ t).continuous).add hsrc
   exact hinv.mul hprod
@@ -121,14 +121,14 @@ theorem norm_kgChar_mul_hillDrivenDensityDeriv_le (a : HillSpeed) (b : WienerFam
 theorem norm_kgChar_mul_hillDrivenDensitySecond_le (a : HillSpeed) (b : WienerFamily E N)
     (G₀ : E →ᵇ ℂ) {T t : ℝ} (hT : 0 ≤ T) (ht : |t| ≤ T) (x ξ : E) :
     ‖kgChar x ξ * hillDrivenDensitySecond a b G₀ t ξ‖
-      ≤ kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ *
-          ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T) +
+      ≤ kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ *
+          ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T) +
         (kgFreq ξ ^ N)⁻¹ * hillSourceSize a b G₀ T := by
   have hinvnn : (0 : ℝ) ≤ (kgFreq ξ ^ N)⁻¹ := inv_nonneg.mpr (pow_pos (kgFreq_pos ξ) N).le
-  have hfreqsq : a.freq ξ t ^ 2 ≤ (a.mass ^ 2 + a.sizeBound ^ 2) * kgFreq ξ ^ 2 := by
-    have h1 : a.freq ξ t ^ 2 ≤ a.mass ^ 2 + a.sizeBound ^ 2 * ‖ξ‖ ^ 2 :=
+  have hfreqsq : a.freq ξ t ^ (2 : ℕ) ≤ (a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * kgFreq ξ ^ (2 : ℕ) := by
+    have h1 : a.freq ξ t ^ (2 : ℕ) ≤ a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ) :=
       massiveFreq_sq_le a.mass_pos a.speed_sq_le le_rfl t
-    have h2 : kgFreq ξ ^ 2 = 1 + ‖ξ‖ ^ 2 := kgFreq_sq ξ
+    have h2 : kgFreq ξ ^ (2 : ℕ) = 1 + ‖ξ‖ ^ (2 : ℕ) := kgFreq_sq ξ
     nlinarith [sq_nonneg a.mass, sq_nonneg a.sizeBound, sq_nonneg ‖ξ‖]
   have hflow : ‖hillPotentialFlow a b G₀ t ξ‖ ≤ hillFlowSize a b G₀ T :=
     le_trans ((hillPotentialFlow a b G₀ t).norm_coe_le_norm ξ)
@@ -137,18 +137,18 @@ theorem norm_kgChar_mul_hillDrivenDensitySecond_le (a : HillSpeed) (b : WienerFa
     norm_hillFlowSource_le_window a b G₀ hT ht ξ
   have hnorm : ‖kgChar x ξ * hillDrivenDensitySecond a b G₀ t ξ‖
       = (kgFreq ξ ^ N)⁻¹ *
-        ‖-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
+        ‖-(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
           hillFlowSource a b G₀ ξ t‖ := by
     rw [norm_mul, norm_kgChar, one_mul, hillDrivenDensitySecond, norm_mul, norm_inv,
       Complex.norm_real, Real.norm_eq_abs, abs_of_pos (pow_pos (kgFreq_pos ξ) N)]
   rw [hnorm]
-  have hterm : ‖-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
+  have hterm : ‖-(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
       hillFlowSource a b G₀ ξ t‖
-      ≤ (a.mass ^ 2 + a.sizeBound ^ 2) * kgFreq ξ ^ 2 * hillFlowSize a b G₀ T +
+      ≤ (a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * kgFreq ξ ^ (2 : ℕ) * hillFlowSize a b G₀ T +
         hillSourceSize a b G₀ T := by
     refine (norm_add_le _ _).trans (add_le_add ?_ hsrc)
-    have hmul : ‖-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ‖
-        = a.freq ξ t ^ 2 * ‖hillPotentialFlow a b G₀ t ξ‖ := by
+    have hmul : ‖-(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ‖
+        = a.freq ξ t ^ (2 : ℕ) * ‖hillPotentialFlow a b G₀ t ξ‖ := by
       rw [norm_mul, norm_neg, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (sq_nonneg (a.freq ξ t))]
     rw [hmul]
@@ -219,18 +219,18 @@ theorem hasDerivAt_deriv_hillDrivenField (hN : (Module.finrank ℝ E : ℝ) + 2 
     filter_upwards with ξ
     exact norm_kgChar_mul_hillDrivenDensityDeriv_le a b G₀ hTnn ht₀T x ξ
   have hbint : Integrable (fun ξ : E =>
-      kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ *
-          ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T) +
+      kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ *
+          ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T) +
         (kgFreq ξ ^ N)⁻¹ * hillSourceSize a b G₀ T) (volume : Measure E) :=
     ((integrable_kgFreq_pow_mul_inv_pow (E := E) (j := 2) hN).mul_const
-      ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T)).add
+      ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T)).add
       ((integrable_kgFreq_inv_pow (E := E) hNdim).mul_const (hillSourceSize a b G₀ T))
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := (volume : Measure E))
     (x₀ := t₀) (s := Metric.ball t₀ 1)
     (F := fun t ξ => kgChar x ξ * hillDrivenDensityDeriv a b G₀ t ξ)
     (F' := fun t ξ => kgChar x ξ * hillDrivenDensitySecond a b G₀ t ξ)
-    (bound := fun ξ => kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ *
-        ((a.mass ^ 2 + a.sizeBound ^ 2) * hillFlowSize a b G₀ T) +
+    (bound := fun ξ => kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ *
+        ((a.mass ^ (2 : ℕ) + a.sizeBound ^ (2 : ℕ)) * hillFlowSize a b G₀ T) +
       (kgFreq ξ ^ N)⁻¹ * hillSourceSize a b G₀ T)
     (Metric.ball_mem_nhds t₀ one_pos)
     (Filter.Eventually.of_forall fun t =>

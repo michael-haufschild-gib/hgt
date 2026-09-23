@@ -12,7 +12,7 @@ with the substitution by a single factor:
 The Schwarzian coordinate `𝔖 = z₃ − (3/2)·z₂²` is the weight-zero object whose substitution law is a
 pure translation,
 
-`R'^2·Φ(𝔖) = 𝔖 + S_R`,   `S_R = R'''/R' − (3/2)(R''/R')²`,
+`R'^(2 : ℕ)·Φ(𝔖) = 𝔖 + S_R`,   `S_R = R'''/R' − (3/2)(R''/R')²`,
 
 and the covariant derivative `D_κ(g) = ∇g + κ·z₂·g` intertwines the relation
 `R'^κ·Φ(g) = g + c` with `R'^{κ+1}·Φ(D_κ g) = D_κ g + D_κ c`.  So a jet-level invariant is a
@@ -53,13 +53,13 @@ theorem jetSubstitution_jetNabla (R : RatFunc C) (hR : substitutionDeriv R ≠ 0
 
 /-- The Schwarzian coordinate. -/
 private def schwarzianJet : JetField C Unit :=
-  (jetRatio 3 : JetField C Unit) - (3 / 2 : JetField C Unit) * (jetRatio 2 : JetField C Unit) ^ 2
+  (jetRatio 3 : JetField C Unit) - (3 / 2 : JetField C Unit) * (jetRatio 2 : JetField C Unit) ^ (2 : ℕ)
 
 /-- The Schwarzian of the map, as an order-zero element. -/
 def ratSchwarzian (R : RatFunc C) : JetField C Unit :=
   JetField.pd ((), 0) (JetField.pd ((), 0) (substitutionDeriv R)) / substitutionDeriv R
     - (3 / 2 : JetField C Unit)
-      * (JetField.pd ((), 0) (substitutionDeriv R) / substitutionDeriv R) ^ 2
+      * (JetField.pd ((), 0) (substitutionDeriv R) / substitutionDeriv R) ^ (2 : ℕ)
 
 theorem substitutionShiftRatio_three (R : RatFunc C) :
     substitutionShiftRatio R 3
@@ -71,7 +71,7 @@ theorem substitutionShiftRatio_three (R : RatFunc C) :
 
 /-- **The Schwarzian coordinate translates.** -/
 theorem jetSubstitution_schwarzianJet (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) :
-    substitutionDeriv R ^ 2 * jetSubstitution R hR (schwarzianJet : JetField C Unit)
+    substitutionDeriv R ^ (2 : ℕ) * jetSubstitution R hR (schwarzianJet : JetField C Unit)
       = (schwarzianJet : JetField C Unit) + ratSchwarzian R := by
   have hρ : substitutionDeriv R ≠ 0 := hR
   have h2 := jetSubstitution_jetRatio R hR 2
@@ -83,10 +83,10 @@ theorem jetSubstitution_schwarzianJet (R : RatFunc C) (hR : substitutionDeriv R 
   set ρ₂ : JetField C Unit := JetField.pd ((), 0) ρ₁ with hρ₂def
   set z₂ : JetField C Unit := (jetRatio 2 : JetField C Unit) with hz₂def
   set z₃ : JetField C Unit := (jetRatio 3 : JetField C Unit) with hz₃def
-  have hΦ2 : jetSubstitution R hR z₂ = (ρ * z₂ + ρ₁) / ρ ^ 2 := by
+  have hΦ2 : jetSubstitution R hR z₂ = (ρ * z₂ + ρ₁) / ρ ^ (2 : ℕ) := by
     rw [eq_div_iff (pow_ne_zero 2 hρ)]
     linear_combination h2
-  have hΦ3 : jetSubstitution R hR z₃ = (ρ * z₃ + (3 * ρ₁ * z₂ + ρ₂)) / ρ ^ 3 := by
+  have hΦ3 : jetSubstitution R hR z₃ = (ρ * z₃ + (3 * ρ₁ * z₂ + ρ₂)) / ρ ^ (3 : ℕ) := by
     rw [eq_div_iff (pow_ne_zero 3 hρ)]
     linear_combination h3
   rw [schwarzianJet, ratSchwarzian, map_sub, map_mul, map_pow, hΦ2, hΦ3]
@@ -98,7 +98,7 @@ theorem jetSubstitution_schwarzianJet (R : RatFunc C) (hR : substitutionDeriv R 
 /-- The Schwarzian of the map, as a rational function. -/
 def ratFuncSchwarzian (R : RatFunc C) : RatFunc C :=
   ratFuncDeriv (ratFuncDeriv (ratFuncDeriv R)) / ratFuncDeriv R
-    - RatFunc.C (3 / 2 : C) * (ratFuncDeriv (ratFuncDeriv R) / ratFuncDeriv R) ^ 2
+    - RatFunc.C (3 / 2 : C) * (ratFuncDeriv (ratFuncDeriv R) / ratFuncDeriv R) ^ (2 : ℕ)
 
 theorem ratFuncEval_ratFuncSchwarzian (R : RatFunc C) :
     ratFuncEval (JetField.jet ((), 0) : JetField C Unit) transcendental_freeGen
@@ -171,7 +171,7 @@ theorem jetNabla_jetRatio (j : ℕ) :
       rw [jetRatio]
       field_simp
     have hmul2 : (jetRatio 2 : JetField C Unit)
-        * (JetField.jet ((), 1) : JetField C Unit) ^ 2
+        * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)
         = (JetField.jet ((), 2) : JetField C Unit) := by
       rw [jetRatio]
       field_simp

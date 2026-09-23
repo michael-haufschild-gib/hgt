@@ -182,11 +182,11 @@ theorem sum_normSq_mtOuterSeparatedBoxFamily_productBoundary_le_collar_zeta_sq
     ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF
       (mtOuterSeparatedBoxIndexSet S data maxDepth j eMax kMax)
       (mtOuterSeparatedBoxAF alpha data z₀ D delta)
-      (mtOuterSeparatedBoxScale L delta recStart) Y n‖ ^ 2 ≤
+      (mtOuterSeparatedBoxScale L delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (r + 3)) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (r + 3)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (r + 3)) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (r + 3)) n : ℝ) ^ (2 : ℕ)) := by
   apply sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     A (mtOuterSeparatedBoxIndexSet S data maxDepth j eMax kMax)
       (mtOuterSeparatedBoxAF alpha data z₀ D delta)

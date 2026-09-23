@@ -75,7 +75,7 @@ theorem exists_xiShiftedCofinalPositiveProjectiveSchedule_above
     have hblock := hW w hw
     have heq : HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence w) (n + 2) =
-        xiShiftedMomentHankelMatrix (w ^ 2) (n + 2) := by
+        xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2) := by
       ext i j
       rfl
     rwa [heq]
@@ -155,7 +155,7 @@ theorem exists_xiShiftedCofinalPositiveSchedule_spread_and_harmonicWork :
       ∀ n, 2 ≤ n →
         dimensionlessProjectiveArithmeticSurplus (w n) n ≥
           1 / (2 * (2 * n + 1 : ℝ)) *
-            dimensionlessCumulativeJacobiFlux (w n) n ^ 2 := by
+            dimensionlessCumulativeJacobiFlux (w n) n ^ (2 : ℕ) := by
   obtain ⟨W, hW⟩ := exists_uniform_lowEdgeAnchor_half
   obtain ⟨w, hfloor, hwtop, hpos, hspread⟩ :=
     exists_xiShiftedCofinalPositiveProjectiveSchedule_above (fun _ => W)

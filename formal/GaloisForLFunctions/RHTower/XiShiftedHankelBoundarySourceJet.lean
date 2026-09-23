@@ -38,7 +38,7 @@ theorem completedSourceMomentScale_pos (n : ℕ) {w : ℝ} (hw : 0 < w) :
 /-- The normalized completed source jet is exactly the shifted reciprocal-Xi moment. -/
 theorem normalizedCompletedSourceMoment_eq (n : ℕ) {w : ℝ} (hw : 0 < w) :
     normalizedCompletedSourceMoment n w =
-      (xiShiftedReciprocalMoment (w ^ 2) n).re := by
+      (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) n).re := by
   rw [normalizedCompletedSourceMoment,
     completedSourceJet_eq_xiShiftedReciprocalMoment n hw]
   apply mul_div_cancel_left₀
@@ -83,7 +83,7 @@ def xiShiftedHankelBoundaryDiscrepancyJet
 theorem xiShiftedHankelBoundarySourceJet_eq
     {w : ℝ} (hw : 0 < w) (n : ℕ) (c : Fin n → ℝ) :
     xiShiftedHankelBoundarySourceJet w n c =
-      xiShiftedHankelFirstOmittedCoupling (w ^ 2) n c := by
+      xiShiftedHankelFirstOmittedCoupling (w ^ (2 : ℕ)) n c := by
   simp only [xiShiftedHankelBoundarySourceJet,
     xiShiftedHankelFirstOmittedCoupling,
     GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling]
@@ -106,7 +106,7 @@ theorem xiShiftedHankelBoundarySourceJet_eq_archimedean_add_discrepancy
 the sum of one normalized archimedean jet and one normalized Chebyshev--Stieltjes discrepancy jet. -/
 theorem xiShiftedHankelFirstOmittedCoupling_eq_archimedean_add_discrepancy
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) (c : Fin n → ℝ) :
-    xiShiftedHankelFirstOmittedCoupling (w ^ 2) n c =
+    xiShiftedHankelFirstOmittedCoupling (w ^ (2 : ℕ)) n c =
       xiShiftedHankelBoundaryArchimedeanJet w n c +
         xiShiftedHankelBoundaryDiscrepancyJet w n c := by
   rw [← xiShiftedHankelBoundarySourceJet_eq (by linarith : 0 < w) n c,

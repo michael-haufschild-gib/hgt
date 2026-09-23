@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 The entire function `E = XiC + i XiC'` is defined from the completed theta transform without
 enumerating its divisor.  Its Schwarz-reflected commutator is exactly the division-free Xi
 Bezoutian.  Removing the diagonal by `dslope` gives an everywhere-defined kernel whose diagonal at
-a Xi zero is `XiC'(alpha)^2`, while distinct Xi zeros are orthogonal for the kernel.
+a Xi zero is `XiC'(alpha)^(2 : ℕ)`, while distinct Xi zeros are orthogonal for the kernel.
 
 This is unconditional bridge infrastructure.  No positivity of the Bezoutian is asserted: that
 positivity is the RH-bearing de Branges condition.  The final theorem identifies the separate
@@ -164,7 +164,7 @@ theorem xiHedenmalmDeBrangesCommutator_eq_mul_bezoutian (z v : ℂ) :
 /-- Exact diagonal value of the removable Xi Bezoutian. -/
 theorem xiHedenmalmBezoutian_self (z : ℂ) :
     xiHedenmalmBezoutian z z =
-      deriv XiC z ^ 2 - XiC z * deriv (deriv XiC) z := by
+      deriv XiC z ^ (2 : ℕ) - XiC z * deriv (deriv XiC) z := by
   rw [xiHedenmalmBezoutian, dslope_same]
   have hXi : HasDerivAt XiC (deriv XiC z) z :=
     XiC_differentiable.differentiableAt.hasDerivAt
@@ -176,7 +176,7 @@ theorem xiHedenmalmBezoutian_self (z : ℂ) :
 
 /-- At a Xi zero, the diagonal Bezoutian is exactly the square of the first derivative. -/
 theorem xiHedenmalmBezoutian_self_of_zero {z : ℂ} (hz : XiC z = 0) :
-    xiHedenmalmBezoutian z z = deriv XiC z ^ 2 := by
+    xiHedenmalmBezoutian z z = deriv XiC z ^ (2 : ℕ) := by
   rw [xiHedenmalmBezoutian_self, hz, zero_mul, sub_zero]
 
 /-- Distinct Xi zeros are off-diagonally orthogonal for the source-defined Bezoutian. -/

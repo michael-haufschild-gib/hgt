@@ -27,9 +27,9 @@ private theorem range_shift_eq_Icc {E : Type*} [AddCommMonoid E] (F : ℕ → E)
 
 /-- The same closed estimate applies to the actual endpoint error against any coefficient model. -/
 theorem endpointJet_error_energy_le (c : ℕ → ℝ) (N T : ℕ) :
-    ‖PrimeCountDamping.endpointJet N-source c N‖^2 ≤
+    ‖PrimeCountDamping.endpointJet N-source c N‖^(2 : ℕ) ≤
       4*(T : ℝ)*(prefixEnvelope (fun n => PrimeCountDamping.jetCoeff n-c n) N*
-        harmonicMass N)^2+mass (fun n => PrimeCountDamping.jetCoeff n-c n) N^2/((T : ℝ)+1) := by
+        harmonicMass N)^(2 : ℕ)+mass (fun n => PrimeCountDamping.jetCoeff n-c n) N^(2 : ℕ)/((T : ℝ)+1) := by
   have he : source (fun n => PrimeCountDamping.jetCoeff n-c n) N =
       PrimeCountDamping.endpointJet N-source c N := by
     unfold source

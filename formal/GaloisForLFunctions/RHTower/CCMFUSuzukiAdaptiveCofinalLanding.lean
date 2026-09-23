@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 The finite connected Suzuki multiplier has quadratic clock defect.  We measure the exact finite
 total variation of the literal triangular prime--polar source and choose a positive clock from that
 variation.  The resulting schedule is explicit, tends to zero, and lands on the moving literal
-signed windows with error at most `exp 1 / (2 * H_N^2)`.  No cancellation estimate, compactness
+signed windows with error at most `exp 1 / (2 * H_N^(2 : ℕ))`.  No cancellation estimate, compactness
 selection, or Riemann-hypothesis input enters this convergence theorem.
 -/
 
@@ -22,7 +22,7 @@ open GaloisForLFunctions.RHTower
 theorem abs_multiplier_sub_one_le
     {ω h : ℝ} (hω : 0 < ω) (hh : 0 < h) :
     |shiftedEulerLogConnectedThirdMultiplier ω h - 1| ≤
-      (ω * h) ^ 2 / 2 * Real.exp (ω * h) := by
+      (ω * h) ^ (2 : ℕ) / 2 * Real.exp (ω * h) := by
   have hy : 0 < ω * h := mul_pos hω hh
   have hlow := one_le_shiftedEulerLogConnectedThirdMultiplier hω hh
   have hup := shiftedEulerLogConnectedThirdMultiplier_le_cosh hω hh
@@ -32,8 +32,8 @@ theorem abs_multiplier_sub_one_le
   calc
     shiftedEulerLogConnectedThirdMultiplier ω h - 1 ≤
         Real.cosh (ω * h) - 1 := sub_le_sub_right hup 1
-    _ ≤ (ω * h) ^ 2 / 2 * Real.cosh (ω * h) := hcosh
-    _ ≤ (ω * h) ^ 2 / 2 * Real.exp (ω * h) :=
+    _ ≤ (ω * h) ^ (2 : ℕ) / 2 * Real.cosh (ω * h) := hcosh
+    _ ≤ (ω * h) ^ (2 : ℕ) / 2 * Real.exp (ω * h) :=
       mul_le_mul_of_nonneg_left hce (by positivity)
 
 def ccmGuinandWeilPrimePolarWeightedWindowVariation
@@ -171,19 +171,19 @@ theorem abs_positiveLogChordApprox_sub_literal_le_variation
     |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-      ((ω * H) ^ 2 / 2 * Real.exp (ω * H)) *
+      ((ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)) *
         ccmGuinandWeilPrimePolarWeightedWindowVariation b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H) := by
   let T : ℝ → ℝ := ccmGuinandWeilThirdGradeCesaroTriangularWeight H
   let M : ℝ → ℝ := shiftedEulerLogConnectedThirdMultiplier ω
-  let c : ℝ := (ω * H) ^ 2 / 2 * Real.exp (ω * H)
+  let c : ℝ := (ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)
   have hH : 0 < H := hb.trans_le hbH
   have hgap : ∀ h ∈ Set.Icc b H, |M h - 1| ≤ c := by
     intro h hhmem
     have hh : 0 < h := hb.trans_le hhmem.1
     have hy : 0 ≤ ω * h := (mul_pos hω hh).le
     have hyH : ω * h ≤ ω * H := mul_le_mul_of_nonneg_left hhmem.2 hω.le
-    have hsq : (ω * h) ^ 2 / 2 ≤ (ω * H) ^ 2 / 2 := by
+    have hsq : (ω * h) ^ (2 : ℕ) / 2 ≤ (ω * H) ^ (2 : ℕ) / 2 := by
       have hs := pow_le_pow_left₀ hy hyH 2
       linarith
     have hexp : Real.exp (ω * h) ≤ Real.exp (ω * H) :=
@@ -251,11 +251,11 @@ theorem abs_positiveLogChordApprox_sub_literal_le_variation
 
 theorem adaptive_clock_algebra
     {H V : ℝ} (hH : 0 < H) (hV : 0 ≤ V) :
-    ((1 / (H ^ 2 * (V + 1)) * H) ^ 2) * V ≤ 1 / H ^ 2 := by
+    ((1 / (H ^ (2 : ℕ) * (V + 1)) * H) ^ (2 : ℕ)) * V ≤ 1 / H ^ (2 : ℕ) := by
   have hV1 : 0 < V + 1 := by linarith
-  have hden : 0 < H ^ 2 * (V + 1) ^ 2 := mul_pos (sq_pos_of_pos hH) (sq_pos_of_pos hV1)
-  rw [show ((1 / (H ^ 2 * (V + 1)) * H) ^ 2) * V =
-      V / (H ^ 2 * (V + 1) ^ 2) by
+  have hden : 0 < H ^ (2 : ℕ) * (V + 1) ^ (2 : ℕ) := mul_pos (sq_pos_of_pos hH) (sq_pos_of_pos hV1)
+  rw [show ((1 / (H ^ (2 : ℕ) * (V + 1)) * H) ^ (2 : ℕ)) * V =
+      V / (H ^ (2 : ℕ) * (V + 1) ^ (2 : ℕ)) by
         field_simp [hH.ne', hV1.ne']]
   apply (div_le_iff₀ hden).2
   field_simp [hH.ne']
@@ -264,7 +264,7 @@ theorem adaptive_clock_algebra
 def ccmFUSuzukiPositiveLogChordSourceAdaptiveClock (b H : ℝ) : ℝ :=
   let V := ccmGuinandWeilPrimePolarWeightedWindowVariation b H
     (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
-  1 / (H ^ 2 * (V + 1))
+  1 / (H ^ (2 : ℕ) * (V + 1))
 
 theorem abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) (hH1 : 1 ≤ H) :
@@ -272,7 +272,7 @@ theorem abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le
     |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-      Real.exp 1 / (2 * H ^ 2) := by
+      Real.exp 1 / (2 * H ^ (2 : ℕ)) := by
   dsimp only
   let V := ccmGuinandWeilPrimePolarWeightedWindowVariation b H
     (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)
@@ -280,7 +280,7 @@ theorem abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le
   have hH : 0 < H := hb.trans_le hbH
   have hV : 0 ≤ V :=
     ccmGuinandWeilPrimePolarWeightedWindowVariation_nonneg hbH
-  have hωdef : ω = 1 / (H ^ 2 * (V + 1)) := by rfl
+  have hωdef : ω = 1 / (H ^ (2 : ℕ) * (V + 1)) := by rfl
   have hω : 0 < ω := by rw [hωdef]; positivity
   have hωH : ω * H ≤ 1 := by
     rw [hωdef]
@@ -288,27 +288,27 @@ theorem abs_positiveLogChordSourceAdaptiveApprox_sub_literal_le
     have hden : 1 ≤ H * (V + 1) := by
       simpa only [one_mul] using
         mul_le_mul hH1 hV1 (by norm_num : (0 : ℝ) ≤ 1) hH.le
-    rw [show 1 / (H ^ 2 * (V + 1)) * H = 1 / (H * (V + 1)) by
+    rw [show 1 / (H ^ (2 : ℕ) * (V + 1)) * H = 1 / (H * (V + 1)) by
       field_simp [hH.ne']]
     exact (div_le_one (by positivity : 0 < H * (V + 1))).2 hden
   have hexp : Real.exp (ω * H) ≤ Real.exp 1 := Real.exp_le_exp.mpr hωH
-  have halg : (ω * H) ^ 2 * V ≤ 1 / H ^ 2 := by
+  have halg : (ω * H) ^ (2 : ℕ) * V ≤ 1 / H ^ (2 : ℕ) := by
     rw [hωdef]
     exact adaptive_clock_algebra hH hV
   have hraw := abs_positiveLogChordApprox_sub_literal_le_variation hω hb hbH
   change |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-      ((ω * H) ^ 2 / 2 * Real.exp (ω * H)) * V at hraw
+      ((ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)) * V at hraw
   calc
     |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-        ((ω * H) ^ 2 / 2 * Real.exp (ω * H)) * V := hraw
-    _ = (Real.exp (ω * H) / 2) * ((ω * H) ^ 2 * V) := by ring
-    _ ≤ (Real.exp 1 / 2) * (1 / H ^ 2) :=
+        ((ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)) * V := hraw
+    _ = (Real.exp (ω * H) / 2) * ((ω * H) ^ (2 : ℕ) * V) := by ring
+    _ ≤ (Real.exp 1 / 2) * (1 / H ^ (2 : ℕ)) :=
       mul_le_mul (by linarith) halg (by positivity) (by positivity)
-    _ = Real.exp 1 / (2 * H ^ 2) := by ring
+    _ = Real.exp 1 / (2 * H ^ (2 : ℕ)) := by ring
 
 theorem uniformlyBounded_sourceAdaptivePositiveLogChord_iff_literal
     {b : ℝ} (hb : 0 < b) :
@@ -332,9 +332,9 @@ theorem uniformlyBounded_sourceAdaptivePositiveLogChord_iff_literal
         (ccmGuinandWeilThirdGradeCesaroTriangularWeight H))
       (ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H
         (ccmFUSuzukiPositiveLogChordSourceAdaptiveClock b H))
-    have hrate : Real.exp 1 / (2 * H ^ 2) ≤ Real.exp 1 / 2 := by
+    have hrate : Real.exp 1 / (2 * H ^ (2 : ℕ)) ≤ Real.exp 1 / 2 := by
       have hH0 : 0 < H := lt_of_lt_of_le (by norm_num) hH1
-      have hHsq : 1 ≤ H ^ 2 := by nlinarith
+      have hHsq : 1 ≤ H ^ (2 : ℕ) := by nlinarith
       apply (div_le_div_iff_of_pos_left (Real.exp_pos 1) (by positivity) (by positivity)).2
       nlinarith
     rw [abs_sub_comm] at herr
@@ -352,9 +352,9 @@ theorem uniformlyBounded_sourceAdaptivePositiveLogChord_iff_literal
         (ccmFUSuzukiPositiveLogChordSourceAdaptiveClock b H))
       (ccmGuinandWeilPrimePolarWeightedWindow b H
         (ccmGuinandWeilThirdGradeCesaroTriangularWeight H))
-    have hrate : Real.exp 1 / (2 * H ^ 2) ≤ Real.exp 1 / 2 := by
+    have hrate : Real.exp 1 / (2 * H ^ (2 : ℕ)) ≤ Real.exp 1 / 2 := by
       have hH0 : 0 < H := lt_of_lt_of_le (by norm_num) hH1
-      have hHsq : 1 ≤ H ^ 2 := by nlinarith
+      have hHsq : 1 ≤ H ^ (2 : ℕ) := by nlinarith
       apply (div_le_div_iff_of_pos_left (Real.exp_pos 1) (by positivity) (by positivity)).2
       nlinarith
     linarith [htri]
@@ -395,7 +395,7 @@ def ccmFUSuzukiPositiveLogChordCofinalVariation (b : ℝ) (N : ℕ) : ℝ :=
 def ccmFUSuzukiPositiveLogChordAdaptiveClock (b : ℝ) (N : ℕ) : ℝ :=
   let H := ccmFUSuzukiPositiveLogChordCofinalWall b N
   let V := ccmFUSuzukiPositiveLogChordCofinalVariation b N
-  1 / (H ^ 2 * (V + 1))
+  1 / (H ^ (2 : ℕ) * (V + 1))
 
 theorem ccmFUSuzukiPositiveLogChordAdaptiveClock_pos
     {b : ℝ} (hb : 0 < b) (N : ℕ) :
@@ -409,7 +409,7 @@ theorem ccmFUSuzukiPositiveLogChordAdaptiveClock_pos
   have hH : 0 < H := hb.trans_le hbH
   have hV : 0 ≤ V := by
     exact ccmGuinandWeilPrimePolarWeightedWindowVariation_nonneg hbH
-  change 0 < 1 / (H ^ 2 * (V + 1))
+  change 0 < 1 / (H ^ (2 : ℕ) * (V + 1))
   positivity
 
 theorem abs_positiveLogChordAdaptiveCofinalApprox_sub_literal_le
@@ -419,7 +419,7 @@ theorem abs_positiveLogChordAdaptiveCofinalApprox_sub_literal_le
     |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-      Real.exp 1 / (2 * H ^ 2) := by
+      Real.exp 1 / (2 * H ^ (2 : ℕ)) := by
   dsimp only
   let H := ccmFUSuzukiPositiveLogChordCofinalWall b N
   let V := ccmFUSuzukiPositiveLogChordCofinalVariation b N
@@ -436,7 +436,7 @@ theorem abs_positiveLogChordAdaptiveCofinalApprox_sub_literal_le
   have hV : 0 ≤ V := by
     exact ccmGuinandWeilPrimePolarWeightedWindowVariation_nonneg hbH
   have hω : 0 < ω := ccmFUSuzukiPositiveLogChordAdaptiveClock_pos hb N
-  have hωdef : ω = 1 / (H ^ 2 * (V + 1)) := by
+  have hωdef : ω = 1 / (H ^ (2 : ℕ) * (V + 1)) := by
     rfl
   have hωH : ω * H ≤ 1 := by
     rw [hωdef]
@@ -444,27 +444,27 @@ theorem abs_positiveLogChordAdaptiveCofinalApprox_sub_literal_le
     have hden : 1 ≤ H * (V + 1) := by
       simpa only [one_mul] using
         mul_le_mul hH1 hV1 (by norm_num : (0 : ℝ) ≤ 1) hH.le
-    rw [show 1 / (H ^ 2 * (V + 1)) * H = 1 / (H * (V + 1)) by
+    rw [show 1 / (H ^ (2 : ℕ) * (V + 1)) * H = 1 / (H * (V + 1)) by
       field_simp [hH.ne']]
     exact (div_le_one (by positivity : 0 < H * (V + 1))).2 hden
   have hexp : Real.exp (ω * H) ≤ Real.exp 1 := Real.exp_le_exp.mpr hωH
-  have halg : (ω * H) ^ 2 * V ≤ 1 / H ^ 2 := by
+  have halg : (ω * H) ^ (2 : ℕ) * V ≤ 1 / H ^ (2 : ℕ) := by
     rw [hωdef]
     exact adaptive_clock_algebra hH hV
   have hraw := abs_positiveLogChordApprox_sub_literal_le_variation hω hb hbH
   change |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-      ((ω * H) ^ 2 / 2 * Real.exp (ω * H)) * V at hraw
+      ((ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)) * V at hraw
   calc
     |ccmFUSuzukiPositiveConnectedLogChordTriangularCompletedApprox b H ω -
         ccmGuinandWeilPrimePolarWeightedWindow b H
           (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤
-        ((ω * H) ^ 2 / 2 * Real.exp (ω * H)) * V := hraw
-    _ = (Real.exp (ω * H) / 2) * ((ω * H) ^ 2 * V) := by ring
-    _ ≤ (Real.exp 1 / 2) * (1 / H ^ 2) :=
+        ((ω * H) ^ (2 : ℕ) / 2 * Real.exp (ω * H)) * V := hraw
+    _ = (Real.exp (ω * H) / 2) * ((ω * H) ^ (2 : ℕ) * V) := by ring
+    _ ≤ (Real.exp 1 / 2) * (1 / H ^ (2 : ℕ)) :=
       mul_le_mul (by linarith) halg (by positivity) (by positivity)
-    _ = Real.exp 1 / (2 * H ^ 2) := by ring
+    _ = Real.exp 1 / (2 * H ^ (2 : ℕ)) := by ring
 
 theorem tendsto_ccmFUSuzukiPositiveLogChordCofinalWall (b : ℝ) :
     Tendsto (ccmFUSuzukiPositiveLogChordCofinalWall b) atTop atTop := by
@@ -484,9 +484,9 @@ theorem tendsto_ccmFUSuzukiPositiveLogChordAdaptiveClock
     tendsto_ccmFUSuzukiPositiveLogChordCofinalWall b
   have hinv : Tendsto (fun N => (H N)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp hHtop
-  have hinvSq : Tendsto (fun N => ((H N)⁻¹) ^ 2) atTop (𝓝 0) := by
+  have hinvSq : Tendsto (fun N => ((H N)⁻¹) ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa using hinv.pow 2
-  have honeDivSq : Tendsto (fun N => 1 / (H N) ^ 2) atTop (𝓝 0) := by
+  have honeDivSq : Tendsto (fun N => 1 / (H N) ^ (2 : ℕ)) atTop (𝓝 0) := by
     apply hinvSq.congr'
     exact Filter.Eventually.of_forall fun N => by
       simp only [one_div, inv_pow]
@@ -503,7 +503,7 @@ theorem tendsto_ccmFUSuzukiPositiveLogChordAdaptiveClock
   have hHN : 0 < H N := hb.trans_le hbH
   have hV : 0 ≤ V :=
     ccmGuinandWeilPrimePolarWeightedWindowVariation_nonneg hbH
-  change 1 / ((H N) ^ 2 * (V + 1)) ≤ 1 / (H N) ^ 2
+  change 1 / ((H N) ^ (2 : ℕ) * (V + 1)) ≤ 1 / (H N) ^ (2 : ℕ)
   apply one_div_le_one_div_of_le (sq_pos_of_pos hHN)
   nlinarith [mul_nonneg (sq_nonneg (H N)) hV]
 
@@ -521,11 +521,11 @@ theorem tendsto_positiveLogChordAdaptiveCofinalApprox_sub_literal
     tendsto_ccmFUSuzukiPositiveLogChordCofinalWall b
   have hinv : Tendsto (fun N => (H N)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp hHtop
-  have hrate : Tendsto (fun N => Real.exp 1 / (2 * (H N) ^ 2))
+  have hrate : Tendsto (fun N => Real.exp 1 / (2 * (H N) ^ (2 : ℕ)))
       atTop (𝓝 0) := by
-    have hsq : Tendsto (fun N => ((H N)⁻¹) ^ 2) atTop (𝓝 0) := by
+    have hsq : Tendsto (fun N => ((H N)⁻¹) ^ (2 : ℕ)) atTop (𝓝 0) := by
       simpa using hinv.pow 2
-    have hmul : Tendsto (fun N => (Real.exp 1 / 2) * ((H N)⁻¹) ^ 2)
+    have hmul : Tendsto (fun N => (Real.exp 1 / 2) * ((H N)⁻¹) ^ (2 : ℕ))
         atTop (𝓝 0) := by
       simpa using hsq.const_mul (Real.exp 1 / 2)
     apply hmul.congr'

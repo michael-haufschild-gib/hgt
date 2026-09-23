@@ -56,9 +56,9 @@ set_option backward.isDefEq.respectTransparency false
 theorem physicalCuspProfile_weak_equation (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2) (f : RadialCore) :
     (∫ t in Iio (0:ℝ), deriv (deriv f.field) t*physicalCuspProfile q r branch w a hw hd hwi hwr t)+
-      (physicalAngularParameter r^2-1/4)*(∫ t in Iio (0:ℝ),
-        f.field t*(angularWeight t^2*physicalCuspProfile q r branch w a hw hd hwi hwr t))-
-      w^2*(∫ t in Iio (0:ℝ), f.field t*physicalCuspProfile q r branch w a hw hd hwi hwr t) =
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*(∫ t in Iio (0:ℝ),
+        f.field t*(angularWeight t^(2 : ℕ)*physicalCuspProfile q r branch w a hw hd hwi hwr t))-
+      w^(2 : ℕ)*(∫ t in Iio (0:ℝ), f.field t*physicalCuspProfile q r branch w a hw hd hwi hwr t) =
       -(∫ t in Iio (0:ℝ), f.field t*continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t) := by
   have h := physicalCuspResponse_radial_equation q r branch w a hw hd hwi hwr f.conjugate
   have hp := (physicalCuspProfile_ae q r branch w a hw hd hwi hwr).symm

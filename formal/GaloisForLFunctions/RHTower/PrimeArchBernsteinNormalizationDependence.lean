@@ -12,7 +12,7 @@ For every uniform reciprocal-square norm bound `M` and every scale `R > 0`, the 
 of the normalized atom `z/R` is at most `1 + 2M/R`.  The full divisor envelope then bounds the
 degree-`n` Bernstein purity by
 
-`(absoluteMass * (1 + 2M/R)^n)^2`.
+`(absoluteMass * (1 + 2M/R)^n)^(2 : ℕ)`.
 
 Taking `R` sufficiently large makes this unconditional exponential ceiling arbitrarily close to
 one.  Thus a small open collar is not by itself an invariant measure of progress toward RH; only
@@ -136,7 +136,7 @@ theorem bernsteinCoefficientPurity_radiusNormalized_le_largeScale
     (n : ℕ) :
     bernsteinCoefficientPurity
         (radiusNormalizedMoment R normalizedPrimeArchMoment) n ≤
-      (xiReciprocalSquareAbsoluteMass * (1 + 2 * M / R) ^ n) ^ 2 := by
+      (xiReciprocalSquareAbsoluteMass * (1 + 2 * M / R) ^ n) ^ (2 : ℕ) := by
   exact (bernsteinCoefficientPurity_le_l1_sq _ _).trans
     ((sq_le_sq₀
       (Finset.sum_nonneg fun _ _ => abs_nonneg _)
@@ -172,7 +172,7 @@ theorem exists_radius_bernsteinCoefficientPurity_le_arbitrarilyNarrow
     ∃ R : ℝ, 0 < R ∧ ∀ n : ℕ,
       bernsteinCoefficientPurity
           (radiusNormalizedMoment R normalizedPrimeArchMoment) n ≤
-        (xiReciprocalSquareAbsoluteMass * (1 + ε) ^ n) ^ 2 := by
+        (xiReciprocalSquareAbsoluteMass * (1 + ε) ^ n) ^ (2 : ℕ) := by
   obtain ⟨R, hR, hbase⟩ := exists_largeScale_affineAmplitude_lt hM0 hε
   refine ⟨R, hR, fun n => ?_⟩
   have hraw :=

@@ -240,7 +240,7 @@ theorem suzukiReporterSecantFarBlockEnergy_nonpos
           suzukiReporterSecantCauchyGram (p i) (2 * p i + r i j) := by ring
     _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hc hd) hg
 
-/-- Natural aperture pair lying below the multiplicative hyperbola `N*j = k^2`. -/
+/-- Natural aperture pair lying below the multiplicative hyperbola `N*j = k^(2 : ℕ)`. -/
 structure SuzukiNaturalApertureHyperbolaPair where
   aperture : ℕ
   shallowIndex : ℕ
@@ -363,7 +363,7 @@ def suzukiNaturalApertureCauchyEnergy (N : ℕ) : ℝ :=
     suzukiNaturalApertureCauchyPairTerm N ij
 
 /-- The only source region that can contribute positive pair energy:
-`max(j,k)^2 < N * min(j,k)`. -/
+`max(j,k)^(2 : ℕ) < N * min(j,k)`. -/
 def suzukiNaturalApertureNearHyperbolaCauchyEnergy (N : ℕ) : ℝ :=
   ∑ ij ∈ (suzukiNaturalAperturePairSet N).filter
       (fun ij => ¬ suzukiNaturalApertureBelowHyperbola N ij),
@@ -479,7 +479,7 @@ theorem suzukiNaturalApertureFarHyperbolaCauchyEnergy_nonpos (N : ℕ) :
     (mul_nonpos_of_nonneg_of_nonpos hwi hgram) hwj
 
 /-- **Hyperbola localization of the literal prime energy.** The full Mangoldt Cauchy-secant
-energy is bounded above by its restriction to `max(j,k)^2 < N * min(j,k)`; all deleted terms
+energy is bounded above by its restriction to `max(j,k)^(2 : ℕ) < N * min(j,k)`; all deleted terms
 have the favorable sign. -/
 theorem suzukiNaturalApertureCauchyEnergy_le_nearHyperbola (N : ℕ) :
     suzukiNaturalApertureCauchyEnergy N ≤

@@ -39,10 +39,10 @@ theorem ladderDefectSum_mono {L B₀ B₁ : ℕ} {Q η : ℝ} (hQ1 : 1 < Q) (hη
     exact_mod_cast hfl1
   have hsum : ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
         * ((1 + ((B₀ : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-          + ((B₀ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2)
+          + ((B₀ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))
       ≤ ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
         * ((1 + ((B₁ : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-          + ((B₁ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+          + ((B₁ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
     refine Finset.sum_le_sum fun j _ => ?_
     have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
     have hfac : (0 : ℝ) ≤ Q * (1 + η) ^ j * η + 1 := by positivity
@@ -50,7 +50,7 @@ theorem ladderDefectSum_mono {L B₀ B₁ : ℕ} {Q η : ℝ} (hQ1 : 1 < Q) (hη
     gcongr
   have hsum0 : (0 : ℝ) ≤ ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
       * ((1 + ((B₀ : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-        + ((B₀ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+        + ((B₀ : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
     refine Finset.sum_nonneg fun j _ => ?_
     have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
     positivity

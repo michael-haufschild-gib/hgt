@@ -80,15 +80,15 @@ correlation for every `q > λ²`. -/
 theorem logApertureDilationCorrelation_eq_zero
     {lambda q : ℝ} {f : ℝ → ℂ}
     (hlambda : 1 < lambda)
-    (hq : lambda ^ 2 < q)
+    (hq : lambda ^ (2 : ℕ) < q)
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda)) :
     ∫ x, (starRingEnd ℂ) (f x) * f (x + Real.log q) = 0 := by
   apply intervalShiftCorrelation_eq_zero hf
   have hlambda_pos : 0 < lambda := lt_trans (by norm_num) hlambda
-  have hlambda_sq_pos : 0 < lambda ^ 2 := sq_pos_of_pos hlambda_pos
+  have hlambda_sq_pos : 0 < lambda ^ (2 : ℕ) := sq_pos_of_pos hlambda_pos
   have hqpos : 0 < q := lt_trans hlambda_sq_pos hq
   calc
-    2 * Real.log lambda = Real.log (lambda ^ 2) := by
+    2 * Real.log lambda = Real.log (lambda ^ (2 : ℕ)) := by
       rw [Real.log_pow]
       norm_num
     _ < Real.log q := Real.strictMonoOn_log
@@ -99,15 +99,15 @@ with `logApertureDilationCorrelation_eq_zero`, this covers both shifts in an eve
 theorem logApertureReverseDilationCorrelation_eq_zero
     {lambda q : ℝ} {f : ℝ → ℂ}
     (hlambda : 1 < lambda)
-    (hq : lambda ^ 2 < q)
+    (hq : lambda ^ (2 : ℕ) < q)
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda)) :
     ∫ x, (starRingEnd ℂ) (f x) * f (x - Real.log q) = 0 := by
   have hlambda_pos : 0 < lambda := lt_trans (by norm_num) hlambda
-  have hlambda_sq_pos : 0 < lambda ^ 2 := sq_pos_of_pos hlambda_pos
+  have hlambda_sq_pos : 0 < lambda ^ (2 : ℕ) := sq_pos_of_pos hlambda_pos
   have hqpos : 0 < q := lt_trans hlambda_sq_pos hq
   have hlog : 2 * Real.log lambda < Real.log q := by
     calc
-      2 * Real.log lambda = Real.log (lambda ^ 2) := by
+      2 * Real.log lambda = Real.log (lambda ^ (2 : ℕ)) := by
         rw [Real.log_pow]
         norm_num
       _ < Real.log q := Real.strictMonoOn_log

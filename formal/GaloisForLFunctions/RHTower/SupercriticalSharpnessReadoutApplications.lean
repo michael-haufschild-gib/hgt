@@ -30,8 +30,8 @@ theorem inner_simplexPrimalReader_dual (i : ι) :
 /-- Concrete coefficient-one uncertainty product for the simplex primal reader and all dual
 channels. -/
 theorem simplexPrimalReader_dual_energy_product_ge_card_sq :
-    ((Fintype.card ι : ℝ) ^ 2) ≤
-      ‖simplexPrimalReader ι‖ ^ 2 * ‖∑ i : ι, dual ι i‖ ^ 2 := by
+    ((Fintype.card ι : ℝ) ^ (2 : ℕ)) ≤
+      ‖simplexPrimalReader ι‖ ^ (2 : ℕ) * ‖∑ i : ι, dual ι i‖ ^ (2 : ℕ) := by
   simpa using
     (coefficientOneHilbertReadout_energy_product_ge_card_sq
       (Finset.univ : Finset ι) (simplexPrimalReader ι) (dual ι)
@@ -40,22 +40,22 @@ theorem simplexPrimalReader_dual_energy_product_ge_card_sq :
 /-- Large-branch midpoint alternative: either primal-reader energy or summed-dual energy reaches
 the channel count. -/
 theorem card_le_simplexPrimalReader_energy_or_card_le_dualSum_energy :
-    (Fintype.card ι : ℝ) ≤ ‖simplexPrimalReader ι‖ ^ 2 ∨
-      (Fintype.card ι : ℝ) ≤ ‖∑ i : ι, dual ι i‖ ^ 2 := by
+    (Fintype.card ι : ℝ) ≤ ‖simplexPrimalReader ι‖ ^ (2 : ℕ) ∨
+      (Fintype.card ι : ℝ) ≤ ‖∑ i : ι, dual ι i‖ ^ (2 : ℕ) := by
   let c : ℝ := Fintype.card ι
-  let a : ℝ := ‖simplexPrimalReader ι‖ ^ 2
-  let b : ℝ := ‖∑ i : ι, dual ι i‖ ^ 2
+  let a : ℝ := ‖simplexPrimalReader ι‖ ^ (2 : ℕ)
+  let b : ℝ := ‖∑ i : ι, dual ι i‖ ^ (2 : ℕ)
   have hc : 0 < c := by
     dsimp [c]
     exact_mod_cast card_pos ι
   have ha0 : 0 ≤ a := by exact sq_nonneg _
   have hb0 : 0 ≤ b := by exact sq_nonneg _
-  have hproduct : c ^ 2 ≤ a * b := by
+  have hproduct : c ^ (2 : ℕ) ≤ a * b := by
     exact simplexPrimalReader_dual_energy_product_ge_card_sq ι
   change c ≤ a ∨ c ≤ b
   by_contra h
   push Not at h
-  have hablt : a * b < c ^ 2 := by
+  have hablt : a * b < c ^ (2 : ℕ) := by
     by_cases hbzero : b = 0
     · rw [hbzero, mul_zero]
       positivity
@@ -63,7 +63,7 @@ theorem card_le_simplexPrimalReader_energy_or_card_le_dualSum_energy :
       calc
         a * b < c * b := mul_lt_mul_of_pos_right h.1 hbpos
         _ < c * c := mul_lt_mul_of_pos_left h.2 hc
-        _ = c ^ 2 := by ring
+        _ = c ^ (2 : ℕ) := by ring
   exact (not_lt_of_ge hproduct) hablt
 
 end RHTower

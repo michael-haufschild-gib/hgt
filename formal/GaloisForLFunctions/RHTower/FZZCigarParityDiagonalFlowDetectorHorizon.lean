@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.FZZCigarParityDiagonalRieszStabilization
 # Finite reflection-detector horizon for stabilized FZZ diagonal flow
 
 The source-gap stabilized FZZ generator has a rank-one polynomial law.  Its exact exponential flow
-pulls unit diagonal energy back to the Hermitian coefficient parabola `(k^2,-k,0,1)`.  This module
+pulls unit diagonal energy back to the Hermitian coefficient parabola `(k^(2 : ℕ),-k,0,1)`.  This module
 proves that the parabola lies in the sharp reflection-detector cone exactly through one finite,
 source-defined time.  The lightlike boundary remains separating; every later time is phase-blind.
 -/
@@ -93,7 +93,7 @@ theorem fzzCigarParityDilatedSecondDiagonalStabilizedFlow_pullback
     fzzCigarParityHermitianQuadraticObservable 0 0 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t u) =
       fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2)
+        (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ))
         (-fzzCigarParityDilatedSecondDiagonalFlowShear beta t) 0 1 u := by
   rcases u with ⟨u₁, u₂⟩
   simp [fzzCigarParityDilatedSecondDiagonalStabilizedFlow,
@@ -105,13 +105,13 @@ theorem fzzCigarParityDilatedSecondDiagonalStabilizedFlow_pullback
 def FZZCigarParityDilatedSecondDiagonalFlowUniversallySeparating
     (beta t : ℝ) : Prop :=
   FZZCigarParityHermitianUniversalRadialReflectionSeparating
-    (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2)
+    (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ))
     (-fzzCigarParityDilatedSecondDiagonalFlowShear beta t) 0 1
 
 theorem fzzCigarParityDilatedSecondDiagonalFlowUniversallySeparating_iff
     (beta t : ℝ) :
     FZZCigarParityDilatedSecondDiagonalFlowUniversallySeparating beta t ↔
-      fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2 ≤ 1 := by
+      fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ) ≤ 1 := by
   rw [FZZCigarParityDilatedSecondDiagonalFlowUniversallySeparating,
     fzzCigarParityHermitianUniversalRadialReflectionSeparating_iff]
   simp
@@ -209,8 +209,8 @@ theorem fzzCigarParityDilatedSecondDiagonalFlowUniversallySeparating_iff_time_le
   rw [fzzCigarParityDilatedSecondDiagonalFlowUniversallySeparating_iff]
   have hk := fzzCigarParityDilatedSecondDiagonalFlowShear_nonneg hbeta ht
   calc
-    fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2 ≤ 1 ↔
-        fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2 ≤ 1 ^ 2 := by
+    fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ) ≤ 1 ↔
+        fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ) ≤ 1 ^ (2 : ℕ) := by
           norm_num
     _ ↔ fzzCigarParityDilatedSecondDiagonalFlowShear beta t ≤ 1 :=
       sq_le_sq₀ hk zero_le_one
@@ -257,10 +257,10 @@ theorem fzzCigarParityDilatedSecondDiagonalStabilizedFlow_mellinReading_eq_refle
       hbeta ht0).mpr ht
   have hcone :=
     (fzzCigarParityHermitianUniversalRadialReflectionSeparating_iff
-      (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2)
+      (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ))
       (-fzzCigarParityDilatedSecondDiagonalFlowShear beta t) 0 1).mp hsep
   exact fzzCigarParityMellinCharacterHermitianReading_eq_reflection_iff
-    (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2)
+    (fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ))
     (-fzzCigarParityDilatedSecondDiagonalFlowShear beta t) 0 1
     hcone.1 hcone.2 rho
 

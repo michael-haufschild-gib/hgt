@@ -41,10 +41,10 @@ theorem norm_tsum_mul_smoothWeight_le
     (hWsup : ∀ y : ℝ, ‖perronKernel σ N H y‖ ≤ Wsup) :
     (2 * Real.pi) * ‖∑' n : ℕ, f n * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
       Wsup * ((1 + 1 / (σ - 1)) *
-            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
             ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-              (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+              (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z))))
         + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
             ∫ y in (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖ := by
   classical
@@ -121,10 +121,10 @@ theorem norm_tsum_mul_smoothWeight_le
   have hmean := integral_norm_tsum_twistedSummand_le hf1 hmul hbdd hσ hz2 hδ hWz hT
   have hWsupmul : Wsup * ∫ y in Set.Icc (-T) T, ‖F y‖ ≤
       Wsup * ((1 + 1 / (σ - 1)) *
-            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
             ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-              (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z)))) :=
+              (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z)))) :=
     mul_le_mul_of_nonneg_left hmean hWsup0
   linarith [hnorm, hsplit, hrange, htail, hWsupmul]
 
@@ -152,10 +152,10 @@ theorem norm_tsum_mul_smoothWeight_le_explicit
         ‖∑' n : ℕ, f n *
           ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
       ((N + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
-            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+            Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
             ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-              (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+              (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z))))
         + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
             ∫ y in (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖ :=
   norm_tsum_mul_smoothWeight_le hf1 hmul hbdd hf0 hσ hz2 hδ hWz hN hH hT
@@ -167,7 +167,7 @@ theorem norm_tsum_mul_smoothWeight_le_explicit
 /-- The Cauchy tail: outside `[-T, T]` the reciprocal-quadratic majorant integrates to
 `π − 2 arctan T`. -/
 theorem integral_compl_Icc_inv_one_add_sq_le {T : ℝ} (hT : 0 ≤ T) :
-    (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ 2)⁻¹) ≤ Real.pi - 2 * Real.arctan T := by
+    (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ (2 : ℕ))⁻¹) ≤ Real.pi - 2 * Real.arctan T := by
   have hsub : (Set.Icc (-T) T)ᶜ ⊆ Set.Iic (-T) ∪ Set.Ioi T := by
     intro y hy
     rcases lt_or_ge y (-T) with h | h
@@ -181,12 +181,12 @@ theorem integral_compl_Icc_inv_one_add_sq_le {T : ℝ} (hT : 0 ≤ T) :
     have h1 : a ≤ -T := ha
     have h2 : T < a := hb
     linarith
-  have hunion : (∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ 2)⁻¹)
-      = (∫ y in Set.Iic (-T), (1 + y ^ 2)⁻¹) + ∫ y in Set.Ioi T, (1 + y ^ 2)⁻¹ :=
+  have hunion : (∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ (2 : ℕ))⁻¹)
+      = (∫ y in Set.Iic (-T), (1 + y ^ (2 : ℕ))⁻¹) + ∫ y in Set.Ioi T, (1 + y ^ (2 : ℕ))⁻¹ :=
     setIntegral_union hdisj measurableSet_Ioi
       integrable_inv_one_add_sq.integrableOn integrable_inv_one_add_sq.integrableOn
-  have hmono : (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ 2)⁻¹)
-      ≤ ∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ 2)⁻¹ := by
+  have hmono : (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ (2 : ℕ))⁻¹)
+      ≤ ∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ (2 : ℕ))⁻¹ := by
     refine setIntegral_mono_set integrable_inv_one_add_sq.integrableOn ?_ hsub.eventuallyLE
     filter_upwards with y using by positivity
   refine le_trans hmono (le_of_eq ?_)
@@ -203,15 +203,15 @@ theorem norm_tsum_mul_smoothWeight_le_of_kernelBound
     {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz2 : 2 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
     (hWz : 0 < logSqWeight z) {N H : ℝ} (hN : 0 < N) (hH : 0 < H)
     {T : ℝ} (hT : 0 ≤ T) {C : ℝ} (hC0 : 0 ≤ C)
-    (hCbound : ∀ y : ℝ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ 2)⁻¹) :
+    (hCbound : ∀ y : ℝ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹) :
       (2 * Real.pi) *
           ‖∑' n : ℕ, f n *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
         ((N + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
-              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
             + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
               ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-                (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+                (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z))))
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
               (C * (Real.pi - 2 * Real.arctan T)) := by
   have htriv0 : (0 : ℝ) ≤ (1 + 1 / (σ - 1)) * Real.exp (7 / 2) := by
@@ -221,11 +221,11 @@ theorem norm_tsum_mul_smoothWeight_le_of_kernelBound
     verticalIntegrable_mellin_smoothWeight (σ := σ) hN hH (by linarith)
   have htail : (∫ y in (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖)
       ≤ C * (Real.pi - 2 * Real.arctan T) := by
-    have hb : ∀ y ∈ (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ 2)⁻¹ :=
+    have hb : ∀ y ∈ (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹ :=
       fun y _ => hCbound y
     have hint1 : IntegrableOn (fun y : ℝ => ‖perronKernel σ N H y‖) (Set.Icc (-T) T)ᶜ :=
       hWint.norm.integrableOn
-    have hint2 : IntegrableOn (fun y : ℝ => C * (1 + y ^ 2)⁻¹) (Set.Icc (-T) T)ᶜ :=
+    have hint2 : IntegrableOn (fun y : ℝ => C * (1 + y ^ (2 : ℕ))⁻¹) (Set.Icc (-T) T)ᶜ :=
       (integrable_inv_one_add_sq.const_mul C).integrableOn
     refine le_trans (setIntegral_mono_on hint1 hint2 measurableSet_Icc.compl hb) ?_
     rw [integral_const_mul]
@@ -250,10 +250,10 @@ theorem exists_norm_tsum_mul_smoothWeight_le
           ‖∑' n : ℕ, f n *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
         ((N + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
-              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
             + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
               ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-                (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+                (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z))))
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
               (C * (Real.pi - 2 * Real.arctan T)) := by
   obtain ⟨C, hC0, hCbound⟩ :=

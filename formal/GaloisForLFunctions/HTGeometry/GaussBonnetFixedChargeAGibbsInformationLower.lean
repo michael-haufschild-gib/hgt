@@ -6,18 +6,18 @@ noncomputable section
 
 private theorem square_root_difference_lower (x y : ℝ)
     (hx : 0 ≤ x) (hy : 0 ≤ y) (hx1 : x ≤ 1) (hy1 : y ≤ 1) :
-    (x - y) ^ 2 ≤ 4 * (Real.sqrt x - Real.sqrt y) ^ 2 := by
+    (x - y) ^ (2 : ℕ) ≤ 4 * (Real.sqrt x - Real.sqrt y) ^ (2 : ℕ) := by
   have hxs := Real.sq_sqrt hx
   have hys := Real.sq_sqrt hy
   have hxp := Real.sqrt_nonneg x
   have hyp := Real.sqrt_nonneg y
   have hxle : Real.sqrt x ≤ 1 := by nlinarith
   have hyle : Real.sqrt y ≤ 1 := by nlinarith
-  have hsum : (Real.sqrt x + Real.sqrt y) ^ 2 ≤ 4 := by nlinarith
+  have hsum : (Real.sqrt x + Real.sqrt y) ^ (2 : ℕ) ≤ 4 := by nlinarith
   calc
-    (x - y) ^ 2 = ((Real.sqrt x) ^ 2 - (Real.sqrt y) ^ 2) ^ 2 := by rw [hxs, hys]
-    _ = (Real.sqrt x - Real.sqrt y) ^ 2 * (Real.sqrt x + Real.sqrt y) ^ 2 := by ring
-    _ ≤ (Real.sqrt x - Real.sqrt y) ^ 2 * 4 :=
+    (x - y) ^ (2 : ℕ) = ((Real.sqrt x) ^ (2 : ℕ) - (Real.sqrt y) ^ (2 : ℕ)) ^ (2 : ℕ) := by rw [hxs, hys]
+    _ = (Real.sqrt x - Real.sqrt y) ^ (2 : ℕ) * (Real.sqrt x + Real.sqrt y) ^ (2 : ℕ) := by ring
+    _ ≤ (Real.sqrt x - Real.sqrt y) ^ (2 : ℕ) * 4 :=
       mul_le_mul_of_nonneg_left hsum (sq_nonneg _)
     _ = _ := by ring
 
@@ -36,7 +36,7 @@ theorem egbFixedChargeAGibbsCollisionExcess_hellinger_lower (n m : ℕ) (β : �
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionExcess n m β E ≤
       4 * finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 := by
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) := by
   have hu0 : 0 ≤ ((2 : ℝ) ^ (n + 3))⁻¹ := by positivity
   have hu1 : ((2 : ℝ) ^ (n + 3))⁻¹ ≤ 1 := by
     have hn : 1 ≤ (2 : ℝ) ^ (n + 3) := one_le_pow₀ (by norm_num)

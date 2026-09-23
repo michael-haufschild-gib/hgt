@@ -70,8 +70,8 @@ theorem egbFixedChargeAInteriorRadius_linear_critical_limit (w φ ψ : ℝ) :
     ((egbFixedChargeAMeanRadius_critical_limit w φ).mul (tendsto_const_nhds (x := sin ψ)))
 
 theorem egbFixedChargeAInteriorRadius_square_gap_critical_limit (w φ ψ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAInteriorRadius w φ τ ψ ^ 2 - egbFixedChargeACriticalRadius w φ ^ 2) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (2 * egbFixedChargeACriticalRadius w φ ^ 2 * sin ψ)) := by
+    Tendsto (fun τ => (egbFixedChargeAInteriorRadius w φ τ ψ ^ (2 : ℕ) - egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      atBot (𝓝 (2 * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * sin ψ)) := by
   have h := (egbFixedChargeAInteriorRadius_linear_critical_limit w φ ψ).mul
     ((egbFixedChargeAInteriorRadius_critical_limit w φ ψ).add (tendsto_const_nhds (x := egbFixedChargeACriticalRadius w φ)))
   convert h using 1

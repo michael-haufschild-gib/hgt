@@ -56,8 +56,8 @@ theorem rawScatteringFourthCoefficient_offdiagonal (q : SchwartzMap ℝ ℂ) :
 
 /-- Exact reflection expansion through fifth order, with the cubic obstruction evaluated. -/
 theorem rawReflection_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) :
-    rawScatteringMatrix q k 1 0 = (k : ℂ)^3*(2*compatibilityMoment q)+
-      (k : ℂ)^5*rawScatteringFifthRemainder q k 1 0 := by
+    rawScatteringMatrix q k 1 0 = (k : ℂ)^(3 : ℕ)*(2*compatibilityMoment q)+
+      (k : ℂ)^(5 : ℕ)*rawScatteringFifthRemainder q k 1 0 := by
   have hh := congrArg (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 1 0) (rawScatteringMatrix_fifth_factor q k)
   simpa only [Matrix.add_apply,Matrix.smul_apply,Matrix.one_apply_ne (by omega : (1 : Fin 2) ≠ 0),
     rawScatteringQuadraticCoefficient_lower,rawScatteringCubicCoefficient_lower,
@@ -65,8 +65,8 @@ theorem rawReflection_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) :
 
 /-- The reverse channel has the opposite cubic obstruction and its own controlled fifth remainder. -/
 theorem rawReverseReflection_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) :
-    rawScatteringMatrix q k 0 1 = (k : ℂ)^3*(-2*compatibilityMoment q)+
-      (k : ℂ)^5*rawScatteringFifthRemainder q k 0 1 := by
+    rawScatteringMatrix q k 0 1 = (k : ℂ)^(3 : ℕ)*(-2*compatibilityMoment q)+
+      (k : ℂ)^(5 : ℕ)*rawScatteringFifthRemainder q k 0 1 := by
   have hh := congrArg (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 0 1) (rawScatteringMatrix_fifth_factor q k)
   simpa only [Matrix.add_apply,Matrix.smul_apply,Matrix.one_apply_ne (by omega : (0 : Fin 2) ≠ 1),
     rawScatteringQuadraticCoefficient_upper,rawScatteringCubicCoefficient_upper,

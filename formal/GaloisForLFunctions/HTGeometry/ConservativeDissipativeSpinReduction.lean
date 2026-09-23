@@ -21,15 +21,15 @@ noncomputable section
 
 /-- Exact reduced population field with one retained squared-radius invariant. -/
 def spinReducedField (a q : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ((-a ^ 2 * (q - (Matrix.trace (ρ * QuantumAlg.pauliZ)).re ^ 2) / 2 : ℝ) : ℂ) • QuantumAlg.pauliZ
+  ((-a ^ (2 : ℕ) * (q - (Matrix.trace (ρ * QuantumAlg.pauliZ)).re ^ (2 : ℕ)) / 2 : ℝ) : ℂ) • QuantumAlg.pauliZ
 
 /-- One scalar invariant closes the measured field for every real spin, not only pure states. -/
 theorem spinZPinch_field_reduced (a : ℝ) (m : EuclideanSpace ℝ (Fin 3)) :
     spinZPinch (spinDensityField a (spinMatrix m)) =
-      spinReducedField a (‖m‖ ^ 2) (spinZPinch (spinMatrix m)) := by
+      spinReducedField a (‖m‖ ^ (2 : ℕ)) (spinZPinch (spinMatrix m)) := by
   rw [spinZPinch_field, spinReducedField, spinZPinch_expectation_Z, spinMatrix_expectation_Z]
   have h := spinTorqueEnergy_add_latitude_sq m
-  have he : spinTorqueEnergy m = ‖m‖ ^ 2 - m 2 ^ 2 := by linarith
+  have he : spinTorqueEnergy m = ‖m‖ ^ (2 : ℕ) - m 2 ^ (2 : ℕ) := by linarith
   rw [he]
 
 /-- The pure-state Riccati equation is the unit-radius member of the exact invariant closure. -/
@@ -38,7 +38,7 @@ theorem spinReducedField_one (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) :
 
 /-- The retained squared radius is precisely twice quantum purity minus one. -/
 theorem spinMixedDensity_radius_purity (a u : ℝ) (z : ℂ) (t : ℝ) :
-    spinMixRadius u ^ 2 = 2 * (Matrix.trace (spinMixedDensity a u z t ^ 2)).re - 1 := by
+    spinMixRadius u ^ (2 : ℕ) = 2 * (Matrix.trace (spinMixedDensity a u z t ^ (2 : ℕ))).re - 1 := by
   rw [spinMixedDensity_trace_pow]
   simp only [pow_two, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
     Complex.ofReal_im, mul_zero, sub_zero]
@@ -48,7 +48,7 @@ theorem spinMixedDensity_radius_purity (a u : ℝ) (z : ℂ) (t : ℝ) :
 /-- Measured mixed trajectories solve the augmented autonomous equation with their fixed invariant. -/
 theorem hasDerivAt_spinZPinchedMixedDensity (a u : ℝ) (z : ℂ) (t : ℝ) :
     HasDerivAt (fun v => spinZPinch (spinMixedDensity a u z v))
-      (spinReducedField a (spinMixRadius u ^ 2) (spinZPinch (spinMixedDensity a u z t))) t := by
+      (spinReducedField a (spinMixRadius u ^ (2 : ℕ)) (spinZPinch (spinMixedDensity a u z t))) t := by
   have h := hasDerivAt_spinMixedDensity a u z t
   have hp := ((h.const_mul spinZCutoff).mul_const spinZCutoff).add
     ((h.const_mul (1 - spinZCutoff)).mul_const (1 - spinZCutoff))
@@ -60,7 +60,7 @@ theorem hasDerivAt_spinZPinchedMixedDensity (a u : ℝ) (z : ℂ) (t : ℝ) :
 /-- The augmented scalar can be read once from the initial full state's purity. -/
 theorem hasDerivAt_spinZPinchedMixedDensity_initialPurity (a u : ℝ) (z : ℂ) (t : ℝ) :
     HasDerivAt (fun v => spinZPinch (spinMixedDensity a u z v))
-      (spinReducedField a (2 * (Matrix.trace (spinMixedDensity a u z 0 ^ 2)).re - 1)
+      (spinReducedField a (2 * (Matrix.trace (spinMixedDensity a u z 0 ^ (2 : ℕ))).re - 1)
         (spinZPinch (spinMixedDensity a u z t))) t := by
   rw [← spinMixedDensity_radius_purity a u z 0]
   exact hasDerivAt_spinZPinchedMixedDensity a u z t

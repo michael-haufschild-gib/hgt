@@ -33,15 +33,15 @@ theorem jetSubstitution_jetRatio_two_mul (R : RatFunc C) (hR : substitutionDeriv
   rw [substitutionShiftRatio_two] at h2
   have hN := jetSubstitution_jetRatio R hR N
   have hsplit : substitutionDeriv R ^ (N + 2)
-      = substitutionDeriv R ^ 2 * substitutionDeriv R ^ N := by
+      = substitutionDeriv R ^ (2 : ℕ) * substitutionDeriv R ^ N := by
     rw [← pow_add]
     congr 1
     omega
   rw [map_mul, hsplit]
-  calc substitutionDeriv R ^ 2 * substitutionDeriv R ^ N
+  calc substitutionDeriv R ^ (2 : ℕ) * substitutionDeriv R ^ N
         * (jetSubstitution R hR (jetRatio 2 : JetField C Unit)
           * jetSubstitution R hR (jetRatio N : JetField C Unit))
-      = (substitutionDeriv R ^ 2 * jetSubstitution R hR (jetRatio 2 : JetField C Unit))
+      = (substitutionDeriv R ^ (2 : ℕ) * jetSubstitution R hR (jetRatio 2 : JetField C Unit))
         * (substitutionDeriv R ^ N
           * jetSubstitution R hR (jetRatio N : JetField C Unit)) := by ring
     _ = _ := by rw [h2, hN]

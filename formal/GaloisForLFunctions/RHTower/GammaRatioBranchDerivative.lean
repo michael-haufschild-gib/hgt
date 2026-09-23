@@ -70,7 +70,7 @@ theorem hasDerivAt_gammaRatio {z : ℂ} (hz : z ∈ imStrip (-1) 1) :
 /-- **The branch has half the logarithmic derivative.** -/
 theorem hasDerivAt_gammaRatioSqrt {E : ℂ → ℂ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {z : ℂ} (hz : z ∈ imStrip (-1) 1) :
     HasDerivAt E
@@ -80,11 +80,11 @@ theorem hasDerivAt_gammaRatioSqrt {E : ℂ → ℂ}
   have hnhds : imStrip (-1 : ℝ) 1 ∈ nhds z := hopen.mem_nhds hz
   have hEat : DifferentiableAt ℂ E z :=
     (hEdiff.differentiableAt hnhds)
-  have hsq : HasDerivAt (fun w => E w ^ 2) (2 * E z * deriv E z) z := by
+  have hsq : HasDerivAt (fun w => E w ^ (2 : ℕ)) (2 * E z * deriv E z) z := by
     have h := (hEat.hasDerivAt.pow 2)
     refine h.congr_deriv ?_
     ring
-  have hcong : (fun w => E w ^ 2) =ᶠ[nhds z] gammaRatio := by
+  have hcong : (fun w => E w ^ (2 : ℕ)) =ᶠ[nhds z] gammaRatio := by
     filter_upwards [hnhds] with w hw
     exact hE w hw
   have hR := hsq.congr_of_eventuallyEq hcong.symm
@@ -93,7 +93,7 @@ theorem hasDerivAt_gammaRatioSqrt {E : ℂ → ℂ}
       = gammaRatio z * (Complex.I *
         (Complex.digamma (1 + Complex.I * z) + Complex.digamma (1 - Complex.I * z))) :=
     hR.unique hR2
-  have hgz : gammaRatio z = E z ^ 2 := (hE z hz).symm
+  have hgz : gammaRatio z = E z ^ (2 : ℕ) := (hE z hz).symm
   have hEz : E z ≠ 0 := hEne z hz
   have hval : deriv E z
       = E z * (Complex.I / 2 *

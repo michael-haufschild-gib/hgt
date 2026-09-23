@@ -14,7 +14,7 @@ open Complex Filter Topology intervalIntegral
 noncomputable section
 
 def verticalCauchyKernel (σ t x : ℝ) : ℝ :=
-  t / ((σ + x) ^ 2 + t ^ 2)
+  t / ((σ + x) ^ (2 : ℕ) + t ^ (2 : ℕ))
 
 lemma verticalCauchyKernel_nonneg {σ t x : ℝ} (ht : 0 < t) :
     0 ≤ verticalCauchyKernel σ t x := by
@@ -29,7 +29,7 @@ lemma verticalCauchyKernel_antitoneOn {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t)
   unfold verticalCauchyKernel
   have hx0 : 0 ≤ σ + x := by linarith
   have hy0 : 0 ≤ σ + y := by linarith
-  have hsquare : (σ + x) ^ 2 ≤ (σ + y) ^ 2 := by nlinarith
+  have hsquare : (σ + x) ^ (2 : ℕ) ≤ (σ + y) ^ (2 : ℕ) := by nlinarith
   gcongr
 
 theorem integral_verticalCauchyKernel {σ t a b : ℝ} (ht : 0 < t) :

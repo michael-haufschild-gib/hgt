@@ -142,7 +142,7 @@ theorem abs_turan_sub_approx_le {t : ℝ} {a0 a1 a2 ε B : ℝ} (hε : 0 ≤ ε)
     (h1 : |xiGaussianHeatMomentReal 1 t - a1| ≤ ε)
     (h2 : |xiGaussianHeatMomentReal 2 t - a2| ≤ ε)
     (hb0 : |a0| ≤ B) (hb1 : |a1| ≤ B) (hb2 : |a2| ≤ B) :
-    |xiHeatTuranDefect t - (a0 * a2 - a1 ^ 2)| ≤ 4 * B * ε + 2 * ε ^ 2 := by
+    |xiHeatTuranDefect t - (a0 * a2 - a1 ^ (2 : ℕ))| ≤ 4 * B * ε + 2 * ε ^ (2 : ℕ) := by
   set m0 := xiGaussianHeatMomentReal 0 t
   set m1 := xiGaussianHeatMomentReal 1 t
   set m2 := xiGaussianHeatMomentReal 2 t
@@ -166,7 +166,7 @@ theorem not_riemannHypothesis_of_certified_negative {t : ℝ} (ht : 0 < t)
     (h1 : |xiGaussianHeatMomentReal 1 t - a1| ≤ ε)
     (h2 : |xiGaussianHeatMomentReal 2 t - a2| ≤ ε)
     (hb0 : |a0| ≤ B) (hb1 : |a1| ≤ B) (hb2 : |a2| ≤ B)
-    (hcert : a0 * a2 - a1 ^ 2 < -(4 * B * ε + 2 * ε ^ 2)) :
+    (hcert : a0 * a2 - a1 ^ (2 : ℕ) < -(4 * B * ε + 2 * ε ^ (2 : ℕ))) :
     ¬ RiemannHypothesis := by
   refine not_riemannHypothesis_of_det_neg (N := 2) ht ?_
   rw [det_xiHeatHankelMatrix_two]
@@ -190,7 +190,7 @@ produce: a heat parameter, an order, and a vector. -/
 theorem abs_form_sub_le {N : ℕ} {t : ℝ} (M : Fin N → Fin N → ℝ) {ε : ℝ} (_hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε) (x : Fin N → ℝ) :
     |(∑ j, ∑ k, x j * x k * xiHeatHankelMatrix N t j k) - ∑ j, ∑ k, x j * x k * M j k|
-      ≤ ε * (∑ j, |x j|) ^ 2 := by
+      ≤ ε * (∑ j, |x j|) ^ (2 : ℕ) := by
   classical
   have hdiff : (∑ j, ∑ k, x j * x k * xiHeatHankelMatrix N t j k)
       - ∑ j, ∑ k, x j * x k * M j k
@@ -208,7 +208,7 @@ theorem abs_form_sub_le {N : ℕ} {t : ℝ} (M : Fin N → Fin N → ℝ) {ε : 
         refine le_trans (Finset.abs_sum_le_sum_abs _ _) (Finset.sum_le_sum fun k _ => ?_)
         rw [abs_mul, abs_mul]
         exact mul_le_mul_of_nonneg_left (happrox j k) (by positivity)
-    _ = ε * (∑ j, |x j|) ^ 2 := by
+    _ = ε * (∑ j, |x j|) ^ (2 : ℕ) := by
         rw [sq, Finset.sum_mul_sum]
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
@@ -222,7 +222,7 @@ theorem not_riemannHypothesis_of_certified_witness {N : ℕ} {t : ℝ} (ht : 0 <
     (M : Fin N → Fin N → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε)
     (x : Fin N → ℝ)
-    (hcert : (∑ j, ∑ k, x j * x k * M j k) < -(ε * (∑ j, |x j|) ^ 2)) :
+    (hcert : (∑ j, ∑ k, x j * x k * M j k) < -(ε * (∑ j, |x j|) ^ (2 : ℕ))) :
     ¬ RiemannHypothesis := by
   classical
   have hb := abs_le.mp (abs_form_sub_le M hε happrox x)
@@ -290,7 +290,7 @@ perturbation budget at every vector forces the true rung positive semidefinite. 
 theorem posSemidef_of_certified_positive {N : ℕ} {t : ℝ}
     (M : Fin N → Fin N → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε)
-    (hcert : ∀ x : Fin N → ℝ, ε * (∑ j, |x j|) ^ 2 ≤ ∑ j, ∑ k, x j * x k * M j k) :
+    (hcert : ∀ x : Fin N → ℝ, ε * (∑ j, |x j|) ^ (2 : ℕ) ≤ ∑ j, ∑ k, x j * x k * M j k) :
     (xiHeatHankelMatrix N t).PosSemidef := by
   classical
   refine posSemidef_xiHeatHankelMatrix_of_forall_nonneg (fun a => ?_)
@@ -317,7 +317,7 @@ the scheme. -/
 theorem rung_decided_by_prime_certificate {N : ℕ} {t : ℝ}
     (M : Fin N → Fin N → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε) :
-    (∀ x : Fin N → ℝ, ε * (∑ j, |x j|) ^ 2 ≤ ∑ j, ∑ k, x j * x k * M j k) →
+    (∀ x : Fin N → ℝ, ε * (∑ j, |x j|) ^ (2 : ℕ) ≤ ∑ j, ∑ k, x j * x k * M j k) →
       (xiHeatHankelMatrix N t).PosSemidef :=
   fun hcert => posSemidef_of_certified_positive M hε happrox hcert
 
@@ -337,7 +337,7 @@ theorem approx_form_ge_of_riemannHypothesis (hRH : RiemannHypothesis) {N : ℕ} 
     (M : Fin N → Fin N → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε)
     (x : Fin N → ℝ) :
-    -(ε * (∑ j, |x j|) ^ 2) ≤ ∑ j, ∑ k, x j * x k * M j k := by
+    -(ε * (∑ j, |x j|) ^ (2 : ℕ)) ≤ ∑ j, ∑ k, x j * x k * M j k := by
   classical
   by_contra hcon
   rw [not_le] at hcon
@@ -349,10 +349,10 @@ There is no third possibility. -/
 theorem certificate_dichotomy {N : ℕ} {t : ℝ} (ht : 0 < t)
     (M : Fin N → Fin N → ℝ) {ε : ℝ} (hε : 0 ≤ ε)
     (happrox : ∀ j k, |xiHeatHankelMatrix N t j k - M j k| ≤ ε) :
-    (∀ x : Fin N → ℝ, -(ε * (∑ j, |x j|) ^ 2) ≤ ∑ j, ∑ k, x j * x k * M j k)
+    (∀ x : Fin N → ℝ, -(ε * (∑ j, |x j|) ^ (2 : ℕ)) ≤ ∑ j, ∑ k, x j * x k * M j k)
       ∨ ¬ RiemannHypothesis := by
   classical
-  by_cases h : ∀ x : Fin N → ℝ, -(ε * (∑ j, |x j|) ^ 2) ≤ ∑ j, ∑ k, x j * x k * M j k
+  by_cases h : ∀ x : Fin N → ℝ, -(ε * (∑ j, |x j|) ^ (2 : ℕ)) ≤ ∑ j, ∑ k, x j * x k * M j k
   · exact Or.inl h
   · rw [not_forall] at h
     obtain ⟨x, hx⟩ := h
@@ -379,9 +379,9 @@ quadratic `u²m₂ⱼ + 2uv·m_{j+k} + v²m₂ₖ`. -/
 theorem hankelForm_two_support {N : ℕ} (t : ℝ) {j k : ℕ} (hj : j < N) (hk : k < N) (hjk : j ≠ k)
     (u v : ℝ) :
     xiHeatHankelForm N (fun n => if n = j then u else if n = k then v else 0) t
-      = u ^ 2 * xiGaussianHeatMomentReal (2 * j) t
+      = u ^ (2 : ℕ) * xiGaussianHeatMomentReal (2 * j) t
         + 2 * (u * v) * xiGaussianHeatMomentReal (j + k) t
-        + v ^ 2 * xiGaussianHeatMomentReal (2 * k) t := by
+        + v ^ (2 : ℕ) * xiGaussianHeatMomentReal (2 * k) t := by
   classical
   unfold xiHeatHankelForm
   rw [Finset.sum_eq_add_of_mem j k (Finset.mem_range.mpr hj) (Finset.mem_range.mpr hk) hjk ?_]
@@ -402,7 +402,7 @@ theorem hankelForm_two_support {N : ℕ} (t : ℝ) {j k : ℕ} (hj : j < N) (hk 
 heat parameter, `m_{j+k}² ≤ m_{2j}·m_{2k}`. -/
 theorem sq_heatMoment_le_mul_of_riemannHypothesis (hRH : RiemannHypothesis)
     {j k : ℕ} (hjk : j ≠ k) {t : ℝ} (ht : 0 < t) :
-    xiGaussianHeatMomentReal (j + k) t ^ 2
+    xiGaussianHeatMomentReal (j + k) t ^ (2 : ℕ)
       ≤ xiGaussianHeatMomentReal (2 * j) t * xiGaussianHeatMomentReal (2 * k) t := by
   classical
   set N := max j k + 1 with hN
@@ -411,9 +411,9 @@ theorem sq_heatMoment_le_mul_of_riemannHypothesis (hRH : RiemannHypothesis)
   have hform := fun (u v : ℝ) =>
     (riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg).mp hRH N
       (fun n => if n = j then u else if n = k then v else 0) t ht
-  have hquad : ∀ u v : ℝ, 0 ≤ u ^ 2 * xiGaussianHeatMomentReal (2 * j) t
+  have hquad : ∀ u v : ℝ, 0 ≤ u ^ (2 : ℕ) * xiGaussianHeatMomentReal (2 * j) t
       + 2 * (u * v) * xiGaussianHeatMomentReal (j + k) t
-      + v ^ 2 * xiGaussianHeatMomentReal (2 * k) t := by
+      + v ^ (2 : ℕ) * xiGaussianHeatMomentReal (2 * k) t := by
     intro u v
     rw [← hankelForm_two_support t hj hk hjk u v]
     exact hform u v
@@ -424,7 +424,7 @@ theorem sq_heatMoment_le_mul_of_riemannHypothesis (hRH : RiemannHypothesis)
   have hC : 0 ≤ C := by simpa using hquad 0 1
   rcases eq_or_lt_of_le hA with hA0 | hApos
   · -- degenerate rung: the diagonal entry vanishes, forcing the off-diagonal to vanish too
-    have h1 : ∀ v : ℝ, 0 ≤ 2 * v * B + v ^ 2 * C := by
+    have h1 : ∀ v : ℝ, 0 ≤ 2 * v * B + v ^ (2 : ℕ) * C := by
       intro v
       have hq := hquad 1 v
       rw [← hA0] at hq
@@ -432,11 +432,11 @@ theorem sq_heatMoment_le_mul_of_riemannHypothesis (hRH : RiemannHypothesis)
     have hC1 : (0 : ℝ) < C + 1 := by linarith
     have hB : B = 0 := by
       by_contra hBne
-      have hB2 : 0 < B ^ 2 := by positivity
+      have hB2 : 0 < B ^ (2 : ℕ) := by positivity
       have hv := h1 (-(B / (C + 1)))
-      have hclear : 0 ≤ B ^ 2 * (-C - 2) := by
-        have hexp : 2 * (-(B / (C + 1))) * B + (-(B / (C + 1))) ^ 2 * C
-            = (B ^ 2 * (-C - 2)) / (C + 1) ^ 2 := by
+      have hclear : 0 ≤ B ^ (2 : ℕ) * (-C - 2) := by
+        have hexp : 2 * (-(B / (C + 1))) * B + (-(B / (C + 1))) ^ (2 : ℕ) * C
+            = (B ^ (2 : ℕ) * (-C - 2)) / (C + 1) ^ (2 : ℕ) := by
           field_simp
           ring
         rw [hexp] at hv
@@ -468,11 +468,11 @@ explicit finite matrix, so a negative value refutes RH through `not_riemannHypot
 /-- The third Hankel determinant of the Gaussian heat moments. -/
 noncomputable def xiHeatThirdHankelDet (t : ℝ) : ℝ :=
   xiGaussianHeatMomentReal 0 t * xiGaussianHeatMomentReal 2 t * xiGaussianHeatMomentReal 4 t
-    - xiGaussianHeatMomentReal 0 t * xiGaussianHeatMomentReal 3 t ^ 2
-    - xiGaussianHeatMomentReal 1 t ^ 2 * xiGaussianHeatMomentReal 4 t
+    - xiGaussianHeatMomentReal 0 t * xiGaussianHeatMomentReal 3 t ^ (2 : ℕ)
+    - xiGaussianHeatMomentReal 1 t ^ (2 : ℕ) * xiGaussianHeatMomentReal 4 t
     + 2 * (xiGaussianHeatMomentReal 1 t * xiGaussianHeatMomentReal 2 t
         * xiGaussianHeatMomentReal 3 t)
-    - xiGaussianHeatMomentReal 2 t ^ 3
+    - xiGaussianHeatMomentReal 2 t ^ (3 : ℕ)
 
 /-- **The order-three determinant is that expression.** -/
 theorem det_xiHeatHankelMatrix_three (t : ℝ) :

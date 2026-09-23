@@ -28,7 +28,7 @@ namespace RHTower.Sieve
 open Complex Finset
 
 /-- The modulus squared on a vertical line. -/
-theorem normSq_line_eq (σ y : ℝ) : ‖(σ : ℂ) + (y : ℝ) * I‖ ^ 2 = σ ^ 2 + y ^ 2 := by
+theorem normSq_line_eq (σ y : ℝ) : ‖(σ : ℂ) + (y : ℝ) * I‖ ^ (2 : ℕ) = σ ^ (2 : ℕ) + y ^ (2 : ℕ) := by
   have hre : ((σ : ℂ) + (y : ℝ) * I).re = σ := by simp
   have him : ((σ : ℂ) + (y : ℝ) * I).im = y := by simp
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hre, him]
@@ -38,30 +38,30 @@ theorem normSq_line_eq (σ y : ℝ) : ‖(σ : ℂ) + (y : ℝ) * I‖ ^ 2 = σ 
 theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ → ℝ}
     (hv : ∀ k, k < m →
       v k ∈ Set.Icc (-(n : ℝ) + (k : ℝ) * 1) (-(n : ℝ) + ((k : ℝ) + 1) * 1)) :
-    ∑ k ∈ Finset.range m, 1 / ‖(σ : ℂ) + (v k : ℝ) * I‖ ^ 2 ≤ 7 / σ ^ 2 + 1 := by
+    ∑ k ∈ Finset.range m, 1 / ‖(σ : ℂ) + (v k : ℝ) * I‖ ^ (2 : ℕ) ≤ 7 / σ ^ (2 : ℕ) + 1 := by
   classical
-  have hσ2 : (0 : ℝ) < σ ^ 2 := by positivity
-  set g : ℕ → ℝ := fun k => 1 / ‖(σ : ℂ) + (v k : ℝ) * I‖ ^ 2 with hg
-  have hgeq : ∀ k, g k = 1 / (σ ^ 2 + (v k) ^ 2) := by
+  have hσ2 : (0 : ℝ) < σ ^ (2 : ℕ) := by positivity
+  set g : ℕ → ℝ := fun k => 1 / ‖(σ : ℂ) + (v k : ℝ) * I‖ ^ (2 : ℕ) with hg
+  have hgeq : ∀ k, g k = 1 / (σ ^ (2 : ℕ) + (v k) ^ (2 : ℕ)) := by
     intro k; rw [hg]; simp only; rw [normSq_line_eq]
   have hg0 : ∀ k, 0 ≤ g k := fun k => by
     rw [hgeq]; positivity
-  have hgσ : ∀ k, g k ≤ 1 / σ ^ 2 := fun k => by
+  have hgσ : ∀ k, g k ≤ 1 / σ ^ (2 : ℕ) := fun k => by
     rw [hgeq]
     exact one_div_le_one_div_of_le hσ2 (by nlinarith [sq_nonneg (v k)])
   -- the far terms are dominated by the squares of their distance to the axis
-  have hgfar : ∀ (k : ℕ) (d : ℕ), 0 < d → ((d : ℝ)) ^ 2 ≤ (v k) ^ 2 →
-      g k ≤ 1 / ((d : ℝ)) ^ 2 := by
+  have hgfar : ∀ (k : ℕ) (d : ℕ), 0 < d → ((d : ℝ)) ^ (2 : ℕ) ≤ (v k) ^ (2 : ℕ) →
+      g k ≤ 1 / ((d : ℝ)) ^ (2 : ℕ) := by
     intro k d hd hsq
     rw [hgeq]
-    have hd0 : (0 : ℝ) < (d : ℝ) ^ 2 := by
+    have hd0 : (0 : ℝ) < (d : ℝ) ^ (2 : ℕ) := by
       have : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd
       positivity
     exact one_div_le_one_div_of_le hd0 (by linarith)
   set P : ℕ → Prop := fun k => k + 3 < n ∨ n + 3 < k with hP
   rw [← Finset.sum_filter_add_sum_filter_not (Finset.range m) P g]
   -- the near cells
-  have hnear : ∑ k ∈ (Finset.range m).filter (fun k => ¬ P k), g k ≤ 7 / σ ^ 2 := by
+  have hnear : ∑ k ∈ (Finset.range m).filter (fun k => ¬ P k), g k ≤ 7 / σ ^ (2 : ℕ) := by
     have hsub : (Finset.range m).filter (fun k => ¬ P k) ⊆ Finset.Icc (n - 3) (n + 3) := by
       intro k hk
       rw [Finset.mem_filter] at hk
@@ -75,14 +75,14 @@ theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ �
       rw [Nat.card_Icc]
       omega
     have hc : (#((Finset.range m).filter (fun k => ¬ P k)) : ℝ) ≤ 7 := by exact_mod_cast hcard
-    have hinv : (0 : ℝ) ≤ 1 / σ ^ 2 := by positivity
+    have hinv : (0 : ℝ) ≤ 1 / σ ^ (2 : ℕ) := by positivity
     calc ∑ k ∈ (Finset.range m).filter (fun k => ¬ P k), g k
-        ≤ ∑ _k ∈ (Finset.range m).filter (fun k => ¬ P k), (1 / σ ^ 2) :=
+        ≤ ∑ _k ∈ (Finset.range m).filter (fun k => ¬ P k), (1 / σ ^ (2 : ℕ)) :=
           Finset.sum_le_sum fun k _ => hgσ k
-      _ = #((Finset.range m).filter (fun k => ¬ P k)) * (1 / σ ^ 2) := by
+      _ = #((Finset.range m).filter (fun k => ¬ P k)) * (1 / σ ^ (2 : ℕ)) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ 7 * (1 / σ ^ 2) := by nlinarith [hc, hinv]
-      _ = 7 / σ ^ 2 := by ring
+      _ ≤ 7 * (1 / σ ^ (2 : ℕ)) := by nlinarith [hc, hinv]
+      _ = 7 / σ ^ (2 : ℕ) := by ring
   -- the far cells
   have hfar : ∑ k ∈ (Finset.range m).filter P, g k ≤ 1 := by
     rw [← Finset.sum_filter_add_sum_filter_not ((Finset.range m).filter P)
@@ -93,7 +93,7 @@ theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ �
         intro k hk
         rw [hL, Finset.mem_filter, Finset.mem_filter, Finset.mem_range] at hk
         exact ⟨hk.2, hk.1.1⟩
-      have hstep : ∀ k ∈ L, g k ≤ 1 / (((n - k - 1 : ℕ) : ℝ)) ^ 2 := by
+      have hstep : ∀ k ∈ L, g k ≤ 1 / (((n - k - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
         intro k hk
         obtain ⟨hk3, hkm⟩ := hmemL k hk
         have hd3 : 3 ≤ n - k - 1 := by omega
@@ -123,10 +123,10 @@ theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ �
         rw [Finset.mem_Icc]
         omega
       calc ∑ k ∈ L, g k
-          ≤ ∑ k ∈ L, 1 / (((n - k - 1 : ℕ) : ℝ)) ^ 2 := Finset.sum_le_sum hstep
-        _ = ∑ d ∈ L.image (fun k => n - k - 1), 1 / ((d : ℕ) : ℝ) ^ 2 := by
+          ≤ ∑ k ∈ L, 1 / (((n - k - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := Finset.sum_le_sum hstep
+        _ = ∑ d ∈ L.image (fun k => n - k - 1), 1 / ((d : ℕ) : ℝ) ^ (2 : ℕ) := by
             rw [Finset.sum_image (fun a ha b hb h => hinj ha hb h)]
-        _ ≤ ∑ d ∈ Finset.Icc 3 n, 1 / ((d : ℕ) : ℝ) ^ 2 :=
+        _ ≤ ∑ d ∈ Finset.Icc 3 n, 1 / ((d : ℕ) : ℝ) ^ (2 : ℕ) :=
             Finset.sum_le_sum_of_subset_of_nonneg himg (fun d _ _ => by positivity)
         _ ≤ 1 / 2 := by
             have := sum_Icc_inv_sq_le (R := 2) (by norm_num) n
@@ -144,7 +144,7 @@ theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ �
         rcases hPk with h | h
         · omega
         · exact ⟨h, hk.1.1⟩
-      have hstep : ∀ k ∈ R, g k ≤ 1 / (((k - n : ℕ) : ℝ)) ^ 2 := by
+      have hstep : ∀ k ∈ R, g k ≤ 1 / (((k - n : ℕ) : ℝ)) ^ (2 : ℕ) := by
         intro k hk
         obtain ⟨hk3, hkm⟩ := hmemR k hk
         have hd3 : 3 ≤ k - n := by omega
@@ -171,10 +171,10 @@ theorem sum_cells_inv_normSq_le {σ : ℝ} (hσ : 0 < σ) {n m : ℕ} {v : ℕ �
         rw [Finset.mem_Icc]
         omega
       calc ∑ k ∈ R, g k
-          ≤ ∑ k ∈ R, 1 / (((k - n : ℕ) : ℝ)) ^ 2 := Finset.sum_le_sum hstep
-        _ = ∑ d ∈ R.image (fun k => k - n), 1 / ((d : ℕ) : ℝ) ^ 2 := by
+          ≤ ∑ k ∈ R, 1 / (((k - n : ℕ) : ℝ)) ^ (2 : ℕ) := Finset.sum_le_sum hstep
+        _ = ∑ d ∈ R.image (fun k => k - n), 1 / ((d : ℕ) : ℝ) ^ (2 : ℕ) := by
             rw [Finset.sum_image (fun a ha b hb h => hinj ha hb h)]
-        _ ≤ ∑ d ∈ Finset.Icc 3 m, 1 / ((d : ℕ) : ℝ) ^ 2 :=
+        _ ≤ ∑ d ∈ Finset.Icc 3 m, 1 / ((d : ℕ) : ℝ) ^ (2 : ℕ) :=
             Finset.sum_le_sum_of_subset_of_nonneg himg (fun d _ _ => by positivity)
         _ ≤ 1 / 2 := by
             have := sum_Icc_inv_sq_le (R := 2) (by norm_num) m

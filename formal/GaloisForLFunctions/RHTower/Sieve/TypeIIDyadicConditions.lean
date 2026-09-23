@@ -47,7 +47,7 @@ theorem four_r_div_le_of_mem_effSet {r : ℝ} {A B P Q L m : ℕ}
 /-- The long-orientation curvature parameter is at most one above its explicit threshold. -/
 theorem curvedLambda_effSet_le_one {T r : ℝ} {A B P Q L m₁ m₂ : ℕ}
     (hT : 0 < T) (hA : 1 ≤ A) (hP : 1 ≤ P) (hQ : 2 ≤ Q)
-    (hQ2P : Q ≤ 2 * P) (hr : 0 ≤ r) (hTr : T * r ≤ 9 * Real.pi * A * P ^ 2)
+    (hQ2P : Q ≤ 2 * P) (hr : 0 ≤ r) (hTr : T * r ≤ 9 * Real.pi * A * P ^ (2 : ℕ))
     (hm₁ : m₁ ∈ effSet A B P Q L) (hm₂ : m₂ ∈ effSet A B P Q L) :
     curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1 := by
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
@@ -76,12 +76,12 @@ theorem curvedLambda_effSet_le_one {T r : ℝ} {A B P Q L m₁ m₂ : ℕ}
       |r / m₁ - r / m₂| ≤ r / m₁ + r / m₂ := h
       _ ≤ 2 * r * P / A + 2 * r * P / A := add_le_add (hri m₁ hm₁) (hri m₂ hm₂)
       _ = 4 * r * P / A := by ring
-  have hbound : T * (4 * r * P / A) ≤ 36 * Real.pi * P ^ 3 := by
+  have hbound : T * (4 * r * P / A) ≤ 36 * Real.pi * P ^ (3 : ℕ) := by
     calc
       T * (4 * r * P / A) = (4 * P / A) * (T * r) := by ring
-      _ ≤ (4 * P / A) * (9 * Real.pi * A * P ^ 2) :=
+      _ ≤ (4 * P / A) * (9 * Real.pi * A * P ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hTr (by positivity)
-      _ = 36 * Real.pi * P ^ 3 := by field_simp; ring
+      _ = 36 * Real.pi * P ^ (3 : ℕ) := by field_simp; ring
   rw [curvedLambda, div_le_one (by positivity)]
   exact (mul_le_mul_of_nonneg_left habs hT.le).trans hbound
 
@@ -107,7 +107,7 @@ theorem four_r_div_le_effLow_of_mem_Ico {r : ℝ} {A P Q d : ℕ}
 theorem curvedLambda_Ico_effLow_le_one {T r : ℝ} {A P Q d₁ d₂ : ℕ}
     (hT : 0 < T) (hA : 1 ≤ A) (hP : 1 ≤ P) (hQ : 2 ≤ Q)
     (hQ2P : Q ≤ 2 * P) (hr : 0 ≤ r)
-    (hTrP : 4 * T * r * P ^ 2 ≤ 9 * Real.pi * A ^ 3)
+    (hTrP : 4 * T * r * P ^ (2 : ℕ) ≤ 9 * Real.pi * A ^ (3 : ℕ))
     (hd₁ : d₁ ∈ Finset.Ico P Q) (hd₂ : d₂ ∈ Finset.Ico P Q) :
     curvedLambda (T * |r / d₁ - r / d₂|) ((effLow A Q : ℕ) : ℝ) ≤ 1 := by
   rw [Finset.mem_Ico] at hd₁ hd₂
@@ -130,11 +130,11 @@ theorem curvedLambda_Ico_effLow_le_one {T r : ℝ} {A P Q d₁ d₂ : ℕ}
     le_trans (div_le_div_of_nonneg_left hA0.le hQ0 hQcast) (cast_effLow_ge hA hQ)
   have hM0 : (0 : ℝ) < ((effLow A Q : ℕ) : ℝ) := by
     exact_mod_cast one_le_effLow A Q
-  have hmain : T * (2 * r / P) ≤ 36 * Real.pi * ((A : ℝ) / (2 * P)) ^ 3 := by
+  have hmain : T * (2 * r / P) ≤ 36 * Real.pi * ((A : ℝ) / (2 * P)) ^ (3 : ℕ) := by
     rw [div_pow]
     field_simp
     nlinarith [hTrP]
-  have hcube : ((A : ℝ) / (2 * P)) ^ 3 ≤ ((effLow A Q : ℕ) : ℝ) ^ 3 := by
+  have hcube : ((A : ℝ) / (2 * P)) ^ (3 : ℕ) ≤ ((effLow A Q : ℕ) : ℝ) ^ (3 : ℕ) := by
     gcongr
   rw [curvedLambda, div_le_one (by positivity)]
   refine (mul_le_mul_of_nonneg_left habs hT.le).trans (hmain.trans ?_)
@@ -144,24 +144,24 @@ theorem curvedLambda_Ico_effLow_le_one {T r : ℝ} {A P Q d₁ d₂ : ℕ}
 the two orientation thresholds. -/
 theorem typeII_orientation_cover {T r : ℝ} {A P : ℕ}
     (hT : 0 < T) (hr : 0 < r) (hA : 1 ≤ A)
-    (hglobal : 2 * T * r ≤ 9 * Real.pi * A ^ 2) :
-    T * r ≤ 9 * Real.pi * A * P ^ 2 ∨
-      4 * T * r * P ^ 2 ≤ 9 * Real.pi * A ^ 3 := by
-  by_cases hlarge : T * r ≤ 9 * Real.pi * A * P ^ 2
+    (hglobal : 2 * T * r ≤ 9 * Real.pi * A ^ (2 : ℕ)) :
+    T * r ≤ 9 * Real.pi * A * P ^ (2 : ℕ) ∨
+      4 * T * r * P ^ (2 : ℕ) ≤ 9 * Real.pi * A ^ (3 : ℕ) := by
+  by_cases hlarge : T * r ≤ 9 * Real.pi * A * P ^ (2 : ℕ)
   · exact Or.inl hlarge
   · right
     have hpi : 0 < Real.pi := Real.pi_pos
     have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
     have hX0 : 0 < T * r := mul_pos hT hr
-    have hlarge' : ¬T * r ≤ (P : ℝ) ^ 2 * (9 * Real.pi * A) := by
+    have hlarge' : ¬T * r ≤ (P : ℝ) ^ (2 : ℕ) * (9 * Real.pi * A) := by
       simpa [mul_assoc, mul_left_comm, mul_comm] using hlarge
-    have hP2 : ((P : ℝ) ^ 2) < T * r / (9 * Real.pi * A) := by
+    have hP2 : ((P : ℝ) ^ (2 : ℕ)) < T * r / (9 * Real.pi * A) := by
       rw [lt_div_iff₀ (by positivity)]
       exact lt_of_not_ge hlarge'
     have hmul := mul_le_mul_of_nonneg_left hP2.le (by positivity : (0 : ℝ) ≤ 4 * T * r)
     have hsquare := mul_self_le_mul_self (by positivity : (0 : ℝ) ≤ 2 * T * r) hglobal
     have hmid : 4 * T * r * (T * r / (9 * Real.pi * A))
-        ≤ 9 * Real.pi * A ^ 3 := by
+        ≤ 9 * Real.pi * A ^ (3 : ℕ) := by
       rw [div_eq_mul_inv]
       field_simp
       nlinarith [hsquare]

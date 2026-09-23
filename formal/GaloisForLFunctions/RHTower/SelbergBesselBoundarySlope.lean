@@ -6,7 +6,7 @@ import Mathlib.Analysis.Calculus.MeanValue
 # The actual critical Bessel boundary slope
 
 For the source-defined Schlaefli integrals, `q(s)=s*K_1(s)/K_0(s)` obeys
-`q'(s)=(q(s)^2-s^2)/s` and is strictly increasing on the positive ray.
+`q'(s)=(q(s)^(2 : ℕ)-s^(2 : ℕ))/s` and is strictly increasing on the positive ray.
 Its logarithmic reparameterization has range exactly the positive ray: a
 hypothetical positive lower bound contradicts the Riccati equation on a
 sufficiently long interval toward negative logarithmic height. No small-argument
@@ -74,7 +74,7 @@ theorem argument_lt_slope {s : ℝ} (hs : 0 < s) : s < slope s := by
 
 /-- Exact Riccati derivative of the source-defined Bessel ratio. -/
 theorem slope_hasDerivAt {s : ℝ} (hs : 0 < s) :
-    HasDerivAt slope ((slope s ^ 2 - s ^ 2) / s) s := by
+    HasDerivAt slope ((slope s ^ (2 : ℕ) - s ^ (2 : ℕ)) / s) s := by
   have hk0 := (K_pos hs 0).ne'
   convert (((hasDerivAt_id s).mul (K_one_hasDerivAt hs)).div (K_zero_hasDerivAt hs) hk0) using 1 <;> try rfl
   dsimp only [slope, id_eq, Pi.mul_apply]
@@ -104,7 +104,7 @@ theorem logSlope_pos (t : ℝ) : 0 < logSlope t :=
 
 /-- The Riccati equation without a singular denominator. -/
 theorem logSlope_hasDerivAt (t : ℝ) :
-    HasDerivAt logSlope (logSlope t ^ 2 - Real.exp t ^ 2) t := by
+    HasDerivAt logSlope (logSlope t ^ (2 : ℕ) - Real.exp t ^ (2 : ℕ)) t := by
   have hh := (slope_hasDerivAt (Real.exp_pos t)).comp t (Real.hasDerivAt_exp t)
   convert hh using 1 <;> try rfl
   dsimp only [logSlope]
@@ -121,7 +121,7 @@ theorem logSlope_contDiff : ContDiff ℝ 1 logSlope := by
   have hc : Continuous logSlope :=
     continuous_iff_continuousAt.mpr (fun t => (logSlope_hasDerivAt t).continuousAt)
   refine ⟨fun t => (logSlope_hasDerivAt t).differentiableAt, ?_⟩
-  have he : deriv logSlope = fun t => logSlope t ^ 2 - Real.exp t ^ 2 :=
+  have he : deriv logSlope = fun t => logSlope t ^ (2 : ℕ) - Real.exp t ^ (2 : ℕ) :=
     funext (fun t => (logSlope_hasDerivAt t).deriv)
   rw [he]
   exact (hc.pow 2).sub (Real.continuous_exp.pow 2)
@@ -131,11 +131,11 @@ theorem exists_logSlope_lt {d : ℝ} (hd : 0 < d) : ∃ t, logSlope t < d := by
   by_contra hn
   push Not at hn
   let T := Real.log (d / 2)
-  let c := d ^ 2 / 2
+  let c := d ^ (2 : ℕ) / 2
   have hc : 0 < c := div_pos (sq_pos_of_pos hd) (by linarith)
   have hT : Real.exp T = d / 2 := Real.exp_log (by positivity)
   let F := fun t => logSlope t - c * t
-  have hF : ∀ t, HasDerivAt F (logSlope t ^ 2 - Real.exp t ^ 2 - c) t := by
+  have hF : ∀ t, HasDerivAt F (logSlope t ^ (2 : ℕ) - Real.exp t ^ (2 : ℕ) - c) t := by
     intro t
     convert (logSlope_hasDerivAt t).sub ((hasDerivAt_id t).const_mul c) using 1 <;> try rfl
     simp only [mul_one]
@@ -232,7 +232,7 @@ theorem logMode_hasDerivAt (a t : ℝ) :
 /-- Its actual second derivative. -/
 theorem logMode_second_hasDerivAt (a t : ℝ) :
     HasDerivAt (deriv (logMode a))
-      ((1 / 4 - logSlope (a + t) + Real.exp (a + t) ^ 2) * logMode a t) t := by
+      ((1 / 4 - logSlope (a + t) + Real.exp (a + t) ^ (2 : ℕ)) * logMode a t) t := by
   have hfun : deriv (logMode a) = fun s => (1 / 2 - logSlope (a + s)) * logMode a s :=
     funext (fun s => (logMode_hasDerivAt a s).deriv)
   rw [hfun]
@@ -244,7 +244,7 @@ theorem logMode_second_hasDerivAt (a t : ℝ) :
 /-- The original profile solves the critical logarithmic-height mode equation. -/
 theorem logMode_critical_equation (a t : ℝ) :
     deriv (deriv (logMode a)) t - deriv (logMode a) t =
-      (Real.exp (a + t) ^ 2 - 1 / 4) * logMode a t := by
+      (Real.exp (a + t) ^ (2 : ℕ) - 1 / 4) * logMode a t := by
   rw [(logMode_second_hasDerivAt a t).deriv, (logMode_hasDerivAt a t).deriv]
   ring
 

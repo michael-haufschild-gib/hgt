@@ -9,14 +9,14 @@ set_option maxHeartbeats 3000000
 
 /-- The seventh signed moment retains the full twelfth-derivative numerator. -/
 def firstAtomEvenTailNumerator6 (u : ℝ) : ℝ :=
-  (43599790080 : ℝ)*(u)^0 +
-    (-239798845440 : ℝ)*(u)^1 +
-    (886529064960 : ℝ)*(u)^2 +
-    (-1280916848640 : ℝ)*(u)^3 +
-    (603009318912 : ℝ)*(u)^4 +
-    (-75547148288 : ℝ)*(u)^5 +
-    (1408303104 : ℝ)*(u)^6 +
-    (-491520 : ℝ)*(u)^7
+  (43599790080 : ℝ)*(u)^(0 : ℕ) +
+    (-239798845440 : ℝ)*(u)^(1 : ℕ) +
+    (886529064960 : ℝ)*(u)^(2 : ℕ) +
+    (-1280916848640 : ℝ)*(u)^(3 : ℕ) +
+    (603009318912 : ℝ)*(u)^(4 : ℕ) +
+    (-75547148288 : ℝ)*(u)^(5 : ℕ) +
+    (1408303104 : ℝ)*(u)^(6 : ℕ) +
+    (-491520 : ℝ)*(u)^(7 : ℕ)
 
 /-- All seven even moments, with the exact common denominator. -/
 def firstAtomEvenTailProfile (k : Fin 7) (u : ℝ) : ℝ :=
@@ -32,7 +32,7 @@ def firstAtomEvenTailProfile (k : Fin 7) (u : ℝ) : ℝ :=
 /-- Balanced entries reserve one hundred million in the original last normalized coordinate. -/
 def firstAtomEvenTailBalanced (k : Fin 7) (u : ℝ) : ℝ :=
   firstAtomEvenTailProfile k u / (32 : ℝ)^k.val -
-    if k.val = 6 then 100000000/(32 : ℝ)^6 else 0
+    if k.val = 6 then 100000000/(32 : ℝ)^(6 : ℕ) else 0
 
 /-- The determinant of the balanced first-atom reserve matrix. -/
 def firstAtomEvenTailBalancedDet (u : ℝ) : ℝ :=
@@ -42,26 +42,26 @@ def firstAtomEvenTailBalancedDet (u : ℝ) : ℝ :=
 
 /-- Exact common-denominator numerator, including the last-coordinate reserve. -/
 def firstAtomEvenTailReserveNumerator (u : ℝ) : ℝ :=
-  (73181031038724341760 : ℝ)*(u)^0 +
-    (-1589905688489675980800 : ℝ)*(u)^1 +
-    (16710964264412601384960 : ℝ)*(u)^2 +
-    (-109498791137393655152640 : ℝ)*(u)^3 +
-    (490916038663711940935680 : ℝ)*(u)^4 +
-    (-1574108555788415800442880 : ℝ)*(u)^5 +
-    (3669211928323772047687680 : ℝ)*(u)^6 +
-    (-6214959571530568213463040 : ℝ)*(u)^7 +
-    (7554530181257636924620800 : ℝ)*(u)^8 +
-    (-6420844592432812759449600 : ℝ)*(u)^9 +
-    (3660583483455636190003200 : ℝ)*(u)^10 +
-    (-1319845633904996882841600 : ℝ)*(u)^11 +
-    (293937397852752838656000 : ℝ)*(u)^12 +
-    (-47265445215020777472000 : ℝ)*(u)^13 +
-    (4090278912838336512000 : ℝ)*(u)^14
+  (73181031038724341760 : ℝ)*(u)^(0 : ℕ) +
+    (-1589905688489675980800 : ℝ)*(u)^(1 : ℕ) +
+    (16710964264412601384960 : ℝ)*(u)^(2 : ℕ) +
+    (-109498791137393655152640 : ℝ)*(u)^(3 : ℕ) +
+    (490916038663711940935680 : ℝ)*(u)^(4 : ℕ) +
+    (-1574108555788415800442880 : ℝ)*(u)^(5 : ℕ) +
+    (3669211928323772047687680 : ℝ)*(u)^(6 : ℕ) +
+    (-6214959571530568213463040 : ℝ)*(u)^(7 : ℕ) +
+    (7554530181257636924620800 : ℝ)*(u)^(8 : ℕ) +
+    (-6420844592432812759449600 : ℝ)*(u)^(9 : ℕ) +
+    (3660583483455636190003200 : ℝ)*(u)^(10 : ℕ) +
+    (-1319845633904996882841600 : ℝ)*(u)^(11 : ℕ) +
+    (293937397852752838656000 : ℝ)*(u)^(12 : ℕ) +
+    (-47265445215020777472000 : ℝ)*(u)^(13 : ℕ) +
+    (4090278912838336512000 : ℝ)*(u)^(14 : ℕ)
 
 /-- All scale factors and the reserved last coordinate remain in the exact determinant. -/
 theorem firstAtomEvenTailBalancedDet_eq_ratio (u : ℝ) (hD : firstAtomOddTailDenominator u ≠ 0) :
     firstAtomEvenTailBalancedDet u =
-      firstAtomEvenTailReserveNumerator u / ((32 : ℝ)^12*firstAtomOddTailDenominator u^4) := by
+      firstAtomEvenTailReserveNumerator u / ((32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ)) := by
   unfold firstAtomEvenTailBalancedDet
   norm_num [firstAtomEvenTailBalanced, firstAtomEvenTailProfile]
   unfold firstAtomOddTailProfile1 firstAtomOddTailProfile2 firstAtomOddTailProfile3
@@ -81,30 +81,30 @@ theorem firstAtomEvenTailBalancedDet_lower {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u �
     linarith
   have hz : 0 ≤ 1-30*u := by linarith
   have hid : 10000*firstAtomEvenTailReserveNumerator u-
-      (32 : ℝ)^12*firstAtomOddTailDenominator u^4 =
-    (354255354766547092947695828992/1171875 : ℝ)*(1-30*u)^0 +
-    (2508957298178177584104143323136/10546875 : ℝ)*(1-30*u)^1 +
-    (956695124815744944344110465024/10546875 : ℝ)*(1-30*u)^2 +
-    (226415409359974459457060995072/10546875 : ℝ)*(1-30*u)^3 +
-    (7294307573291460416864518144/2109375 : ℝ)*(1-30*u)^4 +
-    (4200607945192158422915612672/10546875 : ℝ)*(1-30*u)^5 +
-    (117325328497964755491749888/3515625 : ℝ)*(1-30*u)^6 +
-    (21414592093379284147634176/10546875 : ℝ)*(1-30*u)^7 +
-    (932874188172374759702528/10546875 : ℝ)*(1-30*u)^8 +
-    (628590543391900565504/234375 : ℝ)*(1-30*u)^9 +
-    (114229676951335862272/2109375 : ℝ)*(1-30*u)^10 +
-    (1436413883089682432/2109375 : ℝ)*(1-30*u)^11 +
-    (10870313118072832/2109375 : ℝ)*(1-30*u)^12 +
-    (60009283059712/2109375 : ℝ)*(1-30*u)^13 +
-    (60129542144/703125 : ℝ)*(1-30*u)^14 := by
+      (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ) =
+    (354255354766547092947695828992/1171875 : ℝ)*(1-30*u)^(0 : ℕ) +
+    (2508957298178177584104143323136/10546875 : ℝ)*(1-30*u)^(1 : ℕ) +
+    (956695124815744944344110465024/10546875 : ℝ)*(1-30*u)^(2 : ℕ) +
+    (226415409359974459457060995072/10546875 : ℝ)*(1-30*u)^(3 : ℕ) +
+    (7294307573291460416864518144/2109375 : ℝ)*(1-30*u)^(4 : ℕ) +
+    (4200607945192158422915612672/10546875 : ℝ)*(1-30*u)^(5 : ℕ) +
+    (117325328497964755491749888/3515625 : ℝ)*(1-30*u)^(6 : ℕ) +
+    (21414592093379284147634176/10546875 : ℝ)*(1-30*u)^(7 : ℕ) +
+    (932874188172374759702528/10546875 : ℝ)*(1-30*u)^(8 : ℕ) +
+    (628590543391900565504/234375 : ℝ)*(1-30*u)^(9 : ℕ) +
+    (114229676951335862272/2109375 : ℝ)*(1-30*u)^(10 : ℕ) +
+    (1436413883089682432/2109375 : ℝ)*(1-30*u)^(11 : ℕ) +
+    (10870313118072832/2109375 : ℝ)*(1-30*u)^(12 : ℕ) +
+    (60009283059712/2109375 : ℝ)*(1-30*u)^(13 : ℕ) +
+    (60129542144/703125 : ℝ)*(1-30*u)^(14 : ℕ) := by
     unfold firstAtomEvenTailReserveNumerator firstAtomOddTailDenominator
     ring
   have hr : 0 ≤ 10000*firstAtomEvenTailReserveNumerator u-
-      (32 : ℝ)^12*firstAtomOddTailDenominator u^4 := by
+      (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ) := by
     rw [hid]
     positivity
   rw [firstAtomEvenTailBalancedDet_eq_ratio u hD.ne']
-  apply (le_div_iff₀ (by positivity : 0 < (32 : ℝ)^12*firstAtomOddTailDenominator u^4)).mpr
+  apply (le_div_iff₀ (by positivity : 0 < (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ))).mpr
   nlinarith only [hr]
 
 /-- A fixed denominator margin keeps the new twelfth entry bounded. -/
@@ -143,8 +143,8 @@ theorem firstAtomEvenTailBalanced_abs_le {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 
   have h4 := firstAtomOddScaleSeven_profile4_bounds hu0 hu7
   have h5 := firstAtomOddScaleSeven_profile5_bounds hu0 hu7
   have h6 := firstAtomEvenTailProfile_six_abs_le hu0 hu1
-  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^6-100000000/(32 : ℝ)^6| ≤ 4 := by
-    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^6) (100000000/(32 : ℝ)^6)
+  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)-100000000/(32 : ℝ)^(6 : ℕ)| ≤ 4 := by
+    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)) (100000000/(32 : ℝ)^(6 : ℕ))
     norm_num [abs_div] at ht
     linarith
   fin_cases k

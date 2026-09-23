@@ -9,7 +9,7 @@ formula (3.3): if the heat trace `Θ(t) = Tr e^{−tΔ}` has the small-time expa
 `Θ(t) = a₀/t + a₁ + O(t)` and approaches the dimension `h` of the kernel exponentially fast, then
 
 ```text
-log det' Δ⁻¹ = ∫_0^1 (Θ(t) − a₀/t − a₁) dt/t + ∫_1^∞ (Θ(t) − h) dt/t − Γ'(1)(a₀ − h) .
+log det' Δ⁻¹ = ∫_0^(1 : ℕ) (Θ(t) − a₀/t − a₁) dt/t + ∫_1^∞ (Θ(t) − h) dt/t − Γ'(1)(a₀ − h) .
 ```
 
 Both integrals converge under exactly those two hypotheses, which is proved here.
@@ -19,7 +19,7 @@ The structural point exploited throughout Section 3 of the paper is that the reg
 so they cancel in the difference and
 
 ```text
-log τ(X_s, 𝒪) − log τ(X_s, L) = ∫_0^1 (Θ₁ − Θ₂) dt/t + ∫_1^∞ (Θ₁ − Θ₂) dt/t ,
+log τ(X_s, 𝒪) − log τ(X_s, L) = ∫_0^(1 : ℕ) (Θ₁ − Θ₂) dt/t + ∫_1^∞ (Θ₁ − Θ₂) dt/t ,
 ```
 
 with no regularization left.  That cancellation is the second theorem below, and it is what turns

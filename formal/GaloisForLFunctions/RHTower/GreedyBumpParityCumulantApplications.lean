@@ -46,7 +46,7 @@ theorem greedyBumpRadialBinaryDigit_factorialCumulantOne
 theorem greedyBumpRadialBinaryDigit_factorialCumulantTwo
     (c : ℝ) (p : Nat.Primes) (j : ℕ) :
     (greedyBumpRadialBinaryDigitCount c p j).factorialCumulantTwo =
-      -(radialBinaryDigitOdds c p j / (1 + radialBinaryDigitOdds c p j)) ^ 2 := by
+      -(radialBinaryDigitOdds c p j / (1 + radialBinaryDigitOdds c p j)) ^ (2 : ℕ) := by
   exact greedyBumpBernoulli_factorialCumulantTwo
     (radialBinaryDigitProbability c p j)
 
@@ -54,7 +54,7 @@ theorem greedyBumpRadialBinaryDigit_factorialCumulantTwo
 theorem greedyBumpRadialBinaryDigit_factorialCumulantThree
     (c : ℝ) (p : Nat.Primes) (j : ℕ) :
     (greedyBumpRadialBinaryDigitCount c p j).factorialCumulantThree =
-      2 * (radialBinaryDigitOdds c p j / (1 + radialBinaryDigitOdds c p j)) ^ 3 := by
+      2 * (radialBinaryDigitOdds c p j / (1 + radialBinaryDigitOdds c p j)) ^ (3 : ℕ) := by
   exact greedyBumpBernoulli_factorialCumulantThree
     (radialBinaryDigitProbability c p j)
 

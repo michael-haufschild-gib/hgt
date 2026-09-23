@@ -31,8 +31,8 @@ theorem suzukiTaActualResolventHerglotzEnergy_im_eq_graphEnergy
       z.im *
         (‖suzukiTaSelfAdjointExtension a theta
             ⟨resolventLinear (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v,
-              resolventLinear_mem (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v⟩‖ ^ 2 +
-          ‖resolventLinear (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v‖ ^ 2) := by
+              resolventLinear_mem (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v⟩‖ ^ (2 : ℕ) +
+          ‖resolventLinear (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v‖ ^ (2 : ℕ)) := by
   exact resolventHerglotzEnergy_im_eq_graphEnergy
     (suzukiTaSelfAdjointExtension_isSelfAdjoint a theta) hz v
 

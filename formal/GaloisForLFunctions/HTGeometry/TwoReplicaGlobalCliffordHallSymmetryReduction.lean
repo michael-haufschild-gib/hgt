@@ -423,7 +423,7 @@ theorem finiteProductCliffordDoubledGate_singleSiteQuarterTurn
   ext x y
   rcases x with ⟨x₁, x₂⟩
   rcases y with ⟨y₁, y₂⟩
-  have hI : Complex.I ^ 2 = (-1 : ℂ) := by norm_num
+  have hI : Complex.I ^ (2 : ℕ) = (-1 : ℂ) := by norm_num
   by_cases h₁ : x₁ = y₁ <;> by_cases h₂ : x₂ = y₂ <;>
     simp [finiteTwoReplicaPauliLeft, finiteTwoReplicaPauliRight,
       finiteTwoReplicaPairedPauli, Matrix.smul_apply, Matrix.add_apply,

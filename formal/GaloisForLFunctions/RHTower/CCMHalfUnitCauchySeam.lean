@@ -16,7 +16,7 @@ J_RH = J_safe * H,                              H (x, y) = (x + y - 1)/(x + y).
 The scalar seam `H` is not positive semidefinite on any two distinct points: its two-point minor is
 
 ```text
--(x - y)^2 (2x + 2y - 1) / (4 x y (x + y)^2) < 0 .
+-(x - y)^(2 : ℕ) (2x + 2y - 1) / (4 x y (x + y)^(2 : ℕ)) < 0 .
 ```
 
 So no universal scalar Schur multiplier can transport the safe kernel to the RH kernel.  What does
@@ -102,7 +102,7 @@ theorem integral_exp_ray {x y : ℝ} (h : 0 < x + y) :
 /-- **Equation (6).**  The exact two-point seam minor. -/
 theorem det_seam_two_point {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : 0 < x + y) :
     seamKernel x x * seamKernel y y - seamKernel x y * seamKernel y x
-      = -((x - y) ^ 2 * (2 * x + 2 * y - 1)) / (4 * x * y * (x + y) ^ 2) := by
+      = -((x - y) ^ (2 : ℕ) * (2 * x + 2 * y - 1)) / (4 * x * y * (x + y) ^ (2 : ℕ)) := by
   unfold seamKernel
   have h2x : (2 : ℝ) * x ≠ 0 := by positivity
   have h2y : (2 : ℝ) * y ≠ 0 := by positivity
@@ -118,11 +118,11 @@ theorem det_seam_two_point_neg {x y : ℝ} (hx : 1 / 2 < x) (hy : 1 / 2 < y) (hn
   have hy0 : (0 : ℝ) < y := by linarith
   have hxy : (0 : ℝ) < x + y := by linarith
   rw [det_seam_two_point hx0 hy0 hxy]
-  have hnum : 0 < (x - y) ^ 2 * (2 * x + 2 * y - 1) := by
-    have h1 : 0 < (x - y) ^ 2 := by positivity
+  have hnum : 0 < (x - y) ^ (2 : ℕ) * (2 * x + 2 * y - 1) := by
+    have h1 : 0 < (x - y) ^ (2 : ℕ) := by positivity
     have h2 : 0 < 2 * x + 2 * y - 1 := by linarith
     positivity
-  have hden : 0 < 4 * x * y * (x + y) ^ 2 := by positivity
+  have hden : 0 < 4 * x * y * (x + y) ^ (2 : ℕ) := by positivity
   rw [neg_div, neg_lt_zero]
   positivity
 

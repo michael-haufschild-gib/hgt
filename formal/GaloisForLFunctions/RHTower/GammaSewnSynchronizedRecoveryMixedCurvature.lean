@@ -163,10 +163,10 @@ private theorem tendsto_finset_prod_pureSecondJet
     (P : Finset α) (f : α → ℝ → ℝ) (b : α → ℝ)
     (hf0 : ∀ p ∈ P, Tendsto (f p) (𝓝 (0 : ℝ)) (𝓝 1))
     (hf2 : ∀ p ∈ P,
-      Tendsto (fun x : ℝ => (f p x - 1) / x ^ 2)
+      Tendsto (fun x : ℝ => (f p x - 1) / x ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ)) (𝓝 (b p))) :
     Tendsto
-      (fun x : ℝ => ((∏ p ∈ P, f p x) - 1) / x ^ 2)
+      (fun x : ℝ => ((∏ p ∈ P, f p x) - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ)) (𝓝 (∑ p ∈ P, b p)) := by
   induction P using Finset.induction_on with
   | empty => simp
@@ -187,8 +187,8 @@ private theorem tendsto_finset_prod_pureSecondJet
       have hmain' :
           Tendsto
             (fun x : ℝ =>
-              f p x * (((∏ q ∈ P, f q x) - 1) / x ^ 2) +
-                (f p x - 1) / x ^ 2)
+              f p x * (((∏ q ∈ P, f q x) - 1) / x ^ (2 : ℕ)) +
+                (f p x - 1) / x ^ (2 : ℕ))
             (𝓝[>] (0 : ℝ)) (𝓝 (b p + ∑ q ∈ P, b q)) := by
         convert hmain using 1
         all_goals ring_nf
@@ -205,12 +205,12 @@ theorem tendsto_gammaSewnSynchronizedRecoveryPrimewiseFactor_quadraticJet_zero
     (P : Finset Nat.Primes) :
     Tendsto
       (fun x : ℝ =>
-        ((∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p) - 1) / x ^ 2)
+        ((∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p) - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
-      (𝓝 (∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+      (𝓝 (∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
   apply tendsto_finset_prod_pureSecondJet P
     (fun p x ↦ gammaSewnMobiusValuationContractionMultiplier x p)
-    (fun p ↦ -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2)
+    (fun p ↦ -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))
   · intro p hp
     simpa [gammaSewnMobiusValuationContractionMultiplier_zero] using
       (continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p).tendsto
@@ -223,7 +223,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryCrossFactor_quadraticJet_zero
     (P : Finset Nat.Primes) :
     Tendsto
       (fun x : ℝ =>
-        (gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ 2)
+        (gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P)) := by
   classical
@@ -250,13 +250,13 @@ theorem tendsto_gammaSewnSynchronizedRecoveryCrossFactor_quadraticJet_zero
   have hquot := hdiff.div hM0 one_ne_zero
   change Tendsto
       (fun x : ℝ =>
-        ((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ 2 -
-          ((∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p) - 1) / x ^ 2) / M x)
+        ((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ (2 : ℕ) -
+          ((∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p) - 1) / x ^ (2 : ℕ)) / M x)
       (𝓝[>] (0 : ℝ))
       (𝓝 ((-gammaSewnSynchronizedRecoveryQuadraticCost P -
-        ∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2) / 1)) at hquot
+        ∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) / 1)) at hquot
   have hcost :
-      (∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2) =
+      (∑ p ∈ P, -(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) =
         -∑ p ∈ P, gammaSewnSynchronizedRecoveryQuadraticCost {p} := by
     rw [← Finset.sum_neg_distrib]
     apply Finset.sum_congr rfl
@@ -274,8 +274,8 @@ theorem tendsto_gammaSewnSynchronizedRecoveryCrossFactor_quadraticJet_zero
   have hquot' :
       Tendsto
         (fun x : ℝ =>
-          ((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ 2 -
-            (M x - 1) / x ^ 2) / M x)
+          ((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ (2 : ℕ) -
+            (M x - 1) / x ^ (2 : ℕ)) / M x)
         (𝓝[>] (0 : ℝ))
         (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P)) := by
     simpa only [M, div_one] using hquot
@@ -290,9 +290,9 @@ theorem tendsto_gammaSewnSynchronizedRecoveryCrossFactor_quadraticJet_zero
     dsimp only [M]
     exact Finset.prod_pos fun p hp => gammaSewnMobiusValuationContractionMultiplier_pos x p
   change
-    (((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ 2 -
-      (M x - 1) / x ^ 2) / M x) =
-      (gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ 2
+    (((gammaSewnSynchronizedRecoveryRatio (fun _ : Nat.Primes ↦ (1 : ℝ)) x P - 1) / x ^ (2 : ℕ) -
+      (M x - 1) / x ^ (2 : ℕ)) / M x) =
+      (gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ (2 : ℕ)
   rw [hfactor]
   field_simp [hx.ne', hMpos.ne']
   ring
@@ -338,7 +338,7 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryCrossFactor_sub_one_div_sq_zer
     (P : Finset Nat.Primes) :
     Tendsto
       (fun x : ℝ =>
-        (Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) - 1) / x ^ 2)
+        (Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2)) := by
   have hqjet :=
@@ -353,7 +353,7 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryCrossFactor_sub_one_div_sq_zer
     have hprod' :
         Tendsto
           (fun x : ℝ =>
-            ((gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ 2) * x ^ 2)
+            ((gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ (2 : ℕ)) * x ^ (2 : ℕ))
           (𝓝[>] (0 : ℝ)) (𝓝 0) := by
       simpa using hprod
     apply hprod'.congr'
@@ -383,7 +383,7 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryCrossFactor_sub_one_div_sq_zer
   have hquot :
       Tendsto
         (fun x : ℝ =>
-          ((gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ 2) /
+          ((gammaSewnSynchronizedRecoveryCrossFactor x P - 1) / x ^ (2 : ℕ)) /
             (Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) + 1))
         (𝓝[>] (0 : ℝ))
         (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2)) := by
@@ -403,7 +403,7 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryCrossFactor_sub_one_div_sq_zer
       exact Finset.sum_nonneg fun p hp =>
         Real.log_nonneg (by exact_mod_cast p.property.one_le)
   have hsqrtSq :
-      Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) ^ 2 =
+      Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) ^ (2 : ℕ) =
         gammaSewnSynchronizedRecoveryCrossFactor x P :=
     Real.sq_sqrt hqpos.le
   field_simp [hx.ne', (by positivity :
@@ -421,7 +421,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_sub_prod_singleton_
       (fun x : ℝ =>
         (gammaSewnSynchronizedSignedRecoveryAmplitude nu x P -
             ∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) /
-          (x : ℂ) ^ 2)
+          (x : ℂ) ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 (Complex.ofReal ((-1 : ℝ) ^ P.card) *
         Complex.ofReal (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2))) := by
@@ -453,7 +453,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_sub_prod_singleton_
         (fun x : ℝ =>
           (∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) *
             ((Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) - 1 : ℝ) : ℂ) /
-              (x : ℂ) ^ 2)
+              (x : ℂ) ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ))
         (𝓝 (Complex.ofReal ((-1 : ℝ) ^ P.card) *
           Complex.ofReal (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2))) := by
@@ -461,7 +461,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_sub_prod_singleton_
         Tendsto
           (fun x : ℝ =>
             (∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) *
-              (((Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) - 1) / x ^ 2 : ℝ) : ℂ))
+              (((Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) - 1) / x ^ (2 : ℕ) : ℝ) : ℂ))
           (𝓝[>] (0 : ℝ))
           (𝓝 (Complex.ofReal ((-1 : ℝ) ^ P.card) *
             Complex.ofReal (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2))) := by
@@ -471,19 +471,19 @@ theorem tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_sub_prod_singleton_
     filter_upwards [self_mem_nhdsWithin] with x hx
     change 0 < x at hx
     have hx0 : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
-    have hx2 : (x : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ hx0
+    have hx2 : (x : ℂ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hx0
     field_simp [hx0, hx2]
     push_cast
-    have hinv : (x : ℂ) ^ 2 * (x : ℂ)⁻¹ ^ 2 = 1 := by
+    have hinv : (x : ℂ) ^ (2 : ℕ) * (x : ℂ)⁻¹ ^ (2 : ℕ) = 1 := by
       rw [inv_pow]
       exact mul_inv_cancel₀ hx2
     calc
       _ =
           (∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) *
               (Real.sqrt (gammaSewnSynchronizedRecoveryCrossFactor x P) : ℂ) *
-                ((x : ℂ) ^ 2 * (x : ℂ)⁻¹ ^ 2) -
+                ((x : ℂ) ^ (2 : ℕ) * (x : ℂ)⁻¹ ^ (2 : ℕ)) -
             (∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) *
-              ((x : ℂ) ^ 2 * (x : ℂ)⁻¹ ^ 2) := by ring
+              ((x : ℂ) ^ (2 : ℕ) * (x : ℂ)⁻¹ ^ (2 : ℕ)) := by ring
       _ = _ := by rw [hinv]; ring
   apply hmain.congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
@@ -555,7 +555,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecovery_relative_cross_julia_div_cu_
       (fun x : ℝ =>
         ((gammaSewnSynchronizedSignedRecoveryAmplitude nu x P -
             ∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) *
-          xiWardJuliaCrossDefect z w (x : ℂ)) / (x : ℂ) ^ 3)
+          xiWardJuliaCrossDefect z w (x : ℂ)) / (x : ℂ) ^ (3 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 ((Complex.ofReal ((-1 : ℝ) ^ P.card) *
         Complex.ofReal (-gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly P / 2)) *
@@ -584,7 +584,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecovery_relative_cross_julia_div_cu_
         (fun x : ℝ =>
           ((gammaSewnSynchronizedSignedRecoveryAmplitude nu x P -
             ∏ p ∈ P, gammaSewnSynchronizedSignedRecoveryAmplitude nu x {p}) /
-              (x : ℂ) ^ 2) *
+              (x : ℂ) ^ (2 : ℕ)) *
             (xiWardJuliaCrossDefect z w (x : ℂ) / (x : ℂ)))
         (𝓝[>] (0 : ℝ))
         (𝓝 ((Complex.ofReal ((-1 : ℝ) ^ P.card) *

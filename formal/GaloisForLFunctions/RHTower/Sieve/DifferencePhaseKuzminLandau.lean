@@ -51,7 +51,7 @@ theorem diffPhaseD1_monotoneOn {T s₁ s₂ : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s
 /-- Upper bound for the size of the first derivative. -/
 theorem abs_diffPhaseD1_le {T s₁ s₂ u : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s₂) (hs : s₂ ≤ s₁)
     (hu : 0 < u) :
-    -(T * (s₁ - s₂) / (2 * Real.pi * u ^ 2)) ≤ diffPhaseD1 T s₁ s₂ u := by
+    -(T * (s₁ - s₂) / (2 * Real.pi * u ^ (2 : ℕ))) ≤ diffPhaseD1 T s₁ s₂ u := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hs₁ : (0 : ℝ) ≤ s₁ := le_trans hs₂ hs
   have hΔ : (0 : ℝ) ≤ s₁ - s₂ := by linarith
@@ -61,7 +61,7 @@ theorem abs_diffPhaseD1_le {T s₁ s₂ u : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s�
       = -(T * (s₁ - s₂) / (2 * Real.pi * ((u + s₁) * (u + s₂)))) := by
     rw [diffPhaseD1_eq T hs₁ hs₂ hu]
     field_simp
-  have hbase : u ^ 2 ≤ (u + s₁) * (u + s₂) := by
+  have hbase : u ^ (2 : ℕ) ≤ (u + s₁) * (u + s₂) := by
     nlinarith [mul_nonneg hu.le hs₁, mul_nonneg hu.le hs₂, mul_nonneg hs₁ hs₂]
   rw [hLHS, neg_le_neg_iff]
   exact div_le_div_of_nonneg_left (mul_nonneg hT.le hΔ) (by positivity)
@@ -70,7 +70,7 @@ theorem abs_diffPhaseD1_le {T s₁ s₂ u : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s�
 /-- Lower bound for the size of the first derivative on a range whose right endpoint is `b`. -/
 theorem diffPhaseD1_le_neg {T s₁ s₂ u b : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s₂) (hs : s₂ ≤ s₁)
     (hu : 0 < u) (hub : u ≤ b) (h4 : 4 * s₁ ≤ b) :
-    diffPhaseD1 T s₁ s₂ u ≤ -(8 * (T * (s₁ - s₂)) / (25 * Real.pi * b ^ 2)) := by
+    diffPhaseD1 T s₁ s₂ u ≤ -(8 * (T * (s₁ - s₂)) / (25 * Real.pi * b ^ (2 : ℕ))) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hs₁ : (0 : ℝ) ≤ s₁ := le_trans hs₂ hs
   have hΔ : (0 : ℝ) ≤ s₁ - s₂ := by linarith
@@ -82,7 +82,7 @@ theorem diffPhaseD1_le_neg {T s₁ s₂ u b : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s
     rw [diffPhaseD1_eq T hs₁ hs₂ hu]
     field_simp
   rw [hLHS, neg_le_neg_iff, div_le_div_iff₀ (by positivity) (by positivity)]
-  have hkey : 16 * ((u + s₁) * (u + s₂)) ≤ 25 * b ^ 2 := by
+  have hkey : 16 * ((u + s₁) * (u + s₂)) ≤ 25 * b ^ (2 : ℕ) := by
     have h1 : u + s₁ ≤ 5 / 4 * b := by linarith
     have h2 : u + s₂ ≤ 5 / 4 * b := by linarith
     nlinarith
@@ -93,9 +93,9 @@ theorem diffPhaseD1_le_neg {T s₁ s₂ u b : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s
 range costs only `B²/(T(s₁−s₂))`. -/
 theorem norm_curvedSum_diffPhase_kuzminLandau {T s₁ s₂ : ℝ} (hT : 0 < T) (hs₂ : 0 ≤ s₂)
     (hs : s₂ < s₁) {A B : ℕ} (hA : 1 ≤ A) (hAB : A < B) (h4 : 4 * s₁ ≤ (A : ℝ))
-    (hsmall : T * (s₁ - s₂) / (2 * Real.pi * (A : ℝ) ^ 2) ≤ 1 / 2) :
+    (hsmall : T * (s₁ - s₂) / (2 * Real.pi * (A : ℝ) ^ (2 : ℕ)) ≤ 1 / 2) :
     ‖curvedSum (diffPhase T s₁ s₂) A B‖
-      ≤ 75 * Real.pi * (B : ℝ) ^ 2 / (16 * (T * (s₁ - s₂))) + 1 := by
+      ≤ 75 * Real.pi * (B : ℝ) ^ (2 : ℕ) / (16 * (T * (s₁ - s₂))) + 1 := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hs₁ : (0 : ℝ) < s₁ := lt_of_le_of_lt hs₂ hs
   have hΔ : (0 : ℝ) < s₁ - s₂ := by linarith
@@ -106,7 +106,7 @@ theorem norm_curvedSum_diffPhase_kuzminLandau {T s₁ s₂ : ℝ} (hT : 0 < T) (
   have hABr : (A : ℝ) ≤ (B : ℝ) := by exact_mod_cast hAB.le
   set Y : ℝ := T * (s₁ - s₂) with hYdef
   have hY0 : 0 < Y := by rw [hYdef]; positivity
-  set δ : ℝ := 8 * Y / (25 * Real.pi * (B : ℝ) ^ 2) with hδdef
+  set δ : ℝ := 8 * Y / (25 * Real.pi * (B : ℝ) ^ (2 : ℕ)) with hδdef
   have hδ0 : 0 < δ := by rw [hδdef]; positivity
   -- the span
   have hspan : ((B - A - 1 : ℕ) : ℝ) + (A : ℝ) ≤ (B : ℝ) := by
@@ -121,10 +121,10 @@ theorem norm_curvedSum_diffPhase_kuzminLandau {T s₁ s₂ : ℝ} (hT : 0 < T) (
     intro x hx
     exact ⟨hx.1, le_trans hx.2 (by linarith)⟩
   have hδhalf : δ ≤ 1 / 2 := by
-    have hbound : Y ≤ Real.pi * (A : ℝ) ^ 2 := by
+    have hbound : Y ≤ Real.pi * (A : ℝ) ^ (2 : ℕ) := by
       rw [div_le_iff₀ (by positivity)] at hsmall
       nlinarith [hsmall]
-    have hAB2 : (A : ℝ) ^ 2 ≤ (B : ℝ) ^ 2 := by nlinarith
+    have hAB2 : (A : ℝ) ^ (2 : ℕ) ≤ (B : ℝ) ^ (2 : ℕ) := by nlinarith
     rw [hδdef, div_le_iff₀ (by positivity)]
     nlinarith [hbound, hAB2]
   have hkl := kuzminLandau_interval (diffPhase T s₁ s₂) (diffPhaseD1 T s₁ s₂) (A : ℝ)
@@ -136,12 +136,12 @@ theorem norm_curvedSum_diffPhase_kuzminLandau {T s₁ s₂ : ℝ} (hT : 0 < T) (
       have hxA := (hmem x hx).1
       have hx0 : (0 : ℝ) < x := lt_of_lt_of_le hA0 hxA
       have hup := abs_diffPhaseD1_le hT hs₂ hs.le hx0
-      have hxA2 : (A : ℝ) ^ 2 ≤ x ^ 2 := by nlinarith
-      have hmono : Y / (2 * Real.pi * x ^ 2) ≤ Y / (2 * Real.pi * (A : ℝ) ^ 2) := by
+      have hxA2 : (A : ℝ) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by nlinarith
+      have hmono : Y / (2 * Real.pi * x ^ (2 : ℕ)) ≤ Y / (2 * Real.pi * (A : ℝ) ^ (2 : ℕ)) := by
         apply div_le_div_of_nonneg_left hY0.le (by positivity)
         nlinarith
-      have hhalf : Y / (2 * Real.pi * x ^ 2) ≤ 1 / 2 := le_trans hmono hsmall
-      have : (-1 : ℝ) + δ ≤ -(Y / (2 * Real.pi * x ^ 2)) := by
+      have hhalf : Y / (2 * Real.pi * x ^ (2 : ℕ)) ≤ 1 / 2 := le_trans hmono hsmall
+      have : (-1 : ℝ) + δ ≤ -(Y / (2 * Real.pi * x ^ (2 : ℕ))) := by
         linarith [hδhalf, hhalf]
       exact le_trans (by push_cast; linarith) hup)
     (fun x hx => by
@@ -150,7 +150,7 @@ theorem norm_curvedSum_diffPhase_kuzminLandau {T s₁ s₂ : ℝ} (hT : 0 < T) (
       have hx0 : (0 : ℝ) < x := lt_of_lt_of_le hA0 hxA
       have h4B : 4 * s₁ ≤ (B : ℝ) := le_trans h4 hABr
       have hlow := diffPhaseD1_le_neg hT hs₂ hs.le hx0 hxB h4B
-      have hval : -(8 * Y / (25 * Real.pi * (B : ℝ) ^ 2)) = -δ := by rw [hδdef]
+      have hval : -(8 * Y / (25 * Real.pi * (B : ℝ) ^ (2 : ℕ))) = -δ := by rw [hδdef]
       rw [hval] at hlow
       have : diffPhaseD1 T s₁ s₂ x ≤ ((-1 : ℤ) : ℝ) + 1 - δ := by push_cast; linarith
       exact this)

@@ -10,65 +10,65 @@ private def hA (u t : ℝ) := 37*u+50*t
 private def hB (u t : ℝ) := 10*u+10*t
 private def hTaylor (n : ℕ) (A B v : ℝ) : ℝ :=
   ∑ j ∈ Finset.range (n+1), (20*A-49*B)^j*v^j*(20*B)^(n-j)/(j.factorial : ℝ)
-private def hScore6 (A B r : ℝ) := (-64 : ℝ)*A^1*r^1*B^(6-1) + (1984 : ℝ)*A^2*r^2*B^(6-2) + (-5760 : ℝ)*A^3*r^3*B^(6-3) + (4160 : ℝ)*A^4*r^4*B^(6-4) + (-960 : ℝ)*A^5*r^5*B^(6-5) + (64 : ℝ)*A^6*r^6*B^(6-6)
+private def hScore6 (A B r : ℝ) := (-64 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(6-1) + (1984 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(6-2) + (-5760 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(6-3) + (4160 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(6-4) + (-960 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(6-5) + (64 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(6-6)
 
 private theorem weighted_score_poly6 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^6*hTaylor 6 (hA u t) (hB u t) v-
-      20^6*(hB u t)^6*((-1 : ℝ)^6*hScore6 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(6 : ℕ)*hTaylor 6 (hA u t) (hB u t) v-
+      20^(6 : ℕ)*(hB u t)^(6 : ℕ)*((-1 : ℝ)^(6 : ℕ)*hScore6 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore6 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore7 (A B r : ℝ) := (-128 : ℝ)*A^1*r^1*B^(7-1) + (8064 : ℝ)*A^2*r^2*B^(7-2) + (-38528 : ℝ)*A^3*r^3*B^(7-3) + (44800 : ℝ)*A^4*r^4*B^(7-4) + (-17920 : ℝ)*A^5*r^5*B^(7-5) + (2688 : ℝ)*A^6*r^6*B^(7-6) + (-128 : ℝ)*A^7*r^7*B^(7-7)
+private def hScore7 (A B r : ℝ) := (-128 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(7-1) + (8064 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(7-2) + (-38528 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(7-3) + (44800 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(7-4) + (-17920 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(7-5) + (2688 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(7-6) + (-128 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(7-7)
 
 private theorem weighted_score_poly7 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^7*hTaylor 7 (hA u t) (hB u t) v-
-      20^7*(hB u t)^7*((-1 : ℝ)^7*hScore7 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(7 : ℕ)*hTaylor 7 (hA u t) (hB u t) v-
+      20^(7 : ℕ)*(hB u t)^(7 : ℕ)*((-1 : ℝ)^(7 : ℕ)*hScore7 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore7 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore8 (A B r : ℝ) := (-256 : ℝ)*A^1*r^1*B^(8-1) + (32512 : ℝ)*A^2*r^2*B^(8-2) + (-247296 : ℝ)*A^3*r^3*B^(8-3) + (435456 : ℝ)*A^4*r^4*B^(8-4) + (-268800 : ℝ)*A^5*r^5*B^(8-5) + (68096 : ℝ)*A^6*r^6*B^(8-6) + (-7168 : ℝ)*A^7*r^7*B^(8-7) + (256 : ℝ)*A^8*r^8*B^(8-8)
+private def hScore8 (A B r : ℝ) := (-256 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(8-1) + (32512 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(8-2) + (-247296 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(8-3) + (435456 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(8-4) + (-268800 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(8-5) + (68096 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(8-6) + (-7168 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(8-7) + (256 : ℝ)*A^(8 : ℕ)*r^(8 : ℕ)*B^(8-8)
 
 private theorem weighted_score_poly8 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^8*hTaylor 8 (hA u t) (hB u t) v-
-      20^8*(hB u t)^8*((-1 : ℝ)^8*hScore8 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(8 : ℕ)*hTaylor 8 (hA u t) (hB u t) v-
+      20^(8 : ℕ)*(hB u t)^(8 : ℕ)*((-1 : ℝ)^(8 : ℕ)*hScore8 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore8 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore9 (A B r : ℝ) := (-512 : ℝ)*A^1*r^1*B^(9-1) + (130560 : ℝ)*A^2*r^2*B^(9-2) + (-1548800 : ℝ)*A^3*r^3*B^(9-3) + (3978240 : ℝ)*A^4*r^4*B^(9-4) + (-3558912 : ℝ)*A^5*r^5*B^(9-5) + (1354752 : ℝ)*A^6*r^6*B^(9-6) + (-236544 : ℝ)*A^7*r^7*B^(9-7) + (18432 : ℝ)*A^8*r^8*B^(9-8) + (-512 : ℝ)*A^9*r^9*B^(9-9)
+private def hScore9 (A B r : ℝ) := (-512 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(9-1) + (130560 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(9-2) + (-1548800 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(9-3) + (3978240 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(9-4) + (-3558912 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(9-5) + (1354752 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(9-6) + (-236544 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(9-7) + (18432 : ℝ)*A^(8 : ℕ)*r^(8 : ℕ)*B^(9-8) + (-512 : ℝ)*A^(9 : ℕ)*r^(9 : ℕ)*B^(9-9)
 
 private theorem weighted_score_poly9 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^9*hTaylor 9 (hA u t) (hB u t) v-
-      20^9*(hB u t)^9*((-1 : ℝ)^9*hScore9 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(9 : ℕ)*hTaylor 9 (hA u t) (hB u t) v-
+      20^(9 : ℕ)*(hB u t)^(9 : ℕ)*((-1 : ℝ)^(9 : ℕ)*hScore9 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore9 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore10 (A B r : ℝ) := (-1024 : ℝ)*A^1*r^1*B^(10-1) + (523264 : ℝ)*A^2*r^2*B^(10-2) + (-9553920 : ℝ)*A^3*r^3*B^(10-3) + (34923520 : ℝ)*A^4*r^4*B^(10-4) + (-43545600 : ℝ)*A^5*r^5*B^(10-5) + (23374848 : ℝ)*A^6*r^6*B^(10-6) + (-6021120 : ℝ)*A^7*r^7*B^(10-7) + (768000 : ℝ)*A^8*r^8*B^(10-8) + (-46080 : ℝ)*A^9*r^9*B^(10-9) + (1024 : ℝ)*A^10*r^10*B^(10-10)
+private def hScore10 (A B r : ℝ) := (-1024 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(10-1) + (523264 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(10-2) + (-9553920 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(10-3) + (34923520 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(10-4) + (-43545600 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(10-5) + (23374848 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(10-6) + (-6021120 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(10-7) + (768000 : ℝ)*A^(8 : ℕ)*r^(8 : ℕ)*B^(10-8) + (-46080 : ℝ)*A^(9 : ℕ)*r^(9 : ℕ)*B^(10-9) + (1024 : ℝ)*A^(10 : ℕ)*r^(10 : ℕ)*B^(10-10)
 
 private theorem weighted_score_poly10 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^10*hTaylor 10 (hA u t) (hB u t) v-
-      20^10*(hB u t)^10*((-1 : ℝ)^10*hScore10 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(10 : ℕ)*hTaylor 10 (hA u t) (hB u t) v-
+      20^(10 : ℕ)*(hB u t)^(10 : ℕ)*((-1 : ℝ)^(10 : ℕ)*hScore10 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore10 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore11 (A B r : ℝ) := (-2048 : ℝ)*A^1*r^1*B^(11-1) + (2095104 : ℝ)*A^2*r^2*B^(11-2) + (-58370048 : ℝ)*A^3*r^3*B^(11-3) + (298496000 : ℝ)*A^4*r^4*B^(11-4) + (-505303040 : ℝ)*A^5*r^5*B^(11-5) + (367589376 : ℝ)*A^6*r^6*B^(11-6) + (-131045376 : ℝ)*A^7*r^7*B^(11-7) + (24330240 : ℝ)*A^8*r^8*B^(11-8) + (-2365440 : ℝ)*A^9*r^9*B^(11-9) + (112640 : ℝ)*A^10*r^10*B^(11-10) + (-2048 : ℝ)*A^11*r^11*B^(11-11)
+private def hScore11 (A B r : ℝ) := (-2048 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(11-1) + (2095104 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(11-2) + (-58370048 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(11-3) + (298496000 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(11-4) + (-505303040 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(11-5) + (367589376 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(11-6) + (-131045376 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(11-7) + (24330240 : ℝ)*A^(8 : ℕ)*r^(8 : ℕ)*B^(11-8) + (-2365440 : ℝ)*A^(9 : ℕ)*r^(9 : ℕ)*B^(11-9) + (112640 : ℝ)*A^(10 : ℕ)*r^(10 : ℕ)*B^(11-10) + (-2048 : ℝ)*A^(11 : ℕ)*r^(11 : ℕ)*B^(11-11)
 
 private theorem weighted_score_poly11 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^11*hTaylor 11 (hA u t) (hB u t) v-
-      20^11*(hB u t)^11*((-1 : ℝ)^11*hScore11 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(11 : ℕ)*hTaylor 11 (hA u t) (hB u t) v-
+      20^(11 : ℕ)*(hB u t)^(11 : ℕ)*((-1 : ℝ)^(11 : ℕ)*hScore11 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore11 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
   positivity
-private def hScore12 (A B r : ℝ) := (-4096 : ℝ)*A^1*r^1*B^(12-1) + (8384512 : ℝ)*A^2*r^2*B^(12-2) + (-354410496 : ℝ)*A^3*r^3*B^(12-3) + (2504708096 : ℝ)*A^4*r^4*B^(12-4) + (-5650022400 : ℝ)*A^5*r^5*B^(12-5) + (5421678592 : ℝ)*A^6*r^6*B^(12-6) + (-2569814016 : ℝ)*A^7*r^7*B^(12-7) + (651374592 : ℝ)*A^8*r^8*B^(12-8) + (-91238400 : ℝ)*A^9*r^9*B^(12-9) + (6983680 : ℝ)*A^10*r^10*B^(12-10) + (-270336 : ℝ)*A^11*r^11*B^(12-11) + (4096 : ℝ)*A^12*r^12*B^(12-12)
+private def hScore12 (A B r : ℝ) := (-4096 : ℝ)*A^(1 : ℕ)*r^(1 : ℕ)*B^(12-1) + (8384512 : ℝ)*A^(2 : ℕ)*r^(2 : ℕ)*B^(12-2) + (-354410496 : ℝ)*A^(3 : ℕ)*r^(3 : ℕ)*B^(12-3) + (2504708096 : ℝ)*A^(4 : ℕ)*r^(4 : ℕ)*B^(12-4) + (-5650022400 : ℝ)*A^(5 : ℕ)*r^(5 : ℕ)*B^(12-5) + (5421678592 : ℝ)*A^(6 : ℕ)*r^(6 : ℕ)*B^(12-6) + (-2569814016 : ℝ)*A^(7 : ℕ)*r^(7 : ℕ)*B^(12-7) + (651374592 : ℝ)*A^(8 : ℕ)*r^(8 : ℕ)*B^(12-8) + (-91238400 : ℝ)*A^(9 : ℕ)*r^(9 : ℕ)*B^(12-9) + (6983680 : ℝ)*A^(10 : ℕ)*r^(10 : ℕ)*B^(12-10) + (-270336 : ℝ)*A^(11 : ℕ)*r^(11 : ℕ)*B^(12-11) + (4096 : ℝ)*A^(12 : ℕ)*r^(12 : ℕ)*B^(12-12)
 
 private theorem weighted_score_poly12 {u t v : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hv : 0 ≤ v) :
-    0 ≤ (3/4)*(16*hA u t)^12*hTaylor 12 (hA u t) (hB u t) v-
-      20^12*(hB u t)^12*((-1 : ℝ)^12*hScore12 (hA u t) (hB u t) (8+v)) := by
+    0 ≤ (3/4)*(16*hA u t)^(12 : ℕ)*hTaylor 12 (hA u t) (hB u t) v-
+      20^(12 : ℕ)*(hB u t)^(12 : ℕ)*((-1 : ℝ)^(12 : ℕ)*hScore12 (hA u t) (hB u t) (8+v)) := by
   unfold hTaylor hScore12 hA hB
   norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.factorial,Nat.succ_eq_add_one,Nat.cast_mul,Nat.cast_add]
   ring_nf
@@ -95,23 +95,23 @@ private theorem hTaylor_scale (n : ℕ) (q v : ℝ) :
 
 private theorem weighted_score_taylor6 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^6*laplaceCoolingJet 6 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^6*truncatedExp 6 ((q-49/20)*v) := by
+    (-1 : ℝ)^(6 : ℕ)*laplaceCoolingJet 6 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(6 : ℕ)*truncatedExp 6 ((q-49/20)*v) := by
   have h := weighted_score_poly6 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore6 (130*q) 130 (8+v) =
-      (130 : ℝ)^6*laplaceCoolingJet 6 0 (q*(8+v)) := by
+      (130 : ℝ)^(6 : ℕ)*laplaceCoolingJet 6 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_6]
     unfold hScore6
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^6*130^6*
-      ((3/4)*(16*q)^6*truncatedExp 6 ((q-49/20)*v)-
-        (-1 : ℝ)^6*laplaceCoolingJet 6 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(6 : ℕ)*130^(6 : ℕ)*
+      ((3/4)*(16*q)^(6 : ℕ)*truncatedExp 6 ((q-49/20)*v)-
+        (-1 : ℝ)^(6 : ℕ)*laplaceCoolingJet 6 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -119,23 +119,23 @@ private theorem weighted_score_taylor6 {q v : ℝ}
 
 private theorem weighted_score_taylor7 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^7*laplaceCoolingJet 7 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^7*truncatedExp 7 ((q-49/20)*v) := by
+    (-1 : ℝ)^(7 : ℕ)*laplaceCoolingJet 7 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(7 : ℕ)*truncatedExp 7 ((q-49/20)*v) := by
   have h := weighted_score_poly7 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore7 (130*q) 130 (8+v) =
-      (130 : ℝ)^7*laplaceCoolingJet 7 0 (q*(8+v)) := by
+      (130 : ℝ)^(7 : ℕ)*laplaceCoolingJet 7 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_7]
     unfold hScore7
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^7*130^7*
-      ((3/4)*(16*q)^7*truncatedExp 7 ((q-49/20)*v)-
-        (-1 : ℝ)^7*laplaceCoolingJet 7 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(7 : ℕ)*130^(7 : ℕ)*
+      ((3/4)*(16*q)^(7 : ℕ)*truncatedExp 7 ((q-49/20)*v)-
+        (-1 : ℝ)^(7 : ℕ)*laplaceCoolingJet 7 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -143,23 +143,23 @@ private theorem weighted_score_taylor7 {q v : ℝ}
 
 private theorem weighted_score_taylor8 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^8*laplaceCoolingJet 8 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^8*truncatedExp 8 ((q-49/20)*v) := by
+    (-1 : ℝ)^(8 : ℕ)*laplaceCoolingJet 8 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(8 : ℕ)*truncatedExp 8 ((q-49/20)*v) := by
   have h := weighted_score_poly8 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore8 (130*q) 130 (8+v) =
-      (130 : ℝ)^8*laplaceCoolingJet 8 0 (q*(8+v)) := by
+      (130 : ℝ)^(8 : ℕ)*laplaceCoolingJet 8 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_8]
     unfold hScore8
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^8*130^8*
-      ((3/4)*(16*q)^8*truncatedExp 8 ((q-49/20)*v)-
-        (-1 : ℝ)^8*laplaceCoolingJet 8 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(8 : ℕ)*130^(8 : ℕ)*
+      ((3/4)*(16*q)^(8 : ℕ)*truncatedExp 8 ((q-49/20)*v)-
+        (-1 : ℝ)^(8 : ℕ)*laplaceCoolingJet 8 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -167,23 +167,23 @@ private theorem weighted_score_taylor8 {q v : ℝ}
 
 private theorem weighted_score_taylor9 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^9*laplaceCoolingJet 9 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^9*truncatedExp 9 ((q-49/20)*v) := by
+    (-1 : ℝ)^(9 : ℕ)*laplaceCoolingJet 9 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(9 : ℕ)*truncatedExp 9 ((q-49/20)*v) := by
   have h := weighted_score_poly9 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore9 (130*q) 130 (8+v) =
-      (130 : ℝ)^9*laplaceCoolingJet 9 0 (q*(8+v)) := by
+      (130 : ℝ)^(9 : ℕ)*laplaceCoolingJet 9 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_9]
     unfold hScore9
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^9*130^9*
-      ((3/4)*(16*q)^9*truncatedExp 9 ((q-49/20)*v)-
-        (-1 : ℝ)^9*laplaceCoolingJet 9 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(9 : ℕ)*130^(9 : ℕ)*
+      ((3/4)*(16*q)^(9 : ℕ)*truncatedExp 9 ((q-49/20)*v)-
+        (-1 : ℝ)^(9 : ℕ)*laplaceCoolingJet 9 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -191,23 +191,23 @@ private theorem weighted_score_taylor9 {q v : ℝ}
 
 private theorem weighted_score_taylor10 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^10*laplaceCoolingJet 10 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^10*truncatedExp 10 ((q-49/20)*v) := by
+    (-1 : ℝ)^(10 : ℕ)*laplaceCoolingJet 10 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(10 : ℕ)*truncatedExp 10 ((q-49/20)*v) := by
   have h := weighted_score_poly10 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore10 (130*q) 130 (8+v) =
-      (130 : ℝ)^10*laplaceCoolingJet 10 0 (q*(8+v)) := by
+      (130 : ℝ)^(10 : ℕ)*laplaceCoolingJet 10 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_10]
     unfold hScore10
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^10*130^10*
-      ((3/4)*(16*q)^10*truncatedExp 10 ((q-49/20)*v)-
-        (-1 : ℝ)^10*laplaceCoolingJet 10 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(10 : ℕ)*130^(10 : ℕ)*
+      ((3/4)*(16*q)^(10 : ℕ)*truncatedExp 10 ((q-49/20)*v)-
+        (-1 : ℝ)^(10 : ℕ)*laplaceCoolingJet 10 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -215,23 +215,23 @@ private theorem weighted_score_taylor10 {q v : ℝ}
 
 private theorem weighted_score_taylor11 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^11*laplaceCoolingJet 11 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^11*truncatedExp 11 ((q-49/20)*v) := by
+    (-1 : ℝ)^(11 : ℕ)*laplaceCoolingJet 11 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(11 : ℕ)*truncatedExp 11 ((q-49/20)*v) := by
   have h := weighted_score_poly11 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore11 (130*q) 130 (8+v) =
-      (130 : ℝ)^11*laplaceCoolingJet 11 0 (q*(8+v)) := by
+      (130 : ℝ)^(11 : ℕ)*laplaceCoolingJet 11 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_11]
     unfold hScore11
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^11*130^11*
-      ((3/4)*(16*q)^11*truncatedExp 11 ((q-49/20)*v)-
-        (-1 : ℝ)^11*laplaceCoolingJet 11 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(11 : ℕ)*130^(11 : ℕ)*
+      ((3/4)*(16*q)^(11 : ℕ)*truncatedExp 11 ((q-49/20)*v)-
+        (-1 : ℝ)^(11 : ℕ)*laplaceCoolingJet 11 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
@@ -239,23 +239,23 @@ private theorem weighted_score_taylor11 {q v : ℝ}
 
 private theorem weighted_score_taylor12 {q v : ℝ}
     (hq : 37/10 ≤ q) (hqu : q ≤ 5) (hv : 0 ≤ v) :
-    (-1 : ℝ)^12*laplaceCoolingJet 12 0 (q*(8+v)) ≤
-      (3/4)*(16*q)^12*truncatedExp 12 ((q-49/20)*v) := by
+    (-1 : ℝ)^(12 : ℕ)*laplaceCoolingJet 12 0 (q*(8+v)) ≤
+      (3/4)*(16*q)^(12 : ℕ)*truncatedExp 12 ((q-49/20)*v) := by
   have h := weighted_score_poly12 (u:=50-10*q) (t:=10*q-37)
     (by linarith) (by linarith) hv
   have hAq : hA (50-10*q) (10*q-37) = 130*q := by unfold hA; ring
   have hBq : hB (50-10*q) (10*q-37) = 130 := by unfold hB; ring
   rw [hAq,hBq] at h
   have hs : hScore12 (130*q) 130 (8+v) =
-      (130 : ℝ)^12*laplaceCoolingJet 12 0 (q*(8+v)) := by
+      (130 : ℝ)^(12 : ℕ)*laplaceCoolingJet 12 0 (q*(8+v)) := by
     rw [laplaceCoolingJet_12]
     unfold hScore12
     norm_num
     ring
   rw [hs,hTaylor_scale] at h
-  have he : 0 ≤ (2600 : ℝ)^12*130^12*
-      ((3/4)*(16*q)^12*truncatedExp 12 ((q-49/20)*v)-
-        (-1 : ℝ)^12*laplaceCoolingJet 12 0 (q*(8+v))) := by
+  have he : 0 ≤ (2600 : ℝ)^(12 : ℕ)*130^(12 : ℕ)*
+      ((3/4)*(16*q)^(12 : ℕ)*truncatedExp 12 ((q-49/20)*v)-
+        (-1 : ℝ)^(12 : ℕ)*laplaceCoolingJet 12 0 (q*(8+v))) := by
     convert h using 1
     ring
   have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he

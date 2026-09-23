@@ -34,7 +34,7 @@ theorem clopenKernel_firstSecondKind_complete_polarization
       BoundedKernel s (x : ℂ) ∧
       FirstKindBounded s (x : ℂ) ∧
       0 < christoffelLimit s x ∧
-      Summable (fun k => ((monicOrtho s k).eval x) ^ 2 /
+      Summable (fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k)) ∧
       Tendsto (fun k => (orthonormalPoly s k).eval x) atTop (nhds 0) ∧
       ∀ C : ℝ, ∃ n : ℕ,
@@ -49,7 +49,7 @@ theorem clopenKernel_firstSecondKind_complete_polarization
     (firstKindBounded_iff_christoffelLimit_pos h x).mp hfirst
   have hsumComplex :=
     summable_kernel_everywhere_of_isClosed h hclosed hz0 (x : ℂ)
-  have hsum : Summable (fun k => ((monicOrtho s k).eval x) ^ 2 /
+  have hsum : Summable (fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) := by
     convert hsumComplex using 1
     funext k

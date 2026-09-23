@@ -7,12 +7,12 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 # A continuous Euler pair with a quadratic logarithmic counting remainder
 
 For each real `g`, two nonnegative densities have transforms equal to
-`Z_g(s) = ((s-2/3)^2+g^2)(s+1/3)/((s-1)s^2)` on `Re s > 1`: the logarithmic-prime
+`Z_g(s) = ((s-2/3)^(2 : ℕ)+g^(2 : ℕ))(s+1/3)/((s-1)s^(2 : ℕ))` on `Re s > 1`: the logarithmic-prime
 density through the exponential of its Laplace integral, and the integer density through
 its Laplace integral with a unit atom at zero. The latter's cumulative function is explicit.
 
 One fixed pair, `g=1`, has counting remainder
-`-13/27 - (40/27) log x - (13/54)(log x)^2`, hence error `o(x^e)` for every `e>0`,
+`-13/27 - (40/27) log x - (13/54)(log x)^(2 : ℕ)`, hence error `o(x^e)` for every `e>0`,
 and a genuine nonreal zero at `2/3+i`. The prime density is nonnegative by the exponential
 factorization for poles `{1,0,0}` and zeros `{2/3,2/3,-1/3}`, followed by `cos <= 1`.
 Frullani integrals and elementary exponential integrals give the two transforms.
@@ -209,7 +209,7 @@ theorem exp_integral_primeDensity (g : ℝ) {s : ℂ} (hs : 1 < s.re) :
   unfold zeta
   have hf : (s - 2 / 3 - (g : ℂ) * Complex.I) * (s - 2 / 3 + (g : ℂ) * Complex.I) =
       (s - 2 / 3) ^ 2 + (g : ℂ) ^ 2 := by
-    linear_combination -(g : ℂ)^2 * Complex.I_sq
+    linear_combination -(g : ℂ)^(2 : ℕ) * Complex.I_sq
   rw [← hf]
   field_simp
 

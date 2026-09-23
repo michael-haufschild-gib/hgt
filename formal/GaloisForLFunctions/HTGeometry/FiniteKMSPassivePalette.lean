@@ -38,18 +38,18 @@ theorem denseRange_universalKMSRat : DenseRange universalKMSRat := by
 
 /-- Every real square is a cluster value of the squared rational enumeration. -/
 theorem sq_mem_closure_range_universalKMSRat_sq (x : ℝ) :
-    x ^ 2 ∈ closure (Set.range fun N => universalKMSRat N ^ 2) := by
+    x ^ (2 : ℕ) ∈ closure (Set.range fun N => universalKMSRat N ^ (2 : ℕ)) := by
   have hx : x ∈ closure (Set.range universalKMSRat) :=
     denseRange_universalKMSRat x
-  have himage : x ^ 2 ∈
-      (fun y : ℝ => y ^ 2) '' closure (Set.range universalKMSRat) :=
+  have himage : x ^ (2 : ℕ) ∈
+      (fun y : ℝ => y ^ (2 : ℕ)) '' closure (Set.range universalKMSRat) :=
     ⟨x, hx, rfl⟩
-  have hcontinuous : Continuous (fun y : ℝ => y ^ 2) :=
+  have hcontinuous : Continuous (fun y : ℝ => y ^ (2 : ℕ)) :=
     continuous_id.pow 2
   have hclosure := image_closure_subset_closure_image hcontinuous himage
   have hrange :
-      (fun y : ℝ => y ^ 2) '' Set.range universalKMSRat =
-        Set.range (fun N => universalKMSRat N ^ 2) := by
+      (fun y : ℝ => y ^ (2 : ℕ)) '' Set.range universalKMSRat =
+        Set.range (fun N => universalKMSRat N ^ (2 : ℕ)) := by
     ext y
     constructor
     · rintro ⟨_, ⟨N, rfl⟩, rfl⟩
@@ -60,7 +60,7 @@ theorem sq_mem_closure_range_universalKMSRat_sq (x : ℝ) :
 
 /-- The squared rational enumeration is dense in the nonnegative ray. -/
 theorem nonneg_mem_closure_range_universalKMSRat_sq {x : ℝ} (hx : 0 ≤ x) :
-    x ∈ closure (Set.range fun N => universalKMSRat N ^ 2) := by
+    x ∈ closure (Set.range fun N => universalKMSRat N ^ (2 : ℕ)) := by
   rw [← Real.sq_sqrt hx]
   exact sq_mem_closure_range_universalKMSRat_sq (Real.sqrt x)
 
@@ -75,7 +75,7 @@ def universalOneStateKMSAmplitude (N : ℕ) (_a _b : Fin 1) : ℂ :=
 theorem universalOneStateKMSIntensity_eq_sq (N : ℕ) (a b : Fin 1) :
     finiteKMSWightmanTransitionIntensity 0
       (universalOneStateKMSEnergy N) (universalOneStateKMSAmplitude N) a b =
-        universalKMSRat N ^ 2 := by
+        universalKMSRat N ^ (2 : ℕ) := by
   simp [finiteKMSWightmanTransitionIntensity, finiteKMSWightmanWeight,
     finiteGibbsPartition, wightmanTransitionIntensity,
     universalOneStateKMSEnergy, universalOneStateKMSAmplitude,
@@ -87,7 +87,7 @@ theorem universalOneStateKMSPassiveResponse_im (N : ℕ) (z : ℂ) :
       (finiteKMSWightmanTransitionIntensity 0
         (universalOneStateKMSEnergy N) (universalOneStateKMSAmplitude N))
       (universalOneStateKMSEnergy N) z).im =
-        -(universalKMSRat N ^ 2 * z.im) / Complex.normSq z := by
+        -(universalKMSRat N ^ (2 : ℕ) * z.im) / Complex.normSq z := by
   rw [finiteTransitionPassiveResponse_im]
   simp only [Fin.sum_univ_one]
   rw [universalOneStateKMSIntensity_eq_sq]
@@ -114,23 +114,23 @@ theorem Iic_subset_closure_range_universalOneStateKMSPassiveResponse_im
     dsimp only [t]
     exact div_nonneg (mul_nonneg (neg_nonneg.mpr hy) hnorm.le) hz.le
   have htclosure :
-      t ∈ closure (Set.range fun N => universalKMSRat N ^ 2) :=
+      t ∈ closure (Set.range fun N => universalKMSRat N ^ (2 : ℕ)) :=
     nonneg_mem_closure_range_universalKMSRat_sq ht
   let phi : ℝ → ℝ := fun u => -(u * z.im) / Complex.normSq z
   have hphi : Continuous phi := by
     fun_prop
   have hphit : phi t ∈
-      phi '' closure (Set.range fun N => universalKMSRat N ^ 2) :=
+      phi '' closure (Set.range fun N => universalKMSRat N ^ (2 : ℕ)) :=
     ⟨t, htclosure, rfl⟩
   have hmapped : phi t ∈ closure
-      (phi '' Set.range fun N => universalKMSRat N ^ 2) :=
+      (phi '' Set.range fun N => universalKMSRat N ^ (2 : ℕ)) :=
     image_closure_subset_closure_image hphi hphit
   have hvalue : phi t = y := by
     dsimp only [phi, t]
     field_simp [hz.ne', hnorm.ne']
   rw [hvalue] at hmapped
   have hrange :
-      phi '' Set.range (fun N => universalKMSRat N ^ 2) =
+      phi '' Set.range (fun N => universalKMSRat N ^ (2 : ℕ)) =
         Set.range (fun N =>
           (finiteTransitionPassiveResponse
             (finiteKMSWightmanTransitionIntensity 0
@@ -145,12 +145,12 @@ theorem Iic_subset_closure_range_universalOneStateKMSPassiveResponse_im
           (finiteKMSWightmanTransitionIntensity 0
             (universalOneStateKMSEnergy N) (universalOneStateKMSAmplitude N))
           (universalOneStateKMSEnergy N) z).im =
-            phi (universalKMSRat N ^ 2)
+            phi (universalKMSRat N ^ (2 : ℕ))
       rw [universalOneStateKMSPassiveResponse_im]
     · rintro ⟨N, rfl⟩
-      refine ⟨universalKMSRat N ^ 2, ⟨N, rfl⟩, ?_⟩
+      refine ⟨universalKMSRat N ^ (2 : ℕ), ⟨N, rfl⟩, ?_⟩
       change
-        phi (universalKMSRat N ^ 2) =
+        phi (universalKMSRat N ^ (2 : ℕ)) =
           (finiteTransitionPassiveResponse
             (finiteKMSWightmanTransitionIntensity 0
               (universalOneStateKMSEnergy N) (universalOneStateKMSAmplitude N))

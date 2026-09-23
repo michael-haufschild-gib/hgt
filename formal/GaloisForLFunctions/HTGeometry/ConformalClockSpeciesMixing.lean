@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Spectral gap of a real symmetric mass matrix with diagonal entries `a, d` and mixing `b`. -/
 noncomputable def massMixingGap (a b d : ℝ) : ℝ :=
-  Real.sqrt ((a - d) ^ 2 + 4 * b ^ 2)
+  Real.sqrt ((a - d) ^ (2 : ℕ) + 4 * b ^ (2 : ℕ))
 
 /-- Upper calibrated squared mass of a mixed clock pair. -/
 noncomputable def massEigenvalueHigh (a b d : ℝ) : ℝ :=
@@ -32,20 +32,20 @@ theorem massMixingGap_nonneg (a b d : ℝ) : 0 ≤ massMixingGap a b d :=
   Real.sqrt_nonneg _
 
 theorem sq_massMixingGap (a b d : ℝ) :
-    massMixingGap a b d ^ 2 = (a - d) ^ 2 + 4 * b ^ 2 := by
+    massMixingGap a b d ^ (2 : ℕ) = (a - d) ^ (2 : ℕ) + 4 * b ^ (2 : ℕ) := by
   refine Real.sq_sqrt ?_
   positivity
 
 /-- The upper eigenvalue is a root of the characteristic polynomial. -/
 theorem massEigenvalueHigh_isRoot (a b d : ℝ) :
-    massEigenvalueHigh a b d ^ 2 - (a + d) * massEigenvalueHigh a b d + (a * d - b ^ 2) = 0 := by
+    massEigenvalueHigh a b d ^ (2 : ℕ) - (a + d) * massEigenvalueHigh a b d + (a * d - b ^ (2 : ℕ)) = 0 := by
   have hsq := sq_massMixingGap a b d
   simp only [massEigenvalueHigh]
   nlinarith [hsq]
 
 /-- The lower eigenvalue is a root of the characteristic polynomial. -/
 theorem massEigenvalueLow_isRoot (a b d : ℝ) :
-    massEigenvalueLow a b d ^ 2 - (a + d) * massEigenvalueLow a b d + (a * d - b ^ 2) = 0 := by
+    massEigenvalueLow a b d ^ (2 : ℕ) - (a + d) * massEigenvalueLow a b d + (a * d - b ^ (2 : ℕ)) = 0 := by
   have hsq := sq_massMixingGap a b d
   simp only [massEigenvalueLow]
   nlinarith [hsq]
@@ -63,20 +63,20 @@ theorem massMixingGap_eq_abs_sub_iff (a b d : ℝ) :
   · intro hEq
     have hsq := sq_massMixingGap a b d
     rw [hEq, sq_abs] at hsq
-    have hb : b ^ 2 = 0 := by linarith
+    have hb : b ^ (2 : ℕ) = 0 := by linarith
     exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hb
   · intro hb
     simp only [massMixingGap, hb]
-    rw [show (a - d) ^ 2 + 4 * (0 : ℝ) ^ 2 = (a - d) ^ 2 by ring]
+    rw [show (a - d) ^ (2 : ℕ) + 4 * (0 : ℝ) ^ (2 : ℕ) = (a - d) ^ (2 : ℕ) by ring]
     exact Real.sqrt_sq_eq_abs _
 
 /-- **Mixing strictly widens the calibrated mass gap.** -/
 theorem abs_sub_lt_massMixingGap {a b d : ℝ} (hb : b ≠ 0) :
     |a - d| < massMixingGap a b d := by
-  have hlt : (a - d) ^ 2 < (a - d) ^ 2 + 4 * b ^ 2 := by
-    have : 0 < b ^ 2 := pow_pos (abs_pos.mpr hb) 2 |>.trans_le (le_of_eq (sq_abs b))
+  have hlt : (a - d) ^ (2 : ℕ) < (a - d) ^ (2 : ℕ) + 4 * b ^ (2 : ℕ) := by
+    have : 0 < b ^ (2 : ℕ) := pow_pos (abs_pos.mpr hb) 2 |>.trans_le (le_of_eq (sq_abs b))
     linarith
-  calc |a - d| = Real.sqrt ((a - d) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
+  calc |a - d| = Real.sqrt ((a - d) ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs _).symm
     _ < massMixingGap a b d := Real.sqrt_lt_sqrt (sq_nonneg _) hlt
 
 /-- **Correct reconstruction after diagonalization.** Dividing the potential difference of the two

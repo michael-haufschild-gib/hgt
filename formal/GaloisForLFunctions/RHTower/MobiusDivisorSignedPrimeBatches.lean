@@ -98,8 +98,8 @@ theorem mobiusDivisorSelectionEnergy_union_isolated (M : ℕ) (P L : Finset ℕ)
     (hL : ∀ p∈L,p.Prime ∧ p<M ∧ p∉P ∧ mobiusDivisorSelectionPrimes (M/p+1)⊆P) :
     mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P+
       2*mobiusDivisorSelectionFibre M P ∅*(∑ p∈L,mobiusDivisorSelectionFibre M P {p})+
-      (∑ p∈L,mobiusDivisorSelectionFibre M P {p})^2-
-      ∑ p∈L,(mobiusDivisorSelectionFibre M P {p})^2 := by
+      (∑ p∈L,mobiusDivisorSelectionFibre M P {p})^(2 : ℕ)-
+      ∑ p∈L,(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) := by
   revert hL
   induction L using Finset.induction_on with
   | empty => intro _; simp
@@ -123,10 +123,10 @@ theorem exists_mobiusDivisorIsolatedPrimeOrder (M : ℕ) (P U : Finset ℕ)
   let h := mobiusDivisorSelectionFibre M P ∅
   have hid (L : Finset ℕ) (hLU : L⊆U) :
       mobiusDivisorSelectionEnergy M (P∪L)=
-        mobiusDivisorSelectionEnergy M P-h^2-(∑ p∈U,(c p)^2)+
+        mobiusDivisorSelectionEnergy M P-h^(2 : ℕ)-(∑ p∈U,(c p)^(2 : ℕ))+
           scalarSubsetMergeEnergy c h U L := by
     rw [mobiusDivisorSelectionEnergy_union_isolated M P L (fun p hp => hU p (hLU hp)),scalarSubsetMergeEnergy]
-    have hs := sum_sdiff hLU (f := fun p => (c p)^2)
+    have hs := sum_sdiff hLU (f := fun p => (c p)^(2 : ℕ))
     dsimp [c,h] at *
     nlinarith only [hs]
   obtain ⟨l,hl,hset,hbound⟩ := exists_scalarSubsetMergeOrder c h U
@@ -140,7 +140,7 @@ theorem exists_mobiusDivisorIsolatedPrimeOrder (M : ℕ) (P U : Finset ℕ)
   have hk := hid (l.take k).toFinset htake
   have hb := hbound k
   simp [scalarSubsetMergeEnergy] at hf
-  rcases le_total (h^2+∑ p∈U,(c p)^2) ((h+∑ p∈U,c p)^2) with he|he
+  rcases le_total (h^(2 : ℕ)+∑ p∈U,(c p)^(2 : ℕ)) ((h+∑ p∈U,c p)^(2 : ℕ)) with he|he
   · rw [max_eq_right he] at hb
     exact (by linarith only [hk,hf,hb] : _≤ mobiusDivisorSelectionEnergy M (P∪U)).trans (le_max_right _ _)
   · rw [max_eq_left he] at hb
@@ -187,7 +187,7 @@ theorem mobiusDivisorSelectionEnergy_le_pow_card (M : ℕ) (P : Finset ℕ)
 /-- Every partial preparation of the fixed core below eight has one uniform quadratic source bound. -/
 theorem mobiusDivisorSelectionEnergy_small_core_le (M : ℕ) (hM : 8≤M) (P : Finset ℕ)
     (hP : P⊆mobiusDivisorSelectionPrimes 8) :
-    mobiusDivisorSelectionEnergy M P≤(2:ℝ)^8*722*(M:ℝ)^2 := by
+    mobiusDivisorSelectionEnergy M P≤(2:ℝ)^(8 : ℕ)*722*(M:ℝ)^(2 : ℕ) := by
   have hprimes : ∀ p∈P,p.Prime ∧ p<M := by
     intro p hp
     obtain ⟨hp,hprime⟩ := mem_filter.mp (hP hp)
@@ -196,18 +196,18 @@ theorem mobiusDivisorSelectionEnergy_small_core_le (M : ℕ) (hM : 8≤M) (P : F
   have hc : P.card≤8 := (card_le_card hP).trans
     (by simpa only [mobiusDivisorSelectionPrimes,card_range] using
       (card_filter_le (s := range 8) (p := Nat.Prime)))
-  have hpow : (2:ℝ)^P.card≤2^8 := by gcongr; norm_num
+  have hpow : (2:ℝ)^P.card≤2^(8 : ℕ) := by gcongr; norm_num
   have hdiag := sum_mobiusDivisorDilationChannel_sq_le_quadratic M
   rw [mobiusDivisorSelectionEnergy_empty] at he
   have hmult := mul_le_mul_of_nonneg_left hdiag (by positivity : (0:ℝ)≤2^P.card)
-  have hlast := mul_le_mul_of_nonneg_right hpow (by positivity : (0:ℝ)≤722*(M:ℝ)^2)
+  have hlast := mul_le_mul_of_nonneg_right hpow (by positivity : (0:ℝ)≤722*(M:ℝ)^(2 : ℕ))
   exact he.trans (hmult.trans (by nlinarith only [hlast]))
 
 
 private theorem exists_cover_with_removed_square {α : Type*} [DecidableEq α]
     (U : Finset α) (w : α→ℝ) (h : ℝ) (hh : 0≤h)
     (hw : ∀ p∈U,0≤w p) (hcover : h≤∑ p∈U,w p) :
-    ∃ L⊆U,h≤∑ p∈L,w p ∧ (h-∑ p∈L,w p)^2≤∑ p∈L,(w p)^2 := by
+    ∃ L⊆U,h≤∑ p∈L,w p ∧ (h-∑ p∈L,w p)^(2 : ℕ)≤∑ p∈L,(w p)^(2 : ℕ) := by
   obtain ⟨L,hLU,h0,h1,hs⟩ := exists_mass_cover_with_square_reserve U w (∑ p∈U,w p)
     (sum_nonneg hw) h hh (fun p hp => ⟨hw p hp,single_le_sum hw hp⟩) hcover
   exact ⟨L,hLU,by linarith only [h0],by nlinarith only [hs]⟩
@@ -218,8 +218,8 @@ theorem exists_signedScalarBalancedBatch {α : Type*} [DecidableEq α]
     (hA : ∀ p∈A,0≤c p) (hB : ∀ p∈B,c p≤0)
     (hcoverA : |h|≤∑ p∈A,c p) (hcoverB : |h|≤∑ p∈B,-c p) :
     ∃ L⊆A,∃ R⊆B,
-      (h+(∑ p∈L,c p)+(∑ p∈R,c p))^2≤
-        (∑ p∈L,(c p)^2)+(∑ p∈R,(c p)^2) ∧
+      (h+(∑ p∈L,c p)+(∑ p∈R,c p))^(2 : ℕ)≤
+        (∑ p∈L,(c p)^(2 : ℕ))+(∑ p∈R,(c p)^(2 : ℕ)) ∧
       min (∑ p∈A,c p) (∑ p∈B,-c p)-|h|≤∑ p∈L,c p ∧
       min (∑ p∈A,c p) (∑ p∈B,-c p)-|h|≤∑ p∈R,-c p := by
   have hh0 := abs_nonneg h

@@ -87,11 +87,11 @@ private theorem coordinate_gram_packet_bound
     (s : Finset I) (Δ : ℝ) (hΔ : 0 ≤ Δ)
     (hrow : ∀ i ∈ s, ∑ j ∈ s, ‖inner ℂ (h i) (h j)‖ ≤ Δ)
     (c : I → ℂ) :
-    ‖∑ i ∈ s, c i • v i‖ ^ 2 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ 2 := by
-  have hG : 0 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ 2 :=
+    ‖∑ i ∈ s, c i • v i‖ ^ (2 : ℕ) ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
+  have hG : 0 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) :=
     mul_nonneg hΔ (Finset.sum_nonneg fun _ _ => sq_nonneg _)
-  have hcoord : ∀ n, ‖q n (∑ i ∈ s, c i • v i)‖ ^ 2 ≤
-      Δ * ∑ i ∈ s, ‖c i‖ ^ 2 := by
+  have hcoord : ∀ n, ‖q n (∑ i ∈ s, c i • v i)‖ ^ (2 : ℕ) ≤
+      Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
     intro n
     simp only [map_sum, map_smul]
     apply RHTower.Sieve.norm_sum_smul_sq_le_of_schur
@@ -103,7 +103,7 @@ private theorem coordinate_gram_packet_bound
         rw [hq, hq, unimodular_gram_norm _ _ _ _ (hz i) (hz j)]
       _ ≤ Δ := hrow i hi
   have hb := hnorm (∑ i ∈ s, c i • v i)
-    (Real.sqrt (Δ * ∑ i ∈ s, ‖c i‖ ^ 2)) (Real.sqrt_nonneg _)
+    (Real.sqrt (Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ))) (Real.sqrt_nonneg _)
     (fun n => Real.le_sqrt_of_sq_le (hcoord n))
   nlinarith [Real.sq_sqrt hG, norm_nonneg (∑ i ∈ s, c i • v i)]
 end CoordinateEstimate
@@ -133,8 +133,8 @@ private theorem actual_finite_packet_upper (b : ℝ) (s : Finset ℝ) (ε : ℝ)
       ‖inner ℂ (causalUnitBoundaryEigenvector b i).val
         (causalUnitBoundaryEigenvector b j).val‖ < ε)
     (c : ℝ → ℂ) :
-    ‖∑ i ∈ s, c i • causalBoundedUnitEigenchain b i‖ ^ 2 ≤
-      (1 + s.card * ε) * ∑ i ∈ s, ‖c i‖ ^ 2 := by
+    ‖∑ i ∈ s, c i • causalBoundedUnitEigenchain b i‖ ^ (2 : ℕ) ≤
+      (1 + s.card * ε) * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
   apply coordinate_gram_packet_bound causalBoundedChainCoordinate
     (causalBoundedUnitEigenchain b)
     (fun ω => (causalUnitBoundaryEigenvector b ω).val)
@@ -148,10 +148,10 @@ uniformly for every complex amplitude family. The precision is prescribed by
 `k`; the finite set is selected from actual normalized boundary data. -/
 theorem causalFrequencyPacket_almost_euclidean (b : ℝ) (N k : ℕ) :
     ∃ s : Finset ℝ, s.card = N ∧ ∀ c : ℝ → ℂ,
-      (∑ ω ∈ s, ‖c ω‖ ^ 2 ≤
-        ‖∑ ω ∈ s, c ω • causalBoundedUnitEigenchain b ω‖ ^ 2) ∧
-      (‖∑ ω ∈ s, c ω • causalBoundedUnitEigenchain b ω‖ ^ 2 ≤
-        (1 + 1 / ((k : ℝ) + 1)) * ∑ ω ∈ s, ‖c ω‖ ^ 2) := by
+      (∑ ω ∈ s, ‖c ω‖ ^ (2 : ℕ) ≤
+        ‖∑ ω ∈ s, c ω • causalBoundedUnitEigenchain b ω‖ ^ (2 : ℕ)) ∧
+      (‖∑ ω ∈ s, c ω • causalBoundedUnitEigenchain b ω‖ ^ (2 : ℕ) ≤
+        (1 + 1 / ((k : ℝ) + 1)) * ∑ ω ∈ s, ‖c ω‖ ^ (2 : ℕ)) := by
   let ε : ℝ := ((N : ℝ) + 1)⁻¹ * ((k : ℝ) + 1)⁻¹
   have hε : 0 < ε := by dsimp [ε]; positivity
   obtain ⟨s, hs, hp⟩ := weak_unit_finite_selection

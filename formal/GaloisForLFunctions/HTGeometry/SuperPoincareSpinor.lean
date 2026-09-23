@@ -48,8 +48,8 @@ theorem weylSuperTranslationBracket_self (psi : Fin 2 → ℂ) :
 /-- Spinor-generated momentum lies in the closed future light cone, on its null boundary. -/
 theorem weylSuperMomentum_future_null (psi : Fin 2 → ℂ) :
     0 ≤ higgsSpinorTime psi ∧
-      higgsSpinorTime psi ^ 2 - higgsSpinorX psi ^ 2 -
-        higgsSpinorY psi ^ 2 - higgsSpinorZ psi ^ 2 = 0 :=
+      higgsSpinorTime psi ^ (2 : ℕ) - higgsSpinorX psi ^ (2 : ℕ) -
+        higgsSpinorY psi ^ (2 : ℕ) - higgsSpinorZ psi ^ (2 : ℕ) = 0 :=
   ⟨higgsSpinorTime_nonneg psi, higgsSpinor_lorentzQuadratic_eq_zero psi⟩
 
 /-- Existing Higgs-spinor coordinates are exactly the supermomentum coordinates. -/

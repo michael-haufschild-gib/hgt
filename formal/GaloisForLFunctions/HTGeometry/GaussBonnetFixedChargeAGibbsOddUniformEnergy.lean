@@ -14,9 +14,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAInteriorGibbsGap_uniform_first_correction_limit (w φ l : ℝ) :
-    TendstoUniformly (fun τ ψ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ 4 -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      (fun ψ => egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4) atBot := by
+    TendstoUniformly (fun τ ψ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) -
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      (fun ψ => egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have h := (Metric.tendstoUniformlyOn_iff.mp (egbFixedChargeAGibbsOddIntegrand_uniform_critical_limit w φ))
@@ -38,9 +38,9 @@ theorem egbFixedChargeAInteriorGibbsGap_uniform_first_correction_limit (w φ l :
 
 theorem egbFixedChargeAInteriorGibbsGap_uniform_fifth_order_limit (w φ l : ℝ) :
     TendstoUniformly (fun τ ψ => (egbFixedChargeAInteriorGibbsGap w φ τ l ψ -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4 * egbCoexistenceASymmetricRatio τ ^ 4) /
-      egbCoexistenceASymmetricRatio τ ^ 5)
-      (fun ψ => egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4) atBot := by
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) /
+      egbCoexistenceASymmetricRatio τ ^ (5 : ℕ))
+      (fun ψ => egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ)) atBot := by
   convert egbFixedChargeAInteriorGibbsGap_uniform_first_correction_limit w φ l using 1
   funext τ ψ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1

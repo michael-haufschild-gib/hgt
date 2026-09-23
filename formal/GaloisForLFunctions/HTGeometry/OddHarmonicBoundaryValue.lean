@@ -37,8 +37,8 @@ theorem exp_mul_I_eq (θ : ℝ) :
 
 theorem abs_cos_lt_one (hθ : Real.sin θ ≠ 0) : |Real.cos θ| < 1 := by
   have hpy := Real.sin_sq_add_cos_sq θ
-  have hs : 0 < Real.sin θ ^ 2 := by positivity
-  have : Real.cos θ ^ 2 < 1 := by nlinarith
+  have hs : 0 < Real.sin θ ^ (2 : ℕ) := by positivity
+  have : Real.cos θ ^ (2 : ℕ) < 1 := by nlinarith
   nlinarith [abs_nonneg (Real.cos θ), sq_abs (Real.cos θ)]
 
 theorem re_one_add_exp_pos (hθ : Real.sin θ ≠ 0) :

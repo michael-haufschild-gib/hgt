@@ -34,7 +34,7 @@ theorem substitutionShift_three (R : RatFunc C) :
       = 3 * JetField.pd ((), 0) (substitutionDeriv R)
           * (JetField.jet ((), 1) : JetField C Unit) * (JetField.jet ((), 2) : JetField C Unit)
         + JetField.pd ((), 0) (JetField.pd ((), 0) (substitutionDeriv R))
-          * (JetField.jet ((), 1) : JetField C Unit) ^ 3 := by
+          * (JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ) := by
   set ρ : JetField C Unit := substitutionDeriv R with hρdef
   set ρ₁ : JetField C Unit := JetField.pd ((), 0) ρ with hρ₁def
   set ρ₂ : JetField C Unit := JetField.pd ((), 0) ρ₁ with hρ₂def
@@ -43,7 +43,7 @@ theorem substitutionShift_three (R : RatFunc C) :
     rw [substitutionJet, substitutionJet, show (3 : ℕ) = 2 + 1 from rfl, differentialJet_succ,
       JetField.deriv_eq, hδdef]
   have haff2 : substitutionJet R 2 = ρ * (JetField.jet ((), 2) : JetField C Unit)
-      + ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := by
+      + ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := by
     rw [substitutionJet_eq_affine R 2, substitutionShift_two, hρdef, hρ₁def]
   have hδρ : δ ρ = (JetField.jet ((), 1) : JetField C Unit) * ρ₁ :=
     jetDerivation_of_order_zero (fun k hk => pd_substitutionDeriv_eq_zero R hk)
@@ -59,16 +59,16 @@ theorem substitutionShift_three (R : RatFunc C) :
     have h := δ.leibniz ρ (JetField.jet ((), 2) : JetField C Unit)
     simp only [smul_eq_mul] at h
     rw [h]; ring
-  have hsq : δ ((JetField.jet ((), 1) : JetField C Unit) ^ 2)
+  have hsq : δ ((JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ))
       = 2 * (JetField.jet ((), 1) : JetField C Unit) * δ (JetField.jet ((), 1)) := by
     have h := δ.leibniz (JetField.jet ((), 1) : JetField C Unit)
       (JetField.jet ((), 1) : JetField C Unit)
     simp only [smul_eq_mul] at h
     rw [pow_two, h]; ring
-  have hL2 : δ (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2)
-      = δ ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2
-        + ρ₁ * δ ((JetField.jet ((), 1) : JetField C Unit) ^ 2) := by
-    have h := δ.leibniz ρ₁ ((JetField.jet ((), 1) : JetField C Unit) ^ 2)
+  have hL2 : δ (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ))
+      = δ ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)
+        + ρ₁ * δ ((JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)) := by
+    have h := δ.leibniz ρ₁ ((JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ))
     simp only [smul_eq_mul] at h
     rw [h]; ring
   rw [substitutionShift, hjet, haff2, map_add, hL1, hL2, hsq, hδρ, hδρ₁, hδ1, hδ2]
@@ -80,7 +80,7 @@ variable {K : Type*} [Field K]
 
 omit [Field C] [CharZero C] in
 theorem eq_quadratic_of_natDegree_le_two {u : Polynomial K} (hu : u.natDegree ≤ 2) :
-    u = Polynomial.C (u.coeff 2) * Polynomial.X ^ 2 + Polynomial.C (u.coeff 1) * Polynomial.X
+    u = Polynomial.C (u.coeff 2) * Polynomial.X ^ (2 : ℕ) + Polynomial.C (u.coeff 1) * Polynomial.X
       + Polynomial.C (u.coeff 0) := by
   ext n
   simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
@@ -100,23 +100,23 @@ theorem coeff_eqs_of_twistComp_affine_deg_le_two (Φ : K →+* K) (ρ s c A B : 
     {u : Polynomial K} (hu : u.natDegree ≤ 2)
     (hcu : twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C s) u
       = Polynomial.C c * u - (Polynomial.C A * Polynomial.X + Polynomial.C B)) :
-    Φ (u.coeff 2) * ρ ^ 2 = c * u.coeff 2
+    Φ (u.coeff 2) * ρ ^ (2 : ℕ) = c * u.coeff 2
       ∧ Φ (u.coeff 2) * (2 * ρ * s) + Φ (u.coeff 1) * ρ = c * u.coeff 1 - A
-      ∧ Φ (u.coeff 2) * s ^ 2 + Φ (u.coeff 1) * s + Φ (u.coeff 0) = c * u.coeff 0 - B := by
+      ∧ Φ (u.coeff 2) * s ^ (2 : ℕ) + Φ (u.coeff 1) * s + Φ (u.coeff 0) = c * u.coeff 0 - B := by
   set T : Polynomial K := Polynomial.C ρ * Polynomial.X + Polynomial.C s with hTdef
   have hexp : twistComp Φ T u
-      = Polynomial.C (Φ (u.coeff 2)) * T ^ 2 + Polynomial.C (Φ (u.coeff 1)) * T
+      = Polynomial.C (Φ (u.coeff 2)) * T ^ (2 : ℕ) + Polynomial.C (Φ (u.coeff 1)) * T
         + Polynomial.C (Φ (u.coeff 0)) := by
     conv_lhs => rw [eq_quadratic_of_natDegree_le_two hu]
     rw [twistComp_add, twistComp_add, twistComp_C_mul_X_pow]
     congr 1
     · congr 1
       have h1 : Polynomial.C (u.coeff 1) * Polynomial.X
-          = Polynomial.C (u.coeff 1) * Polynomial.X ^ 1 := by rw [pow_one]
+          = Polynomial.C (u.coeff 1) * Polynomial.X ^ (1 : ℕ) := by rw [pow_one]
       rw [h1, twistComp_C_mul_X_pow, pow_one]
     · exact twistComp_C Φ T (u.coeff 0)
-  have hTsq : T ^ 2 = Polynomial.C (ρ ^ 2) * Polynomial.X ^ 2
-      + Polynomial.C (2 * ρ * s) * Polynomial.X + Polynomial.C (s ^ 2) := by
+  have hTsq : T ^ (2 : ℕ) = Polynomial.C (ρ ^ (2 : ℕ)) * Polynomial.X ^ (2 : ℕ)
+      + Polynomial.C (2 * ρ * s) * Polynomial.X + Polynomial.C (s ^ (2 : ℕ)) := by
     rw [hTdef]
     simp only [map_pow, map_mul, map_ofNat]
     ring
@@ -206,7 +206,7 @@ theorem eq_zero_of_linear_shift (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     rw [jetSubstitution_jet, substitutionJet_one]
   have hΦ2 : jetSubstitution R hR (JetField.jet ((), 2) : JetField C Unit)
       = ρ * (JetField.jet ((), 2) : JetField C Unit)
-        + ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := by
+        + ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := by
     rw [jetSubstitution_jet, substitutionJet_eq_affine, substitutionShift_two]
   have hΦratio : jetSubstitution R hR (ratioTwo : JetField C Unit)
       = ratioTwo + ρ₁ * (JetField.jet ((), 1) : JetField C Unit) / ρ := by
@@ -285,7 +285,7 @@ variable {C : Type*} [Field C] [CharZero C]
 /-- **The level-three descent.**  When fixed elements of order at most two are constant, a
 normalizing shift at jet level three either descends to level two, or produces a rational affine
 transport of exponent three whose inhomogeneous term is the Schwarzian-type combination
-`R''' - (3/2)*(R'')^2/R'`. -/
+`R''' - (3/2)*(R'')^(2 : ℕ)/R'`. -/
 theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
     (hR : substitutionDeriv R ≠ 0)
     (hR2 : JetField.pd ((), 0) (substitutionDeriv R) ≠ 0)
@@ -295,10 +295,10 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
     HasNormalizingShift R hR (show (1 : ℕ) ≤ 2 by omega)
       ∨ ∃ a : RatFunc C,
           ratFuncSubstitutionAlgHom R (not_isConst_of_substitutionDeriv_ne_zero hR) a
-              * ratFuncDeriv R ^ 3
+              * ratFuncDeriv R ^ (3 : ℕ)
             = ratFuncDeriv R * a
               - (ratFuncDeriv (ratFuncDeriv (ratFuncDeriv R))
-                - RatFunc.C (3 / 2 : C) * ratFuncDeriv (ratFuncDeriv R) ^ 2 / ratFuncDeriv R) := by
+                - RatFunc.C (3 / 2 : C) * ratFuncDeriv (ratFuncDeriv R) ^ (2 : ℕ) / ratFuncDeriv R) := by
   classical
   rcases hasNormalizingShift_pred_or_low_degree R hR hR2 0 h with hpred | ⟨u, A, B, hdeg, hAB, hcu⟩
   · exact Or.inl hpred
@@ -314,7 +314,7 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
       show (0 : ℕ) + 3 = 1 + 2 from rfl, pd_top_substitutionShift_eq R 1]
     push_cast
     ring
-  have hBval : (B : JetField C Unit) = ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ 3 := by
+  have hBval : (B : JetField C Unit) = ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ) := by
     have h3 := substitutionShift_three R
     rw [hAB, hAval] at h3
     linear_combination h3
@@ -327,21 +327,21 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
   set w1 : JetField C Unit := ι (u.coeff 1) with hw1def
   set w0 : JetField C Unit := ι (u.coeff 0) with hw0def
   have hσ2 : ι (substitutionShiftPrefix R h2)
-      = ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := substitutionShift_two R
+      = ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := substitutionShift_two R
   have hρι : ι (substitutionDerivPrefix R h2) = ρ := rfl
   have hΦι : ∀ z : ↥(jetPrefixField C 2),
       ι ((jetSubstitutionPrefix R hR 2).toRingHom z) = jetSubstitution R hR (ι z) :=
     fun _ => rfl
-  have hE2 : jetSubstitution R hR w2 * ρ ^ 2 = ρ * w2 := by
+  have hE2 : jetSubstitution R hR w2 * ρ ^ (2 : ℕ) = ρ * w2 := by
     have hc := congrArg ι e2
     simpa only [map_mul, map_pow, hΦι, hρι] using hc
-  have hE1 : jetSubstitution R hR w2 * (2 * ρ * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2))
+  have hE1 : jetSubstitution R hR w2 * (2 * ρ * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)))
       + jetSubstitution R hR w1 * ρ = ρ * w1 - (A : JetField C Unit) := by
     have hc := congrArg ι e1
     simp only [map_mul, map_add, map_sub, map_ofNat, hΦι, hρι, hσ2] at hc
     exact hc
-  have hE0 : jetSubstitution R hR w2 * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2) ^ 2
-      + jetSubstitution R hR w1 * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ 2)
+  have hE0 : jetSubstitution R hR w2 * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)) ^ (2 : ℕ)
+      + jetSubstitution R hR w1 * (ρ₁ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ))
       + jetSubstitution R hR w0 = ρ * w0 - (B : JetField C Unit) := by
     have hc := congrArg ι e0
     simp only [map_mul, map_add, map_sub, map_pow, hΦι, hρι, hσ2] at hc
@@ -365,7 +365,7 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
         = 3 + 2 * algebraMap C (JetField C Unit) e := by
       rw [map_add, map_mul, map_ofNat, map_ofNat]
     rw [hmap]
-    linear_combination hE1 - 2 * ρ₁ * y ^ 2 * hw2eig - 2 * ρ₁ * y * he
+    linear_combination hE1 - 2 * ρ₁ * y ^ (2 : ℕ) * hw2eig - 2 * ρ₁ * y * he
   obtain ⟨hκ, k, hk⟩ := eq_zero_of_linear_shift R hR hfix (hord (u.coeff 1)) (3 + 2 * e) hE1'
   rw [← hw1def] at hk
   have he2 : (2 : C) * e = -3 := by linear_combination hκ
@@ -385,10 +385,10 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
   set G : JetField C Unit := algebraMap C (JetField C Unit) (3 / 2 : C) with hGdef
   set K : JetField C Unit := algebraMap C (JetField C Unit) k with hKdef
   set Dp : ↥(jetPrefixField C 1) :=
-    ρ₂P - algebraMap C ↥(jetPrefixField C 1) (3 / 2 : C) * ρ₁P ^ 2 / ρP with hDpdef
+    ρ₂P - algebraMap C ↥(jetPrefixField C 1) (3 / 2 : C) * ρ₁P ^ (2 : ℕ) / ρP with hDpdef
   set Ep : ↥(jetPrefixField C 1) := algebraMap C ↥(jetPrefixField C 1) k * ρ₁P with hEpdef
   set S : Polynomial ↥(jetPrefixField C 1) :=
-    Polynomial.C Dp * Polynomial.X ^ 3 + Polynomial.C Ep * Polynomial.X ^ 2 with hSdef
+    Polynomial.C Dp * Polynomial.X ^ (3 : ℕ) + Polynomial.C Ep * Polynomial.X ^ (2 : ℕ) with hSdef
   set ι₁ := algebraMap ↥(jetPrefixField C 1) (JetField C Unit) with hι₁def
   have hι₁ρ : ι₁ ρP = ρ := rfl
   have hι₁ρ₁ : ι₁ ρ₁P = ρ₁ := substitutionDeriv_ratFuncDeriv R
@@ -399,24 +399,24 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
     rw [hGdef, ← IsScalarTower.algebraMap_apply]
   have hι₁K : ι₁ (algebraMap C ↥(jetPrefixField C 1) k) = K := by
     rw [hKdef, ← IsScalarTower.algebraMap_apply]
-  have hι₁Dp : ι₁ Dp = ρ₂ - G * ρ₁ ^ 2 / ρ := by
+  have hι₁Dp : ι₁ Dp = ρ₂ - G * ρ₁ ^ (2 : ℕ) / ρ := by
     rw [hDpdef, map_sub, map_div₀, map_mul, map_pow, hι₁ρ, hι₁ρ₁, hι₁ρ₂, hι₁G]
   have hι₁Ep : ι₁ Ep = K * ρ₁ := by
     rw [hEpdef, map_mul, hι₁K, hι₁ρ₁]
-  have haevalS : Polynomial.aeval y S = ι₁ Dp * y ^ 3 + ι₁ Ep * y ^ 2 := by
+  have haevalS : Polynomial.aeval y S = ι₁ Dp * y ^ (3 : ℕ) + ι₁ Ep * y ^ (2 : ℕ) := by
     rw [hSdef, map_add, map_mul, map_mul, map_pow, map_pow, Polynomial.aeval_C,
       Polynomial.aeval_C, Polynomial.aeval_X]
   have hΦ1K : jetSubstitution R hR w1 = K := by
     rw [hk, hKdef, AlgHom.commutes]
-  have hquad : jetSubstitution R hR w2 * (ρ₁ * y ^ 2) ^ 2 * ρ
-      = ρ₁ ^ 2 * y ^ 3 * algebraMap C (JetField C Unit) e := by
-    linear_combination (ρ₁ ^ 2 * y ^ 4) * hw2eig + (ρ₁ ^ 2 * y ^ 3) * he
+  have hquad : jetSubstitution R hR w2 * (ρ₁ * y ^ (2 : ℕ)) ^ (2 : ℕ) * ρ
+      = ρ₁ ^ (2 : ℕ) * y ^ (3 : ℕ) * algebraMap C (JetField C Unit) e := by
+    linear_combination (ρ₁ ^ (2 : ℕ) * y ^ (4 : ℕ)) * hw2eig + (ρ₁ ^ (2 : ℕ) * y ^ (3 : ℕ)) * he
   have hEq0 : ρ * jetSubstitution R hR w0
-      = ρ * ρ * w0 - ρ * ρ₂ * y ^ 3 + G * ρ₁ ^ 2 * y ^ 3 - ρ * K * ρ₁ * y ^ 2 := by
+      = ρ * ρ * w0 - ρ * ρ₂ * y ^ (3 : ℕ) + G * ρ₁ ^ (2 : ℕ) * y ^ (3 : ℕ) - ρ * K * ρ₁ * y ^ (2 : ℕ) := by
     have hEfull : algebraMap C (JetField C Unit) e = -G := by rw [hE, hGdef]
-    linear_combination ρ * hE0 - hquad - hEfull * (ρ₁ ^ 2 * y ^ 3)
-      - (ρ * (ρ₁ * y ^ 2)) * hΦ1K
-  have hEq : jetSubstitution R hR w0 * substitutionDeriv R ^ 0
+    linear_combination ρ * hE0 - hquad - hEfull * (ρ₁ ^ (2 : ℕ) * y ^ (3 : ℕ))
+      - (ρ * (ρ₁ * y ^ (2 : ℕ))) * hΦ1K
+  have hEq : jetSubstitution R hR w0 * substitutionDeriv R ^ (0 : ℕ)
       = ρ * w0 - Polynomial.aeval y S := by
     rw [pow_zero, mul_one, haevalS, hι₁Dp, hι₁Ep]
     field_simp
@@ -430,7 +430,7 @@ theorem hasNormalizingShift_two_or_affineTransport_three (R : RatFunc C)
     rw [hSdef]
     simp
   set D : RatFunc C := ratFuncDeriv (ratFuncDeriv (ratFuncDeriv R))
-    - RatFunc.C (3 / 2 : C) * ratFuncDeriv (ratFuncDeriv R) ^ 2 / ratFuncDeriv R with hDdef
+    - RatFunc.C (3 / 2 : C) * ratFuncDeriv (ratFuncDeriv R) ^ (2 : ℕ) / ratFuncDeriv R with hDdef
   have hD : ratFuncEval (JetField.jet ((), 0) : JetField C Unit) transcendental_freeGen D
       = ι₁ (S.coeff 3) := by
     rw [hScoeff, hι₁Dp, hDdef, map_sub, map_div₀, map_mul, map_pow, ratFuncEval_ratFuncDeriv,

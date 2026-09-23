@@ -11,7 +11,7 @@ q_j(c) = (j+1) sqrt(c sqrt c).
 ```
 
 The step is `c^(3/4)`: it is `o(c)`, so translated edge tails remain subexponential, while
-`q_step^2/(2c)=sqrt(c)/2`, so distinct transform readings are exponentially separated.  This file
+`q_step^(2 : ℕ)/(2c)=sqrt(c)/2`, so distinct transform readings are exponentially separated.  This file
 proves the exact frequency geometry, product-to-sum reading formula, positive diagonal bound, and
 `exp(-sqrt(c)/2)` off-diagonal estimate.
 -/
@@ -41,7 +41,7 @@ theorem kaiserPacketAngularStep_pos {c : ℝ} (hc : 0 < c) :
   positivity
 
 theorem kaiserPacketAngularStep_sq {c : ℝ} (hc : 0 ≤ c) :
-    kaiserPacketAngularStep c ^ 2 = c * Real.sqrt c := by
+    kaiserPacketAngularStep c ^ (2 : ℕ) = c * Real.sqrt c := by
   rw [kaiserPacketAngularStep, Real.sq_sqrt]
   positivity
 
@@ -94,9 +94,9 @@ theorem abs_kaiserPacketAngularFrequency_sub_ge_step {m : ℕ} {c : ℝ} (hc : 0
 /-- Under the explicit fixed-depth aperture condition, every sum of two grid frequencies lies in
 the middle half of the band. -/
 theorem kaiserPacketAngularFrequency_add_sq_le_half {m : ℕ} {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c) (i j : Fin m) :
-    (kaiserPacketAngularFrequency c i + kaiserPacketAngularFrequency c j) ^ 2 ≤
-      c ^ 2 / 2 := by
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c) (i j : Fin m) :
+    (kaiserPacketAngularFrequency c i + kaiserPacketAngularFrequency c j) ^ (2 : ℕ) ≤
+      c ^ (2 : ℕ) / 2 := by
   have hc0 : 0 ≤ c := zero_le_one.trans hc
   have hcpos : 0 < c := one_pos.trans_le hc
   have hstep0 : 0 ≤ kaiserPacketAngularStep c :=
@@ -111,21 +111,21 @@ theorem kaiserPacketAngularFrequency_add_sq_le_half {m : ℕ} {c : ℝ}
       2 * (m : ℝ) * kaiserPacketAngularStep c := by linarith
   have hsq := pow_le_pow_left₀ hsum0 hsum 2
   rw [mul_pow, kaiserPacketAngularStep_sq hc0] at hsq
-  have hsqrtSq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc0
+  have hsqrtSq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc0
   have hfactor :
-      4 * (m : ℝ) ^ 2 * (c * Real.sqrt c) ≤ c ^ 2 / 2 := by
+      4 * (m : ℝ) ^ (2 : ℕ) * (c * Real.sqrt c) ≤ c ^ (2 : ℕ) / 2 := by
     calc
-      4 * (m : ℝ) ^ 2 * (c * Real.sqrt c) =
-          (8 * (m : ℝ) ^ 2) * (c * Real.sqrt c / 2) := by ring
+      4 * (m : ℝ) ^ (2 : ℕ) * (c * Real.sqrt c) =
+          (8 * (m : ℝ) ^ (2 : ℕ)) * (c * Real.sqrt c / 2) := by ring
       _ ≤ Real.sqrt c * (c * Real.sqrt c / 2) :=
         mul_le_mul_of_nonneg_right hscale (by positivity)
-      _ = c ^ 2 / 2 := by nlinarith [hsqrtSq]
+      _ = c ^ (2 : ℕ) / 2 := by nlinarith [hsqrtSq]
   exact hsq.trans_eq (by ring) |>.trans hfactor
 
 theorem kaiserPacketAngularFrequency_sub_sq_le_half {m : ℕ} {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c) (i j : Fin m) :
-    (kaiserPacketAngularFrequency c i - kaiserPacketAngularFrequency c j) ^ 2 ≤
-      c ^ 2 / 2 := by
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c) (i j : Fin m) :
+    (kaiserPacketAngularFrequency c i - kaiserPacketAngularFrequency c j) ^ (2 : ℕ) ≤
+      c ^ (2 : ℕ) / 2 := by
   have hi0 : 0 ≤ kaiserPacketAngularFrequency c i :=
     (kaiserPacketAngularFrequency_pos (one_pos.trans_le hc) i).le
   have hj0 : 0 ≤ kaiserPacketAngularFrequency c j :=
@@ -190,28 +190,28 @@ theorem kaiserPacketReading_eq (c qi qj : ℝ) :
     intervalIntegral.integral_add hminus hplus]
   rfl
 
-theorem kaiserAngularTransform_nonneg_of_sq_lt {c q : ℝ} (hq : q ^ 2 < c ^ 2) :
+theorem kaiserAngularTransform_nonneg_of_sq_lt {c q : ℝ} (hq : q ^ (2 : ℕ) < c ^ (2 : ℕ)) :
     0 ≤ kaiserAngularTransform c q := by
   rw [kaiserAngularTransform, integral_kaiserTrial_cos_of_lt hq]
-  have hv : 0 < Real.sqrt (c ^ 2 - q ^ 2) := Real.sqrt_pos.mpr (by linarith)
-  have hsinh : 0 ≤ Real.sinh (Real.sqrt (c ^ 2 - q ^ 2)) := by
+  have hv : 0 < Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by linarith)
+  have hsinh : 0 ≤ Real.sinh (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) := by
     rw [Real.sinh_eq]
-    have hexp := Real.exp_le_exp.mpr (show -Real.sqrt (c ^ 2 - q ^ 2) ≤
-      Real.sqrt (c ^ 2 - q ^ 2) by linarith)
+    have hexp := Real.exp_le_exp.mpr (show -Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) ≤
+      Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) by linarith)
     linarith
   exact div_nonneg (mul_nonneg (by norm_num) hsinh) hv.le
 
 /-- Every grid reading has a diagonal at least half the central Kaiser transform. -/
 theorem kaiserPacketReading_diagonal_ge {m : ℕ} {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c) (i : Fin m) :
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c) (i : Fin m) :
     kaiserAngularTransform c 0 / 2 ≤
       kaiserPacketReading c (kaiserPacketAngularFrequency c i)
         (kaiserPacketAngularFrequency c i) := by
   rw [kaiserPacketReading_eq, sub_self]
   have hsumSq := kaiserPacketAngularFrequency_add_sq_le_half hc hscale i i
-  have hcSq : 0 < c ^ 2 := sq_pos_of_pos (one_pos.trans_le hc)
+  have hcSq : 0 < c ^ (2 : ℕ) := sq_pos_of_pos (one_pos.trans_le hc)
   have hlt : (kaiserPacketAngularFrequency c i +
-      kaiserPacketAngularFrequency c i) ^ 2 < c ^ 2 :=
+      kaiserPacketAngularFrequency c i) ^ (2 : ℕ) < c ^ (2 : ℕ) :=
     lt_of_le_of_lt hsumSq (by linarith)
   have hnonneg : 0 ≤ kaiserAngularTransform c
       (kaiserPacketAngularFrequency c i + kaiserPacketAngularFrequency c i) :=
@@ -220,7 +220,7 @@ theorem kaiserPacketReading_diagonal_ge {m : ℕ} {c : ℝ}
 
 /-- Distinct grid readings are exponentially smaller than the central diagonal scale. -/
 theorem abs_kaiserPacketReading_offDiagonal_le {m : ℕ} {c : ℝ}
-    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c)
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt c)
     {i j : Fin m} (hij : i ≠ j) :
     |kaiserPacketReading c (kaiserPacketAngularFrequency c i)
         (kaiserPacketAngularFrequency c j)| ≤
@@ -228,17 +228,17 @@ theorem abs_kaiserPacketReading_offDiagonal_le {m : ℕ} {c : ℝ}
   let qi : ℝ := kaiserPacketAngularFrequency c i
   let qj : ℝ := kaiserPacketAngularFrequency c j
   have hcpos : 0 < c := one_pos.trans_le hc
-  have hsubSq : (qi - qj) ^ 2 ≤ c ^ 2 / 2 := by
+  have hsubSq : (qi - qj) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) / 2 := by
     simpa [qi, qj] using kaiserPacketAngularFrequency_sub_sq_le_half hc hscale i j
-  have haddSq : (qi + qj) ^ 2 ≤ c ^ 2 / 2 := by
+  have haddSq : (qi + qj) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) / 2 := by
     simpa [qi, qj] using kaiserPacketAngularFrequency_add_sq_le_half hc hscale i j
   have hsub : kaiserAngularTransform c (qi - qj) ≤
-      8 * Real.exp (-((qi - qj) ^ 2 / (2 * c))) * kaiserAngularTransform c 0 :=
+      8 * Real.exp (-((qi - qj) ^ (2 : ℕ) / (2 * c))) * kaiserAngularTransform c 0 :=
     kaiserAngularTransform_le_exp_separation hc hsubSq
   have hadd : kaiserAngularTransform c (qi + qj) ≤
-      8 * Real.exp (-((qi + qj) ^ 2 / (2 * c))) * kaiserAngularTransform c 0 :=
+      8 * Real.exp (-((qi + qj) ^ (2 : ℕ) / (2 * c))) * kaiserAngularTransform c 0 :=
     kaiserAngularTransform_le_exp_separation hc haddSq
-  have hstepSq : kaiserPacketAngularStep c ^ 2 = c * Real.sqrt c :=
+  have hstepSq : kaiserPacketAngularStep c ^ (2 : ℕ) = c * Real.sqrt c :=
     kaiserPacketAngularStep_sq hcpos.le
   have hsep : kaiserPacketAngularStep c ≤ |qi - qj| := by
     simpa [qi, qj] using abs_kaiserPacketAngularFrequency_sub_ge_step hcpos hij
@@ -258,13 +258,13 @@ theorem abs_kaiserPacketReading_offDiagonal_le {m : ℕ} {c : ℝ}
     linarith
   have hsumSepSq := pow_le_pow_left₀ (kaiserPacketAngularStep_pos hcpos).le hsumSep 2
   rw [hstepSq] at hsumSepSq
-  have hexpSub : Real.exp (-((qi - qj) ^ 2 / (2 * c))) ≤
+  have hexpSub : Real.exp (-((qi - qj) ^ (2 : ℕ) / (2 * c))) ≤
       Real.exp (-(Real.sqrt c / 2)) := by
     apply Real.exp_le_exp.mpr
     apply neg_le_neg
     rw [le_div_iff₀ (show 0 < 2 * c by positivity)]
     nlinarith
-  have hexpAdd : Real.exp (-((qi + qj) ^ 2 / (2 * c))) ≤
+  have hexpAdd : Real.exp (-((qi + qj) ^ (2 : ℕ) / (2 * c))) ≤
       Real.exp (-(Real.sqrt c / 2)) := by
     apply Real.exp_le_exp.mpr
     apply neg_le_neg
@@ -280,7 +280,7 @@ theorem abs_kaiserPacketReading_offDiagonal_le {m : ℕ} {c : ℝ}
       8 * Real.exp (-(Real.sqrt c / 2)) * kaiserAngularTransform c 0 :=
     hadd.trans (mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hexpAdd (by norm_num)) hcenter0)
-  have hcSq : 0 < c ^ 2 := sq_pos_of_pos hcpos
+  have hcSq : 0 < c ^ (2 : ℕ) := sq_pos_of_pos hcpos
   have hsub0 : 0 ≤ kaiserAngularTransform c (qi - qj) :=
     kaiserAngularTransform_nonneg_of_sq_lt
       (lt_of_le_of_lt hsubSq (by linarith))

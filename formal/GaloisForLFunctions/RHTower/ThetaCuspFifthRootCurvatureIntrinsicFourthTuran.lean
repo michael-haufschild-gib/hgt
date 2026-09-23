@@ -11,11 +11,11 @@ center. -/
 def thetaCuspReflectedSourceDecayFluxFourthJetTuranCeilingAtZero
     (t : ℝ) : ℝ :=
   thetaCuspReflectedSourceProduct 0 t *
-    ((2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 - 320) -
+    ((2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) - 320) -
       4 * thetaCuspReflectedLogJetOne 0 t * thetaCuspReflectedLogJetThree 0 t -
-      3 * thetaCuspReflectedLogJetTwo 0 t ^ 2 +
-      6 * thetaCuspReflectedLogJetOne 0 t ^ 2 * thetaCuspReflectedLogJetTwo 0 t -
-      thetaCuspReflectedLogJetOne 0 t ^ 4)
+      3 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) +
+      6 * thetaCuspReflectedLogJetOne 0 t ^ (2 : ℕ) * thetaCuspReflectedLogJetTwo 0 t -
+      thetaCuspReflectedLogJetOne 0 t ^ (4 : ℕ))
 
 theorem thetaCuspReflectedSourceDecayFluxFourthJet_lt_turanCeiling_zero
     {t : ℝ} (ht : 0 < t) :
@@ -38,8 +38,8 @@ def thetaCuspReflectedSourceFifthRootCurvatureAccelerationTuranCeilingAtZero
   let J := thetaCuspReflectedSourceDecayFluxCurvature 0 t
   let K := thetaCuspReflectedSourceDecayFluxThirdJet 0 t
   let L := thetaCuspReflectedSourceDecayFluxFourthJetTuranCeilingAtZero t
-  22 * D ^ 2 + 40 * A * J - 39 * t * D * J + 11 * t * A * K +
-    t ^ 2 * (2 * D * K + 5 * A * L - 3 * J ^ 2)
+  22 * D ^ (2 : ℕ) + 40 * A * J - 39 * t * D * J + 11 * t * A * K +
+    t ^ (2 : ℕ) * (2 * D * K + 5 * A * L - 3 * J ^ (2 : ℕ))
 
 theorem thetaCuspReflectedSourceFifthRootCurvatureAcceleration_lt_turanCeiling_zero
     {t : ℝ} (ht : 0 < t) :
@@ -47,7 +47,7 @@ theorem thetaCuspReflectedSourceFifthRootCurvatureAcceleration_lt_turanCeiling_z
       thetaCuspReflectedSourceFifthRootCurvatureAccelerationTuranCeilingAtZero t := by
   have hL := thetaCuspReflectedSourceDecayFluxFourthJet_lt_turanCeiling_zero ht
   have hA := thetaCuspReflectedSourceFirstDrop_pos 0 ht
-  have hweight : 0 < 5 * t ^ 2 * thetaCuspReflectedSourceFirstDrop 0 t := by
+  have hweight : 0 < 5 * t ^ (2 : ℕ) * thetaCuspReflectedSourceFirstDrop 0 t := by
     positivity
   have hmul := mul_lt_mul_of_pos_left hL hweight
   unfold thetaCuspReflectedSourceFifthRootCurvatureAcceleration
@@ -63,7 +63,7 @@ def thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAt
   let J := thetaCuspReflectedSourceDecayFluxCurvature 0 t
   let N := thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 t
   let Acc := thetaCuspReflectedSourceFifthRootCurvatureAccelerationTuranCeilingAtZero t
-  Acc * A ^ 2 - 2 * N * (D ^ 2 + A * J)
+  Acc * A ^ (2 : ℕ) - 2 * N * (D ^ (2 : ℕ) + A * J)
 
 theorem
     thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderNumerator_lt_turanCeiling_zero
@@ -108,8 +108,8 @@ theorem
         (thetaCuspReflectedSourceFifthRootCurvatureIntrinsicBalance 0) t ∧
       0 <
         thetaCuspReflectedSourceFifthRootCurvatureIntrinsicSecondOrderTuranCeilingAtZero t ∧
-      thetaCuspReflectedLogJetFour 0 t + 320 <
-        2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 ∧
+      thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+        2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) ∧
       thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero t <
         thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t := by
   obtain ⟨t, ht, hneg, hmin, _hrel, _hvel, hfour, hover⟩ :=

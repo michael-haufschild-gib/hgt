@@ -207,12 +207,12 @@ theorem tendsto_scaleCovariantBernsteinAbelField_of_atomic_halfOrder
     (hhalf : Tendsto
       (fun N : ℕ => Real.sqrt N *
         atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) N /
-          (B ^ 2) ^ N)
+          (B ^ (2 : ℕ)) ^ N)
       atTop (nhds L)) :
     Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
         scaleCovariantBernsteinAbelField m R t)
-      (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+      (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
       (nhds (Real.sqrt Real.pi * L)) := by
   have hboundary :=
     GaloisForLFunctions.HTGeometry.tendsto_sqrt_scaled_boundary_mul_tsum_of_halfOrder

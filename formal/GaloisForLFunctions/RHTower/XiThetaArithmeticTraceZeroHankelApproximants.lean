@@ -29,7 +29,7 @@ noncomputable section
 
 /-- Explicit source-derived mass where the degree-`k` shifted moment block is positive. -/
 def thetaArithmeticParabolicMass (k : ℕ) : ℝ :=
-  routeUParabolicDegreeHorizon * (((k + 2 : ℕ) : ℝ) ^ 2)
+  routeUParabolicDegreeHorizon * (((k + 2 : ℕ) : ℝ) ^ (2 : ℕ))
 
 /-- Positive reverse-Bessel radius associated with the parabolic mass. -/
 def thetaArithmeticParabolicRadius (k : ℕ) : ℝ :=
@@ -79,7 +79,7 @@ theorem thetaArithmeticParabolicMass_pos (k : ℕ) :
   exact mul_pos routeUParabolicDegreeHorizon_pos (sq_pos_of_pos (by positivity))
 
 theorem thetaArithmeticParabolicRadius_sq (k : ℕ) :
-    thetaArithmeticParabolicRadius k ^ 2 = thetaArithmeticParabolicMass k := by
+    thetaArithmeticParabolicRadius k ^ (2 : ℕ) = thetaArithmeticParabolicMass k := by
   exact Real.sq_sqrt (thetaArithmeticParabolicMass_pos k).le
 
 theorem thetaArithmeticParabolicRadius_gt_half (k : ℕ) :
@@ -87,7 +87,7 @@ theorem thetaArithmeticParabolicRadius_gt_half (k : ℕ) :
   have hK : 16 ≤ routeUParabolicDegreeHorizon := le_max_left _ _
   have hk : (1 : ℝ) ≤ ((k + 2 : ℕ) : ℝ) := by
     exact_mod_cast (show 1 ≤ k + 2 by omega)
-  have hn : (1 : ℝ) ≤ (((k + 2 : ℕ) : ℝ) ^ 2) := by
+  have hn : (1 : ℝ) ≤ (((k + 2 : ℕ) : ℝ) ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (((k + 2 : ℕ) : ℝ) - 1)]
   have hmass : 16 ≤ thetaArithmeticParabolicMass k := by
     rw [thetaArithmeticParabolicMass]
@@ -109,7 +109,7 @@ theorem thetaArithmeticParabolicMoment_eq_shifted (k m : ℕ) :
   have hsource := completedSourceJet_eq_rationalGamma_sub_prime m
     (thetaArithmeticParabolicRadius_gt_half k)
   have hmoment := completedSourceJet_eq_xiShiftedReciprocalMoment m hw
-  have hwSq : w ^ 2 = thetaArithmeticParabolicMass k :=
+  have hwSq : w ^ (2 : ℕ) = thetaArithmeticParabolicMass k :=
     thetaArithmeticParabolicRadius_sq k
   have hscale : (2 : ℝ) ^ m * (m.factorial : ℝ) * w ^ (2 * m + 1) ≠ 0 := by
     positivity

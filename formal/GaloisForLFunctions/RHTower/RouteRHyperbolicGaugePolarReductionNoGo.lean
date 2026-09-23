@@ -318,7 +318,7 @@ theorem routeR_actualFixedMetricExcess_eq_modularSquare
           primeDepthBVWoldConnection primeDepthBVWoldWitnessZero
             primeDepthBVWoldWitnessOne /
           (xiGammaEulerPrimitivePrimeDepthLogClock primeDepthBVWoldWitnessZero *
-            xiGammaEulerPrimitivePrimeDepthLogClock primeDepthBVWoldWitnessOne)) ^ 2 *
+            xiGammaEulerPrimitivePrimeDepthLogClock primeDepthBVWoldWitnessOne)) ^ (2 : ℕ) *
         Complex.normSq
           (iteratedDeriv (xiSupportMultiplicity rho) XiC
             (xiSpectralPointSupport rho)) :=

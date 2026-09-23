@@ -101,7 +101,7 @@ theorem hasDerivAt_suzukiHalfInner {γ : ℂ} {m : ℕ} (hm : 0 < m)
     simpa [Pi.mul_def] using hmul
   have hPd : HasDerivAt P (deriv P γ) γ := hPan.differentiableAt.hasDerivAt
   have hq := hN.div hPd hPne
-  have hval : (h γ * P γ - (γ - γ) * h γ * deriv P γ) / P γ ^ 2 = -I / (m : ℂ) := by
+  have hval : (h γ * P γ - (γ - γ) * h γ * deriv P γ) / P γ ^ (2 : ℕ) = -I / (m : ℂ) := by
     rw [hPγ]
     have hI : I ≠ 0 := Complex.I_ne_zero
     field_simp

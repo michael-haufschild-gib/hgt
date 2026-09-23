@@ -69,48 +69,48 @@ def arithmeticEigenvalueProfile (x : ℝ) : ℝ :=
 
 /-- Elementary tangent envelope used to control the profile derivative. -/
 theorem sqrt_sub_one_mul_arcsin_one_div_le_one {x : ℝ} (hx : 1 < x) :
-    Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) ≤ 1 := by
+    Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) ≤ 1 := by
   have hx0 : 0 < x := one_pos.trans hx
   have ht0 : 0 ≤ 1 / x := by positivity
   have ht1 : 1 / x < 1 := (div_lt_one hx0).mpr hx
   have htan := Real.le_tan (Real.arcsin_nonneg.mpr ht0)
     (Real.arcsin_lt_pi_div_two.mpr ht1)
   rw [Real.tan_arcsin] at htan
-  have harg : 0 < x ^ 2 - 1 := by nlinarith
-  have hspos : 0 < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.2 harg
-  have hsquare : Real.sqrt (1 - (1 / x) ^ 2) = Real.sqrt (x ^ 2 - 1) / x := by
-    rw [show 1 - (1 / x) ^ 2 = (x ^ 2 - 1) / x ^ 2 by field_simp]
+  have harg : 0 < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hspos : 0 < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.2 harg
+  have hsquare : Real.sqrt (1 - (1 / x) ^ (2 : ℕ)) = Real.sqrt (x ^ (2 : ℕ) - 1) / x := by
+    rw [show 1 - (1 / x) ^ (2 : ℕ) = (x ^ (2 : ℕ) - 1) / x ^ (2 : ℕ) by field_simp]
     rw [Real.sqrt_div (le_of_lt harg), Real.sqrt_sq_eq_abs, abs_of_pos hx0]
   rw [hsquare] at htan
-  have hbound : Real.arcsin (1 / x) ≤ 1 / Real.sqrt (x ^ 2 - 1) := by
+  have hbound : Real.arcsin (1 / x) ≤ 1 / Real.sqrt (x ^ (2 : ℕ) - 1) := by
     convert htan using 1
     field_simp
   simpa [mul_comm] using (le_div_iff₀ hspos).mp hbound
 
 theorem hasDerivAt_arithmeticEigenvalueProfile {x : ℝ} (hx : 1 < x) :
     HasDerivAt arithmeticEigenvalueProfile
-      (Real.arcsin (1 / x) * (1 - Real.log x) / x ^ 2 -
-        Real.log x / (x ^ 2 * Real.sqrt (x ^ 2 - 1))) x := by
+      (Real.arcsin (1 / x) * (1 - Real.log x) / x ^ (2 : ℕ) -
+        Real.log x / (x ^ (2 : ℕ) * Real.sqrt (x ^ (2 : ℕ) - 1))) x := by
   have hx0 : x ≠ 0 := ne_of_gt (one_pos.trans hx)
   have htneg : 1 / x ≠ -1 := by
     have : 0 < 1 / x := by positivity
     linarith
   have htone : 1 / x ≠ 1 := ne_of_lt ((div_lt_one (one_pos.trans hx)).mpr hx)
-  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-1 / x ^ 2) x := by
+  have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-1 / x ^ (2 : ℕ)) x := by
     simpa [div_eq_mul_inv] using hasDerivAt_inv hx0
   have harc : HasDerivAt (fun y : ℝ => Real.arcsin (1 / y))
-      ((1 / Real.sqrt (1 - (1 / x) ^ 2)) * (-1 / x ^ 2)) x :=
+      ((1 / Real.sqrt (1 - (1 / x) ^ (2 : ℕ))) * (-1 / x ^ (2 : ℕ))) x :=
     (Real.hasDerivAt_arcsin htneg htone).comp x hinv
   have hmain := ((Real.hasDerivAt_log hx0).div (hasDerivAt_id x) hx0).mul harc
   have hraw : HasDerivAt arithmeticEigenvalueProfile
-      (((x⁻¹ * x - Real.log x) / x ^ 2) * Real.arcsin (1 / x) +
-        (Real.log x / x) * ((1 / Real.sqrt (1 - (1 / x) ^ 2)) * (-1 / x ^ 2))) x := by
+      (((x⁻¹ * x - Real.log x) / x ^ (2 : ℕ)) * Real.arcsin (1 / x) +
+        (Real.log x / x) * ((1 / Real.sqrt (1 - (1 / x) ^ (2 : ℕ))) * (-1 / x ^ (2 : ℕ)))) x := by
     have hfun := hmain.congr_of_eventuallyEq (f₁ := arithmeticEigenvalueProfile)
       (Filter.Eventually.of_forall fun _ => rfl)
     simpa using hfun
-  have harg : 0 < x ^ 2 - 1 := by nlinarith
-  have hsquare : Real.sqrt (1 - (1 / x) ^ 2) = Real.sqrt (x ^ 2 - 1) / x := by
-    rw [show 1 - (1 / x) ^ 2 = (x ^ 2 - 1) / x ^ 2 by field_simp]
+  have harg : 0 < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hsquare : Real.sqrt (1 - (1 / x) ^ (2 : ℕ)) = Real.sqrt (x ^ (2 : ℕ) - 1) / x := by
+    rw [show 1 - (1 / x) ^ (2 : ℕ) = (x ^ (2 : ℕ) - 1) / x ^ (2 : ℕ) by field_simp]
     rw [Real.sqrt_div (le_of_lt harg), Real.sqrt_sq_eq_abs,
       abs_of_pos (one_pos.trans hx)]
   convert hraw using 1
@@ -119,33 +119,33 @@ theorem hasDerivAt_arithmeticEigenvalueProfile {x : ℝ} (hx : 1 < x) :
   ring
 
 theorem arithmeticEigenvalueProfile_deriv_neg {x : ℝ} (hx : 2 ≤ x) :
-    Real.arcsin (1 / x) * (1 - Real.log x) / x ^ 2 -
-        Real.log x / (x ^ 2 * Real.sqrt (x ^ 2 - 1)) < 0 := by
+    Real.arcsin (1 / x) * (1 - Real.log x) / x ^ (2 : ℕ) -
+        Real.log x / (x ^ (2 : ℕ) * Real.sqrt (x ^ (2 : ℕ) - 1)) < 0 := by
   have hx1 : 1 < x := lt_of_lt_of_le one_lt_two hx
   have hx0 : 0 < x := one_pos.trans hx1
-  have harg : 0 < x ^ 2 - 1 := by nlinarith
-  have hspos : 0 < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.2 harg
+  have harg : 0 < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hspos : 0 < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.2 harg
   have hloghalf : (1 / 2 : ℝ) < Real.log x := by
     have htwo : (1 / 2 : ℝ) < Real.log 2 :=
       (by norm_num : (1 / 2 : ℝ) < 0.6931471803).trans Real.log_two_gt_d9
     exact htwo.trans_le (Real.log_le_log zero_lt_two hx)
-  have hprod : Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) ≤ 1 :=
+  have hprod : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) ≤ 1 :=
     sqrt_sub_one_mul_arcsin_one_div_le_one hx1
-  have hnum : Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) *
+  have hnum : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) *
         (1 - Real.log x) - Real.log x < 0 := by
     by_cases hsign : 0 ≤ 1 - Real.log x
     · have hmul := mul_le_mul_of_nonneg_right hprod hsign
       linarith
     · have harc0 : 0 ≤ Real.arcsin (1 / x) := Real.arcsin_nonneg.mpr (by positivity)
-      have hpa : 0 ≤ Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) :=
+      have hpa : 0 ≤ Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) :=
         mul_nonneg (Real.sqrt_nonneg _) harc0
-      have hmul : Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) *
+      have hmul : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) *
           (1 - Real.log x) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hpa (le_of_not_ge hsign)
       linarith
-  rw [show Real.arcsin (1 / x) * (1 - Real.log x) / x ^ 2 -
-        Real.log x / (x ^ 2 * Real.sqrt (x ^ 2 - 1)) =
-      (Real.sqrt (x ^ 2 - 1) * Real.arcsin (1 / x) * (1 - Real.log x) -
-        Real.log x) / (x ^ 2 * Real.sqrt (x ^ 2 - 1)) by field_simp]
+  rw [show Real.arcsin (1 / x) * (1 - Real.log x) / x ^ (2 : ℕ) -
+        Real.log x / (x ^ (2 : ℕ) * Real.sqrt (x ^ (2 : ℕ) - 1)) =
+      (Real.sqrt (x ^ (2 : ℕ) - 1) * Real.arcsin (1 / x) * (1 - Real.log x) -
+        Real.log x) / (x ^ (2 : ℕ) * Real.sqrt (x ^ (2 : ℕ) - 1)) by field_simp]
   exact div_neg_of_neg_of_pos hnum (mul_pos (sq_pos_of_pos hx0) hspos)
 
 /-- The real profile `log x · arcsin(1/x) / x` is strictly decreasing on `[2,∞)`. -/

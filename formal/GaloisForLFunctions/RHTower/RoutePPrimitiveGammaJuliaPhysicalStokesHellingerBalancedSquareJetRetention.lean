@@ -6,7 +6,7 @@ import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 # P-G105R: balanced physical determinant square-jet retention
 
 The balanced two-channel physical determinant factors through the square
-coordinate `v = u^2`. For every finite prime block, its punctured quadratic
+coordinate `v = u^(2 : ℕ)`. For every finite prime block, its punctured quadratic
 quotient tends exactly to minus sixty-four times child Hilbert--Schmidt energy.
 
 Square blocks exhaust the full child kernel, so these finite determinant jets
@@ -49,7 +49,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil_eq_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (u : ℂ) :
     routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil H u =
-      routePPrimitiveGammaJuliaPhysicalStokesHellingerSquareCoordinatePencil H (u ^ 2) := by
+      routePPrimitiveGammaJuliaPhysicalStokesHellingerSquareCoordinatePencil H (u ^ (2 : ℕ)) := by
   rfl
 
 theorem trace_sq_eq_matHSNormSq_of_isHermitian
@@ -82,15 +82,15 @@ theorem hasDerivAt_squareCoordinatePencil_det_zero
   module
 
 private theorem tendsto_sq_nhdsNE_zero :
-    Tendsto (fun u : ℂ => u ^ 2) (𝓝[≠] (0 : ℂ)) (𝓝[≠] (0 : ℂ)) := by
+    Tendsto (fun u : ℂ => u ^ (2 : ℕ)) (𝓝[≠] (0 : ℂ)) (𝓝[≠] (0 : ℂ)) := by
   rw [tendsto_nhdsWithin_iff]
   constructor
-  · have hsq : Tendsto (fun u : ℂ => u ^ 2) (𝓝 (0 : ℂ)) (𝓝 (0 : ℂ)) := by
+  · have hsq : Tendsto (fun u : ℂ => u ^ (2 : ℕ)) (𝓝 (0 : ℂ)) (𝓝 (0 : ℂ)) := by
       have hsq' := ((continuousAt_id' (y := (0 : ℂ))).mul
         (continuousAt_id' (y := (0 : ℂ)))).tendsto
       convert hsq' using 1
       funext u
-      change u ^ 2 = u * u
+      change u ^ (2 : ℕ) = u * u
       exact pow_two u
       simp
     exact hsq.mono_left nhdsWithin_le_nhds
@@ -103,7 +103,7 @@ theorem tendsto_squaredChildPencil_det_sub_one_div_sq_zero
     Tendsto
       (fun u : ℂ =>
         ((routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil H u).det - 1) /
-          u ^ 2)
+          u ^ (2 : ℕ))
       (𝓝[≠] (0 : ℂ))
       (𝓝 (-64 * ((GaloisForLFunctions.HTGeometry.matHSNormSq H : ℝ) : ℂ))) := by
   have hslope := (hasDerivAt_squareCoordinatePencil_det_zero H hH).tendsto_slope_zero
@@ -119,7 +119,7 @@ theorem tendsto_channelCompleteFiniteDet_sub_one_div_sq_zero
       (fun u : ℂ =>
         (routePPrimitiveGammaJuliaPhysicalStokesHellingerOrdinaryFiniteDet d 1
             (routePPrimitiveGammaJuliaPhysicalStokesHellingerChannelComplete t) u - 1) /
-          u ^ 2)
+          u ^ (2 : ℕ))
       (𝓝[≠] (0 : ℂ))
       (𝓝 (-64 *
         ((GaloisForLFunctions.HTGeometry.matHSNormSq
@@ -155,8 +155,8 @@ theorem tendsto_childBlockEnergy_atTop
   have hK : HilbertSchmidt.IsHS K :=
     routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd
   have hsum : Tendsto
-      (fun t : Finset Nat.Primes => ∑ pq ∈ t ×ˢ t, ‖K pq‖ ^ 2)
-      atTop (𝓝 (∑' pq : Nat.Primes × Nat.Primes, ‖K pq‖ ^ 2)) :=
+      (fun t : Finset Nat.Primes => ∑ pq ∈ t ×ˢ t, ‖K pq‖ ^ (2 : ℕ))
+      atTop (𝓝 (∑' pq : Nat.Primes × Nat.Primes, ‖K pq‖ ^ (2 : ℕ))) :=
     hK.hasSum.comp (HilbertSchmidt.tendsto_finset_product_atTop (ι := Nat.Primes))
   convert hsum using 1
   · funext t

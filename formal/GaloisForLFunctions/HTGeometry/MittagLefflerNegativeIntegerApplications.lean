@@ -48,7 +48,7 @@ Mittag-Leffler approximation required by the logarithmic-derivative construction
 theorem exists_entire_approx_sq_logDeriv_negativeIntegerProduct :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
       ∀ s : ℂ, 1 ≤ s.re →
-        ‖s ^ 2 * logDeriv (weierstrassGenusProduct negativeIntegerPole) s - G s‖ ≤ 1 := by
+        ‖s ^ (2 : ℕ) * logDeriv (weierstrassGenusProduct negativeIntegerPole) s - G s‖ ≤ 1 := by
   obtain ⟨G, hGd, hGb⟩ := exists_entire_approx_sq_logDeriv_weierstrassGenusProduct 0
     tendsto_norm_negativeIntegerPole negativeIntegerPole_ne_zero negativeIntegerPole_re_lt_one
     zero_lt_one
@@ -59,7 +59,7 @@ Mittag-Leffler approximation. -/
 theorem exists_entire_approx_sq_logDeriv_negativeIntegerDivisor :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
       ∀ s : ℂ, 1 ≤ s.re →
-        ‖s ^ 2 * logDeriv
+        ‖s ^ (2 : ℕ) * logDeriv
           (divisorFunction negativeIntegerPole (fun n => negativeIntegerPole (n + 1))) s - G s‖ ≤ 1 := by
   have hshift : Filter.Tendsto (fun n => ‖negativeIntegerPole (n + 1)‖)
       Filter.atTop Filter.atTop := by

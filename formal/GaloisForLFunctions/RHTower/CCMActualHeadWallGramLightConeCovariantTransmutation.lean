@@ -29,7 +29,7 @@ def ccmActualHeadWallChordPolarJetCurrent
   ∫ xi : ℝ,
     deriv (fun x : ℝ => normSq (ccmActualHeadMellinWallChord x n)) xi *
       ccmActualHeadMatchedSinePhaseProfile n xi *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 theorem ccmActualHeadWallPolarJetRate_pos
     (p : Nat.Primes) (e : ℕ) :
@@ -48,7 +48,7 @@ theorem integrable_ccmActualHeadWallChordPolarJetCurrent_integrand
     Integrable (fun xi : ℝ =>
       deriv (fun x : ℝ => normSq (ccmActualHeadMellinWallChord x n)) xi *
         ccmActualHeadMatchedSinePhaseProfile n xi *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   let n := xiGammaEulerValuationNat (p, e)
   have h :=
     (integrable_ccmActualHeadMatchedSinePhaseProfile_mul_density n f).const_mul
@@ -58,10 +58,10 @@ theorem integrable_ccmActualHeadWallChordPolarJetCurrent_integrand
     (4 * Real.pi * Real.log n * criticalMellinAtomWeight n) *
           (Real.sin (2 * Real.pi * Real.log n * xi) *
             ccmActualHeadMatchedSinePhaseProfile n xi *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) =
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
       deriv (fun x : ℝ => normSq (ccmActualHeadMellinWallChord x n)) xi *
         ccmActualHeadMatchedSinePhaseProfile n xi *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   rw [congrFun (deriv_normSq_ccmActualHeadMellinWallChord_primePower p e) xi,
     ccmActualHeadMatchedWallLightImbalance_eq]
   dsimp only [n]
@@ -82,12 +82,12 @@ theorem ccmActualHeadWallChordPolarJetCurrent_eq_rate_mul_matchedSuzukiCurrent
       (∫ xi : ℝ,
         deriv (fun x : ℝ => normSq (ccmActualHeadMellinWallChord x n)) xi *
           ccmActualHeadMatchedSinePhaseProfile n xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) =
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
         (4 * Real.pi * Real.log n * criticalMellinAtomWeight n) *
           ∫ xi : ℝ,
             Real.sin (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedSinePhaseProfile n xi *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
     rw [← integral_const_mul]
     apply integral_congr_ae
     filter_upwards with xi
@@ -116,12 +116,12 @@ theorem ccmActualHeadMatchedSuzukiCurrent_l2Reflection
   have hreflect := l2Reflection_ae g
   congr 1
   calc
-    (∫ xi : ℝ, K xi * ‖(l2Reflection g : ℝ → ℂ) xi‖ ^ 2) =
-        ∫ xi : ℝ, K xi * ‖(g : ℝ → ℂ) (-xi)‖ ^ 2 := by
+    (∫ xi : ℝ, K xi * ‖(l2Reflection g : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
+        ∫ xi : ℝ, K xi * ‖(g : ℝ → ℂ) (-xi)‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [hreflect] with xi hxi
       rw [hxi]
-    _ = ∫ xi : ℝ, K (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ 2 := by
+    _ = ∫ xi : ℝ, K (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards with xi
       dsimp only [K]
@@ -129,9 +129,9 @@ theorem ccmActualHeadMatchedSuzukiCurrent_l2Reflection
           -(2 * Real.pi * Real.log n * xi) by ring,
         Real.sin_neg, ccmActualHeadMatchedSinePhaseProfile_neg]
       ring
-    _ = ∫ xi : ℝ, K xi * ‖(g : ℝ → ℂ) xi‖ ^ 2 := by
+    _ = ∫ xi : ℝ, K xi * ‖(g : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
       simpa only using MeasureTheory.integral_neg_eq_self
-        (fun xi : ℝ => K xi * ‖(g : ℝ → ℂ) xi‖ ^ 2) volume
+        (fun xi : ℝ => K xi * ‖(g : ℝ → ℂ) xi‖ ^ (2 : ℕ)) volume
 
 /-- Covariantizing the odd wall jet bypasses the scalar reflection no-go: the resulting current is
 reflection-even. -/
@@ -170,9 +170,9 @@ theorem abs_ccmActualHeadWallChordPolarJetCurrent_le
     (p : Nat.Primes) (e : ℕ) (f : SoninL2) :
     |ccmActualHeadWallChordPolarJetCurrent p e f| ≤
       ccmActualHeadWallPolarJetRate p e *
-        (criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e)) ^ 2 /
+        (criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e)) ^ (2 : ℕ) /
           (4 * Real.exp
-            (Real.log (xiGammaEulerValuationNat (p, e)) / 2)) * ‖f‖ ^ 2) := by
+            (Real.log (xiGammaEulerValuationNat (p, e)) / 2)) * ‖f‖ ^ (2 : ℕ)) := by
   rw [ccmActualHeadWallChordPolarJetCurrent_eq_rate_mul_matchedSuzukiCurrent,
     abs_mul, abs_of_pos (ccmActualHeadWallPolarJetRate_pos p e)]
   exact mul_le_mul_of_nonneg_left

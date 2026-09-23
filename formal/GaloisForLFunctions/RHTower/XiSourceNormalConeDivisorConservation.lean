@@ -199,11 +199,11 @@ theorem hasDerivAt_depthSuccessorTransport_zero
     (by simpa using hfu)
   change HasDerivAt (fun ε : ℂ => f u / f ((1 + ε) * u))
     ((0 * f ((1 + 0) * u) - f u * (deriv f u * u)) /
-      f ((1 + 0) * u) ^ 2) 0 at hquot
+      f ((1 + 0) * u) ^ (2 : ℕ)) 0 at hquot
   have heq :
       -u * logDeriv f u =
         (0 * f ((1 + 0) * u) - f u * (deriv f u * u)) /
-          f ((1 + 0) * u) ^ 2 := by
+          f ((1 + 0) * u) ^ (2 : ℕ) := by
     rw [logDeriv_apply]
     simp only [add_zero, one_mul, zero_mul, zero_sub]
     field_simp [hfu]
@@ -505,7 +505,7 @@ theorem tendsto_boundedExponentEulerSource_mesoscopicScale
     {u : ℂ} (hu : 0 < u.re) :
     Tendsto
       (fun M : ℕ =>
-        boundedExponentEulerSource ((M + 1) ^ 2)
+        boundedExponentEulerSource ((M + 1) ^ (2 : ℕ))
           ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
       atTop (𝓝 (-1 / 2 : ℂ)) := by
   have hinv :
@@ -545,7 +545,7 @@ theorem tendsto_boundedExponentEulerSource_microscopicScale
     Tendsto
       (fun M : ℕ =>
         boundedExponentEulerSource (M + 1)
-          (((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u))
+          (((((M + 1 : ℕ) : ℂ)⁻¹) ^ (2 : ℕ)) * u))
       atTop (𝓝 1) := by
   have hinv :
       Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹))
@@ -556,7 +556,7 @@ theorem tendsto_boundedExponentEulerSource_microscopicScale
     exact h.congr' (Filter.Eventually.of_forall fun M => by rfl)
   have hargNum :
       Tendsto
-        (fun M : ℕ => ((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u)
+        (fun M : ℕ => ((((M + 1 : ℕ) : ℂ)⁻¹) ^ (2 : ℕ)) * u)
         atTop (𝓝 0) := by
     convert (hinv.pow 2).mul_const u using 1 ; simp
   have hargDen :
@@ -664,7 +664,7 @@ structure ZetaSourceScaleTransitionCertificate : Prop where
     ∀ {u : ℂ}, 0 < u.re →
       Tendsto
         (fun M : ℕ =>
-          boundedExponentEulerSource ((M + 1) ^ 2)
+          boundedExponentEulerSource ((M + 1) ^ (2 : ℕ))
             ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
         atTop (𝓝 (-1 / 2 : ℂ))
   microscopicCollapse :
@@ -672,7 +672,7 @@ structure ZetaSourceScaleTransitionCertificate : Prop where
       Tendsto
         (fun M : ℕ =>
           boundedExponentEulerSource (M + 1)
-            (((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u))
+            (((((M + 1 : ℕ) : ℂ)⁻¹) ^ (2 : ℕ)) * u))
         atTop (𝓝 1)
 
 /-- **Zeta divisor scale-transition law.**  Renormalized depth selects whether

@@ -44,16 +44,16 @@ def tiedPowerNegativeNodes : Fin 4 → ℂ :=
 
 theorem tiedPowerPositiveNodes_narrowRightSector :
     ∀ i, 0 < (tiedPowerPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerPositiveNodes i).re ^ 2 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerPositiveNodes i).re ^ (2 : ℕ) := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerPositiveNodes, Complex.normSq_apply]
 
 theorem tiedPowerNegativeNodes_narrowRightSector :
     ∀ i, 0 < (tiedPowerNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerNegativeNodes i).re ^ 2 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerNegativeNodes i).re ^ (2 : ℕ) := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerNegativeNodes, Complex.normSq_apply]
@@ -249,17 +249,17 @@ theorem tiedPowerPositive_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C 10) = X ^ 3 - C 10 * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C 10) = X ^ (3 : ℕ) - C 10 * X ^ (2 : ℕ) := by ring
   calc
-    momentFunctional (tiedPowerMoment tiedPowerPositiveNodes) (X ^ 2 * (X - C 10)) =
+    momentFunctional (tiedPowerMoment tiedPowerPositiveNodes) (X ^ (2 : ℕ) * (X - C 10)) =
         momentFunctional (tiedPowerMoment tiedPowerPositiveNodes)
-          (X ^ 3 - C 10 * X ^ 2) := congrArg _ hpoly
+          (X ^ (3 : ℕ) - C 10 * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = 4 := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C 10 * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C 10 * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C 10 * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C 10 * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C 10 * X ^ 2 : Polynomial ℝ) = (10 : ℝ) • X ^ 2 by
+      rw [show (C 10 * X ^ (2 : ℕ) : Polynomial ℝ) = (10 : ℝ) • X ^ (2 : ℕ) by
         rw [Polynomial.smul_eq_C_mul], momentFunctional_smul,
         momentFunctional_X_pow, tiedPowerPositiveMoment_three,
         tiedPowerPositiveMoment_two]
@@ -278,17 +278,17 @@ theorem tiedPowerNegative_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C 10) = X ^ 3 - C 10 * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C 10) = X ^ (3 : ℕ) - C 10 * X ^ (2 : ℕ) := by ring
   calc
-    momentFunctional (tiedPowerMoment tiedPowerNegativeNodes) (X ^ 2 * (X - C 10)) =
+    momentFunctional (tiedPowerMoment tiedPowerNegativeNodes) (X ^ (2 : ℕ) * (X - C 10)) =
         momentFunctional (tiedPowerMoment tiedPowerNegativeNodes)
-          (X ^ 3 - C 10 * X ^ 2) := congrArg _ hpoly
+          (X ^ (3 : ℕ) - C 10 * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = -16 := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C 10 * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C 10 * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C 10 * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C 10 * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C 10 * X ^ 2 : Polynomial ℝ) = (10 : ℝ) • X ^ 2 by
+      rw [show (C 10 * X ^ (2 : ℕ) : Polynomial ℝ) = (10 : ℝ) • X ^ (2 : ℕ) by
         rw [Polynomial.smul_eq_C_mul], momentFunctional_smul,
         momentFunctional_X_pow, tiedPowerNegativeMoment_three,
         tiedPowerNegativeMoment_two]
@@ -302,7 +302,7 @@ theorem complexAtomicMobiusPowerTrajectory_hasDerivAt (z : ℂ) (k : ℕ) :
       (-((k + 1 : ℕ) : ℂ) * z ^ (k + 2)) 0 := by
   have hden : HasDerivAt (fun h : ℂ => 1 + h * z) z 0 := by
     simpa [add_comm] using ((hasDerivAt_id (0 : ℂ)).mul_const z).const_add 1
-  have hquot : HasDerivAt (fun h : ℂ => z / (1 + h * z)) (-z ^ 2) 0 := by
+  have hquot : HasDerivAt (fun h : ℂ => z / (1 + h * z)) (-z ^ (2 : ℕ)) 0 := by
     have hraw := (hasDerivAt_const (x := (0 : ℂ)) z).div hden (by norm_num)
     convert! hraw using 1
     ring
@@ -334,11 +334,11 @@ theorem tiedPowerNarrowSectorOrientationNoGo :
     (∀ i, ∃ j, conj (tiedPowerPositiveNodes i) = tiedPowerPositiveNodes j) ∧
     (∀ i, ∃ j, conj (tiedPowerNegativeNodes i) = tiedPowerNegativeNodes j) ∧
     (∀ i, 0 < (tiedPowerPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerPositiveNodes i).re ^ 2) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerPositiveNodes i).re ^ (2 : ℕ)) ∧
     (∀ i, 0 < (tiedPowerNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerNegativeNodes i).re ^ 2) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerNegativeNodes i).re ^ (2 : ℕ)) ∧
     momentHankelMatrix (tiedPowerMoment tiedPowerPositiveNodes) 2 =
       momentHankelMatrix (tiedPowerMoment tiedPowerNegativeNodes) 2 ∧
     (momentHankelMatrix (tiedPowerMoment tiedPowerPositiveNodes) 1).PosDef ∧

@@ -30,7 +30,7 @@ noncomputable section
 
 /-- The exact Weyl compression leakage of the projective clock of the prime `p`. -/
 def primeLeakage (p : ℕ) (z : ℝ) : ℝ :=
-  ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ 2 / ((p : ℝ) + Real.exp z ^ 2)
+  ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ (2 : ℕ) / ((p : ℝ) + Real.exp z ^ (2 : ℕ))
 
 /-- The prime leakage is the geometric leakage of the projective clock `P¹(F_p)`. -/
 theorem primeLeakage_eq_projLeakageValue (p : ℕ) [Fact p.Prime] (z : ℝ) :
@@ -47,65 +47,65 @@ theorem primeLeakage_nonneg {p : ℕ} (hp : 2 ≤ p) (z : ℝ) : 0 ≤ primeLeak
   rw [primeLeakage]
   have h1 : (0 : ℝ) ≤ ((p : ℝ) - 1) / (p : ℝ) := by
     apply div_nonneg <;> linarith
-  have h2 : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
+  have h2 : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
   positivity
 
 /-- The leakage is bounded by its leading prime-density term. -/
 theorem primeLeakage_le_div {p : ℕ} (hp : 2 ≤ p) (z : ℝ) :
-    primeLeakage p z ≤ (Real.exp z - 1) ^ 2 / (p : ℝ) := by
+    primeLeakage p z ≤ (Real.exp z - 1) ^ (2 : ℕ) / (p : ℝ) := by
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hE : (0 : ℝ) < Real.exp z := Real.exp_pos z
-  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
-  have hsq : (0 : ℝ) ≤ (Real.exp z - 1) ^ 2 := sq_nonneg _
+  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
+  have hsq : (0 : ℝ) ≤ (Real.exp z - 1) ^ (2 : ℕ) := sq_nonneg _
   rw [primeLeakage, div_le_div_iff₀ hden (by linarith)]
-  have hfac : ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ 2 * (p : ℝ)
-      = ((p : ℝ) - 1) * (Real.exp z - 1) ^ 2 := by
+  have hfac : ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ (2 : ℕ) * (p : ℝ)
+      = ((p : ℝ) - 1) * (Real.exp z - 1) ^ (2 : ℕ) := by
     field_simp
   rw [hfac]
   nlinarith [hsq, hden, hpR]
 
 /-- The leakage stays uniformly below `1` on any bounded weight range. -/
 theorem primeLeakage_le_theta {p : ℕ} (hp : 2 ≤ p) {z F : ℝ} (hz : z ≤ F) :
-    primeLeakage p z ≤ (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2) := by
+    primeLeakage p z ≤ (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ)) := by
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hE : (0 : ℝ) < Real.exp z := Real.exp_pos z
   have hEF : Real.exp z ≤ Real.exp F := Real.exp_le_exp.mpr hz
-  have hEsq : Real.exp z ^ 2 ≤ Real.exp F ^ 2 := by nlinarith [hE.le, hEF]
-  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
-  have hden2 : (0 : ℝ) < 2 + Real.exp z ^ 2 := by positivity
-  have hdenF : (0 : ℝ) < 2 + Real.exp F ^ 2 := by positivity
+  have hEsq : Real.exp z ^ (2 : ℕ) ≤ Real.exp F ^ (2 : ℕ) := by nlinarith [hE.le, hEF]
+  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
+  have hden2 : (0 : ℝ) < 2 + Real.exp z ^ (2 : ℕ) := by positivity
+  have hdenF : (0 : ℝ) < 2 + Real.exp F ^ (2 : ℕ) := by positivity
   have hfrac1 : ((p : ℝ) - 1) / (p : ℝ) ≤ 1 := by
     rw [div_le_one (by linarith)]
     linarith
-  have hA : (Real.exp z - 1) ^ 2 ≤ Real.exp z ^ 2 + 1 := by nlinarith [hE]
-  have hnum : ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ 2 ≤ Real.exp z ^ 2 + 1 :=
+  have hA : (Real.exp z - 1) ^ (2 : ℕ) ≤ Real.exp z ^ (2 : ℕ) + 1 := by nlinarith [hE]
+  have hnum : ((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ (2 : ℕ) ≤ Real.exp z ^ (2 : ℕ) + 1 :=
     le_trans (mul_le_of_le_one_left (sq_nonneg _) hfrac1) hA
-  have hstep1 : primeLeakage p z ≤ (Real.exp z ^ 2 + 1) / (2 + Real.exp z ^ 2) := by
+  have hstep1 : primeLeakage p z ≤ (Real.exp z ^ (2 : ℕ) + 1) / (2 + Real.exp z ^ (2 : ℕ)) := by
     calc primeLeakage p z
-        = (((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ 2) / ((p : ℝ) + Real.exp z ^ 2) := rfl
-      _ ≤ (Real.exp z ^ 2 + 1) / ((p : ℝ) + Real.exp z ^ 2) := by gcongr
-      _ ≤ (Real.exp z ^ 2 + 1) / (2 + Real.exp z ^ 2) := by
+        = (((p : ℝ) - 1) / (p : ℝ) * (Real.exp z - 1) ^ (2 : ℕ)) / ((p : ℝ) + Real.exp z ^ (2 : ℕ)) := rfl
+      _ ≤ (Real.exp z ^ (2 : ℕ) + 1) / ((p : ℝ) + Real.exp z ^ (2 : ℕ)) := by gcongr
+      _ ≤ (Real.exp z ^ (2 : ℕ) + 1) / (2 + Real.exp z ^ (2 : ℕ)) := by
           gcongr
   refine le_trans hstep1 ?_
   rw [div_le_div_iff₀ hden2 hdenF]
   nlinarith [hEsq, hE]
 
 theorem theta_lt_one (F : ℝ) :
-    (Real.exp F ^ 2 + 1) / (2 + Real.exp F ^ 2) < 1 := by
-  have hdenF : (0 : ℝ) < 2 + Real.exp F ^ 2 := by positivity
+    (Real.exp F ^ (2 : ℕ) + 1) / (2 + Real.exp F ^ (2 : ℕ)) < 1 := by
+  have hdenF : (0 : ℝ) < 2 + Real.exp F ^ (2 : ℕ) := by positivity
   rw [div_lt_one hdenF]
   linarith
 
 /-- **The `O(p⁻²)` expansion of the prime leakage.** -/
 theorem abs_primeLeakage_sub_div_le {p : ℕ} (hp : 2 ≤ p) (z : ℝ) :
-    |primeLeakage p z - (Real.exp z - 1) ^ 2 / (p : ℝ)|
-      ≤ (Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) / (p : ℝ) ^ 2 := by
+    |primeLeakage p z - (Real.exp z - 1) ^ (2 : ℕ) / (p : ℝ)|
+      ≤ (Real.exp z - 1) ^ (2 : ℕ) * (1 + Real.exp z ^ (2 : ℕ)) / (p : ℝ) ^ (2 : ℕ) := by
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hE : (0 : ℝ) < Real.exp z := Real.exp_pos z
-  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ 2 := by positivity
-  have hkey : primeLeakage p z - (Real.exp z - 1) ^ 2 / (p : ℝ)
-      = -((Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) /
-          ((p : ℝ) * ((p : ℝ) + Real.exp z ^ 2))) := by
+  have hden : (0 : ℝ) < (p : ℝ) + Real.exp z ^ (2 : ℕ) := by positivity
+  have hkey : primeLeakage p z - (Real.exp z - 1) ^ (2 : ℕ) / (p : ℝ)
+      = -((Real.exp z - 1) ^ (2 : ℕ) * (1 + Real.exp z ^ (2 : ℕ)) /
+          ((p : ℝ) * ((p : ℝ) + Real.exp z ^ (2 : ℕ)))) := by
     rw [primeLeakage]
     field_simp
     ring
@@ -117,7 +117,7 @@ theorem abs_primeLeakage_sub_div_le {p : ℕ} (hp : 2 ≤ p) (z : ℝ) :
 
 /-- **The logarithmic defect is quadratic.**  For `0 ≤ u ≤ θ < 1`, `log (1-u) + u` is `O(u²)`. -/
 theorem abs_log_one_sub_add_le {u θ : ℝ} (h0 : 0 ≤ u) (hθ : θ < 1) (huθ : u ≤ θ) :
-    |Real.log (1 - u) + u| ≤ u ^ 2 / (1 - θ) := by
+    |Real.log (1 - u) + u| ≤ u ^ (2 : ℕ) / (1 - θ) := by
   have hu1 : u < 1 := lt_of_le_of_lt huθ hθ
   have habs : |u| < 1 := by rw [abs_of_nonneg h0]; exact hu1
   have h1 := Real.abs_log_sub_add_sum_range_le habs 1

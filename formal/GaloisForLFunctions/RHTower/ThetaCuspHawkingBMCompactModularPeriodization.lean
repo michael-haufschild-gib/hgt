@@ -19,18 +19,18 @@ theorem modular_orbit_height_le (γ : PSL2Z) (z : UpperHalfPlane) :
     by_cases hc : A 1 0 = 0
     · have hd : A 1 1 ≠ 0 := fun hd => zero_ne_one <| by
         simpa only [Matrix.det_fin_two,hc,hd,mul_zero,sub_zero] using A.det_coe
-      have hs : (1 : ℝ) ≤ (A 1 1 : ℝ)^2 := by
+      have hs : (1 : ℝ) ≤ (A 1 1 : ℝ)^(2 : ℕ) := by
         exact_mod_cast (one_le_sq_iff_one_le_abs _).mpr (Int.one_le_abs hd)
       apply le_trans _ (le_max_left _ _)
-      rw [show Complex.normSq ((A 1 0)*z+(A 1 1)) = (A 1 1 : ℝ)^2 by simp [hc,sq]]
+      rw [show Complex.normSq ((A 1 0)*z+(A 1 1)) = (A 1 1 : ℝ)^(2 : ℕ) by simp [hc,sq]]
       exact div_le_self z.im_pos.le hs
     · apply le_trans _ (le_max_right _ _)
-      rw [show 1/z.im = z.im/z.im^2 by field_simp]
+      rw [show 1/z.im = z.im/z.im^(2 : ℕ) by field_simp]
       gcongr
       rw [show Complex.normSq ((A 1 0)*z+(A 1 1)) =
-        ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))^2+(A 1 0 : ℝ)^2*z.im^2 by
+        ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))^(2 : ℕ)+(A 1 0 : ℝ)^(2 : ℕ)*z.im^(2 : ℕ) by
           simp [Complex.normSq_apply]; ring]
-      have hs : (1 : ℝ) ≤ (A 1 0 : ℝ)^2 := by
+      have hs : (1 : ℝ) ≤ (A 1 0 : ℝ)^(2 : ℕ) := by
         exact_mod_cast (one_le_sq_iff_one_le_abs _).mpr (Int.one_le_abs hc)
       nlinarith [sq_nonneg ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))]
 

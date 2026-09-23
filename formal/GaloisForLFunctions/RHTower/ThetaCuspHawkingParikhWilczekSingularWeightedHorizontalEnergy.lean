@@ -22,7 +22,7 @@ def pwLogDensityFromCore (h : ℝ → ℝ) (t : ℝ) : ℝ :=
 
 /-- The horizontal gauge is the positive square root of the singular gain. -/
 theorem pwLogSingularGauge_sq (t : ℝ) :
-    pwLogSingularGauge t ^ 2 = pwLogSingularGain t := by
+    pwLogSingularGauge t ^ (2 : ℕ) = pwLogSingularGain t := by
   rw [pwLogSingularGauge, pow_two, ← Real.exp_add, pwLogSingularGain]
   congr 1
   ring
@@ -30,7 +30,7 @@ theorem pwLogSingularGauge_sq (t : ℝ) :
 /-- Exact weighted density for every horizontal amplitude and every core. -/
 theorem pwLogWeightedEnergyDensity_horizontal (h : ℝ → ℝ) (c t : ℝ) :
     pwLogWeightedEnergyDensity (pwLogDensityFromCore h)
-      (fun u => c * pwLogSingularGauge u) t = c ^ 2 * h t := by
+      (fun u => c * pwLogSingularGauge u) t = c ^ (2 : ℕ) * h t := by
   unfold pwLogWeightedEnergyDensity pwLogDensityFromCore
   rw [mul_pow, pwLogSingularGauge_sq]
   have ha : pwLogSingularGain t ≠ 0 := Real.exp_ne_zero _
@@ -40,7 +40,7 @@ theorem pwLogWeightedEnergyDensity_horizontal (h : ℝ → ℝ) (c t : ℝ) :
 theorem pwLogHorizontal_weightedEnergy_classification (f h : ℝ → ℝ) :
     (∀ t, HasDerivAt f (pwLogSingularConnectionPotential t * f t) t) ↔
       ∃ c : ℝ, (∀ t, f t = c * pwLogSingularGauge t) ∧
-        (∀ t, pwLogWeightedEnergyDensity (pwLogDensityFromCore h) f t = c ^ 2 * h t) := by
+        (∀ t, pwLogWeightedEnergyDensity (pwLogDensityFromCore h) f t = c ^ (2 : ℕ) * h t) := by
   constructor
   · intro hf
     obtain ⟨c, hc⟩ := pwLogSingular_horizontal_plus_classification hf
@@ -56,13 +56,13 @@ theorem pwLogHorizontal_weightedEnergy_classification (f h : ℝ → ℝ) :
 /-- The constant core gives exact volume growth, allowing nonzero bounded mean energy. -/
 theorem pwLogHorizontal_flatCore_intervalEnergy (c a b : ℝ) :
     (∫ t in a..b, pwLogWeightedEnergyDensity (pwLogDensityFromCore (fun _ => 1))
-      (fun u => c * pwLogSingularGauge u) t) = (b - a) * c ^ 2 := by
+      (fun u => c * pwLogSingularGauge u) t) = (b - a) * c ^ (2 : ℕ) := by
   simp only [pwLogWeightedEnergyDensity_horizontal, mul_one]
   rw [intervalIntegral.integral_const, smul_eq_mul]
 
 /-- Squared original critical-line Gamma source profile. -/
 def pwLogGammaSourceDensity (t : ℝ) : ℝ :=
-  expShift (1 / 2) 0 t ^ 2
+  expShift (1 / 2) 0 t ^ (2 : ℕ)
 
 /-- The density core is the product of the original and reflected Gamma profiles. -/
 theorem pwLogGammaSourceDensity_eq_core (t : ℝ) :
@@ -88,7 +88,7 @@ theorem pwLogGammaSourceDensity_positive_unitary :
 /-- Exact original-source weighted density of every horizontal amplitude. -/
 theorem pwLogGammaSourceDensity_horizontal_energy (c t : ℝ) :
     pwLogWeightedEnergyDensity pwLogGammaSourceDensity
-      (fun u => c * pwLogSingularGauge u) t = c ^ 2 * Real.exp (-2 * Real.cosh t) := by
+      (fun u => c * pwLogSingularGauge u) t = c ^ (2 : ℕ) * Real.exp (-2 * Real.cosh t) := by
   have hw : pwLogGammaSourceDensity =
       pwLogDensityFromCore (fun u => Real.exp (-2 * Real.cosh u)) :=
     funext pwLogGammaSourceDensity_eq_core
@@ -126,7 +126,7 @@ theorem pwLogGammaSourceDensity_horizontal_integrable (c : ℝ) :
       (fun u => c * pwLogSingularGauge u)) := by
   have he : pwLogWeightedEnergyDensity pwLogGammaSourceDensity
       (fun u => c * pwLogSingularGauge u) =
-      fun t => c ^ 2 * Real.exp (-2 * Real.cosh t) :=
+      fun t => c ^ (2 : ℕ) * Real.exp (-2 * Real.cosh t) :=
     funext (pwLogGammaSourceDensity_horizontal_energy c)
   rw [he]
   exact pwLogGammaSourceCore_integrable.const_mul _
@@ -151,7 +151,7 @@ theorem pwLogSingularWeightedReflection_gauge :
   ring
 
 theorem pwLogSingularGauge_not_neutral_integrable :
-    ¬ Integrable (fun t => pwLogSingularGauge t ^ 2) := by
+    ¬ Integrable (fun t => pwLogSingularGauge t ^ (2 : ℕ)) := by
   intro h
   have hz := pwLogSingular_horizontal_plus_not_integrable hasDerivAt_pwLogSingularGauge h
   have hz0 := congrFun hz 0
@@ -170,7 +170,7 @@ theorem pwLogGammaSource_exists_finiteEnergy_horizontal_fixed_section :
       (0 < ∫ t, pwLogWeightedEnergyDensity pwLogGammaSourceDensity f t) ∧
       (∀ t, pwLogWeightedEnergyDensity pwLogGammaSourceDensity f t =
         Real.exp (-2 * Real.cosh t)) ∧
-      ¬ Integrable (fun t => f t ^ 2) := by
+      ¬ Integrable (fun t => f t ^ (2 : ℕ)) := by
   refine ⟨pwLogSingularGauge,
     pwLogGammaSourceDensity_positive_unitary.1,
     pwLogGammaSourceDensity_positive_unitary.2,

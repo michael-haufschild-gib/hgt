@@ -24,7 +24,7 @@ noncomputable section
 namespace RHTower
 
 lemma sqrt_thetaSquare (n : ℕ) : Complex.sqrt (thetaSquare n) = (n : ℂ) := by
-  rw [show thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) by simp [thetaSquare]]
+  rw [show thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) by simp [thetaSquare]]
   rw [Complex.sqrt_of_nonneg]
   · norm_cast
     rw [Nat.cast_pow]
@@ -35,7 +35,7 @@ lemma sqrt_thetaSquare (n : ℕ) : Complex.sqrt (thetaSquare n) = (n : ℂ) := b
 
 lemma thetaSquare_mem_slitPlane {n : ℕ} (hn : 1 ≤ n) :
     thetaSquare n ∈ Complex.slitPlane := by
-  rw [show thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) by simp [thetaSquare]]
+  rw [show thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) by simp [thetaSquare]]
   rw [ofReal_mem_slitPlane]
   have hnR : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
   exact sq_pos_of_pos hnR
@@ -114,9 +114,9 @@ def thetaSquareBlaschkeReaderSymbol (n : ℕ) (z : ℂ) : ℂ :=
 
 lemma thetaSquare_ne_of_ne {n m : ℕ} (hnm : n ≠ m) : thetaSquare n ≠ thetaSquare m := by
   intro h
-  have hreal : (n : ℝ) ^ 2 = (m : ℝ) ^ 2 := by
-    have hncast : thetaSquare n = (((n : ℝ) ^ 2 : ℝ) : ℂ) := by simp [thetaSquare]
-    have hmcast : thetaSquare m = (((m : ℝ) ^ 2 : ℝ) : ℂ) := by simp [thetaSquare]
+  have hreal : (n : ℝ) ^ (2 : ℕ) = (m : ℝ) ^ (2 : ℕ) := by
+    have hncast : thetaSquare n = (((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by simp [thetaSquare]
+    have hmcast : thetaSquare m = (((m : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by simp [thetaSquare]
     rw [hncast, hmcast] at h
     exact_mod_cast h
   have heq : (n : ℝ) = (m : ℝ) := by
@@ -140,7 +140,7 @@ theorem thetaSquareBlaschkeReaderSymbol_other {n m : ℕ} (hmn : m ≠ n) :
     sub_zero, zero_div, mul_zero]
 
 /-- The physical heat rate appearing after logarithmic source reparametrization. -/
-def thetaHeatRate (m : ℕ) : ℝ := Real.pi * (m : ℝ) ^ 2
+def thetaHeatRate (m : ℕ) : ℝ := Real.pi * (m : ℝ) ^ (2 : ℕ)
 
 /-- The square reader rescaled from the dimensionless variable to the physical heat rate. -/
 def thetaHeatRateReaderSymbol (n : ℕ) (s : ℂ) : ℂ :=

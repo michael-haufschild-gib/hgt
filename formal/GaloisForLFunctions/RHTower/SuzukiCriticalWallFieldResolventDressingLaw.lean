@@ -82,7 +82,7 @@ theorem suzukiCriticalWallField_mul_dressedResidual_eq_kreinDefect_mul_farHingeN
         ((suzukiAffineResolventKreinDefect alpha beta spectralLevel : ℂ) *
           suzukiCriticalWallField t p e) =
       (suzukiAffineResolventKreinDefect alpha beta spectralLevel : ℂ) *
-        suzukiCriticalWallField t p e ^ 2 := by ring
+        suzukiCriticalWallField t p e ^ (2 : ℕ) := by ring
     _ = _ := by rw [sq_suzukiCriticalWallField_eq_farHingeNumerator]
 
 /-- At zero height, self-paired affine residual is scalar Krein defect times exact positive

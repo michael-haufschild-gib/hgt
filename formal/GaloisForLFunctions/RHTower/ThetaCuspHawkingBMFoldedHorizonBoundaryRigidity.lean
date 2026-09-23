@@ -89,7 +89,7 @@ theorem d4BMXiFESchwarzHorizonNormalizedFoldedOrthogonalRadiation_eq
 def d4BMXiFESchwarzFoldedHorizonBoundaryDefectFlux
     (q : XiZeroCopy) (horizon : ℂ) : ℝ :=
   ‖d4BMXiFESchwarzFoldedOrthogonalHelicityRadiation q
-    (d4BMXiFESchwarzHorizonNormalizedOrthogonalSeed q horizon)‖ ^ 2
+    (d4BMXiFESchwarzHorizonNormalizedOrthogonalSeed q horizon)‖ ^ (2 : ℕ)
 
 theorem d4BMXiFESchwarzFoldedHorizonBoundaryDefectFlux_eq
     (q : XiZeroCopy) (horizon : ℂ) :

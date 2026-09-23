@@ -20,18 +20,18 @@ noncomputable section
 
 /-- The entire realization of a modulus profile with independent phases. -/
 def modulusProfileFunction (ρ : ℕ → ℝ) : ℂ → ℂ :=
-  FormalMultilinearSeries.ofScalarsSum (phaseSeq ρ)
+  FormalMultilinearSeries.ofScalarsSum (phaseSeq_modulusPhaseSequence ρ)
 
 theorem radius_eq_top_of_bounded {ρ : ℕ → ℝ}
     (h : ∀ r : ℝ, 0 < r → ∃ C : ℝ, ∀ n, |ρ n| * r ^ n ≤ C) :
-    (FormalMultilinearSeries.ofScalars ℂ (phaseSeq ρ)).radius = ⊤ := by
+    (FormalMultilinearSeries.ofScalars ℂ (phaseSeq_modulusPhaseSequence ρ)).radius = ⊤ := by
   refine ENNReal.eq_top_of_forall_nnreal_le fun r => ?_
   rcases eq_or_ne r 0 with rfl | hr0
   · simp
   have hrpos : (0 : ℝ) < (r : ℝ) := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hr0)
   obtain ⟨C, hC⟩ := h r hrpos
   refine FormalMultilinearSeries.le_radius_of_bound _ (max C 1) fun n => ?_
-  have hnorm : ‖FormalMultilinearSeries.ofScalars ℂ (phaseSeq ρ) n‖ = ‖phaseSeq ρ n‖ := by
+  have hnorm : ‖FormalMultilinearSeries.ofScalars ℂ (phaseSeq_modulusPhaseSequence ρ) n‖ = ‖phaseSeq_modulusPhaseSequence ρ n‖ := by
     simp
   rw [hnorm, norm_phaseSeq]
   exact le_trans (hC n) (le_max_left _ _)
@@ -39,7 +39,7 @@ theorem radius_eq_top_of_bounded {ρ : ℕ → ℝ}
 theorem contDiff_modulusProfileFunction {ρ : ℕ → ℝ}
     (h : ∀ r : ℝ, 0 < r → ∃ C : ℝ, ∀ n, |ρ n| * r ^ n ≤ C) :
     ContDiff ℂ (⊤ : ℕ∞) (modulusProfileFunction ρ) := by
-  set p := FormalMultilinearSeries.ofScalars ℂ (phaseSeq ρ) with hp
+  set p := FormalMultilinearSeries.ofScalars ℂ (phaseSeq_modulusPhaseSequence ρ) with hp
   have hr : p.radius = ⊤ := radius_eq_top_of_bounded h
   have hball : HasFPowerSeriesOnBall p.sum p 0 p.radius :=
     p.hasFPowerSeriesOnBall (by rw [hr]; simp)
@@ -50,8 +50,8 @@ theorem contDiff_modulusProfileFunction {ρ : ℕ → ℝ}
 theorem taylorPS_modulusProfileFunction {ρ : ℕ → ℝ}
     (h : ∀ r : ℝ, 0 < r → ∃ C : ℝ, ∀ n, |ρ n| * r ^ n ≤ C) (n : ℕ) :
     PowerSeries.coeff n (GaloisForLFunctions.taylorPS (modulusProfileFunction ρ))
-      = phaseSeq ρ n :=
-  GaloisForLFunctions.taylorPS_ofScalarsSum_of_radius_eq_top (phaseSeq ρ)
+      = phaseSeq_modulusPhaseSequence ρ n :=
+  GaloisForLFunctions.taylorPS_ofScalarsSum_of_radius_eq_top (phaseSeq_modulusPhaseSequence ρ)
     (radius_eq_top_of_bounded h) n
 
 /-- **The prescribed magnitudes are attained.** -/
@@ -69,7 +69,7 @@ theorem hypertranscendental_modulusProfileFunction {ρ : ℕ → ℝ}
     (contDiff_modulusProfileFunction h) ?_
   intro m Q hQ0
   have htaylor : GaloisForLFunctions.taylorPS (modulusProfileFunction ρ)
-      = PowerSeries.mk (phaseSeq ρ) := by
+      = PowerSeries.mk (phaseSeq_modulusPhaseSequence ρ) := by
     ext n
     rw [taylorPS_modulusProfileFunction h, PowerSeries.coeff_mk]
   rw [htaylor]

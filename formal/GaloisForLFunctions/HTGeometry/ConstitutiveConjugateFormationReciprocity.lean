@@ -17,7 +17,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 
 /-- Squared least formation work relative to a closed Hilbert subspace. -/
 def conjugateFormationWork (L : Submodule ℂ H) (x : H) : ℝ :=
-  quotientDistance L x ^ 2
+  quotientDistance L x ^ (2 : ℕ)
 
 /-- A normalized reporter annihilates the formation subspace and reads the target as one. -/
 def IsNormalizedFormationReporter (L : Submodule ℂ H) (x : H)
@@ -27,7 +27,7 @@ def IsNormalizedFormationReporter (L : Submodule ℂ H) (x : H)
 /-- Squared norms attained by normalized reporters. -/
 def normalizedReporterNormSqSet (L : Submodule ℂ H) (x : H) : Set ℝ :=
   {r | ∃ φ : StrongDual ℂ H,
-    IsNormalizedFormationReporter L x φ ∧ ‖φ‖ ^ 2 = r}
+    IsNormalizedFormationReporter L x φ ∧ ‖φ‖ ^ (2 : ℕ) = r}
 
 /-- Least normalized reporter capacity. -/
 def conjugateReporterCapacity (L : Submodule ℂ H) (x : H) : ℝ :=
@@ -49,14 +49,14 @@ theorem formationResidual_ne_zero {L : Submodule ℂ H} [L.HasOrthogonalProjecti
 /-- Riesz reporter of the orthogonal formation innovation. -/
 def canonicalFormationReporter (L : Submodule ℂ H) [L.HasOrthogonalProjection]
     (x : H) : StrongDual ℂ H :=
-  ((‖formationResidual L x‖ ^ 2 : ℝ) : ℂ)⁻¹ •
+  ((‖formationResidual L x‖ ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ •
     (InnerProductSpace.toDual ℂ H) (formationResidual L x)
 
 omit [CompleteSpace H] in
 theorem inner_formationResidual_target (L : Submodule ℂ H) [L.HasOrthogonalProjection]
     (x : H) :
     inner ℂ (formationResidual L x) x =
-      ((‖formationResidual L x‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖formationResidual L x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   let q := formationResidual L x
   have hq : q ∈ Lᗮ := L.sub_starProjection_mem_orthogonal x
   have horth : inner ℂ q (L.starProjection x) = 0 :=
@@ -65,7 +65,7 @@ theorem inner_formationResidual_target (L : Submodule ℂ H) [L.HasOrthogonalPro
     inner ℂ q x = inner ℂ q (L.starProjection x + q) := by
       congr 1
       simp [q, formationResidual]
-    _ = ((‖q‖ ^ 2 : ℝ) : ℂ) := by
+    _ = ((‖q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [inner_add_right, horth, zero_add, inner_self_eq_norm_sq_to_K]
       norm_cast
 
@@ -76,7 +76,7 @@ theorem canonicalFormationReporter_apply_target {L : Submodule ℂ H}
   rw [canonicalFormationReporter, smul_apply,
     InnerProductSpace.toDual_apply_apply, inner_formationResidual_target]
   have hq := formationResidual_ne_zero hx
-  have hnorm : ‖formationResidual L x‖ ^ 2 ≠ 0 :=
+  have hnorm : ‖formationResidual L x‖ ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero _ (norm_ne_zero_iff.mpr hq)
   exact inv_mul_cancel₀ (by exact_mod_cast hnorm)
 
@@ -101,8 +101,8 @@ theorem canonicalFormationReporter_isNormalized {L : Submodule ℂ H}
 theorem norm_sq_canonicalFormationReporter {L : Submodule ℂ H}
     [L.HasOrthogonalProjection] {x : H}
     (hx : x ∉ L) :
-    ‖canonicalFormationReporter L x‖ ^ 2 =
-      (‖formationResidual L x‖ ^ 2)⁻¹ := by
+    ‖canonicalFormationReporter L x‖ ^ (2 : ℕ) =
+      (‖formationResidual L x‖ ^ (2 : ℕ))⁻¹ := by
   have hq := formationResidual_ne_zero hx
   have hnorm : 0 < ‖formationResidual L x‖ := norm_pos_iff.mpr hq
   rw [canonicalFormationReporter, norm_smul,
@@ -133,7 +133,7 @@ theorem normalizedReporter_inv_sq_le {L : Submodule ℂ H}
     [L.HasOrthogonalProjection] {x : H}
     (hx : x ∉ L) {φ : StrongDual ℂ H}
     (hφ : IsNormalizedFormationReporter L x φ) :
-    (‖formationResidual L x‖ ^ 2)⁻¹ ≤ ‖φ‖ ^ 2 := by
+    (‖formationResidual L x‖ ^ (2 : ℕ))⁻¹ ≤ ‖φ‖ ^ (2 : ℕ) := by
   rw [← inv_pow]
   exact pow_le_pow_left₀ (inv_nonneg.mpr (norm_nonneg _))
     (normalizedReporter_norm_inv_le hx hφ) 2
@@ -141,7 +141,7 @@ theorem normalizedReporter_inv_sq_le {L : Submodule ℂ H}
 theorem conjugateReporterCapacity_eq {L : Submodule ℂ H}
     [L.HasOrthogonalProjection] {x : H}
     (hx : x ∉ L) :
-    conjugateReporterCapacity L x = (‖formationResidual L x‖ ^ 2)⁻¹ := by
+    conjugateReporterCapacity L x = (‖formationResidual L x‖ ^ (2 : ℕ))⁻¹ := by
   apply le_antisymm
   · apply csInf_le
     · refine ⟨0, ?_⟩
@@ -161,7 +161,7 @@ theorem conjugateReporterCapacity_eq {L : Submodule ℂ H}
 theorem canonicalFormationReporter_unique {L : Submodule ℂ H}
     [L.HasOrthogonalProjection] {x : H} (hx : x ∉ L)
     {φ : StrongDual ℂ H} (hφ : IsNormalizedFormationReporter L x φ)
-    (hmin : ‖φ‖ ^ 2 = conjugateReporterCapacity L x) :
+    (hmin : ‖φ‖ ^ (2 : ℕ) = conjugateReporterCapacity L x) :
     φ = canonicalFormationReporter L x := by
   let q := formationResidual L x
   let g : H := (InnerProductSpace.toDual ℂ H).symm φ
@@ -178,36 +178,36 @@ theorem canonicalFormationReporter_unique {L : Submodule ℂ H}
   have hgq : inner ℂ g q = 1 := (hg_apply q).trans hφq
   have hgnorm : ‖g‖ = ‖φ‖ :=
     (InnerProductSpace.toDual ℂ H).symm.norm_map φ
-  have hgnormsq : ‖g‖ ^ 2 = (‖q‖ ^ 2)⁻¹ := by
+  have hgnormsq : ‖g‖ ^ (2 : ℕ) = (‖q‖ ^ (2 : ℕ))⁻¹ := by
     rw [hgnorm, hmin, conjugateReporterCapacity_eq hx]
-  let c : ℂ := ((‖q‖ ^ 2 : ℝ) : ℂ)⁻¹
+  let c : ℂ := ((‖q‖ ^ (2 : ℕ) : ℝ) : ℂ)⁻¹
   have hqne : q ≠ 0 := formationResidual_ne_zero hx
-  have hqnormne : ‖q‖ ^ 2 ≠ 0 := pow_ne_zero _ (norm_ne_zero_iff.mpr hqne)
-  have hqnormpos : 0 < ‖q‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hqne)
-  have hc : c = (((‖q‖ ^ 2)⁻¹ : ℝ) : ℂ) := by
-    exact (Complex.ofReal_inv (‖q‖ ^ 2)).symm
-  have hinvCastRe : RCLike.re ((((‖q‖ ^ 2 : ℝ) : ℂ))⁻¹) =
-      (‖q‖ ^ 2)⁻¹ := by
+  have hqnormne : ‖q‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ (norm_ne_zero_iff.mpr hqne)
+  have hqnormpos : 0 < ‖q‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hqne)
+  have hc : c = (((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) := by
+    exact (Complex.ofReal_inv (‖q‖ ^ (2 : ℕ))).symm
+  have hinvCastRe : RCLike.re ((((‖q‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) =
+      (‖q‖ ^ (2 : ℕ))⁻¹ := by
     rw [← Complex.ofReal_inv]
     exact RCLike.ofReal_re _
-  have hinvCastNorm : ‖((((‖q‖ ^ 2 : ℝ) : ℂ))⁻¹)‖ =
-      (‖q‖ ^ 2)⁻¹ := by
+  have hinvCastNorm : ‖((((‖q‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹)‖ =
+      (‖q‖ ^ (2 : ℕ))⁻¹ := by
     rw [← Complex.ofReal_inv]
     calc
-      ‖(((‖q‖ ^ 2)⁻¹ : ℝ) : ℂ)‖ = ‖((‖q‖ ^ 2)⁻¹ : ℝ)‖ :=
+      ‖(((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ)‖ = ‖((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ)‖ :=
         Complex.norm_real _
-      _ = |(‖q‖ ^ 2)⁻¹| := Real.norm_eq_abs _
-      _ = (‖q‖ ^ 2)⁻¹ := abs_of_pos (inv_pos.mpr hqnormpos)
-  have hcastInvRe : RCLike.re (((‖q‖ ^ 2)⁻¹ : ℝ) : ℂ) =
-      (‖q‖ ^ 2)⁻¹ := RCLike.ofReal_re _
-  have hcastInvNorm : ‖(((‖q‖ ^ 2)⁻¹ : ℝ) : ℂ)‖ =
-      (‖q‖ ^ 2)⁻¹ := by
+      _ = |(‖q‖ ^ (2 : ℕ))⁻¹| := Real.norm_eq_abs _
+      _ = (‖q‖ ^ (2 : ℕ))⁻¹ := abs_of_pos (inv_pos.mpr hqnormpos)
+  have hcastInvRe : RCLike.re (((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) =
+      (‖q‖ ^ (2 : ℕ))⁻¹ := RCLike.ofReal_re _
+  have hcastInvNorm : ‖(((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ)‖ =
+      (‖q‖ ^ (2 : ℕ))⁻¹ := by
     calc
-      ‖(((‖q‖ ^ 2)⁻¹ : ℝ) : ℂ)‖ = ‖((‖q‖ ^ 2)⁻¹ : ℝ)‖ :=
+      ‖(((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ)‖ = ‖((‖q‖ ^ (2 : ℕ))⁻¹ : ℝ)‖ :=
         Complex.norm_real _
-      _ = |(‖q‖ ^ 2)⁻¹| := Real.norm_eq_abs _
-      _ = (‖q‖ ^ 2)⁻¹ := abs_of_pos (inv_pos.mpr hqnormpos)
-  have hdist : ‖g - c • q‖ ^ 2 = 0 := by
+      _ = |(‖q‖ ^ (2 : ℕ))⁻¹| := Real.norm_eq_abs _
+      _ = (‖q‖ ^ (2 : ℕ))⁻¹ := abs_of_pos (inv_pos.mpr hqnormpos)
+  have hdist : ‖g - c • q‖ ^ (2 : ℕ) = 0 := by
     rw [norm_sub_sq (𝕜 := ℂ), inner_smul_right, hgq, mul_one, norm_smul,
       hgnormsq, hc, hcastInvRe, hcastInvNorm]
     field_simp
@@ -245,7 +245,7 @@ theorem quotientDistance_ker_continuousLinearMap
   apply le_antisymm
   · rw [quotientDistance, Metric.infDist_eq_iInf]
     let g : H := (InnerProductSpace.toDual ℂ H).symm δ
-    let a : ℂ := δ x / ((‖δ‖ ^ 2 : ℝ) : ℂ)
+    let a : ℂ := δ x / ((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ)
     let y : H := x - a • g
     have hg_apply (z : H) : inner ℂ g z = δ z := by
       rw [← InnerProductSpace.toDual_apply_apply]
@@ -254,13 +254,13 @@ theorem quotientDistance_ker_continuousLinearMap
       rw [LinearIsometryEquiv.apply_symm_apply]
     have hgnorm : ‖g‖ = ‖δ‖ :=
       (InnerProductSpace.toDual ℂ H).symm.norm_map δ
-    have hδg : δ g = ((‖δ‖ ^ 2 : ℝ) : ℂ) := by
+    have hδg : δ g = ((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [← hg_apply, inner_self_eq_norm_sq_to_K, hgnorm]
       norm_cast
-    have hδnormsq : ((‖δ‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    have hδnormsq : ((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by
       exact_mod_cast (pow_ne_zero 2 hδnorm.ne')
     have hy : y ∈ LinearMap.ker (δ : H →ₗ[ℂ] ℂ) := by
-      change δ (x - (δ x / ((‖δ‖ ^ 2 : ℝ) : ℂ)) • g) = 0
+      change δ (x - (δ x / ((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ)) • g) = 0
       rw [map_sub, map_smul, hδg]
       simp only [smul_eq_mul]
       field_simp
@@ -276,13 +276,13 @@ theorem quotientDistance_ker_continuousLinearMap
         ciInf_le hbdd ⟨y, hy⟩
       _ = ‖a • g‖ := by simp [y]
       _ = ‖δ x‖ / ‖δ‖ := by
-        change ‖(δ x / ((‖δ‖ ^ 2 : ℝ) : ℂ)) • g‖ = _
+        change ‖(δ x / ((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ)) • g‖ = _
         rw [norm_smul, hgnorm, norm_div]
-        have hcast : ‖(((‖δ‖ ^ 2 : ℝ) : ℂ))‖ = ‖δ‖ ^ 2 := by
+        have hcast : ‖(((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ))‖ = ‖δ‖ ^ (2 : ℕ) := by
           calc
-            ‖(((‖δ‖ ^ 2 : ℝ) : ℂ))‖ = ‖(‖δ‖ ^ 2 : ℝ)‖ := Complex.norm_real _
-            _ = |‖δ‖ ^ 2| := Real.norm_eq_abs _
-            _ = ‖δ‖ ^ 2 := abs_of_pos (sq_pos_of_pos hδnorm)
+            ‖(((‖δ‖ ^ (2 : ℕ) : ℝ) : ℂ))‖ = ‖(‖δ‖ ^ (2 : ℕ) : ℝ)‖ := Complex.norm_real _
+            _ = |‖δ‖ ^ (2 : ℕ)| := Real.norm_eq_abs _
+            _ = ‖δ‖ ^ (2 : ℕ) := abs_of_pos (sq_pos_of_pos hδnorm)
         rw [hcast]
         field_simp
   · apply (le_infDist ⟨0, (LinearMap.ker (δ : H →ₗ[ℂ] ℂ)).zero_mem⟩).2
@@ -297,8 +297,8 @@ theorem quotientDistance_ker_continuousLinearMap
 /-- Charged reporter form of exact work--capacity reciprocity. -/
 theorem conjugateFormationWork_ker_mul_norm_sq
     (δ : StrongDual ℂ H) (hδ : δ ≠ 0) (x : H) :
-    conjugateFormationWork (LinearMap.ker (δ : H →ₗ[ℂ] ℂ)) x * ‖δ‖ ^ 2 =
-      ‖δ x‖ ^ 2 := by
+    conjugateFormationWork (LinearMap.ker (δ : H →ₗ[ℂ] ℂ)) x * ‖δ‖ ^ (2 : ℕ) =
+      ‖δ x‖ ^ (2 : ℕ) := by
   rw [conjugateFormationWork, quotientDistance_ker_continuousLinearMap δ hδ]
   have hδnorm : ‖δ‖ ≠ 0 := norm_ne_zero_iff.mpr hδ
   field_simp
@@ -306,7 +306,7 @@ theorem conjugateFormationWork_ker_mul_norm_sq
 theorem conjugateReporterCapacity_ker_eq_norm_ratio
     (δ : StrongDual ℂ H) (hδ : δ ≠ 0) {x : H} (hδx : δ x ≠ 0) :
     conjugateReporterCapacity (LinearMap.ker (δ : H →ₗ[ℂ] ℂ)) x =
-      ‖δ‖ ^ 2 / ‖δ x‖ ^ 2 := by
+      ‖δ‖ ^ (2 : ℕ) / ‖δ x‖ ^ (2 : ℕ) := by
   have hx : x ∉ LinearMap.ker (δ : H →ₗ[ℂ] ℂ) := hδx
   rw [conjugateReporterCapacity_eq hx,
     ← quotientDistance_eq_norm_formationResidual,
@@ -593,19 +593,19 @@ theorem weightedPacketReporter_resolvent_ne_zero (n : ℕ)
 theorem norm_sq_weightedPacketReporter (n : ℕ)
     (nodes : Fin (n + 1) ↪ ℂ) (w : Fin (n + 1) → ℝ)
     (v : Fin (n + 1) → ℂ) :
-    ‖weightedPacketReporter n nodes w v‖ ^ 2 =
-      ∑ i, ‖weightedPacketReporterCoeff n nodes w v i‖ ^ 2 := by
+    ‖weightedPacketReporter n nodes w v‖ ^ (2 : ℕ) =
+      ∑ i, ‖weightedPacketReporterCoeff n nodes w v i‖ ^ (2 : ℕ) := by
   rw [weightedPacketReporter, LinearIsometryEquiv.norm_map]
-  change ‖weightedPacketReporterVector n nodes w v‖ ^ 2 = _
+  change ‖weightedPacketReporterVector n nodes w v‖ ^ (2 : ℕ) = _
   rw [PiLp.norm_sq_eq_of_L2]
   simp [weightedPacketReporterVector]
 
 theorem norm_sq_weightedPacketReporter_exact (n : ℕ)
     (nodes : Fin (n + 1) ↪ ℂ) (w : Fin (n + 1) → ℝ)
     (v : Fin (n + 1) → ℂ) (hw : ∀ i, 0 < w i) :
-    ‖weightedPacketReporter n nodes w v‖ ^ 2 =
-      ∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ 2 /
-        (w i * ‖v i‖ ^ 2) := by
+    ‖weightedPacketReporter n nodes w v‖ ^ (2 : ℕ) =
+      ∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ (2 : ℕ) /
+        (w i * ‖v i‖ ^ (2 : ℕ)) := by
   rw [norm_sq_weightedPacketReporter]
   apply Finset.sum_congr rfl
   intro i _
@@ -620,9 +620,9 @@ theorem norm_sq_weightedPacketReporter_exact (n : ℕ)
 
 theorem norm_sq_nodalWeight_eq_inv_product (n : ℕ)
     (nodes : Fin (n + 1) ↪ ℂ) (i : Fin (n + 1)) :
-    ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ 2 =
+    ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ (2 : ℕ) =
       1 / ‖∏ j ∈ (Finset.univ : Finset (Fin (n + 1))).erase i,
-        (nodes i - nodes j)‖ ^ 2 := by
+        (nodes i - nodes j)‖ ^ (2 : ℕ) := by
   rw [Lagrange.nodalWeight, Finset.prod_inv_distrib, norm_inv]
   rw [inv_pow]
   rw [inv_eq_one_div]
@@ -630,11 +630,11 @@ theorem norm_sq_nodalWeight_eq_inv_product (n : ℕ)
 theorem norm_sq_weightedPacketReporter_product_exact (n : ℕ)
     (nodes : Fin (n + 1) ↪ ℂ) (w : Fin (n + 1) → ℝ)
     (v : Fin (n + 1) → ℂ) (hw : ∀ i, 0 < w i) :
-    ‖weightedPacketReporter n nodes w v‖ ^ 2 =
+    ‖weightedPacketReporter n nodes w v‖ ^ (2 : ℕ) =
       ∑ i, 1 /
-        (w i * ‖v i‖ ^ 2 *
+        (w i * ‖v i‖ ^ (2 : ℕ) *
           ‖∏ j ∈ (Finset.univ : Finset (Fin (n + 1))).erase i,
-            (nodes i - nodes j)‖ ^ 2) := by
+            (nodes i - nodes j)‖ ^ (2 : ℕ)) := by
   rw [norm_sq_weightedPacketReporter_exact n nodes w v hw]
   apply Finset.sum_congr rfl
   intro i _
@@ -739,9 +739,9 @@ theorem weightedResolvent_conjugateFormationWork_eq (n : ℕ)
     (c : {z : ℂ // z ∉ Set.range nodes}) :
     conjugateFormationWork (weightedLowDepthFormationSubspace n nodes w v)
         (weightedResolventPacket n nodes w v c) =
-      ‖∏ i, (c.1 - nodes i)⁻¹‖ ^ 2 /
-        (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ 2 /
-          (w i * ‖v i‖ ^ 2)) := by
+      ‖∏ i, (c.1 - nodes i)⁻¹‖ ^ (2 : ℕ) /
+        (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ (2 : ℕ) /
+          (w i * ‖v i‖ ^ (2 : ℕ))) := by
   let δ := weightedPacketReporter n nodes w v
   have hδ : δ ≠ 0 := weightedPacketReporter_ne_zero n nodes w v hw hv c
   have hcharge := conjugateFormationWork_ker_mul_norm_sq δ hδ
@@ -749,11 +749,11 @@ theorem weightedResolvent_conjugateFormationWork_eq (n : ℕ)
   have hnormsq := norm_sq_weightedPacketReporter_exact n nodes w v hw
   have happly := weightedPacketReporter_resolvent n nodes w v hw hv c
   change conjugateFormationWork (weightedLowDepthFormationSubspace n nodes w v)
-      (weightedResolventPacket n nodes w v c) * ‖δ‖ ^ 2 =
-        ‖δ (weightedResolventPacket n nodes w v c)‖ ^ 2 at hcharge
+      (weightedResolventPacket n nodes w v c) * ‖δ‖ ^ (2 : ℕ) =
+        ‖δ (weightedResolventPacket n nodes w v c)‖ ^ (2 : ℕ) at hcharge
   rw [hnormsq, happly] at hcharge
-  have hsumne : (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ 2 /
-      (w i * ‖v i‖ ^ 2)) ≠ 0 := by
+  have hsumne : (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ (2 : ℕ) /
+      (w i * ‖v i‖ ^ (2 : ℕ))) ≠ 0 := by
     rw [← hnormsq]
     exact pow_ne_zero _ (norm_ne_zero_iff.mpr hδ)
   exact (eq_div_iff hsumne).2 hcharge
@@ -765,9 +765,9 @@ theorem weightedResolvent_conjugateReporterCapacity_eq (n : ℕ)
     (c : {z : ℂ // z ∉ Set.range nodes}) :
     conjugateReporterCapacity (weightedLowDepthFormationSubspace n nodes w v)
         (weightedResolventPacket n nodes w v c) =
-      (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ 2 /
-          (w i * ‖v i‖ ^ 2)) /
-        ‖∏ i, (c.1 - nodes i)⁻¹‖ ^ 2 := by
+      (∑ i, ‖Lagrange.nodalWeight Finset.univ nodes i‖ ^ (2 : ℕ) /
+          (w i * ‖v i‖ ^ (2 : ℕ))) /
+        ‖∏ i, (c.1 - nodes i)⁻¹‖ ^ (2 : ℕ) := by
   let δ := weightedPacketReporter n nodes w v
   have hδ : δ ≠ 0 := weightedPacketReporter_ne_zero n nodes w v hw hv c
   have hδx : δ (weightedResolventPacket n nodes w v c) ≠ 0 :=
@@ -1191,8 +1191,8 @@ theorem norm_consecutivePrimitiveNodes_prod_erase (n : ℕ) (i : Fin (n + 1)) :
 /-- Consecutive resolvent divided-difference charge has squared magnitude `1/((n+1)!)²`. -/
 theorem norm_sq_consecutivePrimitive_resolvent_charge (n : ℕ) :
     ‖∏ i, ((zeroOffConsecutivePrimitiveNodes n).1 -
-        consecutivePrimitiveNodes n i)⁻¹‖ ^ 2 =
-      1 / ((((n + 1).factorial : ℕ) : ℝ) ^ 2) := by
+        consecutivePrimitiveNodes n i)⁻¹‖ ^ (2 : ℕ) =
+      1 / ((((n + 1).factorial : ℕ) : ℝ) ^ (2 : ℕ)) := by
   have hnorm :
       ‖∏ i, ((zeroOffConsecutivePrimitiveNodes n).1 -
           consecutivePrimitiveNodes n i)⁻¹‖ =
@@ -1226,9 +1226,9 @@ theorem norm_sq_consecutivePrimitive_resolvent_charge (n : ℕ) :
 theorem inv_sq_factorial_pair_eq_choose_sq_div_factorial_sq
     (n : ℕ) (i : Fin (n + 1)) :
     1 / (((((i : ℕ).factorial : ℕ) : ℝ) *
-        (((n - (i : ℕ)).factorial : ℕ) : ℝ)) ^ 2) =
-      ((((n.choose (i : ℕ) : ℕ) : ℝ) ^ 2) /
-        ((((n.factorial : ℕ) : ℝ)) ^ 2)) := by
+        (((n - (i : ℕ)).factorial : ℕ) : ℝ)) ^ (2 : ℕ)) =
+      ((((n.choose (i : ℕ) : ℕ) : ℝ) ^ (2 : ℕ)) /
+        ((((n.factorial : ℕ) : ℝ)) ^ (2 : ℕ))) := by
   have hi : (i : ℕ) ≤ n := by omega
   have hfactNat := Nat.choose_mul_factorial_mul_factorial hi
   have hfact :
@@ -1247,19 +1247,19 @@ theorem inv_sq_factorial_pair_eq_choose_sq_div_factorial_sq
 theorem sum_inv_sq_factorial_pair_eq_choose_div_factorial_sq (n : ℕ) :
     ∑ i : Fin (n + 1),
         1 / (((((i : ℕ).factorial : ℕ) : ℝ) *
-          (((n - (i : ℕ)).factorial : ℕ) : ℝ)) ^ 2) =
-      (((2 * n).choose n : ℕ) : ℝ) / ((((n.factorial : ℕ) : ℝ)) ^ 2) := by
+          (((n - (i : ℕ)).factorial : ℕ) : ℝ)) ^ (2 : ℕ)) =
+      (((2 * n).choose n : ℕ) : ℝ) / ((((n.factorial : ℕ) : ℝ)) ^ (2 : ℕ)) := by
   simp_rw [inv_sq_factorial_pair_eq_choose_sq_div_factorial_sq]
   rw [← Finset.sum_div]
   congr 1
   rw [Fin.sum_univ_eq_sum_range
-    (fun k : ℕ ↦ (((n.choose k : ℕ) : ℝ) ^ 2)) (n + 1)]
+    (fun k : ℕ ↦ (((n.choose k : ℕ) : ℝ) ^ (2 : ℕ))) (n + 1)]
   exact_mod_cast (by simpa [pow_two] using sum_choose_sq_eq_choose_two_mul n)
 
 /-- Consecutive-node normalized reporter norm is the central-binomial/factorial quotient. -/
 theorem norm_sq_consecutivePrimitive_reporter (n : ℕ) :
-    ‖weightedPacketReporter n (consecutivePrimitiveNodes n) (fun _ ↦ 1) (fun _ ↦ 1)‖ ^ 2 =
-      (((2 * n).choose n : ℕ) : ℝ) / ((((n.factorial : ℕ) : ℝ)) ^ 2) := by
+    ‖weightedPacketReporter n (consecutivePrimitiveNodes n) (fun _ ↦ 1) (fun _ ↦ 1)‖ ^ (2 : ℕ) =
+      (((2 * n).choose n : ℕ) : ℝ) / ((((n.factorial : ℕ) : ℝ)) ^ (2 : ℕ)) := by
   rw [norm_sq_weightedPacketReporter_product_exact n
     (consecutivePrimitiveNodes n) (fun _ ↦ 1) (fun _ ↦ 1) (by simp)]
   simp only [one_mul, norm_one, one_pow]
@@ -1294,7 +1294,7 @@ def consecutivePrimitiveCapacity (n : ℕ) : ℝ :=
 /-- CFR.23 exact work value, with packet size `N=n+1`. -/
 theorem consecutivePrimitiveWork_eq (n : ℕ) :
     consecutivePrimitiveWork n =
-      1 / (((n + 1 : ℕ) : ℝ) ^ 2 * (((2 * n).choose n : ℕ) : ℝ)) := by
+      1 / (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (((2 * n).choose n : ℕ) : ℝ)) := by
   have hw : ∀ i : Fin (n + 1), (0 : ℝ) < (1 : ℝ) := by simp
   have hv : ∀ i : Fin (n + 1), (1 : ℂ) ≠ 0 := by simp
   have hwork := weightedResolvent_conjugateFormationWork_eq n
@@ -1320,7 +1320,7 @@ theorem consecutivePrimitiveWork_eq (n : ℕ) :
 /-- CFR.24 exact reciprocal capacity value, with packet size `N=n+1`. -/
 theorem consecutivePrimitiveCapacity_eq (n : ℕ) :
     consecutivePrimitiveCapacity n =
-      (((n + 1 : ℕ) : ℝ) ^ 2 * (((2 * n).choose n : ℕ) : ℝ)) := by
+      (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (((2 * n).choose n : ℕ) : ℝ)) := by
   have hw : ∀ i : Fin (n + 1), (0 : ℝ) < (1 : ℝ) := by simp
   have hv : ∀ i : Fin (n + 1), (1 : ℂ) ≠ 0 := by simp
   have hcap := weightedResolvent_conjugateReporterCapacity_eq n
@@ -1345,7 +1345,7 @@ theorem consecutivePrimitiveCapacity_eq (n : ℕ) :
 
 theorem consecutivePrimitive_denominator_ge_size (n : ℕ) :
     (((n + 1 : ℕ) : ℝ)) ≤
-      (((n + 1 : ℕ) : ℝ) ^ 2 * (((2 * n).choose n : ℕ) : ℝ)) := by
+      (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (((2 * n).choose n : ℕ) : ℝ)) := by
   have hsize : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by norm_num
   have hchooseNat : 1 ≤ (2 * n).choose n := by
     have := Nat.choose_pos (by omega : n ≤ 2 * n)
@@ -1353,9 +1353,9 @@ theorem consecutivePrimitive_denominator_ge_size (n : ℕ) :
   have hchoose : (1 : ℝ) ≤ (((2 * n).choose n : ℕ) : ℝ) := by
     exact_mod_cast hchooseNat
   calc
-    (((n + 1 : ℕ) : ℝ)) ≤ ((n + 1 : ℕ) : ℝ) ^ 2 := by nlinarith
-    _ = ((n + 1 : ℕ) : ℝ) ^ 2 * 1 := by ring
-    _ ≤ ((n + 1 : ℕ) : ℝ) ^ 2 * (((2 * n).choose n : ℕ) : ℝ) :=
+    (((n + 1 : ℕ) : ℝ)) ≤ ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by nlinarith
+    _ = ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * 1 := by ring
+    _ ≤ ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) * (((2 * n).choose n : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_left hchoose (sq_nonneg _)
 
 /-- CFR.23 asymptotic: exact formation depth escapes while least work tends to zero. -/

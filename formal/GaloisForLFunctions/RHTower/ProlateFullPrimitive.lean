@@ -22,8 +22,8 @@ namespace GaloisForLFunctions.RHTower
 theorem abs_integral_endpoint_interval_le {s c b : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1)
     (hR : ∀ u : ℝ, HasDerivAt R (DR u) u) (hDR : ∀ u : ℝ, HasDerivAt DR (DDR u) u)
-    (hode : ∀ u : ℝ, (u ^ 2 - 1) * DDR u + 2 * u * DR u
-      - (s * c ^ 2 - c ^ 2 * u ^ 2) * R u = 0)
+    (hode : ∀ u : ℝ, (u ^ (2 : ℕ) - 1) * DDR u + 2 * u * DR u
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * u ^ (2 : ℕ)) * R u = 0)
     (hb1 : 1 ≤ b) (hb2 : b ≤ dunsterEndpointCrossing c) :
     |∫ x in (1 : ℝ)..b, Real.sqrt c * R x| ≤ 2 * Real.sqrt c * (b - 1) := by
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr (lt_of_lt_of_le (by norm_num) hc)
@@ -46,8 +46,8 @@ theorem abs_integral_sqrt_mul_radialProlate_full_le
     {s c X : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) (hR1 : R 1 = 1)
     (hR : ∀ u : ℝ, HasDerivAt R (DR u) u) (hDR : ∀ u : ℝ, HasDerivAt DR (DDR u) u)
-    (hode : ∀ u : ℝ, (u ^ 2 - 1) * DDR u + 2 * u * DR u
-      - (s * c ^ 2 - c ^ 2 * u ^ 2) * R u = 0)
+    (hode : ∀ u : ℝ, (u ^ (2 : ℕ) - 1) * DDR u + 2 * u * DR u
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * u ^ (2 : ℕ)) * R u = 0)
     (hX1 : 1 ≤ X) (hX2 : X ≤ 2) :
     |∫ x in (1 : ℝ)..X, Real.sqrt c * R x|
       ≤ (9 / 4 + (8 * radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant / 3
@@ -59,7 +59,7 @@ theorem abs_integral_sqrt_mul_radialProlate_full_le
   have hK : 0 ≤ radialProlateUniformTransferConstant := radialProlateUniformTransferConstant_nonneg
   have hC : 0 ≤ lgBesselCommonEnvelopeConstant := lgBesselCommonEnvelopeConstant_nonneg
   have hA1 : (1 : ℝ) < dunsterEndpointCrossing c := dunsterEndpointCrossing_gt_one hc0
-  have hAsub : dunsterEndpointCrossing c - 1 = 9 / (8 * c ^ 2) := dunsterEndpointCrossing_sub_one
+  have hAsub : dunsterEndpointCrossing c - 1 = 9 / (8 * c ^ (2 : ℕ)) := dunsterEndpointCrossing_sub_one
   set A : ℝ := dunsterEndpointCrossing c with hAdef
   have hRc : Continuous fun x : ℝ => Real.sqrt c * R x :=
     continuous_const.mul (continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt)
@@ -68,11 +68,11 @@ theorem abs_integral_sqrt_mul_radialProlate_full_le
       |∫ x in (1 : ℝ)..b, Real.sqrt c * R x| ≤ 9 / (4 * c) := by
     intro b hb1 hb2
     have h := abs_integral_endpoint_interval_le hs0 hs1 hc hR1 hR hDR hode hb1 hb2
-    have hwidth : b - 1 ≤ 9 / (8 * c ^ 2) := by linarith [hb2, hAsub]
-    have hstep : 2 * Real.sqrt c * (b - 1) ≤ 2 * Real.sqrt c * (9 / (8 * c ^ 2)) :=
+    have hwidth : b - 1 ≤ 9 / (8 * c ^ (2 : ℕ)) := by linarith [hb2, hAsub]
+    have hstep : 2 * Real.sqrt c * (b - 1) ≤ 2 * Real.sqrt c * (9 / (8 * c ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hwidth (by positivity)
-    have hval : 2 * Real.sqrt c * (9 / (8 * c ^ 2)) ≤ 9 / (4 * c) := by
-      have he : 2 * Real.sqrt c * (9 / (8 * c ^ 2)) = 9 * Real.sqrt c / (4 * c ^ 2) := by
+    have hval : 2 * Real.sqrt c * (9 / (8 * c ^ (2 : ℕ))) ≤ 9 / (4 * c) := by
+      have he : 2 * Real.sqrt c * (9 / (8 * c ^ (2 : ℕ))) = 9 * Real.sqrt c / (4 * c ^ (2 : ℕ)) := by
         field_simp
         ring
       rw [he, div_le_div_iff₀ (by positivity) (by positivity)]

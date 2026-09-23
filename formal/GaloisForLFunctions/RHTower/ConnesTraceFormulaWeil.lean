@@ -54,7 +54,7 @@ theorem connes_trace4_weil (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) (qq : ι 
             * ((Real.log ε + Real.eulerMascheroniConstant + Real.log (2 * π) : ℝ) : ℂ))
       (𝓝[>] 0) (𝓝 (W i))) (N : ℕ) :
     Tendsto (fun Λ : ℝ => Λ ^ N *
-        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ 2},
+        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)},
               (SchwartzMap.fourierTransformCLM ℂ (g i) : ℝ → ℂ) u
                 * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
             - (((2 * Real.log Λ : ℝ) : ℂ) * h1 + ∑ i ∈ s, W i)‖)

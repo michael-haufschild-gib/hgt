@@ -113,7 +113,7 @@ noncomputable def counterPhaseWeight (e : Sym2 (PairQubit 16384)) : ℝ :=
   |nestedFoldedPhase 16384 monotonicityCounterEarlyTime monotonicityCounterDelta e|
 
 noncomputable def counterPhaseThreshold : ℝ :=
-  monotonicityCounterEarlyTime / (1477 : ℝ) ^ 2
+  monotonicityCounterEarlyTime / (1477 : ℝ) ^ (2 : ℕ)
 
 theorem counterPhaseWeight_nonneg (e : Sym2 (PairQubit 16384)) :
     0 ≤ counterPhaseWeight e := abs_nonneg _
@@ -140,8 +140,8 @@ theorem counterKeptPhaseWeight_ge_threshold
       simp [counterKeptMatchingIndexEmbedding]
     rw [if_neg hj0, abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
     unfold counterPhaseThreshold counterKeptMatchingIndexEmbedding
-    change monotonicityCounterEarlyTime / (1477 : ℝ) ^ 2 ≤
-      monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ 2)
+    change monotonicityCounterEarlyTime / (1477 : ℝ) ^ (2 : ℕ) ≤
+      monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ (2 : ℕ))
     have hn : ((j.val + 2 : ℕ) : ℝ) ≤ 1477 := by
       exact_mod_cast (by omega : j.val + 2 ≤ 1477)
     have hn0 : (0 : ℝ) < ((j.val + 2 : ℕ) : ℝ) := by positivity
@@ -153,11 +153,11 @@ theorem counterKeptPhaseWeight_ge_threshold
     rw [counterPhaseWeight, nestedFoldedPhase_bridge,
       abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
     unfold counterPhaseThreshold counterKeptBridgeIndexEmbedding
-    change monotonicityCounterEarlyTime / (1477 : ℝ) ^ 2 ≤
-      monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ 4)
-    have hpow : (((j.val + 2 : ℕ) : ℝ) ^ 4) ≤ (1477 : ℝ) ^ 2 := by
+    change monotonicityCounterEarlyTime / (1477 : ℝ) ^ (2 : ℕ) ≤
+      monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ))
+    have hpow : (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) ≤ (1477 : ℝ) ^ (2 : ℕ) := by
       have hj38 : j.val + 2 ≤ 38 := by omega
-      have hbase : (((j.val + 2 : ℕ) : ℝ) ^ 4) ≤ (38 : ℝ) ^ 4 := by
+      have hbase : (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) ≤ (38 : ℝ) ^ (4 : ℕ) := by
         gcongr
         exact_mod_cast hj38
       norm_num at hbase ⊢
@@ -192,7 +192,7 @@ theorem counterOutsidePhaseWeight_le_threshold
         exact Finset.mem_map.mpr ⟨Sum.inl i, Finset.mem_univ _, by
           simpa [counterKeptEdgeEmbedding] using congrArg nestedMatchingEdge hindex⟩
       unfold counterPhaseThreshold
-      have hden : (1477 : ℝ) ^ 2 ≤ (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
+      have hden : (1477 : ℝ) ^ (2 : ℕ) ≤ (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
         gcongr
         exact_mod_cast (by omega : 1477 ≤ j.val + 1)
       exact div_le_div_of_nonneg_left counterEarlyTime_pos.le (by positivity) hden
@@ -211,9 +211,9 @@ theorem counterOutsidePhaseWeight_le_threshold
       exact Finset.mem_map.mpr ⟨Sum.inr i, Finset.mem_univ _, by
         simpa [counterKeptEdgeEmbedding] using congrArg nestedBridgeEdge hindex⟩
     unfold counterPhaseThreshold
-    have hden : (1477 : ℝ) ^ 2 ≤ (((j.val + 2 : ℕ) : ℝ) ^ 4) := by
+    have hden : (1477 : ℝ) ^ (2 : ℕ) ≤ (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) := by
       have h39 : 39 ≤ j.val + 2 := by omega
-      have hpow : (39 : ℝ) ^ 4 ≤ (((j.val + 2 : ℕ) : ℝ) ^ 4) := by
+      have hpow : (39 : ℝ) ^ (4 : ℕ) ≤ (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) := by
         gcongr
         exact_mod_cast h39
       norm_num at hpow ⊢
@@ -358,7 +358,7 @@ theorem counterCertifiedTailEdges_pairwise_disjoint :
 theorem sum_counterTailMatchingEdges :
     ∑ e ∈ counterTailMatchingEdges, counterPhaseWeight e =
       monotonicityCounterEarlyTime *
-        ∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2 := by
+        ∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
   classical
   rw [counterTailMatchingEdges, Finset.sum_image]
   · rw [Finset.mul_sum]
@@ -385,7 +385,7 @@ theorem sum_counterTailMatchingEdges :
 theorem sum_counterTailBridgeEdges :
     ∑ e ∈ counterTailBridgeEdges, counterPhaseWeight e =
       monotonicityCounterEarlyTime *
-        ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 := by
+        ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) := by
   classical
   rw [counterTailBridgeEdges, Finset.sum_image]
   · rw [Finset.mul_sum]
@@ -461,9 +461,9 @@ theorem counterFullPhaseWeight_sum :
     have hmatch :
         ∑ j : Fin 16384,
             |if j.val = 0 then -monotonicityCounterDelta
-              else monotonicityCounterEarlyTime / (((j.val + 1 : ℕ) : ℝ) ^ 2)| =
+              else monotonicityCounterEarlyTime / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))| =
           monotonicityCounterDelta + monotonicityCounterEarlyTime *
-            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2 := by
+            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
       rw [Fin.sum_univ_succ]
       simp only [Fin.val_zero, if_true, abs_neg, abs_of_pos counterDelta_pos]
       rw [Finset.mul_sum]
@@ -482,9 +482,9 @@ theorem counterFullPhaseWeight_sum :
         ring
     have hbridge :
         ∑ j : Fin (16384 - 1),
-            |monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ 4)| =
+            |monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ (4 : ℕ))| =
           monotonicityCounterEarlyTime *
-            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 := by
+            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ (4 : ℕ) := by
       rw [Finset.mul_sum]
       refine Finset.sum_bij (fun j _ => (j.val + 2 : ℕ)) ?_ ?_ ?_ ?_
       · intro j hj; simp; omega

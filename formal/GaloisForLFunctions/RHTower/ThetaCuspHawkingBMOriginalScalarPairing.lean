@@ -71,7 +71,7 @@ private theorem differential_components (F : Point → ℂ) (z : UpperHalfPlane)
 private theorem differential_modular (F : Point → ℂ)
     (hF : ∀ z, 0 < z 1 → ContDiffAt ℝ ∞ F z) (A : SL(2,ℤ))
     (hi : ∀ z, F (coordinates (A • z))=F (coordinates z)) (z : UpperHalfPlane) (v : ℂ) :
-    differential F z v=differential F (A • z) ((1/(denom A z)^2)*v) := by
+    differential F z v=differential F (A • z) ((1/(denom A z)^(2 : ℕ))*v) := by
   have he : (fun w : UpperHalfPlane => F (coordinates (A • w))) =
       (fun w => F (coordinates w)) := funext hi
   have h := chart_fderiv_modular_pullback A (fun w => F (coordinates w))
@@ -82,7 +82,7 @@ private theorem differential_modular (F : Point → ℂ)
 
 /-- The original scalar-density pairing in the hyperbolic area measure. -/
 def scalarDensity (F : Point → ℂ) (u : ℂ) (z : Point) : ℂ :=
-  F z*D4BMLiteralCusp.scalar u z/(z 1:ℂ)^2
+  F z*D4BMLiteralCusp.scalar u z/(z 1:ℂ)^(2 : ℕ)
 
 /-- The actual coexact source tested by the original physical covector. -/
 def coexactPair (F : Point → ℂ) (u : ℂ) (z : Point) : ℂ :=
@@ -93,7 +93,7 @@ def flux (F : Point → ℂ) (u : ℂ) (j : Fin 2) (z : Point) : ℂ :=
   F z*coordDeriv j (D4BMLiteralCusp.scalar u) z
 
 def defect (F : Point → ℂ) (u : ℂ) (z : Point) : ℂ :=
-  coexactPair F u z+(u^2-1/4)*scalarDensity F u z
+  coexactPair F u z+(u^(2 : ℕ)-1/4)*scalarDensity F u z
 
 private theorem partial_smooth {F : Point → ℂ} {z : Point} (hF : ContDiffAt ℝ ∞ F z) (j : Fin 2) :
     ContDiffAt ℝ ∞ (coordDeriv j F) z := coordDeriv_contDiffAt hF (by simp) j
@@ -114,7 +114,7 @@ private theorem divergence_flux {F : Point → ℂ} {z : Point} (hF : ContDiffAt
   simp only [D4BMLiteralCusp.scalarQ,neg_sub] at he
   have hl : coordDeriv 0 (coordDeriv 0 (D4BMLiteralCusp.scalar u)) z+
       coordDeriv 1 (coordDeriv 1 (D4BMLiteralCusp.scalar u)) z=
-        (u^2-1/4)*D4BMLiteralCusp.scalar u z/(z 1:ℂ)^2 := by
+        (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u z/(z 1:ℂ)^(2 : ℕ) := by
     apply (eq_div_iff (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hz.ne'))).mpr
     simpa only [mul_comm] using he
   calc
@@ -152,7 +152,7 @@ private theorem current_differential (q r : XiZeroCopy) (branch : Bool) (amp : �
 theorem current_modular (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ)
     (A : SL(2,ℤ)) (z : UpperHalfPlane) (a : ℂ) :
     current q r branch amp p v z a =
-      current q r branch amp p v (A • z) ((1/(denom A z)^2)*a) := by
+      current q r branch amp p v (A • z) ((1/(denom A z)^(2 : ℕ))*a) := by
   rw [current_differential,current_differential,source_modular,
     differential_modular _ (reader_smooth r) A (physicalScalar_modular r A)]
 
@@ -162,7 +162,7 @@ theorem current_radial_inversion (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) 
     current q r branch amp p v z (z:ℂ)+
       current q r branch amp p v (S • z) ((S • z:UpperHalfPlane):ℂ)=0 := by
   have h := current_modular q r branch amp p v S z (z:ℂ)
-  have hv : (1/(denom S z)^2)*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
+  have hv : (1/(denom S z)^(2 : ℕ))*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom,ModularGroup.S,inv_neg]
     field_simp
@@ -194,7 +194,7 @@ theorem original_side_cancellation (q r : XiZeroCopy) (branch : Bool) (amp : ℂ
 
 /-- Literal oriented unit-circle fluxes cancel for the complete original source and reader. -/
 theorem original_arc_cancellation (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ)
-    {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     ((x/y:ℝ):ℂ)*(flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 0 ![-x,y]-
       flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 0 ![x,y])-
       flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 1 ![-x,y]-
@@ -303,7 +303,7 @@ private theorem scalarDensity_continuous (q r : XiZeroCopy) (branch : Bool) (amp
   intro z hz
   have hn := (source_smooth q branch amp p v z hz).continuousAt.mul
     (reader_smooth r z hz).continuousAt
-  have hd : ContinuousAt (fun w : Point => (w 1:ℂ)^2) z :=
+  have hd : ContinuousAt (fun w : Point => (w 1:ℂ)^(2 : ℕ)) z :=
     (Complex.ofRealCLM.continuous.continuousAt.comp (continuous_apply 1).continuousAt).pow 2
   exact (hn.div hd (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hz.ne'))).continuousWithinAt
 
@@ -325,10 +325,10 @@ private theorem coexactPair_integrable (q r : XiZeroCopy) (branch : Bool) (amp :
     IntegrableOn (fun w : ℝ × ℝ => coexactPair (D4BMOriginalAngularGreen.source q branch amp p v)
       (physicalAngularParameter r) ![w.1,w.2]) (SelbergModularDomainSlices.domain Y) := by
   have h := (defect_integrable q r branch amp p v Y).sub
-    ((scalarDensity_integrable q r branch amp p v Y).const_mul ((physicalAngularParameter r)^2-1/4))
+    ((scalarDensity_integrable q r branch amp p v Y).const_mul ((physicalAngularParameter r)^(2 : ℕ)-1/4))
   change IntegrableOn (fun w : ℝ × ℝ =>
     defect (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2]-
-      ((physicalAngularParameter r)^2-1/4)*
+      ((physicalAngularParameter r)^(2 : ℕ)-1/4)*
         scalarDensity (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2])
     (SelbergModularDomainSlices.domain Y) at h
   simpa only [defect,add_sub_cancel_right] using h
@@ -422,7 +422,7 @@ theorem original_physical_pairing (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
     {Y : ℝ} (hY : 1 ≤ Y) :
     (∫ w in SelbergModularDomainSlices.domain Y,
       coexactPair (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2])+
-      ((physicalAngularParameter r)^2-1/4)*(∫ w in SelbergModularDomainSlices.domain Y,
+      ((physicalAngularParameter r)^(2 : ℕ)-1/4)*(∫ w in SelbergModularDomainSlices.domain Y,
         scalarDensity (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2])=
       normalFlux q r branch amp p v Y := by
   have h := original_modular_area q r branch amp p v hY
@@ -438,7 +438,7 @@ theorem original_physical_pairing_finitePart (q r : XiZeroCopy) (branch : Bool) 
     Tendsto (fun k : ℝ =>
       ((∫ w in SelbergModularDomainSlices.domain (Real.exp k),
         coexactPair (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2])+
-        ((physicalAngularParameter r)^2-1/4)*(∫ w in SelbergModularDomainSlices.domain (Real.exp k),
+        ((physicalAngularParameter r)^(2 : ℕ)-1/4)*(∫ w in SelbergModularDomainSlices.domain (Real.exp k),
           scalarDensity (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) ![w.1,w.2]))-
         D4BMOriginalCuspFlux.pairingNonconstantFlux q r branch amp p v k) atTop
       (𝓝 (D4BMOriginalCuspFlux.pairingFluxConstant q r branch amp p v)) := by
@@ -456,7 +456,7 @@ theorem diagonal_physical_pairing_finitePart (q : XiZeroCopy) (branch : Bool) (a
     Tendsto (fun k : ℝ =>
       ((∫ w in SelbergModularDomainSlices.domain (Real.exp k),
         coexactPair (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter q) ![w.1,w.2])+
-        ((physicalAngularParameter q)^2-1/4)*(∫ w in SelbergModularDomainSlices.domain (Real.exp k),
+        ((physicalAngularParameter q)^(2 : ℕ)-1/4)*(∫ w in SelbergModularDomainSlices.domain (Real.exp k),
           scalarDensity (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter q) ![w.1,w.2]))-
         D4BMOriginalCuspFlux.pairingNonconstantFlux q q branch amp p v k) atTop (𝓝 0) := by
   simpa only [(D4BMOriginalCuspFlux.pairingFluxConstant_original_readers q branch amp p v).1] using
@@ -469,7 +469,7 @@ theorem reflected_physical_pairing_finitePart (q : XiZeroCopy) (branch : Bool) (
       ((∫ w in SelbergModularDomainSlices.domain (Real.exp k),
         coexactPair (D4BMOriginalAngularGreen.source q branch amp p v)
           (physicalAngularParameter (xiZeroCopyReflectEquiv q)) ![w.1,w.2])+
-        ((physicalAngularParameter (xiZeroCopyReflectEquiv q))^2-1/4)*
+        ((physicalAngularParameter (xiZeroCopyReflectEquiv q))^(2 : ℕ)-1/4)*
           (∫ w in SelbergModularDomainSlices.domain (Real.exp k),
             scalarDensity (D4BMOriginalAngularGreen.source q branch amp p v)
               (physicalAngularParameter (xiZeroCopyReflectEquiv q)) ![w.1,w.2]))-

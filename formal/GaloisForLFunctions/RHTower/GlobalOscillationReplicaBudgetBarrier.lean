@@ -50,10 +50,10 @@ theorem globalOscillationReplicaBudget_forces_strict_oneCopyContraction
     (hT : epsw / speed ≤ T)
     (hbudget : rank * (other + q ^ r) <
       gaussianFloorTwo * ((epsw - epsn) / speed / (2 * T)) *
-        (1 - epsw ^ 2) ^ r) :
-    q < 1 - epsw ^ 2 := by
+        (1 - epsw ^ (2 : ℕ)) ^ r) :
+    q < 1 - epsw ^ (2 : ℕ) := by
   have hepsw0 : 0 < epsw := hepsn.trans_lt hgap
-  have ha : 0 < 1 - epsw ^ 2 := by
+  have ha : 0 < 1 - epsw ^ (2 : ℕ) := by
     nlinarith [sq_nonneg epsw]
   have hmeshT : (epsw - epsn) / speed ≤ T := by
     calc
@@ -76,11 +76,11 @@ theorem globalOscillationReplicaBudget_forces_strict_oneCopyContraction
   by_contra hnq
   push Not at hnq
   have hq0 : 0 ≤ q := ha.le.trans hnq
-  have hpow : (1 - epsw ^ 2) ^ r ≤ q ^ r :=
+  have hpow : (1 - epsw ^ (2 : ℕ)) ^ r ≤ q ^ r :=
     pow_le_pow_left₀ ha.le hnq r
-  have hleft : (1 - epsw ^ 2) ^ r ≤ rank * (other + q ^ r) := by
+  have hleft : (1 - epsw ^ (2 : ℕ)) ^ r ≤ rank * (other + q ^ r) := by
     calc
-      (1 - epsw ^ 2) ^ r ≤ q ^ r := hpow
+      (1 - epsw ^ (2 : ℕ)) ^ r ≤ q ^ r := hpow
       _ ≤ other + q ^ r := le_add_of_nonneg_left hother
       _ ≤ rank * (other + q ^ r) := by
         have hsum0 : 0 ≤ other + q ^ r :=
@@ -89,8 +89,8 @@ theorem globalOscillationReplicaBudget_forces_strict_oneCopyContraction
         nlinarith [mul_nonneg hrankSub hsum0]
   have hright :
       gaussianFloorTwo * ((epsw - epsn) / speed / (2 * T)) *
-          (1 - epsw ^ 2) ^ r < (1 - epsw ^ 2) ^ r := by
-    have hpowpos : 0 < (1 - epsw ^ 2) ^ r := pow_pos ha r
+          (1 - epsw ^ (2 : ℕ)) ^ r < (1 - epsw ^ (2 : ℕ)) ^ r := by
+    have hpowpos : 0 < (1 - epsw ^ (2 : ℕ)) ^ r := pow_pos ha r
     simpa using mul_lt_mul_of_pos_right hprefactor hpowpos
   linarith
 
@@ -105,12 +105,12 @@ theorem explicitGlobalOscillationReplicaBudget_forces_errorSq_lt_activationRatio
     (hbudget : rank *
         (other + (max 0 (1 - activationRatio)) ^ r) <
       gaussianFloorTwo * ((epsw - epsn) / speed / (2 * T)) *
-        (1 - epsw ^ 2) ^ r) :
-    epsw ^ 2 < activationRatio := by
+        (1 - epsw ^ (2 : ℕ)) ^ r) :
+    epsw ^ (2 : ℕ) < activationRatio := by
   have hstrict :=
     globalOscillationReplicaBudget_forces_strict_oneCopyContraction
       hrank hother hepsn hgap hepsw hspeed hTpos hT hbudget
-  have hraw : 1 - activationRatio < 1 - epsw ^ 2 :=
+  have hraw : 1 - activationRatio < 1 - epsw ^ (2 : ℕ) :=
     (le_max_right 0 (1 - activationRatio)).trans_lt hstrict
   linarith
 

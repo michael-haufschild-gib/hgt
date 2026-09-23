@@ -52,15 +52,15 @@ theorem rawPhaseAverage_sub_one_factor (r x : ℝ) :
     sub_zero,one_smul] using hi.symm
 
 theorem rawPhaseAverage_square_sub_one_factor (k x : ℝ) :
-    rawPhaseAverage (2*k^2) x-1 =
-      (k : ℂ)^2*(-2*I*(x : ℂ))*rawSecondPhaseAverage (2*k^2) x := by
+    rawPhaseAverage (2*k^(2 : ℕ)) x-1 =
+      (k : ℂ)^(2 : ℕ)*(-2*I*(x : ℂ))*rawSecondPhaseAverage (2*k^(2 : ℕ)) x := by
   rw [rawPhaseAverage_sub_one_factor]
   push_cast
   ring
 
 theorem rawPhaseAverage_neg_square_sub_one_factor (k x : ℝ) :
-    rawPhaseAverage (-(2*k^2)) x-1 =
-      (k : ℂ)^2*(2*I*(x : ℂ))*rawSecondPhaseAverage (-(2*k^2)) x := by
+    rawPhaseAverage (-(2*k^(2 : ℕ))) x-1 =
+      (k : ℂ)^(2 : ℕ)*(2*I*(x : ℂ))*rawSecondPhaseAverage (-(2*k^(2 : ℕ))) x := by
   rw [rawPhaseAverage_sub_one_factor]
   push_cast
   ring

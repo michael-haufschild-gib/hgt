@@ -32,15 +32,15 @@ def canonicalProductE1IndexedComplement
 theorem canonicalProductE1IndexedSelected_inv_sq_summable
     (a : ι → ℂ)
     (p : ι → Prop)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2)) :
-    Summable (fun i : {i // p i} => 1 / ‖a i.1‖ ^ 2) :=
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ))) :
+    Summable (fun i : {i // p i} => 1 / ‖a i.1‖ ^ (2 : ℕ)) :=
   hsum.comp_injective Subtype.val_injective
 
 theorem canonicalProductE1IndexedComplement_inv_sq_summable
     (a : ι → ℂ)
     (p : ι → Prop)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2)) :
-    Summable (fun i : {i // ¬ p i} => 1 / ‖a i.1‖ ^ 2) :=
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ))) :
+    Summable (fun i : {i // ¬ p i} => 1 / ‖a i.1‖ ^ (2 : ℕ)) :=
   hsum.comp_injective Subtype.val_injective
 
 /-- Every predicate-selected canonical factor is entire. -/
@@ -48,7 +48,7 @@ theorem canonicalProductE1IndexedSelected_analytic
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2)) :
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ))) :
     AnalyticOnNhd ℂ (canonicalProductE1IndexedSelected a p) Set.univ :=
   canonicalProductE1Indexed_analytic (fun i : {i // p i} => a i.1)
     (fun i => ha i.1)
@@ -59,7 +59,7 @@ theorem canonicalProductE1IndexedComplement_analytic
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2)) :
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ))) :
     AnalyticOnNhd ℂ (canonicalProductE1IndexedComplement a p) Set.univ :=
   canonicalProductE1Indexed_analytic (fun i : {i // ¬ p i} => a i.1)
     (fun i => ha i.1)
@@ -70,7 +70,7 @@ theorem canonicalProductE1IndexedSelected_ne_zero
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ)))
     (z : ℂ)
     (haway : ∀ i : {i // p i}, z ≠ a i.1) :
     canonicalProductE1IndexedSelected a p z ≠ 0 :=
@@ -85,7 +85,7 @@ theorem canonicalProductE1IndexedComplement_ne_zero
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ)))
     (z : ℂ)
     (haway : ∀ i : {i // ¬ p i}, z ≠ a i.1) :
     canonicalProductE1IndexedComplement a p z ≠ 0 :=
@@ -99,7 +99,7 @@ theorem canonicalProductE1IndexedSelected_multipliable
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ)))
     (z : ℂ) :
     Multipliable (fun i : {i // p i} => weierstrassE1 (z / a i.1)) := by
   let f : {i // p i} → ℂ := fun i => weierstrassE1 (z / a i.1) - 1
@@ -119,7 +119,7 @@ theorem canonicalProductE1IndexedComplement_multipliable
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ)))
     (z : ℂ) :
     Multipliable (fun i : {i // ¬ p i} => weierstrassE1 (z / a i.1)) := by
   let f : {i // ¬ p i} → ℂ := fun i => weierstrassE1 (z / a i.1) - 1
@@ -144,7 +144,7 @@ theorem canonicalProductE1Indexed_eq_selected_mul_complement
     (a : ι → ℂ)
     (p : ι → Prop)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i : ι => 1 / ‖a i‖ ^ (2 : ℕ)))
     (z : ℂ) :
     canonicalProductE1Indexed a z =
       canonicalProductE1IndexedSelected a p z *

@@ -11,7 +11,7 @@ remainder.  The latter has the independent fixed-source-radius representation in
 
 namespace RHTower.D4BMCorrectedFutureFixedArmDecomposition
 
-open D4BMJointSource D4BMModularCore D4BMFullSourceAdvanced D4BMFutureHorizon
+open D4BMJointSource D4BMModularCore D4BMFullSourceAdvanced D4BMFutureHorizon D4BMGlobalAngularResponse
 open D4BMFuturePulseAdmission D4BMFutureSourceBridge D4BMFutureSeedHorizon
 open D4BMCompleteOriginalWeakSource
 noncomputable section
@@ -29,10 +29,10 @@ theorem correctedFutureField_pulse_cap_decomposition (q : XiZeroCopy) (branch : 
         (seedCapField q branch amp tau (-(depth : ℝ)) X k-
           parameter q branch*capBoundaryField q branch amp tau (-(depth : ℝ)) X k) := by
   have hbalance := future_source_balance q branch amp tau depth X k
-  change parameter q branch*
-      (timeLiftField q branch amp tau (-(depth : ℝ)) ![X, Real.exp k]+
-        D4BMFullSourceAdvanced.response q branch amp tau (-(depth : ℝ)) X k-
-        capBoundaryField q branch amp tau (-(depth : ℝ)) X k) = _
+  have hre : ((X : ℂ)+Complex.I*(k : ℂ)).re = X := by simp
+  have him : ((X : ℂ)+Complex.I*(k : ℂ)).im = k := by simp
+  unfold correctedFutureField
+  simp only [hre, him]
   linear_combination hbalance
 
 end

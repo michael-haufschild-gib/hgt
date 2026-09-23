@@ -35,27 +35,27 @@ private theorem sourceLogHeightFirst_continuousAt {t : ℝ} (ht : t < 1) :
 
 private theorem sourceRemainder_exp (s w a J K T : ℂ) (t : ℝ) :
     sourceRemainder s w a J K T t =
-      Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w))*a^2*
-        (((5*s^2+15*s+4)/4)*J+(1-(t:ℂ))*(s*(s-1)/4*((s+2)^2*J-K)))*T := by
+      Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w))*a^(2 : ℕ)*
+        (((5*s^(2 : ℕ)+15*s+4)/4)*J+(1-(t:ℂ))*(s*(s-1)/4*((s+2)^(2 : ℕ)*J-K)))*T := by
   unfold sourceRemainder power sourceLogHeight
   rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (show 1+Real.sqrt (1-t) ≠ 0 by positivity)),
     Complex.ofReal_log (show 0 ≤ 1+Real.sqrt (1-t) by positivity)]
   ring
 
 private def sourceRemainderJet (s w a J K T : ℂ) (t : ℝ) : ℂ :=
-  Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w)) * ((sourceLogHeightFirst t:ℂ)*(2*s-w))*a^2*
-    (((5*s^2+15*s+4)/4)*J+(1-(t:ℂ))*(s*(s-1)/4*((s+2)^2*J-K)))*T -
-  Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w))*a^2*(s*(s-1)/4*((s+2)^2*J-K))*T
+  Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w)) * ((sourceLogHeightFirst t:ℂ)*(2*s-w))*a^(2 : ℕ)*
+    (((5*s^(2 : ℕ)+15*s+4)/4)*J+(1-(t:ℂ))*(s*(s-1)/4*((s+2)^(2 : ℕ)*J-K)))*T -
+  Complex.exp ((sourceLogHeight t:ℂ)*(2*s-w))*a^(2 : ℕ)*(s*(s-1)/4*((s+2)^(2 : ℕ)*J-K))*T
 
 private theorem sourceRemainder_hasDerivAt (s w a J K T : ℂ) {t : ℝ} (ht : t < 1) :
     HasDerivAt (sourceRemainder s w a J K T) (sourceRemainderJet s w a J K T t) t := by
   have he := (((sourceLogHeight_deriv ht).ofReal_comp).mul_const (2*s-w)).cexp
   have hpoly := ((((hasDerivAt_id t).ofReal_comp).const_sub (1:ℂ)).mul_const
-    (s*(s-1)/4*((s+2)^2*J-K))).const_add (((5*s^2+15*s+4)/4)*J)
-  have hd := (((he.mul_const (a^2)).mul hpoly).mul_const T)
+    (s*(s-1)/4*((s+2)^(2 : ℕ)*J-K))).const_add (((5*s^(2 : ℕ)+15*s+4)/4)*J)
+  have hd := (((he.mul_const (a^(2 : ℕ))).mul hpoly).mul_const T)
   have hf : sourceRemainder s w a J K T = fun v =>
-      Complex.exp ((sourceLogHeight v:ℂ)*(2*s-w))*a^2*
-        (((5*s^2+15*s+4)/4)*J+(1-(v:ℂ))*(s*(s-1)/4*((s+2)^2*J-K)))*T :=
+      Complex.exp ((sourceLogHeight v:ℂ)*(2*s-w))*a^(2 : ℕ)*
+        (((5*s^(2 : ℕ)+15*s+4)/4)*J+(1-(v:ℂ))*(s*(s-1)/4*((s+2)^(2 : ℕ)*J-K)))*T :=
     funext (sourceRemainder_exp s w a J K T)
   rw [hf]
   convert! hd using 1
@@ -75,8 +75,8 @@ theorem sourceRemainder_frequency_entire (s a J K T : ℂ) (t : ℝ) :
   have hp := (power_exponent_entire (show 0 < 1+Real.sqrt (1-t) by positivity)).comp
     (show Differentiable ℂ (fun w : ℂ => 2*s-w) by fun_prop)
   simpa only [sourceRemainder,Function.comp_def] using!
-    (((hp.mul_const (a^2)).mul_const
-      (((5*s^2+15*s+4)/4)*J+(1-(t:ℂ))*s*(s-1)/4*((s+2)^2*J-K))).mul_const T)
+    (((hp.mul_const (a^(2 : ℕ))).mul_const
+      (((5*s^(2 : ℕ)+15*s+4)/4)*J+(1-(t:ℂ))*s*(s-1)/4*((s+2)^(2 : ℕ)*J-K))).mul_const T)
 
 /-- The literal undressed remainder is jointly continuous in frequency and radius. -/
 theorem sourceRemainder_joint_continuous (s a J K T : ℂ) :

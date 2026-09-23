@@ -21,7 +21,7 @@ theorem fibre_lt_marker {x h : ℝ} (hx : 16 ≤ x) (hh : 0 ≤ h) (hhx : h ≤ 
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   have hs4 : (4 : ℝ) ≤ Real.sqrt x := by
     rw [show (4 : ℝ) = Real.sqrt 16 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt hx
   have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith

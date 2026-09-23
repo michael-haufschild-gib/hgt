@@ -242,7 +242,7 @@ theorem upperAverageField_eq_blockAverage (q : Deck N) (z : ℍ) :
 
 /-- Exact arithmetic block variance is the mass of the literal complementary source fields. -/
 theorem upperComplement_norm_sq (z : ℍ) :
-    ‖sourceVector N f z-blockAverage (upperBlock N) (sourceVector N f z)‖^2 =
+    ‖sourceVector N f z-blockAverage (upperBlock N) (sourceVector N f z)‖^(2 : ℕ) =
       ∑ q : Deck N, normSq (upperComplementField N f q (z : ℂ)) := by
   rw [EuclideanSpace.norm_sq_eq]
   apply Finset.sum_congr rfl
@@ -260,7 +260,7 @@ theorem upperBlock_variance_hasSum {y : ℝ} (hy : 0 < y) :
       ∑ q : Deck N, normSq (maassCoefficient N (quotientForm N f q) n y))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ‖sourceVector N f (ofComplex (point x y))-
-          blockAverage (upperBlock N) (sourceVector N f (ofComplex (point x y)))‖^2) := by
+          blockAverage (upperBlock N) (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)) := by
   classical
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => upperComplement_mass_hasSum N f q hy)
@@ -276,7 +276,7 @@ theorem upperBlock_variance_hasSum {y : ℝ} (hy : 0 < y) :
   have he (x : ℝ) :
       (∑ q : Deck N, normSq (upperComplementField N f q (point x y))) =
       ‖sourceVector N f (ofComplex (point x y))-
-        blockAverage (upperBlock N) (sourceVector N f (ofComplex (point x y)))‖^2 := by
+        blockAverage (upperBlock N) (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ) := by
     rw [upperComplement_norm_sq, coe_ofComplex_point x hy]
   simp_rw [he] at h
   exact h

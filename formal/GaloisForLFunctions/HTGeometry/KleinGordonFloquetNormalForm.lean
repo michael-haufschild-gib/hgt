@@ -106,9 +106,9 @@ theorem kgFieldEnergyT_eigen (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ ≤ b
     (hWs : ∀ x : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r x)
     (hper : ∀ r : ℝ, W (r + T) = W r) {k : ℂ} (g h : Lp ℂ 2 (volume : Measure E))
     (heig : kgMonodromy W b hb0 hWb hWs T (kgPair E (g, h)) = k • kgPair E (g, h)) (n : ℕ) :
-    ‖kgFieldGradT W g h ((n : ℝ) * T)‖ ^ 2 + ‖kgFieldVelT W g h ((n : ℝ) * T)‖ ^ 2
-      = (‖k‖ ^ 2) ^ n * (‖g‖ ^ 2 + ‖h‖ ^ 2) := by
-  have hk : (‖k‖ ^ n) ^ 2 = (‖k‖ ^ 2) ^ n := by
+    ‖kgFieldGradT W g h ((n : ℝ) * T)‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h ((n : ℝ) * T)‖ ^ (2 : ℕ)
+      = (‖k‖ ^ (2 : ℕ)) ^ n * (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) := by
+  have hk : (‖k‖ ^ n) ^ (2 : ℕ) = (‖k‖ ^ (2 : ℕ)) ^ n := by
     rw [← pow_mul, ← pow_mul, Nat.mul_comm]
   rw [kgFieldEnergyT_eq_norm_sq W g h ((n : ℝ) * T),
     norm_kgFieldStateT_eigen hb0 hWb hWs hper g h heig n, mul_pow, hk, norm_kgPair_sq]

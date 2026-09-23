@@ -38,14 +38,14 @@ theorem egbFixedChargeAGibbsMirrorDifference_odd (w φ τ l ψ : ℝ) :
   ring
 
 theorem egbFixedChargeAGibbsMirrorDifference_fifth_order_limit (w φ l ψ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAGibbsMirrorDifference w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ 5)
-      atBot (𝓝 (2 * egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4)) := by
+    Tendsto (fun τ => egbFixedChargeAGibbsMirrorDifference w φ τ l ψ / egbCoexistenceASymmetricRatio τ ^ (5 : ℕ))
+      atBot (𝓝 (2 * egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have h := (egbFixedChargeAInteriorGibbsGap_fifth_order_limit w φ l ψ).sub
     (egbFixedChargeAInteriorGibbsGap_fifth_order_limit w φ l (-ψ))
   simp only [sin_neg, cos_neg] at h
-  have he : egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4 -
-      egbFixedChargeAGibbsOddCoefficient w φ * (-sin ψ) * cos ψ ^ 4 =
-      2 * egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4 := by ring
+  have he : egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ) -
+      egbFixedChargeAGibbsOddCoefficient w φ * (-sin ψ) * cos ψ ^ (4 : ℕ) =
+      2 * egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ) := by ring
   rw [he] at h
   convert h using 1
   funext τ
@@ -54,13 +54,13 @@ theorem egbFixedChargeAGibbsMirrorDifference_fifth_order_limit (w φ l ψ : ℝ)
 
 theorem egbFixedChargeAGibbsSymmetricAverage_fifth_zero_limit (w φ l ψ : ℝ) :
     Tendsto (fun τ => ((egbFixedChargeAInteriorGibbsGap w φ τ l ψ + egbFixedChargeAInteriorGibbsGap w φ τ l (-ψ)) / 2 -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4 * egbCoexistenceASymmetricRatio τ ^ 4) /
-      egbCoexistenceASymmetricRatio τ ^ 5) atBot (𝓝 (0 : ℝ)) := by
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) /
+      egbCoexistenceASymmetricRatio τ ^ (5 : ℕ)) atBot (𝓝 (0 : ℝ)) := by
   have h := ((egbFixedChargeAInteriorGibbsGap_fifth_order_limit w φ l ψ).add
     (egbFixedChargeAInteriorGibbsGap_fifth_order_limit w φ l (-ψ))).div_const 2
   simp only [sin_neg, cos_neg] at h
-  have he : (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4 +
-      egbFixedChargeAGibbsOddCoefficient w φ * (-sin ψ) * cos ψ ^ 4) / 2 = 0 := by ring
+  have he : (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ) +
+      egbFixedChargeAGibbsOddCoefficient w φ * (-sin ψ) * cos ψ ^ (4 : ℕ)) / 2 = 0 := by ring
   rw [he] at h
   convert h using 1
   funext τ
@@ -69,13 +69,13 @@ theorem egbFixedChargeAGibbsSymmetricAverage_fifth_zero_limit (w φ l ψ : ℝ) 
 theorem egbFixedChargeAGibbsMirrorDifference_normalized_first_limit (w φ l₁ l₂ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAGibbsMirrorDifference w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂) /
       egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (8 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4)) := by
+      atBot (𝓝 (8 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have h := (egbFixedChargeAInteriorGibbsGap_normalized_first_correction_limit w φ l₁ l₂ ψ).sub
     (egbFixedChargeAInteriorGibbsGap_normalized_first_correction_limit w φ l₁ l₂ (-ψ))
   simp only [sin_neg, cos_neg] at h
-  have he : 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 -
-      4 * egbFixedChargeAMiddleMeanCorrection φ * (-sin ψ) * cos ψ ^ 4 =
-      8 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 := by ring
+  have he : 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) -
+      4 * egbFixedChargeAMiddleMeanCorrection φ * (-sin ψ) * cos ψ ^ (4 : ℕ) =
+      8 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) := by ring
   rw [he] at h
   convert h using 1
   funext τ
@@ -85,11 +85,11 @@ theorem egbFixedChargeAGibbsMirrorDifference_normalized_first_limit (w φ l₁ l
 theorem egbFixedChargeAGibbsMirrorDifference_peak_displacement_limit (w φ l₁ l₂ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAGibbsMirrorDifference w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂) /
       egbFixedChargeAMiddleGapCoordinate τ φ)
-      atBot (𝓝 (8 * sin ψ * cos ψ ^ 4)) := by
+      atBot (𝓝 (8 * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have h := (egbFixedChargeAInteriorGibbsGap_peak_displacement_correction_limit w φ l₁ l₂ ψ).sub
     (egbFixedChargeAInteriorGibbsGap_peak_displacement_correction_limit w φ l₁ l₂ (-ψ))
   simp only [sin_neg, cos_neg] at h
-  have he : 4 * sin ψ * cos ψ ^ 4 - 4 * (-sin ψ) * cos ψ ^ 4 = 8 * sin ψ * cos ψ ^ 4 := by ring
+  have he : 4 * sin ψ * cos ψ ^ (4 : ℕ) - 4 * (-sin ψ) * cos ψ ^ (4 : ℕ) = 8 * sin ψ * cos ψ ^ (4 : ℕ) := by ring
   rw [he] at h
   convert h using 1
   funext τ

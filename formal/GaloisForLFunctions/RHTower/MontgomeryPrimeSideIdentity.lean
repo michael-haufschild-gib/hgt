@@ -179,7 +179,7 @@ theorem tsum_montgomeryZeroTerm_eq_primeSide {x : ℝ} (hx : 1 < x) (t : ℝ) :
   have hζab : logDeriv riemannZeta ab = -LSeries (fun n => ((vonMangoldt n : ℝ) : ℂ)) ab := by
     rw [ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div habre, logDeriv_apply]; ring
   have hxb : logDeriv xi b = -logDeriv xi ab := by
-    have := logDeriv_xi_one_sub (1 - b)
+    have := logDeriv_xi_one_sub_xiLogDerivSymmetry (1 - b)
     rw [sub_sub_cancel, h1b] at this
     exact this
   -- the digamma shift sums

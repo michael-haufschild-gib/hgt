@@ -214,7 +214,7 @@ private theorem hasDerivAt_fullMirrorCouplingDefectIntegrand
   simp_rw [hphaseEq]
   change HasDerivAt
     (fun q : ℝ => base * (Complex.exp ((q : ℂ) * rate) - 1))
-    (base * (Complex.exp ((t : ℂ) * rate) * rate ^ 1)) t
+    (base * (Complex.exp ((t : ℂ) * rate) * rate ^ (1 : ℕ))) t
   simpa only [pow_one] using hmain
 
 /-- Exact first coupling derivative of the full eikonal Fourier response at every real coupling. -/
@@ -440,7 +440,7 @@ theorem thetaCuspHawkingFullMirrorCayley_denominator_pos
 /-- Exact lossless law for the Cayley completion fed by the full eikonal amplitude. -/
 theorem thetaCuspHawkingFullMirrorCayleyRetention_sq_add_transition_normSq
     (a lambda omega : ℝ) :
-    thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2 +
+    thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ) +
         Complex.normSq
           (thetaCuspHawkingFullMirrorCayleyTransition a lambda omega) = 1 := by
   let A : ℂ := thetaCuspHawkingBalancedFullMirrorAmplitude a lambda omega
@@ -451,7 +451,7 @@ theorem thetaCuspHawkingFullMirrorCayleyRetention_sq_add_transition_normSq
     (thetaCuspHawkingFullMirrorCayley_denominator_pos a lambda omega).ne'
   rw [thetaCuspHawkingFullMirrorCayleyRetention,
     thetaCuspHawkingFullMirrorCayleyTransition]
-  change ((1 - j) / (1 + j)) ^ 2 +
+  change ((1 - j) / (1 + j)) ^ (2 : ℕ) +
       Complex.normSq (A / ((1 + j : ℝ) : ℂ)) = 1
   rw [Complex.normSq_div, Complex.normSq_ofReal]
   field_simp [hden]
@@ -520,7 +520,7 @@ theorem thetaCuspHawkingFullMirrorKMSExcitedPopulation_pos
 /-- One exact collision with a fresh Hawking Gibbs horizon mode. -/
 def thetaCuspHawkingFullMirrorKMSPopulationChannel
     (kappa a lambda omega p : ℝ) : ℝ :=
-  thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2 * p +
+  thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ) * p +
     Complex.normSq (thetaCuspHawkingFullMirrorCayleyTransition a lambda omega) *
       thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega
 
@@ -529,7 +529,7 @@ theorem thetaCuspHawkingFullMirrorKMSPopulationChannel_sub_gibbs
     thetaCuspHawkingFullMirrorKMSPopulationChannel
         kappa a lambda omega p -
         thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega =
-      thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2 *
+      thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ) *
         (p - thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega) := by
   have hunit :=
     thetaCuspHawkingFullMirrorCayleyRetention_sq_add_transition_normSq
@@ -559,7 +559,7 @@ theorem thetaCuspHawkingFullMirrorKMSDetailedBalance
 def thetaCuspHawkingFullMirrorKMSPopulationAfter
     (kappa a lambda omega : ℝ) (n : ℕ) (p : ℝ) : ℝ :=
   thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega +
-    (thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2) ^ n *
+    (thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ)) ^ n *
       (p - thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega)
 
 theorem thetaCuspHawkingFullMirrorKMSPopulationAfter_zero
@@ -584,7 +584,7 @@ theorem thetaCuspHawkingFullMirrorKMSPopulationAfter_succ
           (thetaCuspHawkingFullMirrorKMSPopulationAfter
             kappa a lambda omega n p) =
         thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega +
-          thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2 *
+          thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ) *
             (thetaCuspHawkingFullMirrorKMSPopulationAfter
                 kappa a lambda omega n p -
               thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega) := by
@@ -629,15 +629,15 @@ theorem thetaCuspHawkingFullMirrorKMSCayleySectorMixes_iff
       thetaCuspHawkingFullMirrorCayleyRetention_sq_add_transition_normSq
         a lambda omega
     have hr0 : 0 ≤ thetaCuspHawkingFullMirrorCayleyRetention
-        a lambda omega ^ 2 := sq_nonneg _
+        a lambda omega ^ (2 : ℕ) := sq_nonneg _
     have hr1 : thetaCuspHawkingFullMirrorCayleyRetention
-        a lambda omega ^ 2 < 1 := by linarith
+        a lambda omega ^ (2 : ℕ) < 1 := by linarith
     have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1
     have hdev := hpow.mul_const
       (p - thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega)
     have hsum : Tendsto
         (fun n : ℕ => thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega +
-          (thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ 2) ^ n *
+          (thetaCuspHawkingFullMirrorCayleyRetention a lambda omega ^ (2 : ℕ)) ^ n *
             (p - thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega))
         atTop
         (𝓝 (thetaCuspHawkingFullMirrorKMSExcitedPopulation kappa omega + 0)) :=

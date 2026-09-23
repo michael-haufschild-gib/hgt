@@ -27,9 +27,9 @@ theorem egbFixedChargeAGibbsCollisionExcess_two_step (n m : ℕ) (β : ℝ)
   calc
     egbFixedChargeAGibbsCollisionExcess n (m + 2) β E =
         (25 / 36) * ∑ i, ((egbFixedChargeACriticalMarkovRefreshKernel n).toFinitePositiveKernel.applyReal
-          (fun j => egbFixedChargeAGibbsMarkovPopulation n m β E j - ((2 : ℝ) ^ (n + 3))⁻¹) i) ^ 2 := by
+          (fun j => egbFixedChargeAGibbsMarkovPopulation n m β E j - ((2 : ℝ) ^ (n + 3))⁻¹) i) ^ (2 : ℕ) := by
       simp only [egbFixedChargeAGibbsCollisionExcess, egbFixedChargeAGibbsCentered_refresh, mul_pow]
-      rw [show (5 / 6 : ℝ) ^ 2 = 25 / 36 by norm_num, Finset.mul_sum]
+      rw [show (5 / 6 : ℝ) ^ (2 : ℕ) = 25 / 36 by norm_num, Finset.mul_sum]
     _ ≤ (25 / 36) * egbFixedChargeAGibbsCollisionExcess n m β E :=
       mul_le_mul_of_nonneg_left h (by norm_num)
 

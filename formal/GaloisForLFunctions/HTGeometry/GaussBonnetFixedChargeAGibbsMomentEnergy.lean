@@ -27,16 +27,16 @@ theorem egbFixedChargeAGibbsFourierMoment_zero (n : ℕ) (β : ℝ)
 /-- The invariant Fourier energy is precisely the uniform collision floor. -/
 theorem egbFixedChargeAGibbsFourierMoment_zero_sq_norm (n : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    ‖egbFixedChargeAGibbsFourierMoment n β E 0‖ ^ 2 = ((2 : ℝ) ^ (n + 3))⁻¹ := by
+    ‖egbFixedChargeAGibbsFourierMoment n β E 0‖ ^ (2 : ℕ) = ((2 : ℝ) ^ (n + 3))⁻¹ := by
   rw [egbFixedChargeAGibbsFourierMoment_zero, QuantumAlg.norm_invSqrtN,
     inv_pow (Real.sqrt ((2 : ℝ) ^ (n + 3))) 2, Real.sq_sqrt (by positivity)]
 
 /-- At every positive time, the full Gibbs collision probability has five exact spectral terms. -/
 theorem egbFixedChargeAGibbsMarkovPopulation_spectral_energy (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    ∑ i, egbFixedChargeAGibbsMarkovPopulation n (m + 1) β E i ^ 2 =
-      ∑ k : Fin 5, (egbFixedChargeACriticalMarkovEigenvalues k ^ (m + 1)) ^ 2 *
-        ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ 2 := by
+    ∑ i, egbFixedChargeAGibbsMarkovPopulation n (m + 1) β E i ^ (2 : ℕ) =
+      ∑ k : Fin 5, (egbFixedChargeACriticalMarkovEigenvalues k ^ (m + 1)) ^ (2 : ℕ) *
+        ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ (2 : ℕ) := by
   have h := egbFixedChargeACriticalMarkovMatrix_five_mode_energy n m
     (fun i => (_root_.HTGeometry.finiteGibbsStateWeight β E i : ℂ))
   rw [egbFixedChargeACriticalMarkov_complex_lift] at h

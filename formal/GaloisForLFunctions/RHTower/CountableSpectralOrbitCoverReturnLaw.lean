@@ -55,9 +55,9 @@ theorem norm_countableSpectralKetAt_sub_ketAt_eq_timeDifference
     exact_mod_cast (Nat.add_sub_of_le hij).symm
   have hsquares :
       ‖countableSpectralKetAt p hp hsum x (j : ℝ) -
-          countableSpectralKetAt p hp hsum x (i : ℝ)‖ ^ 2 =
+          countableSpectralKetAt p hp hsum x (i : ℝ)‖ ^ (2 : ℕ) =
         ‖countableSpectralKetAt p hp hsum x ((j - i : ℕ) : ℝ) -
-          countableSpectralKet p hp hsum‖ ^ 2 := by
+          countableSpectralKet p hp hsum‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq,
       HilbertSchmidt.lp_norm_sq_eq]
     apply tsum_congr
@@ -66,11 +66,11 @@ theorem norm_countableSpectralKetAt_sub_ketAt_eq_timeDifference
       ‖(Real.sqrt (p k) : ℂ) *
             countableSpectralHamiltonianEvolutionPhase x (j : ℝ) k -
           (Real.sqrt (p k) : ℂ) *
-            countableSpectralHamiltonianEvolutionPhase x (i : ℝ) k‖ ^ 2 =
+            countableSpectralHamiltonianEvolutionPhase x (i : ℝ) k‖ ^ (2 : ℕ) =
         ‖(Real.sqrt (p k) : ℂ) *
             countableSpectralHamiltonianEvolutionPhase
               x ((j - i : ℕ) : ℝ) k -
-          (Real.sqrt (p k) : ℂ)‖ ^ 2
+          (Real.sqrt (p k) : ℂ)‖ ^ (2 : ℕ)
     have hphase :
         countableSpectralHamiltonianEvolutionPhase x (j : ℝ) k =
           countableSpectralHamiltonianEvolutionPhase x (i : ℝ) k *
@@ -130,7 +130,7 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
     (hr : 0 ≤ r)
     (hcover : CountableSpectralOrbitCover p hp hsum x C r) :
     ∃ n : ℕ, 0 < n ∧ n ≤ C.card ∧
-      CountableTorusWeightedCoherenceAt p x (2 * r ^ 2) n := by
+      CountableTorusWeightedCoherenceAt p x (2 * r ^ (2 : ℕ)) n := by
   classical
   let center : Fin (C.card + 1) → C := fun k =>
     ⟨(hcover k.1).choose, (hcover k.1).choose_spec.1⟩
@@ -143,7 +143,7 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
   have collision {i j : Fin (C.card + 1)} (hij_lt : i.1 < j.1)
       (hcenter_eq : center i = center j) :
       ∃ n : ℕ, 0 < n ∧ n ≤ C.card ∧
-        CountableTorusWeightedCoherenceAt p x (2 * r ^ 2) n := by
+        CountableTorusWeightedCoherenceAt p x (2 * r ^ (2 : ℕ)) n := by
     let n := j.1 - i.1
     have hn0 : 0 < n := Nat.sub_pos_of_lt hij_lt
     have hnC : n ≤ C.card :=
@@ -186,7 +186,7 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
       rw [countableSpectralHamiltonianEvolutionPhase_nat]
     have hdistSq :
         ‖countableSpectralKetAt p hp hsum x n -
-            countableSpectralKet p hp hsum‖ ^ 2 =
+            countableSpectralKet p hp hsum‖ ^ (2 : ℕ) =
           2 - 2 *
             (summableWeightedPhaseAmplitude p
               (fun k => fourier 1 (((n : ℕ) : ℤ) • x k))).re := by
@@ -199,12 +199,12 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
       ring
     have hdistBound :
         ‖countableSpectralKetAt p hp hsum x n -
-            countableSpectralKet p hp hsum‖ ^ 2 ≤
-          (2 * r) ^ 2 :=
+            countableSpectralKet p hp hsum‖ ^ (2 : ℕ) ≤
+          (2 * r) ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (by norm_num) hr)).mpr
         hreturnDist
     have hre :
-        1 - 2 * r ^ 2 ≤
+        1 - 2 * r ^ (2 : ℕ) ≤
           (summableWeightedPhaseAmplitude p
             (fun k => fourier 1 (((n : ℕ) : ℤ) • x k))).re := by
       rw [hdistSq] at hdistBound
@@ -223,13 +223,13 @@ theorem countableSpectralFirstCoherenceTime_le_card_of_orbitCover
     (C : Finset CountableSpectralPhaseSpace) {r : ℝ}
     (hr : 0 ≤ r)
     (hcover : CountableSpectralOrbitCover p hp hsum x C r) :
-    countableTorusWeightedFirstCoherenceTime p x (2 * r ^ 2) ≤
+    countableTorusWeightedFirstCoherenceTime p x (2 * r ^ (2 : ℕ)) ≤
       C.card := by
   obtain ⟨n, _hn0, hnC, hn⟩ :=
     exists_countableSpectralFirstReturn_le_card_of_orbitCover
       p hp hsum htotal x C hr hcover
   exact
     (countableTorusWeightedFirstCoherenceTime_le_of
-      p x (2 * r ^ 2) hn).trans (by exact_mod_cast hnC)
+      p x (2 * r ^ (2 : ℕ)) hn).trans (by exact_mod_cast hnC)
 
 end RHTower

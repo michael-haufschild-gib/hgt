@@ -75,12 +75,12 @@ noncomputable def pairPhaseGate {L : ℕ} (j : Fin L) (θ : ℝ) :
 
 noncomputable def matchingPhaseCircuit {L : ℕ} (js : List (Fin L)) (t : ℝ) :
     List (LocalGate (PairQubit L)) :=
-  js.map (fun j => pairPhaseGate j (t / (((j.val + 1 : ℕ) : ℝ) ^ 2)))
+  js.map (fun j => pairPhaseGate j (t / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))))
 
 noncomputable def listMatchingEnergy {L : ℕ} (js : List (Fin L))
     (x : Config (PairQubit L)) : ℝ :=
   (js.map fun j => if x (j, false) = true ∧ x (j, true) = true
-    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0).sum
+    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0).sum
 
 set_option maxHeartbeats 10000 in
 theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
@@ -93,7 +93,7 @@ theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
       simp [matchingPhaseCircuit, circuitMatrix, listMatchingEnergy]
   | cons j js ih =>
       rw [matchingPhaseCircuit, List.map_cons, circuitMatrix]
-      change pairPhaseMatrix j (t / (((j.val + 1 : ℕ) : ℝ) ^ 2)) *
+      change pairPhaseMatrix j (t / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
           circuitMatrix (matchingPhaseCircuit js t) = _
       rw [ih, pairPhaseMatrix, Matrix.diagonal_mul_diagonal]
       congr 1
@@ -114,7 +114,7 @@ theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
   | nil => simp [matchingPhaseCircuit, twoGateCount]
   | cons j js ih =>
       rw [matchingPhaseCircuit, List.map_cons, twoGateCount]
-      have hcard : (pairPhaseGate j (t / (((j.val + 1 : ℕ) : ℝ) ^ 2))).support.card = 2 := by
+      have hcard : (pairPhaseGate j (t / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)))).support.card = 2 := by
         simp [pairPhaseGate]
       rw [if_pos hcard]
       change 1 + twoGateCount (matchingPhaseCircuit js t) = js.length + 1
@@ -123,7 +123,7 @@ theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
 
 noncomputable def pairMatchingWeight {L : ℕ} (x : Config (PairQubit L)) (j : Fin L) : ℝ :=
   if x (j, false) = true ∧ x (j, true) = true
-    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0
+    then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0
 
 theorem inverseSquareMatchingEnergy_eq_sum_pairMatchingWeight {L : ℕ}
     (x : Config (PairQubit L)) :
@@ -169,8 +169,8 @@ theorem initialPairList_twoGateCount {L K : ℕ} (hKL : K ≤ L) (t : ℝ) :
   simp
 
 theorem sum_tailPairs_inv_sq_eq_Ioc (L K : ℕ) :
-    ∑ j ∈ tailPairs L K, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) =
-      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ 2 := by
+    ∑ j ∈ tailPairs L K, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) =
+      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
   refine Finset.sum_bij (fun j _ => j.val + 1) ?_ ?_ ?_ ?_
   · intro j hj
     have hjK : K ≤ j.val := (Finset.mem_filter.mp hj).2
@@ -197,7 +197,7 @@ theorem pairMatchingWeight_nonneg {L : ℕ} (x : Config (PairQubit L)) (j : Fin 
   split_ifs <;> positivity
 
 theorem pairMatchingWeight_le_inv_sq {L : ℕ} (x : Config (PairQubit L)) (j : Fin L) :
-    pairMatchingWeight x j ≤ 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
+    pairMatchingWeight x j ≤ 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   unfold pairMatchingWeight
   split_ifs
   · exact le_rfl
@@ -206,7 +206,7 @@ theorem pairMatchingWeight_le_inv_sq {L : ℕ} (x : Config (PairQubit L)) (j : F
 theorem inverseSquareMatchingEnergy_le_initial_add_tail {L K : ℕ}
     (hKL : K ≤ L) (x : Config (PairQubit L)) :
     inverseSquareMatchingEnergy x ≤ listMatchingEnergy (initialPairList hKL) x +
-      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ 2 := by
+      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
   rw [inverseSquareMatchingEnergy_eq_sum_pairMatchingWeight,
     listMatchingEnergy_initialPairList hKL, ← sum_tailPairs_inv_sq_eq_Ioc]
   have hsplit := Finset.sum_filter_add_sum_filter_not Finset.univ
@@ -240,7 +240,7 @@ theorem listMatchingEnergy_initial_le_inverseSquareMatchingEnergy {L K : ℕ}
 theorem inverseSquareChainEnergy_sub_initial_le {L K : ℕ}
     (hK : 1 ≤ K) (hKL : K ≤ L) (x : Config (PairQubit L)) :
     inverseSquareChainEnergy x - listMatchingEnergy (initialPairList hKL) x ≤
-      1 / (K : ℝ) + 1 / (L : ℝ) ^ 2 := by
+      1 / (K : ℝ) + 1 / (L : ℝ) ^ (2 : ℕ) := by
   have htail := sum_inv_sq_Ioc_le K hK L hKL
   have hmatching := inverseSquareMatchingEnergy_le_initial_add_tail hKL x
   have hLpos : 0 < L := lt_of_lt_of_le (by omega : 0 < K) hKL
@@ -260,7 +260,7 @@ theorem listMatchingEnergy_initial_le_inverseSquareChainEnergy {L K : ℕ}
 theorem ramp_total_invSq_lt {t ε L K R : ℝ}
     (hε : 0 < ε) (hL : 1 < L) (ht : 0 ≤ t) (hK : 0 < K)
     (hKlb : 2 * t / ε ≤ K) (htL : t ≤ ε * L / 2)
-    (hR : R ≤ 1 / K + 1 / L ^ 2) :
+    (hR : R ≤ 1 / K + 1 / L ^ (2 : ℕ)) :
     t * R < ε := by
   have hLpos : 0 < L := lt_trans one_pos hL
   have hfirst : t * (1 / K) ≤ ε / 2 := by
@@ -272,9 +272,9 @@ theorem ramp_total_invSq_lt {t ε L K R : ℝ}
       have hKlb' := hKlb
       rw [div_le_iff₀ hε] at hKlb'
       nlinarith
-  have hsecond : t * (1 / L ^ 2) ≤ ε / (2 * L) := by
+  have hsecond : t * (1 / L ^ (2 : ℕ)) ≤ ε / (2 * L) := by
     rw [mul_one_div, div_le_iff₀ (by positivity)]
-    have hreassoc : ε / (2 * L) * L ^ 2 = ε * L / 2 := by field_simp
+    have hreassoc : ε / (2 * L) * L ^ (2 : ℕ) = ε * L / 2 := by field_simp
     rw [hreassoc]
     exact htL
   have hhalf : ε / (2 * L) < ε / 2 := by
@@ -323,7 +323,7 @@ theorem inverseSquareChain_upper_approximation {L K : ℕ} {t ε : ℝ}
   let E₀ := listMatchingEnergy (initialPairList hKL) x
   let E := inverseSquareChainEnergy x
   have hE : E₀ ≤ E := listMatchingEnergy_initial_le_inverseSquareChainEnergy hKL x
-  have hR : E - E₀ ≤ 1 / (K : ℝ) + 1 / (L : ℝ) ^ 2 :=
+  have hR : E - E₀ ≤ 1 / (K : ℝ) + 1 / (L : ℝ) ^ (2 : ℕ) :=
     inverseSquareChainEnergy_sub_initial_le hK hKL x
   have htime : t * (E - E₀) < ε := by
     apply ramp_total_invSq_lt hε (by exact_mod_cast hL) ht0 (by exact_mod_cast hK)

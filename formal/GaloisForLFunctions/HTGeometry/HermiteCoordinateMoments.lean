@@ -119,7 +119,7 @@ theorem schwartzPair_mulXCLM_hermiteSchwartz_cross (n : ℕ) :
 theorem schwartzPair_mulXCLM_sq_hermiteSchwartz_self (n : ℕ) :
     schwartzPair (mulXCLM (mulXCLM (hermiteSchwartz n)))
         (mulXCLM (mulXCLM (hermiteSchwartz n)))
-      = (3 * (2 * (n : ℂ) ^ 2 + 2 * (n : ℂ) + 1) / (16 * (π : ℂ) ^ 2))
+      = (3 * (2 * (n : ℂ) ^ (2 : ℕ) + 2 * (n : ℂ) + 1) / (16 * (π : ℂ) ^ (2 : ℕ)))
         * schwartzPair (hermiteSchwartz n) (hermiteSchwartz n) := by
   have hpi : (π : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   rw [mulXCLM_hermiteSchwartz n, map_add, map_smul, map_smul]
@@ -157,7 +157,7 @@ theorem schwartzPair_hermiteSchwartz_second_moment (n : ℕ) :
 theorem schwartzPair_hermiteSchwartz_fourth_moment (n : ℕ) :
     schwartzPair (hermiteSchwartz n)
         (mulXCLM (mulXCLM (mulXCLM (mulXCLM (hermiteSchwartz n)))))
-      = (3 * (2 * (n : ℂ) ^ 2 + 2 * (n : ℂ) + 1) / (16 * (π : ℂ) ^ 2))
+      = (3 * (2 * (n : ℂ) ^ (2 : ℕ) + 2 * (n : ℂ) + 1) / (16 * (π : ℂ) ^ (2 : ℕ)))
         * schwartzPair (hermiteSchwartz n) (hermiteSchwartz n) := by
   rw [schwartzPair_mulXCLM, schwartzPair_mulXCLM,
     schwartzPair_mulXCLM_sq_hermiteSchwartz_self]
@@ -165,23 +165,23 @@ theorem schwartzPair_hermiteSchwartz_fourth_moment (n : ℕ) :
 /-- **(24.186) The universal Paley--Zygmund ratio of the actual Hermite states.**  The two
 coordinate-moment coefficients of `h_n` have ratio at least `1/3`, uniformly in the level. -/
 theorem hermiteCoordinateMomentRatio_ge (n : ℕ) :
-    (1 : ℝ) / 3 ≤ ((2 * (n : ℝ) + 1) / (4 * Real.pi)) ^ 2
-      / (3 * (2 * (n : ℝ) ^ 2 + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ 2)) := by
+    (1 : ℝ) / 3 ≤ ((2 * (n : ℝ) + 1) / (4 * Real.pi)) ^ (2 : ℕ)
+      / (3 * (2 * (n : ℝ) ^ (2 : ℕ) + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ (2 : ℕ))) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
-  have hden : (0 : ℝ) < 3 * (2 * (n : ℝ) ^ 2 + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ 2) := by
-    have h1 : (0 : ℝ) < 2 * (n : ℝ) ^ 2 + 2 * (n : ℝ) + 1 := by positivity
+  have hden : (0 : ℝ) < 3 * (2 * (n : ℝ) ^ (2 : ℕ) + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ (2 : ℕ)) := by
+    have h1 : (0 : ℝ) < 2 * (n : ℝ) ^ (2 : ℕ) + 2 * (n : ℝ) + 1 := by positivity
     positivity
   rw [le_div_iff₀ hden]
-  have hexp : ((2 * (n : ℝ) + 1) / (4 * Real.pi)) ^ 2
-      = (2 * (n : ℝ) + 1) ^ 2 / (16 * Real.pi ^ 2) := by
+  have hexp : ((2 * (n : ℝ) + 1) / (4 * Real.pi)) ^ (2 : ℕ)
+      = (2 * (n : ℝ) + 1) ^ (2 : ℕ) / (16 * Real.pi ^ (2 : ℕ)) := by
     rw [div_pow]
     congr 1
     ring
   rw [hexp]
-  have hpos : (0 : ℝ) < 16 * Real.pi ^ 2 := by positivity
-  rw [show (1 : ℝ) / 3 * (3 * (2 * (n : ℝ) ^ 2 + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ 2))
-      = (2 * (n : ℝ) ^ 2 + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ 2) by ring]
+  have hpos : (0 : ℝ) < 16 * Real.pi ^ (2 : ℕ) := by positivity
+  rw [show (1 : ℝ) / 3 * (3 * (2 * (n : ℝ) ^ (2 : ℕ) + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ (2 : ℕ)))
+      = (2 * (n : ℝ) ^ (2 : ℕ) + 2 * (n : ℝ) + 1) / (16 * Real.pi ^ (2 : ℕ)) by ring]
   rw [div_le_div_iff_of_pos_right hpos]
   nlinarith [hn]
 

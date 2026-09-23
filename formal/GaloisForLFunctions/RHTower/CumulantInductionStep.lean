@@ -69,7 +69,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- **Coercivity gives a propagator bound.**  If `⟪A φ, φ⟫ ≥ c ‖φ‖²` then `c ‖φ‖ ≤ ‖A φ‖`, so `A` is
 injective with inverse of norm at most `1/c`. -/
 theorem coercive_lower_bound {A : E →L[ℝ] E} {c : ℝ}
-    (hcoer : ∀ φ : E, c * ‖φ‖ ^ 2 ≤ inner ℝ (A φ) φ) (φ : E) :
+    (hcoer : ∀ φ : E, c * ‖φ‖ ^ (2 : ℕ) ≤ inner ℝ (A φ) φ) (φ : E) :
     c * ‖φ‖ ≤ ‖A φ‖ := by
   rcases eq_or_ne φ 0 with rfl | hφ
   · simp
@@ -115,12 +115,12 @@ end Exponents
 /-- **The assembled step.**  Given a bound `K` at stage `m` with `p` propagators, one differentiation
 gives at most `p · K · (b/c²)` at stage `m+1`. -/
 theorem assembled_step {K p b c : ℝ} (hK : 0 ≤ K) (hp : 0 ≤ p) (hb : 0 ≤ b) (hc : 0 < c) :
-    0 ≤ p * K * (b / c ^ 2) := by
+    0 ≤ p * K * (b / c ^ (2 : ℕ)) := by
   positivity
 
 /-- And the product of the step factors telescopes to the required power. -/
 theorem step_product {b c : ℝ} (hc : c ≠ 0) (k : ℕ) :
-    (1 / c) * (b / c ^ 2) ^ k = b ^ k / c ^ (2 * k + 1) := by
+    (1 / c) * (b / c ^ (2 : ℕ)) ^ k = b ^ k / c ^ (2 * k + 1) := by
   rw [div_pow, one_div]
   field_simp
   ring

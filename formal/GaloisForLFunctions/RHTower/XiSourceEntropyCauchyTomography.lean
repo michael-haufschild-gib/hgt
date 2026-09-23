@@ -25,7 +25,7 @@ noncomputable section
 
 /-- Atomic mass of the canonical Xi source-orientation measure. -/
 def xiSourceEntropyOrientationMassAtom (q : XiZeroCopy) : ℝ :=
-  (xiZeroCopyReciprocalSquare q).im ^ 2
+  (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)
 
 /-- Total mass of the canonical Xi source-orientation measure. -/
 def xiSourceEntropyOrientationMeasureMass : ℝ :=
@@ -47,7 +47,7 @@ def xiSourceEntropyPolarizationCurvatureMass : ℝ :=
 /-- Tangentially weighted Fisher information of the reflected Xi character at one zero copy. -/
 def xiSourceEntropyReflectionFisherAtom (q : XiZeroCopy) : ℝ :=
   GaloisForLFunctions.HTGeometry.reciprocalSquareTangentialAmplitude
-      (xiSpectralPoint q) ^ 2 *
+      (xiSpectralPoint q) ^ (2 : ℕ) *
     GaloisForLFunctions.HTGeometry.reflectedBernoulliFisherAtZero
       (GaloisForLFunctions.HTGeometry.reflectionTransverseRate
         (xiSpectralPoint q))
@@ -175,7 +175,7 @@ theorem xiSourceEntropyReflectionFisherMass_eq_measureMass :
 /-- Positive Cauchy tomography weight.  Multiplying this weight by the squared
 reciprocal-square orientation coordinate gives the quartet variance. -/
 def xiSourceEntropyCauchyTomographyWeight (z a : ℂ) : ℝ :=
-  (Complex.normSq a ^ 2 *
+  (Complex.normSq a ^ (2 : ℕ) *
       (Complex.normSq a + Complex.normSq z)) /
     (4 *
       Complex.normSq (a - z) *
@@ -192,8 +192,8 @@ def xiSourceEntropyCauchyTomography
 
 private theorem reciprocalSquare_im
     (a : ℂ) :
-    (a⁻¹ ^ 2).im =
-      -2 * a.re * a.im / Complex.normSq a ^ 2 := by
+    (a⁻¹ ^ (2 : ℕ)).im =
+      -2 * a.re * a.im / Complex.normSq a ^ (2 : ℕ) := by
   rw [pow_two, mul_im, Complex.inv_re, Complex.inv_im]
   ring
 
@@ -206,7 +206,7 @@ theorem cauchyQuartetVariance_eq_tomographyWeight_mul_orientationMass
     (hapz : a + z ≠ 0)
     (hcapz : (starRingEnd ℂ) a + z ≠ 0) :
     xiReciprocalSquareCauchyQuartetVariance z a =
-      xiSourceEntropyCauchyTomographyWeight z a * (a⁻¹ ^ 2).im ^ 2 := by
+      xiSourceEntropyCauchyTomographyWeight z a * (a⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) := by
   have hna : Complex.normSq a ≠ 0 :=
     ne_of_gt (Complex.normSq_pos.mpr ha)
   have hnaz : Complex.normSq (a - z) ≠ 0 :=
@@ -271,16 +271,16 @@ theorem reciprocalSquareQuartetSymmetricCauchyTomographyLaw
     (hzre : z.re ≠ 0) (hzim : z.im ≠ 0) :
     Summable (fun q =>
       xiSourceEntropyCauchyTomographyWeight z (point q) *
-        ((point q)⁻¹ ^ 2).im ^ 2) ∧
+        ((point q)⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ)) ∧
       (∑' q, xiReciprocalSquareCauchySpectralTerm z (point q)) =
         16 * z.re * z.im *
           ∑' q, xiSourceEntropyCauchyTomographyWeight z (point q) *
-            ((point q)⁻¹ ^ 2).im ^ 2 := by
+            ((point q)⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) := by
   let t : ι → ℝ := fun q =>
     xiReciprocalSquareCauchySpectralTerm z (point q)
   let w : ι → ℝ := fun q =>
     xiSourceEntropyCauchyTomographyWeight z (point q) *
-      ((point q)⁻¹ ^ 2).im ^ 2
+      ((point q)⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ)
   let c : ℝ := 64 * z.re * z.im
   have hc : c ≠ 0 :=
     mul_ne_zero (mul_ne_zero (by norm_num) hzre) hzim
@@ -323,7 +323,7 @@ theorem reciprocalSquareQuartetSymmetricCauchyTomographyLaw
               ring
       _ = 64 * z.re * z.im *
           (xiSourceEntropyCauchyTomographyWeight z (point q) *
-            ((point q)⁻¹ ^ 2).im ^ 2) := by rw [hfactor]
+            ((point q)⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ)) := by rw [hfactor]
   have hscaled : Summable (fun q => c * w q) :=
     hquartet.congr hlocal
   have hw : Summable w := by
@@ -363,8 +363,8 @@ theorem reciprocalSquareOrientationReflectionPairing_eq_neg_mass
     {ι : Type*} (point : ι → ℂ) (lineConj : Equiv ι ι)
     (hlineConj : ∀ q, point (lineConj q) = (starRingEnd ℂ) (point q)) :
     (∑' q,
-      ((point (lineConj q))⁻¹ ^ 2).im * ((point q)⁻¹ ^ 2).im) =
-      -∑' q, ((point q)⁻¹ ^ 2).im ^ 2 := by
+      ((point (lineConj q))⁻¹ ^ (2 : ℕ)).im * ((point q)⁻¹ ^ (2 : ℕ)).im) =
+      -∑' q, ((point q)⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) := by
   rw [← tsum_neg]
   apply tsum_congr
   intro q
@@ -374,16 +374,16 @@ theorem reciprocalSquareOrientationReflectionPairing_eq_neg_mass
 
 private theorem fixedCauchyTomography_numerator_lt_denominator
     (x y : ℝ)
-    (hx : (41 / 2 : ℝ) < x ^ 2)
-    (hy : y ^ 2 < (1 / 4 : ℝ)) :
-    16 * (x ^ 2 + y ^ 2) ^ 2 *
-          (x ^ 2 + y ^ 2 + 1 / 8) <
-      ((x - 1 / 4) ^ 2 + (y - 1 / 4) ^ 2) *
-      ((x - 1 / 4) ^ 2 + (-y - 1 / 4) ^ 2) *
-      ((x + 1 / 4) ^ 2 + (y + 1 / 4) ^ 2) *
-      ((x + 1 / 4) ^ 2 + (-y + 1 / 4) ^ 2) := by
-  let X : ℝ := x ^ 2
-  let N : ℝ := x ^ 2 + y ^ 2
+    (hx : (41 / 2 : ℝ) < x ^ (2 : ℕ))
+    (hy : y ^ (2 : ℕ) < (1 / 4 : ℝ)) :
+    16 * (x ^ (2 : ℕ) + y ^ (2 : ℕ)) ^ (2 : ℕ) *
+          (x ^ (2 : ℕ) + y ^ (2 : ℕ) + 1 / 8) <
+      ((x - 1 / 4) ^ (2 : ℕ) + (y - 1 / 4) ^ (2 : ℕ)) *
+      ((x - 1 / 4) ^ (2 : ℕ) + (-y - 1 / 4) ^ (2 : ℕ)) *
+      ((x + 1 / 4) ^ (2 : ℕ) + (y + 1 / 4) ^ (2 : ℕ)) *
+      ((x + 1 / 4) ^ (2 : ℕ) + (-y + 1 / 4) ^ (2 : ℕ)) := by
+  let X : ℝ := x ^ (2 : ℕ)
+  let N : ℝ := x ^ (2 : ℕ) + y ^ (2 : ℕ)
   let c : ℝ := (33 / 32 : ℝ) * X
   let d : ℝ := (31 / 32 : ℝ) * X
   have hX : 0 < X := by
@@ -404,92 +404,92 @@ private theorem fixedCauchyTomography_numerator_lt_denominator
   have hNzlt : N + 1 / 8 < c := by
     dsimp [N, c, X]
     nlinarith
-  have hnum : N ^ 2 * (N + 1 / 8) < c ^ 3 := by
+  have hnum : N ^ (2 : ℕ) * (N + 1 / 8) < c ^ (3 : ℕ) := by
     calc
-      N ^ 2 * (N + 1 / 8) < c ^ 2 * c := by
+      N ^ (2 : ℕ) * (N + 1 / 8) < c ^ (2 : ℕ) * c := by
         gcongr
-      _ = c ^ 3 := by ring
+      _ = c ^ (3 : ℕ) := by ring
   have hdbase : d < X - 1 / 16 := by
     dsimp [d]
     nlinarith
-  have hdpow : d ^ 4 < (X - 1 / 16) ^ 4 := by
+  have hdpow : d ^ (4 : ℕ) < (X - 1 / 16) ^ (4 : ℕ) := by
     gcongr
-  have hconstant : 16 * c ^ 3 < d ^ 4 := by
+  have hconstant : 16 * c ^ (3 : ℕ) < d ^ (4 : ℕ) := by
     dsimp [c, d]
     have hcoeff :
-        16 * (33 / 32 : ℝ) ^ 3 <
-          (31 / 32 : ℝ) ^ 4 * X := by
+        16 * (33 / 32 : ℝ) ^ (3 : ℕ) <
+          (31 / 32 : ℝ) ^ (4 : ℕ) * X := by
       nlinarith
     have hmul :=
       mul_lt_mul_of_pos_right hcoeff (pow_pos hX 3)
     calc
-      16 * ((33 / 32 : ℝ) * X) ^ 3 =
-          (16 * (33 / 32 : ℝ) ^ 3) * X ^ 3 := by ring
-      _ < ((31 / 32 : ℝ) ^ 4 * X) * X ^ 3 := hmul
-      _ = ((31 / 32 : ℝ) * X) ^ 4 := by ring
+      16 * ((33 / 32 : ℝ) * X) ^ (3 : ℕ) =
+          (16 * (33 / 32 : ℝ) ^ (3 : ℕ)) * X ^ (3 : ℕ) := by ring
+      _ < ((31 / 32 : ℝ) ^ (4 : ℕ) * X) * X ^ (3 : ℕ) := hmul
+      _ = ((31 / 32 : ℝ) * X) ^ (4 : ℕ) := by ring
   have hcore :
-      16 * N ^ 2 * (N + 1 / 8) <
-        (X - 1 / 16) ^ 4 := by
+      16 * N ^ (2 : ℕ) * (N + 1 / 8) <
+        (X - 1 / 16) ^ (4 : ℕ) := by
     calc
-      16 * N ^ 2 * (N + 1 / 8) =
-          16 * (N ^ 2 * (N + 1 / 8)) := by ring
-      _ < 16 * c ^ 3 := by gcongr
-      _ < d ^ 4 := hconstant
-      _ < (X - 1 / 16) ^ 4 := hdpow
-  have hxm : 0 ≤ (x - 1 / 4) ^ 2 := sq_nonneg _
-  have hxp : 0 ≤ (x + 1 / 4) ^ 2 := sq_nonneg _
+      16 * N ^ (2 : ℕ) * (N + 1 / 8) =
+          16 * (N ^ (2 : ℕ) * (N + 1 / 8)) := by ring
+      _ < 16 * c ^ (3 : ℕ) := by gcongr
+      _ < d ^ (4 : ℕ) := hconstant
+      _ < (X - 1 / 16) ^ (4 : ℕ) := hdpow
+  have hxm : 0 ≤ (x - 1 / 4) ^ (2 : ℕ) := sq_nonneg _
+  have hxp : 0 ≤ (x + 1 / 4) ^ (2 : ℕ) := sq_nonneg _
   have h1 :
-      (x - 1 / 4) ^ 2 ≤
-        (x - 1 / 4) ^ 2 + (y - 1 / 4) ^ 2 := by
+      (x - 1 / 4) ^ (2 : ℕ) ≤
+        (x - 1 / 4) ^ (2 : ℕ) + (y - 1 / 4) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (y - 1 / 4)]
   have h2 :
-      (x - 1 / 4) ^ 2 ≤
-        (x - 1 / 4) ^ 2 + (-y - 1 / 4) ^ 2 := by
+      (x - 1 / 4) ^ (2 : ℕ) ≤
+        (x - 1 / 4) ^ (2 : ℕ) + (-y - 1 / 4) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (-y - 1 / 4)]
   have h3 :
-      (x + 1 / 4) ^ 2 ≤
-        (x + 1 / 4) ^ 2 + (y + 1 / 4) ^ 2 := by
+      (x + 1 / 4) ^ (2 : ℕ) ≤
+        (x + 1 / 4) ^ (2 : ℕ) + (y + 1 / 4) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (y + 1 / 4)]
   have h4 :
-      (x + 1 / 4) ^ 2 ≤
-        (x + 1 / 4) ^ 2 + (-y + 1 / 4) ^ 2 := by
+      (x + 1 / 4) ^ (2 : ℕ) ≤
+        (x + 1 / 4) ^ (2 : ℕ) + (-y + 1 / 4) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (-y + 1 / 4)]
   have h12 :
-      (x - 1 / 4) ^ 2 * (x - 1 / 4) ^ 2 ≤
-        ((x - 1 / 4) ^ 2 + (y - 1 / 4) ^ 2) *
-        ((x - 1 / 4) ^ 2 + (-y - 1 / 4) ^ 2) :=
+      (x - 1 / 4) ^ (2 : ℕ) * (x - 1 / 4) ^ (2 : ℕ) ≤
+        ((x - 1 / 4) ^ (2 : ℕ) + (y - 1 / 4) ^ (2 : ℕ)) *
+        ((x - 1 / 4) ^ (2 : ℕ) + (-y - 1 / 4) ^ (2 : ℕ)) :=
     mul_le_mul h1 h2 hxm
       (add_nonneg hxm (sq_nonneg (y - 1 / 4)))
   have h34 :
-      (x + 1 / 4) ^ 2 * (x + 1 / 4) ^ 2 ≤
-        ((x + 1 / 4) ^ 2 + (y + 1 / 4) ^ 2) *
-        ((x + 1 / 4) ^ 2 + (-y + 1 / 4) ^ 2) :=
+      (x + 1 / 4) ^ (2 : ℕ) * (x + 1 / 4) ^ (2 : ℕ) ≤
+        ((x + 1 / 4) ^ (2 : ℕ) + (y + 1 / 4) ^ (2 : ℕ)) *
+        ((x + 1 / 4) ^ (2 : ℕ) + (-y + 1 / 4) ^ (2 : ℕ)) :=
     mul_le_mul h3 h4 hxp
       (add_nonneg hxp (sq_nonneg (y + 1 / 4)))
   have hprod :
-      ((x - 1 / 4) ^ 2 * (x - 1 / 4) ^ 2) *
-          ((x + 1 / 4) ^ 2 * (x + 1 / 4) ^ 2) ≤
-        (((x - 1 / 4) ^ 2 + (y - 1 / 4) ^ 2) *
-          ((x - 1 / 4) ^ 2 + (-y - 1 / 4) ^ 2)) *
-        (((x + 1 / 4) ^ 2 + (y + 1 / 4) ^ 2) *
-          ((x + 1 / 4) ^ 2 + (-y + 1 / 4) ^ 2)) :=
+      ((x - 1 / 4) ^ (2 : ℕ) * (x - 1 / 4) ^ (2 : ℕ)) *
+          ((x + 1 / 4) ^ (2 : ℕ) * (x + 1 / 4) ^ (2 : ℕ)) ≤
+        (((x - 1 / 4) ^ (2 : ℕ) + (y - 1 / 4) ^ (2 : ℕ)) *
+          ((x - 1 / 4) ^ (2 : ℕ) + (-y - 1 / 4) ^ (2 : ℕ))) *
+        (((x + 1 / 4) ^ (2 : ℕ) + (y + 1 / 4) ^ (2 : ℕ)) *
+          ((x + 1 / 4) ^ (2 : ℕ) + (-y + 1 / 4) ^ (2 : ℕ))) :=
     mul_le_mul h12 h34
       (mul_nonneg hxp hxp)
       (mul_nonneg
         (add_nonneg hxm (sq_nonneg (y - 1 / 4)))
         (add_nonneg hxm (sq_nonneg (-y - 1 / 4))))
   have hfactor :
-      (X - 1 / 16) ^ 4 =
-        ((x - 1 / 4) ^ 2 * (x - 1 / 4) ^ 2) *
-          ((x + 1 / 4) ^ 2 * (x + 1 / 4) ^ 2) := by
+      (X - 1 / 16) ^ (4 : ℕ) =
+        ((x - 1 / 4) ^ (2 : ℕ) * (x - 1 / 4) ^ (2 : ℕ)) *
+          ((x + 1 / 4) ^ (2 : ℕ) * (x + 1 / 4) ^ (2 : ℕ)) := by
     dsimp [X]
     ring
   dsimp [N] at hcore
   calc
-    16 * (x ^ 2 + y ^ 2) ^ 2 * (x ^ 2 + y ^ 2 + 1 / 8) <
-        (X - 1 / 16) ^ 4 := hcore
-    _ = ((x - 1 / 4) ^ 2 * (x - 1 / 4) ^ 2) *
-          ((x + 1 / 4) ^ 2 * (x + 1 / 4) ^ 2) := hfactor
+    16 * (x ^ (2 : ℕ) + y ^ (2 : ℕ)) ^ (2 : ℕ) * (x ^ (2 : ℕ) + y ^ (2 : ℕ) + 1 / 8) <
+        (X - 1 / 16) ^ (4 : ℕ) := hcore
+    _ = ((x - 1 / 4) ^ (2 : ℕ) * (x - 1 / 4) ^ (2 : ℕ)) *
+          ((x + 1 / 4) ^ (2 : ℕ) * (x + 1 / 4) ^ (2 : ℕ)) := hfactor
     _ ≤ _ := by
       simpa only [mul_assoc] using hprod
 
@@ -579,11 +579,11 @@ theorem xiSourceEntropyFixedCauchyTomographyWeight_lt_one_div_sixtyFour
   let a : ℂ := xiSpectralPoint q
   change xiSourceEntropyCauchyTomographyWeight
       (xiReciprocalSquareFixedCauchyPole : ℂ) a < 1 / 64
-  have hx : (41 / 2 : ℝ) < a.re ^ 2 := by
+  have hx : (41 / 2 : ℝ) < a.re ^ (2 : ℕ) := by
     simpa [a, xiSpectralPoint, Complex.mul_re] using
       xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hy : a.im ^ 2 < (1 / 4 : ℝ) := by
+  have hy : a.im ^ (2 : ℕ) < (1 / 4 : ℝ) := by
     have hproduct :
         0 < (q.1 : ℂ).re * (1 - (q.1 : ℂ).re) :=
       mul_pos hstrip.1 (sub_pos.mpr hstrip.2)

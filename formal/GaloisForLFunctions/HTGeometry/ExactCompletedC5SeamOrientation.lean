@@ -52,8 +52,8 @@ theorem c5ExactCompletedClearedExpression_seamJetClassification
     (∀ k < 9,
       iteratedDeriv k (c5ExactCompletedClearedExpression q s) 0 = 0) ∧
       iteratedDeriv 9 (c5ExactCompletedClearedExpression q s) 0 =
-        80640 * (A ^ 2 * G - 3 * A * C * E - 2 * A * B * F +
-          4 * B ^ 2 * E - 18 * A ^ 3 * F + 36 * A ^ 2 * B * E) := by
+        80640 * (A ^ (2 : ℕ) * G - 3 * A * C * E - 2 * A * B * F +
+          4 * B ^ (2 : ℕ) * E - 18 * A ^ (3 : ℕ) * F + 36 * A ^ (2 : ℕ) * B * E) := by
   let x : ℝ → ℝ := id
   let ee : ℝ → ℝ := fun t => Real.exp (q t)
   let r : ℝ → ℝ := fun t => ee t - 1

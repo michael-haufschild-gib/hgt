@@ -158,7 +158,7 @@ theorem normedPeriodic_exp_decay_of_zero_at_inf
 
 /-- Thermal density of a logarithmic cusp branch along its central vertical ray. -/
 def logarithmicCuspBoundaryDensity (f : ℂ → E) (t : ℝ) : ℝ :=
-  ‖f ((t : ℂ) * I)‖ ^ 2 /
+  ‖f ((t : ℂ) * I)‖ ^ (2 : ℕ) /
     (1 - Real.exp (-Real.exp (-t)))
 
 theorem qParam_vertical_eq_real_exp

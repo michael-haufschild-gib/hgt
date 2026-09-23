@@ -35,7 +35,7 @@ namespace GaloisForLFunctions.HTGeometry
 open SimpleGraph Finset
 
 /-- The two-element scalar dichotomy. -/
-theorem zmodTwo_eq_zero_or_one (a : ZMod 2) : a = 0 ∨ a = 1 := by
+theorem zmodTwo_eq_zero_or_one_constitutiveParityContextuality (a : ZMod 2) : a = 0 ∨ a = 1 := by
   have hv : a.val < 2 := ZMod.val_lt a
   have hcast : ((a.val : ℕ) : ZMod 2) = a := ZMod.natCast_rightInverse a
   interval_cases h : a.val
@@ -44,7 +44,7 @@ theorem zmodTwo_eq_zero_or_one (a : ZMod 2) : a = 0 ∨ a = 1 := by
 
 /-- A nonzero two-element scalar is the unit. -/
 theorem zmodTwo_eq_one_of_ne_zero {a : ZMod 2} (ha : a ≠ 0) : a = 1 :=
-  (zmodTwo_eq_zero_or_one a).resolve_left ha
+  (zmodTwo_eq_zero_or_one_constitutiveParityContextuality a).resolve_left ha
 
 section Boundary
 
@@ -401,7 +401,7 @@ theorem two_mul_card_fiber_of_flip {β : Type*} [Fintype β] [DecidableEq β]
       exact ⟨fun h => zmodTwo_eq_one_of_ne_zero h, fun h => by rw [h]; exact one_ne_zero⟩
     rw [hne] at h
     rw [h, Finset.card_univ]
-  rcases zmodTwo_eq_zero_or_one d with rfl | rfl
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality d with rfl | rfl
   · have h0 := hflip 0
     rw [zero_add] at h0
     omega

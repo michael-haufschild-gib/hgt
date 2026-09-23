@@ -14,13 +14,13 @@ namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
 private theorem rawReverseReflection_cubic_quotient_unevaluated (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => rawScatteringMatrix q k 0 1/(k : ℂ)^3)
+    Tendsto (fun k : ℝ => rawScatteringMatrix q k 0 1/(k : ℂ)^(3 : ℕ))
       (𝓝[≠] 0) (𝓝 (rawScatteringCubicCoefficient q 0 1)) := by
   have hc : Continuous (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 0 1) := by fun_prop
   have hh := (hc.tendsto (rawScatteringCubicCoefficient q)).comp
     (rawScatteringMatrix_cubic_quotient_tendsto q)
   change Tendsto (fun k : ℝ =>
-    (((k : ℂ)^3)⁻¹ • (rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q)) 0 1)
+    (((k : ℂ)^(3 : ℕ))⁻¹ • (rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q)) 0 1)
     (𝓝[≠] 0) (𝓝 (rawScatteringCubicCoefficient q 0 1)) at hh
   simpa only [Matrix.smul_apply,Matrix.sub_apply,Matrix.one_apply_ne (by omega : (0 : Fin 2) ≠ 1),
     rawScatteringQuadraticCoefficient_upper,smul_zero,sub_zero,smul_eq_mul,mul_zero,zero_mul,
@@ -33,13 +33,13 @@ theorem rawScatteringCubicCoefficient_upper (q : SchwartzMap ℝ ℂ) :
     nhdsWithin_mono 0 (fun _ hx => ne_of_gt hx)
   have hh := ((rawReverseReflection_cubic_quotient_unevaluated q).mono_left hp).comp
     Real.tendsto_exp_atBot_nhdsGT
-  change Tendsto (fun κ : ℝ => rawScatteringMatrix q (Real.exp κ) 0 1/(Real.exp κ : ℂ)^3)
+  change Tendsto (fun κ : ℝ => rawScatteringMatrix q (Real.exp κ) 0 1/(Real.exp κ : ℂ)^(3 : ℕ))
     atBot (𝓝 (rawScatteringCubicCoefficient q 0 1)) at hh
-  have he : (fun κ : ℝ => rawScatteringMatrix q (Real.exp κ) 0 1/(Real.exp κ : ℂ)^3) =
-      fun κ => -(reflectionAmplitude q κ/(Real.exp κ : ℂ)^3) := by
+  have he : (fun κ : ℝ => rawScatteringMatrix q (Real.exp κ) 0 1/(Real.exp κ : ℂ)^(3 : ℕ)) =
+      fun κ => -(reflectionAmplitude q κ/(Real.exp κ : ℂ)^(3 : ℕ)) := by
     funext κ
     rw [rawScatteringMatrix_exp_eq]
-    change reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^3 = _
+    change reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^(3 : ℕ) = _
     rw [reverseReflectionAmplitude_eq_neg,neg_div]
   rw [he] at hh
   have hz := tendsto_nhds_unique hh (reflectionAmplitude_cubic_quotient_tendsto q).neg
@@ -83,15 +83,15 @@ theorem rawScatteringCubicCoefficient_eq (q : SchwartzMap ℝ ℂ) :
 
 /-- The reverse channel shares the same exact compatibility locus. -/
 theorem rawReverseReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => rawScatteringMatrix q k 0 1/(k : ℂ)^3)
+    Tendsto (fun k : ℝ => rawScatteringMatrix q k 0 1/(k : ℂ)^(3 : ℕ))
       (𝓝[≠] 0) (𝓝 (-2*compatibilityMoment q)) := by
   simpa only [rawScatteringCubicCoefficient_upper] using rawReverseReflection_cubic_quotient_unevaluated q
 
 theorem reverseReflectionAmplitude_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun κ : ℝ => reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^3)
+    Tendsto (fun κ : ℝ => reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^(3 : ℕ))
       atBot (𝓝 (-2*compatibilityMoment q)) := by
-  have he : (fun κ : ℝ => reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^3) =
-      fun κ => -(reflectionAmplitude q κ/(Real.exp κ : ℂ)^3) := by
+  have he : (fun κ : ℝ => reverseReflectionAmplitude q κ/(Real.exp κ : ℂ)^(3 : ℕ)) =
+      fun κ => -(reflectionAmplitude q κ/(Real.exp κ : ℂ)^(3 : ℕ)) := by
     funext κ
     rw [reverseReflectionAmplitude_eq_neg,neg_div]
   rw [he]
@@ -99,14 +99,14 @@ theorem reverseReflectionAmplitude_cubic_quotient_tendsto (q : SchwartzMap ℝ �
 
 /-- The reverse spatial channel has the same unconditional cubic bound. -/
 theorem rawReverseReflection_isBigO_cubic (q : SchwartzMap ℝ ℂ) :
-    (fun k : ℝ => rawScatteringMatrix q k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^3 := by
+    (fun k : ℝ => rawScatteringMatrix q k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^(3 : ℕ) := by
   refine isBigO_of_div_tendsto_nhds ?_ _ (rawReverseReflection_cubic_quotient_tendsto q)
   filter_upwards [self_mem_nhdsWithin] with k hk
   exact fun h => (pow_ne_zero 3 (Complex.ofReal_ne_zero.mpr hk) h).elim
 
 /-- Both reflection channels improve beyond cubic order on exactly the same initial-data locus. -/
 theorem rawReverseReflection_isLittleO_cubic_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix q k 0 1) =o[𝓝[≠] 0] fun k => (k : ℂ)^3) ↔
+    ((fun k : ℝ => rawScatteringMatrix q k 0 1) =o[𝓝[≠] 0] fun k => (k : ℂ)^(3 : ℕ)) ↔
       compatibilityMoment q = 0 := by
   constructor
   · intro h
@@ -121,7 +121,7 @@ theorem rawReverseReflection_isLittleO_cubic_iff (q : SchwartzMap ℝ ℂ) :
 /-- The original reverse amplitude fails fifth-order decay for the same explicit small Gaussian. -/
 theorem reverseReflectionAmplitude_globalSmallGaussian_not_isBigO_fifth (a : ℝ) :
     ¬ ((fun κ : ℝ => reverseReflectionAmplitude (globalSmallScatteringPotential (compatibilityGaussian a)) κ)
-      =O[atBot] fun κ => (Real.exp κ : ℂ)^5) := by
+      =O[atBot] fun κ => (Real.exp κ : ℂ)^(5 : ℕ)) := by
   have he : (fun κ : ℝ => reverseReflectionAmplitude (globalSmallScatteringPotential (compatibilityGaussian a)) κ) =
       fun κ => -reflectionAmplitude (globalSmallScatteringPotential (compatibilityGaussian a)) κ := by
     funext κ

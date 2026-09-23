@@ -51,17 +51,17 @@ theorem exists_hermiteFun_pair_ne_zero_Ioo (m n : ℕ) {A B : ℝ} (hAB : A < B)
     refine himg.mono ?_
     rintro y ⟨x, hx, rfl⟩
     have h := hzero x hx
-    have hexp : Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)) ≠ 0 := (Real.exp_pos _).ne'
+    have hexp : Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)) ≠ 0 := (Real.exp_pos _).ne'
     have hval : (Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite m)
-        * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)))
+        * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)))
         * (Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite n)
-        * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4))) = 0 := h
+        * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4))) = 0 := h
     have hz : Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite m)
         * Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite n) = 0 := by
       have hfac : (Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite m)
           * Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite n))
-          * (Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4))
-            * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4))) = 0 := by
+          * (Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4))
+            * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4))) = 0 := by
         rw [← hval]; ring
       rcases mul_eq_zero.1 hfac with h1 | h2
       · exact h1
@@ -94,14 +94,14 @@ theorem prolatePairAnchor_pos (m n : ℕ) : 0 < prolatePairAnchor m n := by
 
 /-- The pair anchor is beyond twice the turning scale of each of the two rungs. -/
 theorem prolatePairAnchor_sq_gt (m n : ℕ) (k : ℕ) (hk : k = m ∨ k = n) :
-    4 * (4 * (k : ℝ) + 1) < prolatePairAnchor m n ^ 2 := by
+    4 * (4 * (k : ℝ) + 1) < prolatePairAnchor m n ^ (2 : ℕ) := by
   have h := (prolatePairAnchor_spec m n).1.1
   have hpos : 0 < prolatePairAnchor m n := prolatePairAnchor_pos m n
   have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have hsum : (4 * (k : ℝ) + 1) ≤ 4 * (m : ℝ) + 4 * (n : ℝ) + 1 := by
     rcases hk with h | h <;> subst h <;> linarith
-  have hsq : Real.sqrt (4 * (m : ℝ) + 4 * (n : ℝ) + 1) ^ 2
+  have hsq : Real.sqrt (4 * (m : ℝ) + 4 * (n : ℝ) + 1) ^ (2 : ℕ)
       = 4 * (m : ℝ) + 4 * (n : ℝ) + 1 := by
     refine Real.sq_sqrt ?_
     linarith

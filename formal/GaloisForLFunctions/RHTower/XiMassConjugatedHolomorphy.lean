@@ -21,13 +21,13 @@ namespace RHTower
 noncomputable section
 
 /-- The open region on which the propagation radius is a genuine principal square root. -/
-def xiMassHeightRegion (τ : ℂ) : Set ℂ := {w : ℂ | 0 < (τ ^ 2 + w ^ 2).re}
+def xiMassHeightRegion (τ : ℂ) : Set ℂ := {w : ℂ | 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re}
 
 theorem isOpen_xiMassHeightRegion (τ : ℂ) : IsOpen (xiMassHeightRegion τ) := by
-  have hcont : Continuous fun w : ℂ => (τ ^ 2 + w ^ 2).re := by fun_prop
+  have hcont : Continuous fun w : ℂ => (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re := by fun_prop
   exact isOpen_lt continuous_const hcont
 
-theorem mem_xiMassHeightRegion {τ w : ℂ} : w ∈ xiMassHeightRegion τ ↔ 0 < (τ ^ 2 + w ^ 2).re :=
+theorem mem_xiMassHeightRegion {τ w : ℂ} : w ∈ xiMassHeightRegion τ ↔ 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re :=
   Iff.rfl
 
 /-- The propagation radius is holomorphic on the region. -/
@@ -37,7 +37,7 @@ theorem differentiableOn_xiMassHeightRadius (τ : ℂ) :
 
 /-- The conjugated carrier is holomorphic on the region. -/
 theorem differentiableAt_xiMassConjugatedCarrier {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     DifferentiableAt ℂ (xiMassConjugatedCarrier a τ) w := by
   have hZ := (hasDerivAt_xiMassHeightRadius hw).differentiableAt
   have hexp : DifferentiableAt ℂ
@@ -56,32 +56,32 @@ theorem differentiableOn_xiMassConjugatedCarrier {a : ℝ} (ha : 0 < a) (τ : �
 /-- The zeroth-order coefficient of the caustic operator on the conjugated carrier. -/
 def xiCausticCoeffZero (a : ℝ) (τ w : ℂ) : ℂ :=
   xiMassCausticSymbolC a τ w
-    + (a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3)
+    + (a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ))
 
 /-- The first-order coefficient of the caustic operator on the conjugated carrier. -/
 def xiCausticCoeffOne (a : ℝ) (τ w : ℂ) : ℂ :=
   2 * (a : ℂ) * xiMassRadiusRate τ w
 
-theorem differentiableAt_xiCausticCoeffZero {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem differentiableAt_xiCausticCoeffZero {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     DifferentiableAt ℂ (xiCausticCoeffZero a τ) w := by
   have hZne : xiMassHeightRadius τ w ≠ 0 := xiMassHeightRadius_ne_zero hw
-  have hRne : (τ ^ 2 + w ^ 2) ≠ 0 := by
+  have hRne : (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ≠ 0 := by
     intro hcon
     rw [hcon] at hw
     simp at hw
   have hZ := (hasDerivAt_xiMassHeightRadius hw).differentiableAt
-  have hquad : DifferentiableAt ℂ (fun v : ℂ => τ ^ 2 + v ^ 2) w := by fun_prop
+  have hquad : DifferentiableAt ℂ (fun v : ℂ => τ ^ (2 : ℕ) + v ^ (2 : ℕ)) w := by fun_prop
   have hsym : DifferentiableAt ℂ (fun v : ℂ => xiMassCausticSymbolC a τ v) w := by
-    have hnum : DifferentiableAt ℂ (fun v : ℂ => (a : ℂ) ^ 2 * v ^ 2) w := by fun_prop
+    have hnum : DifferentiableAt ℂ (fun v : ℂ => (a : ℂ) ^ (2 : ℕ) * v ^ (2 : ℕ)) w := by fun_prop
     exact (differentiableAt_const _).sub (hnum.div hquad hRne)
   have hone : DifferentiableAt ℂ (fun v : ℂ => 1 / xiMassHeightRadius τ v) w :=
     (differentiableAt_const _).div hZ hZne
-  have hcube : DifferentiableAt ℂ (fun v : ℂ => v ^ 2 / xiMassHeightRadius τ v ^ 3) w :=
-    (by fun_prop : DifferentiableAt ℂ (fun v : ℂ => v ^ 2) w).div (hZ.pow 3)
+  have hcube : DifferentiableAt ℂ (fun v : ℂ => v ^ (2 : ℕ) / xiMassHeightRadius τ v ^ (3 : ℕ)) w :=
+    (by fun_prop : DifferentiableAt ℂ (fun v : ℂ => v ^ (2 : ℕ)) w).div (hZ.pow 3)
       (pow_ne_zero _ hZne)
   exact hsym.add ((hone.sub hcube).const_mul _)
 
-theorem differentiableAt_xiCausticCoeffOne {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem differentiableAt_xiCausticCoeffOne {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     DifferentiableAt ℂ (xiCausticCoeffOne a τ) w := by
   have hrate := (hasDerivAt_xiMassRadiusRate hw).differentiableAt
   exact hrate.const_mul _

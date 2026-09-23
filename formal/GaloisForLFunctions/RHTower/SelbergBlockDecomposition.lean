@@ -93,7 +93,7 @@ theorem selberg_second_block_form (N K : ℕ) (c : ℕ → ℕ) (s : ℕ → ℝ
     (hs : ∀ k, k < K → 0 ≤ s k)
     (hratio : ∀ k, k < K → ∀ t : ℕ, c k < t → t ≤ c (k + 1) →
       |psiRemainder t| ≤ s k * t) :
-    |psiRemainder N| * Real.log N ^ 2
+    |psiRemainder N| * Real.log N ^ (2 : ℕ)
       ≤ (N : ℝ) * (∑ k ∈ Finset.range K, s k
           * ∑ m ∈ Finset.Ioc (N / (c (k + 1) + 1)) (N / (c k + 1)),
               (vonMangoldt m * Real.log m

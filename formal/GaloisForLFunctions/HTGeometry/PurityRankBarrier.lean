@@ -22,12 +22,12 @@ variable {ι : Type*} [Fintype ι] [Nonempty ι]
 
 /-- **The purity bound.**  A probability vector on `q` entries has squared mass at least `1/q`. -/
 theorem inv_card_le_sum_sq (f : ι → ℝ) (hsum : ∑ i, f i = 1) :
-    1 / (Fintype.card ι : ℝ) ≤ ∑ i, f i ^ 2 := by
+    1 / (Fintype.card ι : ℝ) ≤ ∑ i, f i ^ (2 : ℕ) := by
   have hcs := sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset ι) (fun _ => (1 : ℝ)) f
   have hone : ∑ i : ι, (1 : ℝ) * f i = 1 := by
     simpa using hsum
   rw [hone] at hcs
-  have hcard : ∑ _i : ι, (1 : ℝ) ^ 2 = (Fintype.card ι : ℝ) := by
+  have hcard : ∑ _i : ι, (1 : ℝ) ^ (2 : ℕ) = (Fintype.card ι : ℝ) := by
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     norm_num
   rw [hcard] at hcs
@@ -39,7 +39,7 @@ theorem inv_card_le_sum_sq (f : ι → ℝ) (hsum : ∑ i, f i = 1) :
 
 /-- The uniform distribution attains the purity bound. -/
 theorem sum_sq_const_eq_inv_card :
-    ∑ _i : ι, ((Fintype.card ι : ℝ)⁻¹) ^ 2 = 1 / (Fintype.card ι : ℝ) := by
+    ∑ _i : ι, ((Fintype.card ι : ℝ)⁻¹) ^ (2 : ℕ) = 1 / (Fintype.card ι : ℝ) := by
   have hcardpos : (0 : ℝ) < Fintype.card ι := by
     have := Fintype.card_pos (α := ι)
     exact_mod_cast this

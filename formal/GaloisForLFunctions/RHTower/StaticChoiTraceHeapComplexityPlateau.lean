@@ -130,7 +130,7 @@ theorem measureReal_iUnion_uniformPhaseDensity_traceWords_le
         (⋃ w, torusMetricBallTarget (uniformPhaseDensity d) (target w) δ) ≤
       (traceHeapCapacity α ell Delta : ℝ) *
         ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
   letI : Nonempty (Fin d) := Fin.pos_iff_nonempty.mp hd
   let Q := GaloisForLFunctions.RHTower.FixedTraceClass independent ell
   letI : Fintype Q := Fintype.ofFinite Q
@@ -146,7 +146,7 @@ theorem measureReal_iUnion_uniformPhaseDensity_traceWords_le
     exact hw
   have hraw := measureReal_iUnion_torusTargetControlled_le
     (fun q : Q => torusMetricBallTarget (uniformPhaseDensity d) (targetQ q) δ)
-    (by positivity : 0 < 2 * δ ^ 2)
+    (by positivity : 0 < 2 * δ ^ (2 : ℕ))
     (fun q => uniformPhaseDensity_metricBallTarget_controlled hd hδ.le (targetQ q))
   have hcardNat : Nat.card Q ≤ traceHeapCapacity α ell Delta := by
     simpa only [traceHeapCapacity] using
@@ -156,7 +156,7 @@ theorem measureReal_iUnion_uniformPhaseDensity_traceWords_le
     exact_mod_cast (by simpa [Nat.card_eq_fintype_card] using hcardNat)
   have hbase : 0 ≤
       (d : ℝ) * Real.exp ((d : ℝ) / 2) *
-        Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1) := by positivity
+        Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1) := by positivity
   calc
     volume.real (⋃ w, torusMetricBallTarget (uniformPhaseDensity d) (target w) δ)
         ≤ volume.real
@@ -164,11 +164,11 @@ theorem measureReal_iUnion_uniformPhaseDensity_traceWords_le
           measureReal_mono hsub
     _ ≤ (Fintype.card Q : ℝ) *
           ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
           simpa only [Fintype.card_fin] using hraw
     _ ≤ (traceHeapCapacity α ell Delta : ℝ) *
           ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) :=
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) :=
           mul_le_mul_of_nonneg_right hcard hbase
 
 /-- **Completed-time trace-heap plateau law.**  One rationally independent static spectrum spends
@@ -195,7 +195,7 @@ theorem completedTime_iUnion_uniformPhaseDensity_traceWords
       volume.real A ≤
         (traceHeapCapacity α ell Delta : ℝ) *
           ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
   dsimp only
   constructor
   · apply GaloisForLFunctions.HTGeometry.rationallyIndependent_closedTarget_limsup_le_volume
@@ -308,7 +308,7 @@ theorem measureReal_zeroAnchoredTraceWordTarget_le
     volume.real (zeroAnchoredTraceWordTarget d ell target δ) ≤
       (traceHeapCapacity α ell Delta : ℝ) *
         (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) := by
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) := by
   rw [measureReal_def, volume_zeroAnchoredTraceWordTarget_eq_full, ← measureReal_def]
   exact measureReal_iUnion_uniformPhaseDensity_traceWords_le (Nat.succ_pos d)
     independent hsymm ell Delta hdegree target htrace hδ
@@ -333,7 +333,7 @@ theorem completedTime_zeroAnchoredTraceWordTargets
       volume.real A ≤
         (traceHeapCapacity α ell Delta : ℝ) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) := by
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) := by
   dsimp only
   constructor
   · apply GaloisForLFunctions.HTGeometry.rationallyIndependent_closedTarget_limsup_le_volume
@@ -385,7 +385,7 @@ theorem maximallyProjective_traceWordsHardTimes_syndetic
     (hentropy :
       (traceHeapCapacity α ell Delta : ℝ) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : List.Vector α ell,
         δ < dist
@@ -436,7 +436,7 @@ theorem maximallyProjective_commutingGateWordsHardTimes_syndetic
     (hentropy :
       (traceHeapCapacity α ell Delta : ℝ) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : List.Vector α ell,
         δ < dist
@@ -469,7 +469,7 @@ theorem maximallyProjective_commutingGateWordsAtMostHardTimes_syndetic
     (hentropy :
       (traceHeapCapacity α budget Delta : ℝ) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : List α, w.length ≤ budget →
         δ < dist

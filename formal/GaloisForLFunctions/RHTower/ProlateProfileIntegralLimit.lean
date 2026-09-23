@@ -25,7 +25,7 @@ open _root_.RHTower
 
 /-! ## The Gaussian target -/
 
-theorem gaussianProfile_eq (x : ℝ) : gaussianProfile x = Real.exp (-(1 / 2 : ℝ) * x ^ 2) := by
+theorem gaussianProfile_eq (x : ℝ) : gaussianProfile x = Real.exp (-(1 / 2 : ℝ) * x ^ (2 : ℕ)) := by
   rw [gaussianProfile]
   ring_nf
 
@@ -36,14 +36,14 @@ theorem integrable_gaussianProfile : Integrable gaussianProfile volume := by
   exact (gaussianProfile_eq x).symm
 
 theorem continuous_gaussianProfile : Continuous gaussianProfile := by
-  have hfun : gaussianProfile = fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x ^ 2) :=
+  have hfun : gaussianProfile = fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x ^ (2 : ℕ)) :=
     funext gaussianProfile_eq
   rw [hfun]
   exact Real.continuous_exp.comp (by fun_prop)
 
 /-- **The total mass of the Gaussian profile.** -/
 theorem integral_gaussianProfile : (∫ x : ℝ, gaussianProfile x) = Real.sqrt (2 * Real.pi) := by
-  have hfun : (fun x : ℝ => gaussianProfile x) = fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x ^ 2) := by
+  have hfun : (fun x : ℝ => gaussianProfile x) = fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x ^ (2 : ℕ)) := by
     funext x
     exact gaussianProfile_eq x
   rw [hfun, integral_gaussian]

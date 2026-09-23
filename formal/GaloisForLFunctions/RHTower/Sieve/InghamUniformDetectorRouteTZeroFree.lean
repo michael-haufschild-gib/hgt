@@ -140,7 +140,7 @@ theorem inghamRouteTUniformZeroFreeWidth_eq_contourShift
   congr 1
   · ring
 
-/-- The explicit `log(T)^(-9/10)/(log log T)^2` Route-T envelope is eventually a genuine common
+/-- The explicit `log(T)^(-9/10)/(log log T)^(2 : ℕ)` Route-T envelope is eventually a genuine common
 zero-free edge for the whole Littlewood rectangle. -/
 theorem exists_eventually_zetaLittlewoodZeroCountAbove_eq_zero_routeT_envelope :
     ∃ A : ℝ,

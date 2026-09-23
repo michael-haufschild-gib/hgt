@@ -21,10 +21,10 @@ open scoped Topology
 
 /-- **The logarithm is below twice the root.** -/
 theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
-  have hsq : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
+  have hsq : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   have hspos : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hlog : Real.log x = 2 * Real.log (Real.sqrt x) := by
-    have hpow : Real.log (Real.sqrt x ^ 2) = 2 * Real.log (Real.sqrt x) := by
+    have hpow : Real.log (Real.sqrt x ^ (2 : ℕ)) = 2 * Real.log (Real.sqrt x) := by
       rw [Real.log_pow]
       push_cast
       ring
@@ -38,17 +38,17 @@ theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqr
 theorem eventually_log_add_le_linear {s : ℝ} (hs : 0 < s) (C δ : ℝ) :
     ∀ᶠ x : ℝ in atTop, Real.log x + δ ≤ s * x - C := by
   filter_upwards [eventually_gt_atTop (0 : ℝ),
-    eventually_ge_atTop (16 / s ^ 2), eventually_ge_atTop (2 * (C + δ) / s)] with x hx h1 h2
-  have hy : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
+    eventually_ge_atTop (16 / s ^ (2 : ℕ)), eventually_ge_atTop (2 * (C + δ) / s)] with x hx h1 h2
+  have hy : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   have hynn : 0 ≤ Real.sqrt x := Real.sqrt_nonneg x
   -- the root is at least four over the slope
   have hy4 : 4 / s ≤ Real.sqrt x := by
     by_contra hcon
     push Not at hcon
     have h4 : (0 : ℝ) < 4 / s := by positivity
-    have hlt : Real.sqrt x ^ 2 < (4 / s) ^ 2 := by nlinarith [hynn, hcon]
+    have hlt : Real.sqrt x ^ (2 : ℕ) < (4 / s) ^ (2 : ℕ) := by nlinarith [hynn, hcon]
     rw [hy] at hlt
-    have h16 : (4 / s) ^ 2 = 16 / s ^ 2 := by
+    have h16 : (4 / s) ^ (2 : ℕ) = 16 / s ^ (2 : ℕ) := by
       field_simp
       norm_num
     rw [h16] at hlt

@@ -124,7 +124,7 @@ variable {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
 
 /-- Along a complex line the Hermitian form is the squared modulus times its value. -/
 theorem hermitianForm_smul_self {H : W → W → ℂ} (hH : IsHermitianForm H) (s : ℂ) (v : W) :
-    (H (s • v) (s • v)).re = ‖s‖ ^ 2 * (H v v).re := by
+    (H (s • v) (s • v)).re = ‖s‖ ^ (2 : ℕ) * (H v v).re := by
   have hreal : star (H v v) = H v v := by
     rw [Complex.star_def, Complex.conj_eq_iff_im]
     exact hH.self_im v
@@ -150,12 +150,12 @@ theorem eq_zero_along_line_of_neg_of_thetaNorm_bounded {H : W → W → ℂ} (hH
   refine eq_zero_of_gaussian_decay_along_line (C := M) hdiff v ha (fun s => ?_) t
   have hb := hbdd (s • v)
   rw [thetaNorm, hermitianForm_smul_self hH] at hb
-  have hexp : (0 : ℝ) < Real.exp (-(Real.pi / 2) * (‖s‖ ^ 2 * (H v v).re)) := Real.exp_pos _
+  have hexp : (0 : ℝ) < Real.exp (-(Real.pi / 2) * (‖s‖ ^ (2 : ℕ) * (H v v).re)) := Real.exp_pos _
   rw [← le_div_iff₀ hexp] at hb
   refine hb.trans_eq ?_
   rw [div_eq_mul_inv, ← Real.exp_neg,
-    show -(-(Real.pi / 2) * (‖s‖ ^ 2 * (H v v).re))
-      = -(-(Real.pi / 2) * (H v v).re) * ‖s‖ ^ 2 from by ring]
+    show -(-(Real.pi / 2) * (‖s‖ ^ (2 : ℕ) * (H v v).re))
+      = -(-(Real.pi / 2) * (H v v).re) * ‖s‖ ^ (2 : ℕ) from by ring]
 
 end Normed
 

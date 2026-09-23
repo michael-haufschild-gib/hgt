@@ -31,12 +31,12 @@ theorem inverseSquareChainCubicReturnSeparation_le_bridgePhaseChord
     {L : ℕ} (hL : 2 ≤ L) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     inverseSquareChainCubicReturnSeparation L guard ≤
-      ‖Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ 3 : ℝ) : ℂ))) - 1‖ := by
-  let phi := t / (L : ℝ) ^ 3
-  have hden : 0 < (L : ℝ) ^ 3 := by positivity
-  by_cases hhalf : t ≤ Real.pi * (L : ℝ) ^ 3
+      ‖Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ (3 : ℕ) : ℝ) : ℂ))) - 1‖ := by
+  let phi := t / (L : ℝ) ^ (3 : ℕ)
+  have hden : 0 < (L : ℝ) ^ (3 : ℕ) := by positivity
+  by_cases hhalf : t ≤ Real.pi * (L : ℝ) ^ (3 : ℕ)
   · have ht0 : 0 ≤ t := hguard.trans ht.1
     have hphi0 : 0 ≤ phi := div_nonneg ht0 hden.le
     have hphipi : phi ≤ Real.pi := by
@@ -45,14 +45,14 @@ theorem inverseSquareChainCubicReturnSeparation_le_bridgePhaseChord
     have hchord := phase_chord_lower hphi0 hphipi
     calc
       inverseSquareChainCubicReturnSeparation L guard =
-          2 * (guard / (L : ℝ) ^ 3) / Real.pi := rfl
+          2 * (guard / (L : ℝ) ^ (3 : ℕ)) / Real.pi := rfl
       _ ≤ 2 * phi / Real.pi := by
         gcongr
         exact div_le_div_of_nonneg_right ht.1 hden.le
       _ ≤ ‖Complex.exp (-(Complex.I * (phi : ℂ))) - 1‖ := hchord
       _ = _ := by rfl
   · let psi := 2 * Real.pi - phi
-    have htop : t ≤ 2 * Real.pi * (L : ℝ) ^ 3 :=
+    have htop : t ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) :=
       ht.2.trans (sub_le_self _ hguard)
     have hpsi0 : 0 ≤ psi := by
       dsimp [psi, phi]
@@ -66,10 +66,10 @@ theorem inverseSquareChainCubicReturnSeparation_le_bridgePhaseChord
         exact hnot.le
       dsimp [psi]
       nlinarith
-    have hguardPsi : guard / (L : ℝ) ^ 3 ≤ psi := by
+    have hguardPsi : guard / (L : ℝ) ^ (3 : ℕ) ≤ psi := by
       dsimp [psi, phi]
       rw [div_le_iff₀ hden]
-      have hcancel : t / (L : ℝ) ^ 3 * (L : ℝ) ^ 3 = t :=
+      have hcancel : t / (L : ℝ) ^ (3 : ℕ) * (L : ℝ) ^ (3 : ℕ) = t :=
         div_mul_cancel₀ t (ne_of_gt hden)
       rw [sub_mul, hcancel]
       nlinarith [ht.2]
@@ -77,7 +77,7 @@ theorem inverseSquareChainCubicReturnSeparation_le_bridgePhaseChord
     have hreflect := norm_exp_neg_I_mul_two_pi_sub_sub_one phi
     calc
       inverseSquareChainCubicReturnSeparation L guard =
-          2 * (guard / (L : ℝ) ^ 3) / Real.pi := rfl
+          2 * (guard / (L : ℝ) ^ (3 : ℕ)) / Real.pi := rfl
       _ ≤ 2 * psi / Real.pi := by gcongr
       _ ≤ ‖Complex.exp (-(Complex.I * (psi : ℂ))) - 1‖ := hchord
       _ = ‖Complex.exp (-(Complex.I * (phi : ℂ))) - 1‖ := hreflect.symm
@@ -96,7 +96,7 @@ theorem inverseSquareChainPhasePacket_bridge_sub_vacuum
     {L : ℕ} (hL : 2 ≤ L) (t : ℝ) :
     inverseSquareChainPhasePacket L t (firstInverseCubeBridgeConfig hL) -
         inverseSquareChainPhasePacket L t (inverseSquareChainVacuumConfig L) =
-      Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ 3 : ℝ) : ℂ))) - 1 := by
+      Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ (3 : ℕ) : ℝ) : ℂ))) - 1 := by
   simp only [inverseSquareChainPhasePacket,
     inverseSquareChainEnergy_firstInverseCubeBridgeConfig hL,
     inverseSquareChainEnergy_vacuumConfig]
@@ -123,11 +123,11 @@ theorem inverseSquareChainCubic_projectiveTraceFidelityDeficit
     {L : ℕ} (hL : 2 ≤ L) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
-    inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2) ≤
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
+    inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ)) ≤
       1 - ‖(Fintype.card (Config (PairQubit L)) : ℂ)⁻¹ *
-        Matrix.trace (inverseSquareChainEvolution L t)‖ ^ 2 := by
+        Matrix.trace (inverseSquareChainEvolution L t)‖ ^ (2 : ℕ) := by
   let phase := inverseSquareChainPhasePacket L t
   let x := firstInverseCubeBridgeConfig hL
   let y := inverseSquareChainVacuumConfig L
@@ -139,28 +139,28 @@ theorem inverseSquareChainCubic_projectiveTraceFidelityDeficit
     positivity
   have hterm :
       ‖phase x - phase y‖ =
-        ‖Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ 3 : ℝ) : ℂ))) - 1‖ := by
+        ‖Complex.exp (-(Complex.I * ((t / (L : ℝ) ^ (3 : ℕ) : ℝ) : ℂ))) - 1‖ := by
     rw [inverseSquareChainPhasePacket_bridge_sub_vacuum hL t]
-  have hsepTerm : inverseSquareChainCubicReturnSeparation L guard ^ 2 ≤
-      ‖phase x - phase y‖ ^ 2 := by
+  have hsepTerm : inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) ≤
+      ‖phase x - phase y‖ ^ (2 : ℕ) := by
     rw [hterm]
     exact pow_le_pow_left₀ hsep0 hsep 2
-  have hinner : ‖phase x - phase y‖ ^ 2 ≤
-      ∑ j, ‖phase x - phase j‖ ^ 2 := by
+  have hinner : ‖phase x - phase y‖ ^ (2 : ℕ) ≤
+      ∑ j, ‖phase x - phase j‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum (fun j _ => sq_nonneg ‖phase x - phase j‖)
       (Finset.mem_univ y)
-  have houter : (∑ j, ‖phase x - phase j‖ ^ 2) ≤
-      ∑ i, ∑ j, ‖phase i - phase j‖ ^ 2 := by
+  have houter : (∑ j, ‖phase x - phase j‖ ^ (2 : ℕ)) ≤
+      ∑ i, ∑ j, ‖phase i - phase j‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum
       (fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg ‖phase i - phase j‖)
       (Finset.mem_univ x)
-  have henergy : inverseSquareChainCubicReturnSeparation L guard ^ 2 ≤
+  have henergy : inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) ≤
       phasePairwiseSqEnergy phase := by
     exact hsepTerm.trans (hinner.trans (by simpa [phasePairwiseSqEnergy] using houter))
   rw [phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit phase
       (norm_inverseSquareChainPhasePacket L t)] at henergy
   rw [equalPhaseAmplitude_inverseSquareChainPhasePacket_eq_normalizedTrace] at henergy
-  have hD : 0 < 2 * D ^ 2 := by
+  have hD : 0 < 2 * D ^ (2 : ℕ) := by
     dsimp [D]
     positivity
   rw [div_le_iff₀ hD]
@@ -199,23 +199,23 @@ theorem norm_inverseSquareChain_normalizedTrace_le_sqrt_cubicDeficit
     {L : ℕ} (hL : 2 ≤ L) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     ‖(Fintype.card (Config (PairQubit L)) : ℂ)⁻¹ *
         Matrix.trace (inverseSquareChainEvolution L t)‖ ≤
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) := by
-  let q := inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-    (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) := by
+  let q := inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+    (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))
   let a := ‖(Fintype.card (Config (PairQubit L)) : ℂ)⁻¹ *
     Matrix.trace (inverseSquareChainEvolution L t)‖
   have hdef := inverseSquareChainCubic_projectiveTraceFidelityDeficit
     hL hguard ht
-  have hsq : a ^ 2 ≤ 1 - q := by
+  have hsq : a ^ (2 : ℕ) ≤ 1 - q := by
     dsimp only [a, q]
     linarith
   have hnonneg : 0 ≤ 1 - q := (sq_nonneg a).trans hsq
-  rw [show Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-      (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) =
+  rw [show Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+      (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) =
       Real.sqrt (1 - q) by rfl]
   rw [← sq_le_sq₀ (norm_nonneg _) (Real.sqrt_nonneg _)]
   rw [Real.sq_sqrt hnonneg]
@@ -229,11 +229,11 @@ theorem norm_perturbedInverseSquareChain_normalizedTrace_le
     (hK : IsSelfAdjoint K) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     ‖(Fintype.card (Config (PairQubit L)) : ℂ)⁻¹ *
         Matrix.trace (unitaryEvolution K t)‖ ≤
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+        (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
       |t| * ‖K - inverseSquareChainHamiltonian L‖ := by
   let c : ℂ := (Fintype.card (Config (PairQubit L)) : ℂ)⁻¹
   let UK := unitaryEvolution K t
@@ -257,8 +257,8 @@ theorem norm_perturbedInverseSquareChain_normalizedTrace_le
           ring
         _ ≤ _ := norm_add_le (c * Matrix.trace UH)
           (c * Matrix.trace UK - c * Matrix.trace UH)
-    _ ≤ Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
+    _ ≤ Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
         |t| * ‖K - inverseSquareChainHamiltonian L‖ := add_le_add hseed hdiff
 
 end

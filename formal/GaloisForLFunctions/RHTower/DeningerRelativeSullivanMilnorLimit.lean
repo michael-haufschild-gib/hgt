@@ -112,7 +112,7 @@ theorem deningerMilnorGCAEps_sigma (B : Module.Basis G k V) (x : G) :
         (deningerMilnorAugBase B).eps
           (deningerGCAι k (deningerMilnorAugBase B).toStage.deg x) := by
   show deningerMilnorSigma k V (deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)) =
-    ((-1 : k) ^ 1) • deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)
+    ((-1 : k) ^ (1 : ℕ)) • deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)
   rw [deningerMilnorGCAEps_ι, deningerMilnorSigma_inr, pow_one]
   module
 
@@ -126,7 +126,7 @@ theorem deningerMilnorGCAEps_weight (B : Module.Basis G k V) (t : k) (x : G) :
         (deningerMilnorAugBase B).eps
           (deningerGCAι k (deningerMilnorAugBase B).toStage.deg x) := by
   show deningerMilnorWeight k V t (deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)) =
-    (t ^ 1) • deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)
+    (t ^ (1 : ℕ)) • deningerMilnorGCAEps B (deningerGCAι k (fun _ : G => 1) x)
   rw [deningerMilnorGCAEps_ι, deningerMilnorWeight_inr, pow_one]
 
 /-- **The relative Sullivan resolution of the two-term algebra.**  The limit of the relative tower

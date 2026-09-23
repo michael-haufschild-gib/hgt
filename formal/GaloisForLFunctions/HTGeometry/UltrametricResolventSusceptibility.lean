@@ -68,7 +68,7 @@ theorem ultrametricResolventCoefficient_denominator_pos
     exact_mod_cast (show 1 < p by omega)
   have hpow : (p : ℚ) < (p : ℚ) ^ (m + k) := by
     calc
-      (p : ℚ) = (p : ℚ) ^ 1 := by simp
+      (p : ℚ) = (p : ℚ) ^ (1 : ℕ) := by simp
       _ < (p : ℚ) ^ (m + k) :=
         pow_lt_pow_right₀ hpQ (by omega)
   have hpowpos : 0 < (p : ℚ) ^ (m + k) :=

@@ -134,8 +134,8 @@ theorem sameZetaConjugatePacket_of_re_eq_of_im_sq_eq
     {ρ σ : NontrivialZetaZero}
     (hre : (zetaSpectralCoordinate σ.1).re =
       (zetaSpectralCoordinate ρ.1).re)
-    (him : (zetaSpectralCoordinate σ.1).im ^ 2 =
-      (zetaSpectralCoordinate ρ.1).im ^ 2) :
+    (him : (zetaSpectralCoordinate σ.1).im ^ (2 : ℕ) =
+      (zetaSpectralCoordinate ρ.1).im ^ (2 : ℕ)) :
     SameZetaConjugatePacket ρ σ := by
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp him with him | him
   · left
@@ -276,7 +276,7 @@ theorem exists_goodCenter_for_offAxisZetaPacket
   have habs : |γ - t| < |a| := by
     rw [abs_lt]
     constructor <;> linarith [htinterval.1, htinterval.2]
-  have hsquare : (γ - t) ^ 2 < a ^ 2 := by
+  have hsquare : (γ - t) ^ (2 : ℕ) < a ^ (2 : ℕ) := by
     rw [sq_lt_sq]
     simpa only [abs_abs] using habs
   refine ⟨t, ?_, htTie, ?_⟩
@@ -821,7 +821,7 @@ def ZetaZeroGaussianOrdinateSummable : Prop :=
   ∀ (c : ℝ), 0 < c →
     Summable fun occurrence :
         NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
-      Real.exp (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ 2)
+      Real.exp (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ (2 : ℕ))
 
 /-- The bounded critical strip and a Gaussian ordinate tail imply absolute
 summability of every translated entire Gaussian. -/
@@ -833,33 +833,33 @@ theorem summable_zetaGaussianZeroSummand_of_ordinateSummable
   let c : ℝ := ε / 2
   have hc : 0 < c := div_pos hε two_pos
   have hbase := hOrdinate c hc
-  let constant : ℝ := Real.exp (ε / 4 + ε * t ^ 2)
+  let constant : ℝ := Real.exp (ε / 4 + ε * t ^ (2 : ℕ))
   have hdominating : Summable fun occurrence :
       NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
         constant * Real.exp
-          (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ 2) :=
+          (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ (2 : ℕ)) :=
     hbase.mul_left constant
   apply hdominating.of_norm_bounded
   intro occurrence
   let z := zetaSpectralCoordinate occurrence.1.1
   have habs :=
     NontrivialZetaZero.abs_spectralCoordinate_im_lt_half occurrence.1
-  have himSq : z.im ^ 2 ≤ 1 / 4 := by
-    have hsquare : z.im ^ 2 < (1 / 2 : ℝ) ^ 2 :=
+  have himSq : z.im ^ (2 : ℕ) ≤ 1 / 4 := by
+    have hsquare : z.im ^ (2 : ℕ) < (1 / 2 : ℝ) ^ (2 : ℕ) :=
       sq_lt_sq.mpr (by simpa only [abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)]
         using habs)
     norm_num at hsquare ⊢
     exact hsquare.le
   have hquadratic :
-      ε * z.im ^ 2 - ε * (z.re - t) ^ 2 ≤
-        ε / 4 + ε * t ^ 2 - (ε / 2) * z.re ^ 2 := by
+      ε * z.im ^ (2 : ℕ) - ε * (z.re - t) ^ (2 : ℕ) ≤
+        ε / 4 + ε * t ^ (2 : ℕ) - (ε / 2) * z.re ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (z.re - 2 * t)]
   rw [zetaGaussianZeroSummand, norm_complexTranslatedGaussian]
   calc
-    Real.exp (ε * z.im ^ 2 - ε * (z.re - t) ^ 2) ≤
-        Real.exp (ε / 4 + ε * t ^ 2 - (ε / 2) * z.re ^ 2) :=
+    Real.exp (ε * z.im ^ (2 : ℕ) - ε * (z.re - t) ^ (2 : ℕ)) ≤
+        Real.exp (ε / 4 + ε * t ^ (2 : ℕ) - (ε / 2) * z.re ^ (2 : ℕ)) :=
       Real.exp_le_exp.mpr hquadratic
-    _ = constant * Real.exp (-c * z.re ^ 2) := by
+    _ = constant * Real.exp (-c * z.re ^ (2 : ℕ)) := by
       unfold constant c
       rw [← Real.exp_add]
       congr 1

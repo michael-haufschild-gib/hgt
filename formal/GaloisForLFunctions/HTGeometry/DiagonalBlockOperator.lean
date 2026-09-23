@@ -95,7 +95,7 @@ theorem hasRankLE_blockOp (e : Fin m → H) (μ : Fin m → ℂ) : HasRankLE (bl
 
 /-- The squared norm of an orthonormal combination is the sum of the squared coefficients. -/
 theorem norm_sq_orthonormal_sum (he : Orthonormal ℂ e) (c : Fin m → ℂ) (s : Finset (Fin m)) :
-    ‖∑ i ∈ s, c i • e i‖ ^ 2 = ∑ i ∈ s, ‖c i‖ ^ 2 := by
+    ‖∑ i ∈ s, c i • e i‖ ^ (2 : ℕ) = ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
   have h := he.inner_sum c c s
   rw [inner_self_eq_norm_sq_to_K] at h
   simp only [RCLike.conj_mul] at h
@@ -105,19 +105,19 @@ theorem norm_sq_orthonormal_sum (he : Orthonormal ℂ e) (c : Fin m → ℂ) (s 
 theorem norm_blockOpOn_le (he : Orthonormal ℂ e) (s : Finset (Fin m)) (μ : Fin m → ℂ)
     {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ i ∈ s, ‖μ i‖ ≤ M) : ‖blockOpOn s e μ‖ ≤ M := by
   refine ContinuousLinearMap.opNorm_le_bound _ hM0 fun x => ?_
-  have hsq : ‖blockOpOn s e μ x‖ ^ 2 ≤ (M * ‖x‖) ^ 2 := by
+  have hsq : ‖blockOpOn s e μ x‖ ^ (2 : ℕ) ≤ (M * ‖x‖) ^ (2 : ℕ) := by
     rw [blockOpOn_apply, norm_sq_orthonormal_sum he _ s]
-    have hstep : ∀ i ∈ s, ‖μ i * ⟪e i, x⟫_ℂ‖ ^ 2 ≤ M ^ 2 * ‖⟪e i, x⟫_ℂ‖ ^ 2 := by
+    have hstep : ∀ i ∈ s, ‖μ i * ⟪e i, x⟫_ℂ‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * ‖⟪e i, x⟫_ℂ‖ ^ (2 : ℕ) := by
       intro i hi
       rw [norm_mul, mul_pow]
       exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hM i hi) 2)
         (by positivity)
-    calc ∑ i ∈ s, ‖μ i * ⟪e i, x⟫_ℂ‖ ^ 2 ≤ ∑ i ∈ s, M ^ 2 * ‖⟪e i, x⟫_ℂ‖ ^ 2 :=
+    calc ∑ i ∈ s, ‖μ i * ⟪e i, x⟫_ℂ‖ ^ (2 : ℕ) ≤ ∑ i ∈ s, M ^ (2 : ℕ) * ‖⟪e i, x⟫_ℂ‖ ^ (2 : ℕ) :=
           Finset.sum_le_sum hstep
-      _ = M ^ 2 * ∑ i ∈ s, ‖⟪e i, x⟫_ℂ‖ ^ 2 := by rw [Finset.mul_sum]
-      _ ≤ M ^ 2 * ‖x‖ ^ 2 :=
+      _ = M ^ (2 : ℕ) * ∑ i ∈ s, ‖⟪e i, x⟫_ℂ‖ ^ (2 : ℕ) := by rw [Finset.mul_sum]
+      _ ≤ M ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left (he.sum_inner_products_le x) (by positivity)
-      _ = (M * ‖x‖) ^ 2 := by ring
+      _ = (M * ‖x‖) ^ (2 : ℕ) := by ring
   have hnn : (0 : ℝ) ≤ M * ‖x‖ := mul_nonneg hM0 (norm_nonneg x)
   exact (sq_le_sq₀ (norm_nonneg _) hnn).mp hsq
 

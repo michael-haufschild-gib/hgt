@@ -124,7 +124,7 @@ def mobiusCausalQDeriv (ω : ℝ) (z : ℂ) : ℂ :=
   (2 * ((1 + (ω : ℂ) + z) * zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) -
       (2 * (ω : ℂ) + z) * (zetaPoleUnit (1 + 2 * (ω : ℂ) + z) +
         (1 + (ω : ℂ) + z) * (2 * deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + z)))) /
-    ((1 + (ω : ℂ) + z) * zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) ^ 2
+    ((1 + (ω : ℂ) + z) * zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) ^ (2 : ℕ)
 
 theorem hasDerivAt_mobiusCausalQ {ω : ℝ} (hω : 0 < ω) {z : ℂ} (hz : 0 ≤ z.re) :
     HasDerivAt (fun w : ℝ => mobiusCausalQ w z) (mobiusCausalQDeriv ω z) ω := by

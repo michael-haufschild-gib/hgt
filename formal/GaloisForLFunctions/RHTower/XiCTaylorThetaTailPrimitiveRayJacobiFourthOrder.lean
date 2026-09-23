@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.SoninSemilocalJacobiTransform
 The growing completion coefficient in the primitive polar reflection is a degree-four polynomial
 in the logistic coordinate `tanh t`.  The exact archimedean Jacobi transform shows that its
 degree-zero and degree-two spectral components cancel: the corresponding spectral packet is
-literally `X^4`.
+literally `X^(4 : ℕ)`.
 
 Equivalently, twice the growing coefficient times the archimedean characteristic is the Fourier
 transform of the nonnegative fourth spectral multiplier against the canonical Gamma measure.
@@ -30,29 +30,29 @@ def thetaCuspPrimitiveRayJacobiSpectralPacket : ℝ[X] :=
       semilocalArchimedeanJacobiPolynomial 4
 
 theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eval (s : ℝ) :
-    thetaCuspPrimitiveRayJacobiSpectralPacket.eval s = s ^ 4 := by
+    thetaCuspPrimitiveRayJacobiSpectralPacket.eval s = s ^ (4 : ℕ) := by
   let a : ℕ → ℝ := semilocalArchimedeanJacobiCoefficient
   let c : ℕ → ℝ := semilocalArchimedeanJacobiNormalization
   let p : ℕ → ℝ := fun n => (semilocalArchimedeanJacobiPolynomial n).eval s
   have ha (n : ℕ) : 0 < a n := semilocalArchimedeanJacobiCoefficient_pos n
   have hc (n : ℕ) : 0 < c n := semilocalArchimedeanJacobiNormalization_pos n
-  have haSq (n : ℕ) : a n ^ 2 = ((n : ℝ) + 1 / 2) * ((n : ℝ) + 1) :=
+  have haSq (n : ℕ) : a n ^ (2 : ℕ) = ((n : ℝ) + 1 / 2) * ((n : ℝ) + 1) :=
     semilocalArchimedeanJacobiCoefficient_sq n
-  have hcSq (n : ℕ) : c n ^ 2 =
+  have hcSq (n : ℕ) : c n ^ (2 : ℕ) =
       (Nat.factorial (2 * n) : ℝ) /
-        (((2 : ℝ) ^ n * (Nat.factorial n : ℝ)) ^ 2) :=
+        (((2 : ℝ) ^ n * (Nat.factorial n : ℝ)) ^ (2 : ℕ)) :=
     semilocalArchimedeanJacobiNormalization_sq n
   have hc2prod : c 2 * a 0 * a 1 = 3 / 4 := by
     have hnon : 0 ≤ c 2 * a 0 * a 1 :=
       (mul_pos (mul_pos (hc 2) (ha 0)) (ha 1)).le
-    have hsq : (c 2 * a 0 * a 1) ^ 2 = (3 / 4 : ℝ) ^ 2 := by
+    have hsq : (c 2 * a 0 * a 1) ^ (2 : ℕ) = (3 / 4 : ℝ) ^ (2 : ℕ) := by
       rw [mul_pow, mul_pow, hcSq, haSq, haSq]
       norm_num
     nlinarith
   have hc4prod : c 4 * a 0 * a 1 * a 2 * a 3 = 105 / 16 := by
     have hnon : 0 ≤ c 4 * a 0 * a 1 * a 2 * a 3 :=
       (mul_pos (mul_pos (mul_pos (mul_pos (hc 4) (ha 0)) (ha 1)) (ha 2)) (ha 3)).le
-    have hsq : (c 4 * a 0 * a 1 * a 2 * a 3) ^ 2 = (105 / 16 : ℝ) ^ 2 := by
+    have hsq : (c 4 * a 0 * a 1 * a 2 * a 3) ^ (2 : ℕ) = (105 / 16 : ℝ) ^ (2 : ℕ) := by
       rw [mul_pow, mul_pow, mul_pow, mul_pow, hcSq, haSq, haSq, haSq, haSq]
       norm_num
     nlinarith
@@ -67,7 +67,7 @@ theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eval (s : ℝ) :
   change s * p 1 = a 0 * p 0 + a 1 * p 2 at hrec0
   change s * p 2 = a 1 * p 1 + a 2 * p 3 at hrec1
   change s * p 3 = a 2 * p 2 + a 3 * p 4 at hrec2
-  have hp2raw : a 0 * a 1 * p 2 = s ^ 2 - 1 / 2 := by
+  have hp2raw : a 0 * a 1 * p 2 = s ^ (2 : ℕ) - 1 / 2 := by
     rw [hp0] at hrec0
     have ha0sq := haSq 0
     norm_num at ha0sq
@@ -75,10 +75,10 @@ theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eval (s : ℝ) :
       a 0 * a 1 * p 2 = a 0 * (a 1 * p 2) := by ring
       _ = a 0 * (s * p 1 - a 0) := by
         rw [show a 1 * p 2 = s * p 1 - a 0 by linarith [hrec0]]
-      _ = s * (a 0 * p 1) - a 0 ^ 2 := by ring
-      _ = s ^ 2 - 1 / 2 := by rw [hp1, ha0sq]; ring
+      _ = s * (a 0 * p 1) - a 0 ^ (2 : ℕ) := by ring
+      _ = s ^ (2 : ℕ) - 1 / 2 := by rw [hp1, ha0sq]; ring
   have hp4raw : a 0 * a 1 * a 2 * a 3 * p 4 =
-      s ^ 4 - 11 * s ^ 2 + 15 / 4 := by
+      s ^ (4 : ℕ) - 11 * s ^ (2 : ℕ) + 15 / 4 := by
     have ha0sq := haSq 0
     have ha1sq := haSq 1
     have ha2sq := haSq 2
@@ -90,33 +90,33 @@ theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eval (s : ℝ) :
               a 0 * a 1 * a 2 * (a 3 * p 4) by ring,
               show a 3 * p 4 = s * p 3 - a 2 * p 2 by linarith [hrec2]]
       _ = a 0 * a 1 *
-          (s * (s * p 2 - a 1 * p 1) - a 2 ^ 2 * p 2) := by
+          (s * (s * p 2 - a 1 * p 1) - a 2 ^ (2 : ℕ) * p 2) := by
             rw [show a 0 * a 1 * a 2 * (s * p 3 - a 2 * p 2) =
-              a 0 * a 1 * (s * (a 2 * p 3) - a 2 ^ 2 * p 2) by ring,
+              a 0 * a 1 * (s * (a 2 * p 3) - a 2 ^ (2 : ℕ) * p 2) by ring,
               show a 2 * p 3 = s * p 2 - a 1 * p 1 by linarith [hrec1]]
-      _ = (s ^ 2 - a 2 ^ 2) * (a 0 * a 1 * p 2) -
-          a 1 ^ 2 * s * (a 0 * p 1) := by ring
-      _ = s ^ 4 - 11 * s ^ 2 + 15 / 4 := by
+      _ = (s ^ (2 : ℕ) - a 2 ^ (2 : ℕ)) * (a 0 * a 1 * p 2) -
+          a 1 ^ (2 : ℕ) * s * (a 0 * p 1) := by ring
+      _ = s ^ (4 : ℕ) - 11 * s ^ (2 : ℕ) + 15 / 4 := by
         rw [hp2raw, hp1, ha1sq, ha2sq]
         ring
-  have hp2scaled : p 2 / c 2 = (4 / 3 : ℝ) * (s ^ 2 - 1 / 2) := by
+  have hp2scaled : p 2 / c 2 = (4 / 3 : ℝ) * (s ^ (2 : ℕ) - 1 / 2) := by
     calc
       p 2 / c 2 = (a 0 * a 1 * p 2) / (c 2 * a 0 * a 1) := by
         field_simp [(hc 2).ne', (ha 0).ne', (ha 1).ne']
-      _ = (s ^ 2 - 1 / 2) / (3 / 4) := by rw [hp2raw, hc2prod]
-      _ = (4 / 3 : ℝ) * (s ^ 2 - 1 / 2) := by ring
+      _ = (s ^ (2 : ℕ) - 1 / 2) / (3 / 4) := by rw [hp2raw, hc2prod]
+      _ = (4 / 3 : ℝ) * (s ^ (2 : ℕ) - 1 / 2) := by ring
   have hp4scaled : p 4 / c 4 =
-      (16 / 105 : ℝ) * (s ^ 4 - 11 * s ^ 2 + 15 / 4) := by
+      (16 / 105 : ℝ) * (s ^ (4 : ℕ) - 11 * s ^ (2 : ℕ) + 15 / 4) := by
     calc
       p 4 / c 4 =
           (a 0 * a 1 * a 2 * a 3 * p 4) /
             (c 4 * a 0 * a 1 * a 2 * a 3) := by
         field_simp [(hc 4).ne', (ha 0).ne', (ha 1).ne', (ha 2).ne', (ha 3).ne']
-      _ = (s ^ 4 - 11 * s ^ 2 + 15 / 4) / (105 / 16) := by
+      _ = (s ^ (4 : ℕ) - 11 * s ^ (2 : ℕ) + 15 / 4) / (105 / 16) := by
         rw [hp4raw, hc4prod]
-      _ = (16 / 105 : ℝ) * (s ^ 4 - 11 * s ^ 2 + 15 / 4) := by ring
+      _ = (16 / 105 : ℝ) * (s ^ (4 : ℕ) - 11 * s ^ (2 : ℕ) + 15 / 4) := by ring
   simp only [thetaCuspPrimitiveRayJacobiSpectralPacket, eval_add, eval_mul, eval_C]
-  change 7 / 4 * p 0 + (33 / 4 / c 2) * p 2 + (105 / 16 / c 4) * p 4 = s ^ 4
+  change 7 / 4 * p 0 + (33 / 4 / c 2) * p 2 + (105 / 16 / c 4) * p 4 = s ^ (4 : ℕ)
   rw [hp0]
   rw [show (33 / 4 / c 2) * p 2 = (33 / 4) * (p 2 / c 2) by ring,
     show (105 / 16 / c 4) * p 4 = (105 / 16) * (p 4 / c 4) by ring,
@@ -124,7 +124,7 @@ theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eval (s : ℝ) :
   ring
 
 theorem thetaCuspPrimitiveRayJacobiSpectralPacket_eq_X_pow_four :
-    thetaCuspPrimitiveRayJacobiSpectralPacket = X ^ 4 := by
+    thetaCuspPrimitiveRayJacobiSpectralPacket = X ^ (4 : ℕ) := by
   apply Polynomial.funext
   intro s
   rw [thetaCuspPrimitiveRayJacobiSpectralPacket_eval]
@@ -165,14 +165,14 @@ theorem two_mul_characteristic_mul_primitiveRayGrowingCoefficient_logistic
     2 * semilocalArchimedeanCharacteristic t *
         thetaCuspPrimitiveRayGrowingCoefficient ((1 + Real.tanh t) / 2) =
       semilocalArchimedeanCharacteristic t *
-        (7 / 4 - (33 / 4) * Real.tanh t ^ 2 +
-          (105 / 16) * Real.tanh t ^ 4) := by
+        (7 / 4 - (33 / 4) * Real.tanh t ^ (2 : ℕ) +
+          (105 / 16) * Real.tanh t ^ (4 : ℕ)) := by
   unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
   ring
 
 theorem semilocalArchimedean_fourthMomentFourier_eq_primitiveRayGrowing
     (t : ℝ) :
-    semilocalArchimedeanPolynomialFourier (X ^ 4) t =
+    semilocalArchimedeanPolynomialFourier (X ^ (4 : ℕ)) t =
       (2 * semilocalArchimedeanCharacteristic t *
         thetaCuspPrimitiveRayGrowingCoefficient
           ((1 + Real.tanh t) / 2) : ℝ) := by
@@ -212,7 +212,7 @@ theorem semilocalArchimedean_fourthMomentFourier_eq_primitiveRayGrowing
 
 theorem integral_semilocalArchimedean_fourthMoment_eq_primitiveRayGrowing
     (t : ℝ) :
-    (∫ s : ℝ, ((s ^ 4 : ℝ) : ℂ) *
+    (∫ s : ℝ, ((s ^ (4 : ℕ) : ℝ) : ℂ) *
         Complex.exp (((t * s : ℝ) : ℂ) * I)
           ∂semilocalArchimedeanGammaMeasure) =
       (2 * semilocalArchimedeanCharacteristic t *

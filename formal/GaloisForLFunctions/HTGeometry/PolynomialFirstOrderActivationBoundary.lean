@@ -123,7 +123,7 @@ theorem hypertranscendentalOver_input_of_tanh_chain_law
     {F E : Type*} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     {h y : E} (hy : HypertranscendentalOver F y)
-    (hrel : y′ = h′ * (1 - y ^ 2)) :
+    (hrel : y′ = h′ * (1 - y ^ (2 : ℕ))) :
     HypertranscendentalOver F h := by
   let S := differentialAdjoin F ({h} : Set E)
   have hdh : h′ ∈ S := by
@@ -131,7 +131,7 @@ theorem hypertranscendentalOver_input_of_tanh_chain_law
       (s := ({h} : Set E)) (x := h) rfl 1
     simpa using hj
   let dh : S := ⟨h′, hdh⟩
-  let P : Polynomial S := Polynomial.C dh * (1 - Polynomial.X ^ 2)
+  let P : Polynomial S := Polynomial.C dh * (1 - Polynomial.X ^ (2 : ℕ))
   apply hypertranscendentalOver_input_of_polynomial_firstOrder_output hy P
   simpa [P, dh] using hrel
 

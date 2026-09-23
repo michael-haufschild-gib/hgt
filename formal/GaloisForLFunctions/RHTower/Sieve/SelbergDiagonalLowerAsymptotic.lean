@@ -53,8 +53,8 @@ theorem sum_moebius_mul_selbergMultiplesInner {X : ℕ} (hX : 1 ≤ X) (a : ℕ 
 /-- Selberg's squarefree Cauchy lower bound for any finite coefficient vector. -/
 theorem sq_div_sum_sqfreeTotientInv_le_totientDiagonal {X : ℕ} (hX : 1 ≤ X)
     (a : ℕ → ℝ) :
-    (a 1) ^ 2 / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e) ≤
-      ∑ e ∈ Finset.Icc 1 X, (Nat.totient e : ℝ) * (selbergMultiplesInner X a e) ^ 2 := by
+    (a 1) ^ (2 : ℕ) / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e) ≤
+      ∑ e ∈ Finset.Icc 1 X, (Nat.totient e : ℝ) * (selbergMultiplesInner X a e) ^ (2 : ℕ) := by
   let S := (Finset.Icc 1 X).filter Squarefree
   have hphi : ∀ e ∈ S, 0 < (1 / (Nat.totient e : ℝ)) := by
     intro e he
@@ -89,16 +89,16 @@ theorem sq_div_sum_sqfreeTotientInv_le_totientDiagonal {X : ℕ} (hX : 1 ≤ X)
   rw [hdenom] at hcs
   have hrhs :
       (∑ e ∈ S,
-        ((μ e : ℝ) * selbergMultiplesInner X a e) ^ 2 /
+        ((μ e : ℝ) * selbergMultiplesInner X a e) ^ (2 : ℕ) /
           (1 / (Nat.totient e : ℝ))) =
-        ∑ e ∈ S, (Nat.totient e : ℝ) * (selbergMultiplesInner X a e) ^ 2 := by
+        ∑ e ∈ S, (Nat.totient e : ℝ) * (selbergMultiplesInner X a e) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro e he
     have hsq : Squarefree e := (Finset.mem_filter.mp he).2
     have hepos : 0 < e := (Finset.mem_Icc.mp (Finset.mem_filter.mp he).1).1
     have htot : (Nat.totient e : ℝ) ≠ 0 := by
       exact_mod_cast (Nat.totient_pos.mpr hepos).ne'
-    have hmu : (μ e : ℝ) ^ 2 = 1 := by
+    have hmu : (μ e : ℝ) ^ (2 : ℕ) = 1 := by
       have h := ArithmeticFunction.moebius_sq (n := e)
       rw [if_pos hsq] at h
       exact_mod_cast h
@@ -115,7 +115,7 @@ theorem sq_div_sum_sqfreeTotientInv_le_totientDiagonal {X : ℕ} (hX : 1 ≤ X)
 /-- The diagonal quadratic form for the linear Barban--Vehov weight. -/
 def barbanVehovSelbergDiagonal (X : ℕ) : ℝ :=
   ∑ e ∈ Finset.Icc 1 X, (Nat.totient e : ℝ) *
-    (selbergMultiplesInner X (barbanVehovWeight X) e) ^ 2
+    (selbergMultiplesInner X (barbanVehovWeight X) e) ^ (2 : ℕ)
 
 theorem barbanVehovWeight_one {X : ℕ} (hX : 1 ≤ X) :
     barbanVehovWeight X 1 = Real.log X := by
@@ -125,7 +125,7 @@ theorem barbanVehovWeight_one {X : ℕ} (hX : 1 ≤ X) :
 /-- Exact Cauchy lower bound for the Barban--Vehov Selberg diagonal. -/
 theorem sq_log_div_sum_sqfreeTotientInv_le_barbanVehovSelbergDiagonal
     {X : ℕ} (hX : 1 ≤ X) :
-    (Real.log X) ^ 2 / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e) ≤
+    (Real.log X) ^ (2 : ℕ) / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e) ≤
       barbanVehovSelbergDiagonal X := by
   simpa [barbanVehovSelbergDiagonal, barbanVehovWeight_one hX] using
     sq_div_sum_sqfreeTotientInv_le_totientDiagonal hX (barbanVehovWeight X)
@@ -134,7 +134,7 @@ theorem sq_log_div_sum_sqfreeTotientInv_le_barbanVehovSelbergDiagonal
 theorem tendsto_barbanVehovSelbergLowerBenchmark_one :
     Tendsto
       (fun X : ℕ =>
-        ((Real.log X) ^ 2 / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
+        ((Real.log X) ^ (2 : ℕ) / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
           Real.log X)
       atTop (𝓝 1) := by
   have hinv := tendsto_sum_sqfreeTotientInv_div_log_one.inv₀ one_ne_zero
@@ -149,7 +149,7 @@ theorem eventually_one_sub_le_barbanVehovSelbergDiagonal_div_log {ε : ℝ} (hε
     ∀ᶠ X : ℕ in atTop,
       1 - ε ≤ barbanVehovSelbergDiagonal X / Real.log X := by
   have hnear : ∀ᶠ X : ℕ in atTop,
-      dist (((Real.log X) ^ 2 / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
+      dist (((Real.log X) ^ (2 : ℕ) / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
         Real.log X) 1 < ε :=
     tendsto_barbanVehovSelbergLowerBenchmark_one.eventually
       (Metric.ball_mem_nhds _ hε)
@@ -160,7 +160,7 @@ theorem eventually_one_sub_le_barbanVehovSelbergDiagonal_div_log {ε : ℝ} (hε
   have hdiv := div_le_div_of_nonneg_right hlower hlogpos.le
   rw [Real.dist_eq] at hnearX
   have habsLower : -ε <
-      ((Real.log X) ^ 2 / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
+      ((Real.log X) ^ (2 : ℕ) / (∑ e ∈ Finset.Icc 1 X, sqfreeTotientInv e)) /
         Real.log X - 1 := (abs_lt.mp hnearX).1
   exact le_trans (by linarith) hdiv
 

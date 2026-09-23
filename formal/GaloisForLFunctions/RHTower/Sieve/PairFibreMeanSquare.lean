@@ -53,7 +53,7 @@ theorem innerFibre_eq {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ} (ha : 
     have h2 : (2 : ℝ) ≤ Real.sqrt x := by
       have hle : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
       rwa [show Real.sqrt 4 = 2 by
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at hle
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at hle
     have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0
     have hb0 : (1 : ℝ) ≤ (b : ℝ) := by nlinarith [hhigh, hprod1]
     exact_mod_cast hb0
@@ -67,8 +67,8 @@ theorem innerFibre_eq {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {a : ℕ} (ha : 
 corresponding averaged bound, because the block has at most `√X + 1` elements. -/
 theorem tendsto_sum_abs_div_of_meanSquare {g : ℝ → ℕ → ℝ} {X hh : ℝ → ℝ}
     (hXtop : Tendsto X atTop atTop) (hhtop : Tendsto hh atTop atTop)
-    (hms : Tendsto (fun x => (∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ 2)
-        / (hh x ^ 2 * Real.sqrt (X x))) atTop (𝓝 0)) :
+    (hms : Tendsto (fun x => (∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ (2 : ℕ))
+        / (hh x ^ (2 : ℕ) * Real.sqrt (X x))) atTop (𝓝 0)) :
     Tendsto (fun x => (∑ a ∈ outerBlock (X x) (hh x), |g x a|)
         / (hh x * Real.sqrt (X x) * Real.log 2)) atTop (𝓝 0) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
@@ -86,8 +86,8 @@ theorem tendsto_sum_abs_div_of_meanSquare {g : ℝ → ℕ → ℝ} {X hh : ℝ 
   have hprod := hratio.mul hms
   rw [mul_zero] at hprod
   have hsqrtlim : Tendsto (fun x : ℝ => Real.sqrt (((Real.sqrt (X x) + 1) / Real.sqrt (X x))
-      * ((∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ 2)
-        / (hh x ^ 2 * Real.sqrt (X x)))) / Real.log 2) atTop (𝓝 0) := by
+      * ((∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ (2 : ℕ))
+        / (hh x ^ (2 : ℕ) * Real.sqrt (X x)))) / Real.log 2) atTop (𝓝 0) := by
     have hc : Tendsto (fun y : ℝ => Real.sqrt y) (𝓝 0) (𝓝 0) := by
       have := (Real.continuous_sqrt).tendsto (0 : ℝ)
       rwa [Real.sqrt_zero] at this
@@ -99,37 +99,37 @@ theorem tendsto_sum_abs_div_of_meanSquare {g : ℝ → ℕ → ℝ} {X hh : ℝ 
     hXsqrt.eventually_gt_atTop 0] with x hx hhx hs
   have hd : (0 : ℝ) < hh x * Real.sqrt (X x) := by positivity
   set A : ℝ := ∑ a ∈ outerBlock (X x) (hh x), |g x a| with hAdef
-  set Q : ℝ := ∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ 2 with hQdef
+  set Q : ℝ := ∑ a ∈ outerBlock (X x) (hh x), (g x a) ^ (2 : ℕ) with hQdef
   have hA0 : (0 : ℝ) ≤ A := by
     rw [hAdef]
     positivity
   have hQ0 : (0 : ℝ) ≤ Q := by
     rw [hQdef]
     positivity
-  have hcs : A ^ 2 ≤ ((outerBlock (X x) (hh x)).card : ℝ) * Q := by
+  have hcs : A ^ (2 : ℕ) ≤ ((outerBlock (X x) (hh x)).card : ℝ) * Q := by
     have hbase := sq_sum_le_card_mul_sum_sq (s := outerBlock (X x) (hh x))
       (f := fun a => |g x a|)
-    have hval : ∑ a ∈ outerBlock (X x) (hh x), |g x a| ^ 2 = Q := by
+    have hval : ∑ a ∈ outerBlock (X x) (hh x), |g x a| ^ (2 : ℕ) = Q := by
       rw [hQdef]
       exact Finset.sum_congr rfl (fun a _ => sq_abs _)
     rw [hval] at hbase
     exact hbase
   have hcard : ((outerBlock (X x) (hh x)).card : ℝ) ≤ Real.sqrt (X x) + 1 :=
     card_outerBlock_le (le_of_lt hx) hhx.le
-  have hbound : A ^ 2 ≤ (Real.sqrt (X x) + 1) * Q :=
+  have hbound : A ^ (2 : ℕ) ≤ (Real.sqrt (X x) + 1) * Q :=
     le_trans hcs (mul_le_mul_of_nonneg_right hcard hQ0)
   set K : ℝ := ((Real.sqrt (X x) + 1) / Real.sqrt (X x))
-    * (Q / (hh x ^ 2 * Real.sqrt (X x))) with hKdef
-  have hK : (A / (hh x * Real.sqrt (X x))) ^ 2 ≤ K := by
+    * (Q / (hh x ^ (2 : ℕ) * Real.sqrt (X x))) with hKdef
+  have hK : (A / (hh x * Real.sqrt (X x))) ^ (2 : ℕ) ≤ K := by
     rw [hKdef, div_pow, div_le_iff₀ (by positivity)]
-    have hexp : ((Real.sqrt (X x) + 1) / Real.sqrt (X x)) * (Q / (hh x ^ 2 * Real.sqrt (X x)))
-        * (hh x * Real.sqrt (X x)) ^ 2 = (Real.sqrt (X x) + 1) * Q := by
+    have hexp : ((Real.sqrt (X x) + 1) / Real.sqrt (X x)) * (Q / (hh x ^ (2 : ℕ) * Real.sqrt (X x)))
+        * (hh x * Real.sqrt (X x)) ^ (2 : ℕ) = (Real.sqrt (X x) + 1) * Q := by
       field_simp
     rw [hexp]
     exact hbound
   have hstep : A / (hh x * Real.sqrt (X x)) ≤ Real.sqrt K := by
     calc A / (hh x * Real.sqrt (X x))
-        = Real.sqrt ((A / (hh x * Real.sqrt (X x))) ^ 2) :=
+        = Real.sqrt ((A / (hh x * Real.sqrt (X x))) ^ (2 : ℕ)) :=
           (Real.sqrt_sq (by positivity)).symm
       _ ≤ Real.sqrt K := Real.sqrt_le_sqrt hK
   have hfinal : A / (hh x * Real.sqrt (X x) * Real.log 2) ≤ Real.sqrt K / Real.log 2 := by
@@ -140,15 +140,15 @@ theorem tendsto_sum_abs_div_of_meanSquare {g : ℝ → ℕ → ℝ} {X hh : ℝ 
 
 /-- **The mean square of the fibre sums, normalised.** -/
 def AveragedMeanSquare (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
-  Tendsto (fun x => (∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ 2)
-      / (hh x ^ 2 * Real.sqrt x)) atTop (𝓝 0)
+  Tendsto (fun x => (∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ (2 : ℕ))
+      / (hh x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0)
 
 /-- **The centred mean square of the fibre sums, at a moving pair of parameters.** -/
 def AveragedMeanSquareDensityAt (f : ℕ → ℝ) (c : ℝ) (X hh : ℝ → ℝ) : Prop :=
   Tendsto (fun x => (∑ a ∈ outerBlock (X x) (hh x),
       ((∑ b ∈ innerFibre (X x) (hh x) a, f b)
-        - c * (hh x * Real.sqrt (X x) / (a : ℝ))) ^ 2)
-      / (hh x ^ 2 * Real.sqrt (X x))) atTop (𝓝 0)
+        - c * (hh x * Real.sqrt (X x) / (a : ℝ))) ^ (2 : ℕ))
+      / (hh x ^ (2 : ℕ) * Real.sqrt (X x))) atTop (𝓝 0)
 
 /-- The cancellation hypothesis follows from the mean square. -/
 theorem averagedShortInterval_of_meanSquare {f : ℕ → ℝ} {hh : ℝ → ℝ}

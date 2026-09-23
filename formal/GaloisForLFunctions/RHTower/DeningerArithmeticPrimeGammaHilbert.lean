@@ -162,7 +162,7 @@ theorem deningerPrimeGammaUpperCauchyTest_squareSummable
   exact hs.congr fun q => by
     rw [deningerPrimeGammaUpperToJetHilbert_apply]
 
-/-- The abstract lower packet realization is its literal `ell^2` evaluation vector. -/
+/-- The abstract lower packet realization is its literal `ell^(2 : ℕ)` evaluation vector. -/
 theorem xiWeilEvaluationLp_deningerPrimeGammaLowerCauchyTest
     (x : DeningerPrimeGammaLowerPacket) :
     xiWeilEvaluationLp
@@ -174,7 +174,7 @@ theorem xiWeilEvaluationLp_deningerPrimeGammaLowerCauchyTest
   rw [xiWeilEvaluationLp_apply,
     deningerPrimeGammaLowerToJetHilbert_apply]
 
-/-- The abstract upper packet realization is its literal `ell^2` evaluation vector. -/
+/-- The abstract upper packet realization is its literal `ell^(2 : ℕ)` evaluation vector. -/
 theorem xiWeilEvaluationLp_deningerPrimeGammaUpperCauchyTest
     (y : DeningerPrimeGammaUpperPacket) :
     xiWeilEvaluationLp

@@ -153,25 +153,25 @@ private lemma ratio_prime_step {p : ℕ} (hp : p.Prime) (P : Finset ℕ)
         (tendsto_id : Tendsto id atTop atTop)
   have hh : Tendsto h atTop (𝓝 (L-(1/(p : ℝ))*L)) :=
     hlim.sub ((hlim.comp hscale).const_mul (1/(p : ℝ)))
-  have hrec (Y : ℝ) : h Y = f Y - (1/(p : ℝ)^2)*f (Y/(p : ℝ)^2) := by
+  have hrec (Y : ℝ) : h Y = f Y - (1/(p : ℝ)^(2 : ℕ))*f (Y/(p : ℝ)^(2 : ℕ)) := by
     dsimp only [h, g]
     rw [ratio_insert hp P hpP Y, ratio_insert hp P hpP (Y/p)]
     change f Y + (1/(p : ℝ))*f (Y/p) -
       (1/(p : ℝ))*(f (Y/p)+(1/(p : ℝ))*f (Y/(p : ℝ)/(p : ℝ))) = _
     rw [div_div, ← pow_two]
     ring
-  have hf := Sieve.tendsto_of_div_contraction ((p : ℝ)^2) (by nlinarith) f h
+  have hf := Sieve.tendsto_of_div_contraction ((p : ℝ)^(2 : ℕ)) (by nlinarith) f h
     (L-(1/(p : ℝ))*L) 1 (by norm_num) (ratio_bound (insert p P)) hh hrec
   convert hf using 1
   congr 1
   have hm : (p : ℝ)-1 ≠ 0 := by linarith
-  have hs : (p : ℝ)^2-1 ≠ 0 := by nlinarith
+  have hs : (p : ℝ)^(2 : ℕ)-1 ≠ 0 := by nlinarith
   field_simp
   ring
 
 private lemma count_empty_eq (N : ℕ) :
     (fixedCoreSquarefreeCount ∅ N : ℝ) =
-      ∑ n ∈ Icc 1 N, ((ArithmeticFunction.moebius n : ℤ) : ℝ)^2 := by
+      ∑ n ∈ Icc 1 N, ((ArithmeticFunction.moebius n : ℤ) : ℝ)^(2 : ℕ) := by
   calc
     _ = ∑ n ∈ fixedCoreSquarefreeIndices ∅ N, (1 : ℝ) := by
       simp [fixedCoreSquarefreeCount]
@@ -180,7 +180,7 @@ private lemma count_empty_eq (N : ℕ) :
       apply sum_congr rfl
       intro n hn
       by_cases hs : Squarefree n
-      · have hm : (1 : ℝ) = ((ArithmeticFunction.moebius n : ℤ) : ℝ)^2 := by
+      · have hm : (1 : ℝ) = ((ArithmeticFunction.moebius n : ℤ) : ℝ)^(2 : ℕ) := by
           exact_mod_cast (ArithmeticFunction.moebius_sq_eq_one_of_squarefree hs).symm
         simpa [hs] using hm
       · simp [hs, ArithmeticFunction.moebius_eq_zero_of_not_squarefree hs]

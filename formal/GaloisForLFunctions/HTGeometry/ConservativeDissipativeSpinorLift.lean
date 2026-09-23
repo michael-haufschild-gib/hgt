@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry.SchafferExl
 noncomputable section
 
 /-- Positive normalization of the finite stereographic chart. -/
-def spinChartScale (z : ℂ) : ℝ := (Real.sqrt (1 + ‖z‖ ^ 2))⁻¹
+def spinChartScale (z : ℂ) : ℝ := (Real.sqrt (1 + ‖z‖ ^ (2 : ℕ)))⁻¹
 
 /-- The chart normalization never vanishes. -/
 theorem spinChartScale_pos (z : ℂ) : 0 < spinChartScale z := by
@@ -28,7 +28,7 @@ theorem spinChartScale_pos (z : ℂ) : 0 < spinChartScale z := by
   positivity
 
 /-- Exact squared chart normalization, with no nonzero-coordinate premise. -/
-theorem spinChartScale_sq (z : ℂ) : spinChartScale z ^ 2 = (1 + ‖z‖ ^ 2)⁻¹ := by
+theorem spinChartScale_sq (z : ℂ) : spinChartScale z ^ (2 : ℕ) = (1 + ‖z‖ ^ (2 : ℕ))⁻¹ := by
   rw [spinChartScale, inv_pow, Real.sq_sqrt (by positivity)]
 
 /-- A canonical normalized complex doublet over every finite spin chart coordinate. -/
@@ -36,12 +36,12 @@ def spinChartSpinor (z : ℂ) : Fin 2 → ℂ := (spinChartScale z : ℂ) • ![
 
 /-- The chart lift lies exactly on the existing unit Higgs-spinor vacuum manifold. -/
 theorem spinChartSpinor_normSq (z : ℂ) : abelianHiggsSpinorNormSq (spinChartSpinor z) = 1 := by
-  have hd : 1 + ‖z‖ ^ 2 ≠ 0 := by positivity
+  have hd : 1 + ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
   simp only [abelianHiggsSpinorNormSq, spinChartSpinor, Pi.smul_apply, smul_eq_mul,
     Matrix.cons_val_zero, Matrix.cons_val_one, mul_one, Complex.normSq_eq_norm_sq,
     norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
-  rw [show spinChartScale z ^ 2 * ‖z‖ ^ 2 + spinChartScale z ^ 2 =
-    spinChartScale z ^ 2 * (1 + ‖z‖ ^ 2) by ring, spinChartScale_sq, inv_mul_cancel₀ hd]
+  rw [show spinChartScale z ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ) + spinChartScale z ^ (2 : ℕ) =
+    spinChartScale z ^ (2 : ℕ) * (1 + ‖z‖ ^ (2 : ℕ)) by ring, spinChartScale_sq, inv_mul_cancel₀ hd]
 
 /-- The spin lift has zero Mexican-hat energy at every chart coordinate. -/
 theorem spinChartSpinor_higgs_potential (z : ℂ) :
@@ -73,9 +73,9 @@ theorem spinChartDensity_isHermitian (z : ℂ) : (spinChartDensity z).IsHermitia
 /-- The density matrix has the exact rational stereographic entries. -/
 theorem spinChartDensity_entries (z : ℂ) :
     spinChartDensity z =
-      (((1 + ‖z‖ ^ 2)⁻¹ : ℝ) : ℂ) • !![((‖z‖ ^ 2 : ℝ) : ℂ), z; conj z, 1] := by
+      (((1 + ‖z‖ ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) • !![((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ), z; conj z, 1] := by
   have hfactor : spinChartDensity z =
-      ((spinChartScale z ^ 2 : ℝ) : ℂ) • higgsSpinorEventMatrix ![z, 1] := by
+      ((spinChartScale z ^ (2 : ℕ) : ℝ) : ℂ) • higgsSpinorEventMatrix ![z, 1] := by
     ext i j
     simp only [spinChartDensity, higgsSpinorEventMatrix, spinChartSpinor,
       Matrix.vecMulVec_apply, Pi.star_apply, Pi.smul_apply, Matrix.smul_apply, smul_eq_mul,
@@ -90,7 +90,7 @@ theorem spinChartDensity_entries (z : ℂ) :
 
 /-- The spin density has unit trace. -/
 theorem spinChartDensity_trace (z : ℂ) : Matrix.trace (spinChartDensity z) = 1 := by
-  have hd : ((1 + ‖z‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (show (1 + ‖z‖ ^ 2 : ℝ) ≠ 0 by positivity)
+  have hd : ((1 + ‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (show (1 + ‖z‖ ^ (2 : ℕ) : ℝ) ≠ 0 by positivity)
   rw [spinChartDensity_entries]
   simp [Matrix.trace, Fin.sum_univ_two]
   field_simp
@@ -117,7 +117,7 @@ theorem spinChartDensity_lorentz (z : ℂ) :
     spinChartDensity z = (1 / 2 : ℂ) •
       lorentzHermitianMatrix 1 (_root_.Bottcher.stereo z 0)
         (_root_.Bottcher.stereo z 1) (_root_.Bottcher.stereo z 2) := by
-  have hd : 1 + ‖z‖ ^ 2 ≠ 0 := by positivity
+  have hd : 1 + ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
   rw [spinChartDensity_entries]
   ext i j
   fin_cases i <;> fin_cases j <;>

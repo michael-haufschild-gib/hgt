@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.ProjectiveGaussianRateDistortion
 # Operational effective-support separation
 
 The amplitude target `1 - eta` corresponds for pure states to trace-distance
-radius `sqrt (2 * eta - eta^2)`.  This file compares projective water entropy
+radius `sqrt (2 * eta - eta^(2 : ℕ))`.  This file compares projective water entropy
 with hard support at half that operational radius, the sharper truncation
 scale used in current geometric recurrence bounds.
 -/
@@ -13,9 +13,9 @@ noncomputable section
 
 namespace RHTower
 
-/-- Trace-distance radius corresponding to fidelity target `(1 - eta)^2`. -/
+/-- Trace-distance radius corresponding to fidelity target `(1 - eta)^(2 : ℕ)`. -/
 def binaryTraceDistanceRadius (eta : ℝ) : ℝ :=
-  Real.sqrt (2 * eta - eta ^ 2)
+  Real.sqrt (2 * eta - eta ^ (2 : ℕ))
 
 /-- The half-trace-distance tail scale used for the sharper hard-support
 comparison. -/
@@ -24,8 +24,8 @@ def binaryTraceSupportTail (eta : ℝ) : ℝ :=
 
 theorem binaryTraceDistanceRadius_sq
     {eta : ℝ} (heta0 : 0 ≤ eta) (heta2 : eta ≤ 2) :
-    binaryTraceDistanceRadius eta ^ 2 = 1 - (1 - eta) ^ 2 := by
-  have hrad : 0 ≤ 2 * eta - eta ^ 2 := by
+    binaryTraceDistanceRadius eta ^ (2 : ℕ) = 1 - (1 - eta) ^ (2 : ℕ) := by
+  have hrad : 0 ≤ 2 * eta - eta ^ (2 : ℕ) := by
     nlinarith [mul_nonneg heta0 (sub_nonneg.mpr heta2)]
   rw [binaryTraceDistanceRadius, Real.sq_sqrt hrad]
   ring
@@ -35,13 +35,13 @@ strictly larger than the amplitude defect itself. -/
 theorem eta_lt_binaryTraceSupportTail
     {eta : ℝ} (heta0 : 0 < eta) (heta2fifths : eta < 2 / 5) :
     eta < binaryTraceSupportTail eta := by
-  have hrad : 0 ≤ 2 * eta - eta ^ 2 := by
+  have hrad : 0 ≤ 2 * eta - eta ^ (2 : ℕ) := by
     nlinarith [sq_nonneg eta]
-  have hsqrt_nonneg : 0 ≤ Real.sqrt (2 * eta - eta ^ 2) :=
+  have hsqrt_nonneg : 0 ≤ Real.sqrt (2 * eta - eta ^ (2 : ℕ)) :=
     Real.sqrt_nonneg _
-  have hsqrt_sq : Real.sqrt (2 * eta - eta ^ 2) ^ 2 =
-      2 * eta - eta ^ 2 := Real.sq_sqrt hrad
-  have hgap : 4 * eta ^ 2 < 2 * eta - eta ^ 2 := by
+  have hsqrt_sq : Real.sqrt (2 * eta - eta ^ (2 : ℕ)) ^ (2 : ℕ) =
+      2 * eta - eta ^ (2 : ℕ) := Real.sq_sqrt hrad
+  have hgap : 4 * eta ^ (2 : ℕ) < 2 * eta - eta ^ (2 : ℕ) := by
     nlinarith [mul_pos heta0 (by linarith : 0 < 2 - 5 * eta)]
   simp only [binaryTraceSupportTail, binaryTraceDistanceRadius]
   nlinarith
@@ -49,13 +49,13 @@ theorem eta_lt_binaryTraceSupportTail
 theorem binaryTraceSupportTail_lt_half
     {eta : ℝ} (heta0 : 0 < eta) (heta2fifths : eta < 2 / 5) :
     binaryTraceSupportTail eta < 1 / 2 := by
-  have hrad : 0 ≤ 2 * eta - eta ^ 2 := by
+  have hrad : 0 ≤ 2 * eta - eta ^ (2 : ℕ) := by
     nlinarith [sq_nonneg eta]
-  have hsqrt_nonneg : 0 ≤ Real.sqrt (2 * eta - eta ^ 2) :=
+  have hsqrt_nonneg : 0 ≤ Real.sqrt (2 * eta - eta ^ (2 : ℕ)) :=
     Real.sqrt_nonneg _
-  have hsqrt_sq : Real.sqrt (2 * eta - eta ^ 2) ^ 2 =
-      2 * eta - eta ^ 2 := Real.sq_sqrt hrad
-  have hradlt : 2 * eta - eta ^ 2 < 1 := by
+  have hsqrt_sq : Real.sqrt (2 * eta - eta ^ (2 : ℕ)) ^ (2 : ℕ) =
+      2 * eta - eta ^ (2 : ℕ) := Real.sq_sqrt hrad
+  have hradlt : 2 * eta - eta ^ (2 : ℕ) < 1 := by
     nlinarith [sq_nonneg eta]
   simp only [binaryTraceSupportTail, binaryTraceDistanceRadius]
   nlinarith

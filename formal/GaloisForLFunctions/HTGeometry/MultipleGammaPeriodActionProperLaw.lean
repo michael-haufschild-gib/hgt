@@ -6,7 +6,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 # Multiple-Gamma period-action properness law
 
 This module proves exact topological nonproperness of the finite marked action and constructs the
-effective boundary `Z^2` action as a proper, cocompact lattice action on `C`.
+effective boundary `Z^(2 : ℕ)` action as a proper, cocompact lattice action on `C`.
 -/
 
 open Set Topology Complex
@@ -117,7 +117,7 @@ instance : AddAction BoundaryEffectiveSource ℂ where
     rw [map_add]
     abel
 
-/-- Effective boundary `Z^2` translation action is proper. -/
+/-- Effective boundary `Z^(2 : ℕ)` translation action is proper. -/
 theorem boundaryEffectiveAction_proper : ProperVAdd BoundaryEffectiveSource ℂ := by
   exact properVAdd_of_isClosedEmbedding boundaryEffectivePeriodMap
     boundaryEffectivePeriodMap_isClosedEmbedding (fun _ _ => rfl)

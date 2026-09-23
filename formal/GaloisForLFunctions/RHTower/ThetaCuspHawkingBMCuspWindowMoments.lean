@@ -29,12 +29,12 @@ theorem cuspWindowDerivative_compact (j : ℕ) : HasCompactSupport (cuspWindowDe
   isCompact_Icc.of_isClosed_subset isClosed_closure (cuspWindowDerivative_support j)
 
 theorem cuspWindowDerivative_sq_integrable (j : ℕ) :
-    Integrable (fun x : ℝ => cuspWindowDerivative j x^2) := by
+    Integrable (fun x : ℝ => cuspWindowDerivative j x^(2 : ℕ)) := by
   apply ((cuspWindowDerivative_smooth j).continuous.pow 2).integrable_of_hasCompactSupport
   simpa only [pow_two] using (cuspWindowDerivative_compact j).mul_right
 
 /-- The finite real squared derivative moments of the original compact window. -/
-def cuspWindowMoment (j : ℕ) : ℝ := ∫ x : ℝ, cuspWindowDerivative j x^2
+def cuspWindowMoment (j : ℕ) : ℝ := ∫ x : ℝ, cuspWindowDerivative j x^(2 : ℕ)
 
 theorem cuspWindowMoment_nonneg (j : ℕ) : 0 ≤ cuspWindowMoment j :=
   integral_nonneg (fun _ => sq_nonneg _)

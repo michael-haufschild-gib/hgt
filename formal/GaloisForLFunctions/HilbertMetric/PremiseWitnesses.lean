@@ -132,7 +132,7 @@ theorem squareEnergy_lt_trace_columnEnergy_sq_jordanNilpotentTwo :
 /-- Strict positivity of the scalar log-curvature numerator is strict log-convexity of the
 2-jet. -/
 theorem scalarLogCurvatureNumerator_pos_iff (z z₁ z₂ : ℝ) :
-    0 < scalarLogCurvatureNumerator z z₁ z₂ ↔ z₁ ^ 2 < z * z₂ := by
+    0 < scalarLogCurvatureNumerator z z₁ z₂ ↔ z₁ ^ (2 : ℕ) < z * z₂ := by
   rw [scalarLogCurvatureNumerator, sub_pos]
 
 theorem scalarLogCurvatureNumerator_unit : scalarLogCurvatureNumerator 1 0 1 = 1 := by
@@ -191,7 +191,7 @@ theorem quasiFreeSpectralFanoMargin_twoMode_neg :
 /-- The filling-failure consequence, on the explicit configuration. -/
 theorem twoMode_filling_failure :
     4 * ((0 : ℝ) * 4) * (∑ i, twoModeOccupation i) <
-      (Fintype.card (Fin 2) : ℝ) * ((0 : ℝ) + 4 - 1) ^ 2 :=
+      (Fintype.card (Fin 2) : ℝ) * ((0 : ℝ) + 4 - 1) ^ (2 : ℕ) :=
   quasiFreeSpectralFanoMargin_negative_forces_filling_failure
     twoModeFrame twoModeEnergy twoModeOccupation twoModeFrame_isOrthonormal
     twoModeOccupation_nonneg 0 4 twoModeEnergy_lower twoModeEnergy_upper
@@ -212,7 +212,7 @@ theorem quasiFreeSpectralBandBudget_twoMode_pos :
 
 /-- The tomography-free support-rank certificate, on the explicit configuration. -/
 theorem twoMode_support_rank_lower_bound :
-    quasiFreeSpectralMean twoModeFrame twoModeEnergy twoModeOccupation ^ 2 /
+    quasiFreeSpectralMean twoModeFrame twoModeEnergy twoModeOccupation ^ (2 : ℕ) /
         quasiFreeSpectralBandBudget twoModeFrame twoModeEnergy twoModeOccupation 0 4 ≤
       (Fintype.card (Fin 2) : ℝ) :=
   quasiFreeSpectral_support_rank_lower_bound

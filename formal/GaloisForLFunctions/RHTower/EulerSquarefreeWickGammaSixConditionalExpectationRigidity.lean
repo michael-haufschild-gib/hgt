@@ -96,7 +96,7 @@ theorem eulerWickGammaSixBalancedDephasing_comp_apply
     eulerWickGammaSixBalancedDephasing a
         (eulerWickGammaSixBalancedDephasing a M) i j =
       if i = j then M i j
-      else ((eulerWickGammaSixDephasingFactor a : ℂ) ^ 2) * M i j := by
+      else ((eulerWickGammaSixDephasingFactor a : ℂ) ^ (2 : ℕ)) * M i j := by
   rw [eulerWickGammaSixBalancedDephasing_apply]
   split_ifs with hij
   · simpa [hij] using eulerWickGammaSixBalancedDephasing_apply a M i j
@@ -122,7 +122,7 @@ theorem eulerWickGammaSixBalancedDephasing_idempotent_iff (a : ℝ) :
       eulerWickQuadraticDepthCharacter_five_odd] at h
     have hkpos := eulerWickGammaSixDephasingFactor_pos a
     have hk : eulerWickGammaSixDephasingFactor a = 1 := by
-      have hreal : eulerWickGammaSixDephasingFactor a ^ 2 =
+      have hreal : eulerWickGammaSixDephasingFactor a ^ (2 : ℕ) =
           eulerWickGammaSixDephasingFactor a := by
         exact_mod_cast h
       nlinarith

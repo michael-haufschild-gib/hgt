@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.SummableSpectrumScrewHilbert
 # Suzuki's screw function: hull, value law, and parity law
 
 Suzuki's screw function of a multiplicity-weighted family of positive ordinates is the
-summable-spectrum screw series with weights `2 m / gamma ^ 2`. Applying the relation-hull
+summable-spectrum screw series with weights `2 m / gamma ^ (2 : ℕ)`. Applying the relation-hull
 laws to that weight family determines its complete cofinal behaviour without assuming
 simplicity of the divisor or rational independence of the ordinates:
 
@@ -15,7 +15,7 @@ simplicity of the divisor or rational independence of the ordinates:
   levels;
 * the uniform time law converges weakly to a limiting distribution supported exactly on
   that interval;
-* the absolute upper bound `4 ∑ m / gamma ^ 2` is attained precisely when every finite
+* the absolute upper bound `4 ∑ m / gamma ^ (2 : ℕ)` is attained precisely when every finite
   integer relation among the ordinates has even total coefficient.
 
 The last item replaces rational independence by an exact parity criterion, which is
@@ -33,7 +33,7 @@ variable {G : Type*}
 
 /-- Screw weight of an ordinate carrying analytic multiplicity. -/
 def suzukiScrewWeight (mult : G → ℕ) (gamma : G → ℝ) : G → ℝ :=
-  fun g => 2 * (mult g : ℝ) / (gamma g) ^ 2
+  fun g => 2 * (mult g : ℝ) / (gamma g) ^ (2 : ℕ)
 
 /-- Suzuki's screw function of a multiplicity-weighted positive ordinate family. -/
 def suzukiScrewFunction (mult : G → ℕ) (gamma : G → ℝ) : ℝ → ℝ :=
@@ -41,20 +41,20 @@ def suzukiScrewFunction (mult : G → ℕ) (gamma : G → ℝ) : ℝ → ℝ :=
 
 theorem suzukiScrewFunction_apply (mult : G → ℕ) (gamma : G → ℝ) (t : ℝ) :
     suzukiScrewFunction mult gamma t =
-      ∑' g, 2 * (mult g : ℝ) / (gamma g) ^ 2 * (1 - Real.cos (gamma g * t)) := rfl
+      ∑' g, 2 * (mult g : ℝ) / (gamma g) ^ (2 : ℕ) * (1 - Real.cos (gamma g * t)) := rfl
 
 theorem suzukiScrewWeight_pos {mult : G → ℕ} {gamma : G → ℝ}
     (hmult : ∀ g, 0 < mult g) (hgamma : ∀ g, gamma g ≠ 0) (g : G) :
     0 < suzukiScrewWeight mult gamma g := by
   have hm : (0 : ℝ) < (mult g : ℝ) := by exact_mod_cast hmult g
-  have hg : (0 : ℝ) < (gamma g) ^ 2 := pow_pos (abs_pos.mpr (hgamma g)) 2 |>.trans_eq
+  have hg : (0 : ℝ) < (gamma g) ^ (2 : ℕ) := pow_pos (abs_pos.mpr (hgamma g)) 2 |>.trans_eq
     (by rw [sq_abs])
   exact div_pos (by linarith) hg
 
 theorem suzukiScrewWeight_nonneg {mult : G → ℕ} {gamma : G → ℝ} (g : G) :
     0 ≤ suzukiScrewWeight mult gamma g := by
   have hm : (0 : ℝ) ≤ (mult g : ℝ) := Nat.cast_nonneg _
-  have hg : (0 : ℝ) ≤ (gamma g) ^ 2 := sq_nonneg _
+  have hg : (0 : ℝ) ≤ (gamma g) ^ (2 : ℕ) := sq_nonneg _
   exact div_nonneg (by linarith) hg
 
 section Laws
@@ -117,7 +117,7 @@ theorem suzukiScrewFunction_law_support :
   screwValueLaw_support (fun g => suzukiScrewWeight_nonneg g) hsum gamma
 
 /-- **Parity law for Suzuki's screw function.** The absolute upper bound
-`4 ∑ m / gamma ^ 2` is the true upper limit exactly when every finite integer relation
+`4 ∑ m / gamma ^ (2 : ℕ)` is the true upper limit exactly when every finite integer relation
 among the ordinates has even total coefficient. -/
 theorem suzukiScrewFunction_limsup_eq_absolute_bound_iff
     (hmult : ∀ g, 0 < mult g) (hgamma : ∀ g, gamma g ≠ 0) :
@@ -144,7 +144,7 @@ theorem sq_norm_suzukiScrewEmbed_sub (t u : ℝ) :
     ‖screwEmbed (fun g => suzukiScrewWeight_nonneg (mult := mult) (gamma := gamma) g) hsum
           (screwPhase gamma t) -
         screwEmbed (fun g => suzukiScrewWeight_nonneg (mult := mult) (gamma := gamma) g) hsum
-          (screwPhase gamma u)‖ ^ 2 =
+          (screwPhase gamma u)‖ ^ (2 : ℕ) =
       suzukiScrewFunction mult gamma (t - u) :=
   sq_norm_screwEmbed_screwPhase_sub (fun g => suzukiScrewWeight_nonneg g) hsum gamma t u
 

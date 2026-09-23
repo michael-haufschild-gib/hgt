@@ -16,7 +16,7 @@ public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.Common
 
 This module packages the Roetteler--Naehrig--Svore--Lauter P-256 baseline row
 as Lean-facing resource fields.  The quantum tuple is the source table route:
-`2330` logical qubits, `1.26 * 10^11` Toffoli gates, and `1.16 * 10^11`
+`2330` logical qubits, `1.26 * 10^(11 : ℕ)` Toffoli gates, and `1.16 * 10^(11 : ℕ)`
 maximal Toffoli-gate depth [RNSL17, ECDLP.tex:170,712-738].  The success
 accounting layer keeps the finite-cyclic DLP classical taxonomy explicit.
 -/

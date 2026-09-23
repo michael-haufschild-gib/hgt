@@ -147,14 +147,14 @@ theorem summable_cofiniteWeightedGramTerm_of_phase
     (hphase : ∀ j p, ‖c j p‖ = 1)
     (hweight : ∀ p, 0 ≤ weight p) (hwsum : Summable weight) :
     Summable fun p => if p ∈ F then 0
-      else weight p * ‖∑ j, q j * c j p‖ ^ 2 := by
+      else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ) := by
   let Q : ℝ := ∑ j, ‖q j‖
   let g : P → ℝ := fun p => if p ∈ F then 0
-    else weight p * ‖∑ j, q j * c j p‖ ^ 2
-  have hdom : Summable fun p => weight p * Q ^ 2 :=
-    hwsum.mul_right (Q ^ 2)
+    else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
+  have hdom : Summable fun p => weight p * Q ^ (2 : ℕ) :=
+    hwsum.mul_right (Q ^ (2 : ℕ))
   change Summable g
-  refine Summable.of_nonneg_of_le (f := fun p => weight p * Q ^ 2) (g := g) ?_ ?_ hdom
+  refine Summable.of_nonneg_of_le (f := fun p => weight p * Q ^ (2 : ℕ)) (g := g) ?_ ?_ hdom
   · intro p
     by_cases hpF : p ∈ F
     · simp [g, hpF]
@@ -186,9 +186,9 @@ theorem cofiniteWeightedGramEnergy_sourceMarkedGibbs_zero_iff_change_temperature
     (_hupper : ∀ p, energy p ≤ radius)
     (k l : ℕ) (F : Finset P) (q : J → ℂ)
     (hsummablek : Summable fun p => if p ∈ F then 0 else
-      sourceMarkedGibbsWeight base energy k p * ‖∑ j, q j * c j p‖ ^ 2)
+      sourceMarkedGibbsWeight base energy k p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ))
     (hsummablel : Summable fun p => if p ∈ F then 0 else
-      sourceMarkedGibbsWeight base energy l p * ‖∑ j, q j * c j p‖ ^ 2) :
+      sourceMarkedGibbsWeight base energy l p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     cofiniteWeightedGramEnergy c (sourceMarkedGibbsWeight base energy k) F q = 0 ↔
       cofiniteWeightedGramEnergy c (sourceMarkedGibbsWeight base energy l) F q = 0 := by
   apply cofiniteWeightedGramEnergy_zero_iff_change_weight

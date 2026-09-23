@@ -24,14 +24,14 @@ theorem mertensS_nonneg' (N : ℕ) : 0 ≤ mertensS N := by
 
 /-- **The coefficient energy of the weighted Möbius polynomial over a half-open range.** -/
 theorem sum_normSq_omegaCoeff_Ioc_le {z₀ z : ℕ} (hz : z₀ ≤ z) (a b : ℕ) (hab : a ≤ b) :
-    ∑ n ∈ Finset.Ioc a b, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2
+    ∑ n ∈ Finset.Ioc a b, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)
       ≤ 8 * ((b : ℝ) - a) * mertensS z + 8 * ((Nat.primesLE z).card : ℝ)
-          + 16 * ((Nat.primesLE z).card : ℝ) ^ 2
-        + 2 * (mertensS z - mertensS z₀) ^ 2 * ((b : ℝ) - a) := by
+          + 16 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)
+        + 2 * (mertensS z - mertensS z₀) ^ (2 : ℕ) * ((b : ℝ) - a) := by
   classical
   set W : ℝ := mertensS z - mertensS z₀ with hW
-  have hterm : ∀ n ∈ Finset.Ioc a b, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2
-      ≤ 2 * (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - W) ^ 2 + 2 * W ^ 2 := by
+  have hterm : ∀ n ∈ Finset.Ioc a b, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)
+      ≤ 2 * (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - W) ^ (2 : ℕ) + 2 * W ^ (2 : ℕ) := by
     intro n _
     have hnorm : ‖omegaCoeff (primesRange z₀ z) n‖
         = |((ArithmeticFunction.moebius n : ℤ) : ℝ)
@@ -45,8 +45,8 @@ theorem sum_normSq_omegaCoeff_Ioc_le {z₀ z : ℕ} (hz : z₀ ≤ z) (a b : ℕ
         ≤ ((primeFactorsIn (primesRange z₀ z) n).card : ℝ) := by
       rw [hnorm, abs_mul, abs_of_nonneg hcard0]
       nlinarith [h1, h4, hcard0]
-    have hsq : ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2
-        ≤ ((primeFactorsIn (primesRange z₀ z) n).card : ℝ) ^ 2 :=
+    have hsq : ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)
+        ≤ ((primeFactorsIn (primesRange z₀ z) n).card : ℝ) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hle 2
     nlinarith [hsq, sq_nonneg (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - 2 * W)]
   refine (Finset.sum_le_sum hterm).trans ?_
@@ -58,15 +58,15 @@ theorem sum_normSq_omegaCoeff_Ioc_le {z₀ z : ℕ} (hz : z₀ ≤ z) (a b : ℕ
       push_cast [Nat.cast_sub this]
       ring
     linarith [this.le]
-  have hW2 : (0 : ℝ) ≤ W ^ 2 := sq_nonneg W
+  have hW2 : (0 : ℝ) ≤ W ^ (2 : ℕ) := sq_nonneg W
   nlinarith [hvar, hcount, hW2]
 
 /-- **The coefficient energy over a closed range.** -/
 theorem sum_normSq_omegaCoeff_Icc_le {z₀ z : ℕ} (hz : z₀ ≤ z) {A B : ℕ} (hA : 1 ≤ A) :
-    ∑ n ∈ Finset.Icc A B, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2
+    ∑ n ∈ Finset.Icc A B, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)
       ≤ 8 * (B : ℝ) * mertensS z + 8 * ((Nat.primesLE z).card : ℝ)
-          + 16 * ((Nat.primesLE z).card : ℝ) ^ 2
-        + 2 * (mertensS z - mertensS z₀) ^ 2 * (B : ℝ) := by
+          + 16 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)
+        + 2 * (mertensS z - mertensS z₀) ^ (2 : ℕ) * (B : ℝ) := by
   classical
   by_cases hAB : A ≤ B
   · have hIcc : Finset.Icc A B = Finset.Ioc (A - 1) B := by
@@ -80,14 +80,14 @@ theorem sum_normSq_omegaCoeff_Icc_le {z₀ z : ℕ} (hz : z₀ ≤ z) {A B : ℕ
       have : (0 : ℝ) ≤ ((A - 1 : ℕ) : ℝ) := Nat.cast_nonneg _
       linarith
     have hm : (0 : ℝ) ≤ mertensS z := mertensS_nonneg' z
-    have hW2 : (0 : ℝ) ≤ (mertensS z - mertensS z₀) ^ 2 := sq_nonneg _
+    have hW2 : (0 : ℝ) ≤ (mertensS z - mertensS z₀) ^ (2 : ℕ) := sq_nonneg _
     nlinarith [hstep, hm, hW2]
   · have hempty : Finset.Icc A B = ∅ := by
       rw [Finset.Icc_eq_empty]
       omega
     rw [hempty, Finset.sum_empty]
     have hm : (0 : ℝ) ≤ mertensS z := mertensS_nonneg' z
-    have hW2 : (0 : ℝ) ≤ (mertensS z - mertensS z₀) ^ 2 := sq_nonneg _
+    have hW2 : (0 : ℝ) ≤ (mertensS z - mertensS z₀) ^ (2 : ℕ) := sq_nonneg _
     have hB : (0 : ℝ) ≤ (B : ℝ) := Nat.cast_nonneg _
     have hp : (0 : ℝ) ≤ ((Nat.primesLE z).card : ℝ) := Nat.cast_nonneg _
     positivity

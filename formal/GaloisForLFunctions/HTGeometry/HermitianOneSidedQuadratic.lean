@@ -22,7 +22,7 @@ variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 /-- Exact eigencoordinate formula for a Hermitian quadratic form. -/
 theorem inner_apply_eq_sum_eigenvalues (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) :
     inner ℂ v (T v) =
-      ((∑ i, hT.eigenvalues hn i * ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ i, hT.eigenvalues hn i * ‖(hT.eigenvectorBasis hn).repr v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [inner_eq_sum_repr hT hn v (T v), Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [repr_of_diagonal (hT.eigenvectorBasis hn) (hT.apply_eigenvectorBasis hn) v i]
@@ -33,7 +33,7 @@ threshold times the norm square. -/
 theorem re_inner_apply_le_of_mem_eigenSum_orthogonal
     (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ} {v : E}
     (hv : v ∈ (eigenSum T c)ᗮ) :
-    (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ 2 := by
+    (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ (2 : ℕ) := by
   rw [inner_apply_eq_sum_eigenvalues hT hn v]
   simp only [Complex.ofReal_re]
   rw [norm_sq_eq_sum_repr hT hn v, Finset.mul_sum]
@@ -48,14 +48,14 @@ above the threshold. -/
 theorem re_inner_apply_gt_of_mem_eigenSum
     (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ} {v : E}
     (hv : v ∈ eigenSum T c) (hv0 : v ≠ 0) :
-    c * ‖v‖ ^ 2 < (inner ℂ v (T v)).re := by
+    c * ‖v‖ ^ (2 : ℕ) < (inner ℂ v (T v)).re := by
   rw [inner_apply_eq_sum_eigenvalues hT hn v]
   simp only [Complex.ofReal_re]
   rw [norm_sq_eq_sum_repr hT hn v, Finset.mul_sum]
   obtain ⟨i, hi⟩ : ∃ i : Fin n, (hT.eigenvectorBasis hn).repr v i ≠ 0 := by
     by_contra hcon
     push Not at hcon
-    have hnorm : ‖v‖ ^ 2 = 0 := by
+    have hnorm : ‖v‖ ^ (2 : ℕ) = 0 := by
       rw [norm_sq_eq_sum_repr hT hn v]
       exact Finset.sum_eq_zero fun i _ => by rw [hcon i]; simp
     exact hv0 (norm_eq_zero.1 ((pow_eq_zero_iff two_ne_zero).1 hnorm))
@@ -77,7 +77,7 @@ theorem re_inner_apply_gt_of_mem_eigenSum
 upper bound `c`. -/
 theorem eigenSum_eq_bot_iff_global_quadratic_upper
     (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (c : ℝ) :
-    eigenSum T c = ⊥ ↔ ∀ v : E, (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ 2 := by
+    eigenSum T c = ⊥ ↔ ∀ v : E, (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ (2 : ℕ) := by
   constructor
   · intro hbot v
     have hv : v ∈ (eigenSum T c)ᗮ := by rw [hbot]; simp
@@ -99,9 +99,9 @@ theorem eigenSum_eq_bot_iff_global_quadratic_upper
 Large negative eigenspaces play no role. -/
 theorem global_quadratic_upper_iff_on_eigenSum
     (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (c : ℝ) :
-    (∀ v : E, (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ 2) ↔
+    (∀ v : E, (inner ℂ v (T v)).re ≤ c * ‖v‖ ^ (2 : ℕ)) ↔
       ∀ v : eigenSum T c,
-        (inner ℂ (v : E) (T (v : E))).re ≤ c * ‖(v : E)‖ ^ 2 := by
+        (inner ℂ (v : E) (T (v : E))).re ≤ c * ‖(v : E)‖ ^ (2 : ℕ) := by
   constructor
   · exact fun h v => h v
   · intro h

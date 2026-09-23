@@ -29,7 +29,7 @@ theorem xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder
     (y : ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) * xiShiftedHankelFirstOmittedCoupling y (n + 1) c =
-      c (Fin.last n) ^ 2 * xiShiftedHankelBoundaryMonicRemainder y c := by
+      c (Fin.last n) ^ (2 : ℕ) * xiShiftedHankelBoundaryMonicRemainder y c := by
   exact HTGeometry.terminal_mul_hankelFirstOmittedCoupling_eq_sq_mul_monicRemainder
     (fun k => (xiShiftedReciprocalMoment y k).re) c hlast
 
@@ -49,7 +49,7 @@ theorem xiShiftedHankelFirstCrossing_monicRemainder_nonpos
     hy n c hc hmin
   rw [xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder y c hlast]
     at hcross
-  have hsquare : 0 < c (Fin.last n) ^ 2 := sq_pos_of_ne_zero hlast
+  have hsquare : 0 < c (Fin.last n) ^ (2 : ℕ) := sq_pos_of_ne_zero hlast
   nlinarith
 
 /-- The monic extension class is the monic positive-flat-quadrature remainder. -/
@@ -194,10 +194,10 @@ theorem xiShiftedHankelBoundary_christoffelPortDifference_eq_monicRemainder
     (hlast : c (Fin.last n) ≠ 0) :
     HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X + C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) -
+          (((X + C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+          (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
       4 * a * xiShiftedHankelBoundaryMonicRemainder y c := by
   exact HTGeometry.finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
     (fun k => (xiShiftedReciprocalMoment y k).re) c a hc hlast
@@ -211,18 +211,18 @@ theorem xiShiftedHankelBoundary_christoffelPortCapacityOrientation
     (hlast : c (Fin.last n) ≠ 0) :
     HTGeometry.momentFunctional
         (fun k => (xiShiftedReciprocalMoment y k).re)
-        (((X + C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+        (((X + C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
               (fun k => (xiShiftedReciprocalMoment y k).re)
-              (X ^ 2 * HTGeometry.finiteHankelNullMonicPolynomial c *
+              (X ^ (2 : ℕ) * HTGeometry.finiteHankelNullMonicPolynomial c *
                 HTGeometry.finiteHankelNullMonicPolynomial c) +
             2 * a * xiShiftedHankelBoundaryMonicRemainder y c ∧
       HTGeometry.momentFunctional
         (fun k => (xiShiftedReciprocalMoment y k).re)
-        (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+        (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
               (fun k => (xiShiftedReciprocalMoment y k).re)
-              (X ^ 2 * HTGeometry.finiteHankelNullMonicPolynomial c *
+              (X ^ (2 : ℕ) * HTGeometry.finiteHankelNullMonicPolynomial c *
                 HTGeometry.finiteHankelNullMonicPolynomial c) -
             2 * a * xiShiftedHankelBoundaryMonicRemainder y c := by
   exact HTGeometry.finiteHankelBoundary_christoffelPortCapacityOrientation
@@ -237,10 +237,10 @@ theorem xiShiftedHankelBoundaryMonicRemainder_pos_iff_christoffelPortOrder
     0 < xiShiftedHankelBoundaryMonicRemainder y c ↔
       HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) <
+          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) := by
+          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
   exact HTGeometry.finiteHankelBoundaryMonicRemainder_pos_iff_christoffelPortOrder
     (fun k => (xiShiftedReciprocalMoment y k).re) c hc hlast
 
@@ -252,7 +252,7 @@ theorem hasDerivAt_xiShiftedMomentHankelQuadratic_of_kernel_succ_shiftedSquare
     (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     HasDerivAt (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c)
-      (-(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+      (-(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
           (X * HTGeometry.finiteHankelNullMonicPolynomial c *
@@ -266,7 +266,7 @@ theorem hasDerivAt_xiShiftedMomentHankelQuadratic_of_kernel_succ_shiftedSquare
   have hvalue :
       -(2 * (n : ℝ) + 1) * c (Fin.last n) *
           xiShiftedHankelFirstOmittedCoupling y (n + 1) c =
-        -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ 2 *
+        -(2 * (n : ℝ) + 1) * c (Fin.last n) ^ (2 : ℕ) *
           HTGeometry.momentFunctional
             (fun k => (xiShiftedReciprocalMoment y k).re)
             (X * HTGeometry.finiteHankelNullMonicPolynomial c *
@@ -278,7 +278,7 @@ theorem hasDerivAt_xiShiftedMomentHankelQuadratic_of_kernel_succ_shiftedSquare
             (c (Fin.last n) *
               xiShiftedHankelFirstOmittedCoupling y (n + 1) c) := by ring
       _ = -(2 * (n : ℝ) + 1) *
-          (c (Fin.last n) ^ 2 *
+          (c (Fin.last n) ^ (2 : ℕ) *
             xiShiftedHankelBoundaryMonicRemainder y c) := by rw [hterminal]
       _ = _ := by rw [hshift]; ring
   rw [← hvalue]
@@ -314,10 +314,10 @@ theorem xiShiftedHankelFirstCrossing_christoffelForwardPort_le_backwardPort
       (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c) (Ici y) y) :
     HTGeometry.momentFunctional
         (fun k => (xiShiftedReciprocalMoment y k).re)
-        (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) ≤
+        (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) ≤
       HTGeometry.momentFunctional
         (fun k => (xiShiftedReciprocalMoment y k).re)
-        (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) := by
+        (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
   have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
     y n c hhead hcne hc
   have hnonpos := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
@@ -329,10 +329,10 @@ theorem xiShiftedHankelFirstCrossing_christoffelForwardPort_le_backwardPort
   have hle :
       HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X + 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) ≤
+          (((X + 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) ≤
         HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
-          (((X - 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) := by
+          (((X - 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
     linarith
   simpa using hle
 
@@ -340,7 +340,7 @@ theorem xiShiftedHankelFirstCrossing_christoffelForwardPort_le_backwardPort
 theorem xiShiftedHankelBoundaryMonicRemainder_eq_inv_mul_sourceJet
     {w : ℝ} (hw : 0 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
-    xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c =
+    xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c =
       (c (Fin.last n))⁻¹ * xiShiftedHankelBoundarySourceJet w (n + 1) c := by
   rw [xiShiftedHankelBoundaryMonicRemainder,
     HTGeometry.finiteHankelBoundaryMonicRemainder_eq_inv_mul_raw _ c hlast,
@@ -356,11 +356,11 @@ theorem xiShiftedHankel_terminal_mul_sourceJet_eq_sq_mul_monicRemainder
     {w : ℝ} (hw : 0 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) * xiShiftedHankelBoundarySourceJet w (n + 1) c =
-      c (Fin.last n) ^ 2 *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      c (Fin.last n) ^ (2 : ℕ) *
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   rw [xiShiftedHankelBoundarySourceJet_eq hw,
     xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder
-      (w ^ 2) c hlast]
+      (w ^ (2 : ℕ)) c hlast]
 
 /-- **Projective prime--Gamma open core.** On the Euler ray, positivity of the canonical monic
 extension class is exactly domination of the oriented prime discrepancy by the oriented
@@ -368,7 +368,7 @@ archimedean jet.  Both sides are invariant under reversing the null vector. -/
 theorem xiShiftedHankelBoundaryMonicRemainder_pos_iff_projectiveSourceDominance
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
-    0 < xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c ↔
+    0 < xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c ↔
       -(c (Fin.last n) *
           xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c) <
         c (Fin.last n) *
@@ -378,7 +378,7 @@ theorem xiShiftedHankelBoundaryMonicRemainder_pos_iff_projectiveSourceDominance
       (by linarith : 0 < w) c hlast
   rw [xiShiftedHankelBoundarySourceJet_eq_archimedean_add_discrepancy hw]
     at hsource
-  have hsquare : 0 < c (Fin.last n) ^ 2 := sq_pos_of_ne_zero hlast
+  have hsquare : 0 < c (Fin.last n) ^ (2 : ℕ) := sq_pos_of_ne_zero hlast
   constructor <;> intro h <;> nlinarith
 
 /-- **Local Stieltjes/source equivalence.** On an admissible singular face, positivity of the one
@@ -386,10 +386,10 @@ shifted-Hankel square not seen by the current face is exactly projective prime--
 dominance. -/
 theorem xiShiftedHankelBoundaryShiftedSquare_pos_iff_projectiveSourceDominance
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     0 < HTGeometry.momentFunctional
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
         (X * HTGeometry.finiteHankelNullMonicPolynomial c *
           HTGeometry.finiteHankelNullMonicPolynomial c) ↔
       -(c (Fin.last n) *
@@ -406,14 +406,14 @@ This identifies the missing face sign as a source-conditioned two-port orientati
 positivity of either diagonal port separately. -/
 theorem xiShiftedHankelBoundary_christoffelPortOrder_iff_projectiveSourceDominance
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (c : Fin (n + 1) → ℝ)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
-          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) <
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
         HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
-          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) ↔
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) ↔
       -(c (Fin.last n) *
           xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c) <
         c (Fin.last n) *
@@ -430,7 +430,7 @@ theorem xiShiftedHankel_terminal_mul_primeArchJet_eq_sq_mul_monicRemainder
     {n : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) * xiShiftedHankelBoundaryPrimeArchJet y (n + 1) c =
-      c (Fin.last n) ^ 2 * xiShiftedHankelBoundaryMonicRemainder y c := by
+      c (Fin.last n) ^ (2 : ℕ) * xiShiftedHankelBoundaryMonicRemainder y c := by
   rw [← xiShiftedHankelBoundaryQuadratureError_eq_primeArchJet hy hymax,
     ← xiShiftedHankelFirstOmittedCoupling_eq_boundaryQuadratureError]
   exact xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder y c hlast
@@ -445,10 +445,10 @@ theorem primeArchShifted_christoffelPortDifference_eq_monicRemainder
     (hlast : c (Fin.last n) ≠ 0) :
     HTGeometry.momentFunctional
           (fun k => (primeArchShiftedReciprocalMoment y k).re)
-          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) -
+          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
         HTGeometry.momentFunctional
           (fun k => (primeArchShiftedReciprocalMoment y k).re)
-          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
       4 * xiShiftedHankelBoundaryMonicRemainder y c := by
   have htransport (p : Polynomial ℝ) :
       HTGeometry.momentFunctional
@@ -476,10 +476,10 @@ theorem xiShiftedHankelBoundaryMonicRemainder_pos_iff_primeArchChristoffelPortOr
     0 < xiShiftedHankelBoundaryMonicRemainder y c ↔
       HTGeometry.momentFunctional
           (fun k => (primeArchShiftedReciprocalMoment y k).re)
-          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) <
+          (((X - C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
         HTGeometry.momentFunctional
           (fun k => (primeArchShiftedReciprocalMoment y k).re)
-          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) := by
+          (((X + C 1) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
   have hdiff :=
     primeArchShifted_christoffelPortDifference_eq_monicRemainder
       hy hymax c hc hlast
@@ -494,18 +494,18 @@ of the oriented prime discrepancy by the oriented archimedean jet is impossible.
 this one source inequality for every admissible singular face excludes every first crossing. -/
 theorem xiShiftedHankelFirstCrossing_not_projectiveSourceDominance
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
     (hcne : c ≠ 0)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hmin : IsLocalMinOn
       (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c)
-      (Ici (w ^ 2)) (w ^ 2)) :
+      (Ici (w ^ (2 : ℕ))) (w ^ (2 : ℕ))) :
     ¬ (-(c (Fin.last n) *
           xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c) <
         c (Fin.last n) *
           xiShiftedHankelBoundaryArchimedeanJet w (n + 1) c) := by
   have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
-    (w ^ 2) n c hhead hcne hc
+    (w ^ (2 : ℕ)) n c hhead hcne hc
   have hnonpos := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
     (sq_pos_of_pos (by linarith : 0 < w)) n c hhead hcne hc hmin
   intro hdominance

@@ -63,16 +63,16 @@ multiplier minus exactly half the real Neumann symbol. -/
 theorem suzukiPhysicalRightCarlemanMultiplier_eq
     (lambda : ℝ) {z : ℂ} (hXi : XiC z ≠ 0) :
     suzukiPhysicalRightCarlemanMultiplier lambda z =
-      I * suzukiShiftedXiMultiplier 0 z - (lambda : ℂ) / (2 * z ^ 2) := by
+      I * suzukiShiftedXiMultiplier 0 z - (lambda : ℂ) / (2 * z ^ (2 : ℕ)) := by
   simp only [suzukiPhysicalRightCarlemanMultiplier, suzukiShiftedXiMultiplier_eq,
     suzukiShiftedXiDenominator, suzukiOneSidedCenteredShiftParameter,
     zero_mul, sub_zero]
   field_simp [hXi]
   calc
-    I * (deriv XiC z * 2 - -(I * (lambda : ℂ) * XiC z)) / z ^ 2 =
-        (I * deriv XiC z * 2 + (I * I) * (lambda : ℂ) * XiC z) / z ^ 2 := by
+    I * (deriv XiC z * 2 - -(I * (lambda : ℂ) * XiC z)) / z ^ (2 : ℕ) =
+        (I * deriv XiC z * 2 + (I * I) * (lambda : ℂ) * XiC z) / z ^ (2 : ℕ) := by
           ring
-    _ = (I * deriv XiC z * 2 - (lambda : ℂ) * XiC z) / z ^ 2 := by
+    _ = (I * deriv XiC z * 2 - (lambda : ℂ) * XiC z) / z ^ (2 : ℕ) := by
           rw [I_mul_I]
           ring
 
@@ -98,7 +98,7 @@ theorem neg_I_mul_suzukiPhysicalRightCarlemanExterior
   simp only [suzukiPhysicalRightCarlemanExterior, suzukiPhysicalRightCarlemanMultiplier,
     suzukiRightCarlemanExterior, suzukiWeylNormalizedRightTriangle]
   ring_nf
-  rw [show I ^ 2 = (-1 : ℂ) by norm_num]
+  rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
   ring
 
 /-! ## Central physical flux and the corrected Herglotz threshold -/
@@ -172,7 +172,7 @@ theorem suzukiWeylNormalizedCentralSourceFlux_im_eq_zero_of_source_quadrature
     simp only [suzukiPhysicalAffineSewnCentralSourceFlux]
     push_cast
     field_simp
-    rw [show I ^ 2 = (-1 : ℂ) by norm_num]
+    rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
     ring
   rw [hval]
   change ((((beta * b * rightAlpha - alpha * a * rightBeta) /

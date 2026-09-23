@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem nestedInfiniteEdgeWeight_le_inverseSquare (e : ℕ) :
-    nestedInfiniteEdgeWeight e ≤ 4 / (((e + 1 : ℕ) : ℝ) ^ 2) := by
+    nestedInfiniteEdgeWeight e ≤ 4 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   unfold nestedInfiniteEdgeWeight
   split_ifs with he
   · rcases he with ⟨m, rfl⟩
@@ -35,42 +35,42 @@ theorem nestedInfiniteEdgeWeight_le_inverseSquare (e : ℕ) :
     have hx0 : 0 ≤ x := by positivity
     have hy0 : 0 ≤ y := by positivity
     have hxy : y ≤ 2 * x := by simpa [x, y] using hreal
-    have hySq : y ^ 2 ≤ 4 * x ^ 2 := by
+    have hySq : y ^ (2 : ℕ) ≤ 4 * x ^ (2 : ℕ) := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hxy)
         (add_nonneg hy0 (mul_nonneg (show (0 : ℝ) ≤ 2 by norm_num) hx0))]
-    have hxSq : x ^ 2 ≤ x ^ 4 := by
-      have hxSqOne : 1 ≤ x ^ 2 := one_le_pow₀ (by simpa [x] using hbase)
+    have hxSq : x ^ (2 : ℕ) ≤ x ^ (4 : ℕ) := by
+      have hxSqOne : 1 ≤ x ^ (2 : ℕ) := one_le_pow₀ (by simpa [x] using hbase)
       nlinarith [mul_nonneg (sq_nonneg x) (sub_nonneg.mpr hxSqOne)]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     simpa [x, y] using hySq.trans (mul_le_mul_of_nonneg_left hxSq (by norm_num))
 
-theorem nestedInfiniteEdgeWeight_nonneg (e : ℕ) :
+theorem nestedInfiniteEdgeWeight_nonneg_thermodynamicPathCoefficientSummability (e : ℕ) :
     0 ≤ nestedInfiniteEdgeWeight e := by
   unfold nestedInfiniteEdgeWeight
   split_ifs <;> positivity
 
 theorem infinitePathRadius_le_inverseSquare (i : InfinitePathLabel) :
-    infinitePathRadius i ≤ 1 / ((((i.elim Prod.fst Prod.fst) + 1 : ℕ) : ℝ) ^ 2) := by
+    infinitePathRadius i ≤ 1 / ((((i.elim Prod.fst Prod.fst) + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   rcases i with ⟨s, q⟩ | ⟨e, ab⟩
-  · change 1 / (1000000 * (((s + 1 : ℕ) : ℝ) ^ 2)) ≤
-      1 / (((s + 1 : ℕ) : ℝ) ^ 2)
+  · change 1 / (1000000 * (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))) ≤
+      1 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [sq_nonneg (((s + 1 : ℕ) : ℝ))]
-  · change 1 / (1000000 * (((e + 1 : ℕ) : ℝ) ^ 2)) ≤
-      1 / (((e + 1 : ℕ) : ℝ) ^ 2)
+  · change 1 / (1000000 * (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ))) ≤
+      1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ))
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [sq_nonneg (((e + 1 : ℕ) : ℝ))]
 
 theorem nestedInfinitePathCenter_onsite_abs_le
     (s : ℕ) (q : Fin 3) :
     |nestedInfinitePathCenter (Sum.inl (s, q))| ≤
-      5 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+      5 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   change |if q = 2 then
     -(nestedInfiniteEdgeWeight s +
       if s = 0 then 0 else nestedInfiniteEdgeWeight (s - 1)) / 4 else 0| ≤ _
   by_cases hq : q = 2
   · rw [if_pos hq]
-    have hw0 := nestedInfiniteEdgeWeight_nonneg s
+    have hw0 := nestedInfiniteEdgeWeight_nonneg_thermodynamicPathCoefficientSummability s
     have hw := nestedInfiniteEdgeWeight_le_inverseSquare s
     by_cases hs : s = 0
     · subst s
@@ -80,54 +80,54 @@ theorem nestedInfinitePathCenter_onsite_abs_le
       norm_num at hw ⊢
       linarith
     · have hspos : 0 < s := Nat.pos_of_ne_zero hs
-      have hwPrev0 := nestedInfiniteEdgeWeight_nonneg (s - 1)
+      have hwPrev0 := nestedInfiniteEdgeWeight_nonneg_thermodynamicPathCoefficientSummability (s - 1)
       have hwPrev := nestedInfiniteEdgeWeight_le_inverseSquare (s - 1)
       have hsCast : (1 : ℝ) ≤ s := by exact_mod_cast hspos
-      have hcompare : (1 : ℝ) / (s : ℝ) ^ 2 ≤
-          4 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+      have hcompare : (1 : ℝ) / (s : ℝ) ^ (2 : ℕ) ≤
+          4 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         push_cast
         nlinarith
       have hwPrev' : nestedInfiniteEdgeWeight (s - 1) ≤
-          4 / (s : ℝ) ^ 2 := by
+          4 / (s : ℝ) ^ (2 : ℕ) := by
         have hnat : s - 1 + 1 = s := by omega
         simpa [hnat] using hwPrev
       have hwPrevFinal : nestedInfiniteEdgeWeight (s - 1) ≤
-          16 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+          16 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
         calc
-          nestedInfiniteEdgeWeight (s - 1) ≤ 4 / (s : ℝ) ^ 2 := hwPrev'
-          _ = 4 * (1 / (s : ℝ) ^ 2) := by ring
-          _ ≤ 4 * (4 / (((s + 1 : ℕ) : ℝ) ^ 2)) :=
+          nestedInfiniteEdgeWeight (s - 1) ≤ 4 / (s : ℝ) ^ (2 : ℕ) := hwPrev'
+          _ = 4 * (1 / (s : ℝ) ^ (2 : ℕ)) := by ring
+          _ ≤ 4 * (4 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))) :=
             mul_le_mul_of_nonneg_left hcompare (by norm_num)
-          _ = 16 / (((s + 1 : ℕ) : ℝ) ^ 2) := by ring
+          _ = 16 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by ring
       rw [if_neg hs,
         show -(nestedInfiniteEdgeWeight s + nestedInfiniteEdgeWeight (s - 1)) / 4 =
           -((nestedInfiniteEdgeWeight s + nestedInfiniteEdgeWeight (s - 1)) / 4) by ring,
         abs_neg, abs_of_nonneg (div_nonneg (add_nonneg hw0 hwPrev0) (by norm_num))]
       calc
         (nestedInfiniteEdgeWeight s + nestedInfiniteEdgeWeight (s - 1)) / 4 ≤
-            (4 / (((s + 1 : ℕ) : ℝ) ^ 2) +
-              16 / (((s + 1 : ℕ) : ℝ) ^ 2)) / 4 :=
+            (4 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) +
+              16 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))) / 4 :=
           div_le_div_of_nonneg_right (add_le_add hw hwPrevFinal) (by norm_num)
-        _ = 5 / (((s + 1 : ℕ) : ℝ) ^ 2) := by ring
+        _ = 5 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by ring
   · rw [if_neg hq, abs_zero]
     positivity
 
 theorem nestedInfinitePathCenter_edge_abs_le
     (e : ℕ) (ab : Fin 3 × Fin 3) :
     |nestedInfinitePathCenter (Sum.inr (e, ab))| ≤
-      1 / (((e + 1 : ℕ) : ℝ) ^ 2) := by
+      1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   change |if ab = ((2 : Fin 3), (2 : Fin 3)) then
     nestedInfiniteEdgeWeight e / 4 else 0| ≤ _
   by_cases hab : ab = ((2 : Fin 3), (2 : Fin 3))
   · rw [if_pos hab,
-      abs_of_nonneg (div_nonneg (nestedInfiniteEdgeWeight_nonneg e) (by norm_num))]
+      abs_of_nonneg (div_nonneg (nestedInfiniteEdgeWeight_nonneg_thermodynamicPathCoefficientSummability e) (by norm_num))]
     have hw := nestedInfiniteEdgeWeight_le_inverseSquare e
     calc
       nestedInfiniteEdgeWeight e / 4 ≤
-          (4 / (((e + 1 : ℕ) : ℝ) ^ 2)) / 4 :=
+          (4 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ))) / 4 :=
         div_le_div_of_nonneg_right hw (by norm_num)
-      _ = 1 / (((e + 1 : ℕ) : ℝ) ^ 2) := by ring
+      _ = 1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by ring
   · rw [if_neg hab, abs_zero]
     positivity
 
@@ -135,43 +135,43 @@ theorem selectedPath_onsite_abs_le
     {p : InfinitePathLabel → ℝ}
     (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i)
     (s : ℕ) (q : Fin 3) :
-    |p (Sum.inl (s, q))| ≤ 6 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+    |p (Sum.inl (s, q))| ≤ 6 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   let i : InfinitePathLabel := Sum.inl (s, q)
   have hdiff : |p i - nestedInfinitePathCenter i| ≤ infinitePathRadius i :=
     (hp i).le
-  have hradius : infinitePathRadius i ≤ 1 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+  have hradius : infinitePathRadius i ≤ 1 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
     simpa [i] using infinitePathRadius_le_inverseSquare i
   have hcenter := nestedInfinitePathCenter_onsite_abs_le s q
   calc
     |p i| = |(p i - nestedInfinitePathCenter i) + nestedInfinitePathCenter i| := by ring_nf
     _ ≤ |p i - nestedInfinitePathCenter i| + |nestedInfinitePathCenter i| := abs_add_le _ _
-    _ ≤ infinitePathRadius i + 5 / (((s + 1 : ℕ) : ℝ) ^ 2) :=
+    _ ≤ infinitePathRadius i + 5 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       add_le_add hdiff hcenter
-    _ ≤ 1 / (((s + 1 : ℕ) : ℝ) ^ 2) +
-        5 / (((s + 1 : ℕ) : ℝ) ^ 2) :=
+    _ ≤ 1 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) +
+        5 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       add_le_add hradius le_rfl
-    _ = 6 / (((s + 1 : ℕ) : ℝ) ^ 2) := by ring
+    _ = 6 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by ring
 
 theorem selectedPath_edge_abs_le
     {p : InfinitePathLabel → ℝ}
     (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i)
     (e : ℕ) (ab : Fin 3 × Fin 3) :
-    |p (Sum.inr (e, ab))| ≤ 2 / (((e + 1 : ℕ) : ℝ) ^ 2) := by
+    |p (Sum.inr (e, ab))| ≤ 2 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   let i : InfinitePathLabel := Sum.inr (e, ab)
   have hdiff : |p i - nestedInfinitePathCenter i| ≤ infinitePathRadius i :=
     (hp i).le
-  have hradius : infinitePathRadius i ≤ 1 / (((e + 1 : ℕ) : ℝ) ^ 2) := by
+  have hradius : infinitePathRadius i ≤ 1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
     simpa [i] using infinitePathRadius_le_inverseSquare i
   have hcenter := nestedInfinitePathCenter_edge_abs_le e ab
   calc
     |p i| = |(p i - nestedInfinitePathCenter i) + nestedInfinitePathCenter i| := by ring_nf
     _ ≤ |p i - nestedInfinitePathCenter i| + |nestedInfinitePathCenter i| := abs_add_le _ _
-    _ ≤ infinitePathRadius i + 1 / (((e + 1 : ℕ) : ℝ) ^ 2) :=
+    _ ≤ infinitePathRadius i + 1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       add_le_add hdiff hcenter
-    _ ≤ 1 / (((e + 1 : ℕ) : ℝ) ^ 2) +
-        1 / (((e + 1 : ℕ) : ℝ) ^ 2) :=
+    _ ≤ 1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) +
+        1 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       add_le_add hradius le_rfl
-    _ = 2 / (((e + 1 : ℕ) : ℝ) ^ 2) := by ring
+    _ = 2 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by ring
 
 def selectedPathOnsiteMass (p : InfinitePathLabel → ℝ) (s : ℕ) : ℝ :=
   ∑ q : Fin 3, |p (Sum.inl (s, q))|
@@ -184,30 +184,30 @@ theorem selectedPathOnsiteMass_le
     (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i)
     (s : ℕ) :
     selectedPathOnsiteMass p s ≤
-      18 / (((s + 1 : ℕ) : ℝ) ^ 2) := by
+      18 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   unfold selectedPathOnsiteMass
   calc
     ∑ q : Fin 3, |p (Sum.inl (s, q))| ≤
-        ∑ _q : Fin 3, 6 / (((s + 1 : ℕ) : ℝ) ^ 2) :=
+        ∑ _q : Fin 3, 6 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun q _ => selectedPath_onsite_abs_le hp s q
-    _ = 18 / (((s + 1 : ℕ) : ℝ) ^ 2) := by simp; ring
+    _ = 18 / (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by simp; ring
 
 theorem selectedPathEdgeMass_le
     {p : InfinitePathLabel → ℝ}
     (hp : ∀ i, |p i - nestedInfinitePathCenter i| < infinitePathRadius i)
     (e : ℕ) :
     selectedPathEdgeMass p e ≤
-      18 / (((e + 1 : ℕ) : ℝ) ^ 2) := by
+      18 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   unfold selectedPathEdgeMass
   calc
     ∑ ab : Fin 3 × Fin 3, |p (Sum.inr (e, ab))| ≤
-        ∑ _ab : Fin 3 × Fin 3, 2 / (((e + 1 : ℕ) : ℝ) ^ 2) :=
+        ∑ _ab : Fin 3 × Fin 3, 2 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun ab _ => selectedPath_edge_abs_le hp e ab
-    _ = 18 / (((e + 1 : ℕ) : ℝ) ^ 2) := by simp; ring
+    _ = 18 / (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by simp; ring
 
 theorem summable_pathShiftedInverseSquare :
-    Summable (fun n : ℕ => (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2)) := by
-  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+    Summable (fun n : ℕ => (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
+  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
   have hshift := (summable_nat_add_iff 1).2 hbase
   simpa [Nat.add_comm] using hshift

@@ -40,21 +40,21 @@ noncomputable section
 
 private theorem hasSum_nat_sq_mul_geometric
     {r : ℝ} (hr : ‖r‖ < 1) :
-    HasSum (fun e : ℕ => (e : ℝ) ^ 2 * r ^ e)
-      (r * (1 + r) / (1 - r) ^ 3) := by
+    HasSum (fun e : ℕ => (e : ℝ) ^ (2 : ℕ) * r ^ e)
+      (r * (1 + r) / (1 - r) ^ (3 : ℕ)) := by
   have hchoose := hasSum_choose_mul_geometric_of_norm_lt_one (𝕜 := ℝ) 2 hr
   have hlinear := hasSum_coe_mul_geometric_of_norm_lt_one (𝕜 := ℝ) hr
   have hgeom := hasSum_geometric_of_norm_lt_one (K := ℝ) hr
   have hraw := ((hchoose.mul_left 2).sub (hlinear.mul_left 3)).sub
     (hgeom.mul_left 2)
-  have hraw' : HasSum (fun e : ℕ => (e : ℝ) ^ 2 * r ^ e)
+  have hraw' : HasSum (fun e : ℕ => (e : ℝ) ^ (2 : ℕ) * r ^ e)
       (2 * (1 / (1 - r) ^ (2 + 1)) -
-        3 * (r / (1 - r) ^ 2) - 2 * (1 - r)⁻¹) := by
+        3 * (r / (1 - r) ^ (2 : ℕ)) - 2 * (1 - r)⁻¹) := by
     apply HasSum.congr_fun hraw
     intro e
     have hchooseTwo :
         (2 : ℝ) * ((((e + 2).choose 2 : ℕ) : ℝ)) - 3 * (e : ℝ) - 2 =
-          (e : ℝ) ^ 2 := by
+          (e : ℝ) ^ (2 : ℕ) := by
       have hd : 2 ∣ (e + 2) * (e + 1) := by
         simpa [mul_comm, add_comm, add_left_comm, add_assoc] using
           (Nat.even_mul_succ_self (e + 1)).two_dvd
@@ -77,8 +77,8 @@ private theorem hasSum_nat_sq_mul_geometric
     norm_num at hr
   have hvalue :
       2 * (1 / (1 - r) ^ (2 + 1)) -
-          3 * (r / (1 - r) ^ 2) - 2 * (1 - r)⁻¹ =
-        r * (1 + r) / (1 - r) ^ 3 := by
+          3 * (r / (1 - r) ^ (2 : ℕ)) - 2 * (1 - r)⁻¹ =
+        r * (1 + r) / (1 - r) ^ (3 : ℕ) := by
     field_simp [hne]
     ring_nf
   rw [← hvalue]
@@ -89,26 +89,26 @@ The inverse-prime parameter is source-forced by the completed `+2` shift. -/
 def gammaSewnXiShiftEndpointTangentFeature
     (p : Nat.Primes) (e : ℕ) : ℝ :=
   let a := ((p : ℝ)⁻¹)
-  Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
-    ((1 - a ^ 2) * (e : ℝ) - a ^ 2)
+  Real.sqrt (1 - a ^ (2 : ℕ)) * a ^ (e + 1) *
+    ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ))
 
 /-- The explicit feature is exactly the square-root-density lift of the centered physical-height
 coordinate.  This identifies the new cross-prime carrier with the actual Xi-shift law. -/
 theorem gammaSewnXiShiftEndpointTangentFeature_sq_eq
     (p : Nat.Primes) (e : ℕ) :
-    gammaSewnXiShiftEndpointTangentFeature p e ^ 2 =
+    gammaSewnXiShiftEndpointTangentFeature p e ^ (2 : ℕ) =
       gammaSewnXiShiftJointDepthProbability 1 p e *
-        (gammaSewnXiShiftEndpointHeightLift p e - (p : ℝ)⁻¹) ^ 2 := by
+        (gammaSewnXiShiftEndpointHeightLift p e - (p : ℝ)⁻¹) ^ (2 : ℕ) := by
   let a := ((p : ℝ)⁻¹)
   have hp : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
   have ha0 : 0 < a := by dsimp only [a]; positivity
   have ha1 : a < 1 := by
     dsimp only [a]
     exact (inv_lt_one₀ (by positivity)).mpr hp
-  have haSq : 0 ≤ 1 - a ^ 2 := by nlinarith [sq_lt_sq₀ ha0.le (by norm_num) |>.2 ha1]
-  have hsqrt : Real.sqrt (1 - a ^ 2) ^ 2 = 1 - a ^ 2 :=
+  have haSq : 0 ≤ 1 - a ^ (2 : ℕ) := by nlinarith [sq_lt_sq₀ ha0.le (by norm_num) |>.2 ha1]
+  have hsqrt : Real.sqrt (1 - a ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - a ^ (2 : ℕ) :=
     Real.sq_sqrt haSq
-  have haPow : (a ^ (e + 1)) ^ 2 = (a ^ 2) ^ e * a ^ 2 := by
+  have haPow : (a ^ (e + 1)) ^ (2 : ℕ) = (a ^ (2 : ℕ)) ^ e * a ^ (2 : ℕ) := by
     rw [pow_succ a e, mul_pow, ← mul_pow]
     ring
   rw [gammaSewnXiShiftJointDepthProbability,
@@ -118,22 +118,22 @@ theorem gammaSewnXiShiftEndpointTangentFeature_sq_eq
   unfold gammaSewnXiShiftEndpointTangentFeature
     gammaSewnXiShiftEndpointHeightLift
   rw [xiMobiusContinuousApertureDiskNode_two_eq_inv_sq]
-  change (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
-      ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) ^ 2 =
-    (1 - a ^ 2) * (a ^ 2) ^ e *
-      ((1 - a ^ 2) * a * ((e : ℝ) + 1) - a) ^ 2
+  change (Real.sqrt (1 - a ^ (2 : ℕ)) * a ^ (e + 1) *
+      ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ))) ^ (2 : ℕ) =
+    (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ e *
+      ((1 - a ^ (2 : ℕ)) * a * ((e : ℝ) + 1) - a) ^ (2 : ℕ)
   calc
-    (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
-        ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) ^ 2 =
-        Real.sqrt (1 - a ^ 2) ^ 2 * (a ^ (e + 1)) ^ 2 *
-          ((1 - a ^ 2) * (e : ℝ) - a ^ 2) ^ 2 := by
+    (Real.sqrt (1 - a ^ (2 : ℕ)) * a ^ (e + 1) *
+        ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ))) ^ (2 : ℕ) =
+        Real.sqrt (1 - a ^ (2 : ℕ)) ^ (2 : ℕ) * (a ^ (e + 1)) ^ (2 : ℕ) *
+          ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ)) ^ (2 : ℕ) := by
             ring
-    _ = Real.sqrt (1 - a ^ 2) ^ 2 * (a ^ 2) ^ e * a ^ 2 *
-          ((1 - a ^ 2) * (e : ℝ) - a ^ 2) ^ 2 := by
+    _ = Real.sqrt (1 - a ^ (2 : ℕ)) ^ (2 : ℕ) * (a ^ (2 : ℕ)) ^ e * a ^ (2 : ℕ) *
+          ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ)) ^ (2 : ℕ) := by
             rw [haPow]
             ring
-    _ = (1 - a ^ 2) * (a ^ 2) ^ e *
-        ((1 - a ^ 2) * a * ((e : ℝ) + 1) - a) ^ 2 := by
+    _ = (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ e *
+        ((1 - a ^ (2 : ℕ)) * a * ((e : ℝ) + 1) - a) ^ (2 : ℕ) := by
           rw [hsqrt]
           ring
 
@@ -149,8 +149,8 @@ def gammaSewnXiShiftEndpointTangentKernelClosed
     (p q : Nat.Primes) : ℝ :=
   let a := ((p : ℝ)⁻¹)
   let b := ((q : ℝ)⁻¹)
-  a ^ 2 * b ^ 2 * Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) *
-    ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / (1 - a * b) ^ 3
+  a ^ (2 : ℕ) * b ^ (2 : ℕ) * Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) *
+    ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / (1 - a * b) ^ (3 : ℕ)
 
 /-- Exact infinite cross-prime summation. -/
 theorem hasSum_gammaSewnXiShiftEndpointTangentFeature_mul
@@ -180,46 +180,46 @@ theorem hasSum_gammaSewnXiShiftEndpointTangentFeature_mul
   have hzero := hasSum_geometric_of_norm_lt_one (K := ℝ) hunorm
   have hone := hasSum_coe_mul_geometric_of_norm_lt_one (𝕜 := ℝ) hunorm
   have htwo := hasSum_nat_sq_mul_geometric hunorm
-  let A := (1 - a ^ 2) * (1 - b ^ 2)
-  let B := -((1 - a ^ 2) * b ^ 2 + (1 - b ^ 2) * a ^ 2)
-  let C := a ^ 2 * b ^ 2
-  let D := Real.sqrt (1 - a ^ 2) * Real.sqrt (1 - b ^ 2) * a * b
+  let A := (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))
+  let B := -((1 - a ^ (2 : ℕ)) * b ^ (2 : ℕ) + (1 - b ^ (2 : ℕ)) * a ^ (2 : ℕ))
+  let C := a ^ (2 : ℕ) * b ^ (2 : ℕ)
+  let D := Real.sqrt (1 - a ^ (2 : ℕ)) * Real.sqrt (1 - b ^ (2 : ℕ)) * a * b
   have hpoly := ((htwo.mul_left A).add (hone.mul_left B)).add (hzero.mul_left C)
   have hscaled := hpoly.mul_left D
   have hscaled' : HasSum
       (fun e : ℕ => gammaSewnXiShiftEndpointTangentFeature p e *
         gammaSewnXiShiftEndpointTangentFeature q e)
-      (D * (A * (u * (1 + u) / (1 - u) ^ 3) +
-        B * (u / (1 - u) ^ 2) + C * (1 - u)⁻¹)) := by
+      (D * (A * (u * (1 + u) / (1 - u) ^ (3 : ℕ)) +
+        B * (u / (1 - u) ^ (2 : ℕ)) + C * (1 - u)⁻¹)) := by
     apply HasSum.congr_fun hscaled
     intro e
-    change (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
-        ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) *
-      (Real.sqrt (1 - b ^ 2) * b ^ (e + 1) *
-        ((1 - b ^ 2) * (e : ℝ) - b ^ 2)) =
-      D * (A * ((e : ℝ) ^ 2 * u ^ e) +
+    change (Real.sqrt (1 - a ^ (2 : ℕ)) * a ^ (e + 1) *
+        ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ))) *
+      (Real.sqrt (1 - b ^ (2 : ℕ)) * b ^ (e + 1) *
+        ((1 - b ^ (2 : ℕ)) * (e : ℝ) - b ^ (2 : ℕ))) =
+      D * (A * ((e : ℝ) ^ (2 : ℕ) * u ^ e) +
         B * ((e : ℝ) * u ^ e) + C * u ^ e)
     rw [pow_succ, pow_succ]
-    change _ = D * (A * ((e : ℝ) ^ 2 * (a * b) ^ e) +
+    change _ = D * (A * ((e : ℝ) ^ (2 : ℕ) * (a * b) ^ e) +
       B * ((e : ℝ) * (a * b) ^ e) + C * (a * b) ^ e)
     rw [mul_pow]
     dsimp only [A, B, C, D]
     ring_nf
   have hvalue :
       gammaSewnXiShiftEndpointTangentKernelClosed p q =
-        D * (A * (u * (1 + u) / (1 - u) ^ 3) +
-          B * (u / (1 - u) ^ 2) + C * (1 - u)⁻¹) := by
+        D * (A * (u * (1 + u) / (1 - u) ^ (3 : ℕ)) +
+          B * (u / (1 - u) ^ (2 : ℕ)) + C * (1 - u)⁻¹) := by
     dsimp only [gammaSewnXiShiftEndpointTangentKernelClosed,
       u]
     have hden : 1 - a * b ≠ 0 := sub_ne_zero.mpr hu1.ne'
-    have haSq : 0 ≤ 1 - a ^ 2 := by
+    have haSq : 0 ≤ 1 - a ^ (2 : ℕ) := by
       nlinarith [sq_lt_sq₀ ha0.le (by norm_num) |>.2 ha1]
-    have hbSq : 0 ≤ 1 - b ^ 2 := by
+    have hbSq : 0 ≤ 1 - b ^ (2 : ℕ) := by
       nlinarith [sq_lt_sq₀ hb0.le (by norm_num) |>.2 hb1]
-    change a ^ 2 * b ^ 2 * Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) *
-        ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / (1 - a * b) ^ 3 =
-      D * (A * (u * (1 + u) / (1 - u) ^ 3) +
-        B * (u / (1 - u) ^ 2) + C * (1 - u)⁻¹)
+    change a ^ (2 : ℕ) * b ^ (2 : ℕ) * Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) *
+        ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / (1 - a * b) ^ (3 : ℕ) =
+      D * (A * (u * (1 + u) / (1 - u) ^ (3 : ℕ)) +
+        B * (u / (1 - u) ^ (2 : ℕ)) + C * (1 - u)⁻¹)
     rw [Real.sqrt_mul haSq]
     dsimp only [A, B, C, D, u]
     field_simp [hden]
@@ -245,7 +245,7 @@ theorem gammaSewnXiShiftEndpointTangentKernel_symm
 /-- The diagonal of the new cross-prime kernel recovers the exact `p⁻⁴` tangent mass. -/
 theorem gammaSewnXiShiftEndpointTangentKernel_self
     (p : Nat.Primes) :
-    gammaSewnXiShiftEndpointTangentKernel p p = ((p : ℝ)⁻¹) ^ 4 := by
+    gammaSewnXiShiftEndpointTangentKernel p p = ((p : ℝ)⁻¹) ^ (4 : ℕ) := by
   rw [gammaSewnXiShiftEndpointTangentKernel]
   rw [← (hasSum_gammaSewnXiShiftDepthProbability_mul_endpointHeightLift_centered_sq_eq_inv_four
     p).tsum_eq]
@@ -275,31 +275,31 @@ theorem gammaSewnXiShiftEndpointTangentKernel_pos
     dsimp only [b]
     rw [inv_eq_one_div, div_le_iff₀ hq0]
     nlinarith
-  have haSq : a ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
-  have hbSq : b ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg (b - 1 / 2)]
-  have hroot : 0 < (1 - a ^ 2) * (1 - b ^ 2) := by nlinarith
+  have haSq : a ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
+  have hbSq : b ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg (b - 1 / 2)]
+  have hroot : 0 < (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ)) := by nlinarith
   have habHalf' : a * b ≤ (1 / 2 : ℝ) * (1 / 2 : ℝ) :=
     mul_le_mul haHalf hbHalf hb0.le (by norm_num)
   have habHalf : a * b ≤ 1 / 4 := by nlinarith
   have hnode : 0 < 1 - a * b := by nlinarith
-  have hnumerator : 0 < (1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2) := by
+  have hnumerator : 0 < (1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
     have hab : 0 < a * b := mul_pos ha0 hb0
     nlinarith [sq_pos_of_pos hab]
   rw [gammaSewnXiShiftEndpointTangentKernel_eq_closed]
-  change 0 < a ^ 2 * b ^ 2 *
-      Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) *
-        ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / (1 - a * b) ^ 3
+  change 0 < a ^ (2 : ℕ) * b ^ (2 : ℕ) *
+      Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) *
+        ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / (1 - a * b) ^ (3 : ℕ)
   exact div_pos (by positivity) (pow_pos hnode 3)
 
 /-- The forced `p²` normalization of the endpoint tangent feature. -/
 def gammaSewnXiShiftEndpointUnitTangentFeature
     (p : Nat.Primes) (e : ℕ) : ℝ :=
-  (p : ℝ) ^ 2 * gammaSewnXiShiftEndpointTangentFeature p e
+  (p : ℝ) ^ (2 : ℕ) * gammaSewnXiShiftEndpointTangentFeature p e
 
 /-- The normalized cross-prime tangent correlation kernel. -/
 def gammaSewnXiShiftEndpointUnitTangentKernel
     (p q : Nat.Primes) : ℝ :=
-  (p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
+  (p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ) *
     gammaSewnXiShiftEndpointTangentKernel p q
 
 theorem hasSum_gammaSewnXiShiftEndpointUnitTangentFeature_mul
@@ -309,11 +309,11 @@ theorem hasSum_gammaSewnXiShiftEndpointUnitTangentFeature_mul
         gammaSewnXiShiftEndpointUnitTangentFeature q e)
       (gammaSewnXiShiftEndpointUnitTangentKernel p q) := by
   have h := (hasSum_gammaSewnXiShiftEndpointTangentFeature_mul p q).mul_left
-    ((p : ℝ) ^ 2 * (q : ℝ) ^ 2)
+    ((p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ))
   have h' : HasSum
       (fun e : ℕ => gammaSewnXiShiftEndpointUnitTangentFeature p e *
         gammaSewnXiShiftEndpointUnitTangentFeature q e)
-      ((p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
+      ((p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ) *
         gammaSewnXiShiftEndpointTangentKernelClosed p q) := by
     apply HasSum.congr_fun h
     intro e
@@ -321,7 +321,7 @@ theorem hasSum_gammaSewnXiShiftEndpointUnitTangentFeature_mul
     ring_nf
   have hvalue :
       gammaSewnXiShiftEndpointUnitTangentKernel p q =
-        (p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
+        (p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ) *
           gammaSewnXiShiftEndpointTangentKernelClosed p q := by
     rw [gammaSewnXiShiftEndpointUnitTangentKernel,
       gammaSewnXiShiftEndpointTangentKernel_eq_closed]
@@ -342,7 +342,7 @@ def gammaSewnXiShiftEndpointUnitTangentDistanceSq
     (p q : Nat.Primes) : ℝ :=
   ∑' e : ℕ,
     (gammaSewnXiShiftEndpointUnitTangentFeature p e -
-      gammaSewnXiShiftEndpointUnitTangentFeature q e) ^ 2
+      gammaSewnXiShiftEndpointUnitTangentFeature q e) ^ (2 : ℕ)
 
 /-- The correlation defect is exactly half the squared all-depth tangent distance. -/
 theorem gammaSewnXiShiftEndpointUnitTangentDistanceSq_eq
@@ -366,7 +366,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentDistanceSq_eq
   have hsum' : HasSum
       (fun e : ℕ =>
         (gammaSewnXiShiftEndpointUnitTangentFeature p e -
-          gammaSewnXiShiftEndpointUnitTangentFeature q e) ^ 2)
+          gammaSewnXiShiftEndpointUnitTangentFeature q e) ^ (2 : ℕ))
       (gammaSewnXiShiftEndpointUnitTangentKernel p p +
         gammaSewnXiShiftEndpointUnitTangentKernel q q -
           2 * gammaSewnXiShiftEndpointUnitTangentKernel p q) := by
@@ -403,11 +403,11 @@ not remove.  The following source specialization isolates that term exactly.
 
 /-- Determinant of a symmetric three-node matrix with common diagonal `d`. -/
 def constantDiagonalThreePointDet (d xy xz yz : ℝ) : ℝ :=
-  d ^ 3 + 2 * xy * xz * yz - d * (xy ^ 2 + xz ^ 2 + yz ^ 2)
+  d ^ (3 : ℕ) + 2 * xy * xz * yz - d * (xy ^ (2 : ℕ) + xz ^ (2 : ℕ) + yz ^ (2 : ℕ))
 
 /-- Quadratic second-compound expression of three tangent edges. -/
 def rootedTangentSecondCompound (xy xz yz : ℝ) : ℝ :=
-  2 * (xy * xz + xy * yz + xz * yz) - (xy ^ 2 + xz ^ 2 + yz ^ 2)
+  2 * (xy * xz + xy * yz + xz * yz) - (xy ^ (2 : ℕ) + xz ^ (2 : ℕ) + yz ^ (2 : ℕ))
 
 /-- A rank-one root converts the tangent second compound only into the rooted part of the
 three-node determinant; the pure tangent third compound survives exactly. -/
@@ -488,14 +488,14 @@ theorem gammaSewnXiShiftEndpointTangentGeneratingFunction_eq
     (p : Nat.Primes) {z : ℝ}
     (hz : ‖((p : ℝ)⁻¹) * z‖ < 1) :
     gammaSewnXiShiftEndpointTangentGeneratingFunction p z =
-      ((p : ℝ)⁻¹) ^ 2 * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ 2) *
-        (z - (p : ℝ)⁻¹) / (1 - (p : ℝ)⁻¹ * z) ^ 2 := by
+      ((p : ℝ)⁻¹) ^ (2 : ℕ) * Real.sqrt (1 - ((p : ℝ)⁻¹) ^ (2 : ℕ)) *
+        (z - (p : ℝ)⁻¹) / (1 - (p : ℝ)⁻¹ * z) ^ (2 : ℕ) := by
   let a := ((p : ℝ)⁻¹)
   let u := a * z
   have hzero := hasSum_geometric_of_norm_lt_one (K := ℝ) hz
   have hone := hasSum_coe_mul_geometric_of_norm_lt_one (𝕜 := ℝ) hz
-  have hsum := ((hone.mul_left (1 - a ^ 2)).sub
-    (hzero.mul_left (a ^ 2))).mul_left (Real.sqrt (1 - a ^ 2) * a)
+  have hsum := ((hone.mul_left (1 - a ^ (2 : ℕ))).sub
+    (hzero.mul_left (a ^ (2 : ℕ)))).mul_left (Real.sqrt (1 - a ^ (2 : ℕ)) * a)
   unfold gammaSewnXiShiftEndpointTangentGeneratingFunction
   have hden : 1 - a * z ≠ 0 := by
     intro h
@@ -504,24 +504,24 @@ theorem gammaSewnXiShiftEndpointTangentGeneratingFunction_eq
     norm_num at hz
   have hsum' : HasSum
       (fun e : ℕ => gammaSewnXiShiftEndpointTangentFeature p e * z ^ e)
-      (Real.sqrt (1 - a ^ 2) * a *
-        ((1 - a ^ 2) * (u / (1 - u) ^ 2) - a ^ 2 * (1 - u)⁻¹)) := by
+      (Real.sqrt (1 - a ^ (2 : ℕ)) * a *
+        ((1 - a ^ (2 : ℕ)) * (u / (1 - u) ^ (2 : ℕ)) - a ^ (2 : ℕ) * (1 - u)⁻¹)) := by
     apply HasSum.congr_fun hsum
     intro e
-    change (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
-        ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) * z ^ e =
-      Real.sqrt (1 - a ^ 2) * a *
-        ((1 - a ^ 2) * ((e : ℝ) * u ^ e) - a ^ 2 * u ^ e)
+    change (Real.sqrt (1 - a ^ (2 : ℕ)) * a ^ (e + 1) *
+        ((1 - a ^ (2 : ℕ)) * (e : ℝ) - a ^ (2 : ℕ))) * z ^ e =
+      Real.sqrt (1 - a ^ (2 : ℕ)) * a *
+        ((1 - a ^ (2 : ℕ)) * ((e : ℝ) * u ^ e) - a ^ (2 : ℕ) * u ^ e)
     rw [pow_succ]
-    change _ = Real.sqrt (1 - a ^ 2) * a *
-      ((1 - a ^ 2) * ((e : ℝ) * (a * z) ^ e) - a ^ 2 * (a * z) ^ e)
+    change _ = Real.sqrt (1 - a ^ (2 : ℕ)) * a *
+      ((1 - a ^ (2 : ℕ)) * ((e : ℝ) * (a * z) ^ e) - a ^ (2 : ℕ) * (a * z) ^ e)
     rw [mul_pow]
     ring_nf
   rw [hsum'.tsum_eq]
-  change Real.sqrt (1 - a ^ 2) * a *
-      ((1 - a ^ 2) * (a * z / (1 - a * z) ^ 2) -
-        a ^ 2 * (1 - a * z)⁻¹) =
-    a ^ 2 * Real.sqrt (1 - a ^ 2) * (z - a) / (1 - a * z) ^ 2
+  change Real.sqrt (1 - a ^ (2 : ℕ)) * a *
+      ((1 - a ^ (2 : ℕ)) * (a * z / (1 - a * z) ^ (2 : ℕ)) -
+        a ^ (2 : ℕ) * (1 - a * z)⁻¹) =
+    a ^ (2 : ℕ) * Real.sqrt (1 - a ^ (2 : ℕ)) * (z - a) / (1 - a * z) ^ (2 : ℕ)
   field_simp [hden]
   ring
 

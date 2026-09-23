@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardFixedPolylogSelectedEnergy
 
 The Montgomery schedule raises at most `90` times, rather than Huxley's `51`.  Degree `60` still
 makes every coefficient loss fixed: selected width is at most `120`, so the raised dyadic width is
-bounded by `2^10800` and the divisor-moment logarithmic exponent is one fixed natural number.
+bounded by `2^(10800 : ℕ)` and the divisor-moment logarithmic exponent is one fixed natural number.
 -/
 
 noncomputable section
@@ -14,7 +14,7 @@ namespace RHTower.Sieve
 open Finset ArithmeticFunction
 
 /-- Uniform width ratio for a degree-`60` selected group raised at most `90` times. -/
-def maynardMontgomeryRaisedWidthConstant : ℝ := ((2 ^ 10800 : ℕ) : ℝ)
+def maynardMontgomeryRaisedWidthConstant : ℝ := ((2 ^ (10800 : ℕ) : ℕ) : ℝ)
 
 theorem maynardMontgomeryRaisedWidthConstant_one_le :
     1 ≤ maynardMontgomeryRaisedWidthConstant := by
@@ -71,21 +71,21 @@ theorem heathBrownSelected_raisedUpper_le_montgomeryWidth
   have hM : M = A * 2 ^ w := by
     dsimp [M, A, w]
     exact groupedDyadicUpper_eq_lower_mul_twoPow _
-  have hn : M ^ ell ≤ 2 ^ 10800 * A ^ ell := by
+  have hn : M ^ ell ≤ 2 ^ (10800 : ℕ) * A ^ ell := by
     rw [hM, mul_pow, ← pow_mul]
-    have hp : 2 ^ (w * ell) ≤ 2 ^ 10800 :=
+    have hp : 2 ^ (w * ell) ≤ 2 ^ (10800 : ℕ) :=
       Nat.pow_le_pow_right (by norm_num : 0 < 2) hwe
     calc
-      A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ 10800 :=
+      A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ (10800 : ℕ) :=
         Nat.mul_le_mul_left (A ^ ell) hp
-      _ = 2 ^ 10800 * A ^ ell := by rw [mul_comm]
-  have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ 10800 * A ^ ell : ℕ) : ℝ) := by
+      _ = 2 ^ (10800 : ℕ) * A ^ ell := by rw [mul_comm]
+  have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ (10800 : ℕ) * A ^ ell : ℕ) : ℝ) := by
     exact_mod_cast hn
   calc
     (((groupedDyadicUpper
         (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ) =
         ((M ^ ell : ℕ) : ℝ) := rfl
-    _ ≤ ((2 ^ 10800 * A ^ ell : ℕ) : ℝ) := hn'
+    _ ≤ ((2 ^ (10800 : ℕ) * A ^ ell : ℕ) : ℝ) := hn'
     _ = maynardMontgomeryRaisedWidthConstant *
         (((groupedDyadicLower
           (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ) := by
@@ -120,19 +120,19 @@ theorem heathBrownSelectedRaisedEnergy_le_lower_montgomery_fixed_polylog
     dsimp [M, A, w]
     exact groupedDyadicUpper_eq_lower_mul_twoPow _
   have hZwidth : Z ≤ maynardMontgomeryRaisedWidthConstant * Y := by
-    have hn : M ^ ell ≤ 2 ^ 10800 * A ^ ell := by
+    have hn : M ^ ell ≤ 2 ^ (10800 : ℕ) * A ^ ell := by
       rw [hM, mul_pow, ← pow_mul]
-      have hp : 2 ^ (w * ell) ≤ 2 ^ 10800 :=
+      have hp : 2 ^ (w * ell) ≤ 2 ^ (10800 : ℕ) :=
         Nat.pow_le_pow_right (by norm_num : 0 < 2) hwe
       calc
-        A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ 10800 :=
+        A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ (10800 : ℕ) :=
           Nat.mul_le_mul_left (A ^ ell) hp
-        _ = 2 ^ 10800 * A ^ ell := by rw [mul_comm]
-    have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ 10800 * A ^ ell : ℕ) : ℝ) := by
+        _ = 2 ^ (10800 : ℕ) * A ^ ell := by rw [mul_comm]
+    have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ (10800 : ℕ) * A ^ ell : ℕ) : ℝ) := by
       exact_mod_cast hn
     calc
       Z = ((M ^ ell : ℕ) : ℝ) := rfl
-      _ ≤ ((2 ^ 10800 * A ^ ell : ℕ) : ℝ) := hn'
+      _ ≤ ((2 ^ (10800 : ℕ) * A ^ ell : ℕ) : ℝ) := hn'
       _ = maynardMontgomeryRaisedWidthConstant * Y := by
         rw [Nat.cast_mul]
         rfl

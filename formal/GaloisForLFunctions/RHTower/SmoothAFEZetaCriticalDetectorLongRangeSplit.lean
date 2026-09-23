@@ -40,7 +40,7 @@ theorem sum_levinsonCriticalDetectorFiniteEnergyTerm_short_eq
         (fun r : Fin (L * M) => (r : ℕ) + 1 ≤ L),
       levinsonCriticalDetectorFiniteEnergyTerm lam L M r =
       ∑ k ∈ Finset.Icc 1 L,
-        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2 := by
+        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) := by
   classical
   have hLprod : L ≤ L * M := by
     simpa using Nat.mul_le_mul_left L hM
@@ -66,7 +66,7 @@ theorem sum_levinsonCriticalDetectorFiniteEnergyTerm_short_eq
           levinsonCriticalDetectorFiniteEnergyTerm lam L M (cast n)) =
         ∑ n : Fin L,
           ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff
-            lam M ((n : ℕ) + 1)‖ ^ 2 by
+            lam M ((n : ℕ) + 1)‖ ^ (2 : ℕ) by
       apply Finset.sum_congr rfl
       intro n hn
       unfold levinsonCriticalDetectorFiniteEnergyTerm
@@ -77,7 +77,7 @@ theorem sum_levinsonCriticalDetectorFiniteEnergyTerm_short_eq
       · change (n : ℕ) + 1 ≤ L
         omega]
     exact sum_fin_succ_eq_sum_Icc_generic L (fun k =>
-      ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+      ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
   · intro x hx y hy hxy
     apply Fin.ext
     simpa [cast] using congrArg Fin.val hxy
@@ -88,7 +88,7 @@ theorem sum_levinsonCriticalDetectorFiniteEnergyTerm_eq_short_add_long
     (lam : ℝ) (L M : ℕ) (hM : 1 ≤ M) :
     ∑ r : Fin (L * M), levinsonCriticalDetectorFiniteEnergyTerm lam L M r =
       (∑ k ∈ Finset.Icc 1 L,
-        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2) +
+        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ)) +
       levinsonCriticalDetectorLongEnergy lam L M := by
   classical
   rw [← Finset.sum_filter_add_sum_filter_not
@@ -108,7 +108,7 @@ theorem mollifiedTwistedDiagonalIcc_levinsonCriticalDetector_zero_eq_short_add_l
         (Sieve.levinsonLinearMollifierCoeff M)
         (Sieve.levinsonLinearMollifierCoeff M) L M 0 =
       (((∑ k ∈ Finset.Icc 1 L,
-          ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2) +
+          ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ)) +
         levinsonCriticalDetectorLongEnergy lam L M : ℝ) : ℂ) := by
   rw [mollifiedTwistedDiagonalIcc_levinsonCriticalDetector_zero_eq_energy]
   rw [← Complex.ofReal_sum]

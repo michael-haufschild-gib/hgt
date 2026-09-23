@@ -287,7 +287,7 @@ theorem suzukiProjectedIntervalFourier_secondDefect_eq_parityCurvature
             suzukiProjectedIntervalFourier (fun x => (u x : ℂ)) a (-I) +
           suzukiProjectedIntervalFourier (fun x => (u x : ℂ)) a I *
             deriv (suzukiProjectedIntervalFourier (fun x => (u x : ℂ)) a) (-I)) /
-          suzukiProjectedIntervalFourier (fun x => (u x : ℂ)) a (-I) ^ 2 =
+          suzukiProjectedIntervalFourier (fun x => (u x : ℂ)) a (-I) ^ (2 : ℕ) =
       (suzukiSecondDefectParityCurvature
         (suzukiCompactEvenEnergy u a) (suzukiCompactOddEnergy u a)
         (suzukiCompactEvenTilt u a) (suzukiCompactOddTilt u a) : ℂ) := by

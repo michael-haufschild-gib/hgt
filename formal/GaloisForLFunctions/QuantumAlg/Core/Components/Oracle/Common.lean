@@ -35,14 +35,14 @@ variable {n : Nat}
 /-- The basis involution underlying the XOR oracle:
 `(x, b) ↦ (x, b ⊕ f x)`, with the bit flip written as `Fin.rev`. -/
 def xorPerm (f : Fin (2 ^ n) -> Bool) :
-    Equiv.Perm (Fin (2 ^ n) × Fin (2 ^ 1)) where
+    Equiv.Perm (Fin (2 ^ n) × Fin (2 ^ (1 : ℕ))) where
   toFun p := (p.1, if f p.1 then p.2.rev else p.2)
   invFun p := (p.1, if f p.1 then p.2.rev else p.2)
   left_inv p := by by_cases h : f p.1 <;> simp [h]
   right_inv p := by by_cases h : f p.1 <;> simp [h]
 
 @[simp]
-theorem xorPerm_apply (f : Fin (2 ^ n) -> Bool) (p : Fin (2 ^ n) × Fin (2 ^ 1)) :
+theorem xorPerm_apply (f : Fin (2 ^ n) -> Bool) (p : Fin (2 ^ n) × Fin (2 ^ (1 : ℕ))) :
     xorPerm f p = (p.1, if f p.1 then p.2.rev else p.2) :=
   rfl
 
@@ -67,7 +67,7 @@ theorem xorOracle_apply (f : Fin (2 ^ n) -> Bool) (ψ : PureState (Qubits (n + 1
 
 /-- Action on basis kets: `U_f |x⟩|b⟩ = |x⟩|b ⊕ f(x)⟩`. -/
 theorem xorOracle_apply_ket (f : Fin (2 ^ n) -> Bool) (x : Fin (2 ^ n))
-    (b : Fin (2 ^ 1)) :
+    (b : Fin (2 ^ (1 : ℕ))) :
     (xorOracle f).apply (ket (prodEquiv (x, b)))
       = ket (prodEquiv (x, if f x then b.rev else b)) := by
   rw [xorOracle, ofPerm_apply_ket]

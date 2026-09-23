@@ -70,7 +70,7 @@ def finiteSpectralTransitionProbability
 def finiteSpectralTransitionRecurrenceBudget
     (totalMass tailBound : ℝ) (Q : ℕ) : ℝ :=
   4 * totalMass * tailBound +
-    2 * (2 * Real.pi / (Q + 1 : ℝ)) * totalMass ^ 2
+    2 * (2 * Real.pi / (Q + 1 : ℝ)) * totalMass ^ (2 : ℕ)
 
 theorem finiteSpectralTransition_history_eq_probability
     {d : ℕ} (amplitude z : Fin d → ℂ) :
@@ -156,9 +156,9 @@ theorem finiteEigenvectorTransitionMass_le_one
     (eigenvector : X → Fin d → ℂ)
     (source detector : X)
     (hsource :
-      ∑ k, ‖eigenvector source k‖ ^ 2 = 1)
+      ∑ k, ‖eigenvector source k‖ ^ (2 : ℕ) = 1)
     (hdetector :
-      ∑ k, ‖eigenvector detector k‖ ^ 2 = 1) :
+      ∑ k, ‖eigenvector detector k‖ ^ (2 : ℕ) = 1) :
     finiteSpectralTransitionMass
         (finiteEigenvectorTransitionAmplitude
           eigenvector source detector) ≤ 1 := by
@@ -176,8 +176,8 @@ theorem finiteEigenvectorTransitionMass_le_one
       rw [norm_mul]
       simp
     _ ≤
-      Real.sqrt (∑ k, ‖eigenvector detector k‖ ^ 2) *
-        Real.sqrt (∑ k, ‖eigenvector source k‖ ^ 2) := by
+      Real.sqrt (∑ k, ‖eigenvector detector k‖ ^ (2 : ℕ)) *
+        Real.sqrt (∑ k, ‖eigenvector source k‖ ^ (2 : ℕ)) := by
       exact Real.sum_mul_le_sqrt_mul_sqrt
         Finset.univ
         (fun k => ‖eigenvector detector k‖)
@@ -193,7 +193,7 @@ theorem finiteSpectralTransition_selectedMass_le_sq
         (finiteLocalizedSpectralSupportGraph S)
         (fun _ : Unit => 1)
         (finiteSpectralTransitionCoefficient amplitude) ≤
-      finiteSpectralTransitionMass amplitude ^ 2 := by
+      finiteSpectralTransitionMass amplitude ^ (2 : ℕ) := by
   classical
   unfold finiteExpectationSelectedDirectedMass
   calc
@@ -218,7 +218,7 @@ theorem finiteSpectralTransition_selectedMass_le_sq
       apply Finset.sum_congr rfl
       intro i hi
       rw [Finset.mul_sum]
-    _ = finiteSpectralTransitionMass amplitude ^ 2 := by
+    _ = finiteSpectralTransitionMass amplitude ^ (2 : ℕ) := by
       unfold finiteSpectralTransitionMass
       ring
 
@@ -352,7 +352,7 @@ theorem exists_finiteSpectralTransition_recurrence
           (finiteLocalizedSpectralSupportGraph S)
           (fun _ : Unit => 1)
           (finiteSpectralTransitionCoefficient amplitude) ≤
-        finiteSpectralTransitionMass amplitude ^ 2 :=
+        finiteSpectralTransitionMass amplitude ^ (2 : ℕ) :=
     finiteSpectralTransition_selectedMass_le_sq amplitude S
   unfold finiteSpectralTransitionDeviation
   calc
@@ -373,7 +373,7 @@ theorem exists_finiteSpectralTransition_recurrence
     _ ≤
       2 * (2 * finiteSpectralTransitionMass amplitude * tailBound) +
         2 * (2 * Real.pi / (Q + 1 : ℝ)) *
-          finiteSpectralTransitionMass amplitude ^ 2 := by
+          finiteSpectralTransitionMass amplitude ^ (2 : ℕ) := by
       exact add_le_add
         (mul_le_mul_of_nonneg_left homit (by norm_num))
         (mul_le_mul_of_nonneg_left hselected (by positivity))

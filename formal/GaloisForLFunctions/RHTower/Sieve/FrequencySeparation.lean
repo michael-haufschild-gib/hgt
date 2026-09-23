@@ -23,7 +23,7 @@ open Finset
 
 /-- Jordan's inequality in the form `1 - cos x ≥ (2/π²) x²` on `|x| ≤ π`. -/
 theorem two_div_pi_sq_mul_sq_le_one_sub_cos {x : ℝ} (hx : |x| ≤ Real.pi) :
-    2 / Real.pi ^ 2 * x ^ 2 ≤ 1 - Real.cos x := by
+    2 / Real.pi ^ (2 : ℕ) * x ^ (2 : ℕ) ≤ 1 - Real.cos x := by
   have h := Real.cos_le_one_sub_mul_cos_sq hx
   linarith
 
@@ -33,30 +33,30 @@ theorem sq_mul_sum_sq_log_le_of_close {f : ℕ → ℂ} {P : Finset ℕ} (hf : �
     (ht : Real.sqrt (mulDistSqPair f (charFn t) P) ≤ δ)
     (hu : Real.sqrt (mulDistSqPair f (charFn u) P) ≤ δ)
     (hsmall : ∀ p ∈ P, |(t - u) * Real.log (p : ℝ)| ≤ Real.pi) :
-    (t - u) ^ 2 * ∑ p ∈ P, Real.log (p : ℝ) ^ 2 / (p : ℝ) ≤ 2 * Real.pi ^ 2 * δ ^ 2 := by
-  have hπ : (0 : ℝ) < Real.pi ^ 2 := by positivity
+    (t - u) ^ (2 : ℕ) * ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) ≤ 2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) := by
+  have hπ : (0 : ℝ) < Real.pi ^ (2 : ℕ) := by positivity
   have hmain := sum_one_sub_cos_le_of_close hf hP ht hu
   have hterm : ∀ p ∈ P,
-      2 / Real.pi ^ 2 * ((t - u) ^ 2 * (Real.log (p : ℝ) ^ 2 / (p : ℝ)))
+      2 / Real.pi ^ (2 : ℕ) * ((t - u) ^ (2 : ℕ) * (Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ)))
         ≤ (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) := by
     intro p hp
     have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
-    have hstep : (2 / Real.pi ^ 2 * ((t - u) * Real.log (p : ℝ)) ^ 2) / (p : ℝ)
+    have hstep : (2 / Real.pi ^ (2 : ℕ) * ((t - u) * Real.log (p : ℝ)) ^ (2 : ℕ)) / (p : ℝ)
         ≤ (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) := by
       gcongr
       exact two_div_pi_sq_mul_sq_le_one_sub_cos (hsmall p hp)
-    calc 2 / Real.pi ^ 2 * ((t - u) ^ 2 * (Real.log (p : ℝ) ^ 2 / (p : ℝ)))
-        = (2 / Real.pi ^ 2 * ((t - u) * Real.log (p : ℝ)) ^ 2) / (p : ℝ) := by ring
+    calc 2 / Real.pi ^ (2 : ℕ) * ((t - u) ^ (2 : ℕ) * (Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ)))
+        = (2 / Real.pi ^ (2 : ℕ) * ((t - u) * Real.log (p : ℝ)) ^ (2 : ℕ)) / (p : ℝ) := by ring
       _ ≤ _ := hstep
   have hsum := Finset.sum_le_sum hterm
-  set X := (t - u) ^ 2 * ∑ p ∈ P, Real.log (p : ℝ) ^ 2 / (p : ℝ) with hXdef
-  have hleft : ∑ p ∈ P, 2 / Real.pi ^ 2 * ((t - u) ^ 2 * (Real.log (p : ℝ) ^ 2 / (p : ℝ)))
-      = 2 / Real.pi ^ 2 * X := by
+  set X := (t - u) ^ (2 : ℕ) * ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) with hXdef
+  have hleft : ∑ p ∈ P, 2 / Real.pi ^ (2 : ℕ) * ((t - u) ^ (2 : ℕ) * (Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ)))
+      = 2 / Real.pi ^ (2 : ℕ) * X := by
     rw [hXdef, ← Finset.mul_sum, ← Finset.mul_sum]
   rw [hleft] at hsum
-  have hX : 2 / Real.pi ^ 2 * X ≤ 4 * δ ^ 2 := le_trans hsum hmain
+  have hX : 2 / Real.pi ^ (2 : ℕ) * X ≤ 4 * δ ^ (2 : ℕ) := le_trans hsum hmain
   have hmul := mul_le_mul_of_nonneg_right hX (le_of_lt hπ)
-  have heq : (2 / Real.pi ^ 2 * X) * Real.pi ^ 2 = 2 * X := by
+  have heq : (2 / Real.pi ^ (2 : ℕ) * X) * Real.pi ^ (2 : ℕ) = 2 * X := by
     field_simp
   rw [heq] at hmul
   linarith

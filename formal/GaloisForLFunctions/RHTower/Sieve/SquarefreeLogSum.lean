@@ -21,7 +21,7 @@ theorem squarefreeDensity_nonneg' : 0 ≤ squarefreeDensity := by
 
 /-- The squarefree counting error, in the general notation. -/
 theorem abs_weightErr_moebius_sq_le (m : ℕ) :
-    |weightErr (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity m|
+    |weightErr (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity m|
       ≤ 2 * Real.sqrt m + 2 := by
   have hbase := abs_sum_moebius_sq_Icc_sub_le m
   rw [weightErr, weightCount]
@@ -29,7 +29,7 @@ theorem abs_weightErr_moebius_sq_le (m : ℕ) :
 
 /-- **The logarithmic mean of the squarefree indicator over a dyadic block.** -/
 theorem tendsto_squarefree_block_log_mean :
-    Tendsto (fun u : ℝ => ∑ a ∈ Finset.Icc ⌈u⌉₊ ⌊2 * u⌋₊, ((moebius a : ℤ) : ℝ) ^ 2 / (a : ℝ))
+    Tendsto (fun u : ℝ => ∑ a ∈ Finset.Icc ⌈u⌉₊ ⌊2 * u⌋₊, ((moebius a : ℤ) : ℝ) ^ (2 : ℕ) / (a : ℝ))
       atTop (𝓝 (squarefreeDensity * Real.log 2)) :=
   tendsto_block_log_mean_of_count squarefreeDensity_nonneg' (by norm_num)
     abs_weightErr_moebius_sq_le

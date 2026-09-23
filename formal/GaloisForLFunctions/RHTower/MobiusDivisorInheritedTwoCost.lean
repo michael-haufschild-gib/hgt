@@ -130,9 +130,9 @@ theorem mobiusDivisorSelectionEnergy_union_two_child_inactive
     mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P-
       2*mobiusDivisorSelectionFibre M P ∅*(∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)-
       2*mobiusDivisorSelectionFibre M P {2}*(∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})+
-      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)^2+
-      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})^2-
-      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+      (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)-
+      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
   induction L using Finset.induction_on with
   | empty => simp
   | @insert p L hpL ih =>
@@ -156,8 +156,8 @@ theorem mobiusDivisorSelectionEnergy_union_two_child_inactive
       (fun q hq => ⟨(hL' q hq).1,(hL' q hq).2.2.1,by simpa using (hL' q hq).2.2.2⟩) hd'
     rw [h0,h2,ih hL' hc' hd'] at hs
     rw [union_insert,sum_insert hpL,sum_insert hpL,sum_insert hpL]
-    have hr := congrArg (fun x : ℝ => x*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p P {2})^2))
+    have hr := congrArg (fun x : ℝ => x*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))
         (Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) p))
     nlinarith only [hs,hr]
 
@@ -214,15 +214,15 @@ theorem mobiusDivisorSelectionEnergy_balanced_two_reserves
     (hbalance0 : (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)=0)
     (hbalance2 : (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})=0) :
     mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P-
-      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2) ∧
+      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) ∧
     mobiusDivisorSelectionEnergy M (insert 2 (P∪L))=mobiusDivisorSelectionEnergy M (insert 2 P)-
-      ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2 := by
+      ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ) := by
   have h0 := mobiusDivisorSelectionEnergy_union_two_child_inactive M P L hM hL hcore hchild
   simp only [hbalance0,hbalance2,mul_zero,sub_zero,zero_pow (by omega : 2≠0),add_zero] at h0
   refine ⟨h0,?_⟩
   have h2 := mobiusDivisorSelectionEnergy_balanced_two_block M P L hM hL hcore hchild hbalance0 hbalance2
-  have he : (∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2)=
-      (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2))+
+  have he : (∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))=
+      (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))+
       ∑ p∈L,2*(p:ℝ)*mobiusDivisorInterpolatedFibre M p P ∅*mobiusDivisorInterpolatedFibre M p P {2} := by
     rw [← sum_add_distrib]
     apply sum_congr rfl
@@ -241,8 +241,8 @@ private lemma balanced_other_successor
     {q : ℕ} (hq : q.Prime) (hqP : q∉P) (hqL : q∉L) (hq2 : q≠2) :
     mobiusDivisorSelectionEnergy M (insert q (P∪L))=
       mobiusDivisorSelectionEnergy M (insert q P)-
-        ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-          (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+        ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+          (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
   have hinactive (p : ℕ) (hp : p∈L) : M/p+1≤q := by
     by_contra hn
     apply hqP
@@ -272,10 +272,10 @@ private lemma balanced_other_successor
     rw [hi p hp R]
   have he := (mobiusDivisorSelectionEnergy_balanced_two_reserves M (insert q P) L hM hL' hc'
     hchild (by rw [hsum,hbalance0]) (by rw [hsum,hbalance2])).1
-  have hsquares : (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^2))=
-      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+  have hsquares : (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^(2 : ℕ)))=
+      ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
     apply sum_congr rfl
     intro p hp
     rw [hi p hp ∅,hi p hp {2}]
@@ -291,14 +291,14 @@ theorem mobiusDivisorSuccessorEnvelope_balanced_two_block_reserve
     (hbalance0 : (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅)=0)
     (hbalance2 : (∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2})=0) :
     mobiusDivisorSuccessorEnvelope M (P∪L)+
-      min (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2))
+      min (∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))
         (∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+
-          mobiusDivisorInterpolatedFibre M p P {2})^2) ≤ mobiusDivisorSuccessorEnvelope M P := by
-  let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-    (mobiusDivisorInterpolatedFibre M p P {2})^2)
+          mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) ≤ mobiusDivisorSuccessorEnvelope M P := by
+  let R := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+    (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))
   let T := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+
-    mobiusDivisorInterpolatedFibre M p P {2})^2
+    mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)
   have hbase := (mobiusDivisorSuccessorEnvelope_le_iff M P _).mp le_rfl
   obtain ⟨h0,h2⟩ := mobiusDivisorSelectionEnergy_balanced_two_reserves M P L hM hL hcore hchild hbalance0 hbalance2
   change mobiusDivisorSelectionEnergy M (P∪L)=mobiusDivisorSelectionEnergy M P-R at h0

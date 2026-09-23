@@ -11,7 +11,7 @@ finite prime-support face. This module extends that connection through the Boole
 constructs its first genuine Hilbert completion.
 
 For each prime, maximal real diagonal multiplication by the insertion gain is followed by the
-unitary that toggles that prime in `ell^2(Finset Primes)`. The diagonal vanishes on already occupied
+unitary that toggles that prime in `ell^(2 : ℕ)(Finset Primes)`. The diagonal vanishes on already occupied
 supports. The resulting partial operator is closed and densely defined, raises each unoccupied
 basis support with the literal Gamma coefficient, kills the occupied sector, has range in the
 occupied corner, is not surjective, and commutes with every other prime creation on admissible

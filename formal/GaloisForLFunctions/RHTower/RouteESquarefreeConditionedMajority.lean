@@ -128,15 +128,15 @@ theorem image_card_le_four_of_no_five_distinct
 omit [Fintype C] [DecidableEq C] [Fintype S] [DecidableEq S] in
 theorem width_lt_baseline_of_power_separation
     (A L W : ℝ) (hA : 1 ≤ A) (hL : 0 ≤ L)
-    (hbase : L ^ 10 ≤ A ^ 11) (hgap : W ^ 55 < L ^ 30) :
+    (hbase : L ^ (10 : ℕ) ≤ A ^ (11 : ℕ)) (hgap : W ^ (55 : ℕ) < L ^ (30 : ℕ)) :
     W < A := by
-  have hLA : L ^ 30 ≤ A ^ 33 := by
+  have hLA : L ^ (30 : ℕ) ≤ A ^ (33 : ℕ) := by
     calc
-      L ^ 30 = (L ^ 10) ^ 3 := by ring
-      _ ≤ (A ^ 11) ^ 3 := pow_le_pow_left₀ (pow_nonneg hL 10) hbase 3
-      _ = A ^ 33 := by ring
-  have hAmono : A ^ 33 ≤ A ^ 55 := pow_le_pow_right₀ hA (by norm_num)
-  have hpow : W ^ 55 < A ^ 55 := hgap.trans_le (hLA.trans hAmono)
+      L ^ (30 : ℕ) = (L ^ (10 : ℕ)) ^ (3 : ℕ) := by ring
+      _ ≤ (A ^ (11 : ℕ)) ^ (3 : ℕ) := pow_le_pow_left₀ (pow_nonneg hL 10) hbase 3
+      _ = A ^ (33 : ℕ) := by ring
+  have hAmono : A ^ (33 : ℕ) ≤ A ^ (55 : ℕ) := pow_le_pow_right₀ hA (by norm_num)
+  have hpow : W ^ (55 : ℕ) < A ^ (55 : ℕ) := hgap.trans_le (hLA.trans hAmono)
   exact lt_of_pow_lt_pow_left₀ 55 (by linarith) hpow
 
 omit [DecidableEq C] [Fintype S] [DecidableEq S] in
@@ -159,7 +159,7 @@ theorem singleton_history_support_le_four_of_power_activation
     (hmem : history ∈ routeEComponentHistogramCell (fun _ : C => Bool) m k)
     (hone : ∀ i, k i true = 1) (ha : ∀ i, 1 ≤ a i)
     (hactivation : ∀ i, b i ≤ a i ^ K) (hm : 10 * (K + 1) ≤ m)
-    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ 55 < L ^ 30)
+    (L W : ℝ) (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ (55 : ℕ) < L ^ (30 : ℕ))
     (hwindow : ∀ r, routeEComponentSlotReceiver (fun _ : C => Bool)
       (fun i z => if z then (b i : ℝ) else (a i : ℝ)) history r ∈ Set.Icc L (L + W)) :
     ((univ : Finset (Fin m)).image fun r =>
@@ -560,7 +560,7 @@ theorem squarefree_power_bounded_invariant_weight_anchor_majority
     (a b : C → ℕ) (L W : ℝ)
     (hone : ∀ i, k i true = 1) (ha : ∀ i, 1 ≤ a i)
     (hactivation : ∀ i, b i ≤ a i ^ K) (hm : 10 * (K + 1) ≤ m)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ 55 < L ^ 30)
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ (55 : ℕ) < L ^ (30 : ℕ))
     (hsquarefree : ∀ x ∈ family, ∀ r, Squarefree
       (boolCorner (fun i z => if z then b i else a i) (x r)))
     (hwindow : ∀ x ∈ family, ∀ r,
@@ -598,7 +598,7 @@ theorem squarefree_power_bounded_invariant_weight_anchor_majority
       (hmem x hx) hone ha hactivation hm L W hL hW hgap (hwindow x hx)
   let x0 := hfamily.choose
   have hx0 : x0 ∈ family := hfamily.choose_spec
-  have hbase : L ^ 10 ≤ ((∏ i, a i : ℕ) : ℝ) ^ 11 :=
+  have hbase : L ^ (10 : ℕ) ≤ ((∏ i, a i : ℕ) : ℝ) ^ (11 : ℕ) :=
     singleton_history_baseline_tenth_power m K k a b x0 (hmem x0 hx0) hone ha
       hactivation hm L hL (fun r => (hwindow x0 hx0 r).1)
   have hA : 1 ≤ ((∏ i, a i : ℕ) : ℝ) := by
@@ -615,7 +615,7 @@ theorem squarefree_power_bounded_uniform_conditioned_anchor_majority
     (m K : ℕ) (k : C → Bool → ℕ) (a b : C → ℕ) (L W : ℝ)
     (hone : ∀ i, k i true = 1) (ha : ∀ i, 1 ≤ a i)
     (hactivation : ∀ i, b i ≤ a i ^ K) (hm : 10 * (K + 1) ≤ m)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ 55 < L ^ 30)
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hgap : W ^ (55 : ℕ) < L ^ (30 : ℕ))
     (hfamily : (routeESquarefreeWindowFamily m k a b L W).Nonempty)
     (anchor : Fin m) :
     ∃ nStar : ℕ,

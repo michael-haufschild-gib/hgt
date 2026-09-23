@@ -37,7 +37,7 @@ theorem sourceMean_apply_eq_zero (z : ℍ) : sourceMean N f z = 0 :=
 /-- Full deck mixing energy equals original density for every exceptional source. -/
 theorem source_mixing_energy_eq_density (z : ℍ) :
     (2 * (Fintype.card (Deck N) : ℝ))⁻¹ *
-        ∑ g : Deck N, ‖finiteRegularUnitary g (sourceVector N f z) - sourceVector N f z‖ ^ 2 =
+        ∑ g : Deck N, ‖finiteRegularUnitary g (sourceVector N f z) - sourceVector N f z‖ ^ (2 : ℕ) =
       density N f z := by
   rw [source_mixing_energy, density_mean_variance, sourceMean_apply_eq_zero]
   simp

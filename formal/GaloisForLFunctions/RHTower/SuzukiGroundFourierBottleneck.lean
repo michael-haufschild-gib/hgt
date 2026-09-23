@@ -28,7 +28,7 @@ noncomputable section
 namespace RHTower
 
 /-- The normalized source coherence built from a numerator and the two norms. -/
-def coherenceQuotient (num anc vec : ℝ) : ℝ := num ^ 2 / (anc * vec)
+def coherenceQuotient (num anc vec : ℝ) : ℝ := num ^ (2 : ℕ) / (anc * vec)
 
 /-! ## The exact cancellation -/
 
@@ -37,8 +37,8 @@ coefficient cancel out of the normalized quotient. -/
 theorem coherenceQuotient_odd_factor {s : ℕ} {ρ c δ num anc vec : ℝ}
     (hρ : ρ ≠ 0) (hc : c ≠ 0) (hδ : δ ≠ 0) :
     coherenceQuotient num anc vec
-      = (δ * num / c ^ s) ^ 2 * (ρ * c ^ (2 * s + 2) / δ)
-          / ((ρ * c ^ 2 * anc) * (δ * vec)) := by
+      = (δ * num / c ^ s) ^ (2 : ℕ) * (ρ * c ^ (2 * s + 2) / δ)
+          / ((ρ * c ^ (2 : ℕ) * anc) * (δ * vec)) := by
   rw [coherenceQuotient]
   rcases eq_or_ne anc 0 with h | h
   · simp [h]
@@ -51,7 +51,7 @@ theorem coherenceQuotient_odd_factor {s : ℕ} {ρ c δ num anc vec : ℝ}
 theorem coherenceQuotient_even_factor {r : ℕ} {c δ num anc vec : ℝ}
     (hc : c ≠ 0) (hδ : δ ≠ 0) :
     coherenceQuotient num anc vec
-      = (δ * num / c ^ r) ^ 2 * (c ^ (2 * r) / δ) / (anc * (δ * vec)) := by
+      = (δ * num / c ^ r) ^ (2 : ℕ) * (c ^ (2 * r) / δ) / (anc * (δ * vec)) := by
   rw [coherenceQuotient]
   rcases eq_or_ne anc 0 with h | h
   · simp [h]
@@ -67,22 +67,22 @@ theorem tendsto_coherenceQuotient_odd {s : ℕ} {ρ B G H : ℝ} (hB : 0 < B) (h
     {δ num anc vec : ℝ → ℝ} (hρ : ρ ≠ 0)
     (hδ : Tendsto (fun c => ρ * c ^ (2 * s + 2) / δ c) (𝓝[>] (0 : ℝ)) (𝓝 1))
     (hnum : Tendsto (fun c => δ c * num c / c ^ s) (𝓝[>] (0 : ℝ)) (𝓝 G))
-    (hanc : Tendsto (fun c => ρ * c ^ 2 * anc c) (𝓝[>] (0 : ℝ)) (𝓝 B))
+    (hanc : Tendsto (fun c => ρ * c ^ (2 : ℕ) * anc c) (𝓝[>] (0 : ℝ)) (𝓝 B))
     (hvec : Tendsto (fun c => δ c * vec c) (𝓝[>] (0 : ℝ)) (𝓝 H))
     (hδ0 : ∀ᶠ c in 𝓝[>] (0 : ℝ), δ c ≠ 0) :
     Tendsto (fun c => coherenceQuotient (num c) (anc c) (vec c)) (𝓝[>] (0 : ℝ))
-      (𝓝 (G ^ 2 / (B * H))) := by
+      (𝓝 (G ^ (2 : ℕ) / (B * H))) := by
   have hc0 : ∀ᶠ c in 𝓝[>] (0 : ℝ), c ≠ 0 :=
     eventually_nhdsWithin_of_forall fun c hc => ne_of_gt hc
-  have heq : (fun c => (δ c * num c / c ^ s) ^ 2 * (ρ * c ^ (2 * s + 2) / δ c)
-      / ((ρ * c ^ 2 * anc c) * (δ c * vec c)))
+  have heq : (fun c => (δ c * num c / c ^ s) ^ (2 : ℕ) * (ρ * c ^ (2 * s + 2) / δ c)
+      / ((ρ * c ^ (2 : ℕ) * anc c) * (δ c * vec c)))
       =ᶠ[𝓝[>] (0 : ℝ)] fun c => coherenceQuotient (num c) (anc c) (vec c) := by
     filter_upwards [hc0, hδ0] with c hc hδc
     exact (coherenceQuotient_odd_factor (s := s) hρ hc hδc).symm
   refine Tendsto.congr' heq ?_
-  have hlim : Tendsto (fun c => (δ c * num c / c ^ s) ^ 2 * (ρ * c ^ (2 * s + 2) / δ c)
-      / ((ρ * c ^ 2 * anc c) * (δ c * vec c))) (𝓝[>] (0 : ℝ))
-      (𝓝 (G ^ 2 * 1 / (B * H))) :=
+  have hlim : Tendsto (fun c => (δ c * num c / c ^ s) ^ (2 : ℕ) * (ρ * c ^ (2 * s + 2) / δ c)
+      / ((ρ * c ^ (2 : ℕ) * anc c) * (δ c * vec c))) (𝓝[>] (0 : ℝ))
+      (𝓝 (G ^ (2 : ℕ) * 1 / (B * H))) :=
     ((hnum.pow 2).mul hδ).div (hanc.mul hvec) (by positivity)
   simpa using hlim
 
@@ -95,19 +95,19 @@ theorem tendsto_coherenceQuotient_even {r : ℕ} {ρ A G H : ℝ} (hA : 0 < A) (
     (hvec : Tendsto (fun c => δ c * vec c) (𝓝[>] (0 : ℝ)) (𝓝 H))
     (hδ0 : ∀ᶠ c in 𝓝[>] (0 : ℝ), δ c ≠ 0) :
     Tendsto (fun c => coherenceQuotient (num c) (anc c) (vec c)) (𝓝[>] (0 : ℝ))
-      (𝓝 (G ^ 2 / (ρ * A * H))) := by
+      (𝓝 (G ^ (2 : ℕ) / (ρ * A * H))) := by
   have hc0 : ∀ᶠ c in 𝓝[>] (0 : ℝ), c ≠ 0 :=
     eventually_nhdsWithin_of_forall fun c hc => ne_of_gt hc
-  have heq : (fun c => (δ c * num c / c ^ r) ^ 2 * (c ^ (2 * r) / δ c)
+  have heq : (fun c => (δ c * num c / c ^ r) ^ (2 : ℕ) * (c ^ (2 * r) / δ c)
       / (anc c * (δ c * vec c)))
       =ᶠ[𝓝[>] (0 : ℝ)] fun c => coherenceQuotient (num c) (anc c) (vec c) := by
     filter_upwards [hc0, hδ0] with c hc hδc
     exact (coherenceQuotient_even_factor (r := r) hc hδc).symm
   refine Tendsto.congr' heq ?_
-  have hlim : Tendsto (fun c => (δ c * num c / c ^ r) ^ 2 * (c ^ (2 * r) / δ c)
-      / (anc c * (δ c * vec c))) (𝓝[>] (0 : ℝ)) (𝓝 (G ^ 2 * ρ⁻¹ / (A * H))) :=
+  have hlim : Tendsto (fun c => (δ c * num c / c ^ r) ^ (2 : ℕ) * (c ^ (2 * r) / δ c)
+      / (anc c * (δ c * vec c))) (𝓝[>] (0 : ℝ)) (𝓝 (G ^ (2 : ℕ) * ρ⁻¹ / (A * H))) :=
     ((hnum.pow 2).mul hδ).div (hanc.mul hvec) (by positivity)
-  have hval : G ^ 2 * ρ⁻¹ / (A * H) = G ^ 2 / (ρ * A * H) := by
+  have hval : G ^ (2 : ℕ) * ρ⁻¹ / (A * H) = G ^ (2 : ℕ) / (ρ * A * H) := by
     field_simp
   rwa [hval] at hlim
 

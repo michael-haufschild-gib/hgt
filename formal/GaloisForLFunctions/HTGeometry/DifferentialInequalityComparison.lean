@@ -109,8 +109,8 @@ theorem riccati_le_of_le_of_supersolution {a b : ℝ} {u U u' U' bcoef q : ℝ �
     (hu : ∀ y ∈ Ioo a b, HasDerivAt u (u' y) y)
     (hU : ∀ y ∈ Ioo a b, HasDerivAt U (U' y) y)
     (hbc : ContinuousOn bcoef (Icc a b))
-    (hsub : ∀ y ∈ Ioo a b, u' y ≤ (u y) ^ 2 + bcoef y * u y - q y)
-    (hsuper : ∀ y ∈ Ioo a b, (U y) ^ 2 + bcoef y * U y - q y ≤ U' y)
+    (hsub : ∀ y ∈ Ioo a b, u' y ≤ (u y) ^ (2 : ℕ) + bcoef y * u y - q y)
+    (hsuper : ∀ y ∈ Ioo a b, (U y) ^ (2 : ℕ) + bcoef y * U y - q y ≤ U' y)
     (h0 : u a ≤ U a) :
     ∀ y ∈ Icc a b, u y ≤ U y := by
   have hkey := nonpos_of_hasDerivAt_le_mul (d := fun y => u y - U y)
@@ -207,8 +207,8 @@ theorem riccati_le_of_le_of_subsolution {a b : ℝ} {u U u' U' bcoef q : ℝ →
     (hu : ∀ y ∈ Ioo a b, HasDerivAt u (u' y) y)
     (hU : ∀ y ∈ Ioo a b, HasDerivAt U (U' y) y)
     (hbc : ContinuousOn bcoef (Icc a b))
-    (heq : ∀ y ∈ Ioo a b, u' y = (u y) ^ 2 + bcoef y * u y - q y)
-    (hsub : ∀ y ∈ Ioo a b, U' y ≤ (U y) ^ 2 + bcoef y * U y - q y)
+    (heq : ∀ y ∈ Ioo a b, u' y = (u y) ^ (2 : ℕ) + bcoef y * u y - q y)
+    (hsub : ∀ y ∈ Ioo a b, U' y ≤ (U y) ^ (2 : ℕ) + bcoef y * U y - q y)
     (h0 : u b ≤ U b) :
     ∀ y ∈ Icc a b, u y ≤ U y := by
   have hkey := nonpos_of_hasDerivAt_ge_mul (d := fun y => u y - U y)

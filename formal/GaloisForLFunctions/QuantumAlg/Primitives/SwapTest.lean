@@ -13,10 +13,10 @@ public import GaloisForLFunctions.QuantumAlg.Core.Circuit
 /-!
 # The SWAP test
 
-The SWAP test estimates the overlap `|<psi|phi>|^2` of two `n`-qubit states:
+The SWAP test estimates the overlap `|<psi|phi>|^(2 : ℕ)` of two `n`-qubit states:
 run the Hadamard test with the unitary that swaps the two registers
 [BCWdW01, main.tex:291]. Measuring the control yields outcome `1` with
-probability `(1 - |<psi|phi>|^2)/2` [BCWdW01, main.tex:328].
+probability `(1 - |<psi|phi>|^(2 : ℕ))/2` [BCWdW01, main.tex:328].
 -/
 
 @[expose] public section
@@ -56,19 +56,19 @@ theorem swapRegisters_apply_tensor (psi phi : PureState (Qubits n)) :
 def swapTest (n : ℕ) : Gate (Qubits (1 + (n + n))) :=
   hadamardTest (swapRegisters n)
 
-/-- `Re <psi ⊗ phi, SWAP (psi ⊗ phi)> = |<psi|phi>|^2`. -/
+/-- `Re <psi ⊗ phi, SWAP (psi ⊗ phi)> = |<psi|phi>|^(2 : ℕ)`. -/
 theorem re_inner_swapRegisters (psi phi : PureState (Qubits n)) :
     (inner ℂ (psi.tensor phi) ((swapRegisters n).apply (psi.tensor phi))).re
-      = ‖inner ℂ psi phi‖ ^ 2 := by
+      = ‖inner ℂ psi phi‖ ^ (2 : ℕ) := by
   change (inner ℂ ((psi.tensor phi : PureState (Qubits (n + n))) : StateVector (Qubits (n + n)))
       (((swapRegisters n).apply (psi.tensor phi) : PureState (Qubits (n + n)))
         : StateVector (Qubits (n + n)))).re
-    = ‖inner ℂ (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n))‖ ^ 2
+    = ‖inner ℂ (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n))‖ ^ (2 : ℕ)
   rw [swapRegisters_apply_tensor]
   change (inner ℂ
       (StateVector.tensor (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n)))
       (StateVector.tensor (phi : StateVector (Qubits n)) (psi : StateVector (Qubits n)))).re
-    = ‖inner ℂ (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n))‖ ^ 2
+    = ‖inner ℂ (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n))‖ ^ (2 : ℕ)
   rw [StateVector.inner_tensor_tensor,
     ← inner_conj_symm (phi : StateVector (Qubits n)) (psi : StateVector (Qubits n)),
     Complex.mul_conj', ← Complex.ofReal_pow,
@@ -77,7 +77,7 @@ theorem re_inner_swapRegisters (psi phi : PureState (Qubits n)) :
 /-- **SWAP test, outcome 0** [BCWdW01, main.tex:328]. -/
 theorem swapTest_probQubit0_zero (psi phi : PureState (Qubits n)) :
     probQubit0 ((swapTest n).apply (ket0.tensor (psi.tensor phi))) 0
-      = (1 + ‖inner ℂ psi phi‖ ^ 2) / 2 := by
+      = (1 + ‖inner ℂ psi phi‖ ^ (2 : ℕ)) / 2 := by
   rw [swapTest, hadamardTest_probQubit0_zero, re_inner_swapRegisters]
 
 /-- Typed circuit witness for the SWAP test. -/
@@ -91,11 +91,11 @@ theorem SwapTest.main (psi phi : PureState (Qubits n)) :
         (Circuit.apply (swapTestCircuit n)
           (StateVector.tensor (ket0 : StateVector (Qubits 1))
             (StateVector.tensor (psi : StateVector (Qubits n)) (phi : StateVector (Qubits n))))) 1
-      = (1 - ‖inner ℂ psi phi‖ ^ 2) / 2 := by
+      = (1 - ‖inner ℂ psi phi‖ ^ (2 : ℕ)) / 2 := by
   rw [swapTestCircuit, Circuit.apply, Circuit.ofGate,
     Circuit.atom]
   change probQubit0 ((swapTest n).apply (ket0.tensor (psi.tensor phi))) 1
-      = (1 - ‖inner ℂ psi phi‖ ^ 2) / 2
+      = (1 - ‖inner ℂ psi phi‖ ^ (2 : ℕ)) / 2
   rw [swapTest, hadamardTest_probQubit0_one, re_inner_swapRegisters]
 
 end

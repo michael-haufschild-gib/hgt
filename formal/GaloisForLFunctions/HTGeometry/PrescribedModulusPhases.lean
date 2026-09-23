@@ -55,17 +55,17 @@ theorem countable_isAlgebraic_of_countable {K : IntermediateField ℚ ℂ}
 /-! ### An uncountable supply of unit vectors -/
 
 /-- A point of the unit circle with prescribed real part. -/
-def circlePoint (t : ℝ) : ℂ := ⟨t, Real.sqrt (1 - t ^ 2)⟩
+def circlePoint (t : ℝ) : ℂ := ⟨t, Real.sqrt (1 - t ^ (2 : ℕ))⟩
 
 theorem norm_circlePoint {t : ℝ} (ht : |t| ≤ 1) : ‖circlePoint t‖ = 1 := by
-  have ht2 : t ^ 2 ≤ 1 := by
+  have ht2 : t ^ (2 : ℕ) ≤ 1 := by
     have := abs_le.mp ht
     nlinarith [this.1, this.2]
-  have hnn : (0 : ℝ) ≤ 1 - t ^ 2 := by linarith
+  have hnn : (0 : ℝ) ≤ 1 - t ^ (2 : ℕ) := by linarith
   rw [Complex.norm_def, Complex.normSq_apply]
   simp only [circlePoint]
   rw [Real.mul_self_sqrt hnn]
-  have h1 : t * t + (1 - t ^ 2) = 1 := by ring
+  have h1 : t * t + (1 - t ^ (2 : ℕ)) = 1 := by ring
   rw [h1, Real.sqrt_one]
 
 theorem circlePoint_injective : Function.Injective circlePoint := by

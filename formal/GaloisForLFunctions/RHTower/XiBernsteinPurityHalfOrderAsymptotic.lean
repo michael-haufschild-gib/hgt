@@ -42,18 +42,18 @@ theorem exists_positive_halfOrder_primeArchEndpointBernsteinPurity_of_not_rh
       (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
       (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
       L = ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n * primeArchEndpointBernsteinPurity n /
-          (B ^ 2) ^ n)
+          (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   obtain ⟨D, B, beta, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hmax, hLpos⟩ :=
     exists_positive_halfOrder_maximalXiBernsteinCoordinatePacket_of_not_rh hRH
   let L : ℝ := ∑ u ∈ xiEndpointCoordinateSet D,
-    ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+    ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
       bernsteinAffineRowHalfOrderConstant u
   have hfull :=
     tendsto_atomicBernsteinPacketSquareEnergy_of_finiteCoordinatePacket
@@ -64,14 +64,14 @@ theorem exists_positive_halfOrder_primeArchEndpointBernsteinPurity_of_not_rh
         exact hmax)
   have hpurity : Tendsto
       (fun n : ℕ => Real.sqrt n * primeArchEndpointBernsteinPurity n /
-        (B ^ 2) ^ n)
+        (B ^ (2 : ℕ)) ^ n)
       atTop (nhds L) := by
     apply hfull.congr'
     exact Eventually.of_forall fun n => by
       change Real.sqrt n *
           atomicBernsteinPacketSquareEnergy xiZeroCopyReciprocalSquare
-            xiEndpointNormalizedReciprocalSquare n / (B ^ 2) ^ n =
-        Real.sqrt n * primeArchEndpointBernsteinPurity n / (B ^ 2) ^ n
+            xiEndpointNormalizedReciprocalSquare n / (B ^ (2 : ℕ)) ^ n =
+        Real.sqrt n * primeArchEndpointBernsteinPurity n / (B ^ (2 : ℕ)) ^ n
       rw [primeArchEndpointBernsteinPurity_eq_atomicBernsteinPacketSquareEnergy]
   exact ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
     rfl, hLpos, hpurity⟩

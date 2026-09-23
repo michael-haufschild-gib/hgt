@@ -39,7 +39,7 @@ theorem mulDistSqPair_neg_one_charFn_neg {f : ℕ → ℂ} {P : Finset ℕ} (hne
 /-- **The pair-correlation lower bound for the doubled distance sum.** -/
 theorem sq_le_sum_sum_mulDistSqPair {f : ℕ → ℂ} {P : Finset ℕ} (hneg : ∀ p ∈ P, f p = -1)
     (hP : ∀ p ∈ P, 0 < p) (K : ℕ) (t : ℝ) :
-    (((K : ℝ) + 1) ^ 2) * (∑ p ∈ P, 1 / (p : ℝ))
+    (((K : ℝ) + 1) ^ (2 : ℕ)) * (∑ p ∈ P, 1 / (p : ℝ))
       ≤ ∑ j : Fin (K + 1), ∑ k : Fin (K + 1),
           mulDistSqPair f (charFn ((((j : ℕ) : ℝ) - ((k : ℕ) : ℝ)) * t) ) P := by
   classical
@@ -60,8 +60,8 @@ theorem sq_le_sum_sum_mulDistSqPair {f : ℕ → ℂ} {P : Finset ℕ} (hneg : �
         (f := fun k p => G j k p))]
     exact Finset.sum_comm
   -- the mass side is a `p`-sum too
-  have hmass : (((K : ℝ) + 1) ^ 2) * (∑ p ∈ P, 1 / (p : ℝ))
-      = ∑ p ∈ P, (((K : ℝ) + 1) ^ 2) / (p : ℝ) := by
+  have hmass : (((K : ℝ) + 1) ^ (2 : ℕ)) * (∑ p ∈ P, 1 / (p : ℝ))
+      = ∑ p ∈ P, (((K : ℝ) + 1) ^ (2 : ℕ)) / (p : ℝ) := by
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun p _ => by rw [mul_one_div]
   rw [hswap, hmass]
@@ -79,7 +79,7 @@ theorem sq_le_sum_sum_mulDistSqPair {f : ℕ → ℂ} {P : Finset ℕ} (hneg : �
     ring
   rw [hcongr] at hcos
   have hexpand : (∑ j : Fin (K + 1), ∑ k : Fin (K + 1), G j k p)
-      = (((K : ℝ) + 1) ^ 2) / (p : ℝ)
+      = (((K : ℝ) + 1) ^ (2 : ℕ)) / (p : ℝ)
         + (∑ j : Fin (K + 1), ∑ k : Fin (K + 1),
             Real.cos ((((j : ℕ) : ℝ) - ((k : ℕ) : ℝ)) * t * Real.log (p : ℝ))) / (p : ℝ) := by
     have hinner : ∀ j : Fin (K + 1), (∑ k : Fin (K + 1), G j k p)
@@ -210,11 +210,11 @@ theorem exists_norm_smoothMulSum_le_of_neg_one {f : ℕ → ℂ} (hf : ∀ n, �
     (t : ℝ) :
     ∃ k : ℕ, 1 ≤ k ∧ k ≤ K ∧
       ‖smoothMulSum f P ((k : ℝ) * t)‖
-        ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) / (K : ℝ) + ∑ p ∈ P, 1 / (p : ℝ) ^ 2) := by
+        ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) / (K : ℝ) + ∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ)) := by
   classical
   have hPpos : ∀ p ∈ P, 0 < p := fun p hp => (hP p hp).pos
   set A : ℝ := ∑ p ∈ P, 1 / (p : ℝ) with hA
-  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ 2 with hB
+  set B : ℝ := ∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ) with hB
   have hA0 : (0 : ℝ) ≤ A := by
     rw [hA]
     refine Finset.sum_nonneg fun p hp => ?_
@@ -230,7 +230,7 @@ theorem exists_norm_smoothMulSum_le_of_neg_one {f : ℕ → ℂ} (hf : ∀ n, �
     have h1' : (0 : ℝ) ≤ ((K : ℝ) - 1) / (K : ℝ) := div_nonneg (by linarith) hK0.le
     exact mul_nonneg h1' hA0
   have hδ0 : (0 : ℝ) ≤ δ := Real.sqrt_nonneg _
-  have hδsq : δ ^ 2 = (((K : ℝ) - 1) / (K : ℝ)) * A := Real.sq_sqrt hratio
+  have hδsq : δ ^ (2 : ℕ) = (((K : ℝ) - 1) / (K : ℝ)) * A := Real.sq_sqrt hratio
   have hfar : δ ≤ Real.sqrt (mulDistSqPair f (charFn ((k : ℝ) * t)) P) := Real.sqrt_le_sqrt hk
   have hdamp := norm_sum_smooth_le_exp_of_far hf hmul h1 ((k : ℝ) * t) hP hδ0 hfar
   rw [← smoothMulSum] at hdamp

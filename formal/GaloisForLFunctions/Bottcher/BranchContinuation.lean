@@ -28,7 +28,7 @@ namespace Bottcher
 `Polynomial (Polynomial ℂ)` (its outer coefficients are `P.coeff i` composed with this). -/
 noncomputable def quadIteratePoly (c : ℂ) : ℕ → Polynomial ℂ
   | 0 => Polynomial.X
-  | (p + 1) => (Polynomial.X ^ 2 + Polynomial.C c).comp (quadIteratePoly c p)
+  | (p + 1) => (Polynomial.X ^ (2 : ℕ) + Polynomial.C c).comp (quadIteratePoly c p)
 
 @[simp] theorem quadIteratePoly_zero (c : ℂ) : quadIteratePoly c 0 = Polynomial.X := rfl
 
@@ -471,7 +471,7 @@ theorem nonresonant_of_norm_gt {lam : ℂ} {p : ℕ} (h : (2 ^ p : ℝ) < ‖lam
   have h1 : (1 : ℝ) ≤ ‖lam‖ := le_of_lt (lt_of_le_of_lt h2p h)
   have hge : (2 ^ p : ℝ) < ‖lam‖ ^ m := by
     calc (2 ^ p : ℝ) < ‖lam‖ := h
-      _ = ‖lam‖ ^ 1 := (pow_one _).symm
+      _ = ‖lam‖ ^ (1 : ℕ) := (pow_one _).symm
       _ ≤ ‖lam‖ ^ m := pow_le_pow_right₀ h1 hm
   linarith [hnormeq, hge]
 
@@ -486,10 +486,10 @@ theorem nonresonant_of_norm_lt_one {lam : ℂ} {p : ℕ} (hp : 1 ≤ p) (h : ‖
     rw [norm_pow] at this
     rw [this, Complex.norm_natCast]; push_cast; ring
   have hle : ‖lam‖ ^ m ≤ ‖lam‖ := by
-    calc ‖lam‖ ^ m ≤ ‖lam‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg _) (le_of_lt h) hm
+    calc ‖lam‖ ^ m ≤ ‖lam‖ ^ (1 : ℕ) := pow_le_pow_of_le_one (norm_nonneg _) (le_of_lt h) hm
       _ = ‖lam‖ := pow_one _
   have h2p : (2 : ℝ) ≤ 2 ^ p := by
-    calc (2 : ℝ) = 2 ^ 1 := (pow_one 2).symm
+    calc (2 : ℝ) = 2 ^ (1 : ℕ) := (pow_one 2).symm
       _ ≤ 2 ^ p := pow_le_pow_right₀ (by norm_num) hp
   linarith [hnormeq, hle, h]
 

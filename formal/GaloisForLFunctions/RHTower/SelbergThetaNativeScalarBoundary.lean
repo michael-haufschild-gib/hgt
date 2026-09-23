@@ -89,7 +89,7 @@ private theorem responseLine_xi (t : ℝ) : XiC (responseLine t) = xi (7/4+(t:�
   linear_combination -(5/4:ℂ)*I_sq
 
 private theorem responseLine_denominator (q : XiZeroCopy) (t : ℝ) :
-    (1/2:ℝ) ≤ ‖(xiSpectralPoint q)^2-(responseLine t)^2‖ := by
+    (1/2:ℝ) ≤ ‖(xiSpectralPoint q)^(2 : ℕ)-(responseLine t)^(2 : ℕ)‖ := by
   have hs := xiSpectralPoint_im_mem_openHalf q
   have hw : (responseLine t).im = -5/4 := by norm_num [responseLine]
   have h1 : (3/4:ℝ) ≤ ‖xiSpectralPoint q-responseLine t‖ := by
@@ -103,7 +103,7 @@ private theorem responseLine_denominator (q : XiZeroCopy) (t : ℝ) :
     have ha := le_abs_self (-((xiSpectralPoint q).im+(-5/4)))
     rw [abs_neg] at ha
     linarith
-  have he : (xiSpectralPoint q)^2-(responseLine t)^2 =
+  have he : (xiSpectralPoint q)^(2 : ℕ)-(responseLine t)^(2 : ℕ) =
       (xiSpectralPoint q-responseLine t)*(xiSpectralPoint q+responseLine t) := by ring
   rw [he,norm_mul]
   have hh := mul_le_mul h1 h2 (by norm_num : (0:ℝ) ≤ 3/4) (norm_nonneg _)
@@ -176,13 +176,13 @@ private theorem product_exp (q : XiZeroCopy) (x : ℝ) :
        _ = _ := by rw [he]
 
 private theorem heightPair_exp (q : XiZeroCopy) (x : ℝ) :
-    |2*Real.exp (2*x)| • ((Real.exp (2*x))^2)⁻¹ •
+    |2*Real.exp (2*x)| • ((Real.exp (2*x))^(2 : ℕ))⁻¹ •
       (heightProfile q (Real.exp (2*x))*(horizontalWeight (Real.exp (2*x)):ℂ)) =
       2*(tiltedProfile q (-5/4) x*safeSource x) := by
   rw [abs_of_pos (by positivity),product_exp,heightProfile,Real.log_exp]
   have hx : (2*x)/2 = x := by ring
   rw [hx]
-  have he : (Real.exp (2*x):ℂ) = (Complex.exp (x:ℂ))^2 := by
+  have he : (Real.exp (2*x):ℂ) = (Complex.exp (x:ℂ))^(2 : ℕ) := by
     rw [Complex.ofReal_exp]
     have hh : ((2*x:ℝ):ℂ) = (x:ℂ)+(x:ℂ) := by push_cast; ring
     rw [hh,Complex.exp_add,pow_two]
@@ -215,7 +215,7 @@ theorem scalarResponse_eq_log_pairing (q : XiZeroCopy) :
   have h := integral_image_eq_integral_abs_deriv_smul
     (f := fun x : ℝ => Real.exp (2*x)) (f' := fun x : ℝ => 2*Real.exp (2*x))
     (s := univ) MeasurableSet.univ hd hinj
-    (fun y : ℝ => (y^2)⁻¹ • (heightProfile q y*(horizontalWeight y:ℂ)))
+    (fun y : ℝ => (y^(2 : ℕ))⁻¹ • (heightProfile q y*(horizontalWeight y:ℂ)))
   rw [himg,setIntegral_univ] at h
   change scalarResponse q = _ at h
   rw [h,← integral_const_mul]
@@ -263,7 +263,7 @@ theorem scalarResponse_eq_contour (q : XiZeroCopy) :
 /-- The source-response contour transfer, now joined to the literal native scalar. -/
 theorem scalarResponse_spectral_boundary (q : XiZeroCopy) :
     scalarResponse q =
-      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^2)+
+      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^(2 : ℕ))+
       (1/(Real.pi:ℂ))*∫ t : ℝ,
         XiC (t:ℂ)*(1+boundaryPhase t)*profileTransform q (t:ℂ) := by
   rw [scalarResponse_eq_contour,responseSymbol_spectral_boundary]
@@ -288,7 +288,7 @@ theorem profileTransform_even_real (q : XiZeroCopy) (t : ℝ) :
       have hr := congrArg Complex.re h
       simp at hr
       exact ht2 (by linarith)
-    have hn : (xiSpectralPoint q)^2-(t:ℂ)^2 ≠ 0 := by
+    have hn : (xiSpectralPoint q)^(2 : ℕ)-(t:ℂ)^(2 : ℕ) ≠ 0 := by
       rw [sq_sub_sq]
       exact mul_ne_zero h2 h1
     have hh := profile_transform_equation q (-(t:ℂ))
@@ -333,7 +333,7 @@ theorem boundary_integral_eq_real (q : XiZeroCopy) :
 /-- Exact spectral formula for the original native scalar response, including its mean residue. -/
 theorem scalarResponse_real_boundary (q : XiZeroCopy) :
     scalarResponse q =
-      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^2)+
+      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^(2 : ℕ))+
       (1/(Real.pi:ℂ))*∫ t : ℝ,
         XiC (t:ℂ)*(boundaryWeight t:ℂ)*profileTransform q (t:ℂ) := by
   rw [scalarResponse_spectral_boundary,boundary_integral_eq_real]
@@ -353,7 +353,7 @@ theorem sourceMass_eq_xi : (SelbergThetaNativeSource.sourceMass:ℂ) = 2*xi (3/2
 
 private theorem real_boundary_ae_cauchy (q : XiZeroCopy) :
     (fun t : ℝ => XiC (t:ℂ)*(boundaryWeight t:ℂ)*profileTransform q (t:ℂ)) =ᵐ[volume]
-      fun t : ℝ => -((Xi t:ℂ)^2*(boundaryWeight t:ℂ)/((t:ℂ)^2-(xiSpectralPoint q)^2)) := by
+      fun t : ℝ => -((Xi t:ℂ)^(2 : ℕ)*(boundaryWeight t:ℂ)/((t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ))) := by
   filter_upwards [volume.ae_ne (xiSpectralPoint q).re,
     volume.ae_ne (-(xiSpectralPoint q).re)] with t ht1 ht2
   have h1 : xiSpectralPoint q-(t:ℂ) ≠ 0 := by
@@ -366,41 +366,41 @@ private theorem real_boundary_ae_cauchy (q : XiZeroCopy) :
     have hr := congrArg Complex.re h
     simp at hr
     exact ht2 (by linarith)
-  have hn : (xiSpectralPoint q)^2-(t:ℂ)^2 ≠ 0 := by
+  have hn : (xiSpectralPoint q)^(2 : ℕ)-(t:ℂ)^(2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero h2 h1
-  have he : profileTransform q (t:ℂ) = XiC (t:ℂ)/((xiSpectralPoint q)^2-(t:ℂ)^2) :=
+  have he : profileTransform q (t:ℂ) = XiC (t:ℂ)/((xiSpectralPoint q)^(2 : ℕ)-(t:ℂ)^(2 : ℕ)) :=
     (eq_div_iff hn).mpr (by simpa only [mul_comm] using profile_transform_equation q (t:ℂ))
   rw [he,XiC_ofReal]
-  have hd : (t:ℂ)^2-(xiSpectralPoint q)^2 = -((xiSpectralPoint q)^2-(t:ℂ)^2) := by ring
+  have hd : (t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ) = -((xiSpectralPoint q)^(2 : ℕ)-(t:ℂ)^(2 : ℕ)) := by ring
   rw [hd,div_neg,neg_neg]
   ring
 
 /-- Absolute admission of the literal arithmetic Cauchy integral at every actual Xi copy. -/
 theorem native_cauchy_integrable (q : XiZeroCopy) :
     Integrable (fun t : ℝ =>
-      (Xi t:ℂ)^2*(boundaryWeight t:ℂ)/((t:ℂ)^2-(xiSpectralPoint q)^2)) := by
+      (Xi t:ℂ)^(2 : ℕ)*(boundaryWeight t:ℂ)/((t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ))) := by
   have h := (real_boundary_integrable q).congr (real_boundary_ae_cauchy q)
   exact h.neg.congr (Eventually.of_forall fun t => by simp only [Pi.neg_apply,neg_neg])
 
 /-- The native scalar response is a mean residue plus the complete arithmetic Cauchy transform. -/
 theorem scalarResponse_cauchy (q : XiZeroCopy) :
     scalarResponse q =
-      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^2)-
+      2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^(2 : ℕ))-
       (1/(Real.pi:ℂ))*∫ t : ℝ,
-        (Xi t:ℂ)^2*(boundaryWeight t:ℂ)/((t:ℂ)^2-(xiSpectralPoint q)^2) := by
+        (Xi t:ℂ)^(2 : ℕ)*(boundaryWeight t:ℂ)/((t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ)) := by
   rw [scalarResponse_real_boundary,integral_congr_ae (real_boundary_ae_cauchy q),integral_neg]
   ring
 
 /-- The actual constant-mode correction and arithmetic Cauchy transform in one native equality. -/
 theorem sourcePairing_cauchy (q : XiZeroCopy) :
     SelbergThetaCommonForcingGram.sourcePairing q =
-      -(1/4:ℂ)*(2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^2)-
-        (SelbergThetaNativeSource.sourceMass:ℂ)^2/
-          ((1+(xiSpectralPoint q)^2)*inner ℂ SelbergNativeConstantMode.constantVector
+      -(1/4:ℂ)*(2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^(2 : ℕ))-
+        (SelbergThetaNativeSource.sourceMass:ℂ)^(2 : ℕ)/
+          ((1+(xiSpectralPoint q)^(2 : ℕ))*inner ℂ SelbergNativeConstantMode.constantVector
             SelbergNativeConstantMode.constantVector))+
       (1/(4*(Real.pi:ℂ)))*∫ t : ℝ,
-        (Xi t:ℂ)^2*(boundaryWeight t:ℂ)/((t:ℂ)^2-(xiSpectralPoint q)^2) := by
+        (Xi t:ℂ)^(2 : ℕ)*(boundaryWeight t:ℂ)/((t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ)) := by
   rw [sourcePairing_eq_scalarResponse,scalarResponse_cauchy]
   ring
 

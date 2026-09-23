@@ -197,7 +197,7 @@ theorem continuous_pointwiseMul :
       C * productControl k n p.1 * productControl k n p.2 at hbound
     have hp0 : 0 ≤ productControl k n p.1 := by positivity
     have hq0 : 0 ≤ productControl k n p.2 := by positivity
-    have hδsq : δ ^ 2 = ε / A := by
+    have hδsq : δ ^ (2 : ℕ) = ε / A := by
       dsimp only [δ]
       exact Real.sq_sqrt (div_nonneg hε.le hA.le)
     calc
@@ -215,7 +215,7 @@ theorem continuous_pointwiseMul :
             _ < δ * δ := mul_lt_mul_of_pos_right hp hδ
         nlinarith
       _ = ε := by
-        rw [show A * δ * δ = A * δ ^ 2 by ring, hδsq]
+        rw [show A * δ * δ = A * δ ^ (2 : ℕ) by ring, hδsq]
         exact mul_div_cancel₀ ε hA.ne'
   · intro f
     simpa only [pointwiseMulAddHom_apply, pointwiseMul] using!

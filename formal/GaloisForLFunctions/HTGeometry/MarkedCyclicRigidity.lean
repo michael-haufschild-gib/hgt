@@ -81,7 +81,7 @@ theorem norm_cyclicMap_eq
     exact Finset.sum_congr rfl fun g _ =>
       Finset.sum_congr rfl fun h _ => by rw [hcoef]
   rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at heq
-  have hsq : ‖cyclicMap U Ω c‖ ^ 2 = ‖cyclicMap U' Ω' c‖ ^ 2 := by
+  have hsq : ‖cyclicMap U Ω c‖ ^ (2 : ℕ) = ‖cyclicMap U' Ω' c‖ ^ (2 : ℕ) := by
     exact_mod_cast heq
   rw [← Real.sqrt_sq (norm_nonneg (cyclicMap U Ω c)),
     ← Real.sqrt_sq (norm_nonneg (cyclicMap U' Ω' c)), hsq]

@@ -69,7 +69,7 @@ theorem one_fourteenth_lt_deningerHeightSeminorm_one_primeCriticalStokesKotheWit
   have hr0 : 0 < r := criticalStokesNode_pos p
   have hr1 : r < 1 :=
     (criticalStokesNode_lt_five_sevenths p).trans (by norm_num)
-  have hr2 : r ^ 2 = P⁻¹ := by simpa [r, P] using criticalStokesNode_sq p
+  have hr2 : r ^ (2 : ℕ) = P⁻¹ := by simpa [r, P] using criticalStokesNode_sq p
   have hW0 : 0 < W := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) p
   have hW : W ≤ 14 * Real.log P / r := by
     simpa [W, P, r] using criticalStokesInverseTilt_upper p
@@ -78,11 +78,11 @@ theorem one_fourteenth_lt_deningerHeightSeminorm_one_primeCriticalStokesKotheWit
     exact div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hlog (by norm_num)) hr0.le |>.trans' hW
   have hPr : 1 < P * r := by
-    have hPrr : P * r ^ 2 = 1 := by
+    have hPrr : P * r ^ (2 : ℕ) = 1 := by
       rw [hr2]
       exact mul_inv_cancel₀ hP0.ne'
     nlinarith [mul_pos hP0 hr0]
-  have hratio : 1 / 14 < P ^ 2 / W := by
+  have hratio : 1 / 14 < P ^ (2 : ℕ) / W := by
     rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 14) hW0]
     have hmul := mul_le_mul_of_nonneg_left hWcoarse (by norm_num : (0 : ℝ) ≤ 14)
     have hscaled := mul_lt_mul_of_pos_left hPr (mul_pos (by norm_num : (0 : ℝ) < 14) hP0)
@@ -97,7 +97,7 @@ theorem one_fourteenth_lt_deningerHeightSeminorm_one_primeCriticalStokesKotheWit
     abs_of_pos (div_pos hP0 hW0)] at hcoord
   change P * (P / W) ≤ _ at hcoord
   calc
-    1 / 14 < P ^ 2 / W := hratio
+    1 / 14 < P ^ (2 : ℕ) / W := hratio
     _ = P * (P / W) := by ring
     _ ≤ _ := hcoord
 

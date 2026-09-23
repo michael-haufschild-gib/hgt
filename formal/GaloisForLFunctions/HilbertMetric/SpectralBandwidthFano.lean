@@ -7,7 +7,7 @@ For an orthonormal finite frame in a spectrally graded real Hilbert space, this 
 the additive Slater mean and variance through the standard one-particle compression formula.  If
 the one-particle spectrum is contained in `[lower, upper]`, it proves the universal bound
 
-`card ι * (lower - (upper - lower - 1)^2 / 4) ≤ mean - variance`.
+`card ι * (lower - (upper - lower - 1)^(2 : ℕ) / 4) ≤ mean - variance`.
 
 The bound is independent of ambient dimension.  Its nonnegative phase is controlled only by the
 spectral bandwidth, and its positive integral specialization shows that every spectrum supported
@@ -29,17 +29,17 @@ def IsOrthonormalCoordinateFrame (v : ι → κ → ℝ) : Prop :=
 
 /-- Spectral mean of one occupied orbital. -/
 def orbitalSpectralMean (v : ι → κ → ℝ) (energy : κ → ℝ) (i : ι) : ℝ :=
-  ∑ k, energy k * v i k ^ 2
+  ∑ k, energy k * v i k ^ (2 : ℕ)
 
 /-- Spectral second moment of one occupied orbital. -/
 def orbitalSpectralSecondMoment
     (v : ι → κ → ℝ) (energy : κ → ℝ) (i : ι) : ℝ :=
-  ∑ k, energy k ^ 2 * v i k ^ 2
+  ∑ k, energy k ^ (2 : ℕ) * v i k ^ (2 : ℕ)
 
 /-- Squared Hilbert--Schmidt energy of the spectral observable compressed to the occupied frame. -/
 def slaterCompressedSpectralEnergy
     (v : ι → κ → ℝ) (energy : κ → ℝ) : ℝ :=
-  ∑ i, ∑ j, (∑ k, energy k * v i k * v j k) ^ 2
+  ∑ i, ∑ j, (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)
 
 /-- Mean of the additive spectral observable in the Slater state of the occupied frame. -/
 def slaterSpectralMean (v : ι → κ → ℝ) (energy : κ → ℝ) : ℝ :=
@@ -63,13 +63,13 @@ def slaterSpectralSecantDefect
 /-- Squared displacement of the occupied spectral means from the extremal balancing energy. -/
 def slaterSpectralCenteringDefect
     (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) : ℝ :=
-  ∑ i, (orbitalSpectralMean v energy i - (lower + upper - 1) / 2) ^ 2
+  ∑ i, (orbitalSpectralMean v energy i - (lower + upper - 1) / 2) ^ (2 : ℕ)
 
 /-- Off-diagonal energy of the spectral observable compressed to the occupied frame. -/
 def slaterSpectralCoherenceDefect
     (v : ι → κ → ℝ) (energy : κ → ℝ) : ℝ :=
   ∑ i, ∑ j ∈ Finset.univ.erase i,
-    (∑ k, energy k * v i k * v j k) ^ 2
+    (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)
 
 /-- Small-band displacement defect from the lower spectral endpoint. -/
 def slaterSpectralLowerEndpointDefect
@@ -80,15 +80,15 @@ def slaterSpectralLowerEndpointDefect
 /-- Mean-minus-variance margin of a rank-one orbital supported on two spectral endpoints. -/
 def endpointPairSpectralFanoMargin (lower upper p : ℝ) : ℝ :=
   let mean := lower * (1 - p) + upper * p
-  let secondMoment := lower ^ 2 * (1 - p) + upper ^ 2 * p
-  mean - (secondMoment - mean ^ 2)
+  let secondMoment := lower ^ (2 : ℕ) * (1 - p) + upper ^ (2 : ℕ) * p
+  mean - (secondMoment - mean ^ (2 : ℕ))
 
 /-- **Endpoint-pair square law.**  The exact remainder above the spectral-bandwidth constant is
 one square. -/
 theorem endpointPairSpectralFanoMargin_square (lower upper p : ℝ) :
     endpointPairSpectralFanoMargin lower upper p =
-      lower - (upper - lower - 1) ^ 2 / 4 +
-        ((upper - lower) * p - (upper - lower - 1) / 2) ^ 2 := by
+      lower - (upper - lower - 1) ^ (2 : ℕ) / 4 +
+        ((upper - lower) * p - (upper - lower - 1) / 2) ^ (2 : ℕ) := by
   unfold endpointPairSpectralFanoMargin
   ring
 
@@ -97,17 +97,17 @@ theorem endpointPairSpectralFanoMargin_at_optimal
     (lower upper : ℝ) (hdiff : upper - lower ≠ 0) :
     endpointPairSpectralFanoMargin lower upper
         ((upper - lower - 1) / (2 * (upper - lower))) =
-      lower - (upper - lower - 1) ^ 2 / 4 := by
+      lower - (upper - lower - 1) ^ (2 : ℕ) / 4 := by
   rw [endpointPairSpectralFanoMargin_square]
   have htwo : (2 : ℝ) ≠ 0 := by norm_num
   field_simp
   ring
 
-/-- The secant line through `(lower, lower^2)` and `(upper, upper^2)` dominates the square
+/-- The secant line through `(lower, lower^(2 : ℕ))` and `(upper, upper^(2 : ℕ))` dominates the square
 function on the spectral interval. -/
 theorem spectral_sq_le_secant
     {lower upper x : ℝ} (hlower : lower ≤ x) (hupper : x ≤ upper) :
-    x ^ 2 ≤ (lower + upper) * x - lower * upper := by
+    x ^ (2 : ℕ) ≤ (lower + upper) * x - lower * upper := by
   have hproduct : (x - lower) * (x - upper) ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hlower) (sub_nonpos.mpr hupper)
   nlinarith
@@ -116,7 +116,7 @@ omit [Fintype ι] in
 /-- Every member of an orthonormal coordinate frame has unit squared norm. -/
 theorem orthonormalCoordinateFrame_row_norm
     (v : ι → κ → ℝ) (hframe : IsOrthonormalCoordinateFrame v) (i : ι) :
-    ∑ k, v i k ^ 2 = 1 := by
+    ∑ k, v i k ^ (2 : ℕ) = 1 := by
   have h := hframe i i
   simpa [pow_two] using h
 
@@ -127,8 +127,8 @@ theorem lower_le_orbitalSpectralMean
     (hframe : IsOrthonormalCoordinateFrame v)
     (lower : ℝ) (hlower : ∀ k, lower ≤ energy k) (i : ι) :
     lower ≤ orbitalSpectralMean v energy i := by
-  have hsum : (∑ k, lower * v i k ^ 2) ≤
-      ∑ k, energy k * v i k ^ 2 :=
+  have hsum : (∑ k, lower * v i k ^ (2 : ℕ)) ≤
+      ∑ k, energy k * v i k ^ (2 : ℕ) :=
     Finset.sum_le_sum fun k (_ : k ∈ Finset.univ) =>
       mul_le_mul_of_nonneg_right (hlower k) (sq_nonneg (v i k))
   rw [← Finset.mul_sum, orthonormalCoordinateFrame_row_norm v hframe i, mul_one] at hsum
@@ -145,16 +145,16 @@ theorem orbitalSpectralSecondMoment_le_secant
     orbitalSpectralSecondMoment v energy i ≤
       (lower + upper) * orbitalSpectralMean v energy i - lower * upper := by
   have hpoint : ∀ k,
-      energy k ^ 2 * v i k ^ 2 ≤
-        (((lower + upper) * energy k - lower * upper) * v i k ^ 2) := by
+      energy k ^ (2 : ℕ) * v i k ^ (2 : ℕ) ≤
+        (((lower + upper) * energy k - lower * upper) * v i k ^ (2 : ℕ)) := by
     intro k
     exact mul_le_mul_of_nonneg_right
       (spectral_sq_le_secant (hlower k) (hupper k)) (sq_nonneg (v i k))
   have hsum := Finset.sum_le_sum fun k (_ : k ∈ Finset.univ) => hpoint k
   rw [show
-      (∑ k, ((lower + upper) * energy k - lower * upper) * v i k ^ 2) =
+      (∑ k, ((lower + upper) * energy k - lower * upper) * v i k ^ (2 : ℕ)) =
         (lower + upper) * orbitalSpectralMean v energy i -
-          lower * upper * (∑ k, v i k ^ 2) by
+          lower * upper * (∑ k, v i k ^ (2 : ℕ)) by
     unfold orbitalSpectralMean
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
@@ -167,22 +167,22 @@ theorem orbitalSpectralSecondMoment_le_secant
 theorem slaterCompressedSpectralEnergy_eq_diagonal_add_coherence
     (v : ι → κ → ℝ) (energy : κ → ℝ) :
     slaterCompressedSpectralEnergy v energy =
-      (∑ i, orbitalSpectralMean v energy i ^ 2) +
+      (∑ i, orbitalSpectralMean v energy i ^ (2 : ℕ)) +
         slaterSpectralCoherenceDefect v energy := by
   unfold slaterCompressedSpectralEnergy slaterSpectralCoherenceDefect
   calc
-    (∑ i, ∑ j, (∑ k, energy k * v i k * v j k) ^ 2) =
-        ∑ i, ((∑ k, energy k * v i k * v i k) ^ 2 +
+    (∑ i, ∑ j, (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) =
+        ∑ i, ((∑ k, energy k * v i k * v i k) ^ (2 : ℕ) +
           ∑ j ∈ Finset.univ.erase i,
-            (∑ k, energy k * v i k * v j k) ^ 2) := by
+            (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       rw [← Finset.sum_erase_add Finset.univ
-        (fun j => (∑ k, energy k * v i k * v j k) ^ 2) (Finset.mem_univ i)]
+        (fun j => (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) (Finset.mem_univ i)]
       ring
-    _ = (∑ i, orbitalSpectralMean v energy i ^ 2) +
+    _ = (∑ i, orbitalSpectralMean v energy i ^ (2 : ℕ)) +
         ∑ i, ∑ j ∈ Finset.univ.erase i,
-          (∑ k, energy k * v i k * v j k) ^ 2 := by
+          (∑ k, energy k * v i k * v j k) ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib]
       congr 1
       apply Finset.sum_congr rfl
@@ -239,7 +239,7 @@ omit [DecidableEq ι] in
 /-- The full compression energy dominates the sum of its diagonal squares. -/
 theorem sum_orbitalSpectralMean_sq_le_compressed
     (v : ι → κ → ℝ) (energy : κ → ℝ) :
-    (∑ i, orbitalSpectralMean v energy i ^ 2) ≤
+    (∑ i, orbitalSpectralMean v energy i ^ (2 : ℕ)) ≤
       slaterCompressedSpectralEnergy v energy := by
   classical
   rw [slaterCompressedSpectralEnergy_eq_diagonal_add_coherence]
@@ -251,7 +251,7 @@ theorem sum_orbital_diagonalFano_le_slaterSpectralFanoMargin
     (v : ι → κ → ℝ) (energy : κ → ℝ) :
     (∑ i, (orbitalSpectralMean v energy i -
       orbitalSpectralSecondMoment v energy i +
-        orbitalSpectralMean v energy i ^ 2)) ≤
+        orbitalSpectralMean v energy i ^ (2 : ℕ))) ≤
       slaterSpectralFanoMargin v energy := by
   have hdiagonal := sum_orbitalSpectralMean_sq_le_compressed v energy
   unfold slaterSpectralFanoMargin slaterSpectralMean slaterSpectralVariance
@@ -260,7 +260,7 @@ theorem sum_orbital_diagonalFano_le_slaterSpectralFanoMargin
 
 /-- **Slater margin splitting law.**  Every pointwise algebraic identity
 
-`m - q + m ^ 2 = base + ((lower + upper) * m - lower * upper - q) + rest m`
+`m - q + m ^ (2 : ℕ) = base + ((lower + upper) * m - lower * upper - q) + rest m`
 
 splits the Slater Fano margin into the extensive floor `card ι * base`, the endpoint-secant
 defect, the `rest` defect of the occupied spectral means, and occupied coherence.  The
@@ -268,7 +268,7 @@ balancing decomposition and the lower-endpoint decomposition are this one law at
 of `rest`. -/
 theorem slaterSpectralFanoMargin_split
     (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper base : ℝ) (rest : ℝ → ℝ)
-    (hrest : ∀ m q : ℝ, m - q + m ^ 2 =
+    (hrest : ∀ m q : ℝ, m - q + m ^ (2 : ℕ) =
       base + ((lower + upper) * m - lower * upper - q) + rest m) :
     slaterSpectralFanoMargin v energy =
       (Fintype.card ι : ℝ) * base +
@@ -279,7 +279,7 @@ theorem slaterSpectralFanoMargin_split
       slaterSpectralFanoMargin v energy =
         (∑ i, (orbitalSpectralMean v energy i -
           orbitalSpectralSecondMoment v energy i +
-            orbitalSpectralMean v energy i ^ 2)) +
+            orbitalSpectralMean v energy i ^ (2 : ℕ))) +
           slaterSpectralCoherenceDefect v energy := by
     unfold slaterSpectralFanoMargin slaterSpectralMean slaterSpectralVariance
     rw [slaterCompressedSpectralEnergy_eq_diagonal_add_coherence]
@@ -291,7 +291,7 @@ theorem slaterSpectralFanoMargin_split
   calc
     (∑ i, (orbitalSpectralMean v energy i -
         orbitalSpectralSecondMoment v energy i +
-          orbitalSpectralMean v energy i ^ 2)) =
+          orbitalSpectralMean v energy i ^ (2 : ℕ))) =
         ∑ i, (base +
           ((lower + upper) * orbitalSpectralMean v energy i - lower * upper -
             orbitalSpectralSecondMoment v energy i) +
@@ -311,12 +311,12 @@ theorem slaterSpectralFanoMargin_three_defect
     (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
     slaterSpectralFanoMargin v energy =
       (Fintype.card ι : ℝ) *
-          (lower - (upper - lower - 1) ^ 2 / 4) +
+          (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) +
         slaterSpectralSecantDefect v energy lower upper +
         slaterSpectralCenteringDefect v energy lower upper +
         slaterSpectralCoherenceDefect v energy :=
   slaterSpectralFanoMargin_split v energy lower upper
-    (lower - (upper - lower - 1) ^ 2 / 4) (fun m => (m - (lower + upper - 1) / 2) ^ 2)
+    (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) (fun m => (m - (lower + upper - 1) / 2) ^ (2 : ℕ))
     (fun m q => by ring)
 
 /-- **Spectral-bandwidth Slater Fano law.**  The universal mean-minus-variance lower bound is
@@ -327,7 +327,7 @@ theorem slaterSpectralFanoMargin_lower_bound
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     (Fintype.card ι : ℝ) *
-        (lower - (upper - lower - 1) ^ 2 / 4) ≤
+        (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ≤
       slaterSpectralFanoMargin v energy := by
   rw [slaterSpectralFanoMargin_three_defect v energy lower upper]
   have hsecant := slaterSpectralSecantDefect_nonneg
@@ -365,18 +365,18 @@ theorem slaterSpectralFanoMargin_lower_bound_of_width_le_one
   have hcoherence := slaterSpectralCoherenceDefect_nonneg v energy
   linarith
 
-/-- The exact bandwidth inequality `(upper - lower - 1)^2 ≤ 4 * lower` forces a nonnegative
+/-- The exact bandwidth inequality `(upper - lower - 1)^(2 : ℕ) ≤ 4 * lower` forces a nonnegative
 Slater Fano margin in every occupied rank. -/
 theorem slaterSpectralFanoMargin_nonnegative_of_bandwidth
     (v : ι → κ → ℝ) (energy : κ → ℝ)
     (hframe : IsOrthonormalCoordinateFrame v)
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper)
-    (hthreshold : (upper - lower - 1) ^ 2 ≤ 4 * lower) :
+    (hthreshold : (upper - lower - 1) ^ (2 : ℕ) ≤ 4 * lower) :
     0 ≤ slaterSpectralFanoMargin v energy := by
   have hlowerBound := slaterSpectralFanoMargin_lower_bound
     v energy hframe lower upper hlower hupper
-  have hfactor : 0 ≤ lower - (upper - lower - 1) ^ 2 / 4 := by nlinarith
+  have hfactor : 0 ≤ lower - (upper - lower - 1) ^ (2 : ℕ) / 4 := by nlinarith
   have hcard : 0 ≤ (Fintype.card ι : ℝ) := by positivity
   exact le_trans (mul_nonneg hcard hfactor) hlowerBound
 
@@ -389,7 +389,7 @@ theorem slaterSpectralFanoMargin_eq_lower_bound_iff
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     slaterSpectralFanoMargin v energy =
         (Fintype.card ι : ℝ) *
-          (lower - (upper - lower - 1) ^ 2 / 4) ↔
+          (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ↔
       slaterSpectralSecantDefect v energy lower upper = 0 ∧
       slaterSpectralCenteringDefect v energy lower upper = 0 ∧
       slaterSpectralCoherenceDefect v energy = 0 := by

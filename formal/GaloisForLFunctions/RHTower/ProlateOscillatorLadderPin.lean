@@ -41,19 +41,19 @@ open GaloisForLFunctions.HTGeometry
 
 /-! ## Differentiability of the oscillator eigenfunctions -/
 
-theorem differentiable_probHermiteFun (n : ℕ) : Differentiable ℝ (probHermiteFun n) :=
+theorem differentiable_probHermiteFun_prolateOscillatorLadderPin (n : ℕ) : Differentiable ℝ (probHermiteFun n) :=
   fun x => (hasDerivAt_probHermiteFun n x).differentiableAt
 
-theorem differentiable_deriv_probHermiteFun (n : ℕ) :
+theorem differentiable_deriv_probHermiteFun_prolateOscillatorLadderPin (n : ℕ) :
     Differentiable ℝ (deriv (probHermiteFun n)) := by
   rw [deriv_probHermiteFun]
   intro x
   have h1 : DifferentiableAt ℝ
-      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ 2 / 4))) x :=
+      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ (2 : ℕ) / 4))) x :=
     ((Polynomial.hasDerivAt_aeval (𝕜 := ℝ) (derivative (hermite n)) x).differentiableAt).mul
-      (by fun_prop : DifferentiableAt ℝ (fun y : ℝ => Real.exp (-(y ^ 2 / 4))) x)
+      (by fun_prop : DifferentiableAt ℝ (fun y : ℝ => Real.exp (-(y ^ (2 : ℕ) / 4))) x)
   have h2 : DifferentiableAt ℝ (fun y : ℝ => y / 2 * probHermiteFun n y) x :=
-    ((differentiableAt_id).div_const 2).mul (differentiable_probHermiteFun n x)
+    ((differentiableAt_id).div_const 2).mul (differentiable_probHermiteFun_prolateOscillatorLadderPin n x)
   exact h1.sub h2
 
 private theorem deriv_hermiteFun_eq (n : ℕ) :
@@ -66,7 +66,7 @@ theorem hasDerivAt_ladderHermiteFun (n : ℕ) (x : ℝ) :
     simpa using (hasDerivAt_id x).const_mul (Real.sqrt 2)
   have h : HasDerivAt (fun y : ℝ => probHermiteFun n (Real.sqrt 2 * y))
       (deriv (probHermiteFun n) (Real.sqrt 2 * x) * Real.sqrt 2) x :=
-    ((differentiable_probHermiteFun n (Real.sqrt 2 * x)).hasDerivAt).comp x hlin
+    ((differentiable_probHermiteFun_prolateOscillatorLadderPin n (Real.sqrt 2 * x)).hasDerivAt).comp x hlin
   have h2 : HasDerivAt (hermiteFun n)
       (deriv (probHermiteFun n) (Real.sqrt 2 * x) * Real.sqrt 2) x := h
   exact h2.deriv ▸ h2
@@ -76,7 +76,7 @@ theorem hasDerivAt_deriv_ladderHermiteFun (n : ℕ) (x : ℝ) :
   have hd : Differentiable ℝ (deriv (hermiteFun n)) := by
     rw [deriv_hermiteFun_eq]
     intro y
-    exact ((differentiable_deriv_probHermiteFun n (Real.sqrt 2 * y)).comp y
+    exact ((differentiable_deriv_probHermiteFun_prolateOscillatorLadderPin n (Real.sqrt 2 * y)).comp y
       (by fun_prop : DifferentiableAt ℝ (fun z : ℝ => Real.sqrt 2 * z) y)).const_mul _
   exact (hd x).hasDerivAt
 
@@ -96,7 +96,7 @@ theorem hermitePairing_pin {u u' u'' D : ℝ → ℝ} {μ : ℝ} (n : ℕ)
     (heq : ∀ x, hermiteSLAction u x + μ * u x = D x)
     (hintL : Integrable fun x => u'' x * hermiteFun n x)
     (hintR : Integrable fun x => u x * deriv (deriv (hermiteFun n)) x)
-    (hintSq : Integrable fun x => x ^ 2 * (u x * hermiteFun n x))
+    (hintSq : Integrable fun x => x ^ (2 : ℕ) * (u x * hermiteFun n x))
     (hintU : Integrable fun x => u x * hermiteFun n x)
     (hplus : Tendsto (fun x => u' x * hermiteFun n x - u x * deriv (hermiteFun n) x)
       atTop (𝓝 0))
@@ -110,19 +110,19 @@ theorem hermitePairing_pin {u u' u'' D : ℝ → ℝ} {μ : ℝ} (n : ℕ)
     integral_secondDeriv_mul_comm hu (fun x => hasDerivAt_ladderHermiteFun n x) hu'
       (fun x => hasDerivAt_deriv_ladderHermiteFun n x) hintL hintR hplus hminus
   have hR : ∫ x, u x * deriv (deriv (hermiteFun n)) x
-      = (∫ x, x ^ 2 * (u x * hermiteFun n x)) - (2 * n + 1) * ∫ x, u x * hermiteFun n x := by
+      = (∫ x, x ^ (2 : ℕ) * (u x * hermiteFun n x)) - (2 * n + 1) * ∫ x, u x * hermiteFun n x := by
     have hpt : ∀ x, u x * deriv (deriv (hermiteFun n)) x
-        = x ^ 2 * (u x * hermiteFun n x) - (2 * n + 1) * (u x * hermiteFun n x) := by
+        = x ^ (2 : ℕ) * (u x * hermiteFun n x) - (2 * n + 1) * (u x * hermiteFun n x) := by
       intro x
       rw [deriv2_hermiteFun]
       ring
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt),
       MeasureTheory.integral_sub hintSq (hintU.const_mul _), MeasureTheory.integral_const_mul]
   have hD : ∫ x, D x * hermiteFun n x
-      = (∫ x, u'' x * hermiteFun n x) - (∫ x, x ^ 2 * (u x * hermiteFun n x))
+      = (∫ x, u'' x * hermiteFun n x) - (∫ x, x ^ (2 : ℕ) * (u x * hermiteFun n x))
         + μ * ∫ x, u x * hermiteFun n x := by
     have hpt : ∀ x, D x * hermiteFun n x
-        = u'' x * hermiteFun n x - x ^ 2 * (u x * hermiteFun n x)
+        = u'' x * hermiteFun n x - x ^ (2 : ℕ) * (u x * hermiteFun n x)
           + μ * (u x * hermiteFun n x) := by
       intro x
       have h := heq x
@@ -131,16 +131,16 @@ theorem hermitePairing_pin {u u' u'' D : ℝ → ℝ} {μ : ℝ} (n : ℕ)
       rw [← h]
       ring
     have e1 : ∫ x, D x * hermiteFun n x
-        = ∫ x, (u'' x * hermiteFun n x - x ^ 2 * (u x * hermiteFun n x)
+        = ∫ x, (u'' x * hermiteFun n x - x ^ (2 : ℕ) * (u x * hermiteFun n x)
             + μ * (u x * hermiteFun n x)) :=
       MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt)
-    have e2 : ∫ x, (u'' x * hermiteFun n x - x ^ 2 * (u x * hermiteFun n x)
+    have e2 : ∫ x, (u'' x * hermiteFun n x - x ^ (2 : ℕ) * (u x * hermiteFun n x)
           + μ * (u x * hermiteFun n x))
-        = (∫ x, (u'' x * hermiteFun n x - x ^ 2 * (u x * hermiteFun n x)))
+        = (∫ x, (u'' x * hermiteFun n x - x ^ (2 : ℕ) * (u x * hermiteFun n x)))
           + ∫ x, μ * (u x * hermiteFun n x) :=
       MeasureTheory.integral_add (hintL.sub hintSq) (hintU.const_mul _)
-    have e3 : ∫ x, (u'' x * hermiteFun n x - x ^ 2 * (u x * hermiteFun n x))
-        = (∫ x, u'' x * hermiteFun n x) - ∫ x, x ^ 2 * (u x * hermiteFun n x) :=
+    have e3 : ∫ x, (u'' x * hermiteFun n x - x ^ (2 : ℕ) * (u x * hermiteFun n x))
+        = (∫ x, u'' x * hermiteFun n x) - ∫ x, x ^ (2 : ℕ) * (u x * hermiteFun n x) :=
       MeasureTheory.integral_sub hintL hintSq
     have e4 : ∫ x, μ * (u x * hermiteFun n x) = μ * ∫ x, u x * hermiteFun n x :=
       MeasureTheory.integral_const_mul _ _
@@ -155,7 +155,7 @@ theorem abs_sub_oscillatorLadder_eq {u u' u'' D : ℝ → ℝ} {μ : ℝ} (n : �
     (heq : ∀ x, hermiteSLAction u x + μ * u x = D x)
     (hintL : Integrable fun x => u'' x * hermiteFun n x)
     (hintR : Integrable fun x => u x * deriv (deriv (hermiteFun n)) x)
-    (hintSq : Integrable fun x => x ^ 2 * (u x * hermiteFun n x))
+    (hintSq : Integrable fun x => x ^ (2 : ℕ) * (u x * hermiteFun n x))
     (hintU : Integrable fun x => u x * hermiteFun n x)
     (hplus : Tendsto (fun x => u' x * hermiteFun n x - u x * deriv (hermiteFun n) x)
       atTop (𝓝 0))

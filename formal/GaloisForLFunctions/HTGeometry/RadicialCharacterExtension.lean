@@ -145,7 +145,7 @@ theorem charRestrict_surjective
     rw [e1, e2, e3, map_mul, powMulEquiv_symm_iterate_mul]
   · refine MonoidHom.ext fun a => ?_
     show ((powMulEquiv q hq).symm : C → C)^[N (ι a)] (g (aN (ι a))) = g a
-    have ha : ι a = (ι a) ^ q ^ 0 := by simp
+    have ha : ι a = (ι a) ^ q ^ (0 : ℕ) := by simp
     have hres := charRoot_well_defined ι hι q hq g (ι a) (N (ι a)) 0 (aN (ι a)) a (hN (ι a)) ha
     simpa using hres
 

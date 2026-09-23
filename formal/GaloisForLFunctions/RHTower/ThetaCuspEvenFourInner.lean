@@ -25,7 +25,7 @@ theorem abs_nativeEvenEnergy_sub_two_inner {x : ℝ}
         thetaCuspNativeReflectionJet (2*(i.val+j.val)) x)*c j)-
       (∑ i : Fin 4, ∑ j : Fin 4, c i*((-1 : ℝ)^(i.val+j.val)*
         thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*c j)| ≤
-      thetaCuspSourceTerm x 1^2*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3) := by
+      thetaCuspSourceTerm x 1^(2 : ℕ)*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let s := 8*q
   let f := thetaCuspSourceTerm x 1
@@ -35,7 +35,7 @@ theorem abs_nativeEvenEnergy_sub_two_inner {x : ℝ}
     (thetaCuspNativeReflectionJet (2*(i.val+j.val)) x-
       thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x))*c j
   have hs : 0 ≤ s := by dsimp [s,q]; linarith
-  have hp (i j : Fin 4) : |T i j| ≤ f^2*e (i.val+j.val)*|y i*y j| := by
+  have hp (i j : Fin 4) : |T i j| ≤ f^(2 : ℕ)*e (i.val+j.val)*|y i*y j| := by
     have h := abs_thetaCuspNativeReflectionJet_sub_two_le_inner_budget hq hqu
       (⟨i.val+j.val,by omega⟩ : Fin 7)
     have hm := mul_le_mul_of_nonneg_left h (mul_nonneg (abs_nonneg (c i)) (abs_nonneg (c j)))
@@ -46,7 +46,7 @@ theorem abs_nativeEvenEnergy_sub_two_inner {x : ℝ}
       ring
     change |c i| * |c j| * |thetaCuspNativeReflectionJet (2*(i.val+j.val)) x-
       thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x| ≤
-      |c i| * |c j| * (f^2*s^(i.val+j.val)*e (i.val+j.val)) at hm
+      |c i| * |c j| * (f^(2 : ℕ)*s^(i.val+j.val)*e (i.val+j.val)) at hm
     calc
       _ = |c i| * |c j| * |thetaCuspNativeReflectionJet (2*(i.val+j.val)) x-
           thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x| := by
@@ -61,11 +61,11 @@ theorem abs_nativeEvenEnergy_sub_two_inner {x : ℝ}
       (∑ i : Fin 4, ∑ j : Fin 4, c i*((-1 : ℝ)^(i.val+j.val)*
         thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*c j) = ∑ i, ∑ j, T i j := by
     simp only [T,mul_sub,sub_mul,Finset.sum_sub_distrib]
-  have hb : |∑ i, ∑ j, T i j| ≤ f^2*(∑ i, ∑ j, e (i.val+j.val)*|y i*y j|) := by
+  have hb : |∑ i, ∑ j, T i j| ≤ f^(2 : ℕ)*(∑ i, ∑ j, e (i.val+j.val)*|y i*y j|) := by
     apply (Finset.abs_sum_le_sum_abs _ _).trans
     calc
       _ ≤ ∑ i, ∑ j, |T i j| := Finset.sum_le_sum fun i hi => Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ i, ∑ j, f^2*e (i.val+j.val)*|y i*y j| :=
+      _ ≤ ∑ i, ∑ j, f^(2 : ℕ)*e (i.val+j.val)*|y i*y j| :=
         Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hp i j
       _ = _ := by simp only [Finset.mul_sum,mul_assoc]
   have he : (∑ i : Fin 4, ∑ j : Fin 4, e (i.val+j.val)*|y i*y j|) =
@@ -75,7 +75,7 @@ theorem abs_nativeEvenEnergy_sub_two_inner {x : ℝ}
     ring_nf
   dsimp only
   rw [hid]
-  change _ ≤ f^2*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3)
+  change _ ≤ f^(2 : ℕ)*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3)
   rwa [he] at hb
 
 /-- The literal retained source and the full compensation supply all four normalized reserves. -/
@@ -84,39 +84,39 @@ theorem twoAtomEvenEnergy_fullCompensation_inner_reserve {x : ℝ}
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 5) (c : Fin 4 → ℝ) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
     let y := fun i : Fin 4 => (8*q)^i.val*c i
-    thetaCuspSourceTerm x 1^2*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤
+    thetaCuspSourceTerm x 1^(2 : ℕ)*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤
       (∑ i : Fin 4, ∑ j : Fin 4, c i*((-1 : ℝ)^(i.val+j.val)*
         thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*c j)+
-      1000000000000*thetaCuspCenterCompensationSource x*(c 3)^2 := by
+      1000000000000*thetaCuspCenterCompensationSource x*(c 3)^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let s := 8*q
   let f := thetaCuspSourceTerm x 1
-  let C := 4*q^2*Real.exp (x-2*q)
+  let C := 4*q^(2 : ℕ)*Real.exp (x-2*q)
   let y := fun i : Fin 4 => s^i.val*c i
-  let B := (c 0)^2/1000000+s^2*(c 1)^2/10000+s^4*(c 2)^2/10+
-    (500*(5-q)^2+1)*s^6*(c 3)^2
+  let B := (c 0)^(2 : ℕ)/1000000+s^(2 : ℕ)*(c 1)^(2 : ℕ)/10000+s^(4 : ℕ)*(c 2)^(2 : ℕ)/10+
+    (500*(5-q)^(2 : ℕ)+1)*s^(6 : ℕ)*(c 3)^(2 : ℕ)
   have hC : 0 ≤ C := by dsimp [C]; positivity
   have hqp : 0 < q := by dsimp [q]; linarith
   have hs : s ≠ 0 := by dsimp [s]; positivity
-  have hmass : C*(2*q-3)^2 = f^2 := thetaCuspAffineGaussian_mul_seedSquare x
+  have hmass : C*(2*q-3)^(2 : ℕ) = f^(2 : ℕ) := thetaCuspAffineGaussian_mul_seedSquare x
   have hr := mul_le_mul_of_nonneg_left (HTGeometry.twoAtomAffineEvenFourDiagonalReserve_le
     hq hqu (Real.exp_pos (-3*q)).le (thetaCuspTwoAtom_lower_envelope_admission hq)
     (c 0) (c 1) (c 2) (c 3)) hC
   have ht := thetaCuspTwoAtomAffineCorrectedEnergy_le hq c
-  have hb : f^2*B ≤ (∑ i : Fin 4, ∑ j : Fin 4,
+  have hb : f^(2 : ℕ)*B ≤ (∑ i : Fin 4, ∑ j : Fin 4,
       c i*((-1 : ℝ)^(i.val+j.val)*thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*c j)+
-      1000000000000*(11/2-q)*f^2*(c 3)^2 := by
+      1000000000000*(11/2-q)*f^(2 : ℕ)*(c 3)^(2 : ℕ) := by
     have hh := hr.trans ht
-    change C*((2*q-3)^2*B) ≤ _ at hh
+    change C*((2*q-3)^(2 : ℕ)*B) ≤ _ at hh
     rwa [← mul_assoc,hmass] at hh
   dsimp only
-  change f^2*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤ _
+  change f^(2 : ℕ)*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤ _
   by_cases hl : q ≤ 9/2
   · have hg := mul_le_mul_of_nonneg_left
       (thetaCuspCenterCompensationSource_firstAtom_extra_inner hq hl)
-      (show 0 ≤ (1000000000000 : ℝ)*(c 3)^2 by positivity)
+      (show 0 ≤ (1000000000000 : ℝ)*(c 3)^(2 : ℕ) by positivity)
     have he : HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) =
-        B+1000000000000*(2/5)*(q-5/2)*(9/2-q)*(c 3)^2 := by
+        B+1000000000000*(2/5)*(q-5/2)*(9/2-q)*(c 3)^(2 : ℕ) := by
       dsimp [HTGeometry.innerEvenCoordinateReserve,y,B]
       rw [if_pos hl]
       unfold HTGeometry.innerExtraCompensation
@@ -128,7 +128,7 @@ theorem twoAtomEvenEnergy_fullCompensation_inner_reserve {x : ℝ}
     nlinarith only [hb,hg]
   · have hg := mul_le_mul_of_nonneg_left
       (thetaCuspCenterCompensationSource_firstAtom_affine_lower_on_scale_five hq hqu)
-      (show 0 ≤ (1000000000000 : ℝ)*(c 3)^2 by positivity)
+      (show 0 ≤ (1000000000000 : ℝ)*(c 3)^(2 : ℕ) by positivity)
     have he : HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) = B := by
       dsimp [HTGeometry.innerEvenCoordinateReserve,y,B]
       rw [if_neg hl]
@@ -169,13 +169,13 @@ theorem thetaCuspNativeEvenFourFixed_posDef_inner {x : ℝ}
     have heq : star c ⬝ᵥ (thetaCuspNativeEvenFourCompensated 1000000000000 x).mulVec c =
       (∑ i : Fin 4, ∑ j : Fin 4, c i*((-1 : ℝ)^(i.val+j.val)*
         thetaCuspNativeReflectionJet (2*(i.val+j.val)) x)*c j)+
-        1000000000000*thetaCuspCenterCompensationSource x*(c 3)^2 := by
+        1000000000000*thetaCuspCenterCompensationSource x*(c 3)^(2 : ℕ) := by
       simp [thetaCuspNativeEvenFourCompensated,dotProduct,Matrix.mulVec,Fin.sum_univ_succ]
       ring
     rw [heq]
     dsimp only at he hr
-    change _ ≤ f^2*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3) at he
-    change f^2*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤ _ at hr
+    change _ ≤ f^(2 : ℕ)*HTGeometry.innerEvenErrorQuadratic q (y 0) (y 1) (y 2) (y 3) at he
+    change f^(2 : ℕ)*HTGeometry.innerEvenCoordinateReserve q (y 0) (y 1) (y 2) (y 3) ≤ _ at hr
     have helo := (abs_le.mp he).1
     linarith only [hp,hr,helo]
 end

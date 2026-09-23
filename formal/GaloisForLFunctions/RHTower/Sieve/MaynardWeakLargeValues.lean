@@ -237,7 +237,7 @@ theorem maynard_unbalanced_montgomery_of_split
 
 /-- **Sixth/second-moment interpolation.**  A sixth-moment estimate on one factor and a
 length-dominated second-moment estimate on its complement close the Route-T target whenever
-`x^(2+2σ-4ν) ≤ (TM)^3`.  This is the exact residual condition for the high-`σ` lane. -/
+`x^(2+2σ-4ν) ≤ (TM)^(3 : ℕ)`.  This is the exact residual condition for the high-`σ` lane. -/
 theorem maynard_sixth_montgomery
     {R T M x σ ν A B : ℝ} (hR : 0 ≤ R) (hT : 0 ≤ T)
     (hM : 0 < M) (hx : 1 ≤ x) (hA : 0 ≤ A)

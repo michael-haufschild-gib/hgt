@@ -39,7 +39,7 @@ open MeasureTheory intervalIntegral Set Filter Finset Topology
 /-! ## The periodic primitive of the sawtooth -/
 
 /-- The `1`-periodic primitive of `sawUnit`, normalised to vanish at the integers. -/
-def sawPrimitive (x : ℝ) : ℝ := (Int.fract x - Int.fract x ^ 2) / 2
+def sawPrimitive (x : ℝ) : ℝ := (Int.fract x - Int.fract x ^ (2 : ℕ)) / 2
 
 theorem sawPrimitive_intCast (m : ℤ) : sawPrimitive (m : ℝ) = 0 := by
   simp [sawPrimitive]
@@ -80,21 +80,21 @@ of the Bernoulli Fourier expansion, rewritten through `sawPrimitive`.  Unlike th
 `sawUnit`, this one converges absolutely, which is what makes the remainder term of Euler–Maclaurin
 interchangeable with the sum. -/
 theorem hasSum_cos_div_sq (x : ℝ) :
-    HasSum (fun n : ℕ => Real.cos (2 * Real.pi * n * x) / (n : ℝ) ^ 2)
-      (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive x)) := by
+    HasSum (fun n : ℕ => Real.cos (2 * Real.pi * n * x) / (n : ℝ) ^ (2 : ℕ))
+      (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive x)) := by
   have hmem : Int.fract x ∈ Icc (0 : ℝ) 1 :=
     ⟨Int.fract_nonneg x, (Int.fract_lt_one x).le⟩
   have hml := hasSum_one_div_nat_pow_mul_cos (k := 1) one_ne_zero hmem
   have hfac : ((2 * 1 : ℕ).factorial : ℝ) = 2 := by norm_num
   have hbern : Polynomial.eval (Int.fract x)
       (Polynomial.map (algebraMap ℚ ℝ) (Polynomial.bernoulli (2 * 1)))
-      = Int.fract x ^ 2 - Int.fract x + 1 / 6 := by
+      = Int.fract x ^ (2 : ℕ) - Int.fract x + 1 / 6 := by
     simp [Polynomial.bernoulli, Finset.sum_range_succ]
     ring
   rw [hfac, hbern] at hml
   have hval : ((-1 : ℝ)) ^ (1 + 1) * (2 * Real.pi) ^ (2 * 1) / 2 / 2 *
-      (Int.fract x ^ 2 - Int.fract x + 1 / 6)
-      = 2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive x) := by
+      (Int.fract x ^ (2 : ℕ) - Int.fract x + 1 / 6)
+      = 2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive x) := by
     rw [sawPrimitive]; ring
   rw [hval] at hml
   refine hml.congr_fun fun n => ?_
@@ -407,8 +407,8 @@ theorem integral_mul_cos_twice_ibp_gen {a b y : ℝ} (hy : y ≠ 0) (hab : a ≤
       = (f b * Real.sin (2 * Real.pi * b * y) - f a * Real.sin (2 * Real.pi * a * y))
           / (2 * Real.pi * y)
         + (f' b * Real.cos (2 * Real.pi * b * y) - f' a * Real.cos (2 * Real.pi * a * y))
-          / (4 * Real.pi ^ 2 * y ^ 2)
-        - (1 / (4 * Real.pi ^ 2 * y ^ 2)) * ∫ x in a..b, f'' x * Real.cos (2 * Real.pi * x * y) := by
+          / (4 * Real.pi ^ (2 : ℕ) * y ^ (2 : ℕ))
+        - (1 / (4 * Real.pi ^ (2 : ℕ) * y ^ (2 : ℕ))) * ∫ x in a..b, f'' x * Real.cos (2 * Real.pi * x * y) := by
   have hne := two_pi_mul_ne_zero hy
   have huIcc : uIcc a b = Icc a b := uIcc_of_le hab
   have hd1u : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x := by rw [huIcc]; exact hd1
@@ -451,11 +451,11 @@ interchange is dominated convergence with the dominating function `‖w‖ / n²
 theorem hasSum_integral_cos_div_sq {a b u : ℝ} (hab : a ≤ b) {w : ℝ → ℝ}
     (hw : ContinuousOn w (Icc a b)) :
     HasSum (fun n : ℕ =>
-        (∫ t in a..b, w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ 2)
-      (∫ t in a..b, w t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u)))) := by
+        (∫ t in a..b, w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ (2 : ℕ))
+      (∫ t in a..b, w t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u)))) := by
   set μ : Measure ℝ := volume.restrict (Ioc a b) with hμ
   set F : ℕ → ℝ → ℝ := fun n t =>
-    w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u)) / (n : ℝ) ^ 2 with hF
+    w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u)) / (n : ℝ) ^ (2 : ℕ) with hF
   have hwi : IntegrableOn w (Ioc a b) volume := by
     have : IntervalIntegrable w volume a b := by
       refine ContinuousOn.intervalIntegrable ?_
@@ -474,32 +474,32 @@ theorem hasSum_integral_cos_div_sq {a b u : ℝ} (hab : a ≤ b) {w : ℝ → �
     rw [hcomm] at hb
     exact hb.div_const _
   have hKnn : 0 ≤ ∫ t, ‖w t‖ ∂μ := integral_nonneg fun t => norm_nonneg _
-  have hnormle : ∀ n : ℕ, (∫ t, ‖F n t‖ ∂μ) ≤ (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ 2 := by
+  have hnormle : ∀ n : ℕ, (∫ t, ‖F n t‖ ∂μ) ≤ (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ (2 : ℕ) := by
     intro n
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp only [hF]
       norm_num
-    have hnpos : (0 : ℝ) < (n : ℝ) ^ 2 := by positivity
-    have hptw : ∀ t, ‖F n t‖ ≤ ‖w t‖ / (n : ℝ) ^ 2 := by
+    have hnpos : (0 : ℝ) < (n : ℝ) ^ (2 : ℕ) := by positivity
+    have hptw : ∀ t, ‖F n t‖ ≤ ‖w t‖ / (n : ℝ) ^ (2 : ℕ) := by
       intro t
       have habs : |Real.cos (2 * Real.pi * t * ((n : ℝ) / u))| ≤ 1 := Real.abs_cos_le_one _
-      have hnn : (0 : ℝ) ≤ (n : ℝ) ^ 2 := le_of_lt hnpos
+      have hnn : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := le_of_lt hnpos
       simp only [hF, Real.norm_eq_abs, abs_div, abs_mul, abs_of_nonneg hnn]
       gcongr
       nlinarith [abs_nonneg (w t)]
-    calc (∫ t, ‖F n t‖ ∂μ) ≤ ∫ t, ‖w t‖ / (n : ℝ) ^ 2 ∂μ :=
+    calc (∫ t, ‖F n t‖ ∂μ) ≤ ∫ t, ‖w t‖ / (n : ℝ) ^ (2 : ℕ) ∂μ :=
           integral_mono (hFint n).norm (hwμ.norm.div_const _) hptw
-      _ = (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ 2 := integral_div _ _
+      _ = (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ (2 : ℕ) := integral_div _ _
   have hsummable : Summable fun n : ℕ => ∫ t, ‖F n t‖ ∂μ := by
-    have hdom : Summable fun n : ℕ => (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ 2 := by
+    have hdom : Summable fun n : ℕ => (∫ t, ‖w t‖ ∂μ) / (n : ℝ) ^ (2 : ℕ) := by
       have hml := summable_one_div_sq.mul_left (∫ t, ‖w t‖ ∂μ)
       exact hml.congr fun n => by ring
     exact Summable.of_nonneg_of_le (fun n => integral_nonneg fun t => norm_nonneg _) hnormle hdom
   have hmain := MeasureTheory.hasSum_integral_of_summable_integral_norm hFint hsummable
-  have htsum : ∀ t, (∑' n : ℕ, F n t) = w t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u))) := by
+  have htsum : ∀ t, (∑' n : ℕ, F n t) = w t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u))) := by
     intro t
     have h := (hasSum_cos_div_sq (t / u)).mul_left (w t)
-    have heq : (fun n : ℕ => w t * (Real.cos (2 * Real.pi * (n : ℝ) * (t / u)) / (n : ℝ) ^ 2))
+    have heq : (fun n : ℕ => w t * (Real.cos (2 * Real.pi * (n : ℝ) * (t / u)) / (n : ℝ) ^ (2 : ℕ)))
         = fun n : ℕ => F n t := by
       funext n
       simp only [hF]
@@ -509,12 +509,12 @@ theorem hasSum_integral_cos_div_sq {a b u : ℝ} (hab : a ≤ b) {w : ℝ → �
     exact h.tsum_eq
   simp only [htsum] at hmain
   have hcast : ∀ n : ℕ, (∫ t, F n t ∂μ)
-      = (∫ t in a..b, w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ 2 := by
+      = (∫ t in a..b, w t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ (2 : ℕ) := by
     intro n
     rw [intervalIntegral.integral_of_le hab, hμ]
     exact integral_div _ _
-  have hcast2 : (∫ t, w t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u))) ∂μ)
-      = ∫ t in a..b, w t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u))) := by
+  have hcast2 : (∫ t, w t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u))) ∂μ)
+      = ∫ t in a..b, w t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u))) := by
     rw [intervalIntegral.integral_of_le hab]
   rw [hcast2] at hmain
   exact hmain.congr_fun fun n => (hcast n).symm
@@ -557,22 +557,22 @@ theorem em_dilated {a b u : ℝ} (hab : a ≤ b) (hu : 0 < u) {h h' h'' : ℝ �
     rw [show u * h' (x * u) = h' (x * u) * u from by ring]
     exact hcomp
   have hdg' : ∀ x ∈ Icc (a / u) (b / u),
-      HasDerivAt (fun y : ℝ => u * h' (y * u)) (u ^ 2 * h'' (x * u)) x := by
+      HasDerivAt (fun y : ℝ => u * h' (y * u)) (u ^ (2 : ℕ) * h'' (x * u)) x := by
     intro x hx
     have hcomp := (hd2 (x * u) (hmaps x hx)).comp x (hlin x)
     have := hcomp.const_mul u
-    rw [show u ^ 2 * h'' (x * u) = u * (h'' (x * u) * u) from by ring]
+    rw [show u ^ (2 : ℕ) * h'' (x * u) = u * (h'' (x * u) * u) from by ring]
     exact this
   have hcontg' : ContinuousOn (fun y : ℝ => u * h' (y * u)) (Icc (a / u) (b / u)) := by
     intro x hx
     exact ((hdg' x hx).continuousAt).continuousWithinAt
-  have hcontg'' : ContinuousOn (fun y : ℝ => u ^ 2 * h'' (y * u)) (Icc (a / u) (b / u)) := by
+  have hcontg'' : ContinuousOn (fun y : ℝ => u ^ (2 : ℕ) * h'' (y * u)) (Icc (a / u) (b / u)) := by
     refine ContinuousOn.mul continuousOn_const ?_
     exact hc2.comp (by fun_prop) hmaps
   have hig' : IntervalIntegrable (fun y : ℝ => u * h' (y * u)) volume (a / u) (b / u) := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [uIcc_of_le hαβ]; exact hcontg'
-  have hig'' : IntervalIntegrable (fun y : ℝ => u ^ 2 * h'' (y * u)) volume (a / u) (b / u) := by
+  have hig'' : IntervalIntegrable (fun y : ℝ => u ^ (2 : ℕ) * h'' (y * u)) volume (a / u) (b / u) := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [uIcc_of_le hαβ]; exact hcontg''
   have hem1 := em1 hαβ hdg hig'
@@ -580,18 +580,18 @@ theorem em_dilated {a b u : ℝ} (hab : a ≤ b) (hu : 0 < u) {h h' h'' : ℝ �
   -- change of variables in the two integrals
   have hcv1 : (∫ x in (a / u)..(b / u), h (x * u)) = u⁻¹ * ∫ t in a..b, h t := by
     rw [intervalIntegral.integral_comp_mul_right h hune, hau, hbu, smul_eq_mul]
-  have hcv2 : (∫ x in (a / u)..(b / u), sawPrimitive x * (u ^ 2 * h'' (x * u)))
-      = u⁻¹ * (u ^ 2 * ∫ t in a..b, sawPrimitive (t / u) * h'' t) := by
-    obtain ⟨G, hGdef⟩ : ∃ G : ℝ → ℝ, ∀ t, G t = u ^ 2 * (sawPrimitive (t / u) * h'' t) :=
+  have hcv2 : (∫ x in (a / u)..(b / u), sawPrimitive x * (u ^ (2 : ℕ) * h'' (x * u)))
+      = u⁻¹ * (u ^ (2 : ℕ) * ∫ t in a..b, sawPrimitive (t / u) * h'' t) := by
+    obtain ⟨G, hGdef⟩ : ∃ G : ℝ → ℝ, ∀ t, G t = u ^ (2 : ℕ) * (sawPrimitive (t / u) * h'' t) :=
       ⟨_, fun _ => rfl⟩
-    have h1 : (∫ x in (a / u)..(b / u), sawPrimitive x * (u ^ 2 * h'' (x * u)))
+    have h1 : (∫ x in (a / u)..(b / u), sawPrimitive x * (u ^ (2 : ℕ) * h'' (x * u)))
         = ∫ x in (a / u)..(b / u), G (x * u) := by
       refine intervalIntegral.integral_congr fun x _ => ?_
       rw [hGdef, mul_div_cancel_right₀ x hune]
       ring
     have h2 := intervalIntegral.integral_comp_mul_right G hune (a := a / u) (b := b / u)
     rw [hau, hbu, smul_eq_mul] at h2
-    have h3 : (∫ x in a..b, G x) = u ^ 2 * ∫ t in a..b, sawPrimitive (t / u) * h'' t := by
+    have h3 : (∫ x in a..b, G x) = u ^ (2 : ℕ) * ∫ t in a..b, sawPrimitive (t / u) * h'' t := by
       rw [← intervalIntegral.integral_const_mul]
       exact intervalIntegral.integral_congr fun x _ => hGdef x
     rw [h1, h2, h3]
@@ -648,10 +648,10 @@ theorem tendsto_sum_endpointSine {a b u Ha Hb : ℝ} (hu : 0 < u)
 remainder.  This is the absolutely convergent half. -/
 theorem hasSum_endpointCos {a b u : ℝ} (hab : a ≤ b) (hu : 0 < u) {h' h'' : ℝ → ℝ}
     (hd2 : ∀ x ∈ Icc a b, HasDerivAt h' (h'' x) x) (hc2 : ContinuousOn h'' (Icc a b)) :
-    HasSum (fun n : ℕ => (u / (2 * Real.pi ^ 2)) *
+    HasSum (fun n : ℕ => (u / (2 * Real.pi ^ (2 : ℕ))) *
         ((h' b * Real.cos (2 * Real.pi * b * ((n : ℝ) / u))
           - h' a * Real.cos (2 * Real.pi * a * ((n : ℝ) / u))
-          - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ 2))
+          - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ (2 : ℕ)))
       (u * (-(sawPrimitive (b / u) * h' b) + sawPrimitive (a / u) * h' a
         + ∫ t in a..b, sawPrimitive (t / u) * h'' t)) := by
   have hune : u ≠ 0 := hu.ne'
@@ -678,31 +678,31 @@ theorem hasSum_endpointCos {a b u : ℝ} (hab : a ≤ b) (hu : 0 < u) {h' h'' : 
   have harga : ∀ n : ℕ, Real.cos (2 * Real.pi * (n : ℝ) * (a / u))
       = Real.cos (2 * Real.pi * a * ((n : ℝ) / u)) := fun n => by
     rw [show 2 * Real.pi * (n : ℝ) * (a / u) = 2 * Real.pi * a * ((n : ℝ) / u) from by ring]
-  have hSb' : HasSum (fun n : ℕ => Real.cos (2 * Real.pi * b * ((n : ℝ) / u)) / (n : ℝ) ^ 2)
-      (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (b / u))) :=
+  have hSb' : HasSum (fun n : ℕ => Real.cos (2 * Real.pi * b * ((n : ℝ) / u)) / (n : ℝ) ^ (2 : ℕ))
+      (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (b / u))) :=
     hSb.congr_fun fun n => by rw [hargb n]
-  have hSa' : HasSum (fun n : ℕ => Real.cos (2 * Real.pi * a * ((n : ℝ) / u)) / (n : ℝ) ^ 2)
-      (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (a / u))) :=
+  have hSa' : HasSum (fun n : ℕ => Real.cos (2 * Real.pi * a * ((n : ℝ) / u)) / (n : ℝ) ^ (2 : ℕ))
+      (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (a / u))) :=
     hSa.congr_fun fun n => by rw [harga n]
   have hcomb := (((hSb'.mul_left (h' b)).sub (hSa'.mul_left (h' a))).sub hSI).mul_left
-    (u / (2 * Real.pi ^ 2))
+    (u / (2 * Real.pi ^ (2 : ℕ)))
   -- the remainder integral, split
-  have hsplit : (∫ t in a..b, h'' t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u))))
-      = 2 * Real.pi ^ 2 * (1 / 12) * (h' b - h' a)
-        - 2 * Real.pi ^ 2 * ∫ t in a..b, sawPrimitive (t / u) * h'' t := by
-    have hcongr : (∫ t in a..b, h'' t * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (t / u))))
-        = ∫ t in a..b, (2 * Real.pi ^ 2 * (1 / 12) * h'' t
-            - 2 * Real.pi ^ 2 * (sawPrimitive (t / u) * h'' t)) := by
+  have hsplit : (∫ t in a..b, h'' t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u))))
+      = 2 * Real.pi ^ (2 : ℕ) * (1 / 12) * (h' b - h' a)
+        - 2 * Real.pi ^ (2 : ℕ) * ∫ t in a..b, sawPrimitive (t / u) * h'' t := by
+    have hcongr : (∫ t in a..b, h'' t * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (t / u))))
+        = ∫ t in a..b, (2 * Real.pi ^ (2 : ℕ) * (1 / 12) * h'' t
+            - 2 * Real.pi ^ (2 : ℕ) * (sawPrimitive (t / u) * h'' t)) := by
       refine intervalIntegral.integral_congr fun t _ => ?_
       ring
     rw [hcongr, intervalIntegral.integral_sub (hi2.const_mul _) (hiP.const_mul _),
       intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, hFTC]
   rw [hsplit] at hcomb
-  have hvalue : (u / (2 * Real.pi ^ 2)) *
-      (h' b * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (b / u)))
-        - h' a * (2 * Real.pi ^ 2 * (1 / 12 - sawPrimitive (a / u)))
-        - (2 * Real.pi ^ 2 * (1 / 12) * (h' b - h' a)
-            - 2 * Real.pi ^ 2 * ∫ t in a..b, sawPrimitive (t / u) * h'' t))
+  have hvalue : (u / (2 * Real.pi ^ (2 : ℕ))) *
+      (h' b * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (b / u)))
+        - h' a * (2 * Real.pi ^ (2 : ℕ) * (1 / 12 - sawPrimitive (a / u)))
+        - (2 * Real.pi ^ (2 : ℕ) * (1 / 12) * (h' b - h' a)
+            - 2 * Real.pi ^ (2 : ℕ) * ∫ t in a..b, sawPrimitive (t / u) * h'' t))
       = u * (-(sawPrimitive (b / u) * h' b) + sawPrimitive (a / u) * h' a
         + ∫ t in a..b, sawPrimitive (t / u) * h'' t) := by
     field_simp
@@ -723,10 +723,10 @@ theorem cosTransform_term {a b u m : ℝ} (hab : a ≤ b) (hu : 0 < u) (hm : 0 <
     (2 / u) * (∫ t in a..b, h t * Real.cos (2 * Real.pi * t * (m / u)))
       = (h b * Real.sin (2 * Real.pi * b * (m / u))
           - h a * Real.sin (2 * Real.pi * a * (m / u))) / (Real.pi * m)
-        + (u / (2 * Real.pi ^ 2)) *
+        + (u / (2 * Real.pi ^ (2 : ℕ))) *
             ((h' b * Real.cos (2 * Real.pi * b * (m / u))
               - h' a * Real.cos (2 * Real.pi * a * (m / u))
-              - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * (m / u))) / m ^ 2) := by
+              - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * (m / u))) / m ^ (2 : ℕ)) := by
   have hune : u ≠ 0 := hu.ne'
   have hmne : m ≠ 0 := hm.ne'
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
@@ -763,10 +763,10 @@ theorem tendsto_sum_cosTransform {a b u : ℝ} (hab : a ≤ b) (hu : 0 < u)
       (h b * Real.sin (2 * Real.pi * b * ((n : ℝ) / u))
         - h a * Real.sin (2 * Real.pi * a * ((n : ℝ) / u))) / (Real.pi * (n : ℝ)) :=
     ⟨_, fun _ => rfl⟩
-  obtain ⟨B, hB⟩ : ∃ B : ℕ → ℝ, ∀ n : ℕ, B n = (u / (2 * Real.pi ^ 2)) *
+  obtain ⟨B, hB⟩ : ∃ B : ℕ → ℝ, ∀ n : ℕ, B n = (u / (2 * Real.pi ^ (2 : ℕ))) *
       ((h' b * Real.cos (2 * Real.pi * b * ((n : ℝ) / u))
         - h' a * Real.cos (2 * Real.pi * a * ((n : ℝ) / u))
-        - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ 2) :=
+        - ∫ t in a..b, h'' t * Real.cos (2 * Real.pi * t * ((n : ℝ) / u))) / (n : ℝ) ^ (2 : ℕ)) :=
     ⟨_, fun _ => rfl⟩
   have hA0 : A 0 = 0 := by rw [hA]; norm_num
   have hB0 : B 0 = 0 := by rw [hB]; norm_num

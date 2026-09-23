@@ -30,7 +30,7 @@ noncomputable def herglotzTransform (c : ℂ) (R : ℝ) (v : ℂ → ℝ) (w : �
   circleAverage (fun z => herglotzRieszKernel c w z * (v z : ℂ)) c R
 
 /-- The kernel obtained by differentiating the Herglotz–Riesz kernel in the interior variable. -/
-noncomputable def herglotzDerivKernel (c w z : ℂ) : ℂ := 2 * (z - c) / (z - w) ^ 2
+noncomputable def herglotzDerivKernel (c w z : ℂ) : ℂ := 2 * (z - c) / (z - w) ^ (2 : ℕ)
 
 theorem herglotzRieszKernel_eq (c w z : ℂ) :
     herglotzRieszKernel c w z = (z + w - 2 * c) / (z - w) := by
@@ -45,7 +45,7 @@ theorem hasDerivAt_herglotzRieszKernel {c z w : ℂ} (h : z ≠ w) :
   have hD : HasDerivAt (fun w' : ℂ => z - w') (-1) w := by
     simpa using ((hasDerivAt_id w).const_sub z)
   have hdiv := hN.div hD hzw
-  have hval : (1 * (z - w) - (z + w - 2 * c) * (-1)) / (z - w) ^ 2
+  have hval : (1 * (z - w) - (z + w - 2 * c) * (-1)) / (z - w) ^ (2 : ℕ)
       = herglotzDerivKernel c w z := by
     rw [herglotzDerivKernel]
     congr 1
@@ -60,7 +60,7 @@ theorem hasDerivAt_herglotzRieszKernel {c z w : ℂ} (h : z ≠ w) :
 
 theorem norm_herglotzDerivKernel_le {c w z : ℂ} {R δ : ℝ} (hR : 0 < R)
     (hz : ‖z - c‖ = R) (hδ : 0 < δ) (hlow : δ ≤ ‖z - w‖) :
-    ‖herglotzDerivKernel c w z‖ ≤ 2 * R / δ ^ 2 := by
+    ‖herglotzDerivKernel c w z‖ ≤ 2 * R / δ ^ (2 : ℕ) := by
   rw [herglotzDerivKernel, norm_div, norm_mul, norm_pow, hz]
   have h2 : ‖(2 : ℂ)‖ = 2 := by norm_num
   rw [h2]
@@ -155,7 +155,7 @@ theorem hasDerivAt_herglotzTransform {c : ℂ} {R : ℝ} {v : ℂ → ℝ} (hR :
     · exact ((continuous_circleMap c R).sub continuous_const).pow 2
   set F : ℂ → ℝ → ℂ := fun w' θ => herglotzRieszKernel c w' (circleMap c R θ) * V θ with hF
   set F' : ℂ → ℝ → ℂ := fun w' θ => herglotzDerivKernel c w' (circleMap c R θ) * V θ with hF'
-  set bound : ℝ → ℝ := fun θ => (2 * R / ε ^ 2) * ‖V θ‖ with hbound
+  set bound : ℝ → ℝ := fun θ => (2 * R / ε ^ (2 : ℕ)) * ‖V θ‖ with hbound
   have hFint : ∀ w' ∈ ball w ε, IntervalIntegrable (F w') volume 0 (2 * π) := by
     intro w' hw'
     exact hVint.continuousOn_mul ((hcontK w' hw').continuousOn)
@@ -377,22 +377,22 @@ noncomputable section
 theorem hasDerivAt_innerLogKernel (c u : ℂ) (R : ℝ) (w : ℂ) :
     HasDerivAt (innerLogKernel c u R) (-(starRingEnd ℂ) (u - c) / (R : ℂ)) w := by
   unfold innerLogKernel
-  have h1 : HasDerivAt (fun z : ℂ => (R : ℂ) ^ 2 - (starRingEnd ℂ) (u - c) * (z - c))
+  have h1 : HasDerivAt (fun z : ℂ => (R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - c) * (z - c))
       (-((starRingEnd ℂ) (u - c))) w := by
     have h2 : HasDerivAt (fun z : ℂ => (starRingEnd ℂ) (u - c) * (z - c))
         ((starRingEnd ℂ) (u - c)) w := by
       simpa using ((hasDerivAt_id w).sub_const c).const_mul ((starRingEnd ℂ) (u - c))
-    simpa using h2.const_sub ((R : ℂ) ^ 2)
+    simpa using h2.const_sub ((R : ℂ) ^ (2 : ℕ))
   simpa [div_eq_mul_inv] using h1.div_const (R : ℂ)
 
 /-- The logarithmic derivative of the Blaschke-corrected kernel at an interior point. -/
 theorem logDeriv_innerLogKernel {c u : ℂ} {R : ℝ} (hR : 0 < R) {w : ℂ}
     (hne : innerLogKernel c u R w ≠ 0) :
     deriv (innerLogKernel c u R) w / innerLogKernel c u R w
-      = -(starRingEnd ℂ) (u - c) / ((R : ℂ) ^ 2 - (starRingEnd ℂ) (u - c) * (w - c)) := by
+      = -(starRingEnd ℂ) (u - c) / ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - c) * (w - c)) := by
   have hRne : (R : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hR.ne'
   rw [(hasDerivAt_innerLogKernel c u R w).deriv, innerLogKernel]
-  have hnum : (R : ℂ) ^ 2 - (starRingEnd ℂ) (u - c) * (w - c) ≠ 0 := by
+  have hnum : (R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - c) * (w - c) ≠ 0 := by
     intro h0
     apply hne
     rw [innerLogKernel, h0, zero_div]
@@ -404,7 +404,7 @@ derivative of the Blaschke correction. -/
 theorem circleAverage_herglotzDerivKernel_log_norm_sub {c u : ℂ} {R : ℝ} (hR : 0 < R)
     (hu : u ∈ ball c R) {w : ℂ} (hw : w ∈ ball c R) :
     circleAverage (fun z => herglotzDerivKernel c w z * ((Real.log ‖z - u‖ : ℝ) : ℂ)) c R
-      = -(starRingEnd ℂ) (u - c) / ((R : ℂ) ^ 2 - (starRingEnd ℂ) (u - c) * (w - c)) := by
+      = -(starRingEnd ℂ) (u - c) / ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (u - c) * (w - c)) := by
   have hunorm : ‖u - c‖ < R := mem_ball_iff_norm.mp hu
   have hnezero : ∀ z ∈ closedBall c R, innerLogKernel c u R z ≠ 0 := by
     intro z hz

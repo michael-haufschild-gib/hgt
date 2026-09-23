@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardUniformAbsorption
 This removes every schedule and absorption placeholder from the fixed-group all-short theorem.
 For a raised grouped factor with lower edge `Y=A^ell`, block switch `U=D`, clipped envelope
 `maynardHuxleyB D T`, the Huxley hypotheses follow from two transparent conditions: the complete
-height lies below `8*pi*Y^2`, and the sigma-free energy scale inequality from uniform absorption.
+height lies below `8*pi*Y^(2 : ℕ)`, and the sigma-free energy scale inequality from uniform absorption.
 -/
 
 noncomputable section

@@ -84,8 +84,8 @@ theorem integral_lowRange_windowCompare_le {A B : ℝ → ℂ} (hA : Continuous 
     {QA κA QB κB x h h₁ t₀ δ : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA) (hQB : 0 ≤ QB) (hκB : 0 ≤ κB)
     (hx : 0 < x) (hh : 0 ≤ h) (hh₁ : 0 < h₁) (ht₀ : 0 < t₀) (hδ : 0 ≤ δ)
     (hlow : t₀ ≤ δ * x / h₁)
-    (hmsA : (∫ t in Set.Icc (-t₀) t₀, ‖A t‖ ^ 2) ≤ QA + κA * t₀)
-    (hmsB : (∫ t in Set.Icc (-t₀) t₀, ‖B t‖ ^ 2) ≤ QB + κB * t₀) :
+    (hmsA : (∫ t in Set.Icc (-t₀) t₀, ‖A t‖ ^ (2 : ℕ)) ≤ QA + κA * t₀)
+    (hmsB : (∫ t in Set.Icc (-t₀) t₀, ‖B t‖ ^ (2 : ℕ)) ≤ QB + κB * t₀) :
     (∫ t in (0 : ℝ)..t₀, (‖A t‖ * ‖B t‖) * windowCompareKernel x h h₁ t₀ t)
       ≤ 2 * h * δ * (Real.sqrt QA * Real.sqrt QB
           + (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt t₀
@@ -116,8 +116,8 @@ the mixed-moment assembly with `C = 4(x+h₁)`. -/
 theorem integral_dyadicRange_windowCompare_le {A B : ℝ → ℂ} (hA : Continuous A) (hB : Continuous B)
     {QA κA QB κB x h h₁ t₀ : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA) (hQB : 0 ≤ QB) (hκB : 0 ≤ κB)
     (hx : 0 < x) (hh₁ : 0 ≤ h₁) (ht₀ : 0 < t₀)
-    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ QA + κA * U)
-    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U) (M : ℕ) :
+    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ (2 : ℕ)) ≤ QA + κA * U)
+    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ (2 : ℕ)) ≤ QB + κB * U) (M : ℕ) :
     (∫ t in t₀..(t₀ * 2 ^ M), (‖A t‖ * ‖B t‖) * windowCompareKernel x h h₁ t₀ t)
       ≤ 2 * (4 * (x + h₁) * (Real.sqrt QA * Real.sqrt QB) / t₀)
           + (4 * (x + h₁) * (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB)
@@ -136,8 +136,8 @@ theorem integral_mixed_moment_windowCompare_le {A B : ℝ → ℂ} (hA : Continu
     (hB : Continuous B) {QA κA QB κB x h h₁ t₀ δ : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA)
     (hQB : 0 ≤ QB) (hκB : 0 ≤ κB) (hx : 0 < x) (hh : 0 ≤ h) (hh₁ : 0 < h₁) (ht₀ : 0 < t₀)
     (hδ : 0 ≤ δ) (hlow : t₀ ≤ δ * x / h₁)
-    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ QA + κA * U)
-    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U) (M : ℕ) :
+    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ (2 : ℕ)) ≤ QA + κA * U)
+    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ (2 : ℕ)) ≤ QB + κB * U) (M : ℕ) :
     (∫ t in (0 : ℝ)..(t₀ * 2 ^ M), (‖A t‖ * ‖B t‖) * windowCompareKernel x h h₁ t₀ t)
       ≤ 2 * h * δ * (Real.sqrt QA * Real.sqrt QB
             + (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt t₀

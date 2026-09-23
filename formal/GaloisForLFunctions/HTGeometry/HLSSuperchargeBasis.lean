@@ -6,7 +6,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 Positivity of the odd sector makes the coefficient form of `{Q, Q̄}` a positive definite
 Hermitian form on the undotted highest-weight sector.  Diagonalizing it produces the
-`N` supercharges `Q^1, …, Q^N` for which the Haag--Łopuszański--Sohnius relation takes its
+`N` supercharges `Q^(1 : ℕ), …, Q^N` for which the Haag--Łopuszański--Sohnius relation takes its
 standard normalized shape
 
   `{Q^I_α, Q̄^J_β̇} = 2 δ^{IJ} P_{α β̇}`.

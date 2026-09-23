@@ -29,7 +29,7 @@ theorem dyadicPoincareMass_eq (a : ℝ) (n' M j : ℕ) (X : ℝ) :
     Nat.lt_succ_of_le (natDegree_poincareCoeffPoly_le a n' M j)
   have hstep : ∀ k ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊,
       (((vonMangoldt k : ℝ) / Real.sqrt k : ℝ) : ℂ)
-        * (poincareCoeffPoly a n' M j).eval (((Real.log k : ℝ) : ℂ) ^ 2)
+        * (poincareCoeffPoly a n' M j).eval (((Real.log k : ℝ) : ℂ) ^ (2 : ℕ))
       = ∑ d ∈ Finset.range (j + 1),
           (poincareCoeffPoly a n' M j).coeff d
             * ((((vonMangoldt k : ℝ) / Real.sqrt k * Real.log k ^ (2 * d) : ℝ)) : ℂ) := by

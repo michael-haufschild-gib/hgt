@@ -389,14 +389,14 @@ theorem tendsto_hsNormSq_centralSoninProjectionCorrection_sub_of_tendsto
   have hstrong : ∀ x : SoninL2, Tendsto (fun n => Tn n x) atTop (𝓝 (T x)) := by
     intro x
     exact (continuousAt_centralSoninProjectionCorrection_apply ha x).tendsto.comp hu
-  have hpoly : Tendsto (fun n => 8 * (u n) ^ 2) atTop (𝓝 (8 * a ^ 2)) :=
+  have hpoly : Tendsto (fun n => 8 * (u n) ^ (2 : ℕ)) atTop (𝓝 (8 * a ^ (2 : ℕ))) :=
     tendsto_const_nhds.mul (hu.pow 2)
   have henergy : Tendsto (fun n => hsNormSq (Tn n)) atTop (𝓝 (hsNormSq T)) := by
-    have hfun : (fun n => hsNormSq (Tn n)) = fun n => 8 * (u n) ^ 2 := by
+    have hfun : (fun n => hsNormSq (Tn n)) = fun n => 8 * (u n) ^ (2 : ℕ) := by
       funext n
       exact hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq
         (u n) (huPos n)
-    have hval : hsNormSq T = 8 * a ^ 2 :=
+    have hval : hsNormSq T = 8 * a ^ (2 : ℕ) :=
       hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq a ha
     rw [hfun, hval]
     exact hpoly
@@ -445,16 +445,16 @@ theorem tendsto_hsNormSq_comp_left_zero_of_strong
     have hDsmall : hsNorm D < δ := by simpa [D, R, b] using hsTail
     have hfiniteSq : Tendsto (fun n => hsNormSq (An n * R)) atTop (𝓝 0) := by
       have heq : (fun n => hsNormSq (An n * R)) =
-          fun n => ∑ i ∈ s, ‖An n (K (b i))‖ ^ 2 := by
+          fun n => ∑ i ∈ s, ‖An n (K (b i))‖ ^ (2 : ℕ) := by
         funext n
         have hAR : IsHilbertSchmidt (An n * R) := hR.comp_left (An n)
         rw [hsNormSq_eq hAR b,
           tsum_eq_sum (s := s) (fun i hi => by
-            change ‖An n (R (b i))‖ ^ 2 = 0
+            change ‖An n (R (b i))‖ ^ (2 : ℕ) = 0
             rw [hsTruncation_apply_basis b K s i, if_neg hi]
             simp)]
         exact Finset.sum_congr rfl fun i hi => by
-          change ‖An n (R (b i))‖ ^ 2 = ‖An n (K (b i))‖ ^ 2
+          change ‖An n (R (b i))‖ ^ (2 : ℕ) = ‖An n (K (b i))‖ ^ (2 : ℕ)
           rw [hsTruncation_apply_basis b K s i, if_pos hi]
       rw [heq]
       simpa using tendsto_finsetSum s fun i _ =>
@@ -485,7 +485,7 @@ theorem tendsto_hsNormSq_comp_left_zero_of_strong
     rw [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg (hsNorm_nonneg _), hsplit]
     exact (hsNorm_add_le hAR hAD).trans_lt (by linarith [hN n hn])
   have hsq : (fun n => hsNormSq (An n * K)) =
-      fun n => hsNorm (An n * K) ^ 2 := by
+      fun n => hsNorm (An n * K) ^ (2 : ℕ) := by
     funext n
     rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg _)]
   rw [hsq]
@@ -539,7 +539,7 @@ theorem tendsto_hsNormSq_add_zero
     squeeze_zero (fun n => hsNorm_nonneg _) (fun n => hsNorm_add_le (hAn n) (hBn n))
       (by simpa using hnormA.add hnormB)
   have hsq : (fun n => hsNormSq (An n + Bn n)) =
-      fun n => hsNorm (An n + Bn n) ^ 2 := by
+      fun n => hsNorm (An n + Bn n) ^ (2 : ℕ) := by
     funext n
     rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg _)]
   rw [hsq]
@@ -594,14 +594,14 @@ theorem tendsto_hsNormSq_comp_left_zero_of_hsNormSq
     (hK : Tendsto (fun n => hsNormSq (Kn n)) atTop (𝓝 0))
     {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ n, ‖An n‖ ≤ M) :
     Tendsto (fun n => hsNormSq (An n * Kn n)) atTop (𝓝 0) := by
-  refine squeeze_zero (g := fun n => M ^ 2 * hsNormSq (Kn n))
+  refine squeeze_zero (g := fun n => M ^ (2 : ℕ) * hsNormSq (Kn n))
     (fun n => hsNormSq_nonneg _) (fun n => ?_)
     (by simpa using (tendsto_const_nhds.mul hK :
-      Tendsto (fun n => M ^ 2 * hsNormSq (Kn n)) atTop (𝓝 (M ^ 2 * 0))))
+      Tendsto (fun n => M ^ (2 : ℕ) * hsNormSq (Kn n)) atTop (𝓝 (M ^ (2 : ℕ) * 0))))
   calc
-    hsNormSq (An n * Kn n) ≤ ‖An n‖ ^ 2 * hsNormSq (Kn n) :=
+    hsNormSq (An n * Kn n) ≤ ‖An n‖ ^ (2 : ℕ) * hsNormSq (Kn n) :=
       hsNormSq_comp_left_le (hKn n) (An n)
-    _ ≤ M ^ 2 * hsNormSq (Kn n) :=
+    _ ≤ M ^ (2 : ℕ) * hsNormSq (Kn n) :=
       mul_le_mul_of_nonneg_right
         ((sq_le_sq₀ (norm_nonneg _) hM).2 (hbound n)) (hsNormSq_nonneg _)
 
@@ -612,14 +612,14 @@ theorem tendsto_hsNormSq_comp_right_zero_of_hsNormSq
     (hK : Tendsto (fun n => hsNormSq (Kn n)) atTop (𝓝 0))
     {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ n, ‖Bn n‖ ≤ M) :
     Tendsto (fun n => hsNormSq (Kn n * Bn n)) atTop (𝓝 0) := by
-  refine squeeze_zero (g := fun n => M ^ 2 * hsNormSq (Kn n))
+  refine squeeze_zero (g := fun n => M ^ (2 : ℕ) * hsNormSq (Kn n))
     (fun n => hsNormSq_nonneg _) (fun n => ?_)
     (by simpa using (tendsto_const_nhds.mul hK :
-      Tendsto (fun n => M ^ 2 * hsNormSq (Kn n)) atTop (𝓝 (M ^ 2 * 0))))
+      Tendsto (fun n => M ^ (2 : ℕ) * hsNormSq (Kn n)) atTop (𝓝 (M ^ (2 : ℕ) * 0))))
   calc
-    hsNormSq (Kn n * Bn n) ≤ ‖Bn n‖ ^ 2 * hsNormSq (Kn n) :=
+    hsNormSq (Kn n * Bn n) ≤ ‖Bn n‖ ^ (2 : ℕ) * hsNormSq (Kn n) :=
       hsNormSq_comp_right_le (hKn n) (Bn n)
-    _ ≤ M ^ 2 * hsNormSq (Kn n) :=
+    _ ≤ M ^ (2 : ℕ) * hsNormSq (Kn n) :=
       mul_le_mul_of_nonneg_right
         ((sq_le_sq₀ (norm_nonneg _) hM).2 (hbound n)) (hsNormSq_nonneg _)
 
@@ -803,14 +803,14 @@ theorem tendsto_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
   have heq : (fun b : ℝ => hsNormSq
       (centralSoninWeightedPrimePowerResidual b pk -
         centralSoninWeightedPrimePowerResidual a pk)) =ᶠ[𝓝 a]
-      (fun b : ℝ => ‖c‖ ^ 2 * hsNormSq (R b - R a)) :=
+      (fun b : ℝ => ‖c‖ ^ (2 : ℕ) * hsNormSq (R b - R a)) :=
     hevent.mono fun b hb => by
-      change hsNormSq (c • R b - c • R a) = ‖c‖ ^ 2 * hsNormSq (R b - R a)
+      change hsNormSq (c • R b - c • R a) = ‖c‖ ^ (2 : ℕ) * hsNormSq (R b - R a)
       rw [← smul_sub, hsNormSq_smul_eq hb]
-  have hmul : Tendsto (fun b : ℝ => ‖c‖ ^ 2 * hsNormSq (R b - R a))
-      (𝓝 a) (𝓝 (‖c‖ ^ 2 * 0)) := by
+  have hmul : Tendsto (fun b : ℝ => ‖c‖ ^ (2 : ℕ) * hsNormSq (R b - R a))
+      (𝓝 a) (𝓝 (‖c‖ ^ (2 : ℕ) * 0)) := by
     simpa [R, centralSoninPrimePowerResidual] using tendsto_const_nhds.mul hbase
-  exact (show Tendsto (fun b : ℝ => ‖c‖ ^ 2 * hsNormSq (R b - R a))
+  exact (show Tendsto (fun b : ℝ => ‖c‖ ^ (2 : ℕ) * hsNormSq (R b - R a))
     (𝓝 a) (𝓝 0) by simpa using hmul).congr' heq.symm
 
 end RHTower

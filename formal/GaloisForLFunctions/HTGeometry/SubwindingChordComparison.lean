@@ -23,7 +23,7 @@ theorem norm_expI_sub_eq (x y : ℝ) :
     rw [show (-x - -y : ℝ) = -(x - y) from by ring, Real.cos_neg]
   have hcast : ∀ r : ℝ, ((-r : ℝ) : ℂ) = -(r : ℂ) := fun r => by push_cast; ring
   rw [hcast, hcast, hcos] at hsq
-  have hdouble : Real.cos (x - y) = 1 - 2 * Real.sin ((x - y) / 2) ^ 2 := by
+  have hdouble : Real.cos (x - y) = 1 - 2 * Real.sin ((x - y) / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul ((x - y) / 2)
     rw [show 2 * ((x - y) / 2) = x - y from by ring] at h
     nlinarith [Real.sin_sq_add_cos_sq ((x - y) / 2), h]
@@ -111,7 +111,7 @@ transfers to their commutator energies. -/
 theorem hsSqRe_commutator_comparison (d e : n → ℂ) (X : Matrix n n ℂ) {C : ℝ}
     (hcomp : ∀ i j : n, ‖d j - d i‖ ≤ C * ‖e j - e i‖) :
     hsSqRe (X * Matrix.diagonal d - Matrix.diagonal d * X)
-      ≤ C ^ 2 * hsSqRe (X * Matrix.diagonal e - Matrix.diagonal e * X) := by
+      ≤ C ^ (2 : ℕ) * hsSqRe (X * Matrix.diagonal e - Matrix.diagonal e * X) := by
   rw [hsSqRe_eq_sum, hsSqRe_eq_sum, Finset.mul_sum]
   refine Finset.sum_le_sum fun a _ => ?_
   rw [Finset.mul_sum]
@@ -121,19 +121,19 @@ theorem hsSqRe_commutator_comparison (d e : n → ℂ) (X : Matrix n n ℂ) {C :
   have hab := hcomp b a
   have hnn : (0 : ℝ) ≤ ‖d a - d b‖ := norm_nonneg _
   have hnn' : (0 : ℝ) ≤ ‖e a - e b‖ := norm_nonneg _
-  have hsq : ‖d a - d b‖ ^ 2 ≤ C ^ 2 * ‖e a - e b‖ ^ 2 := by
+  have hsq : ‖d a - d b‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * ‖e a - e b‖ ^ (2 : ℕ) := by
     nlinarith [hab, hnn, hnn']
-  calc ‖d a - d b‖ ^ 2 * ‖X b a‖ ^ 2
-      ≤ (C ^ 2 * ‖e a - e b‖ ^ 2) * ‖X b a‖ ^ 2 :=
+  calc ‖d a - d b‖ ^ (2 : ℕ) * ‖X b a‖ ^ (2 : ℕ)
+      ≤ (C ^ (2 : ℕ) * ‖e a - e b‖ ^ (2 : ℕ)) * ‖X b a‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-    _ = C ^ 2 * (‖e a - e b‖ ^ 2 * ‖X b a‖ ^ 2) := by ring
+    _ = C ^ (2 : ℕ) * (‖e a - e b‖ ^ (2 : ℕ) * ‖X b a‖ ^ (2 : ℕ)) := by ring
 
 omit [DecidableEq n] in
 /-- **Left multiplication is bounded by the operator norm.**  Each column is moved by at most the
 operator bound, so the total Hilbert--Schmidt energy is. -/
 theorem hsSqRe_mul_left_le (E A : Matrix n n ℂ) {c : ℝ}
-    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ∑ l, ‖v l‖ ^ 2) :
-    hsSqRe (E * A) ≤ c ^ 2 * hsSqRe A := by
+    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ)) :
+    hsSqRe (E * A) ≤ c ^ (2 : ℕ) * hsSqRe A := by
   rw [hsSqRe_eq_sum, hsSqRe_eq_sum, Finset.mul_sum]
   refine Finset.sum_le_sum fun a _ => ?_
   have hcol : ∀ b : n, (E * A) b a = (E *ᵥ fun k => A k a) b := by

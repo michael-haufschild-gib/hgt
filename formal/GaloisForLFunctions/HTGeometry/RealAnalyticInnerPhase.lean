@@ -65,10 +65,10 @@ theorem realBoundaryPhaseRate_nonneg
       simpa using han x
     simpa [curve, Function.comp_def] using
       han0.differentiableAt.hasDerivAt.comp 0 hpath
-  have hnorm : HasDerivAt (fun y => ‖curve y‖ ^ 2)
+  have hnorm : HasDerivAt (fun y => ‖curve y‖ ^ (2 : ℕ))
       (2 * inner ℝ (curve 0) (deriv theta (x : ℂ) * I)) 0 :=
     hcurve.norm_sq
-  have hmax : IsLocalMaxOn (fun y => ‖curve y‖ ^ 2) (Ici 0) 0 := by
+  have hmax : IsLocalMaxOn (fun y => ‖curve y‖ ^ (2 : ℕ)) (Ici 0) 0 := by
     filter_upwards [self_mem_nhdsWithin] with y hy
     simp only [mem_Ici] at hy
     rw [show curve 0 = theta (x : ℂ) by simp [curve], hunit x]
@@ -151,7 +151,7 @@ theorem exp_realAnalyticInnerPhase
       ((starRingEnd ℂ) (theta (y : ℂ)) * deriv theta (y : ℂ)).re = 0 := by
     have hn := (htheta y).norm_sq
     have hconst : HasDerivAt (fun _ : ℝ => (1 : ℝ)) 0 y := hasDerivAt_const y 1
-    have heq : (fun t : ℝ => ‖theta (t : ℂ)‖ ^ 2) = fun _ => (1 : ℝ) := by
+    have heq : (fun t : ℝ => ‖theta (t : ℂ)‖ ^ (2 : ℕ)) = fun _ => (1 : ℝ) := by
       funext t
       rw [hunit t]
       norm_num

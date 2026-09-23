@@ -23,12 +23,12 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_logPow_oneDivEnergy (k : ℕ) 
     Summable (fun N : ℕ =>
       Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) /
           (nthPrimeSubtype N : ℝ) *
-        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2) := by
+        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ)) := by
   obtain ⟨B, c, hc, hB, hrate⟩ :=
     exists_xiHeatCassiniOrderedWoldResidualLogDiscrepancy_exp_rate
-  have hprime := (burnolSummable_poissonWeight_logPow hc k).mul_left (B ^ 2)
+  have hprime := (burnolSummable_poissonWeight_logPow hc k).mul_left (B ^ (2 : ℕ))
   have hmajor : Summable (fun N : ℕ =>
-      B ^ 2 *
+      B ^ (2 : ℕ) *
         (Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) *
           Real.exp (-(2 * c * Real.sqrt
             (Real.log (nthPrimeSubtype N : ℝ)))) /
@@ -41,7 +41,7 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_logPow_oneDivEnergy (k : ℕ) 
           (Real.log (nthPrimeSubtype N : ℝ))) then
       Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) /
           (nthPrimeSubtype N : ℝ) *
-        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2
+        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ)
     else 0
   have hclipped : Summable clipped := by
     refine Summable.of_nonneg_of_le (fun N => ?_) (fun N => ?_) hmajor
@@ -57,17 +57,17 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_logPow_oneDivEnergy (k : ℕ) 
         have hE0 : 0 ≤ E := (Real.exp_pos _).le
         have hBE0 : 0 ≤ B * E := mul_nonneg hB hE0
         have hrateSq :
-            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 ≤
-              B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) := by
+            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) ≤
+              B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) := by
           have hsquare := pow_le_pow_left₀
             (abs_nonneg (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N))
             (by simpa only [p, L, E] using hN) 2
           calc
-            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 =
-                |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| ^ 2 := by
+            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) =
+                |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| ^ (2 : ℕ) := by
               rw [sq_abs]
-            _ ≤ (B * E) ^ 2 := hsquare
-            _ = B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) := by
+            _ ≤ (B * E) ^ (2 : ℕ) := hsquare
+            _ = B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) := by
               dsimp only [E]
               rw [mul_pow, ← Real.exp_nat_mul]
               congr 2
@@ -78,11 +78,11 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_logPow_oneDivEnergy (k : ℕ) 
         calc
           Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) /
                 (nthPrimeSubtype N : ℝ) *
-              xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 ≤
+              xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) ≤
             (Real.log (p : ℝ) ^ (2 * k) / (p : ℝ)) *
-              (B ^ 2 * Real.exp (-(2 * c * Real.sqrt L))) := by
+              (B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L))) := by
                 exact mul_le_mul_of_nonneg_left hrateSq hweight0
-          _ = B ^ 2 *
+          _ = B ^ (2 : ℕ) *
               (Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) *
                 Real.exp (-(2 * c * Real.sqrt
                   (Real.log (nthPrimeSubtype N : ℝ)))) /
@@ -99,7 +99,7 @@ the harmonic base measure. -/
 theorem summable_xiHeatCassiniPrimeWoldResidual_logPow_oneDivEnergy (k : ℕ) :
     Summable (fun p : Nat.Primes =>
       Real.log (p : ℝ) ^ (2 * k) / (p : ℝ) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2) := by
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ)) := by
   have hNat :=
     summable_xiHeatCassiniOrderedWoldResidual_logPow_oneDivEnergy k
   apply nthPrimeEquiv.summable_iff.mp
@@ -107,10 +107,10 @@ theorem summable_xiHeatCassiniPrimeWoldResidual_logPow_oneDivEnergy (k : ℕ) :
   change
     Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) /
           (nthPrimeSubtype N : ℝ) *
-        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 =
+        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) =
       Real.log (nthPrimeEquiv N : ℝ) ^ (2 * k) /
           (nthPrimeEquiv N : ℝ) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy (nthPrimeEquiv N) ^ 2
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy (nthPrimeEquiv N) ^ (2 : ℕ)
   have hsymm : nthPrimeEquiv.symm (nthPrimeSubtype N) = N := by
     change nthPrimeEquiv.symm (nthPrimeEquiv N) = N
     exact Equiv.symm_apply_apply nthPrimeEquiv N
@@ -122,7 +122,7 @@ domain of the source-selected activation-Fisher prime-log generator. -/
 theorem summable_xiHeatCassiniPrimeWoldResidual_activationFisherLogPowEnergy (k : ℕ) :
     Summable (fun p : Nat.Primes =>
       Real.log (p : ℝ) ^ (2 * k) * primeActivationOccupancyFisherDensity p *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2) := by
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le
     (fun p => mul_nonneg (mul_nonneg (by positivity) (by
       exact (by positivity : 0 ≤ 1 / (4 * (p : ℝ))).trans
@@ -131,15 +131,15 @@ theorem summable_xiHeatCassiniPrimeWoldResidual_activationFisherLogPowEnergy (k 
     (summable_xiHeatCassiniPrimeWoldResidual_logPow_oneDivEnergy k)
   calc
     Real.log (p : ℝ) ^ (2 * k) * primeActivationOccupancyFisherDensity p *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 ≤
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) ≤
       Real.log (p : ℝ) ^ (2 * k) * (1 / (p : ℝ)) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 :=
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left
           (primeActivationOccupancyFisherDensity_bounds p).2 (by positivity))
         (sq_nonneg _)
     _ = Real.log (p : ℝ) ^ (2 * k) / (p : ℝ) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 := by ring
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) := by ring
 
 /-- **Essential-edge log-smoothness.**  Same all-orders graph landing holds for the literal
 strict-preclosure essential edge. -/
@@ -147,7 +147,7 @@ theorem summable_xiHeatCassiniPrimeWoldResidual_actualEssentialEdgeLogPowEnergy 
     Summable (fun p : Nat.Primes =>
       Real.log (p : ℝ) ^ (2 * k) *
         primeFirstTraceEssentialHarmonicCoordinate p *
-          xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2) := by
+          xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le
     (fun p => mul_nonneg
       (mul_nonneg (by positivity)
@@ -157,15 +157,15 @@ theorem summable_xiHeatCassiniPrimeWoldResidual_actualEssentialEdgeLogPowEnergy 
   calc
     Real.log (p : ℝ) ^ (2 * k) *
           primeFirstTraceEssentialHarmonicCoordinate p *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 ≤
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) ≤
       Real.log (p : ℝ) ^ (2 * k) * (1 / (p : ℝ)) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 :=
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left
           (primeFirstTraceEssentialHarmonicCoordinate_bounds p).2 (by positivity))
         (sq_nonneg _)
     _ = Real.log (p : ℝ) ^ (2 * k) / (p : ℝ) *
-        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2 := by ring
+        xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ) := by ring
 
 end
 

@@ -222,7 +222,7 @@ theorem photonicPrimeTemporalMaxwellCyclicTransfer_eq_primeCyclicTimeCrystalCell
 
 /-- Two literal prime temporal-Maxwell slab cycles realize the PTR parabolic transfer. -/
 theorem photonicPrimeTemporalMaxwellCyclicTransfer_square_intertwines
-    (p : Nat.Primes) : photonicPrimeTemporalMaxwellCyclicTransfer p ^ 2 *
+    (p : Nat.Primes) : photonicPrimeTemporalMaxwellCyclicTransfer p ^ (2 : ℕ) *
         (photonicPrimeFrame p * photonicParabolicBasis) =
       (photonicPrimeFrame p * photonicParabolicBasis) * photonicParabolic := by
   rw [photonicPrimeTemporalMaxwellCyclicTransfer_eq_primeCyclicTimeCrystalCell]

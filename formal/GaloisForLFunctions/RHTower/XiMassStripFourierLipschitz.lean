@@ -28,7 +28,7 @@ private theorem integrable_xiMassAnalyticTest_fourierKernel_real
     Integrable (fun x : ℝ =>
       xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
         Complex.exp (-(I * (w : ℂ) * x))) := by
-  apply Integrable.mono' (integrable_exp_neg_mul_abs hσ)
+  apply Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ)
   · exact ((continuous_xiMassAnalyticTest_real ha _).mul
       (Complex.continuous_exp.comp (by fun_prop))).aestronglyMeasurable
   · refine ae_of_all _ fun x => ?_
@@ -87,7 +87,7 @@ theorem norm_stripFourier_xiMassAnalyticTest_sub_le
       integrable_xiMassAnalyticTest_fourierKernel_real ha hσ u w
   have hmajor : Integrable (fun x : ℝ =>
       |v - w| * (|x| * Real.exp (-(σ * |x|)))) :=
-    (integrable_abs_mul_exp_neg_mul_abs hσ).const_mul |v - w|
+    (integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul |v - w|
   calc
     ‖stripFourier (xiMassAnalyticTest a ((σ : ℂ) + u * I)) (v : ℂ) -
         stripFourier (xiMassAnalyticTest a ((σ : ℂ) + u * I)) (w : ℂ)‖ =

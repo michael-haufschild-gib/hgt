@@ -26,15 +26,15 @@ noncomputable section
 
 /-- The signed reciprocal-square orientation test on the centered spectral plane. -/
 def xiSourceEntropyOrientationTest (z : ℂ) : ℂ :=
-  (((z⁻¹ ^ 2).im : ℝ) : ℂ)
+  (((z⁻¹ ^ (2 : ℕ)).im : ℝ) : ℂ)
 
 /-- The source-entropy orientation test is square-summable on the complete Xi divisor. -/
 theorem xiSourceEntropyOrientationTest_squareSummable :
     XiWeilSquareSummable xiSourceEntropyOrientationTest := by
   unfold XiWeilSquareSummable
   exact summable_xiThermalOrientationTerm.congr (fun q => by
-    change (xiZeroCopyReciprocalSquare q).im ^ 2 =
-      ‖(((xiZeroCopyReciprocalSquare q).im : ℝ) : ℂ)‖ ^ 2
+    change (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) =
+      ‖(((xiZeroCopyReciprocalSquare q).im : ℝ) : ℂ)‖ ^ (2 : ℕ)
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs])
 
 /-- The canonical signed source-entropy orientation vector. -/
@@ -55,8 +55,8 @@ theorem xiSourceEntropyOrientationVector_apply_eq_sourceEntropyAmplitude
     xiSourceEntropyOrientationVector q =
       ((-riemannReflectedSourceEntropy (q.1 : ℂ) *
           (q.1 : ℂ).im /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 +
-          (q.1 : ℂ).im ^ 2) ^ 2 : ℝ) : ℂ) := by
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+          (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [xiSourceEntropyOrientationVector_apply]
   congr 1
   have hentropy :
@@ -72,7 +72,7 @@ theorem xiSourceEntropyOrientationVector_apply_eq_sourceEntropyAmplitude
 /-- The squared Hilbert norm of the signed orientation vector is exactly the global conserved
 source-entropy energy. -/
 theorem norm_sq_xiSourceEntropyOrientationVector :
-    ‖xiSourceEntropyOrientationVector‖ ^ 2 =
+    ‖xiSourceEntropyOrientationVector‖ ^ (2 : ℕ) =
       xiSourceEntropyOrientationEnergy := by
   rw [HilbertSchmidt.lp_norm_sq_eq,
     xiSourceEntropyOrientationEnergy_eq_thermalOrientationEnergy,

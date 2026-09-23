@@ -35,7 +35,7 @@ theorem semilocalOnePrimeLogFrequency (p : ℕ) (m : Fin 1 → ℤ) :
 
 theorem semilocalOnePrimePoissonPrefactor (p : ℕ) :
     semilocalFinitePrimePoissonPrefactor (semilocalOnePrimeFamily p) =
-      (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ := by
+      (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ := by
   simp [semilocalFinitePrimePoissonPrefactor, semilocalOnePrimeFamily]
 
 theorem semilocalArchimedeanEvenJacobiKernel_neg (k : ℕ) (t : ℝ) :
@@ -217,7 +217,7 @@ def semilocalOnePrimeEvenJacobiCoefficient (k p : ℕ) : ℝ :=
 theorem semilocalOnePrimeEvenJacobiCoefficient_eq_numerator
     {k p : ℕ} (hk : 0 < k) (hp : p.Prime) :
     semilocalOnePrimeEvenJacobiCoefficient k p =
-      (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+      (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
         semilocalFinitePrimeEvenJacobiNumerator k
           (semilocalOnePrimeFamily p) := by
   unfold semilocalOnePrimeEvenJacobiCoefficient
@@ -228,7 +228,7 @@ theorem semilocalOnePrimeEvenJacobiCoefficient_eq_numerator
 theorem semilocalOnePrimeEvenJacobiCoefficient_signed_eq_magnitudeSeries
     {k p : ℕ} (hk : 0 < k) (hp : p.Prime) :
     (-1 : ℝ) ^ k * semilocalOnePrimeEvenJacobiCoefficient k p =
-      2 * (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+      2 * (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
         semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by
   rw [semilocalOnePrimeEvenJacobiCoefficient_eq_numerator hk hp,
     semilocalOnePrimeEvenJacobiNumerator_eq_two_mul_positiveSeries hk hp,
@@ -238,11 +238,11 @@ theorem semilocalOnePrimeEvenJacobiCoefficient_signed_eq_magnitudeSeries
     norm_num
   calc
     (-1 : ℝ) ^ k *
-        ((1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+        ((1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
           (2 * ((-1 : ℝ) ^ k *
             semilocalOnePrimeEvenJacobiMagnitudeSeries k p))) =
         ((-1 : ℝ) ^ k * (-1 : ℝ) ^ k) *
-          (2 * (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+          (2 * (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
             semilocalOnePrimeEvenJacobiMagnitudeSeries k p) := by ring
     _ = _ := by rw [hsign, one_mul]
 
@@ -250,16 +250,16 @@ theorem semilocalOnePrimeEvenJacobiCoefficient_signed_eq_magnitudeSeries
 theorem abs_semilocalOnePrimeEvenJacobiCoefficient_eq_magnitudeSeries
     {k p : ℕ} (hk : 0 < k) (hp : p.Prime) :
     |semilocalOnePrimeEvenJacobiCoefficient k p| =
-      2 * (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+      2 * (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
         semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by
   have h := semilocalOnePrimeEvenJacobiCoefficient_signed_eq_magnitudeSeries hk hp
-  have hden : 0 < (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ := by
+  have hden : 0 < (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ := by
     apply inv_pos.mpr
     have hr0 := semilocalPrimePoissonRatio_pos hp
     have hr1 := semilocalPrimePoissonRatio_lt_one hp
     nlinarith [sq_nonneg (semilocalPrimePoissonRatio p)]
   have hseries := semilocalOnePrimeEvenJacobiMagnitudeSeries_pos (k := k) hp
-  have hright : 0 < 2 * (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
+  have hright : 0 < 2 * (1 - semilocalPrimePoissonRatio p ^ (2 : ℕ))⁻¹ *
       semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by positivity
   have habs := congrArg abs h
   simpa [abs_mul, abs_of_pos hright] using habs

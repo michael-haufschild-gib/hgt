@@ -57,11 +57,11 @@ namespace RHTower
 
 /-- **Monotonicity of the digamma summand.**  Each term `-(c/(c²+b²))` of the series for
 `Re Ψ(a+ib)` increases with `b²`, so `σ` increases with `|ξ|`. -/
-theorem digamma_summand_mono {c b₁ b₂ : ℝ} (hc : 0 < c) (h : b₁ ^ 2 ≤ b₂ ^ 2) :
-    -(c / (c ^ 2 + b₁ ^ 2)) ≤ -(c / (c ^ 2 + b₂ ^ 2)) := by
-  have h1 : (0 : ℝ) < c ^ 2 + b₁ ^ 2 := by positivity
-  have h2 : (0 : ℝ) < c ^ 2 + b₂ ^ 2 := by positivity
-  have hmono : c / (c ^ 2 + b₂ ^ 2) ≤ c / (c ^ 2 + b₁ ^ 2) := by
+theorem digamma_summand_mono {c b₁ b₂ : ℝ} (hc : 0 < c) (h : b₁ ^ (2 : ℕ) ≤ b₂ ^ (2 : ℕ)) :
+    -(c / (c ^ (2 : ℕ) + b₁ ^ (2 : ℕ))) ≤ -(c / (c ^ (2 : ℕ) + b₂ ^ (2 : ℕ))) := by
+  have h1 : (0 : ℝ) < c ^ (2 : ℕ) + b₁ ^ (2 : ℕ) := by positivity
+  have h2 : (0 : ℝ) < c ^ (2 : ℕ) + b₂ ^ (2 : ℕ) := by positivity
+  have hmono : c / (c ^ (2 : ℕ) + b₂ ^ (2 : ℕ)) ≤ c / (c ^ (2 : ℕ) + b₁ ^ (2 : ℕ)) := by
     apply div_le_div_of_nonneg_left hc.le h1
     linarith
   linarith
@@ -87,17 +87,17 @@ theorem highFreq_mass_ge {μ m Ξ β : ℝ} (hμ : 0 ≤ μ) (hm : 0 < m) (hβ :
     field_simp
   rw [hval] at hsplit
   have h4 : Real.sqrt 4 = 2 := by
-    rw [show (4 : ℝ) = 2 ^ 2 from by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) from by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
   have hquarter : Real.sqrt (μ / 4) = Real.sqrt μ / 2 := by
     rw [Real.sqrt_div hμ, h4]
   rw [hquarter] at hsplit
   have hhalf : Real.sqrt μ / 2 ≤ Real.sqrt β := by linarith
-  have hsq : (Real.sqrt μ / 2) ^ 2 ≤ (Real.sqrt β) ^ 2 := by
+  have hsq : (Real.sqrt μ / 2) ^ (2 : ℕ) ≤ (Real.sqrt β) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ Real.sqrt μ / 2 := by positivity
     nlinarith [hhalf, h0]
   rw [Real.sq_sqrt hβ] at hsq
-  have hμsq : (Real.sqrt μ) ^ 2 = μ := Real.sq_sqrt hμ
-  have : (Real.sqrt μ / 2) ^ 2 = μ / 4 := by
+  have hμsq : (Real.sqrt μ) ^ (2 : ℕ) = μ := Real.sq_sqrt hμ
+  have : (Real.sqrt μ / 2) ^ (2 : ℕ) = μ / 4 := by
     rw [div_pow, hμsq]; norm_num
   linarith [this ▸ hsq]
 

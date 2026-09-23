@@ -18,7 +18,7 @@ namespace RHTower
 /-- Squared normalized chi carrier on the positive dual contour. -/
 def smoothAFEZetaChiShiftRatioSq (tau v : ℝ) : ℂ :=
   (smoothAFEZetaChiShiftRatio (linePt tau)
-    (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) ^ 2
+    (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) ^ (2 : ℕ)
 
 /-- Exact height derivative of the squared normalized chi carrier. -/
 theorem deriv_smoothAFEZetaChiShiftRatioSq (tau v : ℝ) :
@@ -34,7 +34,7 @@ theorem deriv_smoothAFEZetaChiShiftRatioSq (tau v : ℝ) :
   change deriv
       (fun u : ℝ =>
         (smoothAFEZetaChiShiftRatio (linePt u)
-          (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) ^ 2) tau = _ at hp
+          (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) ^ (2 : ℕ)) tau = _ at hp
   unfold smoothAFEZetaChiShiftRatioSq
   rw [hp, h.deriv]
   norm_num
@@ -44,7 +44,7 @@ height derivative.  In the outer region that power is absorbed by frequency. -/
 theorem exists_norm_deriv_smoothAFEZetaChiShiftRatioSq_le_global :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {tau : ℝ}, 4 ≤ tau → ∀ v : ℝ,
       ‖deriv (fun u : ℝ => smoothAFEZetaChiShiftRatioSq u v) tau‖ ≤
-        K * (1 + tau) * (1 + |v|) ^ 5 := by
+        K * (1 + tau) * (1 + |v|) ^ (5 : ℕ) := by
   obtain ⟨D, hD, hglobal⟩ :=
     exists_norm_deriv_smoothAFEZetaChiShiftRatio_le_global
   let C : ℝ := 6 + 2 * Real.pi
@@ -77,13 +77,13 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatioSq_le_global :
     have hscale : (1 + tau) * tau⁻¹ ≤ 2 := by
       rw [mul_inv_le_iff₀ htau0]
       linarith
-    have hpow : (1 + |v|) ^ 3 ≤ (1 + |v|) ^ 5 := by
+    have hpow : (1 + |v|) ^ (3 : ℕ) ≤ (1 + |v|) ^ (5 : ℕ) := by
       calc
-        (1 + |v|) ^ 3 = (1 + |v|) ^ 3 * 1 := by ring
-        _ ≤ (1 + |v|) ^ 3 * (1 + |v|) ^ 2 := by
+        (1 + |v|) ^ (3 : ℕ) = (1 + |v|) ^ (3 : ℕ) * 1 := by ring
+        _ ≤ (1 + |v|) ^ (3 : ℕ) * (1 + |v|) ^ (2 : ℕ) := by
           gcongr
           nlinarith
-        _ = (1 + |v|) ^ 5 := by ring
+        _ = (1 + |v|) ^ (5 : ℕ) := by ring
     have hK : 4 * C ≤ K := by
       dsimp only [K]
       linarith
@@ -108,20 +108,20 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatioSq_le_global :
             (((1 + tau) * (1 + |v|)) *
               (C * (1 + |v|) / tau)) := by gcongr
       _ = (2 * C * ((1 + tau) * tau⁻¹)) *
-            ((1 + tau) * (1 + |v|) ^ 3) := by
+            ((1 + tau) * (1 + |v|) ^ (3 : ℕ)) := by
           rw [div_eq_mul_inv]
           ring
-      _ ≤ (4 * C) * ((1 + tau) * (1 + |v|) ^ 3) := by
+      _ ≤ (4 * C) * ((1 + tau) * (1 + |v|) ^ (3 : ℕ)) := by
           exact mul_le_mul_of_nonneg_right hcoef
             (mul_nonneg htau1 (pow_nonneg hb0 3))
-      _ ≤ (4 * C) * ((1 + tau) * (1 + |v|) ^ 5) := by gcongr
-      _ ≤ K * (1 + tau) * (1 + |v|) ^ 5 := by
+      _ ≤ (4 * C) * ((1 + tau) * (1 + |v|) ^ (5 : ℕ)) := by gcongr
+      _ ≤ K * (1 + tau) * (1 + |v|) ^ (5 : ℕ) := by
           calc
-            (4 * C) * ((1 + tau) * (1 + |v|) ^ 5)
-              ≤ K * ((1 + tau) * (1 + |v|) ^ 5) := by gcongr
-            _ = K * (1 + tau) * (1 + |v|) ^ 5 := by ring
+            (4 * C) * ((1 + tau) * (1 + |v|) ^ (5 : ℕ))
+              ≤ K * ((1 + tau) * (1 + |v|) ^ (5 : ℕ)) := by gcongr
+            _ = K * (1 + tau) * (1 + |v|) ^ (5 : ℕ) := by ring
   · have htail : tau < 2 * |v| := lt_of_not_ge hv
-    have hheight : (1 + tau) ^ 2 ≤ 4 * (1 + |v|) ^ 2 := by
+    have hheight : (1 + tau) ^ (2 : ℕ) ≤ 4 * (1 + |v|) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (1 + tau), sq_nonneg (1 + |v|)]
     have hder := hglobal tau v
     rw [habstau] at hder
@@ -130,11 +130,11 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatioSq_le_global :
       have hC : 0 ≤ C := by dsimp only [C]; positivity
       linarith
     have hcoef :
-        2 * D * (1 + tau) ^ 2 ≤ 8 * D * (1 + |v|) ^ 2 := by
+        2 * D * (1 + tau) ^ (2 : ℕ) ≤ 8 * D * (1 + |v|) ^ (2 : ℕ) := by
       calc
-        2 * D * (1 + tau) ^ 2
-          ≤ 2 * D * (4 * (1 + |v|) ^ 2) := by gcongr
-        _ = 8 * D * (1 + |v|) ^ 2 := by ring
+        2 * D * (1 + tau) ^ (2 : ℕ)
+          ≤ 2 * D * (4 * (1 + |v|) ^ (2 : ℕ)) := by gcongr
+        _ = 8 * D * (1 + |v|) ^ (2 : ℕ) := by ring
     calc
       2 * ‖smoothAFEZetaChiShiftRatio (linePt tau)
               (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))‖ *
@@ -142,15 +142,15 @@ theorem exists_norm_deriv_smoothAFEZetaChiShiftRatioSq_le_global :
               (fun u : ℝ => smoothAFEZetaChiShiftRatio (linePt u)
                 (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) tau‖
         ≤ 2 * ((1 + tau) * (1 + |v|)) *
-            (D * (1 + tau) ^ 2 * (1 + |v|) ^ 2) := by gcongr
-      _ = (2 * D * (1 + tau) ^ 2) *
-            ((1 + tau) * (1 + |v|) ^ 3) := by ring
-      _ ≤ (8 * D * (1 + |v|) ^ 2) *
-            ((1 + tau) * (1 + |v|) ^ 3) := by
+            (D * (1 + tau) ^ (2 : ℕ) * (1 + |v|) ^ (2 : ℕ)) := by gcongr
+      _ = (2 * D * (1 + tau) ^ (2 : ℕ)) *
+            ((1 + tau) * (1 + |v|) ^ (3 : ℕ)) := by ring
+      _ ≤ (8 * D * (1 + |v|) ^ (2 : ℕ)) *
+            ((1 + tau) * (1 + |v|) ^ (3 : ℕ)) := by
           exact mul_le_mul_of_nonneg_right hcoef
             (mul_nonneg htau1 (pow_nonneg hb0 3))
-      _ = (8 * D) * ((1 + tau) * (1 + |v|) ^ 5) := by ring
-      _ ≤ K * ((1 + tau) * (1 + |v|) ^ 5) := by gcongr
-      _ = K * (1 + tau) * (1 + |v|) ^ 5 := by ring
+      _ = (8 * D) * ((1 + tau) * (1 + |v|) ^ (5 : ℕ)) := by ring
+      _ ≤ K * ((1 + tau) * (1 + |v|) ^ (5 : ℕ)) := by gcongr
+      _ = K * (1 + tau) * (1 + |v|) ^ (5 : ℕ) := by ring
 
 end RHTower

@@ -106,7 +106,7 @@ theorem cayleyChebyshevSourcePolynomial_one :
 theorem cayleyChebyshevSourcePolynomial_succ_succ (n : ℕ) :
     cayleyChebyshevSourcePolynomial (n + 2) =
       2 * (1 - X) * cayleyChebyshevSourcePolynomial (n + 1) -
-        (1 + X) ^ 2 * cayleyChebyshevSourcePolynomial n := by
+        (1 + X) ^ (2 : ℕ) * cayleyChebyshevSourcePolynomial n := by
   apply Polynomial.eq_of_infinite_eval_eq
   refine (Set.Finite.infinite_compl (Set.finite_singleton (-1 : ℝ))).mono ?_
   intro W hW
@@ -139,7 +139,7 @@ theorem cayleyChebyshevSourcePolynomial_succ_succ (n : ℕ) :
   rw [hpRec] at h2'
   have hpow1 : (1 + W) ^ (n + 1) = (1 + W) ^ n * (1 + W) := by
     rw [pow_succ]
-  have hpow2 : (1 + W) ^ (n + 2) = (1 + W) ^ n * (1 + W) ^ 2 := by
+  have hpow2 : (1 + W) ^ (n + 2) = (1 + W) ^ n * (1 + W) ^ (2 : ℕ) := by
     rw [pow_add]
   rw [hpow1] at h1'
   rw [hpow2] at h2'
@@ -149,7 +149,7 @@ theorem cayleyChebyshevSourcePolynomial_succ_succ (n : ℕ) :
 
 /-- Explicit positive candidate root. -/
 def cayleyChebyshevSourceRoot (n k : ℕ) : ℝ :=
-  Real.tan (((2 * k + 1 : ℕ) : ℝ) * Real.pi / (4 * n)) ^ 2
+  Real.tan (((2 * k + 1 : ℕ) : ℝ) * Real.pi / (4 * n)) ^ (2 : ℕ)
 
 theorem cayleyChebyshevSourceRoot_pos {n k : ℕ} (hn : 0 < n) (hk : k < n) :
     0 < cayleyChebyshevSourceRoot n k := by
@@ -185,7 +185,7 @@ theorem cayleyChebyshevSourcePolynomial_eval_root {n k : ℕ}
     linarith
   have htan : 0 < Real.tan (θ / 2) :=
     Real.tan_pos_of_pos_of_lt_pi_div_two (by linarith) (by linarith)
-  have hrootEq : cayleyChebyshevSourceRoot n k = Real.tan (θ / 2) ^ 2 := by
+  have hrootEq : cayleyChebyshevSourceRoot n k = Real.tan (θ / 2) ^ (2 : ℕ) := by
     have harg : (((2 * k + 1 : ℕ) : ℝ) * Real.pi / (4 * n)) = θ / 2 := by
       dsimp [θ]
       ring
@@ -222,26 +222,26 @@ theorem cayleyChebyshevSourcePolynomial_eval_root {n k : ℕ}
 
 /-- Exact real-line rational-square identity. -/
 theorem cayleyChebyshev_rational_square (n : ℕ) (x : ℝ) :
-    (cayleyChebyshevSourcePolynomial n).eval (x ^ 2) ^ 2 /
-        (1 + x ^ 2) ^ (2 * n + 1) =
-      Real.cos (2 * n * Real.arctan x) ^ 2 / (1 + x ^ 2) := by
-  have hplus : 1 + x ^ 2 ≠ 0 := by positivity
-  have hnorm := eval_cayleyChebyshevSourcePolynomial_div n (x ^ 2) hplus
+    (cayleyChebyshevSourcePolynomial n).eval (x ^ (2 : ℕ)) ^ (2 : ℕ) /
+        (1 + x ^ (2 : ℕ)) ^ (2 * n + 1) =
+      Real.cos (2 * n * Real.arctan x) ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) := by
+  have hplus : 1 + x ^ (2 : ℕ) ≠ 0 := by positivity
+  have hnorm := eval_cayleyChebyshevSourcePolynomial_div n (x ^ (2 : ℕ)) hplus
   have hcos :
-      (cayleyChebyshevPolynomial n).eval (1 / (1 + x ^ 2)) =
+      (cayleyChebyshevPolynomial n).eval (1 / (1 + x ^ (2 : ℕ))) =
         Real.cos (2 * n * Real.arctan x) := by
     rw [eval_cayleyChebyshevPolynomial]
     have harctan := Real.cos_two_mul (Real.arctan x)
     rw [Real.cos_sq_arctan] at harctan
-    have harg : 2 * (1 / (1 + x ^ 2)) - 1 =
+    have harg : 2 * (1 / (1 + x ^ (2 : ℕ))) - 1 =
         Real.cos (2 * Real.arctan x) := by nlinarith
     rw [harg, Polynomial.Chebyshev.T_real_cos]
     congr 1
     push_cast
     ring
   rw [hcos] at hnorm
-  have hQ : (cayleyChebyshevSourcePolynomial n).eval (x ^ 2) =
-      (1 + x ^ 2) ^ n * Real.cos (2 * n * Real.arctan x) := by
+  have hQ : (cayleyChebyshevSourcePolynomial n).eval (x ^ (2 : ℕ)) =
+      (1 + x ^ (2 : ℕ)) ^ n * Real.cos (2 * n * Real.arctan x) := by
     have := (div_eq_iff (pow_ne_zero n hplus)).mp hnorm
     nlinarith
   rw [hQ]

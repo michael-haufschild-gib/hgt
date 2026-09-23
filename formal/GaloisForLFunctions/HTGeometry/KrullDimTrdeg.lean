@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.HankelSecantDimension
 
 Noether normalization (`exists_integral_inj_algHom_of_fg`) embeds a polynomial ring on `s` variables
 integrally into a finitely generated algebra over a field.  Dimension does not grow along an
-integral extension (`ringKrullDim_le_of_isIntegral`), so the dimension is at most `s`; and `s` is at
+integral extension (`ringKrullDim_le_of_isIntegral_rationalNormalCone`), so the dimension is at most `s`; and `s` is at
 most the transcendence degree because an injective algebra map cannot decrease it.
 
 ```text
@@ -36,7 +36,7 @@ theorem ringKrullDim_le_of_trdeg_le {k : Type u} {R : Type u} [Field k] [CommRin
   letI : Algebra (MvPolynomial (Fin s) k) R := g.toRingHom.toAlgebra
   haveI : Algebra.IsIntegral (MvPolynomial (Fin s) k) R := ⟨hgint⟩
   have h1 : ringKrullDim R ≤ ringKrullDim (MvPolynomial (Fin s) k) :=
-    ringKrullDim_le_of_isIntegral
+    ringKrullDim_le_of_isIntegral_rationalNormalCone
   have h2 : ringKrullDim (MvPolynomial (Fin s) k) = ((s : ℕ∞) : WithBot ℕ∞) := by
     rw [MvPolynomial.ringKrullDim_of_isNoetherianRing, ringKrullDim_eq_zero_of_field k]
     simp

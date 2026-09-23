@@ -31,7 +31,7 @@ namespace RHTower
 
 /-- The `k`-th divided-jet moment of the state `(u - r)^m·G` at the root `r`. -/
 def routeUJetMoment (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (k : ℕ) : ℝ :=
-  routeUHardEdgePairing σ fun u => (u - r) ^ k * G u ^ 2
+  routeUHardEdgePairing σ fun u => (u - r) ^ k * G u ^ (2 : ℕ)
 
 /-- The `k`-th divided descendant of the state `(u - r)^m·G`, written without division. -/
 def routeUJetDescendant (m : ℕ) (r : ℝ) (G : ℝ → ℝ) (k : ℕ) : ℝ → ℝ :=
@@ -53,16 +53,16 @@ theorem routeUEvenForm_descendant (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m p q 
 /-- **(HPJI.6) The odd Gram entry of two divided descendants.** -/
 theorem routeUOddForm_descendant (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m p q : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ ((m - p) + (m - q) + 1) * G u ^ 2
+      (u - r) ^ ((m - p) + (m - q) + 1) * G u ^ (2 : ℕ)
         * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ ((m - p) + (m - q)) * G u ^ 2)
+      r * ((u - r) ^ ((m - p) + (m - q)) * G u ^ (2 : ℕ))
         * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0)) :
     routeUHardEdgeOddForm σ (routeUJetDescendant m r G p) (routeUJetDescendant m r G q)
       = routeUJetMoment σ G r ((m - p) + (m - q) + 1)
         + r * routeUJetMoment σ G r ((m - p) + (m - q)) := by
   have hprod : (fun u : ℝ => u * (routeUJetDescendant m r G p u * routeUJetDescendant m r G q u))
-      = fun u : ℝ => u * ((u - r) ^ ((m - p) + (m - q)) * G u ^ 2) := by
+      = fun u : ℝ => u * ((u - r) ^ ((m - p) + (m - q)) * G u ^ (2 : ℕ)) := by
     funext u
     rw [routeUJetDescendant, routeUJetDescendant, pow_add]
     ring
@@ -72,9 +72,9 @@ theorem routeUOddForm_descendant (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m p q :
 /-- **(HPJI.7) The terminal odd energy is the root times the terminal even mass.** -/
 theorem routeUOddForm_terminal (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      r * ((u - r) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hvanish : routeUJetMoment σ G r 1 = 0) :
     routeUHardEdgeOddForm σ (routeUJetDescendant m r G m) (routeUJetDescendant m r G m)
       = r * routeUJetMoment σ G r 0 := by
@@ -91,7 +91,7 @@ inequality of the nonnegative form and the nullity of the state on the first `m`
 propagate to all moments below the terminal one. -/
 theorem routeUJetMoment_eq_zero_of_null (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m →
-      routeUJetMoment σ G r (2 * m - (p + q)) ^ 2
+      routeUJetMoment σ G r (2 * m - (p + q)) ^ (2 : ℕ)
         ≤ routeUJetMoment σ G r (2 * m - 2 * p) * routeUJetMoment σ G r (2 * m - 2 * q))
     (hbase : ∀ j : ℕ, 1 ≤ j → j ≤ m → routeUJetMoment σ G r (2 * m - j) = 0) :
     ∀ j : ℕ, 1 ≤ j → j < 2 * m → routeUJetMoment σ G r (2 * m - j) = 0 := by
@@ -111,7 +111,7 @@ theorem routeUJetMoment_cauchySchwarz (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m 
       (fun u => routeUJetDescendant m r G p u + t * routeUJetDescendant m r G q u)
       (fun u => routeUJetDescendant m r G p u + t * routeUJetDescendant m r G q u)) :
     ∀ p q : ℕ, p ≤ m → q ≤ m →
-      routeUJetMoment σ G r (2 * m - (p + q)) ^ 2
+      routeUJetMoment σ G r (2 * m - (p + q)) ^ (2 : ℕ)
         ≤ routeUJetMoment σ G r (2 * m - 2 * p) * routeUJetMoment σ G r (2 * m - 2 * q) := by
   intro p q hp hq
   have hcs := routeUEvenForm_sq_le σ (routeUJetDescendant m r G p) (routeUJetDescendant m r G q)
@@ -126,7 +126,7 @@ theorem routeUJetMoment_cauchySchwarz (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m 
 /-- **(RJRR.6) A null state is orthogonal to all of its own divided descendants.** -/
 theorem routeUJetMoment_base_of_null (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m →
-      routeUJetMoment σ G r (2 * m - (p + q)) ^ 2
+      routeUJetMoment σ G r (2 * m - (p + q)) ^ (2 : ℕ)
         ≤ routeUJetMoment σ G r (2 * m - 2 * p) * routeUJetMoment σ G r (2 * m - 2 * q))
     (hnull : routeUJetMoment σ G r (2 * m) = 0) :
     ∀ j : ℕ, 1 ≤ j → j ≤ m → routeUJetMoment σ G r (2 * m - j) = 0 := by
@@ -162,7 +162,7 @@ moment sequence and nullity of the state, every even Gram entry off the terminal
 and the terminal odd energy is `r` times the terminal even mass. -/
 theorem routeUJetGram_of_null (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m →
-      routeUJetMoment σ G r (2 * m - (p + q)) ^ 2
+      routeUJetMoment σ G r (2 * m - (p + q)) ^ (2 : ℕ)
         ≤ routeUJetMoment σ G r (2 * m - 2 * p) * routeUJetMoment σ G r (2 * m - 2 * q))
     (hnull : routeUJetMoment σ G r (2 * m) = 0)
     (p q : ℕ) (hp : 1 ≤ p) (hq : 1 ≤ q) (hpm : p ≤ m) (hqm : q ≤ m)
@@ -340,9 +340,9 @@ theorem routeUJetDescendant_eq_zero_of_sum_eq_zero (r : ℝ) (G : ℝ → ℝ) (
 the terminal even mass, so odd nonnegativity forces `r ≥ 0`. -/
 theorem routeUJetRoot_nonneg (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      r * ((u - r) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hvanish : routeUJetMoment σ G r 1 = 0)
     (hpsd : 0 ≤ routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
       (routeUJetDescendant m r G m))
@@ -354,9 +354,9 @@ theorem routeUJetRoot_nonneg (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
 positive.** -/
 theorem routeUJetRoot_pos (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      r * ((u - r) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hvanish : routeUJetMoment σ G r 1 = 0)
     (hpsd : 0 ≤ routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
       (routeUJetDescendant m r G m))
@@ -373,9 +373,9 @@ theorem routeUJetRoot_pos (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
 /-- **A vanishing terminal mass makes both terminal descendants zero-energy.** -/
 theorem routeUJetTerminal_null_of_terminal_mass_zero (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      r * ((u - r) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hvanish : routeUJetMoment σ G r 1 = 0)
     (hgamma : routeUJetMoment σ G r 0 = 0) :
     routeUHardEdgeEvenForm σ (routeUJetDescendant m r G m) (routeUJetDescendant m r G m) = 0
@@ -390,9 +390,9 @@ theorem routeUJetTerminal_null_of_terminal_mass_zero (σ : ℝ) (G : ℝ → ℝ
 /-- **A zero root makes the terminal odd descendant zero-energy.** -/
 theorem routeUJetTerminalOdd_null_of_root_zero (σ : ℝ) (G : ℝ → ℝ) (m : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - (0 : ℝ)) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - (0 : ℝ)) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      (0 : ℝ) * ((u - (0 : ℝ)) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u)
+      (0 : ℝ) * ((u - (0 : ℝ)) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u)
         / Real.sqrt u) (Ioi 0))
     (hvanish : routeUJetMoment σ G 0 1 = 0) :
     routeUHardEdgeOddForm σ (routeUJetDescendant m 0 G m) (routeUJetDescendant m 0 G m) = 0 := by

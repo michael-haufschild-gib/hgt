@@ -26,13 +26,13 @@ noncomputable section
 /-- Dirichlet spectral coefficient of the unit--double Euler response. -/
 def xiUnitDoubleEulerResponseSpectralCoefficient (n : ℕ) : ℝ :=
   ArithmeticFunction.vonMangoldt n *
-    (2 / (n : ℝ) ^ 2 - 1 / (n : ℝ))
+    (2 / (n : ℝ) ^ (2 : ℕ) - 1 / (n : ℝ))
 
 theorem xiUnitDoubleEulerResponseSpectralCoefficient_eq
     {n : ℕ} (hn : 2 ≤ n) :
     xiUnitDoubleEulerResponseSpectralCoefficient n =
       ArithmeticFunction.vonMangoldt n *
-        (2 - (n : ℝ)) / (n : ℝ) ^ 2 := by
+        (2 - (n : ℝ)) / (n : ℝ) ^ (2 : ℕ) := by
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
   rw [xiUnitDoubleEulerResponseSpectralCoefficient]
   field_simp [hn0]
@@ -44,7 +44,7 @@ theorem xiUnitDoubleEulerResponseSpectralCoefficient_nonpos
   rw [xiUnitDoubleEulerResponseSpectralCoefficient_eq hn]
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hnum : 2 - (n : ℝ) ≤ 0 := sub_nonpos.mpr hnR
-  have hden : 0 ≤ (n : ℝ) ^ 2 := sq_nonneg _
+  have hden : 0 ≤ (n : ℝ) ^ (2 : ℕ) := sq_nonneg _
   exact div_nonpos_of_nonpos_of_nonneg
     (mul_nonpos_of_nonneg_of_nonpos
       ArithmeticFunction.vonMangoldt_nonneg hnum) hden
@@ -76,8 +76,8 @@ private theorem finite_cosine_translation_quadratic_eq_sq
     {ι : Type*} (I : Finset ι) (weight node : ι → ℝ) (t : ℝ) :
     (∑ i ∈ I, ∑ j ∈ I,
       weight i * weight j * Real.cos (t * (node i - node j))) =
-      (∑ i ∈ I, weight i * Real.cos (t * node i)) ^ 2 +
-        (∑ i ∈ I, weight i * Real.sin (t * node i)) ^ 2 := by
+      (∑ i ∈ I, weight i * Real.cos (t * node i)) ^ (2 : ℕ) +
+        (∑ i ∈ I, weight i * Real.sin (t * node i)) ^ (2 : ℕ) := by
   rw [pow_two, pow_two, Finset.sum_mul_sum, Finset.sum_mul_sum,
     ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
@@ -104,8 +104,8 @@ theorem xiUnitDoubleFiniteEulerResponseQuadratic_eq_sq
     (weight node : ι → ℝ) :
     xiUnitDoubleFiniteEulerResponseQuadratic N I weight node =
       ∑ n ∈ N, xiUnitDoubleEulerResponseSpectralCoefficient n *
-        ((∑ i ∈ I, weight i * Real.cos (Real.log n * node i)) ^ 2 +
-          (∑ i ∈ I, weight i * Real.sin (Real.log n * node i)) ^ 2) := by
+        ((∑ i ∈ I, weight i * Real.cos (Real.log n * node i)) ^ (2 : ℕ) +
+          (∑ i ∈ I, weight i * Real.sin (Real.log n * node i)) ^ (2 : ℕ)) := by
   rw [xiUnitDoubleFiniteEulerResponseQuadratic]
   apply Finset.sum_congr rfl
   intro n hn

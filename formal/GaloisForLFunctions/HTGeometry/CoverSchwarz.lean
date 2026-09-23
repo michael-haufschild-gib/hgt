@@ -41,7 +41,7 @@ theorem norm_le_of_cover_schwarz
       have h1 : ‖F (c i)‖ ≤ M := by
         have := hbd i 0 (by simpa using hR.le)
         simpa using this
-      have h2 : M ≤ M * (r / R) ^ 0 / (1 - r / R) := by
+      have h2 : M ≤ M * (r / R) ^ (0 : ℕ) / (1 - r / R) := by
         rw [pow_zero, mul_one, le_div_iff₀ hden]
         nlinarith
       exact h1.trans h2

@@ -82,21 +82,21 @@ theorem kapustinUniversalGammaCarrier_neg_div_conj (x : ℝ) :
 
 theorem realCayley_eq_neg_exp_two_mul_I_arctan (x : ℝ) :
     realCayley x = -Complex.exp (((2 * Real.arctan x : ℝ) : ℂ) * I) := by
-  have hsqrt : 0 < Real.sqrt (1 + x ^ 2) := Real.sqrt_pos.2 (by positivity)
-  have hsqrtSq : Real.sqrt (1 + x ^ 2) ^ 2 = 1 + x ^ 2 := by
+  have hsqrt : 0 < Real.sqrt (1 + x ^ (2 : ℕ)) := Real.sqrt_pos.2 (by positivity)
+  have hsqrtSq : Real.sqrt (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) = 1 + x ^ (2 : ℕ) := by
     rw [Real.sq_sqrt (by positivity)]
-  have hden : 1 + x ^ 2 ≠ 0 := by positivity
-  have hcos : Real.cos (2 * Real.arctan x) = (1 - x ^ 2) / (1 + x ^ 2) := by
+  have hden : 1 + x ^ (2 : ℕ) ≠ 0 := by positivity
+  have hcos : Real.cos (2 * Real.arctan x) = (1 - x ^ (2 : ℕ)) / (1 + x ^ (2 : ℕ)) := by
     rw [Real.cos_two_mul, Real.cos_arctan]
     field_simp
     nlinarith
-  have hsin : Real.sin (2 * Real.arctan x) = 2 * x / (1 + x ^ 2) := by
+  have hsin : Real.sin (2 * Real.arctan x) = 2 * x / (1 + x ^ (2 : ℕ)) := by
     rw [Real.sin_two_mul, Real.sin_arctan, Real.cos_arctan]
     field_simp
     rw [hsqrtSq]
   have hcayley : realCayley x =
-      (((x ^ 2 - 1) / (1 + x ^ 2) : ℝ) : ℂ) +
-        (((-2 * x) / (1 + x ^ 2) : ℝ) : ℂ) * I := by
+      (((x ^ (2 : ℕ) - 1) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ) +
+        (((-2 * x) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ) * I := by
     apply Complex.ext
     · rw [realCayley, Complex.div_re]
       simp only [Complex.sub_re, Complex.ofReal_re, Complex.I_re, sub_zero,
@@ -113,15 +113,15 @@ theorem realCayley_eq_neg_exp_two_mul_I_arctan (x : ℝ) :
       field_simp [hden]
       ring
   rw [hcayley, Complex.exp_ofReal_mul_I, hcos, hsin]
-  have hreal : (x ^ 2 - 1) / (1 + x ^ 2) =
-      -(1 - x ^ 2) / (1 + x ^ 2) := by ring
+  have hreal : (x ^ (2 : ℕ) - 1) / (1 + x ^ (2 : ℕ)) =
+      -(1 - x ^ (2 : ℕ)) / (1 + x ^ (2 : ℕ)) := by ring
   rw [hreal]
   apply Complex.ext <;>
     simp [Complex.div_re, Complex.div_im, Complex.normSq_apply] <;>
     field_simp [hden] <;> ring
 
 theorem conj_realCayley_pow_four_eq_exp_neg_eight_arctan (x : ℝ) :
-    (starRingEnd ℂ) (realCayley x ^ 4) =
+    (starRingEnd ℂ) (realCayley x ^ (4 : ℕ)) =
       Complex.exp (((-8 * Real.arctan x : ℝ) : ℂ) * I) := by
   rw [realCayley_eq_neg_exp_two_mul_I_arctan, map_pow, map_neg,
     ← Complex.exp_conj]
@@ -221,12 +221,12 @@ theorem kapustinGauge_boundedPhase_symbol_eq_ae
   rw [show
     ((starRingEnd ℂ) (diskMultiplierLineBoundary Phi x) /
         diskMultiplierLineBoundary Phi x) *
-      ((starRingEnd ℂ) (realCayley x ^ 4) *
+      ((starRingEnd ℂ) (realCayley x ^ (4 : ℕ)) *
         ((kapustinUniversalGammaCarrier (-x) *
             diskMultiplierLineBoundary Phi x) /
           (starRingEnd ℂ) (kapustinUniversalGammaCarrier (-x) *
             diskMultiplierLineBoundary Phi x))) =
-      (starRingEnd ℂ) (realCayley x ^ 4) *
+      (starRingEnd ℂ) (realCayley x ^ (4 : ℕ)) *
         (((starRingEnd ℂ) (diskMultiplierLineBoundary Phi x) /
             diskMultiplierLineBoundary Phi x) *
           ((kapustinUniversalGammaCarrier (-x) *

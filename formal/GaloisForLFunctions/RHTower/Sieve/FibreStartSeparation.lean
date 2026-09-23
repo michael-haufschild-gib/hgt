@@ -171,28 +171,28 @@ theorem sum_block_comp_start_le {x h : ℝ} (hx : 4 ≤ x) {G : ℕ → ℝ} (hG
 /-- The largest squared window sum of length at most `H` starting at `y`. -/
 noncomputable def maxWindowSq (f : ℕ → ℝ) (H y : ℕ) : ℝ :=
   (Finset.range (H + 1)).sup' Finset.nonempty_range_add_one
-    (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ 2)
+    (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ (2 : ℕ))
 
 theorem maxWindowSq_nonneg (f : ℕ → ℝ) (H y : ℕ) : 0 ≤ maxWindowSq f H y := by
   refine le_trans (sq_nonneg (∑ b ∈ Finset.Icc y (y + 0), f b)) ?_
-  exact Finset.le_sup' (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ 2)
+  exact Finset.le_sup' (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ (2 : ℕ))
     (Finset.mem_range.2 (by omega))
 
 theorem sq_sum_le_maxWindowSq {f : ℕ → ℝ} {H y m : ℕ} (hm : m ≤ H) :
-    (∑ b ∈ Finset.Icc y (y + m), f b) ^ 2 ≤ maxWindowSq f H y :=
-  Finset.le_sup' (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ 2)
+    (∑ b ∈ Finset.Icc y (y + m), f b) ^ (2 : ℕ) ≤ maxWindowSq f H y :=
+  Finset.le_sup' (fun m => (∑ b ∈ Finset.Icc y (y + m), f b) ^ (2 : ℕ))
     (Finset.mem_range.2 (by omega))
 
 /-- **The fibre mean square is controlled by the maximal-window mean square.**  Every fibre is a
 window of length at most `⌈h⌉` starting at `⌈x/a⌉`, and at most four fibres share a start. -/
 theorem sum_fibre_sq_le_maximal {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (f : ℕ → ℝ) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       ≤ 4 * ∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊, maxWindowSq f ⌈h⌉₊ y := by
   classical
   have hx0 : (0 : ℝ) < x := by linarith
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   have hterm : ∀ a ∈ outerBlock x h,
-      (∑ b ∈ innerFibre x h a, f b) ^ 2 ≤ maxWindowSq f ⌈h⌉₊ ⌈x / (a : ℝ)⌉₊ := by
+      (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ) ≤ maxWindowSq f ⌈h⌉₊ ⌈x / (a : ℝ)⌉₊ := by
     intro a ha
     have hmem := ha
     rw [mem_outerBlock] at hmem
@@ -229,22 +229,22 @@ theorem sum_fibre_sq_le_maximal {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (f : �
 short-interval estimates for a multiplicative function are proved. -/
 def MaximalWindowMeanSquare (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
   Filter.Tendsto (fun x => (∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊,
-      maxWindowSq f ⌈hh x⌉₊ y) / (hh x ^ 2 * Real.sqrt x)) Filter.atTop (nhds 0)
+      maxWindowSq f ⌈hh x⌉₊ y) / (hh x ^ (2 : ℕ) * Real.sqrt x)) Filter.atTop (nhds 0)
 
 /-- **The fibre mean square follows from the maximal-window mean square.** -/
 theorem averagedMeanSquare_of_maximal {f : ℕ → ℝ} {hh : ℝ → ℝ}
     (hgrow : Filter.Tendsto hh Filter.atTop Filter.atTop)
     (hmax : MaximalWindowMeanSquare f hh) : AveragedMeanSquare f hh := by
   have h4 : Filter.Tendsto (fun x => 4 * ((∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊,
-      maxWindowSq f ⌈hh x⌉₊ y) / (hh x ^ 2 * Real.sqrt x))) Filter.atTop (nhds 0) := by
+      maxWindowSq f ⌈hh x⌉₊ y) / (hh x ^ (2 : ℕ) * Real.sqrt x))) Filter.atTop (nhds 0) := by
     have := hmax.const_mul (4 : ℝ)
     rwa [mul_zero] at this
   refine squeeze_zero_norm' ?_ h4
   filter_upwards [Filter.eventually_ge_atTop (4 : ℝ), hgrow.eventually_gt_atTop 0] with x hx hhx
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
-  have hden : (0 : ℝ) < hh x ^ 2 * Real.sqrt x := by positivity
+  have hden : (0 : ℝ) < hh x ^ (2 : ℕ) * Real.sqrt x := by positivity
   have hbridge := sum_fibre_sq_le_maximal hx hhx.le f
-  have hQ0 : (0 : ℝ) ≤ ∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ 2 := by
+  have hQ0 : (0 : ℝ) ≤ ∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ (2 : ℕ) := by
     positivity
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [mul_div_assoc'] at *

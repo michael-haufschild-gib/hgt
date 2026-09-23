@@ -70,8 +70,8 @@ controlled by the second moments of `D` and its log-weighted companion. -/
 theorem large_values_dpoly (a : ℕ → ℝ) (s : Finset ℕ) {A δ V η : ℝ}
     (hδ : 0 < δ) (hη : 0 < η) (hV0 : 0 ≤ V) (R : ℕ)
     (hV : ∀ r, r < R → V ≤ ‖dpoly a s (A + r * δ)‖) :
-    (R : ℝ) * V ^ 2 ≤ (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖dpoly a s u‖ ^ 2)
-      + η * (∫ u in A..A + R * δ, ‖dpoly (fun m => a m * Real.log m) s u‖ ^ 2) := by
+    (R : ℝ) * V ^ (2 : ℕ) ≤ (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖dpoly a s u‖ ^ (2 : ℕ))
+      + η * (∫ u in A..A + R * δ, ‖dpoly (fun m => a m * Real.log m) s u‖ ^ (2 : ℕ)) := by
   set alog : ℕ → ℝ := fun m => a m * Real.log m with halog
   set f : ℝ → ℂ := fun t => dpoly a s t with hf_def
   set f' : ℝ → ℂ := fun t => -I * dpoly alog s t with hf'_def
@@ -80,9 +80,9 @@ theorem large_values_dpoly (a : ℕ → ℝ) (s : Finset ℕ) {A δ V η : ℝ}
   have hfc : Continuous f := dpoly_continuous a s
   have hf'c : Continuous f' := continuous_const.mul (dpoly_continuous alog s)
   have hAle : A ≤ A + R * δ := le_add_of_nonneg_right (by positivity)
-  have hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (A + R * δ) :=
+  have hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (A + R * δ) :=
     (hfc.norm.pow 2).intervalIntegrable _ _
-  have hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume A (A + R * δ) :=
+  have hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume A (A + R * δ) :=
     (hf'c.norm.pow 2).intervalIntegrable _ _
   have hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (A + R * δ) :=
     (continuous_const.mul (hfc.norm.mul hf'c.norm)).intervalIntegrable _ _
@@ -90,8 +90,8 @@ theorem large_values_dpoly (a : ℕ → ℝ) (s : Finset ℕ) {A δ V η : ℝ}
     (continuous_const.mul (continuous_inner.comp (hfc.prodMk hf'c))).intervalIntegrable _ _
   have hlvc := large_values_count hδ hη hV0 R hf hg'int hgint hsqf'int hcrossint hV
   -- replace ∫‖f'‖² with ∫‖dpoly(a·log)‖²
-  have heq : (∫ u in A..A + R * δ, ‖f' u‖ ^ 2)
-      = ∫ u in A..A + R * δ, ‖dpoly alog s u‖ ^ 2 :=
+  have heq : (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ))
+      = ∫ u in A..A + R * δ, ‖dpoly alog s u‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_congr (fun y _ => by rw [hf'_def, norm_dpoly_deriv])
   rw [heq] at hlvc
   exact hlvc

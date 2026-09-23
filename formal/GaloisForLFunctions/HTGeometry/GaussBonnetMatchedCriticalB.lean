@@ -17,27 +17,27 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The effective-charge substitution is an identity of whole pressure functions. -/
 theorem egbPressureB_effective_charge_function (T Q a : ℝ) :
-    egbPressureB T Q a = egbPressureA T (sqrt (Q ^ 2 + a ^ 2)) 0 := by
+    egbPressureB T Q a = egbPressureA T (sqrt (Q ^ (2 : ℕ) + a ^ (2 : ℕ))) 0 := by
   funext r
   unfold egbPressureB egbPressureA
-  rw [sq_sqrt (by positivity : 0 ≤ Q ^ 2 + a ^ 2)]
+  rw [sq_sqrt (by positivity : 0 ≤ Q ^ (2 : ℕ) + a ^ (2 : ℕ))]
   ring
 
 theorem egbPressureB_hasDerivAt (T Q a x : ℝ) :
     HasDerivAt (egbPressureB T Q a)
-      (-T / (2 * exp x ^ 2) + 1 / (4 * Real.pi * exp x ^ 3) - (Q ^ 2 + a ^ 2) / (2 * Real.pi * exp x ^ 5)) (exp x) := by
+      (-T / (2 * exp x ^ (2 : ℕ)) + 1 / (4 * Real.pi * exp x ^ (3 : ℕ)) - (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (2 * Real.pi * exp x ^ (5 : ℕ))) (exp x) := by
   rw [egbPressureB_effective_charge_function]
-  apply (egbPressureA_hasDerivAt T (sqrt (Q ^ 2 + a ^ 2)) 0 x).congr_deriv
+  apply (egbPressureA_hasDerivAt T (sqrt (Q ^ (2 : ℕ) + a ^ (2 : ℕ))) 0 x).congr_deriv
   unfold egbPressureAD1
-  rw [sq_sqrt (by positivity : 0 ≤ Q ^ 2 + a ^ 2)]
+  rw [sq_sqrt (by positivity : 0 ≤ Q ^ (2 : ℕ) + a ^ (2 : ℕ))]
   ring
 
 theorem egbPressureB_second_derivative (T Q a x : ℝ) :
     deriv (deriv (egbPressureB T Q a)) (exp x) =
-      T / exp x ^ 3 - 3 / (4 * Real.pi * exp x ^ 4) + 5 * (Q ^ 2 + a ^ 2) / (2 * Real.pi * exp x ^ 6) := by
+      T / exp x ^ (3 : ℕ) - 3 / (4 * Real.pi * exp x ^ (4 : ℕ)) + 5 * (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (2 * Real.pi * exp x ^ (6 : ℕ)) := by
   rw [egbPressureB_effective_charge_function, egbPressureA_second_derivative]
   unfold egbPressureAD2
-  rw [sq_sqrt (by positivity : 0 ≤ Q ^ 2 + a ^ 2)]
+  rw [sq_sqrt (by positivity : 0 ≤ Q ^ (2 : ℕ) + a ^ (2 : ℕ))]
   ring
 
 /-- Both literal radial pressure derivatives vanish for the same charge/coupling data. -/
@@ -47,7 +47,7 @@ theorem egbMatchedCriticalB_pressure_inflection (x θ : ℝ) :
     deriv (deriv (egbPressureB (egbMatchedCriticalBTemperature x θ) (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ)))
       (egbMatchedCriticalBRadius x θ) = 0 := by
   have hp := egbMatchedCriticalBRadius_pos x θ
-  have he : egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2 = egbMatchedCriticalBRadius x θ ^ 2 / 6 := by
+  have he : egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ) = egbMatchedCriticalBRadius x θ ^ (2 : ℕ) / 6 := by
     rw [egbMatchedCriticalBRadius_square]
     ring
   have h₁ := (egbPressureB_hasDerivAt (egbMatchedCriticalBTemperature x θ) (egbCriticalACharge x θ)
@@ -82,7 +82,7 @@ def egbMatchedCriticalBLogGibbs (x θ u : ℝ) : ℝ :=
 theorem egbMatchedCriticalBLogGibbs_canonical (x θ u : ℝ) :
     egbMatchedCriticalBLogGibbs x θ u = egbCriticalLogGibbs (log (egbMatchedCriticalBRadius x θ)) 0 u := by
   have hp := egbMatchedCriticalBRadius_pos x θ
-  have he : egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2 = egbMatchedCriticalBRadius x θ ^ 2 / 6 := by
+  have he : egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ) = egbMatchedCriticalBRadius x θ ^ (2 : ℕ) / 6 := by
     rw [egbMatchedCriticalBRadius_square]
     ring
   unfold egbMatchedCriticalBLogGibbs egbCriticalLogGibbs egbOffShellGibbs egbMass
@@ -94,7 +94,7 @@ theorem egbMatchedCriticalBLogGibbs_canonical (x θ u : ℝ) :
 
 theorem egbMatchedCriticalBLogGibbs_quartic_gap (x θ u : ℝ) :
     egbMatchedCriticalBLogGibbs x θ u - egbMatchedCriticalBRadius x θ / 3 =
-      (exp u - egbMatchedCriticalBRadius x θ) ^ 4 / (12 * exp u * egbMatchedCriticalBRadius x θ ^ 2) := by
+      (exp u - egbMatchedCriticalBRadius x θ) ^ (4 : ℕ) / (12 * exp u * egbMatchedCriticalBRadius x θ ^ (2 : ℕ)) := by
   rw [egbMatchedCriticalBLogGibbs_canonical]
   simpa only [exp_log (egbMatchedCriticalBRadius_pos x θ)] using
     egbCriticalLogGibbs_gap (log (egbMatchedCriticalBRadius x θ)) 0 u

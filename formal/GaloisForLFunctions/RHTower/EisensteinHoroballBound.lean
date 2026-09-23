@@ -19,16 +19,16 @@ open scoped MatrixGroups
 namespace RHTower
 
 /-- The real inequality behind the horoball bound. -/
-theorem horoball_aux {x y c d : ℝ} (hy : 0 < y) (h1 : 1 ≤ x ^ 2 + y ^ 2) (hx : |x| ≤ 1 / 2)
-    (hc : 4 ≤ c ^ 2 ∨ (c ^ 2 = 1 ∧ (d = 0 ∨ 1 ≤ d ^ 2))) :
-    y ≤ (c * y) ^ 2 + (c * x + d) ^ 2 := by
-  have hx2 : x ^ 2 ≤ 1 / 4 := by
+theorem horoball_aux {x y c d : ℝ} (hy : 0 < y) (h1 : 1 ≤ x ^ (2 : ℕ) + y ^ (2 : ℕ)) (hx : |x| ≤ 1 / 2)
+    (hc : 4 ≤ c ^ (2 : ℕ) ∨ (c ^ (2 : ℕ) = 1 ∧ (d = 0 ∨ 1 ≤ d ^ (2 : ℕ)))) :
+    y ≤ (c * y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ) := by
+  have hx2 : x ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := abs_le.mp hx
     nlinarith [h.1, h.2]
-  have hy2 : 3 / 4 ≤ y ^ 2 := by linarith
+  have hy2 : 3 / 4 ≤ y ^ (2 : ℕ) := by linarith
   rcases hc with hc | ⟨hc1, hd⟩
   · have hy14 : 1 / 4 ≤ y := by nlinarith
-    have h4 : 4 * y ^ 2 ≤ (c * y) ^ 2 := by
+    have h4 : 4 * y ^ (2 : ℕ) ≤ (c * y) ^ (2 : ℕ) := by
       rw [mul_pow]
       nlinarith [sq_nonneg y]
     nlinarith [sq_nonneg (c * x + d)]
@@ -38,16 +38,16 @@ theorem horoball_aux {x y c d : ℝ} (hy : 0 < y) (h1 : 1 ≤ x ^ 2 + y ^ 2) (hx
       · exact Or.inl (by linarith)
       · exact Or.inr (by linarith)
     rcases hd with rfl | hd
-    · have hsq : (c * x + 0) ^ 2 = x ^ 2 := by
+    · have hsq : (c * x + 0) ^ (2 : ℕ) = x ^ (2 : ℕ) := by
         rcases hcabs with rfl | rfl <;> ring
-      have hcy : (c * y) ^ 2 = y ^ 2 := by
+      have hcy : (c * y) ^ (2 : ℕ) = y ^ (2 : ℕ) := by
         rcases hcabs with rfl | rfl <;> ring
       rw [hsq, hcy]
       rcases le_or_gt y 1 with hy1 | hy1
       · nlinarith
       · nlinarith
     · have hdabs : 1 ≤ |d| := by
-        have h : 1 ≤ |d| ^ 2 := by rw [sq_abs]; exact hd
+        have h : 1 ≤ |d| ^ (2 : ℕ) := by rw [sq_abs]; exact hd
         nlinarith [abs_nonneg d]
       have hcx : |c * x| ≤ 1 / 2 := by
         rw [abs_mul]
@@ -61,27 +61,27 @@ theorem horoball_aux {x y c d : ℝ} (hy : 0 < y) (h1 : 1 ≤ x ^ 2 + y ^ 2) (hx
           calc |d| = |c * x + d + -(c * x)| := by ring_nf
             _ ≤ |c * x + d| + |c * x| := this
         linarith
-      have hsq : 1 / 4 ≤ (c * x + d) ^ 2 := by
-        have h : (1 / 2 : ℝ) ^ 2 ≤ |c * x + d| ^ 2 :=
+      have hsq : 1 / 4 ≤ (c * x + d) ^ (2 : ℕ) := by
+        have h : (1 / 2 : ℝ) ^ (2 : ℕ) ≤ |c * x + d| ^ (2 : ℕ) :=
           pow_le_pow_left₀ (by norm_num) habs 2
         rw [sq_abs] at h
         linarith
-      have hcy : (c * y) ^ 2 = y ^ 2 := by
+      have hcy : (c * y) ^ (2 : ℕ) = y ^ (2 : ℕ) := by
         rcases hcabs with rfl | rfl <;> ring
       rw [hcy]
       nlinarith [sq_nonneg (y - 1 / 2)]
 
 /-- The integer dichotomy feeding `horoball_aux`. -/
 theorem horoball_int_cases {c d : ℤ} (hc : c ≠ 0) :
-    4 ≤ (c : ℝ) ^ 2 ∨ ((c : ℝ) ^ 2 = 1 ∧ ((d : ℝ) = 0 ∨ 1 ≤ (d : ℝ) ^ 2)) := by
+    4 ≤ (c : ℝ) ^ (2 : ℕ) ∨ ((c : ℝ) ^ (2 : ℕ) = 1 ∧ ((d : ℝ) = 0 ∨ 1 ≤ (d : ℝ) ^ (2 : ℕ))) := by
   have hc1 : 1 ≤ c ∨ c ≤ -1 := by omega
-  by_cases h4 : 4 ≤ c ^ 2
+  by_cases h4 : 4 ≤ c ^ (2 : ℕ)
   · left
     exact_mod_cast h4
   · right
-    have hcsq : c ^ 2 = 1 := by
-      have h1 : 1 ≤ c ^ 2 := by rcases hc1 with h | h <;> nlinarith
-      have h2 : c ^ 2 < 4 := by omega
+    have hcsq : c ^ (2 : ℕ) = 1 := by
+      have h1 : 1 ≤ c ^ (2 : ℕ) := by rcases hc1 with h | h <;> nlinarith
+      have h2 : c ^ (2 : ℕ) < 4 := by omega
       have h3 : c ≤ 1 := by nlinarith
       have h4' : -1 ≤ c := by nlinarith
       rcases hc1 with h | h <;> nlinarith
@@ -91,13 +91,13 @@ theorem horoball_int_cases {c d : ℤ} (hc : c ≠ 0) :
       exact_mod_cast hd
     · right
       have hd1 : 1 ≤ d ∨ d ≤ -1 := by omega
-      have : 1 ≤ d ^ 2 := by rcases hd1 with h | h <;> nlinarith
+      have : 1 ≤ d ^ (2 : ℕ) := by rcases hd1 with h | h <;> nlinarith
       exact_mod_cast this
 
 /-- `|cz + d|² = (cy)² + (cx + d)²`. -/
 theorem normSq_int_mul_add (c d : ℤ) (z : ℍ) :
     Complex.normSq ((c : ℂ) * (z : ℂ) + (d : ℂ)) =
-      ((c : ℝ) * z.im) ^ 2 + ((c : ℝ) * z.re + (d : ℝ)) ^ 2 := by
+      ((c : ℝ) * z.im) ^ (2 : ℕ) + ((c : ℝ) * z.re + (d : ℝ)) ^ (2 : ℕ) := by
   rw [Complex.normSq_apply]
   simp only [Complex.add_re, Complex.mul_re, Complex.intCast_re, Complex.intCast_im,
     Complex.add_im, Complex.mul_im, UpperHalfPlane.coe_re, UpperHalfPlane.coe_im]
@@ -107,7 +107,7 @@ theorem normSq_int_mul_add (c d : ℤ) (z : ℍ) :
 theorem im_le_normSq_of_mem_fd {z : ℍ} (hz : z ∈ ModularGroup.fd) {c d : ℤ} (hc : c ≠ 0) :
     z.im ≤ Complex.normSq ((c : ℂ) * (z : ℂ) + (d : ℂ)) := by
   rw [normSq_int_mul_add]
-  have h1 : 1 ≤ z.re ^ 2 + z.im ^ 2 := by
+  have h1 : 1 ≤ z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     have := hz.1
     rw [Complex.normSq_apply] at this
     simp only [UpperHalfPlane.coe_re, UpperHalfPlane.coe_im] at this

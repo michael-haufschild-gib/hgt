@@ -73,7 +73,7 @@ theorem localExtension_quadraticRate_key
     (hroot : ∀ z ∈ S, ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hident : ∀ z ∈ S, ∀ᶠ g in 𝓝 (0 : ℂ),
-        (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv)) :
+        (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv)) :
     ∀ z ∈ S,
       ((∑ α, (c (α, false) + c (α, true)) * E α)
           + ((∑ α, c (α, false) - ∑ α, c (α, true)) / 2) * z)
@@ -137,7 +137,7 @@ theorem localExtension_quadraticRate_collapse (hcard : 3 ≤ Fintype.card A)
     (hroot : ∀ z ∈ S, ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hident : ∀ z ∈ S, ∀ᶠ g in 𝓝 (0 : ℂ),
-        (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv)) :
+        (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv)) :
     (∀ x y : A, c (x, false) = c (y, false)) ∧ (∀ x y : A, c (x, true) = c (y, true))
       ∧ (∀ x y : A, c (x, false) = c (y, true)) :=
   extensionPacket_crossPair_constant hcard hE hgap
@@ -163,7 +163,7 @@ theorem localExtension_quadraticRate_eq_zero (hcard : 3 ≤ Fintype.card A)
     (hroot : ∀ z ∈ S, ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hident : ∀ z ∈ S, ∀ᶠ g in 𝓝 (0 : ℂ),
-        (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv))
+        (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv))
     (hzero : ∑ i, c i = 0) : c = 0 := by
   classical
   obtain ⟨hu, hv, huv⟩ := localExtension_quadraticRate_collapse hcard hE hgap hM c hL hS havoid

@@ -24,11 +24,11 @@ private theorem f_ne {x : ℝ} (hx : 0 < x) : thetaCuspSourceTerm x 1 ≠ 0 :=
 /-- Fourier-signed native reflection moment normalized by first-atom mass and Gaussian scale. -/
 def thetaCuspNativeScaledEvenJet (k : ℕ) (x : ℝ) : ℝ :=
   (-1 : ℝ)^k*thetaCuspNativeReflectionJet (2*k) x /
-    (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k)
+    (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k)
 
 private theorem native_limit_of_first (k : ℕ) (c : ℝ)
     (hfirst : Tendsto (fun x : ℝ => (-1 : ℝ)^k*thetaCuspFirstAtomReflectionJet (2*k) x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k)) atTop (𝓝 c)) :
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k)) atTop (𝓝 c)) :
     Tendsto (thetaCuspNativeScaledEvenJet k) atTop (𝓝 c) := by
   have herr := ((thetaCuspNativeReflectionJet_firstAtom_error_scaled_tendsto_zero 0 (2*k)).mul
     (thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero.pow k)).const_mul ((-1 : ℝ)^k)
@@ -62,7 +62,7 @@ theorem thetaCuspNativeScaledEvenJet_five_tendsto :
 /-- The complete odd leading minor has the strictly positive Gaussian asymptotic reserve. -/
 theorem thetaCuspNativeOddHeadDet_scaled_tendsto :
     Tendsto (fun x : ℝ => thetaCuspNativeOddHeadDet x /
-      (thetaCuspSourceTerm x 1^4*thetaCuspSingleAtomReflectionScale 1 x^4))
+      (thetaCuspSourceTerm x 1^(4 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)))
       atTop (𝓝 (24576 : ℝ)) := by
   have h := (thetaCuspNativeScaledEvenJet_one_tendsto.mul thetaCuspNativeScaledEvenJet_three_tendsto).sub
     (thetaCuspNativeScaledEvenJet_two_tendsto.pow 2)
@@ -74,7 +74,7 @@ theorem thetaCuspNativeOddHeadDet_scaled_tendsto :
 /-- The complete native odd rank-three determinant has a fixed positive asymptotic reserve. -/
 theorem thetaCuspNativeOddHankelThreeDet_scaled_tendsto :
     Tendsto (fun x : ℝ => thetaCuspNativeOddHankelThreeDet x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9))
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)))
       atTop (𝓝 (96636764160 : ℝ)) := by
   have h1 := thetaCuspNativeScaledEvenJet_one_tendsto
   have h2 := thetaCuspNativeScaledEvenJet_two_tendsto
@@ -102,7 +102,7 @@ theorem thetaCuspFullSource_div_firstAtom_tendsto_one :
 private theorem firstAtom_scaled_slope_tendsto :
     Tendsto (fun x : ℝ => deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x /
       (thetaCuspSourceTerm x 1*thetaCuspSingleAtomReflectionScale 1 x)) atTop (𝓝 (-2 : ℝ)) := by
-  let R (u : ℝ) := (-15*u^2+30*u-8)/(4-6*u)
+  let R (u : ℝ) := (-15*u^(2 : ℕ)+30*u-8)/(4-6*u)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -111,7 +111,7 @@ private theorem firstAtom_scaled_slope_tendsto :
   apply h.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -137,12 +137,12 @@ theorem thetaCuspFullSource_deriv_div_firstAtom_scale_tendsto :
   ring
 
 private theorem center_div_scale_four_tendsto_zero :
-    Tendsto (fun x : ℝ => x/thetaCuspSingleAtomReflectionScale 1 x^4) atTop (𝓝 0) := by
+    Tendsto (fun x : ℝ => x/thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)) atTop (𝓝 0) := by
   have h := (GaloisForLFunctions.HTGeometry.tendsto_pow_mul_exp_neg_mul_atTop
-    (b := (8 : ℝ)) (by norm_num) 1).const_mul ((Real.pi^4)⁻¹)
+    (b := (8 : ℝ)) (by norm_num) 1).const_mul ((Real.pi^(4 : ℕ))⁻¹)
   apply (show Tendsto _ atTop (𝓝 (0 : ℝ)) from by simpa using h).congr'
   filter_upwards with x
-  have hp : Real.exp (8*x) = Real.exp (2*x)^4 := by
+  have hp : Real.exp (8*x) = Real.exp (2*x)^(4 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -153,7 +153,7 @@ private theorem center_div_scale_four_tendsto_zero :
 /-- The exact center-flux source correction is lower order than the native determinant reserve. -/
 theorem thetaCuspCenterCompensationSource_scaled_tendsto_zero :
     Tendsto (fun x : ℝ => thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^5)) atTop (𝓝 0) := by
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ))) atTop (𝓝 0) := by
   have hm := thetaCuspFullSource_div_firstAtom_tendsto_one
   have hs := thetaCuspFullSource_deriv_div_firstAtom_scale_tendsto
   have hi := thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero
@@ -167,7 +167,7 @@ theorem thetaCuspCenterCompensationSource_scaled_tendsto_zero :
 /-- Every fixed compensation coefficient preserves the strictly positive far-tail determinant limit. -/
 theorem thetaCuspNativeOddCompensatedDet_scaled_tendsto (C : ℝ) :
     Tendsto (fun x : ℝ => thetaCuspNativeOddCompensatedDet C x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9))
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)))
       atTop (𝓝 (96636764160 : ℝ)) := by
   have h := thetaCuspNativeOddHankelThreeDet_scaled_tendsto.add
     ((thetaCuspNativeOddHeadDet_scaled_tendsto.mul thetaCuspCenterCompensationSource_scaled_tendsto_zero).const_mul C)
@@ -185,7 +185,7 @@ theorem eventually_thetaCuspNativeOddCompensatedDet_pos (C : ℝ) :
   have hq : 0 < thetaCuspSingleAtomReflectionScale 1 x := by
     unfold thetaCuspSingleAtomReflectionScale
     positivity
-  have hm : 0 < thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9 :=
+  have hm : 0 < thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ) :=
     mul_pos (pow_pos (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)) 6) (pow_pos hq 9)
   simpa only [div_mul_cancel₀ _ hm.ne'] using mul_pos hp hm
 

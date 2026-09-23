@@ -48,15 +48,15 @@ theorem cutoffHeight_smooth (q : XiZeroCopy) (branch : Bool) :
 /-- All original cutoff derivatives reduce to the actual second height derivative. -/
 theorem cutoffResponse_laplacian (q : XiZeroCopy) (branch : Bool) (z : Fin 2 → ℝ) :
     hyperbolicLaplacian (cutoffResponse q branch) z =
-      (z 1:ℂ)^2*deriv (deriv (cutoffHeight q branch)) (z 1) := by
+      (z 1:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) (z 1) := by
   have he : cutoffResponse q branch = fun w => cutoffHeight q branch (w 1) := rfl
   rw [he]
   exact height_laplacian _ (cutoffHeight_smooth q branch) z
 
 /-- The complete scalar square retains its two principal powers and the infinite paired-mode sum. -/
 theorem mean_scalar_sq (u : ℂ) {y : ℝ} (hy : 0 < y) :
-    mean (fun x => scalar u ![x,y] ^2) = principal u ![0,y] ^2+
-      8*∑' N, amplitude u y N^2 := by
+    mean (fun x => scalar u ![x,y] ^(2 : ℕ)) = principal u ![0,y] ^(2 : ℕ)+
+      8*∑' N, amplitude u y N^(2 : ℕ) := by
   have ht : Continuous (fun x => tail u ![x,y]) := by
     have he : (fun x => tail u ![x,y]) = fun x => 2*series (amplitude u y) x :=
       funext (tail_eq_series u hy)
@@ -64,20 +64,20 @@ theorem mean_scalar_sq (u : ℂ) {y : ℝ} (hy : 0 < y) :
     exact continuous_const.mul (series_continuous _ (amplitude_norm_summable u hy))
   have hr : Continuous (fun x => squareRemainder u ![x,y]) := by
     have he : (fun x => squareRemainder u ![x,y]) =
-      fun x => 2*(principal u ![0,y]*tail u ![x,y])+tail u ![x,y] ^2 := by
+      fun x => 2*(principal u ![0,y]*tail u ![x,y])+tail u ![x,y] ^(2 : ℕ) := by
       funext x
       exact squareRemainder_eq u ![x,y]
     rw [he]
     exact (continuous_const.mul (continuous_const.mul ht)).add (ht.pow 2)
-  have he : (fun x => scalar u ![x,y] ^2) =
-    fun x => principal u ![0,y] ^2+squareRemainder u ![x,y] := by
+  have he : (fun x => scalar u ![x,y] ^(2 : ℕ)) =
+    fun x => principal u ![0,y] ^(2 : ℕ)+squareRemainder u ![x,y] := by
     funext x
-    change _ = principal u ![x,y] ^2+(scalar u ![x,y] ^2-principal u ![x,y] ^2)
+    change _ = principal u ![x,y] ^(2 : ℕ)+(scalar u ![x,y] ^(2 : ℕ)-principal u ![x,y] ^(2 : ℕ))
     ring
   rw [he]
-  change (∫ x in Ioc (-1/2:ℝ) (1/2), principal u ![0,y] ^2+squareRemainder u ![x,y])=_
+  change (∫ x in Ioc (-1/2:ℝ) (1/2), principal u ![0,y] ^(2 : ℕ)+squareRemainder u ![x,y])=_
   rw [integral_add (integrable_const _) hr.integrableOn_Ioc]
-  change (∫ _x in Ioc (-1/2:ℝ) (1/2), principal u ![0,y] ^2)+
+  change (∫ _x in Ioc (-1/2:ℝ) (1/2), principal u ![0,y] ^(2 : ℕ))+
     mean (fun x => squareRemainder u ![x,y])=_
   rw [mean_squareRemainder u hy]
   norm_num
@@ -86,25 +86,25 @@ theorem mean_scalar_sq (u : ℂ) {y : ℝ} (hy : 0 < y) :
 second derivative and original amplitude are retained explicitly. -/
 theorem mean_forcing (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 0 < y) :
     mean (fun x => forcing q branch ![x,y]) =
-      (parameter q branch/2)*(principal (center q) ![0,y] ^2+
-        8*∑' N, amplitude (center q) y N^2)-
-      ((y:ℂ)^2*deriv (deriv (cutoffHeight q branch)) y-
+      (parameter q branch/2)*(principal (center q) ![0,y] ^(2 : ℕ)+
+        8*∑' N, amplitude (center q) y N^(2 : ℕ))-
+      ((y:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) y-
         parameter q branch*cutoffHeight q branch y) := by
   have hs : Continuous (fun x => scalar (center q) ![x,y]) := by
     have hc : Continuous (fun x : ℝ => (![x,y] : Fin 2 → ℝ)) := by fun_prop
     exact (cuspLeg_contDiffOn .scalar (center q)).continuousOn.comp_continuous hc (fun _ => hy)
   have he (x : ℝ) : forcing q branch ![x,y] =
-      (parameter q branch/2)*scalar (center q) ![x,y] ^2-
-      ((y:ℂ)^2*deriv (deriv (cutoffHeight q branch)) y-
+      (parameter q branch/2)*scalar (center q) ![x,y] ^(2 : ℕ)-
+      ((y:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) y-
         parameter q branch*cutoffHeight q branch y) := by
     rw [forcing,cutoffResponse_laplacian,cutoffResponse_eq_height]
     rfl
   simp_rw [he]
-  have hi : IntegrableOn (fun x => (parameter q branch/2)*scalar (center q) ![x,y] ^2)
+  have hi : IntegrableOn (fun x => (parameter q branch/2)*scalar (center q) ![x,y] ^(2 : ℕ))
       (Ioc (-1/2:ℝ) (1/2)) := (continuous_const.mul (hs.pow 2)).integrableOn_Ioc
   change (∫ x in Ioc (-1/2:ℝ) (1/2), _-_) = _
   rw [integral_sub hi (integrable_const _),integral_const_mul]
-  change (parameter q branch/2)*mean (fun x => scalar (center q) ![x,y] ^2)-_= _
+  change (parameter q branch/2)*mean (fun x => scalar (center q) ![x,y] ^(2 : ℕ))-_= _
   rw [mean_scalar_sq _ hy]
   norm_num
 

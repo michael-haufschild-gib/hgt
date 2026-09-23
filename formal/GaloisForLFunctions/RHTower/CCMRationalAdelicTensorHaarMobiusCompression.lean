@@ -18,13 +18,13 @@ open scoped Classical BigOperators RestrictedProduct algebraMap FourierTransform
 
 namespace GaloisForLFunctions.RHTower
 
-private abbrev Core := CCMRationalAdelicBruhatSimpleTensor
+private abbrev Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression := CCMRationalAdelicBruhatSimpleTensor
 private abbrev U := CCMRationalProfiniteUnit
 
 /-- Profinite Haar average of the full rational diagonal trace of an
 arbitrary algebraic adelic Bruhat tensor. -/
 def ccmRationalAdelicTensorProfiniteHaarRationalLogTrace
-    (x : Core) (t : ℝ) : ℂ :=
+    (x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression) (t : ℝ) : ℂ :=
   ∫ u : U, (∑' q : ℚ,
     ccmRationalAdelicBruhatTensorOrbit
       x (Real.exp t) u.1 q) ∂ccmRationalProfiniteUnitHaar
@@ -32,7 +32,7 @@ def ccmRationalAdelicTensorProfiniteHaarRationalLogTrace
 /-- The full rational diagonal trace is Haar integrable in the profinite
 coordinate for every algebraic tensor and every logarithmic radius. -/
 theorem integrable_ccmRationalAdelicTensorRationalLogTrace
-    (x : Core) (t : ℝ) :
+    (x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression) (t : ℝ) :
     Integrable (fun u : U => ∑' q : ℚ,
       ccmRationalAdelicBruhatTensorOrbit
         x (Real.exp t) u.1 q) ccmRationalProfiniteUnitHaar := by
@@ -108,7 +108,7 @@ theorem ccmRationalAdelicTensorProfiniteHaarRationalLogTrace_tmul
   rfl
 
 theorem ccmRationalAdelicTensorProfiniteHaarRationalLogTrace_add
-    (x y : Core) :
+    (x y : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression) :
     ccmRationalAdelicTensorProfiniteHaarRationalLogTrace (x + y) =
       ccmRationalAdelicTensorProfiniteHaarRationalLogTrace x +
         ccmRationalAdelicTensorProfiniteHaarRationalLogTrace y := by
@@ -149,7 +149,7 @@ theorem ccmRationalAdelicTensorProfiniteHaarRationalLogTrace_add
       x y (Real.exp t) u.1 q
 
 /-- One exact universal Möbius source for an arbitrary algebraic tensor. -/
-structure CCMRationalAdelicTensorHaarMobiusPacket (x : Core) where
+structure CCMRationalAdelicTensorHaarMobiusPacket (x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression) where
   source : CCMRationalArchimedeanSchwartz
   source_even : ∀ z : ℝ, source (-z) = source z
   haarTrace_eq :
@@ -164,7 +164,7 @@ structure CCMRationalAdelicTensorHaarMobiusPacket (x : Core) where
 /-- Every algebraic adelic Bruhat tensor has an exact Haar--Möbius packet.
 Cancellation is allowed globally between tensor summands. -/
 theorem ccmRationalAdelicTensor_exists_haarMobiusPacket
-    (x : Core) : Nonempty (CCMRationalAdelicTensorHaarMobiusPacket x) := by
+    (x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression) : Nonempty (CCMRationalAdelicTensorHaarMobiusPacket x) := by
   induction x using TensorProduct.induction_on with
   | zero =>
       refine ⟨{
@@ -258,7 +258,7 @@ theorem ccmRationalAdelicTensor_exists_haarMobiusPacket
 /-- With both literal Tate endpoints zero, the packet source is a genuine
 element of Meyer's cap. -/
 theorem CCMRationalAdelicTensorHaarMobiusPacket.source_mem_meyerCap
-    {x : Core} (P : CCMRationalAdelicTensorHaarMobiusPacket x)
+    {x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression} (P : CCMRationalAdelicTensorHaarMobiusPacket x)
     (hzero : ccmRationalAdelicBruhatZeroEval x = 0)
     (hone : ccmRationalAdelicBruhatIntegral x = 0) :
     P.source ∈ RHTower.DeningerMeyerCap := by
@@ -271,7 +271,7 @@ theorem CCMRationalAdelicTensorHaarMobiusPacket.source_mem_meyerCap
 
 /-- Canonical cap element carried by an endpoint-zero Haar--Möbius packet. -/
 def CCMRationalAdelicTensorHaarMobiusPacket.toMeyerCap
-    {x : Core} (P : CCMRationalAdelicTensorHaarMobiusPacket x)
+    {x : Core_cCMRationalAdelicEpsilonOne_cCMRationalAdelicTensorHaarMobiusCompression} (P : CCMRationalAdelicTensorHaarMobiusPacket x)
     (hzero : ccmRationalAdelicBruhatZeroEval x = 0)
     (hone : ccmRationalAdelicBruhatIntegral x = 0) :
     RHTower.DeningerMeyerCap :=

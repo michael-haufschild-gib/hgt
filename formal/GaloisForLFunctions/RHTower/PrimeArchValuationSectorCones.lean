@@ -58,7 +58,7 @@ theorem xiShiftAbsoluteMass_pos (s : ℕ) :
 /-- Xi reciprocal-square specialization of the quantitative `1/84` sector-power bound. -/
 theorem sectorFactor_mul_norm_xiZeroCopyReciprocalSquare_pow_le_re
     (q : XiZeroCopy) (k : ℕ) :
-    (1 - (k : ℝ) ^ 2 / 168) *
+    (1 - (k : ℝ) ^ (2 : ℕ) / 168) *
         ‖xiZeroCopyReciprocalSquare q‖ ^ k ≤
       (xiZeroCopyReciprocalSquare q ^ k).re := by
   apply GaloisForLFunctions.HTGeometry.re_pow_lower_of_re_pos_of_im_sq_le_one_div_eightyFour
@@ -69,7 +69,7 @@ theorem sectorFactor_mul_norm_xiZeroCopyReciprocalSquare_pow_le_re
 /-- The shifted prime--Gamma source moment dominates its sectorial absolute mass. -/
 theorem sectorFactor_mul_xiShiftAbsoluteMass_le_normalizedPrimeArchMoment
     (s : ℕ) :
-    (1 - (((s + 1 : ℕ) : ℝ) ^ 2) / 168) *
+    (1 - (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 168) *
         xiShiftAbsoluteMass s ≤
       normalizedPrimeArchMoment s := by
   have hpow := summable_xiZeroCopyReciprocalSquare_pow s
@@ -82,7 +82,7 @@ theorem sectorFactor_mul_xiShiftAbsoluteMass_le_normalizedPrimeArchMoment
     xiShiftAbsoluteMass, ← tsum_mul_left]
   exact
     ((summable_xiShiftAbsoluteMass s).mul_left
-      (1 - (((s + 1 : ℕ) : ℝ) ^ 2) / 168)).tsum_le_tsum
+      (1 - (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 168)).tsum_le_tsum
       (fun q =>
         sectorFactor_mul_norm_xiZeroCopyReciprocalSquare_pow_le_re q (s + 1))
       hre
@@ -94,10 +94,10 @@ theorem normalizedPrimeArchMoment_pos_of_le_eleven
   have hsCast : (((s + 1 : ℕ) : ℝ)) ≤ 12 := by
     exact_mod_cast (show s + 1 ≤ 12 by omega)
   have hfactor :
-      0 < 1 - (((s + 1 : ℕ) : ℝ) ^ 2) / 168 := by
+      0 < 1 - (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 168 := by
     nlinarith [sq_nonneg ((((s + 1 : ℕ) : ℝ)) - 12)]
   have hpositive :
-      0 < (1 - (((s + 1 : ℕ) : ℝ) ^ 2) / 168) *
+      0 < (1 - (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 168) *
         xiShiftAbsoluteMass s :=
     mul_pos hfactor (xiShiftAbsoluteMass_pos s)
   exact hpositive.trans_le
@@ -225,12 +225,12 @@ square nonnegative. -/
 theorem momentFunctional_primeArchShiftMoment_sq_nonneg
     (s : ℕ) (hs : s ≤ 11) (p : Polynomial ℝ)
     (hcone : 224 * HTGeometry.polynomialNonconstantCoeffSqEnergy p ≤
-      (1960 - 13 * (((s + 1 : ℕ) : ℝ) ^ 2)) * (p.coeff 0) ^ 2) :
-    0 ≤ HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ 2) := by
+      (1960 - 13 * (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))) * (p.coeff 0) ^ (2 : ℕ)) :
+    0 ≤ HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ (2 : ℕ)) := by
   let E : ℝ := HTGeometry.polynomialCoeffSqEnergy p
   let A : ℝ := xiShiftAbsoluteMass s
   let m0 : ℝ := normalizedPrimeArchMoment s
-  let C : ℝ := 168 - (((s + 1 : ℕ) : ℝ) ^ 2)
+  let C : ℝ := 168 - (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))
   have hsCast : (((s + 1 : ℕ) : ℝ)) ≤ 12 := by
     exact_mod_cast (show s + 1 ≤ 12 by omega)
   have hC : 0 < C := by
@@ -256,12 +256,12 @@ theorem momentFunctional_primeArchShiftMoment_sq_nonneg
   have hE : 0 ≤ E := by
     simpa only [E] using HTGeometry.polynomialCoeffSqEnergy_nonneg p
   have htotal :
-      224 * E ≤ 13 * C * (p.coeff 0) ^ 2 := by
+      224 * E ≤ 13 * C * (p.coeff 0) ^ (2 : ℕ) := by
     dsimp only [E, C, HTGeometry.polynomialCoeffSqEnergy]
     nlinarith
   have hden : 0 < 13 * C := mul_pos (by norm_num) hC
   have hEratio :
-      (224 * E) / (13 * C) ≤ (p.coeff 0) ^ 2 :=
+      (224 * E) / (13 * C) ≤ (p.coeff 0) ^ (2 : ℕ) :=
     (div_le_iff₀ hden).2 (by
       nlinarith)
   have herr := HTGeometry.abs_momentFunctional_sq_sub_vacuum_le
@@ -269,9 +269,9 @@ theorem momentFunctional_primeArchShiftMoment_sq_nonneg
     (summable_abs_primeArchShiftMoment_tail s)
     (tsum_abs_primeArchShiftMoment_tail_le s)
   have herr' :
-      |HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ 2) -
-          (p.coeff 0) ^ 2 * m0| ≤
-        m0 * (p.coeff 0) ^ 2 := by
+      |HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ (2 : ℕ)) -
+          (p.coeff 0) ^ (2 : ℕ) * m0| ≤
+        m0 * (p.coeff 0) ^ (2 : ℕ) := by
     have hmiddle :
         2 * E * ((2 / 39 : ℝ) * A) ≤
           ((224 * E) / (13 * C)) * m0 := by
@@ -284,12 +284,12 @@ theorem momentFunctional_primeArchShiftMoment_sq_nonneg
           all_goals ring
     have hlast :
         ((224 * E) / (13 * C)) * m0 ≤
-          m0 * (p.coeff 0) ^ 2 := by
+          m0 * (p.coeff 0) ^ (2 : ℕ) := by
       simpa only [mul_comm] using mul_le_mul_of_nonneg_right hEratio hm0
     exact (herr.trans hmiddle).trans hlast
   have hneg := neg_abs_le
-    (HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ 2) -
-      (p.coeff 0) ^ 2 * m0)
+    (HTGeometry.momentFunctional (primeArchShiftMoment s) (p ^ (2 : ℕ)) -
+      (p.coeff 0) ^ (2 : ℕ) * m0)
   nlinarith
 
 /-- A test `Xᵛ p`, `v ≤ 5`, has nonnegative source Hankel value on its exact sector coefficient
@@ -297,31 +297,31 @@ cone. -/
 theorem re_primeArchSourceTraceHankel_X_pow_mul_nonneg_of_le_five
     (v : ℕ) (hv : v ≤ 5) (p : Polynomial ℝ)
     (hcone : 224 * HTGeometry.polynomialNonconstantCoeffSqEnergy p ≤
-      (1960 - 13 * ((((2 * v + 1 : ℕ) : ℝ)) ^ 2)) *
-        (p.coeff 0) ^ 2) :
+      (1960 - 13 * ((((2 * v + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) *
+        (p.coeff 0) ^ (2 : ℕ)) :
     0 ≤ (primeArchSourceTraceHankel
       ((Polynomial.X : Polynomial ℝ) ^ v * p)).re := by
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   have hshift :
       HTGeometry.momentFunctional normalizedPrimeArchMoment
-          (((Polynomial.X : Polynomial ℝ) ^ v * p) ^ 2) =
-        HTGeometry.momentFunctional (primeArchShiftMoment (2 * v)) (p ^ 2) := by
+          (((Polynomial.X : Polynomial ℝ) ^ v * p) ^ (2 : ℕ)) =
+        HTGeometry.momentFunctional (primeArchShiftMoment (2 * v)) (p ^ (2 : ℕ)) := by
     calc
       HTGeometry.momentFunctional normalizedPrimeArchMoment
-          (((Polynomial.X : Polynomial ℝ) ^ v * p) ^ 2) =
+          (((Polynomial.X : Polynomial ℝ) ^ v * p) ^ (2 : ℕ)) =
           HTGeometry.momentFunctional normalizedPrimeArchMoment
-            ((p ^ 2) * (((Polynomial.X : Polynomial ℝ) ^ v) ^ 2)) := by
+            ((p ^ (2 : ℕ)) * (((Polynomial.X : Polynomial ℝ) ^ v) ^ (2 : ℕ))) := by
         congr 1
         ring
       _ = HTGeometry.momentFunctional
           (momentPolynomialTransform normalizedPrimeArchMoment
-            (((Polynomial.X : Polynomial ℝ) ^ v) ^ 2)) (p ^ 2) := by
+            (((Polynomial.X : Polynomial ℝ) ^ v) ^ (2 : ℕ))) (p ^ (2 : ℕ)) := by
         rw [momentFunctional_momentPolynomialTransform]
       _ = HTGeometry.momentFunctional
-          (shiftedPrimeArchMomentTail v) (p ^ 2) := by
+          (shiftedPrimeArchMomentTail v) (p ^ (2 : ℕ)) := by
         rw [momentPolynomialTransform_X_pow_sq_eq_shiftedPrimeArchMomentTail]
       _ = HTGeometry.momentFunctional
-          (primeArchShiftMoment (2 * v)) (p ^ 2) := by
+          (primeArchShiftMoment (2 * v)) (p ^ (2 : ℕ)) := by
         congr 1
   rw [hshift]
   apply momentFunctional_primeArchShiftMoment_sq_nonneg (2 * v) (by omega) p
@@ -333,8 +333,8 @@ def PrimeArchLowValuationCoefficientCone (p : Polynomial ℤ) : Prop :=
     p = (Polynomial.X : Polynomial ℤ) ^ v * q ∧
       224 * HTGeometry.polynomialNonconstantCoeffSqEnergy
           (q.map (Int.castRingHom ℝ)) ≤
-        (1960 - 13 * ((((2 * v + 1 : ℕ) : ℝ)) ^ 2)) *
-          ((q.coeff 0 : ℤ) : ℝ) ^ 2
+        (1960 - 13 * ((((2 * v + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) *
+          ((q.coeff 0 : ℤ) : ℝ) ^ (2 : ℕ)
 
 theorem re_primeArchSourceTraceHankel_nonneg_of_lowValuationCoefficientCone
     (p : Polynomial ℤ) (hp : PrimeArchLowValuationCoefficientCone p) :

@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry.CPV
 
 /-- Constant-force Hamiltonian, with logarithmic mass and acceleration. -/
 def energy (mu alpha p q : ℝ) : ℝ :=
-  p ^ 2 / (2 * Real.exp mu) + Real.exp mu * Real.exp alpha * q
+  p ^ (2 : ℕ) / (2 * Real.exp mu) + Real.exp mu * Real.exp alpha * q
 
 /-- Momentum in equation (16). -/
 def momentum (mu alpha j v : ℝ) : ℝ :=
@@ -23,7 +23,7 @@ def momentum (mu alpha j v : ℝ) : ℝ :=
 /-- Position in equation (17), before imposing the exterior-domain restriction. -/
 def position (mu alpha j v w : ℝ) : ℝ :=
   Real.exp j * w / (Real.exp mu * Real.exp alpha) -
-    Real.exp alpha / 2 * (v / Real.exp j) ^ 2
+    Real.exp alpha / 2 * (v / Real.exp j) ^ (2 : ℕ)
 
 /-- The coordinate transformation exactly transports the Hamiltonian. -/
 theorem energy_map (mu alpha j v w : ℝ) :
@@ -71,12 +71,12 @@ def phaseEquiv (mu alpha j : ℝ) : (ℝ × ℝ) ≃ (ℝ × ℝ) where
 /-- Exact exterior-domain boundary at fixed clock energy. -/
 theorem exterior_iff (mu alpha j v w : ℝ) :
     0 < position mu alpha j v w ↔
-      momentum mu alpha j v ^ 2 < 2 * Real.exp mu * (Real.exp j * w) := by
+      momentum mu alpha j v ^ (2 : ℕ) < 2 * Real.exp mu * (Real.exp j * w) := by
   have he := energy_map mu alpha j v w
   unfold energy at he
   have hm := Real.exp_pos mu
   have ha := Real.exp_pos alpha
-  have he' : momentum mu alpha j v ^ 2 +
+  have he' : momentum mu alpha j v ^ (2 : ℕ) +
       (2 * Real.exp mu) * (Real.exp mu * Real.exp alpha) *
         position mu alpha j v w = (2 * Real.exp mu) * (Real.exp j * w) := by
     field_simp at he
@@ -95,9 +95,9 @@ theorem inverseW_exterior_pos (mu alpha j p x : ℝ) :
 
 /-- A positive-half-plane family whose image lies strictly inside the horizon. -/
 theorem halfPlane_not_all_exterior (mu alpha j : ℝ) :
-    0 < Real.exp mu * Real.exp alpha ^ 2 / Real.exp j ∧
+    0 < Real.exp mu * Real.exp alpha ^ (2 : ℕ) / Real.exp j ∧
     position mu alpha j (2 * Real.exp j)
-      (Real.exp mu * Real.exp alpha ^ 2 / Real.exp j) = -Real.exp alpha := by
+      (Real.exp mu * Real.exp alpha ^ (2 : ℕ) / Real.exp j) = -Real.exp alpha := by
   constructor
   · positivity
   · unfold position
@@ -115,7 +115,7 @@ theorem momentum_hasDerivAt (mu alpha j v : ℝ) :
 /-- Position derivative in the time coordinate. -/
 theorem position_v_hasDerivAt (mu alpha j v w : ℝ) :
     HasDerivAt (fun x => position mu alpha j x w)
-      (-Real.exp alpha * v / Real.exp j ^ 2) v := by
+      (-Real.exp alpha * v / Real.exp j ^ (2 : ℕ)) v := by
   convert! (hasDerivAt_const v (Real.exp j * w / (Real.exp mu * Real.exp alpha))).sub
     ((((hasDerivAt_id v).div_const (Real.exp j)).pow 2).const_mul (Real.exp alpha / 2)) using 1
   simp only [id_eq]
@@ -126,7 +126,7 @@ theorem position_w_hasDerivAt (mu alpha j v w : ℝ) :
     HasDerivAt (position mu alpha j v)
       (Real.exp j / (Real.exp mu * Real.exp alpha)) w := by
   convert! (((hasDerivAt_id w).const_mul (Real.exp j)).div_const
-      (Real.exp mu * Real.exp alpha)).sub_const (Real.exp alpha / 2 * (v / Real.exp j) ^ 2)
+      (Real.exp mu * Real.exp alpha)).sub_const (Real.exp alpha / 2 * (v / Real.exp j) ^ (2 : ℕ))
     using 1
   simp
 
@@ -139,7 +139,7 @@ theorem clock_jacobian (mu alpha j : ℝ) :
 /-- Exact constant-force Hamiltonian flow for arbitrary initial state. -/
 def flow (mu alpha t : ℝ) (x : ℝ × ℝ) : ℝ × ℝ :=
   (x.1 - Real.exp mu * Real.exp alpha * t,
-   x.2 + x.1 / Real.exp mu * t - Real.exp alpha / 2 * t ^ 2)
+   x.2 + x.1 / Real.exp mu * t - Real.exp alpha / 2 * t ^ (2 : ℕ))
 
 @[simp] theorem flow_zero (mu alpha : ℝ) (x : ℝ × ℝ) : flow mu alpha 0 x = x := by
   simp [flow]
@@ -188,8 +188,8 @@ theorem map_eq_reverse_flow (mu alpha j t w : ℝ) :
 theorem printed_trajectory_energy_defect (mu alpha E t : ℝ) :
     energy mu alpha (Real.exp mu * Real.exp alpha * t)
       (E / (Real.exp mu * Real.exp alpha) -
-        Real.exp mu * Real.exp alpha / 2 * t ^ 2) - E =
-      Real.exp mu * Real.exp alpha ^ 2 * (1 - Real.exp mu) * t ^ 2 / 2 := by
+        Real.exp mu * Real.exp alpha / 2 * t ^ (2 : ℕ)) - E =
+      Real.exp mu * Real.exp alpha ^ (2 : ℕ) * (1 - Real.exp mu) * t ^ (2 : ℕ) / 2 := by
   unfold energy
   field_simp
   ring

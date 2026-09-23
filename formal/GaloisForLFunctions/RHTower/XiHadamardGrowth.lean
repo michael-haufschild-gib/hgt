@@ -7,9 +7,9 @@ import Mathlib.Analysis.Complex.Harmonic.Poisson
 /-!
 # Subquadratic Hadamard growth for the centered Xi canonical product
 
-The genus-one product over the exact Xi divisor has Nevanlinna proximity `o(r^2)`.  The First Main
+The genus-one product over the exact Xi divisor has Nevanlinna proximity `o(r^(2 : ℕ))`.  The First Main
 Theorem transfers the same bound to its reciprocal, the unconditional order-one estimate transfers
-it to `XiC`, and hence the entire zero-free Hadamard quotient also has proximity `o(r^2)`.
+it to `XiC`, and hence the entire zero-free Hadamard quotient also has proximity `o(r^(2 : ℕ))`.
 
 Poisson, Borel--Caratheodory, and Cauchy estimates then show that any entire logarithm of that
 quotient is affine.  Evenness kills its linear term, giving the unconditional multiplicity-exact
@@ -148,8 +148,8 @@ theorem proximity_zero_le_proximity_top_of_entire_one
 
 theorem proximity_zero_isLittleO_sq_of_entire_one
     (f : ℂ → ℂ) (hf : AnalyticOnNhd ℂ f Set.univ) (hf0 : f 0 = 1)
-    (htop : proximity f ⊤ =o[atTop] (fun r : ℝ => r ^ 2)) :
-    proximity f 0 =o[atTop] (fun r : ℝ => r ^ 2) := by
+    (htop : proximity f ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ))) :
+    proximity f 0 =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
   apply isLittleO_iff.mpr
   intro c hc
   filter_upwards [isLittleO_iff.mp htop hc, eventually_ge_atTop (1 : ℝ)] with r htopr hr
@@ -159,11 +159,11 @@ theorem proximity_zero_isLittleO_sq_of_entire_one
       proximity_zero_le_proximity_top_of_entire_one f hf hf0 hr
     _ = ‖proximity f ⊤ r‖ := by
       rw [Real.norm_eq_abs, abs_of_nonneg (proximity_nonneg r)]
-    _ ≤ c * ‖r ^ 2‖ := htopr
+    _ ≤ c * ‖r ^ (2 : ℕ)‖ := htopr
 
 theorem orderOneLog_envelope_div_sq_tendsto_zero (C : ℝ) :
     Tendsto (fun r : ℝ =>
-      (C * (1 + |r|) * Real.log (2 + |r|)) / r ^ 2) atTop (𝓝 0) := by
+      (C * (1 + |r|) * Real.log (2 + |r|)) / r ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hlog : Tendsto (fun r : ℝ => Real.log (2 + r) / r) atTop (𝓝 0) := by
     have hbase : Tendsto (fun u : ℝ => Real.log u / (1 * u + (-2))) atTop (𝓝 0) :=
       Real.tendsto_pow_log_div_mul_add_atTop 1 (-2) 1 one_ne_zero
@@ -195,7 +195,7 @@ theorem orderOneLog_envelope_div_sq_tendsto_zero (C : ℝ) :
 
 theorem orderOneLog_envelope_isLittleO_sq (C : ℝ) :
     (fun r : ℝ => C * (1 + |r|) * Real.log (2 + |r|)) =o[atTop]
-      (fun r : ℝ => r ^ 2) := by
+      (fun r : ℝ => r ^ (2 : ℕ)) := by
   apply isLittleO_of_tendsto'
   · filter_upwards [eventually_ne_atTop (0 : ℝ)] with r hr
     intro hs
@@ -207,7 +207,7 @@ theorem proximity_isLittleO_sq_of_orderOneLog
     (C : ℝ) (hC : 0 ≤ C)
     (hbound : ∀ z : ℂ,
       ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖))) :
-    proximity f ⊤ =o[atTop] (fun r : ℝ => r ^ 2) := by
+    proximity f ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
   have hpoint : ∀ r : ℝ, proximity f ⊤ r ≤
       C * (1 + |r|) * Real.log (2 + |r|) := by
     intro r
@@ -250,22 +250,22 @@ theorem proximity_isLittleO_sq_of_orderOneLog
       have hnonneg : 0 ≤ C * (1 + |r|) * Real.log (2 + |r|) := by
         positivity
       rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
-    _ ≤ c * ‖r ^ 2‖ := hr
+    _ ≤ c * ‖r ^ (2 : ℕ)‖ := hr
 
 theorem xiCanonicalProduct_proximity_isLittleO_sq :
-    proximity xiCanonicalProduct ⊤ =o[atTop] (fun r : ℝ => r ^ 2) := by
+    proximity xiCanonicalProduct ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
   simpa only [xiCanonicalProduct] using
     (canonicalProductE1Indexed_proximity_isLittleO_sq xiSpectralPoint
       xiSpectralPoint_ne_zero xiSpectralPoint_inv_sq_summable)
 
 theorem xiCanonicalProduct_proximity_zero_isLittleO_sq :
-    proximity xiCanonicalProduct 0 =o[atTop] (fun r : ℝ => r ^ 2) :=
+    proximity xiCanonicalProduct 0 =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) :=
   proximity_zero_isLittleO_sq_of_entire_one xiCanonicalProduct
     xiCanonicalProduct_analytic xiCanonicalProduct_zero
     xiCanonicalProduct_proximity_isLittleO_sq
 
 theorem XiC_proximity_isLittleO_sq :
-    proximity XiC ⊤ =o[atTop] (fun r : ℝ => r ^ 2) := by
+    proximity XiC ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
   obtain ⟨C, hC, hbound⟩ := XiC_order
   exact proximity_isLittleO_sq_of_orderOneLog XiC XiC_analytic C hC.le hbound
 
@@ -297,7 +297,7 @@ theorem xiHadamardQuotient_proximity_eventually_le :
       rw [proximity_inv]
 
 theorem xiHadamardQuotient_proximity_isLittleO_sq :
-    proximity xiHadamardQuotient ⊤ =o[atTop] (fun r : ℝ => r ^ 2) := by
+    proximity xiHadamardQuotient ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
   have hsum := XiC_proximity_isLittleO_sq.add
     xiCanonicalProduct_proximity_zero_isLittleO_sq
   apply isLittleO_iff.mpr
@@ -311,21 +311,21 @@ theorem xiHadamardQuotient_proximity_isLittleO_sq :
     _ = ‖(proximity XiC ⊤ + proximity xiCanonicalProduct 0) r‖ := by
       rw [Real.norm_eq_abs, abs_of_nonneg]
       exact add_nonneg (proximity_nonneg r) (proximity_nonneg r)
-    _ ≤ c * ‖r ^ 2‖ := hsumr
+    _ ≤ c * ‖r ^ (2 : ℕ)‖ := hsumr
 
 /-- A zero-free entire function of subquadratic Nevanlinna proximity has an affine entire
 logarithm.  This is the minimal-growth Hadamard lemma needed for genus-one products. -/
 theorem entire_log_affine_of_proximity_isLittleO_sq
     (q g : ℂ → ℂ) (hg : Differentiable ℂ g)
     (hexp : ∀ z, q z = Complex.exp (g z))
-    (hprox : proximity q ⊤ =o[atTop] (fun r : ℝ => r ^ 2)) :
+    (hprox : proximity q ⊤ =o[atTop] (fun r : ℝ => r ^ (2 : ℕ))) :
     ∀ z : ℂ, g z = g 0 + deriv g 0 * z := by
   have hsecond : ∀ c : ℂ, iteratedDeriv 2 g c = 0 := by
     intro c
     have hcauchy : ∀ r : ℝ, 0 < r →
         ‖iteratedDeriv 2 g c‖ ≤
           2 * (6 * proximity q ⊤ (2 * (1 + ‖c‖ + 2 * r)) +
-            2 + 3 * ‖g c‖) / r ^ 2 := by
+            2 + 3 * ‖g c‖) / r ^ (2 : ℕ) := by
       intro r hr
       have hsph : ∀ w ∈ sphere c r,
           ‖g w‖ ≤ 6 * proximity q ⊤ (2 * (1 + ‖c‖ + 2 * r)) +
@@ -395,10 +395,10 @@ theorem entire_log_affine_of_proximity_isLittleO_sq
       dsimp only [S]
       ring
     have hcomp := hprox.comp_tendsto hS_tendsto
-    have hSbig : (fun r : ℝ => (S r) ^ 2) =O[atTop] (fun r : ℝ => r ^ 2) := by
+    have hSbig : (fun r : ℝ => (S r) ^ (2 : ℕ)) =O[atTop] (fun r : ℝ => r ^ (2 : ℕ)) := by
       apply isBigO_iff.mpr
       let K : ℝ := 6 + 2 * ‖c‖
-      refine ⟨K ^ 2, ?_⟩
+      refine ⟨K ^ (2 : ℕ), ?_⟩
       filter_upwards [eventually_ge_atTop (1 : ℝ)] with r hr1
       have hK0 : 0 ≤ K := by dsimp only [K]; positivity
       have hS0 : 0 ≤ S r := by dsimp only [S]; positivity
@@ -410,23 +410,23 @@ theorem entire_log_affine_of_proximity_isLittleO_sq
         abs_of_nonneg (sq_nonneg _)]
       exact (sq_le_sq₀ hS0 (mul_nonneg hK0 hr0)).mpr hSK |>.trans_eq (by ring)
     have hm : (fun r : ℝ => proximity q ⊤ (S r)) =o[atTop]
-        (fun r : ℝ => r ^ 2) := by
+        (fun r : ℝ => r ^ (2 : ℕ)) := by
       have := hcomp.trans_isBigO hSbig
       simpa only [Function.comp_apply] using! this
-    have hratio : Tendsto (fun r : ℝ => proximity q ⊤ (S r) / r ^ 2)
+    have hratio : Tendsto (fun r : ℝ => proximity q ⊤ (S r) / r ^ (2 : ℕ))
         atTop (𝓝 0) := by
       apply (isLittleO_iff_tendsto' ?_).mp hm
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with r hr0
       intro hs
       exact (hr0 (sq_eq_zero_iff.mp hs)).elim
     have htend : Tendsto (fun r : ℝ =>
-        2 * (6 * proximity q ⊤ (S r) + 2 + 3 * ‖g c‖) / r ^ 2)
+        2 * (6 * proximity q ⊤ (S r) + 2 + 3 * ‖g c‖) / r ^ (2 : ℕ))
         atTop (𝓝 0) := by
       have hmain := hratio.const_mul 12
       simp only [mul_zero] at hmain
-      have hconst : Tendsto (fun r : ℝ => (4 + 6 * ‖g c‖) / r ^ 2)
+      have hconst : Tendsto (fun r : ℝ => (4 + 6 * ‖g c‖) / r ^ (2 : ℕ))
           atTop (𝓝 0) := by
-        have hinv : Tendsto (fun r : ℝ => (r ^ 2)⁻¹) atTop (𝓝 0) :=
+        have hinv : Tendsto (fun r : ℝ => (r ^ (2 : ℕ))⁻¹) atTop (𝓝 0) :=
           Filter.Tendsto.comp tendsto_inv_atTop_zero
             (tendsto_pow_atTop (by norm_num))
         have hmul := hinv.const_mul (4 + 6 * ‖g c‖)

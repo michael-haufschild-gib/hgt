@@ -28,7 +28,7 @@ noncomputable section
 
 /-- The open critical strip for the centered spectral point: `Im(α)² < 1/4`. -/
 theorem xiSpectralPoint_im_sq_lt_quarter (q : XiZeroCopy) :
-    (xiSpectralPoint q).im ^ 2 < 1 / 4 := by
+    (xiSpectralPoint q).im ^ (2 : ℕ) < 1 / 4 := by
   have him : (xiSpectralPoint q).im = -((q.1 : ℂ).re - 1 / 2) := by
     simp [xiSpectralPoint]
   rw [him, neg_sq]
@@ -36,14 +36,14 @@ theorem xiSpectralPoint_im_sq_lt_quarter (q : XiZeroCopy) :
 
 /-- The real part of the shifted spectral square in coordinates. -/
 theorem xiSpectralSq_add_ofReal_re_eq (X : ℝ) (q : XiZeroCopy) :
-    (xiSpectralPoint q ^ 2 + (X : ℂ)).re =
-      (xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2 + X := by
+    (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).re =
+      (xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ) + X := by
   rw [Complex.add_re, Complex.ofReal_re, pow_two, Complex.mul_re]
   ring
 
 /-- The imaginary part of the shifted spectral square in coordinates. -/
 theorem xiSpectralSq_add_ofReal_im_eq (X : ℝ) (q : XiZeroCopy) :
-    (xiSpectralPoint q ^ 2 + (X : ℂ)).im =
+    (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im =
       2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im := by
   rw [Complex.add_im, Complex.ofReal_im, add_zero, pow_two, Complex.mul_im]
   ring
@@ -52,48 +52,48 @@ theorem xiSpectralSq_add_ofReal_im_eq (X : ℝ) (q : XiZeroCopy) :
 most `129/127` times its real part. -/
 theorem norm_xiResolventPoint_le_re_mul {X : ℝ} (hX : 0 ≤ X) (q : XiZeroCopy) :
     ‖xiResolventPoint X q‖ ≤ (129 / 127) * (xiResolventPoint X q).re := by
-  set z : ℂ := xiSpectralPoint q ^ 2 + (X : ℂ) with hz
+  set z : ℂ := xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ) with hz
   have hzre : 0 < z.re := xiSpectralSq_add_ofReal_re_pos hX q
   have hzne : z ≠ 0 := xiSpectralSq_add_ofReal_ne_zero hX q
   have hg := xiSpectral_re_sq_gt_thirtytwo q
   have hs := xiSpectralPoint_im_sq_lt_quarter q
-  have hzre_eq : z.re = (xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2 + X :=
+  have hzre_eq : z.re = (xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ) + X :=
     xiSpectralSq_add_ofReal_re_eq X q
   have hzim_eq : z.im = 2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im :=
     xiSpectralSq_add_ofReal_im_eq X q
-  have hsector : ‖z‖ ^ 2 ≤ (129 / 127) ^ 2 * z.re ^ 2 := by
-    have hnorm : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+  have hsector : ‖z‖ ^ (2 : ℕ) ≤ (129 / 127) ^ (2 : ℕ) * z.re ^ (2 : ℕ) := by
+    have hnorm : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.normSq_apply]
       ring
     rw [hnorm, hzre_eq, hzim_eq]
-    have h1 : 4 * ((xiSpectralPoint q).im ^ 2) ≤ 1 := by linarith
-    have h2 : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 := by linarith
-    have h3 : (xiSpectralPoint q).re ^ 2 - 1 / 4 ≤
-        (xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2 + X := by linarith
-    have h4 : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 - 1 / 4 := by linarith
-    have h5 : ((xiSpectralPoint q).re ^ 2 - 1 / 4) ^ 2 ≤
-        ((xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2 + X) ^ 2 := by nlinarith
-    have h6 : 16129 * ((xiSpectralPoint q).re ^ 2) ≤
-        512 * ((xiSpectralPoint q).re ^ 2 - 1 / 4) ^ 2 := by
-      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ (xiSpectralPoint q).re ^ 2 - 32)
-        (by linarith : (0 : ℝ) ≤ 512 * (xiSpectralPoint q).re ^ 2 - 1)]
-    have h7 : 4 * ((xiSpectralPoint q).re ^ 2 * (xiSpectralPoint q).im ^ 2) ≤
-        (xiSpectralPoint q).re ^ 2 := by nlinarith [h1, h2]
+    have h1 : 4 * ((xiSpectralPoint q).im ^ (2 : ℕ)) ≤ 1 := by linarith
+    have h2 : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) := by linarith
+    have h3 : (xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4 ≤
+        (xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ) + X := by linarith
+    have h4 : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4 := by linarith
+    have h5 : ((xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4) ^ (2 : ℕ) ≤
+        ((xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ) + X) ^ (2 : ℕ) := by nlinarith
+    have h6 : 16129 * ((xiSpectralPoint q).re ^ (2 : ℕ)) ≤
+        512 * ((xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4) ^ (2 : ℕ) := by
+      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ (xiSpectralPoint q).re ^ (2 : ℕ) - 32)
+        (by linarith : (0 : ℝ) ≤ 512 * (xiSpectralPoint q).re ^ (2 : ℕ) - 1)]
+    have h7 : 4 * ((xiSpectralPoint q).re ^ (2 : ℕ) * (xiSpectralPoint q).im ^ (2 : ℕ)) ≤
+        (xiSpectralPoint q).re ^ (2 : ℕ) := by nlinarith [h1, h2]
     nlinarith [h5, h6, h7]
   have hzabs : ‖z‖ ≤ (129 / 127) * z.re := by
     nlinarith [hsector, norm_nonneg z, hzre]
   have hu : xiResolventPoint X q = z⁻¹ := by
     rw [xiResolventPoint]
   rw [hu, norm_inv, Complex.inv_re]
-  have hnormSq : Complex.normSq z = ‖z‖ ^ 2 := (Complex.sq_norm z).symm
+  have hnormSq : Complex.normSq z = ‖z‖ ^ (2 : ℕ) := (Complex.sq_norm z).symm
   rw [hnormSq]
   have hznorm_pos : 0 < ‖z‖ := norm_pos_iff.mpr hzne
-  have hgoal : (1 : ℝ) / ‖z‖ ≤ (129 / 127 * z.re) / ‖z‖ ^ 2 := by
+  have hgoal : (1 : ℝ) / ‖z‖ ≤ (129 / 127 * z.re) / ‖z‖ ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ hznorm_pos (by positivity)]
     nlinarith [hzabs, hznorm_pos.le]
   calc ‖z‖⁻¹ = 1 / ‖z‖ := (one_div _).symm
-    _ ≤ (129 / 127 * z.re) / ‖z‖ ^ 2 := hgoal
-    _ = 129 / 127 * (z.re / ‖z‖ ^ 2) := by ring
+    _ ≤ (129 / 127 * z.re) / ‖z‖ ^ (2 : ℕ) := hgoal
+    _ = 129 / 127 * (z.re / ‖z‖ ^ (2 : ℕ)) := by ring
 
 /-- **Norm mass is dominated by the trace**: the total resolvent norm mass at any shift is at
 most `129/127` times the real part of the zeroth moment. -/
@@ -117,9 +117,9 @@ theorem tsum_norm_xiResolventPoint_le_re_moment {X : ℝ} (hX : 0 ≤ X) :
 /-- The trace domination on prime–Gamma data: at `X = x²` the norm mass is bounded by the
 Euler-ray response of `ξ`. -/
 theorem tsum_norm_xiResolventPoint_le_logDeriv {x : ℝ} (hx : 0 < x) :
-    (∑' q : XiZeroCopy, ‖xiResolventPoint (x ^ 2) q‖) ≤
+    (∑' q : XiZeroCopy, ‖xiResolventPoint (x ^ (2 : ℕ)) q‖) ≤
       (129 / 127) * (logDeriv xi ((1 / 2 : ℂ) + (x : ℂ)) / (x : ℂ)).re := by
-  have h := tsum_norm_xiResolventPoint_le_re_moment (X := x ^ 2) (by positivity)
+  have h := tsum_norm_xiResolventPoint_le_re_moment (X := x ^ (2 : ℕ)) (by positivity)
   rwa [xiResolventMoment_zero_eq_logDeriv hx] at h
 
 /-- **Pointwise budget domination, tight at the certified floor**: each resolvent norm is at
@@ -130,56 +130,56 @@ theorem norm_xiResolventPoint_le_budgetMass {X : ℝ} (hX : 0 ≤ X) (q : XiZero
   have hs := xiSpectralPoint_im_sq_lt_quarter q
   have hb1 : (xiSpectralPoint q).im < 1 / 2 := by nlinarith
   have hb2 : -(1 / 2) < (xiSpectralPoint q).im := by nlinarith
-  have hApos : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 - 1 / 4 := by linarith
-  have hBpos : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 + 1 := by linarith
+  have hApos : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4 := by linarith
+  have hBpos : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) + 1 := by linarith
   -- the resolvent norm against the floor-shifted real part
-  have hnorm_u : ‖xiResolventPoint X q‖ ≤ 1 / ((xiSpectralPoint q).re ^ 2 - 1 / 4) := by
-    have h1 : ‖xiResolventPoint X q‖ = ‖xiSpectralPoint q ^ 2 + (X : ℂ)‖⁻¹ := by
+  have hnorm_u : ‖xiResolventPoint X q‖ ≤ 1 / ((xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4) := by
+    have h1 : ‖xiResolventPoint X q‖ = ‖xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)‖⁻¹ := by
       rw [xiResolventPoint, norm_inv]
-    have hre_le : (xiSpectralPoint q).re ^ 2 - 1 / 4 ≤
-        ‖xiSpectralPoint q ^ 2 + (X : ℂ)‖ := by
-      have hle := Complex.re_le_norm (xiSpectralPoint q ^ 2 + (X : ℂ))
+    have hre_le : (xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4 ≤
+        ‖xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)‖ := by
+      have hle := Complex.re_le_norm (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ))
       have heq := xiSpectralSq_add_ofReal_re_eq X q
       linarith [hs, hX]
     rw [h1, inv_eq_one_div]
     exact one_div_le_one_div_of_le hApos hre_le
   -- the budget mass against the strip-shifted real part
-  have hmass_lb : 1 / ((xiSpectralPoint q).re ^ 2 + 1) ≤ xiBudgetMassAt (1 / 2) q := by
+  have hmass_lb : 1 / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) ≤ xiBudgetMassAt (1 / 2) q := by
     rw [xiBudgetMassAt]
     have hnum1 : (0 : ℝ) ≤ 1 / 2 - (xiSpectralPoint q).im := by linarith
     have hnum2 : (0 : ℝ) ≤ 1 / 2 + (xiSpectralPoint q).im := by linarith
-    have hden1pos : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 +
-        (1 / 2 - (xiSpectralPoint q).im) ^ 2 := by nlinarith
-    have hden2pos : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 +
-        (1 / 2 + (xiSpectralPoint q).im) ^ 2 := by nlinarith
-    have hden1 : (xiSpectralPoint q).re ^ 2 + (1 / 2 - (xiSpectralPoint q).im) ^ 2 ≤
-        (xiSpectralPoint q).re ^ 2 + 1 := by nlinarith
-    have hden2 : (xiSpectralPoint q).re ^ 2 + (1 / 2 + (xiSpectralPoint q).im) ^ 2 ≤
-        (xiSpectralPoint q).re ^ 2 + 1 := by nlinarith
-    have ht1 : (1 / 2 - (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ 2 + 1) ≤
+    have hden1pos : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) +
+        (1 / 2 - (xiSpectralPoint q).im) ^ (2 : ℕ) := by nlinarith
+    have hden2pos : (0 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) +
+        (1 / 2 + (xiSpectralPoint q).im) ^ (2 : ℕ) := by nlinarith
+    have hden1 : (xiSpectralPoint q).re ^ (2 : ℕ) + (1 / 2 - (xiSpectralPoint q).im) ^ (2 : ℕ) ≤
+        (xiSpectralPoint q).re ^ (2 : ℕ) + 1 := by nlinarith
+    have hden2 : (xiSpectralPoint q).re ^ (2 : ℕ) + (1 / 2 + (xiSpectralPoint q).im) ^ (2 : ℕ) ≤
+        (xiSpectralPoint q).re ^ (2 : ℕ) + 1 := by nlinarith
+    have ht1 : (1 / 2 - (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) ≤
         (1 / 2 - (xiSpectralPoint q).im) /
-          ((xiSpectralPoint q).re ^ 2 + (1 / 2 - (xiSpectralPoint q).im) ^ 2) :=
+          ((xiSpectralPoint q).re ^ (2 : ℕ) + (1 / 2 - (xiSpectralPoint q).im) ^ (2 : ℕ)) :=
       div_le_div_of_nonneg_left hnum1 hden1pos hden1
-    have ht2 : (1 / 2 + (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ 2 + 1) ≤
+    have ht2 : (1 / 2 + (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) ≤
         (1 / 2 + (xiSpectralPoint q).im) /
-          ((xiSpectralPoint q).re ^ 2 + (1 / 2 + (xiSpectralPoint q).im) ^ 2) :=
+          ((xiSpectralPoint q).re ^ (2 : ℕ) + (1 / 2 + (xiSpectralPoint q).im) ^ (2 : ℕ)) :=
       div_le_div_of_nonneg_left hnum2 hden2pos hden2
-    have hsum : (1 / 2 - (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ 2 + 1) +
-        (1 / 2 + (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ 2 + 1) =
-        1 / ((xiSpectralPoint q).re ^ 2 + 1) := by
+    have hsum : (1 / 2 - (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) +
+        (1 / 2 + (xiSpectralPoint q).im) / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) =
+        1 / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1) := by
       rw [← add_div, show (1 / 2 - (xiSpectralPoint q).im) +
         (1 / 2 + (xiSpectralPoint q).im) = 1 by ring]
     linarith [ht1, ht2]
   -- the floor closes the gap between the two real parts
-  have hfinal : 1 / ((xiSpectralPoint q).re ^ 2 - 1 / 4) ≤
-      (132 / 127) * (1 / ((xiSpectralPoint q).re ^ 2 + 1)) := by
-    rw [show (132 / 127 : ℝ) * (1 / ((xiSpectralPoint q).re ^ 2 + 1)) =
-      132 / (127 * ((xiSpectralPoint q).re ^ 2 + 1)) by
+  have hfinal : 1 / ((xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4) ≤
+      (132 / 127) * (1 / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1)) := by
+    rw [show (132 / 127 : ℝ) * (1 / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1)) =
+      132 / (127 * ((xiSpectralPoint q).re ^ (2 : ℕ) + 1)) by
         rw [mul_one_div, div_div],
       div_le_div_iff₀ hApos (by positivity)]
     nlinarith [hg]
-  calc ‖xiResolventPoint X q‖ ≤ 1 / ((xiSpectralPoint q).re ^ 2 - 1 / 4) := hnorm_u
-    _ ≤ (132 / 127) * (1 / ((xiSpectralPoint q).re ^ 2 + 1)) := hfinal
+  calc ‖xiResolventPoint X q‖ ≤ 1 / ((xiSpectralPoint q).re ^ (2 : ℕ) - 1 / 4) := hnorm_u
+    _ ≤ (132 / 127) * (1 / ((xiSpectralPoint q).re ^ (2 : ℕ) + 1)) := hfinal
     _ ≤ (132 / 127) * xiBudgetMassAt (1 / 2) q :=
         mul_le_mul_of_nonneg_left hmass_lb (by norm_num)
 
@@ -210,14 +210,14 @@ theorem polyTuranMinor_supply_of_partial_line_budget {X δ : ℝ} (hX : 0 ≤ X)
     (hne : ‖xiResolventPoint X q₁‖ ≠ ‖xiResolventPoint X q₂‖)
     {E : ℝ} (hE : (∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
       ‖xiResolventPoint X (q : XiZeroCopy)‖) ≤ E)
-    (hmassE : 8 * B ^ 4 * E * (198 / 3175) ≤
+    (hmassE : 8 * B ^ (4 : ℕ) * E * (198 / 3175) ≤
       2 * ((‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) ^ (2 * m + 1) *
-        (Polynomial.eval ‖xiResolventPoint X q₁‖ p ^ 2 *
-          Polynomial.eval ‖xiResolventPoint X q₂‖ p ^ 2) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2)) :
+        (Polynomial.eval ‖xiResolventPoint X q₁‖ p ^ (2 : ℕ) *
+          Polynomial.eval ‖xiResolventPoint X q₂‖ p ^ (2 : ℕ)) *
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ))) :
     0 ≤ (xiPolyMoment (Polynomial.X ^ m * p) 0 X *
       xiPolyMoment (Polynomial.X ^ m * p) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * p) 1 X ^ 2).re := by
+      xiPolyMoment (Polynomial.X ^ m * p) 1 X ^ (2 : ℕ)).re := by
   refine polyTuranMinor_supply_of_partial_line hX hδ hline p m hB h1 h2 hne ?_
   have hS := tsum_norm_xiResolventPoint_le_budget (X := X) hX
   have hεnn : (0 : ℝ) ≤ ∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
@@ -229,10 +229,10 @@ theorem polyTuranMinor_supply_of_partial_line_budget {X δ : ℝ} (hX : 0 ≤ X)
       ‖xiResolventPoint X (q : XiZeroCopy)‖) *
       (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖) ≤ E * (198 / 3175) :=
     mul_le_mul hE hS hSnn (le_trans hεnn hE)
-  have h8 : 8 * B ^ 4 * ((∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
+  have h8 : 8 * B ^ (4 : ℕ) * ((∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
       ‖xiResolventPoint X (q : XiZeroCopy)‖) *
       (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖)) ≤
-      8 * B ^ 4 * (E * (198 / 3175)) :=
+      8 * B ^ (4 : ℕ) * (E * (198 / 3175)) :=
     mul_le_mul_of_nonneg_left hprod (by positivity)
   nlinarith [h8, hmassE]
 
@@ -249,12 +249,12 @@ theorem rational_nodal_datum_of_partial_line_budget {X δ : ℝ} (hX : 0 ≤ X) 
       ‖xiResolventPoint X (q : XiZeroCopy)‖) ≤ E)
     (hmassE : 8 * 2 ^ (4 * j) * E * (198 / 3175) ≤
       2 * ((‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) ^ (2 * m + 1) *
-        ((∏ i, (‖xiResolventPoint X q₁‖ - c i)) ^ 2 *
-          (∏ i, (‖xiResolventPoint X q₂‖ - c i)) ^ 2) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2)) :
+        ((∏ i, (‖xiResolventPoint X q₁‖ - c i)) ^ (2 : ℕ) *
+          (∏ i, (‖xiResolventPoint X q₂‖ - c i)) ^ (2 : ℕ)) *
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ))) :
     0 ≤ (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2).re := by
+      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)).re := by
   have hB : ∀ z : ℂ, ‖z‖ ≤ 1 → ‖evalRealPolynomial (finNodalPolynomial c) z‖ ≤ 2 ^ j := by
     intro z hz
     rw [evalRealPolynomial_finNodalPolynomial, norm_prod]
@@ -262,7 +262,7 @@ theorem rational_nodal_datum_of_partial_line_budget {X δ : ℝ} (hX : 0 ≤ X) 
           Finset.prod_le_prod (fun i _ => norm_nonneg _)
             (fun i _ => norm_sub_node_le hz (hc i).1 (hc i).2)
       _ = 2 ^ j := by rw [Finset.prod_const, Finset.card_fin]
-  have hBpow : ((2 : ℝ) ^ j) ^ 4 = 2 ^ (4 * j) := by
+  have hBpow : ((2 : ℝ) ^ j) ^ (4 : ℕ) = 2 ^ (4 * j) := by
     rw [← pow_mul, mul_comm]
   refine polyTuranMinor_supply_of_partial_line_budget hX hδ hline (finNodalPolynomial c) m
     hB h1 h2 hne hE ?_
@@ -279,14 +279,14 @@ theorem exists_neg_even_plain_minor_of_offline_top_budget {X : ℝ} (hX : 0 ≤ 
     (hρ₂bound : ∀ q, ‖xiResolventPoint X q‖ < ℓ → ‖xiResolventPoint X q‖ ≤ ρ₂)
     {g : ℝ} (hg : 0 < g)
     (hgap : ∀ q q' : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ → ‖xiResolventPoint X q'‖ = ℓ →
-      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ 2 →
-      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ 2) ^ 2 - 1‖)
+      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) →
+      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) - 1‖)
     {qh : XiZeroCopy} (hqhℓ : ‖xiResolventPoint X qh‖ = ℓ)
     (hoff : (xiSpectralPoint qh).im ≠ 0)
-    {N : ℕ} (hN : (2 * (198 / 3175) ^ 2 / g + (198 / 3175) ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-      (xiResolventPoint X qh).im ^ 2 < (N : ℝ)) :
+    {N : ℕ} (hN : (2 * (198 / 3175) ^ (2 : ℕ) / g + (198 / 3175) ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+      (xiResolventPoint X qh).im ^ (2 : ℕ) < (N : ℝ)) :
     ∃ n : ℕ, n < N ∧ (xiResolventMoment (2 * n) X * xiResolventMoment (2 * n + 2) X -
-      xiResolventMoment (2 * n + 1) X ^ 2).re < 0 :=
+      xiResolventMoment (2 * n + 1) X ^ (2 : ℕ)).re < 0 :=
   exists_neg_even_plain_minor_of_offline_top hX hℓpos htop hρ₂0 hρ₂lt hρ₂bound
     (tsum_norm_xiResolventPoint_le_budget hX) hg hgap hqhℓ hoff hN
 

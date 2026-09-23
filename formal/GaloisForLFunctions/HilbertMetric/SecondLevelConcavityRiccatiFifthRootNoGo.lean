@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 This module strengthens `SecondLevelConcavityFifthRootNoGo`.  The positive even kernel
 
-`F(t) = exp (-(t^2 + t^4/10 + t^6/2))`
+`F(t) = exp (-(t^(2 : ℕ) + t^(4 : ℕ)/10 + t^(6 : ℕ)/2))`
 
 has all three source-independent properties currently available to the reflected fifth-root
 route:
@@ -38,18 +38,18 @@ private theorem exp_fortyseven_fortieth_lt_eightyone_twentyfifth :
   have hhalf : Real.exp (47 / 80 : ℝ) < 9 / 5 := by
     nlinarith [le_abs_self
       (Real.exp (47 / 80 : ℝ) -
-        (1 + (47 / 80 : ℝ) + (47 / 80 : ℝ) ^ 2 / 2 +
-          (47 / 80 : ℝ) ^ 3 / 6 + (47 / 80 : ℝ) ^ 4 / 24 +
-          (47 / 80 : ℝ) ^ 5 / 120 + (47 / 80 : ℝ) ^ 6 / 720 +
-          (47 / 80 : ℝ) ^ 7 / 5040 + (47 / 80 : ℝ) ^ 8 / 40320 +
-          (47 / 80 : ℝ) ^ 9 / 362880))]
+        (1 + (47 / 80 : ℝ) + (47 / 80 : ℝ) ^ (2 : ℕ) / 2 +
+          (47 / 80 : ℝ) ^ (3 : ℕ) / 6 + (47 / 80 : ℝ) ^ (4 : ℕ) / 24 +
+          (47 / 80 : ℝ) ^ (5 : ℕ) / 120 + (47 / 80 : ℝ) ^ (6 : ℕ) / 720 +
+          (47 / 80 : ℝ) ^ (7 : ℕ) / 5040 + (47 / 80 : ℝ) ^ (8 : ℕ) / 40320 +
+          (47 / 80 : ℝ) ^ (9 : ℕ) / 362880))]
   rw [show (47 / 40 : ℝ) = 47 / 80 + 47 / 80 by ring, Real.exp_add]
   nlinarith [Real.exp_pos (47 / 80 : ℝ)]
 
 /-- Exact scalar sign at the later C5-failure point. -/
 theorem sexticGaussianC5ActionPolynomial_neg :
     let r := Real.exp (47 / 40 : ℝ) - 1
-    24 * r ^ 2 - 613 / 16 * r - 3481 / 100 < 0 := by
+    24 * r ^ (2 : ℕ) - 613 / 16 * r - 3481 / 100 < 0 := by
   dsimp
   let r := Real.exp (47 / 40 : ℝ) - 1
   have hrUpper : r < 56 / 25 := by
@@ -61,8 +61,8 @@ theorem sexticGaussianC5ActionPolynomial_neg :
     nlinarith
   have hmono : 0 < 48 * r - 613 / 16 := by nlinarith
   have hfactor :
-      (24 * (56 / 25 : ℝ) ^ 2 - 613 / 16 * (56 / 25 : ℝ) - 3481 / 100) -
-          (24 * r ^ 2 - 613 / 16 * r - 3481 / 100) =
+      (24 * (56 / 25 : ℝ) ^ (2 : ℕ) - 613 / 16 * (56 / 25 : ℝ) - 3481 / 100) -
+          (24 * r ^ (2 : ℕ) - 613 / 16 * r - 3481 / 100) =
         ((56 / 25 : ℝ) - r) * (24 * ((56 / 25 : ℝ) + r) - 613 / 16) := by
     ring
   have hfactorPos :
@@ -74,28 +74,28 @@ theorem sexticGaussianC5ActionPolynomial_neg :
   norm_num at hfactorPos ⊢
   linarith
 
-def sexticGaussianAction (t : ℝ) : ℝ := 2 * t ^ 2 + t ^ 4 / 5 + t ^ 6
+def sexticGaussianAction (t : ℝ) : ℝ := 2 * t ^ (2 : ℕ) + t ^ (4 : ℕ) / 5 + t ^ (6 : ℕ)
 
-def sexticGaussianActionOne (t : ℝ) : ℝ := 4 * t + 4 / 5 * t ^ 3 + 6 * t ^ 5
+def sexticGaussianActionOne (t : ℝ) : ℝ := 4 * t + 4 / 5 * t ^ (3 : ℕ) + 6 * t ^ (5 : ℕ)
 
-def sexticGaussianActionTwo (t : ℝ) : ℝ := 4 + 12 / 5 * t ^ 2 + 30 * t ^ 4
+def sexticGaussianActionTwo (t : ℝ) : ℝ := 4 + 12 / 5 * t ^ (2 : ℕ) + 30 * t ^ (4 : ℕ)
 
-def sexticGaussianActionThree (t : ℝ) : ℝ := 24 / 5 * t + 120 * t ^ 3
+def sexticGaussianActionThree (t : ℝ) : ℝ := 24 / 5 * t + 120 * t ^ (3 : ℕ)
 
 theorem sexticGaussianAction_riccatiMargin_nonneg {t : ℝ} (ht : 0 ≤ t) :
     0 ≤ 2 * sexticGaussianActionOne t * sexticGaussianActionTwo t -
       sexticGaussianActionThree t := by
-  have hy : 0 ≤ t ^ 2 := sq_nonneg t
-  have hquad : 0 < 680 - 2360 * t ^ 2 + 7296 * (t ^ 2) ^ 2 := by
-    nlinarith [sq_nonneg (7296 * t ^ 2 - 1180)]
+  have hy : 0 ≤ t ^ (2 : ℕ) := sq_nonneg t
+  have hquad : 0 < 680 - 2360 * t ^ (2 : ℕ) + 7296 * (t ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (7296 * t ^ (2 : ℕ) - 1180)]
   unfold sexticGaussianActionOne sexticGaussianActionTwo sexticGaussianActionThree
   have hfactor :
-      2 * (4 * t + 4 / 5 * t ^ 3 + 6 * t ^ 5) *
-          (4 + 12 / 5 * t ^ 2 + 30 * t ^ 4) -
-          (24 / 5 * t + 120 * t ^ 3) =
+      2 * (4 * t + 4 / 5 * t ^ (3 : ℕ) + 6 * t ^ (5 : ℕ)) *
+          (4 + 12 / 5 * t ^ (2 : ℕ) + 30 * t ^ (4 : ℕ)) -
+          (24 / 5 * t + 120 * t ^ (3 : ℕ)) =
         t / 25 *
-          (680 - 2360 * t ^ 2 + 7296 * (t ^ 2) ^ 2 +
-            1920 * (t ^ 2) ^ 3 + 9000 * (t ^ 2) ^ 4) := by
+          (680 - 2360 * t ^ (2 : ℕ) + 7296 * (t ^ (2 : ℕ)) ^ (2 : ℕ) +
+            1920 * (t ^ (2 : ℕ)) ^ (3 : ℕ) + 9000 * (t ^ (2 : ℕ)) ^ (4 : ℕ)) := by
     ring
   rw [hfactor]
   positivity
@@ -105,9 +105,9 @@ theorem hasDerivAt_sexticGaussianAction (t : ℝ) :
   unfold sexticGaussianAction sexticGaussianActionOne
   have hraw := (((hasDerivAt_id t).pow 2).const_mul 2).add
     (((hasDerivAt_id t).pow 4).div_const 5 |>.add ((hasDerivAt_id t).pow 6))
-  rw [show (fun y : ℝ => 2 * y ^ 2 + y ^ 4 / 5 + y ^ 6) =
-      (fun y => 2 * (id ^ 2) y) +
-        ((fun y => (id ^ 4) y / 5) + id ^ 6) by
+  rw [show (fun y : ℝ => 2 * y ^ (2 : ℕ) + y ^ (4 : ℕ) / 5 + y ^ (6 : ℕ)) =
+      (fun y => 2 * (id ^ (2 : ℕ)) y) +
+        ((fun y => (id ^ (4 : ℕ)) y / 5) + id ^ (6 : ℕ)) by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
       ring]
@@ -121,10 +121,10 @@ theorem hasDerivAt_sexticGaussianActionOne (t : ℝ) :
   have hraw := ((hasDerivAt_id t).const_mul 4).add
     ((((hasDerivAt_id t).pow 3).const_mul (4 / 5 : ℝ)).add
       (((hasDerivAt_id t).pow 5).const_mul 6))
-  rw [show (fun y : ℝ => 4 * y + 4 / 5 * y ^ 3 + 6 * y ^ 5) =
+  rw [show (fun y : ℝ => 4 * y + 4 / 5 * y ^ (3 : ℕ) + 6 * y ^ (5 : ℕ)) =
       (fun y => 4 * id y) +
-        ((fun y => (4 / 5 : ℝ) * (id ^ 3) y) +
-          fun y => 6 * (id ^ 5) y) by
+        ((fun y => (4 / 5 : ℝ) * (id ^ (3 : ℕ)) y) +
+          fun y => 6 * (id ^ (5 : ℕ)) y) by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
       ring]
@@ -138,10 +138,10 @@ theorem hasDerivAt_sexticGaussianActionTwo (t : ℝ) :
   have hraw := (hasDerivAt_const t 4).add
     ((((hasDerivAt_id t).pow 2).const_mul (12 / 5 : ℝ)).add
       (((hasDerivAt_id t).pow 4).const_mul 30))
-  rw [show (fun y : ℝ => 4 + 12 / 5 * y ^ 2 + 30 * y ^ 4) =
+  rw [show (fun y : ℝ => 4 + 12 / 5 * y ^ (2 : ℕ) + 30 * y ^ (4 : ℕ)) =
       (fun _ : ℝ => 4) +
-        ((fun y => (12 / 5 : ℝ) * (id ^ 2) y) +
-          fun y => 30 * (id ^ 4) y) by
+        ((fun y => (12 / 5 : ℝ) * (id ^ (2 : ℕ)) y) +
+          fun y => 30 * (id ^ (4 : ℕ)) y) by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
       ring]
@@ -151,7 +151,7 @@ theorem hasDerivAt_sexticGaussianActionTwo (t : ℝ) :
 
 /-- Positive even kernel with a cubic action in the squared coordinate. -/
 def sexticGaussianKernel (t : ℝ) : ℝ :=
-  Real.exp (-(t ^ 2 + t ^ 4 / 10 + t ^ 6 / 2))
+  Real.exp (-(t ^ (2 : ℕ) + t ^ (4 : ℕ) / 10 + t ^ (6 : ℕ) / 2))
 
 /-- Centered reflected product of `sexticGaussianKernel`. -/
 def sexticGaussianReflectedProfile (t : ℝ) : ℝ :=
@@ -174,7 +174,7 @@ theorem iteratedDeriv_one_sexticGaussianReflectedProfile (t : ℝ) :
 
 theorem iteratedDeriv_two_sexticGaussianReflectedProfile (t : ℝ) :
     iteratedDeriv 2 sexticGaussianReflectedProfile t =
-      (sexticGaussianActionOne t ^ 2 - sexticGaussianActionTwo t) *
+      (sexticGaussianActionOne t ^ (2 : ℕ) - sexticGaussianActionTwo t) *
         sexticGaussianReflectedProfile t := by
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hfun : deriv sexticGaussianReflectedProfile = fun y =>
@@ -212,7 +212,7 @@ theorem sexticGaussianCorrelationAngle_concaveOn {T : ℝ} (hT : 0 ≤ T) :
   · intro t ht
     rw [interior_Icc] at ht
     unfold sexticGaussianAction
-    have : 0 < t ^ 2 := sq_pos_of_pos ht.1
+    have : 0 < t ^ (2 : ℕ) := sq_pos_of_pos ht.1
     positivity
   · intro t ht
     exact sexticGaussianAction_riccatiMargin_nonneg ht.1
@@ -223,14 +223,14 @@ theorem sexticGaussianReflectedProfile_fifthRootCurvature_neg :
   let t : ℝ := Real.sqrt (1 / 2)
   let p : ℝ := Real.exp (-(47 / 40 : ℝ))
   let r : ℝ := Real.exp (47 / 40 : ℝ) - 1
-  have htSq : t ^ 2 = 1 / 2 := by
+  have htSq : t ^ (2 : ℕ) = 1 / 2 := by
     dsimp [t]
     rw [Real.sq_sqrt]
     norm_num
-  have htFour : t ^ 4 = 1 / 4 := by nlinarith [sq_nonneg (t ^ 2 - 1 / 2)]
-  have htSix : t ^ 6 = 1 / 8 := by
+  have htFour : t ^ (4 : ℕ) = 1 / 4 := by nlinarith [sq_nonneg (t ^ (2 : ℕ) - 1 / 2)]
+  have htSix : t ^ (6 : ℕ) = 1 / 8 := by
     calc
-      t ^ 6 = t ^ 4 * t ^ 2 := by ring
+      t ^ (6 : ℕ) = t ^ (4 : ℕ) * t ^ (2 : ℕ) := by ring
       _ = 1 / 8 := by rw [htFour, htSq]; norm_num
   have hq : sexticGaussianAction t = 47 / 40 := by
     unfold sexticGaussianAction
@@ -239,14 +239,14 @@ theorem sexticGaussianReflectedProfile_fifthRootCurvature_neg :
   have hqOne : t * sexticGaussianActionOne t = 59 / 20 := by
     unfold sexticGaussianActionOne
     calc
-      t * (4 * t + 4 / 5 * t ^ 3 + 6 * t ^ 5) =
-          4 * t ^ 2 + 4 / 5 * t ^ 4 + 6 * t ^ 6 := by ring
+      t * (4 * t + 4 / 5 * t ^ (3 : ℕ) + 6 * t ^ (5 : ℕ)) =
+          4 * t ^ (2 : ℕ) + 4 / 5 * t ^ (4 : ℕ) + 6 * t ^ (6 : ℕ) := by ring
       _ = 59 / 20 := by rw [htSq, htFour, htSix]; norm_num
-  have hqTwo : t ^ 2 * sexticGaussianActionTwo t = 127 / 20 := by
+  have hqTwo : t ^ (2 : ℕ) * sexticGaussianActionTwo t = 127 / 20 := by
     unfold sexticGaussianActionTwo
     calc
-      t ^ 2 * (4 + 12 / 5 * t ^ 2 + 30 * t ^ 4) =
-          4 * t ^ 2 + 12 / 5 * t ^ 4 + 30 * t ^ 6 := by ring
+      t ^ (2 : ℕ) * (4 + 12 / 5 * t ^ (2 : ℕ) + 30 * t ^ (4 : ℕ)) =
+          4 * t ^ (2 : ℕ) + 12 / 5 * t ^ (4 : ℕ) + 30 * t ^ (6 : ℕ) := by ring
       _ = 127 / 20 := by rw [htSq, htFour, htSix]; norm_num
   have hP : sexticGaussianReflectedProfile t = p := by
     dsimp [p]
@@ -259,11 +259,11 @@ theorem sexticGaussianReflectedProfile_fifthRootCurvature_neg :
     dsimp [p, r]
     rw [mul_sub, ← Real.exp_add]
     norm_num
-  have hpoly : 24 * r ^ 2 - 613 / 16 * r - 3481 / 100 < 0 :=
+  have hpoly : 24 * r ^ (2 : ℕ) - 613 / 16 * r - 3481 / 100 < 0 :=
     sexticGaussianC5ActionPolynomial_neg
   have hformula :
       fifthRootDividedDropCurvatureNumerator sexticGaussianReflectedProfile t =
-        p ^ 2 * (24 * r ^ 2 - 613 / 16 * r - 3481 / 100) := by
+        p ^ (2 : ℕ) * (24 * r ^ (2 : ℕ) - 613 / 16 * r - 3481 / 100) := by
     unfold fifthRootDividedDropCurvatureNumerator
     rw [iteratedDeriv_one_sexticGaussianReflectedProfile,
       iteratedDeriv_two_sexticGaussianReflectedProfile,
@@ -271,19 +271,19 @@ theorem sexticGaussianReflectedProfile_fifthRootCurvature_neg :
     dsimp only
     rw [hpr]
     calc
-      24 * (p * r) ^ 2 +
+      24 * (p * r) ^ (2 : ℕ) +
             9 * t * (p * r) * (-sexticGaussianActionOne t * p) +
-            t ^ 2 *
+            t ^ (2 : ℕ) *
               (-5 * (p * r) *
-                  ((sexticGaussianActionOne t ^ 2 - sexticGaussianActionTwo t) * p) -
-                4 * (-sexticGaussianActionOne t * p) ^ 2) =
-          p ^ 2 *
-            (24 * r ^ 2 - 9 * r * (t * sexticGaussianActionOne t) +
+                  ((sexticGaussianActionOne t ^ (2 : ℕ) - sexticGaussianActionTwo t) * p) -
+                4 * (-sexticGaussianActionOne t * p) ^ (2 : ℕ)) =
+          p ^ (2 : ℕ) *
+            (24 * r ^ (2 : ℕ) - 9 * r * (t * sexticGaussianActionOne t) +
               5 * r *
-                (t ^ 2 * sexticGaussianActionTwo t -
-                  (t * sexticGaussianActionOne t) ^ 2) -
-              4 * (t * sexticGaussianActionOne t) ^ 2) := by ring
-      _ = p ^ 2 * (24 * r ^ 2 - 613 / 16 * r - 3481 / 100) := by
+                (t ^ (2 : ℕ) * sexticGaussianActionTwo t -
+                  (t * sexticGaussianActionOne t) ^ (2 : ℕ)) -
+              4 * (t * sexticGaussianActionOne t) ^ (2 : ℕ)) := by ring
+      _ = p ^ (2 : ℕ) * (24 * r ^ (2 : ℕ) - 613 / 16 * r - 3481 / 100) := by
         rw [hqOne, hqTwo]
         ring
   rw [hformula]
@@ -298,9 +298,9 @@ theorem sexticGaussianKernel_reflected (t : ℝ) :
   ring
 
 /-- Cubic squared-coordinate action whose exponential is the kernel's radial profile. -/
-def cubicGaussianRadialAction (x : ℝ) : ℝ := x + x ^ 2 / 10 + x ^ 3 / 2
+def cubicGaussianRadialAction (x : ℝ) : ℝ := x + x ^ (2 : ℕ) / 10 + x ^ (3 : ℕ) / 2
 
-def cubicGaussianRadialActionOne (x : ℝ) : ℝ := 1 + x / 5 + 3 / 2 * x ^ 2
+def cubicGaussianRadialActionOne (x : ℝ) : ℝ := 1 + x / 5 + 3 / 2 * x ^ (2 : ℕ)
 
 def cubicGaussianRadialActionTwo (x : ℝ) : ℝ := 1 / 5 + 3 * x
 
@@ -312,8 +312,8 @@ theorem hasDerivAt_cubicGaussianRadialAction (x : ℝ) :
   have hraw := (hasDerivAt_id x).add
     (((hasDerivAt_id x).pow 2).div_const 10 |>.add
       (((hasDerivAt_id x).pow 3).div_const 2))
-  rw [show (fun y : ℝ => y + y ^ 2 / 10 + y ^ 3 / 2) =
-      id + ((fun y => (id ^ 2) y / 10) + fun y => (id ^ 3) y / 2) by
+  rw [show (fun y : ℝ => y + y ^ (2 : ℕ) / 10 + y ^ (3 : ℕ) / 2) =
+      id + ((fun y => (id ^ (2 : ℕ)) y / 10) + fun y => (id ^ (3 : ℕ)) y / 2) by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
       ring]
@@ -327,9 +327,9 @@ theorem hasDerivAt_cubicGaussianRadialActionOne (x : ℝ) :
   have hraw := (hasDerivAt_const x 1).add
     ((hasDerivAt_id x).div_const 5 |>.add
       (((hasDerivAt_id x).pow 2).const_mul (3 / 2 : ℝ)))
-  rw [show (fun y : ℝ => 1 + y / 5 + 3 / 2 * y ^ 2) =
+  rw [show (fun y : ℝ => 1 + y / 5 + 3 / 2 * y ^ (2 : ℕ)) =
       (fun _ : ℝ => 1) + ((fun y => id y / 5) +
-        fun y => (3 / 2 : ℝ) * (id ^ 2) y) by
+        fun y => (3 / 2 : ℝ) * (id ^ (2 : ℕ)) y) by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]
       ring]
@@ -366,7 +366,7 @@ theorem iteratedDeriv_one_cubicGaussianRadialProfile (x : ℝ) :
 
 theorem iteratedDeriv_two_cubicGaussianRadialProfile (x : ℝ) :
     iteratedDeriv 2 cubicGaussianRadialProfile x =
-      (cubicGaussianRadialActionOne x ^ 2 - cubicGaussianRadialActionTwo x) *
+      (cubicGaussianRadialActionOne x ^ (2 : ℕ) - cubicGaussianRadialActionTwo x) *
         cubicGaussianRadialProfile x := by
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hfun : deriv cubicGaussianRadialProfile = fun y =>
@@ -394,7 +394,7 @@ theorem firstLaguerreExpression_cubicGaussianRadialProfile (x : ℝ) :
     iteratedDeriv_two_cubicGaussianRadialProfile]
   unfold cubicGaussianRadialProfile
   have hexp : Real.exp (-2 * cubicGaussianRadialAction x) =
-      Real.exp (-cubicGaussianRadialAction x) ^ 2 := by
+      Real.exp (-cubicGaussianRadialAction x) ^ (2 : ℕ) := by
     rw [show -2 * cubicGaussianRadialAction x =
         -cubicGaussianRadialAction x + -cubicGaussianRadialAction x by ring,
       Real.exp_add]
@@ -453,7 +453,7 @@ theorem cubicGaussianRadialProfile_secondLevelLogCurvature
     {x : ℝ} (hx : 0 ≤ x) :
     iteratedDeriv 2
         (fun y => Real.log (firstLaguerreExpression cubicGaussianRadialProfile y)) x =
-      -9 / cubicGaussianRadialActionTwo x ^ 2 -
+      -9 / cubicGaussianRadialActionTwo x ^ (2 : ℕ) -
         2 * cubicGaussianRadialActionTwo x := by
   rw [iteratedDeriv_succ]
   have hthreshold : (-1 / 15 : ℝ) < x := by linarith
@@ -479,7 +479,7 @@ theorem cubicGaussianRadialProfile_secondLevelLogCurvature
       (fun y => 3 / cubicGaussianRadialActionTwo y -
         2 * cubicGaussianRadialActionOne y)
       ((0 * cubicGaussianRadialActionTwo x - 3 * 3) /
-          cubicGaussianRadialActionTwo x ^ 2 -
+          cubicGaussianRadialActionTwo x ^ (2 : ℕ) -
         2 * cubicGaussianRadialActionTwo x) x := by
     rw [show (fun y => 3 / cubicGaussianRadialActionTwo y -
         2 * cubicGaussianRadialActionOne y) =
@@ -499,12 +499,12 @@ theorem cubicGaussianRadialProfile_secondLevel_strict
   have hTwo : 0 < cubicGaussianRadialActionTwo x := by
     unfold cubicGaussianRadialActionTwo
     positivity
-  have hsq : 0 < cubicGaussianRadialActionTwo x ^ 2 := sq_pos_of_pos hTwo
-  have hfirst : -9 / cubicGaussianRadialActionTwo x ^ 2 < 0 :=
+  have hsq : 0 < cubicGaussianRadialActionTwo x ^ (2 : ℕ) := sq_pos_of_pos hTwo
+  have hfirst : -9 / cubicGaussianRadialActionTwo x ^ (2 : ℕ) < 0 :=
     div_neg_of_neg_of_pos (by norm_num) hsq
   nlinarith
 
-def sexticGaussianActionFour (t : ℝ) : ℝ := 24 / 5 + 360 * t ^ 2
+def sexticGaussianActionFour (t : ℝ) : ℝ := 24 / 5 + 360 * t ^ (2 : ℕ)
 
 def sexticGaussianActionFive (t : ℝ) : ℝ := 720 * t
 
@@ -515,8 +515,8 @@ theorem hasDerivAt_sexticGaussianActionThree (t : ℝ) :
   unfold sexticGaussianActionThree sexticGaussianActionFour
   have hraw := ((hasDerivAt_id t).const_mul (24 / 5 : ℝ)).add
     (((hasDerivAt_id t).pow 3).const_mul 120)
-  rw [show (fun y : ℝ => 24 / 5 * y + 120 * y ^ 3) =
-      (fun y => (24 / 5 : ℝ) * id y) + fun y => 120 * (id ^ 3) y by
+  rw [show (fun y : ℝ => 24 / 5 * y + 120 * y ^ (3 : ℕ)) =
+      (fun y => (24 / 5 : ℝ) * id y) + fun y => 120 * (id ^ (3 : ℕ)) y by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -528,8 +528,8 @@ theorem hasDerivAt_sexticGaussianActionFour (t : ℝ) :
   unfold sexticGaussianActionFour sexticGaussianActionFive
   have hraw := (hasDerivAt_const t (24 / 5 : ℝ)).add
     (((hasDerivAt_id t).pow 2).const_mul 360)
-  rw [show (fun y : ℝ => 24 / 5 + 360 * y ^ 2) =
-      (fun _ : ℝ => 24 / 5) + fun y => 360 * (id ^ 2) y by
+  rw [show (fun y : ℝ => 24 / 5 + 360 * y ^ (2 : ℕ)) =
+      (fun _ : ℝ => 24 / 5) + fun y => 360 * (id ^ (2 : ℕ)) y by
       funext y
       simp only [Pi.add_apply, Pi.pow_apply, id_eq]]
   refine hraw.congr_deriv ?_
@@ -547,39 +547,39 @@ theorem hasDerivAt_sexticGaussianActionFive (t : ℝ) :
   norm_num
 
 def sexticGaussianJetTwo (t : ℝ) : ℝ :=
-  sexticGaussianActionOne t ^ 2 - sexticGaussianActionTwo t
+  sexticGaussianActionOne t ^ (2 : ℕ) - sexticGaussianActionTwo t
 
 def sexticGaussianJetThree (t : ℝ) : ℝ :=
-  -sexticGaussianActionOne t ^ 3 +
+  -sexticGaussianActionOne t ^ (3 : ℕ) +
     3 * sexticGaussianActionOne t * sexticGaussianActionTwo t -
     sexticGaussianActionThree t
 
 def sexticGaussianJetFour (t : ℝ) : ℝ :=
-  sexticGaussianActionOne t ^ 4 -
-    6 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionTwo t +
-    3 * sexticGaussianActionTwo t ^ 2 +
+  sexticGaussianActionOne t ^ (4 : ℕ) -
+    6 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionTwo t +
+    3 * sexticGaussianActionTwo t ^ (2 : ℕ) +
     4 * sexticGaussianActionOne t * sexticGaussianActionThree t -
     sexticGaussianActionFour t
 
 def sexticGaussianJetFive (t : ℝ) : ℝ :=
-  -sexticGaussianActionOne t ^ 5 +
-    10 * sexticGaussianActionOne t ^ 3 * sexticGaussianActionTwo t -
-    15 * sexticGaussianActionOne t * sexticGaussianActionTwo t ^ 2 -
-    10 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionThree t +
+  -sexticGaussianActionOne t ^ (5 : ℕ) +
+    10 * sexticGaussianActionOne t ^ (3 : ℕ) * sexticGaussianActionTwo t -
+    15 * sexticGaussianActionOne t * sexticGaussianActionTwo t ^ (2 : ℕ) -
+    10 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionThree t +
     10 * sexticGaussianActionTwo t * sexticGaussianActionThree t +
     5 * sexticGaussianActionOne t * sexticGaussianActionFour t -
     sexticGaussianActionFive t
 
 def sexticGaussianJetSix (t : ℝ) : ℝ :=
-  sexticGaussianActionOne t ^ 6 -
-    15 * sexticGaussianActionOne t ^ 4 * sexticGaussianActionTwo t +
-    45 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionTwo t ^ 2 -
-    15 * sexticGaussianActionTwo t ^ 3 +
-    20 * sexticGaussianActionOne t ^ 3 * sexticGaussianActionThree t -
+  sexticGaussianActionOne t ^ (6 : ℕ) -
+    15 * sexticGaussianActionOne t ^ (4 : ℕ) * sexticGaussianActionTwo t +
+    45 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionTwo t ^ (2 : ℕ) -
+    15 * sexticGaussianActionTwo t ^ (3 : ℕ) +
+    20 * sexticGaussianActionOne t ^ (3 : ℕ) * sexticGaussianActionThree t -
     60 * sexticGaussianActionOne t * sexticGaussianActionTwo t *
       sexticGaussianActionThree t +
-    10 * sexticGaussianActionThree t ^ 2 -
-    15 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionFour t +
+    10 * sexticGaussianActionThree t ^ (2 : ℕ) -
+    15 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionFour t +
     15 * sexticGaussianActionTwo t * sexticGaussianActionFour t +
     6 * sexticGaussianActionOne t * sexticGaussianActionFive t -
     sexticGaussianActionSix t
@@ -591,8 +591,8 @@ theorem hasDerivAt_sexticGaussianJetTwo (t : ℝ) :
   unfold sexticGaussianJetTwo
   have hraw := (hasDerivAt_sexticGaussianActionOne t).pow 2 |>.sub
     (hasDerivAt_sexticGaussianActionTwo t)
-  rw [show (fun y => sexticGaussianActionOne y ^ 2 - sexticGaussianActionTwo y) =
-      sexticGaussianActionOne ^ 2 - sexticGaussianActionTwo by
+  rw [show (fun y => sexticGaussianActionOne y ^ (2 : ℕ) - sexticGaussianActionTwo y) =
+      sexticGaussianActionOne ^ (2 : ℕ) - sexticGaussianActionTwo by
       funext y
       rfl]
   refine hraw.congr_deriv ?_
@@ -609,10 +609,10 @@ theorem hasDerivAt_sexticGaussianJetThree (t : ℝ) :
     (((hasDerivAt_sexticGaussianActionOne t).mul
       (hasDerivAt_sexticGaussianActionTwo t)).const_mul 3) |>.sub
     (hasDerivAt_sexticGaussianActionThree t)
-  rw [show (fun y => -sexticGaussianActionOne y ^ 3 +
+  rw [show (fun y => -sexticGaussianActionOne y ^ (3 : ℕ) +
         3 * sexticGaussianActionOne y * sexticGaussianActionTwo y -
         sexticGaussianActionThree y) =
-      -(sexticGaussianActionOne ^ 3) +
+      -(sexticGaussianActionOne ^ (3 : ℕ)) +
           (fun y => 3 * (sexticGaussianActionOne * sexticGaussianActionTwo) y) -
         sexticGaussianActionThree by
       funext y
@@ -635,14 +635,14 @@ theorem hasDerivAt_sexticGaussianJetFour (t : ℝ) :
       (((hasDerivAt_sexticGaussianActionOne t).mul
         (hasDerivAt_sexticGaussianActionThree t)).const_mul 4) |>.sub
       (hasDerivAt_sexticGaussianActionFour t)
-  rw [show (fun y => sexticGaussianActionOne y ^ 4 -
-        6 * sexticGaussianActionOne y ^ 2 * sexticGaussianActionTwo y +
-        3 * sexticGaussianActionTwo y ^ 2 +
+  rw [show (fun y => sexticGaussianActionOne y ^ (4 : ℕ) -
+        6 * sexticGaussianActionOne y ^ (2 : ℕ) * sexticGaussianActionTwo y +
+        3 * sexticGaussianActionTwo y ^ (2 : ℕ) +
         4 * sexticGaussianActionOne y * sexticGaussianActionThree y -
         sexticGaussianActionFour y) =
-      (((sexticGaussianActionOne ^ 4 -
-          fun y => 6 * ((sexticGaussianActionOne ^ 2) * sexticGaussianActionTwo) y) +
-        fun y => 3 * (sexticGaussianActionTwo ^ 2) y) +
+      (((sexticGaussianActionOne ^ (4 : ℕ) -
+          fun y => 6 * ((sexticGaussianActionOne ^ (2 : ℕ)) * sexticGaussianActionTwo) y) +
+        fun y => 3 * (sexticGaussianActionTwo ^ (2 : ℕ)) y) +
         fun y => 4 * (sexticGaussianActionOne * sexticGaussianActionThree) y) -
         sexticGaussianActionFour by
       funext y
@@ -674,19 +674,19 @@ theorem hasDerivAt_sexticGaussianJetFive (t : ℝ) :
     (((hasDerivAt_sexticGaussianActionOne t).mul
       (hasDerivAt_sexticGaussianActionFour t)).const_mul 5)
   have hraw := h₅.sub (hasDerivAt_sexticGaussianActionFive t)
-  rw [show (fun y => -sexticGaussianActionOne y ^ 5 +
-        10 * sexticGaussianActionOne y ^ 3 * sexticGaussianActionTwo y -
-        15 * sexticGaussianActionOne y * sexticGaussianActionTwo y ^ 2 -
-        10 * sexticGaussianActionOne y ^ 2 * sexticGaussianActionThree y +
+  rw [show (fun y => -sexticGaussianActionOne y ^ (5 : ℕ) +
+        10 * sexticGaussianActionOne y ^ (3 : ℕ) * sexticGaussianActionTwo y -
+        15 * sexticGaussianActionOne y * sexticGaussianActionTwo y ^ (2 : ℕ) -
+        10 * sexticGaussianActionOne y ^ (2 : ℕ) * sexticGaussianActionThree y +
         10 * sexticGaussianActionTwo y * sexticGaussianActionThree y +
         5 * sexticGaussianActionOne y * sexticGaussianActionFour y -
         sexticGaussianActionFive y) =
-      (((((-(sexticGaussianActionOne ^ 5) +
-          fun y => 10 * ((sexticGaussianActionOne ^ 3) *
+      (((((-(sexticGaussianActionOne ^ (5 : ℕ)) +
+          fun y => 10 * ((sexticGaussianActionOne ^ (3 : ℕ)) *
             sexticGaussianActionTwo) y) -
           fun y => 15 * (sexticGaussianActionOne *
-            (sexticGaussianActionTwo ^ 2)) y) -
-          fun y => 10 * ((sexticGaussianActionOne ^ 2) *
+            (sexticGaussianActionTwo ^ (2 : ℕ))) y) -
+          fun y => 10 * ((sexticGaussianActionOne ^ (2 : ℕ)) *
             sexticGaussianActionThree) y) +
           fun y => 10 * (sexticGaussianActionTwo * sexticGaussianActionThree) y) +
           fun y => 5 * (sexticGaussianActionOne * sexticGaussianActionFour) y) -
@@ -780,7 +780,7 @@ theorem sexticGaussianReflectedProfile_even :
 theorem sexticGaussianReflectedProfile_secondSixthHankel :
     iteratedDeriv 2 sexticGaussianReflectedProfile 0 *
           iteratedDeriv 6 sexticGaussianReflectedProfile 0 -
-        iteratedDeriv 4 sexticGaussianReflectedProfile 0 ^ 2 = 92544 / 25 := by
+        iteratedDeriv 4 sexticGaussianReflectedProfile 0 ^ (2 : ℕ) = 92544 / 25 := by
   rw [iteratedDeriv_two_sexticGaussianReflectedProfile,
     iteratedDeriv_four_sexticGaussianReflectedProfile,
     iteratedDeriv_six_sexticGaussianReflectedProfile]
@@ -813,8 +813,8 @@ theorem cubicGaussianRadialProfile_eq_sexticGaussianKernel_sqrt
     cubicGaussianRadialProfile x = sexticGaussianKernel (Real.sqrt x) := by
   unfold cubicGaussianRadialProfile cubicGaussianRadialAction sexticGaussianKernel
   congr 1
-  rw [show Real.sqrt x ^ 4 = (Real.sqrt x ^ 2) ^ 2 by ring,
-    show Real.sqrt x ^ 6 = (Real.sqrt x ^ 2) ^ 3 by ring,
+  rw [show Real.sqrt x ^ (4 : ℕ) = (Real.sqrt x ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
+    show Real.sqrt x ^ (6 : ℕ) = (Real.sqrt x ^ (2 : ℕ)) ^ (3 : ℕ) by ring,
     Real.sq_sqrt hx]
 
 /-- **Strengthened no-go.** Strict radial second-level concavity, a globally concave

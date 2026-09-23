@@ -108,11 +108,11 @@ theorem reciprocalPosition_velocity
     {g z : ℂ → ℂ} {x dz d : ℂ} (hx : x ≠ 0)
     (hposition : (fun y : ℂ => g (z y)) =ᶠ[nhds x] (fun y : ℂ => -y⁻¹))
     (hz : HasDerivAt z dz x) (hg : HasDerivAt g d (z x)) :
-    d * dz = (x ^ 2)⁻¹ := by
+    d * dz = (x ^ (2 : ℕ))⁻¹ := by
   have hcomp : HasDerivAt (fun y : ℂ => g (z y)) (d * dz) x := hg.comp x hz
   have hcomp' : HasDerivAt (fun y : ℂ => -y⁻¹) (d * dz) x :=
     hposition.hasDerivAt_iff.mp hcomp
-  have hinv : HasDerivAt (fun y : ℂ => -y⁻¹) ((x ^ 2)⁻¹) x := by
+  have hinv : HasDerivAt (fun y : ℂ => -y⁻¹) ((x ^ (2 : ℕ))⁻¹) x := by
     have hraw := ((hasDerivAt_id x).inv hx).neg
     rw [show (-id⁻¹ : ℂ → ℂ) = (fun y : ℂ => -y⁻¹) by
       funext y
@@ -128,18 +128,18 @@ theorem reciprocalPosition_residueInterpolation
     {g z : ℂ → ℂ} {x dz d : ℂ} (hx : x ≠ 0) (hd : d ≠ 0)
     (hposition : (fun y : ℂ => g (z y)) =ᶠ[nhds x] (fun y : ℂ => -y⁻¹))
     (hz : HasDerivAt z dz x) (hg : HasDerivAt g d (z x)) :
-    -1 / d = -(x ^ 2) * dz := by
+    -1 / d = -(x ^ (2 : ℕ)) * dz := by
   have hv := reciprocalPosition_velocity hx hposition hz hg
   field_simp [hx] at hv
-  have hinvd : 1 / d = x ^ 2 * dz := by
+  have hinvd : 1 / d = x ^ (2 : ℕ) * dz := by
     apply (div_eq_iff hd).2
     calc
-      1 = d * dz * x ^ 2 := hv.symm
-      _ = x ^ 2 * dz * d := by ring
+      1 = d * dz * x ^ (2 : ℕ) := hv.symm
+      _ = x ^ (2 : ℕ) * dz * d := by ring
   calc
     -1 / d = -(1 / d) := by ring
-    _ = -(x ^ 2 * dz) := congrArg Neg.neg hinvd
-    _ = -(x ^ 2) * dz := by ring
+    _ = -(x ^ (2 : ℕ) * dz) := congrArg Neg.neg hinvd
+    _ = -(x ^ (2 : ℕ)) * dz := by ring
 
 /-- At a reciprocal Gamma value, the scaled Gamma derivative is exactly the digamma value.  This
 identifies the additive coordinate used below with a classical special-function value. -/

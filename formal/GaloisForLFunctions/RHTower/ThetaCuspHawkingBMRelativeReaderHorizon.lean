@@ -33,9 +33,9 @@ private theorem one_add_frequency_ne_zero (q : XiZeroCopy) (side : Bool) :
 private theorem gauss_product (r : XiZeroCopy) (w : ℂ) :
     gaussA w (physicalRadialFrequency r) * gaussB w (physicalRadialFrequency r) =
       (w * (w + 1) + D4BMLiteralCusp.scalarQ (physicalAngularParameter r)) / 4 := by
-  have hi : I ^ 4 = 1 := by
+  have hi : I ^ (4 : ℕ) = 1 := by
     calc
-      I ^ 4 = (I ^ 2) ^ 2 := by ring
+      I ^ (4 : ℕ) = (I ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       _ = 1 := by rw [Complex.I_sq]; norm_num
   dsimp [gaussA, gaussB, physicalRadialFrequency, D4BMLiteralCusp.scalarQ]
   ring_nf
@@ -103,7 +103,7 @@ private def gaussGreen (q : XiZeroCopy) (side : Bool) (z : ℂ) : ℂ :=
 theorem radialGreen_eq (q : XiZeroCopy) (side : Bool) (t : ℝ) :
     radialGreen q side t =
       2 * (radialUnit t : ℂ) * ((horizonCoordinate t : ℂ) *
-        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ 2) *
+        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ (2 : ℕ)) *
         gaussGreen q side (horizonCoordinate t) := by
   dsimp [radialGreen, gaussGreen, tortoiseMode, tortoiseModeFirst, radialMode,
     radialModeFirst, horizon, horizonFirst, dress, dressFirst, coordinateFirst]
@@ -156,7 +156,7 @@ private theorem unit_horizon : Tendsto radialUnit atBot (𝓝 (1 : ℝ)) := by
 theorem normalized_radialGreen_tendsto (q : XiZeroCopy) (side : Bool) :
     Tendsto (fun t => radialGreen q side t /
       ((horizonCoordinate t : ℂ) *
-        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ 2))
+        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ (2 : ℕ)))
       atBot (𝓝 (center q / (4 * (1 + physicalFundamentalFrequency q side)))) := by
   have hg := (gaussGreen_continuousAt_zero q side).tendsto.comp
     horizonCoordinate_tendsto_horizon.ofReal
@@ -172,7 +172,7 @@ theorem normalized_radialGreen_tendsto (q : XiZeroCopy) (side : Bool) :
   filter_upwards [eventually_lt_atBot (0 : ℝ)] with t ht
   have hz := (horizonCoordinate_interior t ht).1
   have hn : (horizonCoordinate t : ℂ) *
-      power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ 2 ≠ 0 :=
+      power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ (2 : ℕ) ≠ 0 :=
     mul_ne_zero (Complex.ofReal_ne_zero.mpr hz.ne')
       (pow_ne_zero _ (power_ne_zero _ hz))
   rw [radialGreen_eq]
@@ -202,13 +202,13 @@ private theorem power_along_horizon {a : ℂ} (ha : 0 < a.re) :
     hc.comp horizonCoordinate_tendsto_horizon.ofReal
 
 private theorem horizon_scale_eq (q : XiZeroCopy) (side : Bool) {z : ℝ} (hz : 0 < z) :
-    (z : ℂ) * power (physicalFundamentalFrequency q side / 2) z ^ 2 =
+    (z : ℂ) * power (physicalFundamentalFrequency q side / 2) z ^ (2 : ℕ) =
       power (physicalFundamentalFrequency q side + 1) z := by
   have hn := Complex.ofReal_ne_zero.mpr hz.ne'
   dsimp only [power]
   rw [Complex.cpow_add _ _ hn, Complex.cpow_one]
   have he : (z : ℂ) ^ physicalFundamentalFrequency q side =
-      ((z : ℂ) ^ (physicalFundamentalFrequency q side / 2)) ^ 2 := by
+      ((z : ℂ) ^ (physicalFundamentalFrequency q side / 2)) ^ (2 : ℕ) := by
     rw [pow_two, ← Complex.cpow_add _ _ hn]
     congr 1
     ring
@@ -226,7 +226,7 @@ theorem radialGreen_no_finite_horizon_limit (q : XiZeroCopy) (side : Bool) (a : 
   simp only [mul_zero] at hh
   have he : Tendsto (fun t => radialGreen q side t /
       ((horizonCoordinate t : ℂ) *
-        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ 2))
+        power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ (2 : ℕ)))
       atBot (𝓝 0) := by
     apply hh.congr'
     filter_upwards [eventually_lt_atBot (0 : ℝ)] with t ht
@@ -318,7 +318,7 @@ theorem radialGreen_finite_subtraction_iff (q : XiZeroCopy) (side : Bool) (c : �
     simp only [mul_zero] at hh
     have he : Tendsto (fun t => radialGreen q side t /
         ((horizonCoordinate t : ℂ) *
-          power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ 2) - c)
+          power (physicalFundamentalFrequency q side / 2) (horizonCoordinate t) ^ (2 : ℕ)) - c)
         atBot (𝓝 0) := by
       apply hh.congr'
       filter_upwards [eventually_lt_atBot (0 : ℝ)] with t ht

@@ -19,8 +19,8 @@ theorem fullErrorEnergy_le_two_sourceGram_add_two (N : ℕ) :
     calc
       _ ≤ ‖bdTarget‖ + ‖bdMobiusModularApproximantVec N‖ := norm_sub_le _ _
       _ = _ := by rw [norm_bdTarget]
-  have hsq : ‖bdTarget - bdMobiusModularApproximantVec N‖ ^ 2 ≤
-      (1 + ‖bdMobiusModularApproximantVec N‖) ^ 2 :=
+  have hsq : ‖bdTarget - bdMobiusModularApproximantVec N‖ ^ (2 : ℕ) ≤
+      (1 + ‖bdMobiusModularApproximantVec N‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr hnorm
   nlinarith [sq_nonneg (1 - ‖bdMobiusModularApproximantVec N‖)]
 
@@ -28,7 +28,7 @@ theorem fullErrorEnergy_le_two_sourceGram_add_two (N : ℕ) :
 predictable-drift energy. -/
 theorem incrementEnergy_le_twentyfour_drift_sq_add_sixty (N : ℕ) :
     DeletionFirstTail.incrementEnergy N ≤
-      24 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 60 := by
+      24 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 60 := by
   have htail := DeletionFirstTail.incrementEnergy_le_six_fullErrorEnergy N
   have herror := fullErrorEnergy_le_two_sourceGram_add_two N
   have hdrift := DeletionResidueMartingalePhysical.sourceGramEnergy_le_two_drift_sq_add_four N
@@ -38,9 +38,9 @@ theorem incrementEnergy_le_twentyfour_drift_sq_add_sixty (N : ℕ) :
 Möbius windows of the literal first EDQ tail. -/
 theorem weighted_window_energy_le_twentyfour_drift_sq_add_sixty (N : ℕ) :
     (∑ n ∈ Finset.Ioc N (2 * N),
-      ‖∑ m ∈ Finset.Ioc N n, Sieve.moebiusC m‖ ^ 2 /
+      ‖∑ m ∈ Finset.Ioc N n, Sieve.moebiusC m‖ ^ (2 : ℕ) /
         ((n : ℝ) * ((n : ℝ) + 1))) ≤
-      24 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 60 := by
+      24 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 60 := by
   rw [← DeletionFirstTail.incrementEnergy_eq_weighted_window_energy]
   exact incrementEnergy_le_twentyfour_drift_sq_add_sixty N
 

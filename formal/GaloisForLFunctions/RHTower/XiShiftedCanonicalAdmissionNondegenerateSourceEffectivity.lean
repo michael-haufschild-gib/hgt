@@ -22,7 +22,7 @@ noncomputable section
 
 /-- Sharp dual quadratic weight for admitted trace and current diagonal channels. -/
 def xiShiftedNondegenerateSourceEffectivityWeight (n : ℕ) : ℝ :=
-  (2 * n + 1 : ℝ) ^ 2 + 2
+  (2 * n + 1 : ℝ) ^ (2 : ℕ) + 2
 
 theorem xiShiftedNondegenerateSourceEffectivityWeight_pos (n : ℕ) :
     0 < xiShiftedNondegenerateSourceEffectivityWeight n := by
@@ -35,7 +35,7 @@ theorem one_le_nondegenerateNullFlagCompletedJacobiHistory
     (hnN : n ≤ N) :
     1 ≤ HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n := by
   have hsquares : 0 ≤ ∑ j ∈ Finset.range n,
-      HTGeometry.monicOrthoAlpha s j ^ 2 :=
+      HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta s j := by
@@ -64,7 +64,7 @@ theorem jacobiEffectivity_sq_add_weight_le_weight_mul_nondegenerateHistory
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hnN : n ≤ N) :
     (-2 * HTGeometry.monicOrthoFirstCoeff s n +
-          (2 * n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n) ^ 2 +
+          (2 * n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n) ^ (2 : ℕ) +
         xiShiftedNondegenerateSourceEffectivityWeight n ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n := by
@@ -74,7 +74,7 @@ theorem jacobiEffectivity_sq_add_weight_le_weight_mul_nondegenerateHistory
   let K := xiShiftedNondegenerateSourceEffectivityWeight n
   have hK : 0 ≤ K := (xiShiftedNondegenerateSourceEffectivityWeight_pos n).le
   have hsquares : 0 ≤ ∑ j ∈ Finset.range n,
-      HTGeometry.monicOrthoAlpha s j ^ 2 :=
+      HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta s j := by
@@ -85,13 +85,13 @@ theorem jacobiEffectivity_sq_add_weight_le_weight_mul_nondegenerateHistory
     · exact (HTGeometry.monicOrthoBeta_pos_below h (Nat.succ_pos j) (by
         have hjn := Finset.mem_range.mp hj
         omega)).le
-  have hdual : (-2 * f + c * a) ^ 2 ≤ K * (2 * f ^ 2 + a ^ 2) := by
+  have hdual : (-2 * f + c * a) ^ (2 : ℕ) ≤ K * (2 * f ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
     have hsq := sq_nonneg (c * f + a)
     dsimp only [K, c]
     unfold xiShiftedNondegenerateSourceEffectivityWeight
     nlinarith
   have hhistory :
-      2 * f ^ 2 + a ^ 2 + 1 ≤
+      2 * f ^ (2 : ℕ) + a ^ (2 : ℕ) + 1 ≤
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n := by
     unfold HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory
     dsimp only [f, a]
@@ -107,7 +107,7 @@ theorem jacobiEffectivity_sq_le_weight_mul_nondegenerateHistory_sub_one
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hnN : n ≤ N) :
     (-2 * HTGeometry.monicOrthoFirstCoeff s n +
-          (2 * n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n) ^ 2 ≤
+          (2 * n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n) ^ (2 : ℕ) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         (HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n - 1) := by
   let f := HTGeometry.monicOrthoFirstCoeff s n
@@ -116,7 +116,7 @@ theorem jacobiEffectivity_sq_le_weight_mul_nondegenerateHistory_sub_one
   let K := xiShiftedNondegenerateSourceEffectivityWeight n
   have hK : 0 ≤ K := (xiShiftedNondegenerateSourceEffectivityWeight_pos n).le
   have hsquares : 0 ≤ ∑ j ∈ Finset.range n,
-      HTGeometry.monicOrthoAlpha s j ^ 2 :=
+      HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta s j := by
@@ -127,13 +127,13 @@ theorem jacobiEffectivity_sq_le_weight_mul_nondegenerateHistory_sub_one
     · exact (HTGeometry.monicOrthoBeta_pos_below h (Nat.succ_pos j) (by
         have hjn := Finset.mem_range.mp hj
         omega)).le
-  have hdual : (-2 * f + c * a) ^ 2 ≤ K * (2 * f ^ 2 + a ^ 2) := by
+  have hdual : (-2 * f + c * a) ^ (2 : ℕ) ≤ K * (2 * f ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
     have hsq := sq_nonneg (c * f + a)
     dsimp only [K, c]
     unfold xiShiftedNondegenerateSourceEffectivityWeight
     nlinarith
   have hhistory :
-      2 * f ^ 2 + a ^ 2 ≤
+      2 * f ^ (2 : ℕ) + a ^ (2 : ℕ) ≤
         HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n - 1 := by
     unfold HTGeometry.nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory
     dsimp only [f, a]
@@ -147,7 +147,7 @@ theorem jacobiEffectivity_sq_le_weight_mul_nondegenerateHistory_sub_one
 /-- Remove unit null-flag vacuum inside adaptive adjacent-amplitude shear polynomial. -/
 def xiShiftedBoundaryUnitRenormalizedNondegenerateNullFlagShearPolynomial
     (n : ℕ) (A B : Polynomial ℝ) : Polynomial ℝ :=
-  xiShiftedBoundaryNondegenerateNullFlagCompletedShearPolynomial n A B - A ^ 2
+  xiShiftedBoundaryNondegenerateNullFlagCompletedShearPolynomial n A B - A ^ (2 : ℕ)
 
 /-- Literal unit-renormalized rational--Gamma/von-Mangoldt source.  Subtraction is performed on
 source polynomial before completed aggregation. -/
@@ -182,7 +182,7 @@ theorem xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass_eq_sub
 formation of renormalized adjacent-amplitude polynomial. -/
 theorem xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass (w ^ 2) n =
+    xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass (w ^ (2 : ℕ)) n =
       xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n)
@@ -201,12 +201,12 @@ theorem xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource_
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0)
     (B : Polynomial ℝ) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
     xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource w (n + m) A B =
-      2 * xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      2 * xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
         (2 * n + (2 * m + 1)) := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
@@ -219,17 +219,17 @@ theorem xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource_
     dsimp only [A]
     rw [hP.natDegree_mul (Polynomial.monic_X_pow m), hPdeg,
       Polynomial.natDegree_X_pow]
-  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ 2 = P * R := by
+  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ (2 : ℕ) = P * R := by
     refine ⟨P * X ^ (2 * m), ?_⟩
     dsimp only [A]
     ring
   have hAsqMoment :
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) = 0 := by
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) = 0 := by
     obtain ⟨R, hAR⟩ := hAsqFactor
     have hdefect :
-        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) =
+        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
-            (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) (A ^ 2) := by
+            (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) (A ^ (2 : ℕ)) := by
       rw [hAR]
       exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
         (xiShiftedRealMomentSequence w) c R).symm
@@ -314,7 +314,7 @@ theorem two_mul_norm_mul_effectivity_sq_le_weight_mul_unitRenormalizedSourceMass
     {y : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (xiShiftedMomentHankelMatrix y (n + 2)).PosDef) :
     2 * xiShiftedCanonicalAdmissionNorm y n *
-        xiShiftedCanonicalAdmissionEffectivityRate y n ^ 2 ≤
+        xiShiftedCanonicalAdmissionEffectivityRate y n ^ (2 : ℕ) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass y n := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -342,7 +342,7 @@ positive. -/
 theorem effectivity_sq_le_weight_mul_unitRenormalizedSourceMass_div_norm
     {y : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (xiShiftedMomentHankelMatrix y (n + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionEffectivityRate y n ^ 2 ≤
+    xiShiftedCanonicalAdmissionEffectivityRate y n ^ (2 : ℕ) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         (xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass y n /
           (2 * xiShiftedCanonicalAdmissionNorm y n)) := by
@@ -355,7 +355,7 @@ theorem effectivity_sq_le_weight_mul_unitRenormalizedSourceMass_div_norm
   have hsource :=
     two_mul_norm_mul_effectivity_sq_le_weight_mul_unitRenormalizedSourceMass hn hH
   calc
-    xiShiftedCanonicalAdmissionEffectivityRate y n ^ 2 ≤
+    xiShiftedCanonicalAdmissionEffectivityRate y n ^ (2 : ℕ) ≤
         (xiShiftedNondegenerateSourceEffectivityWeight n *
           xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass y n) /
             (2 * xiShiftedCanonicalAdmissionNorm y n) := by
@@ -370,15 +370,15 @@ theorem literal_unitRenormalizedAdaptiveMixedSource_pays_admissionEffectivity
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n ^ 2 ≤
+    2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n ^ (2 : ℕ) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         xiShiftedUnitRenormalizedNondegenerateNullFlagCompletedArithmeticSource w n
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n)
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) (n + 1)) := by
-  have hmass : (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosDef := hH
+  have hmass : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosDef := hH
   have hsource :=
     two_mul_norm_mul_effectivity_sq_le_weight_mul_unitRenormalizedSourceMass hn hmass
   rw [xiShiftedCanonicalUnitRenormalizedNondegenerateNullFlagSourceMass_sq_eq_arithmetic
@@ -428,7 +428,7 @@ theorem two_mul_norm_mul_effectivity_sq_add_weight_le_weight_mul_nondegenerateSo
     {y : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (xiShiftedMomentHankelMatrix y (n + 2)).PosDef) :
     2 * xiShiftedCanonicalAdmissionNorm y n *
-        (xiShiftedCanonicalAdmissionEffectivityRate y n ^ 2 +
+        (xiShiftedCanonicalAdmissionEffectivityRate y n ^ (2 : ℕ) +
           xiShiftedNondegenerateSourceEffectivityWeight n) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass y n := by
@@ -459,8 +459,8 @@ theorem literal_nondegenerateAdaptiveMixedSource_pays_admissionEffectivity
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    2 * xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-        (xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n ^ 2 +
+    2 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+        (xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n ^ (2 : ℕ) +
           xiShiftedNondegenerateSourceEffectivityWeight n) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
         xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n
@@ -468,7 +468,7 @@ theorem literal_nondegenerateAdaptiveMixedSource_pays_admissionEffectivity
             (xiShiftedRealMomentSequence w) n)
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) (n + 1)) := by
-  have hmass : (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosDef := by
+  have hmass : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosDef := by
     exact hH
   have hsource :=
     two_mul_norm_mul_effectivity_sq_add_weight_le_weight_mul_nondegenerateSourceMass
@@ -486,7 +486,7 @@ theorem adjacent_norm_product_mul_effectivity_difference_sq_add_reserve_le_mixed
     xiShiftedCanonicalAdmissionNorm y n *
           xiShiftedCanonicalAdmissionNorm y (n - 1) *
           (xiShiftedCanonicalAdmissionEffectivityRate y (n - 1) -
-            xiShiftedCanonicalAdmissionEffectivityRate y n) ^ 2 +
+            xiShiftedCanonicalAdmissionEffectivityRate y n) ^ (2 : ℕ) +
         2 * (xiShiftedNondegenerateSourceEffectivityWeight n +
             xiShiftedNondegenerateSourceEffectivityWeight (n - 1)) *
           xiShiftedCanonicalAdmissionNorm y n *
@@ -524,28 +524,28 @@ theorem adjacent_norm_product_mul_effectivity_difference_sq_add_reserve_le_mixed
   let Kp := xiShiftedNondegenerateSourceEffectivityWeight (n - 1)
   let Sn := xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass y n
   let Sp := xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass y (n - 1)
-  change 2 * Nn * (Rn ^ 2 + Kn) ≤ Kn * Sn at hcur
-  change 2 * Np * (Rp ^ 2 + Kp) ≤ Kp * Sp at hprev
-  have hcurScaled : Np * (2 * Nn * (Rn ^ 2 + Kn)) ≤ Np * (Kn * Sn) :=
+  change 2 * Nn * (Rn ^ (2 : ℕ) + Kn) ≤ Kn * Sn at hcur
+  change 2 * Np * (Rp ^ (2 : ℕ) + Kp) ≤ Kp * Sp at hprev
+  have hcurScaled : Np * (2 * Nn * (Rn ^ (2 : ℕ) + Kn)) ≤ Np * (Kn * Sn) :=
     mul_le_mul_of_nonneg_left hcur hP
-  have hprevScaled : Nn * (2 * Np * (Rp ^ 2 + Kp)) ≤ Nn * (Kp * Sp) :=
+  have hprevScaled : Nn * (2 * Np * (Rp ^ (2 : ℕ) + Kp)) ≤ Nn * (Kp * Sp) :=
     mul_le_mul_of_nonneg_left hprev hN
   have hdiff :
-      (Rp - Rn) ^ 2 ≤ 2 * (Rp ^ 2 + Rn ^ 2) := by
+      (Rp - Rn) ^ (2 : ℕ) ≤ 2 * (Rp ^ (2 : ℕ) + Rn ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (Rp + Rn)]
   have hNP : 0 ≤ Nn * Np := mul_nonneg hN hP
-  have hdiffScaled : Nn * Np * (Rp - Rn) ^ 2 ≤
-      Nn * Np * (2 * (Rp ^ 2 + Rn ^ 2)) :=
+  have hdiffScaled : Nn * Np * (Rp - Rn) ^ (2 : ℕ) ≤
+      Nn * Np * (2 * (Rp ^ (2 : ℕ) + Rn ^ (2 : ℕ))) :=
     mul_le_mul_of_nonneg_left hdiff hNP
-  change Nn * Np * (Rp - Rn) ^ 2 + 2 * (Kn + Kp) * Nn * Np ≤
+  change Nn * Np * (Rp - Rn) ^ (2 : ℕ) + 2 * (Kn + Kp) * Nn * Np ≤
     Kn * Np * Sn + Kp * Nn * Sp
   calc
-    Nn * Np * (Rp - Rn) ^ 2 + 2 * (Kn + Kp) * Nn * Np ≤
-        Nn * Np * (2 * (Rp ^ 2 + Rn ^ 2)) +
+    Nn * Np * (Rp - Rn) ^ (2 : ℕ) + 2 * (Kn + Kp) * Nn * Np ≤
+        Nn * Np * (2 * (Rp ^ (2 : ℕ) + Rn ^ (2 : ℕ))) +
           2 * (Kn + Kp) * Nn * Np :=
       add_le_add hdiffScaled (le_refl _)
-    _ = Np * (2 * Nn * (Rn ^ 2 + Kn)) +
-          Nn * (2 * Np * (Rp ^ 2 + Kp)) := by ring
+    _ = Np * (2 * Nn * (Rn ^ (2 : ℕ) + Kn)) +
+          Nn * (2 * Np * (Rp ^ (2 : ℕ) + Kp)) := by ring
     _ ≤ Np * (Kn * Sn) + Nn * (Kp * Sp) :=
       add_le_add hcurScaled hprevScaled
     _ = Kn * Np * Sn + Kp * Nn * Sp := by ring
@@ -558,29 +558,29 @@ theorem literal_adjacent_nondegenerateAdaptiveMixedSources_pay_edgeEffectivity
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 2 ≤ n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) *
-          (xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) (n - 1) -
-            xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n) ^ 2 +
+    xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) *
+          (xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) (n - 1) -
+            xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n) ^ (2 : ℕ) +
         2 * (xiShiftedNondegenerateSourceEffectivityWeight n +
             xiShiftedNondegenerateSourceEffectivityWeight (n - 1)) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) ≤
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) ≤
       xiShiftedNondegenerateSourceEffectivityWeight n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) *
           xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n)
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) (n + 1)) +
         xiShiftedNondegenerateSourceEffectivityWeight (n - 1) *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
           xiShiftedNondegenerateNullFlagCompletedArithmeticSource w (n - 1)
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) (n - 1))
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n) := by
-  have hmass : (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosDef := hH
+  have hmass : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosDef := hH
   have haction :=
     adjacent_norm_product_mul_effectivity_difference_sq_add_reserve_le_mixed_sources
       hn hmass
@@ -599,25 +599,25 @@ theorem hasDerivAt_log_adjacentEdge_and_literal_nondegenerateSource_action
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     HasDerivAt
         (fun y => Real.log (xiShiftedCanonicalAdmissionAdjacentEdge y n))
-        (xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) (n - 1) -
-          xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n) (w ^ 2) ∧
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) *
-            (xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) (n - 1) -
-              xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) n) ^ 2 +
+        (xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) (n - 1) -
+          xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n) (w ^ (2 : ℕ)) ∧
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) *
+            (xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) (n - 1) -
+              xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) n) ^ (2 : ℕ) +
           2 * (xiShiftedNondegenerateSourceEffectivityWeight n +
               xiShiftedNondegenerateSourceEffectivityWeight (n - 1)) *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) ≤
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) ≤
         xiShiftedNondegenerateSourceEffectivityWeight n *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) (n - 1) *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n - 1) *
             xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n
               (HTGeometry.monicMomentAdmissionPolynomial
                 (xiShiftedRealMomentSequence w) n)
               (HTGeometry.monicMomentAdmissionPolynomial
                 (xiShiftedRealMomentSequence w) (n + 1)) +
           xiShiftedNondegenerateSourceEffectivityWeight (n - 1) *
-            xiShiftedCanonicalAdmissionNorm (w ^ 2) n *
+            xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) n *
             xiShiftedNondegenerateNullFlagCompletedArithmeticSource w (n - 1)
               (HTGeometry.monicMomentAdmissionPolynomial
                 (xiShiftedRealMomentSequence w) (n - 1))
@@ -625,7 +625,7 @@ theorem hasDerivAt_log_adjacentEdge_and_literal_nondegenerateSource_action
                 (xiShiftedRealMomentSequence w) n) := by
   have hw0 : 0 < w := lt_trans (by norm_num) hw
   have hmass : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef := hH
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef := hH
   constructor
   · exact hasDerivAt_log_xiShiftedCanonicalAdmissionAdjacentEdge
       (sq_pos_of_pos hw0) (by omega) hmass

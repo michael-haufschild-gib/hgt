@@ -84,24 +84,24 @@ theorem fj_pointwise_bounds (ht : 0 ≤ t)
     (hc₄ : ∀ x, HasDerivAt c₄ (c₅ x) x)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |c₄ x| ≤ S₄) (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |c₅ x| ≤ S₅) :
     ∀ s ∈ Icc (0 : ℝ) t,
-      |fjEven c u s - (c u + c₂ u * s ^ 2 / 2)| ≤ S₄ * s ^ 4 / 24 ∧
-      |fjOdd c u s - (c₁ u * s + c₃ u * s ^ 3 / 6)| ≤ S₅ * s ^ 5 / 120 ∧
-      |fjOdd c₁ u s - c₂ u * s| ≤ S₄ * s ^ 3 / 6 ∧
-      |fjEven c₁ u s - (c₁ u + c₃ u * s ^ 2 / 2)| ≤ S₅ * s ^ 4 / 24 ∧
-      |fjEven c₂ u s - c₂ u| ≤ S₄ * s ^ 2 / 2 ∧
-      |fjOdd c₂ u s - c₃ u * s| ≤ S₅ * s ^ 3 / 6 := by
+      |fjEven c u s - (c u + c₂ u * s ^ (2 : ℕ) / 2)| ≤ S₄ * s ^ (4 : ℕ) / 24 ∧
+      |fjOdd c u s - (c₁ u * s + c₃ u * s ^ (3 : ℕ) / 6)| ≤ S₅ * s ^ (5 : ℕ) / 120 ∧
+      |fjOdd c₁ u s - c₂ u * s| ≤ S₄ * s ^ (3 : ℕ) / 6 ∧
+      |fjEven c₁ u s - (c₁ u + c₃ u * s ^ (2 : ℕ) / 2)| ≤ S₅ * s ^ (4 : ℕ) / 24 ∧
+      |fjEven c₂ u s - c₂ u| ≤ S₄ * s ^ (2 : ℕ) / 2 ∧
+      |fjOdd c₂ u s - c₃ u * s| ≤ S₅ * s ^ (3 : ℕ) / 6 := by
   have h4 := frozenJet_bounds_four ht hc hc₁ hc₂ hc₃ hS₄
   have h5 := frozenJet_bounds_four ht hc₁ hc₂ hc₃ hc₄ hS₅
   -- fifth-order expansion of `c` with `S₅`
   have h5c := abs_le_pow_div_of_abs_deriv_le_Icc
-    (h := fun s => c (u + s) - (c u + c₁ u * s + c₂ u * s ^ 2 / 2 + c₃ u * s ^ 3 / 6 +
-      c₄ u * s ^ 4 / 24))
-    (h' := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2 + c₄ u * s ^ 3 / 6))
+    (h := fun s => c (u + s) - (c u + c₁ u * s + c₂ u * s ^ (2 : ℕ) / 2 + c₃ u * s ^ (3 : ℕ) / 6 +
+      c₄ u * s ^ (4 : ℕ) / 24))
+    (h' := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2 + c₄ u * s ^ (3 : ℕ) / 6))
     (K := S₅ / 24) (k := 4) ht (by simp) ?_ ?_
   rotate_left
   · intro s _
-    have hp : HasDerivAt (fun s : ℝ => c u + c₁ u * s + c₂ u * s ^ 2 / 2 + c₃ u * s ^ 3 / 6 +
-        c₄ u * s ^ 4 / 24) (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2 + c₄ u * s ^ 3 / 6) s := by
+    have hp : HasDerivAt (fun s : ℝ => c u + c₁ u * s + c₂ u * s ^ (2 : ℕ) / 2 + c₃ u * s ^ (3 : ℕ) / 6 +
+        c₄ u * s ^ (4 : ℕ) / 24) (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2 + c₄ u * s ^ (3 : ℕ) / 6) s := by
       have := (((((hasDerivAt_id s).const_mul (c₁ u)).const_add (c u)).add
         (((hasDerivAt_pow 2 s).const_mul (c₂ u)).div_const 2)).add
         (((hasDerivAt_pow 3 s).const_mul (c₃ u)).div_const 6)).add
@@ -111,8 +111,8 @@ theorem fj_pointwise_bounds (ht : 0 ≤ t)
     convert this using 1 <;> first | rfl | simp
   · intro s hs
     have := (h5 s hs).2.2.2
-    calc _ ≤ S₅ * |s| ^ 4 / 24 := this
-      _ = S₅ / 24 * |s| ^ 4 := by ring
+    calc _ ≤ S₅ * |s| ^ (4 : ℕ) / 24 := this
+      _ = S₅ / 24 * |s| ^ (4 : ℕ) := by ring
   intro s hs
   have hs' : s ∈ Icc (-t) t := ⟨by linarith [hs.1], hs.2⟩
   have hs'' : -s ∈ Icc (-t) t := ⟨by linarith [hs.2], by linarith [hs.1]⟩
@@ -178,11 +178,11 @@ noncomputable def fjM (σ c c₁ : ℝ → ℝ) (u t : ℝ) : ℝ :=
 
 /-- `K₁ = t²o₁ − 5to + 8O`. -/
 noncomputable def fjK₁ (σ c c₁ : ℝ → ℝ) (u t : ℝ) : ℝ :=
-  t ^ 2 * fjEven c₁ u t - 5 * t * fjOdd c u t + 8 * fjO σ u t
+  t ^ (2 : ℕ) * fjEven c₁ u t - 5 * t * fjOdd c u t + 8 * fjO σ u t
 
 /-- `K₂ = 3te − 3E − t²e₁`. -/
 noncomputable def fjK₂ (σ c c₁ : ℝ → ℝ) (u t : ℝ) : ℝ :=
-  3 * t * fjEven c u t - 3 * fjE σ u t - t ^ 2 * fjOdd c₁ u t
+  3 * t * fjEven c u t - 3 * fjE σ u t - t ^ (2 : ℕ) * fjOdd c₁ u t
 
 /-- `Λ = to − 2O`. -/
 noncomputable def fjLam (σ c : ℝ → ℝ) (u t : ℝ) : ℝ := t * fjOdd c u t - 2 * fjO σ u t
@@ -202,7 +202,7 @@ theorem fjN_eq (σ c : ℝ → ℝ) (u t : ℝ) :
 
 /-- The remainder functions. -/
 noncomputable def fjWt (c c₁ c₃ : ℝ → ℝ) (u t : ℝ) : ℝ :=
-  t * fjEven c₁ u t - fjOdd c u t - c₃ u * t ^ 3 / 3
+  t * fjEven c₁ u t - fjOdd c u t - c₃ u * t ^ (3 : ℕ) / 3
 noncomputable def fjOmega (c₂ c₃ : ℝ → ℝ) (u t : ℝ) : ℝ := fjOdd c₂ u t - c₃ u * t
 noncomputable def fjP₀ (c₁ c₂ : ℝ → ℝ) (u t : ℝ) : ℝ := fjOdd c₁ u t - c₂ u * t
 noncomputable def fjEta (c₂ : ℝ → ℝ) (u t : ℝ) : ℝ := fjEven c₂ u t - c₂ u
@@ -219,7 +219,7 @@ theorem hasDerivAt_fjWt (hc : ∀ x, HasDerivAt c (c₁ x) x) (hc₁ : ∀ x, Ha
 
 theorem hasDerivAt_fjK₁ (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasDerivAt c (c₁ x) x)
     (hc₁ : ∀ x, HasDerivAt c₁ (c₂ x) x) (c₃ : ℝ → ℝ) (u t : ℝ) :
-    HasDerivAt (fjK₁ σ c c₁ u) (t ^ 2 * fjOmega c₂ c₃ u t - 3 * fjWt c c₁ c₃ u t) t := by
+    HasDerivAt (fjK₁ σ c c₁ u) (t ^ (2 : ℕ) * fjOmega c₂ c₃ u t - 3 * fjWt c c₁ c₃ u t) t := by
   have h1 := (hasDerivAt_pow 2 t).mul (hasDerivAt_fjEven hc₁ u t)
   have h2 := ((hasDerivAt_id t).const_mul (5 : ℝ)).mul (hasDerivAt_fjOdd hc u t)
   have h3 := (hasDerivAt_fjO hσ u t).const_mul (8 : ℝ)
@@ -229,7 +229,7 @@ theorem hasDerivAt_fjK₁ (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasD
 
 theorem hasDerivAt_fjK₂ (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasDerivAt c (c₁ x) x)
     (hc₁ : ∀ x, HasDerivAt c₁ (c₂ x) x) (u t : ℝ) :
-    HasDerivAt (fjK₂ σ c c₁ u) (t * fjP₀ c₁ c₂ u t - t ^ 2 * fjEta c₂ u t) t := by
+    HasDerivAt (fjK₂ σ c c₁ u) (t * fjP₀ c₁ c₂ u t - t ^ (2 : ℕ) * fjEta c₂ u t) t := by
   have h1 := ((hasDerivAt_id t).const_mul (3 : ℝ)).mul (hasDerivAt_fjEven hc u t)
   have h2 := (hasDerivAt_fjE hσ u t).const_mul (3 : ℝ)
   have h3 := (hasDerivAt_pow 2 t).mul (hasDerivAt_fjOdd hc₁ u t)
@@ -239,7 +239,7 @@ theorem hasDerivAt_fjK₂ (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasD
 
 theorem hasDerivAt_fjLam_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasDerivAt c (c₁ x) x)
     (c₃ : ℝ → ℝ) (u t : ℝ) :
-    HasDerivAt (fun t => fjLam σ c u t - c₃ u * t ^ 4 / 12) (fjWt c c₁ c₃ u t) t := by
+    HasDerivAt (fun t => fjLam σ c u t - c₃ u * t ^ (4 : ℕ) / 12) (fjWt c c₁ c₃ u t) t := by
   have h1 := (hasDerivAt_id t).mul (hasDerivAt_fjOdd hc u t)
   have h2 := (hasDerivAt_fjO hσ u t).const_mul (2 : ℝ)
   have h3 := ((hasDerivAt_pow 4 t).const_mul (c₃ u)).div_const 12
@@ -249,7 +249,7 @@ theorem hasDerivAt_fjLam_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, H
 
 theorem hasDerivAt_fjY_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, HasDerivAt c (c₁ x) x)
     (c₂ : ℝ → ℝ) (u t : ℝ) :
-    HasDerivAt (fun t => fjY σ c u t - c₂ u * t ^ 3 / 3) (t * fjP₀ c₁ c₂ u t) t := by
+    HasDerivAt (fun t => fjY σ c u t - c₂ u * t ^ (3 : ℕ) / 3) (t * fjP₀ c₁ c₂ u t) t := by
   have h1 := (hasDerivAt_id t).mul (hasDerivAt_fjEven hc u t)
   have h2 := hasDerivAt_fjE hσ u t
   have h3 := ((hasDerivAt_pow 3 t).const_mul (c₂ u)).div_const 3
@@ -258,8 +258,8 @@ theorem hasDerivAt_fjY_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (hc : ∀ x, Has
   convert this using 1 <;> first | rfl | ((try simp only [id_eq]); push_cast; ring)
 
 theorem hasDerivAt_fjE_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (c₂ : ℝ → ℝ) (u t : ℝ) :
-    HasDerivAt (fun t => fjE σ u t - c u * t - c₂ u * t ^ 3 / 6)
-      (fjEven c u t - (c u + c₂ u * t ^ 2 / 2)) t := by
+    HasDerivAt (fun t => fjE σ u t - c u * t - c₂ u * t ^ (3 : ℕ) / 6)
+      (fjEven c u t - (c u + c₂ u * t ^ (2 : ℕ) / 2)) t := by
   have h1 := hasDerivAt_fjE hσ u t
   have h2 := (hasDerivAt_id t).const_mul (c u)
   have h3 := ((hasDerivAt_pow 3 t).const_mul (c₂ u)).div_const 6
@@ -267,8 +267,8 @@ theorem hasDerivAt_fjE_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (c₂ : ℝ → 
   convert this using 1 <;> first | rfl | ((try simp only [id_eq]); push_cast; ring)
 
 theorem hasDerivAt_fjO_sub (hσ : ∀ x, HasDerivAt σ (c x) x) (c₁ c₃ : ℝ → ℝ) (u t : ℝ) :
-    HasDerivAt (fun t => fjO σ u t - c₁ u * t ^ 2 / 2 - c₃ u * t ^ 4 / 24)
-      (fjOdd c u t - (c₁ u * t + c₃ u * t ^ 3 / 6)) t := by
+    HasDerivAt (fun t => fjO σ u t - c₁ u * t ^ (2 : ℕ) / 2 - c₃ u * t ^ (4 : ℕ) / 24)
+      (fjOdd c u t - (c₁ u * t + c₃ u * t ^ (3 : ℕ) / 6)) t := by
   have h1 := hasDerivAt_fjO hσ u t
   have h2 := ((hasDerivAt_pow 2 t).const_mul (c₁ u)).div_const 2
   have h3 := ((hasDerivAt_pow 4 t).const_mul (c₃ u)).div_const 24
@@ -282,12 +282,12 @@ theorem fj_component_bounds (ht : 0 ≤ t)
     (hc₂ : ∀ x, HasDerivAt c₂ (c₃ x) x) (hc₃ : ∀ x, HasDerivAt c₃ (c₄ x) x)
     (hc₄ : ∀ x, HasDerivAt c₄ (c₅ x) x)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |c₄ x| ≤ S₄) (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |c₅ x| ≤ S₅) :
-    |fjK₁ σ c c₁ u t| ≤ 2 / 45 * S₅ * t ^ 6 ∧
-    |fjK₂ σ c c₁ u t| ≤ 2 / 15 * S₄ * t ^ 5 ∧
-    |fjLam σ c u t - c₃ u * t ^ 4 / 12| ≤ S₅ * t ^ 6 / 180 ∧
-    |fjY σ c u t - c₂ u * t ^ 3 / 3| ≤ S₄ * t ^ 5 / 30 ∧
-    |fjE σ u t - c u * t - c₂ u * t ^ 3 / 6| ≤ S₄ * t ^ 5 / 120 ∧
-    |fjO σ u t - c₁ u * t ^ 2 / 2 - c₃ u * t ^ 4 / 24| ≤ S₅ * t ^ 6 / 720 := by
+    |fjK₁ σ c c₁ u t| ≤ 2 / 45 * S₅ * t ^ (6 : ℕ) ∧
+    |fjK₂ σ c c₁ u t| ≤ 2 / 15 * S₄ * t ^ (5 : ℕ) ∧
+    |fjLam σ c u t - c₃ u * t ^ (4 : ℕ) / 12| ≤ S₅ * t ^ (6 : ℕ) / 180 ∧
+    |fjY σ c u t - c₂ u * t ^ (3 : ℕ) / 3| ≤ S₄ * t ^ (5 : ℕ) / 30 ∧
+    |fjE σ u t - c u * t - c₂ u * t ^ (3 : ℕ) / 6| ≤ S₄ * t ^ (5 : ℕ) / 120 ∧
+    |fjO σ u t - c₁ u * t ^ (2 : ℕ) / 2 - c₃ u * t ^ (4 : ℕ) / 24| ≤ S₅ * t ^ (6 : ℕ) / 720 := by
   have hpt := fj_pointwise_bounds ht hc hc₁ hc₂ hc₃ hc₄ hS₄ hS₅
   have hS₄0 : 0 ≤ S₄ := le_trans (abs_nonneg _) (hS₄ u ⟨by linarith, by linarith⟩)
   have hS₅0 : 0 ≤ S₅ := le_trans (abs_nonneg _) (hS₅ u ⟨by linarith, by linarith⟩)
@@ -299,9 +299,9 @@ theorem fj_component_bounds (ht : 0 ≤ t)
       have hω := (hpt s hs).2.2.2.2.2
       rw [abs_mul, abs_of_nonneg hs.1]
       unfold fjOmega
-      calc s * |fjOdd c₂ u s - c₃ u * s| ≤ s * (S₅ * s ^ 3 / 6) :=
+      calc s * |fjOdd c₂ u s - c₃ u * s| ≤ s * (S₅ * s ^ (3 : ℕ) / 6) :=
             mul_le_mul_of_nonneg_left hω hs.1
-        _ = S₅ / 6 * s ^ 4 := by ring
+        _ = S₅ / 6 * s ^ (4 : ℕ) := by ring
   -- `|K₁| ≤ (2/45) S₅ t⁶`
   have hK₁ : ∀ s ∈ Icc (0 : ℝ) t, |fjK₁ σ c c₁ u s| ≤ 4 * S₅ / 15 * s ^ (5 + 1) / (5 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjK₁ hσ hc hc₁ c₃ u s) ?_
@@ -310,14 +310,14 @@ theorem fj_component_bounds (ht : 0 ≤ t)
       have hω := (hpt s hs).2.2.2.2.2
       have hW := hWt s hs
       have hs0 := hs.1
-      calc |s ^ 2 * fjOmega c₂ c₃ u s - 3 * fjWt c c₁ c₃ u s|
-          ≤ |s ^ 2 * fjOmega c₂ c₃ u s| + |3 * fjWt c c₁ c₃ u s| := abs_sub _ _
-        _ = s ^ 2 * |fjOdd c₂ u s - c₃ u * s| + 3 * |fjWt c c₁ c₃ u s| := by
-            rw [abs_mul, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ s ^ 2)]
+      calc |s ^ (2 : ℕ) * fjOmega c₂ c₃ u s - 3 * fjWt c c₁ c₃ u s|
+          ≤ |s ^ (2 : ℕ) * fjOmega c₂ c₃ u s| + |3 * fjWt c c₁ c₃ u s| := abs_sub _ _
+        _ = s ^ (2 : ℕ) * |fjOdd c₂ u s - c₃ u * s| + 3 * |fjWt c c₁ c₃ u s| := by
+            rw [abs_mul, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ s ^ (2 : ℕ))]
             norm_num [fjOmega]
-        _ ≤ s ^ 2 * (S₅ * s ^ 3 / 6) + 3 * (S₅ / 6 * s ^ (4 + 1) / (4 + 1)) := by
+        _ ≤ s ^ (2 : ℕ) * (S₅ * s ^ (3 : ℕ) / 6) + 3 * (S₅ / 6 * s ^ (4 + 1) / (4 + 1)) := by
             gcongr
-        _ = 4 * S₅ / 15 * s ^ 5 := by ring
+        _ = 4 * S₅ / 15 * s ^ (5 : ℕ) := by ring
   -- `|K₂| ≤ (2/15) S₄ t⁵`
   have hK₂ : ∀ s ∈ Icc (0 : ℝ) t, |fjK₂ σ c c₁ u s| ≤ 2 * S₄ / 3 * s ^ (4 + 1) / (4 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjK₂ hσ hc hc₁ u s) ?_
@@ -326,72 +326,72 @@ theorem fj_component_bounds (ht : 0 ≤ t)
       have hP := (hpt s hs).2.2.1
       have hη := (hpt s hs).2.2.2.2.1
       have hs0 := hs.1
-      calc |s * fjP₀ c₁ c₂ u s - s ^ 2 * fjEta c₂ u s|
-          ≤ |s * fjP₀ c₁ c₂ u s| + |s ^ 2 * fjEta c₂ u s| := abs_sub _ _
-        _ = s * |fjOdd c₁ u s - c₂ u * s| + s ^ 2 * |fjEven c₂ u s - c₂ u| := by
-            rw [abs_mul, abs_mul, abs_of_nonneg hs0, abs_of_nonneg (by positivity : (0:ℝ) ≤ s ^ 2)]
+      calc |s * fjP₀ c₁ c₂ u s - s ^ (2 : ℕ) * fjEta c₂ u s|
+          ≤ |s * fjP₀ c₁ c₂ u s| + |s ^ (2 : ℕ) * fjEta c₂ u s| := abs_sub _ _
+        _ = s * |fjOdd c₁ u s - c₂ u * s| + s ^ (2 : ℕ) * |fjEven c₂ u s - c₂ u| := by
+            rw [abs_mul, abs_mul, abs_of_nonneg hs0, abs_of_nonneg (by positivity : (0:ℝ) ≤ s ^ (2 : ℕ))]
             rfl
-        _ ≤ s * (S₄ * s ^ 3 / 6) + s ^ 2 * (S₄ * s ^ 2 / 2) := by gcongr
-        _ = 2 * S₄ / 3 * s ^ 4 := by ring
+        _ ≤ s * (S₄ * s ^ (3 : ℕ) / 6) + s ^ (2 : ℕ) * (S₄ * s ^ (2 : ℕ) / 2) := by gcongr
+        _ = 2 * S₄ / 3 * s ^ (4 : ℕ) := by ring
   -- `|Λ − c₃t⁴/12| ≤ S₅ t⁶/180`
   have hΛ : ∀ s ∈ Icc (0 : ℝ) t,
-      |fjLam σ c u s - c₃ u * s ^ 4 / 12| ≤ S₅ / 30 * s ^ (5 + 1) / (5 + 1) := by
+      |fjLam σ c u s - c₃ u * s ^ (4 : ℕ) / 12| ≤ S₅ / 30 * s ^ (5 + 1) / (5 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjLam_sub hσ hc c₃ u s) ?_
     · simp [fjLam, fjOdd_zero, fjO_zero]
     · intro s hs
       have := hWt s hs
       calc |fjWt c c₁ c₃ u s| ≤ S₅ / 6 * s ^ (4 + 1) / (4 + 1) := this
-        _ = S₅ / 30 * s ^ 5 := by ring
+        _ = S₅ / 30 * s ^ (5 : ℕ) := by ring
   -- `|Y − c₂t³/3| ≤ S₄ t⁵/30`
   have hY : ∀ s ∈ Icc (0 : ℝ) t,
-      |fjY σ c u s - c₂ u * s ^ 3 / 3| ≤ S₄ / 6 * s ^ (4 + 1) / (4 + 1) := by
+      |fjY σ c u s - c₂ u * s ^ (3 : ℕ) / 3| ≤ S₄ / 6 * s ^ (4 + 1) / (4 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjY_sub hσ hc c₂ u s) ?_
     · simp [fjY, fjE_zero]
     · intro s hs
       have hP := (hpt s hs).2.2.1
       rw [abs_mul, abs_of_nonneg hs.1]
       unfold fjP₀
-      calc s * |fjOdd c₁ u s - c₂ u * s| ≤ s * (S₄ * s ^ 3 / 6) :=
+      calc s * |fjOdd c₁ u s - c₂ u * s| ≤ s * (S₄ * s ^ (3 : ℕ) / 6) :=
             mul_le_mul_of_nonneg_left hP hs.1
-        _ = S₄ / 6 * s ^ 4 := by ring
+        _ = S₄ / 6 * s ^ (4 : ℕ) := by ring
   -- `|E − c₀t − c₂t³/6| ≤ S₄ t⁵/120`
   have hE : ∀ s ∈ Icc (0 : ℝ) t,
-      |fjE σ u s - c u * s - c₂ u * s ^ 3 / 6| ≤ S₄ / 24 * s ^ (4 + 1) / (4 + 1) := by
+      |fjE σ u s - c u * s - c₂ u * s ^ (3 : ℕ) / 6| ≤ S₄ / 24 * s ^ (4 + 1) / (4 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjE_sub hσ c₂ u s) ?_
     · simp [fjE_zero]
     · intro s hs
       have := (hpt s hs).1
-      calc _ ≤ S₄ * s ^ 4 / 24 := this
-        _ = S₄ / 24 * s ^ 4 := by ring
+      calc _ ≤ S₄ * s ^ (4 : ℕ) / 24 := this
+        _ = S₄ / 24 * s ^ (4 : ℕ) := by ring
   -- `|O − c₁t²/2 − c₃t⁴/24| ≤ S₅ t⁶/720`
   have hO : ∀ s ∈ Icc (0 : ℝ) t,
-      |fjO σ u s - c₁ u * s ^ 2 / 2 - c₃ u * s ^ 4 / 24| ≤ S₅ / 120 * s ^ (5 + 1) / (5 + 1) := by
+      |fjO σ u s - c₁ u * s ^ (2 : ℕ) / 2 - c₃ u * s ^ (4 : ℕ) / 24| ≤ S₅ / 120 * s ^ (5 + 1) / (5 + 1) := by
     refine abs_le_pow_div_of_abs_deriv_le ht ?_ (fun s _ => hasDerivAt_fjO_sub hσ c₁ c₃ u s) ?_
     · simp [fjO_zero]
     · intro s hs
       have := (hpt s hs).2.1
-      calc _ ≤ S₅ * s ^ 5 / 120 := this
-        _ = S₅ / 120 * s ^ 5 := by ring
+      calc _ ≤ S₅ * s ^ (5 : ℕ) / 120 := this
+        _ = S₅ / 120 * s ^ (5 : ℕ) := by ring
   have htt : t ∈ Icc (0 : ℝ) t := ⟨ht, le_rfl⟩
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · have := hK₁ t htt
     calc _ ≤ 4 * S₅ / 15 * t ^ (5 + 1) / (5 + 1) := this
-      _ = 2 / 45 * S₅ * t ^ 6 := by ring
+      _ = 2 / 45 * S₅ * t ^ (6 : ℕ) := by ring
   · have := hK₂ t htt
     calc _ ≤ 2 * S₄ / 3 * t ^ (4 + 1) / (4 + 1) := this
-      _ = 2 / 15 * S₄ * t ^ 5 := by ring
+      _ = 2 / 15 * S₄ * t ^ (5 : ℕ) := by ring
   · have := hΛ t htt
     calc _ ≤ S₅ / 30 * t ^ (5 + 1) / (5 + 1) := this
-      _ = S₅ * t ^ 6 / 180 := by ring
+      _ = S₅ * t ^ (6 : ℕ) / 180 := by ring
   · have := hY t htt
     calc _ ≤ S₄ / 6 * t ^ (4 + 1) / (4 + 1) := this
-      _ = S₄ * t ^ 5 / 30 := by ring
+      _ = S₄ * t ^ (5 : ℕ) / 30 := by ring
   · have := hE t htt
     calc _ ≤ S₄ / 24 * t ^ (4 + 1) / (4 + 1) := this
-      _ = S₄ * t ^ 5 / 120 := by ring
+      _ = S₄ * t ^ (5 : ℕ) / 120 := by ring
   · have := hO t htt
     calc _ ≤ S₅ / 120 * t ^ (5 + 1) / (5 + 1) := this
-      _ = S₅ * t ^ 6 / 720 := by ring
+      _ = S₅ * t ^ (6 : ℕ) / 720 := by ring
 
 end
 

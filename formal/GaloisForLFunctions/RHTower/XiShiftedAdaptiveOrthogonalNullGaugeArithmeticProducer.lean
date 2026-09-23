@@ -44,9 +44,9 @@ theorem xiShiftedAdaptiveNullGaugeCorrectedArithmeticProducer_eq_arithmeticSourc
   change
     2 * PowerSeries.coeff 2
           (xiShiftedAdaptiveNullGaugeSourceSeries
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) A N) -
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) A N) -
         2 * HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
           (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A N) = _
   rw [
     two_mul_coeff_two_xiShiftedAdaptiveNullGaugeMomentSourceSeries_sub_lowerResidual_eq_completedPacket
@@ -116,7 +116,7 @@ theorem genuineCrossing_forces_higherHankelFailure_or_admissionHolonomy
     (hleft : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       ¬ (xiShiftedMomentHankelMatrix (y - u) (n + 1)).PosSemidef) :
     ∃ m : ℕ, ∃ w : ℝ,
-      1 / 2 < w ∧ y < w ^ 2 ∧
+      1 / 2 < w ∧ y < w ^ (2 : ℕ) ∧
       let P := HTGeometry.finiteHankelNullMonicPolynomial c
       let A := P * X ^ m
       ¬(HTGeometry.momentHankelMatrix
@@ -143,9 +143,9 @@ theorem genuineCrossing_forces_higherHankelFailure_or_admissionHolonomy
     change
       2 * PowerSeries.coeff 2
             (xiShiftedAdaptiveNullGaugeSourceSeries
-              (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) A (n + m)) -
+              (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) A (n + m)) -
           2 * HTGeometry.momentFunctional
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
             (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A (n + m)) < 0
     simpa only [A, P] using hneg
   exact neg_correctedNullGaugeProducer_forces_hankelFailure_or_admissionMismatch

@@ -31,7 +31,7 @@ def suzukiDeBrangesLift (hRH : RiemannHypothesis) (F : Lp ℂ 2 (volume : Measur
 
 theorem summable_suzukiDeBrangesLiftCoef (hRH : RiemannHypothesis)
     {F : Lp ℂ 2 (volume : Measure ℝ)} (hF : F ∈ suzukiModelSpace) :
-    Summable fun ρ : XiDivisorSupport => ‖(inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ)‖ ^ 2 :=
+    Summable fun ρ : XiDivisorSupport => ‖(inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ)‖ ^ (2 : ℕ) :=
   (hasSum_normSq_inner_suzukiFGammaFamily hRH hF).summable
 
 theorem differentiable_suzukiDeBrangesLift (hRH : RiemannHypothesis)
@@ -144,7 +144,7 @@ theorem inner_thetaMul_star (F G : Lp ℂ 2 (volume : Measure ℝ)) :
 theorem norm_thetaMul_star (F : Lp ℂ 2 (volume : Measure ℝ)) :
     ‖thetaMul (star F)‖ = ‖F‖ := by
   have h := inner_thetaMul_star F F
-  have h2 : ‖thetaMul (star F)‖ ^ 2 = ‖F‖ ^ 2 := by
+  have h2 : ‖thetaMul (star F)‖ ^ (2 : ℕ) = ‖F‖ ^ (2 : ℕ) := by
     have hl := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (thetaMul (star F))
     have hr := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) F
     rw [hl, hr] at h

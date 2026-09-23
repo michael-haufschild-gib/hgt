@@ -7,7 +7,7 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 # Gamma-damped prime incidence in the even-factorial jet metric
 
 The usual factorial Fock norm makes a prime raw-jet column grow like
-`exp ((log p)^2)`.  The even-factorial metric instead has the exact column identity
+`exp ((log p)^(2 : ℕ))`.  The even-factorial metric instead has the exact column identity
 
 `sum_j (log p)^(2j) / (2j)! = cosh (log p)`.
 

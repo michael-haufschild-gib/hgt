@@ -193,7 +193,7 @@ theorem eventually_exists_windowRelevant_subHeight_group :
         ((c : ℂ) + (y : ℝ) * Complex.I)‖ := by
     dsimp [heathBrownBoxTerm] at hterm
     rw [norm_heathBrownDyadicTermProduct_eq_choose_mul_core] at hterm
-    have hchoose : (Nat.choose 60 box.m : ℝ) ≤ (2 ^ 60 : ℝ) := by
+    have hchoose : (Nat.choose 60 box.m : ℝ) ≤ (2 ^ (60 : ℕ) : ℝ) := by
       exact_mod_cast Nat.choose_le_two_pow 60 box.m
     calc
       V ≤ (Fintype.card (HeathBrownBoxChoice L X 60) : ℝ) *
@@ -201,7 +201,7 @@ theorem eventually_exists_windowRelevant_subHeight_group :
             ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
               ((c : ℂ) + (y : ℝ) * Complex.I)‖) := hterm
       _ ≤ (Fintype.card (HeathBrownBoxChoice L X 60) : ℝ) *
-          ((2 ^ 60 : ℝ) *
+          ((2 ^ (60 : ℕ) : ℝ) *
             ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
               ((c : ℂ) + (y : ℝ) * Complex.I)‖) := by gcongr
       _ = heathBrownEligibleBoxCost L X 60 *

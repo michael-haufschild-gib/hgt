@@ -40,7 +40,7 @@ namespace GaloisForLFunctions.HTGeometry.FDNLS
 `2 Re⟨v, w⟩ v = |v|² w + v² w^*`. -/
 theorem two_rePair_mul (z w : ℂ) :
     ((2 * rePair z w : ℝ) : ℂ) * z
-      = ((‖z‖ ^ 2 : ℝ) : ℂ) * w + z ^ 2 * (starRingEnd ℂ) w := by
+      = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) * w + z ^ (2 : ℕ) * (starRingEnd ℂ) w := by
   rw [← rePair_self]
   refine Complex.ext ?_ ?_ <;>
     simp only [rePair, Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
@@ -52,13 +52,13 @@ variable {ι : Type*} [Fintype ι]
 
 /-- The residual of the stationary equation (26). -/
 noncomputable def stationaryResidual (C σ ω : ℝ) (D : ι → ι → ℝ) (v : ι → ℂ) (n : ι) : ℂ :=
-  (ω : ℂ) * v n + ((σ * ‖v n‖ ^ 2 : ℝ) : ℂ) * v n - (C : ℂ) * ∑ m, ((D n m : ℝ) : ℂ) * v m
+  (ω : ℂ) * v n + ((σ * ‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * v n - (C : ℂ) * ∑ m, ((D n m : ℝ) : ℂ) * v m
 
 /-- **Equation (30).**  The linearized operator: `L₁₁ w + L₁₂ w^*` with
 `L₁₁ = C D - 2σ|v|² - ω` and `L₁₂ = -σ v²`, written here as the derivative of the residual. -/
 noncomputable def bdgFirstOrder (C σ ω : ℝ) (D : ι → ι → ℝ) (v w : ι → ℂ) (n : ι) : ℂ :=
   (ω : ℂ) * w n
-    + (σ : ℂ) * (2 * ((‖v n‖ ^ 2 : ℝ) : ℂ) * w n + (v n) ^ 2 * (starRingEnd ℂ) (w n))
+    + (σ : ℂ) * (2 * ((‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * w n + (v n) ^ (2 : ℕ) * (starRingEnd ℂ) (w n))
     - (C : ℂ) * ∑ m, ((D n m : ℝ) : ℂ) * w m
 
 theorem hasDerivAt_ofRealLin (t : ℝ) : HasDerivAt (fun s : ℝ => (s : ℂ)) 1 t :=
@@ -95,41 +95,41 @@ theorem hasDerivAt_stationaryResidual (C σ ω : ℝ) (D : ι → ι → ℝ) (v
       ((C : ℂ) * ∑ m, ((D n m : ℝ) : ℂ) * w m) 0 :=
     hsum.const_mul (C : ℂ)
   -- the nonlinear term
-  have hnormexp : ∀ δ : ℝ, ‖v n + (δ : ℂ) * w n‖ ^ 2
-      = ‖v n‖ ^ 2 + 2 * δ * rePair (v n) (w n) + δ ^ 2 * ‖w n‖ ^ 2 := by
+  have hnormexp : ∀ δ : ℝ, ‖v n + (δ : ℂ) * w n‖ ^ (2 : ℕ)
+      = ‖v n‖ ^ (2 : ℕ) + 2 * δ * rePair (v n) (w n) + δ ^ (2 : ℕ) * ‖w n‖ ^ (2 : ℕ) := by
     intro δ
     rw [← rePair_self, ← rePair_self, ← rePair_self]
     simp only [rePair, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
       Complex.ofReal_re, Complex.ofReal_im]
     ring
   have hpoly : HasDerivAt
-      (fun δ : ℝ => σ * (‖v n‖ ^ 2 + 2 * δ * rePair (v n) (w n) + δ ^ 2 * ‖w n‖ ^ 2))
+      (fun δ : ℝ => σ * (‖v n‖ ^ (2 : ℕ) + 2 * δ * rePair (v n) (w n) + δ ^ (2 : ℕ) * ‖w n‖ ^ (2 : ℕ)))
       (σ * (2 * rePair (v n) (w n))) 0 := by
     have hbase : HasDerivAt
-        (fun δ : ℝ => ‖v n‖ ^ 2 + 2 * δ * rePair (v n) (w n) + δ ^ 2 * ‖w n‖ ^ 2)
+        (fun δ : ℝ => ‖v n‖ ^ (2 : ℕ) + 2 * δ * rePair (v n) (w n) + δ ^ (2 : ℕ) * ‖w n‖ ^ (2 : ℕ))
         (2 * rePair (v n) (w n)) 0 := by
       have h1 : HasDerivAt (fun δ : ℝ => 2 * δ * rePair (v n) (w n))
           (2 * rePair (v n) (w n)) 0 := by
         have := ((hasDerivAt_id (0:ℝ)).const_mul (2:ℝ)).mul_const (rePair (v n) (w n))
         simpa using this
-      have h2 : HasDerivAt (fun δ : ℝ => δ ^ 2 * ‖w n‖ ^ 2) 0 0 := by
-        have := ((hasDerivAt_pow 2 (0:ℝ))).mul_const (‖w n‖ ^ 2)
+      have h2 : HasDerivAt (fun δ : ℝ => δ ^ (2 : ℕ) * ‖w n‖ ^ (2 : ℕ)) 0 0 := by
+        have := ((hasDerivAt_pow 2 (0:ℝ))).mul_const (‖w n‖ ^ (2 : ℕ))
         simpa using this
-      have h3 := (h1.const_add (‖v n‖ ^ 2)).add h2
+      have h3 := (h1.const_add (‖v n‖ ^ (2 : ℕ))).add h2
       simp only [Pi.add_def, add_zero] at h3
       exact h3
     exact hbase.const_mul σ
-  have hscalar : HasDerivAt (fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ 2 : ℝ)))
+  have hscalar : HasDerivAt (fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ (2 : ℕ) : ℝ)))
       (σ * (2 * rePair (v n) (w n))) 0 := by
-    have hfun : (fun δ : ℝ => σ * (‖v n‖ ^ 2 + 2 * δ * rePair (v n) (w n) + δ ^ 2 * ‖w n‖ ^ 2))
-        = fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ 2 : ℝ)) := by
+    have hfun : (fun δ : ℝ => σ * (‖v n‖ ^ (2 : ℕ) + 2 * δ * rePair (v n) (w n) + δ ^ (2 : ℕ) * ‖w n‖ ^ (2 : ℕ)))
+        = fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ (2 : ℕ) : ℝ)) := by
       funext δ
       rw [hnormexp δ]
     rwa [hfun] at hpoly
   have hnl : HasDerivAt
-      (fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ 2 : ℝ) : ℂ) * (v n + (δ : ℂ) * w n))
+      (fun δ : ℝ => ((σ * ‖v n + (δ : ℂ) * w n‖ ^ (2 : ℕ) : ℝ) : ℂ) * (v n + (δ : ℂ) * w n))
       ((((σ * (2 * rePair (v n) (w n))) : ℝ) : ℂ) * (v n + ((0:ℝ) : ℂ) * w n)
-        + ((σ * ‖v n + ((0:ℝ) : ℂ) * w n‖ ^ 2 : ℝ) : ℂ) * w n) 0 :=
+        + ((σ * ‖v n + ((0:ℝ) : ℂ) * w n‖ ^ (2 : ℕ) : ℝ) : ℂ) * w n) 0 :=
     (hscalar.ofReal_comp).mul (hline n)
   have hd := (hω.add hnl).sub hC
   refine hd.congr_deriv ?_
@@ -138,7 +138,7 @@ theorem hasDerivAt_stationaryResidual (C σ ω : ℝ) (D : ι → ι → ℝ) (v
   simp only [zero_mul, add_zero]
   rw [bdgFirstOrder]
   have hkey : ((σ * (2 * rePair (v n) (w n)) : ℝ) : ℂ) * v n
-      = (σ : ℂ) * (((‖v n‖ ^ 2 : ℝ) : ℂ) * w n + (v n) ^ 2 * (starRingEnd ℂ) (w n)) := by
+      = (σ : ℂ) * (((‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * w n + (v n) ^ (2 : ℕ) * (starRingEnd ℂ) (w n)) := by
     have h2 := two_rePair_mul (v n) (w n)
     rw [show ((σ * (2 * rePair (v n) (w n)) : ℝ) : ℂ)
         = (σ : ℂ) * ((2 * rePair (v n) (w n) : ℝ) : ℂ) by push_cast; ring, mul_assoc, h2]
@@ -190,10 +190,10 @@ theorem hasDerivAt_bdgResidual (C σ ω : ℝ) (D : ι → ι → ℝ) (v a b : 
 /-- The operator `L₁₁ = C D - 2σ|v|² - ω` of equation (30). -/
 noncomputable def bdgL11 (C σ ω : ℝ) (D : ι → ι → ℝ) (v x : ι → ℂ) (n : ι) : ℂ :=
   (C : ℂ) * (∑ m, ((D n m : ℝ) : ℂ) * x m)
-    - ((2 * σ * ‖v n‖ ^ 2 : ℝ) : ℂ) * x n - (ω : ℂ) * x n
+    - ((2 * σ * ‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * x n - (ω : ℂ) * x n
 
 /-- The operator `L₁₂ = -σ v²` of equation (30). -/
-noncomputable def bdgL12 (σ : ℝ) (v x : ι → ℂ) (n : ι) : ℂ := -(σ : ℂ) * (v n) ^ 2 * x n
+noncomputable def bdgL12 (σ : ℝ) (v x : ι → ℂ) (n : ι) : ℂ := -(σ : ℂ) * (v n) ^ (2 : ℕ) * x n
 
 /-- `L₁₁` has real coefficients, so it commutes with conjugation. -/
 theorem conj_bdgL11 (C σ ω : ℝ) (D : ι → ι → ℝ) (v x : ι → ℂ) (n : ι) :
@@ -210,7 +210,7 @@ theorem conj_bdgL11 (C σ ω : ℝ) (D : ι → ι → ℝ) (v x : ι → ℂ) (
 /-- **Equation (29).**  The Bogoliubov--de Gennes eigenvalue problem. -/
 def IsBdGMode (C σ ω : ℝ) (D : ι → ι → ℝ) (v a b : ι → ℂ) (lam : ℂ) : Prop :=
   (∀ n, bdgL11 C σ ω D v a n + bdgL12 σ v b n = Complex.I * lam * a n)
-    ∧ (∀ n, (σ : ℂ) * ((starRingEnd ℂ) (v n)) ^ 2 * a n - bdgL11 C σ ω D v b n
+    ∧ (∀ n, (σ : ℂ) * ((starRingEnd ℂ) (v n)) ^ (2 : ℕ) * a n - bdgL11 C σ ω D v b n
         = Complex.I * lam * b n)
 
 /-- Conjugating a real-time exponential flips the exponent. -/
@@ -241,15 +241,15 @@ theorem bdgFirstOrder_perturbation_eq_zero {C σ ω : ℝ} {D : ι → ι → �
     rw [bdgPerturbation]
     ring
   have hrow1 : (ω : ℂ) * a n
-      + (σ : ℂ) * (2 * ((‖v n‖ ^ 2 : ℝ) : ℂ) * a n + (v n) ^ 2 * b n)
+      + (σ : ℂ) * (2 * ((‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * a n + (v n) ^ (2 : ℕ) * b n)
       - (C : ℂ) * (∑ m, ((D n m : ℝ) : ℂ) * a m) + Complex.I * (lam * a n) = 0 := by
     have hone := h1 n
     rw [bdgL11, bdgL12] at hone
     push_cast at hone ⊢
     linear_combination -hone
   have hrow2 : (ω : ℂ) * ((starRingEnd ℂ) (b n))
-      + (σ : ℂ) * (2 * ((‖v n‖ ^ 2 : ℝ) : ℂ) * ((starRingEnd ℂ) (b n))
-        + (v n) ^ 2 * ((starRingEnd ℂ) (a n)))
+      + (σ : ℂ) * (2 * ((‖v n‖ ^ (2 : ℕ) : ℝ) : ℂ) * ((starRingEnd ℂ) (b n))
+        + (v n) ^ (2 : ℕ) * ((starRingEnd ℂ) (a n)))
       - (C : ℂ) * (∑ m, ((D n m : ℝ) : ℂ) * (starRingEnd ℂ) (b m))
       + Complex.I * ((starRingEnd ℂ) lam * (starRingEnd ℂ) (b n)) = 0 := by
     have hc := congrArg (starRingEnd ℂ) (h2 n)

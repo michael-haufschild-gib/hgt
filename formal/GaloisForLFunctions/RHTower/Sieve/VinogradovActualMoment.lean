@@ -141,7 +141,7 @@ theorem sum_vinogradovActualPolynomialMoment_le_rationalProduct
     (α : Fin k → ℝ) (a q : Fin k → ℕ)
     (hq : ∀ j, 0 < q j) (hcop : ∀ j, Nat.Coprime (a j) (q j))
     (happrox : ∀ j,
-      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ (2 : ℕ)) :
     (∑ uv : (Fin b → Fin Y) × (Fin b → Fin Y),
       Complex.normSq (finitePhaseSum
         (vinogradovActualPolynomialPhase α uv : Fin X → ℝ)) ^ b) ≤

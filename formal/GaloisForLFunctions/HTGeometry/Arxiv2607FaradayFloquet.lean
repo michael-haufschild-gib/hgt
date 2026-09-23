@@ -25,7 +25,7 @@ def faradayViscousWavenumberSq (beta gamma viscosity : ℝ) : ℝ :=
 /-- Positive viscosity parameter. -/
 abbrev FaradayPositiveViscosity := Set.Ioi (0 : ℝ)
 
-/-- Cleared form of `q^2 = beta^2 + gamma / C`, with no division left. -/
+/-- Cleared form of `q^(2 : ℕ) = beta^(2 : ℕ) + gamma / C`, with no division left. -/
 theorem faradayViscousWavenumberSq_cleared
     (beta gamma : ℝ) (viscosity : FaradayPositiveViscosity) :
     (viscosity : ℝ) * (faradayViscousWavenumberSq beta gamma viscosity - beta ^ 2) = gamma := by
@@ -39,7 +39,7 @@ def faradayDimensionlessQSq (beta gamma viscosity : ℝ) : ℝ :=
   1 + gamma / (viscosity * beta ^ 2)
 
 /-- The paper's dimensionless `q` and the physical vertical exponent used above are exactly the
-same dispersion branch after multiplying by `beta^2`. -/
+same dispersion branch after multiplying by `beta^(2 : ℕ)`. -/
 theorem faradayDimensionlessQSq_scaled
     (beta viscosity : Set.Ioi (0 : ℝ)) (gamma : ℝ) :
     (beta : ℝ) ^ 2 * faradayDimensionlessQSq beta gamma viscosity =

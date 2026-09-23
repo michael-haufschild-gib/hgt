@@ -31,19 +31,19 @@ private theorem nat_succ_le_three_pow : ∀ m : ℕ, m + 1 ≤ 3 ^ m
       have h3 : 3 ^ (m + 1) = 3 * 3 ^ m := by ring
       omega
 
-private theorem nat_sq_le_three_pow : ∀ m : ℕ, m ^ 2 ≤ 3 ^ m
+private theorem nat_sq_le_three_pow : ∀ m : ℕ, m ^ (2 : ℕ) ≤ 3 ^ m
   | 0 => by norm_num
   | (m + 1) => by
       have ih := nat_sq_le_three_pow m
       have hs := nat_succ_le_three_pow m
-      have hexp : (m + 1) ^ 2 = m ^ 2 + 2 * m + 1 := by ring
+      have hexp : (m + 1) ^ (2 : ℕ) = m ^ (2 : ℕ) + 2 * m + 1 := by ring
       have h3 : 3 ^ (m + 1) = 3 * 3 ^ m := by ring
       omega
 
 /-- **A geometric factor beats a square.**  For every `m`, `m² (1/3)^m ≤ 1`. -/
-theorem sq_mul_third_pow_le_one (m : ℕ) : ((m : ℝ)) ^ 2 * (1 / 3 : ℝ) ^ m ≤ 1 := by
-  have hnat : ((m ^ 2 : ℕ) : ℝ) ≤ ((3 ^ m : ℕ) : ℝ) := Nat.cast_le.mpr (nat_sq_le_three_pow m)
-  have hcast : ((m : ℝ)) ^ 2 ≤ (3 : ℝ) ^ m := by
+theorem sq_mul_third_pow_le_one (m : ℕ) : ((m : ℝ)) ^ (2 : ℕ) * (1 / 3 : ℝ) ^ m ≤ 1 := by
+  have hnat : ((m ^ (2 : ℕ) : ℕ) : ℝ) ≤ ((3 ^ m : ℕ) : ℝ) := Nat.cast_le.mpr (nat_sq_le_three_pow m)
+  have hcast : ((m : ℝ)) ^ (2 : ℕ) ≤ (3 : ℝ) ^ m := by
     push_cast at hnat
     exact hnat
   have hpos : (0 : ℝ) < (3 : ℝ) ^ m := by positivity
@@ -116,7 +116,7 @@ theorem wiman_valiron_amplitude_le (hN : 1 ≤ N) (hL : 0 < L) (hNL : 8 * L ≤ 
     have h1 : Real.sqrt (2 * (N : ℝ) + 1) ≤ Real.sqrt (4 * (N : ℝ)) :=
       Real.sqrt_le_sqrt (by linarith)
     have h2 : Real.sqrt (4 * (N : ℝ)) = 2 * Real.sqrt (N : ℝ) := by
-      rw [show (4 : ℝ) * (N : ℝ) = 2 ^ 2 * (N : ℝ) by ring, Real.sqrt_mul (by positivity),
+      rw [show (4 : ℝ) * (N : ℝ) = 2 ^ (2 : ℕ) * (N : ℝ) by ring, Real.sqrt_mul (by positivity),
         Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h1, h2.le, h2.ge]
   have hsqN : (1 : ℝ) ≤ Real.sqrt (N : ℝ) := by
@@ -135,9 +135,9 @@ theorem wiman_valiron_bound_le_polynomial {N : ℕ} {L B : ℝ} (hN : 1 ≤ N) (
     (Real.sqrt (2 * (N : ℝ) + 1)
         + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
             / (1 - Real.exp (-((N : ℝ) / (4 * L)))))) * B
-      + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+      + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
           * (Real.sqrt (2 * (N : ℝ) + 1)
             + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                 / (1 - Real.exp (-((N : ℝ) / (4 * L)))))))
@@ -161,91 +161,91 @@ theorem wiman_valiron_bound_le_polynomial {N : ℕ} {L B : ℝ} (hN : 1 ≤ N) (
     have h1 : Real.sqrt (2 * (N : ℝ) + 1) ≤ Real.sqrt (4 * (N : ℝ)) :=
       Real.sqrt_le_sqrt (by linarith)
     have h2 : Real.sqrt (4 * (N : ℝ)) = 2 * Real.sqrt (N : ℝ) := by
-      rw [show (4 : ℝ) * (N : ℝ) = 2 ^ 2 * (N : ℝ) by ring, Real.sqrt_mul (by positivity),
+      rw [show (4 : ℝ) * (N : ℝ) = 2 ^ (2 : ℕ) * (N : ℝ) by ring, Real.sqrt_mul (by positivity),
         Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h1, h2.le, h2.ge]
   -- the cube of the gap
-  have hcube : (8 / 27 : ℝ) ≤ (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 := by
-    have : ((2 : ℝ) / 3) ^ 3 ≤ (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 := by
+  have hcube : (8 / 27 : ℝ) ≤ (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) := by
+    have : ((2 : ℝ) / 3) ^ (3 : ℕ) ≤ (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) := by
       gcongr
     nlinarith [this]
   -- the square-times-geometric factor
-  have hgeom : ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1) ≤ 1 := by
+  have hgeom : ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1) ≤ 1 := by
     have hqpow : Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1) ≤ (1 / 3 : ℝ) ^ (N + 1) := by
       gcongr
-    have hcast : ((N : ℝ) + 1) ^ 2 = (((N + 1 : ℕ) : ℝ)) ^ 2 := by push_cast; ring
+    have hcast : ((N : ℝ) + 1) ^ (2 : ℕ) = (((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by push_cast; ring
     have hbase := sq_mul_third_pow_le_one (N + 1)
     rw [hcast]
-    calc (((N + 1 : ℕ) : ℝ)) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-        ≤ (((N + 1 : ℕ) : ℝ)) ^ 2 * (1 / 3 : ℝ) ^ (N + 1) := by
-          have hnn : (0 : ℝ) ≤ (((N + 1 : ℕ) : ℝ)) ^ 2 := by positivity
+    calc (((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+        ≤ (((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * (1 / 3 : ℝ) ^ (N + 1) := by
+          have hnn : (0 : ℝ) ≤ (((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by positivity
           exact mul_le_mul_of_nonneg_left hqpow hnn
       _ ≤ 1 := hbase
-  have hterm2 : 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3) ≤ 14 := by
-    have hcubepos : (0 : ℝ) < (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 := by positivity
+  have hterm2 : 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)) ≤ 14 := by
+    have hcubepos : (0 : ℝ) < (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) := by positivity
     rw [mul_div_assoc'] at *
     rw [div_le_iff₀ hcubepos]
     nlinarith [hgeom, hcube]
   -- the inner factor
-  have hinner : 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
-      ≤ 4 * (N : ℝ) ^ 2 * Real.sqrt (N : ℝ) + 28 := by
+  have hinner : 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
+      ≤ 4 * (N : ℝ) ^ (2 : ℕ) * Real.sqrt (N : ℝ) + 28 := by
     nlinarith [hsq, hterm2, sq_nonneg ((N : ℝ))]
-  have hinner0 : 0 ≤ 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3)) := by positivity
+  have hinner0 : 0 ≤ 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ))) := by positivity
   -- the product under the root
-  have hprod : 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-        + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-            / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+  have hprod : 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+        + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+            / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
       * (Real.sqrt (2 * (N : ℝ) + 1)
         + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
             / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
-      ≤ 100 * (N : ℝ) ^ 3 := by
-    have hstep : 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-          + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-              / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+      ≤ 100 * (N : ℝ) ^ (3 : ℕ) := by
+    have hstep : 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+          + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+              / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
         * (Real.sqrt (2 * (N : ℝ) + 1)
           + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
               / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
-        ≤ (4 * (N : ℝ) ^ 2 * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ)) :=
+        ≤ (4 * (N : ℝ) ^ (2 : ℕ) * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ)) :=
       mul_le_mul hinner hamp hamp0 (by positivity)
-    have hexpand : (4 * (N : ℝ) ^ 2 * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ))
-        = 12 * (N : ℝ) ^ 3 + 84 * Real.sqrt (N : ℝ) := by
-      have : (4 * (N : ℝ) ^ 2 * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ))
-          = 12 * (N : ℝ) ^ 2 * (Real.sqrt (N : ℝ) * Real.sqrt (N : ℝ))
+    have hexpand : (4 * (N : ℝ) ^ (2 : ℕ) * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ))
+        = 12 * (N : ℝ) ^ (3 : ℕ) + 84 * Real.sqrt (N : ℝ) := by
+      have : (4 * (N : ℝ) ^ (2 : ℕ) * Real.sqrt (N : ℝ) + 28) * (3 * Real.sqrt (N : ℝ))
+          = 12 * (N : ℝ) ^ (2 : ℕ) * (Real.sqrt (N : ℝ) * Real.sqrt (N : ℝ))
             + 84 * Real.sqrt (N : ℝ) := by ring
       rw [this, hsqsq]
       ring
     have hsqle : Real.sqrt (N : ℝ) ≤ (N : ℝ) := by
-      have h1 : Real.sqrt (N : ℝ) ≤ Real.sqrt ((N : ℝ) ^ 2) :=
+      have h1 : Real.sqrt (N : ℝ) ≤ Real.sqrt ((N : ℝ) ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt (by nlinarith)
       rwa [Real.sqrt_sq hN0] at h1
-    have hcube3 : (N : ℝ) ≤ (N : ℝ) ^ 3 := by nlinarith
+    have hcube3 : (N : ℝ) ≤ (N : ℝ) ^ (3 : ℕ) := by nlinarith
     linarith [hstep, hexpand.le, hexpand.ge, hsqle, hcube3]
-  have hroot : Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-        + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-            / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+  have hroot : Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+        + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+            / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
       * (Real.sqrt (2 * (N : ℝ) + 1)
         + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
             / (1 - Real.exp (-((N : ℝ) / (4 * L)))))))
       ≤ 10 * ((N : ℝ) * Real.sqrt (N : ℝ)) := by
-    have hsqrt : Real.sqrt (100 * (N : ℝ) ^ 3) = 10 * ((N : ℝ) * Real.sqrt (N : ℝ)) := by
-      have hval : (10 * ((N : ℝ) * Real.sqrt (N : ℝ))) ^ 2 = 100 * (N : ℝ) ^ 3 := by
-        have : (10 * ((N : ℝ) * Real.sqrt (N : ℝ))) ^ 2
-            = 100 * (N : ℝ) ^ 2 * (Real.sqrt (N : ℝ) * Real.sqrt (N : ℝ)) := by ring
+    have hsqrt : Real.sqrt (100 * (N : ℝ) ^ (3 : ℕ)) = 10 * ((N : ℝ) * Real.sqrt (N : ℝ)) := by
+      have hval : (10 * ((N : ℝ) * Real.sqrt (N : ℝ))) ^ (2 : ℕ) = 100 * (N : ℝ) ^ (3 : ℕ) := by
+        have : (10 * ((N : ℝ) * Real.sqrt (N : ℝ))) ^ (2 : ℕ)
+            = 100 * (N : ℝ) ^ (2 : ℕ) * (Real.sqrt (N : ℝ) * Real.sqrt (N : ℝ)) := by ring
         rw [this, hsqsq]
         ring
       rw [← hval, Real.sqrt_sq (by positivity)]
-    calc Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+    calc Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
           * (Real.sqrt (2 * (N : ℝ) + 1)
             + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                 / (1 - Real.exp (-((N : ℝ) / (4 * L)))))))
-        ≤ Real.sqrt (100 * (N : ℝ) ^ 3) := Real.sqrt_le_sqrt hprod
+        ≤ Real.sqrt (100 * (N : ℝ) ^ (3 : ℕ)) := Real.sqrt_le_sqrt hprod
       _ = 10 * ((N : ℝ) * Real.sqrt (N : ℝ)) := hsqrt
   have hfirst : (Real.sqrt (2 * (N : ℝ) + 1)
       + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
@@ -367,7 +367,7 @@ theorem exists_radius_point_wiman_valiron_scale
   have hsqN2 : Real.sqrt (N : ℝ) ≤ 2 * Real.sqrt s := by
     have h1 : Real.sqrt (N : ℝ) ≤ Real.sqrt (4 * s) := Real.sqrt_le_sqrt hN4s
     have h2 : Real.sqrt (4 * s) = 2 * Real.sqrt s := by
-      rw [show (4 : ℝ) * s = 2 ^ 2 * s by ring, Real.sqrt_mul (by positivity),
+      rw [show (4 : ℝ) * s = 2 ^ (2 : ℕ) * s by ring, Real.sqrt_mul (by positivity),
         Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h1, h2.le, h2.ge]
   have hstep1 : 3 * Real.sqrt (N : ℝ)
@@ -443,8 +443,8 @@ theorem exp_pow_div_one_sub_le {κ : ℝ} (hκ : 0 < κ) (m : ℕ) :
 
 /-- The same bound with the gap cubed, as it occurs in the Cauchy--Schwarz defect. -/
 theorem exp_pow_div_one_sub_cube_le {κ : ℝ} (hκ : 0 < κ) (m : ℕ) :
-    Real.exp (-κ) ^ m / (1 - Real.exp (-κ)) ^ 3
-      ≤ ((1 + κ) / κ) ^ 3 * Real.exp (-((m : ℝ) * κ)) := by
+    Real.exp (-κ) ^ m / (1 - Real.exp (-κ)) ^ (3 : ℕ)
+      ≤ ((1 + κ) / κ) ^ (3 : ℕ) * Real.exp (-((m : ℝ) * κ)) := by
   have hgap : (0 : ℝ) < 1 - Real.exp (-κ) := by
     have := exp_neg_lt_one hκ
     linarith
@@ -458,14 +458,14 @@ theorem exp_pow_div_one_sub_cube_le {κ : ℝ} (hκ : 0 < κ) (m : ℕ) :
   have hfrac : (1 : ℝ) ≤ (1 + κ) / κ * (1 - Real.exp (-κ)) := by
     calc (1 : ℝ) = (1 + κ) / κ * (κ / (1 + κ)) := h1.symm
       _ ≤ (1 + κ) / κ * (1 - Real.exp (-κ)) := mul_le_mul_of_nonneg_left hlow (le_of_lt hc)
-  have hcube : (1 : ℝ) ≤ ((1 + κ) / κ) ^ 3 * (1 - Real.exp (-κ)) ^ 3 := by
-    have hprod : ((1 + κ) / κ * (1 - Real.exp (-κ))) ^ 3
-        = ((1 + κ) / κ) ^ 3 * (1 - Real.exp (-κ)) ^ 3 := by ring
-    have : (1 : ℝ) ^ 3 ≤ ((1 + κ) / κ * (1 - Real.exp (-κ))) ^ 3 := by
+  have hcube : (1 : ℝ) ≤ ((1 + κ) / κ) ^ (3 : ℕ) * (1 - Real.exp (-κ)) ^ (3 : ℕ) := by
+    have hprod : ((1 + κ) / κ * (1 - Real.exp (-κ))) ^ (3 : ℕ)
+        = ((1 + κ) / κ) ^ (3 : ℕ) * (1 - Real.exp (-κ)) ^ (3 : ℕ) := by ring
+    have : (1 : ℝ) ^ (3 : ℕ) ≤ ((1 + κ) / κ * (1 - Real.exp (-κ))) ^ (3 : ℕ) := by
       gcongr
     rw [hprod] at this
     simpa using this
-  have hcubepos : (0 : ℝ) < (1 - Real.exp (-κ)) ^ 3 := by positivity
+  have hcubepos : (0 : ℝ) < (1 - Real.exp (-κ)) ^ (3 : ℕ) := by positivity
   rw [hpow, div_le_iff₀ hcubepos]
   nlinarith [hcube, Real.exp_pos (-((m : ℝ) * κ))]
 
@@ -488,21 +488,21 @@ quantities may be substituted. -/
 theorem wiman_valiron_expression_mono {N : ℕ} {B t₁ t₁' t₃ t₃' : ℝ}
     (hB : 0 ≤ B) (h10 : 0 ≤ t₁) (h1 : t₁ ≤ t₁') (h30 : 0 ≤ t₃) (h3 : t₃ ≤ t₃') :
     (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁) * B
-        + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃)) * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁))
+        + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃)) * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁))
       ≤ (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁') * B
-        + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃')) * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁')) := by
+        + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃')) * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁')) := by
   have hsq0 : (0 : ℝ) ≤ Real.sqrt (2 * (N : ℝ) + 1) := Real.sqrt_nonneg _
-  have hsqc : (0 : ℝ) ≤ ((N : ℝ) + 1) ^ 2 := by positivity
-  have hfirst : (0 : ℝ) ≤ (N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) := by positivity
+  have hsqc : (0 : ℝ) ≤ ((N : ℝ) + 1) ^ (2 : ℕ) := by positivity
+  have hfirst : (0 : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) := by positivity
   have h30' : (0 : ℝ) ≤ t₃' := le_trans h30 h3
-  have hcoef : (0 : ℝ) ≤ 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃) := by nlinarith [h30, hsqc]
-  have hcoef' : (0 : ℝ) ≤ 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃') := by nlinarith [h30', hsqc]
-  have hin0 : (0 : ℝ) ≤ 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃)) := by linarith
-  have hin0' : (0 : ℝ) ≤ 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * t₃')) := by linarith
+  have hcoef : (0 : ℝ) ≤ 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃) := by nlinarith [h30, hsqc]
+  have hcoef' : (0 : ℝ) ≤ 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃') := by nlinarith [h30', hsqc]
+  have hin0 : (0 : ℝ) ≤ 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃)) := by linarith
+  have hin0' : (0 : ℝ) ≤ 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * t₃')) := by linarith
   have hamp0 : (0 : ℝ) ≤ Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁ := by linarith
   have hamp0' : (0 : ℝ) ≤ Real.sqrt (2 * (N : ℝ) + 1) + 2 * t₁' := by linarith
   gcongr
@@ -527,9 +527,9 @@ theorem exists_radius_point_wiman_valiron_tail
             * (2 * L * h
               + 2 * Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
                   + 1 / (Real.exp h - 1)) / h)
-          + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-              + 2 * (2 * ((N : ℝ) + 1) ^ 2
-                  * (((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))) ^ 3
+          + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+              + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ)
+                  * (((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))) ^ (3 : ℕ)
                       * Real.exp (-(((N : ℝ) + 1) * ((N : ℝ) / (4 * L)))))))
             * (Real.sqrt (2 * (N : ℝ) + 1)
               + 2 * ((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))
@@ -566,16 +566,16 @@ theorem exists_radius_point_wiman_valiron_tail
       ≤ (1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))
         * Real.exp (-(((N : ℝ) + 1) * ((N : ℝ) / (4 * L)))) := window_tail_le hN0 hL
   have ht3 : Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3
-      ≤ ((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))) ^ 3
+      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)
+      ≤ ((1 + (N : ℝ) / (4 * L)) / ((N : ℝ) / (4 * L))) ^ (3 : ℕ)
         * Real.exp (-(((N : ℝ) + 1) * ((N : ℝ) / (4 * L)))) := by
     have hcube := exp_pow_div_one_sub_cube_le hκ (N + 1)
     have hcast : (((N + 1 : ℕ) : ℝ)) = (N : ℝ) + 1 := by push_cast; ring
     rwa [hcast] at hcube
-  have hassoc : 2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3
-      = 2 * ((N : ℝ) + 1) ^ 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3) := mul_div_assoc _ _ _
+  have hassoc : 2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)
+      = 2 * ((N : ℝ) + 1) ^ (2 : ℕ) * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)) := mul_div_assoc _ _ _
   rw [hassoc]
   exact wiman_valiron_expression_mono hB (by positivity) ht1 (by positivity) ht3
 

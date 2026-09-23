@@ -7,15 +7,15 @@ Functional-equation and Schwarz orientations do not repair the literal unshifted
 kernel.  On two distinct positive real source nodes, even the bilateral `a,-a` packet has exact
 negative determinant
 
-`-16 a^2 (x-y)^2 / ((x^2-a^2)^2 (y^2-a^2)^2)`.
+`-16 a^(2 : ℕ) (x-y)^(2 : ℕ) / ((x^(2 : ℕ)-a^(2 : ℕ))^(2 : ℕ) (y^(2 : ℕ)-a^(2 : ℕ))^(2 : ℕ))`.
 
 The failure has a sharp positive survivor.  Bilateral orientation collapses the packetwise Hardy
 debt to one shared rank-one ghost:
 
 `K_a = P_a P_aᴴ - G_a G_aᴴ`,
 
-where `P_a(lambda)=2lambda/(lambda^2-a^2)` and
-`G_a(lambda)=2a/(lambda^2-a^2)`.  Thus adding the independently specified shared ghost gives an
+where `P_a(lambda)=2lambda/(lambda^(2 : ℕ)-a^(2 : ℕ))` and
+`G_a(lambda)=2a/(lambda^(2 : ℕ)-a^(2 : ℕ))`.  Thus adding the independently specified shared ghost gives an
 exact positive completion before finite source compression.  This avoids the cellwise companion
 trace divergence, but it does not yet give the fixed primitive Euler budget: the positive column
 is strictly amplified at every nonzero grade.  A completed source producer must therefore short
@@ -43,8 +43,8 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex
     {a x y : ℝ} (ha : 0 < a) (hx : a < x) (hy : a < y) :
     (xiWardCubicBilateralUnshiftedResidualPickMatrix
       ![(x : ℂ), (y : ℂ)] (a : ℂ)).det =
-      -16 * (a : ℂ) ^ 2 * ((x : ℂ) - y) ^ 2 /
-        (((x : ℂ) ^ 2 - a ^ 2) ^ 2 * ((y : ℂ) ^ 2 - a ^ 2) ^ 2) := by
+      -16 * (a : ℂ) ^ (2 : ℕ) * ((x : ℂ) - y) ^ (2 : ℕ) /
+        (((x : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * ((y : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hxa : (x : ℂ) - a ≠ 0 := by
     exact_mod_cast (sub_ne_zero.mpr (ne_of_gt hx))
   have hxp : (x : ℂ) + a ≠ 0 := by
@@ -61,14 +61,14 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex
     exact_mod_cast (ne_of_gt (by linarith : 0 < x + y))
   have hyx0 : (y : ℂ) + x ≠ 0 := by
     exact_mod_cast (ne_of_gt (by linarith : 0 < y + x))
-  have hxd : (x : ℂ) ^ 2 - (a : ℂ) ^ 2 ≠ 0 := by
-    exact_mod_cast (by nlinarith : x ^ 2 - a ^ 2 ≠ 0)
-  have hyd : (y : ℂ) ^ 2 - (a : ℂ) ^ 2 ≠ 0 := by
-    exact_mod_cast (by nlinarith : y ^ 2 - a ^ 2 ≠ 0)
+  have hxd : (x : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) ≠ 0 := by
+    exact_mod_cast (by nlinarith : x ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
+  have hyd : (y : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) ≠ 0 := by
+    exact_mod_cast (by nlinarith : y ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
   have h00 :
       xiWardCubicBilateralUnshiftedResidualPickMatrix
         ![(x : ℂ), (y : ℂ)] (a : ℂ) 0 0 =
-        4 / ((x : ℂ) ^ 2 - (a : ℂ) ^ 2) := by
+        4 / ((x : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) := by
     apply (eq_div_iff hxd).2
     norm_num [xiWardCubicBilateralUnshiftedResidualPickMatrix,
       xiWardCubicUnshiftedReflectedResidualPickMatrix]
@@ -77,7 +77,7 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex
   have h11 :
       xiWardCubicBilateralUnshiftedResidualPickMatrix
         ![(x : ℂ), (y : ℂ)] (a : ℂ) 1 1 =
-        4 / ((y : ℂ) ^ 2 - (a : ℂ) ^ 2) := by
+        4 / ((y : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) := by
     apply (eq_div_iff hyd).2
     norm_num [xiWardCubicBilateralUnshiftedResidualPickMatrix,
       xiWardCubicUnshiftedReflectedResidualPickMatrix]
@@ -86,8 +86,8 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex
   have h01 :
       xiWardCubicBilateralUnshiftedResidualPickMatrix
         ![(x : ℂ), (y : ℂ)] (a : ℂ) 0 1 =
-        4 * ((x : ℂ) * y - (a : ℂ) ^ 2) /
-          (((x : ℂ) ^ 2 - a ^ 2) * ((y : ℂ) ^ 2 - a ^ 2)) := by
+        4 * ((x : ℂ) * y - (a : ℂ) ^ (2 : ℕ)) /
+          (((x : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ)) * ((y : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ))) := by
     apply (eq_div_iff (mul_ne_zero hxd hyd)).2
     norm_num [xiWardCubicBilateralUnshiftedResidualPickMatrix,
       xiWardCubicUnshiftedReflectedResidualPickMatrix]
@@ -96,8 +96,8 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex
   have h10 :
       xiWardCubicBilateralUnshiftedResidualPickMatrix
         ![(x : ℂ), (y : ℂ)] (a : ℂ) 1 0 =
-        4 * ((x : ℂ) * y - (a : ℂ) ^ 2) /
-          (((x : ℂ) ^ 2 - a ^ 2) * ((y : ℂ) ^ 2 - a ^ 2)) := by
+        4 * ((x : ℂ) * y - (a : ℂ) ^ (2 : ℕ)) /
+          (((x : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ)) * ((y : ℂ) ^ (2 : ℕ) - a ^ (2 : ℕ))) := by
     apply (eq_div_iff (mul_ne_zero hxd hyd)).2
     norm_num [xiWardCubicBilateralUnshiftedResidualPickMatrix,
       xiWardCubicUnshiftedReflectedResidualPickMatrix]
@@ -115,8 +115,8 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two
     {a x y : ℝ} (ha : 0 < a) (hx : a < x) (hy : a < y) :
     (xiWardCubicBilateralUnshiftedResidualPickMatrix
       ![(x : ℂ), (y : ℂ)] (a : ℂ)).det =
-      ((-16 * a ^ 2 * (x - y) ^ 2 /
-        ((x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2) : ℝ) : ℂ) := by
+      ((-16 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) /
+        ((x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two_complex ha hx hy]
   norm_cast
 
@@ -131,17 +131,17 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_not_posSemidef
   have hdet := hpsd.det_nonneg
   rw [xiWardCubicBilateralUnshiftedResidualPickMatrix_det_two ha hx hy] at hdet
   have hreal := (RCLike.nonneg_iff.mp hdet).1
-  change 0 ≤ -16 * a ^ 2 * (x - y) ^ 2 /
-    ((x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2) at hreal
-  have hxa : 0 < x ^ 2 - a ^ 2 := by nlinarith
-  have hya : 0 < y ^ 2 - a ^ 2 := by nlinarith
-  have hxySq : 0 < (x - y) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hxy)
-  have hneg : -16 * a ^ 2 * (x - y) ^ 2 /
-      ((x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2) < 0 := by
-    have hnum : -16 * a ^ 2 * (x - y) ^ 2 < 0 :=
+  change 0 ≤ -16 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) /
+    ((x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ)) at hreal
+  have hxa : 0 < x ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
+  have hya : 0 < y ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
+  have hxySq : 0 < (x - y) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hxy)
+  have hneg : -16 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) /
+      ((x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ)) < 0 := by
+    have hnum : -16 * a ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) < 0 :=
       mul_neg_of_neg_of_pos
         (mul_neg_of_neg_of_pos (by norm_num) (sq_pos_of_pos ha)) hxySq
-    have hden : 0 < (x ^ 2 - a ^ 2) ^ 2 * (y ^ 2 - a ^ 2) ^ 2 :=
+    have hden : 0 < (x ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) * (y ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (2 : ℕ) :=
       mul_pos (sq_pos_of_pos hxa) (sq_pos_of_pos hya)
     exact div_neg_of_neg_of_pos hnum hden
   linarith
@@ -183,12 +183,12 @@ theorem xiWardCubicFourOrientationUnshiftedResidualPickMatrix_not_posSemidef
 /-- Positive source column in the bilateral rank-two Krein factorization. -/
 def xiWardCubicBilateralPositiveColumn {N : ℕ}
     (w : Fin N → ℝ) (a : ℝ) : Matrix (Fin N) (Fin 1) ℂ :=
-  fun i _ => (2 * w i / (w i ^ 2 - a ^ 2) : ℝ)
+  fun i _ => (2 * w i / (w i ^ (2 : ℕ) - a ^ (2 : ℕ)) : ℝ)
 
 /-- One shared ghost column replacing the nonsummable cellwise companion family. -/
 def xiWardCubicBilateralSharedGhostColumn {N : ℕ}
     (w : Fin N → ℝ) (a : ℝ) : Matrix (Fin N) (Fin 1) ℂ :=
-  fun i _ => (2 * a / (w i ^ 2 - a ^ 2) : ℝ)
+  fun i _ => (2 * a / (w i ^ (2 : ℕ) - a ^ (2 : ℕ)) : ℝ)
 
 /-- Bilateral orientation converts the complete Hardy debt into one prime-independent rank-one
 ghost before any finite source packet is compressed. -/
@@ -214,12 +214,12 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_eq_credit_sub_sharedGhos
     exact_mod_cast (ne_of_gt (by linarith : 0 < w j + a))
   have hsum : (w i : ℂ) + w j ≠ 0 := by
     exact_mod_cast (ne_of_gt (add_pos hwi0 hwj0))
-  have hdi : (w i : ℂ) ^ 2 - (a : ℂ) ^ 2 ≠ 0 := by
-    have hsquare : a ^ 2 < w i ^ 2 :=
+  have hdi : (w i : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) ≠ 0 := by
+    have hsquare : a ^ (2 : ℕ) < w i ^ (2 : ℕ) :=
       (sq_lt_sq₀ ha hwi0.le).2 (hw i)
     exact_mod_cast (ne_of_gt (sub_pos.mpr hsquare))
-  have hdj : (w j : ℂ) ^ 2 - (a : ℂ) ^ 2 ≠ 0 := by
-    have hsquare : a ^ 2 < w j ^ 2 :=
+  have hdj : (w j : ℂ) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) ≠ 0 := by
+    have hsquare : a ^ (2 : ℕ) < w j ^ (2 : ℕ) :=
       (sq_lt_sq₀ ha hwj0.le).2 (hw j)
     exact_mod_cast (ne_of_gt (sub_pos.mpr hsquare))
   simp only [xiWardCubicBilateralUnshiftedResidualPickMatrix,
@@ -262,16 +262,16 @@ theorem xiWardCubicBilateralUnshiftedResidualPickMatrix_add_sharedGhost_posSemid
 ghost is not by itself a contraction into the grade-zero primitive source budget. -/
 theorem xiWardCubicBilateralPositiveColumn_normSq_strictly_increases
     {lambda a : ℝ} (ha : 0 < a) (hala : a < lambda) :
-    Complex.normSq (2 * lambda / lambda ^ 2 : ℝ) <
+    Complex.normSq (2 * lambda / lambda ^ (2 : ℕ) : ℝ) <
       Complex.normSq
         (xiWardCubicBilateralPositiveColumn (fun _ : Fin 1 => lambda) a 0 0) := by
   simp only [xiWardCubicBilateralPositiveColumn, Complex.normSq_ofReal]
   have hl0 : 0 < lambda := ha.trans hala
-  have hden : 0 < lambda ^ 2 - a ^ 2 := by nlinarith
-  have hleft : 0 < 2 * lambda / lambda ^ 2 := by positivity
-  have hright : 0 < 2 * lambda / (lambda ^ 2 - a ^ 2) := by positivity
-  have hlt : 2 * lambda / lambda ^ 2 <
-      2 * lambda / (lambda ^ 2 - a ^ 2) := by
+  have hden : 0 < lambda ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
+  have hleft : 0 < 2 * lambda / lambda ^ (2 : ℕ) := by positivity
+  have hright : 0 < 2 * lambda / (lambda ^ (2 : ℕ) - a ^ (2 : ℕ)) := by positivity
+  have hlt : 2 * lambda / lambda ^ (2 : ℕ) <
+      2 * lambda / (lambda ^ (2 : ℕ) - a ^ (2 : ℕ)) := by
     rw [div_lt_div_iff₀ (sq_pos_of_pos hl0) hden]
     nlinarith [sq_pos_of_pos ha]
   have hsquare := (sq_lt_sq₀ hleft.le hright.le).2 hlt

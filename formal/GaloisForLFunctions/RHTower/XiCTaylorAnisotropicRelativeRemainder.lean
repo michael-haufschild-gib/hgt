@@ -41,8 +41,8 @@ theorem eventually_remainder_lt_scaled_xiCTaylor_normSq_of_tendsto_localOrder
           (((n + 1 : ℕ) : ℝ) ^ m) < c / 2 :=
     htolM.eventually (eventually_lt_nhds (half_pos hc))
   have hsmallE : ∀ᶠ n : ℕ in atTop,
-      E n * (((n + 1 : ℕ) : ℝ) ^ (2 * m)) < epsilon * c ^ 2 / 4 := by
-    have htarget : 0 < epsilon * c ^ 2 / 4 := by positivity
+      E n * (((n + 1 : ℕ) : ℝ) ^ (2 * m)) < epsilon * c ^ (2 : ℕ) / 4 := by
+    have htarget : 0 < epsilon * c ^ (2 : ℕ) / 4 := by positivity
     simpa only [m] using hE.eventually (eventually_lt_nhds htarget)
   filter_upwards [hvalueLower, hsmallValue, hsmallE]
       with n hnLower hnSmall hnE
@@ -79,31 +79,31 @@ theorem eventually_remainder_lt_scaled_xiCTaylor_normSq_of_tendsto_localOrder
   have hPValueLower : c / (2 * q ^ m) < ‖P.eval z‖ := by
     rw [div_lt_iff₀ (mul_pos (by norm_num) hqpow)]
     nlinarith
-  have hnE' : E n * q ^ (2 * m) < epsilon * c ^ 2 / 4 := by
+  have hnE' : E n * q ^ (2 * m) < epsilon * c ^ (2 : ℕ) / 4 := by
     simpa only [q, m] using hnE
-  have hEbase : E n < (epsilon * q) * (c / (2 * q ^ m)) ^ 2 := by
-    have hpowEq : q ^ (2 * m) = (q ^ m) ^ 2 := by
+  have hEbase : E n < (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) := by
+    have hpowEq : q ^ (2 * m) = (q ^ m) ^ (2 : ℕ) := by
       rw [show 2 * m = m * 2 by omega, pow_mul]
-    rw [show (epsilon * q) * (c / (2 * q ^ m)) ^ 2 =
-        (epsilon * q * c ^ 2 / 4) / (q ^ m) ^ 2 by
+    rw [show (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) =
+        (epsilon * q * c ^ (2 : ℕ) / 4) / (q ^ m) ^ (2 : ℕ) by
           field_simp
           ring]
     rw [lt_div_iff₀ (sq_pos_of_pos hqpow)]
     rw [hpowEq] at hnE'
-    have htargetMono : epsilon * c ^ 2 / 4 ≤ epsilon * q * c ^ 2 / 4 := by
-      have hnonneg : 0 ≤ epsilon * c ^ 2 / 4 := by positivity
+    have htargetMono : epsilon * c ^ (2 : ℕ) / 4 ≤ epsilon * q * c ^ (2 : ℕ) / 4 := by
+      have hnonneg : 0 ≤ epsilon * c ^ (2 : ℕ) / 4 := by positivity
       calc
-        epsilon * c ^ 2 / 4 = 1 * (epsilon * c ^ 2 / 4) := by ring
-        _ ≤ q * (epsilon * c ^ 2 / 4) :=
+        epsilon * c ^ (2 : ℕ) / 4 = 1 * (epsilon * c ^ (2 : ℕ) / 4) := by ring
+        _ ≤ q * (epsilon * c ^ (2 : ℕ) / 4) :=
           mul_le_mul_of_nonneg_right hqOne hnonneg
-        _ = epsilon * q * c ^ 2 / 4 := by ring
+        _ = epsilon * q * c ^ (2 : ℕ) / 4 := by ring
     exact hnE'.trans_le htargetMono
-  have hbaseSq : (c / (2 * q ^ m)) ^ 2 ≤ ‖P.eval z‖ ^ 2 := by
+  have hbaseSq : (c / (2 * q ^ m)) ^ (2 : ℕ) ≤ ‖P.eval z‖ ^ (2 : ℕ) := by
     have ha : 0 ≤ c / (2 * q ^ m) := by positivity
     have hb : 0 ≤ ‖P.eval z‖ := norm_nonneg _
     nlinarith [mul_nonneg (sub_nonneg.mpr hPValueLower.le) (add_nonneg hb ha)]
   calc
-    E n < (epsilon * q) * (c / (2 * q ^ m)) ^ 2 := hEbase
+    E n < (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) := hEbase
     _ ≤ (epsilon * q) * Complex.normSq (P.eval z) := by
       rw [Complex.normSq_eq_norm_sq]
       exact mul_le_mul_of_nonneg_left hbaseSq (mul_nonneg hepsilon.le hq.le)

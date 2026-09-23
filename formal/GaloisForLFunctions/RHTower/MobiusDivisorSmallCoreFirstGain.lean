@@ -31,8 +31,8 @@ private lemma product_count (T : Finset (Finset ℕ)) (N : ℕ)
   simpa [S] using card_le_card_of_injOn _ hm hi
 
 private lemma amplitude_square (M k : ℕ) :
-    ((3/5:ℝ)*2^k*Real.sqrt M)^2=(9/25:ℝ)*4^k*(M:ℝ) := by
-  have hp : ((2:ℝ)^k)^2=4^k := by
+    ((3/5:ℝ)*2^k*Real.sqrt M)^(2 : ℕ)=(9/25:ℝ)*4^k*(M:ℝ) := by
+  have hp : ((2:ℝ)^k)^(2 : ℕ)=4^k := by
     rw [← pow_mul,Nat.mul_comm,pow_mul]
     norm_num
   rw [mul_pow,mul_pow,hp,Real.sq_sqrt (Nat.cast_nonneg M)]
@@ -44,7 +44,7 @@ theorem sum_mobiusDivisorPrimeFibre_sq_le_small_core
     (M N : ℕ) (P : Finset ℕ) (hP : ∀ r∈P,r.Prime) {p : ℕ}
     (hp : p.Prime) (hpP : p∉P) (hN : M/p+1≤N) :
     (∑ R∈((mobiusDivisorSelectionPrimes M).erase p).powerset,
-      (mobiusDivisorSelectionFibre M P (insert p R))^2)≤
+      (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ))≤
         (9/25:ℝ)*4^((P.filter (fun r => r<N)).card-1)*(M:ℝ)*((M-1)/p:ℕ) := by
   let T := ((mobiusDivisorSelectionPrimes M).erase p).powerset
   let S := P.filter (fun r => r<N)
@@ -63,12 +63,12 @@ theorem sum_mobiusDivisorPrimeFibre_sq_le_small_core
     apply mobiusDivisorSelectionFibre_eq_zero_of_le_product
     rw [prod_insert (hpR R hR)]
     omega
-  have he : (∑ R∈T,(mobiusDivisorSelectionFibre M P (insert p R))^2)=
-      ∑ R∈A,(mobiusDivisorSelectionFibre M P (insert p R))^2 := by
+  have he : (∑ R∈T,(mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ))=
+      ∑ R∈A,(mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ) := by
     symm
     exact sum_subset (filter_subset _ _) (fun R hR hn => by rw [hz R hR hn]; ring)
   have hb (R : Finset ℕ) (hR : R∈T) :
-      (mobiusDivisorSelectionFibre M P (insert p R))^2≤H^2 := by
+      (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ)≤H^(2 : ℕ) := by
     rw [mobiusDivisorSelectionFibre_partner_filter_cutoff M N P R hp hpP (hpR R hR) hN]
     have h := abs_mobiusDivisorSelectionFibre_le_source_amplitude M S (insert p R)
       (fun r hr => hP r (mem_filter.mp hr).1) (by simpa using And.intro hp (hprime R hR))
@@ -78,9 +78,9 @@ theorem sum_mobiusDivisorPrimeFibre_sq_le_small_core
   change (∑ R∈T,_)≤_
   rw [he]
   calc
-    _ ≤ ∑ _R∈A,H^2 := sum_le_sum (fun R hR => hb R (mem_filter.mp hR).1)
-    _ = (A.card:ℝ)*H^2 := by simp
-    _ ≤ (((M-1)/p:ℕ):ℝ)*H^2 := mul_le_mul_of_nonneg_right
+    _ ≤ ∑ _R∈A,H^(2 : ℕ) := sum_le_sum (fun R hR => hb R (mem_filter.mp hR).1)
+    _ = (A.card:ℝ)*H^(2 : ℕ) := by simp
+    _ ≤ (((M-1)/p:ℕ):ℝ)*H^(2 : ℕ) := mul_le_mul_of_nonneg_right
       (by exact_mod_cast product_count T ((M-1)/p) hprime) (sq_nonneg H)
     _ = _ := by dsimp [H,S]; rw [amplitude_square]; ring
 
@@ -89,7 +89,7 @@ small-prime quotient core, with no full processed-cardinality factor. -/
 theorem sq_mobiusDivisorSelectionEnergy_insert_le_small_core
     (M N : ℕ) (P : Finset ℕ) (hP : ∀ r∈P,r.Prime) {p : ℕ}
     (hp : p.Prime) (hpM : p<M) (hpP : p∉P) (hN : M/p+1≤N) :
-    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^2≤
+    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^(2 : ℕ)≤
       (36/25:ℝ)*4^((P.filter (fun r => r<N)).card-1)*(M:ℝ)*((M-1)/p:ℕ)*
         mobiusDivisorSelectionEnergy M P := by
   let T := ((mobiusDivisorSelectionPrimes M).erase p).powerset
@@ -102,10 +102,10 @@ theorem sq_mobiusDivisorSelectionEnergy_insert_le_small_core
     (sum_nonneg (fun R (_hR : R∈T) => sq_nonneg (f R))).trans hf
   have hb := mul_le_mul hf hg (sum_nonneg (fun R (_hR : R∈T) => sq_nonneg (g R))) hQ
   rw [mobiusDivisorSelectionEnergy_insert_cross hp M P hpM hpP,mul_pow]
-  change (2:ℝ)^2*(∑ R∈T,f R*g R)^2≤_
-  norm_num only [show (2:ℝ)^2=4 by norm_num]
+  change (2:ℝ)^(2 : ℕ)*(∑ R∈T,f R*g R)^(2 : ℕ)≤_
+  norm_num only [show (2:ℝ)^(2 : ℕ)=4 by norm_num]
   calc
-    _ ≤ 4*((∑ R∈T,(f R)^2)*(∑ R∈T,(g R)^2)) :=
+    _ ≤ 4*((∑ R∈T,(f R)^(2 : ℕ))*(∑ R∈T,(g R)^(2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hcs (by norm_num)
     _ ≤ 4*(mobiusDivisorSelectionEnergy M P*
         ((9/25:ℝ)*4^((P.filter (fun r => r<N)).card-1)*(M:ℝ)*((M-1)/p:ℕ))) :=
@@ -117,7 +117,7 @@ energy), uniformly in all processed primes and their retained signs. -/
 theorem sq_mobiusDivisorSelectionEnergy_insert_le_fixed_quotient
     (M L : ℕ) (P : Finset ℕ) (hP : ∀ r∈P,r.Prime) {p : ℕ}
     (hp : p.Prime) (hpM : p<M) (hpP : p∉P) (hpL : M/p≤L) :
-    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^2≤
+    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^(2 : ℕ)≤
       (36/25:ℝ)*4^L*(L:ℝ)*(M:ℝ)*mobiusDivisorSelectionEnergy M P := by
   have hb := sq_mobiusDivisorSelectionEnergy_insert_le_small_core M (L+1) P hP
     hp hpM hpP (by omega)
@@ -131,7 +131,7 @@ theorem sq_mobiusDivisorSelectionEnergy_insert_le_fixed_quotient
   have hdiv : (M-1)/p≤L := (Nat.div_le_div_right (Nat.sub_le M 1)).trans hpL
   have hQ : 0 ≤ mobiusDivisorSelectionEnergy M P := by
     change 0 ≤ ∑ R∈(mobiusDivisorSelectionPrimes M).powerset,
-      (mobiusDivisorSelectionFibre M P R)^2
+      (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
     exact sum_nonneg (fun _ _ => sq_nonneg _)
   calc
     _ ≤ (36/25:ℝ)*4^((P.filter (fun r => r<L+1)).card-1)*(M:ℝ)*((M-1)/p:ℕ)*

@@ -10,7 +10,7 @@ Together they give a physical-scale lower bound on `k`, and in particular
 `k ≥ 3` on the ray `x ≥ 2/3`.
 
 The signed polynomial flux estimate then supplies the positive reserve
-`(5/48)*amp^2*T`. This exceeds fifteen times the earlier barrier reserve on
+`(5/48)*amp^(2 : ℕ)*T`. This exceeds fifteen times the earlier barrier reserve on
 that whole ray. Global coefficient compatibility with the inner determinant
 margin remains a separate sign problem.
 -/
@@ -22,8 +22,8 @@ noncomputable section
 private theorem first_slope_eq (x : ℝ) :
     deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
       Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)*
-        (-8*thetaCuspSingleAtomReflectionScale 1 x^3+
-          30*thetaCuspSingleAtomReflectionScale 1 x^2-15*thetaCuspSingleAtomReflectionScale 1 x) := by
+        (-8*thetaCuspSingleAtomReflectionScale 1 x^(3 : ℕ)+
+          30*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-15*thetaCuspSingleAtomReflectionScale 1 x) := by
   have h := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
   rw [iteratedDeriv_one] at h
   rw [h]
@@ -53,8 +53,8 @@ private theorem full_slope_upper {x : ℝ}
     rw [first_slope_eq]
     dsimp [f]
     rw [thetaCuspSourceTerm_one_eq_scale_profile]
-    change Real.exp (x/2-q)*(-8*q^3+30*q^2-15*q) ≤
-      (5-2*q)*(Real.exp (x/2-q)*(4*q^2-6*q))
+    change Real.exp (x/2-q)*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q) ≤
+      (5-2*q)*(Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q))
     nlinarith only [hm]
   have hm := mul_le_mul_of_nonneg_right hfirst (show 0 ≤ 1+R by linarith only [hR])
   have htail : 0 ≤ 2*q*f*M := by positivity
@@ -115,7 +115,7 @@ theorem ratio_ge_three_on_upper_ray {x : ℝ} (hx : 2/3 ≤ x) : 3 ≤ k x := by
 /-- The actual zero-integral flux supplies a gap-scaled reserve on the complete upper ray. -/
 theorem barrierFlux_deriv_gap_gain {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
     (hx : 2/3 ≤ x) :
-    (5/48 : ℝ)*(4*x*Real.sinh (2*a*x))*sourceAmplitude x^2*(t x*(k x+1/3)) ≤
+    (5/48 : ℝ)*(4*x*Real.sinh (2*a*x))*sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3)) ≤
       -deriv (barrierFlux a) x := by
   have hx0 : 0 ≤ x := by linarith only [hx]
   have hd := barrierFlux_deriv_polynomial_cost ha0 ha hx0
@@ -128,11 +128,11 @@ theorem barrierFlux_deriv_gap_gain {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
   have hs := Real.sinh_nonneg_iff.mpr (show 0 ≤ 2*a*x by positivity)
   have ht := t_pos hx0
   have hf := mul_le_mul_of_nonneg_left hp
-    (show 0 ≤ 4*x*Real.sinh (2*a*x)*sourceAmplitude x^2*(t x*(k x+1/3)) by positivity)
+    (show 0 ≤ 4*x*Real.sinh (2*a*x)*sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3)) by positivity)
   nlinarith only [hd, hf]
 
 /-- Gap-scaled source reserve obtained from the signed flux estimate. -/
-def barrierGapReserve (x : ℝ) : ℝ := (5/48 : ℝ)*sourceAmplitude x^2*(t x*(k x+1/3))
+def barrierGapReserve (x : ℝ) : ℝ := (5/48 : ℝ)*sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))
 
 /-- The gap-scaled reserve exceeds fifteen times the earlier upper-ray reserve. -/
 theorem barrierGapReserve_ge_fifteen {x : ℝ} (hx : 2/3 ≤ x) :

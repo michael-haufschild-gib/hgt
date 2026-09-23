@@ -96,8 +96,8 @@ estimates control, no Cauchy--Schwarz step is needed to connect them. -/
 theorem abs_pow_sub_truncPow_le_even (hR : 0 < R) (k : ℕ) (x : ℝ) :
     |x ^ k - truncPow R k x| ≤ 2 * x ^ (2 * k) / R ^ k := by
   have hRk : (0 : ℝ) < R ^ k := pow_pos hR k
-  have hsq : x ^ (2 * k) = (x ^ k) ^ 2 := by rw [mul_comm, pow_mul]
-  have hxk2 : (x ^ k) ^ 2 = (|x| ^ k) ^ 2 := by rw [← abs_pow, sq_abs]
+  have hsq : x ^ (2 * k) = (x ^ k) ^ (2 : ℕ) := by rw [mul_comm, pow_mul]
+  have hxk2 : (x ^ k) ^ (2 : ℕ) = (|x| ^ k) ^ (2 : ℕ) := by rw [← abs_pow, sq_abs]
   by_cases hx : x ∈ Set.Icc (-R) R
   · rw [abs_pow_sub_truncPow_eq_zero_of_mem R k hx, abs_zero, hsq]
     positivity

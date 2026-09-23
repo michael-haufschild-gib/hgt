@@ -19,7 +19,7 @@ into
 The coefficient energy enters at its **true** size `≍ B₀·(W_PW_Q)²`
 (`Sieve/JointOmegaBudgetFromLadder.energy_jointOmegaCoeff_le_variance`); the divisor bound `(log x)²`
 is *not* enough here, because the `5e·h/ω` half of the prefactor would then leave
-`(log x)^4/(log x)^{β/2} → ∞`.
+`(log x)^(4 : ℕ)/(log x)^{β/2} → ∞`.
 -/
 
 namespace RHTower.Sieve

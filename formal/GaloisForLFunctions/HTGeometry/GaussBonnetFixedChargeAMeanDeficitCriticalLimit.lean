@@ -38,7 +38,7 @@ theorem egbFixedChargeAMeanDeficitIntegrand_integral_critical_limit (w φ : ℝ)
   rwa [egbFixedChargeAMeanDeficitLimitIntegrand_integral] at h
 
 theorem egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / egbCoexistenceASymmetricRatio τ ^ 6)
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / egbCoexistenceASymmetricRatio τ ^ (6 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanDeficitCoefficient w φ)) := by
   simp only [egbFixedChargeAMeanGibbsDeficit_integral]
   exact egbFixedChargeAMeanDeficitIntegrand_integral_critical_limit w φ
@@ -59,13 +59,13 @@ theorem egbFixedChargeAMeanGibbsDeficit_eventually_pos (w φ l : ℝ) :
     (egbFixedChargeAMeanDeficitCoefficient_pos w φ)
   filter_upwards [h] with τ hτ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd6 : 0 < egbCoexistenceASymmetricRatio τ ^ 6 := by positivity
+  have hd6 : 0 < egbCoexistenceASymmetricRatio τ ^ (6 : ℕ) := by positivity
   have hcross := (lt_div_iff₀ hd6).1 hτ
   linarith
 
 theorem egbFixedChargeAMeanGibbsDeficit_barrier_quadratic_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAMeanGibbsDeficit w φ τ l₁ / egbFixedChargeAGibbsBarrier w φ τ l₂) /
-      egbCoexistenceASymmetricRatio τ ^ 2) atBot (𝓝 (2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2)) := by
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) atBot (𝓝 (2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ))) := by
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l₁).div
     (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l₂) (egbFixedChargeAGibbsBarrierCoefficient_pos w φ).ne'
   rw [egbFixedChargeAMeanDeficitCoefficient_barrier_ratio] at h

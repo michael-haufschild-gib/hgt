@@ -27,18 +27,18 @@ open scoped InnerProductSpace
 theorem abs_sum_symbol_mul_norm_inner_le {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q)
     (hζ : IsPrimitiveRoot ζ Q) {c : Fin Q → ℝ} {C : ℝ} (hc : ∀ j, |c j| ≤ C)
     (x : EuclideanSpace ℂ (Fin Q)) :
-    |∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2| ≤ C * ((Q : ℝ) * ‖x‖ ^ 2) := by
+    |∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ)| ≤ C * ((Q : ℝ) * ‖x‖ ^ (2 : ℕ)) := by
   classical
   have hpar := sum_norm_inner_expRow_root hQ hζ x
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   have hterm : ∀ j : Fin Q,
-      |c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2|
-        ≤ C * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 := by
+      |c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ)|
+        ≤ C * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) := by
     intro j
     rw [abs_mul, abs_of_nonneg (sq_nonneg ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖)]
     exact mul_le_mul_of_nonneg_right (hc j) (sq_nonneg _)
-  have hstep : ∑ j : Fin Q, |c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2|
-      ≤ ∑ j : Fin Q, C * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 :=
+  have hstep : ∑ j : Fin Q, |c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ)|
+      ≤ ∑ j : Fin Q, C * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) :=
     Finset.sum_le_sum fun j _ => hterm j
   refine le_trans hstep ?_
   rw [← Finset.mul_sum, hpar]

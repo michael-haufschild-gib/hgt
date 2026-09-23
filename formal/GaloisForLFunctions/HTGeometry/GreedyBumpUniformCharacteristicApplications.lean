@@ -160,7 +160,7 @@ theorem GreedyBumpUniformCharacteristicData.localizationRadius {N : ℕ}
     (data : GreedyBumpUniformCharacteristicData N) (Q : PositiveSignal) :
     Matrix.trace
         (greedyBumpLocalizationCovariance Q data.metric * data.metric.matrix) =
-      ((N + N : ℕ) : ℝ) / (Q : ℝ) ^ 2 :=
+      ((N + N : ℕ) : ℝ) / (Q : ℝ) ^ (2 : ℕ) :=
   greedyBumpLocalizationCovariance_trace_mul Q data.metric
 
 end

@@ -23,7 +23,7 @@ theorem cglProposition51_axialRowTerm_norm_summable
     Summable fun m : CGLProposition51PuncturedFrequency =>
       ‖cglProposition51AxialRowTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) u.1 m.val‖ := by
-  let C : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+  let C : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
     cglProposition51FibreAxialAnalyticBudget P w N n
   have hmajor := (cglProposition51_axialFrequencyTail_summable w N
     (cglLemma45FibreModulus q) (P.ordinate u.1.2.2 - P.ordinate u.1.1)).mul_left C
@@ -40,11 +40,11 @@ theorem cglProposition51_axialRowTerm_tsum_le
     ∑' m : CGLProposition51PuncturedFrequency,
       ‖cglProposition51AxialRowTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) u.1 m.val‖ ≤
-      ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         cglProposition51FibreAxialAnalyticBudget P w N n *
           cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
             (P.ordinate u.1.2.2 - P.ordinate u.1.1) := by
-  let C : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+  let C : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
     cglProposition51FibreAxialAnalyticBudget P w N n
   have hmajor := (cglProposition51_axialFrequencyTail_summable w N
     (cglLemma45FibreModulus q) (P.ordinate u.1.2.2 - P.ordinate u.1.1)).mul_left C

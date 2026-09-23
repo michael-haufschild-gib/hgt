@@ -59,19 +59,19 @@ theorem shiftedPairPoly_pairSum_norm_ge {Θ g γ : ℝ} (hΘ : 0 < Θ) (hg : 0 <
   have hm1 : min 1 (min Θ g) ≤ 1 := min_le_left _ _
   have hmΘ : min 1 (min Θ g) ≤ Θ := (min_le_right _ _).trans (min_le_left _ _)
   have hmg : min 1 (min Θ g) ≤ g := (min_le_right _ _).trans (min_le_right _ _)
-  have hm1sq : (min 1 (min Θ g)) ^ 2 ≤ 1 := by nlinarith
-  have hmgsq : (min 1 (min Θ g)) ^ 2 ≤ g ^ 2 := by nlinarith
+  have hm1sq : (min 1 (min Θ g)) ^ (2 : ℕ) ≤ 1 := by nlinarith
+  have hmgsq : (min 1 (min Θ g)) ^ (2 : ℕ) ≤ g ^ (2 : ℕ) := by nlinarith
   have hb := abs_le.mp hq
-  have hν₁sq : 1 ≤ ((xiSpectralPoint q).re - γ) ^ 2 := by
+  have hν₁sq : 1 ≤ ((xiSpectralPoint q).re - γ) ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ zero_le_one hfar.1 2
     rwa [one_pow, sq_abs] at this
-  have hν₂sq : 1 ≤ ((xiSpectralPoint q).re + γ) ^ 2 := by
+  have hν₂sq : 1 ≤ ((xiSpectralPoint q).re + γ) ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ zero_le_one hfar.2 2
     rwa [one_pow, sq_abs] at this
-  have hzsq : g ^ 2 ≤ (xiSpectralPoint q).re ^ 2 := by
+  have hzsq : g ^ (2 : ℕ) ≤ (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ hg.le hz 2
     rwa [sq_abs] at this
-  have hγsq : g ^ 2 ≤ γ ^ 2 := by
+  have hγsq : g ^ (2 : ℕ) ≤ γ ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ hg.le hγ 2
     rwa [sq_abs] at this
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hp hr
@@ -143,30 +143,30 @@ theorem decayNorm_normalizedRayTermPoly_le_far {Θ g γ M : ℝ} (hΘ : 0 < Θ) 
     {q : XiZeroCopy} (hq : |(xiSpectralPoint q).im| ≤ Θ) (hz : g ≤ |(xiSpectralPoint q).re|)
     (hγ : g ≤ |γ|) (hfar : FarFromCentre γ q) :
     ExpPoly.decayNorm (normalizedRayTermPoly Θ γ q)
-      ≤ (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by
+      ≤ (8 * (M * Real.exp (Θ / 4))) ^ (2 : ℕ) / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
   have hm0 : 0 < min 1 (min Θ g) := lt_min one_pos (lt_min hΘ hg)
   have hpair := shiftedPairPoly_pairSum_norm_ge hΘ hg hq hz hγ hfar
   rw [normalizedRayTermPoly_eq, ExpPoly.decayNorm_smul]
   have hmul := ExpPoly.decayNorm_mul_le (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q) hm0 hpair
   have hcs := coeffSum_shiftedPairPoly_le hM hMb γ hq hfar
   have hcs0 := ExpPoly.coeffSum_nonneg (shiftedPairPoly Θ γ q)
-  have hw : ‖-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2‖ = 1 / (4 * ‖xiSpectralPoint q‖ ^ 2) := by
+  have hw : ‖-(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)‖ = 1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     rw [norm_div, norm_neg, norm_div, norm_one, norm_pow, Complex.norm_ofNat]
     ring
   rw [hw]
   have hsq : ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
-      ≤ (8 * (M * Real.exp (Θ / 4))) ^ 2 := by
+      ≤ (8 * (M * Real.exp (Θ / 4))) ^ (2 : ℕ) := by
     rw [← sq]
     exact pow_le_pow_left₀ hcs0 hcs 2
   have hz0 : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-  calc 1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+  calc 1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
         * ExpPoly.decayNorm (ExpPoly.mul (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q))
-      ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+      ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
         * (ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
           / min 1 (min Θ g)) := mul_le_mul_of_nonneg_left hmul (by positivity)
-    _ ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ 2) * ((8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g)) := by
+    _ ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ((8 * (M * Real.exp (Θ / 4))) ^ (2 : ℕ) / min 1 (min Θ g)) := by
         gcongr
-    _ = (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by
+    _ = (8 * (M * Real.exp (Θ / 4))) ^ (2 : ℕ) / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
         ring
 
 /-! ## Summability of the decay norms over the copies -/
@@ -194,12 +194,12 @@ theorem summable_decayNorm_normalizedRayTermPoly {Θ g γ : ℝ} (hΘ : 0 < Θ) 
     Summable (fun q : XiZeroCopy => ExpPoly.decayNorm (normalizedRayTermPoly Θ γ q)) := by
   classical
   obtain ⟨M, hM, hMb⟩ := exists_plateau_coeff_bound
-  set K : ℝ := (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) with hK
+  set K : ℝ := (8 * (M * Real.exp (Θ / 4))) ^ (2 : ℕ) / min 1 (min Θ g) with hK
   have hK0 : 0 ≤ K := by
     have : 0 < min 1 (min Θ g) := lt_min one_pos (lt_min hΘ hg)
     positivity
   set F : Finset XiZeroCopy := (finite_not_farFromCentre γ).toFinset with hF
-  have hsum1 : Summable (fun q : XiZeroCopy => K * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2))) := by
+  have hsum1 : Summable (fun q : XiZeroCopy => K * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)))) := by
     have := xiSpectralPoint_inv_sq_summable.mul_left (K / 4)
     refine this.congr fun q => ?_
     ring
@@ -219,7 +219,7 @@ theorem summable_decayNorm_normalizedRayTermPoly {Θ g γ : ℝ} (hΘ : 0 < Θ) 
       simp only [hF, Set.Finite.mem_toFinset, mem_setOf_eq]
       exact hfar
     rw [if_pos hqF]
-    have : 0 ≤ K * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by positivity
+    have : 0 ≤ K * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by positivity
     linarith
 
 end

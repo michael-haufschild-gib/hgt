@@ -40,34 +40,34 @@ namespace RHTower
 /-- **A product of squares of real numbers is nonnegative.**  This is the discriminant's positivity
 when all roots are real. -/
 theorem prod_sq_nonneg {ι : Type*} (s : Finset ι) (f : ι → ℝ) :
-    0 ≤ ∏ i ∈ s, (f i) ^ 2 :=
+    0 ≤ ∏ i ∈ s, (f i) ^ (2 : ℕ) :=
   Finset.prod_nonneg (fun i _ => sq_nonneg (f i))
 
 /-- **A negative value refutes.**  If the product of squares is negative, the values are not all
 real — contrapositive of the previous statement. -/
 theorem neg_refutes_reality {ι : Type*} (s : Finset ι) (f : ι → ℝ)
-    (h : ∏ i ∈ s, (f i) ^ 2 < 0) : False := by
+    (h : ∏ i ∈ s, (f i) ^ (2 : ℕ) < 0) : False := by
   exact absurd (prod_sq_nonneg s f) (not_le.mpr h)
 
 /-- **The quadratic case.**  For `a x² + b x + c` with `a ≠ 0`, real roots force `b² - 4ac ≥ 0`. -/
 theorem quadratic_discriminant_nonneg {a b c r : ℝ} (_ha : a ≠ 0)
-    (hroot : a * r ^ 2 + b * r + c = 0) : 0 ≤ b ^ 2 - 4 * a * c := by
-  have hfac : b ^ 2 - 4 * a * c = (2 * a * r + b) ^ 2 := by
-    have h4 : 4 * a * (a * r ^ 2 + b * r + c) = 0 := by rw [hroot]; ring
+    (hroot : a * r ^ (2 : ℕ) + b * r + c = 0) : 0 ≤ b ^ (2 : ℕ) - 4 * a * c := by
+  have hfac : b ^ (2 : ℕ) - 4 * a * c = (2 * a * r + b) ^ (2 : ℕ) := by
+    have h4 : 4 * a * (a * r ^ (2 : ℕ) + b * r + c) = 0 := by rw [hroot]; ring
     nlinarith [h4]
   rw [hfac]
   exact sq_nonneg _
 
 /-- **And a negative discriminant excludes a real root.** -/
 theorem no_real_root_of_neg_discriminant {a b c : ℝ} (ha : a ≠ 0)
-    (hd : b ^ 2 - 4 * a * c < 0) : ∀ r : ℝ, a * r ^ 2 + b * r + c ≠ 0 := by
+    (hd : b ^ (2 : ℕ) - 4 * a * c < 0) : ∀ r : ℝ, a * r ^ (2 : ℕ) + b * r + c ≠ 0 := by
   intro r hroot
   exact absurd (quadratic_discriminant_nonneg ha hroot) (not_le.mpr hd)
 
 /-- **The category is nonempty.**  A reality-sensitive unconditional criterion exists: nonnegativity
 of the discriminant, polynomial in the coefficients. -/
 theorem reality_sensitive_criterion_exists {a b c : ℝ} (ha : a ≠ 0) :
-    (∃ r : ℝ, a * r ^ 2 + b * r + c = 0) → 0 ≤ b ^ 2 - 4 * a * c := by
+    (∃ r : ℝ, a * r ^ (2 : ℕ) + b * r + c = 0) → 0 ≤ b ^ (2 : ℕ) - 4 * a * c := by
   rintro ⟨r, hr⟩
   exact quadratic_discriminant_nonneg ha hr
 

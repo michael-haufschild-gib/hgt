@@ -95,7 +95,7 @@ theorem sum_finiteNegativePositiveCrossedTranslationPacket_factorPairs
 formula. -/
 theorem thetaProductFiberFiniteRadialPolynomial_primeCube_coeff_two_mul
     {p : ℕ} (hp : p.Prime) (d l : ℕ) :
-    (thetaProductFiberFiniteRadialPolynomial (p ^ 3) d).coeff (2 * l) =
+    (thetaProductFiberFiniteRadialPolynomial (p ^ (3 : ℕ)) d).coeff (2 * l) =
       if l ≤ d then
         ((-1 : ℂ) ^ l *
           (2 * (3 * Real.log p / 2) ^ (2 * l) +
@@ -109,20 +109,20 @@ two-radius radial polynomial. -/
 structure ThetaPrimeCubeCrossedPhaseRadialFactorizationUniversalCertificate
     (p d : ℕ) (a : ℝ) : Prop where
   positiveNegativeFactorization :
-    (∑ q ∈ thetaPositiveFactorPairs (p ^ 3),
+    (∑ q ∈ thetaPositiveFactorPairs (p ^ (3 : ℕ)),
       finitePositiveNegativeCrossedTranslationPacket d
         (thetaFactorPairLogDisplacement q) a) =
-      thetaProductFiberFiniteRadialPolynomial (p ^ 3) d *
+      thetaProductFiberFiniteRadialPolynomial (p ^ (3 : ℕ)) d *
         finiteNegativePhasePolynomial d a
   negativePositiveFactorization :
-    (∑ q ∈ thetaPositiveFactorPairs (p ^ 3),
+    (∑ q ∈ thetaPositiveFactorPairs (p ^ (3 : ℕ)),
       finiteNegativePositiveCrossedTranslationPacket d
         (thetaFactorPairLogDisplacement q) a) =
-      thetaProductFiberFiniteRadialPolynomial (p ^ 3) d *
+      thetaProductFiberFiniteRadialPolynomial (p ^ (3 : ℕ)) d *
         finitePositivePhasePolynomial d a
   radialEvenCoefficient :
     ∀ l : ℕ,
-      (thetaProductFiberFiniteRadialPolynomial (p ^ 3) d).coeff (2 * l) =
+      (thetaProductFiberFiniteRadialPolynomial (p ^ (3 : ℕ)) d).coeff (2 * l) =
         if l ≤ d then
           ((-1 : ℂ) ^ l *
             (2 * (3 * Real.log p / 2) ^ (2 * l) +
@@ -139,9 +139,9 @@ theorem thetaPrimeCube_crossedPhaseRadialFactorizationUniversalCertificate
     ThetaPrimeCubeCrossedPhaseRadialFactorizationUniversalCertificate p d a := by
   exact {
     positiveNegativeFactorization :=
-      sum_finitePositiveNegativeCrossedTranslationPacket_factorPairs (p ^ 3) d a
+      sum_finitePositiveNegativeCrossedTranslationPacket_factorPairs (p ^ (3 : ℕ)) d a
     negativePositiveFactorization :=
-      sum_finiteNegativePositiveCrossedTranslationPacket_factorPairs (p ^ 3) d a
+      sum_finiteNegativePositiveCrossedTranslationPacket_factorPairs (p ^ (3 : ℕ)) d a
     radialEvenCoefficient := fun l =>
       thetaProductFiberFiniteRadialPolynomial_primeCube_coeff_two_mul hp d l }
 

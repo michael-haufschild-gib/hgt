@@ -6,7 +6,7 @@ import GaloisForLFunctions.Core
 This file formalizes the nilpotent matrix algebra used in
 `docs/drafts/pipeline/2-fully-proven/cross-prime-curvature-reducibility.md`.
 
-For a rank-two unipotent extension with `E^2 = 0`, matrices have the form
+For a rank-two unipotent extension with `E^(2 : ℕ) = 0`, matrices have the form
 `I + b E`. The paper computation of the curvature coefficient is the elementary
 identity
 `(I-b_qE)(I-σ_q(b_p)E)(I+b_pE)(I+σ_p(b_q)E)
@@ -20,7 +20,7 @@ noncomputable section
 open Matrix
 
 /-- The upper-unipotent matrix `I + aE`, where `E` has a single upper-right
-entry and satisfies `E^2 = 0`. -/
+entry and satisfies `E^(2 : ℕ) = 0`. -/
 def upperUnipotentE (R : Type*) [CommRing R] (a : R) : Matrix (Fin 2) (Fin 2) R :=
   ![![1, a], ![0, 1]]
 

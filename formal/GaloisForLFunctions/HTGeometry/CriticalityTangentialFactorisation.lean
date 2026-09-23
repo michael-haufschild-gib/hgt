@@ -47,7 +47,7 @@ theorem eval_map_criticalityPoly_eq (m : ℕ) (c : ℕ → MvPolynomial (Fin N) 
 /-- The squared norm of the tangential part of a gradient at a point of the unit sphere: the
 gradient minus its radial component, the latter being the value itself by Euler's relation. -/
 def tangentialGradNormSq (y : ℝ) (θ : Fin N → ℝ) (D : Fin N → ℝ) : ℝ :=
-  ∑ i : Fin N, (D i - y * θ i) ^ 2
+  ∑ i : Fin N, (D i - y * θ i) ^ (2 : ℕ)
 
 theorem tangentialGradNormSq_nonneg (y : ℝ) (θ D : Fin N → ℝ) :
     0 ≤ tangentialGradNormSq y θ D :=
@@ -68,10 +68,10 @@ theorem tangentialGradNormSq_eq_zero_iff (y : ℝ) (θ D : Fin N → ℝ) :
 /-- On the unit sphere, with the radial derivative equal to the value, the tangential norm is the
 full gradient norm minus the square of the value. -/
 theorem tangentialGradNormSq_eq_sub_sq_of_euler (y : ℝ) (θ D : Fin N → ℝ)
-    (hunit : ∑ i : Fin N, θ i ^ 2 = 1) (heuler : ∑ i : Fin N, θ i * D i = y) :
-    tangentialGradNormSq y θ D = (∑ i : Fin N, (D i) ^ 2) - y ^ 2 := by
-  have hexp : ∀ i : Fin N, (D i - y * θ i) ^ 2
-      = (D i) ^ 2 - 2 * y * (θ i * D i) + y ^ 2 * (θ i ^ 2) := fun i => by ring
+    (hunit : ∑ i : Fin N, θ i ^ (2 : ℕ) = 1) (heuler : ∑ i : Fin N, θ i * D i = y) :
+    tangentialGradNormSq y θ D = (∑ i : Fin N, (D i) ^ (2 : ℕ)) - y ^ (2 : ℕ) := by
+  have hexp : ∀ i : Fin N, (D i - y * θ i) ^ (2 : ℕ)
+      = (D i) ^ (2 : ℕ) - 2 * y * (θ i * D i) + y ^ (2 : ℕ) * (θ i ^ (2 : ℕ)) := fun i => by ring
   rw [tangentialGradNormSq, Finset.sum_congr rfl fun i _ => hexp i]
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum, heuler,
     hunit]
@@ -136,8 +136,8 @@ theorem criticalitySquareSum_eq_leading_sq_mul (D : Fin N → ℝ)
       ∑ n ∈ Finset.range m, MvPolynomial.eval θ (c n) * (φ θ) ^ n = 0)
     (hD : ∀ i : Fin N,
       HasDerivAt (fun t : ℝ => φ (fun j => θ₀ j + (if j = i then t else 0))) (D i) 0) :
-    ∑ i : Fin N, (criticalityValue m c θ₀ (φ θ₀) i) ^ 2
-      = (criticalityLeading m c θ₀ (φ θ₀)) ^ 2 * tangentialGradNormSq (φ θ₀) θ₀ D := by
+    ∑ i : Fin N, (criticalityValue m c θ₀ (φ θ₀) i) ^ (2 : ℕ)
+      = (criticalityLeading m c θ₀ (φ θ₀)) ^ (2 : ℕ) * tangentialGradNormSq (φ θ₀) θ₀ D := by
   rw [tangentialGradNormSq, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [criticalityValue_eq_leading_mul_tangential D i hrel (hD i), mul_pow]
@@ -150,7 +150,7 @@ theorem eval_map_criticalitySquareSum_eq_leading_sq_mul (D : Fin N → ℝ)
     (hD : ∀ i : Fin N,
       HasDerivAt (fun t : ℝ => φ (fun j => θ₀ j + (if j = i then t else 0))) (D i) 0) :
     Polynomial.eval (φ θ₀) (Polynomial.map (MvPolynomial.eval θ₀) (criticalitySquareSum m c))
-      = (criticalityLeading m c θ₀ (φ θ₀)) ^ 2 * tangentialGradNormSq (φ θ₀) θ₀ D := by
+      = (criticalityLeading m c θ₀ (φ θ₀)) ^ (2 : ℕ) * tangentialGradNormSq (φ θ₀) θ₀ D := by
   rw [eval_map_criticalitySquareSum]
   rw [← criticalitySquareSum_eq_leading_sq_mul D hrel hD]
   exact Finset.sum_congr rfl fun i _ => by rw [eval_map_criticalityPoly_eq]

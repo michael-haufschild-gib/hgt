@@ -7,7 +7,7 @@ The real-form obstruction behind the fixed Xi Cauchy probe is independent of zet
 space estimates.  For any conjugation-stable family of nonzero spectral points and any nonreal
 regular pole, one common sequence of real reciprocal polynomials recovers the conjugate-adjoint
 Cauchy response pointwise exactly when every spectral point is real.  The reverse implication is
-realized by the single polynomial `X ^ 2`.
+realized by the single polynomial `X ^ (2 : ℕ)`.
 -/
 
 open Complex Filter Topology
@@ -23,7 +23,7 @@ def universalCauchyRealKrylovValue
 
 /-- Conjugate-adjoint reciprocal-square response at one Cauchy coordinate. -/
 def universalCauchyAdjointResponseValue (z a : ℂ) : ℂ :=
-  ((starRingEnd ℂ) a)⁻¹ ^ 2 * ((starRingEnd ℂ) a - z)⁻¹
+  ((starRingEnd ℂ) a)⁻¹ ^ (2 : ℕ) * ((starRingEnd ℂ) a - z)⁻¹
 
 /-- Local two-coordinate seam forced by real polynomial coefficients. -/
 def universalCauchyRealKrylovSeam
@@ -57,10 +57,10 @@ theorem universalCauchyRealKrylovSeam_polynomial_eq_zero
 private theorem universalCauchyRealKrylovSeam_response_algebra
     (a z : ℂ) (haz : a ≠ z)
     (haconjz : a ≠ (starRingEnd ℂ) z) :
-    ((starRingEnd ℂ) a - z) * (a⁻¹ ^ 2 * (a - z)⁻¹) -
+    ((starRingEnd ℂ) a - z) * (a⁻¹ ^ (2 : ℕ) * (a - z)⁻¹) -
         ((starRingEnd ℂ) a - (starRingEnd ℂ) z) *
-          (a⁻¹ ^ 2 * (a - (starRingEnd ℂ) z)⁻¹) =
-      4 * a.im * z.im * a⁻¹ ^ 2 * (a - z)⁻¹ *
+          (a⁻¹ ^ (2 : ℕ) * (a - (starRingEnd ℂ) z)⁻¹) =
+      4 * a.im * z.im * a⁻¹ ^ (2 : ℕ) * (a - z)⁻¹ *
         (a - (starRingEnd ℂ) z)⁻¹ := by
   have hnum :
       ((starRingEnd ℂ) a - z) * (a - (starRingEnd ℂ) z) -
@@ -69,7 +69,7 @@ private theorem universalCauchyRealKrylovSeam_response_algebra
     apply Complex.ext <;>
       simp [Complex.mul_re, Complex.mul_im] <;> ring
   calc
-    _ = a⁻¹ ^ 2 *
+    _ = a⁻¹ ^ (2 : ℕ) *
         ((((starRingEnd ℂ) a - z) * (a - (starRingEnd ℂ) z) -
             ((starRingEnd ℂ) a - (starRingEnd ℂ) z) * (a - z)) *
           ((a - z) * (a - (starRingEnd ℂ) z))⁻¹) := by
@@ -80,11 +80,11 @@ private theorem universalCauchyRealKrylovSeam_response_algebra
           (a - (starRingEnd ℂ) z)⁻¹ = 1 :=
         mul_inv_cancel₀ (sub_ne_zero.mpr haconjz)
       calc
-        _ = a⁻¹ ^ 2 *
+        _ = a⁻¹ ^ (2 : ℕ) *
             (((starRingEnd ℂ) a - z) * (a - z)⁻¹ -
               ((starRingEnd ℂ) a - (starRingEnd ℂ) z) *
                 (a - (starRingEnd ℂ) z)⁻¹) := by ring
-        _ = a⁻¹ ^ 2 *
+        _ = a⁻¹ ^ (2 : ℕ) *
             (((starRingEnd ℂ) a - z) *
                 ((a - (starRingEnd ℂ) z) *
                   (a - (starRingEnd ℂ) z)⁻¹) * (a - z)⁻¹ -
@@ -103,7 +103,7 @@ theorem universalCauchyRealKrylovSeam_adjointResponse_eq
     universalCauchyRealKrylovSeam z a
       (universalCauchyAdjointResponseValue z a)
       (universalCauchyAdjointResponseValue z ((starRingEnd ℂ) a)) =
-      4 * a.im * z.im * a⁻¹ ^ 2 * (a - z)⁻¹ *
+      4 * a.im * z.im * a⁻¹ ^ (2 : ℕ) * (a - z)⁻¹ *
         (a - (starRingEnd ℂ) z)⁻¹ := by
   simp only [universalCauchyRealKrylovSeam,
     universalCauchyAdjointResponseValue, map_mul, map_inv₀, map_pow,
@@ -173,7 +173,7 @@ theorem universalCauchyRealKrylovPointwiseRecovery_iff_all_real
       z (a i) (sub_ne_zero.mp (haz i)) (sub_ne_zero.mp haconjz)
     rw [hseam] at hres
     have hrest :
-        (4 : ℂ) * z.im * (a i)⁻¹ ^ 2 * (a i - z)⁻¹ *
+        (4 : ℂ) * z.im * (a i)⁻¹ ^ (2 : ℕ) * (a i - z)⁻¹ *
           (a i - (starRingEnd ℂ) z)⁻¹ ≠ 0 := by
       apply mul_ne_zero
       · apply mul_ne_zero
@@ -185,17 +185,17 @@ theorem universalCauchyRealKrylovPointwiseRecovery_iff_all_real
         · exact inv_ne_zero (haz i)
       · exact inv_ne_zero haconjz
     have himul : ((a i).im : ℂ) *
-        ((4 : ℂ) * z.im * (a i)⁻¹ ^ 2 * (a i - z)⁻¹ *
+        ((4 : ℂ) * z.im * (a i)⁻¹ ^ (2 : ℕ) * (a i - z)⁻¹ *
           (a i - (starRingEnd ℂ) z)⁻¹) = 0 := by
       calc
-        _ = 4 * (a i).im * z.im * (a i)⁻¹ ^ 2 *
+        _ = 4 * (a i).im * z.im * (a i)⁻¹ ^ (2 : ℕ) *
             (a i - z)⁻¹ * (a i - (starRingEnd ℂ) z)⁻¹ := by ring
         _ = 0 := hres.symm
     have himComplex : ((a i).im : ℂ) = 0 :=
       (mul_eq_zero.mp himul).resolve_right hrest
     exact_mod_cast himComplex
   · intro hreal
-    refine ⟨fun _ => Polynomial.X ^ 2, fun i => ?_⟩
+    refine ⟨fun _ => Polynomial.X ^ (2 : ℕ), fun i => ?_⟩
     have hconjA : (starRingEnd ℂ) (a i) = a i := by
       apply Complex.ext
       · simp

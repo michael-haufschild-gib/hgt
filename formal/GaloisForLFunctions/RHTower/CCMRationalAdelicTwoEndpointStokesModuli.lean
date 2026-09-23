@@ -385,33 +385,33 @@ open GaloisForLFunctions.RHTower
 
 private abbrev Arch := CCMRationalArchimedeanSchwartz
 private abbrev FinBruhat := CCMRationalFiniteBruhatSchwartz
-private abbrev Core := CCMRationalAdelicBruhatSimpleTensor
+private abbrev Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli := CCMRationalAdelicBruhatSimpleTensor
 
 /-- The ordinary-prime scaling as an endomorphism of the actual adelic core. -/
-abbrev ccmRationalAdelicPrimeAlpha (p : Nat.Primes) : Core →ₗ[ℂ] Core :=
+abbrev ccmRationalAdelicPrimeAlpha (p : Nat.Primes) : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli →ₗ[ℂ] Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli :=
   ccmRationalAdelicBruhatScaling (ccmRationalAdelicPrimeScaling p)
 
 /-- **Card `(TPS.13)`.**  The zero-adele endpoint annihilates orbit differences. -/
-theorem ccmRationalAdelicTwoEndpoint_eps0 (p : Nat.Primes) (x : Core) :
+theorem ccmRationalAdelicTwoEndpoint_eps0 (p : Nat.Primes) (x : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) :
     ccmRationalAdelicBruhatZeroEval
       (twoEndpointOrbitDifference (ccmRationalAdelicPrimeAlpha p) x) = 0 :=
   ccmRationalAdelicPrimeOrbitDifference_mem_ker p x
 
 /-- **Card `(TPS.13)`.**  The Haar endpoint annihilates orbit differences. -/
-theorem ccmRationalAdelicTwoEndpoint_eps1 (p : Nat.Primes) (x : Core) :
+theorem ccmRationalAdelicTwoEndpoint_eps1 (p : Nat.Primes) (x : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) :
     ccmRationalAdelicBruhatIntegral
       (twoEndpointOrbitDifference (ccmRationalAdelicPrimeAlpha p) x) = 0 :=
   ccmRationalAdelicBruhatIntegral_orbitDifference p x
 
 /-- **Card `(TPS.13)`.**  The bilateral orbit regulator is a Stokes primitive. -/
-theorem ccmRationalAdelicTwoEndpoint_primitive (p : Nat.Primes) (x : Core) :
+theorem ccmRationalAdelicTwoEndpoint_primitive (p : Nat.Primes) (x : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) :
     ccmRationalAdelicPrimeOrbitStokesLM p
       (twoEndpointOrbitDifference (ccmRationalAdelicPrimeAlpha p) x) =
       ccmRationalAdelicBruhatZeroEval x :=
   ccmRationalAdelicPrimeOrbitStokes_scaling_sub p x
 
 /-- **Card `(TPS.3)`.**  The literal two-endpoint kernel. -/
-abbrev CCMRationalAdelicTwoEndpointKernel : Submodule ℂ Core :=
+abbrev CCMRationalAdelicTwoEndpointKernel : Submodule ℂ Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli :=
   twoEndpointKernel ccmRationalAdelicBruhatZeroEval ccmRationalAdelicBruhatIntegral
 
 /-- **Card `(TPS.17)`.**  The literal two-endpoint coinvariants. -/
@@ -451,14 +451,14 @@ def ccmRationalScalingOfBase (a : ℚ) (ha : a ≠ 0) : CCMRationalAdelicScaling
   simp [ccmRationalScalingOfBase]
 
 /-- **Card `(TPS.14)`.**  Bilateral orbit sampling at a rational base. -/
-def ccmRationalAdelicOrbitSample (p : Nat.Primes) (a : ℚ) (ha : a ≠ 0) : Core →ₗ[ℂ] ℂ :=
+def ccmRationalAdelicOrbitSample (p : Nat.Primes) (a : ℚ) (ha : a ≠ 0) : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli →ₗ[ℂ] ℂ :=
   (ccmRationalAdelicPrimeOrbitStokesLM p).comp
     (ccmRationalAdelicBruhatScaling (ccmRationalScalingOfBase a ha))
 
 /-- **Lemma D, card `(TPS.15)`.**  Universal boundary response: every sampling base reads an orbit
 difference as the zero-adele endpoint. -/
 theorem ccmRationalAdelicOrbitSample_orbitDifference (p : Nat.Primes) (a : ℚ) (ha : a ≠ 0)
-    (x : Core) :
+    (x : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) :
     ccmRationalAdelicOrbitSample p a ha (ccmRationalAdelicPrimeOrbitDifference p x) =
       ccmRationalAdelicBruhatZeroEval x := by
   set k := ccmRationalScalingOfBase a ha with hk
@@ -481,12 +481,12 @@ theorem ccmRationalAdelicOrbitSample_orbitDifference (p : Nat.Primes) (a : ℚ) 
 
 /-- **Card `(TPS.16)`.**  The orbit-phase difference of two sampling bases. -/
 def ccmRationalAdelicOrbitPhase (p : Nat.Primes) (a b : ℚ) (ha : a ≠ 0) (hb : b ≠ 0) :
-    Core →ₗ[ℂ] ℂ :=
+    Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli →ₗ[ℂ] ℂ :=
   ccmRationalAdelicOrbitSample p a ha - ccmRationalAdelicOrbitSample p b hb
 
 /-- Orbit-phase differences annihilate every orbit difference. -/
 theorem ccmRationalAdelicOrbitPhase_orbitDifference (p : Nat.Primes) (a b : ℚ)
-    (ha : a ≠ 0) (hb : b ≠ 0) (x : Core) :
+    (ha : a ≠ 0) (hb : b ≠ 0) (x : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) :
     ccmRationalAdelicOrbitPhase p a b ha hb (ccmRationalAdelicPrimeOrbitDifference p x) = 0 := by
   change ccmRationalAdelicOrbitSample p a ha (ccmRationalAdelicPrimeOrbitDifference p x) -
     ccmRationalAdelicOrbitSample p b hb (ccmRationalAdelicPrimeOrbitDifference p x) = 0
@@ -501,15 +501,15 @@ def ccmRationalAdelicOrbitPhaseCovector (p : Nat.Primes) (a b : ℚ) (ha : a ≠
       CCMRationalAdelicTwoEndpointKernel.subtype)
     (by
       rintro y ⟨x, hx⟩
-      have hx' : ccmRationalAdelicPrimeOrbitDifference p x = (y : Core) := congrArg Subtype.val hx
-      change ccmRationalAdelicOrbitPhase p a b ha hb (y : Core) = 0
+      have hx' : ccmRationalAdelicPrimeOrbitDifference p x = (y : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) := congrArg Subtype.val hx
+      change ccmRationalAdelicOrbitPhase p a b ha hb (y : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) = 0
       rw [← hx']
       exact ccmRationalAdelicOrbitPhase_orbitDifference p a b ha hb x)
 
 @[simp] theorem ccmRationalAdelicOrbitPhaseCovector_mk (p : Nat.Primes) (a b : ℚ)
     (ha : a ≠ 0) (hb : b ≠ 0) (y : CCMRationalAdelicTwoEndpointKernel) :
     ccmRationalAdelicOrbitPhaseCovector p a b ha hb (Submodule.Quotient.mk y) =
-      ccmRationalAdelicOrbitPhase p a b ha hb (y : Core) := rfl
+      ccmRationalAdelicOrbitPhase p a b ha hb (y : Core_cCMRationalAdelicPrimeIsotropyObserverFreedom_cCMRationalAdelicTwoEndpointStokesModuli) := rfl
 
 end Literal
 

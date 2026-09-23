@@ -14,7 +14,7 @@ critical-line condition, and its universal Xi admission is equivalent to RH.
 This is a classification, not an unconditional proof of that admission.
 
 The positive survivor is quantitative.  Across functional-equation
-reflection, complete source vectors collapse in `ell^1`, while the endpoint
+reflection, complete source vectors collapse in `ell^(1 : ℕ)`, while the endpoint
 characters stay separated off line.  Hence every exact, possibly nonlinear,
 coefficient-faithful extractor has Lipschitz sensitivity tending to infinity.
 -/
@@ -171,10 +171,10 @@ theorem completeResolutionSourceNormal_actualXiLiteralEndpoint_coefficientMultip
           (sourceHorizontalActualXiSecondCartierKreinScale x u q r N) n) =
       ‖bilateralEigenFamily
           (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-            (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+            (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
         4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N
           (default : Nat.Primes) sourceHorizontalBilateralSecondJetGhost)
-            (n : ℤ)‖ ^ 2 ∧
+            (n : ℤ)‖ ^ (2 : ℕ) ∧
     (∑ s : XiRightSupportFiber q,
       sourceHorizontalActualXiSecondCartierKreinPolarizedGhost
         x u s.1 r N) =

@@ -27,8 +27,8 @@ open scoped ArithmeticFunction.Moebius
 /-- The cofactor coefficient is bounded by the reciprocal of the weight of its multiple. -/
 theorem norm_ramareCofactorCoeff_sq_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.Prime)
     {p m : ℕ} (hp : p.Prime) (hpP : p ∈ P) (hpm : ¬ p ∣ m) :
-    ‖ramareCofactorCoeff P m‖ ^ 2
-      ≤ (1 / ((primeFactorsIn P (p * m)).card : ℝ)) ^ 2 := by
+    ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)
+      ≤ (1 / ((primeFactorsIn P (p * m)).card : ℝ)) ^ (2 : ℕ) := by
   have hcard := card_primeFactorsIn_mul_prime hPprime hp hpP hpm
   have hden : (((primeFactorsIn P m).card : ℂ) + 1)
       = (((primeFactorsIn P (p * m)).card : ℕ) : ℂ) := by
@@ -80,14 +80,14 @@ theorem dvd_of_mem_ramareCofactorImage {M p n : ℕ}
 /-- **The Ramaré blocks carry no more energy than the original polynomial.** -/
 theorem sum_ramareCofactor_energy_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) :
     ∑ p ∈ P, ∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-        ‖ramareCofactorCoeff P m‖ ^ 2
+        ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)
       ≤ (M : ℝ) := by
   classical
   -- pass to the multiples
   have hblock : ∀ p ∈ P,
       ∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-          ‖ramareCofactorCoeff P m‖ ^ 2
-        ≤ ∑ n ∈ ramareCofactorImage M p, (1 / ((primeFactorsIn P n).card : ℝ)) ^ 2 := by
+          ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)
+        ≤ ∑ n ∈ ramareCofactorImage M p, (1 / ((primeFactorsIn P n).card : ℝ)) ^ (2 : ℕ) := by
     intro p hp
     have hpP := hPprime p hp
     have hinj : ∀ x ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
@@ -102,9 +102,9 @@ theorem sum_ramareCofactor_energy_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.
   refine le_trans (Finset.sum_le_sum hblock) ?_
   -- exchange the order of summation
   have hswap : ∑ p ∈ P, ∑ n ∈ ramareCofactorImage M p,
-        (1 / ((primeFactorsIn P n).card : ℝ)) ^ 2
+        (1 / ((primeFactorsIn P n).card : ℝ)) ^ (2 : ℕ)
       = ∑ n ∈ Finset.Icc 1 M, ∑ p ∈ P,
-          (if n ∈ ramareCofactorImage M p then (1 / ((primeFactorsIn P n).card : ℝ)) ^ 2
+          (if n ∈ ramareCofactorImage M p then (1 / ((primeFactorsIn P n).card : ℝ)) ^ (2 : ℕ)
             else 0) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun p _ => ?_
@@ -119,7 +119,7 @@ theorem sum_ramareCofactor_energy_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.
       exact hn
   rw [hswap]
   have hrow : ∀ n ∈ Finset.Icc 1 M,
-      ∑ p ∈ P, (if n ∈ ramareCofactorImage M p then (1 / ((primeFactorsIn P n).card : ℝ)) ^ 2
+      ∑ p ∈ P, (if n ∈ ramareCofactorImage M p then (1 / ((primeFactorsIn P n).card : ℝ)) ^ (2 : ℕ)
         else 0) ≤ 1 := by
     intro n _
     rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
@@ -136,7 +136,7 @@ theorem sum_ramareCofactor_energy_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.
     · have hω : 1 ≤ (primeFactorsIn P n).card := le_trans hk0 hkle
       have hωR : (1 : ℝ) ≤ ((primeFactorsIn P n).card : ℝ) := by exact_mod_cast hω
       have hkR : (k : ℝ) ≤ ((primeFactorsIn P n).card : ℝ) := by exact_mod_cast hkle
-      have hval : (1 / ((primeFactorsIn P n).card : ℝ)) ^ 2
+      have hval : (1 / ((primeFactorsIn P n).card : ℝ)) ^ (2 : ℕ)
           = 1 / (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn P n).card : ℝ)) := by
         rw [div_pow, one_pow, sq]
       rw [hval, mul_one_div, div_le_one (by nlinarith)]
@@ -168,20 +168,20 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
     (M : ℕ) {W : ℝ} (hW : 1 ≤ W) :
     ∑ p ∈ P, (∫ w in Set.Icc (-W) W,
         ‖logPoly (ramareCofactorCoeff P)
-          {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ 2)
+          {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ (2 : ℕ))
       ≤ 5 * Real.pi / 2 * W * (M : ℝ)
-        + 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2 * (∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
+        + 5 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ) * (∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
   classical
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   set E : ℕ → ℝ := fun p =>
     ∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-      ‖ramareCofactorCoeff P m‖ ^ 2 with hEdef
+      ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ) with hEdef
   have hE0 : ∀ p, 0 ≤ E p := fun p => Finset.sum_nonneg fun m _ => by positivity
   -- the per-block mean value theorem, at the block's own length
   have hblock : ∀ p ∈ P, (∫ w in Set.Icc (-W) W,
       ‖logPoly (ramareCofactorCoeff P)
-        {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ 2)
+        {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ (2 : ℕ))
       ≤ 5 * Real.pi / 2 * W * E p + 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ) * E p := by
     intro p hp
     have hppos := (hPprime p hp).pos
@@ -195,16 +195,16 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
     rw [hEdef]
     calc (∫ w in Set.Icc (-W) W,
           ‖logPoly (ramareCofactorCoeff P)
-            {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ 2)
+            {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ (2 : ℕ))
         ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ))
             * (∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-                ‖ramareCofactorCoeff P m‖ ^ 2) := h
+                ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)) := h
       _ = 5 * Real.pi / 2 * W
             * (∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-                ‖ramareCofactorCoeff P m‖ ^ 2)
+                ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ))
           + 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ)
             * (∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-                ‖ramareCofactorCoeff P m‖ ^ 2) := by ring
+                ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)) := by ring
   refine le_trans (Finset.sum_le_sum hblock) ?_
   rw [Finset.sum_add_distrib]
   refine add_le_add ?_ ?_
@@ -216,14 +216,14 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
   · have hEle : ∀ p ∈ P, E p ≤ ((M / p : ℕ) : ℝ) := by
       intro p hp
       have hcoeff : ∀ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-          ‖ramareCofactorCoeff P m‖ ^ 2 ≤ 1 := by
+          ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ) ≤ 1 := by
         intro m hm
         have hpm : ¬ p ∣ m := (Finset.mem_filter.1 hm).2
         have hb := norm_ramareCofactorCoeff_sq_le hPprime (hPprime p hp) hp hpm
         have hpos : (1 : ℝ) ≤ ((primeFactorsIn P (p * m)).card : ℝ) := by
           have := one_le_card_primeFactorsIn_mul hp m
           exact_mod_cast this
-        have : (1 / ((primeFactorsIn P (p * m)).card : ℝ)) ^ 2 ≤ 1 := by
+        have : (1 / ((primeFactorsIn P (p * m)).card : ℝ)) ^ (2 : ℕ) ≤ 1 := by
           have h1 : 1 / ((primeFactorsIn P (p * m)).card : ℝ) ≤ 1 := by
             rw [div_le_one (by linarith)]
             exact hpos
@@ -231,7 +231,7 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
           nlinarith [h1, h0]
         linarith
       have hcard : ∑ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m},
-          ‖ramareCofactorCoeff P m‖ ^ 2
+          ‖ramareCofactorCoeff P m‖ ^ (2 : ℕ)
           ≤ (({m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m}).card : ℝ) := by
         refine le_trans (Finset.sum_le_sum hcoeff) ?_
         rw [Finset.sum_const, nsmul_eq_mul, mul_one]
@@ -242,7 +242,7 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
       rw [hEdef]
       linarith
     have hstep : ∀ p ∈ P, 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ) * E p
-        ≤ 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2 * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
+        ≤ 5 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ) * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
       intro p hp
       have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (hPprime p hp).pos
       have hdiv : ((M / p : ℕ) : ℝ) ≤ (M : ℝ) / (p : ℝ) := by
@@ -254,14 +254,14 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
               mul_le_mul_of_nonneg_left (hEle p hp) hd0
           _ ≤ ((M : ℝ) / (p : ℝ)) * ((M : ℝ) / (p : ℝ)) := by nlinarith [hdiv, hd0]
       have hval : ((M : ℝ) / (p : ℝ)) * ((M : ℝ) / (p : ℝ))
-          = (M : ℝ) ^ 2 * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
+          = (M : ℝ) ^ (2 : ℕ) * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
         field_simp
       have hc0 : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 := by positivity
       calc 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ) * E p
           = 5 * Real.exp 1 / 2 * (((M / p : ℕ) : ℝ) * E p) := by ring
         _ ≤ 5 * Real.exp 1 / 2 * (((M : ℝ) / (p : ℝ)) * ((M : ℝ) / (p : ℝ))) :=
             mul_le_mul_of_nonneg_left hprod hc0
-        _ = 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2 * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
+        _ = 5 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ) * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
             rw [hval]; ring
     refine le_trans (Finset.sum_le_sum hstep) (le_of_eq ?_)
     rw [← Finset.mul_sum]
@@ -275,8 +275,8 @@ theorem sum_integral_normSq_ramareCofactorPoly_le_budget {P : Finset ℕ}
     (hsq : ∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ)) ≤ 2 * ε / (5 * Real.exp 1)) :
     ∑ p ∈ P, (∫ w in Set.Icc (-W) W,
         ‖logPoly (ramareCofactorCoeff P)
-          {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ 2)
-      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+          {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ (2 : ℕ))
+      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) := by
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   have hpi : Real.pi ≤ 4 := Real.pi_le_four
@@ -285,9 +285,9 @@ theorem sum_integral_normSq_ramareCofactorPoly_le_budget {P : Finset ℕ}
   have hfirst : 5 * Real.pi / 2 * W * (M : ℝ) ≤ 10 * W * (M : ℝ) := by
     have hWM : (0 : ℝ) ≤ W * (M : ℝ) := by positivity
     nlinarith [hpi, hWM]
-  have hsecond : 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2
-      * (∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ))) ≤ ε * (M : ℝ) ^ 2 := by
-    have hc0 : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2 := by positivity
+  have hsecond : 5 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ)
+      * (∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ))) ≤ ε * (M : ℝ) ^ (2 : ℕ) := by
+    have hc0 : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ) := by positivity
     refine le_trans (mul_le_mul_of_nonneg_left hsq hc0) (le_of_eq ?_)
     field_simp
   linarith

@@ -25,7 +25,7 @@ theorem kukolTubeMinimumValue_joint_separation (W : Submodule ℝ E)
     let b := kukolTubeMinimizer W v' r' s' z' anchor'
     let c := kukolTubeCurvature v r s z a
     let d := kukolTubeCurvature v' r' s' z' b
-    c*d/(c+d)*‖a-b‖^2 ≤
+    c*d/(c+d)*‖a-b‖^(2 : ℕ) ≤
       kukolTubeMinimumValue W (Sum.elim v v') (Sum.elim r r') (Sum.elim s s') (Sum.elim z z')
         (Sum.inl anchor)-
         (kukolTubeMinimumValue W v r s z anchor+kukolTubeMinimumValue W v' r' s' z' anchor') := by
@@ -46,18 +46,18 @@ theorem kukolTubeMinimumValue_joint_separation (W : Submodule ℝ E)
   have hd : 0 < d := kukolTubeCurvature_pos v' r' s' z' anchor' ⟨b,hb.1.1⟩
   have haBound := kukolTubeMinimum_distance_bound W v r s z anchor ⟨x,hx.1⟩
   have hbBound := kukolTubeMinimum_distance_bound W v' r' s' z' anchor' ⟨x,hx.2⟩
-  have hid : (c+d)*(c*‖x-a‖^2+d*‖x-b‖^2)-c*d*‖a-b‖^2 =
-      ‖c • (x-a)+d • (x-b)‖^2 := by
+  have hid : (c+d)*(c*‖x-a‖^(2 : ℕ)+d*‖x-b‖^(2 : ℕ))-c*d*‖a-b‖^(2 : ℕ) =
+      ‖c • (x-a)+d • (x-b)‖^(2 : ℕ) := by
     simp only [← real_inner_self_eq_norm_sq,inner_add_left,inner_add_right,
       inner_sub_left,inner_sub_right,inner_smul_left,inner_smul_right,RCLike.conj_to_real,
       real_inner_comm b a,real_inner_comm x a,real_inner_comm x b]
     ring
-  have hsep : c*d/(c+d)*‖a-b‖^2 ≤ c*‖x-a‖^2+d*‖x-b‖^2 := by
+  have hsep : c*d/(c+d)*‖a-b‖^(2 : ℕ) ≤ c*‖x-a‖^(2 : ℕ)+d*‖x-b‖^(2 : ℕ) := by
     rw [div_mul_eq_mul_div,div_le_iff₀ (add_pos hc hd)]
     nlinarith [sq_nonneg ‖c • (x-a)+d • (x-b)‖]
-  change c*‖x-a‖^2 ≤ kukolTubePotential v r s z x-kukolTubeMinimumValue W v r s z anchor at haBound
-  change d*‖x-b‖^2 ≤ kukolTubePotential v' r' s' z' x-kukolTubeMinimumValue W v' r' s' z' anchor' at hbBound
-  change c*d/(c+d)*‖a-b‖^2 ≤
+  change c*‖x-a‖^(2 : ℕ) ≤ kukolTubePotential v r s z x-kukolTubeMinimumValue W v r s z anchor at haBound
+  change d*‖x-b‖^(2 : ℕ) ≤ kukolTubePotential v' r' s' z' x-kukolTubeMinimumValue W v' r' s' z' anchor' at hbBound
+  change c*d/(c+d)*‖a-b‖^(2 : ℕ) ≤
     kukolTubePotential (Sum.elim v v') (Sum.elim r r') (Sum.elim s s') (Sum.elim z z') x-_
   rw [kukolTubePotential_sum_family]
   linarith

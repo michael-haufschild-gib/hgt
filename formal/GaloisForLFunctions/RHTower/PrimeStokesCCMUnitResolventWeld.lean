@@ -33,7 +33,7 @@ def primeStokesFixedActionFourierMultiplier (c ξ : ℝ) : ℝ :=
 
 /-- Fourier multiplier after unit exponential aperture averaging. -/
 def primeStokesUnitAveragedFourierMultiplier (ξ : ℝ) : ℝ :=
-  2 + 2 / (1 + ξ ^ 2)
+  2 + 2 / (1 + ξ ^ (2 : ℕ))
 
 theorem primeStokesFixedActionFourierMultiplier_pi_div_eq_zero
     {c : ℝ} (hc : c ≠ 0) :
@@ -47,10 +47,10 @@ theorem primeStokesFixedActionFourierMultiplier_pi_div_eq_zero
 theorem primeStokesUnitAveragedFourierMultiplier_mem_Icc (ξ : ℝ) :
     2 ≤ primeStokesUnitAveragedFourierMultiplier ξ ∧
       primeStokesUnitAveragedFourierMultiplier ξ ≤ 4 := by
-  have hden : 0 < 1 + ξ ^ 2 := by positivity
-  have hnonneg : 0 ≤ 2 / (1 + ξ ^ 2) :=
+  have hden : 0 < 1 + ξ ^ (2 : ℕ) := by positivity
+  have hnonneg : 0 ≤ 2 / (1 + ξ ^ (2 : ℕ)) :=
     div_nonneg (by norm_num) hden.le
-  have hle : 2 / (1 + ξ ^ 2) ≤ 2 := by
+  have hle : 2 / (1 + ξ ^ (2 : ℕ)) ≤ 2 := by
     apply (div_le_iff₀ hden).2
     nlinarith [sq_nonneg ξ]
   rw [primeStokesUnitAveragedFourierMultiplier]

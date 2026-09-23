@@ -84,7 +84,7 @@ structure ThetaSourceFiniteWindowRealGradedPolarization where
     polarization k * even k = (even k)ᴴ * polarization k
   coerciveEscape : ∀ k : ℕ,
     (polarization k)ᴴ * polarization k =
-      ((((k : ℝ) + 1) ^ 2 : ℝ) : ℂ) • 1
+      ((((k : ℝ) + 1) ^ (2 : ℕ) : ℝ) : ℂ) • 1
 
 /-- First total-rank signed trace window already forces the exact cross-multiplied
 superdeterminant identity. -/

@@ -94,7 +94,7 @@ theorem dampedPoleHalfCausal_integrable : Integrable dampedPoleHalfCausal := by
   exact filteredGammaHalf_integrable (by norm_num)
 
 theorem dampedPoleHalfCausal_laplace_sq {s : ℂ} (hs : 0 ≤ s.re) :
-    causalComplexLaplace s dampedPoleHalfCausal ^ 2 = (s+2)/(s+3)^2 := by
+    causalComplexLaplace s dampedPoleHalfCausal ^ 2 = (s+2)/(s+3)^(2 : ℕ) := by
   rw [dampedPoleHalfCausal_eq_filtered]
   exact causalComplexLaplace_filteredGammaHalf_sq hs (by norm_num)
 

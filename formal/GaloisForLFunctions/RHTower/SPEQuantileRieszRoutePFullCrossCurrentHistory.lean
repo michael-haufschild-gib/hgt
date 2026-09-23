@@ -58,10 +58,10 @@ def speQuantileRieszAtomCrossCurrent {ι : Type*} (atom : ι → ℕ) : Matrix �
     (1 / 2 : ℂ) • Matrix.vecMulVec
       (fun i => (criticalMellinAtomWeight (atom i) : ℂ))
       (fun i => ((criticalMellinAtomWeight (atom i) *
-        ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ 2 : ℝ) : ℂ)) -
+        ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ (2 : ℕ) : ℝ) : ℂ)) -
     (1 / 2 : ℂ) • Matrix.vecMulVec
       (fun i => ((criticalMellinAtomWeight (atom i) *
-        ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ 2 : ℝ) : ℂ))
+        ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ (2 : ℕ) : ℝ) : ℂ))
       (fun i => (criticalMellinAtomWeight (atom i) : ℂ))
 
 /-- The five-profile carrier is entrywise the literal strict-cross kernel: signed orientation

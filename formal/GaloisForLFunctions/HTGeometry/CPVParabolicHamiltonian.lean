@@ -28,7 +28,7 @@ theorem parabolicHamiltonian_factor :
     parabolicHamiltonian = pairedQuadratureAdjoint * pairedQuadrature := by
   apply LinearMap.ext
   intro p
-  have hI : (C Complex.I : Fock) ^ 2 = -1 := by
+  have hI : (C Complex.I : Fock) ^ (2 : ℕ) = -1 := by
     rw [← map_pow, Complex.I_sq, map_neg, map_one]
   simp [parabolicHamiltonian, pairedQuadratureAdjoint, pairedQuadrature,
     Module.End.mul_apply, MvPolynomial.smul_eq_C_mul,

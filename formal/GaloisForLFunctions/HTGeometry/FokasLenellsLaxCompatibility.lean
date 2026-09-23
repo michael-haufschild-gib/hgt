@@ -22,22 +22,22 @@ def offDiagonal (p q : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := !![0,p;q,0]
 
 def clearedTemporalLax (p q k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (-I) • grading + (2*k) • (offDiagonal p q * grading) +
-    (2*I*k^2) • (offDiagonal p q ^ 2 * grading)
+    (2*I*k^(2 : ℕ)) • (offDiagonal p q ^ (2 : ℕ) * grading)
 
 def clearedTemporalDerivative (p q u v k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (2*k) • (offDiagonal v u * grading) +
-    (2*I*k^2) • ((offDiagonal v u * offDiagonal p q +
+    (2*I*k^(2 : ℕ)) • ((offDiagonal v u * offDiagonal p q +
       offDiagonal p q * offDiagonal v u) * grading)
 
 def clearedCurvature (p q u v pt qt k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (4*I*k^3) • offDiagonal pt qt - clearedTemporalDerivative p q u v k +
+  (4*I*k^(3 : ℕ)) • offDiagonal pt qt - clearedTemporalDerivative p q u v k +
     spatialLax u v k * clearedTemporalLax p q k -
     clearedTemporalLax p q k * spatialLax u v k
 
 /-- Equation (5.38), after multiplying through by 4 k², including the singular point. -/
 theorem clearedCurvature_factor (p q u v pt qt k : ℂ) :
     clearedCurvature p q u v pt qt k =
-      (4*I*k^3) • offDiagonal (pt-p-I*p*q*v) (qt-q+I*p*q*u) := by
+      (4*I*k^(3 : ℕ)) • offDiagonal (pt-p-I*p*q*v) (qt-q+I*p*q*u) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [clearedCurvature, clearedTemporalDerivative, clearedTemporalLax,
@@ -59,8 +59,8 @@ theorem clearedCurvature_zero_iff (p q u v pt qt : ℂ) :
     fin_cases i <;> fin_cases j <;> simp [hp,hq,offDiagonal]
 
 def temporalLax (p q k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (-I/(4*k^2)) • grading + (1/(2*k)) • (offDiagonal p q * grading) +
-    (I/2) • (offDiagonal p q ^ 2 * grading)
+  (-I/(4*k^(2 : ℕ))) • grading + (1/(2*k)) • (offDiagonal p q * grading) +
+    (I/2) • (offDiagonal p q ^ (2 : ℕ) * grading)
 
 def temporalDerivative (p q u v k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (1/(2*k)) • (offDiagonal v u * grading) +

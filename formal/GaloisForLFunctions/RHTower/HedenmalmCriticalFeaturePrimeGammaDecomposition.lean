@@ -62,7 +62,7 @@ theorem xiWeilSharp_criticalHardyLowerCauchyTest (t : ℝ) :
 theorem criticalKernel_eq_hardyCauchySum
     {t : ℝ} {z : ℂ}
     (hl : z ≠ (t : ℂ) - I) (hu : z ≠ (t : ℂ) + I) :
-    2 / (1 + (z - (t : ℂ)) ^ 2) =
+    2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ)) =
       criticalHardyLowerCauchyTest t z +
         criticalHardyUpperCauchyTest t z := by
   simp only [criticalHardyLowerCauchyTest, criticalHardyUpperCauchyTest,
@@ -70,10 +70,10 @@ theorem criticalKernel_eq_hardyCauchySum
     xiWeilCauchyTest]
   have hdl : z - ((t : ℂ) - I) ≠ 0 := sub_ne_zero.mpr hl
   have hdu : z - ((t : ℂ) + I) ≠ 0 := sub_ne_zero.mpr hu
-  have hden : 1 + (z - (t : ℂ)) ^ 2 ≠ 0 := by
+  have hden : 1 + (z - (t : ℂ)) ^ (2 : ℕ) ≠ 0 := by
     intro h
     have hfactor :
-        1 + (z - (t : ℂ)) ^ 2 =
+        1 + (z - (t : ℂ)) ^ (2 : ℕ) =
           (z - ((t : ℂ) - I)) * (z - ((t : ℂ) + I)) := by
       ring_nf
       norm_num [Complex.I_sq]

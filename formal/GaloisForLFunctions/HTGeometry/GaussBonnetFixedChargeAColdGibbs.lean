@@ -14,7 +14,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAColdEntropy (w φ l : ℝ) : ℝ :=
-  Real.pi * exp w ^ 2 + 4 * Real.pi * (exp w * sin φ) ^ 2 * (w - l)
+  Real.pi * exp w ^ (2 : ℕ) + 4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) * (w - l)
 
 theorem egbFixedChargeA_extremal_mass (w φ : ℝ) :
     egbMass 0 (exp w * cos φ) (exp w * sin φ) (exp w) = exp w := by
@@ -33,8 +33,8 @@ theorem egbFixedChargeA_small_log_radius_cold_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_small_entropy_log_formula (w φ τ l : ℝ) :
     egbEntropyA (exp w * sin φ) l (egbFixedChargeASmallRadius w φ τ) =
-      Real.pi * egbFixedChargeASmallRadius w φ τ ^ 2 +
-        4 * Real.pi * (exp w * sin φ) ^ 2 * (log (egbFixedChargeASmallRadius w φ τ) - l) := by
+      Real.pi * egbFixedChargeASmallRadius w φ τ ^ (2 : ℕ) +
+        4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) * (log (egbFixedChargeASmallRadius w φ τ) - l) := by
   unfold egbEntropyA
   rw [log_div (egbFixedChargeA_radii_order w φ τ).1.ne' (exp_ne_zero l), log_exp]
 

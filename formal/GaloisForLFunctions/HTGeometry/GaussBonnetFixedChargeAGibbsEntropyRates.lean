@@ -11,7 +11,7 @@ theorem egbFixedChargeAGibbsCollisionExcess_le_uniform_complement (n m : ℕ) (�
   rw [egbFixedChargeAGibbsCollisionExcess_identity]
   apply sub_le_sub_right
   calc
-    (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ 2) ≤
+    (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ (2 : ℕ)) ≤
         ∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i := by
       apply Finset.sum_le_sum
       intro i hi

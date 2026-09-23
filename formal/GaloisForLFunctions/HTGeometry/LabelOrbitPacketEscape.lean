@@ -29,7 +29,7 @@ theorem forall_perm_exists_permutedAnalyticVariableRate_ne_zero
     {I E : Type*} [Fintype I] [DecidableEq I] (c : I → ℂ) (rate : E → ℂ)
     (branch : I → E → ℂ) {U : Set E}
     (hpacket : ∀ d : I → ℂ, d ≠ 0 → (∑ i, d i) = 0 →
-      ∃ p ∈ U, (∑ i, d i * branch i p) ^ 2 - rate p * ∑ i, branch i p ^ 2 ≠ 0)
+      ∃ p ∈ U, (∑ i, d i * branch i p) ^ (2 : ℕ) - rate p * ∑ i, branch i p ^ (2 : ℕ) ≠ 0)
     (hc : c ≠ 0) (hsum : ∑ i, c i = 0) :
     ∀ σ : Equiv.Perm I, ∃ p ∈ U, permutedAnalyticVariableRate c rate branch σ p ≠ 0 := by
   intro σ
@@ -66,15 +66,15 @@ theorem exists_mem_forall_relabelled_quadraticRate_ne_zero_of_packetEscape
       matrixCharpolyRelation
         (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) p), branch x p) = 0)
     (hpacket : ∀ d : I → ℂ, d ≠ 0 → (∑ i, d i) = 0 →
-      ∃ p ∈ U, (∑ i, d i * branch i p) ^ 2
-        - MvPolynomial.eval₂ (RingHom.id ℂ) p κ * ∑ i, branch i p ^ 2 ≠ 0)
+      ∃ p ∈ U, (∑ i, d i * branch i p) ^ (2 : ℕ)
+        - MvPolynomial.eval₂ (RingHom.id ℂ) p κ * ∑ i, branch i p ^ (2 : ℕ) ≠ 0)
     {V : Set (Fin m → ℝ)} (hVopen : IsOpen V) (hVne : V.Nonempty) :
     ∃ q ∈ V, ∀ energy : I → ℂ, Function.Injective energy →
       (∀ i, matrixCharpolyRelation
         (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (fun t => (q t : ℂ))), energy i) = 0) →
       ∀ σ : Equiv.Perm I,
-        (∑ j, c (σ.symm j) * energy j) ^ 2
-          - MvPolynomial.eval₂ (RingHom.id ℂ) (fun t => (q t : ℂ)) κ * ∑ j, energy j ^ 2 ≠ 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ)
+          - MvPolynomial.eval₂ (RingHom.id ℂ) (fun t => (q t : ℂ)) κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   have hlabel := forall_perm_exists_permutedAnalyticVariableRate_ne_zero c
     (fun p : Fin m → ℂ => MvPolynomial.eval₂ (RingHom.id ℂ) p κ) branch hpacket hc hsum
   obtain ⟨q, hq, hqne⟩ :=

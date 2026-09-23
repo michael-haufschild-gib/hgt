@@ -24,7 +24,7 @@ namespace RHTower
 `-2·I_L(s)·(-ζ'/ζ)(s-½)` with `I_L(s) = A_L(s-1)²`.  Its poles in `Re s > 1` are exactly the shifted
 off-critical zeta zeros. -/
 noncomputable def primeObservable (L : ℝ) (s : ℂ) : ℂ :=
-  -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2
+  -2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ)
     * (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2))
 
 /-- **Off-critical detection.**  A zeta zero `ρ` with `Re ρ > 1/2` makes the observable have a genuine

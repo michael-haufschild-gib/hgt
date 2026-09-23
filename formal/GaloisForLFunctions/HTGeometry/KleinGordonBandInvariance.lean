@@ -153,7 +153,7 @@ theorem kgBandOp_lowPass_invariant
 /-! ## On a band the frequency is bounded -/
 
 /-- The symbol of `⟨D⟩²` cut to the frequencies below `R`. -/
-def kgFreqSqLow (R : ℝ) (ξ : E) : ℂ := ((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgLowPass R ξ
+def kgFreqSqLow (R : ℝ) (ξ : E) : ℂ := ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgLowPass R ξ
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem measurable_kgFreqSqLow (R : ℝ) : Measurable (kgFreqSqLow (E := E) R) :=
@@ -161,14 +161,14 @@ theorem measurable_kgFreqSqLow (R : ℝ) : Measurable (kgFreqSqLow (E := E) R) :
     (measurable_kgLowPass R)
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem norm_kgFreqSqLow_le (R : ℝ) (ξ : E) : ‖kgFreqSqLow R ξ‖ ≤ 1 + R ^ 2 := by
-  have hB0 : (0 : ℝ) ≤ 1 + R ^ 2 := by positivity
+theorem norm_kgFreqSqLow_le (R : ℝ) (ξ : E) : ‖kgFreqSqLow R ξ‖ ≤ 1 + R ^ (2 : ℕ) := by
+  have hB0 : (0 : ℝ) ≤ 1 + R ^ (2 : ℕ) := by positivity
   rw [kgFreqSqLow, kgLowPass]
   split
   · rename_i hξ
     rw [mul_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), kgFreq,
       Real.sq_sqrt (by positivity)]
-    have h : ‖ξ‖ ^ 2 ≤ R ^ 2 := by
+    have h : ‖ξ‖ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by
       have := norm_nonneg ξ
       nlinarith
     linarith
@@ -178,7 +178,7 @@ theorem norm_kgFreqSqLow_le (R : ℝ) (ξ : E) : ‖kgFreqSqLow R ξ‖ ≤ 1 + 
 def kgFreqSqLowOp (R : ℝ) : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E) :=
   fourierMulCLM (measurable_kgFreqSqLow (E := E) R) (by positivity) (norm_kgFreqSqLow_le R)
 
-theorem norm_kgFreqSqLowOp_le (R : ℝ) : ‖kgFreqSqLowOp (E := E) R‖ ≤ 1 + R ^ 2 :=
+theorem norm_kgFreqSqLowOp_le (R : ℝ) : ‖kgFreqSqLowOp (E := E) R‖ ≤ 1 + R ^ (2 : ℕ) :=
   norm_fourierMulCLM_le _ _ _
 
 set_option maxHeartbeats 1000000 in
@@ -188,7 +188,7 @@ theorem kgFreqInvOp_sq_kgFreqSqLowOp (R : ℝ) (x : Lp ℂ 2 (volume : Measure E
     kgFreqInvOp (kgFreqInvOp (kgFreqSqLowOp R x)) = kgLowPassOp R x := by
   have hmeas : Measurable fun ξ : E => kgFreqInv ξ * kgFreqSqLow R ξ :=
     (measurable_kgFreqInv (E := E)).mul (measurable_kgFreqSqLow R)
-  have hbd : ∀ ξ : E, ‖kgFreqInv ξ * kgFreqSqLow R ξ‖ ≤ Real.sqrt (1 + R ^ 2) := by
+  have hbd : ∀ ξ : E, ‖kgFreqInv ξ * kgFreqSqLow R ξ‖ ≤ Real.sqrt (1 + R ^ (2 : ℕ)) := by
     intro ξ
     have hpos := kgFreq_pos ξ
     have hne : kgFreq ξ ≠ 0 := hpos.ne'
@@ -196,7 +196,7 @@ theorem kgFreqInvOp_sq_kgFreqSqLowOp (R : ℝ) (x : Lp ℂ 2 (volume : Measure E
     split
     · rename_i hξ
       rw [mul_one, kgFreqInv, ← Complex.ofReal_mul, Complex.norm_real, Real.norm_eq_abs]
-      have hval : (kgFreq ξ)⁻¹ * kgFreq ξ ^ 2 = kgFreq ξ := by
+      have hval : (kgFreq ξ)⁻¹ * kgFreq ξ ^ (2 : ℕ) = kgFreq ξ := by
         field_simp
       rw [hval, abs_of_pos hpos, kgFreq]
       refine Real.sqrt_le_sqrt ?_
@@ -204,7 +204,7 @@ theorem kgFreqInvOp_sq_kgFreqSqLowOp (R : ℝ) (x : Lp ℂ 2 (volume : Measure E
       nlinarith
     · simp only [mul_zero, norm_zero]
       positivity
-  have hB0 : (0 : ℝ) ≤ Real.sqrt (1 + R ^ 2) := Real.sqrt_nonneg _
+  have hB0 : (0 : ℝ) ≤ Real.sqrt (1 + R ^ (2 : ℕ)) := Real.sqrt_nonneg _
   have hstep1 : (kgFreqInvOp (E := E)).comp (kgFreqSqLowOp R)
       = fourierMulCLM hmeas hB0 hbd := by
     rw [kgFreqInvOp_eq, kgFreqSqLowOp]

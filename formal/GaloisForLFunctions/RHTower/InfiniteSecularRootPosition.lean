@@ -21,7 +21,7 @@ variable {d ℓ : ℕ → ℝ}
 
 /-- **The root is located by the sign of the secular function.** -/
 theorem lt_infiniteSecularRoot_iff (h01 : d 0 < d 1) (h12 : d 1 < d 2)
-    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ 2)
+    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hℓ0 : ℓ 0 ≠ 0) (hℓ1 : ℓ 1 ≠ 0) {x : ℝ} (hx : x ∈ Ioo (d 0) (d 1)) :
     x < infiniteSecularRoot d ℓ ↔ infiniteSecular d ℓ x < 0 := by
   obtain ⟨hrmem, hr0, _⟩ := infiniteSecularRoot_spec h01 h12 hd2 hsum hℓ0 hℓ1
@@ -43,7 +43,7 @@ theorem lt_infiniteSecularRoot_iff (h01 : d 0 < d 1) (h12 : d 1 < d 2)
 /-- The threshold form: the root clears `x` exactly when the secular function is negative at
 `x`. -/
 theorem lt_infiniteSecularRoot_of_infiniteSecular_neg (h01 : d 0 < d 1) (h12 : d 1 < d 2)
-    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ 2)
+    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hℓ0 : ℓ 0 ≠ 0) (hℓ1 : ℓ 1 ≠ 0) {x : ℝ} (hx : x ∈ Ioo (d 0) (d 1))
     (hneg : infiniteSecular d ℓ x < 0) :
     x < infiniteSecularRoot d ℓ :=

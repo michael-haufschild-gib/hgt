@@ -30,7 +30,7 @@ def xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient
       (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
         xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
           w n x) /
-    (w ^ 2 * x ^ 4 *
+    (w ^ (2 : ℕ) * x ^ (4 : ℕ) *
       HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1))
 
 /-- **Pointwise faithful-source law.**  Every nonzero admitted node carries exactly one unit after
@@ -50,7 +50,7 @@ theorem xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient_eq_one
   have hnorm : HTGeometry.monicOrthoNormSq
       (xiShiftedRealMomentSequence w) (n - 1) ≠ 0 :=
     ne_of_gt (HTGeometry.monicOrthoNorm_pos_below hbelow (by omega))
-  have hrhs : w ^ 2 * x ^ 4 *
+  have hrhs : w ^ (2 : ℕ) * x ^ (4 : ℕ) *
       HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1) ≠ 0 :=
     mul_ne_zero (mul_ne_zero (pow_ne_zero 2 hw) (pow_ne_zero 4 hx)) hnorm
   rw [xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient]
@@ -93,7 +93,7 @@ def xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate
     (w : ℝ) (n : ℕ) (a eta : ℝ) : ℝ :=
   ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
     xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient w n x * eta /
-      ((a - x) ^ 2 + eta ^ 2)
+      ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))
 
 /-- De-resisted completed source is exactly unweighted nodal Poisson density. -/
 theorem xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate_eq_unweighted
@@ -104,7 +104,7 @@ theorem xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate_eq_
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) (a eta : ℝ) :
     xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate w n a eta =
       ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
-        eta / ((a - x) ^ 2 + eta ^ 2) := by
+        eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ)) := by
   rw [xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate]
   apply Finset.sum_congr rfl
   intro x hxmem
@@ -112,9 +112,9 @@ theorem xiShiftedCanonicalAdmissionDeResistedCompletedSourcePoissonAggregate_eq_
       (xiShiftedRealMomentSequence w) n =
         HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n := by
     change HTGeometry.monicMomentAdmissionPolynomial
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n =
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n =
         HTGeometry.monicOrtho
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n
     exact xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hH
   have hroot : (HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n).eval x = 0 := by
@@ -191,7 +191,7 @@ theorem sub_sum_deResistedCompletedSourceCoefficient_eq_one
   have hHcurrent : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef
     exact xiShiftedMomentHankel_posDef_of_le (m := n + 2) (by omega) hH
   have hnext :=
     sum_xiShiftedCanonicalAdmissionDeResistedCompletedSourceCoefficient_eq_degree

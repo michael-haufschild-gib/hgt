@@ -30,7 +30,7 @@ theorem exists_uniform_compact_oscLogKernelDeriv_thetaError_tail
   rw [Asymptotics.isBigO_iff] at hthetaO
   obtain ⟨C, hC⟩ := hthetaO
   rcases (eventually_atTop.1 hC) with ⟨T, hT⟩
-  set K : ℝ := (1 + R) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ 2
+  set K : ℝ := (1 + R) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ (2 : ℕ)
   set A : ℝ := K * |C|
   have hK0 : 0 ≤ K := by
     dsimp [K]
@@ -68,24 +68,24 @@ theorem exists_uniform_compact_oscLogKernelDeriv_thetaError_tail
         rw [Pi.sub_apply, id_eq, Real.norm_eq_abs, hthetaNorm] at htheta
         refine htheta.trans ?_
         exact mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity)
-      have hcoef : (1 + |lam|) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ 2 ≤ K := by
+      have hcoef : (1 + |lam|) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ (2 : ℕ) ≤ K := by
         dsimp [K]
         have hlog2 : 0 ≤ (Real.log 2)⁻¹ := by positivity
         nlinarith
       have hderiv := norm_oscLogKernelDeriv_le lam ht2
       have hfactor : 0 ≤ |C| * (t * Real.exp (-c * Real.sqrt (Real.log t))) := by
         positivity
-      have htinvsq : 0 ≤ (t ^ 2)⁻¹ := by positivity
+      have htinvsq : 0 ≤ (t ^ (2 : ℕ))⁻¹ := by positivity
       have hpoint : ‖oscLogKernelDeriv lam t‖ * |Chebyshev.theta t - t| ≤
           A * (Real.exp (-c * Real.sqrt (Real.log t)) / t) := by
         calc
           ‖oscLogKernelDeriv lam t‖ * |Chebyshev.theta t - t|
-              ≤ (((1 + |lam|) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ 2) *
-                  (t ^ 2)⁻¹) *
+              ≤ (((1 + |lam|) * (Real.log 2)⁻¹ + ((Real.log 2)⁻¹) ^ (2 : ℕ)) *
+                  (t ^ (2 : ℕ))⁻¹) *
                   (|C| * (t * Real.exp (-c * Real.sqrt (Real.log t)))) := by
                 refine mul_le_mul hderiv hthetaBound (abs_nonneg _) ?_
                 positivity
-          _ ≤ (K * (t ^ 2)⁻¹) *
+          _ ≤ (K * (t ^ (2 : ℕ))⁻¹) *
                   (|C| * (t * Real.exp (-c * Real.sqrt (Real.log t)))) := by
                 apply mul_le_mul_of_nonneg_right
                 exact mul_le_mul_of_nonneg_right hcoef htinvsq

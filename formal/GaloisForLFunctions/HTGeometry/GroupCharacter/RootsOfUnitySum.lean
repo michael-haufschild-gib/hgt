@@ -28,7 +28,7 @@ theorem norm_eq_one_of_pow_eq_one {z : ℂ} {m : ℕ} (hm : m ≠ 0) (h : z ^ m 
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg z) hm).mp h1
 
 theorem eq_one_of_norm_eq_one_of_re_eq_one {z : ℂ} (hn : ‖z‖ = 1) (hre : z.re = 1) : z = 1 := by
-  have h1 : z.re ^ 2 + z.im ^ 2 = 1 := by
+  have h1 : z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) = 1 := by
     have h2 : Complex.normSq z = 1 := by
       rw [Complex.normSq_eq_norm_sq, hn]; norm_num
     simpa [Complex.normSq_apply, sq] using h2

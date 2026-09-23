@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskySingleSectorFrequenc
 For the exact Birmingham--Mokhtari scalar/vector potential gap, subtracting the linear and
 quadratic mass terms leaves a cubic factor with continuous coefficient.  Its value at zero mass is
 
-`36 (2 - 2 Q - 3 u) / (Q + 2)^3`.
+`36 (2 - 2 Q - 3 u) / (Q + 2)^(3 : ℕ)`.
 
 Thus the third Taylor jet is strictly negative on the physical theta exterior, although the exact
 finite-positive-mass parity gap is strictly positive.  Finite-mass positivity therefore does not
@@ -31,7 +31,7 @@ noncomputable section
 scalar/vector parity gap. -/
 def d4ParitySplitThirdJetCompletion (Q u x : ℝ) : ℝ :=
   (36 * (Q + 2) * (2 - 2 * Q - 3 * u) - 162 * (Q + u - 1) * x) /
-    ((Q + 2) ^ 2 * (Q + 2 + 3 * x) ^ 2)
+    ((Q + 2) ^ (2 : ℕ) * (Q + 2 + 3 * x) ^ (2 : ℕ))
 
 /-- Exact cubic factorization of the BM parity gap after its linear and quadratic mass jets are
 removed. -/
@@ -39,8 +39,8 @@ theorem d4ParitySplit_sub_linear_sub_quadratic_eq_thirdJet
     (Q x u : ℝ) (hQ2 : Q + 2 ≠ 0) (hden : Q + 2 + 3 * x ≠ 0) :
     d4ScalarBracket Q x u - d4VectorBracket Q x -
           (12 / (Q + 2)) * x -
-        (18 * (Q + u - 1) / (Q + 2) ^ 2) * x ^ 2 =
-      x ^ 3 * d4ParitySplitThirdJetCompletion Q u x := by
+        (18 * (Q + u - 1) / (Q + 2) ^ (2 : ℕ)) * x ^ (2 : ℕ) =
+      x ^ (3 : ℕ) * d4ParitySplitThirdJetCompletion Q u x := by
   rw [d4ParitySplit_sub_linear_eq_secondJet Q x u hQ2 hden]
   unfold d4ParitySplitSecondJetCompletion d4ParitySplitThirdJetCompletion
   let A : ℝ := Q + 2
@@ -48,11 +48,11 @@ theorem d4ParitySplit_sub_linear_sub_quadratic_eq_thirdJet
   have hA : A ≠ 0 := by simpa [A] using hQ2
   have hd : d ≠ 0 := by simpa [d] using hden
   change
-    x ^ 2 * ((18 * A * (Q + u - 1) + 36 * (Q - 1) * x) /
-        (A * d ^ 2)) -
-      (18 * (Q + u - 1) / A ^ 2) * x ^ 2 =
-    x ^ 3 * ((36 * A * (2 - 2 * Q - 3 * u) -
-        162 * (Q + u - 1) * x) / (A ^ 2 * d ^ 2))
+    x ^ (2 : ℕ) * ((18 * A * (Q + u - 1) + 36 * (Q - 1) * x) /
+        (A * d ^ (2 : ℕ))) -
+      (18 * (Q + u - 1) / A ^ (2 : ℕ)) * x ^ (2 : ℕ) =
+    x ^ (3 : ℕ) * ((36 * A * (2 - 2 * Q - 3 * u) -
+        162 * (Q + u - 1) * x) / (A ^ (2 : ℕ) * d ^ (2 : ℕ)))
   field_simp [hA, hd]
   ring
 
@@ -60,7 +60,7 @@ theorem d4ParitySplit_sub_linear_sub_quadratic_eq_thirdJet
 theorem d4ParitySplitThirdJetCompletion_zero
     (Q u : ℝ) (hQ2 : Q + 2 ≠ 0) :
     d4ParitySplitThirdJetCompletion Q u 0 =
-      36 * (2 - 2 * Q - 3 * u) / (Q + 2) ^ 3 := by
+      36 * (2 - 2 * Q - 3 * u) / (Q + 2) ^ (3 : ℕ) := by
   unfold d4ParitySplitThirdJetCompletion
   field_simp [hQ2]
   ring
@@ -76,7 +76,7 @@ theorem continuousAt_d4ParitySplitThirdJetCompletion_zero
 
 /-- Third mass Taylor jet: six times the cubic coefficient of the exact BM parity gap. -/
 def d4ThirdMassParityJet (Q u : ℝ) : ℝ :=
-  216 * (2 - 2 * Q - 3 * u) / (Q + 2) ^ 3
+  216 * (2 - 2 * Q - 3 * u) / (Q + 2) ^ (3 : ℕ)
 
 theorem d4ThirdMassParityJet_eq_six_mul_completion
     (Q u : ℝ) (hQ2 : Q + 2 ≠ 0) :
@@ -91,9 +91,9 @@ theorem d4ThirdMassParityJet_neg_physical
     (xi u : ℝ) (hu : 1 ≤ u) :
     d4ThirdMassParityJet (d4ThetaPhysicalAngularQ xi) u < 0 := by
   unfold d4ThirdMassParityJet d4ThetaPhysicalAngularQ
-  have hnum : 2 - 2 * ((1 / 4 : ℝ) + xi ^ 2) - 3 * u < 0 := by
+  have hnum : 2 - 2 * ((1 / 4 : ℝ) + xi ^ (2 : ℕ)) - 3 * u < 0 := by
     nlinarith [sq_nonneg xi]
-  have hden : 0 < (((1 / 4 : ℝ) + xi ^ 2) + 2) ^ 3 := by positivity
+  have hden : 0 < (((1 / 4 : ℝ) + xi ^ (2 : ℕ)) + 2) ^ (3 : ℕ) := by positivity
   exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by norm_num) hnum) hden
 
 /-- Positive exact finite-mass response and negative third Taylor jet coexist on every physical
@@ -164,8 +164,8 @@ def d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect (q : XiZeroCopy) : �
 variation. -/
 def d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial (q : XiZeroCopy) : ℝ :=
   let a := (q.1 : ℂ).re
-  24 - 36 * (a * (1 - a)) - 38 * (a * (1 - a)) ^ 2 -
-    8 * (a * (1 - a)) ^ 3
+  24 - 36 * (a * (1 - a)) - 38 * (a * (1 - a)) ^ (2 : ℕ) -
+    8 * (a * (1 - a)) ^ (3 : ℕ)
 
 /-- Exact reflection variation of the BM fixed-unit-radius third mass jet. -/
 theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq
@@ -173,8 +173,8 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq
     d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect q =
       216 * (1 - 2 * (q.1 : ℂ).re) *
           d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-        ((q.1 : ℂ).re ^ 3 * (3 - (q.1 : ℂ).re) ^ 3 *
-          (1 - (q.1 : ℂ).re) ^ 3 * (2 + (q.1 : ℂ).re) ^ 3) := by
+        ((q.1 : ℂ).re ^ (3 : ℕ) * (3 - (q.1 : ℂ).re) ^ (3 : ℕ) *
+          (1 - (q.1 : ℂ).re) ^ (3 : ℕ) * (2 + (q.1 : ℂ).re) ^ (3 : ℕ)) := by
   let a : ℝ := (q.1 : ℂ).re
   have hQ : d4BMXiReflectedRealPairMediatorAngularQ q =
       (2 - a) * (a - 1) := by
@@ -197,18 +197,18 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq
   unfold d4ThirdMassParityJet d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial
   change
     216 * (2 - 2 * ((2 - a) * (a - 1)) - 3 * 1) /
-          (((2 - a) * (a - 1)) + 2) ^ 3 -
+          (((2 - a) * (a - 1)) + 2) ^ (3 : ℕ) -
         216 * (2 - 2 * (-a * (a + 1)) - 3 * 1) /
-          ((-a * (a + 1)) + 2) ^ 3 =
+          ((-a * (a + 1)) + 2) ^ (3 : ℕ) =
       216 * (1 - 2 * a) *
-          (24 - 36 * (a * (1 - a)) - 38 * (a * (1 - a)) ^ 2 -
-            8 * (a * (1 - a)) ^ 3) /
-        (a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3)
+          (24 - 36 * (a * (1 - a)) - 38 * (a * (1 - a)) ^ (2 : ℕ) -
+            8 * (a * (1 - a)) ^ (3 : ℕ)) /
+        (a ^ (3 : ℕ) * (3 - a) ^ (3 : ℕ) * (1 - a) ^ (3 : ℕ) * (2 + a) ^ (3 : ℕ))
   rw [show 2 - 2 * ((2 - a) * (a - 1)) - 3 * 1 =
-        2 * a ^ 2 - 6 * a + 3 by ring,
+        2 * a ^ (2 : ℕ) - 6 * a + 3 by ring,
     show (2 - a) * (a - 1) + 2 = a * (3 - a) by ring,
     show 2 - 2 * (-a * (a + 1)) - 3 * 1 =
-        2 * a ^ 2 + 2 * a - 1 by ring,
+        2 * a ^ (2 : ℕ) + 2 * a - 1 by ring,
     show -a * (a + 1) + 2 = (1 - a) * (2 + a) by ring]
   field_simp [ha, h1a, h3a, h2a]
   ring
@@ -227,10 +227,10 @@ theorem d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos
     nlinarith [sq_nonneg (a - 1 / 2)]
   have hgap : 0 ≤ t * (1 / 4 - t) :=
     mul_nonneg ht (sub_nonneg.mpr htle)
-  have hgap2 : 0 ≤ t ^ 2 * (1 / 4 - t) :=
+  have hgap2 : 0 ≤ t ^ (2 : ℕ) * (1 / 4 - t) :=
     mul_nonneg (sq_nonneg t) (sub_nonneg.mpr htle)
   unfold d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial
-  change 0 < 24 - 36 * t - 38 * t ^ 2 - 8 * t ^ 3
+  change 0 < 24 - 36 * t - 38 * t ^ (2 : ℕ) - 8 * t ^ (3 : ℕ)
   nlinarith
 
 /-- Reflected BM fixed-unit-radius third mass jets agree exactly at critical-line incidence. -/
@@ -246,7 +246,7 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_zero_iff
   have h3a : 3 - a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have h2a : 2 + a ≠ 0 := ne_of_gt (by dsimp [a]; linarith)
   have hp := d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos q
-  have hden : a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3 ≠ 0 :=
+  have hden : a ^ (3 : ℕ) * (3 - a) ^ (3 : ℕ) * (1 - a) ^ (3 : ℕ) * (2 + a) ^ (3 : ℕ) ≠ 0 :=
     mul_ne_zero
       (mul_ne_zero
         (mul_ne_zero (pow_ne_zero 3 ha) (pow_ne_zero 3 h3a))
@@ -255,7 +255,7 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_zero_iff
   change
     216 * (1 - 2 * a) *
           d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-        (a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3) = 0 ↔
+        (a ^ (3 : ℕ) * (3 - a) ^ (3 : ℕ) * (1 - a) ^ (3 : ℕ) * (2 + a) ^ (3 : ℕ)) = 0 ↔
       a = 1 / 2
   constructor
   · intro h
@@ -278,7 +278,7 @@ response. -/
 def d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility (q : XiZeroCopy) : ℝ :=
   let a := (q.1 : ℂ).re
   9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-    (a * (1 - a) * (3 - a) * (2 + a)) ^ 2
+    (a * (1 - a) * (3 - a) * (2 + a)) ^ (2 : ℕ)
 
 theorem d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility_pos
     (q : XiZeroCopy) :
@@ -293,7 +293,7 @@ theorem d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility_pos
     mul_ne_zero (mul_ne_zero (mul_ne_zero ha h1a) h3a) h2a
   unfold d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility
   change 0 < 9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-    (a * (1 - a) * (3 - a) * (2 + a)) ^ 2
+    (a * (1 - a) * (3 - a) * (2 + a)) ^ (2 : ℕ)
   exact div_pos
     (mul_pos (by norm_num)
       (d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial_pos q))
@@ -317,9 +317,9 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_eq_susceptibility
   change
     216 * (1 - 2 * a) *
           d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-        (a ^ 3 * (3 - a) ^ 3 * (1 - a) ^ 3 * (2 + a) ^ 3) =
+        (a ^ (3 : ℕ) * (3 - a) ^ (3 : ℕ) * (1 - a) ^ (3 : ℕ) * (2 + a) ^ (3 : ℕ)) =
       (9 * d4BMXiFixedUnitRadiusThirdMassParityReflectionPolynomial q /
-          (a * (1 - a) * (3 - a) * (2 + a)) ^ 2) *
+          (a * (1 - a) * (3 - a) * (2 + a)) ^ (2 : ℕ)) *
         (24 * (1 - 2 * a) /
           (a * (1 - a) * (3 - a) * (2 + a)))
   field_simp [ha, h1a, h3a, h2a]
@@ -340,7 +340,7 @@ theorem d4BMXiReflectedFixedUnitRadiusThirdMassParityJetDefect_mul_first_pos_of_
           d4BMXiReflectionOddBackreactionDefect q *
         d4BMXiReflectionOddBackreactionDefect q =
       d4BMXiFixedUnitRadiusThirdToFirstMassSusceptibility q *
-        d4BMXiReflectionOddBackreactionDefect q ^ 2 := by ring
+        d4BMXiReflectionOddBackreactionDefect q ^ (2 : ℕ) := by ring
     _ > 0 := mul_pos hs (sq_pos_of_ne_zero hf)
 
 end

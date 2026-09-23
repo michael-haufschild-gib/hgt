@@ -13,14 +13,14 @@ at `(P,Q)=(2,5)`.  This module closes the full strict unfolding chamber.  For pa
 put `u=P-1/2`, `a=1-2P`, `w=Q-2P+1`, and `A=2P+Q-1`.  The literal nonconstant Whittaker source is
 
 ```text
-8 Λ(2Q) (2π)^(-Q) ∫₀∞ x^(Q-1) K_u(x)^2 dx · L(σ_a σ_a,w).
+8 Λ(2Q) (2π)^(-Q) ∫₀∞ x^(Q-1) K_u(x)^(2 : ℕ) dx · L(σ_a σ_a,w).
 ```
 
 The corpus two-shift Ramanujan product and two-K Mellin theorem, together with an exact
 complex-cpow archimedean cancellation proved here, give
 
 ```text
-S(P,Q) = Λ(A) Λ(Q)^2 Λ(w).
+S(P,Q) = Λ(A) Λ(Q)^(2 : ℕ) Λ(w).
 ```
 
 The positive fourth source argument is `w=1-(2P-Q)`.  Using the entire Xi functional equation on
@@ -292,7 +292,7 @@ lemma completedXiFactor_centered_eq_poleFill_mul_lambda
     rw [h] at hs
     norm_num at hs
   rw [harg, xi_eq_mul_completedRiemannZeta hs0 hs1,
-    completedRiemannZeta_eq_Gammaℝ_mul (by linarith [hs])]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by linarith [hs])]
   unfold d4BMPoleFillCasimirWeight reflectedCompletedLambda
   ring
 

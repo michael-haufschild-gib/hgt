@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.PrimeCoherenceTailReconstruction
 
 A signed prime-Dirichlet tail identifies an orientation with its global complement.  Euler local
 factors do not forget this sign: equal signs give the same local factor, while opposite signs give
-the cyclotomic norm `1 - X^2`.  This file proves that these two local alternatives recover exactly
+the cyclotomic norm `1 - X^(2 : ℕ)`.  This file proves that these two local alternatives recover exactly
 the two branches of the projective tail classification.
 
 The result is source-free and finite-support algebra.  Analytically, evaluation at `X = p^(-s)`
@@ -39,7 +39,7 @@ theorem primeEulerOrientationPolynomial_eq_iff (b c : Bool) :
     · rfl
   · exact fun h => congrArg primeEulerOrientationPolynomial h
 
-/-- Two one-prime Euler polynomials have cyclotomic norm `1 - X^2` exactly when their signs are
+/-- Two one-prime Euler polynomials have cyclotomic norm `1 - X^(2 : ℕ)` exactly when their signs are
 opposite. -/
 theorem primeEulerOrientationPolynomial_mul_eq_norm_iff (b c : Bool) :
     primeEulerOrientationPolynomial b * primeEulerOrientationPolynomial c =
@@ -63,7 +63,7 @@ def PrimeEulerTailGaugeEquivalent {P : Type*} (ε δ : P → Bool) : Prop :=
   {p | primeEulerOrientationPolynomial (ε p) ≠
     primeEulerOrientationPolynomial (δ p)}.Finite
 
-/-- Opposite-sheet Euler norm complementarity: the local product fails to be `1 - X^2` at only
+/-- Opposite-sheet Euler norm complementarity: the local product fails to be `1 - X^(2 : ℕ)` at only
 finitely many coordinates. -/
 def PrimeEulerTailNormComplementary {P : Type*} (ε δ : P → Bool) : Prop :=
   {p | primeEulerOrientationPolynomial (ε p) * primeEulerOrientationPolynomial (δ p) ≠

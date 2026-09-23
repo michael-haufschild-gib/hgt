@@ -3,7 +3,7 @@ Moving-threshold SPUR-R / AMP carrier adapter.
 
 `SpurCarrier` instantiates the stack for a fixed monotone/antitone dressing of
 the reversed S-readings.  The intended outer-reversal reader compares each
-reading `S(y_i)` with its own threshold `(d - a*y_i)^2 + b^2*y_i^2`.  This
+reading `S(y_i)` with its own threshold `(d - a*y_i)^(2 : ℕ) + b^(2 : ℕ)*y_i^(2 : ℕ)`.  This
 module turns such paired data into the existing `SpurRAMPInput` shape by using
 the margin differences `S(y_i) - threshold_i` and the fixed dressing `x ↦ x + 1`.
 Thresholding that dressed margin at `1` is exactly the intended comparison
@@ -151,14 +151,14 @@ theorem amp_reader_exact_pair_of_movingThresholdLists {values thresholds : List 
   amp_reader_exact_pair_of_spurRAMPInput
     (spurRAMPInput_of_movingThresholdLists hsteps hthresholds hvisible heven hbound)
 
-/-- The intended reversed-carrier threshold `(d - a*y)^2 + b^2*y^2`. -/
+/-- The intended reversed-carrier threshold `(d - a*y)^(2 : ℕ) + b^(2 : ℕ)*y^(2 : ℕ)`. -/
 def reversedCarrierAMPThreshold (d : ℕ) (a b y : ℝ) : ℝ :=
-  ((d : ℝ) - a * y) ^ 2 + b ^ 2 * y ^ 2
+  ((d : ℝ) - a * y) ^ (2 : ℕ) + b ^ (2 : ℕ) * y ^ (2 : ℕ)
 
 /-- Difference identity for the intended reversed-carrier threshold quadratic. -/
 theorem reversedCarrierAMPThreshold_sub (d : ℕ) (a b y z : ℝ) :
     reversedCarrierAMPThreshold d a b z - reversedCarrierAMPThreshold d a b y =
-      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) := by
+      (z - y) * (((a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y)) - 2 * a * (d : ℝ)) := by
   unfold reversedCarrierAMPThreshold
   ring
 
@@ -168,13 +168,13 @@ make the threshold antitone.
 -/
 theorem reversedCarrierAMPThreshold_le_of_leftOfVertex {d : ℕ} {a b y z : ℝ}
     (hyz : y ≤ z)
-    (hvertex : (a ^ 2 + b ^ 2) * (z + y) ≤ 2 * a * (d : ℝ)) :
+    (hvertex : (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y) ≤ 2 * a * (d : ℝ)) :
     reversedCarrierAMPThreshold d a b z ≤ reversedCarrierAMPThreshold d a b y := by
   have hnonneg : 0 ≤ z - y := by linarith
-  have hnonpos : (a ^ 2 + b ^ 2) * (z + y) - 2 * a * (d : ℝ) ≤ 0 := by
+  have hnonpos : (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y) - 2 * a * (d : ℝ) ≤ 0 := by
     linarith
   have hprod :
-      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
+      (z - y) * (((a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos hnonneg hnonpos
   have hdiff := reversedCarrierAMPThreshold_sub d a b y z
   linarith
@@ -185,13 +185,13 @@ make the threshold antitone along the list order.
 -/
 theorem reversedCarrierAMPThreshold_le_of_rightOfVertex {d : ℕ} {a b y z : ℝ}
     (hzy : z ≤ y)
-    (hvertex : 2 * a * (d : ℝ) ≤ (a ^ 2 + b ^ 2) * (z + y)) :
+    (hvertex : 2 * a * (d : ℝ) ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y)) :
     reversedCarrierAMPThreshold d a b z ≤ reversedCarrierAMPThreshold d a b y := by
   have hnonpos : z - y ≤ 0 := by linarith
-  have hnonneg : 0 ≤ (a ^ 2 + b ^ 2) * (z + y) - 2 * a * (d : ℝ) := by
+  have hnonneg : 0 ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y) - 2 * a * (d : ℝ) := by
     linarith
   have hprod :
-      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
+      (z - y) * (((a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg hnonpos hnonneg
   have hdiff := reversedCarrierAMPThreshold_sub d a b y z
   linarith
@@ -204,7 +204,7 @@ def ReversedCarrierThresholdLeftOfVertex (d : ℕ) (a b : ℝ) : List ℝ → Pr
   | [] => True
   | [_] => True
   | y :: z :: ys =>
-      y ≤ z ∧ (a ^ 2 + b ^ 2) * (z + y) ≤ 2 * a * (d : ℝ) ∧
+      y ≤ z ∧ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y) ≤ 2 * a * (d : ℝ) ∧
         ReversedCarrierThresholdLeftOfVertex d a b (z :: ys)
 
 /--
@@ -215,7 +215,7 @@ def ReversedCarrierThresholdRightOfVertex (d : ℕ) (a b : ℝ) : List ℝ → P
   | [] => True
   | [_] => True
   | y :: z :: ys =>
-      z ≤ y ∧ 2 * a * (d : ℝ) ≤ (a ^ 2 + b ^ 2) * (z + y) ∧
+      z ≤ y ∧ 2 * a * (d : ℝ) ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (z + y) ∧
         ReversedCarrierThresholdRightOfVertex d a b (z :: ys)
 
 /-- Threshold readings along a reversed one-sided-far carrier. -/

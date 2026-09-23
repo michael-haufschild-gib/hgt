@@ -9,21 +9,21 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedPowerSpectrumInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedPowerSpectrumInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedPowerSpectrumInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedPowerSpectrumInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedPowerSpectrumInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedPowerSpectrumInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedPowerSpectrumInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedPowerSpectrumInst8 : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
-local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
+local instance fokasLenellsCausalBoundedPowerSpectrumInst9 : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
   have he := congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => ‖A‖)
     causalBoundedChainExponential_zero
   exact he.symm.trans (norm_causalBoundedChainExponential_real (0 : ℝ≥0))⟩
@@ -43,10 +43,10 @@ theorem norm_causalBoundedChainShift_pow (n : ℕ) : ‖causalBoundedChainShift^
     exact hn.symm.trans_le (spectrum.norm_le_norm_of_mem hs)
 
 private theorem exists_left_square_root (z : {z : ℂ // ‖z‖ ≤ 1}) :
-    ∃ w : causalClosedLeftDisk, w.val^2 = z.val := by
+    ∃ w : causalClosedLeftDisk, w.val^(2 : ℕ) = z.val := by
   let w : ℂ := z.val ^ (1 / 2 : ℂ)
-  have hw : w^2 = z.val := _root_.HTGeometry.cpow_half_sq
-  have hn : ‖w‖^2 = ‖z.val‖ := (norm_pow w 2).symm.trans (congrArg (fun q : ℂ => ‖q‖) hw)
+  have hw : w^(2 : ℕ) = z.val := _root_.HTGeometry.cpow_half_sq
+  have hn : ‖w‖^(2 : ℕ) = ‖z.val‖ := (norm_pow w 2).symm.trans (congrArg (fun q : ℂ => ‖q‖) hw)
   have hb : ‖w‖ ≤ 1 := by nlinarith only [norm_nonneg w, z.property, hn]
   by_cases hr : w.re ≤ 0
   · exact ⟨⟨w, hr, hb⟩, hw⟩
@@ -58,52 +58,52 @@ private theorem exists_left_square_root (z : {z : ℂ // ‖z‖ ≤ 1}) :
 
 /-- The squared bounded shift is literally two successive genuine derivative coordinates. -/
 theorem causalBoundedChainShift_square_coordinate (j : ℕ) (u : causalBoundedChain) :
-    causalBoundedChainCoordinate j ((causalBoundedChainShift^2) u) =
+    causalBoundedChainCoordinate j ((causalBoundedChainShift^(2 : ℕ)) u) =
       causalBoundedChainCoordinate (j+2) u :=
   (causalBoundedChainShift_coordinate j (causalBoundedChainShift u)).trans
     (causalBoundedChainShift_coordinate (j+1) u)
 
 /-- Squaring the actual derivative shift fills the entire closed complex unit disk with spectrum. -/
 theorem causalBoundedChainShift_square_spectrum :
-    spectrum ℂ (causalBoundedChainShift^2) = {z : ℂ | ‖z‖ ≤ 1} := by
+    spectrum ℂ (causalBoundedChainShift^(2 : ℕ)) = {z : ℂ | ‖z‖ ≤ 1} := by
   apply Set.ext
   intro z
-  change (z ∈ spectrum ℂ (causalBoundedChainShift^2)) ↔ ‖z‖ ≤ 1
+  change (z ∈ spectrum ℂ (causalBoundedChainShift^(2 : ℕ))) ↔ ‖z‖ ≤ 1
   constructor
   · intro hz
     exact (spectrum.norm_le_norm_of_mem hz).trans_eq (norm_causalBoundedChainShift_pow 2)
   · intro hz
     let w : causalClosedLeftDisk := Classical.choose (exists_left_square_root ⟨z, hz⟩)
-    have hw : w.val^2 = z := Classical.choose_spec (exists_left_square_root ⟨z, hz⟩)
+    have hw : w.val^(2 : ℕ) = z := Classical.choose_spec (exists_left_square_root ⟨z, hz⟩)
     have hs := spectrum.pow_mem_pow causalBoundedChainShift 2 (causalClosedLeftDisk_mem_spectrum w)
-    have he := congrArg (fun q : ℂ => q ∈ spectrum ℂ (causalBoundedChainShift^2)) hw
+    have he := congrArg (fun q : ℂ => q ∈ spectrum ℂ (causalBoundedChainShift^(2 : ℕ))) hw
     exact he.mp hs
 
 /-- Exact membership in the genuine second-derivative spectrum. -/
 theorem causalBoundedChainShift_square_mem_spectrum_iff (z : ℂ) :
-    z ∈ spectrum ℂ (causalBoundedChainShift^2) ↔ ‖z‖ ≤ 1 := by
+    z ∈ spectrum ℂ (causalBoundedChainShift^(2 : ℕ)) ↔ ‖z‖ ≤ 1 := by
   rw [causalBoundedChainShift_square_spectrum]
   rfl
 
 /-- A scalar shift of the actual second derivative is invertible precisely outside the unit disk. -/
 theorem causalBoundedChainShift_square_isUnit_iff (z : ℂ) :
-    IsUnit (algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) z - causalBoundedChainShift^2) ↔
+    IsUnit (algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) z - causalBoundedChainShift^(2 : ℕ)) ↔
       1 < ‖z‖ := by
   have h := not_congr (causalBoundedChainShift_square_mem_spectrum_iff z)
   simpa only [spectrum.mem_iff, not_not, not_le] using h
 
 /-- Two genuine derivatives retain injectivity on the same actual bounded-chain carrier. -/
-theorem causalBoundedChainShift_square_injective : Function.Injective (causalBoundedChainShift^2 : causalBoundedChain →L[ℂ] causalBoundedChain) := by
+theorem causalBoundedChainShift_square_injective : Function.Injective (causalBoundedChainShift^(2 : ℕ) : causalBoundedChain →L[ℂ] causalBoundedChain) := by
   change Function.Injective (fun u : causalBoundedChain => causalBoundedChainShift (causalBoundedChainShift u))
   exact causalBoundedChainShift_injective.comp causalBoundedChainShift_injective
 
 /-- The actual second derivative remains non-surjective on the stronger bounded-chain space. -/
 theorem causalBoundedChainShift_square_not_surjective :
-    ¬ Function.Surjective (causalBoundedChainShift^2 : causalBoundedChain →L[ℂ] causalBoundedChain) := by
+    ¬ Function.Surjective (causalBoundedChainShift^(2 : ℕ) : causalBoundedChain →L[ℂ] causalBoundedChain) := by
   intro hs
-  have hu : IsUnit (causalBoundedChainShift^2) := ContinuousLinearMap.isUnit_iff_bijective.mpr
+  have hu : IsUnit (causalBoundedChainShift^(2 : ℕ)) := ContinuousLinearMap.isUnit_iff_bijective.mpr
     ⟨causalBoundedChainShift_square_injective, hs⟩
-  have hz : (0 : ℂ) ∈ spectrum ℂ (causalBoundedChainShift^2) :=
+  have hz : (0 : ℂ) ∈ spectrum ℂ (causalBoundedChainShift^(2 : ℕ)) :=
     (causalBoundedChainShift_square_mem_spectrum_iff 0).mpr (by simp)
   apply spectrum.mem_iff.mp hz
   simpa only [map_zero, zero_sub] using hu.neg

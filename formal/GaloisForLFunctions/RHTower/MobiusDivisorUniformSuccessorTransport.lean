@@ -99,15 +99,15 @@ no processed-cardinality factor and no assumption on retained signs. -/
 theorem sum_mobiusDivisorPrimeFibre_sq_le_quotient
     (M : ℕ) (P : Finset ℕ) {p : ℕ} (hp : p.Prime) :
     (∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase p).powerset,
-      (mobiusDivisorSelectionFibre M P (insert p R))^2) ≤
-        (9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^2 := by
+      (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ)) ≤
+        (9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^(2 : ℕ) := by
   have hs := sum_sq_le_sq_sum_of_nonneg (s := ((mobiusDivisorSelectionPrimes M).erase p).powerset)
     (f := fun R => |mobiusDivisorSelectionFibre M P (insert p R)|) (fun R _ => abs_nonneg _)
   simp only [sq_abs] at hs
   have hb := sum_abs_mobiusDivisorPrimeFibre_le_quotient M P hp
   have hh := mul_le_mul hb hb (sum_nonneg (fun _ _ => abs_nonneg _)) (by positivity)
   rw [← pow_two,← pow_two] at hh
-  have he : ((3/5:ℝ)*Real.sqrt M*(M/p : ℕ))^2=(9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^2 := by
+  have he : ((3/5:ℝ)*Real.sqrt M*(M/p : ℕ))^(2 : ℕ)=(9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^(2 : ℕ) := by
     rw [mul_pow,mul_pow,Real.sq_sqrt (Nat.cast_nonneg M)]
     ring
   rw [he] at hh
@@ -115,7 +115,7 @@ theorem sum_mobiusDivisorPrimeFibre_sq_le_quotient
 private lemma energy_nonneg (M : ℕ) (P : Finset ℕ) :
     0 ≤ mobiusDivisorSelectionEnergy M P := by
   change 0 ≤ ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
   exact sum_nonneg (fun _ _ => sq_nonneg _)
 
 /-- Squared signed gain has a polynomial quotient bound at every processed
@@ -123,8 +123,8 @@ state; no sign, energy ceiling, or core-size bound is a premise. -/
 theorem sq_mobiusDivisorSelectionEnergy_insert_le_quotient
     (M : ℕ) (P : Finset ℕ) {p : ℕ}
     (hp : p.Prime) (hpM : p < M) (hpP : p ∉ P) :
-    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^2 ≤
-      (36/25:ℝ)*(M:ℝ)*(M/p : ℕ)^2*mobiusDivisorSelectionEnergy M P := by
+    (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P)^(2 : ℕ) ≤
+      (36/25:ℝ)*(M:ℝ)*(M/p : ℕ)^(2 : ℕ)*mobiusDivisorSelectionEnergy M P := by
   let T := ((mobiusDivisorSelectionPrimes M).erase p).powerset
   let f := mobiusDivisorSelectionFibre M P
   let g := fun R => mobiusDivisorSelectionFibre M P (insert p R)
@@ -133,10 +133,10 @@ theorem sq_mobiusDivisorSelectionEnergy_insert_le_quotient
   have hg := sum_mobiusDivisorPrimeFibre_sq_le_quotient M P hp
   have hb := mul_le_mul hf hg (sum_nonneg (fun _ _ => sq_nonneg _)) (energy_nonneg M P)
   rw [mobiusDivisorSelectionEnergy_insert_cross hp M P hpM hpP,mul_pow]
-  change (2:ℝ)^2*(∑ R∈T,f R*g R)^2 ≤ _
+  change (2:ℝ)^(2 : ℕ)*(∑ R∈T,f R*g R)^(2 : ℕ) ≤ _
   calc
-    _ ≤ 4*((∑ R∈T,(f R)^2)*(∑ R∈T,(g R)^2)) := by nlinarith only [hcs]
-    _ ≤ 4*(mobiusDivisorSelectionEnergy M P*((9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^2)) :=
+    _ ≤ 4*((∑ R∈T,(f R)^(2 : ℕ))*(∑ R∈T,(g R)^(2 : ℕ))) := by nlinarith only [hcs]
+    _ ≤ 4*(mobiusDivisorSelectionEnergy M P*((9/25:ℝ)*(M:ℝ)*(M/p : ℕ)^(2 : ℕ))) :=
       mul_le_mul_of_nonneg_left hb (by norm_num)
     _ = _ := by ring
 
@@ -149,8 +149,8 @@ theorem abs_mobiusDivisorSelectionEnergy_insert_le_quotient
   have hb := sq_mobiusDivisorSelectionEnergy_insert_le_quotient M P hp hpM hpP
   have hr := Real.sq_sqrt (mul_nonneg (Nat.cast_nonneg M) (energy_nonneg M P))
   have hn : 0 ≤ (6/5:ℝ)*(M/p : ℕ)*Real.sqrt ((M:ℝ)*mobiusDivisorSelectionEnergy M P) := by positivity
-  have he : ((6/5:ℝ)*(M/p : ℕ)*Real.sqrt ((M:ℝ)*mobiusDivisorSelectionEnergy M P))^2 =
-      (36/25:ℝ)*(M:ℝ)*(M/p : ℕ)^2*mobiusDivisorSelectionEnergy M P := by
+  have he : ((6/5:ℝ)*(M/p : ℕ)*Real.sqrt ((M:ℝ)*mobiusDivisorSelectionEnergy M P))^(2 : ℕ) =
+      (36/25:ℝ)*(M:ℝ)*(M/p : ℕ)^(2 : ℕ)*mobiusDivisorSelectionEnergy M P := by
     rw [mul_pow,hr]
     ring
   nlinarith only [hb,he,sq_abs (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P),abs_nonneg (mobiusDivisorSelectionEnergy M (insert p P)-mobiusDivisorSelectionEnergy M P),hn]
@@ -243,12 +243,12 @@ theorem mul_mobiusDivisorSuccessorEnvelope_insert_sub_le
 /-- The uniform channel amplitude gives the complete original diagonal an
 explicit quadratic ceiling, with all squarefree channels retained. -/
 theorem mobiusDivisorSelectionEnergy_empty_le_nine_twentyFifths_sq (M : ℕ) :
-    mobiusDivisorSelectionEnergy M ∅ ≤ (9/25:ℝ)*(M:ℝ)^2 := by
+    mobiusDivisorSelectionEnergy M ∅ ≤ (9/25:ℝ)*(M:ℝ)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy_empty]
-  have hs (n : ℕ) : (mobiusDivisorDilationChannel M n)^2 ≤ (9/25:ℝ)*(M:ℝ) := by
+  have hs (n : ℕ) : (mobiusDivisorDilationChannel M n)^(2 : ℕ) ≤ (9/25:ℝ)*(M:ℝ) := by
     have h := channel_abs_le M n
     have hh := mul_le_mul h h (abs_nonneg _) (by positivity)
-    have he : ((3/5:ℝ)*Real.sqrt M)^2=(9/25:ℝ)*(M:ℝ) := by
+    have he : ((3/5:ℝ)*Real.sqrt M)^(2 : ℕ)=(9/25:ℝ)*(M:ℝ) := by
       rw [mul_pow,Real.sq_sqrt (Nat.cast_nonneg M)]
       ring
     simpa only [← pow_two,sq_abs,he] using hh
@@ -261,11 +261,11 @@ quadratic reserve must lie below the explicit square-root prime scale. -/
 theorem mobiusDivisorSuccessorEnvelope_failure_prime_bound
     (M : ℕ) (P : Finset ℕ) {p : ℕ} (hp : p.Prime) (hpM : p < M) (hpP : p ∉ P)
     (δ : ℝ) (hδ : 0 < δ)
-    (hreserve : mobiusDivisorSuccessorEnvelope M P+δ*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M ∅)
+    (hreserve : mobiusDivisorSuccessorEnvelope M P+δ*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M ∅)
     (hfail : mobiusDivisorSelectionEnergy M ∅ < mobiusDivisorSuccessorEnvelope M (insert p P)) :
     δ*(p:ℝ) < (18/25:ℝ)*Real.sqrt M := by
   have hM : (0:ℝ) < M := by exact_mod_cast (hp.pos.trans hpM)
-  have hPsi : mobiusDivisorSuccessorEnvelope M P ≤ (9/25:ℝ)*(M:ℝ)^2 := by
+  have hPsi : mobiusDivisorSuccessorEnvelope M P ≤ (9/25:ℝ)*(M:ℝ)^(2 : ℕ) := by
     have hd := mobiusDivisorSelectionEnergy_empty_le_nine_twentyFifths_sq M
     nlinarith only [hreserve,hd,mul_nonneg hδ.le (sq_nonneg (M:ℝ))]
   have hroot : Real.sqrt ((M:ℝ)*mobiusDivisorSuccessorEnvelope M P) ≤
@@ -273,18 +273,18 @@ theorem mobiusDivisorSuccessorEnvelope_failure_prime_bound
     rw [Real.sqrt_le_iff]
     refine ⟨by positivity,?_⟩
     have hm := mul_le_mul_of_nonneg_left hPsi hM.le
-    have he : ((3/5:ℝ)*(M:ℝ)*Real.sqrt M)^2=(9/25:ℝ)*(M:ℝ)^3 := by
+    have he : ((3/5:ℝ)*(M:ℝ)*Real.sqrt M)^(2 : ℕ)=(9/25:ℝ)*(M:ℝ)^(3 : ℕ) := by
       rw [mul_pow,Real.sq_sqrt hM.le]
       ring
     rw [he]
     nlinarith only [hm]
   have hcost := mul_mobiusDivisorSuccessorEnvelope_insert_sub_le M P hp hpM hpP
   have hrootcost := mul_le_mul_of_nonneg_left hroot (show 0 ≤ (6/5:ℝ)*(M:ℝ) by positivity)
-  have hgap : δ*(M:ℝ)^2 < mobiusDivisorSuccessorEnvelope M (insert p P)-mobiusDivisorSuccessorEnvelope M P := by
+  have hgap : δ*(M:ℝ)^(2 : ℕ) < mobiusDivisorSuccessorEnvelope M (insert p P)-mobiusDivisorSuccessorEnvelope M P := by
     linarith only [hreserve,hfail]
   have hpR : (0:ℝ) < p := by exact_mod_cast hp.pos
   have hgapmul := mul_lt_mul_of_pos_left hgap hpR
-  have hfinal : (δ*(p:ℝ))*(M:ℝ)^2 < ((18/25:ℝ)*Real.sqrt M)*(M:ℝ)^2 := by
+  have hfinal : (δ*(p:ℝ))*(M:ℝ)^(2 : ℕ) < ((18/25:ℝ)*Real.sqrt M)*(M:ℝ)^(2 : ℕ) := by
     nlinarith only [hgapmul,hcost,hrootcost]
   exact (mul_lt_mul_iff_left₀ (sq_pos_of_pos hM)).mp hfinal
 end RHTower

@@ -30,7 +30,7 @@ def cornerProduct {ι : Type*} [Fintype ι] [DecidableEq ι]
 theorem comparable_corners_differ_at_most_two {ι : Type*} [Fintype ι] [DecidableEq ι]
     (a b : ι → ℕ) (L W : ℝ)
     (ha : ∀ i, 1 ≤ a i) (hab : ∀ i, a i < b i)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^3 < 27*L^2)
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ))
     (s t : Finset ι) (hst : s ⊆ t)
     (hs : L ≤ (cornerProduct a b s : ℝ))
     (ht : (cornerProduct a b t : ℝ) ≤ L+W) :
@@ -96,7 +96,7 @@ theorem three_antichain_card_bound {ι : Type*} [Fintype ι] [DecidableEq ι]
 theorem integer_window_card_bound {ι : Type*} [Fintype ι] [DecidableEq ι]
     (a b : ι → ℕ) (L W : ℝ)
     (ha : ∀ i, 1 ≤ a i) (hab : ∀ i, a i < b i)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^3 < 27*L^2) :
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) :
     (univ.filter fun s : Finset ι => (cornerProduct a b s : ℝ) ∈ Set.Icc L (L+W)).card ≤
       3*(Fintype.card ι).choose (Fintype.card ι / 2) := by
   apply three_antichain_card_bound
@@ -123,9 +123,9 @@ theorem three_antichain_lubell_bound {ι : Type*} [Fintype ι] [DecidableEq ι]
 theorem binomial_atom_le_sqrt_row (n k : ℕ) (p : ℝ) (hk : k ≤ n) :
     (n.choose k : ℝ)*p^k*(1-p)^(n-k) ≤
       Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare p (1-p) n) := by
-  have hs : ((n.choose k : ℝ)*p^k*(1-p)^(n-k))^2 ≤
+  have hs : ((n.choose k : ℝ)*p^k*(1-p)^(n-k))^(2 : ℕ) ≤
       GaloisForLFunctions.HTGeometry.bernsteinRowSquare p (1-p) n := by
-    have h := single_le_sum (f := fun j => ((n.choose j : ℝ)*p^j*(1-p)^(n-j))^2)
+    have h := single_le_sum (f := fun j => ((n.choose j : ℝ)*p^j*(1-p)^(n-j))^(2 : ℕ))
       (fun j _ => sq_nonneg _) (show k ∈ range (n+1) by simpa using hk)
     refine h.trans_eq ?_
     unfold GaloisForLFunctions.HTGeometry.bernsteinRowSquare
@@ -159,7 +159,7 @@ theorem three_antichain_bernoulli_mass_bound {ι : Type*} [Fintype ι] [Decidabl
 theorem integer_window_bernoulli_mass_bound {ι : Type*} [Fintype ι] [DecidableEq ι]
     (a b : ι → ℕ) (L W p : ℝ)
     (ha : ∀ i, 1 ≤ a i) (hab : ∀ i, a i < b i)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^3 < 27*L^2) :
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) :
     ∑ s ∈ (univ.filter fun s : Finset ι => (cornerProduct a b s : ℝ) ∈ Set.Icc L (L+W)),
         p^s.card*(1-p)^(Fintype.card ι-s.card) ≤
       3*Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare
@@ -170,11 +170,11 @@ theorem integer_window_bernoulli_mass_bound {ι : Type*} [Fintype ι] [Decidable
     s t hst (mem_filter.mp hs).2.1 (mem_filter.mp ht).2.2
 
 theorem aperture_div_spectator (L W c : ℝ) (hc : 1 ≤ c)
-    (hwidth : W^3 < 27*L^2) : (W/c)^3 < 27*(L/c)^2 := by
+    (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) : (W/c)^(3 : ℕ) < 27*(L/c)^(2 : ℕ) := by
   have hc0 : 0 < c := by linarith
   rw [div_pow,div_pow]
   apply (div_lt_iff₀ (pow_pos hc0 3)).mpr
-  have he : 27*(L^2/c^2)*c^3 = 27*L^2*c := by field_simp
+  have he : 27*(L^(2 : ℕ)/c^(2 : ℕ))*c^(3 : ℕ) = 27*L^(2 : ℕ)*c := by field_simp
   rw [he]
   exact hwidth.trans_le (le_mul_of_one_le_right (by positivity) hc)
 
@@ -183,7 +183,7 @@ theorem integer_window_spectator_bernoulli_mass_bound
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (a b : ι → ℕ) (L W c p : ℝ)
     (ha : ∀ i, 1 ≤ a i) (hab : ∀ i, a i < b i)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^3 < 27*L^2) :
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) :
     ∑ s ∈ (univ.filter fun s : Finset ι => c*(cornerProduct a b s : ℝ) ∈ Set.Icc L (L+W)),
         p^s.card*(1-p)^(Fintype.card ι-s.card) ≤
       3*Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare
@@ -209,7 +209,7 @@ theorem one_sub_pow_le_reciprocal (u : ℝ) (hu : 0 ≤ u) (hu1 : u ≤ 1) (n : 
     induction n with
     | zero => simp
     | succ n ih =>
-      have hn : 0 ≤ (n+1:ℝ)*u^2 := by positivity
+      have hn : 0 ≤ (n+1:ℝ)*u^(2 : ℕ) := by positivity
       have hp : 0 ≤ (1-u)^n := pow_nonneg (by linarith) _
       have hmul := mul_nonneg hp hn
       rw [pow_succ, Nat.cast_add, Nat.cast_one]
@@ -219,14 +219,14 @@ theorem one_sub_pow_le_reciprocal (u : ℝ) (hu : 0 ≤ u) (hu1 : u ≤ 1) (n : 
   exact (le_div_iff₀ hpos).mpr (h n)
 
 private def binomialTrig (n : ℕ) (p x : ℝ) : ℝ :=
-  (1-4*p*(1-p)*Real.sin x^2)^n
+  (1-4*p*(1-p)*Real.sin x^(2 : ℕ))^n
 
 private theorem binomialTrig_base_bounds (p x : ℝ) (hp0 : 0 ≤ p) (hp1 : p ≤ 1) :
-    0 ≤ 1-4*p*(1-p)*Real.sin x^2 ∧ 1-4*p*(1-p)*Real.sin x^2 ≤ 1 := by
+    0 ≤ 1-4*p*(1-p)*Real.sin x^(2 : ℕ) ∧ 1-4*p*(1-p)*Real.sin x^(2 : ℕ) ≤ 1 := by
   have hs := Real.sin_sq_add_cos_sq x
-  have hprod : 0 ≤ 4*p*(1-p)*Real.sin x^2 := by positivity
-  have hid : 1-4*p*(1-p)*Real.sin x^2 =
-      (2*p-1)^2*Real.sin x^2+Real.cos x^2 := by nlinarith [hs]
+  have hprod : 0 ≤ 4*p*(1-p)*Real.sin x^(2 : ℕ) := by positivity
+  have hid : 1-4*p*(1-p)*Real.sin x^(2 : ℕ) =
+      (2*p-1)^(2 : ℕ)*Real.sin x^(2 : ℕ)+Real.cos x^(2 : ℕ) := by nlinarith [hs]
   constructor
   · rw [hid]; positivity
   · linarith
@@ -253,8 +253,8 @@ theorem tendsto_binomial_rowSquare_zero (d : ℕ → ℕ) (p : ℕ → ℝ)
   have hptw : ∀ᵐ x ∂μ, Tendsto (fun n => binomialTrig (d n) (p n) x) atTop (𝓝 0) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     have hspos : 0 < Real.sin x := Real.sin_pos_of_pos_of_lt_pi hx.1 (by linarith [hx.2,Real.pi_pos])
-    have ht := Filter.Tendsto.const_mul_atTop (show 0 < 4*Real.sin x^2 by positivity) hvariance
-    have ht' : Tendsto (fun n => 1+(d n:ℝ)*(4*p n*(1-p n)*Real.sin x^2)) atTop atTop := by
+    have ht := Filter.Tendsto.const_mul_atTop (show 0 < 4*Real.sin x^(2 : ℕ) by positivity) hvariance
+    have ht' : Tendsto (fun n => 1+(d n:ℝ)*(4*p n*(1-p n)*Real.sin x^(2 : ℕ))) atTop atTop := by
       have hc : Tendsto (fun _ : ℕ => (1:ℝ)) atTop (𝓝 1) := tendsto_const_nhds
       convert hc.add_atTop ht using 1
       funext n

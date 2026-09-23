@@ -28,18 +28,18 @@ variable {d : ℕ} {m K C cmin : ℝ} {c dc : ℝ → ℝ} {G : EuclideanSpace �
 noncomputable def hillWaveOp (d : ℕ) (c : ℝ → ℝ) :
     ((Fin (d + 1) → ℝ) → ℝ) → (Fin (d + 1) → ℝ) → ℝ :=
   fun u y => -(coordPartial 0 (coordPartial 0 u) y) +
-    c (y 0) ^ 2 * ∑ i : Fin d, coordPartial i.succ (coordPartial i.succ u) y
+    c (y 0) ^ (2 : ℕ) * ∑ i : Fin d, coordPartial i.succ (coordPartial i.succ u) y
 
 /-- **The chart field solves the potential-dressed wave equation** of its own speed, for the
 constant potential `-m²`. -/
 theorem solvesPotentialWave_hillChartField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume)) :
-    SolvesPotentialWave (hillWaveOp d c) (fun _ => -(m ^ 2)) (hillChartField m c G) := by
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume)) :
+    SolvesPotentialWave (hillWaveOp d c) (fun _ => -(m ^ (2 : ℕ))) (hillChartField m c G) := by
   intro y
   have hwave := hillChartField_wave_identity (C := C) hm hc hcd hcpos hK hC hcmin hclow hG h2 y
-  show hillWaveOp d c (hillChartField m c G) y + -(m ^ 2) * hillChartField m c G y = 0
+  show hillWaveOp d c (hillChartField m c G) y + -(m ^ (2 : ℕ)) * hillChartField m c G y = 0
   rw [hillWaveOp, hwave]
   ring
 
@@ -100,14 +100,14 @@ variable {d : ℕ} {m K C cmin : ℝ} {c dc : ℝ → ℝ}
 the initial slice. -/
 theorem exists_localProbesOn_hillWaveOp (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     {y₀ : Fin (d + 1) → ℝ} (hy₀ : y₀ 0 = 0) :
     ∃ region : Set (Fin (d + 1) → ℝ), IsOpen region ∧ y₀ ∈ region ∧
-      LocalProbesOn (hillWaveOp d c) (fun _ => -(m ^ 2)) region := by
+      LocalProbesOn (hillWaveOp d c) (fun _ => -(m ^ (2 : ℕ))) region := by
   set x₀ : EuclideanSpace ℝ (Fin d) := kgSpatial d y₀ with hx₀
   set G : EuclideanSpace ℝ (Fin d) → ℂ := hillProbeDatum d x₀ with hG'
   have hG : Continuous G := continuous_hillProbeDatum x₀
-  have h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume) :=
+  have h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume) :=
     integrable_kgFreq_pow_mul_hillProbeDatum x₀ 2
   have h1 := integrable_kgFreq_mul_of_sq hG h2
   have h0 := integrable_of_kgFreq_mul hG h1

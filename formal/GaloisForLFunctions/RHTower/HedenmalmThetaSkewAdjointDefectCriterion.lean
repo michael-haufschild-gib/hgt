@@ -36,7 +36,7 @@ theorem thetaSourceSignedStageSkewAdjointEnergy_eq_sum (k : ℕ) :
     thetaSourceSignedStageSkewAdjointEnergy k =
       ∑ i, ∑ j,
         ‖thetaSourceSignedStageFinMatrix k i j -
-          (starRingEnd ℂ) (thetaSourceSignedStageFinMatrix k j i)‖ ^ 2 := by
+          (starRingEnd ℂ) (thetaSourceSignedStageFinMatrix k j i)‖ ^ (2 : ℕ) := by
   rfl
 
 /-- The quadratic trace-energy defect of an actual stage is half its skew-adjoint energy. -/
@@ -63,7 +63,7 @@ theorem thetaSourceStageSchurPositiveQuarticCharge_le_skewAdjointEnergy
 theorem thetaSourceStageSchurPositiveQuarticCharge_le_ceiling_mul_skewAdjointEnergy
     {k : ℕ} (S : ThetaSourceStageSchurPacket k) :
     thetaSourceStageSchurPositiveQuarticCharge S ≤
-      575 * thetaSourceSignedHSCeiling ^ 2 *
+      575 * thetaSourceSignedHSCeiling ^ (2 : ℕ) *
         thetaSourceSignedStageSkewAdjointEnergy k := by
   have henergy := thetaSourceSignedStageSkewAdjointEnergy_nonneg k
   exact (thetaSourceStageSchurPositiveQuarticCharge_le_skewAdjointEnergy S).trans
@@ -82,7 +82,7 @@ theorem thetaSourceSchurPositiveQuarticChargeCofinallySmall_of_skewAdjointEnergy
     (hskew : ThetaSourceSignedStageSkewAdjointEnergyCofinallySmall) :
     ThetaSourceSchurPositiveQuarticChargeCofinallySmall := by
   intro ε hε N
-  let A : ℝ := 575 * thetaSourceSignedHSCeiling ^ 2
+  let A : ℝ := 575 * thetaSourceSignedHSCeiling ^ (2 : ℕ)
   have hA : 0 < A := by
     dsimp [A]
     exact mul_pos (by norm_num) (sq_pos_of_pos thetaSourceSignedHSCeiling_pos)

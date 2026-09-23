@@ -25,7 +25,7 @@ the compact unit sphere `{x | x ⬝ᵥ x = 1}` and rescaling. -/
 theorem posDef_coercive {n : ℕ} {M : Matrix (Fin n) (Fin n) ℝ} (hM : M.PosDef) :
     ∃ μ : ℝ, 0 < μ ∧ ∀ x : Fin n → ℝ, μ * (x ⬝ᵥ x) ≤ x ⬝ᵥ M *ᵥ x := by
   have hfc : Continuous (fun x : Fin n → ℝ => x ⬝ᵥ M *ᵥ x) := by fun_prop
-  have hhom : ∀ (c : ℝ) (x : Fin n → ℝ), (c • x) ⬝ᵥ M *ᵥ (c • x) = c ^ 2 * (x ⬝ᵥ M *ᵥ x) := by
+  have hhom : ∀ (c : ℝ) (x : Fin n → ℝ), (c • x) ⬝ᵥ M *ᵥ (c • x) = c ^ (2 : ℕ) * (x ⬝ᵥ M *ᵥ x) := by
     intro c x
     rw [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul]
     ring
@@ -41,7 +41,7 @@ theorem posDef_coercive {n : ℕ} {M : Matrix (Fin n) (Fin n) ℝ} (hM : M.PosDe
     simp only [Metric.mem_closedBall, dist_zero_right]
     rw [pi_norm_le_iff_of_nonneg (by norm_num)]
     intro i
-    have hle : x i ^ 2 ≤ x ⬝ᵥ x := by
+    have hle : x i ^ (2 : ℕ) ≤ x ⬝ᵥ x := by
       rw [dotProduct, sq]
       exact Finset.single_le_sum (f := fun j => x j * x j) (fun j _ => mul_self_nonneg _)
         (Finset.mem_univ i)
@@ -93,7 +93,7 @@ theorem abs_dotProduct_mulVec_le {n : ℕ} (N : Matrix (Fin n) (Fin n) ℝ) {ε 
     rw [mulVec, dotProduct, Finset.mul_sum]
     apply Finset.sum_congr rfl; intro q _; ring
   rw [hexp]
-  have hstep : |∑ p, ∑ q, x p * N p q * x q| ≤ ε * (∑ p, |x p|) ^ 2 := by
+  have hstep : |∑ p, ∑ q, x p * N p q * x q| ≤ ε * (∑ p, |x p|) ^ (2 : ℕ) := by
     calc |∑ p, ∑ q, x p * N p q * x q|
         ≤ ∑ p, ∑ q, |x p| * ε * |x q| := by
           refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
@@ -103,17 +103,17 @@ theorem abs_dotProduct_mulVec_le {n : ℕ} (N : Matrix (Fin n) (Fin n) ℝ) {ε 
           rw [abs_mul, abs_mul]
           refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
           exact mul_le_mul_of_nonneg_left (hN p q) (abs_nonneg _)
-      _ = ε * (∑ p, |x p|) ^ 2 := by
+      _ = ε * (∑ p, |x p|) ^ (2 : ℕ) := by
           rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
           apply Finset.sum_congr rfl; intro p _
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl; intro q _; ring
   refine hstep.trans ?_
-  have hsq : (∑ p, |x p|) ^ 2 ≤ (n : ℝ) * ∑ p, |x p| ^ 2 := by
+  have hsq : (∑ p, |x p|) ^ (2 : ℕ) ≤ (n : ℝ) * ∑ p, |x p| ^ (2 : ℕ) := by
     have h := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin n))
       (fun _ => (1 : ℝ)) (fun p => |x p|)
     simpa using h
-  calc ε * (∑ p, |x p|) ^ 2 ≤ ε * ((n : ℝ) * ∑ p, |x p| ^ 2) :=
+  calc ε * (∑ p, |x p|) ^ (2 : ℕ) ≤ ε * ((n : ℝ) * ∑ p, |x p| ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hsq hε
     _ = (n : ℝ) * ε * (x ⬝ᵥ x) := by
         rw [dotProduct]

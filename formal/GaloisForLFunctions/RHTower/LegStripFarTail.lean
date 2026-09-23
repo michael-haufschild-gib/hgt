@@ -25,7 +25,7 @@ namespace RHTower
 /-- Exponential decay of `rcsch² = 1/sinh²`: for `0 < z₀ ≤ z`, `rcsch(z)² ≤ 4/(1−e^{−2z₀})²·e^{−2z}`.
 The near-pole bound `rcsch²(z) < 1/z²` captures only the `z → 0` behaviour; this is the `z → ∞` tail. -/
 theorem rcsch_sq_le_exp {z z₀ : ℝ} (hz₀ : 0 < z₀) (hz : z₀ ≤ z) :
-    (rcsch z)^2 ≤ 4/(1 - Real.exp (-(2*z₀)))^2 * Real.exp (-(2*z)) := by
+    (rcsch z)^(2 : ℕ) ≤ 4/(1 - Real.exp (-(2*z₀)))^(2 : ℕ) * Real.exp (-(2*z)) := by
   have hz0 : 0 < z := lt_of_lt_of_le hz₀ hz
   have hB0 : 0 < 1 - Real.exp (-(2*z₀)) := by
     have : Real.exp (-(2*z₀)) < 1 := by rw [Real.exp_lt_one_iff]; linarith
@@ -39,20 +39,20 @@ theorem rcsch_sq_le_exp {z z₀ : ℝ} (hz₀ : 0 < z₀) (hz : z₀ ≤ z) :
   have hge : Real.exp z * (1 - Real.exp (-(2*z₀))) ≤ Real.exp z - Real.exp (-z) := by
     rw [hd]; exact mul_le_mul_of_nonneg_left hBz (Real.exp_pos z).le
   have hsinh : Real.sinh z = (Real.exp z - Real.exp (-z))/2 := Real.sinh_eq z
-  have hsq : (rcsch z)^2 = 4/(Real.exp z - Real.exp (-z))^2 := by
+  have hsq : (rcsch z)^(2 : ℕ) = 4/(Real.exp z - Real.exp (-z))^(2 : ℕ) := by
     rw [rcsch, hsinh]; rw [div_pow, div_pow]; norm_num
-  have hexpsq : Real.exp (2*z) = (Real.exp z)^2 := by
+  have hexpsq : Real.exp (2*z) = (Real.exp z)^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]; congr 1; ring
-  have hden : Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^2 ≤ (Real.exp z - Real.exp (-z))^2 := by
+  have hden : Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^(2 : ℕ) ≤ (Real.exp z - Real.exp (-z))^(2 : ℕ) := by
     rw [hexpsq, ← mul_pow]
     exact pow_le_pow_left₀ hpos.le hge 2
   rw [hsq]
-  calc 4/(Real.exp z - Real.exp (-z))^2
-      ≤ 4/(Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^2) := by
-        have hpd : 0 < Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^2 := by positivity
+  calc 4/(Real.exp z - Real.exp (-z))^(2 : ℕ)
+      ≤ 4/(Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^(2 : ℕ)) := by
+        have hpd : 0 < Real.exp (2*z) * (1 - Real.exp (-(2*z₀)))^(2 : ℕ) := by positivity
         exact div_le_div_of_nonneg_left (by norm_num) hpd hden
-  _ = 4/(1 - Real.exp (-(2*z₀)))^2 * Real.exp (-(2*z)) := by
-        rw [Real.exp_neg (2*z), mul_comm (Real.exp (2*z)) ((1 - Real.exp (-(2*z₀)))^2),
+  _ = 4/(1 - Real.exp (-(2*z₀)))^(2 : ℕ) * Real.exp (-(2*z)) := by
+        rw [Real.exp_neg (2*z), mul_comm (Real.exp (2*z)) ((1 - Real.exp (-(2*z₀)))^(2 : ℕ)),
           ← div_div, div_eq_mul_inv]
 
 /-- Distance from a far pole `j ≥ i+2` to the gap midpoint `m = harmMid c i`, bounded below by the
@@ -94,8 +94,8 @@ polynomial `p`-series term: `rcsch²((harmPole c j − harmMid c i)/2) ≤ 4/(1�
 The uniform floor `(j+1)/(i+2) ≥ 3/2` fixes the constant; the exponential kernel decay becomes the
 `((i+2)/(j+1))^c` polynomial tail. -/
 theorem farEnergy_term_le {c : ℝ} (hc : 0 < c) {i j : ℕ} (hj : 2*i+2 ≤ j) :
-    (rcsch ((harmPole c j - harmMid c i)/2))^2
-      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (((i:ℝ)+2)/((j:ℝ)+1))^c := by
+    (rcsch ((harmPole c j - harmMid c i)/2))^(2 : ℕ)
+      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) * (((i:ℝ)+2)/((j:ℝ)+1))^c := by
   have hij : i + 2 ≤ j := by omega
   have hdist := harmMid_far_dist_lower hc hij
   -- ratio floor: (j+1)/(i+2) ≥ 3/2, so log((j+1)/(i+2)) ≥ log(3/2)
@@ -130,16 +130,16 @@ theorem farEnergy_term_le {c : ℝ} (hc : 0 < c) {i j : ℕ} (hj : 2*i+2 ≤ j) 
     rw [hlogrecip]
     have h2 : c * Real.log (((j:ℝ)+1)/((i:ℝ)+2)) ≤ harmPole c j - harmMid c i := hdist
     nlinarith [h2]
-  have hCpos : 0 < 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 := by
+  have hCpos : 0 < 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) := by
     have hlt : Real.exp (-(c * Real.log (3/2))) < 1 := by
       rw [Real.exp_lt_one_iff]
       have : 0 < Real.log (3/2) := Real.log_pos (by norm_num)
       nlinarith [this]
     have : 0 < 1 - Real.exp (-(c * Real.log (3/2))) := by linarith
     positivity
-  calc (rcsch ((harmPole c j - harmMid c i)/2))^2
-      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * Real.exp (-(harmPole c j - harmMid c i)) := hbound
-  _ ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (((i:ℝ)+2)/((j:ℝ)+1))^c :=
+  calc (rcsch ((harmPole c j - harmMid c i)/2))^(2 : ℕ)
+      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) * Real.exp (-(harmPole c j - harmMid c i)) := hbound
+  _ ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) * (((i:ℝ)+2)/((j:ℝ)+1))^c :=
         mul_le_mul_of_nonneg_left hexptail hCpos.le
 
 /-- Summability of the shifted `p`-series `((2i+3)+m)^{−c}` for `c > 1`. -/
@@ -182,9 +182,9 @@ theorem rpow_prod_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
 /-- **Far-ahead energy tail is `O(i+1)`.** The total energy of the poles `j ≥ 2i+2` at the midpoint is
 `≤ 4/(1−(2/3)^c)²·(2/(c−1))·(i+1)`, from `farEnergy_term_le` summed against the `p`-series bound. -/
 theorem farEnergyTail_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
-    (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2)
-      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (2/(c-1)) * ((i:ℝ)+1) := by
-  set C := 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 with hC
+    (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ))
+      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) * (2/(c-1)) * ((i:ℝ)+1) := by
+  set C := 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) with hC
   have hc0 : 0 < c := by linarith
   have hCpos : 0 ≤ C := by
     rw [hC]
@@ -193,7 +193,7 @@ theorem farEnergyTail_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
     have : 0 < 1 - Real.exp (-(c * Real.log (3/2))) := by linarith
     positivity
   set env : ℕ → ℝ := fun m => C * (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c with henv
-  have hterm : ∀ m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2 ≤ env m := by
+  have hterm : ∀ m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ) ≤ env m := by
     intro m
     have h := farEnergy_term_le hc0 (show 2*i+2 ≤ 2*i+2+m by omega)
     have hdenom : (((2*i+2+m:ℕ):ℝ)+1) = (((2*i+3:ℕ):ℝ)+(m:ℝ)) := by push_cast; ring
@@ -206,9 +206,9 @@ theorem farEnergyTail_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
         div_eq_mul_inv]
       ring
     rw [hform]; exact (envelope_summable hc i).mul_left _
-  have hsummT : Summable (fun m : ℕ => (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) :=
+  have hsummT : Summable (fun m : ℕ => (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ)) :=
     Summable.of_nonneg_of_le (fun m => sq_nonneg _) hterm hsummE
-  calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2)
+  calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ))
       ≤ ∑' m, env m := hsummT.tsum_le_tsum hterm hsummE
     _ = C * ∑' m : ℕ, (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c := by rw [henv, tsum_mul_left]
     _ ≤ C * (((i:ℝ)+2)^c * ((((2*i+3:ℕ):ℝ)-1)^(1-c)/(c-1))) :=
@@ -225,9 +225,9 @@ tends to `0`, so the general-`d` midpoint steepness agrees with the balanced mod
 `W(m)·δ/i → π²/c` holds for every pole count. -/
 theorem farEnergyTail_div_tendsto {c : ℝ} (hc : 1 < c) :
     Tendsto (fun i : ℕ =>
-        (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) / ((i:ℝ)+1)^2)
+        (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ)) / ((i:ℝ)+1)^(2 : ℕ))
       atTop (𝓝 0) := by
-  set K := 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (2/(c-1)) with hK
+  set K := 4/(1 - Real.exp (-(c * Real.log (3/2))))^(2 : ℕ) * (2/(c-1)) with hK
   have hupper : Tendsto (fun i : ℕ => K / ((i:ℝ)+1)) atTop (𝓝 0) :=
     Tendsto.div_atTop tendsto_const_nhds
       (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
@@ -236,11 +236,11 @@ theorem farEnergyTail_div_tendsto {c : ℝ} (hc : 1 < c) :
   · filter_upwards [eventually_gt_atTop 0] with i _
     have hnum := farEnergyTail_le hc i
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) * ((i:ℝ)+1)
+    calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^(2 : ℕ)) * ((i:ℝ)+1)
         ≤ (K * ((i:ℝ)+1)) * ((i:ℝ)+1) := by
           apply mul_le_mul_of_nonneg_right _ (by positivity)
           rw [hK]; exact hnum
-      _ = K * ((i:ℝ)+1)^2 := by ring
+      _ = K * ((i:ℝ)+1)^(2 : ℕ) := by ring
 
 end RHTower
 end

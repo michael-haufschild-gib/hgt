@@ -12,7 +12,7 @@ neighbourhood, so the removable-singularity theorem applies.
 Iterating gives the second-order Taylor expansion with an analytic remainder,
 
 ```text
-f z = f c + (z - c) f'(c) + (z - c)^2 g z,
+f z = f c + (z - c) f'(c) + (z - c)^(2 : ℕ) g z,
 ```
 
 which is the form needed to subtract the singular part of a Mellin integrand.
@@ -87,7 +87,7 @@ theorem analyticAt_analyticSlope {f : ℂ → ℂ} {c : ℂ} (hf : AnalyticAt �
 /-- **Second-order Taylor expansion with an analytic remainder.** -/
 theorem eq_taylor_two_add_sq_mul (f : ℂ → ℂ) (c z : ℂ) :
     f z = f c + (z - c) * deriv f c
-      + (z - c) ^ 2 * analyticSlope (analyticSlope f c) c z := by
+      + (z - c) ^ (2 : ℕ) * analyticSlope (analyticSlope f c) c z := by
   have h1 := sub_eq_mul_analyticSlope f c z
   have h2 := sub_eq_mul_analyticSlope (analyticSlope f c) c z
   rw [analyticSlope_self] at h2
@@ -104,8 +104,8 @@ theorem analyticAt_analyticSlope_two {f : ℂ → ℂ} {c : ℂ} (hf : AnalyticA
 /-- Away from the base point the second divided difference is the explicit Taylor remainder. -/
 theorem analyticSlope_two_of_ne {f : ℂ → ℂ} {c z : ℂ} (h : z ≠ c) :
     analyticSlope (analyticSlope f c) c z
-      = (f z - f c - (z - c) * deriv f c) / (z - c) ^ 2 := by
-  have hz : (z - c) ^ 2 ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr h)
+      = (f z - f c - (z - c) * deriv f c) / (z - c) ^ (2 : ℕ) := by
+  have hz : (z - c) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr h)
   have ht := eq_taylor_two_add_sq_mul f c z
   rw [eq_div_iff hz]
   linear_combination -ht

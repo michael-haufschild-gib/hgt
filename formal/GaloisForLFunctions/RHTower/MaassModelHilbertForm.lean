@@ -187,19 +187,19 @@ theorem modelInner_eq_sphericalForm :
 /-- The positive scaling constant is the squared norm of the actual spherical Maass vector. -/
 theorem modelInner_spherical_scale :
     modelInner N lam f (Finsupp.single 0 1) (Finsupp.single 0 1) =
-      (‖modelToLp N lam f (Finsupp.single 0 1)‖ ^ 2 : ℝ) := by
+      (‖modelToLp N lam f (Finsupp.single 0 1)‖ ^ (2 : ℕ) : ℝ) := by
   rw [modelInner_apply, inner_self_eq_norm_sq_to_K, Complex.ofReal_pow]
   rfl
 
 /-- The complete finite-vector norm identity for the actual Maass model map. -/
 theorem modelToLp_norm_sq (v : SphericalKFiniteModel) :
-    ‖modelToLp N lam f v‖ ^ 2 = ‖modelToLp N lam f (Finsupp.single 0 1)‖ ^ 2 *
+    ‖modelToLp N lam f v‖ ^ (2 : ℕ) = ‖modelToLp N lam f (Finsupp.single 0 1)‖ ^ (2 : ℕ) *
       (sphericalComplementaryHermitianForm (2*lam.complementaryExponent) v v).re := by
   have h := congrArg (fun B : ComplexHermitianForm SphericalKFiniteModel => (B v v).re)
     (modelInner_eq_sphericalForm N lam f)
   rw [modelInner_spherical_scale] at h
   have he := @norm_sq_eq_re_inner ℂ _ _ _ _ (modelToLp N lam f v)
-  change ‖modelToLp N lam f v‖ ^ 2 = (inner ℂ (modelToLp N lam f v) (modelToLp N lam f v)).re at he
+  change ‖modelToLp N lam f v‖ ^ (2 : ℕ) = (inner ℂ (modelToLp N lam f v) (modelToLp N lam f v)).re at he
   rw [he]
   simpa only [modelInner_apply, LinearMap.smul_apply, smul_eq_mul, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     zero_mul, sub_zero] using h

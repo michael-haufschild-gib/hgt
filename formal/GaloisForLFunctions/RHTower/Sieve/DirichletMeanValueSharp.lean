@@ -86,17 +86,17 @@ theorem sum_erase_eq_sum_ite_offDiag {N : ℕ} (f : Fin N → Fin N → ℂ) :
 
 /-- **The sharp mean value theorem.** -/
 theorem dirichlet_meanValue_sharp (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    |(∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2) - T * ∑ m : Fin N, ‖a m‖ ^ 2|
-      ≤ 104 * ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2 := by
+    |(∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ (2 : ℕ)) - T * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ)|
+      ≤ 104 * ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ (2 : ℕ) := by
   classical
   set freq : Fin N → ℝ := fun m => Real.log (((m : ℕ) : ℝ) + 1) with hfreq
   set δ : Fin N → ℝ := fun m => 1 / (2 * (((m : ℕ) : ℝ) + 1)) with hδ
   set x1 : Fin N → ℂ := fun m => a m * Complex.exp (((T * freq m : ℝ) : ℂ) * Complex.I) with hx1
-  set E : ℝ := ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2 with hE
+  set E : ℝ := ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ (2 : ℕ) with hE
   -- the complex form of the left-hand side
-  have hcast : (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-      - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)
-      = ((((∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2) - T * ∑ m : Fin N, ‖a m‖ ^ 2 : ℝ)) : ℂ) := by
+  have hcast : (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+      - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)
+      = ((((∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ (2 : ℕ)) - T * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
     rw [intervalIntegral.integral_ofReal, ← Complex.ofReal_sum, ← Complex.ofReal_mul,
       ← Complex.ofReal_sub]
   rw [← Real.norm_eq_abs, ← Complex.norm_real, ← hcast, integral_normSq_dirPoly_sub_diag,
@@ -144,7 +144,7 @@ theorem dirichlet_meanValue_sharp (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
   have h2 := hMV (Fin N) freq δ a a hinj hδpos hgap
   have hnx1 : ∀ m, ‖x1 m‖ = ‖a m‖ := fun m => by
     simp only [hx1, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
-  have hsum : ∀ f : Fin N → ℂ, (∀ m, ‖f m‖ = ‖a m‖) → ∑ r, ‖f r‖ ^ 2 / δ r = 2 * E := by
+  have hsum : ∀ f : Fin N → ℂ, (∀ m, ‖f m‖ = ‖a m‖) → ∑ r, ‖f r‖ ^ (2 : ℕ) / δ r = 2 * E := by
     intro f hf
     simp only [hE, Finset.mul_sum, hδ, hf]
     refine Finset.sum_congr rfl fun m _ => ?_

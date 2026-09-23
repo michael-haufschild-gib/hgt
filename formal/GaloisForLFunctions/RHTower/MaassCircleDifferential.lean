@@ -47,10 +47,10 @@ private theorem along_second (f : FunctionSpace) (p : ℝ → ℍ)
     (hp : ∀ r, HasDerivAt (fun s => (p s : ℂ)) ((a r : ℂ) + (b r : ℂ) * Complex.I) r)
     (ha : HasDerivAt a a' t) (hb : HasDerivAt b b' t) :
     deriv (deriv (fun r => f (p r))) t =
-      (a t : ℂ)^2 * directional 1 (directional 1 f) (p t) +
+      (a t : ℂ)^(2 : ℕ) * directional 1 (directional 1 f) (p t) +
       (a t : ℂ)*(b t : ℂ) * (directional Complex.I (directional 1 f) (p t) +
         directional 1 (directional Complex.I f) (p t)) +
-      (b t : ℂ)^2 * directional Complex.I (directional Complex.I f) (p t) +
+      (b t : ℂ)^(2 : ℕ) * directional Complex.I (directional Complex.I f) (p t) +
       (a' : ℂ) * directional 1 f (p t) + (b' : ℂ) * directional Complex.I f (p t) := by
   have he : deriv (fun r => f (p r)) = fun r =>
       (a r : ℂ) * directional 1 f (p r) + (b r : ℂ) * directional Complex.I f (p r) :=
@@ -89,10 +89,10 @@ theorem circle_angular (d theta : ℝ) (z : ℍ) :
     ((Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt theta hy).mul_const Complex.I))
 
 theorem circle_polar (f : FunctionSpace) (d theta : ℝ) (z : ℍ) :
-    (Real.sinh d : ℂ)^2 * deriv (deriv (fun r => f (circlePoint r theta z))) d +
+    (Real.sinh d : ℂ)^(2 : ℕ) * deriv (deriv (fun r => f (circlePoint r theta z))) d +
       (Real.sinh d : ℂ)*(Real.cosh d : ℂ)*deriv (fun r => f (circlePoint r theta z)) d +
       deriv (deriv (fun t => f (circlePoint d t z))) theta =
-      -(Real.sinh d : ℂ)^2 * positiveHyperbolicLaplacian (f : ℍ → ℂ) (circlePoint d theta z) := by
+      -(Real.sinh d : ℂ)^(2 : ℕ) * positiveHyperbolicLaplacian (f : ℍ → ℂ) (circlePoint d theta z) := by
   rw [along_second f (fun r => circlePoint r theta z)
       (fun r => z.im * offsetRadial r theta) (fun r => z.im * heightRadial r theta) d
       (z.im * offsetRadialSecond d theta) (z.im * heightRadialSecond d theta)
@@ -109,7 +109,7 @@ theorem circle_polar (f : FunctionSpace) (d theta : ℝ) (z : ℍ) :
       ((offset_angular_derivatives d theta).2.const_mul z.im)
       ((height_angular_derivatives d theta).2.const_mul z.im)]
   rw [← laplacian_apply]
-  change _ = -(Real.sinh d : ℂ)^2 *
+  change _ = -(Real.sinh d : ℂ)^(2 : ℕ) *
     (-(((circlePoint d theta z).im : ℂ) * (((circlePoint d theta z).im : ℂ) *
       (directional 1 (directional 1 f) (circlePoint d theta z) +
         directional Complex.I (directional Complex.I f) (circlePoint d theta z)))))
@@ -117,34 +117,34 @@ theorem circle_polar (f : FunctionSpace) (d theta : ℝ) (z : ℍ) :
   simp only [Complex.ofReal_mul]
   obtain ⟨hxx,hxy,hyy⟩ := polar_principal d theta
   obtain ⟨hx,hy⟩ := polar_connection d theta
-  have hxxC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)^2+(offsetAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(_root_.RHTower.D4BMNativeCircle.height d theta:ℂ)^2 := by exact_mod_cast hxx
-  have hxyC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
+  have hxxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)^(2 : ℕ)+(offsetAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(_root_.RHTower.D4BMNativeCircle.height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hxx
+  have hxyC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
       (offsetAngular d theta:ℂ)*(heightAngular d theta:ℂ)=0 := by exact_mod_cast hxy
-  have hyyC : (Real.sinh d:ℂ)^2*(heightRadial d theta:ℂ)^2+(heightAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(_root_.RHTower.D4BMNativeCircle.height d theta:ℂ)^2 := by exact_mod_cast hyy
-  have hxC : (Real.sinh d:ℂ)^2*(offsetRadialSecond d theta:ℂ)+
+  have hyyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadial d theta:ℂ)^(2 : ℕ)+(heightAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(_root_.RHTower.D4BMNativeCircle.height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hyy
+  have hxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(offsetRadial d theta:ℂ)+(offsetAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hx
-  have hyC : (Real.sinh d:ℂ)^2*(heightRadialSecond d theta:ℂ)+
+  have hyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(heightRadial d theta:ℂ)+(heightAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hy
   linear_combination
-    (z.im:ℂ)^2*directional 1 (directional 1 f) (circlePoint d theta z)*hxxC +
-    (z.im:ℂ)^2*(directional Complex.I (directional 1 f) (circlePoint d theta z)+
+    (z.im:ℂ)^(2 : ℕ)*directional 1 (directional 1 f) (circlePoint d theta z)*hxxC +
+    (z.im:ℂ)^(2 : ℕ)*(directional Complex.I (directional 1 f) (circlePoint d theta z)+
       directional 1 (directional Complex.I f) (circlePoint d theta z))*hxyC +
-    (z.im:ℂ)^2*directional Complex.I (directional Complex.I f) (circlePoint d theta z)*hyyC +
+    (z.im:ℂ)^(2 : ℕ)*directional Complex.I (directional Complex.I f) (circlePoint d theta z)*hyyC +
     (z.im:ℂ)*directional 1 f (circlePoint d theta z)*hxC +
     (z.im:ℂ)*directional Complex.I f (circlePoint d theta z)*hyC
 
 theorem maass_circle_polar {Γ : Subgroup SL2R} {lam : ℝ}
     (f : MaassCuspEigenform Γ lam) (d theta : ℝ) (z : ℍ) :
-    (Real.sinh d : ℂ)^2 * deriv (deriv (fun r => f.1.1 (circlePoint r theta z))) d +
+    (Real.sinh d : ℂ)^(2 : ℕ) * deriv (deriv (fun r => f.1.1 (circlePoint r theta z))) d +
       (Real.sinh d : ℂ)*(Real.cosh d : ℂ)*deriv (fun r => f.1.1 (circlePoint r theta z)) d +
       deriv (deriv (fun t => f.1.1 (circlePoint d t z))) theta =
-      -(Real.sinh d : ℂ)^2 * (lam : ℂ) * f.1.1 (circlePoint d theta z) := by
+      -(Real.sinh d : ℂ)^(2 : ℕ) * (lam : ℂ) * f.1.1 (circlePoint d theta z) := by
   have h := circle_polar (ofMaass f) d theta z
-  change _ = -(Real.sinh d : ℂ)^2 * positiveHyperbolicLaplacian f.1.1 (circlePoint d theta z) at h
+  change _ = -(Real.sinh d : ℂ)^(2 : ℕ) * positiveHyperbolicLaplacian f.1.1 (circlePoint d theta z) at h
   rw [f.2.2.1.2] at h
   simpa only [ofMaass_apply, mul_assoc] using h
 

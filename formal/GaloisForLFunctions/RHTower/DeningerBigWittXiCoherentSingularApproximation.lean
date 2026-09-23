@@ -15,7 +15,7 @@ vanishes.  For the actual reflected-Gaussian Xi class this is exactly the
 critical-line condition, pointwise and globally.
 
 The statement is source-facing rather than another Hilbert-space positivity
-criterion: ordinary ambient `ell^2` observation loses the vertical component,
+criterion: ordinary ambient `ell^(2 : ℕ)` observation loses the vertical component,
 whereas the singular graph topology retains the arithmetic one-leg trace.  No
 RH, zero-location, positivity, or spectral-realization premise is assumed.
 -/

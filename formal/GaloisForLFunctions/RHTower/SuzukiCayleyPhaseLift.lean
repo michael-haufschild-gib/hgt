@@ -24,25 +24,25 @@ open Filter Topology
 /-- The normalized phase lift: the boundary argument of the Cayley transform. -/
 noncomputable def cayleyPhaseLift (m : ℝ) : ℝ := Real.pi + 2 * Real.arctan m
 
-theorem cos_arctan_sq (m : ℝ) : Real.cos (Real.arctan m) ^ 2 = 1 / (1 + m ^ 2) := by
-  rw [Real.cos_arctan, div_pow, one_pow, Real.sq_sqrt (by positivity : (0:ℝ) ≤ 1 + m ^ 2)]
+theorem cos_arctan_sq (m : ℝ) : Real.cos (Real.arctan m) ^ (2 : ℕ) = 1 / (1 + m ^ (2 : ℕ)) := by
+  rw [Real.cos_arctan, div_pow, one_pow, Real.sq_sqrt (by positivity : (0:ℝ) ≤ 1 + m ^ (2 : ℕ))]
 
 theorem sin_arctan_mul_cos_arctan (m : ℝ) :
-    Real.sin (Real.arctan m) * Real.cos (Real.arctan m) = m / (1 + m ^ 2) := by
-  have hs : Real.sqrt (1 + m ^ 2) * Real.sqrt (1 + m ^ 2) = 1 + m ^ 2 :=
+    Real.sin (Real.arctan m) * Real.cos (Real.arctan m) = m / (1 + m ^ (2 : ℕ)) := by
+  have hs : Real.sqrt (1 + m ^ (2 : ℕ)) * Real.sqrt (1 + m ^ (2 : ℕ)) = 1 + m ^ (2 : ℕ) :=
     Real.mul_self_sqrt (by positivity)
   rw [Real.sin_arctan, Real.cos_arctan, div_mul_div_comm, mul_one, hs]
 
 theorem cos_cayleyPhaseLift (m : ℝ) :
-    Real.cos (cayleyPhaseLift m) = (m ^ 2 - 1) / (m ^ 2 + 1) := by
-  have hpos : (0:ℝ) < 1 + m ^ 2 := by positivity
+    Real.cos (cayleyPhaseLift m) = (m ^ (2 : ℕ) - 1) / (m ^ (2 : ℕ) + 1) := by
+  have hpos : (0:ℝ) < 1 + m ^ (2 : ℕ) := by positivity
   rw [cayleyPhaseLift, Real.cos_add, Real.cos_pi, Real.sin_pi, Real.cos_two_mul, cos_arctan_sq]
   field_simp
   ring
 
 theorem sin_cayleyPhaseLift (m : ℝ) :
-    Real.sin (cayleyPhaseLift m) = -(2 * m) / (m ^ 2 + 1) := by
-  have hpos : (0:ℝ) < 1 + m ^ 2 := by positivity
+    Real.sin (cayleyPhaseLift m) = -(2 * m) / (m ^ (2 : ℕ) + 1) := by
+  have hpos : (0:ℝ) < 1 + m ^ (2 : ℕ) := by positivity
   have hprod := sin_arctan_mul_cos_arctan m
   rw [cayleyPhaseLift, Real.sin_add, Real.sin_pi, Real.cos_pi, Real.sin_two_mul, mul_assoc,
     hprod]
@@ -55,9 +55,9 @@ theorem ofReal_add_I_ne_zero (m : ℝ) : (m : ℂ) + Complex.I ≠ 0 := by
   simp only [Complex.add_im, Complex.ofReal_im, Complex.I_im, zero_add] at him
   exact one_ne_zero him
 
-theorem ofReal_sq_add_one_ne_zero (m : ℝ) : ((m : ℂ) ^ 2 + 1) ≠ 0 := by
+theorem ofReal_sq_add_one_ne_zero (m : ℝ) : ((m : ℂ) ^ (2 : ℕ) + 1) ≠ 0 := by
   intro hc
-  have hre : (((m : ℂ) ^ 2 + 1)).re = 0 := by rw [hc]; simp
+  have hre : (((m : ℂ) ^ (2 : ℕ) + 1)).re = 0 := by rw [hc]; simp
   rw [← Complex.ofReal_pow] at hre
   simp only [Complex.add_re, Complex.one_re, Complex.ofReal_re] at hre
   nlinarith [sq_nonneg m]

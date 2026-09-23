@@ -59,7 +59,7 @@ theorem primeDepthBVWoldSourcePolarizationStokesExcess_eq_normalExtensionEnergy
     primeDepthBVWoldSourcePolarizationStokesExcess a i j c =
       (primeDepthBVWoldConnection i j /
           (xiGammaEulerPrimitivePrimeDepthLogClock i *
-            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ 2 *
+            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ (2 : ℕ) *
         Complex.normSq
           (primeDepthBVWoldSourceNormalExtensionCocycle a j s c) := by
   rw [primeDepthBVWoldSourcePolarizationStokesExcess_eq,
@@ -76,7 +76,7 @@ theorem log_deningerMeyerXiPrimeGammaModularWeight
   rw [deningerMeyerXiPrimeGammaModularWeight,
     norm_deningerMeyerXiPrimeGammaCharacter_eq_halfGammaClock]
   rw [show
-      Real.exp (-(Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate rho) / 2) ^ 2 =
+      Real.exp (-(Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate rho) / 2) ^ (2 : ℕ) =
         Real.exp (-Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate rho) by
     rw [pow_two, ← Real.exp_add]
     congr 1
@@ -91,11 +91,11 @@ theorem primeDepthBVWoldXiNormalExtensionEnergy_eq_modularLogEnergy
     (s : ℂ →ₗ[ℂ] (ℂ × ℂ))
     (hs : primeDepthBVWoldVerticalQuotient.comp s = LinearMap.id)
     (c : ℂ) :
-    Real.log (p : ℝ) ^ 2 *
+    Real.log (p : ℝ) ^ (2 : ℕ) *
         Complex.normSq
           (primeDepthBVWoldSourceNormalExtensionCocycle
             (primeDepthBVWoldXiCenteredRate rho) i s c) =
-      Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ 2 *
+      Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *
         Complex.normSq c := by
   rw [primeDepthBVWoldSourceNormalExtensionCocycle_eq_of_rightInverse
       (primeDepthBVWoldXiCenteredRate rho) i s hs c,
@@ -113,7 +113,7 @@ theorem primeDepthBVWoldXiNormalExtensionEnergy_eq_spectralEnergy
     Complex.normSq
         (primeDepthBVWoldSourceNormalExtensionCocycle
           (primeDepthBVWoldXiCenteredRate q.1) i s c) =
-      4 * (xiSpectralPoint q).im ^ 2 * Complex.normSq c := by
+      4 * (xiSpectralPoint q).im ^ (2 : ℕ) * Complex.normSq c := by
   rw [primeDepthBVWoldSourceNormalExtensionCocycle_eq_of_rightInverse
     (primeDepthBVWoldXiCenteredRate q.1) i s hs c]
   have hrate :
@@ -129,13 +129,13 @@ energy in the explicit edge/clock gauge. -/
 theorem primeDepthBVWoldXiStokesEnergy_eq_modularLogEnergy
     (rho : XiDivisorSupport) (p : Nat.Primes)
     (i j : PrimeDepthBVWoldCell) (c : ℂ) :
-    Real.log (p : ℝ) ^ 2 *
+    Real.log (p : ℝ) ^ (2 : ℕ) *
         primeDepthBVWoldSourcePolarizationStokesExcess
           (primeDepthBVWoldXiCenteredRate rho) i j c =
       (primeDepthBVWoldConnection i j /
           (xiGammaEulerPrimitivePrimeDepthLogClock i *
-            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ 2 *
-        Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ 2 *
+            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ (2 : ℕ) *
+        Real.log (deningerMeyerXiPrimeGammaModularWeight rho p) ^ (2 : ℕ) *
           Complex.normSq c := by
   rw [primeDepthBVWoldSourcePolarizationStokesExcess_eq,
     log_deningerMeyerXiPrimeGammaModularWeight]

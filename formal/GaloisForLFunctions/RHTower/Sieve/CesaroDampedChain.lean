@@ -36,7 +36,7 @@ is discharged: complete multiplicativity by `liouvilleC_mul`, the distance by th
 analytic side by the integrable second-order decay of `x^s/s²`.  Only the parameters remain free. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_div_le_cesaro :
     ∃ C : ℝ, ∀ (N z : ℕ) (σ T x : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 1 ≤ T → 9 ≤ T →
-      (N : ℝ) ≤ x → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ 9 →
+      (N : ℝ) ≤ x → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ (9 : ℕ) →
       ‖∑ n ∈ Finset.Icc 1 N, truncSeq liouvilleC N n * ((Real.log (x / n) : ℝ) : ℂ)‖
         ≤ (∑ n ∈ Finset.Icc 1 N, cesaroError σ T (x / n))
           + (1 / (2 * Real.pi))

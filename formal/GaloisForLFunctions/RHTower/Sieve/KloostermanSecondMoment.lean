@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.FinitePowerSumFourier
 # Kloosterman additive-frequency second moment
 
 Additive-character orthogonality gives the exact complete second moment
-`sum_n |S(m,n;q)|^2 = q * φ(q)`.  This is average square-root cancellation for every nonzero
+`sum_n |S(m,n;q)|^(2 : ℕ) = q * φ(q)`.  This is average square-root cancellation for every nonzero
 modulus.  It is the finite Plancherel layer beneath later spectral large-sieve estimates; it does
 not replace the pointwise Weil bound.
 -/

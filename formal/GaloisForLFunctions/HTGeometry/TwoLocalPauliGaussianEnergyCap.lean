@@ -100,7 +100,7 @@ theorem stdGaussian_twoLocalPauli_measure_coefficientBox_compl_le (n : ℕ) :
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         (twoLocalPauliCoefficientBox n)ᶜ ≤
       (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
-        (2 * Real.exp (-(n : ℝ) ^ 2 / 2)) := by
+        (2 * Real.exp (-(n : ℝ) ^ (2 : ℕ) / 2)) := by
   classical
   have hcompl : (twoLocalPauliCoefficientBox n)ᶜ ⊆
       ⋃ Q : PauliTracelessLabel n 2,
@@ -125,7 +125,7 @@ theorem stdGaussian_twoLocalPauli_measure_coefficientBox_compl_le (n : ℕ) :
           {x | (n : ℝ) ≤ |WithLp.ofLp x Q|} :=
       measureReal_iUnion_fintype_le _
     _ ≤ ∑ _Q : PauliTracelessLabel n 2,
-        2 * Real.exp (-(n : ℝ) ^ 2 / 2) := by
+        2 * Real.exp (-(n : ℝ) ^ (2 : ℕ) / 2) := by
       apply Finset.sum_le_sum
       intro Q _
       apply measureReal_abs_ge_le_of_standardGaussian
@@ -135,7 +135,7 @@ theorem stdGaussian_twoLocalPauli_measure_coefficientBox_compl_le (n : ℕ) :
       · exact map_coordinate_stdGaussian Q
       · positivity
     _ = (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
-        (2 * Real.exp (-(n : ℝ) ^ 2 / 2)) := by
+        (2 * Real.exp (-(n : ℝ) ^ (2 : ℕ) / 2)) := by
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 /-- On the coefficient box, one ordinary two-local Hamiltonian has the
@@ -143,8 +143,8 @@ deterministic polynomial energy cap `18 n³`. -/
 theorem norm_realActivePauliHamiltonian_le_eighteen_mul_cube_of_mem_box
     {n : ℕ} (hn : 1 ≤ n) {x : TwoLocalPauliCoefficientSpace n}
     (hx : x ∈ twoLocalPauliCoefficientBox n) :
-    ‖realActivePauliHamiltonian x‖ ≤ 18 * (n : ℝ) ^ 3 := by
-  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ 2 := by
+    ‖realActivePauliHamiltonian x‖ ≤ 18 * (n : ℝ) ^ (3 : ℕ) := by
+  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ (2 : ℕ) := by
     rw [card_pauliTracelessLabel]
     simpa using Quantum.nonidentityPauliWeightCount_le n 2 hn
   have hbase := norm_realActivePauliHamiltonian_le_card_mul x
@@ -152,9 +152,9 @@ theorem norm_realActivePauliHamiltonian_le_eighteen_mul_cube_of_mem_box
   calc
     ‖realActivePauliHamiltonian x‖ ≤
         (Fintype.card (PauliTracelessLabel n 2) : ℝ) * (n : ℝ) := hbase
-    _ ≤ ((18 * n ^ 2 : ℕ) : ℝ) * (n : ℝ) := by
+    _ ≤ ((18 * n ^ (2 : ℕ) : ℕ) : ℝ) * (n : ℝ) := by
       gcongr
-    _ = 18 * (n : ℝ) ^ 3 := by
+    _ = 18 * (n : ℝ) ^ (3 : ℕ) := by
       push_cast
       ring
 
@@ -167,7 +167,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_coefficientBox_compl_atTop :
           (twoLocalPauliCoefficientBox n)ᶜ)
       atTop (nhds 0) := by
   have hmajorReal : Tendsto
-      (fun y : ℝ => 36 * (y ^ 2 * Real.exp (-((1 / 2 : ℝ) * y))))
+      (fun y : ℝ => 36 * (y ^ (2 : ℕ) * Real.exp (-((1 / 2 : ℝ) * y))))
       atTop (nhds 0) := by
     simpa using
       (tendsto_pow_mul_exp_neg_scaled 2
@@ -175,7 +175,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_coefficientBox_compl_atTop :
   have hcast : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop
   have hmajor : Tendsto
-      (fun n : ℕ => 36 * ((n : ℝ) ^ 2 * Real.exp (-(n : ℝ) / 2)))
+      (fun n : ℕ => 36 * ((n : ℝ) ^ (2 : ℕ) * Real.exp (-(n : ℝ) / 2)))
       atTop (nhds 0) := by
     have hcomp := hmajorReal.comp hcast
     apply hcomp.congr'
@@ -186,11 +186,11 @@ theorem tendsto_stdGaussian_twoLocalPauli_coefficientBox_compl_atTop :
   refine squeeze_zero'
     (Filter.Eventually.of_forall fun _n => measureReal_nonneg) ?_ hmajor
   filter_upwards [Filter.eventually_ge_atTop 1] with n hn
-  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ 2 := by
+  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ (2 : ℕ) := by
     rw [card_pauliTracelessLabel]
     simpa using Quantum.nonidentityPauliWeightCount_le n 2 hn
   have htail := stdGaussian_twoLocalPauli_measure_coefficientBox_compl_le n
-  have hexp : Real.exp (-(n : ℝ) ^ 2 / 2) ≤
+  have hexp : Real.exp (-(n : ℝ) ^ (2 : ℕ) / 2) ≤
       Real.exp (-(n : ℝ) / 2) := by
     apply Real.exp_le_exp.mpr
     have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
@@ -199,11 +199,11 @@ theorem tendsto_stdGaussian_twoLocalPauli_coefficientBox_compl_atTop :
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         (twoLocalPauliCoefficientBox n)ᶜ ≤
       (Fintype.card (PauliTracelessLabel n 2) : ℝ) *
-        (2 * Real.exp (-(n : ℝ) ^ 2 / 2)) := htail
-    _ ≤ ((18 * n ^ 2 : ℕ) : ℝ) *
+        (2 * Real.exp (-(n : ℝ) ^ (2 : ℕ) / 2)) := htail
+    _ ≤ ((18 * n ^ (2 : ℕ) : ℕ) : ℝ) *
         (2 * Real.exp (-(n : ℝ) / 2)) := by
       gcongr
-    _ = 36 * ((n : ℝ) ^ 2 * Real.exp (-(n : ℝ) / 2)) := by
+    _ = 36 * ((n : ℝ) ^ (2 : ℕ) * Real.exp (-(n : ℝ) / 2)) := by
       push_cast
       ring
 

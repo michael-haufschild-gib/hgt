@@ -92,14 +92,14 @@ theorem average_phaseCollision_polyEval_eq_integral (m : ℕ)
 theorem average_phaseCollision_sq_polyEval_eq_integral (m : ℕ)
     (hm : 8 ≤ 2 ^ (m + 1) - 1) (e : κ → (ι → Bool) → ℂ) :
     ((Fintype.card (MonLe ι m → ZMod 8) : ℝ))⁻¹ *
-        ∑ c : MonLe ι m → ZMod 8, phaseCollision e (eighthPhase (polyEval m c)) ^ 2
-      = ∫ x in torusBox (ι → Bool), phaseCollision e x ^ 2 := by
+        ∑ c : MonLe ι m → ZMod 8, phaseCollision e (eighthPhase (polyEval m c)) ^ (2 : ℕ)
+      = ∫ x in torusBox (ι → Bool), phaseCollision e x ^ (2 : ℕ) := by
   classical
   haveI : Nonempty (MonLe ι m → ZMod 8) := ⟨fun _ => 0⟩
   have hcomplex : ((Fintype.card (MonLe ι m → ZMod 8) : ℂ))⁻¹ *
       ∑ c : MonLe ι m → ZMod 8,
-        ((phaseCollision e (eighthPhase (polyEval m c)) ^ 2 : ℝ) : ℂ)
-      = ∫ x in torusBox (ι → Bool), ((phaseCollision e x ^ 2 : ℝ) : ℂ) := by
+        ((phaseCollision e (eighthPhase (polyEval m c)) ^ (2 : ℕ) : ℝ) : ℂ)
+      = ∫ x in torusBox (ι → Bool), ((phaseCollision e x ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [Finset.sum_congr rfl
       (fun c _ => phaseCollision_sq_eq_trigLift_fin8 e (eighthPhase (polyEval m c)))]
     rw [average_trigLift_eighthPhase_eq_integral_box (polyEval m) (eighthPhaseUniform_polyEval m)
@@ -107,8 +107,8 @@ theorem average_phaseCollision_sq_polyEval_eq_integral (m : ℕ)
       (fun r _ hr => exists_sqFreq_ne_zero_mod_eight hr)]
     refine setIntegral_congr_fun measurableSet_torusBox fun x _ => ?_
     exact (phaseCollision_sq_eq_trigLift_fin8 e x).symm
-  have hint : ∫ x in torusBox (ι → Bool), ((phaseCollision e x ^ 2 : ℝ) : ℂ)
-      = ((∫ x in torusBox (ι → Bool), phaseCollision e x ^ 2 : ℝ) : ℂ) := integral_ofReal
+  have hint : ∫ x in torusBox (ι → Bool), ((phaseCollision e x ^ (2 : ℕ) : ℝ) : ℂ)
+      = ((∫ x in torusBox (ι → Bool), phaseCollision e x ^ (2 : ℕ) : ℝ) : ℂ) := integral_ofReal
   rw [hint] at hcomplex
   refine Complex.ofReal_injective ?_
   push_cast

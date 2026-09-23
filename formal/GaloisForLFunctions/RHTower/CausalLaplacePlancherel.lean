@@ -45,7 +45,7 @@ theorem mellin_log_comp_eq_laplaceBoundary (g : ℝ → ℂ) (y : ℝ) :
 /-- **Plancherel for the boundary Laplace transform.** -/
 theorem integral_norm_sq_laplaceBoundary
     {g : ℝ → ℂ} (h1 : Integrable g) (h2 : MemLp g 2 volume) :
-    (∫ y : ℝ, ‖laplaceBoundary g y‖ ^ 2) = 2 * Real.pi * ∫ u : ℝ, ‖g u‖ ^ 2 := by
+    (∫ y : ℝ, ‖laplaceBoundary g y‖ ^ (2 : ℕ)) = 2 * Real.pi * ∫ u : ℝ, ‖g u‖ ^ (2 : ℕ) := by
   have hsrc := logMellinLineSource_log_comp g
   have h1' : Integrable (logMellinLineSource (fun x : ℝ => g (-Real.log x)) 0) := by
     rw [hsrc]; exact h1
@@ -61,7 +61,7 @@ theorem integral_norm_sq_laplaceBoundary
 /-- **Integrability companion.** -/
 theorem integrable_norm_sq_laplaceBoundary
     {g : ℝ → ℂ} (h1 : Integrable g) (h2 : MemLp g 2 volume) :
-    Integrable (fun y : ℝ => ‖laplaceBoundary g y‖ ^ 2) := by
+    Integrable (fun y : ℝ => ‖laplaceBoundary g y‖ ^ (2 : ℕ)) := by
   have hsrc := logMellinLineSource_log_comp g
   have h1' : Integrable (logMellinLineSource (fun x : ℝ => g (-Real.log x)) 0) := by
     rw [hsrc]; exact h1

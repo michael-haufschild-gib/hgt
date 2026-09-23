@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.MellinDecayUniform
 
 Substituting the width-`1/log` contour data into the five-term estimate gives a bound in which the
 cutoff enters only through the trivial sizes `(N+H)^{c(T)}` and `(N+H+1)^{d(T)}` and the explicit
-price `H^{-2}(N+H+1)^2` of the smoothing, and the height enters only through `T` and `log²T`.
+price `H^{-2}(N+H+1)^(2 : ℕ)` of the smoothing, and the height enters only through `T` and `log²T`.
 
 Every edge bound is the same `C log²T`, so the left edge is of size `(N+H)^{c(T)}` throughout and
 retains the saving `exp(-log(N+H)/(40000 log T))`.

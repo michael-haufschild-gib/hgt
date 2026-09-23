@@ -24,7 +24,7 @@ noncomputable section
 negative at every sample inside its margin window. -/
 theorem continuedXiWardFourUnitSchurDefect_marginWindow_diag_re_neg
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     (continuedXiWardFourUnitSchurDefect
       (fun _ : Fin 1 => (1 / 2 : ℂ) + I * (t : ℂ)) 0 0).re < 0 := by
@@ -52,7 +52,7 @@ theorem continuedXiWardFourUnitSchurDefect_marginWindow_diag_re_neg
 augmented boundary Gram. -/
 theorem continuedXiWardFourUnitBoundaryGram_marginWindow_not_posSemidef
     (q : XiRightUpperZeroCopy) {t : ℝ}
-    (ht : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤
+    (ht : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤
       xiWardZeroFreeMargin (xiRightCenteredZero q.1).im / 2) :
     ¬ (continuedXiWardFourUnitBoundaryGram
       (fun _ : Fin 1 => (1 / 2 : ℂ) + I * (t : ℂ))).PosSemidef := by
@@ -76,7 +76,7 @@ def ContinuedXiWardSampledBoundaryGramLaw (S : Set ℝ) : Prop :=
 an upper representative, so this one-sided covering already carries the full
 refutation power. -/
 def XiWardUpperDetectionCover (S : Set ℝ) : Prop :=
-  ∀ y : ℝ, 0 < y → ∃ t ∈ S, (t + y) ^ 2 ≤ xiWardZeroFreeMargin y / 2
+  ∀ y : ℝ, 0 < y → ∃ t ∈ S, (t + y) ^ (2 : ℕ) ≤ xiWardZeroFreeMargin y / 2
 
 theorem XiWardDetectionCover.upper {S : Set ℝ}
     (h : XiWardDetectionCover S) : XiWardUpperDetectionCover S :=

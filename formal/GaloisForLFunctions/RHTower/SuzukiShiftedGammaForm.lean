@@ -34,18 +34,18 @@ theorem suzukiGammaShiftLowerKernel_eq (σ s : ℝ) :
 `kappa_sigma` times the energy. -/
 theorem neg_suzukiGammaShiftKappa_mul_le_shiftedGammaForm
     {F : ℝ → ℝ} (hmeas : AEStronglyMeasurable F volume)
-    (hF2 : Integrable (fun L => F L ^ 2))
+    (hF2 : Integrable (fun L => F L ^ (2 : ℕ)))
     {σ : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ < 1)
     (hform : IntegrableOn
       (fun s => (∫ L, shiftedSecondDifference σ F L s * F L) * gammaTransportKernel s)
       (Ioi 0)) :
-    -(suzukiGammaShiftKappa σ * ∫ L, F L ^ 2) ≤ shiftedGammaForm σ F := by
+    -(suzukiGammaShiftKappa σ * ∫ L, F L ^ (2 : ℕ)) ≤ shiftedGammaForm σ F := by
   have hker := integrableOn_suzukiGammaShiftLowerKernel hσ0 hσ1
   have hlow : IntegrableOn
-      (fun s => -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ 2)) (Ioi 0) :=
+      (fun s => -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ (2 : ℕ))) (Ioi 0) :=
     (hker.mul_const _).neg
   have hptw : ∀ s ∈ Ioi (0 : ℝ),
-      -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ 2)
+      -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ (2 : ℕ))
         ≤ (∫ L, shiftedSecondDifference σ F L s * F L) * gammaTransportKernel s := by
     intro s hs
     have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
@@ -53,15 +53,15 @@ theorem neg_suzukiGammaShiftKappa_mul_le_shiftedGammaForm
     rw [suzukiGammaShiftLowerKernel_eq]
     nlinarith [hk.le, hb]
   have hmono := setIntegral_mono_on hlow hform measurableSet_Ioi hptw
-  have hleft : (∫ s in Ioi (0 : ℝ), -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ 2))
-      = -(suzukiGammaShiftKappa σ * ∫ L, F L ^ 2) := by
+  have hleft : (∫ s in Ioi (0 : ℝ), -(suzukiGammaShiftLowerKernel σ s * ∫ L, F L ^ (2 : ℕ)))
+      = -(suzukiGammaShiftKappa σ * ∫ L, F L ^ (2 : ℕ)) := by
     rw [integral_neg, integral_mul_const, suzukiGammaShiftKappa]
   rw [hleft] at hmono
   exact hmono
 
 /-- **The unshifted Gamma jump is a positive form.** -/
 theorem shiftedGammaForm_zero_nonneg {F : ℝ → ℝ} (hmeas : AEStronglyMeasurable F volume)
-    (hF2 : Integrable (fun L => F L ^ 2)) :
+    (hF2 : Integrable (fun L => F L ^ (2 : ℕ))) :
     0 ≤ shiftedGammaForm 0 F := by
   refine setIntegral_nonneg measurableSet_Ioi fun s hs => ?_
   have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
@@ -106,8 +106,8 @@ theorem neg_suzukiGammaShiftKappa_mul_le_gammaJumpPairing {U : ℝ → ℝ} {K B
     (hmeas : Measurable U)
     (hK : ∀ x y : ℝ, |U x - U y| ≤ K * |x - y|) (hB : ∀ x, |U x| ≤ B)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hUint : Integrable U)
-    (hU2 : Integrable (fun L => U L ^ 2)) :
-    -(suzukiGammaShiftKappa σ * ∫ L, U L ^ 2) ≤ ∫ L, shiftedGammaJump σ U L * U L := by
+    (hU2 : Integrable (fun L => U L ^ (2 : ℕ))) :
+    -(suzukiGammaShiftKappa σ * ∫ L, U L ^ (2 : ℕ)) ≤ ∫ L, shiftedGammaJump σ U L * U L := by
   rw [integral_shiftedGammaJump_mul_self hmeas hK hB hσ0 hσ1 hUint]
   exact neg_suzukiGammaShiftKappa_mul_le_shiftedGammaForm hmeas.aestronglyMeasurable hU2 hσ0 hσ1
     (integrableOn_shiftedGammaFormIntegrand hmeas hK hB hσ0 hσ1 hUint)

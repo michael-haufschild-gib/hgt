@@ -17,8 +17,8 @@ namespace RHTower.Sieve
 theorem tendsto_shifted_quartic_mul_exp_neg_sq (A C : ℝ) :
     Tendsto
       (fun T : ℝ =>
-        C * ((1 + A + T) ^ 2 * (4 + A + T) ^ 2 *
-          Real.exp (-(T ^ 2))))
+        C * ((1 + A + T) ^ (2 : ℕ) * (4 + A + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))))
       atTop (𝓝 0) := by
   let a : ℝ := 1 + A
   let b : ℝ := 4 + A
@@ -34,9 +34,9 @@ theorem tendsto_shifted_quartic_mul_exp_neg_sq (A C : ℝ) :
     4 (b := 1) (by norm_num)
   have hsum :=
     (((h4.add (h3.const_mul (2 * (a + b)))).add
-      (h2.const_mul (a ^ 2 + 4 * a * b + b ^ 2))).add
+      (h2.const_mul (a ^ (2 : ℕ) + 4 * a * b + b ^ (2 : ℕ)))).add
       (h1.const_mul (2 * a * b * (a + b)))).add
-      (h0.const_mul (a ^ 2 * b ^ 2))
+      (h0.const_mul (a ^ (2 : ℕ) * b ^ (2 : ℕ)))
   have hscaled := hsum.const_mul C
   simpa only [one_mul, zero_add, mul_zero, neg_one_mul] using hscaled.congr'
     (Filter.Eventually.of_forall fun T => by
@@ -50,8 +50,8 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_horizontal_le
       -1 ≤ u → u ≤ 1 → 1 ≤ |T| → 2 ≤ |tau + T| →
       ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((u : ℂ) + (T : ℂ) * I)‖ ≤
-        C * ((1 + |tau + T|) ^ 2 * (4 + |tau + T|) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+        C * ((1 + |tau + T|) ^ (2 : ℕ) * (4 + |tau + T|) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
   let B : ℝ :=
     5 * Real.exp 2 * Real.exp |Real.log x| * Real.exp 1
   let Z : ℝ := 5 * Real.exp 2
@@ -77,12 +77,12 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_horizontal_le
           (↑u + ↑T * I)‖ *
         ‖riemannZeta (linePt tau + (↑u + ↑T * I))‖
       ≤ (B * ((1 + |tau + T|) * (4 + |tau + T|) *
-          Real.exp (-(T ^ 2)))) *
+          Real.exp (-(T ^ (2 : ℕ))))) *
         (Z * (1 + |tau + T|) * (4 + |tau + T|)) := by
           dsimp only [B]
           gcongr
-    _ = C * ((1 + |tau + T|) ^ 2 * (4 + |tau + T|) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+    _ = C * ((1 + |tau + T|) ^ (2 : ℕ) * (4 + |tau + T|) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
       dsimp only [C]
       ring
 
@@ -99,8 +99,8 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_top
   have hmajor :
       Tendsto
         (fun T : ℝ =>
-          (2 * C) * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-            Real.exp (-(T ^ 2))))
+          (2 * C) * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+            Real.exp (-(T ^ (2 : ℕ)))))
         atTop (𝓝 0) :=
     tendsto_shifted_quartic_mul_exp_neg_sq |tau| (2 * C)
   refine squeeze_zero_norm' ?_ hmajor
@@ -121,8 +121,8 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_top
   have hpoint : ∀ u ∈ uIoc (-1 : ℝ) 1,
       ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((u : ℂ) + (T : ℂ) * I)‖ ≤
-        C * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+        C * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
     intro u hu
     have hu' : -1 ≤ u ∧ u ≤ 1 := by
       have h := (by simpa [mem_uIcc] using hu : -1 < u ∧ u ≤ 1)
@@ -130,20 +130,20 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_top
     have hraw := hbase hu'.1 hu'.2 (by rw [hTabs]; exact hT1) hheight
     have hfirst : 1 + |tau + T| ≤ 1 + |tau| + T := by linarith
     have hsecond : 4 + |tau + T| ≤ 4 + |tau| + T := by linarith
-    have hp1 : (1 + |tau + T|) ^ 2 ≤ (1 + |tau| + T) ^ 2 := by
+    have hp1 : (1 + |tau + T|) ^ (2 : ℕ) ≤ (1 + |tau| + T) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ (by positivity) hfirst 2
-    have hp2 : (4 + |tau + T|) ^ 2 ≤ (4 + |tau| + T) ^ 2 := by
+    have hp2 : (4 + |tau + T|) ^ (2 : ℕ) ≤ (4 + |tau| + T) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ (by positivity) hsecond 2
     exact hraw.trans (by gcongr)
   calc
     ‖∫ u : ℝ in (-1)..1,
         smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((u : ℂ) + (T : ℂ) * I)‖
-      ≤ C * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) * |(1 : ℝ) - (-1)| :=
+      ≤ C * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) * |(1 : ℝ) - (-1)| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = (2 * C) * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+    _ = (2 * C) * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
       norm_num
       ring
 
@@ -160,8 +160,8 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_bottom
   have hmajor :
       Tendsto
         (fun T : ℝ =>
-          (2 * C) * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-            Real.exp (-(T ^ 2))))
+          (2 * C) * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+            Real.exp (-(T ^ (2 : ℕ)))))
         atTop (𝓝 0) :=
     tendsto_shifted_quartic_mul_exp_neg_sq |tau| (2 * C)
   refine squeeze_zero_norm' ?_ hmajor
@@ -183,8 +183,8 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_bottom
   have hpoint : ∀ u ∈ uIoc (-1 : ℝ) 1,
       ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((u : ℂ) - (T : ℂ) * I)‖ ≤
-        C * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+        C * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
     intro u hu
     have hu' : -1 ≤ u ∧ u ≤ 1 := by
       have h := (by simpa [mem_uIcc] using hu : -1 < u ∧ u ≤ 1)
@@ -195,25 +195,25 @@ theorem tendsto_smoothAFEZetaSquareMellinIntegrand_horizontal_bottom
     have hraw' :
         ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
             ((u : ℂ) - (T : ℂ) * I)‖ ≤
-          C * ((1 + |tau - T|) ^ 2 * (4 + |tau - T|) ^ 2 *
-            Real.exp (-(T ^ 2))) := by
+          C * ((1 + |tau - T|) ^ (2 : ℕ) * (4 + |tau - T|) ^ (2 : ℕ) *
+            Real.exp (-(T ^ (2 : ℕ)))) := by
       simpa [sub_eq_add_neg, ofReal_neg, neg_sq] using hraw
     have hfirst : 1 + |tau - T| ≤ 1 + |tau| + T := by linarith
     have hsecond : 4 + |tau - T| ≤ 4 + |tau| + T := by linarith
-    have hp1 : (1 + |tau - T|) ^ 2 ≤ (1 + |tau| + T) ^ 2 := by
+    have hp1 : (1 + |tau - T|) ^ (2 : ℕ) ≤ (1 + |tau| + T) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ (by positivity) hfirst 2
-    have hp2 : (4 + |tau - T|) ^ 2 ≤ (4 + |tau| + T) ^ 2 := by
+    have hp2 : (4 + |tau - T|) ^ (2 : ℕ) ≤ (4 + |tau| + T) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ (by positivity) hsecond 2
     exact hraw'.trans (by gcongr)
   calc
     ‖∫ u : ℝ in (-1)..1,
         smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((u : ℂ) - (T : ℂ) * I)‖
-      ≤ C * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) * |(1 : ℝ) - (-1)| :=
+      ≤ C * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) * |(1 : ℝ) - (-1)| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = (2 * C) * ((1 + |tau| + T) ^ 2 * (4 + |tau| + T) ^ 2 *
-          Real.exp (-(T ^ 2))) := by
+    _ = (2 * C) * ((1 + |tau| + T) ^ (2 : ℕ) * (4 + |tau| + T) ^ (2 : ℕ) *
+          Real.exp (-(T ^ (2 : ℕ)))) := by
       norm_num
       ring
 

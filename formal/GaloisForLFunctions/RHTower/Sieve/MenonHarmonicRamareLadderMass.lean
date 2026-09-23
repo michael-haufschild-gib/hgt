@@ -34,9 +34,9 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_blocks_mass
     {ι : Type*} [DecidableEq ι] (I : Finset ι) (B : ι → Finset ℕ)
     (hdisj : (I : Set ι).PairwiseDisjoint B) (hcover : I.biUnion B = P)
     (hmass : ∀ i ∈ I, 0 < harmonicPrimeMass (B i)) :
-    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ i ∈ I,
-          (∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ 2) / harmonicPrimeMass (B i) := by
+          (∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ)) / harmonicPrimeMass (B i) := by
   classical
   have hbase := setIntegral_normSq_harmonicRamareBilinear_le_blocks_weighted
     (P := P) (s := s) (W := W) hEm hEs I B hdisj hcover
@@ -68,7 +68,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_min_mass
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hprime : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V j) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
           min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j) E j)
             (menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j)

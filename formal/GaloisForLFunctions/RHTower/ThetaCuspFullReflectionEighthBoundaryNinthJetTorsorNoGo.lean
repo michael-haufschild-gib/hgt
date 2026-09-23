@@ -9,7 +9,7 @@ The current reflected moments through order eight do not orient their own first 
 inside the class of entire functions that are strictly positive on the real axis.  The positive
 family
 
-`cosh(x) * exp(c x^9 / 9!)`
+`cosh(x) * exp(c x^(9 : ℕ) / 9!)`
 
 has one common jet through order eight.  Its ninth jet is `c`, while the common reflected Hankel
 face is singular with strict leading rank-two minor.  The canonical boundary crossing is exactly
@@ -39,7 +39,7 @@ def reflectedBoundaryNinthJet (c : ℝ) : ℕ → ℝ
 /-- The five current reflected even moments of the ninth-jet family. -/
 def reflectedBoundaryNinthJetMoment (c : ℝ) : Fin 5 → ℝ :=
   let f := reflectedBoundaryNinthJet c
-  ![f 0 ^ 2,
+  ![f 0 ^ (2 : ℕ),
     reflectedProductSecondJet (f 0) (f 1) (f 2),
     reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4),
     reflectedProductSixthJet (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6),
@@ -87,7 +87,7 @@ theorem reflectedBoundaryNinthJet_det_zero (c : ℝ) :
 /-- The common singular face has strict leading rank-two minor `4`. -/
 theorem reflectedBoundaryNinthJet_strictHead (c : ℝ) :
     let p := reflectedBoundaryNinthJetMoment c
-    p 0 * p 2 - p 1 ^ 2 = 4 := by
+    p 0 * p 2 - p 1 ^ (2 : ℕ) = 4 := by
   rw [reflectedBoundaryNinthJetMoment_eq]
   simp
   norm_num
@@ -137,7 +137,7 @@ theorem exists_reflectedBoundaryNinthJetCrossing_eq (r : ℝ) :
 
 /-- Entire positive-real-axis realization of the ninth-jet torsor. -/
 def reflectedBoundaryNinthEntireGauge (c z : ℂ) : ℂ :=
-  Complex.cosh z * Complex.exp (c / 362880 * z ^ 9)
+  Complex.cosh z * Complex.exp (c / 362880 * z ^ (9 : ℕ))
 
 /-- Complex version of the prescribed jet. -/
 def reflectedBoundaryNinthJetC (c : ℂ) : ℕ → ℂ
@@ -155,11 +155,11 @@ theorem reflectedBoundaryNinthEntireGauge_lower
     iteratedDeriv n (reflectedBoundaryNinthEntireGauge c) 0 =
       iteratedDeriv n Complex.cosh 0 := by
   have hgauge : ∀ j ≤ 8,
-      iteratedDeriv j (fun z : ℂ => Complex.exp (c / 362880 * z ^ 9)) 0 =
+      iteratedDeriv j (fun z : ℂ => Complex.exp (c / 362880 * z ^ (9 : ℕ))) 0 =
         iteratedDeriv j (fun _z : ℂ => Complex.exp 0) 0 := by
     intro j hj
     apply GaloisForLFunctions.HTGeometry.iteratedDeriv_exp_congr_of_flat
-      (L₁ := fun z : ℂ => c / 362880 * z ^ 9)
+      (L₁ := fun z : ℂ => c / 362880 * z ^ (9 : ℕ))
       (L₂ := fun _z : ℂ => 0)
       (k := 8) (W := fun _z : ℂ => c / 362880)
     · intro z
@@ -173,11 +173,11 @@ theorem reflectedBoundaryNinthEntireGauge_lower
     · exact hj
   have hmul := RHTower.iteratedDeriv_mul_congr
     (A := Complex.cosh)
-    (f := fun z : ℂ => Complex.exp (c / 362880 * z ^ 9))
+    (f := fun z : ℂ => Complex.exp (c / 362880 * z ^ (9 : ℕ)))
     (g := fun _z : ℂ => Complex.exp 0)
     (w := 0) (N := 8) (by fun_prop) (by fun_prop) (by fun_prop) hgauge n hn
   have hleft :
-      Complex.cosh * (fun z : ℂ => Complex.exp (c / 362880 * z ^ 9)) =
+      Complex.cosh * (fun z : ℂ => Complex.exp (c / 362880 * z ^ (9 : ℕ))) =
         reflectedBoundaryNinthEntireGauge c := by
     funext z
     rfl
@@ -198,7 +198,7 @@ theorem reflectedBoundaryNinthEntireGauge_top (c : ℂ) :
     convert ((Complex.hasDerivAt_exp 0).sub_const 1).deriv using 1
     simp
   let a : ℂ := c / 362880
-  let W : ℂ → ℂ := fun z => a * Complex.cosh z * psi (a * z ^ 9)
+  let W : ℂ → ℂ := fun z => a * Complex.cosh z * psi (a * z ^ (9 : ℕ))
   have hW : AnalyticAt ℂ W 0 := by
     dsimp only [W]
     exact (analyticAt_const.mul (by fun_prop)).mul
@@ -206,23 +206,23 @@ theorem reflectedBoundaryNinthEntireGauge_top (c : ℂ) :
         (analyticAt_const.mul (analyticAt_id.pow 9)))
   have hdiff :
       (fun z => reflectedBoundaryNinthEntireGauge c z - Complex.cosh z) =
-        fun z => z ^ 9 * W z := by
+        fun z => z ^ (9 : ℕ) * W z := by
     funext z
     dsimp only [reflectedBoundaryNinthEntireGauge, W, a]
     calc
-      Complex.cosh z * Complex.exp (c / 362880 * z ^ 9) - Complex.cosh z =
-          Complex.cosh z * (Complex.exp (c / 362880 * z ^ 9) - 1) := by ring
+      Complex.cosh z * Complex.exp (c / 362880 * z ^ (9 : ℕ)) - Complex.cosh z =
+          Complex.cosh z * (Complex.exp (c / 362880 * z ^ (9 : ℕ)) - 1) := by ring
       _ = Complex.cosh z *
-          ((c / 362880 * z ^ 9) * psi (c / 362880 * z ^ 9)) := by
-        rw [hpsiFactor (c / 362880 * z ^ 9)]
-      _ = z ^ 9 * (c / 362880 * Complex.cosh z * psi (c / 362880 * z ^ 9)) := by
+          ((c / 362880 * z ^ (9 : ℕ)) * psi (c / 362880 * z ^ (9 : ℕ))) := by
+        rw [hpsiFactor (c / 362880 * z ^ (9 : ℕ))]
+      _ = z ^ (9 : ℕ) * (c / 362880 * Complex.cosh z * psi (c / 362880 * z ^ (9 : ℕ))) := by
         ring
   have htop := GaloisForLFunctions.HTGeometry.iteratedDeriv_pow_mul (m := 9) hW
   rw [← hdiff] at htop
   have hF : ∀ z : ℂ, AnalyticAt ℂ (reflectedBoundaryNinthEntireGauge c) z := by
     intro z
     change AnalyticAt ℂ
-      (fun w : ℂ => Complex.cosh w * Complex.exp (c / 362880 * w ^ 9)) z
+      (fun w : ℂ => Complex.cosh w * Complex.exp (c / 362880 * w ^ (9 : ℕ))) z
     fun_prop
   have hC : ∀ z : ℂ, AnalyticAt ℂ Complex.cosh z := by
     intro z
@@ -259,7 +259,7 @@ theorem reflectedBoundaryNinthJetC_ofReal
 
 /-- Positive real restriction of the entire gauge. -/
 def reflectedBoundaryNinthPositiveGauge (c x : ℝ) : ℝ :=
-  Real.cosh x * Real.exp (c / 362880 * x ^ 9)
+  Real.cosh x * Real.exp (c / 362880 * x ^ (9 : ℕ))
 
 theorem reflectedBoundaryNinthPositiveGauge_pos (c x : ℝ) :
     0 < reflectedBoundaryNinthPositiveGauge c x := by

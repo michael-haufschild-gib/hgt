@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 The even alternating harmonic partial sum is the harmonic difference `H_{2c} - H_c`, and the
 geometric identity `∑_{i < m} (-x)^i = (1 - (-x)^m)/(1+x)` integrates on `[0,1]` to
 
-`∑_{i < m} (-1)^i/(i+1) = log 2 - (-1)^m ∫_0^1 x^m/(1+x) dx`.
+`∑_{i < m} (-1)^i/(i+1) = log 2 - (-1)^m ∫_0^(1 : ℕ) x^m/(1+x) dx`.
 
 Splitting `1/(1+x) = 1/2 + (1-x)/(2(1+x))` evaluates the tail to `1/(2(m+1))` up to an error of at
 most `1/(2(m+1)(m+2))`.  Together these give the exact expansion

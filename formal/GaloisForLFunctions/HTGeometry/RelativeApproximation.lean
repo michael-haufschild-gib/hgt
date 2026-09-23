@@ -109,8 +109,8 @@ theorem RelApprox.sqrt {x y e : ℝ} (hy : 0 < y) (he : e < 1) (h : RelApprox x 
   have hx : 0 < x := h.pos hy he
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hsy : 0 < Real.sqrt y := Real.sqrt_pos.mpr hy
-  have hxy : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
-  have hyy : Real.sqrt y ^ 2 = y := Real.sq_sqrt hy.le
+  have hxy : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
+  have hyy : Real.sqrt y ^ (2 : ℕ) = y := Real.sq_sqrt hy.le
   have h3 : Real.sqrt y * Real.sqrt y = y := Real.mul_self_sqrt hy.le
   have hfac : (Real.sqrt x - Real.sqrt y) * (Real.sqrt x + Real.sqrt y) = x - y := by
     nlinarith [hxy, hyy]

@@ -60,7 +60,7 @@ theorem suzukiCompletedFormationEnergy_succ_sub
     suzukiCompletedFormationEnergy (N + 1) -
         suzukiCompletedFormationEnergy N =
       ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) *
-        (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 := by
+        (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) := by
   rw [suzukiCompletedFormationEnergy, suzukiCompletedFormationEnergy,
     completedScaleDirichletEnergy_succ_sub _ _ hN]
   have hsource := suzukiTransitionCoreCompletedAbelSource_succ_eq_scaleConnection hN
@@ -71,7 +71,7 @@ theorem suzukiCompletedFormationEnergy_succ_sub
 /-- The Abel square is exactly the scale-normalised production of completed formation energy. -/
 theorem suzukiCompletedAbelSource_sq_eq_scaledFormationProduction
     {N : ℕ} (hN : 2 ≤ N) :
-    (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 =
+    (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) =
       (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
         (suzukiCompletedFormationEnergy (N + 1) -
           suzukiCompletedFormationEnergy N) := by
@@ -86,7 +86,7 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_formationProduct
     (hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
       (suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) /
-          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) *
+          unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) *
         (((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
         (suzukiCompletedFormationEnergy (N + 1) -
           suzukiCompletedFormationEnergy N) := by
@@ -116,7 +116,7 @@ theorem suzukiAlignedGamma_le_condition_mul_scaledFormationProduction
     (hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0)
     (hcore : suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) ≤
       suzukiTransitionCoreAnchorConditionNumberBound *
-        unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) :
+        unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) ≤
       suzukiTransitionCoreAnchorConditionNumberBound *
         ((((N + 2 : ℕ) : ℝ) / (N + 1 : ℕ)) *
@@ -142,7 +142,7 @@ theorem suzukiCompletedFormationEnergy_succ_sub_le_alignedGamma
   have hcoef : (((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ)) ≤ 1 := by
     apply (div_le_one (by positivity)).2
     norm_num
-  have hs : 0 ≤ (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 := sq_nonneg _
+  have hs : 0 ≤ (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) := sq_nonneg _
   rw [hprod]
   exact (mul_le_of_le_one_left hs hcoef).trans hsq
 
@@ -152,7 +152,7 @@ theorem suzukiAlignedGamma_le_two_condition_mul_formationProduction
     (hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0)
     (hcore : suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) ≤
       suzukiTransitionCoreAnchorConditionNumberBound *
-        unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ 2) :
+        unitRieszCoherentPrimeOutgoingCharge (N + 1) ^ (2 : ℕ)) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) ≤
       2 * suzukiTransitionCoreAnchorConditionNumberBound *
         (suzukiCompletedFormationEnergy (N + 1) -
@@ -162,14 +162,14 @@ theorem suzukiAlignedGamma_le_two_condition_mul_formationProduction
     hcharge hcore
   rw [suzukiNaturalApertureCompletedLowerHardyAmplitude_eq_completedAbelSource
     (by omega : 2 ≤ N + 1)] at hupper
-  have hs : 0 ≤ (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 := sq_nonneg _
+  have hs : 0 ≤ (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) := sq_nonneg _
   have hhalf : (1 / 2 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) / (N + 2 : ℕ) := by
     have hden : (0 : ℝ) < (N + 2 : ℕ) := by positivity
     apply (le_div_iff₀ hden).2
     push_cast
     nlinarith
   have hsqprod :
-      (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 ≤
+      (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) ≤
         2 * (suzukiCompletedFormationEnergy (N + 1) -
           suzukiCompletedFormationEnergy N) := by
     rw [hprod]
@@ -179,7 +179,7 @@ theorem suzukiAlignedGamma_le_two_condition_mul_formationProduction
     positivity
   calc
     _ ≤ suzukiTransitionCoreAnchorConditionNumberBound *
-        (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ 2 := hupper
+        (suzukiTransitionCoreCompletedAbelSource (N + 1)) ^ (2 : ℕ) := hupper
     _ ≤ suzukiTransitionCoreAnchorConditionNumberBound *
         (2 * (suzukiCompletedFormationEnergy (N + 1) -
           suzukiCompletedFormationEnergy N)) :=

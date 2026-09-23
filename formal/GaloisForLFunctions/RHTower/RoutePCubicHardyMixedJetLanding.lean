@@ -120,31 +120,31 @@ theorem routePHalfWeightedHellingerCauchyKernel_eq_projectiveHardy
 
 /-- First horizontal jet of the half-weighted Hardy difference. -/
 def routePHalfWeightedHellingerCauchyFirstJet (a b : ℝ) : ℝ :=
-  -1 / (a + b) ^ 2 +
-    (1 / 2) * (1 / (a + 2 * b) ^ 2) +
-    1 / (2 * a + b) ^ 2 -
-    (1 / 2) * (1 / (2 * a + 2 * b) ^ 2)
+  -1 / (a + b) ^ (2 : ℕ) +
+    (1 / 2) * (1 / (a + 2 * b) ^ (2 : ℕ)) +
+    1 / (2 * a + b) ^ (2 : ℕ) -
+    (1 / 2) * (1 / (2 * a + 2 * b) ^ (2 : ℕ))
 
 private theorem hasDerivAt_one_div_affine
     {alpha beta x : ℝ} (h : alpha * x + beta ≠ 0) :
     HasDerivAt (fun y : ℝ => 1 / (alpha * y + beta))
-      (-alpha / (alpha * x + beta) ^ 2) x := by
+      (-alpha / (alpha * x + beta) ^ (2 : ℕ)) x := by
   have hbase : HasDerivAt (fun y : ℝ => alpha * y + beta) alpha x :=
     by simpa using ((hasDerivAt_id x).const_mul alpha).add_const beta
   simpa only [one_div, one_mul, neg_div] using! hbase.inv h
 
 private theorem hasDerivAt_one_div_affine_sq
     {alpha beta x : ℝ} (h : alpha * x + beta ≠ 0) :
-    HasDerivAt (fun y : ℝ => 1 / (alpha * y + beta) ^ 2)
-      (-2 * alpha / (alpha * x + beta) ^ 3) x := by
+    HasDerivAt (fun y : ℝ => 1 / (alpha * y + beta) ^ (2 : ℕ))
+      (-2 * alpha / (alpha * x + beta) ^ (3 : ℕ)) x := by
   have hlinear : HasDerivAt (fun y : ℝ => alpha * y + beta) alpha x :=
     by simpa using ((hasDerivAt_id x).const_mul alpha).add_const beta
   have hsq := hlinear.pow 2
-  have hne : (alpha * x + beta) ^ 2 ≠ 0 := pow_ne_zero 2 h
+  have hne : (alpha * x + beta) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 h
   have hinv := hsq.inv hne
   have hfun :
-      (fun y : ℝ => 1 / (alpha * y + beta) ^ 2) =
-        ((fun y : ℝ => alpha * y + beta) ^ 2)⁻¹ := by
+      (fun y : ℝ => 1 / (alpha * y + beta) ^ (2 : ℕ)) =
+        ((fun y : ℝ => alpha * y + beta) ^ (2 : ℕ))⁻¹ := by
     funext y
     simp only [one_div, Pi.inv_apply, Pi.pow_apply]
   rw [hfun]
@@ -183,9 +183,9 @@ theorem hasDerivAt_routePHalfWeightedHellingerCauchyKernel
       Pi.add_apply, Pi.sub_apply]
   have hder :
       routePHalfWeightedHellingerCauchyFirstJet a b =
-        -1 / (1 * a + b) ^ 2 - (1 / 2) * (-1 / (1 * a + 2 * b) ^ 2) -
-          (1 / 2) * (-2 / (2 * a + b) ^ 2) +
-          (1 / 4) * (-2 / (2 * a + 2 * b) ^ 2) := by
+        -1 / (1 * a + b) ^ (2 : ℕ) - (1 / 2) * (-1 / (1 * a + 2 * b) ^ (2 : ℕ)) -
+          (1 / 2) * (-2 / (2 * a + b) ^ (2 : ℕ)) +
+          (1 / 4) * (-2 / (2 * a + 2 * b) ^ (2 : ℕ)) := by
     simp only [routePHalfWeightedHellingerCauchyFirstJet, one_mul]
     ring
   rw [hfun, hder]
@@ -195,8 +195,8 @@ theorem hasDerivAt_routePHalfWeightedHellingerCauchyKernel
 theorem hasDerivAt_routePHalfWeightedHellingerCauchyFirstJet
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     HasDerivAt (fun y : ℝ => routePHalfWeightedHellingerCauchyFirstJet a y)
-      (2 / (a + b) ^ 3 - 2 / (a + 2 * b) ^ 3 -
-        2 / (2 * a + b) ^ 3 + 2 / (2 * a + 2 * b) ^ 3) b := by
+      (2 / (a + b) ^ (3 : ℕ) - 2 / (a + 2 * b) ^ (3 : ℕ) -
+        2 / (2 * a + b) ^ (3 : ℕ) + 2 / (2 * a + 2 * b) ^ (3 : ℕ)) b := by
   have hab : a + b ≠ 0 := (add_pos ha hb).ne'
   have ha2b : a + 2 * b ≠ 0 := (add_pos ha (mul_pos two_pos hb)).ne'
   have h2ab : 2 * a + b ≠ 0 := (add_pos (mul_pos two_pos ha) hb).ne'
@@ -215,21 +215,21 @@ theorem hasDerivAt_routePHalfWeightedHellingerCauchyFirstJet
       (h4.const_mul (1 / 2))
   have hfun :
       (fun y : ℝ => routePHalfWeightedHellingerCauchyFirstJet a y) =
-        ((((-fun y : ℝ => 1 / (1 * y + a) ^ 2) +
-            fun y : ℝ => (1 / 2) * (1 / (2 * y + a) ^ 2)) +
-          fun y : ℝ => 1 / (1 * y + 2 * a) ^ 2) -
-          fun y : ℝ => (1 / 2) * (1 / (2 * y + 2 * a) ^ 2)) := by
+        ((((-fun y : ℝ => 1 / (1 * y + a) ^ (2 : ℕ)) +
+            fun y : ℝ => (1 / 2) * (1 / (2 * y + a) ^ (2 : ℕ))) +
+          fun y : ℝ => 1 / (1 * y + 2 * a) ^ (2 : ℕ)) -
+          fun y : ℝ => (1 / 2) * (1 / (2 * y + 2 * a) ^ (2 : ℕ))) := by
     funext y
     simp only [routePHalfWeightedHellingerCauchyFirstJet, one_mul,
       Pi.add_apply, Pi.sub_apply, Pi.neg_apply]
     congr 1 <;> ring
   have hder :
-      2 / (a + b) ^ 3 - 2 / (a + 2 * b) ^ 3 -
-          2 / (2 * a + b) ^ 3 + 2 / (2 * a + 2 * b) ^ 3 =
-        -(-2 * 1 / (1 * b + a) ^ 3) +
-          (1 / 2) * (-2 * 2 / (2 * b + a) ^ 3) +
-          -2 * 1 / (1 * b + 2 * a) ^ 3 -
-          (1 / 2) * (-2 * 2 / (2 * b + 2 * a) ^ 3) := by
+      2 / (a + b) ^ (3 : ℕ) - 2 / (a + 2 * b) ^ (3 : ℕ) -
+          2 / (2 * a + b) ^ (3 : ℕ) + 2 / (2 * a + 2 * b) ^ (3 : ℕ) =
+        -(-2 * 1 / (1 * b + a) ^ (3 : ℕ)) +
+          (1 / 2) * (-2 * 2 / (2 * b + a) ^ (3 : ℕ)) +
+          -2 * 1 / (1 * b + 2 * a) ^ (3 : ℕ) -
+          (1 / 2) * (-2 * 2 / (2 * b + 2 * a) ^ (3 : ℕ)) := by
     field_simp [hab, ha2b, h2ab, h2a2b]
     ring
   rw [hfun, hder]

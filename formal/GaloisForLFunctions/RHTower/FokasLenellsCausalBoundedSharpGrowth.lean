@@ -9,16 +9,16 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSharpGrowthInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedSharpGrowthInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSharpGrowthInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSharpGrowthInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSharpGrowthInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSharpGrowthInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSharpGrowthInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
 private theorem lower_of_rate_limit (z : ℂ) (ω : ℝ) (w : ℂ)
@@ -69,7 +69,7 @@ private theorem aligned_real_character (z : ℂ) (hz : z.re < 0) :
     _ = (z*(conj z / (‖z‖ : ℂ))).re :=
       congrArg (fun w : ℂ => (z*w).re) (aligned_unit_rate z hz)
     _ = (z*conj z).re / ‖z‖ := by rw [← mul_div_assoc, Complex.div_ofReal_re]
-    _ = ‖z‖^2 / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
+    _ = ‖z‖^(2 : ℕ) / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
     _ = ‖z‖ * (‖z‖/‖z‖) := by rw [pow_two, mul_div_assoc]
     _ = ‖z‖ := by rw [div_self hn, mul_one]
 
@@ -90,7 +90,7 @@ theorem norm_causalBoundedChainExponential (z : ℂ) :
 
 /-- The sharp exponent is the Euclidean length after clipping the positive real component. -/
 theorem causalBoundedGrowthExponent_eq_sqrt (z : ℂ) :
-    causalBoundedGrowthExponent z = Real.sqrt ((min z.re 0)^2 + z.im^2) := by
+    causalBoundedGrowthExponent z = Real.sqrt ((min z.re 0)^(2 : ℕ) + z.im^(2 : ℕ)) := by
   by_cases hz : 0 ≤ z.re
   · simp only [causalBoundedGrowthExponent, if_pos hz, min_eq_right hz,
       zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_add, Real.sqrt_sq_eq_abs]
@@ -99,7 +99,7 @@ theorem causalBoundedGrowthExponent_eq_sqrt (z : ℂ) :
 
 /-- Closed sharp complex-time norm formula in elementary real coordinates. -/
 theorem norm_causalBoundedChainExponential_eq_sqrt (z : ℂ) :
-    ‖causalBoundedChainExponential z‖ = Real.exp (Real.sqrt ((min z.re 0)^2 + z.im^2)) :=
+    ‖causalBoundedChainExponential z‖ = Real.exp (Real.sqrt ((min z.re 0)^(2 : ℕ) + z.im^(2 : ℕ))) :=
   (norm_causalBoundedChainExponential z).trans (congrArg Real.exp (causalBoundedGrowthExponent_eq_sqrt z))
 
 /-- Real time is contractive forward and has exact exponential norm growth backward. -/

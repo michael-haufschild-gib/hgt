@@ -127,14 +127,14 @@ theorem exists_trigPoly_spectrum_approx_lattice {β : ℝ} (hβ : β ≠ 0)
     rw [dist_eq_norm] at this
     exact this.le
   -- the concentration scale
-  set c : ℝ := 2 * (|β| * ρ / Real.pi) ^ 2 with hcdef
+  set c : ℝ := 2 * (|β| * ρ / Real.pi) ^ (2 : ℕ) with hcdef
   have hpi : 0 < Real.pi := Real.pi_pos
   have hc : 0 < c := by
     rw [hcdef]
     have : 0 < |β| * ρ / Real.pi := by positivity
     positivity
   have hcρ : Real.pi * Real.sqrt (c / 2) ≤ |β| * ρ := by
-    have hhalf : c / 2 = (|β| * ρ / Real.pi) ^ 2 := by
+    have hhalf : c / 2 = (|β| * ρ / Real.pi) ^ (2 : ℕ) := by
       rw [hcdef]; ring
     have hnn : 0 ≤ |β| * ρ / Real.pi := by positivity
     rw [hhalf, Real.sqrt_sq hnn]

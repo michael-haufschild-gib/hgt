@@ -57,7 +57,7 @@ sequence space: `‖F‖² = Σ_γ π m_γ |F(γ)|²`.  This is the Makarov--Pol
 theorem hasSum_suzukiClarkWeight_normSq_restriction (hRH : RiemannHypothesis)
     {F : Lp ℂ 2 (volume : Measure ℝ)} (hF : F ∈ suzukiModelSpace) :
     HasSum (fun ρ : XiDivisorSupport =>
-      suzukiClarkWeight ρ * ‖suzukiRestriction hRH F ρ‖ ^ 2) (‖F‖ ^ 2) := by
+      suzukiClarkWeight ρ * ‖suzukiRestriction hRH F ρ‖ ^ (2 : ℕ)) (‖F‖ ^ (2 : ℕ)) := by
   have hbase := hasSum_normSq_inner_suzukiFGammaFamily hRH hF
   refine hbase.congr_fun ?_
   intro ρ
@@ -136,18 +136,18 @@ theorem hasSum_expansion_upper (hRH : RiemannHypothesis)
 /-- **Lemma 5.3, surjectivity.**  Every weighted square-summable sequence on the spectrum is the
 restriction of an element of the model space. -/
 theorem exists_suzukiRestriction_eq (hRH : RiemannHypothesis) {a : XiDivisorSupport → ℂ}
-    (ha : Summable (fun ρ : XiDivisorSupport => suzukiClarkWeight ρ * ‖a ρ‖ ^ 2)) :
+    (ha : Summable (fun ρ : XiDivisorSupport => suzukiClarkWeight ρ * ‖a ρ‖ ^ (2 : ℕ))) :
     ∃ F : Lp ℂ 2 (volume : Measure ℝ), F ∈ suzukiModelSpace ∧
       suzukiRestriction hRH F = a := by
   set c : XiDivisorSupport → ℂ :=
     fun ρ => ((Real.sqrt (suzukiClarkWeight ρ) : ℝ) : ℂ) * a ρ with hc
-  have hcnorm : ∀ ρ, ‖c ρ‖ ^ 2 = suzukiClarkWeight ρ * ‖a ρ‖ ^ 2 := by
+  have hcnorm : ∀ ρ, ‖c ρ‖ ^ (2 : ℕ) = suzukiClarkWeight ρ * ‖a ρ‖ ^ (2 : ℕ) := by
     intro ρ
     have hpos := suzukiClarkWeight_pos ρ
     rw [hc]
     rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt (le_of_lt hpos)]
-  have hsum : Summable (fun ρ => ‖c ρ‖ ^ 2) := by
+  have hsum : Summable (fun ρ => ‖c ρ‖ ^ (2 : ℕ)) := by
     refine ha.congr ?_
     intro ρ
     exact (hcnorm ρ).symm
@@ -192,8 +192,8 @@ the unitary Fourier transform; Suzuki's `2‖ψ‖²` reflects his `‖ψ̂‖²
 theorem hasSum_suzukiClarkWeight_normSq_restriction_suzukiV0 (hRH : RiemannHypothesis)
     {ψ : Lp ℂ 2 (volume : Measure ℝ)} (hψ : ψ ∈ suzukiV0) :
     HasSum (fun ρ : XiDivisorSupport => suzukiClarkWeight ρ *
-        ‖suzukiRestriction hRH ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ) ρ‖ ^ 2)
-      (‖ψ‖ ^ 2) := by
+        ‖suzukiRestriction hRH ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ) ρ‖ ^ (2 : ℕ))
+      (‖ψ‖ ^ (2 : ℕ)) := by
   have hmem : ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ) ∈ suzukiModelSpace := by
     rw [← map_fourier_suzukiV0]
     exact ⟨ψ, hψ, rfl⟩

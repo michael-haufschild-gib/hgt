@@ -48,11 +48,11 @@ theorem deningerCycRed_of_pow (C R V V₀ : List (Σ i, G i)) (n : ℕ)
     deningerLen_conj_pow (d := d) C R V hCRred hCRalt hVne hVred hValt hVcyc hhead hprod (2 * n + 1)
   have f1 : deningerLen d (deningerLetterProd (φ := φ) V₀) = V₀.length :=
     deningerLen_letterProd (d := d) V₀ hV₀red hV₀alt
-  have f2 : deningerLen d ((deningerLetterProd (φ := φ) V₀) ^ 2) = 2 * V₀.length := by
+  have f2 : deningerLen d ((deningerLetterProd (φ := φ) V₀) ^ (2 : ℕ)) = 2 * V₀.length := by
     have := deningerLen_pow (d := d) V₀ 1 1 hV₀ne hV₀red hV₀alt hV₀cyc
     simpa using this
   have hsq : (deningerLetterProd (φ := φ) (C ++ R)) ^ (2 * n + 2) =
-      (deningerLetterProd (φ := φ) V₀) ^ 2 := by
+      (deningerLetterProd (φ := φ) V₀) ^ (2 : ℕ) := by
     rw [show 2 * n + 2 = (n + 1) * 2 by ring, pow_mul, hx]
   rw [hx, f1] at e1
   rw [hsq, f2] at e2

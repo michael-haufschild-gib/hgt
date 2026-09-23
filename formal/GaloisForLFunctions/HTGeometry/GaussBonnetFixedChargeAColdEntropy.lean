@@ -16,13 +16,13 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbFixedChargeAEntropyWeight (τ φ : ℝ) : ℝ :=
-  1 - thermalRatio τ ^ 2 - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)
+  1 - thermalRatio τ ^ (2 : ℕ) - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)
 
 theorem egbFixedChargeA_log_product_formula (τ φ : ℝ) :
     egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ) =
-      ((thermalRatio τ - 1) ^ 3 * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ) +
-        4 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ 2 + thermalRatio τ + 1) * (thermalRatio τ - 1)) /
-          (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1)) := by
+      ((thermalRatio τ - 1) ^ (3 : ℕ) * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ) +
+        4 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) * (thermalRatio τ - 1)) /
+          (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1)) := by
   have hz := thermalRatio_pos τ
   apply (eq_div_iff (by positivity)).2
   linear_combination -(egbFixedChargeACouplingWeight τ φ) * egbCoexistenceALogKernel_cubic_identity τ
@@ -33,11 +33,11 @@ theorem egbFixedChargeA_log_product_cold_limit (φ : ℝ) :
   have hz := thermalRatio_tendsto_atTop_zero
   have hb := egbFixedChargeACouplingWeight_cold_limit φ
   have h : Tendsto (fun τ =>
-      ((thermalRatio τ - 1) ^ 3 * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ) +
-        4 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ 2 + thermalRatio τ + 1) * (thermalRatio τ - 1)) /
-          (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1))) atTop
-      (𝓝 ((((0 : ℝ) - 1) ^ 3 * 0 + 4 * 0 * (0 ^ 2 + 0 + 1) * (0 - 1)) /
-        (3 * (0 + 1) * (0 ^ 2 + 1)))) :=
+      ((thermalRatio τ - 1) ^ (3 : ℕ) * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ) +
+        4 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) * (thermalRatio τ - 1)) /
+          (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1))) atTop
+      (𝓝 ((((0 : ℝ) - 1) ^ (3 : ℕ) * 0 + 4 * 0 * (0 ^ (2 : ℕ) + 0 + 1) * (0 - 1)) /
+        (3 * (0 + 1) * (0 ^ (2 : ℕ) + 1)))) :=
     ((((hz.sub tendsto_const_nhds).pow 3).mul (egbFixedChargeA_kernel_product_cold_limit φ)).add
       (((tendsto_const_nhds.mul hb).mul (((hz.pow 2).add hz).add tendsto_const_nhds)).mul
         (hz.sub tendsto_const_nhds))).div
@@ -46,13 +46,13 @@ theorem egbFixedChargeA_log_product_cold_limit (φ : ℝ) :
   exact h
 
 theorem egbFixedChargeAEntropyJump_weight (w φ τ : ℝ) :
-    egbFixedChargeAEntropyJump w φ τ = Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeAEntropyWeight τ φ :=
+    egbFixedChargeAEntropyJump w φ τ = Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAEntropyWeight τ φ :=
   egbFixedChargeAEntropyJump_formula w φ τ
 
 theorem egbFixedChargeAEntropyWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeAEntropyWeight τ φ := by
   have h := egbFixedChargeAEntropyJump_pos 0 φ τ
   rw [egbFixedChargeAEntropyJump_weight] at h
-  have hA : 0 < Real.pi * egbFixedChargeALargeRadius 0 φ τ ^ 2 := by
+  have hA : 0 < Real.pi * egbFixedChargeALargeRadius 0 φ τ ^ (2 : ℕ) := by
     have hR := egbFixedChargeALargeRadius_pos 0 φ τ
     positivity
   by_contra hn
@@ -62,32 +62,32 @@ theorem egbFixedChargeAEntropyWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeAEntr
 theorem egbFixedChargeAEntropyWeight_cold_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAEntropyWeight τ φ) atTop (𝓝 1) := by
   have he : (fun τ => egbFixedChargeAEntropyWeight τ φ) =
-      (fun τ => 1 - thermalRatio τ ^ 2 - 4 * (egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ))) := by
+      (fun τ => 1 - thermalRatio τ ^ (2 : ℕ) - 4 * (egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ))) := by
     funext τ
     unfold egbFixedChargeAEntropyWeight
     ring
   rw [he]
-  have h : Tendsto (fun τ => 1 - thermalRatio τ ^ 2 - 4 * (egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)))
-      atTop (𝓝 (1 - (0 : ℝ) ^ 2 - 4 * 0)) :=
+  have h : Tendsto (fun τ => 1 - thermalRatio τ ^ (2 : ℕ) - 4 * (egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)))
+      atTop (𝓝 (1 - (0 : ℝ) ^ (2 : ℕ) - 4 * 0)) :=
     (tendsto_const_nhds.sub (thermalRatio_tendsto_atTop_zero.pow 2)).sub
       (tendsto_const_nhds.mul (egbFixedChargeA_log_product_cold_limit φ))
   norm_num at h
   exact h
 
 theorem egbFixedChargeAEntropyJump_area_formula (w φ τ : ℝ) :
-    egbFixedChargeAEntropyJump w φ τ / (Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2) = egbFixedChargeAEntropyWeight τ φ := by
+    egbFixedChargeAEntropyJump w φ τ / (Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) = egbFixedChargeAEntropyWeight τ φ := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   rw [egbFixedChargeAEntropyJump_weight]
   field_simp
 
 theorem egbFixedChargeAEntropyJump_area_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAEntropyJump w φ τ / (Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2)) atTop (𝓝 1) := by
+    Tendsto (fun τ => egbFixedChargeAEntropyJump w φ τ / (Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ))) atTop (𝓝 1) := by
   simp only [egbFixedChargeAEntropyJump_area_formula]
   exact egbFixedChargeAEntropyWeight_cold_limit φ
 
 theorem egbFixedChargeAEntropyJump_radius_square_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAEntropyJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ 2) atTop (𝓝 Real.pi) := by
-  have he : (fun τ => egbFixedChargeAEntropyJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ 2) =
+    Tendsto (fun τ => egbFixedChargeAEntropyJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) atTop (𝓝 Real.pi) := by
+  have he : (fun τ => egbFixedChargeAEntropyJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) =
       (fun τ => Real.pi * egbFixedChargeAEntropyWeight τ φ) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
@@ -97,16 +97,16 @@ theorem egbFixedChargeAEntropyJump_radius_square_cold_limit (w φ : ℝ) :
   simpa only [mul_one] using (tendsto_const_nhds (x := Real.pi)).mul (egbFixedChargeAEntropyWeight_cold_limit φ)
 
 theorem egbFixedChargeAVolumeJump_radius_cube_cold_limit (w φ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAVolumeJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ 3) atTop (𝓝 (4 * Real.pi / 3)) := by
-  have he : (fun τ => egbFixedChargeAVolumeJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ 3) =
-      (fun τ => (4 * Real.pi / 3) * (1 - thermalRatio τ ^ 3)) := by
+    Tendsto (fun τ => egbFixedChargeAVolumeJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ (3 : ℕ)) atTop (𝓝 (4 * Real.pi / 3)) := by
+  have he : (fun τ => egbFixedChargeAVolumeJump w φ τ / egbFixedChargeALargeRadius w φ τ ^ (3 : ℕ)) =
+      (fun τ => (4 * Real.pi / 3) * (1 - thermalRatio τ ^ (3 : ℕ))) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
     rw [egbFixedChargeAVolumeJump_formula]
     field_simp <;> ring
   rw [he]
-  have h : Tendsto (fun τ => (4 * Real.pi / 3) * (1 - thermalRatio τ ^ 3)) atTop
-      (𝓝 ((4 * Real.pi / 3) * (1 - (0 : ℝ) ^ 3))) :=
+  have h : Tendsto (fun τ => (4 * Real.pi / 3) * (1 - thermalRatio τ ^ (3 : ℕ))) atTop
+      (𝓝 ((4 * Real.pi / 3) * (1 - (0 : ℝ) ^ (3 : ℕ)))) :=
     tendsto_const_nhds.mul (tendsto_const_nhds.sub (thermalRatio_tendsto_atTop_zero.pow 3))
   norm_num at h
   exact h

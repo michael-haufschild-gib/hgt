@@ -32,7 +32,7 @@ theorem unitProjectiveRemainder_inner_eq_zero
 of their projective angle. -/
 theorem norm_projectiveRemainder_sq
     {v g : E} (hv : ‖v‖ = 1) (hg : ‖g‖ = 1) :
-    ‖g - inner 𝕜 v g • v‖ ^ 2 = 1 - ‖inner 𝕜 v g‖ ^ 2 := by
+    ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) = 1 - ‖inner 𝕜 v g‖ ^ (2 : ℕ) := by
   let a : 𝕜 := inner 𝕜 v g
   let w : E := g - a • v
   have hvw : inner 𝕜 (a • v) w = 0 := by
@@ -41,7 +41,7 @@ theorem norm_projectiveRemainder_sq
   have hsum : a • v + w = g := by simp [w]
   have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (a • v) w hvw
   rw [hsum, norm_smul, hv, mul_one, hg] at hpyth
-  change ‖w‖ ^ 2 = 1 - ‖a‖ ^ 2
+  change ‖w‖ ^ (2 : ℕ) = 1 - ‖a‖ ^ (2 : ℕ)
   nlinarith
 
 /-- A symmetric form shifted by an eigenvalue depends only on the component orthogonal to the
@@ -72,10 +72,10 @@ theorem projectiveRemainder_sq_le_rayleighExcess_div_gap
     {v g : E} {epsilon gap : ℝ}
     (hg : ‖g‖ = 1)
     (hTv : T v = (epsilon : 𝕜) • v) (hgap : 0 < gap)
-    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T - (epsilon : 𝕜) • ContinuousLinearMap.id 𝕜 E).reApplyInnerSelf
         (g - inner 𝕜 v g • v)) :
-    ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T.rayleighQuotient g - epsilon) / gap := by
   have hg0 : g ≠ 0 := by
     intro h
@@ -102,10 +102,10 @@ theorem one_sub_norm_inner_sq_le_rayleighExcess_div_gap
     {v g : E} {epsilon gap : ℝ}
     (hv : ‖v‖ = 1) (hg : ‖g‖ = 1)
     (hTv : T v = (epsilon : 𝕜) • v) (hgap : 0 < gap)
-    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T - (epsilon : 𝕜) • ContinuousLinearMap.id 𝕜 E).reApplyInnerSelf
         (g - inner 𝕜 v g • v)) :
-    1 - ‖inner 𝕜 v g‖ ^ 2 ≤
+    1 - ‖inner 𝕜 v g‖ ^ (2 : ℕ) ≤
       (T.rayleighQuotient g - epsilon) / gap := by
   rw [← norm_projectiveRemainder_sq hv hg]
   exact projectiveRemainder_sq_le_rayleighExcess_div_gap T hT hg hTv hgap hcoercive
@@ -115,7 +115,7 @@ twice their projective defect `1 - ‖inner v g‖²`. -/
 theorem exists_unitScalar_norm_sub_sq_le_two_projectiveDefect
     {v g : E} (hv : ‖v‖ = 1) (hg : ‖g‖ = 1) :
     ∃ c : 𝕜, ‖c‖ = 1 ∧
-      ‖g - c • v‖ ^ 2 ≤ 2 * (1 - ‖inner 𝕜 v g‖ ^ 2) := by
+      ‖g - c • v‖ ^ (2 : ℕ) ≤ 2 * (1 - ‖inner 𝕜 v g‖ ^ (2 : ℕ)) := by
   let a : 𝕜 := inner 𝕜 v g
   have ha_le : ‖a‖ ≤ 1 := by
     calc
@@ -151,11 +151,11 @@ theorem exists_unitScalar_norm_sub_sq_le_two_rayleighExcess_div_gap
     {v g : E} {epsilon gap : ℝ}
     (hv : ‖v‖ = 1) (hg : ‖g‖ = 1)
     (hTv : T v = (epsilon : 𝕜) • v) (hgap : 0 < gap)
-    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T - (epsilon : 𝕜) • ContinuousLinearMap.id 𝕜 E).reApplyInnerSelf
         (g - inner 𝕜 v g • v)) :
     ∃ c : 𝕜, ‖c‖ = 1 ∧
-      ‖g - c • v‖ ^ 2 ≤ 2 * ((T.rayleighQuotient g - epsilon) / gap) := by
+      ‖g - c • v‖ ^ (2 : ℕ) ≤ 2 * ((T.rayleighQuotient g - epsilon) / gap) := by
   obtain ⟨c, hc, hdist⟩ :=
     exists_unitScalar_norm_sub_sq_le_two_projectiveDefect (𝕜 := 𝕜) hv hg
   refine ⟨c, hc, hdist.trans ?_⟩
@@ -173,24 +173,24 @@ theorem exists_unitScalar_observable_sq_le
     {v g : E} {epsilon gap : ℝ}
     (hv : ‖v‖ = 1) (hg : ‖g‖ = 1)
     (hTv : T v = (epsilon : 𝕜) • v) (hgap : 0 < gap)
-    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T - (epsilon : 𝕜) • ContinuousLinearMap.id 𝕜 E).reApplyInnerSelf
         (g - inner 𝕜 v g • v)) :
     ∃ c : 𝕜, ‖c‖ = 1 ∧
-      ‖L g - c • L v‖ ^ 2 ≤
-        ‖L‖ ^ 2 * (2 * ((T.rayleighQuotient g - epsilon) / gap)) := by
+      ‖L g - c • L v‖ ^ (2 : ℕ) ≤
+        ‖L‖ ^ (2 : ℕ) * (2 * ((T.rayleighQuotient g - epsilon) / gap)) := by
   obtain ⟨c, hc, hdist⟩ :=
     exists_unitScalar_norm_sub_sq_le_two_rayleighExcess_div_gap
       T hT hv hg hTv hgap hcoercive
   refine ⟨c, hc, ?_⟩
   have hmap : ‖L (g - c • v)‖ ≤ ‖L‖ * ‖g - c • v‖ := L.le_opNorm _
   calc
-    ‖L g - c • L v‖ ^ 2 = ‖L (g - c • v)‖ ^ 2 := by simp
-    _ ≤ (‖L‖ * ‖g - c • v‖) ^ 2 := by
+    ‖L g - c • L v‖ ^ (2 : ℕ) = ‖L (g - c • v)‖ ^ (2 : ℕ) := by simp
+    _ ≤ (‖L‖ * ‖g - c • v‖) ^ (2 : ℕ) := by
       exact (sq_le_sq₀ (norm_nonneg _)
         (mul_nonneg (norm_nonneg L) (norm_nonneg _))).2 hmap
-    _ = ‖L‖ ^ 2 * ‖g - c • v‖ ^ 2 := by ring
-    _ ≤ ‖L‖ ^ 2 * (2 * ((T.rayleighQuotient g - epsilon) / gap)) :=
+    _ = ‖L‖ ^ (2 : ℕ) * ‖g - c • v‖ ^ (2 : ℕ) := by ring
+    _ ≤ ‖L‖ ^ (2 : ℕ) * (2 * ((T.rayleighQuotient g - epsilon) / gap)) :=
       mul_le_mul_of_nonneg_left hdist (sq_nonneg ‖L‖)
 
 end RHTower

@@ -28,7 +28,7 @@ theorem mobius_anchor_generator
     (σ : E ≃ₐ[C] E) {a b c d : C} {u : E}
     (hσu : σ u * (algebraMap C E c * u + algebraMap C E d)
       = algebraMap C E a * u + algebraMap C E b)
-    (hc : c ≠ 0) (hdisc : (d - a) ^ 2 + 4 * c * b ≠ 0)
+    (hc : c ≠ 0) (hdisc : (d - a) ^ (2 : ℕ) + 4 * c * b ≠ 0)
     (hu_ne : ∀ p : C, u - algebraMap C E p ≠ 0)
     (hden : algebraMap C E c * u + algebraMap C E d ≠ 0)
     (htop : differentialAdjoin C ({u} : Set E) = ⊤) :

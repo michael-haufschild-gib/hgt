@@ -20,11 +20,11 @@ noncomputable section
 theorem integral_Icc_normSq_menonFinalRangeHarmonicRough_le_energy
     {x W : ℝ} (_hW : 0 ≤ W) (hWx : W ≤ x) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ))
       ≤ menonFinalRangeHarmonicRoughEnergy x := by
   classical
   have hcont : Continuous fun w : ℝ =>
-      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 :=
+      ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   have hsub : Set.Icc (-W) W ⊆ Set.Icc (-x) x := by
     intro w hw
@@ -50,13 +50,13 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_threshold_rough
       harmonicPrimeMass (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j)
         ≤ 2 ^ (J j) * V₀ j)
     (hI : (∫ w in Set.Icc (-W) W,
-      ‖harmonicRamareBilinear (menonFinalRangePrimes x) (menonFinalRangeShell x) w‖ ^ 2) ≤ I) :
+      ‖harmonicRamareBilinear (menonFinalRangePrimes x) (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤ I) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
-      ≤ 2 * (V ^ 2 * (2 * W)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
+      ≤ 2 * (V ^ (2 : ℕ) * (2 * W)
           + harmonicPrimeMass (menonFinalRangePrimes x) * ∑ j ∈ Finset.range L,
               menonHarmonicLevelTrivialBlockCost (menonFinalRangePrimes x) ⌈x⌉₊
-                  (menonFinalRangeTopNat x) Q eta W (I / V ^ 2) k j (J j) (V₀ j)
+                  (menonFinalRangeTopNat x) Q eta W (I / V ^ (2 : ℕ)) k j (J j) (V₀ j)
                 / harmonicPrimeMass (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j))
         + 2 * menonFinalRangeHarmonicRoughEnergy x := by
   have hbase := integral_Icc_normSq_menonFinalRangeShell_le_threshold_chebyshev

@@ -143,10 +143,10 @@ theorem reverseBesselPoly_pos (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
     intro j _
     exact mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hx _)
   have hzero : (0 : ℕ) ∈ Finset.range (n + 1) := by simp
-  have hle : (squaredRadialJetWeight n 0 : ℝ) * x ^ 0 ≤
+  have hle : (squaredRadialJetWeight n 0 : ℝ) * x ^ (0 : ℕ) ≤
       ∑ j ∈ Finset.range (n + 1), (squaredRadialJetWeight n j : ℝ) * x ^ j :=
     Finset.single_le_sum hnonneg hzero
-  have hw : 0 < (squaredRadialJetWeight n 0 : ℝ) * x ^ 0 := by
+  have hw : 0 < (squaredRadialJetWeight n 0 : ℝ) * x ^ (0 : ℕ) := by
     simpa using weight_zero_pos n
   exact hw.trans_le hle
 

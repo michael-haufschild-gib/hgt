@@ -27,7 +27,7 @@ variable {α : Type*} [Fintype α] [LinearOrder α]
 
 /-- The Casimir value of a weight: the sum of squares plus the sum of ordered differences. -/
 def weightCasimir (mu : α → ℤ) : ℤ :=
-  (∑ a, (mu a) ^ 2) +
+  (∑ a, (mu a) ^ (2 : ℕ)) +
     ∑ p ∈ Finset.univ.filter (fun p : α × α => p.1 < p.2), (mu p.1 - mu p.2)
 
 /-- **The weight gap.**  A nonzero decreasing zero-sum integer weight has Casimir value at least
@@ -102,23 +102,23 @@ theorem two_mul_card_le_weightCasimir (mu : α → ℤ)
     simp only [nsmul_eq_mul, mul_neg, mul_one] at h
     omega
   -- the squares
-  have hsq : 2 * A ≤ ∑ a, (mu a) ^ 2 := by
+  have hsq : 2 * A ≤ ∑ a, (mu a) ^ (2 : ℕ) := by
     have hPN : Disjoint Pos Neg := by
       rw [Finset.disjoint_left]
       intro a ha han
       rw [hmemPos] at ha
       rw [hmemNeg] at han
       omega
-    have hsub : (∑ a ∈ Pos ∪ Neg, (mu a) ^ 2) ≤ ∑ a, (mu a) ^ 2 :=
+    have hsub : (∑ a ∈ Pos ∪ Neg, (mu a) ^ (2 : ℕ)) ≤ ∑ a, (mu a) ^ (2 : ℕ) :=
       Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
         fun a _ _ => sq_nonneg _
-    have hposq : A ≤ ∑ a ∈ Pos, (mu a) ^ 2 := by
+    have hposq : A ≤ ∑ a ∈ Pos, (mu a) ^ (2 : ℕ) := by
       refine le_trans (le_of_eq rfl) (Finset.sum_le_sum ?_)
       intro b hb
       have h1 := hposge b hb
       nlinarith [h1]
-    have hnegq : A ≤ ∑ a ∈ Neg, (mu a) ^ 2 := by
-      have hstep : (∑ a ∈ Neg, -mu a) ≤ ∑ a ∈ Neg, (mu a) ^ 2 := by
+    have hnegq : A ≤ ∑ a ∈ Neg, (mu a) ^ (2 : ℕ) := by
+      have hstep : (∑ a ∈ Neg, -mu a) ≤ ∑ a ∈ Neg, (mu a) ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun b hb => ?_
         have h1 := hnegle b hb
         nlinarith [h1]

@@ -91,7 +91,7 @@ theorem maass_mass_hasSum (N : ℕ) {lam : ℝ}
 theorem maass_horizontal_hasSum (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N + 1 : ℕ) n ^ 2 *
+    HasSum (fun n : ℤ => signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) *
       Complex.normSq (maassCoefficient N f n y))
       (((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
         Complex.normSq (directional 1 (f.1.1 ∘ ofComplex) (point x y))) := by
@@ -128,14 +128,14 @@ def quarterSlice (N : ℕ) {lam : ℝ}
   ∫ x in (0 : ℝ)..(N + 1 : ℕ),
     Complex.normSq (directional 1 (f.1.1 ∘ ofComplex) (point x y)) +
     Complex.normSq (directional Complex.I (f.1.1 ∘ ofComplex) (point x y)) -
-    (1 / (4 * y ^ 2)) * Complex.normSq ((f.1.1 ∘ ofComplex) (point x y))
+    (1 / (4 * y ^ (2 : ℕ))) * Complex.normSq ((f.1.1 ∘ ofComplex) (point x y))
 
 /-- The corresponding literal modal energy at a fixed positive height. -/
 def modalQuarter (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     (y : ℝ) (n : ℤ) : ℝ :=
   Complex.normSq (deriv (maassCoefficient N f n) y) +
-    (signedFrequency (N + 1 : ℕ) n ^ 2 - 1 / (4 * y ^ 2)) * Complex.normSq (maassCoefficient N f n y)
+    (signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) - 1 / (4 * y ^ (2 : ℕ))) * Complex.normSq (maassCoefficient N f n y)
 
 /-- The modal quarter-energy series converges to the normalized physical slice energy. -/
 theorem maass_quarter_hasSum (N : ℕ) {lam : ℝ}
@@ -150,20 +150,20 @@ theorem maass_quarter_hasSum (N : ℕ) {lam : ℝ}
   have hiI := slice_normSq_intervalIntegrable (N + 1 : ℕ) hdI.continuousOn hy
   have hi0 := slice_normSq_intervalIntegrable (N + 1 : ℕ) hf.continuousOn hy
   have hs := ((maass_horizontal_hasSum N f hy).add (maass_vertical_hasSum N f hy)).sub
-    ((maass_mass_hasSum N f hy).mul_left (1 / (4 * y ^ 2)))
+    ((maass_mass_hasSum N f hy).mul_left (1 / (4 * y ^ (2 : ℕ))))
   have he :
       (((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
         Complex.normSq (directional 1 F (point x y))) +
       (((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
         Complex.normSq (directional Complex.I F (point x y))) -
-      (1 / (4 * y ^ 2)) * (((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
+      (1 / (4 * y ^ (2 : ℕ))) * (((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
         Complex.normSq (F (point x y))) =
       (((N + 1 : ℕ) : ℝ)⁻¹ * quarterSlice N f y) := by
     unfold quarterSlice
     change _ = ((N + 1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N + 1 : ℕ),
       Complex.normSq (directional 1 F (point x y)) +
       Complex.normSq (directional Complex.I F (point x y)) -
-      (1 / (4 * y ^ 2)) * Complex.normSq (F (point x y))
+      (1 / (4 * y ^ (2 : ℕ))) * Complex.normSq (F (point x y))
     rw [intervalIntegral.integral_sub (hi1.add hiI) (hi0.const_mul _),
       intervalIntegral.integral_add hi1 hiI, intervalIntegral.integral_const_mul]
     ring

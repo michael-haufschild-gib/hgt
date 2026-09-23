@@ -77,7 +77,7 @@ variable {Θ : Type*} {E : Type*} [Fintype E] [Nonempty E]
 
 /-- The Euclidean coefficient length of one interaction block. -/
 def blockRadius (J : E → Θ → (σ → Option (Fin 3)) → ℂ) (e : E) (θ : Θ) : ℝ :=
-  Real.sqrt (∑ P, ‖J e θ P‖ ^ 2)
+  Real.sqrt (∑ P, ‖J e θ P‖ ^ (2 : ℕ))
 
 /-- The interaction block of one edge. -/
 def blockMatrix (J : E → Θ → (σ → Option (Fin 3)) → ℂ) (e : E) (θ : Θ) :
@@ -95,7 +95,7 @@ theorem norm_blockMatrix_le (J : E → Θ → (σ → Option (Fin 3)) → ℂ)
   have h := opNorm_pauliCombination_le_sqrt_card S (J e θ) (hJ e θ)
   rw [hcard] at h
   have h3 : Real.sqrt ((9 : ℕ) : ℝ) = 3 := by
-    rw [show ((9 : ℕ) : ℝ) = 3 ^ 2 by norm_num]
+    rw [show ((9 : ℕ) : ℝ) = 3 ^ (2 : ℕ) by norm_num]
     exact Real.sqrt_sq (by norm_num)
   rw [h3] at h
   exact h

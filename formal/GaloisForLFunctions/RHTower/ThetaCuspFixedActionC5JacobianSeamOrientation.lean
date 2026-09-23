@@ -12,7 +12,7 @@ The direct fixed-action C5 Jacobian has a cancellation absent from the previousl
 action-velocity transport.  Its first deciding self-dual displacement coefficient is the log-jet
 polynomial
 
-`A^2 D - 5 A B C + 4 B^3 - 18 A^3 C + 36 A^2 B^2`,
+`A^(2 : ℕ) D - 5 A B C + 4 B^(3 : ℕ) - 18 A^(3 : ℕ) C + 36 A^(2 : ℕ) B^(2 : ℕ)`,
 
 where `A=-L₂(0)`, `B=-L₄(0)`, `C=-L₆(0)`, and `D=-L₈(0)` for the completed theta-source
 logarithm.  This file proves that coefficient strictly positive for the literal theta cusp by
@@ -30,7 +30,7 @@ noncomputable section
 theorem thetaCuspModularSourcePositiveState_zero_eq_seam :
     (fun i => thetaCuspModularSourcePositiveState i 0) =
       HTGeometry.modularThetaSourcePositiveSeamState
-        (thetaCuspSelfDualModularScale ^ 2) := by
+        (thetaCuspSelfDualModularScale ^ (2 : ℕ)) := by
   funext i
   cases i with
   | U =>
@@ -55,23 +55,23 @@ def thetaCuspC5FixedActionSeamSourceValueC : ℂ :=
   let f : ℕ → ℂ := fun n =>
     iteratedDeriv n (fun x : ℝ => (thetaCuspFullSource x : ℂ)) 0
   let a := -f 2
-  let b := 3 * f 2 ^ 2 - f 0 * f 4
-  let c := -f 0 ^ 2 * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ 3
-  let d := -f 0 ^ 3 * f 8 + 28 * f 0 ^ 2 * f 2 * f 6 +
-    35 * f 0 ^ 2 * f 4 ^ 2 - 420 * f 0 * f 2 ^ 2 * f 4 + 630 * f 2 ^ 4
-  a ^ 2 * d - 5 * a * b * c + 4 * b ^ 3 - 18 * a ^ 3 * c +
-    36 * a ^ 2 * b ^ 2
+  let b := 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+  let c := -f 0 ^ (2 : ℕ) * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ (3 : ℕ)
+  let d := -f 0 ^ (3 : ℕ) * f 8 + 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+    35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) - 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + 630 * f 2 ^ (4 : ℕ)
+  a ^ (2 : ℕ) * d - 5 * a * b * c + 4 * b ^ (3 : ℕ) - 18 * a ^ (3 : ℕ) * c +
+    36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Real raw-source form of the same seam coefficient. -/
 def thetaCuspC5FixedActionSeamSourceValue : ℝ :=
   let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
   let a := -f 2
-  let b := 3 * f 2 ^ 2 - f 0 * f 4
-  let c := -f 0 ^ 2 * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ 3
-  let d := -f 0 ^ 3 * f 8 + 28 * f 0 ^ 2 * f 2 * f 6 +
-    35 * f 0 ^ 2 * f 4 ^ 2 - 420 * f 0 * f 2 ^ 2 * f 4 + 630 * f 2 ^ 4
-  a ^ 2 * d - 5 * a * b * c + 4 * b ^ 3 - 18 * a ^ 3 * c +
-    36 * a ^ 2 * b ^ 2
+  let b := 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+  let c := -f 0 ^ (2 : ℕ) * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ (3 : ℕ)
+  let d := -f 0 ^ (3 : ℕ) * f 8 + 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+    35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) - 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + 630 * f 2 ^ (4 : ℕ)
+  a ^ (2 : ℕ) * d - 5 * a * b * c + 4 * b ^ (3 : ℕ) - 18 * a ^ (3 : ℕ) * c +
+    36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Logarithmic direct fixed-action C5 seam coefficient. -/
 def thetaCuspC5FixedActionSeamLogValue : ℝ :=
@@ -79,8 +79,8 @@ def thetaCuspC5FixedActionSeamLogValue : ℝ :=
   let b := -iteratedDeriv 4 thetaCuspLogSource 0
   let c := -iteratedDeriv 6 thetaCuspLogSource 0
   let d := -iteratedDeriv 8 thetaCuspLogSource 0
-  a ^ 2 * d - 5 * a * b * c + 4 * b ^ 3 - 18 * a ^ 3 * c +
-    36 * a ^ 2 * b ^ 2
+  a ^ (2 : ℕ) * d - 5 * a * b * c + 4 * b ^ (3 : ℕ) - 18 * a ^ (3 : ℕ) * c +
+    36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Complex and real degree-twelve modular seam polynomials agree under real embedding. -/
 theorem ofReal_modularThetaC5FixedActionSeamPolynomialReal (X : ℝ) :
@@ -94,9 +94,9 @@ theorem ofReal_modularThetaC5FixedActionSeamPolynomialReal (X : ℝ) :
 /-- Exact modular-ODE evaluation of the literal theta raw-source coefficient. -/
 theorem thetaCuspC5FixedActionSeamSourceValueC_eq_modularPolynomial :
     thetaCuspC5FixedActionSeamSourceValueC =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H 0 ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H 0 ^ (6 : ℕ) *
         HTGeometry.modularThetaC5FixedActionSeamPolynomial
-          ((thetaCuspSelfDualModularScale : ℂ) ^ 2) := by
+          ((thetaCuspSelfDualModularScale : ℂ) ^ (2 : ℕ)) := by
   let H : ℝ → ℂ :=
     thetaCuspModularODEState HTGeometry.ModularThetaODEState.H
   let F : ℝ → ℂ := fun x => (thetaCuspFullSource x : ℂ)
@@ -120,15 +120,15 @@ theorem thetaCuspC5FixedActionSeamSourceValueC_eq_modularPolynomial :
 theorem thetaCuspC5FixedActionSeamSourceValueC_re_pos :
     0 < thetaCuspC5FixedActionSeamSourceValueC.re := by
   have hpoly : 0 < HTGeometry.modularThetaC5FixedActionSeamPolynomialReal
-      (thetaCuspSelfDualModularScale ^ 2) :=
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ)) :=
     HTGeometry.modularThetaC5FixedActionSeamPolynomialReal_pos_of_mem_physicalChamber
       (le_of_lt thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one)
       thetaCuspSelfDualModularScale_sq_lt_twenty
   have hpolyC :
       HTGeometry.modularThetaC5FixedActionSeamPolynomial
-          ((thetaCuspSelfDualModularScale : ℂ) ^ 2) =
+          ((thetaCuspSelfDualModularScale : ℂ) ^ (2 : ℕ)) =
         (HTGeometry.modularThetaC5FixedActionSeamPolynomialReal
-          (thetaCuspSelfDualModularScale ^ 2) : ℂ) := by
+          (thetaCuspSelfDualModularScale ^ (2 : ℕ)) : ℂ) := by
     rw [← Complex.ofReal_pow]
     exact (ofReal_modularThetaC5FixedActionSeamPolynomialReal _).symm
   rw [thetaCuspC5FixedActionSeamSourceValueC_eq_modularPolynomial,
@@ -157,7 +157,7 @@ theorem thetaCuspC5FixedActionSeamSourceValue_pos :
 /-- Exact Bell cancellation from raw source jets to the direct fixed-action log coefficient. -/
 theorem thetaCuspC5FixedActionSeamSourceValue_eq_logValue :
     thetaCuspC5FixedActionSeamSourceValue =
-      thetaCuspFullSource 0 ^ 6 * thetaCuspC5FixedActionSeamLogValue := by
+      thetaCuspFullSource 0 ^ (6 : ℕ) * thetaCuspC5FixedActionSeamLogValue := by
   have h1 := iteratedDeriv_thetaCuspLogSource_zero_of_odd
     (show Odd 1 by norm_num)
   have h3 := iteratedDeriv_thetaCuspLogSource_zero_of_odd

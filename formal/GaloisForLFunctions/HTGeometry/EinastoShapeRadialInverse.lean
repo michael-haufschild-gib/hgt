@@ -36,10 +36,10 @@ theorem einastoShapeCorrection_corrected_sign (d l a r : ℝ) :
 theorem einastoShapeCorrection_integral (d l a σ t : ℝ) :
     einastoShapeCorrection d l a σ (exp t) =
       (∫ v in 0..exp t, 8 * Real.pi * einastoProfilePower l a v * einastoShapeSourceFactor d l a v +
-        8 * Real.pi * v ^ 2 * einastoShapeSourceDefect d l a σ v) / exp t := by
+        8 * Real.pi * v ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ v) / exp t := by
   have hP : Continuous (fun v : ℝ => 8 * Real.pi * einastoProfilePower l a v * einastoShapeSourceFactor d l a v) :=
     (continuous_const.mul (einastoProfilePower_continuous l a)).mul (einastoShapeSourceFactor_continuous d l a)
-  have hD : Continuous (fun v : ℝ => 8 * Real.pi * v ^ 2 * einastoShapeSourceDefect d l a σ v) :=
+  have hD : Continuous (fun v : ℝ => 8 * Real.pi * v ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ v) :=
     (continuous_const.mul (continuous_id.pow 2)).mul (einastoShapeSourceDefect_continuous d l a σ)
   rw [einastoShapeCorrection, einastoPowerCorrection_integral, einastoDefectCorrection_integral,
     intervalIntegral.integral_add (hP.intervalIntegrable 0 (exp t)) (hD.intervalIntegrable 0 (exp t)), add_div]
@@ -47,7 +47,7 @@ theorem einastoShapeCorrection_integral (d l a σ t : ℝ) :
 /-- Identification with the paper's actual radial source, with neither regularity nor boundedness assumed. -/
 theorem einastoShapeCorrection_actual_integral (d l a σ t : ℝ) :
     einastoShapeCorrection d l a σ (exp t) =
-      (∫ v in 0..exp t, 8 * Real.pi * v ^ 2 * quadraticRadialSource σ (einastoMetric d l a) v) / exp t := by
+      (∫ v in 0..exp t, 8 * Real.pi * v ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l a) v) / exp t := by
   rw [einastoShapeCorrection_integral]
   congr 1
   apply intervalIntegral.integral_congr_Ioo_of_le (exp_pos t).le
@@ -61,7 +61,7 @@ theorem einastoShapeCorrection_actual_integral (d l a σ t : ℝ) :
 /-- The literal appendix integral is included for every shape, on a whole central neighborhood. -/
 theorem einastoShapeCorrection_appendix_integral (d l a : ℝ) :
     (fun t => einastoShapeCorrection d l a (-1) (exp t)) =ᶠ[atBot]
-      (fun t => (∫ v in 0..exp t, 8 * Real.pi * v ^ 2 * quadraticAppendixSource (einastoMetric d l a) v) / exp t) := by
+      (fun t => (∫ v in 0..exp t, 8 * Real.pi * v ^ (2 : ℕ) * quadraticAppendixSource (einastoMetric d l a) v) / exp t) := by
   obtain ⟨T, hT⟩ := eventually_atBot.mp (quadraticAppendixSource_einasto_all_shapes_eventually d l a)
   filter_upwards [eventually_le_atBot T] with t ht
   rw [einastoShapeCorrection_actual_integral]
@@ -102,7 +102,7 @@ theorem einastoShapeCorrection_second_hasDerivAt (d l a σ t : ℝ) :
 /-- The source equation holds for the actually constructed correction on the entire positive ray. -/
 theorem einastoShapeCorrection_source_ode (d l a σ t : ℝ) :
     HasDerivAt (fun r => r * einastoShapeCorrection d l a σ r)
-      (8 * Real.pi * exp t ^ 2 * quadraticRadialSource σ (einastoMetric d l a) (exp t)) (exp t) := by
+      (8 * Real.pi * exp t ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l a) (exp t)) (exp t) := by
   have h := (hasDerivAt_id (exp t)).mul (einastoShapeCorrection_hasDerivAt d l a σ t)
   simp only [Pi.mul_def, id_eq] at h
   apply h.congr_deriv

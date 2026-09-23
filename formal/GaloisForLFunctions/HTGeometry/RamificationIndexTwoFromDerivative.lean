@@ -60,7 +60,7 @@ theorem ramificationIdx_eq_two_of_derivative_uniformizer
       ({algebraMap B (FractionRing B) x} : Set (FractionRing B)) = ⊤)
     (hnot : Polynomial.aeval x (derivative (minpoly A x)) ∉ Q ^ e)
     (hmemQ : Polynomial.aeval x (derivative (minpoly A x)) ∈ Q)
-    (hnotsq : Polynomial.aeval x (derivative (minpoly A x)) ∉ Q ^ 2) :
+    (hnotsq : Polynomial.aeval x (derivative (minpoly A x)) ∉ Q ^ (2 : ℕ)) :
     e = 2 := by
   have hin : Polynomial.aeval x (derivative (minpoly A x)) ∈ Q ^ (e - 1) :=
     mem_pow_sub_one_aeval_derivative hp hQdvd hxK

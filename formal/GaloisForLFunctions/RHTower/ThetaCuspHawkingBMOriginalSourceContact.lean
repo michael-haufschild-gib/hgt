@@ -31,7 +31,7 @@ private def chart (x : P) : P :=
 
 private def chartDifferential (x : P) : P →L[ℝ] P :=
   ContinuousLinearMap.pi ![ContinuousLinearMap.proj 0,
-    ContinuousLinearMap.proj 0-(2/(x 1^2-1)) • ContinuousLinearMap.proj 1,
+    ContinuousLinearMap.proj 0-(2/(x 1^(2 : ℕ)-1)) • ContinuousLinearMap.proj 1,
     ContinuousLinearMap.proj 2,(x 3)⁻¹ • ContinuousLinearMap.proj 3]
 
 private theorem chart_hasFDerivAt (x : P) (hr : 1<x 1) (hy : 0<x 3) :
@@ -52,14 +52,14 @@ private theorem chart_hasFDerivAt (x : P) (hr : 1<x 1) (hy : 0<x 3) :
 
 private theorem chart_basis (x : P) (i : Fin 4) :
     chartDifferential x (Pi.single i 1) =
-      ![Pi.single 0 1+Pi.single 1 1,(-2/(x 1^2-1)) • Pi.single 1 1,
+      ![Pi.single 0 1+Pi.single 1 1,(-2/(x 1^(2 : ℕ)-1)) • Pi.single 1 1,
         Pi.single 2 1,(x 3)⁻¹ • Pi.single 3 1] i := by
   ext j
   fin_cases i <;> fin_cases j <;> simp [chartDifferential,neg_div]
 
 private def pullFirst (f : F) (i : Fin 4) (x : P) : ℂ :=
   ![coordDeriv 0 f (chart x)+coordDeriv 1 f (chart x),
-    (-2/((x 1:ℂ)^2-1))*coordDeriv 1 f (chart x),
+    (-2/((x 1:ℂ)^(2 : ℕ)-1))*coordDeriv 1 f (chart x),
     coordDeriv 2 f (chart x),(x 3:ℂ)⁻¹*coordDeriv 3 f (chart x)] i
 
 private theorem chart_first {f : F} {x : P} (hr : 1<x 1) (hy : 0<x 3)
@@ -84,22 +84,22 @@ private theorem chart_partial_differentiable {f : F} {x : P}
     DifferentiableAt ℝ (fun z => coordDeriv i f (chart z)) x :=
   ((coordDeriv_hasFDerivAt hf i).comp x (chart_hasFDerivAt x hr hy)).differentiableAt
 
-private def radialMultiplier (x : P) : ℂ := -2/((x 1:ℂ)^2-1)
+private def radialMultiplier (x : P) : ℂ := -2/((x 1:ℂ)^(2 : ℕ)-1)
 private def heightMultiplier (x : P) : ℂ := (x 3:ℂ)⁻¹
 
 private theorem radialMultiplier_hasFDerivAt (x : P) (hr : 1<x 1) :
     HasFDerivAt radialMultiplier
-      ((4*(x 1:ℂ)/((x 1:ℂ)^2-1)^2) •
+      ((4*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ)) •
         (Complex.ofRealCLM.comp (ContinuousLinearMap.proj 1))) x := by
-  have hf : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
+  have hf : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
   have hR := (hasDerivAt_id (x 1)).ofReal_comp
-  have hd : HasDerivAt (fun r : ℝ => -2/((r:ℂ)^2-1))
-      (4*(x 1:ℂ)/((x 1:ℂ)^2-1)^2) (x 1) := by
+  have hd : HasDerivAt (fun r : ℝ => -2/((r:ℂ)^(2 : ℕ)-1))
+      (4*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ)) (x 1) := by
     convert! (hasDerivAt_const (x 1) (-2:ℂ)).div ((hR.pow 2).sub_const 1) hf using 1
     simp only [id_eq,Complex.ofReal_one,Pi.pow_apply]
     ring
-  have hout : HasFDerivAt (fun r : ℝ => -2/((r:ℂ)^2-1))
-      ((1:ℝ →L[ℝ] ℝ).smulRight (4*(x 1:ℂ)/((x 1:ℂ)^2-1)^2)) (x 1) := hd.hasFDerivAt
+  have hout : HasFDerivAt (fun r : ℝ => -2/((r:ℂ)^(2 : ℕ)-1))
+      ((1:ℝ →L[ℝ] ℝ).smulRight (4*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ))) (x 1) := hd.hasFDerivAt
   have hcoord : HasFDerivAt (fun z : P => z 1)
       (ContinuousLinearMap.proj 1 : P →L[ℝ] ℝ) x := hasFDerivAt_apply 1 x
   have hcomp := hout.comp x hcoord
@@ -109,13 +109,13 @@ private theorem radialMultiplier_hasFDerivAt (x : P) (hr : 1<x 1) :
 
 private theorem heightMultiplier_hasFDerivAt (x : P) (hy : 0<x 3) :
     HasFDerivAt heightMultiplier
-      ((-(x 3:ℂ)⁻¹^2) • (Complex.ofRealCLM.comp (ContinuousLinearMap.proj 3))) x := by
+      ((-(x 3:ℂ)⁻¹^(2 : ℕ)) • (Complex.ofRealCLM.comp (ContinuousLinearMap.proj 3))) x := by
   have hd := ((hasDerivAt_id (x 3)).ofReal_comp).inv (Complex.ofReal_ne_zero.mpr hy.ne')
-  have hd' : HasDerivAt (fun r : ℝ => (r:ℂ)⁻¹) (-(x 3:ℂ)⁻¹^2) (x 3) := by
+  have hd' : HasDerivAt (fun r : ℝ => (r:ℂ)⁻¹) (-(x 3:ℂ)⁻¹^(2 : ℕ)) (x 3) := by
     convert! hd using 1
     simp [div_eq_mul_inv]
   have hout : HasFDerivAt (fun r : ℝ => (r:ℂ)⁻¹)
-      ((1:ℝ →L[ℝ] ℝ).smulRight (-(x 3:ℂ)⁻¹^2)) (x 3) := hd'.hasFDerivAt
+      ((1:ℝ →L[ℝ] ℝ).smulRight (-(x 3:ℂ)⁻¹^(2 : ℕ))) (x 3) := hd'.hasFDerivAt
   have hcoord : HasFDerivAt (fun z : P => z 3)
       (ContinuousLinearMap.proj 3 : P →L[ℝ] ℝ) x := hasFDerivAt_apply 3 x
   have hcomp := hout.comp x hcoord
@@ -125,14 +125,14 @@ private theorem heightMultiplier_hasFDerivAt (x : P) (hy : 0<x 3) :
 
 private theorem radialMultiplier_partial (x : P) (hr : 1<x 1) (i : Fin 4) :
     coordDeriv i radialMultiplier x=
-      if i=1 then 4*(x 1:ℂ)/((x 1:ℂ)^2-1)^2 else 0 := by
+      if i=1 then 4*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ) else 0 := by
   rw [coordDeriv,(radialMultiplier_hasFDerivAt x hr).fderiv]
   by_cases hi : i=1
   · subst i; simp
   · simp [hi,Ne.symm hi]
 
 private theorem heightMultiplier_partial (x : P) (hy : 0<x 3) (i : Fin 4) :
-    coordDeriv i heightMultiplier x=if i=3 then -(x 3:ℂ)⁻¹^2 else 0 := by
+    coordDeriv i heightMultiplier x=if i=3 then -(x 3:ℂ)⁻¹^(2 : ℕ) else 0 := by
   rw [coordDeriv,(heightMultiplier_hasFDerivAt x hy).fderiv]
   by_cases hi : i=3
   · subst i; simp
@@ -141,7 +141,7 @@ private theorem heightMultiplier_partial (x : P) (hy : 0<x 3) (i : Fin 4) :
 private theorem chart_radial_second {f : F} {x : P} (hr : 1<x 1) (hy : 0<x 3)
     (hf : ContDiffAt ℝ 2 f (chart x)) (i : Fin 4) :
     coordDeriv i (coordDeriv 1 (fun z => f (chart z))) x=
-      (if i=1 then 4*(x 1:ℂ)/((x 1:ℂ)^2-1)^2 else 0)*coordDeriv 1 f (chart x)+
+      (if i=1 then 4*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ) else 0)*coordDeriv 1 f (chart x)+
       radialMultiplier x*pullFirst (coordDeriv 1 f) i x := by
   have he := chart_first_germ hr hy hf 1
   change coordDeriv 1 (fun z => f (chart z)) =ᶠ[𝓝 x]
@@ -165,7 +165,7 @@ private theorem chart_horizontal_second {f : F} {x : P} (hr : 1<x 1) (hy : 0<x 3
 private theorem chart_height_second {f : F} {x : P} (hr : 1<x 1) (hy : 0<x 3)
     (hf : ContDiffAt ℝ 2 f (chart x)) :
     coordDeriv 3 (coordDeriv 3 (fun z => f (chart z))) x=
-      (x 3:ℂ)⁻¹^2*(coordDeriv 3 (coordDeriv 3 f) (chart x)-coordDeriv 3 f (chart x)) := by
+      (x 3:ℂ)⁻¹^(2 : ℕ)*(coordDeriv 3 (coordDeriv 3 f) (chart x)-coordDeriv 3 f (chart x)) := by
   have he := chart_first_germ hr hy hf 3
   change coordDeriv 3 (fun z => f (chart z)) =ᶠ[𝓝 x]
     (fun z => heightMultiplier z*coordDeriv 3 f (chart z)) at he
@@ -209,13 +209,13 @@ private def nativeField (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (x : P) : �
   D4BMOriginalCausalPotential.originalPotential q branch amp (x 0) (x 1) (x 2) (x 3)
 
 private def nativeLap (f : F) (x : P) : ℂ :=
-  (Real.exp (x 3):ℂ)^2*coordDeriv 2 (coordDeriv 2 f) x+
+  (Real.exp (x 3):ℂ)^(2 : ℕ)*coordDeriv 2 (coordDeriv 2 f) x+
     coordDeriv 3 (coordDeriv 3 f) x-coordDeriv 3 f x
 
 private theorem native_wave (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hpr : x 0<x 1) :
     4*coordDeriv 0 (coordDeriv 1 (nativeField q branch amp)) x-
-      nativeLap (nativeField q branch amp) x/(Real.cosh ((x 0-x 1)/2):ℂ)^2=
+      nativeLap (nativeField q branch amp) x/(Real.cosh ((x 0-x 1)/2):ℂ)^(2 : ℕ)=
       D4BMJointSource.timeOriginalForcing q branch amp
         ((x 0+x 1)/2) ((x 0-x 1)/2) ![x 2,Real.exp (x 3)] := by
   have hs := D4BMOriginalSpacetimeRegularity.originalPotential_smooth q branch amp x hp hpr
@@ -234,20 +234,20 @@ private theorem tortoise_neg (R : ℝ) (hr : 1<R) : tortoise R<0 := by
   linarith
 
 private theorem tortoise_cosh_weight (R : ℝ) (hr : 1<R) :
-    (Real.cosh (tortoise R):ℂ)^2=((R:ℂ)^2)/((R:ℂ)^2-1) := by
+    (Real.cosh (tortoise R):ℂ)^(2 : ℕ)=((R:ℂ)^(2 : ℕ))/((R:ℂ)^(2 : ℕ)-1) := by
   have hm : R-1≠0 := by linarith
   have hp : R+1≠0 := by linarith
-  have hf : R^2-1≠0 := by nlinarith
+  have hf : R^(2 : ℕ)-1≠0 := by nlinarith
   have he : Real.exp (2*tortoise R)=(R-1)/(R+1) := by
     rw [tortoise,mul_div_cancel₀ _ (by norm_num : (2:ℝ)≠0),Real.exp_sub,
       Real.exp_log (by linarith : 0<R-1),Real.exp_log (by linarith : 0<R+1)]
-  have hc (t : ℝ) : (Real.cosh t)^2=(Real.exp (2*t)+2+(Real.exp (2*t))⁻¹)/4 := by
+  have hc (t : ℝ) : (Real.cosh t)^(2 : ℕ)=(Real.exp (2*t)+2+(Real.exp (2*t))⁻¹)/4 := by
     have hn := (Real.exp_pos t).ne'
-    have ht : Real.exp (2*t)=(Real.exp t)^2 := by rw [two_mul,Real.exp_add,pow_two]
+    have ht : Real.exp (2*t)=(Real.exp t)^(2 : ℕ) := by rw [two_mul,Real.exp_add,pow_two]
     rw [ht,Real.cosh_eq,Real.exp_neg]
     field_simp
     ring
-  have hh : (Real.cosh (tortoise R))^2=R^2/(R^2-1) := by
+  have hh : (Real.cosh (tortoise R))^(2 : ℕ)=R^(2 : ℕ)/(R^(2 : ℕ)-1) := by
     rw [hc,he]
     field_simp
     ring
@@ -255,15 +255,15 @@ private theorem tortoise_cosh_weight (R : ℝ) (hr : 1<R) :
 
 private theorem chart_radial_wave {f : F} {x : P} (hr : 1<x 1) (hy : 0<x 3)
     (hf : ContDiffAt ℝ 2 f (chart x)) :
-    ((x 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 (fun z => f (chart z))) x+
+    ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 (fun z => f (chart z))) x+
       2*coordDeriv 0 (coordDeriv 1 (fun z => f (chart z))) x+
       2*(x 1:ℂ)*coordDeriv 1 (fun z => f (chart z)) x=
-      -4/((x 1:ℂ)^2-1)*coordDeriv 0 (coordDeriv 1 f) (chart x) := by
+      -4/((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 0 (coordDeriv 1 f) (chart x) := by
   rw [chart_radial_second hr hy hf 1,chart_radial_second hr hy hf 0,
     chart_first hr hy (hf.differentiableAt (by norm_num)) 1]
   simp only [pullFirst,radialMultiplier,Matrix.cons_val_zero,Matrix.cons_val_one,
     ite_true,zero_ne_one,ite_false,zero_mul,zero_add]
-  have hne : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
+  have hne : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
   field_simp
   ring
 
@@ -287,9 +287,9 @@ def originalForcing (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (x : P) : ℂ :
 theorem original_ingoing_wave (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) :
     let V := D4BMActualIngoingCurrent.originalIngoingPotential q branch amp
-    ((x 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 V) x+
+    ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 V) x+
       2*coordDeriv 0 (coordDeriv 1 V) x+2*(x 1:ℂ)*coordDeriv 1 V x+
-      angularLap V x/(x 1:ℂ)^2= -originalForcing q branch amp x/((x 1:ℂ)^2-1) := by
+      angularLap V x/(x 1:ℂ)^(2 : ℕ)= -originalForcing q branch amp x/((x 1:ℂ)^(2 : ℕ)-1) := by
   let f := nativeField q branch amp
   have hpr : chart x 0<chart x 1 := by
     change x 0<x 0-2*tortoise (x 1)
@@ -303,20 +303,20 @@ theorem original_ingoing_wave (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
   have hpoint : ![chart x 2,Real.exp (chart x 3)]=![x 2,x 3] := by simp [chart,Real.exp_log hy]
   rw [htime,hrad,hpoint] at hw
   change 4*coordDeriv 0 (coordDeriv 1 f) (chart x)-nativeLap f (chart x)/
-    (Real.cosh (tortoise (x 1)):ℂ)^2=originalForcing q branch amp x at hw
-  change ((x 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 (fun z => f (chart z))) x+
+    (Real.cosh (tortoise (x 1)):ℂ)^(2 : ℕ)=originalForcing q branch amp x at hw
+  change ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 (fun z => f (chart z))) x+
       2*coordDeriv 0 (coordDeriv 1 (fun z => f (chart z))) x+
       2*(x 1:ℂ)*coordDeriv 1 (fun z => f (chart z)) x+
-      angularLap (fun z => f (chart z)) x/(x 1:ℂ)^2=_
+      angularLap (fun z => f (chart z)) x/(x 1:ℂ)^(2 : ℕ)=_
   rw [chart_radial_wave hr hy hs2,chart_angular_wave hr hy hs2,← hw,
     tortoise_cosh_weight (x 1) hr]
   have hR : (x 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hF : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
+  have hF : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
   field_simp
   ring
 
 private def contactJet (r : ℂ) (J : ScalarTwoJet (Fin 4) ℂ) : ℂ :=
-  -r^2*(r^2-1)*J.second 1 1-r^2*(J.second 0 1+J.second 1 0)-
+  -r^(2 : ℕ)*(r^(2 : ℕ)-1)*J.second 1 1-r^(2 : ℕ)*(J.second 0 1+J.second 1 0)-
     2*r*J.first 1+2*r*J.first 0
 
 /-- The scalar contact whose coexact field is the actual reconstructed Einstein contact. -/
@@ -324,7 +324,7 @@ def scalarContact (u : F) (x : P) : ℂ := contactJet (x 1) (ofField u x)
 
 private theorem radius_contact {v : F} {x : P} (hv : ContDiffAt ℝ 2 v x) :
     scalarContact (fun z => (z 1:ℂ)*v z) x=
-      -(x 1:ℂ)^3*(((x 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 v) x+
+      -(x 1:ℂ)^(3 : ℕ)*(((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 v) x+
         coordDeriv 0 (coordDeriv 1 v) x+coordDeriv 1 (coordDeriv 0 v) x+
         2*(x 1:ℂ)*coordDeriv 1 v x)-2*(x 1:ℂ)*v x := by
   have hc : ContDiffAt ℝ 2 (fun z : P => (z 1:ℂ)) x :=
@@ -344,7 +344,7 @@ private theorem radius_angularLap {v : F} {x : P} (hv : ContDiffAt ℝ 2 v x) :
   have h2 := congrArg (fun J => J.second 2 2) hj
   have h3 := congrArg (fun J => J.second 3 3) hj
   unfold angularLap
-  change (x 3:ℂ)^2*((ofField (fun z => (z 1:ℂ)*v z) x).second 2 2+
+  change (x 3:ℂ)^(2 : ℕ)*((ofField (fun z => (z 1:ℂ)*v z) x).second 2 2+
     (ofField (fun z => (z 1:ℂ)*v z) x).second 3 3)=_
   rw [h2,h3]
   simp only [ScalarTwoJet.mul,D4BMFundamentalScalarMetric.coordinateJet,ofField]
@@ -356,20 +356,20 @@ theorem original_scalar_contact (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) :
     scalarContact (sourceScalar q branch amp) x=
       angularLap (sourceScalar q branch amp) x-2*sourceScalar q branch amp x+
-        (x 1:ℂ)^3/((x 1:ℂ)^2-1)*originalForcing q branch amp x := by
+        (x 1:ℂ)^(3 : ℕ)/((x 1:ℂ)^(2 : ℕ)-1)*originalForcing q branch amp x := by
   let V := D4BMActualIngoingCurrent.originalIngoingPotential q branch amp
   have hs : ContDiffAt ℝ 2 V x :=
     (D4BMOriginalGreenBoundary.originalPotential_exterior_smooth q branch amp x hp hr hy).of_le (WithTop.coe_le_coe.mpr le_top)
   have hw := original_ingoing_wave q branch amp x hp hr hy
-  change ((x 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 V) x+
+  change ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 V) x+
     2*coordDeriv 0 (coordDeriv 1 V) x+2*(x 1:ℂ)*coordDeriv 1 V x+
-    angularLap V x/(x 1:ℂ)^2= -originalForcing q branch amp x/((x 1:ℂ)^2-1) at hw
+    angularLap V x/(x 1:ℂ)^(2 : ℕ)= -originalForcing q branch amp x/((x 1:ℂ)^(2 : ℕ)-1) at hw
   change scalarContact (fun z => (z 1:ℂ)*V z) x=
     angularLap (fun z => (z 1:ℂ)*V z) x-2*((x 1:ℂ)*V x)+_
   rw [radius_contact hs,radius_angularLap hs,coordDeriv_comm hs 1 0]
   have hR : (x 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hF : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
-  linear_combination (norm := (field_simp [hR,hF]; ring)) -(x 1:ℂ)^3*hw
+  have hF : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
+  linear_combination (norm := (field_simp [hR,hF]; ring)) -(x 1:ℂ)^(3 : ℕ)*hw
 
 private theorem smooth_partial {u : F} {x : P} (hu : ContDiffAt ℝ ∞ u x) (i : Fin 4) :
     ContDiffAt ℝ ∞ (coordDeriv i u) x := coordDeriv_contDiffAt hu (by simp) i
@@ -397,8 +397,8 @@ private theorem scalarContact_angular_partial {u : F} {x : P}
   have hB := (hR.pow 2).mul ((hdd 0 1).add (hdd 1 0))
   have h := ((hA.sub hB).sub ((hR.const_mul 2).mul (hd 1))).add
     ((hR.const_mul 2).mul (hd 0))
-  change coordDeriv i (fun z => -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 u) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 u) z+coordDeriv 1 (coordDeriv 0 u) z)-
+  change coordDeriv i (fun z => -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 u) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 u) z+coordDeriv 1 (coordDeriv 0 u) z)-
     2*(z 1:ℂ)*coordDeriv 1 u z+2*(z 1:ℂ)*coordDeriv 0 u z) x=_
   simp only [Function.comp_def,Complex.ofRealCLM_apply,Pi.mul_apply,Pi.add_apply,
     Pi.neg_apply] at h
@@ -408,8 +408,8 @@ private theorem scalarContact_angular_partial {u : F} {x : P}
   simp only [add_apply,sub_apply,neg_apply,smul_apply,smul_eq_mul,
     ContinuousLinearMap.comp_apply,ContinuousLinearMap.proj_apply,Complex.ofRealCLM_apply,
     Pi.single_eq_of_ne (Ne.symm hi),Complex.ofReal_zero,mul_zero,add_zero,neg_zero]
-  change -(x 1:ℂ)^2*((x 1:ℂ)^2-1)*coordDeriv i (coordDeriv 1 (coordDeriv 1 u)) x-
-    (x 1:ℂ)^2*(coordDeriv i (coordDeriv 0 (coordDeriv 1 u)) x+
+  change -(x 1:ℂ)^(2 : ℕ)*((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv i (coordDeriv 1 (coordDeriv 1 u)) x-
+    (x 1:ℂ)^(2 : ℕ)*(coordDeriv i (coordDeriv 0 (coordDeriv 1 u)) x+
       coordDeriv i (coordDeriv 1 (coordDeriv 0 u)) x)-
     2*(x 1:ℂ)*coordDeriv i (coordDeriv 1 u) x+
     2*(x 1:ℂ)*coordDeriv i (coordDeriv 0 u) x=_
@@ -445,7 +445,7 @@ theorem original_stream_contact (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
       (fun j => ofField (D4BMActualIngoingCurrent.originalStream q branch amp j) x) a=
       coexactField (fun z => angularLap (sourceScalar q branch amp) z-
         2*sourceScalar q branch amp z+
-        (z 1:ℂ)^3/((z 1:ℂ)^2-1)*originalForcing q branch amp z) a x := by
+        (z 1:ℂ)^(3 : ℕ)/((z 1:ℂ)^(2 : ℕ)-1)*originalForcing q branch amp z) a x := by
   have hu := D4BMOriginalGreenBoundary.sourceScalar_exterior_smooth q branch amp x hp hr hy
   have hs := D4BMOriginalGreenBoundary.originalPotential_exterior_smooth q branch amp x hp hr hy
   have hj (j : Fin 2) : ofField (coexactField (sourceScalar q branch amp) j) x=
@@ -457,7 +457,7 @@ theorem original_stream_contact (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
   rw [coexact_contact hu]
   have he : scalarContact (sourceScalar q branch amp) =ᶠ[𝓝 x]
       (fun z => angularLap (sourceScalar q branch amp) z-2*sourceScalar q branch amp z+
-        (z 1:ℂ)^3/((z 1:ℂ)^2-1)*originalForcing q branch amp z) := by
+        (z 1:ℂ)^(3 : ℕ)/((z 1:ℂ)^(2 : ℕ)-1)*originalForcing q branch amp z) := by
     filter_upwards [(isOpen_lt continuous_const (continuous_apply 0)).mem_nhds hp,
       (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hr,
       (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hzp hzr hzy

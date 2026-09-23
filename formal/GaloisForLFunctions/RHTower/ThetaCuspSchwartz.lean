@@ -26,8 +26,8 @@ theorem thetaCuspCoeffMass_nonneg (P : ℝ[X]) : 0 ≤ thetaCuspCoeffMass P := b
 
 /-- A polynomial times a half-Gaussian has a uniform elementary bound. -/
 theorem pow_mul_exp_neg_half_pi_sq_le (p : ℕ) {y : ℝ} (hy : 0 ≤ y) :
-    y ^ p * Real.exp (-(Real.pi / 2) * y ^ 2) ≤
-      Real.exp ((p : ℝ) ^ 2 / (2 * Real.pi)) := by
+    y ^ p * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) ≤
+      Real.exp ((p : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) := by
   have hyle : y ≤ Real.exp y := by
     calc
       y ≤ y + 1 := by linarith
@@ -37,19 +37,19 @@ theorem pow_mul_exp_neg_half_pi_sq_le (p : ℕ) {y : ℝ} (hy : 0 ≤ y) :
       y ^ p ≤ Real.exp y ^ p := pow_le_pow_left₀ hy hyle p
       _ = Real.exp ((p : ℝ) * y) := by
         rw [← Real.exp_nat_mul]
-  have hquad : (p : ℝ) * y - (Real.pi / 2) * y ^ 2 ≤
-      (p : ℝ) ^ 2 / (2 * Real.pi) := by
+  have hquad : (p : ℝ) * y - (Real.pi / 2) * y ^ (2 : ℕ) ≤
+      (p : ℝ) ^ (2 : ℕ) / (2 * Real.pi) := by
     rw [le_div_iff₀ (by positivity : 0 < 2 * Real.pi)]
     nlinarith [sq_nonneg (Real.pi * y - p), Real.pi_pos]
   calc
-    y ^ p * Real.exp (-(Real.pi / 2) * y ^ 2) ≤
-        Real.exp ((p : ℝ) * y) * Real.exp (-(Real.pi / 2) * y ^ 2) := by
+    y ^ p * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) ≤
+        Real.exp ((p : ℝ) * y) * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) := by
       gcongr
-    _ = Real.exp ((p : ℝ) * y - (Real.pi / 2) * y ^ 2) := by
+    _ = Real.exp ((p : ℝ) * y - (Real.pi / 2) * y ^ (2 : ℕ)) := by
       rw [← Real.exp_add]
       congr 1
       ring
-    _ ≤ Real.exp ((p : ℝ) ^ 2 / (2 * Real.pi)) := Real.exp_le_exp.mpr hquad
+    _ ≤ Real.exp ((p : ℝ) ^ (2 : ℕ) / (2 * Real.pi)) := Real.exp_le_exp.mpr hquad
 
 /-- On `y ≥ 1`, evaluation is bounded by coefficient mass times the top-degree monomial. -/
 theorem abs_eval_le_coeffMass_mul_pow (P : ℝ[X]) {y : ℝ} (hy : 1 ≤ y) :
@@ -77,7 +77,7 @@ theorem thetaCuspPolynomialAtom_derivative_zero (m : ℕ) (x : ℝ) :
 /-- Constant in the positive-half Gaussian bound for a polynomial atom. -/
 def thetaCuspGaussianConstant (P : ℝ[X]) : ℝ :=
   thetaCuspCoeffMass P *
-    Real.exp (((P.natDegree + 2 : ℕ) : ℝ) ^ 2 / (2 * Real.pi))
+    Real.exp (((P.natDegree + 2 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi))
 
 theorem thetaCuspGaussianConstant_nonneg (P : ℝ[X]) :
     0 ≤ thetaCuspGaussianConstant P := by
@@ -90,7 +90,7 @@ theorem exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos
     (P : ℝ[X]) {x : ℝ} (hx : 0 ≤ x) {n : ℕ} (hn : 0 < n) :
     Real.exp x * |thetaCuspPolynomialAtom P n x| ≤
       thetaCuspGaussianConstant P *
-        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) := by
   obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
   focus
       let q : ℕ := n + 1
@@ -109,62 +109,62 @@ theorem exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos
         nlinarith [Real.exp_pos x]
       have hhalf : Real.exp (x / 2) ≤ y := by
         exact (Real.exp_le_exp.mpr (by linarith)).trans hexy
-      have hfront : Real.exp x * Real.exp (x / 2) ≤ y ^ 2 := by
+      have hfront : Real.exp x * Real.exp (x / 2) ≤ y ^ (2 : ℕ) := by
         rw [pow_two]
         exact mul_le_mul hexy hhalf (Real.exp_pos _).le hy0
       have heval := abs_eval_le_coeffMass_mul_pow P hy1
       let d : ℕ := P.natDegree
-      let B : ℝ := Real.exp (((d + 2 : ℕ) : ℝ) ^ 2 / (2 * Real.pi))
-      have hgauss : y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ 2) ≤ B := by
+      let B : ℝ := Real.exp (((d + 2 : ℕ) : ℝ) ^ (2 : ℕ) / (2 * Real.pi))
+      have hgauss : y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) ≤ B := by
         simpa [B] using pow_mul_exp_neg_half_pi_sq_le (d + 2) hy0
       have hmass : 0 ≤ thetaCuspCoeffMass P := thetaCuspCoeffMass_nonneg P
       have hB : 0 ≤ B := (Real.exp_pos _).le
-      have htail : Real.exp (-(Real.pi / 2) * y ^ 2) ≤
-          Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+      have htail : Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) ≤
+          Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) := by
         apply Real.exp_le_exp.mpr
-        have hsq : (q : ℝ) ^ 2 ≤ y ^ 2 := by nlinarith
+        have hsq : (q : ℝ) ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith
         nlinarith [Real.pi_pos]
-      have hsplit : Real.exp (-Real.pi * y ^ 2) =
-          Real.exp (-(Real.pi / 2) * y ^ 2) *
-            Real.exp (-(Real.pi / 2) * y ^ 2) := by
+      have hsplit : Real.exp (-Real.pi * y ^ (2 : ℕ)) =
+          Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) *
+            Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) := by
         rw [← Real.exp_add]
         congr 1
         ring
       rw [thetaCuspPolynomialAtom, abs_mul, abs_mul,
         abs_of_pos (Real.exp_pos _), abs_of_pos (Real.exp_pos _)]
       change Real.exp x *
-          (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) ≤ _
+          (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ (2 : ℕ))) ≤ _
       calc
         Real.exp x *
-            (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ 2)) =
+            (Real.exp (x / 2) * |eval y P| * Real.exp (-Real.pi * y ^ (2 : ℕ))) =
             (Real.exp x * Real.exp (x / 2)) * |eval y P| *
-              Real.exp (-Real.pi * y ^ 2) := by ring
+              Real.exp (-Real.pi * y ^ (2 : ℕ)) := by ring
         _ ≤
-            y ^ 2 * (thetaCuspCoeffMass P * y ^ d) *
-              Real.exp (-Real.pi * y ^ 2) := by
+            y ^ (2 : ℕ) * (thetaCuspCoeffMass P * y ^ d) *
+              Real.exp (-Real.pi * y ^ (2 : ℕ)) := by
           apply mul_le_mul_of_nonneg_right
           · exact mul_le_mul hfront heval (abs_nonneg _) (sq_nonneg y)
           · positivity
         _ = thetaCuspCoeffMass P *
-            (y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ 2)) *
-              Real.exp (-(Real.pi / 2) * y ^ 2) := by
+            (y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ))) *
+              Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) := by
           rw [hsplit, pow_add]
           ring
         _ ≤ thetaCuspCoeffMass P * B *
-            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) := by
           calc
             thetaCuspCoeffMass P *
-                (y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ 2)) *
-                  Real.exp (-(Real.pi / 2) * y ^ 2) ≤
+                (y ^ (d + 2) * Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ))) *
+                  Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) ≤
                 thetaCuspCoeffMass P * B *
-                  Real.exp (-(Real.pi / 2) * y ^ 2) := by
+                  Real.exp (-(Real.pi / 2) * y ^ (2 : ℕ)) := by
               exact mul_le_mul_of_nonneg_right
                 (mul_le_mul_of_nonneg_left hgauss hmass) (Real.exp_pos _).le
             _ ≤ thetaCuspCoeffMass P * B *
-                Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+                Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) := by
               exact mul_le_mul_of_nonneg_left htail (mul_nonneg hmass hB)
         _ = thetaCuspGaussianConstant P *
-            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
+            Real.exp (-(Real.pi / 2) * (q : ℝ) ^ (2 : ℕ)) := by
           rfl
 
 /-- Zero constant term extends the positive-index bound across the zero atom. -/
@@ -172,20 +172,20 @@ theorem exp_mul_abs_thetaCuspPolynomialAtom_le
     (P : ℝ[X]) (hP0 : P.coeff 0 = 0) {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
     Real.exp x * |thetaCuspPolynomialAtom P n x| ≤
       thetaCuspGaussianConstant P *
-        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) := by
   rcases n with _ | n
   · have heval : eval 0 P = 0 := by rw [← coeff_zero_eq_eval_zero, hP0]
     simpa [thetaCuspPolynomialAtom, heval] using thetaCuspGaussianConstant_nonneg P
   · exact exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos P hx (Nat.succ_pos n)
 
 theorem summable_thetaCuspHalfGaussian :
-    Summable (fun n : ℕ => Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)) := by
+    Summable (fun n : ℕ => Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))) := by
   simpa using summable_pow_mul_exp_neg_nat_sq 0 (by positivity : 0 < Real.pi / 2)
 
 /-- Constant in the `exp(-x)` bound for the `m`-th derivative. -/
 def thetaCuspDerivativeExpConstant (m : ℕ) : ℝ :=
   thetaCuspGaussianConstant (thetaCuspLogDerivativePolynomial m) *
-    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
 
 theorem thetaCuspDerivativeExpConstant_nonneg (m : ℕ) :
     0 ≤ thetaCuspDerivativeExpConstant m := by
@@ -196,7 +196,7 @@ theorem thetaCuspDerivativeExpConstant_nonneg (m : ℕ) :
 /-- Constant in the positive-half `exp(-x)` bound for a derivative of the raw theta tail. -/
 def thetaCuspTailDerivativeExpConstant (m : ℕ) : ℝ :=
   thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial m) *
-    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))
 
 theorem thetaCuspTailDerivativeExpConstant_nonneg (m : ℕ) :
     0 ≤ thetaCuspTailDerivativeExpConstant m := by
@@ -211,7 +211,7 @@ theorem abs_thetaCuspTailDerivative_le_exp_neg
       thetaCuspTailDerivativeExpConstant m * Real.exp (-x) := by
   let P : ℝ[X] := thetaCuspTailDerivativePolynomial m
   let a : ℕ → ℝ := fun n => thetaCuspPolynomialAtom P (n + 1) x
-  let g : ℕ → ℝ := fun n => Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+  let g : ℕ → ℝ := fun n => Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))
   have ha : Summable a := by
     simpa [a, P, thetaCuspTailDerivative] using summable_thetaCuspTailDerivative m x
   have hg0 : Summable g := by
@@ -281,7 +281,7 @@ theorem abs_iteratedDeriv_thetaCuspFullSource_le_exp_neg
       thetaCuspDerivativeExpConstant m * Real.exp (-x) := by
   let P : ℝ[X] := thetaCuspLogDerivativePolynomial m
   let a : ℕ → ℝ := fun n => thetaCuspPolynomialAtom P n x
-  let g : ℕ → ℝ := fun n => Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+  let g : ℕ → ℝ := fun n => Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   have hatom :
       (fun n : ℕ => iteratedDeriv m (fun y => thetaCuspSourceTerm y n) x) = a := by
     funext n

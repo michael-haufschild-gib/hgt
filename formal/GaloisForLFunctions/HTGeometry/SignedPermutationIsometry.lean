@@ -57,15 +57,15 @@ def signedPermIsometry (π : Equiv.Perm ι) {ε : ι → ℝ} (hε : ∀ i, ε i
     rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
     congr 1
     have hterm : ∀ i : ι,
-        ‖(WithLp.ofLp (signedPermLinearEquiv π hε x)) i‖ ^ 2
-          = ‖(WithLp.ofLp x) (π i)‖ ^ 2 := by
+        ‖(WithLp.ofLp (signedPermLinearEquiv π hε x)) i‖ ^ (2 : ℕ)
+          = ‖(WithLp.ofLp x) (π i)‖ ^ (2 : ℕ) := by
       intro i
       rw [coe_signedPermLinearEquiv, norm_mul]
       have hone : ‖ε i‖ = 1 := by
         rcases hε i with h | h <;> rw [h] <;> norm_num
       rw [hone, one_mul]
     rw [Finset.sum_congr rfl fun i _ => hterm i]
-    exact Equiv.sum_comp π fun j => ‖(WithLp.ofLp x) j‖ ^ 2
+    exact Equiv.sum_comp π fun j => ‖(WithLp.ofLp x) j‖ ^ (2 : ℕ)
 
 theorem coe_signedPermIsometry (π : Equiv.Perm ι) {ε : ι → ℝ}
     (hε : ∀ i, ε i = 1 ∨ ε i = -1) (x : EuclideanSpace ℝ ι) (i : ι) :

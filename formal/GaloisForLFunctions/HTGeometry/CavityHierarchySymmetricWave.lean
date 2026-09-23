@@ -29,8 +29,8 @@ theorem quadraticResponseCoeff_eq_hSym {R : Type*} [CommRing R] (a b : R) (n : �
 /-- The symmetric-square even-index law transfers to the cavity response at all orders. -/
 theorem quadraticResponseCoeff_even_selection {R : Type*} [CommRing R] (a b : R) (n : ℕ) :
     quadraticResponseCoeff (-(a + b)) (a * b) (2 * n + 2) =
-      quadraticResponseCoeff (-(a ^ 2 + b ^ 2)) (a ^ 2 * b ^ 2) (n + 1) +
-        a * b * quadraticResponseCoeff (-(a ^ 2 + b ^ 2)) (a ^ 2 * b ^ 2) n := by
+      quadraticResponseCoeff (-(a ^ (2 : ℕ) + b ^ (2 : ℕ))) (a ^ (2 : ℕ) * b ^ (2 : ℕ)) (n + 1) +
+        a * b * quadraticResponseCoeff (-(a ^ (2 : ℕ) + b ^ (2 : ℕ))) (a ^ (2 : ℕ) * b ^ (2 : ℕ)) n := by
   simp only [quadraticResponseCoeff_eq_hSym]
   exact _root_.HTGeometry.hSym_two_mul a b n
 /-- An exact finite local-factor expansion for arbitrary roots, including repeated and zero roots. -/
@@ -46,16 +46,16 @@ theorem hSym_cavity_finite_remainder {R : Type*} [CommRing R] (a b z : R) (n : �
 theorem qnmHyperboloidalDx_squared_cavityChebyshev
     {R : Type*} [CommRing R] (z : R) (n : ℤ) :
     qnmHyperboloidalDx z (qnmHyperboloidalDx z (Polynomial.Chebyshev.U R n)) =
-      (1 - 2 * Polynomial.C z) * Polynomial.X * (1 - Polynomial.X ^ 2) *
+      (1 - 2 * Polynomial.C z) * Polynomial.X * (1 - Polynomial.X ^ (2 : ℕ)) *
         (Polynomial.Chebyshev.U R n).derivative +
-      (Polynomial.C z ^ 2 * Polynomial.X ^ 2 -
-        ((n : Polynomial R) * ((n : Polynomial R) + 2) + Polynomial.C z) * (1 - Polynomial.X ^ 2)) *
+      (Polynomial.C z ^ (2 : ℕ) * Polynomial.X ^ (2 : ℕ) -
+        ((n : Polynomial R) * ((n : Polynomial R) + 2) + Polynomial.C z) * (1 - Polynomial.X ^ (2 : ℕ))) *
           Polynomial.Chebyshev.U R n := by
   rw [qnmHyperboloidalDx_squared]
   have h := Polynomial.Chebyshev.one_sub_X_sq_mul_derivative_derivative_U_eq_poly_in_U (R := R) n
-  change (1 - Polynomial.X ^ 2) * (Polynomial.Chebyshev.U R n).derivative.derivative =
+  change (1 - Polynomial.X ^ (2 : ℕ)) * (Polynomial.Chebyshev.U R n).derivative.derivative =
     3 * Polynomial.X * (Polynomial.Chebyshev.U R n).derivative -
       (((n : Polynomial R) + 2) * (n : Polynomial R)) * Polynomial.Chebyshev.U R n at h
-  linear_combination (1 - Polynomial.X ^ 2) * h
+  linear_combination (1 - Polynomial.X ^ (2 : ℕ)) * h
 end
 end GaloisForLFunctions.HTGeometry

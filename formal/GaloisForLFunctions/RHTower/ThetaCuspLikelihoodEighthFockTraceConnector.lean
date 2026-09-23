@@ -81,7 +81,7 @@ theorem thetaCuspLikelihoodEighthFockOddWeight_lt_dominantSingleMass
     dsimp only [A, B]
     unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hpair := thetaCuspLikelihoodEighthPairSectorMass_pos hA hBA
@@ -110,7 +110,7 @@ theorem thetaCuspLikelihoodEighthFockOddWeight_lt_sourceOrdinaryJetEight
     dsimp only [A, B]
     unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx

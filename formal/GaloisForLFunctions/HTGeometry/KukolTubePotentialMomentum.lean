@@ -19,7 +19,7 @@ variable {E ι : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- The orbit margin as a scalar quadratic with its intrinsic drift. -/
 theorem kukolTubeMargin_quadratic (v : KukolLightCone E) (r s : ℝ) (z u : E) :
     kukolTubeMargin v r s z u = Real.exp s+
-      2*inner ℝ (kukolOrbitDrift r v.1 v.2.2 z) u-kukolOrbitCoefficient r v.1*‖u‖^2 := by
+      2*inner ℝ (kukolOrbitDrift r v.1 v.2.2 z) u-kukolOrbitCoefficient r v.1*‖u‖^(2 : ℕ) := by
   unfold kukolTubeMargin
   rw [kukolQuadratic_imaginaryAction,kukolQuadratic_strictState]
   simp [kukolStrictState,kukolOrbitDrift,kukolOrbitCoefficient,inner_sub_left,inner_smul_left]
@@ -40,7 +40,7 @@ theorem hasFDerivAt_kukolTubeMargin (v : KukolLightCone E) (r s : ℝ) (z u : E)
 
 /-- A component of the gradient, expressed by the transformed orbit drift. -/
 def kukolTubeForceComponent (v : KukolLightCone E) (r s : ℝ) (z u : E) : E :=
-  (1/(kukolTubeMargin v r s z u)^2) •
+  (1/(kukolTubeMargin v r s z u)^(2 : ℕ)) •
     (kukolOrbitCoefficient r v.1 • u-kukolOrbitDrift r v.1 v.2.2 z)
 
 /-- Differentiation of the reciprocal margin on its natural positive domain. -/
@@ -50,7 +50,7 @@ theorem hasFDerivAt_kukolTubeReciprocal (v : KukolLightCone E) (r s : ℝ) (z : 
       ((2 : ℝ) • innerSL ℝ (kukolTubeForceComponent v r s z u)) u.val := by
   have h := (hasDerivAt_inv u.property.ne').comp_hasFDerivAt u.val
     (hasFDerivAt_kukolTubeMargin v r s z u)
-  have hmap : (-((kukolTubeMargin v r s z u)^2)⁻¹) •
+  have hmap : (-((kukolTubeMargin v r s z u)^(2 : ℕ))⁻¹) •
       ((2 : ℝ) • innerSL ℝ (kukolOrbitDrift r v.1 v.2.2 z-kukolOrbitCoefficient r v.1 • u.val)) =
       (2 : ℝ) • innerSL ℝ (kukolTubeForceComponent v r s z u) := by
     ext w

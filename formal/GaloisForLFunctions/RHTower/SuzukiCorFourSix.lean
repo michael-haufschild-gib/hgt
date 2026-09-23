@@ -143,7 +143,7 @@ theorem abs_im_xiSpectralPointSupport_lt (ρ : XiDivisorSupport) :
 theorem half_sub_I_mul_neg_spectral (ρ : XiDivisorSupport) :
     1 / 2 - Complex.I * (-(xiSpectralPointSupport ρ)) = (ρ : ℂ) := by
   show 1 / 2 - Complex.I * (-(((ρ : ℂ) - 1 / 2) * (-Complex.I))) = (ρ : ℂ)
-  have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+  have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
   linear_combination (1 / 2 - (ρ : ℂ)) * hI
 
 theorem conj_half_ofReal : (starRingEnd ℂ) ((1 : ℂ) / 2) = 1 / 2 := by
@@ -213,29 +213,29 @@ theorem summable_liTerm_xiZeroCopy (n : ℕ) :
     intro ρ
     exact_mod_cast xi_divisor_pos_on_support ρ
   -- the inverse-square weight is summable over the copies
-  have hgnn : ∀ ρ : XiDivisorSupport, (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ 2 := fun ρ => by positivity
+  have hgnn : ∀ ρ : XiDivisorSupport, (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ) := fun ρ => by positivity
   have houter : Summable fun ρ : XiDivisorSupport =>
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
     refine xi_zero_multiplicity_inv_sq_summable.congr fun ρ => ?_
     rw [mul_one_div]
   have hfibR : ∀ ρ : XiDivisorSupport,
       HasSum (fun _ : Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ))) =>
-        1 / ‖(ρ : ℂ)‖ ^ 2)
-        (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
+        1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))
+        (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))) := by
     intro ρ
     have hb := hasSum_fintype
       (fun _ : Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ))) =>
-        1 / ‖(ρ : ℂ)‖ ^ 2)
+        1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))
     have hcast : ((Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) : ℕ) : ℝ)
         = ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
       have hpos := (xi_divisor_pos_on_support ρ).le
       exact_mod_cast Int.toNat_of_nonneg hpos
     simpa [Finset.sum_const, nsmul_eq_mul, hcast] using hb
-  have hcopy : Summable fun q : XiZeroCopy => 1 / ‖((q.1 : XiDivisorSupport) : ℂ)‖ ^ 2 := by
+  have hcopy : Summable fun q : XiZeroCopy => 1 / ‖((q.1 : XiDivisorSupport) : ℂ)‖ ^ (2 : ℕ) := by
     rw [summable_sigma_of_nonneg (fun q => hgnn q.1)]
     exact ⟨fun ρ => (hfibR ρ).summable,
       houter.congr fun ρ => ((hfibR ρ).tsum_eq).symm⟩
-  refine Summable.of_norm_bounded (hcopy.mul_left ((n : ℝ) ^ 2 * M ^ n)) fun q => ?_
+  refine Summable.of_norm_bounded (hcopy.mul_left ((n : ℝ) ^ (2 : ℕ) * M ^ n)) fun q => ?_
   set ρ : XiDivisorSupport := q.1 with hρ
   have him : (ρ : ℂ).im ≠ 0 := xi_divisor_support_im_ne_zero ρ
   have h0 : (ρ : ℂ) ≠ 0 := by
@@ -252,11 +252,11 @@ theorem summable_liTerm_xiZeroCopy (n : ℕ) :
   have hMn : max ‖xiRootW ((ρ : XiDivisorSupport) : ℂ)‖
       ‖xiRootW ((ρ : XiDivisorSupport) : ℂ)‖⁻¹ ^ n ≤ M ^ n :=
     pow_le_pow_left₀ (le_trans (norm_nonneg _) (le_max_left _ _)) (hMb ρ) n
-  have hsq : (1 / ‖(ρ : ℂ)‖) ^ 2 = 1 / ‖(ρ : ℂ)‖ ^ 2 := by rw [div_pow, one_pow]
+  have hsq : (1 / ‖(ρ : ℂ)‖) ^ (2 : ℕ) = 1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ) := by rw [div_pow, one_pow]
   refine le_trans hbase ?_
   rw [hsq]
-  have hnn : (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ 2 := hgnn ρ
-  have hnn2 : (0 : ℝ) ≤ (n : ℝ) ^ 2 := sq_nonneg _
+  have hnn : (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ) := hgnn ρ
+  have hnn2 : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := sq_nonneg _
   rw [mul_assoc, mul_assoc]
   gcongr
 

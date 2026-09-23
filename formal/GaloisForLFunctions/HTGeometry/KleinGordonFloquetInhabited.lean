@@ -46,7 +46,7 @@ theorem kgFieldStateT_const (W₀ : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp �
 
 /-- The energy norm of a datum is the square root of its energy. -/
 theorem norm_kgPair_sq (g h : Lp ℂ 2 (volume : Measure E)) :
-    ‖kgPair E (g, h)‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+    ‖kgPair E (g, h)‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
   rw [← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd]
 
 /-! ## The free clock -/
@@ -59,14 +59,14 @@ variable {T : ℝ}
 theorem norm_kgMonodromy_zero_apply (hT : ℝ) (v : KGEnergy E) :
     ‖kgPeriodMap (E := E) (fun _ : ℝ => 0) hT v‖ = ‖v‖ := by
   have hsq : ‖kgFieldGrad (0 : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E))
-        v.fst v.snd hT‖ ^ 2
+        v.fst v.snd hT‖ ^ (2 : ℕ)
       + ‖kgFieldVel (0 : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E))
-        v.fst v.snd hT‖ ^ 2
-      = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := kgFieldEnergy_zero_op v.fst v.snd hT
-  have hL : ‖kgPeriodMap (E := E) (fun _ : ℝ => 0) hT v‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := by
+        v.fst v.snd hT‖ ^ (2 : ℕ)
+      = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := kgFieldEnergy_zero_op v.fst v.snd hT
+  have hL : ‖kgPeriodMap (E := E) (fun _ : ℝ => 0) hT v‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := by
     rw [kgPeriodMap, kgFieldStateT_const, ← kgFieldEnergy_eq_norm_sq]
     exact hsq
-  have hR : ‖v‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := by
+  have hR : ‖v‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := by
     rw [← kgPair_fst_snd v, norm_kgPair_sq, kgPair_fst, kgPair_snd]
   have h1 : (0 : ℝ) ≤ ‖kgPeriodMap (E := E) (fun _ : ℝ => 0) hT v‖ := norm_nonneg _
   have h2 : (0 : ℝ) ≤ ‖v‖ := norm_nonneg _
@@ -101,12 +101,12 @@ theorem norm_kgFieldState_le_uniform (hb0 : 0 ≤ b) (hb1 : b < 1) (hW : ‖W₀
   have hb1' : (0 : ℝ) < 1 - b := by linarith
   have hK0 : (0 : ℝ) ≤ (1 + b) / (1 - b) := by positivity
   have hen := kgFieldEnergy_uniform hb0 hb1 hW hsa g h t
-  have hL : ‖kgFieldState W₀ g h t‖ ^ 2
-      = ‖kgFieldGrad W₀ g h t‖ ^ 2 + ‖kgFieldVel W₀ g h t‖ ^ 2 :=
+  have hL : ‖kgFieldState W₀ g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGrad W₀ g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g h t‖ ^ (2 : ℕ) :=
     (kgFieldEnergy_eq_norm_sq W₀ g h t).symm
-  have hR : ‖kgPair E (g, h)‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := norm_kgPair_sq g h
-  have hsq : ‖kgFieldState W₀ g h t‖ ^ 2
-      ≤ (Real.sqrt ((1 + b) / (1 - b)) * ‖kgPair E (g, h)‖) ^ 2 := by
+  have hR : ‖kgPair E (g, h)‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := norm_kgPair_sq g h
+  have hsq : ‖kgFieldState W₀ g h t‖ ^ (2 : ℕ)
+      ≤ (Real.sqrt ((1 + b) / (1 - b)) * ‖kgPair E (g, h)‖) ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt hK0, hL, hR]
     exact hen
   have h1 : (0 : ℝ) ≤ ‖kgFieldState W₀ g h t‖ := norm_nonneg _
@@ -139,8 +139,8 @@ theorem norm_kgMonodromy_pow_le_of_small (hb0 : 0 ≤ b) (hb1 : b < 1) (hW : ‖
 theorem norm_kgFieldState_le_of_small (hb0 : 0 ≤ b) (hb1 : b < 1) (hW : ‖W₀‖ ≤ b)
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (W₀ x) y : ℂ) = inner ℂ x (W₀ y))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad W₀ g h t‖ ^ 2 + ‖kgFieldVel W₀ g h t‖ ^ 2
-      ≤ (1 + b) / (1 - b) * (‖g‖ ^ 2 + ‖h‖ ^ 2) :=
+    ‖kgFieldGrad W₀ g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g h t‖ ^ (2 : ℕ)
+      ≤ (1 + b) / (1 - b) * (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) :=
   kgFieldEnergy_uniform hb0 hb1 hW hsa g h t
 
 end SmallPotential

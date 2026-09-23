@@ -147,14 +147,14 @@ theorem re_digamma_quarter_gt_lower_bound :
 /-! ## Positive terms at the first tail base -/
 
 private theorem exp_logTwo_half_sq_reserve :
-    Real.exp (Real.log 2 / 2) ^ 2 = 2 := by
+    Real.exp (Real.log 2 / 2) ^ (2 : ℕ) = 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   rw [show (2 : ℝ) * (Real.log 2 / 2) = Real.log 2 by ring,
     Real.exp_log (by norm_num : (0 : ℝ) < 2)]
 
 private theorem exp_neg_logTwo_half_sq_reserve :
-    Real.exp (-Real.log 2 / 2) ^ 2 = 1 / 2 := by
+    Real.exp (-Real.log 2 / 2) ^ (2 : ℕ) = 1 / 2 := by
   rw [← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]
   have hneg : Real.exp (-Real.log 2) = (1 / 2 : ℝ) := by
@@ -192,7 +192,7 @@ private theorem exp_neg_two_logTwo_reserve :
 
 private theorem lerchGapSummand_logTwo_lower_bound (n : ℕ) :
     (1 - (177 / 250 : ℝ) * (1 / 4 : ℝ) ^ n) /
-        ((n : ℝ) + 1 / 4) ^ 2 ≤
+        ((n : ℝ) + 1 / 4) ^ (2 : ℕ) ≤
       suzukiPointwiseLerchGapSummand (Real.log 2) n := by
   rw [suzukiPointwiseLerchGapSummand_eq,
     suzukiPointwiseLerchMode_eq_geometric,
@@ -213,7 +213,7 @@ theorem quarter_mul_lerchGap_logTwo_gt :
           suzukiPointwiseLerchGapSummand (Real.log 2) n) := by
   let lower : ℕ → ℝ := fun n =>
     (1 - (177 / 250 : ℝ) * (1 / 4 : ℝ) ^ n) /
-      ((n : ℝ) + 1 / 4) ^ 2
+      ((n : ℝ) + 1 / 4) ^ (2 : ℕ)
   have hfinite : (711 / 125 : ℝ) <
       ∑ n ∈ Finset.range 18, lower n := by
     dsimp only [lower]

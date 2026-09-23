@@ -29,7 +29,7 @@ theorem card_le_of_selected_wide_huxley_windows
     (ell : ℕ) (hell : 0 < ell) (hell90 : ell ≤ 90)
     (hheight : W ≤ 8 * Real.pi *
       ((((groupedDyadicLower
-        (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ)) ^ 2)
+        (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ)) ^ (2 : ℕ))
     (hlarge : ∀ r ∈ S,
       ((((groupedDyadicLower
         (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ)) ^ (alpha - c) ≤
@@ -39,7 +39,7 @@ theorem card_le_of_selected_wide_huxley_windows
             (heathBrownSelectedExponent label i)))
               ((c : ℂ) + (lam r : ℝ) * Complex.I)) ^ ell‖)
     (hscale :
-      2 * ((Fintype.card (HeathBrownSelectedFactor label) * ell + 1 : ℕ) : ℝ) ^ 2 *
+      2 * ((Fintype.card (HeathBrownSelectedFactor label) * ell + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           heathBrownSelectedRaisedEnergy label ell *
           (1 + 256 * (Real.sqrt W +
             8 * Real.sqrt
@@ -49,7 +49,7 @@ theorem card_le_of_selected_wide_huxley_windows
           (heathBrownSelectedExponent label)) ^ ell : ℕ) : ℝ)) ^ (2 * alpha)) :
     (S.card : ℝ) ≤
       (huxleyWindowCount T W : ℝ) *
-        (2 * (10801 : ℝ) ^ 2 * maynardMontgomeryRaisedWidthConstant *
+        (2 * (10801 : ℝ) ^ (2 : ℕ) * maynardMontgomeryRaisedWidthConstant *
           maynardHarmonicFactor K delta *
           (1 + Real.log
             (maynardMontgomeryRaisedWidthConstant *
@@ -63,7 +63,7 @@ theorem card_le_of_selected_wide_huxley_windows
             (2 - 2 * alpha)) := by
   let color : ℕ → Fin (huxleyWindowCount T W) := huxleyWindowColor T W lam
   let B : ℝ :=
-    2 * (10801 : ℝ) ^ 2 * maynardMontgomeryRaisedWidthConstant *
+    2 * (10801 : ℝ) ^ (2 : ℕ) * maynardMontgomeryRaisedWidthConstant *
       maynardHarmonicFactor K delta *
       (1 + Real.log
         (maynardMontgomeryRaisedWidthConstant *
@@ -113,7 +113,7 @@ theorem card_le_of_selected_wide_huxley_windows
     _ = (huxleyWindowCount T W : ℝ) * B := by
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     _ = (huxleyWindowCount T W : ℝ) *
-        (2 * (10801 : ℝ) ^ 2 * maynardMontgomeryRaisedWidthConstant *
+        (2 * (10801 : ℝ) ^ (2 : ℕ) * maynardMontgomeryRaisedWidthConstant *
           maynardHarmonicFactor K delta *
           (1 + Real.log
             (maynardMontgomeryRaisedWidthConstant *

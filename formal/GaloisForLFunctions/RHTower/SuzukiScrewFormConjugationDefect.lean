@@ -86,7 +86,7 @@ theorem suzukiTestRayCoefBar_eq_conj_partner {a : ℝ} (φ : SuzukiSmoothZeroMea
 /-- Pointwise polarisation: `Re(w A conj B) = ½ Re w (|A|² + |B|² − |A−B|²) − Im w · Im(A conj B)`. -/
 theorem re_mul_mul_conj_eq (w A B : ℂ) :
     ((starRingEnd ℂ) B * A * w).re =
-      1 / 2 * w.re * (‖A‖ ^ 2 + ‖B‖ ^ 2 - ‖A - B‖ ^ 2) - w.im * (A * (starRingEnd ℂ) B).im := by
+      1 / 2 * w.re * (‖A‖ ^ (2 : ℕ) + ‖B‖ ^ (2 : ℕ) - ‖A - B‖ ^ (2 : ℕ)) - w.im * (A * (starRingEnd ℂ) B).im := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
   simp only [Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im, Complex.normSq_apply,
     Complex.sub_re, Complex.sub_im]
@@ -94,11 +94,11 @@ theorem re_mul_mul_conj_eq (w A B : ℂ) :
 
 /-- The ray term of the screw form at a copy. -/
 def screwRayTerm {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (q : XiZeroCopy) : ℂ :=
-  suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2
+  suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ)
 
 theorem screwRayTerm_eq {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) (q : XiZeroCopy) :
     screwRayTerm φ q = (starRingEnd ℂ) (suzukiTestRayCoef φ (xiZeroCopyPartner q)) *
-      suzukiTestRayCoef φ q * (1 / xiSpectralPoint q ^ 2) := by
+      suzukiTestRayCoef φ q * (1 / xiSpectralPoint q ^ (2 : ℕ)) := by
   unfold screwRayTerm
   rw [suzukiTestRayCoefBar_eq_conj_partner]
   ring
@@ -112,7 +112,7 @@ theorem norm_suzukiTestRayCoef_le_half {a : ℝ} (φ : SuzukiSmoothZeroMeanTest 
 
 /-- Summability of a real sequence dominated by a multiple of `‖z_q‖⁻²`. -/
 theorem summable_of_le_inv_sq {f : XiZeroCopy → ℝ} {M : ℝ}
-    (hf : ∀ q, |f q| ≤ M * (1 / ‖xiSpectralPoint q‖ ^ 2)) : Summable f :=
+    (hf : ∀ q, |f q| ≤ M * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) : Summable f :=
   Summable.of_norm_bounded (xiSpectralPoint_inv_sq_summable.mul_left M) fun q => by
     rw [Real.norm_eq_abs]; exact hf q
 
@@ -121,10 +121,10 @@ theorem summable_of_le_inv_sq {f : XiZeroCopy → ℝ} {M : ℝ}
 `Re Q(φ) = Σ'_q Re w_q |c_q|² − ½ Σ'_q Re w_q |c_q − c_{q*}|² − Σ'_q Im w_q · Im(c_q conj c_{q*})`. -/
 theorem re_suzukiScrewSmoothForm_eq_sampling_sub_defect {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
     (suzukiScrewSmoothForm φ φ).re =
-      (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).re * ‖suzukiTestRayCoef φ q‖ ^ 2)
-        - 1 / 2 * ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).re *
-            ‖suzukiTestRayCoef φ q - suzukiTestRayCoef φ (xiZeroCopyPartner q)‖ ^ 2
-        - ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).im *
+      (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).re * ‖suzukiTestRayCoef φ q‖ ^ (2 : ℕ))
+        - 1 / 2 * ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).re *
+            ‖suzukiTestRayCoef φ q - suzukiTestRayCoef φ (xiZeroCopyPartner q)‖ ^ (2 : ℕ)
+        - ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).im *
             (suzukiTestRayCoef φ q *
               (starRingEnd ℂ) (suzukiTestRayCoef φ (xiZeroCopyPartner q))).im := by
   rw [suzukiScrewSmoothForm_eq_tsum]
@@ -133,61 +133,61 @@ theorem re_suzukiScrewSmoothForm_eq_sampling_sub_defect {a : ℝ} (φ : SuzukiSm
     have : 0 ≤ ∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖ := integral_nonneg fun u => norm_nonneg _
     positivity
   have hc : ∀ q, ‖suzukiTestRayCoef φ q‖ ≤ M := fun q => norm_suzukiTestRayCoef_le_half φ q
-  have hw : ∀ q, ‖(1 / xiSpectralPoint q ^ 2 : ℂ)‖ = 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+  have hw : ∀ q, ‖(1 / xiSpectralPoint q ^ (2 : ℕ) : ℂ)‖ = 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     intro q
     rw [norm_div, norm_one, norm_pow]
   set A : XiZeroCopy → ℂ := fun q => suzukiTestRayCoef φ q with hA
   set B : XiZeroCopy → ℂ := fun q => suzukiTestRayCoef φ (xiZeroCopyPartner q) with hB
-  set w : XiZeroCopy → ℂ := fun q => 1 / xiSpectralPoint q ^ 2 with hwdef
+  set w : XiZeroCopy → ℂ := fun q => 1 / xiSpectralPoint q ^ (2 : ℕ) with hwdef
   -- the three real pieces
-  set f₁ : XiZeroCopy → ℝ := fun q => (w q).re * ‖A q‖ ^ 2 with hf₁
-  set f₂ : XiZeroCopy → ℝ := fun q => (w q).re * ‖B q‖ ^ 2 with hf₂
-  set f₃ : XiZeroCopy → ℝ := fun q => (w q).re * ‖A q - B q‖ ^ 2 with hf₃
+  set f₁ : XiZeroCopy → ℝ := fun q => (w q).re * ‖A q‖ ^ (2 : ℕ) with hf₁
+  set f₂ : XiZeroCopy → ℝ := fun q => (w q).re * ‖B q‖ ^ (2 : ℕ) with hf₂
+  set f₃ : XiZeroCopy → ℝ := fun q => (w q).re * ‖A q - B q‖ ^ (2 : ℕ) with hf₃
   set f₄ : XiZeroCopy → ℝ := fun q => (w q).im * (A q * (starRingEnd ℂ) (B q)).im with hf₄
-  have hwre : ∀ q, |(w q).re| ≤ 1 / ‖xiSpectralPoint q‖ ^ 2 := fun q =>
+  have hwre : ∀ q, |(w q).re| ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := fun q =>
     (Complex.abs_re_le_norm _).trans (le_of_eq (hw q))
-  have hwim : ∀ q, |(w q).im| ≤ 1 / ‖xiSpectralPoint q‖ ^ 2 := fun q =>
+  have hwim : ∀ q, |(w q).im| ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := fun q =>
     (Complex.abs_im_le_norm _).trans (le_of_eq (hw q))
   have hAle : ∀ q, ‖A q‖ ≤ M := fun q => hc q
   have hBle : ∀ q, ‖B q‖ ≤ M := fun q => hc _
-  have hs₁ : Summable f₁ := summable_of_le_inv_sq (M := M ^ 2) fun q => by
+  have hs₁ : Summable f₁ := summable_of_le_inv_sq (M := M ^ (2 : ℕ)) fun q => by
     simp only [hf₁]
-    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖A q‖ ^ 2)]
-    calc |(w q).re| * ‖A q‖ ^ 2 ≤ (1 / ‖xiSpectralPoint q‖ ^ 2) * M ^ 2 :=
+    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖A q‖ ^ (2 : ℕ))]
+    calc |(w q).re| * ‖A q‖ ^ (2 : ℕ) ≤ (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * M ^ (2 : ℕ) :=
           mul_le_mul (hwre q) (pow_le_pow_left₀ (norm_nonneg _) (hAle q) 2) (by positivity)
             (by positivity)
-      _ = M ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
-  have hs₂ : Summable f₂ := summable_of_le_inv_sq (M := M ^ 2) fun q => by
+      _ = M ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
+  have hs₂ : Summable f₂ := summable_of_le_inv_sq (M := M ^ (2 : ℕ)) fun q => by
     simp only [hf₂]
-    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖B q‖ ^ 2)]
-    calc |(w q).re| * ‖B q‖ ^ 2 ≤ (1 / ‖xiSpectralPoint q‖ ^ 2) * M ^ 2 :=
+    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖B q‖ ^ (2 : ℕ))]
+    calc |(w q).re| * ‖B q‖ ^ (2 : ℕ) ≤ (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * M ^ (2 : ℕ) :=
           mul_le_mul (hwre q) (pow_le_pow_left₀ (norm_nonneg _) (hBle q) 2) (by positivity)
             (by positivity)
-      _ = M ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
-  have hs₃ : Summable f₃ := summable_of_le_inv_sq (M := (2 * M) ^ 2) fun q => by
+      _ = M ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
+  have hs₃ : Summable f₃ := summable_of_le_inv_sq (M := (2 * M) ^ (2 : ℕ)) fun q => by
     simp only [hf₃]
-    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖A q - B q‖ ^ 2)]
+    rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖A q - B q‖ ^ (2 : ℕ))]
     have hAB : ‖A q - B q‖ ≤ 2 * M := by
       calc ‖A q - B q‖ ≤ ‖A q‖ + ‖B q‖ := norm_sub_le _ _
         _ ≤ M + M := add_le_add (hAle q) (hBle q)
         _ = 2 * M := by ring
-    calc |(w q).re| * ‖A q - B q‖ ^ 2 ≤ (1 / ‖xiSpectralPoint q‖ ^ 2) * (2 * M) ^ 2 :=
+    calc |(w q).re| * ‖A q - B q‖ ^ (2 : ℕ) ≤ (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * (2 * M) ^ (2 : ℕ) :=
           mul_le_mul (hwre q) (pow_le_pow_left₀ (norm_nonneg _) hAB 2) (by positivity)
             (by positivity)
-      _ = (2 * M) ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
-  have hs₄ : Summable f₄ := summable_of_le_inv_sq (M := M ^ 2) fun q => by
+      _ = (2 * M) ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
+  have hs₄ : Summable f₄ := summable_of_le_inv_sq (M := M ^ (2 : ℕ)) fun q => by
     simp only [hf₄]
     rw [abs_mul]
-    have him : |(A q * (starRingEnd ℂ) (B q)).im| ≤ M ^ 2 := by
+    have him : |(A q * (starRingEnd ℂ) (B q)).im| ≤ M ^ (2 : ℕ) := by
       calc |(A q * (starRingEnd ℂ) (B q)).im| ≤ ‖A q * (starRingEnd ℂ) (B q)‖ :=
             Complex.abs_im_le_norm _
         _ = ‖A q‖ * ‖B q‖ := by rw [norm_mul, Complex.norm_conj]
         _ ≤ M * M := mul_le_mul (hAle q) (hBle q) (norm_nonneg _) hM0
-        _ = M ^ 2 := by ring
+        _ = M ^ (2 : ℕ) := by ring
     calc |(w q).im| * |(A q * (starRingEnd ℂ) (B q)).im|
-        ≤ (1 / ‖xiSpectralPoint q‖ ^ 2) * M ^ 2 :=
+        ≤ (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * M ^ (2 : ℕ) :=
           mul_le_mul (hwim q) him (abs_nonneg _) (by positivity)
-      _ = M ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+      _ = M ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
   -- the complex terms are summable, and their real parts split
   have hterm : ∀ q, screwRayTerm φ q = (starRingEnd ℂ) (B q) * A q * w q := fun q =>
     screwRayTerm_eq φ q
@@ -198,14 +198,14 @@ theorem re_suzukiScrewSmoothForm_eq_sampling_sub_defect {a : ℝ} (φ : SuzukiSm
     simp only [hf₁, hf₂, hf₃, hf₄]
     ring
   have hsum : Summable (screwRayTerm φ) := by
-    refine Summable.of_norm_bounded (xiSpectralPoint_inv_sq_summable.mul_left (M ^ 2)) fun q => ?_
+    refine Summable.of_norm_bounded (xiSpectralPoint_inv_sq_summable.mul_left (M ^ (2 : ℕ))) fun q => ?_
     rw [hterm, norm_mul, norm_mul, Complex.norm_conj, hw]
-    calc ‖B q‖ * ‖A q‖ * (1 / ‖xiSpectralPoint q‖ ^ 2)
-        ≤ M * M * (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+    calc ‖B q‖ * ‖A q‖ * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
+        ≤ M * M * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_right (mul_le_mul (hBle q) (hAle q) (norm_nonneg _) hM0)
             (by positivity)
-      _ = M ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
-  have hQ : (∑' q, suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2) =
+      _ = M ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
+  have hQ : (∑' q, suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ)) =
       ∑' q, screwRayTerm φ q := rfl
   rw [hQ, Complex.re_tsum hsum, tsum_congr hre]
   rw [Summable.tsum_sub (by
@@ -220,8 +220,8 @@ theorem re_suzukiScrewSmoothForm_eq_sampling_sub_defect {a : ℝ} (φ : SuzukiSm
     refine tsum_congr fun q => ?_
     simp only [hf₂, hf₁, hB, hA, hwdef]
     rw [xiZeroCopyPartner_partner, xiSpectralPoint_partner]
-    have hconj : (1 / (starRingEnd ℂ) (xiSpectralPoint q) ^ 2 : ℂ) =
-        (starRingEnd ℂ) (1 / xiSpectralPoint q ^ 2) := by
+    have hconj : (1 / (starRingEnd ℂ) (xiSpectralPoint q) ^ (2 : ℕ) : ℂ) =
+        (starRingEnd ℂ) (1 / xiSpectralPoint q ^ (2 : ℕ)) := by
       rw [map_div₀, map_one, map_pow]
     rw [hconj, Complex.conj_re]
   rw [hsym]
@@ -233,26 +233,26 @@ sums vanish, and `Re Q(φ) = Σ'_q |c_q|²/z_q² ≥ 0`. -/
 theorem re_suzukiScrewSmoothForm_eq_sampling_of_riemannHypothesis (hRH : RiemannHypothesis)
     {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
     (suzukiScrewSmoothForm φ φ).re =
-      ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).re * ‖suzukiTestRayCoef φ q‖ ^ 2 := by
+      ∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).re * ‖suzukiTestRayCoef φ q‖ ^ (2 : ℕ) := by
   rw [re_suzukiScrewSmoothForm_eq_sampling_sub_defect]
   have hself : ∀ q : XiZeroCopy, xiZeroCopyPartner q = q := fun q =>
     xiZeroCopyPartner_eq_self_of_im_eq_zero q (xiSpectralPoint_im_eq_zero_of_riemannHypothesis hRH q)
-  have h3 : (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).re *
-      ‖suzukiTestRayCoef φ q - suzukiTestRayCoef φ (xiZeroCopyPartner q)‖ ^ 2) = 0 := by
+  have h3 : (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).re *
+      ‖suzukiTestRayCoef φ q - suzukiTestRayCoef φ (xiZeroCopyPartner q)‖ ^ (2 : ℕ)) = 0 := by
     calc _ = ∑' _q : XiZeroCopy, (0 : ℝ) := tsum_congr fun q => by
             rw [hself q, sub_self, norm_zero]; ring
       _ = 0 := tsum_zero
-  have h4 : (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ 2).im *
+  have h4 : (∑' q : XiZeroCopy, (1 / xiSpectralPoint q ^ (2 : ℕ)).im *
       (suzukiTestRayCoef φ q * (starRingEnd ℂ) (suzukiTestRayCoef φ (xiZeroCopyPartner q))).im) = 0 := by
     refine (tsum_congr fun q => ?_).trans (tsum_zero (α := ℝ) (β := XiZeroCopy))
-    have him : (1 / xiSpectralPoint q ^ 2 : ℂ).im = 0 := by
+    have him : (1 / xiSpectralPoint q ^ (2 : ℕ) : ℂ).im = 0 := by
       obtain ⟨t, ht⟩ : ∃ t : ℝ, xiSpectralPoint q = (t : ℂ) :=
         ⟨(xiSpectralPoint q).re, by
           apply Complex.ext
           · simp
           · simp [xiSpectralPoint_im_eq_zero_of_riemannHypothesis hRH q]⟩
       rw [ht]
-      have hcast : (1 / (t : ℂ) ^ 2) = ((1 / t ^ 2 : ℝ) : ℂ) := by push_cast; ring
+      have hcast : (1 / (t : ℂ) ^ (2 : ℕ)) = ((1 / t ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
       rw [hcast, Complex.ofReal_im]
     rw [him, zero_mul]
   rw [h3, h4]

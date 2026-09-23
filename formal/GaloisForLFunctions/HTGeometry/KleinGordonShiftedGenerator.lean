@@ -30,7 +30,7 @@ variable {v : E → ℝ} {b : ℝ}
 
 /-- The symbol of `Ω²`, cut to the frequencies below `R`. -/
 def kgShiftedFreqSqLow (v : E → ℝ) (R : ℝ) (ξ : E) : ℂ :=
-  ((kgShiftedFreq v ξ ^ 2 : ℝ) : ℂ) * kgLowPass R ξ
+  ((kgShiftedFreq v ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgLowPass R ξ
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem measurable_kgShiftedFreqSqLow (hv : Measurable v) (R : ℝ) :
@@ -41,7 +41,7 @@ theorem measurable_kgShiftedFreqSqLow (hv : Measurable v) (R : ℝ) :
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **Below a fixed frequency the generator symbol is bounded.** -/
 theorem norm_kgShiftedFreqSqLow_le (hb0 : 0 ≤ b) (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b)
-    (R : ℝ) (ξ : E) : ‖kgShiftedFreqSqLow v R ξ‖ ≤ 1 + R ^ 2 + b := by
+    (R : ℝ) (ξ : E) : ‖kgShiftedFreqSqLow v R ξ‖ ≤ 1 + R ^ (2 : ℕ) + b := by
   have hband := band_bound_nonneg (b := b) hb0 R
   rw [kgShiftedFreqSqLow, kgLowPass]
   split
@@ -65,7 +65,7 @@ def kgShiftedFreqSqLowOp (hv : Measurable v) (hb0 : 0 ≤ b) (hb1 : b < 1)
 
 theorem norm_kgShiftedFreqSqLowOp_le (hv : Measurable v) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hvb : ∀ ξ : E, |v ξ| ≤ b) (R : ℝ) :
-    ‖kgShiftedFreqSqLowOp (E := E) hv hb0 hb1 hvb R‖ ≤ 1 + R ^ 2 + b :=
+    ‖kgShiftedFreqSqLowOp (E := E) hv hb0 hb1 hvb R‖ ≤ 1 + R ^ (2 : ℕ) + b :=
   norm_fourierMulCLM_le _ _ _
 
 /-- **The generator is self-adjoint**, because its symbol is real. -/
@@ -85,7 +85,7 @@ theorem kgShiftedCos_add_lowPass (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) 
             * (kgShiftedSinOverFreq v t ξ * (kgShiftedSinOverFreq v s ξ * kgLowPass R ξ)) := by
   have hpos := kgShiftedFreq_pos hb1 hvb ξ
   have hne : kgShiftedFreq v ξ ≠ 0 := ne_of_gt hpos
-  have hprod : ((kgShiftedFreq v ξ ^ 2 : ℝ) : ℂ)
+  have hprod : ((kgShiftedFreq v ξ ^ (2 : ℕ) : ℝ) : ℂ)
       * (kgShiftedSinOverFreq v t ξ * kgShiftedSinOverFreq v s ξ)
       = kgShiftedSin v t ξ * kgShiftedSin v s ξ := by
     rw [kgShiftedSinOverFreq, kgShiftedSinOverFreq, kgShiftedSin, kgShiftedSin,

@@ -157,24 +157,24 @@ theorem cauchySum_ne_zero_of_im_ne_zero {ι : Type*} (s : Finset ι) (w t : ι �
 /-! ## Strict monotonicity off the nodes
 
 On the real axis away from the nodes, a positive Cauchy combination has derivative
-`sum w_j/(t_j - x)^2 > 0`.  So it is strictly increasing on every interval free of nodes, which is
+`sum w_j/(t_j - x)^(2 : ℕ) > 0`.  So it is strictly increasing on every interval free of nodes, which is
 the *uniqueness* half of "one real zero between consecutive nodes": a strictly monotone function
 takes each value at most once. -/
 
 /-- The real derivative of a single Cauchy term off its node. -/
 theorem hasDerivAt_cauchyTermReal (w t x : ℝ) (h : t - x ≠ 0) :
-    HasDerivAt (fun y : ℝ => w / (t - y)) (w / (t - x) ^ 2) x := by
+    HasDerivAt (fun y : ℝ => w / (t - y)) (w / (t - x) ^ (2 : ℕ)) x := by
   have hsub : HasDerivAt (fun y : ℝ => t - y) (-1) x := by
     simpa using HasDerivAt.const_sub t (hasDerivAt_id x)
   have hdiv := (hasDerivAt_const x w).div hsub h
-  have hval : (0 * (t - x) - w * -1) / (t - x) ^ 2 = w / (t - x) ^ 2 := by ring
+  have hval : (0 * (t - x) - w * -1) / (t - x) ^ (2 : ℕ) = w / (t - x) ^ (2 : ℕ) := by ring
   rwa [hval] at hdiv
 
 /-- The real derivative of the full combination off every node. -/
 theorem hasDerivAt_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ) (x : ℝ)
     (h : ∀ j ∈ s, t j - x ≠ 0) :
     HasDerivAt (fun y : ℝ => ∑ j ∈ s, w j / (t j - y))
-      (∑ j ∈ s, w j / (t j - x) ^ 2) x := by
+      (∑ j ∈ s, w j / (t j - x) ^ (2 : ℕ)) x := by
   have h2 := HasDerivAt.sum fun j hj => hasDerivAt_cauchyTermReal (w j) (t j) x (h j hj)
   have hfun : (∑ i ∈ s, fun y : ℝ => w i / (t i - y))
       = fun y : ℝ => ∑ j ∈ s, w j / (t j - y) := by
@@ -185,7 +185,7 @@ theorem hasDerivAt_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ)
 /-- **The derivative is strictly positive off the nodes.** -/
 theorem deriv_cauchySumReal_pos {ι : Type*} (s : Finset ι) (w t : ι → ℝ) (x : ℝ)
     (h : ∀ j ∈ s, t j - x ≠ 0) (hw : ∀ j ∈ s, 0 < w j) (hne : s.Nonempty) :
-    0 < ∑ j ∈ s, w j / (t j - x) ^ 2 := by
+    0 < ∑ j ∈ s, w j / (t j - x) ^ (2 : ℕ) := by
   refine Finset.sum_pos (fun j hj => ?_) hne
   have hne' := h j hj
   exact div_pos (hw j hj) (by positivity)

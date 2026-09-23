@@ -39,23 +39,23 @@ theorem hermiteFun_one_eq (x : ℝ) : hermiteFun 1 x = Real.sqrt 2 * x * hermite
     rw [Polynomial.hermite_succ 0, Polynomial.hermite_zero]
     simp
   show Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite 1)
-      * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4))
+      * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4))
     = Real.sqrt 2 * x * (Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite 0)
-      * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)))
+      * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)))
   rw [h1, Polynomial.hermite_zero]
   simp only [Polynomial.aeval_X, map_one]
   ring
 
 theorem deriv_hermiteFun_zero (x : ℝ) :
     deriv (hermiteFun 0) x = -(x * hermiteFun 0 x) := by
-  have hfun : hermiteFun 0 = fun y : ℝ => Real.exp (-(y ^ 2 / 2)) := funext hermiteFun_zero_eq
-  have h1 : HasDerivAt (fun y : ℝ => -(y ^ 2 / 2)) (-x) x := by
+  have hfun : hermiteFun 0 = fun y : ℝ => Real.exp (-(y ^ (2 : ℕ) / 2)) := funext hermiteFun_zero_eq
+  have h1 : HasDerivAt (fun y : ℝ => -(y ^ (2 : ℕ) / 2)) (-x) x := by
     have h0 := ((hasDerivAt_pow 2 x).div_const 2).neg
     refine h0.congr_deriv ?_
     push_cast
     ring
-  have h2 : HasDerivAt (fun y : ℝ => Real.exp (-(y ^ 2 / 2)))
-      (-(x * Real.exp (-(x ^ 2 / 2)))) x := by
+  have h2 : HasDerivAt (fun y : ℝ => Real.exp (-(y ^ (2 : ℕ) / 2)))
+      (-(x * Real.exp (-(x ^ (2 : ℕ) / 2)))) x := by
     refine h1.exp.congr_deriv ?_
     ring
   rw [hfun, h2.deriv]
@@ -94,9 +94,9 @@ theorem integrable_hermiteFun_mul (m n : ℕ) :
   obtain ⟨q, hq⟩ := exists_poly_hermiteFun n
   refine (integrable_polyEval_mul_gauss (p * q) (b := 1) (by norm_num)).congr ?_
   refine Filter.Eventually.of_forall fun x => ?_
-  show Polynomial.eval x (p * q) * Real.exp (-(1 * x ^ 2)) = hermiteFun m x * hermiteFun n x
-  have hexp : Real.exp (-(1 / 2 * x ^ 2)) * Real.exp (-(1 / 2 * x ^ 2))
-      = Real.exp (-(1 * x ^ 2)) := by
+  show Polynomial.eval x (p * q) * Real.exp (-(1 * x ^ (2 : ℕ))) = hermiteFun m x * hermiteFun n x
+  have hexp : Real.exp (-(1 / 2 * x ^ (2 : ℕ))) * Real.exp (-(1 / 2 * x ^ (2 : ℕ)))
+      = Real.exp (-(1 * x ^ (2 : ℕ))) := by
     rw [← Real.exp_add]
     ring_nf
   rw [hp x, hq x, Polynomial.eval_mul, ← hexp]
@@ -108,10 +108,10 @@ theorem integrable_id_mul_hermiteFun_mul (m n : ℕ) :
   obtain ⟨q, hq⟩ := exists_poly_hermiteFun n
   refine (integrable_polyEval_mul_gauss (Polynomial.X * (p * q)) (b := 1) (by norm_num)).congr ?_
   refine Filter.Eventually.of_forall fun x => ?_
-  show Polynomial.eval x (Polynomial.X * (p * q)) * Real.exp (-(1 * x ^ 2))
+  show Polynomial.eval x (Polynomial.X * (p * q)) * Real.exp (-(1 * x ^ (2 : ℕ)))
       = x * (hermiteFun m x * hermiteFun n x)
-  have hexp : Real.exp (-(1 / 2 * x ^ 2)) * Real.exp (-(1 / 2 * x ^ 2))
-      = Real.exp (-(1 * x ^ 2)) := by
+  have hexp : Real.exp (-(1 / 2 * x ^ (2 : ℕ))) * Real.exp (-(1 / 2 * x ^ (2 : ℕ)))
+      = Real.exp (-(1 * x ^ (2 : ℕ))) := by
     rw [← Real.exp_add]
     ring_nf
   rw [hp x, hq x, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_mul, ← hexp]
@@ -255,20 +255,20 @@ theorem integral_id_mul_hermiteFun_mul_succ (m : ℕ) :
 
 /-- **The `L²` norm recursion of the Hermite functions.** -/
 theorem integral_hermiteFun_sq_succ (m : ℕ) :
-    (∫ x, hermiteFun (m + 1) x ^ 2) = ((m : ℝ) + 1) * ∫ x, hermiteFun m x ^ 2 := by
+    (∫ x, hermiteFun (m + 1) x ^ (2 : ℕ)) = ((m : ℝ) + 1) * ∫ x, hermiteFun m x ^ (2 : ℕ) := by
   have hA : Integrable fun x : ℝ =>
       Real.sqrt 2 * (x * (hermiteFun m x * hermiteFun (m + 1) x)) :=
     (integrable_id_mul_hermiteFun_mul m (m + 1)).const_mul _
   have hB : Integrable fun x : ℝ =>
       (m : ℝ) * (hermiteFun (m - 1) x * hermiteFun (m + 1) x) :=
     (integrable_hermiteFun_mul (m - 1) (m + 1)).const_mul _
-  have hsplit : (∫ x, hermiteFun (m + 1) x ^ 2)
+  have hsplit : (∫ x, hermiteFun (m + 1) x ^ (2 : ℕ))
       = (∫ x, Real.sqrt 2 * (x * (hermiteFun m x * hermiteFun (m + 1) x)))
         - ∫ x, (m : ℝ) * (hermiteFun (m - 1) x * hermiteFun (m + 1) x) := by
     rw [← MeasureTheory.integral_sub hA hB]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     have h := hermiteFun_succ_uniform m x
-    show hermiteFun (m + 1) x ^ 2
+    show hermiteFun (m + 1) x ^ (2 : ℕ)
         = Real.sqrt 2 * (x * (hermiteFun m x * hermiteFun (m + 1) x))
           - (m : ℝ) * (hermiteFun (m - 1) x * hermiteFun (m + 1) x)
     rw [sq]
@@ -280,21 +280,21 @@ theorem integral_hermiteFun_sq_succ (m : ℕ) :
     · have hne : m - 1 ≠ m + 1 := by omega
       rw [MeasureTheory.integral_const_mul, integral_hermiteFun_mul_eq_zero_of_ne hne, mul_zero]
   have hcross := integral_id_mul_hermiteFun_mul_succ m
-  have hsq : (∫ x, hermiteFun m x * hermiteFun m x) = ∫ x, hermiteFun m x ^ 2 := by
+  have hsq : (∫ x, hermiteFun m x * hermiteFun m x) = ∫ x, hermiteFun m x ^ (2 : ℕ) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show hermiteFun m x * hermiteFun m x = hermiteFun m x ^ 2
+    show hermiteFun m x * hermiteFun m x = hermiteFun m x ^ (2 : ℕ)
     rw [sq]
   have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
   rw [hsplit, hortho, MeasureTheory.integral_const_mul, hcross, hsq]
-  linear_combination (((m : ℝ) + 1) / 2 * ∫ x, hermiteFun m x ^ 2) * hs2
+  linear_combination (((m : ℝ) + 1) / 2 * ∫ x, hermiteFun m x ^ (2 : ℕ)) * hs2
 
 /-! ## The two Gaussian values -/
 
 theorem integral_hermiteFun_zero_val :
     (∫ x, hermiteFun 0 x) = Real.sqrt (2 * Real.pi) := by
-  have hfun : (∫ x, hermiteFun 0 x) = ∫ x : ℝ, Real.exp (-(1 / 2) * x ^ 2) := by
+  have hfun : (∫ x, hermiteFun 0 x) = ∫ x : ℝ, Real.exp (-(1 / 2) * x ^ (2 : ℕ)) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show hermiteFun 0 x = Real.exp (-(1 / 2) * x ^ 2)
+    show hermiteFun 0 x = Real.exp (-(1 / 2) * x ^ (2 : ℕ))
     rw [hermiteFun_zero_eq]
     congr 1
     ring
@@ -303,10 +303,10 @@ theorem integral_hermiteFun_zero_val :
   field_simp
 
 theorem integral_hermiteFun_zero_sq :
-    (∫ x, hermiteFun 0 x ^ 2) = Real.sqrt Real.pi := by
-  have hfun : (∫ x, hermiteFun 0 x ^ 2) = ∫ x : ℝ, Real.exp (-1 * x ^ 2) := by
+    (∫ x, hermiteFun 0 x ^ (2 : ℕ)) = Real.sqrt Real.pi := by
+  have hfun : (∫ x, hermiteFun 0 x ^ (2 : ℕ)) = ∫ x : ℝ, Real.exp (-1 * x ^ (2 : ℕ)) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show hermiteFun 0 x ^ 2 = Real.exp (-1 * x ^ 2)
+    show hermiteFun 0 x ^ (2 : ℕ) = Real.exp (-1 * x ^ (2 : ℕ))
     rw [hermiteFun_zero_eq, sq, ← Real.exp_add]
     congr 1
     ring
@@ -318,13 +318,13 @@ theorem integral_hermiteFun_zero_sq :
 
 /-- The whole-line shape ratio of a Hermite function. -/
 def hermiteShapeRatio (n : ℕ) : ℝ :=
-  (∫ x, hermiteFun n x) ^ 2 / ∫ x, hermiteFun n x ^ 2
+  (∫ x, hermiteFun n x) ^ (2 : ℕ) / ∫ x, hermiteFun n x ^ (2 : ℕ)
 
 theorem hermiteShapeRatio_zero : hermiteShapeRatio 0 = 2 * Real.sqrt Real.pi := by
   have hpi : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.2 Real.pi_pos
   have hpp : Real.sqrt Real.pi * Real.sqrt Real.pi = Real.pi :=
     Real.mul_self_sqrt Real.pi_pos.le
-  have hsq : Real.sqrt (2 * Real.pi) ^ 2 = 2 * Real.pi :=
+  have hsq : Real.sqrt (2 * Real.pi) ^ (2 : ℕ) = 2 * Real.pi :=
     Real.sq_sqrt (by positivity)
   rw [hermiteShapeRatio, integral_hermiteFun_zero_val, integral_hermiteFun_zero_sq, hsq,
     div_eq_iff hpi.ne']
@@ -339,13 +339,13 @@ theorem hermiteShapeRatio_two_mul (k : ℕ) :
       have hI : (∫ x, hermiteFun (2 * m + 2) x)
           = ((2 * m : ℕ) + 1 : ℝ) * ∫ x, hermiteFun (2 * m) x :=
         integral_hermiteFun_add_two (2 * m)
-      have hN1 : (∫ x, hermiteFun (2 * m + 1) x ^ 2)
-          = ((2 * m : ℕ) + 1 : ℝ) * ∫ x, hermiteFun (2 * m) x ^ 2 :=
+      have hN1 : (∫ x, hermiteFun (2 * m + 1) x ^ (2 : ℕ))
+          = ((2 * m : ℕ) + 1 : ℝ) * ∫ x, hermiteFun (2 * m) x ^ (2 : ℕ) :=
         integral_hermiteFun_sq_succ (2 * m)
-      have hN2 : (∫ x, hermiteFun (2 * m + 2) x ^ 2)
-          = ((2 * m + 1 : ℕ) + 1 : ℝ) * ∫ x, hermiteFun (2 * m + 1) x ^ 2 :=
+      have hN2 : (∫ x, hermiteFun (2 * m + 2) x ^ (2 : ℕ))
+          = ((2 * m + 1 : ℕ) + 1 : ℝ) * ∫ x, hermiteFun (2 * m + 1) x ^ (2 : ℕ) :=
         integral_hermiteFun_sq_succ (2 * m + 1)
-      have hNpos : (0 : ℝ) < ∫ x, hermiteFun (2 * m) x ^ 2 :=
+      have hNpos : (0 : ℝ) < ∫ x, hermiteFun (2 * m) x ^ (2 : ℕ) :=
         integral_hermiteFun_sq_pos_line (2 * m)
       have hbin := Nat.succ_mul_centralBinom_succ m
       have hbinR : ((m : ℝ) + 1) * (Nat.centralBinom (m + 1) : ℝ)
@@ -356,9 +356,9 @@ theorem hermiteShapeRatio_two_mul (k : ℕ) :
       rw [hermiteShapeRatio] at ih
       have hm1 : (0 : ℝ) < (2 * m : ℕ) + 1 := by positivity
       have hm2 : (0 : ℝ) < (2 * m + 1 : ℕ) + 1 := by positivity
-      have hIH : (∫ x, hermiteFun (2 * m) x) ^ 2
+      have hIH : (∫ x, hermiteFun (2 * m) x) ^ (2 : ℕ)
           = (2 * Real.sqrt Real.pi * (Nat.centralBinom m : ℝ) / 4 ^ m)
-            * ∫ x, hermiteFun (2 * m) x ^ 2 := by
+            * ∫ x, hermiteFun (2 * m) x ^ (2 : ℕ) := by
         rw [← ih]
         field_simp
       push_cast at hm1 hm2 hIH ⊢
@@ -389,10 +389,10 @@ carry the same central-binomial profile; the constant `√(2π)` is the whole di
 analytic normalization and the constrained-prolate one. -/
 theorem hermiteShapeRatio_four_mul_eq_coordinate_sq (j : ℕ) :
     hermiteShapeRatio (4 * j)
-      = Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ 2 := by
+      = Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ (2 : ℕ) := by
   have hw : (0 : ℝ) ≤ Real.sqrt 2 * constrainedProlateHermiteWeight j :=
     le_of_lt (mul_pos (Real.sqrt_pos.2 (by norm_num)) (constrainedProlateHermiteWeight_pos j))
-  have hcoord : constrainedProlateHermiteCoordinate j ^ 2
+  have hcoord : constrainedProlateHermiteCoordinate j ^ (2 : ℕ)
       = Real.sqrt 2 * constrainedProlateHermiteWeight j := by
     rw [constrainedProlateHermiteCoordinate, Real.sq_sqrt hw]
   have hconst : Real.sqrt (2 * Real.pi) * Real.sqrt 2 = 2 * Real.sqrt Real.pi := by

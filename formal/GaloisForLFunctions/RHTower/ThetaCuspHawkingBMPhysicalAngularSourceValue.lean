@@ -48,7 +48,7 @@ theorem physicalPrincipalCorrection_eq_nativeMoment (q : XiZeroCopy) :
 /-- The actual complete angular source equals the four-Lambda product; the cutoff terms cancel only after exact assembly. -/
 theorem physicalSelfSourceCoefficient_fourLambda (q : XiZeroCopy) (hq : 1/2 < (q.1:ℂ).re) :
     physicalSelfSourceCoefficient q =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2 := by
   rw [physicalSelfSourceCoefficient,physicalPrincipalCorrection_eq_nativeMoment,
     physicalAngularParameter_eq,scalarResidualPeriod_physical_value q hq]

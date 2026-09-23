@@ -163,7 +163,7 @@ theorem clearedDensityProfile_analyticAt (q : XiZeroCopy) (branch : Bool)
       (((hY0.mul analyticAt_const).add (hY1.mul analyticAt_const)).add
         (hY2.mul analyticAt_const)))
   have hscale : AnalyticAt ℂ
-      (fun u => -2 * u * (physicalAngularParameter q ^ 2 - 1 / 4 - 2)) w :=
+      (fun u => -2 * u * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2)) w :=
     (analyticAt_const.mul analyticAt_id).mul analyticAt_const
   exact ((analyticAt_const.mul (((hscale.mul hself).sub
     (analyticAt_id.mul hcontact)).mul hG)).mul analyticAt_const).div

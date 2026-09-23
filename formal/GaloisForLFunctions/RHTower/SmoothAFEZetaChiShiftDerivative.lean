@@ -22,7 +22,7 @@ theorem hasDerivAt_smoothAFEZetaChiShiftRatio_line
     HasDerivAt (fun u : ℝ => smoothAFEZetaChiShiftRatio (linePt u) w)
       (((deriv zetaChi (linePt tau + w) * I) * zetaChi (linePt tau) -
           zetaChi (linePt tau + w) * (deriv zetaChi (linePt tau) * I)) /
-        zetaChi (linePt tau) ^ 2) tau := by
+        zetaChi (linePt tau) ^ (2 : ℕ)) tau := by
   have hn := ((zetaChi_analyticAt hnum).differentiableAt.hasDerivAt.comp tau
     ((hasDerivAt_linePt tau).add_const w))
   have hbase : Gammaℝ (1 - linePt tau) ≠ 0 :=

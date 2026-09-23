@@ -93,7 +93,7 @@ theorem endpointShearedDoubleTransform_zero_eq_norm_sq
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)
     (hχstar : ∀ t : R, star (χ t) = χ (-t)) (b : R) :
     endpointShearedDoubleTransform χ residue x 0 b =
-      ((‖endpointFrequencyPacket χ residue x b‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖endpointFrequencyPacket χ residue x b‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [endpointShearedDoubleTransform_eq_inner_frequencyPacket χ residue x hχstar]
   simp only [sub_zero]
   rw [inner_self_eq_norm_sq_to_K]
@@ -177,7 +177,7 @@ theorem endpointShearedGramMatrix_quadratic_eq_norm_sq
     (hχstar : ∀ t : R, star (χ t) = χ (-t)) (c : R → ℂ) :
     (∑ j, ∑ k,
       star (c j) * endpointShearedGramMatrix χ residue x j k * c k) =
-        ((‖endpointFrequencyPacketCombination χ residue x c‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖endpointFrequencyPacketCombination χ residue x c‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [endpointShearedGramMatrix_quadratic_eq_inner χ residue x hχstar]
   rw [inner_self_eq_norm_sq_to_K]
   norm_cast

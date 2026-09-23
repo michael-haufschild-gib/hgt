@@ -101,7 +101,7 @@ theorem scatteringMatrix_eq_uniformized (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
     scatteringMatrix q κ =
       (uniformizationGauge 0 (Complex.exp (κ:ℂ)))⁻¹*
         uniformizedScatteringMatrix (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
-          (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^2)*
+          (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) ((Real.exp κ)^(2 : ℕ))*
             uniformizationGauge 0 (Complex.exp (κ:ℂ)) := by
   rw [uniformizedScatteringMatrix_gauge]
   have hi := Matrix.nonsing_inv_mul (uniformizationGauge 0 (Complex.exp (κ:ℂ)))

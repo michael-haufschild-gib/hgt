@@ -124,38 +124,38 @@ theorem hasSum_suzukiPHatEnergy (hRH : RiemannHypothesis) {a : ℝ}
   ring
 
 theorem summable_norm_sq_suzukiPHatCoefFn {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
-    Summable fun q : XiZeroCopy => ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 := by
+    Summable fun q : XiZeroCopy => ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
   set Mφ : ℝ := (Real.exp (|a| / 2) + 1) * ∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖ with hM
   have hMnn : 0 ≤ Mφ :=
     mul_nonneg (by positivity) (MeasureTheory.integral_nonneg fun u => norm_nonneg _)
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
-    (xiSpectralPoint_inv_sq_summable.mul_left (Mφ ^ 2))
+    (xiSpectralPoint_inv_sq_summable.mul_left (Mφ ^ (2 : ℕ)))
   have h := norm_suzukiPHatCoefFn_le φ q
   have hγ : (0 : ℝ) < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hnn : (0 : ℝ) ≤ ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ := norm_nonneg _
-  calc ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2
-      ≤ (Mφ / ‖xiSpectralPoint q‖) ^ 2 := by nlinarith
-    _ = Mφ ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+  calc ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ)
+      ≤ (Mφ / ‖xiSpectralPoint q‖) ^ (2 : ℕ) := by nlinarith
+    _ = Mφ ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         rw [div_pow]
         ring
 
 theorem summable_weighted_suzukiPHatSupportCoef (hRH : RiemannHypothesis) {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) :
     Summable fun ρ : XiDivisorSupport =>
-      ‖suzukiPHatSupportCoef φ ρ‖ ^ 2 * suzukiCauchyWeight ρ := by
+      ‖suzukiPHatSupportCoef φ ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ := by
   have hbase := summable_norm_sq_suzukiPHatCoefFn φ
   have hsig := (summable_sigma_of_nonneg
-    (f := fun q : XiZeroCopy => ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2)
+    (f := fun q : XiZeroCopy => ‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ))
     (fun q => sq_nonneg _)).mp hbase
   refine ((hsig.2).mul_left Real.pi).congr fun ρ => ?_
   have hpos := xiSupportMult_pos ρ
   have hi : Fin (xiSupportMult ρ) := ⟨0, hpos⟩
   show Real.pi * (∑' j : Fin (xiSupportMult ρ),
-      ‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ 2)
-      = ‖suzukiPHatSupportCoef φ ρ‖ ^ 2 * suzukiCauchyWeight ρ
+      ‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ (2 : ℕ))
+      = ‖suzukiPHatSupportCoef φ ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ
   · have hconst : ∀ j : Fin (xiSupportMult ρ),
-        ‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ 2
-          = ‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2 := by
+        ‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ (2 : ℕ)
+          = ‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ) := by
       intro j
       rw [xiSpectralPoint_copy_eq hRH]
     rw [tsum_fintype, Finset.sum_congr rfl (fun j _ => hconst j), Finset.sum_const,
@@ -171,9 +171,9 @@ theorem tsum_weighted_suzukiPHatSupportCoef (hRH : RiemannHypothesis) {a : ℝ}
     (∑' ρ : XiDivisorSupport, (starRingEnd ℂ) (suzukiPHatSupportCoef φ ρ)
         * suzukiPHatSupportCoef φ ρ * ((suzukiCauchyWeight ρ : ℝ) : ℂ))
       = ((Real.pi : ℝ) : ℂ) * ∑' q : XiZeroCopy,
-        ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hbase : Summable fun q : XiZeroCopy =>
-      ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     refine Summable.of_norm_bounded (summable_norm_sq_suzukiPHatCoefFn φ) fun q => ?_
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
   have hsigma := hbase.tsum_sigma
@@ -182,12 +182,12 @@ theorem tsum_weighted_suzukiPHatSupportCoef (hRH : RiemannHypothesis) {a : ℝ}
   have hpos := xiSupportMult_pos ρ
   have hi : Fin (xiSupportMult ρ) := ⟨0, hpos⟩
   have hconst : ∀ j : Fin (xiSupportMult ρ),
-      ((‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ 2 : ℝ) : ℂ)
-        = ((‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ (2 : ℕ) : ℝ) : ℂ)
+        = ((‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro j
     rw [xiSpectralPoint_copy_eq hRH]
   show _ = ((Real.pi : ℝ) : ℂ) * ∑' j : Fin (xiSupportMult ρ),
-    ((‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ 2 : ℝ) : ℂ)
+    ((‖suzukiPHatCoefFn φ (xiSpectralPoint (⟨ρ, j⟩ : XiZeroCopy))‖ ^ (2 : ℕ) : ℝ) : ℂ)
   rw [tsum_fintype, Finset.sum_congr rfl (fun j _ => hconst j), Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, suzukiPHatSupportCoef,
     suzukiCauchyWeight]
@@ -196,14 +196,14 @@ theorem tsum_weighted_suzukiPHatSupportCoef (hRH : RiemannHypothesis) {a : ℝ}
     omega
   have hnorm : (starRingEnd ℂ) (suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ))
       * suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)
-      = ((‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [mul_comm, Complex.mul_conj, Complex.sq_norm]
   rw [map_mul, Complex.conj_natCast]
   push_cast
   rw [show ((xiSupportMult ρ : ℂ)
       * (starRingEnd ℂ) (suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)))
       * ((xiSupportMult ρ : ℂ) * suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ))
-      = (xiSupportMult ρ : ℂ) ^ 2 *
+      = (xiSupportMult ρ : ℂ) ^ (2 : ℕ) *
         ((starRingEnd ℂ) (suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ))
           * suzukiPHatCoefFn φ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)) by ring, hnorm]
   field_simp
@@ -215,7 +215,7 @@ theorem integral_conj_suzukiPHatEnergy (hRH : RiemannHypothesis) {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) :
     (∫ x : ℝ, (starRingEnd ℂ) (suzukiPHatEnergyFun φ x) * suzukiPHatEnergyFun φ x)
       = ((Real.pi : ℝ) : ℂ) * ∑' q : XiZeroCopy,
-        ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [integral_conj_of_hasSum hRH (suzukiPHatSupportCoef φ) (suzukiPHatSupportCoef φ)
     (summable_weighted_suzukiPHatSupportCoef hRH φ)
     (summable_weighted_suzukiPHatSupportCoef hRH φ) _ _
@@ -252,7 +252,7 @@ theorem norm_suzukiPHat_ofReal_eq {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) {x
 
 theorem integral_normSq_suzukiPHat (hRH : RiemannHypothesis) {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) :
-    ((∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ)
+    ((∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∫ x : ℝ, (starRingEnd ℂ) (suzukiPHatEnergyFun φ x) * suzukiPHatEnergyFun φ x := by
   rw [← integral_complex_ofReal]
   refine MeasureTheory.integral_congr_ae ?_
@@ -277,11 +277,11 @@ theorem suzukiTestRayCoefBar_eq_conj (hRH : RiemannHypothesis) {a : ℝ}
 
 theorem tsum_normSq_suzukiPHatCoefFn (hRH : RiemannHypothesis) {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) :
-    (∑' q : XiZeroCopy, ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ))
+    (∑' q : XiZeroCopy, ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ))
       = suzukiScrewSmoothForm φ φ := by
   rw [suzukiScrewSmoothForm_eq_tsum φ,
     ← xiZeroCopyReflectEquiv.tsum_eq
-      (fun q : XiZeroCopy => ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ))]
+      (fun q : XiZeroCopy => ((‖suzukiPHatCoefFn φ (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ))]
   refine tsum_congr fun q => ?_
   have hrefl : xiSpectralPoint (xiZeroCopyReflectEquiv q) = -xiSpectralPoint q :=
     xiSpectralPoint_reflect q
@@ -296,14 +296,14 @@ theorem tsum_normSq_suzukiPHatCoefFn (hRH : RiemannHypothesis) {a : ℝ}
         = (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1)
           * (starRingEnd ℂ) ((φ : ℝ → ℂ) t)
     rw [show -(I * (-xiSpectralPoint q) * (t : ℂ)) = I * xiSpectralPoint q * (t : ℂ) by ring]
-  have hsq : xiSpectralPoint q ^ 2 = ((‖xiSpectralPoint q‖ ^ 2 : ℝ) : ℂ) := by
+  have hsq : xiSpectralPoint q ^ (2 : ℕ) = ((‖xiSpectralPoint q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [xiSpectralPoint_eq_ofReal_of_rh hRH]
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
     push_cast
     ring
   rw [hN, norm_div, norm_neg, suzukiTestRayCoefBar_eq_conj hRH φ q, RCLike.norm_conj, hsq]
   rw [show (starRingEnd ℂ) (suzukiTestRayCoef φ q) * suzukiTestRayCoef φ q
-      = ((‖suzukiTestRayCoef φ q‖ ^ 2 : ℝ) : ℂ) by
+      = ((‖suzukiTestRayCoef φ q‖ ^ (2 : ℕ) : ℝ) : ℂ) by
     rw [mul_comm, Complex.mul_conj, Complex.sq_norm]]
   have hne : ((‖xiSpectralPoint q‖ : ℝ) : ℂ) ≠ 0 := by
     simp only [ne_eq, Complex.ofReal_eq_zero]
@@ -315,7 +315,7 @@ theorem tsum_normSq_suzukiPHatCoefFn (hRH : RiemannHypothesis) {a : ℝ}
 norm of the transform of a smooth zero-mean test is `π` times its screw form. -/
 theorem normSq_suzukiPHat_eq_pi_mul_screwForm (hRH : RiemannHypothesis) {a : ℝ}
     (φ : SuzukiSmoothZeroMeanTest a) :
-    ((∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ)
+    ((∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ((Real.pi : ℝ) : ℂ) * suzukiScrewSmoothForm φ φ := by
   rw [integral_normSq_suzukiPHat hRH φ, integral_conj_suzukiPHatEnergy hRH φ,
     tsum_normSq_suzukiPHatCoefFn hRH φ]
@@ -324,7 +324,7 @@ theorem normSq_suzukiPHat_eq_pi_mul_screwForm (hRH : RiemannHypothesis) {a : ℝ
 form to `L²(ℝ)` on smooth zero-mean tests. -/
 theorem riemannHypothesis_iff_normSq_suzukiPHat :
     RiemannHypothesis ↔ ∀ (a : ℝ), 0 < a → ∀ φ : SuzukiSmoothZeroMeanTest a,
-      (∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2)
+      (∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ))
         = Real.pi * (suzukiScrewSmoothForm φ φ).re := by
   constructor
   · intro hRH a _ φ
@@ -336,7 +336,7 @@ theorem riemannHypothesis_iff_normSq_suzukiPHat :
   · intro h
     refine riemannHypothesis_of_suzukiSmoothTestFormNonnegative fun a ha φ => ?_
     have h1 := h a ha φ
-    have h2 : (0 : ℝ) ≤ ∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2 :=
+    have h2 : (0 : ℝ) ≤ ∫ x : ℝ, ‖suzukiPHat (fun t => (φ : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) :=
       MeasureTheory.integral_nonneg fun x => sq_nonneg _
     rw [h1] at h2
     nlinarith [Real.pi_pos]

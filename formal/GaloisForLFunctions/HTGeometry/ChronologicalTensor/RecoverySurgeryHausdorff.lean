@@ -35,7 +35,7 @@ theorem recoveryWedge_radial_distance (p : ℝ × ℝ) (hp : p ∈ recoveryWedge
   · nlinarith [mul_nonneg (show 0 ≤ 3-p.2 by linarith [hp.2.1]) (sub_nonneg.mpr hq.2)]
 
 theorem recoverySurgeryDomain_hausdorff_bound (n : ℕ) :
-    Metric.hausdorffDist (recoverySurgeryDomain n) recoveryWedge ≤ 33/(32*(n+2 : ℝ)^2) := by
+    Metric.hausdorffDist (recoverySurgeryDomain n) recoveryWedge ≤ 33/(32*(n+2 : ℝ)^(2 : ℕ)) := by
   have ha := recoverySurgeryCorePower_le_scale n
   have hb := recoverySurgeryCorePower_deficit_bound n
   have hq : recoverySurgeryCoreScale n ∈ Icc (0 : ℝ) 1 :=
@@ -47,7 +47,7 @@ theorem recoverySurgeryDomain_hausdorff_bound (n : ℕ) :
     refine ⟨(recoverySurgeryCoreScale n*p.1,recoverySurgeryCoreScale n*p.2),
       recoverySurgeryDomain_core n p hp,?_⟩
     apply (recoveryWedge_radial_distance p hp _ hq).trans
-    have he : 33/(32*(n+2 : ℝ)^2)=3*(11/(32*(n+2 : ℝ)^2)) := by ring
+    have he : 33/(32*(n+2 : ℝ)^(2 : ℕ))=3*(11/(32*(n+2 : ℝ)^(2 : ℕ))) := by ring
     rw [he]
     linarith
 

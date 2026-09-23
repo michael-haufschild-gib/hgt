@@ -161,7 +161,7 @@ theorem exists_xiSeparatedContinuedCauchyPacket_sourceEnergy_pos :
       xiSpectralPoint_eq_support] at hval
   have hvpos : 0 < xiWeilHilbertQuadratic v := by
     rw [xiWeilHilbertQuadratic, hvfix]
-    have hinner : (inner ℂ v v).re = ‖v‖ ^ 2 := by
+    have hinner : (inner ℂ v v).re = ‖v‖ ^ (2 : ℕ) := by
       change RCLike.re (inner ℂ v v) = _
       exact inner_self_eq_norm_sq (𝕜 := ℂ) v
     rw [hinner]

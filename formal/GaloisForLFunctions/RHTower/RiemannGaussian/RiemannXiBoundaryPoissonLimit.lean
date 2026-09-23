@@ -41,7 +41,7 @@ theorem upperBoundaryApproachPoint_zero (x : ℝ) :
   simp [upperBoundaryApproachPoint]
 
 /-- Moving a real boundary point vertically upward increases the squared
-distance to a reflected upper-half-plane pole by `y^2 + 2*y*alpha.im`. -/
+distance to a reflected upper-half-plane pole by `y^(2 : ℕ) + 2*y*alpha.im`. -/
 theorem normSq_upperBoundaryApproachPoint_sub_conj
     (x y : ℝ) (alpha : ℂ) :
     Complex.normSq

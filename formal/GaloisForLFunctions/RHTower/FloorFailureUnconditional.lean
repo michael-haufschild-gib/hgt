@@ -43,7 +43,7 @@ theorem norm_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (τ : ℝ) :
     rw [Complex.norm_exp, hre, Real.exp_zero]
   rw [hnexp, mul_one]
 
-/-- Evaluating a real polynomial at `x^2` expands over the degree range as the even-power sum
+/-- Evaluating a real polynomial at `x^(2 : ℕ)` expands over the degree range as the even-power sum
 `∑_{j≤deg} c_j · x^(2j)`. -/
 theorem sum_coeff_pow_two_mul_eq_eval_sq (q : Polynomial ℝ) (x : ℝ) :
     ∑ j ∈ Finset.range (q.natDegree + 1), q.coeff j * x ^ (2 * j) = q.eval (x ^ 2) := by

@@ -145,7 +145,7 @@ theorem suzukiCriticalMellinWeightedPrimeMass_eq_vonMangoldt
 raw rooted-Bianchi mass. -/
 theorem vonMangoldtGammaRenormalizedBoundaryCoordinate_sq_eq_rootedBianchiPrimeMassAt
     (x : ℝ) (p : Nat.Primes) :
-    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ 2 =
+    vonMangoldtGammaRenormalizedBoundaryCoordinate x p ^ (2 : ℕ) =
       suzukiRootedBianchiPrimeMassAt x p := by
   have hp2 : 2 ≤ (p : ℕ) := p.prop.two_le
   have hnonneg : 0 ≤ suzukiRootedBianchiPrimeMassAt x p := by
@@ -164,7 +164,7 @@ theorem summable_suzukiCriticalMellinWeightedPrimeMass_iff (sigma : ℝ) :
     Summable (suzukiCriticalMellinWeightedPrimeMass sigma) ↔ 1 < sigma := by
   rw [show Summable (suzukiCriticalMellinWeightedPrimeMass sigma) ↔
       Summable (fun p : Nat.Primes =>
-        vonMangoldtGammaRenormalizedBoundaryCoordinate (sigma - 1) p ^ 2) by
+        vonMangoldtGammaRenormalizedBoundaryCoordinate (sigma - 1) p ^ (2 : ℕ)) by
     apply summable_congr
     intro p
     rw [suzukiCriticalMellinWeightedPrimeMass_eq_rootedBianchi,

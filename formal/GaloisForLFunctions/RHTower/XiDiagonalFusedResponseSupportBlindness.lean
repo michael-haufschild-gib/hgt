@@ -67,8 +67,8 @@ carrier is literally the norm of the inverse-square remainder carrier. -/
 theorem norm_sq_xiPhysicalPrimeLogAggregate_add_fusedResponse_eq_remainder
     (P : Finset Nat.Primes) (A m k : ℝ) :
     ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k +
-        xiUnitDoubleFusedPrimeResponseApertureCarrier P A m k‖ ^ 2 =
-      ‖xiPhysicalEndpointResponseRemainderApertureCarrier P A m k‖ ^ 2 := by
+        xiUnitDoubleFusedPrimeResponseApertureCarrier P A m k‖ ^ (2 : ℕ) =
+      ‖xiPhysicalEndpointResponseRemainderApertureCarrier P A m k‖ ^ (2 : ℕ) := by
   rw [xiPhysicalPrimeLogAggregate_add_fusedResponse_eq_remainder]
 
 end

@@ -55,13 +55,13 @@ theorem IsPolarConstrained.oddPart {a : SuzukiPositiveAperture}
 theorem polarGround_evenOdd_components (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2) :
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ)) :
     ccmRestrictedWeilSourceQuadratic a (ccmRestrictedWeilEvenPart a u) =
       ccmRestrictedWeilPolarGroundEnergy a *
-        ‖ccmArchimedeanFormToAperture a (ccmRestrictedWeilEvenPart a u)‖ ^ 2 ∧
+        ‖ccmArchimedeanFormToAperture a (ccmRestrictedWeilEvenPart a u)‖ ^ (2 : ℕ) ∧
     ccmRestrictedWeilSourceQuadratic a (ccmRestrictedWeilOddPart a u) =
       ccmRestrictedWeilPolarGroundEnergy a *
-        ‖ccmArchimedeanFormToAperture a (ccmRestrictedWeilOddPart a u)‖ ^ 2 := by
+        ‖ccmArchimedeanFormToAperture a (ccmRestrictedWeilOddPart a u)‖ ^ (2 : ℕ) := by
   have he := ccmRestrictedWeilPolarGroundEnergy_mul_le a _ hu.evenPart
   have ho := ccmRestrictedWeilPolarGroundEnergy_mul_le a _ hu.oddPart
   have henergy := ccmRestrictedWeilSourceQuadratic_evenOdd_split a u
@@ -76,7 +76,7 @@ theorem exists_polar_pureParity_groundFormState (a : SuzukiPositiveAperture) :
       ccmArchimedeanFormToAperture a u ≠ 0 ∧
       (ccmArchimedeanFormReflection a u = u ∨ ccmArchimedeanFormReflection a u = -u) ∧
       ccmRestrictedWeilSourceQuadratic a u =
-        ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+        ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
   obtain ⟨u, hu, hn, hQ⟩ := exists_polarConstrained_groundState a
   have hcomponents := polarGround_evenOdd_components a u hu (by simpa only [hn, one_pow, mul_one] using hQ)
   have hne : ccmArchimedeanFormToAperture a u ≠ 0 := by
@@ -165,7 +165,7 @@ private theorem shifted_pair_reflection (a : SuzukiPositiveAperture) (E : ℝ)
 /-- Reflection of a forced state fixes the relation between its two pole coefficients:
 even forcing has equal coefficients and odd forcing has opposite coefficients. -/
 theorem polarForcing_coefficient_reflection (a : SuzukiPositiveAperture) (E r : ℝ)
-    (hr : r ^ 2 = 1) (u : CCMArchimedeanFormDomain a)
+    (hr : r ^ (2 : ℕ) = 1) (u : CCMArchimedeanFormDomain a)
     (hRu : ccmArchimedeanFormReflection a u = (r : ℂ) • u) (c : ℂ × ℂ)
     (hc : ∀ v, ccmRestrictedWeilForm a u v =
       inner ℂ ((E : ℂ) • ccmArchimedeanFormToAperture a u + ccmPolarForcing a c)
@@ -190,7 +190,7 @@ theorem polarForcing_coefficient_reflection (a : SuzukiPositiveAperture) (E r : 
     hminus, mul_one, mul_zero, add_zero, zero_add] at hp
   have hconj := congrArg (starRingEnd ℂ) hp
   simp only [map_mul, Complex.conj_ofReal, Complex.conj_conj] at hconj
-  have hrr : (r : ℂ) ^ 2 = 1 := by exact_mod_cast hr
+  have hrr : (r : ℂ) ^ (2 : ℕ) = 1 := by exact_mod_cast hr
   calc
     c.2 = (r : ℂ) * ((r : ℂ) * c.2) := by rw [← mul_assoc, ← pow_two, hrr, one_mul]
     _ = (r : ℂ) * c.1 := congrArg ((r : ℂ) * ·) hconj
@@ -203,7 +203,7 @@ theorem exists_polarGround_singleProfile_forcing (a : SuzukiPositiveAperture) :
       ccmArchimedeanFormToAperture a u ≠ 0 ∧
       ccmArchimedeanFormReflection a u = (r : ℂ) • u ∧
       ccmRestrictedWeilSourceQuadratic a u =
-        ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ∧
+        ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ∧
       ∃ hmem : ccmArchimedeanFormToAperture a u ∈ (ccmRestrictedWeilOperator a).domain,
         ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u, hmem⟩ =
           (ccmRestrictedWeilPolarGroundEnergy a : ℂ) • ccmArchimedeanFormToAperture a u +
@@ -214,7 +214,7 @@ theorem exists_polarGround_singleProfile_forcing (a : SuzukiPositiveAperture) :
     rcases hparity with he | ho
     · exact ⟨1, Or.inl rfl, by simpa only [Complex.ofReal_one, one_smul] using he⟩
     · exact ⟨-1, Or.inr rfl, by simpa only [Complex.ofReal_neg, Complex.ofReal_one, neg_one_smul] using ho⟩
-  have hrsq : r ^ 2 = 1 := by rcases hr with rfl | rfl <;> norm_num
+  have hrsq : r ^ (2 : ℕ) = 1 := by rcases hr with rfl | rfl <;> norm_num
   obtain ⟨c, hc, _⟩ := existsUnique_polarGround_forcing_form a u hu hQ
   have hc2 := polarForcing_coefficient_reflection a _ r hrsq u hRu c hc
   obtain ⟨hm, hA⟩ := boundedPerturbedFriedrichsOperator_mem_domain_of_represents

@@ -28,13 +28,13 @@ variable {ι E : Type*} [Fintype ι] [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 /-- **The pencil Cauchy--Schwarz bound.** -/
 theorem norm_sum_smul_sq_le (c : ι → ℂ) (w : ι → E) :
-    ‖∑ i, c i • w i‖ ^ 2 ≤ (∑ i, ‖c i‖ ^ 2) * (∑ i, ‖w i‖ ^ 2) := by
+    ‖∑ i, c i • w i‖ ^ (2 : ℕ) ≤ (∑ i, ‖c i‖ ^ (2 : ℕ)) * (∑ i, ‖w i‖ ^ (2 : ℕ)) := by
   have htri : ‖∑ i, c i • w i‖ ≤ ∑ i, ‖c i‖ * ‖w i‖ := by
     refine le_trans (norm_sum_le _ _) ?_
     exact Finset.sum_le_sum fun i _ => le_of_eq (norm_smul (c i) (w i))
   have hnn : (0 : ℝ) ≤ ∑ i, ‖c i‖ * ‖w i‖ :=
     Finset.sum_nonneg fun i _ => by positivity
-  have hsq : ‖∑ i, c i • w i‖ ^ 2 ≤ (∑ i, ‖c i‖ * ‖w i‖) ^ 2 := by
+  have hsq : ‖∑ i, c i • w i‖ ^ (2 : ℕ) ≤ (∑ i, ‖c i‖ * ‖w i‖) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖∑ i, c i • w i‖ := norm_nonneg _
     nlinarith [htri, h0, hnn]
   refine le_trans hsq ?_
@@ -43,7 +43,7 @@ theorem norm_sum_smul_sq_le (c : ι → ℂ) (w : ι → E) :
 /-- The unit-coefficient case: a plain sum of `k` displacements is at most `k` times the summed
 squares. -/
 theorem norm_sum_sq_le_card_mul (w : ι → E) :
-    ‖∑ i, w i‖ ^ 2 ≤ (Fintype.card ι : ℝ) * ∑ i, ‖w i‖ ^ 2 := by
+    ‖∑ i, w i‖ ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) * ∑ i, ‖w i‖ ^ (2 : ℕ) := by
   have h := norm_sum_smul_sq_le (fun _ : ι => (1 : ℂ)) w
   simp only [one_smul, norm_one, one_pow, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
     mul_one] at h
@@ -58,7 +58,7 @@ variable {d : Type*} [Fintype d] [DecidableEq d]
 omit [DecidableEq d] in
 /-- The quadratic form of `Nᴴ N` is the squared length of `N v`. -/
 theorem quadForm_conjTranspose_mul_self (N : Matrix d d ℂ) (v : d → ℂ) :
-    star v ⬝ᵥ ((Nᴴ * N) *ᵥ v) = ((∑ l, ‖(N *ᵥ v) l‖ ^ 2 : ℝ) : ℂ) := by
+    star v ⬝ᵥ ((Nᴴ * N) *ᵥ v) = ((∑ l, ‖(N *ᵥ v) l‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, ← Matrix.star_mulVec]
   rw [dotProduct]
   push_cast
@@ -71,7 +71,7 @@ omit [DecidableEq d] in
 /-- A congruence by `M` through a squared factor is the squared length of `S Mᴴ v`. -/
 theorem quadForm_congruence {X S : Matrix d d ℂ} (hS : Sᴴ = S) (hSS : S * S = X)
     (M : Matrix d d ℂ) (v : d → ℂ) :
-    star v ⬝ᵥ ((M * X * Mᴴ) *ᵥ v) = ((∑ l, ‖((S * Mᴴ) *ᵥ v) l‖ ^ 2 : ℝ) : ℂ) := by
+    star v ⬝ᵥ ((M * X * Mᴴ) *ᵥ v) = ((∑ l, ‖((S * Mᴴ) *ᵥ v) l‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hfac : M * X * Mᴴ = (S * Mᴴ)ᴴ * (S * Mᴴ) := by
     rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hS, ← hSS]
     simp [Matrix.mul_assoc]
@@ -102,21 +102,21 @@ at most the squared coefficient norm times the total state spread by the members
 theorem quadForm_pencil_le {X : Matrix d d ℂ} (hX : X.PosDef) (c : ι → ℂ)
     (B : ι → Matrix d d ℂ) (v : d → ℂ) :
     star v ⬝ᵥ (((∑ i, c i • B i) * X * (∑ i, c i • B i)ᴴ) *ᵥ v)
-      ≤ ((∑ i, ‖c i‖ ^ 2 : ℝ) : ℂ)
+      ≤ ((∑ i, ‖c i‖ ^ (2 : ℕ) : ℝ) : ℂ)
           * ∑ i, star v ⬝ᵥ ((B i * X * (B i)ᴴ) *ᵥ v) := by
   set S : Matrix d d ℂ := CFC.sqrt X with hSdef
   have hSpd : S.PosDef := positiveMatrixSqrt_posDef hX
   have hS : Sᴴ = S := hSpd.isHermitian.eq
   have hSS : S * S = X := positiveMatrixSqrt_mul_self hX
   have hmem : ∀ i : ι, star v ⬝ᵥ ((B i * X * (B i)ᴴ) *ᵥ v)
-      = ((∑ l, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ 2 : ℝ) : ℂ) :=
+      = ((∑ l, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
     fun i => quadForm_congruence hS hSS (B i) v
   have hpen := quadForm_congruence hS hSS (∑ i, c i • B i) v
   -- both sides are real; compare the real numbers
-  have hreal : ∑ l, ‖((S * (∑ i, c i • B i)ᴴ) *ᵥ v) l‖ ^ 2
-      ≤ (∑ i, ‖c i‖ ^ 2) * ∑ i, ∑ l, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ 2 := by
-    have hpoint : ∀ l : d, ‖((S * (∑ i, c i • B i)ᴴ) *ᵥ v) l‖ ^ 2
-        ≤ (∑ i, ‖c i‖ ^ 2) * ∑ i, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ 2 := by
+  have hreal : ∑ l, ‖((S * (∑ i, c i • B i)ᴴ) *ᵥ v) l‖ ^ (2 : ℕ)
+      ≤ (∑ i, ‖c i‖ ^ (2 : ℕ)) * ∑ i, ∑ l, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ (2 : ℕ) := by
+    have hpoint : ∀ l : d, ‖((S * (∑ i, c i • B i)ᴴ) *ᵥ v) l‖ ^ (2 : ℕ)
+        ≤ (∑ i, ‖c i‖ ^ (2 : ℕ)) * ∑ i, ‖((S * (B i)ᴴ) *ᵥ v) l‖ ^ (2 : ℕ) := by
       intro l
       rw [sqrt_pencil_mulVec S c B v l]
       have h := norm_sum_smul_sq_le (E := ℂ) (fun i => (starRingEnd ℂ) (c i))
@@ -139,7 +139,7 @@ theorem isHermitian_congruence {X : Matrix d d ℂ} (hX : Xᴴ = X) (M : Matrix 
 `B X Bᴴ ≤ ‖c‖₂² ∑ᵢ Bᵢ X Bᵢᴴ`   where `B = ∑ᵢ cᵢ Bᵢ`. -/
 theorem posSemidef_pencil_bound {X : Matrix d d ℂ} (hX : X.PosDef) (c : ι → ℂ)
     (B : ι → Matrix d d ℂ) :
-    (((∑ i, ‖c i‖ ^ 2 : ℝ) : ℂ) • (∑ i, B i * X * (B i)ᴴ)
+    (((∑ i, ‖c i‖ ^ (2 : ℕ) : ℝ) : ℂ) • (∑ i, B i * X * (B i)ᴴ)
       - (∑ i, c i • B i) * X * (∑ i, c i • B i)ᴴ).PosSemidef := by
   have hXh : Xᴴ = X := hX.isHermitian.eq
   refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
@@ -151,9 +151,9 @@ theorem posSemidef_pencil_bound {X : Matrix d d ℂ} (hX : X.PosDef) (c : ι →
     simp [Complex.conj_ofReal]
   · intro v
     have hkey := quadForm_pencil_le hX c B v
-    have hexp : star v ⬝ᵥ ((((∑ i, ‖c i‖ ^ 2 : ℝ) : ℂ) • (∑ i, B i * X * (B i)ᴴ)
+    have hexp : star v ⬝ᵥ ((((∑ i, ‖c i‖ ^ (2 : ℕ) : ℝ) : ℂ) • (∑ i, B i * X * (B i)ᴴ)
         - (∑ i, c i • B i) * X * (∑ i, c i • B i)ᴴ) *ᵥ v)
-        = ((∑ i, ‖c i‖ ^ 2 : ℝ) : ℂ) * (∑ i, star v ⬝ᵥ ((B i * X * (B i)ᴴ) *ᵥ v))
+        = ((∑ i, ‖c i‖ ^ (2 : ℕ) : ℝ) : ℂ) * (∑ i, star v ⬝ᵥ ((B i * X * (B i)ᴴ) *ᵥ v))
           - star v ⬝ᵥ (((∑ i, c i • B i) * X * (∑ i, c i • B i)ᴴ) *ᵥ v) := by
       simp [Matrix.sub_mulVec, dotProduct_sub, smul_mulVec, dotProduct_smul,
         Matrix.sum_mulVec, dotProduct_sum, smul_eq_mul, Finset.mul_sum]

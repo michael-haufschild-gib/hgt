@@ -10,16 +10,16 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedUnitEigenchainsInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
 private theorem unit_power_norm (b ω : ℝ) (j : ℕ) :
@@ -57,7 +57,7 @@ theorem causalBoundedUnitEigenchain_coordinate_norm (b ω : ℝ) (j : ℕ) :
 theorem causalBoundedUnitEigenchain_zero (b ω : ℝ) :
     causalBoundedChainCoordinate 0 (causalBoundedUnitEigenchain b ω) =
       (causalUnitBoundaryEigenvector b ω).val := by
-  change (causalUnitBoundaryRate b ω).val^0 • (causalUnitBoundaryEigenvector b ω).val = _
+  change (causalUnitBoundaryRate b ω).val^(0 : ℕ) • (causalUnitBoundaryEigenvector b ω).val = _
   rw [pow_zero, one_smul]
 
 /-- These concrete genuine eigenchains lie on the unit sphere in the actual supremum norm. -/

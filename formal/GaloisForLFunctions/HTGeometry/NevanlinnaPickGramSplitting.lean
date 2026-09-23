@@ -295,11 +295,11 @@ theorem integrable_centered_leafCauchy [IsProbabilityMeasure eta] {z : ℂ} (hz 
 /-- **The self-Gram is the boundary variance.** -/
 theorem boundaryGram_self [IsProbabilityMeasure eta] {z : ℂ} (hz : z.im ≠ 0) :
     F.boundaryGram eta z z =
-      ((∫ t, ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 ∂eta : ℝ) : ℂ) := by
+      ((∫ t, ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) ∂eta : ℝ) : ℂ) := by
   have hcentered := integrable_centered_leafCauchy (F := F) (eta := eta) hz
-  have hsq : Integrable (fun t => ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2) eta := by
+  have hsq : Integrable (fun t => ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ)) eta := by
     have hbound : ∀ t : OnePoint ℝ,
-        ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 ≤ (2 * |z.im|⁻¹) ^ 2 := by
+        ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) ≤ (2 * |z.im|⁻¹) ^ (2 : ℕ) := by
       intro t
       have hb : ‖F.leafCauchy z t - F.boundaryMean eta z‖ ≤ 2 * |z.im|⁻¹ := by
         have hm : ‖F.boundaryMean eta z‖ ≤ |z.im|⁻¹ := by
@@ -315,7 +315,7 @@ theorem boundaryGram_self [IsProbabilityMeasure eta] {z : ℂ} (hz : z.im ≠ 0)
           _ = 2 * |z.im|⁻¹ := by ring
       have hnn : (0:ℝ) ≤ ‖F.leafCauchy z t - F.boundaryMean eta z‖ := norm_nonneg _
       nlinarith [hb, hnn]
-    refine Integrable.mono' (g := fun _ => (2 * |z.im|⁻¹) ^ 2) (integrable_const _)
+    refine Integrable.mono' (g := fun _ => (2 * |z.im|⁻¹) ^ (2 : ℕ)) (integrable_const _)
       ((hcentered.aestronglyMeasurable.norm.pow 2)) ?_
     filter_upwards with t
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
@@ -324,7 +324,7 @@ theorem boundaryGram_self [IsProbabilityMeasure eta] {z : ℂ} (hz : z.im ≠ 0)
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
   show (F.leafCauchy z t - F.boundaryMean eta z) *
       (starRingEnd ℂ) (F.leafCauchy z t - F.boundaryMean eta z)
-    = ((‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 : ℝ) : ℂ)
+    = ((‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) : ℝ) : ℂ)
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 /-- A vanishing self-Gram makes the leaf transform almost everywhere constant. -/
@@ -334,11 +334,11 @@ theorem leafCauchy_ae_eq_of_boundaryGram_self_eq_zero [IsProbabilityMeasure eta]
   have hcentered := integrable_centered_leafCauchy (F := F) (eta := eta) hz
   have hself := boundaryGram_self (F := F) (eta := eta) hz
   rw [h0] at hself
-  have hzeroReal : ∫ t, ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 ∂eta = 0 := by
+  have hzeroReal : ∫ t, ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) ∂eta = 0 := by
     exact_mod_cast hself.symm
-  have hsq : Integrable (fun t => ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2) eta := by
+  have hsq : Integrable (fun t => ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ)) eta := by
     have hbound : ∀ t : OnePoint ℝ,
-        ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 ≤ (2 * |z.im|⁻¹) ^ 2 := by
+        ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) ≤ (2 * |z.im|⁻¹) ^ (2 : ℕ) := by
       intro t
       have hm : ‖F.boundaryMean eta z‖ ≤ |z.im|⁻¹ := by
         have hb := norm_integral_le_of_norm_le_const (C := |z.im|⁻¹) (μ := eta)
@@ -353,14 +353,14 @@ theorem leafCauchy_ae_eq_of_boundaryGram_self_eq_zero [IsProbabilityMeasure eta]
           _ ≤ |z.im|⁻¹ + |z.im|⁻¹ := add_le_add (F.norm_leafCauchy_le hz t) hm
           _ = 2 * |z.im|⁻¹ := by ring
       nlinarith [hb, norm_nonneg (F.leafCauchy z t - F.boundaryMean eta z)]
-    refine Integrable.mono' (g := fun _ => (2 * |z.im|⁻¹) ^ 2) (integrable_const _)
+    refine Integrable.mono' (g := fun _ => (2 * |z.im|⁻¹) ^ (2 : ℕ)) (integrable_const _)
       (hcentered.aestronglyMeasurable.norm.pow 2) ?_
     filter_upwards with t
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     exact hbound t
   have hae := (integral_eq_zero_iff_of_nonneg (fun t => by positivity) hsq).1 hzeroReal
   filter_upwards [hae] with t ht
-  have hzero2 : ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ 2 = 0 := ht
+  have hzero2 : ‖F.leafCauchy z t - F.boundaryMean eta z‖ ^ (2 : ℕ) = 0 := ht
   have hnorm : ‖F.leafCauchy z t - F.boundaryMean eta z‖ = 0 := by
     nlinarith [norm_nonneg (F.leafCauchy z t - F.boundaryMean eta z), hzero2]
   exact sub_eq_zero.1 (norm_eq_zero.1 hnorm)

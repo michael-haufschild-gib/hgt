@@ -68,7 +68,7 @@ theorem xiMassHighPassBottomRoot_re_gt_mass {a x : ℝ}
   have hxabs : (3 / 4 : ℝ) < |x| := by
     rw [abs_of_neg (by linarith)]
     linarith
-  have hxsq : (3 / 4 : ℝ) ^ 2 < x ^ 2 := by
+  have hxsq : (3 / 4 : ℝ) ^ (2 : ℕ) < x ^ (2 : ℕ) := by
     rw [sq_lt_sq]
     norm_num
     exact hxabs

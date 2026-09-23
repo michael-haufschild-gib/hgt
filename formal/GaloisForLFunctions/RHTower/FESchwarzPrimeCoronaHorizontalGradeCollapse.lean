@@ -107,14 +107,14 @@ def logarithmicPrimePhaseSumIoc (xi : ℝ) (N : ℕ) : ℂ :=
     if k.Prime then ((Real.log k / k : ℝ) : ℂ) * logarithmicPhase xi k else 0
 
 theorem sum_complexPrimeLogWeight_eq_theta (t : ℝ) :
-    ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, (primeLogWeight k : ℂ) =
+    ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, (primeLogWeight_primeRpowAbelSummation k : ℂ) =
       (Chebyshev.theta t : ℂ) := by
   rw [← Complex.ofReal_sum, sum_primeLogWeight_eq_theta]
 
 theorem logarithmicPhaseOverId_mul_primeLogWeight {xi : ℝ} {k : ℕ} (hk : 2 < k) :
-    logarithmicPhaseOverId xi k * (primeLogWeight k : ℂ) =
+    logarithmicPhaseOverId xi k * (primeLogWeight_primeRpowAbelSummation k : ℂ) =
       if k.Prime then ((Real.log k / k : ℝ) : ℂ) * logarithmicPhase xi k else 0 := by
-  rw [primeLogWeight]
+  rw [primeLogWeight_primeRpowAbelSummation]
   split_ifs with hp
   · have hk0 : (k : ℂ) ≠ 0 := by exact_mod_cast (Nat.ne_zero_of_lt hk)
     rw [logarithmicPhaseOverId]
@@ -134,7 +134,7 @@ theorem logarithmicPrimePhaseSumIoc_eq_thetaAbel {xi : ℝ} {N : ℕ} (hN : 2 �
     exact (hasDerivAt_logarithmicPhaseOverId
       (xi := xi) (ne_of_gt (lt_of_lt_of_le two_pos ht.1))).differentiableAt
   have hab := sum_mul_eq_sub_sub_integral_mul
-    (fun k : ℕ => (primeLogWeight k : ℂ))
+    (fun k : ℕ => (primeLogWeight_primeRpowAbelSummation k : ℂ))
     (f := logarithmicPhaseOverId xi) (a := (2 : ℝ)) (b := (N : ℝ))
     (by norm_num) (by exact_mod_cast hN) hdiff
     (integrableOn_deriv_logarithmicPhaseOverId xi (by norm_num))
@@ -898,7 +898,7 @@ theorem mertensPrimeMean_absField_eq_complexMarcinkiewiczQuotient
     mertensPrimeMean (absField b) X = complexMarcinkiewiczQuotient b X := by
   unfold mertensPrimeMean complexMarcinkiewiczQuotient
   congr 1
-  unfold primeLogMass
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   apply Finset.sum_congr rfl
   intro n hn
   simp [absField]
@@ -965,9 +965,9 @@ theorem norm_marcinkiewiczLogQuotientMk_mk_eq_of_tendsto_cutoff
       by_cases hXP : X ≤ P
       · rw [complexMarcinkiewiczQuotient, marcinkiewiczTailPre_coe,
           absField_primeFieldTail, marcinkiewiczLogQuotient]
-        have hmass0 : primeLogMass
+        have hmass0 : primeLogMass_weightedEulerCoefficientSpaces
             (primeCoefficientTail (absField (b : ℕ → ℂ)) P) X = 0 := by
-          unfold primeLogMass
+          unfold primeLogMass_weightedEulerCoefficientSpaces
           apply Finset.sum_eq_zero
           intro n hn
           rw [Finset.mem_filter, Finset.mem_Icc] at hn
@@ -1152,7 +1152,7 @@ theorem complexMarcinkiewiczQuotient_logarithmicPhaseDifferencePre
       logarithmicPrimePhaseDistanceSum t u N / Real.log N := by
   unfold complexMarcinkiewiczQuotient marcinkiewiczLogQuotient
   congr 1
-  unfold primeLogMass logarithmicPrimePhaseDistanceSum
+  unfold primeLogMass_weightedEulerCoefficientSpaces logarithmicPrimePhaseDistanceSum
   apply Finset.sum_congr rfl
   intro n hn
   simp [absField]
@@ -1256,7 +1256,7 @@ theorem marcinkiewiczPreNorm_eq_zero_of_eq_on_primes
   apply le_antisymm
   · apply marcinkiewiczPreNorm_le
     intro X hX
-    unfold complexMarcinkiewiczQuotient marcinkiewiczLogQuotient primeLogMass
+    unfold complexMarcinkiewiczQuotient marcinkiewiczLogQuotient primeLogMass_weightedEulerCoefficientSpaces
     have hsum :
         (∑ p ∈ Finset.Icc 1 X with p.Prime,
           Real.log p / p *
@@ -1484,7 +1484,7 @@ theorem memVanishingTailLayer_absField_finsetSum_complex
   | empty =>
       intro ε hε
       refine ⟨0, fun X hX => ?_⟩
-      simpa [absField, marcinkiewiczLogQuotient, primeLogMass,
+      simpa [absField, marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces,
         primeCoefficientTail] using hε.le
   | @insert i s his ih =>
       rw [Finset.sum_insert his]
@@ -2746,8 +2746,8 @@ theorem norm_horizontalLeadingPrimeWindowSum_le_of_marcinkiewicz_bound
     have hmem := mem_primeLogWindow.1 hp
     exact ⟨⟨hmem.2.one_le, hmem.1.2⟩, hmem.2⟩
   have hwindowMass : (∑ p ∈ primeLogWindow H (H + L), w p) ≤
-      primeLogMass (absField b) X := by
-    unfold primeLogMass
+      primeLogMass_weightedEulerCoefficientSpaces (absField b) X := by
+    unfold primeLogMass_weightedEulerCoefficientSpaces
     have hsub := Finset.sum_le_sum_of_subset_of_nonneg
       (f := fun p : ℕ => Real.log p / (p : ℝ) * absField b p) hsubset
       (fun p hp hpn => by
@@ -2756,10 +2756,10 @@ theorem norm_horizontalLeadingPrimeWindowSum_le_of_marcinkiewicz_bound
         exact mul_nonneg (div_nonneg (Real.log_nonneg hponeR) (Nat.cast_nonneg p))
           (absField_nonneg b p))
     simpa only [w, abs_of_nonneg (absField_nonneg b _)] using hsub
-  have hmass : primeLogMass (absField b) X ≤ |C₀| * Real.log X := by
+  have hmass : primeLogMass_weightedEulerCoefficientSpaces (absField b) X ≤ |C₀| * Real.log X := by
     have hq := hC₀ X hX
     unfold marcinkiewiczLogQuotient at hq
-    have hq' : primeLogMass (absField b) X ≤ C₀ * Real.log X := by
+    have hq' : primeLogMass_weightedEulerCoefficientSpaces (absField b) X ≤ C₀ * Real.log X := by
       exact (div_le_iff₀ (log_cutoff_pos hX)).mp hq
     have hXone : (1 : ℝ) ≤ (X : ℝ) := by
       exact_mod_cast (le_trans (by omega : (1 : ℕ) ≤ 2) hX)
@@ -2785,7 +2785,7 @@ theorem norm_horizontalLeadingPrimeWindowSum_le_of_marcinkiewicz_bound
       exact norm_log_mul_horizontalLeadingTest_on_prime_le ha hmStar hp
     _ = A * ∑ p ∈ primeLogWindow H (H + L), w p := by
       rw [Finset.mul_sum]
-    _ ≤ A * primeLogMass (absField b) X :=
+    _ ≤ A * primeLogMass_weightedEulerCoefficientSpaces (absField b) X :=
       mul_le_mul_of_nonneg_left hwindowMass hA
     _ ≤ A * (|C₀| * Real.log X) :=
       mul_le_mul_of_nonneg_left hmass hA

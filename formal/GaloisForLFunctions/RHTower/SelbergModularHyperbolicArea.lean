@@ -15,14 +15,14 @@ noncomputable section
 
 /-- The literal negative reciprocal has inverse-square derivative off zero. -/
 theorem inverse_primitive_hasDerivAt {y : ℝ} (hy : y ≠ 0) :
-    HasDerivAt (fun t : ℝ => -1 / t) (1 / y ^ 2) y := by
+    HasDerivAt (fun t : ℝ => -1 / t) (1 / y ^ (2 : ℕ)) y := by
   have h := (hasDerivAt_const y (-1 : ℝ)).div (hasDerivAt_id y) hy
   apply h.congr_deriv
   simp
 
 /-- The positive inverse-square derivative is integrable on every positive closed ray. -/
 theorem inverse_square_integrable {a : ℝ} (ha : 0 < a) :
-    IntegrableOn (fun y : ℝ => 1 / y ^ 2) (Ici a) := by
+    IntegrableOn (fun y : ℝ => 1 / y ^ (2 : ℕ)) (Ici a) := by
   rw [integrableOn_Ici_iff_integrableOn_Ioi]
   exact integrableOn_Ioi_deriv_of_nonneg'
     (fun y hy => inverse_primitive_hasDerivAt (ha.trans_le hy).ne')
@@ -31,7 +31,7 @@ theorem inverse_square_integrable {a : ℝ} (ha : 0 < a) :
 
 /-- Exact inverse-square ray integral from the actual primitive and its limit. -/
 theorem inverse_square_integral {a : ℝ} (ha : 0 < a) :
-    (∫ y in Ici a, 1 / y ^ 2) = 1 / a := by
+    (∫ y in Ici a, 1 / y ^ (2 : ℕ)) = 1 / a := by
   rw [integral_Ici_eq_integral_Ioi]
   have h := integral_Ioi_of_hasDerivAt_of_nonneg'
     (fun y hy => inverse_primitive_hasDerivAt (ha.trans_le hy).ne')
@@ -47,7 +47,7 @@ theorem fullDomain_subset_strip : fullDomain ⊆ strip :=
   fun _ hp => ⟨hp.1, (arcHeight_half_le hp.1).trans hp.2⟩
 
 /-- The strip hyperbolic weight is integrable by genuine product integration. -/
-theorem strip_weight_integrable : IntegrableOn (fun p : ℝ × ℝ => 1 / p.2 ^ 2) strip := by
+theorem strip_weight_integrable : IntegrableOn (fun p : ℝ × ℝ => 1 / p.2 ^ (2 : ℕ)) strip := by
   have hx : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Icc (-(1 / 2 : ℝ)) (1 / 2)) volume :=
     continuous_const.integrableOn_Icc
   have hy := inverse_square_integrable (by norm_num : (0 : ℝ) < 1 / 2)
@@ -55,9 +55,9 @@ theorem strip_weight_integrable : IntegrableOn (fun p : ℝ × ℝ => 1 / p.2 ^ 
   simpa only [one_mul] using hx.mul_prod hy
 
 /-- The explicit half-height unit strip has hyperbolic area two. -/
-theorem strip_weight_integral : (∫ p in strip, 1 / p.2 ^ 2) = 2 := by
+theorem strip_weight_integral : (∫ p in strip, 1 / p.2 ^ (2 : ℕ)) = 2 := by
   have h := setIntegral_prod_mul (μ := (volume : Measure ℝ)) (ν := (volume : Measure ℝ))
-    (fun _ : ℝ => (1 : ℝ)) (fun y : ℝ => 1 / y ^ 2)
+    (fun _ : ℝ => (1 : ℝ)) (fun y : ℝ => 1 / y ^ (2 : ℕ))
     (Icc (-(1 / 2 : ℝ)) (1 / 2)) (Ici (1 / 2 : ℝ))
   simp only [one_mul] at h
   rw [inverse_square_integral (by norm_num : (0 : ℝ) < 1 / 2), setIntegral_const,
@@ -66,11 +66,11 @@ theorem strip_weight_integral : (∫ p in strip, 1 / p.2 ^ 2) = 2 := by
   simpa only [← Measure.volume_eq_prod, strip, one_div] using h
 
 /-- The actual full modular domain has integrable hyperbolic area density. -/
-theorem full_weight_integrable : IntegrableOn (fun p : ℝ × ℝ => 1 / p.2 ^ 2) fullDomain :=
+theorem full_weight_integrable : IntegrableOn (fun p : ℝ × ℝ => 1 / p.2 ^ (2 : ℕ)) fullDomain :=
   strip_weight_integrable.mono_set fullDomain_subset_strip
 
 /-- The actual full modular hyperbolic area is bounded by two. -/
-theorem full_weight_integral_le_two : (∫ p in fullDomain, 1 / p.2 ^ 2) ≤ 2 := by
+theorem full_weight_integral_le_two : (∫ p in fullDomain, 1 / p.2 ^ (2 : ℕ)) ≤ 2 := by
   rw [← strip_weight_integral]
   exact setIntegral_mono_set strip_weight_integrable
     (Eventually.of_forall (fun p : ℝ × ℝ => div_nonneg zero_le_one (sq_nonneg p.2)))

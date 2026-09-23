@@ -49,7 +49,7 @@ theorem chargedChannelWave_derivative (a b : ℂ) (k x : ℝ) :
 
 theorem chargedChannelWave_second_derivative (a b : ℂ) (k x : ℝ) :
     HasDerivAt (deriv (chargedChannelWave a b k))
-      (-(k : ℂ) ^ 2 * chargedChannelWave a b k x) x := by
+      (-(k : ℂ) ^ (2 : ℕ) * chargedChannelWave a b k x) x := by
   have he : deriv (chargedChannelWave a b k) = fun y =>
       I * (k : ℂ) * (b * FDNLS.staggerPhase (-k) y - a * FDNLS.staggerPhase k y) :=
     funext (fun y => (chargedChannelWave_derivative a b k y).deriv)
@@ -58,24 +58,24 @@ theorem chargedChannelWave_second_derivative (a b : ℂ) (k x : ℝ) :
     ((FDNLS.hasDerivAt_staggerPhase k x).const_mul a)).const_mul (I * (k : ℂ))
   apply h.congr_deriv
   simp only [chargedChannelWave, Complex.ofReal_neg]
-  linear_combination (I_sq) * ((k : ℂ) ^ 2 * (a * FDNLS.staggerPhase k x + b * FDNLS.staggerPhase (-k) x))
+  linear_combination (I_sq) * ((k : ℂ) ^ (2 : ℕ) * (a * FDNLS.staggerPhase k x + b * FDNLS.staggerPhase (-k) x))
 
 /-- The channels solve the actual constant-coefficient radial wave equation. -/
 theorem chargedChannelWave_wave_equation (a b : ℂ) (k x : ℝ) :
-    deriv (deriv (chargedChannelWave a b k)) x + (k : ℂ) ^ 2 * chargedChannelWave a b k x = 0 := by
+    deriv (deriv (chargedChannelWave a b k)) x + (k : ℂ) ^ (2 : ℕ) * chargedChannelWave a b k x = 0 := by
   rw [(chargedChannelWave_second_derivative a b k x).deriv]
   ring
 
 /-- Equation (29), with arbitrary complex incident and reflected amplitudes. -/
 theorem chargedChannelWave_flux (a b : ℂ) (k x : ℝ) :
-    complexRadialFlux (chargedChannelWave a b k) x = k * (‖b‖ ^ 2 - ‖a‖ ^ 2) := by
+    complexRadialFlux (chargedChannelWave a b k) x = k * (‖b‖ ^ (2 : ℕ) - ‖a‖ ^ (2 : ℕ)) := by
   rw [complexRadialFlux, (chargedChannelWave_derivative a b k x).deriv, chargedChannelWave,
     complexOppositeChannelFlux]
   simp only [normSq_eq_norm_sq, norm_mul, FDNLS.norm_staggerPhase, mul_one]
 
 theorem chargedChannelWave_wronskian (a b : ℂ) (k x : ℝ) :
     complexRadialWronskian (chargedChannelWave a b k) x =
-      2 * I * ((k * (‖b‖ ^ 2 - ‖a‖ ^ 2) : ℝ) : ℂ) := by
+      2 * I * ((k * (‖b‖ ^ (2 : ℕ) - ‖a‖ ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [complexRadialWronskian_eq_flux, chargedChannelWave_flux]
 
 theorem chargedChannelWave_flux_conserved (a b : ℂ) (k x : ℝ) :
@@ -85,7 +85,7 @@ theorem chargedChannelWave_flux_conserved (a b : ℂ) (k x : ℝ) :
 
 /-- Actual Fokas--Lenells waves carry the expected positive momentum current. -/
 theorem fokasLenells_planeWave_radialFlux (a κ t x : ℝ) :
-    complexRadialFlux (FokasLenells.planeWave a κ t) x = Real.exp κ * a ^ 2 := by
+    complexRadialFlux (FokasLenells.planeWave a κ t) x = Real.exp κ * a ^ (2 : ℕ) := by
   have he : FokasLenells.planeWave a κ t =
       chargedChannelWave ((a : ℂ) * FDNLS.staggerPhase (FokasLenells.waveFrequency a κ) t) 0 (-Real.exp κ) := by
     funext y

@@ -63,7 +63,7 @@ theorem eventually_exists_nearestNeighborPath_sameDraw_growth_nearHilbertContinu
     have hpow : 2 ^ (L * 2) = 4 ^ L := by
       calc
         2 ^ (L * 2) = 2 ^ (2 * L) := by rw [Nat.mul_comm]
-        _ = (2 ^ 2) ^ L := by rw [pow_mul]
+        _ = (2 ^ (2 : ℕ)) ^ L := by rw [pow_mul]
         _ = 4 ^ L := by norm_num
     have hdim : nearestNeighborPathProjectiveDimension L = 2 ^ (L * 2) - 1 := by
       have h := nearestNeighborPathProjectiveDimension_add_one L

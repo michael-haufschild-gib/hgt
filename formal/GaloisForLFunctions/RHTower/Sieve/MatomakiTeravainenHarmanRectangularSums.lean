@@ -132,7 +132,7 @@ theorem mtHarmanPairCellFamilySiftSum_eq
 def mtHarmanAdmissiblePairSiftSum
     (P : Finset ℕ) (E : ℝ) (z n : ℕ) : ℂ :=
   ∑ q ∈ P.product P,
-    if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ 4 < E ∧ q.1 * q.2 ∣ n then
+    if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ (4 : ℕ) < E ∧ q.1 * q.2 ∣ n then
       (rho (n / q.1 / q.2) z : ℂ)
     else 0
 
@@ -149,7 +149,7 @@ theorem harmanPairs_eq_primesIco_filter
     {z D E n q₁ : ℕ} (hq₁ : q₁ ∈ primeWindow n z D) :
     harmanPairs z E n q₁ =
       (primesIco z D).filter fun q₂ =>
-        q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < (E : ℝ) ∧ q₁ * q₂ ∣ n := by
+        q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧ q₁ * q₂ ∣ n := by
   ext q₂
   rw [harmanPairs, Finset.mem_filter, Finset.mem_filter]
   have hq₁' := mem_primeWindow.mp hq₁
@@ -176,11 +176,11 @@ theorem mtHarmanAdmissiblePairSiftSum_primesIco
   rw [primeWindow_eq_primesIco_filter_dvd, Finset.sum_filter]
   calc
     (∑ q ∈ (primesIco z D).product (primesIco z D),
-        if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ 4 < (E : ℝ) ∧
+        if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧
             q.1 * q.2 ∣ n then
           (rho (n / q.1 / q.2) z : ℂ) else 0) =
         ∑ q₁ ∈ primesIco z D, ∑ q₂ ∈ primesIco z D,
-          if q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < (E : ℝ) ∧
+          if q₂ < q₁ ∧ (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧
               q₁ * q₂ ∣ n then
             (rho (n / q₁ / q₂) z : ℂ) else 0 :=
       Finset.sum_product (primesIco z D) (primesIco z D) _
@@ -208,7 +208,7 @@ def mtHarmanPairNonrectangularError {t : ℕ}
     (endpoint : ℕ → ℕ) (P : Finset ℕ) (E : ℝ) (z n : ℕ) : ℂ := by
   classical
   exact ∑ q ∈ P.product P,
-    if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ 4 < E ∧ q.1 * q.2 ∣ n ∧
+    if q.2 < q.1 ∧ (q.1 : ℝ) * (q.2 : ℝ) ^ (4 : ℕ) < E ∧ q.1 * q.2 ∣ n ∧
         ¬MTHarmanPairRectangular t endpoint E q.1 q.2 then
       (rho (n / q.1 / q.2) z : ℂ)
     else 0
@@ -376,7 +376,7 @@ def mtHarmanAdmissibleTripleSiftSum
     (P : Finset ℕ) (E : ℝ) (z n : ℕ) : ℂ :=
   ∑ q ∈ (P.product P).product P,
     if q.2 < q.1.2 ∧ q.1.2 < q.1.1 ∧
-        (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ 4 < E ∧
+        (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ (4 : ℕ) < E ∧
         q.1.1 * q.1.2 * q.2 ∣ n then
       (rho (n / q.1.1 / q.1.2 / q.2) z : ℂ)
     else 0
@@ -419,20 +419,20 @@ theorem mtHarmanAdmissibleTripleSiftSum_primesIco
   calc
     (∑ q ∈ ((primesIco z D).product (primesIco z D)).product (primesIco z D),
         if q.2 < q.1.2 ∧ q.1.2 < q.1.1 ∧
-            (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ 4 < (E : ℝ) ∧
+            (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧
             q.1.1 * q.1.2 * q.2 ∣ n then
           (rho (n / q.1.1 / q.1.2 / q.2) z : ℂ) else 0) =
         ∑ q₁q₂ ∈ (primesIco z D).product (primesIco z D),
           ∑ q₃ ∈ primesIco z D,
             if q₃ < q₁q₂.2 ∧ q₁q₂.2 < q₁q₂.1 ∧
-                (q₁q₂.1 : ℝ) * (q₁q₂.2 : ℝ) ^ 4 < (E : ℝ) ∧
+                (q₁q₂.1 : ℝ) * (q₁q₂.2 : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧
                 q₁q₂.1 * q₁q₂.2 * q₃ ∣ n then
               (rho (n / q₁q₂.1 / q₁q₂.2 / q₃) z : ℂ) else 0 :=
       Finset.sum_product ((primesIco z D).product (primesIco z D)) (primesIco z D) _
     _ = ∑ q₁ ∈ primesIco z D, ∑ q₂ ∈ primesIco z D,
         ∑ q₃ ∈ primesIco z D,
           if q₃ < q₂ ∧ q₂ < q₁ ∧
-              (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < (E : ℝ) ∧
+              (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧
               q₁ * q₂ * q₃ ∣ n then
             (rho (n / q₁ / q₂ / q₃) z : ℂ) else 0 :=
       Finset.sum_product (primesIco z D) (primesIco z D) _
@@ -453,7 +453,7 @@ theorem mtHarmanAdmissibleTripleSiftSum_primesIco
         apply Finset.sum_congr rfl
         intro q₂ hq₂
         by_cases hpair : q₂ < q₁ ∧
-            (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < (E : ℝ) ∧ q₁ * q₂ ∣ n
+            (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < (E : ℝ) ∧ q₁ * q₂ ∣ n
         · have hq₂pair : q₂ ∈ harmanPairs z E n q₁ := by
             rw [harmanPairs_eq_primesIco_filter hq₁win]
             exact Finset.mem_filter.mpr ⟨hq₂, hpair⟩
@@ -486,7 +486,7 @@ def mtHarmanTripleNonrectangularError {t : ℕ}
   classical
   exact ∑ q ∈ (P.product P).product P,
     if q.2 < q.1.2 ∧ q.1.2 < q.1.1 ∧
-        (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ 4 < E ∧
+        (q.1.1 : ℝ) * (q.1.2 : ℝ) ^ (4 : ℕ) < E ∧
         q.1.1 * q.1.2 * q.2 ∣ n ∧
         ¬MTHarmanTripleRectangular t endpoint E q.1.1 q.1.2 q.2 then
       (rho (n / q.1.1 / q.1.2 / q.2) z : ℂ)

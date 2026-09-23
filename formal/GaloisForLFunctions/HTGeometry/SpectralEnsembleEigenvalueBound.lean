@@ -30,7 +30,7 @@ variable {d : Type*} [Fintype d] [DecidableEq d]
 
 /-- The eigenvalue energy of a Hermitian matrix is the real trace of its square. -/
 theorem sum_sq_eigenvalues_eq_trace_sq_re {H : Matrix d d ℂ} (hH : H.IsHermitian) :
-    ∑ i, (hH.eigenvalues i) ^ 2 = ((H ^ 2).trace).re := by
+    ∑ i, (hH.eigenvalues i) ^ (2 : ℕ) = ((H ^ (2 : ℕ)).trace).re := by
   rw [trace_pow_eq_sum_eigenvalues_pow hH 2, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← Complex.ofReal_pow, Complex.ofReal_re]
@@ -38,13 +38,13 @@ theorem sum_sq_eigenvalues_eq_trace_sq_re {H : Matrix d d ℂ} (hH : H.IsHermiti
 /-- Each eigenvalue of a Hermitian matrix is bounded by the square root of the eigenvalue
 energy. -/
 theorem abs_eigenvalues_le_sqrt_trace_sq_re {H : Matrix d d ℂ} (hH : H.IsHermitian) (j : d) :
-    |hH.eigenvalues j| ≤ Real.sqrt (((H ^ 2).trace).re) := by
-  have hle : (hH.eigenvalues j) ^ 2 ≤ ∑ i, (hH.eigenvalues i) ^ 2 :=
-    Finset.single_le_sum (f := fun i => (hH.eigenvalues i) ^ 2)
+    |hH.eigenvalues j| ≤ Real.sqrt (((H ^ (2 : ℕ)).trace).re) := by
+  have hle : (hH.eigenvalues j) ^ (2 : ℕ) ≤ ∑ i, (hH.eigenvalues i) ^ (2 : ℕ) :=
+    Finset.single_le_sum (f := fun i => (hH.eigenvalues i) ^ (2 : ℕ))
       (fun i _ => sq_nonneg _) (Finset.mem_univ j)
   rw [sum_sq_eigenvalues_eq_trace_sq_re hH] at hle
-  calc |hH.eigenvalues j| = Real.sqrt ((hH.eigenvalues j) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
-    _ ≤ Real.sqrt (((H ^ 2).trace).re) := Real.sqrt_le_sqrt hle
+  calc |hH.eigenvalues j| = Real.sqrt ((hH.eigenvalues j) ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs _).symm
+    _ ≤ Real.sqrt (((H ^ (2 : ℕ)).trace).re) := Real.sqrt_le_sqrt hle
 
 end Eigenvalues
 
@@ -58,7 +58,7 @@ def ensembleTraceBound (P : Fin N → Matrix (Fin D) (Fin D) ℂ) : ℝ :=
 
 theorem trace_sq_spectralEnsembleMatrix (P : Fin N → Matrix (Fin D) (Fin D) ℂ)
     (θ : Fin N → ℝ) :
-    ((spectralEnsembleMatrix P θ) ^ 2).trace
+    ((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace
       = ∑ a, ∑ b, ((θ a : ℂ) * (θ b : ℂ)) * (P a * P b).trace := by
   rw [sq, spectralEnsembleMatrix, Finset.sum_mul_sum, Matrix.trace_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -69,9 +69,9 @@ theorem trace_sq_spectralEnsembleMatrix (P : Fin N → Matrix (Fin D) (Fin D) �
 
 theorem trace_sq_spectralEnsembleMatrix_re_le (P : Fin N → Matrix (Fin D) (Fin D) ℂ)
     {θ : Fin N → ℝ} (hθ : ∀ a, |θ a| ≤ 1) :
-    (((spectralEnsembleMatrix P θ) ^ 2).trace).re ≤ ensembleTraceBound P := by
-  have h1 : (((spectralEnsembleMatrix P θ) ^ 2).trace).re
-      ≤ ‖((spectralEnsembleMatrix P θ) ^ 2).trace‖ := Complex.re_le_norm _
+    (((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace).re ≤ ensembleTraceBound P := by
+  have h1 : (((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace).re
+      ≤ ‖((spectralEnsembleMatrix P θ) ^ (2 : ℕ)).trace‖ := Complex.re_le_norm _
   refine le_trans h1 ?_
   rw [trace_sq_spectralEnsembleMatrix]
   refine le_trans (norm_sum_le _ _) ?_

@@ -46,7 +46,7 @@ theorem norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ
 
 theorem norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ_sq_eq_plainMass
     (N : ℕ) (center : ℝ) (n : ℕ) :
-    ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ 2 =
+    ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ (2 : ℕ) =
       smoothAFEZetaSquarePrimalHeightDerivativePlainMass N n := by
   rw [norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ]
   rfl
@@ -54,7 +54,7 @@ theorem norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ_sq_eq_
 theorem natSucc_mul_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_weightedMass
     (N : ℕ) (center : ℝ) (n : ℕ) :
     ((n + 1 : ℕ) : ℝ) *
-        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ 2 =
+        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ (2 : ℕ) =
       smoothAFEZetaSquarePrimalHeightDerivativeWeightedMass N n := by
   rw [norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ_sq_eq_plainMass]
   rfl
@@ -64,9 +64,9 @@ theorem summable_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_affine_
     Summable (fun k : ℕ =>
       ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖) ∧
     Summable (fun k : ℕ =>
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) ∧
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) ∧
     Summable (fun k : ℕ => (k : ℝ) *
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) := by
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) := by
   obtain ⟨hplain, hweighted⟩ :=
     summable_smoothAFEZetaSquarePrimalHeightDerivativeMasses hN
   constructor
@@ -77,12 +77,12 @@ theorem summable_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_affine_
         N center n).symm)
   constructor
   · apply (summable_nat_add_iff (f := fun k : ℕ =>
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) 1).mp
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) 1).mp
     exact hplain.congr (fun n =>
       (norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_succ_sq_eq_plainMass
         N center n).symm)
   · apply (summable_nat_add_iff (f := fun k : ℕ => (k : ℝ) *
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) 1).mp
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) 1).mp
     exact hweighted.congr (fun n =>
       (natSucc_mul_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_weightedMass
         N center n).symm)
@@ -90,7 +90,7 @@ theorem summable_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_affine_
 theorem tsum_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_plainMass
     {N : ℕ} (hN : 4 ≤ N) (center : ℝ) :
     (∑' k : ℕ,
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) =
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) =
       ∑' n : ℕ, smoothAFEZetaSquarePrimalHeightDerivativePlainMass N n := by
   have hsum :=
     (summable_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_affine_masses
@@ -98,9 +98,9 @@ theorem tsum_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_
   have hsplit := hsum.sum_add_tsum_nat_add 1
   calc
     (∑' k : ℕ,
-        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) =
+        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) =
       ∑' n : ℕ,
-        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ 2 := by
+        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ (2 : ℕ) := by
       rw [← hsplit]
       simp
     _ = ∑' n : ℕ, smoothAFEZetaSquarePrimalHeightDerivativePlainMass N n := by
@@ -112,7 +112,7 @@ theorem tsum_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_
 theorem tsum_weighted_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_weightedMass
     {N : ℕ} (hN : 4 ≤ N) (center : ℝ) :
     (∑' k : ℕ, (k : ℝ) *
-      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) =
+      ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) =
       ∑' n : ℕ, smoothAFEZetaSquarePrimalHeightDerivativeWeightedMass N n := by
   have hsum :=
     (summable_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_affine_masses
@@ -120,9 +120,9 @@ theorem tsum_weighted_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficie
   have hsplit := hsum.sum_add_tsum_nat_add 1
   calc
     (∑' k : ℕ, (k : ℝ) *
-        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) =
+        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) =
       ∑' n : ℕ, ((n + 1 : ℕ) : ℝ) *
-        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ 2 := by
+        ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center (n + 1)‖ ^ (2 : ℕ) := by
       rw [← hsplit]
       simp
     _ = ∑' n : ℕ, smoothAFEZetaSquarePrimalHeightDerivativeWeightedMass N n := by
@@ -138,11 +138,11 @@ theorem exists_integral_normSq_smoothAFEZetaSquarePrimalHeightDerivativeLSeries_
       (∫ y in Set.Icc (-H) H,
         ‖LSeries
           (smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center)
-          ((y : ℝ) * I)‖ ^ 2) ≤
+          ((y : ℝ) * I)‖ ^ (2 : ℕ)) ≤
         5 * Real.pi * Real.exp 1 *
-            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ 5) +
+            (B * (N : ℝ) * (1 + Real.log (N : ℝ)) ^ (5 : ℕ)) +
           (5 * Real.pi / 2) *
-            (B * (1 + Real.log (N : ℝ)) ^ 6) * H := by
+            (B * (1 + Real.log (N : ℝ)) ^ (6 : ℕ)) * H := by
   obtain ⟨B, hB, hmass⟩ :=
     exists_tsum_smoothAFEZetaSquarePrimalHeightDerivativeMasses_le
   refine ⟨B, hB, ?_⟩
@@ -159,13 +159,13 @@ theorem exists_integral_normSq_smoothAFEZetaSquarePrimalHeightDerivativeLSeries_
       (∫ y in Set.Icc (-H) H,
         ‖LSeries
           (smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center)
-          ((y : ℝ) * I)‖ ^ 2) ≤
+          ((y : ℝ) * I)‖ ^ (2 : ℕ)) ≤
         5 * Real.pi * Real.exp 1 *
           (∑' k : ℕ, (k : ℝ) *
-            ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) +
+            ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) +
         (5 * Real.pi / 2) *
           (∑' k : ℕ,
-            ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ 2) * H := by
+            ‖smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient N center k‖ ^ (2 : ℕ)) * H := by
     simpa using hmv
   obtain ⟨hweightedMass, hplainMass⟩ := hmass hN
   rw [tsum_norm_smoothAFEZetaSquarePrimalHeightDerivativeNatCoefficient_sq_eq_plainMass

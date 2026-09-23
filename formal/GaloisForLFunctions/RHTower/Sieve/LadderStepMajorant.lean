@@ -33,14 +33,14 @@ theorem stepMVTMajorant_pos {B₀ : ℕ} {Q η : ℝ} (hQ : 0 < Q) (hη : 0 ≤ 
 /-- **Below the Gallagher cut the mean value factor is dominated by the cofactor length squared.** -/
 theorem ladderStepMVT_le_sq {B₀ : ℕ} {Q η G : ℝ} (hQ : 0 < Q) (hη : 0 ≤ η) (j : ℕ)
     (hG : G ≤ (B₀ : ℝ) / (Q * (1 + η) ^ j)) :
-    ladderStepMVT B₀ Q η G j ≤ (stepMVTMajorant B₀ Q η j) ^ 2 := by
+    ladderStepMVT B₀ Q η G j ≤ (stepMVTMajorant B₀ Q η j) ^ (2 : ℕ) := by
   have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
   set N : ℝ := (B₀ : ℝ) / (Q * (1 + η) ^ j) with hN
   have hN0 : (0 : ℝ) ≤ N := div_nonneg (Nat.cast_nonneg _) hbase.le
   have hfl : ((⌊N⌋₊ : ℕ) : ℝ) ≤ N := Nat.floor_le hN0
   have hCpos : (0 : ℝ) ≤ 5 * Real.pi / 2 + 5 * Real.exp 1 / 2 := by positivity
-  have hsq : (stepMVTMajorant B₀ Q η j) ^ 2
-      = (5 * Real.pi / 2 + 5 * Real.exp 1 / 2) * (N + 1) ^ 2 := by
+  have hsq : (stepMVTMajorant B₀ Q η j) ^ (2 : ℕ)
+      = (5 * Real.pi / 2 + 5 * Real.exp 1 / 2) * (N + 1) ^ (2 : ℕ) := by
     rw [stepMVTMajorant, ← hN, mul_pow, Real.sq_sqrt hCpos]
   rw [ladderStepMVT, ← hN, hsq]
   have hstep : 5 * Real.pi / 2 * G + 5 * Real.exp 1 / 2 * ((⌊N⌋₊ : ℕ) : ℝ)
@@ -120,26 +120,26 @@ theorem discMajorant_sq_ge {P : Finset ℕ} {B₀ : ℕ} {Q η s w₀ : ℝ} (hQ
     (hs : 0 ≤ s) (hw₀ : 0 ≤ w₀) {U Vlow : ℕ → ℝ} (j : ℕ) (hU0 : 0 ≤ U j) (hVlow0 : 0 ≤ Vlow j)
     (hVlowj : Vlow j ≤ ((geomBlock P Q (1 + η) j).card : ℝ))
     (hUj : U j ≤ s * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) :
-    Vlow j ^ 2 * U j ^ 2 * (2 * w₀) ≤ (discMajorant P B₀ Q η s w₀ j) ^ 2 := by
+    Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) ≤ (discMajorant P B₀ Q η s w₀ j) ^ (2 : ℕ) := by
   have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
   set a : ℝ := ((geomBlock P Q (1 + η) j).card : ℝ) + 1 with ha
   set b : ℝ := s * ((B₀ : ℝ) / (Q * (1 + η) ^ j)) + 1 with hb
   set r : ℝ := Real.sqrt (2 * w₀) + 1 with hr
   have hVa : Vlow j ≤ a := by rw [ha]; linarith [hVlowj]
   have hUb : U j ≤ b := by rw [hb]; linarith [hUj]
-  have hsq : Real.sqrt (2 * w₀) ^ 2 = 2 * w₀ := Real.sq_sqrt (by linarith)
-  have hwr : 2 * w₀ ≤ r ^ 2 := by
+  have hsq : Real.sqrt (2 * w₀) ^ (2 : ℕ) = 2 * w₀ := Real.sq_sqrt (by linarith)
+  have hwr : 2 * w₀ ≤ r ^ (2 : ℕ) := by
     rw [hr]
     nlinarith [Real.sqrt_nonneg (2 * w₀), hsq]
   have ha0 : (0 : ℝ) ≤ a := le_trans hVlow0 hVa
   have hb0 : (0 : ℝ) ≤ b := le_trans hU0 hUb
-  have h1 : Vlow j ^ 2 ≤ a ^ 2 := by nlinarith [hVa, hVlow0]
-  have h2 : U j ^ 2 ≤ b ^ 2 := by nlinarith [hUb, hU0]
+  have h1 : Vlow j ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by nlinarith [hVa, hVlow0]
+  have h2 : U j ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := by nlinarith [hUb, hU0]
   rw [discMajorant, ← ha, ← hb, ← hr, mul_pow, mul_pow]
-  have hUsq0 : (0 : ℝ) ≤ U j ^ 2 := sq_nonneg _
-  have hasq0 : (0 : ℝ) ≤ a ^ 2 := sq_nonneg _
-  have hbsq0 : (0 : ℝ) ≤ b ^ 2 := sq_nonneg _
-  have hstep1 : Vlow j ^ 2 * U j ^ 2 ≤ a ^ 2 * b ^ 2 := mul_le_mul h1 h2 hUsq0 hasq0
+  have hUsq0 : (0 : ℝ) ≤ U j ^ (2 : ℕ) := sq_nonneg _
+  have hasq0 : (0 : ℝ) ≤ a ^ (2 : ℕ) := sq_nonneg _
+  have hbsq0 : (0 : ℝ) ≤ b ^ (2 : ℕ) := sq_nonneg _
+  have hstep1 : Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) ≤ a ^ (2 : ℕ) * b ^ (2 : ℕ) := mul_le_mul h1 h2 hUsq0 hasq0
   exact mul_le_mul hstep1 hwr (by linarith) (by positivity)
 
 /-- **The disc majorant sums to the harmonic mass times the cofactor saving.** -/

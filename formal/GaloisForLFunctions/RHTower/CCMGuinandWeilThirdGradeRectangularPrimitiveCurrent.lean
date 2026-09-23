@@ -130,7 +130,7 @@ theorem ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_volterraMixture
       (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         (∫ h in b..t,
           (criticalMellinCompletedError b - criticalMellinCompletedError h))) +
-      (32 / H ^ 4) *
+      (32 / H ^ (4 : ℕ)) *
         (∫ h in b..H,
           (criticalMellinCompletedError b - criticalMellinCompletedError h)) := by
   rw [ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_fubini hb hbH]

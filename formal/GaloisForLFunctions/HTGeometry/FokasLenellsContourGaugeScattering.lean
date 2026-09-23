@@ -83,7 +83,7 @@ theorem regularReflectionCoefficients_contour_gauge (q : SchwartzMap ℝ ℂ) (v
 
 /-- On negative z the imaginary-ray transform exchanges the transmissions and inserts the exact imaginary reflection factors. -/
 theorem regularScatteringMatrix_negative_exp (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    regularScatteringMatrix q (-((Real.exp κ)^2)) =
+    regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) =
       !![reverseTransmission (twistedPotential q) κ,
         I*reflectionAmplitude (twistedPotential q) κ/(2*(Real.exp κ : ℂ));
         2*I*(Real.exp κ : ℂ)*reflectionAmplitude (twistedPotential q) κ,

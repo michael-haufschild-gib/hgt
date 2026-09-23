@@ -79,11 +79,11 @@ theorem re_routeUCayleyMobius_le {z : ℂ} {σ : ℝ} (hσ : 0 < σ) (hz : z.im 
     rw [norm_routeUCayleyCircle, hz, neg_neg]
   have hexp1 : 1 < Real.exp σ := Real.one_lt_exp_iff.mpr hσ
   have hne := one_add_routeUCayleyCircle_ne_zero hzim
-  have hnorm : Complex.normSq (routeUCayleyCircle z) = Real.exp σ ^ 2 := by
+  have hnorm : Complex.normSq (routeUCayleyCircle z) = Real.exp σ ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq, hw]
   have hden_pos : 0 < Complex.normSq (1 + routeUCayleyCircle z) :=
     Complex.normSq_pos.2 hne
-  have hden_le : Complex.normSq (1 + routeUCayleyCircle z) ≤ (1 + Real.exp σ) ^ 2 := by
+  have hden_le : Complex.normSq (1 + routeUCayleyCircle z) ≤ (1 + Real.exp σ) ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq]
     have h := norm_add_le (1 : ℂ) (routeUCayleyCircle z)
     rw [norm_one, hw] at h
@@ -93,8 +93,8 @@ theorem re_routeUCayleyMobius_le {z : ℂ} {σ : ℝ} (hσ : 0 < σ) (hz : z.im 
     rw [hnorm]
     nlinarith
   rw [re_routeUCayleyMobius, hnorm]
-  have hstep : (1 - Real.exp σ ^ 2) / Complex.normSq (1 + routeUCayleyCircle z)
-      ≤ (1 - Real.exp σ ^ 2) / (1 + Real.exp σ) ^ 2 := by
+  have hstep : (1 - Real.exp σ ^ (2 : ℕ)) / Complex.normSq (1 + routeUCayleyCircle z)
+      ≤ (1 - Real.exp σ ^ (2 : ℕ)) / (1 + Real.exp σ) ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ hden_pos (by positivity)]
     nlinarith [hnum, hden_le, hnorm]
   refine le_trans hstep (le_of_eq ?_)
@@ -117,20 +117,20 @@ theorem routeUCayleyMobius_ofReal {θ : ℝ} (hθ : Real.cos (θ / 2) ≠ 0) :
   have hc : c ≠ 0 := by
     rw [hcdef]
     exact Complex.ofReal_ne_zero.2 hθ
-  have hpy : c ^ 2 + s ^ 2 = 1 := by
+  have hpy : c ^ (2 : ℕ) + s ^ (2 : ℕ) = 1 := by
     rw [hcdef, hsdef, ← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.ofReal_add]
-    rw [show Real.cos (θ / 2) ^ 2 + Real.sin (θ / 2) ^ 2 = 1 by
+    rw [show Real.cos (θ / 2) ^ (2 : ℕ) + Real.sin (θ / 2) ^ (2 : ℕ) = 1 by
       have := Real.sin_sq_add_cos_sq (θ / 2); linarith]
     norm_num
   have hhalf : Complex.exp ((θ : ℂ) * Complex.I)
-      = Complex.exp ((((θ / 2 : ℝ)) : ℂ) * Complex.I) ^ 2 := by
+      = Complex.exp ((((θ / 2 : ℝ)) : ℂ) * Complex.I) ^ (2 : ℕ) := by
     rw [← Complex.exp_nat_mul]
     congr 1
     push_cast
     ring
   have hexp : Complex.exp ((((θ / 2 : ℝ)) : ℂ) * Complex.I) = c + s * Complex.I := by
     rw [Complex.exp_mul_I, hcdef, hsdef, Complex.ofReal_cos, Complex.ofReal_sin]
-  have hw : routeUCayleyCircle (θ : ℂ) = c ^ 2 - s ^ 2 + 2 * c * s * Complex.I := by
+  have hw : routeUCayleyCircle (θ : ℂ) = c ^ (2 : ℕ) - s ^ (2 : ℕ) + 2 * c * s * Complex.I := by
     rw [routeUCayleyCircle, hhalf, hexp]
     ring_nf
     rw [Complex.I_sq]
@@ -138,7 +138,7 @@ theorem routeUCayleyMobius_ofReal {θ : ℝ} (hθ : Real.cos (θ / 2) ≠ 0) :
   have hcs : c + s * Complex.I ≠ 0 := by
     intro h0
     have hprod : (c + s * Complex.I) * (c - s * Complex.I) = 1 := by
-      have : (c + s * Complex.I) * (c - s * Complex.I) = c ^ 2 + s ^ 2 := by
+      have : (c + s * Complex.I) * (c - s * Complex.I) = c ^ (2 : ℕ) + s ^ (2 : ℕ) := by
         ring_nf
         rw [Complex.I_sq]
         ring
@@ -155,7 +155,7 @@ theorem routeUCayleyMobius_ofReal {θ : ℝ} (hθ : Real.cos (θ / 2) ≠ 0) :
     rw [Real.tan_eq_sin_div_cos, Complex.ofReal_div, hcdef, hsdef]
   rw [routeUCayleyMobius, htan, div_eq_iff hden, hw]
   field_simp
-  linear_combination (-(c + Complex.I * s)) * hpy + (2 * c * s ^ 2) * Complex.I_sq
+  linear_combination (-(c + Complex.I * s)) * hpy + (2 * c * s ^ (2 : ℕ)) * Complex.I_sq
 
 end RHTower
 

@@ -13,8 +13,8 @@ matrix of a cubic-minus-linear source polynomial.  On every zero-sum coefficient
 quadratic form is exactly
 
 ```text
-2 * pi^2 * q_k * (sum_i clock_i * v_i)^2,
-q_k = 32 * criticalMellinAtomWeight(k) / log(k)^3.
+2 * pi^(2 : ℕ) * q_k * (sum_i clock_i * v_i)^(2 : ℕ),
+q_k = 32 * criticalMellinAtomWeight(k) / log(k)^(3 : ℕ).
 ```
 
 For a genuine prime power `q_k>0`, so the third jet is positive semidefinite on the centered sector
@@ -35,15 +35,15 @@ noncomputable section
 
 /-- First aperture derivative of the moving horizon away from zero aperture. -/
 def ccmGuinandWeilPrimeEntryHorizonJet1 (k : ℕ) (a : ℝ) : ℝ :=
-  (Real.log k / 2) / a ^ 2
+  (Real.log k / 2) / a ^ (2 : ℕ)
 
 /-- Second aperture derivative of the moving horizon away from zero aperture. -/
 def ccmGuinandWeilPrimeEntryHorizonJet2 (k : ℕ) (a : ℝ) : ℝ :=
-  -2 * (Real.log k / 2) / a ^ 3
+  -2 * (Real.log k / 2) / a ^ (3 : ℕ)
 
 /-- Third aperture derivative of the moving horizon away from zero aperture. -/
 def ccmGuinandWeilPrimeEntryHorizonJet3 (k : ℕ) (a : ℝ) : ℝ :=
-  6 * (Real.log k / 2) / a ^ 4
+  6 * (Real.log k / 2) / a ^ (4 : ℕ)
 
 theorem hasDerivAt_ccmGuinandWeilPrimeEntryHorizon_jet1
     (k : ℕ) {a : ℝ} (ha : a ≠ 0) :
@@ -53,7 +53,7 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryHorizon_jet1
     (hasDerivAt_id (x := a)) ha
   have hraw := (hasDerivAt_const (x := a) (c := (1 : ℝ))).sub hquot
   have hraw' : HasDerivAt (fun x : ℝ => 1 - (Real.log k / 2) / x)
-      ((Real.log k / 2) / a ^ 2) a := by
+      ((Real.log k / 2) / a ^ (2 : ℕ)) a := by
     apply hraw.congr_deriv
     simp only [id_eq, zero_mul, zero_sub]
     field_simp [ha]
@@ -67,8 +67,8 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryHorizonJet1
       (ccmGuinandWeilPrimeEntryHorizonJet2 k a) a := by
   have hraw := (hasDerivAt_const (x := a) (c := Real.log k / 2)).div
     ((hasDerivAt_id (x := a)).pow 2) (pow_ne_zero 2 ha)
-  have hraw' : HasDerivAt (fun x : ℝ => (Real.log k / 2) / x ^ 2)
-      (-2 * (Real.log k / 2) / a ^ 3) a := by
+  have hraw' : HasDerivAt (fun x : ℝ => (Real.log k / 2) / x ^ (2 : ℕ))
+      (-2 * (Real.log k / 2) / a ^ (3 : ℕ)) a := by
     apply hraw.congr_deriv
     simp only [Pi.pow_apply, id_eq, zero_mul, zero_sub, Nat.cast_ofNat]
     field_simp [ha]
@@ -83,8 +83,8 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryHorizonJet2
       (ccmGuinandWeilPrimeEntryHorizonJet3 k a) a := by
   have hraw := (hasDerivAt_const (x := a) (c := -2 * (Real.log k / 2))).div
     ((hasDerivAt_id (x := a)).pow 3) (pow_ne_zero 3 ha)
-  have hraw' : HasDerivAt (fun x : ℝ => -2 * (Real.log k / 2) / x ^ 3)
-      (6 * (Real.log k / 2) / a ^ 4) a := by
+  have hraw' : HasDerivAt (fun x : ℝ => -2 * (Real.log k / 2) / x ^ (3 : ℕ))
+      (6 * (Real.log k / 2) / a ^ (4 : ℕ)) a := by
     apply hraw.congr_deriv
     simp only [Pi.pow_apply, id_eq, zero_mul, zero_sub, Nat.cast_ofNat]
     field_simp [ha]
@@ -102,13 +102,13 @@ def ccmGuinandWeilPrimeEntryOddProfileJet1
 /-- Second horizon jet of the odd reporter. -/
 def ccmGuinandWeilPrimeEntryOddProfileJet2
     (k : ℕ) (mode : ℤ) (omega : ℝ) : ℝ :=
-  4 * Real.pi * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k *
+  4 * Real.pi * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k *
     Real.sin (2 * Real.pi * omega * (mode : ℝ))
 
 /-- Third horizon jet of the odd reporter. -/
 def ccmGuinandWeilPrimeEntryOddProfileJet3
     (k : ℕ) (mode : ℤ) (omega : ℝ) : ℝ :=
-  8 * Real.pi ^ 2 * (mode : ℝ) ^ 3 * criticalMellinAtomWeight k *
+  8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (3 : ℕ) * criticalMellinAtomWeight k *
     Real.cos (2 * Real.pi * omega * (mode : ℝ))
 
 theorem hasDerivAt_ccmGuinandWeilPrimeEntryOddProfile_jet1
@@ -188,9 +188,9 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryOddProfileJet2
   have hsin := (Real.hasDerivAt_sin
     (2 * Real.pi * omega * (mode : ℝ))).comp omega hphase
   have hscaled := hsin.const_mul
-    (4 * Real.pi * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k)
+    (4 * Real.pi * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k)
   have hscaled' : HasDerivAt
-      (fun x : ℝ => 4 * Real.pi * (mode : ℝ) ^ 2 *
+      (fun x : ℝ => 4 * Real.pi * (mode : ℝ) ^ (2 : ℕ) *
         criticalMellinAtomWeight k *
           Real.sin (2 * Real.pi * x * (mode : ℝ)))
       (ccmGuinandWeilPrimeEntryOddProfileJet3 k mode omega) omega := by
@@ -214,15 +214,15 @@ def ccmGuinandWeilPrimeEntryDiagonalProfileJet2
     (k : ℕ) (mode : ℤ) (omega : ℝ) : ℝ :=
   8 * Real.pi * (mode : ℝ) * criticalMellinAtomWeight k *
       Real.sin (2 * Real.pi * omega * (mode : ℝ)) +
-    8 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k * omega *
+    8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k * omega *
       Real.cos (2 * Real.pi * omega * (mode : ℝ))
 
 /-- Third horizon jet of the weighted-cosine diagonal reporter. -/
 def ccmGuinandWeilPrimeEntryDiagonalProfileJet3
     (k : ℕ) (mode : ℤ) (omega : ℝ) : ℝ :=
-  24 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k *
+  24 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k *
       Real.cos (2 * Real.pi * omega * (mode : ℝ)) -
-    16 * Real.pi ^ 3 * (mode : ℝ) ^ 3 * criticalMellinAtomWeight k * omega *
+    16 * Real.pi ^ (3 : ℕ) * (mode : ℝ) ^ (3 : ℕ) * criticalMellinAtomWeight k * omega *
       Real.sin (2 * Real.pi * omega * (mode : ℝ))
 
 theorem hasDerivAt_ccmGuinandWeilPrimeEntryDiagonalProfile_jet1
@@ -331,18 +331,18 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryDiagonalProfileJet2
   have hterm1 := hsin.const_mul
     (8 * Real.pi * (mode : ℝ) * criticalMellinAtomWeight k)
   have hterm2 := ((hasDerivAt_id (x := omega)).mul hcos).const_mul
-    (8 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k)
+    (8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k)
   have hsum := hterm1.add hterm2
   have hfunc : HasDerivAt
       (fun x : ℝ =>
         8 * Real.pi * (mode : ℝ) * criticalMellinAtomWeight k *
             Real.sin (2 * Real.pi * x * (mode : ℝ)) +
-          8 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k * x *
+          8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k * x *
             Real.cos (2 * Real.pi * x * (mode : ℝ)))
       (8 * Real.pi * (mode : ℝ) * criticalMellinAtomWeight k *
           (Real.cos (2 * Real.pi * omega * (mode : ℝ)) *
             (2 * Real.pi * (mode : ℝ))) +
-        8 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k *
+        8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k *
           (1 * Real.cos (2 * Real.pi * omega * (mode : ℝ)) +
             omega * (-Real.sin (2 * Real.pi * omega * (mode : ℝ)) *
               (2 * Real.pi * (mode : ℝ))))) omega :=
@@ -354,7 +354,7 @@ theorem hasDerivAt_ccmGuinandWeilPrimeEntryDiagonalProfileJet2
       (fun x : ℝ =>
         8 * Real.pi * (mode : ℝ) * criticalMellinAtomWeight k *
             Real.sin (2 * Real.pi * x * (mode : ℝ)) +
-          8 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k * x *
+          8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k * x *
             Real.cos (2 * Real.pi * x * (mode : ℝ)))
       (ccmGuinandWeilPrimeEntryDiagonalProfileJet3 k mode omega) omega := by
     apply hfunc.congr_deriv
@@ -379,7 +379,7 @@ private theorem hasDerivAt_compJet1
     (hg0 : HasDerivAt g0 (g1 a) a)
     (hg1 : HasDerivAt g1 (g2 a) a) :
     HasDerivAt (fun x => f1 (g0 x) * g1 x)
-      (f2 (g0 a) * (g1 a) ^ 2 + f1 (g0 a) * g2 a) a := by
+      (f2 (g0 a) * (g1 a) ^ (2 : ℕ) + f1 (g0 a) * g2 a) a := by
   have hraw := (hf1.comp a hg0).mul hg1
   exact hraw.congr_deriv (by
     simp only [Function.comp_apply]
@@ -393,8 +393,8 @@ private theorem hasDerivAt_compJet2
     (hg1 : HasDerivAt g1 (g2 a) a)
     (hg2 : HasDerivAt g2 (g3 a) a) :
     HasDerivAt
-      (fun x => f2 (g0 x) * (g1 x) ^ 2 + f1 (g0 x) * g2 x)
-      (f3 (g0 a) * (g1 a) ^ 3 +
+      (fun x => f2 (g0 x) * (g1 x) ^ (2 : ℕ) + f1 (g0 x) * g2 x)
+      (f3 (g0 a) * (g1 a) ^ (3 : ℕ) +
         3 * f2 (g0 a) * g1 a * g2 a + f1 (g0 a) * g3 a) a := by
   have hterm1 := (hf2.comp a hg0).mul (hg1.pow 2)
   have hterm2 := (hf1.comp a hg0).mul hg2
@@ -415,7 +415,7 @@ def ccmGuinandWeilPrimeEntryOddGermJet2
     (k : ℕ) (mode : ℤ) (a : ℝ) : ℝ :=
   ccmGuinandWeilPrimeEntryOddProfileJet2 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
-      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ 2 +
+      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ (2 : ℕ) +
     ccmGuinandWeilPrimeEntryOddProfileJet1 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
       ccmGuinandWeilPrimeEntryHorizonJet2 k a
@@ -425,7 +425,7 @@ def ccmGuinandWeilPrimeEntryOddGermJet3
     (k : ℕ) (mode : ℤ) (a : ℝ) : ℝ :=
   ccmGuinandWeilPrimeEntryOddProfileJet3 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
-      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ 3 +
+      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ (3 : ℕ) +
     3 * ccmGuinandWeilPrimeEntryOddProfileJet2 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
       ccmGuinandWeilPrimeEntryHorizonJet1 k a *
@@ -484,7 +484,7 @@ def ccmGuinandWeilPrimeEntryDiagonalGermJet2
     (k : ℕ) (mode : ℤ) (a : ℝ) : ℝ :=
   ccmGuinandWeilPrimeEntryDiagonalProfileJet2 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
-      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ 2 +
+      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ (2 : ℕ) +
     ccmGuinandWeilPrimeEntryDiagonalProfileJet1 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
       ccmGuinandWeilPrimeEntryHorizonJet2 k a
@@ -494,7 +494,7 @@ def ccmGuinandWeilPrimeEntryDiagonalGermJet3
     (k : ℕ) (mode : ℤ) (a : ℝ) : ℝ :=
   ccmGuinandWeilPrimeEntryDiagonalProfileJet3 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
-      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ 3 +
+      (ccmGuinandWeilPrimeEntryHorizonJet1 k a) ^ (3 : ℕ) +
     3 * ccmGuinandWeilPrimeEntryDiagonalProfileJet2 k mode
       (ccmGuinandWeilPrimeEntryHorizon k a) *
       ccmGuinandWeilPrimeEntryHorizonJet1 k a *
@@ -555,7 +555,7 @@ theorem ccmGuinandWeilPrimeEntryHorizonJet1_at_entry
 theorem ccmGuinandWeilPrimeEntryHorizonJet2_at_entry
     {k : ℕ} (hk : 1 < k) :
     ccmGuinandWeilPrimeEntryHorizonJet2 k
-        (ccmGuinandWeilPrimeEntryAperture k) = -8 / Real.log k ^ 2 := by
+        (ccmGuinandWeilPrimeEntryAperture k) = -8 / Real.log k ^ (2 : ℕ) := by
   have hlog : Real.log k ≠ 0 := (Real.log_pos (by exact_mod_cast hk)).ne'
   unfold ccmGuinandWeilPrimeEntryHorizonJet2 ccmGuinandWeilPrimeEntryAperture
   field_simp [hlog]
@@ -564,7 +564,7 @@ theorem ccmGuinandWeilPrimeEntryHorizonJet2_at_entry
 theorem ccmGuinandWeilPrimeEntryHorizonJet3_at_entry
     {k : ℕ} (hk : 1 < k) :
     ccmGuinandWeilPrimeEntryHorizonJet3 k
-        (ccmGuinandWeilPrimeEntryAperture k) = 48 / Real.log k ^ 3 := by
+        (ccmGuinandWeilPrimeEntryAperture k) = 48 / Real.log k ^ (3 : ℕ) := by
   have hlog : Real.log k ≠ 0 := (Real.log_pos (by exact_mod_cast hk)).ne'
   unfold ccmGuinandWeilPrimeEntryHorizonJet3 ccmGuinandWeilPrimeEntryAperture
   field_simp [hlog]
@@ -584,7 +584,7 @@ theorem ccmGuinandWeilPrimeEntryHorizonJet3_at_entry
 @[simp] theorem ccmGuinandWeilPrimeEntryOddProfileJet3_zero
     (k : ℕ) (mode : ℤ) :
     ccmGuinandWeilPrimeEntryOddProfileJet3 k mode 0 =
-      8 * Real.pi ^ 2 * (mode : ℝ) ^ 3 * criticalMellinAtomWeight k := by
+      8 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (3 : ℕ) * criticalMellinAtomWeight k := by
   simp [ccmGuinandWeilPrimeEntryOddProfileJet3]
 
 @[simp] theorem ccmGuinandWeilPrimeEntryDiagonalProfileJet1_zero
@@ -601,7 +601,7 @@ theorem ccmGuinandWeilPrimeEntryHorizonJet3_at_entry
 @[simp] theorem ccmGuinandWeilPrimeEntryDiagonalProfileJet3_zero
     (k : ℕ) (mode : ℤ) :
     ccmGuinandWeilPrimeEntryDiagonalProfileJet3 k mode 0 =
-      24 * Real.pi ^ 2 * (mode : ℝ) ^ 2 * criticalMellinAtomWeight k := by
+      24 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) * criticalMellinAtomWeight k := by
   simp [ccmGuinandWeilPrimeEntryDiagonalProfileJet3]
 
 /-- Odd second aperture jet is linear in Fourier mode. -/
@@ -609,7 +609,7 @@ theorem ccmGuinandWeilPrimeEntryOddGermJet2_at_entry
     {k : ℕ} (hk : 1 < k) (mode : ℤ) :
     ccmGuinandWeilPrimeEntryOddGermJet2 k mode
         (ccmGuinandWeilPrimeEntryAperture k) =
-      16 * (mode : ℝ) * criticalMellinAtomWeight k / Real.log k ^ 2 := by
+      16 * (mode : ℝ) * criticalMellinAtomWeight k / Real.log k ^ (2 : ℕ) := by
   rw [ccmGuinandWeilPrimeEntryOddGermJet2,
     ccmGuinandWeilPrimeEntryHorizon_at_entry hk,
     ccmGuinandWeilPrimeEntryHorizonJet1_at_entry hk,
@@ -622,7 +622,7 @@ theorem ccmGuinandWeilPrimeEntryDiagonalGermJet2_at_entry
     {k : ℕ} (hk : 1 < k) (mode : ℤ) :
     ccmGuinandWeilPrimeEntryDiagonalGermJet2 k mode
         (ccmGuinandWeilPrimeEntryAperture k) =
-      16 * criticalMellinAtomWeight k / Real.log k ^ 2 := by
+      16 * criticalMellinAtomWeight k / Real.log k ^ (2 : ℕ) := by
   rw [ccmGuinandWeilPrimeEntryDiagonalGermJet2,
     ccmGuinandWeilPrimeEntryHorizon_at_entry hk,
     ccmGuinandWeilPrimeEntryHorizonJet1_at_entry hk,
@@ -636,7 +636,7 @@ theorem ccmGuinandWeilPrimeEntryOddGermJet3_at_entry
     ccmGuinandWeilPrimeEntryOddGermJet3 k mode
         (ccmGuinandWeilPrimeEntryAperture k) =
       32 * (mode : ℝ) * criticalMellinAtomWeight k *
-        (2 * Real.pi ^ 2 * (mode : ℝ) ^ 2 - 3) / Real.log k ^ 3 := by
+        (2 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) - 3) / Real.log k ^ (3 : ℕ) := by
   rw [ccmGuinandWeilPrimeEntryOddGermJet3,
     ccmGuinandWeilPrimeEntryHorizon_at_entry hk,
     ccmGuinandWeilPrimeEntryHorizonJet1_at_entry hk,
@@ -651,7 +651,7 @@ theorem ccmGuinandWeilPrimeEntryDiagonalGermJet3_at_entry
     ccmGuinandWeilPrimeEntryDiagonalGermJet3 k mode
         (ccmGuinandWeilPrimeEntryAperture k) =
       96 * criticalMellinAtomWeight k *
-        (2 * Real.pi ^ 2 * (mode : ℝ) ^ 2 - 1) / Real.log k ^ 3 := by
+        (2 * Real.pi ^ (2 : ℕ) * (mode : ℝ) ^ (2 : ℕ) - 1) / Real.log k ^ (3 : ℕ) := by
   rw [ccmGuinandWeilPrimeEntryDiagonalGermJet3,
     ccmGuinandWeilPrimeEntryHorizon_at_entry hk,
     ccmGuinandWeilPrimeEntryHorizonJet1_at_entry hk,
@@ -664,7 +664,7 @@ theorem ccmGuinandWeilPrimeEntryDiagonalGermJet3_at_entry
 
 /-- Positive third-jet scale at genuine prime powers. -/
 def ccmGuinandWeilPrimeEntryThirdJetScale (k : ℕ) : ℝ :=
-  32 * criticalMellinAtomWeight k / Real.log k ^ 3
+  32 * criticalMellinAtomWeight k / Real.log k ^ (3 : ℕ)
 
 def ccmGuinandWeilPrimeEntryCenteredSourceJet3
     (k N : ℕ) (i : Fin (2 * N + 1)) : ℝ :=
@@ -689,7 +689,7 @@ theorem ccmGuinandWeilPrimeEntryCenteredSourceJet3_eq
     ccmGuinandWeilPrimeEntryCenteredSourceJet3 k N i =
       ccmGuinandWeilPrimeEntryThirdJetScale k *
         ccmPublishedCenteredClock N i *
-          (2 * Real.pi ^ 2 * ccmPublishedCenteredClock N i ^ 2 - 3) := by
+          (2 * Real.pi ^ (2 : ℕ) * ccmPublishedCenteredClock N i ^ (2 : ℕ) - 3) := by
   rw [ccmGuinandWeilPrimeEntryCenteredSourceJet3,
     ccmGuinandWeilPrimeEntryOddGermJet3_at_entry hk,
     ccmGuinandWeilPrimeEntryThirdJetScale, ccmPublishedCenteredClock]
@@ -699,7 +699,7 @@ theorem ccmGuinandWeilPrimeEntryCenteredDiagonalJet3_eq
     {k : ℕ} (hk : 1 < k) (N : ℕ) (i : Fin (2 * N + 1)) :
     ccmGuinandWeilPrimeEntryCenteredDiagonalJet3 k N i =
       3 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-        (2 * Real.pi ^ 2 * ccmPublishedCenteredClock N i ^ 2 - 1) := by
+        (2 * Real.pi ^ (2 : ℕ) * ccmPublishedCenteredClock N i ^ (2 : ℕ) - 1) := by
   rw [ccmGuinandWeilPrimeEntryCenteredDiagonalJet3,
     ccmGuinandWeilPrimeEntryDiagonalGermJet3_at_entry hk,
     ccmGuinandWeilPrimeEntryThirdJetScale, ccmPublishedCenteredClock]
@@ -711,10 +711,10 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_apply
     (i j : Fin (2 * N + 1)) :
     ccmGuinandWeilPrimeEntryCenteredMatrixJet3 k N i j =
       ccmGuinandWeilPrimeEntryThirdJetScale k *
-        (2 * Real.pi ^ 2 *
-          (ccmPublishedCenteredClock N i ^ 2 +
+        (2 * Real.pi ^ (2 : ℕ) *
+          (ccmPublishedCenteredClock N i ^ (2 : ℕ) +
             ccmPublishedCenteredClock N i * ccmPublishedCenteredClock N j +
-            ccmPublishedCenteredClock N j ^ 2) - 3) := by
+            ccmPublishedCenteredClock N j ^ (2 : ℕ)) - 3) := by
   by_cases hij : i = j
   · subst j
     rw [ccmGuinandWeilPrimeEntryCenteredMatrixJet3,
@@ -735,16 +735,16 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_apply
 theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_eq_outerProducts
     {k : ℕ} (hk : 1 < k) (N : ℕ) :
     ccmGuinandWeilPrimeEntryCenteredMatrixJet3 k N =
-      (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k) •
+      (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k) •
           Matrix.vecMulVec
-            (fun i : Fin (2 * N + 1) => ccmPublishedCenteredClock N i ^ 2)
+            (fun i : Fin (2 * N + 1) => ccmPublishedCenteredClock N i ^ (2 : ℕ))
             ccmConstantBoundary +
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k) •
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k) •
           Matrix.vecMulVec (ccmPublishedCenteredClock N)
             (ccmPublishedCenteredClock N) +
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k) •
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k) •
           Matrix.vecMulVec ccmConstantBoundary
-            (fun i : Fin (2 * N + 1) => ccmPublishedCenteredClock N i ^ 2) -
+            (fun i : Fin (2 * N + 1) => ccmPublishedCenteredClock N i ^ (2 : ℕ)) -
         (3 * ccmGuinandWeilPrimeEntryThirdJetScale k) •
           Matrix.vecMulVec ccmConstantBoundary ccmConstantBoundary := by
   ext i j
@@ -758,8 +758,8 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_quadratic_of_sum_eq_zero
     {k : ℕ} (hk : 1 < k) (N : ℕ)
     (v : Fin (2 * N + 1) → ℝ) (hv : ∑ i, v i = 0) :
     dotProduct v (ccmGuinandWeilPrimeEntryCenteredMatrixJet3 k N *ᵥ v) =
-      2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-        (∑ i, ccmPublishedCenteredClock N i * v i) ^ 2 := by
+      2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
+        (∑ i, ccmPublishedCenteredClock N i * v i) ^ (2 : ℕ) := by
   rw [ccmGuinandWeilPrimeEntryCenteredMatrixJet3_eq_outerProducts hk]
   simp only [Matrix.add_mulVec, Matrix.sub_mulVec, Matrix.smul_mulVec,
     Matrix.vecMulVec_mulVec, dotProduct, Pi.add_apply, Pi.sub_apply,
@@ -771,10 +771,10 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_quadratic_of_sum_eq_zero
   rw [Finset.sum_add_distrib]
   have hfirst :
       (∑ x, v x *
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
           (ccmPublishedCenteredClock N x *
             ∑ i, ccmPublishedCenteredClock N i * v i))) =
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k) *
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k) *
           (∑ i, ccmPublishedCenteredClock N i * v i) *
             (∑ x, v x * ccmPublishedCenteredClock N x) := by
     rw [Finset.mul_sum]
@@ -783,21 +783,21 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_quadratic_of_sum_eq_zero
     ring
   have hsecond :
       (∑ x, v x *
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-          ∑ x, ccmPublishedCenteredClock N x ^ 2 * v x)) =
-        (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k) *
-          (∑ x, ccmPublishedCenteredClock N x ^ 2 * v x) *
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
+          ∑ x, ccmPublishedCenteredClock N x ^ (2 : ℕ) * v x)) =
+        (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k) *
+          (∑ x, ccmPublishedCenteredClock N x ^ (2 : ℕ) * v x) *
             (∑ x, v x) := by
     calc
       (∑ x, v x *
-          (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-            ∑ x, ccmPublishedCenteredClock N x ^ 2 * v x)) =
+          (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
+            ∑ x, ccmPublishedCenteredClock N x ^ (2 : ℕ) * v x)) =
           (∑ x, v x) *
-            (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-              ∑ x, ccmPublishedCenteredClock N x ^ 2 * v x) :=
+            (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
+              ∑ x, ccmPublishedCenteredClock N x ^ (2 : ℕ) * v x) :=
         (Finset.sum_mul Finset.univ (fun x => v x)
-          (2 * Real.pi ^ 2 * ccmGuinandWeilPrimeEntryThirdJetScale k *
-            ∑ x, ccmPublishedCenteredClock N x ^ 2 * v x)).symm
+          (2 * Real.pi ^ (2 : ℕ) * ccmGuinandWeilPrimeEntryThirdJetScale k *
+            ∑ x, ccmPublishedCenteredClock N x ^ (2 : ℕ) * v x)).symm
       _ = _ := by ring
   rw [hfirst, hsecond, hv]
   simp
@@ -843,7 +843,7 @@ theorem ccmGuinandWeilPrimeEntryCenteredMatrixJet3_quadratic_pos_of_sum_eq_zero
 
 /-- Common second-jet entry scale. -/
 def ccmGuinandWeilPrimeEntrySecondJetScale (k : ℕ) : ℝ :=
-  16 * criticalMellinAtomWeight k / Real.log k ^ 2
+  16 * criticalMellinAtomWeight k / Real.log k ^ (2 : ℕ)
 
 def ccmGuinandWeilPrimeEntryCenteredSourceJet2
     (k N : ℕ) (i : Fin (2 * N + 1)) : ℝ :=

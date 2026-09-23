@@ -10,7 +10,7 @@ The change of variables `x = tanh t` turns the hyperbolic power integral on the 
 algebraic integral on the unit interval:
 
 ```text
-∫_0^∞ (cosh t)^(-s) dt = ∫_0^1 (1 - x²)^(s/2 - 1) dx .
+∫_0^∞ (cosh t)^(-s) dt = ∫_0^(1 : ℕ) (1 - x²)^(s/2 - 1) dx .
 ```
 
 Everything needed for it is built here, since mathlib has no derivative or monotonicity API for

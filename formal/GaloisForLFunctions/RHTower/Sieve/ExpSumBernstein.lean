@@ -112,14 +112,14 @@ theorem norm_expSum_sub_le (N : ℕ) (c : Fin N → ℂ) {M : ℝ}
   have hlip := abs_sub_genTrigCost_le (a := rotCos N c w) (b := rotSin N c w) hR hbound
     (2 * Real.pi * x) (2 * Real.pi * y)
   rw [genTrigCost_rot_two_pi N hN1 c w x, genTrigCost_rot_two_pi N hN1 c w y] at hlip
-  have hdiff : (w * expSum N c x).re - (w * expSum N c y).re = ‖z‖ ^ 2 := by
+  have hdiff : (w * expSum N c x).re - (w * expSum N c y).re = ‖z‖ ^ (2 : ℕ) := by
     rw [← Complex.sub_re, ← mul_sub, ← hz, hw, ← Complex.normSq_eq_conj_mul_self]
     simpa using Complex.normSq_eq_norm_sq z
   have habs : |2 * Real.pi * x - 2 * Real.pi * y| = 2 * Real.pi * |x - y| := by
     rw [← mul_sub, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
-  rw [hdiff, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖z‖ ^ 2), habs] at hlip
+  rw [hdiff, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖z‖ ^ (2 : ℕ)), habs] at hlip
   have hkey : ‖z‖ * ‖z‖ ≤ ‖z‖ * (2 * Real.pi * ((N - 1 : ℕ) : ℝ) * M * |x - y|) := by
-    calc ‖z‖ * ‖z‖ = ‖z‖ ^ 2 := by ring
+    calc ‖z‖ * ‖z‖ = ‖z‖ ^ (2 : ℕ) := by ring
       _ ≤ ((N - 1 : ℕ) : ℝ) * (‖z‖ * M) * (2 * Real.pi * |x - y|) := hlip
       _ = ‖z‖ * (2 * Real.pi * ((N - 1 : ℕ) : ℝ) * M * |x - y|) := by ring
   exact le_of_mul_le_mul_left hkey hnormz

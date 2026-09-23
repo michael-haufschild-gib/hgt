@@ -74,7 +74,7 @@ theorem sqrt_mul_hermiteTrial_numerator {c : ℝ} (hc : 0 < c) (ν : Fin (j + 1)
 /-- The diagonal Gram entries are bounded below by the fixed unit-window masses. -/
 theorem hermiteTrialGram_diag_ge {c : ℝ} (hc : (1 : ℝ) ≤ Real.sqrt c) (ν : Fin (j + 1) → ℕ)
     (i : Fin (j + 1)) :
-    (∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2) ≤ hermiteTrialGram ν c i i := by
+    (∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ)) ≤ hermiteTrialGram ν c i i := by
   have h := window_le_total (f := hermiteFun (ν i)) hc (continuous_hermiteFun (ν i))
   rw [hermiteTrialGram]
   refine le_trans h (le_of_eq ?_)
@@ -108,12 +108,12 @@ theorem eventually_hermiteTrial_rayleigh_gt
             prolateSLAction c (hermiteTrialVector ν a c) x * hermiteTrialVector ν a c x := by
   classical
   set δ : ℝ := Finset.univ.inf' Finset.univ_nonempty
-    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2) with hδdef
+    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ)) with hδdef
   have hδpos : 0 < δ := by
     rw [hδdef, Finset.lt_inf'_iff]
     intro i _
     exact integral_hermiteFun_sq_pos (ν i) (by norm_num)
-  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2 := fun i =>
+  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ) := fun i =>
     Finset.inf'_le _ (Finset.mem_univ i)
   set w : Fin (j + 1) → ℝ := fun i => (Λ + ε) - (2 * (ν i : ℝ) + 1) with hwdef
   have hwge : ∀ i, ε ≤ w i := by
@@ -222,12 +222,12 @@ theorem eventually_hermiteTrial_norm_pos (ν : Fin (j + 1) → ℕ) (hinj : Func
       0 < ∫ x in (-1 : ℝ)..1, hermiteTrialVector ν a c x * hermiteTrialVector ν a c x := by
   classical
   set δ : ℝ := Finset.univ.inf' Finset.univ_nonempty
-    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2) with hδdef
+    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ)) with hδdef
   have hδpos : 0 < δ := by
     rw [hδdef, Finset.lt_inf'_iff]
     intro i _
     exact integral_hermiteFun_sq_pos (ν i) (by norm_num)
-  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2 := fun i =>
+  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ) := fun i =>
     Finset.inf'_le _ (Finset.mem_univ i)
   have hjpos : (0 : ℝ) < (j : ℝ) + 1 := by positivity
   set θ : ℝ := δ / (2 * ((j : ℝ) + 1)) with hθdef

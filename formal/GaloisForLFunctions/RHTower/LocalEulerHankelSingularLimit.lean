@@ -36,7 +36,7 @@ def localEulerDenominator (L c z : ℂ) : ℂ := 1 - Complex.exp (L * (c - z))
 def localEulerBlaschke (L c z : ℂ) : ℂ :=
   Complex.sinh (L * (z - c) / 2) / Complex.sinh (L * (z + c - 1) / 2)
 
-private theorem exp_two_mul (w : ℂ) : Complex.exp (2 * w) = Complex.exp w ^ 2 := by
+private theorem exp_two_mul (w : ℂ) : Complex.exp (2 * w) = Complex.exp w ^ (2 : ℕ) := by
   rw [two_mul, Complex.exp_add]; ring
 
 /-- **`(18)`: the exact local Euler--Blaschke identity, in division-free form.** -/
@@ -50,16 +50,16 @@ theorem localEuler_blaschke_identity (L c z : ℂ) :
   have ha0 : a ≠ 0 := Complex.exp_ne_zero _
   have hb0 : b ≠ 0 := Complex.exp_ne_zero _
   have hg0 : g ≠ 0 := Complex.exp_ne_zero _
-  have E1 : Complex.exp (L * (z + c - 1)) = a ^ 2 * b ^ 2 / g ^ 2 := by
+  have E1 : Complex.exp (L * (z + c - 1)) = a ^ (2 : ℕ) * b ^ (2 : ℕ) / g ^ (2 : ℕ) := by
     rw [eq_div_iff (pow_ne_zero 2 hg0), ha, hb, hg, ← exp_two_mul, ← exp_two_mul, ← exp_two_mul,
       ← Complex.exp_add, ← Complex.exp_add]
     congr 1
     ring
-  have E2 : Complex.exp (L * (c - z)) = b ^ 2 / a ^ 2 := by
+  have E2 : Complex.exp (L * (c - z)) = b ^ (2 : ℕ) / a ^ (2 : ℕ) := by
     rw [eq_div_iff (pow_ne_zero 2 ha0), ha, hb, ← exp_two_mul, ← exp_two_mul, ← Complex.exp_add]
     congr 1
     ring
-  have E3 : Complex.exp (L * (z - 1 / 2)) = a ^ 2 / g := by
+  have E3 : Complex.exp (L * (z - 1 / 2)) = a ^ (2 : ℕ) / g := by
     rw [eq_div_iff hg0, ha, hg, ← exp_two_mul, ← Complex.exp_add]
     congr 1
     ring

@@ -28,26 +28,26 @@ theorem exists_setIntegral_mtTypeI_amplified_constructedRange
       (T ≤ (N : ℝ) ∨
         Real.sqrt T ≤ (B : ℝ) ∨
           (((2 * B) * (N' * N') : ℕ) : ℝ) ≤
-            T + (B : ℝ) ^ 2 * Real.sqrt T +
+            T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
               (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ) ∨
-          (T ≤ (N : ℝ) ^ 3 ∧
-            T ^ (5 / 6 : ℝ) ≤ (B : ℝ) ^ 2 ∧
-            (N : ℝ) ^ (3 / 2 : ℝ) ≤ (B : ℝ) ^ 2 ∧
+          (T ≤ (N : ℝ) ^ (3 : ℕ) ∧
+            T ^ (5 / 6 : ℝ) ≤ (B : ℝ) ^ (2 : ℕ) ∧
+            (N : ℝ) ^ (3 / 2 : ℝ) ≤ (B : ℝ) ^ (2 : ℕ) ∧
             (N : ℝ) ≤ (B : ℝ) * T ^ (1 / 6 : ℝ) ∧
             (N : ℝ) ^ (5 / 2 : ℝ) ≤ (B : ℝ) * T)) →
       0 ≤ K → MeasurableSet E → E ⊆ Set.Icc (T / 2) T →
       (∀ t ∈ E, 1 ≤ K * ‖mtWattCoefficientBlock b B t‖) →
       (∫ t in E,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         K * Real.sqrt
           (C * T ^ epsilon *
-            (((T + (B : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (B : ℝ)) +
-                (T + (B : ℝ)) / (T ^ 4 * (B : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (B : ℝ)) +
+                (T + (B : ℝ)) / (T ^ (4 : ℕ) * (B : ℝ))) *
               (1 / (B : ℝ)) *
-              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2))) *
+              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)))) *
           Real.sqrt
             (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
                 (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -65,17 +65,17 @@ theorem exists_setIntegral_mtTypeI_amplified_constructedRange
     (continuous_perronPoly _ _ _)
     hK hEmeas hE hlarge
   have hmixedSet : (∫ t in E,
-      ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+      ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
       ∫ t in (T / 2)..T,
-        ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2 :=
+        ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ) :=
     setIntegral_le_intervalIntegral_of_subset_Icc
       (((continuous_perronPoly _ _ _).norm.pow 4).mul
         ((continuous_perronPoly _ _ _).norm.pow 2))
       (by linarith) hE (fun t =>
         mul_nonneg (pow_nonneg (norm_nonneg (mtWattUnitBlock N N' t)) 4)
           (sq_nonneg ‖mtWattCoefficientBlock b B t‖))
-  have hfourthSet : (∫ t in E, ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
-      ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4 :=
+  have hfourthSet : (∫ t in E, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
+      ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) :=
     setIntegral_le_intervalIntegral_of_subset_Icc
       ((continuous_perronPoly _ _ _).norm.pow 4)
       (by linarith) hE (fun t =>
@@ -103,16 +103,16 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_constructedRange
         T ≤ (N : ℝ) ∨
           Real.sqrt T ≤ (B : ℝ) ∨
             (((2 * B) * (N' * N') : ℕ) : ℝ) ≤
-              T + (B : ℝ) ^ 2 * Real.sqrt T +
+              T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                 (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ) ∨
-            (T ≤ (N : ℝ) ^ 3 ∧
-              T ^ (5 / 6 : ℝ) ≤ (B : ℝ) ^ 2 ∧
-              (N : ℝ) ^ (3 / 2 : ℝ) ≤ (B : ℝ) ^ 2 ∧
+            (T ≤ (N : ℝ) ^ (3 : ℕ) ∧
+              T ^ (5 / 6 : ℝ) ≤ (B : ℝ) ^ (2 : ℕ) ∧
+              (N : ℝ) ^ (3 / 2 : ℝ) ≤ (B : ℝ) ^ (2 : ℕ) ∧
               (N : ℝ) ≤ (B : ℝ) * T ^ (1 / 6 : ℝ) ∧
               (N : ℝ) ^ (5 / 2 : ℝ) ≤ (B : ℝ) * T)) →
       (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         ∑ r : Fin ell,
           mtTypeIPrimeBlockMomentBound C epsilon a A P ell N T V r := by
   obtain ⟨C, hC, hrestricted⟩ :=
@@ -120,7 +120,7 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_constructedRange
   refine ⟨C, hC, ?_⟩
   intro a A P ell N N' T V hA hP hell hN hNN' hN' hT hV hroute
   let f : ℝ → ℝ := fun t =>
-    ‖mtWattCoefficientBlock a A t‖ ^ 2 * ‖mtWattUnitBlock N N' t‖ ^ 2
+    ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) * ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)
   have hunion : (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V, f t) ≤
       ∑ r : Fin ell,
         ∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r, f t :=

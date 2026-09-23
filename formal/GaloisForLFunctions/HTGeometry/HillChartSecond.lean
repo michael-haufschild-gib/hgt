@@ -120,8 +120,8 @@ theorem hillChartSpaceSecond_succ (m : ℝ) (c : ℝ → ℝ) (G : EuclideanSpac
 /-- **The second time derivative of the chart field.** -/
 theorem hasDerivAt_hillChartTimePartial_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (y : Fin (d + 1) → ℝ) :
     HasDerivAt (fun r : ℝ => hillChartTimePartial m c G (Function.update y 0 r))
       (hillChartTimeSecond m c G 0 y) (y 0) := by
@@ -132,7 +132,7 @@ theorem hasDerivAt_hillChartTimePartial_zero (hm : 0 < m) (hc : Continuous c)
       (1 : ℝ) * ((m + c 0 * ‖ξ‖) * ‖G ξ‖)) (volume) :=
     hwA.congr (Filter.Eventually.of_forall fun ξ => (one_mul _).symm)
   have hwB' : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) =>
-      (1 : ℝ) * ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * ‖G ξ‖)) (volume) :=
+      (1 : ℝ) * ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * ‖G ξ‖)) (volume) :=
     hwB.congr (Filter.Eventually.of_forall fun ξ => (one_mul _).symm)
   have hfun : (fun r : ℝ => hillChartTimePartial m c G (Function.update y 0 r))
       = fun r : ℝ => (hillSynthesisDeriv m c G (kgChar (kgSpatial d y)) (volume) r).re := by
@@ -148,8 +148,8 @@ theorem hasDerivAt_hillChartTimePartial_zero (hm : 0 < m) (hc : Continuous c)
 /-- **The spatial derivative of the time partial.** -/
 theorem hasDerivAt_hillChartTimePartial_succ (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (y : Fin (d + 1) → ℝ) (i : Fin d) :
     HasDerivAt (fun r : ℝ => hillChartTimePartial m c G (Function.update y i.succ r))
       (hillChartTimeSecond m c G i.succ y) (y i.succ) := by
@@ -195,8 +195,8 @@ theorem hasDerivAt_hillChartTimePartial_succ (hm : 0 < m) (hc : Continuous c)
 /-- **The time derivative of a spatial partial.** -/
 theorem hasDerivAt_hillChartSpacePartial_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (y : Fin (d + 1) → ℝ) (i : Fin d) :
     HasDerivAt (fun r : ℝ => hillChartSpacePartial m c G i (Function.update y 0 r))
       (hillChartSpaceSecond m c G i 0 y) (y 0) := by
@@ -230,8 +230,8 @@ theorem hasDerivAt_hillChartSpacePartial_zero (hm : 0 < m) (hc : Continuous c)
 /-- **The mixed spatial derivatives of a spatial partial.** -/
 theorem hasDerivAt_hillChartSpacePartial_succ (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (y : Fin (d + 1) → ℝ) (i j : Fin d) :
     HasDerivAt (fun r : ℝ => hillChartSpacePartial m c G i (Function.update y j.succ r))
       (hillChartSpaceSecond m c G i j.succ y) (y j.succ) := by
@@ -276,8 +276,8 @@ theorem hasDerivAt_hillChartSpacePartial_succ (hm : 0 < m) (hc : Continuous c)
 /-- **The second time derivative is continuous in the event.** -/
 theorem continuous_hillChartTimeSecond_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume)) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume)) :
     Continuous (hillChartTimeSecond m c G 0) := by
   have hK0 : 0 ≤ K := by
     have h0 : (0 : ℝ) ≤ |dc 0| := abs_nonneg _
@@ -305,19 +305,19 @@ theorem continuous_hillChartTimeSecond_zero (hm : 0 < m) (hc : Continuous c)
   have hstep : max 1 (c 0 / c r) * Real.exp (K * |r|)
       ≤ max 1 (c 0 / cmin) * Real.exp (K * T) :=
     mul_le_mul hratio hexp (le_of_lt (Real.exp_pos _)) (le_trans zero_le_one (le_max_left _ _))
-  have hsq : (0 : ℝ) ≤ m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2 := by positivity
+  have hsq : (0 : ℝ) ≤ m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ) := by positivity
   calc ‖hillDensitySecond m c G r ξ‖
-      ≤ ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / c r) * Real.exp (K * |r|))) * ‖G ξ‖ :=
+      ≤ ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / c r) * Real.exp (K * |r|))) * ‖G ξ‖ :=
         norm_hillDensitySecond_le_abs hm hc hcd hcpos hK hC r ξ
-    _ ≤ ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * (max 1 (c 0 / cmin) * Real.exp (K * T))) * ‖G ξ‖ :=
+    _ ≤ ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * (max 1 (c 0 / cmin) * Real.exp (K * T))) * ‖G ξ‖ :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hstep hsq) (norm_nonneg _)
-    _ = max 1 (c 0 / cmin) * Real.exp (K * T) * ((m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * ‖G ξ‖) := by ring
+    _ = max 1 (c 0 / cmin) * Real.exp (K * T) * ((m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * ‖G ξ‖) := by ring
 
 /-- **The mixed derivative is continuous in the event.** -/
 theorem continuous_hillChartMixedSecond (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (i : Fin d) :
     Continuous fun y : Fin (d + 1) → ℝ =>
       (kgSynthesis (kgDirDensity ((2 * Real.pi)⁻¹ • kgDir d i)
@@ -368,8 +368,8 @@ theorem continuous_hillChartMixedSecond (hm : 0 < m) (hc : Continuous c)
 /-- **The mixed spatial derivatives are continuous in the event.** -/
 theorem continuous_hillChartSpaceSecond_succ (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (i j : Fin d) : Continuous (hillChartSpaceSecond m c G i j.succ) := by
   have hK0 : 0 ≤ K := by
     have h0 : (0 : ℝ) ≤ |dc 0| := abs_nonneg _
@@ -419,13 +419,13 @@ theorem continuous_hillChartSpaceSecond_succ (hm : 0 < m) (hc : Continuous c)
           (2 * Real.pi * ‖v‖ * (kgFreq ξ * ((max 1 (c 0 / cmin) * Real.exp (K * T)) * ‖G ξ‖)))) :=
         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hinner hfreqnn) hpiw
     _ = 2 * Real.pi * ‖w‖ * (2 * Real.pi * ‖v‖) * (max 1 (c 0 / cmin) * Real.exp (K * T)) *
-          (kgFreq ξ ^ 2 * ‖G ξ‖) := by ring
+          (kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) := by ring
 
 /-- **Every partial of the time partial is continuous.** -/
 theorem continuous_hillChartTimeSecond (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (k : Fin (d + 1)) : Continuous (hillChartTimeSecond m c G k) := by
   refine Fin.cases ?_ ?_ k
   · exact continuous_hillChartTimeSecond_zero (C := C) hm hc hcd hcpos hK hC hcmin hclow hG h2
@@ -436,8 +436,8 @@ theorem continuous_hillChartTimeSecond (hm : 0 < m) (hc : Continuous c)
 /-- **Every partial of a spatial partial is continuous.** -/
 theorem continuous_hillChartSpaceSecond (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (i : Fin d) (k : Fin (d + 1)) : Continuous (hillChartSpaceSecond m c G i k) := by
   refine Fin.cases ?_ ?_ k
   · rw [hillChartSpaceSecond_zero]
@@ -450,8 +450,8 @@ theorem continuous_hillChartSpaceSecond (hm : 0 < m) (hc : Continuous c)
 /-- **The time partial has continuous partial derivatives everywhere.** -/
 theorem isC1OnPi_hillChartTimePartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume)) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume)) :
     IsC1OnPi (hillChartTimePartial m c G) (hillChartTimeSecond m c G) Set.univ where
   isOpen := isOpen_univ
   hasDeriv := by
@@ -466,8 +466,8 @@ theorem isC1OnPi_hillChartTimePartial (hm : 0 < m) (hc : Continuous c)
 /-- **A spatial partial has continuous partial derivatives everywhere.** -/
 theorem isC1OnPi_hillChartSpacePartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (i : Fin d) :
     IsC1OnPi (hillChartSpacePartial m c G i) (hillChartSpaceSecond m c G i) Set.univ where
   isOpen := isOpen_univ
@@ -483,8 +483,8 @@ theorem isC1OnPi_hillChartSpacePartial (hm : 0 < m) (hc : Continuous c)
 /-- **Every first partial of the chart field is differentiable.** -/
 theorem differentiableAt_hillChartPartial (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (j : Fin (d + 1)) (y : Fin (d + 1) → ℝ) :
     DifferentiableAt ℝ (hillChartPartial m c G j) y := by
   refine Fin.cases ?_ ?_ j
@@ -504,8 +504,8 @@ theorem differentiableAt_hillChartPartial (hm : 0 < m) (hc : Continuous c)
 divergence-form d'Alembertian. -/
 theorem differentiableAt_coordPartial_hillChartField (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (j : Fin (d + 1)) (y : Fin (d + 1) → ℝ) :
     DifferentiableAt ℝ (coordPartial j (hillChartField m c G)) y := by
   have h1 := integrable_kgFreq_mul_of_sq hG h2

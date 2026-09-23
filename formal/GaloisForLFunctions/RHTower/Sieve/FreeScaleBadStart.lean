@@ -19,14 +19,14 @@ noncomputable section
 theorem tendsto_freeScale (K₀ : ℕ) {k : ℕ} (hk : k ≤ K₀ + 1) :
     Tendsto (fun u : ℕ => freeScale (2 ^ (K₀ + 1) * u) k) atTop atTop := by
   have hval : ∀ u : ℕ, freeScale (2 ^ (K₀ + 1) * u) k
-      = ((2 : ℝ) ^ (K₀ + 1 - k) * (u : ℝ)) ^ 2 := by
+      = ((2 : ℝ) ^ (K₀ + 1 - k) * (u : ℝ)) ^ (2 : ℕ) := by
     intro u
     rw [freeScale, freeStart_pow_mul hk]
     push_cast
     ring
   have hlin : Tendsto (fun u : ℕ => (2 : ℝ) ^ (K₀ + 1 - k) * (u : ℝ)) atTop atTop :=
     Filter.Tendsto.const_mul_atTop (by positivity) tendsto_natCast_atTop_atTop
-  have hsq : Tendsto (fun u : ℕ => ((2 : ℝ) ^ (K₀ + 1 - k) * (u : ℝ)) ^ 2) atTop atTop := by
+  have hsq : Tendsto (fun u : ℕ => ((2 : ℝ) ^ (K₀ + 1 - k) * (u : ℝ)) ^ (2 : ℕ)) atTop atTop := by
     have := hlin.atTop_mul_atTop₀ hlin
     exact this.congr fun u => (sq _).symm
   exact hsq.congr fun u => (hval u).symm
@@ -54,7 +54,7 @@ theorem eventually_card_freeBadStartUnion_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : 
   have hD : (0 : ℝ) < squarefreeDensity := squarefreeDensity_pos
   set δ : ℝ := ε / (2 * ((K₀ : ℝ) + 1)) with hδ
   have hδ0 : (0 : ℝ) < δ := by rw [hδ]; positivity
-  set ε' : ℝ := δ * squarefreeDensity ^ 2 / 2048 with hε'
+  set ε' : ℝ := δ * squarefreeDensity ^ (2 : ℕ) / 2048 with hε'
   have hε'0 : (0 : ℝ) < ε' := by rw [hε']; positivity
   have hblock : ∀ k, k ≤ K₀ → ∀ᶠ u : ℕ in atTop,
       (((badStart (freeScale (2 ^ (K₀ + 1) * u) k)
@@ -66,17 +66,17 @@ theorem eventually_card_freeBadStartUnion_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : 
     have hev := eventually_card_badOuter_le (c := ((1 : ℝ) / 2) ^ k) (β := β) hc0 hc1 hβ0 hβ1
       hε'0
     have htail : ∀ᶠ y : ℝ in atTop,
-        Real.sqrt y / (Real.log y) ^ 2 ≤ δ / 2 * Real.sqrt y := by
+        Real.sqrt y / (Real.log y) ^ (2 : ℕ) ≤ δ / 2 * Real.sqrt y := by
       filter_upwards [Real.tendsto_log_atTop.eventually_ge_atTop (Real.sqrt (2 / δ) + 1),
         eventually_gt_atTop (1 : ℝ)] with y hy hy1
       have hs0 : (0 : ℝ) ≤ Real.sqrt y := Real.sqrt_nonneg y
       have hd0 : (0 : ℝ) < Real.sqrt (2 / δ) := Real.sqrt_pos.2 (by positivity)
       have hlog0 : (0 : ℝ) < Real.log y := by linarith
-      have hsq : 2 / δ ≤ (Real.log y) ^ 2 := by
+      have hsq : 2 / δ ≤ (Real.log y) ^ (2 : ℕ) := by
         have hbase : Real.sqrt (2 / δ) ≤ Real.log y := by linarith
         nlinarith [Real.sq_sqrt (by positivity : (0:ℝ) ≤ 2 / δ), hbase, hd0]
       rw [div_le_iff₀ (by positivity)]
-      have hkey : (1 : ℝ) ≤ δ / 2 * (Real.log y) ^ 2 := by
+      have hkey : (1 : ℝ) ≤ δ / 2 * (Real.log y) ^ (2 : ℕ) := by
         have hmul := mul_le_mul_of_nonneg_left hsq (by positivity : (0:ℝ) ≤ δ / 2)
         have hval : δ / 2 * (2 / δ) = 1 := by field_simp
         linarith [hmul, hval]
@@ -96,9 +96,9 @@ theorem eventually_card_freeBadStartUnion_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : 
       exact_mod_cast hcard
     have hmain : (((badOuter (freeScale m k)
           (scaledLength (((1:ℝ)/2) ^ k) β (freeScale m k))).card : ℕ) : ℝ)
-        ≤ 1024 * ε' * Real.sqrt (freeScale m k) / squarefreeDensity ^ 2
-          + Real.sqrt (freeScale m k) / (Real.log (freeScale m k)) ^ 2 := hv
-    have hfirst : 1024 * ε' * Real.sqrt (freeScale m k) / squarefreeDensity ^ 2
+        ≤ 1024 * ε' * Real.sqrt (freeScale m k) / squarefreeDensity ^ (2 : ℕ)
+          + Real.sqrt (freeScale m k) / (Real.log (freeScale m k)) ^ (2 : ℕ) := hv
+    have hfirst : 1024 * ε' * Real.sqrt (freeScale m k) / squarefreeDensity ^ (2 : ℕ)
         = δ / 2 * Real.sqrt (freeScale m k) := by
       rw [hε']
       field_simp

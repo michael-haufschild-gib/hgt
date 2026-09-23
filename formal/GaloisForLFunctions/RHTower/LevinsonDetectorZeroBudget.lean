@@ -38,7 +38,7 @@ theorem levinsonGEntire_zeroMass_le_of_meanSquare
       A ≤ ‖levinsonGEntire lam (((4 : ℝ) : ℂ) + (t : ℂ) * I)
             * Ψ (((4 : ℝ) : ℂ) + (t : ℂ) * I)‖)
     (hMsq : (∫ t in T₁..T₂,
-        ‖levinsonGEntire lam ((σ₀ : ℂ) + (t : ℂ) * I) * Ψ ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq)
+        ‖levinsonGEntire lam ((σ₀ : ℂ) + (t : ℂ) * I) * Ψ ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq)
     (Z : Finset ℂ)
     (hZ : ∀ z : ℂ, z ∈ Z ↔ z ∈ (uIcc (1 / 2 : ℝ) 4 ×ℂ uIcc T₁ T₂) ∧ levinsonGEntire lam z = 0) :
     2 * Real.pi * ((1 / 2 - σ₀) *

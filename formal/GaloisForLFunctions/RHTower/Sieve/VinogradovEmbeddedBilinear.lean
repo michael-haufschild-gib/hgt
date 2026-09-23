@@ -110,7 +110,7 @@ while both mean values and coordinate ranges use ambient boxes `X,Y`. -/
 theorem norm_vinogradovEmbeddedBilinearSum_pow_le_coordinateProduct
     {X₀ X Y₀ Y b k : ℕ} (hb : b ≠ 0) (hX : X ≠ 0) (hY : Y ≠ 0)
     (eX : Fin X₀ ↪ Fin X) (eY : Fin Y₀ ↪ Fin Y) (α : Fin k → ℝ) :
-    ‖vinogradovEmbeddedBilinearSum eX eY α‖ ^ (4 * b ^ 2) ≤
+    ‖vinogradovEmbeddedBilinearSum eX eY α‖ ^ (4 * b ^ (2 : ℕ)) ≤
       (((X₀ : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
         (Fintype.card ((Fin b → Fin Y₀) × (Fin b → Fin Y₀)) : ℝ) ^
           (2 * b - 1)) *
@@ -190,8 +190,8 @@ theorem norm_vinogradovEmbeddedBilinearSum_pow_le_mixedProduct
     (hq : ∀ j, U j → 0 < q j)
     (hcop : ∀ j, U j → Nat.Coprime (a j) (q j))
     (happrox : ∀ j, U j →
-      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
-    ‖vinogradovEmbeddedBilinearSum eX eY α‖ ^ (4 * b ^ 2) ≤
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ (2 : ℕ)) :
+    ‖vinogradovEmbeddedBilinearSum eX eY α‖ ^ (4 * b ^ (2 : ℕ)) ≤
       (((X₀ : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
         (Fintype.card ((Fin b → Fin Y₀) × (Fin b → Fin Y₀)) : ℝ) ^
           (2 * b - 1)) *

@@ -49,7 +49,7 @@ theorem primeUnitTranslation_apply (h : ℝ) (b : ℕ → ℝ) (p : ℕ) :
 
 theorem primeLogMass_le_of_marcinkiewicz {b : ℕ → ℝ} {C : ℝ}
     (hC : ∀ X : ℕ, 2 ≤ X → marcinkiewiczLogQuotient b X ≤ C) {X : ℕ} (hX : 2 ≤ X) :
-    primeLogMass b X ≤ C * Real.log X := by
+    primeLogMass_weightedEulerCoefficientSpaces b X ≤ C * Real.log X := by
   have hlog : 0 < Real.log X := log_cutoff_pos hX
   have h := hC X hX
   rw [marcinkiewiczLogQuotient, div_le_iff₀ hlog] at h
@@ -105,10 +105,10 @@ theorem sum_primeUnitTranslation_dyadic_block_le {b : ℕ → ℝ} {C h : ℝ} (
     obtain ⟨-, hup, hpp⟩ := hmem p hp
     rw [Finset.mem_filter, Finset.mem_Icc]
     exact ⟨⟨hpp.one_lt.le.trans' (by norm_num), by omega⟩, hpp⟩
-  have hmassle : ∑ p ∈ B, (Real.log p / p * |b p|) ≤ primeLogMass b (2 ^ (j + 1)) := by
-    rw [primeLogMass]
+  have hmassle : ∑ p ∈ B, (Real.log p / p * |b p|) ≤ primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (j + 1)) := by
+    rw [primeLogMass_weightedEulerCoefficientSpaces]
     exact Finset.sum_le_sum_of_subset_of_nonneg hsub fun p _ _ => primeLog_term_nonneg b p
-  have hbound : primeLogMass b (2 ^ (j + 1)) ≤ C * ((j : ℝ) + 1) * Real.log 2 := by
+  have hbound : primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (j + 1)) ≤ C * ((j : ℝ) + 1) * Real.log 2 := by
     have h2 : 2 ≤ 2 ^ (j + 1) := Nat.le_self_pow (by omega) 2
     have := primeLogMass_le_of_marcinkiewicz hC h2
     have hlogpow : Real.log ((2 ^ (j + 1) : ℕ) : ℝ) = ((j : ℝ) + 1) * Real.log 2 := by
@@ -154,7 +154,7 @@ theorem memCriticalSummableLayer_primeUnitTranslation {b : ℕ → ℝ} {h : ℝ
     have h2 := hC 2 le_rfl
     have hq : 0 ≤ marcinkiewiczLogQuotient b 2 := by
       rw [marcinkiewiczLogQuotient]
-      exact div_nonneg (primeLogMass_nonneg b 2) (log_cutoff_pos (le_refl 2)).le
+      exact div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces b 2) (log_cutoff_pos (le_refl 2)).le
     linarith
   have hsummable := summable_dyadicShiftWeight hh
   refine summable_of_sum_range_le (c := C * Real.log 2 * dyadicShiftConstant h) ?_ ?_

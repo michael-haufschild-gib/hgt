@@ -185,7 +185,7 @@ theorem re_matQuad_blockHankel_nonneg {a : ℝ} (ha : 0 < a)
 
 /-! ## Rank-one reduction to a scalar density -/
 
-theorem conj_mul_self (z : ℂ) : (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+theorem conj_mul_self (z : ℂ) : (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [mul_comm, Complex.mul_conj]
   norm_cast
   exact Complex.normSq_eq_norm_sq z
@@ -212,14 +212,14 @@ theorem integral_normSq_poly_mul_matQuad_nonneg {a : ℝ} (ha : 0 < a)
     (hbdd : ∀ᵐ x ∂μ, ∀ k l, ‖J x k l‖ ≤ C)
     (hH : ∀ (N : ℕ) (v : Fin N × Fin d → ℂ), 0 ≤ (matQuad (blockHankel μ J N) v).re)
     (P : Polynomial ℂ) (u : Fin d → ℂ) :
-    0 ≤ ∫ x : ℝ, ‖Polynomial.eval (x : ℂ) P‖ ^ 2 * (matQuad (J x) u).re ∂μ := by
+    0 ≤ ∫ x : ℝ, ‖Polynomial.eval (x : ℂ) P‖ ^ (2 : ℕ) * (matQuad (J x) u).re ∂μ := by
   set N := P.natDegree + 1 with hNdef
   set v : Fin N × Fin d → ℂ := fun p => P.coeff (p.1 : ℕ) * u p.2 with hv
   have hN : P.natDegree < N := by omega
   have hkey := hH N v
   rw [matQuad_blockHankel_eq_multiplierForm ha hexp hC hmeas hbdd N v, multiplierForm] at hkey
   have hpt : ∀ x : ℝ, matQuad (J x) (vectorPoly v x)
-      = ((‖Polynomial.eval (x : ℂ) P‖ ^ 2 : ℝ) : ℂ) * matQuad (J x) u := by
+      = ((‖Polynomial.eval (x : ℂ) P‖ ^ (2 : ℕ) : ℝ) : ℂ) * matQuad (J x) u := by
     intro x
     have hvp : vectorPoly v x = fun k => Polynomial.eval (x : ℂ) P * u k := by
       funext k
@@ -227,7 +227,7 @@ theorem integral_normSq_poly_mul_matQuad_nonneg {a : ℝ} (ha : 0 < a)
     rw [hvp, matQuad_smul_vector, conj_mul_self]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)] at hkey
   have hint : Integrable (fun x : ℝ =>
-      ((‖Polynomial.eval (x : ℂ) P‖ ^ 2 : ℝ) : ℂ) * matQuad (J x) u) μ := by
+      ((‖Polynomial.eval (x : ℂ) P‖ ^ (2 : ℕ) : ℝ) : ℂ) * matQuad (J x) u) μ := by
     refine Integrable.congr (integrable_matQuad_vectorPoly ha hexp hC hmeas hbdd v)
       (Filter.Eventually.of_forall hpt)
   have hre := integral_re hint

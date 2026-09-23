@@ -114,13 +114,13 @@ theorem hasTubePolyGrowth_polyEval (q : Polynomial ℂ) :
     have hnorm := Complex.norm_add_mul_I (σ : ℝ) (t : ℝ)
     rw [hnorm]
     have ht1 : (1 : ℝ) ≤ t := by linarith
-    have hM2 : σ ^ 2 ≤ M ^ 2 := by nlinarith
-    have ht2sq : (1 : ℝ) ≤ t ^ 2 := by nlinarith
-    have h1 : M ^ 2 ≤ M ^ 2 * t ^ 2 := by
+    have hM2 : σ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by nlinarith
+    have ht2sq : (1 : ℝ) ≤ t ^ (2 : ℕ) := by nlinarith
+    have h1 : M ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * t ^ (2 : ℕ) := by
       nlinarith [mul_nonneg (sq_nonneg M) (sub_nonneg.mpr ht2sq)]
-    have h2M : (0 : ℝ) ≤ 2 * M * t ^ 2 := by positivity
-    have hsq : σ ^ 2 + t ^ 2 ≤ ((M + 1) * t) ^ 2 := by nlinarith [hM2, h1, h2M]
-    calc Real.sqrt (σ ^ 2 + t ^ 2) ≤ Real.sqrt (((M + 1) * t) ^ 2) := Real.sqrt_le_sqrt hsq
+    have h2M : (0 : ℝ) ≤ 2 * M * t ^ (2 : ℕ) := by positivity
+    have hsq : σ ^ (2 : ℕ) + t ^ (2 : ℕ) ≤ ((M + 1) * t) ^ (2 : ℕ) := by nlinarith [hM2, h1, h2M]
+    calc Real.sqrt (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ Real.sqrt (((M + 1) * t) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
       _ = (M + 1) * t := by
           rw [Real.sqrt_sq (by positivity)]
   calc ‖q.eval ((σ : ℂ) + (t : ℂ) * Complex.I)‖

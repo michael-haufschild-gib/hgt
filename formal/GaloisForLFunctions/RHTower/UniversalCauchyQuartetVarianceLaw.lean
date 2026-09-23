@@ -66,7 +66,7 @@ theorem cauchyQuartetVariance_eq_zero_iff
     (hcapz : (starRingEnd ℂ) a + z ≠ 0) :
     cauchyQuartetVariance z a = 0 ↔ a.re = 0 ∨ a.im = 0 := by
   have hden :
-      Complex.normSq a ^ 2 *
+      Complex.normSq a ^ (2 : ℕ) *
           Complex.normSq (a - z) *
           Complex.normSq ((starRingEnd ℂ) a - z) *
           Complex.normSq (a + z) *
@@ -87,7 +87,7 @@ theorem cauchyQuartetVariance_eq_zero_iff
   constructor
   · intro hzero
     have hnum :
-        a.re ^ 2 * a.im ^ 2 *
+        a.re ^ (2 : ℕ) * a.im ^ (2 : ℕ) *
           (Complex.normSq a + Complex.normSq z) = 0 := by
       unfold cauchyQuartetVariance xiReciprocalSquareCauchyQuartetVariance at hzero
       rcases div_eq_zero_iff.mp hzero with hnum | hdenzero

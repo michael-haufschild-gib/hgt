@@ -16,7 +16,7 @@ namespace RHTower.Sieve
 
 /-- **The totient weight is dominated by the harmonic weight.** -/
 theorem sum_totient_div_sq_le (N : ℕ) :
-    ∑ e ∈ Finset.Icc 1 N, (Nat.totient e : ℝ) / (e : ℝ) ^ 2
+    ∑ e ∈ Finset.Icc 1 N, (Nat.totient e : ℝ) / (e : ℝ) ^ (2 : ℕ)
       ≤ ∑ e ∈ Finset.Icc 1 N, 1 / (e : ℝ) := by
   refine Finset.sum_le_sum fun e he => ?_
   obtain ⟨he1, -⟩ := Finset.mem_Icc.mp he
@@ -30,8 +30,8 @@ theorem sum_totient_div_sq_le (N : ℕ) :
 uniform bound on the inner sums. -/
 theorem sum_totient_diagonal_le {N : ℕ} {C : ℝ} (hC : 0 ≤ C) (T : ℕ → ℝ)
     (hT : ∀ e ∈ Finset.Icc 1 N, |T e| ≤ C) :
-    ∑ e ∈ Finset.Icc 1 N, (Nat.totient e : ℝ) / (e : ℝ) ^ 2 * (T e) ^ 2
-      ≤ C ^ 2 * ∑ e ∈ Finset.Icc 1 N, 1 / (e : ℝ) := by
+    ∑ e ∈ Finset.Icc 1 N, (Nat.totient e : ℝ) / (e : ℝ) ^ (2 : ℕ) * (T e) ^ (2 : ℕ)
+      ≤ C ^ (2 : ℕ) * ∑ e ∈ Finset.Icc 1 N, 1 / (e : ℝ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun e he => ?_
   obtain ⟨he1, -⟩ := Finset.mem_Icc.mp he
@@ -39,16 +39,16 @@ theorem sum_totient_diagonal_le {N : ℕ} {C : ℝ} (hC : 0 ≤ C) (T : ℕ → 
   have htot : (Nat.totient e : ℝ) ≤ (e : ℝ) := by
     exact_mod_cast Nat.totient_le e
   have htot0 : (0 : ℝ) ≤ (Nat.totient e : ℝ) := by positivity
-  have hTe : (T e) ^ 2 ≤ C ^ 2 := by
+  have hTe : (T e) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     have h := hT e he
     nlinarith [abs_nonneg (T e), sq_abs (T e), h, hC]
-  have hweight : (Nat.totient e : ℝ) / (e : ℝ) ^ 2 ≤ 1 / (e : ℝ) := by
+  have hweight : (Nat.totient e : ℝ) / (e : ℝ) ^ (2 : ℕ) ≤ 1 / (e : ℝ) := by
     rw [div_le_div_iff₀ (by positivity) heR]
     nlinarith [htot, heR]
-  calc (Nat.totient e : ℝ) / (e : ℝ) ^ 2 * (T e) ^ 2
-      ≤ (Nat.totient e : ℝ) / (e : ℝ) ^ 2 * C ^ 2 :=
+  calc (Nat.totient e : ℝ) / (e : ℝ) ^ (2 : ℕ) * (T e) ^ (2 : ℕ)
+      ≤ (Nat.totient e : ℝ) / (e : ℝ) ^ (2 : ℕ) * C ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hTe (by positivity)
-    _ ≤ (1 / (e : ℝ)) * C ^ 2 := mul_le_mul_of_nonneg_right hweight (by positivity)
-    _ = C ^ 2 * (1 / (e : ℝ)) := by ring
+    _ ≤ (1 / (e : ℝ)) * C ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hweight (by positivity)
+    _ = C ^ (2 : ℕ) * (1 / (e : ℝ)) := by ring
 
 end RHTower.Sieve

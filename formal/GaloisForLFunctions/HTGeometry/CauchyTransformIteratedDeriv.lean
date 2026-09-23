@@ -96,7 +96,7 @@ theorem hasDerivAt_cauchyKernelMoment (ν : Measure ℝ) [IsFiniteMeasure ν]
     have hbase : HasDerivAt (fun w : ℂ => ((t : ℝ) : ℂ) - w) (-1) z := by
       simpa using (hasDerivAt_id z).const_sub ((t : ℝ) : ℂ)
     have hinv : HasDerivAt (fun w : ℂ => (((t : ℝ) : ℂ) - w)⁻¹)
-        ((((t : ℝ) : ℂ) - z)⁻¹ ^ 2) z := by
+        ((((t : ℝ) : ℂ) - z)⁻¹ ^ (2 : ℕ)) z := by
       have := hbase.inv hden
       exact this.congr_deriv (by field_simp)
     have hpow := hinv.pow (k + 1)

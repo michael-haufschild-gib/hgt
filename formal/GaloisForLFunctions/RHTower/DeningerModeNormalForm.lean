@@ -48,19 +48,19 @@ theorem deningerFirstOrder_eq_exp {f : ℝ → ℝ} {c : ℝ}
 /-- **The mode normal form.**  A solution of `u'' = m² u` is a combination of the two
 exponentials, with coefficients read off the initial data. -/
 theorem deningerSecondOrder_normal_form {u u' : ℝ → ℝ} {m : ℝ} (hm : m ≠ 0)
-    (hu : ∀ r, HasDerivAt u (u' r) r) (hu2 : ∀ r, HasDerivAt u' (m ^ 2 * u r) r) (r : ℝ) :
+    (hu : ∀ r, HasDerivAt u (u' r) r) (hu2 : ∀ r, HasDerivAt u' (m ^ (2 : ℕ) * u r) r) (r : ℝ) :
     u r = ((u' 0 + m * u 0) / (2 * m)) * Real.exp (m * r)
       - ((u' 0 - m * u 0) / (2 * m)) * Real.exp (-m * r) := by
   have hw : ∀ x : ℝ, HasDerivAt (fun t => u' t + m * u t) (m * (u' x + m * u x)) x := by
     intro x
     have h := (hu2 x).add ((hu x).const_mul m)
-    have hval : m ^ 2 * u x + m * u' x = m * (u' x + m * u x) := by ring
+    have hval : m ^ (2 : ℕ) * u x + m * u' x = m * (u' x + m * u x) := by ring
     rw [hval] at h
     exact h
   have hz : ∀ x : ℝ, HasDerivAt (fun t => u' t - m * u t) (-m * (u' x - m * u x)) x := by
     intro x
     have h := (hu2 x).sub ((hu x).const_mul m)
-    have hval : m ^ 2 * u x - m * u' x = -m * (u' x - m * u x) := by ring
+    have hval : m ^ (2 : ℕ) * u x - m * u' x = -m * (u' x - m * u x) := by ring
     rw [hval] at h
     exact h
   have hwsol := deningerFirstOrder_eq_exp hw r
@@ -75,9 +75,9 @@ theorem deningerSecondOrder_normal_form {u u' : ℝ → ℝ} {m : ℝ} (hm : m �
 first-order system `f' = m g`, `g' = m f` makes each component satisfy `u'' = m² u`. -/
 theorem deningerDirac_secondOrder {f g : ℝ → ℝ} {m : ℝ}
     (hg : ∀ r, HasDerivAt g (m * f r) r) (r : ℝ) :
-    HasDerivAt (fun t => m * g t) (m ^ 2 * f r) r := by
+    HasDerivAt (fun t => m * g t) (m ^ (2 : ℕ) * f r) r := by
   have h := (hg r).const_mul m
-  have hval : m * (m * f r) = m ^ 2 * f r := by ring
+  have hval : m * (m * f r) = m ^ (2 : ℕ) * f r := by ring
   rw [hval] at h
   exact h
 

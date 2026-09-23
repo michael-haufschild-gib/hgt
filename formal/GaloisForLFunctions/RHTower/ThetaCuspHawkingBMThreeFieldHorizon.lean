@@ -21,24 +21,24 @@ noncomputable section
 set_option autoImplicit false
 
 /-- Physical-shift Laurent constant after the horizon denominator cancels. -/
-def regularHDCoefficient (s : ℂ) : ℂ := 3*(s+1)^2*(3*s+4)/(8*(2*s+3))
+def regularHDCoefficient (s : ℂ) : ℂ := 3*(s+1)^(2 : ℕ)*(3*s+4)/(8*(2*s+3))
 
 /-- Three Laurent constants of the angular metric amplitudes, regular at the horizon. -/
 def angularLaurentA (s : ℂ) : Fin 3 → ℂ :=
-  ![1/4,regularHDCoefficient s-(3*s^2+6*s+2)/4,regularHDCoefficient s]
+  ![1/4,regularHDCoefficient s-(3*s^(2 : ℕ)+6*s+2)/4,regularHDCoefficient s]
 
 /-- Three inverse-square Laurent coefficients of the angular metric amplitudes. -/
 def angularLaurentB (s : ℂ) : Fin 3 → ℂ :=
-  ![s*(3*s+2)/8,regularHDCoefficient s*(2*s^2+s)-s*(4*s^3+9*s^2+6*s+2)/4,
-    regularHDCoefficient s*(2*s^2+s)]
+  ![s*(3*s+2)/8,regularHDCoefficient s*(2*s^(2 : ℕ)+s)-s*(4*s^(3 : ℕ)+9*s^(2 : ℕ)+6*s+2)/4,
+    regularHDCoefficient s*(2*s^(2 : ℕ)+s)]
 
 /-- Three inverse-fourth Laurent coefficients of the angular metric amplitudes. -/
 def angularLaurentC (s : ℂ) : Fin 3 → ℂ :=
-  ![s^2*(s+1)^2/32,-s^2*(s+1)^3/16,0]
+  ![s^(2 : ℕ)*(s+1)^(2 : ℕ)/32,-s^(2 : ℕ)*(s+1)^(3 : ℕ)/16,0]
 
 /-- Horizon-regular expression of each original angular metric amplitude. -/
 def regularAngularColumn (s : ℂ) (k : Fin 3) (r : ℂ) : ℂ :=
-  angularLaurentA s k+angularLaurentB s k/r^2+angularLaurentC s k/r^4
+  angularLaurentA s k+angularLaurentB s k/r^(2 : ℕ)+angularLaurentC s k/r^(4 : ℕ)
 
 /-- The original angular coefficients lose every apparent horizon denominator. -/
 theorem angular_column_laurent (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s ≠ 0)
@@ -68,8 +68,8 @@ theorem angular_column_laurent (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift 
 
 /-- The reduced master has these three first Laurent coefficients. -/
 def masterLeading : Fin 3 → ℂ := ![1,0,0]
-def masterInverse (s : ℂ) : Fin 3 → ℂ := ![s*(3*s+2)/2,0,3*s*(s+1)^2*(3*s+4)/2]
-def masterInverseCube (s : ℂ) : Fin 3 → ℂ := ![s^2*(s+1)^2/8,0,0]
+def masterInverse (s : ℂ) : Fin 3 → ℂ := ![s*(3*s+2)/2,0,3*s*(s+1)^(2 : ℕ)*(3*s+4)/2]
+def masterInverseCube (s : ℂ) : Fin 3 → ℂ := ![s^(2 : ℕ)*(s+1)^(2 : ℕ)/8,0,0]
 def tensorWeight (s : ℂ) : Fin 3 → ℂ := ![1,(s+1)*(s+2),0]
 
 def wLeading (s : ℂ) (k : Fin 3) : ℂ := 4*angularLaurentA s k-masterLeading k
@@ -78,17 +78,17 @@ def wInverseCube (s : ℂ) (k : Fin 3) : ℂ := 4*angularLaurentC s k-masterInve
 
 def pInverseSquare (s : ℂ) (k : Fin 3) : ℂ :=
   -8*angularLaurentB s k+masterInverse s k+masterLeading k*s*(s+2)/2+
-    tensorWeight s k*s^2
+    tensorWeight s k*s^(2 : ℕ)
 
 def pInverseFourth (s : ℂ) (k : Fin 3) : ℂ :=
   -16*angularLaurentC s k+3*masterInverseCube s k+
-    masterLeading k*3*s^2*(s+1)^2/8-tensorWeight s k*s^2*(s+1)^2/4
+    masterLeading k*3*s^(2 : ℕ)*(s+1)^(2 : ℕ)/8-tensorWeight s k*s^(2 : ℕ)*(s+1)^(2 : ℕ)/4
 
 /-- Each original column has precisely the residue cancellation required at the ingoing horizon. -/
 theorem horizon_numerator_zero (s : ℂ) (hs : 2*s+3 ≠ 0) (k : Fin 3) :
     pInverseSquare s k+pInverseFourth s k =
       s*(wLeading s k+wInverse s k+wInverseCube s k) := by
-  have hc : (8*(2*s+3))*regularHDCoefficient s = 3*(s+1)^2*(3*s+4) :=
+  have hc : (8*(2*s+3))*regularHDCoefficient s = 3*(s+1)^(2 : ℕ)*(3*s+4) :=
     mul_div_cancel₀ _ (mul_ne_zero (by norm_num) hs)
   fin_cases k <;> simp only [pInverseSquare,pInverseFourth,wLeading,wInverse,wInverseCube,
     angularLaurentA,angularLaurentB,angularLaurentC,masterLeading,masterInverse,masterInverseCube,
@@ -101,20 +101,20 @@ theorem horizon_numerator_zero (s : ℂ) (hs : 2*s+3 ≠ 0) (k : Fin 3) :
 
 /-- Explicit ingoing radial coefficient after dividing out the vanishing horizon numerator. -/
 def regularIngoingRR (s : ℂ) (k : Fin 3) (r : ℂ) : ℂ :=
-  (-2*s*wLeading s k*r^3+(pInverseSquare s k-2*s*wLeading s k)*r^2+
+  (-2*s*wLeading s k*r^(3 : ℕ)+(pInverseSquare s k-2*s*wLeading s k)*r^(2 : ℕ)+
     (-2*pInverseFourth s k+2*s*wInverseCube s k)*r+
-    (-pInverseFourth s k+2*s*wInverseCube s k))/(r^4*(r+1)^2)
+    (-pInverseFourth s k+2*s*wInverseCube s k))/(r^(4 : ℕ)*(r+1)^(2 : ℕ))
 
 /-- The remaining radial pole cancels exactly, retaining the full source contribution. -/
 theorem horizon_numerator_factor (s r : ℂ) (hs : 2*s+3 ≠ 0)
     (hr : r ≠ 0) (hp : r+1 ≠ 0) (k : Fin 3) :
-    pInverseSquare s k/r^2+pInverseFourth s k/r^4-
-      2*s/(r+1)*(wLeading s k+wInverse s k/r^2+wInverseCube s k/r^4) =
-      (r^2-1)*regularIngoingRR s k r := by
+    pInverseSquare s k/r^(2 : ℕ)+pInverseFourth s k/r^(4 : ℕ)-
+      2*s/(r+1)*(wLeading s k+wInverse s k/r^(2 : ℕ)+wInverseCube s k/r^(4 : ℕ)) =
+      (r^(2 : ℕ)-1)*regularIngoingRR s k r := by
   have he := horizon_numerator_zero s hs k
   unfold regularIngoingRR
   field_simp
-  linear_combination 2*r^2*(r+1)*he
+  linear_combination 2*r^(2 : ℕ)*(r+1)*he
 
 /-- The divided radial expression is smooth through every positive radius, including the horizon. -/
 theorem regularIngoingRR_smooth (s : ℂ) (k : Fin 3) {r : ℝ} (hr : 0 < r) :
@@ -130,7 +130,7 @@ theorem regularIngoingRR_smooth (s : ℂ) (k : Fin 3) {r : ℝ} (hr : 0 < r) :
 theorem regularAngularColumn_hasDerivAt (s : ℂ) (k : Fin 3) {r : ℝ}
     (hr : (r:ℂ) ≠ 0) :
     HasDerivAt (fun t : ℝ => regularAngularColumn s k t)
-      (-2*angularLaurentB s k/(r:ℂ)^3-4*angularLaurentC s k/(r:ℂ)^5) r := by
+      (-2*angularLaurentB s k/(r:ℂ)^(3 : ℕ)-4*angularLaurentC s k/(r:ℂ)^(5 : ℕ)) r := by
   have hR : HasDerivAt (fun t : ℝ => (t:ℂ)) 1 r := by
     simpa using (hasDerivAt_id r).ofReal_comp
   have h := ((hasDerivAt_const r (angularLaurentA s k)).add
@@ -145,20 +145,20 @@ theorem regularAngularColumn_hasDerivAt (s : ℂ) (k : Fin 3) {r : ℝ}
 theorem angular_column_twist (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s ≠ 0)
     {r : ℝ} (hr1 : 1 < r) (k : Fin 3) :
     twist s (radialColumn s k 3) r =
-      -2*angularLaurentB s k/(r:ℂ)^3-4*angularLaurentC s k/(r:ℂ)^5+
-        2*s/(r*((r:ℂ)^2-1))*regularAngularColumn s k r := by
+      -2*angularLaurentB s k/(r:ℂ)^(3 : ℕ)-4*angularLaurentC s k/(r:ℂ)^(5 : ℕ)+
+        2*s/(r*((r:ℂ)^(2 : ℕ)-1))*regularAngularColumn s k r := by
   have he : radialColumn s k 3 =ᶠ[𝓝 r] (fun t : ℝ => regularAngularColumn s k t) := by
     filter_upwards [exterior_eventually hr1] with t ht
     exact angular_column_laurent s hs hshift ht k
   rw [twist_congr s he]
-  exact congrArg (fun v => v+2*s/(r*((r:ℂ)^2-1))*regularAngularColumn s k r)
+  exact congrArg (fun v => v+2*s/(r*((r:ℂ)^(2 : ℕ)-1))*regularAngularColumn s k r)
     (regularAngularColumn_hasDerivAt s k (exterior_ne r hr1).1).deriv
 
 /-- The actual radial-radial coefficient after the original ingoing coordinate change has no horizon pole. -/
 theorem original_ingoing_rr (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s ≠ 0)
     {r : ℝ} (hr1 : 1 < r) (k : Fin 3) :
-    radialColumn s k 2 r-2*radialColumn s k 1 r/((r:ℂ)^2-1)+
-      radialColumn s k 0 r/((r:ℂ)^2-1)^2 = regularIngoingRR s k r := by
+    radialColumn s k 2 r-2*radialColumn s k 1 r/((r:ℂ)^(2 : ℕ)-1)+
+      radialColumn s k 0 r/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ) = regularIngoingRR s k r := by
   obtain ⟨hr,hf⟩ := exterior_ne r hr1
   have hp : (r:ℂ)+1 ≠ 0 := by exact_mod_cast (show r+1 ≠ 0 by linarith)
   have hd : 2*s+3 ≠ 0 := by
@@ -197,7 +197,7 @@ theorem original_ingoing_rr (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s �
       masterLeading,masterInverse,masterInverseCube,tensorWeight,regularAngularColumn,tensorCoefficient,
       Matrix.cons_val_zero,Matrix.cons_val_one,
       ] at hfac ⊢
-    linear_combination (norm := (field_simp; ring)) hfac/((r:ℂ)^2-1)
+    linear_combination (norm := (field_simp; ring)) hfac/((r:ℂ)^(2 : ℕ)-1)
   · simp only [regularIngoingRR,pInverseSquare,pInverseFourth,wLeading,wInverseCube,
     regularAngularColumn,angularLaurentA,angularLaurentB,angularLaurentC,masterLeading,
     masterInverse,masterInverseCube,tensorWeight,regularHDCoefficient,reducedMasterD,
@@ -209,24 +209,24 @@ theorem original_ingoing_rr (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s �
 
 /-- The complete source-retaining master combination in each radial column. -/
 def regularW (s : ℂ) (k : Fin 3) (r : ℂ) : ℂ :=
-  wLeading s k*r+wInverse s k/r+wInverseCube s k/r^3
+  wLeading s k*r+wInverse s k/r+wInverseCube s k/r^(3 : ℕ)
 
 /-- The explicit regular ingoing amplitudes, ordered as vv, vr, rr and angular. -/
 def regularIngoingColumn (s : ℂ) (k : Fin 3) : Fin 4 → ℝ → ℂ :=
-  ![fun r => s*regularW s k r-((r:ℂ)^2-1)*tensorWeight s k*tensorCoefficient s r+
-      ((r:ℂ)^2-1)^2/2*regularIngoingRR s k r,
-    fun r => tensorWeight s k*tensorCoefficient s r-((r:ℂ)^2-1)/2*regularIngoingRR s k r,
+  ![fun r => s*regularW s k r-((r:ℂ)^(2 : ℕ)-1)*tensorWeight s k*tensorCoefficient s r+
+      ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)/2*regularIngoingRR s k r,
+    fun r => tensorWeight s k*tensorCoefficient s r-((r:ℂ)^(2 : ℕ)-1)/2*regularIngoingRR s k r,
     fun r => regularIngoingRR s k r,
     fun r => regularAngularColumn s k r]
 
 /-- The ordinary tensor coordinate transformation induced by dt=dv-dr/(r²-1). -/
 def ingoingTransform (F : Fin 4 → ℝ → ℂ) : Fin 4 → ℝ → ℂ :=
-  ![F 0,fun r => F 1 r-F 0 r/((r:ℂ)^2-1),
-    fun r => F 2 r-2*F 1 r/((r:ℂ)^2-1)+F 0 r/((r:ℂ)^2-1)^2,F 3]
+  ![F 0,fun r => F 1 r-F 0 r/((r:ℂ)^(2 : ℕ)-1),
+    fun r => F 2 r-2*F 1 r/((r:ℂ)^(2 : ℕ)-1)+F 0 r/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ),F 3]
 
 private theorem radial_column_trace (s : ℂ) (k : Fin 3) (r : ℝ) :
-    radialColumn s k 0 r = ((r:ℂ)^2-1)^2*radialColumn s k 2 r-
-      2*((r:ℂ)^2-1)*tensorWeight s k*tensorCoefficient s r := by
+    radialColumn s k 0 r = ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*radialColumn s k 2 r-
+      2*((r:ℂ)^(2 : ℕ)-1)*tensorWeight s k*tensorCoefficient s r := by
   fin_cases k <;> simp only [radialColumn,tensorWeight,metricF00,metricF02,metricF0D,
     Matrix.cons_val',Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two,
     Matrix.head_cons,Matrix.tail_cons,Fin.reduceFinMk]
@@ -234,7 +234,7 @@ private theorem radial_column_trace (s : ℂ) (k : Fin 3) (r : ℝ) :
 
 private theorem radial_column_mixed (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift s ≠ 0)
     {r : ℝ} (hr1 : 1 < r) (k : Fin 3) :
-    ((r:ℂ)^2-1)*radialColumn s k 1 r = s*regularW s k r := by
+    ((r:ℂ)^(2 : ℕ)-1)*radialColumn s k 1 r = s*regularW s k r := by
   have hf := (exterior_ne r hr1).2
   have hr := (exterior_ne r hr1).1
   have h0 := angular_column_laurent s hs hshift hr1 0
@@ -258,9 +258,9 @@ theorem original_ingoing_column (s : ℂ) (hs : s ≠ 0) (hshift : 2-targetShift
   have hrr := original_ingoing_rr s hs hshift hr1 k
   have htrace := radial_column_trace s k r
   have hmix := radial_column_mixed s hs hshift hr1 k
-  have hrr' : ((r:ℂ)^2-1)^2*radialColumn s k 2 r-
-      2*((r:ℂ)^2-1)*radialColumn s k 1 r+radialColumn s k 0 r =
-      ((r:ℂ)^2-1)^2*regularIngoingRR s k r := by
+  have hrr' : ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*radialColumn s k 2 r-
+      2*((r:ℂ)^(2 : ℕ)-1)*radialColumn s k 1 r+radialColumn s k 0 r =
+      ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*regularIngoingRR s k r := by
     field_simp at hrr
     linear_combination hrr
   fin_cases j <;> simp only [ingoingTransform,regularIngoingColumn,

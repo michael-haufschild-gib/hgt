@@ -102,7 +102,7 @@ private theorem scalar_fifth_remainder_bound (s₀ : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s ∈ Icc (s₀-1) (s₀+1),
       ∀ q ∈ Icc (-3/4 : ℝ) (5/4),
         ‖(1+q)^s - ∑ j ∈ Finset.range 6,
-          (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j‖ ≤ C*|q|^6 := by
+          (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j‖ ≤ C*|q|^(6 : ℕ) := by
   obtain ⟨C,hC0,hC⟩ := sixth_derivative_uniform_bound s₀
   refine ⟨C / ((5:ℕ).factorial : ℝ), by positivity, ?_⟩
   intro s hs q hq
@@ -111,11 +111,11 @@ private theorem scalar_fifth_remainder_bound (s₀ : ℝ) :
     exact (affine_rpow_contDiffAt s q t
       (lt_of_lt_of_le (by norm_num) (affine_base_bounds q t hq ht).1) _).contDiffWithinAt
   have hb : ∀ t ∈ Icc (0 : ℝ) 1,
-      ‖iteratedDerivWithin (5+1) (fun t : ℝ => (1+q*t)^s) (Icc 0 1) t‖ ≤ C*|q|^6 := by
+      ‖iteratedDerivWithin (5+1) (fun t : ℝ => (1+q*t)^s) (Icc 0 1) t‖ ≤ C*|q|^(6 : ℕ) := by
     intro t ht
     rw [affine_rpow_within 6 s q t hq ht, mul_assoc, norm_mul, norm_pow, Real.norm_eq_abs]
     simpa only [Nat.cast_ofNat, mul_comm] using mul_le_mul_of_nonneg_left
-      (hC s hs (1+q*t) (affine_base_bounds q t hq ht)) (by positivity : 0 ≤ |q|^6)
+      (hC s hs (1+q*t) (affine_base_bounds q t hq ht)) (by positivity : 0 ≤ |q|^(6 : ℕ))
   have h := taylor_mean_remainder_bound (n := 5) (by norm_num : (0:ℝ) ≤ 1) hcont
     (show (1 : ℝ) ∈ Icc 0 1 by norm_num) hb
   have ht : taylorWithinEval (fun t : ℝ => (1+q*t)^s) 5 (Icc 0 1) 0 1 =
@@ -132,15 +132,15 @@ private theorem scalar_fifth_remainder_bound (s₀ : ℝ) :
 /-- The complete fifth Taylor polynomial of the original regular collision factor. -/
 def fzzScreeningFifthTaylor (β : ℝ) (z : ℂ) : ℝ :=
   ∑ j ∈ Finset.range 6,
-    (descPochhammer ℝ j).eval (β/2) / (j.factorial : ℝ) * (‖z‖^2-2*z.re)^j
+    (descPochhammer ℝ j).eval (β/2) / (j.factorial : ℝ) * (‖z‖^(2 : ℕ)-2*z.re)^j
 
 /-- Pointwise subtraction is performed before the singular plane integral. -/
 def fzzScreeningFifthSubtracted (α β : ℝ) (z : ℂ) : ℝ :=
   ‖z‖^α * (‖z-1‖^β - fzzScreeningFifthTaylor β z)
 
 private theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
-    (‖z‖^2-2*z.re) ∈ Icc (-3/4 : ℝ) (5/4) ∧
-      |‖z‖^2-2*z.re| ≤ (5/2)*‖z‖ := by
+    (‖z‖^(2 : ℕ)-2*z.re) ∈ Icc (-3/4 : ℝ) (5/4) ∧
+      |‖z‖^(2 : ℕ)-2*z.re| ≤ (5/2)*‖z‖ := by
   have hr : ‖z‖ ≤ 1/2 := by simpa only [mem_closedBall, dist_zero_right] using hz
   have hr0 := norm_nonneg z
   have hre := abs_le.mp (Complex.abs_re_le_norm z)
@@ -153,7 +153,7 @@ private theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2))
     constructor <;> nlinarith [hre.1,hre.2]
 
 private theorem plane_q_identity (z : ℂ) :
-    1+(‖z‖^2-2*z.re) = ‖z-1‖^2 := by
+    1+(‖z‖^(2 : ℕ)-2*z.re) = ‖z-1‖^(2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
     Complex.one_re, Complex.one_im, sub_zero]
@@ -163,22 +163,22 @@ private theorem plane_q_identity (z : ℂ) :
 theorem fzzScreeningFifthTaylor_uniform_remainder (β₀ : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ β ∈ Icc (β₀-2) (β₀+2),
       ∀ z ∈ closedBall (0 : ℂ) (1/2),
-        ‖‖z-1‖^β - fzzScreeningFifthTaylor β z‖ ≤ C*‖z‖^6 := by
+        ‖‖z-1‖^β - fzzScreeningFifthTaylor β z‖ ≤ C*‖z‖^(6 : ℕ) := by
   obtain ⟨C,hC0,hC⟩ := scalar_fifth_remainder_bound (β₀/2)
-  refine ⟨C*(5/2)^6, by positivity, ?_⟩
+  refine ⟨C*(5/2)^(6 : ℕ), by positivity, ?_⟩
   intro β hβ z hz
   obtain ⟨hq,hqn⟩ := plane_q_bounds z hz
   have hβ' : β/2 ∈ Icc (β₀/2-1) (β₀/2+1) := by
     constructor <;> linarith [hβ.1,hβ.2]
-  have h := hC (β/2) hβ' (‖z‖^2-2*z.re) hq
+  have h := hC (β/2) hβ' (‖z‖^(2 : ℕ)-2*z.re) hq
   rw [plane_q_identity, ← Real.rpow_natCast_mul (norm_nonneg (z-1))] at h
   simp only [Nat.cast_ofNat, show (2:ℝ)*(β/2)=β by ring] at h
   change ‖‖z-1‖^β - fzzScreeningFifthTaylor β z‖ ≤ _ at h
   exact h.trans (by
     calc
-      C*|‖z‖^2-2*z.re|^6 ≤ C*((5/2)*‖z‖)^6 :=
+      C*|‖z‖^(2 : ℕ)-2*z.re|^(6 : ℕ) ≤ C*((5/2)*‖z‖)^(6 : ℕ) :=
         mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg _) hqn 6) hC0
-      _ = (C*(5/2)^6)*‖z‖^6 := by rw [mul_pow]; ring)
+      _ = (C*(5/2)^(6 : ℕ))*‖z‖^(6 : ℕ) := by rw [mul_pow]; ring)
 
 
 private theorem fifth_subtracted_integrable (α β : ℝ) (hα : -8 < α) :
@@ -197,7 +197,7 @@ private theorem fifth_subtracted_integrable (α β : ℝ) (hα : -8 < α) :
   change ‖‖z‖^α * (‖z-1‖^β - fzzScreeningFifthTaylor β z)‖ ≤ _
   rw [norm_mul, Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg z) α)]
   calc
-    ‖z‖^α * ‖‖z-1‖^β - fzzScreeningFifthTaylor β z‖ ≤ ‖z‖^α * (C*‖z‖^6) :=
+    ‖z‖^α * ‖‖z-1‖^β - fzzScreeningFifthTaylor β z‖ ≤ ‖z‖^α * (C*‖z‖^(6 : ℕ)) :=
       mul_le_mul_of_nonneg_left
         (hC β (by constructor <;> linarith) z (ball_subset_closedBall hz))
         (Real.rpow_nonneg (norm_nonneg z) α)
@@ -346,8 +346,8 @@ private theorem scalar_fifth_integral_remainder (s q : ℝ)
     (1+q)^s - ∑ j ∈ Finset.range 6,
       (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j =
       ∫ t : ℝ in Ioc 0 1,
-        ((1-t)^5 / ((5:ℕ).factorial : ℝ)) *
-          (q^6 * (descPochhammer ℝ 6).eval s * (1+q*t)^(s-6)) := by
+        ((1-t)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) *
+          (q^(6 : ℕ) * (descPochhammer ℝ 6).eval s * (1+q*t)^(s-6)) := by
   have hf : ContDiffOn ℝ (5+1 : ℕ) (fun t : ℝ => (1+q*t)^s) (Icc 0 1) := by
     intro t ht
     exact (affine_rpow_contDiffAt s q t
@@ -369,13 +369,13 @@ def fzzScreeningFifthLiftMeasure : Measure (ℂ × ℝ) :=
 
 /-- Original Taylor remainder weight; it is nonnegative on the integration domain. -/
 def fzzScreeningFifthLiftWeight (α : ℝ) (p : ℂ × ℝ) : ℝ :=
-  ‖p.1‖^α * (‖p.1‖^2-2*p.1.re)^6 *
-    ((1-p.2)^5 / ((5:ℕ).factorial : ℝ)) *
-    (1+(‖p.1‖^2-2*p.1.re)*p.2)^(-6 : ℝ)
+  ‖p.1‖^α * (‖p.1‖^(2 : ℕ)-2*p.1.re)^(6 : ℕ) *
+    ((1-p.2)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) *
+    (1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)^(-6 : ℝ)
 
 /-- The bounded logarithmic variable for the regular source exponent. -/
 def fzzScreeningFifthLiftLog (p : ℂ × ℝ) : ℝ :=
-  Real.log (1+(‖p.1‖^2-2*p.1.re)*p.2)/2
+  Real.log (1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)/2
 
 private theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
     (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
@@ -384,18 +384,18 @@ private theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
         ∫ t : ℝ in Ioc 0 1, fzzScreeningFifthLiftWeight α (z,t) *
           Real.exp (β*fzzScreeningFifthLiftLog (z,t)) := by
   have hq := (plane_q_bounds z hz).1
-  have h := scalar_fifth_integral_remainder (β/2) (‖z‖^2-2*z.re) hq
+  have h := scalar_fifth_integral_remainder (β/2) (‖z‖^(2 : ℕ)-2*z.re) hq
   rw [plane_q_identity, ← Real.rpow_natCast_mul (norm_nonneg (z-1))] at h
   simp only [Nat.cast_ofNat, show (2:ℝ)*(β/2)=β by ring] at h
   change ‖z-1‖^β - fzzScreeningFifthTaylor β z = _ at h
   rw [fzzScreeningFifthSubtracted, h, ← integral_const_mul, ← integral_const_mul]
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-  have hp : 0 < 1+(‖z‖^2-2*z.re)*t :=
+  have hp : 0 < 1+(‖z‖^(2 : ℕ)-2*z.re)*t :=
     lt_of_lt_of_le (by norm_num) (affine_base_bounds _ t hq ⟨ht.1.le,ht.2⟩).1
-  have he : (1+(‖z‖^2-2*z.re)*t)^(β/2-6) =
-      (1+(‖z‖^2-2*z.re)*t)^(-6 : ℝ) *
-        Real.exp (β*(Real.log (1+(‖z‖^2-2*z.re)*t)/2)) := by
+  have he : (1+(‖z‖^(2 : ℕ)-2*z.re)*t)^(β/2-6) =
+      (1+(‖z‖^(2 : ℕ)-2*z.re)*t)^(-6 : ℝ) *
+        Real.exp (β*(Real.log (1+(‖z‖^(2 : ℕ)-2*z.re)*t)/2)) := by
     rw [show β/2-6 = β/2+(-6) by ring, Real.rpow_add hp]
     rw [Real.rpow_def_of_pos hp]
     rw [mul_comm]
@@ -411,30 +411,30 @@ private def fifthLiftCompact : Set (ℂ × ℝ) :=
   closedBall (0 : ℂ) (1/2) ×ˢ Icc (0 : ℝ) 1
 
 private theorem fifth_lift_base_pos (p : ℂ × ℝ) (hp : p ∈ fifthLiftCompact) :
-    0 < 1+(‖p.1‖^2-2*p.1.re)*p.2 :=
+    0 < 1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2 :=
   lt_of_lt_of_le (by norm_num)
     (affine_base_bounds _ _ (plane_q_bounds p.1 hp.1).1 hp.2).1
 
 private theorem fifth_lift_log_continuous :
     ContinuousOn fzzScreeningFifthLiftLog fifthLiftCompact := by
   unfold fzzScreeningFifthLiftLog
-  exact ((show ContinuousOn (fun p : ℂ × ℝ => 1+(‖p.1‖^2-2*p.1.re)*p.2)
+  exact ((show ContinuousOn (fun p : ℂ × ℝ => 1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)
       fifthLiftCompact by fun_prop).log (fun p hp => (fifth_lift_base_pos p hp).ne')).div_const 2
 
 private def fifthLiftFactor (β : ℝ) (p : ℂ × ℝ) : ℝ :=
-  ((1-p.2)^5 / ((5:ℕ).factorial : ℝ)) *
-    (1+(‖p.1‖^2-2*p.1.re)*p.2)^(-6 : ℝ) *
+  ((1-p.2)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) *
+    (1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)^(-6 : ℝ) *
     Real.exp (β*fzzScreeningFifthLiftLog p)
 
 private theorem fifth_lift_factor_continuous (β : ℝ) :
     ContinuousOn (fifthLiftFactor β) fifthLiftCompact := by
   have hp : ContinuousOn (fun p : ℂ × ℝ =>
-      (1+(‖p.1‖^2-2*p.1.re)*p.2)^(-6 : ℝ)) fifthLiftCompact := by
+      (1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)^(-6 : ℝ)) fifthLiftCompact := by
     apply ContinuousOn.rpow_const (by fun_prop)
     intro p hp
     exact Or.inl (fifth_lift_base_pos p hp).ne'
   exact ((show ContinuousOn (fun p : ℂ × ℝ =>
-      (1-p.2)^5 / ((5:ℕ).factorial : ℝ)) fifthLiftCompact by fun_prop).mul hp).mul
+      (1-p.2)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) fifthLiftCompact by fun_prop).mul hp).mul
     (Real.continuous_exp.comp_continuousOn (continuousOn_const.mul fifth_lift_log_continuous))
 
 private theorem fifth_lift_exp_integrable (α β : ℝ) (ha : -8 < α) :
@@ -450,7 +450,7 @@ private theorem fifth_lift_exp_integrable (α β : ℝ) (ha : -8 < α) :
     simpa only [fzzScreeningFifthLiftMeasure, mul_one] using h
   obtain ⟨C,hC⟩ := ((isCompact_closedBall (0 : ℂ) (1/2)).prod isCompact_Icc).exists_bound_of_continuousOn
     (fifth_lift_factor_continuous β)
-  apply (hi.const_mul ((5/2)^6 * max C 0)).mono' (by
+  apply (hi.const_mul ((5/2)^(6 : ℕ) * max C 0)).mono' (by
     unfold fzzScreeningFifthLiftWeight fzzScreeningFifthLiftLog
     fun_prop)
   rw [fzzScreeningFifthLiftMeasure, Measure.ae_prod_iff_ae_ae (measurableSet_le
@@ -463,21 +463,21 @@ private theorem fifth_lift_exp_integrable (α β : ℝ) (ha : -8 < α) :
   have hcp : ‖fifthLiftFactor β (z,t)‖ ≤ max C 0 :=
     (hC (z,t) ⟨ball_subset_closedBall hz, ht.1.le, ht.2⟩).trans (le_max_left _ _)
   have he : fzzScreeningFifthLiftWeight α (z,t) * Real.exp (β*fzzScreeningFifthLiftLog (z,t)) =
-      ‖z‖^α * (‖z‖^2-2*z.re)^6 * fifthLiftFactor β (z,t) := by
+      ‖z‖^α * (‖z‖^(2 : ℕ)-2*z.re)^(6 : ℕ) * fifthLiftFactor β (z,t) := by
     dsimp [fzzScreeningFifthLiftWeight, fifthLiftFactor]
     ring
   change ‖fzzScreeningFifthLiftWeight α (z,t) * Real.exp (β*fzzScreeningFifthLiftLog (z,t))‖ ≤ _
   rw [he, norm_mul, norm_mul, Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg z) α),
     norm_pow, Real.norm_eq_abs]
   calc
-    ‖z‖^α * |‖z‖^2-2*z.re|^6 * ‖fifthLiftFactor β (z,t)‖ ≤
-        ‖z‖^α * |‖z‖^2-2*z.re|^6 * max C 0 :=
+    ‖z‖^α * |‖z‖^(2 : ℕ)-2*z.re|^(6 : ℕ) * ‖fifthLiftFactor β (z,t)‖ ≤
+        ‖z‖^α * |‖z‖^(2 : ℕ)-2*z.re|^(6 : ℕ) * max C 0 :=
       mul_le_mul_of_nonneg_left hcp (by positivity)
-    _ ≤ ‖z‖^α * ((5/2)*‖z‖)^6 * max C 0 :=
+    _ ≤ ‖z‖^α * ((5/2)*‖z‖)^(6 : ℕ) * max C 0 :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg _) hq 6) (by positivity))
         (le_max_right _ _)
-    _ = ((5/2)^6 * max C 0) * ‖z‖^(α+6) := by
+    _ = ((5/2)^(6 : ℕ) * max C 0) * ‖z‖^(α+6) := by
       rw [mul_pow, Real.rpow_add hn]
       norm_num only [Real.rpow_ofNat]
       ring

@@ -19,12 +19,12 @@ theorem regionIAmplitudeOscillatorEnergy_eq
       correctedJacobiAmplitudeEnergy P J x := by
   rw [amplitudeOscillatorEnergy, correctedJacobiAmplitudeEnergy]
   change
-    correctedJacobiAmplitudeVelocity P J x ^ 2 / 2 +
-        (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J x ^ 4 / 2 +
-        (P.val.q₀ : ℝ) * physicalGamma P ^ 2 *
-          correctedJacobiAmplitude P J x ^ 2 / 2 +
-        (P.val.q₀ : ℝ) * physicalNu P ^ 2 /
-          (2 * correctedJacobiAmplitude P J x ^ 2) = _
+    correctedJacobiAmplitudeVelocity P J x ^ (2 : ℕ) / 2 +
+        (P.val.q₀ : ℝ) * correctedJacobiAmplitude P J x ^ (4 : ℕ) / 2 +
+        (P.val.q₀ : ℝ) * physicalGamma P ^ (2 : ℕ) *
+          correctedJacobiAmplitude P J x ^ (2 : ℕ) / 2 +
+        (P.val.q₀ : ℝ) * physicalNu P ^ (2 : ℕ) /
+          (2 * correctedJacobiAmplitude P J x ^ (2 : ℕ)) = _
   rw [physicalGamma_sq, physicalNu_sq]
 
 theorem regionIAmplitudeOscillatorEnergy_const
@@ -41,12 +41,12 @@ theorem regionIIAmplitudeOscillatorEnergy_eq
       regionIIJacobiAmplitudeEnergy P J x := by
   rw [amplitudeOscillatorEnergy, regionIIJacobiAmplitudeEnergy]
   change
-    regionIIJacobiAmplitudeVelocity P J x ^ 2 / 2 +
-        regionIIRealScale P * regionIIJacobiAmplitude P J x ^ 4 / 2 +
-        regionIIRealScale P * regionIIGamma P ^ 2 *
-          regionIIJacobiAmplitude P J x ^ 2 / 2 +
-        regionIIRealScale P * regionIINu P ^ 2 /
-          (2 * regionIIJacobiAmplitude P J x ^ 2) = _
+    regionIIJacobiAmplitudeVelocity P J x ^ (2 : ℕ) / 2 +
+        regionIIRealScale P * regionIIJacobiAmplitude P J x ^ (4 : ℕ) / 2 +
+        regionIIRealScale P * regionIIGamma P ^ (2 : ℕ) *
+          regionIIJacobiAmplitude P J x ^ (2 : ℕ) / 2 +
+        regionIIRealScale P * regionIINu P ^ (2 : ℕ) /
+          (2 * regionIIJacobiAmplitude P J x ^ (2 : ℕ)) = _
   rw [regionIIGamma_sq, regionIINu_sq]
 
 theorem regionIIJacobiAmplitudeEnergy_const

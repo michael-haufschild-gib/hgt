@@ -46,7 +46,7 @@ private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh d
   field_simp [hc,hy]
 
 private theorem tanh_derivative_local (x : ℝ) :
-    HasDerivAt Real.tanh (1-Real.tanh x^2) x := by
+    HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
   have hc := (Real.cosh_pos x).ne'
   have hd := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) hc
   rw [show Real.tanh = Real.sinh / Real.cosh by
@@ -117,21 +117,21 @@ private theorem characteristic_first_derivative (nu : ℂ) (y u v : ℝ)
 private theorem characteristic_mixed_derivative (nu : ℂ) (y u v : ℝ)
     (hz : 0 < invariant ((u+v)/2) (y+(u-v)/2) y) :
     HasDerivAt (characteristicFirst nu y u)
-      (nu*(nu+1)/(4*(Real.cosh (y+(u-v)/2):ℂ)^2)*characteristicKernel nu y u v) v := by
+      (nu*(nu+1)/(4*(Real.cosh (y+(u-v)/2):ℂ)^(2 : ℕ))*characteristicKernel nu y u v) v := by
   let h := (u+v)/2
   let x := y+(u-v)/2
   have hc : (Real.cosh x : ℂ) ≠ 0 := by exact_mod_cast (Real.cosh_pos x).ne'
-  have hg1 : (invariantTimeFirst h x y:ℂ)^2-(invariantSpaceFirst h x y:ℂ)^2 =
-      ((invariant h x y:ℂ)^2-1)/(Real.cosh x:ℂ)^2 := by
+  have hg1 : (invariantTimeFirst h x y:ℂ)^(2 : ℕ)-(invariantSpaceFirst h x y:ℂ)^(2 : ℕ) =
+      ((invariant h x y:ℂ)^(2 : ℕ)-1)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).1
   have hg2 : (invariantTimeSecond h x y:ℂ)-(invariantSpaceSecond h x y:ℂ) =
-      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^2 := by
+      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).2
   have hraw := ((legendreKernel_derivatives nu hz).2.scomp v
     (nullInvariant_second y u v)).mul (nullInvariant_mixed y u v).ofReal_comp
   apply hraw.congr_deriv
   simp only [Complex.real_smul,Function.comp_apply]
-  change _ = nu*(nu+1)/(4*(Real.cosh x:ℂ)^2)*legendreKernel nu (invariant h x y)
+  change _ = nu*(nu+1)/(4*(Real.cosh x:ℂ)^(2 : ℕ))*legendreKernel nu (invariant h x y)
   dsimp only [nullInvariantFirst]
   push_cast
   change ((invariantTimeFirst h x y-invariantSpaceFirst h x y:ℂ)/2*
@@ -140,14 +140,14 @@ private theorem characteristic_mixed_derivative (nu : ℂ) (y u v : ℝ)
     legendreKernelFirst nu (invariant h x y)*
       ((invariantTimeSecond h x y-invariantSpaceSecond h x y:ℂ)/4) = _
   have he := legendreKernel_equation nu hz
-  change ((invariant h x y:ℂ)^2-1)*legendreKernelSecond nu (invariant h x y)+
+  change ((invariant h x y:ℂ)^(2 : ℕ)-1)*legendreKernelSecond nu (invariant h x y)+
     2*(invariant h x y:ℂ)*legendreKernelFirst nu (invariant h x y)-
     nu*(nu+1)*legendreKernel nu (invariant h x y) = 0 at he
   simp only [← Complex.ofReal_cosh]
   linear_combination
     legendreKernelSecond nu (invariant h x y)/4*hg1+
     legendreKernelFirst nu (invariant h x y)/4*hg2+
-    1/(4*(Real.cosh x:ℂ)^2)*he
+    1/(4*(Real.cosh x:ℂ)^(2 : ℕ))*he
 
 private theorem characteristic_axis_right (nu : ℂ) (y u : ℝ) :
     characteristicKernel nu y u 0 = 1 := by
@@ -197,7 +197,7 @@ private theorem characteristicFirst_continuousAt (nu : ℂ) (y u v : ℝ)
 
 private theorem characteristic_integrand_continuousOn (nu : ℂ) (y : ℝ)
     {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
-    ContinuousOn (fun b => nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^2)*
+    ContinuousOn (fun b => nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^(2 : ℕ))*
       characteristicKernel nu y u b) (uIcc 0 v) := by
   intro b hb
   have hb0 : 0 ≤ b := (show b ∈ Icc 0 v by simpa only [uIcc_of_le hv] using hb).1
@@ -207,16 +207,16 @@ private theorem characteristic_integrand_continuousOn (nu : ℂ) (y : ℝ)
   have hx : HasDerivAt (fun a : ℝ => y+(u-a)/2) (-1/2) b := by
     convert! (((hasDerivAt_id b).const_sub u).div_const 2).const_add y using 1
   have hc := (((Real.hasDerivAt_cosh (y+(u-b)/2)).comp b hx).continuousAt.ofReal).pow 2
-  have hn : (4:ℂ)*(Real.cosh (y+(u-b)/2):ℂ)^2 ≠ 0 := by
+  have hn : (4:ℂ)*(Real.cosh (y+(u-b)/2):ℂ)^(2 : ℕ) ≠ 0 := by
     exact mul_ne_zero (by norm_num) (pow_ne_zero 2 (by exact_mod_cast (Real.cosh_pos _).ne'))
   exact ((continuousAt_const.div (continuousAt_const.mul hc) hn).mul hr).continuousWithinAt
 
 private theorem characteristicFirst_integral (nu : ℂ) (y : ℝ)
     {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
-    (∫ b in (0:ℝ)..v, nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^2)*
+    (∫ b in (0:ℝ)..v, nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^(2 : ℕ))*
       characteristicKernel nu y u b) = characteristicFirst nu y u v := by
   have hd : ∀ b ∈ uIcc 0 v, HasDerivAt (characteristicFirst nu y u)
-      (nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^2)*characteristicKernel nu y u b) b := by
+      (nu*(nu+1)/(4*(Real.cosh (y+(u-b)/2):ℂ)^(2 : ℕ))*characteristicKernel nu y u b) b := by
     intro b hb
     have hb0 : 0 ≤ b := (show b ∈ Icc 0 v by simpa only [uIcc_of_le hv] using hb).1
     exact characteristic_mixed_derivative nu y u b (nullInvariant_positive y hu hb0)
@@ -228,9 +228,9 @@ private theorem characteristic_integral (nu : ℂ) (y : ℝ)
     {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
     characteristicKernel nu y u v = 1+
       ∫ a in (0:ℝ)..u, ∫ b in (0:ℝ)..v,
-        nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^2)*characteristicKernel nu y a b := by
+        nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^(2 : ℕ))*characteristicKernel nu y a b := by
   have he : (∫ a in (0:ℝ)..u, ∫ b in (0:ℝ)..v,
-        nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^2)*characteristicKernel nu y a b) =
+        nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^(2 : ℕ))*characteristicKernel nu y a b) =
       ∫ a in (0:ℝ)..u, characteristicFirst nu y a v := by
     apply intervalIntegral.integral_congr
     intro a ha
@@ -256,7 +256,7 @@ theorem riemannKernel_goursat (nu : ℂ) (p : CausalPoint) :
     riemannKernel nu p.time p.target p.source = 1+
       ∫ a in (0:ℝ)..(p.time+p.target-p.source),
         ∫ b in (0:ℝ)..(p.time-p.target+p.source),
-          nu*(nu+1)/(4*(Real.cosh (p.source+(a-b)/2):ℂ)^2)*
+          nu*(nu+1)/(4*(Real.cosh (p.source+(a-b)/2):ℂ)^(2 : ℕ))*
             characteristicKernel nu p.source a b := by
   obtain ⟨hl,hr⟩ := abs_le.mp p.inside
   have hu : 0 ≤ p.time+p.target-p.source := by linarith
@@ -270,7 +270,7 @@ theorem riemannKernel_goursat (nu : ℂ) (p : CausalPoint) :
 def causalPotentialCorrection (nu : ℂ) (h x y : ℝ) : ℂ :=
   if |x-y| ≤ h then
     ∫ a in (0:ℝ)..(h+x-y), ∫ b in (0:ℝ)..(h-x+y),
-      nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^2)*characteristicKernel nu y a b
+      nu*(nu+1)/(4*(Real.cosh (y+(a-b)/2):ℂ)^(2 : ℕ))*characteristicKernel nu y a b
   else 0
 
 private theorem causalKernel_split (nu : ℂ) (h x y : ℝ) :

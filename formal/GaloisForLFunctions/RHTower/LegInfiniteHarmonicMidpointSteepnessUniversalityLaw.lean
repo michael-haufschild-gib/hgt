@@ -20,7 +20,7 @@ def harmonicInfiniteMidpointEnergy (c : ℝ) (i : ℕ) : ℝ :=
   spurLatticeEnergy (Finset.range (2 * i + 2)) (harmPole c) (harmMid c i) +
     (1 / 4) *
       ∑' m : ℕ,
-        (rcsch ((harmPole c (2 * i + 2 + m) - harmMid c i) / 2)) ^ 2
+        (rcsch ((harmPole c (2 * i + 2 + m) - harmMid c i) / 2)) ^ (2 : ℕ)
 
 /-- **Infinite harmonic midpoint steepness universality law.**  For every harmonic spacing
 parameter `c > 1`, completing the balanced block by the entire infinite ahead tail leaves the
@@ -28,12 +28,12 @@ quadratically rescaled midpoint steepness unchanged. -/
 theorem harmonicInfiniteMidpointEnergy_steepness
     {c : ℝ} (hc : 1 < c) :
     Tendsto (fun i : ℕ =>
-      harmonicInfiniteMidpointEnergy c i / (((i + 1 : ℕ) : ℝ)) ^ 2)
-      atTop (𝓝 (Real.pi ^ 2 / c ^ 2)) := by
+      harmonicInfiniteMidpointEnergy c i / (((i + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+      atTop (𝓝 (Real.pi ^ (2 : ℕ) / c ^ (2 : ℕ))) := by
   have hnear := harmonic_midpoint_energy_steepness (by linarith : 0 < c)
   have hfar := (farEnergyTail_div_tendsto hc).const_mul (1 / 4 : ℝ)
   have hsum := hnear.add hfar
-  rw [show Real.pi ^ 2 / c ^ 2 = Real.pi ^ 2 / c ^ 2 + (1 / 4 : ℝ) * 0 by ring]
+  rw [show Real.pi ^ (2 : ℕ) / c ^ (2 : ℕ) = Real.pi ^ (2 : ℕ) / c ^ (2 : ℕ) + (1 / 4 : ℝ) * 0 by ring]
   convert hsum using 1
   funext i
   rw [harmonicInfiniteMidpointEnergy, add_div, mul_div_assoc]

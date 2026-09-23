@@ -16,7 +16,7 @@ noncomputable section
 
 /-- Literal center flux whose derivative changes no integrated source moment. -/
 def thetaCuspCenterCompensationFlux (a r : ℝ) : ℝ :=
-  r^2 * Real.sinh (a*r) * thetaCuspFullSource (r/2)^2
+  r^(2 : ℕ) * Real.sinh (a*r) * thetaCuspFullSource (r/2)^(2 : ℕ)
 
 private theorem exists_schwartz_thetaCuspCenterCompensationFlux
     {a : ℝ} (ha : |a| < 1) :
@@ -31,11 +31,11 @@ private theorem exists_schwartz_thetaCuspCenterCompensationFlux
     (thetaCuspTiltedSchwartzReal (-a) (by simpa using ha))
   let h := SchwartzMap.pairing (ContinuousLinearMap.mul ℝ ℝ) f f -
     SchwartzMap.pairing (ContinuousLinearMap.mul ℝ ℝ) g g
-  have hp : (fun r : ℝ => r^2/2).HasTemperateGrowth := by fun_prop
-  refine ⟨SchwartzMap.smulLeftCLM ℝ (fun r : ℝ => r^2/2) h, ?_⟩
+  have hp : (fun r : ℝ => r^(2 : ℕ)/2).HasTemperateGrowth := by fun_prop
+  refine ⟨SchwartzMap.smulLeftCLM ℝ (fun r : ℝ => r^(2 : ℕ)/2) h, ?_⟩
   funext r
   rw [SchwartzMap.smulLeftCLM_apply_apply hp]
-  change r^2/2 * ((Real.exp (a*(r/2))*thetaCuspFullSource (r/2)) *
+  change r^(2 : ℕ)/2 * ((Real.exp (a*(r/2))*thetaCuspFullSource (r/2)) *
     (Real.exp (a*(r/2))*thetaCuspFullSource (r/2)) -
     (Real.exp (-a*(r/2))*thetaCuspFullSource (r/2)) *
     (Real.exp (-a*(r/2))*thetaCuspFullSource (r/2))) = _
@@ -46,8 +46,8 @@ private theorem exists_schwartz_thetaCuspCenterCompensationFlux
   unfold thetaCuspCenterCompensationFlux
   rw [Real.sinh_eq]
   calc
-    _ = r^2/2 * ((Real.exp (a*(r/2))*Real.exp (a*(r/2))) -
-      (Real.exp (-a*(r/2))*Real.exp (-a*(r/2)))) * thetaCuspFullSource (r/2)^2 := by ring
+    _ = r^(2 : ℕ)/2 * ((Real.exp (a*(r/2))*Real.exp (a*(r/2))) -
+      (Real.exp (-a*(r/2))*Real.exp (-a*(r/2)))) * thetaCuspFullSource (r/2)^(2 : ℕ) := by ring
     _ = _ := by rw [he, hn]; ring
 
 /-- The center correction derivative is absolutely integrable. -/
@@ -73,8 +73,8 @@ theorem integral_deriv_thetaCuspCenterCompensationFlux
 /-- Exact derivative of the literal center flux. -/
 theorem hasDerivAt_thetaCuspCenterCompensationFlux (a r : ℝ) :
     HasDerivAt (thetaCuspCenterCompensationFlux a)
-      ((2*r*Real.sinh (a*r) + a*r^2*Real.cosh (a*r))*thetaCuspFullSource (r/2)^2 +
-        r^2*Real.sinh (a*r)*thetaCuspFullSource (r/2)*deriv thetaCuspFullSource (r/2)) r := by
+      ((2*r*Real.sinh (a*r) + a*r^(2 : ℕ)*Real.cosh (a*r))*thetaCuspFullSource (r/2)^(2 : ℕ) +
+        r^(2 : ℕ)*Real.sinh (a*r)*thetaCuspFullSource (r/2)*deriv thetaCuspFullSource (r/2)) r := by
   have hp : HasDerivAt thetaCuspFullSource (deriv thetaCuspFullSource (r/2)) (r/2) :=
     thetaCuspSchwartzReal.hasDerivAt (r/2)
   have h := (((hasDerivAt_id r).pow 2).mul ((hasDerivAt_id r).const_mul a).sinh).mul
@@ -84,7 +84,7 @@ theorem hasDerivAt_thetaCuspCenterCompensationFlux (a r : ℝ) :
 /-- Aperture-independent lower bound for the zero-integral correction. -/
 theorem deriv_thetaCuspCenterCompensationFlux_lower
     {a r : ℝ} (ha : 0 ≤ a) (hr : 0 ≤ r) :
-    r*Real.sinh (a*r)*(3*thetaCuspFullSource (r/2)^2 +
+    r*Real.sinh (a*r)*(3*thetaCuspFullSource (r/2)^(2 : ℕ) +
       r*thetaCuspFullSource (r/2)*deriv thetaCuspFullSource (r/2)) ≤
       deriv (thetaCuspCenterCompensationFlux a) r := by
   rw [(hasDerivAt_thetaCuspCenterCompensationFlux a r).deriv]

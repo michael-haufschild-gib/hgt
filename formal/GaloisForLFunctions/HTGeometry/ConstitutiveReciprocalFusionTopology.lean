@@ -62,11 +62,11 @@ variable {ι : Type*} [Fintype ι]
 
 /-- Source-complexity-weighted work of a finite radial packet. -/
 def reciprocalPacketWork (a : ι → ℝ) (x : ι → ℝ) : ℝ :=
-  ∑ i, (a i) ^ 2 * reciprocalFusionWork (x i)
+  ∑ i, (a i) ^ (2 : ℕ) * reciprocalFusionWork (x i)
 
 /-- Nonlinear interaction term in the packet fusion law. -/
 def reciprocalPacketInteraction (a : ι → ℝ) (x y : ι → ℝ) : ℝ :=
-  ∑ i, (a i) ^ 2 * reciprocalFusionWork (x i) * reciprocalFusionWork (y i)
+  ∑ i, (a i) ^ (2 : ℕ) * reciprocalFusionWork (x i) * reciprocalFusionWork (y i)
 
 /-- **Finite packet fusion.**  Arbitrary marked weights preserve the exact local fusion identity. -/
 theorem reciprocalPacketWork_fusion (a : ι → ℝ) (x y : ι → ℝ) :
@@ -76,18 +76,18 @@ theorem reciprocalPacketWork_fusion (a : ι → ℝ) (x y : ι → ℝ) :
   rw [reciprocalPacketWork, reciprocalPacketWork, ← Finset.sum_add_distrib]
   rw [reciprocalPacketInteraction, reciprocalPacketWork, reciprocalPacketWork]
   calc
-    (∑ i, ((a i) ^ 2 * reciprocalFusionWork ((x + y) i) +
-      (a i) ^ 2 * reciprocalFusionWork ((x - y) i))) =
-        ∑ i, ((a i) ^ 2 * reciprocalFusionWork (x i) * reciprocalFusionWork (y i) +
-          2 * ((a i) ^ 2 * reciprocalFusionWork (x i)) +
-          2 * ((a i) ^ 2 * reciprocalFusionWork (y i))) := by
+    (∑ i, ((a i) ^ (2 : ℕ) * reciprocalFusionWork ((x + y) i) +
+      (a i) ^ (2 : ℕ) * reciprocalFusionWork ((x - y) i))) =
+        ∑ i, ((a i) ^ (2 : ℕ) * reciprocalFusionWork (x i) * reciprocalFusionWork (y i) +
+          2 * ((a i) ^ (2 : ℕ) * reciprocalFusionWork (x i)) +
+          2 * ((a i) ^ (2 : ℕ) * reciprocalFusionWork (y i))) := by
             apply Finset.sum_congr rfl
             intro i hi
             simp only [Pi.add_apply, Pi.sub_apply]
             calc
-              (a i) ^ 2 * reciprocalFusionWork (x i + y i) +
-                  (a i) ^ 2 * reciprocalFusionWork (x i - y i) =
-                (a i) ^ 2 * (reciprocalFusionWork (x i + y i) +
+              (a i) ^ (2 : ℕ) * reciprocalFusionWork (x i + y i) +
+                  (a i) ^ (2 : ℕ) * reciprocalFusionWork (x i - y i) =
+                (a i) ^ (2 : ℕ) * (reciprocalFusionWork (x i + y i) +
                   reciprocalFusionWork (x i - y i)) := by ring
               _ = _ := by rw [reciprocalFusionWork_fusion]; ring
     _ = _ := by
@@ -109,27 +109,27 @@ theorem reciprocalLeg_exactRecovery (x : ℝ) :
 
 /-- Reciprocal positive Grams multiply to the identity. -/
 theorem reciprocalLeg_gram_product (x : ℝ) :
-    reciprocalSemanticLeg x ^ 2 * reciprocalLineageLeg x ^ 2 = 1 := by
+    reciprocalSemanticLeg x ^ (2 : ℕ) * reciprocalLineageLeg x ^ (2 : ℕ) = 1 := by
   rw [← mul_pow, reciprocalLeg_exactRecovery]
   norm_num
 
 /-- Semantic positive Gram coordinate. -/
 theorem reciprocalSemanticGram (x : ℝ) :
-    reciprocalSemanticLeg x ^ 2 = Real.exp x := by
+    reciprocalSemanticLeg x ^ (2 : ℕ) = Real.exp x := by
   rw [reciprocalSemanticLeg, pow_two, ← Real.exp_add]
   congr 1
   ring
 
 /-- Lineage positive Gram coordinate. -/
 theorem reciprocalLineageGram (x : ℝ) :
-    reciprocalLineageLeg x ^ 2 = Real.exp (-x) := by
+    reciprocalLineageLeg x ^ (2 : ℕ) = Real.exp (-x) := by
   rw [reciprocalLineageLeg, pow_two, ← Real.exp_add]
   congr 1
   ring
 
 /-- **Gram reconstruction.**  The semantic positive Gram retains the full radial coordinate. -/
 theorem reciprocalSemanticGram_reconstructs (x : ℝ) :
-    Real.log (reciprocalSemanticLeg x ^ 2) = x := by
+    Real.log (reciprocalSemanticLeg x ^ (2 : ℕ)) = x := by
   rw [reciprocalSemanticGram, Real.log_exp]
 
 /-- Functional reversal exchanges semantic and lineage legs. -/
@@ -139,17 +139,17 @@ theorem reciprocalLeg_reversal_semantic (x : ℝ) :
 
 /-- Squared leg separation equals reciprocal work. -/
 theorem reciprocalLeg_separation_sq (x : ℝ) :
-    (reciprocalSemanticLeg x - reciprocalLineageLeg x) ^ 2 = reciprocalFusionWork x := by
+    (reciprocalSemanticLeg x - reciprocalLineageLeg x) ^ (2 : ℕ) = reciprocalFusionWork x := by
   rw [reciprocalSemanticLeg, reciprocalLineageLeg, reciprocalFusionWork_exp]
   have hmul : Real.exp (x / 2) * Real.exp (-x / 2) = 1 := by
     rw [← Real.exp_add]
     ring_nf
     exact Real.exp_zero
-  have hpos : Real.exp (x / 2) ^ 2 = Real.exp x := by
+  have hpos : Real.exp (x / 2) ^ (2 : ℕ) = Real.exp x := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hneg : Real.exp (-x / 2) ^ 2 = Real.exp (-x) := by
+  have hneg : Real.exp (-x / 2) ^ (2 : ℕ) = Real.exp (-x) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -157,8 +157,8 @@ theorem reciprocalLeg_separation_sq (x : ℝ) :
 
 /-- Weighted squared separation of all exact-recovery legs is exactly packet work. -/
 theorem reciprocalPacket_separation_sq (a : ι → ℝ) (x : ι → ℝ) :
-    (∑ i, (a i) ^ 2 *
-      (reciprocalSemanticLeg (x i) - reciprocalLineageLeg (x i)) ^ 2) =
+    (∑ i, (a i) ^ (2 : ℕ) *
+      (reciprocalSemanticLeg (x i) - reciprocalLineageLeg (x i)) ^ (2 : ℕ)) =
         reciprocalPacketWork a x := by
   simp_rw [reciprocalLeg_separation_sq]
   rfl

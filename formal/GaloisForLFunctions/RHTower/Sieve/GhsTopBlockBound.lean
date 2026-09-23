@@ -27,7 +27,7 @@ def ghsTopConst : ℝ :=
   ((Real.log 4096 + mertensBlockGapConst) / Real.log 2) * (Real.log 4096 + Real.log 4)
 
 /-- **The top block is `O(N)`.** -/
-theorem ghs_top_block_le {N n : ℕ} (hN : 65536 ≤ N) (hn2 : n ^ 2 ≤ N) :
+theorem ghs_top_block_le {N n : ℕ} (hN : 65536 ≤ N) (hn2 : n ^ (2 : ℕ) ≤ N) :
     (N : ℝ) * (((1 / Real.log 2)
             * (Real.log (N : ℝ)
                 - Real.log ((ghsPart N n (ghsScaleCount N + 1) : ℕ) : ℝ)

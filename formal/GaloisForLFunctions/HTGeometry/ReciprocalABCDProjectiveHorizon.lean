@@ -38,7 +38,7 @@ theorem reciprocalABCD_projective_hypertranscendence_and_horizon_law
       ((∀ n : ℕ,
           jetTailField F (projectiveImmittanceChart a b c d x⁻¹) n =
             jetTailField F (projectiveImmittanceChart a b c d x) n) ↔
-        d ^ 2 = c ^ 2) := by
+        d ^ (2 : ℕ) = c ^ (2 : ℕ)) := by
   have hdet := reciprocalABCD_nonDegenerate a b c d hrecip
   exact ⟨
     hypertranscendentalOver_projectiveImmittanceChart x hx a b c d hdet,

@@ -19,24 +19,24 @@ noncomputable section
 survive. -/
 theorem thirteenTwentyFifths_mul_pow_four_le_thetaLikelihoodFourthScore
     {z : ℝ} (hz : (45 / 4 : ℝ) ≤ z) :
-    (13 / 25 : ℝ) * z ^ 4 ≤ thetaLikelihoodFourthScore z := by
+    (13 / 25 : ℝ) * z ^ (4 : ℕ) ≤ thetaLikelihoodFourthScore z := by
   let y := z - 45 / 4
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   rw [show z = 45 / 4 + y by dsimp only [y]; ring]
   dsimp [thetaLikelihoodFourthScore]
   ring_nf
-  have hy2 : 0 ≤ y ^ 2 := by positivity
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
   nlinarith
 
 private theorem integrable_thetaLikelihoodFourthScore_tilted_scaleFifteenFourths
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodFourthScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   convert (((h4.sub h3).add h2).sub h1) using 1
   funext t
@@ -47,18 +47,18 @@ private theorem integral_thetaLikelihoodFourthScore_tilted_eq_scaleFifteenFourth
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodFourthScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
-      A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+      A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
-  let f4 : ℝ → ℝ := fun t => A ^ 4 * t ^ 4
-  let f3 : ℝ → ℝ := fun t => (6 * A ^ 3) * t ^ 3
-  let f2 : ℝ → ℝ := fun t => (7 * A ^ 2) * t ^ 2
-  let f1 : ℝ → ℝ := fun t => A * t ^ 1
+  let f4 : ℝ → ℝ := fun t => A ^ (4 : ℕ) * t ^ (4 : ℕ)
+  let f3 : ℝ → ℝ := fun t => (6 * A ^ (3 : ℕ)) * t ^ (3 : ℕ)
+  let f2 : ℝ → ℝ := fun t => (7 * A ^ (2 : ℕ)) * t ^ (2 : ℕ)
+  let f1 : ℝ → ℝ := fun t => A * t ^ (1 : ℕ)
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t)) =
       ((f4 - f3) + f2) - f1 by
     funext t
@@ -73,7 +73,7 @@ private theorem integral_thetaLikelihoodFourthScore_tilted_eq_scaleFifteenFourth
 theorem twoHundredEightTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJetFour
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (15 / 4 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    (208 / 25 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    (208 / 25 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 ≤
       thetaCuspLikelihoodSourceOrdinaryJetFour x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -82,18 +82,18 @@ theorem twoHundredEightTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJet
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hI4 := integrable_thetaLikelihoodFourthScore_tilted_scaleFifteenFourths A hB
   have hlead : Integrable (fun t : ℝ =>
-      (13 / 25 : ℝ) * A ^ 4 * t ^ 4)
+      (13 / 25 : ℝ) * A ^ (4 : ℕ) * t ^ (4 : ℕ))
       (thetaCuspHigherLikelihoodTiltedMeasure B) :=
     (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul _
   have hpoint : ∀ᵐ t ∂thetaCuspHigherLikelihoodTiltedMeasure B,
-      (13 / 25 : ℝ) * A ^ 4 * t ^ 4 ≤ thetaLikelihoodFourthScore (A * t) := by
+      (13 / 25 : ℝ) * A ^ (4 : ℕ) * t ^ (4 : ℕ) ≤ thetaLikelihoodFourthScore (A * t) := by
     filter_upwards [ae_three_le_thetaCuspHigherLikelihoodTiltedMeasure B] with t ht
     have hAt : (45 / 4 : ℝ) ≤ A * t := by
       nlinarith [mul_le_mul_of_nonneg_left hA (by linarith : (0 : ℝ) ≤ t),
         mul_le_mul_of_nonneg_left ht (by norm_num : (0 : ℝ) ≤ 15 / 4)]
     have h := thirteenTwentyFifths_mul_pow_four_le_thetaLikelihoodFourthScore hAt
     calc
-      (13 / 25 : ℝ) * A ^ 4 * t ^ 4 = (13 / 25 : ℝ) * (A * t) ^ 4 := by ring
+      (13 / 25 : ℝ) * A ^ (4 : ℕ) * t ^ (4 : ℕ) = (13 / 25 : ℝ) * (A * t) ^ (4 : ℕ) := by ring
       _ ≤ thetaLikelihoodFourthScore (A * t) := h
   have hint := integral_mono_ae hlead hI4 hpoint
   rw [integral_const_mul,
@@ -102,9 +102,9 @@ theorem twoHundredEightTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJet
   have hcoeff : 0 ≤ 16 / P := div_nonneg (by norm_num) hP.le
   have hscaled := mul_le_mul_of_nonneg_left hint hcoeff
   calc
-    (208 / 25 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    (208 / 25 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 =
-      (16 / P) * ((13 / 25 : ℝ) * A ^ 4 *
+      (16 / P) * ((13 / 25 : ℝ) * A ^ (4 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment B 4) := by
           dsimp only [A, B]
           unfold thetaCuspLikelihoodNormalizedMoment
@@ -112,9 +112,9 @@ theorem twoHundredEightTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJet
           field_simp [hP.ne']
           ring
     _ ≤ (16 / P) *
-        (A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-          6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-          7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+        (A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+          6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+          7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
           A * thetaCuspHigherLikelihoodSpectralMoment B 1) := hscaled
     _ = thetaCuspLikelihoodSourceOrdinaryJetFour x := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryJetFour, A, B]
@@ -126,7 +126,7 @@ theorem twoHundredEightTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJet
 /-- Sharp enough elementary rational lower enclosure at the scale-`15/4` endpoint. -/
 theorem oneOverSeventySevenThousand_lt_exp_neg_fortyFiveFourths :
     (1 / 77000 : ℝ) < Real.exp (-(45 / 4 : ℝ)) := by
-  have hpow11 : Real.exp 1 ^ 11 < (2.7182818286 : ℝ) ^ 11 :=
+  have hpow11 : Real.exp 1 ^ (11 : ℕ) < (2.7182818286 : ℝ) ^ (11 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_one_lt_d9 (Real.exp_pos 1).le (by norm_num)
   have h11 : Real.exp 11 < (59900 : ℝ) := by
     rw [show (11 : ℝ) = (11 : ℕ) * (1 : ℝ) by norm_num, Real.exp_nat_mul]
@@ -150,9 +150,9 @@ theorem oneOverSeventySevenThousand_lt_exp_neg_fortyFiveFourths :
 
 /-- Rational lower polynomial for the first atom-ray fourth moment. -/
 def thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor : ℝ :=
-  1296 + 18 * (81 * (3 / 7 : ℝ) + 108 * (3 / 7 : ℝ) ^ 2 +
-    108 * (3 / 7 : ℝ) ^ 3 + 72 * (3 / 7 : ℝ) ^ 4 +
-    24 * (3 / 7 : ℝ) ^ 5)
+  1296 + 18 * (81 * (3 / 7 : ℝ) + 108 * (3 / 7 : ℝ) ^ (2 : ℕ) +
+    108 * (3 / 7 : ℝ) ^ (3 : ℕ) + 72 * (3 / 7 : ℝ) ^ (4 : ℕ) +
+    24 * (3 / 7 : ℝ) ^ (5 : ℕ))
 
 /-- Live affine lower envelope for the first atom-ray exponential across the short chamber. -/
 theorem thetaCuspLikelihoodFourthScaleFifteenFourths_expAffine_lt_exp_neg_three_mul
@@ -186,7 +186,7 @@ theorem thetaCuspLikelihoodFourthScaleFifteenFourthsAtomFloor_lt_dominantAtomMom
     (hBA : B = A - 3 / 2) :
     (1 / 77000 : ℝ) * (1 - 3 * (A - 15 / 4)) *
         thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor <
-      ∫ t : ℝ, t ^ 4 * Real.exp (-(B * t))
+      ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-(B * t))
         ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
   have hB : 0 < B := by rw [hBA]; linarith
   have hBupper : B ≤ (7 / 3 : ℝ) := by rw [hBA]; linarith
@@ -194,28 +194,28 @@ theorem thetaCuspLikelihoodFourthScaleFifteenFourthsAtomFloor_lt_dominantAtomMom
     have h := one_div_le_one_div_of_le hB hBupper
     norm_num at h ⊢
     exact h
-  have hinv2 : (3 / 7 : ℝ) ^ 2 ≤ 1 / B ^ 2 := by
+  have hinv2 : (3 / 7 : ℝ) ^ (2 : ℕ) ≤ 1 / B ^ (2 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 2
     have h := one_div_le_one_div_of_le (pow_pos hB 2) hp
     norm_num at h ⊢
     exact h
-  have hinv3 : (3 / 7 : ℝ) ^ 3 ≤ 1 / B ^ 3 := by
+  have hinv3 : (3 / 7 : ℝ) ^ (3 : ℕ) ≤ 1 / B ^ (3 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 3
     have h := one_div_le_one_div_of_le (pow_pos hB 3) hp
     norm_num at h ⊢
     exact h
-  have hinv4 : (3 / 7 : ℝ) ^ 4 ≤ 1 / B ^ 4 := by
+  have hinv4 : (3 / 7 : ℝ) ^ (4 : ℕ) ≤ 1 / B ^ (4 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 4
     have h := one_div_le_one_div_of_le (pow_pos hB 4) hp
     norm_num at h ⊢
     exact h
-  have hinv5 : (3 / 7 : ℝ) ^ 5 ≤ 1 / B ^ 5 := by
+  have hinv5 : (3 / 7 : ℝ) ^ (5 : ℕ) ≤ 1 / B ^ (5 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 5
     have h := one_div_le_one_div_of_le (pow_pos hB 5) hp
     norm_num at h ⊢
     exact h
   let Q := 1296 + 18 *
-    (81 / B + 108 / B ^ 2 + 108 / B ^ 3 + 72 / B ^ 4 + 24 / B ^ 5)
+    (81 / B + 108 / B ^ (2 : ℕ) + 108 / B ^ (3 : ℕ) + 72 / B ^ (4 : ℕ) + 24 / B ^ (5 : ℕ))
   have hQ : thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor ≤ Q := by
     dsimp only [thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor, Q]
     simp only [div_eq_mul_inv] at hinv1 hinv2 hinv3 hinv4 hinv5 ⊢
@@ -249,7 +249,7 @@ target. -/
 theorem twentyNineteenths_mul_fourthAffineFloor_lt_atomEnvelope
     {A : ℝ} (hAlo : (15 / 4 : ℝ) ≤ A) (hAhi : A ≤ 23 / 6) :
     (20 / 19 : ℝ) * (454 - 108 * A) <
-      (208 / 25 : ℝ) * A ^ 4 * (399 / 400 : ℝ) *
+      (208 / 25 : ℝ) * A ^ (4 : ℕ) * (399 / 400 : ℝ) *
         ((1 / 77000 : ℝ) * (1 - 3 * (A - 15 / 4))) *
         thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor := by
   let y := 23 / 6 - A
@@ -258,12 +258,12 @@ theorem twentyNineteenths_mul_fourthAffineFloor_lt_atomEnvelope
   rw [show A = 23 / 6 - y by dsimp only [y]; ring]
   dsimp [thetaCuspLikelihoodFourthScaleFifteenFourthsAtomQFloor]
   ring_nf
-  have hy2 : y ^ 2 ≤ (1 / 12 : ℝ) ^ 2 :=
+  have hy2 : y ^ (2 : ℕ) ≤ (1 / 12 : ℝ) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hy hyhi 2
-  have hy4 : y ^ 4 ≤ (1 / 12 : ℝ) ^ 4 :=
+  have hy4 : y ^ (4 : ℕ) ≤ (1 / 12 : ℝ) ^ (4 : ℕ) :=
     pow_le_pow_left₀ hy hyhi 4
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy5 : 0 ≤ y ^ 5 := by positivity
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := by positivity
   norm_num at hy2 hy4 ⊢
   nlinarith
 
@@ -285,7 +285,7 @@ theorem twentyNineteenths_mul_fourthAffineFloor_lt_thetaCuspLikelihoodSourceOrdi
   have hBA : B = A - 3 / 2 := by
     simpa only [A, B] using thetaCuspSingleAtomScale_likelihoodCoordinate x
   have hAtom : atomFloor <
-      ∫ t : ℝ, t ^ 4 * Real.exp (-(B * t))
+      ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-(B * t))
         ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
     dsimp only [atomFloor]
     exact thetaCuspLikelihoodFourthScaleFifteenFourthsAtomFloor_lt_dominantAtomMomentFour
@@ -305,9 +305,9 @@ theorem twentyNineteenths_mul_fourthAffineFloor_lt_thetaCuspLikelihoodSourceOrdi
       Measure.le_sum (fun k : ℕ => thetaCuspAtomLikelihoodSpectralMeasure (k + 2)) 0
   have hInt := integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB
   have hMono :
-      (∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+      (∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspAtomLikelihoodSpectralMeasure 2) ≤
-        ∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+        ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspHigherLikelihoodSpectralMeasure := by
     apply integral_mono_measure hMeasure
     · exact ae_of_all _ fun t => by positivity
@@ -315,7 +315,7 @@ theorem twentyNineteenths_mul_fourthAffineFloor_lt_thetaCuspLikelihoodSourceOrdi
   have hMoment : atomFloor < thetaCuspHigherLikelihoodSpectralMoment B 4 := by
     rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral]
     have hAtom' : atomFloor <
-        ∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+        ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
       simpa only [neg_mul] using hAtom
     exact hAtom'.trans_le hMono
@@ -355,11 +355,11 @@ theorem twentyNineteenths_mul_fourthAffineFloor_lt_thetaCuspLikelihoodSourceOrdi
   calc
     (20 / 19 : ℝ) *
         (454 - 108 * thetaCuspSingleAtomReflectionScale 1 x) <
-      (208 / 25 : ℝ) * A ^ 4 * (399 / 400 : ℝ) * atomFloor := by
+      (208 / 25 : ℝ) * A ^ (4 : ℕ) * (399 / 400 : ℝ) * atomFloor := by
         convert hpoly using 1 <;> dsimp only [A, atomFloor] <;> ring
-    _ < (208 / 25 : ℝ) * A ^ 4 *
+    _ < (208 / 25 : ℝ) * A ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment B 4 := by
-      have hcoeff : 0 < (208 / 25 : ℝ) * A ^ 4 := by positivity
+      have hcoeff : 0 < (208 / 25 : ℝ) * A ^ (4 : ℕ) := by positivity
       nlinarith
     _ ≤ thetaCuspLikelihoodSourceOrdinaryJetFour x := by
       simpa only [A, B] using hbase
@@ -394,7 +394,7 @@ theorem fourthAffineWeightFloor_lt_thetaCuspLikelihoodSourceLogPartitionJetFour
     dsimp only [thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have h := fourthAffineFloor_lt_thetaCuspLikelihoodSourceLogPartitionJetFour

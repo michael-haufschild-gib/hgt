@@ -23,22 +23,22 @@ open MeasureTheory Set intervalIntegral FourierTransform
 open _root_.RHTower
 
 /-- The entire series behind the trial weight. -/
-def kaiserSeries (u : ℝ) : ℝ := ∑' k : ℕ, u ^ k / (Nat.factorial k : ℝ) ^ 2
+def kaiserSeries (u : ℝ) : ℝ := ∑' k : ℕ, u ^ k / (Nat.factorial k : ℝ) ^ (2 : ℕ)
 
 theorem kaiserTrial_eq_kaiserSeries (c x : ℝ) :
-    kaiserTrial c x = kaiserSeries (c ^ 2 * (1 - x ^ 2) / 4) := rfl
+    kaiserTrial c x = kaiserSeries (c ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) / 4) := rfl
 
 /-- The trial series is continuous on every closed ball, by uniform domination. -/
 theorem continuousOn_kaiserSeries (R : ℝ) :
     ContinuousOn kaiserSeries (Metric.closedBall (0 : ℝ) R) := by
-  refine continuousOn_tsum (u := fun k : ℕ => R ^ k / (Nat.factorial k : ℝ) ^ 2)
+  refine continuousOn_tsum (u := fun k : ℕ => R ^ k / (Nat.factorial k : ℝ) ^ (2 : ℕ))
     (fun k => by fun_prop) (summable_kaiserTerm R) ?_
   intro k u hu
   have hu' : |u| ≤ R := by
     rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hu
     exact hu
   have hR : 0 ≤ R := le_trans (abs_nonneg u) hu'
-  have hkpos : (0 : ℝ) < (Nat.factorial k : ℝ) ^ 2 := by
+  have hkpos : (0 : ℝ) < (Nat.factorial k : ℝ) ^ (2 : ℕ) := by
     have : (0 : ℝ) < (Nat.factorial k : ℝ) := by exact_mod_cast Nat.factorial_pos k
     positivity
   rw [Real.norm_eq_abs, abs_div, abs_pow, abs_of_pos hkpos]
@@ -58,7 +58,7 @@ theorem continuous_kaiserSeries : Continuous kaiserSeries := by
 
 /-- **The trial weight is continuous.** -/
 theorem continuous_kaiserTrial (c : ℝ) : Continuous (kaiserTrial c) := by
-  have hinner : Continuous fun x : ℝ => c ^ 2 * (1 - x ^ 2) / 4 := by fun_prop
+  have hinner : Continuous fun x : ℝ => c ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) / 4 := by fun_prop
   exact continuous_kaiserSeries.comp hinner
 
 /-! ## The spectral density of an even test function -/
@@ -66,8 +66,8 @@ theorem continuous_kaiserTrial (c : ℝ) : Continuous (kaiserTrial c) := by
 /-- **The spectral density is the square of the cosine transform.** -/
 theorem norm_sq_fourier_bandTrunc_of_even {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (heven : ∀ x, Φ (-x) = Φ x) (ξ : ℝ) :
-    ‖𝓕 (bandTrunc Φ) ξ‖ ^ 2
-      = (∫ x in (-1 : ℝ)..1, Φ x * Real.cos (2 * Real.pi * ξ * x)) ^ 2 := by
+    ‖𝓕 (bandTrunc Φ) ξ‖ ^ (2 : ℕ)
+      = (∫ x in (-1 : ℝ)..1, Φ x * Real.cos (2 * Real.pi * ξ * x)) ^ (2 : ℕ) := by
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
   have hfreq : -(-(2 * Real.pi * ξ) / (2 * Real.pi)) = ξ := by
     field_simp
@@ -85,9 +85,9 @@ theorem norm_sq_fourier_bandTrunc_of_even {Φ : ℝ → ℝ} (hΦ : Continuous �
 the Fourier variable. -/
 theorem norm_sq_fourier_bandTrunc_kaiser_le {c ξ : ℝ} (hc : 0 ≤ c)
     (h : c < |2 * Real.pi * ξ|) :
-    ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ 2 ≤ 8 / (1 + (|2 * Real.pi * ξ| - c) ^ 2) := by
-  have hsq : c ^ 2 < (2 * Real.pi * ξ) ^ 2 := by
-    have habs : |2 * Real.pi * ξ| ^ 2 = (2 * Real.pi * ξ) ^ 2 := sq_abs _
+    ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ) ≤ 8 / (1 + (|2 * Real.pi * ξ| - c) ^ (2 : ℕ)) := by
+  have hsq : c ^ (2 : ℕ) < (2 * Real.pi * ξ) ^ (2 : ℕ) := by
+    have habs : |2 * Real.pi * ξ| ^ (2 : ℕ) = (2 * Real.pi * ξ) ^ (2 : ℕ) := sq_abs _
     nlinarith [abs_nonneg (2 * Real.pi * ξ), hc]
   rw [norm_sq_fourier_bandTrunc_of_even (continuous_kaiserTrial c) (kaiserTrial_even c) ξ]
   have hbound := sq_integral_kaiserTrial_cos_le (c := c) (ω := 2 * Real.pi * ξ) hc hsq

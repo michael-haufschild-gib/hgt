@@ -46,8 +46,8 @@ def ccmActualHeadMatchedPhaseBlochFeature (n : ℕ) (xi : ℝ) :
       ccmActualHeadMatchedSinePhaseProfile n xi := rfl
 
 theorem ccmActualHeadMatchedPhaseBlochFeature_norm_sq_le (n : ℕ) (xi : ℝ) :
-    ‖ccmActualHeadMatchedPhaseBlochFeature n xi‖ ^ 2 ≤
-      criticalMellinAtomWeight n ^ 2 := by
+    ‖ccmActualHeadMatchedPhaseBlochFeature n xi‖ ^ (2 : ℕ) ≤
+      criticalMellinAtomWeight n ^ (2 : ℕ) := by
   rw [PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
   simpa [Real.norm_eq_abs, sq_abs] using
     ccmActualHeadMatchedPhaseProfile_mem_weightDisk n xi
@@ -143,7 +143,7 @@ theorem ccmActualHeadMatchedPhaseFockTomographyReporter_eq_orientedPhaseSymbol_r
 theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom
     {ι : Type*} (n : ι → ℕ) (xi : ℝ) (i : ι) :
     ccmActualHeadMatchedPhaseFockMatrix n xi (.atom i) (.atom i) =
-      Real.exp (‖ccmActualHeadMatchedPhaseBlochFeature (n i) xi‖ ^ 2) := by
+      Real.exp (‖ccmActualHeadMatchedPhaseBlochFeature (n i) xi‖ ^ (2 : ℕ)) := by
   simp [ccmActualHeadMatchedPhaseFockMatrix,
     GaloisForLFunctions.HilbertMetric.hilbertExponentialInnerMatrix,
     CCMActualHeadMatchedPhaseFockIndex.feature]
@@ -185,7 +185,7 @@ theorem log_ccmActualHeadMatchedPhaseFockMatrix_atom_atom_eq_anchor_products
 theorem ccmActualHeadMatchedPhaseFockMatrix_atom_atom_le_weightDisk
     {ι : Type*} (n : ι → ℕ) (xi : ℝ) (i : ι) :
     ccmActualHeadMatchedPhaseFockMatrix n xi (.atom i) (.atom i) ≤
-      Real.exp (criticalMellinAtomWeight (n i) ^ 2) := by
+      Real.exp (criticalMellinAtomWeight (n i) ^ (2 : ℕ)) := by
   rw [ccmActualHeadMatchedPhaseFockMatrix_atom_atom]
   exact Real.exp_le_exp.mpr
     (ccmActualHeadMatchedPhaseBlochFeature_norm_sq_le (n i) xi)
@@ -217,7 +217,7 @@ theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_phaseFockTomography
     ccmActualHeadMatchedPrimePolarFiniteBlock F f =
       -2 * ∫ xi : ℝ,
         ccmActualHeadMatchedPhaseFiniteFockTomographyReporter F xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
   congr 2
   funext xi

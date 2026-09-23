@@ -139,8 +139,8 @@ theorem one_add_pow_le_two_pow_mul {a : ℝ} (ha : 0 ≤ a) (j : ℕ) :
     exact h1.trans h3
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
-theorem kgFreq_pow_two_mul (w : E) (j : ℕ) : kgFreq w ^ (2 * j) = (1 + ‖w‖ ^ 2) ^ j := by
-  have hsq : kgFreq w ^ 2 = 1 + ‖w‖ ^ 2 := by
+theorem kgFreq_pow_two_mul (w : E) (j : ℕ) : kgFreq w ^ (2 * j) = (1 + ‖w‖ ^ (2 : ℕ)) ^ j := by
+  have hsq : kgFreq w ^ (2 : ℕ) = 1 + ‖w‖ ^ (2 : ℕ) := by
     rw [kgFreq, Real.sq_sqrt]
     positivity
   rw [pow_mul, hsq]
@@ -174,10 +174,10 @@ theorem kgFreq_pow_mul_norm_fourier_le {j : ℕ} {f : E → ℂ}
             ((2 * Real.pi) ^ (2 * j) * ‖w‖ ^ (2 * j) * ‖𝓕 f w‖) := hid.symm
       _ ≤ ((2 * Real.pi) ^ (2 * j))⁻¹ * derivL1 (2 * j) f :=
           mul_le_mul_of_nonneg_left hn (le_of_lt (inv_pos.mpr hpi))
-  have hweight : kgFreq w ^ (2 * j) ≤ 2 ^ j * (1 + (‖w‖ ^ 2) ^ j) := by
+  have hweight : kgFreq w ^ (2 * j) ≤ 2 ^ j * (1 + (‖w‖ ^ (2 : ℕ)) ^ j) := by
     rw [kgFreq_pow_two_mul]
     exact one_add_pow_le_two_pow_mul (by positivity) j
-  have hpow : (‖w‖ ^ 2) ^ j = ‖w‖ ^ (2 * j) := by rw [← pow_mul]
+  have hpow : (‖w‖ ^ (2 : ℕ)) ^ j = ‖w‖ ^ (2 * j) := by rw [← pow_mul]
   have hfour : (0 : ℝ) ≤ ‖𝓕 f w‖ := norm_nonneg _
   calc kgFreq w ^ (2 * j) * ‖𝓕 f w‖
       ≤ (2 ^ j * (1 + ‖w‖ ^ (2 * j))) * ‖𝓕 f w‖ := by

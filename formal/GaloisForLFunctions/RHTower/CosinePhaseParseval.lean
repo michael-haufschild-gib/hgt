@@ -57,7 +57,7 @@ theorem integral_sin_int_mul (n : ℤ) :
 /-- **Orthogonality of phase-shifted cosines on the full period.** -/
 theorem integral_cos_shift_mul_cos_shift (j k : ℕ) (φ : ℝ) :
     (∫ θ in (-Real.pi)..Real.pi, Real.cos ((j : ℝ) * θ + φ) * Real.cos ((k : ℝ) * θ + φ))
-      = if j = k then (if j = 0 then 2 * Real.pi * Real.cos φ ^ 2 else Real.pi) else 0 := by
+      = if j = k then (if j = 0 then 2 * Real.pi * Real.cos φ ^ (2 : ℕ) else Real.pi) else 0 := by
   have hpts : ∀ A B : ℝ, Real.cos A * Real.cos B = (Real.cos (A - B) + Real.cos (A + B)) / 2 := by
     intro A B
     rw [Real.cos_sub, Real.cos_add]
@@ -157,17 +157,17 @@ theorem hasDerivAt_cosPhasePoly (m M : ℕ) (b : ℕ → ℝ) (θ : ℝ) :
 
 /-- **Parseval for phase-shifted cosine polynomials.** -/
 theorem integral_cosPhasePoly_sq (m M : ℕ) (b : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, cosPhasePoly m M b θ ^ 2)
+    (∫ θ in (-Real.pi)..Real.pi, cosPhasePoly m M b θ ^ (2 : ℕ))
       = ∑ j ∈ Finset.range (M + 1),
-          (if j = 0 then 2 * Real.pi * Real.cos ((m : ℝ) * (Real.pi / 2)) ^ 2 else Real.pi)
-            * (b j * (j : ℝ) ^ m) ^ 2 := by
+          (if j = 0 then 2 * Real.pi * Real.cos ((m : ℝ) * (Real.pi / 2)) ^ (2 : ℕ) else Real.pi)
+            * (b j * (j : ℝ) ^ m) ^ (2 : ℕ) := by
   obtain ⟨c, hcdef⟩ : ∃ c : ℕ → ℝ, c = fun j => b j * (j : ℝ) ^ m := ⟨_, rfl⟩
   obtain ⟨φ, hφdef⟩ : ∃ φ : ℝ, φ = (m : ℝ) * (Real.pi / 2) := ⟨_, rfl⟩
   have hpoly : ∀ θ : ℝ, cosPhasePoly m M b θ
       = ∑ j ∈ Finset.range (M + 1), c j * Real.cos ((j : ℝ) * θ + φ) := by
     intro θ
     rw [cosPhasePoly, hcdef, hφdef]
-  have hexpand : ∀ θ : ℝ, cosPhasePoly m M b θ ^ 2
+  have hexpand : ∀ θ : ℝ, cosPhasePoly m M b θ ^ (2 : ℕ)
       = ∑ j ∈ Finset.range (M + 1), ∑ k ∈ Finset.range (M + 1),
         (c j * c k) * (Real.cos ((j : ℝ) * θ + φ) * Real.cos ((k : ℝ) * θ + φ)) := by
     intro θ
@@ -203,7 +203,7 @@ theorem integral_cosPhasePoly_sq (m M : ℕ) (b : ℕ → ℝ) :
       (∫ θ in (-Real.pi)..Real.pi,
         (c j * c k) * (Real.cos ((j : ℝ) * θ + φ) * Real.cos ((k : ℝ) * θ + φ)))
         = (c j * c k)
-          * (if j = k then (if j = 0 then 2 * Real.pi * Real.cos φ ^ 2 else Real.pi) else 0) := by
+          * (if j = k then (if j = 0 then 2 * Real.pi * Real.cos φ ^ (2 : ℕ) else Real.pi) else 0) := by
     intro k _
     rw [intervalIntegral.integral_const_mul, integral_cos_shift_mul_cos_shift]
   rw [Finset.sum_congr rfl hterm, Finset.sum_eq_single j]
@@ -217,8 +217,8 @@ theorem integral_cosPhasePoly_sq (m M : ℕ) (b : ℕ → ℝ) :
 /-- **The `L²` Bernstein inequality.**  Every derivative frame of a cosine polynomial of degree at
 most `M` has `L²` norm at most `M^m` times that of the polynomial. -/
 theorem integral_cosPhasePoly_sq_le (m M : ℕ) (b : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, cosPhasePoly m M b θ ^ 2)
-      ≤ ((M : ℝ) ^ m) ^ 2 * ∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ 2 := by
+    (∫ θ in (-Real.pi)..Real.pi, cosPhasePoly m M b θ ^ (2 : ℕ))
+      ≤ ((M : ℝ) ^ m) ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, cosPoly M b θ ^ (2 : ℕ) := by
   rw [integral_cosPhasePoly_sq, integral_cosPoly_sq, Finset.mul_sum]
   refine Finset.sum_le_sum fun j hj => ?_
   simp only [Finset.mem_range] at hj
@@ -233,24 +233,24 @@ theorem integral_cosPhasePoly_sq_le (m M : ℕ) (b : ℕ → ℝ) :
         rw [Nat.cast_zero]
         exact zero_pow (by omega)
       rw [if_pos rfl, if_pos rfl, hzero]
-      have hzz : (b 0 * (0 : ℝ)) ^ 2 = 0 := by ring
+      have hzz : (b 0 * (0 : ℝ)) ^ (2 : ℕ) = 0 := by ring
       rw [hzz, mul_zero]
-      have hMnn : (0 : ℝ) ≤ ((M : ℝ) ^ m) ^ 2 := sq_nonneg _
-      have hb0 : (0 : ℝ) ≤ b 0 ^ 2 := sq_nonneg _
+      have hMnn : (0 : ℝ) ≤ ((M : ℝ) ^ m) ^ (2 : ℕ) := sq_nonneg _
+      have hb0 : (0 : ℝ) ≤ b 0 ^ (2 : ℕ) := sq_nonneg _
       have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
       positivity
   · have hjne : ¬ j = 0 := by omega
     rw [if_neg hjne, if_neg hjne]
-    have hpow : ((j : ℝ) ^ m) ^ 2 ≤ ((M : ℝ) ^ m) ^ 2 := by
+    have hpow : ((j : ℝ) ^ m) ^ (2 : ℕ) ≤ ((M : ℝ) ^ m) ^ (2 : ℕ) := by
       have h1 : (j : ℝ) ^ m ≤ (M : ℝ) ^ m := pow_le_pow_left₀ hj0 hjM m
       have h2 : (0 : ℝ) ≤ (j : ℝ) ^ m := by positivity
       exact pow_le_pow_left₀ h2 h1 2
     have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-    have hb : (0 : ℝ) ≤ b j ^ 2 := sq_nonneg _
-    have hrw : (b j * (j : ℝ) ^ m) ^ 2 = b j ^ 2 * ((j : ℝ) ^ m) ^ 2 := by ring
+    have hb : (0 : ℝ) ≤ b j ^ (2 : ℕ) := sq_nonneg _
+    have hrw : (b j * (j : ℝ) ^ m) ^ (2 : ℕ) = b j ^ (2 : ℕ) * ((j : ℝ) ^ m) ^ (2 : ℕ) := by ring
     rw [hrw]
     have hkey := mul_le_mul_of_nonneg_left hpow
-      (by positivity : (0 : ℝ) ≤ Real.pi * b j ^ 2)
+      (by positivity : (0 : ℝ) ≤ Real.pi * b j ^ (2 : ℕ))
     nlinarith [hkey]
 
 end RHTower

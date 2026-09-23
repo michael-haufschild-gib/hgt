@@ -121,7 +121,7 @@ theorem routeETerminalSincGap_pos {s : ℝ} (hs : 0 < s) :
 at least `s²/28`, hence the flat phase frame loses at least `s²/14`. -/
 theorem routeETerminalSincGap_ge_sq_div_fourteen
     {s : ℝ} (hs : 0 < s) (hs1 : s ≤ 1) :
-    s ^ 2 / 14 ≤ routeETerminalSincGap s := by
+    s ^ (2 : ℕ) / 14 ≤ routeETerminalSincGap s := by
   let x : ℝ := s / 2
   have hx : 0 < x := by dsimp [x]; positivity
   have hxhalf : x ≤ 1 / 2 := by dsimp [x]; linarith
@@ -130,13 +130,13 @@ theorem routeETerminalSincGap_ge_sq_div_fourteen
     linarith
   have hTaylor := (abs_le.mp (Real.sin_bound hxabs)).2
   rw [abs_of_pos hx] at hTaylor
-  have hx2 : x ^ 2 ≤ 1 / 4 := by nlinarith
-  have hx3 : 0 ≤ x ^ 3 := pow_nonneg hx.le 3
-  have hx5 : x ^ 5 / 100 ≤ x ^ 3 / 42 := by
+  have hx2 : x ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith
+  have hx3 : 0 ≤ x ^ (3 : ℕ) := pow_nonneg hx.le 3
+  have hx5 : x ^ (5 : ℕ) / 100 ≤ x ^ (3 : ℕ) / 42 := by
     have hmul := mul_le_mul_of_nonneg_left hx2 hx3
-    rw [show x ^ 3 * x ^ 2 = x ^ 5 by ring] at hmul
+    rw [show x ^ (3 : ℕ) * x ^ (2 : ℕ) = x ^ (5 : ℕ) by ring] at hmul
     nlinarith
-  have hsin : Real.sin x ≤ x - x ^ 3 / 7 := by
+  have hsin : Real.sin x ≤ x - x ^ (3 : ℕ) / 7 := by
     nlinarith
   have hxpi : x ≤ Real.pi :=
     hxhalf.trans (by linarith [Real.two_le_pi])
@@ -246,7 +246,7 @@ theorem routeETerminalContinuousEnergy_ge_exp_neg_one_mul_flat
 theorem routeETerminalContinuousEnergy_ge_local_sq
     {a L t : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1)
     (ht0 : t ≠ 0) (ht1 : |t| ≤ 1) :
-    Real.exp (-1) * (t ^ 2 / 14) ≤
+    Real.exp (-1) * (t ^ (2 : ℕ) / 14) ≤
       routeETerminalContinuousEnergy a L t := by
   have htpos : 0 < |t| := abs_pos.mpr ht0
   have hgap := routeETerminalSincGap_ge_sq_div_fourteen htpos ht1
@@ -254,7 +254,7 @@ theorem routeETerminalContinuousEnergy_ge_local_sq
   have htilt := routeETerminalContinuousEnergy_ge_exp_neg_one_mul_flat
     (L := L) (t := t) ha0 ha1
   have hexp : 0 ≤ Real.exp (-1) := (Real.exp_pos _).le
-  have htSq : |t| ^ 2 = t ^ 2 := sq_abs t
+  have htSq : |t| ^ (2 : ℕ) = t ^ (2 : ℕ) := sq_abs t
   rw [htSq] at hgap
   exact (mul_le_mul_of_nonneg_left (hgap.trans hflat) hexp).trans htilt
 
@@ -279,14 +279,14 @@ frequency region; once there, local sinc coercivity bounds `L|t|` absolutely. -/
 theorem exists_routeETerminal_boundedEnergy_localization_constant :
     ∃ δ : ℝ, 0 < δ ∧ ∀ a L t C : ℝ,
       0 ≤ a → a ≤ 1 → 1 ≤ L → 0 ≤ C →
-      L ^ 2 * routeETerminalContinuousEnergy a L t ≤ C →
-      C < L ^ 2 * δ →
-      (L * |t|) ^ 2 ≤ 14 * Real.exp 1 * C := by
+      L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L t ≤ C →
+      C < L ^ (2 : ℕ) * δ →
+      (L * |t|) ^ (2 : ℕ) ≤ 14 * Real.exp 1 * C := by
   obtain ⟨δ, hδ, hglobal⟩ :=
     exists_routeETerminalContinuousEnergy_uniform_of_one_le_abs
   refine ⟨δ, hδ, ?_⟩
   intro a L t C ha0 ha1 hL hC henergy hthreshold
-  have hLabs : 0 ≤ L ^ 2 := sq_nonneg L
+  have hLabs : 0 ≤ L ^ (2 : ℕ) := sq_nonneg L
   have ht1 : |t| < 1 := by
     by_contra hnot
     have hfar : 1 ≤ |t| := le_of_not_gt hnot
@@ -299,7 +299,7 @@ theorem exists_routeETerminal_boundedEnergy_localization_constant :
   · have hlocal := routeETerminalContinuousEnergy_ge_local_sq
       (L := L) ha0 ha1 ht0 ht1.le
     have hscaled := mul_le_mul_of_nonneg_left hlocal hLabs
-    have hbasic : L ^ 2 * (Real.exp (-1) * (t ^ 2 / 14)) ≤ C :=
+    have hbasic : L ^ (2 : ℕ) * (Real.exp (-1) * (t ^ (2 : ℕ) / 14)) ≤ C :=
       hscaled.trans henergy
     have hexp : Real.exp (-1) * Real.exp 1 = 1 := by
       rw [← Real.exp_add]
@@ -307,15 +307,15 @@ theorem exists_routeETerminal_boundedEnergy_localization_constant :
     have hscaledBasic := mul_le_mul_of_nonneg_left hbasic
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 14) (Real.exp_pos 1).le)
     calc
-      (L * |t|) ^ 2 = L ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs]
+      (L * |t|) ^ (2 : ℕ) = L ^ (2 : ℕ) * t ^ (2 : ℕ) := by rw [mul_pow, sq_abs]
       _ = 14 * Real.exp 1 *
-          (L ^ 2 * (Real.exp (-1) * (t ^ 2 / 14))) := by
+          (L ^ (2 : ℕ) * (Real.exp (-1) * (t ^ (2 : ℕ) / 14))) := by
         symm
         calc
           14 * Real.exp 1 *
-              (L ^ 2 * (Real.exp (-1) * (t ^ 2 / 14))) =
-              (Real.exp 1 * Real.exp (-1)) * (L ^ 2 * t ^ 2) := by ring
-          _ = L ^ 2 * t ^ 2 := by rw [mul_comm (Real.exp 1), hexp, one_mul]
+              (L ^ (2 : ℕ) * (Real.exp (-1) * (t ^ (2 : ℕ) / 14))) =
+              (Real.exp 1 * Real.exp (-1)) * (L ^ (2 : ℕ) * t ^ (2 : ℕ)) := by ring
+          _ = L ^ (2 : ℕ) * t ^ (2 : ℕ) := by rw [mul_comm (Real.exp 1), hexp, one_mul]
       _ ≤ 14 * Real.exp 1 * C := hscaledBasic
 
 /-- Odd-resonance classifier for every cofinal history already localized to `t → 0`: if its
@@ -408,14 +408,14 @@ theorem tendsto_terminalPhaseEnergy_scaled
     (hodd : Real.cos u₀ = -1) (hsin : Real.sin u₀ = 0)
     (he : Tendsto e l (𝓝 0))
     (hscaled : Tendsto (fun z => scale z * e z) l (𝓝 q)) :
-    Tendsto (fun z => scale z ^ 2 * (2 + 2 * Real.cos (u₀ + e z))) l
-      (𝓝 (q ^ 2)) := by
+    Tendsto (fun z => scale z ^ (2 : ℕ) * (2 + 2 * Real.cos (u₀ + e z))) l
+      (𝓝 (q ^ (2 : ℕ))) := by
   have hcosRatio : Tendsto (fun x : ℝ =>
-      if x = 0 then (1 : ℝ) else 2 * (1 - Real.cos x) / x ^ 2)
+      if x = 0 then (1 : ℝ) else 2 * (1 - Real.cos x) / x ^ (2 : ℕ))
       (𝓝 0) (𝓝 1) := by
     have hratioEq : (fun x : ℝ =>
-        if x = 0 then (1 : ℝ) else 2 * (1 - Real.cos x) / x ^ 2) =
-        fun x : ℝ => Real.sinc (x / 2) ^ 2 := by
+        if x = 0 then (1 : ℝ) else 2 * (1 - Real.cos x) / x ^ (2 : ℕ)) =
+        fun x : ℝ => Real.sinc (x / 2) ^ (2 : ℕ) := by
       funext x
       by_cases hx : x = 0
       · simp [hx]
@@ -429,12 +429,12 @@ theorem tendsto_terminalPhaseEnergy_scaled
     convert ((Real.continuous_sinc.comp (continuous_id.div_const 2)).tendsto 0).pow 2 using 1 <;>
       norm_num
   have hratioComp : Tendsto (fun z =>
-      if e z = 0 then (1 : ℝ) else 2 * (1 - Real.cos (e z)) / e z ^ 2)
+      if e z = 0 then (1 : ℝ) else 2 * (1 - Real.cos (e z)) / e z ^ (2 : ℕ))
       l (𝓝 1) := hcosRatio.comp he
   have hfactor : ∀ z : Z,
-      scale z ^ 2 * (2 + 2 * Real.cos (u₀ + e z)) =
-        (scale z * e z) ^ 2 *
-          (if e z = 0 then 1 else 2 * (1 - Real.cos (e z)) / e z ^ 2) := by
+      scale z ^ (2 : ℕ) * (2 + 2 * Real.cos (u₀ + e z)) =
+        (scale z * e z) ^ (2 : ℕ) *
+          (if e z = 0 then 1 else 2 * (1 - Real.cos (e z)) / e z ^ (2 : ℕ)) := by
     intro z
     rw [routeETerminalPhaseEnergy_eq_two_mul_one_sub_cos u₀ (e z) hodd hsin]
     by_cases hz : e z = 0
@@ -455,7 +455,7 @@ theorem tendsto_routeETerminalContinuousEnergy_of_secondOrderHistory
     (hodd : Real.cos u₀ = -1) (hsin : Real.sin u₀ = 0)
     (hphase : Tendsto (fun L => t L * L) atTop (𝓝 u₀))
     (hcorrection : Tendsto (fun L => L * (t L * L - u₀)) atTop (𝓝 b)) :
-    Tendsto (fun L => L ^ 2 * routeETerminalContinuousEnergy a L (t L))
+    Tendsto (fun L => L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L (t L))
       atTop (𝓝 (routeETerminalQuadratic a u₀ b)) := by
   let e : ℝ → ℝ → ℝ := fun L v => t L * (L - v) - u₀
   let scaled : ℝ → ℝ → ℝ := fun L v => L * e L v
@@ -481,17 +481,17 @@ theorem tendsto_routeETerminalContinuousEnergy_of_secondOrderHistory
       exact hL.symm
     convert ((hscaled v).mul hLinv).congr' hEq' using 1 <;> ring
   have hpoint (v : ℝ) : Tendsto (fun L =>
-      L ^ 2 * (routeETerminalWeight a v *
+      L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) atTop
-      (𝓝 (routeETerminalWeight a v * (b - u₀ * v) ^ 2)) := by
+      (𝓝 (routeETerminalWeight a v * (b - u₀ * v) ^ (2 : ℕ))) := by
     have hphaseScaled := tendsto_terminalPhaseEnergy_scaled hodd hsin
       (he0 v) (hscaled v)
     have hweightLimit : Tendsto (fun _ : ℝ => routeETerminalWeight a v) atTop
         (𝓝 (routeETerminalWeight a v)) := tendsto_const_nhds
     have hmul := hweightLimit.mul hphaseScaled
     have hEq : (fun L => routeETerminalWeight a v *
-        (L ^ 2 * (2 + 2 * Real.cos (u₀ + e L v)))) =
-        (fun L => L ^ 2 * (routeETerminalWeight a v *
+        (L ^ (2 : ℕ) * (2 + 2 * Real.cos (u₀ + e L v)))) =
+        (fun L => L ^ (2 : ℕ) * (routeETerminalWeight a v *
           routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) := by
       funext L
       rw [routeETerminalPhaseEnergy_exp]
@@ -512,9 +512,9 @@ theorem tendsto_routeETerminalContinuousEnergy_of_secondOrderHistory
     exact (tendsto_order.1 habs).2 (|u₀| + 1) (by linarith)
   have hbound : ∀ᶠ L : ℝ in atTop, ∀ᵐ v : ℝ,
       v ∈ uIoc (0 : ℝ) 1 →
-      ‖L ^ 2 * (routeETerminalWeight a v *
+      ‖L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))‖ ≤
-        routeETerminalWeight a v * B ^ 2 := by
+        routeETerminalWeight a v * B ^ (2 : ℕ) := by
     filter_upwards [hcorrAbs, hphaseAbs] with L hcorr hphaseL
     filter_upwards with v hv
     rw [uIoc_of_le zero_le_one] at hv
@@ -540,48 +540,48 @@ theorem tendsto_routeETerminalContinuousEnergy_of_secondOrderHistory
     rw [hrewrite, Real.norm_eq_abs]
     have hphaseNonneg : 0 ≤ 2 * (1 - Real.cos (e L v)) := by
       nlinarith [Real.cos_le_one (e L v)]
-    have hnonneg : 0 ≤ L ^ 2 *
+    have hnonneg : 0 ≤ L ^ (2 : ℕ) *
         (routeETerminalWeight a v * (2 * (1 - Real.cos (e L v)))) :=
       mul_nonneg (sq_nonneg _) (mul_nonneg (routeETerminalWeight_pos a v).le hphaseNonneg)
     rw [abs_of_nonneg hnonneg]
-    have hphaseLe : 2 * (1 - Real.cos (e L v)) ≤ (e L v) ^ 2 := by
+    have hphaseLe : 2 * (1 - Real.cos (e L v)) ≤ (e L v) ^ (2 : ℕ) := by
       nlinarith [Real.one_sub_sq_div_two_le_cos (x := e L v)]
-    have hsq : (scaled L v) ^ 2 ≤ B ^ 2 := by
+    have hsq : (scaled L v) ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by
       apply (sq_le_sq).2
       rwa [abs_of_pos hBpos]
     calc
-      L ^ 2 * (routeETerminalWeight a v * (2 * (1 - Real.cos (e L v)))) ≤
-          L ^ 2 * (routeETerminalWeight a v * (e L v) ^ 2) := by
+      L ^ (2 : ℕ) * (routeETerminalWeight a v * (2 * (1 - Real.cos (e L v)))) ≤
+          L ^ (2 : ℕ) * (routeETerminalWeight a v * (e L v) ^ (2 : ℕ)) := by
         exact mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hphaseLe (routeETerminalWeight_pos a v).le)
           (sq_nonneg _)
-      _ = routeETerminalWeight a v * (scaled L v) ^ 2 := by
+      _ = routeETerminalWeight a v * (scaled L v) ^ (2 : ℕ) := by
         dsimp [scaled]
         ring
-      _ ≤ routeETerminalWeight a v * B ^ 2 :=
+      _ ≤ routeETerminalWeight a v * B ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq (routeETerminalWeight_pos a v).le
   have hboundInt : IntervalIntegrable (fun v : ℝ =>
-      routeETerminalWeight a v * B ^ 2) volume 0 1 :=
+      routeETerminalWeight a v * B ^ (2 : ℕ)) volume 0 1 :=
     ((continuous_routeETerminalWeight a).mul continuous_const).intervalIntegrable 0 1
   have hmeas (L : ℝ) : AEStronglyMeasurable (fun v : ℝ =>
-      L ^ 2 * (routeETerminalWeight a v *
+      L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v))))
       (volume.restrict (uIoc (0 : ℝ) 1)) :=
     ((continuous_const.mul
       (continuous_routeETerminalContinuousIntegrand a L (t L))).aestronglyMeasurable).mono_measure
         Measure.restrict_le_self
   have hDCT := intervalIntegral.tendsto_integral_filter_of_dominated_convergence
-    (bound := fun v : ℝ => routeETerminalWeight a v * B ^ 2)
+    (bound := fun v : ℝ => routeETerminalWeight a v * B ^ (2 : ℕ))
     (l := (atTop : Filter ℝ))
-    (F := fun L v => L ^ 2 * (routeETerminalWeight a v *
+    (F := fun L v => L ^ (2 : ℕ) * (routeETerminalWeight a v *
       routeETerminalPhaseEnergy (t L) (Real.exp (L - v))))
-    (f := fun v => routeETerminalWeight a v * (b - u₀ * v) ^ 2)
+    (f := fun v => routeETerminalWeight a v * (b - u₀ * v) ^ (2 : ℕ))
     (Eventually.of_forall hmeas) hbound hboundInt
     (Eventually.of_forall fun v _ => hpoint v)
   have hleft : ∀ L : ℝ,
-      (∫ v in (0 : ℝ)..1, L ^ 2 * (routeETerminalWeight a v *
+      (∫ v in (0 : ℝ)..1, L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) =
-      L ^ 2 * routeETerminalContinuousEnergy a L (t L) := by
+      L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L (t L) := by
     intro L
     rw [routeETerminalContinuousEnergy, intervalIntegral.integral_const_mul]
   simpa only [hleft, routeETerminalQuadratic] using hDCT
@@ -592,9 +592,9 @@ theorem routeETerminal_secondOrderHistory_limit_ge_variance
     (hodd : Real.cos u₀ = -1) (hsin : Real.sin u₀ = 0)
     (hphase : Tendsto (fun L => t L * L) atTop (𝓝 u₀))
     (hcorrection : Tendsto (fun L => L * (t L * L - u₀)) atTop (𝓝 b)) :
-    Tendsto (fun L => L ^ 2 * routeETerminalContinuousEnergy a L (t L))
+    Tendsto (fun L => L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L (t L))
         atTop (𝓝 (routeETerminalQuadratic a u₀ b)) ∧
-      u₀ ^ 2 * routeETerminalVariance a ≤ routeETerminalQuadratic a u₀ b := by
+      u₀ ^ (2 : ℕ) * routeETerminalVariance a ≤ routeETerminalQuadratic a u₀ b := by
   exact ⟨tendsto_routeETerminalContinuousEnergy_of_secondOrderHistory
     a u₀ b t hodd hsin hphase hcorrection,
     routeETerminalVariance_minimax_lower a u₀ b⟩
@@ -603,14 +603,14 @@ theorem routeETerminal_secondOrderHistory_limit_ge_variance
 `pi²` times unnormalized weighted terminal-position variance. -/
 theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
     (a : ℝ) :
-    Tendsto (fun L : ℝ => L ^ 2 * routeETerminalContinuousEnergy a L
-      (Real.pi / L + Real.pi * routeETerminalMean a / L ^ 2))
-      atTop (𝓝 (Real.pi ^ 2 * routeETerminalVariance a)) := by
+    Tendsto (fun L : ℝ => L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L
+      (Real.pi / L + Real.pi * routeETerminalMean a / L ^ (2 : ℕ)))
+      atTop (𝓝 (Real.pi ^ (2 : ℕ) * routeETerminalVariance a)) := by
   let t : ℝ → ℝ := fun L =>
-    Real.pi / L + Real.pi * routeETerminalMean a / L ^ 2
+    Real.pi / L + Real.pi * routeETerminalMean a / L ^ (2 : ℕ)
   let e : ℝ → ℝ → ℝ := fun L v => t L * (L - v) - Real.pi
   have hLinv : Tendsto (fun L : ℝ => L⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero
-  have hLinv2 : Tendsto (fun L : ℝ => (L ^ 2)⁻¹) atTop (𝓝 0) := by
+  have hLinv2 : Tendsto (fun L : ℝ => (L ^ (2 : ℕ))⁻¹) atTop (𝓝 0) := by
     simpa [inv_pow] using hLinv.pow 2
   have ht0 : Tendsto t atTop (𝓝 0) := by
     dsimp [t]
@@ -641,10 +641,10 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         (𝓝 (Real.pi * (routeETerminalMean a - v))) := tendsto_const_nhds
     simpa only [sub_zero] using (hconst.sub htail).congr' hEq'
   have hpoint (v : ℝ) : Tendsto (fun L =>
-      L ^ 2 * (routeETerminalWeight a v *
+      L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) atTop
       (𝓝 (routeETerminalWeight a v *
-        (Real.pi * (routeETerminalMean a - v)) ^ 2)) := by
+        (Real.pi * (routeETerminalMean a - v)) ^ (2 : ℕ))) := by
     have he0 : Tendsto (fun L => e L v) atTop (𝓝 0) := by
       have hEq : ∀ᶠ L : ℝ in atTop,
           e L v = (L * e L v) * L⁻¹ := by
@@ -663,8 +663,8 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         (𝓝 (routeETerminalWeight a v)) := tendsto_const_nhds
     have hmul := hweightLimit.mul hphaseScaled
     have hEq : (fun L => routeETerminalWeight a v *
-        (L ^ 2 * (2 + 2 * Real.cos (Real.pi + e L v)))) =
-        (fun L => L ^ 2 * (routeETerminalWeight a v *
+        (L ^ (2 : ℕ) * (2 + 2 * Real.cos (Real.pi + e L v)))) =
+        (fun L => L ^ (2 : ℕ) * (routeETerminalWeight a v *
           routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) := by
       funext L
       rw [routeETerminalPhaseEnergy_exp]
@@ -672,10 +672,10 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
       ring
     convert hmul.congr' (Filter.Eventually.of_forall fun L => congrFun hEq L) using 1 <;> ring
   have hbound : ∀ᶠ L : ℝ in atTop, ∀ v ∈ uIoc (0 : ℝ) 1,
-      ‖L ^ 2 * (routeETerminalWeight a v *
+      ‖L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))‖ ≤
         routeETerminalWeight a v *
-          (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ 2 := by
+          (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ (2 : ℕ) := by
     filter_upwards [eventually_ge_atTop (2 : ℝ)] with L hL
     intro v hv
     rw [uIoc_of_le zero_le_one] at hv
@@ -689,7 +689,7 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         routeETerminal_pi_is_odd_phase.1 routeETerminal_pi_is_odd_phase.2
     rw [hrewrite]
     have hcosLower := Real.one_sub_sq_div_two_le_cos (x := e L v)
-    have hphaseLe : 2 * (1 - Real.cos (e L v)) ≤ (e L v) ^ 2 := by linarith
+    have hphaseLe : 2 * (1 - Real.cos (e L v)) ≤ (e L v) ^ (2 : ℕ) := by linarith
     have hscaledPhase : |L * e L v| ≤
         2 * Real.pi * (1 + |routeETerminalMean a|) := by
       have hLpos : 0 < L := by linarith
@@ -727,18 +727,18 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         _ ≤ 2 * Real.pi * (1 + |routeETerminalMean a|) := by
           nlinarith [Real.pi_pos]
     rw [Real.norm_eq_abs]
-    have hnonneg : 0 ≤ L ^ 2 * (routeETerminalWeight a v *
+    have hnonneg : 0 ≤ L ^ (2 : ℕ) * (routeETerminalWeight a v *
         (2 * (1 - Real.cos (e L v)))) := by
       exact mul_nonneg (sq_nonneg _) (mul_nonneg
         (routeETerminalWeight_pos a v).le (by nlinarith [Real.cos_le_one (e L v)]))
     rw [abs_of_nonneg hnonneg]
     have hweight := (routeETerminalWeight_pos a v).le
     calc
-      L ^ 2 * (routeETerminalWeight a v * (2 * (1 - Real.cos (e L v))))
-          ≤ L ^ 2 * (routeETerminalWeight a v * (e L v) ^ 2) := by gcongr
-      _ = routeETerminalWeight a v * (L * e L v) ^ 2 := by ring
+      L ^ (2 : ℕ) * (routeETerminalWeight a v * (2 * (1 - Real.cos (e L v))))
+          ≤ L ^ (2 : ℕ) * (routeETerminalWeight a v * (e L v) ^ (2 : ℕ)) := by gcongr
+      _ = routeETerminalWeight a v * (L * e L v) ^ (2 : ℕ) := by ring
       _ ≤ routeETerminalWeight a v *
-          (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ 2 := by
+          (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ (2 : ℕ) := by
         apply mul_le_mul_of_nonneg_left _ hweight
         apply (sq_le_sq).2
         rw [abs_of_nonneg (mul_nonneg
@@ -746,10 +746,10 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         exact hscaledPhase
   have hboundInt : IntervalIntegrable (fun v : ℝ =>
       routeETerminalWeight a v *
-        (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ 2) volume 0 1 := by
+        (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ (2 : ℕ)) volume 0 1 := by
     exact ((continuous_routeETerminalWeight a).mul continuous_const).intervalIntegrable 0 1
   have hmeas (L : ℝ) : AEStronglyMeasurable (fun v : ℝ =>
-      L ^ 2 * (routeETerminalWeight a v *
+      L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v))))
       (volume.restrict (uIoc (0 : ℝ) 1)) :=
     ((continuous_const.mul
@@ -757,25 +757,25 @@ theorem tendsto_routeETerminalContinuousEnergy_centeredFirstOdd
         Measure.restrict_le_self
   have hDCT := intervalIntegral.tendsto_integral_filter_of_dominated_convergence
     (bound := fun v : ℝ => routeETerminalWeight a v *
-      (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ 2)
+      (2 * Real.pi * (1 + |routeETerminalMean a|)) ^ (2 : ℕ))
     (l := (atTop : Filter ℝ))
-    (F := fun L v => L ^ 2 * (routeETerminalWeight a v *
+    (F := fun L v => L ^ (2 : ℕ) * (routeETerminalWeight a v *
       routeETerminalPhaseEnergy (t L) (Real.exp (L - v))))
     (f := fun v => routeETerminalWeight a v *
-      (Real.pi * (routeETerminalMean a - v)) ^ 2)
+      (Real.pi * (routeETerminalMean a - v)) ^ (2 : ℕ))
     (Eventually.of_forall hmeas)
     (hbound.mono fun _ hL => Filter.Eventually.of_forall fun v => hL v)
     hboundInt (Eventually.of_forall fun v _ => hpoint v)
   have hleft : ∀ L : ℝ,
-      (∫ v in (0 : ℝ)..1, L ^ 2 * (routeETerminalWeight a v *
+      (∫ v in (0 : ℝ)..1, L ^ (2 : ℕ) * (routeETerminalWeight a v *
         routeETerminalPhaseEnergy (t L) (Real.exp (L - v)))) =
-      L ^ 2 * routeETerminalContinuousEnergy a L (t L) := by
+      L ^ (2 : ℕ) * routeETerminalContinuousEnergy a L (t L) := by
     intro L
     rw [routeETerminalContinuousEnergy, intervalIntegral.integral_const_mul]
   have hright : (∫ v in (0 : ℝ)..1,
       routeETerminalWeight a v *
-        (Real.pi * (routeETerminalMean a - v)) ^ 2) =
-      Real.pi ^ 2 * routeETerminalVariance a := by
+        (Real.pi * (routeETerminalMean a - v)) ^ (2 : ℕ)) =
+      Real.pi ^ (2 : ℕ) * routeETerminalVariance a := by
     rw [routeETerminalVariance, ← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr
     intro v _

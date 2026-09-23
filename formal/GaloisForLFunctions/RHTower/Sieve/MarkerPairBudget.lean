@@ -41,7 +41,7 @@ theorem sum_card_shift_bigPrimeSet_le_sieve {M₀ b : ℕ} {P₁ : ℕ} (hP₁ :
     (hk : Real.exp 1 * (∑ p ∈ rangePrimes P₁ h, 2 / ((p : ℝ) - 2)) + Real.log 2 ≤ (k : ℝ)) :
     ∑ d ∈ Finset.Icc 1 K,
         ((((bigPrimeSet M₀ b).filter (fun p => p + d ∈ bigPrimeSet M₀ b)).card : ℕ) : ℝ)
-      ≤ 2 * Real.exp 1 * (K : ℝ) * (b : ℝ) / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+      ≤ 2 * Real.exp 1 * (K : ℝ) * (b : ℝ) / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
         + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
   classical

@@ -245,10 +245,10 @@ theorem l2_opNorm_averaged_compression_ge [Nonempty w] {μ : Measure Θ} [IsProb
 /-- **Equation (23).**  At one replica the codimension ratio of the floor is the reciprocal of the
 successor of the level count. -/
 theorem oneReplica_floor_ratio (D : ℝ) (hD : 1 < D) :
-    (D - 1) / (D ^ 2 - 1) = 1 / (D + 1) := by
+    (D - 1) / (D ^ (2 : ℕ) - 1) = 1 / (D + 1) := by
   have h1 : D - 1 ≠ 0 := by intro h; linarith [sub_eq_zero.mp h]
   have h2 : D + 1 ≠ 0 := by intro h; linarith
-  rw [show D ^ 2 - 1 = (D - 1) * (D + 1) by ring]
+  rw [show D ^ (2 : ℕ) - 1 = (D - 1) * (D + 1) by ring]
   field_simp
 
 end GaloisForLFunctions.HTGeometry

@@ -65,7 +65,7 @@ theorem hasDerivWithinAt_newton_quadratic_iterate
   have hdiff : Differentiable ℂ
       (fun w => w - A * ((quadratic c)^[q] w - w)) := by
     have hiter : Differentiable ℂ ((quadratic c)^[q]) :=
-      differentiable_quadratic_iterate c q
+      differentiable_quadratic_iterate_repellingFixedPoint c q
     fun_prop
   exact (hdiff z).hasDerivAt.hasDerivWithinAt
 
@@ -74,7 +74,7 @@ theorem deriv_newton_quadratic_iterate (c A : ℂ) (q : ℕ) (z : ℂ) :
     deriv (fun w => w - A * ((quadratic c)^[q] w - w)) z =
       1 - A * (deriv ((quadratic c)^[q]) z - 1) := by
   have hF : HasDerivAt ((quadratic c)^[q]) (deriv ((quadratic c)^[q]) z) z :=
-    (differentiable_quadratic_iterate c q z).hasDerivAt
+    (differentiable_quadratic_iterate_repellingFixedPoint c q z).hasDerivAt
   have hid : HasDerivAt (fun w : ℂ => w) 1 z := hasDerivAt_id z
   have hdiff : HasDerivAt (fun w => (quadratic c)^[q] w - w)
       (deriv ((quadratic c)^[q]) z - 1) z := hF.sub hid
@@ -454,7 +454,7 @@ theorem hasDerivAt_deriv_iterate_fixed
       have hF : HasDerivAt ((quadratic c)^[m]) (lam ^ m) α := by
         have hbase : HasDerivAt ((quadratic c)^[m])
             (deriv ((quadratic c)^[m]) α) α :=
-          (differentiable_quadratic_iterate c m α).hasDerivAt
+          (differentiable_quadratic_iterate_repellingFixedPoint c m α).hasDerivAt
         have hderiv : deriv ((quadratic c)^[m]) α = lam ^ m := by
           dsimp [lam]
           simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
@@ -499,7 +499,7 @@ theorem hasDerivAt_deriv_fixed_tail_of_iterate_eq_fixed
   have hA : HasDerivAt (fun w => deriv ((quadratic c)^[m]) w) A α := by
     simpa [A, lam] using hasDerivAt_deriv_iterate_fixed hfix m
   have hG : HasDerivAt ((quadratic c)^[n]) P z := by
-    simpa [P] using (differentiable_quadratic_iterate c n z).hasDerivAt
+    simpa [P] using (differentiable_quadratic_iterate_repellingFixedPoint c n z).hasDerivAt
   have hAat : HasDerivAt (fun w => deriv ((quadratic c)^[m]) w) A ((quadratic c)^[n] z) := by
     rwa [hhit]
   have hcomp : HasDerivAt
@@ -572,7 +572,7 @@ def fixedTailThirdCoeff (lam : ℂ) : ℕ → ℂ
 quadratic growth bound for the second coefficient.
 
 The recurrence is `C₃(m+1) = λ C₃(m) + 6 λ^m C₂(m)`, so a cubic bound closes whenever the
-available cubic constant absorbs `6 * C₂` across the multiplier gap `|λ|^3 - |λ|`. -/
+available cubic constant absorbs `6 * C₂` across the multiplier gap `|λ|^(3 : ℕ) - |λ|`. -/
 theorem norm_fixedTailThirdCoeff_le_mul_pow_of_second_bound
     {lam : ℂ} {C₂ C₃ : ℝ}
     (hL : 1 < ‖lam‖)
@@ -663,8 +663,8 @@ def fixedTailFourthCoeff (lam : ℂ) : ℕ → ℂ
 and cubic bounds for the second and third coefficients.
 
 The recurrence is
-`D₄(m+1) = λ D₄(m) + 8 λ^m D₃(m) + 6 D₂(m)^2`, so a quartic bound closes whenever the available
-quartic constant absorbs `8*C₃ + 6*C₂^2` across the multiplier gap `|λ|^4 - |λ|`. -/
+`D₄(m+1) = λ D₄(m) + 8 λ^m D₃(m) + 6 D₂(m)^(2 : ℕ)`, so a quartic bound closes whenever the available
+quartic constant absorbs `8*C₃ + 6*C₂^(2 : ℕ)` across the multiplier gap `|λ|^(4 : ℕ) - |λ|`. -/
 theorem norm_fixedTailFourthCoeff_le_mul_pow_of_second_third_bound
     {lam : ℂ} {C₂ C₃ C₄ : ℝ}
     (hL : 1 < ‖lam‖)
@@ -791,7 +791,7 @@ theorem deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ) :
       funext x
       exact deriv_quadratic_iterate_succ_eq c m x
     have hF : HasDerivAt ((quadratic c)^[m]) (deriv ((quadratic c)^[m]) w) w :=
-      (differentiable_quadratic_iterate c m w).hasDerivAt
+      (differentiable_quadratic_iterate_repellingFixedPoint c m w).hasDerivAt
     have hB : HasDerivAt (fun x => deriv ((quadratic c)^[m]) x)
         (deriv (fun v => deriv ((quadratic c)^[m]) v) w) w :=
       (analyticAt_quadratic_iterate c m w).deriv.differentiableAt.hasDerivAt
@@ -822,7 +822,7 @@ theorem deriv_deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ
       funext x
       exact deriv_deriv_quadratic_iterate_succ_eq c m x
     have hF : HasDerivAt ((quadratic c)^[m]) (deriv ((quadratic c)^[m]) w) w :=
-      (differentiable_quadratic_iterate c m w).hasDerivAt
+      (differentiable_quadratic_iterate_repellingFixedPoint c m w).hasDerivAt
     have hB : HasDerivAt (fun x => deriv ((quadratic c)^[m]) x)
         (deriv (fun v => deriv ((quadratic c)^[m]) v) w) w :=
       (analyticAt_quadratic_iterate c m w).deriv.differentiableAt.hasDerivAt
@@ -868,7 +868,7 @@ theorem hasDerivAt_deriv_deriv_iterate_fixed
       have hF : HasDerivAt ((quadratic c)^[m]) (lam ^ m) α := by
         have hbase : HasDerivAt ((quadratic c)^[m])
             (deriv ((quadratic c)^[m]) α) α :=
-          (differentiable_quadratic_iterate c m α).hasDerivAt
+          (differentiable_quadratic_iterate_repellingFixedPoint c m α).hasDerivAt
         have hderiv : deriv ((quadratic c)^[m]) α = lam ^ m := by
           dsimp [lam]
           simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
@@ -931,7 +931,7 @@ theorem hasDerivAt_deriv_deriv_deriv_iterate_fixed
       have hF : HasDerivAt ((quadratic c)^[m]) (lam ^ m) α := by
         have hbase : HasDerivAt ((quadratic c)^[m])
             (deriv ((quadratic c)^[m]) α) α :=
-          (differentiable_quadratic_iterate c m α).hasDerivAt
+          (differentiable_quadratic_iterate_repellingFixedPoint c m α).hasDerivAt
         have hderiv : deriv ((quadratic c)^[m]) α = lam ^ m := by
           dsimp [lam]
           simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
@@ -1038,7 +1038,7 @@ theorem deriv_deriv_iterate_add_eq (c : ℂ) (n m : ℕ) (w : ℂ) :
     (analyticAt_quadratic_iterate c m ((quadratic c)^[n] w)).deriv.differentiableAt.hasDerivAt
   have hG : HasDerivAt ((quadratic c)^[n])
       (deriv ((quadratic c)^[n]) w) w :=
-    (differentiable_quadratic_iterate c n w).hasDerivAt
+    (differentiable_quadratic_iterate_repellingFixedPoint c n w).hasDerivAt
   have hcomp : HasDerivAt
       (fun x => deriv ((quadratic c)^[m]) ((quadratic c)^[n] x))
       (deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w) *
@@ -1054,7 +1054,7 @@ theorem deriv_deriv_iterate_add_eq (c : ℂ) (n m : ℕ) (w : ℂ) :
 
 /-- The third derivative of a fixed tail after a preperiodic hit.  This is the exact
 chain-rule decomposition
-`T'''(α) P^3 + 3 T''(α) P B + T'(α) C` for `T = f_c^[m]` and `P,B,C`
+`T'''(α) P^(3 : ℕ) + 3 T''(α) P B + T'(α) C` for `T = f_c^[m]` and `P,B,C`
 the first three derivative coefficients of the initial segment `f_c^[n]` at `z`. -/
 theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
     {c z α : ℂ} {n : ℕ} (hhit : (quadratic c)^[n] z = α)
@@ -1073,7 +1073,7 @@ theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
   let A₂ : ℂ := fixedTailSecondCoeff lam m
   let A₃ : ℂ := fixedTailThirdCoeff lam m
   have hG : HasDerivAt ((quadratic c)^[n]) P z := by
-    simpa [P] using (differentiable_quadratic_iterate c n z).hasDerivAt
+    simpa [P] using (differentiable_quadratic_iterate_repellingFixedPoint c n z).hasDerivAt
   have hP : HasDerivAt (fun w => deriv ((quadratic c)^[n]) w) B z := by
     simpa [B] using (analyticAt_quadratic_iterate c n z).deriv.differentiableAt.hasDerivAt
   have hC : HasDerivAt

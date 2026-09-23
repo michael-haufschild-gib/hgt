@@ -210,9 +210,9 @@ theorem visibleFromInfinity_of_supportBall_unbounded {c₁ c₂ x y : ℂ} {r : 
 /-- **The filled Julia set is always nonempty.**  A fixed point of `z ↦ z² + c` (a root of `z² − z + c`,
 which exists over `ℂ`) has a constant, hence bounded, orbit, so lies in `filledJulia c`. -/
 theorem nonempty_filledJulia (c : ℂ) : (filledJulia c).Nonempty := by
-  have hdeg : (Polynomial.X ^ 2 - Polynomial.X + Polynomial.C c).degree = 2 := by compute_degree!
+  have hdeg : (Polynomial.X ^ (2 : ℕ) - Polynomial.X + Polynomial.C c).degree = 2 := by compute_degree!
   obtain ⟨z, hz⟩ := IsAlgClosed.exists_root
-    (p := Polynomial.X ^ 2 - Polynomial.X + Polynomial.C c) (by rw [hdeg]; decide)
+    (p := Polynomial.X ^ (2 : ℕ) - Polynomial.X + Polynomial.C c) (by rw [hdeg]; decide)
   have hfix : quadratic c z = z := by
     simp only [Polynomial.IsRoot, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_C] at hz

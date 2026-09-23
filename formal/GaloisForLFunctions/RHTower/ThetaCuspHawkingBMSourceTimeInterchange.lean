@@ -109,7 +109,7 @@ private theorem timeTransfer_eq_trace (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 private theorem radialTrace_at_zero (q : XiZeroCopy) (branch : Bool) (a : ℂ) (v : ℝ)
     (image : Bool) (h target X k : ℝ) :
     sourceRadialTraceCurrent q branch a v image h target X k 0=0 := by
-  change (radialUnit (0:ℝ):ℂ)^4*(1+(radialUnit (0:ℝ):ℂ))*_=0
+  change (radialUnit (0:ℝ):ℂ)^(4 : ℕ)*(1+(radialUnit (0:ℝ):ℂ))*_=0
   simp [radialUnit]
 
 private theorem clippedPair_zero (q : XiZeroCopy) (branch : Bool) (a : ℂ)

@@ -35,14 +35,14 @@ theorem occupiedTargetBures_conditionalIncidence_integral_bound
     (hCapacityIntegrable : Integrable
       (fun y => compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance (mu y) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2) nu) :
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ)) nu) :
     (∫ y, threshold *
         (mu y).real
           (finitePositiveReporterCaptureEvent
             (target y) (state y) threshold) ∂nu) ≤
       ∫ y, compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance (mu y) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 ∂nu := by
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) ∂nu := by
   apply integral_mono hEventIntegrable hCapacityIntegrable
   intro y
   exact occupiedTargetBures_completeIncidence_minimax_bound
@@ -73,11 +73,11 @@ theorem occupiedTargetBures_conditionalIncidence_global_bound
     (hCapacityIntegrable : Integrable
       (fun y => compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance (mu y) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2) nu) :
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ)) nu) :
     threshold * globalEventMass ≤
       ∫ y, compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance (mu y) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 ∂nu := by
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) ∂nu := by
   rw [hdisintegrate, ← integral_const_mul]
   exact occupiedTargetBures_conditionalIncidence_integral_bound
     nu mu target state threshold hthreshold hTargetCompact hprod
@@ -107,7 +107,7 @@ theorem occupiedTargetBures_conditionalReturnExcised_integral_bound
       (fun y => compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance
           ((mu y).restrict (returnSet y)ᶜ) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 /
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) /
           threshold) nu) :
     (∫ y, (mu y).real
         (finitePositiveReporterCaptureEvent
@@ -116,12 +116,12 @@ theorem occupiedTargetBures_conditionalReturnExcised_integral_bound
         ∫ y, compactBuresDualCapacity
           (finitePositiveReporterSourceCovariance
             ((mu y).restrict (returnSet y)ᶜ) (state y))
-          (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 /
+          (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) /
             threshold ∂nu := by
   let cap : Y → ℝ := fun y => compactBuresDualCapacity
     (finitePositiveReporterSourceCovariance
       ((mu y).restrict (returnSet y)ᶜ) (state y))
-    (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 / threshold
+    (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) / threshold
   have hsum : Integrable (fun y => (mu y).real (returnSet y) + cap y) nu :=
     hReturnIntegrable.add (by simpa [cap] using hCapacityIntegrable)
   calc
@@ -170,13 +170,13 @@ theorem occupiedTargetBures_conditionalReturnExcised_global_bound
       (fun y => compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance
           ((mu y).restrict (returnSet y)ᶜ) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 /
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) /
           threshold) nu) :
     globalEventMass ≤ globalReturnMass +
       ∫ y, compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance
           ((mu y).restrict (returnSet y)ᶜ) (state y))
-        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ 2 /
+        (finiteBuresOccupiedTargetBody (Set.range (target y))) ^ (2 : ℕ) /
           threshold ∂nu := by
   rw [hEventDisintegrate, hReturnDisintegrate]
   exact occupiedTargetBures_conditionalReturnExcised_integral_bound
@@ -219,14 +219,14 @@ theorem ordinaryStaticLocalBures_returnExcised_bound
         (finitePositiveReporterSourceCovariance
           ((hamiltonianLaw chi).restrict (returnSet chi)ᶜ)
           (replicaSource chi))
-        (finiteBuresOccupiedTargetBody (Set.range (shallowTarget chi))) ^ 2 /
+        (finiteBuresOccupiedTargetBody (Set.range (shallowTarget chi))) ^ (2 : ℕ) /
           a ^ r) seedLaw) :
     globalShortcutMass ≤ globalReturnMass +
       ∫ chi, compactBuresDualCapacity
         (finitePositiveReporterSourceCovariance
           ((hamiltonianLaw chi).restrict (returnSet chi)ᶜ)
           (replicaSource chi))
-        (finiteBuresOccupiedTargetBody (Set.range (shallowTarget chi))) ^ 2 /
+        (finiteBuresOccupiedTargetBody (Set.range (shallowTarget chi))) ^ (2 : ℕ) /
           a ^ r ∂seedLaw := by
   exact occupiedTargetBures_conditionalReturnExcised_global_bound
     seedLaw hamiltonianLaw shallowTarget replicaSource (a ^ r) (pow_pos ha r)

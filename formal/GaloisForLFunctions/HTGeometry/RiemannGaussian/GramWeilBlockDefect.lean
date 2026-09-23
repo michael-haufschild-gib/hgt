@@ -94,15 +94,15 @@ def gramWeilBlockDefectOperator (C : N →ₗ[𝕜] P) :
 /-- The real quadratic form of `gramWeilBlockDefectOperator`. -/
 def gramWeilBlockDefectQuadratic (C : N →ₗ[𝕜] P)
     (x : P × N) : ℝ :=
-  2 * ‖x.2‖ ^ 2 -
+  2 * ‖x.2‖ ^ (2 : ℕ) -
     2 * RCLike.re (inner 𝕜 x.2 (C.adjoint x.1))
 
 /-- Completing the square in the negative block. -/
 theorem gramWeilBlockDefectQuadratic_eq_completedSquare
     (C : N →ₗ[𝕜] P) (x : P × N) :
     gramWeilBlockDefectQuadratic C x =
-      (1 / 2 : ℝ) * ‖(2 : 𝕜) • x.2 - C.adjoint x.1‖ ^ 2 -
-        (1 / 2 : ℝ) * ‖C.adjoint x.1‖ ^ 2 := by
+      (1 / 2 : ℝ) * ‖(2 : 𝕜) • x.2 - C.adjoint x.1‖ ^ (2 : ℕ) -
+        (1 / 2 : ℝ) * ‖C.adjoint x.1‖ ^ (2 : ℕ) := by
   unfold gramWeilBlockDefectQuadratic
   rw [norm_sub_sq (𝕜 := 𝕜), norm_smul]
   rw [inner_smul_left]
@@ -265,7 +265,7 @@ theorem gramWeilBlockDefectQuadratic_positiveEmbedding_pos
     (C : N →ₗ[𝕜] P) {n : N} (hn : n ≠ 0) :
     0 < gramWeilBlockDefectQuadratic C
       (gramWeilPositiveEmbedding (𝕜 := 𝕜) (P := P) n) := by
-  change 0 < 2 * ‖n‖ ^ 2 -
+  change 0 < 2 * ‖n‖ ^ (2 : ℕ) -
     2 * RCLike.re (inner 𝕜 n (C.adjoint 0))
   simp only [map_zero, inner_zero_right, map_zero]
   nlinarith [sq_pos_of_pos (norm_pos_iff.mpr hn)]
@@ -287,9 +287,9 @@ theorem gramWeilBlockDefectQuadratic_negativeEmbedding_neg
   rw [hcontrol]
   have hadjoint : C.adjoint (C n) ≠ 0 :=
     adjoint_apply_apply_ne_zero_of_injective hC hn
-  change (1 / 2 : ℝ) * ‖(0 : N)‖ ^ 2 -
-    (1 / 2 : ℝ) * ‖C.adjoint (C n)‖ ^ 2 < 0
-  have hnorm : 0 < ‖C.adjoint (C n)‖ ^ 2 :=
+  change (1 / 2 : ℝ) * ‖(0 : N)‖ ^ (2 : ℕ) -
+    (1 / 2 : ℝ) * ‖C.adjoint (C n)‖ ^ (2 : ℕ) < 0
+  have hnorm : 0 < ‖C.adjoint (C n)‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr hadjoint)
   norm_num
   linarith

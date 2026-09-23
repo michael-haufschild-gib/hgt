@@ -39,11 +39,11 @@ set_option maxHeartbeats 1000000 in
 theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Differentiable ℂ F)
     (horder : ∀ u, meromorphicOrderAt F u ≠ ⊤) {A B : ℝ} (hA : 1 ≤ A)
     (hbd : ∀ s : ℝ, 1 ≤ s → characteristic F ⊤ s ≤ 6 * Real.log (s + A) + B) :
-    ∃ M : ℝ, ∀ z : ℂ, ‖F z‖ ≤ M * (1 + ‖z‖) ^ 36 := by
+    ∃ M : ℝ, ∀ z : ℂ, ‖F z‖ ≤ M * (1 + ‖z‖) ^ (36 : ℕ) := by
   classical
   set C₀ : ℝ := max |Real.log ‖F 0‖| |Real.log ‖meromorphicTrailingCoeffAt F 0‖| with hC₀
   have hC₀0 : 0 ≤ C₀ := le_trans (abs_nonneg _) (le_max_left _ _)
-  refine ⟨Real.exp (6 * B + 3 * C₀) * (2 + A) ^ 36, fun z => ?_⟩
+  refine ⟨Real.exp (6 * B + 3 * C₀) * (2 + A) ^ (36 : ℕ), fun z => ?_⟩
   set r : ℝ := max ‖z‖ 1 with hr
   have hr1 : (1 : ℝ) ≤ r := le_max_right _ _
   have hzr : ‖z‖ ≤ r := le_max_left _ _
@@ -64,7 +64,7 @@ theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Diffe
     exact Real.exp_le_exp.mpr hstep
   have hpos : (0 : ℝ) < 2 * r + A := by linarith
   have hval : Real.exp (36 * Real.log (2 * r + A) + 6 * B + 3 * C₀)
-      = Real.exp (6 * B + 3 * C₀) * (2 * r + A) ^ 36 := by
+      = Real.exp (6 * B + 3 * C₀) * (2 * r + A) ^ (36 : ℕ) := by
     have ht : Real.exp (36 * Real.log (2 * r + A)) = (2 * r + A) ^ (36 : ℕ) := by
       rw [show (36 : ℝ) * Real.log (2 * r + A) = ((36 : ℕ) : ℝ) * Real.log (2 * r + A) by norm_num,
         Real.exp_nat_mul, Real.exp_log hpos]
@@ -78,13 +78,13 @@ theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Diffe
       · rw [hr]; simp only [max_le_iff]; constructor <;> linarith [norm_nonneg z]
       · rw [hr, max_eq_left hgt.le]; linarith
     nlinarith [this, norm_nonneg z, hA]
-  have hpow : (2 * r + A) ^ 36 ≤ ((2 + A) * (1 + ‖z‖)) ^ 36 :=
+  have hpow : (2 * r + A) ^ (36 : ℕ) ≤ ((2 + A) * (1 + ‖z‖)) ^ (36 : ℕ) :=
     pow_le_pow_left₀ (by linarith) hbase 36
   have hEpos : (0 : ℝ) < Real.exp (6 * B + 3 * C₀) := Real.exp_pos _
-  calc Real.exp (6 * B + 3 * C₀) * (2 * r + A) ^ 36
-      ≤ Real.exp (6 * B + 3 * C₀) * ((2 + A) * (1 + ‖z‖)) ^ 36 :=
+  calc Real.exp (6 * B + 3 * C₀) * (2 * r + A) ^ (36 : ℕ)
+      ≤ Real.exp (6 * B + 3 * C₀) * ((2 + A) * (1 + ‖z‖)) ^ (36 : ℕ) :=
         mul_le_mul_of_nonneg_left hpow hEpos.le
-    _ = Real.exp (6 * B + 3 * C₀) * (2 + A) ^ 36 * (1 + ‖z‖) ^ 36 := by
+    _ = Real.exp (6 * B + 3 * C₀) * (2 + A) ^ (36 : ℕ) * (1 + ‖z‖) ^ (36 : ℕ) := by
         rw [mul_pow, ← mul_assoc]
 
 set_option maxHeartbeats 1000000 in

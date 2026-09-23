@@ -50,7 +50,7 @@ def weightedIrregularity {R beta : ℕ} : Characteristic R beta → ℕ
 /-- Signed diagonal Stokes-loop functional
 `Σ βᵢ(eᵢ₋₁-eᵢ) - R² + 1`. -/
 def diagonalLoop {R beta : ℕ} (c : Characteristic R beta) : ℤ :=
-  (c.weightedIrregularity : ℤ) - (R : ℤ) ^ 2 + 1
+  (c.weightedIrregularity : ℤ) - (R : ℤ) ^ (2 : ℕ) + 1
 
 /-- The Airy-tower law at every gcd drop. -/
 def IsAiryTower {R beta : ℕ} : Characteristic R beta → Prop
@@ -271,14 +271,14 @@ theorem diagonalLoop_pos_of_first_gt {R beta : ℕ}
   have htwice : 2 * E ≤ R := twice_le_of_dvd_of_lt hE hEdvdR hER
   have hERsub : R - E + E = R := Nat.sub_add_cancel (Nat.le_of_lt hER)
   have hEsub : E ≤ R - E := by omega
-  have hproduct : R ^ 2 ≤ (R + 2 * E) * (R - E) := by
+  have hproduct : R ^ (2 : ℕ) ≤ (R + 2 * E) * (R - E) := by
     nlinarith
   have hmono : (R + 2 * E) * (R - E) ≤ beta * (R - E) :=
     Nat.mul_le_mul_right (R - E) hbeta
   have hfirstContribution := c.firstContribution_le_weightedIrregularity
-  have htotal : R ^ 2 ≤ c.weightedIrregularity :=
+  have htotal : R ^ (2 : ℕ) ≤ c.weightedIrregularity :=
     le_trans hproduct (le_trans hmono hfirstContribution)
-  have htotalZ : ((R : ℤ) ^ 2) ≤ (c.weightedIrregularity : ℤ) := by
+  have htotalZ : ((R : ℤ) ^ (2 : ℕ)) ≤ (c.weightedIrregularity : ℤ) := by
     exact_mod_cast htotal
   simp only [diagonalLoop]
   omega
@@ -356,10 +356,10 @@ theorem diagonalLoop_eq_zero_iff_isAiryTower {R beta : ℕ}
 /-- Natural-number form of zero-loop rigidity: the weighted irregularity is exactly `R²-1`. -/
 theorem weightedIrregularity_eq_diagonal_iff_isAiryTower {R beta : ℕ}
     (c : Characteristic R beta) :
-    c.weightedIrregularity = R ^ 2 - 1 ↔ c.IsAiryTower := by
+    c.weightedIrregularity = R ^ (2 : ℕ) - 1 ↔ c.IsAiryTower := by
   rw [← c.diagonalLoop_eq_zero_iff_isAiryTower]
   have hR : 1 ≤ R := Nat.le_of_lt c.ramification_gt_one
-  have hR2 : 1 ≤ R ^ 2 := by
+  have hR2 : 1 ≤ R ^ (2 : ℕ) := by
     simpa [pow_two] using Nat.mul_le_mul hR hR
   constructor
   · intro h
@@ -368,7 +368,7 @@ theorem weightedIrregularity_eq_diagonal_iff_isAiryTower {R beta : ℕ}
     push_cast [Nat.cast_sub hR2]
     ring
   · intro h
-    have hcast : (c.weightedIrregularity : ℤ) = ((R ^ 2 - 1 : ℕ) : ℤ) := by
+    have hcast : (c.weightedIrregularity : ℤ) = ((R ^ (2 : ℕ) - 1 : ℕ) : ℤ) := by
       simp only [diagonalLoop] at h
       push_cast [Nat.cast_sub hR2]
       nlinarith

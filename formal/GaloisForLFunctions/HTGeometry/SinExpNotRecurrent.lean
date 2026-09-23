@@ -46,7 +46,7 @@ theorem deriv_sinExp :
 
 theorem hasDerivAt_deriv_sinExp (s : ℂ) :
     HasDerivAt (deriv sinExp)
-      (-Complex.sin (s * Complex.exp s) * (Complex.exp s * (1 + s)) ^ 2
+      (-Complex.sin (s * Complex.exp s) * (Complex.exp s * (1 + s)) ^ (2 : ℕ)
         + Complex.cos (s * Complex.exp s) * (Complex.exp s * (2 + s))) s := by
   rw [deriv_sinExp]
   have hcos : HasDerivAt (fun z : ℂ => Complex.cos (z * Complex.exp z))
@@ -63,17 +63,17 @@ theorem hasDerivAt_deriv_sinExp (s : ℂ) :
 
 theorem deriv_deriv_sinExp (s : ℂ) :
     deriv (deriv sinExp) s
-      = -Complex.sin (s * Complex.exp s) * (Complex.exp s * (1 + s)) ^ 2
+      = -Complex.sin (s * Complex.exp s) * (Complex.exp s * (1 + s)) ^ (2 : ℕ)
         + Complex.cos (s * Complex.exp s) * (Complex.exp s * (2 + s)) :=
   (hasDerivAt_deriv_sinExp s).deriv
 
 /-- **`sin(s e^s)` is differentially algebraic over `ℂ(s)`.**  The relation is polynomial in the jet
 with rational coefficients, and holds at every point. -/
 theorem sinExp_differentialAlgebraic (s : ℂ) :
-    (1 + s) * (1 - sinExp s ^ 2) * deriv (deriv sinExp) s
-        - (2 + s) * (1 - sinExp s ^ 2) * deriv sinExp s
-        + (1 + s) * sinExp s * (deriv sinExp s) ^ 2 = 0 := by
-  have hpy : 1 - Complex.sin (s * Complex.exp s) ^ 2 = Complex.cos (s * Complex.exp s) ^ 2 := by
+    (1 + s) * (1 - sinExp s ^ (2 : ℕ)) * deriv (deriv sinExp) s
+        - (2 + s) * (1 - sinExp s ^ (2 : ℕ)) * deriv sinExp s
+        + (1 + s) * sinExp s * (deriv sinExp s) ^ (2 : ℕ) = 0 := by
+  have hpy : 1 - Complex.sin (s * Complex.exp s) ^ (2 : ℕ) = Complex.cos (s * Complex.exp s) ^ (2 : ℕ) := by
     have := Complex.sin_sq_add_cos_sq (s * Complex.exp s)
     linear_combination -this
   rw [deriv_deriv_sinExp, deriv_sinExp, sinExp, hpy]

@@ -64,7 +64,7 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_weightedCrowding
       (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         fidelityReplicaNearActionMass
           (microcanonicalWeight (Fin d)) energy r δ +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   let f : ℝ × ℝ → ℝ := fun p => finitePureStateFidelity
     (staticSpectralChoiVector d (T * p.1) energy).ofLp
     (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r
@@ -72,7 +72,7 @@ theorem integral_gaussianPair_staticChoi_fidelity_pow_le_weightedCrowding
     (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
       fidelityReplicaNearActionMass
         (microcanonicalWeight (Fin d)) energy r δ +
-      Real.exp (-((T * δ) ^ 2) / 2)
+      Real.exp (-((T * δ) ^ (2 : ℕ)) / 2)
   have hf : Integrable f
       ((gaussianReal 0 1).prod (gaussianReal 0 1)) :=
     integrable_gaussianPair_staticChoi_fidelity_pow hd energy T r
@@ -113,7 +113,7 @@ theorem returnExcisedReplicaCarrierIncidenceAction_staticChoi_le_weightedCrowdin
       (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         fidelityReplicaNearActionMass
           (microcanonicalWeight (Fin d)) energy r δ +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   let f : ℝ × ℝ → ℝ := fun p => finitePureStateFidelity
     (staticSpectralChoiVector d (T * p.1) energy).ofLp
     (staticSpectralChoiVector d (T * p.2) energy).ofLp ^ r

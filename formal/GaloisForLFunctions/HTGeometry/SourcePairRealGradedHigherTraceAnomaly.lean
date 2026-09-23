@@ -69,12 +69,12 @@ theorem sourcePairRealOddBlock_trace_pow (n : ℕ) (b : ℝ) :
 
 /-- Degree-one source moment is the actual power trace of the literal source block. -/
 theorem sourcePairBlock_trace_pow_one (a b : ℝ) :
-    (sourcePairBlock a b ^ 1).trace = sourcePairMoment 1 a b := by
+    (sourcePairBlock a b ^ (1 : ℕ)).trace = sourcePairMoment 1 a b := by
   simp [sourcePairBlock, sourcePairMoment, Matrix.trace_fin_two]
 
 /-- Degree-two source moment is the actual power trace of the literal source block. -/
 theorem sourcePairBlock_trace_pow_two (a b : ℝ) :
-    (sourcePairBlock a b ^ 2).trace = sourcePairMoment 2 a b := by
+    (sourcePairBlock a b ^ (2 : ℕ)).trace = sourcePairMoment 2 a b := by
   norm_num [pow_succ, sourcePairBlock, sourcePairMoment, Matrix.trace_fin_two,
     Matrix.mul_apply, Fin.sum_univ_two]
   ring_nf
@@ -83,7 +83,7 @@ theorem sourcePairBlock_trace_pow_two (a b : ℝ) :
 
 /-- Degree-three source moment is the actual power trace of the literal source block. -/
 theorem sourcePairBlock_trace_pow_three (a b : ℝ) :
-    (sourcePairBlock a b ^ 3).trace = sourcePairMoment 3 a b := by
+    (sourcePairBlock a b ^ (3 : ℕ)).trace = sourcePairMoment 3 a b := by
   norm_num [pow_succ, sourcePairBlock, sourcePairMoment, Matrix.trace_fin_two,
     Matrix.mul_apply, Fin.sum_univ_two]
   ring_nf
@@ -91,7 +91,7 @@ theorem sourcePairBlock_trace_pow_three (a b : ℝ) :
 
 /-- Degree-four source moment is the actual power trace of the literal source block. -/
 theorem sourcePairBlock_trace_pow_four (a b : ℝ) :
-    (sourcePairBlock a b ^ 4).trace = sourcePairMoment 4 a b := by
+    (sourcePairBlock a b ^ (4 : ℕ)).trace = sourcePairMoment 4 a b := by
   norm_num [pow_succ, sourcePairBlock, sourcePairMoment, Matrix.trace_fin_two,
     Matrix.mul_apply, Fin.sum_univ_two]
   ring_nf
@@ -139,7 +139,7 @@ theorem sourcePairRealGradedAnomaly_two (a b : ℝ) :
 
 /-- Exact cubic trace anomaly of the real graded lift. -/
 theorem sourcePairRealGradedAnomaly_three (a b : ℝ) :
-    sourcePairRealGradedAnomaly 3 a b = 12 * (a : ℂ) * (b : ℂ) ^ 2 := by
+    sourcePairRealGradedAnomaly 3 a b = 12 * (a : ℂ) * (b : ℂ) ^ (2 : ℕ) := by
   simp [sourcePairRealGradedAnomaly, sourcePairRealEvenMoment,
     sourcePairRealOddMoment, sourcePairMoment]
   ring_nf
@@ -149,7 +149,7 @@ theorem sourcePairRealGradedAnomaly_three (a b : ℝ) :
 /-- Exact quartic trace anomaly of the real graded lift. -/
 theorem sourcePairRealGradedAnomaly_four (a b : ℝ) :
     sourcePairRealGradedAnomaly 4 a b =
-      4 * (b : ℂ) ^ 2 * (6 * (a : ℂ) ^ 2 - (b : ℂ) ^ 2) := by
+      4 * (b : ℂ) ^ (2 : ℕ) * (6 * (a : ℂ) ^ (2 : ℕ) - (b : ℂ) ^ (2 : ℕ)) := by
   simp [sourcePairRealGradedAnomaly, sourcePairRealEvenMoment,
     sourcePairRealOddMoment, sourcePairMoment]
   ring_nf
@@ -159,8 +159,8 @@ theorem sourcePairRealGradedAnomaly_four (a b : ℝ) :
 /-- The cubic anomaly is literally the signed difference of the three matrix power traces. -/
 theorem sourcePairRealGradedAnomaly_three_eq_matrixTrace (a b : ℝ) :
     sourcePairRealGradedAnomaly 3 a b =
-      (sourcePairRealEvenBlock a b ^ 3).trace -
-        (sourcePairRealOddBlock b ^ 3).trace - (sourcePairBlock a b ^ 3).trace := by
+      (sourcePairRealEvenBlock a b ^ (3 : ℕ)).trace -
+        (sourcePairRealOddBlock b ^ (3 : ℕ)).trace - (sourcePairBlock a b ^ (3 : ℕ)).trace := by
   rw [sourcePairRealEvenBlock_trace_pow, sourcePairRealOddBlock_trace_pow,
     sourcePairBlock_trace_pow_three]
   rfl
@@ -168,8 +168,8 @@ theorem sourcePairRealGradedAnomaly_three_eq_matrixTrace (a b : ℝ) :
 /-- The quartic anomaly is literally the signed difference of the three matrix power traces. -/
 theorem sourcePairRealGradedAnomaly_four_eq_matrixTrace (a b : ℝ) :
     sourcePairRealGradedAnomaly 4 a b =
-      (sourcePairRealEvenBlock a b ^ 4).trace -
-        (sourcePairRealOddBlock b ^ 4).trace - (sourcePairBlock a b ^ 4).trace := by
+      (sourcePairRealEvenBlock a b ^ (4 : ℕ)).trace -
+        (sourcePairRealOddBlock b ^ (4 : ℕ)).trace - (sourcePairBlock a b ^ (4 : ℕ)).trace := by
   rw [sourcePairRealEvenBlock_trace_pow, sourcePairRealOddBlock_trace_pow,
     sourcePairBlock_trace_pow_four]
   rfl

@@ -111,7 +111,7 @@ theorem abs_mem_of_cosh_mem {u : ℝ} (h2 : 2 < Real.cosh u) (h3 : Real.cosh u <
         exact absurd this (by linarith [three_lt_cosh_two]))
 
 /-- `1 - cos u = 2 sin²(u/2)`. -/
-theorem one_sub_cos_eq (u : ℝ) : 1 - Real.cos u = 2 * Real.sin (u / 2) ^ 2 := by
+theorem one_sub_cos_eq (u : ℝ) : 1 - Real.cos u = 2 * Real.sin (u / 2) ^ (2 : ℕ) := by
   have h := two_sin_sq_half 1 u
   rw [one_mul] at h
   linarith
@@ -119,14 +119,14 @@ theorem one_sub_cos_eq (u : ℝ) : 1 - Real.cos u = 2 * Real.sin (u / 2) ^ 2 := 
 theorem sin_half_lower {u : ℝ} (h1 : 1 < |u|) (h2 : |u| < 2) :
     (7 : ℝ) / 15 < Real.sin (|u| / 2) := by
   have hx0 : (0 : ℝ) < (1 : ℝ) / 2 := by norm_num
-  have hcube : (1 : ℝ) / 2 - (1 / 2) ^ 3 / 6 < Real.sin (1 / 2) :=
+  have hcube : (1 : ℝ) / 2 - (1 / 2) ^ (3 : ℕ) / 6 < Real.sin (1 / 2) :=
     Real.sin_gt_sub_cube hx0
   have hmono : Real.sin (1 / 2) ≤ Real.sin (|u| / 2) := by
     refine Real.sin_le_sin_of_le_of_le_pi_div_two (by nlinarith [Real.pi_pos]) ?_ (by linarith)
     have hpi : (2 : ℝ) / 2 ≤ Real.pi / 2 := by
       have := Real.pi_gt_three; linarith
     linarith
-  have : (7 : ℝ) / 15 < 1 / 2 - (1 / 2) ^ 3 / 6 := by norm_num
+  have : (7 : ℝ) / 15 < 1 / 2 - (1 / 2) ^ (3 : ℕ) / 6 := by norm_num
   linarith
 
 /-- **The witness is nonnegative on `ℝ`.** -/
@@ -142,18 +142,18 @@ theorem coneObstruction_nonneg (u : ℝ) : 0 ≤ coneObstruction u := by
     linarith
   · obtain ⟨hu1, hu2⟩ := abs_mem_of_cosh_mem h2 h3
     have hsin := sin_half_lower hu1 hu2
-    have hsq : Real.sin (u / 2) ^ 2 = Real.sin (|u| / 2) ^ 2 := by
+    have hsq : Real.sin (u / 2) ^ (2 : ℕ) = Real.sin (|u| / 2) ^ (2 : ℕ) := by
       rcases abs_cases u with ⟨he, _⟩ | ⟨he, _⟩
       · rw [he]
       · rw [he, neg_div, Real.sin_neg, neg_pow]
         simp
-    have hlow : 2 * (7 / 15 : ℝ) ^ 2 < 1 - Real.cos u := by
+    have hlow : 2 * (7 / 15 : ℝ) ^ (2 : ℕ) < 1 - Real.cos u := by
       rw [one_sub_cos_eq, hsq]
       have h0 : (0 : ℝ) ≤ 7 / 15 := by norm_num
       nlinarith [hsin, h0]
     have hbound : (Real.cosh u - 2) * (Real.cosh u - 3) ≥ -(1 / 4 : ℝ) := by
       nlinarith [sq_nonneg (Real.cosh u - 5 / 2)]
-    have : (2 : ℝ) * (7 / 15) ^ 2 > 1 / 4 := by norm_num
+    have : (2 : ℝ) * (7 / 15) ^ (2 : ℕ) > 1 / 4 := by norm_num
     linarith
 
 /-! ## The lift is negative off the diagonal -/
@@ -161,7 +161,7 @@ theorem coneObstruction_nonneg (u : ℝ) : 0 ≤ coneObstruction u := by
 /-- The abscissa at which `cosh s = 5/2`. -/
 def obstructionPoint : ℝ := Real.log ((5 + Real.sqrt 21) / 2)
 
-theorem sqrt21_sq : Real.sqrt 21 ^ 2 = 21 := Real.sq_sqrt (by norm_num)
+theorem sqrt21_sq : Real.sqrt 21 ^ (2 : ℕ) = 21 := Real.sq_sqrt (by norm_num)
 
 theorem sqrt21_lt_five : Real.sqrt 21 < 5 := by
   nlinarith [sqrt21_sq, Real.sqrt_nonneg 21]
@@ -188,9 +188,9 @@ representation as a finite sum of squared moduli, since it is negative at
 `(obstructionPoint, 0)`.  By the character argument in the module docstring, a sum-of-Hermitian-
 squares certificate for `coneObstruction` would produce exactly such a representation. -/
 theorem cylinderLift_not_sum_of_squares {n : ℕ} (q : Fin n → ℝ → ℝ → ℂ)
-    (h : ∀ s φ, cylinderLift s φ = ∑ k, ‖q k s φ‖ ^ 2) : False := by
+    (h : ∀ s φ, cylinderLift s φ = ∑ k, ‖q k s φ‖ ^ (2 : ℕ)) : False := by
   have hneg := cylinderLift_obstructionPoint
-  have hnn : (0 : ℝ) ≤ ∑ k, ‖q k obstructionPoint 0‖ ^ 2 :=
+  have hnn : (0 : ℝ) ≤ ∑ k, ‖q k obstructionPoint 0‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k _ => by positivity
   rw [h obstructionPoint 0] at hneg
   linarith
@@ -219,11 +219,11 @@ theorem cylinderLift_neg_of_cos_gt {φ : ℝ} (hφ : 3 / 4 < Real.cos φ) :
 open and everything in sight is real analytic, no nonzero multiplier can exist. -/
 theorem no_multiplier_certificate {n : ℕ} (σ : ℝ → ℝ → ℝ) (q : Fin n → ℝ → ℝ → ℂ)
     (hσ : ∀ s φ, 0 ≤ σ s φ)
-    (h : ∀ s φ, cylinderLift s φ * σ s φ = ∑ k, ‖q k s φ‖ ^ 2)
+    (h : ∀ s φ, cylinderLift s φ * σ s φ = ∑ k, ‖q k s φ‖ ^ (2 : ℕ))
     {φ : ℝ} (hφ : 3 / 4 < Real.cos φ) :
     σ obstructionPoint φ = 0 := by
   have hneg := cylinderLift_neg_of_cos_gt hφ
-  have hnn : (0 : ℝ) ≤ ∑ k, ‖q k obstructionPoint φ‖ ^ 2 :=
+  have hnn : (0 : ℝ) ≤ ∑ k, ‖q k obstructionPoint φ‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k _ => by positivity
   have hprod : 0 ≤ cylinderLift obstructionPoint φ * σ obstructionPoint φ := by
     rw [h obstructionPoint φ]; exact hnn

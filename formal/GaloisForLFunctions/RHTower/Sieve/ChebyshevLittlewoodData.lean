@@ -57,13 +57,13 @@ theorem exists_cheb_littlewood_data (A : ℝ) (hA : 0 < A) :
       ∧ (∀ y ∈ Set.uIcc (-T) T, riemannZeta ((chebLeftLw A T : ℂ) + (y : ℝ) * Complex.I) ≠ 0)
       ∧ (∀ y ∈ Set.Icc (-T) T,
           ‖zetaLogDerivReg ((chebLeftLw A T : ℂ) + (y : ℝ) * Complex.I)‖
-            ≤ Cr * Real.log T ^ 2 / Real.log (Real.log T))
+            ≤ Cr * Real.log T ^ (2 : ℕ) / Real.log (Real.log T))
       ∧ (∀ x ∈ Set.uIoc (chebLeftLw A T) (chebRightTwo T),
           ‖zetaLogDerivReg ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖
-            ≤ Cr * Real.log T ^ 2 / Real.log (Real.log T))
+            ≤ Cr * Real.log T ^ (2 : ℕ) / Real.log (Real.log T))
       ∧ (∀ x ∈ Set.uIoc (chebLeftLw A T) (chebRightTwo T),
           ‖zetaLogDerivReg ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I)‖
-            ≤ Cr * Real.log T ^ 2 / Real.log (Real.log T)) := by
+            ≤ Cr * Real.log T ^ (2 : ℕ) / Real.log (Real.log T)) := by
   obtain ⟨Cr, L₁, hCr0, hL₁1, hreg⟩ := exists_bound_zetaLogDerivReg_uniform_littlewood A hA
   obtain ⟨L₂, hL₂1, hzf⟩ := exists_zeta_uniform_arbitrary_zero_free A hA
   refine ⟨Cr, max (max 8 (2 * A)) (max L₁ L₂), hCr0, le_max_left _ _, fun T hT1 hT => ?_⟩
@@ -127,12 +127,12 @@ theorem exists_cheb_littlewood_data_plain (A : ℝ) (hA : 0 < A) :
       ∧ (∀ y ∈ Set.uIcc (-T) T, riemannZeta ((chebLeftLw A T : ℂ) + (y : ℝ) * Complex.I) ≠ 0)
       ∧ (∀ y ∈ Set.Icc (-T) T,
           ‖zetaLogDerivReg ((chebLeftLw A T : ℂ) + (y : ℝ) * Complex.I)‖
-            ≤ Cr * Real.log T ^ 2)
+            ≤ Cr * Real.log T ^ (2 : ℕ))
       ∧ (∀ x ∈ Set.uIoc (chebLeftLw A T) (chebRightTwo T),
-          ‖zetaLogDerivReg ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ 2)
+          ‖zetaLogDerivReg ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ (2 : ℕ))
       ∧ (∀ x ∈ Set.uIoc (chebLeftLw A T) (chebRightTwo T),
           ‖zetaLogDerivReg ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I)‖
-            ≤ Cr * Real.log T ^ 2) := by
+            ≤ Cr * Real.log T ^ (2 : ℕ)) := by
   obtain ⟨Cr, L₀, hCr0, hL₀, hdata⟩ := exists_cheb_littlewood_data A hA
   refine ⟨Cr, L₀, hCr0, hL₀, fun T hT1 hT => ?_⟩
   obtain ⟨h1, h2, h3, h4, h5⟩ := hdata T hT1 hT
@@ -142,7 +142,7 @@ theorem exists_cheb_littlewood_data_plain (A : ℝ) (hA : 0 < A) :
     have h := Real.log_le_log (Real.exp_pos 1) (le_trans he hT8)
     rwa [Real.log_exp] at h
   have hLL0 : (0 : ℝ) < Real.log (Real.log T) := by linarith
-  have hweak : Cr * Real.log T ^ 2 / Real.log (Real.log T) ≤ Cr * Real.log T ^ 2 := by
+  have hweak : Cr * Real.log T ^ (2 : ℕ) / Real.log (Real.log T) ≤ Cr * Real.log T ^ (2 : ℕ) := by
     rw [div_le_iff₀ hLL0]
     nlinarith [mul_nonneg (mul_nonneg hCr0.le (sq_nonneg (Real.log T)))
       (by linarith : (0 : ℝ) ≤ Real.log (Real.log T) - 1)]

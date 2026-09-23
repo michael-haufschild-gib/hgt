@@ -12,7 +12,7 @@ Euler-deletion coefficients, and one common period is a closed polygon.
 
 CRT factors every polynomial segment density into two explicit one-coordinate phase sums.
 All coefficient-degree-at-most-three polynomial one-forms have zero circulation. The
-higher moment `integral x*y^3 dx` is exactly `P*(P-1)*Q*(Q-1)*(Q-2)/120` for coprime
+higher moment `integral x*y^(3 : ℕ) dx` is exactly `P*(P-1)*Q*(Q-1)*(Q-2)/120` for coprime
 `P,Q`. In particular the literal moduli-2-and-3 path gives the closed value `1/10`.
 
 This is a finite unweighted arithmetic statement. It supplies no assertion about a weighted
@@ -142,8 +142,8 @@ theorem sum_shift_pow_one (p : ℕ) (t : ℝ) :
     ring
 
 theorem sum_shift_pow_two (p : ℕ) (t : ℝ) :
-    (∑ j ∈ Finset.range p, ((j:ℝ)+t)^2) =
-      (p:ℝ)*t^2 + (p:ℝ)*(p-1)*t + (p:ℝ)*(p-1)*(2*p-1)/6 := by
+    (∑ j ∈ Finset.range p, ((j:ℝ)+t)^(2 : ℕ)) =
+      (p:ℝ)*t^(2 : ℕ) + (p:ℝ)*(p-1)*t + (p:ℝ)*(p-1)*(2*p-1)/6 := by
   induction p with
   | zero => simp
   | succ p ih =>
@@ -152,9 +152,9 @@ theorem sum_shift_pow_two (p : ℕ) (t : ℝ) :
     ring
 
 theorem sum_shift_pow_three (p : ℕ) (t : ℝ) :
-    (∑ j ∈ Finset.range p, ((j:ℝ)+t)^3) =
-      (p:ℝ)*t^3 + 3*(p:ℝ)*(p-1)*t^2/2 + (p:ℝ)*(p-1)*(2*p-1)*t/2 +
-        (p:ℝ)^2*(p-1)^2/4 := by
+    (∑ j ∈ Finset.range p, ((j:ℝ)+t)^(3 : ℕ)) =
+      (p:ℝ)*t^(3 : ℕ) + 3*(p:ℝ)*(p-1)*t^(2 : ℕ)/2 + (p:ℝ)*(p-1)*(2*p-1)*t/2 +
+        (p:ℝ)^(2 : ℕ)*(p-1)^(2 : ℕ)/4 := by
   induction p with
   | zero => simp
   | succ p ih =>
@@ -172,13 +172,13 @@ theorem phaseMoment_one (p : ℕ) (t : ℝ) :
 
 theorem phaseMoment_two (p : ℕ) (t : ℝ) :
     phaseMoment p 2 t = (p:ℝ)*(p+1)*(2*p+1)/6 - (p:ℝ)*(p+1)*t +
-      (p:ℝ)*(p+1)*t^2 := by
+      (p:ℝ)*(p+1)*t^(2 : ℕ) := by
   rw [phaseMoment, sum_shift_pow_two]
   ring
 
 theorem phaseMoment_three (p : ℕ) (t : ℝ) :
-    phaseMoment p 3 t = (p:ℝ)^2*(p+1)^2/4 - (p:ℝ)*(p+1)*(4*p-1)*t/2 +
-      3*(p:ℝ)*(p+1)*(2*p-1)*t^2/2 - (p:ℝ)*(p+1)*(p-1)*t^3 := by
+    phaseMoment p 3 t = (p:ℝ)^(2 : ℕ)*(p+1)^(2 : ℕ)/4 - (p:ℝ)*(p+1)*(4*p-1)*t/2 +
+      3*(p:ℝ)*(p+1)*(2*p-1)*t^(2 : ℕ)/2 - (p:ℝ)*(p+1)*(p-1)*t^(3 : ℕ) := by
   rw [phaseMoment, sum_shift_pow_three]
   ring
 
@@ -197,7 +197,7 @@ private theorem integral_linear (a : ℝ) :
   ring
 
 private theorem integral_quartic (a b c d e : ℝ) :
-    (∫ t in (0:ℝ)..1, a + b*t + c*t^2 + d*t^3 + e*t^4) =
+    (∫ t in (0:ℝ)..1, a + b*t + c*t^(2 : ℕ) + d*t^(3 : ℕ) + e*t^(4 : ℕ)) =
       a + b/2 + c/3 + d/4 + e/5 := by
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_const_mul,
@@ -212,15 +212,15 @@ theorem circulation_one_three {p q : ℕ} (hpq : (p+1).Coprime (q+1)) :
   unfold circulation
   simp_rw [integrand_factorization hpq, velocityMoment_one, phaseMoment_three]
   let A : ℝ := (p:ℝ)*(p+1)/2
-  let B : ℝ := (q:ℝ)^2*(q+1)^2/4
+  let B : ℝ := (q:ℝ)^(2 : ℕ)*(q+1)^(2 : ℕ)/4
   let C : ℝ := -(q:ℝ)*(q+1)*(4*q-1)/2
   let D : ℝ := 3*(q:ℝ)*(q+1)*(2*q-1)/2
   let E : ℝ := -(q:ℝ)*(q+1)*(q-1)
   have hpoly (t : ℝ) :
-      (p:ℝ)*(p+1)*(2*t-1)/2 * ((q:ℝ)^2*(q+1)^2/4 -
-      (q:ℝ)*(q+1)*(4*q-1)*t/2 + 3*(q:ℝ)*(q+1)*(2*q-1)*t^2/2 -
-      (q:ℝ)*(q+1)*(q-1)*t^3) =
-      -A*B + A*(2*B-C)*t + A*(2*C-D)*t^2 + A*(2*D-E)*t^3 + 2*A*E*t^4 := by
+      (p:ℝ)*(p+1)*(2*t-1)/2 * ((q:ℝ)^(2 : ℕ)*(q+1)^(2 : ℕ)/4 -
+      (q:ℝ)*(q+1)*(4*q-1)*t/2 + 3*(q:ℝ)*(q+1)*(2*q-1)*t^(2 : ℕ)/2 -
+      (q:ℝ)*(q+1)*(q-1)*t^(3 : ℕ)) =
+      -A*B + A*(2*B-C)*t + A*(2*C-D)*t^(2 : ℕ) + A*(2*D-E)*t^(3 : ℕ) + 2*A*E*t^(4 : ℕ) := by
     dsimp [A, B, C, D, E]
     ring
   simp_rw [hpoly]

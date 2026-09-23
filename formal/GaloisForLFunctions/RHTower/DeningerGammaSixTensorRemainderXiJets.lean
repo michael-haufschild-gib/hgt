@@ -238,7 +238,7 @@ theorem deningerGammaSixInternalJetTensorRemainder_fourierLaplace_data
       (deningerGammaSixInternalJetTensorRemainder k l m) w z) (volume.prod volume) ∧
     deningerGammaSixTensorFourierLaplace
         (deningerGammaSixInternalJetTensorRemainder k l m) w z =
-      (deningerGammaSixHalfWeight m : ℂ) ^ 2 *
+      (deningerGammaSixHalfWeight m : ℂ) ^ (2 : ℕ) *
         (mobiusThetaPrimeNormalResidualMultiplier 6 m w *
           mobiusThetaPrimeNormalResidualMultiplier 6 m z - 1) *
         (iteratedDeriv k XiC w * iteratedDeriv l XiC z) := by
@@ -348,8 +348,8 @@ theorem eventually_deningerGammaSixInternalJetTensorConormalPair_at_divisor
       let m : MobiusHonestDepth := ⟨n + 3, by omega⟩
       let w := xiSpectralPointSupport rho
       let q := xiSupportMultiplicity rho
-      let c := (deningerGammaSixHalfWeight m : ℂ) ^ 2 *
-        deningerGammaSixTensorRemainderMultiplier m w w * (iteratedDeriv q XiC w) ^ 2
+      let c := (deningerGammaSixHalfWeight m : ℂ) ^ (2 : ℕ) *
+        deningerGammaSixTensorRemainderMultiplier m w w * (iteratedDeriv q XiC w) ^ (2 : ℕ)
       deningerGammaSixInternalJetTensorConormalPair (q - 1) q m w = (0, c) ∧ c ≠ 0 := by
   have hre : 0 < (mobiusThetaCenteredParameter (xiSpectralPointSupport rho)).re := by
     rw [mobiusThetaCenteredParameter_xiSpectralPointSupport]
@@ -384,7 +384,7 @@ theorem tendsto_deningerGammaSixInternalJetTensorRemainder_fourierLaplace_normal
     Tendsto (fun n : ℕ =>
       let m : MobiusHonestDepth := ⟨n + 3, by omega⟩
       mobiusThetaSuccessorSpectralNormalizer ⟨6, by omega⟩ m (mobiusThetaCenteredParameter w) *
-        (((deningerGammaSixHalfWeight m : ℂ) ^ 2)⁻¹ *
+        (((deningerGammaSixHalfWeight m : ℂ) ^ (2 : ℕ))⁻¹ *
           deningerGammaSixTensorFourierLaplace
             (deningerGammaSixInternalJetTensorRemainder k l m) w w)) atTop
       (nhds ((2 * (((ArithmeticFunction.moebius (mobiusSuccessor 6) : ℤ) : ℂ))) *
@@ -400,8 +400,8 @@ theorem tendsto_deningerGammaSixInternalJetTensorRemainder_fourierLaplace_normal
     ⟨n + 3, by omega⟩ hw hw hm.2 hm.2).2]
   have hweight : (deningerGammaSixHalfWeight ⟨n + 3, by omega⟩ : ℂ) ≠ 0 := by
     exact_mod_cast (deningerGammaSixHalfWeight_pos ⟨n + 3, by omega⟩).ne'
-  rw [mul_assoc ((deningerGammaSixHalfWeight ⟨n + 3, by omega⟩ : ℂ) ^ 2),
-    ← mul_assoc (((deningerGammaSixHalfWeight ⟨n + 3, by omega⟩ : ℂ) ^ 2)⁻¹),
+  rw [mul_assoc ((deningerGammaSixHalfWeight ⟨n + 3, by omega⟩ : ℂ) ^ (2 : ℕ)),
+    ← mul_assoc (((deningerGammaSixHalfWeight ⟨n + 3, by omega⟩ : ℂ) ^ (2 : ℕ))⁻¹),
     inv_mul_cancel₀ (pow_ne_zero 2 hweight), one_mul]
   exact mul_assoc _ _ _
 

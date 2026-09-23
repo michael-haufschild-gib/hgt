@@ -28,12 +28,12 @@ theorem ccmNegativeHardyIndex_injective : Function.Injective ccmNegativeHardyInd
   simp only [ccmNegativeHardyIndex, neg_inj] at h
   exact Nat.add_right_cancel (Int.ofNat_injective h)
 
-/-- Source isometry from `ell^2(N)` to nonnegative circle Fourier modes. -/
+/-- Source isometry from `ell^(2 : ℕ)(N)` to nonnegative circle Fourier modes. -/
 def ccmPositiveHardyIsometry : HardyDisk →ₗᵢ[ℂ] CCMCircleL2 :=
   (fourierBasis (T := (1 : ℝ))).repr.symm.toLinearIsometry.comp
     (lpScalarInjection ccmPositiveHardyIndex ccmPositiveHardyIndex_injective)
 
-/-- Source isometry from `ell^2(N)` to strictly negative circle Fourier modes. -/
+/-- Source isometry from `ell^(2 : ℕ)(N)` to strictly negative circle Fourier modes. -/
 def ccmNegativeHardyIsometry : HardyDisk →ₗᵢ[ℂ] CCMCircleL2 :=
   (fourierBasis (T := (1 : ℝ))).repr.symm.toLinearIsometry.comp
     (lpScalarInjection ccmNegativeHardyIndex ccmNegativeHardyIndex_injective)

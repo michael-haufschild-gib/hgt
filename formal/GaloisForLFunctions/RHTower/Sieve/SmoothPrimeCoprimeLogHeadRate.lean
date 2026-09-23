@@ -23,7 +23,7 @@ theorem exists_abs_smoothPrimeCoprimeLogHead_log_sq_rate
         |∑ d ∈ primeSupportedIcc r D,
             (1 / (d : ℝ)) * (coprimeLogMoebius 1 (Y / (d : ℝ)) - 1)| ≤
           C * ((r : ℝ) / (Nat.totient r : ℝ)) /
-            (Real.log (Y / (D : ℝ))) ^ 2 := by
+            (Real.log (Y / (D : ℝ))) ^ (2 : ℕ) := by
   classical
   obtain ⟨C, hC, hrate⟩ :=
     exists_abs_coprimeLogMoebius_one_sub_one_log_sq_rate
@@ -47,7 +47,7 @@ theorem exists_abs_smoothPrimeCoprimeLogHead_log_sq_rate
     lt_of_lt_of_le zero_lt_one hlogBase
   have hpoint : ∀ d ∈ primeSupportedIcc r D,
       |(1 / (d : ℝ)) * (coprimeLogMoebius 1 (Y / (d : ℝ)) - 1)| ≤
-        (C / (Real.log (Y / (D : ℝ))) ^ 2) * (1 / (d : ℝ)) := by
+        (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) * (1 / (d : ℝ)) := by
     intro d hd
     have hdmem : d ∈ Finset.Icc 1 D := (Finset.mem_filter.mp hd).1
     have hd1 : 1 ≤ d := (Finset.mem_Icc.mp hdmem).1
@@ -63,17 +63,17 @@ theorem exists_abs_smoothPrimeCoprimeLogHead_log_sq_rate
       Real.log_le_log hbasePos hquot
     have hlogArgPos : 0 < Real.log (Y / (d : ℝ)) :=
       lt_of_lt_of_le hlogBasePos hlogMono
-    have hsquares : (Real.log (Y / (D : ℝ))) ^ 2 ≤
-        (Real.log (Y / (d : ℝ))) ^ 2 := by nlinarith
+    have hsquares : (Real.log (Y / (D : ℝ))) ^ (2 : ℕ) ≤
+        (Real.log (Y / (d : ℝ))) ^ (2 : ℕ) := by nlinarith
     rw [abs_mul, abs_of_pos (one_div_pos.mpr hdpos)]
     calc
       (1 / (d : ℝ)) * |coprimeLogMoebius 1 (Y / (d : ℝ)) - 1| ≤
-          (1 / (d : ℝ)) * (C / (Real.log (Y / (d : ℝ))) ^ 2) :=
+          (1 / (d : ℝ)) * (C / (Real.log (Y / (d : ℝ))) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hrateArg (one_div_nonneg.mpr hdpos.le)
-      _ ≤ (1 / (d : ℝ)) * (C / (Real.log (Y / (D : ℝ))) ^ 2) := by
+      _ ≤ (1 / (d : ℝ)) * (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) := by
         apply mul_le_mul_of_nonneg_left _ (one_div_nonneg.mpr hdpos.le)
         exact div_le_div_of_nonneg_left hC (pow_pos hlogBasePos 2) hsquares
-      _ = (C / (Real.log (Y / (D : ℝ))) ^ 2) * (1 / (d : ℝ)) := by ring
+      _ = (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) * (1 / (d : ℝ)) := by ring
   have hsumMass :
       ∑ d ∈ primeSupportedIcc r D, (1 / (d : ℝ)) =
         ∑ d ∈ primeSupportedIcc r D, primeSupportedReciprocal r d := by
@@ -92,7 +92,7 @@ theorem exists_abs_smoothPrimeCoprimeLogHead_log_sq_rate
     exact (summable_primeSupportedReciprocal
       (Nat.pos_of_ne_zero hr.ne_zero)).sum_le_tsum
         (primeSupportedIcc r D) (fun d _ => primeSupportedReciprocal_nonneg r d)
-  have hfactor : 0 ≤ C / (Real.log (Y / (D : ℝ))) ^ 2 := by positivity
+  have hfactor : 0 ≤ C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ) := by positivity
   calc
     |∑ d ∈ primeSupportedIcc r D,
         (1 / (d : ℝ)) * (coprimeLogMoebius 1 (Y / (d : ℝ)) - 1)| ≤
@@ -100,16 +100,16 @@ theorem exists_abs_smoothPrimeCoprimeLogHead_log_sq_rate
           |(1 / (d : ℝ)) * (coprimeLogMoebius 1 (Y / (d : ℝ)) - 1)| :=
       Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ d ∈ primeSupportedIcc r D,
-        (C / (Real.log (Y / (D : ℝ))) ^ 2) * (1 / (d : ℝ)) :=
+        (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) * (1 / (d : ℝ)) :=
       Finset.sum_le_sum hpoint
-    _ = (C / (Real.log (Y / (D : ℝ))) ^ 2) *
+    _ = (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) *
         ∑ d ∈ primeSupportedIcc r D, (1 / (d : ℝ)) := by
       rw [Finset.mul_sum]
-    _ ≤ (C / (Real.log (Y / (D : ℝ))) ^ 2) *
+    _ ≤ (C / (Real.log (Y / (D : ℝ))) ^ (2 : ℕ)) *
         (∑' d : ℕ, primeSupportedReciprocal r d) :=
       mul_le_mul_of_nonneg_left hmass hfactor
     _ = C * ((r : ℝ) / (Nat.totient r : ℝ)) /
-        (Real.log (Y / (D : ℝ))) ^ 2 := by
+        (Real.log (Y / (D : ℝ))) ^ (2 : ℕ) := by
       rw [tsum_primeSupportedReciprocal_eq_totientRatio hr]
       ring
 

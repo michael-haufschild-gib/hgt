@@ -93,7 +93,7 @@ theorem exists_subcritical_chain {c : ℂ} {rlo R₀ : ℝ}
       -- convert to the raw winding of the radicand
       have hgwind : (∫ θ in (0:ℝ)..(2 * Real.pi),
           logDeriv g (circleMap 0 ρ θ) * (circleMap 0 ρ θ * Complex.I))
-          = ((2 ^ 1 * 0 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
+          = ((2 ^ (1 : ℕ) * 0 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
         have hcongr : ∀ θ : ℝ,
             logDeriv g (circleMap 0 ρ θ) * (circleMap 0 ρ θ * Complex.I)
             = (ℓj.γ θ - c)⁻¹ * ℓj.γ' θ := by
@@ -116,7 +116,7 @@ theorem exists_subcritical_chain {c : ℂ} {rlo R₀ : ℝ}
         ring
       obtain ⟨s, hs_an, hs_sq, hs_ne⟩ :=
         exists_pow_root_on_annulus hrapos hρ1 hρ2 hg_an hg_ne 1 0 hgwind
-      have hs_sq' : ∀ v ∈ annulusSet ra rb, s v ^ 2 = Sj v - c := by
+      have hs_sq' : ∀ v ∈ annulusSet ra rb, s v ^ (2 : ℕ) = Sj v - c := by
         intro v hv
         have := hs_sq v hv
         rwa [pow_one 2] at this
@@ -143,7 +143,7 @@ theorem exists_subcritical_chain {c : ℂ} {rlo R₀ : ℝ}
       · -- derivative nonvanishing
         intro v hv
         have hs_d : HasDerivAt s (deriv s v) v := (hs_an v hv).differentiableAt.hasDerivAt
-        have hLd : HasDerivAt (fun x => s x ^ 2) (2 * s v * deriv s v) v := by
+        have hLd : HasDerivAt (fun x => s x ^ (2 : ℕ)) (2 * s v * deriv s v) v := by
           have h4 := hs_d.pow 2
           have h5 : (2:ℕ) * s v ^ (2 - 1) * deriv s v = 2 * s v * deriv s v := by
             push_cast
@@ -151,7 +151,7 @@ theorem exists_subcritical_chain {c : ℂ} {rlo R₀ : ℝ}
           rwa [h5] at h4
         have hRd : HasDerivAt (fun x => Sj x - c) (deriv Sj v) v :=
           ((han v hv).differentiableAt.hasDerivAt).sub_const c
-        have hEqF : (fun x => s x ^ 2) =ᶠ[nhds v] (fun x => Sj x - c) := by
+        have hEqF : (fun x => s x ^ (2 : ℕ)) =ᶠ[nhds v] (fun x => Sj x - c) := by
           filter_upwards [(isOpen_annulusSet ra rb).mem_nhds hv] with z hz
           exact hs_sq' z hz
         have h7 : HasDerivAt (fun x => Sj x - c) (2 * s v * deriv s v) v :=

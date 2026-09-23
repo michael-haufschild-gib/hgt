@@ -106,9 +106,9 @@ created by P-G199's common radial generator. -/
 theorem neg_sq_xiWeilCauchyTest_routePPrimitiveDeningerUpperPoint
     (pe : Nat.Primes × ℕ) (kappa : ℝ) (q : XiRightZeroCopy) :
     -(xiWeilCauchyTest (routePPrimitiveDeningerUpperPoint pe kappa : ℂ)
-        (xiSpectralPoint q.1)) ^ 2 =
+        (xiSpectralPoint q.1)) ^ (2 : ℕ) =
       (xiRightCenteredZero q +
-        routePPrimitiveBurnolCenteredMode pe kappa)⁻¹ ^ 2 := by
+        routePPrimitiveBurnolCenteredMode pe kappa)⁻¹ ^ (2 : ℕ) := by
   rw [xiWeilCauchyTest_routePPrimitiveDeningerUpperPoint]
   rw [mul_pow]
   norm_num [I_mul_I]
@@ -124,7 +124,7 @@ theorem integral_routePPrimitiveBurnolWindowFeature_eq_deningerSquaredEvaluation
       finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
         (-(xiWeilCauchyTest
           (routePPrimitiveDeningerUpperPoint pe kappa : ℂ)
-          (xiSpectralPoint q.1)) ^ 2) := by
+          (xiSpectralPoint q.1)) ^ (2 : ℕ)) := by
   let lam := routePPrimitiveBurnolCenteredMode pe kappa
   have hrate : 0 < (xiRightCenteredZero q + lam).re := by
     rw [Complex.add_re, routePPrimitiveBurnolCenteredMode_re]

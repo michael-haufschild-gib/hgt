@@ -31,10 +31,10 @@ theorem signedOriginWeightedReflection_measurable (q : SchwartzMap ℝ ℂ) :
 theorem signedOriginWeightedReflection_eq_contour (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) (κ : ℝ) :
     signedOriginWeightedReflection q (contourSquaredParameter vertical κ) =
-      contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^5 := by
-  have hp : 0 < (Real.exp κ)^2 := sq_pos_of_pos (Real.exp_pos κ)
-  have hi : Complex.I^5 = Complex.I := by rw [pow_succ,I_pow_four,one_mul]
-  have hni : (-I)^5 = -I := by rw [neg_pow,hi]; norm_num
+      contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(5 : ℕ) := by
+  have hp : 0 < (Real.exp κ)^(2 : ℕ) := sq_pos_of_pos (Real.exp_pos κ)
+  have hi : Complex.I^(5 : ℕ) = Complex.I := by rw [pow_succ,I_pow_four,one_mul]
+  have hni : (-I)^(5 : ℕ) = -I := by rw [neg_pow,hi]; norm_num
   cases vertical <;> cases negative <;>
     simp only [contourSquaredParameter,contourReflectionAmplitude_eq,contourSource,contourParameter,
       Bool.false_eq_true,↓reduceIte,one_mul,neg_one_mul,
@@ -77,7 +77,7 @@ private theorem signed_origin_integrable_forces_compatibility (q : SchwartzMap �
     exact if_pos hz.1.le
   exact (originWeightedReflection_locally_integrable_iff q).1 ⟨δ,hδ,hp⟩
 
-/-- The full two-sided local L^1 assertion has the same exact compatibility boundary. -/
+/-- The full two-sided local L^(1 : ℕ) assertion has the same exact compatibility boundary. -/
 theorem signedOriginWeightedReflection_locally_integrable_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ IntegrableOn (signedOriginWeightedReflection q) (Ioo (-δ) δ)) ↔
       compatibilityMoment q = 0 := by
@@ -109,7 +109,7 @@ theorem signedOriginWeightedReflection_locally_memLp_all_iff (q : SchwartzMap �
     exact (signedOriginWeightedReflection_locally_memLp_two_iff q).1 ⟨δ,hδ,hW 2⟩
   · exact signed_origin_bounded_window q
 
-/-- Small Gaussian scattering fails the full signed weighted L^2 conclusion on every origin window. -/
+/-- Small Gaussian scattering fails the full signed weighted L^(2 : ℕ) conclusion on every origin window. -/
 theorem signedOriginWeightedReflection_globalSmallGaussian_not_memLp_two (a r : ℝ) :
     ¬ MemLp (signedOriginWeightedReflection (globalSmallScatteringPotential (compatibilityGaussian a))) 2
       (volume.restrict (Ioo (-(Real.exp r)) (Real.exp r))) := by

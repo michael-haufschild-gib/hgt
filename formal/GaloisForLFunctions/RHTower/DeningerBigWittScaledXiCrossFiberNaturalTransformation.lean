@@ -194,7 +194,7 @@ theorem deningerBigWittFrobeniusTwo_crossFiber_naturality
       simpa using
         deningerBigWittFrobeniusTwo_completedXiPrimeMarkOrbit p alpha 0
     _ = completedXiBigWittPrimeMark p
-        (completedXiSpectralDilation (2 ^ 1) alpha) :=
+        (completedXiSpectralDilation (2 ^ (1 : ℕ)) alpha) :=
       completedXiBigWittPrimeMarkOrbit_eq_spectralDilation p alpha 1
     _ = scaledTwoCompletedXiThetaFiberBigWittReporter p
         ((2 : ℂ) * alpha)

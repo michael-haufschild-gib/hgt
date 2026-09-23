@@ -44,7 +44,7 @@ theorem momentInner_cdKernel (h : PositiveMomentForm s) (n : ℕ) (x : ℝ) (p :
 theorem cdKernel_eval_self (s : ℕ → ℝ) (n : ℕ) (x : ℝ) :
     (cdKernel s n x).eval x
       = ∑ k ∈ Finset.range (n + 1),
-        (monicOrtho s k).eval x ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) := by
+        (monicOrtho s k).eval x ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) := by
   rw [cdKernel, Polynomial.eval_finsetSum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Polynomial.eval_smul, smul_eq_mul]
@@ -129,7 +129,7 @@ it is the least moment norm among polynomials of degree at most `n` normalised a
 /-- **Cauchy--Schwarz from positive definiteness.**  Unlike `momentInner_sq_le`, this needs no
 representing measure: the discriminant of `t ↦ ⟪p + t q, p + t q⟫` does the work. -/
 theorem momentInner_sq_le_of_posDef (h : PositiveMomentForm s) (p q : Polynomial ℝ) :
-    (momentInner s p q) ^ 2 ≤ momentInner s p p * momentInner s q q := by
+    (momentInner s p q) ^ (2 : ℕ) ≤ momentInner s p p * momentInner s q q := by
   have hquad : ∀ t : ℝ, 0 ≤ momentInner s q q * (t * t)
       + (2 * momentInner s p q) * t + momentInner s p p := by
     intro t
@@ -196,7 +196,7 @@ theorem cdKernel_posSemidef {ι : Type*} (h : PositiveMomentForm s) (n : ℕ)
 
 /-- The diagonal dominates: `|K(x,y)| ≤ sqrt (K(x,x) K(y,y))`, the kernel Cauchy--Schwarz. -/
 theorem cdKernel_sq_le (h : PositiveMomentForm s) (n : ℕ) (x y : ℝ) :
-    ((cdKernel s n x).eval y) ^ 2
+    ((cdKernel s n x).eval y) ^ (2 : ℕ)
       ≤ (cdKernel s n x).eval x * (cdKernel s n y).eval y := by
   have hcs := momentInner_sq_le_of_posDef h (cdKernel s n x) (cdKernel s n y)
   rw [momentInner_cdKernel_cdKernel h n x y, momentInner_cdKernel_cdKernel h n x x,
@@ -211,7 +211,7 @@ the classical candidate for the mass an N-extremal measure puts at the point. -/
 theorem cdKernel_eval_self_succ (s : ℕ → ℝ) (n : ℕ) (x : ℝ) :
     (cdKernel s (n + 1) x).eval x
       = (cdKernel s n x).eval x
-        + (monicOrtho s (n + 1)).eval x ^ 2 /
+        + (monicOrtho s (n + 1)).eval x ^ (2 : ℕ) /
           momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) := by
   rw [cdKernel_eval_self, cdKernel_eval_self, Finset.sum_range_succ]
 

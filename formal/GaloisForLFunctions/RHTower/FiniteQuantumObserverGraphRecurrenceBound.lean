@@ -216,7 +216,7 @@ theorem exists_finiteQuantumObserver_graphRank_recurrence
           (finiteObserverCoherenceGraph lam block).ConnectedComponent) ∧
       finiteQuantumObserverPhaseEnergy lam
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) block ≤
-        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           ∑ i, ∑ j, finiteObserverUnionWeight lam block i j := by
   let G := finiteObserverCoherenceGraph lam block
   obtain ⟨n, hn0, hnQ, hedge⟩ :=
@@ -227,9 +227,9 @@ theorem exists_finiteQuantumObserver_graphRank_recurrence
     calc
       (∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
           ‖finiteQuantumObserverPhase
-            (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) i j - 1‖ ^ 2) ≤
+            (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) i j - 1‖ ^ (2 : ℕ)) ≤
           ∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
-            (2 * (2 * Real.pi / (Q + 1 : ℝ))) ^ 2 := by
+            (2 * (2 * Real.pi / (Q + 1 : ℝ))) ^ (2 : ℕ) := by
         apply Finset.sum_le_sum
         intro i _hi
         apply Finset.sum_le_sum
@@ -275,7 +275,7 @@ theorem exists_finiteQuantumObserver_graphRank_recurrence
           ((sq_le_sq₀ (norm_nonneg _)
             (by positivity)).2 hchord)
           (finiteObserverUnionWeight_nonneg lam block hlam i j)
-      _ = 4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+      _ = 4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           ∑ i, ∑ j, finiteObserverUnionWeight lam block i j := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
@@ -300,7 +300,7 @@ theorem exists_finiteQuantumObserver_graphRank_distance_recurrence
           (finiteObserverCoherenceGraph lam block).ConnectedComponent) ∧
       finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) block ≤
-        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           ∑ i, ∑ j, finiteObserverUnionWeight lam block i j := by
   obtain ⟨n, hn0, hnQ, henergy⟩ :=
     exists_finiteQuantumObserver_graphRank_recurrence

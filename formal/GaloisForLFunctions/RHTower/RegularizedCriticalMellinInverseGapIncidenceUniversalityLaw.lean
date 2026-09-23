@@ -49,7 +49,7 @@ theorem regularizedInverseGapCommutatorEnergy_eq_primePolarRegularizedCriticalMe
                 (HTGeometry.cauchyBoundaryNode ε x)) v i j +
             HTGeometry.gramValueCommutator
               (regularizedCriticalMellinRightHalfPlaneGram
-                (HTGeometry.cauchyBoundaryNode ε x)) v i j‖ ^ 2 := by
+                (HTGeometry.cauchyBoundaryNode ε x)) v i j‖ ^ (2 : ℕ) := by
   have hw : ∀ i, 0 < (HTGeometry.cauchyBoundaryNode ε x i).re := by
     intro i
     simp [HTGeometry.cauchyBoundaryNode, hε]

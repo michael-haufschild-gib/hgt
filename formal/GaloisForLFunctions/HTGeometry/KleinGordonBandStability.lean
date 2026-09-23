@@ -32,20 +32,20 @@ variable {W₁ W₂ : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume :
 /-- An admissible probing time always exists, and `min T (8K)^{-1/2}` is one. -/
 theorem exists_probe_time {R T b : ℝ} (hb0 : 0 ≤ b) (hT0 : 0 < T) :
     ∃ x : ℝ, 0 < x ∧ x ≤ T
-      ∧ x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) ≤ 1 / 8
-      ∧ 1 / x ^ 2 ≤ 1 / T ^ 2 + 8 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) := by
-  set K : ℝ := (1 + R ^ 2) / 2 + b * Real.exp (b * T) with hK
+      ∧ x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) ≤ 1 / 8
+      ∧ 1 / x ^ (2 : ℕ) ≤ 1 / T ^ (2 : ℕ) + 8 * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) := by
+  set K : ℝ := (1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T) with hK
   have hK0 : 0 < K := by rw [hK]; positivity
   have hinv0 : (0 : ℝ) < 1 / (8 * K) := by positivity
   set c : ℝ := Real.sqrt (1 / (8 * K)) with hc
   have hc0 : 0 < c := Real.sqrt_pos.mpr hinv0
-  have hcsq : c ^ 2 = 1 / (8 * K) := Real.sq_sqrt hinv0.le
+  have hcsq : c ^ (2 : ℕ) = 1 / (8 * K) := Real.sq_sqrt hinv0.le
   refine ⟨min T c, lt_min hT0 hc0, min_le_left _ _, ?_, ?_⟩
   · have hle : min T c ≤ c := min_le_right _ _
-    have hsq : (min T c) ^ 2 ≤ c ^ 2 :=
+    have hsq : (min T c) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) :=
       pow_le_pow_left₀ (le_of_lt (lt_min hT0 hc0)) hle 2
     rw [hcsq] at hsq
-    have hstep : (min T c) ^ 2 * K ≤ 1 / (8 * K) * K :=
+    have hstep : (min T c) ^ (2 : ℕ) * K ≤ 1 / (8 * K) * K :=
       mul_le_mul_of_nonneg_right hsq hK0.le
     have hval : 1 / (8 * K) * K = 1 / 8 := by field_simp
     linarith
@@ -57,7 +57,7 @@ theorem exists_probe_time {R T b : ℝ} (hb0 : 0 ≤ b) (hT0 : 0 < T) :
     · rw [heq, hcsq]
       have hval : 1 / (1 / (8 * K)) = 8 * K := by field_simp
       rw [hval]
-      have hT2 : (0 : ℝ) < 1 / T ^ 2 := by positivity
+      have hT2 : (0 : ℝ) < 1 / T ^ (2 : ℕ) := by positivity
       linarith
 
 /-- **Conditional stability with an explicit constant.** No free parameter: the probing time has been
@@ -72,13 +72,13 @@ theorem norm_sub_le_of_lowPass_explicit (hb0 : 0 ≤ b) (hW₁ : ‖W₁‖ ≤ 
     (hobs : ∀ (g k : Lp ℂ 2 (volume : Measure E)) (t : ℝ), |t| ≤ T →
       ‖kgFieldMild W₁ g k t - kgFieldMild W₂ g k t‖ ≤ η * (‖g‖ + ‖k‖)) :
     ‖W₁ - W₂‖ ≤ 8 * (η * (1 + b * T))
-      * (1 / T ^ 2 + 8 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T))) := by
+      * (1 / T ^ (2 : ℕ) + 8 * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T))) := by
   obtain ⟨x, hx0, hxT, hxK, hxinv⟩ := exists_probe_time (R := R) (T := T) (b := b) hb0 hT0
   have hmain := norm_sub_le_of_lowPass hb0 hW₁ hW₂ hAdom hAran hη0 hx0 hxT hxK hobs
   refine hmain.trans ?_
-  have hx2 : (0 : ℝ) < x ^ 2 := by positivity
+  have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   have hcoef : (0 : ℝ) ≤ 8 * (η * (1 + b * T)) := by positivity
-  have hrw : 8 * (η * (1 + b * T)) / x ^ 2 = 8 * (η * (1 + b * T)) * (1 / x ^ 2) := by
+  have hrw : 8 * (η * (1 + b * T)) / x ^ (2 : ℕ) = 8 * (η * (1 + b * T)) * (1 / x ^ (2 : ℕ)) := by
     field_simp
   rw [hrw]
   exact mul_le_mul_of_nonneg_left hxinv hcoef
@@ -99,7 +99,7 @@ theorem lowPass_band_stability (hb0 : 0 ≤ b) (hW₁ : ‖W₁‖ ≤ b) (hW₂
           (∀ (f h : Lp ℂ 2 (volume : Measure E)) (t : ℝ), |t| ≤ T →
             ‖kgFieldMild W₁ f h t - kgFieldMild W₂ f h t‖ ≤ η * (‖f‖ + ‖h‖)) →
           ‖W₁ - W₂‖ ≤ 8 * (η * (1 + b * T))
-            * (1 / T ^ 2 + 8 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T))) := by
+            * (1 / T ^ (2 : ℕ) + 8 * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T))) := by
   refine ⟨fun f h t htT => ?_, fun η hη0 hobs =>
     norm_sub_le_of_lowPass_explicit hb0 hW₁ hW₂ hAdom hAran hη0 hT0 hobs⟩
   refine (norm_kgFieldMild_sub_potential_le hb0 hW₁ hW₂ (norm_nonneg _) le_rfl f h t).trans ?_

@@ -90,19 +90,19 @@ theorem exists_bound_datumPaired {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
     (hψs : HasCompactSupport ψ) (hf : StripDatum f) {σ σ' : ℝ}
     (hσ : σ ∈ Ioo (0 : ℝ) 1) (hσ' : σ' ∈ Ioo (0 : ℝ) 1) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ z : ℂ, z.im ∈ uIcc σ σ' →
-      ‖datumPaired ψ f z‖ ≤ A / (1 + z.re ^ 2) := by
+      ‖datumPaired ψ f z‖ ≤ A / (1 + z.re ^ (2 : ℕ)) := by
   obtain ⟨D, n, hD0, hD⟩ := hf.bdd (σ ⊓ σ') (σ ⊔ σ') (lt_min hσ.1 hσ'.1) inf_le_sup
     (max_lt hσ.2 hσ'.2)
   obtain ⟨C, hC0, hC⟩ := exists_testTransformTwoPi_decay_order hψ hψs σ σ' (n + 2)
   refine ⟨C * D, by positivity, fun z hz => ?_⟩
   have hzIcc : z.im ∈ Icc (σ ⊓ σ') (σ ⊔ σ') := hz
   have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
-  have hre : z.re ^ 2 ≤ ‖z‖ ^ 2 := by
+  have hre : z.re ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) := by
     have h1 : |z.re| ≤ ‖z‖ := Complex.abs_re_le_norm z
-    calc z.re ^ 2 = |z.re| ^ 2 := (sq_abs _).symm
-      _ ≤ ‖z‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h1 2
+    calc z.re ^ (2 : ℕ) = |z.re| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ ‖z‖ ^ (2 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) h1 2
   have hcollapse : (C / (1 + ‖z‖) ^ (n + 2)) * (D * (1 + ‖z‖) ^ n)
-      = (C * D) / (1 + ‖z‖) ^ 2 := by
+      = (C * D) / (1 + ‖z‖) ^ (2 : ℕ) := by
     have hne : ((1 : ℝ) + ‖z‖) ^ n ≠ 0 := by positivity
     rw [pow_add]
     field_simp
@@ -110,8 +110,8 @@ theorem exists_bound_datumPaired {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
       = ‖testTransformTwoPi ψ z‖ * ‖f z‖ := by rw [datumPaired, norm_smul]
     _ ≤ (C / (1 + ‖z‖) ^ (n + 2)) * (D * (1 + ‖z‖) ^ n) :=
         mul_le_mul (hC z hz) (hD z hzIcc) (norm_nonneg _) (by positivity)
-    _ = (C * D) / (1 + ‖z‖) ^ 2 := hcollapse
-    _ ≤ (C * D) / (1 + z.re ^ 2) := by
+    _ = (C * D) / (1 + ‖z‖) ^ (2 : ℕ) := hcollapse
+    _ ≤ (C * D) / (1 + z.re ^ (2 : ℕ)) := by
         refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
         nlinarith [hz0, hre]
 
@@ -134,7 +134,7 @@ theorem integrable_datumPaired_line {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ �
     (hψs : HasCompactSupport ψ) (hf : StripDatum f) {σ : ℝ} (hσ : σ ∈ Ioo (0 : ℝ) 1) :
     Integrable (fun x : ℝ => datumPaired ψ f ((x : ℂ) + (σ : ℂ) * Complex.I)) := by
   obtain ⟨A, hA0, hA⟩ := exists_bound_datumPaired hψ hψs hf hσ hσ
-  have hint : Integrable (fun x : ℝ => A / (1 + x ^ 2)) := by
+  have hint : Integrable (fun x : ℝ => A / (1 + x ^ (2 : ℕ))) := by
     have := integrable_inv_one_add_sq.const_mul A
     refine this.congr (Filter.Eventually.of_forall fun x => ?_)
     simp [div_eq_mul_inv]
@@ -161,27 +161,27 @@ theorem datumPaired_line_shift {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
   have hbound : ∀ R : ℝ,
       ‖∫ y in σ..σ', datumPaired ψ f ((R : ℂ) + (y : ℂ) * Complex.I)‖
         + ‖∫ y in σ..σ', datumPaired ψ f (-(R : ℂ) + (y : ℂ) * Complex.I)‖
-      ≤ 2 * (A / (1 + R ^ 2) * |σ' - σ|) := by
+      ≤ 2 * (A / (1 + R ^ (2 : ℕ)) * |σ' - σ|) := by
     intro R
-    have hpos : ∀ (w : ℂ) (y : ℝ), y ∈ Set.uIoc σ σ' → w.re ^ 2 = R ^ 2 →
-        w.im = y → ‖datumPaired ψ f w‖ ≤ A / (1 + R ^ 2) := by
+    have hpos : ∀ (w : ℂ) (y : ℝ), y ∈ Set.uIoc σ σ' → w.re ^ (2 : ℕ) = R ^ (2 : ℕ) →
+        w.im = y → ‖datumPaired ψ f w‖ ≤ A / (1 + R ^ (2 : ℕ)) := by
       intro w y hy hwre hwim
       have hyIcc : y ∈ uIcc σ σ' := Set.Ioc_subset_Icc_self hy
       have := hA w (by rw [hwim]; exact hyIcc)
       rwa [hwre] at this
     have h1 : ‖∫ y in σ..σ', datumPaired ψ f ((R : ℂ) + (y : ℂ) * Complex.I)‖
-        ≤ A / (1 + R ^ 2) * |σ' - σ| := by
+        ≤ A / (1 + R ^ (2 : ℕ)) * |σ' - σ| := by
       refine intervalIntegral.norm_integral_le_of_norm_le_const (fun y hy => ?_)
       refine hpos _ y hy ?_ ?_ <;> simp
     have h2 : ‖∫ y in σ..σ', datumPaired ψ f (-(R : ℂ) + (y : ℂ) * Complex.I)‖
-        ≤ A / (1 + R ^ 2) * |σ' - σ| := by
+        ≤ A / (1 + R ^ (2 : ℕ)) * |σ' - σ| := by
       refine intervalIntegral.norm_integral_le_of_norm_le_const (fun y hy => ?_)
       refine hpos _ y hy ?_ ?_ <;> simp
     linarith
   refine squeeze_zero (fun R => by positivity) hbound ?_
-  have hquad : Tendsto (fun R : ℝ => 1 + R ^ 2) atTop atTop :=
+  have hquad : Tendsto (fun R : ℝ => 1 + R ^ (2 : ℕ)) atTop atTop :=
     tendsto_atTop_add_const_left _ 1 (tendsto_pow_atTop two_ne_zero)
-  have hdiv : Tendsto (fun R : ℝ => A / (1 + R ^ 2)) atTop (nhds 0) :=
+  have hdiv : Tendsto (fun R : ℝ => A / (1 + R ^ (2 : ℕ))) atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop hquad
   have := (hdiv.mul_const |σ' - σ|).const_mul (2 : ℝ)
   simpa using this

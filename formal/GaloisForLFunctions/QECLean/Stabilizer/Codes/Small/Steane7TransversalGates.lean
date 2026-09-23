@@ -347,7 +347,7 @@ theorem transversalS_Steane7_isLogicalS :
           logicalX.toMatrix = (NQubitPauliOperator.X 7).toMatrix := by
         simp [logicalX, NQubitPauliGroupElement.toMatrix, PauliGroupElement.phasePowerToComplex]
       rw [hX, uniformTransversalGateMatrix_inv_S_conj_allX]
-      have hpow : ((-1 : ℂ) ^ 7) = -1 := by norm_num
+      have hpow : ((-1 : ℂ) ^ (7 : ℕ)) = -1 := by norm_num
       simp [logicalY_eq_phase2_allY, NQubitPauliGroupElement.toMatrix,
         PauliGroupElement.phasePowerToComplex, hpow]
     simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,

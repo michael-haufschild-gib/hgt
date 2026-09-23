@@ -22,7 +22,7 @@ theorem huxley_raised_fixedWidth_factor_large_values_finset
     (hsupp : ∀ n : Fin N, a n ≠ 0 →
       A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
     {sigma : ℝ} (hsigma : 0 ≤ sigma)
-    (G : ℝ) (henergy : ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ 2 ≤ G)
+    (G : ℝ) (henergy : ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ (2 : ℕ) ≤ G)
     (U B : Fin (w * ell + 1) → ℝ)
     {S : Finset ℕ} (hS : S ⊆ Finset.range K)
     {lam : ℕ → ℝ} {delta T V : ℝ}
@@ -39,8 +39,8 @@ theorem huxley_raised_fixedWidth_factor_large_values_finset
     (hdiam : ∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T)
     (hlarge : ∀ r ∈ S, V ≤ ‖raisedDirichletValue N ell a sigma (lam r)‖)
     (habsorb : ((w * ell + 1 : ℕ) : ℝ) *
-      ∑ q : Fin (w * ell + 1), G * B q ≤ V ^ 2 / 2) :
-    (S.card : ℝ) * V ^ 2 ≤
+      ∑ q : Fin (w * ell + 1), G * B q ≤ V ^ (2 : ℕ) / 2) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
       2 * ((w * ell + 1 : ℕ) : ℝ) * ∑ q : Fin (w * ell + 1),
         G * ((((A ^ ell * 2 ^ (q : ℕ) : ℕ) : ℝ)) +
           (12 * Real.pi * (((A ^ ell * 2 ^ (q : ℕ) : ℕ) : ℝ)) / delta) *
@@ -53,7 +53,7 @@ theorem huxley_raised_fixedWidth_factor_large_values_finset
     dsimp [D]
     exact Nat.one_le_iff_ne_zero.mpr
       (mul_ne_zero (pow_ne_zero ell (by omega)) (pow_ne_zero (q : ℕ) (by norm_num)))
-  have hmass : ∀ q, ‖c q‖ ^ 2 ≤ G := by
+  have hmass : ∀ q, ‖c q‖ ^ (2 : ℕ) ≤ G := by
     intro q
     exact (norm_dyadicWeightedCoeff_sq_le _ _ _ hsigma (hD q)).trans henergy
   have hbig : ∀ r ∈ S,
@@ -62,7 +62,7 @@ theorem huxley_raised_fixedWidth_factor_large_values_finset
     exact (hlarge r hr).trans
       (norm_raisedDirichletValue_le_sum_fixedWidth_dyadic hA a hsupp sigma (lam r))
   have habsorb' : (Fintype.card (Fin (w * ell + 1)) : ℝ) *
-      ∑ q : Fin (w * ell + 1), G * B q ≤ V ^ 2 / 2 := by
+      ∑ q : Fin (w * ell + 1), G * B q ≤ V ^ (2 : ℕ) / 2 := by
     simpa using habsorb
   simpa [D, c] using huxley_multiblock_large_values_finset D hD c
     (fun _ => G) U B hS hdelta hV hmass hU hgap hnear hlamT hB hB1
@@ -76,7 +76,7 @@ theorem huxley_heathBrown_grouped_large_values_finset
     (G : ℝ)
     (henergy : ∑ j : Fin ((groupedDyadicUpper q) ^ ell),
       ‖convPow (groupedDyadicUpper q) ell
-        (groupedDyadicCoeffVector (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ 2 ≤ G)
+        (groupedDyadicCoeffVector (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ (2 : ℕ) ≤ G)
     (U B : Fin (Fintype.card ι * ell + 1) → ℝ)
     {S : Finset ℕ} (hS : S ⊆ Finset.range K)
     {lam : ℕ → ℝ} {delta T V : ℝ}
@@ -99,8 +99,8 @@ theorem huxley_heathBrown_grouped_large_values_finset
           (heathBrownFactorBase L X (kind i)) (q i)))
           ((sigma : ℂ) + (lam r : ℝ) * Complex.I)) ^ ell‖)
     (habsorb : ((Fintype.card ι * ell + 1 : ℕ) : ℝ) *
-      ∑ r : Fin (Fintype.card ι * ell + 1), G * B r ≤ V ^ 2 / 2) :
-    (S.card : ℝ) * V ^ 2 ≤
+      ∑ r : Fin (Fintype.card ι * ell + 1), G * B r ≤ V ^ (2 : ℕ) / 2) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
       2 * ((Fintype.card ι * ell + 1 : ℕ) : ℝ) *
         ∑ r : Fin (Fintype.card ι * ell + 1),
           G * (((((groupedDyadicLower q) ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) +

@@ -21,7 +21,7 @@ namespace RHTower.D4BMFullAngularSourceHorizonAdmission
 
 open D4BMHorizon D4BMModularCore D4BMJointSource D4BMCausalKernel
 open D4BMFullAngularCircle D4BMFullAngularReconstruction D4BMFullAngularGrowth
-open D4BMFullAngularSourceHorizonTrace
+open D4BMFullAngularSourceHorizonTrace D4BMFutureSeedHorizon D4BMFullSourceAdvanced
 
 noncomputable section
 set_option autoImplicit false
@@ -40,14 +40,15 @@ private theorem fullMean_source_horizon_majorant (q : XiZeroCopy) (branch : Bool
   intro v x y hv hy
   have hmajor := h v x y hv hy
   dsimp only at hmajor
+  rw [show v - y - tau = v - tau - y from by ring] at hmajor
   have hE : 0 < Real.exp (2 * (physicalRate q branch).re * v) := Real.exp_pos _
   have hterm : Real.exp (2 * (physicalRate q branch).re * v) *
       ‖angularMean q branch
         (Real.arcosh (max 1 (invariant (v - tau - y) x y))) X k‖ ≤
       B * Real.exp ((2 * (physicalRate q branch).re + decayExponent q) * v) := by
-    apply (mul_le_mul_of_nonneg_left
-      (le_add_of_nonneg_right (norm_nonneg _)) hE.le).trans
-    exact hmajor
+    refine le_trans (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right
+      (norm_nonneg (deriv (fun r => angularMean q branch r X k)
+        (Real.arcosh (max 1 (invariant (v - tau - y) x y)))))) hE.le) hmajor
   calc
     ‖angularMean q branch
         (Real.arcosh (max 1 (invariant (v - tau - y) x y))) X k‖ =
@@ -63,7 +64,6 @@ private theorem fullMean_source_horizon_majorant (q : XiZeroCopy) (branch : Bool
       rw [show (2 * (physicalRate q branch).re + decayExponent q) * v =
         2 * (physicalRate q branch).re * v + decayExponent q * v by ring, Real.exp_add]
       field_simp [hE.ne']
-      ring
 
 private theorem onsetFirst_majorant (q : XiZeroCopy) (branch : Bool) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ v : ℝ,
@@ -71,7 +71,7 @@ private theorem onsetFirst_majorant (q : XiZeroCopy) (branch : Bool) :
         A * Real.exp (2 * (physicalRate q branch).re * v) := by
   obtain ⟨A, hA, h⟩ := timeOnset_pair_bound (2 * physicalRate q branch)
     (-(2 * physicalRate q branch).re) (by simp)
-  have hre : -(2 * physicalRate q branch).re = 2 * (physicalRate q branch).re := by
+  have hre : - -(2 * physicalRate q branch).re = 2 * (physicalRate q branch).re := by
     simp
   refine ⟨A, hA, ?_⟩
   intro v
@@ -99,7 +99,7 @@ private theorem closedSourceFace_continuous (q : XiZeroCopy) (branch : Bool)
     intro v
     exact mul_ne_zero (Real.cosh_pos target).ne' (Real.cosh_pos source).ne'
   · intro v
-    exact le_max_left 1 _
+    exact Set.mem_Ici.mpr (le_max_left 1 _)
 
 private theorem sourceFace_indicator (q : XiZeroCopy) (branch : Bool)
     (tau target source X k : ℝ) :
@@ -110,12 +110,12 @@ private theorem sourceFace_indicator (q : XiZeroCopy) (branch : Bool)
         (closedSourceFace q branch tau target source X k) := by
   funext v
   by_cases hv : tau + source + |target - source| ≤ v
-  · rw [Set.indicator_of_mem hv]
+  · rw [Set.indicator_of_mem (Set.mem_Ici.mpr hv)]
     have hcone : |target - source| ≤ v - tau - source := by linarith
     have hz := invariant_causal
       (⟨v - tau - source, target, source, hcone⟩ : CausalPoint)
     simp only [if_pos hcone, closedSourceFace, max_eq_right hz]
-  · rw [Set.indicator_of_notMem hv]
+  · rw [Set.indicator_of_notMem (fun hmem => hv (Set.mem_Ici.mp hmem))]
     have hcone : ¬|target - source| ≤ v - tau - source := by
       intro h
       apply hv
@@ -127,10 +127,16 @@ private theorem fullDirichlet_source_horizon_aestronglyMeasurable
     AEStronglyMeasurable (fun v =>
       angularDirichletKernel q branch (v - tau - y) x y X k)
       (volume.restrict (Ioi 0)) := by
-  have hd := (closedSourceFace_continuous q branch tau x y X k).aestronglyMeasurable
-    |>.indicator measurableSet_Ici
-  have hi := (closedSourceFace_continuous q branch tau (-x) y X k).aestronglyMeasurable
-    |>.indicator measurableSet_Ici
+  have hd : AEStronglyMeasurable
+      ((Ici (tau + y + |x - y|)).indicator (closedSourceFace q branch tau x y X k))
+      (volume : Measure ℝ) :=
+    ((closedSourceFace_continuous q branch tau x y X k).aestronglyMeasurable).indicator
+      measurableSet_Ici
+  have hi : AEStronglyMeasurable
+      ((Ici (tau + y + |(-x) - y|)).indicator (closedSourceFace q branch tau (-x) y X k))
+      (volume : Measure ℝ) :=
+    ((closedSourceFace_continuous q branch tau (-x) y X k).aestronglyMeasurable).indicator
+      measurableSet_Ici
   have he : (fun v => angularDirichletKernel q branch (v - tau - y) x y X k) =
       fun v =>
         ((Ici (tau + y + |x - y|)).indicator
@@ -139,15 +145,15 @@ private theorem fullDirichlet_source_horizon_aestronglyMeasurable
           (closedSourceFace q branch tau (-x) y X k) v) / 2 := by
     funext v
     unfold angularDirichletKernel
-    rw [sourceFace_indicator q branch tau x y X k,
-      sourceFace_indicator q branch tau (-x) y X k]
     have heq : invariant (v - tau - y) (-x) y = invariant (v - tau - y) x (-y) := by
       simp [invariant, Real.sinh_neg, Real.cosh_neg]
     have habs : |(-x) - y| = |x + y| := by
       rw [show -x - y = -(x + y) by ring, abs_neg]
-    rw [habs, heq]
+    rw [congrFun (sourceFace_indicator q branch tau x y X k) v, ← habs, ← heq,
+      congrFun (sourceFace_indicator q branch tau (-x) y X k) v]
   rw [he]
-  exact (hd.sub hi).div_const (2 : ℂ) |>.restrict
+  simp only [div_eq_mul_inv]
+  exact ((hd.sub hi).mul_const (2 : ℂ)⁻¹).restrict
 
 private theorem fullDirichlet_source_horizon_majorant (q : XiZeroCopy) (branch : Bool)
     (tau X k : ℝ) :
@@ -213,9 +219,7 @@ theorem fullAngularDirichlet_source_horizon_admission (q : XiZeroCopy) (branch :
   obtain ⟨A, hA, honset⟩ := onsetFirst_majorant q branch
   obtain ⟨B, hB, hI, hkernel⟩ := fullDirichlet_source_horizon_majorant q branch tau X k
   refine ⟨A * B, mul_nonneg hA hB, ?_, ?_⟩
-  · convert hI.const_mul A using 1
-    funext v
-    ring
+  · exact (hI.const_mul A).congr (Filter.Eventually.of_forall fun v => by ring)
   intro v x y hv hy
   rw [norm_mul]
   calc

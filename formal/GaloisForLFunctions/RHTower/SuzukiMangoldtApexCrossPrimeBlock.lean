@@ -704,7 +704,7 @@ lemma suzukiMangoldt_logTwo_div_mul_alignedApex_eq
     (Real.log 2 / (n : ℝ)) *
         suzukiRectangularPositiveArchSampleChannel (Real.log 2)
           (suzukiMangoldtApexAperture n) (mangoldtLogHaarNode n) =
-      (Real.log 2) ^ 2 / Real.sqrt n := by
+      (Real.log 2) ^ (2 : ℕ) / Real.sqrt n := by
   have hnR : (0 : ℝ) < n := by positivity
   have hsqrtPos : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hnR
   have hlogPos : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
@@ -722,9 +722,9 @@ theorem exists_dyadic_absolute_suzukiMangoldtFlankSurplus
       2 ≤ m ∧ n < 2 * m ∧ m ≤ 2 * n ∧ m ≠ n ∧
       IsPrimePow m ∧
       0 < (1 - suzukiMangoldtDyadicSharpContraction) *
-        (Real.log 2) ^ 2 / Real.sqrt n ∧
+        (Real.log 2) ^ (2 : ℕ) / Real.sqrt n ∧
       (1 - suzukiMangoldtDyadicSharpContraction) *
-          (Real.log 2) ^ 2 / Real.sqrt n ≤
+          (Real.log 2) ^ (2 : ℕ) / Real.sqrt n ≤
         (1 - suzukiMangoldtDyadicSharpContraction) * mangoldtLogHaarAtomMass m *
           suzukiRectangularPositiveArchSampleChannel (Real.log 2)
             (suzukiMangoldtApexAperture n) (mangoldtLogHaarNode n) ∧
@@ -740,7 +740,7 @@ theorem exists_dyadic_absolute_suzukiMangoldtFlankSurplus
   have hsqrtPos : 0 < Real.sqrt (n : ℝ) := by positivity
   have hlogPos : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
   have habsolutePos : 0 < (1 - suzukiMangoldtDyadicSharpContraction) *
-      (Real.log 2) ^ 2 / Real.sqrt n := by positivity
+      (Real.log 2) ^ (2 : ℕ) / Real.sqrt n := by positivity
   have hsurplusLower :
       (1 - suzukiMangoldtDyadicSharpContraction) * mangoldtLogHaarAtomMass m *
           suzukiRectangularPositiveArchSampleChannel (Real.log 2)
@@ -759,14 +759,14 @@ theorem exists_dyadic_absolute_suzukiMangoldtFlankSurplus
     have hmassWeighted := mul_le_mul_of_nonneg_left hmMassLower hcPos.le
     exact mul_le_mul_of_nonneg_right hmassWeighted hselfPos.le
   have habsoluteLe :
-      (1 - suzukiMangoldtDyadicSharpContraction) * (Real.log 2) ^ 2 / Real.sqrt n ≤
+      (1 - suzukiMangoldtDyadicSharpContraction) * (Real.log 2) ^ (2 : ℕ) / Real.sqrt n ≤
         (1 - suzukiMangoldtDyadicSharpContraction) * mangoldtLogHaarAtomMass m *
           suzukiRectangularPositiveArchSampleChannel (Real.log 2)
             (suzukiMangoldtApexAperture n) (mangoldtLogHaarNode n) := by
     calc
-      (1 - suzukiMangoldtDyadicSharpContraction) * (Real.log 2) ^ 2 / Real.sqrt n =
+      (1 - suzukiMangoldtDyadicSharpContraction) * (Real.log 2) ^ (2 : ℕ) / Real.sqrt n =
           (1 - suzukiMangoldtDyadicSharpContraction) *
-            ((Real.log 2) ^ 2 / Real.sqrt n) := by ring
+            ((Real.log 2) ^ (2 : ℕ) / Real.sqrt n) := by ring
       _ = (1 - suzukiMangoldtDyadicSharpContraction) *
           ((Real.log 2 / (n : ℝ)) *
             suzukiRectangularPositiveArchSampleChannel (Real.log 2)

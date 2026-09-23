@@ -9,7 +9,7 @@ splits `∫_0^∞ (Θ(t) − h) t^{s−1} dt` at `t = 1` and subtracts the two-t
 The subtracted terms are elementary Mellin transforms,
 
 ```text
-∫_0^1 t^{-1} · t^{s−1} dt = 1/(s−1),        ∫_0^1 t^{s−1} dt = 1/s ,
+∫_0^(1 : ℕ) t^{-1} · t^{s−1} dt = 1/(s−1),        ∫_0^(1 : ℕ) t^{s−1} dt = 1/s ,
 ```
 
 and they carry the two poles of `Γ(s)ζ(s)`, at `s = 1` and `s = 0`.  This file records the split
@@ -69,12 +69,12 @@ theorem mellin_eq_mellinHead_add_mellinTail {f : ℝ → ℂ} {s : ℂ}
 
 /-! ## The two subtracted terms -/
 
-/-- `∫_0^1 t^{s−1} dt = 1/s` for `Re s > 0`. -/
+/-- `∫_0^(1 : ℕ) t^{s−1} dt = 1/s` for `Re s > 0`. -/
 theorem mellinHead_one {s : ℂ} (hs : 0 < s.re) :
     mellinHead (fun _ => (1 : ℂ)) s = 1 / s :=
   (hasMellin_one_Ioc hs).2
 
-/-- `∫_0^1 t^{-1} t^{s−1} dt = 1/(s−1)` for `Re s > 1`. -/
+/-- `∫_0^(1 : ℕ) t^{-1} t^{s−1} dt = 1/(s−1)` for `Re s > 1`. -/
 theorem mellinHead_cpow_neg_one {s : ℂ} (hs : 1 < s.re) :
     mellinHead (fun t : ℝ => (t : ℂ) ^ (-1 : ℂ)) s = 1 / (s - 1) := by
   have hre : 0 < s.re + ((-1 : ℂ)).re := by

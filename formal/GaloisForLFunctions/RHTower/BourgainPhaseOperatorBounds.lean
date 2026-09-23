@@ -60,7 +60,7 @@ theorem opNorm_bourgainParabolaPhaseScale_le_one
 private theorem norm_bourgainSquareRootLinearPhaseRow_le_six
     {p : ℝ} (hp0 : 1 / 2 ≤ p) (hp1 : p ≤ 1)
     (x : Fin 4 → ℝ) :
-    ‖x 0 + 2 * p ^ 2 * x 1 + (3 * p / 2) * x 2 +
+    ‖x 0 + 2 * p ^ (2 : ℕ) * x 1 + (3 * p / 2) * x 2 +
         (1 / (2 * p)) * x 3‖ ≤
       6 * ‖x‖ := by
   have hp : 0 < p := lt_of_lt_of_le (by norm_num) hp0
@@ -76,7 +76,7 @@ private theorem norm_bourgainSquareRootLinearPhaseRow_le_six
     exact (div_le_one (by positivity)).2 (by nlinarith)
   have hx (i : Fin 4) : ‖x i‖ ≤ ‖x‖ :=
     norm_apply_le_norm_bourgainPhaseSpace x i
-  have ht1 : ‖2 * p ^ 2 * x 1‖ ≤ 2 * ‖x‖ := by
+  have ht1 : ‖2 * p ^ (2 : ℕ) * x 1‖ ≤ 2 * ‖x‖ := by
     rw [norm_mul]
     exact mul_le_mul hc1 (hx 1) (norm_nonneg _) (by norm_num)
   have ht2 : ‖(3 * p / 2) * x 2‖ ≤ 2 * ‖x‖ := by
@@ -86,9 +86,9 @@ private theorem norm_bourgainSquareRootLinearPhaseRow_le_six
     rw [norm_mul]
     exact (mul_le_of_le_one_left (norm_nonneg _) hc3).trans (hx 3)
   calc
-    ‖x 0 + 2 * p ^ 2 * x 1 + (3 * p / 2) * x 2 +
+    ‖x 0 + 2 * p ^ (2 : ℕ) * x 1 + (3 * p / 2) * x 2 +
         (1 / (2 * p)) * x 3‖ ≤
-      ‖x 0‖ + ‖2 * p ^ 2 * x 1‖ + ‖(3 * p / 2) * x 2‖ +
+      ‖x 0‖ + ‖2 * p ^ (2 : ℕ) * x 1‖ + ‖(3 * p / 2) * x 2‖ +
         ‖(1 / (2 * p)) * x 3‖ := norm_add₄_le
     _ ≤ 6 * ‖x‖ := by
       nlinarith [hx 0, ht1, ht2, ht3]
@@ -97,7 +97,7 @@ private theorem norm_bourgainSquareRootQuadraticPhaseRow_le_six
     {p : ℝ} (hp0 : 1 / 2 ≤ p)
     (x : Fin 4 → ℝ) :
     ‖x 1 + (3 / (8 * p)) * x 2 -
-        (1 / (8 * p ^ 3)) * x 3‖ ≤
+        (1 / (8 * p ^ (3 : ℕ))) * x 3‖ ≤
       6 * ‖x‖ := by
   have hp : 0 < p := lt_of_lt_of_le (by norm_num) hp0
   have hp3 : (1 / 2 : ℝ) ^ (3 : ℕ) ≤ p ^ (3 : ℕ) :=
@@ -115,15 +115,15 @@ private theorem norm_bourgainSquareRootQuadraticPhaseRow_le_six
   have ht2 : ‖(3 / (8 * p)) * x 2‖ ≤ ‖x‖ := by
     rw [norm_mul]
     exact (mul_le_of_le_one_left (norm_nonneg _) hc2).trans (hx 2)
-  have ht3 : ‖(1 / (8 * p ^ 3)) * x 3‖ ≤ ‖x‖ := by
+  have ht3 : ‖(1 / (8 * p ^ (3 : ℕ))) * x 3‖ ≤ ‖x‖ := by
     rw [norm_mul]
     exact (mul_le_of_le_one_left (norm_nonneg _) hc3).trans (hx 3)
   rw [sub_eq_add_neg]
   calc
     ‖x 1 + (3 / (8 * p)) * x 2 +
-        -((1 / (8 * p ^ 3)) * x 3)‖ ≤
+        -((1 / (8 * p ^ (3 : ℕ))) * x 3)‖ ≤
       ‖x 1‖ + ‖(3 / (8 * p)) * x 2‖ +
-        ‖-((1 / (8 * p ^ 3)) * x 3)‖ := norm_add₃_le
+        ‖-((1 / (8 * p ^ (3 : ℕ))) * x 3)‖ := norm_add₃_le
     _ ≤ 6 * ‖x‖ := by
       rw [norm_neg]
       nlinarith [hx 1, ht2, ht3, norm_nonneg x]
@@ -184,7 +184,7 @@ theorem bourgainSquareRootPhaseOperatorBound_pos
 private theorem norm_bourgainSquareRootLinearPhaseRow_le_of_lower
     {A p : ℝ} (hA : 0 < A) (hAp : A ≤ p) (hp1 : p ≤ 1)
     (x : Fin 4 → ℝ) :
-    ‖x 0 + 2 * p ^ 2 * x 1 + (3 * p / 2) * x 2 +
+    ‖x 0 + 2 * p ^ (2 : ℕ) * x 1 + (3 * p / 2) * x 2 +
         (1 / (2 * p)) * x 3‖ ≤
       bourgainSquareRootPhaseOperatorBound A * ‖x‖ := by
   have hp : 0 < p := hA.trans_le hAp
@@ -201,7 +201,7 @@ private theorem norm_bourgainSquareRootLinearPhaseRow_le_of_lower
     exact one_div_le_one_div_of_le (by positivity) hden
   have hx (i : Fin 4) : ‖x i‖ ≤ ‖x‖ :=
     norm_apply_le_norm_bourgainPhaseSpace x i
-  have ht1 : ‖2 * p ^ 2 * x 1‖ ≤ 2 * ‖x‖ := by
+  have ht1 : ‖2 * p ^ (2 : ℕ) * x 1‖ ≤ 2 * ‖x‖ := by
     rw [norm_mul]
     exact mul_le_mul hc1 (hx 1) (norm_nonneg _) (by norm_num)
   have ht2 : ‖(3 * p / 2) * x 2‖ ≤ (3 / 2) * ‖x‖ := by
@@ -215,9 +215,9 @@ private theorem norm_bourgainSquareRootLinearPhaseRow_le_of_lower
       9 / 2 + 1 / (2 * A) ≤ bourgainSquareRootPhaseOperatorBound A :=
     le_max_left _ _
   calc
-    ‖x 0 + 2 * p ^ 2 * x 1 + (3 * p / 2) * x 2 +
+    ‖x 0 + 2 * p ^ (2 : ℕ) * x 1 + (3 * p / 2) * x 2 +
         (1 / (2 * p)) * x 3‖ ≤
-      ‖x 0‖ + ‖2 * p ^ 2 * x 1‖ + ‖(3 * p / 2) * x 2‖ +
+      ‖x 0‖ + ‖2 * p ^ (2 : ℕ) * x 1‖ + ‖(3 * p / 2) * x 2‖ +
         ‖(1 / (2 * p)) * x 3‖ := norm_add₄_le
     _ ≤ (9 / 2 + 1 / (2 * A)) * ‖x‖ := by
       nlinarith [hx 0, ht1, ht2, ht3]
@@ -228,7 +228,7 @@ private theorem norm_bourgainSquareRootQuadraticPhaseRow_le_of_lower
     {A p : ℝ} (hA : 0 < A) (hAp : A ≤ p)
     (x : Fin 4 → ℝ) :
     ‖x 1 + (3 / (8 * p)) * x 2 -
-        (1 / (8 * p ^ 3)) * x 3‖ ≤
+        (1 / (8 * p ^ (3 : ℕ))) * x 3‖ ≤
       bourgainSquareRootPhaseOperatorBound A * ‖x‖ := by
   have hp : 0 < p := hA.trans_le hAp
   have hp3 : A ^ (3 : ℕ) ≤ p ^ (3 : ℕ) :=
@@ -249,8 +249,8 @@ private theorem norm_bourgainSquareRootQuadraticPhaseRow_le_of_lower
       (3 / (8 * A)) * ‖x‖ := by
     rw [norm_mul]
     exact mul_le_mul hc2 (hx 2) (norm_nonneg _) (by positivity)
-  have ht3 : ‖(1 / (8 * p ^ 3)) * x 3‖ ≤
-      (1 / (8 * A ^ 3)) * ‖x‖ := by
+  have ht3 : ‖(1 / (8 * p ^ (3 : ℕ))) * x 3‖ ≤
+      (1 / (8 * A ^ (3 : ℕ))) * ‖x‖ := by
     rw [norm_mul]
     exact mul_le_mul hc3 (hx 3) (norm_nonneg _) (by positivity)
   have hrow :
@@ -260,9 +260,9 @@ private theorem norm_bourgainSquareRootQuadraticPhaseRow_le_of_lower
   rw [sub_eq_add_neg]
   calc
     ‖x 1 + (3 / (8 * p)) * x 2 +
-        -((1 / (8 * p ^ 3)) * x 3)‖ ≤
+        -((1 / (8 * p ^ (3 : ℕ))) * x 3)‖ ≤
       ‖x 1‖ + ‖(3 / (8 * p)) * x 2‖ +
-        ‖-((1 / (8 * p ^ 3)) * x 3)‖ := norm_add₃_le
+        ‖-((1 / (8 * p ^ (3 : ℕ))) * x 3)‖ := norm_add₃_le
     _ ≤ (1 + 3 / (8 * A) + 1 / (8 * A ^ (3 : ℕ))) *
         ‖x‖ := by
       rw [norm_neg]

@@ -10,7 +10,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalSmoothGraphTopologyInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 local instance : CompleteSpace causalSmoothGraph := causalSmoothGraph_complete
 
 /-- Coordinate norm seminorms on the actual smooth graph, with the natural product-family index. -/
@@ -31,7 +31,7 @@ theorem withSeminorms_causalSmoothGraph : WithSeminorms causalSmoothGraphSeminor
 theorem causalSmoothGraph_uniformAddGroup : IsUniformAddGroup causalSmoothGraph :=
   causalSmoothGraph.toAddSubgroup.isUniformAddGroup
 
-local instance : IsUniformAddGroup causalSmoothGraph := causalSmoothGraph_uniformAddGroup
+local instance fokasLenellsCausalSmoothGraphTopologyInst2 : IsUniformAddGroup causalSmoothGraph := causalSmoothGraph_uniformAddGroup
 local instance : FirstCountableTopology causalSmoothGraph :=
   withSeminorms_causalSmoothGraph.firstCountableTopology
 local instance : (uniformity causalSmoothGraph).IsCountablyGenerated :=
@@ -43,7 +43,7 @@ theorem causalSmoothGraph_baire : BaireSpace causalSmoothGraph := inferInstance
 local instance : BaireSpace causalSmoothGraph := causalSmoothGraph_baire
 local instance : IsTopologicalAddGroup causalSmoothGraph :=
   withSeminorms_causalSmoothGraph.topologicalAddGroup
-local instance : ContinuousSMul ℝ causalSmoothGraph := withSeminorms_causalSmoothGraph.continuousSMul
+local instance fokasLenellsCausalSmoothGraphTopologyInst3 : ContinuousSMul ℝ causalSmoothGraph := withSeminorms_causalSmoothGraph.continuousSMul
 
 /-- The actual smooth graph is barrelled, enabling the corpus finite-seminorm bound. -/
 theorem causalSmoothGraph_barrelled : BarrelledSpace ℝ causalSmoothGraph := inferInstance

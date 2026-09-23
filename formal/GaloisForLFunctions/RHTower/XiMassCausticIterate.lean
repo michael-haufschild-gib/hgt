@@ -74,7 +74,7 @@ theorem norm_xiCausticIterate_le {a : ℝ} (ha : 0 < a) {τ z₀ : ℂ} {δ M ε
     (hc₀ : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖xiCausticCoeffZero a τ ζ‖ ≤ ε)
     (hc₁ : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖xiCausticCoeffOne a τ ζ‖ ≤ γ)
     (hbase : ∀ ζ : ℂ, ‖ζ - z₀‖ ≤ (n : ℝ) * δ → ‖xiMassConjugatedCarrier a τ ζ‖ ≤ M) :
-    ‖xiCausticIterate a τ n z₀‖ ≤ M * (ε + γ / δ + 2 / δ ^ 2) ^ n :=
+    ‖xiCausticIterate a τ n z₀‖ ≤ M * (ε + γ / δ + 2 / δ ^ (2 : ℕ)) ^ n :=
   HTGeometry.norm_secondOrderIterate_le n hδ hM
     (fun k ζ hζ => diffContOnCl_xiCausticIterate ha k (hsub ζ hζ))
     (fun k ζ => xiCausticIterate_succ a τ k ζ) hc₀ hc₁ hbase

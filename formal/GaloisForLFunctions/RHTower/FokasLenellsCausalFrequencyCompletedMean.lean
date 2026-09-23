@@ -16,8 +16,8 @@ set_option backward.isDefEq.respectTransparency false
 
 private theorem norm_square_gap_bound
     {H : Type*} [NormedAddCommGroup H] (x y : H) :
-    |‖x‖ ^ 2 - ‖y‖ ^ 2| ≤ (‖x‖ + ‖y‖) * ‖x - y‖ := by
-  have he : ‖x‖ ^ 2 - ‖y‖ ^ 2 = (‖x‖ + ‖y‖) * (‖x‖ - ‖y‖) := by ring
+    |‖x‖ ^ (2 : ℕ) - ‖y‖ ^ (2 : ℕ)| ≤ (‖x‖ + ‖y‖) * ‖x - y‖ := by
+  have he : ‖x‖ ^ (2 : ℕ) - ‖y‖ ^ (2 : ℕ) = (‖x‖ + ‖y‖) * (‖x‖ - ‖y‖) := by ring
   rw [he, abs_mul, abs_of_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _))]
   exact mul_le_mul_of_nonneg_left (abs_norm_sub_norm_le x y)
     (add_nonneg (norm_nonneg _) (norm_nonneg _))
@@ -49,12 +49,12 @@ variable {E H : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
   [NormedAddCommGroup H] [NormedSpace ℂ H]
 
 private def quadraticCesaro (T : E ≃ₗᵢ[ℂ] E) (J : E →L[ℂ] H) (N : ℕ) (u : E) : ℝ :=
-  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖J ((T ^ n) u)‖ ^ 2
+  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖J ((T ^ n) u)‖ ^ (2 : ℕ)
 
 private theorem observed_square_gap_bound (T : E ≃ₗᵢ[ℂ] E) (J : E →L[ℂ] H)
     (n : ℕ) (u v : E) :
-    |‖J ((T ^ n) u)‖ ^ 2 - ‖J ((T ^ n) v)‖ ^ 2| ≤
-      ‖J‖ ^ 2 * (‖u‖ + ‖v‖) * ‖u - v‖ := by
+    |‖J ((T ^ n) u)‖ ^ (2 : ℕ) - ‖J ((T ^ n) v)‖ ^ (2 : ℕ)| ≤
+      ‖J‖ ^ (2 : ℕ) * (‖u‖ + ‖v‖) * ‖u - v‖ := by
   have hb (w : E) : ‖J ((T ^ n) w)‖ ≤ ‖J‖ * ‖w‖ := by
     simpa only [(T ^ n).norm_map] using J.le_opNorm ((T ^ n) w)
   have hd : ‖J ((T ^ n) u) - J ((T ^ n) v)‖ ≤ ‖J‖ * ‖u - v‖ := by
@@ -70,10 +70,10 @@ private theorem observed_square_gap_bound (T : E ≃ₗᵢ[ℂ] E) (J : E →L[�
 private theorem quadraticCesaro_gap_bound (T : E ≃ₗᵢ[ℂ] E) (J : E →L[ℂ] H)
     (N : ℕ) (u v : E) :
     |quadraticCesaro T J N u - quadraticCesaro T J N v| ≤
-      ‖J‖ ^ 2 * (‖u‖ + ‖v‖) * ‖u - v‖ := by
+      ‖J‖ ^ (2 : ℕ) * (‖u‖ + ‖v‖) * ‖u - v‖ := by
   have he : quadraticCesaro T J N u - quadraticCesaro T J N v =
       (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        (‖J ((T ^ n) u)‖ ^ 2 - ‖J ((T ^ n) v)‖ ^ 2) := by
+        (‖J ((T ^ n) u)‖ ^ (2 : ℕ) - ‖J ((T ^ n) v)‖ ^ (2 : ℕ)) := by
     simp only [quadraticCesaro, Finset.sum_sub_distrib, mul_sub]
   rw [he]
   exact absolute_real_cesaro_bound _ _ (by positivity)
@@ -152,18 +152,18 @@ private theorem completed_quadratic_mean
     (hS : DenseRange S) (hsum : ∀ c, HasSum (fun i => c i • v i) (S c))
     (W : E →L[ℂ] lp (fun _ : I => ℂ) 2)
     (hW : ∀ (s : Finset I) (c : I → ℂ),
-      ‖W (∑ i ∈ s, c i • v i)‖ ^ 2 = ∑ i ∈ s, ‖c i‖ ^ 2 * ‖J (v i)‖ ^ 2)
+      ‖W (∑ i ∈ s, c i • v i)‖ ^ (2 : ℕ) = ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖J (v i)‖ ^ (2 : ℕ))
     (hm : ∀ (s : Finset I) (c : I → ℂ),
       Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖J ((T ^ n) (∑ i ∈ s, c i • v i))‖ ^ 2) atTop
-        (𝓝 (∑ i ∈ s, ‖c i‖ ^ 2 * ‖J (v i)‖ ^ 2)))
+        ‖J ((T ^ n) (∑ i ∈ s, c i • v i))‖ ^ (2 : ℕ)) atTop
+        (𝓝 (∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖J (v i)‖ ^ (2 : ℕ))))
     (u : E) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J ((T ^ n) u)‖ ^ 2) atTop (𝓝 (‖W u‖ ^ 2)) := by
+      ‖J ((T ^ n) u)‖ ^ (2 : ℕ)) atTop (𝓝 (‖W u‖ ^ (2 : ℕ))) := by
   classical
   apply quadratic_limit_from_dense (Finsupp.linearCombination ℂ v)
-    (finite_synthesis_dense v S hS hsum) (quadraticCesaro T J) (fun w => ‖W w‖ ^ 2)
-    (by fun_prop) (‖J‖ ^ 2) (sq_nonneg ‖J‖)
+    (finite_synthesis_dense v S hS hsum) (quadraticCesaro T J) (fun w => ‖W w‖ ^ (2 : ℕ))
+    (by fun_prop) (‖J‖ ^ (2 : ℕ)) (sq_nonneg ‖J‖)
   · intro N x y
     simpa only [dist_eq_norm] using quadraticCesaro_gap_bound T J N x y
   · intro c
@@ -183,8 +183,8 @@ theorem causalFrequencyShift_completed_hilbert_square_mean
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop
-      (𝓝 (‖causalFrequencyObservedAmplitude b J u‖ ^ 2)) :=
+      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop
+      (𝓝 (‖causalFrequencyObservedAmplitude b J u‖ ^ (2 : ℕ))) :=
   completed_quadratic_mean (causalFrequencyShift b) J (causalFrequencyMode b)
     (causalFrequencyAbsoluteSynthesis b) (causalFrequencyAbsoluteSynthesis_denseRange b)
     (causalFrequencyAbsoluteSynthesis_hasSum b) (causalFrequencyObservedAmplitude b J)
@@ -197,9 +197,9 @@ theorem causalFrequencyShift_completed_hilbert_parseval
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ 2) atTop
-      (𝓝 (∑' ω : ℝ, ‖causalFrequencyCoefficient b ω u‖ ^ 2 *
-        ‖J (causalFrequencyMode b ω)‖ ^ 2)) := by
+      ‖J (((causalFrequencyShift b) ^ n) u)‖ ^ (2 : ℕ)) atTop
+      (𝓝 (∑' ω : ℝ, ‖causalFrequencyCoefficient b ω u‖ ^ (2 : ℕ) *
+        ‖J (causalFrequencyMode b ω)‖ ^ (2 : ℕ))) := by
   simpa only [causalFrequencyObservedAmplitude_square_norm] using
     causalFrequencyShift_completed_hilbert_square_mean b J u
 
@@ -234,8 +234,8 @@ the square of the canonical amplitude norm. This holds throughout completion. -/
 theorem causalFrequencyShift_completed_coordinate_square_mean
     (b : ℝ) (j : ℕ) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖causalBoundedChainCoordinate j ((((causalFrequencyShift b) ^ n) u).val)‖ ^ 2)
-      atTop (𝓝 (‖causalFrequencyAmplitudeMap b u‖ ^ 2)) := by
+      ‖causalBoundedChainCoordinate j ((((causalFrequencyShift b) ^ n) u).val)‖ ^ (2 : ℕ))
+      atTop (𝓝 (‖causalFrequencyAmplitudeMap b u‖ ^ (2 : ℕ))) := by
   have hm := causalFrequencyShift_completed_hilbert_square_mean b
     ((causalBoundedChainCoordinate j).comp (causalFrequencySpace b).subtypeL) u
   simpa only [causalFrequencyObservedAmplitude_coordinate, ContinuousLinearMap.comp_apply,
@@ -246,7 +246,7 @@ exactly when the vector itself vanishes. -/
 theorem causalFrequencyShift_completed_coordinate_mean_zero_iff
     (b : ℝ) (j : ℕ) (u : causalFrequencySpace b) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖causalBoundedChainCoordinate j ((((causalFrequencyShift b) ^ n) u).val)‖ ^ 2)
+      ‖causalBoundedChainCoordinate j ((((causalFrequencyShift b) ^ n) u).val)‖ ^ (2 : ℕ))
       atTop (𝓝 0) ↔ u = 0 := by
   constructor
   · intro h

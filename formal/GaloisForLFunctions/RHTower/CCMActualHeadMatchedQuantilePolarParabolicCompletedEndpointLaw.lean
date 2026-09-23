@@ -28,7 +28,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolic_pairing_sourceBoundary_eq
         (ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K T) =
       ccmParabolicForm (ccmActualHeadMatchedParabolicAggregate K) -
         (ccmActualHeadPolarMassCoordinate T -
-          ccmActualHeadQuantilePolarCoordinate 2) ^ 4 / 12 := by
+          ccmActualHeadQuantilePolarCoordinate 2) ^ (4 : ℕ) / 12 := by
   rw [ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal_pairing_sourceBoundary,
     ccmActualHeadCompletedQuantileParabolicAggregate_eq_moment,
     ccmParabolicForm_moment]
@@ -41,7 +41,7 @@ theorem ccmActualHeadPolarMassCoordinate_log_nat (N : ℕ) (hN : 0 < N) :
   unfold ccmActualHeadPolarMassCoordinate
   congr 1
   have hNR : 0 < (N : ℝ) := by exact_mod_cast hN
-  have hsq : Real.exp (Real.log (N : ℝ) / 2) ^ 2 = (N : ℝ) := by
+  have hsq : Real.exp (Real.log (N : ℝ) / 2) ^ (2 : ℕ) = (N : ℝ) := by
     rw [pow_two, ← Real.exp_add]
     have hsum : Real.log (N : ℝ) / 2 + Real.log (N : ℝ) / 2 =
         Real.log (N : ℝ) := by ring
@@ -59,7 +59,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolic_pairing_sourceBoundary_lo
         (ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal K (Real.log (K + 3)))
         (ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3))) =
       ccmParabolicForm (ccmActualHeadMatchedParabolicAggregate K) -
-        (2 * Real.sqrt ((K + 3 : ℕ) : ℝ) - 2) ^ 4 / 12 := by
+        (2 * Real.sqrt ((K + 3 : ℕ) : ℝ) - 2) ^ (4 : ℕ) / 12 := by
   rw [ccmActualHeadMatchedCompletedQuantileParabolic_pairing_sourceBoundary_eq_matchedForm_sub_endpointQuartic]
   have hcast : (K : ℝ) + 3 = ((K + 3 : ℕ) : ℝ) := by norm_num
   rw [hcast,

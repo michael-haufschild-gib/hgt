@@ -11,7 +11,7 @@ limit.
 For the finite eta polynomial `E_N` and its explicit derivative `D_N`,
 Lean proves on every nonvanishing circle
 
-`d/dr log |E_N(rho + r * exp (I * theta))|^2
+`d/dr log |E_N(rho + r * exp (I * theta))|^(2 : ℕ)
   = 2 * Re (exp (I * theta) * D_N / E_N)`.
 
 The selected finite denominators are already proved uniformly nonzero, so the

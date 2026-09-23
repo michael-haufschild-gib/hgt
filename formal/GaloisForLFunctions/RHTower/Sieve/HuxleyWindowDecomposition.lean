@@ -10,8 +10,8 @@ ordinate set into intervals of length `W`, applying the local estimate on every 
 summing.  The number of intervals is at most `floor (T / W) + 1`.
 
 Choosing `W` at the largest locally absorbing scale is the source of Huxley's classical cubic
-term: local cost `G N / V^2` times `T / W`, with `W` proportional to `V^4 / G^2`, is
-`T N G^3 / V^6`.
+term: local cost `G N / V^(2 : ℕ)` times `T / W`, with `W` proportional to `V^(4 : ℕ) / G^(2 : ℕ)`, is
+`T N G^(3 : ℕ) / V^(6 : ℕ)`.
 -/
 
 noncomputable section
@@ -95,7 +95,7 @@ theorem huxley_multiblock_large_values_finset_windowed
     (G U B : ι → ℝ) {S : Finset ℕ} (hS : S ⊆ Finset.range K)
     {lam : ℕ → ℝ} {delta T W V : ℝ}
     (hdelta : 0 < delta) (hT : 0 ≤ T) (hW : 0 < W) (hV : 0 < V)
-    (hmass : ∀ q, ‖a q‖ ^ 2 ≤ G q)
+    (hmass : ∀ q, ‖a q‖ ^ (2 : ℕ) ≤ G q)
     (hU : ∀ q, 0 < U q)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hband : ∀ r ∈ S, 0 ≤ lam r ∧ lam r ≤ T)
@@ -105,8 +105,8 @@ theorem huxley_multiblock_large_values_finset_windowed
     (hB1 : ∀ q, 1 ≤ B q)
     (hbig : ∀ r ∈ S,
       V ≤ ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖)
-    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ 2 / 2) :
-    (S.card : ℝ) * V ^ 2 ≤
+    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ (2 : ℕ) / 2) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
       (huxleyWindowCount T W : ℝ) *
         (2 * (Fintype.card ι : ℝ) * ∑ q : ι,
           G q * ((N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta) *
@@ -116,7 +116,7 @@ theorem huxley_multiblock_large_values_finset_windowed
     G q * ((N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta) *
       ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1))
   have hfibre : ∀ c : Fin (huxleyWindowCount T W),
-      ((((S.filter fun r => color r = c).card : ℕ) : ℝ) * V ^ 2) ≤ H := by
+      ((((S.filter fun r => color r = c).card : ℕ) : ℝ) * V ^ (2 : ℕ)) ≤ H := by
     intro c
     let Sf : Finset ℕ := S.filter fun r => color r = c
     have hSfS : Sf ⊆ S := Finset.filter_subset _ _

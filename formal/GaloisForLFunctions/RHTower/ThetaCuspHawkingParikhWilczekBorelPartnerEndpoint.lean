@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 Finite-mass Schwarzschild tunnelling produces more than generic KMS mixing.  Expanding the
 Parikh--Wilczek winding
 
-`exp (-n*x + epsilon*n*x^2)`
+`exp (-n*x + epsilon*n*x^(2 : ℕ))`
 
 in the horizon-shrinkage parameter and taking its Mellin transform gives the order-`k` jet
 
@@ -16,7 +16,7 @@ in the horizon-shrinkage parameter and taking its Mellin transform gives the ord
 After the second factorial normalization of a Borel transform, the first physical winding
 `n = 1` therefore has coefficient
 
-`b_k(s) = Gamma (s + 2*k) / (k!)^2`.
+`b_k(s) = Gamma (s + 2*k) / (k!)^(2 : ℕ)`.
 
 This file proves its exact consecutive growth law
 
@@ -24,11 +24,11 @@ This file proves its exact consecutive growth law
 
 where
 
-`R_k(s) = (s + 2*k) (s + 2*k + 1) / (k+1)^2`.
+`R_k(s) = (s + 2*k) (s + 2*k + 1) / (k+1)^(2 : ℕ)`.
 
 The functional-equation partner has a coefficient-faithful asymmetry at every Borel grade:
 
-`R_k(s) - R_k(1-s) = 4 (2*k+1) (s-1/2) / (k+1)^2`.
+`R_k(s) - R_k(1-s) = 4 (2*k+1) (s-1/2) / (k+1)^(2 : ℕ)`.
 
 Thus equality of the real partner growth rates is exactly critical-line placement, already at
 one grade.  Requiring this balance at every actual Xi zero is equivalent to RH.
@@ -73,14 +73,14 @@ namespace RHTower
 noncomputable section
 
 /-- Dimensionless upper energy endpoint `E = M` after setting
-`x = 8*pi*M*E` and `epsilon = 1/(16*pi*M^2)`. -/
+`x = 8*pi*M*E` and `epsilon = 1/(16*pi*M^(2 : ℕ))`. -/
 def schwarzschildParikhWilczekDimensionlessEnergyEndpoint (epsilon : ℝ) : ℝ :=
   1 / (2 * epsilon)
 
 /-- Exponent of the `(n+1)`-st exact Parikh--Wilczek Bose winding before applying `exp`. -/
 def schwarzschildParikhWilczekWindingPhase
     (n : ℕ) (epsilon x : ℝ) : ℝ :=
-  -((n : ℝ) + 1) * x + epsilon * (((n : ℝ) + 1) * x ^ 2)
+  -((n : ℝ) + 1) * x + epsilon * (((n : ℝ) + 1) * x ^ (2 : ℕ))
 
 /-- Nonperturbative action of the `(n+1)`-st winding at the physical energy endpoint. -/
 def schwarzschildParikhWilczekEndpointAction (n : ℕ) : ℝ :=
@@ -164,8 +164,8 @@ theorem schwarzschildParikhWilczekBorelMirrorPairMixing_ne_zero_iff
 /-- Canonical nonperturbative `SU(1,1)` norm law for the Borel mirror completion. -/
 theorem schwarzschildParikhWilczekBorelMirror_bogoliubov_norm
     (s : ℂ) (z : ℝ) :
-    Real.cosh (schwarzschildParikhWilczekBorelMirrorLogSqueeze s z) ^ 2 -
-        schwarzschildParikhWilczekBorelMirrorPairMixing s z ^ 2 = 1 := by
+    Real.cosh (schwarzschildParikhWilczekBorelMirrorLogSqueeze s z) ^ (2 : ℕ) -
+        schwarzschildParikhWilczekBorelMirrorPairMixing s z ^ (2 : ℕ) = 1 := by
   rw [schwarzschildParikhWilczekBorelMirrorPairMixing]
   exact Real.cosh_sq_sub_sinh_sq _
 
@@ -174,14 +174,14 @@ grade `k`.  One factorial comes from the `epsilon` Taylor expansion and the seco
 transform. -/
 def schwarzschildParikhWilczekFirstWindingBorelCoefficient
     (s : ℂ) (k : ℕ) : ℂ :=
-  Complex.Gamma (s + 2 * (k : ℂ)) / ((k.factorial : ℂ) ^ 2)
+  Complex.Gamma (s + 2 * (k : ℂ)) / ((k.factorial : ℂ) ^ (2 : ℕ))
 
 /-- Exact weld to the existing finite-mass Mellin jet: restoring both factorials and summing the
 Bose windings contributes precisely the shifted zeta factor. -/
 theorem schwarzschildParikhWilczekMellinJet_eq_factorialSq_mul_firstWindingBorelCoefficient
     (k : ℕ) (s : ℂ) :
     schwarzschildParikhWilczekMellinJet k s =
-      (k.factorial : ℂ) ^ 2 *
+      (k.factorial : ℂ) ^ (2 : ℕ) *
         schwarzschildParikhWilczekFirstWindingBorelCoefficient s k *
           riemannZeta (s + (k : ℂ)) := by
   have hfac : (k.factorial : ℂ) ≠ 0 := by
@@ -194,7 +194,7 @@ theorem schwarzschildParikhWilczekMellinJet_eq_factorialSq_mul_firstWindingBorel
 def schwarzschildParikhWilczekFirstWindingBorelGrowthRatio
     (s : ℂ) (k : ℕ) : ℂ :=
   ((s + 2 * (k : ℂ)) * (s + 2 * (k : ℂ) + 1)) /
-    (((k + 1 : ℕ) : ℂ) ^ 2)
+    (((k + 1 : ℕ) : ℂ) ^ (2 : ℕ))
 
 /-- Numerator of one source-derived recoil-grade edge.  Removing the positive factorial
 normalization preserves its forward/reverse phase and diagonal symmetrizability. -/
@@ -217,7 +217,7 @@ theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im
       -2 * s.im * (2 * s.re - 1) *
         ((2 * (k : ℝ) + s.re + 1 / 2) *
             (2 * (k : ℝ) + 3 / 2 - s.re) +
-          s.im ^ 2 + 1 / 4) := by
+          s.im ^ (2 : ℕ) + 1 / 4) := by
   rw [schwarzschildParikhWilczekBorelRecoilHolonomy,
     schwarzschildParikhWilczekBorelRecoilEdge,
     schwarzschildParikhWilczekBorelRecoilEdge]
@@ -239,14 +239,14 @@ theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im_eq_zero_iff
   have hfactor : 0 <
       (2 * (k : ℝ) + s.re + 1 / 2) *
           (2 * (k : ℝ) + 3 / 2 - s.re) +
-        s.im ^ 2 + 1 / 4 := by positivity
+        s.im ^ (2 : ℕ) + 1 / 4 := by positivity
   constructor
   · intro h
     have hfirst : -2 * s.im ≠ 0 := mul_ne_zero (by norm_num) hsim
     have hfactor_ne :
         (2 * (k : ℝ) + s.re + 1 / 2) *
               (2 * (k : ℝ) + 3 / 2 - s.re) +
-            s.im ^ 2 + 1 / 4 ≠ 0 := ne_of_gt hfactor
+            s.im ^ (2 : ℕ) + 1 / 4 ≠ 0 := ne_of_gt hfactor
     have hcenter : 2 * s.re - 1 = 0 := by
       apply (mul_eq_zero.mp ?_).resolve_right hfactor_ne
       apply (mul_eq_zero.mp ?_).resolve_left hfirst
@@ -351,7 +351,7 @@ theorem schwarzschildParikhWilczekFirstWindingBorelGrowthRatio_sub_partner
     schwarzschildParikhWilczekFirstWindingBorelGrowthRatio s k -
         schwarzschildParikhWilczekFirstWindingBorelGrowthRatio (1 - s) k =
       4 * (2 * (k : ℂ) + 1) * (s - 1 / 2) /
-        (((k + 1 : ℕ) : ℂ) ^ 2) := by
+        (((k + 1 : ℕ) : ℂ) ^ (2 : ℕ)) := by
   rw [schwarzschildParikhWilczekFirstWindingBorelGrowthRatio,
     schwarzschildParikhWilczekFirstWindingBorelGrowthRatio]
   have hk1 : ((k + 1 : ℕ) : ℂ) ≠ 0 := by
@@ -366,7 +366,7 @@ theorem schwarzschildParikhWilczekFirstWindingBorelGrowthRatio_re_sub_partner
     (schwarzschildParikhWilczekFirstWindingBorelGrowthRatio s k).re -
         (schwarzschildParikhWilczekFirstWindingBorelGrowthRatio (1 - s) k).re =
       (4 * (2 * (k : ℝ) + 1) * (s.re - 1 / 2)) /
-        (k + 1 : ℝ) ^ 2 := by
+        (k + 1 : ℝ) ^ (2 : ℕ) := by
   rw [← Complex.sub_re,
     schwarzschildParikhWilczekFirstWindingBorelGrowthRatio_sub_partner]
   push_cast
@@ -386,7 +386,7 @@ theorem schwarzschildParikhWilczekFirstWindingBorelGrowthRatio_partner_re_eq_iff
   have hkpos : (0 : ℝ) < (k + 1 : ℕ) := by positivity
   constructor
   · intro hzero
-    have hden : (k + 1 : ℝ) ^ 2 ≠ 0 := by positivity
+    have hden : (k + 1 : ℝ) ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp [hden] at hzero
     have hfactor : 0 < 4 * (2 * (k : ℝ) + 1) := by positivity
     nlinarith

@@ -41,9 +41,9 @@ namespace RealBoundedMatchingParity
 /-- The polynomial to which the interval-square theorem is applied in the
 real-polynomial QSP corollary [GSLW19, BlockHam.tex:544-557]. -/
 noncomputable def squareTarget (PRe : ℝ[X]) : ℝ[X] :=
-  1 - PRe ^ 2
+  1 - PRe ^ (2 : ℕ)
 
-/-- The boundedness hypothesis makes `1 - P_re^2` nonnegative on `[-1,1]`,
+/-- The boundedness hypothesis makes `1 - P_re^(2 : ℕ)` nonnegative on `[-1,1]`,
 matching the input condition of [GSLW19, BlockHam.tex:436-438]. -/
 theorem squareTarget_nonnegative {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe) :
@@ -52,19 +52,19 @@ theorem squareTarget_nonnegative {d : ℕ} {PRe : ℝ[X]}
     Complement.Interval.one_sub_sq_nonnegative_of_bounded hP.bounded
 
 /-- Degree input for the interval-square theorem: if `deg(P_re) <= d`, then
-`deg(1 - P_re^2) <= 2d` [GSLW19, BlockHam.tex:436-438,544-557]. -/
+`deg(1 - P_re^(2 : ℕ)) <= 2d` [GSLW19, BlockHam.tex:436-438,544-557]. -/
 theorem squareTarget_natDegree_le {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe) :
     (squareTarget PRe).natDegree ≤ 2 * d := by
   unfold squareTarget
   have hone : (1 : ℝ[X]).natDegree ≤ 2 * d := by simp
-  have hsq : (PRe ^ 2).natDegree ≤ 2 * d :=
+  have hsq : (PRe ^ (2 : ℕ)).natDegree ≤ 2 * d :=
     Polynomial.natDegree_pow_le_of_le 2 hP.degree_le
   simpa using
     (Polynomial.natDegree_sub_le_of_le
-      (p := (1 : ℝ[X])) (q := PRe ^ 2) hone hsq)
+      (p := (1 : ℝ[X])) (q := PRe ^ (2 : ℕ)) hone hsq)
 
-/-- Parity input for the interval-square theorem: `1 - P_re^2` is even
+/-- Parity input for the interval-square theorem: `1 - P_re^(2 : ℕ)` is even
 whenever `P_re` has a fixed parity [GSLW19, BlockHam.tex:436-438,544-557]. -/
 theorem squareTarget_even {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe) :
@@ -687,18 +687,18 @@ theorem realBoundedMatchingParity_twoOddPart_branch_of_boundedByHalf_including_c
 /-- The interval-square data used in [GSLW19, BlockHam.tex:436-480] and then
 in the real-polynomial corollary [GSLW19, BlockHam.tex:544-557].  For a
 degree-`d` matching-parity polynomial `PRe`, the source proves a certificate
-for `1 - PRe^2` with the degree/parity bounds needed to form the complementary
+for `1 - PRe^(2 : ℕ)` with the degree/parity bounds needed to form the complementary
 QSP polynomial. -/
 structure IntervalSquareCompletionData (d : ℕ) (PRe : ℝ[X]) where
   hypotheses : RealBoundedMatchingParity d PRe
-  /-- Degree/parity interval-square certificate for `1 - PRe^2`. -/
+  /-- Degree/parity interval-square certificate for `1 - PRe^(2 : ℕ)`. -/
   squareCertificate :
-    Complement.Interval.DegreeParityCertificate (1 - PRe ^ 2) d
+    Complement.Interval.DegreeParityCertificate (1 - PRe ^ (2 : ℕ)) d
 
 /-- Forget degree/parity bounds when only pointwise normalization is needed. -/
 noncomputable def IntervalSquareCompletionData.toIntervalCertificate {d : ℕ} {PRe : ℝ[X]}
     (h : IntervalSquareCompletionData d PRe) :
-    Complement.Interval.Certificate (1 - PRe ^ 2) :=
+    Complement.Interval.Certificate (1 - PRe ^ (2 : ℕ)) :=
   h.squareCertificate.toCertificate
 
 /-- The interval-square data gives the pointwise normalization used to build
@@ -706,7 +706,7 @@ the complex QSP completion [GSLW19, BlockHam.tex:475-480,544-557]. -/
 theorem IntervalSquareCompletionData.normalization_on_interval {d : ℕ} {PRe : ℝ[X]}
     (h : IntervalSquareCompletionData d PRe) {x : ℝ}
     (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    (((PRe.eval x) ^ 2 : ℝ) : ℂ) +
+    (((PRe.eval x) ^ (2 : ℕ) : ℝ) : ℂ) +
         Complement.Interval.intervalComplexForm
           h.squareCertificate.B h.squareCertificate.C x *
           starRingEnd ℂ
@@ -750,30 +750,30 @@ theorem completedSignalPolynomial_average_conjP (PRe B : ℝ[X]) :
       simp
 
 /-- The source square certificate gives the polynomial normalization
-`P P* + (1-X^2) Q Q* = 1` for `P = P_re+iB` and `Q=iC`
+`P P* + (1-X^(2 : ℕ)) Q Q* = 1` for `P = P_re+iB` and `Q=iC`
 [GSLW19, BlockHam.tex:433-435,475-480]. -/
 theorem completedPolynomials_norm {PRe : ℝ[X]}
-    (h : Complement.Interval.Certificate (1 - PRe ^ 2)) :
+    (h : Complement.Interval.Certificate (1 - PRe ^ (2 : ℕ))) :
     completedSignalPolynomial PRe h.B * conjP (completedSignalPolynomial PRe h.B) +
-        (1 - X ^ 2) *
+        (1 - X ^ (2 : ℕ)) *
           (completedComplementPolynomial h.C * conjP (completedComplementPolynomial h.C)) =
       1 := by
   let B : ℝ[X] := h.B
   let CRe : ℝ[X] := h.C
   have hdecomp :
-      realPolynomialToComplex (1 - PRe ^ 2) =
-        realPolynomialToComplex B ^ 2 + (1 - X ^ 2) * realPolynomialToComplex CRe ^ 2 := by
+      realPolynomialToComplex (1 - PRe ^ (2 : ℕ)) =
+        realPolynomialToComplex B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * realPolynomialToComplex CRe ^ (2 : ℕ) := by
     calc
-      realPolynomialToComplex (1 - PRe ^ 2)
-          = realPolynomialToComplex (B ^ 2 + (1 - X ^ 2) * CRe ^ 2) := by
+      realPolynomialToComplex (1 - PRe ^ (2 : ℕ))
+          = realPolynomialToComplex (B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * CRe ^ (2 : ℕ)) := by
             exact congrArg realPolynomialToComplex (by simpa [B, CRe] using h.eq_decomposition)
-      _ = realPolynomialToComplex B ^ 2 + (1 - X ^ 2) * realPolynomialToComplex CRe ^ 2 := by
+      _ = realPolynomialToComplex B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * realPolynomialToComplex CRe ^ (2 : ℕ) := by
             simp [pow_two]
   change completedSignalPolynomial PRe B * conjP (completedSignalPolynomial PRe B) +
-        (1 - X ^ 2) *
+        (1 - X ^ (2 : ℕ)) *
           (completedComplementPolynomial CRe * conjP (completedComplementPolynomial CRe)) =
       1
-  have hCI_sq : (C Complex.I : ℂ[X]) ^ 2 = -1 := by
+  have hCI_sq : (C Complex.I : ℂ[X]) ^ (2 : ℕ) = -1 := by
     rw [pow_two, ← Polynomial.C_mul]
     simp [Complex.I_mul_I]
   unfold completedSignalPolynomial completedComplementPolynomial
@@ -782,12 +782,12 @@ theorem completedPolynomials_norm {PRe : ℝ[X]}
   rw [hCI_sq]
   ring_nf
   calc
-    realPolynomialToComplex PRe ^ 2 + realPolynomialToComplex B ^ 2 -
-          X ^ 2 * realPolynomialToComplex CRe ^ 2 + realPolynomialToComplex CRe ^ 2
-        = realPolynomialToComplex PRe ^ 2 +
-          (realPolynomialToComplex B ^ 2 + (1 - X ^ 2) * realPolynomialToComplex CRe ^ 2) := by
+    realPolynomialToComplex PRe ^ (2 : ℕ) + realPolynomialToComplex B ^ (2 : ℕ) -
+          X ^ (2 : ℕ) * realPolynomialToComplex CRe ^ (2 : ℕ) + realPolynomialToComplex CRe ^ (2 : ℕ)
+        = realPolynomialToComplex PRe ^ (2 : ℕ) +
+          (realPolynomialToComplex B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * realPolynomialToComplex CRe ^ (2 : ℕ)) := by
             ring
-    _ = realPolynomialToComplex PRe ^ 2 + realPolynomialToComplex (1 - PRe ^ 2) := by
+    _ = realPolynomialToComplex PRe ^ (2 : ℕ) + realPolynomialToComplex (1 - PRe ^ (2 : ℕ)) := by
             rw [hdecomp]
     _ = 1 := by
             simp [pow_two]
@@ -898,7 +898,7 @@ classification layer to the reflection-QSP phase synthesis layer. -/
 noncomputable def ofDegreeParityProductDecomposition {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe)
     (decomp :
-      Complement.Interval.DegreeParityProductDecomposition (1 - PRe ^ 2) d) :
+      Complement.Interval.DegreeParityProductDecomposition (1 - PRe ^ (2 : ℕ)) d) :
     RealBoundedCompletion d PRe :=
   ofIntervalSquareCompletionData
     { hypotheses := hP, squareCertificate := decomp.toCertificate }
@@ -909,7 +909,7 @@ completion promised by Gilyen--Su--Low--Wiebe [GSLW19, BlockHam.tex:436-480,
 noncomputable def ofSourceRootClassFactorization {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe)
     (roots :
-      Complement.Interval.SourceRootClassFactorization (1 - PRe ^ 2) d) :
+      Complement.Interval.SourceRootClassFactorization (1 - PRe ^ (2 : ℕ)) d) :
     RealBoundedCompletion d PRe :=
   ofDegreeParityProductDecomposition hP roots.toProductDecomposition
 
@@ -1005,12 +1005,12 @@ theorem phaseCertificate_of_intervalSquareCompletionData {d : ℕ} {PRe : ℝ[X]
 
 /-- The exact handoff needed from the interval-square root-class proof:
 given the source hypotheses of real QSP and the degree/parity square
-certificate for `1 - P_re^2`, the reflection-QSP phase certificate follows.
+certificate for `1 - P_re^(2 : ℕ)`, the reflection-QSP phase certificate follows.
 This isolates the remaining Gilyén Lemma-6-to-Corollary-10 existence work from
 the downstream QSVT proof path [GSLW19, BlockHam.tex:436-480,544-557]. -/
 theorem phaseCertificate_of_degreeParityCertificate {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe)
-    (cert : Complement.Interval.DegreeParityCertificate (1 - PRe ^ 2) d) :
+    (cert : Complement.Interval.DegreeParityCertificate (1 - PRe ^ (2 : ℕ)) d) :
     Nonempty (PhaseCertificate d
       (completedSignalPolynomial PRe cert.B)
       (completedComplementPolynomial cert.C)) :=
@@ -1023,7 +1023,7 @@ BlockHam.tex:436-480,544-557]. -/
 theorem phaseCertificate_of_degreeParityProductDecomposition {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe)
     (decomp :
-      Complement.Interval.DegreeParityProductDecomposition (1 - PRe ^ 2) d) :
+      Complement.Interval.DegreeParityProductDecomposition (1 - PRe ^ (2 : ℕ)) d) :
     Nonempty (PhaseCertificate d
       (completedSignalPolynomial PRe decomp.toCertificate.B)
       (completedComplementPolynomial decomp.toCertificate.C)) :=
@@ -1036,7 +1036,7 @@ certificate used downstream by projected QSVT [GSLW19, BlockHam.tex:436-480,
 theorem phaseCertificate_of_sourceRootClassFactorization {d : ℕ} {PRe : ℝ[X]}
     (hP : RealBoundedMatchingParity d PRe)
     (roots :
-      Complement.Interval.SourceRootClassFactorization (1 - PRe ^ 2) d) :
+      Complement.Interval.SourceRootClassFactorization (1 - PRe ^ (2 : ℕ)) d) :
     Nonempty (PhaseCertificate d
       (completedSignalPolynomial PRe roots.toCertificate.B)
       (completedComplementPolynomial roots.toCertificate.C)) :=
@@ -1173,7 +1173,7 @@ noncomputable def chooseRealBoundedPhaseCertificateOfSourceRootProductAndDegreeL
     (realBoundedPhaseCertificate_of_sourceRootProductAndDegreeLe hP
       constant constant_nonnegative hproduct hdegree_le)
 
-/-- Final handoff from the canonical source data of `1 - P_re^2`: once the
+/-- Final handoff from the canonical source data of `1 - P_re^(2 : ℕ)`: once the
 source proof supplies the product identity and degree bound, the real-polynomial
 phase certificate follows [GSLW19, BlockHam.tex:436-480,544-557]. -/
 theorem realBoundedPhaseCertificate_ofSquareTargetProductAndDegreeLe
@@ -1210,7 +1210,7 @@ theorem realBoundedPhaseCertificate_ofSquareTargetProductAndDegreeLe
 /-- End-to-end handoff from the Gilyén Lemma-6 interval-square decomposition
 to the real-polynomial QSP phase certificate.  This is the compact
 Lemma-6-through-Corollary-10 interface: the root-class factorization is now
-constructed internally from the source hypotheses of `1 - P_re^2`
+constructed internally from the source hypotheses of `1 - P_re^(2 : ℕ)`
 [GSLW19, BlockHam.tex:436-480,544-557]. -/
 theorem realBoundedPhaseCertificate_of_sourceHypotheses
     {d : ℕ} {PRe : ℝ[X]} (hP : RealBoundedMatchingParity d PRe) :
@@ -1226,7 +1226,7 @@ noncomputable def chooseRealBoundedPhaseCertificateOfSourceHypotheses
   Classical.choice (realBoundedPhaseCertificate_of_sourceHypotheses hP)
 
 /-- Boundary-case end-to-end handoff for the source chain: when the square target
-`1 - P_re^2` is constant, the source root-class construction immediately gives
+`1 - P_re^(2 : ℕ)` is constant, the source root-class construction immediately gives
 the real-bounded phase certificate [GSLW19, BlockHam.tex:436-480,544-557]. -/
 noncomputable def chooseRealBoundedPhaseCertificateOfSquareTargetNatDegreeZero
     {d : ℕ} {PRe : ℝ[X]} (hP : RealBoundedMatchingParity d PRe)

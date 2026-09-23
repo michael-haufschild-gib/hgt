@@ -56,14 +56,14 @@ theorem responseCompression_sub (x : Fin (n + 1) → E) (c : ℝ)
 
 /-- The existing centered Hilbert energy retains exactly the square of the compression scale. -/
 theorem responseCompression_energy (x : Fin (n + 1) → E) (c : ℝ) :
-    (∑ i, ‖responseCompression x c i - hilbertCentroid (responseCompression x c)‖ ^ 2) =
-      c ^ 2 * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2 := by
+    (∑ i, ‖responseCompression x c i - hilbertCentroid (responseCompression x c)‖ ^ (2 : ℕ)) =
+      c ^ (2 : ℕ) * ∑ i, ‖x i - hilbertCentroid x‖ ^ (2 : ℕ) := by
   simp_rw [responseCompression_centered, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
   exact (Finset.mul_sum ..).symm
 
 /-- Compression is equivalent to changing the inverse squared Gaussian bandwidth. -/
 theorem gaussianDistanceMatrix_responseCompression (x : Fin (n + 1) → E) (c t : ℝ) :
-    gaussianDistanceMatrix (responseCompression x c) t = gaussianDistanceMatrix x (t * c ^ 2) := by
+    gaussianDistanceMatrix (responseCompression x c) t = gaussianDistanceMatrix x (t * c ^ (2 : ℕ)) := by
   ext i j
   simp only [gaussianDistanceMatrix, responseCompression_sub, norm_smul, mul_pow,
     Real.norm_eq_abs, sq_abs]
@@ -73,7 +73,7 @@ theorem gaussianDistanceMatrix_responseCompression (x : Fin (n + 1) → E) (c t 
 /-- The same bandwidth law holds for the Gaussian volume determinant. -/
 theorem gaussianDistanceMatrix_det_responseCompression (x : Fin (n + 1) → E) (c t : ℝ) :
     (gaussianDistanceMatrix (responseCompression x c) t).det =
-      (gaussianDistanceMatrix x (t * c ^ 2)).det := by
+      (gaussianDistanceMatrix x (t * c ^ (2 : ℕ))).det := by
   rw [gaussianDistanceMatrix_responseCompression]
 
 omit [InnerProductSpace ℝ E] in

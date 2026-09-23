@@ -82,7 +82,7 @@ theorem u0_phi_independence_of_towerData_greenBand {U : Set ℂ}
         (Filter.Germ.coeRingHom (Filter.principal Ext') F)
           = (aExt : Filter.Germ (Filter.principal Ext') ℂ) ∧
         restrictAnalytic hUExt aExt = (phiAnalytic b hU_esc) ^ (2 ^ k) ∧
-        (∃ t : ℝ, Real.exp (4 * t) + 4 ≤ (‖b‖ - 1) ^ 2 - ‖b‖ ∧
+        (∃ t : ℝ, Real.exp (4 * t) + 4 ≤ (‖b‖ - 1) ^ (2 : ℕ) - ‖b‖ ∧
           ∀ z ∈ Ext', greenFunctionDyn b z < t) ∧
         (∀ T : Set ℂ, T.Countable →
           ∃ (γ γ' : ℝ → ℂ) (m : ℤ),

@@ -171,7 +171,7 @@ theorem augmentationCycleClosure_reflected_firstGradedResidue (p : ℕ) :
         (invert ((T (p : ℤ) : AugmentationFormationAlgebra) - 1) -
           (-1 : AugmentationFormationAlgebra) *
             ((T (p : ℤ) : AugmentationFormationAlgebra) - 1)) -
-          (T 1 - 1) ^ 2 * augmentationCycleCurvature p := by
+          (T 1 - 1) ^ (2 : ℕ) * augmentationCycleCurvature p := by
             rw [hres]
             ring
     _ = augmentationFormationBoundary 2 D -
@@ -476,7 +476,7 @@ theorem augmentationGradedFormationSpectrum_completion_certificate :
         ((-1 : AugmentationFormationAlgebra) ^ r *
           augmentationFormationBoundary r P)) ∧
     (∀ r : ℕ, ∀ x y : ℤ,
-      (((-1 : ℤ) ^ r * x) ^ 2 = x ^ 2) ∧
+      (((-1 : ℤ) ^ r * x) ^ (2 : ℕ) = x ^ (2 : ℕ)) ∧
         ((-1 : ℤ) ^ r * x) * ((-1 : ℤ) ^ (r + 1) * y) = -(x * y)) ∧
     (∀ p : ℕ,
       (T (p : ℤ) : AugmentationFormationAlgebra) - 1 =
@@ -484,7 +484,7 @@ theorem augmentationGradedFormationSpectrum_completion_certificate :
       augmentationObserver (augmentationCycleCarrier p) = p ∧
       (T (p : ℤ) : AugmentationFormationAlgebra) - 1 =
         (p : AugmentationFormationAlgebra) * (T 1 - 1) +
-          (T 1 - 1) ^ 2 * augmentationCycleCurvature p) ∧
+          (T 1 - 1) ^ (2 : ℕ) * augmentationCycleCurvature p) ∧
     (∀ (r : ℕ) (clock : ℤ → ℤ),
       (∀ P : AugmentationFormationAlgebra,
         augmentationObserverPairing (augmentationFormationBoundary r P) clock = 0) ↔

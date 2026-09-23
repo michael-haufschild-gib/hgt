@@ -44,7 +44,7 @@ theorem coprime_density_nonneg {p : ℕ} (hp : p.Prime) :
 /-- **The dyadic density of squarefree integers coprime to `p`.** -/
 theorem tendsto_window_coprime_squarefree_density {p : ℕ} (hp : p.Prime) :
     Tendsto (fun y : ℝ =>
-        (∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)) / y)
+        (∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) / y)
       atTop (𝓝 (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))) := by
   set δ : ℝ := (1 - 1 / (p : ℝ)) * coprimeSquarefreeSum p with hδ
   have hδ0 : 0 ≤ δ := coprime_density_nonneg hp
@@ -62,7 +62,7 @@ theorem tendsto_window_coprime_squarefree_density {p : ℕ} (hp : p.Prime) :
     have := (h1.add h2).add h3
     simpa using this
   have hkey : Tendsto (fun y : ℝ =>
-      |(∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)) / y - δ|)
+      |(∑ n ∈ Finset.Ioc ⌊y⌋₊ ⌊2 * y⌋₊, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) / y - δ|)
       atTop (𝓝 0) := by
     refine squeeze_zero' ?_ ?_ hmaj
     · filter_upwards with y
@@ -76,7 +76,7 @@ theorem tendsto_window_coprime_squarefree_density {p : ℕ} (hp : p.Prime) :
       have htL : t + L = m := by omega
       set R : ℕ := Nat.sqrt m + 1 with hR
       have hR1 : 1 ≤ R := by omega
-      have hRM : t + L ≤ R ^ 2 := by
+      have hRM : t + L ≤ R ^ (2 : ℕ) := by
         rw [htL, hR]
         exact le_of_lt (Nat.lt_succ_sqrt' m)
       have hbound := abs_window_coprime_squarefree_sub_le (p := p) (t := t) (L := L) hp hR1 hRM
@@ -108,7 +108,7 @@ theorem tendsto_window_coprime_squarefree_density {p : ℕ} (hp : p.Prime) :
           refine Real.sqrt_le_sqrt ?_
           linarith
         have h4 : Real.sqrt (4 * y) = 2 * Real.sqrt y := by
-          rw [show (4 : ℝ) * y = 2 ^ 2 * y by ring, Real.sqrt_mul (by positivity),
+          rw [show (4 : ℝ) * y = 2 ^ (2 : ℕ) * y by ring, Real.sqrt_mul (by positivity),
             Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
         linarith [h2, h4.le, h4.ge]
       have hLle : (L : ℝ) ≤ 2 * y := by rw [hLcast]; linarith
@@ -120,28 +120,28 @@ theorem tendsto_window_coprime_squarefree_density {p : ℕ} (hp : p.Prime) :
       have herr : 2 * (R : ℝ) + (L : ℝ) / (R : ℝ) ≤ 6 * Real.sqrt y + 2 := by
         linarith [hRhigh, hsqrt2y, hLR]
       have hsplit : |(∑ n ∈ Finset.Ioc t m,
-              (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)) / y - δ|
+              (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) / y - δ|
           ≤ (6 * Real.sqrt y + 2) / y + (2 / y) * δ := by
-        have hA : |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2))
+        have hA : |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ)))
               - (L : ℝ) * δ| ≤ 6 * Real.sqrt y + 2 := le_trans hbound herr
         have hB : |((L : ℝ) - y) * δ| ≤ 2 * δ := by
           rw [abs_mul, abs_of_nonneg hδ0]
           exact mul_le_mul_of_nonneg_right hLy hδ0
-        have hC : |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2))
+        have hC : |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ)))
               - y * δ| ≤ (6 * Real.sqrt y + 2) + 2 * δ := by
           have hts := abs_sub_le
-            (∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2))
+            (∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ)))
             ((L : ℝ) * δ) (y * δ)
           have hrw : |(L : ℝ) * δ - y * δ| = |((L : ℝ) - y) * δ| := by
             congr 1
             ring
           linarith [hts, hrw ▸ hB]
         have hdiv : |(∑ n ∈ Finset.Ioc t m,
-              (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)) / y - δ|
-            = |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2))
+              (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) / y - δ|
+            = |(∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ)))
               - y * δ| / y := by
-          rw [show (∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)) / y - δ
-                = ((∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2))
+          rw [show (∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) / y - δ
+                = ((∑ n ∈ Finset.Ioc t m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ)))
                   - y * δ) / y by field_simp,
             abs_div, abs_of_pos hy0]
         rw [hdiv, div_le_iff₀ hy0]

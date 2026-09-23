@@ -56,11 +56,11 @@ theorem kgMonodromy_neg_pow_apply (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ 
           (continuous_neg_background_apply hWs) T ^ n) (kgFlip E v)) := by
   induction n generalizing v with
   | zero =>
-      have h1 : (kgMonodromy W b hb0 hWb hWs (-T) ^ 0) v = v := by
+      have h1 : (kgMonodromy W b hb0 hWb hWs (-T) ^ (0 : ℕ)) v = v := by
         rw [pow_zero]
         rfl
       have h2 : ((kgMonodromy (fun r : ℝ => W (-r)) b hb0 (norm_neg_background_le hWb)
-          (continuous_neg_background_apply hWs) T) ^ 0) (kgFlip E v) = kgFlip E v := by
+          (continuous_neg_background_apply hWs) T) ^ (0 : ℕ)) (kgFlip E v) = kgFlip E v := by
         rw [pow_zero]
         rfl
       rw [h1, h2, kgFlip_kgFlip]

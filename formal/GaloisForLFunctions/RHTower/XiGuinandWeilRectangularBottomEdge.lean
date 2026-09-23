@@ -24,7 +24,7 @@ namespace RHTower
 
 def rectangularEulerPrimeIntegrand (L a : ℝ) (xi : ℝ) : ℂ :=
   rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2 *
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ (2 : ℕ) *
     LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (rectangularEulerArchPoint xi)
 
@@ -92,7 +92,7 @@ theorem integrable_rectangularEulerPrimeIntegrand (L a : ℝ) :
     Integrable (rectangularEulerPrimeIntegrand L a) := by
   let f : ℝ → ℂ := fun xi =>
     rectangularTwoEdgeTransform L a
-      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ 2
+      (1 - ((2 * Real.pi * xi : ℝ) : ℂ) * I) ^ (2 : ℕ)
   have hf : Integrable f := integrable_rectangularTwoEdgeTransform_eulerLine_sq L a
   have hmajor : Integrable (fun xi : ℝ =>
       |rectangularEulerVonMangoldtBound| * ‖f xi‖) :=
@@ -113,7 +113,7 @@ theorem integrable_rectangularEulerPrimeIntegrand (L a : ℝ) :
     _ = |rectangularEulerVonMangoldtBound| * ‖f xi‖ := mul_comm _ _
 
 def rectangularBottomPrimeIntegrand (L a : ℝ) (x : ℝ) : ℂ :=
-  xiRectangularTwoEdgeTransform L a ((x : ℂ) - I) ^ 2 *
+  xiRectangularTwoEdgeTransform L a ((x : ℂ) - I) ^ (2 : ℕ) *
     LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       ((3 / 2 : ℂ) + x * I)
 
@@ -141,7 +141,7 @@ theorem integrable_rectangularBottomPrimeIntegrand (L a : ℝ) :
     (mul_ne_zero (by norm_num) Real.pi_ne_zero)).mp hscaled
 
 def rectangularBottomXiLogDerivIntegrand (L a : ℝ) (x : ℝ) : ℂ :=
-  xiRectangularTwoEdgeTransform L a ((x : ℂ) - I) ^ 2 *
+  xiRectangularTwoEdgeTransform L a ((x : ℂ) - I) ^ (2 : ℕ) *
     logDeriv XiC ((x : ℂ) - I)
 
 theorem rectangularBottomXiLogDerivIntegrand_eq (L a x : ℝ) :

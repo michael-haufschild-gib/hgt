@@ -101,7 +101,7 @@ private theorem integrableOn_mul_shiftedDensityAtomOneDerivative
   let f : ℝ → ℝ := fun u =>
     4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 3) 1 u
   have hbase : IntegrableOn (fun u : ℝ =>
-      4 * (u ^ 1 * thetaCuspPolynomialAtom
+      4 * (u ^ (1 : ℕ) * thetaCuspPolynomialAtom
         (thetaCuspTailDerivativePolynomial 3) 1 u)) (Ioi 0) :=
     (integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
       1 (thetaCuspTailDerivativePolynomial 3) Nat.zero_lt_one).const_mul 4
@@ -157,7 +157,7 @@ private theorem integrableOn_mul_shiftedDensityAtomOne
       thetaCuspTailSecondDensityAtom 1 (t + a)) (Ioi 0) := by
   let f : ℝ → ℝ := thetaCuspTailSecondDensityAtom 1
   have hbase : IntegrableOn (fun u : ℝ =>
-      4 * (u ^ 1 * thetaCuspPolynomialAtom
+      4 * (u ^ (1 : ℕ) * thetaCuspPolynomialAtom
         (thetaCuspTailDerivativePolynomial 2) 1 u)) (Ioi 0) :=
     (integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
       1 (thetaCuspTailDerivativePolynomial 2) Nat.zero_lt_one).const_mul 4

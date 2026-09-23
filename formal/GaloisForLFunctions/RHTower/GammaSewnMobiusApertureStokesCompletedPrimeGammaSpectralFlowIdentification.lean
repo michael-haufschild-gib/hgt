@@ -139,7 +139,7 @@ private theorem gammaSewnCriticalStokes_denominator_three_quarters_le
     {t : ℝ} (ht : t ∈ Set.Icc (-1 / 2 : ℝ) (1 / 2))
     (pk : Nat.Primes × ℕ) :
     (3 / 4 : ℝ) ≤
-      1 - (gammaSewnCriticalStokesNormalizedNode pk * t) ^ 2 := by
+      1 - (gammaSewnCriticalStokesNormalizedNode pk * t) ^ (2 : ℕ) := by
   have ha := gammaSewnCriticalStokesNormalizedNode_mem_unit pk
   have htAbs : |t| ≤ (1 / 2 : ℝ) :=
     (abs_le).2 ⟨by linarith [ht.1], ht.2⟩
@@ -151,7 +151,7 @@ private theorem gammaSewnCriticalStokes_denominator_three_quarters_le
         exact mul_le_mul_of_nonneg_right ha.2 (abs_nonneg t)
       _ ≤ 1 / 2 := by simpa using htAbs
   have hsq :
-      (gammaSewnCriticalStokesNormalizedNode pk * t) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+      (gammaSewnCriticalStokesNormalizedNode pk * t) ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
     simpa only [sq_abs] using
       (sq_le_sq₀ (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hatAbs
   nlinarith
@@ -186,7 +186,7 @@ theorem continuousOn_gammaSewnCriticalStokesSpectralFlow_halfChamber :
     have hdenLower :=
       gammaSewnCriticalStokes_denominator_three_quarters_le ht pk
     have hden :
-        0 < 1 - (gammaSewnCriticalStokesNormalizedNode pk * t) ^ 2 :=
+        0 < 1 - (gammaSewnCriticalStokesNormalizedNode pk * t) ^ (2 : ℕ) :=
       (by norm_num : (0 : ℝ) < 3 / 4).trans_le hdenLower
     have htAbs : |t| ≤ (1 / 2 : ℝ) :=
       (abs_le).2 ⟨by linarith [ht.1], ht.2⟩

@@ -68,12 +68,12 @@ theorem evenProlateSignedUnitExtension_unitScale_eigen
 theorem evenProlateSignedUnitExtension_bandIntegral_eigen_global
     (ha : 0 < a) (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) :
     (∫ t in Icc (-1 : ℝ) 1,
-        ((sincKernelSmooth (2 * Real.pi * a ^ 2) x t : ℝ) : ℂ) *
+        ((sincKernelSmooth (2 * Real.pi * a ^ (2 : ℕ)) x t : ℝ) : ℂ) *
           evenProlateSignedUnitExtension a n hvalue t) =
-      (evenProlateSignedValue a n : ℂ) ^ 2 * evenProlateSignedUnitExtension a n hvalue x := by
+      (evenProlateSignedValue a n : ℂ) ^ (2 : ℕ) * evenProlateSignedUnitExtension a n hvalue x := by
   set g : ℝ → ℂ := evenProlateSignedUnitExtension a n hvalue with hgdef
   set χ : ℂ := (evenProlateSignedValue a n : ℂ) with hχdef
-  set κ : ℝ := a ^ 2 with hκdef
+  set κ : ℝ := a ^ (2 : ℕ) with hκdef
   have hκ : 0 < κ := by
     rw [hκdef]
     positivity
@@ -127,7 +127,7 @@ theorem evenProlateSignedUnitExtension_bandIntegral_eigen_global
   norm_num at hdouble
   have hband := scaled_sincIntegral_eq_bandIntegral κ x hκ g
   change (∫ t in Icc (-1 : ℝ) 1,
-      ((sincKernelSmooth (2 * Real.pi * κ) x t : ℝ) : ℂ) * g t) = χ ^ 2 * g x
+      ((sincKernelSmooth (2 * Real.pi * κ) x t : ℝ) : ℂ) * g t) = χ ^ (2 : ℕ) * g x
   rw [← hband, ← hdouble]
   calc
     (κ : ℂ) * (∫ y in Icc (-1 : ℝ) 1, outerF y * innerF y) =
@@ -141,18 +141,18 @@ theorem evenProlateSignedUnitExtension_bandIntegral_eigen_global
           ring
     _ = χ * (χ * g x) := by
           rw [heig x]
-    _ = χ ^ 2 * g x := by
+    _ = χ ^ (2 : ℕ) * g x := by
           ring
 
 /-- The real channel of the unit-band extension is a global real Slepian eigenfunction. -/
 theorem bandTransform_evenProlateSignedUnitExtension_re_global
     (ha : 0 < a) (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) :
-    bandTransform (2 * Real.pi * a ^ 2)
+    bandTransform (2 * Real.pi * a ^ (2 : ℕ))
         (fun t => (evenProlateSignedUnitExtension a n hvalue t).re) x =
-      evenProlateSignedValue a n ^ 2 *
+      evenProlateSignedValue a n ^ (2 : ℕ) *
         (evenProlateSignedUnitExtension a n hvalue x).re := by
   set q := evenProlateSignedUnitExtension a n hvalue with hq
-  set c := 2 * Real.pi * a ^ 2 with hc
+  set c := 2 * Real.pi * a ^ (2 : ℕ) with hc
   have hqc : Continuous q := continuous_evenProlateSignedUnitExtension a n hvalue
   have hint : IntegrableOn
       (fun t : ℝ => ((sincKernelSmooth c x t : ℝ) : ℂ) * q t) (Icc (-1 : ℝ) 1) volume :=
@@ -173,20 +173,20 @@ theorem bandTransform_evenProlateSignedUnitExtension_re_global
                     simp
             _ = (∫ t in Icc (-1 : ℝ) 1,
                   ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).re := integral_re hint
-    _ = ((evenProlateSignedValue a n : ℂ) ^ 2 * q x).re := by rw [hcplx]
-    _ = evenProlateSignedValue a n ^ 2 * (q x).re := by
+    _ = ((evenProlateSignedValue a n : ℂ) ^ (2 : ℕ) * q x).re := by rw [hcplx]
+    _ = evenProlateSignedValue a n ^ (2 : ℕ) * (q x).re := by
           rw [← Complex.ofReal_pow, Complex.mul_re]
           simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
 
 /-- The imaginary channel of the unit-band extension is a global real Slepian eigenfunction. -/
 theorem bandTransform_evenProlateSignedUnitExtension_im_global
     (ha : 0 < a) (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) :
-    bandTransform (2 * Real.pi * a ^ 2)
+    bandTransform (2 * Real.pi * a ^ (2 : ℕ))
         (fun t => (evenProlateSignedUnitExtension a n hvalue t).im) x =
-      evenProlateSignedValue a n ^ 2 *
+      evenProlateSignedValue a n ^ (2 : ℕ) *
         (evenProlateSignedUnitExtension a n hvalue x).im := by
   set q := evenProlateSignedUnitExtension a n hvalue with hq
-  set c := 2 * Real.pi * a ^ 2 with hc
+  set c := 2 * Real.pi * a ^ (2 : ℕ) with hc
   have hqc : Continuous q := continuous_evenProlateSignedUnitExtension a n hvalue
   have hint : IntegrableOn
       (fun t : ℝ => ((sincKernelSmooth c x t : ℝ) : ℂ) * q t) (Icc (-1 : ℝ) 1) volume :=
@@ -207,8 +207,8 @@ theorem bandTransform_evenProlateSignedUnitExtension_im_global
                     simp
             _ = (∫ t in Icc (-1 : ℝ) 1,
                   ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).im := integral_im hint
-    _ = ((evenProlateSignedValue a n : ℂ) ^ 2 * q x).im := by rw [hcplx]
-    _ = evenProlateSignedValue a n ^ 2 * (q x).im := by
+    _ = ((evenProlateSignedValue a n : ℂ) ^ (2 : ℕ) * q x).im := by rw [hcplx]
+    _ = evenProlateSignedValue a n ^ (2 : ℕ) * (q x).im := by
           rw [← Complex.ofReal_pow, Complex.mul_im]
           simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
 

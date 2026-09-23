@@ -104,7 +104,7 @@ lemma iterated_deriv_mul_pow_sub_of_analytic (r : ℕ) (z₀ : ℂ) {R R₁ : �
         · simp only [one_mul, ← mul_assoc]; nth_rw 5 [mul_comm]; simp only [← add_assoc, mul_assoc]
           rw [← mul_add]; simp only [← mul_assoc]; nth_rw 6 [mul_comm]; nth_rw 7 [mul_comm];
           simp only [← mul_assoc]; nth_rw 7 [mul_comm]; simp only [mul_assoc, ← mul_add]
-          have : (z - z₀) ^ (r - k) = (z - z₀) ^ (r - (k + 1)) * (z - z₀) ^ 1 := by
+          have : (z - z₀) ^ (r - k) = (z - z₀) ^ (r - (k + 1)) * (z - z₀) ^ (1 : ℕ) := by
             rw [← pow_add]; congr; grind
           rw [this, mul_assoc, ← mul_add, pow_one, mul_eq_mul_left_iff]; left;
           nth_rw 1 [← mul_assoc, ← add_mul, ← one_mul (a := (r.factorial / (r - k).factorial : ℂ))]

@@ -33,7 +33,7 @@ theorem deriv_neg_div_eq_projectiveDerivativeNumerator_div_sq
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     {z : ℂ} (hCz : C z ≠ 0) :
     deriv (fun w => -D w / C w) z =
-      projectiveDerivativeNumerator C D z / C z ^ 2 := by
+      projectiveDerivativeNumerator C D z / C z ^ (2 : ℕ) := by
   have hneg : HasDerivAt (fun w => -D w) (-deriv D z) z :=
     (hD z).hasDerivAt.neg
   have hdiv := hneg.div (hC z).hasDerivAt hCz

@@ -135,7 +135,7 @@ theorem secondKindC_succ_eq_transfer (h : PositiveMomentForm s) (n : ℕ) (z : �
 def transferStepBound (s : ℕ → ℝ) (j : ℕ) : ℝ :=
   momentInner s (monicOrtho s 0) (monicOrtho s 0) /
     momentInner s (monicOrtho s j) (monicOrtho s j) *
-    (‖monicOrthoC s j 0‖ + ‖secondKindC s j 0‖) ^ 2
+    (‖monicOrthoC s j 0‖ + ‖secondKindC s j 0‖) ^ (2 : ℕ)
 
 theorem transferStepBound_nonneg (h : PositiveMomentForm s) (j : ℕ) :
     0 ≤ transferStepBound s j := by
@@ -185,7 +185,7 @@ theorem truncEntryMax_succ_le (h : PositiveMomentForm s) (n : ℕ) (z : ℂ) :
   have hmn : 0 ≤ m := truncEntryMax_nonneg s n z
   have hznn : (0 : ℝ) ≤ ‖z‖ := norm_nonneg _
   have hdiv : 0 ≤ h0r / hnr := le_of_lt (div_pos h0pos hnpos)
-  have hstep : transferStepBound s (n + 1) = h0r / hnr * (p0 + q0) ^ 2 := rfl
+  have hstep : transferStepBound s (n + 1) = h0r / hnr * (p0 + q0) ^ (2 : ℕ) := rfl
   have hpz : ‖monicOrthoC s (n + 1) z‖ ≤ (p0 + q0) * m := by
     rw [monicOrthoC_succ_eq_transfer h n z]
     refine le_trans (norm_sub_le _ _) ?_
@@ -307,7 +307,7 @@ theorem summable_normSq_div_of_kernelRoot_le (h : PositiveMomentForm s) (p : ℕ
     have := monicOrtho_inner_self_pos h k
     have := Complex.normSq_nonneg (p k)
     positivity
-  refine summable_of_sum_range_le (c := C ^ 2) hterm ?_
+  refine summable_of_sum_range_le (c := C ^ (2 : ℕ)) hterm ?_
   intro n
   have hsub : ∑ j ∈ Finset.range n, Complex.normSq (p j) /
       momentInner s (monicOrtho s j) (monicOrtho s j) ≤
@@ -340,9 +340,9 @@ theorem summable_transferStepBound (h : PositiveMomentForm s) (h0b : BoundedKern
     monicOrtho_inner_self_pos h j
   unfold transferStepBound
   rw [← hh0]
-  have hnormP : Complex.normSq (monicOrthoC s j 0) = ‖monicOrthoC s j 0‖ ^ 2 := by
+  have hnormP : Complex.normSq (monicOrthoC s j 0) = ‖monicOrthoC s j 0‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
-  have hnormQ : Complex.normSq (secondKindC s j 0) = ‖secondKindC s j 0‖ ^ 2 := by
+  have hnormQ : Complex.normSq (secondKindC s j 0) = ‖secondKindC s j 0‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
   rw [div_mul_eq_mul_div, div_le_iff₀ hjpos]
   rw [hnormP, hnormQ]
@@ -350,11 +350,11 @@ theorem summable_transferStepBound (h : PositiveMomentForm s) (h0b : BoundedKern
   set b := ‖secondKindC s j 0‖
   have han : 0 ≤ a := norm_nonneg _
   have hbn : 0 ≤ b := norm_nonneg _
-  have hsq : (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by nlinarith [sq_nonneg (a - b)]
-  have hexp : 2 * h0r * (a ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j) +
-      b ^ 2 / momentInner s (monicOrtho s j) (monicOrtho s j)) *
+  have hsq : (a + b) ^ (2 : ℕ) ≤ 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by nlinarith [sq_nonneg (a - b)]
+  have hexp : 2 * h0r * (a ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j) +
+      b ^ (2 : ℕ) / momentInner s (monicOrtho s j) (monicOrtho s j)) *
         momentInner s (monicOrtho s j) (monicOrtho s j) =
-      2 * h0r * (a ^ 2 + b ^ 2) := by
+      2 * h0r * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
     field_simp
   rw [hexp]
   nlinarith [hsq, h0pos.le]

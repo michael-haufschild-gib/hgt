@@ -36,11 +36,11 @@ theorem cyclicRaychaudhuri_dimension_increment (d G rho pressure Lambda : ℝ) :
 
 /-- Phantom pressure with nonnegative coupling and density increases acceleration with dimension. -/
 theorem cyclicRaychaudhuri_phantom_dimension_mono (d G rho Lambda : ℝ) :
-    cyclicRaychaudhuri d (G ^ 2) (rho ^ 2) (-(3 / 2) * rho ^ 2) Lambda ≤
-      cyclicRaychaudhuri (d + 1) (G ^ 2) (rho ^ 2) (-(3 / 2) * rho ^ 2) Lambda := by
-  have h := cyclicRaychaudhuri_dimension_increment d (G ^ 2) (rho ^ 2)
-    (-(3 / 2) * rho ^ 2) Lambda
-  have hn : 0 ≤ -(4 * Real.pi * G ^ 2 / 3) * (-(3 / 2) * rho ^ 2) := by
+    cyclicRaychaudhuri d (G ^ (2 : ℕ)) (rho ^ (2 : ℕ)) (-(3 / 2) * rho ^ (2 : ℕ)) Lambda ≤
+      cyclicRaychaudhuri (d + 1) (G ^ (2 : ℕ)) (rho ^ (2 : ℕ)) (-(3 / 2) * rho ^ (2 : ℕ)) Lambda := by
+  have h := cyclicRaychaudhuri_dimension_increment d (G ^ (2 : ℕ)) (rho ^ (2 : ℕ))
+    (-(3 / 2) * rho ^ (2 : ℕ)) Lambda
+  have hn : 0 ≤ -(4 * Real.pi * G ^ (2 : ℕ) / 3) * (-(3 / 2) * rho ^ (2 : ℕ)) := by
     have hp := Real.pi_pos
     nlinarith [mul_nonneg (mul_nonneg hp.le (sq_nonneg G)) (sq_nonneg rho)]
   linarith
@@ -72,7 +72,7 @@ theorem cyclicLoopDensity_roots (critical : ℝ) :
 /-- The global upper bound is sharp, with an exact nonnegative deficit. -/
 theorem cyclicLoopDensity_square_completion (c rho : ℝ) :
     Real.exp c / 4 - cyclicLoopDensity (Real.exp c) rho =
-      (rho - Real.exp c / 2) ^ 2 / Real.exp c := by
+      (rho - Real.exp c / 2) ^ (2 : ℕ) / Real.exp c := by
   unfold cyclicLoopDensity
   field_simp
   ring
@@ -81,7 +81,7 @@ theorem cyclicLoopDensity_square_completion (c rho : ℝ) :
 theorem cyclicLoopDensity_le_quarter (c rho : ℝ) :
     cyclicLoopDensity (Real.exp c) rho ≤ Real.exp c / 4 := by
   have h := cyclicLoopDensity_square_completion c rho
-  have hn : 0 ≤ (rho - Real.exp c / 2) ^ 2 / Real.exp c := by positivity
+  have hn : 0 ≤ (rho - Real.exp c / 2) ^ (2 : ℕ) / Real.exp c := by positivity
   linarith
 
 /-- The upper endpoint is attained exactly at half critical density. -/

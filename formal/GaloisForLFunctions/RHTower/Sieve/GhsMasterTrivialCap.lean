@@ -35,10 +35,10 @@ def ghsMasterBound (N : ℕ) (H σ Bout Bin C : ℝ) : ℝ :=
               * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                     / Real.log 2)
                   * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-    + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+    + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
     + (1 / (2 * Real.pi))
         * (((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
-            * (Real.sqrt (25 * Real.pi ^ 2 * Bout) * Real.sqrt (25 * Real.pi ^ 2 * Bin)))
+            * (Real.sqrt (25 * Real.pi ^ (2 : ℕ) * Bout) * Real.sqrt (25 * Real.pi ^ (2 : ℕ) * Bin)))
 
 /-- **The master bound with the kernel constant and both majorants as parameters.** -/
 theorem norm_sum_Icc_mul_log_le_ghsMasterBound {f : ℕ → ℂ} (hf1 : f 1 = 1)
@@ -48,16 +48,16 @@ theorem norm_sum_Icc_mul_log_le_ghsMasterBound {f : ℕ → ℂ} (hf1 : f 1 = 1)
     {C : ℝ} (hC0 : 0 ≤ C)
     (hCb : ∀ y : ℝ, ‖mellin (fun x : ℝ =>
         ((GaloisForLFunctions.HTGeometry.smoothWeight ((N : ℕ) : ℝ) H x : ℝ) : ℂ))
-          ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ≤ C * (1 + y ^ 2)⁻¹)
+          ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹)
     {Bout Bin : ℝ}
     (hout : sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y ≤ Bout)
     (hin : sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y ≤ Bin) :
     ‖∑ n ∈ Finset.Icc 1 N, f n‖ * Real.log (N : ℝ) ≤ ghsMasterBound N H σ Bout Bin C := by
   have hmain := norm_sum_Icc_mul_log_le_of_kernelBound hf1 hfmul hbdd N hN hH hσ z Y hY hYz hz
     hlogY hC0 hCb
-  have hsq : Real.sqrt (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
-        * Real.sqrt (25 * Real.pi ^ 2 * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y)
-      ≤ Real.sqrt (25 * Real.pi ^ 2 * Bout) * Real.sqrt (25 * Real.pi ^ 2 * Bin) := by
+  have hsq : Real.sqrt (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
+        * Real.sqrt (25 * Real.pi ^ (2 : ℕ) * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y)
+      ≤ Real.sqrt (25 * Real.pi ^ (2 : ℕ) * Bout) * Real.sqrt (25 * Real.pi ^ (2 : ℕ) * Bin) := by
     refine mul_le_mul (Real.sqrt_le_sqrt (by nlinarith [hout, sq_nonneg Real.pi, Real.pi_pos]))
       (Real.sqrt_le_sqrt (by nlinarith [hin, sq_nonneg Real.pi, Real.pi_pos]))
       (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)

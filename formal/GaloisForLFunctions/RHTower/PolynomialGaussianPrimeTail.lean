@@ -7,11 +7,11 @@ import GaloisForLFunctions.HTGeometry.RealDirichletSeries
 This file closes C43-Y (24.138) with an exact arithmetic constant.  Under the universal
 parabolic wedge
 
-`t * (natDegree Q + 1) <= (log 2)^2 / 256`,
+`t * (natDegree Q + 1) <= (log 2)^(2 : ℕ) / 256`,
 
 the coefficient-uniform Fourier aperture first loses half its Gaussian exponent.  Splitting the
 remaining exponent once more produces both the first-frequency factor
-`exp (-(log 2)^2 / (16t))` and a full `n^-2` at every arithmetic frequency `log n`.  The complete
+`exp (-(log 2)^(2 : ℕ) / (16t))` and a full `n^-2` at every arithmetic frequency `log n`.  The complete
 prime tail is therefore controlled by the fixed, absolutely convergent right-half-plane mass
 
 `sum_n vonMangoldt(n) n^-2`.

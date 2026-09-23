@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.ConstitutiveInteractionSpectrumMechanics
 For `M` independent Bernoulli replicas of one binary component, the squared empirical parity
 bias has expectation
 
-`(1 - 2q)^2 + 4q(1-q)/M`.
+`(1 - 2q)^(2 : ℕ) + 4q(1-q)/M`.
 
 Across independent components these factors multiply.  The resulting histogram ANOVA is therefore
 at least the square of the original one-copy product parity mean.  Independent replica
@@ -30,62 +30,62 @@ def routeEReplicaHistogramBias (M k : ℕ) : ℝ :=
 def routeEIndependentReplicaLocalANOVA
     {R : Type*} [Fintype R] [DecidableEq R] (q : ℝ) : ℝ :=
   ∑ S : Finset R, interactionWorkWeight (fun _ => q) S *
-    routeEReplicaHistogramBias (Fintype.card R) S.card ^ 2
+    routeEReplicaHistogramBias (Fintype.card R) S.card ^ (2 : ℕ)
 
 /-- Exact bias-variance decomposition for an arbitrary product Bernoulli replica law. -/
 theorem routeE_replica_degree_bias_second_moment
     {R : Type*} [Fintype R] [DecidableEq R]
     (a : R → ℝ) (M : ℝ) (hM : M ≠ 0) :
     (∑ S : Finset R, interactionWorkWeight a S *
-        (1 - 2 * (S.card : ℝ) / M) ^ 2) =
-      (1 - 2 * meanInteractionDegree a / M) ^ 2 +
-        4 * interactionDegreeVariance a / M ^ 2 := by
+        (1 - 2 * (S.card : ℝ) / M) ^ (2 : ℕ)) =
+      (1 - 2 * meanInteractionDegree a / M) ^ (2 : ℕ) +
+        4 * interactionDegreeVariance a / M ^ (2 : ℕ) := by
   have hcenter :
       interactionDegreeVariance a =
-        (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) -
-          meanInteractionDegree a ^ 2 := by
+        (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) -
+          meanInteractionDegree a ^ (2 : ℕ) := by
     unfold interactionDegreeVariance
     calc
       (∑ S : Finset R, interactionWorkWeight a S *
-          ((S.card : ℝ) - meanInteractionDegree a) ^ 2) =
+          ((S.card : ℝ) - meanInteractionDegree a) ^ (2 : ℕ)) =
           ∑ S : Finset R,
-            (interactionWorkWeight a S * (S.card : ℝ) ^ 2 -
+            (interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ) -
               2 * meanInteractionDegree a *
                 (interactionWorkWeight a S * (S.card : ℝ)) +
-              meanInteractionDegree a ^ 2 * interactionWorkWeight a S) := by
+              meanInteractionDegree a ^ (2 : ℕ) * interactionWorkWeight a S) := by
             apply Finset.sum_congr rfl
             intro S hS
             ring
-      _ = (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) -
+      _ = (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) -
             2 * meanInteractionDegree a *
               (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ)) +
-            meanInteractionDegree a ^ 2 *
+            meanInteractionDegree a ^ (2 : ℕ) *
               (∑ S : Finset R, interactionWorkWeight a S) := by
             rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
             rw [Finset.mul_sum, Finset.mul_sum]
-      _ = (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) -
-            meanInteractionDegree a ^ 2 := by
+      _ = (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) -
+            meanInteractionDegree a ^ (2 : ℕ) := by
             rw [← meanInteractionDegree, sum_interactionWorkWeight_eq_one]
             ring
   calc
     (∑ S : Finset R, interactionWorkWeight a S *
-        (1 - 2 * (S.card : ℝ) / M) ^ 2) =
+        (1 - 2 * (S.card : ℝ) / M) ^ (2 : ℕ)) =
         (∑ S : Finset R, interactionWorkWeight a S) -
           (4 / M) *
             (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ)) +
-          (4 / M ^ 2) *
-            (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) := by
+          (4 / M ^ (2 : ℕ)) *
+            (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) := by
           rw [show
             (∑ S : Finset R, interactionWorkWeight a S) -
                 (4 / M) *
                   (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ)) +
-                (4 / M ^ 2) *
-                  (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) =
+                (4 / M ^ (2 : ℕ)) *
+                  (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) =
               ∑ S : Finset R,
                 (interactionWorkWeight a S -
                   (4 / M) * (interactionWorkWeight a S * (S.card : ℝ)) +
-                  (4 / M ^ 2) *
-                    (interactionWorkWeight a S * (S.card : ℝ) ^ 2)) by
+                  (4 / M ^ (2 : ℕ)) *
+                    (interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ))) by
               rw [Finset.sum_add_distrib, Finset.sum_sub_distrib,
                 ← Finset.mul_sum, ← Finset.mul_sum]]
           apply Finset.sum_congr rfl
@@ -93,13 +93,13 @@ theorem routeE_replica_degree_bias_second_moment
           field_simp
           ring
     _ = 1 - (4 / M) * meanInteractionDegree a +
-          (4 / M ^ 2) *
-            (interactionDegreeVariance a + meanInteractionDegree a ^ 2) := by
+          (4 / M ^ (2 : ℕ)) *
+            (interactionDegreeVariance a + meanInteractionDegree a ^ (2 : ℕ)) := by
           rw [sum_interactionWorkWeight_eq_one, ← meanInteractionDegree]
-          rw [show (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ 2) =
-              interactionDegreeVariance a + meanInteractionDegree a ^ 2 by linarith [hcenter]]
-    _ = (1 - 2 * meanInteractionDegree a / M) ^ 2 +
-          4 * interactionDegreeVariance a / M ^ 2 := by
+          rw [show (∑ S : Finset R, interactionWorkWeight a S * (S.card : ℝ) ^ (2 : ℕ)) =
+              interactionDegreeVariance a + meanInteractionDegree a ^ (2 : ℕ) by linarith [hcenter]]
+    _ = (1 - 2 * meanInteractionDegree a / M) ^ (2 : ℕ) +
+          4 * interactionDegreeVariance a / M ^ (2 : ℕ) := by
           field_simp
           ring
 
@@ -107,7 +107,7 @@ theorem routeE_replica_degree_bias_second_moment
 theorem routeE_independent_replica_localANOVA_eq
     {R : Type*} [Fintype R] [DecidableEq R] [Nonempty R] (q : ℝ) :
     routeEIndependentReplicaLocalANOVA (R := R) q =
-      (1 - 2 * q) ^ 2 +
+      (1 - 2 * q) ^ (2 : ℕ) +
         4 * q * (1 - q) / (Fintype.card R : ℝ) := by
   have hcard : (Fintype.card R : ℝ) ≠ 0 := by positivity
   unfold routeEIndependentReplicaLocalANOVA routeEReplicaHistogramBias
@@ -121,7 +121,7 @@ theorem routeE_independent_replica_localANOVA_eq
 theorem routeE_independent_replica_localANOVA_floor
     {R : Type*} [Fintype R] [DecidableEq R] [Nonempty R]
     (q : ℝ) (hq0 : 0 ≤ q) (hq1 : q ≤ 1) :
-    (1 - 2 * q) ^ 2 ≤ routeEIndependentReplicaLocalANOVA (R := R) q := by
+    (1 - 2 * q) ^ (2 : ℕ) ≤ routeEIndependentReplicaLocalANOVA (R := R) q := by
   rw [routeE_independent_replica_localANOVA_eq]
   have hcard : 0 < (Fintype.card R : ℝ) := by positivity
   have hcorrection : 0 ≤ 4 * q * (1 - q) / (Fintype.card R : ℝ) := by positivity
@@ -132,7 +132,7 @@ theorem routeE_independent_replica_productANOVA_floor
     {C R : Type*} [Fintype C] [Fintype R]
     [DecidableEq C] [DecidableEq R] [Nonempty R]
     (q : C → ℝ) (hq0 : ∀ c, 0 ≤ q c) (hq1 : ∀ c, q c ≤ 1) :
-    (∏ c, (1 - 2 * q c)) ^ 2 ≤
+    (∏ c, (1 - 2 * q c)) ^ (2 : ℕ) ≤
       ∏ c, routeEIndependentReplicaLocalANOVA (R := R) (q c) := by
   rw [← Finset.prod_pow]
   apply Finset.prod_le_prod

@@ -78,7 +78,7 @@ theorem eq_of_leibniz_div {F : Type*} [Field F] (D₁ D₂ : F → F)
 /-- The quotient rule for any Leibniz operator on a field. -/
 theorem leibniz_div {F : Type*} [Field F] (D : F → F)
     (h : ∀ x y : F, D (x * y) = x * D y + y * D x)
-    {a b : F} (hb : b ≠ 0) : D (a / b) = (D a * b - a * D b) / b ^ 2 := by
+    {a b : F} (hb : b ≠ 0) : D (a / b) = (D a * b - a * D b) / b ^ (2 : ℕ) := by
   set c : F := a / b with hc
   have hab : a = c * b := by
     rw [hc]
@@ -331,7 +331,7 @@ local instance tcDivIntTower : IsScalarTower ℤ (Polynomial K) (RatFunc K) :=
 /-- The quotient rule for the two-cylinder derivation. -/
 theorem twoCylDerivation_div (lam : K) (a b : RatFunc K) (hb : b ≠ 0) :
     twoCylDerivation lam (a / b)
-      = (twoCylDerivation lam a * b - a * twoCylDerivation lam b) / b ^ 2 :=
+      = (twoCylDerivation lam a * b - a * twoCylDerivation lam b) / b ^ (2 : ℕ) :=
   leibniz_div _ (twoCylDerivation_leibniz lam) hb
 
 end

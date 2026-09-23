@@ -19,7 +19,7 @@ namespace RHTower
 noncomputable section
 
 def smoothRapidExponentialFockHeadA (a : ℝ) : ℝ :=
-  (4 - 5 * a + 2 * a ^ 2) / 4
+  (4 - 5 * a + 2 * a ^ (2 : ℕ)) / 4
 
 def smoothRapidExponentialFockHeadB (a : ℝ) : ℝ :=
   a * (3 - 2 * a) / 2
@@ -29,8 +29,8 @@ def smoothRapidExponentialFockHeadC (a : ℝ) : ℝ :=
 
 def smoothRapidExponentialFockHeadPolynomial (a : ℝ) : Polynomial ℝ :=
   Polynomial.C (smoothRapidExponentialFockHeadA a) +
-    Polynomial.C (smoothRapidExponentialFockHeadB a) * Polynomial.X ^ 2 +
-    Polynomial.C (smoothRapidExponentialFockHeadC a) * Polynomial.X ^ 4
+    Polynomial.C (smoothRapidExponentialFockHeadB a) * Polynomial.X ^ (2 : ℕ) +
+    Polynomial.C (smoothRapidExponentialFockHeadC a) * Polynomial.X ^ (4 : ℕ)
 
 def smoothRapidExponentialFockHeadPotential (a r : ℝ) : ℝ :=
   Real.exp (2 * a) * Polynomial.eval r (smoothRapidExponentialFockHeadPolynomial a)
@@ -48,7 +48,7 @@ def smoothRapidExponentialFockHeadCurvature (a r : ℝ) : ℝ :=
 def smoothRapidExponentialFockHeadLaplacianDensity (a r : ℝ) : ℝ :=
   Real.exp (2 * a) *
     (4 * smoothRapidExponentialFockHeadB a +
-      16 * smoothRapidExponentialFockHeadC a * r ^ 2)
+      16 * smoothRapidExponentialFockHeadC a * r ^ (2 : ℕ))
 
 def smoothRapidExponentialFockPotential (a r : ℝ) : ℝ :=
   if r < 1 then smoothRapidExponentialFockHeadPotential a r
@@ -73,8 +73,8 @@ theorem smoothRapidExponentialFockHeadPotential_formula (a r : ℝ) :
     smoothRapidExponentialFockHeadPotential a r =
       Real.exp (2 * a) *
         (smoothRapidExponentialFockHeadA a +
-          smoothRapidExponentialFockHeadB a * r ^ 2 +
-          smoothRapidExponentialFockHeadC a * r ^ 4) := by
+          smoothRapidExponentialFockHeadB a * r ^ (2 : ℕ) +
+          smoothRapidExponentialFockHeadC a * r ^ (4 : ℕ)) := by
   simp [smoothRapidExponentialFockHeadPotential,
     smoothRapidExponentialFockHeadPolynomial]
 
@@ -82,7 +82,7 @@ theorem smoothRapidExponentialFockHeadSlope_formula (a r : ℝ) :
     smoothRapidExponentialFockHeadSlope a r =
       Real.exp (2 * a) *
         (2 * smoothRapidExponentialFockHeadB a * r +
-          4 * smoothRapidExponentialFockHeadC a * r ^ 3) := by
+          4 * smoothRapidExponentialFockHeadC a * r ^ (3 : ℕ)) := by
   simp [smoothRapidExponentialFockHeadSlope,
     smoothRapidExponentialFockHeadPolynomial]
   ring
@@ -91,7 +91,7 @@ theorem smoothRapidExponentialFockHeadCurvature_formula (a r : ℝ) :
     smoothRapidExponentialFockHeadCurvature a r =
       Real.exp (2 * a) *
         (2 * smoothRapidExponentialFockHeadB a +
-          12 * smoothRapidExponentialFockHeadC a * r ^ 2) := by
+          12 * smoothRapidExponentialFockHeadC a * r ^ (2 : ℕ)) := by
   simp [smoothRapidExponentialFockHeadCurvature,
     smoothRapidExponentialFockHeadPolynomial]
   ring
@@ -188,30 +188,30 @@ theorem smoothRapidExponentialFockPotential_eq_tail
 theorem smoothRapidExponentialFockHeadPotential_pos
     {a r : ℝ} (ha : 0 < a) (haHalf : a < 1 / 2) (hr0 : 0 ≤ r) (hr1 : r ≤ 1) :
     0 < smoothRapidExponentialFockHeadPotential a r := by
-  have hrSq : r ^ 2 ≤ 1 := by nlinarith [sq_nonneg r]
+  have hrSq : r ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg r]
   have hC : smoothRapidExponentialFockHeadC a < 0 := by
     unfold smoothRapidExponentialFockHeadC
     have hlin : 2 * a - 1 < 0 := by linarith
     exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg ha hlin) (by norm_num)
   have hA : 0 < smoothRapidExponentialFockHeadA a := by
     unfold smoothRapidExponentialFockHeadA
-    have : 0 < 4 - 5 * a + 2 * a ^ 2 := by nlinarith [sq_nonneg (a - 1)]
+    have : 0 < 4 - 5 * a + 2 * a ^ (2 : ℕ) := by nlinarith [sq_nonneg (a - 1)]
     positivity
   have hBC : 0 < smoothRapidExponentialFockHeadB a +
       smoothRapidExponentialFockHeadC a := by
     unfold smoothRapidExponentialFockHeadB smoothRapidExponentialFockHeadC
     nlinarith
   have hBCr : 0 < smoothRapidExponentialFockHeadB a +
-      smoothRapidExponentialFockHeadC a * r ^ 2 := by
+      smoothRapidExponentialFockHeadC a * r ^ (2 : ℕ) := by
     nlinarith
   rw [smoothRapidExponentialFockHeadPotential_formula]
   have hbracket : 0 < smoothRapidExponentialFockHeadA a +
-      smoothRapidExponentialFockHeadB a * r ^ 2 +
-      smoothRapidExponentialFockHeadC a * r ^ 4 := by
-    have hrSq0 : 0 ≤ r ^ 2 := sq_nonneg r
-    have : 0 ≤ r ^ 2 *
+      smoothRapidExponentialFockHeadB a * r ^ (2 : ℕ) +
+      smoothRapidExponentialFockHeadC a * r ^ (4 : ℕ) := by
+    have hrSq0 : 0 ≤ r ^ (2 : ℕ) := sq_nonneg r
+    have : 0 ≤ r ^ (2 : ℕ) *
         (smoothRapidExponentialFockHeadB a +
-          smoothRapidExponentialFockHeadC a * r ^ 2) :=
+          smoothRapidExponentialFockHeadC a * r ^ (2 : ℕ)) :=
       mul_nonneg hrSq0 hBCr.le
     nlinarith
   exact mul_pos (Real.exp_pos _) hbracket
@@ -235,7 +235,7 @@ theorem smoothRapidExponentialFockLaplacianDensity_eq_tail
 theorem smoothRapidExponentialFockHeadLaplacianDensity_pos
     {a r : ℝ} (ha : 0 < a) (haHalf : a < 1 / 2) (hr0 : 0 ≤ r) (hr1 : r ≤ 1) :
     0 < smoothRapidExponentialFockHeadLaplacianDensity a r := by
-  have hrSq : r ^ 2 ≤ 1 := by nlinarith [sq_nonneg r]
+  have hrSq : r ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg r]
   have hC : smoothRapidExponentialFockHeadC a < 0 := by
     unfold smoothRapidExponentialFockHeadC
     have : 2 * a - 1 < 0 := by linarith
@@ -245,7 +245,7 @@ theorem smoothRapidExponentialFockHeadLaplacianDensity_pos
       4 * smoothRapidExponentialFockHeadB a +
           16 * smoothRapidExponentialFockHeadC a ≤
         4 * smoothRapidExponentialFockHeadB a +
-          16 * smoothRapidExponentialFockHeadC a * r ^ 2 := by
+          16 * smoothRapidExponentialFockHeadC a * r ^ (2 : ℕ) := by
     nlinarith
   have hatOne :
       0 < 4 * smoothRapidExponentialFockHeadB a +
@@ -288,7 +288,7 @@ theorem smoothRapidExponentialFockAdaptedRadius_upper
 
 theorem smoothRapidExponentialFockAdaptedRadius_lower
     {a r : ℝ} (ha : 0 < a) (hr : 1 ≤ r) :
-    (Real.sqrt (4 * a ^ 2 + 2 * a))⁻¹ * Real.exp (-a * r) ≤
+    (Real.sqrt (4 * a ^ (2 : ℕ) + 2 * a))⁻¹ * Real.exp (-a * r) ≤
       smoothRapidExponentialFockAdaptedRadius a r := by
   rw [smoothRapidExponentialFockAdaptedRadius_eq_tail hr]
   exact rapidExponentialFockAdaptedRadius_lower ha hr

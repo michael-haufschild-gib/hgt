@@ -82,7 +82,7 @@ noncomputable instance : InnerProductSpace 𝕜 (HSpace 𝕜 E) :=
       simp only [norm_def, op_smul]
       exact le_of_eq (hsNorm_smul c S.op)
     norm_sq_eq_re_inner := fun S => by
-      show (hsNorm S.op) ^ 2 = RCLike.re (hsInner S.op S.op)
+      show (hsNorm S.op) ^ (2 : ℕ) = RCLike.re (hsInner S.op S.op)
       rw [sq_hsNorm, hsInner_self_re S.isHS]
     conj_inner_symm := fun S T => (hsInner_conj_symm S.op T.op).symm
     add_left := fun S T U => by

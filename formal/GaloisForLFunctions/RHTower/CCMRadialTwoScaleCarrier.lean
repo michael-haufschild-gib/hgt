@@ -25,20 +25,20 @@ open _root_.RHTower
 /-- **Equation (3).**  The exterior energy of the normalized vanishing-integral two-mode source is
 the orthogonality-weighted average of the two component leakages. -/
 theorem norm_sq_twoModeExterior {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (P : E →ₗ[ℝ] E) (e₀ e₁ : E) {l₀ l₁ : ℝ} (hsum : 0 < l₀ ^ 2 + l₁ ^ 2)
+    (P : E →ₗ[ℝ] E) (e₀ e₁ : E) {l₀ l₁ : ℝ} (hsum : 0 < l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ))
     (horth : (inner ℝ (P e₀) (P e₁) : ℝ) = 0) :
-    ‖P ((Real.sqrt (l₀ ^ 2 + l₁ ^ 2))⁻¹ • (l₁ • e₀ - l₀ • e₁))‖ ^ 2
-      = (l₁ ^ 2 * ‖P e₀‖ ^ 2 + l₀ ^ 2 * ‖P e₁‖ ^ 2) / (l₀ ^ 2 + l₁ ^ 2) := by
-  have hspos : (0 : ℝ) < Real.sqrt (l₀ ^ 2 + l₁ ^ 2) := Real.sqrt_pos.mpr hsum
-  have hsq : Real.sqrt (l₀ ^ 2 + l₁ ^ 2) ^ 2 = l₀ ^ 2 + l₁ ^ 2 := Real.sq_sqrt hsum.le
-  have hmap : P ((Real.sqrt (l₀ ^ 2 + l₁ ^ 2))⁻¹ • (l₁ • e₀ - l₀ • e₁))
-      = (Real.sqrt (l₀ ^ 2 + l₁ ^ 2))⁻¹ • (l₁ • P e₀ - l₀ • P e₁) := by
+    ‖P ((Real.sqrt (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)))⁻¹ • (l₁ • e₀ - l₀ • e₁))‖ ^ (2 : ℕ)
+      = (l₁ ^ (2 : ℕ) * ‖P e₀‖ ^ (2 : ℕ) + l₀ ^ (2 : ℕ) * ‖P e₁‖ ^ (2 : ℕ)) / (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)) := by
+  have hspos : (0 : ℝ) < Real.sqrt (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)) := Real.sqrt_pos.mpr hsum
+  have hsq : Real.sqrt (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)) ^ (2 : ℕ) = l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ) := Real.sq_sqrt hsum.le
+  have hmap : P ((Real.sqrt (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)))⁻¹ • (l₁ • e₀ - l₀ • e₁))
+      = (Real.sqrt (l₀ ^ (2 : ℕ) + l₁ ^ (2 : ℕ)))⁻¹ • (l₁ • P e₀ - l₀ • P e₁) := by
     rw [map_smul, map_sub, map_smul, map_smul]
   have hinner : (inner ℝ (l₁ • P e₀) (l₀ • P e₁) : ℝ) = 0 := by
     rw [real_inner_smul_left, real_inner_smul_right, horth]
     ring
-  have hnorm : ‖l₁ • P e₀ - l₀ • P e₁‖ ^ 2
-      = l₁ ^ 2 * ‖P e₀‖ ^ 2 + l₀ ^ 2 * ‖P e₁‖ ^ 2 := by
+  have hnorm : ‖l₁ • P e₀ - l₀ • P e₁‖ ^ (2 : ℕ)
+      = l₁ ^ (2 : ℕ) * ‖P e₀‖ ^ (2 : ℕ) + l₀ ^ (2 : ℕ) * ‖P e₁‖ ^ (2 : ℕ) := by
     rw [norm_sub_sq_real, hinner, norm_smul, norm_smul]
     simp only [Real.norm_eq_abs, mul_pow, sq_abs]
     ring
@@ -54,7 +54,7 @@ def scaledProfile (lam alpha : ℝ) (q : ℝ → ℂ) (t : ℝ) : ℂ := q (lam 
 
 /-- Its squared modulus. -/
 def scaledProfileSq (lam alpha : ℝ) (q : ℝ → ℂ) (t : ℝ) : ℝ :=
-  ‖q (lam + t / alpha)‖ ^ 2 / ‖q lam‖ ^ 2
+  ‖q (lam + t / alpha)‖ ^ (2 : ℕ) / ‖q lam‖ ^ (2 : ℕ)
 
 theorem scaledProfile_zero {lam alpha : ℝ} {q : ℝ → ℂ} (hq : q lam ≠ 0) :
     scaledProfile lam alpha q 0 = 1 := by
@@ -86,17 +86,17 @@ theorem integral_Ioi_dilate {alpha : ℝ} (halpha : 0 < alpha) (g : ℝ → ℝ)
 `α δ / (2 |q(λ)|²)`: one translation and one dilation of the half-line, no asymptotics. -/
 theorem integral_Ioi_scaledProfileSq {lam alpha delta : ℝ} {q : ℝ → ℂ} (halpha : 0 < alpha)
     (hqeven : Function.Even q) (hqlam : ‖q lam‖ ≠ 0)
-    (hexterior : (∫ y in Iic (-lam), ‖q y‖ ^ 2) + ∫ y in Ioi lam, ‖q y‖ ^ 2 = delta) :
-    ∫ t in Ioi (0 : ℝ), scaledProfileSq lam alpha q t = alpha * delta / (2 * ‖q lam‖ ^ 2) := by
-  have h2 : ‖q lam‖ ^ 2 ≠ 0 := pow_ne_zero 2 hqlam
+    (hexterior : (∫ y in Iic (-lam), ‖q y‖ ^ (2 : ℕ)) + ∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ) = delta) :
+    ∫ t in Ioi (0 : ℝ), scaledProfileSq lam alpha q t = alpha * delta / (2 * ‖q lam‖ ^ (2 : ℕ)) := by
+  have h2 : ‖q lam‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hqlam
   have heven := integral_Iic_norm_sq_eq_integral_Ioi_of_even (lam := lam) hqeven
-  have htail : ∫ y in Ioi lam, ‖q y‖ ^ 2 = delta / 2 := by
+  have htail : ∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ) = delta / 2 := by
     rw [heven] at hexterior
     linarith
-  have hstep : ∫ t in Ioi (0 : ℝ), ‖q (lam + t / alpha)‖ ^ 2
-      = alpha * ∫ y in Ioi lam, ‖q y‖ ^ 2 := by
-    rw [integral_Ioi_dilate halpha (fun u => ‖q (lam + u)‖ ^ 2),
-      integral_Ioi_shift lam (fun y => ‖q y‖ ^ 2)]
+  have hstep : ∫ t in Ioi (0 : ℝ), ‖q (lam + t / alpha)‖ ^ (2 : ℕ)
+      = alpha * ∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ) := by
+    rw [integral_Ioi_dilate halpha (fun u => ‖q (lam + u)‖ ^ (2 : ℕ)),
+      integral_Ioi_shift lam (fun y => ‖q y‖ ^ (2 : ℕ))]
   unfold scaledProfileSq
   rw [integral_div, hstep, htail]
   field_simp
@@ -107,9 +107,9 @@ theorem tendsto_integral_Ioi_scaledProfileSq_outer
     (hparam : ∀ᶠ i in l, 0 < lamf i ∧ df i ≠ 0 ∧ ‖qf i (lamf i)‖ ≠ 0)
     (hqeven : ∀ i, Function.Even (qf i))
     (hexterior : ∀ i,
-      (∫ y in Iic (-lamf i), ‖qf i y‖ ^ 2) + ∫ y in Ioi (lamf i), ‖qf i y‖ ^ 2 = deltaf i)
+      (∫ y in Iic (-lamf i), ‖qf i y‖ ^ (2 : ℕ)) + ∫ y in Ioi (lamf i), ‖qf i y‖ ^ (2 : ℕ) = deltaf i)
     (hratio : Tendsto (fun i => deltaf i / df i) l (nhds (8 / 11)))
-    (hheight : Tendsto (fun i => ‖qf i (lamf i)‖ ^ 2 / (lamf i * df i)) l
+    (hheight : Tendsto (fun i => ‖qf i (lamf i)‖ ^ (2 : ℕ) / (lamf i * df i)) l
       (nhds (16 * Real.pi / 11))) :
     Tendsto (fun i => ∫ t in Ioi (0 : ℝ), scaledProfileSq (lamf i) (lamf i) (qf i) t) l
       (nhds (1 / (4 * Real.pi))) := by
@@ -124,7 +124,7 @@ theorem tendsto_integral_Ioi_scaledProfileSq_outer
   filter_upwards [hparam] with i hi
   rw [integral_Ioi_scaledProfileSq hi.1 (hqeven i) hi.2.2 (hexterior i)]
   simp only [Pi.div_apply]
-  have h2 : ‖qf i (lamf i)‖ ^ 2 ≠ 0 := pow_ne_zero 2 hi.2.2
+  have h2 : ‖qf i (lamf i)‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hi.2.2
   have hd : df i ≠ 0 := hi.2.1
   have hl : lamf i ≠ 0 := hi.1.ne'
   field_simp
@@ -136,17 +136,17 @@ theorem tendsto_integral_Ioi_scaledProfileSq_inner
     (hparam : ∀ᶠ i in l, 0 < lamf i ∧ df i ≠ 0 ∧ ‖qf i (lamf i)‖ ≠ 0)
     (hqeven : ∀ i, Function.Even (qf i))
     (hexterior : ∀ i,
-      (∫ y in Iic (-lamf i), ‖qf i y‖ ^ 2) + ∫ y in Ioi (lamf i), ‖qf i y‖ ^ 2 = deltaf i)
+      (∫ y in Iic (-lamf i), ‖qf i y‖ ^ (2 : ℕ)) + ∫ y in Ioi (lamf i), ‖qf i y‖ ^ (2 : ℕ) = deltaf i)
     (hratio : Tendsto (fun i => deltaf i / df i) l (nhds (8 / 11)))
-    (hheight : Tendsto (fun i => ‖qf i (lamf i)‖ ^ 2 / (lamf i * df i)) l
+    (hheight : Tendsto (fun i => ‖qf i (lamf i)‖ ^ (2 : ℕ) / (lamf i * df i)) l
       (nhds (16 * Real.pi / 11))) :
-    Tendsto (fun i => (∫ t in Ioi (0 : ℝ), scaledProfileSq (lamf i) (lamf i ^ 3) (qf i) t)
-        / lamf i ^ 2) l (nhds (1 / (4 * Real.pi))) := by
+    Tendsto (fun i => (∫ t in Ioi (0 : ℝ), scaledProfileSq (lamf i) (lamf i ^ (3 : ℕ)) (qf i) t)
+        / lamf i ^ (2 : ℕ)) l (nhds (1 / (4 * Real.pi))) := by
   refine (tendsto_integral_Ioi_scaledProfileSq_outer hparam hqeven hexterior hratio
     hheight).congr' ?_
   filter_upwards [hparam] with i hi
   have hl : lamf i ≠ 0 := hi.1.ne'
-  have h2 : ‖qf i (lamf i)‖ ^ 2 ≠ 0 := pow_ne_zero 2 hi.2.2
+  have h2 : ‖qf i (lamf i)‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hi.2.2
   rw [integral_Ioi_scaledProfileSq hi.1 (hqeven i) hi.2.2 (hexterior i),
     integral_Ioi_scaledProfileSq (pow_pos hi.1 3) (hqeven i) hi.2.2 (hexterior i)]
   field_simp
@@ -176,8 +176,8 @@ theorem hasDerivAt_scaledProfile {lam alpha : ℝ} (halpha : alpha ≠ 0) {q : �
 /-- **Equations (11)–(12).**  In the CCM aperture `c = 2πλ²` the endpoint logarithmic derivative
 splits into the universal cubic term and an eigenvalue remainder. -/
 theorem endpointLogDeriv_eq {lam : ℝ} (hlam : lam ≠ 0) (kappa : ℝ) :
-    (kappa - (2 * Real.pi * lam ^ 2) ^ 2) / (2 * lam)
-      = -(2 * Real.pi ^ 2) * lam ^ 3 + kappa / (2 * lam) := by
+    (kappa - (2 * Real.pi * lam ^ (2 : ℕ)) ^ (2 : ℕ)) / (2 * lam)
+      = -(2 * Real.pi ^ (2 : ℕ)) * lam ^ (3 : ℕ) + kappa / (2 * lam) := by
   field_simp
   ring
 
@@ -186,11 +186,11 @@ constant `-2π²`. -/
 theorem tendsto_endpointLogDeriv_div_cube
     {ι : Type*} {l : Filter ι} {lamf kappaf : ι → ℝ}
     (hlam : ∀ᶠ i in l, lamf i ≠ 0)
-    (hkappa : Tendsto (fun i => kappaf i / lamf i ^ 4) l (nhds 0)) :
-    Tendsto (fun i => ((kappaf i - (2 * Real.pi * lamf i ^ 2) ^ 2) / (2 * lamf i)) / lamf i ^ 3)
-      l (nhds (-(2 * Real.pi ^ 2))) := by
-  have hlim : Tendsto (fun i => (1 / 2 : ℝ) * (kappaf i / lamf i ^ 4) + -(2 * Real.pi ^ 2)) l
-      (nhds ((1 / 2 : ℝ) * 0 + -(2 * Real.pi ^ 2))) :=
+    (hkappa : Tendsto (fun i => kappaf i / lamf i ^ (4 : ℕ)) l (nhds 0)) :
+    Tendsto (fun i => ((kappaf i - (2 * Real.pi * lamf i ^ (2 : ℕ)) ^ (2 : ℕ)) / (2 * lamf i)) / lamf i ^ (3 : ℕ))
+      l (nhds (-(2 * Real.pi ^ (2 : ℕ)))) := by
+  have hlim : Tendsto (fun i => (1 / 2 : ℝ) * (kappaf i / lamf i ^ (4 : ℕ)) + -(2 * Real.pi ^ (2 : ℕ))) l
+      (nhds ((1 / 2 : ℝ) * 0 + -(2 * Real.pi ^ (2 : ℕ)))) :=
     (hkappa.const_mul (1 / 2 : ℝ)).add_const _
   rw [mul_zero, zero_add] at hlim
   refine hlim.congr' ?_
@@ -201,7 +201,7 @@ theorem tendsto_endpointLogDeriv_div_cube
 /-- **Equation (15).**  The two endpoint slopes differ by exactly `λ²`: the outer coordinate has a
 diverging boundary derivative, the inner one a finite limit.  The scale separation is an identity. -/
 theorem outerSlope_eq_sq_mul_innerSlope {lam : ℝ} (hlam : lam ≠ 0) (q : ℝ → ℂ) (qp : ℂ) :
-    qp / ((lam : ℂ) * q lam) = (lam : ℂ) ^ 2 * (qp / ((lam : ℂ) ^ 3 * q lam)) := by
+    qp / ((lam : ℂ) * q lam) = (lam : ℂ) ^ (2 : ℕ) * (qp / ((lam : ℂ) ^ (3 : ℕ) * q lam)) := by
   have hl : (lam : ℂ) ≠ 0 := by exact_mod_cast hlam
   field_simp
 

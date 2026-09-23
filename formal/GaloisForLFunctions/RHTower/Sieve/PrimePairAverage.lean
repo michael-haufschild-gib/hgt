@@ -50,7 +50,7 @@ theorem sum_card_primePair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : �
     ∑ d ∈ Finset.Icc 1 K,
         ((((Finset.Icc 1 ⌊Y⌋₊).filter
             (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-      ≤ 2 * Real.exp 1 * (K : ℝ) * Y / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+      ≤ 2 * Real.exp 1 * (K : ℝ) * Y / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
         + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
   classical
@@ -75,7 +75,7 @@ theorem sum_card_primePair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : �
   have hterm : ∀ d : ℕ,
       ((((Finset.Icc 1 ⌊Y⌋₊).filter
             (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-        ≤ (2 * Y / E ^ 2)
+        ≤ (2 * Y / E ^ (2 : ℕ))
             * (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), ((p : ℝ) / ((p : ℝ) - 1)))
           + R := by
     intro d
@@ -94,9 +94,9 @@ theorem sum_card_primePair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : �
       have h3 := hp3 p (Finset.mem_filter.1 hp).1
       rw [inv_div]
     rw [hinv]
-    have hmain : Y / ((1 / 2) * (E ^ 2
+    have hmain : Y / ((1 / 2) * (E ^ (2 : ℕ)
           * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
-        = (2 * Y / E ^ 2)
+        = (2 * Y / E ^ (2 : ℕ))
           * (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d),
               (((p : ℝ) - 1) / (p : ℝ)))⁻¹ := by
       field_simp
@@ -108,14 +108,14 @@ theorem sum_card_primePair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : �
     congr 1
   rw [hcard]
   have hkey := sum_inv_shiftCorrection_le hP₁ h K
-  have hcoef : (0 : ℝ) ≤ 2 * Y / E ^ 2 := by positivity
-  have hstep : (2 * Y / E ^ 2)
+  have hcoef : (0 : ℝ) ≤ 2 * Y / E ^ (2 : ℕ) := by positivity
+  have hstep : (2 * Y / E ^ (2 : ℕ))
       * ∑ d ∈ Finset.Icc 1 K,
           (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), ((p : ℝ) / ((p : ℝ) - 1)))
-      ≤ (2 * Y / E ^ 2) * (Real.exp 1 * (K : ℝ)) :=
+      ≤ (2 * Y / E ^ (2 : ℕ)) * (Real.exp 1 * (K : ℝ)) :=
     mul_le_mul_of_nonneg_left hkey hcoef
-  have hfin : (2 * Y / E ^ 2) * (Real.exp 1 * (K : ℝ))
-      = 2 * Real.exp 1 * (K : ℝ) * Y / E ^ 2 := by
+  have hfin : (2 * Y / E ^ (2 : ℕ)) * (Real.exp 1 * (K : ℝ))
+      = 2 * Real.exp 1 * (K : ℝ) * Y / E ^ (2 : ℕ) := by
     field_simp
   linarith [hstep, hfin.le, hfin.ge]
 

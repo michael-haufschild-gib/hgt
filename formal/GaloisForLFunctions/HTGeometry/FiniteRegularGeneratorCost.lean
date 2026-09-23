@@ -102,10 +102,10 @@ theorem cost_spec (g : G) : GeneratedCost s t g (cost s t hgen g) := by
   exact Nat.find_spec _
 
 /-- A finite, source-independent comparison cost. No level-uniform bound is asserted. -/
-def comparisonConstant : ℝ := 1+(Fintype.card G:ℝ)⁻¹*∑ g : G, (cost s t hgen g:ℝ)^2
+def comparisonConstant : ℝ := 1+(Fintype.card G:ℝ)⁻¹*∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ)
 
 theorem comparisonConstant_pos : 0 < comparisonConstant s t hgen := by
-  have h : 0 ≤ (Fintype.card G:ℝ)⁻¹*∑ g : G, (cost s t hgen g:ℝ)^2 :=
+  have h : 0 ≤ (Fintype.card G:ℝ)⁻¹*∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ) :=
     mul_nonneg (by positivity) (Finset.sum_nonneg (fun _ _ => sq_nonneg _))
   unfold comparisonConstant
   linarith
@@ -113,21 +113,21 @@ theorem comparisonConstant_pos : 0 < comparisonConstant s t hgen := by
 /-- Actual generator displacements control the full regular mean-zero variance
 with the finite cost constructed from group generation. -/
 theorem variance_le_generator_energy (v : EuclideanSpace ℂ G) :
-    ‖v-finiteRegularAverage v‖^2 ≤ comparisonConstant s t hgen*
-      (‖finiteRegularUnitary s v-v‖^2+‖finiteRegularUnitary t v-v‖^2) := by
+    ‖v-finiteRegularAverage v‖^(2 : ℕ) ≤ comparisonConstant s t hgen*
+      (‖finiteRegularUnitary s v-v‖^(2 : ℕ)+‖finiteRegularUnitary t v-v‖^(2 : ℕ)) := by
   let D := ‖finiteRegularUnitary s v-v‖+‖finiteRegularUnitary t v-v‖
-  let E := ‖finiteRegularUnitary s v-v‖^2+‖finiteRegularUnitary t v-v‖^2
+  let E := ‖finiteRegularUnitary s v-v‖^(2 : ℕ)+‖finiteRegularUnitary t v-v‖^(2 : ℕ)
   have hE : 0 ≤ E := add_nonneg (sq_nonneg _) (sq_nonneg _)
-  have hD : D^2 ≤ 2*E := by
+  have hD : D^(2 : ℕ) ≤ 2*E := by
     dsimp [D,E]
     nlinarith [sq_nonneg (‖finiteRegularUnitary s v-v‖-‖finiteRegularUnitary t v-v‖)]
-  have hpoint (g : G) : ‖finiteRegularUnitary g v-v‖^2 ≤
-      2*(cost s t hgen g:ℝ)^2*E := by
+  have hpoint (g : G) : ‖finiteRegularUnitary g v-v‖^(2 : ℕ) ≤
+      2*(cost s t hgen g:ℝ)^(2 : ℕ)*E := by
     have hb := generated_displacement_le s t (cost_spec s t hgen g) v
     change ‖finiteRegularUnitary g v-v‖ ≤ (cost s t hgen g:ℝ)*D at hb
     have hc : 0 ≤ (cost s t hgen g:ℝ) := by positivity
     have hd : 0 ≤ D := add_nonneg (norm_nonneg _) (norm_nonneg _)
-    have hsq : ‖finiteRegularUnitary g v-v‖^2 ≤ ((cost s t hgen g:ℝ)*D)^2 := by
+    have hsq : ‖finiteRegularUnitary g v-v‖^(2 : ℕ) ≤ ((cost s t hgen g:ℝ)*D)^(2 : ℕ) := by
       nlinarith [norm_nonneg (finiteRegularUnitary g v-v)]
     nlinarith [mul_nonneg (sq_nonneg (cost s t hgen g:ℝ)) (sub_nonneg.mpr hD)]
   have hsum := Finset.sum_le_sum (fun g (_ : g ∈ Finset.univ) => hpoint g)
@@ -136,12 +136,12 @@ theorem variance_le_generator_energy (v : EuclideanSpace ℂ G) :
   have hh := finiteRegularAverage_energy v
   have hn := finiteRegularAverage_norm_decomposition v
   have hmul := mul_le_mul_of_nonneg_left hsum (inv_nonneg.mpr (by positivity : 0 ≤ 2*(Fintype.card G:ℝ)))
-  have hcoef : (2*(Fintype.card G:ℝ))⁻¹*(2*(∑ g : G, (cost s t hgen g:ℝ)^2)*E)=
-      (Fintype.card G:ℝ)⁻¹*(∑ g : G, (cost s t hgen g:ℝ)^2)*E := by rw [mul_inv_rev]; ring
+  have hcoef : (2*(Fintype.card G:ℝ))⁻¹*(2*(∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ))*E)=
+      (Fintype.card G:ℝ)⁻¹*(∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ))*E := by rw [mul_inv_rev]; ring
   rw [hcoef] at hmul
   rw [hh] at hmul
-  change ‖v-finiteRegularAverage v‖^2 ≤ (1+(Fintype.card G:ℝ)⁻¹*
-      ∑ g : G, (cost s t hgen g:ℝ)^2)*E
+  change ‖v-finiteRegularAverage v‖^(2 : ℕ) ≤ (1+(Fintype.card G:ℝ)⁻¹*
+      ∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ))*E
   nlinarith
 
 include hgen in

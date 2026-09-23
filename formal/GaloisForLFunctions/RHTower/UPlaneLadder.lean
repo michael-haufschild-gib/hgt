@@ -99,7 +99,7 @@ theorem xiDescent_far_anchor_mem_slitPlane : ((9 : ℂ) / 4) ∈ slitPlane := by
 
 /-- The positive real u-plane anchor is a nonzero value of the descended function. -/
 theorem xiDescent_far_anchor_ne_zero : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
-  rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num,
+  rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ (2 : ℕ) from by norm_num,
     ← xi_eq_xiDescent]
   exact xi_two_ne_zero
 

@@ -30,11 +30,11 @@ theorem normalizedRankOneProjection_neg (v : E) :
 
 /-- Chordal gap of two real rays, in its exact Gram form `(AH19)`. -/
 def realProjectiveChordalGap (v w : E) : ℝ :=
-  Real.sqrt (1 - (inner ℝ v w) ^ 2 / (‖v‖ ^ 2 * ‖w‖ ^ 2))
+  Real.sqrt (1 - (inner ℝ v w) ^ (2 : ℕ) / (‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ)))
 
 theorem realProjectiveChordalGap_eq (v w : E) :
     realProjectiveChordalGap v w =
-      Real.sqrt (1 - (inner ℝ v w) ^ 2 / (‖v‖ ^ 2 * ‖w‖ ^ 2)) :=
+      Real.sqrt (1 - (inner ℝ v w) ^ (2 : ℕ) / (‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ))) :=
   rfl
 
 theorem realProjectiveChordalGap_neg_left (v w : E) :
@@ -64,13 +64,13 @@ theorem same_antipodal_cloud_projectiveGap_eq (v : E) (i j : Fin 2) :
 
 /-- Oriented resultant of the repeated cloud retains four times the one-vector energy. -/
 theorem norm_sq_same_oriented_pair (v : E) :
-    ‖v + v‖ ^ 2 = 4 * ‖v‖ ^ 2 := by
+    ‖v + v‖ ^ (2 : ℕ) = 4 * ‖v‖ ^ (2 : ℕ) := by
   rw [← two_smul ℝ v, norm_smul, Real.norm_ofNat]
   ring
 
 /-- Oriented resultant of the antipodal cloud cancels exactly. -/
 theorem norm_sq_antipodal_oriented_pair (v : E) :
-    ‖v + -v‖ ^ 2 = 0 := by
+    ‖v + -v‖ ^ (2 : ℕ) = 0 := by
   simp
 
 /-- Complete abstract projective-blindness no-go: all unoriented data agree while oriented
@@ -84,8 +84,8 @@ theorem projectiveGap_cannot_recover_oriented_resultant (v : E) :
         realProjectiveChordalGap
           ((fun k : Fin 2 => if k = 0 then v else -v) i)
           ((fun k : Fin 2 => if k = 0 then v else -v) j)) ∧
-    ‖v + v‖ ^ 2 = 4 * ‖v‖ ^ 2 ∧
-    ‖v + -v‖ ^ 2 = 0 := by
+    ‖v + v‖ ^ (2 : ℕ) = 4 * ‖v‖ ^ (2 : ℕ) ∧
+    ‖v + -v‖ ^ (2 : ℕ) = 0 := by
   exact ⟨same_antipodal_cloud_projectors_eq v,
     same_antipodal_cloud_projectiveGap_eq v,
     norm_sq_same_oriented_pair v,
@@ -103,8 +103,8 @@ theorem centeredIndicatorOn_projective_complement_noGo
       (measure_ne_top_of_subset Set.sdiff_subset hΩfin)
     normalizedRankOneProjection κc = normalizedRankOneProjection κ ∧
       realProjectiveChordalGap κ κc = realProjectiveChordalGap κ κ ∧
-      ‖κ + κ‖ ^ 2 = 4 * ‖κ‖ ^ 2 ∧
-      ‖κ + κc‖ ^ 2 = 0 := by
+      ‖κ + κ‖ ^ (2 : ℕ) = 4 * ‖κ‖ ^ (2 : ℕ) ∧
+      ‖κ + κc‖ ^ (2 : ℕ) = 0 := by
   dsimp only
   rw [centeredIndicatorOn_sdiff_eq_neg μ Ω E hΩ hΩfin hE hEfin hEΩ hΩpos]
   exact ⟨normalizedRankOneProjection_neg _,

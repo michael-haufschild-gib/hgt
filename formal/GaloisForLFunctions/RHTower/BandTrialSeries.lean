@@ -74,13 +74,13 @@ theorem tsum_eq_tsum_sum_antidiagonal {T : ℕ × ℕ → ℝ} (hT : Summable T)
 
 /-- The `(j, k)` term of the trial series. -/
 def trialTerm (c ω : ℝ) (p : ℕ × ℕ) : ℝ :=
-  2 * (Nat.choose (p.1 + p.2) p.1 : ℝ) * (c ^ 2) ^ p.2 * (-(ω ^ 2)) ^ p.1
+  2 * (Nat.choose (p.1 + p.2) p.1 : ℝ) * (c ^ (2 : ℕ)) ^ p.2 * (-(ω ^ (2 : ℕ))) ^ p.1
     / (Nat.factorial (2 * (p.1 + p.2) + 1) : ℝ)
 
 /-- The absolute value of the trial term is the same expression with `+omega²`. -/
 theorem abs_trialTerm (c ω : ℝ) (p : ℕ × ℕ) :
     |trialTerm c ω p|
-      = 2 * (Nat.choose (p.1 + p.2) p.1 : ℝ) * (c ^ 2) ^ p.2 * (ω ^ 2) ^ p.1
+      = 2 * (Nat.choose (p.1 + p.2) p.1 : ℝ) * (c ^ (2 : ℕ)) ^ p.2 * (ω ^ (2 : ℕ)) ^ p.1
         / (Nat.factorial (2 * (p.1 + p.2) + 1) : ℝ) := by
   have hoddposR : (0 : ℝ) < (Nat.factorial (2 * (p.1 + p.2) + 1) : ℝ) := by
     exact_mod_cast Nat.factorial_pos _
@@ -91,10 +91,10 @@ theorem abs_trialTerm (c ω : ℝ) (p : ℕ × ℕ) :
   have h2 : |(Nat.choose (p.1 + p.2) p.1 : ℝ)| = (Nat.choose (p.1 + p.2) p.1 : ℝ) := by
     rw [abs_of_nonneg]
     positivity
-  have h3 : |((c ^ 2) ^ p.2 : ℝ)| = (c ^ 2) ^ p.2 := by
+  have h3 : |((c ^ (2 : ℕ)) ^ p.2 : ℝ)| = (c ^ (2 : ℕ)) ^ p.2 := by
     rw [abs_of_nonneg]
     positivity
-  have h4 : |((-(ω ^ 2)) ^ p.1 : ℝ)| = (ω ^ 2) ^ p.1 := by
+  have h4 : |((-(ω ^ (2 : ℕ))) ^ p.1 : ℝ)| = (ω ^ (2 : ℕ)) ^ p.1 := by
     rw [abs_pow, abs_neg, abs_of_nonneg (sq_nonneg ω)]
   rw [h1, h2, h3, h4]
 
@@ -106,11 +106,11 @@ theorem summable_trialTerm (c ω : ℝ) : Summable (trialTerm c ω) := by
     fun m => (hasSum_fintype _).summable
   -- the antidiagonal sums of the absolute values
   have hantisum : ∀ m : ℕ, (∑' p : Finset.antidiagonal m, |trialTerm c ω (p : ℕ × ℕ)|)
-      = 2 * (ω ^ 2 + c ^ 2) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
+      = 2 * (ω ^ (2 : ℕ) + c ^ (2 : ℕ)) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
     intro m
     rw [tsum_fintype,
       Finset.sum_coe_sort (Finset.antidiagonal m) (fun p : ℕ × ℕ => |trialTerm c ω p|),
-      ← antidiagonal_binomial_sum (ω ^ 2) (c ^ 2) m]
+      ← antidiagonal_binomial_sum (ω ^ (2 : ℕ)) (c ^ (2 : ℕ)) m]
     refine Finset.sum_congr rfl fun p hp => ?_
     have hmem : p.1 + p.2 = m := Finset.mem_antidiagonal.mp hp
     rw [abs_trialTerm, hmem]
@@ -118,7 +118,7 @@ theorem summable_trialTerm (c ω : ℝ) : Summable (trialTerm c ω) := by
       |trialTerm c ω (x.2 : ℕ × ℕ)| := by
     rw [summable_sigma_of_nonneg hnonneg]
     refine ⟨hfibsum, ?_⟩
-    refine (summable_oddFactorial_pow (ω ^ 2 + c ^ 2)).congr fun m => ?_
+    refine (summable_oddFactorial_pow (ω ^ (2 : ℕ) + c ^ (2 : ℕ))).congr fun m => ?_
     exact (hantisum m).symm
   have habs : Summable fun p : ℕ × ℕ => |trialTerm c ω p| :=
     Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd.summable_iff.mp hsigsum
@@ -127,17 +127,17 @@ theorem summable_trialTerm (c ω : ℝ) : Summable (trialTerm c ω) := by
 /-- **The trial series collapses to the odd-factorial series.** -/
 theorem tsum_trialTerm_eq (c ω : ℝ) :
     (∑' p : ℕ × ℕ, trialTerm c ω p)
-      = ∑' m : ℕ, 2 * (c ^ 2 - ω ^ 2) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
+      = ∑' m : ℕ, 2 * (c ^ (2 : ℕ) - ω ^ (2 : ℕ)) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
   rw [tsum_eq_tsum_sum_antidiagonal (summable_trialTerm c ω)]
   refine tsum_congr fun m => ?_
   have hsum : (∑ p ∈ Finset.antidiagonal m, trialTerm c ω p)
       = ∑ p ∈ Finset.antidiagonal m,
-        2 * (Nat.choose m p.1 : ℝ) * (c ^ 2) ^ p.2 * (-(ω ^ 2)) ^ p.1
+        2 * (Nat.choose m p.1 : ℝ) * (c ^ (2 : ℕ)) ^ p.2 * (-(ω ^ (2 : ℕ))) ^ p.1
           / (Nat.factorial (2 * m + 1) : ℝ) := by
     refine Finset.sum_congr rfl fun p hp => ?_
     have hmem : p.1 + p.2 = m := Finset.mem_antidiagonal.mp hp
     rw [trialTerm, hmem]
-  rw [hsum, antidiagonal_binomial_sum (-(ω ^ 2)) (c ^ 2) m]
+  rw [hsum, antidiagonal_binomial_sum (-(ω ^ (2 : ℕ))) (c ^ (2 : ℕ)) m]
   congr 2
   ring
 

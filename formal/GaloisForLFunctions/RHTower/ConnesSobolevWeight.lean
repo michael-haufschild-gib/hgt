@@ -14,21 +14,21 @@ Formalization of the growth-weight layer of
 
 namely §III (16)(17) and Appendix I (1)-(5), (29).
 
-Connes builds the Polya-Hilbert space as a cokernel inside the weighted space `L^2_delta(C_k)`
-whose square norm carries the factor `(1 + log^2 |g|)^{delta/2}`.  Everything the paper needs about
+Connes builds the Polya-Hilbert space as a cokernel inside the weighted space `L^(2 : ℕ)_delta(C_k)`
+whose square norm carries the factor `(1 + log^(2 : ℕ) |g|)^{delta/2}`.  Everything the paper needs about
 that weight is elementary and is proved here without hypotheses:
 
 * `connesSobolevWeight_add_le` - Appendix I (2) / §III (17): the weight
-  `rho_delta(u) = (1+u^2)^{delta/2}` is submultiplicative up to the constant `2^{delta/2}`.  This is
+  `rho_delta(u) = (1+u^(2 : ℕ))^{delta/2}` is submultiplicative up to the constant `2^{delta/2}`.  This is
   exactly the inequality that produces the almost-unitarity estimate `‖V(g)‖ = O((log|g|)^{delta/2})`
   of §III (16), so the representation `V` is not unitary but has polynomial growth.
 * `connesSobolevWeight_lintegral_translate_le` - Appendix I (4)(5): the resulting operator bound
   `‖V(v)‖ ≤ (c rho_delta(v))^{1/2}` for the translation `V(v) xi = xi(· - v)`, stated with lower
   Lebesgue integrals so that it needs no integrability side condition.
 * `connesSobolevWeight_integrable_iff` - Appendix I (29): the vector
-  `eta_{t,a}(x) = chi_0(x)|x|^{it}(log|x|)^a` lies in `L^2_{-delta}` exactly when `a < (delta-1)/2`.
+  `eta_{t,a}(x) = chi_0(x)|x|^{it}(log|x|)^a` lies in `L^(2 : ℕ)_{-delta}` exactly when `a < (delta-1)/2`.
   In the logarithmic coordinate this is the integrability criterion `2k - delta < -1` for
-  `u ↦ u^{2k}(1+u^2)^{-delta/2}` on the whole line.
+  `u ↦ u^{2k}(1+u^(2 : ℕ))^{-delta/2}` on the whole line.
 
 The printed paper states the last condition as `2k + delta < -1`; its own displayed conclusion
 `k < (delta-1)/2` shows the intended inequality is `2k - delta < -1`, which is what is proved.

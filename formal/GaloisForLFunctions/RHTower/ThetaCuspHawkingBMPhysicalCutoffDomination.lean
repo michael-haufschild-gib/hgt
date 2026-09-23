@@ -16,7 +16,7 @@ set_option backward.isDefEq.respectTransparency false
 theorem physicalCoreCutoff_laplacian_bound : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (q : XiZeroCopy) (n : ℕ) (z : UpperHalfPlane), z ∈ ModularGroup.fd →
       ‖(physicalCoreCutoff q n).laplacian.field z‖ ≤
-        (‖physicalAngularParameter q^2-1/4‖+C)*‖scalar (physicalAngularParameter q) (coordinates z)‖+
+        (‖physicalAngularParameter q^(2 : ℕ)-1/4‖+C)*‖scalar (physicalAngularParameter q) (coordinates z)‖+
         2*C*z.im*‖coordDeriv 1 (scalar (physicalAngularParameter q)) (coordinates z)‖ := by
   obtain ⟨C,hC,hb⟩ := scaledCuspCutoff_derivative_bounds
   refine ⟨C,hC,?_⟩
@@ -24,7 +24,7 @@ theorem physicalCoreCutoff_laplacian_bound : ∃ C : ℝ, 0 ≤ C ∧
   let N : ℝ := (n:ℝ)+1
   let E := scalar (physicalAngularParameter q) (coordinates z)
   let D := coordDeriv 1 (scalar (physicalAngularParameter q)) (coordinates z)
-  let L := physicalAngularParameter q^2-1/4
+  let L := physicalAngularParameter q^(2 : ℕ)-1/4
   have hchi : ‖(scaledCuspCutoff N z.im:ℂ)‖ ≤ 1 := by
     rw [Complex.norm_real,Real.norm_eq_abs]
     change |baseCuspCutoff (z.im/N)| ≤ 1
@@ -38,19 +38,19 @@ theorem physicalCoreCutoff_laplacian_bound : ∃ C : ℝ, 0 ≤ C ∧
     simp only [norm_mul,norm_conj,Complex.norm_ofNat,Complex.norm_real,Real.norm_eq_abs,abs_of_pos z.im_pos]
     gcongr
     simpa only [abs_mul,abs_of_pos z.im_pos] using (hb N z.im).1
-  have h2 : ‖((z.im^2*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ ≤ C*‖E‖ := by
+  have h2 : ‖((z.im^(2 : ℕ)*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ ≤ C*‖E‖ := by
     simp only [norm_mul,norm_conj,Complex.norm_real,Real.norm_eq_abs]
-    have ht : |z.im^2| * |deriv (deriv (scaledCuspCutoff N)) z.im| ≤ C := by
+    have ht : |z.im^(2 : ℕ)| * |deriv (deriv (scaledCuspCutoff N)) z.im| ≤ C := by
       simpa only [abs_mul] using (hb N z.im).2
     exact mul_le_mul_of_nonneg_right ht (norm_nonneg _)
   rw [physicalCoreCutoff_laplacian q n z hz]
   change ‖(scaledCuspCutoff N z.im:ℂ)*conj (L*E)+
       2*((z.im*deriv (scaledCuspCutoff N) z.im:ℝ):ℂ)*(z.im:ℂ)*conj D+
-      ((z.im^2*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ ≤ _
+      ((z.im^(2 : ℕ)*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ ≤ _
   calc
     _ ≤ (‖(scaledCuspCutoff N z.im:ℂ)*conj (L*E)‖+
         ‖2*((z.im*deriv (scaledCuspCutoff N) z.im:ℝ):ℂ)*(z.im:ℂ)*conj D‖)+
-        ‖((z.im^2*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ :=
+        ‖((z.im^(2 : ℕ)*deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)*conj E‖ :=
       (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
     _ ≤ ‖L‖*‖E‖+2*C*z.im*‖D‖+C*‖E‖ := add_le_add (add_le_add h0 h1) h2
     _ = _ := by change _ = (‖L‖+C)*‖E‖+2*C*z.im*‖D‖; ring

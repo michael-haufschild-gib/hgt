@@ -28,9 +28,9 @@ theorem radial_cutoff_package (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
       AnalyticAt ℂ Mel (physicalFundamentalFrequency q side) ∧
       AnalyticAt ℂ (compactPart q branch a zang b) (physicalFundamentalFrequency q side) ∧
       (∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ u in 𝓝 (physicalFundamentalFrequency q side), ∀ z ∈ Ioc (0:ℝ) b,
-        ‖clearedDensityProfile q branch a zang u z - c₀ u - c₁ u * z‖ ≤ C * z ^ 2) ∧
+        ‖clearedDensityProfile q branch a zang u z - c₀ u - c₁ u * z‖ ≤ C * z ^ (2 : ℕ)) ∧
       (∀ᶠ u in 𝓝[≠] (physicalFundamentalFrequency q side), Tendsto (fun L : ℝ =>
-        (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ 2 - 1) *
+        (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) *
           continuedPhysicalTimeAction q branch u a false t zang) +
           (c₀ u * (horizonCoordinate L:ℂ) ^ u / u + c₁ u * (horizonCoordinate L:ℂ) ^ (u + 1) / (u + 1)) /
             reducedGreenClearingFactor u (physicalRadialFrequency q) (physicalRate q branch))
@@ -115,7 +115,7 @@ theorem radial_cutoff_package (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
       exact (hPan t htI u hu).differentiableAt
   have hC' : ∀ u ∈ ball (physicalFundamentalFrequency q side) r, ∀ t ∈ Ioc (0:ℝ) b,
       ‖patchedProfile q branch a zang c₀ b u t - patchedProfile q branch a zang c₀ b u 0 -
-        c₁ u * t‖ ≤ C * t ^ 2 := by
+        c₁ u * t‖ ≤ C * t ^ (2 : ℕ) := by
     intro u hu t ht
     rw [patchedProfile_of_mem q branch a zang c₀ b u ht, patchedProfile_zero]
     exact hjet u (hall (mem_ball.mp hu)).2.2.2.2.2.2.1 t ht

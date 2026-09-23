@@ -29,10 +29,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-abbrev PositiveReal := {x : ℝ // 0 < x}
+abbrev PositiveReal_halfDensityRouteLOddWeilConnectionWeld := {x : ℝ // 0 < x}
 
 noncomputable def halfDensityLogEquiv :
-    (PositiveReal → ℂ) ≃ₗ[ℂ] (ℝ → ℂ) where
+    (PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) ≃ₗ[ℂ] (ℝ → ℂ) where
   toFun f t := Complex.exp ((t : ℂ) / 2) * f ⟨Real.exp t, Real.exp_pos t⟩
   invFun g x := Complex.exp (-(Real.log (x : ℝ) : ℂ) / 2) * g (Real.log (x : ℝ))
   left_inv f := by
@@ -41,7 +41,7 @@ noncomputable def halfDensityLogEquiv :
       (Complex.exp ((Real.log (x : ℝ) : ℂ) / 2) *
         f ⟨Real.exp (Real.log (x : ℝ)), Real.exp_pos _⟩) = f x
     rw [← mul_assoc, ← Complex.exp_add]
-    have hx : (⟨Real.exp (Real.log (x : ℝ)), Real.exp_pos _⟩ : PositiveReal) = x :=
+    have hx : (⟨Real.exp (Real.log (x : ℝ)), Real.exp_pos _⟩ : PositiveReal_halfDensityRouteLOddWeilConnectionWeld) = x :=
       Subtype.ext (Real.exp_log x.prop)
     rw [hx]
     rw [show -(Real.log (x : ℝ) : ℂ) / 2 + (Real.log (x : ℝ) : ℂ) / 2 = 0 by ring,
@@ -65,10 +65,10 @@ noncomputable def halfDensityLogEquiv :
 def complexMellinWeight (b : ℂ) (n : ℕ) : ℂ :=
   Complex.exp (-(Real.log (n : ℝ) : ℂ) * b)
 
-def positiveDilation (n : ApertureAtom) (f : PositiveReal → ℂ) (x : PositiveReal) : ℂ :=
+def positiveDilation (n : ApertureAtom) (f : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) (x : PositiveReal_halfDensityRouteLOddWeilConnectionWeld) : ℂ :=
   f ⟨(n : ℝ) * x, mul_pos (by exact_mod_cast (show 0 < (n : ℕ) by omega)) x.prop⟩
 
-def positiveContraction (n : ApertureAtom) (f : PositiveReal → ℂ) (x : PositiveReal) : ℂ :=
+def positiveContraction (n : ApertureAtom) (f : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) (x : PositiveReal_halfDensityRouteLOddWeilConnectionWeld) : ℂ :=
   f ⟨(x : ℝ) / n, div_pos x.prop (by exact_mod_cast (show 0 < (n : ℕ) by omega))⟩
 
 theorem halfDensityLogEquiv_positiveDilation
@@ -112,19 +112,19 @@ theorem complexMellinWeight_add (b c : ℂ) (n : ℕ) :
   ring
 
 def routeLPositiveExpansionOperator
-    (a : ℂ) (f : PositiveReal → ℂ) (x : PositiveReal) : ℂ :=
+    (a : ℂ) (f : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) (x : PositiveReal_halfDensityRouteLOddWeilConnectionWeld) : ℂ :=
   ∑ᶠ n : ℕ, if hn : 2 ≤ n then
     (ArithmeticFunction.vonMangoldt n : ℂ) * complexMellinWeight a n *
       positiveDilation ⟨n, hn⟩ f x else 0
 
 def routeLPositiveContractionOperator
-    (a : ℂ) (f : PositiveReal → ℂ) (x : PositiveReal) : ℂ :=
+    (a : ℂ) (f : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) (x : PositiveReal_halfDensityRouteLOddWeilConnectionWeld) : ℂ :=
   ∑ᶠ n : ℕ, if hn : 2 ≤ n then
     (ArithmeticFunction.vonMangoldt n : ℂ) * complexMellinWeight (a + 1) n *
       positiveContraction ⟨n, hn⟩ f x else 0
 
 def routeLPositiveComparisonOperator
-    (a : ℂ) (f : PositiveReal → ℂ) : PositiveReal → ℂ :=
+    (a : ℂ) (f : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) : PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ :=
   routeLPositiveContractionOperator a f - routeLPositiveExpansionOperator a f
 
 def routeLLogExpansionOperator (a : ℂ) (g : ℝ → ℂ) (t : ℝ) : ℂ :=
@@ -636,7 +636,7 @@ noncomputable def halfDensityRouteLArrowEquiv (a : ℂ) :
   intertwines g := halfDensity_routeL_oddWeil_weld a g
 
 noncomputable def halfDensityRouteLPositiveArrow (a : ℂ) : Arrow Type :=
-  Arrow.mk (TypeCat.ofHom (show ComplexRouteLTestFunction → (PositiveReal → ℂ) from
+  Arrow.mk (TypeCat.ofHom (show ComplexRouteLTestFunction → (PositiveReal_halfDensityRouteLOddWeilConnectionWeld → ℂ) from
     fun g => routeLPositiveComparisonOperator a (halfDensityLogEquiv.symm g)))
 
 noncomputable def halfDensityRouteLConvolutionArrow (a : ℂ) : Arrow Type :=

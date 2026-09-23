@@ -25,12 +25,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Integer-sector index rotation preserves the Gaussian exponent. -/
 theorem thetaSewing_integer_square_identity (i j : ℤ) :
-    (i + j) ^ 2 + (i - j) ^ 2 = 2 * i ^ 2 + 2 * j ^ 2 := by ring
+    (i + j) ^ (2 : ℕ) + (i - j) ^ (2 : ℕ) = 2 * i ^ (2 : ℕ) + 2 * j ^ (2 : ℕ) := by ring
 
 /-- Odd-sector index rotation has half-integer output frequencies. -/
 theorem thetaSewing_half_square_identity (i j : ℤ) :
-    ((i + j + 1 : ℤ) : ℚ) ^ 2 + ((i - j : ℤ) : ℚ) ^ 2 =
-      2 * ((i : ℚ) + 1 / 2) ^ 2 + 2 * ((j : ℚ) + 1 / 2) ^ 2 := by
+    ((i + j + 1 : ℤ) : ℚ) ^ (2 : ℕ) + ((i - j : ℤ) : ℚ) ^ (2 : ℕ) =
+      2 * ((i : ℚ) + 1 / 2) ^ (2 : ℕ) + 2 * ((j : ℚ) + 1 / 2) ^ (2 : ℕ) := by
   push_cast
   ring
 
@@ -130,13 +130,13 @@ def ThetaLatticeRateSewing (q h : ℤ → ℂ) : Prop :=
 private theorem integerRate_of_parallelogram
     (q : ℤ → ℂ) (hz : q 0 = 0)
     (heven : ∀ i j, q (i + j) + q (i - j) = 2 * q i + 2 * q j) :
-    ∀ n : ℤ, q n = (n : ℂ) ^ 2 * q 1 := by
+    ∀ n : ℤ, q n = (n : ℂ) ^ (2 : ℕ) * q 1 := by
   have hneg : ∀ n : ℤ, q (-n) = q n := by
     intro n
     have h := heven 0 n
     simp only [zero_add, zero_sub, hz] at h
     linear_combination h
-  have hnat : ∀ n : ℕ, q (n : ℤ) = (n : ℂ) ^ 2 * q 1 := by
+  have hnat : ∀ n : ℕ, q (n : ℤ) = (n : ℂ) ^ (2 : ℕ) * q 1 := by
     apply Nat.twoStepInduction
     · simpa using hz
     · simp
@@ -160,8 +160,8 @@ private theorem integerRate_of_parallelogram
 one freely chosen scalar scale. There is no additional frequency-labelled mode. -/
 theorem thetaLatticeRateSewing_iff (q h : ℤ → ℂ) :
     ThetaLatticeRateSewing q h ↔
-      (∀ n, q n = (n : ℂ) ^ 2 * q 1) ∧
-      (∀ n, h n = ((n : ℂ) + 1 / 2) ^ 2 * q 1) := by
+      (∀ n, q n = (n : ℂ) ^ (2 : ℕ) * q 1) ∧
+      (∀ n, h n = ((n : ℂ) + 1 / 2) ^ (2 : ℕ) * q 1) := by
   constructor
   · rintro ⟨hz, heven, hodd⟩
     have hq := integerRate_of_parallelogram q hz heven

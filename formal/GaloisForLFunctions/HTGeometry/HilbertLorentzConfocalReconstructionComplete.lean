@@ -87,7 +87,7 @@ theorem causalContact_eq_iff_lorentzAxialSupportOperator_fixedPoint
     {e : E} {S : Set (E × ℝ)} (hne : S.Nonempty) {M R g : ℝ}
     (hR : 0 < R) (hgR : R ≤ g)
     (hScone : ∀ q ∈ S, ‖q.1‖ ≤ q.2) (hbound : ∀ q ∈ S, q.2 ≤ M) :
-    causalSupport S ((-R) • e) g = (g ^ 2 - R ^ 2) / 2 ↔
+    causalSupport S ((-R) • e) g = (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 ↔
       g - R = lorentzAxialSupportOperator e S R (g - R) := by
   have hd0 : 0 ≤ g - R := sub_nonneg.mpr hgR
   have hden : 0 < 2 * R + (g - R) := by linarith
@@ -115,7 +115,7 @@ theorem causalContact_eq_iff_lorentzAxialSupportOperator_fixedPoint
   rw [hzscale, htscale,
     ← lorentzAxialSupport_eq_causalSupport e S
       (confocalProjectiveParameter R (g - R))] at hscale
-  have hquadratic : (g ^ 2 - R ^ 2) / 2 = ((g + R) / 2) * (g - R) := by
+  have hquadratic : (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 = ((g + R) / 2) * (g - R) := by
     ring
   rw [hscale, hquadratic, lorentzAxialSupportOperator,
     confocalNullSupportOperator, lorentzAxialSupport]
@@ -129,9 +129,9 @@ theorem lorentzAxialEnvelope_isGreatest_causalContact
     (hScone : ∀ q ∈ S, ‖q.1‖ ≤ q.2) (hbound : ∀ q ∈ S, q.2 ≤ M) :
     R ≤ lorentzAxialEnvelope e S R ∧
       causalSupport S ((-R) • e) (lorentzAxialEnvelope e S R) =
-        (lorentzAxialEnvelope e S R ^ 2 - R ^ 2) / 2 ∧
+        (lorentzAxialEnvelope e S R ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 ∧
       ∀ g : ℝ, R ≤ g →
-        causalSupport S ((-R) • e) g = (g ^ 2 - R ^ 2) / 2 →
+        causalSupport S ((-R) • e) g = (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 →
           g ≤ lorentzAxialEnvelope e S R := by
   have hgreat := lorentzAxialDefect_isGreatest_fixedPoint
     he hne hM hR hScone hbound
@@ -163,8 +163,8 @@ theorem causalContact_above_radius_unique
     (hR : 0 < R)
     (hScone : ∀ q ∈ S, ‖q.1‖ ≤ q.2) (hbound : ∀ q ∈ S, q.2 ≤ M)
     (hg : R < g) (hk : R < k)
-    (hgcontact : causalSupport S ((-R) • e) g = (g ^ 2 - R ^ 2) / 2)
-    (hkcontact : causalSupport S ((-R) • e) k = (k ^ 2 - R ^ 2) / 2) :
+    (hgcontact : causalSupport S ((-R) • e) g = (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2)
+    (hkcontact : causalSupport S ((-R) • e) k = (k ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2) :
     g = k := by
   obtain ⟨hcone, hbnd⟩ := lorentz_projection_data he hScone hbound
   have hfixedG :=
@@ -251,7 +251,7 @@ theorem lorentzAxialSupport_zero_iff_positiveNullRay
         q.2 = inner ℝ e q.1 := hinner.symm
         _ ≤ ‖e‖ * ‖q.1‖ := real_inner_le_norm e q.1
         _ = ‖q.1‖ := by rw [he, one_mul]
-    have hsquare : ‖q.1 - q.2 • e‖ ^ 2 = 0 := by
+    have hsquare : ‖q.1 - q.2 • e‖ ^ (2 : ℕ) = 0 := by
       rw [norm_sub_sq_real, hnorm, norm_smul, Real.norm_eq_abs,
         abs_of_nonneg hq2, he, mul_one, real_inner_smul_right,
         real_inner_comm e q.1, hinner]
@@ -343,7 +343,7 @@ theorem causalContact_radical_iff
     (hM : 0 ≤ M) (hR : 0 < R) (hgR : R ≤ g)
     (hScone : ∀ q ∈ S, ‖q.1‖ ≤ q.2) (hbound : ∀ q ∈ S, q.2 ≤ M)
     (hradical : lorentzAxialSupport e S 0 = 0) :
-    causalSupport S ((-R) • e) g = (g ^ 2 - R ^ 2) / 2 ↔
+    causalSupport S ((-R) • e) g = (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 ↔
       g = R ∨
         (R < lorentzAxialRadicalHeight e S ∧
           g = 2 * lorentzAxialRadicalHeight e S - R) := by
@@ -393,7 +393,7 @@ theorem causalContact_nonradical_existsUnique
     (hScone : ∀ q ∈ S, ‖q.1‖ ≤ q.2) (hbound : ∀ q ∈ S, q.2 ≤ M)
     (hnonradical : 0 < lorentzAxialSupport e S 0) :
     ∃! g : ℝ, R ≤ g ∧
-      causalSupport S ((-R) • e) g = (g ^ 2 - R ^ 2) / 2 := by
+      causalSupport S ((-R) • e) g = (g ^ (2 : ℕ) - R ^ (2 : ℕ)) / 2 := by
   have hgreat := lorentzAxialEnvelope_isGreatest_causalContact
     he hne hM hR hScone hbound
   have hdefectPos := lorentzAxialDefect_pos_of_nonradical

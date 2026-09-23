@@ -25,12 +25,12 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in E,
           ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
             logPoly (harmonicRamareCofactorCoeff P)
-              (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ 2)
-        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+              (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ (2 : ℕ))
+        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
             harmonicCofactorSupportError A₀ B₀ Q eta W j := by
   classical
   let B : Finset ℕ := geomBlock P Q (1 + eta) j
@@ -47,7 +47,7 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le
   have hdisc : ∀ p ∈ B,
       (∫ w in E,
         ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2) ≤ R := by
+          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)) ≤ R := by
     intro p hp
     have hpB := Finset.mem_filter.1 hp
     have hp0 := (hBprime p hp).pos
@@ -60,16 +60,16 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le
       hA₀ hQj heta hW hp0 hpB.2.1 hphi hleft
     have hcont : Continuous fun w : ℝ =>
         ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2 :=
+          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ) :=
       (((continuous_harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p).sub
         (continuous_logPoly _ _)).norm).pow 2
     have hmono :
         (∫ w in E,
           ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2)
+            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ))
           ≤ ∫ w in Set.Icc (-W) W,
             ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2 := by
+              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ) := by
       refine MeasureTheory.setIntegral_mono_set
         (hcont.integrableOn_Icc (a := -W) (b := W))
         (Filter.Eventually.of_forall fun _ => by positivity)
@@ -80,13 +80,13 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le
       (∑ p ∈ B, (1 / (p : ℝ)) *
         (∫ w in E,
           ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
         ≤ harmonicPrimeMass B * R := by
     calc
       (∑ p ∈ B, (1 / (p : ℝ)) *
           (∫ w in E,
             ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
           ≤ ∑ p ∈ B, (1 / (p : ℝ)) * R := by
             refine Finset.sum_le_sum fun p hp => ?_
             exact mul_le_mul_of_nonneg_left (hdisc p hp) (by positivity)
@@ -103,17 +103,17 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le
           (∑ p ∈ B, (1 / (p : ℝ)) *
             (∫ w in E,
               ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
-        ≤ 2 * harmonicPrimeMass B ^ 2 * R := by
+                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
+        ≤ 2 * harmonicPrimeMass B ^ (2 : ℕ) * R := by
     calc
       2 * harmonicPrimeMass B *
           (∑ p ∈ B, (1 / (p : ℝ)) *
             (∫ w in E,
               ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
           ≤ 2 * harmonicPrimeMass B * (harmonicPrimeMass B * R) :=
             mul_le_mul_of_nonneg_left hsum (mul_nonneg (by norm_num) hmass0)
-      _ = 2 * harmonicPrimeMass B ^ 2 * R := by ring
+      _ = 2 * harmonicPrimeMass B ^ (2 : ℕ) * R := by ring
   dsimp only [B, C, R] at hbase hsecond ⊢
   exact hbase.trans (add_le_add le_rfl hsecond)
 
@@ -122,11 +122,11 @@ theorem setIntegral_normSq_harmonicBlockProduct_le_supMeanSquare
     (a : ℕ → ℂ) (B D : Finset ℕ) {W V I : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hbound : ∀ w ∈ E, ‖harmonicPrimeBlockPoly B w‖ ≤ V)
-    (hI : (∫ w in E, ‖logPoly a D w‖ ^ 2) ≤ I) :
-    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      ≤ V ^ 2 * I := by
-  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      = ∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ 2 * ‖logPoly a D w‖ ^ 2 := by
+    (hI : (∫ w in E, ‖logPoly a D w‖ ^ (2 : ℕ)) ≤ I) :
+    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * I := by
+  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ) * ‖logPoly a D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_mul, mul_pow]
   rw [hrw]
@@ -148,14 +148,14 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_HM
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
-      ≤ 2 * V ^ 2 * ((2 * Real.pi)⁻¹ *
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
+      ≤ 2 * V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
           (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊
             (2 * Real.pi * W) (2 * Real.pi * volume.real E) *
               ((1 / (⌈(A₀ : ℝ) /
-                ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+                ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
                 ((harmonicGeomCofactorBlock A₀ B₀ Q eta j).card : ℝ))))
-        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
             harmonicCofactorSupportError A₀ B₀ Q eta W j := by
   let D : Finset ℕ := harmonicGeomCofactorBlock A₀ B₀ Q eta j
   let L : ℕ := ⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊

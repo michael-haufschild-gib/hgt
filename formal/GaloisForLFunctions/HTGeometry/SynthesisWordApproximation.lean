@@ -28,8 +28,8 @@ variable {K : ℕ}
 /-! ## Norms along the two passes -/
 
 theorem normSq_absState_apply (ψ : Fin K → ℂ) (p : ℕ) (r : Fin K) :
-    ‖absState ψ p r‖ ^ 2
-      = (if (r : ℕ) < p then ‖ψ r‖ ^ 2 else if (r : ℕ) = p then (tailv ψ p) ^ 2 else 0) := by
+    ‖absState ψ p r‖ ^ (2 : ℕ)
+      = (if (r : ℕ) < p then ‖ψ r‖ ^ (2 : ℕ) else if (r : ℕ) = p then (tailv ψ p) ^ (2 : ℕ) else 0) := by
   rw [absState]
   split_ifs
   · rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
@@ -38,7 +38,7 @@ theorem normSq_absState_apply (ψ : Fin K → ℂ) (p : ℕ) (r : Fin K) :
     ring
 
 theorem sum_normSq_absState_zero (ψ : Fin K → ℂ) (hK : 0 < K) :
-    ∑ r, ‖absState ψ 0 r‖ ^ 2 = ∑ r, ‖ψ r‖ ^ 2 := by
+    ∑ r, ‖absState ψ 0 r‖ ^ (2 : ℕ) = ∑ r, ‖ψ r‖ ^ (2 : ℕ) := by
   classical
   rw [Finset.sum_congr rfl (fun r _ => normSq_absState_apply ψ 0 r)]
   rw [Finset.sum_eq_single (⟨0, hK⟩ : Fin K)]
@@ -51,7 +51,7 @@ theorem sum_normSq_absState_zero (ψ : Fin K → ℂ) (hK : 0 < K) :
     exact absurd (Finset.mem_univ _) h
 
 theorem sum_normSq_absState (ψ : Fin K → ℂ) (hK : 0 < K) :
-    ∀ p : ℕ, p + 1 ≤ K → ∑ r, ‖absState ψ p r‖ ^ 2 = ∑ r, ‖ψ r‖ ^ 2
+    ∀ p : ℕ, p + 1 ≤ K → ∑ r, ‖absState ψ p r‖ ^ (2 : ℕ) = ∑ r, ‖ψ r‖ ^ (2 : ℕ)
   | 0, _ => sum_normSq_absState_zero ψ hK
   | (p + 1), hp => by
       have hplt : p + 1 < K := by omega
@@ -70,7 +70,7 @@ theorem sum_normSq_absState (ψ : Fin K → ℂ) (hK : 0 < K) :
       exact sum_normSq_absState ψ hK p (by omega)
 
 theorem sum_normSq_phState (ψ : Fin K → ℂ) (q : ℕ) :
-    ∑ r, ‖phState ψ q r‖ ^ 2 = ∑ r, ‖ψ r‖ ^ 2 := by
+    ∑ r, ‖phState ψ q r‖ ^ (2 : ℕ) = ∑ r, ‖ψ r‖ ^ (2 : ℕ) := by
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [phState]
   split_ifs
@@ -96,7 +96,7 @@ theorem dist_le_of_pointwise {u v : Fin K → ℂ} {c : ℝ} (hc : 0 ≤ c)
     (h : ∀ r, ‖u r - v r‖ ≤ c) :
     dist (eucVec u) (eucVec v) ≤ Real.sqrt (K : ℝ) * c := by
   rw [dist_eucVec]
-  have hsum : ∑ r, ‖u r - v r‖ ^ 2 ≤ (K : ℝ) * c ^ 2 := by
+  have hsum : ∑ r, ‖u r - v r‖ ^ (2 : ℕ) ≤ (K : ℝ) * c ^ (2 : ℕ) := by
     refine le_trans (Finset.sum_le_sum fun r _ => pow_le_pow_left₀ (norm_nonneg _) (h r) 2)
       (le_of_eq ?_)
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
@@ -104,7 +104,7 @@ theorem dist_le_of_pointwise {u v : Fin K → ℂ} {c : ℝ} (hc : 0 ≤ c)
   rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hc]
 
 theorem dist_eucVec_ofLp (x y : EuclideanSpace ℂ (Fin K)) :
-    dist x y = Real.sqrt (∑ i, ‖WithLp.ofLp x i - WithLp.ofLp y i‖ ^ 2) :=
+    dist x y = Real.sqrt (∑ i, ‖WithLp.ofLp x i - WithLp.ofLp y i‖ ^ (2 : ℕ)) :=
   dist_eucVec (WithLp.ofLp x) (WithLp.ofLp y)
 
 theorem dist_synthAct_eq {m : ℕ} (g : SynthLetter K m) (u v : EuclideanSpace ℂ (Fin K)) :
@@ -153,11 +153,11 @@ theorem dist_wordAct_eq {m : ℕ} :
 /-- The fixed reference state: the first computational basis vector. -/
 def unitBasisFirst (K : ℕ) : Fin K → ℂ := fun r => if (r : ℕ) = 0 then 1 else 0
 
-theorem absState_zero_eq (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) :
+theorem absState_zero_eq (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) :
     absState ψ 0 = unitBasisFirst K := absState_zero ψ hunit
 
 /-- **The amplitude pass.** -/
-theorem exists_absWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) (hK : 0 < K) {m : ℕ}
+theorem exists_absWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) (hK : 0 < K) {m : ℕ}
     (hm : 0 < m) :
     ∀ p : ℕ, p + 1 ≤ K →
       ∃ w : List (SynthLetter K m), w.length = p ∧
@@ -179,7 +179,7 @@ theorem exists_absWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) 
       refine ⟨Sum.inl (i, j, q) :: w, by rw [List.length_cons, hwlen], ?_⟩
       have hstep := rotStep ψ (i := i) (j := j) (by rw [hival, hjval])
       rw [hival] at hstep
-      have hnorm : ∑ r, ‖absState ψ p r‖ ^ 2 = 1 := by
+      have hnorm : ∑ r, ‖absState ψ p r‖ ^ (2 : ℕ) = 1 := by
         rw [sum_normSq_absState ψ hK p (by omega), hunit]
       have hij : i ≠ j := by
         intro h
@@ -220,7 +220,7 @@ theorem exists_absWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) 
       linarith [htri, hfirst, hsecond]
 
 /-- **The phase pass.** -/
-theorem exists_phWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) {m : ℕ} (hm : 0 < m) :
+theorem exists_phWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) {m : ℕ} (hm : 0 < m) :
     ∀ q : ℕ, q ≤ K →
       ∃ w : List (SynthLetter K m), w.length = q ∧
         dist (wordAct (synthAct K m) w (eucVec (phState ψ 0))) (eucVec (phState ψ q))
@@ -237,14 +237,14 @@ theorem exists_phWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) {
       obtain ⟨t, ht⟩ := exists_gridIndex hm (Complex.arg (ψ i))
       have htexp := ht (-1) (by norm_num)
       refine ⟨Sum.inr (i, t) :: w, by rw [List.length_cons, hwlen], ?_⟩
-      have hstep := phaseStep ψ i
+      have hstep := phaseStep_twoLevelStateSynthesis ψ i
       rw [hival] at hstep
-      have hnorm : ∑ r, ‖phState ψ q r‖ ^ 2 = ∑ r, ‖ψ r‖ ^ 2 := sum_normSq_phState ψ q
+      have hnorm : ∑ r, ‖phState ψ q r‖ ^ (2 : ℕ) = ∑ r, ‖ψ r‖ ^ (2 : ℕ) := sum_normSq_phState ψ q
       have hgateEq : synthAct K m (Sum.inr (i, t)) (eucVec (phState ψ q))
           = eucVec (phaseAct i (gridAngle m t) (phState ψ q)) := rfl
       have hpt : ∀ r, ‖phaseAct i (gridAngle m t) (phState ψ q) r
           - phaseAct i (Complex.arg (ψ i)) (phState ψ q) r‖
-          ≤ (2 * Real.pi / m) * Real.sqrt (∑ x, ‖ψ x‖ ^ 2) := by
+          ≤ (2 * Real.pi / m) * Real.sqrt (∑ x, ‖ψ x‖ ^ (2 : ℕ)) := by
         intro r
         refine le_trans (norm_phaseAct_sub_le i (gridAngle m t) (Complex.arg (ψ i))
           (phState ψ q) r) ?_
@@ -286,7 +286,7 @@ theorem exists_phWord (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) {
 /-! ## The synthesis theorem -/
 
 /-- **Every unit vector is reached by a word of length `2K-1` up to the grid error.** -/
-theorem exists_synthesis_word (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 2 = 1) (hK : 0 < K)
+theorem exists_synthesis_word (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) (hK : 0 < K)
     {m : ℕ} (hm : 0 < m) :
     ∃ w : List (SynthLetter K m), w.length ≤ 2 * K ∧
       dist (wordAct (synthAct K m) w (eucVec (unitBasisFirst K))) (eucVec ψ)
@@ -325,7 +325,7 @@ theorem exists_synthesis_word (ψ : Fin K → ℂ) (hunit : ∑ r, ‖ψ r‖ ^ 
 /-- **The synthesis alphabet.**  For every tolerance there is a grid whose words of length at most
 `2K` reach every unit vector of `ℂ^K` within that tolerance. -/
 theorem exists_synthesis_alphabet (K : ℕ) (hK : 0 < K) {eta : ℝ} (heta : 0 < eta) :
-    ∃ m : ℕ, 0 < m ∧ ∀ ψ : Fin K → ℂ, (∑ r, ‖ψ r‖ ^ 2 = 1) →
+    ∃ m : ℕ, 0 < m ∧ ∀ ψ : Fin K → ℂ, (∑ r, ‖ψ r‖ ^ (2 : ℕ) = 1) →
       ∃ w : List (SynthLetter K m), w.length ≤ 2 * K ∧
         dist (wordAct (synthAct K m) w (eucVec (unitBasisFirst K))) (eucVec ψ) ≤ eta := by
   classical

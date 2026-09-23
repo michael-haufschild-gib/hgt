@@ -24,7 +24,7 @@ open Finset
 
 /-- `1/(√√n)³ ≤ 4·(√√n − √√(n−1))` for `1 ≤ n`. -/
 theorem quarter_root_inv_cube_le {x : ℝ} (hx : 1 ≤ x) :
-    1 / Real.sqrt (Real.sqrt x) ^ 3
+    1 / Real.sqrt (Real.sqrt x) ^ (3 : ℕ)
       ≤ 4 * (Real.sqrt (Real.sqrt x) - Real.sqrt (Real.sqrt (x - 1))) := by
   set a := Real.sqrt (Real.sqrt x) with ha
   set b := Real.sqrt (Real.sqrt (x - 1)) with hb
@@ -38,31 +38,31 @@ theorem quarter_root_inv_cube_le {x : ℝ} (hx : 1 ≤ x) :
   have hba : b ≤ a := by
     rw [ha, hb]
     exact Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (by linarith))
-  have ha4 : a ^ 4 = x := by
-    rw [ha, show (Real.sqrt (Real.sqrt x)) ^ 4
-      = ((Real.sqrt (Real.sqrt x)) ^ 2) ^ 2 from by ring,
+  have ha4 : a ^ (4 : ℕ) = x := by
+    rw [ha, show (Real.sqrt (Real.sqrt x)) ^ (4 : ℕ)
+      = ((Real.sqrt (Real.sqrt x)) ^ (2 : ℕ)) ^ (2 : ℕ) from by ring,
       Real.sq_sqrt (Real.sqrt_nonneg x), Real.sq_sqrt hx0]
-  have hb4 : b ^ 4 = x - 1 := by
-    rw [hb, show (Real.sqrt (Real.sqrt (x - 1))) ^ 4
-      = ((Real.sqrt (Real.sqrt (x - 1))) ^ 2) ^ 2 from by ring,
+  have hb4 : b ^ (4 : ℕ) = x - 1 := by
+    rw [hb, show (Real.sqrt (Real.sqrt (x - 1))) ^ (4 : ℕ)
+      = ((Real.sqrt (Real.sqrt (x - 1))) ^ (2 : ℕ)) ^ (2 : ℕ) from by ring,
       Real.sq_sqrt (Real.sqrt_nonneg (x - 1)), Real.sq_sqrt hx10]
-  have hfact : (a - b) * (a ^ 3 + a ^ 2 * b + a * b ^ 2 + b ^ 3) = 1 := by
-    have : a ^ 4 - b ^ 4 = 1 := by rw [ha4, hb4]; ring
+  have hfact : (a - b) * (a ^ (3 : ℕ) + a ^ (2 : ℕ) * b + a * b ^ (2 : ℕ) + b ^ (3 : ℕ)) = 1 := by
+    have : a ^ (4 : ℕ) - b ^ (4 : ℕ) = 1 := by rw [ha4, hb4]; ring
     nlinarith [this]
-  have hS4 : a ^ 3 + a ^ 2 * b + a * b ^ 2 + b ^ 3 ≤ 4 * a ^ 3 := by
+  have hS4 : a ^ (3 : ℕ) + a ^ (2 : ℕ) * b + a * b ^ (2 : ℕ) + b ^ (3 : ℕ) ≤ 4 * a ^ (3 : ℕ) := by
     nlinarith [hba, hb0, ha1, sq_nonneg a, sq_nonneg b, sq_nonneg (a - b),
       mul_nonneg hb0 hb0]
   have hab0 : 0 ≤ a - b := by linarith
-  have ha3 : (0 : ℝ) < a ^ 3 := by positivity
+  have ha3 : (0 : ℝ) < a ^ (3 : ℕ) := by positivity
   rw [div_le_iff₀ ha3]
   nlinarith [hfact, mul_le_mul_of_nonneg_left hS4 hab0]
 
 /-- **Quarter-root telescope**: `∑_{n ≤ N} 1/(√√n)³ ≤ 4·√√N`. -/
 theorem sum_inv_quarter_root_cube_le (N : ℕ) :
-    ∑ n ∈ Finset.Icc 1 N, 1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3
+    ∑ n ∈ Finset.Icc 1 N, 1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ)
       ≤ 4 * Real.sqrt (Real.sqrt N) := by
   have hstep : ∀ n ∈ Finset.Icc 1 N,
-      1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3
+      1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ)
         ≤ 4 * (Real.sqrt (Real.sqrt (n : ℝ))
             - Real.sqrt (Real.sqrt ((n - 1 : ℕ) : ℝ))) := by
     intro n hn
@@ -71,7 +71,7 @@ theorem sum_inv_quarter_root_cube_le (N : ℕ) :
       rw [Nat.cast_sub hn.1, Nat.cast_one]
     rw [hcast]
     exact quarter_root_inv_cube_le (by exact_mod_cast hn.1)
-  calc ∑ n ∈ Finset.Icc 1 N, 1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ 3
+  calc ∑ n ∈ Finset.Icc 1 N, 1 / Real.sqrt (Real.sqrt (n : ℝ)) ^ (3 : ℕ)
       ≤ ∑ n ∈ Finset.Icc 1 N, 4 * (Real.sqrt (Real.sqrt (n : ℝ))
           - Real.sqrt (Real.sqrt ((n - 1 : ℕ) : ℝ))) :=
         Finset.sum_le_sum hstep

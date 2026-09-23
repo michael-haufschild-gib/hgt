@@ -34,7 +34,7 @@ private theorem summable_prod_mul_of_summable
   summable_mul_of_summable_norm hf.norm hg.norm
 
 def countableCassiniPairEnergy {α : Type*} (z : α → ℂ) (p : α × α) : ℂ :=
-  z p.1 * z p.2 * (z p.1 - z p.2) ^ 2
+  z p.1 * z p.2 * (z p.1 - z p.2) ^ (2 : ℕ)
 
 def countableCassiniPairTransport {α : Type*} (z : α → ℂ) (p : α × α) : ℂ :=
   countableCassiniPairEnergy z p * (z p.1 + z p.2)
@@ -42,16 +42,16 @@ def countableCassiniPairTransport {α : Type*} (z : α → ℂ) (p : α × α) :
 theorem summable_countableCassiniPairEnergy
     {α : Type*} {z : α → ℂ}
     (h1 : Summable z)
-    (h2 : Summable (fun i => z i ^ 2))
-    (h3 : Summable (fun i => z i ^ 3)) :
+    (h2 : Summable (fun i => z i ^ (2 : ℕ)))
+    (h3 : Summable (fun i => z i ^ (3 : ℕ))) :
     Summable (countableCassiniPairEnergy z) := by
-  have h31 : Summable (fun p : α × α => z p.1 ^ 3 * z p.2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 3) z h3 h1
-  have h22 : Summable (fun p : α × α => z p.1 ^ 2 * z p.2 ^ 2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 2)
-      (fun i => z i ^ 2) h2 h2
-  have h13 : Summable (fun p : α × α => z p.1 * z p.2 ^ 3) :=
-    @summable_prod_mul_of_summable α α z (fun i => z i ^ 3) h1 h3
+  have h31 : Summable (fun p : α × α => z p.1 ^ (3 : ℕ) * z p.2) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (3 : ℕ)) z h3 h1
+  have h22 : Summable (fun p : α × α => z p.1 ^ (2 : ℕ) * z p.2 ^ (2 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (2 : ℕ))
+      (fun i => z i ^ (2 : ℕ)) h2 h2
+  have h13 : Summable (fun p : α × α => z p.1 * z p.2 ^ (3 : ℕ)) :=
+    @summable_prod_mul_of_summable α α z (fun i => z i ^ (3 : ℕ)) h1 h3
   exact ((h31.sub (h22.mul_left 2)).add h13).congr (fun p => by
     simp only [countableCassiniPairEnergy]
     ring)
@@ -59,20 +59,20 @@ theorem summable_countableCassiniPairEnergy
 theorem summable_countableCassiniPairTransport
     {α : Type*} {z : α → ℂ}
     (h1 : Summable z)
-    (h2 : Summable (fun i => z i ^ 2))
-    (h3 : Summable (fun i => z i ^ 3))
-    (h4 : Summable (fun i => z i ^ 4)) :
+    (h2 : Summable (fun i => z i ^ (2 : ℕ)))
+    (h3 : Summable (fun i => z i ^ (3 : ℕ)))
+    (h4 : Summable (fun i => z i ^ (4 : ℕ))) :
     Summable (countableCassiniPairTransport z) := by
-  have h41 : Summable (fun p : α × α => z p.1 ^ 4 * z p.2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 4) z h4 h1
-  have h32 : Summable (fun p : α × α => z p.1 ^ 3 * z p.2 ^ 2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 3)
-      (fun i => z i ^ 2) h3 h2
-  have h23 : Summable (fun p : α × α => z p.1 ^ 2 * z p.2 ^ 3) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 2)
-      (fun i => z i ^ 3) h2 h3
-  have h14 : Summable (fun p : α × α => z p.1 * z p.2 ^ 4) :=
-    @summable_prod_mul_of_summable α α z (fun i => z i ^ 4) h1 h4
+  have h41 : Summable (fun p : α × α => z p.1 ^ (4 : ℕ) * z p.2) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (4 : ℕ)) z h4 h1
+  have h32 : Summable (fun p : α × α => z p.1 ^ (3 : ℕ) * z p.2 ^ (2 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (3 : ℕ))
+      (fun i => z i ^ (2 : ℕ)) h3 h2
+  have h23 : Summable (fun p : α × α => z p.1 ^ (2 : ℕ) * z p.2 ^ (3 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (2 : ℕ))
+      (fun i => z i ^ (3 : ℕ)) h2 h3
+  have h14 : Summable (fun p : α × α => z p.1 * z p.2 ^ (4 : ℕ)) :=
+    @summable_prod_mul_of_summable α α z (fun i => z i ^ (4 : ℕ)) h1 h4
   exact (((h41.sub h32).sub h23).add h14).congr (fun p => by
     simp only [countableCassiniPairTransport, countableCassiniPairEnergy]
     ring)
@@ -80,20 +80,20 @@ theorem summable_countableCassiniPairTransport
 theorem two_mul_countableCassiniMinor_eq_pairEnergy
     {α : Type*} {z : α → ℂ}
     (h1 : Summable z)
-    (h2 : Summable (fun i => z i ^ 2))
-    (h3 : Summable (fun i => z i ^ 3)) :
-    2 * ((∑' i, z i) * (∑' i, z i ^ 3) - (∑' i, z i ^ 2) ^ 2) =
+    (h2 : Summable (fun i => z i ^ (2 : ℕ)))
+    (h3 : Summable (fun i => z i ^ (3 : ℕ))) :
+    2 * ((∑' i, z i) * (∑' i, z i ^ (3 : ℕ)) - (∑' i, z i ^ (2 : ℕ)) ^ (2 : ℕ)) =
       ∑' p, countableCassiniPairEnergy z p := by
-  have h31 : Summable (fun p : α × α => z p.1 ^ 3 * z p.2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 3) z h3 h1
-  have h22 : Summable (fun p : α × α => z p.1 ^ 2 * z p.2 ^ 2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 2)
-      (fun i => z i ^ 2) h2 h2
-  have h13 : Summable (fun p : α × α => z p.1 * z p.2 ^ 3) :=
-    @summable_prod_mul_of_summable α α z (fun i => z i ^ 3) h1 h3
+  have h31 : Summable (fun p : α × α => z p.1 ^ (3 : ℕ) * z p.2) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (3 : ℕ)) z h3 h1
+  have h22 : Summable (fun p : α × α => z p.1 ^ (2 : ℕ) * z p.2 ^ (2 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (2 : ℕ))
+      (fun i => z i ^ (2 : ℕ)) h2 h2
+  have h13 : Summable (fun p : α × α => z p.1 * z p.2 ^ (3 : ℕ)) :=
+    @summable_prod_mul_of_summable α α z (fun i => z i ^ (3 : ℕ)) h1 h3
   rw [show countableCassiniPairEnergy z =
-      (fun p : α × α => z p.1 ^ 3 * z p.2 -
-        2 * (z p.1 ^ 2 * z p.2 ^ 2) + z p.1 * z p.2 ^ 3) by
+      (fun p : α × α => z p.1 ^ (3 : ℕ) * z p.2 -
+        2 * (z p.1 ^ (2 : ℕ) * z p.2 ^ (2 : ℕ)) + z p.1 * z p.2 ^ (3 : ℕ)) by
     funext p
     simp only [countableCassiniPairEnergy]
     ring]
@@ -106,25 +106,25 @@ theorem two_mul_countableCassiniMinor_eq_pairEnergy
 theorem two_mul_countableCassiniTransportNumerator_eq_pairTransport
     {α : Type*} {z : α → ℂ}
     (h1 : Summable z)
-    (h2 : Summable (fun i => z i ^ 2))
-    (h3 : Summable (fun i => z i ^ 3))
-    (h4 : Summable (fun i => z i ^ 4)) :
-    2 * ((∑' i, z i) * (∑' i, z i ^ 4) -
-      (∑' i, z i ^ 2) * (∑' i, z i ^ 3)) =
+    (h2 : Summable (fun i => z i ^ (2 : ℕ)))
+    (h3 : Summable (fun i => z i ^ (3 : ℕ)))
+    (h4 : Summable (fun i => z i ^ (4 : ℕ))) :
+    2 * ((∑' i, z i) * (∑' i, z i ^ (4 : ℕ)) -
+      (∑' i, z i ^ (2 : ℕ)) * (∑' i, z i ^ (3 : ℕ))) =
       ∑' p, countableCassiniPairTransport z p := by
-  have h41 : Summable (fun p : α × α => z p.1 ^ 4 * z p.2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 4) z h4 h1
-  have h32 : Summable (fun p : α × α => z p.1 ^ 3 * z p.2 ^ 2) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 3)
-      (fun i => z i ^ 2) h3 h2
-  have h23 : Summable (fun p : α × α => z p.1 ^ 2 * z p.2 ^ 3) :=
-    @summable_prod_mul_of_summable α α (fun i => z i ^ 2)
-      (fun i => z i ^ 3) h2 h3
-  have h14 : Summable (fun p : α × α => z p.1 * z p.2 ^ 4) :=
-    @summable_prod_mul_of_summable α α z (fun i => z i ^ 4) h1 h4
+  have h41 : Summable (fun p : α × α => z p.1 ^ (4 : ℕ) * z p.2) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (4 : ℕ)) z h4 h1
+  have h32 : Summable (fun p : α × α => z p.1 ^ (3 : ℕ) * z p.2 ^ (2 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (3 : ℕ))
+      (fun i => z i ^ (2 : ℕ)) h3 h2
+  have h23 : Summable (fun p : α × α => z p.1 ^ (2 : ℕ) * z p.2 ^ (3 : ℕ)) :=
+    @summable_prod_mul_of_summable α α (fun i => z i ^ (2 : ℕ))
+      (fun i => z i ^ (3 : ℕ)) h2 h3
+  have h14 : Summable (fun p : α × α => z p.1 * z p.2 ^ (4 : ℕ)) :=
+    @summable_prod_mul_of_summable α α z (fun i => z i ^ (4 : ℕ)) h1 h4
   rw [show countableCassiniPairTransport z =
-      (fun p : α × α => z p.1 ^ 4 * z p.2 - z p.1 ^ 3 * z p.2 ^ 2 -
-        z p.1 ^ 2 * z p.2 ^ 3 + z p.1 * z p.2 ^ 4) by
+      (fun p : α × α => z p.1 ^ (4 : ℕ) * z p.2 - z p.1 ^ (3 : ℕ) * z p.2 ^ (2 : ℕ) -
+        z p.1 ^ (2 : ℕ) * z p.2 ^ (3 : ℕ) + z p.1 * z p.2 ^ (4 : ℕ)) by
     funext p
     simp only [countableCassiniPairTransport, countableCassiniPairEnergy]
     ring]
@@ -164,7 +164,7 @@ theorem summable_xiShiftedCassiniPairTransport {y : ℝ} (hy : 0 ≤ y) :
 theorem two_mul_xiShiftedCassiniMinorComplex_eq_pairEnergy
     {y : ℝ} (hy : 0 ≤ y) :
     2 * (xiShiftedReciprocalMoment y 0 * xiShiftedReciprocalMoment y 2 -
-      xiShiftedReciprocalMoment y 1 ^ 2) =
+      xiShiftedReciprocalMoment y 1 ^ (2 : ℕ)) =
       ∑' p, xiShiftedCassiniPairEnergy y p := by
   have h1 : Summable (xiShiftedReciprocalSquare y) := by
     simpa only [Nat.zero_add, pow_one] using
@@ -233,7 +233,7 @@ theorem tsum_xiShiftedCassiniPairTransport_eq_two_mul_response_mul_terminalFlux_
   let m2 : ℝ := (xiShiftedReciprocalMoment y 2).re
   let m3 : ℝ := (xiShiftedReciprocalMoment y 3).re
   have hm0 : 0 < m0 := xiShiftedCassiniResponse_pos hy
-  have hcontact : m0 * m2 = m1 ^ 2 := by
+  have hcontact : m0 * m2 = m1 ^ (2 : ℕ) := by
     rw [xiShiftedDegreeOneHankelMinor] at hflat
     dsimp only [xiShiftedCassiniResponse, m0, m1, m2] at hflat
     linarith
@@ -241,11 +241,11 @@ theorem tsum_xiShiftedCassiniPairTransport_eq_two_mul_response_mul_terminalFlux_
   have hterminalTransport :
       m0 * xiShiftedDegreeOneTerminalFlux y = m0 * m3 - m1 * m2 := by
     rw [hterminal]
-    change m0 * (m3 - 2 * (m1 / m0) * m2 + (m1 / m0) ^ 2 * m1) =
+    change m0 * (m3 - 2 * (m1 / m0) * m2 + (m1 / m0) ^ (2 : ℕ) * m1) =
       m0 * m3 - m1 * m2
-    have hcubic : m1 ^ 3 = m0 * m1 * m2 := by
+    have hcubic : m1 ^ (3 : ℕ) = m0 * m1 * m2 := by
       calc
-        m1 ^ 3 = m1 * (m1 ^ 2) := by ring
+        m1 ^ (3 : ℕ) = m1 * (m1 ^ (2 : ℕ)) := by ring
         _ = m1 * (m0 * m2) := by rw [← hcontact]
         _ = m0 * m1 * m2 := by ring
     field_simp [hm0.ne']

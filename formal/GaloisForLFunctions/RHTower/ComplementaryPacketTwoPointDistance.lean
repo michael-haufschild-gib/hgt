@@ -27,8 +27,8 @@ noncomputable section
 variable {ω : ℝ}
 
 /-- Translating a square-integrable kernel keeps it square integrable on the shifted half line. -/
-theorem integrableOn_sub_const_sq {K : ℝ → ℝ} (hsq : IntegrableOn (fun r => K r ^ 2) (Ioi 0))
-    (a : ℝ) : IntegrableOn (fun r => K (r - a) ^ 2) (Ioi a) := by
+theorem integrableOn_sub_const_sq {K : ℝ → ℝ} (hsq : IntegrableOn (fun r => K r ^ (2 : ℕ)) (Ioi 0))
+    (a : ℝ) : IntegrableOn (fun r => K (r - a) ^ (2 : ℕ)) (Ioi a) := by
   have hmp : MeasurePreserving (fun r : ℝ => r - a) volume volume :=
     measurePreserving_sub_right volume a
   have hme : MeasurableEmbedding (fun r : ℝ => r - a) :=
@@ -36,12 +36,12 @@ theorem integrableOn_sub_const_sq {K : ℝ → ℝ} (hsq : IntegrableOn (fun r =
   have hpre : (fun r : ℝ => r - a) ⁻¹' (Ioi (0 : ℝ)) = Ioi a := by
     ext r
     simp
-  have h := (hmp.integrableOn_comp_preimage hme (f := fun r => K r ^ 2) (s := Ioi (0 : ℝ))).2 hsq
+  have h := (hmp.integrableOn_comp_preimage hme (f := fun r => K r ^ (2 : ℕ)) (s := Ioi (0 : ℝ))).2 hsq
   rwa [hpre] at h
 
 /-- The squared distance between two points of the boundary affine packet path. -/
 def packetPathDistanceSq (ω h k : ℝ) : ℝ :=
-  ∫ t in Ioi (0 : ℝ), (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2
+  ∫ t in Ioi (0 : ℝ), (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ)
 
 /-- The packet difference vanishes before the base point. -/
 theorem packet_difference_of_neg (ω : ℝ) {a r : ℝ} (ha : 0 ≤ a) (hr : r < 0) :
@@ -51,16 +51,16 @@ theorem packet_difference_of_neg (ω : ℝ) {a r : ℝ} (ha : 0 ≤ a) (hr : r <
 /-- Between the two base points the packet difference is the kernel against the incoming
 constant. -/
 theorem packet_difference_of_mem_Ioo (ω : ℝ) {a r : ℝ} (hr : r ∈ Ioo (0 : ℝ) a) :
-    (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2
-      = (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ 2 := by
+    (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ)
+      = (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ (2 : ℕ) := by
   rw [affinePacketProfile_of_neg ω (by linarith [hr.2] : r - a < 0),
     affinePacketProfile_of_nonneg ω (le_of_lt hr.1)]
   ring_nf
 
 /-- Past the separation the packet difference is a difference of two kernel translates. -/
 theorem packet_difference_of_mem_Ioi (ω : ℝ) {a r : ℝ} (ha : 0 ≤ a) (hr : r ∈ Ioi a) :
-    (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2
-      = (complementaryPacketKernel ω (r - a) - complementaryPacketKernel ω r) ^ 2 := by
+    (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ)
+      = (complementaryPacketKernel ω (r - a) - complementaryPacketKernel ω r) ^ (2 : ℕ) := by
   have hr0 : (0 : ℝ) < r := lt_of_le_of_lt ha hr
   have hra : a < r := hr
   rw [affinePacketProfile_of_nonneg ω (by linarith : (0 : ℝ) ≤ r - a),
@@ -68,20 +68,20 @@ theorem packet_difference_of_mem_Ioi (ω : ℝ) {a r : ℝ} (ha : 0 ≤ a) (hr :
 
 /-- The packet difference is square integrable up to the separation. -/
 theorem integrableOn_packet_difference_Ioc (hω : 0 ≤ ω) (a : ℝ) :
-    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       (Ioc (0 : ℝ) a) := by
-  have hK2 : IntegrableOn (fun r => complementaryPacketKernel ω r ^ 2) (Ioc (0 : ℝ) a) :=
+  have hK2 : IntegrableOn (fun r => complementaryPacketKernel ω r ^ (2 : ℕ)) (Ioc (0 : ℝ) a) :=
     (integrableOn_complementaryPacketKernel_sq ω hω).mono_set Ioc_subset_Ioi_self
   have hK1 : IntegrableOn (complementaryPacketKernel ω) (Ioc (0 : ℝ) a) :=
     (integrableOn_complementaryPacketKernel ω hω).mono_set Ioc_subset_Ioi_self
-  have hconst : IntegrableOn (fun _ : ℝ => complementaryPacketConstant ω ^ 2) (Ioc (0 : ℝ) a) :=
+  have hconst : IntegrableOn (fun _ : ℝ => complementaryPacketConstant ω ^ (2 : ℕ)) (Ioc (0 : ℝ) a) :=
     integrableOn_const (hs := measure_Ioc_lt_top.ne)
-  have hsum : IntegrableOn (fun r => complementaryPacketKernel ω r ^ 2
+  have hsum : IntegrableOn (fun r => complementaryPacketKernel ω r ^ (2 : ℕ)
       + 2 * complementaryPacketConstant ω * complementaryPacketKernel ω r
-      + complementaryPacketConstant ω ^ 2) (Ioc (0 : ℝ) a) :=
+      + complementaryPacketConstant ω ^ (2 : ℕ)) (Ioc (0 : ℝ) a) :=
     (hK2.add (hK1.const_mul (2 * complementaryPacketConstant ω))).add hconst
   have hmeas : Measurable fun r =>
-      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2 :=
+      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ) :=
     (((measurable_affinePacketProfile ω hω).comp (measurable_id.sub_const a)).sub
       (measurable_affinePacketProfile ω hω)).pow_const 2
   refine (Integrable.mono hsum hmeas.aestronglyMeasurable ?_)
@@ -92,26 +92,26 @@ theorem integrableOn_packet_difference_Ioc (hω : 0 ≤ ω) (a : ℝ) :
   filter_upwards [hae] with r hr
   rw [Real.norm_eq_abs, Real.norm_eq_abs, packet_difference_of_mem_Ioo ω hr,
     abs_of_nonneg (sq_nonneg _)]
-  have hexp : (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ 2
-      = complementaryPacketKernel ω r ^ 2
+  have hexp : (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ (2 : ℕ)
+      = complementaryPacketKernel ω r ^ (2 : ℕ)
         + 2 * complementaryPacketConstant ω * complementaryPacketKernel ω r
-        + complementaryPacketConstant ω ^ 2 := by ring_nf
+        + complementaryPacketConstant ω ^ (2 : ℕ) := by ring_nf
   rw [hexp]
   exact le_abs_self _
 
 /-- The packet difference is square integrable past the separation. -/
 theorem integrableOn_packet_difference_Ioi (hω : 0 ≤ ω) {a : ℝ} (ha : 0 ≤ a) :
-    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       (Ioi a) := by
-  have hK2 : IntegrableOn (fun r => complementaryPacketKernel ω r ^ 2) (Ioi a) :=
+  have hK2 : IntegrableOn (fun r => complementaryPacketKernel ω r ^ (2 : ℕ)) (Ioi a) :=
     (integrableOn_complementaryPacketKernel_sq ω hω).mono_set (Ioi_subset_Ioi ha)
-  have hK2' : IntegrableOn (fun r => complementaryPacketKernel ω (r - a) ^ 2) (Ioi a) :=
+  have hK2' : IntegrableOn (fun r => complementaryPacketKernel ω (r - a) ^ (2 : ℕ)) (Ioi a) :=
     integrableOn_sub_const_sq (integrableOn_complementaryPacketKernel_sq ω hω) a
-  have hsum : IntegrableOn (fun r => 2 * complementaryPacketKernel ω (r - a) ^ 2
-      + 2 * complementaryPacketKernel ω r ^ 2) (Ioi a) :=
+  have hsum : IntegrableOn (fun r => 2 * complementaryPacketKernel ω (r - a) ^ (2 : ℕ)
+      + 2 * complementaryPacketKernel ω r ^ (2 : ℕ)) (Ioi a) :=
     (hK2'.const_mul 2).add (hK2.const_mul 2)
   have hmeas : Measurable fun r =>
-      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2 :=
+      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ) :=
     (((measurable_affinePacketProfile ω hω).comp (measurable_id.sub_const a)).sub
       (measurable_affinePacketProfile ω hω)).pow_const 2
   refine (Integrable.mono hsum hmeas.aestronglyMeasurable ?_)
@@ -123,33 +123,33 @@ theorem integrableOn_packet_difference_Ioi (hω : 0 ≤ ω) {a : ℝ} (ha : 0 �
 
 /-- **The shifted packet difference has the two-point modulus as its energy.** -/
 theorem integral_packet_difference_sq (hω : 0 ≤ ω) {a : ℝ} (ha : 0 ≤ a) :
-    (∫ r in Ioi (0 : ℝ), (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+    (∫ r in Ioi (0 : ℝ), (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       = packetTranslationModulus (complementaryPacketKernel ω)
         (complementaryPacketConstant ω) a := by
   have hsplit : (∫ r in Ioi (0 : ℝ),
-        (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
-      = (∫ r in Ioc (0 : ℝ) a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
-        + ∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2 := by
+        (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
+      = (∫ r in Ioc (0 : ℝ) a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
+        + ∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ) := by
     rw [← Ioc_union_Ioi_eq_Ioi ha,
       setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
         (integrableOn_packet_difference_Ioc hω a) (integrableOn_packet_difference_Ioi hω ha)]
   have hfirst : (∫ r in Ioc (0 : ℝ) a,
-        (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+        (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       = ∫ r in Ioc (0 : ℝ) a,
-        (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ 2 := by
+        (complementaryPacketKernel ω r + complementaryPacketConstant ω) ^ (2 : ℕ) := by
     rw [integral_Ioc_eq_integral_Ioo, integral_Ioc_eq_integral_Ioo]
     exact setIntegral_congr_fun measurableSet_Ioo fun r hr =>
       packet_difference_of_mem_Ioo ω hr
-  have hsecond : (∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+  have hsecond : (∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       = ∫ r in Ioi (0 : ℝ),
-        (complementaryPacketKernel ω (r + a) - complementaryPacketKernel ω r) ^ 2 := by
-    have hcongr : (∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+        (complementaryPacketKernel ω (r + a) - complementaryPacketKernel ω r) ^ (2 : ℕ) := by
+    have hcongr : (∫ r in Ioi a, (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
         = ∫ r in Ioi a,
-          (complementaryPacketKernel ω (r - a) - complementaryPacketKernel ω r) ^ 2 :=
+          (complementaryPacketKernel ω (r - a) - complementaryPacketKernel ω r) ^ (2 : ℕ) :=
       setIntegral_congr_fun measurableSet_Ioi fun r hr =>
         packet_difference_of_mem_Ioi ω ha hr
     rw [hcongr, ← setIntegral_Ioi_zero_comp_add_right
-      (fun s => (complementaryPacketKernel ω (s - a) - complementaryPacketKernel ω s) ^ 2) a]
+      (fun s => (complementaryPacketKernel ω (s - a) - complementaryPacketKernel ω s) ^ (2 : ℕ)) a]
     refine setIntegral_congr_fun measurableSet_Ioi fun r _ => ?_
     simp only [add_sub_cancel_right]
     rw [← neg_sub (complementaryPacketKernel ω (r + a)) (complementaryPacketKernel ω r),
@@ -164,9 +164,9 @@ theorem packetPathDistanceSq_eq (hω : 0 ≤ ω) {h k : ℝ} (hk : 0 ≤ k) (hkh
         (complementaryPacketConstant ω) (h - k) := by
   have ha : (0 : ℝ) ≤ h - k := by linarith
   have htrans : packetPathDistanceSq ω h k
-      = ∫ r in Ioi (-k), (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2 := by
+      = ∫ r in Ioi (-k), (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ) := by
     have h1 := setIntegral_Ioi_comp_add_right'
-      (fun s => (affinePacketProfile ω (s - h) - affinePacketProfile ω (s - k)) ^ 2) (-k) k
+      (fun s => (affinePacketProfile ω (s - h) - affinePacketProfile ω (s - k)) ^ (2 : ℕ)) (-k) k
     rw [neg_add_cancel] at h1
     rw [packetPathDistanceSq, ← h1]
     refine setIntegral_congr_fun measurableSet_Ioi fun r _ => ?_
@@ -174,23 +174,23 @@ theorem packetPathDistanceSq_eq (hω : 0 ≤ ω) {h k : ℝ} (hk : 0 ≤ k) (hkh
     have e2 : r + k - k = r := by ring_nf
     rw [e1, e2]
   have hzero : (∫ r in Ioc (-k) (0 : ℝ),
-      (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2) = 0 := by
+      (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ)) = 0 := by
     rw [integral_Ioc_eq_integral_Ioo]
     refine setIntegral_eq_zero_of_forall_eq_zero fun r hr => ?_
     rw [packet_difference_of_neg ω ha hr.2]
     ring_nf
   have hsplit : (∫ r in Ioi (-k),
-        (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2)
+        (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ))
       = (∫ r in Ioc (-k) (0 : ℝ),
-          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2)
+          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ))
         + ∫ r in Ioi (0 : ℝ),
-          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2 := by
+          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ) := by
     have hle : (-k : ℝ) ≤ 0 := by linarith
     have hint1 : IntegrableOn
-        (fun r => (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2)
+        (fun r => (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ))
         (Ioc (-k) (0 : ℝ)) := by
       have hmeas : Measurable fun r =>
-          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2 :=
+          (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ) :=
         (((measurable_affinePacketProfile ω hω).comp (measurable_id.sub_const (h - k))).sub
           (measurable_affinePacketProfile ω hω)).pow_const 2
       refine Integrable.mono (integrableOn_const (C := (0 : ℝ)) (hs := measure_Ioc_lt_top.ne))
@@ -203,7 +203,7 @@ theorem packetPathDistanceSq_eq (hω : 0 ≤ ω) {h k : ℝ} (hk : 0 ≤ k) (hkh
       rw [packet_difference_of_neg ω ha hr.2]
       simp
     have hint2 : IntegrableOn
-        (fun r => (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ 2)
+        (fun r => (affinePacketProfile ω (r - (h - k)) - affinePacketProfile ω r) ^ (2 : ℕ))
         (Ioi (0 : ℝ)) := by
       have hsplit2 := integrableOn_packet_difference_Ioc hω (h - k)
       have hsplit3 := integrableOn_packet_difference_Ioi hω ha
@@ -234,7 +234,7 @@ theorem packetPathDistanceSq_eq_abs (hω : 0 ≤ ω) {h k : ℝ} (hh : 0 ≤ h) 
 clock values exceeds the affine term by at most the uniform defect. -/
 theorem packetPathDistanceSq_le (hω : 0 ≤ ω) {h k : ℝ} (hh : 0 ≤ h) (hk : 0 ≤ k) :
     packetPathDistanceSq ω h k
-      ≤ complementaryPacketConstant ω ^ 2 * |h - k| + (5 * 4 ^ ω
+      ≤ complementaryPacketConstant ω ^ (2 : ℕ) * |h - k| + (5 * 4 ^ ω
         + 2 * |complementaryPacketConstant ω| * 2 ^ ω) := by
   have hbound := abs_complementaryPacketModulus_sub_le ω hω (abs_nonneg (h - k))
   have h := (abs_le.mp hbound).2
@@ -250,14 +250,14 @@ theorem packetPathDistanceSq_nonneg (ω h k : ℝ) : 0 ≤ packetPathDistanceSq 
 /-- The shifted packet difference is square integrable on every half line reaching the origin. -/
 theorem integrableOn_packet_shifted_difference (hω : 0 ≤ ω) {a : ℝ} (ha : 0 ≤ a) {L : ℝ}
     (hL : L ≤ 0) :
-    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+    IntegrableOn (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       (Ioi L) := by
   have hmeas : Measurable fun r =>
-      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2 :=
+      (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ) :=
     (((measurable_affinePacketProfile ω hω).comp (measurable_id.sub_const a)).sub
       (measurable_affinePacketProfile ω hω)).pow_const 2
   have hint1 : IntegrableOn
-      (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+      (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       (Ioc L (0 : ℝ)) := by
     refine Integrable.mono (integrableOn_const (C := (0 : ℝ)) (hs := measure_Ioc_lt_top.ne))
       hmeas.aestronglyMeasurable ?_
@@ -269,7 +269,7 @@ theorem integrableOn_packet_shifted_difference (hω : 0 ≤ ω) {a : ℝ} (ha : 
     rw [packet_difference_of_neg ω ha hr.2]
     simp
   have hint2 : IntegrableOn
-      (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ 2)
+      (fun r => (affinePacketProfile ω (r - a) - affinePacketProfile ω r) ^ (2 : ℕ))
       (Ioi (0 : ℝ)) := by
     rw [← Ioc_union_Ioi_eq_Ioi ha]
     exact (integrableOn_packet_difference_Ioc hω a).union
@@ -279,10 +279,10 @@ theorem integrableOn_packet_shifted_difference (hω : 0 ≤ ω) {a : ℝ} (ha : 
 
 /-- The packet difference of two nonnegative clock values is square integrable. -/
 theorem integrableOn_packetPathDifference (hω : 0 ≤ ω) {h k : ℝ} (hh : 0 ≤ h) (hk : 0 ≤ k) :
-    IntegrableOn (fun t => (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2)
+    IntegrableOn (fun t => (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ))
       (Ioi (0 : ℝ)) := by
   have key : ∀ {u v : ℝ}, 0 ≤ v → v ≤ u →
-      IntegrableOn (fun t => (affinePacketProfile ω (t - u) - affinePacketProfile ω (t - v)) ^ 2)
+      IntegrableOn (fun t => (affinePacketProfile ω (t - u) - affinePacketProfile ω (t - v)) ^ (2 : ℕ))
         (Ioi (0 : ℝ)) := by
     intro u v hv hvu
     have ha : (0 : ℝ) ≤ u - v := by linarith
@@ -295,19 +295,19 @@ theorem integrableOn_packetPathDifference (hω : 0 ≤ ω) {h k : ℝ} (hh : 0 �
       simp
     have hbase := integrableOn_packet_shifted_difference hω ha (by linarith : (-v : ℝ) ≤ 0)
     have hI := (hmp.integrableOn_comp_preimage hme
-      (f := fun r => (affinePacketProfile ω (r - (u - v)) - affinePacketProfile ω r) ^ 2)
+      (f := fun r => (affinePacketProfile ω (r - (u - v)) - affinePacketProfile ω r) ^ (2 : ℕ))
       (s := Ioi (-v))).2 hbase
     rw [hpre] at hI
     refine hI.congr_fun (fun t _ => ?_) measurableSet_Ioi
-    show (affinePacketProfile ω (t - v - (u - v)) - affinePacketProfile ω (t - v)) ^ 2
-      = (affinePacketProfile ω (t - u) - affinePacketProfile ω (t - v)) ^ 2
+    show (affinePacketProfile ω (t - v - (u - v)) - affinePacketProfile ω (t - v)) ^ (2 : ℕ)
+      = (affinePacketProfile ω (t - u) - affinePacketProfile ω (t - v)) ^ (2 : ℕ)
     have e : t - v - (u - v) = t - u := by ring_nf
     rw [e]
   rcases le_total k h with hkh | hhk
   · exact key hk hkh
   · refine (key hh hhk).congr_fun (fun t _ => ?_) measurableSet_Ioi
-    show (affinePacketProfile ω (t - k) - affinePacketProfile ω (t - h)) ^ 2
-      = (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2
+    show (affinePacketProfile ω (t - k) - affinePacketProfile ω (t - h)) ^ (2 : ℕ)
+      = (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ)
     rw [← neg_sub (affinePacketProfile ω (t - h)) (affinePacketProfile ω (t - k)), neg_pow_two]
 
 /-- The complementary-packet edge field of a clock pair: twice the packet increment between the
@@ -317,7 +317,7 @@ def packetEdgeField (ω h h' t : ℝ) : ℝ :=
 
 /-- The squared distance between two packet edge fields. -/
 def packetEdgeFieldDistanceSq (ω h k h' k' : ℝ) : ℝ :=
-  ∫ t in Ioi (0 : ℝ), (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ 2
+  ∫ t in Ioi (0 : ℝ), (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ (2 : ℕ)
 
 theorem packetEdgeFieldDistanceSq_nonneg (ω h k h' k' : ℝ) :
     0 ≤ packetEdgeFieldDistanceSq ω h k h' k' :=
@@ -333,33 +333,33 @@ theorem packetEdgeFieldDistanceSq_le (hω : 0 ≤ ω) {h k h' k' : ℝ} (hh : 0 
   have hint1 := integrableOn_packetPathDifference hω hh' hk'
   have hint2 := integrableOn_packetPathDifference hω hh hk
   have hdom : IntegrableOn (fun t =>
-      8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ 2
-      + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2)
+      8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ (2 : ℕ)
+      + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ))
       (Ioi (0 : ℝ)) := (hint1.const_mul 8).add (hint2.const_mul 8)
   have hmeas : Measurable fun t =>
-      (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ 2 := by
+      (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ (2 : ℕ) := by
     have hb : ∀ x : ℝ, Measurable fun t : ℝ => affinePacketProfile ω (t - x) := fun x =>
       (measurable_affinePacketProfile ω hω).comp (measurable_id.sub_const x)
     exact ((((hb h').sub (hb h)).const_mul 2).sub (((hb k').sub (hb k)).const_mul 2)).pow_const 2
-  have hpt : ∀ t : ℝ, (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ 2
-      ≤ 8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ 2
-        + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2 := by
+  have hpt : ∀ t : ℝ, (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ (2 : ℕ)
+      ≤ 8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ (2 : ℕ)
+        + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ) := by
     intro t
     rw [packetEdgeField, packetEdgeField]
     nlinarith [sq_nonneg ((affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k'))
       + (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)))]
   have hintLHS : IntegrableOn (fun t =>
-      (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ 2) (Ioi (0 : ℝ)) := by
+      (packetEdgeField ω h h' t - packetEdgeField ω k k' t) ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
     refine Integrable.mono hdom hmeas.aestronglyMeasurable (Filter.Eventually.of_forall fun t => ?_)
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _),
       abs_of_nonneg (by positivity : (0 : ℝ) ≤
-        8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ 2
-        + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2)]
+        8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ (2 : ℕ)
+        + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ))]
     exact hpt t
   calc packetEdgeFieldDistanceSq ω h k h' k'
       ≤ ∫ t in Ioi (0 : ℝ),
-          (8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ 2
-            + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ 2) :=
+          (8 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - k')) ^ (2 : ℕ)
+            + 8 * (affinePacketProfile ω (t - h) - affinePacketProfile ω (t - k)) ^ (2 : ℕ)) :=
         integral_mono_ae hintLHS hdom (Filter.Eventually.of_forall hpt)
     _ = 8 * packetPathDistanceSq ω h' k' + 8 * packetPathDistanceSq ω h k := by
         rw [integral_add (hint1.const_mul 8) (hint2.const_mul 8), integral_const_mul,
@@ -367,13 +367,13 @@ theorem packetEdgeFieldDistanceSq_le (hω : 0 ≤ ω) {h k h' k' : ℝ} (hh : 0 
 
 /-- The squared edge field is integrable on the physical half line. -/
 theorem integrableOn_packetEdgeField_sq (hω : 0 ≤ ω) {h h' : ℝ} (hh : 0 ≤ h) (hh' : 0 ≤ h') :
-    IntegrableOn (fun t => packetEdgeField ω h h' t ^ 2) (Ioi (0 : ℝ)) := by
+    IntegrableOn (fun t => packetEdgeField ω h h' t ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
   have h4 : IntegrableOn
-      (fun t => 4 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - h)) ^ 2)
+      (fun t => 4 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - h)) ^ (2 : ℕ))
       (Ioi (0 : ℝ)) := (integrableOn_packetPathDifference hω hh' hh).const_mul 4
   refine MeasureTheory.IntegrableOn.congr_fun h4 (fun t _ => ?_) measurableSet_Ioi
-  show 4 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - h)) ^ 2
-    = packetEdgeField ω h h' t ^ 2
+  show 4 * (affinePacketProfile ω (t - h') - affinePacketProfile ω (t - h)) ^ (2 : ℕ)
+    = packetEdgeField ω h h' t ^ (2 : ℕ)
   rw [packetEdgeField]
   ring
 
@@ -391,18 +391,18 @@ theorem measurable_packetEdgeFieldDistanceSq (hω : 0 ≤ ω) :
   have h3 := hprof (fun p => p.1.2.2) (measurable_snd.comp (measurable_snd.comp measurable_fst))
   have h4 := hprof (fun p => p.1.1.2) (measurable_snd.comp (measurable_fst.comp measurable_fst))
   have hjoint : StronglyMeasurable fun p : ((ℝ × ℝ) × (ℝ × ℝ)) × ℝ =>
-      (packetEdgeField ω p.1.1.1 p.1.2.1 p.2 - packetEdgeField ω p.1.1.2 p.1.2.2 p.2) ^ 2 := by
+      (packetEdgeField ω p.1.1.1 p.1.2.1 p.2 - packetEdgeField ω p.1.1.2 p.1.2.2 p.2) ^ (2 : ℕ) := by
     have h : Measurable fun p : ((ℝ × ℝ) × (ℝ × ℝ)) × ℝ =>
         (2 * (affinePacketProfile ω (p.2 - p.1.2.1) - affinePacketProfile ω (p.2 - p.1.1.1))
           - 2 * (affinePacketProfile ω (p.2 - p.1.2.2)
-            - affinePacketProfile ω (p.2 - p.1.1.2))) ^ 2 :=
+            - affinePacketProfile ω (p.2 - p.1.1.2))) ^ (2 : ℕ) :=
       (((h1.sub h2).const_mul 2).sub ((h3.sub h4).const_mul 2)).pow_const 2
     exact h.stronglyMeasurable
   exact (hjoint.integral_prod_right' (ν := volume.restrict (Ioi 0))).measurable
 
 /-- **The energy of a packet edge field is four times the two-point distance.** -/
 theorem integral_packetEdgeField_sq (ω h h' : ℝ) :
-    (∫ t in Ioi (0 : ℝ), packetEdgeField ω h h' t ^ 2) = 4 * packetPathDistanceSq ω h' h := by
+    (∫ t in Ioi (0 : ℝ), packetEdgeField ω h h' t ^ (2 : ℕ)) = 4 * packetPathDistanceSq ω h' h := by
   rw [packetPathDistanceSq, ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
   rw [packetEdgeField]

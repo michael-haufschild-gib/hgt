@@ -29,13 +29,13 @@ theorem norm_l2Pair_le_sqrt_l2NormSq {f g : ℝ → ℂ}
     rw [norm_mul, Complex.norm_conj]
   have hcs := RHTower.Sieve.integral_mul_sq_le (a := (0 : ℝ)) (b := 1)
     (by norm_num) hf.norm hg.norm
-  have hcs' : (∫ t in (0 : ℝ)..1, ‖f t‖ * ‖g t‖) ^ 2 ≤
+  have hcs' : (∫ t in (0 : ℝ)..1, ‖f t‖ * ‖g t‖) ^ (2 : ℕ) ≤
       l2NormSq f * l2NormSq g := by
     simpa only [l2NormSq] using hcs
   have hprod : 0 ≤ ∫ t in (0 : ℝ)..1, ‖f t‖ * ‖g t‖ := by
     exact intervalIntegral.integral_nonneg (by norm_num)
       (fun _ _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
-  have hsquare : (Real.sqrt (l2NormSq f) * Real.sqrt (l2NormSq g)) ^ 2 =
+  have hsquare : (Real.sqrt (l2NormSq f) * Real.sqrt (l2NormSq g)) ^ (2 : ℕ) =
       l2NormSq f * l2NormSq g := by
     rw [mul_pow, Real.sq_sqrt (l2NormSq_nonneg f), Real.sq_sqrt (l2NormSq_nonneg g)]
   apply hnorm.trans
@@ -48,8 +48,8 @@ theorem l2NormSq_unitCoord_mul_le {g : ℝ → ℂ} (hg : Continuous g) :
     l2NormSq (fun t => (t : ℂ) * g t) ≤ l2NormSq g := by
   have hcont : Continuous (fun t : ℝ => (t : ℂ) * g t) :=
     (Complex.continuous_ofReal.comp continuous_id).mul hg
-  change (∫ t in (0 : ℝ)..1, ‖(t : ℂ) * g t‖ ^ 2) ≤
-    ∫ t in (0 : ℝ)..1, ‖g t‖ ^ 2
+  change (∫ t in (0 : ℝ)..1, ‖(t : ℂ) * g t‖ ^ (2 : ℕ)) ≤
+    ∫ t in (0 : ℝ)..1, ‖g t‖ ^ (2 : ℕ)
   refine intervalIntegral.integral_mono_on (μ := volume) (by norm_num)
     ((hcont.norm.pow 2).intervalIntegrable 0 1)
     ((hg.norm.pow 2).intervalIntegrable 0 1) ?_
@@ -57,19 +57,19 @@ theorem l2NormSq_unitCoord_mul_le {g : ℝ → ℂ} (hg : Continuous g) :
   have ht0 : 0 ≤ t := ht.1
   have ht1 : t ≤ 1 := ht.2
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht0]
-  have htsq : t ^ 2 ≤ 1 := by nlinarith [sq_nonneg (1 - t)]
-  have hgsq : 0 ≤ ‖g t‖ ^ 2 := sq_nonneg _
+  have htsq : t ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg (1 - t)]
+  have hgsq : 0 ≤ ‖g t‖ ^ (2 : ℕ) := sq_nonneg _
   calc
-    (t * ‖g t‖) ^ 2 = t ^ 2 * ‖g t‖ ^ 2 := by ring
-    _ ≤ 1 * ‖g t‖ ^ 2 := mul_le_mul_of_nonneg_right htsq hgsq
-    _ = ‖g t‖ ^ 2 := by ring
+    (t * ‖g t‖) ^ (2 : ℕ) = t ^ (2 : ℕ) * ‖g t‖ ^ (2 : ℕ) := by ring
+    _ ≤ 1 * ‖g t‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_right htsq hgsq
+    _ = ‖g t‖ ^ (2 : ℕ) := by ring
 
 private theorem l2NormSq_sub_comm {f g : ℝ → ℂ} :
     l2NormSq (fun t => f t - g t) = l2NormSq (fun t => g t - f t) := by
   unfold l2NormSq
   apply intervalIntegral.integral_congr
   intro t _
-  change ‖f t - g t‖ ^ 2 = ‖g t - f t‖ ^ 2
+  change ‖f t - g t‖ ^ (2 : ℕ) = ‖g t - f t‖ ^ (2 : ℕ)
   have h : f t - g t = -(g t - f t) := by ring
   rw [h, norm_neg]
 

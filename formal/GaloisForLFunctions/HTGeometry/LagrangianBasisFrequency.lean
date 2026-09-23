@@ -201,7 +201,7 @@ theorem card_filter_mem_spanOf_mul_succ {v : PauliSymp n} (hv : v ≠ 0) :
   rw [hfact] at hdouble
   have hpos : 0 < 2 ^ n - 1 := by
     have h2 : 2 ≤ 2 ^ n := by
-      calc (2 : ℕ) = 2 ^ 1 := (pow_one 2).symm
+      calc (2 : ℕ) = 2 ^ (1 : ℕ) := (pow_one 2).symm
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hnpos
     omega
   have hle : (2 ^ n - 1) * ((2 ^ n + 1) * c) = (2 ^ n - 1) * (lagrBases n).card := by

@@ -157,7 +157,7 @@ private theorem forall_hermitianTwoEnergy_nonneg_iff
       have hc := henergy c
       have hvalue :
           hermitianTwoEnergy A B C c =
-            -(B + 2) * (Complex.normSq C) ^ 2 := by
+            -(B + 2) * (Complex.normSq C) ^ (2 : ℕ) := by
         simp only [hermitianTwoEnergy, c, Matrix.cons_val_zero, Matrix.cons_val_one,
           hAzero, zero_mul, zero_add, Complex.normSq_apply, Complex.neg_re,
           Complex.neg_im, Complex.mul_re,
@@ -166,7 +166,7 @@ private theorem forall_hermitianTwoEnergy_nonneg_iff
         ring
       rw [hvalue] at hc
       have hfactor : 0 < B + 2 := by linarith
-      have hsquare : 0 < (Complex.normSq C) ^ 2 := sq_pos_of_pos hCpos
+      have hsquare : 0 < (Complex.normSq C) ^ (2 : ℕ) := sq_pos_of_pos hCpos
       exact (not_lt_of_ge hc (mul_neg_of_neg_of_pos (neg_neg_of_pos hfactor) hsquare)).elim
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hAzero)
       let c : Fin 2 → ℂ := ![-conj C, (A : ℂ)]

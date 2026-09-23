@@ -88,7 +88,7 @@ the exact cosecant-square carrier
 This is the first differentiated member of `polygamma_reflection`. -/
 theorem trigamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
     deriv Complex.digamma z + deriv Complex.digamma (1 - z) =
-      (Real.pi : ℂ) ^ 2 / Complex.sin ((Real.pi : ℂ) * z) ^ 2 := by
+      (Real.pi : ℂ) ^ (2 : ℕ) / Complex.sin ((Real.pi : ℂ) * z) ^ (2 : ℕ) := by
   have hsin := sin_pi_mul_ne_zero_of_not_int hz
   have harg : HasDerivAt (fun w : ℂ => (Real.pi : ℂ) * w) (Real.pi : ℂ) z := by
     simpa using (hasDerivAt_id z).const_mul (Real.pi : ℂ)
@@ -103,7 +103,7 @@ theorem trigamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
   have hcot : HasDerivAt
       (fun w : ℂ => Complex.cos ((Real.pi : ℂ) * w) /
         Complex.sin ((Real.pi : ℂ) * w))
-      (-(Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * z) ^ 2) z := by
+      (-(Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * z) ^ (2 : ℕ)) z := by
     apply (hcos.div hsine hsin).congr_deriv
     field_simp
     rw [← Complex.sin_sq_add_cos_sq ((Real.pi : ℂ) * z)]
@@ -116,7 +116,7 @@ theorem trigamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
       show iteratedDeriv 1
           (fun w : ℂ => Complex.cos ((Real.pi : ℂ) * w) /
             Complex.sin ((Real.pi : ℂ) * w)) z =
-          -(Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * z) ^ 2 by
+          -(Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * z) ^ (2 : ℕ) by
         simp [iteratedDeriv_succ, hcot.deriv]] at h
   norm_num at h
   convert h using 1
@@ -125,7 +125,7 @@ theorem trigamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
 /-- **Trigamma at the reflection centre.**  The fixed point `z = 1/2` of reflection turns the
 two-value identity into the exact special value `ψ'(1/2) = π²/2`. -/
 theorem trigamma_one_half :
-    deriv Complex.digamma (1 / 2 : ℂ) = (Real.pi : ℂ) ^ 2 / 2 := by
+    deriv Complex.digamma (1 / 2 : ℂ) = (Real.pi : ℂ) ^ (2 : ℕ) / 2 := by
   have h := trigamma_reflection (z := (1 / 2 : ℂ)) (by
     intro m hm
     have hmreal : (1 / 2 : ℝ) = (m : ℝ) := by
@@ -143,12 +143,12 @@ theorem trigamma_one_half :
 /-- **Trigamma at one.**  Combining the reflection-centre value with the duplication value relation
 gives the classical exact value `ψ'(1)=π²/6`. -/
 theorem trigamma_one :
-    deriv Complex.digamma 1 = (Real.pi : ℂ) ^ 2 / 6 := by
+    deriv Complex.digamma 1 = (Real.pi : ℂ) ^ (2 : ℕ) / 6 := by
   have h := GaloisForLFunctions.polygamma_one_half_eq_mul_one 0
   simp only [iteratedDeriv_succ, iteratedDeriv_zero] at h
   rw [trigamma_one_half] at h
   norm_num at h
-  have h' : deriv Complex.digamma 1 = ((Real.pi : ℂ) ^ 2 / 2) / 3 := by
+  have h' : deriv Complex.digamma 1 = ((Real.pi : ℂ) ^ (2 : ℕ) / 2) / 3 := by
     apply (eq_div_iff (by norm_num : (3 : ℂ) ≠ 0)).2
     simpa [mul_comm] using h.symm
   rw [h']

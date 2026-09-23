@@ -126,7 +126,7 @@ theorem hasDerivAt_gammaDampedLaurent {s : ℂ} (hs : 1 < s.re) :
     HasDerivAt (fun z : ℂ => gammaDampedPoleFree z + gammaDampedResidueFactor z / (z - 1))
       (deriv gammaDampedPoleFree s +
         (deriv gammaDampedResidueFactor s * (s - 1) - gammaDampedResidueFactor s * 1) /
-          (s - 1) ^ 2) s := by
+          (s - 1) ^ (2 : ℕ)) s := by
   have hhalf : (1 : ℝ) / 2 < s.re := by linarith
   have hC : HasDerivAt gammaDampedPoleFree (deriv gammaDampedPoleFree s) s :=
     (analyticAt_gammaDampedPoleFree hhalf).differentiableAt.hasDerivAt
@@ -145,7 +145,7 @@ theorem deriv_lSeries_gammaDampedCoeff {s : ℂ} (hs : 1 < s.re) :
     deriv (LSeries gammaDampedCoeff) s
       = deriv gammaDampedPoleFree s +
         (deriv gammaDampedResidueFactor s * (s - 1) - gammaDampedResidueFactor s * 1) /
-          (s - 1) ^ 2 := by
+          (s - 1) ^ (2 : ℕ) := by
   have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const Complex.continuous_re
   have heq : Set.EqOn (LSeries gammaDampedCoeff)
       (fun z : ℂ => gammaDampedPoleFree z + gammaDampedResidueFactor z / (z - 1))
@@ -155,7 +155,7 @@ theorem deriv_lSeries_gammaDampedCoeff {s : ℂ} (hs : 1 < s.re) :
 
 /-- **The derivative scaling.**  `(z-1)² F'(z) → -1/ζ(2)` in the Euler half plane. -/
 theorem tendsto_sub_one_sq_mul_deriv_lSeries_gammaDampedCoeff :
-    Tendsto (fun s : ℂ => (s - 1) ^ 2 * deriv (LSeries gammaDampedCoeff) s)
+    Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * deriv (LSeries gammaDampedCoeff) s)
       (nhdsWithin 1 {s : ℂ | 1 < s.re}) (nhds (-(1 / riemannZeta 2))) := by
   have hhalf : (1 : ℝ) / 2 < (1 : ℂ).re := by norm_num
   have hC : ContinuousAt (deriv gammaDampedPoleFree) 1 :=
@@ -166,7 +166,7 @@ theorem tendsto_sub_one_sq_mul_deriv_lSeries_gammaDampedCoeff :
     (analyticAt_gammaDampedResidueFactor hhalf).continuousAt
   have hsub : Tendsto (fun s : ℂ => s - 1) (nhds (1 : ℂ)) (nhds 0) := by
     simpa using (continuous_sub_right (1 : ℂ)).tendsto (1 : ℂ)
-  have h1 : Tendsto (fun s : ℂ => (s - 1) ^ 2 * deriv gammaDampedPoleFree s)
+  have h1 : Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * deriv gammaDampedPoleFree s)
       (nhds (1 : ℂ)) (nhds 0) := by
     have := (hsub.pow 2).mul hC.tendsto
     simpa using this

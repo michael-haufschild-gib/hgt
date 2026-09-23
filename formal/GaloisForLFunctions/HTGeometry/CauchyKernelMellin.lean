@@ -413,7 +413,7 @@ theorem cpow_scaled_split {a x : ℝ} (hx : 0 < x) (ha : 0 < a) (w : ℂ) :
 
 /-! ### The inner sum is a zeta value -/
 
-theorem ofReal_rpow_cpow {a : ℝ} (ha : 0 < a) (s : ℝ) (w : ℂ) :
+theorem ofReal_rpow_cpow_cauchyKernelMellin {a : ℝ} (ha : 0 < a) (s : ℝ) (w : ℂ) :
     (((a ^ s : ℝ)) : ℂ) ^ w = ((a : ℝ) : ℂ) ^ ((s : ℂ) * w) := by
   have him : (Complex.log ((a : ℝ) : ℂ) * (s : ℂ)).im = 0 := by
     simp [Complex.mul_im, Complex.log_im, Complex.arg_ofReal_of_nonneg (le_of_lt ha)]
@@ -434,7 +434,7 @@ theorem tsum_scaled_eq_zeta {s : ℝ} {x : ℝ} (hx : 0 < x) {w : ℂ}
     intro n
     have hnpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
     rw [cpow_scaled_split hx (Real.rpow_pos_of_pos hnpos s) w,
-      ofReal_rpow_cpow hnpos s w]
+      ofReal_rpow_cpow_cauchyKernelMellin hnpos s w]
     congr 1
     rw [one_div, ← Complex.cpow_neg]
     congr 1

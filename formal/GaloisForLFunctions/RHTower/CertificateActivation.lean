@@ -38,11 +38,11 @@ theorem carrier_mass_zero_at_odd_xi_order {ρ : ℂ}
       (∃ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
         ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N (circleMap ρ r θ)) ∧
+          V θ ^ (2 : ℕ) = completedEM N (circleMap ρ r θ)) ∧
       ∀ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) →
         (∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N (circleMap ρ r θ)) →
+          V θ ^ (2 : ℕ) = completedEM N (circleMap ρ r θ)) →
         V (3 * Real.pi / 2) = -V (-(Real.pi / 2)) ∧
         ∀ p : ℝ → ℂ,
           ContinuousOn p
@@ -98,11 +98,11 @@ theorem carrier_mass_zero_mirror_pair_at_odd_xi_order {ρ : ℂ}
       (∃ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
         ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N (circleMap ρ r θ)) ∧
+          V θ ^ (2 : ℕ) = completedEM N (circleMap ρ r θ)) ∧
       ∀ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) →
         (∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N (circleMap ρ r θ)) →
+          V θ ^ (2 : ℕ) = completedEM N (circleMap ρ r θ)) →
         V (3 * Real.pi / 2) = -V (-(Real.pi / 2)) ∧
         ∀ p : ℝ → ℂ,
           ContinuousOn p
@@ -118,12 +118,12 @@ theorem carrier_mass_zero_mirror_pair_at_odd_xi_order {ρ : ℂ}
       (∃ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
         ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N
+          V θ ^ (2 : ℕ) = completedEM N
             (circleMap (lineReflection (1 / 2) ρ) r θ)) ∧
       ∀ V : ℝ → ℂ,
         ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) →
         (∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-          V θ ^ 2 = completedEM N
+          V θ ^ (2 : ℕ) = completedEM N
             (circleMap (lineReflection (1 / 2) ρ) r θ)) →
         V (3 * Real.pi / 2) = -V (-(Real.pi / 2)) ∧
         ∀ p : ℝ → ℂ,

@@ -25,21 +25,21 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedAddCommGroup F]
 
 omit [NormedSpace ℂ F] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
   [CompleteSpace F] [InnerProductSpace ℝ E] in
-theorem kgFreq_sq (ξ : E) : kgFreq ξ ^ 2 = 1 + ‖ξ‖ ^ 2 := by
+theorem kgFreq_sq (ξ : E) : kgFreq ξ ^ (2 : ℕ) = 1 + ‖ξ‖ ^ (2 : ℕ) := by
   rw [kgFreq, Real.sq_sqrt (by positivity)]
 
 /-- **The Klein–Gordon multiplier is the Klein–Gordon operator.** -/
 theorem fourierMultiplierCLM_kgFreqSq (f : 𝓢(E, F)) :
-    fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => kgFreq ξ ^ 2) f
-      = f - (((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ f := by
+    fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => kgFreq ξ ^ (2 : ℕ)) f
+      = f - (((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ f := by
   classical
-  set g : Fin 2 → E → ℝ := ![fun _ : E => (1 : ℝ), fun ξ : E => ‖ξ‖ ^ 2] with hg
+  set g : Fin 2 → E → ℝ := ![fun _ : E => (1 : ℝ), fun ξ : E => ‖ξ‖ ^ (2 : ℕ)] with hg
   have hgrow : ∀ i ∈ (Finset.univ : Finset (Fin 2)), (g i).HasTemperateGrowth := by
     intro i _
     fin_cases i
     · exact Function.HasTemperateGrowth.const (1 : ℝ)
     · exact Function.hasTemperateGrowth_norm_sq E
-  have hsum : (fun ξ : E => ∑ i : Fin 2, g i ξ) = fun ξ : E => kgFreq ξ ^ 2 := by
+  have hsum : (fun ξ : E => ∑ i : Fin 2, g i ξ) = fun ξ : E => kgFreq ξ ^ (2 : ℕ) := by
     funext ξ
     rw [Fin.sum_univ_two, kgFreq_sq, hg]
     simp
@@ -54,12 +54,12 @@ theorem fourierMultiplierCLM_kgFreqSq (f : 𝓢(E, F)) :
     have := fourierMultiplierCLM_const (𝕜 := ℝ) (F := F) (E := E) (1 : ℝ)
     rw [this]
     simp
-  have hlap : fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => ‖ξ‖ ^ 2) f
-      = -(((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ f := by
+  have hlap : fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => ‖ξ‖ ^ (2 : ℕ)) f
+      = -(((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ f := by
     have hL := laplacian_eq_fourierMultiplierCLM (F := F) f
     rw [hL, smul_smul]
-    have hpi : (0 : ℝ) < (2 * Real.pi) ^ 2 := by positivity
-    rw [show -(((2 * Real.pi) ^ 2)⁻¹ : ℝ) * -(2 * Real.pi) ^ 2 = 1 from by
+    have hpi : (0 : ℝ) < (2 * Real.pi) ^ (2 : ℕ) := by positivity
+    rw [show -(((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) * -(2 * Real.pi) ^ (2 : ℕ) = 1 from by
       field_simp]
     simp
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]

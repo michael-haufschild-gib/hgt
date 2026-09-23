@@ -333,7 +333,7 @@ The rows of the check matrix for the generator list are linearly independent.
 -/
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 1500000 in
--- decide needs many heartbeats for 2^8 coefficient vectors
+-- decide needs many heartbeats for 2^(8 : ℕ) coefficient vectors
 theorem rowsLinearIndependent_generatorsList :
     NQubitPauliGroupElement.rowsLinearIndependent generatorsList := by
   rw [NQubitPauliGroupElement.rowsLinearIndependent_iff_forall]

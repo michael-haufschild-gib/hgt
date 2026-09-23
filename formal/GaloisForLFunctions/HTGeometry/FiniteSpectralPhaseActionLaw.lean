@@ -31,14 +31,14 @@ noncomputable section
 noncomputable def phaseNormalize (target a : ℂ) : ℂ :=
   if a = 0 then target else a / ‖a‖
 
-theorem norm_phaseNormalize {target a : ℂ} (htarget : ‖target‖ = 1) :
+theorem norm_phaseNormalize_finiteSpectralPhaseActionLaw {target a : ℂ} (htarget : ‖target‖ = 1) :
     ‖phaseNormalize target a‖ = 1 := by
   by_cases ha : a = 0
   · simp [phaseNormalize, ha, htarget]
   · rw [phaseNormalize, if_neg ha, norm_div, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (norm_nonneg a), div_self (norm_ne_zero_iff.mpr ha)]
 
-theorem norm_phaseNormalize_sub_le {target a : ℂ} (htarget : ‖target‖ = 1) :
+theorem norm_phaseNormalize_sub_le_finiteSpectralPhaseActionLaw {target a : ℂ} (htarget : ‖target‖ = 1) :
     ‖phaseNormalize target a - target‖ ≤ 2 * ‖a - target‖ := by
   by_cases ha : a = 0
   · simp [phaseNormalize, ha]
@@ -134,36 +134,36 @@ theorem spectralPhaseAction_phaseNormalize_lower {n : ℕ}
         intro i hi
         rw [norm_sub_rev]
       _ ≤ ∑ i, 2 * ‖a i - target i‖ :=
-        Finset.sum_le_sum fun i _ => norm_phaseNormalize_sub_le (htarget i)
+        Finset.sum_le_sum fun i _ => norm_phaseNormalize_sub_le_finiteSpectralPhaseActionLaw (htarget i)
       _ = 2 * ∑ i, ‖a i - target i‖ := by rw [Finset.mul_sum]
   linarith
 
 theorem sum_le_sqrt_card_mul_sqrt_sum_sq
     {ι : Type*} [Fintype ι] (e : ι → ℝ) (he : ∀ i, 0 ≤ e i) :
-    ∑ i, e i ≤ Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ 2) := by
+    ∑ i, e i ≤ Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ (2 : ℕ)) := by
   classical
-  have hsq : (∑ i, e i) ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i, (e i) ^ 2 := by
+  have hsq : (∑ i, e i) ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i, (e i) ^ (2 : ℕ) := by
     simpa using sq_sum_le_card_mul_sum_sq
       (s := (Finset.univ : Finset ι)) (f := e)
   have hsum : 0 ≤ ∑ i, e i := Finset.sum_nonneg fun i _ => he i
   have hcard : 0 ≤ (Fintype.card ι : ℝ) := by positivity
-  have henergy : 0 ≤ ∑ i, (e i) ^ 2 := by positivity
-  have hsqrtCard : Real.sqrt (Fintype.card ι) ^ 2 = (Fintype.card ι : ℝ) :=
+  have henergy : 0 ≤ ∑ i, (e i) ^ (2 : ℕ) := by positivity
+  have hsqrtCard : Real.sqrt (Fintype.card ι) ^ (2 : ℕ) = (Fintype.card ι : ℝ) :=
     Real.sq_sqrt hcard
-  have hsqrtEnergy : Real.sqrt (∑ i, (e i) ^ 2) ^ 2 = ∑ i, (e i) ^ 2 :=
+  have hsqrtEnergy : Real.sqrt (∑ i, (e i) ^ (2 : ℕ)) ^ (2 : ℕ) = ∑ i, (e i) ^ (2 : ℕ) :=
     Real.sq_sqrt henergy
-  have hrhs : 0 ≤ Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ 2) := by
+  have hrhs : 0 ≤ Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ (2 : ℕ)) := by
     positivity
   nlinarith [sq_nonneg
-    (Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ 2))]
+    (Real.sqrt (Fintype.card ι) * Real.sqrt (∑ i, (e i) ^ (2 : ℕ)))]
 
 /-- **Hilbert--Schmidt-stable phase recovery.** Radial projection loses at most the square-root
 vertex error multiplied by the square root of the number of spectral vertices. -/
 theorem spectralPhaseAction_phaseNormalize_lower_l2 {n : ℕ}
     (target a : Fin (n + 1) → ℂ) (htarget : ∀ i, ‖target i‖ = 1) :
     spectralPhaseAction target -
-        4 * Real.sqrt (n + 1) * Real.sqrt (∑ i, ‖a i - target i‖ ^ 2) ≤
+        4 * Real.sqrt (n + 1) * Real.sqrt (∑ i, ‖a i - target i‖ ^ (2 : ℕ)) ≤
       spectralPhaseAction (fun i => phaseNormalize (target i) (a i)) := by
   have hl1 := sum_le_sqrt_card_mul_sqrt_sum_sq
     (fun i : Fin (n + 1) => ‖a i - target i‖) (fun _ => norm_nonneg _)
@@ -171,7 +171,7 @@ theorem spectralPhaseAction_phaseNormalize_lower_l2 {n : ℕ}
   simp only [Fintype.card_fin] at hl1
   norm_num [Nat.cast_add, Nat.cast_one] at hl1 ⊢
   have hscale : 4 * ∑ i, ‖a i - target i‖ ≤
-      4 * (Real.sqrt ((n : ℝ) + 1) * Real.sqrt (∑ i, ‖a i - target i‖ ^ 2)) := by
+      4 * (Real.sqrt ((n : ℝ) + 1) * Real.sqrt (∑ i, ‖a i - target i‖ ^ (2 : ℕ))) := by
     gcongr
   nlinarith
 
@@ -183,22 +183,22 @@ noncomputable def phaseDiagonalMatrix {n : ℕ}
 /-- Entrywise squared error between two finite complex matrices. -/
 noncomputable def matrixEntryErrorEnergy {n : ℕ}
     (A B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) : ℝ :=
-  ∑ i, ∑ j, ‖A i j - B i j‖ ^ 2
+  ∑ i, ∑ j, ‖A i j - B i j‖ ^ (2 : ℕ)
 
 theorem diagonalErrorEnergy_le_matrixEntryErrorEnergy {n : ℕ}
     (target : Fin (n + 1) → ℂ)
     (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) :
-    (∑ i, ‖A i i - target i‖ ^ 2) ≤
+    (∑ i, ‖A i i - target i‖ ^ (2 : ℕ)) ≤
       matrixEntryErrorEnergy A (phaseDiagonalMatrix target) := by
   classical
   unfold matrixEntryErrorEnergy phaseDiagonalMatrix
   apply Finset.sum_le_sum
   intro i hi
-  have hone : ‖A i i - Matrix.diagonal target i i‖ ^ 2 ≤
-      ∑ j, ‖A i j - Matrix.diagonal target i j‖ ^ 2 := by
+  have hone : ‖A i i - Matrix.diagonal target i i‖ ^ (2 : ℕ) ≤
+      ∑ j, ‖A i j - Matrix.diagonal target i j‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum
       (s := (Finset.univ : Finset (Fin (n + 1))))
-      (f := fun j => ‖A i j - Matrix.diagonal target i j‖ ^ 2)
+      (f := fun j => ‖A i j - Matrix.diagonal target i j‖ ^ (2 : ℕ))
       (fun j _ => sq_nonneg _) (Finset.mem_univ i)
   simpa using hone
 
@@ -215,7 +215,7 @@ theorem spectralPhaseAction_phaseNormalize_diagonal_lower_l2 {n : ℕ}
   have hdiag := diagonalErrorEnergy_le_matrixEntryErrorEnergy target A
   have hsqrt := Real.sqrt_le_sqrt hdiag
   have hscale :
-      4 * Real.sqrt ((n : ℝ) + 1) * Real.sqrt (∑ i, ‖A i i - target i‖ ^ 2) ≤
+      4 * Real.sqrt ((n : ℝ) + 1) * Real.sqrt (∑ i, ‖A i i - target i‖ ^ (2 : ℕ)) ≤
         4 * Real.sqrt ((n : ℝ) + 1) *
           Real.sqrt (matrixEntryErrorEnergy A (phaseDiagonalMatrix target)) := by
     gcongr
@@ -258,7 +258,7 @@ noncomputable def unitaryTraceAlignmentPhase
 theorem norm_unitaryTraceAlignmentPhase {n : ℕ}
     (T W : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
     ‖unitaryTraceAlignmentPhase T W‖ = 1 := by
-  exact norm_phaseNormalize (by norm_num)
+  exact norm_phaseNormalize_finiteSpectralPhaseActionLaw (by norm_num)
 
 /-- Entrywise square error is the trace-defined Hilbert--Schmidt energy of the difference. -/
 theorem matrixEntryErrorEnergy_eq_finiteMatrixHilbertSchmidtEnergy {n : ℕ}

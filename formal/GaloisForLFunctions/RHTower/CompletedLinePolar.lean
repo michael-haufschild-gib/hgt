@@ -49,7 +49,7 @@ theorem Gammaℝ_line_eq_norm_mul_exp_theta (τ : ℝ) :
 theorem completedRiemannZeta_line_eq_norm_mul_hardyZ (τ : ℝ) :
     completedRiemannZeta (linePt τ)
       = ((‖Complex.Gammaℝ (linePt τ)‖ * hardyZ τ : ℝ) : ℂ) := by
-  have h1 := completedRiemannZeta_eq_Gammaℝ_mul (linePt_re_pos τ)
+  have h1 := completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (linePt_re_pos τ)
   have h2 := riemannZeta_line_eq_exp_neg_theta_mul_hardyZ τ
   have h3 := Gammaℝ_line_eq_norm_mul_exp_theta τ
   conv_lhs => rw [h1, h2, h3]

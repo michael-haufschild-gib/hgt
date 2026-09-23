@@ -25,12 +25,12 @@ variable {H X Y : Type*}
 
 /-- Tikhonov energy of one synthesis coordinate. -/
 def ridgeSynthesisEnergy (S : X →L[ℂ] H) (r : ℝ) (x : X) : ℝ :=
-  ‖S x‖ ^ 2 + r * ‖x‖ ^ 2
+  ‖S x‖ ^ (2 : ℕ) + r * ‖x‖ ^ (2 : ℕ)
 
 /-- Squared Hilbert coupling is bounded by the product of the two synthesis energies. -/
 theorem cross_inner_norm_sq_le
     (A : X →L[ℂ] H) (C : Y →L[ℂ] H) (x : X) (y : Y) :
-    ‖inner ℂ (A x) (C y)‖ ^ 2 ≤ ‖A x‖ ^ 2 * ‖C y‖ ^ 2 := by
+    ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ) ≤ ‖A x‖ ^ (2 : ℕ) * ‖C y‖ ^ (2 : ℕ) := by
   have hcs : ‖inner ℂ (A x) (C y)‖ ≤ ‖A x‖ * ‖C y‖ :=
     norm_inner_le_norm _ _
   have hcross : 0 ≤ ‖inner ℂ (A x) (C y)‖ := norm_nonneg _
@@ -43,23 +43,23 @@ covers zero packets. -/
 theorem cross_sq_visibility_le_right
     (A : X →L[ℂ] H) (C : Y →L[ℂ] H) (r ε : ℝ) (x : X) (y : Y)
     (hr : 0 ≤ r) (hε : 0 ≤ ε)
-    (hsmall : ‖C y‖ ^ 2 ≤ ε * r * ‖y‖ ^ 2) :
-    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ 2 ≤
+    (hsmall : ‖C y‖ ^ (2 : ℕ) ≤ ε * r * ‖y‖ ^ (2 : ℕ)) :
+    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ) ≤
       ε * ridgeSynthesisEnergy A r x * ridgeSynthesisEnergy C r y := by
   have hcs := cross_inner_norm_sq_le A C x y
-  have hA : ‖A x‖ ^ 2 ≤ ridgeSynthesisEnergy A r x := by
+  have hA : ‖A x‖ ^ (2 : ℕ) ≤ ridgeSynthesisEnergy A r x := by
     simp only [ridgeSynthesisEnergy]
     nlinarith [mul_nonneg hr (sq_nonneg ‖x‖)]
   have hA0 : 0 ≤ ridgeSynthesisEnergy A r x :=
     (sq_nonneg ‖A x‖).trans hA
-  have hC : (1 + ε) * ‖C y‖ ^ 2 ≤
+  have hC : (1 + ε) * ‖C y‖ ^ (2 : ℕ) ≤
       ε * ridgeSynthesisEnergy C r y := by
     simp only [ridgeSynthesisEnergy]
     nlinarith
   calc
-    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ 2
-        ≤ (1 + ε) * (‖A x‖ ^ 2 * ‖C y‖ ^ 2) := by gcongr
-    _ = ‖A x‖ ^ 2 * ((1 + ε) * ‖C y‖ ^ 2) := by ring
+    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ)
+        ≤ (1 + ε) * (‖A x‖ ^ (2 : ℕ) * ‖C y‖ ^ (2 : ℕ)) := by gcongr
+    _ = ‖A x‖ ^ (2 : ℕ) * ((1 + ε) * ‖C y‖ ^ (2 : ℕ)) := by ring
     _ ≤ ridgeSynthesisEnergy A r x *
         (ε * ridgeSynthesisEnergy C r y) := by gcongr
     _ = ε * ridgeSynthesisEnergy A r x * ridgeSynthesisEnergy C r y := by ring
@@ -68,13 +68,13 @@ theorem cross_sq_visibility_le_right
 theorem cross_sq_visibility_le_left
     (A : X →L[ℂ] H) (C : Y →L[ℂ] H) (r ε : ℝ) (x : X) (y : Y)
     (hr : 0 ≤ r) (hε : 0 ≤ ε)
-    (hsmall : ‖A x‖ ^ 2 ≤ ε * r * ‖x‖ ^ 2) :
-    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ 2 ≤
+    (hsmall : ‖A x‖ ^ (2 : ℕ) ≤ ε * r * ‖x‖ ^ (2 : ℕ)) :
+    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ) ≤
       ε * ridgeSynthesisEnergy A r x * ridgeSynthesisEnergy C r y := by
   have h := cross_sq_visibility_le_right C A r ε y x hr hε hsmall
   calc
-    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ 2 =
-        (1 + ε) * ‖inner ℂ (C y) (A x)‖ ^ 2 := by rw [norm_inner_symm]
+    (1 + ε) * ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ) =
+        (1 + ε) * ‖inner ℂ (C y) (A x)‖ ^ (2 : ℕ) := by rw [norm_inner_symm]
     _ ≤ ε * ridgeSynthesisEnergy C r y * ridgeSynthesisEnergy A r x := h
     _ = ε * ridgeSynthesisEnergy A r x * ridgeSynthesisEnergy C r y := by ring
 
@@ -84,18 +84,18 @@ theorem cross_sq_gt_oneFifteenth_forces_ridge_matched
     (A : X →L[ℂ] H) (C : Y →L[ℂ] H) (r : ℝ) (x : X) (y : Y)
     (hr : 0 ≤ r)
     (hcoh : ridgeSynthesisEnergy A r x * ridgeSynthesisEnergy C r y / 15 <
-      ‖inner ℂ (A x) (C y)‖ ^ 2) :
-    r * ‖x‖ ^ 2 / 14 < ‖A x‖ ^ 2 ∧
-      r * ‖y‖ ^ 2 / 14 < ‖C y‖ ^ 2 := by
+      ‖inner ℂ (A x) (C y)‖ ^ (2 : ℕ)) :
+    r * ‖x‖ ^ (2 : ℕ) / 14 < ‖A x‖ ^ (2 : ℕ) ∧
+      r * ‖y‖ ^ (2 : ℕ) / 14 < ‖C y‖ ^ (2 : ℕ) := by
   constructor
   · by_contra h
-    have hsmall : ‖A x‖ ^ 2 ≤ (1 / 14 : ℝ) * r * ‖x‖ ^ 2 := by
+    have hsmall : ‖A x‖ ^ (2 : ℕ) ≤ (1 / 14 : ℝ) * r * ‖x‖ ^ (2 : ℕ) := by
       have := le_of_not_gt h
       nlinarith
     have hvis := cross_sq_visibility_le_left A C r (1 / 14) x y hr (by norm_num) hsmall
     nlinarith
   · by_contra h
-    have hsmall : ‖C y‖ ^ 2 ≤ (1 / 14 : ℝ) * r * ‖y‖ ^ 2 := by
+    have hsmall : ‖C y‖ ^ (2 : ℕ) ≤ (1 / 14 : ℝ) * r * ‖y‖ ^ (2 : ℕ) := by
       have := le_of_not_gt h
       nlinarith
     have hvis := cross_sq_visibility_le_right A C r (1 / 14) x y hr (by norm_num) hsmall
@@ -132,8 +132,8 @@ theorem cross_coherence_forces_collar_mass
 omit [InnerProductSpace ℂ H] in
 /-- A vector difference with squared norm above `1/16` has one component above `1/64`. -/
 theorem oneSixteenth_lt_norm_sub_sq_split (p q : H)
-    (hgain : 1 / 16 < ‖p - q‖ ^ 2) :
-    1 / 64 < ‖p‖ ^ 2 ∨ 1 / 64 < ‖q‖ ^ 2 := by
+    (hgain : 1 / 16 < ‖p - q‖ ^ (2 : ℕ)) :
+    1 / 64 < ‖p‖ ^ (2 : ℕ) ∨ 1 / 64 < ‖q‖ ^ (2 : ℕ) := by
   by_contra h
   rw [not_or] at h
   have hp := le_of_not_gt h.1
@@ -149,10 +149,10 @@ theorem directSource_gain_forces_gap_lt
     {rho tau direct : ℝ}
     (hrho : 0 ≤ rho) (hrho1 : rho < 1)
     (hdirect : 1 / 64 < direct)
-    (henvelope : direct ≤ tau / (1 - rho ^ 2)) :
-    1 - rho ^ 2 < 64 * tau := by
-  have hden : 0 < 1 - rho ^ 2 := by nlinarith
-  have hscaled : direct * (1 - rho ^ 2) ≤ tau :=
+    (henvelope : direct ≤ tau / (1 - rho ^ (2 : ℕ))) :
+    1 - rho ^ (2 : ℕ) < 64 * tau := by
+  have hden : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith
+  have hscaled : direct * (1 - rho ^ (2 : ℕ)) ≤ tau :=
     (le_div_iff₀ hden).mp henvelope
   nlinarith
 
@@ -177,27 +177,27 @@ theorem coherence_capacity_gap
     (heta : 0 ≤ eta) (heta1 : eta ≤ 1) (hr : 0 ≤ r) (hC : 0 ≤ C)
     (hEL0 : 0 ≤ EL)
     (hEL : EL = qL + r) (hEH : EH = qH + r)
-    (hvisL : eta ^ 2 * EL ≤ qL) (hvisH : eta ^ 2 * EH ≤ qH)
-    (hcapacity : eta ^ 2 * EL * EH ≤ C ^ 2) :
-    eta * r ≤ C * (1 - eta ^ 2) := by
-  have hgap : 0 ≤ 1 - eta ^ 2 := by nlinarith
-  have hL : r ≤ (1 - eta ^ 2) * EL := by
+    (hvisL : eta ^ (2 : ℕ) * EL ≤ qL) (hvisH : eta ^ (2 : ℕ) * EH ≤ qH)
+    (hcapacity : eta ^ (2 : ℕ) * EL * EH ≤ C ^ (2 : ℕ)) :
+    eta * r ≤ C * (1 - eta ^ (2 : ℕ)) := by
+  have hgap : 0 ≤ 1 - eta ^ (2 : ℕ) := by nlinarith
+  have hL : r ≤ (1 - eta ^ (2 : ℕ)) * EL := by
     rw [hEL] at hvisL
     nlinarith
-  have hH : r ≤ (1 - eta ^ 2) * EH := by
+  have hH : r ≤ (1 - eta ^ (2 : ℕ)) * EH := by
     rw [hEH] at hvisH
     nlinarith
   have hprod : r * r ≤
-      ((1 - eta ^ 2) * EL) * ((1 - eta ^ 2) * EH) := by
+      ((1 - eta ^ (2 : ℕ)) * EL) * ((1 - eta ^ (2 : ℕ)) * EH) := by
     gcongr
-  have hsq : (eta * r) ^ 2 ≤ (C * (1 - eta ^ 2)) ^ 2 := by
+  have hsq : (eta * r) ^ (2 : ℕ) ≤ (C * (1 - eta ^ (2 : ℕ))) ^ (2 : ℕ) := by
     calc
-      (eta * r) ^ 2 = eta ^ 2 * (r * r) := by ring
-      _ ≤ eta ^ 2 *
-          (((1 - eta ^ 2) * EL) * ((1 - eta ^ 2) * EH)) := by gcongr
-      _ = (1 - eta ^ 2) ^ 2 * (eta ^ 2 * EL * EH) := by ring
-      _ ≤ (1 - eta ^ 2) ^ 2 * C ^ 2 := by gcongr
-      _ = (C * (1 - eta ^ 2)) ^ 2 := by ring
+      (eta * r) ^ (2 : ℕ) = eta ^ (2 : ℕ) * (r * r) := by ring
+      _ ≤ eta ^ (2 : ℕ) *
+          (((1 - eta ^ (2 : ℕ)) * EL) * ((1 - eta ^ (2 : ℕ)) * EH)) := by gcongr
+      _ = (1 - eta ^ (2 : ℕ)) ^ (2 : ℕ) * (eta ^ (2 : ℕ) * EL * EH) := by ring
+      _ ≤ (1 - eta ^ (2 : ℕ)) ^ (2 : ℕ) * C ^ (2 : ℕ) := by gcongr
+      _ = (C * (1 - eta ^ (2 : ℕ))) ^ (2 : ℕ) := by ring
   nlinarith [mul_nonneg heta hr, mul_nonneg hC hgap]
 
 /-- The direct-tail amplification branch is incompatible with the capacity gap once
@@ -205,8 +205,8 @@ theorem coherence_capacity_gap
 theorem directSource_branch_incompatible_with_capacity
     {eta r C tau : ℝ}
     (heta : 1 / 4 ≤ eta) (hr : 0 < r) (hC : 0 ≤ C)
-    (hcapacity : eta * r ≤ C * (1 - eta ^ 2))
-    (hdirect : 1 - eta ^ 2 < 64 * tau)
+    (hcapacity : eta * r ≤ C * (1 - eta ^ (2 : ℕ)))
+    (hdirect : 1 - eta ^ (2 : ℕ) < 64 * tau)
     (hsmall : 256 * C * tau ≤ r) : False := by
   have hetaPos : 0 < eta := lt_of_lt_of_le (by norm_num) heta
   have hCpos : 0 < C := by

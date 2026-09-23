@@ -8,10 +8,10 @@ import GaloisForLFunctions.HTGeometry.EndpointIntegralAsymptotics
 On its support `0 < x < 1` Suzuki's kernel
 
 `g_ω(x) = (2π^ω/Γ(ω)) ( x^{2-ω}(1-x²)^{ω-1} - ω x^{ω-1} T_ω(x) )`,
-`T_ω(x) = ∫_{x²}^1 t^{1/2-ω}(1-t)^{ω-1} dt`,
+`T_ω(x) = ∫_{x²}^(1 : ℕ) t^{1/2-ω}(1-t)^{ω-1} dt`,
 
 takes only real values, and so does its once-integrated primitive
-`g_ω^{⟨1⟩}(x) = ∫_x^1 √(y/x) g_ω(y) dy/y`.  This module introduces the real-valued versions,
+`g_ω^{⟨1⟩}(x) = ∫_x^(1 : ℕ) √(y/x) g_ω(y) dy/y`.  This module introduces the real-valued versions,
 identifies them with the complex source kernels, and records the analytic facts about the
 incomplete-beta tail that the endpoint expansions need:
 
@@ -19,7 +19,7 @@ incomplete-beta tail that the endpoint expansions need:
 * continuity of `T_ω` up to the endpoint `x = 0`;
 * the exact vanishing rate `T_ω(x) ∼ (1-x²)^ω/ω` at `x = 1`;
 * interval integrability of the weighted kernel `y^{-1/2} g_ω(y)` on `[x,1]`, `0 < x < 1`, and the
-  primitive formula `g_ω^{⟨1⟩}(x) = x^{-1/2} ∫_x^1 y^{-1/2} g_ω(y) dy`.
+  primitive formula `g_ω^{⟨1⟩}(x) = x^{-1/2} ∫_x^(1 : ℕ) y^{-1/2} g_ω(y) dy`.
 -/
 
 namespace RHTower
@@ -71,7 +71,7 @@ theorem intervalIntegrable_suzukiRealBetaIntegrand {ω : ℝ} (hω : 0 < ω) (h�
 
 /-! ## The real beta tail -/
 
-/-- The real incomplete-beta tail `T_ω(x) = ∫_{x²}^1 t^{1/2-ω}(1-t)^{ω-1} dt`. -/
+/-- The real incomplete-beta tail `T_ω(x) = ∫_{x²}^(1 : ℕ) t^{1/2-ω}(1-t)^{ω-1} dt`. -/
 def suzukiRealBetaTail (ω x : ℝ) : ℝ := ∫ t in Ioc (x ^ 2) 1, suzukiRealBetaIntegrand ω t
 
 theorem ofReal_suzukiRealBetaTail (ω x : ℝ) :
@@ -255,7 +255,7 @@ theorem intervalIntegrable_suzukiRealBetaIntegrand_sub {ω : ℝ} (hω : 0 < ω)
     rw [uIcc_of_le hu1, uIcc_of_le zero_le_one]
     exact Icc_subset_Icc hu0 le_rfl)
 
-/-- **The exact vanishing rate of the beta tail.**  `∫_u^1 t^{1/2-ω}(1-t)^{ω-1} dt ∼ (1-u)^ω/ω`
+/-- **The exact vanishing rate of the beta tail.**  `∫_u^(1 : ℕ) t^{1/2-ω}(1-t)^{ω-1} dt ∼ (1-u)^ω/ω`
 as `u → 1⁻`. -/
 theorem tendsto_betaIntegrandPrimitive_nhdsLT_one {ω : ℝ} (hω : 0 < ω) (hω' : ω < 3 / 2) :
     Tendsto (fun u : ℝ => (1 - u) ^ (-ω) * ∫ t in u..1, suzukiRealBetaIntegrand ω t)

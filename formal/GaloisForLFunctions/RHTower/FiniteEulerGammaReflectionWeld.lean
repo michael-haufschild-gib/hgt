@@ -110,7 +110,7 @@ weld with a constant exponential gauge. -/
 theorem finiteEulerLocalQuartet_eq_gammaReciprocalQuartet
     (p : Nat.Primes) (s : ℂ) :
     finiteEulerLocalQuartet p s =
-      (-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
+      (-2 * Complex.I * (Real.pi : ℂ)) ^ (2 : ℕ) *
         Complex.exp (-((Real.log p : ℂ) / 2)) *
         (finiteEulerGammaReciprocalPair p s *
           finiteEulerGammaReciprocalPair p (1 - s)) := by
@@ -134,7 +134,7 @@ theorem finiteEulerLocalQuartet_eq_gammaReciprocalQuartet
             Complex.exp (-((Real.log p : ℂ) * (1 - s)) / 2)) *
           (finiteEulerGammaReciprocalPair p s *
             finiteEulerGammaReciprocalPair p (1 - s)) := by ring
-    _ = (-2 * Complex.I * (Real.pi : ℂ)) ^ 2 *
+    _ = (-2 * Complex.I * (Real.pi : ℂ)) ^ (2 : ℕ) *
           Complex.exp (-((Real.log p : ℂ) / 2)) *
           (finiteEulerGammaReciprocalPair p s *
             finiteEulerGammaReciprocalPair p (1 - s)) := by

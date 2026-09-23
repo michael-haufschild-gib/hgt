@@ -16,10 +16,10 @@ open Finset
 namespace HTGeometry
 
 /-- Euclidean radius of a planar displacement represented in the product norm. -/
-def planeDisplacementRadius (z : ℝ × ℝ) : ℝ := Real.sqrt (z.1^2+z.2^2)
+def planeDisplacementRadius (z : ℝ × ℝ) : ℝ := Real.sqrt (z.1^(2 : ℕ)+z.2^(2 : ℕ))
 
 private lemma radius_nonneg (z : ℝ × ℝ) : 0 ≤ planeDisplacementRadius z := Real.sqrt_nonneg _
-private lemma radius_sq (z : ℝ × ℝ) : (planeDisplacementRadius z)^2=z.1^2+z.2^2 :=
+private lemma radius_sq (z : ℝ × ℝ) : (planeDisplacementRadius z)^(2 : ℕ)=z.1^(2 : ℕ)+z.2^(2 : ℕ) :=
   Real.sq_sqrt (by positivity)
 
 private lemma radius_coord (z : ℝ × ℝ) : |z.1| ≤ planeDisplacementRadius z ∧
@@ -58,12 +58,12 @@ theorem planeDisplacementRadius_inward_step {z w : ℝ × ℝ} {B c : ℝ}
     (hB : 0<B) (hc : 0<c) (hw : ‖w‖ ≤ B)
     (hdot : z.1*w.1+z.2*w.2 ≤ -c*‖z‖) :
     planeDisplacementRadius (z+w) ≤
-      max (4*B^2/c+2*B+c) (planeDisplacementRadius z-c/4) := by
-  have hBc : 0 ≤ 4*B^2/c := by positivity
-  by_cases hz : planeDisplacementRadius z ≤ 4*B^2/c+c
+      max (4*B^(2 : ℕ)/c+2*B+c) (planeDisplacementRadius z-c/4) := by
+  have hBc : 0 ≤ 4*B^(2 : ℕ)/c := by positivity
+  by_cases hz : planeDisplacementRadius z ≤ 4*B^(2 : ℕ)/c+c
   · exact (planeDisplacementRadius_add_le hB.le hw).trans
-      ((by linarith : planeDisplacementRadius z+2*B ≤ 4*B^2/c+2*B+c).trans (le_max_left _ _))
-  have hzlarge : 4*B^2/c+c < planeDisplacementRadius z := lt_of_not_ge hz
+      ((by linarith : planeDisplacementRadius z+2*B ≤ 4*B^(2 : ℕ)/c+2*B+c).trans (le_max_left _ _))
+  have hzlarge : 4*B^(2 : ℕ)/c+c < planeDisplacementRadius z := lt_of_not_ge hz
   have hrpos : 0 ≤ planeDisplacementRadius z-c/4 := by nlinarith
   have hw0 : |w.1| ≤ B := (show |w.1| ≤ ‖w‖ by simpa using norm_fst_le w).trans hw
   have hw1 : |w.2| ≤ B := (show |w.2| ≤ ‖w‖ by simpa using norm_snd_le w).trans hw
@@ -71,7 +71,7 @@ theorem planeDisplacementRadius_inward_step {z w : ℝ × ℝ} {B c : ℝ}
   have h1 := mul_le_mul hw1 hw1 (abs_nonneg _) hB.le
   have hrad := mul_le_mul_of_nonneg_left (radius_le_two_norm z) hc.le
   have hlarge := mul_lt_mul_of_pos_left hzlarge hc
-  have hcancel : c*(4*B^2/c+c)=4*B^2+c^2 := by field_simp
+  have hcancel : c*(4*B^(2 : ℕ)/c+c)=4*B^(2 : ℕ)+c^(2 : ℕ) := by field_simp
   rw [hcancel] at hlarge
   have hs := radius_sq (z+w)
   simp only [Prod.fst_add,Prod.snd_add] at hs
@@ -97,7 +97,7 @@ theorem exists_planeDisplacement_return_batch {ι : Type*} [DecidableEq ι]
       ∃ p ∈ U,p ∉ L ∧ z.1*(v p).1+z.2*(v p).2 ≤ -c*‖z‖) :
     ∃ l : List ι,l.Nodup ∧ l.length=n ∧ l.toFinset ⊆ U ∧ ∀ k ≤ n,
       planeDisplacementRadius (z0+∑ p ∈ (l.take k).toFinset,v p) ≤
-        max (4*B^2/c+2*B+c) (planeDisplacementRadius z0-(k:ℝ)*c/4) := by
+        max (4*B^(2 : ℕ)/c+2*B+c) (planeDisplacementRadius z0-(k:ℝ)*c/4) := by
   induction n with
   | zero =>
     refine ⟨[],by simp,by simp,by simp,?_⟩
@@ -124,7 +124,7 @@ theorem exists_planeDisplacement_return_batch {ι : Type*} [DecidableEq ι]
         have hklong : (l++[p]).length ≤ k := by simp only [List.length_append,List.length_singleton]; omega
         rw [List.take_of_length_le hklong]
         have hz : planeDisplacementRadius z ≤
-            max (4*B^2/c+2*B+c) (planeDisplacementRadius z0-(n:ℝ)*c/4) := by
+            max (4*B^(2 : ℕ)/c+2*B+c) (planeDisplacementRadius z0-(n:ℝ)*c/4) := by
           simpa only [z,← hlen,List.take_length] using hbound n le_rfl
         have hs := planeDisplacementRadius_inward_step hB hc (hv p hp) hpd
         have hb := hs.trans (max_radius_decay (by positivity : 0 ≤ c/4) hz)
@@ -142,15 +142,15 @@ theorem exists_planeDisplacement_return_batch {ι : Type*} [DecidableEq ι]
 theorem exists_planeDisplacement_restoring_batch {ι : Type*} [DecidableEq ι]
     (v : ι → ℝ × ℝ) (U : Finset ι) (K : ℕ) (z0 w : ℝ × ℝ) (B c : ℝ)
     (hB : 0<B) (hc : 0<c) (hK : 2*B ≤ (K:ℝ)*c/4)
-    (hz : planeDisplacementRadius z0 ≤ 4*B^2/c+2*B+c) (hw : ‖w‖ ≤ B)
+    (hz : planeDisplacementRadius z0 ≤ 4*B^(2 : ℕ)/c+2*B+c) (hw : ‖w‖ ≤ B)
     (hv : ∀ p ∈ U,‖v p‖ ≤ B)
     (hdir : ∀ L ⊆ U,L.card<K → ∀ z : ℝ × ℝ,
       ∃ p ∈ U,p ∉ L ∧ z.1*(v p).1+z.2*(v p).2 ≤ -c*‖z‖) :
     ∃ l : List ι,l.Nodup ∧ l.length=K ∧ l.toFinset ⊆ U ∧
-      (∀ k ≤ K,planeDisplacementRadius (z0+w+((l.take k).map v).sum) ≤ 4*B^2/c+4*B+c) ∧
-      planeDisplacementRadius (z0+w+(l.map v).sum) ≤ 4*B^2/c+2*B+c := by
+      (∀ k ≤ K,planeDisplacementRadius (z0+w+((l.take k).map v).sum) ≤ 4*B^(2 : ℕ)/c+4*B+c) ∧
+      planeDisplacementRadius (z0+w+(l.map v).sum) ≤ 4*B^(2 : ℕ)/c+2*B+c := by
   obtain ⟨l,hnd,hlen,hsub,hbound⟩ := exists_planeDisplacement_return_batch v U K (z0+w) B c hB hc hv hdir
-  have hstart : planeDisplacementRadius (z0+w) ≤ 4*B^2/c+4*B+c := by
+  have hstart : planeDisplacementRadius (z0+w) ≤ 4*B^(2 : ℕ)/c+4*B+c := by
     have hh := planeDisplacementRadius_add_le (z:=z0) hB.le hw
     linarith
   refine ⟨l,hnd,hlen,hsub,?_,?_⟩

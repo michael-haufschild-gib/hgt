@@ -53,12 +53,12 @@ private theorem kept_derivative_bound {n : ℕ} (hn : n ≤ 12) {x : ℝ}
 private theorem inner_first_moment_bound {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x) (k : Fin 7) :
     |thetaCuspFirstAtomReflectionJet (2*k.val) x| ≤
-      HTGeometry.innerFirstMomentCeiling k.val*thetaCuspSourceTerm x 1^2*
+      HTGeometry.innerFirstMomentCeiling k.val*thetaCuspSourceTerm x 1^(2 : ℕ)*
         thetaCuspSingleAtomReflectionScale 1 x^k.val := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
-  have hd : 0 < thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^k.val := by positivity
+  have hd : 0 < thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^k.val := by positivity
   have hs : |thetaCuspFirstAtomScaledEvenJet k.val x| ≤ HTGeometry.innerFirstMomentCeiling k.val := by
     have hb : |thetaCuspFirstAtomScaledEvenJet 1 x| ≤ 11 ∧
         |thetaCuspFirstAtomScaledEvenJet 2 x| ≤ 310 ∧
@@ -105,7 +105,7 @@ theorem abs_thetaCuspTwoAtomReflectionErrorJet_le_middle_coefficients {n : ℕ} 
   have hq0 : 0 ≤ q := by dsimp [q]; linarith
   have he : 0 ≤ ε := by dsimp [ε,thetaCuspDeepTailErrorScale]; positivity
   have heU : ε ≤ 1/22000000000 := deep_scale_uniform hq
-  have he2 : ε^2 ≤ ε/22000000000 := by
+  have he2 : ε^(2 : ℕ) ≤ ε/22000000000 := by
     have h := mul_le_mul_of_nonneg_left heU he
     nlinarith only [h]
   rw [thetaCuspTwoAtomReflectionErrorJet_eq n (thetaCusp_pos_of_thirtySevenTenths_le hq)]
@@ -144,10 +144,10 @@ theorem abs_thetaCuspTwoAtomReflectionErrorJet_le_middle_coefficients {n : ℕ} 
       (mul_le_mul hDi hDj (abs_nonneg _) (by positivity))
   have hpoly : (a i*q^i)*(b (n-i)*q^(n-i)*ε)+(b i*q^i*ε)*(a (n-i)*q^(n-i))+
         (b i*q^i*ε)*(b (n-i)*q^(n-i)*ε) =
-      q^n*(a i*b (n-i)+b i*a (n-i))*ε+q^n*b i*b (n-i)*ε^2 := by
+      q^n*(a i*b (n-i)+b i*a (n-i))*ε+q^n*b i*b (n-i)*ε^(2 : ℕ) := by
     calc
       _ = (q^i*q^(n-i))*(a i*b (n-i)+b i*a (n-i))*ε+
-        (q^i*q^(n-i))*b i*b (n-i)*ε^2 := by ring
+        (q^i*q^(n-i))*b i*b (n-i)*ε^(2 : ℕ) := by ring
       _ = _ := by rw [hp]
   have hquad := mul_le_mul_of_nonneg_left he2
     (show 0 ≤ q^n*b i*b (n-i) by positivity)
@@ -191,7 +191,7 @@ private theorem sum_range_even_only (f : ℕ → ℝ) (ho : ∀ j, f (2*j+1) = 0
 theorem abs_thetaCuspNativeReflectionJet_sub_two_le_middle_budget {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x) (k : Fin 7) :
     |thetaCuspNativeReflectionJet (2*k.val) x-thetaCuspTwoAtomReflectionJet (2*k.val) x| ≤
-      thetaCuspSourceTerm x 1^2*(8*thetaCuspSingleAtomReflectionScale 1 x)^k.val*
+      thetaCuspSourceTerm x 1^(2 : ℕ)*(8*thetaCuspSingleAtomReflectionScale 1 x)^k.val*
         HTGeometry.middleEvenErrorBound k.val (thetaCuspSingleAtomReflectionScale 1 x) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let ε := thetaCuspDeepTailErrorScale x
@@ -219,7 +219,7 @@ theorem abs_thetaCuspNativeReflectionJet_sub_two_le_middle_budget {x : ℝ}
     convert hm using 1 <;> dsimp [summand] <;> ring
   rw [sum_range_even_only summand ho k.val] at herr
   have hpoly : (∑ r ∈ Finset.range (k.val+1), summand (2*r)) ≤
-      f^2*(8*q)^k.val*HTGeometry.innerEvenErrorPolynomial k.val q*ε := by
+      f^(2 : ℕ)*(8*q)^k.val*HTGeometry.innerEvenErrorPolynomial k.val q*ε := by
     unfold HTGeometry.innerEvenErrorPolynomial
     rw [Finset.mul_sum,Finset.sum_mul]
     apply Finset.sum_le_sum
@@ -237,12 +237,12 @@ theorem abs_thetaCuspNativeReflectionJet_sub_two_le_middle_budget {x : ℝ}
     rw [hdiff]
     calc
       _ ≤ ((2*k.val).choose (2*r) : ℝ)*
-          (HTGeometry.innerFirstMomentCeiling r*f^2*q^r)*
+          (HTGeometry.innerFirstMomentCeiling r*f^(2 : ℕ)*q^r)*
           (q^(2*(k.val-r))*HTGeometry.innerPartitionErrorCoefficient (2*(k.val-r))*ε) := by
         apply mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hb (Nat.cast_nonneg _))
           (by positivity)
-      _ = ((((2*k.val).choose (2*r) : ℝ)*HTGeometry.innerFirstMomentCeiling r)*f^2*
+      _ = ((((2*k.val).choose (2*r) : ℝ)*HTGeometry.innerFirstMomentCeiling r)*f^(2 : ℕ)*
             HTGeometry.innerPartitionErrorCoefficient (2*(k.val-r))*ε)*
           (q^r*q^(2*(k.val-r))) := by ring
       _ = _ := by
@@ -258,15 +258,15 @@ theorem abs_thetaCuspNativeReflectionJet_sub_two_le_middle_budget {x : ℝ}
     have hK := inner_K_nonneg (2*(k.val-r))
     positivity
   have hscale := mul_le_mul_of_nonneg_left (thetaCuspDeepTailErrorScale_le_innerDenominator hq)
-    (show 0 ≤ f^2*(8*q)^k.val*HTGeometry.innerEvenErrorPolynomial k.val q by positivity)
+    (show 0 ≤ f^(2 : ℕ)*(8*q)^k.val*HTGeometry.innerEvenErrorPolynomial k.val q by positivity)
   have hsingle : (∑ r ∈ Finset.range (k.val+1), summand (2*r)) ≤
-      f^2*(8*q)^k.val*HTGeometry.innerEvenErrorBound k.val q := by
+      f^(2 : ℕ)*(8*q)^k.val*HTGeometry.innerEvenErrorBound k.val q := by
     apply hpoly.trans
     rw [HTGeometry.innerEvenErrorBound_eq]
     convert hscale using 1 <;> dsimp [q,ε,f] <;> ring
   have hall := herr.trans (mul_le_mul_of_nonneg_left hsingle (by norm_num : (0 : ℝ) ≤ 2))
   calc
-    _ ≤ 2*(f^2*(8*q)^k.val*HTGeometry.innerEvenErrorBound k.val q) := hall
+    _ ≤ 2*(f^(2 : ℕ)*(8*q)^k.val*HTGeometry.innerEvenErrorBound k.val q) := hall
     _ = _ := by
       dsimp [HTGeometry.middleEvenErrorBound,q,f]
       ring

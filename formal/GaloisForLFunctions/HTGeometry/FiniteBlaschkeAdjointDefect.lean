@@ -38,8 +38,8 @@ theorem finiteBlaschkeModelSpace_orthogonal_eq_range (B : FiniteBlaschke) :
 
 /-- Exact adjoint-energy loss of arbitrary finite-Blaschke multiplier. -/
 theorem norm_sq_adjoint_finiteBlaschkeMul (B : FiniteBlaschke) (g : HardyDisk) :
-    ‖ContinuousLinearMap.adjoint (finiteBlaschkeMul B) g‖ ^ 2 =
-      ‖g‖ ^ 2 - ‖(finiteBlaschkeModelSpace B).starProjection g‖ ^ 2 := by
+    ‖ContinuousLinearMap.adjoint (finiteBlaschkeMul B) g‖ ^ (2 : ℕ) =
+      ‖g‖ ^ (2 : ℕ) - ‖(finiteBlaschkeModelSpace B).starProjection g‖ ^ (2 : ℕ) := by
   classical
   set u : HardyDisk := (finiteBlaschkeModelSpace B).starProjection g with hu
   set v : HardyDisk := g - u with hv
@@ -69,7 +69,7 @@ theorem norm_sq_adjoint_finiteBlaschkeMul (B : FiniteBlaschke) (g : HardyDisk) :
     rw [hsplit, map_add, hadjU, zero_add, ← hh, adjoint_finiteBlaschkeMul_comp]
   have hperp : (inner ℂ u v : ℂ) = 0 :=
     ((finiteBlaschkeModelSpace B).mem_orthogonal _).1 hvmem u humem
-  have hpyth : ‖g‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 := by
+  have hpyth : ‖g‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ) := by
     rw [hsplit]
     simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero u v hperp
   have hnh : ‖h‖ = ‖v‖ := by rw [← hh, norm_finiteBlaschkeMul]
@@ -80,8 +80,8 @@ theorem norm_sq_adjoint_finiteBlaschkeMul (B : FiniteBlaschke) (g : HardyDisk) :
 theorem finiteBlaschkeGeneralizedSchurForm_eq_adjoint_energy_difference
     (F : DiskMultiplier) (B : FiniteBlaschke) (x : HardyDisk) :
     finiteBlaschkeGeneralizedSchurForm F B x =
-      ‖ContinuousLinearMap.adjoint (finiteBlaschkeMul B) x‖ ^ 2 -
-        ‖ContinuousLinearMap.adjoint (hardyMul F) x‖ ^ 2 := by
+      ‖ContinuousLinearMap.adjoint (finiteBlaschkeMul B) x‖ ^ (2 : ℕ) -
+        ‖ContinuousLinearMap.adjoint (hardyMul F) x‖ ^ (2 : ℕ) := by
   rw [finiteBlaschkeGeneralizedSchurForm, projectedAdjointDefectForm,
     norm_sq_adjoint_finiteBlaschkeMul]
   ring

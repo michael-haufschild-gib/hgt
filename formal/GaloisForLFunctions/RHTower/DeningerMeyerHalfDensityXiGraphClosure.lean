@@ -20,7 +20,7 @@ log-Gaussian class, then
 
 `u_n = exp (-(n*a)*z) • V_(n*a) u_*`
 
-has half-density completion norm `exp (-n*a^2) * ‖completionMk u_*‖`, hence tends to zero, while
+has half-density completion norm `exp (-n*a^(2 : ℕ)) * ‖completionMk u_*‖`, hence tends to zero, while
 its Xi evaluation is the fixed nonzero scalar `E_rho u_*`.  Scaling this one graph-null sequence
 puts every scalar over zero in the graph closure.
 
@@ -113,7 +113,7 @@ theorem norm_deningerMeyerHalfDensityXiGraphNullSequence
     ‖deningerMeyerHalfDensityCompletionMk
         (deningerMeyerHalfDensityXiGraphNullSequence rho n)‖ =
       Real.exp
-          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ 2)) *
+          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ (2 : ℕ))) *
         ‖deningerMeyerHalfDensityCompletionMk
           deningerMeyerLogGaussianCohomologyClass‖ := by
   rw [deningerMeyerHalfDensityXiGraphNullSequence, map_smul, norm_smul,
@@ -139,18 +139,18 @@ theorem deningerMeyerHalfDensityXiGraphNullSequence_tendsto_zero
   have hrate : deningerMeyerHalfDensityXiHorizontalRate rho ≠ 0 := by
     rw [deningerMeyerHalfDensityXiHorizontalRate]
     exact sub_ne_zero.mpr hrho
-  have hrateSq : 0 < deningerMeyerHalfDensityXiHorizontalRate rho ^ 2 :=
+  have hrateSq : 0 < deningerMeyerHalfDensityXiHorizontalRate rho ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hrate
   have htop :
       Tendsto
         (fun n : ℕ =>
-          (n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ 2)
+          (n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ (2 : ℕ))
         atTop atTop :=
     tendsto_natCast_atTop_atTop.atTop_mul_const hrateSq
   have hdecay :
       Tendsto
         (fun n : ℕ => Real.exp
-          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ 2)))
+          (-((n : ℝ) * deningerMeyerHalfDensityXiHorizontalRate rho ^ (2 : ℕ))))
         atTop (𝓝 0) :=
     Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp htop)
   have hmul := hdecay.const_mul

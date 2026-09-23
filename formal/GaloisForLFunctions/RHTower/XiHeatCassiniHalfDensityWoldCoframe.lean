@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiMassHalfDensityAdjacentPrimeConnection
 At the raw critical coefficient scale, the depth-one Wold profile is a compact diagonal smoothing.
 Route T already carries a canonical half-density gauge, however.  After moving `sqrt(p)` into the
 mass profile, the remaining arithmetic coefficient is `log(p)/p`; the Wold coefficient differs
-from it only by the Euler factor `(1-1/p)^3`.  That factor and its inverse are uniformly bounded.
+from it only by the Euler factor `(1-1/p)^(3 : ℕ)`.  That factor and its inverse are uniformly bounded.
 
 Thus the apparent compactness wall is entirely in the half-density conjugation, not in the
 valuation-one arithmetic coframe.  This module gives the exact atomwise and cofinal source bridge.
@@ -23,7 +23,7 @@ noncomputable section
 /-- Uniformly bounded inverse Euler factor converting depth-one Wold coefficients to the
 half-density-gauged Route-T harmonic coefficients. -/
 def xiHeatCassiniWoldInverseEulerFactor (p : Nat.Primes) : ℝ :=
-  ((1 - 1 / (p : ℝ)) ^ 3)⁻¹
+  ((1 - 1 / (p : ℝ)) ^ (3 : ℕ))⁻¹
 
 /-- Real harmonic coefficient of one prime in the Route-T half-density gauge. -/
 def xiMassPrimeHarmonicRealCoefficient (p : Nat.Primes) : ℝ :=
@@ -32,7 +32,7 @@ def xiMassPrimeHarmonicRealCoefficient (p : Nat.Primes) : ℝ :=
 /-- The inverse Euler coframe is positive. -/
 theorem xiHeatCassiniWoldInverseEulerFactor_pos (p : Nat.Primes) :
     0 < xiHeatCassiniWoldInverseEulerFactor p := by
-  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ 3 := by
+  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ (3 : ℕ) := by
     linarith [(woldFactor_mem p).1]
   exact inv_pos.mpr hfactor
 
@@ -41,17 +41,17 @@ theorem xiHeatCassiniWoldInverseEulerFactor_mul_woldCoeff_one
     (p : Nat.Primes) :
     xiHeatCassiniWoldInverseEulerFactor p * woldCoeff 1 p =
       xiMassPrimeHarmonicRealCoefficient p := by
-  have hfactor : (1 - 1 / (p : ℝ)) ^ 3 ≠ 0 :=
+  have hfactor : (1 - 1 / (p : ℝ)) ^ (3 : ℕ) ≠ 0 :=
     (by linarith [(woldFactor_mem p).1] :
-      0 < (1 - 1 / (p : ℝ)) ^ 3).ne'
+      0 < (1 - 1 / (p : ℝ)) ^ (3 : ℕ)).ne'
   rw [xiHeatCassiniWoldInverseEulerFactor,
     xiMassPrimeHarmonicRealCoefficient, woldCoeff]
   simp only [pow_one]
   calc
-    ((1 - 1 / (p : ℝ)) ^ 3)⁻¹ *
-          ((1 - 1 / (p : ℝ)) ^ 3 * Real.log (p : ℝ) / (p : ℝ)) =
-        (((1 - 1 / (p : ℝ)) ^ 3)⁻¹ *
-          (1 - 1 / (p : ℝ)) ^ 3) *
+    ((1 - 1 / (p : ℝ)) ^ (3 : ℕ))⁻¹ *
+          ((1 - 1 / (p : ℝ)) ^ (3 : ℕ) * Real.log (p : ℝ) / (p : ℝ)) =
+        (((1 - 1 / (p : ℝ)) ^ (3 : ℕ))⁻¹ *
+          (1 - 1 / (p : ℝ)) ^ (3 : ℕ)) *
             (Real.log (p : ℝ) / (p : ℝ)) := by ring
     _ = Real.log (p : ℝ) / (p : ℝ) := by
       rw [inv_mul_cancel₀ hfactor, one_mul]
@@ -59,16 +59,16 @@ theorem xiHeatCassiniWoldInverseEulerFactor_mul_woldCoeff_one
 /-- The inverse coframe never contracts a coordinate. -/
 theorem one_le_xiHeatCassiniWoldInverseEulerFactor (p : Nat.Primes) :
     1 ≤ xiHeatCassiniWoldInverseEulerFactor p := by
-  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ 3 := by
+  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ (3 : ℕ) := by
     linarith [(woldFactor_mem p).1]
   exact (one_le_inv₀ hfactor).2 (woldFactor_mem p).2
 
-/-- Sharp uniform conditioning bound inherited from `1/8 ≤ (1-1/p)^3`. -/
+/-- Sharp uniform conditioning bound inherited from `1/8 ≤ (1-1/p)^(3 : ℕ)`. -/
 theorem xiHeatCassiniWoldInverseEulerFactor_le_eight (p : Nat.Primes) :
     xiHeatCassiniWoldInverseEulerFactor p ≤ 8 := by
-  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ 3 := by
+  have hfactor : 0 < (1 - 1 / (p : ℝ)) ^ (3 : ℕ) := by
     linarith [(woldFactor_mem p).1]
-  have hinv : ((1 - 1 / (p : ℝ)) ^ 3)⁻¹ ≤ ((1 / 8 : ℝ))⁻¹ :=
+  have hinv : ((1 - 1 / (p : ℝ)) ^ (3 : ℕ))⁻¹ ≤ ((1 / 8 : ℝ))⁻¹ :=
     (inv_le_inv₀ hfactor (by norm_num : (0 : ℝ) < 1 / 8)).2
       (woldFactor_mem p).1
   simpa [xiHeatCassiniWoldInverseEulerFactor] using hinv
@@ -99,7 +99,7 @@ theorem xiHeatCassiniWoldEulerTraceCorrection_nonneg (p : Nat.Primes) :
 /-- Euler depletion costs one full extra prime power. -/
 theorem xiHeatCassiniWoldEulerTraceCorrection_le (p : Nat.Primes) :
     xiHeatCassiniWoldEulerTraceCorrection p ≤
-      3 * (Real.log (p : ℝ) / (p : ℝ) ^ 2) := by
+      3 * (Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) := by
   let x : ℝ := 1 / (p : ℝ)
   have hp : 0 < (p : ℝ) := by exact_mod_cast p.2.pos
   have hx0 : 0 ≤ x := by dsimp [x]; positivity
@@ -107,8 +107,8 @@ theorem xiHeatCassiniWoldEulerTraceCorrection_le (p : Nat.Primes) :
     dsimp [x]
     rw [div_le_one hp]
     linarith [two_le_prime_cast p]
-  have hpoly : 1 - (1 - x) ^ 3 ≤ 3 * x := by
-    have hmul : x ^ 2 * (x - 3) ≤ 0 :=
+  have hpoly : 1 - (1 - x) ^ (3 : ℕ) ≤ 3 * x := by
+    have hmul : x ^ (2 : ℕ) * (x - 3) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos (sq_nonneg x) (by linarith)
     nlinarith
   have hlogdiv : 0 ≤ Real.log (p : ℝ) / (p : ℝ) := by
@@ -117,15 +117,15 @@ theorem xiHeatCassiniWoldEulerTraceCorrection_le (p : Nat.Primes) :
     xiMassPrimeHarmonicRealCoefficient, woldCoeff]
   simp only [pow_one]
   change Real.log (p : ℝ) / (p : ℝ) -
-      (1 - x) ^ 3 * Real.log (p : ℝ) / (p : ℝ) ≤ _
+      (1 - x) ^ (3 : ℕ) * Real.log (p : ℝ) / (p : ℝ) ≤ _
   calc
     Real.log (p : ℝ) / (p : ℝ) -
-        (1 - x) ^ 3 * Real.log (p : ℝ) / (p : ℝ) =
-      (1 - (1 - x) ^ 3) *
+        (1 - x) ^ (3 : ℕ) * Real.log (p : ℝ) / (p : ℝ) =
+      (1 - (1 - x) ^ (3 : ℕ)) *
         (Real.log (p : ℝ) / (p : ℝ)) := by ring
     _ ≤ (3 * x) * (Real.log (p : ℝ) / (p : ℝ)) :=
       mul_le_mul_of_nonneg_right hpoly hlogdiv
-    _ = 3 * (Real.log (p : ℝ) / (p : ℝ) ^ 2) := by
+    _ = 3 * (Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) := by
       dsimp [x]
       field_simp [hp.ne']
 
@@ -139,7 +139,7 @@ theorem summable_xiHeatCassiniWoldEulerTraceCorrection :
   intro p
   calc
     xiHeatCassiniWoldEulerTraceCorrection p ≤
-        3 * (Real.log (p : ℝ) / (p : ℝ) ^ 2) :=
+        3 * (Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) :=
       xiHeatCassiniWoldEulerTraceCorrection_le p
     _ = 3 * xiMassPrimeSquareEulerWeight (1 / 2) p := by
       rw [xiMassPrimeSquareEulerWeight_eq]
@@ -149,7 +149,7 @@ theorem summable_xiHeatCassiniWoldEulerTraceCorrection :
 
 /-- Harmonic Route-T coefficient is square summable in the same coframe as Wold depth one. -/
 theorem summable_xiMassPrimeHarmonicRealCoefficient_sq :
-    Summable (fun p : Nat.Primes => xiMassPrimeHarmonicRealCoefficient p ^ 2) := by
+    Summable (fun p : Nat.Primes => xiMassPrimeHarmonicRealCoefficient p ^ (2 : ℕ)) := by
   exact GaloisForLFunctions.HTGeometry.summable_logSq_div_sq.comp_injective
     Subtype.val_injective
 

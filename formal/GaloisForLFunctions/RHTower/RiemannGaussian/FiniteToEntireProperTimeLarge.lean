@@ -13,8 +13,8 @@ observation point which is not itself a spectral zero.
 The second part proves a quantitative finite-divisor statement.  If every
 upper root stays at least `delta > 0` from the observation point, then its
 heat after time `T` decays relative to its value at `T` at exponential rate
-`delta ^ 2`.  Consequently every later truncated action is at most the heat
-at `T` divided by `delta ^ 2`.  Combining this estimate with fixed-time
+`delta ^ (2 : ℕ)`.  Consequently every later truncated action is at most the heat
+at `T` divided by `delta ^ (2 : ℕ)`.  Combining this estimate with fixed-time
 convergence and the spectral decay gives uniform large-time tightness.
 
 Thus the large endpoint is closed whenever the pinned observation point is
@@ -161,14 +161,14 @@ theorem tendsto_riemannXiUpperHyperbolicHeatSum_atTop_zero_of_ne_zero
 /-! ## Relative exponential decay for finite divisors -/
 
 /-- A divided exponential difference with lower spectral edge at least
-`delta ^ 2` decays, relative to its value at an earlier time, at rate
-`delta ^ 2`. -/
+`delta ^ (2 : ℕ)` decays, relative to its value at an earlier time, at rate
+`delta ^ (2 : ℕ)`. -/
 theorem expDifferenceDiv_le_mul_exp_decay
-    {A B delta s t : ℝ} (hdeltaA : delta ^ 2 ≤ A) (hAB : A ≤ B)
+    {A B delta s t : ℝ} (hdeltaA : delta ^ (2 : ℕ) ≤ A) (hAB : A ≤ B)
     (hs : 0 < s) (hst : s ≤ t) :
     t⁻¹ * (Real.exp (-(A * t)) - Real.exp (-(B * t))) ≤
       (s⁻¹ * (Real.exp (-(A * s)) - Real.exp (-(B * s)))) *
-        Real.exp (-(delta ^ 2 * (t - s))) := by
+        Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
   have ht : 0 < t := hs.trans_le hst
   rw [expDifferenceDiv_eq_intervalIntegral ht,
     expDifferenceDiv_eq_intervalIntegral hs]
@@ -176,21 +176,21 @@ theorem expDifferenceDiv_le_mul_exp_decay
     (∫ x in A..B, Real.exp (-(x * t))) ≤
         ∫ x in A..B,
           Real.exp (-(x * s)) *
-            Real.exp (-(delta ^ 2 * (t - s))) := by
+            Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
       apply intervalIntegral.integral_mono_on hAB
       · exact (by fun_prop : Continuous fun x : ℝ ↦
           Real.exp (-(x * t))).intervalIntegrable A B
       · exact (by fun_prop : Continuous fun x : ℝ ↦
           Real.exp (-(x * s)) *
-            Real.exp (-(delta ^ 2 * (t - s)))).intervalIntegrable A B
+            Real.exp (-(delta ^ (2 : ℕ) * (t - s)))).intervalIntegrable A B
       · intro x hx
         rw [← Real.exp_add]
         apply Real.exp_le_exp.mpr
-        have hdeltaX : delta ^ 2 ≤ x := hdeltaA.trans hx.1
+        have hdeltaX : delta ^ (2 : ℕ) ≤ x := hdeltaA.trans hx.1
         nlinarith [mul_nonneg (sub_nonneg.mpr hdeltaX)
           (sub_nonneg.mpr hst)]
     _ = (∫ x in A..B, Real.exp (-(x * s))) *
-          Real.exp (-(delta ^ 2 * (t - s))) := by
+          Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
       rw [intervalIntegral.integral_mul_const]
 
 /-- A separated upper-half-plane root has the corresponding relative
@@ -202,10 +202,10 @@ theorem upperHalfPlaneHyperbolicHeatIntegrand_le_mul_exp_decay
     (hs : 0 < s) (hst : s ≤ t) :
     upperHalfPlaneHyperbolicHeatIntegrand z alpha t ≤
       upperHalfPlaneHyperbolicHeatIntegrand z alpha s *
-        Real.exp (-(delta ^ 2 * (t - s))) := by
+        Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
   have hnorm : delta ≤ ‖z - alpha‖ := by
     simpa [dist_eq_norm] using hdist
-  have hdeltaSq : delta ^ 2 ≤ Complex.normSq (z - alpha) := by
+  have hdeltaSq : delta ^ (2 : ℕ) ≤ Complex.normSq (z - alpha) := by
     rw [Complex.normSq_eq_norm_sq]
     exact (sq_le_sq₀ hdelta (norm_nonneg _)).2 hnorm
   have hsqOrder : Complex.normSq (z - alpha) ≤
@@ -235,7 +235,7 @@ theorem finiteUpperHyperbolicHeatSum_le_mul_exp_decay
     (hs : 0 < s) (hst : s ≤ t) :
     finiteUpperHyperbolicHeatSum z upper t ≤
       finiteUpperHyperbolicHeatSum z upper s *
-        Real.exp (-(delta ^ 2 * (t - s))) := by
+        Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
   induction upper using Multiset.induction_on with
   | empty => simp [finiteUpperHyperbolicHeatSum]
   | @cons alpha upper ih =>
@@ -247,10 +247,10 @@ theorem finiteUpperHyperbolicHeatSum_le_mul_exp_decay
             (upper.map fun beta ↦
               upperHalfPlaneHyperbolicHeatIntegrand z beta t).sum ≤
           upperHalfPlaneHyperbolicHeatIntegrand z alpha s *
-              Real.exp (-(delta ^ 2 * (t - s))) +
+              Real.exp (-(delta ^ (2 : ℕ) * (t - s))) +
             (upper.map fun beta ↦
               upperHalfPlaneHyperbolicHeatIntegrand z beta s).sum *
-              Real.exp (-(delta ^ 2 * (t - s))) := by
+              Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
           apply add_le_add
           · exact upperHalfPlaneHyperbolicHeatIntegrand_le_mul_exp_decay
               hz (halpha alpha (by simp)) hdelta
@@ -263,45 +263,45 @@ theorem finiteUpperHyperbolicHeatSum_le_mul_exp_decay
         _ = (upperHalfPlaneHyperbolicHeatIntegrand z alpha s +
               (upper.map fun beta ↦
                 upperHalfPlaneHyperbolicHeatIntegrand z beta s).sum) *
-              Real.exp (-(delta ^ 2 * (t - s))) := by
+              Real.exp (-(delta ^ (2 : ℕ) * (t - s))) := by
           ring
 
 /-- The integral of the normalized exponential tail is bounded by the
 inverse squared gap. -/
 theorem intervalIntegral_exp_neg_sq_sub_le_inv_sq
     {delta T U : ℝ} (hdelta : 0 < delta) :
-    (∫ t in T..U, Real.exp (-(delta ^ 2 * (t - T)))) ≤
-      (delta ^ 2)⁻¹ := by
-  have hsq : 0 < delta ^ 2 := sq_pos_of_pos hdelta
+    (∫ t in T..U, Real.exp (-(delta ^ (2 : ℕ) * (t - T)))) ≤
+      (delta ^ (2 : ℕ))⁻¹ := by
+  have hsq : 0 < delta ^ (2 : ℕ) := sq_pos_of_pos hdelta
   have hderiv (x : ℝ) :
       HasDerivAt
         (fun y : ℝ ↦
-          -(delta ^ 2)⁻¹ *
-            Real.exp (-(delta ^ 2 * (y - T))))
-        (Real.exp (-(delta ^ 2 * (x - T)))) x := by
+          -(delta ^ (2 : ℕ))⁻¹ *
+            Real.exp (-(delta ^ (2 : ℕ) * (y - T))))
+        (Real.exp (-(delta ^ (2 : ℕ) * (x - T)))) x := by
     have hinner : HasDerivAt
-        (fun y : ℝ ↦ -(delta ^ 2 * (y - T)))
-        (-(delta ^ 2)) x := by
+        (fun y : ℝ ↦ -(delta ^ (2 : ℕ) * (y - T)))
+        (-(delta ^ (2 : ℕ))) x := by
       have hbase : HasDerivAt
-          (fun y : ℝ ↦ -(delta ^ 2) * (y - T))
-          (-(delta ^ 2)) x := by
+          (fun y : ℝ ↦ -(delta ^ (2 : ℕ)) * (y - T))
+          (-(delta ^ (2 : ℕ))) x := by
         apply (((hasDerivAt_id x).sub_const T).const_mul
-          (-(delta ^ 2))).congr_deriv
+          (-(delta ^ (2 : ℕ)))).congr_deriv
         ring
       apply hbase.congr_of_eventuallyEq
       exact Eventually.of_forall fun y ↦ by ring
     have hexp := (Real.hasDerivAt_exp
-      (-(delta ^ 2 * (x - T)))).comp x hinner
-    have hscaled := hexp.const_mul (-(delta ^ 2)⁻¹)
+      (-(delta ^ (2 : ℕ) * (x - T)))).comp x hinner
+    have hscaled := hexp.const_mul (-(delta ^ (2 : ℕ))⁻¹)
     apply hscaled.congr_deriv
     field_simp [ne_of_gt hsq]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun x _ ↦ hderiv x)
     ((by fun_prop : Continuous fun x : ℝ ↦
-      Real.exp (-(delta ^ 2 * (x - T)))).intervalIntegrable T U)]
-  have hinv : 0 ≤ (delta ^ 2)⁻¹ := inv_nonneg.mpr hsq.le
-  have hprod : 0 ≤ (delta ^ 2)⁻¹ *
-      Real.exp (-(delta ^ 2 * (U - T))) :=
+      Real.exp (-(delta ^ (2 : ℕ) * (x - T)))).intervalIntegrable T U)]
+  have hinv : 0 ≤ (delta ^ (2 : ℕ))⁻¹ := inv_nonneg.mpr hsq.le
+  have hprod : 0 ≤ (delta ^ (2 : ℕ))⁻¹ *
+      Real.exp (-(delta ^ (2 : ℕ) * (U - T))) :=
     mul_nonneg hinv (Real.exp_pos _).le
   simp only [sub_self, mul_zero, neg_zero, Real.exp_zero]
   nlinarith
@@ -316,7 +316,7 @@ theorem upperHalfPlaneHyperbolicHeatAction_le_heat_div_sq
     (hdist : ∀ alpha ∈ upper, delta ≤ dist z alpha)
     (hT : 0 < T) (hTU : T ≤ U) :
     upperHalfPlaneHyperbolicHeatAction z upper (T, U) ≤
-      finiteUpperHyperbolicHeatSum z upper T / delta ^ 2 := by
+      finiteUpperHyperbolicHeatSum z upper T / delta ^ (2 : ℕ) := by
   rw [upperHalfPlaneHyperbolicHeatAction_eq_intervalIntegral
     z upper hT hTU]
   have hheatNonneg : 0 ≤ finiteUpperHyperbolicHeatSum z upper T :=
@@ -325,25 +325,25 @@ theorem upperHalfPlaneHyperbolicHeatAction_le_heat_div_sq
     (∫ tau in T..U, finiteUpperHyperbolicHeatSum z upper tau) ≤
         ∫ tau in T..U,
           finiteUpperHyperbolicHeatSum z upper T *
-            Real.exp (-(delta ^ 2 * (tau - T))) := by
+            Real.exp (-(delta ^ (2 : ℕ) * (tau - T))) := by
       apply intervalIntegral.integral_mono_on hTU
       · exact intervalIntegrable_finiteUpperHyperbolicHeatSum
           z upper hT hTU
       · exact (by fun_prop : Continuous fun tau : ℝ ↦
           finiteUpperHyperbolicHeatSum z upper T *
-            Real.exp (-(delta ^ 2 * (tau - T)))).intervalIntegrable T U
+            Real.exp (-(delta ^ (2 : ℕ) * (tau - T)))).intervalIntegrable T U
       · intro tau htau
         exact finiteUpperHyperbolicHeatSum_le_mul_exp_decay
           hz halpha hdelta.le hdist hT htau.1
     _ = finiteUpperHyperbolicHeatSum z upper T *
           (∫ tau in T..U,
-            Real.exp (-(delta ^ 2 * (tau - T)))) := by
+            Real.exp (-(delta ^ (2 : ℕ) * (tau - T)))) := by
       rw [intervalIntegral.integral_const_mul]
-    _ ≤ finiteUpperHyperbolicHeatSum z upper T * (delta ^ 2)⁻¹ :=
+    _ ≤ finiteUpperHyperbolicHeatSum z upper T * (delta ^ (2 : ℕ))⁻¹ :=
       mul_le_mul_of_nonneg_left
         (intervalIntegral_exp_neg_sq_sub_le_inv_sq hdelta)
         hheatNonneg
-    _ = finiteUpperHyperbolicHeatSum z upper T / delta ^ 2 := by
+    _ = finiteUpperHyperbolicHeatSum z upper T / delta ^ (2 : ℕ) := by
       rw [div_eq_mul_inv]
 
 /-- Fixed-time convergence to a heat profile which vanishes at infinity,
@@ -365,21 +365,21 @@ theorem eventually_finiteUpperHyperbolicHeatAction_largeTime_lt
       ∀ᶠ n in atTop, ∀ U : ℝ, T ≤ U →
         upperHalfPlaneHyperbolicHeatAction z (upper n) (T, U) <
           epsilon := by
-  have htarget : 0 < epsilon * delta ^ 2 :=
+  have htarget : 0 < epsilon * delta ^ (2 : ℕ) :=
     mul_pos hepsilon (sq_pos_of_pos hdelta)
   have hgBound : ∀ᶠ T in atTop,
-      g T < epsilon * delta ^ 2 / 2 :=
+      g T < epsilon * delta ^ (2 : ℕ) / 2 :=
     (tendsto_order.1 hdecay).2
-      (epsilon * delta ^ 2 / 2) (by linarith)
+      (epsilon * delta ^ (2 : ℕ) / 2) (by linarith)
   obtain ⟨T, hT, hgT⟩ :=
     ((eventually_gt_atTop (0 : ℝ)).and hgBound).exists
-  have hgTFull : g T < epsilon * delta ^ 2 := by
+  have hgTFull : g T < epsilon * delta ^ (2 : ℕ) := by
     linarith
   have hheatBound : ∀ᶠ n in atTop,
       finiteUpperHyperbolicHeatSum z (upper n) T <
-        epsilon * delta ^ 2 :=
+        epsilon * delta ^ (2 : ℕ) :=
     (tendsto_order.1 (hpointwise T hT)).2
-      (epsilon * delta ^ 2) hgTFull
+      (epsilon * delta ^ (2 : ℕ)) hgTFull
   refine ⟨T, hT, ?_⟩
   filter_upwards [hdist, hheatBound] with n hdistn hheatn
   intro U hTU

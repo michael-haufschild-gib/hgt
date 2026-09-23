@@ -29,7 +29,7 @@ theorem oddCompactDet_eq_scalarPolynomial (u a w : ℝ) :
     oddCompactDet u a w = oddCompactScalarDet u a w := by
   rw [oddCompactDet_eq_reflectedScalars]
   have h (a b c d e : ℝ) :
-      a*c*e-a*d^2-b^2*e+2*b*c*d-c^3 = e*(a*c-b^2)-d*(a*d-b*c)+c*(b*d-c^2) := by ring
+      a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ) = e*(a*c-b^(2 : ℕ))-d*(a*d-b*c)+c*(b*d-c^(2 : ℕ)) := by ring
   rw [h, oddCompactHeadScalar_identity, oddCompactCrossAD_eq, oddCompactCrossBD_eq,
     oddCompactProductE_eq, oddCompactProductD_eq, oddCompactProductC_eq,
     oddCompactScalarDet_products]

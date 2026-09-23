@@ -83,7 +83,7 @@ theorem wedge_expansion {w : E → E → W}
     w (p • u + p⁻¹ • v)
         ((α * p) • u + p • u' + ((-(α * p⁻¹)) • v + p⁻¹ • v'))
       = (-2 * α) • w u v
-        + ((p ^ 2) • w u u' + (p⁻¹ ^ 2) • w v v' + (w u v' + w v u')) := by
+        + ((p ^ (2 : ℕ)) • w u u' + (p⁻¹ ^ (2 : ℕ)) • w v v' + (w u v' + w v u')) := by
   have hvu : w v u = -w u v := by
     have h := halt (u + v)
     rw [hadd₁, hadd₂, hadd₂, halt u, halt v] at h
@@ -93,8 +93,8 @@ theorem wedge_expansion {w : E → E → W}
   have e3 : p⁻¹ * (α * p) = α := by field_simp
   have e4 : p * p⁻¹ = (1 : ℂ) := mul_inv_cancel₀ hp
   have e5 : p⁻¹ * p = (1 : ℂ) := inv_mul_cancel₀ hp
-  have e7 : p * p = p ^ 2 := by ring
-  have e8 : p⁻¹ * p⁻¹ = p⁻¹ ^ 2 := by ring
+  have e7 : p * p = p ^ (2 : ℕ) := by ring
+  have e8 : p⁻¹ * p⁻¹ = p⁻¹ ^ (2 : ℕ) := by ring
   simp only [hadd₁, hadd₂, hsmul₁, hsmul₂, smul_smul, e2, e3, e4, e5, e7, e8,
     halt, smul_zero, zero_add, hvu]
   module
@@ -103,14 +103,14 @@ theorem wedge_expansion {w : E → E → W}
 
 /-- **`(85)`: a positive wedge floor forces angular speed of order the aperture.** -/
 theorem projectiveSpeed_ge {a δ S β N Ω : ℝ} (hS : 0 < S) (hβ : 0 < β)
-    (hβS : β ≤ S) (hN : 0 ≤ N) (hlow : δ * a * S ^ 2 ≤ N) (hΩ : Ω = N / β ^ 2) :
+    (hβS : β ≤ S) (hN : 0 ≤ N) (hlow : δ * a * S ^ (2 : ℕ) ≤ N) (hΩ : Ω = N / β ^ (2 : ℕ)) :
     δ * a ≤ Ω := by
-  have hβ2 : (0 : ℝ) < β ^ 2 := by positivity
-  have hS2 : (0 : ℝ) < S ^ 2 := by positivity
-  have hmono : N / S ^ 2 ≤ N / β ^ 2 := by
+  have hβ2 : (0 : ℝ) < β ^ (2 : ℕ) := by positivity
+  have hS2 : (0 : ℝ) < S ^ (2 : ℕ) := by positivity
+  have hmono : N / S ^ (2 : ℕ) ≤ N / β ^ (2 : ℕ) := by
     apply div_le_div_of_nonneg_left hN hβ2
     nlinarith [hβS, hβ, hS]
-  have hlow' : δ * a ≤ N / S ^ 2 := by
+  have hlow' : δ * a ≤ N / S ^ (2 : ℕ) := by
     rw [le_div_iff₀ hS2]
     linarith
   rw [hΩ]

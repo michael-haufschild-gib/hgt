@@ -43,7 +43,7 @@ theorem semilocalFinitePrimePoissonExpansion_frequency
     (∏ i, (Complex.normSq
         (1 - (semilocalPrimePoissonRatio (p i) : ℂ) *
           semilocalPrimePhase (p i) s) : ℂ)⁻¹) =
-      (∏ i, (1 - (semilocalPrimePoissonRatio (p i) : ℂ) ^ 2)⁻¹) *
+      (∏ i, (1 - (semilocalPrimePoissonRatio (p i) : ℂ) ^ (2 : ℕ))⁻¹) *
         ∑' m : Fin n → ℤ,
           (semilocalFinitePrimePoissonWeight p m : ℂ) *
             Complex.exp

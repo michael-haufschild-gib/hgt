@@ -57,7 +57,7 @@ theorem gammaSixFilteredBoundaryAsymptoticResidue_eq_escapeIndex
     (m : ℕ) (q : XiZeroCopy) :
     gammaSixFilteredBoundaryAsymptoticResidue m
         (primeDepthBVWoldXiCenteredRate q.1) =
-      (Real.log 2 / (m : ℝ) ^ 2) *
+      (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) *
         thetaKakutaniHarmonicEscapeIndex q := by
   by_cases hrate : primeDepthBVWoldXiCenteredRate q.1 = 0
   · have hflux : thetaXiRankTwoBoundaryFlux q = 0 :=
@@ -78,7 +78,7 @@ theorem tendsto_gammaSixFilteredBoundarySecondJet_harmonic_residue_escapeIndex
       ((gammaSixFilteredBoundaryNthPrime n).1 : ℝ) *
         gammaSixFilteredBoundarySecondJet m q
           (gammaSixFilteredBoundaryNthPrime n)) atTop
-      (nhds ((Real.log 2 / (m : ℝ) ^ 2) *
+      (nhds ((Real.log 2 / (m : ℝ) ^ (2 : ℕ)) *
         thetaKakutaniHarmonicEscapeIndex q)) := by
   simpa [gammaSixFilteredBoundaryAsymptoticResidue_eq_escapeIndex m q] using
     tendsto_gammaSixFilteredBoundarySecondJet_harmonic_residue hm q
@@ -114,9 +114,9 @@ theorem tendsto_reflectionPairKakutaniFluxPolarization_div_primeReciprocalMass_e
     Tendsto
       (fun s : Finset Nat.Primes =>
         (∑ p ∈ s,
-          (thetaKakutaniFluxPositiveUnit p q * thetaXiRankTwoBoundaryFlux q ^ 2 +
+          (thetaKakutaniFluxPositiveUnit p q * thetaXiRankTwoBoundaryFlux q ^ (2 : ℕ) +
             thetaKakutaniFluxPositiveUnit p (xiZeroCopyReflectEquiv q) *
-              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ 2)) /
+              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ (2 : ℕ))) /
             primeReciprocalMass s)
       atTop (nhds (2 * thetaKakutaniHarmonicEscapeIndex q)) := by
   by_cases hflux : thetaXiRankTwoBoundaryFlux q = 0
@@ -134,7 +134,7 @@ theorem xiFormationEscapePrincipalClass_fourOrganLaw
         ((gammaSixFilteredBoundaryNthPrime n).1 : ℝ) *
           gammaSixFilteredBoundarySecondJet m q
             (gammaSixFilteredBoundaryNthPrime n)) atTop
-        (nhds ((Real.log 2 / (m : ℝ) ^ 2) *
+        (nhds ((Real.log 2 / (m : ℝ) ^ (2 : ℕ)) *
           thetaKakutaniHarmonicEscapeIndex q)) ∧
     Tendsto (fun N : ℕ =>
         thetaMobiusPrimeNormalHalfDensityEnergyPrefix q N /
@@ -146,9 +146,9 @@ theorem xiFormationEscapePrincipalClass_fourOrganLaw
     Tendsto
       (fun s : Finset Nat.Primes =>
         (∑ ell ∈ s,
-          (thetaKakutaniFluxPositiveUnit ell q * thetaXiRankTwoBoundaryFlux q ^ 2 +
+          (thetaKakutaniFluxPositiveUnit ell q * thetaXiRankTwoBoundaryFlux q ^ (2 : ℕ) +
             thetaKakutaniFluxPositiveUnit ell (xiZeroCopyReflectEquiv q) *
-              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ 2)) /
+              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ (2 : ℕ))) /
             primeReciprocalMass s)
       atTop (nhds (2 * thetaKakutaniHarmonicEscapeIndex q)) := by
   exact ⟨tendsto_gammaSixFilteredBoundarySecondJet_harmonic_residue_escapeIndex hm q,

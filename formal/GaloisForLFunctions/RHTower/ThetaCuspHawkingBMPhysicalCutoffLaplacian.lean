@@ -13,7 +13,7 @@ set_option backward.isDefEq.respectTransparency false
 /-- The conjugated physical testing field satisfies the original modular eigen-equation with the conjugated coefficient. -/
 theorem physicalTestField_laplacian (q : XiZeroCopy) (z : UpperHalfPlane) :
     chartLaplacian (physicalTestField q) z =
-      conj ((physicalAngularParameter q^2-1/4)*scalar (physicalAngularParameter q) (coordinates z)) := by
+      conj ((physicalAngularParameter q^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) (coordinates z)) := by
   change chartLaplacian (fun w => (fun x => conj (scalar (physicalAngularParameter q) x)) (coordinates w)) z = _
   rw [chartLaplacian_coordinates (fun x => conj (scalar (physicalAngularParameter q) x)) z,
     hyperbolicLaplacian_conj]
@@ -24,10 +24,10 @@ theorem physicalCoreCutoff_laplacian (q : XiZeroCopy) (n : ℕ) (z : UpperHalfPl
     (hz : z ∈ ModularGroup.fd) :
     (physicalCoreCutoff q n).laplacian.field z =
       (scaledCuspCutoff ((n:ℝ)+1) z.im:ℂ)*
-        conj ((physicalAngularParameter q^2-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
+        conj ((physicalAngularParameter q^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
       2*((z.im*deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*(z.im:ℂ)*
         conj (coordDeriv 1 (scalar (physicalAngularParameter q)) (coordinates z))+
-      ((z.im^2*deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
+      ((z.im^(2 : ℕ)*deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
         conj (scalar (physicalAngularParameter q) (coordinates z)) := by
   have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
     have : (0:ℝ) ≤ n := by positivity
@@ -48,22 +48,22 @@ theorem physicalCoreCutoff_laplacian (q : XiZeroCopy) (n : ℕ) (z : UpperHalfPl
     Complex.conjCLE.contDiff.contDiffAt.comp (coordinates z)
       (cuspLeg_contDiffAt .scalar (physicalAngularParameter q) 2 (coordinates z) z.im_pos)
   have hs : hyperbolicLaplacian (scalar (physicalAngularParameter q)) (coordinates z) =
-      (physicalAngularParameter q^2-1/4)*scalar (physicalAngularParameter q) (coordinates z) :=
+      (physicalAngularParameter q^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) (coordinates z) :=
     scalarCusp_hyperbolicLaplacian (physicalAngularParameter q) (coordinates z) z.im_pos
   rw [hyperbolicLaplacian_height_mul _ (scaledCuspCutoff_smooth _) _ _ hf,
     hyperbolicLaplacian_conj,coordDeriv_conj,hs]
   change _ = (scaledCuspCutoff ((n:ℝ)+1) z.im:ℂ)*
-    conj ((physicalAngularParameter q^2-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
+    conj ((physicalAngularParameter q^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
     2*((z.im*deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*(z.im:ℂ)*
       conj (coordDeriv 1 (scalar (physicalAngularParameter q)) (coordinates z))+
-    ((z.im^2*deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
+    ((z.im^(2 : ℕ)*deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
       conj (scalar (physicalAngularParameter q) (coordinates z))
   simp only [Complex.ofReal_mul,Complex.ofReal_pow]
   change (scaledCuspCutoff ((n:ℝ)+1) z.im:ℂ)*
-      conj ((physicalAngularParameter q^2-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
-    2*(z.im:ℂ)^2*((deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*
+      conj ((physicalAngularParameter q^(2 : ℕ)-1/4)*scalar (physicalAngularParameter q) (coordinates z))+
+    2*(z.im:ℂ)^(2 : ℕ)*((deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*
       conj (coordDeriv 1 (scalar (physicalAngularParameter q)) (coordinates z))+
-    (z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
+    (z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
       conj (scalar (physicalAngularParameter q) (coordinates z)) = _
   ring
 

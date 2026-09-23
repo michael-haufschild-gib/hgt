@@ -27,7 +27,7 @@ def modularThetaSourcePositiveVacuumBoundaryState (b : ℂ) :
     ModularThetaSourcePositiveState → ℂ
   | .U => -3 * b
   | .B => b
-  | .Q => (3 / 8 : ℂ) * (b ^ 2 - 1)
+  | .Q => (3 / 8 : ℂ) * (b ^ (2 : ℕ) - 1)
 
 /-- Polynomial restriction to the invariant boundary `r=k=0`. -/
 def modularThetaSourcePositiveVacuumBoundaryPullback :
@@ -35,7 +35,7 @@ def modularThetaSourcePositiveVacuumBoundaryPullback :
   MvPolynomial.eval₂Hom Polynomial.C fun
     | .U => Polynomial.C (-3 : ℂ) * Polynomial.X
     | .B => Polynomial.X
-    | .Q => Polynomial.C (3 / 8 : ℂ) * (Polynomial.X ^ 2 - 1)
+    | .Q => Polynomial.C (3 / 8 : ℂ) * (Polynomial.X ^ (2 : ℕ) - 1)
 
 theorem eval_modularThetaSourcePositiveVacuumBoundaryPullback
     (b : ℂ) (P : ModularThetaSourcePositivePolynomial) :
@@ -76,7 +76,7 @@ theorem modularThetaSourcePositiveVacuumBoundaryPullback_sl2E_X
     modularThetaSourcePositiveVacuumBoundaryPullback
         (modularThetaSourcePositiveFieldLie modularThetaSourcePositiveSl2E
           (MvPolynomial.X i)) =
-      Polynomial.X ^ 2 *
+      Polynomial.X ^ (2 : ℕ) *
         (modularThetaSourcePositiveVacuumBoundaryPullback
           (MvPolynomial.X i)).derivative := by
   cases i <;>
@@ -136,7 +136,7 @@ theorem modularThetaSourcePositiveVacuumBoundaryPullback_sl2E
     (P : ModularThetaSourcePositivePolynomial) :
     modularThetaSourcePositiveVacuumBoundaryPullback
         (modularThetaSourcePositiveFieldLie modularThetaSourcePositiveSl2E P) =
-      Polynomial.X ^ 2 *
+      Polynomial.X ^ (2 : ℕ) *
         (modularThetaSourcePositiveVacuumBoundaryPullback P).derivative := by
   induction P using MvPolynomial.induction_on with
   | C c =>
@@ -308,7 +308,7 @@ def modularThetaSourcePositiveToAdaptedCoordinate :
   | .U => MvPolynomial.X .U - MvPolynomial.C (3 : ℂ) * MvPolynomial.X .B
   | .B => MvPolynomial.X .B
   | .Q => MvPolynomial.X .Q - MvPolynomial.C (3 / 8 : ℂ) +
-      MvPolynomial.C (3 / 8 : ℂ) * MvPolynomial.X .B ^ 2
+      MvPolynomial.C (3 / 8 : ℂ) * MvPolynomial.X .B ^ (2 : ℕ)
 
 def modularThetaSourcePositiveToAdapted :
     ModularThetaSourcePositivePolynomial →+* ModularThetaSourcePositivePolynomial :=

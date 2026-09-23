@@ -112,7 +112,7 @@ theorem xiShiftTwoRationalCorrection_translatedJet_mem_rationalCoordinateField
           xiShiftTwoRationalCorrectionUpperEndCarrier_mem_rationalCoordinateField⟩ :
             upperEndRationalCoordinateField)).property
     simpa only [upperEndRationalCoordinateTranslationAlgEquiv_apply] using hmem
-  exact differentialJet_mem_of_derivationClosed
+  exact differentialJet_mem_of_derivationClosed_jetHorizonTorsorTower
     upperEndRationalCoordinateField_derivationClosed k htranslated
 
 /-- Chosen exact `F_s` coefficient representing each translated correction jet. -/

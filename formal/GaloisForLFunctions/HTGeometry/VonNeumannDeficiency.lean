@@ -450,7 +450,7 @@ theorem coefficient_relation_of_boundary_zero {S : H →ₗ.[ℂ] H}
   simp only [starRingEnd_apply, star_neg, hstarI] at hboundary
   rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K, ← hnorm] at hboundary
   have hscalar : u * star beta = star alpha := by
-    have hnorm0 : ((‖(p : H)‖ : ℝ) : ℂ) ^ 2 ≠ 0 := by
+    have hnorm0 : ((‖(p : H)‖ : ℝ) : ℂ) ^ (2 : ℕ) ≠ 0 := by
       rw [ne_eq, sq_eq_zero_iff, Complex.ofReal_eq_zero, norm_eq_zero]
       exact hp0
     apply (mul_left_cancel₀ (mul_ne_zero (by exact Complex.I_ne_zero)

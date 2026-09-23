@@ -43,16 +43,16 @@ theorem monicOrtho_aeval_ne_zero_at_cutoff {N n : ℕ}
     refine lt_of_le_of_lt Polynomial.natDegree_mul_le ?_
     simp only [natDegree_X_sub_C]
     omega
-  have hpoly : conjQuadratic z * g * g = A * A + (z.im ^ 2) • (g * g) := by
+  have hpoly : conjQuadratic z * g * g = A * A + (z.im ^ (2 : ℕ)) • (g * g) := by
     simp only [conjQuadratic, A, Polynomial.smul_eq_C_mul]
     ring
   have hexp : momentInner s (monicOrtho s (n + 1)) g =
-      momentInner s A A + z.im ^ 2 * momentInner s g g := by
+      momentInner s A A + z.im ^ (2 : ℕ) * momentInner s g g := by
     rw [hQg, momentInner_def, hpoly, momentFunctional_add, momentFunctional_smul,
       momentInner_def, momentInner_def]
   have hApos : 0 < momentInner s A A := h.self_pos hAne hAN
   have hgpos : 0 < momentInner s g g := h.self_pos hgne hgN
-  have himpos : 0 < z.im ^ 2 := sq_pos_of_ne_zero hz
+  have himpos : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero hz
   rw [hexp] at hzero
   nlinarith
 
@@ -71,9 +71,9 @@ theorem monicOrtho_splits_at_cutoff {N n : ℕ}
 
 theorem monicOrtho_not_sq_dvd_at_cutoff {N n : ℕ}
     (h : PositiveMomentFormBelow s N) (hnN : n + 1 ≤ N) (r : ℝ) :
-    ¬ (((X - C r) ^ 2 : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
+    ¬ (((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
   rintro ⟨g, hg⟩
-  have hsqne : ((X - C r) ^ 2 : Polynomial ℝ) ≠ 0 :=
+  have hsqne : ((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ≠ 0 :=
     pow_ne_zero 2 (X_sub_C_ne_zero r)
   have hgne : g ≠ 0 := by
     intro h0

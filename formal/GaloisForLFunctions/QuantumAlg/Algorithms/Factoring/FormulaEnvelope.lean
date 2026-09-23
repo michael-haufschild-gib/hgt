@@ -222,16 +222,16 @@ def modulusBits : ℕ := 2048
 formula envelope [GE19, main.tex:78, 211-216]. -/
 def logModulusBitsUpperBound : ℕ := 11
 
-/-- GE19 RSA-2048 logical-qubit baseline `6.19 * 10^3`, stored as an integer
+/-- GE19 RSA-2048 logical-qubit baseline `6.19 * 10^(3 : ℕ)`, stored as an integer
 count for the terminal RSA-2048 resource profile [GE19, main.tex:78, 211-216]. -/
 def logicalQubits : ℕ := 6190
 
-/-- GE19 RSA-2048 Toffoli baseline `2.7 * 10^9`, stored as an integer count.
+/-- GE19 RSA-2048 Toffoli baseline `2.7 * 10^(9 : ℕ)`, stored as an integer count.
 GE19 records that this count is not adjusted for retry chance [GE19,
 main.tex:211-216, 1785-1788]. -/
 def toffoliGates : ℕ := 2700000000
 
-/-- GE19 RSA-2048 maximal circuit-depth baseline `2.14 * 10^9`, stored as an
+/-- GE19 RSA-2048 maximal circuit-depth baseline `2.14 * 10^(9 : ℕ)`, stored as an
 integer count by evaluating the abstract depth formula at `n = 2048` [GE19,
 main.tex:78, 211-216]. -/
 def circuitDepth : ℕ := 2140000000

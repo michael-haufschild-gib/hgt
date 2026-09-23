@@ -26,11 +26,11 @@ def mobiusDivisorMixedCoarea (M : ℕ) (P : Finset ℕ) : ℝ :=
 
 /-- Exact square reserve of the unprocessed active late-prime source atoms. -/
 def mobiusDivisorRemainingLateEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  ∑ p ∈ mobiusDivisorActiveLatePrimes M \ P, (mobiusDivisorDilationChannel M p)^2
+  ∑ p ∈ mobiusDivisorActiveLatePrimes M \ P, (mobiusDivisorDilationChannel M p)^(2 : ℕ)
 
 /-- Head-weighted mixed conditional energy plus the head and late squares at their actual sizes. -/
 def mobiusDivisorCorrectedCoareaAction (M : ℕ) (P : Finset ℕ) : ℝ :=
-  (mobiusDivisorSelectionFibre M P ∅)^2 +
+  (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) +
     mobiusDivisorFibreAbsoluteMass M P ∅ * mobiusDivisorMixedCoarea M P +
     mobiusDivisorRemainingLateEnergy M P
 
@@ -54,11 +54,11 @@ private lemma sum_nonempty_split (M : ℕ) (P : Finset ℕ) (f : Finset ℕ → 
 /-- Subtracting isolated late mass leaves exactly the mixed-label conditional energy. -/
 theorem mobiusDivisorMixedCoarea_eq_sum (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorMixedCoarea M P = ∑ R ∈ mobiusDivisorMixedCoareaLabels M P,
-      (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R := by
+      (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R := by
   have h := sum_nonempty_split M P (fun R =>
-    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R)
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R)
   have hl : (∑ p ∈ mobiusDivisorActiveLatePrimes M \ P,
-      (mobiusDivisorSelectionFibre M P {p})^2 / mobiusDivisorFibreAbsoluteMass M P {p}) =
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P {p}) =
       mobiusDivisorRemainingLateMass M P :=
     sum_congr rfl (fun p hp => mobiusDivisorCoarea_activeLate_singleton
       (mem_sdiff.mp hp).1 P (mem_sdiff.mp hp).2)
@@ -83,23 +83,23 @@ theorem mobiusDivisorCorrectedCoareaAction_eq_correction (M : ℕ) (P : Finset �
 
 /-- Raw energy separates into the head square, exact late squares, and mixed-label squares. -/
 theorem mobiusDivisorSelectionEnergy_eq_late_mixed (M : ℕ) (P : Finset ℕ) :
-    mobiusDivisorSelectionEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^2 +
+    mobiusDivisorSelectionEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) +
       mobiusDivisorRemainingLateEnergy M P +
-      ∑ R ∈ mobiusDivisorMixedCoareaLabels M P, (mobiusDivisorSelectionFibre M P R)^2 := by
-  have h := sum_nonempty_split M P (fun R => (mobiusDivisorSelectionFibre M P R)^2)
+      ∑ R ∈ mobiusDivisorMixedCoareaLabels M P, (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) := by
+  have h := sum_nonempty_split M P (fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ))
   have hl : (∑ p ∈ mobiusDivisorActiveLatePrimes M \ P,
-      (mobiusDivisorSelectionFibre M P {p})^2) = mobiusDivisorRemainingLateEnergy M P := by
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ)) = mobiusDivisorRemainingLateEnergy M P := by
     apply sum_congr rfl
     intro p hp
     have hpr := mem_mobiusDivisorActiveLatePrimes (mem_sdiff.mp hp).1
     rw [mobiusDivisorSelectionFibre_late_prime hpr.1 hpr.2.1 hpr.2.2 P {p}
       (mem_sdiff.mp hp).2 (mem_singleton_self p),if_pos rfl]
   have hh := sum_erase_add (s := (mobiusDivisorSelectionPrimes M).powerset)
-    (f := fun R => (mobiusDivisorSelectionFibre M P R)^2)
+    (f := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ))
     (by simp : (∅:Finset ℕ) ∈ (mobiusDivisorSelectionPrimes M).powerset)
   rw [hl] at h
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2) = _
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) = _
   linarith only [h,hh]
 
 /-- Mixed-cell head dominance suffices for corrected coarea to bound the full raw energy. -/
@@ -108,8 +108,8 @@ theorem mobiusDivisorSelectionEnergy_le_correctedCoareaAction (M : ℕ) (P : Fin
       mobiusDivisorFibreAbsoluteMass M P R ≤ mobiusDivisorFibreAbsoluteMass M P ∅) :
     mobiusDivisorSelectionEnergy M P ≤ mobiusDivisorCorrectedCoareaAction M P := by
   have hpoint (R : Finset ℕ) (hR : R ∈ mobiusDivisorMixedCoareaLabels M P) :
-      (mobiusDivisorSelectionFibre M P R)^2 ≤ mobiusDivisorFibreAbsoluteMass M P ∅ *
-        ((mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R) := by
+      (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) ≤ mobiusDivisorFibreAbsoluteMass M P ∅ *
+        ((mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R) := by
     by_cases hz : mobiusDivisorFibreAbsoluteMass M P R=0
     · have hf : mobiusDivisorSelectionFibre M P R=0 := by
         apply abs_eq_zero.mp
@@ -118,7 +118,7 @@ theorem mobiusDivisorSelectionEnergy_le_correctedCoareaAction (M : ℕ) (P : Fin
       simp [hf]
     · calc
         _ = mobiusDivisorFibreAbsoluteMass M P R *
-            ((mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R) := by
+            ((mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R) := by
               field_simp
         _ ≤ _ := mul_le_mul_of_nonneg_right (hdom R hR)
           (div_nonneg (sq_nonneg _) (mobiusDivisorFibreAbsoluteMass_nonneg M P R))
@@ -130,7 +130,7 @@ theorem mobiusDivisorSelectionEnergy_le_correctedCoareaAction (M : ℕ) (P : Fin
 
 /-- The restored late diagonal always has the corpus quadratic source ceiling. -/
 theorem mobiusDivisorRemainingLateEnergy_le_quadratic (M : ℕ) (P : Finset ℕ) :
-    mobiusDivisorRemainingLateEnergy M P ≤ 722*(M:ℝ)^2 := by
+    mobiusDivisorRemainingLateEnergy M P ≤ 722*(M:ℝ)^(2 : ℕ) := by
   have hsub : mobiusDivisorActiveLatePrimes M \ P ⊆ Icc 1 M := by
     intro p hp
     have h := mem_mobiusDivisorActiveLatePrimes (mem_sdiff.mp hp).1
@@ -180,8 +180,8 @@ theorem mobiusDivisorCorrectedCoareaAction_late_block (M : ℕ) (P L : Finset �
     mobiusDivisorCorrectedCoareaAction M (P ∪ L)-mobiusDivisorCorrectedCoareaAction M P =
       (∑ p ∈ L, |mobiusDivisorDilationChannel M p|) *
         (mobiusDivisorMixedCoarea M P-2*mobiusDivisorSelectionFibre M P ∅) +
-      (∑ p ∈ L, |mobiusDivisorDilationChannel M p|)^2 -
-      ∑ p ∈ L, (mobiusDivisorDilationChannel M p)^2 := by
+      (∑ p ∈ L, |mobiusDivisorDilationChannel M p|)^(2 : ℕ) -
+      ∑ p ∈ L, (mobiusDivisorDilationChannel M p)^(2 : ℕ) := by
   induction L using Finset.induction_on with
   | empty => simp
   | @insert p L hpL ih =>

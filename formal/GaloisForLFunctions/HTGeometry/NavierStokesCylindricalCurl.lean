@@ -58,15 +58,15 @@ theorem radialInverse_differentiableAt {x : Point} (hx : x 0 ≠ 0) :
 
 /-- Only the radial derivative of `R⁻¹` is nonzero. -/
 theorem coordDeriv_radialInverse {x : Point} (hx : x 0 ≠ 0) (i : Fin 3) :
-    coordDeriv i radialInverse x = if i = 0 then -(radialInverse x) ^ 2 else 0 := by
+    coordDeriv i radialInverse x = if i = 0 then -(radialInverse x) ^ (2 : ℕ) else 0 := by
   have hbase : ContDiffAt ℝ 2 radialCoordinate x := radialCoordinate_contDiff.contDiffAt
   have hinv := ScalarTwoJet.ofField_inv hbase (by simpa [radialCoordinate])
   have h := congrArg (fun J : ScalarTwoJet (Fin 3) ℂ => J.first i) hinv
   change coordDeriv i (fun y => (radialCoordinate y)⁻¹) x =
-    -(radialCoordinate x)⁻¹ ^ 2 * coordDeriv i radialCoordinate x at h
+    -(radialCoordinate x)⁻¹ ^ (2 : ℕ) * coordDeriv i radialCoordinate x at h
   rw [coordDeriv_radialCoordinate] at h
   change coordDeriv i (fun y => (radialCoordinate y)⁻¹) x =
-    if i = 0 then -((radialCoordinate x)⁻¹) ^ 2 else 0
+    if i = 0 then -((radialCoordinate x)⁻¹) ^ (2 : ℕ) else 0
   by_cases hi : i = 0
   · simpa [hi] using h
   · simpa [hi] using h

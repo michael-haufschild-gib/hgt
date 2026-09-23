@@ -37,7 +37,7 @@ theorem amplitude_norm_summable (u : ℂ) {y : ℝ} (hy : 0 < y) :
 
 /-- The opposite-frequency amplitude squares are also absolutely summable. -/
 theorem amplitude_sq_norm_summable (u : ℂ) {y : ℝ} (hy : 0 < y) :
-    Summable (fun N => ‖amplitude u y N^2‖) := by
+    Summable (fun N => ‖amplitude u y N^(2 : ℕ)‖) := by
   have h := (amplitude_norm_summable u hy).mul_norm (amplitude_norm_summable u hy)
   have hd := h.comp_injective (i := fun N : ℕ => (N,N)) (by
     intro a b hab
@@ -75,17 +75,17 @@ theorem mean_tail (u : ℂ) {y : ℝ} (hy : 0 < y) :
 /-- The full complex square retains exactly the paired opposite-frequency source.
 No modulus square or positivity hypothesis replaces this phase-sensitive coefficient. -/
 theorem mean_tail_sq (u : ℂ) {y : ℝ} (hy : 0 < y) :
-    mean (fun x => tail u ![x,y] ^2) = 8*∑' N, amplitude u y N^2 := by
+    mean (fun x => tail u ![x,y] ^(2 : ℕ)) = 8*∑' N, amplitude u y N^(2 : ℕ) := by
   simp_rw [tail_eq_series u hy,mul_pow]
-  change (∫ x in Ioc (-1/2:ℝ) (1/2), (2:ℂ)^2*series (amplitude u y) x^2)=_
+  change (∫ x in Ioc (-1/2:ℝ) (1/2), (2:ℂ)^(2 : ℕ)*series (amplitude u y) x^(2 : ℕ))=_
   rw [integral_const_mul]
-  change (2:ℂ)^2*mean (fun x => series (amplitude u y) x^2)=_
+  change (2:ℂ)^(2 : ℕ)*mean (fun x => series (amplitude u y) x^(2 : ℕ))=_
   rw [mean_series_sq _ (amplitude_norm_summable u hy)]
   ring
 
 /-- The full squared-source remainder has an exact convergent constant Fourier coefficient. -/
 theorem mean_squareRemainder (u : ℂ) {y : ℝ} (hy : 0 < y) :
-    mean (fun x => squareRemainder u ![x,y]) = 8*∑' N, amplitude u y N^2 := by
+    mean (fun x => squareRemainder u ![x,y]) = 8*∑' N, amplitude u y N^(2 : ℕ) := by
   have ht : Continuous (fun x => tail u ![x,y]) := by
     have he : (fun x => tail u ![x,y]) = fun x => 2*series (amplitude u y) x :=
       funext (tail_eq_series u hy)
@@ -94,20 +94,20 @@ theorem mean_squareRemainder (u : ℂ) {y : ℝ} (hy : 0 < y) :
   simp_rw [squareRemainder_eq]
   simp only [← mul_assoc]
   change (∫ x in Ioc (-1/2:ℝ) (1/2),
-    (2*principal u ![0,y])*tail u ![x,y]+tail u ![x,y] ^2)=_
+    (2*principal u ![0,y])*tail u ![x,y]+tail u ![x,y] ^(2 : ℕ))=_
   have h1 : IntegrableOn (fun x => (2*principal u ![0,y])*tail u ![x,y])
       (Ioc (-1/2:ℝ) (1/2)) := (continuous_const.mul ht).integrableOn_Ioc
-  have h2 : IntegrableOn (fun x => tail u ![x,y] ^2) (Ioc (-1/2:ℝ) (1/2)) :=
+  have h2 : IntegrableOn (fun x => tail u ![x,y] ^(2 : ℕ)) (Ioc (-1/2:ℝ) (1/2)) :=
     (ht.pow 2).integrableOn_Ioc
   rw [integral_add h1 h2,integral_const_mul]
   change (2*principal u ![0,y])*mean (fun x => tail u ![x,y])+
-    mean (fun x => tail u ![x,y] ^2)=_
+    mean (fun x => tail u ![x,y] ^(2 : ℕ))=_
   rw [mean_tail u hy,mul_zero,zero_add,mean_tail_sq u hy]
 
 /-- The actual admitted full forcing sees the opposite-frequency sum above its cutoff. -/
 theorem mean_forcing_high (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 3 < y) :
     mean (fun x => forcing q branch ![x,y]) =
-      4*parameter q branch*∑' N, amplitude (center q) y N^2 := by
+      4*parameter q branch*∑' N, amplitude (center q) y N^(2 : ℕ) := by
   have hh (x : ℝ) := forcing_high q branch ![x,y] hy
   simp_rw [hh]
   change (∫ x in Ioc (-1/2:ℝ) (1/2),

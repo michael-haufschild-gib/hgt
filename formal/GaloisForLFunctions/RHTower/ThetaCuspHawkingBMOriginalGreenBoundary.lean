@@ -70,7 +70,7 @@ private theorem angularLap_partial {f : F} {x : P} (hf : ContDiffAt ℝ ∞ f x)
   have hY := hYs.differentiable (by simp) x
   have h2 := (smooth_partial (smooth_partial hf 2) 2).differentiableAt (by simp)
   have h3 := (smooth_partial (smooth_partial hf 3) 3).differentiableAt (by simp)
-  change coordDeriv i (fun z => (z 3:ℂ)^2*
+  change coordDeriv i (fun z => (z 3:ℂ)^(2 : ℕ)*
     (coordDeriv 2 (coordDeriv 2 f) z+coordDeriv 3 (coordDeriv 3 f) z)) x=_
   simp only [pow_two]
   have hYY : DifferentiableAt ℝ (fun z : P => (z 3:ℂ)*(z 3:ℂ)) x := hY.mul hY
@@ -109,9 +109,9 @@ theorem greenPair_partial {u v : F} {x : P} (hu : ContDiffAt ℝ ∞ u x)
   dsimp only [greenPair]
   ring
 
-def inverseSquare (x : P) : ℂ := 1/(x 1:ℂ)^2
+def inverseSquare (x : P) : ℂ := 1/(x 1:ℂ)^(2 : ℕ)
 def radialCoefficient (x : P) : ℂ := 1-inverseSquare x
-def weightDerivative (x : P) : ℂ := -2/(x 1:ℂ)^3
+def weightDerivative (x : P) : ℂ := -2/(x 1:ℂ)^(3 : ℕ)
 
 private theorem inverseSquare_smooth {x : P} (hr : x 1≠0) :
     ContDiffAt ℝ ∞ inverseSquare x := by
@@ -128,7 +128,7 @@ private theorem radialCoefficient_smooth {x : P} (hr : x 1≠0) :
 
 private theorem inverseSquare_partial {x : P} (hr : x 1≠0) (i : Fin 4) :
     coordDeriv i inverseSquare x=if i=1 then weightDerivative x else 0 := by
-  have hd : HasDerivAt (fun r : ℝ => 1/r^2) (-2/(x 1)^3) (x 1) := by
+  have hd : HasDerivAt (fun r : ℝ => 1/r^(2 : ℕ)) (-2/(x 1)^(3 : ℕ)) (x 1) := by
     have h := (hasDerivAt_const (x 1) (1:ℝ)).div
       ((hasDerivAt_id (x 1)).pow 2) (pow_ne_zero 2 hr)
     apply h.congr_deriv
@@ -138,7 +138,7 @@ private theorem inverseSquare_partial {x : P} (hr : x 1≠0) (i : Fin 4) :
   have hc := HasDerivAt.comp_hasFDerivAt (𝕜 := ℝ) (𝕜' := ℝ)
     (f := fun z : P => z 1) x hd (hasFDerivAt_apply 1 x)
   have h := Complex.ofRealCLM.hasFDerivAt.comp x hc
-  have he : inverseSquare=Complex.ofRealCLM ∘ ((fun r : ℝ => 1/r^2) ∘ (fun z : P => z 1)) := by
+  have he : inverseSquare=Complex.ofRealCLM ∘ ((fun r : ℝ => 1/r^(2 : ℕ)) ∘ (fun z : P => z 1)) := by
     funext z
     simp [inverseSquare,Function.comp_def]
   rw [he]
@@ -222,7 +222,7 @@ private theorem timeBoundary_partial {u v : F} {x : P} (hu : ContDiffAt ℝ ∞ 
 /-- All source parameter derivatives move to the two retained endpoint currents. -/
 theorem green_triple_boundary {u v : F} {x : P} (hu : ContDiffAt ℝ ∞ u x)
     (hv : ContDiffAt ℝ ∞ v x) (hr : x 1≠0) (j : Fin 2) :
-    1/(x 1:ℂ)^2*(((x 1:ℂ)^2-1)*greenPair (coordDeriv 1 u) (coordDeriv 1 v) j x+
+    1/(x 1:ℂ)^(2 : ℕ)*(((x 1:ℂ)^(2 : ℕ)-1)*greenPair (coordDeriv 1 u) (coordDeriv 1 v) j x+
       greenPair (coordDeriv 1 u) (coordDeriv 0 v) j x+
       greenPair (coordDeriv 0 u) (coordDeriv 1 v) j x)=
     coordDeriv 1 (radialBoundary u v j) x+coordDeriv 0 (timeBoundary u v j) x-

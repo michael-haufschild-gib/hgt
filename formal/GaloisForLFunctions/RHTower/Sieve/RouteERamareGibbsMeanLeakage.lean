@@ -43,7 +43,7 @@ theorem routeE_incidenceComplement_gibbs_le_tanhMeanLeakage
           (routeENormalizedWeightedCoefficient weight observable x *
             (starRingEnd ℂ) (routeENormalizedWeightedCoefficient weight observable y)).re ≤
       (|(∑ x, observable x) / (Fintype.card Ω : ℝ)| +
-        2 * Real.tanh (eta / 4)) ^ 2 := by
+        2 * Real.tanh (eta / 4)) ^ (2 : ℕ) := by
   classical
   let c : Ω → ℂ := routeENormalizedWeightedCoefficient weight observable
   let physicalMean := (∑ x, weight x * observable x) / (∑ x, weight x)
@@ -72,8 +72,8 @@ theorem routeE_incidenceComplement_gibbs_le_tanhMeanLeakage
       |physicalMean| ≤ |uniformMean| + |physicalMean - uniformMean| := by
         linarith [abs_sub_abs_le_abs_sub physicalMean uniformMean]
       _ ≤ _ := by linarith
-  have hsquare : physicalMean ^ 2 ≤
-      (|uniformMean| + 2 * Real.tanh (eta / 4)) ^ 2 := by
+  have hsquare : physicalMean ^ (2 : ℕ) ≤
+      (|uniformMean| + 2 * Real.tanh (eta / 4)) ^ (2 : ℕ) := by
     have hright : 0 ≤ |uniformMean| + 2 * Real.tanh (eta / 4) :=
       add_nonneg (abs_nonneg _) hdelta
     have hsquareAbs := (sq_le_sq₀ (abs_nonneg physicalMean) hright).2 habs
@@ -110,8 +110,8 @@ theorem routeE_productHistory_incidenceComplement_le_tanhMeanLeakage
                 (fun ω => routeEProductHistoryGibbsWeight X (history ω)) observable y)).re ≤
       (|(∑ x, observable x) / (Fintype.card Ω : ℝ)| +
         2 * Real.tanh
-          (((Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))) / 4)) ^ 2 := by
-  let eta := (Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))
+          (((Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) / 4)) ^ (2 : ℕ) := by
+  let eta := (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))
   have hXH : 0 < X - H := sub_pos.mpr hHX
   have heta : 0 ≤ eta := by
     dsimp [eta]

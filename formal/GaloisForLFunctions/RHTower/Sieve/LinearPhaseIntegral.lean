@@ -21,7 +21,7 @@ open MeasureTheory
 /-- The antiderivative of `t e^{itL}`. -/
 noncomputable def linPhaseAnti (L : ℝ) (t : ℝ) : ℂ :=
   (t : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I)
-    - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I) ^ 2
+    - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I) ^ (2 : ℕ)
 
 /-- **The antiderivative of a linear weight against a phase.** -/
 theorem hasDerivAt_linPhaseAnti (L : ℝ) (hL : L ≠ 0) (t : ℝ) :
@@ -42,21 +42,21 @@ theorem hasDerivAt_linPhaseAnti (L : ℝ) (hL : L ≠ 0) (t : ℝ) :
           / ((L : ℂ) * Complex.I)) t :=
     hprod.div_const _
   have h2 : HasDerivAt (fun s : ℝ =>
-      Complex.exp (((s * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I) ^ 2)
+      Complex.exp (((s * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I) ^ (2 : ℕ))
       (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
-        / ((L : ℂ) * Complex.I) ^ 2) t :=
+        / ((L : ℂ) * Complex.I) ^ (2 : ℕ)) t :=
     hE.div_const _
   have hd : HasDerivAt (linPhaseAnti L)
       ((((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
         + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)))
           / ((L : ℂ) * Complex.I)
         - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
-          / ((L : ℂ) * Complex.I) ^ 2) t := h1.sub h2
+          / ((L : ℂ) * Complex.I) ^ (2 : ℕ)) t := h1.sub h2
   have hval : (((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
         + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)))
           / ((L : ℂ) * Complex.I)
         - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
-          / ((L : ℂ) * Complex.I) ^ 2
+          / ((L : ℂ) * Complex.I) ^ (2 : ℕ)
       = (t : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) := by
     push_cast
     field_simp

@@ -20,16 +20,16 @@ noncomputable section
 /-- Seventh logarithmic derivative of the theta Born--Witten potential. -/
 def thetaCuspBornWittenLogSeventhDerivative (n : ℕ) (x : ℝ) : ℝ :=
   let q := thetaCuspBornWittenWeight n x
-  (2 * q + 3) * (64 - 96 / q ^ 2 - 8928 / q ^ 3 -
-    116640 / q ^ 4 - 505440 / q ^ 5 - 874800 / q ^ 6 -
-    524880 / q ^ 7)
+  (2 * q + 3) * (64 - 96 / q ^ (2 : ℕ) - 8928 / q ^ (3 : ℕ) -
+    116640 / q ^ (4 : ℕ) - 505440 / q ^ (5 : ℕ) - 874800 / q ^ (6 : ℕ) -
+    524880 / q ^ (7 : ℕ))
 
 /-- Eighth logarithmic derivative of the theta Born--Witten potential. -/
 def thetaCuspBornWittenLogEighthDerivative (n : ℕ) (x : ℝ) : ℝ :=
   let q := thetaCuspBornWittenWeight n x
-  (2 * q + 3) * (128 + 192 / q ^ 2 + 36288 / q ^ 3 +
-    780192 / q ^ 4 + 5443200 / q ^ 5 + 16329600 / q ^ 6 +
-    22044960 / q ^ 7 + 11022480 / q ^ 8)
+  (2 * q + 3) * (128 + 192 / q ^ (2 : ℕ) + 36288 / q ^ (3 : ℕ) +
+    780192 / q ^ (4 : ℕ) + 5443200 / q ^ (5 : ℕ) + 16329600 / q ^ (6 : ℕ) +
+    22044960 / q ^ (7 : ℕ) + 11022480 / q ^ (8 : ℕ))
 
 /-- Differentiating the sixth readout profile produces the literal seventh potential jet. -/
 theorem hasDerivAt_thetaCuspBornWittenLogSixthDerivative
@@ -65,9 +65,9 @@ theorem hasDerivAt_thetaCuspBornWittenLogSixthDerivative
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one] at hrq2 hrq3 hrq4
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff] at hrq5 hrq6 hrq7
   have hprofile : HasDerivAt
-      (fun y : ℝ => 32 * r y + 48 * r y / q y ^ 2 +
-        2160 * r y / q y ^ 3 + 16200 * r y / q y ^ 4 +
-        38880 * r y / q y ^ 5 + 29160 * r y / q y ^ 6)
+      (fun y : ℝ => 32 * r y + 48 * r y / q y ^ (2 : ℕ) +
+        2160 * r y / q y ^ (3 : ℕ) + 16200 * r y / q y ^ (4 : ℕ) +
+        38880 * r y / q y ^ (5 : ℕ) + 29160 * r y / q y ^ (6 : ℕ))
       (thetaCuspBornWittenLogSeventhDerivative n x) x := by
     simpa only [Pi.add_apply, Pi.div_apply, Pi.pow_apply, mul_div_assoc] using!
       ((((((hr.const_mul 32).add (hrq2.const_mul 48)).add
@@ -119,10 +119,10 @@ theorem hasDerivAt_thetaCuspBornWittenLogSeventhDerivative
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one] at hrq2 hrq3 hrq4
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff] at hrq5 hrq6 hrq7 hrq8
   have hprofile : HasDerivAt
-      (fun y : ℝ => 64 * r y - 96 * r y / q y ^ 2 -
-        8928 * r y / q y ^ 3 - 116640 * r y / q y ^ 4 -
-        505440 * r y / q y ^ 5 - 874800 * r y / q y ^ 6 -
-        524880 * r y / q y ^ 7)
+      (fun y : ℝ => 64 * r y - 96 * r y / q y ^ (2 : ℕ) -
+        8928 * r y / q y ^ (3 : ℕ) - 116640 * r y / q y ^ (4 : ℕ) -
+        505440 * r y / q y ^ (5 : ℕ) - 874800 * r y / q y ^ (6 : ℕ) -
+        524880 * r y / q y ^ (7 : ℕ))
       (thetaCuspBornWittenLogEighthDerivative n x) x := by
     simpa only [Pi.add_apply, Pi.sub_apply, Pi.div_apply, Pi.pow_apply,
       mul_div_assoc] using!
@@ -156,8 +156,8 @@ def thetaCuspBornWittenReflectionEighthHankelCurvature
   let B := thetaCuspBornWittenLogFourthDerivative n x
   let C := thetaCuspBornWittenLogSixthDerivative n x
   let D := thetaCuspBornWittenLogEighthDerivative n x
-  768 * A ^ 6 - 1344 * A ^ 4 * B + 304 * A ^ 2 * B ^ 2 -
-    68 * B ^ 3 + 128 * A ^ 3 * C - 4 * A ^ 2 * D + B * D - C ^ 2
+  768 * A ^ (6 : ℕ) - 1344 * A ^ (4 : ℕ) * B + 304 * A ^ (2 : ℕ) * B ^ (2 : ℕ) -
+    68 * B ^ (3 : ℕ) + 128 * A ^ (3 : ℕ) * C - 4 * A ^ (2 : ℕ) * D + B * D - C ^ (2 : ℕ)
 
 /-- Every positive theta atom has strictly positive rank-three order-eight source curvature. -/
 theorem thetaCuspBornWittenReflectionEighthHankelCurvature_pos
@@ -171,24 +171,24 @@ theorem thetaCuspBornWittenReflectionEighthHankelCurvature_pos
   have hy : 0 ≤ y := by
     dsimp only [y]
     linarith
-  let A := 4 * q + 6 + 6 / q + 9 / q ^ 2
+  let A := 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)
   let B := (2 * q + 3) *
-    (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)
+    (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))
   let C := (2 * q + 3) *
-    (32 + 48 / q ^ 2 + 2160 / q ^ 3 + 16200 / q ^ 4 +
-      38880 / q ^ 5 + 29160 / q ^ 6)
+    (32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) + 16200 / q ^ (4 : ℕ) +
+      38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ))
   let D := (2 * q + 3) *
-    (128 + 192 / q ^ 2 + 36288 / q ^ 3 + 780192 / q ^ 4 +
-      5443200 / q ^ 5 + 16329600 / q ^ 6 + 22044960 / q ^ 7 +
-      11022480 / q ^ 8)
-  have hpow : 0 < q ^ 16 := pow_pos hq0 16
-  have hcleared : 0 < q ^ 16 *
+    (128 + 192 / q ^ (2 : ℕ) + 36288 / q ^ (3 : ℕ) + 780192 / q ^ (4 : ℕ) +
+      5443200 / q ^ (5 : ℕ) + 16329600 / q ^ (6 : ℕ) + 22044960 / q ^ (7 : ℕ) +
+      11022480 / q ^ (8 : ℕ))
+  have hpow : 0 < q ^ (16 : ℕ) := pow_pos hq0 16
+  have hcleared : 0 < q ^ (16 : ℕ) *
       thetaCuspBornWittenReflectionEighthHankelCurvature n x := by
     simp only [thetaCuspBornWittenReflectionEighthHankelCurvature]
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
-    change 0 < q ^ 16 *
-      (768 * A ^ 6 - 1344 * A ^ 4 * B + 304 * A ^ 2 * B ^ 2 -
-        68 * B ^ 3 + 128 * A ^ 3 * C - 4 * A ^ 2 * D + B * D - C ^ 2)
+    change 0 < q ^ (16 : ℕ) *
+      (768 * A ^ (6 : ℕ) - 1344 * A ^ (4 : ℕ) * B + 304 * A ^ (2 : ℕ) * B ^ (2 : ℕ) -
+        68 * B ^ (3 : ℕ) + 128 * A ^ (3 : ℕ) * C - 4 * A ^ (2 : ℕ) * D + B * D - C ^ (2 : ℕ))
     dsimp only [A, B, C, D]
     field_simp [hq0.ne']
     rw [show q = 3 / 2 + y by dsimp only [y]; ring]
@@ -199,7 +199,7 @@ theorem thetaCuspBornWittenReflectionEighthHankelCurvature_pos
 /-- Hypothesis-free square-parameter form of single-atom order-eight positivity. -/
 theorem thetaCuspBornWittenReflectionEighthHankelCurvature_natSucc_sq_pos
     (n : ℕ) (x : ℝ) :
-    0 < thetaCuspBornWittenReflectionEighthHankelCurvature (n + 1) (x ^ 2) := by
+    0 < thetaCuspBornWittenReflectionEighthHankelCurvature (n + 1) (x ^ (2 : ℕ)) := by
   exact thetaCuspBornWittenReflectionEighthHankelCurvature_pos
     (by omega) (sq_nonneg x)
 

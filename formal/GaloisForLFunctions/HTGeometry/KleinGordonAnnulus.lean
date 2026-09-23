@@ -151,16 +151,16 @@ theorem kgFieldEnergyT_annulus_split (hw : ∀ r : ℝ, Measurable (w r)) (hb0 :
     (hWs : ∀ x : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
-        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
+    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
       = (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
         + (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2) := by
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)) := by
   obtain ⟨hsum, hin, hout⟩ := kgFieldStateT_annulus_decouple hw hb0 hwb hWs R₁ R₂ g h t
   rw [kgFieldEnergyT_eq_norm_sq, kgFieldEnergyT_eq_norm_sq, kgFieldEnergyT_eq_norm_sq, hsum]
   exact norm_kgEnergy_add_sq (kgAnnulusOp_inner R₁ R₂) hin hout

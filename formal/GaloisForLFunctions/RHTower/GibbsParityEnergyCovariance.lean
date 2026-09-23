@@ -67,13 +67,13 @@ noncomputable def gibbsParityEnergyCovarianceNumerator (S : Finset ℕ) (x : ℝ
 
 /-- Normalized covariance between configuration parity and multiplicative energy. -/
 noncomputable def gibbsParityEnergyCovariance (S : Finset ℕ) (x : ℝ) : ℝ :=
-  gibbsParityEnergyCovarianceNumerator S x / (gibbsDiag S x 1) ^ 2
+  gibbsParityEnergyCovarianceNumerator S x / (gibbsDiag S x 1) ^ (2 : ℕ)
 
 /-- The derivative of the normalized parity current is minus parity--energy covariance. -/
 theorem hasDerivAt_normalized_gibbs_current (S : Finset ℕ) (x : ℝ) :
     HasDerivAt
       (fun y => gibbsDiag S y (-1) / gibbsDiag S y 1)
-      (-gibbsParityEnergyCovarianceNumerator S x / (gibbsDiag S x 1) ^ 2) x := by
+      (-gibbsParityEnergyCovarianceNumerator S x / (gibbsDiag S x 1) ^ (2 : ℕ)) x := by
   have hJ := hasDerivAt_gibbsDiag_energy S x (-1)
   have hZ := hasDerivAt_gibbsDiag_energy S x 1
   have hZne : gibbsDiag S x 1 ≠ 0 := ne_of_gt (gibbs_partition_pos S x)
@@ -81,8 +81,8 @@ theorem hasDerivAt_normalized_gibbs_current (S : Finset ℕ) (x : ℝ) :
   have hvalue :
       (-gibbsEnergyMoment S x (-1) * gibbsDiag S x 1 -
           gibbsDiag S x (-1) * (-gibbsEnergyMoment S x 1)) /
-          gibbsDiag S x 1 ^ 2 =
-        -gibbsParityEnergyCovarianceNumerator S x / gibbsDiag S x 1 ^ 2 := by
+          gibbsDiag S x 1 ^ (2 : ℕ) =
+        -gibbsParityEnergyCovarianceNumerator S x / gibbsDiag S x 1 ^ (2 : ℕ) := by
     unfold gibbsParityEnergyCovarianceNumerator
     ring
   rw [hvalue] at hquot
@@ -117,8 +117,8 @@ theorem integral_neg_covariance_eq_normalized_current_sub (S : Finset ℕ) (a b 
     intro t _
     have h := hasDerivAt_normalized_gibbs_current S t
     have hvalue :
-        -gibbsParityEnergyCovarianceNumerator S t / gibbsDiag S t 1 ^ 2 =
-          -(gibbsParityEnergyCovarianceNumerator S t / gibbsDiag S t 1 ^ 2) := by
+        -gibbsParityEnergyCovarianceNumerator S t / gibbsDiag S t 1 ^ (2 : ℕ) =
+          -(gibbsParityEnergyCovarianceNumerator S t / gibbsDiag S t 1 ^ (2 : ℕ)) := by
       ring
     rw [hvalue] at h
     simpa only [gibbsParityEnergyCovariance] using h

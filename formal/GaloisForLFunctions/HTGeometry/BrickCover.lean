@@ -115,7 +115,7 @@ theorem dist_le_of_mem_brick {k : ℕ} {δ : ℝ} (hδ : 0 < δ) {s : Fin (k + 1
     have := one_sub_two_brickHalf k
     have := brickShift_pos k
     linarith
-  have hcoord : ∀ i, dist (x i) (y i) ^ 2 ≤ δ ^ 2 := by
+  have hcoord : ∀ i, dist (x i) (y i) ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by
     intro i
     have h1 := hx i
     have h2 := hy i
@@ -126,11 +126,11 @@ theorem dist_le_of_mem_brick {k : ℕ} {δ : ℝ} (hδ : 0 < δ) {s : Fin (k + 1
     rw [Real.dist_eq]
     nlinarith [abs_nonneg (x i - y i)]
   rw [EuclideanSpace.dist_eq]
-  have hsum : ∑ i : Fin k, dist (x i) (y i) ^ 2 ≤ (k : ℝ) * δ ^ 2 := by
-    calc ∑ i : Fin k, dist (x i) (y i) ^ 2 ≤ ∑ _i : Fin k, δ ^ 2 :=
+  have hsum : ∑ i : Fin k, dist (x i) (y i) ^ (2 : ℕ) ≤ (k : ℝ) * δ ^ (2 : ℕ) := by
+    calc ∑ i : Fin k, dist (x i) (y i) ^ (2 : ℕ) ≤ ∑ _i : Fin k, δ ^ (2 : ℕ) :=
           Finset.sum_le_sum fun i _ => hcoord i
-      _ = (k : ℝ) * δ ^ 2 := by simp
-  calc Real.sqrt (∑ i : Fin k, dist (x i) (y i) ^ 2) ≤ Real.sqrt ((k : ℝ) * δ ^ 2) :=
+      _ = (k : ℝ) * δ ^ (2 : ℕ) := by simp
+  calc Real.sqrt (∑ i : Fin k, dist (x i) (y i) ^ (2 : ℕ)) ≤ Real.sqrt ((k : ℝ) * δ ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hsum
     _ = Real.sqrt k * δ := by
         rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hδ.le]

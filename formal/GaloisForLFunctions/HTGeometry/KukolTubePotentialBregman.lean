@@ -20,7 +20,7 @@ variable {E ι : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 theorem kukolTubeMargin_increment (v : KukolLightCone E) (r s : ℝ) (z u w : E) :
     kukolTubeMargin v r s z w = kukolTubeMargin v r s z u-
       2*inner ℝ (kukolOrbitCoefficient r v.1 • u-kukolOrbitDrift r v.1 v.2.2 z) (w-u)-
-      kukolOrbitCoefficient r v.1*‖w-u‖^2 := by
+      kukolOrbitCoefficient r v.1*‖w-u‖^(2 : ℕ) := by
   simp only [kukolTubeMargin_quadratic,← real_inner_self_eq_norm_sq,
     inner_sub_left,inner_sub_right,inner_smul_left,RCLike.conj_to_real,real_inner_comm w u]
   ring
@@ -30,21 +30,21 @@ theorem kukolTubeReciprocal_bregman_identity (v : KukolLightCone E) (r s : ℝ) 
     (u w : {u : E | 0 < kukolTubeMargin v r s z u}) :
     1/kukolTubeMargin v r s z w-1/kukolTubeMargin v r s z u-
       2*inner ℝ (kukolTubeForceComponent v r s z u) (w.val-u.val) =
-      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)^2/
-        ((kukolTubeMargin v r s z u)^2*kukolTubeMargin v r s z w)+
-      kukolOrbitCoefficient r v.1*‖w.val-u.val‖^2/(kukolTubeMargin v r s z u)^2 := by
+      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)^(2 : ℕ)/
+        ((kukolTubeMargin v r s z u)^(2 : ℕ)*kukolTubeMargin v r s z w)+
+      kukolOrbitCoefficient r v.1*‖w.val-u.val‖^(2 : ℕ)/(kukolTubeMargin v r s z u)^(2 : ℕ) := by
   have hu : kukolTubeMargin v r s z u ≠ 0 := (show 0 < kukolTubeMargin v r s z u from u.property).ne'
   have hw : kukolTubeMargin v r s z w ≠ 0 := (show 0 < kukolTubeMargin v r s z w from w.property).ne'
   have hid : 1/kukolTubeMargin v r s z w-1/kukolTubeMargin v r s z u+
-      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)/(kukolTubeMargin v r s z u)^2 =
-      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)^2/
-        ((kukolTubeMargin v r s z u)^2*kukolTubeMargin v r s z w) := by
+      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)/(kukolTubeMargin v r s z u)^(2 : ℕ) =
+      (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)^(2 : ℕ)/
+        ((kukolTubeMargin v r s z u)^(2 : ℕ)*kukolTubeMargin v r s z w) := by
     field_simp
     ring
   have hinc := kukolTubeMargin_increment v r s z u.val w.val
-  have hlin : (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)/(kukolTubeMargin v r s z u)^2 =
+  have hlin : (kukolTubeMargin v r s z w-kukolTubeMargin v r s z u)/(kukolTubeMargin v r s z u)^(2 : ℕ) =
       -2*inner ℝ (kukolTubeForceComponent v r s z u) (w.val-u.val)-
-      kukolOrbitCoefficient r v.1*‖w.val-u.val‖^2/(kukolTubeMargin v r s z u)^2 := by
+      kukolOrbitCoefficient r v.1*‖w.val-u.val‖^(2 : ℕ)/(kukolTubeMargin v r s z u)^(2 : ℕ) := by
     conv_lhs => rw [hinc]
     simp only [kukolTubeForceComponent,inner_smul_left,RCLike.conj_to_real]
     ring
@@ -54,12 +54,12 @@ variable [Fintype ι]
 
 /-- A positive, explicit curvature modulus at each admissible parameter. -/
 def kukolTubeCurvature (v : ι → KukolLightCone E) (r s : ι → ℝ) (z : ι → E) (u : E) : ℝ :=
-  ∑ i,kukolOrbitCoefficient (r i) (v i).1/(kukolTubeMargin (v i) (r i) (s i) (z i) u)^2
+  ∑ i,kukolOrbitCoefficient (r i) (v i).1/(kukolTubeMargin (v i) (r i) (s i) (z i) u)^(2 : ℕ)
 
 theorem kukolTubeCurvature_pos (v : ι → KukolLightCone E) (r s : ι → ℝ) (z : ι → E)
     (anchor : ι) (u : kukolTubeDomain v r s z) : 0 < kukolTubeCurvature v r s z u := by
   have hp (i : ι) : 0 < kukolOrbitCoefficient (r i) (v i).1/
-      (kukolTubeMargin (v i) (r i) (s i) (z i) u)^2 :=
+      (kukolTubeMargin (v i) (r i) (s i) (z i) u)^(2 : ℕ) :=
     div_pos (kukolOrbitCoefficient_pos _ _) (sq_pos_of_pos (u.property i))
   exact (hp anchor).trans_le (Finset.single_le_sum (fun i _ => (hp i).le) (Finset.mem_univ anchor))
 
@@ -67,16 +67,16 @@ theorem kukolTubeCurvature_pos (v : ι → KukolLightCone E) (r s : ι → ℝ) 
 theorem kukolTubePotential_quadratic_support (v : ι → KukolLightCone E) (r s : ι → ℝ) (z : ι → E)
     (u w : kukolTubeDomain v r s z) :
     kukolTubePotential v r s z u+2*inner ℝ (kukolTubeForce v r s z u) (w.val-u.val)+
-      kukolTubeCurvature v r s z u*‖w.val-u.val‖^2 ≤ kukolTubePotential v r s z w := by
+      kukolTubeCurvature v r s z u*‖w.val-u.val‖^(2 : ℕ) ≤ kukolTubePotential v r s z w := by
   have hterm (i : ι) : 1/kukolTubeMargin (v i) (r i) (s i) (z i) u+
       2*inner ℝ (kukolTubeForceComponent (v i) (r i) (s i) (z i) u) (w.val-u.val)+
-      (kukolOrbitCoefficient (r i) (v i).1/(kukolTubeMargin (v i) (r i) (s i) (z i) u)^2)*
-        ‖w.val-u.val‖^2 ≤ 1/kukolTubeMargin (v i) (r i) (s i) (z i) w := by
+      (kukolOrbitCoefficient (r i) (v i).1/(kukolTubeMargin (v i) (r i) (s i) (z i) u)^(2 : ℕ))*
+        ‖w.val-u.val‖^(2 : ℕ) ≤ 1/kukolTubeMargin (v i) (r i) (s i) (z i) w := by
     have h := kukolTubeReciprocal_bregman_identity (v i) (r i) (s i) (z i)
       ⟨u.val,u.property i⟩ ⟨w.val,w.property i⟩
     have hp : 0 ≤ (kukolTubeMargin (v i) (r i) (s i) (z i) w-
-        kukolTubeMargin (v i) (r i) (s i) (z i) u)^2 /
-        ((kukolTubeMargin (v i) (r i) (s i) (z i) u)^2*
+        kukolTubeMargin (v i) (r i) (s i) (z i) u)^(2 : ℕ) /
+        ((kukolTubeMargin (v i) (r i) (s i) (z i) u)^(2 : ℕ)*
           kukolTubeMargin (v i) (r i) (s i) (z i) w) :=
       div_nonneg (sq_nonneg _) (mul_pos (sq_pos_of_pos (u.property i)) (w.property i)).le
     rw [mul_div_right_comm] at h
@@ -88,7 +88,7 @@ theorem kukolTubePotential_quadratic_support (v : ι → KukolLightCone E) (r s 
 /-- The force is quantitatively strictly monotone throughout the whole admissible domain. -/
 theorem kukolTubeForce_strong_monotonicity (v : ι → KukolLightCone E) (r s : ι → ℝ) (z : ι → E)
     (u w : kukolTubeDomain v r s z) :
-    (kukolTubeCurvature v r s z u+kukolTubeCurvature v r s z w)*‖w.val-u.val‖^2 ≤
+    (kukolTubeCurvature v r s z u+kukolTubeCurvature v r s z w)*‖w.val-u.val‖^(2 : ℕ) ≤
       2*inner ℝ (kukolTubeForce v r s z w-kukolTubeForce v r s z u) (w.val-u.val) := by
   have h := kukolTubePotential_quadratic_support v r s z u w
   have h' := kukolTubePotential_quadratic_support v r s z w u
@@ -109,7 +109,7 @@ theorem kukolTubeForce_injOn (v : ι → KukolLightCone E) (r s : ι → ℝ) (z
   have hc := add_pos (kukolTubeCurvature_pos v r s z anchor ⟨u,hu⟩)
     (kukolTubeCurvature_pos v r s z anchor ⟨w,hw⟩)
   by_contra huw
-  have hn : 0 < ‖w-u‖^2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr (Ne.symm huw)))
+  have hn : 0 < ‖w-u‖^(2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr (Ne.symm huw)))
   exact (not_lt_of_ge h) (mul_pos hc hn)
 
 variable [FiniteDimensional ℝ E]
@@ -119,7 +119,7 @@ theorem kukolTubeMinimum_distance_bound (W : Submodule ℝ E)
     (v : ι → KukolLightCone E) (r s : ι → ℝ) (z : ι → E) (anchor : ι)
     (w : kukolConstrainedTubeDomain W v r s z) :
     kukolTubeCurvature v r s z (kukolTubeMinimizer W v r s z anchor)*
-      ‖w.val-kukolTubeMinimizer W v r s z anchor‖^2 ≤
+      ‖w.val-kukolTubeMinimizer W v r s z anchor‖^(2 : ℕ) ≤
       kukolTubePotential v r s z w-kukolTubeMinimumValue W v r s z anchor := by
   have hu := kukolTubeMinimizer_spec W v r s z anchor
   have h := kukolTubePotential_quadratic_support v r s z ⟨_,hu.1.1⟩ ⟨w.val,w.property.1⟩

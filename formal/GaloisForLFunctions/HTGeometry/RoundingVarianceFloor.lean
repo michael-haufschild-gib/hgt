@@ -40,12 +40,12 @@ theorem abs_sub_round_le_half (x : ℝ) : |x - round x| ≤ 1 / 2 := abs_sub_rou
 
 /-- **Mean square of the rounding error over one period is `1/12`.**  On `[-1/2, 1/2)` the rounding
 error of `u` is `u` itself, so the mean square is `∫_{-1/2}^{1/2} u² du = 1/12`. -/
-theorem integral_sq_rounding_error : ∫ u in (-(1:ℝ)/2)..(1/2), u ^ 2 = 1 / 12 := by
+theorem integral_sq_rounding_error : ∫ u in (-(1:ℝ)/2)..(1/2), u ^ (2 : ℕ) = 1 / 12 := by
   rw [integral_pow]
   norm_num
 
 /-- The squared rounding error is bounded below by `0` and above by `1/4`. -/
-theorem sq_abs_sub_round_le (x : ℝ) : |x - round x| ^ 2 ≤ 1 / 4 := by
+theorem sq_abs_sub_round_le (x : ℝ) : |x - round x| ^ (2 : ℕ) ≤ 1 / 4 := by
   have h := abs_sub_round_le_half x
   have h0 : 0 ≤ |x - round x| := abs_nonneg _
   nlinarith

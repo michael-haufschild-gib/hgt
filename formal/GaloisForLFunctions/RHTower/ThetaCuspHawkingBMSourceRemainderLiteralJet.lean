@@ -14,9 +14,9 @@ in `B₀` and `B₁`. -/
 theorem sourceRemainder_eq_literalSourceAffinePower (s w a J K T : ℂ) (z : ℝ) :
     sourceRemainder s w a J K T z =
       literalSourceAffinePower (2 * s - w)
-        (((5 * s ^ 2 + 15 * s + 4) / 4) * J +
-          s * (s - 1) / 4 * ((s + 2) ^ 2 * J - K))
-        (s * (s - 1) / 4 * ((s + 2) ^ 2 * J - K)) z * (a ^ 2 * T) := by
+        (((5 * s ^ (2 : ℕ) + 15 * s + 4) / 4) * J +
+          s * (s - 1) / 4 * ((s + 2) ^ (2 : ℕ) * J - K))
+        (s * (s - 1) / 4 * ((s + 2) ^ (2 : ℕ) * J - K)) z * (a ^ (2 : ℕ) * T) := by
   unfold literalSourceAffinePower horizonAffinePowerCore
   rw [literalSourceHorizonPower_eq_cpow]
   unfold sourceRemainder power

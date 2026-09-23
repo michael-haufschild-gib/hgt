@@ -23,7 +23,7 @@ noncomputable section
 
 theorem tendsto_sub_one_cube_mul_iteratedDeriv_two_riemannZeta :
     Tendsto
-      (fun s : ℂ => (s - 1) ^ 3 * iteratedDeriv 2 riemannZeta s)
+      (fun s : ℂ => (s - 1) ^ (3 : ℕ) * iteratedDeriv 2 riemannZeta s)
       (nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ) (nhds 2) := by
   have h := GaloisForLFunctions.iteratedDeriv_residue_of_factor_add
     riemannZeta zetaResidueUnit (-1) ({(1 : ℂ)}ᶜ)
@@ -146,14 +146,14 @@ theorem tendsto_routePProjectiveOrdinateZetaOverlap_collision
 
 /-- Mesoscopic cubic kernel retained when ordinate gaps close at the critical-clock scale. -/
 def routePCollisionCubicKernel (R a b kappa : ℝ) : ℂ :=
-  2 * (R : ℂ) ^ 3 /
-      routePCollisionPairFrequency R a b kappa ^ 3 -
-    2 * (R : ℂ) ^ 3 /
-      routePCollisionPairFrequency R a (2 * b) kappa ^ 3 -
-    2 * (R : ℂ) ^ 3 /
-      routePCollisionPairFrequency R (2 * a) b kappa ^ 3 +
-    2 * (R : ℂ) ^ 3 /
-      routePCollisionPairFrequency R (2 * a) (2 * b) kappa ^ 3
+  2 * (R : ℂ) ^ (3 : ℕ) /
+      routePCollisionPairFrequency R a b kappa ^ (3 : ℕ) -
+    2 * (R : ℂ) ^ (3 : ℕ) /
+      routePCollisionPairFrequency R a (2 * b) kappa ^ (3 : ℕ) -
+    2 * (R : ℂ) ^ (3 : ℕ) /
+      routePCollisionPairFrequency R (2 * a) b kappa ^ (3 : ℕ) +
+    2 * (R : ℂ) ^ (3 : ℕ) /
+      routePCollisionPairFrequency R (2 * a) (2 * b) kappa ^ (3 : ℕ)
 
 theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_collision
     {R a b gamma kappa : ℝ} (hR : 0 < R) (ha : 0 < a) (hb : 0 < b) :
@@ -162,8 +162,8 @@ theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_collision
         routePProjectiveOrdinateLogMomentGramTerm R a gamma b
           (routePCollisionOrdinate gamma kappa sigma) sigma)
       (nhdsWithin 1 (Ioi 1))
-      (nhds (2 * (R : ℂ) ^ 3 /
-        routePCollisionPairFrequency R a b kappa ^ 3)) := by
+      (nhds (2 * (R : ℂ) ^ (3 : ℕ) /
+        routePCollisionPairFrequency R a b kappa ^ (3 : ℕ))) := by
   let q := routePCollisionPairFrequency R a b kappa
   have hq : q ≠ 0 := routePCollisionPairFrequency_ne_zero hR ha hb
   let s : ℝ → ℂ := fun sigma => 1 + ((sigma - 1 : ℝ) : ℂ) * q
@@ -200,16 +200,16 @@ theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_collision
   have hratio := hjet.div hGsig (by norm_num : (1 : ℂ) ≠ 0)
   change Tendsto
     (fun sigma : ℝ =>
-      ((s sigma - 1) ^ 3 * iteratedDeriv 2 riemannZeta (s sigma)) /
+      ((s sigma - 1) ^ (3 : ℕ) * iteratedDeriv 2 riemannZeta (s sigma)) /
         zetaResidueUnit (sigma : ℂ))
     (nhdsWithin 1 (Ioi 1)) (nhds ((2 : ℂ) / 1)) at hratio
-  have hscaled := hratio.const_mul ((R : ℂ) ^ 3 / q ^ 3)
+  have hscaled := hratio.const_mul ((R : ℂ) ^ (3 : ℕ) / q ^ (3 : ℕ))
   have hscaled' : Tendsto
-      (fun sigma : ℝ => ((R : ℂ) ^ 3 / q ^ 3) *
-        (((s sigma - 1) ^ 3 * iteratedDeriv 2 riemannZeta (s sigma)) /
+      (fun sigma : ℝ => ((R : ℂ) ^ (3 : ℕ) / q ^ (3 : ℕ)) *
+        (((s sigma - 1) ^ (3 : ℕ) * iteratedDeriv 2 riemannZeta (s sigma)) /
           zetaResidueUnit (sigma : ℂ)))
       (nhdsWithin 1 (Ioi 1))
-      (nhds (2 * (R : ℂ) ^ 3 / q ^ 3)) := by
+      (nhds (2 * (R : ℂ) ^ (3 : ℕ) / q ^ (3 : ℕ))) := by
     convert hscaled using 1
     all_goals ring
   apply hscaled'.congr'
@@ -222,7 +222,7 @@ theorem tendsto_routePProjectiveOrdinateLogMomentGramTerm_collision
   rw [routePProjectiveOrdinateLogMomentGramTerm,
     routePProjectiveOrdinatePairParameter_collision]
   change
-    (((R * (R * (sigma - 1)) ^ 2 : ℝ) : ℂ) *
+    (((R * (R * (sigma - 1)) ^ (2 : ℕ) : ℝ) : ℂ) *
         (iteratedDeriv 2 riemannZeta (s sigma) /
           riemannZeta (sigma : ℂ))) = _
   rw [show zetaResidueUnit (sigma : ℂ) =

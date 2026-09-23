@@ -21,7 +21,7 @@ open scoped Real
 /-- Squared distance between an interior point `r e^{iφ}` and a boundary point `e^{iθ}` of the unit
 circle: `‖r e^{iφ} - e^{iθ}‖² = r² - 2r cos(θ-φ) + 1`. -/
 theorem norm_sub_circleMap_sq (r φ θ : ℝ) :
-    ‖circleMap 0 r φ - circleMap 0 1 θ‖ ^ 2 = r ^ 2 - 2 * r * Real.cos (θ - φ) + 1 := by
+    ‖circleMap 0 r φ - circleMap 0 1 θ‖ ^ (2 : ℕ) = r ^ (2 : ℕ) - 2 * r * Real.cos (θ - φ) + 1 := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp only [Complex.sub_re, Complex.sub_im, circleMap, Complex.mul_re, Complex.mul_im,
     Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, Complex.ofReal_re, Complex.ofReal_im,
@@ -41,7 +41,7 @@ theorem neg_re_herglotz_eq_poissonKer {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (�
   simp only [sub_zero]
   rw [norm_circleMap_zero, norm_circleMap_zero, abs_of_nonneg hr0,
       abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1), norm_sub_circleMap_sq, poissonKer]
-  have hden : 1 - 2 * r * Real.cos (θ - φ) + r ^ 2 ≠ 0 := (poissonKer_denom_pos habs (θ - φ)).ne'
+  have hden : 1 - 2 * r * Real.cos (θ - φ) + r ^ (2 : ℕ) ≠ 0 := (poissonKer_denom_pos habs (θ - φ)).ne'
   rw [← neg_div]
   congr 1 <;> ring
 
@@ -58,7 +58,7 @@ log weight**: `‖D(r e^{iφ})‖² = exp((2π)⁻¹∫₀²π P_r(θ-φ) log w(
 theorem normSq_szegoOuter_circleMap {w : ℝ → ℝ}
     (hlog : IntervalIntegrable (fun θ => Real.log (w θ)) volume 0 (2 * π))
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (φ : ℝ) :
-    ‖szegoOuter w (circleMap 0 r φ)‖ ^ 2
+    ‖szegoOuter w (circleMap 0 r φ)‖ ^ (2 : ℕ)
       = Real.exp ((1 / (2 * π)) *
           ∫ θ in (0:ℝ)..(2 * π), poissonKer r (θ - φ) * Real.log (w θ)) := by
   set z : ℂ := circleMap 0 r φ with hz
@@ -142,7 +142,7 @@ theorem normSq_szegoOuter_eq_poissonConv {w : ℝ → ℝ}
     (hlog : IntervalIntegrable (fun θ => Real.log (w θ)) volume 0 (2 * π))
     (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (φ : ℝ) :
-    ‖szegoOuter w (circleMap 0 r φ)‖ ^ 2
+    ‖szegoOuter w (circleMap 0 r φ)‖ ^ (2 : ℕ)
       = Real.exp ((2 * π)⁻¹ * ∫ t in (-π)..π, poissonKer r t * Real.log (w (φ + t))) := by
   rw [normSq_szegoOuter_circleMap hlog hr0 hr1 φ, poissonConv_shift hper r φ]
   congr 1
@@ -156,7 +156,7 @@ theorem tendsto_normSq_szegoOuter_ae {w : ℝ → ℝ}
     (hlog : IntervalIntegrable (fun θ => Real.log (w θ)) volume 0 (2 * π))
     (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
     (hwpos : ∀ φ, 0 < w φ) :
-    ∀ᵐ φ, Tendsto (fun r => ‖szegoOuter w (circleMap 0 r φ)‖ ^ 2) (𝓝[<] 1) (𝓝 (w φ)) := by
+    ∀ᵐ φ, Tendsto (fun r => ‖szegoOuter w (circleMap 0 r φ)‖ ^ (2 : ℕ)) (𝓝[<] 1) (𝓝 (w φ)) := by
   filter_upwards [tendsto_poissonConv_ae hlogLI] with φ hφ
   -- ‖D‖² = exp(Poisson conv);  Poisson conv → log w φ;  exp cont ⟹ ‖D‖² → w φ
   have hexp : Tendsto
@@ -201,7 +201,7 @@ theorem normSq_inv_szegoOuter_le {w : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
     (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
     (hlogφ : ∀ φ, IntervalIntegrable (fun t => Real.log (w (φ + t))) volume (-π) π)
     (hwc : ∀ θ, c ≤ w θ) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (φ : ℝ) :
-    ‖(szegoOuter w (circleMap 0 r φ))⁻¹‖ ^ 2 ≤ c⁻¹ := by
+    ‖(szegoOuter w (circleMap 0 r φ))⁻¹‖ ^ (2 : ℕ) ≤ c⁻¹ := by
   rw [norm_inv, inv_pow, normSq_szegoOuter_eq_poissonConv hlog hper hr0 hr1 φ, ← Real.exp_neg,
     show c⁻¹ = Real.exp (-Real.log c) by rw [Real.exp_neg, Real.exp_log hc]]
   apply Real.exp_le_exp.mpr

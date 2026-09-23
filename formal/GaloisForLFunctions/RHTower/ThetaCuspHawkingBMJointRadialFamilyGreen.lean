@@ -64,7 +64,7 @@ theorem jointWaveResponse_radialEnergyFamily (w : ℂ) (hw : 0 < w.re) (F : Spat
     inner ℂ (radialFamilySlot 0 h.radial) ((u : JointEnergySpace) 1) +
       inner ℂ (radialFamilySlot 1 h.weighted) ((u : JointEnergySpace) 2) +
       inner ℂ (radialFamilySlot 2 h.weighted) ((u : JointEnergySpace) 3) +
-      w^2*inner ℂ (radialFamilySlot 0 h.value) (jointEmbedding u) =
+      w^(2 : ℕ)*inner ℂ (radialFamilySlot 0 h.value) (jointEmbedding u) =
       inner ℂ (radialFamilySlot 0 h.value) F :=
   jointWaveSolution_radialEnergyFamily w F _ (jointWaveResponse_spec w hw F) h
 

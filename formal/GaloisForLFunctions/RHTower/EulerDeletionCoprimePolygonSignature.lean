@@ -69,7 +69,7 @@ theorem momY_circulation (p q a b : ℕ) : momY p q a b ((q+1)*(p+1)) = circulat
   (circulation_eq_segment_sum q p b a).symm
 
 private theorem integral_cubic (c0 c1 c2 c3 : ℝ) :
-    (∫ t in (0:ℝ)..1, (c0 + c1*t + c2*t^2 + c3*t^3)) = c0 + c1/2 + c2/3 + c3/4 := by
+    (∫ t in (0:ℝ)..1, (c0 + c1*t + c2*t^(2 : ℕ) + c3*t^(3 : ℕ))) = c0 + c1/2 + c2/3 + c3/4 := by
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_const_mul,
       intervalIntegral.integral_const, integral_pow]
@@ -82,8 +82,8 @@ theorem mom_xy (p q n : ℕ) :
   induction n with
   | zero => simp [momY, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position q n t ^ 0 * position p n t ^ 1 * velocity q n =
-        (position p n 0 * velocity q n) + (velocity p n * velocity q n) * t + 0*t^2 + 0*t^3 := by
+    have hint : ∀ t : ℝ, position q n t ^ (0 : ℕ) * position p n t ^ (1 : ℕ) * velocity q n =
+        (position p n 0 * velocity q n) + (velocity p n * velocity q n) * t + 0*t^(2 : ℕ) + 0*t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momY_succ, ih, pathCoef_succ_two]
     simp only [hint, integral_cubic, coef_x, prefixSum_velocity, letterVal_false, letterVal_true]
@@ -94,8 +94,8 @@ theorem mom_yx (p q n : ℕ) :
   induction n with
   | zero => simp [momX, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position p n t ^ 0 * position q n t ^ 1 * velocity p n =
-        (position q n 0 * velocity p n) + (velocity q n * velocity p n) * t + 0*t^2 + 0*t^3 := by
+    have hint : ∀ t : ℝ, position p n t ^ (0 : ℕ) * position q n t ^ (1 : ℕ) * velocity p n =
+        (position q n 0 * velocity p n) + (velocity q n * velocity p n) * t + 0*t^(2 : ℕ) + 0*t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momX_succ, ih, pathCoef_succ_two]
     simp only [hint, integral_cubic, coef_y, prefixSum_velocity, letterVal_false, letterVal_true]
@@ -106,10 +106,10 @@ theorem mom_xxy (p q n : ℕ) :
   induction n with
   | zero => simp [momY, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position q n t ^ 0 * position p n t ^ 2 * velocity q n =
-        ((position p n 0)^2 * velocity q n) +
+    have hint : ∀ t : ℝ, position q n t ^ (0 : ℕ) * position p n t ^ (2 : ℕ) * velocity q n =
+        ((position p n 0)^(2 : ℕ) * velocity q n) +
         (2 * position p n 0 * velocity p n * velocity q n) * t +
-        ((velocity p n)^2 * velocity q n) * t^2 + 0*t^3 := by
+        ((velocity p n)^(2 : ℕ) * velocity q n) * t^(2 : ℕ) + 0*t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momY_succ, ih, pathCoef_succ_three]
     simp only [hint, integral_cubic, coef_x, coef_xx, prefixSum_velocity,
@@ -121,10 +121,10 @@ theorem mom_yyx (p q n : ℕ) :
   induction n with
   | zero => simp [momX, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position p n t ^ 0 * position q n t ^ 2 * velocity p n =
-        ((position q n 0)^2 * velocity p n) +
+    have hint : ∀ t : ℝ, position p n t ^ (0 : ℕ) * position q n t ^ (2 : ℕ) * velocity p n =
+        ((position q n 0)^(2 : ℕ) * velocity p n) +
         (2 * position q n 0 * velocity q n * velocity p n) * t +
-        ((velocity q n)^2 * velocity p n) * t^2 + 0*t^3 := by
+        ((velocity q n)^(2 : ℕ) * velocity p n) * t^(2 : ℕ) + 0*t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momX_succ, ih, pathCoef_succ_three]
     simp only [hint, integral_cubic, coef_y, coef_yy, prefixSum_velocity,
@@ -136,11 +136,11 @@ theorem mom_xxxy (p q n : ℕ) :
   induction n with
   | zero => simp [momY, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position q n t ^ 0 * position p n t ^ 3 * velocity q n =
-        ((position p n 0)^3 * velocity q n) +
-        (3 * (position p n 0)^2 * velocity p n * velocity q n) * t +
-        (3 * position p n 0 * (velocity p n)^2 * velocity q n) * t^2 +
-        ((velocity p n)^3 * velocity q n) * t^3 := by
+    have hint : ∀ t : ℝ, position q n t ^ (0 : ℕ) * position p n t ^ (3 : ℕ) * velocity q n =
+        ((position p n 0)^(3 : ℕ) * velocity q n) +
+        (3 * (position p n 0)^(2 : ℕ) * velocity p n * velocity q n) * t +
+        (3 * position p n 0 * (velocity p n)^(2 : ℕ) * velocity q n) * t^(2 : ℕ) +
+        ((velocity p n)^(3 : ℕ) * velocity q n) * t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momY_succ, ih, pathCoef_succ_four]
     simp only [hint, integral_cubic, coef_x, coef_xx, coef_xxx, prefixSum_velocity,
@@ -152,11 +152,11 @@ theorem mom_yyyx (p q n : ℕ) :
   induction n with
   | zero => simp [momX, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position p n t ^ 0 * position q n t ^ 3 * velocity p n =
-        ((position q n 0)^3 * velocity p n) +
-        (3 * (position q n 0)^2 * velocity q n * velocity p n) * t +
-        (3 * position q n 0 * (velocity q n)^2 * velocity p n) * t^2 +
-        ((velocity q n)^3 * velocity p n) * t^3 := by
+    have hint : ∀ t : ℝ, position p n t ^ (0 : ℕ) * position q n t ^ (3 : ℕ) * velocity p n =
+        ((position q n 0)^(3 : ℕ) * velocity p n) +
+        (3 * (position q n 0)^(2 : ℕ) * velocity q n * velocity p n) * t +
+        (3 * position q n 0 * (velocity q n)^(2 : ℕ) * velocity p n) * t^(2 : ℕ) +
+        ((velocity q n)^(3 : ℕ) * velocity p n) * t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     rw [momX_succ, ih, pathCoef_succ_four]
     simp only [hint, integral_cubic, coef_y, coef_yy, coef_yyy, prefixSum_velocity,
@@ -170,13 +170,13 @@ theorem mom_xxyy (p q n : ℕ) :
   induction n with
   | zero => simp [momY, pathCoef]
   | succ n ih =>
-    have hint : ∀ t : ℝ, position q n t ^ 1 * position p n t ^ 2 * velocity q n =
-        ((position p n 0)^2 * position q n 0 * velocity q n) +
+    have hint : ∀ t : ℝ, position q n t ^ (1 : ℕ) * position p n t ^ (2 : ℕ) * velocity q n =
+        ((position p n 0)^(2 : ℕ) * position q n 0 * velocity q n) +
         ((2 * position p n 0 * velocity p n * position q n 0 +
-          (position p n 0)^2 * velocity q n) * velocity q n) * t +
-        (((velocity p n)^2 * position q n 0 +
-          2 * position p n 0 * velocity p n * velocity q n) * velocity q n) * t^2 +
-        ((velocity p n)^2 * velocity q n * velocity q n) * t^3 := by
+          (position p n 0)^(2 : ℕ) * velocity q n) * velocity q n) * t +
+        (((velocity p n)^(2 : ℕ) * position q n 0 +
+          2 * position p n 0 * velocity p n * velocity q n) * velocity q n) * t^(2 : ℕ) +
+        ((velocity p n)^(2 : ℕ) * velocity q n * velocity q n) * t^(3 : ℕ) := by
       intro t; rw [position_eq p n t, position_eq q n t]; ring
     have h5 := shuffle_x_y (velocity p) (velocity q) n
     have h8 := shuffle_x_xy (velocity p) (velocity q) n

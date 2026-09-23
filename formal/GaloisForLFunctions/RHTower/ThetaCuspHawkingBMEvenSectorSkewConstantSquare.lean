@@ -21,57 +21,57 @@ set_option linter.unusedVariables false
 
 namespace RHTower.D4BMScalarStream
 
-theorem skewPlateauMuCrossLine_zero (t : ℝ) : skewPlateauMuCrossLine t 0 = (-198711 / 256 : ℝ) * t + (-41707 / 32 : ℝ) * t ^ 3 + (40675 / 4 : ℝ) * t ^ 5 + (50749 / 4 : ℝ) * t ^ 7 + (2889 : ℝ) * t ^ 9 + (-2128 : ℝ) * t ^ 11 + (-1248 : ℝ) * t ^ 13 + (-192 : ℝ) * t ^ 15 := by
+theorem skewPlateauMuCrossLine_zero (t : ℝ) : skewPlateauMuCrossLine t 0 = (-198711 / 256 : ℝ) * t + (-41707 / 32 : ℝ) * t ^ (3 : ℕ) + (40675 / 4 : ℝ) * t ^ (5 : ℕ) + (50749 / 4 : ℝ) * t ^ (7 : ℕ) + (2889 : ℝ) * t ^ (9 : ℕ) + (-2128 : ℝ) * t ^ (11 : ℕ) + (-1248 : ℝ) * t ^ (13 : ℕ) + (-192 : ℝ) * t ^ (15 : ℕ) := by
   unfold skewPlateauMuCrossLine
   ring
 
-theorem skewPlateauMuVVLine_zero (t : ℝ) : skewPlateauMuVVLine t 0 = (-1548639 / 128 : ℝ) * t + (-1170801 / 16 : ℝ) * t ^ 3 + (-115314 : ℝ) * t ^ 5 + (-127503 / 2 : ℝ) * t ^ 7 + (9714 : ℝ) * t ^ 9 + (24768 : ℝ) * t ^ 11 + (9408 : ℝ) * t ^ 13 + (1152 : ℝ) * t ^ 15 := by
+theorem skewPlateauMuVVLine_zero (t : ℝ) : skewPlateauMuVVLine t 0 = (-1548639 / 128 : ℝ) * t + (-1170801 / 16 : ℝ) * t ^ (3 : ℕ) + (-115314 : ℝ) * t ^ (5 : ℕ) + (-127503 / 2 : ℝ) * t ^ (7 : ℕ) + (9714 : ℝ) * t ^ (9 : ℕ) + (24768 : ℝ) * t ^ (11 : ℕ) + (9408 : ℝ) * t ^ (13 : ℕ) + (1152 : ℝ) * t ^ (15 : ℕ) := by
   unfold skewPlateauMuVVLine
   ring
 
 /-- The leading constant-mode quadratic form in the sector amplitudes is a perfect square. -/
 theorem skewConstantMode_leading_square (x y : ℝ) :
-    8 * x ^ 2 + (-192) * (x * y) + 1152 * y ^ 2 = 8 * (x - 12 * y) ^ 2 := by
+    8 * x ^ (2 : ℕ) + (-192) * (x * y) + 1152 * y ^ (2 : ℕ) = 8 * (x - 12 * y) ^ (2 : ℕ) := by
   ring
 
 /-- The leading `t¹⁵` coefficients of the three constant-mode line forms are `8`, `−192`, `1152`. -/
 theorem skewConstantMode_leading_coefficients (t : ℝ) :
-    skewPlateauLineForm t 0 - 8 * t ^ 15 = 36 * t ^ 13 + 46 * t ^ 11 + (-3151 / 8) * t ^ 9 + (-36367 / 32) * t ^ 7 + (-19053 / 32) * t ^ 5 + (-58863 / 256) * t ^ 3 + (-74655 / 2048) * t ∧
-    skewPlateauMuCrossLine t 0 - (-192) * t ^ 15 = (-198711 / 256 : ℝ) * t + (-41707 / 32 : ℝ) * t ^ 3 + (40675 / 4 : ℝ) * t ^ 5 + (50749 / 4 : ℝ) * t ^ 7 + (2889 : ℝ) * t ^ 9 + (-2128 : ℝ) * t ^ 11 + (-1248 : ℝ) * t ^ 13 ∧
-    skewPlateauMuVVLine t 0 - 1152 * t ^ 15 = (-1548639 / 128 : ℝ) * t + (-1170801 / 16 : ℝ) * t ^ 3 + (-115314 : ℝ) * t ^ 5 + (-127503 / 2 : ℝ) * t ^ 7 + (9714 : ℝ) * t ^ 9 + (24768 : ℝ) * t ^ 11 + (9408 : ℝ) * t ^ 13 := by
+    skewPlateauLineForm t 0 - 8 * t ^ (15 : ℕ) = 36 * t ^ (13 : ℕ) + 46 * t ^ (11 : ℕ) + (-3151 / 8) * t ^ (9 : ℕ) + (-36367 / 32) * t ^ (7 : ℕ) + (-19053 / 32) * t ^ (5 : ℕ) + (-58863 / 256) * t ^ (3 : ℕ) + (-74655 / 2048) * t ∧
+    skewPlateauMuCrossLine t 0 - (-192) * t ^ (15 : ℕ) = (-198711 / 256 : ℝ) * t + (-41707 / 32 : ℝ) * t ^ (3 : ℕ) + (40675 / 4 : ℝ) * t ^ (5 : ℕ) + (50749 / 4 : ℝ) * t ^ (7 : ℕ) + (2889 : ℝ) * t ^ (9 : ℕ) + (-2128 : ℝ) * t ^ (11 : ℕ) + (-1248 : ℝ) * t ^ (13 : ℕ) ∧
+    skewPlateauMuVVLine t 0 - 1152 * t ^ (15 : ℕ) = (-1548639 / 128 : ℝ) * t + (-1170801 / 16 : ℝ) * t ^ (3 : ℕ) + (-115314 : ℝ) * t ^ (5 : ℕ) + (-127503 / 2 : ℝ) * t ^ (7 : ℕ) + (9714 : ℝ) * t ^ (9 : ℕ) + (24768 : ℝ) * t ^ (11 : ℕ) + (9408 : ℝ) * t ^ (13 : ℕ) := by
   refine ⟨?_, ?_, ?_⟩
   · rw [skewPlateauLineForm_zero]; ring
   · rw [skewPlateauMuCrossLine_zero]; ring
   · rw [skewPlateauMuVVLine_zero]; ring
 
 /-- The vector-vector constant-mode line form is at least `1000·t¹⁵` for `t ≥ 8`. -/
-theorem skewPlateauMuVVLine_zero_ge (t : ℝ) (ht : (8 : ℝ) ≤ t) : 1000 * t ^ 15 ≤ skewPlateauMuVVLine t 0 := by
+theorem skewPlateauMuVVLine_zero_ge (t : ℝ) (ht : (8 : ℝ) ≤ t) : 1000 * t ^ (15 : ℕ) ≤ skewPlateauMuVVLine t 0 := by
   rw [skewPlateauMuVVLine_zero]
   have h1 : (0 : ℝ) < t := by linarith
-  have h8 : (8 : ℝ) ^ 2 ≤ t ^ 2 := by nlinarith
-  have p1 : t * 4398046511104 ≤ t ^ 15 := by
+  have h8 : (8 : ℝ) ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith
+  have p1 : t * 4398046511104 ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 8) ht 14
-    calc t * 4398046511104 = t * 8 ^ 14 := by norm_num
-      _ ≤ t * t ^ 14 := by exact mul_le_mul_of_nonneg_left this h1.le
-      _ = t ^ 15 := by ring
-  have p3 : t ^ 3 * 68719476736 ≤ t ^ 15 := by
+    calc t * 4398046511104 = t * 8 ^ (14 : ℕ) := by norm_num
+      _ ≤ t * t ^ (14 : ℕ) := by exact mul_le_mul_of_nonneg_left this h1.le
+      _ = t ^ (15 : ℕ) := by ring
+  have p3 : t ^ (3 : ℕ) * 68719476736 ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 8) ht 12
-    calc t ^ 3 * 68719476736 = t ^ 3 * 8 ^ 12 := by norm_num
-      _ ≤ t ^ 3 * t ^ 12 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have p5 : t ^ 5 * 1073741824 ≤ t ^ 15 := by
+    calc t ^ (3 : ℕ) * 68719476736 = t ^ (3 : ℕ) * 8 ^ (12 : ℕ) := by norm_num
+      _ ≤ t ^ (3 : ℕ) * t ^ (12 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have p5 : t ^ (5 : ℕ) * 1073741824 ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 8) ht 10
-    calc t ^ 5 * 1073741824 = t ^ 5 * 8 ^ 10 := by norm_num
-      _ ≤ t ^ 5 * t ^ 10 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have p7 : t ^ 7 * 16777216 ≤ t ^ 15 := by
+    calc t ^ (5 : ℕ) * 1073741824 = t ^ (5 : ℕ) * 8 ^ (10 : ℕ) := by norm_num
+      _ ≤ t ^ (5 : ℕ) * t ^ (10 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have p7 : t ^ (7 : ℕ) * 16777216 ≤ t ^ (15 : ℕ) := by
     have := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 8) ht 8
-    calc t ^ 7 * 16777216 = t ^ 7 * 8 ^ 8 := by norm_num
-      _ ≤ t ^ 7 * t ^ 8 := by exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ = t ^ 15 := by ring
-  have q9 : (0 : ℝ) ≤ t ^ 9 := by positivity
-  have q11 : (0 : ℝ) ≤ t ^ 11 := by positivity
-  have q13 : (0 : ℝ) ≤ t ^ 13 := by positivity
+    calc t ^ (7 : ℕ) * 16777216 = t ^ (7 : ℕ) * 8 ^ (8 : ℕ) := by norm_num
+      _ ≤ t ^ (7 : ℕ) * t ^ (8 : ℕ) := by exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ = t ^ (15 : ℕ) := by ring
+  have q9 : (0 : ℝ) ≤ t ^ (9 : ℕ) := by positivity
+  have q11 : (0 : ℝ) ≤ t ^ (11 : ℕ) := by positivity
+  have q13 : (0 : ℝ) ≤ t ^ (13 : ℕ) := by positivity
   linarith
 
 end RHTower.D4BMScalarStream

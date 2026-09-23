@@ -64,8 +64,8 @@ private lemma fzzHigherGenusTwistExponent_two_mul (n : ℤ) (twist : ℂ) :
   ring
 
 private theorem sinh_cycle_double_chamber_iff_re_eq_zero (z : ℂ) :
-    ((Complex.sinh z) ^ 2).im = 0 ∧
-        ((Complex.sinh (2 * z)) ^ 2).re ≤ 0 ↔
+    ((Complex.sinh z) ^ (2 : ℕ)).im = 0 ∧
+        ((Complex.sinh (2 * z)) ^ (2 : ℕ)).re ≤ 0 ↔
       z.re = 0 := by
   have h :=
     fzzReplicaLevelFourRealityLevelThreeNonpositive_iff_re_eq_zero (2 * z)
@@ -76,8 +76,8 @@ private theorem sinh_cycle_double_chamber_iff_re_eq_zero (z : ℂ) :
 
 /-- Joint reality/passivity chamber at two homology cycle numbers in one fixed cigar CFT. -/
 def FZZHigherGenusCyclePairKreinSign (n : ℤ) (twist : ℂ) : Prop :=
-  ((fzzHigherGenusOddHolonomy n twist) ^ 2).im = 0 ∧
-    ((fzzHigherGenusOddHolonomy (2 * n) twist) ^ 2).re ≤ 0
+  ((fzzHigherGenusOddHolonomy n twist) ^ (2 : ℕ)).im = 0 ∧
+    ((fzzHigherGenusOddHolonomy (2 * n) twist) ^ (2 : ℕ)).re ≤ 0
 
 /-- **Same-CFT two-cycle selector.** Two nonzero homology cycles `n,2n` select exactly real
 higher-genus twist. -/
@@ -161,16 +161,16 @@ theorem higherGenusBetaTwistMultiplier_two_mellinTorusTwist_eq_dyadicCharacter_s
     (rho : ℂ) :
     higherGenusBetaTwistMultiplier 2
         (fzzCigarParityMellinTorusTwist rho) =
-      fzzCigarParityDyadicMellinCharacter rho ^ 2 := by
+      fzzCigarParityDyadicMellinCharacter rho ^ (2 : ℕ) := by
   calc
     higherGenusBetaTwistMultiplier 2 (fzzCigarParityMellinTorusTwist rho) =
-        higherGenusBetaTwistMultiplier 1 (fzzCigarParityMellinTorusTwist rho) ^ 2 := by
+        higherGenusBetaTwistMultiplier 1 (fzzCigarParityMellinTorusTwist rho) ^ (2 : ℕ) := by
       rw [higherGenusBetaTwistMultiplier, higherGenusBetaTwistMultiplier,
         pow_two, ← Complex.exp_add]
       congr 1
       push_cast
       ring
-    _ = fzzCigarParityDyadicMellinCharacter rho ^ 2 := by
+    _ = fzzCigarParityDyadicMellinCharacter rho ^ (2 : ℕ) := by
       rw [higherGenusBetaTwistMultiplier_mellinTorusTwist_eq_dyadicCharacter]
 
 /-- The radial component of the canonical twist is the centered horizontal Mellin weight. -/

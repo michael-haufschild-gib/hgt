@@ -25,7 +25,7 @@ def gomesGaussianChargeGroundState (a : Set.Ioi (0 : ℝ)) : 𝓢(ℝ, ℂ) :=
 
 /-- The ground state is the square root of the Gaussian density. -/
 theorem gomesGaussianChargeGroundState_apply (a : Set.Ioi (0 : ℝ)) (x : ℝ) :
-    gomesGaussianChargeGroundState a x = (Real.exp (-Real.pi * a.val * x ^ 2) : ℂ) := by
+    gomesGaussianChargeGroundState a x = (Real.exp (-Real.pi * a.val * x ^ (2 : ℕ)) : ℂ) := by
   change (RiemannGaussian.centeredGaussianSchwartz
     ⟨Real.pi * a.val, mul_pos Real.pi_pos a.property⟩ x : ℂ) = _
   rw [RiemannGaussian.centeredGaussianSchwartz_apply]
@@ -50,7 +50,7 @@ theorem gomesGaussianChargeGroundState_undressed (a : Set.Ioi (0 : ℝ)) (x : �
   rw [dilatonUndressed, gomesGaussianChargeGroundState_apply]
   simp only [dilatonGauge, gomesGaussianLogWeight_eval]
   rw [← Complex.ofReal_mul, ← Real.exp_add]
-  rw [show -(-2 * Real.pi * a.val * x ^ 2) / 2 + -Real.pi * a.val * x ^ 2 = 0 by ring,
+  rw [show -(-2 * Real.pi * a.val * x ^ (2 : ℕ)) / 2 + -Real.pi * a.val * x ^ (2 : ℕ) = 0 by ring,
     Real.exp_zero, Complex.ofReal_one]
 
 /-- The positive-charge Gaussian is annihilated by the actual Schwartz Hamiltonian. -/
@@ -102,8 +102,8 @@ theorem gomesGaussianHamiltonian_nonzero_kernel_iff (a : ℝ) :
       exact (mul_eq_zero.mp hx).resolve_left (dilatonGauge_ne_zero _ x)
     have hint := dilatonUndressed_weighted_integrable (gomesGaussianLogWeight a) ψ
     have heq : (fun x => dilatonWeight (gomesGaussianLogWeight a) x *
-        ‖dilatonUndressed (gomesGaussianLogWeight a) ψ x‖ ^ 2) =
-        (fun x => dilatonWeight (gomesGaussianLogWeight a) x * ‖c‖ ^ 2) := by
+        ‖dilatonUndressed (gomesGaussianLogWeight a) ψ x‖ ^ (2 : ℕ)) =
+        (fun x => dilatonWeight (gomesGaussianLogWeight a) x * ‖c‖ ^ (2 : ℕ)) := by
       funext x
       rw [hc x]
     rw [heq] at hint

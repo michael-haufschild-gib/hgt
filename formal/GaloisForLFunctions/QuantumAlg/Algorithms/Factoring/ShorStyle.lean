@@ -936,13 +936,13 @@ namespace FormulaParameters
 def logicalQubitBound (params : FormulaParameters) : ℕ :=
   3 * params.modulusBits + params.workspaceAddendBound
 
-/-- Natural-number upper bound for `0.4n^3 + 0.0006n^3 log n`. -/
+/-- Natural-number upper bound for `0.4n^(3 : ℕ) + 0.0006n^(3 : ℕ) log n`. -/
 def toffoliBaseBound (params : FormulaParameters) : ℕ :=
   QuantumAlg.Nat.ceilDiv (2 * params.modulusBits ^ 3) 5 +
     QuantumAlg.Nat.ceilDiv
       (3 * params.modulusBits ^ 3 * params.logModulusBitsUpperBound) 5000
 
-/-- Natural-number upper bound for `600n^2 + n^2 log n`. -/
+/-- Natural-number upper bound for `600n^(2 : ℕ) + n^(2 : ℕ) log n`. -/
 def circuitDepthBaseBound (params : FormulaParameters) : ℕ :=
   600 * params.modulusBits ^ 2 +
     params.modulusBits ^ 2 * params.logModulusBitsUpperBound

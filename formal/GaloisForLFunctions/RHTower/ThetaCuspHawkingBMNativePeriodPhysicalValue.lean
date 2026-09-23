@@ -72,7 +72,7 @@ theorem nativePeriodContinuation_physical_analytic (q : XiZeroCopy) :
 /-- At the physical parameter only the forward principal correction is killed by the original Xi zero. -/
 theorem nativePeriodContinuation_physical_value (q : XiZeroCopy) :
     nativePeriodContinuation q ((q.1:ℂ)/2) =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2+
       reflectedCompletedLambda ((q.1:ℂ)-1)*nativePrincipalMomentContinuation q (-((q.1:ℂ)/2)) := by
   unfold nativePeriodContinuation
@@ -83,7 +83,7 @@ theorem nativePeriodContinuation_physical_value (q : XiZeroCopy) :
 /-- Equality with the diagonal alone requires exactly the displayed remaining original cutoff moment to vanish. -/
 theorem nativePhysicalPeriod_eq_diagonal_iff (q : XiZeroCopy) :
     nativePeriodContinuation q ((q.1:ℂ)/2) =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2 ↔
       nativePrincipalMomentContinuation q (-((q.1:ℂ)/2)) = 0 := by
   rw [nativePeriodContinuation_physical_value,add_eq_left,mul_eq_zero]

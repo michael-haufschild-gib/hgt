@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.PolylogRpowDomination
 /-!
 # Paper-scale generalized-divisor collar bound
 
-The largest product-boundary coefficient in Proposition 2.2 is `ζ^6`, whose squared short-interval
+The largest product-boundary coefficient in Proposition 2.2 is `ζ^(6 : ℕ)`, whose squared short-interval
 bound has logarithmic degree `35`.  At collar width `δ_(A-1) = (log X)^(-10(A-1))`, this leaves
 exactly `(log X)^(-5)` when `A = 5`.  A polylogarithmic auxiliary cutoff removes the secondary
 short-interval term without losing that endpoint exponent.

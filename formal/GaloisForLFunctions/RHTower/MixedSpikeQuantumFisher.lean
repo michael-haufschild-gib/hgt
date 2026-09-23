@@ -69,7 +69,7 @@ theorem hsNormSq_rankOneHamiltonianCommutator
     [CompleteSpace E] (H : E →L[ℂ] E) (hH : adjoint H = H)
     (ψ : E) (hψ : ‖ψ‖ = 1) :
     hsNormSq (rankOneHamiltonianCommutator H ψ) =
-      2 * (‖H ψ‖ ^ 2 - ‖inner ℂ ψ (H ψ)‖ ^ 2) := by
+      2 * (‖H ψ‖ ^ (2 : ℕ) - ‖inner ℂ ψ (H ψ)‖ ^ (2 : ℕ)) := by
   rw [rankOneHamiltonianCommutator_eq H hH ψ]
   let S := rankOne ℂ ψ (H ψ)
   let T := rankOne ℂ (H ψ) ψ
@@ -81,9 +81,9 @@ theorem hsNormSq_rankOneHamiltonianCommutator
   rw [sub_eq_add_neg,
     GaloisForLFunctions.HTGeometry.hsNormSq_add hS hT.neg,
     hsNormSq_neg_eq_self,
-    show hsNormSq S = ‖ψ‖ ^ 2 * ‖H ψ‖ ^ 2 by
+    show hsNormSq S = ‖ψ‖ ^ (2 : ℕ) * ‖H ψ‖ ^ (2 : ℕ) by
       exact GaloisForLFunctions.HTGeometry.hsNormSq_rankOne ψ (H ψ),
-    show hsNormSq T = ‖H ψ‖ ^ 2 * ‖ψ‖ ^ 2 by
+    show hsNormSq T = ‖H ψ‖ ^ (2 : ℕ) * ‖ψ‖ ^ (2 : ℕ) by
       exact GaloisForLFunctions.HTGeometry.hsNormSq_rankOne (H ψ) ψ]
   rw [show hsInner S (-T) = -hsInner S T by
     simpa only [neg_one_smul ℂ T, neg_mul, one_mul] using
@@ -126,7 +126,7 @@ theorem mixedSpikeState_inner_re
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     (b c : ℝ) (ψ x : E) :
     (inner ℂ x (mixedSpikeState b c ψ x)).re =
-      b * ‖x‖ ^ 2 + c * ‖inner ℂ ψ x‖ ^ 2 := by
+      b * ‖x‖ ^ (2 : ℕ) + c * ‖inner ℂ ψ x‖ ^ (2 : ℕ) := by
   simp only [mixedSpikeState, add_apply, smul_apply,
     InnerProductSpace.rankOne_apply, inner_add_right, inner_smul_right,
     ]
@@ -135,7 +135,7 @@ theorem mixedSpikeState_inner_re
   simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
     Complex.ofReal_im, Complex.conj_re, Complex.conj_im,
     zero_mul, sub_zero, neg_mul, mul_neg, neg_neg]
-  have hxx : (inner ℂ x x).re = ‖x‖ ^ 2 :=
+  have hxx : (inner ℂ x x).re = ‖x‖ ^ (2 : ℕ) :=
     inner_self_eq_norm_sq (𝕜 := ℂ) x
   have hone : (1 : E →L[ℂ] E) x = x := rfl
   rw [hone, hxx]
@@ -149,7 +149,7 @@ theorem mixedSpikeState_survivalLoss
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     (b c : ℝ) (φ : E) {ψ : E} (hψ : ‖ψ‖ = 1) :
     (b + c) - (inner ℂ ψ (mixedSpikeState b c φ ψ)).re =
-      c * (1 - ‖inner ℂ φ ψ‖ ^ 2) := by
+      c * (1 - ‖inner ℂ φ ψ‖ ^ (2 : ℕ)) := by
   rw [mixedSpikeState_inner_re, hψ, one_pow]
   ring
 
@@ -160,8 +160,8 @@ theorem mixedSpikeState_inner_re_pos
     0 < (inner ℂ x (mixedSpikeState b c ψ x)).re := by
   rw [mixedSpikeState_inner_re]
   have hxnorm : 0 < ‖x‖ := norm_pos_iff.mpr hx
-  have hmain : 0 < b * ‖x‖ ^ 2 := mul_pos hb (sq_pos_of_pos hxnorm)
-  have hspike : 0 ≤ c * ‖inner ℂ ψ x‖ ^ 2 :=
+  have hmain : 0 < b * ‖x‖ ^ (2 : ℕ) := mul_pos hb (sq_pos_of_pos hxnorm)
+  have hspike : 0 ≤ c * ‖inner ℂ ψ x‖ ^ (2 : ℕ) :=
     mul_nonneg hc (sq_nonneg _)
   linarith
 
@@ -189,8 +189,8 @@ theorem mixedSpikeUnitaryTangent_hsNormSq
     [CompleteSpace E] (c : ℝ) (H : E →L[ℂ] E)
     (hH : adjoint H = H) (ψ : E) (hψ : ‖ψ‖ = 1) :
     hsNormSq (mixedSpikeUnitaryTangent c H ψ) =
-      2 * c ^ 2 *
-        (‖H ψ‖ ^ 2 - ‖inner ℂ ψ (H ψ)‖ ^ 2) := by
+      2 * c ^ (2 : ℕ) *
+        (‖H ψ‖ ^ (2 : ℕ) - ‖inner ℂ ψ (H ψ)‖ ^ (2 : ℕ)) := by
   have hK := isHilbertSchmidt_rankOneHamiltonianCommutator H ψ
   rw [mixedSpikeUnitaryTangent,
     GaloisForLFunctions.HTGeometry.hsNormSq_smul hK,
@@ -289,8 +289,8 @@ theorem mixedSpikeSLDQuantumFisher_eq
     (H : E →L[ℂ] E) (hH : adjoint H = H)
     (ψ : E) (hψ : ‖ψ‖ = 1) :
     mixedSpikeSLDQuantumFisher b c H ψ =
-      4 * c ^ 2 / (2 * b + c) *
-        (‖H ψ‖ ^ 2 - ‖inner ℂ ψ (H ψ)‖ ^ 2) := by
+      4 * c ^ (2 : ℕ) / (2 * b + c) *
+        (‖H ψ‖ ^ (2 : ℕ) - ‖inner ℂ ψ (H ψ)‖ ^ (2 : ℕ)) := by
   unfold mixedSpikeSLDQuantumFisher mixedSpikeUnitaryTangent
     mixedSpikeSymmetricLogDerivative
   let K := rankOneHamiltonianCommutator H ψ
@@ -300,14 +300,14 @@ theorem mixedSpikeSLDQuantumFisher_eq
   have hscalar :
       (starRingEnd ℂ) (I * (c : ℂ)) *
           (2 * I * (c : ℂ) / ((2 * b + c : ℝ) : ℂ)) =
-        ((2 * c ^ 2 / (2 * b + c) : ℝ) : ℂ) := by
+        ((2 * c ^ (2 : ℕ) / (2 * b + c) : ℝ) : ℂ) := by
     have hnum :
         (starRingEnd ℂ) (I * (c : ℂ)) * (2 * I * (c : ℂ)) =
-          ((2 * c ^ 2 : ℝ) : ℂ) := by
+          ((2 * c ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [map_mul, Complex.conj_I, Complex.conj_ofReal]
       push_cast
       ring_nf
-      rw [show I ^ 2 = (-1 : ℂ) by norm_num]
+      rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
       ring
     rw [div_eq_mul_inv, ← mul_assoc, hnum]
     push_cast [div_eq_mul_inv]

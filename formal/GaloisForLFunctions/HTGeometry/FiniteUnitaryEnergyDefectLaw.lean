@@ -152,7 +152,7 @@ theorem finiteUnitary_full_adjointAutocorrelation_iff_commute
 
 /-- **Gap-free approximate-centralizer Haar tail.** For a nonzero traceless Hermitian source,
 the Haar probability that commutator energy is no larger than source energy is at most
-`4 / (D^2 - 1)`. -/
+`4 / (D^(2 : ℕ) - 1)`. -/
 theorem haar_measureReal_commutatorEnergy_le_traceEnergy_le
     {κ : Type*} [Fintype κ] [DecidableEq κ]
     (d : ℕ) (e : κ ≃ Fin 2 ⊕ Fin d)
@@ -162,7 +162,7 @@ theorem haar_measureReal_commutatorEnergy_le_traceEnergy_le
         {U | finiteMatrixHilbertSchmidtEnergy
             (H * (U : Matrix κ κ ℂ) - (U : Matrix κ κ ℂ) * H) ≤
           (Matrix.trace (H * H)).re} ≤
-      4 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+      4 / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   apply (measureReal_mono (μ := finiteUnitaryHaar κ) ?_).trans
     (haar_measureReal_half_traceEnergy_adjointAutocorrelation_le
       d e H hH htrace hzero)
@@ -183,7 +183,7 @@ theorem haar_measureReal_commutatorEnergy_le_traceEnergy_le
         2 * (S - F) := by
     exact finiteUnitary_commutator_hilbertSchmidtEnergy_eq_autocorrelationDefect H hH U
   have hF : S / 2 ≤ F := by linarith
-  change (S / 2) ^ 2 ≤ F ^ 2
+  change (S / 2) ^ (2 : ℕ) ≤ F ^ (2 : ℕ)
   nlinarith
 
 end

@@ -41,7 +41,7 @@ theorem profile_hasDerivAt (q : XiZeroCopy) (x : ℝ) :
 /-- The reflected pair solves one second-order equation with the same complete theta forcing. -/
 theorem profile_second_hasDerivAt (q : XiZeroCopy) (x : ℝ) :
     HasDerivAt (deriv (profile q))
-      ((thetaCuspFullSource x:ℂ)-(xiSpectralPoint q)^2*profile q x) x := by
+      ((thetaCuspFullSource x:ℂ)-(xiSpectralPoint q)^(2 : ℕ)*profile q x) x := by
   have hd : deriv (profile q) = fun x => (I/2)*(mode q x+mode (xiZeroCopyReflectEquiv q) x) :=
     funext (fun x => (profile_hasDerivAt q x).deriv)
   rw [hd]
@@ -122,17 +122,17 @@ private theorem shift_ne_zero (q : XiZeroCopy) (a : ℝ) :
   simpa [Complex.mul_re] using hr
 
 /-- The original mean denominator never vanishes at an actual Xi copy. -/
-theorem mean_denominator_ne_zero (q : XiZeroCopy) : 1+(xiSpectralPoint q)^2 ≠ 0 := by
+theorem mean_denominator_ne_zero (q : XiZeroCopy) : 1+(xiSpectralPoint q)^(2 : ℕ) ≠ 0 := by
   have hm : xiSpectralPoint q-I ≠ 0 := by simpa [sub_eq_add_neg] using shift_ne_zero q (-1)
   have hp : xiSpectralPoint q+I ≠ 0 := by simpa using shift_ne_zero q 1
-  have he : (xiSpectralPoint q-I)*(xiSpectralPoint q+I) = 1+(xiSpectralPoint q)^2 := by
+  have he : (xiSpectralPoint q-I)*(xiSpectralPoint q+I) = 1+(xiSpectralPoint q)^(2 : ℕ) := by
     ring_nf
     simp [Complex.I_sq,add_comm]
   exact he ▸ mul_ne_zero hm hp
 
 /-- Exact mean of the common-forcing source in the original native measure. -/
 theorem source_integral (q : XiZeroCopy) :
-    (∫ z, source q z ∂angularMeasure) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^2) := by
+    (∫ z, source q z ∂angularMeasure) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^(2 : ℕ)) := by
   have hi : Integrable (modeSource q) angularMeasure := MemLp.integrable (by norm_num) (modeSource_memLp q)
   have hj : Integrable (modeSource (xiZeroCopyReflectEquiv q)) angularMeasure :=
     MemLp.integrable (by norm_num) (modeSource_memLp (xiZeroCopyReflectEquiv q))
@@ -185,7 +185,7 @@ theorem height_hasDerivAt (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
 theorem heightDerivative_hasDerivAt (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
     HasDerivAt (heightDerivative q)
       ((Real.exp (-(3/2:ℝ)*Real.log y)/4:ℂ)*
-        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^2)*
+        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^(2 : ℕ))*
           profile q (Real.log y/2))) y := by
   have ht := (Real.hasDerivAt_log hy.ne').div_const 2
   have hp := (profile_hasDerivAt q (Real.log y/2)).scomp y ht
@@ -210,7 +210,7 @@ theorem heightDerivative_hasDerivAt (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
     ring
   calc
     _ = ((Real.exp (-(Real.log y/2)):ℂ)*(y⁻¹:ℝ))/4*
-        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^2)*
+        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^(2 : ℕ))*
           profile q (Real.log y/2)) := by push_cast; ring
     _ = _ := by rw [hf]
 
@@ -219,7 +219,7 @@ theorem heightDerivative_hasDerivAt (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
 theorem height_second_deriv (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
     deriv (deriv (heightProfile q)) y =
       (Real.exp (-(3/2:ℝ)*Real.log y)/4:ℂ)*
-        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^2)*
+        ((thetaCuspFullSource (Real.log y/2):ℂ)-(1+(xiSpectralPoint q)^(2 : ℕ))*
           profile q (Real.log y/2)) := by
   have he : deriv (heightProfile q) =ᶠ[𝓝 y] heightDerivative q := by
     filter_upwards [isOpen_Ioi.mem_nhds hy] with t ht
@@ -228,17 +228,17 @@ theorem height_second_deriv (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
   exact (heightDerivative_hasDerivAt q y hy).deriv
 
 /-- The unchanged quarter-shifted native energy attached to the actual Xi copy. -/
-def energy (q : XiZeroCopy) : ℂ := (5+(xiSpectralPoint q)^2)/4
+def energy (q : XiZeroCopy) : ℂ := (5+(xiSpectralPoint q)^(2 : ℕ))/4
 
 /-- Exact original radial operator residual: every Xi copy has the same complete theta forcing. -/
 theorem height_residual (q : XiZeroCopy) (y : ℝ) (hy : 0 < y) :
-    heightProfile q y-(y:ℂ)^2*deriv (deriv (heightProfile q)) y-
+    heightProfile q y-(y:ℂ)^(2 : ℕ)*deriv (deriv (heightProfile q)) y-
       energy q*heightProfile q y = -(positiveProfile y:ℂ)/4 := by
   rw [height_second_deriv q y hy]
-  have hf : (y:ℂ)^2*(Real.exp (-(3/2:ℝ)*Real.log y)/4:ℂ) =
+  have hf : (y:ℂ)^(2 : ℕ)*(Real.exp (-(3/2:ℝ)*Real.log y)/4:ℂ) =
       (Real.exp (Real.log y/2)/4:ℂ) := by
-    have hr : y^2*Real.exp (-(3/2:ℝ)*Real.log y) = Real.exp (Real.log y/2) := by
-      have hy2 : y^2 = Real.exp (Real.log y+Real.log y) := by rw [Real.exp_add,Real.exp_log hy,pow_two]
+    have hr : y^(2 : ℕ)*Real.exp (-(3/2:ℝ)*Real.log y) = Real.exp (Real.log y/2) := by
+      have hy2 : y^(2 : ℕ) = Real.exp (Real.log y+Real.log y) := by rw [Real.exp_add,Real.exp_log hy,pow_two]
       calc
         _ = Real.exp (Real.log y+Real.log y)*Real.exp (-(3/2:ℝ)*Real.log y) := by rw [hy2]
         _ = _ := by rw [← Real.exp_add]; congr 1; ring

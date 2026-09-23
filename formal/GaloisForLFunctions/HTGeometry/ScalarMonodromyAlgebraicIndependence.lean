@@ -16,7 +16,7 @@ pointwise with
 
 `σ F = ξ • F`,
 
-where the powers `ξ ^ 0, …, ξ ^ (m - 1)` are pairwise distinct for some `m > N`. Then `F` is
+where the powers `ξ ^ (0 : ℕ), …, ξ ^ (m - 1)` are pairwise distinct for some `m > N`. Then `F` is
 transcendental over `B`: an algebraic relation of degree `d` would be satisfied by the `m > d`
 distinct elements `ξ ^ k • F`.
 

@@ -27,7 +27,7 @@ theorem norm_compactFourier_sub_le_meanSquare
     {a b : ℝ} (hab : a ≤ b) (z : ℂ) :
     ‖compactFourier f a b z - compactFourier g a b z‖ ≤
       Real.exp (max |a| |b| * |z.im|) * Real.sqrt (b - a) *
-        Real.sqrt (∫ x in a..b, ‖f x - g x‖ ^ 2) := by
+        Real.sqrt (∫ x in a..b, ‖f x - g x‖ ^ (2 : ℕ)) := by
   let D : ℝ → ℂ := fun x => f x - g x
   have hD : Continuous D := hf.sub hg
   have hdiff :
@@ -78,10 +78,10 @@ theorem norm_compactFourier_sub_le_meanSquare
       intro x _
       ring
     _ ≤ Real.exp (max |a| |b| * |z.im|) *
-          (Real.sqrt (b - a) * Real.sqrt (∫ x in a..b, ‖D x‖ ^ 2)) := by
+          (Real.sqrt (b - a) * Real.sqrt (∫ x in a..b, ‖D x‖ ^ (2 : ℕ))) := by
       exact mul_le_mul_of_nonneg_left hfirst (Real.exp_pos _).le
     _ = Real.exp (max |a| |b| * |z.im|) * Real.sqrt (b - a) *
-          Real.sqrt (∫ x in a..b, ‖f x - g x‖ ^ 2) := by
+          Real.sqrt (∫ x in a..b, ‖f x - g x‖ ^ (2 : ℕ)) := by
       simp [D, mul_assoc]
 
 /-- Mean-square convergence on one fixed interval implies locally uniform
@@ -91,14 +91,14 @@ theorem compactFourier_tendstoLocallyUniformly_of_meanSquare
     (hfseq : ∀ n, Continuous (fseq n)) (hf : Continuous f)
     {a b : ℝ} (hab : a ≤ b)
     (hmean : Tendsto
-      (fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ 2) atTop (nhds 0)) :
+      (fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ (2 : ℕ)) atTop (nhds 0)) :
     TendstoLocallyUniformly
       (fun n z => compactFourier (fseq n) a b z)
       (compactFourier f a b) atTop := by
   rw [Metric.tendstoLocallyUniformly_iff]
   intro eps heps z₀
   refine ⟨Metric.ball z₀ 1, Metric.ball_mem_nhds z₀ one_pos, ?_⟩
-  let q : ℕ → ℝ := fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ 2
+  let q : ℕ → ℝ := fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ (2 : ℕ)
   have hq : Tendsto q atTop (nhds 0) := hmean
   have hsqrt : Tendsto (fun n => Real.sqrt (q n)) atTop (nhds 0) := by
     convert Real.continuous_sqrt.continuousAt.tendsto.comp hq using 1 <;>
@@ -147,7 +147,7 @@ theorem compactFourier_limit_zero_im_eq_zero_of_meanSquare
     (hfseq : ∀ n, Continuous (fseq n)) (hf : Continuous f)
     {a b : ℝ} (hab : a ≤ b)
     (hmean : Tendsto
-      (fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ 2) atTop (nhds 0))
+      (fun n => ∫ x in a..b, ‖fseq n x - f x‖ ^ (2 : ℕ)) atTop (nhds 0))
     (hreal : ∀ n z, compactFourier (fseq n) a b z = 0 → z.im = 0)
     {w z : ℂ} (hw : compactFourier f a b w ≠ 0)
     (hz : compactFourier f a b z = 0) :

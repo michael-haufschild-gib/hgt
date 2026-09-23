@@ -112,10 +112,10 @@ theorem routePPrimeGammaCubicKernelMatrix_diagonal
     simp [finiteVonMangoldtDepthOneAmplitude]
   rw [hampStar, show
     finiteVonMangoldtDepthOneAmplitude (n i) *
-          (((115 : ℝ) / (864 * Real.log (n i : ℝ) ^ 3) : ℝ) : ℂ) *
+          (((115 : ℝ) / (864 * Real.log (n i : ℝ) ^ (3 : ℕ)) : ℝ) : ℂ) *
         finiteVonMangoldtDepthOneAmplitude (n i) =
-      finiteVonMangoldtDepthOneAmplitude (n i) ^ 2 *
-        (((115 : ℝ) / (864 * Real.log (n i : ℝ) ^ 3) : ℝ) : ℂ) by ring,
+      finiteVonMangoldtDepthOneAmplitude (n i) ^ (2 : ℕ) *
+        (((115 : ℝ) / (864 * Real.log (n i : ℝ) ^ (3 : ℕ)) : ℝ) : ℂ) by ring,
     finiteVonMangoldtDepthOneAmplitude_sq hni,
     finiteVonMangoldtWeight_eq_ofReal hni]
   rw [routePPrimeGammaCubicWeight, vonMangoldtInverseLogPowerWeight,

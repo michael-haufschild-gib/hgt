@@ -19,8 +19,8 @@ namespace RHTower
 
 noncomputable section
 
-/-- Unit phase which turns `z ^ 6` into the nonnegative real number
-`‖z‖ ^ 6`.  At zero we choose zero. -/
+/-- Unit phase which turns `z ^ (6 : ℕ)` into the nonnegative real number
+`‖z‖ ^ (6 : ℕ)`.  At zero we choose zero. -/
 def bourgainSixthPowerPolarizer (z : ℂ) : ℂ :=
   if z = 0 then 0
   else (star z / (‖z‖ : ℂ)) ^ (6 : ℕ)
@@ -37,7 +37,7 @@ theorem norm_bourgainSixthPowerPolarizer_le_one (z : ℂ) :
     norm_num
 
 /-- Exact phase alignment:
-`polarizer(z) * z^6 = ‖z‖^6`. -/
+`polarizer(z) * z^(6 : ℕ) = ‖z‖^(6 : ℕ)`. -/
 theorem bourgainSixthPowerPolarizer_mul_pow_six (z : ℂ) :
     bourgainSixthPowerPolarizer z * z ^ (6 : ℕ) =
       ((‖z‖ ^ (6 : ℕ) : ℝ) : ℂ) := by
@@ -127,7 +127,7 @@ theorem sum_polarized_shortCurveSum_pow_six_eq_cloud
 /-- **Bourgain equation (3.7), exact finite form.**
 
 For any finite sample family, the sixth power of the sum of the short-sum
-moduli is bounded by `card^5` times the norm of one bilinear exponential sum
+moduli is bounded by `card^(5 : ℕ)` times the norm of one bilinear exponential sum
 over the sample family and the six-fold moment cloud.  Its outer
 polarization coefficients have norm at most one by
 `norm_bourgainSixthPowerPolarizer_le_one`. -/

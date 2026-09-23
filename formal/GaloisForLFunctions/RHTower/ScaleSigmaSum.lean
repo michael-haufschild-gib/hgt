@@ -25,7 +25,7 @@ open ArithmeticFunction Finset
 /-- `∑_{s ≤ M} log s/s ≤ ½·log²M + 1`. -/
 theorem sum_log_div_le (M : ℕ) (hM : 1 ≤ M) :
     ∑ s ∈ Finset.Icc 1 M, Real.log s / (s : ℝ)
-      ≤ Real.log M ^ 2 / 2 + 1 := by
+      ≤ Real.log M ^ (2 : ℕ) / 2 + 1 := by
   have hins : Finset.Icc 1 M = insert 1 (Finset.Icc 2 M) := by
     ext x
     simp [Finset.mem_Icc, Finset.mem_insert]
@@ -52,17 +52,17 @@ theorem sum_log_div_le (M : ℕ) (hM : 1 ≤ M) :
         mul_le_mul_of_nonneg_left hinc hlog0
   have hAB : ∀ s ∈ Finset.Icc 2 M,
       Real.log s * (Real.log s - Real.log ((s - 1 : ℕ) : ℝ))
-        = (Real.log s ^ 2 - Real.log ((s - 1 : ℕ) : ℝ) ^ 2) / 2
-          + (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ 2 / 2 := by
+        = (Real.log s ^ (2 : ℕ) - Real.log ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 2
+          + (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ) / 2 := by
     intro s _
     ring
   have htel : ∑ s ∈ Finset.Icc 2 M,
-      (Real.log s ^ 2 - Real.log ((s - 1 : ℕ) : ℝ) ^ 2)
-      = Real.log M ^ 2 := by
+      (Real.log s ^ (2 : ℕ) - Real.log ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ))
+      = Real.log M ^ (2 : ℕ) := by
     have hre : ∑ s ∈ Finset.Icc 2 M,
-        (Real.log s ^ 2 - Real.log ((s - 1 : ℕ) : ℝ) ^ 2)
+        (Real.log s ^ (2 : ℕ) - Real.log ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ))
         = ∑ j ∈ Finset.Ico 1 M,
-            (Real.log ((j : ℝ) + 1) ^ 2 - Real.log j ^ 2) := by
+            (Real.log ((j : ℝ) + 1) ^ (2 : ℕ) - Real.log j ^ (2 : ℕ)) := by
       apply Finset.sum_nbij' (i := fun s => s - 1) (j := fun j => j + 1)
       · intro s hs
         rw [Finset.mem_Icc] at hs
@@ -85,10 +85,10 @@ theorem sum_log_div_le (M : ℕ) (hM : 1 ≤ M) :
         rw [hc]
     rw [hre, sum_log_sq_increment_eq M hM]
   have hΔsq : ∑ s ∈ Finset.Icc 2 M,
-      (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ 2 ≤ 2 := by
+      (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ) ≤ 2 := by
     have hle : ∀ s ∈ Finset.Icc 2 M,
-        (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ 2
-          ≤ 1 / ((s - 1 : ℕ) : ℝ) ^ 2 := by
+        (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
+          ≤ 1 / ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
       intro s hs
       rw [Finset.mem_Icc] at hs
       have hs10 : (0 : ℝ) < ((s - 1 : ℕ) : ℝ) := by
@@ -102,13 +102,13 @@ theorem sum_log_div_le (M : ℕ) (hM : 1 ≤ M) :
         have := Real.log_le_log hs10 (show ((s - 1 : ℕ) : ℝ) ≤ s by
           linarith)
         linarith
-      have h2 : (1 : ℝ) / ((s - 1 : ℕ) : ℝ) ^ 2
-          = (1 / ((s - 1 : ℕ) : ℝ)) ^ 2 := by
+      have h2 : (1 : ℝ) / ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ)
+          = (1 / ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
         rw [div_pow, one_pow]
       rw [h2]
       exact pow_le_pow_left₀ hpos hinc 2
-    have hre2 : ∑ s ∈ Finset.Icc 2 M, 1 / ((s - 1 : ℕ) : ℝ) ^ 2
-        = ∑ j ∈ Finset.Icc 1 (M - 1), 1 / (j : ℝ) ^ 2 := by
+    have hre2 : ∑ s ∈ Finset.Icc 2 M, 1 / ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ)
+        = ∑ j ∈ Finset.Icc 1 (M - 1), 1 / (j : ℝ) ^ (2 : ℕ) := by
       apply Finset.sum_nbij' (i := fun s => s - 1) (j := fun j => j + 1)
       · intro s hs
         rw [Finset.mem_Icc] at hs
@@ -126,22 +126,22 @@ theorem sum_log_div_le (M : ℕ) (hM : 1 ≤ M) :
       · intro s _
         rfl
     calc ∑ s ∈ Finset.Icc 2 M,
-          (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ 2
-        ≤ ∑ s ∈ Finset.Icc 2 M, 1 / ((s - 1 : ℕ) : ℝ) ^ 2 :=
+          (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ)
+        ≤ ∑ s ∈ Finset.Icc 2 M, 1 / ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ) :=
           Finset.sum_le_sum hle
-      _ = ∑ j ∈ Finset.Icc 1 (M - 1), 1 / (j : ℝ) ^ 2 := hre2
+      _ = ∑ j ∈ Finset.Icc 1 (M - 1), 1 / (j : ℝ) ^ (2 : ℕ) := hre2
       _ ≤ 2 := sum_inv_sq_le (M - 1)
   calc ∑ s ∈ Finset.Icc 2 M, Real.log s / (s : ℝ)
       ≤ ∑ s ∈ Finset.Icc 2 M,
           Real.log s * (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) :=
         Finset.sum_le_sum hterm
     _ = (∑ s ∈ Finset.Icc 2 M,
-          (Real.log s ^ 2 - Real.log ((s - 1 : ℕ) : ℝ) ^ 2)) / 2
+          (Real.log s ^ (2 : ℕ) - Real.log ((s - 1 : ℕ) : ℝ) ^ (2 : ℕ))) / 2
         + (∑ s ∈ Finset.Icc 2 M,
-            (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ 2) / 2 := by
+            (Real.log s - Real.log ((s - 1 : ℕ) : ℝ)) ^ (2 : ℕ)) / 2 := by
         rw [Finset.sum_congr rfl hAB, Finset.sum_add_distrib,
           ← Finset.sum_div, ← Finset.sum_div]
-    _ ≤ Real.log M ^ 2 / 2 + 1 := by
+    _ ≤ Real.log M ^ (2 : ℕ) / 2 + 1 := by
         rw [htel]
         linarith [hΔsq]
 

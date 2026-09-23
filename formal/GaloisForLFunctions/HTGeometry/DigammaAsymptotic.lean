@@ -356,9 +356,9 @@ theorem gauss_digamma {s : ℂ} (hs : 0 < s.re) :
 
 
 theorem sum_inv_sq_shift_le {N : ℕ} (hN : 1 ≤ N) (M : ℕ) :
-    ∑ j ∈ Finset.range M, (1:ℝ)/((N:ℝ)+1+j)^2 ≤ 1/(N:ℝ) := by
+    ∑ j ∈ Finset.range M, (1:ℝ)/((N:ℝ)+1+j)^(2 : ℕ) ≤ 1/(N:ℝ) := by
   have hNr : (1:ℝ) ≤ (N:ℝ) := by exact_mod_cast hN
-  have hstep : ∀ j : ℕ, (1:ℝ)/((N:ℝ)+1+j)^2 ≤ 1/((N:ℝ)+j) - 1/((N:ℝ)+1+j) := by
+  have hstep : ∀ j : ℕ, (1:ℝ)/((N:ℝ)+1+j)^(2 : ℕ) ≤ 1/((N:ℝ)+j) - 1/((N:ℝ)+1+j) := by
     intro j
     have hNj : (0:ℝ) < (N:ℝ)+j := by have : (0:ℝ) ≤ (j:ℝ) := Nat.cast_nonneg j; linarith
     have hNj1 : (0:ℝ) < (N:ℝ)+1+j := by linarith
@@ -374,7 +374,7 @@ theorem sum_inv_sq_shift_le {N : ℕ} (hN : 1 ≤ N) (M : ℕ) :
     rw [Finset.sum_congr rfl (fun i _ => key i),
       Finset.sum_range_sub' (fun k : ℕ => (1:ℝ)/((N:ℝ)+k)) M]
     push_cast; ring
-  calc ∑ j ∈ Finset.range M, (1:ℝ)/((N:ℝ)+1+j)^2
+  calc ∑ j ∈ Finset.range M, (1:ℝ)/((N:ℝ)+1+j)^(2 : ℕ)
       ≤ ∑ j ∈ Finset.range M, (1/((N:ℝ)+j) - 1/((N:ℝ)+1+j)) := Finset.sum_le_sum (fun j _ => hstep j)
     _ = 1/(N:ℝ) - 1/((N:ℝ)+M) := htel
     _ ≤ 1/(N:ℝ) := by
@@ -396,7 +396,7 @@ theorem digamma_shift_diff_bound {w : ℂ} {N : ℕ} (hN : 1 ≤ N) (hwN : 0 < (
       = ∑ j ∈ Finset.range (m+1), (1/((N:ℂ) + 1 + (j:ℂ)) - 1/(w + (N:ℂ) + (j:ℂ))) := by
     intro m; rw [Finset.sum_sub_distrib]; ring
   have htermbound : ∀ (j : ℕ),
-      ‖1/((N:ℂ) + 1 + (j:ℂ)) - 1/(w + (N:ℂ) + (j:ℂ))‖ ≤ 2 * ‖w - 1‖ / ((N:ℝ)+1+j)^2 := by
+      ‖1/((N:ℂ) + 1 + (j:ℂ)) - 1/(w + (N:ℂ) + (j:ℂ))‖ ≤ 2 * ‖w - 1‖ / ((N:ℝ)+1+j)^(2 : ℕ) := by
     intro j
     set A : ℂ := (N:ℂ) + 1 + (j:ℂ) with hAdef
     set B : ℂ := w + (N:ℂ) + (j:ℂ) with hBdef
@@ -432,9 +432,9 @@ theorem digamma_shift_diff_bound {w : ℂ} {N : ℕ} (hN : 1 ≤ N) (hwN : 0 < (
     calc ‖∑ j ∈ Finset.range (m+1), (1/((N:ℂ) + 1 + (j:ℂ)) - 1/(w + (N:ℂ) + (j:ℂ)))‖
         ≤ ∑ j ∈ Finset.range (m+1), ‖1/((N:ℂ) + 1 + (j:ℂ)) - 1/(w + (N:ℂ) + (j:ℂ))‖ :=
           norm_sum_le _ _
-      _ ≤ ∑ j ∈ Finset.range (m+1), 2 * ‖w - 1‖ / ((N:ℝ)+1+j)^2 :=
+      _ ≤ ∑ j ∈ Finset.range (m+1), 2 * ‖w - 1‖ / ((N:ℝ)+1+j)^(2 : ℕ) :=
           Finset.sum_le_sum (fun j _ => htermbound j)
-      _ = 2 * ‖w - 1‖ * ∑ j ∈ Finset.range (m+1), 1 / ((N:ℝ)+1+j)^2 := by
+      _ = 2 * ‖w - 1‖ * ∑ j ∈ Finset.range (m+1), 1 / ((N:ℝ)+1+j)^(2 : ℕ) := by
           rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro j _; ring
       _ ≤ 2 * ‖w - 1‖ * (1 / (N:ℝ)) := by
           apply mul_le_mul_of_nonneg_left (sum_inv_sq_shift_le hN (m+1)) (by positivity)
@@ -490,27 +490,27 @@ theorem digamma_vertical_anchor_tendsto (σ t : ℝ) :
     rw [Complex.log_re, show ((N:ℂ) + 1) = (((N:ℝ)+1:ℝ):ℂ) by push_cast; ring, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (by positivity)]
   -- P3 : log(N+1) - ½ log((σ+N)²+t²) → 0
-  have hP3 : Tendsto (fun N : ℕ => Real.log ((N:ℝ) + 1) - (1/2) * Real.log ((σ + (N:ℝ))^2 + t^2))
+  have hP3 : Tendsto (fun N : ℕ => Real.log ((N:ℝ) + 1) - (1/2) * Real.log ((σ + (N:ℝ))^(2 : ℕ) + t^(2 : ℕ)))
       atTop (nhds 0) := by
     have hcdiv : ∀ c : ℝ, Tendsto (fun N : ℕ => c/((N:ℝ)+1)) atTop (nhds 0) := by
       intro c
       have hden : Tendsto (fun N : ℕ => (N:ℝ)+1) atTop atTop :=
         tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
       simpa using hden.const_div_atTop c
-    have hratio : Tendsto (fun N : ℕ => ((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2) atTop (nhds 1) := by
+    have hratio : Tendsto (fun N : ℕ => ((σ + (N:ℝ))^(2 : ℕ) + t^(2 : ℕ)) / ((N:ℝ)+1)^(2 : ℕ)) atTop (nhds 1) := by
       have h1 : Tendsto (fun N : ℕ => (σ + (N:ℝ))/((N:ℝ)+1)) atTop (nhds 1) := by
         have heq : (fun N : ℕ => (σ + (N:ℝ))/((N:ℝ)+1)) = fun N : ℕ => 1 + (σ - 1)/((N:ℝ)+1) := by
           funext N; have : (N:ℝ)+1 ≠ 0 := by positivity
           field_simp; ring
         rw [heq]; simpa using tendsto_const_nhds.add (hcdiv (σ - 1))
       have h2 : Tendsto (fun N : ℕ => t/((N:ℝ)+1)) atTop (nhds 0) := hcdiv t
-      have hcomb : Tendsto (fun N : ℕ => ((σ + (N:ℝ))/((N:ℝ)+1))^2 + (t/((N:ℝ)+1))^2)
+      have hcomb : Tendsto (fun N : ℕ => ((σ + (N:ℝ))/((N:ℝ)+1))^(2 : ℕ) + (t/((N:ℝ)+1))^(2 : ℕ))
           atTop (nhds 1) := by simpa using (h1.pow 2).add (h2.pow 2)
       apply hcomb.congr'
       filter_upwards [eventually_ge_atTop 1] with N _
       have hne : (N:ℝ)+1 ≠ 0 := by positivity
       field_simp
-    have hlog : Tendsto (fun N : ℕ => Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2))
+    have hlog : Tendsto (fun N : ℕ => Real.log (((σ + (N:ℝ))^(2 : ℕ) + t^(2 : ℕ)) / ((N:ℝ)+1)^(2 : ℕ)))
         atTop (nhds 0) := by
       have := (Real.continuousAt_log (by norm_num : (1:ℝ) ≠ 0)).tendsto.comp hratio
       have hcomp :
@@ -522,16 +522,16 @@ theorem digamma_vertical_anchor_tendsto (σ t : ℝ) :
       filter_upwards [] with N
       rfl
     have hP3fin : Tendsto (fun N : ℕ =>
-        (-1/2 : ℝ) * Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2)) atTop (nhds 0) := by
+        (-1/2 : ℝ) * Real.log (((σ + (N:ℝ))^(2 : ℕ) + t^(2 : ℕ)) / ((N:ℝ)+1)^(2 : ℕ))) atTop (nhds 0) := by
       simpa using hlog.const_mul (-1/2 : ℝ)
     apply hP3fin.congr'
     filter_upwards [(tendsto_natCast_atTop_atTop (R := ℝ)).eventually_gt_atTop (-σ)] with N hσN
-    have hden : (0:ℝ) < ((N:ℝ)+1)^2 := by positivity
-    have hpos : (0:ℝ) < (σ + (N:ℝ))^2 + t^2 := by
+    have hden : (0:ℝ) < ((N:ℝ)+1)^(2 : ℕ) := by positivity
+    have hpos : (0:ℝ) < (σ + (N:ℝ))^(2 : ℕ) + t^(2 : ℕ) := by
       have : (0:ℝ) < σ + (N:ℝ) := by linarith
       positivity
     rw [Real.log_div (ne_of_gt hpos) (ne_of_gt hden),
-      show Real.log (((N:ℝ)+1)^2) = 2 * Real.log ((N:ℝ)+1) by rw [Real.log_pow]; push_cast; ring]
+      show Real.log (((N:ℝ)+1)^(2 : ℕ)) = 2 * Real.log ((N:ℝ)+1) by rw [Real.log_pow]; push_cast; ring]
     ring
   -- assemble
   have hsum := (hP1.add hP2).add hP3
@@ -654,7 +654,7 @@ theorem re_digamma_ge {x y : ℝ} (hx : 0 ≤ x) (hy : 0 < y) :
   have hb := re_digamma_vertical_bound_uncond hx hy
   have habs := abs_le.mp hb
   have hlogle : Real.log y ≤ (1/2) * Real.log (x ^ 2 + y ^ 2) := by
-    rw [show Real.log y = (1/2) * Real.log (y^2) by rw [Real.log_pow]; push_cast; ring]
+    rw [show Real.log y = (1/2) * Real.log (y^(2 : ℕ)) by rw [Real.log_pow]; push_cast; ring]
     apply mul_le_mul_of_nonneg_left _ (by norm_num)
     apply Real.log_le_log (by positivity)
     nlinarith [sq_nonneg x]

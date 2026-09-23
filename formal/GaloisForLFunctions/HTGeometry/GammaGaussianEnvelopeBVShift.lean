@@ -7,7 +7,7 @@ In the pole coordinate `u = ρ + 1/2` the Riemann reflection `ρ ↦ 1 - ρ` bec
 center `u = 1`.  Translating the multiplier and the reflection factor by `1/2`,
 
 ```text
-A_BV(u) = A(u - 1/2) = exp((u-1)^2) π^((u-1/2)/2) / Γ((u-1/2)/2),
+A_BV(u) = A(u - 1/2) = exp((u-1)^(2 : ℕ)) π^((u-1/2)/2) / Γ((u-1/2)/2),
 χ_BV(u) = χ(u - 1/2) = π^(u-1) Γ((3/2-u)/2) / Γ((u-1/2)/2),
 ```
 

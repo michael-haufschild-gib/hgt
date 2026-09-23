@@ -57,7 +57,7 @@ one quarter under the actual nonzero field weight and Euclidean chart. -/
 theorem jointSpatial_conjugation (F : Point3 → ℂ) (p : Point3) (hp : 0 < p 2)
     (hF : ContDiffAt ℝ 2 F (chart p)) :
     jointSpatial (liftedField F) p =
-      weight p*((chart p 1:ℂ)^2*flatLaplacian F (chart p)+F (chart p)/4) := by
+      weight p*((chart p 1:ℂ)^(2 : ℕ)*flatLaplacian F (chart p)+F (chart p)/4) := by
   let L := fderiv ℝ F (chart p)
   let B := fderiv ℝ (fderiv ℝ F) (chart p)
   have hd := drift_contraction p hp L
@@ -87,8 +87,8 @@ theorem jointSpatial_conjugation (F : Point3 → ℂ) (p : Point3) (hp : 0 < p 2
 /-- The independent-frequency wave becomes the exact Euclidean inverse-square-potential equation. -/
 theorem jointWave_conjugation (F : Point3 → ℂ) (w : ℂ) (p : Point3) (hp : 0 < p 2)
     (hF : ContDiffAt ℝ 2 F (chart p)) :
-    w^2*liftedField F p-jointSpatial (liftedField F) p =
-      weight p*((w^2-1/4)*F (chart p)-(chart p 1:ℂ)^2*flatLaplacian F (chart p)) := by
+    w^(2 : ℕ)*liftedField F p-jointSpatial (liftedField F) p =
+      weight p*((w^(2 : ℕ)-1/4)*F (chart p)-(chart p 1:ℂ)^(2 : ℕ)*flatLaplacian F (chart p)) := by
   rw [jointSpatial_conjugation F p hp hF,liftedField]
   ring
 

@@ -434,13 +434,13 @@ theorem tendsto_xiPhysicalThetaAbelEnergyArithmeticZeroSum_weil
           (xiPhysicalThetaAbelEnergyArithmeticLower m)
           (xiPhysicalThetaAbelEnergyArithmeticUpper m),
         xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-          (xiSpectralPoint q) ^ 2) atTop
+          (xiSpectralPoint q) ^ (2 : ℕ)) atTop
       (𝓝 (xiWeilPolarization
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a)
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a))) := by
   let f : XiZeroCopy → ℂ := fun q =>
     xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-      (xiSpectralPoint q) ^ 2
+      (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable hA hc L a
   rw [Metric.tendsto_nhds]
@@ -516,7 +516,7 @@ theorem xiPhysicalThetaAbelEnergyArithmeticCorrectedPrimeSample_eq_zeroSum
           (xiPhysicalThetaAbelEnergyArithmeticLower m)
           (xiPhysicalThetaAbelEnergyArithmeticUpper m),
         xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-          (xiSpectralPoint q) ^ 2 := by
+          (xiSpectralPoint q) ^ (2 : ℕ) := by
   obtain ⟨hbot, htop, hright, hleft⟩ :=
     xiPhysicalThetaAbelEnergyArithmetic_admissible m
   obtain ⟨hre, him, hleftGeom, hrightGeom, hbelow, habove, htopGeom⟩ :=
@@ -556,11 +556,11 @@ theorem tendsto_xiPhysicalThetaAbelEnergyArithmeticPrimeSample_weil_sub_archSq
       (𝓝 (xiWeilPolarization
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a)
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a) -
-        (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2))) := by
+        (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ)))) := by
   have h := tendsto_xiPhysicalThetaAbelEnergyArithmeticCorrectedPrimeSample_weil
     hA hc L a
   let K : ℂ :=
-    (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2)
+    (((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ))
   have hconst : Tendsto (fun _ : ℕ => K) atTop (𝓝 K) := tendsto_const_nhds
   have hsub := h.sub hconst
   dsimp only [K] at hsub

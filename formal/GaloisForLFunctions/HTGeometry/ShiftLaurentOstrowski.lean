@@ -16,9 +16,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance shiftLaurentOstrowskiInst1 : Differential (LaurentSeries ℂ) := laurentSDifferential
 local instance ratFuncIntAlgebra' : Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-local instance : Differential (RatFunc ℂ) := ratFuncSDifferential
+local instance shiftLaurentOstrowskiInst2 : Differential (RatFunc ℂ) := ratFuncSDifferential
 local instance ratLaurentAlgebra : Algebra (RatFunc ℂ) (LaurentSeries ℂ) :=
   ratToLaurent.toAlgebra
 
@@ -37,7 +37,7 @@ local instance towerCRatLaurentAlg :
     rw [algebraMap_ratLaurent, RatFunc.algebraMap_eq_C, ratToLaurent_C, laurentCHom_eq_single,
       LaurentSeries.algebraMap_apply, HahnSeries.C_apply]
 
-local instance : DifferentialAlgebra (RatFunc ℂ) (LaurentSeries ℂ) :=
+local instance shiftLaurentOstrowskiInst3 : DifferentialAlgebra (RatFunc ℂ) (LaurentSeries ℂ) :=
   ⟨fun r => by rw [algebraMap_ratLaurent, algebraMap_ratLaurent, deriv_ratToLaurent]⟩
 
 /-! ### The Ostrowski alternative for the translation -/

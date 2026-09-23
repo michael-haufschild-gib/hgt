@@ -246,7 +246,7 @@ theorem circleAverage_circleAverage_parabola_norm_pow_twelve_subpower
     (circleAverage_circleAverage_parabola_norm_pow_twelve_le_l1 H a).trans
       (mul_le_mul_of_nonneg_left (hsix H a) (by positivity))
 
-/-- Any unimodular coefficients give the explicit `H^9` baseline.  This
+/-- Any unimodular coefficients give the explicit `H^(9 : ℕ)` baseline.  This
 uniform form is the one needed after inserting Bourgain's higher-order phase
 twists into the coefficients. -/
 theorem circleAverage_circleAverage_parabola_norm_one_coeff_pow_twelve_subpower
@@ -283,7 +283,7 @@ theorem circleAverage_circleAverage_parabola_norm_one_coeff_pow_twelve_subpower
         (C * (H : ℝ) ^ ε * (H : ℝ) ^ (3 : ℕ)) := h'
     _ = C * (H : ℝ) ^ ε * (H : ℝ) ^ (9 : ℕ) := by ring
 
-/-- Unit coefficients give the explicit `H^9` baseline (up to `H^ε`). -/
+/-- Unit coefficients give the explicit `H^(9 : ℕ)` baseline (up to `H^ε`). -/
 theorem circleAverage_circleAverage_parabola_one_norm_pow_twelve_subpower
     {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧

@@ -10,7 +10,7 @@ after removing factors independent of the complexified frequency coordinate `z`,
 `Gamma(z + (1 + Delta) / 2) / Gamma(z + (1 - Delta) / 2)`,
 
 where `Delta = 1 + 2*L` is the effective multipole gap.  Their equation (4) gives
-`Delta = sqrt((2*ell+1)^2 - 4*(q_e Q)^2)`, and equation (21) gives the Gamma ratio.
+`Delta = sqrt((2*ell+1)^(2 : ℕ) - 4*(q_e Q)^(2 : ℕ))`, and equation (21) gives the Gamma ratio.
 
 This file applies the existing same-orientation Gamma-shift classification.  The response is
 differentially algebraic exactly on the integral `Delta` lattice and hypertranscendental off it.
@@ -40,13 +40,13 @@ open scoped UnivMeroFieldInstances
 coupling `charge` represents `q_e Q`. -/
 def kerrNewmanChargedScalarEffectiveMultipoleGap
     (ell : ℕ) (charge : ℂ) : ℂ :=
-  Complex.sqrt ((2 * (ell : ℂ) + 1) ^ 2 - 4 * charge ^ 2)
+  Complex.sqrt ((2 * (ell : ℂ) + 1) ^ (2 : ℕ) - 4 * charge ^ (2 : ℕ))
 
 /-- The real charge amplitude selecting a prescribed nonnegative finite effective gap.  The
 `Fin` index makes the required bound `gap ≤ 2 * ell + 1` intrinsic and assumption-free. -/
 def kerrNewmanChargedScalarQuantizedCharge
     (ell : ℕ) (gap : Fin (2 * ell + 2)) : ℂ :=
-  (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ)
+  (Real.sqrt (((2 * (ell : ℝ) + 1) ^ (2 : ℕ) - (gap : ℝ) ^ (2 : ℕ)) / 4) : ℂ)
 
 /-- At zero scalar charge, the principal effective-multipole gap is the positive odd integer
 selected by the neutral Kerr--Newman sector. -/
@@ -62,13 +62,13 @@ theorem kerrNewmanChargedScalarEffectiveMultipoleGap_neutral
     dsimp [x]
     push_cast
     ring
-  rw [show ((2 * (ell : ℂ) + 1) ^ 2 - 4 * (0 : ℂ) ^ 2) =
-    (2 * (ell : ℂ) + 1) ^ 2 by ring, hcast]
-  have hnonneg : (0 : ℂ) ≤ (x : ℂ) ^ 2 := by
-    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨x ^ 2, sq_nonneg x, ?_⟩
+  rw [show ((2 * (ell : ℂ) + 1) ^ (2 : ℕ) - 4 * (0 : ℂ) ^ (2 : ℕ)) =
+    (2 * (ell : ℂ) + 1) ^ (2 : ℕ) by ring, hcast]
+  have hnonneg : (0 : ℂ) ≤ (x : ℂ) ^ (2 : ℕ) := by
+    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨x ^ (2 : ℕ), sq_nonneg x, ?_⟩
     simp
   rw [Complex.sqrt_of_nonneg hnonneg]
-  have hre : ((x : ℂ) ^ 2).re = x ^ 2 := by
+  have hre : ((x : ℂ) ^ (2 : ℕ)).re = x ^ (2 : ℕ) := by
     simp [pow_two]
   rw [hre]
   simpa using congrArg (fun y : ℝ => (y : ℂ)) (Real.sqrt_sq hx)
@@ -83,10 +83,10 @@ theorem kerrNewmanChargedScalarEffectiveMultipoleGap_criticalCharge
   have hx : 0 ≤ x := by
     dsimp [x]
     positivity
-  have hchargeSq : (Real.sqrt x : ℂ) ^ 2 = (x : ℂ) := by
+  have hchargeSq : (Real.sqrt x : ℂ) ^ (2 : ℕ) = (x : ℂ) := by
     rw [← Complex.ofReal_pow]
     exact_mod_cast Real.sq_sqrt hx
-  rw [show ((2 * (ell : ℂ) + 1) ^ 2 - 4 * (Real.sqrt x : ℂ) ^ 2) = 1 by
+  rw [show ((2 * (ell : ℂ) + 1) ^ (2 : ℕ) - 4 * (Real.sqrt x : ℂ) ^ (2 : ℕ)) = 1 by
     rw [hchargeSq]
     dsimp [x]
     push_cast
@@ -293,10 +293,10 @@ theorem kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge
   have hbound : n ≤ a := by
     dsimp [a, n]
     exact_mod_cast hnat
-  have hrad : 0 ≤ (a ^ 2 - n ^ 2) / 4 := by
+  have hrad : 0 ≤ (a ^ (2 : ℕ) - n ^ (2 : ℕ)) / 4 := by
     nlinarith
-  have hchargeSq : (Real.sqrt ((a ^ 2 - n ^ 2) / 4) : ℂ) ^ 2 =
-      ((a ^ 2 - n ^ 2) / 4 : ℂ) := by
+  have hchargeSq : (Real.sqrt ((a ^ (2 : ℕ) - n ^ (2 : ℕ)) / 4) : ℂ) ^ (2 : ℕ) =
+      ((a ^ (2 : ℕ) - n ^ (2 : ℕ)) / 4 : ℂ) := by
     rw [← Complex.ofReal_pow]
     exact_mod_cast Real.sq_sqrt hrad
   have ha : 2 * (ell : ℂ) + 1 = (a : ℂ) := by
@@ -305,20 +305,20 @@ theorem kerrNewmanChargedScalarEffectiveMultipoleGap_quantizedCharge
     ring
   have hgap : (gap : ℂ) = (n : ℂ) := by
     dsimp [n]
-  rw [show ((2 * (ell : ℂ) + 1) ^ 2 -
-      4 * (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ) ^ 2) =
-        (n : ℂ) ^ 2 by
-    rw [show (Real.sqrt (((2 * (ell : ℝ) + 1) ^ 2 - (gap : ℝ) ^ 2) / 4) : ℂ) =
-        (Real.sqrt ((a ^ 2 - n ^ 2) / 4) : ℂ) by rfl,
+  rw [show ((2 * (ell : ℂ) + 1) ^ (2 : ℕ) -
+      4 * (Real.sqrt (((2 * (ell : ℝ) + 1) ^ (2 : ℕ) - (gap : ℝ) ^ (2 : ℕ)) / 4) : ℂ) ^ (2 : ℕ)) =
+        (n : ℂ) ^ (2 : ℕ) by
+    rw [show (Real.sqrt (((2 * (ell : ℝ) + 1) ^ (2 : ℕ) - (gap : ℝ) ^ (2 : ℕ)) / 4) : ℂ) =
+        (Real.sqrt ((a ^ (2 : ℕ) - n ^ (2 : ℕ)) / 4) : ℂ) by rfl,
       hchargeSq, ha]
     dsimp [a, n]
     push_cast
     ring]
-  have hnonneg : (0 : ℂ) ≤ (n : ℂ) ^ 2 := by
-    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨n ^ 2, sq_nonneg n, ?_⟩
+  have hnonneg : (0 : ℂ) ≤ (n : ℂ) ^ (2 : ℕ) := by
+    refine RCLike.nonneg_iff_exists_ofReal.mpr ⟨n ^ (2 : ℕ), sq_nonneg n, ?_⟩
     simp
   rw [Complex.sqrt_of_nonneg hnonneg]
-  have hre : ((n : ℂ) ^ 2).re = n ^ 2 := by
+  have hre : ((n : ℂ) ^ (2 : ℕ)).re = n ^ (2 : ℕ) := by
     simp [pow_two]
   rw [hre]
   simpa [hgap] using congrArg (fun y : ℝ => (y : ℂ)) (Real.sqrt_sq hn)

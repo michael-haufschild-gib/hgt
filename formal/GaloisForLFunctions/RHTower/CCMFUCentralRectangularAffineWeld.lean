@@ -229,7 +229,7 @@ pre-scalar source family: all aperture slices remain coupled until the final int
 def ccmFUCentralRectangularAffineMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
     ccmFUCentralRectangularAffineRemainder b t) +
-  (32 / H ^ 4) * ccmFUCentralRectangularAffineRemainder b H
+  (32 / H ^ (4 : ℕ)) * ccmFUCentralRectangularAffineRemainder b H
 
 /-- The literal marked FU prime--polar current is negative one half of the full positive marked
 mixture of central affine remainders. This is an exact cross-aperture identity, not an atomwise
@@ -344,20 +344,20 @@ theorem abs_ccmFUCentralGammaLerchAffineDefect_le
 in the moving upper wall. -/
 theorem ccmThirdGradeCesaroRectangularMixDensity_le_invPowFive
     {H t : ℝ} (hH : 0 < H) (ht : 0 < t) (_htH : t ≤ H) :
-    ccmThirdGradeCesaroRectangularMixDensity H t ≤ 384 / t ^ 5 := by
+    ccmThirdGradeCesaroRectangularMixDensity H t ≤ 384 / t ^ (5 : ℕ) := by
   have hfrac : (2 * H - t) / H ≤ 2 := by
     apply (div_le_iff₀ hH).2
     linarith
-  have ht5 : 0 < t ^ 5 := pow_pos ht 5
+  have ht5 : 0 < t ^ (5 : ℕ) := pow_pos ht 5
   unfold ccmThirdGradeCesaroRectangularMixDensity
   calc
-    192 * (2 * H - t) / (H * t ^ 5) =
-        (192 * ((2 * H - t) / H)) / t ^ 5 := by
+    192 * (2 * H - t) / (H * t ^ (5 : ℕ)) =
+        (192 * ((2 * H - t) / H)) / t ^ (5 : ℕ) := by
       field_simp [hH.ne', ht.ne']
-    _ ≤ (192 * 2) / t ^ 5 :=
+    _ ≤ (192 * 2) / t ^ (5 : ℕ) :=
       div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_left hfrac (by norm_num)) ht5.le
-    _ = 384 / t ^ 5 := by ring
+    _ = 384 / t ^ (5 : ℕ) := by ring
 
 /-- After exact Gamma cancellation, every moving FU chart-error slice has an inverse-quartic
 majorant independent of the upper wall. -/
@@ -366,7 +366,7 @@ theorem abs_rectangularMixDensity_mul_gammaLerchDefect_le
     |ccmThirdGradeCesaroRectangularMixDensity H t *
         ccmFUCentralGammaLerchAffineDefect b t| ≤
       (768 * screwLerchConst / b + 384 * |screwLerchTail₁ b|) *
-        (1 / t ^ 4) := by
+        (1 / t ^ (4 : ℕ)) := by
   have ht : 0 < t := hb.trans_le hbt
   have hH : 0 < H := ht.trans_le htH
   have hdensity0 := ccmThirdGradeCesaroRectangularMixDensity_nonneg hH ht htH
@@ -391,11 +391,11 @@ theorem abs_rectangularMixDensity_mul_gammaLerchDefect_le
     _ ≤ ccmThirdGradeCesaroRectangularMixDensity H t *
           (2 * screwLerchConst + t * |screwLerchTail₁ b|) :=
       mul_le_mul_of_nonneg_left hdef' hdensity0
-    _ ≤ (384 / t ^ 5) *
+    _ ≤ (384 / t ^ (5 : ℕ)) *
           (2 * screwLerchConst + t * |screwLerchTail₁ b|) := by
       exact mul_le_mul_of_nonneg_right hdensity (by positivity)
     _ ≤ (768 * screwLerchConst / b + 384 * |screwLerchTail₁ b|) *
-          (1 / t ^ 4) := by
+          (1 / t ^ (4 : ℕ)) := by
       field_simp [hb.ne', ht.ne']
       nlinarith
 
@@ -403,7 +403,7 @@ theorem abs_rectangularMixDensity_mul_gammaLerchDefect_le
 def ccmFUCentralGammaLerchAffineMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
     ccmFUCentralGammaLerchAffineDefect b t) +
-  (32 / H ^ 4) * ccmFUCentralGammaLerchAffineDefect b H
+  (32 / H ^ (4 : ℕ)) * ccmFUCentralGammaLerchAffineDefect b H
 
 /-- **Uniform diagonal Gamma chart bound.** The entire Gamma/Lerch term created by transporting
 the FU source into central Suzuki coordinates is uniformly bounded in the cofinal wall. Hence it
@@ -414,8 +414,8 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture
       |ccmFUCentralGammaLerchAffineMixture b H| ≤ C := by
   let A : ℝ := |screwLerchTail₁ b|
   let K : ℝ := 768 * screwLerchConst / b + 384 * A
-  let Bbulk : ℝ := K * (1 / (3 * b ^ 3))
-  let Bend : ℝ := 64 * screwLerchConst / b ^ 4 + 32 * A / b ^ 3
+  let Bbulk : ℝ := K * (1 / (3 * b ^ (3 : ℕ)))
+  let Bend : ℝ := 64 * screwLerchConst / b ^ (4 : ℕ) + 32 * A / b ^ (3 : ℕ)
   refine ⟨Bbulk + Bend, ?_, ?_⟩
   · have hA : 0 ≤ A := by
       dsimp only [A]
@@ -466,7 +466,7 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture
       exact add_nonneg
         (div_nonneg (mul_nonneg (by norm_num) screwLerchConst_nonneg) hb.le)
         (mul_nonneg (by norm_num) (abs_nonneg _))
-    have hmajor : IntervalIntegrable (fun t : ℝ => K * (1 / t ^ 4)) volume b H := by
+    have hmajor : IntervalIntegrable (fun t : ℝ => K * (1 / t ^ (4 : ℕ))) volume b H := by
       apply ContinuousOn.intervalIntegrable
       rw [Set.uIcc_of_le hbHle]
       apply continuousOn_const.mul
@@ -481,15 +481,15 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture
             |ccmThirdGradeCesaroRectangularMixDensity H t *
               ccmFUCentralGammaLerchAffineDefect b t| :=
           intervalIntegral.abs_integral_le_integral_abs hbHle
-        _ ≤ ∫ t in b..H, K * (1 / t ^ 4) := by
+        _ ≤ ∫ t in b..H, K * (1 / t ^ (4 : ℕ)) := by
           apply intervalIntegral.integral_mono_on hbHle hint.abs hmajor
           intro t ht
           dsimp only [K, A]
           exact abs_rectangularMixDensity_mul_gammaLerchDefect_le
             hb ht.1 ht.2
-        _ = K * (∫ t in b..H, 1 / t ^ 4) := by
+        _ = K * (∫ t in b..H, 1 / t ^ (4 : ℕ)) := by
           rw [intervalIntegral.integral_const_mul]
-        _ ≤ K * (1 / (3 * b ^ 3)) := by
+        _ ≤ K * (1 / (3 * b ^ (3 : ℕ))) := by
           exact mul_le_mul_of_nonneg_left
             (GaloisForLFunctions.HTGeometry.integral_one_div_pow_four_le hb hbHle) hK
         _ = Bbulk := by rfl
@@ -502,23 +502,23 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture
         _ ≤ 2 * screwLerchConst + (H - b) * |screwLerchTail₁ b| := hdefH
         _ ≤ 2 * screwLerchConst + H * |screwLerchTail₁ b| := by
           nlinarith [abs_nonneg (screwLerchTail₁ b)]
-    have hb3 : 0 < b ^ 3 := pow_pos hb 3
-    have hb4 : 0 < b ^ 4 := pow_pos hb 4
-    have hH3 : 0 < H ^ 3 := pow_pos hH 3
-    have hH4 : 0 < H ^ 4 := pow_pos hH 4
-    have hb3H3 : b ^ 3 ≤ H ^ 3 := pow_le_pow_left₀ hb.le hbHle 3
-    have hb4H4 : b ^ 4 ≤ H ^ 4 := pow_le_pow_left₀ hb.le hbHle 4
+    have hb3 : 0 < b ^ (3 : ℕ) := pow_pos hb 3
+    have hb4 : 0 < b ^ (4 : ℕ) := pow_pos hb 4
+    have hH3 : 0 < H ^ (3 : ℕ) := pow_pos hH 3
+    have hH4 : 0 < H ^ (4 : ℕ) := pow_pos hH 4
+    have hb3H3 : b ^ (3 : ℕ) ≤ H ^ (3 : ℕ) := pow_le_pow_left₀ hb.le hbHle 3
+    have hb4H4 : b ^ (4 : ℕ) ≤ H ^ (4 : ℕ) := pow_le_pow_left₀ hb.le hbHle 4
     have hend :
-        |(32 / H ^ 4) * ccmFUCentralGammaLerchAffineDefect b H| ≤ Bend := by
+        |(32 / H ^ (4 : ℕ)) * ccmFUCentralGammaLerchAffineDefect b H| ≤ Bend := by
       calc
-        _ = (32 / H ^ 4) * |ccmFUCentralGammaLerchAffineDefect b H| := by
-          rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ 32 / H ^ 4)]
-        _ ≤ (32 / H ^ 4) * (2 * screwLerchConst + H * A) :=
+        _ = (32 / H ^ (4 : ℕ)) * |ccmFUCentralGammaLerchAffineDefect b H| := by
+          rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ 32 / H ^ (4 : ℕ))]
+        _ ≤ (32 / H ^ (4 : ℕ)) * (2 * screwLerchConst + H * A) :=
           mul_le_mul_of_nonneg_left hdefH' (by positivity)
-        _ = 64 * screwLerchConst / H ^ 4 + 32 * A / H ^ 3 := by
+        _ = 64 * screwLerchConst / H ^ (4 : ℕ) + 32 * A / H ^ (3 : ℕ) := by
           field_simp [hH.ne']
           ring
-        _ ≤ 64 * screwLerchConst / b ^ 4 + 32 * A / b ^ 3 := by
+        _ ≤ 64 * screwLerchConst / b ^ (4 : ℕ) + 32 * A / b ^ (3 : ℕ) := by
           apply add_le_add
           · exact div_le_div_of_nonneg_left
               (mul_nonneg (by norm_num) screwLerchConst_nonneg) hb4 hb4H4
@@ -532,7 +532,7 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture
 def ccmFUCentralXiScrewCodiagonalMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
     ccmGuinandWeilXiScrewCodiagonal b t) +
-  (32 / H ^ 4) * ccmGuinandWeilXiScrewCodiagonal b H
+  (32 / H ^ (4 : ℕ)) * ccmGuinandWeilXiScrewCodiagonal b H
 
 /-- The full central rectangular mixture splits into a literal Xi-screw source mixture and the
 bounded Gamma/Lerch chart term. No arithmetic positive/negative region is separated. -/

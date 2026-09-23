@@ -18,7 +18,7 @@ theorem thetaCuspFullSource_compact_slope_lower {x : ℝ}
   have hrel := thetaCuspModularTransverseShear_le_fiveFourths_drift hx
   have haw := mul_le_mul_of_nonneg_left hrel (by linarith : 0 ≤ a x)
   have hau := mul_nonneg hu0 (show 0 ≤ a x-5 by linarith)
-  have hu3 : 0 ≤ u x^3 := pow_nonneg hu0 3
+  have hu3 : 0 ≤ u x^(3 : ℕ) := pow_nonneg hu0 3
   have hf : -(2/3)*(a x*w x/8+5*u x/16) ≤
       HTGeometry.oddCompactSourceFirst (u x) (a x) (w x) := by
     unfold HTGeometry.oddCompactSourceFirst
@@ -31,7 +31,7 @@ theorem thetaCuspFullSource_compact_slope_lower {x : ℝ}
 /-- The complete correction admits an even polynomial lower comparison on the full energy interval. -/
 theorem thetaCuspCenterCompensationSource_even_compact_lower {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    Bottcher.completedThetaProfile x^2 *
+    Bottcher.completedThetaProfile x^(2 : ℕ) *
       (HTGeometry.oddCompactSourceZero (u x) (a x) *
         (3*HTGeometry.oddCompactSourceZero (u x) (a x)-6/19)) ≤
       thetaCuspCenterCompensationSource x := by
@@ -46,14 +46,14 @@ theorem thetaCuspCenterCompensationSource_even_compact_lower {x : ℝ}
   have htQ := mul_le_mul_of_nonneg_right ht hQ
   have hl : HTGeometry.oddCompactSourceZero (u x) (a x)*
         (3*HTGeometry.oddCompactSourceZero (u x) (a x)-6/19) ≤
-      3*HTGeometry.oddCompactSourceZero (u x) (a x)^2+
+      3*HTGeometry.oddCompactSourceZero (u x) (a x)^(2 : ℕ)+
         2*x*HTGeometry.oddCompactSourceZero (u x) (a x)*
           HTGeometry.oddCompactSourceFirst (u x) (a x) (w x) := by
     nlinarith only [hmul, htQ]
   have hm := mul_le_mul_of_nonneg_left hl (sq_nonneg (Bottcher.completedThetaProfile x))
   unfold thetaCuspCenterCompensationSource
   rw [thetaCuspFullSource_eq_compactSourceZero, deriv_thetaCuspFullSource_eq_compactSourceFirst]
-  change _ ≤ 3*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))^2+
+  change _ ≤ 3*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))^(2 : ℕ)+
     2*x*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))*
       (Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceFirst (u x) (a x) (w x))
   nlinarith only [hm]

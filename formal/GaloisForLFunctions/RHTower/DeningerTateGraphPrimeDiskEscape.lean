@@ -30,13 +30,13 @@ theorem deningerTateUnitGreenMode_energy_eq_one {lam : ℝ} (hlam : 0 < lam) :
 /-- A unit-Green mode costs at least the square of its period in the Tate graph scale. -/
 theorem deningerTateUnitGreenMode_graphCost_ge_period_sq
     {L lam : ℝ} (hlam : 0 < lam) :
-    L ^ 2 ≤ deningerTateGraphWeight L lam * deningerTateUnitGreenModeMass lam := by
+    L ^ (2 : ℕ) ≤ deningerTateGraphWeight L lam * deningerTateUnitGreenModeMass lam := by
   rw [deningerTateUnitGreenModeMass, deningerTateGraphWeight]
-  have hL : 0 ≤ L ^ 2 := sq_nonneg L
+  have hL : 0 ≤ L ^ (2 : ℕ) := sq_nonneg L
   have hinv : 0 < lam⁻¹ := inv_pos.mpr hlam
   calc
-    L ^ 2 = L ^ 2 * lam * lam⁻¹ := by field_simp
-    _ ≤ L ^ 2 * (1 + lam) * lam⁻¹ := by
+    L ^ (2 : ℕ) = L ^ (2 : ℕ) * lam * lam⁻¹ := by field_simp
+    _ ≤ L ^ (2 : ℕ) * (1 + lam) * lam⁻¹ := by
       gcongr
       linarith
 
@@ -48,7 +48,7 @@ theorem deningerTateUnitGreenPrime_graphCost_tendsto_atTop
         deningerTateUnitGreenModeMass (lam p)) cofinite atTop := by
   have hlog : Tendsto (fun p : Nat.Primes => Real.log (p : ℝ)) cofinite atTop :=
     Real.tendsto_log_atTop.comp tendsto_prime_coe_real_cofinite_atTop
-  have hsq : Tendsto (fun p : Nat.Primes => Real.log (p : ℝ) ^ 2) cofinite atTop :=
+  have hsq : Tendsto (fun p : Nat.Primes => Real.log (p : ℝ) ^ (2 : ℕ)) cofinite atTop :=
     (tendsto_pow_atTop (α := ℝ) (by norm_num : (2 : ℕ) ≠ 0)).comp hlog
   exact tendsto_atTop_mono' cofinite
     (Eventually.of_forall fun p =>

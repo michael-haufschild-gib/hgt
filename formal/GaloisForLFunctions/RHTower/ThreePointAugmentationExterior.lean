@@ -52,9 +52,9 @@ oriented three-label augmentation coordinate. -/
 theorem symmetricThreePointDet_cubicApertureSourceKernel_eq_augmentationExteriorSq
     {kappa x y z : ℝ} (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     symmetricThreePointDet (cubicApertureSourceKernel kappa) x y z =
-      kappa ^ 3 * x ^ 3 * y ^ 3 * z ^ 3 *
-          threePointAugmentationExterior x y z ^ 2 /
-        (8 * (x + y) ^ 2 * (x + z) ^ 2 * (y + z) ^ 2) := by
+      kappa ^ (3 : ℕ) * x ^ (3 : ℕ) * y ^ (3 : ℕ) * z ^ (3 : ℕ) *
+          threePointAugmentationExterior x y z ^ (2 : ℕ) /
+        (8 * (x + y) ^ (2 : ℕ) * (x + z) ^ (2 : ℕ) * (y + z) ^ (2 : ℕ)) := by
   rw [symmetricThreePointDet_cubicApertureSourceKernel hx hy hz]
   unfold threePointAugmentationExterior
   congr 1
@@ -68,9 +68,9 @@ theorem neg_symmetricThreePointDet_poissonScaleRefinementKernel_eq_augmentationE
     (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     -symmetricThreePointDet (poissonScaleRefinementKernel a b) x y z =
       xiApertureCubicResponseExteriorGainSq kappa a b x y z *
-        (kappa ^ 3 * x ^ 3 * y ^ 3 * z ^ 3 *
-            threePointAugmentationExterior x y z ^ 2 /
-          (8 * (x + y) ^ 2 * (x + z) ^ 2 * (y + z) ^ 2)) := by
+        (kappa ^ (3 : ℕ) * x ^ (3 : ℕ) * y ^ (3 : ℕ) * z ^ (3 : ℕ) *
+            threePointAugmentationExterior x y z ^ (2 : ℕ) /
+          (8 * (x + y) ^ (2 : ℕ) * (x + z) ^ (2 : ℕ) * (y + z) ^ (2 : ℕ))) := by
   rw [
     neg_symmetricThreePointDet_poissonScaleRefinementKernel_eq_exteriorGainSq_mul
       hkappa ha hb hx hy hz,

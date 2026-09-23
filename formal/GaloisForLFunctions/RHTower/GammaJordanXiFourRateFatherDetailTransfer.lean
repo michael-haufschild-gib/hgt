@@ -39,10 +39,10 @@ theorem gammaJordanXiPrimeJoinedResponse_nonneg (p q : Nat.Primes) :
     0 ≤ gammaJordanXiPrimeJoinedResponse p q := by
   let k := gammaXiFisherBaseCorrelation p q
   have hk0 : 0 < k := gammaXiFisherBaseCorrelation_pos p q
-  have hkLoc : 3 / 4 < k ^ 2 :=
+  have hkLoc : 3 / 4 < k ^ (2 : ℕ) :=
     gammaXiFisherBaseCorrelation_sq_gt_three_fourths p q
   unfold gammaJordanXiPrimeJoinedResponse gammaJordanResponseFromBase
-  change 0 ≤ Real.sqrt k * (3 * k ^ 2 - 1) / 2
+  change 0 ≤ Real.sqrt k * (3 * k ^ (2 : ℕ) - 1) / 2
   exact div_nonneg
     (mul_nonneg (Real.sqrt_nonneg _) (by nlinarith)) (by norm_num)
 
@@ -51,23 +51,23 @@ theorem gammaJordanXiPrimeJoinedResponse_le_one (p q : Nat.Primes) :
   let k := gammaXiFisherBaseCorrelation p q
   have hk0 : 0 < k := gammaXiFisherBaseCorrelation_pos p q
   have hk1 : k ≤ 1 := gammaXiFisherBaseCorrelation_le_one p q
-  have hkLoc : 3 / 4 < k ^ 2 :=
+  have hkLoc : 3 / 4 < k ^ (2 : ℕ) :=
     gammaXiFisherBaseCorrelation_sq_gt_three_fourths p q
   have hsqrt0 : 0 ≤ Real.sqrt k := Real.sqrt_nonneg _
   have hsqrt1 : Real.sqrt k ≤ 1 := Real.sqrt_le_one.mpr hk1
-  have hksq1 : k ^ 2 ≤ 1 := by
+  have hksq1 : k ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg hk0.le (sub_nonneg.mpr hk1)]
-  have hfactor0 : 0 ≤ (3 * k ^ 2 - 1) / 2 := by nlinarith
-  have hfactor1 : (3 * k ^ 2 - 1) / 2 ≤ 1 := by nlinarith
+  have hfactor0 : 0 ≤ (3 * k ^ (2 : ℕ) - 1) / 2 := by nlinarith
+  have hfactor1 : (3 * k ^ (2 : ℕ) - 1) / 2 ≤ 1 := by nlinarith
   unfold gammaJordanXiPrimeJoinedResponse gammaJordanResponseFromBase
-  change Real.sqrt k * (3 * k ^ 2 - 1) / 2 ≤ 1
+  change Real.sqrt k * (3 * k ^ (2 : ℕ) - 1) / 2 ≤ 1
   nlinarith [mul_nonneg hsqrt0 (sub_nonneg.mpr hfactor1)]
 
 theorem gammaSewnXiShiftEndpointUnitTangentKernel_nonneg (p q : Nat.Primes) :
     0 ≤ gammaSewnXiShiftEndpointUnitTangentKernel p q := by
   let k := gammaXiFisherBaseCorrelation p q
   have hk0 : 0 < k := gammaXiFisherBaseCorrelation_pos p q
-  have hkLoc : 3 / 4 < k ^ 2 :=
+  have hkLoc : 3 / 4 < k ^ (2 : ℕ) :=
     gammaXiFisherBaseCorrelation_sq_gt_three_fourths p q
   rw [gammaSewnXiShiftEndpointUnitTangentKernel_eq_responseFromBase]
   unfold xiShiftTangentResponseFromBase
@@ -87,7 +87,7 @@ theorem gammaSewnBoundaryFisherAmplitude_pos (p : Nat.Primes) :
   exact gammaSewnMobiusApertureBoundaryFisherClock_pos p
 
 theorem gammaSewnBoundaryFisherAmplitude_sq (p : Nat.Primes) :
-    gammaSewnBoundaryFisherAmplitude p ^ 2 =
+    gammaSewnBoundaryFisherAmplitude p ^ (2 : ℕ) =
       gammaSewnMobiusApertureBoundaryFisherClock p := by
   rw [gammaSewnBoundaryFisherAmplitude,
     Real.sq_sqrt (gammaSewnMobiusApertureBoundaryFisherClock_pos p).le]
@@ -458,7 +458,7 @@ conservation. -/
 theorem gammaJordanXiFourRateCanonicalPlucker_energy_conservation
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
         (3 / 2 : ℝ) *
           (gammaJordanFourRateJoinedDetailEnergy a rate cell +
@@ -486,7 +486,7 @@ theorem gammaJordanXiFourRateCanonicalPlucker_energy_conservation
 theorem gammaJordanXiFourRateGapTransfer_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 ≤ gammaJordanXiFourRateGapTransfer a rate cell := by
   apply gammaSewnFourRateComplementaryResponseFatherEnergy_nonneg
   · intro s
@@ -529,7 +529,7 @@ is introduced. -/
 theorem gammaJordanXiFourRateGapTransfer_pos_of_aligned_crossPrime
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hcross : ∃ s t : Fin 6,
       (cell (fourRatePairComplementLeft s)).1 ≠
           (cell (fourRatePairComplementLeft t)).1 ∨
@@ -586,7 +586,7 @@ theorem gammaJordanXiFourRateGapTransfer_pos_of_aligned_crossPrime
 theorem gammaJordanFourRateJoinedFather_le_tangentDetail_transfer
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaJordanFourRateJoinedDetailEnergy a rate cell ≤
       xiTangentFourRateDetailEnergy a rate cell := by
   have hvolume := gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
@@ -598,7 +598,7 @@ theorem gammaJordanFourRateJoinedFather_le_tangentDetail_transfer
 theorem xiTangentFourRateFather_le_joinedFather
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     xiTangentFourRateFatherEnergy a rate cell ≤
       gammaJordanFourRateJoinedFatherEnergy a rate cell := by
   rw [gammaJordanFourRateJoinedFather_eq_tangent_add_gap]
@@ -608,7 +608,7 @@ theorem xiTangentFourRateFather_le_joinedFather
 theorem gammaJordanFourRateJoinedDetail_lt_tangentDetail_of_aligned_crossPrime
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hcross : ∃ s t : Fin 6,
       (cell (fourRatePairComplementLeft s)).1 ≠
           (cell (fourRatePairComplementLeft t)).1 ∨
@@ -626,7 +626,7 @@ theorem gammaJordanFourRateJoinedDetail_lt_tangentDetail_of_aligned_crossPrime
 theorem xiTangentFourRateFather_lt_joinedFather_of_aligned_crossPrime
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hcross : ∃ s t : Fin 6,
       (cell (fourRatePairComplementLeft s)).1 ≠
           (cell (fourRatePairComplementLeft t)).1 ∨
@@ -642,7 +642,7 @@ theorem xiTangentFourRateFather_lt_joinedFather_of_aligned_crossPrime
 theorem gammaJordanFourRateJoinedFather_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 ≤ gammaJordanFourRateJoinedFatherEnergy a rate cell := by
   apply gammaSewnFourRateComplementaryResponseFatherEnergy_nonneg
   · intro s
@@ -652,7 +652,7 @@ theorem gammaJordanFourRateJoinedFather_nonneg
 theorem gammaJordanFourRateJoinedDetail_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 ≤ gammaJordanFourRateJoinedDetailEnergy a rate cell := by
   apply gammaSewnFourRateComplementaryResponseDetailEnergy_nonneg
   · intro s
@@ -662,7 +662,7 @@ theorem gammaJordanFourRateJoinedDetail_nonneg
 theorem xiTangentFourRateFather_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 ≤ xiTangentFourRateFatherEnergy a rate cell := by
   apply gammaSewnFourRateComplementaryResponseFatherEnergy_nonneg
   · intro s
@@ -672,7 +672,7 @@ theorem xiTangentFourRateFather_nonneg
 theorem xiTangentFourRateDetail_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 ≤ xiTangentFourRateDetailEnergy a rate cell := by
   apply gammaSewnFourRateComplementaryResponseDetailEnergy_nonneg
   · intro s
@@ -843,7 +843,7 @@ the one-prime fibre, where the gap is zero and the mass is strictly positive. -/
 theorem gammaJordanXi_no_gap_domination_on_samePrime
     {a : ℝ} {rate : Fin 4 → ℝ} (p : Nat.Primes) (depth : Fin 4 → ℕ)
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) (C : ℝ) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) (C : ℝ) :
     C * gammaJordanXiFourRateGapTransfer a rate
           (gammaSewnFourRateSamePrimeCell p depth) <
       complementaryFisherMean

@@ -38,26 +38,26 @@ variable {W Wd : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volu
 theorem norm_kgFieldMildT_sq_le_energy (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ ≤ b)
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ 2 ≤ ‖kgFieldStateT W g h t‖ ^ 2 := by
+    ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ (2 : ℕ) ≤ ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) := by
   have hu : kgFieldMildT W (kgFreqInvOp g) h t = kgFreqInvOp (kgFieldGradT W g h t) :=
     (kgFreqInvOp_kgFieldGradT hb0 hWb hWs g h t).symm
   have hle : ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ≤ ‖kgFieldGradT W g h t‖ := by
     rw [hu]
     have hc := (kgFreqInvOp (E := E)).le_of_opNorm_le norm_kgFreqInvOp_le (kgFieldGradT W g h t)
     rwa [one_mul] at hc
-  have hsq : ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ 2 ≤ ‖kgFieldGradT W g h t‖ ^ 2 :=
+  have hsq : ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ (2 : ℕ) ≤ ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hle 2
-  have hstate : ‖kgFieldStateT W g h t‖ ^ 2
-      = ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2 := by
+  have hstate : ‖kgFieldStateT W g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldStateT, kgPair_fst, kgPair_snd]
-  have hvel : (0 : ℝ) ≤ ‖kgFieldVelT W g h t‖ ^ 2 := sq_nonneg _
+  have hvel : (0 : ℝ) ≤ ‖kgFieldVelT W g h t‖ ^ (2 : ℕ) := sq_nonneg _
   rw [hstate]
   linarith
 
 /-- The energy of the field in a moving background. -/
 def kgAdiabaticEnergy (W : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E)))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) : ℝ :=
-  ‖kgFieldStateT W g h t‖ ^ 2
+  ‖kgFieldStateT W g h t‖ ^ (2 : ℕ)
     - RCLike.re (inner ℂ (W t (kgFieldMildT W (kgFreqInvOp g) h t))
         (kgFieldMildT W (kgFreqInvOp g) h t))
 
@@ -101,11 +101,11 @@ theorem hasDerivAt_kgAdiabaticEnergy (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r�
 theorem kgAdiabaticEnergy_lower (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖ ≤ b)
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (1 - b) * ‖kgFieldStateT W g h t‖ ^ 2 ≤ kgAdiabaticEnergy W g h t := by
+    (1 - b) * ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) ≤ kgAdiabaticEnergy W g h t := by
   have hbd := abs_re_inner_potential_le (hWb t) (kgFieldMildT W (kgFreqInvOp g) h t)
   have hut := norm_kgFieldMildT_sq_le_energy hb0 hWb hWs g h t
   have h1 := (abs_le.mp hbd).2
-  have h2 : b * ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ 2 ≤ b * ‖kgFieldStateT W g h t‖ ^ 2 :=
+  have h2 : b * ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ (2 : ℕ) ≤ b * ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hut hb0
   rw [kgAdiabaticEnergy]
   linarith
@@ -114,7 +114,7 @@ theorem kgAdiabaticEnergy_nonneg (hb0 : 0 ≤ b) (hb1 : b < 1) (hWb : ∀ r : �
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) : 0 ≤ kgAdiabaticEnergy W g h t := by
   have hlow := kgAdiabaticEnergy_lower hb0 hWb hWs g h t
-  have hnn : (0 : ℝ) ≤ (1 - b) * ‖kgFieldStateT W g h t‖ ^ 2 := by
+  have hnn : (0 : ℝ) ≤ (1 - b) * ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) := by
     have : (0 : ℝ) ≤ 1 - b := by linarith
     positivity
   linarith
@@ -131,9 +131,9 @@ theorem abs_deriv_kgAdiabaticEnergy_le (hb0 : 0 ≤ b) (hb1 : b < 1) (hWb : ∀ 
   have hbd := abs_re_inner_potential_le (hWL t) (kgFieldMildT W (kgFreqInvOp g) h t)
   have hut := norm_kgFieldMildT_sq_le_energy hb0 hWb hWs g h t
   have hlow := kgAdiabaticEnergy_lower hb0 hWb hWs g h t
-  have h2 : L * ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ 2 ≤ L * ‖kgFieldStateT W g h t‖ ^ 2 :=
+  have h2 : L * ‖kgFieldMildT W (kgFreqInvOp g) h t‖ ^ (2 : ℕ) ≤ L * ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hut hL0
-  have h3 : L * ‖kgFieldStateT W g h t‖ ^ 2 ≤ L / (1 - b) * kgAdiabaticEnergy W g h t := by
+  have h3 : L * ‖kgFieldStateT W g h t‖ ^ (2 : ℕ) ≤ L / (1 - b) * kgAdiabaticEnergy W g h t := by
     rw [div_mul_eq_mul_div, le_div_iff₀ hb1']
     nlinarith [mul_le_mul_of_nonneg_left hlow hL0]
   linarith
@@ -241,13 +241,13 @@ theorem kgFieldEnergyT_le_adiabatic (hb0 : 0 ≤ b) (hb1 : b < 1) (hWb : ∀ r :
       (inner ℂ (W r x) y : ℂ) = inner ℂ x (W r y))
     (hWd : ∀ r : ℝ, HasDerivAt W (Wd r) r) (hL0 : 0 ≤ L) (hWL : ∀ r : ℝ, ‖Wd r‖ ≤ L)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2
+    ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ)
       ≤ kgAdiabaticEnergy W g h 0 * Real.exp (L / (1 - b) * |t|) / (1 - b) := by
   have hb1' : (0 : ℝ) < 1 - b := by linarith
   have hlow := kgAdiabaticEnergy_lower hb0 hWb hWs g h t
   have hupp := kgAdiabaticEnergy_le hb0 hb1 hWb hWs hsa hWd hL0 hWL g h t
-  have hstate : ‖kgFieldStateT W g h t‖ ^ 2
-      = ‖kgFieldGradT W g h t‖ ^ 2 + ‖kgFieldVelT W g h t‖ ^ 2 := by
+  have hstate : ‖kgFieldStateT W g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGradT W g h t‖ ^ (2 : ℕ) + ‖kgFieldVelT W g h t‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldStateT, kgPair_fst, kgPair_snd]
   rw [le_div_iff₀ hb1', ← hstate]
   linarith

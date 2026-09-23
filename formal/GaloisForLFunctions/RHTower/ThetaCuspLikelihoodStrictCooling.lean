@@ -64,11 +64,11 @@ theorem thetaCuspHigherLikelihoodSpectralMoment_one_pos
       hM1zero.symm
     have hInt :
         Integrable
-          (fun t : ℝ => t ^ 1 * Real.exp (-B * t))
+          (fun t : ℝ => t ^ (1 : ℕ) * Real.exp (-B * t))
           thetaCuspHigherLikelihoodSpectralMeasure :=
       integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB
     have hae :
-        (fun t : ℝ => t ^ 1 * Real.exp (-B * t)) =ᵐ[
+        (fun t : ℝ => t ^ (1 : ℕ) * Real.exp (-B * t)) =ᵐ[
           thetaCuspHigherLikelihoodSpectralMeasure] 0 := by
       apply (integral_eq_zero_iff_of_nonneg_ae
         (by
@@ -114,11 +114,11 @@ theorem thetaCuspLikelihoodVariance_pos
       thetaCuspHigherLikelihoodSpectralMoment B 2 /
             thetaCuspLikelihoodPartition B -
           (thetaCuspHigherLikelihoodSpectralMoment B 1 /
-            thetaCuspLikelihoodPartition B) ^ 2 =
+            thetaCuspLikelihoodPartition B) ^ (2 : ℕ) =
         (thetaCuspLikelihoodPartition B *
               thetaCuspHigherLikelihoodSpectralMoment B 2 -
-            thetaCuspHigherLikelihoodSpectralMoment B 1 ^ 2) /
-          thetaCuspLikelihoodPartition B ^ 2 := by
+            thetaCuspHigherLikelihoodSpectralMoment B 1 ^ (2 : ℕ)) /
+          thetaCuspLikelihoodPartition B ^ (2 : ℕ) := by
     field_simp [hpart.ne']
   rw [hid]
   apply div_pos
@@ -186,7 +186,7 @@ theorem two_pi_mul_thetaCuspLikelihoodMean_coordinate_le_boundarySlope
   have hcoord :
       thetaCuspLikelihoodCoordinate 0 ≤ thetaCuspLikelihoodCoordinate x := by
     have he : 1 ≤ Real.exp x := Real.one_le_exp hx
-    have hesq : 1 ≤ Real.exp x ^ 2 := by
+    have hesq : 1 ≤ Real.exp x ^ (2 : ℕ) := by
       nlinarith [Real.exp_pos x]
     unfold thetaCuspLikelihoodCoordinate
     norm_num
@@ -215,7 +215,7 @@ theorem two_pi_mul_thetaCuspLikelihoodMean_coordinate_lt_boundarySlope
       thetaCuspLikelihoodCoordinate 0 < thetaCuspLikelihoodCoordinate x := by
     have he : 1 < Real.exp x := by
       simpa using (Real.exp_lt_exp.mpr hx : Real.exp 0 < Real.exp x)
-    have hesq : 1 < Real.exp x ^ 2 := by
+    have hesq : 1 < Real.exp x ^ (2 : ℕ) := by
       nlinarith [Real.exp_pos x]
     unfold thetaCuspLikelihoodCoordinate
     norm_num

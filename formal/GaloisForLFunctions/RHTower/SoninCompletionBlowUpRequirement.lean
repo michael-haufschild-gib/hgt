@@ -37,8 +37,8 @@ theorem norm_soninBumpL2_pos (b c : ℝ) (hb : 0 < b) (hbc : b < c) :
   have hLpos := sqrt_half_energy_pos b c hb hbc
   have hlim := tendsto_norm_soninPacketEven b c hb hbc (fun n : ℕ => (n : ℝ))
     tendsto_natCast_atTop_atTop
-  have hhalf : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) / 2 <
-      Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) := by linarith
+  have hhalf : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) / 2 <
+      Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) := by linarith
   obtain ⟨i, hi⟩ := (hlim.eventually_const_lt hhalf).exists
   have hbound : ‖soninPacketEven b c hb hbc (i : ℝ)‖ ≤ 2 * ‖soninBumpL2 b c hb hbc‖ :=
     norm_soninPacketL2_le b c hb hbc _

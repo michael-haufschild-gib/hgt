@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The exact difference of the two printed algebraic quadratic-curvature terms. -/
 def quadraticAlgebraicSignDefect (f : ℝ → ℝ) (β r : ℝ) : ℝ :=
-  -β * radialRicciScalar f r ^ 2
+  -β * radialRicciScalar f r ^ (2 : ℕ)
 
 /-- The defect agrees with the full constant-core discrepancy already audited. -/
 theorem quadraticAlgebraicSignDefect_core (c β t : ℝ) :
@@ -113,9 +113,9 @@ theorem einastoQuadraticSignDefect_negative_iff (d l a b t : ℝ) :
 /-- Core density fixes a nonzero limiting defect for every positive coupling and density. -/
 theorem einastoQuadraticSignDefect_core_limit (d l a b : ℝ) :
     Tendsto (fun t => quadraticAlgebraicSignDefect (einastoMetric d l a) (Real.exp b) (Real.exp t))
-      atBot (𝓝 (-Real.exp b * (-32 * Real.pi * Real.exp d) ^ 2)) := by
+      atBot (𝓝 (-Real.exp b * (-32 * Real.pi * Real.exp d) ^ (2 : ℕ))) := by
   have he : (fun t => quadraticAlgebraicSignDefect (einastoMetric d l a) (Real.exp b) (Real.exp t)) =
-      (fun t => -Real.exp b * einastoRadialRicci d l a (Real.exp t) ^ 2) := by
+      (fun t => -Real.exp b * einastoRadialRicci d l a (Real.exp t) ^ (2 : ℕ)) := by
     funext t
     unfold quadraticAlgebraicSignDefect
     rw [radialRicciScalar_einasto]

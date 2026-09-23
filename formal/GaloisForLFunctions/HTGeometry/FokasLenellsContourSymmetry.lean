@@ -61,7 +61,7 @@ def contourParameter (vertical negative : Bool) (κ : ℝ) : ℂ :=
   (if negative then -1 else 1)*(if vertical then I else 1)*(Real.exp κ : ℂ)
 
 def contourSquaredParameter (vertical : Bool) (κ : ℝ) : ℝ :=
-  if vertical then -(Real.exp κ)^2 else (Real.exp κ)^2
+  if vertical then -(Real.exp κ)^(2 : ℕ) else (Real.exp κ)^(2 : ℕ)
 
 theorem contourConjugator_square (vertical negative : Bool) :
     contourConjugator vertical negative*contourConjugator vertical negative = 1 := by
@@ -71,7 +71,7 @@ theorem contourConjugator_square (vertical negative : Bool) :
       Matrix.mul_apply, Fin.sum_univ_two]
 
 theorem contourParameter_square (vertical negative : Bool) (κ : ℝ) :
-    contourParameter vertical negative κ^2 = (contourSquaredParameter vertical κ : ℂ) := by
+    contourParameter vertical negative κ^(2 : ℕ) = (contourSquaredParameter vertical κ : ℂ) := by
   cases vertical <;> cases negative <;>
     simp [contourParameter, contourSquaredParameter, mul_pow]
 
@@ -88,7 +88,7 @@ theorem contourParameter_ne_zero (vertical negative : Bool) (κ : ℝ) :
 
 /-- Every constructed ray lies on `Im(k²)=0`, the contour in Section 2.2. -/
 theorem contourParameter_square_im (vertical negative : Bool) (κ : ℝ) :
-    (contourParameter vertical negative κ^2).im = 0 := by
+    (contourParameter vertical negative κ^(2 : ℕ)).im = 0 := by
   rw [contourParameter_square]
   rfl
 
@@ -109,7 +109,7 @@ theorem spatialLax_contour_conjugation (q : SchwartzMap ℝ ℂ) (vertical negat
 /-- The same Pauli conjugation transports the free spatial phases. -/
 theorem diagonalFrame_contour_conjugation (vertical negative : Bool) (κ x : ℝ) :
     diagonalFrame (contourSquaredParameter vertical κ) x =
-      contourConjugator vertical negative*diagonalFrame ((Real.exp κ)^2) x*
+      contourConjugator vertical negative*diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*
         contourConjugator vertical negative := by
   cases vertical <;> cases negative <;> ext i j <;> fin_cases i <;> fin_cases j <;>
     simp [contourConjugator, contourSquaredParameter, diagonalFrame,
@@ -118,7 +118,7 @@ theorem diagonalFrame_contour_conjugation (vertical negative : Bool) (κ x : ℝ
 
 /-- The four rays exhaust the nonzero contour; the origin is recorded separately. -/
 theorem contourParameter_exhaustive (k : ℂ) :
-    (k^2).im = 0 ↔ k = 0 ∨ ∃ vertical negative κ, k = contourParameter vertical negative κ := by
+    (k^(2 : ℕ)).im = 0 ↔ k = 0 ∨ ∃ vertical negative κ, k = contourParameter vertical negative κ := by
   constructor
   · intro hk
     have hri : k.re = 0 ∨ k.im = 0 := by

@@ -133,10 +133,10 @@ theorem tendsto_completeResolutionActualXiReflectedShellSecondCartierEnergy
       (nhds
         (‖bilateralEigenFamily
             (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-              (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+              (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
           4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N
             (default : Nat.Primes) sourceHorizontalBilateralSecondJetGhost)
-              (n : ℤ)‖ ^ 2)) := by
+              (n : ℤ)‖ ^ (2 : ℕ))) := by
   have hs := xi_divisor_support_re_mem_open_unit q.1.1
   have h := tendsto_completeResolutionPrimePeeledReflectedSecondCartierEnergy
     (default : Nat.Primes) hs.1 hs.2 n
@@ -307,10 +307,10 @@ theorem completeResolutionActualXiReflectedShellSecondCartier_capstone
         (nhds
           (‖bilateralEigenFamily
               (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-                (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+                (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
             4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N
               (default : Nat.Primes) sourceHorizontalBilateralSecondJetGhost)
-                (n : ℤ)‖ ^ 2))) ∧
+                (n : ℤ)‖ ^ (2 : ℕ)))) ∧
       (∀ B : ℝ, ∃ n : ℕ, ∀ᶠ K : ℕ in atTop,
         B < sourceHorizontalSecondCartierKreinPositiveOrbitEnergy
           (completeResolutionActualXiReflectedShellSecondCartierJet K n x u q r N)) ∧
@@ -530,10 +530,10 @@ theorem tendsto_completeResolutionActualXiCumulativeReflectedSecondCartierEnergy
       (nhds
         (‖bilateralEigenFamily
             (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-              (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+              (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
           4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N
             (default : Nat.Primes) sourceHorizontalBilateralSecondJetGhost)
-              (n : ℤ)‖ ^ 2)) := by
+              (n : ℤ)‖ ^ (2 : ℕ))) := by
   have hs := xi_divisor_support_re_mem_open_unit q.1.1
   have h := tendsto_completeResolutionPrimePeeledCumulativeReflectedSecondCartierEnergy
     (default : Nat.Primes) hs.1 hs.2 n
@@ -666,10 +666,10 @@ theorem completeResolutionActualXiCumulativeReflectedSecondCartier_capstone
         (nhds
           (‖bilateralEigenFamily
               (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-                (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+                (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
             4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent x u q r N
               (default : Nat.Primes) sourceHorizontalBilateralSecondJetGhost)
-                (n : ℤ)‖ ^ 2))) ∧
+                (n : ℤ)‖ ^ (2 : ℕ)))) ∧
       (∀ B : ℝ, ∃ n : ℕ, ∀ᶠ K : ℕ in atTop,
         B < sourceHorizontalSecondCartierKreinPositiveOrbitEnergy
           (completeResolutionActualXiCumulativeReflectedSecondCartierJet

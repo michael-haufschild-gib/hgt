@@ -25,7 +25,7 @@ noncomputable section
 /-- The boundary majorant of the parameter derivative. -/
 def boundaryMajorant (K : ℝ) (τ : ℝ) : ℝ :=
   Set.indicator boundaryNear (fun _ => K) τ +
-    Set.indicator boundaryFar (fun t => farFieldConstant * Real.log |t| ^ 26 / |t|) τ
+    Set.indicator boundaryFar (fun t => farFieldConstant * Real.log |t| ^ (26 : ℕ) / |t|) τ
 
 theorem boundaryMajorant_near {K τ : ℝ} (hτ : |τ| ≤ 9) :
     boundaryMajorant K τ = K := by
@@ -37,7 +37,7 @@ theorem boundaryMajorant_near {K τ : ℝ} (hτ : |τ| ≤ 9) :
   rw [boundaryMajorant, Set.indicator_of_mem h1, Set.indicator_of_notMem h2, add_zero]
 
 theorem boundaryMajorant_far {K τ : ℝ} (hτ : 9 < |τ|) :
-    boundaryMajorant K τ = farFieldConstant * Real.log |τ| ^ 26 / |τ| := by
+    boundaryMajorant K τ = farFieldConstant * Real.log |τ| ^ (26 : ℕ) / |τ| := by
   have h1 : τ ∉ boundaryNear := by
     intro h
     have : |τ| ≤ 9 := h
@@ -57,7 +57,7 @@ theorem boundaryMajorant_nonneg {K : ℝ} (hK : 0 ≤ K) (τ : ℝ) : 0 ≤ boun
     positivity
 
 theorem boundaryBound_eq (K τ : ℝ) :
-    boundaryBound K τ = 4 * boundaryMajorant K τ ^ 2 := by
+    boundaryBound K τ = 4 * boundaryMajorant K τ ^ (2 : ℕ) := by
   by_cases hτ : |τ| ≤ 9
   · have h1 : τ ∈ boundaryNear := hτ
     have h2 : τ ∉ boundaryFar := by
@@ -230,7 +230,7 @@ theorem continuousOn_mobiusCausalMultiplierDeriv_line {ω : ℝ} (hω : 0 < ω) 
         1 / ((t : ℂ) * Complex.I) *
           ((riemannZeta (1 + 2 * (ω : ℂ)) +
               2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)) τ :=
+            ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))) τ :=
       (continuousAt_const.div hz hz0).mul continuousAt_const
     exact ((h1.mul h2).add h3)
   exact hcont.continuousWithinAt
@@ -263,7 +263,7 @@ theorem continuousOn_mobiusCausalFlatDeriv_line :
       Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero]
     linarith
   have hcont : ContinuousAt (fun t : ℝ => mobiusCausalFlatDeriv ((t : ℂ) * Complex.I)) τ := by
-    have h1 : ContinuousAt (fun t : ℝ => -(1 / (1 + (t : ℂ) * Complex.I) ^ 2)) τ :=
+    have h1 : ContinuousAt (fun t : ℝ => -(1 / (1 + (t : ℂ) * Complex.I) ^ (2 : ℕ))) τ :=
       (continuousAt_const.div (hlin.pow 2) (pow_ne_zero 2 hlin0)).neg
     have h2 : ContinuousAt (fun t : ℝ =>
         2 * deriv riemannZeta (1 + (t : ℂ) * Complex.I) /
@@ -279,7 +279,7 @@ theorem continuousOn_mobiusCausalFlatDeriv_line :
 /-- **The card's `(9)`.**  The boundary derivatives converge in the `H²` (boundary `L²`) norm. -/
 theorem tendsto_boundary_deriv_energy :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I) -
-        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ 2)
+        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₀, K, hω₀, hK, hbound⟩ := exists_uniform_boundary_bound
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < ω ∧ ω ≤ ω₀ := by
@@ -300,7 +300,7 @@ theorem tendsto_boundary_deriv_energy :
   have hmeas : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       AEStronglyMeasurable (fun τ : ℝ =>
         ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I) -
-          mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ 2) volume := by
+          mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) volume := by
     filter_upwards [hev] with ω hω
     have h1 := aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_mobiusCausalMultiplierDeriv_line hω.1)
@@ -309,7 +309,7 @@ theorem tendsto_boundary_deriv_energy :
     exact ((h1.sub h2).norm.pow 2)
   have hdom : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), ∀ᵐ τ : ℝ,
       ‖‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I) -
-        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ 2‖ ≤ boundaryBound K τ := by
+        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)‖ ≤ boundaryBound K τ := by
     filter_upwards [hev] with ω hω
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -323,13 +323,13 @@ theorem tendsto_boundary_deriv_energy :
         mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ := norm_nonneg _
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), boundaryBound_eq K τ]
     calc ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I) -
-          mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (2 * boundaryMajorant K τ) ^ 2 := by
+          mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (2 * boundaryMajorant K τ) ^ (2 : ℕ) := by
           exact pow_le_pow_left₀ h4 h3 2
-      _ = 4 * boundaryMajorant K τ ^ 2 := by ring
+      _ = 4 * boundaryMajorant K τ ^ (2 : ℕ) := by ring
   have hlim : ∀ᵐ τ : ℝ, Tendsto (fun ω : ℝ =>
       ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I) -
-        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ 2)
+        mobiusCausalFlatDeriv ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -355,7 +355,7 @@ theorem integrable_boundary_deriv_sq {ω₀ K : ℝ}
     (hbound : ∀ ω : ℝ, 0 < ω → ω ≤ ω₀ → ∀ τ : ℝ, τ ≠ 0 →
       ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ≤ boundaryMajorant K τ)
     {ω : ℝ} (hω : 0 < ω) (hωle : ω ≤ ω₀) :
-    Integrable (fun τ : ℝ => ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2) := by
+    Integrable (fun τ : ℝ => ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) := by
   refine Integrable.mono (integrable_boundaryBound K) ?_ ?_
   · exact ((aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_mobiusCausalMultiplierDeriv_line hω)).norm.pow 2)
@@ -363,8 +363,8 @@ theorem integrable_boundary_deriv_sq {ω₀ K : ℝ}
     have hτ : τ ≠ 0 := hτmem
     have h1 := hbound ω hω hωle τ hτ
     have h2 : (0 : ℝ) ≤ ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ := norm_nonneg _
-    have hsq : ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ boundaryMajorant K τ ^ 2 := pow_le_pow_left₀ h2 h1 2
+    have hsq : ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ boundaryMajorant K τ ^ (2 : ℕ) := pow_le_pow_left₀ h2 h1 2
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (by positivity),
       abs_of_nonneg (boundaryBound_nonneg K τ), boundaryBound_eq K τ]
     nlinarith [sq_nonneg (boundaryMajorant K τ)]
@@ -372,8 +372,8 @@ theorem integrable_boundary_deriv_sq {ω₀ K : ℝ}
 /-- **The card's `(10)`--`(11)`: Fisher-scaled causal flatness.**  With `ε = σ-1 = 2ω` and
 `∂_σ = ∂_ω/2`, the scaled derivative `4ε ∂_σ = 4ω ∂_ω` carries no boundary energy in the limit. -/
 theorem tendsto_fisher_scaled_boundary_energy :
-    Tendsto (fun ω : ℝ => (4 * ω) ^ 2 *
-        ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2)
+    Tendsto (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) *
+        ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₀, K, hω₀, hK, hbound⟩ := exists_uniform_boundary_bound
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < ω ∧ ω ≤ ω₀ := by
@@ -382,37 +382,37 @@ theorem tendsto_fisher_scaled_boundary_energy :
   have hE0 : (0 : ℝ) ≤ ∫ τ : ℝ, boundaryBound K τ :=
     integral_nonneg fun τ => boundaryBound_nonneg K τ
   have hupper : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (4 * ω) ^ 2 * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (4 * ω) ^ 2 * ∫ τ : ℝ, boundaryBound K τ := by
+      (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ := by
     filter_upwards [hev] with ω hω
     have hint := integrable_boundary_deriv_sq hbound hω.1 hω.2
-    have hmono : (∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2)
+    have hmono : (∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
         ≤ ∫ τ : ℝ, boundaryBound K τ := by
       refine integral_mono_ae hint (integrable_boundaryBound K) ?_
       filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
       have hτ : τ ≠ 0 := hτmem
       have h1 := hbound ω hω.1 hω.2 τ hτ
       have h2 : (0 : ℝ) ≤ ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ := norm_nonneg _
-      have hsq : ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2
-          ≤ boundaryMajorant K τ ^ 2 := pow_le_pow_left₀ h2 h1 2
-      have hbb : boundaryBound K τ = 4 * boundaryMajorant K τ ^ 2 := boundaryBound_eq K τ
-      show ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 ≤ boundaryBound K τ
+      have hsq : ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+          ≤ boundaryMajorant K τ ^ (2 : ℕ) := pow_le_pow_left₀ h2 h1 2
+      have hbb : boundaryBound K τ = 4 * boundaryMajorant K τ ^ (2 : ℕ) := boundaryBound_eq K τ
+      show ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) ≤ boundaryBound K τ
       rw [hbb]
       nlinarith [sq_nonneg (boundaryMajorant K τ)]
-    have hpos : (0 : ℝ) ≤ (4 * ω) ^ 2 := by positivity
+    have hpos : (0 : ℝ) ≤ (4 * ω) ^ (2 : ℕ) := by positivity
     exact mul_le_mul_of_nonneg_left hmono hpos
   have hlower : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (0 : ℝ) ≤ (4 * ω) ^ 2 * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 := by
+      (0 : ℝ) ≤ (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
     filter_upwards [hev] with ω hω
-    have hnn : (0 : ℝ) ≤ ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ 2 :=
+    have hnn : (0 : ℝ) ≤ ∫ τ : ℝ, ‖mobiusCausalMultiplierDeriv ω ((τ : ℂ) * Complex.I)‖ ^ (2 : ℕ) :=
       integral_nonneg fun τ => by positivity
     positivity
-  have hzero : Tendsto (fun ω : ℝ => (4 * ω) ^ 2 * ∫ τ : ℝ, boundaryBound K τ)
+  have hzero : Tendsto (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ)
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
-    have hc : Continuous (fun ω : ℝ => (4 * ω) ^ 2 * ∫ τ : ℝ, boundaryBound K τ) := by
+    have hc : Continuous (fun ω : ℝ => (4 * ω) ^ (2 : ℕ) * ∫ τ : ℝ, boundaryBound K τ) := by
       continuity
     have h := hc.tendsto (0 : ℝ)
-    have h0 : (4 * (0 : ℝ)) ^ 2 * (∫ τ : ℝ, boundaryBound K τ) = 0 := by norm_num
+    have h0 : (4 * (0 : ℝ)) ^ (2 : ℕ) * (∫ τ : ℝ, boundaryBound K τ) = 0 := by norm_num
     rw [h0] at h
     exact h.mono_left nhdsWithin_le_nhds
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hzero hlower hupper

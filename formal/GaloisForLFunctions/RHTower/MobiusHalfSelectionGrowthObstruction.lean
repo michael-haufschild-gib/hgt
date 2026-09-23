@@ -73,23 +73,23 @@ theorem exists_mobiusDivisorHalfSelectionHead_gt_linear_after (C : ℝ) (M₀ : 
 /-- Every fixed diagonal budget fails arbitrarily far out for the actual averaged energy. -/
 theorem exists_mobiusDivisorHalfSelectionEnergy_gt_diagonal_multiple (K : ℝ) (M₀ : ℕ) :
     ∃ M : ℕ, M₀ ≤ M ∧
-      K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^2) < mobiusDivisorHalfSelectionEnergy M := by
+      K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^(2 : ℕ)) < mobiusDivisorHalfSelectionEnergy M := by
   let C : ℝ := Real.sqrt (722*|K|)
   have hC : 0 ≤ C := Real.sqrt_nonneg _
-  have hCsq : C^2=722*|K| := Real.sq_sqrt (by positivity)
+  have hCsq : C^(2 : ℕ)=722*|K| := Real.sq_sqrt (by positivity)
   obtain ⟨M,hM,hhead⟩ := exists_mobiusDivisorHalfSelectionHead_gt_linear_after C M₀
   refine ⟨M,hM,?_⟩
   have hCM : 0 ≤ C*(M:ℝ) := mul_nonneg hC (Nat.cast_nonneg (α := ℝ) M)
-  have hsquare : (C*(M:ℝ))^2 < (mobiusDivisorHalfSelectionHead M)^2 := by
+  have hsquare : (C*(M:ℝ))^(2 : ℕ) < (mobiusDivisorHalfSelectionHead M)^(2 : ℕ) := by
     nlinarith [sq_abs (mobiusDivisorHalfSelectionHead M)]
   rw [mul_pow,hCsq] at hsquare
-  have hQ : 0 ≤ ∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^2 :=
+  have hQ : 0 ≤ ∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^(2 : ℕ) :=
     sum_nonneg (fun _ _ => sq_nonneg _)
-  have hbudget : K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^2) ≤ 722*|K| *(M:ℝ)^2 := by
+  have hbudget : K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^(2 : ℕ)) ≤ 722*|K| *(M:ℝ)^(2 : ℕ) := by
     calc
-      _ ≤ |K| *(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^2) :=
+      _ ≤ |K| *(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^(2 : ℕ)) :=
         mul_le_mul_of_nonneg_right (le_abs_self K) hQ
-      _ ≤ |K| *(722*(M:ℝ)^2) := mul_le_mul_of_nonneg_left
+      _ ≤ |K| *(722*(M:ℝ)^(2 : ℕ)) := mul_le_mul_of_nonneg_left
         (sum_mobiusDivisorDilationChannel_sq_le_quadratic M) (abs_nonneg K)
       _ = _ := by ring
   exact lt_of_le_of_lt hbudget (hsquare.trans_le (mobiusDivisorHalfSelectionHead_sq_le_energy M))
@@ -97,7 +97,7 @@ theorem exists_mobiusDivisorHalfSelectionEnergy_gt_diagonal_multiple (K : ℝ) (
 /-- No fixed multiplicative budget and finite cutoff repair the averaged-energy bound. -/
 theorem not_exists_eventual_mobiusDivisorHalfSelectionEnergy_diagonal_budget :
     ¬ ∃ (K : ℝ) (M₀ : ℕ), ∀ M : ℕ, M₀ ≤ M →
-      mobiusDivisorHalfSelectionEnergy M ≤ K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^2) := by
+      mobiusDivisorHalfSelectionEnergy M ≤ K*(∑ d ∈ Icc 1 M,mobiusDivisorDilationChannel M d^(2 : ℕ)) := by
   rintro ⟨K,M₀,h⟩
   obtain ⟨M,hM,hgt⟩ := exists_mobiusDivisorHalfSelectionEnergy_gt_diagonal_multiple K M₀
   exact (not_lt_of_ge (h M hM)) hgt

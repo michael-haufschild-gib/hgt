@@ -30,7 +30,7 @@ def lossPair (v w : EuclideanSpace ℂ (Deck N)) : ℝ :=
   (inner ℂ v w).re-(inner ℂ (inversionTransfer N r s v) (inversionTransfer N r s w)).re
 
 private theorem self_re (v : EuclideanSpace ℂ (Deck N)) :
-    (inner ℂ v v).re=‖v‖^2 := inner_self_eq_norm_sq (𝕜 := ℂ) v
+    (inner ℂ v v).re=‖v‖^(2 : ℕ) := inner_self_eq_norm_sq (𝕜 := ℂ) v
 
 /-- The complete mixed Gram loss has the original transfer energy on its diagonal. -/
 theorem lossPair_self (v : EuclideanSpace ℂ (Deck N)) : lossPair N r s v v=lossEnergy N r s v := by
@@ -41,7 +41,7 @@ theorem lossPair_self (v : EuclideanSpace ℂ (Deck N)) : lossPair N r s v v=los
 theorem lossEnergy_add (v w : EuclideanSpace ℂ (Deck N)) :
     lossEnergy N r s (v+w)=lossEnergy N r s v+lossEnergy N r s w+2*lossPair N r s v w := by
   have hn (a b : EuclideanSpace ℂ (Deck N)) :
-      ‖a+b‖^2=‖a‖^2+2*(inner ℂ a b).re+‖b‖^2 := norm_add_sq (𝕜 := ℂ) a b
+      ‖a+b‖^(2 : ℕ)=‖a‖^(2 : ℕ)+2*(inner ℂ a b).re+‖b‖^(2 : ℕ) := norm_add_sq (𝕜 := ℂ) a b
   simp only [lossEnergy,lossPair,map_add,hn]
   ring
 
@@ -110,7 +110,7 @@ def phaseStressYY (w : ℂ) : ℝ := phaseAverage N (fun i => stressYY N f (phas
 /-- The actual horizontal phase stress is physical derivative loss plus the original potential mass. -/
 theorem phaseStressXX_eq (z : ℍ) :
     phaseStressXX N r s f (z : ℂ)=lossEnergy N r s (sourceDerivative N f 1 z)-
-      lossEnergy N r s (sourceDerivative N f Complex.I z)+(lam/z.im^2)*lossEnergy N r s (sourceVector N f z) := by
+      lossEnergy N r s (sourceDerivative N f Complex.I z)+(lam/z.im^(2 : ℕ))*lossEnergy N r s (sourceVector N f z) := by
   unfold phaseStressXX stressXX potentialMass potential
   simp_rw [phaseReadout_dir]
   simp only [observedField,ofComplex_apply,UpperHalfPlane.coe_im]
@@ -128,7 +128,7 @@ theorem phaseStressXY_eq (z : ℍ) :
 /-- The actual vertical phase stress keeps the full signed derivative loss and original potential. -/
 theorem phaseStressYY_eq (z : ℍ) :
     phaseStressYY N r s f (z : ℂ)=lossEnergy N r s (sourceDerivative N f Complex.I z)-
-      lossEnergy N r s (sourceDerivative N f 1 z)+(lam/z.im^2)*lossEnergy N r s (sourceVector N f z) := by
+      lossEnergy N r s (sourceDerivative N f 1 z)+(lam/z.im^(2 : ℕ))*lossEnergy N r s (sourceVector N f z) := by
   unfold phaseStressYY stressYY potentialMass potential
   simp_rw [phaseReadout_dir]
   simp only [observedField,ofComplex_apply,UpperHalfPlane.coe_im]
@@ -298,9 +298,9 @@ theorem core_cusp_phase_stress_bound (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (r : ZMod (N+1)) :
     (coreQuarter N f r 1+boundarySum N f r 0+squareSum N f r 0-
-      ((lam : ℝ)-1/4)*(coreMass N f r 1+tailMass N f r 1))^2+
-      (Real.goldenRatio^2/4)*(lam : ℝ)*(massPhaseBoundary N f r r)^2 ≤
-      (Real.goldenRatio^2/4)*massPhaseBoundary N f r r*
+      ((lam : ℝ)-1/4)*(coreMass N f r 1+tailMass N f r 1))^(2 : ℕ)+
+      (Real.goldenRatio^(2 : ℕ)/4)*(lam : ℝ)*(massPhaseBoundary N f r r)^(2 : ℕ) ≤
+      (Real.goldenRatio^(2 : ℕ)/4)*massPhaseBoundary N f r r*
         (angularPhaseBoundary N f r r+
           (∫ y in arcFloor..(1 : ℝ), phaseStressXX N r r f (point (1/2) y))+
           (∫ x in (-(1/2 : ℝ))..(1/2), x*phaseStressXY N r r f (point x 1)+phaseStressYY N r r f (point x 1))) := by

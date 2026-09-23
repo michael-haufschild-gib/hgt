@@ -62,8 +62,8 @@ theorem inner_residual_span_eq_zero (v : n → H) (x : H) (c : n → 𝕜)
 `‖x‖²` minus the pairing form. -/
 theorem norm_sq_residual (v : n → H) (x : H) (c : n → 𝕜)
     (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x) :
-    ‖x - ∑ j, c j • v j‖ ^ 2
-      = ‖x‖ ^ 2 - RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
+    ‖x - ∑ j, c j • v j‖ ^ (2 : ℕ)
+      = ‖x‖ ^ (2 : ℕ) - RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
   set y : H := ∑ j, c j • v j with hy
   have hortho : inner 𝕜 (x - y) y = 0 := by
     refine inner_residual_span_eq_zero v x c hc ?_
@@ -85,9 +85,9 @@ theorem norm_sq_residual (v : n → H) (x : H) (c : n → 𝕜)
       rw [inner_smul_right]
       ring
     rw [this, hc i]
-  have hnorm : ‖x - y‖ ^ 2 = ‖x‖ ^ 2 - 2 * RCLike.re (inner 𝕜 x y) + ‖y‖ ^ 2 :=
+  have hnorm : ‖x - y‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) - 2 * RCLike.re (inner 𝕜 x y) + ‖y‖ ^ (2 : ℕ) :=
     norm_sub_sq (𝕜 := 𝕜) x y
-  have hyre : (RCLike.re (inner 𝕜 y y) : ℝ) = ‖y‖ ^ 2 := inner_self_eq_norm_sq y
+  have hyre : (RCLike.re (inner 𝕜 y y) : ℝ) = ‖y‖ ^ (2 : ℕ) := inner_self_eq_norm_sq y
   rw [hnorm, hxy, hyy] at *
   rw [← hyre, hyy]
   ring
@@ -95,7 +95,7 @@ theorem norm_sq_residual (v : n → H) (x : H) (c : n → 𝕜)
 /-- **The explained mass.**  The squared norm of the projection is the pairing form. -/
 theorem norm_sq_combination_of_normalEquations (v : n → H) (x : H) (c : n → 𝕜)
     (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x) :
-    ‖∑ j, c j • v j‖ ^ 2 = RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
+    ‖∑ j, c j • v j‖ ^ (2 : ℕ) = RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
   set y : H := ∑ j, c j • v j with hy
   have hyy : inner 𝕜 y y = ∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x := by
     rw [hy, sum_inner]
@@ -115,8 +115,8 @@ theorem norm_sq_combination_of_normalEquations (v : n → H) (x : H) (c : n → 
 /-- **The quadratic form of the least-squares problem.**  The squared distance to an arbitrary combination,
 with no hypothesis on the coefficients: `‖x‖²` minus twice the pairing plus the Gram form. -/
 theorem norm_sq_sub_combination (v : n → H) (x : H) (c : n → 𝕜) :
-    ‖x - ∑ j, c j • v j‖ ^ 2
-      = ‖x‖ ^ 2 - 2 * RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x)
+    ‖x - ∑ j, c j • v j‖ ^ (2 : ℕ)
+      = ‖x‖ ^ (2 : ℕ) - 2 * RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x)
         + RCLike.re (∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j)) := by
   set y : H := ∑ j, c j • v j with hy
   have hxy : RCLike.re (inner 𝕜 x y)
@@ -131,7 +131,7 @@ theorem norm_sq_sub_combination (v : n → H) (x : H) (c : n → 𝕜) :
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_mul, RingHomInvPair.comp_apply_eq, inner_conj_symm]
     rw [h1, ← h2, RCLike.conj_re]
-  have hyy : ‖y‖ ^ 2
+  have hyy : ‖y‖ ^ (2 : ℕ)
       = RCLike.re (∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j)) := by
     have hinner : inner 𝕜 y y
         = ∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j) := by
@@ -160,7 +160,7 @@ theorem norm_residual_le (v : n → H) (x : H) (c : n → 𝕜)
   have hortho : inner 𝕜 (x - y) (y - z) = 0 :=
     inner_residual_span_eq_zero v x c hc hdiff
   have hsplit : x - z = (x - y) + (y - z) := by abel
-  have hsq : ‖x - z‖ ^ 2 = ‖x - y‖ ^ 2 + ‖y - z‖ ^ 2 := by
+  have hsq : ‖x - z‖ ^ (2 : ℕ) = ‖x - y‖ ^ (2 : ℕ) + ‖y - z‖ ^ (2 : ℕ) := by
     rw [hsplit, norm_add_sq (𝕜 := 𝕜), hortho]
     simp
   nlinarith [norm_nonneg (x - y), norm_nonneg (x - z), norm_nonneg (y - z), hsq]

@@ -32,13 +32,13 @@ def xiEndpointProjectiveReflectionDisplacement (q : XiZeroCopy) : ℝ :=
 
 def xiEndpointProjectiveReflectionDisplacementSq (q : XiZeroCopy) : ℝ :=
   ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 /
-    (4 * ‖xiRawReciprocalCoordinate q‖ ^ 2 *
-      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2)
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) /
+    (4 * ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ) *
+      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ))
 
 theorem xiEndpointProjectiveReflectionDisplacement_sq (q : XiZeroCopy) :
     xiEndpointProjectiveReflectionDisplacementSq q =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
   rw [xiEndpointProjectiveReflectionDisplacementSq,
     endpoint_defect_term_eq]
   rw [Complex.sq_norm, Complex.sq_norm]
@@ -51,9 +51,9 @@ theorem xiEndpointProjectiveReflectionDisplacement_sq (q : XiZeroCopy) :
     Complex.one_re, Complex.one_im, Complex.conj_re, Complex.conj_im,
     sub_neg_eq_add, zero_add]
   have him : (q.1 : ℂ).im ≠ 0 := xi_divisor_support_im_ne_zero q.1
-  have hA : (q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hA : (q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero him]
-  have hB : (1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+  have hB : (1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero him]
   field_simp [hA, hB]
   ring
@@ -79,19 +79,19 @@ theorem xiEndpointProjectiveReflectionDisplacement_eq_abs (q : XiZeroCopy) :
     exact inv_ne_zero hdagger
   have hden : 0 < 2 * ‖xiRawReciprocalCoordinate q‖ *
       ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ := by positivity
-  have hsqdef : xiEndpointProjectiveReflectionDisplacement q ^ 2 =
+  have hsqdef : xiEndpointProjectiveReflectionDisplacement q ^ (2 : ℕ) =
       xiEndpointProjectiveReflectionDisplacementSq q := by
     rw [xiEndpointProjectiveReflectionDisplacement,
       xiEndpointProjectiveReflectionDisplacementSq, div_pow]
     field_simp [ne_of_gt hnr, ne_of_gt hnd]
     ring
-  have hsq : xiEndpointProjectiveReflectionDisplacement q ^ 2 =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+  have hsq : xiEndpointProjectiveReflectionDisplacement q ^ (2 : ℕ) =
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
     rw [hsqdef, xiEndpointProjectiveReflectionDisplacement_sq]
   have hnonneg : 0 ≤ xiEndpointProjectiveReflectionDisplacement q := by
     exact div_nonneg (norm_nonneg _) hden.le
-  have habssq : |(q.1 : ℂ).re - 1 / 2| ^ 2 =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 := sq_abs _
+  have habssq : |(q.1 : ℂ).re - 1 / 2| ^ (2 : ℕ) =
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := sq_abs _
   nlinarith [abs_nonneg ((q.1 : ℂ).re - 1 / 2)]
 
 theorem bornBeta_lineConj_mismatch (q : XiZeroCopy) :
@@ -138,8 +138,8 @@ def xiBornReflectionRadius : ℝ :=
 
 /-- Completed endpoint-energy budget at transverse projective radius `alpha`. -/
 def xiProjectiveEndpointBudget (alpha : ℝ) : ℝ :=
-  (4 * alpha ^ 2 /
-    (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2)) *
+  (4 * alpha ^ (2 : ℕ) /
+    (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ))) *
     xiEndpointCompletedCurvature
 
 theorem xiProjectiveReflectionRadius_eq_transverseSup :
@@ -240,9 +240,9 @@ theorem endpoint_defect_term_le_projective_factor_cross
     {alpha : ℝ} (halpha : 0 ≤ alpha) (halphaHalf : alpha ≤ 1 / 2)
     (hzeros : XiZeroHalfPlaneBound alpha) (q : XiZeroCopy) :
     ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 ≤
-      (4 * alpha ^ 2 /
-        (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2)) *
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) ≤
+      (4 * alpha ^ (2 : ℕ) /
+        (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ))) *
         (xiRawReciprocalCoordinate q *
           (starRingEnd ℂ)
             (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q))).re := by
@@ -252,41 +252,41 @@ theorem endpoint_defect_term_le_projective_factor_cross
   have hCinv : 2 < 1 / xiEndpointCompletedCurvature := by
     rw [lt_div_iff₀ hCpos]
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
-  have halphaSq : alpha ^ 2 ≤ 1 / 4 := by
+  have halphaSq : alpha ^ (2 : ℕ) ≤ 1 / 4 := by
     nlinarith [sq_nonneg alpha]
   have hbase : 0 <
-      1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2 := by
+      1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ) := by
     nlinarith
   have hdelta := abs_xiZero_re_sub_half_le_of_halfPlaneBound hzeros q
-  have hdeltaSq : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ alpha ^ 2 := by
+  have hdeltaSq : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ alpha ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ (abs_nonneg ((q.1 : ℂ).re - 1 / 2)) hdelta 2
     simpa only [sq_abs] using this
   have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
   have hcrossBase :
-      1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2 ≤
-        (q.1 : ℂ).im ^ 2 + (q.1 : ℂ).re * (1 - (q.1 : ℂ).re) := by
+      1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ) ≤
+        (q.1 : ℂ).im ^ (2 : ℕ) + (q.1 : ℂ).re * (1 - (q.1 : ℂ).re) := by
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
-  have hnum : (1 - 2 * (q.1 : ℂ).re) ^ 2 ≤ 4 * alpha ^ 2 := by
+  have hnum : (1 - 2 * (q.1 : ℂ).re) ^ (2 : ℕ) ≤ 4 * alpha ^ (2 : ℕ) := by
     nlinarith
   have him : (q.1 : ℂ).im ≠ 0 := xi_divisor_support_im_ne_zero q.1
-  have hApos : 0 < (q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hApos : 0 < (q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero him]
-  have hBpos : 0 < (1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2 := by
+  have hBpos : 0 < (1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero him]
   have hdenpos : 0 <
-      ((q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2) *
-        ((1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2) :=
+      ((q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) *
+        ((1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) :=
     mul_pos hApos hBpos
   calc
-    _ ≤ ((4 * alpha ^ 2 /
-          (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2)) *
-        ((q.1 : ℂ).im ^ 2 + (q.1 : ℂ).re * (1 - (q.1 : ℂ).re))) /
-        (((q.1 : ℂ).re ^ 2 + (q.1 : ℂ).im ^ 2) *
-          ((1 - (q.1 : ℂ).re) ^ 2 + (q.1 : ℂ).im ^ 2)) := by
+    _ ≤ ((4 * alpha ^ (2 : ℕ) /
+          (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ))) *
+        ((q.1 : ℂ).im ^ (2 : ℕ) + (q.1 : ℂ).re * (1 - (q.1 : ℂ).re))) /
+        (((q.1 : ℂ).re ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) *
+          ((1 - (q.1 : ℂ).re) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ))) := by
       rw [div_le_div_iff_of_pos_right hdenpos]
       rw [div_mul_eq_mul_div, le_div_iff₀ hbase]
-      have hnumNonneg : 0 ≤ (1 - 2 * (q.1 : ℂ).re) ^ 2 := sq_nonneg _
-      have halphaMulNonneg : 0 ≤ 4 * alpha ^ 2 := by positivity
+      have hnumNonneg : 0 ≤ (1 - 2 * (q.1 : ℂ).re) ^ (2 : ℕ) := sq_nonneg _
+      have halphaMulNonneg : 0 ≤ 4 * alpha ^ (2 : ℕ) := by positivity
       nlinarith
     _ = _ := by ring
 
@@ -295,8 +295,8 @@ theorem xiEndpointDefectEnergy_le_of_halfPlaneBound
     (hzeros : XiZeroHalfPlaneBound alpha) :
     xiEndpointReflectionDefectEnergy ≤ xiProjectiveEndpointBudget alpha := by
   rw [xiProjectiveEndpointBudget]
-  let K : ℝ := 4 * alpha ^ 2 /
-    (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ 2)
+  let K : ℝ := 4 * alpha ^ (2 : ℕ) /
+    (1 / xiEndpointCompletedCurvature - 3 / 4 - alpha ^ (2 : ℕ))
   have hR : Summable (fun q : XiZeroCopy =>
       (xiRawReciprocalCoordinate q *
         (starRingEnd ℂ)
@@ -420,7 +420,7 @@ theorem xiProjectiveEndpointBudget_half :
   have hC1 : 1 - xiEndpointCompletedCurvature ≠ 0 := by
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
   have hden :
-      1 / xiEndpointCompletedCurvature - 3 / 4 - (1 / 2 : ℝ) ^ 2 =
+      1 / xiEndpointCompletedCurvature - 3 / 4 - (1 / 2 : ℝ) ^ (2 : ℕ) =
         (1 - xiEndpointCompletedCurvature) / xiEndpointCompletedCurvature := by
     field_simp [hC]
     ring
@@ -437,13 +437,13 @@ theorem xiProjectiveEndpointBudget_strictMonoOn :
   have hCinv : 2 < 1 / xiEndpointCompletedCurvature := by
     rw [lt_div_iff₀ hCpos]
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
-  have haSq : a ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg a]
-  have hbSq : b ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg b]
-  have hDa : 0 < 1 / xiEndpointCompletedCurvature - 3 / 4 - a ^ 2 := by
+  have haSq : a ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg a]
+  have hbSq : b ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg b]
+  have hDa : 0 < 1 / xiEndpointCompletedCurvature - 3 / 4 - a ^ (2 : ℕ) := by
     nlinarith
-  have hDb : 0 < 1 / xiEndpointCompletedCurvature - 3 / 4 - b ^ 2 := by
+  have hDb : 0 < 1 / xiEndpointCompletedCurvature - 3 / 4 - b ^ (2 : ℕ) := by
     nlinarith
-  have habSq : a ^ 2 < b ^ 2 := by nlinarith
+  have habSq : a ^ (2 : ℕ) < b ^ (2 : ℕ) := by nlinarith
   rw [xiProjectiveEndpointBudget, xiProjectiveEndpointBudget]
   apply mul_lt_mul_of_pos_right _ hCpos
   rw [div_lt_div_iff₀ hDa hDb]

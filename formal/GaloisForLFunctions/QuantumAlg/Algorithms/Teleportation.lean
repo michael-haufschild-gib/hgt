@@ -84,7 +84,7 @@ theorem teleportation_uses_bell_state_prep :
       Circuit.apply_ofGate, Gate.mul_applyVec] using BellStatePreparation.main
 
 /-- Three-qubit computational basis vectors at the raw-vector layer. -/
-def teleKet3 (j : Fin (2 ^ 3)) : StateVector (Qubits 3) :=
+def teleKet3 (j : Fin (2 ^ (3 : ℕ))) : StateVector (Qubits 3) :=
   (ket j : PureState (Qubits 3))
 
 /-- Basis-vector expansion of Alice's premeasurement state. This is the

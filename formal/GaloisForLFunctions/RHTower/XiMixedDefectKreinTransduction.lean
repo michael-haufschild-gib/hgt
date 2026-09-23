@@ -33,8 +33,8 @@ noncomputable section
 mixed nodal source curvature, transported through the inverse squared-node polarization. -/
 theorem xiOrbitConfluentMinor_eq_neg_mixedSourceJet_sq_div (q : XiZeroCopy) :
     xiOrbitConfluentMinor q =
-      -(xiReflectedPhaseNeutralMixedJet q ^ 2) /
-        (4 * Complex.normSq (xiSquaredNode q) ^ 3) := by
+      -(xiReflectedPhaseNeutralMixedJet q ^ (2 : ℕ)) /
+        (4 * Complex.normSq (xiSquaredNode q) ^ (3 : ℕ)) := by
   rw [xiOrbitConfluentMinor_eq,
     xiZeroCopyReciprocalSquare_eq_inv_node,
     Complex.inv_im, Complex.normSq_inv,
@@ -48,8 +48,8 @@ theorem xiOrbitConfluentMinor_eq_neg_mixedSourceJet_sq_div (q : XiZeroCopy) :
 the strictly positive sixth-power radial transport. -/
 theorem four_mul_nodeNormSq_cube_mul_xiOrbitConfluentMinor_eq_neg_mixedSourceJet_sq
     (q : XiZeroCopy) :
-    4 * Complex.normSq (xiSquaredNode q) ^ 3 * xiOrbitConfluentMinor q =
-      -(xiReflectedPhaseNeutralMixedJet q ^ 2) := by
+    4 * Complex.normSq (xiSquaredNode q) ^ (3 : ℕ) * xiOrbitConfluentMinor q =
+      -(xiReflectedPhaseNeutralMixedJet q ^ (2 : ℕ)) := by
   rw [xiOrbitConfluentMinor_eq_neg_mixedSourceJet_sq_div]
   have hnorm : Complex.normSq (xiSquaredNode q) ≠ 0 :=
     ne_of_gt (Complex.normSq_pos.mpr (xiSquaredNode_ne_zero q))

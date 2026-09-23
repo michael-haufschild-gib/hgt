@@ -47,14 +47,14 @@ theorem routeUHardEdgeInverseChart_angularChart {a : ℝ} (ha : 0 < a) {θ : ℝ
   ring
 
 theorem hasDerivAt_routeUHardEdgeInverseChart {a : ℝ} (ha : 0 < a) (x : ℝ) :
-    HasDerivAt (routeUHardEdgeInverseChart a) (2 * a / (a ^ 2 + x ^ 2)) x := by
+    HasDerivAt (routeUHardEdgeInverseChart a) (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) x := by
   have hane : a ≠ 0 := ne_of_gt ha
   have h1 : HasDerivAt (fun u : ℝ => u / a) (1 / a) x := by
     simpa using (hasDerivAt_id x).div_const a
   have h3 : HasDerivAt (fun u : ℝ => 2 * Real.arctan (u / a))
-      (2 * (1 / (1 + (x / a) ^ 2) * (1 / a))) x := h1.arctan.const_mul (2 : ℝ)
-  have hval : (2 : ℝ) * (1 / (1 + (x / a) ^ 2) * (1 / a)) = 2 * a / (a ^ 2 + x ^ 2) := by
-    have hden : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
+      (2 * (1 / (1 + (x / a) ^ (2 : ℕ)) * (1 / a))) x := h1.arctan.const_mul (2 : ℝ)
+  have hval : (2 : ℝ) * (1 / (1 + (x / a) ^ (2 : ℕ)) * (1 / a)) = 2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
+    have hden : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
     field_simp
   rw [hval] at h3
   exact h3
@@ -102,7 +102,7 @@ theorem hasDerivAt_routeUHardEdgeRationalTest {a : ℝ} (ha : 0 < a) (p : Polyno
         Polynomial.C (b j) * Polynomial.Chebyshev.T ℝ (j : ℤ)) (x : ℝ) :
     HasDerivAt (routeUHardEdgeRationalTest a p)
       (halfCosPolyDeriv N (halfShiftCoeff N b) (routeUHardEdgeInverseChart a x)
-        * (2 * a / (a ^ 2 + x ^ 2))) x := by
+        * (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))) x := by
   have hcomp := (hasDerivAt_halfCosPoly N (halfShiftCoeff N b)
       (routeUHardEdgeInverseChart a x)).comp x (hasDerivAt_routeUHardEdgeInverseChart ha x)
   refine hcomp.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => ?_)
@@ -116,9 +116,9 @@ theorem integral_deriv_routeUHardEdgeRationalTest_sq_le {a : ℝ} (ha : 0 < a) (
       = ∑ j ∈ Finset.range (N + 1),
         Polynomial.C (b j) * Polynomial.Chebyshev.T ℝ (j : ℤ)) :
     (∫ x : ℝ, (halfCosPolyDeriv N (halfShiftCoeff N b) (routeUHardEdgeInverseChart a x)
-        * (2 * a / (a ^ 2 + x ^ 2))) ^ 2)
-      ≤ (4 * ((N : ℝ) + 1 / 2) ^ 2 / a ^ 2)
-          * ∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ 2 := by
+        * (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))) ^ (2 : ℕ))
+      ≤ (4 * ((N : ℝ) + 1 / 2) ^ (2 : ℕ) / a ^ (2 : ℕ))
+          * ∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ (2 : ℕ) := by
   obtain ⟨c, hcdef⟩ : ∃ c : ℕ → ℝ, c = halfShiftCoeff N b := ⟨_, rfl⟩
   rw [← hcdef]
   have hle : (-Real.pi : ℝ) ≤ Real.pi := by linarith [Real.pi_pos]
@@ -131,45 +131,45 @@ theorem integral_deriv_routeUHardEdgeRationalTest_sq_le {a : ℝ} (ha : 0 < a) (
       (ne_of_gt (cos_half_pos_of_mem_Ioo hθ))).hasDerivWithinAt)
     (injOn_routeUHardEdgeAngularChart ha)
     (fun x : ℝ => (halfCosPolyDeriv N c (routeUHardEdgeInverseChart a x)
-      * (2 * a / (a ^ 2 + x ^ 2))) ^ 2)
+      * (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))) ^ (2 : ℕ))
   rw [image_routeUHardEdgeAngularChart ha, setIntegral_univ] at hchange
   have hpt : ∀ θ ∈ Set.Ioo (-Real.pi) Real.pi,
       |routeUHardEdgeAngularJacobian a θ|
           • (halfCosPolyDeriv N c (routeUHardEdgeInverseChart a
               (routeUHardEdgeAngularChart a θ))
-            * (2 * a / (a ^ 2 + routeUHardEdgeAngularChart a θ ^ 2))) ^ 2
-        = 2 / a * (halfCosPolyDeriv N c θ ^ 2 * Real.cos (θ / 2) ^ 2) := by
+            * (2 * a / (a ^ (2 : ℕ) + routeUHardEdgeAngularChart a θ ^ (2 : ℕ)))) ^ (2 : ℕ)
+        = 2 / a * (halfCosPolyDeriv N c θ ^ (2 : ℕ) * Real.cos (θ / 2) ^ (2 : ℕ)) := by
     intro θ hθ
     have hcos := cos_half_pos_of_mem_Ioo hθ
     have hcosne : Real.cos (θ / 2) ≠ 0 := ne_of_gt hcos
     have hinv : routeUHardEdgeInverseChart a (routeUHardEdgeAngularChart a θ) = θ :=
       routeUHardEdgeInverseChart_angularChart ha hθ
-    have hsum : a ^ 2 + routeUHardEdgeAngularChart a θ ^ 2 = a ^ 2 / Real.cos (θ / 2) ^ 2 := by
+    have hsum : a ^ (2 : ℕ) + routeUHardEdgeAngularChart a θ ^ (2 : ℕ) = a ^ (2 : ℕ) / Real.cos (θ / 2) ^ (2 : ℕ) := by
       rw [routeUHardEdgeAngularChart]
       have h := tan_sq_add_one_of_cos_ne_zero hcosne
-      calc a ^ 2 + (a * Real.tan (θ / 2)) ^ 2 = a ^ 2 * (Real.tan (θ / 2) ^ 2 + 1) := by ring
-        _ = a ^ 2 * (1 / Real.cos (θ / 2) ^ 2) := by rw [h]
-        _ = a ^ 2 / Real.cos (θ / 2) ^ 2 := by ring
+      calc a ^ (2 : ℕ) + (a * Real.tan (θ / 2)) ^ (2 : ℕ) = a ^ (2 : ℕ) * (Real.tan (θ / 2) ^ (2 : ℕ) + 1) := by ring
+        _ = a ^ (2 : ℕ) * (1 / Real.cos (θ / 2) ^ (2 : ℕ)) := by rw [h]
+        _ = a ^ (2 : ℕ) / Real.cos (θ / 2) ^ (2 : ℕ) := by ring
     have hjac : |routeUHardEdgeAngularJacobian a θ|
-        = a * (1 / Real.cos (θ / 2) ^ 2 * (1 / 2)) := by
+        = a * (1 / Real.cos (θ / 2) ^ (2 : ℕ) * (1 / 2)) := by
       rw [routeUHardEdgeAngularJacobian, abs_of_pos (by positivity)]
     rw [hinv, hsum, hjac, smul_eq_mul]
     field_simp
   rw [hchange, MeasureTheory.setIntegral_congr_fun measurableSet_Ioo hpt]
   -- compare with the Bernstein bound
   have hcosle : ∀ θ ∈ Set.Ioo (-Real.pi) Real.pi,
-      2 / a * (halfCosPolyDeriv N c θ ^ 2 * Real.cos (θ / 2) ^ 2)
-        ≤ 2 / a * halfCosPolyDeriv N c θ ^ 2 := by
+      2 / a * (halfCosPolyDeriv N c θ ^ (2 : ℕ) * Real.cos (θ / 2) ^ (2 : ℕ))
+        ≤ 2 / a * halfCosPolyDeriv N c θ ^ (2 : ℕ) := by
     intro θ _
-    have hbound : Real.cos (θ / 2) ^ 2 ≤ 1 := Real.cos_sq_le_one (θ / 2)
+    have hbound : Real.cos (θ / 2) ^ (2 : ℕ) ≤ 1 := Real.cos_sq_le_one (θ / 2)
     have h2a : (0 : ℝ) ≤ 2 / a := by positivity
-    have hkey : halfCosPolyDeriv N c θ ^ 2 * Real.cos (θ / 2) ^ 2
-        ≤ halfCosPolyDeriv N c θ ^ 2 := by
+    have hkey : halfCosPolyDeriv N c θ ^ (2 : ℕ) * Real.cos (θ / 2) ^ (2 : ℕ)
+        ≤ halfCosPolyDeriv N c θ ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (halfCosPolyDeriv N c θ), hbound,
         mul_nonneg (sq_nonneg (halfCosPolyDeriv N c θ)) (sub_nonneg.2 hbound)]
     exact mul_le_mul_of_nonneg_left hkey h2a
   have hint1 : MeasureTheory.IntegrableOn
-      (fun θ : ℝ => 2 / a * (halfCosPolyDeriv N c θ ^ 2 * Real.cos (θ / 2) ^ 2))
+      (fun θ : ℝ => 2 / a * (halfCosPolyDeriv N c θ ^ (2 : ℕ) * Real.cos (θ / 2) ^ (2 : ℕ)))
       (Set.Ioo (-Real.pi) Real.pi) := by
     refine MeasureTheory.IntegrableOn.mono_set ?_ Set.Ioo_subset_Icc_self
     refine Continuous.integrableOn_Icc ?_
@@ -177,14 +177,14 @@ theorem integral_deriv_routeUHardEdgeRationalTest_sq_le {a : ℝ} (ha : 0 < a) (
       (Real.continuous_sin.comp (continuous_const.mul continuous_id))).pow 2).mul
       ((Real.continuous_cos.comp (continuous_id.div_const 2)).pow 2))
   have hint2 : MeasureTheory.IntegrableOn
-      (fun θ : ℝ => 2 / a * halfCosPolyDeriv N c θ ^ 2) (Set.Ioo (-Real.pi) Real.pi) := by
+      (fun θ : ℝ => 2 / a * halfCosPolyDeriv N c θ ^ (2 : ℕ)) (Set.Ioo (-Real.pi) Real.pi) := by
     refine MeasureTheory.IntegrableOn.mono_set ?_ Set.Ioo_subset_Icc_self
     refine Continuous.integrableOn_Icc ?_
     exact continuous_const.mul ((continuous_finsetSum _ fun j _ => continuous_const.mul
       (Real.continuous_sin.comp (continuous_const.mul continuous_id))).pow 2)
   have hstep1 : (∫ θ in Set.Ioo (-Real.pi) Real.pi,
-      2 / a * (halfCosPolyDeriv N c θ ^ 2 * Real.cos (θ / 2) ^ 2))
-      ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, 2 / a * halfCosPolyDeriv N c θ ^ 2 :=
+      2 / a * (halfCosPolyDeriv N c θ ^ (2 : ℕ) * Real.cos (θ / 2) ^ (2 : ℕ)))
+      ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, 2 / a * halfCosPolyDeriv N c θ ^ (2 : ℕ) :=
     MeasureTheory.setIntegral_mono_on hint1 hint2 measurableSet_Ioo hcosle
   -- the Bernstein bound in the angular chart
   have hbern := integral_halfCosPolyDeriv_sq_le N c
@@ -195,55 +195,55 @@ theorem integral_deriv_routeUHardEdgeRationalTest_sq_le {a : ℝ} (ha : 0 < a) (
       = halfCosPoly N c θ := by
     intro θ
     rw [eval_cos_of_chebyshev_expansion hb θ, ← cosPoly, cos_half_mul_cosPoly, hcdef]
-  have hCint1 : MeasureTheory.IntegrableOn (fun θ : ℝ => halfCosPoly N c θ ^ 2)
+  have hCint1 : MeasureTheory.IntegrableOn (fun θ : ℝ => halfCosPoly N c θ ^ (2 : ℕ))
       (Set.Ioo (-Real.pi) Real.pi) := by
     refine MeasureTheory.IntegrableOn.mono_set ?_ Set.Ioo_subset_Icc_self
     refine Continuous.integrableOn_Icc ?_
     exact (continuous_finsetSum _ fun j _ => continuous_const.mul
       (Real.continuous_cos.comp (continuous_const.mul continuous_id))).pow 2
   have hCint2 : MeasureTheory.IntegrableOn
-      (fun θ : ℝ => ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2)
+      (fun θ : ℝ => ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ))
       (Set.Ioo (-Real.pi) Real.pi) := by
     refine MeasureTheory.IntegrableOn.mono_set ?_ Set.Ioo_subset_Icc_self
     refine Continuous.integrableOn_Icc ?_
     exact ((Polynomial.continuous _).comp Real.continuous_cos).pow 2
-  have hC : (∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPoly N c θ ^ 2)
+  have hC : (∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPoly N c θ ^ (2 : ℕ))
       ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2 := by
+          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_on hCint1 hCint2 measurableSet_Ioo fun θ _ => ?_
     rw [← hval θ, mul_pow]
     nlinarith [Real.cos_sq_le_one (θ / 2),
       sq_nonneg ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ))]
   -- nonnegativity of the angular masses
-  have hHnn : (0 : ℝ) ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPoly N c θ ^ 2 :=
+  have hHnn : (0 : ℝ) ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPoly N c θ ^ (2 : ℕ) :=
     MeasureTheory.setIntegral_nonneg measurableSet_Ioo fun θ _ => sq_nonneg _
-  have hDnn : (0 : ℝ) ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ 2 :=
+  have hDnn : (0 : ℝ) ≤ ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ (2 : ℕ) :=
     MeasureTheory.setIntegral_nonneg measurableSet_Ioo fun θ _ => sq_nonneg _
   -- the `L²` mass of the test in the angular chart
-  have hnorm : (∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ 2)
+  have hnorm : (∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ (2 : ℕ))
       = a / 2 * ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2 :=
+          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ) :=
     integral_routeUHardEdgeRationalTest_sq ha p
   -- assemble
-  have hconst : (∫ θ in Set.Ioo (-Real.pi) Real.pi, 2 / a * halfCosPolyDeriv N c θ ^ 2)
-      = 2 / a * ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ 2 :=
+  have hconst : (∫ θ in Set.Ioo (-Real.pi) Real.pi, 2 / a * halfCosPolyDeriv N c θ ^ (2 : ℕ))
+      = 2 / a * ∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ (2 : ℕ) :=
     MeasureTheory.integral_const_mul _ _
   rw [hconst] at hstep1
   rw [hnorm]
   have ha2 : (0 : ℝ) < 2 / a := by positivity
-  have hkey : 2 / a * (∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ 2)
-      ≤ 2 / a * (((N : ℝ) + 1 / 2) ^ 2
+  have hkey : 2 / a * (∫ θ in Set.Ioo (-Real.pi) Real.pi, halfCosPolyDeriv N c θ ^ (2 : ℕ))
+      ≤ 2 / a * (((N : ℝ) + 1 / 2) ^ (2 : ℕ)
           * ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-              ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2) := by
+              ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ)) := by
     refine mul_le_mul_of_nonneg_left ?_ ha2.le
     refine le_trans hbern ?_
     exact mul_le_mul_of_nonneg_left hC (by positivity)
-  have hfinal : 2 / a * (((N : ℝ) + 1 / 2) ^ 2
+  have hfinal : 2 / a * (((N : ℝ) + 1 / 2) ^ (2 : ℕ)
         * ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-            ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2)
-      = 4 * ((N : ℝ) + 1 / 2) ^ 2 / a ^ 2
+            ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ))
+      = 4 * ((N : ℝ) + 1 / 2) ^ (2 : ℕ) / a ^ (2 : ℕ)
         * (a / 2 * ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-            ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2) := by
+            ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ)) := by
     field_simp
     ring
   rw [← hfinal]

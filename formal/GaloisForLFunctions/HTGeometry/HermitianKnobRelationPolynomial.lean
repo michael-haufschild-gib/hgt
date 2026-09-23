@@ -185,7 +185,7 @@ theorem abs_eigenvalues_le_entrySum {A : Matrix I I ℝ} (hA : A.IsHermitian) (j
         have : |x i| ≤ 0 := by rw [← h] at hle; exact hle
         exact abs_eq_zero.mp (le_antisymm this (abs_nonneg _))
       rw [EuclideanSpace.norm_eq] at hnorm
-      have hsum : ∑ i, ‖(hA.eigenvectorBasis j : EuclideanSpace ℝ I) i‖ ^ 2 = 0 := by
+      have hsum : ∑ i, ‖(hA.eigenvectorBasis j : EuclideanSpace ℝ I) i‖ ^ (2 : ℕ) = 0 := by
         refine Finset.sum_eq_zero fun i _ => ?_
         have : ((hA.eigenvectorBasis j : EuclideanSpace ℝ I) i) = 0 := hall i
         rw [this, norm_zero]

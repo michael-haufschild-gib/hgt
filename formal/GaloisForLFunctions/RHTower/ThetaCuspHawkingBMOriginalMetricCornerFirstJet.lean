@@ -15,7 +15,7 @@ private abbrev rate (q : XiZeroCopy) (br : Bool) := physicalRate q br
 private abbrev grad (q : XiZeroCopy) (br : Bool) :=
   reducedGreenGradient (chi q) (rate q br) 1
 private abbrev conn (q : XiZeroCopy) (w : ℂ) := connection w (chi q)
-private abbrev mu (q : XiZeroCopy) := physicalAngularParameter q ^ 2 - 1 / 4
+private abbrev mu (q : XiZeroCopy) := physicalAngularParameter q ^ (2 : ℕ) - 1 / 4
 
 /-- The actual connection-cleared causal horizon amplitude, including its fixed QNM value. -/
 def clearedCornerAmplitude (q : XiZeroCopy) (br side : Bool) (amp : ℂ) : ℂ → ℂ :=
@@ -51,7 +51,7 @@ def cornerNumerator (q : XiZeroCopy) (br side : Bool) (amp w : ℂ) : ℂ :=
   let H := clearedCornerAmplitude q br side amp
   mu q * ((mu q - 2) *
       (conn q w * H w / (2 * w) + conn q w * deriv H w - H w * deriv (conn q) w) +
-    conn q w ^ 2 * physicalSelfSourceCoefficient q / 2 *
+    conn q w ^ (2 : ℕ) * physicalSelfSourceCoefficient q / 2 *
       deriv (continuedForcingTransform (rate q br) amp 1 (grad q br)) w)
 
 theorem cornerNumerator_analytic (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
@@ -113,7 +113,7 @@ theorem cornerNumerator_firstJet (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
   change HasDerivAt (cornerNumerator q br side amp) _ w₀ at hTotal
   have hC₀ : C w₀ = 0 := physicalFundamentalFrequency_connection_zero q side
   have hCH₀ : (C * H) w₀ = 0 := by simp only [Pi.mul_apply, hC₀, zero_mul]
-  have hCpow₀ : (C ^ 2) w₀ = 0 := by
+  have hCpow₀ : (C ^ (2 : ℕ)) w₀ = 0 := by
     rw [Pi.pow_apply, hC₀]
     norm_num
   have hH₀ : H w₀ = s * R := by
@@ -123,7 +123,7 @@ theorem cornerNumerator_firstJet (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
         cornerResidue q br side amp) w₀ = s * R
     rw [show w₀ = physicalFundamentalFrequency q side from rfl, Function.update_self]
   have hderiv : deriv (cornerNumerator q br side amp) w₀ =
-      m * (m - 2) * (s ^ 2 * R / (2 * w₀) - s * R * deriv (deriv C) w₀) := by
+      m * (m - 2) * (s ^ (2 : ℕ) * R / (2 * w₀) - s * R * deriv (deriv C) w₀) := by
     rw [hTotal.deriv]
     rw [hC₀, hCd.deriv, hH₀, hCH₀, hCpow₀]
     norm_num

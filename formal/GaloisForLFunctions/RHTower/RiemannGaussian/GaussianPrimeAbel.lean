@@ -39,12 +39,12 @@ open scoped BigOperators Topology
 prime-energy summand. -/
 def gaussianPrimeAbelKernel (ε t x : ℝ) : ℝ :=
   1 / Real.sqrt x *
-    Real.exp (-(Real.log x) ^ 2 / (4 * ε)) *
+    Real.exp (-(Real.log x) ^ (2 : ℕ) / (4 * ε)) *
       (1 - Real.cos (t * Real.log x))
 
 /-- Closed derivative of the multiplicative Gaussian test kernel. -/
 def gaussianPrimeAbelKernelDerivative (ε t x : ℝ) : ℝ :=
-  Real.exp (-(Real.log x) ^ 2 / (4 * ε)) /
+  Real.exp (-(Real.log x) ^ (2 : ℕ) / (4 * ε)) /
       (x * Real.sqrt x) *
     (t * Real.sin (t * Real.log x) -
       (1 / 2 + Real.log x / (2 * ε)) *
@@ -73,8 +73,8 @@ theorem hasDerivAt_gaussianPrimeAbelKernel
   ring_nf
   rw [Real.sq_sqrt hx.le]
   have hexp :
-      Real.exp ((-Real.log ^ 2) x * ε⁻¹ * (1 / 4)) =
-        Real.exp (ε⁻¹ * Real.log x ^ 2 * (-1 / 4)) := by
+      Real.exp ((-Real.log ^ (2 : ℕ)) x * ε⁻¹ * (1 / 4)) =
+        Real.exp (ε⁻¹ * Real.log x ^ (2 : ℕ) * (-1 / 4)) := by
     congr 1
     dsimp
     ring
@@ -114,10 +114,10 @@ theorem integrableOn_deriv_gaussianPrimeAbelKernel_Icc
         (Set.Ioi 0) x :=
       contDiffWithinAt_const.div hsqrt hsqrtne
     have hgaussianExponent : ContDiffWithinAt ℝ 2
-        (fun y : ℝ => -(Real.log y) ^ 2 / (4 * ε)) (Set.Ioi 0) x :=
+        (fun y : ℝ => -(Real.log y) ^ (2 : ℕ) / (4 * ε)) (Set.Ioi 0) x :=
       (hlog.pow 2).neg.div_const _
     have hgaussian : ContDiffWithinAt ℝ 2
-        (fun y : ℝ => Real.exp (-(Real.log y) ^ 2 / (4 * ε)))
+        (fun y : ℝ => Real.exp (-(Real.log y) ^ (2 : ℕ) / (4 * ε)))
         (Set.Ioi 0) x :=
       hgaussianExponent.exp
     have hphase : ContDiffWithinAt ℝ 2
@@ -269,7 +269,7 @@ theorem gaussianPrimeAbelKernel_intervalIntegral_eq_log
     (ε t : ℝ) {b : ℝ} (hb : 1 ≤ b) :
     (∫ x in (1 : ℝ)..b, gaussianPrimeAbelKernel ε t x) =
       ∫ u in (0 : ℝ)..Real.log b,
-        Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+        Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
           (1 - Real.cos (t * u)) := by
   have hkernel : ContinuousOn (gaussianPrimeAbelKernel ε t)
       (Real.exp '' Set.uIcc (0 : ℝ) (Real.log b)) := by
@@ -287,7 +287,7 @@ theorem gaussianPrimeAbelKernel_intervalIntegral_eq_log
   rw [Real.exp_zero, Real.exp_log hbpos] at hsubst
   have hpoint (u : ℝ) :
       gaussianPrimeAbelKernel ε t (Real.exp u) * Real.exp u =
-        Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+        Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
           (1 - Real.cos (t * u)) := by
     unfold gaussianPrimeAbelKernel
     rw [Real.log_exp, ← Real.exp_half]
@@ -297,8 +297,8 @@ theorem gaussianPrimeAbelKernel_intervalIntegral_eq_log
       congr 1
       ring
     have hexpCombined :
-        Real.exp (u / 2 - u ^ 2 / (4 * ε)) =
-          Real.exp (u / 2) * Real.exp (-(u ^ 2 / (4 * ε))) := by
+        Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) =
+          Real.exp (u / 2) * Real.exp (-(u ^ (2 : ℕ) / (4 * ε))) := by
       rw [← Real.exp_add]
       congr 1
     rw [hexpSplit, hexpCombined]
@@ -349,7 +349,7 @@ theorem gaussianPrimeFiniteForwardEnergyDiscrepancy_eq_logInterval
       gaussianPrimePartialOscillationEnergy ε t (Finset.Ioc 1 ⌊b⌋₊) -
         2 / Real.sqrt (Real.pi * ε) *
           ∫ u in (0 : ℝ)..Real.log b,
-            Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+            Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
               (1 - Real.cos (t * u)) := by
   rw [gaussianPrimeFiniteForwardEnergyDiscrepancy_eq_partial_sub_continuous]
   rw [← intervalIntegral.integral_of_le hb]
@@ -429,12 +429,12 @@ theorem tendsto_gaussianForwardContinuousPrimeOscillationEnergy_logInterval
       (fun n : ℕ =>
         2 / Real.sqrt (Real.pi * ε) *
           ∫ u in (0 : ℝ)..Real.log (n : ℝ),
-            Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+            Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
               (1 - Real.cos (t * u)))
       atTop
       (𝓝 (gaussianForwardContinuousPrimeOscillationEnergy ε t)) := by
   let f : ℝ → ℝ := fun u =>
-    Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+    Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
       (1 - Real.cos (t * u))
   have hf : IntegrableOn f (Set.Ioi 0) :=
     (gaussianContinuousPrimeOscillationIntegrable hε t).integrableOn
@@ -466,7 +466,7 @@ theorem tendsto_gaussianPrimeFiniteForwardEnergyDiscrepancy
 /-- Logarithmic form of the Abel kernel at an exponential argument. -/
 lemma gaussianPrimeAbelKernel_exp (ε t T : ℝ) :
     gaussianPrimeAbelKernel ε t (Real.exp T) =
-      Real.exp (-T / 2 - T ^ 2 / (4 * ε)) *
+      Real.exp (-T / 2 - T ^ (2 : ℕ) / (4 * ε)) *
         (1 - Real.cos (t * T)) := by
   unfold gaussianPrimeAbelKernel
   rw [Real.log_exp, ← Real.exp_half]
@@ -512,37 +512,37 @@ theorem tendsto_gaussianPrimeAbelBoundary_exp
   have hbound : ∀ T : ℝ,
       ‖gaussianPrimeAbelKernel ε t (Real.exp T) *
           (Chebyshev.psi (Real.exp T) - Real.exp T)‖ ≤
-        (2 * A) * Real.exp (-T ^ 2 / (4 * ε) + T / 2) := by
+        (2 * A) * Real.exp (-T ^ (2 : ℕ) / (4 * ε) + T / 2) := by
     intro T
     rw [gaussianPrimeAbelKernel_exp]
     simp only [Real.norm_eq_abs, abs_mul,
       abs_of_pos (Real.exp_pos _), abs_of_nonneg (hosc T).1]
     calc
-      Real.exp (-T / 2 - T ^ 2 / (4 * ε)) *
+      Real.exp (-T / 2 - T ^ (2 : ℕ) / (4 * ε)) *
             (1 - Real.cos (t * T)) *
           |Chebyshev.psi (Real.exp T) - Real.exp T| ≤
-        Real.exp (-T / 2 - T ^ 2 / (4 * ε)) * 2 *
+        Real.exp (-T / 2 - T ^ (2 : ℕ) / (4 * ε)) * 2 *
           (A * Real.exp T) := by
             gcongr
             · exact (hosc T).2
             · exact herror T
-      _ = (2 * A) * Real.exp (-T ^ 2 / (4 * ε) + T / 2) := by
+      _ = (2 * A) * Real.exp (-T ^ (2 : ℕ) / (4 * ε) + T / 2) := by
         calc
           _ = (2 * A) *
-              (Real.exp (-T / 2 - T ^ 2 / (4 * ε)) * Real.exp T) := by ring
+              (Real.exp (-T / 2 - T ^ (2 : ℕ) / (4 * ε)) * Real.exp T) := by ring
           _ = _ := by
             rw [← Real.exp_add]
             congr 2
             ring
   have hdecay : Tendsto
       (fun T : ℝ => (2 * A) *
-        Real.exp (-T ^ 2 / (4 * ε) + T / 2))
+        Real.exp (-T ^ (2 : ℕ) / (4 * ε) + T / 2))
       atTop (𝓝 0) := by
     have h := tendsto_exp_neg_quadratic_add_linear_atTop
       (ε := 1 / (4 * ε)) (by positivity) 0 (1 / 2) 0
     have h' : Tendsto
         (fun T : ℝ => (2 * A) *
-          Real.exp (-(1 / (4 * ε)) * (T - 0) ^ 2 + (1 / 2) * T + 0))
+          Real.exp (-(1 / (4 * ε)) * (T - 0) ^ (2 : ℕ) + (1 / 2) * T + 0))
         atTop (𝓝 0) := by
       simpa using h.const_mul (2 * A)
     apply h'.congr'

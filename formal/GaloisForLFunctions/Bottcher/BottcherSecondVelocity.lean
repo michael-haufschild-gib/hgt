@@ -21,8 +21,8 @@ namespace GaloisForLFunctions
 
 /-- The inhomogeneity of the second-velocity equation: `2X³·A′ − X⁴`. -/
 noncomputable def bottcherSecondVelocityRHS : ℂ⟦X⟧ :=
-  PowerSeries.C (2 : ℂ) * PowerSeries.X ^ 3 * d⁄dX ℂ bottcherVelocitySeries
-    - PowerSeries.X ^ 4
+  PowerSeries.C (2 : ℂ) * PowerSeries.X ^ (3 : ℕ) * d⁄dX ℂ bottcherVelocitySeries
+    - PowerSeries.X ^ (4 : ℕ)
 
 /-- The second Böttcher parameter-velocity series: the unique formal solution of
 `B(X²) = 2·B + (2X³·A′ − X⁴)`. -/
@@ -32,14 +32,14 @@ noncomputable def bottcherSecondVelocitySeries : ℂ⟦X⟧ :=
 
 /-- Defining equation of the second velocity. -/
 theorem bottcherSecondVelocitySeries_spec :
-    subst (PowerSeries.X ^ 2) bottcherSecondVelocitySeries
+    subst (PowerSeries.X ^ (2 : ℕ)) bottcherSecondVelocitySeries
       = PowerSeries.C (2 : ℂ) * bottcherSecondVelocitySeries + bottcherSecondVelocityRHS :=
   (mahler_inhomogeneous_solvable (le_refl 2) (two_ne_zero) (by norm_num)
     bottcherSecondVelocityRHS).exists.choose_spec
 
 /-- Uniqueness: any formal solution of the second-velocity equation is the canonical one. -/
 theorem bottcherSecondVelocity_unique {Y : ℂ⟦X⟧}
-    (h : subst (PowerSeries.X ^ 2) Y
+    (h : subst (PowerSeries.X ^ (2 : ℕ)) Y
       = PowerSeries.C (2 : ℂ) * Y + bottcherSecondVelocityRHS) :
     Y = bottcherSecondVelocitySeries :=
   (mahler_inhomogeneous_solvable (le_refl 2) (two_ne_zero) (by norm_num)
@@ -48,9 +48,9 @@ theorem bottcherSecondVelocity_unique {Y : ℂ⟦X⟧}
 /-- **Exposure identity**: the spatial derivative of the first jet is recovered exactly from
 the second jet and its dyadic transform, `2X³·A′ = B(X²) − 2B + X⁴`. -/
 theorem bottcherSecondVelocity_exposes_deriv :
-    PowerSeries.C (2 : ℂ) * PowerSeries.X ^ 3 * d⁄dX ℂ bottcherVelocitySeries
-      = subst (PowerSeries.X ^ 2) bottcherSecondVelocitySeries
-        - PowerSeries.C (2 : ℂ) * bottcherSecondVelocitySeries + PowerSeries.X ^ 4 := by
+    PowerSeries.C (2 : ℂ) * PowerSeries.X ^ (3 : ℕ) * d⁄dX ℂ bottcherVelocitySeries
+      = subst (PowerSeries.X ^ (2 : ℕ)) bottcherSecondVelocitySeries
+        - PowerSeries.C (2 : ℂ) * bottcherSecondVelocitySeries + PowerSeries.X ^ (4 : ℕ) := by
   have h := bottcherSecondVelocitySeries_spec
   rw [bottcherSecondVelocityRHS] at h
   linear_combination -h

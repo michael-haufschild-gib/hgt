@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.AdaptiveGallagherBrunTitchmarsh
 /-!
 # Log-power cost of the truncated harmonic ladder defect
 
-Stopping the final designated-prime ladder at `X / (log X)^20` makes the exact hard-support
+Stopping the final designated-prime ladder at `X / (log X)^(20 : ℕ)` makes the exact hard-support
 replacement error smaller than eight fixed powers of `log X`, uniformly for every receiver height
 between zero and `X`.
 -/
@@ -54,7 +54,7 @@ theorem eventually_menonFinalRangeLadderEta_le_two_div_log_pow_ten :
     linarith
   exact ⟨hetaPos, hetaLe, by linarith⟩
 
-/-- The truncated ceiling depth costs at most twice `log(X)^11`. -/
+/-- The truncated ceiling depth costs at most twice `log(X)^(11 : ℕ)`. -/
 theorem eventually_menonTruncatedRangeLadderSteps_le_two_mul_log_pow_eleven :
     ∀ᶠ x : ℝ in atTop,
       (menonTruncatedRangeLadderSteps x : ℝ) ≤ 2 * (Real.log x) ^ (11 : ℕ) := by

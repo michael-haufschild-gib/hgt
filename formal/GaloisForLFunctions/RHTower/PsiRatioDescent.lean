@@ -24,48 +24,48 @@ open ArithmeticFunction Finset
 since `ρ(log(1/ρ)+3) ≤ 2√ρ + 3ρ ≤ 5√ρ`. -/
 theorem exists_rho_small {ε : ℝ} (hε : 0 < ε) :
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ 1 / 2 ∧ ρ * (Real.log (1 / ρ) + 3) ≤ ε := by
-  refine ⟨min (1 / 2) ((ε / 5) ^ 2),
+  refine ⟨min (1 / 2) ((ε / 5) ^ (2 : ℕ)),
     lt_min (by norm_num) (by positivity), min_le_left _ _, ?_⟩
-  have hρ0 : 0 < min (1 / 2) ((ε / 5) ^ 2) :=
+  have hρ0 : 0 < min (1 / 2) ((ε / 5) ^ (2 : ℕ)) :=
     lt_min (by norm_num) (by positivity)
-  have hρ1 : min (1 / 2) ((ε / 5) ^ 2) ≤ 1 :=
+  have hρ1 : min (1 / 2) ((ε / 5) ^ (2 : ℕ)) ≤ 1 :=
     le_trans (min_le_left _ _) (by norm_num)
-  have hsρ : Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) ≤ ε / 5 := by
-    have h2 := Real.sqrt_le_sqrt (min_le_right (1 / 2) ((ε / 5) ^ 2))
+  have hsρ : Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) ≤ ε / 5 := by
+    have h2 := Real.sqrt_le_sqrt (min_le_right (1 / 2) ((ε / 5) ^ (2 : ℕ)))
     rwa [Real.sqrt_sq (by positivity)] at h2
-  have hsρ0 : 0 < Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) :=
+  have hsρ0 : 0 < Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) :=
     Real.sqrt_pos.2 hρ0
-  have hsρ1 : Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) ≤ 1 := by
+  have hsρ1 : Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) ≤ 1 := by
     have h1 := Real.sqrt_le_sqrt hρ1
     rwa [Real.sqrt_one] at h1
-  have hρs : min (1 / 2) ((ε / 5) ^ 2)
-      = Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))
-        * Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) :=
+  have hρs : min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+      = Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))
+        * Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) :=
     (Real.mul_self_sqrt hρ0.le).symm
-  have hlog : Real.log (1 / min (1 / 2) ((ε / 5) ^ 2))
-      ≤ 2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))) := by
-    have h1 := log_le_two_sqrt
-      (show (0 : ℝ) < 1 / min (1 / 2) ((ε / 5) ^ 2) by positivity)
-    have h2 : Real.sqrt (1 / min (1 / 2) ((ε / 5) ^ 2))
-        = 1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) := by
+  have hlog : Real.log (1 / min (1 / 2) ((ε / 5) ^ (2 : ℕ)))
+      ≤ 2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))) := by
+    have h1 := log_le_two_sqrt_psiRatioImprove
+      (show (0 : ℝ) < 1 / min (1 / 2) ((ε / 5) ^ (2 : ℕ)) by positivity)
+    have h2 : Real.sqrt (1 / min (1 / 2) ((ε / 5) ^ (2 : ℕ)))
+        = 1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) := by
       rw [one_div, Real.sqrt_inv]
       exact (one_div _).symm
     rwa [h2] at h1
-  have hρle : min (1 / 2) ((ε / 5) ^ 2)
-      ≤ Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) := by
+  have hρle : min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+      ≤ Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) := by
     nlinarith [hρs, hsρ1, hsρ0]
-  have h3 : min (1 / 2) ((ε / 5) ^ 2)
-      * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))))
-      = 2 * Real.sqrt (min (1 / 2) ((ε / 5) ^ 2)) := by
-    rw [show min (1 / 2) ((ε / 5) ^ 2)
-        * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))))
-        = 2 * (min (1 / 2) ((ε / 5) ^ 2)
-          / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))) from by ring,
+  have h3 : min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+      * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))))
+      = 2 * Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ))) := by
+    rw [show min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+        * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))))
+        = 2 * (min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+          / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))) from by ring,
       Real.div_sqrt]
-  have h4 : min (1 / 2) ((ε / 5) ^ 2)
-      * (Real.log (1 / min (1 / 2) ((ε / 5) ^ 2)) + 3)
-      ≤ min (1 / 2) ((ε / 5) ^ 2)
-        * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ 2))) + 3) :=
+  have h4 : min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+      * (Real.log (1 / min (1 / 2) ((ε / 5) ^ (2 : ℕ))) + 3)
+      ≤ min (1 / 2) ((ε / 5) ^ (2 : ℕ))
+        * (2 * (1 / Real.sqrt (min (1 / 2) ((ε / 5) ^ (2 : ℕ)))) + 3) :=
     mul_le_mul_of_nonneg_left (by linarith) hρ0.le
   nlinarith [h3, h4, hρle, hsρ]
 

@@ -15,15 +15,15 @@ noncomputable section
 /-- First-atom squared source mass is the exact common Gaussian times the seed polynomial. -/
 theorem thetaCuspSourceTerm_one_eq_scale_profile (x : ℝ) :
     thetaCuspSourceTerm x 1 = Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x) *
-      (4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x) := by
+      (4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x) := by
   simpa [thetaCuspFirstAtomJetPolynomial] using iteratedDeriv_firstAtom_eq_scale_polynomial 0 x
 
 /-- The signed first-atom reflection moment of order 2 has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_2_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^1*thetaCuspFirstAtomReflectionJet 2 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^1))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(1 : ℕ)*thetaCuspFirstAtomReflectionJet 2 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(1 : ℕ)))
       atTop (𝓝 (8 : ℝ)) := by
-  let R (u : ℝ) := ((480 : ℝ)*u^2 + (-384 : ℝ)*u^1 + (128 : ℝ)) / (4-6*u)^2
+  let R (u : ℝ) := ((480 : ℝ)*u^(2 : ℕ) + (-384 : ℝ)*u^(1 : ℕ) + (128 : ℝ)) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -36,7 +36,7 @@ theorem thetaCuspFirstAtomReflectionJet_2_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -50,10 +50,10 @@ theorem thetaCuspFirstAtomReflectionJet_2_scaled_tendsto :
 
 /-- The signed first-atom reflection moment of order 4 has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_4_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^2*thetaCuspFirstAtomReflectionJet 4 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^2))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(2 : ℕ)*thetaCuspFirstAtomReflectionJet 4 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)))
       atTop (𝓝 (192 : ℝ)) := by
-  let R (u : ℝ) := ((-1920 : ℝ)*u^3 + (17664 : ℝ)*u^2 + (-9728 : ℝ)*u^1 + (3072 : ℝ)) / (4-6*u)^2
+  let R (u : ℝ) := ((-1920 : ℝ)*u^(3 : ℕ) + (17664 : ℝ)*u^(2 : ℕ) + (-9728 : ℝ)*u^(1 : ℕ) + (3072 : ℝ)) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -66,7 +66,7 @@ theorem thetaCuspFirstAtomReflectionJet_4_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -79,10 +79,10 @@ theorem thetaCuspFirstAtomReflectionJet_4_scaled_tendsto :
 
 /-- The signed first-atom reflection moment of order 6 has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_6_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^3*thetaCuspFirstAtomReflectionJet 6 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^3))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(3 : ℕ)*thetaCuspFirstAtomReflectionJet 6 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(3 : ℕ)))
       atTop (𝓝 (7680 : ℝ)) := by
-  let R (u : ℝ) := ((7680 : ℝ)*u^4 + (-328704 : ℝ)*u^3 + (1015808 : ℝ)*u^2 + (-430080 : ℝ)*u^1 + (122880 : ℝ)) / (4-6*u)^2
+  let R (u : ℝ) := ((7680 : ℝ)*u^(4 : ℕ) + (-328704 : ℝ)*u^(3 : ℕ) + (1015808 : ℝ)*u^(2 : ℕ) + (-430080 : ℝ)*u^(1 : ℕ) + (122880 : ℝ)) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -95,7 +95,7 @@ theorem thetaCuspFirstAtomReflectionJet_6_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -109,10 +109,10 @@ theorem thetaCuspFirstAtomReflectionJet_6_scaled_tendsto :
 
 /-- The signed first-atom reflection moment of order 8 has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_8_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^4*thetaCuspFirstAtomReflectionJet 8 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^4))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(4 : ℕ)*thetaCuspFirstAtomReflectionJet 8 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)))
       atTop (𝓝 (430080 : ℝ)) := by
-  let R (u : ℝ) := ((-30720 : ℝ)*u^5 + (5443584 : ℝ)*u^4 + (-49553408 : ℝ)*u^3 + (78446592 : ℝ)*u^2 + (-27525120 : ℝ)*u^1 + (6881280 : ℝ)) / (4-6*u)^2
+  let R (u : ℝ) := ((-30720 : ℝ)*u^(5 : ℕ) + (5443584 : ℝ)*u^(4 : ℕ) + (-49553408 : ℝ)*u^(3 : ℕ) + (78446592 : ℝ)*u^(2 : ℕ) + (-27525120 : ℝ)*u^(1 : ℕ) + (6881280 : ℝ)) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -125,7 +125,7 @@ theorem thetaCuspFirstAtomReflectionJet_8_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt
@@ -138,10 +138,10 @@ theorem thetaCuspFirstAtomReflectionJet_8_scaled_tendsto :
 
 /-- The signed first-atom reflection moment of order 10 has its exact Gaussian scale limit. -/
 theorem thetaCuspFirstAtomReflectionJet_10_scaled_tendsto :
-    Tendsto (fun x : ℝ => (-1 : ℝ)^5*thetaCuspFirstAtomReflectionJet 10 x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^5))
+    Tendsto (fun x : ℝ => (-1 : ℝ)^(5 : ℕ)*thetaCuspFirstAtomReflectionJet 10 x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ)))
       atTop (𝓝 (30965760 : ℝ)) := by
-  let R (u : ℝ) := ((122880 : ℝ)*u^6 + (-87834624 : ℝ)*u^5 + (2001010688 : ℝ)*u^4 + (-7696220160 : ℝ)*u^3 + (7596933120 : ℝ)*u^2 + (-2312110080 : ℝ)*u^1 + (495452160 : ℝ)) / (4-6*u)^2
+  let R (u : ℝ) := ((122880 : ℝ)*u^(6 : ℕ) + (-87834624 : ℝ)*u^(5 : ℕ) + (2001010688 : ℝ)*u^(4 : ℕ) + (-7696220160 : ℝ)*u^(3 : ℕ) + (7596933120 : ℝ)*u^(2 : ℕ) + (-2312110080 : ℝ)*u^(1 : ℕ) + (495452160 : ℝ)) / (4-6*u)^(2 : ℕ)
   have hc : ContinuousAt R 0 := by
     dsimp only [R]
     apply ContinuousAt.div <;> first | fun_prop | norm_num
@@ -154,7 +154,7 @@ theorem thetaCuspFirstAtomReflectionJet_10_scaled_tendsto :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   have hqn : thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by linarith
-  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^2-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
+  have hb : 4*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-6*thetaCuspSingleAtomReflectionScale 1 x ≠ 0 := by
     nlinarith [sq_nonneg (thetaCuspSingleAtomReflectionScale 1 x-3)]
   have hd : 4-6*(thetaCuspSingleAtomReflectionScale 1 x)⁻¹ ≠ 0 := by
     apply ne_of_gt

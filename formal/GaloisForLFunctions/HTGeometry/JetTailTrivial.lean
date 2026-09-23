@@ -25,7 +25,7 @@ omit [CharZero C] in
 theorem invTower_zero : invTower (C := C) 0 = (jetRatio 2 : JetField C Unit) := by
   have hy1 : (JetField.jet ((), 1) : JetField C Unit) ≠ 0 := jet_ne_zero _
   have hδ : deltaIter 1 ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ 2 * (JetField.jet ((), 2)) := by
+      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ (2 : ℕ) * (JetField.jet ((), 2)) := by
     rw [deltaIter_succ]
     have h := (JetField.jetDerivation (C := C) (ι := Unit)).leibniz_inv
       (JetField.jet ((), 1) : JetField C Unit)

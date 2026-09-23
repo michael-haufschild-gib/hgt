@@ -25,18 +25,18 @@ noncomputable section
 /-! ## The cosine Taylor remainder -/
 
 theorem dqpt_pow_two_mul_nonneg (y : ℝ) (n : ℕ) : (0 : ℝ) ≤ y ^ (2 * n) := by
-  have hrw : y ^ (2 * n) = (y ^ 2) ^ n := by rw [← pow_mul, Nat.mul_comm]
+  have hrw : y ^ (2 * n) = (y ^ (2 : ℕ)) ^ n := by rw [← pow_mul, Nat.mul_comm]
   rw [hrw]; positivity
 
 theorem dqpt_summable_cos_terms (y : ℝ) :
     Summable (fun n : ℕ => y ^ (2 * n) / ((2 * n).factorial : ℝ)) := by
   refine Summable.of_nonneg_of_le
     (fun n => div_nonneg (dqpt_pow_two_mul_nonneg y n) (by positivity)) (fun n => ?_)
-    (Real.summable_pow_div_factorial (y ^ 2))
+    (Real.summable_pow_div_factorial (y ^ (2 : ℕ)))
   have hfac : (n.factorial : ℝ) ≤ ((2 * n).factorial : ℝ) := by
     exact_mod_cast Nat.factorial_le (by omega)
   have hfacpos : (0 : ℝ) < (n.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos n
-  have hnum : y ^ (2 * n) = (y ^ 2) ^ n := by
+  have hnum : y ^ (2 * n) = (y ^ (2 : ℕ)) ^ n := by
     rw [← pow_mul, Nat.mul_comm]
   rw [hnum]
   refine div_le_div_of_nonneg_left (by positivity) hfacpos hfac
@@ -44,7 +44,7 @@ theorem dqpt_summable_cos_terms (y : ℝ) :
 theorem dqpt_antitone_cos_terms {y : ℝ} (hy : |y| ≤ 1) :
     Antitone (fun n : ℕ => y ^ (2 * n) / ((2 * n).factorial : ℝ)) := by
   refine antitone_nat_of_succ_le (fun n => ?_)
-  have hy2 : y ^ 2 ≤ 1 := by nlinarith [sq_abs y, abs_nonneg y, hy]
+  have hy2 : y ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_abs y, abs_nonneg y, hy]
   have hnn : (0 : ℝ) ≤ y ^ (2 * n) := dqpt_pow_two_mul_nonneg y n
   have hfacpos : (0 : ℝ) < ((2 * n).factorial : ℝ) := by exact_mod_cast Nat.factorial_pos _
   have hfacpos' : (0 : ℝ) < ((2 * (n + 1)).factorial : ℝ) := by
@@ -55,7 +55,7 @@ theorem dqpt_antitone_cos_terms {y : ℝ} (hy : |y| ≤ 1) :
     rw [h1, Nat.factorial_succ, Nat.factorial_succ]
     push_cast
     ring
-  have hpowstep : y ^ (2 * (n + 1)) = y ^ (2 * n) * y ^ 2 := by
+  have hpowstep : y ^ (2 * (n + 1)) = y ^ (2 * n) * y ^ (2 : ℕ) := by
     rw [← pow_add, Nat.mul_succ]
   have hc1 : (1 : ℝ) ≤ ((2 * n + 1 : ℕ) : ℝ) := by
     exact_mod_cast (by omega : (1 : ℕ) ≤ 2 * n + 1)
@@ -88,11 +88,11 @@ theorem dqpt_cos_taylor_remainder {y : ℝ} (hy : |y| ≤ 1) (K : ℕ) :
 
 /-- **(4.19)–(4.20).**  The truncation error of the `sin²` power series. -/
 theorem dqpt_sin_sq_taylor_remainder {θ : ℝ} (hθ : |2 * θ| ≤ 1) (l : ℕ) :
-    |Real.sin θ ^ 2 - ∑ n ∈ Finset.range l,
+    |Real.sin θ ^ (2 : ℕ) - ∑ n ∈ Finset.range l,
         (-1 : ℝ) ^ n * 2 ^ (2 * (n + 1)) * θ ^ (2 * (n + 1))
           / (2 * ((2 * (n + 1)).factorial : ℝ))|
       ≤ (2 * θ) ^ (2 * (l + 1)) / (2 * ((2 * (l + 1)).factorial : ℝ)) := by
-  have hsin : Real.sin θ ^ 2 = (1 - Real.cos (2 * θ)) / 2 := by
+  have hsin : Real.sin θ ^ (2 : ℕ) = (1 - Real.cos (2 * θ)) / 2 := by
     have h := Real.cos_two_mul' θ
     have hpy := Real.sin_sq_add_cos_sq θ
     linarith [h, hpy]
@@ -122,7 +122,7 @@ theorem dqpt_sin_sq_taylor_remainder {θ : ℝ} (hθ : |2 * θ| ≤ 1) (l : ℕ)
       exact_mod_cast Nat.factorial_pos _
     rw [hmul, pow_succ]
     field_simp
-  have hkey : Real.sin θ ^ 2 - ∑ n ∈ Finset.range l,
+  have hkey : Real.sin θ ^ (2 : ℕ) - ∑ n ∈ Finset.range l,
         (-1 : ℝ) ^ n * 2 ^ (2 * (n + 1)) * θ ^ (2 * (n + 1))
           / (2 * ((2 * (n + 1)).factorial : ℝ))
       = -(Real.cos (2 * θ)
@@ -146,19 +146,19 @@ theorem dqpt_sin_sq_taylor_remainder {θ : ℝ} (hθ : |2 * θ| ≤ 1) (l : ℕ)
 /-- **(4.18).**  Two trial angles separated by `δ` inside `[0, π/4]` give `sin²` values separated
 by more than `δ²/2`. -/
 theorem dqpt_sin_sq_separation {θ δ : ℝ} (hθ : 0 ≤ θ) (hδ : 0 < δ) (hsum : θ + δ ≤ Real.pi / 4) :
-    δ ^ 2 / 2 < Real.sin (θ + δ) ^ 2 - Real.sin θ ^ 2 := by
+    δ ^ (2 : ℕ) / 2 < Real.sin (θ + δ) ^ (2 : ℕ) - Real.sin θ ^ (2 : ℕ) := by
   have hpi : Real.pi < 3.15 := Real.pi_lt_d2
   have hpi0 : (0 : ℝ) < Real.pi := Real.pi_pos
   have hδle : δ ≤ Real.pi / 4 := by linarith
   have hδsmall : δ ≤ 0.7875 := by linarith
   have hhalf : 2 * θ + δ ≤ Real.pi / 2 := by linarith
-  have hid : Real.sin (θ + δ) ^ 2 - Real.sin θ ^ 2
+  have hid : Real.sin (θ + δ) ^ (2 : ℕ) - Real.sin θ ^ (2 : ℕ)
       = Real.sin (2 * θ + δ) * Real.sin δ := by
-    have h1 : Real.sin (θ + δ) ^ 2 = (1 - Real.cos (2 * (θ + δ))) / 2 := by
+    have h1 : Real.sin (θ + δ) ^ (2 : ℕ) = (1 - Real.cos (2 * (θ + δ))) / 2 := by
       have h := Real.cos_two_mul' (θ + δ)
       have hpy := Real.sin_sq_add_cos_sq (θ + δ)
       linarith [h, hpy]
-    have h2 : Real.sin θ ^ 2 = (1 - Real.cos (2 * θ)) / 2 := by
+    have h2 : Real.sin θ ^ (2 : ℕ) = (1 - Real.cos (2 * θ)) / 2 := by
       have h := Real.cos_two_mul' θ
       have hpy := Real.sin_sq_add_cos_sq θ
       linarith [h, hpy]
@@ -174,9 +174,9 @@ theorem dqpt_sin_sq_separation {θ δ : ℝ} (hθ : 0 ≤ θ) (hδ : 0 < δ) (hs
     · exact le_of_eq (congrArg Real.sin h)
     · exact le_of_lt (Real.strictMonoOn_sin ⟨by linarith, by linarith⟩
         ⟨by linarith, by linarith⟩ h)
-  have hcube : δ - δ ^ 3 / 6 < Real.sin δ := Real.sin_gt_sub_cube hδ
-  have hδsq : δ ^ 2 ≤ 0.63 := by nlinarith [hδ, hδsmall]
-  have hlin : 0.87 * δ ≤ δ - δ ^ 3 / 6 := by nlinarith [hδ, hδsq]
+  have hcube : δ - δ ^ (3 : ℕ) / 6 < Real.sin δ := Real.sin_gt_sub_cube hδ
+  have hδsq : δ ^ (2 : ℕ) ≤ 0.63 := by nlinarith [hδ, hδsmall]
+  have hlin : 0.87 * δ ≤ δ - δ ^ (3 : ℕ) / 6 := by nlinarith [hδ, hδsq]
   have hlow : 0.87 * δ < Real.sin δ := lt_of_le_of_lt hlin hcube
   rw [hid]
   nlinarith [hmono, hlow, hsinδpos, hδ]

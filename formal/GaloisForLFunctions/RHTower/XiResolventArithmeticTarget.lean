@@ -3,28 +3,28 @@ import GaloisForLFunctions.RHTower.XiResolventMassRigidity
 /-!
 # The collapse principle and the exact arithmetic target behind the quartic gap
 
-The escape law reads: RH holds iff `(X+1)^4 M X → 0`.  This file settles what kind of bound can
+The escape law reads: RH holds iff `(X+1)^(4 : ℕ) M X → 0`.  This file settles what kind of bound can
 ever realize that decay and isolates the precise arithmetic quantity that remains open.
 
 **The collapse principle.**  If any function `g` eventually dominates the deviation mass and
-beats the quartic rate, `(X+1)^4 g X → 0`, then RH follows.  By the quartic rigidity of `M`, such
+beats the quartic rate, `(X+1)^(4 : ℕ) g X → 0`, then RH follows.  By the quartic rigidity of `M`, such
 a bound is therefore never an asymptotic improvement: producing it is *the same problem* as
 proving RH, and once produced the mass is identically zero.  This turns the strategic slogan
 "beat the exponent four" into a theorem about the solution space of the assignment.
 
-**The arithmetic target.**  Termwise, `‖u‖^2 = Re (u^2) + 2 (Im u)^2`, so the ℓ²-mass of the
+**The arithmetic target.**  Termwise, `‖u‖^(2 : ℕ) = Re (u^(2 : ℕ)) + 2 (Im u)^(2 : ℕ)`, so the ℓ²-mass of the
 resolvent coordinates splits as
 
-`sum_q ‖u_q‖^2 = Re (R_1 X) + 2 M X`,
+`sum_q ‖u_q‖^(2 : ℕ) = Re (R_1 X) + 2 M X`,
 
 where `R_1 X = xiResolventMoment 1 X` is the arithmetic second moment — the negative shift
-derivative of the Euler-ray response `R_0`, whose value at `X = x^2` is
+derivative of the Euler-ray response `R_0`, whose value at `X = x^(2 : ℕ)` is
 `logDeriv xi (1/2 + x) / x`.  Hence, at every shift:
 
-* the geometric side always dominates: `Re (R_1 X) ≤ sum_q ‖u_q‖^2`;
-* RH holds iff the two agree: `RH ↔ sum_q ‖u_q‖^2 = Re (R_1 X)`;
+* the geometric side always dominates: `Re (R_1 X) ≤ sum_q ‖u_q‖^(2 : ℕ)`;
+* RH holds iff the two agree: `RH ↔ sum_q ‖u_q‖^(2 : ℕ) = Re (R_1 X)`;
 * and the full assignment reduces to a one-sided estimate: any eventual arithmetic majorant
-  `sum_q ‖u_q‖^2 ≤ Re (R_1 X) + g X` with `(X+1)^4 g X → 0` proves RH.
+  `sum_q ‖u_q‖^(2 : ℕ) ≤ Re (R_1 X) + g X` with `(X+1)^(4 : ℕ) g X → 0` proves RH.
 
 The open core is exactly this last inequality.  The ℓ²-mass is a conjugation-diagonal sum: it
 pairs each divisor copy with its own line conjugate.  Every bilinear arithmetic observable —
@@ -44,15 +44,15 @@ noncomputable section
 /-! ## §1 The ℓ²-mass decomposition -/
 
 /-- Termwise Pythagoras for the resolvent coordinate:
-`‖u‖^2 = Re (u^2) + 2 (Im u)^2`. -/
+`‖u‖^(2 : ℕ) = Re (u^(2 : ℕ)) + 2 (Im u)^(2 : ℕ)`. -/
 theorem norm_sq_xiResolventPoint_decomposition (X : ℝ) (q : XiZeroCopy) :
-    ‖xiResolventPoint X q‖ ^ 2 =
-      ((xiResolventPoint X q) ^ 2).re + 2 * (xiResolventPoint X q).im ^ 2 := by
+    ‖xiResolventPoint X q‖ ^ (2 : ℕ) =
+      ((xiResolventPoint X q) ^ (2 : ℕ)).re + 2 * (xiResolventPoint X q).im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply, sq, Complex.mul_re]
   ring
 
 theorem summable_norm_sq_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
-    Summable (fun q : XiZeroCopy => ‖xiResolventPoint X q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiResolventPoint X q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
     (summable_norm_xiResolventPoint hX)
   have h1 := norm_xiResolventPoint_le_one hX q
@@ -61,20 +61,20 @@ theorem summable_norm_sq_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
 /-- **The ℓ²-mass decomposition**: the square-summed resolvent coordinates are the arithmetic
 second moment plus twice the deviation mass. -/
 theorem tsum_norm_sq_xiResolventPoint_eq {X : ℝ} (hX : 0 ≤ X) :
-    ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ 2 =
+    ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ (2 : ℕ) =
       (xiResolventMoment 1 X).re + 2 * xiResolventImSqMass X := by
   have hpow := summable_xiResolventPoint_pow hX 1
-  have hre : Summable (fun q : XiZeroCopy => ((xiResolventPoint X q) ^ 2).re) := by
+  have hre : Summable (fun q : XiZeroCopy => ((xiResolventPoint X q) ^ (2 : ℕ)).re) := by
     have h := (Complex.hasSum_re hpow.hasSum).summable
     simpa using h
-  have him : Summable (fun q : XiZeroCopy => 2 * (xiResolventPoint X q).im ^ 2) :=
+  have him : Summable (fun q : XiZeroCopy => 2 * (xiResolventPoint X q).im ^ (2 : ℕ)) :=
     (summable_im_sq_xiResolventPoint hX).mul_left 2
-  calc ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ 2
+  calc ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ (2 : ℕ)
       = ∑' q : XiZeroCopy,
-          (((xiResolventPoint X q) ^ 2).re + 2 * (xiResolventPoint X q).im ^ 2) :=
+          (((xiResolventPoint X q) ^ (2 : ℕ)).re + 2 * (xiResolventPoint X q).im ^ (2 : ℕ)) :=
         tsum_congr fun q => norm_sq_xiResolventPoint_decomposition X q
-    _ = (∑' q : XiZeroCopy, ((xiResolventPoint X q) ^ 2).re) +
-          ∑' q : XiZeroCopy, 2 * (xiResolventPoint X q).im ^ 2 :=
+    _ = (∑' q : XiZeroCopy, ((xiResolventPoint X q) ^ (2 : ℕ)).re) +
+          ∑' q : XiZeroCopy, 2 * (xiResolventPoint X q).im ^ (2 : ℕ) :=
         hre.tsum_add him
     _ = (xiResolventMoment 1 X).re + 2 * xiResolventImSqMass X := by
         rw [tsum_mul_left, xiResolventImSqMass, xiResolventMoment]
@@ -83,7 +83,7 @@ theorem tsum_norm_sq_xiResolventPoint_eq {X : ℝ} (hX : 0 ≤ X) :
 
 /-- The geometric side always dominates the arithmetic side. -/
 theorem moment_one_re_le_tsum_norm_sq {X : ℝ} (hX : 0 ≤ X) :
-    (xiResolventMoment 1 X).re ≤ ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ 2 := by
+    (xiResolventMoment 1 X).re ≤ ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ (2 : ℕ) := by
   rw [tsum_norm_sq_xiResolventPoint_eq hX]
   have h : 0 ≤ xiResolventImSqMass X :=
     tsum_nonneg fun q => sq_nonneg (xiResolventPoint X q).im
@@ -93,7 +93,7 @@ theorem moment_one_re_le_tsum_norm_sq {X : ℝ} (hX : 0 ≤ X) :
 equals the arithmetic second moment exactly on the Riemann hypothesis. -/
 theorem riemannHypothesis_iff_tsum_norm_sq_eq_moment_one_re {X : ℝ} (hX : 0 ≤ X) :
     RiemannHypothesis ↔
-      ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ 2 = (xiResolventMoment 1 X).re := by
+      ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ (2 : ℕ) = (xiResolventMoment 1 X).re := by
   rw [riemannHypothesis_iff_xiResolventImSqMass_eq_zero hX,
     tsum_norm_sq_xiResolventPoint_eq hX]
   constructor
@@ -123,7 +123,7 @@ quartic rate proves RH.  By quartic rigidity there is no asymptotic route: a suc
 certifies that the mass was identically zero. -/
 theorem riemannHypothesis_of_mass_eventually_le (g : ℝ → ℝ)
     (hle : ∀ᶠ X : ℝ in atTop, xiResolventImSqMass X ≤ g X)
-    (hdecay : Tendsto (fun X : ℝ => (X + 1) ^ 4 * g X) atTop (nhds 0)) :
+    (hdecay : Tendsto (fun X : ℝ => (X + 1) ^ (4 : ℕ) * g X) atTop (nhds 0)) :
     RiemannHypothesis := by
   rw [riemannHypothesis_iff_tendsto_quartic_mass_zero]
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hdecay ?_ ?_
@@ -138,9 +138,9 @@ theorem riemannHypothesis_of_mass_eventually_le (g : ℝ → ℝ)
 of the arithmetic second moment proves RH.  The reverse inequality holds unconditionally, so the
 entire content of RH is this one-sided estimate. -/
 theorem riemannHypothesis_of_tsum_norm_sq_eventually_le (g : ℝ → ℝ)
-    (hle : ∀ᶠ X : ℝ in atTop, ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ 2 ≤
+    (hle : ∀ᶠ X : ℝ in atTop, ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ^ (2 : ℕ) ≤
       (xiResolventMoment 1 X).re + g X)
-    (hdecay : Tendsto (fun X : ℝ => (X + 1) ^ 4 * g X) atTop (nhds 0)) :
+    (hdecay : Tendsto (fun X : ℝ => (X + 1) ^ (4 : ℕ) * g X) atTop (nhds 0)) :
     RiemannHypothesis := by
   refine riemannHypothesis_of_mass_eventually_le (fun X => g X / 2) ?_ ?_
   · filter_upwards [hle, eventually_ge_atTop (0 : ℝ)] with X hX hX0

@@ -114,7 +114,7 @@ theorem integral_primeTailSeed {n : ℕ} (hn : 2 ≤ n) {z w : ℂ} (hzw : z ≠
 
 /-! ## The divisor monodromy germ and its reflected characters -/
 
-theorem conj_ofReal_cpow {x : ℝ} (hx : 0 < x) (s : ℂ) :
+theorem conj_ofReal_cpow_primeTailCoPoissonBoundary {x : ℝ} (hx : 0 < x) (s : ℂ) :
     (starRingEnd ℂ) ((x : ℂ) ^ s) = (x : ℂ) ^ ((starRingEnd ℂ) s) := by
   have hxc : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
   rw [Complex.cpow_def_of_ne_zero hxc, Complex.cpow_def_of_ne_zero hxc,
@@ -196,7 +196,7 @@ theorem multiplicativeInversion_conj_monodromyGerm (m : ℕ) (rho : ℂ) {x : �
   have hxinvpos : (0 : ℝ) < x⁻¹ := by positivity
   have hconj : (starRingEnd ℂ) (((x⁻¹ : ℝ) : ℂ) ^ (-rho))
       = ((x⁻¹ : ℝ) : ℂ) ^ (-(starRingEnd ℂ) rho) := by
-    rw [conj_ofReal_cpow hxinvpos, map_neg]
+    rw [conj_ofReal_cpow_primeTailCoPoissonBoundary hxinvpos, map_neg]
   rw [multiplicativeInversion, monodromyGerm, reflectedGerm]
   simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, map_natCast, map_ofNat]
   rw [hconj, hinvcast, Complex.inv_cpow _ _ harg, ← Complex.cpow_neg,

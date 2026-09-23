@@ -11,7 +11,7 @@ noncomputable section
 /-- Quadratic logarithmic Möbius kernel at a real cutoff. -/
 def moebiusDoubleLogKernelReal (Y : ℝ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 ⌊Y⌋₊,
-    ((moebius d : ℤ) : ℝ) / (d : ℝ) * Real.log (Y / (d : ℝ)) ^ 2
+    ((moebius d : ℤ) : ℝ) / (d : ℝ) * Real.log (Y / (d : ℝ)) ^ (2 : ℕ)
 
 /-- Exact transfer of the real-cutoff quadratic kernel to its integer floor. -/
 theorem moebiusDoubleLogKernelReal_eq_floor (Y : ℝ) (hY : 1 ≤ Y) :
@@ -19,7 +19,7 @@ theorem moebiusDoubleLogKernelReal_eq_floor (Y : ℝ) (hY : 1 ≤ Y) :
       moebiusDoubleLogKernel ⌊Y⌋₊ +
         2 * Real.log (Y / (⌊Y⌋₊ : ℝ)) *
           coprimeLogMoebius 1 (⌊Y⌋₊ : ℝ) +
-        Real.log (Y / (⌊Y⌋₊ : ℝ)) ^ 2 *
+        Real.log (Y / (⌊Y⌋₊ : ℝ)) ^ (2 : ℕ) *
           RHTower.deningerHarmonicPartial ⌊Y⌋₊ := by
   classical
   let N : ℕ := ⌊Y⌋₊
@@ -131,7 +131,7 @@ theorem tendsto_moebiusDoubleLogKernelReal_div_log_two :
     have hnum := (hdelta.const_mul 2).mul hlinear
     simpa only [mul_one, zero_mul] using hnum.div_atTop hlog
   have hcorrTwo : Tendsto (fun Y : ℝ =>
-      (Real.log (Y / (⌊Y⌋₊ : ℝ)) ^ 2 *
+      (Real.log (Y / (⌊Y⌋₊ : ℝ)) ^ (2 : ℕ) *
         RHTower.deningerHarmonicPartial ⌊Y⌋₊) / Real.log Y) atTop (𝓝 0) := by
     have hnum := hdelta.pow 2 |>.mul hpartial
     simpa only [zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_mul] using hnum.div_atTop hlog
@@ -183,7 +183,7 @@ theorem exists_abs_moebiusDoubleLogKernelReal_le_const_mul_log :
       dsimp [δ]
       rw [Real.log_div (by positivity) hNR.ne']
     linarith
-  have hδsq : δ ^ 2 ≤ Real.log Y := by nlinarith
+  have hδsq : δ ^ (2 : ℕ) ≤ Real.log Y := by nlinarith
   have hinteger : |moebiusDoubleLogKernel N| ≤ C₀ * Real.log (N : ℝ) := by
     rcases hN1.eq_or_lt with hN | hN2
     · rw [← hN]
@@ -205,7 +205,7 @@ theorem exists_abs_moebiusDoubleLogKernelReal_le_const_mul_log :
     rw [abs_mul, abs_mul, abs_of_nonneg hδnonneg,
       abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
     nlinarith [abs_nonneg (coprimeLogMoebius 1 (N : ℝ))]
-  have hquadratic : |δ ^ 2 * RHTower.deningerHarmonicPartial N| ≤
+  have hquadratic : |δ ^ (2 : ℕ) * RHTower.deningerHarmonicPartial N| ≤
       C₁ * Real.log Y := by
     rw [abs_mul, abs_pow, abs_of_nonneg hδnonneg]
     have hprod := mul_le_mul hδsq (hC₁ N)
@@ -215,10 +215,10 @@ theorem exists_abs_moebiusDoubleLogKernelReal_le_const_mul_log :
     show ⌊Y⌋₊ = N from rfl]
   calc
     |moebiusDoubleLogKernel N + 2 * δ * coprimeLogMoebius 1 (N : ℝ) +
-        δ ^ 2 * RHTower.deningerHarmonicPartial N| ≤
+        δ ^ (2 : ℕ) * RHTower.deningerHarmonicPartial N| ≤
         |moebiusDoubleLogKernel N| +
           |2 * δ * coprimeLogMoebius 1 (N : ℝ)| +
-          |δ ^ 2 * RHTower.deningerHarmonicPartial N| := by
+          |δ ^ (2 : ℕ) * RHTower.deningerHarmonicPartial N| := by
       exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     _ ≤ C₀ * Real.log Y + 2 * B * Real.log Y + C₁ * Real.log Y :=
       add_le_add (add_le_add hintegerY hlinear) hquadratic

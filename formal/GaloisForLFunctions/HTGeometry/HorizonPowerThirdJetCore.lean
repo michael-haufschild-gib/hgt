@@ -13,7 +13,7 @@ def horizonPowerThirdCore (α : ℂ) (z : ℝ) : ℂ :=
   ((horizonLogThirdCore z : ℂ) * α +
     3 * ((literalSourceHorizonLogSecond z : ℂ) * α) *
       ((literalSourceHorizonLogFirst z : ℂ) * α) +
-    ((literalSourceHorizonLogFirst z : ℂ) * α) ^ 3) * literalSourceHorizonPower α z
+    ((literalSourceHorizonLogFirst z : ℂ) * α) ^ (3 : ℕ)) * literalSourceHorizonPower α z
 
 theorem literalSourceHorizonPowerSecond_hasDerivAt (α : ℂ) (z : ℝ) (hz : z < 1) :
     HasDerivAt (literalSourceHorizonPowerSecond α) (horizonPowerThirdCore α z) z := by
@@ -31,7 +31,7 @@ theorem literalSourceHorizonPowerSecond_hasDerivAt (α : ℂ) (z : ℝ) (hz : z 
     rfl
   have hsecond : literalSourceHorizonPowerSecond α = fun x : ℝ =>
       ((literalSourceHorizonLogSecond x : ℂ) * α +
-        ((literalSourceHorizonLogFirst x : ℂ) * α) ^ 2) * literalSourceHorizonPower α x := by
+        ((literalSourceHorizonLogFirst x : ℂ) * α) ^ (2 : ℕ)) * literalSourceHorizonPower α x := by
     funext x
     rfl
   simpa only [horizonPowerThirdCore] using third_deriv_of_quadratic_log_jet

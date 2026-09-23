@@ -34,15 +34,15 @@ def gammaSewnCriticalCompleteGraph_DenominatorTerm
 
 /-- The repeated prime-`2`, depth-zero same-prime Pluecker mass. -/
 def gammaSewnCriticalCompleteGraph_anchorRaw : ℝ :=
-  4 * gammaSewnCriticalFinitePacket_aperture ^ 2 /
-    ((((gammaSewnCriticalCompleteGraph_primeTwo : ℝ) + 1) ^ 4 *
-        Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ) ^ 2 *
-        (((0 : ℝ) + 1 / 2) ^ 2 -
+  4 * gammaSewnCriticalFinitePacket_aperture ^ (2 : ℕ) /
+    ((((gammaSewnCriticalCompleteGraph_primeTwo : ℝ) + 1) ^ (4 : ℕ) *
+        Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ) ^ (2 : ℕ) *
+        (((0 : ℝ) + 1 / 2) ^ (2 : ℕ) -
           (gammaSewnCriticalFinitePacket_aperture /
-            Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ)) ^ 2) ^ 2) *
-      (((0 : ℝ) + 3 / 2) ^ 2 -
+            Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) *
+      (((0 : ℝ) + 3 / 2) ^ (2 : ℕ) -
         (gammaSewnCriticalFinitePacket_aperture /
-          Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ)) ^ 2) ^ 2)
+          Real.log (gammaSewnCriticalCompleteGraph_primeTwo : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ))
 
 theorem gammaSewnCriticalCompleteGraph_lowerRaw_eq_anchor (q : Nat.Primes) :
     RHTower.gammaSewnFourRateBoundaryPairRawWeight gammaSewnCriticalFinitePacket_aperture

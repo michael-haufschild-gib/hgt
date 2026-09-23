@@ -33,7 +33,7 @@ def xiReciprocalSquareOperator :
   xiReciprocalOperator ∘L xiReciprocalOperator
 
 /-- The reciprocal Xi operator acts by coordinatewise reciprocal spectral multiplication on every
-`ell^2` vector, not only on basis vectors. -/
+`ell^(2 : ℕ)` vector, not only on basis vectors. -/
 theorem xiReciprocalOperator_apply
     (f : lp (fun _ : XiZeroCopy => ℂ) 2) (q : XiZeroCopy) :
     xiReciprocalOperator f q = (xiSpectralPoint q)⁻¹ * f q := by

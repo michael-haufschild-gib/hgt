@@ -59,7 +59,7 @@ def boseShiftedTransportTwo (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
     2 * d.dq *
       (d.t * d.da * d.velocityCenter l +
         (d.t * d.jetOne l) * d.velocityCenterOne l) +
-    d.dq ^ 2 * d.boseShiftedTransportZero l
+    d.dq ^ (2 : ℕ) * d.boseShiftedTransportZero l
 
 /-- Third lowest-mode-shifted jet of `v H`. -/
 def boseShiftedTransportThree (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
@@ -67,10 +67,10 @@ def boseShiftedTransportThree (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
     3 * d.dq *
       (2 * (d.t * d.da) * d.velocityCenterOne l +
         (d.t * d.jetOne l) * d.velocityCenterTwo) +
-    3 * d.dq ^ 2 *
+    3 * d.dq ^ (2 : ℕ) *
       (d.t * d.da * d.velocityCenter l +
         (d.t * d.jetOne l) * d.velocityCenterOne l) -
-    d.dq ^ 3 * d.boseShiftedTransportZero l
+    d.dq ^ (3 : ℕ) * d.boseShiftedTransportZero l
 
 /-- Finite four-face replacement for termwise control of all Bose modes. -/
 def BoseShiftedTransportCone (d : C5LikelihoodAffineData) (l : ℝ) : Prop :=
@@ -91,9 +91,9 @@ private theorem boseCenteredJetOne_pos
   dsimp only
   rw [show
       (-Real.exp (d.action l)) * d.dq /
-            (Real.exp (d.action l) - 1) ^ 2 +
+            (Real.exp (d.action l) - 1) ^ (2 : ℕ) +
           d.dq * (1 / (Real.exp (d.action l) - 1)) =
-        (-d.dq) / (Real.exp (d.action l) - 1) ^ 2 by
+        (-d.dq) / (Real.exp (d.action l) - 1) ^ (2 : ℕ) by
       field_simp [hr.ne']
       ring]
   exact div_pos (neg_pos.mpr hdq) (pow_pos hr 2)
@@ -103,7 +103,7 @@ private theorem boseCenteredJetTwo_pos
     (haction : 0 < d.action l) (hdq : d.dq < 0) :
     0 < d.boseReciprocalTwo l +
       2 * d.dq * d.boseReciprocalOne l +
-      d.dq ^ 2 * d.boseReciprocal l := by
+      d.dq ^ (2 : ℕ) * d.boseReciprocal l := by
   have he : 1 < Real.exp (d.action l) := by
     rw [← Real.exp_zero]
     exact Real.exp_lt_exp.mpr haction
@@ -111,14 +111,14 @@ private theorem boseCenteredJetTwo_pos
   unfold boseReciprocal boseReciprocalOne boseReciprocalTwo
   dsimp only
   rw [show
-      Real.exp (d.action l) * (Real.exp (d.action l) + 1) * d.dq ^ 2 /
-            (Real.exp (d.action l) - 1) ^ 3 +
+      Real.exp (d.action l) * (Real.exp (d.action l) + 1) * d.dq ^ (2 : ℕ) /
+            (Real.exp (d.action l) - 1) ^ (3 : ℕ) +
           2 * d.dq *
             ((-Real.exp (d.action l)) * d.dq /
-              (Real.exp (d.action l) - 1) ^ 2) +
-          d.dq ^ 2 * (1 / (Real.exp (d.action l) - 1)) =
-        d.dq ^ 2 * (Real.exp (d.action l) + 1) /
-          (Real.exp (d.action l) - 1) ^ 3 by
+              (Real.exp (d.action l) - 1) ^ (2 : ℕ)) +
+          d.dq ^ (2 : ℕ) * (1 / (Real.exp (d.action l) - 1)) =
+        d.dq ^ (2 : ℕ) * (Real.exp (d.action l) + 1) /
+          (Real.exp (d.action l) - 1) ^ (3 : ℕ) by
       field_simp [hr.ne']
       ring]
   exact div_pos
@@ -129,8 +129,8 @@ private theorem boseCenteredJetThree_pos
     (haction : 0 < d.action l) (hdq : d.dq < 0) :
     0 < d.boseReciprocalThree l +
       3 * d.dq * d.boseReciprocalTwo l +
-      3 * d.dq ^ 2 * d.boseReciprocalOne l +
-      d.dq ^ 3 * d.boseReciprocal l := by
+      3 * d.dq ^ (2 : ℕ) * d.boseReciprocalOne l +
+      d.dq ^ (3 : ℕ) * d.boseReciprocal l := by
   have he : 1 < Real.exp (d.action l) := by
     rw [← Real.exp_zero]
     exact Real.exp_lt_exp.mpr haction
@@ -139,19 +139,19 @@ private theorem boseCenteredJetThree_pos
   dsimp only
   rw [show
       (-Real.exp (d.action l)) *
-              (Real.exp (d.action l) ^ 2 + 4 * Real.exp (d.action l) + 1) *
-              d.dq ^ 3 /
-            (Real.exp (d.action l) - 1) ^ 4 +
+              (Real.exp (d.action l) ^ (2 : ℕ) + 4 * Real.exp (d.action l) + 1) *
+              d.dq ^ (3 : ℕ) /
+            (Real.exp (d.action l) - 1) ^ (4 : ℕ) +
           3 * d.dq *
-            (Real.exp (d.action l) * (Real.exp (d.action l) + 1) * d.dq ^ 2 /
-              (Real.exp (d.action l) - 1) ^ 3) +
-          3 * d.dq ^ 2 *
+            (Real.exp (d.action l) * (Real.exp (d.action l) + 1) * d.dq ^ (2 : ℕ) /
+              (Real.exp (d.action l) - 1) ^ (3 : ℕ)) +
+          3 * d.dq ^ (2 : ℕ) *
             ((-Real.exp (d.action l)) * d.dq /
-              (Real.exp (d.action l) - 1) ^ 2) +
-          d.dq ^ 3 * (1 / (Real.exp (d.action l) - 1)) =
-        (-d.dq) ^ 3 *
-            (Real.exp (d.action l) ^ 2 + 4 * Real.exp (d.action l) + 1) /
-          (Real.exp (d.action l) - 1) ^ 4 by
+              (Real.exp (d.action l) - 1) ^ (2 : ℕ)) +
+          d.dq ^ (3 : ℕ) * (1 / (Real.exp (d.action l) - 1)) =
+        (-d.dq) ^ (3 : ℕ) *
+            (Real.exp (d.action l) ^ (2 : ℕ) + 4 * Real.exp (d.action l) + 1) /
+          (Real.exp (d.action l) - 1) ^ (4 : ℕ) by
       field_simp [hr.ne']
       ring]
   exact div_pos
@@ -165,13 +165,13 @@ private theorem lowerTransportBalance_algebra
       30 * dv * H2 +
         8 * (f *
             (3 * dv * H2 - 3 * dq * (2 * dv * H1 + v * H2) +
-              3 * dq ^ 2 * (dv * H + v * H1) - dq ^ 3 * (v * H)) +
+              3 * dq ^ (2 : ℕ) * (dv * H + v * H1) - dq ^ (3 : ℕ) * (v * H)) +
           3 * (f1 + dq * f) *
             (2 * dv * H1 + v * H2 - 2 * dq * (dv * H + v * H1) +
-              dq ^ 2 * (v * H)) +
-          3 * (f2 + 2 * dq * f1 + dq ^ 2 * f) *
+              dq ^ (2 : ℕ) * (v * H)) +
+          3 * (f2 + 2 * dq * f1 + dq ^ (2 : ℕ) * f) *
             (dv * H + v * H1 - dq * (v * H)) +
-          (f3 + 3 * dq * f2 + 3 * dq ^ 2 * f1 + dq ^ 3 * f) *
+          (f3 + 3 * dq * f2 + 3 * dq ^ (2 : ℕ) * f1 + dq ^ (3 : ℕ) * f) *
             (v * H)) := by
   ring
 
@@ -186,12 +186,12 @@ private theorem lowerTransportBalance_eq_boseShifted
             d.boseShiftedTransportTwo l +
           3 * (d.boseReciprocalTwo l +
               2 * d.dq * d.boseReciprocalOne l +
-              d.dq ^ 2 * d.boseReciprocal l) *
+              d.dq ^ (2 : ℕ) * d.boseReciprocal l) *
             d.boseShiftedTransportOne l +
           (d.boseReciprocalThree l +
               3 * d.dq * d.boseReciprocalTwo l +
-              3 * d.dq ^ 2 * d.boseReciprocalOne l +
-              d.dq ^ 3 * d.boseReciprocal l) *
+              3 * d.dq ^ (2 : ℕ) * d.boseReciprocalOne l +
+              d.dq ^ (3 : ℕ) * d.boseReciprocal l) *
             d.boseShiftedTransportZero l) := by
   unfold boseCoefficientOne boseCoefficientTwo boseCoefficientThree
   dsimp only
@@ -230,12 +230,12 @@ theorem compensationThree_pos_of_boseShiftedTransportCone
             d.boseShiftedTransportTwo l +
           3 * (d.boseReciprocalTwo l +
               2 * d.dq * d.boseReciprocalOne l +
-              d.dq ^ 2 * d.boseReciprocal l) *
+              d.dq ^ (2 : ℕ) * d.boseReciprocal l) *
             d.boseShiftedTransportOne l +
           (d.boseReciprocalThree l +
               3 * d.dq * d.boseReciprocalTwo l +
-              3 * d.dq ^ 2 * d.boseReciprocalOne l +
-              d.dq ^ 3 * d.boseReciprocal l) *
+              3 * d.dq ^ (2 : ℕ) * d.boseReciprocalOne l +
+              d.dq ^ (3 : ℕ) * d.boseReciprocal l) *
             d.boseShiftedTransportZero l ≤ 0 := by
     have h0 := mul_nonpos_of_nonneg_of_nonpos hr.le hthree
     have h1 := mul_nonpos_of_nonneg_of_nonpos hr1.le htwo

@@ -59,12 +59,12 @@ theorem im_real_div_mul_im_neg {lam : ℝ} {z : ℂ} (hlam : 0 < lam) (hz : z �
     (((lam : ℂ) / z).im) * z.im < 0 := by
   rw [im_real_div_eq_neg_normSq]
   have hden : 0 < Complex.normSq z := Complex.normSq_pos.mpr hz
-  have hsq : 0 < z.im ^ 2 := sq_pos_of_ne_zero him
-  have hnum : -(lam * z.im ^ 2) < 0 := by
-    have hprod : 0 < lam * z.im ^ 2 := mul_pos hlam hsq
+  have hsq : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero him
+  have hnum : -(lam * z.im ^ (2 : ℕ)) < 0 := by
+    have hprod : 0 < lam * z.im ^ (2 : ℕ) := mul_pos hlam hsq
     linarith
   have heq : (-lam * z.im / Complex.normSq z) * z.im =
-      -(lam * z.im ^ 2) / Complex.normSq z := by
+      -(lam * z.im ^ (2 : ℕ)) / Complex.normSq z := by
     field_simp [hden.ne']
   rw [heq]
   exact div_neg_of_neg_of_pos hnum hden

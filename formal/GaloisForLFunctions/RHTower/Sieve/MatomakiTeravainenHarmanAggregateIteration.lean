@@ -87,17 +87,17 @@ theorem sum_normSq_mtHarmanAggregateIterationErrorAF_le
     (z Q D : ℕ) (E : ℝ) (data : MTFiniteIterationSourceData recDepth)
     (depth : ℕ) (j : Fin (recDepth + 1)) :
     ∑ n ∈ A, ‖mtHarmanAggregateIterationErrorAF (outerDepth := outerDepth)
-        endpoint z Q D E data depth j n‖ ^ 2 ≤
+        endpoint z Q D E data depth j n‖ ^ (2 : ℕ) ≤
       3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
-          (mtCoefficientAF (mtHarmanBaseOneCoefficient (primesIco z Q))) depth j n‖ ^ 2 +
+          (mtCoefficientAF (mtHarmanBaseOneCoefficient (primesIco z Q))) depth j n‖ ^ (2 : ℕ) +
       3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
           (mtCoefficientAF
             (mtHarmanPairFamilyCoefficient (t := outerDepth)
-              endpoint (primesIco z D) E)) depth j n‖ ^ 2 +
+              endpoint (primesIco z D) E)) depth j n‖ ^ (2 : ℕ) +
       3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
           (mtCoefficientAF
             (mtHarmanTripleFamilyCoefficient (t := outerDepth)
-              endpoint (primesIco z D) E)) depth j n‖ ^ 2 := by
+              endpoint (primesIco z D) E)) depth j n‖ ^ (2 : ℕ) := by
   let e₀ := mtAccumulatedSourceErrorAF data
     (mtCoefficientAF (mtHarmanBaseOneCoefficient (primesIco z Q))) depth j
   let e₂ := mtAccumulatedSourceErrorAF data
@@ -110,8 +110,8 @@ theorem sum_normSq_mtHarmanAggregateIterationErrorAF_le
         endpoint (primesIco z D) E)) depth j
   calc
     ∑ n ∈ A, ‖mtHarmanAggregateIterationErrorAF (outerDepth := outerDepth)
-        endpoint z Q D E data depth j n‖ ^ 2 ≤
-      ∑ n ∈ A, (3 * ‖e₀ n‖ ^ 2 + 3 * ‖e₂ n‖ ^ 2 + 3 * ‖e₃ n‖ ^ 2) := by
+        endpoint z Q D E data depth j n‖ ^ (2 : ℕ) ≤
+      ∑ n ∈ A, (3 * ‖e₀ n‖ ^ (2 : ℕ) + 3 * ‖e₂ n‖ ^ (2 : ℕ) + 3 * ‖e₃ n‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro n hn
       have hnorm : ‖e₀ n + e₂ n - e₃ n‖ ≤
@@ -124,30 +124,30 @@ theorem sum_normSq_mtHarmanAggregateIterationErrorAF_le
           _ ≤ ‖e₀ n‖ + ‖e₂ n‖ + ‖e₃ n‖ := by
             gcongr
             exact norm_add_le (e₀ n) (e₂ n)
-      have hsq : ‖e₀ n + e₂ n - e₃ n‖ ^ 2 ≤
-          (‖e₀ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ 2 :=
+      have hsq : ‖e₀ n + e₂ n - e₃ n‖ ^ (2 : ℕ) ≤
+          (‖e₀ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-      have hthree : (‖e₀ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ 2 ≤
-          3 * ‖e₀ n‖ ^ 2 + 3 * ‖e₂ n‖ ^ 2 + 3 * ‖e₃ n‖ ^ 2 := by
+      have hthree : (‖e₀ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ (2 : ℕ) ≤
+          3 * ‖e₀ n‖ ^ (2 : ℕ) + 3 * ‖e₂ n‖ ^ (2 : ℕ) + 3 * ‖e₃ n‖ ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (‖e₀ n‖ - ‖e₂ n‖),
           sq_nonneg (‖e₀ n‖ - ‖e₃ n‖),
           sq_nonneg (‖e₂ n‖ - ‖e₃ n‖)]
-      change ‖e₀ n + e₂ n - e₃ n‖ ^ 2 ≤ _
+      change ‖e₀ n + e₂ n - e₃ n‖ ^ (2 : ℕ) ≤ _
       exact hsq.trans hthree
-    _ = 3 * ∑ n ∈ A, ‖e₀ n‖ ^ 2 +
-        3 * ∑ n ∈ A, ‖e₂ n‖ ^ 2 +
-        3 * ∑ n ∈ A, ‖e₃ n‖ ^ 2 := by
+    _ = 3 * ∑ n ∈ A, ‖e₀ n‖ ^ (2 : ℕ) +
+        3 * ∑ n ∈ A, ‖e₂ n‖ ^ (2 : ℕ) +
+        3 * ∑ n ∈ A, ‖e₃ n‖ ^ (2 : ℕ) := by
       simp only [Finset.sum_add_distrib, Finset.mul_sum]
     _ = 3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
-          (mtCoefficientAF (mtHarmanBaseOneCoefficient (primesIco z Q))) depth j n‖ ^ 2 +
+          (mtCoefficientAF (mtHarmanBaseOneCoefficient (primesIco z Q))) depth j n‖ ^ (2 : ℕ) +
         3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
           (mtCoefficientAF
             (mtHarmanPairFamilyCoefficient (t := outerDepth)
-              endpoint (primesIco z D) E)) depth j n‖ ^ 2 +
+              endpoint (primesIco z D) E)) depth j n‖ ^ (2 : ℕ) +
         3 * ∑ n ∈ A, ‖mtAccumulatedSourceErrorAF data
           (mtCoefficientAF
             (mtHarmanTripleFamilyCoefficient (t := outerDepth)
-              endpoint (primesIco z D) E)) depth j n‖ ^ 2 := by rfl
+              endpoint (primesIco z D) E)) depth j n‖ ^ (2 : ℕ) := by rfl
 
 end
 

@@ -27,7 +27,7 @@ theorem card_shift_roughSet_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : 
     (D : Finset ℕ) :
     ((((roughSet P₁ h ⌊Y⌋₊ ∩ D).filter
         (fun m => m + d ∈ roughSet P₁ h ⌊Y⌋₊ ∩ D)).card : ℕ) : ℝ)
-      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
         + ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by

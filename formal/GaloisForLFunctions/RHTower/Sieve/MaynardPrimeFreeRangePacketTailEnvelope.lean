@@ -15,14 +15,14 @@ theorem routeTComparableWidthLadder_uniform_tail_of_log_envelope
     (hH0 : 0 < H0) (hH0quarter : H0 ≤ 1 / 4)
     (hA : 0 < A) (hK : 0 < K)
     (hcut :
-      P * (130 * C * (1 / H0) ^ 2 / (K : ℝ)) ≤
+      P * (130 * C * (1 / H0) ^ (2 : ℕ) / (K : ℝ)) ≤
         A / (2 * (1 + Real.log ((1 / 4) / H0) / Real.log 2))) :
     ∀ J : ℕ, 0 < J →
       (((2 ^ (J - 1) : ℕ) : ℝ)) ≤ (1 / 4) / H0 →
       ∀ j ∈ Finset.range J,
         P * (130 * C *
           ((lambda * 1) /
-            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ 2 /
+            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ (2 : ℕ) /
           (K : ℝ)) ≤
         (A / (J : ℝ)) / 2 := by
   intro J hJ hbelow j _hj
@@ -54,17 +54,17 @@ theorem routeTComparableWidthLadder_uniform_tail_of_log_envelope
     positivity
   have hsquare :
       ((lambda * 1) /
-          (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ 2 ≤
-        (1 / H0) ^ 2 :=
+          (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ (2 : ℕ) ≤
+        (1 / H0) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hratio0 hratio 2
   have hKreal : 0 < (K : ℝ) := by exact_mod_cast hK
   have hfactor0 : 0 ≤ 130 * C := mul_nonneg (by norm_num) hC
   have htailEnvelope :
       P * (130 * C *
           ((lambda * 1) /
-            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ 2 /
+            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ (2 : ℕ) /
           (K : ℝ)) ≤
-        P * (130 * C * (1 / H0) ^ 2 / (K : ℝ)) := by
+        P * (130 * C * (1 / H0) ^ (2 : ℕ) / (K : ℝ)) := by
     apply mul_le_mul_of_nonneg_left _ hP
     apply div_le_div_of_nonneg_right _ hKreal.le
     exact mul_le_mul_of_nonneg_left hsquare hfactor0
@@ -76,9 +76,9 @@ theorem routeTComparableWidthLadder_uniform_tail_of_log_envelope
   calc
     P * (130 * C *
           ((lambda * 1) /
-            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ 2 /
+            (lambda * routeTComparableWidthLadder H0 (1 / 4) j)) ^ (2 : ℕ) /
           (K : ℝ)) ≤
-        P * (130 * C * (1 / H0) ^ 2 / (K : ℝ)) := htailEnvelope
+        P * (130 * C * (1 / H0) ^ (2 : ℕ) / (K : ℝ)) := htailEnvelope
     _ ≤ A / (2 * Q) := by simpa only [Q] using hcut
     _ ≤ A / (2 * (J : ℝ)) := htarget
     _ = (A / (J : ℝ)) / 2 := by ring
@@ -97,7 +97,7 @@ theorem exists_eventually_routeT_proportional_primeFree_large_range_packet_of_lo
           lambda ^ theta ≤ lambda * H0 →
           lambda + 2 * (lambda / 4) ≤ X →
           heathBrownWindowRelevantFixedPolylogBound L X k x 1 *
-              (130 * C * (1 / H0) ^ 2 / (K : ℝ)) ≤
+              (130 * C * (1 / H0) ^ (2 : ℕ) / (K : ℝ)) ≤
             ((2 * Real.pi) * (routeTSmoothWindowCentralMargin / 4)) /
               (2 * (1 + Real.log ((1 / 4) / H0) / Real.log 2)) →
           Chebyshev.theta (lambda + 2 * (lambda * H0)) -

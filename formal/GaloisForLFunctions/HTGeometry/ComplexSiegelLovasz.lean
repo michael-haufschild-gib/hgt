@@ -45,13 +45,13 @@ Jacobi weight. -/
 theorem ComplexJacobiData.form_diag_succ (J : ComplexJacobiData n)
     {i j : Fin n} (hij : (j : ℕ) = (i : ℕ) + 1)
     (hpre : ∀ m : Fin n, m < i → J.U m j = 0) :
-    (J.form j j).re = J.d i * ‖J.U i j‖ ^ 2 + J.d j := by
+    (J.form j j).re = J.d i * ‖J.U i j‖ ^ (2 : ℕ) + J.d j := by
   classical
   rw [J.form_diag j]
-  have hsplit : (∑ m, J.d m * ‖J.U m j‖ ^ 2) =
-      J.d i * ‖J.U i j‖ ^ 2 +
+  have hsplit : (∑ m, J.d m * ‖J.U m j‖ ^ (2 : ℕ)) =
+      J.d i * ‖J.U i j‖ ^ (2 : ℕ) +
         ∑ m ∈ Finset.univ.filter (fun m : Fin n => m ≠ i),
-          J.d m * ‖J.U m j‖ ^ 2 := by
+          J.d m * ‖J.U m j‖ ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun m : Fin n => m = i)]
     congr 1
     rw [Finset.filter_eq' Finset.univ i]
@@ -79,9 +79,9 @@ theorem ComplexJacobiData.lovasz_of_le (J : ComplexJacobiData n)
     {k l : Fin n}
     (hred : ∀ i j : Fin n, i < j → ‖J.U i j‖ ≤ 1 / 2)
     (hkl : k < l)
-    (hmin : J.d k ≤ J.d l + ‖J.U k l‖ ^ 2 * J.d k) :
+    (hmin : J.d k ≤ J.d l + ‖J.U k l‖ ^ (2 : ℕ) * J.d k) :
     J.d k ≤ (4 / 3) * J.d l := by
-  have hb : ‖J.U k l‖ ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+  have hb : ‖J.U k l‖ ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
     nlinarith [hred k l hkl, norm_nonneg (J.U k l)]
   nlinarith [hmin, hb, J.pos k]
 
@@ -112,16 +112,16 @@ the next Jacobi weight. -/
 theorem ComplexJacobiData.projNorm_succ (J : ComplexJacobiData n)
     {i j : Fin n} (hij : (j : ℕ) = (i : ℕ) + 1) :
     J.projNorm i (Pi.single j (1 : ℂ)) =
-      J.d i * ‖J.U i j‖ ^ 2 + J.d j := by
+      J.d i * ‖J.U i j‖ ^ (2 : ℕ) + J.d j := by
   classical
   have hij' : i < j := Fin.lt_def.2 (by omega)
   rw [ComplexJacobiData.projNorm]
   have hsplit :
       (∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m),
-          J.d m * ‖J.U.mulVec (Pi.single j (1 : ℂ)) m‖ ^ 2) =
-        J.d i * ‖J.U.mulVec (Pi.single j (1 : ℂ)) i‖ ^ 2 +
+          J.d m * ‖J.U.mulVec (Pi.single j (1 : ℂ)) m‖ ^ (2 : ℕ)) =
+        J.d i * ‖J.U.mulVec (Pi.single j (1 : ℂ)) i‖ ^ (2 : ℕ) +
           ∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m ∧ m ≠ i),
-            J.d m * ‖J.U.mulVec (Pi.single j (1 : ℂ)) m‖ ^ 2 := by
+            J.d m * ‖J.U.mulVec (Pi.single j (1 : ℂ)) m‖ ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not
       (Finset.univ.filter (fun m : Fin n => i ≤ m)) (fun m : Fin n => m = i)]
     congr 1

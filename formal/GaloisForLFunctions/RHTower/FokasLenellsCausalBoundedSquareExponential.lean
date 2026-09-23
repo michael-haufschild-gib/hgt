@@ -9,21 +9,21 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareExponentialInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedSquareExponentialInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSquareExponentialInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSquareExponentialInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSquareExponentialInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareExponentialInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareExponentialInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSquareExponentialInst8 : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
-local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
+local instance fokasLenellsCausalBoundedSquareExponentialInst9 : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
   have he := congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => ‖A‖)
     causalBoundedChainExponential_zero
   exact he.symm.trans (norm_causalBoundedChainExponential_real (0 : ℝ≥0))⟩
@@ -31,20 +31,20 @@ local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) 
 
 /-- The actual exponential of the square of the genuine bounded derivative shift. -/
 def causalBoundedSquareExponential (z : ℂ) : causalBoundedChain →L[ℂ] causalBoundedChain :=
-  NormedSpace.exp (z • causalBoundedChainShift^2)
+  NormedSpace.exp (z • causalBoundedChainShift^(2 : ℕ))
 
 /-- Apply the corpus's genuine operator series to the actual second derivative. -/
 theorem causalBoundedSquareExponential_series (z : ℂ) (u : causalBoundedChain) :
     causalBoundedSquareExponential z u = ∑' k : ℕ,
-      (((k.factorial : ℂ))⁻¹*z^k) • (((causalBoundedChainShift^2)^k) u) :=
-  exp_smul_apply_eq_tsum (causalBoundedChainShift^2) z u
+      (((k.factorial : ℂ))⁻¹*z^k) • (((causalBoundedChainShift^(2 : ℕ))^k) u) :=
+  exp_smul_apply_eq_tsum (causalBoundedChainShift^(2 : ℕ)) z u
 
 private theorem square_power_norm_le (k : ℕ) (u : causalBoundedChain) :
-    ‖((causalBoundedChainShift^2)^k) u‖ ≤ ‖u‖ := by
-  have hp : ‖causalBoundedChainShift^2‖^k = 1 :=
+    ‖((causalBoundedChainShift^(2 : ℕ))^k) u‖ ≤ ‖u‖ := by
+  have hp : ‖causalBoundedChainShift^(2 : ℕ)‖^k = 1 :=
     (congrArg (fun r : ℝ => r^k) (norm_causalBoundedChainShift_pow 2)).trans (one_pow k)
   have he := congrArg (fun r : ℝ => r*‖u‖) hp
-  exact (norm_pow_apply_le (causalBoundedChainShift^2) k u).trans_eq (he.trans (one_mul _))
+  exact (norm_pow_apply_le (causalBoundedChainShift^(2 : ℕ)) k u).trans_eq (he.trans (one_mul _))
 
 private theorem square_majorant_hasSum (z : ℂ) (u : causalBoundedChain) :
     HasSum (fun k : ℕ => ((k.factorial : ℝ))⁻¹*‖z‖^k*‖u‖) (Real.exp ‖z‖*‖u‖) := by
@@ -52,11 +52,11 @@ private theorem square_majorant_hasSum (z : ℂ) (u : causalBoundedChain) :
     (NormedSpace.exp_series_hasSum_exp' (𝕂 := ℝ) ‖z‖).mul_right ‖u‖
 
 private theorem square_term_norm_le (z : ℂ) (u : causalBoundedChain) (k : ℕ) :
-    ‖(((k.factorial : ℂ))⁻¹*z^k) • (((causalBoundedChainShift^2)^k) u)‖ ≤
+    ‖(((k.factorial : ℂ))⁻¹*z^k) • (((causalBoundedChainShift^(2 : ℕ))^k) u)‖ ≤
       ((k.factorial : ℝ))⁻¹*‖z‖^k*‖u‖ := by
   have hc : ‖((k.factorial : ℂ))⁻¹*z^k‖ = ((k.factorial : ℝ))⁻¹*‖z‖^k := by
     rw [norm_mul, norm_inv, Complex.norm_natCast, norm_pow]
-  have he := congrArg (fun r : ℝ => r*‖((causalBoundedChainShift^2)^k) u‖) hc
+  have he := congrArg (fun r : ℝ => r*‖((causalBoundedChainShift^(2 : ℕ))^k) u‖) hc
   exact (norm_smul _ _).trans_le (he.trans_le
     (mul_le_mul_of_nonneg_left (square_power_norm_le k u) (by positivity)))
 
@@ -74,8 +74,8 @@ theorem norm_causalBoundedSquareExponential_le (z : ℂ) :
 /-- The actual complex-time derivative is composition with the genuine second derivative. -/
 theorem causalBoundedSquareExponential_hasDerivAt (z : ℂ) :
     HasDerivAt causalBoundedSquareExponential
-      (causalBoundedChainShift^2 * causalBoundedSquareExponential z) z :=
-  hasDerivAt_exp_smul_const' (causalBoundedChainShift^2) z
+      (causalBoundedChainShift^(2 : ℕ) * causalBoundedSquareExponential z) z :=
+  hasDerivAt_exp_smul_const' (causalBoundedChainShift^(2 : ℕ)) z
 
 /-- The genuine second-derivative evolution starts at the actual identity. -/
 theorem causalBoundedSquareExponential_zero : causalBoundedSquareExponential 0 = 1 := by
@@ -90,7 +90,7 @@ theorem causalBoundedSquareEntireOrbit_hasDerivAt (j : ℕ) (u : causalBoundedCh
     HasDerivAt (causalBoundedSquareEntireOrbit j u) (causalBoundedSquareEntireOrbit (j+2) u z) z := by
   have h := (causalBoundedSquareExponential_hasDerivAt z).clm_apply (hasDerivAt_const z u)
   have he : HasDerivAt (fun w : ℂ => causalBoundedSquareExponential w u)
-      ((causalBoundedChainShift^2) (causalBoundedSquareExponential z u)) z := by
+      ((causalBoundedChainShift^(2 : ℕ)) (causalBoundedSquareExponential z u)) z := by
     convert! h using 1
     simp only [map_zero, add_zero]
     rfl

@@ -39,7 +39,7 @@ noncomputable def polarProfile₁ (P : TravelingPolarProfile) (z : ℝ) : ℂ :=
 
 noncomputable def polarProfile₂ (P : TravelingPolarProfile) (z : ℝ) : ℂ :=
   polarPhase P z *
-    (((P.amplitude₂ z - P.amplitude z * P.phase₁ z ^ 2 : ℝ) : ℂ) +
+    (((P.amplitude₂ z - P.amplitude z * P.phase₁ z ^ (2 : ℕ) : ℝ) : ℂ) +
       Complex.I *
         ((2 * P.amplitude₁ z * P.phase₁ z +
           P.amplitude z * P.phase₂ z : ℝ) : ℂ))
@@ -50,7 +50,7 @@ theorem norm_polarPhase (P : TravelingPolarProfile) (z : ℝ) :
   simp
 
 theorem norm_polarProfile_sq (P : TravelingPolarProfile) (z : ℝ) :
-    ‖polarProfile P z‖ ^ 2 = P.amplitude z ^ 2 := by
+    ‖polarProfile P z‖ ^ (2 : ℕ) = P.amplitude z ^ (2 : ℕ) := by
   rw [polarProfile, norm_mul, norm_polarPhase, mul_one, Complex.norm_real,
     Real.norm_eq_abs, sq_abs]
 
@@ -120,11 +120,11 @@ theorem travelingPolar_residual_split
     Complex.I * ((-c : ℝ) *
         (phase * ((a₁ : ℂ) + Complex.I * (a * p₁ : ℝ)))) +
       (D : ℂ) *
-        (phase * (((a₂ - a * p₁ ^ 2 : ℝ) : ℂ) +
+        (phase * (((a₂ - a * p₁ ^ (2 : ℕ) : ℝ) : ℂ) +
           Complex.I * ((2 * a₁ * p₁ + a * p₂ : ℝ) : ℂ))) +
-      (((D / 2) * a ^ 2 : ℝ) : ℂ) * ((a : ℂ) * phase) =
+      (((D / 2) * a ^ (2 : ℕ) : ℝ) : ℂ) * ((a : ℂ) * phase) =
     phase *
-      (((c * a * p₁ + D * (a₂ - a * p₁ ^ 2 + a ^ 3 / 2) : ℝ) : ℂ) +
+      (((c * a * p₁ + D * (a₂ - a * p₁ ^ (2 : ℕ) + a ^ (3 : ℕ) / 2) : ℝ) : ℂ) +
         Complex.I * ((-c * a₁ + D * (2 * a₁ * p₁ + a * p₂) : ℝ) : ℂ)) := by
   push_cast
   ring_nf
@@ -138,7 +138,7 @@ structure TravelingPolarNLSData extends TravelingPolarProfile where
   real_balance : ∀ z,
     speed * amplitude z * phase₁ z +
       dispersion *
-        (amplitude₂ z - amplitude z * phase₁ z ^ 2 + amplitude z ^ 3 / 2) = 0
+        (amplitude₂ z - amplitude z * phase₁ z ^ (2 : ℕ) + amplitude z ^ (3 : ℕ) / 2) = 0
   imaginary_balance : ∀ z,
     -speed * amplitude₁ z +
       dispersion * (2 * amplitude₁ z * phase₁ z + amplitude z * phase₂ z) = 0
@@ -150,7 +150,7 @@ theorem travelingPolarNLSData_solves (P : TravelingPolarNLSData) :
   let z := x - P.speed * t
   change Complex.I * ((-P.speed : ℝ) * polarProfile₁ P.toTravelingPolarProfile z) +
       (P.dispersion : ℂ) * polarProfile₂ P.toTravelingPolarProfile z +
-      (((P.dispersion / 2) * ‖polarProfile P.toTravelingPolarProfile z‖ ^ 2 : ℝ) : ℂ) *
+      (((P.dispersion / 2) * ‖polarProfile P.toTravelingPolarProfile z‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         polarProfile P.toTravelingPolarProfile z = 0
   rw [norm_polarProfile_sq]
   rw [polarProfile, polarProfile₁, polarProfile₂,

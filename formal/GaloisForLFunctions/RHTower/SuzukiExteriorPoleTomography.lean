@@ -105,7 +105,7 @@ theorem neumannFourierBoundaryLaw
     (hf''i : IntervalIntegrable f'' MeasureTheory.volume (-a) a)
     (hplus : f' a = 0) (hminus : f' (-a) = 0) :
     (∫ x in -a..a, (-f'' x) * suzukiOscillatoryKernel z x) =
-      z ^ 2 * (∫ x in -a..a, f x * suzukiOscillatoryKernel z x) +
+      z ^ (2 : ℕ) * (∫ x in -a..a, f x * suzukiOscillatoryKernel z x) +
         I * z *
           (f a * suzukiOscillatoryKernel z a -
             f (-a) * suzukiOscillatoryKernel z (-a)) := by
@@ -160,19 +160,19 @@ theorem neumannFourierBoundaryLaw
     exact neg_eq_of_add_eq_zero_right hfirst
   rw [show suzukiOscillatoryKernel z = K by rfl, hneg, ← hsecond, hfKp_const]
   simp only [K]
-  have hIzsq : (I * z) * (I * z) = -(z ^ 2) := by
+  have hIzsq : (I * z) * (I * z) = -(z ^ (2 : ℕ)) := by
     rw [mul_mul_mul_comm, I_mul_I]
     ring
   let A : ℂ := ∫ x in -a..a, f' x * suzukiOscillatoryKernel z x
   let B : ℂ := ∫ x in -a..a, f x * suzukiOscillatoryKernel z x
-  change I * z * A = z ^ 2 * B + I * z * (A + I * z * B)
-  have hzero : z ^ 2 * B + (I * z) * (I * z) * B = 0 := by
+  change I * z * A = z ^ (2 : ℕ) * B + I * z * (A + I * z * B)
+  have hzero : z ^ (2 : ℕ) * B + (I * z) * (I * z) * B = 0 := by
     rw [hIzsq]
     ring
   calc
     I * z * A = I * z * A +
-        (z ^ 2 * B + (I * z) * (I * z) * B) := by rw [hzero, add_zero]
-    _ = z ^ 2 * B + I * z * (A + I * z * B) := by ring
+        (z ^ (2 : ℕ) * B + (I * z) * (I * z) * B) := by rw [hzero, add_zero]
+    _ = z ^ (2 : ℕ) * B + I * z * (A + I * z * B) := by ring
 
 /-! ## Exact differential elimination of the Neumann clock -/
 
@@ -193,7 +193,7 @@ private def suzukiNeumannBoundaryClockPrime (a A B z : ℂ) : ℂ :=
 
 private def suzukiNeumannBoundaryClockSecond (a A B z : ℂ) : ℂ :=
   2 * suzukiNeumannBoundaryClockCorePrime a A B z -
-    a ^ 2 * z * suzukiNeumannBoundaryClockCore a A B z
+    a ^ (2 : ℕ) * z * suzukiNeumannBoundaryClockCore a A B z
 
 private theorem hasDerivAt_suzukiNeumannBoundaryClockCore (a A B z : ℂ) :
     HasDerivAt (suzukiNeumannBoundaryClockCore a A B)
@@ -210,7 +210,7 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClockCore (a A B z : ℂ) :
 
 private theorem hasDerivAt_suzukiNeumannBoundaryClockCorePrime (a A B z : ℂ) :
     HasDerivAt (suzukiNeumannBoundaryClockCorePrime a A B)
-      (-a ^ 2 * suzukiNeumannBoundaryClockCore a A B z) z := by
+      (-a ^ (2 : ℕ) * suzukiNeumannBoundaryClockCore a A B z) z := by
   have hlin : HasDerivAt (fun w : ℂ => a * w) a z := by
     simpa using (hasDerivAt_id z).const_mul a
   have hsin := (Complex.hasDerivAt_sin (a * z)).comp z hlin
@@ -244,8 +244,8 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClockPrime (a A B z : ℂ) :
 
 /-- Polynomial second-order annihilator of the complete Neumann boundary-clock module. -/
 def suzukiNeumannBoundaryAnnihilator (a : ℂ) (H : ℂ → ℂ) (z : ℂ) : ℂ :=
-  z ^ 2 * deriv (deriv H) z - 2 * z * deriv H z +
-    (2 + a ^ 2 * z ^ 2) * H z
+  z ^ (2 : ℕ) * deriv (deriv H) z - 2 * z * deriv H z +
+    (2 + a ^ (2 : ℕ) * z ^ (2 : ℕ)) * H z
 
 /-- The complete rank-two endpoint clock is killed exactly, with no estimate on its coefficients. -/
 theorem suzukiNeumannBoundaryAnnihilator_clock (a A B z : ℂ) :
@@ -264,13 +264,13 @@ theorem suzukiNeumannBoundaryAnnihilator_clock (a A B z : ℂ) :
 theorem suzukiNeumannBoundaryAnnihilator_sq_mul
     (a : ℂ) (F : ℂ → ℂ) (z : ℂ)
     (hF : ∀ w, AnalyticAt ℂ F w) :
-    suzukiNeumannBoundaryAnnihilator a (fun w => w ^ 2 * F w) z =
-      z ^ 4 * deriv (deriv F) z + 2 * z ^ 3 * deriv F z +
-        a ^ 2 * z ^ 4 * F z := by
-  have hfirstFun : deriv (fun w : ℂ => w ^ 2 * F w) =
-      fun w => 2 * w * F w + w ^ 2 * deriv F w := by
+    suzukiNeumannBoundaryAnnihilator a (fun w => w ^ (2 : ℕ) * F w) z =
+      z ^ (4 : ℕ) * deriv (deriv F) z + 2 * z ^ (3 : ℕ) * deriv F z +
+        a ^ (2 : ℕ) * z ^ (4 : ℕ) * F z := by
+  have hfirstFun : deriv (fun w : ℂ => w ^ (2 : ℕ) * F w) =
+      fun w => 2 * w * F w + w ^ (2 : ℕ) * deriv F w := by
     funext w
-    have hsq : HasDerivAt (fun v : ℂ => v ^ 2) (2 * w) w := by
+    have hsq : HasDerivAt (fun v : ℂ => v ^ (2 : ℕ)) (2 * w) w := by
       convert (hasDerivAt_id w).pow 2 using 1
       all_goals
         first
@@ -278,7 +278,7 @@ theorem suzukiNeumannBoundaryAnnihilator_sq_mul
         | (simp only [id_eq]; first | rfl | ring)
     exact (hsq.mul (hF w).differentiableAt.hasDerivAt).deriv
   rw [suzukiNeumannBoundaryAnnihilator, hfirstFun]
-  have hsq : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by
+  have hsq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ)) (2 * z) z := by
     convert (hasDerivAt_id z).pow 2 using 1
     all_goals
       first
@@ -292,17 +292,17 @@ theorem suzukiNeumannBoundaryAnnihilator_sq_mul
       first
       | rfl
       | (simp only [id_eq]; first | rfl | ring)
-  have hterm2 : HasDerivAt (fun w : ℂ => w ^ 2 * deriv F w)
-      (2 * z * deriv F z + z ^ 2 * deriv (deriv F) z) z := by
+  have hterm2 : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) * deriv F w)
+      (2 * z * deriv F z + z ^ (2 : ℕ) * deriv (deriv F) z) z := by
     exact hsq.mul (hF z).deriv.differentiableAt.hasDerivAt
   have hsumFun :
-      (fun w : ℂ => 2 * w * F w + w ^ 2 * deriv F w) =
+      (fun w : ℂ => 2 * w * F w + w ^ (2 : ℕ) * deriv F w) =
         (fun w : ℂ => 2 * w * F w) +
-          (fun w : ℂ => w ^ 2 * deriv F w) := by
+          (fun w : ℂ => w ^ (2 : ℕ) * deriv F w) := by
     funext w
     simp only [Pi.add_apply]
-  have hsecond : deriv (fun w : ℂ => 2 * w * F w + w ^ 2 * deriv F w) z =
-      2 * F z + 4 * z * deriv F z + z ^ 2 * deriv (deriv F) z := by
+  have hsecond : deriv (fun w : ℂ => 2 * w * F w + w ^ (2 : ℕ) * deriv F w) z =
+      2 * F z + 4 * z * deriv F z + z ^ (2 : ℕ) * deriv (deriv F) z := by
     rw [hsumFun]
     convert (hterm1.add hterm2).deriv using 1
     all_goals first | rfl | ring
@@ -336,7 +336,7 @@ theorem neumannFourierBoundaryDifference_eq_clock
     (hf''i : IntervalIntegrable f'' MeasureTheory.volume (-a) a)
     (hplus : f' a = 0) (hminus : f' (-a) = 0) :
     (fun z => ∫ x in -a..a, (-f'' x) * suzukiOscillatoryKernel z x) -
-        (fun z => z ^ 2 * (∫ x in -a..a, f x * suzukiOscillatoryKernel z x)) =
+        (fun z => z ^ (2 : ℕ) * (∫ x in -a..a, f x * suzukiOscillatoryKernel z x)) =
       suzukiNeumannBoundaryClock (a : ℂ)
         (I * (f a - f (-a))) (-(f a + f (-a))) := by
   funext z
@@ -356,7 +356,7 @@ theorem suzukiNeumannBoundaryAnnihilator_fourierDefect_eq_zero
     (hplus : f' a = 0) (hminus : f' (-a) = 0) :
     suzukiNeumannBoundaryAnnihilator (a : ℂ)
       ((fun w => ∫ x in -a..a, (-f'' x) * suzukiOscillatoryKernel w x) -
-        (fun w => w ^ 2 * (∫ x in -a..a, f x * suzukiOscillatoryKernel w x))) z = 0 := by
+        (fun w => w ^ (2 : ℕ) * (∫ x in -a..a, f x * suzukiOscillatoryKernel w x))) z = 0 := by
   rw [neumannFourierBoundaryDifference_eq_clock f f' f'' a
     hf hf' hf'i hf''i hplus hminus]
   exact suzukiNeumannBoundaryAnnihilator_clock _ _ _ _
@@ -399,7 +399,7 @@ def suzukiShiftedXiMultiplier (eta z : ℂ) : ℂ :=
 
 theorem suzukiShiftedXiMultiplier_eq (eta z : ℂ) :
     suzukiShiftedXiMultiplier eta z =
-      suzukiShiftedXiDenominator eta z / (z ^ 2 * XiC z) := by
+      suzukiShiftedXiDenominator eta z / (z ^ (2 : ℕ) * XiC z) := by
   simp only [suzukiShiftedXiMultiplier, suzukiShiftedXiTarget]
   field_simp
 
@@ -410,8 +410,8 @@ def suzukiExteriorRemainder
 
 theorem meromorphicAt_suzukiShiftedXiMultiplier (eta z : ℂ) :
     MeromorphicAt (suzukiShiftedXiMultiplier eta) z := by
-  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ 2 * XiC w) z :=
-    (by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ 2) z).mul
+  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ) * XiC w) z :=
+    (by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) z).mul
       (XiC_analytic z (Set.mem_univ z))
   have hden : AnalyticAt ℂ (suzukiShiftedXiDenominator eta) z :=
     (XiC_analytic z (Set.mem_univ z)).deriv.sub
@@ -433,7 +433,7 @@ theorem meromorphicOrderAt_suzukiShiftedXiMultiplier_eq_neg_one_of_XiC_zero
 theorem meromorphicTrailingCoeffAt_suzukiShiftedXiMultiplier_of_XiC_zero
     {eta z : ℂ} (hz : XiC z = 0) :
     meromorphicTrailingCoeffAt (suzukiShiftedXiMultiplier eta) z =
-      (((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2) := by
+      (((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ)) := by
   change meromorphicTrailingCoeffAt (fun w => (suzukiShiftedXiTarget eta w)⁻¹) z = _
   rw [meromorphicTrailingCoeffAt_fun_inv,
     meromorphicTrailingCoeffAt_suzukiShiftedXiTarget_of_XiC_zero hz]
@@ -496,7 +496,7 @@ theorem meromorphicTrailingCoeffAt_suzukiExteriorRemainder
     (hW : AnalyticAt ℂ W z) (hW0 : W z ≠ 0)
     (hI : AnalyticAt ℂ intervalPart z) :
     meromorphicTrailingCoeffAt (suzukiExteriorRemainder eta W intervalPart) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) * W z / z ^ (2 : ℕ) := by
   let singular : ℂ → ℂ := fun w => suzukiShiftedXiMultiplier eta w * W w
   have hmult : MeromorphicAt (suzukiShiftedXiMultiplier eta) z :=
     meromorphicAt_suzukiShiftedXiMultiplier eta z
@@ -537,14 +537,14 @@ theorem analyticAt_suzukiShiftedXiMultiplier_of_XiC_ne_zero
     {eta z : ℂ} (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
     AnalyticAt ℂ (suzukiShiftedXiMultiplier eta) z := by
   rw [show suzukiShiftedXiMultiplier eta = fun w =>
-      suzukiShiftedXiDenominator eta w / (w ^ 2 * XiC w) by
+      suzukiShiftedXiDenominator eta w / (w ^ (2 : ℕ) * XiC w) by
     funext w
     exact suzukiShiftedXiMultiplier_eq eta w]
   have hnum : AnalyticAt ℂ (suzukiShiftedXiDenominator eta) z :=
     (XiC_analytic z (Set.mem_univ z)).deriv.sub
       (analyticAt_const.mul (XiC_analytic z (Set.mem_univ z)))
-  have hden : AnalyticAt ℂ (fun w : ℂ => w ^ 2 * XiC w) z :=
-    (by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ 2) z).mul
+  have hden : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ) * XiC w) z :=
+    (by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) z).mul
       (XiC_analytic z (Set.mem_univ z))
   exact hnum.div hden (mul_ne_zero (pow_ne_zero 2 hz) hXi)
 

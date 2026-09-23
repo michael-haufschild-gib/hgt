@@ -16,20 +16,20 @@ set_option maxHeartbeats 1200000
 
 /-- Original stream-lift radial coefficient, before its actual ingoing clock. -/
 def profile (s a : ℂ) (r : ℝ) : ℂ :=
-  (-s*(s-1)/4)*a^2*(r:ℂ)⁻¹^2*power (2*s) (1+r⁻¹)
+  (-s*(s-1)/4)*a^(2 : ℕ)*(r:ℂ)⁻¹^(2 : ℕ)*power (2*s) (1+r⁻¹)
 private def rate (s : ℂ) (r : ℝ) : ℂ := -(2+2*s)/(r:ℂ)+2*s/(1+(r:ℂ))
-private def rateFirst (s : ℂ) (r : ℝ) : ℂ := (2+2*s)/(r:ℂ)^2-2*s/(1+(r:ℂ))^2
+private def rateFirst (s : ℂ) (r : ℝ) : ℂ := (2+2*s)/(r:ℂ)^(2 : ℕ)-2*s/(1+(r:ℂ))^(2 : ℕ)
 /-- First original radial derivative at fixed ingoing time. -/
 def profileFirst (s a : ℂ) (r : ℝ) : ℂ := profile s a r*rate s r
 /-- Second original radial derivative at fixed ingoing time. -/
-def profileSecond (s a : ℂ) (r : ℝ) : ℂ := profile s a r*((rate s r)^2+rateFirst s r)
+def profileSecond (s a : ℂ) (r : ℝ) : ℂ := profile s a r*((rate s r)^(2 : ℕ)+rateFirst s r)
 
 private theorem profile_hasDerivAt (s a : ℂ) {r : ℝ} (hr : 0 < r) :
     HasDerivAt (profile s a) (profileFirst s a r) r := by
   have hi := hasDerivAt_inv hr.ne'
   have hp := (power_derivatives (2*s) (show 0 < 1+r⁻¹ by positivity)).1.scomp r (hi.const_add 1)
   have hc := hi.ofReal_comp
-  convert! (((hc.pow 2).const_mul ((-s*(s-1)/4)*a^2)).mul hp) using 1
+  convert! (((hc.pow 2).const_mul ((-s*(s-1)/4)*a^(2 : ℕ))).mul hp) using 1
   · funext x
     simp [profile]
   dsimp only [profileFirst,profile,rate,powerFirst,Function.comp_apply,id_eq]
@@ -85,25 +85,25 @@ static chart. The six coefficients are its value and ingoing time/radius derivat
 def separatedJet (r c cv cr cvv crv crr : ℂ) (J : ScalarTwoJet (Fin 2) ℂ) :
     ScalarTwoJet (Fin 4) ℂ where
   value := c*J.value
-  first := ![cv*J.value,(cr+cv/(r^2-1))*J.value,c*J.first 0,c*J.first 1]
+  first := ![cv*J.value,(cr+cv/(r^(2 : ℕ)-1))*J.value,c*J.first 0,c*J.first 1]
   second :=
-    ![![cvv*J.value,(crv+cvv/(r^2-1))*J.value,cv*J.first 0,cv*J.first 1],
-      ![(crv+cvv/(r^2-1))*J.value,
-        (crr+2*crv/(r^2-1)+cvv/(r^2-1)^2-2*r*cv/(r^2-1)^2)*J.value,
-        (cr+cv/(r^2-1))*J.first 0,(cr+cv/(r^2-1))*J.first 1],
-      ![cv*J.first 0,(cr+cv/(r^2-1))*J.first 0,c*J.second 0 0,c*J.second 0 1],
-      ![cv*J.first 1,(cr+cv/(r^2-1))*J.first 1,c*J.second 1 0,c*J.second 1 1]]
+    ![![cvv*J.value,(crv+cvv/(r^(2 : ℕ)-1))*J.value,cv*J.first 0,cv*J.first 1],
+      ![(crv+cvv/(r^(2 : ℕ)-1))*J.value,
+        (crr+2*crv/(r^(2 : ℕ)-1)+cvv/(r^(2 : ℕ)-1)^(2 : ℕ)-2*r*cv/(r^(2 : ℕ)-1)^(2 : ℕ))*J.value,
+        (cr+cv/(r^(2 : ℕ)-1))*J.first 0,(cr+cv/(r^(2 : ℕ)-1))*J.first 1],
+      ![cv*J.first 0,(cr+cv/(r^(2 : ℕ)-1))*J.first 0,c*J.second 0 0,c*J.second 0 1],
+      ![cv*J.first 1,(cr+cv/(r^(2 : ℕ)-1))*J.first 1,c*J.second 1 0,c*J.second 1 1]]
 
 private def orbitMaster (r cv cr crv crr : ℂ) : ℂ :=
-  r^2*(r^2-1)*crr+2*r^2*crv+2*r*cr-2*r*cv
+  r^(2 : ℕ)*(r^(2 : ℕ)-1)*crr+2*r^(2 : ℕ)*crv+2*r*cr-2*r*cv
 
 /-- The actual Einstein action current transformed to ingoing coordinates. -/
 def ingoingAction (p : D4BMBackground.ExteriorPoint)
     (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
-  let w := fun j => (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+  let w := fun j => (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
     (D4BMBackground.jet (p.val 1) (p.val 3))
     (streamMetricJet (p.val 1) P) (streamMetricJet (p.val 1) Q) j
-  ![w 0+w 1/((p.val 1:ℂ)^2-1),w 1,w 2,w 3]
+  ![w 0+w 1/((p.val 1:ℂ)^(2 : ℕ)-1),w 1,w 2,w 3]
 
 private theorem separated_action (p : D4BMBackground.ExteriorPoint)
     (c cv cr cvv crv crr d dv dr dvv drv drr : ℂ)
@@ -113,11 +113,11 @@ private theorem separated_action (p : D4BMBackground.ExteriorPoint)
     let r := (p.val 1:ℂ)
     let OC := orbitMaster r cv cr crv crr
     let OD := orbitMaster r dv dr drv drr
-    let N := ∑ j : Fin 2, (J j).value^2
-    ![(dr*OC-cr*OD)*N/r^2,
-      (((r^2-1)*dr+dv)*OC-((r^2-1)*cr+cv)*OD)*N/r^2,0,0] := by
+    let N := ∑ j : Fin 2, (J j).value^(2 : ℕ)
+    ![(dr*OC-cr*OD)*N/r^(2 : ℕ),
+      (((r^(2 : ℕ)-1)*dr+dv)*OC-((r^(2 : ℕ)-1)*cr+cv)*OD)*N/r^(2 : ℕ),0,0] := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (show p.val 1 ≠ 0 by linarith [p.property.1])
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   unfold ingoingAction
   simp only [stream_complete_action_current]
   ext j
@@ -129,22 +129,22 @@ private theorem separated_action (p : D4BMBackground.ExteriorPoint)
     field_simp [hr,hf]
     ring
   · let r := (p.val 1:ℂ)
-    change (p.val 3:ℂ)^2/r^2*(-(r^2-1)*
-      (((cr+cv/(r^2-1))*(J 1).value)*
-        ((dr+dv/(r^2-1))*(J 1).first 0-(dr+dv/(r^2-1))*(J 0).first 1)-
-       ((dr+dv/(r^2-1))*(J 1).value)*
-        ((cr+cv/(r^2-1))*(J 1).first 0-(cr+cv/(r^2-1))*(J 0).first 1))+
+    change (p.val 3:ℂ)^(2 : ℕ)/r^(2 : ℕ)*(-(r^(2 : ℕ)-1)*
+      (((cr+cv/(r^(2 : ℕ)-1))*(J 1).value)*
+        ((dr+dv/(r^(2 : ℕ)-1))*(J 1).first 0-(dr+dv/(r^(2 : ℕ)-1))*(J 0).first 1)-
+       ((dr+dv/(r^(2 : ℕ)-1))*(J 1).value)*
+        ((cr+cv/(r^(2 : ℕ)-1))*(J 1).first 0-(cr+cv/(r^(2 : ℕ)-1))*(J 0).first 1))+
       (cv*(J 1).value*(dv*(J 1).first 0-dv*(J 0).first 1)-
-       dv*(J 1).value*(cv*(J 1).first 0-cv*(J 0).first 1))/(r^2-1))=0
+       dv*(J 1).value*(cv*(J 1).first 0-cv*(J 0).first 1))/(r^(2 : ℕ)-1))=0
     ring
   · let r := (p.val 1:ℂ)
-    change (p.val 3:ℂ)^2/r^2*((r^2-1)*
-      (((cr+cv/(r^2-1))*(J 0).value)*
-        ((dr+dv/(r^2-1))*(J 1).first 0-(dr+dv/(r^2-1))*(J 0).first 1)-
-       ((dr+dv/(r^2-1))*(J 0).value)*
-        ((cr+cv/(r^2-1))*(J 1).first 0-(cr+cv/(r^2-1))*(J 0).first 1))-
+    change (p.val 3:ℂ)^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*
+      (((cr+cv/(r^(2 : ℕ)-1))*(J 0).value)*
+        ((dr+dv/(r^(2 : ℕ)-1))*(J 1).first 0-(dr+dv/(r^(2 : ℕ)-1))*(J 0).first 1)-
+       ((dr+dv/(r^(2 : ℕ)-1))*(J 0).value)*
+        ((cr+cv/(r^(2 : ℕ)-1))*(J 1).first 0-(cr+cv/(r^(2 : ℕ)-1))*(J 0).first 1))-
       (cv*(J 0).value*(dv*(J 1).first 0-dv*(J 0).first 1)-
-       dv*(J 0).value*(cv*(J 1).first 0-cv*(J 0).first 1))/(r^2-1))=0
+       dv*(J 0).value*(cv*(J 1).first 0-cv*(J 0).first 1))/(r^(2 : ℕ)-1))=0
     ring
 
 /-- Literal two-jets of the original full-square covector. -/
@@ -152,7 +152,7 @@ def angularJets (q : XiZeroCopy) (z : D4BMHorizon.Point) (j : Fin 2) : ScalarTwo
   ScalarTwoJet.ofField (fullSquareCovector q j) z
 /-- The actual angular square in the complex bilinear physical current. -/
 def angularSquare (q : XiZeroCopy) (z : D4BMHorizon.Point) : ℂ :=
-  ∑ j : Fin 2, (fullSquareCovector q j z)^2
+  ∑ j : Fin 2, (fullSquareCovector q j z)^(2 : ℕ)
 
 /-- Static stream jets of the original ingoing source lift, retaining every clock jet. -/
 def liftJet (q : XiZeroCopy) (s a : ℂ) (r v : ℝ) (z : D4BMHorizon.Point) (j : Fin 2) :
@@ -175,9 +175,9 @@ def liftCurrent (q : XiZeroCopy) (s t a b : ℂ) (r v : ℝ) (z : D4BMHorizon.Po
   let cr := profileFirst s a r*timeOnset (2*s) v
   let d := profile t b r*timeOnsetFirst (2*t) v
   let dr := profileFirst t b r*timeOnset (2*t) v
-  ![(dr*liftOrbit s a r v-cr*liftOrbit t b r v)*angularSquare q z/(r:ℂ)^2,
-    ((((r:ℂ)^2-1)*dr+d)*liftOrbit s a r v-(((r:ℂ)^2-1)*cr+c)*liftOrbit t b r v)*
-      angularSquare q z/(r:ℂ)^2,0,0]
+  ![(dr*liftOrbit s a r v-cr*liftOrbit t b r v)*angularSquare q z/(r:ℂ)^(2 : ℕ),
+    ((((r:ℂ)^(2 : ℕ)-1)*dr+d)*liftOrbit s a r v-(((r:ℂ)^(2 : ℕ)-1)*cr+c)*liftOrbit t b r v)*
+      angularSquare q z/(r:ℂ)^(2 : ℕ),0,0]
 
 /-- Equality with all four components of the original volume-weighted Einstein action. -/
 theorem lift_action_current (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy)
@@ -189,7 +189,7 @@ theorem lift_action_current (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy)
 
 /-- Spectral and original amplitude factor of the physical lift horizon current. -/
 def horizonFactor (s a b : ℂ) : ℂ :=
-  (2*s+3)*((s+1)*(s+2)-2)*((s+1)*(s+2)-6)*a^2*b^2/512
+  (2*s+3)*((s+1)*(s+2)-2)*((s+1)*(s+2)-6)*a^(2 : ℕ)*b^(2 : ℕ)/512
 
 private theorem profileFirst_one (s a : ℂ) :
     profileFirst s a 1=-(s+2)*profile s a 1 := by
@@ -206,7 +206,7 @@ private theorem factor_profile (s a b : ℂ) :
     norm_num
   simp only [profile,Complex.ofReal_one,inv_one,one_pow,mul_one,show (1:ℝ)+1=2 by norm_num]
   calc
-    _ = (2*(2*s+3)*(-s*(s-1)/4)*(-(-s-3)*(-s-3-1)/4)*a^2*b^2)*
+    _ = (2*(2*s+3)*(-s*(s-1)/4)*(-(-s-3)*(-s-3-1)/4)*a^(2 : ℕ)*b^(2 : ℕ))*
         (power (2*s) 2*power (2*(-s-3)) 2) := by ring
     _ = horizonFactor s a b := by rw [hp]; unfold horizonFactor; ring
 
@@ -216,7 +216,7 @@ def horizonCurrent (q : XiZeroCopy) (s a b : ℂ) (v : ℝ) (z : D4BMHorizon.Poi
   let χ1 := ((deriv Real.smoothTransition v:ℝ):ℂ)
   let lam := (s+1)*(s+2)
   let K := horizonFactor s a b*Complex.exp (-6*(v:ℂ))*angularSquare q z
-  ![K*(-χ*χ1+2*(2-lam)*χ^2),K*(-χ1^2+5*χ*χ1+4*(lam-1)*χ^2),0,0]
+  ![K*(-χ*χ1+2*(2-lam)*χ^(2 : ℕ)),K*(-χ1^(2 : ℕ)+5*χ*χ1+4*(lam-1)*χ^(2 : ℕ)),0,0]
 
 /-- Evaluation of the regular physical current retains the first-onset square and mixed term. -/
 theorem lift_current_horizon_value (q : XiZeroCopy) (s a b : ℂ) (v : ℝ) (z : D4BMHorizon.Point) :
@@ -255,7 +255,7 @@ theorem lift_current_horizon_limit (q : XiZeroCopy) (s a b : ℂ) (v : ℝ) (z :
   obtain ⟨g0,g1,g2⟩ := profiles_continuousAt_one (-s-3) b
   have hc : ContinuousAt (fun r => liftCurrent q s (-s-3) a b r v z j) 1 := by
     have hz : ContinuousAt (fun r:ℝ => (r:ℂ)) 1 := Complex.continuous_ofReal.continuousAt
-    have hn : ((1:ℝ):ℂ)^2 ≠ 0 := by norm_num
+    have hn : ((1:ℝ):ℂ)^(2 : ℕ) ≠ 0 := by norm_num
     fin_cases j <;> dsimp [liftCurrent,liftOrbit,orbitMaster]
     all_goals fun_prop
   have ht := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (1:ℝ)))
@@ -263,13 +263,13 @@ theorem lift_current_horizon_limit (q : XiZeroCopy) (s a b : ℂ) (v : ℝ) (z :
   exact ht
 
 /-- The original squared onset with the fixed complementary exponential weight. -/
-def onsetSquare (v : ℝ) : ℂ := Complex.exp (-6*(v:ℂ))*(Real.smoothTransition v:ℂ)^2
+def onsetSquare (v : ℝ) : ℂ := Complex.exp (-6*(v:ℂ))*(Real.smoothTransition v:ℂ)^(2 : ℕ)
 /-- The retained mixed onset insertion. -/
 def onsetMixed (v : ℝ) : ℂ :=
   Complex.exp (-6*(v:ℂ))*(Real.smoothTransition v:ℂ)*((deriv Real.smoothTransition v:ℝ):ℂ)
 /-- The original first-onset derivative square with its fixed weight. -/
 def onsetDerivativeSquare (v : ℝ) : ℂ :=
-  Complex.exp (-6*(v:ℂ))*((deriv Real.smoothTransition v:ℝ):ℂ)^2
+  Complex.exp (-6*(v:ℂ))*((deriv Real.smoothTransition v:ℝ):ℂ)^(2 : ℕ)
 /-- Original finite squared-clock mass. -/
 def clockMass (V : ℝ) : ℂ := ∫ v in (0:ℝ)..V, onsetSquare v
 /-- Original finite derivative-clock energy. -/
@@ -359,7 +359,7 @@ theorem horizon_current_finite_integrals (q : XiZeroCopy) (s a b : ℂ) (V : ℝ
 /-- The original angular action on the full-square covector; no scalar eigenvalue replaces it. -/
 def angularAction (q : XiZeroCopy) (z : D4BMHorizon.Point) (j : Fin 2) : ℂ :=
   let J := angularJets q z
-  (z 1:ℂ)^2*((J j).second 0 0+(J j).second 1 1)+
+  (z 1:ℂ)^(2 : ℕ)*((J j).second 0 0+(J j).second 1 1)+
     2*(z 1:ℂ)*(if j=0 then (J 0).first 1-(J 1).first 0 else (J 1).first 1+(J 0).first 0)-
     2*(J j).value
 /-- The actual angular bilinear insertion in the complete master current. -/
@@ -375,8 +375,8 @@ theorem lift_master_original (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy)
     (s a : ℂ) (v : ℝ) (j : Fin 2) :
     streamMasterValue (p.val 1) (p.val 3) (liftJet q s a (p.val 1) v ![p.val 2,p.val 3]) j=
       liftMaster q s a (p.val 1) v ![p.val 2,p.val 3] j := by
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   fin_cases j <;> simp [streamMasterValue,streamAngularAction,liftJet,separatedJet,
     liftMaster,liftOrbit,orbitMaster,angularAction,angularJets,ScalarTwoJet.ofField]
   all_goals field_simp [hf]
@@ -386,11 +386,11 @@ theorem lift_master_original (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy)
 def ingoingContact (p : D4BMBackground.ExteriorPoint)
     (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
   let r := (p.val 1:ℂ)
-  let f := r^2-1
+  let f := r^(2 : ℕ)-1
   let M := streamMasterValue r (p.val 3)
   ![(∑ j : Fin 2, (((P j).first 1-(P j).first 0/f)*M Q j-
-      ((Q j).first 1-(Q j).first 0/f)*M P j))/r^2,
-    f*(∑ j : Fin 2, ((P j).first 1*M Q j-(Q j).first 1*M P j))/r^2,0,0]
+      ((Q j).first 1-(Q j).first 0/f)*M P j))/r^(2 : ℕ),
+    f*(∑ j : Fin 2, ((P j).first 1*M Q j-(Q j).first 1*M P j))/r^(2 : ℕ),0,0]
 
 /-- Regular source contact of the literal lift, retaining its original master source. -/
 def liftContact (q : XiZeroCopy) (s t a b : ℂ) (r v : ℝ) (z : D4BMHorizon.Point) : Fin 4 → ℂ :=
@@ -399,9 +399,9 @@ def liftContact (q : XiZeroCopy) (s t a b : ℂ) (r v : ℝ) (z : D4BMHorizon.Po
   let cv := profile s a r*timeOnsetFirst (2*s) v
   let dv := profile t b r*timeOnsetFirst (2*t) v
   ![(∑ j : Fin 2, (cr*fullSquareCovector q j z*liftMaster q t b r v z j-
-      dr*fullSquareCovector q j z*liftMaster q s a r v z j))/(r:ℂ)^2,
-    (∑ j : Fin 2, ((((r:ℂ)^2-1)*cr+cv)*fullSquareCovector q j z*liftMaster q t b r v z j-
-      (((r:ℂ)^2-1)*dr+dv)*fullSquareCovector q j z*liftMaster q s a r v z j))/(r:ℂ)^2,0,0]
+      dr*fullSquareCovector q j z*liftMaster q s a r v z j))/(r:ℂ)^(2 : ℕ),
+    (∑ j : Fin 2, ((((r:ℂ)^(2 : ℕ)-1)*cr+cv)*fullSquareCovector q j z*liftMaster q t b r v z j-
+      (((r:ℂ)^(2 : ℕ)-1)*dr+dv)*fullSquareCovector q j z*liftMaster q s a r v z j))/(r:ℂ)^(2 : ℕ),0,0]
 
 /-- The regular contact is the actual source contact of the original Einstein stream jet. -/
 theorem lift_contact_original (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy)
@@ -409,8 +409,8 @@ theorem lift_contact_original (p : D4BMBackground.ExteriorPoint) (q : XiZeroCopy
     ingoingContact p (liftJet q s a (p.val 1) v ![p.val 2,p.val 3])
       (liftJet q t b (p.val 1) v ![p.val 2,p.val 3])=
       liftContact q s t a b (p.val 1) v ![p.val 2,p.val 3] := by
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   unfold ingoingContact
   simp only [lift_master_original]
   ext j
@@ -426,8 +426,8 @@ def liftAngularCurrent (q : XiZeroCopy) (s t a b : ℂ) (r v : ℝ) (z : D4BMHor
   let dr := profileFirst t b r*timeOnset (2*t) v
   let cv := profile s a r*timeOnsetFirst (2*s) v
   let dv := profile t b r*timeOnsetFirst (2*t) v
-  ![(cr*d-dr*c)*angularPair q z/(r:ℂ)^2,
-    ((((r:ℂ)^2-1)*cr+cv)*d-(((r:ℂ)^2-1)*dr+dv)*c)*angularPair q z/(r:ℂ)^2,0,0]
+  ![(cr*d-dr*c)*angularPair q z/(r:ℂ)^(2 : ℕ),
+    ((((r:ℂ)^(2 : ℕ)-1)*cr+cv)*d-(((r:ℂ)^(2 : ℕ)-1)*dr+dv)*c)*angularPair q z/(r:ℂ)^(2 : ℕ),0,0]
 
 /-- Exact physical-current/source-contact decomposition with the full angular source. -/
 theorem lift_current_add_contact (q : XiZeroCopy) (s t a b : ℂ) (r v : ℝ) (z : D4BMHorizon.Point) :
@@ -532,7 +532,7 @@ private theorem liftCurrent_joint_continuous (q : XiZeroCopy) (s t a b : ℂ)
     fun v => (timeOnsetFirst_hasDerivAt (2*t) v).continuousAt
   have hz : Continuous (fun p : Ioi (0:ℝ) × ℝ => (p.1.val:ℂ)) :=
     Complex.continuous_ofReal.comp (continuous_subtype_val.comp continuous_fst)
-  have hn (p : Ioi (0:ℝ) × ℝ) : (p.1.val:ℂ)^2 ≠ 0 :=
+  have hn (p : Ioi (0:ℝ) × ℝ) : (p.1.val:ℂ)^(2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr (ne_of_gt p.1.property))
   have h0p := h0.comp (continuous_fst : Continuous (Prod.fst : Ioi (0:ℝ) × ℝ → Ioi (0:ℝ)))
   have h1p := h1.comp (continuous_fst : Continuous (Prod.fst : Ioi (0:ℝ) × ℝ → Ioi (0:ℝ)))
@@ -634,14 +634,14 @@ def staticCoefficient (s a : ℂ) (tau r : ℝ) : ℂ :=
 def staticRadialFirst (s a : ℂ) (tau r : ℝ) : ℂ :=
   let v := tau+D4BMIngoingCoordinates.tortoise r
   profileFirst s a r*timeOnset (2*s) v+
-    profile s a r*timeOnsetFirst (2*s) v/((r:ℂ)^2-1)
+    profile s a r*timeOnsetFirst (2*s) v/((r:ℂ)^(2 : ℕ)-1)
 /-- Its complete static radial second derivative. -/
 def staticRadialSecond (s a : ℂ) (tau r : ℝ) : ℂ :=
   let v := tau+D4BMIngoingCoordinates.tortoise r
   profileSecond s a r*timeOnset (2*s) v+
-    2*profileFirst s a r*timeOnsetFirst (2*s) v/((r:ℂ)^2-1)+
-    profile s a r*timeOnsetSecond (2*s) v/((r:ℂ)^2-1)^2-
-    2*(r:ℂ)*profile s a r*timeOnsetFirst (2*s) v/((r:ℂ)^2-1)^2
+    2*profileFirst s a r*timeOnsetFirst (2*s) v/((r:ℂ)^(2 : ℕ)-1)+
+    profile s a r*timeOnsetSecond (2*s) v/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)-
+    2*(r:ℂ)*profile s a r*timeOnsetFirst (2*s) v/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)
 
 /-- Both static radial jets used by the reconstructed Einstein current are actual derivatives
 of the literal source lift after the differentiated tortoise coordinate change. -/
@@ -653,8 +653,8 @@ theorem static_radial_derivatives (s a : ℂ) (tau : ℝ) (r : Ioi (1:ℝ)) :
   have ht := (D4BMIngoingCoordinates.tortoise_hasDerivAt r hr).const_add tau
   have hT := (timeOnset_hasDerivAt (2*s) (tau+D4BMIngoingCoordinates.tortoise r)).scomp r.val ht
   have hT1 := (timeOnsetFirst_hasDerivAt (2*s) (tau+D4BMIngoingCoordinates.tortoise r)).scomp r.val ht
-  have hn : r.val^2-1 ≠ 0 := by nlinarith
-  have hnC : (r.val:ℂ)^2-1 ≠ 0 := by exact_mod_cast hn
+  have hn : r.val^(2 : ℕ)-1 ≠ 0 := by nlinarith
+  have hnC : (r.val:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast hn
   have hF := ((((hasDerivAt_id r.val).pow 2).sub_const 1).inv hn).ofReal_comp
   constructor
   · convert! hp.1.mul hT using 1

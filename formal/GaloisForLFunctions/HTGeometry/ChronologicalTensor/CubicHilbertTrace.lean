@@ -29,13 +29,13 @@ theorem cubicHilbertStrictFlow_basis (q : Ico (0:ℝ) 1) (k : ℕ) :
 theorem cubicHilbertStrictFlow_hilbertSchmidt (q : Ico (0:ℝ) 1) :
     ContinuousLinearMap.IsHilbertSchmidt (cubicHilbertStrictFlow q) := by
   apply ContinuousLinearMap.isHilbertSchmidt_of_summable cubicHilbertBasis
-  have hq : q.val^2 < 1 := by nlinarith [q.property.1,q.property.2]
-  have hs := (hasSum_geometric_of_lt_one (sq_nonneg q.val) hq).summable.mul_left (q.val^2)
+  have hq : q.val^(2 : ℕ) < 1 := by nlinarith [q.property.1,q.property.2]
+  have hs := (hasSum_geometric_of_lt_one (sq_nonneg q.val) hq).summable.mul_left (q.val^(2 : ℕ))
   apply hs.congr
   intro k
   rw [cubicHilbertStrictFlow_basis,norm_smul,cubicHilbertBasis.orthonormal.1 k,mul_one,
     Real.norm_eq_abs,abs_of_nonneg (pow_nonneg q.property.1 _)]
-  rw [pow_right_comm q.val (k+1) 2,pow_succ (q.val^2) k]
+  rw [pow_right_comm q.val (k+1) 2,pow_succ (q.val^(2 : ℕ)) k]
   ring
 
 def cubicHilbertStrictRoot (q : Ico (0:ℝ) 1) : Ico (0:ℝ) 1 :=

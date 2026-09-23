@@ -100,28 +100,28 @@ theorem polynomialBoundaryQuotient_isBigO_inv_atBot
 
 theorem norm_complex_inv_ofReal_sq_le_cauchy
     {x : ℝ} (hx : 1 ≤ |x|) :
-    ‖((x : ℂ)⁻¹)‖ ^ 2 ≤ 2 * (1 + x ^ 2)⁻¹ := by
+    ‖((x : ℂ)⁻¹)‖ ^ (2 : ℕ) ≤ 2 * (1 + x ^ (2 : ℕ))⁻¹ := by
   have hxzero : x ≠ 0 := by
     intro hzero
     rw [hzero, abs_zero] at hx
     linarith
-  have hxsq : 0 < x ^ 2 := sq_pos_of_ne_zero hxzero
-  have hden : 0 < 1 + x ^ 2 := by positivity
-  have hone : 1 ≤ x ^ 2 := by
+  have hxsq : 0 < x ^ (2 : ℕ) := sq_pos_of_ne_zero hxzero
+  have hden : 0 < 1 + x ^ (2 : ℕ) := by positivity
+  have hone : 1 ≤ x ^ (2 : ℕ) := by
     nlinarith [sq_abs x]
   rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, inv_pow, sq_abs]
-  have hfrac : 1 / x ^ 2 ≤ 2 / (1 + x ^ 2) := by
+  have hfrac : 1 / x ^ (2 : ℕ) ≤ 2 / (1 + x ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ hxsq hden]
     nlinarith
   simpa [div_eq_mul_inv] using hfrac
 
 theorem norm_complex_inv_ofReal_sq_isBigO_cauchy
     {l : Filter ℝ} (hfar : ∀ᶠ x in l, 1 ≤ |x|) :
-    (fun x : ℝ ↦ ‖((x : ℂ)⁻¹)‖ ^ 2) =O[l]
-      (fun x : ℝ ↦ (1 + x ^ 2)⁻¹) := by
+    (fun x : ℝ ↦ ‖((x : ℂ)⁻¹)‖ ^ (2 : ℕ)) =O[l]
+      (fun x : ℝ ↦ (1 + x ^ (2 : ℕ))⁻¹) := by
   apply IsBigO.of_bound 2
   filter_upwards [hfar] with x hx
-  have hden : 0 < 1 + x ^ 2 := by positivity
+  have hden : 0 < 1 + x ^ (2 : ℕ) := by positivity
   simpa [Real.norm_eq_abs, abs_inv, abs_of_pos hden] using
     norm_complex_inv_ofReal_sq_le_cauchy hx
 
@@ -137,9 +137,9 @@ theorem polynomialBoundaryQuotient_normSq_integrable
     {q P : ℂ[X]} (hdeg : q.natDegree < P.natDegree)
     (hreal : ∀ x : ℝ, P.eval (x : ℂ) ≠ 0) :
     Integrable
-      (fun x : ℝ ↦ ‖q.eval (x : ℂ) / P.eval (x : ℂ)‖ ^ 2) := by
+      (fun x : ℝ ↦ ‖q.eval (x : ℂ) / P.eval (x : ℂ)‖ ^ (2 : ℕ)) := by
   let f : ℝ → ℂ := fun x ↦ q.eval (x : ℂ) / P.eval (x : ℂ)
-  let g : ℝ → ℝ := fun x ↦ (1 + x ^ 2)⁻¹
+  let g : ℝ → ℝ := fun x ↦ (1 + x ^ (2 : ℕ))⁻¹
   have hfarTop : ∀ᶠ x : ℝ in atTop, 1 ≤ |x| := by
     filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
     exact hx.trans (le_abs_self x)
@@ -147,13 +147,13 @@ theorem polynomialBoundaryQuotient_normSq_integrable
     filter_upwards [eventually_le_atBot (-1 : ℝ)] with x hx
     rw [abs_of_nonpos (by linarith)]
     linarith
-  have htop : (fun x ↦ ‖f x‖ ^ 2) =O[atTop] g :=
+  have htop : (fun x ↦ ‖f x‖ ^ (2 : ℕ)) =O[atTop] g :=
     ((polynomialBoundaryQuotient_isBigO_inv_atTop hdeg hreal).norm_norm.pow 2).trans
       (norm_complex_inv_ofReal_sq_isBigO_cauchy hfarTop)
-  have hbot : (fun x ↦ ‖f x‖ ^ 2) =O[atBot] g :=
+  have hbot : (fun x ↦ ‖f x‖ ^ (2 : ℕ)) =O[atBot] g :=
     ((polynomialBoundaryQuotient_isBigO_inv_atBot hdeg hreal).norm_norm.pow 2).trans
       (norm_complex_inv_ofReal_sq_isBigO_cauchy hfarBot)
-  have hlocal : LocallyIntegrable (fun x ↦ ‖f x‖ ^ 2) :=
+  have hlocal : LocallyIntegrable (fun x ↦ ‖f x‖ ^ (2 : ℕ)) :=
     (polynomialBoundaryQuotient_continuous hreal).norm.pow 2 |>.locallyIntegrable
   exact hlocal.integrable_of_isBigO_atBot_atTop hbot
     (integrable_inv_one_add_sq.integrableAtFilter atBot) htop

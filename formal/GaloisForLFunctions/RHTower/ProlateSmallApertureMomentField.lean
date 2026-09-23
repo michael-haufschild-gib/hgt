@@ -64,8 +64,7 @@ theorem unitPhysicalInterval_volume_isOpenPosMeasure :
   exact (hopen.measure_ne_zero volume hnonempty)
     (measure_mono_null hsub himageZero)
 
-noncomputable local instance :
-    (volume : Measure UnitPhysicalInterval).IsOpenPosMeasure :=
+noncomputable local instance prolateSmallApertureMomentFieldInst1 : (volume : Measure UnitPhysicalInterval).IsOpenPosMeasure :=
   unitPhysicalInterval_volume_isOpenPosMeasure
 
 noncomputable local instance apertureMeasureOneIsSeparable :

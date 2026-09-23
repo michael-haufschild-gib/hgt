@@ -77,11 +77,11 @@ theorem integral_Ioi_literalMassSourceAction_succ_sub_eq_adjacentAlpha
   rw [(integral_Ioi_literalMassSourceAction_succ_sub_eq_degreeEdge ha hn hH).2]
   have hedge := xiShiftedCanonicalAdmissionCumulativeJacobiFlux_succ_sub_eq_adjacentAlpha
     (w := Real.sqrt a) hn
-  have hasq : (Real.sqrt a) ^ 2 = a := Real.sq_sqrt (le_trans (by norm_num) ha.le)
+  have hasq : (Real.sqrt a) ^ (2 : ℕ) = a := Real.sq_sqrt (le_trans (by norm_num) ha.le)
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt a)) (n + 3)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt a) ^ 2) k).re) (n + 3)).PosDef
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt a) ^ (2 : ℕ)) k).re) (n + 3)).PosDef
     rw [hasq]
     exact hH a self_mem_Ici
   have hseq : xiShiftedRealMomentSequence (Real.sqrt a) =
@@ -104,16 +104,16 @@ theorem integrableOn_Ioi_degreeEdge_sq_and_integral_le_entryFlux
     IntegrableOn
         (fun y =>
           (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y (n + 1) -
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ 2)
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ (2 : ℕ))
         (Ioi a) ∧
       (∫ y in Ioi a,
           (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y (n + 1) -
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ 2) ≤
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ (2 : ℕ)) ≤
         (3 / 2 : ℝ) *
           xiShiftedCanonicalAdmissionCumulativeJacobiFlux a (n + 1) := by
   let E : ℝ → ℝ := fun y =>
     (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y (n + 1) -
-      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ 2
+      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) ^ (2 : ℕ)
   let J : ℝ → ℝ := fun y =>
     xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction
       (Real.sqrt y) (n + 1)
@@ -129,14 +129,14 @@ theorem integrableOn_Ioi_degreeEdge_sq_and_integral_le_entryFlux
   have hpoint : ∀ y ∈ Ioi a, E y < (3 / 2 : ℝ) * J y := by
     intro y hy
     have hyquarter : 1 / 4 < y := lt_trans ha hy
-    have hysq : (Real.sqrt y) ^ 2 = y :=
+    have hysq : (Real.sqrt y) ^ (2 : ℕ) = y :=
       Real.sq_sqrt (le_trans (by norm_num) hyquarter.le)
     have hsqrt : 1 / 2 < Real.sqrt y := by
       nlinarith [Real.sqrt_nonneg y]
     have hHsqrt : (HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 3)).PosDef := by
       change (HTGeometry.momentHankelMatrix
-        (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+        (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
           (n + 3)).PosDef
       rw [hysq]
       exact hH y (Set.mem_Ici.mpr hy.le)

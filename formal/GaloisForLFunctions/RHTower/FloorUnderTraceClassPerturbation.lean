@@ -63,9 +63,9 @@ theorem summable_secular_of_traceClass_perturbation {ell lam e : ℕ → ℝ}
     (hnn : ∀ n, 0 ≤ lam n) (hanti : Antitone lam) {T : ℝ} (hT : 0 ≤ T)
     (hsum : ∀ n : ℕ, ∑ k ∈ Finset.range (n + 1), lam k ≤ T)
     (he : Summable e) {μ : ℝ} (hμ : μ < 1 / 4)
-    (_hbessel : Summable fun j => (ell j) ^ 2) :
+    (_hbessel : Summable fun j => (ell j) ^ (2 : ℕ)) :
     ∃ M : ℕ, ∀ n, M ≤ n →
-      (ell n / (((1 - lam n) + e n) - μ)) ^ 2 ≤ (ell n) ^ 2 / (1 / 4 - μ) ^ 2 := by
+      (ell n / (((1 - lam n) + e n) - μ)) ^ (2 : ℕ) ≤ (ell n) ^ (2 : ℕ) / (1 / 4 - μ) ^ (2 : ℕ) := by
   obtain ⟨M, hM⟩ := exists_perturbed_leakage_floor hnn hanti hT hsum he
   exact ⟨M, fun n hn => sq_secular_le_of_floor (ℓ := ell)
     (d := fun k => (1 - lam k) + e k) (j := n) (hM n hn) hμ⟩

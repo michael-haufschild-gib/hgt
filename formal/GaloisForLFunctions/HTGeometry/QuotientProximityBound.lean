@@ -109,22 +109,22 @@ theorem log_norm_le_three_mul_proximity {h : ℂ → ℂ}
 
 /-- Every constant is absorbed by a positive multiple of `(log (2 + ‖z‖))²`. -/
 theorem abs_le_logSq (c : ℝ) (z : ℂ) :
-    |c| ≤ ((|c| + 1) / (Real.log 2) ^ 2) * (Real.log (2 + ‖z‖)) ^ 2 := by
+    |c| ≤ ((|c| + 1) / (Real.log 2) ^ (2 : ℕ)) * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
   have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hlogz : Real.log 2 ≤ Real.log (2 + ‖z‖) :=
     Real.log_le_log (by norm_num) (by linarith)
-  have hsq : (Real.log 2) ^ 2 ≤ (Real.log (2 + ‖z‖)) ^ 2 := by nlinarith
-  have hstep : ((|c| + 1) / (Real.log 2) ^ 2) * (Real.log 2) ^ 2 = |c| + 1 := by
+  have hsq : (Real.log 2) ^ (2 : ℕ) ≤ (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by nlinarith
+  have hstep : ((|c| + 1) / (Real.log 2) ^ (2 : ℕ)) * (Real.log 2) ^ (2 : ℕ) = |c| + 1 := by
     field_simp
   nlinarith [abs_nonneg c, div_nonneg (by positivity : (0:ℝ) ≤ |c| + 1)
-    (by positivity : (0:ℝ) ≤ (Real.log 2) ^ 2)]
+    (by positivity : (0:ℝ) ≤ (Real.log 2) ^ (2 : ℕ))]
 
 /-- **Subquadratic-logarithmic proximity forces constancy.**  A zero-free entire function whose
 proximity is eventually below `(log R)²` is constant. -/
 theorem const_of_zeroFree_of_proximity_le_logSq {h : ℂ → ℂ}
     (hh : AnalyticOnNhd ℂ h Set.univ) (hne : ∀ z, h z ≠ 0)
-    (hprox : ∀ᶠ R : ℝ in atTop, proximity h ⊤ R ≤ (Real.log R) ^ 2) :
+    (hprox : ∀ᶠ R : ℝ in atTop, proximity h ⊤ R ≤ (Real.log R) ^ (2 : ℕ)) :
     ∀ z, h z = h 0 := by
   obtain ⟨R₀, hR₀⟩ := eventually_atTop.mp hprox
   set S : ℝ := max 1 R₀ with hS
@@ -138,15 +138,15 @@ theorem const_of_zeroFree_of_proximity_le_logSq {h : ℂ → ℂ}
   obtain ⟨C₀, hC₀⟩ := (isCompact_closedBall (0 : ℂ) S).exists_bound_of_continuousOn hcont
   -- the envelope
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
-  set B : ℝ := 12 + (|C₀| + 1) / (Real.log 2) ^ 2 with hB
+  set B : ℝ := 12 + (|C₀| + 1) / (Real.log 2) ^ (2 : ℕ) with hB
   have hBnn : 0 ≤ B := by positivity
-  have hbound : ∀ z : ℂ, Real.log ‖h z‖ ≤ B * (Real.log (2 + ‖z‖)) ^ 2 := by
+  have hbound : ∀ z : ℂ, Real.log ‖h z‖ ≤ B * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
     intro z
     have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
     have hlogz : Real.log 2 ≤ Real.log (2 + ‖z‖) :=
       Real.log_le_log (by norm_num) (by linarith)
     have hlogzpos : (0 : ℝ) < Real.log (2 + ‖z‖) := lt_of_lt_of_le hlog2 hlogz
-    have hsq : (Real.log 2) ^ 2 ≤ (Real.log (2 + ‖z‖)) ^ 2 := by nlinarith
+    have hsq : (Real.log 2) ^ (2 : ℕ) ≤ (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by nlinarith
     by_cases hzS : ‖z‖ ≤ S
     · -- compact range: absorb into the constant
       have hmem : z ∈ closedBall (0 : ℂ) S := by
@@ -156,8 +156,8 @@ theorem const_of_zeroFree_of_proximity_le_logSq {h : ℂ → ℂ}
         rw [Real.norm_eq_abs] at hb
         exact le_trans (le_abs_self _) (le_trans hb (le_abs_self C₀))
       have h2 := abs_le_logSq C₀ z
-      have h3 : ((|C₀| + 1) / (Real.log 2) ^ 2) * (Real.log (2 + ‖z‖)) ^ 2
-          ≤ B * (Real.log (2 + ‖z‖)) ^ 2 := by
+      have h3 : ((|C₀| + 1) / (Real.log 2) ^ (2 : ℕ)) * (Real.log (2 + ‖z‖)) ^ (2 : ℕ)
+          ≤ B * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         rw [hB]; linarith
       linarith
@@ -167,23 +167,23 @@ theorem const_of_zeroFree_of_proximity_le_logSq {h : ℂ → ℂ}
       have hpr := hR₀ (2 * (1 + ‖z‖)) hRge
       have hpo := log_norm_le_three_mul_proximity hh hne z
       have hlogR : Real.log (2 * (1 + ‖z‖)) ≤ 2 * Real.log (2 + ‖z‖) := by
-        have hle : 2 * (1 + ‖z‖) ≤ (2 + ‖z‖) ^ 2 := by nlinarith
-        calc Real.log (2 * (1 + ‖z‖)) ≤ Real.log ((2 + ‖z‖) ^ 2) :=
+        have hle : 2 * (1 + ‖z‖) ≤ (2 + ‖z‖) ^ (2 : ℕ) := by nlinarith
+        calc Real.log (2 * (1 + ‖z‖)) ≤ Real.log ((2 + ‖z‖) ^ (2 : ℕ)) :=
               Real.log_le_log (by linarith) hle
           _ = 2 * Real.log (2 + ‖z‖) := by
               rw [Real.log_pow]; push_cast; ring
       have hlogRnn : (0 : ℝ) ≤ Real.log (2 * (1 + ‖z‖)) :=
         Real.log_nonneg (by linarith)
-      have hsq2 : (Real.log (2 * (1 + ‖z‖))) ^ 2 ≤ 4 * (Real.log (2 + ‖z‖)) ^ 2 := by
+      have hsq2 : (Real.log (2 * (1 + ‖z‖))) ^ (2 : ℕ) ≤ 4 * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
         nlinarith
-      have h4 : Real.log ‖h z‖ ≤ 12 * (Real.log (2 + ‖z‖)) ^ 2 := by
+      have h4 : Real.log ‖h z‖ ≤ 12 * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
         calc Real.log ‖h z‖ ≤ 3 * proximity h ⊤ (2 * (1 + ‖z‖)) := hpo
-          _ ≤ 3 * (Real.log (2 * (1 + ‖z‖))) ^ 2 := by linarith
-          _ ≤ 12 * (Real.log (2 + ‖z‖)) ^ 2 := by linarith
-      have h5 : 12 * (Real.log (2 + ‖z‖)) ^ 2 ≤ B * (Real.log (2 + ‖z‖)) ^ 2 := by
+          _ ≤ 3 * (Real.log (2 * (1 + ‖z‖))) ^ (2 : ℕ) := by linarith
+          _ ≤ 12 * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by linarith
+      have h5 : 12 * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) ≤ B * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         rw [hB]
-        have : (0 : ℝ) ≤ (|C₀| + 1) / (Real.log 2) ^ 2 := by positivity
+        have : (0 : ℝ) ≤ (|C₀| + 1) / (Real.log 2) ^ (2 : ℕ) := by positivity
         linarith
       linarith
   -- exponentiate
@@ -196,9 +196,9 @@ theorem const_of_zeroFree_of_proximity_le_logSq {h : ℂ → ℂ}
       rw [hexp z, norm_mul, Complex.norm_exp]
     rw [hnorm, Real.log_mul hh0 (Real.exp_pos _).ne', Real.log_exp]
     ring
-  set B' : ℝ := B + (|Real.log ‖h 0‖| + 1) / (Real.log 2) ^ 2 with hB'
+  set B' : ℝ := B + (|Real.log ‖h 0‖| + 1) / (Real.log 2) ^ (2 : ℕ) with hB'
   have hB'nn : 0 ≤ B' := by positivity
-  have hbound' : ∀ z : ℂ, (g z).re ≤ B' * (Real.log (2 + ‖z‖)) ^ 2 := by
+  have hbound' : ∀ z : ℂ, (g z).re ≤ B' * (Real.log (2 + ‖z‖)) ^ (2 : ℕ) := by
     intro z
     have h1 := hbound z
     have h2 := abs_le_logSq (Real.log ‖h 0‖) z

@@ -24,22 +24,22 @@ open Complex MeasureTheory Finset
 mean square, applied to the dyadic block decomposition. -/
 theorem sqrt_integral_lorentz_normSq_LSeries_le_sum_blocks {a : ℕ → ℂ} {M : ℕ}
     (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ Finset.Icc 1 M) (σ : ℝ) :
-    Real.sqrt (∫ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 * (1 + y ^ 2)⁻¹)
+    Real.sqrt (∫ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ) * (1 + y ^ (2 : ℕ))⁻¹)
       ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1),
           Real.sqrt (∫ y : ℝ,
-            ‖LSeries (coeffBlock a (fun n => Nat.log 2 n) j) ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2
-              * (1 + y ^ 2)⁻¹) := by
+            ‖LSeries (coeffBlock a (fun n => Nat.log 2 n) j) ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ)
+              * (1 + y ^ (2 : ℕ))⁻¹) := by
   classical
   have hs0 : (0 : ℕ) ∉ Finset.Icc 1 M := by simp
-  set W : ℝ → ℂ := fun y => (((1 + y ^ 2)⁻¹ : ℝ) : ℂ) with hW
-  have hWnorm : ∀ y : ℝ, ‖W y‖ = (1 + y ^ 2)⁻¹ := by
+  set W : ℝ → ℂ := fun y => (((1 + y ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) with hW
+  have hWnorm : ∀ y : ℝ, ‖W y‖ = (1 + y ^ (2 : ℕ))⁻¹ := by
     intro y
     rw [hW, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   have hmW : AEStronglyMeasurable W volume := by
     refine Continuous.aestronglyMeasurable ?_
     rw [hW]
     refine Complex.continuous_ofReal.comp ?_
-    have hdiv : Continuous fun y : ℝ => 1 / (1 + y ^ 2) :=
+    have hdiv : Continuous fun y : ℝ => 1 / (1 + y ^ (2 : ℕ)) :=
       continuous_const.div (by fun_prop) fun y => by positivity
     simpa [one_div] using hdiv
   set g : ℕ → ℝ → ℂ := fun j y =>
@@ -48,15 +48,15 @@ theorem sqrt_integral_lorentz_normSq_LSeries_le_sum_blocks {a : ℕ → ℂ} {M 
     intro j _
     exact (continuous_LSeries_line_of_support hs0 (coeffBlock_support hsupp) σ).aestronglyMeasurable
   have hig : ∀ j ∈ Finset.range (Nat.log 2 M + 1),
-      Integrable fun y => ‖g j y‖ ^ 2 * ‖W y‖ := by
+      Integrable fun y => ‖g j y‖ ^ (2 : ℕ) * ‖W y‖ := by
     intro j _
     have h := integrable_lorentz_normSq_LSeries hs0 (coeffBlock_support (κ := fun n => Nat.log 2 n)
       (j := j) hsupp) σ
     refine h.congr (Filter.Eventually.of_forall fun y => ?_)
     dsimp only
     rw [hWnorm y]
-  have hpt : ∀ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 * (1 + y ^ 2)⁻¹
-      = ‖∑ j ∈ Finset.range (Nat.log 2 M + 1), g j y‖ ^ 2 * ‖W y‖ := by
+  have hpt : ∀ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ) * (1 + y ^ (2 : ℕ))⁻¹
+      = ‖∑ j ∈ Finset.range (Nat.log 2 M + 1), g j y‖ ^ (2 : ℕ) * ‖W y‖ := by
     intro y
     rw [hWnorm y, hg, LSeries_eq_sum_dyadic_blocks hsupp ((σ : ℂ) + (y : ℝ) * I)]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
@@ -76,9 +76,9 @@ theorem sqrt_integral_lorentz_normSq_LSeries_le_sum_prime_sieve {a : ℕ → ℂ
     (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) (Z Yl : ℕ → ℕ)
     (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
     (hlog : ∀ j, 0 < Real.log (Yl j)) :
-    Real.sqrt (∫ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 * (1 + y ^ 2)⁻¹)
+    Real.sqrt (∫ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ (2 : ℕ) * (1 + y ^ (2 : ℕ))⁻¹)
       ≤ ∑ j ∈ Finset.range (Nat.log 2 M + 1),
-          Real.sqrt (25 * Real.pi ^ 2
+          Real.sqrt (25 * Real.pi ^ (2 : ℕ)
             * sieveMeanSquare (coeffBlock a (fun n => Nat.log 2 n) j) (Finset.Icc 1 M) σ
                 (Z j) (Yl j)) := by
   classical

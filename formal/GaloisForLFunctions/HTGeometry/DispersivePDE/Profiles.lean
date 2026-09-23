@@ -11,45 +11,45 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE
 
 noncomputable def solitonT (x : ℝ) : ℝ := Real.tanh x
 
-noncomputable def solitonQ (x : ℝ) : ℝ := 1 - solitonT x ^ 2
+noncomputable def solitonQ (x : ℝ) : ℝ := 1 - solitonT x ^ (2 : ℕ)
 
 noncomputable def solitonQ1 (x : ℝ) : ℝ := -2 * solitonT x * solitonQ x
 
-noncomputable def solitonQ2 (x : ℝ) : ℝ := 4 * solitonQ x - 6 * solitonQ x ^ 2
+noncomputable def solitonQ2 (x : ℝ) : ℝ := 4 * solitonQ x - 6 * solitonQ x ^ (2 : ℕ)
 
 noncomputable def solitonQ3 (x : ℝ) : ℝ :=
-  -8 * solitonT x * solitonQ x + 24 * solitonT x * solitonQ x ^ 2
+  -8 * solitonT x * solitonQ x + 24 * solitonT x * solitonQ x ^ (2 : ℕ)
 
 noncomputable def solitonQ4 (x : ℝ) : ℝ :=
-  16 * solitonQ x - 120 * solitonQ x ^ 2 + 120 * solitonQ x ^ 3
+  16 * solitonQ x - 120 * solitonQ x ^ (2 : ℕ) + 120 * solitonQ x ^ (3 : ℕ)
 
 noncomputable def solitonQ5 (x : ℝ) : ℝ :=
-  -32 * solitonT x * solitonQ x + 480 * solitonT x * solitonQ x ^ 2
-    - 720 * solitonT x * solitonQ x ^ 3
+  -32 * solitonT x * solitonQ x + 480 * solitonT x * solitonQ x ^ (2 : ℕ)
+    - 720 * solitonT x * solitonQ x ^ (3 : ℕ)
 
-noncomputable def solitonR (x : ℝ) : ℝ := solitonQ x ^ 2
+noncomputable def solitonR (x : ℝ) : ℝ := solitonQ x ^ (2 : ℕ)
 
-noncomputable def solitonR1 (x : ℝ) : ℝ := -4 * solitonT x * solitonQ x ^ 2
+noncomputable def solitonR1 (x : ℝ) : ℝ := -4 * solitonT x * solitonQ x ^ (2 : ℕ)
 
-noncomputable def solitonR2 (x : ℝ) : ℝ := 16 * solitonQ x ^ 2 - 20 * solitonQ x ^ 3
+noncomputable def solitonR2 (x : ℝ) : ℝ := 16 * solitonQ x ^ (2 : ℕ) - 20 * solitonQ x ^ (3 : ℕ)
 
 noncomputable def solitonR3 (x : ℝ) : ℝ :=
-  -64 * solitonT x * solitonQ x ^ 2 + 120 * solitonT x * solitonQ x ^ 3
+  -64 * solitonT x * solitonQ x ^ (2 : ℕ) + 120 * solitonT x * solitonQ x ^ (3 : ℕ)
 
 noncomputable def solitonR4 (x : ℝ) : ℝ :=
-  256 * solitonQ x ^ 2 - 1040 * solitonQ x ^ 3 + 840 * solitonQ x ^ 4
+  256 * solitonQ x ^ (2 : ℕ) - 1040 * solitonQ x ^ (3 : ℕ) + 840 * solitonQ x ^ (4 : ℕ)
 
 noncomputable def solitonR5 (x : ℝ) : ℝ :=
-  -1024 * solitonT x * solitonQ x ^ 2 + 6240 * solitonT x * solitonQ x ^ 3
-    - 6720 * solitonT x * solitonQ x ^ 4
+  -1024 * solitonT x * solitonQ x ^ (2 : ℕ) + 6240 * solitonT x * solitonQ x ^ (3 : ℕ)
+    - 6720 * solitonT x * solitonQ x ^ (4 : ℕ)
 
-theorem solitonQ_eq_inv_cosh_sq (x : ℝ) : solitonQ x = 1 / Real.cosh x ^ 2 := by
+theorem solitonQ_eq_inv_cosh_sq (x : ℝ) : solitonQ x = 1 / Real.cosh x ^ (2 : ℕ) := by
   exact HTGeometry.one_sub_tanh_sq x
 
 theorem hasDerivAt_solitonT (x : ℝ) : HasDerivAt solitonT (solitonQ x) x := by
   have h := HTGeometry.hasDerivAt_tanh x
   rw [← HTGeometry.one_sub_tanh_sq x] at h
-  change HasDerivAt Real.tanh (1 - Real.tanh x ^ 2) x
+  change HasDerivAt Real.tanh (1 - Real.tanh x ^ (2 : ℕ)) x
   exact h
 
 theorem hasDerivAt_solitonQ (x : ℝ) : HasDerivAt solitonQ (solitonQ1 x) x := by

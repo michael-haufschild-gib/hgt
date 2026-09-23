@@ -45,10 +45,10 @@ theorem posSemidef_krausSum {X : Matrix d d ℂ} (hX : X.PosSemidef) (B : ι →
 has determinant at least `|det B|² / ‖c‖₂^{2d}`, so the square capacity is bounded below by that
 constant. -/
 theorem pencil_capacity_bound {X : Matrix d d ℂ} (hX : X.PosDef) (hXdet : X.det = 1)
-    (c : ι → ℂ) (B : ι → Matrix d d ℂ) (hc : 0 < ∑ i, ‖c i‖ ^ 2) :
-    ((‖(∑ i, c i • B i).det‖ ^ 2 / (∑ i, ‖c i‖ ^ 2) ^ Fintype.card d : ℝ) : ℂ)
+    (c : ι → ℂ) (B : ι → Matrix d d ℂ) (hc : 0 < ∑ i, ‖c i‖ ^ (2 : ℕ)) :
+    ((‖(∑ i, c i • B i).det‖ ^ (2 : ℕ) / (∑ i, ‖c i‖ ^ (2 : ℕ)) ^ Fintype.card d : ℝ) : ℂ)
       ≤ (∑ i, B i * X * (B i)ᴴ).det := by
-  set r : ℝ := ∑ i, ‖c i‖ ^ 2 with hr
+  set r : ℝ := ∑ i, ‖c i‖ ^ (2 : ℕ) with hr
   set Bp : Matrix d d ℂ := ∑ i, c i • B i with hBp
   set P : Matrix d d ℂ := Bp * X * Bpᴴ with hP
   set K : Matrix d d ℂ := ∑ i, B i * X * (B i)ᴴ with hK
@@ -66,13 +66,13 @@ theorem pencil_capacity_bound {X : Matrix d d ℂ} (hX : X.PosDef) (hXdet : X.de
     exact posSemidef_real_smul hD (by positivity)
   have hcmp : (((r⁻¹ : ℝ) : ℂ) • P).det ≤ K.det :=
     det_le_det_of_loewner (posSemidef_real_smul hPpsd (by positivity)) hKpsd hscaled
-  have hdetP : P.det = ((‖Bp.det‖ ^ 2 : ℝ) : ℂ) := by
+  have hdetP : P.det = ((‖Bp.det‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hP, Matrix.det_mul, Matrix.det_mul, hXdet, Matrix.det_conjTranspose, mul_one,
       Complex.star_def, Complex.mul_conj]
     norm_cast
     exact Complex.normSq_eq_norm_sq _
   have hdetsmul : (((r⁻¹ : ℝ) : ℂ) • P).det
-      = ((‖Bp.det‖ ^ 2 / r ^ Fintype.card d : ℝ) : ℂ) := by
+      = ((‖Bp.det‖ ^ (2 : ℕ) / r ^ Fintype.card d : ℝ) : ℂ) := by
     have hrc : ((r : ℝ) : ℂ) ≠ 0 := by simpa using hrne
     rw [Matrix.det_smul, hdetP]
     push_cast

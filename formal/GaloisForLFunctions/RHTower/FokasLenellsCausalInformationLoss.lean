@@ -17,7 +17,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalInformationLossInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 private theorem forward_adjoint (t : ℝ≥0) (u : hardyL2ᗮ) :
     causalLowerCauchyEvolution t ((causalLowerCauchyEvolution t).adjoint u) = u :=
@@ -59,7 +59,7 @@ theorem causalRecoveryProjection_inner_loss (t : ℝ≥0) (u : hardyL2ᗮ) :
 
 /-- The completed datum splits exactly into retained output energy and lost kernel energy. -/
 theorem causalLowerCauchyEvolution_energy_decomposition (t : ℝ≥0) (u : hardyL2ᗮ) :
-    ‖u‖^2 = ‖causalLowerCauchyEvolution t u‖^2 + ‖causalLossProjection t u‖^2 := by
+    ‖u‖^(2 : ℕ) = ‖causalLowerCauchyEvolution t u‖^(2 : ℕ) + ‖causalLossProjection t u‖^(2 : ℕ) := by
   have h := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
     (causalRecoveryProjection t u) (causalLossProjection t u) (causalRecoveryProjection_inner_loss t u)
   have he : causalRecoveryProjection t u + causalLossProjection t u = u := by

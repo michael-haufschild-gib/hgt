@@ -10,7 +10,7 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 This module proves the exact finite layer-cake/Gini identity for divisor packets, upgrades weak
 critical-clock convergence to convergence of the unbounded absolute gap moment, and derives the
 four-unit incidence and projective-Fisher limits.  It also proves the finite-window profile
-`4 * (1 - exp (-u))^2`.
+`4 * (1 - exp (-u))^(2 : ℕ)`.
 -/
 
 open Complex MeasureTheory Set Filter
@@ -624,7 +624,7 @@ private theorem integral_Ioc_exponentialCDF_mul_one_sub
     (fun x hx => hderiv x) hint]
   norm_num
 
-/-- The finite critical incidence window has profile `4(1-exp(-u))^2`. -/
+/-- The finite critical incidence window has profile `4(1-exp(-u))^(2 : ℕ)`. -/
 theorem tendsto_squarefreeMobiusCriticalIncidenceWindowEnergy
     {u : ℝ} (hu : 0 ≤ u) :
     Tendsto (fun sigma : ℝ =>

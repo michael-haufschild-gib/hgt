@@ -41,7 +41,7 @@ theorem barbanVehovLogMomentCoeff_eq_vonMangoldt
   calc
     ∑ q ∈ k.divisors, (μ q : ℝ) * (Real.log M - Real.log q) * Real.log q =
         Real.log M * (∑ q ∈ k.divisors, (μ q : ℝ) * Real.log q) -
-          ∑ q ∈ k.divisors, (μ q : ℝ) * (Real.log q) ^ 2 := by
+          ∑ q ∈ k.divisors, (μ q : ℝ) * (Real.log q) ^ (2 : ℕ) := by
       rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
       apply Finset.sum_congr rfl
       intro q hq
@@ -70,9 +70,9 @@ theorem levinsonLinearMollifiedCriticalDetectorCoeff_eq_vonMangoldt
 /-- Exact square energy of a non-unit coefficient in the full mollifier range. -/
 theorem norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_vonMangoldt
     {lam : ℝ} {M k : ℕ} (hk : 1 < k) (hkM : k ≤ M) :
-    ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2 =
-      ((1 - lam * Real.log M) * Λ k - lam * (Λ * Λ) k) ^ 2 /
-        (k : ℝ) / (Real.log M) ^ 2 := by
+    ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) =
+      ((1 - lam * Real.log M) * Λ k - lam * (Λ * Λ) k) ^ (2 : ℕ) /
+        (k : ℝ) / (Real.log M) ^ (2 : ℕ) := by
   rw [norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq
       (lt_of_lt_of_le hk hkM) (Nat.zero_lt_of_lt hk),
     barbanVehovCoeff_eq_vonMangoldt hk hkM,
@@ -84,10 +84,10 @@ theorem norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_vonMangoldt
 theorem sum_norm_levinsonLinearMollifiedCriticalDetectorCoeff_sq_eq_vonMangoldt
     (lam : ℝ) {M N : ℕ} (hNM : N ≤ M) :
     ∑ k ∈ Finset.Icc 2 N,
-        ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2 =
+        ‖levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) =
       (∑ k ∈ Finset.Icc 2 N,
-          ((1 - lam * Real.log M) * Λ k - lam * (Λ * Λ) k) ^ 2 / (k : ℝ)) /
-        (Real.log M) ^ 2 := by
+          ((1 - lam * Real.log M) * Λ k - lam * (Λ * Λ) k) ^ (2 : ℕ) / (k : ℝ)) /
+        (Real.log M) ^ (2 : ℕ) := by
   rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro k hk

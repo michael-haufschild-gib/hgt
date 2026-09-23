@@ -195,7 +195,7 @@ theorem thetaCuspGaussianApertureLeadingChannelDampedMoment_le_halfSaddle
       ring
 
 /-- The exact response-centered saddle turns the damped leading channel into a scaled contraction:
-after multiplication by `3*pi*s^4`, the only nonsaddle contribution is two adjacent moments. -/
+after multiplication by `3*pi*s^(4 : ℕ)`, the only nonsaddle contribution is two adjacent moments. -/
 theorem thetaCuspGaussianApertureLeadingChannelDampedMoment_canonical_scaled_le
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
     let s := thetaCuspGaussianApertureResponseCenteredSaddleHeight lambda hlambda j
@@ -378,7 +378,7 @@ theorem one_half_lt_thetaCuspGaussianApertureTailAmplitudeFactor
   rw [thetaCuspGaussianApertureTailAmplitudeFactor]
   linarith
 
-/-- Literal first-atom mass retains at least `2*pi^2` times the positive leading-channel mass. -/
+/-- Literal first-atom mass retains at least `2*pi^(2 : ℕ)` times the positive leading-channel mass. -/
 theorem two_pi_sq_mul_leadingChannelMoment_lt_firstAtomHalfMoment
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
     2 * Real.pi ^ 2 *
@@ -570,7 +570,7 @@ theorem thetaCuspGaussianApertureLeadingChannel_centeredMomentError_sq_le
   rw [hfg, hf2, hg2] at hcs
   simpa only [mul_comm] using hcs
 
-/-- At the exact response center, the adjacent leading moment is at most `2*s^2+1` times the
+/-- At the exact response center, the adjacent leading moment is at most `2*s^(2 : ℕ)+1` times the
 current mass. This is the quantitative conversion from score concentration to moment scale. -/
 theorem thetaCuspGaussianApertureTailChannelMoment_succ_le_canonicalScale
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :

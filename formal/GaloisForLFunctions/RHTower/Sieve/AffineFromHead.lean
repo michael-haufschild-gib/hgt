@@ -22,9 +22,9 @@ noncomputable section
 theorem integral_Icc_normSq_logPoly_affine_of_head (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) {N : ℕ}
     {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s) (hsN : ∀ n ∈ s, n ≤ N)
     {G T₀ B : ℝ} (hG : 1 ≤ G) (hGT₀ : G ≤ T₀) (hB0 : 0 ≤ B)
-    (hB : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly a s w‖ ^ 2) ≤ B) :
+    (hB : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ B) :
     ∀ T : ℝ, G ≤ T →
-      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2)
+      (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ))
         ≤ (5 * Real.pi / 2 * (s.card : ℝ)
             + 5 * Real.exp 1 / 2 * (N : ℝ) * (s.card : ℝ) / T₀) * T + B := by
   intro T hT
@@ -38,9 +38,9 @@ theorem integral_Icc_normSq_logPoly_affine_of_head (a : ℕ → ℂ) (ha : ∀ n
     have := (Real.exp_pos 1).le
     positivity
   rcases le_or_gt T T₀ with hle | hgt
-  · have hmono : (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in Set.Icc (-T₀) T₀, ‖logPoly a s w‖ ^ 2 := by
-      have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+  · have hmono : (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ ∫ w in Set.Icc (-T₀) T₀, ‖logPoly a s w‖ ^ (2 : ℕ) := by
+      have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) :=
         ((continuous_logPoly a s).norm).pow 2
       refine MeasureTheory.setIntegral_mono_set
         (hcont.integrableOn_Icc (a := -T₀) (b := T₀))

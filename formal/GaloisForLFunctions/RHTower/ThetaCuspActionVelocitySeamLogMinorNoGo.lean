@@ -19,7 +19,7 @@ elimination proves the opposite sign.  The sharp survivor is the strict logarith
 def thetaCuspActionVelocitySeamLogMinor : ℝ :=
   iteratedDeriv 2 thetaCuspLogSource 0 *
       iteratedDeriv 6 thetaCuspLogSource 0 -
-    2 * iteratedDeriv 4 thetaCuspLogSource 0 ^ 2
+    2 * iteratedDeriv 4 thetaCuspLogSource 0 ^ (2 : ℕ)
 
 /-- Above the exact theta threshold, every coefficient of the shifted modular polynomial has
 the wrong sign for forward fixed-action transport. -/
@@ -34,28 +34,28 @@ theorem thetaCuspActionVelocitySeamMinorModularPolynomial_neg_of_threshold
         ((191 / 10 : ℝ) + y) =
       -45563383733709932767 / 1677721600000000 +
         y * (-3476245474042946289 / 41943040000000) +
-        y ^ 2 * (-12538280743912413 / 524288000000) +
-        y ^ 3 * (-1288757011003993 / 419430400000) +
-        y ^ 4 * (-3723531634839 / 16777216000) +
-        y ^ 5 * (-40635683163 / 4194304000) +
-        y ^ 6 * (-53459987 / 209715200) +
-        y ^ 7 * (-156219 / 41943040) +
-        y ^ 8 * (-387 / 16777216) by
+        y ^ (2 : ℕ) * (-12538280743912413 / 524288000000) +
+        y ^ (3 : ℕ) * (-1288757011003993 / 419430400000) +
+        y ^ (4 : ℕ) * (-3723531634839 / 16777216000) +
+        y ^ (5 : ℕ) * (-40635683163 / 4194304000) +
+        y ^ (6 : ℕ) * (-53459987 / 209715200) +
+        y ^ (7 : ℕ) * (-156219 / 41943040) +
+        y ^ (8 : ℕ) * (-387 / 16777216) by
       unfold thetaCuspActionVelocitySeamMinorModularPolynomial
       ring]
-  have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-  have hy3 : 0 ≤ y ^ 3 := pow_nonneg hy 3
-  have hy4 : 0 ≤ y ^ 4 := pow_nonneg hy 4
-  have hy5 : 0 ≤ y ^ 5 := pow_nonneg hy 5
-  have hy6 : 0 ≤ y ^ 6 := pow_nonneg hy 6
-  have hy7 : 0 ≤ y ^ 7 := pow_nonneg hy 7
-  have hy8 : 0 ≤ y ^ 8 := pow_nonneg hy 8
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := pow_nonneg hy 3
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := pow_nonneg hy 4
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := pow_nonneg hy 5
+  have hy6 : 0 ≤ y ^ (6 : ℕ) := pow_nonneg hy 6
+  have hy7 : 0 ≤ y ^ (7 : ℕ) := pow_nonneg hy 7
+  have hy8 : 0 ≤ y ^ (8 : ℕ) := pow_nonneg hy 8
   nlinarith
 
 /-- The literal self-dual theta scale lies in the strict negative chamber. -/
 theorem thetaCuspActionVelocitySeamMinorModularPolynomial_source_neg :
     thetaCuspActionVelocitySeamMinorModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2) < 0 :=
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ)) < 0 :=
   thetaCuspActionVelocitySeamMinorModularPolynomial_neg_of_threshold
     thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
 
@@ -72,8 +72,8 @@ theorem thetaCuspActionVelocitySeamMinorModularClosureValue_neg :
 /-- The raw even-source seam polynomial selected by the transport minor is strictly negative. -/
 theorem thetaCuspFullSource_actionVelocitySeamMinor_neg :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
-    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
-        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 < 0 := by
+    f 0 ^ (2 : ℕ) * f 2 * f 6 - 3 * f 0 * f 2 ^ (2 : ℕ) * f 4 +
+        12 * f 2 ^ (4 : ℕ) - 2 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) < 0 := by
   dsimp only
   rw [thetaCuspFullSource_actionVelocitySeamMinor_eq_modularClosure]
   exact thetaCuspActionVelocitySeamMinorModularClosureValue_neg
@@ -81,9 +81,9 @@ theorem thetaCuspFullSource_actionVelocitySeamMinor_neg :
 /-- Exact Bell transfer from the raw source polynomial to the logarithmic transport minor. -/
 theorem thetaCuspFullSource_actionVelocitySeamMinor_eq_logMinor :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
-    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
-        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
-      thetaCuspFullSource 0 ^ 4 * thetaCuspActionVelocitySeamLogMinor := by
+    f 0 ^ (2 : ℕ) * f 2 * f 6 - 3 * f 0 * f 2 ^ (2 : ℕ) * f 4 +
+        12 * f 2 ^ (4 : ℕ) - 2 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) =
+      thetaCuspFullSource 0 ^ (4 : ℕ) * thetaCuspActionVelocitySeamLogMinor := by
   dsimp only
   have hsource := congrFun thetaCuspFullSource_eq_logExponentialJetZero 0
   have h1 : iteratedDeriv 1 thetaCuspLogSource 0 = 0 :=
@@ -109,7 +109,7 @@ theorem thetaCuspActionVelocitySeamLogMinor_neg :
   have hraw := thetaCuspFullSource_actionVelocitySeamMinor_neg
   dsimp only at hraw
   rw [thetaCuspFullSource_actionVelocitySeamMinor_eq_logMinor] at hraw
-  have hmass : 0 < thetaCuspFullSource 0 ^ 4 :=
+  have hmass : 0 < thetaCuspFullSource 0 ^ (4 : ℕ) :=
     pow_pos (thetaCuspFullSource_pos_all 0) 4
   rcases (mul_neg_iff.mp hraw) with h | h
   · exact h.2
@@ -120,7 +120,7 @@ velocity orientation: `A C < 2 B²`. -/
 theorem thetaCuspActionVelocitySeam_curvature_sixth_lt_two_fourth_sq :
     thetaCuspLogCurvature 0 *
         (-iteratedDeriv 6 thetaCuspLogSource 0) <
-      2 * (-iteratedDeriv 4 thetaCuspLogSource 0) ^ 2 := by
+      2 * (-iteratedDeriv 4 thetaCuspLogSource 0) ^ (2 : ℕ) := by
   have h := thetaCuspActionVelocitySeamLogMinor_neg
   unfold thetaCuspActionVelocitySeamLogMinor at h
   unfold thetaCuspLogCurvature

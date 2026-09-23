@@ -33,7 +33,7 @@ theorem deningerConormal_generator_mem : P ∈ Ideal.span ({P} : Set S) :=
 /-- A multiple of a regular generator lies in the square of the principal ideal exactly when its
 cofactor lies in the ideal: this is cancellation by the generator. -/
 theorem deningerConormal_mul_mem_sq_iff (hP : IsRegular P) (q : S) :
-    q * P ∈ (Ideal.span ({P} : Set S)) ^ 2 ↔ q ∈ Ideal.span ({P} : Set S) := by
+    q * P ∈ (Ideal.span ({P} : Set S)) ^ (2 : ℕ) ↔ q ∈ Ideal.span ({P} : Set S) := by
   rw [Ideal.span_singleton_pow, Ideal.mem_span_singleton', Ideal.mem_span_singleton']
   constructor
   · rintro ⟨a, ha⟩

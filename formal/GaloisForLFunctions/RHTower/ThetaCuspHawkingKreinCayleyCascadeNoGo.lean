@@ -10,7 +10,7 @@ module removes that freedom.  Each local scattering cell uses the primitive open
 derivative.  Cascading two such cells through one intermediate Nambu mode nevertheless gives the
 source-to-terminal amplitude
 
-`4 * lambda ^ 2 / (1 - lambda ^ 2) ^ 2`.
+`4 * lambda ^ (2 : ℕ) / (1 - lambda ^ (2 : ℕ)) ^ (2 : ℕ)`.
 
 The cascade preserves the three-mode signed Hermitian form, mixes the terminal mode at every
 nonzero real disk coordinate, and admits exact Hawking KMS detailed balance, while its terminal
@@ -36,11 +36,11 @@ namespace RHTower
 
 /-- Positive-sheet coefficient of one canonical cell at real disk coordinate `lambda`. -/
 def primitiveHawkingKreinCayleyGain (lambda : ℝ) : ℝ :=
-  (1 + lambda ^ 2) / (1 - lambda ^ 2)
+  (1 + lambda ^ (2 : ℕ)) / (1 - lambda ^ (2 : ℕ))
 
 /-- Off-diagonal pair coefficient of one canonical cell at real disk coordinate `lambda`. -/
 def primitiveHawkingKreinCayleyPair (lambda : ℝ) : ℝ :=
-  2 * lambda / (1 - lambda ^ 2)
+  2 * lambda / (1 - lambda ^ (2 : ℕ))
 
 /-- The primitive gain is exactly the real slice of the canonical bosonic Krein--Cayley chart. -/
 theorem primitiveHawkingKreinCayleyGain_eq_twoModeBosonicKreinCayleyGain
@@ -58,10 +58,10 @@ theorem ofReal_primitiveHawkingKreinCayleyPair_eq_twoModeBosonicKreinCayleyPair
 
 /-- Every primitive disk cell lies on the positive bosonic `SU(1,1)` sheet. -/
 theorem primitiveHawkingKreinCayleyGain_sq_sub_pair_sq
-    {lambda : ℝ} (hlambda : lambda ^ 2 < 1) :
-    primitiveHawkingKreinCayleyGain lambda ^ 2 -
-        primitiveHawkingKreinCayleyPair lambda ^ 2 = 1 := by
-  have hden : 1 - lambda ^ 2 ≠ 0 := by linarith
+    {lambda : ℝ} (hlambda : lambda ^ (2 : ℕ) < 1) :
+    primitiveHawkingKreinCayleyGain lambda ^ (2 : ℕ) -
+        primitiveHawkingKreinCayleyPair lambda ^ (2 : ℕ) = 1 := by
+  have hden : 1 - lambda ^ (2 : ℕ) ≠ 0 := by linarith
   rw [primitiveHawkingKreinCayleyGain, primitiveHawkingKreinCayleyPair]
   field_simp [hden]
   ring
@@ -80,7 +80,7 @@ def primitiveHawkingKreinCayleyNegativeOutput
 
 /-- One primitive canonical cell preserves the two-mode signed Hermitian form. -/
 theorem primitiveHawkingKreinCayley_preserves_signedHermitian
-    {lambda : ℝ} (hlambda : lambda ^ 2 < 1) (x h : ℂ) :
+    {lambda : ℝ} (hlambda : lambda ^ (2 : ℕ) < 1) (x h : ℂ) :
     conj (primitiveHawkingKreinCayleyPositiveOutput lambda x h) *
           primitiveHawkingKreinCayleyPositiveOutput lambda x h -
         conj (primitiveHawkingKreinCayleyNegativeOutput lambda x h) *
@@ -102,13 +102,13 @@ theorem primitiveHawkingKreinCayley_preserves_signedHermitian
 /-- A primitive canonical cell has a nonzero first pair-amplitude coupling jet. -/
 theorem hasDerivAt_primitiveHawkingKreinCayleyPair_zero :
     HasDerivAt primitiveHawkingKreinCayleyPair 2 0 := by
-  change HasDerivAt (fun lambda : ℝ => 2 * lambda / (1 - lambda ^ 2)) 2 0
+  change HasDerivAt (fun lambda : ℝ => 2 * lambda / (1 - lambda ^ (2 : ℕ))) 2 0
   have hn := (hasDerivAt_id (𝕜 := ℝ) 0).const_mul (2 : ℝ)
   have hd := (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
     ((hasDerivAt_id (𝕜 := ℝ) 0).pow 2)
   have hq := hn.div hd (by norm_num)
-  have hfun : (fun x : ℝ => 2 * x / (1 - x ^ 2)) =
-      (fun y => 2 * id y) / ((fun _ : ℝ => 1) - id ^ 2) := by
+  have hfun : (fun x : ℝ => 2 * x / (1 - x ^ (2 : ℕ))) =
+      (fun y => 2 * id y) / ((fun _ : ℝ => 1) - id ^ (2 : ℕ)) := by
     funext x
     rfl
   rw [hfun]
@@ -136,7 +136,7 @@ def primitiveHawkingKreinCayleyCascadeTerminalOutput
 
 /-- Two canonical cells preserve the three-mode signature `(+,-,+)`. -/
 theorem primitiveHawkingKreinCayleyCascade_preserves_signedHermitian
-    {lambda : ℝ} (hlambda : lambda ^ 2 < 1) (x₀ x₁ x₂ : ℂ) :
+    {lambda : ℝ} (hlambda : lambda ^ (2 : ℕ) < 1) (x₀ x₁ x₂ : ℂ) :
     conj (primitiveHawkingKreinCayleyCascadeSourceOutput lambda x₀ x₁ x₂) *
           primitiveHawkingKreinCayleyCascadeSourceOutput lambda x₀ x₁ x₂ -
         conj (primitiveHawkingKreinCayleyCascadeMiddleOutput lambda x₀ x₁ x₂) *
@@ -157,7 +157,7 @@ theorem primitiveHawkingKreinCayleyCascade_preserves_signedHermitian
 theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq
     (lambda : ℝ) :
     primitiveHawkingKreinCayleyCascadeTerminalOutput lambda 1 0 0 =
-      (primitiveHawkingKreinCayleyPair lambda : ℂ) ^ 2 := by
+      (primitiveHawkingKreinCayleyPair lambda : ℂ) ^ (2 : ℕ) := by
   simp [primitiveHawkingKreinCayleyCascadeTerminalOutput,
     primitiveHawkingKreinCayleyPositiveOutput,
     primitiveHawkingKreinCayleyNegativeOutput, pow_two]
@@ -166,7 +166,7 @@ theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq
 theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq
     (lambda : ℝ) :
     primitiveHawkingKreinCayleyCascadeTerminalOutput lambda 1 0 0 =
-      ((4 * lambda ^ 2 / (1 - lambda ^ 2) ^ 2 : ℝ) : ℂ) := by
+      ((4 * lambda ^ (2 : ℕ) / (1 - lambda ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq,
     primitiveHawkingKreinCayleyPair]
   norm_cast
@@ -175,9 +175,9 @@ theorem primitiveHawkingKreinCayleyCascadeTerminal_source_eq
 
 /-- Every nonzero real disk coordinate mixes source into the terminal mode. -/
 theorem primitiveHawkingKreinCayleyCascadeTerminal_source_ne_zero
-    {lambda : ℝ} (hlambda : lambda ≠ 0) (hdisk : lambda ^ 2 < 1) :
+    {lambda : ℝ} (hlambda : lambda ≠ 0) (hdisk : lambda ^ (2 : ℕ) < 1) :
     primitiveHawkingKreinCayleyCascadeTerminalOutput lambda 1 0 0 ≠ 0 := by
-  have hden : 1 - lambda ^ 2 ≠ 0 := by linarith
+  have hden : 1 - lambda ^ (2 : ℕ) ≠ 0 := by linarith
   rw [primitiveHawkingKreinCayleyCascadeTerminal_source_eq_pair_sq]
   exact pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr
     (div_ne_zero (mul_ne_zero (by norm_num) hlambda) hden))
@@ -186,11 +186,11 @@ theorem primitiveHawkingKreinCayleyCascadeTerminal_source_ne_zero
 theorem hasDerivAt_primitiveHawkingKreinCayleyCascadeTerminal_source_zero :
     HasDerivAt
       (fun lambda : ℝ =>
-        primitiveHawkingKreinCayleyPair lambda ^ 2) 0 0 := by
+        primitiveHawkingKreinCayleyPair lambda ^ (2 : ℕ)) 0 0 := by
   have hmul := hasDerivAt_primitiveHawkingKreinCayleyPair_zero.mul
     hasDerivAt_primitiveHawkingKreinCayleyPair_zero
   have hfun :
-      (fun lambda : ℝ => primitiveHawkingKreinCayleyPair lambda ^ 2) =
+      (fun lambda : ℝ => primitiveHawkingKreinCayleyPair lambda ^ (2 : ℕ)) =
         primitiveHawkingKreinCayleyPair * primitiveHawkingKreinCayleyPair := by
     funext lambda
     simp [pow_two]
@@ -203,13 +203,13 @@ theorem hasDerivAt_primitiveHawkingKreinCayleyCascadeTerminal_source_zero :
 /-- Upward KMS probability carried by the source-to-terminal cascade channel. -/
 def primitiveHawkingKreinCayleyCascadeKMSUpProbability
     (lambda kappa omega : ℝ) : ℝ :=
-  primitiveHawkingKreinCayleyPair lambda ^ 4 *
+  primitiveHawkingKreinCayleyPair lambda ^ (4 : ℕ) *
     thetaCuspHawkingKMSExcitedPopulation kappa omega
 
 /-- Downward KMS probability carried by the source-to-terminal cascade channel. -/
 def primitiveHawkingKreinCayleyCascadeKMSDownProbability
     (lambda kappa omega : ℝ) : ℝ :=
-  primitiveHawkingKreinCayleyPair lambda ^ 4 *
+  primitiveHawkingKreinCayleyPair lambda ^ (4 : ℕ) *
     (1 - thetaCuspHawkingKMSExcitedPopulation kappa omega)
 
 /-- Exact Hawking detailed balance is compatible with quadratic end-to-end amplitude onset. -/
@@ -237,8 +237,8 @@ theta-specific direct one-step observability theorem required by the RH route. -
 theorem canonicalKreinCayleyCascade_lossless_KMS_mixing_not_force_firstOrder :
     HasDerivAt primitiveHawkingKreinCayleyPair 2 0 ∧
     HasDerivAt
-      (fun lambda : ℝ => primitiveHawkingKreinCayleyPair lambda ^ 2) 0 0 ∧
-    (∀ lambda : ℝ, lambda ^ 2 < 1 → ∀ x₀ x₁ x₂ : ℂ,
+      (fun lambda : ℝ => primitiveHawkingKreinCayleyPair lambda ^ (2 : ℕ)) 0 0 ∧
+    (∀ lambda : ℝ, lambda ^ (2 : ℕ) < 1 → ∀ x₀ x₁ x₂ : ℂ,
       conj (primitiveHawkingKreinCayleyCascadeSourceOutput lambda x₀ x₁ x₂) *
             primitiveHawkingKreinCayleyCascadeSourceOutput lambda x₀ x₁ x₂ -
           conj (primitiveHawkingKreinCayleyCascadeMiddleOutput lambda x₀ x₁ x₂) *
@@ -246,7 +246,7 @@ theorem canonicalKreinCayleyCascade_lossless_KMS_mixing_not_force_firstOrder :
           conj (primitiveHawkingKreinCayleyCascadeTerminalOutput lambda x₀ x₁ x₂) *
             primitiveHawkingKreinCayleyCascadeTerminalOutput lambda x₀ x₁ x₂ =
         conj x₀ * x₀ - conj x₁ * x₁ + conj x₂ * x₂) ∧
-    (∀ lambda : ℝ, lambda ≠ 0 → lambda ^ 2 < 1 →
+    (∀ lambda : ℝ, lambda ≠ 0 → lambda ^ (2 : ℕ) < 1 →
       primitiveHawkingKreinCayleyCascadeTerminalOutput lambda 1 0 0 ≠ 0) ∧
     (∀ lambda kappa omega : ℝ,
       primitiveHawkingKreinCayleyCascadeKMSUpProbability lambda kappa omega =

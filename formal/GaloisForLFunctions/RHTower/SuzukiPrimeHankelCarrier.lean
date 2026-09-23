@@ -15,7 +15,7 @@ splits accordingly, the atomic part being the finite sum
 Two facts make the sum finite and explicit for `φ, ψ` supported in `(0, a)`:
 
 * `screwConvolve_eq_zero_of_two_mul_le` — the convolution vanishes at `t ≥ 2a`, so only prime
-  powers with `log n < 2a`, i.e. `n < lambda^2` in the multiplicative parameter `lambda = e^a`,
+  powers with `log n < 2a`, i.e. `n < lambda^(2 : ℕ)` in the multiplicative parameter `lambda = e^a`,
   contribute;
 * `screwConvolve_eq_intervalIntegral` — at any `0 < t < 2a` the convolution is the integral over the
   explicit window `(max 0 (t - a), min a t)`.
@@ -152,7 +152,7 @@ def atomicHankelPart (b : ℕ → ℝ) (N : ℕ) (φ ψ : ℝ → ℝ) : ℝ :=
 def primeHankelPart (a : ℝ) (φ ψ : ℝ → ℝ) : ℝ :=
   atomicHankelPart screwPrimeWeight ⌊Real.exp (2 * a)⌋₊ φ ψ
 
-/-- **The cutoff `n < lambda^2`.**  Enlarging the atomic index range beyond `e^(2a)` adds nothing:
+/-- **The cutoff `n < lambda^(2 : ℕ)`.**  Enlarging the atomic index range beyond `e^(2a)` adds nothing:
 every further prime-power sample of the convolution vanishes. -/
 theorem atomicHankelPart_eq_primeHankelPart {a : ℝ} {φ ψ : ℝ → ℝ}
     (hφ : ∀ x, φ x ≠ 0 → x ∈ Ioo 0 a) (hψ : ∀ x, ψ x ≠ 0 → x ∈ Ioo 0 a)

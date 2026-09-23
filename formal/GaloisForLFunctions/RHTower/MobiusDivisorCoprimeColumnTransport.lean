@@ -120,7 +120,7 @@ theorem mobiusDivisorCoprimeHead_succ_sub (r M : ℕ) :
 theorem mobiusDivisorGcdCross_one_eq_coprimeHeads (M : ℕ) :
     mobiusDivisorGcdCross M 1 =
       (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d*mobiusDivisorCoprimeHead d M)-
-        mobiusDivisorDilationChannel M 1^2 := by
+        mobiusDivisorDilationChannel M 1^(2 : ℕ) := by
   by_cases hM : M=0
   · subst M
     simp [mobiusDivisorGcdCross,mobiusDivisorDilationChannel]
@@ -129,7 +129,7 @@ theorem mobiusDivisorGcdCross_one_eq_coprimeHeads (M : ℕ) :
       mobiusDivisorDilationChannel M d*
         (if d.Coprime e then mobiusDivisorDilationChannel M e else 0) =
       (if Nat.gcd d e=1 ∧ d≠e then mobiusDivisorDilationChannel M d*mobiusDivisorDilationChannel M e else 0)+
-        (if d=1 ∧ e=1 then mobiusDivisorDilationChannel M 1^2 else 0) := by
+        (if d=1 ∧ e=1 then mobiusDivisorDilationChannel M 1^(2 : ℕ) else 0) := by
     by_cases hde : d=e
     · subst e
       by_cases hd : d=1
@@ -140,11 +140,11 @@ theorem mobiusDivisorGcdCross_one_eq_coprimeHeads (M : ℕ) :
       · simp [hc,hde,hn]
       · simp [hc,hn]
   have heq : (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d*mobiusDivisorCoprimeHead d M) =
-      mobiusDivisorGcdCross M 1+mobiusDivisorDilationChannel M 1^2 := by
+      mobiusDivisorGcdCross M 1+mobiusDivisorDilationChannel M 1^(2 : ℕ) := by
     simp only [mobiusDivisorCoprimeHead,mul_sum,hpoint,sum_add_distrib]
     have hd : (∑ d ∈ Icc 1 M, ∑ e ∈ Icc 1 M,
-        if d=1 ∧ e=1 then mobiusDivisorDilationChannel M 1^2 else 0) =
-        mobiusDivisorDilationChannel M 1^2 := by
+        if d=1 ∧ e=1 then mobiusDivisorDilationChannel M 1^(2 : ℕ) else 0) =
+        mobiusDivisorDilationChannel M 1^(2 : ℕ) := by
       simp [ite_and,h1]
     rw [hd]
     rfl

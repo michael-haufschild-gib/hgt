@@ -30,14 +30,14 @@ theorem smonoStepCert_of_deep_sum_tail {S₀ S₁ : ℝ} {ι : Type*} (s : Finse
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 36 ≤ M ^ 2 * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 36 ≤ M ^ (2 : ℕ) * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : S₁ - S₀ = inc * response - error) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_deep_regime_of_sum_tail s a hC₀ hCsmall hδ hextra hpaired hcard ha htail
@@ -49,14 +49,14 @@ theorem smonoStepCert_of_endpoint_sum_tail {S₀ S₁ : ℝ} {ι : Type*} (s : F
     (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
     (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
     (hcard : (s.card : ℝ) * δ ≤ 4)
-    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
-    (htail : tail ≤ 28 * C₀ ^ 2)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ (2 : ℕ) * δ)
+    (htail : tail ≤ 28 * C₀ ^ (2 : ℕ))
     (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ))
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : S₁ - S₀ = inc * response - error) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_endpoint_regime_of_sum_tail s a hC₀ hCsmall hδ hextra hpaired hcard ha htail
@@ -67,11 +67,11 @@ theorem smonoStepCert_of_deep_direct_eval {S₀ S₁ : ℝ}
     {δ extra paired reversal ΔG γᵢ W inc M response error : ℝ}
     (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
     (hΔG : ΔG = extra + paired - reversal)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 36 ≤ M ^ 2 * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 36 ≤ M ^ (2 : ℕ) * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : S₁ - S₀ = inc * response - error) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_deep_regime_of_direct_eval hδ hγᵢ heval hΔG hWpos hW hinc hM hresponse
@@ -82,11 +82,11 @@ theorem smonoStepCert_of_endpoint_direct_eval {S₀ S₁ : ℝ}
     {δ extra paired reversal ΔG γᵢ W inc M response error : ℝ}
     (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
     (hΔG : ΔG = extra + paired - reversal)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hM : 3136 ≤ M ^ (2 : ℕ) * δ ^ (2 : ℕ))
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (herror : error ≤ 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)))
     (hΔS : S₁ - S₀ = inc * response - error) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_endpoint_regime_of_direct_eval hδ hγᵢ heval hΔG hWpos hW hinc hM hresponse
@@ -96,11 +96,11 @@ theorem smonoStepCert_of_endpoint_direct_eval {S₀ S₁ : ℝ}
 theorem smonoStepCert_of_sdouble_deep {S₀ S₁ : ℝ}
     {δ c₈ M ΔG W inc response swap : ℝ}
     (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hband : 64 ≤ M ^ 2 * c₈ * δ)
-    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ (3 : ℕ) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap)
     (hΔS : S₁ - S₀ = inc * response + swap) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_sdouble_deep_regime_of_unit_march hδ hΔG hWpos hW hinc hband
@@ -110,11 +110,11 @@ theorem smonoStepCert_of_sdouble_deep {S₀ S₁ : ℝ}
 theorem smonoStepCert_of_sdouble_endpoint {S₀ S₁ : ℝ}
     {δ c₈ M ΔG W inc response swap : ℝ}
     (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
-    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ (2 : ℕ))
     (hinc : inc = ΔG / (2 * W))
-    (hband : 64 ≤ M ^ 2 * c₈ * δ)
-    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
-    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hband : 64 ≤ M ^ (2 : ℕ) * c₈ * δ)
+    (hresponse : (5 : ℝ) / (12 * δ ^ (2 : ℕ)) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ (2 : ℕ) * δ ^ (2 : ℕ)) ≤ swap)
     (hΔS : S₁ - S₀ = inc * response + swap) :
     SMonoStepCert S₀ S₁ := by
   exact corrected_sdouble_endpoint_regime_of_unit_march hδ hΔG hWpos hW hinc hband

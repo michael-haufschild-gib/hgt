@@ -31,23 +31,23 @@ theorem criticalFeatureDenominatorNormSq_le_twoHundredTwentyOneFourths
     criticalFeatureDenominatorNormSq t z ≤ 221 / 4 := by
   let u : ℝ := z.re - t
   let y : ℝ := z.im
-  have hu2 : u ^ 2 ≤ 25 / 4 := by
+  have hu2 : u ^ (2 : ℕ) ≤ 25 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg u) (by norm_num : (0 : ℝ) ≤ 5 / 2)).2
       (by simpa [u] using ht)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
-  have hy2 : y ^ 2 ≤ 1 / 4 := by
+  have hy2 : y ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg y) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2
       (by simpa [y] using hy)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
   have hmonoU :
-      0 ≤ (25 / 4 - u ^ 2) * (25 / 4 + u ^ 2 + 2 + 2 * y ^ 2) := by
+      0 ≤ (25 / 4 - u ^ (2 : ℕ)) * (25 / 4 + u ^ (2 : ℕ) + 2 + 2 * y ^ (2 : ℕ)) := by
     exact mul_nonneg (by linarith) (by nlinarith [sq_nonneg u, sq_nonneg y])
   have hmonoY :
-      0 ≤ (1 / 4 - y ^ 2) * (1 / 4 + y ^ 2 + 21 / 2) := by
+      0 ≤ (1 / 4 - y ^ (2 : ℕ)) * (1 / 4 + y ^ (2 : ℕ) + 21 / 2) := by
     exact mul_nonneg (by linarith) (by nlinarith [sq_nonneg y])
   rw [criticalFeatureDenominatorNormSq_eq]
   dsimp only [u, y] at hu2 hy2 hmonoU hmonoY ⊢
@@ -74,11 +74,11 @@ theorem directFiveCenterCriticalFeatureHolomorphicCharge_lower
     {t : ℝ} {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
     (63488 / 21125 + 16 / 221 : ℝ) ≤
-      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t - 1) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest t z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ 2).re +
-        ((criticalFeatureCauchyKernelTest (t + 2) z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest (t - 2) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t - 1) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t + 1) z) ^ (2 : ℕ)).re +
+        ((criticalFeatureCauchyKernelTest (t + 2) z) ^ (2 : ℕ)).re := by
   have hthree := directThreeCenterCriticalFeatureHolomorphicCharge_lower hz ht
   have hmDist : |z.re - (t - 2)| ≤ 5 / 2 := by
     rw [abs_le]
@@ -128,7 +128,7 @@ theorem finite_offLine_card_mul_directFiveCenterCharge_le_offLineLatticeBudget
           (abs_xiSpectralPoint_im_lt_half q) (abs_sub_round _)
       have hoffeq (j : ℤ) :
           ((criticalFeatureCauchyKernelTest (j : ℝ)
-            (xiSpectralPoint q)) ^ 2).re =
+            (xiSpectralPoint q)) ^ (2 : ℕ)).re =
             offLineCriticalFeatureHolomorphicEnergy (j : ℝ) q := by
         rw [offLineCriticalFeatureHolomorphicEnergy, if_neg hqoff]
       have hcastm2 : (kq : ℝ) - 2 = ((kq - 2 : ℤ) : ℝ) := by

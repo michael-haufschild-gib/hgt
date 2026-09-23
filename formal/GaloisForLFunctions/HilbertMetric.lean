@@ -73,13 +73,6 @@ import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityRiccatiFifthRootNoG
 import GaloisForLFunctions.HilbertMetric.FifthRootAtomLikelihoodRiccatiNoGo
 import GaloisForLFunctions.HilbertMetric.RiccatiChargeFifthRootNoGo
 
-/-!
-# Hilbert-metric theorem area
-
-This umbrella owns metric and Hilbert-space laws that are mathematically independent of the
-`HTGeometry` and `RHTower` theorem areas.  Parent infrastructure is imported here before the
-Gaussian feature-determinant layer built on top of it.
--/
 import GaloisForLFunctions.HilbertMetric.GreedyBumpBernoulliCompletion
 import GaloisForLFunctions.HilbertMetric.GreedyBumpGaussianCoherentApplications
 import GaloisForLFunctions.HilbertMetric.PseudospectrumSimilarity
@@ -94,3 +87,11 @@ import GaloisForLFunctions.HilbertMetric.LamzouriSimpleOrSelectedMultiplicity
 import GaloisForLFunctions.HilbertMetric.GomesReflectedQuarticTensor
 import GaloisForLFunctions.HilbertMetric.GaussianCoherentFisherClock
 import GaloisForLFunctions.HilbertMetric.ResponseCompression
+
+/-!
+# Hilbert-metric theorem area
+
+This umbrella owns metric and Hilbert-space laws that are mathematically independent of the
+`HTGeometry` and `RHTower` theorem areas.  Parent infrastructure is imported here before the
+Gaussian feature-determinant layer built on top of it.
+-/

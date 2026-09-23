@@ -33,7 +33,7 @@ theorem mem_filledJulia_iterate {c z : ℂ} (hz : z ∈ filledJulia c) (n : ℕ)
     exact (mem_filledJulia_iff_quadratic_mem c _).mp ih
 
 /-- The iterates `f_c^[n]` are entire (compositions of the polynomial `f_c`). -/
-theorem differentiable_quadratic_iterate (c : ℂ) (n : ℕ) :
+theorem differentiable_quadratic_iterate_repellingFixedPoint (c : ℂ) (n : ℕ) :
     Differentiable ℂ ((quadratic c)^[n]) := by
   induction n with
   | zero => exact differentiable_id
@@ -54,7 +54,7 @@ theorem not_mem_interior_of_repelling_fixed {c z₀ : ℂ}
   have hRK : ball z₀ R ⊆ filledJulia c := hRsub.trans interior_subset
   obtain ⟨C, hC⟩ := (isBounded_filledJulia c).exists_norm_le
   have hFdiff : ∀ n, DifferentiableOn ℂ ((quadratic c)^[n]) (ball z₀ R) :=
-    fun n => (differentiable_quadratic_iterate c n).differentiableOn
+    fun n => (differentiable_quadratic_iterate_repellingFixedPoint c n).differentiableOn
   have hFbd : ∀ n, ∀ z ∈ ball z₀ R, ‖(quadratic c)^[n] z‖ ≤ C :=
     fun n z hz => hC _ (mem_filledJulia_iterate (hRK hz) n)
   set r : ℝ := R / 4 with hrdef

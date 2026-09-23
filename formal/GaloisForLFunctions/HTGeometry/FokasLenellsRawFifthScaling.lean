@@ -16,17 +16,17 @@ noncomputable section
 
 /-- The admissible amplitude scales obey an exact quadratic balance, apart from the zero profile. -/
 theorem rawReflection_scaling_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) (c : ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
-      c = 0 ∨ (∫ x : ℝ, q x) = I*c^2*parityCoupling q := by
+    ((fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
+      c = 0 ∨ (∫ x : ℝ, q x) = I*c^(2 : ℕ)*parityCoupling q := by
   rw [rawReflection_isBigO_fifth_iff,compatibilityMoment_smul]
-  have he : c*(∫ x : ℝ, q x)-I*c^3*parityCoupling q =
-      c*((∫ x : ℝ, q x)-I*c^2*parityCoupling q) := by ring
+  have he : c*(∫ x : ℝ, q x)-I*c^(3 : ℕ)*parityCoupling q =
+      c*((∫ x : ℝ, q x)-I*c^(2 : ℕ)*parityCoupling q) := by ring
   rw [he,mul_eq_zero,sub_eq_zero]
 
 /-- Testing the original amplitude and its double already detects complete scaling stability. -/
 theorem rawReflection_twice_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ∧
-      ((fun k : ℝ => rawScatteringMatrix ((2 : ℂ) • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5)) ↔
+    (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ∧
+      ((fun k : ℝ => rawScatteringMatrix ((2 : ℂ) • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ))) ↔
       ((∫ x : ℝ, q x) = 0 ∧ parityCoupling q = 0) := by
   rw [rawReflection_isBigO_fifth_iff,rawReflection_isBigO_fifth_iff,
     compatibilityMoment_smul,compatibilityMoment_parity_decomposition]
@@ -41,7 +41,7 @@ theorem rawReflection_twice_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- Fifth-order reflection survives every complex amplitude scaling exactly on two separate moment kernels. -/
 theorem rawReflection_all_scalings_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    (∀ c : ℂ, (fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
+    (∀ c : ℂ, (fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
       ((∫ x : ℝ, q x) = 0 ∧ parityCoupling q = 0) := by
   constructor
   · intro h
@@ -52,9 +52,9 @@ theorem rawReflection_all_scalings_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- Scaling stability is equivalent to compatibility for both the initial profile and its spatial reflection. -/
 theorem rawReflection_all_scalings_iff_reflected_profile (q : SchwartzMap ℝ ℂ) :
-    (∀ c : ℂ, (fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
-      (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ∧
-       ((fun k : ℝ => rawScatteringMatrix (RHTower.negSchwartz' q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5)) := by
+    (∀ c : ℂ, (fun k : ℝ => rawScatteringMatrix (c • q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
+      (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ∧
+       ((fun k : ℝ => rawScatteringMatrix (RHTower.negSchwartz' q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ))) := by
   rw [rawReflection_all_scalings_isBigO_fifth_iff,rawReflection_isBigO_fifth_iff,
     rawReflection_isBigO_fifth_iff,compatibilityMoment_both_zero_iff]
 
@@ -72,8 +72,8 @@ theorem globalScatteringScale_lt_one (q : SchwartzMap ℝ ℂ) : globalScatterin
 /-- Global smallness normalization changes the exact compatibility balance by the square of its scale. -/
 theorem rawReflection_globalSmall_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
     ((fun k : ℝ => rawScatteringMatrix (globalSmallScatteringPotential q) k 1 0)
-      =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
-      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^2*parityCoupling q := by
+      =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
+      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^(2 : ℕ)*parityCoupling q := by
   rw [globalSmallScatteringPotential,rawReflection_scaling_isBigO_fifth_iff]
   have hc : (globalScatteringScale q : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (globalScatteringScale_pos q))
@@ -81,19 +81,19 @@ theorem rawReflection_globalSmall_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- Compatibility before and after strict smallness normalization requires separate mass and coupling cancellation. -/
 theorem rawReflection_and_globalSmall_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ∧
+    (((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ∧
       ((fun k : ℝ => rawScatteringMatrix (globalSmallScatteringPotential q) k 1 0)
-        =O[𝓝[≠] 0] fun k => (k : ℂ)^5)) ↔
+        =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ))) ↔
       ((∫ x : ℝ, q x) = 0 ∧ parityCoupling q = 0) := by
   rw [rawReflection_isBigO_fifth_iff_parity_balance,rawReflection_globalSmall_isBigO_fifth_iff]
   constructor
   · rintro ⟨h1,h2⟩
-    have hs : (globalScatteringScale q)^2 < 1 := by
+    have hs : (globalScatteringScale q)^(2 : ℕ) < 1 := by
       have hh := mul_lt_mul_of_pos_right (globalScatteringScale_lt_one q) (globalScatteringScale_pos q)
-      exact (show (globalScatteringScale q)^2 < globalScatteringScale q by
+      exact (show (globalScatteringScale q)^(2 : ℕ) < globalScatteringScale q by
         simpa only [pow_two,one_mul] using hh).trans (globalScatteringScale_lt_one q)
-    have hc : (globalScatteringScale q : ℂ)^2 ≠ 1 := by exact_mod_cast ne_of_lt hs
-    have hz : (I*(1-(globalScatteringScale q : ℂ)^2))*parityCoupling q = 0 := by
+    have hc : (globalScatteringScale q : ℂ)^(2 : ℕ) ≠ 1 := by exact_mod_cast ne_of_lt hs
+    have hz : (I*(1-(globalScatteringScale q : ℂ)^(2 : ℕ)))*parityCoupling q = 0 := by
       linear_combination h2-h1
     have hp : parityCoupling q = 0 := (mul_eq_zero.mp hz).resolve_left
       (mul_ne_zero I_ne_zero (sub_ne_zero.mpr (Ne.symm hc)))

@@ -66,7 +66,7 @@ theorem cuspResidualResponse_operator (q : XiZeroCopy) (branch : Bool) (w a T : 
     (hw : PrincipalChamber q w) :
     ∃ hmem : jointEmbedding (cuspResidualResponse q branch w a T hw) ∈ jointEnergyOperator.domain,
       jointEnergyOperator ⟨jointEmbedding (cuspResidualResponse q branch w a T hw),hmem⟩ +
-        (w^2-1) • jointEmbedding (cuspResidualResponse q branch w a T hw) = cuspResidualVector q branch w a T hw :=
+        (w^(2 : ℕ)-1) • jointEmbedding (cuspResidualResponse q branch w a T hw) = cuspResidualVector q branch w a T hw :=
   jointWaveResponse_operator w (principalChamber_re_pos hw) _
 
 /-- Quantitative frequency control for the admitted full residual response. -/

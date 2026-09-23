@@ -78,7 +78,7 @@ theorem vinogradovReservoirSmallThreshold_le_two_pow (k : ℕ) :
       _ = 2 ^ (vinogradovReservoirSize k + k + 4) := by
         calc
           2 * 2 ^ (vinogradovReservoirSize k + k + 3) =
-              2 ^ 1 * 2 ^ (vinogradovReservoirSize k + k + 3) := by norm_num
+              2 ^ (1 : ℕ) * 2 ^ (vinogradovReservoirSize k + k + 3) := by norm_num
           _ = 2 ^ (1 + (vinogradovReservoirSize k + k + 3)) := by rw [← pow_add]
           _ = 2 ^ (vinogradovReservoirSize k + k + 4) := by
             congr 1
@@ -98,17 +98,17 @@ theorem vinogradovMeanExponent_le_linear (k r : ℕ) :
 
 theorem vinogradovMeanInnerFactor_le_two_pow
     (k R r : ℕ) (hr : r ≤ R) :
-    vinogradovReservoirSize k ^ 2 * k.factorial *
+    vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
           2 ^ vinogradovMeanExponent k r *
           vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-        (k * k - k) ^ 2 ≤
+        (k * k - k) ^ (2 : ℕ) ≤
       2 ^ vinogradovMeanInnerGrowthExponent k R := by
   let V := vinogradovReservoirSize k
   let C := vinogradovReservoirPrimeGrowthExponent k
   let E := 2 * V + k * k + (k + 2 * k * R) + C * k + 4 * k
-  have hV : V ^ 2 ≤ 2 ^ (2 * V) := by
+  have hV : V ^ (2 : ℕ) ≤ 2 ^ (2 * V) := by
     calc
-      V ^ 2 ≤ (2 ^ V) ^ 2 := Nat.pow_le_pow_left (nat_le_two_pow_self V) 2
+      V ^ (2 : ℕ) ≤ (2 ^ V) ^ (2 : ℕ) := Nat.pow_le_pow_left (nat_le_two_pow_self V) 2
       _ = 2 ^ (2 * V) := by
         rw [← pow_mul]
         congr 1
@@ -127,10 +127,10 @@ theorem vinogradovMeanInnerFactor_le_two_pow
       _ ≤ 2 ^ (C * k) := by
         apply Nat.pow_le_pow_right (by omega)
         exact Nat.mul_le_mul_left C (Nat.sub_le k 2)
-  have hfirst : V ^ 2 * k.factorial * 2 ^ vinogradovMeanExponent k r *
+  have hfirst : V ^ (2 : ℕ) * k.factorial * 2 ^ vinogradovMeanExponent k r *
       vinogradovReservoirPrimePowerConstant k ^ (k - 2) ≤ 2 ^ E := by
     calc
-      V ^ 2 * k.factorial * 2 ^ vinogradovMeanExponent k r *
+      V ^ (2 : ℕ) * k.factorial * 2 ^ vinogradovMeanExponent k r *
           vinogradovReservoirPrimePowerConstant k ^ (k - 2) ≤
         2 ^ (2 * V) * 2 ^ (k * k) * 2 ^ (k + 2 * k * R) * 2 ^ (C * k) := by
           gcongr
@@ -140,11 +140,11 @@ theorem vinogradovMeanInnerFactor_le_two_pow
         apply Nat.pow_le_pow_right (by omega)
         unfold E
         omega
-  have hsecond : (k * k - k) ^ 2 ≤ 2 ^ E := by
+  have hsecond : (k * k - k) ^ (2 : ℕ) ≤ 2 ^ E := by
     calc
-      (k * k - k) ^ 2 ≤ (k * k) ^ 2 := Nat.pow_le_pow_left (Nat.sub_le _ _) 2
-      _ = k ^ 4 := by ring
-      _ ≤ (2 ^ k) ^ 4 := Nat.pow_le_pow_left (nat_le_two_pow_self k) 4
+      (k * k - k) ^ (2 : ℕ) ≤ (k * k) ^ (2 : ℕ) := Nat.pow_le_pow_left (Nat.sub_le _ _) 2
+      _ = k ^ (4 : ℕ) := by ring
+      _ ≤ (2 ^ k) ^ (4 : ℕ) := Nat.pow_le_pow_left (nat_le_two_pow_self k) 4
       _ = 2 ^ (4 * k) := by
         rw [← pow_mul]
         congr 1
@@ -209,10 +209,10 @@ theorem vinogradovMeanConstant_le_two_pow_growth_aux
             omega
       have hinner := vinogradovMeanInnerFactor_le_two_pow k R r hrR'
       have hinnerG :
-          vinogradovReservoirSize k ^ 2 * k.factorial *
+          vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
                 2 ^ vinogradovMeanExponent k r *
                 vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-              (k * k - k) ^ 2 ≤ 2 ^ (G - 2) := by
+              (k * k - k) ^ (2 : ℕ) ≤ 2 ^ (G - 2) := by
         calc
           _ ≤ 2 ^ vinogradovMeanInnerGrowthExponent k R := hinner
           _ ≤ 2 ^ (G - 2) := by
@@ -221,15 +221,15 @@ theorem vinogradovMeanConstant_le_two_pow_growth_aux
             omega
       have hproduct :
           2 * vinogradovMeanConstant k r *
-              (vinogradovReservoirSize k ^ 2 * k.factorial *
+              (vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
                   2 ^ vinogradovMeanExponent k r *
                   vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-                (k * k - k) ^ 2) ≤ 2 ^ E := by
+                (k * k - k) ^ (2 : ℕ)) ≤ 2 ^ E := by
         calc
           _ ≤ 2 * 2 ^ D * 2 ^ (G - 2) := by gcongr
           _ = 2 ^ (D + 1 + (G - 2)) := by
             calc
-              2 * 2 ^ D * 2 ^ (G - 2) = 2 ^ 1 * 2 ^ D * 2 ^ (G - 2) := by
+              2 * 2 ^ D * 2 ^ (G - 2) = 2 ^ (1 : ℕ) * 2 ^ D * 2 ^ (G - 2) := by
                 norm_num
               _ = 2 ^ (1 + D + (G - 2)) := by rw [← pow_add, ← pow_add]
               _ = 2 ^ (D + 1 + (G - 2)) := by
@@ -253,10 +253,10 @@ theorem vinogradovMeanConstant_le_two_pow_growth_aux
         calc
           vinogradovReservoirSmallThreshold k ^ (2 * k * (r + 1)) + k.factorial +
                 2 * vinogradovMeanConstant k r *
-                  (vinogradovReservoirSize k ^ 2 * k.factorial *
+                  (vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
                       2 ^ vinogradovMeanExponent k r *
                       vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-                    (k * k - k) ^ 2) + 1 ≤
+                    (k * k - k) ^ (2 : ℕ)) + 1 ≤
               2 ^ E + 2 ^ E + 2 ^ E + 2 ^ E := by omega
           _ = 2 ^ (E + 2) := by
             rw [show E + 2 = E + 1 + 1 by omega, pow_succ, pow_succ]
@@ -276,7 +276,7 @@ theorem vinogradovMeanConstant_le_two_pow_growth
 
 def routeTLogGrowthOrder (u : ℕ) : ℕ := 400 * u
 
-def routeTLogGrowthSteps (u : ℕ) : ℕ := 40000 * u ^ 2
+def routeTLogGrowthSteps (u : ℕ) : ℕ := 40000 * u ^ (2 : ℕ)
 
 def routeTLogGrowthMoment (u : ℕ) : ℕ :=
   routeTLogGrowthOrder u * routeTLogGrowthSteps u
@@ -289,10 +289,10 @@ def routeTLogMeanConstantGrowthExponent (u : ℕ) : ℕ :=
 receiver.  Its deliberately redundant summands keep each provenance visible. -/
 def routeTLogReceiverPolynomialExponent (u : ℕ) : ℕ :=
   2 * routeTLogMeanConstantGrowthExponent u +
-    24 * routeTLogGrowthMoment u ^ 2 * routeTLogGrowthOrder u +
-    160 * routeTLogGrowthMoment u ^ 2 * routeTLogGrowthOrder u +
+    24 * routeTLogGrowthMoment u ^ (2 : ℕ) * routeTLogGrowthOrder u +
+    160 * routeTLogGrowthMoment u ^ (2 : ℕ) * routeTLogGrowthOrder u +
     (5 + (240 * u + 1) + 202 * (240 * u)) +
-    12 * routeTLogGrowthMoment u ^ 2 + 10
+    12 * routeTLogGrowthMoment u ^ (2 : ℕ) + 10
 
 theorem vinogradovRouteTOrder_eq_growthOrder (u : ℕ) :
     vinogradovRouteTOrder (4 * u) = routeTLogGrowthOrder u := by
@@ -302,7 +302,7 @@ theorem vinogradovRouteTOrder_eq_growthOrder (u : ℕ) :
 theorem vinogradovRouteTMomentSteps_le_growthSteps (u : ℕ) :
     vinogradovRouteTMomentSteps (4 * u) ≤ routeTLogGrowthSteps u := by
   unfold vinogradovRouteTMomentSteps routeTLogGrowthSteps
-  rw [show 2500 * (4 * u) ^ 2 = 40000 * u ^ 2 by ring]
+  rw [show 2500 * (4 * u) ^ (2 : ℕ) = 40000 * u ^ (2 : ℕ) by ring]
   exact Nat.sub_le _ _
 
 theorem vinogradovRouteTMoment_le_growthMoment (u : ℕ) :
@@ -335,7 +335,7 @@ theorem routeT_vinogradovMomentConstant_le_two_pow
     {u : ℕ} (hu : 1 ≤ u) :
     vinogradovRouteTMomentConstant u ≤
       2 ^ (2 * routeTLogMeanConstantGrowthExponent u +
-        24 * routeTLogGrowthMoment u ^ 2 * routeTLogGrowthOrder u) := by
+        24 * routeTLogGrowthMoment u ^ (2 : ℕ) * routeTLogGrowthOrder u) := by
   let k := vinogradovRouteTOrder (4 * u)
   let b := vinogradovRouteTMoment (4 * u)
   let K := routeTLogGrowthOrder u
@@ -344,32 +344,32 @@ theorem routeT_vinogradovMomentConstant_le_two_pow
   have hkK : k = K := vinogradovRouteTOrder_eq_growthOrder u
   have hbB : b ≤ B := vinogradovRouteTMoment_le_growthMoment u
   have hmean := routeT_vinogradovMeanConstant_le_two_pow hu
-  have hmeanSq : vinogradovMeanConstant k (vinogradovRouteTMomentSteps (4 * u)) ^ 2 ≤
+  have hmeanSq : vinogradovMeanConstant k (vinogradovRouteTMomentSteps (4 * u)) ^ (2 : ℕ) ≤
       2 ^ (2 * D) := by
     calc
-      _ ≤ (2 ^ D) ^ 2 := Nat.pow_le_pow_left (by simpa only [k, D] using hmean) 2
+      _ ≤ (2 ^ D) ^ (2 : ℕ) := Nat.pow_le_pow_left (by simpa only [k, D] using hmean) 2
       _ = 2 ^ (2 * D) := by
         rw [← pow_mul]
         congr 1
         omega
-  have hfactorBase : 24 * b ^ 2 ≤ 2 ^ (24 * b ^ 2) :=
-    nat_le_two_pow_self (24 * b ^ 2)
-  have hfactor : (24 * b ^ 2) ^ k ≤ 2 ^ (24 * B ^ 2 * K) := by
+  have hfactorBase : 24 * b ^ (2 : ℕ) ≤ 2 ^ (24 * b ^ (2 : ℕ)) :=
+    nat_le_two_pow_self (24 * b ^ (2 : ℕ))
+  have hfactor : (24 * b ^ (2 : ℕ)) ^ k ≤ 2 ^ (24 * B ^ (2 : ℕ) * K) := by
     calc
-      (24 * b ^ 2) ^ k ≤ (2 ^ (24 * b ^ 2)) ^ k :=
+      (24 * b ^ (2 : ℕ)) ^ k ≤ (2 ^ (24 * b ^ (2 : ℕ))) ^ k :=
         Nat.pow_le_pow_left hfactorBase k
-      _ = 2 ^ ((24 * b ^ 2) * k) := by rw [← pow_mul]
-      _ ≤ 2 ^ (24 * B ^ 2 * K) := by
+      _ = 2 ^ ((24 * b ^ (2 : ℕ)) * k) := by rw [← pow_mul]
+      _ ≤ 2 ^ (24 * B ^ (2 : ℕ) * K) := by
         apply Nat.pow_le_pow_right (by omega)
         rw [hkK]
         gcongr
   unfold vinogradovRouteTMomentConstant
-  change vinogradovMeanConstant k (vinogradovRouteTMomentSteps (4 * u)) ^ 2 *
-      (24 * b ^ 2) ^ k ≤ _
+  change vinogradovMeanConstant k (vinogradovRouteTMomentSteps (4 * u)) ^ (2 : ℕ) *
+      (24 * b ^ (2 : ℕ)) ^ k ≤ _
   calc
-    _ ≤ 2 ^ (2 * D) * 2 ^ (24 * B ^ 2 * K) :=
+    _ ≤ 2 ^ (2 * D) * 2 ^ (24 * B ^ (2 : ℕ) * K) :=
       Nat.mul_le_mul hmeanSq hfactor
-    _ = 2 ^ (2 * D + 24 * B ^ 2 * K) := by rw [← pow_add]
+    _ = 2 ^ (2 * D + 24 * B ^ (2 : ℕ) * K) := by rw [← pow_add]
 
 theorem routeTLogWindowThreshold_le_two_pow_polynomial (u : ℕ) :
     routeTLogWindowThreshold u ≤
@@ -378,10 +378,10 @@ theorem routeTLogWindowThreshold_le_two_pow_polynomial (u : ℕ) :
     nat_le_two_pow_self (240 * u + 1)
   unfold routeTLogWindowThreshold routeTLogCentreMultiplier
   calc
-    32 * (240 * u + 1) * (2 ^ 202) ^ (240 * u) ≤
-        2 ^ 5 * 2 ^ (240 * u + 1) * (2 ^ 202) ^ (240 * u) := by
-      simpa only [show 2 ^ 5 = 32 by norm_num] using
-        Nat.mul_le_mul_right ((2 ^ 202) ^ (240 * u))
+    32 * (240 * u + 1) * (2 ^ (202 : ℕ)) ^ (240 * u) ≤
+        2 ^ (5 : ℕ) * 2 ^ (240 * u + 1) * (2 ^ (202 : ℕ)) ^ (240 * u) := by
+      simpa only [show 2 ^ (5 : ℕ) = 32 by norm_num] using
+        Nat.mul_le_mul_right ((2 ^ (202 : ℕ)) ^ (240 * u))
           (Nat.mul_le_mul_left 32 hlinear)
     _ = 2 ^ (5 + (240 * u + 1) + 202 * (240 * u)) := by
       rw [← pow_mul, ← pow_add, ← pow_add]
@@ -401,15 +401,15 @@ theorem routeTLogBaseThreshold_le_two_pow_polynomial
     hwindow.trans (Nat.pow_le_pow_right (by omega) (by
       unfold E routeTLogReceiverPolynomialExponent
       omega))
-  have hscale : 160 * b ^ 2 * k ≤ 2 ^ E := by
+  have hscale : 160 * b ^ (2 : ℕ) * k ≤ 2 ^ E := by
     calc
-      160 * b ^ 2 * k ≤ 2 ^ (160 * b ^ 2 * k) :=
-        nat_le_two_pow_self (160 * b ^ 2 * k)
+      160 * b ^ (2 : ℕ) * k ≤ 2 ^ (160 * b ^ (2 : ℕ) * k) :=
+        nat_le_two_pow_self (160 * b ^ (2 : ℕ) * k)
       _ ≤ 2 ^ E := by
         apply Nat.pow_le_pow_right (by omega)
         rw [hkK]
         unfold E routeTLogReceiverPolynomialExponent
-        have : b ^ 2 ≤ B ^ 2 := Nat.pow_le_pow_left hbB 2
+        have : b ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := Nat.pow_le_pow_left hbB 2
         nlinarith
   have hmoment := routeT_vinogradovMomentConstant_le_two_pow hu
   have hmomentE : vinogradovRouteTMomentConstant u ≤ 2 ^ E :=
@@ -427,16 +427,16 @@ theorem routeTLogReceiverBaseThreshold_le_two_pow_polynomial
   let E := routeTLogReceiverPolynomialExponent u
   have hbB : b ≤ B := vinogradovRouteTMoment_le_growthMoment u
   have hbase := routeTLogBaseThreshold_le_two_pow_polynomial hu
-  have hreceiver : 8 ^ (4 * b ^ 2) ≤ 2 ^ E := by
+  have hreceiver : 8 ^ (4 * b ^ (2 : ℕ)) ≤ 2 ^ E := by
     calc
-      8 ^ (4 * b ^ 2) = 2 ^ (12 * b ^ 2) := by
-        rw [show 8 = 2 ^ 3 by norm_num, ← pow_mul]
+      8 ^ (4 * b ^ (2 : ℕ)) = 2 ^ (12 * b ^ (2 : ℕ)) := by
+        rw [show 8 = 2 ^ (3 : ℕ) by norm_num, ← pow_mul]
         congr 1
         ring
       _ ≤ 2 ^ E := by
         apply Nat.pow_le_pow_right (by omega)
         unfold E routeTLogReceiverPolynomialExponent
-        have : b ^ 2 ≤ B ^ 2 := Nat.pow_le_pow_left hbB 2
+        have : b ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := Nat.pow_le_pow_left hbB 2
         nlinarith
   unfold routeTLogReceiverBaseThreshold
   exact max_le (by simpa only [E] using hbase) hreceiver

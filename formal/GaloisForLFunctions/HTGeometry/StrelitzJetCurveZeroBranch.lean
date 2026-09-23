@@ -78,7 +78,7 @@ theorem strelitzJetCurve_subquadraticEdge_or_zeroFactorBranch
     {ν : ℕ → ℕ} {u v root : ℕ → ℂ} (hνTop : Tendsto ν atTop atTop)
     (hu : ∀ n : ℕ, ‖u n - (ν n : ℂ)‖ ≤
       (1 / ((n : ℝ) + 1)) * (ν n : ℝ))
-    (hv : ∀ n : ℕ, ‖v n‖ ≤ (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ 2)
+    (hv : ∀ n : ℕ, ‖v n‖ ≤ (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ (2 : ℕ))
     (hroot : ∀ᶠ n : ℕ in atTop,
       (strelitzJetCurveSpecialization S (u n)).IsRoot (root n))
     (hclose : Tendsto (fun n => ‖v n - root n‖) atTop (nhds 0)) :

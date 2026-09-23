@@ -61,10 +61,10 @@ theorem affineRootCollision_iff :
 /-- Exact reciprocal-square contribution of the horizontally reflected pair
 `-a + iτ`, `a + iτ`. -/
 theorem conjugatePair_reciprocalSq :
-    ∀ a τ : ℝ, a ^ 2 + τ ^ 2 ≠ 0 →
-      ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ 2 +
-          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ 2) =
-        ((2 * (a ^ 2 - τ ^ 2) / (a ^ 2 + τ ^ 2) ^ 2 : ℝ) : ℂ) := by
+    ∀ a τ : ℝ, a ^ (2 : ℕ) + τ ^ (2 : ℕ) ≠ 0 →
+      ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ) +
+          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ)) =
+        ((2 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) / (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   intro a τ h
   have hplus : (a : ℂ) + (τ : ℂ) * I ≠ 0 := by
     intro hz
@@ -72,7 +72,7 @@ theorem conjugatePair_reciprocalSq :
     simp [Complex.normSq_apply] at hz'
     apply h
     calc
-      a ^ 2 + τ ^ 2 = a * a + τ * τ := by ring
+      a ^ (2 : ℕ) + τ ^ (2 : ℕ) = a * a + τ * τ := by ring
       _ = 0 := hz'
   have hminus : (-(a : ℂ)) + (τ : ℂ) * I ≠ 0 := by
     intro hz
@@ -80,10 +80,10 @@ theorem conjugatePair_reciprocalSq :
     simp [Complex.normSq_apply] at hz'
     apply h
     calc
-      a ^ 2 + τ ^ 2 = a * a + τ * τ := by ring
+      a ^ (2 : ℕ) + τ ^ (2 : ℕ) = a * a + τ * τ := by ring
       _ = 0 := hz'
   push_cast
-  have hden : (a : ℂ) ^ 2 + (τ : ℂ) ^ 2 ≠ 0 := by
+  have hden : (a : ℂ) ^ (2 : ℕ) + (τ : ℂ) ^ (2 : ℕ) ≠ 0 := by
     exact_mod_cast h
   rw [inv_pow, inv_pow]
   field_simp [hplus, hminus, hden]
@@ -93,10 +93,10 @@ theorem conjugatePair_reciprocalSq :
 
 /-- The full functional-equation quartet doubles the pair contribution. -/
 theorem offLineQuartet_reciprocalSq :
-    ∀ a τ : ℝ, a ^ 2 + τ ^ 2 ≠ 0 →
-      2 * ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ 2 +
-          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ 2) =
-        ((4 * (a ^ 2 - τ ^ 2) / (a ^ 2 + τ ^ 2) ^ 2 : ℝ) : ℂ) := by
+    ∀ a τ : ℝ, a ^ (2 : ℕ) + τ ^ (2 : ℕ) ≠ 0 →
+      2 * ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ) +
+          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ)) =
+        ((4 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) / (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   intro a τ h
   rw [conjugatePair_reciprocalSq a τ h]
   push_cast
@@ -106,14 +106,14 @@ theorem offLineQuartet_reciprocalSq :
 the quartet curvature is positive exactly at heights satisfying `|τ| < a`. -/
 theorem offLineQuartet_curvature_pos_iff :
     ∀ a τ : ℝ, 0 < a →
-      (0 < 4 * (a ^ 2 - τ ^ 2) / (a ^ 2 + τ ^ 2) ^ 2 ↔ |τ| < a) := by
+      (0 < 4 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) / (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) ↔ |τ| < a) := by
   intro a τ ha
-  have hden : 0 < (a ^ 2 + τ ^ 2) ^ 2 := by
+  have hden : 0 < (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     positivity
   rw [div_pos_iff]
   constructor
   · intro h
-    have hnum : 0 < 4 * (a ^ 2 - τ ^ 2) := by
+    have hnum : 0 < 4 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) := by
       rcases h with h | h
       · exact h.1
       · exact False.elim (by nlinarith [hden, h.2])
@@ -132,12 +132,12 @@ theorem phaseCancellationAffineCurvatureLaw :
     (∀ δa δb x y : ℝ, x ≠ y →
       ((δa * x + δb) - (δa * y + δb)) / (y - x) = -δa) ∧
     (∀ a b x y : ℝ, 0 < a → (a * x + b = a * y + b ↔ x = y)) ∧
-    (∀ a τ : ℝ, a ^ 2 + τ ^ 2 ≠ 0 →
-      2 * ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ 2 +
-          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ 2) =
-        ((4 * (a ^ 2 - τ ^ 2) / (a ^ 2 + τ ^ 2) ^ 2 : ℝ) : ℂ)) ∧
+    (∀ a τ : ℝ, a ^ (2 : ℕ) + τ ^ (2 : ℕ) ≠ 0 →
+      2 * ((((-(a : ℂ)) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ) +
+          (((a : ℂ) + (τ : ℂ) * I)⁻¹) ^ (2 : ℕ)) =
+        ((4 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) / (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ)) ∧
     (∀ a τ : ℝ, 0 < a →
-      (0 < 4 * (a ^ 2 - τ ^ 2) / (a ^ 2 + τ ^ 2) ^ 2 ↔ |τ| < a)) := by
+      (0 < 4 * (a ^ (2 : ℕ) - τ ^ (2 : ℕ)) / (a ^ (2 : ℕ) + τ ^ (2 : ℕ)) ^ (2 : ℕ) ↔ |τ| < a)) := by
   exact ⟨affineRootGap_exact, affineDisplacement_normalizedGap,
     affineRootCollision_iff, offLineQuartet_reciprocalSq, offLineQuartet_curvature_pos_iff⟩
 

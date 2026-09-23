@@ -8,23 +8,23 @@ open D4BMModularCore D4BMHorizon D4BMScalarLinearEquation
 noncomputable section
 
 def reducedPolynomial (s w u : ℂ) : ℂ :=
-  -2*(1-u^2)*u*((5*s^2+15*s+4)/4+s*(s-1)*(s+2)^2*u^2/4)+
-    s*(s-1)/4*(w^2*u^3-liftSecondPolynomial s w u)-
-    2*(1-u^2)*(s+1)*(s+2)*(s*(s-1)/4)*u^3
+  -2*(1-u^(2 : ℕ))*u*((5*s^(2 : ℕ)+15*s+4)/4+s*(s-1)*(s+2)^(2 : ℕ)*u^(2 : ℕ)/4)+
+    s*(s-1)/4*(w^(2 : ℕ)*u^(3 : ℕ)-liftSecondPolynomial s w u)-
+    2*(1-u^(2 : ℕ))*(s+1)*(s+2)*(s*(s-1)/4)*u^(3 : ℕ)
 
 def reducedCoefficient (s w a T : ℂ) (t : ℝ) : ℂ :=
   sourceAmplitude s w a T t*reducedPolynomial s w (radialUnit t)
 
 /-- The independent-frequency wave on an actual separated scalar potential, using actual derivatives. -/
 def separatedScalarWave (w : ℂ) (b : ℝ → ℂ) (Q : Point → ℂ) (t : ℝ) (z : Point) : ℂ :=
-  (w^2*b t-deriv (deriv b) t)*Q z-
-    (1-(radialUnit t:ℂ)^2)*b t*scalarLaplacian Q z
+  (w^(2 : ℕ)*b t-deriv (deriv b) t)*Q z-
+    (1-(radialUnit t:ℂ)^(2 : ℕ))*b t*scalarLaplacian Q z
 
 /-- The same original wave expression with the complete covector angular operator retained. -/
 def separatedStreamWave (w : ℂ) (b : ℝ → ℂ) (J : Covector)
     (t : ℝ) (z : Point) (k : Fin 2) : ℂ :=
-  (w^2*b t-deriv (deriv b) t)*J k z-
-    (1-(radialUnit t:ℂ)^2)*b t*streamAngularOperator J k z
+  (w^(2 : ℕ)*b t-deriv (deriv b) t)*J k z-
+    (1-(radialUnit t:ℂ)^(2 : ℕ))*b t*streamAngularOperator J k z
 
 /-- Exact scalar source reduction: the full gradient energy is retained in the explicit field. -/
 theorem scalar_gradient_absorption (q : XiZeroCopy) (branch : Bool) (w a T : ℂ)

@@ -26,7 +26,7 @@ theorem balanced_fixed_antiFixed_boundary
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J)
     {w e : H} (hw : J w = -w) (he : J e = e) (hnorm : ‖e‖ = ‖w‖) :
     let v : H := (1 / 2 : ℂ) • (w + e)
-    quadratic J v = 0 ∧ ‖w‖ ^ 2 = 2 * ‖v - w‖ ^ 2 := by
+    quadratic J v = 0 ∧ ‖w‖ ^ (2 : ℕ) = 2 * ‖v - w‖ ^ (2 : ℕ) := by
   let v : H := (1 / 2 : ℂ) • (w + e)
   have hvplus : v + J v = e := by
     dsimp [v]
@@ -56,7 +56,7 @@ theorem balanced_fixed_antiFixed_boundary
   have hplusEnergy := plus_channel_energy_eq J hJ d
   have hminusEnergy := minus_channel_energy_eq J hJ d
   have hparallelogram :
-      ‖d + J d‖ ^ 2 + ‖d - J d‖ ^ 2 = 4 * ‖d‖ ^ 2 := by
+      ‖d + J d‖ ^ (2 : ℕ) + ‖d - J d‖ ^ (2 : ℕ) = 4 * ‖d‖ ^ (2 : ℕ) := by
     nlinarith
   rw [hdplus, hdminus, norm_neg, hnorm] at hparallelogram
   refine ⟨hq, ?_⟩
@@ -75,7 +75,7 @@ private abbrev XiWeilCarrier := lp (fun _ : XiZeroCopy => ℂ) 2
 def xiHurwitzOrientationExactConeBoundary (v : XiWeilCarrier) : Prop :=
   xiWeilHilbertQuadratic v = 0 ∧
     xiHurwitzOrientationEnergy =
-      2 * dist v xiHurwitzOrientationVector ^ 2
+      2 * dist v xiHurwitzOrientationVector ^ (2 : ℕ)
 
 /-- Closest boundary point using the canonical sign-forgetting even companion. -/
 def xiHurwitzOrientationBoundaryPlus : XiWeilCarrier :=

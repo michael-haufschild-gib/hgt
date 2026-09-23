@@ -69,7 +69,7 @@ private theorem colorColumnNormSq_twoNullRootEvent
 theorem suzukiSharpNullFusionTraceEnergy_eq
     (companion : Nat.Primes → Fin 2 → ℂ) (p : Nat.Primes) :
     suzukiSharpNullFusionTraceEnergy companion p =
-      suzukiCriticalEntryWallBareAmplitude p 0 ^ 2 +
+      suzukiCriticalEntryWallBareAmplitude p 0 ^ (2 : ℕ) +
         Complex.normSq (companion p 0) + Complex.normSq (companion p 1) := by
   rw [suzukiSharpNullFusionTraceEnergy,
     GaloisForLFunctions.HTGeometry.colorGramTime,
@@ -100,7 +100,7 @@ theorem suzukiSharpNullRoot_lorentz_null (p : Nat.Primes) :
 /-- Every companion leaves at least the full sharp source square in positive trace energy. -/
 theorem suzukiSharpNullFusionTraceEnergy_ge_source_sq
     (companion : Nat.Primes → Fin 2 → ℂ) (p : Nat.Primes) :
-    suzukiCriticalEntryWallBareAmplitude p 0 ^ 2 ≤
+    suzukiCriticalEntryWallBareAmplitude p 0 ^ (2 : ℕ) ≤
       suzukiSharpNullFusionTraceEnergy companion p := by
   rw [suzukiSharpNullFusionTraceEnergy_eq]
   nlinarith [Complex.normSq_nonneg (companion p 0),

@@ -19,7 +19,7 @@ private theorem fixed_core_head_bound {M : ℕ} (hM : 8≤M) :
   have he := mobiusDivisorSelectionEnergy_small_core_le M hM (mobiusDivisorSelectionPrimes 8) Subset.rfl
   have hn := mobiusDivisorNonemptyEnergy_nonneg M (mobiusDivisorSelectionPrimes 8)
   unfold mobiusDivisorNonemptyEnergy at hn
-  have hc : (2:ℝ)^8*722=184832 := by norm_num
+  have hc : (2:ℝ)^(8 : ℕ)*722=184832 := by norm_num
   rw [hc] at he
   nlinarith only [he,hn,sq_abs (mobiusDivisorSelectionFibre M (mobiusDivisorSelectionPrimes 8) ∅),
     abs_nonneg (mobiusDivisorSelectionFibre M (mobiusDivisorSelectionPrimes 8) ∅),
@@ -60,7 +60,7 @@ theorem exists_mobiusDivisorGrowingSignedPrimeBatches :
         (T*(M:ℝ)≤∑ p∈R,-mobiusDivisorSelectionFibre M (mobiusDivisorSelectionPrimes 8) {p}) ∧
         ∃ l : List ℕ,l.Nodup ∧ l.toFinset=L∪R ∧ ∀ k : ℕ,
           mobiusDivisorSelectionEnergy M (mobiusDivisorSelectionPrimes 8∪(l.take k).toFinset)≤
-            (2:ℝ)^8*722*(M:ℝ)^2 := by
+            (2:ℝ)^(8 : ℕ)*722*(M:ℝ)^(2 : ℕ) := by
   obtain ⟨b,hb,c,hc,hfloor,hpositive⟩ := exists_mobiusDivisorPositivePrimeWindow_mass_atTop
   refine ⟨b,hb,fun T => ?_⟩
   let M := fun N : ℕ => 7*(b+1)*(4*N)

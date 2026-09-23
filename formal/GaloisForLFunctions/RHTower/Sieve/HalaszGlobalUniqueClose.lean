@@ -46,13 +46,13 @@ theorem card_filter_close_le_one_of_separation {f : ℕ → ℂ} (hf : ∀ n, �
     (hz : 3 ≤ z) {δ Δ : ℝ} (hΔ0 : 0 < Δ) (S : Finset ℝ)
     (hS : ∀ t ∈ S, |t| ≤ 1)
     (hspace : ∀ t ∈ S, ∀ u ∈ S, t ≠ u → Δ ≤ |t - u|)
-    (hgap : 4 * δ ^ 2 < charSepLower z Δ) :
+    (hgap : 4 * δ ^ (2 : ℕ) < charSepLower z Δ) :
     ((S.filter (fun t =>
       Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ δ)).card) ≤ 1 := by
   classical
   have hP : ∀ p ∈ Nat.primesLE z, 0 < p := fun p hp => (Nat.prime_of_mem_primesLE hp).pos
   have hsq : ∀ t : ℝ, Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ δ →
-      mulDistSqPair f (charFn t) (Nat.primesLE z) ≤ δ ^ 2 := by
+      mulDistSqPair f (charFn t) (Nat.primesLE z) ≤ δ ^ (2 : ℕ) := by
     intro t h
     have hnn : 0 ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) :=
       mulDistSqPair_nonneg_disc (fun p _ => hf p) (fun p _ => (norm_charFn t p).le) hP
@@ -83,13 +83,13 @@ theorem sum_norm_smoothMulSum_le_of_separation {f : ℕ → ℂ} (hf : ∀ n, �
     {z : ℕ} (hz : 3 ≤ z) {δ Δ : ℝ} (hδ : 0 ≤ δ) (hΔ0 : 0 < Δ) (S : Finset ℝ)
     (hS : ∀ t ∈ S, |t| ≤ 1)
     (hspace : ∀ t ∈ S, ∀ u ∈ S, t ≠ u → Δ ≤ |t - u|)
-    (hgap : 4 * δ ^ 2 < charSepLower z Δ) :
+    (hgap : 4 * δ ^ (2 : ℕ) < charSepLower z Δ) :
     ∑ t ∈ S, ‖smoothMulSum f (Nat.primesLE z) t‖
       ≤ (S.card : ℝ)
           * Real.exp ((∑ p ∈ Nat.primesLE z, 1 / (p : ℝ))
-            + (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ 2) - δ ^ 2)
+            + (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ (2 : ℕ)) - δ ^ (2 : ℕ))
         + Real.exp ((∑ p ∈ Nat.primesLE z, 1 / (p : ℝ))
-            + (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ 2)) :=
+            + (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ) ^ (2 : ℕ))) :=
   sum_norm_smoothMulSum_le_of_card hf hmul h1
     (fun _ hp => Nat.prime_of_mem_primesLE hp)
     (fun _ hp => (Nat.prime_of_mem_primesLE hp).pos) hδ S

@@ -271,7 +271,7 @@ theorem raw_product_factor (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (d : Bool)
   field_simp [hZ]
 
 private theorem geometric_collar_bound (L : ℝ) (hL : 0 < L) :
-    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^2-1 := by
+    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^(2 : ℕ)-1 := by
   let R := tortoiseRadius (-L/2)
   have hR : 1 < R := tortoiseRadius_exterior (-L/2) (by linarith)
   have hR0 : R ≠ 0 := by linarith
@@ -283,18 +283,18 @@ private theorem geometric_collar_bound (L : ℝ) (hL : 0 < L) :
     field_simp [hR0] at hh
     nlinarith
   calc
-    _ ≤ Real.exp (-L)*(R+1)^2 := le_mul_of_one_le_right (Real.exp_nonneg _) (by nlinarith)
+    _ ≤ Real.exp (-L)*(R+1)^(2 : ℕ) := le_mul_of_one_le_right (Real.exp_nonneg _) (by nlinarith)
     _ = (Real.exp (-L)*(R+1))*(R+1) := by ring
-    _ = R^2-1 := by rw [← he];ring
+    _ = R^(2 : ℕ)-1 := by rw [← he];ring
 
 /-- The full forcing transfer survives the squared singular metric denominator.
 Its original horizon trace is retained; cusp decay is uniform in both other cutoffs. -/
 theorem metric_forcing_product_time_error (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (d : Bool) (N : ℕ) (hwi : w.im ≠ 0) (hw : 1 ≤ w.re) :
     ∃ B : ℝ,0 ≤ B ∧ ∀ᶠ L : ℝ in atTop,∀ T x k : ℝ,0 ≤ T → 0 ≤ k →
-      ‖((tortoiseRadius (-L/2):ℂ)^2*(∫ p in (0:ℝ)..T,Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w d p L x k-
+      ‖((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*(∫ p in (0:ℝ)..T,Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w d p L x k-
         (horizonCoordinate (-L/2):ℂ)*horizonProduct q br amp w d p x k)))/
-          ((tortoiseRadius (-L/2):ℂ)^2-1)^2‖ ≤ B*Real.exp (-(N:ℝ)*k) := by
+          ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ)‖ ≤ B*Real.exp (-(N:ℝ)*k) := by
   obtain ⟨B,hB,h⟩ := original_forcing_product_time_error q br amp w d N hwi hw
   refine ⟨2*B,by positivity,?_⟩
   filter_upwards [h,eventually_gt_atTop (0:ℝ)] with L hL hpos T x k hT hk
@@ -302,19 +302,19 @@ theorem metric_forcing_product_time_error (q : XiZeroCopy) (br : Bool) (amp w : 
   let Z := horizonCoordinate (-L/2)
   have hR : 1 < R := tortoiseRadius_exterior (-L/2) (by linarith)
   have hR0 : R ≠ 0 := by linarith
-  have hf : 0 < R^2-1 := by nlinarith
+  have hf : 0 < R^(2 : ℕ)-1 := by nlinarith
   have hZ : 0 < Z := (horizonCoordinate_interior (-L/2) (by linarith)).1
-  have hZscale : Z*R^2=R^2-1 := by
+  have hZscale : Z*R^(2 : ℕ)=R^(2 : ℕ)-1 := by
     dsimp [Z]
     rw [horizonCoordinate,radialUnit_inverse_radius]
-    change (1-R⁻¹^2)*R^2=R^2-1
+    change (1-R⁻¹^(2 : ℕ))*R^(2 : ℕ)=R^(2 : ℕ)-1
     field_simp
-  have hgeo : Real.exp (-L) ≤ R^2-1 := geometric_collar_bound L hpos
+  have hgeo : Real.exp (-L) ≤ R^(2 : ℕ)-1 := geometric_collar_bound L hpos
   have hdec : Real.exp (-w.re*L) ≤ Real.exp (-L) := by
     apply Real.exp_le_exp.mpr
     nlinarith
-  have hS : Real.exp (-L)+Real.exp (-w.re*L) ≤ 2*(R^2-1) := by linarith
-  have hn : ‖(R:ℂ)^2-1‖=R^2-1 := by
+  have hS : Real.exp (-L)+Real.exp (-w.re*L) ≤ 2*(R^(2 : ℕ)-1) := by linarith
+  have hn : ‖(R:ℂ)^(2 : ℕ)-1‖=R^(2 : ℕ)-1 := by
     rw [← Complex.ofReal_pow,← Complex.ofReal_one,← Complex.ofReal_sub,Complex.norm_real,
       Real.norm_eq_abs,abs_of_pos hf]
   have heq (p : ℝ) : Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w d p L x k-
@@ -326,15 +326,15 @@ theorem metric_forcing_product_time_error (q : XiZeroCopy) (br : Bool) (amp w : 
     ring
   simp_rw [heq]
   rw [intervalIntegral.integral_const_mul]
-  change ‖((R:ℂ)^2*((Z:ℂ)*(_ : ℂ)))/((R:ℂ)^2-1)^2‖ ≤ _
+  change ‖((R:ℂ)^(2 : ℕ)*((Z:ℂ)*(_ : ℂ)))/((R:ℂ)^(2 : ℕ)-1)^(2 : ℕ)‖ ≤ _
   simp only [norm_div,norm_mul,norm_pow,hn,Complex.norm_real,Real.norm_eq_abs,
     abs_of_pos hZ,abs_of_pos (show 0 < R by linarith)]
-  rw [← mul_assoc,mul_comm (R^2) Z,hZscale]
+  rw [← mul_assoc,mul_comm (R^(2 : ℕ)) Z,hZscale]
   apply (div_le_iff₀ (sq_pos_of_pos hf)).mpr
   calc
-    _ ≤ (R^2-1)*(B*(Real.exp (-L)+Real.exp (-w.re*L))*Real.exp (-(N:ℝ)*k)) :=
+    _ ≤ (R^(2 : ℕ)-1)*(B*(Real.exp (-L)+Real.exp (-w.re*L))*Real.exp (-(N:ℝ)*k)) :=
       mul_le_mul_of_nonneg_left (hL T x k hT hk) hf.le
-    _ ≤ (R^2-1)*(B*(2*(R^2-1))*Real.exp (-(N:ℝ)*k)) := by gcongr
+    _ ≤ (R^(2 : ℕ)-1)*(B*(2*(R^(2 : ℕ)-1))*Real.exp (-(N:ℝ)*k)) := by gcongr
     _ = _ := by ring
 
 /-- Independent horizon/cusp matching of the actual forcing transfer, with
@@ -343,9 +343,9 @@ theorem metric_forcing_product_joint_limit (q : XiZeroCopy) (br : Bool) (amp w :
     (d : Bool) (hwi : w.im ≠ 0) (hw : 1 ≤ w.re)
     (T : ℝ × ℝ → Ici (0:ℝ)) (X : ℝ × ℝ → ℝ) :
     Tendsto (fun z : ℝ × ℝ =>
-      ((tortoiseRadius (-z.1/2):ℂ)^2*(∫ p in (0:ℝ)..(T z:ℝ),Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w d p z.1 (X z) z.2-
+      ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)*(∫ p in (0:ℝ)..(T z:ℝ),Complex.exp (-w*(p:ℂ))*(rawProduct q br amp w d p z.1 (X z) z.2-
         (horizonCoordinate (-z.1/2):ℂ)*horizonProduct q br amp w d p (X z) z.2)))/
-          ((tortoiseRadius (-z.1/2):ℂ)^2-1)^2)
+          ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1)^(2 : ℕ))
       ((atTop : Filter ℝ) ×ˢ (atTop : Filter ℝ)) (𝓝 0) := by
   obtain ⟨B,hB,hb⟩ := metric_forcing_product_time_error q br amp w d 1 hwi hw
   have he : Tendsto (fun z : ℝ × ℝ => B*Real.exp (-z.2))

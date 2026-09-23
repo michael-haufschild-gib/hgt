@@ -97,7 +97,7 @@ theorem tendsto_norm_gaussCubicSmoothShiftErrorVector
       ‖fourierCoeff ((gaussPrimeScaleBlock hp
           (gaussMovingAmplitudeOneVector (m := m) p hp (ι n)) :
             AddCircle (1 : ℝ) → ℂ)) j‖ ≤
-        4 * (p : ℝ) ^ 2 / (1 + (j.natAbs : ℝ)) := by
+        4 * (p : ℝ) ^ (2 : ℕ) / (1 + (j.natAbs : ℝ)) := by
     intro n j
     rw [gaussMovingAmplitudeOneVector]
     have hb := norm_fourierCoeff_gaussPrimeScaleBlock_amplitudePow hp

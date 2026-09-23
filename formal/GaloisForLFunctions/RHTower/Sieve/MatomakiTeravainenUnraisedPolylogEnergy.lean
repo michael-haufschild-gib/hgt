@@ -20,8 +20,8 @@ theorem matomakiTeravainen_unraised_energy_le_polylog
     (a : Fin N → ℂ)
     (hpoint : ∀ n : Fin N,
       ‖a n‖ ≤ C * ((((n : ℕ) + 1).divisors.card : ℝ) ^ w)) :
-    ∑ n : Fin (N ^ 1), ‖convPow N 1 a n‖ ^ 2 ≤
-      (2 * C ^ 2 *
+    ∑ n : Fin (N ^ (1 : ℕ)), ‖convPow N 1 a n‖ ^ (2 : ℕ) ≤
+      (2 * C ^ (2 : ℕ) *
         (2 * (1 + |Real.log T|)) ^ (2 ^ (2 * (w + 1)) - 1)) * (A : ℝ) := by
   let E : ℕ := 2 ^ (2 * (w + 1)) - 1
   have hbase := sum_normSq_convPow_le_fixed_polylog hN hC a hpoint (ell := 1)
@@ -50,18 +50,18 @@ theorem matomakiTeravainen_unraised_energy_le_polylog
       (1 + Real.log (N : ℝ)) ^ E ≤
         (2 * (1 + |Real.log T|)) ^ E :=
     pow_le_pow_left₀ hlogNonneg hlogBound E
-  have hC2 : 0 ≤ C ^ 2 := sq_nonneg C
+  have hC2 : 0 ≤ C ^ (2 : ℕ) := sq_nonneg C
   have hpoly0 : 0 ≤ (2 * (1 + |Real.log T|)) ^ E := by positivity
   calc
-    ∑ n : Fin (N ^ 1), ‖convPow N 1 a n‖ ^ 2
-        ≤ C ^ 2 * ((N : ℝ) * (1 + Real.log (N : ℝ)) ^ E) := by
+    ∑ n : Fin (N ^ (1 : ℕ)), ‖convPow N 1 a n‖ ^ (2 : ℕ)
+        ≤ C ^ (2 : ℕ) * ((N : ℝ) * (1 + Real.log (N : ℝ)) ^ E) := by
           simpa only [pow_one, Nat.cast_id, mul_one, E, Nat.cast_pow] using hbase
-    _ ≤ C ^ 2 * ((N : ℝ) * (2 * (1 + |Real.log T|)) ^ E) := by
+    _ ≤ C ^ (2 : ℕ) * ((N : ℝ) * (2 * (1 + |Real.log T|)) ^ E) := by
       gcongr
-    _ ≤ C ^ 2 * ((2 * (A : ℝ)) * (2 * (1 + |Real.log T|)) ^ E) := by
+    _ ≤ C ^ (2 : ℕ) * ((2 * (A : ℝ)) * (2 * (1 + |Real.log T|)) ^ E) := by
       gcongr
-    _ = (2 * C ^ 2 * (2 * (1 + |Real.log T|)) ^ E) * (A : ℝ) := by ring
-    _ = (2 * C ^ 2 *
+    _ = (2 * C ^ (2 : ℕ) * (2 * (1 + |Real.log T|)) ^ E) * (A : ℝ) := by ring
+    _ = (2 * C ^ (2 : ℕ) *
         (2 * (1 + |Real.log T|)) ^ (2 ^ (2 * (w + 1)) - 1)) * (A : ℝ) := by
       rfl
 

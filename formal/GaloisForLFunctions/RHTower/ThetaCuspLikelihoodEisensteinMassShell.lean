@@ -35,7 +35,7 @@ def thetaCuspLikelihoodAtomicGapPair (q : ℕ × ℕ) : ℝ × ℝ :=
 
 /-- Adding back the ground-state shift recovers the square index exactly. -/
 theorem thetaCuspLikelihoodGap_add_one (n : ℕ) :
-    thetaCuspLikelihoodGap n + 1 = (n : ℝ) ^ 2 := by
+    thetaCuspLikelihoodGap n + 1 = (n : ℝ) ^ (2 : ℕ) := by
   unfold thetaCuspLikelihoodGap
   ring
 
@@ -43,7 +43,7 @@ theorem thetaCuspLikelihoodGap_add_one (n : ℕ) :
 theorem thetaCuspLikelihoodAtomicGapPair_massSq (q : ℕ × ℕ) :
     ((thetaCuspLikelihoodAtomicGapPair q).1 + 1) *
       ((thetaCuspLikelihoodAtomicGapPair q).2 + 1) =
-      ((thetaPositivePairProduct q : ℕ) : ℝ) ^ 2 := by
+      ((thetaPositivePairProduct q : ℕ) : ℝ) ^ (2 : ℕ) := by
   simp only [thetaCuspLikelihoodAtomicGapPair, thetaCuspLikelihoodGap_add_one,
     thetaPositivePairProduct]
   push_cast
@@ -52,21 +52,21 @@ theorem thetaCuspLikelihoodAtomicGapPair_massSq (q : ℕ × ℕ) :
 /-- Energy and displacement coordinates put every atomic pair on an exact Lorentz mass shell. -/
 theorem thetaCuspLikelihoodAtomicGapPair_lorentz_massShell (q : ℕ × ℕ) :
     ((thetaCuspLikelihoodAtomicGapPair q).1 +
-        (thetaCuspLikelihoodAtomicGapPair q).2 + 2) ^ 2 -
+        (thetaCuspLikelihoodAtomicGapPair q).2 + 2) ^ (2 : ℕ) -
       ((thetaCuspLikelihoodAtomicGapPair q).1 -
-        (thetaCuspLikelihoodAtomicGapPair q).2) ^ 2 =
-      4 * ((thetaPositivePairProduct q : ℕ) : ℝ) ^ 2 := by
+        (thetaCuspLikelihoodAtomicGapPair q).2) ^ (2 : ℕ) =
+      4 * ((thetaPositivePairProduct q : ℕ) : ℝ) ^ (2 : ℕ) := by
   calc
     _ = 4 * (((thetaCuspLikelihoodAtomicGapPair q).1 + 1) *
         ((thetaCuspLikelihoodAtomicGapPair q).2 + 1)) := by ring
-    _ = 4 * ((thetaPositivePairProduct q : ℕ) : ℝ) ^ 2 := by
+    _ = 4 * ((thetaPositivePairProduct q : ℕ) : ℝ) ^ (2 : ℕ) := by
       rw [thetaCuspLikelihoodAtomicGapPair_massSq]
 
 /-- The shifted-gap shell equation detects the arithmetic product mode without loss. -/
 theorem thetaCuspLikelihoodAtomicGapPair_massShell_iff
     (q : ℕ × ℕ) (k : ℕ) :
     ((thetaCuspLikelihoodAtomicGapPair q).1 + 1) *
-        ((thetaCuspLikelihoodAtomicGapPair q).2 + 1) = (k : ℝ) ^ 2 ↔
+        ((thetaCuspLikelihoodAtomicGapPair q).2 + 1) = (k : ℝ) ^ (2 : ℕ) ↔
       thetaPositivePairProduct q = k := by
   constructor
   · intro h
@@ -83,7 +83,7 @@ theorem thetaCuspLikelihoodAtomicGapPair_massShell_iff
 theorem thetaCuspLikelihoodAtomicGapPair_mem_massShell
     {k : ℕ} {q : ℕ × ℕ} (hq : q ∈ thetaPositiveFactorPairs k) :
     ((thetaCuspLikelihoodAtomicGapPair q).1 + 1) *
-      ((thetaCuspLikelihoodAtomicGapPair q).2 + 1) = (k : ℝ) ^ 2 := by
+      ((thetaCuspLikelihoodAtomicGapPair q).2 + 1) = (k : ℝ) ^ (2 : ℕ) := by
   rw [thetaCuspLikelihoodAtomicGapPair_massSq]
   congr 1
   exact_mod_cast (Finset.mem_filter.mp hq).2
@@ -97,9 +97,9 @@ theorem thetaFactorPairLogDisplacement_eq_gapPair (q : ℕ × ℕ) :
     thetaFactorPairLogDisplacement]
   have h1 : ((q.1 + 1 : ℕ) : ℝ) ≠ 0 := by positivity
   have h2 : ((q.2 + 1 : ℕ) : ℝ) ≠ 0 := by positivity
-  rw [show ((q.1 + 1 : ℕ) : ℝ) ^ 2 =
+  rw [show ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ) =
       ((q.1 + 1 : ℕ) : ℝ) * ((q.1 + 1 : ℕ) : ℝ) by ring,
-    show ((q.2 + 1 : ℕ) : ℝ) ^ 2 =
+    show ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) =
       ((q.2 + 1 : ℕ) : ℝ) * ((q.2 + 1 : ℕ) : ℝ) by ring,
     Real.log_mul h1 h1, Real.log_mul h2 h2]
   ring

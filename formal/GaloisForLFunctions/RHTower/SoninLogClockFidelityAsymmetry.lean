@@ -20,8 +20,8 @@ noncomputable section
 weight, hence is automatically real. -/
 theorem inner_soninLogFourierScattering_eq_sectorNormSq_sub (ψ : SoninL2) :
     inner ℂ ψ (soninLogFourierScattering ψ) =
-      (‖soninLogFourierInvariantAverage ψ‖ ^ 2 -
-        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 : ℝ) := by
+      (‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) -
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) : ℝ) := by
   simpa only [soninLogFourierInvariantAverage] using
     HTGeometry.inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
@@ -32,9 +32,9 @@ logarithmic Fourier transform is exactly four times the product of its physical 
 scattering-sector weights. -/
 theorem soninLogFourierScattering_pureStateFidelityDeficit_eq_four_mul_sectorWeights
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1) :
-    1 - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ 2 =
-      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
-        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 := by
+    1 - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ (2 : ℕ) =
+      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) *
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) := by
   simpa only [soninLogFourierInvariantAverage] using
     HTGeometry.finiteInvolutiveClock_pureStateFidelityDeficit_eq_four_mul_sectorWeights
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
@@ -44,9 +44,9 @@ theorem soninLogFourierScattering_pureStateFidelityDeficit_eq_four_mul_sectorWei
 physical and nonphysical scattering-sector weights. -/
 theorem soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
     (ψ : SoninL2) :
-    ‖ψ‖ ^ 4 - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ 2 =
-      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
-        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 := by
+    ‖ψ‖ ^ (4 : ℕ) - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ (2 : ℕ) =
+      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) *
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) := by
   simpa only [soninLogFourierInvariantAverage] using
     HTGeometry.finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
@@ -58,8 +58,8 @@ theorem soninLogFourierScattering_projectiveAsymmetry_eq_four_mul_sectorWeights
     (ψ : SoninL2) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) ψ
         (soninLogFourierScattering ψ) =
-      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
-        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 := by
+      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) *
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ) := by
   simpa only [soninLogFourierInvariantAverage] using
     HTGeometry.finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self

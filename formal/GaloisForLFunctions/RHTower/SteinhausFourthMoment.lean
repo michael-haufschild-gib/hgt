@@ -68,7 +68,7 @@ theorem integrable_smul_X_four (c : ℂ) (p q r t : ℕ) :
 /-- **The fourth moment of a Steinhaus Dirichlet polynomial.**  It is the four-fold sum over the
 divisor diagonal `p r = q t`. -/
 theorem integral_normSq_sq_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, n ≠ 0) :
-    ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 4 ∂steinhausMeasure
+    ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (4 : ℕ) ∂steinhausMeasure
       = ∑ p ∈ s, ∑ q ∈ s, ∑ r ∈ s, ∑ t ∈ s,
           (if p * r = q * t then a p * a q * a r * a t else 0) := by
   classical
@@ -76,12 +76,12 @@ theorem integral_normSq_sq_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n 
       = ∑ n ∈ s, (a n : ℂ) * (starRingEnd ℂ) (X n ω) := by
     intro ω
     simp only [map_sum, map_mul, Complex.conj_ofReal]
-  have hpoint : ∀ ω : Omega, ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 4 : ℝ) : ℂ)
+  have hpoint : ∀ ω : Omega, ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (4 : ℕ) : ℝ) : ℂ)
       = ∑ p ∈ s, ∑ q ∈ s, ∑ r ∈ s, ∑ t ∈ s,
           ((a p * a q * a r * a t : ℝ) : ℂ)
             * (X t ω * (starRingEnd ℂ) (X r ω) * X q ω * (starRingEnd ℂ) (X p ω)) := by
     intro ω
-    have h1 : ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 4 : ℝ) : ℂ)
+    have h1 : ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (4 : ℕ) : ℝ) : ℂ)
         = ((∑ n ∈ s, (a n : ℂ) * X n ω) * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω))
           * ((∑ n ∈ s, (a n : ℂ) * X n ω) * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω)) := by
       rw [Complex.mul_conj']
@@ -108,7 +108,7 @@ theorem integral_normSq_sq_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n 
         * (X t ω * (starRingEnd ℂ) (X r ω) * X q ω * (starRingEnd ℂ) (X p ω)))
       steinhausMeasure :=
     fun p => integrable_finsetSum _ fun q _ => hI2 p q
-  have hcast : ((∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 4 ∂steinhausMeasure : ℝ) : ℂ)
+  have hcast : ((∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (4 : ℕ) ∂steinhausMeasure : ℝ) : ℂ)
       = ∑ p ∈ s, ∑ q ∈ s, ∑ r ∈ s, ∑ t ∈ s,
           ((if p * r = q * t then a p * a q * a r * a t else 0 : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal, integral_congr_ae (Filter.Eventually.of_forall hpoint),

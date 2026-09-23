@@ -21,7 +21,7 @@ theorem integral_log_norm_le_of_meanSquare {g : ℂ → ℂ} {c T₁ T₂ Msq : 
     (hg : ∀ t ∈ uIcc T₁ T₂, AnalyticAt ℂ g ((c : ℂ) + (t : ℂ) * I))
     (hfin : {t : ℝ | t ∈ uIcc T₁ T₂ ∧ g ((c : ℂ) + (t : ℂ) * I) = 0}.Finite)
     (hex : ∃ t ∈ Set.Ioo T₁ T₂, g ((c : ℂ) + (t : ℂ) * I) ≠ 0)
-    (hMsq : (∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq) :
+    (hMsq : (∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq) :
     2 * (∫ t in T₁..T₂, Real.log ‖g ((c : ℂ) + (t : ℂ) * I)‖)
       ≤ (T₂ - T₁) * Real.log (Msq / (T₂ - T₁)) := by
   classical
@@ -36,29 +36,29 @@ theorem integral_log_norm_le_of_meanSquare {g : ℂ → ℂ} {c T₁ T₂ Msq : 
       simpa [Function.comp_def] using hc
     exact hc'.continuousWithinAt
   have hsqint : IntervalIntegrable
-      (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) volume T₁ T₂ :=
+      (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) volume T₁ T₂ :=
     (hcontOn.norm.pow 2).intervalIntegrable
   have hlogint := intervalIntegrable_log_norm_vertical_of_analyticAt hg
-  have hIpos : 0 < ∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  have hIpos : 0 < ∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) := by
     obtain ⟨t₀, ht₀, hne⟩ := hex
-    have hnn : ∀ t ∈ Set.uIoc T₁ T₂, (0 : ℝ) ≤ ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+    have hnn : ∀ t ∈ Set.uIoc T₁ T₂, (0 : ℝ) ≤ ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) := by
       intro t _; positivity
     have hsupp : 0 < volume (Function.support
-        (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) ∩ Set.Ioc T₁ T₂) := by
-      have hcontAt : ContinuousAt (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) t₀ := by
+        (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ∩ Set.Ioc T₁ T₂) := by
+      have hcontAt : ContinuousAt (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) t₀ := by
         have hc : ContinuousAt (g ∘ (fun y : ℝ => (c : ℂ) + (y : ℂ) * I)) t₀ :=
           ContinuousAt.comp ((hg t₀ (by rw [huIcc]; exact Set.Ioo_subset_Icc_self ht₀)).continuousAt)
             (by fun_prop : ContinuousAt (fun y : ℝ => (c : ℂ) + (y : ℂ) * I) t₀)
         have hc' : ContinuousAt (fun y : ℝ => g ((c : ℂ) + (y : ℂ) * I)) t₀ := by
           simpa [Function.comp_def] using hc
         exact (hc'.norm.pow 2)
-      have hval : (0 : ℝ) < ‖g ((c : ℂ) + (t₀ : ℂ) * I)‖ ^ 2 := by
+      have hval : (0 : ℝ) < ‖g ((c : ℂ) + (t₀ : ℂ) * I)‖ ^ (2 : ℕ) := by
         have : 0 < ‖g ((c : ℂ) + (t₀ : ℂ) * I)‖ := norm_pos_iff.mpr hne
         positivity
-      have hne_ev : ∀ᶠ x in 𝓝 t₀, (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) x ≠ 0 :=
+      have hne_ev : ∀ᶠ x in 𝓝 t₀, (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) x ≠ 0 :=
         hcontAt.eventually_ne (ne_of_gt hval)
       have hIoo_ev : Set.Ioo T₁ T₂ ∈ 𝓝 t₀ := Ioo_mem_nhds ht₀.1 ht₀.2
-      have hnhds : Function.support (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2)
+      have hnhds : Function.support (fun t : ℝ => ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ))
           ∩ Set.Ioc T₁ T₂ ∈ 𝓝 t₀ := by
         filter_upwards [hne_ev, hIoo_ev] with x hxne hxIoo
         exact ⟨Function.mem_support.mpr hxne, Set.Ioo_subset_Ioc_self hxIoo⟩
@@ -77,12 +77,12 @@ theorem integral_log_norm_le_of_meanSquare {g : ℂ → ℂ} {c T₁ T₂ Msq : 
     exact ht ⟨by rw [huIcc]; exact htmem, h0⟩
   have hJ := two_mul_integral_log_norm_le_ae (f := fun t : ℝ => g ((c : ℂ) + (t : ℂ) * I))
     hT hae hsqint hlogint hIpos
-  have hdiv : (∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) / (T₂ - T₁)
+  have hdiv : (∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) / (T₂ - T₁)
       ≤ Msq / (T₂ - T₁) := by gcongr
   have hlogmono := Real.log_le_log (div_pos hIpos hlen) hdiv
   calc 2 * (∫ t in T₁..T₂, Real.log ‖g ((c : ℂ) + (t : ℂ) * I)‖)
       ≤ (T₂ - T₁) *
-          Real.log ((∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) / (T₂ - T₁)) := hJ
+          Real.log ((∫ t in T₁..T₂, ‖g ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) / (T₂ - T₁)) := hJ
     _ ≤ (T₂ - T₁) * Real.log (Msq / (T₂ - T₁)) :=
         mul_le_mul_of_nonneg_left hlogmono hlen.le
 

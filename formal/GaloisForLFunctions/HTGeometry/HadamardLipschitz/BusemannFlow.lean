@@ -16,7 +16,7 @@ Nothing about differentiability, curvature bounds or dimension is assumed.
 The main result is `BusemannFlow.dist_flow_sq_le`, an exact quantitative first-variation
 inequality
 ```
-d(Φ_h x, y)^2 ≤ d(x,y)^2 - 2h (b(x) - b(y)) + h^2 ,
+d(Φ_h x, y)^(2 : ℕ) ≤ d(x,y)^(2 : ℕ) - 2h (b(x) - b(y)) + h^(2 : ℕ) ,
 ```
 which on a Hilbert space with `b = ⟪u, ·⟫` and `Φ_h x = x - h u` is an identity.  It replaces
 the Jacobi-field computation used in the literature, and is derived here from the NPC
@@ -82,16 +82,16 @@ theorem fn_flow {t : ℝ} (ht : 0 ≤ t) (x : X) : F.fn (F.flow t x) = F.fn x - 
 /-- Analytic core of the key inequality: pass to the limit `H → ∞` in the NPC comparison. -/
 private theorem npc_limit_helper (A c h P : ℝ) (E : ℝ → ℝ) (hE : Tendsto E atTop (𝓝 c))
     (hbound : ∀ᶠ H : ℝ in atTop,
-      P ≤ A ^ 2 - h * A ^ 2 / H + h * E H * (E H / H + 2) + h ^ 2) :
-    P ≤ A ^ 2 + 2 * h * c + h ^ 2 := by
-  have h1 : Tendsto (fun H : ℝ => h * A ^ 2 / H) atTop (𝓝 0) :=
+      P ≤ A ^ (2 : ℕ) - h * A ^ (2 : ℕ) / H + h * E H * (E H / H + 2) + h ^ (2 : ℕ)) :
+    P ≤ A ^ (2 : ℕ) + 2 * h * c + h ^ (2 : ℕ) := by
+  have h1 : Tendsto (fun H : ℝ => h * A ^ (2 : ℕ) / H) atTop (𝓝 0) :=
     Tendsto.div_atTop tendsto_const_nhds tendsto_id
   have h2 : Tendsto (fun H : ℝ => E H / H) atTop (𝓝 0) := Tendsto.div_atTop hE tendsto_id
-  have h3 : Tendsto (fun H : ℝ => A ^ 2 - h * A ^ 2 / H + h * E H * (E H / H + 2) + h ^ 2)
-      atTop (𝓝 (A ^ 2 - 0 + h * c * (0 + 2) + h ^ 2)) :=
+  have h3 : Tendsto (fun H : ℝ => A ^ (2 : ℕ) - h * A ^ (2 : ℕ) / H + h * E H * (E H / H + 2) + h ^ (2 : ℕ))
+      atTop (𝓝 (A ^ (2 : ℕ) - 0 + h * c * (0 + 2) + h ^ (2 : ℕ))) :=
     ((tendsto_const_nhds.sub h1).add
       ((tendsto_const_nhds.mul hE).mul (h2.add tendsto_const_nhds))).add tendsto_const_nhds
-  have h4 : A ^ 2 - 0 + h * c * (0 + 2) + h ^ 2 = A ^ 2 + 2 * h * c + h ^ 2 := by ring
+  have h4 : A ^ (2 : ℕ) - 0 + h * c * (0 + 2) + h ^ (2 : ℕ) = A ^ (2 : ℕ) + 2 * h * c + h ^ (2 : ℕ) := by ring
   rw [h4] at h3
   exact ge_of_tendsto h3 hbound
 
@@ -103,11 +103,11 @@ squared distance to a fixed point `y` by at most `-2h(b(x) - b(y)) + h²`.
 This is the metric replacement for the Jacobi-field estimate of the literature.  It is sharp:
 in a Hilbert space with `b = ⟪u, ·⟫`, `‖u‖ = 1`, and `Φ_h x = x - h u`, it is an identity. -/
 theorem dist_flow_sq_le (x y : X) {h : ℝ} (hh : 0 ≤ h) :
-    dist (F.flow h x) y ^ 2 ≤ dist x y ^ 2 - 2 * h * (F.fn x - F.fn y) + h ^ 2 := by
+    dist (F.flow h x) y ^ (2 : ℕ) ≤ dist x y ^ (2 : ℕ) - 2 * h * (F.fn x - F.fn y) + h ^ (2 : ℕ) := by
   have hbound : ∀ᶠ H : ℝ in atTop,
-      dist (F.flow h x) y ^ 2
-        ≤ dist x y ^ 2 - h * dist x y ^ 2 / H
-          + h * (dist (F.flow H x) y - H) * ((dist (F.flow H x) y - H) / H + 2) + h ^ 2 := by
+      dist (F.flow h x) y ^ (2 : ℕ)
+        ≤ dist x y ^ (2 : ℕ) - h * dist x y ^ (2 : ℕ) / H
+          + h * (dist (F.flow H x) y - H) * ((dist (F.flow H x) y - H) / H + 2) + h ^ (2 : ℕ) := by
     filter_upwards [eventually_gt_atTop (max h 1)] with H hH
     have hH0 : (0:ℝ) < H := lt_of_lt_of_le (by norm_num) (le_of_lt (lt_of_le_of_lt (le_max_right h 1) hH))
     have hHh : h < H := lt_of_le_of_lt (le_max_left h 1) hH
@@ -124,7 +124,7 @@ theorem dist_flow_sq_le (x y : X) {h : ℝ} (hh : 0 ≤ h) :
     refine hnpc.trans (le_of_eq ?_)
     field_simp
     ring
-  have := npc_limit_helper (dist x y) (F.fn y - F.fn x) h (dist (F.flow h x) y ^ 2)
+  have := npc_limit_helper (dist x y) (F.fn y - F.fn x) h (dist (F.flow h x) y ^ (2 : ℕ))
     (fun H => dist (F.flow H x) y - H) (F.tendsto_fn x y) hbound
   linarith
 
@@ -138,13 +138,13 @@ theorem flow_nonexpansive {t : ℝ} (ht : 0 ≤ t) (x y : X) :
   have h4 : dist y x = dist x y := dist_comm _ _
   rw [h3] at h1
   rw [h4] at h2
-  have hsq : dist (F.flow t x) (F.flow t y) ^ 2 ≤ dist x y ^ 2 := by nlinarith [h1, h2]
+  have hsq : dist (F.flow t x) (F.flow t y) ^ (2 : ℕ) ≤ dist x y ^ (2 : ℕ) := by nlinarith [h1, h2]
   nlinarith [hsq, dist_nonneg (x := F.flow t x) (y := F.flow t y), dist_nonneg (x := x) (y := y)]
 
 /-- **Two-point estimate.**  Flowing `x` for time `s ≥ 0` and `y` for time `t ≥ 0`. -/
 theorem dist_flow_flow_sq_le {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t) (x y : X) :
-    dist (F.flow s x) (F.flow t y) ^ 2
-      ≤ dist x y ^ 2 - 2 * (s - t) * (F.fn x - F.fn y) + (s - t) ^ 2 := by
+    dist (F.flow s x) (F.flow t y) ^ (2 : ℕ)
+      ≤ dist x y ^ (2 : ℕ) - 2 * (s - t) * (F.fn x - F.fn y) + (s - t) ^ (2 : ℕ) := by
   rcases le_total t s with hle | hle
   · have hsplit : F.flow s x = F.flow t (F.flow (s - t) x) := by
       rw [F.flow_add t (s - t) ht (by linarith) x]; ring_nf

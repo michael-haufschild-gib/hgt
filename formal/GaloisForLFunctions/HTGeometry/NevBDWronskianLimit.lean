@@ -29,7 +29,7 @@ noncomputable def kernelInf (s : ℕ → ℝ) (x y : ℝ) : ℝ :=
 
 /-- The real diagonal kernel series is summable at every point. -/
 theorem summable_diag_real (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) (x : ℝ) :
-    Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k) := by
   obtain ⟨S, P, hSpos, hPpos, hS, hP⟩ := h0b
   have hb : ∀ N, kernelRoot s (fun j => monicOrthoC s j ((x : ℝ) : ℂ)) N
@@ -37,7 +37,7 @@ theorem summable_diag_real (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) 
   have hs := summable_of_kernelRoot_le h ((x : ℝ) : ℂ) hb
   have hcast : (fun k => Complex.normSq (monicOrthoC s k ((x : ℝ) : ℂ)) /
       momentInner s (monicOrtho s k) (monicOrtho s k))
-      = fun k => ((monicOrtho s k).eval x) ^ 2 /
+      = fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k) := by
     funext k
     rw [normSq_monicOrthoC_ofReal]
@@ -50,21 +50,21 @@ theorem summable_bilinear_real (h : PositiveMomentForm s) (h0b : BoundedKernel s
   have hx := summable_diag_real h h0b x
   have hy := summable_diag_real h h0b y
   refine Summable.of_norm_bounded (g := fun k =>
-    (((monicOrtho s k).eval x) ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-      + ((monicOrtho s k).eval y) ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) / 2)
+    (((monicOrtho s k).eval x) ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+      + ((monicOrtho s k).eval y) ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) / 2)
     (((hx.add hy).div_const 2)) fun k => ?_
   have hpos : 0 < momentInner s (monicOrtho s k) (monicOrtho s k) :=
     monicOrtho_inner_self_pos h k
   rw [Real.norm_eq_abs, abs_div, abs_of_pos hpos, div_le_div_iff₀ hpos (by norm_num)]
   have hab : |(monicOrtho s k).eval x * (monicOrtho s k).eval y| * 2
-      ≤ ((monicOrtho s k).eval x) ^ 2 + ((monicOrtho s k).eval y) ^ 2 := by
+      ≤ ((monicOrtho s k).eval x) ^ (2 : ℕ) + ((monicOrtho s k).eval y) ^ (2 : ℕ) := by
     rcases abs_cases ((monicOrtho s k).eval x * (monicOrtho s k).eval y) with ⟨he, _⟩ | ⟨he, _⟩ <;>
       rw [he] <;> nlinarith [sq_nonneg ((monicOrtho s k).eval x - (monicOrtho s k).eval y),
         sq_nonneg ((monicOrtho s k).eval x + (monicOrtho s k).eval y)]
-  have hsplit : (((monicOrtho s k).eval x) ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
-      + ((monicOrtho s k).eval y) ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) / 2 * 2
+  have hsplit : (((monicOrtho s k).eval x) ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
+      + ((monicOrtho s k).eval y) ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)) / 2 * 2
       * momentInner s (monicOrtho s k) (monicOrtho s k)
-      = ((monicOrtho s k).eval x) ^ 2 + ((monicOrtho s k).eval y) ^ 2 := by
+      = ((monicOrtho s k).eval x) ^ (2 : ℕ) + ((monicOrtho s k).eval y) ^ (2 : ℕ) := by
     field_simp
   nlinarith [hab, hsplit, hpos]
 

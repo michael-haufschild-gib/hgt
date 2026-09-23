@@ -10,7 +10,7 @@ controls whose joint two-control spectral packet is a nonzero analytic germ.
 Both controls multiply the same off-diagonal Hermitian interaction.  The
 selected eigenvalue branch through zero obeys
 
-`w^2 - w - (z₀ + z₁)^2 = 0`.
+`w^(2 : ℕ) - w - (z₀ + z₁)^(2 : ℕ) = 0`.
 
 If its two-control Möbius packet vanished, restriction to the diagonal
 coupling ray would force that branch to vanish on a neighbourhood of zero,
@@ -87,7 +87,7 @@ theorem twoControlSharpMatrix_isHermitian_real
 theorem twoControlSharp_relation
     (z : Fin 2 → ℂ) (w : ℂ) :
     matrixCharpolyRelation (twoControlSharpMatrix z, w) =
-      w ^ 2 - w - (z 0 + z 1) ^ 2 := by
+      w ^ (2 : ℕ) - w - (z 0 + z 1) ^ (2 : ℕ) := by
   simp [matrixCharpolyRelation, twoControlSharpMatrix,
     affineMatrixFamily, twoControlSharpInteraction,
     twoControlSharpEnergy, Matrix.det_fin_two]
@@ -132,9 +132,9 @@ theorem twoControlSharpBranch_zero :
 the uncoupled point. -/
 theorem twoControlSharpBranch_relation :
     ∀ᶠ z : Fin 2 → ℂ in 𝓝 0,
-      twoControlSharpBranch z ^ 2 -
+      twoControlSharpBranch z ^ (2 : ℕ) -
         twoControlSharpBranch z -
-        (z 0 + z 1) ^ 2 = 0 := by
+        (z 0 + z 1) ^ (2 : ℕ) = 0 := by
   have ht := twoControlSharpMatrix_analyticAt.continuousAt
   change Tendsto twoControlSharpMatrix (𝓝 0)
     (𝓝 (twoControlSharpMatrix 0)) at ht
@@ -266,22 +266,22 @@ theorem twoControlSharp_packetResponse_ne_zero :
           rw [← hsame t]
           ring
     have hb' :
-        twoControlSharpBranch (twoControlSharpBothRay t) ^ 2 -
+        twoControlSharpBranch (twoControlSharpBothRay t) ^ (2 : ℕ) -
           twoControlSharpBranch (twoControlSharpBothRay t) -
-          (2 * t) ^ 2 = 0 := by
+          (2 * t) ^ (2 : ℕ) = 0 := by
       convert hb using 1
       · simp [twoControlSharpBothRay]
         ring
     have hl' :
-        twoControlSharpBranch (twoControlSharpLeftRay t) ^ 2 -
+        twoControlSharpBranch (twoControlSharpLeftRay t) ^ (2 : ℕ) -
           twoControlSharpBranch (twoControlSharpLeftRay t) -
-          t ^ 2 = 0 := by
+          t ^ (2 : ℕ) = 0 := by
       simpa [twoControlSharpLeftRay] using hl
     rw [hadd] at hb'
     have ha :
         twoControlSharpBranch (twoControlSharpLeftRay t) = 0 := by
       linear_combination (1 / 2 : ℂ) * hb' - 2 * hl'
-    have hz : t ^ 2 = 0 := by
+    have hz : t ^ (2 : ℕ) = 0 := by
       rw [ha] at hl'
       simpa using hl'.symm
     exact sq_eq_zero_iff.mp hz

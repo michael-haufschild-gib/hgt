@@ -24,18 +24,18 @@ singularity at `0` is removable. -/
 theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
     (hg : DifferentiableOn ℂ g (ball 0 R))
     (heven : ∀ z ∈ ball 0 R, g (-z) = g z) :
-    ∃ k : ℂ → ℂ, DifferentiableOn ℂ k (ball 0 (R ^ 2)) ∧ ∀ z ∈ ball 0 R, k (z ^ 2) = g z := by
+    ∃ k : ℂ → ℂ, DifferentiableOn ℂ k (ball 0 (R ^ (2 : ℕ))) ∧ ∀ z ∈ ball 0 R, k (z ^ (2 : ℕ)) = g z := by
   classical
   -- the principal square root
   set sq : ℂ → ℂ := fun s => s ^ ((2 : ℂ)⁻¹) with hsqdef
-  have hsq2 : ∀ s : ℂ, (sq s) ^ 2 = s := by
+  have hsq2 : ∀ s : ℂ, (sq s) ^ (2 : ℕ) = s := by
     intro s
     have h := Complex.cpow_nat_inv_pow s (n := 2) two_ne_zero
     rw [Nat.cast_ofNat] at h
     simpa only [hsqdef] using h
-  have hnorm_sq : ∀ s : ℂ, ‖sq s‖ ^ 2 = ‖s‖ := by
+  have hnorm_sq : ∀ s : ℂ, ‖sq s‖ ^ (2 : ℕ) = ‖s‖ := by
     intro s; rw [← norm_pow, hsq2]
-  have hsq_mem : ∀ s : ℂ, ‖s‖ < R ^ 2 → sq s ∈ ball (0 : ℂ) R := by
+  have hsq_mem : ∀ s : ℂ, ‖s‖ < R ^ (2 : ℕ) → sq s ∈ ball (0 : ℂ) R := by
     intro s hs
     rw [mem_ball_zero_iff]
     nlinarith [hnorm_sq s, norm_nonneg (sq s), sq_nonneg (‖sq s‖ - R)]
@@ -44,7 +44,7 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
     rw [Complex.inv_re]; norm_num [Complex.normSq]
   -- differentiability of k = g ∘ sq at nonzero points
   set k : ℂ → ℂ := fun s => g (sq s) with hkdef
-  have hDiff_ne : ∀ s : ℂ, s ≠ 0 → ‖s‖ < R ^ 2 → DifferentiableAt ℂ k s := by
+  have hDiff_ne : ∀ s : ℂ, s ≠ 0 → ‖s‖ < R ^ (2 : ℕ) → DifferentiableAt ℂ k s := by
     intro s hs0 hsR
     have hgd : DifferentiableAt ℂ g (sq s) :=
       hg.differentiableAt (isOpen_ball.mem_nhds (hsq_mem s hsR))
@@ -65,7 +65,7 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
       have hnsl : (-s) ∈ slitPlane := by
         rw [Complex.mem_slitPlane_iff]; left; rw [Complex.neg_re]; linarith
       set b : ℂ → ℂ := fun w => Complex.I * (-w) ^ ((2 : ℂ)⁻¹) with hbdef
-      have hb2 : ∀ w : ℂ, (b w) ^ 2 = w := by
+      have hb2 : ∀ w : ℂ, (b w) ^ (2 : ℕ) = w := by
         intro w
         rw [hbdef, mul_pow, Complex.I_sq]
         have hcp := Complex.cpow_nat_inv_pow (-w) (n := 2) two_ne_zero
@@ -79,7 +79,7 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
       have hgd_b : DifferentiableAt ℂ g (b s) := by
         apply hg.differentiableAt (isOpen_ball.mem_nhds _)
         rw [mem_ball_zero_iff]
-        have hnb : ‖b s‖ ^ 2 = ‖s‖ := by rw [← norm_pow, hb2]
+        have hnb : ‖b s‖ ^ (2 : ℕ) = ‖s‖ := by rw [← norm_pow, hb2]
         nlinarith [hnb, norm_nonneg (b s), sq_nonneg (‖b s‖ - R)]
       -- k =ᶠ g ∘ b near s
       have hcongr : k =ᶠ[𝓝 s] fun w => g (b w) := by
@@ -88,7 +88,7 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
         have hsqw : sq w ∈ ball (0 : ℂ) R := hsq_mem w hw
         have hbw : b w ∈ ball (0 : ℂ) R := by
           rw [mem_ball_zero_iff]
-          have hnb : ‖b w‖ ^ 2 = ‖w‖ := by rw [← norm_pow, hb2]
+          have hnb : ‖b w‖ ^ (2 : ℕ) = ‖w‖ := by rw [← norm_pow, hb2]
           nlinarith [hnb, norm_nonneg (b w), sq_nonneg (‖b w‖ - R)]
         -- (sq w)² = w = (b w)² ⟹ sq w = ± b w
         have hfac : (sq w - b w) * (sq w + b w) = 0 := by
@@ -108,7 +108,7 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
     · subst hs0
       -- removable singularity at 0
       have hev : ∀ᶠ z in 𝓝[≠] (0 : ℂ), DifferentiableAt ℂ k z := by
-        have hmem : ball (0 : ℂ) (R ^ 2) ∈ 𝓝[≠] (0 : ℂ) :=
+        have hmem : ball (0 : ℂ) (R ^ (2 : ℕ)) ∈ 𝓝[≠] (0 : ℂ) :=
           mem_nhdsWithin_of_mem_nhds (isOpen_ball.mem_nhds (by simpa using by positivity))
         filter_upwards [self_mem_nhdsWithin, hmem] with z hz hzb
         exact hDiff_ne z hz (mem_ball_zero_iff.mp hzb)
@@ -128,36 +128,36 @@ theorem exists_analytic_factor_of_even {g : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
   · intro z hz
     rw [mem_ball_zero_iff] at hz
     -- k(z²) = g(sq(z²)) and sq(z²) = ±z
-    have hzsq : ‖z ^ 2‖ < R ^ 2 := by
+    have hzsq : ‖z ^ (2 : ℕ)‖ < R ^ (2 : ℕ) := by
       rw [norm_pow]
       nlinarith [norm_nonneg z, hz, hR]
-    have hfac : (sq (z ^ 2) - z) * (sq (z ^ 2) + z) = 0 := by
-      have := hsq2 (z ^ 2); linear_combination this
+    have hfac : (sq (z ^ (2 : ℕ)) - z) * (sq (z ^ (2 : ℕ)) + z) = 0 := by
+      have := hsq2 (z ^ (2 : ℕ)); linear_combination this
     rw [hkdef]; simp only
     rcases mul_eq_zero.mp hfac with h | h
-    · have : sq (z ^ 2) = z := by linear_combination h
+    · have : sq (z ^ (2 : ℕ)) = z := by linear_combination h
       rw [this]
-    · have : sq (z ^ 2) = -z := by linear_combination h
+    · have : sq (z ^ (2 : ℕ)) = -z := by linear_combination h
       rw [this, heven z (mem_ball_zero_iff.mpr hz)]
 
 /-- One outward-doubling extension step. -/
 theorem even_holo_extension_step {c : ℂ} {ρ : ℝ} (hρ : 1 < ρ) {g : ℂ → ℂ}
     (hgd : DifferentiableOn ℂ g (ball 0 ρ))
     (hge : ∀ z ∈ ball 0 ρ, g (-z) = g z)
-    (hgfe : ∀ t ∈ ball 0 1, g (t ^ 2) = (g t) ^ 2 + c * t ^ 2)
+    (hgfe : ∀ t ∈ ball 0 1, g (t ^ (2 : ℕ)) = (g t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hg0 : g 0 = 1) :
-    ∃ g' : ℂ → ℂ, DifferentiableOn ℂ g' (ball 0 (ρ ^ 2)) ∧
-      (∀ z ∈ ball 0 (ρ ^ 2), g' (-z) = g' z) ∧
-      (∀ t ∈ ball 0 1, g' (t ^ 2) = (g' t) ^ 2 + c * t ^ 2) ∧
+    ∃ g' : ℂ → ℂ, DifferentiableOn ℂ g' (ball 0 (ρ ^ (2 : ℕ))) ∧
+      (∀ z ∈ ball 0 (ρ ^ (2 : ℕ)), g' (-z) = g' z) ∧
+      (∀ t ∈ ball 0 1, g' (t ^ (2 : ℕ)) = (g' t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) ∧
       g' 0 = 1 ∧ EqOn g' g (ball 0 ρ) := by
   have hρ0 : 0 < ρ := by linarith
-  have hρρ2 : ρ ≤ ρ ^ 2 := by nlinarith
+  have hρρ2 : ρ ≤ ρ ^ (2 : ℕ) := by nlinarith
   have hball1 : ball (0 : ℂ) 1 ⊆ ball 0 ρ := ball_subset_ball hρ.le
   -- neg preserves membership in a ball about 0
   have hneg : ∀ {r : ℝ} {z : ℂ}, z ∈ ball (0 : ℂ) r → -z ∈ ball (0 : ℂ) r := by
     intro r z hz; rw [mem_ball_zero_iff] at *; simpa using hz
   -- G = g² + c·id² is even and holomorphic on ball ρ
-  set G : ℂ → ℂ := fun t => (g t) ^ 2 + c * t ^ 2 with hGdef
+  set G : ℂ → ℂ := fun t => (g t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) with hGdef
   have hGd : DifferentiableOn ℂ G (ball 0 ρ) :=
     (hgd.pow 2).add ((differentiableOn_const c).mul ((differentiableOn_id).pow 2))
   have hGe : ∀ z ∈ ball 0 ρ, G (-z) = G z := by
@@ -169,14 +169,14 @@ theorem even_holo_extension_step {c : ℂ} {ρ : ℝ} (hρ : 1 < ρ) {g : ℂ �
     rw [mem_ball_zero_iff] at hs
     obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq s (n := 2) (by norm_num)
     have hznorm : ‖z‖ < 1 := by
-      have : ‖z‖ ^ 2 = ‖s‖ := by rw [← hz, norm_pow]
+      have : ‖z‖ ^ (2 : ℕ) = ‖s‖ := by rw [← hz, norm_pow]
       nlinarith [norm_nonneg z, this, hs]
     have hz1 : z ∈ ball (0 : ℂ) 1 := by rw [mem_ball_zero_iff]; exact hznorm
     have hzρ : z ∈ ball (0 : ℂ) ρ := hball1 hz1
-    calc k s = k (z ^ 2) := by rw [hz]
+    calc k s = k (z ^ (2 : ℕ)) := by rw [hz]
       _ = G z := hkfac z hzρ
-      _ = (g z) ^ 2 + c * z ^ 2 := rfl
-      _ = g (z ^ 2) := (hgfe z hz1).symm
+      _ = (g z) ^ (2 : ℕ) + c * z ^ (2 : ℕ) := rfl
+      _ = g (z ^ (2 : ℕ)) := (hgfe z hz1).symm
       _ = g s := by rw [hz]
   -- identity theorem: k = g on ball ρ
   have hkA : AnalyticOnNhd ℂ k (ball 0 ρ) :=
@@ -189,26 +189,26 @@ theorem even_holo_extension_step {c : ℂ} {ρ : ℝ} (hρ : 1 < ρ) {g : ℂ �
       (mem_ball_self hρ0) hev0
   refine ⟨k, hkd, ?_, ?_, ?_, hEqOn⟩
   · -- even on ball ρ²
-    have hknegd : DifferentiableOn ℂ (fun z => k (-z)) (ball 0 (ρ ^ 2)) :=
+    have hknegd : DifferentiableOn ℂ (fun z => k (-z)) (ball 0 (ρ ^ (2 : ℕ))) :=
       hkd.comp (differentiable_id.neg.differentiableOn) (fun z hz => hneg hz)
-    have hkA2 : AnalyticOnNhd ℂ k (ball 0 (ρ ^ 2)) := hkd.analyticOnNhd isOpen_ball
-    have hknegA : AnalyticOnNhd ℂ (fun z => k (-z)) (ball 0 (ρ ^ 2)) :=
+    have hkA2 : AnalyticOnNhd ℂ k (ball 0 (ρ ^ (2 : ℕ))) := hkd.analyticOnNhd isOpen_ball
+    have hknegA : AnalyticOnNhd ℂ (fun z => k (-z)) (ball 0 (ρ ^ (2 : ℕ))) :=
       hknegd.analyticOnNhd isOpen_ball
     have hkeq_ρ : ∀ z ∈ ball (0 : ℂ) ρ, k (-z) = k z := by
       intro z hz
       rw [hEqOn (hneg hz), hge z hz, hEqOn hz]
     have hev0' : (fun z => k (-z)) =ᶠ[𝓝 (0 : ℂ)] k :=
       Filter.eventually_of_mem (isOpen_ball.mem_nhds (mem_ball_self hρ0)) hkeq_ρ
-    have : EqOn (fun z => k (-z)) k (ball 0 (ρ ^ 2)) :=
-      hknegA.eqOn_of_preconnected_of_eventuallyEq hkA2 (convex_ball 0 (ρ ^ 2)).isPreconnected
+    have : EqOn (fun z => k (-z)) k (ball 0 (ρ ^ (2 : ℕ))) :=
+      hknegA.eqOn_of_preconnected_of_eventuallyEq hkA2 (convex_ball 0 (ρ ^ (2 : ℕ))).isPreconnected
         (mem_ball_self (by positivity)) hev0'
     intro z hz; exact this hz
   · -- FE on ball 1
     intro t ht
-    have ht2 : t ^ 2 ∈ ball (0 : ℂ) 1 := by
+    have ht2 : t ^ (2 : ℕ) ∈ ball (0 : ℂ) 1 := by
       rw [mem_ball_zero_iff] at ht ⊢
       rw [norm_pow]; nlinarith [norm_nonneg t, ht]
-    rw [hkg1 t ht, hkg1 (t ^ 2) ht2]
+    rw [hkg1 t ht, hkg1 (t ^ (2 : ℕ)) ht2]
     exact hgfe t ht
   · -- value at 0
     rw [hEqOn (mem_ball_self hρ0), hg0]
@@ -219,7 +219,7 @@ is bootstrapped to an entire even solution (doubling ladder + gluing), and §3 f
 theorem c_mem_of_even_holo_ball {h : ℂ → ℂ} {c : ℂ} {ρ : ℝ} (hρ : 1 < ρ)
     (hhd : DifferentiableOn ℂ h (ball 0 ρ))
     (hhe : ∀ z ∈ ball 0 ρ, h (-z) = h z)
-    (hhfe : ∀ t ∈ ball 0 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hhfe : ∀ t ∈ ball 0 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1) :
     c = 0 ∨ c = -2 := by
   classical
@@ -229,9 +229,9 @@ theorem c_mem_of_even_holo_ball {h : ℂ → ℂ} {c : ℂ} {ρ : ℝ} (hρ : 1 
   have hrn_gt1 : ∀ n, 1 < rn n := by
     intro n; simp only [hrndef]
     calc (1 : ℝ) < ρ := hρ
-      _ = ρ ^ 1 := (pow_one ρ).symm
+      _ = ρ ^ (1 : ℕ) := (pow_one ρ).symm
       _ ≤ ρ ^ (2 ^ n) := pow_le_pow_right₀ hρ.le Nat.one_le_two_pow
-  have hrn_sq : ∀ n, rn (n + 1) = (rn n) ^ 2 := by
+  have hrn_sq : ∀ n, rn (n + 1) = (rn n) ^ (2 : ℕ) := by
     intro n; simp only [hrndef]; rw [pow_succ, pow_mul]
   have hrn_mono : ∀ {m n : ℕ}, m ≤ n → rn m ≤ rn n := by
     intro m n hmn; simp only [hrndef]
@@ -246,7 +246,7 @@ theorem c_mem_of_even_holo_ball {h : ℂ → ℂ} {c : ℂ} {ρ : ℝ} (hρ : 1 
   -- per-level extension of h
   have hlevel : ∀ n, ∃ g : ℂ → ℂ,
       DifferentiableOn ℂ g (ball 0 (rn n)) ∧ (∀ z ∈ ball 0 (rn n), g (-z) = g z) ∧
-      (∀ t ∈ ball 0 1, g (t ^ 2) = (g t) ^ 2 + c * t ^ 2) ∧ g 0 = 1 ∧ EqOn g h (ball 0 1) := by
+      (∀ t ∈ ball 0 1, g (t ^ (2 : ℕ)) = (g t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) ∧ g 0 = 1 ∧ EqOn g h (ball 0 1) := by
     intro n
     induction n with
     | zero =>
@@ -325,14 +325,14 @@ theorem c_mem_of_even_holo_ball {h : ℂ → ℂ} {c : ℂ} {ρ : ℝ} (hρ : 1 
       rw [mem_ball_zero_iff, norm_neg]; rwa [mem_ball_zero_iff] at hzρ
     rw [hHh (-z) hnegρ, hHh z hzρ, hhe z hzρ]
   -- H satisfies the functional equation everywhere
-  have hHfe : ∀ z, H (z ^ 2) = (H z) ^ 2 + c * z ^ 2 := by
+  have hHfe : ∀ z, H (z ^ (2 : ℕ)) = (H z) ^ (2 : ℕ) + c * z ^ (2 : ℕ) := by
     apply entire_ext (hHdiff.comp (differentiable_pow 2))
       ((hHdiff.pow 2).add ((differentiable_const c).mul (differentiable_pow 2)))
     intro z hz
     simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply, Pi.pow_apply]
-    have hz2 : z ^ 2 ∈ ball (0 : ℂ) 1 := by
+    have hz2 : z ^ (2 : ℕ) ∈ ball (0 : ℂ) 1 := by
       rw [mem_ball_zero_iff] at hz ⊢; rw [norm_pow]; nlinarith [norm_nonneg z, hz]
-    rw [hHh (z ^ 2) (hball1_subρ hz2), hHh z (hball1_subρ hz), hhfe z hz]
+    rw [hHh (z ^ (2 : ℕ)) (hball1_subρ hz2), hHh z (hball1_subρ hz), hhfe z hz]
   -- H 0 = 1
   have hH0 : H 0 = 1 := by rw [hHh 0 (mem_ball_self hρ0), hh0]
   exact c_mem_of_entire_even_functional_eq' hHdiff hHeven hHfe hH0

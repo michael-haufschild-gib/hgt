@@ -153,11 +153,11 @@ theorem mobiusDivisorEnergyBooleanAlternating_union_late_primes
         2 * (∑ s ∈ L, mobiusDivisorDilationChannel M s) *
           ((-1 : ℝ) ^ A.card * mobiusDivisorSelectionFibre M P A) := by
   let S := ∑ s ∈ L, mobiusDivisorDilationChannel M s
-  let T := ∑ s ∈ L, (mobiusDivisorDilationChannel M s) ^ 2
+  let T := ∑ s ∈ L, (mobiusDivisorDilationChannel M s) ^ (2 : ℕ)
   have hterm (U : Finset ℕ) (hU : U ∈ A.powerset) :
       mobiusDivisorSelectionEnergy M ((P ∪ L) ∪ U) =
         mobiusDivisorSelectionEnergy M (P ∪ U) +
-          2 * mobiusDivisorSelectionFibre M (P ∪ U) ∅ * S + S ^ 2 - T := by
+          2 * mobiusDivisorSelectionFibre M (P ∪ U) ∅ * S + S ^ (2 : ℕ) - T := by
     have hfreeU : ∀ s ∈ L, s ∉ P ∪ U := by
       intro s hs hPU
       rcases mem_union.mp hPU with hP | hmemU
@@ -175,7 +175,7 @@ theorem mobiusDivisorEnergyBooleanAlternating_union_late_primes
     mobiusDivisorBooleanAlternating (P ∪ L) A (mobiusDivisorSelectionEnergy M) =
         mobiusDivisorBooleanAlternating P A (fun Q =>
           mobiusDivisorSelectionEnergy M Q +
-            (2 * S) * mobiusDivisorSelectionFibre M Q ∅ + (S ^ 2 - T)) := by
+            (2 * S) * mobiusDivisorSelectionFibre M Q ∅ + (S ^ (2 : ℕ) - T)) := by
       unfold mobiusDivisorBooleanAlternating
       apply sum_congr rfl
       intro U hU
@@ -184,10 +184,10 @@ theorem mobiusDivisorEnergyBooleanAlternating_union_late_primes
     _ = mobiusDivisorBooleanAlternating P A (mobiusDivisorSelectionEnergy M) +
         (2 * S) * mobiusDivisorBooleanAlternating P A
           (fun Q => mobiusDivisorSelectionFibre M Q ∅) +
-          (S ^ 2 - T) * mobiusDivisorBooleanAlternating P A (fun _ => 1) := by
+          (S ^ (2 : ℕ) - T) * mobiusDivisorBooleanAlternating P A (fun _ => 1) := by
       exact mobiusDivisorBooleanAlternating_affine P A
         (mobiusDivisorSelectionEnergy M)
-        (fun Q => mobiusDivisorSelectionFibre M Q ∅) (2 * S) (S ^ 2 - T)
+        (fun Q => mobiusDivisorSelectionFibre M Q ∅) (2 * S) (S ^ (2 : ℕ) - T)
     _ = _ := by
       rw [mobiusDivisorSelectionFibre_booleanAlternating M P ∅ A (by simp),
         mobiusDivisorBooleanAlternating_one_eq_zero P A hA]

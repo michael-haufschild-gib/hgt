@@ -24,14 +24,14 @@ theorem fixed_not_sqrt_of_scaling {K V : Type*} [Field K] [Field V] [CharZero V]
     (σ : V ≃ₐ[K] V) {F ζ b : V} {k : ℕ} (hk : 1 ≤ k)
     (hF : F ≠ 0) (hζ : ζ ^ (2 ^ (k - 1)) = -1)
     (hσF : σ F = ζ * F) (hb : σ b = b) :
-    b ^ 2 ≠ F ^ (2 ^ k) := by
+    b ^ (2 : ℕ) ≠ F ^ (2 ^ k) := by
   intro hbsq
   have hexp : 2 ^ (k - 1) * 2 = 2 ^ k := by rw [← pow_succ]; congr 1; omega
-  have hFsq : (F ^ (2 ^ (k - 1))) ^ 2 = F ^ (2 ^ k) := by rw [← pow_mul, hexp]
+  have hFsq : (F ^ (2 ^ (k - 1))) ^ (2 : ℕ) = F ^ (2 ^ k) := by rw [← pow_mul, hexp]
   have hσFpow : σ (F ^ (2 ^ (k - 1))) = - F ^ (2 ^ (k - 1)) := by
     rw [map_pow, hσF, mul_pow, hζ]; ring
   have hfac : (b - F ^ (2 ^ (k - 1))) * (b + F ^ (2 ^ (k - 1))) = 0 := by
-    have h2 : b ^ 2 = (F ^ (2 ^ (k - 1))) ^ 2 := by rw [hbsq, hFsq]
+    have h2 : b ^ (2 : ℕ) = (F ^ (2 ^ (k - 1))) ^ (2 : ℕ) := by rw [hbsq, hFsq]
     linear_combination h2
   rcases mul_eq_zero.mp hfac with h | h
   · have hbeq : b = F ^ (2 ^ (k - 1)) := by linear_combination h

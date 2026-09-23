@@ -22,7 +22,7 @@ variable {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
 theorem exists_algebraMap_of_sq_eq {x : R} {z : K} (hz : z * z = algebraMap R K x) :
     ∃ w : R, algebraMap R K w = z := by
   have hint : IsIntegral R z := by
-    refine ⟨Polynomial.X ^ 2 - Polynomial.C x, ?_, ?_⟩
+    refine ⟨Polynomial.X ^ (2 : ℕ) - Polynomial.C x, ?_, ?_⟩
     · exact (Polynomial.monic_X_pow 2).sub_of_left (by
         refine lt_of_le_of_lt (Polynomial.degree_C_le) ?_
         rw [Polynomial.degree_X_pow]

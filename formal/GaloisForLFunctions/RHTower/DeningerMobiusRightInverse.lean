@@ -82,14 +82,14 @@ private theorem deningerMobiusPair_zero (h : 𝓢(ℝ, ℂ)) (x : ℝ) {q : ℕ 
 private theorem deningerMobiusPair_summable {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) {x : ℝ}
     (hx : 0 < x) : Summable (deningerMobiusPair h x) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
-  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
   have hpair : Summable fun q : ℕ × ℕ =>
-      (C / x ^ 2) * ((1 / (q.1 : ℝ) ^ 2) * (1 / (q.2 : ℝ) ^ 2)) := by
+      (C / x ^ (2 : ℕ)) * ((1 / (q.1 : ℝ) ^ (2 : ℕ)) * (1 / (q.2 : ℝ) ^ (2 : ℕ))) := by
     refine Summable.mul_left _ ?_
-    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / (n : ℝ) ^ 2)
-      (g := fun n : ℕ => 1 / (n : ℝ) ^ 2) hsq hsq
+    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ))
+      (g := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) hsq hsq
       (fun n => by positivity) (fun n => by positivity)
   refine Summable.of_norm_bounded hpair fun q => ?_
   rcases Nat.eq_zero_or_pos (q.1 * q.2) with hq0 | hqpos

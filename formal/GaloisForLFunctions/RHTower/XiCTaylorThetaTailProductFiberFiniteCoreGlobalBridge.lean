@@ -39,7 +39,7 @@ theorem tsum_thetaCuspTailSecondDensityAtomCoreValueMomentPacket_eq_integral
       ∫ x : ℝ in Ioi 0,
         (thetaCuspTailSecondDensity x : ℂ) *
           thetaCuspTailSecondCoreAtom d z x := by
-  let A : ℂ := z ^ 2 + 1 / 4
+  let A : ℂ := z ^ (2 : ℕ) + 1 / 4
   let c : ℕ → ℂ := thetaCuspTailSecondSectionSourceCoefficient z
   let M : ℕ → ℕ → ℂ := fun r n =>
     (thetaCuspTailSecondDensityAtomMoment (n + 1) (2 * r + 2) : ℂ)
@@ -229,7 +229,7 @@ theorem summable_xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent
     Summable (xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent d z) := by
   apply Summable.congr
     ((summable_xiCTaylorThetaTailCoreProductFiberMomentCurrent d z).mul_left
-        (4 * Complex.normSq z ^ 2) |>.sub
+        (4 * Complex.normSq z ^ (2 : ℕ)) |>.sub
       ((summable_xiCTaylorThetaTailCoreProductFiberValueCorrelation d z).mul_left
         (8 * Complex.normSq z * z.im)))
   intro k
@@ -241,7 +241,7 @@ theorem tsum_xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent_eq
     (d : ℕ) (z : ℂ) :
     (∑' k : ℕ,
       xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent d z k) =
-      16 * Complex.normSq z ^ 2 *
+      16 * Complex.normSq z ^ (2 : ℕ) *
           orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z -
         32 * Complex.normSq z * z.im *
           Complex.normSq ((xiCTaylorThetaTailCorePolynomial d).eval z) := by
@@ -249,7 +249,7 @@ theorem tsum_xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent_eq
   have hR := summable_xiCTaylorThetaTailCoreProductFiberValueCorrelation d z
   rw [tsum_congr fun k =>
       xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent_eq d z k,
-    (hJ.mul_left (4 * Complex.normSq z ^ 2)).tsum_sub
+    (hJ.mul_left (4 * Complex.normSq z ^ (2 : ℕ))).tsum_sub
       (hR.mul_left (8 * Complex.normSq z * z.im)),
     tsum_mul_left, tsum_mul_left,
     tsum_xiCTaylorThetaTailCoreProductFiberValueCorrelation_eq]

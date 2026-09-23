@@ -24,9 +24,9 @@ theorem leastSquaresResidual_update
     {X Y : Type*} [AddCommGroup X] [Module ℂ X]
     [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
     (O : X →ₗ[ℂ] Y) (E : Y) (v w : X) :
-    ‖leastSquaresResidual O E (v + w)‖ ^ 2 =
-      ‖leastSquaresResidual O E v‖ ^ 2 +
-        2 * (inner ℂ (leastSquaresResidual O E v) (O w)).re + ‖O w‖ ^ 2 := by
+    ‖leastSquaresResidual O E (v + w)‖ ^ (2 : ℕ) =
+      ‖leastSquaresResidual O E v‖ ^ (2 : ℕ) +
+        2 * (inner ℂ (leastSquaresResidual O E v) (O w)).re + ‖O w‖ ^ (2 : ℕ) := by
   have h := norm_add_sq (𝕜 := ℂ) (leastSquaresResidual O E v) (O w)
   have hr : leastSquaresResidual O E (v + w) = leastSquaresResidual O E v + O w := by
     unfold leastSquaresResidual

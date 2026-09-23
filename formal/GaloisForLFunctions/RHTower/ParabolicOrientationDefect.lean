@@ -26,12 +26,12 @@ noncomputable section
 
 /-! ## The elementary orientation identity -/
 
-theorem normSq_sub_re_sq (u : ℂ) : ‖u‖ ^ 2 - (u ^ 2).re = 2 * u.im ^ 2 := by
-  have hnorm : ‖u‖ ^ 2 = u.re ^ 2 + u.im ^ 2 := by
+theorem normSq_sub_re_sq (u : ℂ) : ‖u‖ ^ (2 : ℕ) - (u ^ (2 : ℕ)).re = 2 * u.im ^ (2 : ℕ) := by
+  have hnorm : ‖u‖ ^ (2 : ℕ) = u.re ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply]
     ring
-  have hsq : (u ^ 2).re = u.re ^ 2 - u.im ^ 2 := by
+  have hsq : (u ^ (2 : ℕ)).re = u.re ^ (2 : ℕ) - u.im ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re]
     ring
   rw [hnorm, hsq]
@@ -44,8 +44,8 @@ theorem norm_mul_exp_neg_mul_I (z : ℂ) (theta : ℝ) :
 
 /-- **(24.123)** The pointwise orientation identity. -/
 theorem orientation_identity (z : ℂ) (theta : ℝ) :
-    ‖z‖ ^ 2 - ((z * Complex.exp (-((theta : ℝ) : ℂ) * Complex.I)) ^ 2).re
-      = 2 * ((z * Complex.exp (-((theta : ℝ) : ℂ) * Complex.I)).im) ^ 2 := by
+    ‖z‖ ^ (2 : ℕ) - ((z * Complex.exp (-((theta : ℝ) : ℂ) * Complex.I)) ^ (2 : ℕ)).re
+      = 2 * ((z * Complex.exp (-((theta : ℝ) : ℂ) * Complex.I)).im) ^ (2 : ℕ) := by
   have h := normSq_sub_re_sq (z * Complex.exp (-((theta : ℝ) : ℂ) * Complex.I))
   rwa [norm_mul_exp_neg_mul_I] at h
 
@@ -55,15 +55,15 @@ variable {ι : Type*}
 
 /-- The Hermitian mass of a finite family. -/
 def parabolicHermitianMass (s : Finset ι) (weight : ι → ℝ) (P : ι → ℂ) : ℝ :=
-  ∑ q ∈ s, weight q * ‖P q‖ ^ 2
+  ∑ q ∈ s, weight q * ‖P q‖ ^ (2 : ℕ)
 
 /-- The real part of the oriented jet of a finite family. -/
 def parabolicOrientedJet (s : Finset ι) (weight : ι → ℝ) (P : ι → ℂ) (theta : ι → ℝ) : ℝ :=
-  ∑ q ∈ s, weight q * ((P q * Complex.exp (-((theta q : ℝ) : ℂ) * Complex.I)) ^ 2).re
+  ∑ q ∈ s, weight q * ((P q * Complex.exp (-((theta q : ℝ) : ℂ) * Complex.I)) ^ (2 : ℕ)).re
 
 /-- The orientation defect of a finite family. -/
 def parabolicOrientationDefect (s : Finset ι) (weight : ι → ℝ) (P : ι → ℂ) (theta : ι → ℝ) : ℝ :=
-  ∑ q ∈ s, 2 * weight q * ((P q * Complex.exp (-((theta q : ℝ) : ℂ) * Complex.I)).im) ^ 2
+  ∑ q ∈ s, 2 * weight q * ((P q * Complex.exp (-((theta q : ℝ) : ℂ) * Complex.I)).im) ^ (2 : ℕ)
 
 /-- **(24.123)/(24.125) The exact defect identity.** -/
 theorem parabolicHermitianMass_sub_orientedJet (s : Finset ι) (weight : ι → ℝ) (P : ι → ℂ)
@@ -113,7 +113,7 @@ theorem parabolicHeatDefect_eq_orientationDefect (s : Finset ι) (A B : ι → �
       ring
     rw [hform, Complex.exp_ofReal_mul_I_im, Real.sin_neg]
   rw [hexp]
-  have hcos : Real.cos (t * B q) = 1 - 2 * Real.sin (t * B q / 2) ^ 2 := by
+  have hcos : Real.cos (t * B q) = 1 - 2 * Real.sin (t * B q / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul_eq_one_sub (t * B q / 2)
     rw [show 2 * (t * B q / 2) = t * B q by ring] at h
     exact h
@@ -176,7 +176,7 @@ theorem parabolicHeatDefect_eq_zero_iff (s : Finset ι) (A B : ι → ℝ) :
 /-- **(24.124)** In the parabolic limit the longitudinal gap converges to the real part of the
 spectral point. -/
 theorem tendsto_parabolic_longitudinal {w : ℂ} {beta : ℝ → ℂ}
-    (hbeta : ∀ a : ℝ, beta a ^ 2 = (a : ℂ) ^ 2 + w)
+    (hbeta : ∀ a : ℝ, beta a ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (hre : ∀ a : ℝ, 0 ≤ (beta a).re) :
     Tendsto (fun a : ℝ => 2 * a * ((beta a).re - a)) atTop (nhds w.re) := by
   have hbase := tendsto_parabolic_remainder hbeta hre
@@ -188,7 +188,7 @@ theorem tendsto_parabolic_longitudinal {w : ℂ} {beta : ℝ → ℂ}
 /-- **(24.124)** In the parabolic limit the transverse part converges to half the imaginary part of
 the spectral point. -/
 theorem tendsto_parabolic_transverse {w : ℂ} {beta : ℝ → ℂ}
-    (hbeta : ∀ a : ℝ, beta a ^ 2 = (a : ℂ) ^ 2 + w)
+    (hbeta : ∀ a : ℝ, beta a ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (hre : ∀ a : ℝ, 0 ≤ (beta a).re) :
     Tendsto (fun a : ℝ => a * (beta a).im) atTop (nhds (w.im / 2)) := by
   have hbase := tendsto_parabolic_remainder hbeta hre

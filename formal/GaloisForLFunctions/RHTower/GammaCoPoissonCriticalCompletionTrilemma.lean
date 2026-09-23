@@ -32,7 +32,7 @@ theorem gammaCoPoissonCriticalCompletionTrilemma
     (gammaCoPoissonSymmetricPacketValue L d).re < 0 ∧
       ∀ c : ℝ,
         Summable (fun p : Nat.Primes =>
-          (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ 2) ↔
+          (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ (2 : ℕ)) ↔
             c = 0 := by
   exact ⟨gammaCoPoissonSymmetricPacketValue_re_neg hL hd,
     summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff⟩
@@ -43,7 +43,7 @@ theorem gammaCoPoisson_no_nonzero_scalarCriticalHilbertCompletion
     {L d c : ℝ} (hL : 0 < L) (hd : 0 < d) (hc : c ≠ 0) :
     (gammaCoPoissonSymmetricPacketValue L d).re < 0 ∧
       ¬ Summable (fun p : Nat.Primes =>
-        (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ 2) := by
+        (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ (2 : ℕ)) := by
   refine ⟨gammaCoPoissonSymmetricPacketValue_re_neg hL hd, ?_⟩
   rw [summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff]
   exact hc

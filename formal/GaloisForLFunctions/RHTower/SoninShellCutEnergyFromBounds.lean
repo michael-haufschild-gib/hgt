@@ -35,7 +35,7 @@ theorem card_sub_le_hsNormSq_soninApertureCoupling_shellCut_of_bounds
       (soninShellCutWidth b c N) (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)‖)
     (ε η : ℝ) (hε : 0 < ε) (hη : η ≤ 1) (hcomb : 3 * ε + P / L ≤ η) :
     ((N : ℝ) - ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b r⁻¹
-        (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ 2) * (1 - η) ^ 2 ≤
+        (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤
       hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c r hr) := by
   have hmean : ∀ i : Fin N, |soninScaledPacketMean (soninShellCutCentre b c N i)
       (soninShellCutWidth b c N) (2 * Real.pi * w)| ≤ 1 := fun i =>

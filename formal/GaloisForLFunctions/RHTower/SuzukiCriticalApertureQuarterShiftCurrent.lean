@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.VonMangoldtGammaConormalEulerBoundary
 /-!
 # Critical aperture quarter-shift current
 
-The uniquely renormalized Gamma--Euler boundary is not an `ell^2` vector at critical inverse
+The uniquely renormalized Gamma--Euler boundary is not an `ell^(2 : ℕ)` vector at critical inverse
 displacement `-1/2`.  Nevertheless, its source pairing with the cubically normalized true-aperture
 innovation has an exact geometric depth law.  One valuation step multiplies the conjugated critical
 Gamma boundary by
@@ -31,7 +31,7 @@ def suzukiCriticalGammaDepthRatio (t : ℝ) (p : Nat.Primes) : ℂ :=
 def suzukiCriticalApertureDepthRatio
     (h a t : ℝ) (p : Nat.Primes) : ℂ :=
   suzukiCriticalGammaDepthRatio t p *
-    (xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2 : ℂ)
+    (xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ) : ℂ)
 
 /-- Actual critical Gamma-boundary/true-aperture-innovation source atom. -/
 def suzukiCriticalApertureBoundaryAtom
@@ -41,7 +41,7 @@ def suzukiCriticalApertureBoundaryAtom
 
 private theorem innovation_succ (h a : ℝ) (p : Nat.Primes) (e : ℕ) :
     xiMobiusCubicNormalizedInnovationFeature h a (p, e + 1) =
-      xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2 *
+      xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ) *
         xiMobiusCubicNormalizedInnovationFeature h a (p, e) := by
   simp only [xiMobiusCubicNormalizedInnovationFeature,
     xiMobiusContinuousApertureDyadicInnovationFeature,
@@ -188,7 +188,7 @@ theorem norm_suzukiCriticalApertureDepthRatio_lt_one
     rw [show -(1 / 4 * Real.log (p : ℝ)) =
       -(1 / 4 : ℝ) * Real.log (p : ℝ) by ring]
     exact hg1
-  have hrsq : xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2 < 1 := by
+  have hrsq : xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ) < 1 := by
     nlinarith
   exact mul_lt_one_of_nonneg_of_lt_one_left (Real.exp_nonneg _) hg1' hrsq.le
 

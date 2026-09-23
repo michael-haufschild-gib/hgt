@@ -22,7 +22,7 @@ The cumulative endpoint ratio and normalized flux elasticity become
 
 Consequently the remaining C5 sign is exactly the first-order action-flow barrier
 
-`0 <= 24r + 5vw - 14v - 5v^2 - 4v^2/r`,
+`0 <= 24r + 5vw - 14v - 5v^(2 : ℕ) - 4v^(2 : ℕ)/r`,
 
 where `r = exp q - 1 > 0`.  This removes the displacement second jet as an independent
 coordinate.  Any fixed-action centre transport must control one velocity field and its intrinsic
@@ -44,18 +44,18 @@ def thetaCuspReflectedActionVelocityC5Balance (u t : ℝ) : ℝ :=
   let r := Real.exp (thetaCuspReflectedLogAction u t) - 1
   let v := thetaCuspReflectedActionVelocity u t
   let w := thetaCuspReflectedActionVelocitySlope u t
-  6 - v / r - v ^ 2 / r ^ 2 + 5 * v * (w - v - 2) / (4 * r)
+  6 - v / r - v ^ (2 : ℕ) / r ^ (2 : ℕ) + 5 * v * (w - v - 2) / (4 * r)
 
 /-- Division-free first-order action-flow barrier for C5. -/
 def thetaCuspReflectedActionVelocityC5Barrier (u t : ℝ) : ℝ :=
   let r := Real.exp (thetaCuspReflectedLogAction u t) - 1
   let v := thetaCuspReflectedActionVelocity u t
   let w := thetaCuspReflectedActionVelocitySlope u t
-  24 * r + 5 * v * w - 14 * v - 5 * v ^ 2 - 4 * v ^ 2 / r
+  24 * r + 5 * v * w - 14 * v - 5 * v ^ (2 : ℕ) - 4 * v ^ (2 : ℕ) / r
 
 /-- Universal C5 barrier at one positive intrinsic action radius. -/
 def thetaCuspActionVelocityBarrier (r v w : ℝ) : ℝ :=
-  24 * r + 5 * v * w - 14 * v - 5 * v ^ 2 - 4 * v ^ 2 / r
+  24 * r + 5 * v * w - 14 * v - 5 * v ^ (2 : ℕ) - 4 * v ^ (2 : ℕ) / r
 
 theorem thetaCuspReflectedActionVelocityC5Barrier_eq_universal (u t : ℝ) :
     thetaCuspReflectedActionVelocityC5Barrier u t =
@@ -164,7 +164,7 @@ theorem thetaCuspReflectedSourceCumulativeFluxC5Balance_eq_actionVelocity
       thetaCuspReflectedActionVelocityC5Balance u t := by
   rw [show thetaCuspReflectedSourceCumulativeFluxC5Balance u t =
       6 - 2 * thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t -
-        4 * thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ 2 +
+        4 * thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t ^ (2 : ℕ) +
         5 * thetaCuspReflectedSourceCumulativeEndpointFluxRatio u t *
           thetaCuspReflectedSourceNormalizedFluxElasticity u t by rfl,
     thetaCuspReflectedSourceCumulativeEndpointFluxRatio_eq_actionVelocity u ht,

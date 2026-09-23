@@ -31,9 +31,9 @@ variable [hRH : Fact RiemannHypothesis]
 and the chain collapses to the two outer terms.) -/
 theorem norm_sq_suzukiV0_eq_pi_mul_weil
     {ψ : Lp ℂ 2 (volume : Measure ℝ)} (hψ : ψ ∈ suzukiV0) :
-    ‖ψ‖ ^ 2 = Real.pi * ‖suzukiModelWeilEquiv
+    ‖ψ‖ ^ (2 : ℕ) = Real.pi * ‖suzukiModelWeilEquiv
       ⟨(MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ,
-        mem_suzukiModelSpace_fourier_of_suzukiV0 hψ⟩‖ ^ 2 := by
+        mem_suzukiModelSpace_fourier_of_suzukiV0 hψ⟩‖ ^ (2 : ℕ) := by
   have hbase := norm_sq_suzukiModelWeilEquiv
     (⟨(MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ,
       mem_suzukiModelSpace_fourier_of_suzukiV0 hψ⟩ :

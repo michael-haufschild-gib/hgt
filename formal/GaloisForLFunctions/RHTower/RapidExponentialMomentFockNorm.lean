@@ -162,7 +162,7 @@ theorem integrableOn_rapidExponentialMomentFockPolarIntegrand
   exact (rapidExponentialMomentFockPolarIntegrand_eq_tsum a ha f hr).symm
 
 /-- Reconcile the standard polar chart range with one positive angular period. -/
-theorem integral_Ioo_neg_pi_pi_eq_zero_two_pi
+theorem integral_Ioo_neg_pi_pi_eq_zero_two_pi_rapidExponentialMomentFockNorm
     {g : ℝ → ℝ} (hper : Function.Periodic g (2 * Real.pi)) :
     (∫ θ in Ioo (-Real.pi) Real.pi, g θ) =
       ∫ θ in (0 : ℝ)..(2 * Real.pi), g θ := by
@@ -192,7 +192,7 @@ theorem integral_Ioo_rapidExponentialMomentFockCircleNormSq
         ‖rapidExponentialMomentFockFunction a ha f (circleMap 0 r θ)‖ ^ 2) =
       ∫ θ in (0 : ℝ)..(2 * Real.pi),
         ‖rapidExponentialMomentFockFunction a ha f (circleMap 0 r θ)‖ ^ 2 :=
-  integral_Ioo_neg_pi_pi_eq_zero_two_pi
+  integral_Ioo_neg_pi_pi_eq_zero_two_pi_rapidExponentialMomentFockNorm
     (periodic_rapidExponentialMomentFockCircleNormSq a ha f r)
 
 /-- Nonnegative weighted norm density in the standard complex polar chart. -/

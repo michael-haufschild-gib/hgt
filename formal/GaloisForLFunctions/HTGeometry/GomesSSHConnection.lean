@@ -89,9 +89,9 @@ theorem gomesSSHAdjointMass_hasDerivAt (u v theta : ℝ) :
   intro j
   have hr := hasDerivAt_pi.mp (gomesSSHCarrier_hasDerivAt u v theta)
   have hn : HasDerivAt (coppoSSHGapSq u v) (-2*u*v*Real.sin theta) theta := by
-    change HasDerivAt (fun t => u^2+v^2+2*u*v*Real.cos t) (-2*u*v*Real.sin theta) theta
+    change HasDerivAt (fun t => u^(2 : ℕ)+v^(2 : ℕ)+2*u*v*Real.cos t) (-2*u*v*Real.sin theta) theta
     simpa [Pi.add_def,neg_mul,mul_neg,mul_assoc] using
-      (hasDerivAt_const theta (u^2+v^2)).add
+      (hasDerivAt_const theta (u^(2 : ℕ)+v^(2 : ℕ))).add
         ((Real.hasDerivAt_cos theta).const_mul (2*u*v))
   simpa [gomesPauliAdjointMass,gomesSSHCarrier_norm,Matrix.vecMulVec,
     Pi.sub_def,Pi.mul_def,Pi.add_def,Pi.neg_def,sub_eq_add_neg,add_assoc,add_left_comm,add_comm]

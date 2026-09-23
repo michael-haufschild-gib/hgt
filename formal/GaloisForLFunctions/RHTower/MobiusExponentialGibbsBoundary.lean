@@ -426,7 +426,7 @@ theorem mobiusZeroLargePrimeLaplaceTransform_eq_finiteAperture
   rw [mobiusPrimeSectorLaplaceTerm, finitePrimeApertureMobiusLaplaceTerm,
     mobiusZeroLargePrimeCoefficient_eq_finiteAperture]
 
-/-- Two distinct prime factors beyond `z` force the integer strictly beyond `z^2`. -/
+/-- Two distinct prime factors beyond `z` force the integer strictly beyond `z^(2 : ℕ)`. -/
 theorem sq_lt_of_two_le_mobiusLargePrimeFactorCount
     {z n : ℕ} (hcount : 2 ≤ mobiusLargePrimeFactorCount z n) :
     z ^ 2 < n := by
@@ -448,7 +448,7 @@ theorem sq_lt_of_two_le_mobiusLargePrimeFactorCount
     nlinarith
   exact lt_of_lt_of_le hzpq hpqLe
 
-/-- The two-large-prime residual term vanishes through the square boundary `z^2`. -/
+/-- The two-large-prime residual term vanishes through the square boundary `z^(2 : ℕ)`. -/
 theorem mobiusTwoLargePrimeRemainderCoefficient_eq_zero_of_le_sq
     {z n : ℕ} (hn : n ≤ z ^ 2) :
     mobiusTwoLargePrimeRemainderCoefficient z n = 0 := by
@@ -456,7 +456,7 @@ theorem mobiusTwoLargePrimeRemainderCoefficient_eq_zero_of_le_sq
   intro hcount
   exact (not_lt_of_ge hn) (sq_lt_of_two_le_mobiusLargePrimeFactorCount hcount)
 
-/-- Through the square boundary `z^2`, the combined zero/one-large-prime coefficient is the
+/-- Through the square boundary `z^(2 : ℕ)`, the combined zero/one-large-prime coefficient is the
 literal Möbius coefficient.  Thus a transport theorem on this truncation cannot replace the
 all-prime sign problem by a different finite coefficient system. -/
 theorem mobiusZero_add_oneLargePrimeCoefficient_eq_mobius_of_le_sq
@@ -514,7 +514,7 @@ theorem norm_mobiusTwoLargePrimeRemainderLaplaceTransform_le
     _ = Real.exp (-((((z ^ 2) + 1 : ℕ) : ℝ) * x)) /
         (1 - Real.exp (-x)) := tsum_exp_neg_nat_add x (z ^ 2 + 1) hx
 
-/-- At the moving boundary `z^2 x ≈ (1/2) log(1/x)`, every sector with at least two
+/-- At the moving boundary `z^(2 : ℕ) x ≈ (1/2) log(1/x)`, every sector with at least two
 large primes is already within the critical half-power budget. -/
 theorem norm_mobiusTwoLargePrimeRemainderLaplaceTransform_le_critical
     (z : ℕ) {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1)

@@ -56,7 +56,7 @@ theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
     (T : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (t : ℝ), T < t →
       ‖((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖
-        ≤ C * (1 / (n : ℝ) ^ 2) := by
+        ≤ C * (1 / (n : ℝ) ^ (2 : ℕ)) := by
   obtain ⟨C, hCnn, hC⟩ := deningerExpSchwartz_iteratedDeriv_norm_le hh 2 r
   refine ⟨C * Real.exp (-(2 * T)), by positivity, fun n t ht => ?_⟩
   rcases Nat.eq_zero_or_pos n with rfl | hn
@@ -76,10 +76,10 @@ theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
     have hge : Real.log (n : ℝ) + T ≤ |Real.log (n : ℝ) + t| :=
       le_trans (by linarith) (le_abs_self _)
     have hexp : Real.exp (-(2 * |Real.log (n : ℝ) + t|))
-        ≤ Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2) := by
+        ≤ Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
       have hle : -(2 * |Real.log (n : ℝ) + t|) ≤ -(2 * T) - 2 * Real.log (n : ℝ) := by linarith
       refine le_trans (Real.exp_le_exp.mpr hle) (le_of_eq ?_)
-      have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ 2 := by
+      have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ (2 : ℕ) := by
         rw [show (2 : ℝ) * Real.log (n : ℝ) = Real.log (n : ℝ) + Real.log (n : ℝ) by ring,
           Real.exp_add, Real.exp_log hnpos, ← pow_two]
       rw [show -(2 * T) - 2 * Real.log (n : ℝ)
@@ -88,8 +88,8 @@ theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
       congr 1
       rw [Real.exp_neg, hsq, one_div]
     calc C * Real.exp (-(2 * |Real.log (n : ℝ) + t|))
-        ≤ C * (Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2)) := mul_le_mul_of_nonneg_left hexp hCnn
-      _ = C * Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2) := by ring
+        ≤ C * (Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ (2 : ℕ))) := mul_le_mul_of_nonneg_left hexp hCnn
+      _ = C * Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by ring
 
 /-- Every term of the translate series is differentiable, with the next series as derivative. -/
 theorem deningerLogTerm_hasDerivAt (h : 𝓢(ℝ, ℂ)) (r n : ℕ) (t : ℝ) :
@@ -116,7 +116,7 @@ theorem deningerLogSeries_summable {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
     Summable fun n : ℕ =>
       ((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh r (t - 1)
-  have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ 2) :=
+  have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ (2 : ℕ)) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left C
   exact Summable.of_norm_bounded hmaj fun n => hC n t (by linarith)
 
@@ -125,7 +125,7 @@ theorem deningerLogSeries_hasDerivAt {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerEx
     (t : ℝ) :
     HasDerivAt (deningerLogSeries h r) (deningerLogSeries h (r + 1) t) t := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh (r + 1) (t - 1)
-  have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ 2) :=
+  have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ (2 : ℕ)) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left C
   have hopen : IsOpen (Set.Ioi (t - 1)) := isOpen_Ioi
   have hconn : IsPreconnected (Set.Ioi (t - 1)) := (convex_Ioi (t - 1)).isPreconnected
@@ -173,13 +173,13 @@ theorem deningerLogSeries_decay {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchw
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, 0 ≤ t →
       ‖deningerLogSeries h r t‖ ≤ C * Real.exp (-((k : ℝ) * t)) := by
   obtain ⟨C, hCnn, hC⟩ := deningerExpSchwartz_iteratedDeriv_norm_le hh ((k : ℝ) + 2) r
-  have hzeta : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+  have hzeta : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have hzetann : 0 ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ 2 := tsum_nonneg fun n => by positivity
-  refine ⟨C * ∑' n : ℕ, 1 / (n : ℝ) ^ 2, mul_nonneg hCnn hzetann, fun t ht => ?_⟩
+  have hzetann : 0 ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ) := tsum_nonneg fun n => by positivity
+  refine ⟨C * ∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ), mul_nonneg hCnn hzetann, fun t ht => ?_⟩
   have hterm : ∀ n : ℕ,
       ‖((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖
-        ≤ (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ 2) := by
+        ≤ (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
     intro n
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · have hmu : ((moebius 0 : ℤ) : ℂ) = 0 := by simp
@@ -198,24 +198,24 @@ theorem deningerLogSeries_decay {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchw
       refine le_trans hstep (le_trans (hC (Real.log n + t)) ?_)
       have hge : Real.log (n : ℝ) + t ≤ |Real.log (n : ℝ) + t| := le_abs_self _
       have hexp : Real.exp (-(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|))
-          ≤ Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2) := by
+          ≤ Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
         have hle : -(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|)
             ≤ -((k : ℝ) * t) + -(2 * Real.log (n : ℝ)) := by
           have hknn : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
           nlinarith [hge, hlog, ht]
         refine le_trans (Real.exp_le_exp.mpr hle) (le_of_eq ?_)
-        have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ 2 := by
+        have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ (2 : ℕ) := by
           rw [show (2 : ℝ) * Real.log (n : ℝ) = Real.log (n : ℝ) + Real.log (n : ℝ) by ring,
             Real.exp_add, Real.exp_log hnpos, ← pow_two]
         rw [Real.exp_add]
         congr 1
         rw [Real.exp_neg, hsq, one_div]
       calc C * Real.exp (-(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|))
-          ≤ C * (Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2)) :=
+          ≤ C * (Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ (2 : ℕ))) :=
             mul_le_mul_of_nonneg_left hexp hCnn
-        _ = C * Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2) := by ring
+        _ = C * Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by ring
   have hsum := deningerLogSeries_summable hh r t
-  have hmaj : Summable fun n : ℕ => (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ 2) :=
+  have hmaj : Summable fun n : ℕ => (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ (2 : ℕ)) :=
     hzeta.mul_left _
   refine le_trans (norm_tsum_le_tsum_norm hsum.norm) ?_
   refine le_trans (Summable.tsum_le_tsum hterm hsum.norm hmaj) (le_of_eq ?_)

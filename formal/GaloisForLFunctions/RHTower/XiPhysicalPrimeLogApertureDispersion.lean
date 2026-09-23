@@ -22,12 +22,12 @@ def xiPhysicalPrimeLogNormalizedApertureDispersion
     (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
   (∑ p ∈ P,
       (physicalPrimeEndpointWeight p / xiPhysicalPrimeLogTotalWeight P) *
-        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2) -
+        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ (2 : ℕ)) -
     (1 / 2 : ℝ) *
       ∑ p ∈ P, ∑ q ∈ P,
         (physicalPrimeEndpointWeight p / xiPhysicalPrimeLogTotalWeight P) *
           (physicalPrimeEndpointWeight q / xiPhysicalPrimeLogTotalWeight P) *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)
 
 /-- `(AH14)`, Hilbert half: normalized aperture dispersion is exactly coherent fusion energy
 divided by the square of total physical weight. -/
@@ -35,15 +35,15 @@ theorem xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div
     {P : Finset Nat.Primes} (hP : P.Nonempty) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
     xiPhysicalPrimeLogNormalizedApertureDispersion P A m k =
       xiPhysicalPrimeLogApertureFusionEnergy P A m k /
-        xiPhysicalPrimeLogTotalWeight P ^ 2 := by
+        xiPhysicalPrimeLogTotalWeight P ^ (2 : ℕ) := by
   have hW : ∑ p ∈ P, physicalPrimeEndpointWeight p ≠ 0 := by
     simpa [xiPhysicalPrimeLogTotalWeight] using
       (xiPhysicalPrimeLogTotalWeight_pos hP).ne'
   have hdisp := GaloisForLFunctions.HTGeometry.finite_normalized_weighted_hilbert_dispersion
     P (fun p : Nat.Primes => physicalPrimeEndpointWeight p)
       (xiPhysicalPrimeLogCenteredApertureCarrier A m k) hW
-  change ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ 2 /
-      (∑ p ∈ P, physicalPrimeEndpointWeight p) ^ 2 = _ at hdisp
+  change ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ (2 : ℕ) /
+      (∑ p ∈ P, physicalPrimeEndpointWeight p) ^ (2 : ℕ) = _ at hdisp
   rw [← xiPhysicalPrimeLogApertureFusionEnergy_eq_norm_sq P hA m k] at hdisp
   rw [xiPhysicalPrimeLogNormalizedApertureDispersion, xiPhysicalPrimeLogTotalWeight]
   simpa only [xiPhysicalPrimeLogApertureHilbertDistance, dist_eq_norm] using hdisp.symm
@@ -52,7 +52,7 @@ theorem xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div
 theorem xiPhysicalPrimeLogApertureFusionEnergy_eq_totalWeight_sq_mul_dispersion
     {P : Finset Nat.Primes} (hP : P.Nonempty) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
     xiPhysicalPrimeLogApertureFusionEnergy P A m k =
-      xiPhysicalPrimeLogTotalWeight P ^ 2 *
+      xiPhysicalPrimeLogTotalWeight P ^ (2 : ℕ) *
         xiPhysicalPrimeLogNormalizedApertureDispersion P A m k := by
   rw [xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div hP hA]
   field_simp [(xiPhysicalPrimeLogTotalWeight_pos hP).ne']
@@ -71,7 +71,7 @@ theorem xiPhysicalPrimeLogNormalizedApertureDispersion_pos_iff
       xiPhysicalPrimeLogAggregateApertureCarrier P A m k ≠ 0 := by
   rw [xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div hP hA,
     xiPhysicalPrimeLogApertureFusionEnergy_eq_norm_sq P hA m k]
-  have hWsq : 0 < xiPhysicalPrimeLogTotalWeight P ^ 2 :=
+  have hWsq : 0 < xiPhysicalPrimeLogTotalWeight P ^ (2 : ℕ) :=
     sq_pos_of_pos (xiPhysicalPrimeLogTotalWeight_pos hP)
   constructor
   · intro h
@@ -88,7 +88,7 @@ theorem xiPhysicalPrimeLogFusionEnergy_le_iff_dispersion_le
     (m k budget : ℝ) :
     xiPhysicalPrimeLogApertureFusionEnergy P A m k ≤ budget ↔
       xiPhysicalPrimeLogNormalizedApertureDispersion P A m k ≤
-        budget / xiPhysicalPrimeLogTotalWeight P ^ 2 := by
+        budget / xiPhysicalPrimeLogTotalWeight P ^ (2 : ℕ) := by
   rw [xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div hP hA]
   exact (div_le_div_iff_of_pos_right
     (sq_pos_of_pos (xiPhysicalPrimeLogTotalWeight_pos hP))).symm

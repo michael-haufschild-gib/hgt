@@ -69,13 +69,13 @@ theorem sum_indicator_pair_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) 
 
 /-- The second moment of `ω_P` over `[1, M]`. -/
 theorem sum_sq_card_primeFactorsIn_Icc_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : ℕ) :
-    ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ 2
-      ≤ (∑ p ∈ P, ((M / p : ℕ) : ℝ)) + (M : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 := by
+    ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ)
+      ≤ (∑ p ∈ P, ((M / p : ℕ) : ℝ)) + (M : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) := by
   classical
-  have hexpand : ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ 2
+  have hexpand : ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ)
       = ∑ p ∈ P, ∑ q ∈ P, ∑ n ∈ Finset.Icc 1 M,
           (if p ∣ n then (1 : ℝ) else 0) * (if q ∣ n then (1 : ℝ) else 0) := by
-    have hstep : ∀ n : ℕ, ((primeFactorsIn P n).card : ℝ) ^ 2
+    have hstep : ∀ n : ℕ, ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ)
         = ∑ p ∈ P, ∑ q ∈ P,
             (if p ∣ n then (1 : ℝ) else 0) * (if q ∣ n then (1 : ℝ) else 0) := by
       intro n
@@ -159,7 +159,7 @@ theorem sum_card_primeFactorsIn_Icc_le (P : Finset ℕ) (M : ℕ) :
 
 /-- **Turán's second-moment bound on the rough count.** -/
 theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : ℕ) :
-    ((supportMeanSquareRoughSet P M).card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2
+    ((supportMeanSquareRoughSet P M).card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ)
       ≤ (M : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ))
         + 2 * (P.card : ℝ) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) := by
   classical
@@ -168,38 +168,38 @@ theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime
     rw [hAdef]
     exact Finset.sum_nonneg fun p _ => by positivity
   set S1 : ℝ := ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) with hS1def
-  set S2 : ℝ := ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ 2 with hS2def
+  set S2 : ℝ := ∑ n ∈ Finset.Icc 1 M, ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ) with hS2def
   have hcardIcc : ((Finset.Icc 1 M).card : ℝ) = (M : ℝ) := by
     rw [Nat.card_Icc]
     norm_num
-  have hvar : ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
-      = S2 - 2 * A * S1 + A ^ 2 * (M : ℝ) := by
-    have hterm : ∀ n : ℕ, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
-        = ((primeFactorsIn P n).card : ℝ) ^ 2
-          - 2 * A * ((primeFactorsIn P n).card : ℝ) + A ^ 2 := by
+  have hvar : ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ)
+      = S2 - 2 * A * S1 + A ^ (2 : ℕ) * (M : ℝ) := by
+    have hterm : ∀ n : ℕ, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ)
+        = ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ)
+          - 2 * A * ((primeFactorsIn P n).card : ℝ) + A ^ (2 : ℕ) := by
       intro n; ring
     simp_rw [hterm]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_const,
       nsmul_eq_mul, hcardIcc, hS1def, hS2def]
     ring
-  have hlow : ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ 2
-      ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 := by
+  have hlow : ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ (2 : ℕ)
+      ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ) := by
     have hsub : supportMeanSquareRoughSet P M ⊆ Finset.Icc 1 M := by
       rw [supportMeanSquareRoughSet]
       exact Finset.filter_subset _ _
-    have hmono : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
-        ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 :=
+    have hmono : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ)
+        ≤ ∑ n ∈ Finset.Icc 1 M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ) :=
       Finset.sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => by positivity
-    have heq : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2
-        = ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ 2 := by
-      have hz : ∀ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ 2 = A ^ 2 := by
+    have heq : ∑ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ)
+        = ((supportMeanSquareRoughSet P M).card : ℝ) * A ^ (2 : ℕ) := by
+      have hz : ∀ n ∈ supportMeanSquareRoughSet P M, (((primeFactorsIn P n).card : ℝ) - A) ^ (2 : ℕ) = A ^ (2 : ℕ) := by
         intro n hn
         rw [supportMeanSquareRoughSet, Finset.mem_filter] at hn
         rw [hn.2]
         norm_num
       rw [Finset.sum_congr rfl hz, Finset.sum_const, nsmul_eq_mul]
     linarith [hmono, heq]
-  have hS2 : S2 ≤ S1 + (M : ℝ) * A ^ 2 := by
+  have hS2 : S2 ≤ S1 + (M : ℝ) * A ^ (2 : ℕ) := by
     have h := sum_sq_card_primeFactorsIn_Icc_le hPprime M
     rw [← sum_card_primeFactorsIn_Icc P M] at h
     rw [hS1def, hS2def, hAdef]
@@ -207,7 +207,7 @@ theorem card_roughSet_mul_sq_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime
   have hS1lo : (M : ℝ) * A - (P.card : ℝ) ≤ S1 :=
     sum_card_primeFactorsIn_Icc_ge (fun p hp => (hPprime p hp).pos) M
   have hS1hi : S1 ≤ (M : ℝ) * A := sum_card_primeFactorsIn_Icc_le P M
-  have hkey : S2 - 2 * A * S1 + A ^ 2 * (M : ℝ)
+  have hkey : S2 - 2 * A * S1 + A ^ (2 : ℕ) * (M : ℝ)
       ≤ (M : ℝ) * A + 2 * (P.card : ℝ) * A := by
     have hmul : 2 * A * ((M : ℝ) * A - (P.card : ℝ)) ≤ 2 * A * S1 :=
       mul_le_mul_of_nonneg_left hS1lo (by linarith)
@@ -225,7 +225,7 @@ theorem card_roughSet_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : 
   set A : ℝ := ∑ p ∈ P, (1 : ℝ) / (p : ℝ) with hAdef
   have hbase := card_roughSet_mul_sq_le hPprime M
   rw [← hAdef] at hbase
-  have hA2 : 0 < A ^ 2 := by positivity
+  have hA2 : 0 < A ^ (2 : ℕ) := by positivity
   have hcomb : (M : ℝ) / A + 2 * (P.card : ℝ) / A = ((M : ℝ) + 2 * (P.card : ℝ)) / A := by
     field_simp
   rw [hcomb, le_div_iff₀ hA]
@@ -242,8 +242,8 @@ theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ 
     (hPM : (P.card : ℝ) ≤ (M : ℝ))
     (hA : 15 * Real.exp 1 / (2 * ε) ≤ ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
-      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+      ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ))
+      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) := by
   have hexp1 : (2 : ℝ) ≤ Real.exp 1 := by
     have := Real.add_one_le_exp (1 : ℝ)
     linarith
@@ -278,23 +278,23 @@ theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ 
     rw [div_le_iff₀ (by positivity)] at hle
     linarith
   have hval : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (3 * (M : ℝ) / A)
-      = (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2) * (1 / A) := by
+      = (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ)) * (1 / A) := by
     field_simp
     ring
-  have hpos : (0 : ℝ) ≤ 15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2 := by
+  have hpos : (0 : ℝ) ≤ 15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ) := by
     have := Real.pi_pos
     have := (Real.exp_pos 1).le
     positivity
-  have hlast : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2) * (1 / A)
-      ≤ (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+  have hlast : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ)) * (1 / A)
+      ≤ (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ))
           * (2 * ε / (15 * Real.exp 1)) := mul_le_mul_of_nonneg_left hinvA hpos
-  have hfinal : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+  have hfinal : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ))
       * (2 * ε / (15 * Real.exp 1))
-      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ (2 : ℕ) := by
     have hE : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
-    have hsplit : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+    have hsplit : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ (2 : ℕ))
         * (2 * ε / (15 * Real.exp 1))
-        = (Real.pi * ε / Real.exp 1) * (W * (M : ℝ)) + ε * (M : ℝ) ^ 2 := by
+        = (Real.pi * ε / Real.exp 1) * (W * (M : ℝ)) + ε * (M : ℝ) ^ (2 : ℕ) := by
       field_simp
     rw [hsplit]
     have hcoef : Real.pi * ε / Real.exp 1 ≤ 2 := by

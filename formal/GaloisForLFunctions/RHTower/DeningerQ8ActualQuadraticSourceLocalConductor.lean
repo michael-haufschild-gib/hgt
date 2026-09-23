@@ -5,7 +5,7 @@ import LocalClassFieldTheory.Finite.LocalReciprocity.Filtered.FiniteAbelian
 # Actual local conductor of the Q8 quadratic source
 
 The transported completed lower profile gives Herbrand values `φ(2)=2`, `φ(3)=5/2`, hence upper
-groups `G^2=C₂` and `G^3=1`.  Filtered local reciprocity then proves exact local conductor exponent
+groups `G^(2 : ℕ)=C₂` and `G^(3 : ℕ)=1`.  Filtered local reciprocity then proves exact local conductor exponent
 three for the genuine chosen dyadic extension.
 -/
 
@@ -23,39 +23,39 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "S" => q8BiquadQuadraticSourceField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualQuadraticSourceLocalConductorInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualQuadraticSourceLocalConductorInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional S K2 := by infer_instance
-noncomputable local instance : FiniteDimensional S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst7 : FiniteDimensional S K2 := by infer_instance
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst8 : FiniteDimensional S K3 :=
   FiniteDimensional.trans S K2 K3
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst9 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField S := NumberField.mk
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst10 : NumberField S := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst11 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst12 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst13 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-noncomputable local instance : IsGalois S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst14 : IsGalois S K3 :=
   IsGalois.tower_top_of_isGalois ℚ S K3
 
-noncomputable local instance : IsCyclic deningerQ8ActualCyclicSubgroup := by
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst15 : IsCyclic deningerQ8ActualCyclicSubgroup := by
   have hq8 : IsCyclic q8CyclicSubgroup :=
     (MulEquiv.isCyclic q8CyclicSourceEquiv).mp inferInstance
   exact (MulEquiv.isCyclic deningerQ8ActualCyclicSubgroupEquiv).mpr hq8
 
-noncomputable local instance : IsCyclic Gal(K3/S) :=
+noncomputable local instance deningerQ8ActualQuadraticSourceLocalConductorInst16 : IsCyclic Gal(K3/S) :=
   (MulEquiv.isCyclic q8QuadraticSourceGalEquivCyclicSubgroup).mpr
     (inferInstance : IsCyclic deningerQ8ActualCyclicSubgroup)
 

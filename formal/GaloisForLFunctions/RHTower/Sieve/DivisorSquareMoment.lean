@@ -112,9 +112,9 @@ theorem gcd_eq_sum_totient_indicator {N a b : ℕ} (ha : 1 ≤ a) (haN : a ≤ N
 
 /-- **The second moment of the divisor function.** -/
 theorem sum_card_divisors_sq_le (N : ℕ) :
-    ∑ n ∈ Finset.Icc 1 N, ((n.divisors.card : ℕ) : ℝ) ^ 2 ≤ (N : ℝ) * invSum N ^ 3 := by
+    ∑ n ∈ Finset.Icc 1 N, ((n.divisors.card : ℕ) : ℝ) ^ (2 : ℕ) ≤ (N : ℝ) * invSum N ^ (3 : ℕ) := by
   classical
-  have hexp : ∀ n ∈ Finset.Icc 1 N, ((n.divisors.card : ℕ) : ℝ) ^ 2
+  have hexp : ∀ n ∈ Finset.Icc 1 N, ((n.divisors.card : ℕ) : ℝ) ^ (2 : ℕ)
       = ∑ a ∈ Finset.Icc 1 N, ∑ b ∈ Finset.Icc 1 N,
           (if a ∣ n then (1 : ℝ) else 0) * (if b ∣ n then (1 : ℝ) else 0) := by
     intro n hn
@@ -201,7 +201,7 @@ theorem sum_card_divisors_sq_le (N : ℕ) :
   rw [hrewrite]
   have hbound : ∀ g ∈ Finset.Icc 1 N,
       ((N : ℝ) * (Nat.totient g : ℝ)) * ((1 / g) * invSum (N / g) * ((1 / g) * invSum (N / g)))
-        ≤ (N : ℝ) * invSum N ^ 2 * (1 / g) := by
+        ≤ (N : ℝ) * invSum N ^ (2 : ℕ) * (1 / g) := by
     intro g hg
     rw [Finset.mem_Icc] at hg
     have hg0 : (0 : ℝ) < (g : ℝ) := by exact_mod_cast hg.1
@@ -209,25 +209,25 @@ theorem sum_card_divisors_sq_le (N : ℕ) :
     have hmono : invSum (N / g) ≤ invSum N := invSum_mono (Nat.div_le_self N g)
     have hnn : 0 ≤ invSum (N / g) := invSum_nonneg _
     have hN0 : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
-    have hsq : invSum (N / g) * invSum (N / g) ≤ invSum N ^ 2 := by nlinarith
+    have hsq : invSum (N / g) * invSum (N / g) ≤ invSum N ^ (2 : ℕ) := by nlinarith
     have hid : ((N : ℝ) * (Nat.totient g : ℝ))
         * ((1 / g) * invSum (N / g) * ((1 / g) * invSum (N / g)))
-        = (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ 2
+        = (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ (2 : ℕ)
             * (invSum (N / g) * invSum (N / g)) := by
       field_simp
     rw [hid]
-    have hcoef : (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ 2 ≤ (N : ℝ) * (1 / g) := by
+    have hcoef : (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ (2 : ℕ) ≤ (N : ℝ) * (1 / g) := by
       rw [div_le_iff₀ (by positivity)]
       have hstep : (N : ℝ) * (Nat.totient g : ℝ) ≤ (N : ℝ) * (g : ℝ) :=
         mul_le_mul_of_nonneg_left hphi hN0
-      have : (N : ℝ) * (1 / g) * (g : ℝ) ^ 2 = (N : ℝ) * (g : ℝ) := by field_simp
+      have : (N : ℝ) * (1 / g) * (g : ℝ) ^ (2 : ℕ) = (N : ℝ) * (g : ℝ) := by field_simp
       rw [this]
       exact hstep
     have hsq0 : (0 : ℝ) ≤ invSum (N / g) * invSum (N / g) := by positivity
-    calc (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ 2 * (invSum (N / g) * invSum (N / g))
-        ≤ ((N : ℝ) * (1 / g)) * (invSum N ^ 2) :=
+    calc (N : ℝ) * (Nat.totient g : ℝ) / (g : ℝ) ^ (2 : ℕ) * (invSum (N / g) * invSum (N / g))
+        ≤ ((N : ℝ) * (1 / g)) * (invSum N ^ (2 : ℕ)) :=
           mul_le_mul hcoef hsq hsq0 (by positivity)
-      _ = (N : ℝ) * invSum N ^ 2 * (1 / g) := by ring
+      _ = (N : ℝ) * invSum N ^ (2 : ℕ) * (1 / g) := by ring
   refine le_trans (Finset.sum_le_sum hbound) ?_
   rw [← Finset.mul_sum, show (∑ g ∈ Finset.Icc 1 N, (1 : ℝ) / g) = invSum N from rfl]
   ring_nf

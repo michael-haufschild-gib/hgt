@@ -124,7 +124,7 @@ theorem not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily
   obtain ⟨C, hC0, hC⟩ := exists_bound_norm_evenLogShellChannel_of_annulus a₀ r₀ c ha₀ hr₀
     (hb.trans hbc)
   refine not_bddBelow_soninCompletedPacketValueVar_of_bddAbove a b c ha hb hab hbc q haq hqb
-    _ (C * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2) (fun i => ?_)
+    _ (C * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ)) (fun i => ?_)
   set w : evenSubspace :=
     soninPacketEven b c hb hbc (2 * Real.pi * (soninCrossingClock a c i * q)) with hw
   have hhigh : evenIndicatorCutoff c w = w :=
@@ -137,12 +137,12 @@ theorem not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily
       ‖(⟪w, evenLogShellChannel a₀ r₀ (height i) w⟫_ℂ)‖ := Complex.re_le_norm _
   have hinner : ‖(⟪w, evenLogShellChannel a₀ r₀ (height i) w⟫_ℂ)‖ ≤
       ‖w‖ * ‖evenLogShellChannel a₀ r₀ (height i) w‖ := norm_inner_le_norm _ _
-  have hstep : ‖w‖ * ‖evenLogShellChannel a₀ r₀ (height i) w‖ ≤ C * ‖w‖ ^ 2 := by
+  have hstep : ‖w‖ * ‖evenLogShellChannel a₀ r₀ (height i) w‖ ≤ C * ‖w‖ ^ (2 : ℕ) := by
     nlinarith [norm_nonneg w]
-  have hsq : ‖w‖ ^ 2 ≤ (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 := by
+  have hsq : ‖w‖ ^ (2 : ℕ) ≤ (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) := by
     have := norm_nonneg w
     nlinarith
-  have hfinal : C * ‖w‖ ^ 2 ≤ C * (2 * ‖soninBumpL2 b c hb hbc‖) ^ 2 :=
+  have hfinal : C * ‖w‖ ^ (2 : ℕ) ≤ C * (2 * ‖soninBumpL2 b c hb hbc‖) ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq hC0
   linarith
 

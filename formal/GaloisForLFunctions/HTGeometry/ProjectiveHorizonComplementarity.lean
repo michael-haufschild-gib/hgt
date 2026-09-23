@@ -20,13 +20,13 @@ noncomputable section
 /-- The first derivative of projective inversion. -/
 theorem deriv_inv_eq_neg_inv_sq_mul_deriv
     {K : Type*} [Field K] [Differential K] (x : K) :
-    (x⁻¹)′ = -x⁻¹ ^ 2 * x′ := by
+    (x⁻¹)′ = -x⁻¹ ^ (2 : ℕ) * x′ := by
   simpa [smul_eq_mul] using Differential.deriv.leibniz_inv x
 
 /-- The second derivative of projective inversion. -/
 theorem secondDeriv_inv_eq
     {K : Type*} [Field K] [Differential K] (x : K) :
-    (x⁻¹)′′ = 2 * x⁻¹ ^ 3 * x′ ^ 2 - x⁻¹ ^ 2 * x′′ := by
+    (x⁻¹)′′ = 2 * x⁻¹ ^ (3 : ℕ) * x′ ^ (2 : ℕ) - x⁻¹ ^ (2 : ℕ) * x′′ := by
   rw [deriv_inv_eq_neg_inv_sq_mul_deriv]
   simp only [map_neg, Derivation.leibniz, Derivation.leibniz_pow,
     Derivation.leibniz_inv, smul_eq_mul]
@@ -229,7 +229,7 @@ theorem mem_of_sq_mem_and_nonzero_differentialJet_mem
     {F K : Type*} [Field F] [Field K] [CharZero K] [Algebra F K] [Differential K]
     (L : IntermediateField F K) (hL : DerivationClosed L)
     (x : K) (n : ℕ) (hx : x ≠ 0)
-    (hsq : x ^ 2 ∈ L)
+    (hsq : x ^ (2 : ℕ) ∈ L)
     (hjet : differentialJet n x ∈ L)
     (hjet0 : differentialJet n x ≠ 0) :
     x ∈ L :=

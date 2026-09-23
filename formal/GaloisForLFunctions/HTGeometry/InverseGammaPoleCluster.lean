@@ -16,17 +16,17 @@ open Complex Filter Topology Set
 
 theorem iteratedDeriv_neg_sq_mul_deriv_zero
     {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) {j : ℕ} (hj : 1 ≤ j) :
-    iteratedDeriv (j + 1) (fun x : ℂ => -(x ^ 2) * deriv f x) 0 =
+    iteratedDeriv (j + 1) (fun x : ℂ => -(x ^ (2 : ℕ)) * deriv f x) 0 =
       -((j : ℂ) * ((j + 1 : ℕ) : ℂ)) * iteratedDeriv j f 0 := by
-  have hpoly : ContDiffAt ℂ (j + 1) (fun x : ℂ => -(x ^ 2)) 0 := by fun_prop
+  have hpoly : ContDiffAt ℂ (j + 1) (fun x : ℂ => -(x ^ (2 : ℕ))) 0 := by fun_prop
   have hfder : ContDiffAt ℂ (j + 1) (deriv f) 0 := by
     exact hf.deriv.contDiffAt.of_le le_top
   have hmono (i : ℕ) :
-      iteratedDeriv i (fun x : ℂ => -(x ^ 2)) 0 = if i = 2 then -2 else 0 := by
-    change iteratedDeriv i (-(fun x : ℂ => x ^ 2)) 0 = _
+      iteratedDeriv i (fun x : ℂ => -(x ^ (2 : ℕ))) 0 = if i = 2 then -2 else 0 := by
+    change iteratedDeriv i (-(fun x : ℂ => x ^ (2 : ℕ))) 0 = _
     rw [iteratedDeriv_neg, iteratedDeriv_fun_pow_zero]
     split_ifs <;> ring
-  change iteratedDeriv (j + 1) ((fun x : ℂ => -(x ^ 2)) * deriv f) 0 = _
+  change iteratedDeriv (j + 1) ((fun x : ℂ => -(x ^ (2 : ℕ))) * deriv f) 0 = _
   rw [iteratedDeriv_mul hpoly hfder]
   rw [Finset.sum_eq_single 2]
   · rw [hmono, if_pos rfl]
@@ -102,7 +102,7 @@ theorem ReciprocalGammaPoleBranch.position_first_scaled_limit
   have htarget : Tendsto
       (fun m : ℕ => -reciprocalGammaBranchLinearCoeff n +
         reciprocalGammaBranchQuadraticCoeff n * (m : ℂ)⁻¹ +
-          ((m : ℂ)⁻¹) ^ 2 * R ((m : ℂ)⁻¹)) atTop
+          ((m : ℂ)⁻¹) ^ (2 : ℕ) * R ((m : ℂ)⁻¹)) atTop
       (nhds (-reciprocalGammaBranchLinearCoeff n)) := by
     convert tendsto_const_nhds.add
       (tendsto_const_nhds.mul hx) |>.add ((hx.pow 2).mul hRcomp) using 1
@@ -118,7 +118,7 @@ theorem ReciprocalGammaPoleBranch.position_first_scaled_limit
 
 theorem ReciprocalGammaPoleBranch.residue_second_scaled_limit
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
-    Tendsto (fun m : ℕ => (m : ℂ) ^ 2 *
+    Tendsto (fun m : ℕ => (m : ℂ) ^ (2 : ℕ) *
       inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹)) atTop
       (nhds (reciprocalGammaBranchLinearCoeff n)) := by
   obtain ⟨S, hSAn, hRho⟩ := zn.residueInterpolation_cubic
@@ -128,7 +128,7 @@ theorem ReciprocalGammaPoleBranch.residue_second_scaled_limit
   have htarget : Tendsto
       (fun m : ℕ => reciprocalGammaBranchLinearCoeff n -
         2 * reciprocalGammaBranchQuadraticCoeff n * (m : ℂ)⁻¹ +
-          ((m : ℂ)⁻¹) ^ 2 * S ((m : ℂ)⁻¹)) atTop
+          ((m : ℂ)⁻¹) ^ (2 : ℕ) * S ((m : ℂ)⁻¹)) atTop
       (nhds (reciprocalGammaBranchLinearCoeff n)) := by
     convert tendsto_const_nhds.sub
       (tendsto_const_nhds.mul hx) |>.add ((hx.pow 2).mul hScomp) using 1
@@ -144,8 +144,8 @@ theorem ReciprocalGammaPoleBranch.residue_second_scaled_limit
 theorem ReciprocalGammaPoleBranch.balanced_next_scaled_limit
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
     Tendsto (fun m : ℕ =>
-      (m : ℂ) ^ 2 * (zn ((m : ℂ)⁻¹) + (n : ℂ)) +
-        (m : ℂ) ^ 3 * inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹))
+      (m : ℂ) ^ (2 : ℕ) * (zn ((m : ℂ)⁻¹) + (n : ℂ)) +
+        (m : ℂ) ^ (3 : ℕ) * inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹))
       atTop (nhds (-reciprocalGammaBranchQuadraticCoeff n)) := by
   obtain ⟨R, hRAn, hbranch⟩ := zn.taylor_two_with_cubic_remainder
   obtain ⟨S, hSAn, hRho⟩ := zn.residueInterpolation_cubic
@@ -171,11 +171,11 @@ theorem ReciprocalGammaPoleBranch.balanced_next_scaled_limit
 
 theorem ReciprocalGammaPoleBranch.digamma_recovered_from_balanced_cluster
     {n : ℕ} (zn : ReciprocalGammaPoleBranch n) :
-    Tendsto (fun m : ℕ => -((n.factorial : ℂ) ^ 2) *
-      ((m : ℂ) ^ 2 * (zn ((m : ℂ)⁻¹) + (n : ℂ)) +
-        (m : ℂ) ^ 3 * inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹)))
+    Tendsto (fun m : ℕ => -((n.factorial : ℂ) ^ (2 : ℕ)) *
+      ((m : ℂ) ^ (2 : ℕ) * (zn ((m : ℂ)⁻¹) + (n : ℂ)) +
+        (m : ℂ) ^ (3 : ℕ) * inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹)))
       atTop (nhds (Complex.digamma ((n : ℂ) + 1))) := by
-  have h := zn.balanced_next_scaled_limit.const_mul (-((n.factorial : ℂ) ^ 2))
+  have h := zn.balanced_next_scaled_limit.const_mul (-((n.factorial : ℂ) ^ (2 : ℕ)))
   convert h using 1
   simp only [reciprocalGammaBranchQuadraticCoeff]
   have hfac : (n.factorial : ℂ) ≠ 0 := by

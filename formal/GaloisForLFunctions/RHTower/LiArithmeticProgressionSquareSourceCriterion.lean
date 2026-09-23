@@ -9,7 +9,7 @@ reciprocal family `w ↦ w ^ k`; its negative degree pulls back to a multiple of
 
 At step two, Chebyshev algebra factors the whole finite source polynomial:
 
-`2 - 2 T_{2(n+1)}(1-u/2) = u(4-u) U_n(1-u/2)^2`.
+`2 - 2 T_{2(n+1)}(1-u/2) = u(4-u) U_n(1-u/2)^(2 : ℕ)`.
 
 Consequently Route LI reduces exactly to nonnegativity of one hard-edge weighted-square family in
 the completed prime--Gamma quarter-shift moment functional.
@@ -27,7 +27,7 @@ theorem exists_re_tsum_liTerm_neg_on_multiples
     (hm : ∀ i, 1 ≤ m i)
     (hv : ∀ i, 1 ≤ ‖v i‖)
     (hM : ∀ i, ‖v i‖ ≤ M)
-    (hs : Summable (fun i => m i * ‖v i - 1‖ ^ 2))
+    (hs : Summable (fun i => m i * ‖v i - 1‖ ^ (2 : ℕ)))
     {i₀ : ι} (hlt : 1 < ‖v i₀‖)
     {k : ℕ} (hk : 0 < k) :
     ∃ n : ℕ, ∑' i, m i * (liTerm (v i) (k * n)).re < 0 := by
@@ -43,10 +43,10 @@ theorem exists_re_tsum_liTerm_neg_on_multiples
     exact pow_le_pow_left₀ (norm_nonneg _) (hM i) k
   let A : ℝ := (k : ℝ) * M ^ k
   have hA0 : 0 ≤ A := mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hM0 _)
-  have hsPow : Summable (fun i => m i * ‖(v i) ^ k - 1‖ ^ 2) := by
+  have hsPow : Summable (fun i => m i * ‖(v i) ^ k - 1‖ ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le
       (fun i => mul_nonneg (le_trans (by norm_num) (hm i)) (sq_nonneg _))
-      (fun i => ?_) (hs.mul_left (A ^ 2))
+      (fun i => ?_) (hs.mul_left (A ^ (2 : ℕ)))
     have hdef : ‖(v i) ^ k - 1‖ ≤ A * ‖v i - 1‖ := by
       calc
         ‖(v i) ^ k - 1‖
@@ -61,12 +61,12 @@ theorem exists_re_tsum_liTerm_neg_on_multiples
     have hm0 : 0 ≤ m i := le_trans (by norm_num) (hm i)
     have hnorm0 : 0 ≤ ‖v i - 1‖ := norm_nonneg _
     have hpowNorm0 : 0 ≤ ‖(v i) ^ k - 1‖ := norm_nonneg _
-    have hsq : ‖(v i) ^ k - 1‖ ^ 2 ≤ (A * ‖v i - 1‖) ^ 2 := by
+    have hsq : ‖(v i) ^ k - 1‖ ^ (2 : ℕ) ≤ (A * ‖v i - 1‖) ^ (2 : ℕ) := by
       nlinarith
     calc
-      m i * ‖(v i) ^ k - 1‖ ^ 2 ≤ m i * (A * ‖v i - 1‖) ^ 2 :=
+      m i * ‖(v i) ^ k - 1‖ ^ (2 : ℕ) ≤ m i * (A * ‖v i - 1‖) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq hm0
-      _ = A ^ 2 * (m i * ‖v i - 1‖ ^ 2) := by ring
+      _ = A ^ (2 : ℕ) * (m i * ‖v i - 1‖ ^ (2 : ℕ)) := by ring
   have hbadPow : 1 < ‖(v i₀) ^ k‖ := by
     rw [norm_pow]
     exact one_lt_pow₀ hlt (Nat.ne_of_gt hk)
@@ -110,29 +110,29 @@ theorem riemannHypothesis_of_forall_re_xiLiPaired_mul_nonneg
     rw [norm_xiRootV (hne0 ρ) (hne1 ρ)]
     exact hMb ρ
   have hsum : Summable fun ρ : XiDivisorSupport =>
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 := by
+      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) := by
     refine Summable.of_nonneg_of_le
       (fun ρ => by nlinarith [hmult ρ, sq_nonneg ‖xiRootV (ρ : ℂ) - 1‖])
-      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ 2))
+      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ (2 : ℕ)))
     have hb := norm_xiRootV_sub_one_le (hne0 ρ) (hne1 ρ) hM1 (hMb ρ)
     have hw1 : ‖xiRootW (ρ : ℂ) - 1‖ = 1 / ‖(ρ : ℂ)‖ := norm_xiRootW_sub_one _
     rw [hw1] at hb
     have hnn : (0 : ℝ) ≤ ‖xiRootV (ρ : ℂ) - 1‖ := norm_nonneg _
-    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 ≤ M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
       have hM0 : (0 : ℝ) ≤ M := by linarith
-      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ 2 = M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ (2 : ℕ) = M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
         rw [mul_pow, div_pow, one_pow]
       rw [← hmul]
       nlinarith [mul_nonneg hM0 (by positivity : (0 : ℝ) ≤ 1 / ‖(ρ : ℂ)‖)]
     calc
       ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
-          ‖xiRootV (ρ : ℂ) - 1‖ ^ 2
+          ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ)
           ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
-              (M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
+              (M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))) := by
             have := hmult ρ
             nlinarith
-      _ = M ^ 2 *
-          (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+      _ = M ^ (2 : ℕ) *
+          (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
             ring
   have hbad : 1 < ‖xiRootV ((ρ₀ : XiDivisorSupport) : ℂ)‖ := by
     have hnorm : ‖xiRootW ((ρ₀ : XiDivisorSupport) : ℂ)‖ ≠ 1 := by
@@ -188,8 +188,8 @@ theorem riemannHypothesis_iff_forall_re_xiLiPaired_mul_succ_nonneg
     | succ n => simpa [Nat.succ_eq_add_one] using h n
 
 private theorem chebyshevT_sq_add_one_sub_X_sq_mul_chebyshevU_sq (n : ℕ) :
-    (Polynomial.Chebyshev.T ℂ ((n : ℤ) + 1)) ^ 2 +
-      (1 - X ^ 2) * (Polynomial.Chebyshev.U ℂ (n : ℤ)) ^ 2 = 1 := by
+    (Polynomial.Chebyshev.T ℂ ((n : ℤ) + 1)) ^ (2 : ℕ) +
+      (1 - X ^ (2 : ℕ)) * (Polynomial.Chebyshev.U ℂ (n : ℤ)) ^ (2 : ℕ) = 1 := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -203,7 +203,7 @@ private theorem chebyshevT_sq_add_one_sub_X_sq_mul_chebyshevU_sq (n : ℕ) :
 def liEvenShiftedSquarePolynomial (n : ℕ) : Polynomial ℂ :=
   X * (C 4 - X) *
     ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp
-      (C 1 - C (1 / 2) * X)) ^ 2
+      (C 1 - C (1 / 2) * X)) ^ (2 : ℕ)
 
 /-- The even Li polynomial is one fixed hard-edge weight times a Chebyshev square. -/
 theorem liShiftedMomentPolynomial_two_mul_eq_weighted_chebyshevU_square (n : ℕ) :
@@ -217,7 +217,7 @@ theorem liShiftedMomentPolynomial_two_mul_eq_weighted_chebyshevU_square (n : ℕ
   rw [hind, hsum, Polynomial.Chebyshev.T_zero] at hdouble
   have hcore :
       (2 : Polynomial ℂ) - 2 * Polynomial.Chebyshev.T ℂ (2 * (n + 1) : ℕ) =
-        4 * (1 - X ^ 2) * (Polynomial.Chebyshev.U ℂ (n : ℤ)) ^ 2 := by
+        4 * (1 - X ^ (2 : ℕ)) * (Polynomial.Chebyshev.U ℂ (n : ℤ)) ^ (2 : ℕ) := by
     linear_combination (norm := ring_nf) -4 * hnorm + 2 * hdouble
   let A : Polynomial ℂ := C 1 - C (1 / 2) * X
   have hcomp := congrArg (fun P : Polynomial ℂ => P.comp A) hcore
@@ -225,12 +225,12 @@ theorem liShiftedMomentPolynomial_two_mul_eq_weighted_chebyshevU_square (n : ℕ
   rw [liShiftedMomentPolynomial]
   change (2 : Polynomial ℂ) - 2 *
       (Polynomial.Chebyshev.T ℂ (2 * (n + 1) : ℕ)).comp A =
-    X * (4 - X) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ 2
+    X * (4 - X) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ (2 : ℕ)
   calc
     (2 : Polynomial ℂ) - 2 *
         (Polynomial.Chebyshev.T ℂ (2 * (n + 1) : ℕ)).comp A =
-      4 * (1 - A ^ 2) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ 2 := hcomp
-    _ = X * (4 - X) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ 2 := by
+      4 * (1 - A ^ (2 : ℕ)) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ (2 : ℕ) := hcomp
+    _ = X * (4 - X) * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp A) ^ (2 : ℕ) := by
       have hhalf : (2 : Polynomial ℂ) * C (1 / 2 : ℂ) = 1 := by
         rw [← C_ofNat, ← map_mul]
         norm_num
@@ -238,10 +238,10 @@ theorem liShiftedMomentPolynomial_two_mul_eq_weighted_chebyshevU_square (n : ℕ
       simp only [map_one]
       linear_combination (norm := ring_nf)
         (4 * X * ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp
-            (1 - C (1 / 2) * X)) ^ 2 -
-          (2 * C (1 / 2) + 1) * X ^ 2 *
+            (1 - C (1 / 2) * X)) ^ (2 : ℕ) -
+          (2 * C (1 / 2) + 1) * X ^ (2 : ℕ) *
             ((Polynomial.Chebyshev.U ℂ (n : ℤ)).comp
-              (1 - C (1 / 2) * X)) ^ 2) * hhalf
+              (1 - C (1 / 2) * X)) ^ (2 : ℕ)) * hhalf
 
 /-- Literal completed prime--Gamma source formed with the even weighted-square polynomial. -/
 def liPrimeArchEvenSquareSource (n : ℕ) : ℂ :=

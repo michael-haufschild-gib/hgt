@@ -20,7 +20,7 @@ private theorem ccmGammaPoleWallInvariant_forcing {s : ℝ} (hs : 0 < s) :
   have h4 : Real.exp (4 * s) - 1 ≠ 0 := ne_of_gt
     (sub_pos.mpr (Real.one_lt_exp_iff.mpr (by linarith)))
   have hneg : Real.exp (-s) = (Real.exp s)⁻¹ := by rw [Real.exp_neg]
-  have hneg2 : Real.exp (-2 * s) = (Real.exp s)⁻¹ ^ 2 := by
+  have hneg2 : Real.exp (-2 * s) = (Real.exp s)⁻¹ ^ (2 : ℕ) := by
     rw [show -2 * s = (-s) + (-s) by ring, Real.exp_add, hneg]
     ring
   rw [Real.cosh_eq, hneg, hneg2]
@@ -74,7 +74,7 @@ theorem ccmWeilParitySmoothWallForcing_eq_gammaInvariant (s : ℝ) :
     ccmGammaPoleWallInvariant
   rw [Real.cosh_eq, Real.sinh_eq]
   have he : Real.exp s ≠ 0 := (Real.exp_pos s).ne'
-  have hneg2 : Real.exp (-2 * s) = (Real.exp s)⁻¹ ^ 2 := by
+  have hneg2 : Real.exp (-2 * s) = (Real.exp s)⁻¹ ^ (2 : ℕ) := by
     rw [show -2 * s = (-s) + (-s) by ring, Real.exp_add, Real.exp_neg]
     ring
   rw [hneg2, Real.exp_neg]

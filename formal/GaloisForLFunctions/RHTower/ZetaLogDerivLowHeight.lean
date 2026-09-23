@@ -52,14 +52,14 @@ theorem exists_low_height_logDeriv_bound :
       rw [show s = (s.re : ℂ) + (s.im : ℂ) * Complex.I from
         (Complex.re_add_im s).symm]
       rw [Complex.norm_add_mul_I]
-      have hre2 : s.re ^ 2 ≤ 1 := by nlinarith
-      have him2 : s.im ^ 2 ≤ 81 := by
+      have hre2 : s.re ^ (2 : ℕ) ≤ 1 := by nlinarith
+      have him2 : s.im ^ (2 : ℕ) ≤ 81 := by
         have h5 := abs_le.1 hc
         nlinarith [h5.1, h5.2]
-      calc Real.sqrt (s.re ^ 2 + s.im ^ 2)
+      calc Real.sqrt (s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ))
           ≤ Real.sqrt 100 := Real.sqrt_le_sqrt (by linarith)
         _ = 10 := by
-          rw [show (100 : ℝ) = 10 ^ 2 by norm_num,
+          rw [show (100 : ℝ) = 10 ^ (2 : ℕ) by norm_num,
             Real.sqrt_sq (by norm_num)]
   -- the pole unit is zero-free on the closure
   have hZne : ∀ s ∈ {s : ℂ | (1 - δ₀ ≤ s.re ∧ s.re ≤ 1)

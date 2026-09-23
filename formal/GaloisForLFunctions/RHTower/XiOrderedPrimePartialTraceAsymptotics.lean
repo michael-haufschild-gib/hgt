@@ -18,7 +18,7 @@ noncomputable section
 theorem tendsto_xiOrderedSignedPrimeOperator_approxNumber_partialSum_div_logSq :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, approxNumber xiOrderedSignedPrimeOperator n) /
-        Real.log ((N : ℝ) + 1) ^ 2) atTop
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ)) atTop
       (nhds (1 / (2 * Real.pi))) := by
   have hscaled :=
     tendsto_xiOrderedSignedPrimeOperator_approxNumber_div_model.div_const Real.pi

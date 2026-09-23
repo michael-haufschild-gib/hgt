@@ -72,7 +72,7 @@ theorem selfInverseSquareFactor_ne_zero (q : XiZeroCopy) (branch side : Bool) :
 /-- The leading residual after adding any radial-constant cap contribution. -/
 def affineResidual (q : XiZeroCopy) (branch side : Bool) (A K : ℂ)
     (r : Ioi (1 : ℝ)) : ℂ :=
-  (A + selfInverseSquareFactor q branch side / (r.val : ℂ) ^ 2) / 2 - K
+  (A + selfInverseSquareFactor q branch side / (r.val : ℂ) ^ (2 : ℕ)) / 2 - K
 
 /-- No radial-constant cap contribution can cancel the self-copy leading
 residual on every exterior radial fibre. -/

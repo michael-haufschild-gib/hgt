@@ -23,64 +23,64 @@ def thetaCuspLikelihoodEighthRawJetOne (x : ℝ) : ℝ :=
 def thetaCuspLikelihoodEighthRawJetTwo (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+  A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetThree (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 -
-    3 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 +
+  A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 -
+    3 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 +
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetFour (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-    6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-    7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+  A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+    6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+    7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetFive (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 -
-    10 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 +
-    25 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 -
-    15 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 +
+  A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 -
+    10 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 +
+    25 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 -
+    15 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 +
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetSix (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 -
-    15 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-    65 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-    90 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-    31 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+  A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 -
+    15 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+    65 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+    90 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+    31 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetSeven (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 7 * thetaCuspHigherLikelihoodSpectralMoment B 7 -
-    21 * A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 +
-    140 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 -
-    350 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 +
-    301 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 -
-    63 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 +
+  A ^ (7 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 7 -
+    21 * A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 +
+    140 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 -
+    350 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 +
+    301 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 -
+    63 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 +
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 def thetaCuspLikelihoodEighthRawJetEight (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  A ^ 8 * thetaCuspHigherLikelihoodSpectralMoment B 8 -
-    28 * A ^ 7 * thetaCuspHigherLikelihoodSpectralMoment B 7 +
-    266 * A ^ 6 * thetaCuspHigherLikelihoodSpectralMoment B 6 -
-    1050 * A ^ 5 * thetaCuspHigherLikelihoodSpectralMoment B 5 +
-    1701 * A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-    966 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-    127 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+  A ^ (8 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 8 -
+    28 * A ^ (7 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 7 +
+    266 * A ^ (6 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 6 -
+    1050 * A ^ (5 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 5 +
+    1701 * A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+    966 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+    127 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
     A * thetaCuspHigherLikelihoodSpectralMoment B 1
 
 /-- Full algebraic ordered-pair eighth score, including the two zero-derivative allocations. -/
@@ -94,7 +94,7 @@ def thetaCuspLikelihoodEighthAlgebraicPairTrace (x : ℝ) : ℝ :=
       thetaCuspLikelihoodEighthRawJetSix x +
     112 * thetaCuspLikelihoodEighthRawJetThree x *
       thetaCuspLikelihoodEighthRawJetFive x +
-    70 * thetaCuspLikelihoodEighthRawJetFour x ^ 2
+    70 * thetaCuspLikelihoodEighthRawJetFour x ^ (2 : ℕ)
 
 /-- Ordinary normalized jets are raw response jets divided by the literal partition. -/
 theorem thetaCuspLikelihoodEighthBellJets_eq_raw
@@ -174,7 +174,7 @@ trace gives twice the second partial Bell polynomial. -/
 theorem thetaCuspLikelihoodEighthBellGradeTwo_eq_algebraicPairTrace
     {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspLikelihoodEighthBellGradeTwo x =
-      128 / thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate x) ^ 2 *
+      128 / thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate x) ^ (2 : ℕ) *
         (thetaCuspLikelihoodEighthAlgebraicPairTrace x -
           2 * thetaCuspHigherLikelihoodSpectralResponse
               (thetaCuspLikelihoodCoordinate x) *
@@ -190,7 +190,7 @@ theorem thetaCuspLikelihoodEighthBellGradeTwo_eq_algebraicPairTrace
 theorem thetaCuspLikelihoodEighthBellGradeTwo_le_algebraicPairTrace
     {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspLikelihoodEighthBellGradeTwo x ≤
-      128 / thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate x) ^ 2 *
+      128 / thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate x) ^ (2 : ℕ) *
         thetaCuspLikelihoodEighthAlgebraicPairTrace x := by
   let B := thetaCuspLikelihoodCoordinate x
   let P := thetaCuspLikelihoodPartition B
@@ -202,12 +202,12 @@ theorem thetaCuspLikelihoodEighthBellGradeTwo_le_algebraicPairTrace
     rw [← thetaCuspHigherLikelihoodSpectralMoment_zero_eq_response hB]
     exact thetaCuspHigherLikelihoodSpectralMoment_nonneg 0
   have hU8 := thetaCuspLikelihoodEighthRawJetEight_pos hx
-  have hfactor : 0 ≤ 128 / P ^ 2 := by positivity
+  have hfactor : 0 ≤ 128 / P ^ (2 : ℕ) := by positivity
   rw [thetaCuspLikelihoodEighthBellGradeTwo_eq_algebraicPairTrace hx]
-  change 128 / P ^ 2 *
+  change 128 / P ^ (2 : ℕ) *
       (thetaCuspLikelihoodEighthAlgebraicPairTrace x - 2 * r *
         thetaCuspLikelihoodEighthRawJetEight x) ≤
-    128 / P ^ 2 * thetaCuspLikelihoodEighthAlgebraicPairTrace x
+    128 / P ^ (2 : ℕ) * thetaCuspLikelihoodEighthAlgebraicPairTrace x
   exact mul_le_mul_of_nonneg_left (by nlinarith) hfactor
 
 end

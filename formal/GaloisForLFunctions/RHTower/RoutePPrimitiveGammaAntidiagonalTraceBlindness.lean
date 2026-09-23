@@ -30,7 +30,7 @@ noncomputable section
 
 /-- Euclidean energy of a resolved real two-channel current. -/
 def routePPrimitiveGammaResolvedEnergy (z : ℝ × ℝ) : ℝ :=
-  z.1 ^ 2 + z.2 ^ 2
+  z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)
 
 /-- Difference coordinate carrying the hidden antidiagonal channel. -/
 def routePPrimitiveGammaResolvedHiddenCoordinate (z : ℝ × ℝ) : ℝ :=
@@ -42,11 +42,11 @@ as an exact positive square.  The division-free form includes the balanced
 section without singular denominators. -/
 theorem routePPrimitiveGammaResolvedReporter_pythagorean
     (a : ℝ) (i j : Nat.Primes × ℕ) (z : ℝ × ℝ) :
-    2 * xiGammaEulerPrimitiveCoorientedReflectionOddExterior a i j ^ 2 *
+    2 * xiGammaEulerPrimitiveCoorientedReflectionOddExterior a i j ^ (2 : ℕ) *
         routePPrimitiveGammaResolvedEnergy z =
-      routePPrimitiveGammaCoorientedResolvedReporter a i j z ^ 2 +
-        xiGammaEulerPrimitiveCoorientedReflectionOddExterior a i j ^ 2 *
-          routePPrimitiveGammaResolvedHiddenCoordinate z ^ 2 := by
+      routePPrimitiveGammaCoorientedResolvedReporter a i j z ^ (2 : ℕ) +
+        xiGammaEulerPrimitiveCoorientedReflectionOddExterior a i j ^ (2 : ℕ) *
+          routePPrimitiveGammaResolvedHiddenCoordinate z ^ (2 : ℕ) := by
   rw [routePPrimitiveGammaCoorientedResolvedReporter_eq_codiagonal]
   simp only [resolvedDefectCodiagonal_apply]
   unfold routePPrimitiveGammaResolvedEnergy
@@ -70,7 +70,7 @@ theorem not_exists_routePPrimitiveGammaResolvedEnergy_le_reporter_sq
     (a : ℝ) (i j : Nat.Primes × ℕ) :
     ¬ ∃ C : ℝ, ∀ z : ℝ × ℝ,
       routePPrimitiveGammaResolvedEnergy z ≤
-        C * routePPrimitiveGammaCoorientedResolvedReporter a i j z ^ 2 := by
+        C * routePPrimitiveGammaCoorientedResolvedReporter a i j z ^ (2 : ℕ) := by
   rintro ⟨C, hC⟩
   have hbad := hC (routePPrimitiveGammaResolvedWoldCurrent i j)
   rw [routePPrimitiveGammaCoorientedResolvedReporter_woldCurrent,
@@ -137,8 +137,8 @@ theorem re_trace_routePPrimitiveGammaResolvedWoldPacket_gram
     routePPrimitiveGammaResolvedWoldPacket, Fin.sum_univ_two]
   rw [abs_of_pos (routePPrimitiveGammaResolvedWoldAmplitude_pos i j)]
   have hcast :
-      (((routePPrimitiveGammaResolvedWoldAmplitude i j : ℝ) : ℂ) ^ 2).re =
-        routePPrimitiveGammaResolvedWoldAmplitude i j ^ 2 := by
+      (((routePPrimitiveGammaResolvedWoldAmplitude i j : ℝ) : ℂ) ^ (2 : ℕ)).re =
+        routePPrimitiveGammaResolvedWoldAmplitude i j ^ (2 : ℕ) := by
     rw [pow_two]
     norm_num
     exact (pow_two _).symm
@@ -186,7 +186,7 @@ theorem routePPrimitiveGammaResolvedWoldPacket_not_trace_le_coherentNormSq
     (i j : Nat.Primes × ℕ) :
     ¬ (Matrix.gram ℂ
           (routePPrimitiveGammaResolvedWoldPacket i j)).trace.re ≤
-        ‖∑ k : Fin 2, routePPrimitiveGammaResolvedWoldPacket i j k‖ ^ 2 := by
+        ‖∑ k : Fin 2, routePPrimitiveGammaResolvedWoldPacket i j k‖ ^ (2 : ℕ) := by
   rw [routePPrimitiveGammaResolvedWoldPacket_sum]
   simp only [norm_zero, pow_two, mul_zero]
   exact not_le.mpr

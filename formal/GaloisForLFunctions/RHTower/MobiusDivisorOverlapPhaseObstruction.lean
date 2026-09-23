@@ -69,10 +69,10 @@ theorem mobiusDivisorSelectionFibre_eleven_overlap_box :
     ⟨by linarith,by linarith⟩,hz⟩
 
 private theorem eleven_overlap_energies :
-    mobiusDivisorSelectionEnergy 11 {3,7}=H11^2+A11^2+B11^2+C11^2 ∧
-    mobiusDivisorSelectionEnergy 11 (insert 2 {3,7})=(H11+A11)^2+(B11+C11)^2 ∧
-    mobiusDivisorSelectionEnergy 11 (insert 5 {3,7})=(H11+B11)^2+(A11+C11)^2 ∧
-    mobiusDivisorSelectionEnergy 11 (insert 5 (insert 2 {3,7}))=(H11+A11+B11+C11)^2 := by
+    mobiusDivisorSelectionEnergy 11 {3,7}=H11^(2 : ℕ)+A11^(2 : ℕ)+B11^(2 : ℕ)+C11^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 11 (insert 2 {3,7})=(H11+A11)^(2 : ℕ)+(B11+C11)^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 11 (insert 5 {3,7})=(H11+B11)^(2 : ℕ)+(A11+C11)^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 11 (insert 5 (insert 2 {3,7}))=(H11+A11+B11+C11)^(2 : ℕ) := by
   have hrem := mobiusDivisorSelectionPrimes_eleven_overlap_remaining
   have hpair : ({5,2} : Finset ℕ)={2,5} := by ext x; simp [or_comm]
   refine ⟨?_,?_,?_,?_⟩
@@ -86,9 +86,9 @@ private theorem eleven_overlap_energies :
 private theorem eleven_overlap_growth_box (h a b c : ℝ)
     (hh : -0.16 ≤ h ∧ h ≤ -0.11) (ha : -0.08 ≤ a ∧ a ≤ -0.06)
     (hb : -0.15 ≤ b ∧ b ≤ -0.14) (hc : 0.023 ≤ c ∧ c ≤ 0.025) :
-    1/200+(h^2+a^2+b^2+c^2)<(h+a)^2+(b+c)^2 ∧
-    1/200+(h^2+a^2+b^2+c^2)<(h+b)^2+(a+c)^2 ∧
-    (h+a)^2+(b+c)^2<(h+a+b+c)^2 ∧ (h+b)^2+(a+c)^2<(h+a+b+c)^2 := by
+    1/200+(h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ))<(h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ∧
+    1/200+(h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ))<(h+b)^(2 : ℕ)+(a+c)^(2 : ℕ) ∧
+    (h+a)^(2 : ℕ)+(b+c)^(2 : ℕ)<(h+a+b+c)^(2 : ℕ) ∧ (h+b)^(2 : ℕ)+(a+c)^(2 : ℕ)<(h+a+b+c)^(2 : ℕ) := by
   have hha := mul_le_mul (show (0.11:ℝ) ≤ -h by linarith) (show (0.06:ℝ) ≤ -a by linarith)
     (by norm_num : (0:ℝ) ≤ 0.06) (by linarith : 0 ≤ -h)
   have hbc := mul_le_mul (show -b ≤ (0.15:ℝ) by linarith) hc.2

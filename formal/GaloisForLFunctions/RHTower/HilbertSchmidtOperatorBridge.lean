@@ -45,7 +45,7 @@ theorem hasRankLE_hsTruncation {ι : Type*} (b : HilbertBasis ι ℂ H) (T : H �
 the tails of its Hilbert–Schmidt series. -/
 theorem approxNumber_le_hsTail {T : H →L[ℂ] H} (hT : IsHilbertSchmidt T)
     {ι : Type*} (b : HilbertBasis ι ℂ H) (s : Finset ι) :
-    approxNumber T s.card ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) :=
+    approxNumber T s.card ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) :=
   (approxNumber_le T s.card _ (hasRankLE_hsTruncation b T s)).trans
     (norm_sub_hsTruncation_le hT b s)
 
@@ -55,11 +55,11 @@ theorem tendsto_approxNumber_zero_of_isHilbertSchmidt {T : H →L[ℂ] H}
     (hT : IsHilbertSchmidt T) : Tendsto (approxNumber T) atTop (nhds 0) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
-  obtain ⟨s, hs⟩ := hT.exists_tail_lt (hsBasis ℂ H) (show (0 : ℝ) < ε ^ 2 by positivity)
+  obtain ⟨s, hs⟩ := hT.exists_tail_lt (hsBasis ℂ H) (show (0 : ℝ) < ε ^ (2 : ℕ) by positivity)
   refine ⟨s.card, fun n hn => ?_⟩
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (approxNumber_nonneg T n)]
   calc approxNumber T n ≤ approxNumber T s.card := approxNumber_antitone T hn
-    _ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (hsBasis ℂ H i)‖ ^ 2) :=
+    _ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (hsBasis ℂ H i)‖ ^ (2 : ℕ)) :=
         approxNumber_le_hsTail hT (hsBasis ℂ H) s
     _ < ε := (Real.sqrt_lt' hε).mpr hs
 

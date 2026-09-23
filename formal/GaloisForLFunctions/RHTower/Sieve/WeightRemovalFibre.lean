@@ -32,22 +32,22 @@ noncomputable section
 set. -/
 theorem sq_sum_le_weighted_add_variance {f g : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (W : ℝ)
     (F : Finset ℕ) :
-    W ^ 2 * (∑ b ∈ F, f b) ^ 2
-      ≤ 2 * (∑ b ∈ F, f b * g b) ^ 2 + 2 * (F.card : ℝ) * ∑ b ∈ F, (g b - W) ^ 2 := by
+    W ^ (2 : ℕ) * (∑ b ∈ F, f b) ^ (2 : ℕ)
+      ≤ 2 * (∑ b ∈ F, f b * g b) ^ (2 : ℕ) + 2 * (F.card : ℝ) * ∑ b ∈ F, (g b - W) ^ (2 : ℕ) := by
   classical
   have hsplit : W * ∑ b ∈ F, f b
       = (∑ b ∈ F, f b * g b) - ∑ b ∈ F, f b * (g b - W) := by
     rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun b _ => ?_
     ring
-  have hdev : (∑ b ∈ F, f b * (g b - W)) ^ 2
-      ≤ (F.card : ℝ) * ∑ b ∈ F, (g b - W) ^ 2 := by
+  have hdev : (∑ b ∈ F, f b * (g b - W)) ^ (2 : ℕ)
+      ≤ (F.card : ℝ) * ∑ b ∈ F, (g b - W) ^ (2 : ℕ) := by
     refine le_trans sq_sum_le_card_mul_sum_sq ?_
     refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun b _ => ?_) (Nat.cast_nonneg _)
     have hb := hf b
-    have hsq : (f b) ^ 2 ≤ 1 := by nlinarith [abs_nonneg (f b), sq_abs (f b)]
+    have hsq : (f b) ^ (2 : ℕ) ≤ 1 := by nlinarith [abs_nonneg (f b), sq_abs (f b)]
     nlinarith [sq_nonneg (g b - W), hsq]
-  have hval : W ^ 2 * (∑ b ∈ F, f b) ^ 2 = (W * ∑ b ∈ F, f b) ^ 2 := by ring
+  have hval : W ^ (2 : ℕ) * (∑ b ∈ F, f b) ^ (2 : ℕ) = (W * ∑ b ∈ F, f b) ^ (2 : ℕ) := by ring
   rw [hval, hsplit]
   nlinarith [hdev, sq_nonneg ((∑ b ∈ F, f b * g b) + ∑ b ∈ F, f b * (g b - W)),
     sq_nonneg ((∑ b ∈ F, f b * g b) - ∑ b ∈ F, f b * (g b - W))]
@@ -88,17 +88,17 @@ is counted at most `2h + 1` times, and each fibre has at most `h + 1` elements, 
 the variance of the weight over the single dyadic block carrying all the fibres. -/
 theorem sum_sq_fibreSum_le_weighted {f g : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ}
     (hx : 4 ≤ x) (hh0 : 0 ≤ h) (W : ℝ) :
-    W ^ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
-      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b * g b) ^ 2
-        + 2 * (h + 1) * (2 * h + 1) * ∑ b ∈ fibreDyadicIndex x h, (g b - W) ^ 2 := by
+    W ^ (2 : ℕ) * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b * g b) ^ (2 : ℕ)
+        + 2 * (h + 1) * (2 * h + 1) * ∑ b ∈ fibreDyadicIndex x h, (g b - W) ^ (2 : ℕ) := by
   classical
   set D : Finset ℕ := fibreDyadicIndex x h with hD
-  set c : ℕ → ℝ := fun b => (g b - W) ^ 2 with hc
+  set c : ℕ → ℝ := fun b => (g b - W) ^ (2 : ℕ) with hc
   have hc0 : ∀ b, 0 ≤ c b := fun b => sq_nonneg _
   -- one fibre
   have hfibre : ∀ a ∈ outerBlock x h,
-      W ^ 2 * (∑ b ∈ innerFibre x h a, f b) ^ 2
-        ≤ 2 * (∑ b ∈ innerFibre x h a, f b * g b) ^ 2
+      W ^ (2 : ℕ) * (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+        ≤ 2 * (∑ b ∈ innerFibre x h a, f b * g b) ^ (2 : ℕ)
           + 2 * (h + 1) * ∑ b ∈ innerFibre x h a, c b := by
     intro a ha
     refine (sq_sum_le_weighted_add_variance (g := g) hf W (innerFibre x h a)).trans ?_

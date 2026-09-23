@@ -24,7 +24,7 @@ theorem reducedCoefficient_continuous (s w a T : ℂ) : Continuous (reducedCoeff
 /-- The second spatial derivative demanded by the literal original radial equation. -/
 def principalLaplaceSecond (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) (x : ℝ) : ℂ :=
-  w^2*principalLaplaceProfile q branch a i w hw x-
+  w^(2 : ℕ)*principalLaplaceProfile q branch a i w hw x-
     principalExponent q i*(principalExponent q i-1)*(horizonCoordinate x:ℂ)*principalLaplaceProfile q branch a i w hw x-
       principalAmplitude q i*reducedCoefficient (physicalRate q branch) w a
         (onsetTransform (2*physicalRate q branch) w) x
@@ -74,13 +74,13 @@ private theorem principal_local_weak (q : XiZeroCopy) (branch : Bool) (a : ℂ) 
   have hiV := schwartz_pair_integrable ψ hk V hVc
   have hiS := schwartz_pair_integrable ψ hk S hSc
   have he (x : ℝ) : ψ x*principalLaplaceSecond q branch a i w hw x =
-      w^2*(ψ x*f x)-ψ x*V x-ψ x*S x := by dsimp [principalLaplaceSecond,f,V,S]; ring
+      w^(2 : ℕ)*(ψ x*f x)-ψ x*V x-ψ x*S x := by dsimp [principalLaplaceSecond,f,V,S]; ring
   simp only [he]
-  have hiFV : Integrable (fun x => w^2*(ψ x*f x)-ψ x*V x) := by
-    convert (hiF.const_mul (w^2)).sub hiV using 1; rfl
-  rw [integral_sub hiFV hiS,integral_sub (hiF.const_mul (w^2)) hiV,integral_const_mul]
+  have hiFV : Integrable (fun x => w^(2 : ℕ)*(ψ x*f x)-ψ x*V x) := by
+    convert (hiF.const_mul (w^(2 : ℕ))).sub hiV using 1; rfl
+  rw [integral_sub hiFV hiS,integral_sub (hiF.const_mul (w^(2 : ℕ))) hiV,integral_const_mul]
   change (∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) = _
-  change w^2*(∫ x : ℝ, ψ x*f x)-(∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) =
+  change w^(2 : ℕ)*(∫ x : ℝ, ψ x*f x)-(∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) =
     (∫ x : ℝ, ψ x*S x)+(∫ x : ℝ, ψ x*V x) at h
   linear_combination -h
 
@@ -100,7 +100,7 @@ theorem principalLaplaceProfile_hasDerivAt (q : XiZeroCopy) (branch : Bool) (a :
 /-- The causal Laplace profile satisfies the same literal classical equation as the endpoint Green difference. -/
 theorem principalLaplaceProfile_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) (x : ℝ) (hx : x < 0) :
-    w^2*principalLaplaceProfile q branch a i w hw x-
+    w^(2 : ℕ)*principalLaplaceProfile q branch a i w hw x-
       deriv (deriv (principalLaplaceProfile q branch a i w hw)) x-
         (horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)*principalLaplaceProfile q branch a i w hw x =
       reducedCoefficient (physicalRate q branch) w a (onsetTransform (2*physicalRate q branch) w) x*principalAmplitude q i := by

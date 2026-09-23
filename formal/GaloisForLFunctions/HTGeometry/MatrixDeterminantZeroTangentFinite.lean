@@ -22,7 +22,7 @@ theorem finite_matrixSet_of_detOne_tangent_eq_bot
     (gone : (1 : Matrix (Fin 2) (Fin 2) C) ∈ G)
     (gmul : ∀ a ∈ G, ∀ b ∈ G, a * b ∈ G)
     (ginv : ∀ a ∈ G, ∃ b ∈ G, a * b = 1)
-    (gdetSq : ∀ a ∈ G, a.det ^ 2 = 1)
+    (gdetSq : ∀ a ∈ G, a.det ^ (2 : ℕ) = 1)
     (hzero : matrixTangentM
         (matrixVanishingIdeal {a ∈ G | a.det = 1})
         (subset_matrixZeroSet_vanishingIdeal {a ∈ G | a.det = 1}

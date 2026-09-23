@@ -172,15 +172,15 @@ set_option maxHeartbeats 1000000 in
 /-- **Energy conservation for the strong solution of the free Klein–Gordon equation.** The sum of the
 squared `L²` norms of `⟨D⟩u` and `∂ₜu` is independent of the time. -/
 theorem kgFreeField_energy_const (f h : Lp (α := E) ℂ 2) (t : ℝ) :
-    ‖kgFreeGradient f h t‖ ^ 2 + ‖kgFreeVelocity f h t‖ ^ 2
-      = ‖kgFreqInvOp (E := E) f‖ ^ 2 + ‖kgFreqInvOp (E := E) h‖ ^ 2 := by
+    ‖kgFreeGradient f h t‖ ^ (2 : ℕ) + ‖kgFreeVelocity f h t‖ ^ (2 : ℕ)
+      = ‖kgFreqInvOp (E := E) f‖ ^ (2 : ℕ) + ‖kgFreqInvOp (E := E) h‖ ^ (2 : ℕ) := by
   have h0 := kgEnergy_kgPropagator (E := E) t (kgPair E (kgFreqInvOp f, kgFreqInvOp h))
   have h1 : kgEnergy (kgPropagator (E := E) t (kgPair E (kgFreqInvOp f, kgFreqInvOp h)))
-      = ‖kgFreeGradient f h t‖ ^ 2 + ‖kgFreeVelocity f h t‖ ^ 2 := by
+      = ‖kgFreeGradient f h t‖ ^ (2 : ℕ) + ‖kgFreeVelocity f h t‖ ^ (2 : ℕ) := by
     rw [kgPropagator_kgFreeState]
     simp only [kgEnergy, kgPair_fst, kgPair_snd]
   have h2 : kgEnergy (kgPair E (kgFreqInvOp (E := E) f, kgFreqInvOp (E := E) h))
-      = ‖kgFreqInvOp (E := E) f‖ ^ 2 + ‖kgFreqInvOp (E := E) h‖ ^ 2 := by
+      = ‖kgFreqInvOp (E := E) f‖ ^ (2 : ℕ) + ‖kgFreqInvOp (E := E) h‖ ^ (2 : ℕ) := by
     simp only [kgEnergy, kgPair_fst, kgPair_snd]
   rw [← h1, ← h2, h0]
 

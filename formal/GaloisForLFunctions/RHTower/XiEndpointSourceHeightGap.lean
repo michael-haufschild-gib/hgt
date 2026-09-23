@@ -23,7 +23,7 @@ noncomputable section
 /-- The explicit endpoint source bound forces every Xi multiplicity copy above squared height
 one. -/
 theorem xiZeroCopy_one_lt_im_sq (q : XiZeroCopy) :
-    1 < (q.1 : ℂ).im ^ 2 := by
+    1 < (q.1 : ℂ).im ^ (2 : ℕ) := by
   have hCpos : 0 < xiEndpointCompletedCurvature :=
     xiEndpointCompletedCurvature_pos
   have hCinv : 2 < 1 / xiEndpointCompletedCurvature := by
@@ -40,7 +40,7 @@ theorem xiZeroCopy_one_lt_abs_im (q : XiZeroCopy) :
 
 /-- The same strict squared-height gap on the actual Xi divisor support. -/
 theorem xiDivisorSupport_one_lt_im_sq (ρ : XiDivisorSupport) :
-    1 < (ρ : ℂ).im ^ 2 := by
+    1 < (ρ : ℂ).im ^ (2 : ℕ) := by
   let q : XiZeroCopy := by
     have hpos := xi_divisor_pos_on_support ρ
     have hn : 0 < Int.toNat
@@ -58,7 +58,7 @@ theorem xiDivisorSupport_one_lt_abs_im (ρ : XiDivisorSupport) :
 /-- Every zero of `xi`, without choosing a divisor enumeration, satisfies the explicit squared
 height gap. -/
 theorem one_lt_im_sq_of_xi_eq_zero {ρ : ℂ} (hzero : xi ρ = 0) :
-    1 < ρ.im ^ 2 :=
+    1 < ρ.im ^ (2 : ℕ) :=
   xiDivisorSupport_one_lt_im_sq
     ⟨ρ, mem_xi_divisor_support_of_eq_zero hzero⟩
 

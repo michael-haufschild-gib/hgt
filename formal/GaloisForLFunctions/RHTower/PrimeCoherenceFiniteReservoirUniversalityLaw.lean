@@ -37,10 +37,10 @@ theorem exists_orderPointedContinuumPrimeCoherenceFiniteReservoirUniversality
         Cardinal.continuum ∧
       (∀ z, weightedOrientationDistanceSq (primeCoherenceWeight sigma)
         (continuumSparsePrimeOrientation (fun _ => false) e z)
-        (fun _ => false) < eta ^ 2) ∧
+        (fun _ => false) < eta ^ (2 : ℕ)) ∧
       (∀ z w, weightedOrientationDistanceSq (primeCoherenceWeight sigma)
         (continuumSparsePrimeOrientation (fun _ => false) e z)
-        (continuumSparsePrimeOrientation (fun _ => false) e w) < eta ^ 2) ∧
+        (continuumSparsePrimeOrientation (fun _ => false) e w) < eta ^ (2 : ℕ)) ∧
       (∀ epsilon : Nat.Primes → Bool,
         PositiveDefiniteOnReal (signedPrimeVerticalTrace epsilon x) ↔
           epsilon = fun _ => false) ∧

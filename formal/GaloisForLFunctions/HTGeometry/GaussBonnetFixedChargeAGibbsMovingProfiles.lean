@@ -27,8 +27,8 @@ theorem egbFixedChargeAGibbsOddKernel_moving_residual_limit (w φ : ℝ) (ψ : �
 
 theorem egbFixedChargeAInteriorGibbsGap_moving_fifth_residual_limit (w φ l : ℝ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l (ψ τ) -
-      egbFixedChargeAGibbsBarrierCoefficient w φ * cos (ψ τ) ^ 4 * egbCoexistenceASymmetricRatio τ ^ 4) /
-      egbCoexistenceASymmetricRatio τ ^ 5 - egbFixedChargeAGibbsOddCoefficient w φ * sin (ψ τ) * cos (ψ τ) ^ 4)
+      egbFixedChargeAGibbsBarrierCoefficient w φ * cos (ψ τ) ^ (4 : ℕ) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) /
+      egbCoexistenceASymmetricRatio τ ^ (5 : ℕ) - egbFixedChargeAGibbsOddCoefficient w φ * sin (ψ τ) * cos (ψ τ) ^ (4 : ℕ))
       atBot (𝓝 (0 : ℝ)) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
@@ -38,8 +38,8 @@ theorem egbFixedChargeAInteriorGibbsGap_moving_fifth_residual_limit (w φ l : �
 
 theorem egbFixedChargeAInteriorGibbsGap_moving_normalized_residual_limit (w φ l₁ l₂ : ℝ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l₁ (ψ τ) / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos (ψ τ) ^ 4) / egbCoexistenceASymmetricRatio τ -
-      4 * egbFixedChargeAMiddleMeanCorrection φ * sin (ψ τ) * cos (ψ τ) ^ 4) atBot (𝓝 (0 : ℝ)) := by
+      cos (ψ τ) ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ -
+      4 * egbFixedChargeAMiddleMeanCorrection φ * sin (ψ τ) * cos (ψ τ) ^ (4 : ℕ)) atBot (𝓝 (0 : ℝ)) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
   have h := (Metric.tendstoUniformly_iff.mp (egbFixedChargeAInteriorGibbsGap_uniform_normalized_first_limit w φ l₁ l₂)) ε hε
@@ -53,9 +53,9 @@ theorem egbFixedChargeAInteriorGibbsGap_uniform_aligned_first_zero_limit (w φ l
     (egbFixedChargeAPeakAlignedProfile_uniform_first_limit φ)
   simp only [sub_self] at h
   change TendstoUniformly (fun τ ψ =>
-    (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) /
+    (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) /
       egbCoexistenceASymmetricRatio τ -
-    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot at h
+    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot at h
   convert h using 1
   funext τ ψ
   ring

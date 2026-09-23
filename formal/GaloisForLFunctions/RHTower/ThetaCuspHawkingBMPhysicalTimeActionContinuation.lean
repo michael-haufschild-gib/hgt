@@ -58,10 +58,10 @@ theorem projectedSource_fundamental_analytic (q : XiZeroCopy) (branch side : Boo
 def continuedPhysicalTimeAction (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (outer : Bool) (t : ℝ) (z : D4BMHorizon.Point) : ℂ :=
   let R : ℂ := tortoiseRadius t
-  let lam := physicalAngularParameter q^2-1/4
+  let lam := physicalAngularParameter q^(2 : ℕ)-1/4
   let g := tortoiseMode outer w (physicalRadialFrequency q) t
-  (-2*w*(lam-2)*continuedPhysicalSelfResponse q branch w a t*g/(R^2-1)-
-    w*R^2*g*continuedAngularSourceProjection q branch (physicalAngularParameter q) a w t/(R^2-1)^2)*
+  (-2*w*(lam-2)*continuedPhysicalSelfResponse q branch w a t*g/(R^(2 : ℕ)-1)-
+    w*R^(2 : ℕ)*g*continuedAngularSourceProjection q branch (physicalAngularParameter q) a w t/(R^(2 : ℕ)-1)^(2 : ℕ))*
       modeAngularSquare (physicalModeAngularJet q z)
 
 /-- On the original physical band this is exactly component zero of the actual Einstein action current. -/
@@ -84,19 +84,19 @@ theorem continuedPhysicalTimeAction_meromorphic (q : XiZeroCopy) (branch : Bool)
   have hF := projectedSource_meromorphic q branch (physicalAngularParameter q) a w hw hwr t ht
   have hi : MeromorphicAt (fun v : ℂ => v) w := analyticAt_id.meromorphicAt
   have hc (c : ℂ) : MeromorphicAt (fun _ : ℂ => c) w := analyticAt_const.meromorphicAt
-  have hmain := (((((hc (-2)).mul hi).mul (hc (physicalAngularParameter q^2-1/4-2))).mul hf).mul hg).div
-    (hc ((tortoiseRadius t:ℂ)^2-1))
-  have hcontact := ((hi.mul (hc ((tortoiseRadius t:ℂ)^2))).mul hg).mul hF
-  have hcontactD := hcontact.div (hc (((tortoiseRadius t:ℂ)^2-1)^2))
+  have hmain := (((((hc (-2)).mul hi).mul (hc (physicalAngularParameter q^(2 : ℕ)-1/4-2))).mul hf).mul hg).div
+    (hc ((tortoiseRadius t:ℂ)^(2 : ℕ)-1))
+  have hcontact := ((hi.mul (hc ((tortoiseRadius t:ℂ)^(2 : ℕ)))).mul hg).mul hF
+  have hcontactD := hcontact.div (hc (((tortoiseRadius t:ℂ)^(2 : ℕ)-1)^(2 : ℕ)))
   exact (hmain.sub hcontactD).mul (hc (modeAngularSquare (physicalModeAngularJet q z)))
 
 /-- The derived temporal Laurent coefficient before any angular or horizon integration. -/
 def physicalTimeResidue (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (outer : Bool) (t : ℝ) (z : D4BMHorizon.Point) : ℂ :=
-  -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^2-1/4-2)*
+  -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^(2 : ℕ)-1/4-2)*
     physicalSelfResidueCoefficient q branch side a t*
       tortoiseMode outer (physicalFundamentalFrequency q side) (physicalRadialFrequency q) t/
-        ((tortoiseRadius t:ℂ)^2-1)*modeAngularSquare (physicalModeAngularJet q z)
+        ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*modeAngularSquare (physicalModeAngularJet q z)
 
 /-- The retained temporal source contact is regular, so the actual current's simple residue is exactly the field-residue pairing. -/
 theorem continuedPhysicalTimeAction_residue (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
@@ -115,9 +115,9 @@ theorem continuedPhysicalTimeAction_residue (q : XiZeroCopy) (branch side : Bool
   have hi : Tendsto (fun w : ℂ => w) (𝓝[≠] w0) (𝓝 w0) := tendsto_id.mono_left nhdsWithin_le_nhds
   have hz0 : Tendsto (fun w : ℂ => w-w0) (𝓝[≠] w0) (𝓝 0) := by
     simpa only [sub_self] using hi.sub_const w0
-  have hmain := (((hi.const_mul (-2)).mul_const (physicalAngularParameter q^2-1/4-2)).mul hf).mul hg
-  have hcontact := ((((hi.mul_const (R^2)).mul hg).mul hF).mul hz0)
-  have h := ((hmain.div_const (R^2-1)).sub (hcontact.div_const ((R^2-1)^2))).mul_const
+  have hmain := (((hi.const_mul (-2)).mul_const (physicalAngularParameter q^(2 : ℕ)-1/4-2)).mul hf).mul hg
+  have hcontact := ((((hi.mul_const (R^(2 : ℕ))).mul hg).mul hF).mul hz0)
+  have h := ((hmain.div_const (R^(2 : ℕ)-1)).sub (hcontact.div_const ((R^(2 : ℕ)-1)^(2 : ℕ)))).mul_const
     (modeAngularSquare (physicalModeAngularJet q z))
   simp only [mul_zero,zero_div,sub_zero] at h
   apply h.congr'
@@ -144,7 +144,7 @@ private theorem fundamental_mode_value (q : XiZeroCopy) (side outer : Bool)
   · exact normalizable_fundamental_value _ _ (fundamental_roots q side) _
 
 private theorem physical_spin_factor_ne_zero (q : XiZeroCopy) :
-    physicalAngularParameter q^2-1/4-2 ≠ 0 := by
+    physicalAngularParameter q^(2 : ℕ)-1/4-2 ≠ 0 := by
   have hi : (physicalAngularParameter q).im ≠ 0 := by
     rw [physicalAngularParameter_eq]
     simpa using div_ne_zero (xi_divisor_support_im_ne_zero q.1) (by norm_num : (2:ℝ) ≠ 0)
@@ -163,10 +163,10 @@ private theorem physical_spin_factor_ne_zero (q : XiZeroCopy) :
 theorem physicalTimeResidue_fundamental_value (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (outer : Bool) (t : ℝ) (ht : t < 0) (z : D4BMHorizon.Point) :
     physicalTimeResidue q branch side a outer t z =
-      -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^2-1/4-2)/
-        ((tortoiseRadius t:ℂ)^2-1)*
+      -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^(2 : ℕ)-1/4-2)/
+        ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*
       (power (physicalFundamentalFrequency q side/2) (horizonCoordinate t)*
-        power (1/2) (1-horizonCoordinate t))^2*
+        power (1/2) (1-horizonCoordinate t))^(2 : ℕ)*
       (physicalSelfSourceCoefficient q*
         fundamentalSourceMoment (physicalFundamentalFrequency q side) (physicalRate q branch) a*
         clearedOnset (physicalRate q branch) (physicalFundamentalFrequency q side)/
@@ -185,8 +185,8 @@ theorem physicalTimeResidue_ne_zero (q : XiZeroCopy) (branch side : Bool) (a : �
   have hw : physicalFundamentalFrequency q side ≠ 0 := by
     intro h
     exact (physicalFundamentalFrequency_strip q side).1 (by rw [h]; rfl)
-  have hR : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius t)^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t ht])
+  have hR : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t ht])
   have hg : tortoiseMode outer (physicalFundamentalFrequency q side) (physicalRadialFrequency q) t ≠ 0 := by
     rw [fundamental_mode_value q side outer t ht]
     exact mul_ne_zero (power_ne_zero _ (horizonCoordinate_interior t ht).1)

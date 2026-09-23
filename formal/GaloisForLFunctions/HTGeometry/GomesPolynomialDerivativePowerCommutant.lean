@@ -45,7 +45,7 @@ omit [CharZero K] in
 theorem gomesPolynomialDerivativePowerCommutant_zero :
     gomesPolynomialDerivativePowerCommutantAlgebra K 0 = ⊤ := by
   ext E
-  change E ∈ Subalgebra.centralizer K {(Polynomial.derivative ^ 0 : Module.End K K[X])} ↔ True
+  change E ∈ Subalgebra.centralizer K {(Polynomial.derivative ^ (0 : ℕ) : Module.End K K[X])} ↔ True
   simp [gomesCentralizerSingleton_mem_iff]
 
 /-- Every positive derivative order has its full formal matrix classification with no extra premise. -/

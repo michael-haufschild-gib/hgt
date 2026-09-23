@@ -41,12 +41,12 @@ noncomputable section
 
 /-- Chiral `T_mm` coefficient of squared finite-part incoming cusp term. -/
 def d4ThetaHawkingEKGChiralCuspStressCoefficient (z : ℂ) : ℂ :=
-  d4ThetaTeukolskyLinearCuspWeight z ^ 2 / 2
+  d4ThetaTeukolskyLinearCuspWeight z ^ (2 : ℕ) / 2
 
 /-- At a divisor, the chiral stress coefficient is `rho²/8`. -/
 theorem d4ThetaHawkingEKGChiralCuspStressCoefficient_xi_eq (q : XiZeroCopy) :
     d4ThetaHawkingEKGChiralCuspStressCoefficient (xiSpectralPoint q) =
-      (q.1 : ℂ) ^ 2 / 8 := by
+      (q.1 : ℂ) ^ (2 : ℕ) / 8 := by
   rw [d4ThetaHawkingEKGChiralCuspStressCoefficient,
     d4ThetaTeukolskyLinearCuspWeight_eq_half_rho,
     d4ThetaTeukolskyRho_xiSpectralPoint]
@@ -124,7 +124,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 /-- Principal chiral stress vector, including quadratic field amplitude. -/
 def d4ThetaHawkingEKGChiralCuspStressVector
     (amplitude : ℂ) (profile : H) (q : XiZeroCopy) : H :=
-  (amplitude ^ 2 *
+  (amplitude ^ (2 : ℕ) *
     d4ThetaHawkingEKGChiralCuspStressCoefficient
       (xiSpectralPoint (d4ThetaHawkingEKGChiralCuspL2Copy q))) • profile
 

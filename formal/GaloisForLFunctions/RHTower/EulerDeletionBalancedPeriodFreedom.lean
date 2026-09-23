@@ -19,16 +19,16 @@ namespace RHTower.DeletionBalancedPeriods
 def coefficient (d n : ℕ) : ℝ := blockDeletionCoefficient d n
 
 def curvatureCoefficient (p q r n : ℕ) : ℝ :=
-  coefficient p n * coefficient q n ^ 2 +
-    coefficient (p*q) n * coefficient r n ^ 2 -
-    coefficient q n * coefficient r n ^ 2 -
-    coefficient p n * coefficient (q*r) n ^ 2
+  coefficient p n * coefficient q n ^ (2 : ℕ) +
+    coefficient (p*q) n * coefficient r n ^ (2 : ℕ) -
+    coefficient q n * coefficient r n ^ (2 : ℕ) -
+    coefficient p n * coefficient (q*r) n ^ (2 : ℕ)
 
 theorem grade_coefficient_linear {p q : ℕ} (hpq : p.Coprime q) (n : ℕ) :
-    coefficient p n * coefficient q n ^ 2 =
+    coefficient p n * coefficient q n ^ (2 : ℕ) =
       coefficient p n + (2 - (q : ℝ)) * coefficient q n +
         ((q : ℝ) - 2) * coefficient (p*q) n := by
-  have hs : coefficient q n ^ 2 =
+  have hs : coefficient q n ^ (2 : ℕ) =
       (q : ℝ) - 1 + (2 - (q : ℝ)) * coefficient q n := by
     dsimp only [coefficient]
     exact_mod_cast blockDeletionCoefficient_sq_eq q n
@@ -75,7 +75,7 @@ def linearObservation (L : ℕ) (h : Fin L → ℝ) (f : ℕ → ℝ) : ℝ :=
   ∑ n : Fin L, (f (n.val+1) * (1+h n) + f (n.val+1+L) * (1-h n))
 
 def quadraticObservation (L : ℕ) (h : Fin L → ℝ) (f : ℕ → ℝ) : ℝ :=
-  ∑ n : Fin L, (f (n.val+1) * (1+h n)^2 + f (n.val+1+L) * (1-h n)^2)
+  ∑ n : Fin L, (f (n.val+1) * (1+h n)^(2 : ℕ) + f (n.val+1+L) * (1-h n)^(2 : ℕ))
 
 theorem linear_observation (L : ℕ) (h : Fin L → ℝ) {f : ℕ → ℝ}
     (hf : Function.Periodic f L) :
@@ -90,7 +90,7 @@ theorem linear_observation (L : ℕ) (h : Fin L → ℝ) {f : ℕ → ℝ}
 theorem quadratic_observation (L : ℕ) (h : Fin L → ℝ) {f : ℕ → ℝ}
     (hf : Function.Periodic f L) :
     quadraticObservation L h f =
-      2 * ∑ n : Fin L, f (n.val+1) + 2 * ∑ n : Fin L, f (n.val+1) * (h n)^2 := by
+      2 * ∑ n : Fin L, f (n.val+1) + 2 * ∑ n : Fin L, f (n.val+1) * (h n)^(2 : ℕ) := by
   rw [quadraticObservation, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro n _
@@ -117,7 +117,7 @@ theorem spike_positive {L : ℕ} (j : Fin L) {t : ℝ} (ht : |t| < 1) :
 theorem quadratic_observation_spike {L : ℕ} (j : Fin L) (t : ℝ)
     {f : ℕ → ℝ} (hf : Function.Periodic f L) :
     quadraticObservation L (spike j t) f =
-      2 * ∑ n : Fin L, f (n.val+1) + 2 * t^2 * f (j.val+1) := by
+      2 * ∑ n : Fin L, f (n.val+1) + 2 * t^(2 : ℕ) * f (j.val+1) := by
   rw [quadratic_observation L (spike j t) hf]
   simp [spike, ite_pow, mul_ite]
   ring

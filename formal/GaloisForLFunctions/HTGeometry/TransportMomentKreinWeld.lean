@@ -79,11 +79,11 @@ theorem exchangePair_diagonalize (u v : ℝ × ℝ) :
 
 /-- Positive Hilbert majorant integrand for the first-order lift. -/
 def transportDiracMajorant (i : ℕ) (t : ℝ) : ℝ :=
-  (((i + 1 : ℕ) : ℝ) ^ 2) * t ^ (2 * i) + t ^ (2 * i + 2)
+  (((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) * t ^ (2 * i) + t ^ (2 * i + 2)
 
 theorem intervalIntegral_transportDiracMajorant (i : ℕ) (x y : ℝ) :
     (∫ t in x..y, transportDiracMajorant i t) =
-      (((i + 1 : ℕ) : ℝ) ^ 2) *
+      (((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) *
           (y ^ (2 * i + 1) - x ^ (2 * i + 1)) / ((2 * i + 1 : ℕ) : ℝ) +
         (y ^ (2 * i + 3) - x ^ (2 * i + 3)) / ((2 * i + 3 : ℕ) : ℝ) := by
   simp only [transportDiracMajorant]

@@ -369,7 +369,7 @@ theorem causalPairing_eq_I_mul_deriv_orderPhase_zero (causal : ℂ) :
       Complex.I * deriv (causalOrderPhase causal) 0 := by
   rw [(hasDerivAt_causalOrderPhase_zero causal).deriv]
   rw [show Complex.I * (-Complex.I * causal) =
-      -(Complex.I ^ 2 * causal) by ring, Complex.I_sq]
+      -(Complex.I ^ (2 : ℕ) * causal) by ring, Complex.I_sq]
   ring
 
 /-! ## Nine null-order probes and one tick determine a four-metric -/

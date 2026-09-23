@@ -140,7 +140,7 @@ theorem eulerPrimitiveCommonTestLabelWeight_eq_term
     rw [show
       (finiteVonMangoldtDepthOneAmplitude n * ((n : ℂ) ^ w)⁻¹) *
           (finiteVonMangoldtDepthOneAmplitude n * ((n : ℂ) ^ star v)⁻¹) =
-        finiteVonMangoldtDepthOneAmplitude n ^ 2 *
+        finiteVonMangoldtDepthOneAmplitude n ^ (2 : ℕ) *
           (((n : ℂ) ^ w)⁻¹ * ((n : ℂ) ^ star v)⁻¹) by ring,
       finiteVonMangoldtDepthOneAmplitude_sq hn]
     rw [finiteVonMangoldtWeight, LSeries.term_of_ne_zero hn,

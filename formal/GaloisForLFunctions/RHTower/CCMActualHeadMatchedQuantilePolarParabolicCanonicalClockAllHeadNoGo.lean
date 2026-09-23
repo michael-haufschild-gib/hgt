@@ -30,7 +30,7 @@ def ccmActualHeadMatchedCompletedQuantileParabolicCanonicalClockCurrent (K : ℕ
 
 /-- The deterministic physical endpoint contribution at the same canonical clock. -/
 def ccmActualHeadMatchedCompletedQuantileParabolicCanonicalEndpointQuartic (K : ℕ) : ℝ :=
-  (2 * Real.sqrt ((K + 3 : ℕ) : ℝ) - 2) ^ 4 / 12
+  (2 * Real.sqrt ((K + 3 : ℕ) : ℝ) - 2) ^ (4 : ℕ) / 12
 
 theorem criticalMellinAtomWeight_eq_zero_of_not_isPrimePow
     {n : ℕ} (hn : ¬ IsPrimePow n) : criticalMellinAtomWeight n = 0 := by
@@ -93,8 +93,8 @@ its initial range. -/
 theorem ccmActualHeadMatchedCompletedQuantileParabolicEndpointQuartic_succ_sub_lower
     (N : ℕ) (hN : 4 ≤ N) :
     (2 / 9 : ℝ) * N ≤
-      ((2 * Real.sqrt ((N + 1 : ℕ) : ℝ) - 2) ^ 4 / 12 -
-        (2 * Real.sqrt (N : ℝ) - 2) ^ 4 / 12) := by
+      ((2 * Real.sqrt ((N + 1 : ℕ) : ℝ) - 2) ^ (4 : ℕ) / 12 -
+        (2 * Real.sqrt (N : ℝ) - 2) ^ (4 : ℕ) / 12) := by
   let a : ℝ := Real.sqrt (N : ℝ)
   let b : ℝ := Real.sqrt ((N + 1 : ℕ) : ℝ)
   let x : ℝ := 2 * a - 2
@@ -103,10 +103,10 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicEndpointQuartic_succ_sub_l
   have hN1R : 0 ≤ ((N + 1 : ℕ) : ℝ) := by positivity
   have ha0 : 0 ≤ a := by dsimp [a]; positivity
   have hb0 : 0 ≤ b := by dsimp [b]; positivity
-  have hasq : a ^ 2 = (N : ℝ) := by
+  have hasq : a ^ (2 : ℕ) = (N : ℝ) := by
     dsimp [a]
     exact Real.sq_sqrt hNR
-  have hbsq : b ^ 2 = ((N + 1 : ℕ) : ℝ) := by
+  have hbsq : b ^ (2 : ℕ) = ((N + 1 : ℕ) : ℝ) := by
     dsimp [b]
     exact Real.sq_sqrt hN1R
   have hN4 : (4 : ℝ) ≤ N := by exact_mod_cast hN
@@ -116,7 +116,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicEndpointQuartic_succ_sub_l
     have : b < a := lt_of_not_ge h
     have hprod : 0 < (a - b) * (a + b) :=
       mul_pos (sub_pos.mpr this) (by linarith)
-    have hfactor : (a - b) * (a + b) = a ^ 2 - b ^ 2 := by ring
+    have hfactor : (a - b) * (a + b) = a ^ (2 : ℕ) - b ^ (2 : ℕ) := by ring
     rw [hfactor] at hprod
     have hcast : ((N + 1 : ℕ) : ℝ) = (N : ℝ) + 1 := by norm_num
     rw [hcast] at hbsq
@@ -126,7 +126,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicEndpointQuartic_succ_sub_l
     have : a + 1 < b := lt_of_not_ge h
     have hprod : 0 < (b - (a + 1)) * (b + (a + 1)) :=
       mul_pos (sub_pos.mpr this) (by linarith)
-    have hfactor : (b - (a + 1)) * (b + (a + 1)) = b ^ 2 - (a + 1) ^ 2 := by ring
+    have hfactor : (b - (a + 1)) * (b + (a + 1)) = b ^ (2 : ℕ) - (a + 1) ^ (2 : ℕ) := by ring
     rw [hfactor] at hprod
     have hcast : ((N + 1 : ℕ) : ℝ) = (N : ℝ) + 1 := by norm_num
     rw [hcast] at hbsq
@@ -149,27 +149,27 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicEndpointQuartic_succ_sub_l
   have hyx : 0 ≤ y - x := by
     dsimp [x, y]
     linarith
-  have hcube : 0 ≤ x ^ 3 - a ^ 3 := by
+  have hcube : 0 ≤ x ^ (3 : ℕ) - a ^ (3 : ℕ) := by
     calc
-      x ^ 3 - a ^ 3 = (x - a) * (x ^ 2 + x * a + a ^ 2) := by ring
+      x ^ (3 : ℕ) - a ^ (3 : ℕ) = (x - a) * (x ^ (2 : ℕ) + x * a + a ^ (2 : ℕ)) := by ring
       _ ≥ 0 := mul_nonneg (sub_nonneg.mpr hxa) (by positivity)
-  have hfirst : 4 * a ^ 3 * (y - x) ≤ y ^ 4 - x ^ 4 := by
-    have hmono : 4 * a ^ 3 * (y - x) ≤ 4 * x ^ 3 * (y - x) := by
-      have hcube' : a ^ 3 ≤ x ^ 3 := by linarith
+  have hfirst : 4 * a ^ (3 : ℕ) * (y - x) ≤ y ^ (4 : ℕ) - x ^ (4 : ℕ) := by
+    have hmono : 4 * a ^ (3 : ℕ) * (y - x) ≤ 4 * x ^ (3 : ℕ) * (y - x) := by
+      have hcube' : a ^ (3 : ℕ) ≤ x ^ (3 : ℕ) := by linarith
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hcube' (by norm_num)) hyx
-    have hrest : 0 ≤ y ^ 4 - x ^ 4 - 4 * x ^ 3 * (y - x) := by
+    have hrest : 0 ≤ y ^ (4 : ℕ) - x ^ (4 : ℕ) - 4 * x ^ (3 : ℕ) * (y - x) := by
       calc
-        y ^ 4 - x ^ 4 - 4 * x ^ 3 * (y - x) =
-            (y - x) ^ 2 * (6 * x ^ 2 + 4 * x * (y - x) + (y - x) ^ 2) := by ring
+        y ^ (4 : ℕ) - x ^ (4 : ℕ) - 4 * x ^ (3 : ℕ) * (y - x) =
+            (y - x) ^ (2 : ℕ) * (6 * x ^ (2 : ℕ) + 4 * x * (y - x) + (y - x) ^ (2 : ℕ)) := by ring
         _ ≥ 0 := mul_nonneg (sq_nonneg _) (by positivity)
     linarith
-  have hmain : (8 / 3 : ℝ) * a ^ 2 ≤ 4 * a ^ 3 * (y - x) := by
+  have hmain : (8 / 3 : ℝ) * a ^ (2 : ℕ) ≤ 4 * a ^ (3 : ℕ) * (y - x) := by
     calc
-      (8 / 3 : ℝ) * a ^ 2 = (8 / 3 : ℝ) * a ^ 2 * 1 := by ring
-      _ ≤ (8 / 3 : ℝ) * a ^ 2 * (3 * a * (b - a)) :=
+      (8 / 3 : ℝ) * a ^ (2 : ℕ) = (8 / 3 : ℝ) * a ^ (2 : ℕ) * 1 := by ring
+      _ ≤ (8 / 3 : ℝ) * a ^ (2 : ℕ) * (3 * a * (b - a)) :=
         mul_le_mul_of_nonneg_left hden (by positivity)
-      _ = 4 * a ^ 3 * (y - x) := by
+      _ = 4 * a ^ (3 : ℕ) * (y - x) := by
         dsimp [x, y]
         ring
   dsimp [a, b, x, y] at hasq hfirst hmain ⊢

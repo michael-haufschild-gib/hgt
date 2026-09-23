@@ -49,15 +49,15 @@ private theorem exterior_det (p : D4BMBackground.ExteriorPoint) :
     (D4BMBackground.jet (p.val 1) (p.val 3)).metric.det ≠ 0 := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [p.property.1])
   have hy : (p.val 3:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hF : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hF : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
   rw [D4BMBackground.metric_det _ _ hF]
   exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero 4 hr) (pow_ne_zero 4 (inv_ne_zero hy)))
 
 private theorem mixed_current (p : D4BMBackground.ExteriorPoint) (H K : Jet)
     (hH : Mixed H) (hK : Mixed K) :
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 *
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) *
       actionSymplectic (D4BMBackground.jet (p.val 1) (p.val 3)) H K 1 =
       ∑ a : Fin 2, (timeBlock H a * radialCurl K a-timeBlock K a * radialCurl H a) := by
   rw [action_first_congr _ H
@@ -104,8 +104,8 @@ private theorem contact_mixed (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) :
 
 private theorem stream_orbit_values (w r h h1 h2 h3 A C P Q R U V W Z : ℂ) (a : Fin 2) :
     let H := D4BMVectorStream.metricJet w r h h1 h2 h3 A C P Q R U V W Z
-    timeBlock H a = (r^2-1)*h1*(![A,C] a) ∧
-    radialCurl H a = (w^2*h/(r^2-1)-2*r*h1-(r^2-1)*h2)*(![A,C] a) := by
+    timeBlock H a = (r^(2 : ℕ)-1)*h1*(![A,C] a) ∧
+    radialCurl H a = (w^(2 : ℕ)*h/(r^(2 : ℕ)-1)-2*r*h1-(r^(2 : ℕ)-1)*h2)*(![A,C] a) := by
   fin_cases a <;> constructor
   all_goals dsimp [timeBlock,radialCurl,angularIndex,D4BMVectorStream.metricJet,
     D4BMVectorStream.radialJet,D4BMVectorStream.covector0,D4BMVectorStream.covector1,
@@ -114,10 +114,10 @@ private theorem stream_orbit_values (w r h h1 h2 h3 A C P Q R U V W Z : ℂ) (a 
   all_goals ring
 
 private theorem contact_orbit_values (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hF : r^2-1 ≠ 0) (a : Fin 2) :
+    (hr : r ≠ 0) (hF : r^(2 : ℕ)-1 ≠ 0) (a : Fin 2) :
     let H := D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy
-    timeBlock H a = s*(s+1)/2*B^2*(r^2-1)/r^3*(![S*Sy,-S*Sx] a) ∧
-    radialCurl H a = s*(s+1)/2*B^2*(1/r^2-(2*s+3)/r^4)*(![S*Sy,-S*Sx] a) := by
+    timeBlock H a = s*(s+1)/2*B^(2 : ℕ)*(r^(2 : ℕ)-1)/r^(3 : ℕ)*(![S*Sy,-S*Sx] a) ∧
+    radialCurl H a = s*(s+1)/2*B^(2 : ℕ)*(1/r^(2 : ℕ)-(2*s+3)/r^(4 : ℕ))*(![S*Sy,-S*Sx] a) := by
   fin_cases a <;> constructor
   all_goals dsimp [timeBlock,radialCurl,angularIndex,D4BMQuadraticMixedSource.correctionJet,
     D4BMScalarLinearEquation.coord,D4BMScalarLinearEquation.temporalRadial,
@@ -132,10 +132,10 @@ private def assembledJet (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   metricJetCombination (-1)
     (metricJetCombination (physicalRate q branch*(physicalRate q branch-1)/4)
       (streamActualMetricJet (2*physicalRate q branch) (p.val 1)
-        (envelope (2*physicalRate q branch) (a^2) p.val) false
+        (envelope (2*physicalRate q branch) (a^(2 : ℕ)) p.val) false
         (fullAngularCovector q branch) (angularPoint p.val))
       (streamActualMetricJet (2*physicalRate q branch) (p.val 1)
-        (envelope (2*physicalRate q branch) (a^2) p.val) true
+        (envelope (2*physicalRate q branch) (a^(2 : ℕ)) p.val) true
         (fullSquareCovector q) (angularPoint p.val)))
     (D4BMMixedQuadraticClosure.contactJet q branch a p)
 
@@ -169,11 +169,11 @@ private theorem actual_mixed (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 
 /-- Actual source-derived temporal block, after adding the differentiated contact. -/
 def sourceTime (s r E A J : ℂ) : ℂ :=
-  E/r*(2*s*A+s^2*(1-(s+1)/(2*r^2))*J)
+  E/r*(2*s*A+s^(2 : ℕ)*(1-(s+1)/(2*r^(2 : ℕ)))*J)
 
 /-- Actual radial curl of the complete mixed particular correction. -/
 def sourceCurl (s r E A J : ℂ) : ℂ :=
-  E/r^2*(2*s*(2*s+1)*A+s^2*(1-(s+1)*(2*s+3)/(2*r^2))*J)
+  E/r^(2 : ℕ)*(2*s*(2*s+1)*A+s^(2 : ℕ)*(1-(s+1)*(2*s+3)/(2*r^(2 : ℕ)))*J)
 
 private theorem combination_orbit (c : ℂ) (H K : Jet) (a : Fin 2) :
     timeBlock (metricJetCombination c H K) a = timeBlock H a-c*timeBlock K a ∧
@@ -187,10 +187,10 @@ private theorem combination_orbit (c : ℂ) (H K : Jet) (a : Fin 2) :
 private theorem streamActual_orbit (w r E : ℂ) (sq : Bool) (V : D4BMHorizon.Covector)
     (z : Point) (a : Fin 2) :
     timeBlock (streamActualMetricJet w r E sq V z) a =
-      (r^2-1)*streamRadialFirst w r E sq*V a z ∧
+      (r^(2 : ℕ)-1)*streamRadialFirst w r E sq*V a z ∧
     radialCurl (streamActualMetricJet w r E sq V z) a =
-      (w^2*streamRadialValue w r E sq/(r^2-1)-
-        2*r*streamRadialFirst w r E sq-(r^2-1)*streamRadialSecond w r E sq)*V a z := by
+      (w^(2 : ℕ)*streamRadialValue w r E sq/(r^(2 : ℕ)-1)-
+        2*r*streamRadialFirst w r E sq-(r^(2 : ℕ)-1)*streamRadialSecond w r E sq)*V a z := by
   have h := stream_orbit_values w r (streamRadialValue w r E sq)
     (streamRadialFirst w r E sq) (streamRadialSecond w r E sq) (streamRadialThird w r E sq)
     (V 0 z) (V 1 z) (coordDeriv 0 (V 0) z) (coordDeriv 1 (V 0) z) (coordDeriv 0 (V 1) z)
@@ -203,14 +203,14 @@ private theorem contact_actual_orbit (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) (k : Fin 2) :
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let J := fullSquareCovector q k (angularPoint p.val)
     let H := D4BMMixedQuadraticClosure.contactJet q branch a p
-    timeBlock H k = s*(s+1)/2*E*(r^2-1)/r^3*J ∧
-    radialCurl H k = s*(s+1)/2*E*(1/r^2-(2*s+3)/r^4)*J := by
+    timeBlock H k = s*(s+1)/2*E*(r^(2 : ℕ)-1)/r^(3 : ℕ)*J ∧
+    radialCurl H k = s*(s+1)/2*E*(1/r^(2 : ℕ)-(2*s+3)/r^(4 : ℕ))*J := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [p.property.1])
-  have hF : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hF : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   let S := D4BMAngularTwoTensor.source q
   let z := angularPoint p.val
   have he : ![S z*coordDeriv 1 S z,-S z*coordDeriv 0 S z] k = fullSquareCovector q k z := by
@@ -234,13 +234,13 @@ theorem mixedField_orbit (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     let H := ofMetricField (D4BMMixedQuadraticClosure.mixedField q branch a) p.val
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let A := fullAngularCovector q branch k (angularPoint p.val)
     let J := fullSquareCovector q k (angularPoint p.val)
     timeBlock H k = sourceTime s r E A J ∧ radialCurl H k = sourceCurl s r E A J := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [p.property.1])
-  have hF : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hF : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   dsimp only
   rw [actual_jet]
   constructor
@@ -260,7 +260,7 @@ theorem mixedField_orbit (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     ring
 
 /-- Original left-mode temporal block after the unchanged tortoise-to-radius lift. -/
-def leftTime (r g dg : ℂ) : ℂ := (r^2-1)*g+r*dg
+def leftTime (r g dg : ℂ) : ℂ := (r^(2 : ℕ)-1)*g+r*dg
 
 /-- Original left-mode curl, using its actual continued radial equation. -/
 def leftCurl (r lam g dg : ℂ) : ℂ := lam*g/r-2*r*g-2*dg
@@ -278,8 +278,8 @@ private theorem left_actual_orbit (q : XiZeroCopy) (side outer : Bool) (t : Iio 
   have hr : (D4BMJointWave.tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show D4BMJointWave.tortoiseRadius t ≠ 0 by
       linarith [D4BMJointWave.tortoiseRadius_exterior t t.property])
-  have hF : (D4BMJointWave.tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (D4BMJointWave.tortoiseRadius t)^2-1 ≠ 0 by
+  have hF : (D4BMJointWave.tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (D4BMJointWave.tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by
       nlinarith [D4BMJointWave.tortoiseRadius_exterior t t.property])
   dsimp only
   rw [D4BMLeftModeRadialEquation.metricField_jet]
@@ -310,7 +310,7 @@ against the original independent left QNM, at its original physical frequency. -
 def current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reader : XiZeroCopy)
     (side outer : Bool) (t : Iio (0:ℝ)) (z : {z : Point // 0 < z 1}) (j : Fin 4) : ℂ :=
   let p := modePoint t z.val z.property
-  (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+  (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
     (D4BMBackground.jet (p.val 1) (p.val 3))
     (ofMetricField (D4BMMixedQuadraticClosure.mixedField q branch a) p.val)
     (ofMetricField (D4BMLeftModeRadialEquation.metricField reader side outer) p.val) j
@@ -321,7 +321,7 @@ theorem radial_current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reader : XiZe
     let p := modePoint t z.val z.property
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let g := D4BMLeftModeRadialEquation.profile reader side outer t
     let dg := D4BMLeftModeRadialEquation.profileFirst reader side outer t
     current q branch a reader side outer t z 1 =
@@ -359,7 +359,7 @@ theorem complete_current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reader : Xi
   intro p H K
   have hH : Mixed H := actual_mixed ..
   have hK : Mixed K := left_actual_mixed ..
-  change (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 *
+  change (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) *
     actionSymplectic (D4BMBackground.jet (p.val 1) (p.val 3)) H K j = _
   rw [action_first_congr _ H
     (mixedJet (timeBlock H) (radiusBlock H) (fun k a => H.first k 0 (angularIndex a))
@@ -371,7 +371,7 @@ theorem complete_current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reader : Xi
 
 /-- The source-contact contribution required in the original radial boundary pairing. -/
 def contactRadialCoefficient (s r E lam g dg : ℂ) : ℂ :=
-  s*(s+1)/2*E/r^4*((r^2-1)*(lam-3*r^2+2*s+3)*g+r*(2*s+5-3*r^2)*dg)
+  s*(s+1)/2*E/r^(4 : ℕ)*((r^(2 : ℕ)-1)*(lam-3*r^(2 : ℕ)+2*s+3)*g+r*(2*s+5-3*r^(2 : ℕ))*dg)
 
 /-- The actual contact alone has this radial pairing with the original left mode.
 It cannot be dropped merely because its temporal metric entry vanishes at the horizon. -/
@@ -380,8 +380,8 @@ theorem contact_radial_current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reade
     let p := modePoint t z.val z.property
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (ofMetricField (D4BMMixedQuadraticClosure.contactField q branch a) p.val)
       (ofMetricField (D4BMLeftModeRadialEquation.metricField reader side outer) p.val) 1 =
@@ -404,7 +404,7 @@ theorem contact_radial_current (q : XiZeroCopy) (branch : Bool) (a : ℂ) (reade
   change _ = contactRadialCoefficient s r E _ _ _*(_*_)
   rw [show (D4BMJointWave.tortoiseRadius t:ℂ) = r from rfl]
   dsimp only [leftTime,leftCurl,contactRadialCoefficient]
-  change (s*(s+1)/2*E*(r^2-1)/r^3*_)*(_*_)-(_*_)*(s*(s+1)/2*E*(1/r^2-(2*s+3)/r^4)*_) = _
+  change (s*(s+1)/2*E*(r^(2 : ℕ)-1)/r^(3 : ℕ)*_)*(_*_)-(_*_)*(s*(s+1)/2*E*(1/r^(2 : ℕ)-(2*s+3)/r^(4 : ℕ))*_) = _
   field_simp
   ring
 
@@ -436,7 +436,7 @@ def angularGreenCurrent (q : XiZeroCopy) (branch : Bool) (reader : XiZeroCopy)
   let S := D4BMAngularTwoTensor.source q
   let R := D4BMLiteralCusp.scalar (D4BMJointSource.physicalAngularParameter reader)
   D4BMLeftModeRadialEquation.eigenvalue reader*R z*coordDeriv j H z-
-    D4BMGlobalAngularResponse.parameter q branch*(H z+S z^2/2)*coordDeriv j R z
+    D4BMGlobalAngularResponse.parameter q branch*(H z+S z^(2 : ℕ)/2)*coordDeriv j R z
 
 /-- The literal source and reader equations give an exact overlap identity.
 Its right side is a divergence, whose boundary flux still has to be retained. -/
@@ -468,7 +468,7 @@ theorem angular_overlap_divergence (q : XiZeroCopy) (branch : Bool) (reader : Xi
   have hd (j : Fin 2) : coordDeriv j (angularGreenCurrent q branch reader j) z.val =
       lam*(coordDeriv j R z.val*coordDeriv j H z.val+R z.val*coordDeriv j (coordDeriv j H) z.val)-
       mu*((coordDeriv j H z.val+S z.val*coordDeriv j S z.val)*coordDeriv j R z.val+
-        (H z.val+S z.val^2/2)*coordDeriv j (coordDeriv j R) z.val) := by
+        (H z.val+S z.val^(2 : ℕ)/2)*coordDeriv j (coordDeriv j R) z.val) := by
     have dh := (ScalarTwoJet.coordDeriv_hasFDerivAt hH j).differentiableAt.hasFDerivAt
     have dr := (ScalarTwoJet.coordDeriv_hasFDerivAt hR j).differentiableAt.hasFDerivAt
     have hh := ((dR.const_mul lam).mul dh).sub
@@ -479,12 +479,12 @@ theorem angular_overlap_divergence (q : XiZeroCopy) (branch : Bool) (reader : Xi
     ring
   have heH := fullAngularField_equation q branch z.val z.property
   rw [scalarLaplacian_eq _ z.val z.property] at heH
-  change (z.val 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 H) z.val+
-    coordDeriv 1 (coordDeriv 1 H) z.val) = mu*H z.val+(mu/2)*S z.val^2 at heH
+  change (z.val 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 H) z.val+
+    coordDeriv 1 (coordDeriv 1 H) z.val) = mu*H z.val+(mu/2)*S z.val^(2 : ℕ) at heH
   have heR := D4BMLiteralCusp.scalar_equation
     (D4BMJointSource.physicalAngularParameter reader) z.val z.property
   rw [scalarLaplacian_eq _ z.val z.property] at heR
-  have heR' : (z.val 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 R) z.val+
+  have heR' : (z.val 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 R) z.val+
       coordDeriv 1 (coordDeriv 1 R) z.val) = lam*R z.val := by
     dsimp only [R,lam,D4BMLeftModeRadialEquation.eigenvalue,D4BMLiteralCusp.scalarQ] at heR ⊢
     linear_combination heR
@@ -494,7 +494,7 @@ theorem angular_overlap_divergence (q : XiZeroCopy) (branch : Bool) (reader : Xi
   have hy : (z.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.property.ne'
   apply (mul_left_cancel₀ (pow_ne_zero 2 hy))
   simp only [Fin.sum_univ_two,hd,coexact,Matrix.cons_val_zero,Matrix.cons_val_one]
-  linear_combination (lam*R z.val)*heH-(mu*(H z.val+S z.val^2/2))*heR'
+  linear_combination (lam*R z.val)*heH-(mu*(H z.val+S z.val^(2 : ℕ)/2))*heR'
 
 /-- Coefficient of one actual angular overlap in the radial Einstein current. -/
 def radialPairCoefficient (s r E lam g dg A J : ℂ) : ℂ :=
@@ -509,7 +509,7 @@ theorem radial_current_angular_decomposition (q : XiZeroCopy) (branch : Bool) (a
     let p := modePoint t z.val z.property
     let s := physicalRate q branch
     let r := (p.val 1:ℂ)
-    let E := envelope (2*s) (a^2) p.val
+    let E := envelope (2*s) (a^(2 : ℕ)) p.val
     let lam := D4BMLeftModeRadialEquation.eigenvalue reader
     let mu := D4BMGlobalAngularResponse.parameter q branch
     let g := D4BMLeftModeRadialEquation.profile reader side outer t

@@ -144,7 +144,7 @@ theorem norm_eucVec_uniformSeed (m : ℕ) : ‖eucVec (uniformSeed m)‖ = 1 := 
   have hcard : (Fintype.card (FiniteQubitConfiguration (Fin m)) : ℝ) = 2 ^ m := by
     simp
   have hpos : (0 : ℝ) < 2 ^ m := by positivity
-  have hsum : ∑ _x : FiniteQubitConfiguration (Fin m), ‖uniformSeed m _x‖ ^ 2 = 1 := by
+  have hsum : ∑ _x : FiniteQubitConfiguration (Fin m), ‖uniformSeed m _x‖ ^ (2 : ℕ) = 1 := by
     simp only [norm_uniformSeed, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rw [inv_pow, Real.sq_sqrt (le_of_lt hpos), hcard]
     field_simp

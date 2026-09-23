@@ -207,7 +207,7 @@ theorem neg_im_gaussTerminalWeylTransformComplex_eq_poisson_sum {N m : ℕ}
     -(gaussTerminalWeylTransformComplex s m z).im =
       ∑ x ∈ gaussNodes s m,
         gaussTerminalSourceResistance s m x * z.im /
-          ((z.re - x) ^ 2 + z.im ^ 2) := by
+          ((z.re - x) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
   rw [← gaussTerminalWeylSourceSumComplex_eq_transform h hmN hz,
     gaussTerminalWeylSourceSumComplex]
   simp only [Complex.im_sum, Complex.div_im, Complex.ofReal_re, Complex.ofReal_im,

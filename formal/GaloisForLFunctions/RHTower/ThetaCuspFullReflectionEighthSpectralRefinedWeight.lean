@@ -24,7 +24,7 @@ def thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline (q : ℝ) : ℝ :=
       (thetaCuspFirstAtomSixthProfile q - 62928)
       (thetaCuspFirstAtomEighthProfile q) +
     62928 * thetaCuspFullReflectionEighthCompactEighthCoefficient q *
-      (1 / 69) * (q + 3 / 2) ^ 2
+      (1 / 69) * (q + 3 / 2) ^ (2 : ℕ)
 
 /-- The spectrally compensated uniform-loss baseline is strict from weight `467/100`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline_pos_of_fourHundredSixtySevenHundredths_le
@@ -33,7 +33,7 @@ theorem thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline_pos_of_fourHundre
   have hqpos : 0 < q := by linarith
   let y := q - 467 / 100
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 16 *
+  have hmul : 0 < q ^ (16 : ℕ) *
       thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline q := by
     dsimp [thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline,
       thetaCuspFullReflectionEighthCompactEighthCoefficient,
@@ -53,17 +53,17 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_fourHundre
     let B0 := thetaCuspFirstAtomFourthProfile q
     let Cw := thetaCuspFirstAtomSixthProfile q - 62928
     let D0 := thetaCuspFirstAtomEighthProfile q
-    0 < 576 * W ^ 4 - 672 * W ^ 2 * B0 + 76 * B0 ^ 2 +
+    0 < 576 * W ^ (4 : ℕ) - 672 * W ^ (2 : ℕ) * B0 + 76 * B0 ^ (2 : ℕ) +
       48 * W * Cw - D0 := by
   have hqpos : 0 < q := by linarith
   let y := q - 467 / 100
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   dsimp only
-  have hmul : 0 < q ^ 16 *
-      (576 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 4 -
-        672 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 *
+  have hmul : 0 < q ^ (16 : ℕ) *
+      (576 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (4 : ℕ) -
+        672 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) *
           thetaCuspFirstAtomFourthProfile q +
-        76 * thetaCuspFirstAtomFourthProfile q ^ 2 +
+        76 * thetaCuspFirstAtomFourthProfile q ^ (2 : ℕ) +
         48 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) *
           (thetaCuspFirstAtomSixthProfile q - 62928) -
         thetaCuspFirstAtomEighthProfile q) := by
@@ -81,14 +81,14 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_
     let W := thetaCuspFirstAtomCurvatureProfile q - 13 / 10
     let B0 := thetaCuspFirstAtomFourthProfile q
     let Cw := thetaCuspFirstAtomSixthProfile q - 62928
-    0 < 2 * W * (1152 * W ^ 2 - 672 * B0) + 48 * Cw := by
+    0 < 2 * W * (1152 * W ^ (2 : ℕ) - 672 * B0) + 48 * Cw := by
   have hqpos : 0 < q := by linarith
   let y := q - 467 / 100
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   dsimp only
-  have hmul : 0 < q ^ 10 *
+  have hmul : 0 < q ^ (10 : ℕ) *
       (2 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) *
-          (1152 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+          (1152 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
             672 * thetaCuspFirstAtomFourthProfile q) +
         48 * (thetaCuspFirstAtomSixthProfile q - 62928)) := by
     dsimp [thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomFourthProfile,
@@ -102,10 +102,10 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_
 /-- Effective native sixth-loss coefficient after subtracting the guaranteed spectral eighth
 gain. -/
 def thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient (q : ℝ) : ℝ :=
-  128 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 3 -
+  128 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (3 : ℕ) -
     2 * thetaCuspFirstAtomSixthProfile q -
     thetaCuspFullReflectionEighthCompactEighthCoefficient q *
-      (1 / 69) * (q + 3 / 2) ^ 2
+      (1 / 69) * (q + 3 / 2) ^ (2 : ℕ)
 
 /-- The effective loss coefficient is positive throughout the only new chamber. -/
 theorem thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient_pos
@@ -116,15 +116,15 @@ theorem thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient_pos
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   have hyUpper : y < 2 / 25 := by dsimp only [y]; linarith
   have htailFactor : 0 < 2247731200 - 256000 * y := by nlinarith
-  have htail : 0 ≤ y ^ 9 * (2247731200 - 256000 * y) := by positivity
-  have hy2 : 0 ≤ y ^ 2 := by positivity
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
-  have hy5 : 0 ≤ y ^ 5 := by positivity
-  have hy6 : 0 ≤ y ^ 6 := by positivity
-  have hy7 : 0 ≤ y ^ 7 := by positivity
-  have hy8 : 0 ≤ y ^ 8 := by positivity
-  have hmul : 0 < q ^ 6 *
+  have htail : 0 ≤ y ^ (9 : ℕ) * (2247731200 - 256000 * y) := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := by positivity
+  have hy6 : 0 ≤ y ^ (6 : ℕ) := by positivity
+  have hy7 : 0 ≤ y ^ (7 : ℕ) := by positivity
+  have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
+  have hmul : 0 < q ^ (6 : ℕ) *
       thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient q := by
     dsimp [thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient,
       thetaCuspFullReflectionEighthCompactEighthCoefficient,
@@ -160,8 +160,8 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
     let D := D0 - e8
     let Aw := A0 - 13 / 10
     let Cw := C0 - 62928
-    let K8 := 4 * Aw ^ 2 - B0
-    let L := 128 * Aw ^ 3 - 2 * C0 - K8 * (1 / 69) * As ^ 2
+    let K8 := 4 * Aw ^ (2 : ℕ) - B0
+    let L := 128 * Aw ^ (3 : ℕ) - 2 * C0 - K8 * (1 / 69) * As ^ (2 : ℕ)
     have hq : (467 / 100 : ℝ) ≤ q := by simpa only [q] using hqBound
     have hqUpper : q < 19 / 4 := by
       simpa only [q, not_le] using hqLarge
@@ -171,7 +171,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       dsimp only [As, q, thetaCuspSingleAtomReflectionScale]
       rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
       norm_num
-      rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+      rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
         rw [show 2 * x = x + x by ring, Real.exp_add]
         ring]
     have hA0profile : A0 = thetaCuspFirstAtomCurvatureProfile q := by
@@ -183,8 +183,8 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       rfl
     have hC0profile : C0 = thetaCuspFirstAtomSixthProfile q := by
       change
-        (2 * q + 3) * (32 + 48 / q ^ 2 + 2160 / q ^ 3 +
-          16200 / q ^ 4 + 38880 / q ^ 5 + 29160 / q ^ 6) =
+        (2 * q + 3) * (32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) +
+          16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ)) =
           thetaCuspFirstAtomSixthProfile q
       dsimp only [thetaCuspFirstAtomSixthProfile]
       field_simp [hqpos.ne']
@@ -195,7 +195,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
     have hA0 : (19 : ℝ) ≤ A0 := by
       simpa only [A0] using
         nineteen_le_thetaCuspBornWittenLogCurvature (n := 1) (by norm_num) hx
-    have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ 2 := by
+    have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ (2 : ℕ) := by
       simpa only [A0, B0] using
         thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq
           (n := 1) (by norm_num) hx
@@ -211,7 +211,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
         thetaCuspLikelihoodSourceLogPartitionJetSix_lt_sixtyTwoThousandNineHundredTwentyEight hx
     have he8pos : 0 < e8 := by
       simpa only [e8] using thetaCuspLikelihoodSourceLogPartitionJetEight_pos hx
-    have hcoupling : (1 / 69 : ℝ) * As ^ 2 * e6 < e8 := by
+    have hcoupling : (1 / 69 : ℝ) * As ^ (2 : ℕ) * e6 < e8 := by
       simpa only [As, e6, e8] using
         oneSixtyNinth_mul_scale_sq_logJetSix_lt_logJetEight hx
     have hAwpos : 0 < Aw := by dsimp only [Aw]; linarith
@@ -221,15 +221,15 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
     have hAwRatio : (177 / 190 : ℝ) * A0 ≤ Aw := by
       dsimp only [Aw]
       nlinarith
-    have hratioSq : (177 / 190 : ℝ) ^ 2 * A0 ^ 2 ≤ Aw ^ 2 := by
+    have hratioSq : (177 / 190 : ℝ) ^ (2 : ℕ) * A0 ^ (2 : ℕ) ≤ Aw ^ (2 : ℕ) := by
       have hpow := pow_le_pow_left₀
         (by positivity : (0 : ℝ) ≤ (177 / 190) * A0) hAwRatio 2
       simpa only [mul_pow] using hpow
-    have hB0Aw : B0 < (7 / 5 : ℝ) * Aw ^ 2 := by
-      have hcoef : (6 / 5 : ℝ) < (7 / 5 : ℝ) * (177 / 190) ^ 2 := by norm_num
-      have hA0sq : 0 < A0 ^ 2 := by positivity
-      have hstrict : (6 / 5 : ℝ) * A0 ^ 2 <
-          ((7 / 5 : ℝ) * (177 / 190) ^ 2) * A0 ^ 2 :=
+    have hB0Aw : B0 < (7 / 5 : ℝ) * Aw ^ (2 : ℕ) := by
+      have hcoef : (6 / 5 : ℝ) < (7 / 5 : ℝ) * (177 / 190) ^ (2 : ℕ) := by norm_num
+      have hA0sq : 0 < A0 ^ (2 : ℕ) := by positivity
+      have hstrict : (6 / 5 : ℝ) * A0 ^ (2 : ℕ) <
+          ((7 / 5 : ℝ) * (177 / 190) ^ (2 : ℕ)) * A0 ^ (2 : ℕ) :=
         mul_lt_mul_of_pos_right hcoef hA0sq
       nlinarith
     have hK8 : 0 < K8 := by
@@ -248,12 +248,12 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline_pos_of_fourHundredSixtySevenHundredths_le hq
     have hbaseCompare : thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline q <
         thetaCuspReflectedEighthPolynomial Aw B0 C D := by
-      have hgain : 0 < K8 * (e8 - (1 / 69 : ℝ) * As ^ 2 * e6) := by
+      have hgain : 0 < K8 * (e8 - (1 / 69 : ℝ) * As ^ (2 : ℕ) * e6) := by
         exact mul_pos hK8 (sub_pos.mpr hcoupling)
       have hloss : 0 < (62928 - e6) * (L + 62928 + e6) := by positivity
       have htest : thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline q =
           thetaCuspReflectedEighthPolynomial Aw B0 Cw D0 +
-            62928 * K8 * (1 / 69) * As ^ 2 := by
+            62928 * K8 * (1 / 69) * As ^ (2 : ℕ) := by
         dsimp only [thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline,
           Aw, Cw, K8]
         rw [hA0profile, hB0profile, hC0profile, hD0profile, hAsq]
@@ -262,8 +262,8 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       have hdiff :
           thetaCuspReflectedEighthPolynomial Aw B0 C D -
               (thetaCuspReflectedEighthPolynomial Aw B0 Cw D0 +
-                62928 * K8 * (1 / 69) * As ^ 2) =
-            K8 * (e8 - (1 / 69) * As ^ 2 * e6) +
+                62928 * K8 * (1 / 69) * As ^ (2 : ℕ)) =
+            K8 * (e8 - (1 / 69) * As ^ (2 : ℕ) * e6) +
               (62928 - e6) * (L + 62928 + e6) := by
         dsimp only [C, D, Cw, L, K8]
         unfold thetaCuspReflectedEighthPolynomial
@@ -272,7 +272,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       positivity
     have hbase : 0 < thetaCuspReflectedEighthPolynomial Aw B0 C D :=
       hprofileBase.trans hbaseCompare
-    have hG : 0 < 576 * Aw ^ 4 - 672 * Aw ^ 2 * B0 + 76 * B0 ^ 2 +
+    have hG : 0 < 576 * Aw ^ (4 : ℕ) - 672 * Aw ^ (2 : ℕ) * B0 + 76 * B0 ^ (2 : ℕ) +
         48 * Aw * Cw - D := by
       have hprofile :=
         thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_fourHundredSixtySevenHundredths_le hq
@@ -280,14 +280,14 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySeve
       dsimp only [D, Aw, Cw]
       rw [hA0profile, hB0profile, hC0profile, hD0profile]
       nlinarith
-    have hJ : 0 < 2 * Aw * (1152 * Aw ^ 2 - 672 * B0) + 48 * Cw := by
+    have hJ : 0 < 2 * Aw * (1152 * Aw ^ (2 : ℕ) - 672 * B0) + 48 * Cw := by
       dsimp only [Aw, Cw]
       rw [hA0profile, hB0profile, hC0profile]
       simpa only using
         thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_fourHundredSixtySevenHundredths_le hq
-    have hK : 0 < 1344 * Aw ^ 4 - 608 * Aw ^ 2 * B0 + 204 * B0 ^ 2 - D := by
-      have hK0 : 0 < 1344 * Aw ^ 4 - 608 * Aw ^ 2 * B0 +
-          204 * B0 ^ 2 - D0 := by
+    have hK : 0 < 1344 * Aw ^ (4 : ℕ) - 608 * Aw ^ (2 : ℕ) * B0 + 204 * B0 ^ (2 : ℕ) - D := by
+      have hK0 : 0 < 1344 * Aw ^ (4 : ℕ) - 608 * Aw ^ (2 : ℕ) * B0 +
+          204 * B0 ^ (2 : ℕ) - D0 := by
         dsimp only [Aw]
         rw [hA0profile, hB0profile, hD0profile]
         simpa only using thetaCuspFirstAtomEighthFourthDisplacementConstant_pos hqSupport
@@ -331,7 +331,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_oneHundredSixtyNineF
   have hqBound : (467 / 100 : ℝ) ≤ thetaCuspBornWittenWeight 1 x := by
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
     linarith

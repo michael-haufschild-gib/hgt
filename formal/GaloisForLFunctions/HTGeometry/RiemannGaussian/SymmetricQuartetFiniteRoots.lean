@@ -246,7 +246,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      η ^ 2 / (η ^ 2 + a ^ 2) := by
+      η ^ (2 : ℕ) / (η ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hAPole : A.eval₂ Complex.ofRealHom
       (symmetricPickPole x v) ≠ 0 :=
     finiteE_root_base_eval_ne_zero hA hη.ne' hroot
@@ -349,7 +349,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      η ^ 2 / (η ^ 2 + a ^ 2) := by
+      η ^ (2 : ℕ) / (η ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hAPole : A.eval₂ Complex.ofRealHom
       (symmetricPickPole x v) ≠ 0 :=
     finiteE_root_base_eval_ne_zero hA hη.ne' hroot
@@ -410,8 +410,8 @@ theorem conjugatePairRootLogDerivativeSum_im_nonneg_of_height_sq_le
     (hz : 0 < z.im)
     (halpha : ∀ alpha ∈ upper, 0 < alpha.im)
     (hne : ∀ alpha ∈ upper, z ≠ alpha)
-    (houtside : ∀ alpha ∈ upper, alpha.im ^ 2 ≤
-      (z.re - alpha.re) ^ 2 + z.im ^ 2) :
+    (houtside : ∀ alpha ∈ upper, alpha.im ^ (2 : ℕ) ≤
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) :
     0 ≤ (((conjugatePairRootMultiset upper).map fun w =>
       -(η : ℂ) / (z - w)).sum).im := by
   rw [conjugatePairRootMultiset_logDerivative_sum]
@@ -435,13 +435,13 @@ theorem conjugatePairRootLogDerivativeSum_im_nonneg_of_height_sq_le
 `z`, expressed by the closed influence-disk complement. -/
 def outsideInfluenceDiskRoots (z : ℂ) (upper : Multiset ℂ) : Multiset ℂ :=
   upper.filter fun alpha =>
-    alpha.im ^ 2 ≤ (z.re - alpha.re) ^ 2 + z.im ^ 2
+    alpha.im ^ (2 : ℕ) ≤ (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)
 
 /-- Residual upper roots whose conjugate-pair contribution can be negative at
 `z`, expressed by the open influence disk. -/
 def insideInfluenceDiskRoots (z : ℂ) (upper : Multiset ℂ) : Multiset ℂ :=
   upper.filter fun alpha =>
-    (z.re - alpha.re) ^ 2 + z.im ^ 2 < alpha.im ^ 2
+    (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) < alpha.im ^ (2 : ℕ)
 
 /-- The outside- and inside-disk multisets form an exact multiplicity-aware
 partition of the upper roots. -/
@@ -452,16 +452,16 @@ partition of the upper roots. -/
   unfold outsideInfluenceDiskRoots insideInfluenceDiskRoots
   have hpred :
       (fun alpha : ℂ =>
-        (z.re - alpha.re) ^ 2 + z.im ^ 2 < alpha.im ^ 2) =
+        (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) < alpha.im ^ (2 : ℕ)) =
       (fun alpha : ℂ =>
-        ¬alpha.im ^ 2 ≤ (z.re - alpha.re) ^ 2 + z.im ^ 2) := by
+        ¬alpha.im ^ (2 : ℕ) ≤ (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
     funext alpha
     apply propext
     exact not_le.symm
   simpa only [hpred] using
     (Multiset.filter_add_not
       (p := fun alpha : ℂ =>
-        alpha.im ^ 2 ≤ (z.re - alpha.re) ^ 2 + z.im ^ 2) upper)
+        alpha.im ^ (2 : ℕ) ≤ (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) upper)
 
 /-- Exact splitting of the pair logarithmic-derivative sum into its harmless
 outside-disk part and its potentially negative inside-disk part. -/
@@ -681,8 +681,8 @@ theorem
     (hreal : ∀ w ∈ realResidual, w.im = 0)
     (halpha : ∀ alpha ∈ upperResidual, 0 < alpha.im)
     (hne : ∀ alpha ∈ upperResidual, z ≠ alpha)
-    (houtside : ∀ alpha ∈ upperResidual, alpha.im ^ 2 ≤
-      (z.re - alpha.re) ^ 2 + z.im ^ 2) :
+    (houtside : ∀ alpha ∈ upperResidual, alpha.im ^ (2 : ℕ) ≤
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) :
     0 ≤ (finiteQuartetLogDerivativeBackground A η η tau a z).im := by
   rw [finiteQuartetLogDerivativeBackground_eq_residual_root_sum
     htau ha hAz hroots, Multiset.map_add, Multiset.sum_add, Complex.add_im]
@@ -713,13 +713,13 @@ theorem
         (realResidual + conjugatePairRootMultiset upperResidual))
     (hreal : ∀ w ∈ realResidual, w.im = 0)
     (halpha : ∀ alpha ∈ upperResidual, 0 < alpha.im)
-    (houtside : ∀ alpha ∈ upperResidual, alpha.im ^ 2 ≤
-      ((symmetricPickPole x v).re - alpha.re) ^ 2 +
-        (symmetricPickPole x v).im ^ 2) :
+    (houtside : ∀ alpha ∈ upperResidual, alpha.im ^ (2 : ℕ) ≤
+      ((symmetricPickPole x v).re - alpha.re) ^ (2 : ℕ) +
+        (symmetricPickPole x v).im ^ (2 : ℕ)) :
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      η ^ 2 / (η ^ 2 + a ^ 2) := by
+      η ^ (2 : ℕ) / (η ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hAPole : A.eval₂ Complex.ofRealHom
       (symmetricPickPole x v) ≠ 0 :=
     finiteE_root_base_eval_ne_zero hA hη.ne' hroot

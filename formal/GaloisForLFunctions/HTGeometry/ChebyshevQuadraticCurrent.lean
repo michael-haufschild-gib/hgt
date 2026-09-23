@@ -28,8 +28,8 @@ variable {E : Type*} [Field E] [CharZero E] [Differential E]
 omit [CharZero E] in
 /-- The derivative of the Chebyshev coordinate. -/
 theorem deriv_add_inv {w : E} (hw : w ≠ 0) :
-    (w + w⁻¹)′ = w′ * (w ^ 2 - 1) / w ^ 2 := by
-  have hinv : (w⁻¹)′ = -w⁻¹ ^ 2 * w′ := by
+    (w + w⁻¹)′ = w′ * (w ^ (2 : ℕ) - 1) / w ^ (2 : ℕ) := by
+  have hinv : (w⁻¹)′ = -w⁻¹ ^ (2 : ℕ) * w′ := by
     simpa [smul_eq_mul] using Differential.deriv.leibniz_inv w
   rw [map_add, hinv]
   field_simp
@@ -38,24 +38,24 @@ theorem deriv_add_inv {w : E} (hw : w ≠ 0) :
 omit [CharZero E] [Differential E] in
 /-- The Chebyshev coordinate squared, minus four. -/
 theorem add_inv_sq_sub_four {w : E} (hw : w ≠ 0) :
-    (w + w⁻¹) ^ 2 - 4 = (w ^ 2 - 1) ^ 2 / w ^ 2 := by
+    (w + w⁻¹) ^ (2 : ℕ) - 4 = (w ^ (2 : ℕ) - 1) ^ (2 : ℕ) / w ^ (2 : ℕ) := by
   field_simp
   ring
 
 omit [CharZero E] in
 /-- **The quadratic current of the `(2,2,∞)` signature.**  The square of the logarithmic derivative
 upstairs is the quadratic differential `y′²/(y² - 4)` in the Chebyshev coordinate. -/
-theorem logDeriv_sq_eq_chebyshev_current {w : E} (hw : w ≠ 0) (hw1 : w ^ 2 - 1 ≠ 0) :
-    (w′ / w) ^ 2 = ((w + w⁻¹)′) ^ 2 / ((w + w⁻¹) ^ 2 - 4) := by
+theorem logDeriv_sq_eq_chebyshev_current {w : E} (hw : w ≠ 0) (hw1 : w ^ (2 : ℕ) - 1 ≠ 0) :
+    (w′ / w) ^ (2 : ℕ) = ((w + w⁻¹)′) ^ (2 : ℕ) / ((w + w⁻¹) ^ (2 : ℕ) - 4) := by
   rw [deriv_add_inv hw, add_inv_sq_sub_four hw]
-  have hw2 : (w : E) ^ 2 ≠ 0 := pow_ne_zero _ hw
+  have hw2 : (w : E) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hw
   field_simp
 
 omit [CharZero E] in
 /-- The deck involution negates the logarithmic derivative, hence fixes its square. -/
 theorem logDeriv_inv {w : E} (hw : w ≠ 0) :
     (w⁻¹)′ / w⁻¹ = -(w′ / w) := by
-  have hinv : (w⁻¹)′ = -w⁻¹ ^ 2 * w′ := by
+  have hinv : (w⁻¹)′ = -w⁻¹ ^ (2 : ℕ) * w′ := by
     simpa [smul_eq_mul] using Differential.deriv.leibniz_inv w
   rw [hinv]
   field_simp

@@ -22,13 +22,13 @@ def weightedFloquetReturnAmplitude {d : ℕ} (w : Fin d → ℝ)
 /-- Pure-state return fidelity of a finite diagonal Floquet packet. -/
 def weightedFloquetReturnFidelity {d : ℕ} (w : Fin d → ℝ)
     (omega : Fin d → ℝ) (n : ℕ) : ℝ :=
-  ‖weightedFloquetReturnAmplitude w omega n‖ ^ 2
+  ‖weightedFloquetReturnAmplitude w omega n‖ ^ (2 : ℕ)
 
 /-- A universal fidelity deadline at amplitude defect `eta`. -/
 def IsUniversalWeightedFloquetFidelityDeadline {d : ℕ}
     (w : Fin d → ℝ) (eta : ℝ) (N : ℕ) : Prop :=
   ∀ omega : Fin d → ℝ, ∃ n : ℕ, 0 < n ∧ n ≤ N ∧
-    (1 - eta) ^ 2 ≤ weightedFloquetReturnFidelity w omega n
+    (1 - eta) ^ (2 : ℕ) ≤ weightedFloquetReturnFidelity w omega n
 
 /-- Fidelity recurrence and projective amplitude recurrence are exactly the
 same deadline problem when the target amplitude is nonnegative. -/
@@ -41,16 +41,16 @@ theorem isUniversalWeightedFloquetFidelityDeadline_iff
   · intro h omega
     obtain ⟨n, hn0, hnN, hn⟩ := h omega
     refine ⟨n, hn0, hnN, ?_⟩
-    change (1 - eta) ^ 2 ≤
+    change (1 - eta) ^ (2 : ℕ) ≤
       ‖∑ j, (w j : ℂ) * Complex.exp
-        (Complex.I * ((((n : ℝ) * omega j : ℝ) : ℂ)))‖ ^ 2 at hn
+        (Complex.I * ((((n : ℝ) * omega j : ℝ) : ℂ)))‖ ^ (2 : ℕ) at hn
     exact (sq_le_sq₀ htarget (norm_nonneg _)).mp hn
   · intro h omega
     obtain ⟨n, hn0, hnN, hn⟩ := h omega
     refine ⟨n, hn0, hnN, ?_⟩
-    change (1 - eta) ^ 2 ≤
+    change (1 - eta) ^ (2 : ℕ) ≤
       ‖∑ j, (w j : ℂ) * Complex.exp
-        (Complex.I * ((((n : ℝ) * omega j : ℝ) : ℂ)))‖ ^ 2
+        (Complex.I * ((((n : ℝ) * omega j : ℝ) : ℂ)))‖ ^ (2 : ℕ)
     exact (sq_le_sq₀ htarget (norm_nonneg _)).mpr hn
 
 /-- Least universal pure-state Floquet fidelity deadline. -/
@@ -109,7 +109,7 @@ theorem isUniversalWeightedFloquetFidelityDeadline.exists_after
     (hdeadline : IsUniversalWeightedFloquetFidelityDeadline w eta N)
     (omega : Fin d → ℝ) (M : ℕ) :
     ∃ n : ℕ, M < n ∧ n ≤ (M + 1) * N ∧
-      (1 - eta) ^ 2 ≤ weightedFloquetReturnFidelity w omega n := by
+      (1 - eta) ^ (2 : ℕ) ≤ weightedFloquetReturnFidelity w omega n := by
   let scaledOmega : Fin d → ℝ := fun j => (M + 1 : ℕ) * omega j
   obtain ⟨q, hq0, hqN, hq⟩ := hdeadline scaledOmega
   refine ⟨(M + 1) * q, ?_, Nat.mul_le_mul_left (M + 1) hqN, ?_⟩
@@ -133,7 +133,7 @@ theorem exists_weightedFloquetFidelity_recurrence_after
       n ≤ (M + 1) *
         universalWeightedFloquetFidelityRecurrenceTime
           hd w hw hmass eta heta0 heta1 ∧
-      (1 - eta) ^ 2 ≤ weightedFloquetReturnFidelity w omega n := by
+      (1 - eta) ^ (2 : ℕ) ≤ weightedFloquetReturnFidelity w omega n := by
   exact isUniversalWeightedFloquetFidelityDeadline.exists_after
     (universalWeightedFloquetFidelityRecurrenceTime_isDeadline
       hd w hw hmass eta heta0 heta1) omega M

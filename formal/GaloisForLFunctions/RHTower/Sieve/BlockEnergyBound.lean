@@ -23,7 +23,7 @@ theorem blockTypeIIEnergy_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A B L U V j : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hL : 1 ≤ L)
     (hP : 1 ≤ 2 ^ j) (hQ : 2 ≤ min (2 ^ (j + 1)) (L + 1)) {C : ℝ} (hC0 : 0 < C)
     (hCbound : ∀ (U P Q L : ℕ), 1 ≤ L → Q ≤ L + 1 →
-      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
         ≤ C * (Q : ℝ) * Real.log (L : ℝ))
     (hfour : ∀ m ∈ effSet A B (2 ^ j) (min (2 ^ (j + 1)) (L + 1)) L,
       4 * (r / m) ≤ ((2 ^ j : ℕ) : ℝ))
@@ -34,9 +34,9 @@ theorem blockTypeIIEnergy_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
       ≤ (C * ((min (2 ^ (j + 1)) (L + 1) : ℕ) : ℝ) * Real.log (L : ℝ))
         * (((min (2 ^ (j + 1)) (L + 1) - 2 ^ j : ℕ) : ℝ)
               * (∑ m ∈ effSet A B (2 ^ j) (min (2 ^ (j + 1)) (L + 1)) L,
-                  |typeIIShort V m| ^ 2)
+                  |typeIIShort V m| ^ (2 : ℕ))
             + (∑ m ∈ effSet A B (2 ^ j) (min (2 ^ (j + 1)) (L + 1)) L,
-                |typeIIShort V m| ^ 2)
+                |typeIIShort V m| ^ (2 : ℕ))
               * (2 * ∑ h ∈ Finset.Icc 1
                   (effGap A B (2 ^ j) (min (2 ^ (j + 1)) (L + 1))),
                   gapCorrBound T r (effLow A (min (2 ^ (j + 1)) (L + 1)))
@@ -57,7 +57,7 @@ theorem blockTypeIIEnergy_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
                 maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖ := by
     refine Finset.sum_congr rfl fun m₁ _ => Finset.sum_congr rfl fun m₂ _ => ?_
     rw [norm_typeIIShort_eq, norm_typeIIShort_eq]
-  have hlong0 : (0 : ℝ) ≤ ∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2 :=
+  have hlong0 : (0 : ℝ) ≤ ∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun d _ => sq_nonneg _
   have hpair0 : (0 : ℝ) ≤ ∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
       ‖((typeIIShort V m₁ : ℝ) : ℂ)‖ * ‖((typeIIShort V m₂ : ℝ) : ℂ)‖

@@ -27,14 +27,14 @@ variable {α : Type*} [Fintype α] [DecidableEq α]
 section Parseval
 
 theorem spectralCollision_eq_sum_eigenWeight_sq (e : α → α → ℂ) (ψ : α → ℂ) :
-    spectralCollision e ψ = ∑ j, eigenWeight e ψ j ^ 2 := rfl
+    spectralCollision e ψ = ∑ j, eigenWeight e ψ j ^ (2 : ℕ) := rfl
 
 /-- **Parseval.**  The spectral weights of a state sum to its squared length. -/
 theorem sum_eigenWeight_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
     (hb : IsOrthoEigenBasis H e lam) (ψ : α → ℂ) :
-    (∑ j, eigenWeight e ψ j) = ∑ x, ‖ψ x‖ ^ 2 := by
+    (∑ j, eigenWeight e ψ j) = ∑ x, ‖ψ x‖ ^ (2 : ℕ) := by
   classical
-  have hself : finiteComplexInner ψ ψ = ((∑ x, ‖ψ x‖ ^ 2 : ℝ) : ℂ) := by
+  have hself : finiteComplexInner ψ ψ = ((∑ x, ‖ψ x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [finiteComplexInner, Complex.ofReal_sum]
     refine Finset.sum_congr rfl fun x _ => ?_
     rw [Complex.sq_norm, ← Complex.mul_conj]
@@ -46,17 +46,17 @@ theorem sum_eigenWeight_eq {H : Matrix α α ℂ} {e : α → α → ℂ} {lam :
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [finiteComplexInner_smul_right, finiteComplexInner_conj_symm ψ (e j), eigenWeight,
       Complex.sq_norm, ← Complex.mul_conj]
-  have : ((∑ j, eigenWeight e ψ j : ℝ) : ℂ) = ((∑ x, ‖ψ x‖ ^ 2 : ℝ) : ℂ) := by
+  have : ((∑ j, eigenWeight e ψ j : ℝ) : ℂ) = ((∑ x, ‖ψ x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [← hexp, hself]
   exact_mod_cast this
 
 theorem spectralCollision_le_one {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1) :
+    (hb : IsOrthoEigenBasis H e lam) {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1) :
     spectralCollision e ψ ≤ 1 := by
   have hsum := sum_eigenWeight_eq hb ψ
   rw [hψ] at hsum
   rw [spectralCollision_eq_sum_eigenWeight_sq]
-  calc (∑ j, eigenWeight e ψ j ^ 2) ≤ (∑ j, eigenWeight e ψ j) ^ 2 := by
+  calc (∑ j, eigenWeight e ψ j ^ (2 : ℕ)) ≤ (∑ j, eigenWeight e ψ j) ^ (2 : ℕ) := by
         rw [sq, Finset.sum_mul_sum]
         refine Finset.sum_le_sum fun j _ => ?_
         rw [sq]
@@ -67,7 +67,7 @@ theorem spectralCollision_le_one {H : Matrix α α ℂ} {e : α → α → ℂ} 
     _ = 1 := by rw [hsum, one_pow]
 
 theorem cappedRegCollision_le_one {H : Matrix α α ℂ} {e : α → α → ℂ} {lam : α → ℝ}
-    (hb : IsOrthoEigenBasis H e lam) {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1) (m : ℕ) :
+    (hb : IsOrthoEigenBasis H e lam) {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1) (m : ℕ) :
     cappedRegCollision m H ψ ≤ 1 := by
   have h := cappedRegCollision_le_sq hb ψ m
   rw [sum_eigenWeight_eq hb ψ, hψ, one_pow] at h
@@ -202,7 +202,7 @@ theorem aemeasurable_spectralCollision {μ : Measure Θ} {Hf : Θ → Matrix α 
 
 theorem integrable_spectralCollision {μ : Measure Θ} [IsFiniteMeasure μ]
     {Hf : Θ → Matrix α α ℂ} (hH : ∀ x y, Measurable fun θ => Hf θ x y)
-    {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1)
+    {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1)
     {e : Θ → α → α → ℂ} {lam : Θ → α → ℝ}
     (hae : ∀ᵐ θ ∂μ, IsOrthoEigenBasis (Hf θ) (e θ) (lam θ) ∧ Function.Injective (lam θ)) :
     Integrable (fun θ => spectralCollision (e θ) ψ) μ := by
@@ -216,7 +216,7 @@ theorem integrable_spectralCollision {μ : Measure Θ} [IsFiniteMeasure μ]
 exceeds `L c₀` with probability at most `1 / L`. -/
 theorem measureReal_spectralCollision_ge_le {μ : Measure Θ} [IsProbabilityMeasure μ]
     {Hf : Θ → Matrix α α ℂ} (hH : ∀ x y, Measurable fun θ => Hf θ x y)
-    {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ 2) = 1)
+    {ψ : α → ℂ} (hψ : (∑ x, ‖ψ x‖ ^ (2 : ℕ)) = 1)
     {e : Θ → α → α → ℂ} {lam : Θ → α → ℝ}
     (hae : ∀ᵐ θ ∂μ, IsOrthoEigenBasis (Hf θ) (e θ) (lam θ) ∧ Function.Injective (lam θ))
     {c₀ : ℝ} (hc₀ : 0 < c₀) (hmean : (∫ θ, spectralCollision (e θ) ψ ∂μ) ≤ c₀)

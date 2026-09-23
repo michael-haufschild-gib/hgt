@@ -56,15 +56,15 @@ theorem decayingSolution_of_memLp_two (hu : ContDiff ℝ ∞ u) (hsolve : Solves
       fluxInt := fun t => ?_
       dominated := hdom }
   · -- the energy density is a sum of squares
-    have hd : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ 2)
+    have hd : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ))
         (volume : Measure (Fin d → ℝ)) := _root_.MeasureTheory.MemLp.integrable_sq (hL2d t)
-    have hu2 : Integrable (fun x : Fin d → ℝ => (u (t, x)) ^ 2)
+    have hu2 : Integrable (fun x : Fin d → ℝ => (u (t, x)) ^ (2 : ℕ))
         (volume : Measure (Fin d → ℝ)) := _root_.MeasureTheory.MemLp.integrable_sq (hL2u t)
     have hs : ∀ i : Fin d, Integrable
-        (fun x : Fin d → ℝ => (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2)
+        (fun x : Fin d → ℝ => (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ))
         (volume : Measure (Fin d → ℝ)) := fun i => _root_.MeasureTheory.MemLp.integrable_sq (hL2s t i)
     have hsum : Integrable (fun x : Fin d → ℝ =>
-        ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2)
+        ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ))
         (volume : Measure (Fin d → ℝ)) := integrable_finsetSum _ fun i _ => hs i
     exact (hd.add hsum).add hu2
   · -- the zeroth-order term is a bounded multiple of a product of two square integrable factors

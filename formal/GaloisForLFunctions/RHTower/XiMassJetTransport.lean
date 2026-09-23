@@ -22,12 +22,12 @@ noncomputable section
 /-- The caustic-null jet operator iterated on the mass profile. -/
 def xiMassJetIterate (a : ℝ) (τ : ℂ) : ℕ → ℂ → ℂ
   | 0 => xiMassBesselHeightSide a τ
-  | k + 1 => fun ζ => 4 * (a : ℂ) ^ 4 * xiMassJetIterate a τ k ζ
+  | k + 1 => fun ζ => 4 * (a : ℂ) ^ (4 : ℕ) * xiMassJetIterate a τ k ζ
       - deriv (deriv (xiMassJetIterate a τ k)) ζ
 
 theorem xiMassJetIterate_succ (a : ℝ) (τ : ℂ) (k : ℕ) (ζ : ℂ) :
     xiMassJetIterate a τ (k + 1) ζ
-      = 4 * (a : ℂ) ^ 4 * xiMassJetIterate a τ k ζ
+      = 4 * (a : ℂ) ^ (4 : ℕ) * xiMassJetIterate a τ k ζ
         - deriv (deriv (xiMassJetIterate a τ k)) ζ := rfl
 
 /-- **The two gauges agree.** -/
@@ -80,20 +80,20 @@ theorem xiMassJetIterate_eqOn {a : ℝ} (ha : 0 < a) (τ : ℂ) (k : ℕ) :
                 - (a : ℂ) * xiMassRadiusRate τ v * xiCausticIterate a τ k v)) ζ
           = Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ζ)
             * (deriv (deriv (xiCausticIterate a τ k)) ζ
-              - (a : ℂ) * (1 / xiMassHeightRadius τ ζ - ζ ^ 2 / xiMassHeightRadius τ ζ ^ 3)
+              - (a : ℂ) * (1 / xiMassHeightRadius τ ζ - ζ ^ (2 : ℕ) / xiMassHeightRadius τ ζ ^ (3 : ℕ))
                   * xiCausticIterate a τ k ζ
               - 2 * (a : ℂ) * xiMassRadiusRate τ ζ * deriv (xiCausticIterate a τ k) ζ
-              + (a : ℂ) ^ 2 * xiMassRadiusRate τ ζ ^ 2 * xiCausticIterate a τ k ζ) :=
+              + (a : ℂ) ^ (2 : ℕ) * xiMassRadiusRate τ ζ ^ (2 : ℕ) * xiCausticIterate a τ k ζ) :=
         (hasDerivAt_expNegRadius_caustic (a := a) hζ (hΦdiff ζ hζ) (hΦdiff2 ζ hζ)).deriv
       rw [xiMassJetIterate_succ, ih hζ, hstep2, hstep3, hstep4]
-      show 4 * (a : ℂ) ^ 4 * (Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ζ)
+      show 4 * (a : ℂ) ^ (4 : ℕ) * (Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ζ)
             * xiCausticIterate a τ k ζ)
           - Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ζ)
             * (deriv (deriv (xiCausticIterate a τ k)) ζ
-              - (a : ℂ) * (1 / xiMassHeightRadius τ ζ - ζ ^ 2 / xiMassHeightRadius τ ζ ^ 3)
+              - (a : ℂ) * (1 / xiMassHeightRadius τ ζ - ζ ^ (2 : ℕ) / xiMassHeightRadius τ ζ ^ (3 : ℕ))
                   * xiCausticIterate a τ k ζ
               - 2 * (a : ℂ) * xiMassRadiusRate τ ζ * deriv (xiCausticIterate a τ k) ζ
-              + (a : ℂ) ^ 2 * xiMassRadiusRate τ ζ ^ 2 * xiCausticIterate a τ k ζ)
+              + (a : ℂ) ^ (2 : ℕ) * xiMassRadiusRate τ ζ ^ (2 : ℕ) * xiCausticIterate a τ k ζ)
         = Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ζ) * xiCausticIterate a τ (k + 1) ζ
       rw [xiCausticIterate_succ, xiCausticCoeffZero, xiCausticCoeffOne,
         xiMassCausticSymbolC_eq_sub_sq hζ, xiMassRadiusRate]
@@ -108,7 +108,7 @@ theorem exists_norm_xiMassJetIterate_window_le {a sigma : ℝ} (ha : 1 / 2 < a)
       ‖xiMassJetIterate a ((sigma : ℂ) + (u : ℂ) * Complex.I) n
           (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ)‖
         ≤ C / Real.sqrt u ^ (n + 1)
-          * Real.exp (-(a * Real.sqrt ((xiMassSpacelikeSharpSlope a * u) ^ 2 - u ^ 2))) := by
+          * Real.exp (-(a * Real.sqrt ((xiMassSpacelikeSharpSlope a * u) ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
   obtain ⟨C, u₀, hC, hu₀, hbound⟩ := exists_norm_xiCausticIterate_window_le ha hsigma n
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
@@ -129,24 +129,24 @@ theorem exists_norm_xiMassJetIterate_window_le {a sigma : ℝ} (ha : 1 / 2 < a)
     simp [Real.sqrt_nonneg]
   have hgauge := xiMassJetIterate_eqOn ha0 τ n hmem
   rw [hgauge]
-  have hpropeq : τ ^ 2 + ((h : ℝ) : ℂ) ^ 2 = xiMassSpacelikePropagationArgument sigma u h := by
+  have hpropeq : τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ) = xiMassSpacelikePropagationArgument sigma u h := by
     rw [xiMassSpacelikePropagationArgument_eq, hτdef]
   have hexpnorm : ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2))) := by
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)))) := by
     rw [Complex.norm_exp]
     congr 1
     have hre := re_mul_xiMassHeightRadius a τ ((h : ℝ) : ℂ)
     have hneg : (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
         = -((a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ)) := by ring
     rw [hneg, Complex.neg_re, hre]
-  have hgap : Real.sqrt (h ^ 2 - u ^ 2)
-      ≤ HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2) := by
+  have hgap : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))
+      ≤ HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)) := by
     rw [hpropeq]
-    have hmono : Real.sqrt (h ^ 2 - u ^ 2) ≤ Real.sqrt (h ^ 2 - u ^ 2 + sigma ^ 2) :=
+    have hmono : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) ≤ Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ) + sigma ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (by nlinarith [sq_nonneg sigma])
     exact le_trans hmono (sqrt_fullGap_le_csqrtRe_propagationArgument hsigma hu0.le huh)
-  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
-      ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by
+  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
+      ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
     refine Real.exp_le_exp.2 ?_
     nlinarith [hgap, ha0]
   have hΦ := hbound u hu
@@ -154,11 +154,11 @@ theorem exists_norm_xiMassJetIterate_window_le {a sigma : ℝ} (ha : 1 / 2 < a)
   have hΦ0 : (0 : ℝ) ≤ ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := norm_nonneg _
   calc ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
           * xiCausticIterate a τ n ((h : ℝ) : ℂ)‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
         * ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := by rw [norm_mul, hexpnorm]
-    _ ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) * (C / Real.sqrt u ^ (n + 1)) :=
+    _ ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) * (C / Real.sqrt u ^ (n + 1)) :=
         mul_le_mul hexple hΦ hΦ0 (Real.exp_pos _).le
-    _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by ring
+    _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by ring
 
 /-- **(22.7) across the whole balance window.**  The bound of the previous theorem holds uniformly
 for every height in the square-root window about the balance ray. -/
@@ -169,22 +169,22 @@ theorem exists_norm_xiMassJetIterate_window_le' {a sigma : ℝ} (ha : 1 / 2 < a)
       ‖xiMassJetIterate a ((sigma : ℂ) + (u : ℂ) * Complex.I) n
           (((xiMassSpacelikeSharpSlope a * u + t : ℝ)) : ℂ)‖
         ≤ C / Real.sqrt u ^ (n + 1)
-          * Real.exp (-(a * Real.sqrt ((xiMassSpacelikeSharpSlope a * u + t) ^ 2 - u ^ 2))) := by
+          * Real.exp (-(a * Real.sqrt ((xiMassSpacelikeSharpSlope a * u + t) ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
   obtain ⟨C, u₀, hC, hu₀, hbound⟩ := exists_norm_xiCausticIterate_window_le' ha hsigma n
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
   have hκgap : (0 : ℝ) < xiMassSpacelikeSharpSlope a - 1 := by linarith
-  refine ⟨C, max u₀ ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ 2),
+  refine ⟨C, max u₀ ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ (2 : ℕ)),
     hC, le_trans hu₀ (le_max_left _ _), ?_⟩
   intro u hu t ht
   have hu0' : u₀ ≤ u := le_trans (le_max_left _ _) hu
-  have hugap : ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ 2 : ℝ) ≤ u :=
+  have hugap : ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ (2 : ℕ) : ℝ) ≤ u :=
     le_trans (le_max_right _ _) hu
   have huw : xiMassWindowThreshold a ≤ u := le_trans hu₀ hu0'
   have hu1 : (1 : ℝ) ≤ u := le_trans (one_le_xiMassWindowThreshold a) huw
   have hu0 : (0 : ℝ) < u := by linarith
   have hr0 : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hu0
-  have hrsq : Real.sqrt u ^ 2 = u := Real.sq_sqrt hu0.le
+  have hrsq : Real.sqrt u ^ (2 : ℕ) = u := Real.sq_sqrt hu0.le
   set τ : ℂ := (sigma : ℂ) + (u : ℂ) * Complex.I with hτdef
   set h : ℝ := xiMassSpacelikeSharpSlope a * u + t with hhdef
   have hrgap : 1 / (2 * (xiMassSpacelikeSharpSlope a - 1)) ≤ Real.sqrt u := by
@@ -211,24 +211,24 @@ theorem exists_norm_xiMassJetIterate_window_le' {a sigma : ℝ} (ha : 1 / 2 < a)
   have hgauge := xiMassJetIterate_eqOn ha0 τ n hmem
   rw [show (((xiMassSpacelikeSharpSlope a * u + t : ℝ)) : ℂ) = ((h : ℝ) : ℂ) by rw [hhdef],
     hgauge]
-  have hpropeq : τ ^ 2 + ((h : ℝ) : ℂ) ^ 2 = xiMassSpacelikePropagationArgument sigma u h := by
+  have hpropeq : τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ) = xiMassSpacelikePropagationArgument sigma u h := by
     rw [xiMassSpacelikePropagationArgument_eq, hτdef]
   have hexpnorm : ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2))) := by
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)))) := by
     rw [Complex.norm_exp]
     congr 1
     have hre := re_mul_xiMassHeightRadius a τ ((h : ℝ) : ℂ)
     have hneg : (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
         = -((a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ)) := by ring
     rw [hneg, Complex.neg_re, hre]
-  have hgap : Real.sqrt (h ^ 2 - u ^ 2)
-      ≤ HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2) := by
+  have hgap : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))
+      ≤ HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)) := by
     rw [hpropeq]
-    have hmono : Real.sqrt (h ^ 2 - u ^ 2) ≤ Real.sqrt (h ^ 2 - u ^ 2 + sigma ^ 2) :=
+    have hmono : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) ≤ Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ) + sigma ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (by nlinarith [sq_nonneg sigma])
     exact le_trans hmono (sqrt_fullGap_le_csqrtRe_propagationArgument hsigma hu0.le huh)
-  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
-      ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by
+  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
+      ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
     refine Real.exp_le_exp.2 ?_
     nlinarith [hgap, ha0]
   have hΦ := hbound u hu0' t ht
@@ -238,11 +238,11 @@ theorem exists_norm_xiMassJetIterate_window_le' {a sigma : ℝ} (ha : 1 / 2 < a)
   have hΦ0 : (0 : ℝ) ≤ ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := norm_nonneg _
   calc ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
           * xiCausticIterate a τ n ((h : ℝ) : ℂ)‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
         * ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := by rw [norm_mul, hexpnorm]
-    _ ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) * (C / Real.sqrt u ^ (n + 1)) :=
+    _ ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) * (C / Real.sqrt u ^ (n + 1)) :=
         mul_le_mul hexple hΦ hΦ0 (Real.exp_pos _).le
-    _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by ring
+    _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by ring
 
 end
 

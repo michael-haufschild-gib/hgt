@@ -94,7 +94,7 @@ def cumulantPowerTailConstant (P : ℕ) : ℝ :=
 /-- The cumulant-power high-tail provider is discharged on the paper range by a
 finite constant depending only on `P`. -/
 theorem cumulantPowerTailCoeffBound_explicit (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) :
     cumulantPowerTailCoeffBound (cumulantPowerTailConstant P) P j d := by
   rw [cumulantPowerTailCoeffBound, cumulantPowerTailConstant]
   have hterm : ∀ r ∈ Finset.range (P * (P - 1) + 1), ∀ q ∈ Finset.range P,
@@ -175,7 +175,7 @@ theorem multiplierJetTailEvalBound_of_cumulant_power_tail_bound {K : ℝ} (P : �
 /-- Explicit paper-range multiplier-jet tail bound, with no external
 high-coefficient provider. -/
 theorem multiplierJetTailEvalBound_explicit (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) :
     multiplierJetTailEvalBound (cumulantPowerTailConstant P) P (P - 1) j d :=
   multiplierJetTailEvalBound_of_cumulant_power_tail_bound P
     (cumulantPowerTailCoeffBound_explicit P hd hj hjd)
@@ -184,7 +184,7 @@ theorem multiplierJetTailEvalBound_explicit (P : ℕ) {j d : ℕ}
 splits into its order-`P` jet plus a polynomial remainder whose evaluated contribution is bounded
 by the explicit cumulant-power constant.  No tail-provider Prop remains in the statement. -/
 theorem tail_term_bound_explicit (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) :
     ∃ Q : ℝ[X],
       (multiplierTruncPoly P (P - 1) j).eval ((d : ℝ)⁻¹) =
           (multiplierJetPoly P (P - 1) j).eval ((d : ℝ)⁻¹) +

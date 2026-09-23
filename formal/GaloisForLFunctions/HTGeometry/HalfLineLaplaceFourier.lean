@@ -108,21 +108,21 @@ theorem memLp_two_laplaceRay_line {φ : ℝ → ℂ}
 /-- **Plancherel on a vertical line.** -/
 theorem integral_norm_sq_laplaceRay_line {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) {σ : ℝ} (hσ : 0 < σ) :
-    (∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ 2)
-      = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ 2 := by
+    (∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ (2 : ℕ))
+      = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ (2 : ℕ) := by
   have hgm : MemLp (rayDamp φ σ) 2 volume := memLp_two_rayDamp hφ hσ.le
   set G : Lp ℂ 2 (volume : Measure ℝ) := hgm.toLp (rayDamp φ σ) with hG
   have hGcoe : (G : ℝ → ℂ) =ᵐ[volume] rayDamp φ σ := hgm.coeFn_toLp
   have hfour := coeFn_fourierTransform_rayDamp hφ hσ
-  have hlhs : (∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ 2)
-      = ‖(𝓕 G : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2 := by
+  have hlhs : (∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ (2 : ℕ))
+      = ‖(𝓕 G : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ) := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     refine (integral_congr_ae ?_).symm
     filter_upwards [hfour] with ξ hξ
     rw [hξ]
-  have hrhs : ‖G‖ ^ 2 = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ 2 := by
+  have hrhs : ‖G‖ ^ (2 : ℕ) = ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ (2 : ℕ) := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
-    have hstep : (∫ x : ℝ, ‖(G : ℝ → ℂ) x‖ ^ 2) = ∫ x : ℝ, ‖rayDamp φ σ x‖ ^ 2 := by
+    have hstep : (∫ x : ℝ, ‖(G : ℝ → ℂ) x‖ ^ (2 : ℕ)) = ∫ x : ℝ, ‖rayDamp φ σ x‖ ^ (2 : ℕ) := by
       refine integral_congr_ae ?_
       filter_upwards [hGcoe] with x hx
       rw [hx]

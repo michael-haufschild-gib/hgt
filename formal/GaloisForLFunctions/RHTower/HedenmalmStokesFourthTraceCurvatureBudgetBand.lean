@@ -33,8 +33,8 @@ theorem rhVerifiedThrough_twoHundredFortyThree_twentieths :
         ((MeromorphicOn.divisor xi Set.univ) (rhoSupport : ℂ)) := by
       omega
     exact ⟨rhoSupport, ⟨0, hn⟩⟩
-  have hsq : (q.1 : ℂ).im ^ 2 < 2365 / 16 := by
-    change rho.im ^ 2 < 2365 / 16
+  have hsq : (q.1 : ℂ).im ^ (2 : ℕ) < 2365 / 16 := by
+    change rho.im ^ (2 : ℕ) < 2365 / 16
     nlinarith [sq_pos_of_pos him0]
   have hline := xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hsq
   simpa only [q, rhoSupport] using hline

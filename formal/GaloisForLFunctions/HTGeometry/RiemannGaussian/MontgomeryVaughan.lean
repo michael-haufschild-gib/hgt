@@ -54,7 +54,7 @@ def MVDiag (C : ℝ) : Prop :=
   ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (freq δ : ι → ℝ) (x : ι → ℂ),
     Function.Injective freq → (∀ r, 0 < δ r) → (∀ r s, r ≠ s → δ r ≤ |freq r - freq s|) →
     ‖∑ r, ∑ s, if r = s then (0 : ℂ) else x r * conj (x s) / ((freq r - freq s : ℝ) : ℂ)‖
-      ≤ C * ∑ r, ‖x r‖ ^ 2 / δ r
+      ≤ C * ∑ r, ‖x r‖ ^ (2 : ℕ) / δ r
 
 namespace MontgomeryVaughan
 
@@ -69,7 +69,7 @@ def coef (freq : ι → ℝ) (r s : ι) : ℂ :=
 def B (freq : ι → ℝ) (x z : ι → ℂ) : ℂ := ∑ r, ∑ s, x r * conj (z s) * coef freq r s
 
 /-- the weighted ℓ² quantity Σ |x_r|²/δ_r. -/
-def N2 (δ : ι → ℝ) (x : ι → ℂ) : ℝ := ∑ r, ‖x r‖ ^ 2 / δ r
+def N2 (δ : ι → ℝ) (x : ι → ℂ) : ℝ := ∑ r, ‖x r‖ ^ (2 : ℕ) / δ r
 
 lemma sum_eq_B (freq : ι → ℝ) (x z : ι → ℂ) :
     (∑ r, ∑ s, if r = s then (0 : ℂ) else x r * conj (z s) / ((freq r - freq s : ℝ) : ℂ))
@@ -111,10 +111,10 @@ lemma N2_polar (δ : ι → ℝ) (x z : ι → ℂ) :
   have h2 := parallelogram_law_with_norm ℝ (x r) (I * z r)
   have hI : ‖I * z r‖ = ‖z r‖ := by rw [norm_mul, Complex.norm_I, one_mul]
   rw [hI] at h2
-  have key : ‖x r + z r‖ ^ 2 + ‖x r - z r‖ ^ 2 + ‖x r + I * z r‖ ^ 2 + ‖x r - I * z r‖ ^ 2
-      = 4 * (‖x r‖ ^ 2 + ‖z r‖ ^ 2) := by
+  have key : ‖x r + z r‖ ^ (2 : ℕ) + ‖x r - z r‖ ^ (2 : ℕ) + ‖x r + I * z r‖ ^ (2 : ℕ) + ‖x r - I * z r‖ ^ (2 : ℕ)
+      = 4 * (‖x r‖ ^ (2 : ℕ) + ‖z r‖ ^ (2 : ℕ)) := by
     simp only [sq]; linarith [h1, h2]
-  rw [show (4:ℝ) * (‖x r‖ ^ 2 / δ r + ‖z r‖ ^ 2 / δ r) = (4 * (‖x r‖ ^ 2 + ‖z r‖ ^ 2)) / δ r by
+  rw [show (4:ℝ) * (‖x r‖ ^ (2 : ℕ) / δ r + ‖z r‖ ^ (2 : ℕ) / δ r) = (4 * (‖x r‖ ^ (2 : ℕ) + ‖z r‖ ^ (2 : ℕ))) / δ r by
     ring, ← key]
   ring
 
@@ -149,7 +149,7 @@ lemma B_scale (freq : ι → ℝ) (x z : ι → ℂ) {t : ℝ} (ht : t ≠ 0) :
 
 omit [DecidableEq ι] in
 lemma N2_scale (δ : ι → ℝ) (x : ι → ℂ) (t : ℝ) :
-    N2 δ ((t : ℂ) • x) = t ^ 2 * N2 δ x := by
+    N2 δ ((t : ℂ) • x) = t ^ (2 : ℕ) * N2 δ x := by
   unfold N2
   rw [mul_sum]
   refine sum_congr rfl fun r _ => ?_
@@ -159,7 +159,7 @@ lemma N2_scale (δ : ι → ℝ) (x : ι → ℂ) (t : ℝ) :
 
 omit [DecidableEq ι] in
 lemma N2_real_smul (δ : ι → ℝ) (x : ι → ℂ) (t : ℝ) :
-    N2 δ (t • x) = t ^ 2 * N2 δ x := by
+    N2 δ (t • x) = t ^ (2 : ℕ) * N2 δ x := by
   have : (t • x) = ((t : ℂ) • x) := by funext r; simp [Complex.real_smul]
   rw [this, N2_scale]
 
@@ -202,17 +202,17 @@ lemma norm_B_le_sqrt {C : ℝ} (hC : 0 ≤ C) {freq δ : ι → ℝ} (hδ : ∀ 
   · rw [eq_zero_of_N2_eq_zero hδ hz0, B_zero_right, norm_zero]; positivity
   have hu0 : 0 < u := Real.sqrt_pos.mpr (lt_of_le_of_ne hNx (Ne.symm hx0))
   have hv0 : 0 < v := Real.sqrt_pos.mpr (lt_of_le_of_ne hNz (Ne.symm hz0))
-  have hu2 : u ^ 2 = N2 δ x := Real.sq_sqrt hNx
-  have hv2 : v ^ 2 = N2 δ z := Real.sq_sqrt hNz
+  have hu2 : u ^ (2 : ℕ) = N2 δ x := Real.sq_sqrt hNx
+  have hv2 : v ^ (2 : ℕ) = N2 δ z := Real.sq_sqrt hNz
   -- t with t² = v/u
   set t := Real.sqrt (v / u) with htdef
-  have ht2 : t ^ 2 = v / u := Real.sq_sqrt (by positivity)
+  have ht2 : t ^ (2 : ℕ) = v / u := Real.sq_sqrt (by positivity)
   have ht0 : 0 < t := Real.sqrt_pos.mpr (by positivity)
   have hscale := B_scale freq x z ht0.ne'
   rw [← hscale]
   refine (norm_B_le_add hC hdiag _ _).trans ?_
   rw [N2_scale, N2_real_smul, inv_pow, ht2, ← hu2, ← hv2]
-  have : v / u * u ^ 2 + (v / u)⁻¹ * v ^ 2 = 2 * (u * v) := by
+  have : v / u * u ^ (2 : ℕ) + (v / u)⁻¹ * v ^ (2 : ℕ) = 2 * (u * v) := by
     field_simp
     ring
   rw [this]

@@ -83,8 +83,8 @@ theorem fieldOneFiniteStageBruhatHalfDensity_fourier_norm
       fieldOneFiniteStageBruhatSourceInner_eq_halfDensity_inner]
   have hsquare :
       ‖fieldOneFiniteStageBruhatHalfDensityLinearMap S
-          (fieldOneFiniteStageBruhatFourierLinearEquiv S x)‖ ^ 2 =
-        ‖fieldOneFiniteStageBruhatHalfDensityLinearMap S x‖ ^ 2 := by
+          (fieldOneFiniteStageBruhatFourierLinearEquiv S x)‖ ^ (2 : ℕ) =
+        ‖fieldOneFiniteStageBruhatHalfDensityLinearMap S x‖ ^ (2 : ℕ) := by
     rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at hinner
     have hre := congrArg Complex.re hinner
     norm_cast at hre

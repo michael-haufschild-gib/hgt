@@ -164,8 +164,8 @@ arguments differing by the dilation. -/
 theorem fourier_prolateMeanZeroSource (ha : 0 < a) (hlam : 0 < lam) (hΦ : Continuous Φ)
     (heven : Function.Even Φ) {C : ℝ} (hC : ∀ x : ℝ, |Φ x| ≤ C) (hC0 : 0 ≤ C) (x : ℝ) :
     𝓕 (fun y => ((prolateMeanZeroSource a lam Φ y : ℝ) : ℂ)) (a * x)
-      = (a : ℂ) * (fourierBandTransform (2 * Real.pi * a ^ 2) (fun t => ((Φ t : ℝ) : ℂ)) x
-          - fourierBandTransform (2 * Real.pi * a ^ 2) (fun t => ((Φ t : ℝ) : ℂ)) (lam * x)) := by
+      = (a : ℂ) * (fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) (fun t => ((Φ t : ℝ) : ℂ)) x
+          - fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) (fun t => ((Φ t : ℝ) : ℂ)) (lam * x)) := by
   have hgint : Integrable (fun y : ℝ => ((prolateModeSource a Φ y : ℝ) : ℂ)) :=
     (integrable_prolateModeSource ha hΦ hC hC0).ofReal
   have hdint : Integrable (fun y : ℝ => ((prolateModeSource (lam * a) Φ y : ℝ) : ℂ)) :=
@@ -190,13 +190,13 @@ theorem fourier_prolateMeanZeroSource (ha : 0 < a) (hlam : 0 < lam) (hΦ : Conti
   have hinv : ((lam⁻¹ : ℝ) : ℂ) * ((lam : ℝ) : ℂ) = 1 := by
     push_cast
     field_simp
-  calc ((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ 2) (fun t => ((Φ t : ℝ) : ℂ)) x
+  calc ((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) (fun t => ((Φ t : ℝ) : ℂ)) x
         - ((lam⁻¹ : ℝ) : ℂ) * (((lam : ℝ) : ℂ) *
-          (((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ 2)
+          (((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ))
             (fun t => ((Φ t : ℝ) : ℂ)) (lam * x)))
-      = ((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ 2) (fun t => ((Φ t : ℝ) : ℂ)) x
+      = ((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) (fun t => ((Φ t : ℝ) : ℂ)) x
         - (((lam⁻¹ : ℝ) : ℂ) * ((lam : ℝ) : ℂ)) *
-          (((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ 2)
+          (((a : ℝ) : ℂ) * fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ))
             (fun t => ((Φ t : ℝ) : ℂ)) (lam * x)) := by ring
     _ = _ := by rw [hinv]; ring
 

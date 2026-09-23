@@ -92,12 +92,12 @@ theorem barbanVehovSelbergMixedDiagonal_eq_originalLogOneTwo (N : ℕ) :
   field_simp [hmR, hnR, hlcmR]
   calc
     (((μ m : ℤ) : ℝ) * (m : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
-        ((μ n : ℤ) : ℝ) * (n : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) =
+        ((μ n : ℤ) : ℝ) * (n : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) =
         (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
-          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) *
             ((m : ℝ) * (n : ℝ)) := by ring
     _ = (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) *
-          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) *
             ((Nat.gcd m n : ℝ) * (Nat.lcm m n : ℝ)) := by rw [hgcdlcm]
     _ = _ := by ring
 
@@ -126,26 +126,26 @@ theorem barbanVehovSelbergQuadraticLogDiagonal_eq_originalLogTwoTwo (N : ℕ) :
   push_cast
   field_simp [hmR, hnR, hlcmR]
   calc
-    (((μ m : ℤ) : ℝ) * (m : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
-        ((μ n : ℤ) : ℝ) * (n : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) =
-        (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
-          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) *
+    (((μ m : ℤ) : ℝ) * (m : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
+        ((μ n : ℤ) : ℝ) * (n : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) =
+        (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) *
             ((m : ℝ) * (n : ℝ)) := by ring
-    _ = (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
-          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2) *
+    _ = (((μ m : ℤ) : ℝ) * Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
+          ((μ n : ℤ) : ℝ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) *
             ((Nat.gcd m n : ℝ) * (Nat.lcm m n : ℝ)) := by rw [hgcdlcm]
     _ = _ := by ring
 
 theorem tendsto_barbanVehovSelbergMixedDiagonal_div_log_sq_one :
     Tendsto (fun N : ℕ =>
-      barbanVehovSelbergMixedDiagonal N / Real.log N ^ 2)
+      barbanVehovSelbergMixedDiagonal N / Real.log N ^ (2 : ℕ))
       atTop (𝓝 1) := by
   simpa only [barbanVehovSelbergMixedDiagonal_eq_originalLogOneTwo] using
     tendsto_selbergOriginalLogOneTwo_div_log_sq_one
 
 theorem tendsto_barbanVehovSelbergQuadraticLogDiagonal_div_log_cube_four_thirds :
     Tendsto (fun N : ℕ =>
-      barbanVehovSelbergQuadraticLogDiagonal N / Real.log N ^ 3)
+      barbanVehovSelbergQuadraticLogDiagonal N / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (4 / 3 : ℝ)) := by
   simpa only [barbanVehovSelbergQuadraticLogDiagonal_eq_originalLogTwoTwo] using
     tendsto_selbergOriginalLogTwoTwo_div_log_cube_four_thirds

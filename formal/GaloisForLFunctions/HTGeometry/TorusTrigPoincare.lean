@@ -54,7 +54,7 @@ theorem sum_ite_freq_eq_sum_freqBlock (P : Finset ι) (ν : ι → (d → ℤ))
     (a : ι → ℂ) (g : (d → ℤ) → ℝ) :
     (∑ p ∈ P, ∑ q ∈ P,
         if ν p = ν q then ((g (ν p) : ℝ) : ℂ) * (a p * (starRingEnd ℂ) (a q)) else 0) =
-      ((∑ n ∈ P.image ν, g n * ‖freqBlock P ν a n‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ n ∈ P.image ν, g n * ‖freqBlock P ν a n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   rw [← Finset.sum_fiberwise_of_maps_to (t := P.image ν)
       (fun p hp => Finset.mem_image_of_mem ν hp)]
@@ -77,7 +77,7 @@ theorem sum_ite_freq_eq_sum_freqBlock (P : Finset ι) (ν : ι → (d → ℤ))
   rw [Finset.sum_congr rfl hinner, ← Finset.mul_sum, ← Finset.sum_mul]
   rw [show (∑ p ∈ P with ν p = n, a p) = freqBlock P ν a n from rfl]
   have hconj : (freqBlock P ν a n) * (starRingEnd ℂ) (freqBlock P ν a n) =
-      ((‖freqBlock P ν a n‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖freqBlock P ν a n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [Complex.mul_conj, Complex.sq_norm]
   rw [hconj]
   push_cast
@@ -87,8 +87,8 @@ theorem sum_ite_freq_eq_sum_freqBlock (P : Finset ι) (ν : ι → (d → ℤ))
 coefficients. -/
 theorem integral_box_normSq_trigLift_eq_sum_freqBlock (P : Finset ι)
     (ν : ι → (d → ℤ)) (a : ι → ℂ) :
-    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2) =
-      ∑ n ∈ P.image ν, ‖freqBlock P ν a n‖ ^ 2 := by
+    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ)) =
+      ∑ n ∈ P.image ν, ‖freqBlock P ν a n‖ ^ (2 : ℕ) := by
   classical
   have hpars := ofReal_integral_box_normSq_trigLift P ν a
   have hone := sum_ite_freq_eq_sum_freqBlock P ν a (fun _ => (1 : ℝ))
@@ -107,7 +107,7 @@ end Fibre
 section Gap
 
 /-- The squared Euclidean length of an integer frequency. -/
-def freqNormSq (n : d → ℤ) : ℝ := ∑ j, ((n j : ℝ)) ^ 2
+def freqNormSq (n : d → ℤ) : ℝ := ∑ j, ((n j : ℝ)) ^ (2 : ℕ)
 
 theorem freqNormSq_nonneg (n : d → ℤ) : 0 ≤ freqNormSq n :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
@@ -118,13 +118,13 @@ theorem one_le_freqNormSq {n : d → ℤ} (hn : n ≠ 0) : 1 ≤ freqNormSq n :=
   obtain ⟨j, hj⟩ : ∃ j, n j ≠ 0 := by
     by_contra hcon
     exact hn (funext fun j => by simpa using not_exists.mp hcon j)
-  have hone : (1 : ℝ) ≤ ((n j : ℝ)) ^ 2 := by
-    have h1 : (1 : ℤ) ≤ (n j) ^ 2 := by
+  have hone : (1 : ℝ) ≤ ((n j : ℝ)) ^ (2 : ℕ) := by
+    have h1 : (1 : ℤ) ≤ (n j) ^ (2 : ℕ) := by
       rcases lt_or_gt_of_ne hj with h | h <;> nlinarith
-    have : ((1 : ℤ) : ℝ) ≤ (((n j) ^ 2 : ℤ) : ℝ) := by exact_mod_cast h1
+    have : ((1 : ℤ) : ℝ) ≤ (((n j) ^ (2 : ℕ) : ℤ) : ℝ) := by exact_mod_cast h1
     push_cast at this
     exact this
-  exact le_trans hone (Finset.single_le_sum (f := fun i : d => ((n i : ℝ)) ^ 2)
+  exact le_trans hone (Finset.single_le_sum (f := fun i : d => ((n i : ℝ)) ^ (2 : ℕ))
     (fun i _ => sq_nonneg _) (Finset.mem_univ j))
 
 variable {ι : Type*}
@@ -132,20 +132,20 @@ variable {ι : Type*}
 /-- The mean square of one partial derivative is the frequency-weighted fibre sum. -/
 theorem integral_box_normSq_pderiv_trigLift (P : Finset ι)
     (ν : ι → (d → ℤ)) (a : ι → ℂ) (j : d) :
-    (∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ 2) =
-      ∑ n ∈ P.image ν, (2 * Real.pi) ^ 2 * ((n j : ℝ)) ^ 2 * ‖freqBlock P ν a n‖ ^ 2 := by
+    (∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ (2 : ℕ)) =
+      ∑ n ∈ P.image ν, (2 * Real.pi) ^ (2 : ℕ) * ((n j : ℝ)) ^ (2 : ℕ) * ‖freqBlock P ν a n‖ ^ (2 : ℕ) := by
   classical
   rw [pderiv_trigLift]
   have hpars := ofReal_integral_box_normSq_trigLift P ν
     (fun p => (2 * Real.pi * I * ((ν p) j : ℂ)) * a p)
   have hg := sum_ite_freq_eq_sum_freqBlock P ν a
-    (fun n => (2 * Real.pi) ^ 2 * ((n j : ℝ)) ^ 2)
+    (fun n => (2 * Real.pi) ^ (2 : ℕ) * ((n j : ℝ)) ^ (2 : ℕ))
   have hterm : ∀ p ∈ P, ∀ q ∈ P,
       (if ν p = ν q then
         ((2 * Real.pi * I * ((ν p) j : ℂ)) * a p) *
           (starRingEnd ℂ) ((2 * Real.pi * I * ((ν q) j : ℂ)) * a q) else 0) =
       (if ν p = ν q then
-        ((((2 * Real.pi) ^ 2 * ((ν p) j : ℝ) ^ 2 : ℝ)) : ℂ) *
+        ((((2 * Real.pi) ^ (2 : ℕ) * ((ν p) j : ℝ) ^ (2 : ℕ) : ℝ)) : ℂ) *
           (a p * (starRingEnd ℂ) (a q)) else 0) := by
     intro p _ q _
     by_cases h : ν p = ν q
@@ -164,14 +164,14 @@ theorem integral_box_normSq_pderiv_trigLift (P : Finset ι)
 the total mean square of its partial derivatives, divided by the squared circumference. -/
 theorem variance_trigLift_le_sum_integral_normSq_pderiv (P : Finset ι)
     (ν : ι → (d → ℤ)) (a : ι → ℂ) :
-    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2) -
-        ‖∫ x in torusBox d, trigLift P ν a x‖ ^ 2 ≤
-      ((2 * Real.pi) ^ 2)⁻¹ *
-        ∑ j : d, ∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ 2 := by
+    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ (2 : ℕ)) -
+        ‖∫ x in torusBox d, trigLift P ν a x‖ ^ (2 : ℕ) ≤
+      ((2 * Real.pi) ^ (2 : ℕ))⁻¹ *
+        ∑ j : d, ∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ (2 : ℕ) := by
   classical
-  have hpi : (0 : ℝ) < (2 * Real.pi) ^ 2 := by positivity
-  have hderiv : (∑ j : d, ∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ 2) =
-      (2 * Real.pi) ^ 2 * ∑ n ∈ P.image ν, freqNormSq n * ‖freqBlock P ν a n‖ ^ 2 := by
+  have hpi : (0 : ℝ) < (2 * Real.pi) ^ (2 : ℕ) := by positivity
+  have hderiv : (∑ j : d, ∫ x in torusBox d, ‖pderiv j (trigLift P ν a) x‖ ^ (2 : ℕ)) =
+      (2 * Real.pi) ^ (2 : ℕ) * ∑ n ∈ P.image ν, freqNormSq n * ‖freqBlock P ν a n‖ ^ (2 : ℕ) := by
     rw [Finset.sum_congr rfl fun j _ => integral_box_normSq_pderiv_trigLift P ν a j,
       Finset.sum_comm, Finset.mul_sum]
     refine Finset.sum_congr rfl fun n _ => ?_
@@ -180,20 +180,20 @@ theorem variance_trigLift_le_sum_integral_normSq_pderiv (P : Finset ι)
   rw [hderiv, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hpi), one_mul,
     integral_box_normSq_trigLift_eq_sum_freqBlock P ν a,
     integral_box_trigLift_eq_freqBlock_zero P ν a]
-  have hzero : ‖freqBlock P ν a 0‖ ^ 2 =
-      ∑ n ∈ P.image ν, if n = 0 then ‖freqBlock P ν a n‖ ^ 2 else 0 := by
+  have hzero : ‖freqBlock P ν a 0‖ ^ (2 : ℕ) =
+      ∑ n ∈ P.image ν, if n = 0 then ‖freqBlock P ν a n‖ ^ (2 : ℕ) else 0 := by
     by_cases h0 : (0 : d → ℤ) ∈ P.image ν
-    · rw [Finset.sum_ite_eq' (P.image ν) (0 : d → ℤ) fun n => ‖freqBlock P ν a n‖ ^ 2]
+    · rw [Finset.sum_ite_eq' (P.image ν) (0 : d → ℤ) fun n => ‖freqBlock P ν a n‖ ^ (2 : ℕ)]
       rw [if_pos h0]
     · rw [freqBlock_eq_zero_of_notMem_image a h0, norm_zero,
-        show ((0 : ℝ) ^ 2) = 0 from by norm_num]
+        show ((0 : ℝ) ^ (2 : ℕ)) = 0 from by norm_num]
       refine (Finset.sum_eq_zero fun n hn => ?_).symm
       rw [if_neg]
       intro hcon
       exact h0 (hcon ▸ hn)
-  have hterm : ∀ n ∈ P.image ν, ‖freqBlock P ν a n‖ ^ 2 ≤
-      freqNormSq n * ‖freqBlock P ν a n‖ ^ 2 +
-        (if n = 0 then ‖freqBlock P ν a n‖ ^ 2 else 0) := by
+  have hterm : ∀ n ∈ P.image ν, ‖freqBlock P ν a n‖ ^ (2 : ℕ) ≤
+      freqNormSq n * ‖freqBlock P ν a n‖ ^ (2 : ℕ) +
+        (if n = 0 then ‖freqBlock P ν a n‖ ^ (2 : ℕ) else 0) := by
     intro n _
     by_cases hn : n = 0
     · rw [if_pos hn]

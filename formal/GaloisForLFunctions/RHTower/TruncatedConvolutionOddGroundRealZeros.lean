@@ -37,9 +37,9 @@ theorem truncConvModePoly_xiCoeffVec (xi : ℝ → ℂ) (N : ℕ) :
 
 theorem l2NormSq_truncConvModePoly_xiCoeffVec (xi : ℝ → ℂ) (N : ℕ) :
     l2NormSq (truncConvModePoly (xiCoeffVec xi N))
-      = ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) xi‖ ^ 2 := by
+      = ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) xi‖ ^ (2 : ℕ) := by
   rw [l2NormSq_truncConvModePoly]
-  exact sum_ccmParityCenteredMode N (fun j => ‖l2Pair (fourierChar j) xi‖ ^ 2)
+  exact sum_ccmParityCenteredMode N (fun j => ‖l2Pair (fourierChar j) xi‖ ^ (2 : ℕ))
 
 /-- **The projected ground converges in mean square.** -/
 theorem tendsto_l2NormSq_sub_xiCoeffVec {xi : ℝ → ℂ} (hxi : Continuous xi) :
@@ -186,8 +186,8 @@ theorem phaseGround_mem_sphere {xi : ℝ → ℂ} {N : ℕ} {w : CCMCenteredPari
     (hw : w ∈ truncConvSphere N) (hc : l2Pair xi (truncConvModePoly w) ≠ 0) :
     phaseGround xi w ∈ truncConvSphere N := by
   have hn := norm_phaseFactor (xi := xi) (w := w) hc
-  show ∑ i, ‖phaseGround xi w i‖ ^ 2 = 1
-  have hval : ∀ i, ‖phaseGround xi w i‖ ^ 2 = ‖w i‖ ^ 2 := by
+  show ∑ i, ‖phaseGround xi w i‖ ^ (2 : ℕ) = 1
+  have hval : ∀ i, ‖phaseGround xi w i‖ ^ (2 : ℕ) = ‖w i‖ ^ (2 : ℕ) := by
     intro i
     rw [phaseGround, norm_mul, hn, one_mul]
   rw [Finset.sum_congr rfl fun i _ => hval i]
@@ -214,7 +214,7 @@ theorem l2Pair_xi_phaseGround {xi : ℝ → ℂ} {N : ℕ} {w : CCMCenteredParit
       = fun x => ((starRingEnd ℂ) c / ((‖c‖ : ℝ) : ℂ)) * truncConvModePoly w x :=
     funext fun x => truncConvModePoly_phaseGround xi w x
   rw [hP, l2Pair_smul_right _ xi (truncConvModePoly w), ← hcdef]
-  have hcc : (starRingEnd ℂ) c * c = ((‖c‖ ^ 2 : ℝ) : ℂ) := by
+  have hcc : (starRingEnd ℂ) c * c = ((‖c‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
   have hne : ((‖c‖ : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast ne_of_gt hn
@@ -262,7 +262,7 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
     rw [hnorm, mul_one, hray] at h
     rw [le_div_iff₀ H.gapPos]
     linarith [h]
-  have hcsq : ∀ᶠ N : ℕ in atTop, cn N ^ 2 = 1 - l2NormSq (r N) := by
+  have hcsq : ∀ᶠ N : ℕ in atTop, cn N ^ (2 : ℕ) = 1 - l2NormSq (r N) := by
     filter_upwards [hcev] with N hcN
     have hnorm : l2NormSq (P N) = 1 := by
       rw [hP, l2NormSq_truncConvModePoly]
@@ -275,17 +275,17 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
     rw [h, Complex.norm_real, Real.norm_eq_abs, sq_abs]
     ring
   have hclim : Tendsto cn atTop (𝓝 1) := by
-    have hsq : Tendsto (fun N : ℕ => cn N ^ 2) atTop (𝓝 1) := by
+    have hsq : Tendsto (fun N : ℕ => cn N ^ (2 : ℕ)) atTop (𝓝 1) := by
       have hstep : Tendsto (fun N : ℕ => 1 - l2NormSq (r N)) atTop (𝓝 (1 - 0)) :=
         tendsto_const_nhds.sub hrlim
       rw [sub_zero] at hstep
       exact hstep.congr' (hcsq.mono fun N h => h.symm)
-    have hroot : Tendsto (fun N : ℕ => Real.sqrt (cn N ^ 2)) atTop (𝓝 (Real.sqrt 1)) :=
+    have hroot : Tendsto (fun N : ℕ => Real.sqrt (cn N ^ (2 : ℕ))) atTop (𝓝 (Real.sqrt 1)) :=
       (Real.continuous_sqrt.tendsto 1).comp hsq
     rw [Real.sqrt_one] at hroot
     exact hroot.congr fun N => Real.sqrt_sq (norm_nonneg _)
   have hsplit : ∀ᶠ N : ℕ in atTop, l2NormSq (fun x => P N x - xi x)
-      ≤ 2 * l2NormSq (r N) + 2 * ((cn N - 1) ^ 2 * l2NormSq xi) := by
+      ≤ 2 * l2NormSq (r N) + 2 * ((cn N - 1) ^ (2 : ℕ) * l2NormSq xi) := by
     filter_upwards [hcev] with N hcN
     have hpair : l2Pair xi (P N) = ((cn N : ℝ) : ℂ) := l2Pair_xi_phaseGround hcN
     have hid : ∀ x, P N x - xi x = r N x + ((cn N : ℝ) - 1 : ℂ) * xi x := by
@@ -297,7 +297,7 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
         = fun x => r N x + (((cn N : ℝ) - 1 : ℂ)) * xi x := funext hid
     rw [hfun]
     have hb : l2NormSq (fun x => (((cn N : ℝ) - 1 : ℂ)) * xi x)
-        = (cn N - 1) ^ 2 * l2NormSq xi := by
+        = (cn N - 1) ^ (2 : ℕ) * l2NormSq xi := by
       rw [l2NormSq_const_mul]
       congr 1
       rw [show (((cn N : ℝ) - 1 : ℂ)) = (((cn N - 1 : ℝ)) : ℂ) by push_cast; ring,
@@ -308,8 +308,8 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
     exact hadd
   refine squeeze_zero' (Filter.Eventually.of_forall fun N => l2NormSq_nonneg _) hsplit ?_
   have hlim2 : Tendsto (fun N : ℕ => 2 * l2NormSq (r N)
-      + 2 * ((cn N - 1) ^ 2 * l2NormSq xi)) atTop
-      (𝓝 (2 * 0 + 2 * ((1 - 1) ^ 2 * l2NormSq xi))) := by
+      + 2 * ((cn N - 1) ^ (2 : ℕ) * l2NormSq xi)) atTop
+      (𝓝 (2 * 0 + 2 * ((1 - 1) ^ (2 : ℕ) * l2NormSq xi))) := by
     refine (tendsto_const_nhds.mul hrlim).add (tendsto_const_nhds.mul ?_)
     exact ((hclim.sub tendsto_const_nhds).pow 2).mul tendsto_const_nhds
   simpa using hlim2
@@ -361,7 +361,7 @@ theorem truncConvOddGround_compactFourier_zero_im_eq_zero
     have hwz : w' n = 0 := by
       rw [← hframe n, hzero]
       simp
-    have hone : ∑ i, ‖w' n i‖ ^ 2 = 1 := hw'mem n
+    have hone : ∑ i, ‖w' n i‖ ^ (2 : ℕ) = 1 := hw'mem n
     rw [hwz] at hone
     simp at hone
   have hpsd : ∀ n, (truncConvParityPacket k (M n)
@@ -386,9 +386,9 @@ theorem truncConvOddGround_compactFourier_zero_im_eq_zero
     hmean0.comp (tendsto_add_atTop_nat N₀)
   have hmean : Tendsto (fun n : ℕ => ∫ x in (0 : ℝ)..(2 * Real.pi),
       ‖ccmTrigPoly (M n) (ccmOddGroundCoeff (M n) (c n)) x
-        - (fun theta : ℝ => xi (theta / (2 * Real.pi))) x‖ ^ 2) atTop (𝓝 0) := by
+        - (fun theta : ℝ => xi (theta / (2 * Real.pi))) x‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hid : ∀ n : ℕ, (∫ x in (0 : ℝ)..(2 * Real.pi),
-        ‖ccmTrigPoly (M n) (ccmOddGroundCoeff (M n) (c n)) x - xi (x / (2 * Real.pi))‖ ^ 2)
+        ‖ccmTrigPoly (M n) (ccmOddGroundCoeff (M n) (c n)) x - xi (x / (2 * Real.pi))‖ ^ (2 : ℕ))
         = 2 * Real.pi * l2NormSq (fun x => truncConvModePoly (w' n) x - xi x) := by
       intro n
       rw [integral_ccmTrigPoly_sub_sq (M n) (c n) xi, hframe n]

@@ -140,15 +140,15 @@ theorem integer_width_cutoff_unbounded (T : ℝ) (m : ℕ) :
 
 /-- Nonnegative part of the finite-packet seam form. -/
 def positiveForm (s : Finset ℤ) (b T : ℝ) (c : ℤ → ℝ) : ℝ :=
-  ∑ n ∈ s, max (seam b T n) 0 * c n ^ 2
+  ∑ n ∈ s, max (seam b T n) 0 * c n ^ (2 : ℕ)
 
 /-- The complete adverse boundary cost on the intersection with the finite packet. -/
 def debtForm (s : Finset ℤ) (b T : ℝ) (c : ℤ → ℝ) : ℝ :=
-  ∑ n ∈ s.filter (fun n => n ∈ adverse b T), -seam b T n * c n ^ 2
+  ∑ n ∈ s.filter (fun n => n ∈ adverse b T), -seam b T n * c n ^ (2 : ℕ)
 
 /-- Exact signed decomposition; every adverse boundary contribution is retained. -/
 theorem seam_form_decomposition (s : Finset ℤ) (b T : ℝ) (c : ℤ → ℝ) :
-    (∑ n ∈ s, seam b T n * c n ^ 2) = positiveForm s b T c - debtForm s b T c := by
+    (∑ n ∈ s, seam b T n * c n ^ (2 : ℕ)) = positiveForm s b T c - debtForm s b T c := by
   rw [positiveForm, debtForm, Finset.sum_filter, ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro n _
@@ -178,7 +178,7 @@ theorem debtForm_nonneg (s : Finset ℤ) (b T : ℝ) (c : ℤ → ℝ) :
 /-- Strict cost occurs exactly when the packet trace meets an adverse mode nontrivially. -/
 theorem debtForm_pos_iff (s : Finset ℤ) (b T : ℝ) (c : ℤ → ℝ) :
     0 < debtForm s b T c ↔ ∃ n ∈ s, n ∈ adverse b T ∧ c n ≠ 0 := by
-  have hh : ∀ n ∈ s.filter (fun n => n ∈ adverse b T), 0 ≤ -seam b T n * c n ^ 2 := by
+  have hh : ∀ n ∈ s.filter (fun n => n ∈ adverse b T), 0 ≤ -seam b T n * c n ^ (2 : ℕ) := by
     intro n hn
     exact mul_nonneg (neg_nonneg.mpr ((mem_adverse_iff b T n).mp (Finset.mem_filter.mp hn).2).le)
       (sq_nonneg _)
@@ -200,7 +200,7 @@ theorem finite_packet_energy_identity (s : Finset ℤ) (b T : ℝ) (f : ℤ → 
       debtForm (s.erase 0) b T (fun n => f n T) := by
   have hid : (∑ n ∈ s.erase 0, ∫ t in Ioi T, excessField (f n) (modeLog b n) t) =
       ∑ n ∈ s.erase 0, ((∫ t in Ioi T, squareField (f n) (modeLog b n) t) +
-        seam b T n * f n T ^ 2) := by
+        seam b T n * f n T ^ (2 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro n hn
     rw [critical_boundary_identity, seam, if_neg (Finset.mem_erase.mp hn).1]

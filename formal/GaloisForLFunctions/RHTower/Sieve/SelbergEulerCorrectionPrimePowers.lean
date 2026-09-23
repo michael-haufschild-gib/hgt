@@ -48,7 +48,7 @@ private theorem gcd_prime_pow_eq_pow_min {p i j : ℕ} :
 theorem selbergEulerCorrectionCoeff_prime_pow_succ
     {p i j : ℕ} (hp : p.Prime) :
     selbergEulerCorrectionCoeff (p ^ (i + 1)) (p ^ (j + 1)) =
-      (-(1 : ℝ) / ((p : ℝ) ^ 2)) *
+      (-(1 : ℝ) / ((p : ℝ) ^ (2 : ℕ))) *
         reciprocalMoebiusAmplitude (p ^ i) * reciprocalMoebiusAmplitude (p ^ j) := by
   rw [selbergEulerCorrectionCoeff, if_neg (by simp [hp.ne_zero])]
   change (∑ r ∈ (Nat.gcd (p ^ (i + 1)) (p ^ (j + 1))).divisors.attach,
@@ -66,9 +66,9 @@ theorem selbergEulerCorrectionCoeff_prime_pow_succ
           ((p ^ (j + 1)) / r)))]
   rw [gcd_prime_pow_eq_pow_min, Nat.sum_divisors_prime_pow hp]
   rw [Finset.sum_eq_single 1]
-  · have hpi : p ^ (i + 1) / p ^ 1 = p ^ i := by
+  · have hpi : p ^ (i + 1) / p ^ (1 : ℕ) = p ^ i := by
       simpa using Nat.pow_div (x := p) (m := i + 1) (n := 1) (by omega) hp.pos
-    have hpj : p ^ (j + 1) / p ^ 1 = p ^ j := by
+    have hpj : p ^ (j + 1) / p ^ (1 : ℕ) = p ^ j := by
       simpa using Nat.pow_div (x := p) (m := j + 1) (n := 1) (by omega) hp.pos
     rw [hpi, hpj, pow_one, selbergCorrectionWeight,
       ArithmeticFunction.moebius_apply_prime hp,

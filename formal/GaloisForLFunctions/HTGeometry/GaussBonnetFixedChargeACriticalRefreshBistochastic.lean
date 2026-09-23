@@ -43,8 +43,8 @@ theorem egbFixedChargeACriticalMarkovRefresh_center (n : ℕ)
 /-- The residual transition cannot increase the squared norm of any real profile. -/
 theorem egbFixedChargeACriticalMarkovRefresh_sum_sq_le (n : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℝ) :
-    ∑ i, ((egbFixedChargeACriticalMarkovRefreshKernel n).toFinitePositiveKernel.applyReal f i) ^ 2 ≤
-      ∑ i, (f i) ^ 2 := by
+    ∑ i, ((egbFixedChargeACriticalMarkovRefreshKernel n).toFinitePositiveKernel.applyReal f i) ^ (2 : ℕ) ≤
+      ∑ i, (f i) ^ (2 : ℕ) := by
   have h := bistochasticMixing_sum_sq_le (egbFixedChargeACriticalRefreshBistochastic n) f
   rw [egbFixedChargeACriticalRefreshBistochastic_action] at h
   exact h

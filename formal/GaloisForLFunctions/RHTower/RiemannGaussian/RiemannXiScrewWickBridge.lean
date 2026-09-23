@@ -12,7 +12,7 @@ kernel
 
 is `2 h exp (2 h t)` on real time, where `h = im alpha`.  On imaginary time
 `t = i s`, its normalized Gaussian average is instead
-`2 h exp (-tau h^2)`.  Thus the same entire mode realizes both exponential
+`2 h exp (-tau h^(2 : ℕ))`.  Thus the same entire mode realizes both exponential
 screw growth and the Gaussian height damping already obtained from spatially
 integrating the boundary heat kernel.
 
@@ -157,7 +157,7 @@ def reflectedPairScrewWickGaussianAverage
         reflectedPairScrewKernel (Complex.I * (s : ℂ)) alpha beta
 
 /-- The normalized Wick Gaussian average of a conjugate pair is exactly
-`2 h exp (-tau h^2)`. -/
+`2 h exp (-tau h^(2 : ℕ))`. -/
 theorem reflectedPairScrewWickGaussianAverage_conj
     {tau : ℝ} (htau : 0 < tau) (alpha : ℂ) :
     reflectedPairScrewWickGaussianAverage tau alpha

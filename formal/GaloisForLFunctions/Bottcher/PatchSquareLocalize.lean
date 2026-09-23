@@ -29,17 +29,17 @@ theorem patch_square_mem_closedBall {c : ℂ} {rlo R₀ Ra : ℝ}
     (S : TowerSection c rlo R₀) (hc : (1000:ℝ) ≤ ‖c‖)
     (hrlo0 : 0 < rlo) (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
-    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2)
-    {v : ℂ} (hv : v ∈ annulusSet rlo R₀) (hv2 : v ^ 2 ∈ annulusSet rlo R₀)
+    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2)
+    {v : ℂ} (hv : v ∈ annulusSet rlo R₀) (hv2 : v ^ (2 : ℕ) ∈ annulusSet rlo R₀)
     (hpatch : ‖S.T v - c‖ ≤ 4) :
-    ‖v ^ 2 - (c ^ 2 + c)‖ ≤ 8 * ‖c‖ + 17 := by
+    ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 8 * ‖c‖ + 17 := by
   have hc0 : (0:ℝ) < ‖c‖ := by linarith
   have hc100 : (100:ℝ) ≤ ‖c‖ := by linarith
   -- the functional equation at the patch point
-  have hfe : S.T (v ^ 2) = (S.T v) ^ 2 + c := S.fe v hv hv2
+  have hfe : S.T (v ^ (2 : ℕ)) = (S.T v) ^ (2 : ℕ) + c := S.fe v hv hv2
   -- the image ball: `T(v²) ∈ closedBall (c²+c) (8‖c‖+16)`
-  have hT2ball : ‖S.T (v ^ 2) - (c ^ 2 + c)‖ ≤ 8 * ‖c‖ + 16 := by
-    have hfact : S.T (v ^ 2) - (c ^ 2 + c) = (S.T v - c) * (S.T v + c) := by
+  have hT2ball : ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ ≤ 8 * ‖c‖ + 16 := by
+    have hfact : S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c) = (S.T v - c) * (S.T v + c) := by
       rw [hfe]
       ring
     rw [hfact, norm_mul]
@@ -55,28 +55,28 @@ theorem patch_square_mem_closedBall {c : ℂ} {rlo R₀ Ra : ℝ}
           apply mul_le_mul hpatch h2 (norm_nonneg _) (by norm_num)
       _ = 8 * ‖c‖ + 16 := by ring
   -- the image is deep in the far field
-  have hccnorm : ‖c‖ ^ 2 - ‖c‖ ≤ ‖c ^ 2 + c‖ := by
-    have h1 : ‖c ^ 2‖ ≤ ‖c ^ 2 + c‖ + ‖c‖ := by
-      have h2 : ‖(c ^ 2 + c) + (-c)‖ ≤ ‖c ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hccnorm : ‖c‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖c ^ (2 : ℕ) + c‖ := by
+    have h1 : ‖c ^ (2 : ℕ)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖c‖ := by
+      have h2 : ‖(c ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
       rw [add_neg_cancel_right, norm_neg] at h2
       exact h2
     rw [norm_pow] at h1
     linarith
-  have hT2lo : (9:ℝ)/10 * ‖c‖ ^ 2 ≤ ‖S.T (v ^ 2)‖ := by
-    have h1 : ‖c ^ 2 + c‖ - ‖S.T (v ^ 2)‖ ≤ ‖S.T (v ^ 2) - (c ^ 2 + c)‖ := by
-      have h2 := norm_sub_norm_le (c ^ 2 + c) (S.T (v ^ 2))
+  have hT2lo : (9:ℝ)/10 * ‖c‖ ^ (2 : ℕ) ≤ ‖S.T (v ^ (2 : ℕ))‖ := by
+    have h1 : ‖c ^ (2 : ℕ) + c‖ - ‖S.T (v ^ (2 : ℕ))‖ ≤ ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ := by
+      have h2 := norm_sub_norm_le (c ^ (2 : ℕ) + c) (S.T (v ^ (2 : ℕ)))
       rwa [norm_sub_rev] at h2
     nlinarith
   -- level bookkeeping: `log ‖v²‖ = 2·G(T v) ≥ 4h − ½` clears the identity ceiling
   have hpinch := abs_le.mp (abs_greenFunctionDyn_sub_two_crit_le hc100 hpatch)
   have h2h := abs_le.mp (abs_two_greenCritical_sub_log_le hc100)
-  have hlev2 : greenFunctionDyn c (S.T (v ^ 2)) = Real.log ‖v ^ 2‖ := S.level (v ^ 2) hv2
-  have hGdouble : greenFunctionDyn c (S.T (v ^ 2)) = 2 * greenFunctionDyn c (S.T v) := by
+  have hlev2 : greenFunctionDyn c (S.T (v ^ (2 : ℕ))) = Real.log ‖v ^ (2 : ℕ)‖ := S.level (v ^ (2 : ℕ)) hv2
+  have hGdouble : greenFunctionDyn c (S.T (v ^ (2 : ℕ))) = 2 * greenFunctionDyn c (S.T v) := by
     rw [hfe]
     have h1 := greenFunctionDyn_quadratic c (S.T v)
     simpa [quadratic] using h1
-  have hceil_le : Real.log (‖c‖ ^ 2 + ‖c‖) ≤ 2 * Real.log ‖c‖ + 1 / 1000 := by
-    have h1 : ‖c‖ ^ 2 + ‖c‖ = ‖c‖ ^ 2 * (1 + 1 / ‖c‖) := by
+  have hceil_le : Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) ≤ 2 * Real.log ‖c‖ + 1 / 1000 := by
+    have h1 : ‖c‖ ^ (2 : ℕ) + ‖c‖ = ‖c‖ ^ (2 : ℕ) * (1 + 1 / ‖c‖) := by
       field_simp
     rw [h1, Real.log_mul (by positivity) (by positivity), Real.log_pow, Nat.cast_ofNat]
     have h2 : Real.log (1 + 1 / ‖c‖) ≤ 1 / ‖c‖ := by
@@ -87,44 +87,44 @@ theorem patch_square_mem_closedBall {c : ℂ} {rlo R₀ Ra : ℝ}
       linarith
     linarith
   have hexp3 : Real.exp 3 ≤ 27 := by
-    have h1 : Real.exp 3 = Real.exp 1 ^ 3 := by
+    have h1 : Real.exp 3 = Real.exp 1 ^ (3 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
     have h3 : Real.exp 1 ≤ 3 := by
       have := Real.exp_one_lt_d9
       linarith
-    calc Real.exp 1 ^ 3 ≤ 3 ^ 3 := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
+    calc Real.exp 1 ^ (3 : ℕ) ≤ 3 ^ (3 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
       _ = 27 := by norm_num
   have hlogR3 : (3:ℝ) ≤ Real.log ‖c‖ := by
     have h1 : Real.exp 3 ≤ ‖c‖ := by linarith
     calc (3:ℝ) = Real.log (Real.exp 3) := (Real.log_exp 3).symm
       _ ≤ Real.log ‖c‖ := Real.log_le_log (Real.exp_pos 3) h1
-  have hw_lo : (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < Real.log ‖v ^ 2‖ := by
+  have hw_lo : (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < Real.log ‖v ^ (2 : ℕ)‖ := by
     rw [← hlev2, hGdouble]
     linarith [hpinch.1, h2h.1]
   -- the below-anchor identity at `v²`
-  have hid : bottcherCoord c (S.T (v ^ 2)) = v ^ 2 :=
+  have hid : bottcherCoord c (S.T (v ^ (2 : ℕ))) = v ^ (2 : ℕ) :=
     sectionInverse_identity_at S (by linarith) hRa1 hRaR₀ hfar hrlo0 hrlo_ceiling
       hw_lo hv2.2
   -- the explicit rate at `T(v²)`
-  have hcz : ‖c‖ ≤ ‖S.T (v ^ 2)‖ := by nlinarith
-  have h2z : (2:ℝ) < ‖S.T (v ^ 2)‖ := by nlinarith
+  have hcz : ‖c‖ ≤ ‖S.T (v ^ (2 : ℕ))‖ := by nlinarith
+  have h2z : (2:ℝ) < ‖S.T (v ^ (2 : ℕ))‖ := by nlinarith
   have hrate := norm_bottcherCoord_sub_id_le hcz h2z
-  have hrate1 : ‖bottcherCoord c (S.T (v ^ 2)) - S.T (v ^ 2)‖ ≤ 1 := by
-    have h1 : 4 * ‖c‖ / ‖S.T (v ^ 2)‖ ≤ 1 := by
+  have hrate1 : ‖bottcherCoord c (S.T (v ^ (2 : ℕ))) - S.T (v ^ (2 : ℕ))‖ ≤ 1 := by
+    have h1 : 4 * ‖c‖ / ‖S.T (v ^ (2 : ℕ))‖ ≤ 1 := by
       rw [div_le_one (by nlinarith)]
       nlinarith
     linarith
   rw [hid] at hrate1
   -- assemble
-  have hsplit : ‖v ^ 2 - (c ^ 2 + c)‖
-      = ‖(v ^ 2 - S.T (v ^ 2)) + (S.T (v ^ 2) - (c ^ 2 + c))‖ := by
+  have hsplit : ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖
+      = ‖(v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))) + (S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c))‖ := by
     congr 1
     ring
   rw [hsplit]
-  calc ‖(v ^ 2 - S.T (v ^ 2)) + (S.T (v ^ 2) - (c ^ 2 + c))‖
-      ≤ ‖v ^ 2 - S.T (v ^ 2)‖ + ‖S.T (v ^ 2) - (c ^ 2 + c)‖ := norm_add_le _ _
+  calc ‖(v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))) + (S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c))‖
+      ≤ ‖v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))‖ + ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ := norm_add_le _ _
     _ ≤ 1 + (8 * ‖c‖ + 16) := add_le_add hrate1 hT2ball
     _ = 8 * ‖c‖ + 17 := by ring
 
@@ -132,12 +132,12 @@ theorem patch_square_mem_closedBall {c : ℂ} {rlo R₀ Ra : ℝ}
 then `ξ.im` lies within `1/100` of the half-argument lattice `arg(a)/2 + πℤ` — the two
 antipodal wedges the wedge-slit scaffold must dodge. -/
 theorem exists_int_im_near_half_arg_of_sq_near {a : ℂ} (ha : a ≠ 0)
-    {ξ : ℂ} (hρ : ‖Complex.exp ξ ^ 2 - a‖ ≤ 1 / 100 * ‖a‖) :
+    {ξ : ℂ} (hρ : ‖Complex.exp ξ ^ (2 : ℕ) - a‖ ≤ 1 / 100 * ‖a‖) :
     ∃ n : ℤ, |ξ.im - (Complex.arg a / 2 + Real.pi * n)| ≤ 1 / 100 := by
   have hapos : (0:ℝ) < ‖a‖ := norm_pos_iff.mpr ha
-  set u : ℂ := Complex.exp ξ ^ 2 / a with hudef
+  set u : ℂ := Complex.exp ξ ^ (2 : ℕ) / a with hudef
   have hu1 : ‖u - 1‖ ≤ 1 / 100 := by
-    have h1 : u - 1 = (Complex.exp ξ ^ 2 - a) / a := by
+    have h1 : u - 1 = (Complex.exp ξ ^ (2 : ℕ) - a) / a := by
       rw [hudef]
       field_simp
     rw [h1, norm_div, div_le_iff₀ hapos]
@@ -146,7 +146,7 @@ theorem exists_int_im_near_half_arg_of_sq_near {a : ℂ} (ha : a ≠ 0)
     intro h0
     rw [h0] at hu1
     norm_num at hu1
-  have hexpsq : Complex.exp (2 * ξ) = Complex.exp ξ ^ 2 := by
+  have hexpsq : Complex.exp (2 * ξ) = Complex.exp ξ ^ (2 : ℕ) := by
     rw [two_mul, Complex.exp_add, sq]
   have hexp2 : Complex.exp (2 * ξ) = a * u := by
     rw [hexpsq, hudef, mul_comm, div_mul_cancel₀ _ ha]
@@ -187,7 +187,7 @@ theorem exists_slit_center_avoiding_patch {c : ℂ} {rlo R₀ Ra : ℝ}
     (S : TowerSection c rlo R₀) (hc : (1000:ℝ) ≤ ‖c‖)
     (hrlo1 : 1 < rlo) (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
-    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2)
+    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2)
     (hrlo2h : Real.log rlo < 2 * greenFunctionDyn c 0 - 1/4)
     (hR₀4h : 4 * greenFunctionDyn c 0 + 1 < Real.log R₀)
     (hsurj : ∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
@@ -202,34 +202,34 @@ theorem exists_slit_center_avoiding_patch {c : ℂ} {rlo R₀ Ra : ℝ}
   have hc100 : (100:ℝ) ≤ ‖c‖ := by linarith
   have h2h := abs_le.mp (abs_two_greenCritical_sub_log_le hc100)
   have hexp3 : Real.exp 3 ≤ 27 := by
-    have h1 : Real.exp 3 = Real.exp 1 ^ 3 := by
+    have h1 : Real.exp 3 = Real.exp 1 ^ (3 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
     have h3 : Real.exp 1 ≤ 3 := by
       have := Real.exp_one_lt_d9
       linarith
-    calc Real.exp 1 ^ 3 ≤ 3 ^ 3 := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
+    calc Real.exp 1 ^ (3 : ℕ) ≤ 3 ^ (3 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
       _ = 27 := by norm_num
   have hlogc3 : (3:ℝ) ≤ Real.log ‖c‖ := by
     have h1 : Real.exp 3 ≤ ‖c‖ := by linarith
     calc (3:ℝ) = Real.log (Real.exp 3) := (Real.log_exp 3).symm
       _ ≤ Real.log ‖c‖ := Real.log_le_log (Real.exp_pos 3) h1
-  have hccnorm : ‖c‖ ^ 2 - ‖c‖ ≤ ‖c ^ 2 + c‖ := by
-    have h2 : ‖(c ^ 2 + c) + (-c)‖ ≤ ‖c ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hccnorm : ‖c‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖c ^ (2 : ℕ) + c‖ := by
+    have h2 : ‖(c ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
     rw [add_neg_cancel_right, norm_neg, norm_pow] at h2
     linarith
-  have hane : (c ^ 2 + c) ≠ 0 := by
+  have hane : (c ^ (2 : ℕ) + c) ≠ 0 := by
     intro h0
     rw [h0, norm_zero] at hccnorm
     nlinarith
-  set ψ₀ : ℝ := Complex.arg (c ^ 2 + c) / 2 with hψdef
+  set ψ₀ : ℝ := Complex.arg (c ^ (2 : ℕ) + c) / 2 with hψdef
   have hψlo : -(Real.pi / 2) < ψ₀ := by
-    have := Complex.neg_pi_lt_arg (c ^ 2 + c)
+    have := Complex.neg_pi_lt_arg (c ^ (2 : ℕ) + c)
     rw [hψdef]
     linarith
   have hψhi : ψ₀ ≤ Real.pi / 2 := by
-    have := Complex.arg_le_pi (c ^ 2 + c)
+    have := Complex.arg_le_pi (c ^ (2 : ℕ) + c)
     rw [hψdef]
     linarith
   -- the critical-value ball sits inside the band
@@ -250,10 +250,10 @@ theorem exists_slit_center_avoiding_patch {c : ℂ} {rlo R₀ Ra : ℝ}
     have hlev : greenFunctionDyn c (S.T v) = Real.log ‖v‖ := S.level v hv
     have hp := abs_le.mp (abs_greenFunctionDyn_sub_two_crit_le hc100 hballn)
     have hvpos : (0:ℝ) < ‖v‖ := lt_trans (by linarith) hv.1
-    have hexp2log : Real.exp (2 * Real.log ‖v‖) = ‖v‖ ^ 2 := by
+    have hexp2log : Real.exp (2 * Real.log ‖v‖) = ‖v‖ ^ (2 : ℕ) := by
       rw [two_mul, Real.exp_add, Real.exp_log hvpos]
       ring
-    have hv2 : v ^ 2 ∈ annulusSet rlo R₀ := by
+    have hv2 : v ^ (2 : ℕ) ∈ annulusSet rlo R₀ := by
       rw [annulusSet, Set.mem_setOf_eq, norm_pow]
       constructor
       · have h1 : Real.log rlo < 2 * Real.log ‖v‖ := by
@@ -261,20 +261,20 @@ theorem exists_slit_center_avoiding_patch {c : ℂ} {rlo R₀ Ra : ℝ}
           linarith [hp.1]
         calc rlo = Real.exp (Real.log rlo) := (Real.exp_log (by linarith)).symm
           _ < Real.exp (2 * Real.log ‖v‖) := Real.exp_lt_exp.mpr h1
-          _ = ‖v‖ ^ 2 := hexp2log
+          _ = ‖v‖ ^ (2 : ℕ) := hexp2log
       · have h1 : 2 * Real.log ‖v‖ < Real.log R₀ := by
           rw [← hlev]
           linarith [hp.2]
-        calc ‖v‖ ^ 2 = Real.exp (2 * Real.log ‖v‖) := hexp2log.symm
+        calc ‖v‖ ^ (2 : ℕ) = Real.exp (2 * Real.log ‖v‖) := hexp2log.symm
           _ < Real.exp (Real.log R₀) := Real.exp_lt_exp.mpr h1
           _ = R₀ := Real.exp_log (by linarith)
     have hsq := patch_square_mem_closedBall S hc (by linarith : (0:ℝ) < rlo) hRa1 hRaR₀ hfar
       hrlo_ceiling hv hv2 hballn
-    have hsmall : ‖Complex.exp ξ ^ 2 - (c ^ 2 + c)‖ ≤ 1 / 100 * ‖c ^ 2 + c‖ := by
+    have hsmall : ‖Complex.exp ξ ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 1 / 100 * ‖c ^ (2 : ℕ) + c‖ := by
       rw [← hξ]
-      calc ‖v ^ 2 - (c ^ 2 + c)‖ ≤ 8 * ‖c‖ + 17 := hsq
-        _ ≤ 1 / 100 * (‖c‖ ^ 2 - ‖c‖) := by nlinarith
-        _ ≤ 1 / 100 * ‖c ^ 2 + c‖ := by nlinarith [hccnorm]
+      calc ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 8 * ‖c‖ + 17 := hsq
+        _ ≤ 1 / 100 * (‖c‖ ^ (2 : ℕ) - ‖c‖) := by nlinarith
+        _ ≤ 1 / 100 * ‖c ^ (2 : ℕ) + c‖ := by nlinarith [hccnorm]
     obtain ⟨n, hn⟩ := exists_int_im_near_half_arg_of_sq_near hane hsmall
     refine ⟨n, ?_⟩
     rw [hψdef]
@@ -468,24 +468,24 @@ theorem patch_square_mem_closedBall_s {c : ℂ} {rlo R₀ Ra : ℝ}
     (S : TowerSection c rlo R₀) (hc : (1000:ℝ) ≤ ‖c‖)
     (hrlo0 : 0 < rlo) (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
-    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2)
-    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
-    {v : ℂ} (hv : v ∈ annulusSet rlo R₀) (hv2 : v ^ 2 ∈ annulusSet rlo R₀)
-    (hpatch : ‖S.T v - c‖ ≤ s ^ 2) :
-    ‖v ^ 2 - (c ^ 2 + c)‖ ≤ 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 := by
+    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2)
+    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
+    {v : ℂ} (hv : v ∈ annulusSet rlo R₀) (hv2 : v ^ (2 : ℕ) ∈ annulusSet rlo R₀)
+    (hpatch : ‖S.T v - c‖ ≤ s ^ (2 : ℕ)) :
+    ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 := by
   have hc0 : (0:ℝ) < ‖c‖ := by linarith
   have hc100 : (100:ℝ) ≤ ‖c‖ := by linarith
-  have hcc : 100 * ‖c‖ ≤ ‖c‖ ^ 2 := by nlinarith
+  have hcc : 100 * ‖c‖ ≤ ‖c‖ ^ (2 : ℕ) := by nlinarith
   have hs0 : (0:ℝ) < s := by linarith
   -- the functional equation at the patch point
-  have hfe : S.T (v ^ 2) = (S.T v) ^ 2 + c := S.fe v hv hv2
+  have hfe : S.T (v ^ (2 : ℕ)) = (S.T v) ^ (2 : ℕ) + c := S.fe v hv hv2
   -- the image ball: `T(v²) ∈ closedBall (c²+c) (2s²‖c‖ + s⁴)`
-  have hT2ball : ‖S.T (v ^ 2) - (c ^ 2 + c)‖ ≤ 2 * s ^ 2 * ‖c‖ + s ^ 4 := by
-    have hfact : S.T (v ^ 2) - (c ^ 2 + c) = (S.T v - c) * (S.T v + c) := by
+  have hT2ball : ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ ≤ 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) := by
+    have hfact : S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c) = (S.T v - c) * (S.T v + c) := by
       rw [hfe]
       ring
     rw [hfact, norm_mul]
-    have h2 : ‖S.T v + c‖ ≤ 2 * ‖c‖ + s ^ 2 := by
+    have h2 : ‖S.T v + c‖ ≤ 2 * ‖c‖ + s ^ (2 : ℕ) := by
       have h3 : ‖(S.T v - c) + (c + c)‖ ≤ ‖S.T v - c‖ + ‖c + c‖ := norm_add_le _ _
       have h4 : (S.T v - c) + (c + c) = S.T v + c := by ring
       have h5 : ‖c + c‖ ≤ 2 * ‖c‖ := by
@@ -493,36 +493,36 @@ theorem patch_square_mem_closedBall_s {c : ℂ} {rlo R₀ Ra : ℝ}
         linarith
       rw [h4] at h3
       linarith
-    calc ‖S.T v - c‖ * ‖S.T v + c‖ ≤ s ^ 2 * (2 * ‖c‖ + s ^ 2) := by
+    calc ‖S.T v - c‖ * ‖S.T v + c‖ ≤ s ^ (2 : ℕ) * (2 * ‖c‖ + s ^ (2 : ℕ)) := by
           apply mul_le_mul hpatch h2 (norm_nonneg _) (by positivity)
-      _ = 2 * s ^ 2 * ‖c‖ + s ^ 4 := by ring
+      _ = 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) := by ring
   -- the image is deep in the far field
-  have hccnorm : ‖c‖ ^ 2 - ‖c‖ ≤ ‖c ^ 2 + c‖ := by
-    have h1 : ‖c ^ 2‖ ≤ ‖c ^ 2 + c‖ + ‖c‖ := by
-      have h2 : ‖(c ^ 2 + c) + (-c)‖ ≤ ‖c ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hccnorm : ‖c‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖c ^ (2 : ℕ) + c‖ := by
+    have h1 : ‖c ^ (2 : ℕ)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖c‖ := by
+      have h2 : ‖(c ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
       rw [add_neg_cancel_right, norm_neg] at h2
       exact h2
     rw [norm_pow] at h1
     linarith
-  have hradbd : 2 * s ^ 2 * ‖c‖ + s ^ 4 ≤ (21/400) * ‖c‖ ^ 2 := by
-    have h1 : 2 * s ^ 2 * ‖c‖ ≤ 2 * (‖c‖ / 40) * ‖c‖ := by nlinarith
-    have h2 : s ^ 4 ≤ (‖c‖ / 40) ^ 2 := by nlinarith [sq_nonneg s]
+  have hradbd : 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) ≤ (21/400) * ‖c‖ ^ (2 : ℕ) := by
+    have h1 : 2 * s ^ (2 : ℕ) * ‖c‖ ≤ 2 * (‖c‖ / 40) * ‖c‖ := by nlinarith
+    have h2 : s ^ (4 : ℕ) ≤ (‖c‖ / 40) ^ (2 : ℕ) := by nlinarith [sq_nonneg s]
     nlinarith
-  have hT2lo : (9:ℝ)/10 * ‖c‖ ^ 2 ≤ ‖S.T (v ^ 2)‖ := by
-    have h1 : ‖c ^ 2 + c‖ - ‖S.T (v ^ 2)‖ ≤ ‖S.T (v ^ 2) - (c ^ 2 + c)‖ := by
-      have h2 := norm_sub_norm_le (c ^ 2 + c) (S.T (v ^ 2))
+  have hT2lo : (9:ℝ)/10 * ‖c‖ ^ (2 : ℕ) ≤ ‖S.T (v ^ (2 : ℕ))‖ := by
+    have h1 : ‖c ^ (2 : ℕ) + c‖ - ‖S.T (v ^ (2 : ℕ))‖ ≤ ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ := by
+      have h2 := norm_sub_norm_le (c ^ (2 : ℕ) + c) (S.T (v ^ (2 : ℕ)))
       rwa [norm_sub_rev] at h2
     nlinarith
   -- level bookkeeping: `log ‖v²‖ = 2·G(T v) ≥ 4h − ½` clears the identity ceiling
   have hpinch := abs_le.mp (abs_greenFunctionDyn_sub_two_crit_le_s hc100 hs40 hpatch)
   have h2h := abs_le.mp (abs_two_greenCritical_sub_log_le hc100)
-  have hlev2 : greenFunctionDyn c (S.T (v ^ 2)) = Real.log ‖v ^ 2‖ := S.level (v ^ 2) hv2
-  have hGdouble : greenFunctionDyn c (S.T (v ^ 2)) = 2 * greenFunctionDyn c (S.T v) := by
+  have hlev2 : greenFunctionDyn c (S.T (v ^ (2 : ℕ))) = Real.log ‖v ^ (2 : ℕ)‖ := S.level (v ^ (2 : ℕ)) hv2
+  have hGdouble : greenFunctionDyn c (S.T (v ^ (2 : ℕ))) = 2 * greenFunctionDyn c (S.T v) := by
     rw [hfe]
     have h1 := greenFunctionDyn_quadratic c (S.T v)
     simpa [quadratic] using h1
-  have hceil_le : Real.log (‖c‖ ^ 2 + ‖c‖) ≤ 2 * Real.log ‖c‖ + 1 / 1000 := by
-    have h1 : ‖c‖ ^ 2 + ‖c‖ = ‖c‖ ^ 2 * (1 + 1 / ‖c‖) := by
+  have hceil_le : Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) ≤ 2 * Real.log ‖c‖ + 1 / 1000 := by
+    have h1 : ‖c‖ ^ (2 : ℕ) + ‖c‖ = ‖c‖ ^ (2 : ℕ) * (1 + 1 / ‖c‖) := by
       field_simp
     rw [h1, Real.log_mul (by positivity) (by positivity), Real.log_pow, Nat.cast_ofNat]
     have h2 : Real.log (1 + 1 / ‖c‖) ≤ 1 / ‖c‖ := by
@@ -533,46 +533,46 @@ theorem patch_square_mem_closedBall_s {c : ℂ} {rlo R₀ Ra : ℝ}
       linarith
     linarith
   have hexp3 : Real.exp 3 ≤ 27 := by
-    have h1 : Real.exp 3 = Real.exp 1 ^ 3 := by
+    have h1 : Real.exp 3 = Real.exp 1 ^ (3 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
     have h3 : Real.exp 1 ≤ 3 := by
       have := Real.exp_one_lt_d9
       linarith
-    calc Real.exp 1 ^ 3 ≤ 3 ^ 3 := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
+    calc Real.exp 1 ^ (3 : ℕ) ≤ 3 ^ (3 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
       _ = 27 := by norm_num
   have hlogR3 : (3:ℝ) ≤ Real.log ‖c‖ := by
     have h1 : Real.exp 3 ≤ ‖c‖ := by linarith
     calc (3:ℝ) = Real.log (Real.exp 3) := (Real.log_exp 3).symm
       _ ≤ Real.log ‖c‖ := Real.log_le_log (Real.exp_pos 3) h1
-  have hw_lo : (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 < Real.log ‖v ^ 2‖ := by
+  have hw_lo : (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 < Real.log ‖v ^ (2 : ℕ)‖ := by
     rw [← hlev2, hGdouble]
     linarith [hpinch.1, h2h.1]
   -- the below-anchor identity at `v²`
-  have hid : bottcherCoord c (S.T (v ^ 2)) = v ^ 2 :=
+  have hid : bottcherCoord c (S.T (v ^ (2 : ℕ))) = v ^ (2 : ℕ) :=
     sectionInverse_identity_at S (by linarith) hRa1 hRaR₀ hfar hrlo0 hrlo_ceiling
       hw_lo hv2.2
   -- the explicit rate at `T(v²)`
-  have hcz : ‖c‖ ≤ ‖S.T (v ^ 2)‖ := by nlinarith
-  have h2z : (2:ℝ) < ‖S.T (v ^ 2)‖ := by nlinarith
+  have hcz : ‖c‖ ≤ ‖S.T (v ^ (2 : ℕ))‖ := by nlinarith
+  have h2z : (2:ℝ) < ‖S.T (v ^ (2 : ℕ))‖ := by nlinarith
   have hrate := norm_bottcherCoord_sub_id_le hcz h2z
-  have hrate1 : ‖bottcherCoord c (S.T (v ^ 2)) - S.T (v ^ 2)‖ ≤ 1 := by
-    have h1 : 4 * ‖c‖ / ‖S.T (v ^ 2)‖ ≤ 1 := by
+  have hrate1 : ‖bottcherCoord c (S.T (v ^ (2 : ℕ))) - S.T (v ^ (2 : ℕ))‖ ≤ 1 := by
+    have h1 : 4 * ‖c‖ / ‖S.T (v ^ (2 : ℕ))‖ ≤ 1 := by
       rw [div_le_one (by nlinarith)]
       nlinarith
     linarith
   rw [hid] at hrate1
   -- assemble
-  have hsplit : ‖v ^ 2 - (c ^ 2 + c)‖
-      = ‖(v ^ 2 - S.T (v ^ 2)) + (S.T (v ^ 2) - (c ^ 2 + c))‖ := by
+  have hsplit : ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖
+      = ‖(v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))) + (S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c))‖ := by
     congr 1
     ring
   rw [hsplit]
-  calc ‖(v ^ 2 - S.T (v ^ 2)) + (S.T (v ^ 2) - (c ^ 2 + c))‖
-      ≤ ‖v ^ 2 - S.T (v ^ 2)‖ + ‖S.T (v ^ 2) - (c ^ 2 + c)‖ := norm_add_le _ _
-    _ ≤ 1 + (2 * s ^ 2 * ‖c‖ + s ^ 4) := add_le_add hrate1 hT2ball
-    _ = 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 := by ring
+  calc ‖(v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))) + (S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c))‖
+      ≤ ‖v ^ (2 : ℕ) - S.T (v ^ (2 : ℕ))‖ + ‖S.T (v ^ (2 : ℕ)) - (c ^ (2 : ℕ) + c)‖ := norm_add_le _ _
+    _ ≤ 1 + (2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ)) := add_le_add hrate1 hT2ball
+    _ = 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 := by ring
 
 set_option maxHeartbeats 1600000 in
 /-- **Parametric slit center avoiding the `s²`-patch.**  As
@@ -583,75 +583,75 @@ theorem exists_slit_center_avoiding_patch_s {c : ℂ} {rlo R₀ Ra : ℝ}
     (S : TowerSection c rlo R₀) (hc : (1000:ℝ) ≤ ‖c‖)
     (hrlo1 : 1 < rlo) (hRa1 : 1 < Ra) (hRaR₀ : Ra < R₀)
     (hfar : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w)
-    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2)
+    (hrlo_ceiling : Real.log rlo ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2)
     (hrlo2h : Real.log rlo < 2 * greenFunctionDyn c 0 - 1/4)
     (hR₀4h : 4 * greenFunctionDyn c 0 + 1 < Real.log R₀)
     (hsurj : ∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
       greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀)
-    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
-    (hsmall : 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 ≤ 1/100 * (‖c‖ ^ 2 - ‖c‖)) :
+    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
+    (hsmall : 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 ≤ 1/100 * (‖c‖ ^ (2 : ℕ) - ‖c‖)) :
     ∃ θs : ℝ, -Real.pi ≤ θs ∧ θs ≤ Real.pi ∧
       ∀ ra RW : ℝ, rlo < ra → ra < RW → RW < R₀ →
       ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
-        S.T v ∉ Metric.closedBall c (s ^ 2) := by
+        S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)) := by
   classical
   have hπ := Real.pi_pos
   have hπ3 : (3:ℝ) < Real.pi := Real.pi_gt_three
   have hc100 : (100:ℝ) ≤ ‖c‖ := by linarith
   have h2h := abs_le.mp (abs_two_greenCritical_sub_log_le hc100)
   have hexp3 : Real.exp 3 ≤ 27 := by
-    have h1 : Real.exp 3 = Real.exp 1 ^ 3 := by
+    have h1 : Real.exp 3 = Real.exp 1 ^ (3 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
     have h3 : Real.exp 1 ≤ 3 := by
       have := Real.exp_one_lt_d9
       linarith
-    calc Real.exp 1 ^ 3 ≤ 3 ^ 3 := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
+    calc Real.exp 1 ^ (3 : ℕ) ≤ 3 ^ (3 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h3 3
       _ = 27 := by norm_num
   have hlogc3 : (3:ℝ) ≤ Real.log ‖c‖ := by
     have h1 : Real.exp 3 ≤ ‖c‖ := by linarith
     calc (3:ℝ) = Real.log (Real.exp 3) := (Real.log_exp 3).symm
       _ ≤ Real.log ‖c‖ := Real.log_le_log (Real.exp_pos 3) h1
-  have hccnorm : ‖c‖ ^ 2 - ‖c‖ ≤ ‖c ^ 2 + c‖ := by
-    have h2 : ‖(c ^ 2 + c) + (-c)‖ ≤ ‖c ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hccnorm : ‖c‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖c ^ (2 : ℕ) + c‖ := by
+    have h2 : ‖(c ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖c ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
     rw [add_neg_cancel_right, norm_neg, norm_pow] at h2
     linarith
-  have hane : (c ^ 2 + c) ≠ 0 := by
+  have hane : (c ^ (2 : ℕ) + c) ≠ 0 := by
     intro h0
     rw [h0, norm_zero] at hccnorm
     nlinarith
-  set ψ₀ : ℝ := Complex.arg (c ^ 2 + c) / 2 with hψdef
+  set ψ₀ : ℝ := Complex.arg (c ^ (2 : ℕ) + c) / 2 with hψdef
   have hψlo : -(Real.pi / 2) < ψ₀ := by
-    have := Complex.neg_pi_lt_arg (c ^ 2 + c)
+    have := Complex.neg_pi_lt_arg (c ^ (2 : ℕ) + c)
     rw [hψdef]
     linarith
   have hψhi : ψ₀ ≤ Real.pi / 2 := by
-    have := Complex.arg_le_pi (c ^ 2 + c)
+    have := Complex.arg_le_pi (c ^ (2 : ℕ) + c)
     rw [hψdef]
     linarith
   -- the critical-value ball sits inside the band
-  have hballband : ∀ z ∈ Metric.closedBall c (s ^ 2), Real.log rlo < greenFunctionDyn c z ∧
+  have hballband : ∀ z ∈ Metric.closedBall c (s ^ (2 : ℕ)), Real.log rlo < greenFunctionDyn c z ∧
       greenFunctionDyn c z < Real.log R₀ := by
     intro z hz
     rw [Metric.mem_closedBall, dist_eq_norm] at hz
     have hp := abs_le.mp (abs_greenFunctionDyn_sub_two_crit_le_s hc100 hs40 hz)
     exact ⟨by linarith [hp.1], by linarith [hp.2]⟩
   -- the key localization at any annulus point over the ball
-  have hkey : ∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ 2) →
+  have hkey : ∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ (2 : ℕ)) →
       ∀ ξ : ℂ, v = Complex.exp ξ →
       ∃ n : ℤ, |ξ.im - (ψ₀ + Real.pi * n)| ≤ 1 / 100 := by
     intro v hv hball ξ hξ
-    have hballn : ‖S.T v - c‖ ≤ s ^ 2 := by
+    have hballn : ‖S.T v - c‖ ≤ s ^ (2 : ℕ) := by
       rw [Metric.mem_closedBall, dist_eq_norm] at hball
       exact hball
     have hlev : greenFunctionDyn c (S.T v) = Real.log ‖v‖ := S.level v hv
     have hp := abs_le.mp (abs_greenFunctionDyn_sub_two_crit_le_s hc100 hs40 hballn)
     have hvpos : (0:ℝ) < ‖v‖ := lt_trans (by linarith) hv.1
-    have hexp2log : Real.exp (2 * Real.log ‖v‖) = ‖v‖ ^ 2 := by
+    have hexp2log : Real.exp (2 * Real.log ‖v‖) = ‖v‖ ^ (2 : ℕ) := by
       rw [two_mul, Real.exp_add, Real.exp_log hvpos]
       ring
-    have hv2 : v ^ 2 ∈ annulusSet rlo R₀ := by
+    have hv2 : v ^ (2 : ℕ) ∈ annulusSet rlo R₀ := by
       rw [annulusSet, Set.mem_setOf_eq, norm_pow]
       constructor
       · have h1 : Real.log rlo < 2 * Real.log ‖v‖ := by
@@ -659,20 +659,20 @@ theorem exists_slit_center_avoiding_patch_s {c : ℂ} {rlo R₀ Ra : ℝ}
           linarith [hp.1]
         calc rlo = Real.exp (Real.log rlo) := (Real.exp_log (by linarith)).symm
           _ < Real.exp (2 * Real.log ‖v‖) := Real.exp_lt_exp.mpr h1
-          _ = ‖v‖ ^ 2 := hexp2log
+          _ = ‖v‖ ^ (2 : ℕ) := hexp2log
       · have h1 : 2 * Real.log ‖v‖ < Real.log R₀ := by
           rw [← hlev]
           linarith [hp.2]
-        calc ‖v‖ ^ 2 = Real.exp (2 * Real.log ‖v‖) := hexp2log.symm
+        calc ‖v‖ ^ (2 : ℕ) = Real.exp (2 * Real.log ‖v‖) := hexp2log.symm
           _ < Real.exp (Real.log R₀) := Real.exp_lt_exp.mpr h1
           _ = R₀ := Real.exp_log (by linarith)
     have hsq := patch_square_mem_closedBall_s S hc (by linarith : (0:ℝ) < rlo) hRa1 hRaR₀ hfar
       hrlo_ceiling hs2 hs40 hv hv2 hballn
-    have hsmall' : ‖Complex.exp ξ ^ 2 - (c ^ 2 + c)‖ ≤ 1 / 100 * ‖c ^ 2 + c‖ := by
+    have hsmall' : ‖Complex.exp ξ ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 1 / 100 * ‖c ^ (2 : ℕ) + c‖ := by
       rw [← hξ]
-      calc ‖v ^ 2 - (c ^ 2 + c)‖ ≤ 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 := hsq
-        _ ≤ 1 / 100 * (‖c‖ ^ 2 - ‖c‖) := hsmall
-        _ ≤ 1 / 100 * ‖c ^ 2 + c‖ := by nlinarith [hccnorm]
+      calc ‖v ^ (2 : ℕ) - (c ^ (2 : ℕ) + c)‖ ≤ 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 := hsq
+        _ ≤ 1 / 100 * (‖c‖ ^ (2 : ℕ) - ‖c‖) := hsmall
+        _ ≤ 1 / 100 * ‖c ^ (2 : ℕ) + c‖ := by nlinarith [hccnorm]
     obtain ⟨n, hn⟩ := exists_int_im_near_half_arg_of_sq_near hane hsmall'
     refine ⟨n, ?_⟩
     rw [hψdef]
@@ -734,9 +734,9 @@ theorem exists_slit_center_avoiding_patch_s {c : ℂ} {rlo R₀ Ra : ℝ}
     rw [hQdef]
     exact Complex.continuous_re.comp (continuous_mul_const _)
   -- the patch is connected and one-sided
-  set P : Set ℂ := S.inv '' Metric.closedBall c (s ^ 2) with hPdef
+  set P : Set ℂ := S.inv '' Metric.closedBall c (s ^ (2 : ℕ)) with hPdef
   have hPconn : IsPreconnected P := by
-    apply IsPreconnected.image (convex_closedBall c (s ^ 2)).isPreconnected
+    apply IsPreconnected.image (convex_closedBall c (s ^ (2 : ℕ))).isPreconnected
     intro z hz
     have hzim : z ∈ S.T '' annulusSet rlo R₀ := hsurj z (hballband z hz).1 (hballband z hz).2
     exact ((S.inv_analytic z hzim).continuousAt).continuousWithinAt
@@ -775,12 +775,12 @@ theorem exists_slit_center_avoiding_patch_s {c : ℂ} {rlo R₀ Ra : ℝ}
     linarith
   -- the shared window argument
   have hwindow : ∀ θs : ℝ,
-      (∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ 2) →
+      (∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ (2 : ℕ)) →
         ∀ ξ : ℂ, v = Complex.exp ξ →
         ∃ k : ℤ, |ξ.im - (θs + (k:ℝ) * (2 * Real.pi))| ≤ 1/100) →
       ∀ ra RW : ℝ, rlo < ra → ra < RW → RW < R₀ →
       ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
-        S.T v ∉ Metric.closedBall c (s ^ 2) := by
+        S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)) := by
     intro θs hlat ra RW hra hraRW hRW v hv hball
     have hvann : v ∈ annulusSet rlo R₀ := by
       have h1 := arcAnnulus_subset (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)
@@ -825,7 +825,7 @@ theorem exists_slit_center_avoiding_patch_s {c : ℂ} {rlo R₀ Ra : ℝ}
     exact hn
   · -- odd side: the true wedge is at `ψ₀ ± π`
     have hodd_lattice : ∀ (θs : ℝ) (j₀ : ℤ), θs = ψ₀ + Real.pi + (j₀:ℝ) * (2 * Real.pi) →
-        ∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ 2) →
+        ∀ v ∈ annulusSet rlo R₀, S.T v ∈ Metric.closedBall c (s ^ (2 : ℕ)) →
         ∀ ξ : ℂ, v = Complex.exp ξ →
         ∃ k : ℤ, |ξ.im - (θs + (k:ℝ) * (2 * Real.pi))| ≤ 1/100 := by
       intro θs j₀ hθeq v hv hball ξ hξ

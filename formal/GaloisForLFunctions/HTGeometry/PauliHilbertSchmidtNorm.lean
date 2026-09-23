@@ -26,9 +26,9 @@ variable {α : Type*} [Fintype α] [DecidableEq α]
 theorem ofReal_frobSq_eq_trace (M : Matrix α α ℂ) :
     ((frobSq M : ℝ) : ℂ) = Matrix.trace (star M * M) := by
   classical
-  have hpt : ∀ z : ℂ, ((‖z‖ ^ 2 : ℝ) : ℂ) = star z * z := by
+  have hpt : ∀ z : ℂ, ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = star z * z := by
     intro z
-    change ((‖z‖ ^ 2 : ℝ) : ℂ) = (starRingEnd ℂ) z * z
+    change ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = (starRingEnd ℂ) z * z
     rw [Complex.sq_norm, ← Complex.mul_conj]
     ring
   rw [frobSq, Complex.ofReal_sum, Matrix.trace]
@@ -47,15 +47,15 @@ variable {σ : Type*} [Fintype σ] [DecidableEq σ]
 /-- **Hilbert–Schmidt size of a Pauli combination.** -/
 theorem frobSq_pauliCombination (J : (σ → Option (Fin 3)) → ℂ) :
     frobSq (∑ P, J P • finitePauliMatrix P) =
-      2 ^ Fintype.card σ * ∑ P, ‖J P‖ ^ 2 := by
+      2 ^ Fintype.card σ * ∑ P, ‖J P‖ ^ (2 : ℕ) := by
   classical
   have hcast : ((frobSq (∑ P, J P • finitePauliMatrix P) : ℝ) : ℂ) =
-      ((2 ^ Fintype.card σ * ∑ P, ‖J P‖ ^ 2 : ℝ) : ℂ) := by
+      ((2 ^ Fintype.card σ * ∑ P, ‖J P‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [ofReal_frobSq_eq_trace, star_sum, Finset.sum_mul, Matrix.trace_sum]
     have hterm : ∀ P : σ → Option (Fin 3),
         Matrix.trace (star (J P • finitePauliMatrix P) *
             ∑ Q, J Q • finitePauliMatrix Q) =
-          ((‖J P‖ ^ 2 : ℝ) : ℂ) * (2 : ℂ) ^ Fintype.card σ := by
+          ((‖J P‖ ^ (2 : ℕ) : ℝ) : ℂ) * (2 : ℂ) ^ Fintype.card σ := by
       intro P
       rw [Finset.mul_sum, Matrix.trace_sum]
       rw [Finset.sum_eq_single P]

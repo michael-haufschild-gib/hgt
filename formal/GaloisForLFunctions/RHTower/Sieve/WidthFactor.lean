@@ -27,13 +27,13 @@ theorem width_ratio_le {N H L : ℝ} (hH1 : 1 ≤ H) (hN : 0 ≤ N) (hL : N / H 
 /-- The order-two width factor. -/
 theorem sq_width_factor_le {N H L C : ℝ} (hH1 : 1 ≤ H) (hN : 0 ≤ N) (hL : N / H ≤ L)
     (hC : 0 ≤ C) :
-    C / H ^ 2 * (N + H + 1) ^ 2 ≤ C * (L + 2) ^ 2 := by
+    C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) ≤ C * (L + 2) ^ (2 : ℕ) := by
   have hH0 : (0 : ℝ) < H := by linarith
   have hratio := width_ratio_le hH1 hN hL
   have hratio0 : (0 : ℝ) ≤ (N + H + 1) / H := by positivity
-  have hpow : ((N + H + 1) / H) ^ 2 ≤ (L + 2) ^ 2 := by
+  have hpow : ((N + H + 1) / H) ^ (2 : ℕ) ≤ (L + 2) ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ hratio0 hratio 2
-  have hrw : C / H ^ 2 * (N + H + 1) ^ 2 = C * ((N + H + 1) / H) ^ 2 := by
+  have hrw : C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) = C * ((N + H + 1) / H) ^ (2 : ℕ) := by
     rw [div_pow]
     field_simp
   rw [hrw]
@@ -42,10 +42,10 @@ theorem sq_width_factor_le {N H L C : ℝ} (hH1 : 1 ≤ H) (hN : 0 ≤ N) (hL : 
 /-- The order-one width factor. -/
 theorem width_factor_le {N H L C : ℝ} (hH1 : 1 ≤ H) (hN : 0 ≤ N) (hL : N / H ≤ L)
     (hC : 0 ≤ C) :
-    C / H ^ 1 * (N + H + 1) ^ 1 ≤ C * (L + 2) := by
+    C / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) ≤ C * (L + 2) := by
   have hH0 : (0 : ℝ) < H := by linarith
   have hratio := width_ratio_le hH1 hN hL
-  have hrw : C / H ^ 1 * (N + H + 1) ^ 1 = C * ((N + H + 1) / H) := by
+  have hrw : C / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) = C * ((N + H + 1) / H) := by
     rw [pow_one, pow_one]
     field_simp
   rw [hrw]

@@ -42,19 +42,19 @@ theorem riceMele_phaseJumpChern_eq_one :
 
 theorem riceMele_readout_winding_eq_neg_two_chern :
     RHTower.windingNumber
-        (fun t => paperGeometricLoop riceMelePumpChern t ^ 2)
+        (fun t => paperGeometricLoop riceMelePumpChern t ^ (2 : ℕ))
         0 (2 * Real.pi) = -2 * riceMelePumpChern := by
   exact paperForwardBackwardReadout_winding riceMelePumpChern
 
 theorem riceMele_readout_winding_eq_neg_two :
     RHTower.windingNumber
-        (fun t => paperGeometricLoop riceMelePumpChern t ^ 2)
+        (fun t => paperGeometricLoop riceMelePumpChern t ^ (2 : ℕ))
         0 (2 * Real.pi) = -2 := by
   rw [riceMele_readout_winding_eq_neg_two_chern, riceMelePumpChern_eq_one]
   norm_num
 
 theorem z2ChernSimonsLinkPhase_clockReadout_trivial (linking : ZMod 2) :
-    Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase linking ^ 2 = 1 := by
+    Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase linking ^ (2 : ℕ) = 1 := by
   unfold Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase
   split <;> norm_num
 
@@ -62,14 +62,14 @@ theorem fundamentalToricLink_clockReadout_trivial :
     Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase
         (Quantum.Stabilizer.Lattice.toricChernSimonsLinking
           Quantum.Stabilizer.Lattice.toricHorizontalWilsonLoop
-          Quantum.Stabilizer.Lattice.toricVerticalWilsonLoop) ^ 2 = 1 := by
+          Quantum.Stabilizer.Lattice.toricVerticalWilsonLoop) ^ (2 : ℕ) = 1 := by
   exact z2ChernSimonsLinkPhase_clockReadout_trivial _
 
 /-- Integer `K₁` readout is injective although the same squaring protocol erases every `Z₂` phase. -/
 theorem integerKOne_injective_toricZ2_erased :
     Function.Injective PrimeQuasiLocalCharge.topologicalClockReadoutKOne ∧
       ∀ linking : ZMod 2,
-        Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase linking ^ 2 = 1 := by
+        Quantum.Stabilizer.Lattice.z2ChernSimonsLinkPhase linking ^ (2 : ℕ) = 1 := by
   exact ⟨PrimeQuasiLocalCharge.topologicalClockReadoutKOne_injective,
     z2ChernSimonsLinkPhase_clockReadout_trivial⟩
 

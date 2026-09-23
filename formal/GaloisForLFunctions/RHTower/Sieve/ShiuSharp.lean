@@ -8,7 +8,7 @@ previously forced `log z` to be of order `log X / log log X`, losing a power of 
 the expected `(log X)^{-I(t)}`.
 
 Cutting the fibring at a level `M` removes that constraint.  Below the cut there are at most `M`
-fibres, so the total sieve error is `M · (2/log Y + Y² (log z)^4)` — affordable as soon as `M` and
+fibres, so the total sieve error is `M · (2/log Y + Y² (log z)^(4 : ℕ))` — affordable as soon as `M` and
 `Y²` are small powers of the interval length.  Above the cut the integers are handled by the
 divisor window of `LargeSmoothPart.lean`, whose cost is the window size times `(b-a)/M + 1`.
 

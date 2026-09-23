@@ -5,11 +5,11 @@ import GaloisForLFunctions.RHTower.CCMUnitRieszFUCurvatureTransport
 
 The exact FU-to-UR curvature transport identifies the shifted completed-error unit-Riesz response
 with an endpoint term plus a pairing of the CCM-FU Cesàro primitive against the second derivative
-of the cubically renormalized source test.  Normalizing that pairing by `exp(t/2)/t^3` and passing
+of the cubically renormalized source test.  Normalizing that pairing by `exp(t/2)/t^(3 : ℕ)` and passing
 to the lag variable `u = t - s` produces the *finite-aperture reporter kernel*
 
 ```text
-K_t(u) = (3/32) (exp(-u) R(t-u) - exp(-u/2) P(t-u)) / t^3
+K_t(u) = (3/32) (exp(-u) R(t-u) - exp(-u/2) P(t-u)) / t^(3 : ℕ)
 ```
 
 with `P` the slow and `R` the fast polynomial of the second derivative.  This file proves:
@@ -34,11 +34,11 @@ open _root_.RHTower
 
 /-! ## The finite-aperture reporter kernel -/
 
-/-- Finite-aperture FU-to-UR curvature reporter at lag `u`, normalized by `exp(t/2)/t^3`. -/
+/-- Finite-aperture FU-to-UR curvature reporter at lag `u`, normalized by `exp(t/2)/t^(3 : ℕ)`. -/
 def unitRieszCesaroApertureKernel (t u : ℝ) : ℝ :=
   (3 / 32) *
       (Real.exp (-u) * unitRieszCesaroFastPolynomial (t - u) -
-        Real.exp (-u / 2) * unitRieszCesaroSlowPolynomial (t - u)) / t ^ 3
+        Real.exp (-u / 2) * unitRieszCesaroSlowPolynomial (t - u)) / t ^ (3 : ℕ)
 
 /-- The reporter numerator is the negated second derivative of the renormalized source test at
 the reflected point, weighted by `exp(t/2)`. -/
@@ -58,7 +58,7 @@ theorem unitRieszCesaroApertureNumerator (t u : ℝ) :
 /-- **Equation (10).**  Exact reflected form of the finite-aperture reporter. -/
 theorem unitRieszCesaroApertureKernel_eq_secondDeriv (t u : ℝ) :
     unitRieszCesaroApertureKernel t u =
-      -(Real.exp (t / 2) / t ^ 3) * unitRieszCesaroTestSecondDeriv t (t - u) := by
+      -(Real.exp (t / 2) / t ^ (3 : ℕ)) * unitRieszCesaroTestSecondDeriv t (t - u) := by
   rw [unitRieszCesaroApertureKernel, unitRieszCesaroApertureNumerator]
   ring
 
@@ -83,10 +83,10 @@ theorem continuous_unitRieszCesaroApertureKernel (t : ℝ) :
 /-! ## Exact normalized transport -/
 
 /-- **Equation (9).**  The exact finite-aperture FU-to-UR reporter law: after normalizing the
-literal shifted completed-error response by `exp(t/2)/t^3`, the whole answer is a boundary atom
+literal shifted completed-error response by `exp(t/2)/t^(3 : ℕ)`, the whole answer is a boundary atom
 `-(3/64)` on the Cesàro primitive plus its lag pairing against the reporter kernel. -/
 theorem unitRieszCesaro_normalizedTransport {b t : ℝ} (hb : 0 < b) (hbt : b ≤ t) :
-    Real.exp (t / 2) / t ^ 3 *
+    Real.exp (t / 2) / t ^ (3 : ℕ) *
         (-criticalMellinCompletedError b * unitRieszCompletedSourceTestReal t b -
           ∫ s in b..t,
             criticalMellinCompletedError s * unitRieszCompletedSourceTestDerivReal t s) =
@@ -96,21 +96,21 @@ theorem unitRieszCesaro_normalizedTransport {b t : ℝ} (hb : 0 < b) (hbt : b �
           ccmCesaroPrimitive (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b (t - u) *
             unitRieszCesaroApertureKernel t u := by
   have ht : (0 : ℝ) < t := lt_of_lt_of_le hb hbt
-  have ht3 : (t : ℝ) ^ 3 ≠ 0 := by positivity
+  have ht3 : (t : ℝ) ^ (3 : ℕ) ≠ 0 := by positivity
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
     rw [← Real.exp_add, show t / 2 + -t / 2 = (0 : ℝ) by ring, Real.exp_zero]
   have hsub :
       (∫ u in (0 : ℝ)..(t - b),
           ccmCesaroPrimitive (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b (t - u) *
             unitRieszCesaroApertureKernel t u) =
-        -(Real.exp (t / 2) / t ^ 3) *
+        -(Real.exp (t / 2) / t ^ (3 : ℕ)) *
           ∫ s in b..t,
             ccmCesaroPrimitive (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b s *
               unitRieszCesaroTestSecondDeriv t s := by
     have hpt : ∀ u : ℝ,
         ccmCesaroPrimitive (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b (t - u) *
             unitRieszCesaroApertureKernel t u =
-          (-(Real.exp (t / 2) / t ^ 3)) *
+          (-(Real.exp (t / 2) / t ^ (3 : ℕ))) *
             (ccmCesaroPrimitive (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b (t - u) *
               unitRieszCesaroTestSecondDeriv t (t - u)) := by
       intro u
@@ -126,9 +126,9 @@ theorem unitRieszCesaro_normalizedTransport {b t : ℝ} (hb : 0 < b) (hbt : b �
     simpa using hcs
   rw [unitRieszCompletedSource_eq_FUCesaroCurvature_explicitEndpoint hb hbt, hsub]
   have hcollapse :
-      Real.exp (t / 2) / t ^ 3 * (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) = -(3 / 64) := by
-    have hrw : Real.exp (t / 2) / t ^ 3 * (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) =
-        -(3 / 64 : ℝ) * (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ 3 / t ^ 3) := by
+      Real.exp (t / 2) / t ^ (3 : ℕ) * (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) = -(3 / 64) := by
+    have hrw : Real.exp (t / 2) / t ^ (3 : ℕ) * (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) =
+        -(3 / 64 : ℝ) * (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ (3 : ℕ) / t ^ (3 : ℕ)) := by
       ring
     rw [hrw, hexp, div_self ht3]
     ring
@@ -141,9 +141,9 @@ theorem unitRieszCesaro_normalizedTransport {b t : ℝ} (hb : 0 < b) (hbt : b �
 def unitRieszCesaroApertureProfile (u x : ℝ) : ℝ :=
   (3 / 32) *
     (Real.exp (-u) *
-        ((1 - u * x) ^ 3 + 6 * x * (1 - u * x) ^ 2 + 6 * x ^ 2 * (1 - u * x)) -
+        ((1 - u * x) ^ (3 : ℕ) + 6 * x * (1 - u * x) ^ (2 : ℕ) + 6 * x ^ (2 : ℕ) * (1 - u * x)) -
       Real.exp (-u / 2) *
-        ((1 / 4) * (1 - u * x) ^ 3 + 3 * x * (1 - u * x) ^ 2 + 6 * x ^ 2 * (1 - u * x)))
+        ((1 / 4) * (1 - u * x) ^ (3 : ℕ) + 3 * x * (1 - u * x) ^ (2 : ℕ) + 6 * x ^ (2 : ℕ) * (1 - u * x)))
 
 theorem unitRieszCesaroApertureKernel_eq_profile {t : ℝ} (ht : t ≠ 0) (u : ℝ) :
     unitRieszCesaroApertureKernel t u = unitRieszCesaroApertureProfile u (1 / t) := by
@@ -219,10 +219,10 @@ theorem unitRieszCompletedSourceTestDeriv_zero_re_pos_iff (t : ℝ) :
 
 /-- Reduced fast/slow polynomial ratio of the renormalized second derivative. -/
 def unitRieszCesaroRatio (s : ℝ) : ℝ :=
-  4 * (s ^ 2 + 6 * s + 6) / (s ^ 2 + 12 * s + 24)
+  4 * (s ^ (2 : ℕ) + 6 * s + 6) / (s ^ (2 : ℕ) + 12 * s + 24)
 
 theorem unitRieszCesaroRatio_denom_pos {s : ℝ} (hs : 0 ≤ s) :
-    (0 : ℝ) < s ^ 2 + 12 * s + 24 := by nlinarith
+    (0 : ℝ) < s ^ (2 : ℕ) + 12 * s + 24 := by nlinarith
 
 /-- **Equation (11).**  The fast/slow ratio in reduced form. -/
 theorem unitRieszCesaroFast_div_slow_eq_ratio {s : ℝ} (hs : 0 < s) :
@@ -245,7 +245,7 @@ theorem unitRieszCesaroRatio_lt_four {s : ℝ} (hs : 0 ≤ s) : unitRieszCesaroR
   nlinarith
 
 /-- **Equation (12).**  The fast/slow ratio is strictly increasing on the closed positive ray;
-this is exactly positivity of the derivative numerator `24(s^2+6s+12)`. -/
+this is exactly positivity of the derivative numerator `24(s^(2 : ℕ)+6s+12)`. -/
 theorem unitRieszCesaroRatio_strictMonoOn :
     StrictMonoOn unitRieszCesaroRatio (Ici (0 : ℝ)) := by
   intro x hx y hy hxy
@@ -254,8 +254,8 @@ theorem unitRieszCesaroRatio_strictMonoOn :
   have hdx := unitRieszCesaroRatio_denom_pos hx0
   have hdy := unitRieszCesaroRatio_denom_pos hy0
   rw [unitRieszCesaroRatio, unitRieszCesaroRatio, div_lt_div_iff₀ hdx hdy]
-  have key : 4 * (y ^ 2 + 6 * y + 6) * (x ^ 2 + 12 * x + 24) -
-      4 * (x ^ 2 + 6 * x + 6) * (y ^ 2 + 12 * y + 24) =
+  have key : 4 * (y ^ (2 : ℕ) + 6 * y + 6) * (x ^ (2 : ℕ) + 12 * x + 24) -
+      4 * (x ^ (2 : ℕ) + 6 * x + 6) * (y ^ (2 : ℕ) + 12 * y + 24) =
       24 * (y - x) * (x * y + 3 * (x + y) + 12) := by ring
   nlinarith [key, mul_pos (sub_pos.mpr hxy)
     (show (0 : ℝ) < x * y + 3 * (x + y) + 12 by nlinarith)]
@@ -274,13 +274,13 @@ theorem continuousOn_unitRieszCesaroRatio :
 theorem tendsto_unitRieszCesaroRatio_atTop :
     Tendsto unitRieszCesaroRatio atTop (nhds 4) := by
   have hshape : ∀ s : ℝ, 0 ≤ s →
-      unitRieszCesaroRatio s = 4 - (24 * s + 72) / (s ^ 2 + 12 * s + 24) := by
+      unitRieszCesaroRatio s = 4 - (24 * s + 72) / (s ^ (2 : ℕ) + 12 * s + 24) := by
     intro s hs
     have hd := unitRieszCesaroRatio_denom_pos hs
     rw [unitRieszCesaroRatio]
     field_simp
     ring
-  have hzero : Tendsto (fun s : ℝ => (24 * s + 72) / (s ^ 2 + 12 * s + 24)) atTop (nhds 0) := by
+  have hzero : Tendsto (fun s : ℝ => (24 * s + 72) / (s ^ (2 : ℕ) + 12 * s + 24)) atTop (nhds 0) := by
     refine squeeze_zero' (g := fun s : ℝ => 96 * s⁻¹) ?_ ?_ ?_
     · filter_upwards [eventually_ge_atTop (1 : ℝ)] with s hs
       have hd := unitRieszCesaroRatio_denom_pos (by linarith : (0 : ℝ) ≤ s)
@@ -290,14 +290,14 @@ theorem tendsto_unitRieszCesaroRatio_atTop :
       have hs0 : (0 : ℝ) < s := by linarith
       have hd := unitRieszCesaroRatio_denom_pos (by linarith : (0 : ℝ) ≤ s)
       rw [div_le_iff₀ hd]
-      have e1 : 96 * s⁻¹ * (s ^ 2 + 12 * s + 24) = 96 * s + 1152 + 2304 * s⁻¹ := by
+      have e1 : 96 * s⁻¹ * (s ^ (2 : ℕ) + 12 * s + 24) = 96 * s + 1152 + 2304 * s⁻¹ := by
         field_simp; ring
       rw [e1]
       have hinv : (0 : ℝ) < s⁻¹ := inv_pos.mpr hs0
       linarith
     · have h := (tendsto_inv_atTop_zero (𝕜 := ℝ)).const_mul (96 : ℝ)
       simpa using h
-  have hlim : Tendsto (fun s : ℝ => 4 - (24 * s + 72) / (s ^ 2 + 12 * s + 24)) atTop
+  have hlim : Tendsto (fun s : ℝ => 4 - (24 * s + 72) / (s ^ (2 : ℕ) + 12 * s + 24)) atTop
       (nhds (4 - 0)) := tendsto_const_nhds.sub hzero
   rw [sub_zero] at hlim
   refine hlim.congr' ?_
@@ -312,7 +312,7 @@ def unitRieszCesaroWallEquation (t u : ℝ) : ℝ :=
   u - 2 * Real.log (unitRieszCesaroRatio (t - u))
 
 theorem unitRieszCesaroApertureScale_pos {t u : ℝ} (ht : 0 < t) (hu : u < t) :
-    0 < (3 / 32) * Real.exp (-u) * unitRieszCesaroSlowPolynomial (t - u) / t ^ 3 := by
+    0 < (3 / 32) * Real.exp (-u) * unitRieszCesaroSlowPolynomial (t - u) / t ^ (3 : ℕ) := by
   have hs : (0 : ℝ) < t - u := by linarith
   have hP : (0 : ℝ) < unitRieszCesaroSlowPolynomial (t - u) := by
     unfold unitRieszCesaroSlowPolynomial; nlinarith
@@ -321,7 +321,7 @@ theorem unitRieszCesaroApertureScale_pos {t u : ℝ} (ht : 0 < t) (hu : u < t) :
 /-- The reporter is a strictly positive scale times the signed ratio defect. -/
 theorem unitRieszCesaroApertureKernel_eq_scaled {t u : ℝ} (ht : 0 < t) (hu : u < t) :
     unitRieszCesaroApertureKernel t u =
-      ((3 / 32) * Real.exp (-u) * unitRieszCesaroSlowPolynomial (t - u) / t ^ 3) *
+      ((3 / 32) * Real.exp (-u) * unitRieszCesaroSlowPolynomial (t - u) / t ^ (3 : ℕ)) *
         (unitRieszCesaroRatio (t - u) - Real.exp (u / 2)) := by
   have hs : (0 : ℝ) < t - u := by linarith
   have hP : unitRieszCesaroSlowPolynomial (t - u) ≠ 0 := by
@@ -511,7 +511,7 @@ theorem unitRieszCesaroWall_eq {t : ℝ} (ht : 0 < t) :
   linarith
 
 theorem log_sixteen_eq : Real.log 16 = 2 * Real.log 4 := by
-  rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.log_pow]
+  rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.log_pow]
   norm_num
 
 /-- The moving wall lies strictly below the four-unit limit at every finite aperture. -/
@@ -600,7 +600,7 @@ theorem unitRieszCesaroTest_pos {t s : ℝ} (hs : 0 < s) (hst : s < t) :
     0 < unitRieszCesaroTest t s := by
   have hexp : Real.exp (-3 * t / 2 + s) < Real.exp (-t + s / 2) := by
     rw [Real.exp_lt_exp]; linarith
-  have hs3 : (0 : ℝ) < s ^ 3 := by positivity
+  have hs3 : (0 : ℝ) < s ^ (3 : ℕ) := by positivity
   unfold unitRieszCesaroTest
   nlinarith [hexp, hs3]
 
@@ -619,9 +619,9 @@ private theorem exp_half_mul_exp_neg_half (t : ℝ) :
 atom `-(3/64) δ₀` of the transport law. -/
 theorem integral_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
     (∫ u in (0 : ℝ)..t, unitRieszCesaroApertureKernel t u) = 3 / 64 := by
-  have ht3 : (t : ℝ) ^ 3 ≠ 0 := by positivity
+  have ht3 : (t : ℝ) ^ (3 : ℕ) ≠ 0 := by positivity
   have hpt : ∀ u : ℝ, unitRieszCesaroApertureKernel t u =
-      (-(Real.exp (t / 2) / t ^ 3)) * unitRieszCesaroTestSecondDeriv t (t - u) :=
+      (-(Real.exp (t / 2) / t ^ (3 : ℕ))) * unitRieszCesaroTestSecondDeriv t (t - u) :=
     fun u => unitRieszCesaroApertureKernel_eq_secondDeriv t u
   have hcv : (∫ u in (0 : ℝ)..t, unitRieszCesaroTestSecondDeriv t (t - u)) =
       ∫ s in (0 : ℝ)..t, unitRieszCesaroTestSecondDeriv t s := by
@@ -635,8 +635,8 @@ theorem integral_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
   simp_rw [hpt]
   rw [intervalIntegral.integral_const_mul, hcv, hftc, unitRieszCesaroTestDeriv_zero,
     unitRieszCesaroTestDeriv_endpoint]
-  have hrw : -(Real.exp (t / 2) / t ^ 3) * (-(3 / 64) * t ^ 3 * Real.exp (-t / 2) - 0) =
-      (3 / 64 : ℝ) * (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ 3 / t ^ 3) := by ring
+  have hrw : -(Real.exp (t / 2) / t ^ (3 : ℕ)) * (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) - 0) =
+      (3 / 64 : ℝ) * (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ (3 : ℕ) / t ^ (3 : ℕ)) := by ring
   rw [hrw, exp_half_mul_exp_neg_half, div_self ht3]
   ring
 
@@ -662,7 +662,7 @@ theorem integral_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
     rw [hftc, unitRieszCesaroTest_self, unitRieszCesaroTest_zero, unitRieszCesaroTestDeriv_zero]
     ring
   have hpt : ∀ u : ℝ, u * unitRieszCesaroApertureKernel t u =
-      (-(Real.exp (t / 2) / t ^ 3)) *
+      (-(Real.exp (t / 2) / t ^ (3 : ℕ))) *
         ((t - (t - u)) * unitRieszCesaroTestSecondDeriv t (t - u)) := by
     intro u
     rw [unitRieszCesaroApertureKernel_eq_secondDeriv]
@@ -677,19 +677,19 @@ theorem integral_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
 /-- **Equation (17).**  The exact second moment of the interior reporter is a strictly negative
 multiple of the Cesàro test mass: the reporter measures oriented curvature. -/
 theorem integral_sq_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
-    (∫ u in (0 : ℝ)..t, u ^ 2 * unitRieszCesaroApertureKernel t u) =
-      -(2 * Real.exp (t / 2) / t ^ 3) * ∫ s in (0 : ℝ)..t, unitRieszCesaroTest t s := by
+    (∫ u in (0 : ℝ)..t, u ^ (2 : ℕ) * unitRieszCesaroApertureKernel t u) =
+      -(2 * Real.exp (t / 2) / t ^ (3 : ℕ)) * ∫ s in (0 : ℝ)..t, unitRieszCesaroTest t s := by
   have hΦ : ∀ s : ℝ, HasDerivAt
-      (fun x : ℝ => (t - x) ^ 2 * unitRieszCesaroTestDeriv t x +
+      (fun x : ℝ => (t - x) ^ (2 : ℕ) * unitRieszCesaroTestDeriv t x +
         2 * (t - x) * unitRieszCesaroTest t x)
-      ((t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s) s := by
+      ((t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s) s := by
     intro s
     have hlin : HasDerivAt (fun x : ℝ => t - x) (-1) s := by
       simpa using (hasDerivAt_id s).const_sub t
-    have hsq : HasDerivAt (fun x : ℝ => (t - x) ^ 2) (2 * (t - s) * (-1)) s := by
+    have hsq : HasDerivAt (fun x : ℝ => (t - x) ^ (2 : ℕ)) (2 * (t - s) * (-1)) s := by
       have h := hlin.mul hlin
       simp only [Pi.mul_def] at h
-      have hfun : (fun i : ℝ => (t - i) * (t - i)) = fun x : ℝ => (t - x) ^ 2 := by
+      have hfun : (fun i : ℝ => (t - i) * (t - i)) = fun x : ℝ => (t - x) ^ (2 : ℕ) := by
         funext x; ring
       rw [hfun] at h
       exact h.congr_deriv (by ring)
@@ -699,7 +699,7 @@ theorem integral_sq_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
     simp only [Pi.mul_def, Pi.add_def] at h
     exact h.congr_deriv (by ring)
   have hsplit : (∫ s in (0 : ℝ)..t,
-        ((t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s)) = 0 := by
+        ((t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s - 2 * unitRieszCesaroTest t s)) = 0 := by
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := (0 : ℝ)) (b := t)
       (fun x _ => hΦ x)
       (((((continuous_const.sub continuous_id).pow 2).mul
@@ -707,10 +707,10 @@ theorem integral_sq_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
         (continuous_const.mul (continuous_unitRieszCesaroTest t))).intervalIntegrable _ _)
     rw [hftc, unitRieszCesaroTest_self, unitRieszCesaroTest_zero, unitRieszCesaroTestDeriv_zero]
     ring
-  have hint : (∫ s in (0 : ℝ)..t, (t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s) =
+  have hint : (∫ s in (0 : ℝ)..t, (t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s) =
       2 * ∫ s in (0 : ℝ)..t, unitRieszCesaroTest t s := by
     have hi1 : IntervalIntegrable
-        (fun s : ℝ => (t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s) volume 0 t :=
+        (fun s : ℝ => (t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s) volume 0 t :=
       (((continuous_const.sub continuous_id).pow 2).mul
         (continuous_unitRieszCesaroTestSecondDeriv t)).intervalIntegrable _ _
     have hi2 : IntervalIntegrable
@@ -718,25 +718,25 @@ theorem integral_sq_mul_unitRieszCesaroApertureKernel {t : ℝ} (ht : 0 < t) :
       (continuous_const.mul (continuous_unitRieszCesaroTest t)).intervalIntegrable _ _
     rw [intervalIntegral.integral_sub hi1 hi2, intervalIntegral.integral_const_mul] at hsplit
     linarith
-  have hpt : ∀ u : ℝ, u ^ 2 * unitRieszCesaroApertureKernel t u =
-      (-(Real.exp (t / 2) / t ^ 3)) *
-        ((t - (t - u)) ^ 2 * unitRieszCesaroTestSecondDeriv t (t - u)) := by
+  have hpt : ∀ u : ℝ, u ^ (2 : ℕ) * unitRieszCesaroApertureKernel t u =
+      (-(Real.exp (t / 2) / t ^ (3 : ℕ))) *
+        ((t - (t - u)) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t (t - u)) := by
     intro u
     rw [unitRieszCesaroApertureKernel_eq_secondDeriv]
     ring
-  have hcv : (∫ u in (0 : ℝ)..t, (t - (t - u)) ^ 2 * unitRieszCesaroTestSecondDeriv t (t - u)) =
-      ∫ s in (0 : ℝ)..t, (t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s := by
+  have hcv : (∫ u in (0 : ℝ)..t, (t - (t - u)) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t (t - u)) =
+      ∫ s in (0 : ℝ)..t, (t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s := by
     simpa using intervalIntegral.integral_comp_sub_left
-      (a := (0 : ℝ)) (b := t) (fun s => (t - s) ^ 2 * unitRieszCesaroTestSecondDeriv t s) t
+      (a := (0 : ℝ)) (b := t) (fun s => (t - s) ^ (2 : ℕ) * unitRieszCesaroTestSecondDeriv t s) t
   simp_rw [hpt]
   rw [intervalIntegral.integral_const_mul, hcv, hint]
   ring
 
 theorem integral_sq_mul_unitRieszCesaroApertureKernel_neg {t : ℝ} (ht : 0 < t) :
-    (∫ u in (0 : ℝ)..t, u ^ 2 * unitRieszCesaroApertureKernel t u) < 0 := by
+    (∫ u in (0 : ℝ)..t, u ^ (2 : ℕ) * unitRieszCesaroApertureKernel t u) < 0 := by
   rw [integral_sq_mul_unitRieszCesaroApertureKernel ht]
   have hpos := integral_unitRieszCesaroTest_pos ht
-  have hscale : (0 : ℝ) < 2 * Real.exp (t / 2) / t ^ 3 := by positivity
+  have hscale : (0 : ℝ) < 2 * Real.exp (t / 2) / t ^ (3 : ℕ) := by positivity
   nlinarith [hpos, hscale]
 
 end GaloisForLFunctions.RHTower

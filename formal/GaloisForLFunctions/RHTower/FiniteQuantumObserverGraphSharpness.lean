@@ -33,7 +33,7 @@ theorem uniformPureObserverUnionWeight
     {d : ℕ} (hd : 0 < d) (i j : Fin d) :
     finiteObserverUnionWeight uniformPureObserverWeight
         (uniformPureObserverBlock d) i j =
-      (d : ℝ)⁻¹ ^ 2 := by
+      (d : ℝ)⁻¹ ^ (2 : ℕ) := by
   rw [finiteObserverUnionWeight]
   simp only [Finset.univ_unique, Finset.sum_singleton,
     uniformPureObserverWeight, uniformPureObserverBlock, one_mul]
@@ -98,7 +98,7 @@ theorem uniformPureObserver_distanceSq_eq_pairwiseEnergy
     (hunit : ∀ i, ‖z i‖ = 1) :
     finiteQuantumObserverDistanceSq uniformPureObserverWeight z
         (uniformPureObserverBlock d) =
-      (d : ℝ)⁻¹ ^ 2 * phasePairwiseSqEnergy z := by
+      (d : ℝ)⁻¹ ^ (2 : ℕ) * phasePairwiseSqEnergy z := by
   rw [finiteQuantumObserverDistanceSq_eq_phaseEnergy,
     finiteQuantumObserverPhaseEnergy, phasePairwiseSqEnergy]
   simp_rw [uniformPureObserverUnionWeight hd]
@@ -126,7 +126,7 @@ theorem uniformPureObserver_distanceSq_eq_two_mul_fidelityDeficit
     (hunit : ∀ i, ‖z i‖ = 1) :
     finiteQuantumObserverDistanceSq uniformPureObserverWeight z
         (uniformPureObserverBlock d) =
-      2 * (1 - ‖equalPhaseAmplitude z‖ ^ 2) := by
+      2 * (1 - ‖equalPhaseAmplitude z‖ ^ (2 : ℕ)) := by
   rw [uniformPureObserver_distanceSq_eq_pairwiseEnergy hd z hunit,
     phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit z hunit]
   simp only [Fintype.card_fin]
@@ -147,7 +147,7 @@ theorem exists_uniformPureObserver_avoiding_return_until
       (N : ℝ) * ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
         Real.sqrt (Real.pi * η / 2) ^ (d - 1)) < 1) :
     ∃ energy : Fin d → ℝ, ∀ k : Fin N,
-      2 * (1 - (1 - η) ^ 2) <
+      2 * (1 - (1 - η) ^ (2 : ℕ)) <
         finiteQuantumObserverDistanceSq uniformPureObserverWeight
           (finiteObserverHamiltonianVertexPhase
             (((k.1 + 1 : ℕ) : ℝ)) energy)
@@ -201,7 +201,7 @@ theorem exists_rankSharp_uniformPureObserver_avoiding_return_until
                 (uniformPureObserverBlock (r + 1))) ℝ)) =
         r ∧
       ∀ k : Fin N,
-        2 * (1 - (1 - η) ^ 2) <
+        2 * (1 - (1 - η) ^ (2 : ℕ)) <
           finiteQuantumObserverDistanceSq uniformPureObserverWeight
             (finiteObserverHamiltonianVertexPhase
               (((k.1 + 1 : ℕ) : ℝ)) energy)
@@ -225,7 +225,7 @@ theorem exists_uniformPureObserver_rank_recurrence
       finiteQuantumObserverDistanceSq uniformPureObserverWeight
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy)
           (uniformPureObserverBlock d) ≤
-        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   obtain ⟨n, hn0, hnQ, hdistance⟩ :=
     exists_finiteQuantumObserver_graphRank_distance_recurrence
       uniformPureObserverWeight (uniformPureObserverBlock d)

@@ -74,7 +74,7 @@ instance (n : ℕ) : Fintype (ProjectiveDelayIndex n) := by
 
 /-- There are exactly `(n+1)²-1` projective delay reporters. -/
 theorem projectiveDelayIndex_card (n : ℕ) :
-    Fintype.card (ProjectiveDelayIndex n) = (n + 1) ^ 2 - 1 := by
+    Fintype.card (ProjectiveDelayIndex n) = (n + 1) ^ (2 : ℕ) - 1 := by
   change Fintype.card
       {p : Fin (n + 1) × Fin (n + 1) //
         ¬p = (Fin.last n, Fin.last n)} = _
@@ -200,7 +200,7 @@ theorem projectiveDelayPanel_traceLinearMap_ker_injective (n : ℕ) :
 theorem finrank_traceLinearMap_ker_fin_add_one (n : ℕ) :
     Module.finrank ℂ
         (LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ)) =
-      (n + 1) ^ 2 - 1 := by
+      (n + 1) ^ (2 : ℕ) - 1 := by
   have hsurj : Function.Surjective (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) := by
     intro c
     refine ⟨(c / ((n + 1 : ℕ) : ℂ)) • 1, ?_⟩
@@ -223,7 +223,7 @@ at least `(n+1)²-1` reporters. -/
 theorem projectiveDelayReporter_card_lower_bound {n : ℕ} {J : Type*} [Fintype J]
     (R : LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) →ₗ[ℂ] (J → ℂ))
     (hR : Function.Injective R) :
-    (n + 1) ^ 2 - 1 ≤ Fintype.card J := by
+    (n + 1) ^ (2 : ℕ) - 1 ≤ Fintype.card J := by
   have hdim := R.finrank_le_finrank_of_injective hR
   rw [finrank_traceLinearMap_ker_fin_add_one] at hdim
   simpa only [Module.finrank_fintype_fun_eq_card] using hdim
@@ -235,7 +235,7 @@ theorem projectiveDelayPanel_minimal (n : ℕ) :
     Function.Injective (fun Q :
       LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) =>
         projectiveDelayPanel (Q : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) ∧
-      Fintype.card (ProjectiveDelayIndex n) = (n + 1) ^ 2 - 1 ∧
+      Fintype.card (ProjectiveDelayIndex n) = (n + 1) ^ (2 : ℕ) - 1 ∧
       ∀ {J : Type*} [Fintype J]
         (R : LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) →ₗ[ℂ] (J → ℂ)),
         Function.Injective R → Fintype.card (ProjectiveDelayIndex n) ≤ Fintype.card J := by

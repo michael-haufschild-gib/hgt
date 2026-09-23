@@ -57,17 +57,17 @@ theorem exists_thetaCuspCenterCompensationSign_lt (B : ℝ) :
 /-- A displacement profile multiplied by the literal center correction. -/
 def thetaCuspCenterCorrectedProfile (C : ℝ → ℝ) (x t : ℝ) : ℝ :=
   thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-    (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*C t
+    (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*C t
 
 /-- Exact admissible interval for one correction value when its center coefficient is negative. -/
 theorem thetaCuspCenterCorrection_interval {x t c : ℝ}
-    (hg : (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x) < 0)
+    (hg : (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x) < 0)
     (hbound : |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-      (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ thetaCuspFullSource x^2) :
-    (thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)-thetaCuspFullSource x^2) /
-        (-(3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)) ≤ c ∧
-      c ≤ (thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)+thetaCuspFullSource x^2) /
-        (-(3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)) := by
+      (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ thetaCuspFullSource x^(2 : ℕ)) :
+    (thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)-thetaCuspFullSource x^(2 : ℕ)) /
+        (-(3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)) ≤ c ∧
+      c ≤ (thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)+thetaCuspFullSource x^(2 : ℕ)) /
+        (-(3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)) := by
   have hab := abs_le.mp hbound
   constructor
   · apply (div_le_iff₀ (neg_pos.mpr hg)).2
@@ -78,26 +78,26 @@ theorem thetaCuspCenterCorrection_interval {x t c : ℝ}
 /-- Every mass-preserving two-point bound controls the full normalized correction value. -/
 theorem thetaCuspCenterCorrection_normalized_bound {x t c : ℝ}
     (hbound : |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-      (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ thetaCuspFullSource x^2) :
+      (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ thetaCuspFullSource x^(2 : ℕ)) :
     |(3 + 2*x*deriv thetaCuspLogSource x)| * |c| ≤ 2 := by
-  have hm : 0 < thetaCuspFullSource x^2 :=
+  have hm : 0 < thetaCuspFullSource x^(2 : ℕ) :=
     sq_pos_of_pos (thetaCuspFullSource_pos_all x)
   have hP : |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)| ≤
-      thetaCuspFullSource x^2 := by
+      thetaCuspFullSource x^(2 : ℕ) := by
     rw [abs_of_pos (mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _))]
     exact thetaCuspFullSource_mul_reflect_le_sq x t
-  have hcorr : |(3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ 2*thetaCuspFullSource x^2 := by
+  have hcorr : |(3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| ≤ 2*thetaCuspFullSource x^(2 : ℕ) := by
     calc
       _ = |(thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-          (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c) -
+          (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c) -
           thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)| := by congr 1; ring
       _ ≤ |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-          (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| +
+          (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*c| +
           |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t)| := abs_sub _ _
-      _ ≤ 2*thetaCuspFullSource x^2 := by linarith only [hbound, hP]
+      _ ≤ 2*thetaCuspFullSource x^(2 : ℕ) := by linarith only [hbound, hP]
   have hfactor :
-      3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x =
-        thetaCuspFullSource x^2*(3 + 2*x*deriv thetaCuspLogSource x) := by
+      3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x =
+        thetaCuspFullSource x^(2 : ℕ)*(3 + 2*x*deriv thetaCuspLogSource x) := by
     rw [(hasDerivAt_thetaCuspLogSource x).deriv]
     simp only [iteratedDeriv_one]
     field_simp [(thetaCuspFullSource_pos_all x).ne']
@@ -118,7 +118,7 @@ theorem thetaCuspFixedCenterCorrection_eq_zero (C : ℝ → ℝ) (hC : C 0 = 0)
   obtain ⟨x, hx, hg⟩ := exists_thetaCuspCenterCompensationSign_lt (-(2/|C t|+1))
   have hb := hbound x (by linarith) t
   have hb' : |thetaCuspFullSource (x+t)*thetaCuspFullSource (x-t) +
-      (3*thetaCuspFullSource x^2 + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*C t| ≤ thetaCuspFullSource x^2 := by
+      (3*thetaCuspFullSource x^(2 : ℕ) + 2*x*thetaCuspFullSource x*deriv thetaCuspFullSource x)*C t| ≤ thetaCuspFullSource x^(2 : ℕ) := by
     simpa only [thetaCuspCenterCorrectedProfile, add_zero, sub_zero, hC, mul_zero,
       add_zero, sq] using hb
   have hn := thetaCuspCenterCorrection_normalized_bound hb'

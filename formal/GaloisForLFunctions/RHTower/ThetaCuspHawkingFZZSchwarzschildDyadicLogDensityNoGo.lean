@@ -108,12 +108,12 @@ def dyadicLogInterpolationTarget : ℂ :=
 def dyadicLogInterpolationPolynomial (z : ℂ) : ℂ :=
   (dyadicLogInterpolationTarget.re : ℂ) +
     ((2 * dyadicLogInterpolationTarget.im : ℝ) : ℂ) *
-      ((z + (3 / 2 : ℂ)) ^ 2 + 15 / 16)
+      ((z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16)
 
 theorem dyadicLogInterpolationPolynomial_nonrealInteriorResponsePoint :
     dyadicLogInterpolationPolynomial nonrealInteriorResponsePoint =
       dyadicLogInterpolationTarget := by
-  have hu : (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ 2 + 15 / 16 = I / 2 := by
+  have hu : (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16 = I / 2 := by
     rw [nonrealInteriorResponsePoint]
     ring_nf
     rw [Complex.I_sq]
@@ -145,10 +145,10 @@ theorem orderOneEnvelope_dyadicLogInterpolationPolynomial :
   have hid : OrderOneEnvelope (fun z : ℂ => z) := orderOneEnvelope_id
   have hc : OrderOneEnvelope (fun z : ℂ => z + (3 / 2 : ℂ)) :=
     hid.add (orderOneEnvelope_const (3 / 2))
-  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2) :=
+  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ)) :=
     (hc.mul hc).congr fun z => by ring
   have hoff : OrderOneEnvelope (fun z : ℂ =>
-      (z + (3 / 2 : ℂ)) ^ 2 + 15 / 16) :=
+      (z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16) :=
     hsq.add (orderOneEnvelope_const (15 / 16))
   exact ((orderOneEnvelope_const (dyadicLogInterpolationTarget.re : ℂ)).add
     ((orderOneEnvelope_const ((2 * dyadicLogInterpolationTarget.im : ℝ) : ℂ)).mul
@@ -359,7 +359,7 @@ theorem dyadicLogSchwarzEvenProduct_iteratedDeriv_zero
 
 theorem dyadicLogSchwarzEvenProduct_sq_iteratedDeriv_zero
     (j n r : ℕ) (hr : r < 2 * 2 ^ j) :
-    iteratedDeriv r (fun z => dyadicLogSchwarzEvenProduct z ^ 2)
+    iteratedDeriv r (fun z => dyadicLogSchwarzEvenProduct z ^ (2 : ℕ))
       (dyadicLogPhysicalNode j n) = 0 := by
   let m : ℂ := dyadicLogPhysicalNode j n
   have hQzero : ∀ k < 2 ^ j,
@@ -381,18 +381,18 @@ theorem dyadicLogDensityResponseCountermodel_iteratedDeriv
       iteratedDeriv r completedBlackHoleJetInterpolation (dyadicLogPhysicalNode j n) := by
   let H : ℂ → ℂ := fun z =>
     completedBlackHoleJetInterpolation z *
-      (dyadicLogInterpolationPolynomial z * anchoredSymmetricJetNullGenerator z) ^ 2
+      (dyadicLogInterpolationPolynomial z * anchoredSymmetricJetNullGenerator z) ^ (2 : ℕ)
   have hH : Differentiable ℂ H := by
     dsimp [H]
     exact differentiable_completedBlackHoleJetInterpolation.mul
       ((differentiable_dyadicLogInterpolationPolynomial.mul
         differentiable_anchoredSymmetricJetNullGenerator).pow 2)
-  have hQsq : Differentiable ℂ (fun z => dyadicLogSchwarzEvenProduct z ^ 2) :=
+  have hQsq : Differentiable ℂ (fun z => dyadicLogSchwarzEvenProduct z ^ (2 : ℕ)) :=
     differentiable_dyadicLogSchwarzEvenProduct.pow 2
   have hprod : Differentiable ℂ
-      (fun z => H z * dyadicLogSchwarzEvenProduct z ^ 2) := hH.mul hQsq
+      (fun z => H z * dyadicLogSchwarzEvenProduct z ^ (2 : ℕ)) := hH.mul hQsq
   have hzero : iteratedDeriv r
-      (fun z => H z * dyadicLogSchwarzEvenProduct z ^ 2)
+      (fun z => H z * dyadicLogSchwarzEvenProduct z ^ (2 : ℕ))
         (dyadicLogPhysicalNode j n) = 0 := by
     refine complex_iteratedDeriv_mul_eq_zero_before_add_order
       hH.contDiff.contDiffAt hQsq.contDiff.contDiffAt
@@ -401,7 +401,7 @@ theorem dyadicLogDensityResponseCountermodel_iteratedDeriv
       (by omega)
   have hcounter : dyadicLogDensityResponseCountermodel = fun z =>
       completedBlackHoleJetInterpolation z +
-        H z * dyadicLogSchwarzEvenProduct z ^ 2 := by
+        H z * dyadicLogSchwarzEvenProduct z ^ (2 : ℕ) := by
     funext z
     rw [dyadicLogDensityResponseCountermodel, dyadicLogDensityGauge,
       completedResponsePositiveSquareGauge, dyadicLogDensityMultiplier]
@@ -409,9 +409,9 @@ theorem dyadicLogDensityResponseCountermodel_iteratedDeriv
     ring
   rw [hcounter]
   have hsum : (fun z => completedBlackHoleJetInterpolation z +
-      H z * dyadicLogSchwarzEvenProduct z ^ 2) =
+      H z * dyadicLogSchwarzEvenProduct z ^ (2 : ℕ)) =
       completedBlackHoleJetInterpolation +
-        (fun z => H z * dyadicLogSchwarzEvenProduct z ^ 2) := rfl
+        (fun z => H z * dyadicLogSchwarzEvenProduct z ^ (2 : ℕ)) := rfl
   rw [hsum, iteratedDeriv_add
     differentiable_completedBlackHoleJetInterpolation.contDiff.contDiffAt
     hprod.contDiff.contDiffAt, hzero, add_zero]

@@ -45,7 +45,7 @@ theorem clearedDensityCore_eq_physicalCurrent (q : XiZeroCopy) (branch : Bool) (
     (hc : connection w (physicalRadialFrequency q) ≠ 0) :
     (horizonCoordinate t : ℂ) ^ w * clearedDensityCore q branch a zang w (horizonCoordinate t) =
       reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch) *
-        (((tortoiseRadius t : ℂ) ^ 2 - 1) *
+        (((tortoiseRadius t : ℂ) ^ (2 : ℕ) - 1) *
           continuedPhysicalTimeAction q branch w a false t zang) := by
   have hself := selfPart_eq_physicalResponse q branch a w t ht hs hc
   have hcontact := contactPart_eq_sourceProjection q branch a w t ht
@@ -60,7 +60,7 @@ theorem clearedDensityCore_eq_physicalCurrent (q : XiZeroCopy) (branch : Bool) (
   unfold clearedDensityCore gaussProfile
   linear_combination
     (modeAngularSquare (physicalModeAngularJet q zang) *
-      (-2 * w * (physicalAngularParameter q ^ 2 - 1 / 4 - 2)) *
+      (-2 * w * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2)) *
       (horizonCoordinate t : ℂ) ^ (w / 2) *
       gaussFactor w (physicalRadialFrequency q) false (horizonCoordinate t : ℂ)) * hself -
     (modeAngularSquare (physicalModeAngularJet q zang) * w *
@@ -75,7 +75,7 @@ theorem clearedDensityProfile_eq_physicalCurrent (q : XiZeroCopy) (branch : Bool
     (horizonCoordinate t : ℂ) ^ (w - 1) *
         clearedDensityProfile q branch a zang w (horizonCoordinate t) =
       reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch) *
-        (((tortoiseRadius t : ℂ) ^ 2 - 1) *
+        (((tortoiseRadius t : ℂ) ^ (2 : ℕ) - 1) *
           continuedPhysicalTimeAction q branch w a false t zang) /
         (2 * (horizonCoordinate t : ℂ) * (Real.sqrt (1 - horizonCoordinate t) : ℂ)) := by
   have hz0 : (horizonCoordinate t : ℂ) ≠ 0 :=
@@ -97,7 +97,7 @@ theorem clearedDensityProfile_eq_actualAction (q : XiZeroCopy) (branch : Bool) (
     (horizonCoordinate t : ℂ) ^ (w - 1) *
         clearedDensityProfile q branch a zang w (horizonCoordinate t) =
       reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch) *
-        (((tortoiseRadius t : ℂ) ^ 2 - 1) *
+        (((tortoiseRadius t : ℂ) ^ (2 : ℕ) - 1) *
           physicalProjectedModeAction q q branch w a hw hd hwi hwr false t zang hzang 0) /
         (2 * (horizonCoordinate t : ℂ) * (Real.sqrt (1 - horizonCoordinate t) : ℂ)) := by
   rw [clearedDensityProfile_eq_physicalCurrent q branch a w t t.property zang hs hc,

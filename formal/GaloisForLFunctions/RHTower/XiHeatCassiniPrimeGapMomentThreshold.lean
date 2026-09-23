@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiHeatCassiniLogMeshDefectPrimeGapEquivalence
 
 The critical physical mesh energy is
 
-`gap_N^2 * exp (-(3/2) * log p_N)`.
+`gap_N^(2 : ℕ) * exp (-(3/2) * log p_N)`.
 
 Discrete Abel summation shows that a prefix-square moment of order `theta < 3/2` forces this
 energy to be summable.  The proof keeps the exact logarithmic prime mesh: Bertrand bounds each

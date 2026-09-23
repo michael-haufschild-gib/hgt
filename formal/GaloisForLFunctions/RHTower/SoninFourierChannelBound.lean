@@ -68,11 +68,11 @@ theorem sq_le_norm_sq_evenFourierLogShellChannel_apply
     (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n m : ℕ) (hmn : m ≤ n) (w : evenSubspace)
     (L : ℝ) (hL0 : 0 ≤ L)
     (hL : ∀ k, m ≤ k → k < n → L ≤ |Real.log (logShellRadius a r k)|) :
-    L ^ 2 * (‖evenFourierCutoff (logShellRadius a r n) w -
-          evenFourierCutoff (logShellRadius a r 0) w‖ ^ 2 -
+    L ^ (2 : ℕ) * (‖evenFourierCutoff (logShellRadius a r n) w -
+          evenFourierCutoff (logShellRadius a r 0) w‖ ^ (2 : ℕ) -
         ‖evenFourierCutoff (logShellRadius a r m) w -
-          evenFourierCutoff (logShellRadius a r 0) w‖ ^ 2) ≤
-      ‖evenFourierLogShellChannel a r n w‖ ^ 2 := by
+          evenFourierCutoff (logShellRadius a r 0) w‖ ^ (2 : ℕ)) ≤
+      ‖evenFourierLogShellChannel a r n w‖ ^ (2 : ℕ) := by
   have hbound := sq_le_norm_sq_evenLogShellChannel_apply a r ha hr n m hmn
     (evenFourierTransform w) L hL0 hL
   rw [norm_evenIndicatorLayer_evenFourierTransform, norm_evenIndicatorLayer_evenFourierTransform]

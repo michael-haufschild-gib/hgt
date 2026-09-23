@@ -32,7 +32,7 @@ def OffDiagonalVanishes (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
             f m * f n
               * (((outerBlock x (hh x)).filter
                   (fun a => m ∈ innerFibre x (hh x) a ∧ n ∈ innerFibre x (hh x) a)).card : ℝ))
-        / (hh x ^ 2 * Real.sqrt x)) atTop (𝓝 0)
+        / (hh x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0)
 
 /-- **The reduction closes.** -/
 theorem averagedMeanSquare_of_offDiagonal {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {hh : ℝ → ℝ}
@@ -53,7 +53,7 @@ theorem averagedMeanSquare_of_offDiagonal {f : ℕ → ℝ} (hf : ∀ n, |f n| �
           f m * f m
             * (((outerBlock x (hh x)).filter
                 (fun a => m ∈ innerFibre x (hh x) a ∧ m ∈ innerFibre x (hh x) a)).card : ℝ))
-        / (hh x ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
+        / (hh x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0) := by
     refine squeeze_zero' ?_ ?_ hmaj
     · filter_upwards [Filter.eventually_ge_atTop (4 : ℝ), hgrow.eventually_ge_atTop 1]
         with x hx hhx
@@ -67,7 +67,7 @@ theorem averagedMeanSquare_of_offDiagonal {f : ℕ → ℝ} (hf : ∀ n, |f n| �
             (fun a => m ∈ innerFibre x (hh x) a ∧ m ∈ innerFibre x (hh x) a)).card : ℝ) :=
           Nat.cast_nonneg _
         nlinarith [hK, sq_nonneg (f m)]
-      have hden : (0 : ℝ) ≤ hh x ^ 2 * Real.sqrt x := by positivity
+      have hden : (0 : ℝ) ≤ hh x ^ (2 : ℕ) * Real.sqrt x := by positivity
       exact div_nonneg hnum hden
     · filter_upwards [Filter.eventually_ge_atTop (4 : ℝ), hgrow.eventually_ge_atTop 1]
         with x hx hhx
@@ -76,33 +76,33 @@ theorem averagedMeanSquare_of_offDiagonal {f : ℕ → ℝ} (hf : ∀ n, |f n| �
         rw [show (1 : ℝ) = Real.sqrt 1 by simp]
         exact Real.sqrt_le_sqrt (by linarith)
       have hbase := fibre_diag_sum_explicit_le (f := f) hf hx (by linarith : (0 : ℝ) ≤ hh x)
-      have hden : (0 : ℝ) < hh x ^ 2 * Real.sqrt x := by positivity
+      have hden : (0 : ℝ) < hh x ^ (2 : ℕ) * Real.sqrt x := by positivity
       rw [div_le_iff₀ hden]
       have hcrude : (Real.sqrt x / 2 + hh x + 1) * (2 * hh x + 1)
-          ≤ ((3 / 2) / hh x + 6 / Real.sqrt x) * (hh x ^ 2 * Real.sqrt x) := by
-        have hprod : ((3 / 2) / hh x + 6 / Real.sqrt x) * (hh x ^ 2 * Real.sqrt x)
-            = (3 / 2) * hh x * Real.sqrt x + 6 * hh x ^ 2 := by
+          ≤ ((3 / 2) / hh x + 6 / Real.sqrt x) * (hh x ^ (2 : ℕ) * Real.sqrt x) := by
+        have hprod : ((3 / 2) / hh x + 6 / Real.sqrt x) * (hh x ^ (2 : ℕ) * Real.sqrt x)
+            = (3 / 2) * hh x * Real.sqrt x + 6 * hh x ^ (2 : ℕ) := by
           field_simp
         rw [hprod]
         nlinarith [hhx, hs1, hs0]
       linarith [hbase, hcrude]
   -- assemble
   have hsplit : ∀ x : ℝ,
-      (∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ 2)
-          / (hh x ^ 2 * Real.sqrt x)
+      (∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ (2 : ℕ))
+          / (hh x ^ (2 : ℕ) * Real.sqrt x)
         = (∑ m ∈ Finset.Icc 1 ⌊x + hh x * Real.sqrt x⌋₊,
               f m * f m
                 * (((outerBlock x (hh x)).filter
                     (fun a => m ∈ innerFibre x (hh x) a
                       ∧ m ∈ innerFibre x (hh x) a)).card : ℝ))
-              / (hh x ^ 2 * Real.sqrt x)
+              / (hh x ^ (2 : ℕ) * Real.sqrt x)
           + (2 * ∑ m ∈ Finset.Icc 1 ⌊x + hh x * Real.sqrt x⌋₊,
                 ∑ n ∈ (Finset.Icc 1 ⌊x + hh x * Real.sqrt x⌋₊).filter (fun n => n < m),
                   f m * f n
                     * (((outerBlock x (hh x)).filter
                         (fun a => m ∈ innerFibre x (hh x) a
                           ∧ n ∈ innerFibre x (hh x) a)).card : ℝ))
-              / (hh x ^ 2 * Real.sqrt x) := by
+              / (hh x ^ (2 : ℕ) * Real.sqrt x) := by
     intro x
     rw [sum_fibreSq_diag_split f x (hh x),
       sum_offdiag_eq_two_mul (T := Finset.Icc 1 ⌊x + hh x * Real.sqrt x⌋₊)

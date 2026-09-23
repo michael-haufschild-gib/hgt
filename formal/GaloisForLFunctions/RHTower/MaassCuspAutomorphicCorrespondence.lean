@@ -31,7 +31,7 @@ def IsRealSmoothUpperHalfPlane (f : ℍ → ℂ) : Prop :=
 
 /-- Positive hyperbolic Laplacian `-y²(∂ₓ²+∂ᵧ²)` in the complex coordinate chart. -/
 def positiveHyperbolicLaplacian (f : ℍ → ℂ) (z : ℍ) : ℂ :=
-  -(z.im : ℂ) ^ 2 *
+  -(z.im : ℂ) ^ (2 : ℕ) *
     (fderiv ℝ (fun w : ℂ ↦
         fderiv ℝ (f ∘ UpperHalfPlane.ofComplex) w 1) (z : ℂ) 1 +
       fderiv ℝ (fun w : ℂ ↦

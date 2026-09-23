@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.RHTower.SelbergModularStripComparison
 noncomputable section
 
 /-- The complete unit strip above the modular cell's lowest height. -/
-def strip : Set ℍ := {z | |z.re| ≤ (1 : ℝ) / 2 ∧ 3 ≤ 4 * z.im ^ 2}
+def strip : Set ℍ := {z | |z.re| ≤ (1 : ℝ) / 2 ∧ 3 ≤ 4 * z.im ^ (2 : ℕ)}
 
 theorem strip_measurable : MeasurableSet strip := by
   exact (isClosed_le (continuous_re.abs) continuous_const).measurableSet.inter

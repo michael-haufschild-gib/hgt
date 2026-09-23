@@ -23,7 +23,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_1_eq_profile_of_seven_le {x : ℝ}
       HTGeometry.firstAtomOddTailProfile1 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_seven_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/7 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -42,7 +42,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_2_eq_profile_of_seven_le {x : ℝ}
       HTGeometry.firstAtomOddTailProfile2 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_seven_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/7 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -61,7 +61,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_3_eq_profile_of_seven_le {x : ℝ}
       HTGeometry.firstAtomOddTailProfile3 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_seven_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/7 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -80,7 +80,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_4_eq_profile_of_seven_le {x : ℝ}
       HTGeometry.firstAtomOddTailProfile4 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_seven_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/7 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -99,7 +99,7 @@ theorem thetaCuspFirstAtomScaledEvenJet_5_eq_profile_of_seven_le {x : ℝ}
       HTGeometry.firstAtomOddTailProfile5 ((thetaCuspSingleAtomReflectionScale 1 x)⁻¹) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hp : 0 < q := by dsimp [q]; linarith
-  have hs : 0 < 4*q^2-6*q := by nlinarith
+  have hs : 0 < 4*q^(2 : ℕ)-6*q := by nlinarith
   have hu := inverseScale_bounds_of_seven_le hq
   have hd : 0 < 4-6*q⁻¹ := by change 0 ≤ q⁻¹ ∧ q⁻¹ ≤ 1/7 at hu; linarith [hu.2]
   unfold thetaCuspFirstAtomScaledEvenJet
@@ -122,7 +122,7 @@ theorem thetaCuspFirstAtomReflectionJet_odd_zero {n : ℕ} (hn : Odd n) (x : ℝ
 
 /-- The zeroth first-atom reflection jet is exactly its mass squared. -/
 theorem thetaCuspFirstAtomReflectionJet_zero (x : ℝ) :
-    thetaCuspFirstAtomReflectionJet 0 x = thetaCuspSourceTerm x 1^2 := by
+    thetaCuspFirstAtomReflectionJet 0 x = thetaCuspSourceTerm x 1^(2 : ℕ) := by
   simp only [thetaCuspFirstAtomReflectionJet, iteratedDeriv_zero, add_zero, sub_zero, pow_two]
 
 /-- Uniform entrywise first-atom bounds at physical scale at least seven. -/

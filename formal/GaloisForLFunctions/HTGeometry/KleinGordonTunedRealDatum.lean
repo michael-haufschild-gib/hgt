@@ -32,13 +32,13 @@ variable {b c : ℝ}
 set_option maxHeartbeats 1000000 in
 /-- **The gradient of the tuned clock started from a real datum.** -/
 theorem kgFieldGradT_kgTunedPot_real (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     kgFieldGradT (kgBandOpT (fun _ : ℝ => fourierMulCLM
           (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
           (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb)))
-          (Real.sqrt (c ^ 2 - 1 + b)))
-        (kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x) 0 t
-      = ((Real.cos (t * c) : ℝ) : ℂ) • kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x := by
+          (Real.sqrt (c ^ (2 : ℕ) - 1 + b)))
+        (kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) 0 t
+      = ((Real.cos (t * c) : ℝ) : ℂ) • kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x := by
   have hWb : ∀ r : ℝ, ‖(fun _ : ℝ => fourierMulCLM (E := E)
       (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
       (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb))) r‖ ≤ b :=
@@ -47,14 +47,14 @@ theorem kgFieldGradT_kgTunedPot_real (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
       (fun _ : ℝ => fourierMulCLM
         (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
         (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb))) r z := fun _ => continuous_const
-  have hBandb := norm_kgBandOpT_le hb0 hWb (Real.sqrt (c ^ 2 - 1 + b))
-  have hBands := continuous_kgBandOpT_apply hWs (Real.sqrt (c ^ 2 - 1 + b))
-  have hzero : kgLowPassOp (E := E) (Real.sqrt (c ^ 2 - 1 + b)) 0 = 0 := map_zero _
+  have hBandb := norm_kgBandOpT_le hb0 hWb (Real.sqrt (c ^ (2 : ℕ) - 1 + b))
+  have hBands := continuous_kgBandOpT_apply hWs (Real.sqrt (c ^ (2 : ℕ) - 1 + b))
+  have hzero : kgLowPassOp (E := E) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) 0 = 0 := map_zero _
   have hmild := kgFieldMildT_eq_kgShiftedField (measurable_kgTunedPot (E := E) b c) hb0 hb1
-    (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ 2 - 1 + b)) x 0 t
+    (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x 0 t
   rw [kgShiftedField_kgTunedPot hc0 hc1, hzero, smul_zero, add_zero] at hmild
   have hgradinv := kgFreqInvOp_kgFieldGradT hb0 hBandb hBands
-    (kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x) (kgLowPassOp (Real.sqrt (c ^ 2 - 1 + b)) 0) t
+    (kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) (kgLowPassOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) 0) t
   rw [hzero] at hgradinv
   refine kgFreqInvOp_injective ?_
   rw [hgradinv, hmild, map_smul, kgFreqInvOp_kgFreqLowOp]
@@ -62,36 +62,36 @@ theorem kgFieldGradT_kgTunedPot_real (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
 set_option maxHeartbeats 1000000 in
 /-- **The velocity of the tuned clock started from a real datum.** -/
 theorem kgFieldVelT_kgTunedPot_real (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     kgFieldVelT (kgBandOpT (fun _ : ℝ => fourierMulCLM
           (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
           (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb)))
-          (Real.sqrt (c ^ 2 - 1 + b)))
-        (kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x) 0 t
+          (Real.sqrt (c ^ (2 : ℕ) - 1 + b)))
+        (kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) 0 t
       = -(((c * Real.sin (t * c) : ℝ) : ℂ)
-        • kgLowPassOp (Real.sqrt (c ^ 2 - 1 + b)) x) := by
-  have hzero : kgLowPassOp (E := E) (Real.sqrt (c ^ 2 - 1 + b)) 0 = 0 := map_zero _
+        • kgLowPassOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) := by
+  have hzero : kgLowPassOp (E := E) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) 0 = 0 := map_zero _
   have hvel := kgFieldVelT_eq_kgShiftedVel (measurable_kgTunedPot (E := E) b c) hb0 hb1
-    (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ 2 - 1 + b)) x 0 t
+    (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x 0 t
   rw [kgShiftedVel_kgTunedPot hb0 hb1 hc0 hc1 hcb, hzero, smul_zero, add_zero] at hvel
   exact hvel
 
 set_option maxHeartbeats 1000000 in
 /-- **The exact energy of the tuned clock started from a real datum.** -/
 theorem kgFieldEnergyT_kgTunedPot_real (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldGradT (kgBandOpT (fun _ : ℝ => fourierMulCLM
             (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
             (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb)))
-            (Real.sqrt (c ^ 2 - 1 + b)))
-          (kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x) 0 t‖ ^ 2
+            (Real.sqrt (c ^ (2 : ℕ) - 1 + b)))
+          (kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) 0 t‖ ^ (2 : ℕ)
         + ‖kgFieldVelT (kgBandOpT (fun _ : ℝ => fourierMulCLM
             (measurable_kgRealPotSymbol (measurable_kgTunedPot (E := E) b c)) hb0
             (norm_kgRealPotSymbol_le (abs_kgTunedPot_le hb0 hc1 hcb)))
-            (Real.sqrt (c ^ 2 - 1 + b)))
-          (kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x) 0 t‖ ^ 2
-      = Real.cos (t * c) ^ 2 * ‖kgFreqLowOp (Real.sqrt (c ^ 2 - 1 + b)) x‖ ^ 2
-        + (c * Real.sin (t * c)) ^ 2 * ‖kgLowPassOp (Real.sqrt (c ^ 2 - 1 + b)) x‖ ^ 2 := by
+            (Real.sqrt (c ^ (2 : ℕ) - 1 + b)))
+          (kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) 0 t‖ ^ (2 : ℕ)
+      = Real.cos (t * c) ^ (2 : ℕ) * ‖kgFreqLowOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x‖ ^ (2 : ℕ)
+        + (c * Real.sin (t * c)) ^ (2 : ℕ) * ‖kgLowPassOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x‖ ^ (2 : ℕ) := by
   rw [kgFieldGradT_kgTunedPot_real hb0 hb1 hc0 hc1 hcb x t,
     kgFieldVelT_kgTunedPot_real hb0 hb1 hc0 hc1 hcb x t, norm_neg, norm_smul, norm_smul,
     Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, mul_pow, mul_pow,

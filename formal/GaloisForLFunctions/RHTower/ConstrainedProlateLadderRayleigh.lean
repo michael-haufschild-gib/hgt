@@ -25,12 +25,12 @@ def modeCombo (n : ℕ) (c : ℕ → ℝ) (e : ℕ → E) : E :=
 theorem modeCombo_norm_sq (n : ℕ) (c : ℕ → ℝ) (e : ℕ → E)
     (hortho : ∀ i ∈ Finset.range n, ∀ j ∈ Finset.range n, i ≠ j → inner ℝ (e i) (e j) = (0 : ℝ))
     (hunit : ∀ i ∈ Finset.range n, inner ℝ (e i) (e i) = (1 : ℝ)) :
-    ‖modeCombo n c e‖ ^ 2 = ∑ j ∈ Finset.range n, c j ^ 2 := by
+    ‖modeCombo n c e‖ ^ (2 : ℕ) = ∑ j ∈ Finset.range n, c j ^ (2 : ℕ) := by
   unfold modeCombo
   rw [← real_inner_self_eq_norm_sq]
   rw [sum_inner]
   have hdiag : ∀ i ∈ Finset.range n,
-      inner ℝ (c i • e i) (∑ j ∈ Finset.range n, c j • e j) = c i ^ 2 := by
+      inner ℝ (c i • e i) (∑ j ∈ Finset.range n, c j • e j) = c i ^ (2 : ℕ) := by
     intro i hi
     rw [inner_sum]
     have hsum_i : ∑ j ∈ Finset.range n, inner ℝ (c i • e i) (c j • e j) =
@@ -48,7 +48,7 @@ theorem modeCombo_energy (n : ℕ) (c : ℕ → ℝ) (e : ℕ → E) (K : E →L
     (hK : ∀ j ∈ Finset.range n, K (e j) = d j • e j)
     (hortho : ∀ i ∈ Finset.range n, ∀ j ∈ Finset.range n, i ≠ j → inner ℝ (e i) (e j) = (0 : ℝ))
     (hunit : ∀ i ∈ Finset.range n, inner ℝ (e i) (e i) = (1 : ℝ)) :
-    inner ℝ (modeCombo n c e) (K (modeCombo n c e)) = ∑ j ∈ Finset.range n, c j ^ 2 * d j := by
+    inner ℝ (modeCombo n c e) (K (modeCombo n c e)) = ∑ j ∈ Finset.range n, c j ^ (2 : ℕ) * d j := by
   unfold modeCombo
   have hK_sum : K (∑ j ∈ Finset.range n, c j • e j) =
       ∑ j ∈ Finset.range n, (c j * d j) • e j := by
@@ -57,7 +57,7 @@ theorem modeCombo_energy (n : ℕ) (c : ℕ → ℝ) (e : ℕ → E) (K : E →L
     rw [hK j hj, smul_smul]
   rw [hK_sum, sum_inner]
   have hdiag : ∀ i ∈ Finset.range n,
-      inner ℝ (c i • e i) (∑ j ∈ Finset.range n, (c j * d j) • e j) = c i ^ 2 * d i := by
+      inner ℝ (c i • e i) (∑ j ∈ Finset.range n, (c j * d j) • e j) = c i ^ (2 : ℕ) * d i := by
     intro i hi
     rw [inner_sum]
     have hsum_i : ∑ j ∈ Finset.range n, inner ℝ (c i • e i) ((c j * d j) • e j) =
@@ -74,22 +74,22 @@ noncomputable section
 
 /-- Exact Rayleigh quotient of a finite linear combination of modes. -/
 def ladderRayleighQuotient (n : ℕ) (c : ℕ → ℝ) (d : ℕ → ℝ) : ℝ :=
-  (∑ j ∈ Finset.range n, c j ^ 2 * d j) / (∑ j ∈ Finset.range n, c j ^ 2)
+  (∑ j ∈ Finset.range n, c j ^ (2 : ℕ) * d j) / (∑ j ∈ Finset.range n, c j ^ (2 : ℕ))
 
 /-- Algebraic identity isolating the leading eigenvalue `d (n - 1)` in the Rayleigh quotient. -/
 theorem ladderRayleighQuotient_div_dLead_eq (n : ℕ) (c : ℕ → ℝ) (d : ℕ → ℝ)
     (hd_lead : d (n - 1) ≠ 0) (hn : 0 < n) :
     ladderRayleighQuotient n c d / d (n - 1) =
-      (c (n - 1) ^ 2 + ∑ j ∈ Finset.range (n - 1), c j ^ 2 * (d j / d (n - 1))) /
-        (∑ j ∈ Finset.range n, c j ^ 2) := by
+      (c (n - 1) ^ (2 : ℕ) + ∑ j ∈ Finset.range (n - 1), c j ^ (2 : ℕ) * (d j / d (n - 1))) /
+        (∑ j ∈ Finset.range n, c j ^ (2 : ℕ)) := by
   unfold ladderRayleighQuotient
-  have hsplit_num : ∑ j ∈ Finset.range n, c j ^ 2 * d j =
-      (∑ j ∈ Finset.range (n - 1), c j ^ 2 * d j) + c (n - 1) ^ 2 * d (n - 1) := by
+  have hsplit_num : ∑ j ∈ Finset.range n, c j ^ (2 : ℕ) * d j =
+      (∑ j ∈ Finset.range (n - 1), c j ^ (2 : ℕ) * d j) + c (n - 1) ^ (2 : ℕ) * d (n - 1) := by
     conv_lhs => rw [show n = (n - 1) + 1 from (Nat.succ_pred_eq_of_pos hn).symm, Finset.sum_range_succ]
-  have h1 : (∑ j ∈ Finset.range n, c j ^ 2 * d j) / (∑ j ∈ Finset.range n, c j ^ 2) / d (n - 1) =
-      ((∑ j ∈ Finset.range n, c j ^ 2 * d j) / d (n - 1)) / (∑ j ∈ Finset.range n, c j ^ 2) :=
+  have h1 : (∑ j ∈ Finset.range n, c j ^ (2 : ℕ) * d j) / (∑ j ∈ Finset.range n, c j ^ (2 : ℕ)) / d (n - 1) =
+      ((∑ j ∈ Finset.range n, c j ^ (2 : ℕ) * d j) / d (n - 1)) / (∑ j ∈ Finset.range n, c j ^ (2 : ℕ)) :=
     div_right_comm _ _ _
-  rw [h1, hsplit_num, add_div, mul_div_cancel_right₀ (c (n - 1) ^ 2) hd_lead,
+  rw [h1, hsplit_num, add_div, mul_div_cancel_right₀ (c (n - 1) ^ (2 : ℕ)) hd_lead,
     Finset.sum_div]
   congr 1
   rw [add_comm]
@@ -110,17 +110,17 @@ theorem tendsto_ladderRayleighQuotient_div_dLead
     (hd_ratio : ∀ j ∈ Finset.range (n - 1),
       Tendsto (fun i => d i j / d i (n - 1)) L (𝓝 0)) :
     Tendsto (fun i => ladderRayleighQuotient n (c i) (d i) / d i (n - 1))
-      L (𝓝 (C (n - 1) ^ 2 / (∑ j ∈ Finset.range n, C j ^ 2))) := by
-  have hden_pos : 0 < ∑ j ∈ Finset.range n, C j ^ 2 := by
+      L (𝓝 (C (n - 1) ^ (2 : ℕ) / (∑ j ∈ Finset.range n, C j ^ (2 : ℕ)))) := by
+  have hden_pos : 0 < ∑ j ∈ Finset.range n, C j ^ (2 : ℕ) := by
     have hn_mem : n - 1 ∈ Finset.range n := Finset.mem_range.mpr (Nat.pred_lt hn.ne')
-    have hterm_pos : 0 < C (n - 1) ^ 2 := sq_pos_of_ne_zero hC_lead
-    have hsum_le : C (n - 1) ^ 2 ≤ ∑ j ∈ Finset.range n, C j ^ 2 :=
+    have hterm_pos : 0 < C (n - 1) ^ (2 : ℕ) := sq_pos_of_ne_zero hC_lead
+    have hsum_le : C (n - 1) ^ (2 : ℕ) ≤ ∑ j ∈ Finset.range n, C j ^ (2 : ℕ) :=
       Finset.single_le_sum (fun j _ => sq_nonneg (C j)) hn_mem
     exact hterm_pos.trans_le hsum_le
-  have hsub_sum : Tendsto (fun i => ∑ j ∈ Finset.range (n - 1), c i j ^ 2 * (d i j / d i (n - 1)))
+  have hsub_sum : Tendsto (fun i => ∑ j ∈ Finset.range (n - 1), c i j ^ (2 : ℕ) * (d i j / d i (n - 1)))
       L (𝓝 0) := by
     have hterms : ∀ j ∈ Finset.range (n - 1),
-        Tendsto (fun i => c i j ^ 2 * (d i j / d i (n - 1))) L (𝓝 (C j ^ 2 * 0)) := by
+        Tendsto (fun i => c i j ^ (2 : ℕ) * (d i j / d i (n - 1))) L (𝓝 (C j ^ (2 : ℕ) * 0)) := by
       intro j hj
       have hj_n : j ∈ Finset.range n := by
         rw [Finset.mem_range] at hj ⊢
@@ -129,13 +129,13 @@ theorem tendsto_ladderRayleighQuotient_div_dLead
     have hsum := tendsto_finsetSum (Finset.range (n - 1)) hterms
     simp only [mul_zero, Finset.sum_const_zero] at hsum
     exact hsum
-  have hnum : Tendsto (fun i => c i (n - 1) ^ 2 + ∑ j ∈ Finset.range (n - 1), c i j ^ 2 * (d i j / d i (n - 1)))
-      L (𝓝 (C (n - 1) ^ 2 + 0)) := by
+  have hnum : Tendsto (fun i => c i (n - 1) ^ (2 : ℕ) + ∑ j ∈ Finset.range (n - 1), c i j ^ (2 : ℕ) * (d i j / d i (n - 1)))
+      L (𝓝 (C (n - 1) ^ (2 : ℕ) + 0)) := by
     have hn_mem : n - 1 ∈ Finset.range n := Finset.mem_range.mpr (Nat.pred_lt hn.ne')
     exact (hc (n - 1) hn_mem).pow 2 |>.add hsub_sum
   simp only [add_zero] at hnum
-  have hden : Tendsto (fun i => ∑ j ∈ Finset.range n, c i j ^ 2)
-      L (𝓝 (∑ j ∈ Finset.range n, C j ^ 2)) :=
+  have hden : Tendsto (fun i => ∑ j ∈ Finset.range n, c i j ^ (2 : ℕ))
+      L (𝓝 (∑ j ∈ Finset.range n, C j ^ (2 : ℕ))) :=
     tendsto_finsetSum (Finset.range n) (fun j hj => (hc j hj).pow 2)
   have hlim := hnum.div hden hden_pos.ne'
   refine hlim.congr' ?_

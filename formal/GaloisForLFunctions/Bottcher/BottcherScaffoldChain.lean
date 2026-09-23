@@ -22,7 +22,7 @@ one full turn. -/
 theorem sq_mem_arcAnnulus {r R α β r' R' J₁ J₂ : ℝ}
     (hr' : Real.log r ≤ 2 * Real.log r') (hR' : 2 * Real.log R' ≤ Real.log R)
     (hJ₁ : α ≤ 2 * J₁ - 2 * Real.pi) (hJ₂ : 2 * J₂ - 2 * Real.pi ≤ β)
-    {w : ℂ} (hw : w ∈ arcAnnulus r' R' J₁ J₂) : w ^ 2 ∈ arcAnnulus r R α β := by
+    {w : ℂ} (hw : w ∈ arcAnnulus r' R' J₁ J₂) : w ^ (2 : ℕ) ∈ arcAnnulus r R α β := by
   obtain ⟨ξ, ⟨h1, h2, h3, h4⟩, rfl⟩ := hw
   refine ⟨2 * ξ - 2 * Real.pi * Complex.I, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
   · show Real.log r < (2 * ξ - 2 * Real.pi * Complex.I).re
@@ -61,7 +61,7 @@ knows the critical-value preimage patch sits inside the excluded wedge (e.g. via
 `PatchSquareLocalize`) can convert its own avoidance knowledge onto the working arc. -/
 theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     (hrlo : 1 < rlo)
-    {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ (2 : ℕ) < RW) (hRWR : RW < R₀)
     (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
     (hh0 : 0 < greenFunctionDyn c 0)
     (hlow : greenFunctionDyn c 0 < Real.log rlo)
@@ -74,9 +74,9 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       ∃ σ : ℕ → ℂ → ℂ,
         σ 0 = S.T ∧
         (∀ j : ℕ, ScaffoldProps c S.T (arcAnnulus ra RW α β) j (σ j)) ∧
-        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ 2 = σ j v - c) ∧
+        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ (2 : ℕ) = σ j v - c) ∧
         (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂,
-          σ (j+1) (w ^ 2) = σ j w) ∧
+          σ (j+1) (w ^ (2 : ℕ)) = σ j w) ∧
         (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ j v ≠ 0) := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
@@ -89,7 +89,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
   have hlogRW : (0:ℝ) < Real.log RW := Real.log_pos hRW1
   have hlograRW : Real.log ra < Real.log RW := Real.log_lt_log hrapos hraRW'
   have hlograsq : 2 * Real.log ra < Real.log RW := by
-    have h1 : Real.log (ra ^ 2) < Real.log RW := Real.log_lt_log (by positivity) hraRW
+    have h1 : Real.log (ra ^ (2 : ℕ)) < Real.log RW := Real.log_lt_log (by positivity) hraRW
     rwa [Real.log_pow, Nat.cast_ofNat] at h1
   set m : ℝ := Real.pi / 8 with hmdef
   have hπ := Real.pi_pos
@@ -128,12 +128,12 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       Real.log_lt_log (lt_trans hrapos (hAsub hv).1) (hAsub hv).2⟩
   -- the sub-box for the doubling link
   have hsqrtRW : Real.sqrt RW < RW := by
-    have h1 : Real.sqrt RW < Real.sqrt (RW ^ 2) := by
+    have h1 : Real.sqrt RW < Real.sqrt (RW ^ (2 : ℕ)) := by
       apply Real.sqrt_lt_sqrt (le_of_lt hRWpos)
       nlinarith
     rwa [Real.sqrt_sq (le_of_lt hRWpos)] at h1
   have hrasqrt : ra < Real.sqrt RW := by
-    have h1 : Real.sqrt (ra ^ 2) < Real.sqrt RW :=
+    have h1 : Real.sqrt (ra ^ (2 : ℕ)) < Real.sqrt RW :=
       Real.sqrt_lt_sqrt (by positivity) hraRW
     rwa [Real.sqrt_sq (le_of_lt hrapos)] at h1
   have hWsub : arcAnnulus ra (Real.sqrt RW) J₁ J₂ ⊆ A := by
@@ -143,7 +143,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       exact ⟨ξ, ⟨b1, lt_of_lt_of_le b2 (Real.log_le_log (Real.sqrt_pos.mpr hRWpos)
         (le_of_lt hsqrtRW)), b3, b4⟩, rfl⟩
     exact arcAnnulus_mono hαJ₁ hJ₂β (h1 hw)
-  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ 2 ∈ A := by
+  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ (2 : ℕ) ∈ A := by
     intro w hw
     apply sq_mem_arcAnnulus (r' := ra) (R' := Real.sqrt RW) _ _ hJ₁dbl hJ₂dbl hw
     · linarith
@@ -175,7 +175,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
         field_simp at h1
         linarith
       have h3 : (2:ℝ) ^ j ≥ 2 := by
-        calc (2:ℝ) ^ j ≥ 2 ^ 1 := by
+        calc (2:ℝ) ^ j ≥ 2 ^ (1 : ℕ) := by
               apply pow_le_pow_right₀ (by norm_num)
               omega
           _ = 2 := by norm_num
@@ -185,12 +185,12 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
   set W : Set ℂ := arcAnnulus ra (Real.sqrt RW) J₁ J₂ with hWdef
   set PairProps : ℕ → (ℂ → ℂ) → (ℂ → ℂ) → Prop := fun j σa σb =>
     ScaffoldProps c S.T A j σa ∧ ScaffoldProps c S.T A (j+1) σb ∧
-    (∀ v ∈ A, σb v ^ 2 = σa v - c) ∧
-    (∀ w ∈ W, σb (w ^ 2) = σa w) ∧
+    (∀ v ∈ A, σb v ^ (2 : ℕ) = σa v - c) ∧
+    (∀ w ∈ W, σb (w ^ (2 : ℕ)) = σa w) ∧
     (∀ v ∈ A, σa v ≠ 0) ∧ (∀ v ∈ A, σb v ≠ 0) with hPPdef
   -- generic root extraction with all ScaffoldProps
   have hroot : ∀ j : ℕ, ∀ σj : ℂ → ℂ, ScaffoldProps c S.T A j σj →
-      ∃ s : ℂ → ℂ, ScaffoldProps c S.T A (j+1) s ∧ (∀ v ∈ A, s v ^ 2 = σj v - c) ∧
+      ∃ s : ℂ → ℂ, ScaffoldProps c S.T A (j+1) s ∧ (∀ v ∈ A, s v ^ (2 : ℕ) = σj v - c) ∧
         (∀ v ∈ A, s v ≠ 0) := by
     intro j σj hP
     obtain ⟨han, hlev, hinj, hdne, hit⟩ := hP
@@ -224,7 +224,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       exact hinj h₁ h₂ h3
     · intro v hv
       have hs_d : HasDerivAt s (deriv s v) v := (hs_an v hv).differentiableAt.hasDerivAt
-      have hLd : HasDerivAt (fun x => s x ^ 2) (2 * s v * deriv s v) v := by
+      have hLd : HasDerivAt (fun x => s x ^ (2 : ℕ)) (2 * s v * deriv s v) v := by
         have h4 := hs_d.pow 2
         have h5 : (2:ℕ) * s v ^ (2 - 1) * deriv s v = 2 * s v * deriv s v := by
           push_cast
@@ -232,7 +232,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
         rwa [h5] at h4
       have hRd : HasDerivAt (fun x => σj x - c) (deriv σj v) v :=
         ((han v hv).differentiableAt.hasDerivAt).sub_const c
-      have hEqF : (fun x => s x ^ 2) =ᶠ[nhds v] (fun x => σj x - c) := by
+      have hEqF : (fun x => s x ^ (2 : ℕ)) =ᶠ[nhds v] (fun x => σj x - c) := by
         filter_upwards [hAopen.mem_nhds hv] with z hz
         exact hs_sq z hz
       have h7 : HasDerivAt (fun x => σj x - c) (2 * s v * deriv s v) v :=
@@ -284,28 +284,28 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
     obtain ⟨hPa, hPb, hsq, hdbl, haneA, hbneA⟩ := hPP
     obtain ⟨s, hPs, hs_sq, hs_ne'⟩ := hroot (j+1) σb hPb
     -- the doubling dichotomy against σb
-    have hdich : ∀ w ∈ W, s (w ^ 2) = σb w ∨ s (w ^ 2) = -σb w := by
+    have hdich : ∀ w ∈ W, s (w ^ (2 : ℕ)) = σb w ∨ s (w ^ (2 : ℕ)) = -σb w := by
       intro w hw
-      have h1 : s (w ^ 2) ^ 2 = σb (w ^ 2) - c := hs_sq _ (hWsq w hw)
-      have h2 : σb w ^ 2 = σa w - c := hsq w (hWsub hw)
-      have h3 : σb (w ^ 2) = σa w := hdbl w hw
-      have h4 : s (w ^ 2) ^ 2 = σb w ^ 2 := by rw [h1, h3, ← h2]
-      have h5 : (s (w ^ 2) - σb w) * (s (w ^ 2) + σb w) = 0 := by linear_combination h4
+      have h1 : s (w ^ (2 : ℕ)) ^ (2 : ℕ) = σb (w ^ (2 : ℕ)) - c := hs_sq _ (hWsq w hw)
+      have h2 : σb w ^ (2 : ℕ) = σa w - c := hsq w (hWsub hw)
+      have h3 : σb (w ^ (2 : ℕ)) = σa w := hdbl w hw
+      have h4 : s (w ^ (2 : ℕ)) ^ (2 : ℕ) = σb w ^ (2 : ℕ) := by rw [h1, h3, ← h2]
+      have h5 : (s (w ^ (2 : ℕ)) - σb w) * (s (w ^ (2 : ℕ)) + σb w) = 0 := by linear_combination h4
       rcases mul_eq_zero.mp h5 with h6 | h6
       · exact Or.inl (sub_eq_zero.mp h6)
       · exact Or.inr (by linear_combination h6)
-    have hucont : ∀ w ∈ W, ContinuousAt (fun x => s (x ^ 2)) w := by
+    have hucont : ∀ w ∈ W, ContinuousAt (fun x => s (x ^ (2 : ℕ))) w := by
       intro w hw
-      have h1 : ContinuousAt s (w ^ 2) := (hPs.1 _ (hWsq w hw)).continuousAt
-      have h2 : ContinuousAt (fun x : ℂ => x ^ 2) w := (continuous_pow 2).continuousAt
-      exact ContinuousAt.comp (x := w) (g := s) (f := fun x : ℂ => x ^ 2) h1 h2
+      have h1 : ContinuousAt s (w ^ (2 : ℕ)) := (hPs.1 _ (hWsq w hw)).continuousAt
+      have h2 : ContinuousAt (fun x : ℂ => x ^ (2 : ℕ)) w := (continuous_pow 2).continuousAt
+      exact ContinuousAt.comp (x := w) (g := s) (f := fun x : ℂ => x ^ (2 : ℕ)) h1 h2
     have hbne : ∀ w ∈ W, σb w ≠ 0 := by
       intro w hw hcon
       have h1 := hsq w (hWsub hw)
       rw [hcon, zero_pow (by norm_num : (2:ℕ) ≠ 0)] at h1
       exact hrad_ne j σa hPa w (hWsub hw) h1.symm
     have hsign := sign_constant_on_connected hWopen hWconn
-      (u := fun w => s (w ^ 2)) (v := σb)
+      (u := fun w => s (w ^ (2 : ℕ))) (v := σb)
       hucont
       (fun w hw => (hPb.1 w (hWsub hw)).continuousAt)
       hbne
@@ -315,12 +315,12 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
     · refine ⟨fun v => -s v, hPb, hneg_layer (j+2) s (by omega) hPs, ?_, ?_, hbneA, ?_⟩
       · intro v hv
         have := hs_sq v hv
-        show (-s v) ^ 2 = σb v - c
+        show (-s v) ^ (2 : ℕ) = σb v - c
         rw [neg_pow]
         simpa using this
       · intro w hw
-        show -s (w ^ 2) = σb w
-        have h1 : s (w ^ 2) = -σb w := hneg w hw
+        show -s (w ^ (2 : ℕ)) = σb w
+        have h1 : s (w ^ (2 : ℕ)) = -σb w := hneg w hw
         rw [h1]
         ring
       · intro v hv
@@ -344,13 +344,13 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       have h4 : Real.log rlo < Real.log ra := Real.log_lt_log (by linarith) hra
       have h5 : greenFunctionDyn c 0 < Real.log rlo := hlow
       linarith
-    have hdich : ∀ w ∈ W, s (w ^ 2) = S.T w ∨ s (w ^ 2) = -S.T w := by
+    have hdich : ∀ w ∈ W, s (w ^ (2 : ℕ)) = S.T w ∨ s (w ^ (2 : ℕ)) = -S.T w := by
       intro w hw
-      have h1 : s (w ^ 2) ^ 2 = S.T (w ^ 2) - c := hs_sq _ (hWsq w hw)
-      have h2 : S.T (w ^ 2) = S.T w ^ 2 + c :=
+      have h1 : s (w ^ (2 : ℕ)) ^ (2 : ℕ) = S.T (w ^ (2 : ℕ)) - c := hs_sq _ (hWsq w hw)
+      have h2 : S.T (w ^ (2 : ℕ)) = S.T w ^ (2 : ℕ) + c :=
         S.fe w (hAsubS w (hWsub hw)) (hAsubS _ (hWsq w hw))
-      have h4 : s (w ^ 2) ^ 2 = S.T w ^ 2 := by rw [h1, h2]; ring
-      have h5 : (s (w ^ 2) - S.T w) * (s (w ^ 2) + S.T w) = 0 := by linear_combination h4
+      have h4 : s (w ^ (2 : ℕ)) ^ (2 : ℕ) = S.T w ^ (2 : ℕ) := by rw [h1, h2]; ring
+      have h5 : (s (w ^ (2 : ℕ)) - S.T w) * (s (w ^ (2 : ℕ)) + S.T w) = 0 := by linear_combination h4
       rcases mul_eq_zero.mp h5 with h6 | h6
       · exact Or.inl (sub_eq_zero.mp h6)
       · exact Or.inr (by linear_combination h6)
@@ -361,13 +361,13 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
       have h3 := (hlogv w (hWsub hw)).1
       have h4 : Real.log rlo < Real.log ra := Real.log_lt_log (by linarith) hra
       linarith
-    have hucont : ∀ w ∈ W, ContinuousAt (fun x => s (x ^ 2)) w := by
+    have hucont : ∀ w ∈ W, ContinuousAt (fun x => s (x ^ (2 : ℕ))) w := by
       intro w hw
-      have h1 : ContinuousAt s (w ^ 2) := (hPs.1 _ (hWsq w hw)).continuousAt
-      have h2 : ContinuousAt (fun x : ℂ => x ^ 2) w := (continuous_pow 2).continuousAt
-      exact ContinuousAt.comp (x := w) (g := s) (f := fun x : ℂ => x ^ 2) h1 h2
+      have h1 : ContinuousAt s (w ^ (2 : ℕ)) := (hPs.1 _ (hWsq w hw)).continuousAt
+      have h2 : ContinuousAt (fun x : ℂ => x ^ (2 : ℕ)) w := (continuous_pow 2).continuousAt
+      exact ContinuousAt.comp (x := w) (g := s) (f := fun x : ℂ => x ^ (2 : ℕ)) h1 h2
     have hsign := sign_constant_on_connected hWopen hWconn
-      (u := fun w => s (w ^ 2)) (v := S.T)
+      (u := fun w => s (w ^ (2 : ℕ))) (v := S.T)
       hucont
       (fun w hw => (S.an w (hAsubS w (hWsub hw))).continuousAt)
       hTneW hdich
@@ -377,12 +377,12 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
     · refine ⟨fun v => -s v, hP0', hneg_layer 1 s le_rfl hPs, ?_, ?_, hTneA, ?_⟩
       · intro v hv
         have := hs_sq v hv
-        show (-s v) ^ 2 = S.T v - c
+        show (-s v) ^ (2 : ℕ) = S.T v - c
         rw [neg_pow]
         simpa using this
       · intro w hw
-        show -s (w ^ 2) = S.T w
-        have h1 : s (w ^ 2) = -S.T w := hneg w hw
+        show -s (w ^ (2 : ℕ)) = S.T w
+        have h1 : s (w ^ (2 : ℕ)) = -S.T w := hneg w hw
         rw [h1]
         ring
       · intro v hv
@@ -417,7 +417,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
 /-- **The one-slit scaffold chain.** -/
 theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     (hrlo : 1 < rlo)
-    {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ (2 : ℕ) < RW) (hRWR : RW < R₀)
     (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
     (hh0 : 0 < greenFunctionDyn c 0)
     (hlow : greenFunctionDyn c 0 < Real.log rlo) :
@@ -426,9 +426,9 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
       ∃ σ : ℕ → ℂ → ℂ,
         σ 0 = S.T ∧
         (∀ j : ℕ, ScaffoldProps c S.T (arcAnnulus ra RW α β) j (σ j)) ∧
-        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ 2 = σ j v - c) ∧
+        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ (2 : ℕ) = σ j v - c) ∧
         (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂,
-          σ (j+1) (w ^ 2) = σ j w) ∧
+          σ (j+1) (w ^ (2 : ℕ)) = σ j w) ∧
         (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ j v ≠ 0) := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
@@ -490,7 +490,7 @@ which one a given chain satisfies is exactly the branch parity of `σ_{j+1}`. -/
 theorem sq_mem_arcAnnulus_fold0 {r R α β r' R' J₁ J₂ : ℝ}
     (hr' : Real.log r ≤ 2 * Real.log r') (hR' : 2 * Real.log R' ≤ Real.log R)
     (hJ₁ : α ≤ 2 * J₁) (hJ₂ : 2 * J₂ ≤ β)
-    {w : ℂ} (hw : w ∈ arcAnnulus r' R' J₁ J₂) : w ^ 2 ∈ arcAnnulus r R α β := by
+    {w : ℂ} (hw : w ∈ arcAnnulus r' R' J₁ J₂) : w ^ (2 : ℕ) ∈ arcAnnulus r R α β := by
   obtain ⟨ξ, ⟨h1, h2, h3, h4⟩, rfl⟩ := hw
   refine ⟨2 * ξ, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
   · show Real.log r < (2 * ξ).re

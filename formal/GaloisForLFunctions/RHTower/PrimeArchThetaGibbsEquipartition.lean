@@ -7,7 +7,7 @@ The positive Gibbs atom underlying every theta source has logarithmic derivative
 
 `b_n' = (5/2 - 2 t_n) b_n`,
 
-where `t_n = pi * n^2 * exp (2x)` is the Morse coordinate.  Pairing this static Ward equation
+where `t_n = pi * n^(2 : ℕ) * exp (2x)` is the Morse coordinate.  Pairing this static Ward equation
 with `x^k` gives the exact half-line equipartition relation
 
 `2 T_(k,n) = k L_(k-1,n) + (5/2) L_(k,n)`  for `k > 0`,
@@ -20,7 +20,7 @@ insertion.  At `k = 0`, the endpoint current survives and gives
 for the first atom, `b_1(0) = exp (-pi)`.  The elementary source inequality
 `exp (2x) >= 1 + 2x` then removes `T` from every positive-power identity and yields
 
-`4 pi n^2 L_(k+1,n) + (2 pi n^2 - 5/2) L_(k,n) <= k L_(k-1,n)`.
+`4 pi n^(2 : ℕ) L_(k+1,n) + (2 pi n^(2 : ℕ) - 5/2) L_(k,n) <= k L_(k-1,n)`.
 
 Thus the log-Gamma moments in the open first-atom certificate are not independent boxes: every
 upper successor is constrained by two earlier moments.  The boundary restriction matters.  This
@@ -64,7 +64,7 @@ theorem integrableOn_pow_mul_thetaCuspMorseScale_mul_liouvilleGibbsAtom
       x ^ k * thetaCuspMorseScale n x * thetaCuspLiouvilleGibbsAtom n x)
         (Ioi 0) := by
   have h := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-    k (X ^ 4) hn
+    k (X ^ (4 : ℕ)) hn
   have hpi := h.const_mul Real.pi
   apply hpi.congr
   filter_upwards [] with x
@@ -95,7 +95,7 @@ theorem two_mul_thetaCuspLiouvilleGibbsMorseMoment_zero_eq
   let b : ℝ → ℝ := thetaCuspLiouvilleGibbsAtom n
   have hraw := thetaCuspAtomRawEvenMoment_zero_eq_liouvilleGibbs hn
   have hL : IntegrableOn b (Ioi 0) := by
-    have hraw' := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos 0 (X ^ 2) hn
+    have hraw' := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos 0 (X ^ (2 : ℕ)) hn
     simp only [pow_zero, one_mul] at hraw'
     exact hraw'
   have hT : IntegrableOn (fun x : ℝ =>
@@ -154,7 +154,7 @@ theorem two_mul_thetaCuspLiouvilleGibbsMorseMoment_eq
   have hL : IntegrableOn (fun x : ℝ =>
       x ^ k * thetaCuspLiouvilleGibbsAtom n x) (Ioi 0) := by
     simpa only [thetaCuspLiouvilleGibbsAtom] using
-      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos k (X ^ 2) hn
+      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos k (X ^ (2 : ℕ)) hn
   have hT :=
     integrableOn_pow_mul_thetaCuspMorseScale_mul_liouvilleGibbsAtom k hn
   have hscore :
@@ -185,16 +185,16 @@ theorem two_mul_thetaCuspLiouvilleGibbsMorseMoment_eq
 /-- The Morse coordinate dominates its affine tangent at the half-line endpoint. -/
 theorem thetaCuspMorseScale_affine_lower
     (n : ℕ) {x : ℝ} (_hx : 0 ≤ x) :
-    Real.pi * (n : ℝ) ^ 2 * (1 + 2 * x) ≤ thetaCuspMorseScale n x := by
+    Real.pi * (n : ℝ) ^ (2 : ℕ) * (1 + 2 * x) ≤ thetaCuspMorseScale n x := by
   have hexp : 1 + 2 * x ≤ Real.exp (2 * x) := by
     simpa [add_comm] using Real.add_one_le_exp (2 * x)
-  have he2 : Real.exp (2 * x) = Real.exp x ^ 2 := by
+  have he2 : Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) := by
     calc
       Real.exp (2 * x) = Real.exp ((2 : ℝ) * x) := rfl
-      _ = Real.exp x ^ 2 := Real.exp_nat_mul x 2
+      _ = Real.exp x ^ (2 : ℕ) := Real.exp_nat_mul x 2
   have hcore :
-      (n : ℝ) ^ 2 * (1 + 2 * x) ≤
-        (n : ℝ) ^ 2 * Real.exp (2 * x) :=
+      (n : ℝ) ^ (2 : ℕ) * (1 + 2 * x) ≤
+        (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x) :=
     mul_le_mul_of_nonneg_left hexp (sq_nonneg (n : ℝ))
   rw [thetaCuspMorseScale, mul_pow, ← he2]
   simpa only [mul_assoc] using
@@ -203,26 +203,26 @@ theorem thetaCuspMorseScale_affine_lower
 /-- Integrated affine lower bound for the Morse insertion. -/
 theorem pi_mul_sq_mul_gibbsMoment_affine_le_morseMoment
     (k : ℕ) {n : ℕ} (hn : 0 < n) :
-    Real.pi * (n : ℝ) ^ 2 *
+    Real.pi * (n : ℝ) ^ (2 : ℕ) *
         (thetaCuspLiouvilleGibbsMoment k n +
           2 * thetaCuspLiouvilleGibbsMoment (k + 1) n) ≤
       thetaCuspLiouvilleGibbsMorseMoment k n := by
   let b : ℝ → ℝ := thetaCuspLiouvilleGibbsAtom n
   have hL : IntegrableOn (fun x : ℝ => x ^ k * b x) (Ioi 0) := by
     simpa only [b, thetaCuspLiouvilleGibbsAtom] using
-      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos k (X ^ 2) hn
+      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos k (X ^ (2 : ℕ)) hn
   have hLnext : IntegrableOn (fun x : ℝ => x ^ (k + 1) * b x) (Ioi 0) := by
     simpa only [b, thetaCuspLiouvilleGibbsAtom] using
-      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos (k + 1) (X ^ 2) hn
+      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos (k + 1) (X ^ (2 : ℕ)) hn
   have hlower : IntegrableOn (fun x : ℝ =>
-      Real.pi * (n : ℝ) ^ 2 *
+      Real.pi * (n : ℝ) ^ (2 : ℕ) *
         (x ^ k * b x + 2 * (x ^ (k + 1) * b x))) (Ioi 0) :=
-    (hL.add (hLnext.const_mul 2)).const_mul (Real.pi * (n : ℝ) ^ 2)
+    (hL.add (hLnext.const_mul 2)).const_mul (Real.pi * (n : ℝ) ^ (2 : ℕ))
   have hupper :=
     integrableOn_pow_mul_thetaCuspMorseScale_mul_liouvilleGibbsAtom k hn
   have hle :
       (∫ x : ℝ in Ioi 0,
-          Real.pi * (n : ℝ) ^ 2 *
+          Real.pi * (n : ℝ) ^ (2 : ℕ) *
             (x ^ k * b x + 2 * (x ^ (k + 1) * b x))) ≤
         ∫ x : ℝ in Ioi 0,
           x ^ k * thetaCuspMorseScale n x *
@@ -233,9 +233,9 @@ theorem pi_mul_sq_mul_gibbsMoment_affine_le_morseMoment
     have hb : 0 ≤ b x := thetaCuspLiouvilleGibbsAtom_nonneg n x
     have hweight : 0 ≤ x ^ k * b x := mul_nonneg (pow_nonneg hx.le k) hb
     calc
-      Real.pi * (n : ℝ) ^ 2 *
+      Real.pi * (n : ℝ) ^ (2 : ℕ) *
           (x ^ k * b x + 2 * (x ^ (k + 1) * b x)) =
-          (Real.pi * (n : ℝ) ^ 2 * (1 + 2 * x)) *
+          (Real.pi * (n : ℝ) ^ (2 : ℕ) * (1 + 2 * x)) *
             (x ^ k * b x) := by
               rw [pow_succ']
               ring
@@ -255,9 +255,9 @@ lower bound eliminate the inserted energy.  This is the denominator-free recurre
 available to the first-atom log-Gamma enclosure problem. -/
 theorem thetaCuspLiouvilleGibbsMoment_succ_equipartition_upper
     (k : ℕ) (hk : 0 < k) {n : ℕ} (hn : 0 < n) :
-    4 * Real.pi * (n : ℝ) ^ 2 *
+    4 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
           thetaCuspLiouvilleGibbsMoment (k + 1) n +
-        (2 * Real.pi * (n : ℝ) ^ 2 - 5 / 2) *
+        (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 5 / 2) *
           thetaCuspLiouvilleGibbsMoment k n ≤
       (k : ℝ) * thetaCuspLiouvilleGibbsMoment (k - 1) n := by
   have hequip := two_mul_thetaCuspLiouvilleGibbsMorseMoment_eq k hk hn
@@ -272,23 +272,23 @@ theorem twelve_mul_thetaCuspLiouvilleGibbsMoment_succ_le
       (k : ℝ) * thetaCuspLiouvilleGibbsMoment (k - 1) n := by
   have hrec := thetaCuspLiouvilleGibbsMoment_succ_equipartition_upper k hk hn
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-  have hnSq : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
-  have hpin : (3 : ℝ) ≤ Real.pi * (n : ℝ) ^ 2 := by
+  have hnSq : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hpin : (3 : ℝ) ≤ Real.pi * (n : ℝ) ^ (2 : ℕ) := by
     calc
       (3 : ℝ) = 3 * 1 := by ring
-      _ ≤ Real.pi * (n : ℝ) ^ 2 :=
+      _ ≤ Real.pi * (n : ℝ) ^ (2 : ℕ) :=
         mul_le_mul Real.pi_gt_three.le hnSq (by norm_num) Real.pi_pos.le
   have hcoefficient :
-      0 ≤ 2 * Real.pi * (n : ℝ) ^ 2 - 5 / 2 := by
+      0 ≤ 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 5 / 2 := by
     nlinarith
   have hcurrent := thetaCuspLiouvilleGibbsMoment_nonneg k n
   have hnext := thetaCuspLiouvilleGibbsMoment_nonneg (k + 1) n
   have hdrop :
-      4 * Real.pi * (n : ℝ) ^ 2 *
+      4 * Real.pi * (n : ℝ) ^ (2 : ℕ) *
           thetaCuspLiouvilleGibbsMoment (k + 1) n ≤
         (k : ℝ) * thetaCuspLiouvilleGibbsMoment (k - 1) n := by
     nlinarith [mul_nonneg hcoefficient hcurrent]
-  have hfactor : (12 : ℝ) ≤ 4 * Real.pi * (n : ℝ) ^ 2 := by
+  have hfactor : (12 : ℝ) ≤ 4 * Real.pi * (n : ℝ) ^ (2 : ℕ) := by
     nlinarith
   exact (mul_le_mul_of_nonneg_right hfactor hnext).trans hdrop
 

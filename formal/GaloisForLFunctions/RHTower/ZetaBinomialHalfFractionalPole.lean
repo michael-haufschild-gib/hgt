@@ -53,7 +53,7 @@ theorem tendsto_sqrt_mul_LSeries_zetaBinomialHalf_one_add :
   let x : ℝ → ℝ := fun t ↦
     Real.sqrt t * (LSeries zetaBinomialHalf ((1 + t : ℝ) : ℂ)).re
   have hsquare : ∀ᶠ t in 𝓝[>] (0 : ℝ),
-      x t ^ 2 =
+      x t ^ (2 : ℕ) =
         (((t : ℂ) * riemannZeta ((1 + t : ℝ) : ℂ))).re := by
     filter_upwards [self_mem_nhdsWithin] with t ht
     have ht0 : 0 < t := ht

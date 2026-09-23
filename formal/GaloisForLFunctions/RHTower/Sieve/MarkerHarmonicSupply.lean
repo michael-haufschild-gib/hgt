@@ -42,7 +42,7 @@ theorem sum_inv_good_markers_ge {X M₀ K : ℕ} {S : Finset ℕ} {M : Finset �
     (hsep : ∀ p ∈ M, ∀ q ∈ M, p < q → X / q = X / p → q ≤ p + K)
     (hpair : ∑ d ∈ Finset.Icc 1 K,
         (((M.filter (fun p => p + d ∈ M)).card : ℕ) : ℝ) ≤ Pi)
-    (hb : (S.card : ℝ) * ((M.card : ℝ) + 2 * Pi) ≤ b ^ 2) (hb0 : 0 ≤ b) :
+    (hb : (S.card : ℝ) * ((M.card : ℝ) + 2 * Pi) ≤ b ^ (2 : ℕ)) (hb0 : 0 ≤ b) :
     ∑ p ∈ M, (1 : ℝ) / (p : ℝ) - b / (M₀ : ℝ)
       ≤ ∑ p ∈ M.filter (fun p => X / p ∉ S), (1 : ℝ) / (p : ℝ) := by
   classical
@@ -61,7 +61,7 @@ theorem sum_inv_good_markers_ge {X M₀ K : ℕ} {S : Finset ℕ} {M : Finset �
   have hdev := sq_card_markers_start_mem_le (X := X) (M := M) (S := S) (K := K) hsep hpair
   have hcardle : (((M \ P).card : ℕ) : ℝ) ≤ b := by
     rw [hsdiff]
-    have hsq : (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ 2 ≤ b ^ 2 :=
+    have hsq : (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ (2 : ℕ) ≤ b ^ (2 : ℕ) :=
       le_trans hdev hb
     have h0 : (0 : ℝ) ≤ (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) := Nat.cast_nonneg _
     nlinarith [hsq, h0, hb0]

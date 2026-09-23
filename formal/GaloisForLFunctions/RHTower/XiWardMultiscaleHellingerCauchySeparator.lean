@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiWardSourceWindowMultiplicity
 The dyadic horizontal semigroup difference `exp (-a r) - exp (-2 a r)`, integrated across all
 logarithmic scales, has closed Gram kernel
 
-`log (((a + 2b) (2a + b)) / (2 (a + b)^2))`.
+`log (((a + 2b) (2a + b)) / (2 (a + b)^(2 : ℕ)))`.
 
 For positive shifts every mixed entry is strictly positive, while each self-entry is the same
 constant `log (9/8)`, independently of shift size. Tensoring with the positive vertical Cauchy
@@ -26,7 +26,7 @@ noncomputable section
 /-- Closed Frullani kernel of the dyadic horizontal semigroup difference. -/
 def dyadicHellingerHorizontalKernel (a b : ℝ) : ℝ :=
   if a = 0 ∨ b = 0 then 0
-  else Real.log (((a + 2 * b) * (2 * a + b)) / (2 * (a + b) ^ 2))
+  else Real.log (((a + 2 * b) * (2 * a + b)) / (2 * (a + b) ^ (2 : ℕ)))
 
 theorem dyadicHellingerHorizontalKernel_zero_left (b : ℝ) :
     dyadicHellingerHorizontalKernel 0 b = 0 := by
@@ -55,7 +55,7 @@ theorem dyadicHellingerHorizontalKernel_pos
     if_neg (not_or_intro ha.ne' hb.ne')]
   apply Real.log_pos
   have hab : 0 < a + b := add_pos ha hb
-  have hden : 0 < 2 * (a + b) ^ 2 := by positivity
+  have hden : 0 < 2 * (a + b) ^ (2 : ℕ) := by positivity
   rw [lt_div_iff₀ hden]
   nlinarith [mul_pos ha hb]
 
@@ -70,7 +70,7 @@ theorem dyadicHellingerHorizontalKernel_self
 
 /-- Real Gram kernel of vertically damped characters. -/
 def dampedVerticalCauchyKernel (h delta : ℝ) : ℝ :=
-  h / (h ^ 2 + delta ^ 2)
+  h / (h ^ (2 : ℕ) + delta ^ (2 : ℕ))
 
 theorem dampedVerticalCauchyKernel_pos
     {h : ℝ} (hh : 0 < h) (delta : ℝ) :
@@ -124,11 +124,11 @@ theorem finiteMultiscaleHellingerCauchyEnergy_ge_diagonal
     {n : ℕ} {h : ℝ} (hh : 0 < h)
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ)
     (ha : ∀ j, 0 < a j) :
-    (Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ 2 ≤
+    (Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ (2 : ℕ) ≤
       finiteMultiscaleHellingerCauchyEnergy h a gamma m := by
   rw [finiteMultiscaleHellingerCauchyEnergy]
   calc
-    (Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ 2 =
+    (Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ (2 : ℕ) =
         ∑ j, (m j : ℝ) * (m j : ℝ) *
           multiscaleHellingerCauchyKernel h (a j) (a j)
             (gamma j - gamma j) := by
@@ -163,7 +163,7 @@ theorem sum_multiplicity_le_multiscaleHellingerCauchyEnergy
   have hlog : 0 < Real.log (9 / 8 : ℝ) := Real.log_pos (by norm_num)
   have hdiag := finiteMultiscaleHellingerCauchyEnergy_ge_diagonal
     (gamma := gamma) hh m ha
-  have hmass_sq : (∑ j, (m j : ℝ)) ≤ ∑ j, (m j : ℝ) ^ 2 := by
+  have hmass_sq : (∑ j, (m j : ℝ)) ≤ ∑ j, (m j : ℝ) ^ (2 : ℕ) := by
     apply Finset.sum_le_sum
     intro j _
     by_cases hm0 : m j = 0
@@ -173,12 +173,12 @@ theorem sum_multiplicity_le_multiscaleHellingerCauchyEnergy
       have hmnonneg : (0 : ℝ) ≤ m j := by positivity
       nlinarith
   have hdiag_scaled :
-      Real.log (9 / 8 : ℝ) * ∑ j, (m j : ℝ) ^ 2 ≤
+      Real.log (9 / 8 : ℝ) * ∑ j, (m j : ℝ) ^ (2 : ℕ) ≤
         h * finiteMultiscaleHellingerCauchyEnergy h a gamma m := by
     have hmul := mul_le_mul_of_nonneg_left hdiag hh.le
     calc
-      Real.log (9 / 8 : ℝ) * ∑ j, (m j : ℝ) ^ 2 =
-          h * ((Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ 2) := by
+      Real.log (9 / 8 : ℝ) * ∑ j, (m j : ℝ) ^ (2 : ℕ) =
+          h * ((Real.log (9 / 8 : ℝ) / h) * ∑ j, (m j : ℝ) ^ (2 : ℕ)) := by
         field_simp [hh.ne']
       _ ≤ h * finiteMultiscaleHellingerCauchyEnergy h a gamma m := hmul
   have hmass_scaled :

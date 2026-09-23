@@ -106,7 +106,7 @@ theorem exists_slab_conformalPotential (n : ℕ) (a massSq : ℝ) {S : ℝ × �
     isC1On_univ_of_contDiff (hSnd.of_le (by exact_mod_cast le_top))
   refine ⟨fun ξ η => massSq * Real.exp (2 * S (ξ, η))
       + 2 * a * (planarSnd (planarFstU S) ξ η + planarFst (planarSndU S) ξ η)
-      + 4 * a ^ 2 * (planarFst S ξ η * planarSnd S ξ η), ?_, ?_⟩
+      + 4 * a ^ (2 : ℕ) * (planarFst S ξ η * planarSnd S ξ η), ?_, ?_⟩
   · have h1 : ContDiff ℝ 1 fun p : ℝ × ℝ => massSq * Real.exp (2 * S p) :=
       contDiff_const.mul (Real.contDiff_exp.comp (contDiff_const.mul hS1))
     have hle : ((1 + 1 : ℕ∞) : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast (le_top : (1 + 1 : ℕ∞) ≤ ⊤)
@@ -126,12 +126,12 @@ theorem exists_slab_conformalPotential (n : ℕ) (a massSq : ℝ) {S : ℝ × �
     show massSq * Real.exp (2 * S (x 0 + x 1, x 0 - x 1))
         - (a * (-2 * (planarSnd (planarFstU S) (x 0 + x 1) (x 0 - x 1)
               + planarFst (planarSndU S) (x 0 + x 1) (x 0 - x 1)))
-          + a ^ 2 * (-4 * (planarFst S (x 0 + x 1) (x 0 - x 1)
+          + a ^ (2 : ℕ) * (-4 * (planarFst S (x 0 + x 1) (x 0 - x 1)
               * planarSnd S (x 0 + x 1) (x 0 - x 1))))
       = massSq * Real.exp (2 * S (x 0 + x 1, x 0 - x 1))
         + 2 * a * (planarSnd (planarFstU S) (x 0 + x 1) (x 0 - x 1)
             + planarFst (planarSndU S) (x 0 + x 1) (x 0 - x 1))
-        + 4 * a ^ 2 * (planarFst S (x 0 + x 1) (x 0 - x 1)
+        + 4 * a ^ (2 : ℕ) * (planarFst S (x 0 + x 1) (x 0 - x 1)
             * planarSnd S (x 0 + x 1) (x 0 - x 1))
     ring
 

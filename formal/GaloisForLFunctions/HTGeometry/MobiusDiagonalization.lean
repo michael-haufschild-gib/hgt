@@ -31,10 +31,10 @@ variable {C E : Type*} [Field C] [Field E] [Algebra C E]
 theorem mobius_fixed_point_difference (σ : E ≃ₐ[C] E) {a b c d p : C} {q : E}
     (hσq : σ q * (algebraMap C E c * q + algebraMap C E d)
       = algebraMap C E a * q + algebraMap C E b)
-    (hfix : c * p ^ 2 + (d - a) * p - b = 0) :
+    (hfix : c * p ^ (2 : ℕ) + (d - a) * p - b = 0) :
     σ (q - algebraMap C E p) * (algebraMap C E c * q + algebraMap C E d)
       = algebraMap C E (a - c * p) * (q - algebraMap C E p) := by
-  have hfixE : algebraMap C E c * (algebraMap C E p) ^ 2
+  have hfixE : algebraMap C E c * (algebraMap C E p) ^ (2 : ℕ)
       + (algebraMap C E d - algebraMap C E a) * algebraMap C E p
       - algebraMap C E b = 0 := by
     have h := congrArg (algebraMap C E) hfix
@@ -52,8 +52,8 @@ coordinate is a scaling eigenvector: `σ x = χ · x`, `χ = (a − c p₁)/(a �
 theorem mobius_two_fixed_points_scaling (σ : E ≃ₐ[C] E) {a b c d p₁ p₂ : C} {q : E}
     (hσq : σ q * (algebraMap C E c * q + algebraMap C E d)
       = algebraMap C E a * q + algebraMap C E b)
-    (hfix1 : c * p₁ ^ 2 + (d - a) * p₁ - b = 0)
-    (hfix2 : c * p₂ ^ 2 + (d - a) * p₂ - b = 0)
+    (hfix1 : c * p₁ ^ (2 : ℕ) + (d - a) * p₁ - b = 0)
+    (hfix2 : c * p₂ ^ (2 : ℕ) + (d - a) * p₂ - b = 0)
     (hden : algebraMap C E c * q + algebraMap C E d ≠ 0)
     (hq2 : q - algebraMap C E p₂ ≠ 0) :
     σ ((q - algebraMap C E p₁) / (q - algebraMap C E p₂))

@@ -36,7 +36,7 @@ noncomputable section
 
 /-- General real binary quadratic form, with the mixed coefficient normalized as `2Buv`. -/
 def binaryQuadraticForm (A B C : ℝ) (v : ℝ × ℝ) : ℝ :=
-  A * v.1 ^ 2 + 2 * B * v.1 * v.2 + C * v.2 ^ 2
+  A * v.1 ^ (2 : ℕ) + 2 * B * v.1 * v.2 + C * v.2 ^ (2 : ℕ)
 
 /-- Exchange of the two reflected channels. -/
 def reflectionChannelSwap (v : ℝ × ℝ) : ℝ × ℝ :=
@@ -60,7 +60,7 @@ theorem binaryQuadraticForm_swap_invariant_iff
 
 /-- Normal form of a channel-exchange-invariant quadratic form. -/
 def binaryReflectionForm (α β : ℝ) (v : ℝ × ℝ) : ℝ :=
-  α * (v.1 ^ 2 + v.2 ^ 2) + 2 * β * v.1 * v.2
+  α * (v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ)) + 2 * β * v.1 * v.2
 
 /-- Reciprocal real-character transport. -/
 def reflectionBoost (d t : ℝ) (v : ℝ × ℝ) : ℝ × ℝ :=
@@ -71,8 +71,8 @@ diagonal terms by opposite exponential weights. -/
 theorem binaryReflectionForm_reflectionBoost
     (α β d t : ℝ) (v : ℝ × ℝ) :
     binaryReflectionForm α β (reflectionBoost d t v) =
-      α * (Real.exp (2 * d * t) * v.1 ^ 2 +
-        Real.exp (-2 * d * t) * v.2 ^ 2) +
+      α * (Real.exp (2 * d * t) * v.1 ^ (2 : ℕ) +
+        Real.exp (-2 * d * t) * v.2 ^ (2 : ℕ)) +
       2 * β * v.1 * v.2 := by
   unfold binaryReflectionForm reflectionBoost
   have hplus :
@@ -92,12 +92,12 @@ theorem binaryReflectionForm_reflectionBoost
     simp
   rw [hplus, hminus]
   calc
-    α * ((Real.exp (d * t) * v.1) ^ 2 +
-          (Real.exp (-d * t) * v.2) ^ 2) +
+    α * ((Real.exp (d * t) * v.1) ^ (2 : ℕ) +
+          (Real.exp (-d * t) * v.2) ^ (2 : ℕ)) +
         2 * β * (Real.exp (d * t) * v.1) *
           (Real.exp (-d * t) * v.2) =
-        α * ((Real.exp (d * t) * Real.exp (d * t)) * v.1 ^ 2 +
-          (Real.exp (-d * t) * Real.exp (-d * t)) * v.2 ^ 2) +
+        α * ((Real.exp (d * t) * Real.exp (d * t)) * v.1 ^ (2 : ℕ) +
+          (Real.exp (-d * t) * Real.exp (-d * t)) * v.2 ^ (2 : ℕ)) +
         2 * β * (Real.exp (d * t) * Real.exp (-d * t)) *
           v.1 * v.2 := by ring_nf
     _ = _ := by rw [hexp]; simp
@@ -179,7 +179,7 @@ def balancedReflectionBoostEnergy
 theorem balancedReflectionBoostEnergy_eq
     (α β c d t : ℝ) :
     balancedReflectionBoostEnergy α β c d t =
-      2 * c ^ 2 * (α * Real.cosh (2 * d * t) + β) := by
+      2 * c ^ (2 : ℕ) * (α * Real.cosh (2 * d * t) + β) := by
   rw [balancedReflectionBoostEnergy, binaryReflectionForm_reflectionBoost]
   rw [Real.cosh_eq]
   ring_nf
@@ -187,12 +187,12 @@ theorem balancedReflectionBoostEnergy_eq
 /-- First metric jet of balanced reciprocal transport. -/
 def balancedReflectionBoostEnergyVelocity
     (α c d t : ℝ) : ℝ :=
-  4 * α * c ^ 2 * d * Real.sinh (2 * d * t)
+  4 * α * c ^ (2 : ℕ) * d * Real.sinh (2 * d * t)
 
 /-- Second metric jet of balanced reciprocal transport. -/
 def balancedReflectionBoostEnergyAcceleration
     (α c d t : ℝ) : ℝ :=
-  8 * α * c ^ 2 * d ^ 2 * Real.cosh (2 * d * t)
+  8 * α * c ^ (2 : ℕ) * d ^ (2 : ℕ) * Real.cosh (2 * d * t)
 
 theorem hasDerivAt_balancedReflectionBoostEnergy
     (α β c d t : ℝ) :
@@ -205,27 +205,27 @@ theorem hasDerivAt_balancedReflectionBoostEnergy
   have hcosh :=
     (Real.hasDerivAt_cosh (2 * d * t)).comp t hlin
   have hscaled :=
-    hcosh.const_mul (2 * c ^ 2 * α)
+    hcosh.const_mul (2 * c ^ (2 : ℕ) * α)
   have hout :
       HasDerivAt
-        (fun u => 2 * c ^ 2 * α * Real.cosh (2 * d * u))
-        (2 * c ^ 2 * α * (Real.sinh (2 * d * t) * (2 * d))) t := by
+        (fun u => 2 * c ^ (2 : ℕ) * α * Real.cosh (2 * d * u))
+        (2 * c ^ (2 : ℕ) * α * (Real.sinh (2 * d * t) * (2 * d))) t := by
     simpa only [Function.comp_apply] using hscaled
   have hfun :
       balancedReflectionBoostEnergy α β c d =
-        fun u => 2 * c ^ 2 * α * Real.cosh (2 * d * u) +
-          2 * c ^ 2 * β := by
+        fun u => 2 * c ^ (2 : ℕ) * α * Real.cosh (2 * d * u) +
+          2 * c ^ (2 : ℕ) * β := by
     funext u
     rw [balancedReflectionBoostEnergy_eq]
     ring_nf
   rw [hfun]
   have hvelocity :
       balancedReflectionBoostEnergyVelocity α c d t =
-        2 * c ^ 2 * α * (Real.sinh (2 * d * t) * (2 * d)) := by
+        2 * c ^ (2 : ℕ) * α * (Real.sinh (2 * d * t) * (2 * d)) := by
     unfold balancedReflectionBoostEnergyVelocity
     ring_nf
   rw [hvelocity]
-  exact hout.add_const (2 * c ^ 2 * β)
+  exact hout.add_const (2 * c ^ (2 : ℕ) * β)
 
 theorem hasDerivAt_balancedReflectionBoostEnergyVelocity
     (α c d t : ℝ) :
@@ -238,16 +238,16 @@ theorem hasDerivAt_balancedReflectionBoostEnergyVelocity
   have hsinh :=
     (Real.hasDerivAt_sinh (2 * d * t)).comp t hlin
   have hscaled :=
-    hsinh.const_mul (4 * α * c ^ 2 * d)
+    hsinh.const_mul (4 * α * c ^ (2 : ℕ) * d)
   have hout :
       HasDerivAt
-        (fun u => 4 * α * c ^ 2 * d * Real.sinh (2 * d * u))
-        (4 * α * c ^ 2 * d *
+        (fun u => 4 * α * c ^ (2 : ℕ) * d * Real.sinh (2 * d * u))
+        (4 * α * c ^ (2 : ℕ) * d *
           (Real.cosh (2 * d * t) * (2 * d))) t := by
     simpa only [Function.comp_apply] using hscaled
   change HasDerivAt
-    (fun u => 4 * α * c ^ 2 * d * Real.sinh (2 * d * u))
-    (8 * α * c ^ 2 * d ^ 2 * Real.cosh (2 * d * t)) t
+    (fun u => 4 * α * c ^ (2 : ℕ) * d * Real.sinh (2 * d * u))
+    (8 * α * c ^ (2 : ℕ) * d ^ (2 : ℕ) * Real.cosh (2 * d * t)) t
   convert hout using 1
   ring_nf
 
@@ -261,7 +261,7 @@ theorem balancedReflectionBoostEnergyVelocity_zero
 theorem balancedReflectionBoostEnergyAcceleration_zero
     (α c d : ℝ) :
     balancedReflectionBoostEnergyAcceleration α c d 0 =
-      8 * α * (c * d) ^ 2 := by
+      8 * α * (c * d) ^ (2 : ℕ) := by
   simp [balancedReflectionBoostEnergyAcceleration]
   ring_nf
 
@@ -357,14 +357,14 @@ theorem hasDerivAt_log_reflectedBernoulliMinusProbability_zero
 /-- Fisher information at the balanced point of the reflected Bernoulli family. -/
 def reflectedBernoulliFisherAtZero (d : ℝ) : ℝ :=
   reflectedBernoulliPlusProbability d 0 *
-      deriv (fun t => Real.log (reflectedBernoulliPlusProbability d t)) 0 ^ 2 +
+      deriv (fun t => Real.log (reflectedBernoulliPlusProbability d t)) 0 ^ (2 : ℕ) +
     reflectedBernoulliMinusProbability d 0 *
-      deriv (fun t => Real.log (reflectedBernoulliMinusProbability d t)) 0 ^ 2
+      deriv (fun t => Real.log (reflectedBernoulliMinusProbability d t)) 0 ^ (2 : ℕ)
 
 /-- Balanced reflected Bernoulli Fisher information is the squared unsquared rate. -/
 theorem reflectedBernoulliFisherAtZero_eq_sq
     (d : ℝ) :
-    reflectedBernoulliFisherAtZero d = d ^ 2 := by
+    reflectedBernoulliFisherAtZero d = d ^ (2 : ℕ) := by
   rw [reflectedBernoulliFisherAtZero,
     (hasDerivAt_log_reflectedBernoulliPlusProbability_zero d).deriv,
     (hasDerivAt_log_reflectedBernoulliMinusProbability_zero d).deriv,
@@ -397,14 +397,14 @@ theorem reflectionSymmetricReadout_balancedReflectionScore
 theorem binaryReflectionForm_cross_balancedReflectionScore
     (c d : ℝ) :
     binaryReflectionForm 0 1 (balancedReflectionScore c d) =
-      -2 * (c * d) ^ 2 := by
+      -2 * (c * d) ^ (2 : ℕ) := by
   simp [binaryReflectionForm, balancedReflectionScore]
   ring
 
 /-- Amplitude-weighted Fisher information is the square of the odd score. -/
 theorem weighted_reflectedBernoulliFisherAtZero_eq_score_sq
     (c d : ℝ) :
-    c ^ 2 * reflectedBernoulliFisherAtZero d = (c * d) ^ 2 := by
+    c ^ (2 : ℕ) * reflectedBernoulliFisherAtZero d = (c * d) ^ (2 : ℕ) := by
   rw [reflectedBernoulliFisherAtZero_eq_sq]
   ring
 
@@ -416,8 +416,8 @@ reciprocal double are one quantity with universal normalizations.
 theorem reflectionInformationIdentity
     (c d : ℝ) :
     -(binaryReflectionForm 0 1 (balancedReflectionScore c d)) / 2 =
-        c ^ 2 * reflectedBernoulliFisherAtZero d ∧
-      c ^ 2 * reflectedBernoulliFisherAtZero d =
+        c ^ (2 : ℕ) * reflectedBernoulliFisherAtZero d ∧
+      c ^ (2 : ℕ) * reflectedBernoulliFisherAtZero d =
         balancedReflectionBoostEnergyAcceleration 1 c d 0 / 8 := by
   rw [binaryReflectionForm_cross_balancedReflectionScore,
     weighted_reflectedBernoulliFisherAtZero_eq_score_sq,
@@ -426,7 +426,7 @@ theorem reflectionInformationIdentity
 
 /-- Tangential amplitude in the reciprocal-square orientation factorization. -/
 def reciprocalSquareTangentialAmplitude (a : ℂ) : ℝ :=
-  -a.re / Complex.normSq a ^ 2
+  -a.re / Complex.normSq a ^ (2 : ℕ)
 
 /-- Signed transverse rate of a point relative to the reflection axis. -/
 def reflectionTransverseRate (a : ℂ) : ℝ :=
@@ -435,7 +435,7 @@ def reflectionTransverseRate (a : ℂ) : ℝ :=
 /-- Reciprocal-square orientation is tangential amplitude times transverse boost rate. -/
 theorem reciprocalSquare_im_eq_tangentialAmplitude_mul_transverseRate
     (a : ℂ) :
-    (a⁻¹ ^ 2).im =
+    (a⁻¹ ^ (2 : ℕ)).im =
       reciprocalSquareTangentialAmplitude a *
         reflectionTransverseRate a := by
   rw [pow_two, mul_im, Complex.inv_re, Complex.inv_im]
@@ -449,7 +449,7 @@ theorem reciprocalSquareOrientation_eq_boostEnergyCurvature
     balancedReflectionBoostEnergyAcceleration α
         (reciprocalSquareTangentialAmplitude a)
         (reflectionTransverseRate a) 0 =
-      8 * α * (a⁻¹ ^ 2).im ^ 2 := by
+      8 * α * (a⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) := by
   rw [balancedReflectionBoostEnergyAcceleration_zero,
     reciprocalSquare_im_eq_tangentialAmplitude_mul_transverseRate]
 
@@ -457,8 +457,8 @@ theorem reciprocalSquareOrientation_eq_boostEnergyCurvature
 weighted Fisher information of the reflected two-channel character. -/
 theorem reciprocalSquareOrientation_sq_eq_tangentialFisher
     (a : ℂ) :
-    (a⁻¹ ^ 2).im ^ 2 =
-      reciprocalSquareTangentialAmplitude a ^ 2 *
+    (a⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) =
+      reciprocalSquareTangentialAmplitude a ^ (2 : ℕ) *
         reflectedBernoulliFisherAtZero (reflectionTransverseRate a) := by
   rw [reflectedBernoulliFisherAtZero_eq_sq,
     reciprocalSquare_im_eq_tangentialAmplitude_mul_transverseRate]
@@ -476,8 +476,8 @@ theorem reciprocalSquareReflectionInformationIdentity
         (balancedReflectionScore
           (reciprocalSquareTangentialAmplitude a)
           (reflectionTransverseRate a))) / 2 =
-        (a⁻¹ ^ 2).im ^ 2 ∧
-      (a⁻¹ ^ 2).im ^ 2 =
+        (a⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) ∧
+      (a⁻¹ ^ (2 : ℕ)).im ^ (2 : ℕ) =
         balancedReflectionBoostEnergyAcceleration 1
           (reciprocalSquareTangentialAmplitude a)
           (reflectionTransverseRate a) 0 / 8 := by
@@ -495,7 +495,7 @@ theorem boostEnergyCurvature_eq_eight_mul_tangentialFisher
     balancedReflectionBoostEnergyAcceleration α
         (reciprocalSquareTangentialAmplitude a)
         (reflectionTransverseRate a) 0 =
-      8 * α * reciprocalSquareTangentialAmplitude a ^ 2 *
+      8 * α * reciprocalSquareTangentialAmplitude a ^ (2 : ℕ) *
         reflectedBernoulliFisherAtZero (reflectionTransverseRate a) := by
   rw [reciprocalSquareOrientation_eq_boostEnergyCurvature,
     reciprocalSquareOrientation_sq_eq_tangentialFisher]

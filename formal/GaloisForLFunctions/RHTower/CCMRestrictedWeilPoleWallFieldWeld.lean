@@ -18,13 +18,13 @@ namespace RHTower
 /-- Signed propagation response of one critical-Mellin wall energy in the odd pole. -/
 def ccmWeilOddWallEnergyResponse (n : ℕ) (s : ℝ) : ℝ :=
   4 * Real.exp (Real.log n / 2) *
-      (1 - Real.exp (-(Real.log n / 2))) ^ 2 * (s - Real.log n / 2) -
+      (1 - Real.exp (-(Real.log n / 2))) ^ (2 : ℕ) * (s - Real.log n / 2) -
     8 * ccmWeilPoleAgeKernel (s - Real.log n / 2)
 
 /-- Signed propagation response of one critical-Mellin wall energy in the even pole. -/
 def ccmWeilEvenWallEnergyResponse (n : ℕ) (s : ℝ) : ℝ :=
   -4 * Real.exp (Real.log n / 2) *
-      (1 + Real.exp (-(Real.log n / 2))) ^ 2 * (s - Real.log n / 2) -
+      (1 + Real.exp (-(Real.log n / 2))) ^ (2 : ℕ) * (s - Real.log n / 2) -
     8 * ccmWeilPoleAgeKernel (s - Real.log n / 2)
 
 /-- Decaying half-density converts ordinary Mangoldt mass back to critical wall energy. -/
@@ -42,7 +42,7 @@ theorem ccmWeilOddPrimeEntrySlope_eq_criticalMellinWallEnergy
     (n : ℕ) (hn : 2 ≤ n) :
     ccmWeilOddPrimeEntrySlope n =
       4 * criticalMellinAtomWeight n * Real.exp (Real.log n / 2) *
-        (1 - Real.exp (-(Real.log n / 2))) ^ 2 := by
+        (1 - Real.exp (-(Real.log n / 2))) ^ (2 : ℕ) := by
   unfold ccmWeilOddPrimeEntrySlope
   rw [← criticalMellinAtomWeight_mul_exp_log_half (by omega : 0 < n)]
   ring
@@ -52,7 +52,7 @@ theorem ccmWeilEvenPrimeEntrySlopeMagnitude_eq_criticalMellinWallEnergy
     (n : ℕ) (hn : 2 ≤ n) :
     ccmWeilEvenPrimeEntrySlopeMagnitude n =
       4 * criticalMellinAtomWeight n * Real.exp (Real.log n / 2) *
-        (1 + Real.exp (-(Real.log n / 2))) ^ 2 := by
+        (1 + Real.exp (-(Real.log n / 2))) ^ (2 : ℕ) := by
   unfold ccmWeilEvenPrimeEntrySlopeMagnitude
   rw [← criticalMellinAtomWeight_mul_exp_log_half (by omega : 0 < n)]
   ring
@@ -199,36 +199,36 @@ theorem ccmWeilEvenPole_eq_criticalMellinWallEnergySuperposition
 /-! ## Hyperbolic Green residual -/
 
 private theorem ccmWeilOddWallEnergyResponse_coefficient (h : ℝ) :
-    4 * Real.exp h * (1 - Real.exp (-h)) ^ 2 = 8 * (Real.cosh h - 1) := by
+    4 * Real.exp h * (1 - Real.exp (-h)) ^ (2 : ℕ) = 8 * (Real.cosh h - 1) := by
   have hexp : Real.exp h * Real.exp (-h) = 1 := by
     rw [← Real.exp_add]
     simp
-  have hexp_sq : Real.exp h * Real.exp (-h) ^ 2 = Real.exp (-h) := by
+  have hexp_sq : Real.exp h * Real.exp (-h) ^ (2 : ℕ) = Real.exp (-h) := by
     calc
-      Real.exp h * Real.exp (-h) ^ 2 =
+      Real.exp h * Real.exp (-h) ^ (2 : ℕ) =
           (Real.exp h * Real.exp (-h)) * Real.exp (-h) := by ring
       _ = Real.exp (-h) := by rw [hexp]; simp
   calc
-    4 * Real.exp h * (1 - Real.exp (-h)) ^ 2 =
+    4 * Real.exp h * (1 - Real.exp (-h)) ^ (2 : ℕ) =
         4 * (Real.exp h - 2 * (Real.exp h * Real.exp (-h)) +
-          Real.exp h * Real.exp (-h) ^ 2) := by ring
+          Real.exp h * Real.exp (-h) ^ (2 : ℕ)) := by ring
     _ = 4 * (Real.exp h - 2 + Real.exp (-h)) := by simp [hexp, hexp_sq]
     _ = 8 * (Real.cosh h - 1) := by rw [Real.cosh_eq]; ring
 
 private theorem ccmWeilEvenWallEnergyResponse_coefficient (h : ℝ) :
-    4 * Real.exp h * (1 + Real.exp (-h)) ^ 2 = 8 * (Real.cosh h + 1) := by
+    4 * Real.exp h * (1 + Real.exp (-h)) ^ (2 : ℕ) = 8 * (Real.cosh h + 1) := by
   have hexp : Real.exp h * Real.exp (-h) = 1 := by
     rw [← Real.exp_add]
     simp
-  have hexp_sq : Real.exp h * Real.exp (-h) ^ 2 = Real.exp (-h) := by
+  have hexp_sq : Real.exp h * Real.exp (-h) ^ (2 : ℕ) = Real.exp (-h) := by
     calc
-      Real.exp h * Real.exp (-h) ^ 2 =
+      Real.exp h * Real.exp (-h) ^ (2 : ℕ) =
           (Real.exp h * Real.exp (-h)) * Real.exp (-h) := by ring
       _ = Real.exp (-h) := by rw [hexp]; simp
   calc
-    4 * Real.exp h * (1 + Real.exp (-h)) ^ 2 =
+    4 * Real.exp h * (1 + Real.exp (-h)) ^ (2 : ℕ) =
         4 * (Real.exp h + 2 * (Real.exp h * Real.exp (-h)) +
-          Real.exp h * Real.exp (-h) ^ 2) := by ring
+          Real.exp h * Real.exp (-h) ^ (2 : ℕ)) := by ring
     _ = 4 * (Real.exp h + 2 + Real.exp (-h)) := by simp [hexp, hexp_sq]
     _ = 8 * (Real.cosh h + 1) := by rw [Real.cosh_eq]; ring
 
@@ -248,9 +248,9 @@ theorem ccmWeilEvenWallEnergyResponse_eq_hyperbolic (n : ℕ) (s : ℝ) :
         Real.sinh (s - Real.log n / 2)) := by
   unfold ccmWeilEvenWallEnergyResponse ccmWeilPoleAgeKernel
   rw [show -4 * Real.exp (Real.log n / 2) *
-      (1 + Real.exp (-(Real.log n / 2))) ^ 2 =
+      (1 + Real.exp (-(Real.log n / 2))) ^ (2 : ℕ) =
       -(4 * Real.exp (Real.log n / 2) *
-        (1 + Real.exp (-(Real.log n / 2))) ^ 2) by ring,
+        (1 + Real.exp (-(Real.log n / 2))) ^ (2 : ℕ)) by ring,
     ccmWeilEvenWallEnergyResponse_coefficient]
   ring
 

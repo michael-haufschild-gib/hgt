@@ -9,7 +9,7 @@ For every entire finite matrix curve `M` centered at zero, trace-free at every s
 and tied to its negative Schwarz-reflected conjugate transpose, Jacobi's second-variation formula
 gives
 
-`(det (1 + M))''(0) = -tr(M'(0)^2) = ∑ᵢⱼ |M'ᵢⱼ(0)|² ≥ 0`.
+`(det (1 + M))''(0) = -tr(M'(0)^(2 : ℕ)) = ∑ᵢⱼ |M'ᵢⱼ(0)|² ≥ 0`.
 
 The rank may vary with the cutoff. Cauchy convergence of jets therefore prevents these determinant
 stages from converging compact-open to normalized Xi, whose central second jet is strictly negative.

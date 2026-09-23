@@ -19,7 +19,7 @@ noncomputable section
 
 /-- Degree-`n` moving-apex energy shell.  The global energy below only uses positive `n`. -/
 def xiShiftedCanonicalAdmissionApexEnergyShell (y : ℝ) (n : ℕ) : ℝ :=
-  xiShiftedCanonicalAdmissionApexValue y n ^ 2 /
+  xiShiftedCanonicalAdmissionApexValue y n ^ (2 : ℕ) /
     ((n : ℝ) * xiShiftedCanonicalAdmissionNorm y n)
 
 /-- Flux through the degree edge `n ↔ n+1`. -/
@@ -221,7 +221,7 @@ horizon discharges finite positivity, so the exact boundary balance requires no 
 premise on the parabolic region. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy_of_parabolicDegreeHorizon
     {y : ℝ} (N : ℕ)
-    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ 2) ≤ y) :
+    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexEnergy v N)
       ((∑ i ∈ Finset.range N,
           xiShiftedCanonicalAdmissionApexBulkProduction y (i + 1)) +

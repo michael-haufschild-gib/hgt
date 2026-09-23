@@ -10,16 +10,16 @@ the square of its already-evaluated first-jet value loses both second derivative
 
 This module first complexifies the exact chart vector
 
-`partial_Z = rho * partial_sigma + (1-rho^2)/sigma * partial_rho`.
+`partial_Z = rho * partial_sigma + (1-rho^(2 : ℕ))/sigma * partial_rho`.
 
-On a pure BM profile `f(1-rho^2)`, write `s = sigma^-1`.  Its first two Poincare jets are
+On a pure BM profile `f(1-rho^(2 : ℕ))`, write `s = sigma^-1`.  Its first two Poincare jets are
 
 `partial_Z f = C(rho) s f'`,
 
-`partial_Z^2 f = B(rho) s^2 f' + C(rho)^2 s^2 f''`,
+`partial_Z^(2 : ℕ) f = B(rho) s^(2 : ℕ) f' + C(rho)^(2 : ℕ) s^(2 : ℕ) f''`,
 
-where `C(rho) = -2 rho (1-rho^2)` and
-`B(rho) = 2 (1-rho^2) (4 rho^2-1)`.  The `B f'` connection term is forced by differentiating
+where `C(rho) = -2 rho (1-rho^(2 : ℕ))` and
+`B(rho) = 2 (1-rho^(2 : ℕ)) (4 rho^(2 : ℕ)-1)`.  The `B f'` connection term is forced by differentiating
 the chart coefficient; it is absent from a naive squared-chain-rule substitution.
 
 The complete bidifferential SDG vertex is then defined on two arbitrary complex two-jets.  After
@@ -51,11 +51,11 @@ structure D4ComplexRadialTwoJet where
 
 /-- Numerator of the first Poincare derivative of a pure BM radial profile. -/
 def d4BMPoincareFirstPullbackNumerator (rho : ℂ) : ℂ :=
-  -2 * rho * (1 - rho ^ 2)
+  -2 * rho * (1 - rho ^ (2 : ℕ))
 
 /-- Connection numerator in the second Poincare derivative of a pure BM radial profile. -/
 def d4BMPoincareSecondPullbackConnectionNumerator (rho : ℂ) : ℂ :=
-  2 * (1 - rho ^ 2) * (4 * rho ^ 2 - 1)
+  2 * (1 - rho ^ (2 : ℕ)) * (4 * rho ^ (2 : ℕ) - 1)
 
 /-- Complexified second iterate of the pulled-back coordinate vector on a general symmetric
 two-jet.  `sigmaInv` is an algebraic inverse-coordinate variable; using it keeps all identities
@@ -63,21 +63,21 @@ valid without a nonzero-coordinate premise. -/
 def d4PoincareRadialSecondPullbackOperatorOnJet
     (rho sigmaInv : ℂ)
     (partialSigma partialRho partialSigmaSigma partialSigmaRho partialRhoRho : ℂ) : ℂ :=
-  let a := (1 - rho ^ 2) * sigmaInv
-  rho ^ 2 * partialSigmaSigma +
+  let a := (1 - rho ^ (2 : ℕ)) * sigmaInv
+  rho ^ (2 : ℕ) * partialSigmaSigma +
     2 * rho * a * partialSigmaRho +
-    a ^ 2 * partialRhoRho +
+    a ^ (2 : ℕ) * partialRhoRho +
     a * partialSigma -
-    3 * rho * (1 - rho ^ 2) * sigmaInv ^ 2 * partialRho
+    3 * rho * (1 - rho ^ (2 : ℕ)) * sigmaInv ^ (2 : ℕ) * partialRho
 
 /-- Exact second-order chain rule.  The first-jet connection coefficient is
-`2(1-rho^2)(4rho^2-1)`, not zero. -/
+`2(1-rho^(2 : ℕ))(4rho^(2 : ℕ)-1)`, not zero. -/
 theorem d4PoincareRadialSecondPullbackOperatorOnBMSecondJet
     (rho sigmaInv firstBM secondBM : ℂ) :
     d4PoincareRadialSecondPullbackOperatorOnJet rho sigmaInv
-        0 (-2 * rho * firstBM) 0 0 (-2 * firstBM + 4 * rho ^ 2 * secondBM) =
-      d4BMPoincareSecondPullbackConnectionNumerator rho * sigmaInv ^ 2 * firstBM +
-        d4BMPoincareFirstPullbackNumerator rho ^ 2 * sigmaInv ^ 2 * secondBM := by
+        0 (-2 * rho * firstBM) 0 0 (-2 * firstBM + 4 * rho ^ (2 : ℕ) * secondBM) =
+      d4BMPoincareSecondPullbackConnectionNumerator rho * sigmaInv ^ (2 : ℕ) * firstBM +
+        d4BMPoincareFirstPullbackNumerator rho ^ (2 : ℕ) * sigmaInv ^ (2 : ℕ) * secondBM := by
   simp [d4PoincareRadialSecondPullbackOperatorOnJet,
     d4BMPoincareSecondPullbackConnectionNumerator,
     d4BMPoincareFirstPullbackNumerator]
@@ -91,8 +91,8 @@ def d4PoincareRadialFirstDerivativeOnBMJetInv
 /-- Second Poincare derivative of a pure BM second jet, including the chart connection term. -/
 def d4PoincareRadialSecondDerivativeOnBMJetInv
     (rho sigmaInv firstBM secondBM : ℂ) : ℂ :=
-  d4BMPoincareSecondPullbackConnectionNumerator rho * sigmaInv ^ 2 * firstBM +
-    d4BMPoincareFirstPullbackNumerator rho ^ 2 * sigmaInv ^ 2 * secondBM
+  d4BMPoincareSecondPullbackConnectionNumerator rho * sigmaInv ^ (2 : ℕ) * firstBM +
+    d4BMPoincareFirstPullbackNumerator rho ^ (2 : ℕ) * sigmaInv ^ (2 : ℕ) * secondBM
 
 /-- Exact Poincare two-jet obtained from a pure BM radial two-jet. -/
 def d4PoincareRadialTwoJetOfBMInv
@@ -111,20 +111,20 @@ def ads4SelfDualShiftedRadialFirstAction
     (q : ℂ) (J : D4ComplexRadialTwoJet) : ℂ :=
   q * J.value + J.first
 
-/-- Second action of `(q + partial_Z)^2` on one radial jet. -/
+/-- Second action of `(q + partial_Z)^(2 : ℕ)` on one radial jet. -/
 def ads4SelfDualShiftedRadialSecondAction
     (q : ℂ) (J : D4ComplexRadialTwoJet) : ℂ :=
-  q ^ 2 * J.value + 2 * q * J.first + J.second
+  q ^ (2 : ℕ) * J.value + 2 * q * J.first + J.second
 
-/-- The exact `Xleftrightarrow^2` term of the self-dual gravity vertex, already evaluated on the
+/-- The exact `Xleftrightarrow^(2 : ℕ)` term of the self-dual gravity vertex, already evaluated on the
 two scaled-leg two-jets. -/
 def ads4SelfDualDeformedBracketSquareOnTwoJets
     (xBracket q1 q2 q1w q2w : ℂ)
     (P Q : D4ComplexRadialTwoJet) : ℂ :=
-  xBracket ^ 2 * P.value * Q.value -
+  xBracket ^ (2 : ℕ) * P.value * Q.value -
     (1 / 4 : ℂ) *
-      (q1w ^ 2 * P.value * ads4SelfDualShiftedRadialSecondAction q2 Q +
-        q2w ^ 2 * ads4SelfDualShiftedRadialSecondAction q1 P * Q.value -
+      (q1w ^ (2 : ℕ) * P.value * ads4SelfDualShiftedRadialSecondAction q2 Q +
+        q2w ^ (2 : ℕ) * ads4SelfDualShiftedRadialSecondAction q1 P * Q.value -
         2 * q1w * q2w * ads4SelfDualShiftedRadialFirstAction q1 P *
           ads4SelfDualShiftedRadialFirstAction q2 Q)
 
@@ -168,7 +168,7 @@ theorem ads4SelfDualDeformedVertexOnTwoJets_exchange
 def ads4SelfDualBulkToBoundaryScaledTwoJet (q : ℂ) : D4ComplexRadialTwoJet where
   value := 1
   first := -q
-  second := q ^ 2
+  second := q ^ (2 : ℕ)
 
 @[simp]
 theorem ads4SelfDualShiftedRadialFirstAction_bulkToBoundary (q : ℂ) :
@@ -217,8 +217,8 @@ def ads4SelfDualBMRadialFirstJetCross
 def ads4SelfDualBMSquareLaurentCoefficientZero
     (xBracket q1 q2 q1w q2w : ℂ)
     (P Q : D4ComplexRadialTwoJet) : ℂ :=
-  (xBracket ^ 2 -
-      (1 / 4 : ℂ) * ads4SelfDualRadialDeformationDelta q1 q2 q1w q2w ^ 2) *
+  (xBracket ^ (2 : ℕ) -
+      (1 / 4 : ℂ) * ads4SelfDualRadialDeformationDelta q1 q2 q1w q2w ^ (2 : ℕ)) *
     P.value * Q.value
 
 /-- First Laurent coefficient of the pulled-back squared bracket. -/
@@ -236,9 +236,9 @@ def ads4SelfDualBMSquareLaurentCoefficientTwo
     (P Q : D4ComplexRadialTwoJet) : ℂ :=
   -(1 / 4 : ℂ) *
     (d4BMPoincareSecondPullbackConnectionNumerator rho *
-        (q1w ^ 2 * P.value * Q.first + q2w ^ 2 * P.first * Q.value) +
-      d4BMPoincareFirstPullbackNumerator rho ^ 2 *
-        (q1w ^ 2 * P.value * Q.second + q2w ^ 2 * P.second * Q.value -
+        (q1w ^ (2 : ℕ) * P.value * Q.first + q2w ^ (2 : ℕ) * P.first * Q.value) +
+      d4BMPoincareFirstPullbackNumerator rho ^ (2 : ℕ) *
+        (q1w ^ (2 : ℕ) * P.value * Q.second + q2w ^ (2 : ℕ) * P.second * Q.value -
           2 * q1w * q2w * P.first * Q.first))
 
 /-- First Laurent coefficient of `Xleftrightarrow/Z` after the physical `Z=rho*sigma` pullback. -/
@@ -301,7 +301,7 @@ theorem ads4SelfDualDeformedVertexOnBMPulledTwoJets_eq_laurent
         ads4SelfDualBMVertexLaurentCoefficientOne
             rho xBracket q1 q2 q1w q2w P Q * sigmaInv +
           ads4SelfDualBMVertexLaurentCoefficientTwo
-              rho xBracket q1 q2 q1w q2w P Q * sigmaInv ^ 2 := by
+              rho xBracket q1 q2 q1w q2w P Q * sigmaInv ^ (2 : ℕ) := by
   simp [ads4SelfDualDeformedVertexOnTwoJets,
     ads4SelfDualDeformedBracketSquareOnTwoJets,
     ads4SelfDualDeformedBracketOverZOnTwoJets,
@@ -335,7 +335,7 @@ theorem ads4SelfDualDeformedVertexOnBMPulledTwoJets_eq_physicalLaurent
         ads4SelfDualBMVertexLaurentCoefficientOne
             (rho : ℂ) xBracket q1 q2 q1w q2w P Q * (sigma : ℂ)⁻¹ +
           ads4SelfDualBMVertexLaurentCoefficientTwo
-              (rho : ℂ) xBracket q1 q2 q1w q2w P Q * (sigma : ℂ)⁻¹ ^ 2 := by
+              (rho : ℂ) xBracket q1 q2 q1w q2w P Q * (sigma : ℂ)⁻¹ ^ (2 : ℕ) := by
   exact ads4SelfDualDeformedVertexOnBMPulledTwoJets_eq_laurent
     (rho : ℂ) (sigma : ℂ)⁻¹ xBracket q1 q2 q1w q2w P Q
 

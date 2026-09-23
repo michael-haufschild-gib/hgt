@@ -49,7 +49,7 @@ theorem coherentPhaseGram_anchor_reconstruct (z w : ℂ) :
 /-- Exact two-history conservation: variation mass squared is coherent mass squared plus the
 phase-dispersion defect. -/
 theorem twoHistory_phaseDispersion_identity (z w : ℂ) :
-    (‖z‖ + ‖w‖) ^ 2 = ‖z + w‖ ^ 2 +
+    (‖z‖ + ‖w‖) ^ (2 : ℕ) = ‖z + w‖ ^ (2 : ℕ) +
       2 * (‖z‖ * ‖w‖ - (z * (starRingEnd ℂ) w).re) := by
   rw [Complex.sq_norm, Complex.normSq_add, ← Complex.sq_norm z, ← Complex.sq_norm w]
   ring

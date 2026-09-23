@@ -22,11 +22,11 @@ theorem card_filter_dvd_Icc {d N : ℕ} (hd : 0 < d) :
 
 /-- **The divisor-sum mean square as an lcm quadratic form.** -/
 theorem sum_sq_divisorSum_eq_lcm_quadratic (N : ℕ) (a : ℕ → ℝ) :
-    ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ 2
+    ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ (2 : ℕ)
       = ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
           a p.1 * a p.2 * ((N / Nat.lcm p.1 p.2 : ℕ) : ℝ) := by
   classical
-  have hexp : ∀ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ 2
+  have hexp : ∀ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ (2 : ℕ)
       = ∑ p ∈ k.divisors ×ˢ k.divisors, a p.1 * a p.2 := by
     intro k _
     rw [sq, Finset.sum_mul_sum, Finset.sum_product]

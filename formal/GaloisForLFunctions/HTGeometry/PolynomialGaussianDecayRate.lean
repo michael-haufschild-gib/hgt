@@ -45,40 +45,40 @@ theorem abs_eval_le_polyCoeffMass_mul_pow (p : Polynomial ℝ) {x : ℝ} (hx : 1
 interval the product `|p| e^{-x²}` is bounded by an explicit constant divided by `|x|^k`, the
 constant being the coefficient mass times a factorial of the degree and the exponent. -/
 theorem abs_eval_mul_exp_neg_sq_le (p : Polynomial ℝ) (k : ℕ) {x : ℝ} (hx : 1 ≤ |x|) :
-    |p.eval x| * Real.exp (-x ^ 2)
+    |p.eval x| * Real.exp (-x ^ (2 : ℕ))
       ≤ polyCoeffMass p * ((p.natDegree + k).factorial : ℝ) / |x| ^ k := by
   have hx0 : (0 : ℝ) < |x| := lt_of_lt_of_le one_pos hx
   have hpk : (0 : ℝ) < |x| ^ k := pow_pos hx0 k
   have hA : 0 ≤ polyCoeffMass p := polyCoeffMass_nonneg p
-  have hexp : (0 : ℝ) < Real.exp (-x ^ 2) := Real.exp_pos _
+  have hexp : (0 : ℝ) < Real.exp (-x ^ (2 : ℕ)) := Real.exp_pos _
   rw [le_div_iff₀ hpk]
   have h1 : |p.eval x| ≤ polyCoeffMass p * |x| ^ p.natDegree :=
     abs_eval_le_polyCoeffMass_mul_pow p hx
-  have hsq : x ^ 2 = |x| ^ 2 := (sq_abs x).symm
-  have hfac : (x ^ 2) ^ (p.natDegree + k) * Real.exp (-x ^ 2)
+  have hsq : x ^ (2 : ℕ) = |x| ^ (2 : ℕ) := (sq_abs x).symm
+  have hfac : (x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-x ^ (2 : ℕ))
       ≤ ((p.natDegree + k).factorial : ℝ) := by
-    have hx2 : (0 : ℝ) ≤ x ^ 2 := sq_nonneg x
-    have h := Real.pow_div_factorial_le_exp (x ^ 2) hx2 (p.natDegree + k)
+    have hx2 : (0 : ℝ) ≤ x ^ (2 : ℕ) := sq_nonneg x
+    have h := Real.pow_div_factorial_le_exp (x ^ (2 : ℕ)) hx2 (p.natDegree + k)
     have hfac0 : (0 : ℝ) < ((p.natDegree + k).factorial : ℝ) := by positivity
     rw [div_le_iff₀ hfac0] at h
-    have hmul := mul_le_mul_of_nonneg_right h (Real.exp_pos (-x ^ 2)).le
-    have hcancel : Real.exp (x ^ 2) * Real.exp (-x ^ 2) = 1 := by
+    have hmul := mul_le_mul_of_nonneg_right h (Real.exp_pos (-x ^ (2 : ℕ))).le
+    have hcancel : Real.exp (x ^ (2 : ℕ)) * Real.exp (-x ^ (2 : ℕ)) = 1 := by
       rw [← Real.exp_add]
       simp
-    calc (x ^ 2) ^ (p.natDegree + k) * Real.exp (-x ^ 2)
-        ≤ Real.exp (x ^ 2) * ((p.natDegree + k).factorial : ℝ) * Real.exp (-x ^ 2) := hmul
-      _ = ((p.natDegree + k).factorial : ℝ) * (Real.exp (x ^ 2) * Real.exp (-x ^ 2)) := by ring
+    calc (x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-x ^ (2 : ℕ))
+        ≤ Real.exp (x ^ (2 : ℕ)) * ((p.natDegree + k).factorial : ℝ) * Real.exp (-x ^ (2 : ℕ)) := hmul
+      _ = ((p.natDegree + k).factorial : ℝ) * (Real.exp (x ^ (2 : ℕ)) * Real.exp (-x ^ (2 : ℕ))) := by ring
       _ = ((p.natDegree + k).factorial : ℝ) := by rw [hcancel, mul_one]
-  have hxpow : |x| ^ (p.natDegree + k) ≤ (x ^ 2) ^ (p.natDegree + k) := by
+  have hxpow : |x| ^ (p.natDegree + k) ≤ (x ^ (2 : ℕ)) ^ (p.natDegree + k) := by
     rw [hsq, ← pow_mul]
     exact pow_le_pow_right₀ hx (by omega)
-  calc |p.eval x| * Real.exp (-x ^ 2) * |x| ^ k
-      ≤ polyCoeffMass p * |x| ^ p.natDegree * Real.exp (-x ^ 2) * |x| ^ k := by
+  calc |p.eval x| * Real.exp (-x ^ (2 : ℕ)) * |x| ^ k
+      ≤ polyCoeffMass p * |x| ^ p.natDegree * Real.exp (-x ^ (2 : ℕ)) * |x| ^ k := by
         have := mul_le_mul_of_nonneg_right h1 hexp.le
         exact mul_le_mul_of_nonneg_right this hpk.le
-    _ = polyCoeffMass p * (|x| ^ (p.natDegree + k) * Real.exp (-x ^ 2)) := by
+    _ = polyCoeffMass p * (|x| ^ (p.natDegree + k) * Real.exp (-x ^ (2 : ℕ))) := by
         rw [pow_add]; ring
-    _ ≤ polyCoeffMass p * ((x ^ 2) ^ (p.natDegree + k) * Real.exp (-x ^ 2)) := by
+    _ ≤ polyCoeffMass p * ((x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-x ^ (2 : ℕ))) := by
         refine mul_le_mul_of_nonneg_left ?_ hA
         exact mul_le_mul_of_nonneg_right hxpow hexp.le
     _ ≤ polyCoeffMass p * ((p.natDegree + k).factorial : ℝ) :=
@@ -89,51 +89,51 @@ theorem abs_eval_mul_exp_neg_sq_le (p : Polynomial ℝ) (k : ℕ) {x : ℝ} (hx 
 `|p| e^{-b x²} ≤ (∑|coeff|)·(deg p + k)! / (b^{deg p + k} |x|^k)`. -/
 theorem abs_eval_mul_exp_neg_mul_sq_le (p : Polynomial ℝ) {b : ℝ} (hb : 0 < b) (k : ℕ)
     {x : ℝ} (hx : 1 ≤ |x|) :
-    |p.eval x| * Real.exp (-(b * x ^ 2))
+    |p.eval x| * Real.exp (-(b * x ^ (2 : ℕ)))
       ≤ polyCoeffMass p * ((p.natDegree + k).factorial : ℝ) / b ^ (p.natDegree + k)
           / |x| ^ k := by
   have hx0 : (0 : ℝ) < |x| := lt_of_lt_of_le one_pos hx
   have hpk : (0 : ℝ) < |x| ^ k := pow_pos hx0 k
   have hA : 0 ≤ polyCoeffMass p := polyCoeffMass_nonneg p
-  have hexp : (0 : ℝ) < Real.exp (-(b * x ^ 2)) := Real.exp_pos _
+  have hexp : (0 : ℝ) < Real.exp (-(b * x ^ (2 : ℕ))) := Real.exp_pos _
   have hbN : (0 : ℝ) < b ^ (p.natDegree + k) := pow_pos hb _
   rw [le_div_iff₀ hpk]
   have h1 : |p.eval x| ≤ polyCoeffMass p * |x| ^ p.natDegree :=
     abs_eval_le_polyCoeffMass_mul_pow p hx
-  have hsq : x ^ 2 = |x| ^ 2 := (sq_abs x).symm
-  have hfac : (x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2))
+  have hsq : x ^ (2 : ℕ) = |x| ^ (2 : ℕ) := (sq_abs x).symm
+  have hfac : (x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ)))
       ≤ ((p.natDegree + k).factorial : ℝ) / b ^ (p.natDegree + k) := by
-    have hx2 : (0 : ℝ) ≤ b * x ^ 2 := by positivity
-    have h := Real.pow_div_factorial_le_exp (b * x ^ 2) hx2 (p.natDegree + k)
+    have hx2 : (0 : ℝ) ≤ b * x ^ (2 : ℕ) := by positivity
+    have h := Real.pow_div_factorial_le_exp (b * x ^ (2 : ℕ)) hx2 (p.natDegree + k)
     have hfac0 : (0 : ℝ) < ((p.natDegree + k).factorial : ℝ) := by positivity
     rw [div_le_iff₀ hfac0] at h
-    have hmul := mul_le_mul_of_nonneg_right h (Real.exp_pos (-(b * x ^ 2))).le
-    have hcancel : Real.exp (b * x ^ 2) * Real.exp (-(b * x ^ 2)) = 1 := by
+    have hmul := mul_le_mul_of_nonneg_right h (Real.exp_pos (-(b * x ^ (2 : ℕ)))).le
+    have hcancel : Real.exp (b * x ^ (2 : ℕ)) * Real.exp (-(b * x ^ (2 : ℕ))) = 1 := by
       rw [← Real.exp_add]
       simp
-    have hstep : (b * x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2))
+    have hstep : (b * x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ)))
         ≤ ((p.natDegree + k).factorial : ℝ) := by
-      calc (b * x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2))
-          ≤ Real.exp (b * x ^ 2) * ((p.natDegree + k).factorial : ℝ)
-              * Real.exp (-(b * x ^ 2)) := hmul
+      calc (b * x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ)))
+          ≤ Real.exp (b * x ^ (2 : ℕ)) * ((p.natDegree + k).factorial : ℝ)
+              * Real.exp (-(b * x ^ (2 : ℕ))) := hmul
         _ = ((p.natDegree + k).factorial : ℝ)
-              * (Real.exp (b * x ^ 2) * Real.exp (-(b * x ^ 2))) := by ring
+              * (Real.exp (b * x ^ (2 : ℕ)) * Real.exp (-(b * x ^ (2 : ℕ)))) := by ring
         _ = ((p.natDegree + k).factorial : ℝ) := by rw [hcancel, mul_one]
     rw [le_div_iff₀ hbN]
-    calc (x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2)) * b ^ (p.natDegree + k)
-        = (b * x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2)) := by
+    calc (x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ))) * b ^ (p.natDegree + k)
+        = (b * x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ))) := by
           rw [mul_pow]; ring
       _ ≤ ((p.natDegree + k).factorial : ℝ) := hstep
-  have hxpow : |x| ^ (p.natDegree + k) ≤ (x ^ 2) ^ (p.natDegree + k) := by
+  have hxpow : |x| ^ (p.natDegree + k) ≤ (x ^ (2 : ℕ)) ^ (p.natDegree + k) := by
     rw [hsq, ← pow_mul]
     exact pow_le_pow_right₀ hx (by omega)
-  calc |p.eval x| * Real.exp (-(b * x ^ 2)) * |x| ^ k
-      ≤ polyCoeffMass p * |x| ^ p.natDegree * Real.exp (-(b * x ^ 2)) * |x| ^ k := by
+  calc |p.eval x| * Real.exp (-(b * x ^ (2 : ℕ))) * |x| ^ k
+      ≤ polyCoeffMass p * |x| ^ p.natDegree * Real.exp (-(b * x ^ (2 : ℕ))) * |x| ^ k := by
         have := mul_le_mul_of_nonneg_right h1 hexp.le
         exact mul_le_mul_of_nonneg_right this hpk.le
-    _ = polyCoeffMass p * (|x| ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2))) := by
+    _ = polyCoeffMass p * (|x| ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ)))) := by
         rw [pow_add]; ring
-    _ ≤ polyCoeffMass p * ((x ^ 2) ^ (p.natDegree + k) * Real.exp (-(b * x ^ 2))) := by
+    _ ≤ polyCoeffMass p * ((x ^ (2 : ℕ)) ^ (p.natDegree + k) * Real.exp (-(b * x ^ (2 : ℕ)))) := by
         refine mul_le_mul_of_nonneg_left ?_ hA
         exact mul_le_mul_of_nonneg_right hxpow hexp.le
     _ ≤ polyCoeffMass p * (((p.natDegree + k).factorial : ℝ) / b ^ (p.natDegree + k)) :=

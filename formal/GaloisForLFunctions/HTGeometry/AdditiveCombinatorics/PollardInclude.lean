@@ -28,10 +28,10 @@ def PollardConclusion (A B : Finset G) (t : ℕ) : Prop :=
 
 /-- The intermediate bound `∑_{i≤t} #(A ·_i B) ≥ t#A + t#B − t²` implies the weak bound. -/
 theorem pollardWeak_of_boundTSq {A B : Finset G} {t : ℕ} (ht : 1 ≤ t)
-    (h : t * A.card + t * B.card ≤ repSum A B t + t ^ 2) : PollardWeak A B t := by
+    (h : t * A.card + t * B.card ≤ repSum A B t + t ^ (2 : ℕ)) : PollardWeak A B t := by
   rw [PollardWeak]
-  have : 1 ≤ t ^ 2 := Nat.one_le_pow 2 t ht
-  have h2 : t ^ 2 + t ^ 2 = 2 * t ^ 2 := by ring
+  have : 1 ≤ t ^ (2 : ℕ) := Nat.one_le_pow 2 t ht
+  have h2 : t ^ (2 : ℕ) + t ^ (2 : ℕ) = 2 * t ^ (2 : ℕ) := by ring
   omega
 
 theorem pollardConclusion_comm {A B : Finset G} {t : ℕ} (h : PollardConclusion A B t) :
@@ -60,8 +60,8 @@ theorem pollardWeak_of_small_deficiency {A B A' B' : Finset G} {t : ℕ} (ht : 1
     have := Nat.mul_le_mul_left t hdef
     have h5 : t * (defect A A' B B' + 1) = t * defect A A' B B' + t := by ring
     omega
-  have h6 : t * t = t ^ 2 := by ring
-  have h7 : 1 ≤ t ^ 2 := Nat.one_le_pow 2 t ht
+  have h6 : t * t = t ^ (2 : ℕ) := by ring
+  have h7 : 1 ≤ t ^ (2 : ℕ) := Nat.one_le_pow 2 t ht
   rw [PollardWeak, hexp]
   omega
 
@@ -129,7 +129,7 @@ theorem pollardWeak_of_repSet_empty {A B : Finset G} {t : ℕ} (ht : 1 ≤ t)
   rw [PollardWeak, hval, hp, hq]
   have e1 : (t + p) * (t + q) = t * t + t * q + t * p + p * q := by ring
   have e2 : t * (t + p) + t * (t + q) = 2 * (t * t) + t * p + t * q := by ring
-  have e3 : t * t = t ^ 2 := by ring
+  have e3 : t * t = t ^ (2 : ℕ) := by ring
   have e4 : 1 ≤ t * t := Nat.one_le_iff_ne_zero.2 (by positivity)
   omega
 

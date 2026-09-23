@@ -73,7 +73,7 @@ theorem primeStepSymbol_eq_directionalHoppingSum {ι : Type*} [Fintype ι]
 
 /-- Raw imaginary-gauge recurrence for exponential Suzuki weights. -/
 theorem exponentialSkinMode_recurrence (κ k : ℝ) (n : ℕ) :
-    (Real.exp (-κ) * Real.exp κ ^ 2) *
+    (Real.exp (-κ) * Real.exp κ ^ (2 : ℕ)) *
           skinSineMode (Real.exp κ) k n +
         Real.exp (-κ) * skinSineMode (Real.exp κ) k (n + 2) =
       (2 * Real.exp (-κ) * Real.exp κ * Real.cos k) *

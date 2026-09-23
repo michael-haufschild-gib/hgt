@@ -248,7 +248,7 @@ theorem retractedSourceDeckComponent_laplacian
       stripDeriv (0, 1)
         (stripDeriv (0, 1) (retractedDeckComponent ε (sourceInFormPreDomain N lam f) q))
         (x, y) =
-      ((-(lam.1 / y ^ 2) : ℝ) : ℂ) *
+      ((-(lam.1 / y ^ (2 : ℕ)) : ℝ) : ℂ) *
         retractedDeckComponent ε (sourceInFormPreDomain N lam f) q (x, y) := by
   rw [retractedSourceDeckComponentXX_eq_source_directional N lam f q hε hy,
     retractedSourceDeckComponentYY_eq_source_directional N lam f q hε hy]
@@ -265,12 +265,29 @@ theorem retractedSourceDeckComponent_laplacian
   change directional 1 (directional 1 S) (point x y) +
       directional Complex.I (directional Complex.I S) (point x y) = _
   rw [hvalue, hS_eq]
-  rw [ofComplex_apply_of_im_pos (by simpa [point] using hε.trans hy)] at hsource
-  change directional 1 (directional 1 (fun w =>
-      (EuclideanSpace.proj q) (sourceVector N f (ofComplex w)))) (point x y) +
-      directional Complex.I (directional Complex.I (fun w =>
-        (EuclideanSpace.proj q) (sourceVector N f (ofComplex w)))) (point x y) = _ at hsource
-  convert hsource using 1 <;> simp [point]
+  have hpoint : 0 < (point x y).im := by
+    simpa [point] using hε.trans hy
+  rw [ofComplex_apply_of_im_pos hpoint] at hsource
+  have hsource' :
+      SelbergMaassTraceEnergy.dir 1 (SelbergMaassTraceEnergy.dir 1 (fun w =>
+        (EuclideanSpace.proj q) (sourceVector N f (ofComplex w)))) (point x y) +
+        SelbergMaassTraceEnergy.dir Complex.I
+          (SelbergMaassTraceEnergy.dir Complex.I (fun w =>
+            (EuclideanSpace.proj q) (sourceVector N f (ofComplex w)))) (point x y) =
+        ((-(lam.1 / y ^ (2 : ℕ)) : ℝ) : ℂ) *
+          (EuclideanSpace.proj q) (sourceVector N f ⟨point x y, hpoint⟩) := by
+    simpa [point] using hsource
+  have hsourceValue :
+      (fun w => (EuclideanSpace.proj q) (sourceVector N f (ofComplex w))) (point x y) =
+        (EuclideanSpace.proj q) (sourceVector N f ⟨point x y, hpoint⟩) := by
+    change (EuclideanSpace.proj q) (sourceVector N f (ofComplex (point x y))) =
+      (EuclideanSpace.proj q) (sourceVector N f ⟨point x y, hpoint⟩)
+    congr 2
+    rw [ofComplex_apply_of_im_pos hpoint]
+  rw [hsourceValue]
+  convert hsource' using 1
+  rfl
+
 
 end
 end GaloisForLFunctions.RHTower.MaassFiniteDeckDirichlet

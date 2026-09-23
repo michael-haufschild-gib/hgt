@@ -25,7 +25,7 @@ theorem coeff_comp_neg_X (p : ℂ[X]) (n : ℕ) :
 
 /-- **An even polynomial factors through squaring.**  If `Q(-X) = Q`, then `Q = P(X²)` for some `P`. -/
 theorem exists_comp_sq_of_even {Q : ℂ[X]} (hev : Q.comp (-X) = Q) :
-    ∃ P : ℂ[X], Q = P.comp (X ^ 2) := by
+    ∃ P : ℂ[X], Q = P.comp (X ^ (2 : ℕ)) := by
   have hodd : ∀ m, ¬ 2 ∣ m → Q.coeff m = 0 := by
     intro m hm
     have h := congrArg (fun p => Polynomial.coeff p m) hev
@@ -59,7 +59,7 @@ theorem c_mem_of_entire_even_functional_eq {h : ℂ → ℂ} {C : ℝ} {n : ℕ}
     (hh : Differentiable ℂ h)
     (hgrowth : ∀ z, ‖h z‖ ≤ C * (max 1 ‖z‖) ^ n)
     (heven : ∀ z, h (-z) = h z)
-    (hfe : ∀ t : ℂ, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t : ℂ, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (h0 : h 0 = 1) :
     c = 0 ∨ c = -2 := by
   obtain ⟨Qh, hQh⟩ := exists_polynomial_of_entire_polyGrowth hh hgrowth
@@ -67,21 +67,21 @@ theorem c_mem_of_entire_even_functional_eq {h : ℂ → ℂ} {C : ℝ} {n : ℕ}
     apply Polynomial.funext; intro z
     rw [Polynomial.eval_comp, Polynomial.eval_neg, Polynomial.eval_X, ← hQh, ← hQh, heven]
   obtain ⟨P, hP⟩ := exists_comp_sq_of_even hQheven
-  have e1 : ∀ s : ℂ, P.eval (s ^ 2) = h s := by
+  have e1 : ∀ s : ℂ, P.eval (s ^ (2 : ℕ)) = h s := by
     intro s
     rw [hQh s, hP, Polynomial.eval_comp, Polynomial.eval_pow, Polynomial.eval_X]
-  have hPfe : P.comp (X ^ 2) = P ^ 2 + Polynomial.C c * X := by
+  have hPfe : P.comp (X ^ (2 : ℕ)) = P ^ (2 : ℕ) + Polynomial.C c * X := by
     apply Polynomial.funext; intro w
     obtain ⟨t, ht⟩ := IsAlgClosed.exists_pow_nat_eq w (n := 2) (by norm_num)
     rw [← ht]
     simp only [Polynomial.eval_comp, Polynomial.eval_pow, Polynomial.eval_X,
       Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-    rw [e1 (t ^ 2), e1 t]
+    rw [e1 (t ^ (2 : ℕ)), e1 t]
     exact hfe t
   have hP0 : P.coeff 0 = 1 := by
     rw [Polynomial.coeff_zero_eq_eval_zero]
     have he0 := e1 0
-    rw [show ((0 : ℂ) ^ 2) = 0 from by ring] at he0
+    rw [show ((0 : ℂ) ^ (2 : ℕ)) = 0 from by ring] at he0
     rw [he0, h0]
   exact c_mem_of_poly_functional_eq hPfe hP0
 

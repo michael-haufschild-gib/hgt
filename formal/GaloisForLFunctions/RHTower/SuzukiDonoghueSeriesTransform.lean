@@ -29,7 +29,7 @@ variable, so the series is dominated by the masses times one constant. -/
 theorem summable_donoghueSeries {p x : ℤ → ℝ} (hp : Summable p) (hp0 : ∀ k, 0 ≤ p k)
     {z : ℂ} (hz : 0 < z.im) :
     Summable (fun k => (p k : ℂ) * suzukiDonoghueKernel (x k) z) := by
-  refine Summable.of_norm_bounded (hp.mul_right (‖z‖ + (‖z‖ ^ 2 + 1) / z.im)) ?_
+  refine Summable.of_norm_bounded (hp.mul_right (‖z‖ + (‖z‖ ^ (2 : ℕ) + 1) / z.im)) ?_
   intro k
   have hpk : ‖((p k : ℝ) : ℂ)‖ = p k := by simp [abs_of_nonneg (hp0 k)]
   rw [norm_mul, hpk]

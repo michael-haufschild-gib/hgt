@@ -142,7 +142,7 @@ lemma star_raw_dot_raw_of_mem_sphere (x : UnitSphere α) :
     star (raw x.1) ⬝ᵥ raw x.1 = 1 := by
   have hnorm : ‖x.1‖ = 1 := by
     simpa [mem_sphere_zero_iff_norm] using x.2
-  have hsq := congrArg (fun r : ℝ => r ^ 2) hnorm
+  have hsq := congrArg (fun r : ℝ => r ^ (2 : ℕ)) hnorm
   rw [PiLp.norm_sq_eq_of_L2] at hsq
   have hsum : (∑ i, Complex.normSq (raw x.1 i)) = 1 := by
     simpa [raw, Complex.sq_norm] using hsq

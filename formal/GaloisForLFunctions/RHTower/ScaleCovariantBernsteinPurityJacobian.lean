@@ -65,7 +65,7 @@ private theorem deriv_bernsteinPurityJet_zero_slice
   have hfun :
       (fun t : ℝ =>
         (bernsteinScalePurityPolynomial (Function.update m 0 t) N).coeff 0) =
-      fun t : ℝ => t ^ 2 := by
+      fun t : ℝ => t ^ (2 : ℕ) := by
     funext t
     rw [coeff_zero_bernsteinScalePurityPolynomial]
     simp

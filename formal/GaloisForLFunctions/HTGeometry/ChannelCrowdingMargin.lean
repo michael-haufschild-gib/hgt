@@ -28,10 +28,10 @@ def pairDiffCoeff {k : ℕ} (i j : Fin k) : Fin k → ℂ :=
   fun n => (if n = i then 1 else 0) - (if n = j then 1 else 0)
 
 theorem pairDiffCoeff_normSq {k : ℕ} {i j : Fin k} (hij : i ≠ j) :
-    ∑ n, ‖pairDiffCoeff i j n‖ ^ 2 = 2 := by
+    ∑ n, ‖pairDiffCoeff i j n‖ ^ (2 : ℕ) = 2 := by
   classical
   have hsupp : ∀ n ∈ (Finset.univ : Finset (Fin k)), n ∉ ({i, j} : Finset (Fin k)) →
-      ‖pairDiffCoeff i j n‖ ^ 2 = 0 := by
+      ‖pairDiffCoeff i j n‖ ^ (2 : ℕ) = 0 := by
     intro n _ hn
     have hni : n ≠ i := fun h => hn (by simp [h])
     have hnj : n ≠ j := fun h => hn (by simp [h])
@@ -57,9 +57,9 @@ theorem pairDiffCoeff_combination {k : ℕ} (v : Fin k → E) {i j : Fin k} (hij
 /-- **Equation (5), Rayleigh step.**  A separating margin is at most half the squared distance
 between any two channels. -/
 theorem separatingMargin_le_half_dist_sq {k : ℕ} (v : Fin k → E) {σ : ℝ}
-    (hσ : ∀ c : Fin k → ℂ, σ * (∑ n, ‖c n‖ ^ 2) ≤ ‖∑ n, c n • v n‖ ^ 2)
+    (hσ : ∀ c : Fin k → ℂ, σ * (∑ n, ‖c n‖ ^ (2 : ℕ)) ≤ ‖∑ n, c n • v n‖ ^ (2 : ℕ))
     {i j : Fin k} (hij : i ≠ j) :
-    σ ≤ ‖v i - v j‖ ^ 2 / 2 := by
+    σ ≤ ‖v i - v j‖ ^ (2 : ℕ) / 2 := by
   have h := hσ (pairDiffCoeff i j)
   rw [pairDiffCoeff_normSq hij, pairDiffCoeff_combination v hij] at h
   linarith
@@ -79,9 +79,9 @@ theorem separatingMargin_le_of_orbit {k : ℕ} {σ M : ℝ}
     (A A' : ℝ → E) (h : Fin k → ℝ) (v : Fin k → E) (hv : ∀ n, v n = A (h n))
     (hderiv : ∀ a b : ℝ, ∀ t ∈ Icc a b, HasDerivWithinAt A (A' t) (Icc a b) t)
     (hbound : ∀ t, ‖A' t‖ ≤ M)
-    (hσ : ∀ c : Fin k → ℂ, σ * (∑ n, ‖c n‖ ^ 2) ≤ ‖∑ n, c n • v n‖ ^ 2)
+    (hσ : ∀ c : Fin k → ℂ, σ * (∑ n, ‖c n‖ ^ (2 : ℕ)) ≤ ‖∑ n, c n • v n‖ ^ (2 : ℕ))
     {i j : Fin k} (hij : i ≠ j) :
-    σ ≤ |h i - h j| ^ 2 * M ^ 2 / 2 := by
+    σ ≤ |h i - h j| ^ (2 : ℕ) * M ^ (2 : ℕ) / 2 := by
   have hdist : ‖v i - v j‖ ≤ M * |h i - h j| := by
     rcases le_total (h i) (h j) with hle | hle
     · have hd := norm_orbit_sub_le hle A A' (fun t ht => hderiv (h i) (h j) t ht)
@@ -103,16 +103,16 @@ theorem separatingMargin_le_of_orbit {k : ℕ} {σ M : ℝ}
 /-- **Equation (8).**  The exact resource lower bound: a positive separating margin forces orbit
 velocity at least `√(2σ)` divided by the spacing. -/
 theorem orbit_velocity_lower_bound {σ M δ : ℝ} (hδ : 0 < δ) (hM : 0 ≤ M)
-    (hcrowd : σ ≤ δ ^ 2 * M ^ 2 / 2) :
+    (hcrowd : σ ≤ δ ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) :
     Real.sqrt (2 * σ) / δ ≤ M := by
-  have h2σ : 2 * σ ≤ (δ * M) ^ 2 := by nlinarith
+  have h2σ : 2 * σ ≤ (δ * M) ^ (2 : ℕ) := by nlinarith
   have hsq : Real.sqrt (2 * σ) ≤ δ * M := by
     rcases le_or_gt (2 * σ) 0 with hneg | hpos
     · have : Real.sqrt (2 * σ) = 0 := Real.sqrt_eq_zero_of_nonpos hneg
       rw [this]
       positivity
     · have hδM : 0 ≤ δ * M := by positivity
-      calc Real.sqrt (2 * σ) ≤ Real.sqrt ((δ * M) ^ 2) := Real.sqrt_le_sqrt h2σ
+      calc Real.sqrt (2 * σ) ≤ Real.sqrt ((δ * M) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h2σ
         _ = δ * M := by rw [Real.sqrt_sq hδM]
   rw [div_le_iff₀ hδ]
   linarith [hsq]
@@ -121,7 +121,7 @@ theorem orbit_velocity_lower_bound {σ M δ : ℝ} (hδ : 0 < δ) (hM : 0 ≤ M)
 positive margin over `n` gaps in a spread of length `L` forces velocity at least
 `√(2σ) n / L`. -/
 theorem orbit_velocity_lower_bound_of_spread {σ M L : ℝ} {n : ℕ} (hn : 0 < n) (hL : 0 < L)
-    (hM : 0 ≤ M) (hcrowd : σ ≤ (L / n) ^ 2 * M ^ 2 / 2) :
+    (hM : 0 ≤ M) (hcrowd : σ ≤ (L / n) ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) :
     Real.sqrt (2 * σ) * n / L ≤ M := by
   have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
   have hδ : (0 : ℝ) < L / n := by positivity

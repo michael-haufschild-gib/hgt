@@ -9,9 +9,9 @@ Formal certificate for
 `mobius-critical-exponential-boundary-layer-law.md`, with `sigma = 1 + 2 omega`.
 
 ```text
-(1)  P_omega{d} = mu(d)^2 d^{-sigma} / (zeta(sigma)/zeta(2 sigma)) ,
-(2)  sum_d mu(d)^2 d^{-sigma} = zeta(sigma)/zeta(2 sigma) ,
-(3)  ||(C_omega f)_d||^2 / ||C_omega f||^2 = P_omega{d} ,
+(1)  P_omega{d} = mu(d)^(2 : ℕ) d^{-sigma} / (zeta(sigma)/zeta(2 sigma)) ,
+(2)  sum_d mu(d)^(2 : ℕ) d^{-sigma} = zeta(sigma)/zeta(2 sigma) ,
+(3)  ||(C_omega f)_d||^(2 : ℕ) / ||C_omega f||^(2 : ℕ) = P_omega{d} ,
 (4)  Y_omega(d) = 2 omega log d = (sigma - 1) log d ,
 (6)  E_omega[exp(-u Y_omega)] -> 1/(1+u) ,
 (8)  E_omega[exp(-u Y_omega)]

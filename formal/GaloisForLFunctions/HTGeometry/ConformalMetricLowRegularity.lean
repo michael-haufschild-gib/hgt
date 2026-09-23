@@ -299,7 +299,7 @@ theorem dalembert_conformalRescale_conjugation_of_differentiablePartialsOn
       Real.exp (-2 * sigma x) * Real.exp (-conformalDimensionWeight d * sigma x) *
         (M.dalembert u x -
           (conformalDimensionWeight d * M.dalembert sigma x +
-            conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x) * u x) := by
+            conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x) * u x) := by
   set a : ℝ := conformalDimensionWeight d with ha
   have hweight : ContDiff ℝ ∞ fun y => Real.exp (-a * sigma y) :=
     Real.contDiff_exp.comp (contDiff_const.mul hsigma)
@@ -324,7 +324,7 @@ theorem dalembert_conformalRescale_conjugation_of_differentiablePartials
       Real.exp (-2 * sigma x) * Real.exp (-conformalDimensionWeight d * sigma x) *
         (M.dalembert u x -
           (conformalDimensionWeight d * M.dalembert sigma x +
-            conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x) * u x) :=
+            conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x) * u x) :=
   M.dalembert_conformalRescale_conjugation_of_differentiablePartialsOn sigma hsigma isOpen_univ
     (hu.on Set.univ) (Set.mem_univ x)
 
@@ -335,7 +335,7 @@ noncomputable def conformalTransferPotential (sigma V : (Fin d → ℝ) → ℝ)
     (Fin d → ℝ) → ℝ :=
   fun x => Real.exp (-2 * sigma x) *
     (V x + conformalDimensionWeight d * M.dalembert sigma x +
-      conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x)
+      conformalDimensionWeight d ^ (2 : ℕ) * M.gradPair sigma sigma x)
 
 /-- **Probes transfer along a conformal rescaling.** A field solving the potential wave equation on
 the chart gives, after conjugation by the conformal weight, a field solving it on the rescaled chart

@@ -3,8 +3,8 @@ import GaloisForLFunctions.HTGeometry.FokasLenellsRegularOrigin
 /-!
 # The sharp local second-inverse-weight criterion for actual reflection coefficients
 
-On the positive squared spectral axis, the paper's r2/z^2 always belongs
-to every local L^p. Its r1/z^2 belongs locally to L^2 exactly on the
+On the positive squared spectral axis, the paper's r2/z^(2 : ℕ) always belongs
+to every local L^p. Its r1/z^(2 : ℕ) belongs locally to L^(2 : ℕ) exactly on the
 compatibility locus. The proof compares the actual transmission quotient
 with the original weighted profile, using a proved neighborhood bound.
 -/
@@ -43,7 +43,7 @@ theorem regularSecondInverseReflection_lower_locally_memLp_all (q : SchwartzMap 
   finite_limit_memLp_window _ (regularSecondInverseReflection_measurable q false)
     _ (regularSecondInverseReflection_lower_tendsto q)
 
-/-- The upper channel (r1) has the exact compatibility obstruction to the paper's local weighted L^2 claim. -/
+/-- The upper channel (r1) has the exact compatibility obstruction to the paper's local weighted L^(2 : ℕ) claim. -/
 theorem regularSecondInverseReflection_upper_locally_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (regularSecondInverseReflection q true) 2
       (volume.restrict (Ioo 0 δ))) ↔ compatibilityMoment q = 0 := by
@@ -80,7 +80,7 @@ theorem regularSecondInverseReflection_upper_oddInitialPart_memLp_all (q : Schwa
       MemLp (regularSecondInverseReflection (oddInitialPart q) true) p (volume.restrict (Ioo 0 δ)) :=
   (regularSecondInverseReflection_upper_locally_memLp_all_iff _).2 (compatibilityMoment_oddInitialPart q)
 
-/-- Both actual normalized channels satisfy the paper's local L^2 conclusion exactly on the compatibility locus. -/
+/-- Both actual normalized channels satisfy the paper's local L^(2 : ℕ) conclusion exactly on the compatibility locus. -/
 theorem regularSecondInverseReflection_both_locally_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     ((∃ δ : ℝ, 0 < δ ∧ MemLp (regularSecondInverseReflection q false) 2 (volume.restrict (Ioo 0 δ))) ∧
      (∃ δ : ℝ, 0 < δ ∧ MemLp (regularSecondInverseReflection q true) 2 (volume.restrict (Ioo 0 δ)))) ↔

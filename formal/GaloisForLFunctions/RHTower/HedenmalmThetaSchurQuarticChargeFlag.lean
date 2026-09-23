@@ -70,8 +70,8 @@ theorem thetaSourceStageSchurPositiveQuarticCharge_eq_zero_iff_hermiteStage
       (thetaSourceSignedStageFinMatrix k) p).re
     rw [finiteMatrixUnweightedTraceHankel_eq_schur S.unitary_left
       S.unitary_right S.triangular S.conjugates_stage]
-    have hsum : (∑ i, evalRealPolynomial p (S.T i i) ^ 2).re =
-        ∑ i, (evalRealPolynomial p (S.T i i) ^ 2).re := by simp
+    have hsum : (∑ i, evalRealPolynomial p (S.T i i) ^ (2 : ℕ)).re =
+        ∑ i, (evalRealPolynomial p (S.T i i) ^ (2 : ℕ)).re := by simp
     rw [hsum]
     apply Finset.sum_nonneg
     intro i hi

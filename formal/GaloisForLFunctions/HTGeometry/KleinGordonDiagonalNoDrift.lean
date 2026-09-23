@@ -31,7 +31,7 @@ omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensi
 theorem sqrt_one_sub_le_kgShiftedFreq (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) (ξ : E) :
     Real.sqrt (1 - b) ≤ kgShiftedFreq v ξ := by
   have hsq := one_sub_le_kgShiftedFreq_sq hb1 hvb ξ
-  have hmono : Real.sqrt (1 - b) ≤ Real.sqrt (kgShiftedFreq v ξ ^ 2) :=
+  have hmono : Real.sqrt (1 - b) ≤ Real.sqrt (kgShiftedFreq v ξ ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq (kgShiftedFreq_nonneg v ξ)] at hmono
 

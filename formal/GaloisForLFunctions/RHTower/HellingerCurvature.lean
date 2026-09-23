@@ -63,7 +63,7 @@ theorem logAffinityKernelDeriv_zero (a μ : ℝ) :
 
 /-- **`(18)`, `(19)`: the curvature at the critical source.** -/
 theorem hasDerivAt_logAffinityKernelDeriv {a μ : ℝ} (ha : 1 + a ≠ 0) :
-    HasDerivAt (logAffinityKernelDeriv a μ) (-(μ ^ 2 * a / (1 + a) ^ 2)) 0 := by
+    HasDerivAt (logAffinityKernelDeriv a μ) (-(μ ^ (2 : ℕ) * a / (1 + a) ^ (2 : ℕ))) 0 := by
   have hE1 : HasDerivAt (fun x : ℝ => Real.exp (μ * x)) μ 0 := by
     have h := ((Real.hasDerivAt_exp (μ * 0)).comp 0 ((hasDerivAt_id (0:ℝ)).const_mul μ))
     simpa [Function.comp_def] using h
@@ -94,10 +94,10 @@ theorem hasDerivAt_logAffinityKernelDeriv {a μ : ℝ} (ha : 1 + a ≠ 0) :
     funext x
     simp [logAffinityKernelDeriv]
   have hval : (a * μ * μ * (1 + a * Real.exp (μ * 0)) - a * μ * Real.exp (μ * 0) * (a * μ))
-        / (1 + a * Real.exp (μ * 0)) ^ 2
+        / (1 + a * Real.exp (μ * 0)) ^ (2 : ℕ)
       - (a * μ * (2 * μ) * (1 + a * Real.exp (2 * μ * 0))
-          - a * μ * Real.exp (2 * μ * 0) * (a * (2 * μ))) / (1 + a * Real.exp (2 * μ * 0)) ^ 2
-      = -(μ ^ 2 * a / (1 + a) ^ 2) := by
+          - a * μ * Real.exp (2 * μ * 0) * (a * (2 * μ))) / (1 + a * Real.exp (2 * μ * 0)) ^ (2 : ℕ)
+      = -(μ ^ (2 : ℕ) * a / (1 + a) ^ (2 : ℕ)) := by
     simp only [mul_zero, Real.exp_zero, mul_one]
     field_simp
     ring
@@ -125,17 +125,17 @@ theorem log_bitHellingerAffinity_radial {n : ℕ} (hn : 2 ≤ n) (j : ℕ) (c : 
         ((2 : ℝ) ^ j * Real.log n) c := by
   set r : ℝ := Real.exp (-((2 : ℝ) ^ j) * Real.log n) with hr
   set μ : ℝ := (2 : ℝ) ^ j * Real.log n with hμ
-  have hnum : Real.sqrt (radialNome 0 n * radialNome c n) ^ 2 ^ j = r * Real.exp (μ * c) := by
+  have hnum : Real.sqrt (radialNome 0 n * radialNome c n) ^ (2 : ℕ) ^ j = r * Real.exp (μ * c) := by
     rw [sqrt_radialNome_mul hn, ← Real.exp_nat_mul, hr, hμ, ← Real.exp_add]
     congr 1
     push_cast
     ring
-  have h0 : radialNome 0 n ^ 2 ^ j = r := by
+  have h0 : radialNome 0 n ^ (2 : ℕ) ^ j = r := by
     rw [radialNome_pow hn, hr]
     congr 1
     push_cast
     ring
-  have hc2 : radialNome c n ^ 2 ^ j = r * Real.exp (2 * μ * c) := by
+  have hc2 : radialNome c n ^ (2 : ℕ) ^ j = r * Real.exp (2 * μ * c) := by
     rw [radialNome_pow hn, hr, hμ, ← Real.exp_add]
     congr 1
     push_cast
@@ -166,7 +166,7 @@ theorem log_geometricHellingerAffinity_radial {n : ℕ} (hn : 2 ≤ n) {c : ℝ}
   have hsq : Real.sqrt (radialNome 0 n * radialNome c n) = Real.exp (-(1 - c) * Real.log n) :=
     sqrt_radialNome_mul hn
   have hsqle : Real.sqrt (radialNome 0 n * radialNome c n) ≤ 3 / 4 := by
-    have hmul : radialNome 0 n * radialNome c n ≤ (3 / 4 : ℝ) ^ 2 := by nlinarith
+    have hmul : radialNome 0 n * radialNome c n ≤ (3 / 4 : ℝ) ^ (2 : ℕ) := by nlinarith
     nlinarith [Real.sq_sqrt (le_of_lt (mul_pos h0pos hcpos)), Real.sqrt_nonneg
       (radialNome 0 n * radialNome c n)]
   have hA : (0 : ℝ) < 1 - radialNome 0 n := by linarith
@@ -193,8 +193,8 @@ theorem log_geometricHellingerAffinity_radial {n : ℕ} (hn : 2 ≤ n) {c : ℝ}
 theorem hasDerivAt_bitCurvature (n : ℕ) (j : ℕ) :
     HasDerivAt (logAffinityKernelDeriv (Real.exp (-((2 : ℝ) ^ j) * Real.log n))
         ((2 : ℝ) ^ j * Real.log n))
-      (-((4 : ℝ) ^ j * Real.log n ^ 2 * Real.exp (-((2 : ℝ) ^ j) * Real.log n)
-        / (1 + Real.exp (-((2 : ℝ) ^ j) * Real.log n)) ^ 2)) 0 := by
+      (-((4 : ℝ) ^ j * Real.log n ^ (2 : ℕ) * Real.exp (-((2 : ℝ) ^ j) * Real.log n)
+        / (1 + Real.exp (-((2 : ℝ) ^ j) * Real.log n)) ^ (2 : ℕ))) 0 := by
   have hpos : (0 : ℝ) < Real.exp (-((2 : ℝ) ^ j) * Real.log n) := Real.exp_pos _
   have h := hasDerivAt_logAffinityKernelDeriv
     (a := Real.exp (-((2 : ℝ) ^ j) * Real.log n)) (μ := (2 : ℝ) ^ j * Real.log n)
@@ -203,14 +203,14 @@ theorem hasDerivAt_bitCurvature (n : ℕ) (j : ℕ) :
   congr 2
   rw [mul_pow, ← pow_mul]
   congr 1
-  rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul]
+  rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
   congr 1
   ring
 
 /-- **`(18)`: the geometric curvature at the critical source is `(log p)² q/(1-q)²`.** -/
 theorem hasDerivAt_geometricCurvature {n : ℕ} (hn : 2 ≤ n) :
     HasDerivAt (logAffinityKernelDeriv (-Real.exp (-Real.log n)) (Real.log n))
-      (Real.log n ^ 2 * Real.exp (-Real.log n) / (1 - Real.exp (-Real.log n)) ^ 2) 0 := by
+      (Real.log n ^ (2 : ℕ) * Real.exp (-Real.log n) / (1 - Real.exp (-Real.log n)) ^ (2 : ℕ)) 0 := by
   have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hlt : Real.exp (-Real.log n) < 1 := by
     refine Real.exp_lt_one_iff.mpr ?_

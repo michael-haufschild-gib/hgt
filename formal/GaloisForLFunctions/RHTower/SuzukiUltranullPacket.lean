@@ -45,7 +45,7 @@ theorem exists_ne_zero_mem_ker {n m : ℕ} (h : m < n) (f : (Fin n → ℂ) →�
 
 /-- **`(440)`: a uniform per-term remainder bound aggregates with the factor `√n`.** -/
 theorem norm_sum_le_sqrt_card_mul {n : ℕ} (d R : Fin n → ℂ) {ε : ℝ}
-    (hd : ∑ k, ‖d k‖ ^ 2 = 1) (hR : ∀ k, ‖R k‖ ≤ ε) (hε : 0 ≤ ε) :
+    (hd : ∑ k, ‖d k‖ ^ (2 : ℕ) = 1) (hR : ∀ k, ‖R k‖ ≤ ε) (hε : 0 ≤ ε) :
     ‖∑ k, d k * R k‖ ≤ Real.sqrt n * ε := by
   have hterm : ∀ k : Fin n, ‖d k * R k‖ ≤ ‖d k‖ * ε := by
     intro k
@@ -54,7 +54,7 @@ theorem norm_sum_le_sqrt_card_mul {n : ℕ} (d R : Fin n → ℂ) {ε : ℝ}
   have hsum : ‖∑ k, d k * R k‖ ≤ ∑ k, ‖d k‖ * ε := by
     refine le_trans (norm_sum_le _ _) ?_
     exact Finset.sum_le_sum fun k _ => hterm k
-  have hcs : (∑ k : Fin n, ‖d k‖) ^ 2 ≤ (n : ℝ) := by
+  have hcs : (∑ k : Fin n, ‖d k‖) ^ (2 : ℕ) ≤ (n : ℝ) := by
     have h := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun k : Fin n => ‖d k‖)
       (fun _ => (1 : ℝ))
     simp only [mul_one, one_pow, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
@@ -64,7 +64,7 @@ theorem norm_sum_le_sqrt_card_mul {n : ℕ} (d R : Fin n → ℂ) {ε : ℝ}
   have hnn : (0 : ℝ) ≤ ∑ k : Fin n, ‖d k‖ := Finset.sum_nonneg fun k _ => norm_nonneg _
   have hle : (∑ k : Fin n, ‖d k‖) ≤ Real.sqrt n := by
     rw [show (Real.sqrt n : ℝ) = Real.sqrt ((n : ℝ)) from rfl]
-    calc (∑ k : Fin n, ‖d k‖) = Real.sqrt ((∑ k : Fin n, ‖d k‖) ^ 2) := (Real.sqrt_sq hnn).symm
+    calc (∑ k : Fin n, ‖d k‖) = Real.sqrt ((∑ k : Fin n, ‖d k‖) ^ (2 : ℕ)) := (Real.sqrt_sq hnn).symm
       _ ≤ Real.sqrt (n : ℝ) := Real.sqrt_le_sqrt hcs
   calc ‖∑ k, d k * R k‖ ≤ ∑ k, ‖d k‖ * ε := hsum
     _ = (∑ k : Fin n, ‖d k‖) * ε := by rw [← Finset.sum_mul]
@@ -74,13 +74,13 @@ theorem norm_sum_le_sqrt_card_mul {n : ℕ} (d R : Fin n → ℂ) {ε : ℝ}
 
 /-- **`(441)`: collapsing by the multiplicities costs at most the maximal multiplicity.** -/
 theorem coefficient_norm_sq_ge_inv {n : ℕ} (d : Fin n → ℂ) (m : Fin n → ℝ) {M : ℝ}
-    (hm : ∀ k, 0 < m k) (hmM : ∀ k, m k ≤ M) (hd : ∑ k, ‖d k‖ ^ 2 = 1) :
-    1 / M ≤ ∑ k, ‖d k‖ ^ 2 / m k := by
-  have hterm : ∀ k : Fin n, ‖d k‖ ^ 2 / M ≤ ‖d k‖ ^ 2 / m k := by
+    (hm : ∀ k, 0 < m k) (hmM : ∀ k, m k ≤ M) (hd : ∑ k, ‖d k‖ ^ (2 : ℕ) = 1) :
+    1 / M ≤ ∑ k, ‖d k‖ ^ (2 : ℕ) / m k := by
+  have hterm : ∀ k : Fin n, ‖d k‖ ^ (2 : ℕ) / M ≤ ‖d k‖ ^ (2 : ℕ) / m k := by
     intro k
     exact div_le_div_of_nonneg_left (by positivity) (hm k) (hmM k)
-  calc 1 / M = (∑ k : Fin n, ‖d k‖ ^ 2) / M := by rw [hd]
-    _ = ∑ k : Fin n, ‖d k‖ ^ 2 / M := by rw [Finset.sum_div]
-    _ ≤ ∑ k : Fin n, ‖d k‖ ^ 2 / m k := Finset.sum_le_sum fun k _ => hterm k
+  calc 1 / M = (∑ k : Fin n, ‖d k‖ ^ (2 : ℕ)) / M := by rw [hd]
+    _ = ∑ k : Fin n, ‖d k‖ ^ (2 : ℕ) / M := by rw [Finset.sum_div]
+    _ ≤ ∑ k : Fin n, ‖d k‖ ^ (2 : ℕ) / m k := Finset.sum_le_sum fun k _ => hterm k
 
 end GaloisForLFunctions.RHTower

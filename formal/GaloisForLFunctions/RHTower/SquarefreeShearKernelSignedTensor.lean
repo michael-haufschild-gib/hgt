@@ -89,9 +89,9 @@ def signedScalarBranch (s t : Finset ι) (positive negative : ι → R) : R :=
 signed sum of the squares of all global branch amplitudes. -/
 theorem prod_sq_sub_sq_eq_signedBranchSquareSum
     (s : Finset ι) (positive negative : ι → R) :
-    (∏ i ∈ s, ((positive i) ^ 2 - (negative i) ^ 2)) =
+    (∏ i ∈ s, ((positive i) ^ (2 : ℕ) - (negative i) ^ (2 : ℕ))) =
       ∑ t ∈ s.powerset,
-        (-1 : R) ^ t.card * (signedScalarBranch s t positive negative) ^ 2 := by
+        (-1 : R) ^ t.card * (signedScalarBranch s t positive negative) ^ (2 : ℕ) := by
   rw [Finset.prod_sub]
   apply Finset.sum_congr rfl
   intro t _ht

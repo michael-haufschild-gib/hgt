@@ -130,7 +130,7 @@ theorem norm_fourierCoeff_gaussCubicFirstSource_le
   rw [hsub, hδ, norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv hm k p]
   refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
   have hpow : (gaussMovingAmplitudeBlock hp
-      ((Int.fract (gaussSamplePhase m p i) : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+      ((Int.fract (gaussSamplePhase m p i) : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ))
       (fourierLp 2 0) =
         (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
     rw [pow_zero]
@@ -173,7 +173,7 @@ theorem norm_fourierCoeff_gaussCubicThirdInnerDefect_le
     rfl
   rw [hw, hsub, hδ, norm_fourierCoeff_shiftedBlockOf_sub_rotation hm k p]
   refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-  have hpow : (gaussMovingAmplitudeBlock hp ((0 : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+  have hpow : (gaussMovingAmplitudeBlock hp ((0 : ℝ) : AddCircle (1 : ℝ)) ^ (0 : ℕ))
       (fourierLp 2 0) =
         (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
     rw [pow_zero]
@@ -229,32 +229,32 @@ theorem norm_fourierCoeff_gaussPrimeScaleSq_firstSource_le
     (hp : (1 : ℝ) < (p : ℝ)) (i j : ℤ) :
     ‖fourierCoeff ((gaussPrimeScaleSqBlock hp
         (gaussCubicFirstSource hm k p hp i) : AddCircle (1 : ℝ) → ℂ)) j‖ ≤
-      ∑' l : ℤ, gaussCubicSmoothCoeffKernel (8 * (p : ℝ) ^ 3) j l *
+      ∑' l : ℤ, gaussCubicSmoothCoeffKernel (8 * (p : ℝ) ^ (3 : ℕ)) j l *
         ‖gaussSampleRatioDefect k p l i‖ := by
   have hconv := norm_fourierCoeff_gaussPrimeScaleSqBlock_le hp
     (gaussCubicFirstSource hm k p hp i) j
   refine hconv.trans ?_
   have hleft : Summable (fun l : ℤ =>
-      2 * (p : ℝ) ^ 2 / (1 + ((l - j).natAbs : ℝ)) *
+      2 * (p : ℝ) ^ (2 : ℕ) / (1 + ((l - j).natAbs : ℝ)) *
         ‖fourierCoeff ((gaussCubicFirstSource hm k p hp i :
           AddCircle (1 : ℝ) → ℂ)) l‖) :=
     summable_harmonicKernel_mul_fourierCoeff
-      (κ := fun x => 2 * (p : ℝ) ^ 2 / (1 + (x.natAbs : ℝ)))
-      (A := 2 * (p : ℝ) ^ 2) (fun x => by positivity) (fun x => le_rfl)
+      (κ := fun x => 2 * (p : ℝ) ^ (2 : ℕ) / (1 + (x.natAbs : ℝ)))
+      (A := 2 * (p : ℝ) ^ (2 : ℕ)) (fun x => by positivity) (fun x => le_rfl)
       (gaussCubicFirstSource hm k p hp i) j
   have hright := summable_gaussCubicSmoothCoeffKernel_ratio hm k p i j
-    (C := 8 * (p : ℝ) ^ 3) (by positivity)
+    (C := 8 * (p : ℝ) ^ (3 : ℕ)) (by positivity)
   refine hleft.tsum_le_tsum (fun l => ?_) hright
   calc
-    2 * (p : ℝ) ^ 2 / (1 + ((l - j).natAbs : ℝ)) *
+    2 * (p : ℝ) ^ (2 : ℕ) / (1 + ((l - j).natAbs : ℝ)) *
         ‖fourierCoeff ((gaussCubicFirstSource hm k p hp i :
           AddCircle (1 : ℝ) → ℂ)) l‖
-      ≤ 2 * (p : ℝ) ^ 2 / (1 + ((l - j).natAbs : ℝ)) *
+      ≤ 2 * (p : ℝ) ^ (2 : ℕ) / (1 + ((l - j).natAbs : ℝ)) *
           (4 * (p : ℝ) / (1 + (l.natAbs : ℝ)) *
             ‖gaussSampleRatioDefect k p l i‖) := by
         exact mul_le_mul_of_nonneg_left
           (norm_fourierCoeff_gaussCubicFirstSource_le hm k p hp i l) (by positivity)
-    _ = gaussCubicSmoothCoeffKernel (8 * (p : ℝ) ^ 3) j l *
+    _ = gaussCubicSmoothCoeffKernel (8 * (p : ℝ) ^ (3 : ℕ)) j l *
           ‖gaussSampleRatioDefect k p l i‖ := by
       rw [gaussCubicSmoothCoeffKernel]
       field_simp
@@ -266,7 +266,7 @@ theorem norm_fourierCoeff_gaussPrimeScaleSq_thirdSource_le
     (hp : (1 : ℝ) < (p : ℝ)) (i j : ℤ) :
     ‖fourierCoeff ((gaussPrimeScaleSqBlock hp
         (gaussCubicThirdSource hm k p hp i) : AddCircle (1 : ℝ) → ℂ)) j‖ ≤
-      ∑' l : ℤ, gaussCubicSmoothCoeffKernel (16 * (p : ℝ) ^ 2) j l *
+      ∑' l : ℤ, gaussCubicSmoothCoeffKernel (16 * (p : ℝ) ^ (2 : ℕ)) j l *
         ‖gaussSampleRatioDefect k p l i‖ := by
   set δ : AddCircle (1 : ℝ) :=
     ((gaussSamplePhase m p i : ℝ) : AddCircle (1 : ℝ)) with hδ
@@ -296,7 +296,7 @@ theorem norm_fourierCoeff_gaussPrimeScaleSq_thirdSource_le
       (A := 4 * (p : ℝ)) (fun x => by positivity) (fun x => le_rfl)
       (gaussRotationBlockInv δ w) j
   have hright := summable_gaussCubicSmoothCoeffKernel_ratio hm k p i j
-    (C := 16 * (p : ℝ) ^ 2) (by positivity)
+    (C := 16 * (p : ℝ) ^ (2 : ℕ)) (by positivity)
   refine hleft.tsum_le_tsum (fun l => ?_) hright
   have hrot : ‖fourierCoeff ((gaussRotationBlockInv δ w :
       AddCircle (1 : ℝ) → ℂ)) l‖ =
@@ -314,7 +314,7 @@ theorem norm_fourierCoeff_gaussPrimeScaleSq_thirdSource_le
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
         rw [hw]
         exact norm_fourierCoeff_gaussCubicThirdInnerDefect_le hm k p hp i l
-    _ = gaussCubicSmoothCoeffKernel (16 * (p : ℝ) ^ 2) j l *
+    _ = gaussCubicSmoothCoeffKernel (16 * (p : ℝ) ^ (2 : ℕ)) j l *
           ‖gaussSampleRatioDefect k p l i‖ := by
       rw [gaussCubicSmoothCoeffKernel]
       field_simp

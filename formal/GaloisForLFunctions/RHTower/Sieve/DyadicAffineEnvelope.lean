@@ -31,19 +31,19 @@ theorem trivial_le_affine {N : ℕ} (hN : 1 ≤ N) {t : ℝ} (ht : 0 < t)
   have hsq : (0 : ℝ) < Real.sqrt t := Real.sqrt_pos.2 ht
   have hsqsq : Real.sqrt t * Real.sqrt t = t := Real.mul_self_sqrt ht.le
   -- `logDyadicLambda N t = t / (8πN²)`
-  have hlam : logDyadicLambda N t = t / (2 * Real.pi) / (2 * (N : ℝ)) ^ 2 := by
+  have hlam : logDyadicLambda N t = t / (2 * Real.pi) / (2 * (N : ℝ)) ^ (2 : ℕ) := by
     rw [logDyadicLambda]
     norm_num
   rw [hlam] at hbig
-  have hden : (0 : ℝ) < (2 * (N : ℝ)) ^ 2 := by positivity
+  have hden : (0 : ℝ) < (2 * (N : ℝ)) ^ (2 : ℕ) := by positivity
   have h2pi : (0 : ℝ) < 2 * Real.pi := by linarith
-  have hgt : (2 * (N : ℝ)) ^ 2 < t / (2 * Real.pi) := by
+  have hgt : (2 * (N : ℝ)) ^ (2 : ℕ) < t / (2 * Real.pi) := by
     rw [lt_div_iff₀ hden] at hbig
     linarith [hbig]
-  have hkey : 8 * Real.pi * (N : ℝ) ^ 2 < t := by
+  have hkey : 8 * Real.pi * (N : ℝ) ^ (2 : ℕ) < t := by
     rw [lt_div_iff₀ h2pi] at hgt
     nlinarith [hgt]
-  have hNsq : 25 * (N : ℝ) ^ 2 < t := by nlinarith [hkey, hpi, sq_nonneg ((N : ℝ))]
+  have hNsq : 25 * (N : ℝ) ^ (2 : ℕ) < t := by nlinarith [hkey, hpi, sq_nonneg ((N : ℝ))]
   have hNle : (N : ℝ) ≤ Real.sqrt t / 5 := by
     have h5 : (0 : ℝ) < 5 := by norm_num
     rw [le_div_iff₀ h5]

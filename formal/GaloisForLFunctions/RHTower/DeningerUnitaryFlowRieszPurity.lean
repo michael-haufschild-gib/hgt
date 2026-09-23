@@ -59,7 +59,7 @@ theorem norm_eq_one_of_unitary_transposeEigenfunctional
     rw [← Complex.mul_conj]
     exact hcc
   have hnormSq' : Complex.normSq c = 1 := by exact_mod_cast hnormSq
-  have hsq : ‖c‖ ^ 2 = 1 := by
+  have hsq : ‖c‖ ^ (2 : ℕ) = 1 := by
     rw [Complex.sq_norm]
     exact hnormSq'
   nlinarith [norm_nonneg c, hsq]

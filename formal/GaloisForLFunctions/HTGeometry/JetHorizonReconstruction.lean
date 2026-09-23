@@ -211,7 +211,7 @@ theorem differentialAdjoin_differentialJet_eq_top_of_translationRigid
         have hzero : ∀ j, D (z j) = 0 :=
           fun j => derivation_apply_eq_zero_of_translationRigid hconst z hA D hcst j
         rw [hjet, hzero i]
-        exact differentialJet_zero_elt n
+        exact differentialJet_zero_elt_differentialTaylorMorphism n
 
 end
 

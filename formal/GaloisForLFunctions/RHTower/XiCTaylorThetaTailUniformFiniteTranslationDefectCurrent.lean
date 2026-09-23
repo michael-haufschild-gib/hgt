@@ -343,7 +343,7 @@ theorem tendsto_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_mul_pow
     calc
       |thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent (d n) (z n) (a n)| *
           ((n + 1 : ℕ) : ℝ) ^ M ≤
-        (Q n * E n + E n ^ 2) * ((n + 1 : ℕ) : ℝ) ^ M :=
+        (Q n * E n + E n ^ (2 : ℕ)) * ((n + 1 : ℕ) : ℝ) ^ M :=
           mul_le_mul_of_nonneg_right hdef hpow
       _ = (Q n * E n) * ((n + 1 : ℕ) : ℝ) ^ M +
           E n * (E n * ((n + 1 : ℕ) : ℝ) ^ M) := by ring
@@ -411,7 +411,7 @@ theorem tendsto_scheduled_thetaCuspTailNegativePhaseTranslationFullDefectIntegra
   rw [thetaCuspTailNegativePhaseTranslationFullDefectIntegratedCurrent_eq_neg_positive_neg]
   simp
 
-/-- Uniform positive-channel joint defect is `o(n)|P|^2` on the anisotropic mesh. -/
+/-- Uniform positive-channel joint defect is `o(n)|P|^(2 : ℕ)` on the anisotropic mesh. -/
 theorem eventually_abs_scheduled_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_lt_scaled_normSq_of_le
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) (a : ℕ → ℝ)
@@ -438,7 +438,7 @@ theorem eventually_abs_scheduled_thetaCuspTailPhaseTranslationFullDefectIntegrat
         hD A sigma a ha hale
   · exact hepsilon
 
-/-- Uniform negative-channel joint defect is `o(n)|P|^2` on the same mesh. -/
+/-- Uniform negative-channel joint defect is `o(n)|P|^(2 : ℕ)` on the same mesh. -/
 theorem eventually_abs_scheduled_thetaCuspTailNegativePhaseTranslationFullDefectIntegratedCurrent_lt_scaled_normSq_of_le
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) (a : ℕ → ℝ)

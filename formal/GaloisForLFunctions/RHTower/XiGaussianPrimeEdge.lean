@@ -57,16 +57,16 @@ private theorem norm_xiGaussianTestC_fourier_le_on_lower_strip
     (hc : 0 ≤ c) (hy : y ∈ Set.uIoc (-c) 0) :
     ‖xiGaussianTestC t k ((x : ℂ) + (y : ℂ) * I) *
         Complex.exp (-(I * (w : ℂ) * ((x : ℂ) + (y : ℂ) * I)))‖ ≤
-      Real.exp (t * c ^ 2 + |w| * c) *
-        ((c + |x|) ^ (2 * k) * Real.exp (-(t * x ^ 2))) := by
+      Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+        ((c + |x|) ^ (2 * k) * Real.exp (-(t * x ^ (2 : ℕ)))) := by
   have hyIcc : -c ≤ y ∧ y ≤ 0 := by
     rw [Set.uIoc_of_le (by linarith)] at hy
     exact ⟨hy.1.le, hy.2⟩
   have hyabs : |y| ≤ c := by rw [abs_le]; constructor <;> linarith
   have hprofile :
       ‖xiGaussianTestC t k ((x : ℂ) + (y : ℂ) * I)‖ ≤
-        (c + |x|) ^ (2 * k) * Real.exp (t * c ^ 2) *
-          Real.exp (-(t * x ^ 2)) := by
+        (c + |x|) ^ (2 * k) * Real.exp (t * c ^ (2 : ℕ)) *
+          Real.exp (-(t * x ^ (2 : ℕ))) := by
     rw [norm_xiGaussianTestC_eq_norm_rotated]
     have h := norm_xiGaussianTest_le_of_strip ht k hc
       (s := (((1 / 2 - y : ℝ) : ℂ) + (x : ℂ) * I)) (by simpa using hyabs)
@@ -83,11 +83,11 @@ private theorem norm_xiGaussianTestC_fourier_le_on_lower_strip
   have hphaseBound := Real.exp_le_exp.mpr hwy
   calc
     ‖xiGaussianTestC t k ((x : ℂ) + (y : ℂ) * I)‖ * Real.exp (w * y)
-      ≤ ((c + |x|) ^ (2 * k) * Real.exp (t * c ^ 2) *
-          Real.exp (-(t * x ^ 2))) * Real.exp (|w| * c) :=
+      ≤ ((c + |x|) ^ (2 * k) * Real.exp (t * c ^ (2 : ℕ)) *
+          Real.exp (-(t * x ^ (2 : ℕ)))) * Real.exp (|w| * c) :=
         mul_le_mul hprofile hphaseBound (Real.exp_nonneg _) (by positivity)
-    _ = Real.exp (t * c ^ 2 + |w| * c) *
-        ((c + |x|) ^ (2 * k) * Real.exp (-(t * x ^ 2))) := by
+    _ = Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+        ((c + |x|) ^ (2 * k) * Real.exp (-(t * x ^ (2 : ℕ)))) := by
       rw [Real.exp_add]
       ring
 
@@ -97,27 +97,27 @@ private theorem tendsto_xiGaussianTestC_fourier_vertical_right
       xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I) *
         Complex.exp (-(I * (w : ℂ) * ((R : ℂ) + (y : ℂ) * I))))
       atTop (nhds 0) := by
-  let K : ℝ := c * Real.exp (t * c ^ 2 + |w| * c)
+  let K : ℝ := c * Real.exp (t * c ^ (2 : ℕ) + |w| * c)
   have hbase := tendsto_polyGaussian_atTop ht (2 * k) c
   have hmajor : Tendsto (fun R : ℝ =>
-      K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)))) atTop (nhds 0) := by
+      K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))))) atTop (nhds 0) := by
     simpa using hbase.const_mul K
   refine squeeze_zero_norm' ?_ hmajor
   filter_upwards with R
   have hpoint : ∀ y ∈ Set.uIoc (-c) 0,
       ‖xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I) *
           Complex.exp (-(I * (w : ℂ) * ((R : ℂ) + (y : ℂ) * I)))‖ ≤
-        Real.exp (t * c ^ 2 + |w| * c) *
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) :=
+        Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) :=
     fun y hy => norm_xiGaussianTestC_fourier_le_on_lower_strip ht k hc hy
   calc
     ‖∫ y : ℝ in (-c)..0,
         xiGaussianTestC t k ((R : ℂ) + (y : ℂ) * I) *
           Complex.exp (-(I * (w : ℂ) * ((R : ℂ) + (y : ℂ) * I)))‖
-      ≤ (Real.exp (t * c ^ 2 + |w| * c) *
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)))) * |0 - (-c)| :=
+      ≤ (Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))))) * |0 - (-c)| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) := by
+    _ = K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
       have habs : |(0 : ℝ) - -c| = c := by
         rw [sub_neg_eq_add, zero_add, abs_of_nonneg hc]
       rw [habs]
@@ -130,18 +130,18 @@ private theorem tendsto_xiGaussianTestC_fourier_vertical_left
       xiGaussianTestC t k ((-R : ℂ) + (y : ℂ) * I) *
         Complex.exp (-(I * (w : ℂ) * ((-R : ℂ) + (y : ℂ) * I))))
       atTop (nhds 0) := by
-  let K : ℝ := c * Real.exp (t * c ^ 2 + |w| * c)
+  let K : ℝ := c * Real.exp (t * c ^ (2 : ℕ) + |w| * c)
   have hbase := tendsto_polyGaussian_atTop ht (2 * k) c
   have hmajor : Tendsto (fun R : ℝ =>
-      K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)))) atTop (nhds 0) := by
+      K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))))) atTop (nhds 0) := by
     simpa using hbase.const_mul K
   refine squeeze_zero_norm' ?_ hmajor
   filter_upwards with R
   have hpoint : ∀ y ∈ Set.uIoc (-c) 0,
       ‖xiGaussianTestC t k ((-R : ℂ) + (y : ℂ) * I) *
           Complex.exp (-(I * (w : ℂ) * ((-R : ℂ) + (y : ℂ) * I)))‖ ≤
-        Real.exp (t * c ^ 2 + |w| * c) *
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) := by
+        Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
     intro y hy
     have h := norm_xiGaussianTestC_fourier_le_on_lower_strip ht k hc
       (x := -R) (w := w) hy
@@ -150,10 +150,10 @@ private theorem tendsto_xiGaussianTestC_fourier_vertical_left
     ‖∫ y : ℝ in (-c)..0,
         xiGaussianTestC t k ((-R : ℂ) + (y : ℂ) * I) *
           Complex.exp (-(I * (w : ℂ) * ((-R : ℂ) + (y : ℂ) * I)))‖
-      ≤ (Real.exp (t * c ^ 2 + |w| * c) *
-          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2)))) * |0 - (-c)| :=
+      ≤ (Real.exp (t * c ^ (2 : ℕ) + |w| * c) *
+          ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ))))) * |0 - (-c)| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ 2))) := by
+    _ = K * ((c + |R|) ^ (2 * k) * Real.exp (-(t * R ^ (2 : ℕ)))) := by
       have habs : |(0 : ℝ) - -c| = c := by
         rw [sub_neg_eq_add, zero_add, abs_of_nonneg hc]
       rw [habs]

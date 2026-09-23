@@ -9,13 +9,13 @@ noncomputable section
 set_option autoImplicit false
 
 def nonstationarySourceNumerator : ℂ[X] :=
-  Polynomial.C 5*((2+3*Polynomial.X)^4*nonstationaryPolynomial 2 2)-
-  Polynomial.C (5/2)*((2+3*Polynomial.X)^6*nonstationaryPolynomial 2 1)-
-  Polynomial.C (3/2)*((2+3*Polynomial.X)^8*nonstationaryPolynomial 2 0)+
-  Polynomial.C (15/2)*((2+3*Polynomial.X)^0*nonstationaryPolynomial 4 4)-
-  Polynomial.C (81/4)*((2+3*Polynomial.X)^2*nonstationaryPolynomial 4 3)+
-  Polynomial.C 15*((2+3*Polynomial.X)^4*nonstationaryPolynomial 4 2)-
-  Polynomial.C (9/4)*((2+3*Polynomial.X)^6*nonstationaryPolynomial 4 1)
+  Polynomial.C 5*((2+3*Polynomial.X)^(4 : ℕ)*nonstationaryPolynomial 2 2)-
+  Polynomial.C (5/2)*((2+3*Polynomial.X)^(6 : ℕ)*nonstationaryPolynomial 2 1)-
+  Polynomial.C (3/2)*((2+3*Polynomial.X)^(8 : ℕ)*nonstationaryPolynomial 2 0)+
+  Polynomial.C (15/2)*((2+3*Polynomial.X)^(0 : ℕ)*nonstationaryPolynomial 4 4)-
+  Polynomial.C (81/4)*((2+3*Polynomial.X)^(2 : ℕ)*nonstationaryPolynomial 4 3)+
+  Polynomial.C 15*((2+3*Polynomial.X)^(4 : ℕ)*nonstationaryPolynomial 4 2)-
+  Polynomial.C (9/4)*((2+3*Polynomial.X)^(6 : ℕ)*nonstationaryPolynomial 4 1)
 
 theorem nonstationaryIteratedMoment_unshift (n k : ℕ) (w : ℂ)
     (hw : -2 < w.re) (hw1 : w+1 ≠ 0) (hk : k ≤ n) :
@@ -36,9 +36,9 @@ private theorem lift_to_eight (n k : ℕ) (w : ℂ) (hk : k ≤ 4) :
 /-- Moving the frequency polynomials through the original finite part creates this fixed numerator. -/
 theorem nonstationarySourceNumerator_moment (w : ℂ) (hw : -2 < w.re) (hw1 : w+1 ≠ 0) :
     nonstationaryMoment nonstationarySourceNumerator 8 w =
-      (5*(w+1)^2+(5/2:ℂ)*(w+1)-3/2)*nonstationaryMoment ((1-Polynomial.X)^2) 0 w+
-      ((15/2:ℂ)*(w+1)^4+(81/4:ℂ)*(w+1)^3+15*(w+1)^2+(9/4:ℂ)*(w+1))*
-        nonstationaryMoment ((1-Polynomial.X)^4) 0 w := by
+      (5*(w+1)^(2 : ℕ)+(5/2:ℂ)*(w+1)-3/2)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 w+
+      ((15/2:ℂ)*(w+1)^(4 : ℕ)+(81/4:ℂ)*(w+1)^(3 : ℕ)+15*(w+1)^(2 : ℕ)+(9/4:ℂ)*(w+1))*
+        nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 w := by
   simp only [nonstationarySourceNumerator,nonstationaryMoment_add,nonstationaryMoment_sub,
     nonstationaryMoment_C_mul,hw]
   rw [lift_to_eight 2 2 w (by omega),lift_to_eight 2 1 w (by omega),

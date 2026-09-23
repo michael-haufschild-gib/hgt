@@ -363,7 +363,7 @@ theorem normSq_sub_normSq_abs_le
   rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
   have hsum : ‖a‖ + ‖b‖ ≤ 2 := by linarith
   calc
-    |‖a‖ ^ 2 - ‖b‖ ^ 2|
+    |‖a‖ ^ (2 : ℕ) - ‖b‖ ^ (2 : ℕ)|
         = |(‖a‖ - ‖b‖) * (‖a‖ + ‖b‖)| := by ring_nf
     _ = |‖a‖ - ‖b‖| * (‖a‖ + ‖b‖) := by
       rw [abs_mul, abs_of_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _))]
@@ -1168,7 +1168,7 @@ dimensionless. -/
 theorem factorialTail_linear_bound
     (N : ℕ) (hN : 0 < N) (x : ℝ) (hx0 : 0 ≤ x)
     (hx :
-      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ 2)) :
+      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ (2 : ℕ))) :
     4 * ((x ^ N / N.factorial) * Real.exp x) ≤
       4 * (1 / 2 : ℝ) ^ N := by
   have hNreal : 0 < (N : ℝ) := by exact_mod_cast hN
@@ -1192,7 +1192,7 @@ theorem factorialTail_linear_bound
       x ≤ ((N : ℝ) / Real.exp 1) *
         (1 / (2 * Real.exp 1)) := by
     calc
-      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ 2) := hx
+      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ (2 : ℕ)) := hx
       _ = ((N : ℝ) / Real.exp 1) *
           (1 / (2 * Real.exp 1)) := by field_simp
   have hratio :
@@ -1212,7 +1212,7 @@ theorem factorialTail_linear_bound
             field_simp
   have hxN : x ≤ (N : ℝ) := by
     calc
-      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ 2) := hx
+      x ≤ (N : ℝ) / (2 * Real.exp 1 ^ (2 : ℕ)) := hx
       _ ≤ (N : ℝ) := by
         apply div_le_self hNreal.le
         nlinarith [sq_nonneg (Real.exp 1)]
@@ -1628,7 +1628,7 @@ theorem exists_localCompatibleFutureSet_eq_Icc
       ⟨θ, hθ, M, _hMNN, _hMSA, _hintertwines,
         _hlocal, _hwindow, htarget⟩
     have hn : 0 < endpointN q := by simp [endpointN]
-    have hpEq : p = θ ^ 2 := by
+    have hpEq : p = θ ^ (2 : ℕ) := by
       rw [← htarget, M.returnProbability_eq hT hθ.1 hθ.2,
         scaledInterpolatedProbability_target hT hn hθ.1]
     constructor

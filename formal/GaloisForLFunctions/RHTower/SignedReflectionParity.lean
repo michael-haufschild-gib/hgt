@@ -209,7 +209,7 @@ theorem reflection_forces_even_iff_fixedPoint {c ρ : ℂ} :
 
 /-- The antisymmetric witness of `ρ` about `c`: `(s − c)·((s − ρ)(s − (2c − ρ)))²`, antisymmetric
 about `c` with an even (order-2) zero at `ρ`. -/
-noncomputable def antiPair (c ρ : ℂ) : ℂ → ℂ := fun s => (s - c) * (reflPair c ρ s) ^ 2
+noncomputable def antiPair (c ρ : ℂ) : ℂ → ℂ := fun s => (s - c) * (reflPair c ρ s) ^ (2 : ℕ)
 
 theorem antiPair_analytic (c ρ : ℂ) : AnalyticOnNhd ℂ (antiPair c ρ) Set.univ :=
   fun z _ => (analyticAt_id.sub analyticAt_const).mul
@@ -220,18 +220,18 @@ theorem antiPair_antisym (c ρ : ℂ) (s : ℂ) : antiPair c ρ (2 * c - s) = - 
 
 theorem antiPair_order_two {c ρ : ℂ} (h : ρ ≠ c) : analyticOrderAt (antiPair c ρ) ρ = 2 := by
   have hlin_an : AnalyticAt ℂ (fun s : ℂ => s - c) ρ := analyticAt_id.sub analyticAt_const
-  have hsq_an : AnalyticAt ℂ (fun s : ℂ => (reflPair c ρ s) ^ 2) ρ :=
+  have hsq_an : AnalyticAt ℂ (fun s : ℂ => (reflPair c ρ s) ^ (2 : ℕ)) ρ :=
     (reflPair_analytic c ρ ρ (Set.mem_univ ρ)).pow 2
   have hlin0 : (fun s : ℂ => s - c) ρ ≠ 0 := by simp only; exact sub_ne_zero.mpr h
   have hord_lin : analyticOrderAt (fun s : ℂ => s - c) ρ = 0 :=
     analyticOrderAt_eq_zero.mpr (Or.inr hlin0)
-  have hord_sq : analyticOrderAt (fun s : ℂ => (reflPair c ρ s) ^ 2) ρ = 2 := by
-    have hrp : (fun s : ℂ => (reflPair c ρ s) ^ 2) = (reflPair c ρ) * (reflPair c ρ) := by
+  have hord_sq : analyticOrderAt (fun s : ℂ => (reflPair c ρ s) ^ (2 : ℕ)) ρ = 2 := by
+    have hrp : (fun s : ℂ => (reflPair c ρ s) ^ (2 : ℕ)) = (reflPair c ρ) * (reflPair c ρ) := by
       funext s; simp [sq, Pi.mul_apply]
     rw [hrp, analyticOrderAt_mul (reflPair_analytic c ρ ρ (Set.mem_univ ρ))
       (reflPair_analytic c ρ ρ (Set.mem_univ ρ)), reflPair_order_one h]
     rfl
-  have hfeq : antiPair c ρ = (fun s : ℂ => s - c) * (fun s : ℂ => (reflPair c ρ s) ^ 2) := by
+  have hfeq : antiPair c ρ = (fun s : ℂ => s - c) * (fun s : ℂ => (reflPair c ρ s) ^ (2 : ℕ)) := by
     funext s; simp only [antiPair, Pi.mul_apply]
   rw [hfeq, analyticOrderAt_mul hlin_an hsq_an, hord_lin, hord_sq, zero_add]
 
@@ -264,15 +264,15 @@ by evenness); it is analytic off `0` because `X ∘ (·²) = Y` and `z ↦ z²` 
 (`analyticAt_comp_iff_of_deriv_ne_zero`), and analytic at `0` by removable singularity (`X` is bounded
 there since `‖√u‖ = √‖u‖ → 0`). -/
 theorem even_descent {Y : ℂ → ℂ} (hY : AnalyticOnNhd ℂ Y Set.univ) (hev : ∀ z, Y (-z) = Y z) :
-    ∃ X : ℂ → ℂ, AnalyticOnNhd ℂ X Set.univ ∧ ∀ z, Y z = X (z ^ 2) := by
+    ∃ X : ℂ → ℂ, AnalyticOnNhd ℂ X Set.univ ∧ ∀ z, Y z = X (z ^ (2 : ℕ)) := by
   classical
   set rt : ℂ → ℂ := fun u => (IsAlgClosed.exists_pow_nat_eq u (n := 2) two_pos).choose with hrt
-  have hrt2 : ∀ u, (rt u) ^ 2 = u := fun u =>
+  have hrt2 : ∀ u, (rt u) ^ (2 : ℕ) = u := fun u =>
     (IsAlgClosed.exists_pow_nat_eq u (n := 2) two_pos).choose_spec
   set X : ℂ → ℂ := fun u => Y (rt u) with hX
-  have hYany : ∀ (u z : ℂ), z ^ 2 = u → Y z = X u := by
+  have hYany : ∀ (u z : ℂ), z ^ (2 : ℕ) = u → Y z = X u := by
     intro u z hz
-    have hsq : z ^ 2 = (rt u) ^ 2 := by rw [hz, hrt2]
+    have hsq : z ^ (2 : ℕ) = (rt u) ^ (2 : ℕ) := by rw [hz, hrt2]
     have hpm : z = rt u ∨ z = - rt u := by
       have h0 : (z - rt u) * (z + rt u) = 0 := by linear_combination hsq
       rcases mul_eq_zero.mp h0 with h | h
@@ -281,18 +281,18 @@ theorem even_descent {Y : ℂ → ℂ} (hY : AnalyticOnNhd ℂ Y Set.univ) (hev 
     rcases hpm with h | h
     · rw [hX]; simp only; rw [h]
     · rw [hX]; simp only; rw [h, hev]
-  have hXY : ∀ z, Y z = X (z ^ 2) := fun z => hYany (z ^ 2) z rfl
-  have hcomp : (X ∘ fun z : ℂ => z ^ 2) = Y := by
+  have hXY : ∀ z, Y z = X (z ^ (2 : ℕ)) := fun z => hYany (z ^ (2 : ℕ)) z rfl
+  have hcomp : (X ∘ fun z : ℂ => z ^ (2 : ℕ)) = Y := by
     funext z; simp only [Function.comp_apply]; exact (hXY z).symm
   have hXaway : ∀ u : ℂ, u ≠ 0 → AnalyticAt ℂ X u := by
     intro u hu
-    have hz₀2 : (rt u) ^ 2 = u := hrt2 u
+    have hz₀2 : (rt u) ^ (2 : ℕ) = u := hrt2 u
     have hz₀0 : rt u ≠ 0 := fun h => hu (by rw [← hz₀2, h]; ring)
-    have hsqa : AnalyticAt ℂ (fun z : ℂ => z ^ 2) (rt u) := analyticAt_id.pow 2
-    have hd0 : deriv (fun z : ℂ => z ^ 2) (rt u) ≠ 0 := by
+    have hsqa : AnalyticAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) (rt u) := analyticAt_id.pow 2
+    have hd0 : deriv (fun z : ℂ => z ^ (2 : ℕ)) (rt u) ≠ 0 := by
       rw [(hasStrictDerivAt_pow 2 (rt u)).hasDerivAt.deriv]
       exact mul_ne_zero (by norm_num) (pow_ne_zero _ hz₀0)
-    have hYz₀ : AnalyticAt ℂ (X ∘ fun z : ℂ => z ^ 2) (rt u) := by
+    have hYz₀ : AnalyticAt ℂ (X ∘ fun z : ℂ => z ^ (2 : ℕ)) (rt u) := by
       rw [hcomp]; exact hY (rt u) (Set.mem_univ _)
     have hres := (analyticAt_comp_iff_of_deriv_ne_zero hsqa hd0).mp hYz₀
     rwa [hz₀2] at hres
@@ -324,7 +324,7 @@ functional equation becomes single-valued evenness in the `u = (s − c)²` coor
 member.) -/
 theorem symmetric_descent {f : ℂ → ℂ} {c : ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hsym : ∀ s, f (2 * c - s) = f s) :
-    ∃ X : ℂ → ℂ, AnalyticOnNhd ℂ X Set.univ ∧ ∀ s, f s = X ((s - c) ^ 2) := by
+    ∃ X : ℂ → ℂ, AnalyticOnNhd ℂ X Set.univ ∧ ∀ s, f s = X ((s - c) ^ (2 : ℕ)) := by
   set Y : ℂ → ℂ := fun z => f (c + z) with hYdef
   have hYan : AnalyticOnNhd ℂ Y Set.univ := fun z _ =>
     (hf (c + z) (Set.mem_univ _)).comp (analyticAt_const.add analyticAt_id)
@@ -337,7 +337,7 @@ theorem symmetric_descent {f : ℂ → ℂ} {c : ℂ} (hf : AnalyticOnNhd ℂ f 
 /-- **Uniqueness of the descent.**  Any two carriers agreeing after the square substitution agree
 everywhere, since `s ↦ (s − c)²` is surjective: the descent `X` of `symmetric_descent` is unique. -/
 theorem descent_unique {X₁ X₂ : ℂ → ℂ} {c : ℂ}
-    (h : ∀ s, X₁ ((s - c) ^ 2) = X₂ ((s - c) ^ 2)) : ∀ u, X₁ u = X₂ u := by
+    (h : ∀ s, X₁ ((s - c) ^ (2 : ℕ)) = X₂ ((s - c) ^ (2 : ℕ))) : ∀ u, X₁ u = X₂ u := by
   intro u
   obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq u (n := 2) two_pos
   have hu := h (c + z)

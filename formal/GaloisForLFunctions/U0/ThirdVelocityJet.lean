@@ -18,10 +18,10 @@ noncomputable section
 
 /-- The lower-jet value in the third parameter-jet Mahler equation. -/
 def thirdJetRhs : PowerSeries ℂ :=
-  3 * (X ^ 2 * thetaSeries secondJet) +
-    3 * (X ^ 4 * thetaSeries velocityJet) +
-    (3 / 2 : ℂ) • (X ^ 4 * thetaSeries (thetaSeries velocityJet)) -
-    2 * X ^ 6
+  3 * (X ^ (2 : ℕ) * thetaSeries secondJet) +
+    3 * (X ^ (4 : ℕ) * thetaSeries velocityJet) +
+    (3 / 2 : ℂ) • (X ^ (4 : ℕ) * thetaSeries (thetaSeries velocityJet)) -
+    2 * X ^ (6 : ℕ)
 
 /-- Coefficients of the normalized third parameter jet, determined by binary descent. -/
 noncomputable def thirdCoeff : ℕ → ℂ
@@ -68,10 +68,10 @@ logarithmic parameter jet exposes the Euler derivative of the second jet and the
 derivatives of the first jet with exact coefficients. -/
 theorem dyadicSubst_thirdJet_explicit :
     dyadicSubst thirdJet =
-      2 * thirdJet + 3 * (X ^ 2 * thetaSeries secondJet) +
-        3 * (X ^ 4 * thetaSeries velocityJet) +
-        (3 / 2 : ℂ) • (X ^ 4 * thetaSeries (thetaSeries velocityJet)) -
-        2 * X ^ 6 := by
+      2 * thirdJet + 3 * (X ^ (2 : ℕ) * thetaSeries secondJet) +
+        3 * (X ^ (4 : ℕ) * thetaSeries velocityJet) +
+        (3 / 2 : ℂ) • (X ^ (4 : ℕ) * thetaSeries (thetaSeries velocityJet)) -
+        2 * X ^ (6 : ℕ) := by
   rw [dyadicSubst_thirdJet, thirdJetRhs]
   abel
 

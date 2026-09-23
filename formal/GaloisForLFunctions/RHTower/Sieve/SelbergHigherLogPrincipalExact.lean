@@ -12,7 +12,7 @@ theorem moebiusDoubleLogKernelReal_nat_ratio (N q : ℕ) (hq : 0 < q) :
     moebiusDoubleLogKernelReal ((N : ℝ) / (q : ℝ)) =
       ∑ u ∈ Finset.Icc 1 (N / q),
         selbergMoebiusReciprocalCoeff u *
-          Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ)) ^ 2 := by
+          Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ)) ^ (2 : ℕ) := by
   rw [moebiusDoubleLogKernelReal, Nat.floor_div_natCast, Nat.floor_natCast]
   apply Finset.sum_congr rfl
   intro u hu
@@ -43,7 +43,7 @@ theorem selbergPrincipalCoeff_weighted_one_two_eq_scaledMixedModel
     (∑ r ∈ Finset.Icc 1 (N / a), ∑ s ∈ Finset.Icc 1 (N / b),
       selbergPrincipalCoeff r s *
         (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) *
-          Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ 2)) =
+          Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ (2 : ℕ))) =
       selbergPrincipalScaledMixedModel a b N := by
   rw [selbergPrincipalCoeff,
     sum_Icc_bivariateDirichletConvolution_mul]
@@ -52,7 +52,7 @@ theorem selbergPrincipalCoeff_weighted_one_two_eq_scaledMixedModel
         ∑ s ∈ Finset.Icc 1 (N / b / e),
           selbergMoebiusReciprocalPair r s *
             (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) *
-              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ 2)) =
+              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ (2 : ℕ))) =
         coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
           moebiusDoubleLogKernelReal ((N : ℝ) / ((b * e : ℕ) : ℝ)) := by
     intro d hd e he
@@ -61,13 +61,13 @@ theorem selbergPrincipalCoeff_weighted_one_two_eq_scaledMixedModel
         ∑ s ∈ Finset.Icc 1 (N / b / e),
           selbergMoebiusReciprocalPair r s *
             (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) *
-              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ 2)) =
+              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ (2 : ℕ))) =
           (∑ r ∈ Finset.Icc 1 (N / a / d),
             selbergMoebiusReciprocalCoeff r *
               Real.log ((N : ℝ) / (((a * d) * r : ℕ) : ℝ))) *
           (∑ s ∈ Finset.Icc 1 (N / b / e),
             selbergMoebiusReciprocalCoeff s *
-              Real.log ((N : ℝ) / (((b * e) * s : ℕ) : ℝ)) ^ 2) := by
+              Real.log ((N : ℝ) / (((b * e) * s : ℕ) : ℝ)) ^ (2 : ℕ)) := by
         rw [Finset.sum_mul_sum]
         apply Finset.sum_congr rfl
         intro r hr
@@ -94,8 +94,8 @@ theorem selbergPrincipalCoeff_weighted_two_two_eq_scaledQuadraticModel
     (a b N : ℕ) (ha : 0 < a) (hb : 0 < b) :
     (∑ r ∈ Finset.Icc 1 (N / a), ∑ s ∈ Finset.Icc 1 (N / b),
       selbergPrincipalCoeff r s *
-        (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) ^ 2 *
-          Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ 2)) =
+        (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) ^ (2 : ℕ) *
+          Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ (2 : ℕ))) =
       selbergPrincipalScaledQuadraticModel a b N := by
   rw [selbergPrincipalCoeff,
     sum_Icc_bivariateDirichletConvolution_mul]
@@ -103,8 +103,8 @@ theorem selbergPrincipalCoeff_weighted_two_two_eq_scaledQuadraticModel
       (∑ r ∈ Finset.Icc 1 (N / a / d),
         ∑ s ∈ Finset.Icc 1 (N / b / e),
           selbergMoebiusReciprocalPair r s *
-            (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) ^ 2 *
-              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ 2)) =
+            (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) ^ (2 : ℕ) *
+              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ (2 : ℕ))) =
         moebiusDoubleLogKernelReal ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
           moebiusDoubleLogKernelReal ((N : ℝ) / ((b * e : ℕ) : ℝ)) := by
     intro d hd e he
@@ -112,14 +112,14 @@ theorem selbergPrincipalCoeff_weighted_two_two_eq_scaledQuadraticModel
       (∑ r ∈ Finset.Icc 1 (N / a / d),
         ∑ s ∈ Finset.Icc 1 (N / b / e),
           selbergMoebiusReciprocalPair r s *
-            (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) ^ 2 *
-              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ 2)) =
+            (Real.log ((N : ℝ) / ((a * (d * r) : ℕ) : ℝ)) ^ (2 : ℕ) *
+              Real.log ((N : ℝ) / ((b * (e * s) : ℕ) : ℝ)) ^ (2 : ℕ))) =
           (∑ r ∈ Finset.Icc 1 (N / a / d),
             selbergMoebiusReciprocalCoeff r *
-              Real.log ((N : ℝ) / (((a * d) * r : ℕ) : ℝ)) ^ 2) *
+              Real.log ((N : ℝ) / (((a * d) * r : ℕ) : ℝ)) ^ (2 : ℕ)) *
           (∑ s ∈ Finset.Icc 1 (N / b / e),
             selbergMoebiusReciprocalCoeff s *
-              Real.log ((N : ℝ) / (((b * e) * s : ℕ) : ℝ)) ^ 2) := by
+              Real.log ((N : ℝ) / (((b * e) * s : ℕ) : ℝ)) ^ (2 : ℕ)) := by
         rw [Finset.sum_mul_sum]
         apply Finset.sum_congr rfl
         intro r hr

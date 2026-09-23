@@ -21,14 +21,14 @@ noncomputable section
 The signed parameter `xi` is positive for position squeezing and negative for
 momentum squeezing. -/
 def displacedSqueezedSLDCRB (r xi betaX betaP : ℝ) : ℝ :=
-  Real.cosh (r + xi) ^ 2 +
-    (Real.exp (2 * r) * betaX ^ 2 + Real.exp (-2 * r) * betaP ^ 2) / 2
+  Real.cosh (r + xi) ^ (2 : ℕ) +
+    (Real.exp (2 * r) * betaX ^ (2 : ℕ) + Real.exp (-2 * r) * betaP ^ (2 : ℕ)) / 2
 
 /-- Eq. (6): SLD Cramer--Rao bound for a squeezed--coherent probe. -/
 def squeezedCoherentSLDCRB (r xi betaX betaP : ℝ) : ℝ :=
-  Real.cosh (r + xi) ^ 2 +
-    (Real.exp (2 * (r + xi)) * betaX ^ 2 +
-      Real.exp (-2 * (r + xi)) * betaP ^ 2) / 2
+  Real.cosh (r + xi) ^ (2 : ℕ) +
+    (Real.exp (2 * (r + xi)) * betaX ^ (2 : ℕ) +
+      Real.exp (-2 * (r + xi)) * betaP ^ (2 : ℕ)) / 2
 
 /-- The displaced--squeezed position-minus-momentum difference is exactly the
 hyperbolic product stated after Eqs. (5)--(6). -/
@@ -61,20 +61,20 @@ theorem squeezedCoherentSLDCRB_position_sub_momentum
     squeezedCoherentSLDCRB r zeta betaX betaP -
         squeezedCoherentSLDCRB r (-zeta) betaX betaP =
       Real.sinh (2 * zeta) *
-        (Real.sinh (2 * r) + Real.exp (2 * r) * betaX ^ 2 -
-          Real.exp (-2 * r) * betaP ^ 2) := by
+        (Real.sinh (2 * r) + Real.exp (2 * r) * betaX ^ (2 : ℕ) -
+          Real.exp (-2 * r) * betaP ^ (2 : ℕ)) := by
   have hcosh :
-      Real.cosh (r + zeta) ^ 2 - Real.cosh (r - zeta) ^ 2 =
+      Real.cosh (r + zeta) ^ (2 : ℕ) - Real.cosh (r - zeta) ^ (2 : ℕ) =
         Real.sinh (2 * r) * Real.sinh (2 * zeta) := by
     rw [Real.cosh_add, Real.cosh_sub, Real.sinh_two_mul, Real.sinh_two_mul]
     ring
   have hdisp :
-      (Real.exp (2 * (r + zeta)) * betaX ^ 2 +
-          Real.exp (-2 * (r + zeta)) * betaP ^ 2) / 2 -
-        (Real.exp (2 * (r - zeta)) * betaX ^ 2 +
-          Real.exp (-2 * (r - zeta)) * betaP ^ 2) / 2 =
+      (Real.exp (2 * (r + zeta)) * betaX ^ (2 : ℕ) +
+          Real.exp (-2 * (r + zeta)) * betaP ^ (2 : ℕ)) / 2 -
+        (Real.exp (2 * (r - zeta)) * betaX ^ (2 : ℕ) +
+          Real.exp (-2 * (r - zeta)) * betaP ^ (2 : ℕ)) / 2 =
       Real.sinh (2 * zeta) *
-        (Real.exp (2 * r) * betaX ^ 2 - Real.exp (-2 * r) * betaP ^ 2) := by
+        (Real.exp (2 * r) * betaX ^ (2 : ℕ) - Real.exp (-2 * r) * betaP ^ (2 : ℕ)) := by
     rw [show 2 * (r + zeta) = 2 * r + 2 * zeta by ring,
       show -2 * (r + zeta) = -2 * r + -(2 * zeta) by ring,
       show 2 * (r - zeta) = 2 * r + -(2 * zeta) by ring,
@@ -104,21 +104,21 @@ theorem squeezedCoherentSLDCRB_sub_displacedSqueezedSLDCRB
     (r xi betaX betaP : ℝ) :
     squeezedCoherentSLDCRB r xi betaX betaP -
         displacedSqueezedSLDCRB r xi betaX betaP =
-      (Real.exp (2 * (r + xi)) * betaX ^ 2 +
-          Real.exp (-2 * (r + xi)) * betaP ^ 2 -
-        (Real.exp (2 * r) * betaX ^ 2 +
-          Real.exp (-2 * r) * betaP ^ 2)) / 2 := by
+      (Real.exp (2 * (r + xi)) * betaX ^ (2 : ℕ) +
+          Real.exp (-2 * (r + xi)) * betaP ^ (2 : ℕ) -
+        (Real.exp (2 * r) * betaX ^ (2 : ℕ) +
+          Real.exp (-2 * r) * betaP ^ (2 : ℕ))) / 2 := by
   simp [squeezedCoherentSLDCRB, displacedSqueezedSLDCRB]
   ring
 
 /-- Scale-coordinate form of the position-squeezed order difference.  It is the
 algebraic content of Eq. (7), without divisions by possibly zero displacements. -/
 def positionOrderBoundary (R Z betaX betaP : ℝ) : ℝ :=
-  R ^ 2 * Z * betaX ^ 2 - betaP ^ 2
+  R ^ (2 : ℕ) * Z * betaX ^ (2 : ℕ) - betaP ^ (2 : ℕ)
 
 /-- Scale-coordinate form of the momentum-squeezed order difference. -/
 def momentumOrderBoundary (R Z betaX betaP : ℝ) : ℝ :=
-  Z * betaP ^ 2 - R ^ 2 * betaX ^ 2
+  Z * betaP ^ (2 : ℕ) - R ^ (2 : ℕ) * betaX ^ (2 : ℕ)
 
 /-- Corrected Eq. (7): for positive squeezing, the squeezed--coherent position branch
 beats the displaced--squeezed branch exactly below the squared displacement threshold. -/
@@ -138,16 +138,16 @@ theorem squeezedCoherent_position_le_displacedSqueezed_iff
   have hZ : 1 < Z := Real.one_lt_exp_iff.mpr (by nlinarith [zeta.property])
   have hfactor : 0 < (Z - 1) / (2 * R * Z) := by positivity
   have hidentity :
-      (R * Z * betaX ^ 2 + R⁻¹ * Z⁻¹ * betaP ^ 2 -
-          (R * betaX ^ 2 + R⁻¹ * betaP ^ 2)) / 2 =
+      (R * Z * betaX ^ (2 : ℕ) + R⁻¹ * Z⁻¹ * betaP ^ (2 : ℕ) -
+          (R * betaX ^ (2 : ℕ) + R⁻¹ * betaP ^ (2 : ℕ))) / 2 =
         ((Z - 1) / (2 * R * Z)) *
           positionOrderBoundary R Z betaX betaP := by
     unfold positionOrderBoundary
     field_simp [ne_of_gt hR, ne_of_gt hZ]
     ring
   change
-    ((R * Z * betaX ^ 2 + R⁻¹ * Z⁻¹ * betaP ^ 2 -
-        (R * betaX ^ 2 + R⁻¹ * betaP ^ 2)) / 2 ≤ 0 ↔
+    ((R * Z * betaX ^ (2 : ℕ) + R⁻¹ * Z⁻¹ * betaP ^ (2 : ℕ) -
+        (R * betaX ^ (2 : ℕ) + R⁻¹ * betaP ^ (2 : ℕ))) / 2 ≤ 0 ↔
       positionOrderBoundary R Z betaX betaP ≤ 0)
   rw [hidentity]
   constructor
@@ -175,16 +175,16 @@ theorem squeezedCoherent_momentum_le_displacedSqueezed_iff
   have hZ : 1 < Z := Real.one_lt_exp_iff.mpr (by nlinarith [zeta.property])
   have hfactor : 0 < (Z - 1) / (2 * R * Z) := by positivity
   have hidentity :
-      (R * Z⁻¹ * betaX ^ 2 + R⁻¹ * Z * betaP ^ 2 -
-          (R * betaX ^ 2 + R⁻¹ * betaP ^ 2)) / 2 =
+      (R * Z⁻¹ * betaX ^ (2 : ℕ) + R⁻¹ * Z * betaP ^ (2 : ℕ) -
+          (R * betaX ^ (2 : ℕ) + R⁻¹ * betaP ^ (2 : ℕ))) / 2 =
         ((Z - 1) / (2 * R * Z)) *
           momentumOrderBoundary R Z betaX betaP := by
     unfold momentumOrderBoundary
     field_simp [ne_of_gt hR, ne_of_gt hZ]
     ring
   change
-    ((R * Z⁻¹ * betaX ^ 2 + R⁻¹ * Z * betaP ^ 2 -
-        (R * betaX ^ 2 + R⁻¹ * betaP ^ 2)) / 2 ≤ 0 ↔
+    ((R * Z⁻¹ * betaX ^ (2 : ℕ) + R⁻¹ * Z * betaP ^ (2 : ℕ) -
+        (R * betaX ^ (2 : ℕ) + R⁻¹ * betaP ^ (2 : ℕ))) / 2 ≤ 0 ↔
       momentumOrderBoundary R Z betaX betaP ≤ 0)
   rw [hidentity]
   constructor

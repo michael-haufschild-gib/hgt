@@ -21,9 +21,9 @@ theorem hyperbolicLaplacian_mul {f g : (Fin 2 → ℝ) → ℂ} {z : Fin 2 → �
     (hf : ContDiffAt ℝ 2 f z) (hg : ContDiffAt ℝ 2 g z) :
     hyperbolicLaplacian (fun w => f w * g w) z =
       f z * hyperbolicLaplacian g z + hyperbolicLaplacian f z * g z +
-        2 * (z 1 : ℂ)^2 *
+        2 * (z 1 : ℂ)^(2 : ℕ) *
           (coordDeriv 0 f z * coordDeriv 0 g z + coordDeriv 1 f z * coordDeriv 1 g z) := by
-  change (z 1 : ℂ)^2 * ((ofField (fun w => f w * g w) z).second 0 0 +
+  change (z 1 : ℂ)^(2 : ℕ) * ((ofField (fun w => f w * g w) z).second 0 0 +
     (ofField (fun w => f w * g w) z).second 1 1) = _
   rw [ofField_mul hf hg]
   simp only [ScalarTwoJet.mul, ofField, hyperbolicLaplacian]
@@ -75,7 +75,7 @@ theorem quarterShiftSource_equation (u : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1)
   have hf : ContDiffAt ℝ 2 (scalarSource u) z := cuspLeg_contDiffAt .scalar u 2 z hz
   rw [hyperbolicLaplacian_height_mul _ hz hf]
   have he := scalarCusp_hyperbolicLaplacian u z hz
-  change hyperbolicLaplacian (scalarSource u) z = (u^2-1/4)*scalarSource u z at he
+  change hyperbolicLaplacian (scalarSource u) z = (u^(2 : ℕ)-1/4)*scalarSource u z at he
   rw [he]
   unfold outgoingDefect
   ring

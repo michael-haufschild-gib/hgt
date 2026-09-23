@@ -36,9 +36,9 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
         + 2 * Real.sqrt t * Real.log t ≤ κ * t) :
     ∑ m ∈ Finset.Ioc Y (2 * Q * Y),
         (2 * Real.log m + 2) * |psiRemainder (N / m)|
-      ≤ (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+      ≤ (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-          - (Real.log Y ^ 2 + 2 * Real.log Y))
+          - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
         - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * (ρ / 2) * Real.log Y
         + 3 * a * ((2 * Real.log ((2 * Q * Y : ℕ) : ℝ) + 8) / Y)) := by
   set ε' : ℝ := δ + ρ * (Real.log (1 / ρ) + 3) + κ with hε'
@@ -95,8 +95,8 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
   have hzone : ∀ (r : ℝ), 0 ≤ r → ∀ (y z : ℕ), 2 ≤ y → y ≤ z →
       (∀ m ∈ Finset.Ioc y z, |psiRemainder (N / m)| ≤ r * ((N : ℝ) / m)) →
       ∑ m ∈ Finset.Ioc y z, (2 * Real.log m + 2) * |psiRemainder (N / m)|
-        ≤ r * (N : ℝ) * ((Real.log z ^ 2 + 2 * Real.log z)
-            - (Real.log y ^ 2 + 2 * Real.log y)
+        ≤ r * (N : ℝ) * ((Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+            - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
             + (2 * Real.log ((y : ℝ) + 1) + 6) / y) := by
     intro r hr y z hy hyz hrat
     have hterm : ∀ m ∈ Finset.Ioc y z,
@@ -120,8 +120,8 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
       _ = r * (N : ℝ) * ∑ m ∈ Finset.Ioc y z,
             (2 * Real.log m + 2) / m := by
           rw [Finset.mul_sum]
-      _ ≤ r * (N : ℝ) * ((Real.log z ^ 2 + 2 * Real.log z)
-            - (Real.log y ^ 2 + 2 * Real.log y)
+      _ ≤ r * (N : ℝ) * ((Real.log z ^ (2 : ℕ) + 2 * Real.log z)
+            - (Real.log y ^ (2 : ℕ) + 2 * Real.log y)
             + (2 * Real.log ((y : ℝ) + 1) + 6) / y) := by
           apply mul_le_mul_of_nonneg_left
             (sum_log_harmonic_window_le hy hyz) (by positivity)
@@ -189,14 +189,14 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
   have hE3 := hEnorm B (le_trans (le_of_lt hYA) hAB) hB2QY
   -- gain mass lower bound
   have hgainmass : (ρ / 4) * (2 * Real.log Y)
-      ≤ (Real.log B ^ 2 + 2 * Real.log B)
-        - (Real.log A ^ 2 + 2 * Real.log A) := by
+      ≤ (Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+        - (Real.log A ^ (2 : ℕ) + 2 * Real.log A) := by
     have hlogA : Real.log Y ≤ Real.log A := by
       apply Real.log_le_log hY0R
       exact_mod_cast le_of_lt hYA
     have hlogAB : Real.log A ≤ Real.log B := by linarith [hgain, hρ0]
-    have hfact : (Real.log B ^ 2 + 2 * Real.log B)
-        - (Real.log A ^ 2 + 2 * Real.log A)
+    have hfact : (Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+        - (Real.log A ^ (2 : ℕ) + 2 * Real.log A)
         = (Real.log B - Real.log A)
           * (Real.log B + Real.log A + 2) := by
       ring
@@ -206,41 +206,41 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
     apply mul_le_mul hgain h1 (by linarith [hlogY0]) (by linarith [hρ0])
   -- combine
   have hεa : ε' ≤ a := by rw [hε']; exact hε'a
-  have e1 : a * (N : ℝ) * ((Real.log A ^ 2 + 2 * Real.log A)
-      - (Real.log Y ^ 2 + 2 * Real.log Y)
+  have e1 : a * (N : ℝ) * ((Real.log A ^ (2 : ℕ) + 2 * Real.log A)
+      - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y)
       + (2 * Real.log ((Y : ℝ) + 1) + 6) / Y)
-      = a * (N:ℝ) * ((Real.log A ^ 2 + 2 * Real.log A)
-        - (Real.log Y ^ 2 + 2 * Real.log Y))
+      = a * (N:ℝ) * ((Real.log A ^ (2 : ℕ) + 2 * Real.log A)
+        - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
         + a * (N:ℝ) * ((2 * Real.log ((Y : ℝ) + 1) + 6) / Y) := by ring
-  have e2 : ε' * (N : ℝ) * ((Real.log B ^ 2 + 2 * Real.log B)
-      - (Real.log A ^ 2 + 2 * Real.log A)
+  have e2 : ε' * (N : ℝ) * ((Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+      - (Real.log A ^ (2 : ℕ) + 2 * Real.log A)
       + (2 * Real.log ((A : ℝ) + 1) + 6) / A)
-      = ε' * (N:ℝ) * ((Real.log B ^ 2 + 2 * Real.log B)
-        - (Real.log A ^ 2 + 2 * Real.log A))
+      = ε' * (N:ℝ) * ((Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+        - (Real.log A ^ (2 : ℕ) + 2 * Real.log A))
         + ε' * (N:ℝ) * ((2 * Real.log ((A : ℝ) + 1) + 6) / A) := by ring
-  have e3 : a * (N : ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+  have e3 : a * (N : ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
       + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-      - (Real.log B ^ 2 + 2 * Real.log B)
+      - (Real.log B ^ (2 : ℕ) + 2 * Real.log B)
       + (2 * Real.log ((B : ℝ) + 1) + 6) / B)
-      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
         + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-        - (Real.log B ^ 2 + 2 * Real.log B))
+        - (Real.log B ^ (2 : ℕ) + 2 * Real.log B))
         + a * (N:ℝ) * ((2 * Real.log ((B : ℝ) + 1) + 6) / B) := by ring
-  have e4 : a * (N:ℝ) * ((Real.log A ^ 2 + 2 * Real.log A)
-      - (Real.log Y ^ 2 + 2 * Real.log Y))
-      + ε' * (N:ℝ) * ((Real.log B ^ 2 + 2 * Real.log B)
-        - (Real.log A ^ 2 + 2 * Real.log A))
-      + a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+  have e4 : a * (N:ℝ) * ((Real.log A ^ (2 : ℕ) + 2 * Real.log A)
+      - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
+      + ε' * (N:ℝ) * ((Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+        - (Real.log A ^ (2 : ℕ) + 2 * Real.log A))
+      + a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
         + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-        - (Real.log B ^ 2 + 2 * Real.log B))
-      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+        - (Real.log B ^ (2 : ℕ) + 2 * Real.log B))
+      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-          - (Real.log Y ^ 2 + 2 * Real.log Y))
-        - (a - ε') * (N:ℝ) * ((Real.log B ^ 2 + 2 * Real.log B)
-          - (Real.log A ^ 2 + 2 * Real.log A)) := by ring
+          - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
+        - (a - ε') * (N:ℝ) * ((Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+          - (Real.log A ^ (2 : ℕ) + 2 * Real.log A)) := by ring
   have hgm : (a - ε') * (N:ℝ) * ((ρ / 4) * (2 * Real.log Y))
-      ≤ (a - ε') * (N:ℝ) * ((Real.log B ^ 2 + 2 * Real.log B)
-        - (Real.log A ^ 2 + 2 * Real.log A)) := by
+      ≤ (a - ε') * (N:ℝ) * ((Real.log B ^ (2 : ℕ) + 2 * Real.log B)
+        - (Real.log A ^ (2 : ℕ) + 2 * Real.log A)) := by
     apply mul_le_mul_of_nonneg_left hgainmass
     apply mul_nonneg (by linarith) hNR.le
   have hgm2 : (a - ε') * (N:ℝ) * ((ρ / 4) * (2 * Real.log Y))
@@ -265,14 +265,14 @@ theorem m_block_contraction {a δ ρ κ : ℝ} {Q Y N x₀ : ℕ}
   have hEmul3 : a * (N:ℝ) * ((2 * Real.log ((B : ℝ) + 1) + 6) / B)
       ≤ a * (N:ℝ) * ((2 * Real.log ((2 * Q * Y : ℕ) : ℝ) + 8) / Y) := by
     apply mul_le_mul_of_nonneg_left hE3 (by positivity)
-  have efinal : (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+  have efinal : (N : ℝ) * (a * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
         + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-      - (Real.log Y ^ 2 + 2 * Real.log Y))
+      - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
       - (a - ε') * (ρ / 2) * Real.log Y
       + 3 * a * ((2 * Real.log ((2 * Q * Y : ℕ) : ℝ) + 8) / Y))
-      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ 2
+      = a * (N:ℝ) * ((Real.log ((2 * Q * Y : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((2 * Q * Y : ℕ) : ℝ))
-          - (Real.log Y ^ 2 + 2 * Real.log Y))
+          - (Real.log Y ^ (2 : ℕ) + 2 * Real.log Y))
         - (N:ℝ) * ((a - ε') * (ρ / 2) * Real.log Y)
         + 3 * (a * (N:ℝ)
           * ((2 * Real.log ((2 * Q * Y : ℕ) : ℝ) + 8) / Y)) := by

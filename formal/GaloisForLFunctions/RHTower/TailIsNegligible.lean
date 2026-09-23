@@ -36,7 +36,7 @@ namespace RHTower
 
 /-- **The exponent's value.**  With half-width `1/L` and curvature `k L`, the exponent is `k / L`. -/
 theorem exponent_value {k L : ℝ} (hL : L ≠ 0) :
-    (1 / L) ^ 2 * (k * L) = k / L := by
+    (1 / L) ^ (2 : ℕ) * (k * L) = k / L := by
   field_simp
 
 /-- **Superpolynomial decay.**  `e^{-c x}` tends to zero faster than any polynomial: the product with

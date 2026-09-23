@@ -237,7 +237,7 @@ theorem pairMain_lagTopCoeff_nonneg (β₀ : ℝ) (q q' : XiZeroCopy) :
   · rw [pairMain_zero_left _ _ q q' (by unfold lagTopCoeff; rw [if_neg hq])]
 
 theorem pairMain_lagTopCoeff_self (β₀ : ℝ) (q : XiZeroCopy) :
-    ‖lagTopCoeff β₀ q‖ ^ 2 ≤ pairMain (lagTopCoeff β₀) zeroOrdinate q q :=
+    ‖lagTopCoeff β₀ q‖ ^ (2 : ℕ) ≤ pairMain (lagTopCoeff β₀) zeroOrdinate q q :=
   le_of_eq (pairMain_self_of_ne _ _ q (zeroOrdinate_ne_zero' q)).symm
 
 /-! ## The attained-case ratio law -/
@@ -258,7 +258,7 @@ theorem exists_lag_gt_of_attainedTop_of_logDense (hβ : 1 / 2 < β₀) (h : Atta
   have hwW : ‖lagWeight q₀‖ ≤ lagWeightTotal :=
     summable_norm_lagWeight.le_tsum q₀ fun q _ => norm_nonneg _
   have hWpos : 0 < lagWeightTotal := lt_of_lt_of_le hw0 hwW
-  set m₁ : ℝ := ‖lagWeight q₀‖ ^ 2 / 2 with hm₁
+  set m₁ : ℝ := ‖lagWeight q₀‖ ^ (2 : ℕ) / 2 with hm₁
   have hm₁pos : 0 < m₁ := by positivity
   set c₀ : ℝ := m₁ / (8 * lagWeightTotal) with hc₀
   have hc₀pos : 0 < c₀ := by positivity
@@ -359,13 +359,13 @@ theorem exists_lag_gt_of_attainedTop_of_logDense (hβ : 1 / 2 < β₀) (h : Atta
     have h3 := Complex.abs_re_le_norm (∫ x in A..A + ℓ, trigSum F w γ x)
     have h4 := (abs_le.mp (h3.trans h1)).1
     linarith
-  have hsq : 3 * m₁ / 4 * ℓ ≤ ∫ x in A..A + ℓ, f x ^ 2 := by
+  have hsq : 3 * m₁ / 4 * ℓ ≤ ∫ x in A..A + ℓ, f x ^ (2 : ℕ) := by
     have h1 := integral_re_trigSum_sq_ge F w γ (fun q _ q' _ => pairMain_lagTopCoeff_nonneg β₀ q q')
       (fun q _ => pairMain_lagTopCoeff_self β₀ q) A ℓ hℓpos.le
-    have h2 : ‖w q₀‖ ^ 2 ≤ ∑ q ∈ F, ‖w q‖ ^ 2 :=
-      Finset.single_le_sum (f := fun q => ‖w q‖ ^ 2) (fun q _ => by positivity) hq₀F
+    have h2 : ‖w q₀‖ ^ (2 : ℕ) ≤ ∑ q ∈ F, ‖w q‖ ^ (2 : ℕ) :=
+      Finset.single_le_sum (f := fun q => ‖w q‖ ^ (2 : ℕ)) (fun q _ => by positivity) hq₀F
     rw [hwq₀] at h2
-    have h3 : m₁ * ℓ ≤ (∑ q ∈ F, ‖w q‖ ^ 2) * ℓ / 2 := by
+    have h3 : m₁ * ℓ ≤ (∑ q ∈ F, ‖w q‖ ^ (2 : ℕ)) * ℓ / 2 := by
       rw [hm₁]
       have := mul_le_mul_of_nonneg_right h2 hℓpos.le
       linarith

@@ -107,7 +107,7 @@ theorem norm_fn_eq_one {z : ℂ} (hz : ‖z‖ = 1) : ‖B.fn z‖ = 1 := by
   have hzr : ‖z‖ < B.radius := by rw [hz]; exact B.one_lt_radius
   have hzz : z * (starRingEnd ℂ) z = 1 := by
     rw [Complex.mul_conj]
-    have : Complex.normSq z = ‖z‖ ^ 2 := (Complex.normSq_eq_norm_sq z)
+    have : Complex.normSq z = ‖z‖ ^ (2 : ℕ) := (Complex.normSq_eq_norm_sq z)
     rw [this, hz]
     norm_num
   have hfac : ∀ j : Fin B.deg, ‖blaschkeFactor (B.zeros j) z‖ = 1 := by
@@ -191,14 +191,14 @@ theorem norm_hardyMul_blaschke_of_finsupp (B : FiniteBlaschke) {x : HardyDisk}
   have hgP := hasSum_circleAverage_normSq_diskCoeffOn (R := B.radius)
     (hPdiff.differentiableOn) (r := 1) zero_le_one B.one_lt_radius
   -- the two circle integrals agree
-  have hcircle : ∀ θ : ℝ, ‖B.fn (circleMap 0 1 θ) * P (circleMap 0 1 θ)‖ ^ 2
-      = ‖P (circleMap 0 1 θ)‖ ^ 2 := by
+  have hcircle : ∀ θ : ℝ, ‖B.fn (circleMap 0 1 θ) * P (circleMap 0 1 θ)‖ ^ (2 : ℕ)
+      = ‖P (circleMap 0 1 θ)‖ ^ (2 : ℕ) := by
     intro θ
     have hz : ‖circleMap 0 1 θ‖ = 1 := by
       rw [norm_circleMap_zero]; norm_num
     rw [norm_mul, B.norm_fn_eq_one hz, one_mul]
-  have hint : (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖B.fn (circleMap 0 1 θ) * P (circleMap 0 1 θ)‖ ^ 2
-      = (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ 2 := by
+  have hint : (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖B.fn (circleMap 0 1 θ) * P (circleMap 0 1 θ)‖ ^ (2 : ℕ)
+      = (2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ (2 : ℕ) := by
     congr 1
     exact intervalIntegral.integral_congr fun θ _ => hcircle θ
   -- identify coefficients
@@ -213,19 +213,19 @@ theorem norm_hardyMul_blaschke_of_finsupp (B : FiniteBlaschke) {x : HardyDisk}
     rw [hagree z hz]
     rfl
   -- assemble
-  have hsumBP : HasSum (fun n => ‖hardyMulCoeff B.toMultiplier x n‖ ^ 2)
-      ((2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ 2) := by
+  have hsumBP : HasSum (fun n => ‖hardyMulCoeff B.toMultiplier x n‖ ^ (2 : ℕ))
+      ((2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ (2 : ℕ)) := by
     rw [← hint]
     refine hgBP.congr_fun fun k => ?_
     rw [hcoeffBP k, one_pow, mul_one]
-  have hsumP : HasSum (fun n => ‖x n‖ ^ 2)
-      ((2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ 2) := by
+  have hsumP : HasSum (fun n => ‖x n‖ ^ (2 : ℕ))
+      ((2 * π)⁻¹ * ∫ θ in (0:ℝ)..(2 * π), ‖P (circleMap 0 1 θ)‖ ^ (2 : ℕ)) := by
     refine hgP.congr_fun fun k => ?_
     rw [hcoeffP k, one_pow, mul_one]
-  have hnormsq : ‖hardyMul B.toMultiplier x‖ ^ 2 = ‖x‖ ^ 2 := by
+  have hnormsq : ‖hardyMul B.toMultiplier x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
     rw [hardyDisk_norm_sq, hardyDisk_norm_sq, hsumP.tsum_eq]
-    have : ∑' n, ‖(hardyMul B.toMultiplier x) n‖ ^ 2
-        = ∑' n, ‖hardyMulCoeff B.toMultiplier x n‖ ^ 2 := rfl
+    have : ∑' n, ‖(hardyMul B.toMultiplier x) n‖ ^ (2 : ℕ)
+        = ∑' n, ‖hardyMulCoeff B.toMultiplier x n‖ ^ (2 : ℕ) := rfl
     rw [this, hsumBP.tsum_eq]
   have h1 : (0:ℝ) ≤ ‖hardyMul B.toMultiplier x‖ := norm_nonneg _
   have h2 : (0:ℝ) ≤ ‖x‖ := norm_nonneg _

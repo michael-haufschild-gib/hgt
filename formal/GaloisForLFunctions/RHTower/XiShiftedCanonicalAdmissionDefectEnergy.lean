@@ -9,7 +9,7 @@ The mixed mass--admission source debt has an exact connection-free primitive.  I
 canonical monic admission, `A` is a fixed monic amplitude of the same degree, and `D_y=A-P_y`,
 then the completed source transgression is
 
-`T_y(P_y,A) = -d/dy L_y(X D_y^2) - 2 h_y' [X^(n-1)]D_y`.
+`T_y(P_y,A) = -d/dy L_y(X D_y^(2 : ℕ)) - 2 h_y' [X^(n-1)]D_y`.
 
 The inverse-Hankel coefficient velocity cancels identically.  Thus mixed source curvature is
 carried only by odd defect-energy drift and canonical norm flux, not by raw admission speed.
@@ -64,9 +64,9 @@ def xiShiftedCanonicalAdmissionArithmeticDefectSourceDensity
     (w : ℝ) (n : ℕ) (A : Polynomial ℝ) : ℝ :=
   xiShiftedAdaptiveArithmeticAdmissionTransgression w
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n) A +
-    2 * xiShiftedCanonicalAdmissionNormFlux (w ^ 2) n *
-      xiShiftedCanonicalAdmissionDefectFirstCoeff (w ^ 2) n A
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n) A +
+    2 * xiShiftedCanonicalAdmissionNormFlux (w ^ (2 : ℕ)) n *
+      xiShiftedCanonicalAdmissionDefectFirstCoeff (w ^ (2 : ℕ)) n A
 
 /-- Every fixed finite adaptive shear packet is continuous in positive source mass. -/
 theorem continuousAt_xiShiftedFixedAdaptiveShearMoment
@@ -230,7 +230,7 @@ theorem xiShiftedCanonicalAdmission_oddCurrentGap_eq_normCoeff_add_defectEnergy
 /-- Source-mass shear transgression is the literal arithmetic transgression at square mass. -/
 theorem xiShiftedAdaptiveShearAdmissionTransgression_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (P A : Polynomial ℝ) :
-    xiShiftedAdaptiveShearAdmissionTransgression (w ^ 2) P A =
+    xiShiftedAdaptiveShearAdmissionTransgression (w ^ (2 : ℕ)) P A =
       xiShiftedAdaptiveArithmeticAdmissionTransgression w P A := by
   rw [xiShiftedAdaptiveArithmeticAdmissionTransgression_eq_source_sub hw,
     ← two_mul_xiShiftedAdaptiveShear_eq_arithmeticSource hw A,
@@ -242,7 +242,7 @@ theorem xiShiftedAdaptiveShearAdmissionTransgression_sq_eq_arithmetic
 plus its canonical norm connection. -/
 theorem xiShiftedCanonicalAdmissionDefectSourceDensity_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) (A : Polynomial ℝ) :
-    xiShiftedCanonicalAdmissionDefectSourceDensity (w ^ 2) n A =
+    xiShiftedCanonicalAdmissionDefectSourceDensity (w ^ (2 : ℕ)) n A =
       xiShiftedCanonicalAdmissionArithmeticDefectSourceDensity w n A := by
   rw [xiShiftedCanonicalAdmissionDefectSourceDensity,
     xiShiftedCanonicalAdmissionArithmeticDefectSourceDensity,
@@ -389,9 +389,9 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionDefectOddEnergy_eq_neg_arithmeticS
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n) (A : Polynomial ℝ)
     (hA : A.Monic) (hAdeg : A.natDegree = n)
     (hH : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef) :
     HasDerivAt (fun y => xiShiftedCanonicalAdmissionDefectOddEnergy y n A)
-      (-xiShiftedCanonicalAdmissionArithmeticDefectSourceDensity w n A) (w ^ 2) := by
+      (-xiShiftedCanonicalAdmissionArithmeticDefectSourceDensity w n A) (w ^ (2 : ℕ)) := by
   have hwpos : 0 < w := lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hw
   have h := hasDerivAt_xiShiftedCanonicalAdmissionDefectOddEnergy_eq_neg_sourceDensity
     (sq_pos_of_pos hwpos) hn A hA hAdeg hH

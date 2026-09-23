@@ -17,7 +17,7 @@ set_option maxHeartbeats 2000000
 /-- The literal corrected determinant has a uniform arithmetic reserve on the full compact orbit. -/
 theorem thetaCuspNativeOddCompensatedDet_compact_lower {C x : ℝ}
     (hC : 1000000000 ≤ C) (hx : x ∈ Icc (0 : ℝ) (137/2000)) :
-    Bottcher.completedThetaProfile x^6*100000000000000 ≤
+    Bottcher.completedThetaProfile x^(6 : ℕ)*100000000000000 ≤
       thetaCuspNativeOddCompensatedDet C x := by
   obtain ⟨hS0, hS1, hA0, hA1, hW0, _⟩ := thetaCuspModularLyapunovState_compact_box hx
   have hu0 : 0 ≤ -(thetaCuspModularDrift x).re := by linarith
@@ -30,7 +30,7 @@ theorem thetaCuspNativeOddCompensatedDet_compact_lower {C x : ℝ}
   have hdpos := thetaCuspNativeOddHeadDet_pos x
   have hcg := mul_le_mul_of_nonneg_left hg
     (show 0 ≤ (1000000000 : ℝ)*thetaCuspNativeOddHeadDet x from by positivity)
-  have hfixed : Bottcher.completedThetaProfile x^6*100000000000000 ≤
+  have hfixed : Bottcher.completedThetaProfile x^(6 : ℕ)*100000000000000 ≤
       thetaCuspNativeOddCompensatedDet 1000000000 x := by
     unfold thetaCuspNativeOddCompensatedDet
     rw [thetaCuspNativeOddHankelThreeDet_eq_compactPolynomial]

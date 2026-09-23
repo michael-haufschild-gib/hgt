@@ -100,7 +100,7 @@ theorem integral_cpow_neg_linePt_one (a b : ℝ) :
 theorem rpow_neg_half_eq (n : ℕ) : (n : ℝ) ^ (-(1/2) : ℝ) = (Real.sqrt n)⁻¹ := by
   rw [Real.rpow_neg (Nat.cast_nonneg n), Real.sqrt_eq_rpow]
 
-theorem sum_rpow_neg_half_le (K : ℕ) :
+theorem sum_rpow_neg_half_le_zetaLineFirstMoment (K : ℕ) :
     ∑ n ∈ Finset.Icc 1 K, ((n : ℝ) ^ (-(1/2) : ℝ)) ≤ 2 * Real.sqrt K := by
   induction K with
   | zero => simp
@@ -163,7 +163,7 @@ theorem norm_sum_integral_osc_le {N M : ℕ} (hM : 2 ≤ M) (hMN : M ≤ N) (a b
       intro n hn
       have := Finset.mem_Ioc.mp hn
       exact Finset.mem_Icc.mpr ⟨by omega, this.2⟩
-    have hbound := le_trans hsub (sum_rpow_neg_half_le M)
+    have hbound := le_trans hsub (sum_rpow_neg_half_le_zetaLineFirstMoment M)
     have h2 : (0 : ℝ) < 2 / Real.log 2 := by positivity
     calc (2 / Real.log 2) * ∑ n ∈ Finset.Ioc 1 M, ((n : ℝ) ^ (-(1/2) : ℝ))
         ≤ (2 / Real.log 2) * (2 * Real.sqrt M) := by
@@ -197,7 +197,7 @@ theorem norm_sum_integral_osc_le {N M : ℕ} (hM : 2 ≤ M) (hMN : M ≤ N) (a b
       intro n hn
       have := Finset.mem_Ioc.mp hn
       exact Finset.mem_Icc.mpr ⟨by omega, this.2⟩
-    have hbound := le_trans hsub (sum_rpow_neg_half_le N)
+    have hbound := le_trans hsub (sum_rpow_neg_half_le_zetaLineFirstMoment N)
     have h2 : (0 : ℝ) < 2 / Real.log M := by positivity
     calc (2 / Real.log M) * ∑ n ∈ Finset.Ioc M N, ((n : ℝ) ^ (-(1/2) : ℝ))
         ≤ (2 / Real.log M) * (2 * Real.sqrt N) := mul_le_mul_of_nonneg_left hbound h2.le

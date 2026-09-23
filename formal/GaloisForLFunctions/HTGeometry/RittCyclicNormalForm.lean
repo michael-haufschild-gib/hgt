@@ -33,7 +33,7 @@ noncomputable section
 theorem ratFuncDeriv_div {N D : K[X]} (hD : D ≠ 0) :
     ratFuncDeriv (algebraMap K[X] (RatFunc K) N / algebraMap K[X] (RatFunc K) D)
       = algebraMap K[X] (RatFunc K) (derivative N * D - N * derivative D)
-        / algebraMap K[X] (RatFunc K) (D ^ 2) := by
+        / algebraMap K[X] (RatFunc K) (D ^ (2 : ℕ)) := by
   have hDR : algebraMap K[X] (RatFunc K) D ≠ 0 := algebraMap_ne_zero_of_ne_zero hD
   set f : RatFunc K :=
     algebraMap K[X] (RatFunc K) N / algebraMap K[X] (RatFunc K) D with hf
@@ -44,10 +44,10 @@ theorem ratFuncDeriv_div {N D : K[X]} (hD : D ≠ 0) :
       = algebraMap K[X] (RatFunc K) (derivative N) := by
     have h := congrArg ratFuncDeriv hfD
     rwa [ratFuncDeriv_mul, ratFuncDeriv_algebraMap, ratFuncDeriv_algebraMap] at h
-  have hsq : algebraMap K[X] (RatFunc K) (D ^ 2) ≠ 0 :=
+  have hsq : algebraMap K[X] (RatFunc K) (D ^ (2 : ℕ)) ≠ 0 :=
     algebraMap_ne_zero_of_ne_zero (pow_ne_zero _ hD)
   rw [eq_div_iff hsq]
-  have hD2 : algebraMap K[X] (RatFunc K) (D ^ 2)
+  have hD2 : algebraMap K[X] (RatFunc K) (D ^ (2 : ℕ))
       = algebraMap K[X] (RatFunc K) D * algebraMap K[X] (RatFunc K) D := by
     rw [← map_mul]
     ring_nf
@@ -155,7 +155,7 @@ theorem cnf_deriv_poly {p : ℕ} (hp : 0 < p) (A B lam : K) :
 theorem ratFuncDeriv_cnf {p : ℕ} (hp : 0 < p) (A B lam : K) :
     ratFuncDeriv (cnf p A B lam)
       = algebraMap K[X] (RatFunc K) (C ((p : K) * lam * (A - B)) * X ^ (p - 1))
-        / algebraMap K[X] (RatFunc K) ((cnfDen p lam) ^ 2) := by
+        / algebraMap K[X] (RatFunc K) ((cnfDen p lam) ^ (2 : ℕ)) := by
   rw [cnf, ratFuncDeriv_div (cnfDen_ne_zero hp lam), cnf_deriv_poly hp]
 
 end

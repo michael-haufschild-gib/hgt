@@ -34,7 +34,7 @@ noncomputable def twoLocalPauliReturnExcisedCircuitImage
       δ ≤ 1 - ‖pauliCoeff
         (V : Matrix (FiniteQubitConfiguration (Fin n))
           (FiniteQubitConfiguration (Fin n)) ℂ)
-        pauliCharacterZero‖ ^ 2
+        pauliCharacterZero‖ ^ (2 : ℕ)
 
 /-- Inclusion of the return-excised occupied endpoint image. -/
 def twoLocalPauliReturnExcisedCircuitTarget
@@ -71,7 +71,7 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           (Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by
   let V := twoLocalPauliReturnExcisedCircuitTarget U δ
   have hbase :=
@@ -80,17 +80,17 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
   rw [twoLocalPauliReturnExcisedCircuitPolynomialWindowReturnEvent]
   have hsum :
       (∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets V),
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             twoLocalPauliUnitaryAnticommutingIncidenceMass (V c.1))) ≤
         (Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by
     calc
       ∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets V),
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             twoLocalPauliUnitaryAnticommutingIncidenceMass (V c.1)) ≤
         ∑ _c : ↥(twoLocalPauliHighIncidenceCircuitTargets V),
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             (((6 * n - 4 : ℕ) : ℝ) * δ)) := by
         apply Finset.sum_le_sum
         intro c _
@@ -98,7 +98,7 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
         have hcδ : δ ≤ 1 - ‖pauliCoeff
             (V c.1 : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)
-            pauliCharacterZero‖ ^ 2 := by
+            pauliCharacterZero‖ ^ (2 : ℕ) := by
           exact (Finset.mem_filter.mp c.1.2).2.2
         have hcoef : (0 : ℝ) ≤ ((6 * n - 4 : ℕ) : ℝ) := by positivity
         have hinc :=
@@ -107,16 +107,16 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
         have hδinc : ((6 * n - 4 : ℕ) : ℝ) * δ ≤
             twoLocalPauliUnitaryAnticommutingIncidenceMass (V c.1) :=
           (mul_le_mul_of_nonneg_left hcδ hcoef).trans hinc
-        have ha : 0 < gaussianIntervalActivationMass ^ 2 / 2 := by
+        have ha : 0 < gaussianIntervalActivationMass ^ (2 : ℕ) / 2 := by
           have hg := gaussianIntervalActivationMass_pos
           nlinarith [sq_pos_of_pos hg]
         nlinarith
       _ = (Fintype.card ↥(twoLocalPauliHighIncidenceCircuitTargets V) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by
         simp [mul_assoc]
       _ ≤ (Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by
         gcongr
         simpa only [Fintype.card_coe] using
@@ -124,11 +124,11 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
   have hmul :
       (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           (∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets V),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (V c.1))) ≤
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           (Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by
     have hn0 : (0 : ℝ) ≤ n := by positivity
     have hP : (0 : ℝ) ≤ 649 * (n : ℝ) ^ (k + 7) :=
@@ -136,16 +136,16 @@ theorem stdGaussian_twoLocalPauli_measure_returnExcisedCircuitPolynomialWindowRe
     calc
       (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           (∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets V),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (V c.1))) ≤
         (649 * (n : ℝ) ^ (k + 7)) *
           ((Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               ((6 * n - 4 : ℕ) : ℝ) * δ)) :=
         mul_le_mul_of_nonneg_left hsum hP
       _ = (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           (Fintype.card ↥(twoLocalPauliReturnExcisedCircuitImage U δ) : ℝ) *
-          Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+          Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
             ((6 * n - 4 : ℕ) : ℝ) * δ) := by ring
   exact hbase.trans (add_le_add_right hmul _)
 

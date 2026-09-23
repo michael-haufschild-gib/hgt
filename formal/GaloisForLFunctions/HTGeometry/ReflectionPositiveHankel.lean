@@ -73,15 +73,15 @@ theorem momentFunctional_pow_two_eq_reflectionPositiveStateVector_normSq
     (m : ℕ → ℝ) (v : ℕ → E)
     (hgram : ∀ i j, inner ℝ (v i) (v j) = m (i + j))
     (p : Polynomial ℝ) :
-    momentFunctional m (p ^ 2) =
+    momentFunctional m (p ^ (2 : ℕ)) =
       ‖reflectionPositiveStateVector v
-        (Polynomial.toFn (p.natDegree + 1) p)‖ ^ 2 := by
+        (Polynomial.toFn (p.natDegree + 1) p)‖ ^ (2 : ℕ) := by
   let N := p.natDegree + 1
   let c : Fin N → ℝ := Polynomial.toFn N p
-  change momentFunctional m (p ^ 2) = ‖reflectionPositiveStateVector v c‖ ^ 2
+  change momentFunctional m (p ^ (2 : ℕ)) = ‖reflectionPositiveStateVector v c‖ ^ (2 : ℕ)
   calc
-    momentFunctional m (p ^ 2) =
-        momentFunctional m ((∑ i : Fin N, c i • X ^ (i : ℕ)) ^ 2) := by
+    momentFunctional m (p ^ (2 : ℕ)) =
+        momentFunctional m ((∑ i : Fin N, c i • X ^ (i : ℕ)) ^ (2 : ℕ)) := by
       rw [sum_toFn_smul_X_pow_eq]
     _ = ∑ i : Fin N, ∑ j : Fin N,
         c i * c j * m ((i : ℕ) + (j : ℕ)) :=
@@ -89,14 +89,14 @@ theorem momentFunctional_pow_two_eq_reflectionPositiveStateVector_normSq
     _ = inner ℝ (reflectionPositiveStateVector v c)
         (reflectionPositiveStateVector v c) :=
       (inner_reflectionPositiveStateVector_self m v hgram c).symm
-    _ = ‖reflectionPositiveStateVector v c‖ ^ 2 := real_inner_self_eq_norm_sq _
+    _ = ‖reflectionPositiveStateVector v c‖ ^ (2 : ℕ) := real_inner_self_eq_norm_sq _
 
 /-- Real reflection-positive Gram data make the moment functional nonnegative on every square. -/
 theorem momentFunctional_pow_two_nonneg_of_reflectionPositiveGram
     (m : ℕ → ℝ) (v : ℕ → E)
     (hgram : ∀ i j, inner ℝ (v i) (v j) = m (i + j))
     (p : Polynomial ℝ) :
-    0 ≤ momentFunctional m (p ^ 2) := by
+    0 ≤ momentFunctional m (p ^ (2 : ℕ)) := by
   rw [momentFunctional_pow_two_eq_reflectionPositiveStateVector_normSq m v hgram]
   positivity
 
@@ -160,15 +160,15 @@ theorem momentFunctional_pow_two_eq_complexReflectionPositiveStateVector_normSq
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ))
     (p : Polynomial ℝ) :
-    momentFunctional m (p ^ 2) =
+    momentFunctional m (p ^ (2 : ℕ)) =
       ‖complexReflectionPositiveStateVector v
-        (Polynomial.toFn (p.natDegree + 1) p)‖ ^ 2 := by
+        (Polynomial.toFn (p.natDegree + 1) p)‖ ^ (2 : ℕ) := by
   let N := p.natDegree + 1
   let c : Fin N → ℝ := Polynomial.toFn N p
-  change momentFunctional m (p ^ 2) = ‖complexReflectionPositiveStateVector v c‖ ^ 2
+  change momentFunctional m (p ^ (2 : ℕ)) = ‖complexReflectionPositiveStateVector v c‖ ^ (2 : ℕ)
   calc
-    momentFunctional m (p ^ 2) =
-        momentFunctional m ((∑ i : Fin N, c i • X ^ (i : ℕ)) ^ 2) := by
+    momentFunctional m (p ^ (2 : ℕ)) =
+        momentFunctional m ((∑ i : Fin N, c i • X ^ (i : ℕ)) ^ (2 : ℕ)) := by
       rw [sum_toFn_smul_X_pow_eq]
     _ = ∑ i : Fin N, ∑ j : Fin N,
         c i * c j * m ((i : ℕ) + (j : ℕ)) :=
@@ -176,7 +176,7 @@ theorem momentFunctional_pow_two_eq_complexReflectionPositiveStateVector_normSq
     _ = (inner ℂ (complexReflectionPositiveStateVector v c)
         (complexReflectionPositiveStateVector v c)).re :=
       (re_inner_complexReflectionPositiveStateVector_self m v hgram c).symm
-    _ = ‖complexReflectionPositiveStateVector v c‖ ^ 2 :=
+    _ = ‖complexReflectionPositiveStateVector v c‖ ^ (2 : ℕ) :=
       inner_self_eq_norm_sq (𝕜 := ℂ) _
 
 /-- Complex reflection-positive Gram data make the real moment functional nonnegative on every
@@ -186,7 +186,7 @@ theorem momentFunctional_pow_two_nonneg_of_complexReflectionPositiveGram
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ))
     (p : Polynomial ℝ) :
-    0 ≤ momentFunctional m (p ^ 2) := by
+    0 ≤ momentFunctional m (p ^ (2 : ℕ)) := by
   rw [momentFunctional_pow_two_eq_complexReflectionPositiveStateVector_normSq m v hgram]
   positivity
 
@@ -214,7 +214,7 @@ theorem momentFunctional_pow_two_nonneg_of_selfAdjointObservable
     (m : ℕ → ℝ) (A : F →L[ℝ] F) (omega : F) (hA : IsSelfAdjoint A)
     (hmom : ∀ n, m n = inner ℝ omega ((A ^ n) omega))
     (p : Polynomial ℝ) :
-    0 ≤ momentFunctional m (p ^ 2) := by
+    0 ≤ momentFunctional m (p ^ (2 : ℕ)) := by
   apply momentFunctional_pow_two_nonneg_of_reflectionPositiveGram m
     (fun n => (A ^ n) omega)
   intro i j
@@ -227,7 +227,7 @@ theorem momentFunctional_pow_two_nonneg_of_complexSelfAdjointObservable
     (m : ℕ → ℝ) (A : F →L[ℂ] F) (omega : F) (hA : IsSelfAdjoint A)
     (hmom : ∀ n, inner ℂ omega ((A ^ n) omega) = (m n : ℂ))
     (p : Polynomial ℝ) :
-    0 ≤ momentFunctional m (p ^ 2) := by
+    0 ≤ momentFunctional m (p ^ (2 : ℕ)) := by
   apply momentFunctional_pow_two_nonneg_of_complexReflectionPositiveGram m
     (fun n => (A ^ n) omega)
   intro i j

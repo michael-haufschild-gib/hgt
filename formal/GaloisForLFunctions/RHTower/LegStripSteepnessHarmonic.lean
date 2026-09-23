@@ -66,8 +66,8 @@ Assembled from `behind_csch_sum_tendsto` (the abstract-distance limit, reindexed
 distance identity `harmMid_sub_harmPole`. -/
 theorem behind_energy_harmonic {c : ℝ} (hc : 0 < c) :
     Tendsto (fun i : ℕ => ∑ k ∈ Finset.range (i+1),
-        (1/(((i+1:ℕ)):ℝ)^2) * (rcsch ((harmMid c i - harmPole c (i-k))/2))^2)
-      atTop (𝓝 (2*π^2/c^2)) := by
+        (1/(((i+1:ℕ)):ℝ)^(2 : ℕ)) * (rcsch ((harmMid c i - harmPole c (i-k))/2))^(2 : ℕ))
+      atTop (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   have hcomp := (behind_csch_sum_tendsto hc).comp (tendsto_add_atTop_nat 1)
   refine hcomp.congr (fun i => ?_)
   rw [Function.comp_apply]
@@ -117,8 +117,8 @@ the exact midpoint-to-ahead-pole distances `harmPole c (i+1+k) − harmMid c i` 
 `2π²/c²` — the ahead half of `2W(m)δ/i → 2π²/c` on the actual pole positions. -/
 theorem ahead_energy_harmonic {c : ℝ} (hc : 0 < c) :
     Tendsto (fun i : ℕ => ∑ k ∈ Finset.range (i+1),
-        (1/(((i+1:ℕ)):ℝ)^2) * (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^2)
-      atTop (𝓝 (2*π^2/c^2)) := by
+        (1/(((i+1:ℕ)):ℝ)^(2 : ℕ)) * (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^(2 : ℕ))
+      atTop (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   have hcomp := (ahead_csch_sum_tendsto hc).comp (tendsto_add_atTop_nat 1)
   refine hcomp.congr (fun i => ?_)
   rw [Function.comp_apply]
@@ -148,14 +148,14 @@ Combines `behind_energy_harmonic` and `ahead_energy_harmonic` via the `range (2i
 the literal `spurLatticeEnergy` for the balanced model. -/
 theorem harmonic_midpoint_energy_steepness {c : ℝ} (hc : 0 < c) :
     Tendsto (fun i : ℕ =>
-        spurLatticeEnergy (Finset.range (2*i+2)) (harmPole c) (harmMid c i) / (((i+1:ℕ)):ℝ)^2)
-      atTop (𝓝 (π^2/c^2)) := by
+        spurLatticeEnergy (Finset.range (2*i+2)) (harmPole c) (harmMid c i) / (((i+1:ℕ)):ℝ)^(2 : ℕ))
+      atTop (𝓝 (π^(2 : ℕ)/c^(2 : ℕ))) := by
   have hsplit : ∀ i : ℕ,
-      spurLatticeEnergy (Finset.range (2*i+2)) (harmPole c) (harmMid c i) / (((i+1:ℕ)):ℝ)^2
+      spurLatticeEnergy (Finset.range (2*i+2)) (harmPole c) (harmMid c i) / (((i+1:ℕ)):ℝ)^(2 : ℕ)
       = (1/4) * ((∑ k ∈ Finset.range (i+1),
-            (1/(((i+1:ℕ)):ℝ)^2) * (rcsch ((harmMid c i - harmPole c (i-k))/2))^2)
+            (1/(((i+1:ℕ)):ℝ)^(2 : ℕ)) * (rcsch ((harmMid c i - harmPole c (i-k))/2))^(2 : ℕ))
           + ∑ k ∈ Finset.range (i+1),
-            (1/(((i+1:ℕ)):ℝ)^2) * (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^2) := by
+            (1/(((i+1:ℕ)):ℝ)^(2 : ℕ)) * (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^(2 : ℕ)) := by
     intro i
     rw [spurLatticeEnergy, show 2*i+2 = (i+1)+(i+1) by ring, Finset.sum_range_add,
       mul_div_assoc, add_div]
@@ -169,13 +169,13 @@ theorem harmonic_midpoint_energy_steepness {c : ℝ} (hc : 0 < c) :
     · rw [Finset.sum_div]
       apply Finset.sum_congr rfl
       intro k _
-      have heven : (rcsch ((harmMid c i - harmPole c ((i+1)+k))/2))^2
-          = (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^2 := by
+      have heven : (rcsch ((harmMid c i - harmPole c ((i+1)+k))/2))^(2 : ℕ)
+          = (rcsch ((harmPole c (i+1+k) - harmMid c i)/2))^(2 : ℕ) := by
         rw [show (harmMid c i - harmPole c ((i+1)+k))/2
           = -((harmPole c (i+1+k) - harmMid c i)/2) by ring, rcsch_neg]; ring
       rw [heven]; ring
   have hlim := ((behind_energy_harmonic hc).add (ahead_energy_harmonic hc)).const_mul (1/4 : ℝ)
-  rw [show (1/4 : ℝ)*(2*π^2/c^2 + 2*π^2/c^2) = π^2/c^2 by ring] at hlim
+  rw [show (1/4 : ℝ)*(2*π^(2 : ℕ)/c^(2 : ℕ) + 2*π^(2 : ℕ)/c^(2 : ℕ)) = π^(2 : ℕ)/c^(2 : ℕ) by ring] at hlim
   exact hlim.congr' (Filter.Eventually.of_forall (fun i => (hsplit i).symm))
 
 end RHTower

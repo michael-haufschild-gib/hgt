@@ -16,7 +16,7 @@ namespace RHTower.Sieve
 open Filter Finset
 
 /-- A medium factor of length at least `a^(1/8)` has a twenty-fourth-power frequency horizon at
-least `a^3`.  This is the exact exponent arithmetic used in Menon's Case IIa. -/
+least `a^(3 : ℕ)`.  This is the exact exponent arithmetic used in Menon's Case IIa. -/
 theorem rpow_cube_le_pow_twentyFour_of_rpow_oneEighth_le
     {a N : ℝ} (ha : 0 ≤ a) (hN : a ^ (1 / 8 : ℝ) ≤ N) :
     a ^ (3 : ℕ) ≤ N ^ (24 : ℕ) := by

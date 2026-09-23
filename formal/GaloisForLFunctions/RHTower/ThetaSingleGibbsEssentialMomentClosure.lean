@@ -48,13 +48,13 @@ theorem momentFunctional_thetaCuspFirstAtomGibbs_eq_integral
   · intro k hk
     exact
       (integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-        k (X ^ 2) (n := 1) (by norm_num)).const_mul _
+        k (X ^ (2 : ℕ)) (n := 1) (by norm_num)).const_mul _
 
 /-- Every polynomial square is nonnegative for the first-atom Gibbs moment functional. -/
 theorem momentFunctional_thetaCuspFirstAtomGibbs_sq_nonneg
     (p : Polynomial ℝ) :
     0 ≤ HTGeometry.momentFunctional
-      (fun m => thetaCuspLiouvilleGibbsMoment m 1) (p ^ 2) := by
+      (fun m => thetaCuspLiouvilleGibbsMoment m 1) (p ^ (2 : ℕ)) := by
   rw [momentFunctional_thetaCuspFirstAtomGibbs_eq_integral]
   apply integral_nonneg_of_ae
   filter_upwards with x
@@ -77,12 +77,12 @@ theorem thetaCuspFirstAtomMorseQuarticRemainder_nonneg :
         3 * thetaCuspLiouvilleGibbsMoment 8 1 := by
   let L : ℕ → ℝ := fun m => thetaCuspLiouvilleGibbsMoment m 1
   let r : Polynomial ℝ :=
-    (6 : ℝ) • X ^ 4 + (-18 : ℝ) • X ^ 5 + (51 / 2 : ℝ) • X ^ 6 +
-      (-15 : ℝ) • X ^ 7 + (3 : ℝ) • X ^ 8
+    (6 : ℝ) • X ^ (4 : ℕ) + (-18 : ℝ) • X ^ (5 : ℕ) + (51 / 2 : ℝ) • X ^ (6 : ℕ) +
+      (-15 : ℝ) • X ^ (7 : ℕ) + (3 : ℝ) • X ^ (8 : ℕ)
   have hreval (x : ℝ) :
       r.eval x =
-        (3 / 4 : ℝ) * (x ^ 2 * (x - 2) * (2 * x - 1)) ^ 2 +
-          (3 / 4 : ℝ) * (x ^ 2 * (x - 2)) ^ 2 := by
+        (3 / 4 : ℝ) * (x ^ (2 : ℕ) * (x - 2) * (2 * x - 1)) ^ (2 : ℕ) +
+          (3 / 4 : ℝ) * (x ^ (2 : ℕ) * (x - 2)) ^ (2 : ℕ) := by
     dsimp [r]
     simp only [eval_add, eval_smul, eval_pow, eval_X]
     ring
@@ -133,9 +133,9 @@ theorem thetaCuspFirstAtomWardMoment_zero_le_sevenThousandNineHundredTwentySix_d
   have hcoef0 : 0 < 4 * Real.pi - 1 := by
     nlinarith [Real.pi_gt_three]
   have hbudget :
-      ((4 * Real.pi - 1) * Real.exp (-Real.pi)) ^ 2 ≤
+      ((4 * Real.pi - 1) * Real.exp (-Real.pi)) ^ (2 : ℕ) ≤
         ((4 * (3.14159265358979323847 : ℝ) - 1) *
-          (0.0432139182638 : ℝ)) ^ 2 := by
+          (0.0432139182638 : ℝ)) ^ (2 : ℕ) := by
     have hcoef :
         4 * Real.pi - 1 ≤ 4 * (3.14159265358979323847 : ℝ) - 1 := by
       nlinarith [Real.pi_lt_d20]
@@ -147,7 +147,7 @@ theorem thetaCuspFirstAtomWardMoment_zero_le_sevenThousandNineHundredTwentySix_d
         (by norm_num)
     exact pow_le_pow_left₀ (mul_nonneg hcoef0.le he0.le) hmul 2
   have horient :
-      (0.0432139182637 : ℝ) ^ 2 ≤ Real.exp (-Real.pi) ^ 2 := by
+      (0.0432139182637 : ℝ) ^ (2 : ℕ) ≤ Real.exp (-Real.pi) ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ (by norm_num)
       exp_neg_pi_rationalEnclosure_lower 2
   rw [hraw] at hsq
@@ -156,8 +156,8 @@ theorem thetaCuspFirstAtomWardMoment_zero_le_sevenThousandNineHundredTwentySix_d
   have hWlt : (0.07926 : ℝ) < thetaCuspFirstAtomWardMoment 0 :=
     lt_of_not_ge hnot
   have hrawLower :
-      (2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ)) ^ 2 <
-        (2 * Real.pi * thetaCuspFirstAtomWardMoment 0) ^ 2 := by
+      (2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ)) ^ (2 : ℕ) <
+        (2 * Real.pi * thetaCuspFirstAtomWardMoment 0) ^ (2 : ℕ) := by
     have hbase :
         2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ) <
           2 * Real.pi * thetaCuspFirstAtomWardMoment 0 := by
@@ -230,27 +230,27 @@ theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_of_essentialBounds
     ThetaCuspFirstAtomSingleGibbsMorseCertificate,
     ThetaCuspFirstAtomSingleGibbsRelaxedCertificate]
   constructor
-  · change (14 * (3005 / 2997 : ℝ) ^ 2 - 9) * J1 ^ 2 * U ≤
-      9 * J0 * C0 ^ 2
+  · change (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) * J1 ^ (2 : ℕ) * U ≤
+      9 * J0 * C0 ^ (2 : ℕ)
     calc
-      (14 * (3005 / 2997 : ℝ) ^ 2 - 9) * J1 ^ 2 * U ≤
-          (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-            (0.00047155079379 : ℝ) ^ 2 *
+      (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) * J1 ^ (2 : ℕ) * U ≤
+          (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+            (0.00047155079379 : ℝ) ^ (2 : ℕ) *
               (0.00397751749476338850697725 : ℝ) := by
             gcongr
       _ ≤ 9 * (0.0036560148424 : ℝ) *
-          (0.000369937497095 : ℝ) ^ 2 := by norm_num
-      _ ≤ 9 * J0 * C0 ^ 2 := by gcongr
+          (0.000369937497095 : ℝ) ^ (2 : ℕ) := by norm_num
+      _ ≤ 9 * J0 * C0 ^ (2 : ℕ) := by gcongr
   · change 16 * ((3005 / 2997 : ℝ) * E0) *
-      ((3005 / 2997 : ℝ) * J1) ≤ 45 * J0 ^ 2
+      ((3005 / 2997 : ℝ) * J1) ≤ 45 * J0 ^ (2 : ℕ)
     calc
           16 * ((3005 / 2997 : ℝ) * E0) *
           ((3005 / 2997 : ℝ) * J1) ≤
           16 * ((3005 / 2997 : ℝ) * (0.07926 : ℝ)) *
             ((3005 / 2997 : ℝ) * (0.00047155079379 : ℝ)) := by
               gcongr
-      _ ≤ 45 * (0.0036560148424 : ℝ) ^ 2 := by norm_num
-      _ ≤ 45 * J0 ^ 2 := by gcongr
+      _ ≤ 45 * (0.0036560148424 : ℝ) ^ (2 : ℕ) := by norm_num
+      _ ≤ 45 * J0 ^ (2 : ℕ) := by gcongr
 
 /-- Existing rational moment boxes imply the four remaining essential source-functional bounds.
 Seven of the eighteen moment endpoints are not used. -/
@@ -323,7 +323,7 @@ theorem thetaCuspFirstAtomSingleGibbs_twoChannelHypervirialClosure_of_lowDegreeC
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤
       (primeArchSourceTraceHankel (Polynomial.C a + Polynomial.C b * Polynomial.X)).re) ∧
     (PrimeArchSourceTraceHankelIntDegreeTwoTailNonnegative →
@@ -365,7 +365,7 @@ theorem thetaCuspFirstAtomSingleGibbs_twoChannelHypervirialClosure_of_essentialB
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤
       (primeArchSourceTraceHankel (Polynomial.C a + Polynomial.C b * Polynomial.X)).re) ∧
     (PrimeArchSourceTraceHankelIntDegreeTwoTailNonnegative →
@@ -381,7 +381,7 @@ theorem thetaCuspFirstAtomSingleGibbs_likelihoodSingleLossClosure_of_essentialBo
     (16 * (3005 / 2997 : ℝ) *
           thetaCuspBornWittenRadialRawMoment 0 0 1 *
           thetaCuspBornWittenRadialRawMoment 2 0 1 ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤
       (primeArchSourceTraceHankel (Polynomial.C a + Polynomial.C b * Polynomial.X)).re) := by
   have hold :=

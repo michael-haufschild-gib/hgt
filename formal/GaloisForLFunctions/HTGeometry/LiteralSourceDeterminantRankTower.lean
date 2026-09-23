@@ -157,7 +157,7 @@ theorem rankTwelveLiteralSourceIncrementGenerator_span_eq_top (n : ℕ) :
 /-- Determinant of every relative source increment is a line. -/
 theorem rankTwelveLiteralSourceIncrementDeterminant_finrank (n : ℕ) :
     finrank ℂ
-      (⋀[ℂ]^1 (RankTwelveLiteralSourceDeterminantIncrement n)) = 1 := by
+      (⋀[ℂ]^(1 : ℕ) (RankTwelveLiteralSourceDeterminantIncrement n)) = 1 := by
   rw [exteriorPower.finrank_eq,
     rankTwelveLiteralSourceDeterminantIncrement_finrank]
   simp

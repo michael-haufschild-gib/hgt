@@ -59,7 +59,7 @@ theorem causalBoundedChainShift_higher_shift_injective_iff (n : ℕ) (z : ℂ) :
 /-- Second-order shifted equations also retain uniqueness on the whole nonpositive real radius. -/
 theorem causalBoundedChainShift_square_shift_injective_iff (z : ℂ) :
     Function.Injective (algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) z -
-      causalBoundedChainShift^2 : causalBoundedChain →L[ℂ] causalBoundedChain) ↔ 1 < ‖z‖ ∨ (z.re ≤ 0 ∧ z.im = 0) := by
+      causalBoundedChainShift^(2 : ℕ) : causalBoundedChain →L[ℂ] causalBoundedChain) ↔ 1 < ‖z‖ ∨ (z.re ≤ 0 ∧ z.im = 0) := by
   have h := not_congr (causalBoundedChainShift_square_mem_pointSpectrum_iff z)
   exact (causalBoundedChainShift_pow_shift_injective_iff 2 z).trans
     (by simpa only [not_and_or, not_or, not_not, not_le, not_lt] using h)
@@ -67,7 +67,7 @@ theorem causalBoundedChainShift_square_shift_injective_iff (z : ℂ) :
 /-- Every nonpositive real shift of the actual second derivative is injective. -/
 theorem causalBoundedChainShift_square_negative_injective (t : ℝ≥0) :
     Function.Injective (algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) (-(t : ℂ)) -
-      causalBoundedChainShift^2 : causalBoundedChain →L[ℂ] causalBoundedChain) := by
+      causalBoundedChainShift^(2 : ℕ) : causalBoundedChain →L[ℂ] causalBoundedChain) := by
   apply (causalBoundedChainShift_square_shift_injective_iff (-(t : ℂ))).mpr
   right
   constructor
@@ -78,9 +78,9 @@ theorem causalBoundedChainShift_square_negative_injective (t : ℝ≥0) :
 /-- Along the negative real axis, unique second-order solutions exist for all data exactly beyond radius one. -/
 theorem causalBoundedChainShift_square_negative_surjective_iff (t : ℝ≥0) :
     Function.Surjective (algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) (-(t : ℂ)) -
-      causalBoundedChainShift^2 : causalBoundedChain →L[ℂ] causalBoundedChain) ↔ 1 < (t : ℝ) := by
+      causalBoundedChainShift^(2 : ℕ) : causalBoundedChain →L[ℂ] causalBoundedChain) ↔ 1 < (t : ℝ) := by
   let F : causalBoundedChain →L[ℂ] causalBoundedChain :=
-    algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) (-(t : ℂ)) - causalBoundedChainShift^2
+    algebraMap ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) (-(t : ℂ)) - causalBoundedChainShift^(2 : ℕ)
   have hb : Function.Surjective F ↔ IsUnit F :=
     ⟨fun hs => ContinuousLinearMap.isUnit_iff_bijective.mpr
       ⟨causalBoundedChainShift_square_negative_injective t, hs⟩,
@@ -93,7 +93,7 @@ theorem causalBoundedChainShift_square_negative_surjective_iff (t : ℝ≥0) :
 
 /-- The entire missing second-order eigenvalue set is the closed negative-real unit radius. -/
 theorem causalBoundedChainShift_square_spectrum_diff_pointSpectrum :
-    spectrum ℂ (causalBoundedChainShift^2) \ causalBoundedChainPowerPointSpectrum 2 =
+    spectrum ℂ (causalBoundedChainShift^(2 : ℕ)) \ causalBoundedChainPowerPointSpectrum 2 =
       {z : ℂ | ‖z‖ ≤ 1 ∧ z.re ≤ 0 ∧ z.im = 0} := by
   rw [causalBoundedChainShift_square_spectrum, causalBoundedChainPowerPointSpectrum_square]
   ext z

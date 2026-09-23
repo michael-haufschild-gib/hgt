@@ -28,7 +28,7 @@ theorem conj_bohrChar (lam t : ℝ) : conj (bohrChar lam t) = bohrExp lam t := b
 /-- **The coefficients of a product are bounded by the mean squares of the factors.** -/
 theorem norm_bohrCoefficient_mul_sq_le {u v : ℝ → ℂ} (huc : Continuous u)
     (hua : IsBohrAlmostPeriodic u) (hvc : Continuous v) (hva : IsBohrAlmostPeriodic v) (lam : ℝ) :
-    ‖bohrCoefficient (fun t => u t * v t) lam‖ ^ 2
+    ‖bohrCoefficient (fun t => u t * v t) lam‖ ^ (2 : ℕ)
       ≤ (bohrMean (fun t => u t * conj (u t))).re
         * (bohrMean (fun t => v t * conj (v t))).re := by
   set k : ℝ → ℂ := fun t => conj (v t) * bohrExp lam t with hk

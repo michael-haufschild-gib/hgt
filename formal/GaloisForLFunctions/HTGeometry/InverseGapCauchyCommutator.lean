@@ -77,8 +77,8 @@ theorem gramValueCommutator_cauchyBoundary_apply {N : ℕ}
 theorem norm_sq_gramValueCommutator_cauchyBoundary_apply {N : ℕ}
     (ε : ℝ) (x : Fin N → ℝ) (v : Fin N → ℂ) (i j : Fin N) :
     ‖gramValueCommutator
-        (rightHalfPlaneCauchyGram (cauchyBoundaryNode ε x)) v i j‖ ^ 2 =
-      ‖v j - v i‖ ^ 2 / ((2 * ε) ^ 2 + (x i - x j) ^ 2) := by
+        (rightHalfPlaneCauchyGram (cauchyBoundaryNode ε x)) v i j‖ ^ (2 : ℕ) =
+      ‖v j - v i‖ ^ (2 : ℕ) / ((2 * ε) ^ (2 : ℕ) + (x i - x j) ^ (2 : ℕ)) := by
   rw [gramValueCommutator_cauchyBoundary_apply, norm_div, div_pow]
   congr 1
   rw [Complex.sq_norm, Complex.normSq_apply]
@@ -90,13 +90,13 @@ def regularizedInverseGapCommutatorEnergy {N : ℕ}
     (ε : ℝ) (x : Fin N → ℝ) (v : Fin N → ℂ) : ℝ :=
   ∑ i, ∑ j,
     ‖gramValueCommutator
-        (rightHalfPlaneCauchyGram (cauchyBoundaryNode ε x)) v i j‖ ^ 2
+        (rightHalfPlaneCauchyGram (cauchyBoundaryNode ε x)) v i j‖ ^ (2 : ℕ)
 
 theorem regularizedInverseGapCommutatorEnergy_eq {N : ℕ}
     (ε : ℝ) (x : Fin N → ℝ) (v : Fin N → ℂ) :
     regularizedInverseGapCommutatorEnergy ε x v =
-      ∑ i, ∑ j, ‖v j - v i‖ ^ 2 /
-        ((2 * ε) ^ 2 + (x i - x j) ^ 2) := by
+      ∑ i, ∑ j, ‖v j - v i‖ ^ (2 : ℕ) /
+        ((2 * ε) ^ (2 : ℕ) + (x i - x j) ^ (2 : ℕ)) := by
   apply Finset.sum_congr rfl
   intro i _
   apply Finset.sum_congr rfl
@@ -106,7 +106,7 @@ theorem regularizedInverseGapCommutatorEnergy_eq {N : ℕ}
 /-- Ordered inverse-gap energy.  For pairwise distinct nodes it is twice the usual `i<j` sum. -/
 def orderedInverseGapEnergy {N : ℕ}
     (x : Fin N → ℝ) (v : Fin N → ℂ) : ℝ :=
-  ∑ i, ∑ j, ‖v j - v i‖ ^ 2 / (x i - x j) ^ 2
+  ∑ i, ∑ j, ‖v j - v i‖ ^ (2 : ℕ) / (x i - x j) ^ (2 : ℕ)
 
 /-- Positivity of the real-node inverse-gap energy is unconditional.  In particular, this sign
 does not detect whether a node packet came from the Xi divisor, a prime-side construction, or an
@@ -131,20 +131,20 @@ theorem orderedInverseGapEnergy_eq_zero_iff_of_injective {N : ℕ}
     by_cases hij : i = j
     · simp [hij]
     · have hterm_nonneg (k l : Fin N) :
-          0 ≤ ‖v l - v k‖ ^ 2 / (x k - x l) ^ 2 :=
+          0 ≤ ‖v l - v k‖ ^ (2 : ℕ) / (x k - x l) ^ (2 : ℕ) :=
         div_nonneg (sq_nonneg _) (sq_nonneg _)
       unfold orderedInverseGapEnergy at hzero
       have hrowzero :
-          (∑ l, ‖v l - v i‖ ^ 2 / (x i - x l) ^ 2) = 0 :=
+          (∑ l, ‖v l - v i‖ ^ (2 : ℕ) / (x i - x l) ^ (2 : ℕ)) = 0 :=
         (Finset.sum_eq_zero_iff_of_nonneg
           (fun k _ => Finset.sum_nonneg (fun l _ => hterm_nonneg k l))).mp
             hzero i (Finset.mem_univ i)
       have htermzero :
-          ‖v j - v i‖ ^ 2 / (x i - x j) ^ 2 = 0 :=
+          ‖v j - v i‖ ^ (2 : ℕ) / (x i - x j) ^ (2 : ℕ) = 0 :=
         (Finset.sum_eq_zero_iff_of_nonneg
           (fun l _ => hterm_nonneg i l)).mp hrowzero j (Finset.mem_univ j)
       have hxij : x i ≠ x j := fun h => hij (hx h)
-      have hnum : ‖v j - v i‖ ^ 2 = 0 :=
+      have hnum : ‖v j - v i‖ ^ (2 : ℕ) = 0 :=
         (div_eq_zero_iff.mp htermzero).resolve_right (pow_ne_zero 2 (sub_ne_zero.mpr hxij))
       have hvji : v j = v i := by
         apply sub_eq_zero.mp

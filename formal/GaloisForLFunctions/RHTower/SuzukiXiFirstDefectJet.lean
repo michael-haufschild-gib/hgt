@@ -33,7 +33,7 @@ noncomputable section
 by the unconditional first-zero-height gap and the critical strip. -/
 theorem eightyFive_mul_re_xiShiftedReciprocalSquare_sq_lt_four_mul_re
     (q : XiZeroCopy) :
-    85 * (xiShiftedReciprocalSquare 1 q ^ 2).re <
+    85 * (xiShiftedReciprocalSquare 1 q ^ (2 : ℕ)).re <
       4 * (xiShiftedReciprocalSquare 1 q).re := by
   let A : ℝ := 1 + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
@@ -46,22 +46,22 @@ theorem eightyFive_mul_re_xiShiftedReciprocalSquare_sq_lt_four_mul_re
     dsimp only [A]
     linarith
   have hA0 : 0 < A := by linarith
-  have hden : 0 < A ^ 2 + B ^ 2 := by
+  have hden : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA0, sq_nonneg B]
   have hcoord : (1 : ℂ) + xiSquaredNode q = (A : ℂ) + (B : ℂ) * I := by
     apply Complex.ext <;> simp [A, B]
   rw [xiShiftedReciprocalSquare_eq_inv (by norm_num)]
-  change 85 * (((1 : ℂ) + xiSquaredNode q)⁻¹ ^ 2).re <
+  change 85 * (((1 : ℂ) + xiSquaredNode q)⁻¹ ^ (2 : ℕ)).re <
     4 * (((1 : ℂ) + xiSquaredNode q)⁻¹).re
   rw [hcoord, pow_two, Complex.mul_re, Complex.inv_re, Complex.inv_im,
     Complex.normSq_apply]
   simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, mul_zero,
     sub_zero, mul_one, add_zero, zero_add]
-  have hgap : 85 * A < 4 * (A ^ 2 + B ^ 2) := by
+  have hgap : 85 * A < 4 * (A ^ (2 : ℕ) + B ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg B]
   field_simp
-  nlinarith [hden, sq_nonneg (A ^ 2 + B ^ 2)]
+  nlinarith [hden, sq_nonneg (A ^ (2 : ℕ) + B ^ (2 : ℕ))]
 
 /-- Summing the strict atomwise inequality gives a strict relation between the first two
 multiplicity-exact shifted squared-zero moments at base `1`. -/
@@ -78,7 +78,7 @@ theorem eightyFive_mul_re_xiShiftedReciprocalMoment_one_lt_four_mul_zero :
       4 * (xiShiftedReciprocalSquare 1 q).re) := by
     simpa using (Complex.reCLM.summable hsum1C).mul_left 4
   have hsum2 : Summable (fun q : XiZeroCopy =>
-      85 * (xiShiftedReciprocalSquare 1 q ^ 2).re) := by
+      85 * (xiShiftedReciprocalSquare 1 q ^ (2 : ℕ)).re) := by
     simpa using (Complex.reCLM.summable hsum2C).mul_left 85
   obtain ⟨q0⟩ := nonempty_xiZeroCopy
   have hlt := hsum2.tsum_lt_tsum (i := q0)
@@ -97,7 +97,7 @@ zeroth shifted squared-zero moment. -/
 theorem xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment
     {w : ℝ} (hw : 0 < w) :
     xiRealLogDeriv w =
-      w * (xiShiftedReciprocalMoment (w ^ 2) 0).re := by
+      w * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0).re := by
   have h := squaredXiRadialField_sq_eq hw
   rw [squaredXiRadialField] at h
   field_simp [hw.ne'] at h
@@ -109,13 +109,13 @@ theorem deriv_xiRealLogDeriv_one_eq :
       (xiShiftedReciprocalMoment 1 0).re -
         2 * (xiShiftedReciprocalMoment 1 1).re := by
   have hmoment :=
-    hasDerivAt_re_xiShiftedReciprocalMoment (y := (1 : ℝ) ^ 2) (by norm_num) 0
-  have hpow : HasDerivAt (fun w : ℝ => w ^ 2) 2 1 := by
+    hasDerivAt_re_xiShiftedReciprocalMoment (y := (1 : ℝ) ^ (2 : ℕ)) (by norm_num) 0
+  have hpow : HasDerivAt (fun w : ℝ => w ^ (2 : ℕ)) 2 1 := by
     simpa using hasDerivAt_pow 2 (1 : ℝ)
-  have hraw := hmoment.comp (h := fun w : ℝ => w ^ 2) (1 : ℝ) hpow
+  have hraw := hmoment.comp (h := fun w : ℝ => w ^ (2 : ℕ)) (1 : ℝ) hpow
   have hrhs := (hasDerivAt_id (1 : ℝ)).mul hraw
   have heq : xiRealLogDeriv =ᶠ[nhds (1 : ℝ)]
-      fun w : ℝ => w * (xiShiftedReciprocalMoment (w ^ 2) 0).re := by
+      fun w : ℝ => w * (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0).re := by
     filter_upwards [Ioi_mem_nhds (by norm_num : (0 : ℝ) < 1)] with w hw
     exact xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment hw
   have hlhs := hasDerivAt_xiRealLogDeriv (1 : ℝ)
@@ -376,7 +376,7 @@ theorem two_mul_I_mul_deriv_xiHedenmalmLivsicTarget_I :
           (xiHedenmalmDonoghueTarget I + I) -
         (xiHedenmalmDonoghueTarget I - I) *
           deriv xiHedenmalmDonoghueTarget I) /
-        (xiHedenmalmDonoghueTarget I + I) ^ 2) I :=
+        (xiHedenmalmDonoghueTarget I + I) ^ (2 : ℕ)) I :=
     hnum.div hden hne
   have hderiv : deriv (fun z : ℂ =>
       (xiHedenmalmDonoghueTarget z - I) /
@@ -385,7 +385,7 @@ theorem two_mul_I_mul_deriv_xiHedenmalmLivsicTarget_I :
           (xiHedenmalmDonoghueTarget I + I) -
         (xiHedenmalmDonoghueTarget I - I) *
           deriv xiHedenmalmDonoghueTarget I) /
-        (xiHedenmalmDonoghueTarget I + I) ^ 2 :=
+        (xiHedenmalmDonoghueTarget I + I) ^ (2 : ℕ) :=
     hquot.deriv
   change 2 * I * deriv (fun z : ℂ =>
       (xiHedenmalmDonoghueTarget z - I) /

@@ -59,9 +59,9 @@ term sensitive to one edge sign is the closed-cycle holonomy. -/
 theorem routeKThreePrimeCharacteristic_eq
     (q edge : Fin 3 → ℝ) (w : ℝ) :
     routeKThreePrimeCharacteristic q edge w =
-      (w - q 0) * ((w - q 1) * (w - q 2) - (edge 1) ^ 2) -
-      (edge 0) ^ 2 * (w - q 2) -
-      (edge 2) ^ 2 * (w - q 1) -
+      (w - q 0) * ((w - q 1) * (w - q 2) - (edge 1) ^ (2 : ℕ)) -
+      (edge 0) ^ (2 : ℕ) * (w - q 2) -
+      (edge 2) ^ (2 : ℕ) * (w - q 1) -
       2 * edge 0 * edge 1 * edge 2 := by
   simp [routeKThreePrimeCharacteristic, Matrix.det_fin_three]
   ring
@@ -86,9 +86,9 @@ theorem routeKThreePrimePairedCharacteristic_sub_edgeFlip
         routeKThreePrimePairedCharacteristic q
           (routeKThreePrimeEdgeFlip edge) w =
       -8 * (edge 0 * edge 1 * edge 2) *
-        (-(q 0 + q 1 + q 2) * w ^ 2 - q 0 * q 1 * q 2 +
-          q 0 * (edge 1) ^ 2 + q 1 * (edge 2) ^ 2 +
-          q 2 * (edge 0) ^ 2) := by
+        (-(q 0 + q 1 + q 2) * w ^ (2 : ℕ) - q 0 * q 1 * q 2 +
+          q 0 * (edge 1) ^ (2 : ℕ) + q 1 * (edge 2) ^ (2 : ℕ) +
+          q 2 * (edge 0) ^ (2 : ℕ)) := by
   simp [routeKThreePrimePairedCharacteristic,
     routeKThreePrimeCharacteristic, routeKThreePrimeEdgeFlip,
     Matrix.det_fin_three]
@@ -128,7 +128,7 @@ theorem exists_routeKThreePrimePairedCharacteristic_ne_edgeFlip
         routeKThreePrimePairedCharacteristic q
           (routeKThreePrimeEdgeFlip edge) w := by
   let c : ℝ := -q 0 * q 1 * q 2 +
-    q 0 * (edge 1) ^ 2 + q 1 * (edge 2) ^ 2 + q 2 * (edge 0) ^ 2
+    q 0 * (edge 1) ^ (2 : ℕ) + q 1 * (edge 2) ^ (2 : ℕ) + q 2 * (edge 0) ^ (2 : ℕ)
   have hsum : q 0 + q 1 + q 2 ≠ 0 := by
     have hpos : 0 < q 0 + q 1 + q 2 := by
       nlinarith [hq 0, hq 1, hq 2]
@@ -148,17 +148,17 @@ theorem exists_routeKThreePrimePairedCharacteristic_ne_edgeFlip
           (-(q 0 + q 1 + q 2)) := by
       rw [routeKThreePrimePairedCharacteristic_sub_edgeFlip]
       change -q 0 * q 1 * q 2 +
-        q 0 * (edge 1) ^ 2 + q 1 * (edge 2) ^ 2 +
-          q 2 * (edge 0) ^ 2 = 0 at hc
+        q 0 * (edge 1) ^ (2 : ℕ) + q 1 * (edge 2) ^ (2 : ℕ) +
+          q 2 * (edge 0) ^ (2 : ℕ) = 0 at hc
       calc
         -8 * (edge 0 * edge 1 * edge 2) *
-            (-(q 0 + q 1 + q 2) * 1 ^ 2 - q 0 * q 1 * q 2 +
-              q 0 * edge 1 ^ 2 + q 1 * edge 2 ^ 2 +
-              q 2 * edge 0 ^ 2) =
+            (-(q 0 + q 1 + q 2) * 1 ^ (2 : ℕ) - q 0 * q 1 * q 2 +
+              q 0 * edge 1 ^ (2 : ℕ) + q 1 * edge 2 ^ (2 : ℕ) +
+              q 2 * edge 0 ^ (2 : ℕ)) =
             -8 * (edge 0 * edge 1 * edge 2) *
               (-(q 0 + q 1 + q 2) +
-                (-q 0 * q 1 * q 2 + q 0 * edge 1 ^ 2 +
-                  q 1 * edge 2 ^ 2 + q 2 * edge 0 ^ 2)) := by ring
+                (-q 0 * q 1 * q 2 + q 0 * edge 1 ^ (2 : ℕ) +
+                  q 1 * edge 2 ^ (2 : ℕ) + q 2 * edge 0 ^ (2 : ℕ))) := by ring
         _ = -8 * (edge 0 * edge 1 * edge 2) *
               (-(q 0 + q 1 + q 2)) := by rw [hc]; ring
     rw [hdiff] at hd

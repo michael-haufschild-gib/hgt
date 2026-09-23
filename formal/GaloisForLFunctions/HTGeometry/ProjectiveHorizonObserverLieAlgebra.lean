@@ -55,8 +55,8 @@ theorem jetDerivation_add (M M' : Matrix n n K) :
     jetDerivation (M + M') = jetDerivation M + jetDerivation M' := by
   refine GaloisForLFunctions.fractionRing_derivation_ext
     (A := MvPolynomial (n × ℕ) K) _ _ fun p => ?_
-  rw [jetDerivation_algebraMap, jetDerivationPoly_add, Derivation.add_apply, map_add,
-    Derivation.add_apply, jetDerivation_algebraMap, jetDerivation_algebraMap]
+  rw [jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivationPoly_add, Derivation.add_apply, map_add,
+    Derivation.add_apply, jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivation_algebraMap_projectiveHorizonJetDerivation]
 
 omit [DecidableEq n] in
 theorem jetDerivation_smul (c : K) (M : Matrix n n K) :

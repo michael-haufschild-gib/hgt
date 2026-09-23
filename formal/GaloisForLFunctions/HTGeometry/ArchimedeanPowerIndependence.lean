@@ -72,7 +72,7 @@ theorem power_expansion_eq_zero : ∀ (M : ℕ) (a : ℕ → ℂ) (K R : ℝ),
           rw [norm_div, norm_pow, htc]
           rw [div_le_div_iff₀ (by positivity) ht0]
           have hpow : t ≤ t ^ (m + 1) := by
-            calc t = t ^ 1 := (pow_one t).symm
+            calc t = t ^ (1 : ℕ) := (pow_one t).symm
               _ ≤ t ^ (m + 1) := pow_le_pow_right₀ ht1 (by omega)
           nlinarith [norm_nonneg (a (m + 1)), hpow, ht0]
         have hKle : K / t ^ (M + 2) ≤ K / t := by
@@ -84,7 +84,7 @@ theorem power_expansion_eq_zero : ∀ (M : ℕ) (a : ℕ → ℂ) (K R : ℝ),
             nlinarith [this, pow_pos ht0 (M + 2)]
           rw [div_le_div_iff₀ (by positivity) ht0]
           have hpow : t ≤ t ^ (M + 2) := by
-            calc t = t ^ 1 := (pow_one t).symm
+            calc t = t ^ (1 : ℕ) := (pow_one t).symm
               _ ≤ t ^ (M + 2) := pow_le_pow_right₀ ht1 (by omega)
           nlinarith [hK0, hpow, ht0]
         have hstep : ‖a 0‖ ≤ ‖a 0 + ∑ m ∈ Finset.range (M + 1),

@@ -55,8 +55,8 @@ theorem xiHurwitzMonodromyCharacter_im_eq_zero_of_re_eq_half
 zero's character radius. -/
 def xiHurwitzAnchoredPairOrientationDefect
     (ρ τ : XiDivisorSupport) : ℝ :=
-  (xiHurwitzPairVandermondeDet ρ τ).im ^ 2 /
-    ‖xiHurwitzMonodromyCharacter ρ‖ ^ 2
+  (xiHurwitzPairVandermondeDet ρ τ).im ^ (2 : ℕ) /
+    ‖xiHurwitzMonodromyCharacter ρ‖ ^ (2 : ℕ)
 
 /-- Once the anchor lies on the critical line, the anchored determinant defect is exactly the
 canonical pointwise Hurwitz orientation defect. -/

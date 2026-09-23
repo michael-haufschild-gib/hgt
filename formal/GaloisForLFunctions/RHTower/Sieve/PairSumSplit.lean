@@ -31,13 +31,13 @@ theorem diag_pair_sum_le (T r : ℝ) (A B L V P Q : ℕ) :
         ‖((typeIIShort V m : ℝ) : ℂ)‖ * ‖((typeIIShort V m : ℝ) : ℂ)‖
           * ‖∑ d ∈ Finset.Ico P Q,
               maskedNdExp T r A B d m * (starRingEnd ℂ) (maskedNdExp T r A B d m)‖)
-      ≤ ((Q - P : ℕ) : ℝ) * ∑ m ∈ Finset.Icc 1 L, ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ 2 := by
+      ≤ ((Q - P : ℕ) : ℝ) * ∑ m ∈ Finset.Icc 1 L, ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun m _ => ?_
   have hcorr := norm_masked_correlation_diag_le T r A B P Q m
   have hnn : (0 : ℝ) ≤ ‖((typeIIShort V m : ℝ) : ℂ)‖ * ‖((typeIIShort V m : ℝ) : ℂ)‖ := by
     positivity
-  have hid : ((Q - P : ℕ) : ℝ) * ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ 2
+  have hid : ((Q - P : ℕ) : ℝ) * ‖((typeIIShort V m : ℝ) : ℂ)‖ ^ (2 : ℕ)
       = (‖((typeIIShort V m : ℝ) : ℂ)‖ * ‖((typeIIShort V m : ℝ) : ℂ)‖) * ((Q - P : ℕ) : ℝ) := by
     ring
   rw [hid]

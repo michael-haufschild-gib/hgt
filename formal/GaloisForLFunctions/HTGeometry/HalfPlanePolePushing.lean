@@ -120,7 +120,7 @@ theorem norm_inv_sub_pushedKernel_le {z z' s : ℂ} {d₁ d₂ T : ℝ} (N : ℕ
     (hT : 0 ≤ T) (hM : ‖z - z'‖ < d₂) :
     ‖(s - z)⁻¹ - pushedKernel z z' N T s‖
       ≤ (‖z - z'‖ / d₂) ^ N / (d₂ - ‖z - z'‖)
-        + (N : ℝ) ^ 2 * (max 1 (2 * ‖z - z'‖ / d₁)) ^ N * (Real.exp (-(T * d₁)) / d₁) := by
+        + (N : ℝ) ^ (2 : ℕ) * (max 1 (2 * ‖z - z'‖ / d₁)) ^ N * (Real.exp (-(T * d₁)) / d₁) := by
   set a : ℂ := z - z' with ha
   set b : ℂ := s - z' with hbdef
   set M : ℝ := ‖a‖ with hMdef
@@ -220,7 +220,7 @@ theorem norm_inv_sub_pushedKernel_le {z z' s : ℂ} {d₁ d₂ T : ℝ} (N : ℕ
             * (Real.exp (-(T * d₁)) / d₁) := Finset.sum_le_sum hterm
       _ = (N : ℝ) * ((N : ℝ) * (max 1 (2 * M / d₁)) ^ N * (Real.exp (-(T * d₁)) / d₁)) := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-      _ = (N : ℝ) ^ 2 * (max 1 (2 * M / d₁)) ^ N * (Real.exp (-(T * d₁)) / d₁) := by ring
+      _ = (N : ℝ) ^ (2 : ℕ) * (max 1 (2 * M / d₁)) ^ N * (Real.exp (-(T * d₁)) / d₁) := by ring
 
 end GaloisForLFunctions.HTGeometry
 

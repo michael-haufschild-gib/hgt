@@ -29,7 +29,7 @@ open Finset
 
 /-- The square of the window of length `ℓ` immediately after `z`. -/
 def fixedWindowSq (f : ℕ → ℝ) (ℓ z : ℕ) : ℝ :=
-  (partialSum f (z + ℓ) - partialSum f z) ^ 2
+  (partialSum f (z + ℓ) - partialSum f z) ^ (2 : ℕ)
 
 theorem fixedWindowSq_nonneg (f : ℕ → ℝ) (ℓ z : ℕ) : 0 ≤ fixedWindowSq f ℓ z := sq_nonneg _
 

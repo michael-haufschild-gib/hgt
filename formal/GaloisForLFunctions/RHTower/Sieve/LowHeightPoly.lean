@@ -31,12 +31,12 @@ theorem norm_exp_mul_I_sub_one_le (θ : ℝ) :
     simp [Complex.exp_mul_I, Complex.sin_ofReal_re,
       Complex.cos_ofReal_im, Complex.sin_ofReal_im]
   rw [Complex.norm_eq_sqrt_sq_add_sq, hre, him]
-  have hhalf : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+  have hhalf : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
     have := Real.cos_two_mul_eq_one_sub (θ / 2)
     rw [show 2 * (θ / 2) = θ by ring] at this
     linarith
-  have hkey : (Real.cos θ - 1) ^ 2 + Real.sin θ ^ 2 = 4 * Real.sin (θ / 2) ^ 2 := by
-    have hpy : Real.sin θ ^ 2 = 1 - Real.cos θ ^ 2 := by
+  have hkey : (Real.cos θ - 1) ^ (2 : ℕ) + Real.sin θ ^ (2 : ℕ) = 4 * Real.sin (θ / 2) ^ (2 : ℕ) := by
+    have hpy : Real.sin θ ^ (2 : ℕ) = 1 - Real.cos θ ^ (2 : ℕ) := by
       have := Real.sin_sq_add_cos_sq θ
       linarith
     rw [hpy, hhalf]
@@ -46,14 +46,14 @@ theorem norm_exp_mul_I_sub_one_le (θ : ℝ) :
   have habs : |θ / 2| = |θ| / 2 := by
     rw [abs_div]
     norm_num
-  have hle : 4 * Real.sin (θ / 2) ^ 2 ≤ |θ| ^ 2 := by
+  have hle : 4 * Real.sin (θ / 2) ^ (2 : ℕ) ≤ |θ| ^ (2 : ℕ) := by
     have hsin2 : |Real.sin (θ / 2)| ≤ |θ| / 2 := by
       rw [← habs]
       exact hsin
-    have h1 : Real.sin (θ / 2) ^ 2 = |Real.sin (θ / 2)| ^ 2 := (sq_abs _).symm
+    have h1 : Real.sin (θ / 2) ^ (2 : ℕ) = |Real.sin (θ / 2)| ^ (2 : ℕ) := (sq_abs _).symm
     rw [h1]
     nlinarith [hsin2, abs_nonneg (Real.sin (θ / 2)), abs_nonneg θ]
-  calc Real.sqrt (4 * Real.sin (θ / 2) ^ 2) ≤ Real.sqrt (|θ| ^ 2) := Real.sqrt_le_sqrt hle
+  calc Real.sqrt (4 * Real.sin (θ / 2) ^ (2 : ℕ)) ≤ Real.sqrt (|θ| ^ (2 : ℕ)) := Real.sqrt_le_sqrt hle
     _ = |θ| := Real.sqrt_sq (abs_nonneg θ)
 
 /-- Two unit phases differ by at most the difference of their arguments. -/

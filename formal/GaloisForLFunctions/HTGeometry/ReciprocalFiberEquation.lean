@@ -52,7 +52,7 @@ theorem coeff_mul_pow_eq_tail_sum {a b : A} (hab : a * b = 1) (R Y : PowerSeries
       _ = (-1 : A) ^ k * PowerSeries.coeff (n - k) (R ^ k) * a ^ (n - k) := by
           rw [pow_mul_pow_of_mul_eq_one hab (by omega : k ≤ n)]
   rw [h1, Finset.sum_mul, Finset.sum_congr rfl hterm, Finset.sum_range_succ']
-  have hzero : (-1 : A) ^ 0 * PowerSeries.coeff (n - 0) (R ^ 0) * a ^ (n - 0) = 0 := by
+  have hzero : (-1 : A) ^ (0 : ℕ) * PowerSeries.coeff (n - 0) (R ^ (0 : ℕ)) * a ^ (n - 0) = 0 := by
     rw [pow_zero, pow_zero, one_mul, PowerSeries.coeff_one, if_neg (by omega : ¬ n - 0 = 0),
       zero_mul]
   rw [hzero, add_zero]

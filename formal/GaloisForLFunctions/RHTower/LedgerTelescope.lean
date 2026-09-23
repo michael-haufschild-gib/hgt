@@ -157,8 +157,8 @@ theorem ledgerChain_window_back_two_dvd {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r�
     (hwin : LedgerChain a r₀ R f g fluxWin) (hback : LedgerChain a r₀ R g f fluxBack)
     {G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
     (2 : ℤ) ∣ (fluxWin - fluxBack) := by
@@ -229,8 +229,8 @@ theorem ledgerChainE_window_back_two_dvd {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r�
     (hwin : LedgerChainE a r₀ R f g Lwin) (hback : LedgerChainE a r₀ R g f Lback)
     {G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
     (2 : ℤ) ∣ (Lwin.sum - Lback.sum) :=

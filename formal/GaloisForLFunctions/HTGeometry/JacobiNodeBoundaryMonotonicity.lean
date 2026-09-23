@@ -209,7 +209,7 @@ theorem eigenvalue_hasDerivAt_eq_rayleigh {n : ℕ} {U : ℝ → Matrix (Fin n) 
 
 /-- The Rayleigh quotient of a scaled rank-one square. -/
 theorem dotProduct_smul_vecMulVec_eq {n : ℕ} (c : ℝ) (w x : Fin n → ℝ) :
-    x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) = c * (x ⬝ᵥ w) ^ 2 := by
+    x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) = c * (x ⬝ᵥ w) ^ (2 : ℕ) := by
   simp [Matrix.mulVec, Matrix.vecMulVec_apply, dotProduct, Finset.mul_sum,
     mul_comm, mul_left_comm, sq]
 

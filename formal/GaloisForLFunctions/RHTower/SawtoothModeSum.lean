@@ -40,21 +40,21 @@ theorem summable_and_norm_tsum_le_of_mode_bound {T : ℕ → ℂ} {b : ℕ → �
   calc ‖∑' m, T m‖ ≤ ∑' m, ‖T m‖ := norm_tsum_le_tsum_norm hsummT
     _ ≤ ∑' m, b m := Summable.tsum_mono hsummT hb hbound
 
--- specialized to the 1/m^2 per-mode bound from weighted van der Corput
+-- specialized to the 1/m^(2 : ℕ) per-mode bound from weighted van der Corput
 theorem summable_and_norm_tsum_le_of_inv_sq_bound {T : ℕ → ℂ} {K : ℝ}
-    (hbound : ∀ m, ‖T m‖ ≤ K / ((m : ℝ) + 1) ^ 2) :
-    Summable T ∧ ‖∑' m, T m‖ ≤ K * ∑' m : ℕ, (1 : ℝ) / ((m : ℝ) + 1) ^ 2 := by
-  have hbsum : Summable (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ 2) := by
+    (hbound : ∀ m, ‖T m‖ ≤ K / ((m : ℝ) + 1) ^ (2 : ℕ)) :
+    Summable T ∧ ‖∑' m, T m‖ ≤ K * ∑' m : ℕ, (1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
+  have hbsum : Summable (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := (Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)
     exact ((summable_nat_add_iff 1).mpr h).congr (fun m => by push_cast; ring)
-  have hKbsum : Summable (fun m : ℕ => K / ((m : ℝ) + 1) ^ 2) :=
+  have hKbsum : Summable (fun m : ℕ => K / ((m : ℝ) + 1) ^ (2 : ℕ)) :=
     (hbsum.mul_left K).congr (fun m => mul_one_div K _)
   obtain ⟨hsummT, hle⟩ := summable_and_norm_tsum_le_of_mode_bound hKbsum hbound
   refine ⟨hsummT, ?_⟩
-  calc ‖∑' m, T m‖ ≤ ∑' m : ℕ, K / ((m : ℝ) + 1) ^ 2 := hle
-    _ = K * ∑' m : ℕ, (1 : ℝ) / ((m : ℝ) + 1) ^ 2 := by
-        rw [show (∑' m : ℕ, K / ((m : ℝ) + 1) ^ 2)
-            = ∑' m : ℕ, K * (1 / ((m : ℝ) + 1) ^ 2) from
+  calc ‖∑' m, T m‖ ≤ ∑' m : ℕ, K / ((m : ℝ) + 1) ^ (2 : ℕ) := hle
+    _ = K * ∑' m : ℕ, (1 : ℝ) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
+        rw [show (∑' m : ℕ, K / ((m : ℝ) + 1) ^ (2 : ℕ))
+            = ∑' m : ℕ, K * (1 / ((m : ℝ) + 1) ^ (2 : ℕ)) from
               tsum_congr (fun m => (mul_one_div K _).symm)]
         exact tsum_mul_left
 

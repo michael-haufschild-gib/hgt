@@ -34,9 +34,9 @@ theorem greenFunctionDyn_le_crude {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2
     greenFunctionDyn c z ≤ Real.log ‖z‖ + 1 := by
   have hK : z ∉ filledJulia c := not_mem_filledJulia hc hz
   have habs := greenLimit_abs_sub_log hc hz
-  have hcorr : 2 * ‖c‖ / ‖z‖ ^ 2 ≤ 1 := by
-    have h1 : 2 * ‖c‖ ≤ ‖z‖ ^ 2 := by nlinarith [norm_nonneg c]
-    rw [div_le_one (by nlinarith [norm_nonneg c] : (0:ℝ) < ‖z‖ ^ 2)]
+  have hcorr : 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ 1 := by
+    have h1 : 2 * ‖c‖ ≤ ‖z‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg c]
+    rw [div_le_one (by nlinarith [norm_nonneg c] : (0:ℝ) < ‖z‖ ^ (2 : ℕ))]
     exact h1
   unfold greenFunctionDyn
   rw [if_neg hK]
@@ -46,9 +46,9 @@ theorem greenFunctionDyn_le_crude {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2
 /-- Global bound on the non-crude region: `G_c ≤ log((max 2 ‖c‖)² + ‖c‖) + 1` for
 `‖z‖ ≤ max 2 ‖c‖` (first-escape overshoot). -/
 theorem greenFunctionDyn_le_small {c z : ℂ} (hz : ‖z‖ ≤ max 2 ‖c‖) :
-    greenFunctionDyn c z ≤ Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) + 1 := by
+    greenFunctionDyn c z ≤ Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) + 1 := by
   have hB₀ : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
-  have hlogpos : 0 ≤ Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) := by
+  have hlogpos : 0 ≤ Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) := by
     apply Real.log_nonneg
     nlinarith [norm_nonneg c]
   by_cases hK : z ∈ filledJulia c
@@ -72,15 +72,15 @@ theorem greenFunctionDyn_le_small {c z : ℂ} (hz : ‖z‖ ≤ max 2 ‖c‖) :
       by_contra hcon
       push Not at hcon
       exact Nat.find_min hex (by omega : N₀ - 1 < N₀) hcon
-    have hover : ‖(quadratic c)^[N₀] z‖ ≤ (max 2 ‖c‖) ^ 2 + ‖c‖ := by
+    have hover : ‖(quadratic c)^[N₀] z‖ ≤ (max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖ := by
       have harg : (quadratic c)^[N₀] z = quadratic c ((quadratic c)^[N₀ - 1] z) := by
         conv_lhs => rw [show N₀ = (N₀ - 1) + 1 from by omega]
         rw [Function.iterate_succ_apply']
       rw [harg]
       unfold quadratic
-      calc ‖((quadratic c)^[N₀ - 1] z) ^ 2 + c‖
-          ≤ ‖((quadratic c)^[N₀ - 1] z) ^ 2‖ + ‖c‖ := norm_add_le _ _
-        _ ≤ (max 2 ‖c‖) ^ 2 + ‖c‖ := by
+      calc ‖((quadratic c)^[N₀ - 1] z) ^ (2 : ℕ) + c‖
+          ≤ ‖((quadratic c)^[N₀ - 1] z) ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
+        _ ≤ (max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖ := by
             rw [norm_pow]
             have := hprev
             nlinarith [norm_nonneg ((quadratic c)^[N₀ - 1] z)]
@@ -91,7 +91,7 @@ theorem greenFunctionDyn_le_small {c z : ℂ} (hz : ‖z‖ ≤ max 2 ‖c‖) :
     have hup := greenFunctionDyn_le_crude hcrudec hcrude₂
     have hit := greenFunctionDyn_iterate c z N₀
     have hlogmono : Real.log ‖(quadratic c)^[N₀] z‖
-        ≤ Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) := by
+        ≤ Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) := by
       apply Real.log_le_log (by linarith)
       exact hover
     have hGpos : 0 ≤ greenFunctionDyn c z := greenFunctionDyn_nonneg c z
@@ -112,11 +112,11 @@ theorem isProperMap_quadratic (c : ℂ) : IsProperMap (quadratic c) := by
       exact tendsto_atTop_add_const_right _ (-‖c‖) hmul
     apply tendsto_atTop_mono _ h2
     intro z
-    have h3 : ‖z ^ 2‖ ≤ ‖z ^ 2 + c‖ + ‖c‖ := by
-      calc ‖z ^ 2‖ = ‖(z ^ 2 + c) + (-c)‖ := by ring_nf
-        _ ≤ ‖z ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
-        _ = ‖z ^ 2 + c‖ + ‖c‖ := by rw [norm_neg]
-    have h4 : ‖z ^ 2‖ = ‖z‖ * ‖z‖ := by rw [norm_pow]; ring
+    have h3 : ‖z ^ (2 : ℕ)‖ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖c‖ := by
+      calc ‖z ^ (2 : ℕ)‖ = ‖(z ^ (2 : ℕ) + c) + (-c)‖ := by ring_nf
+        _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
+        _ = ‖z ^ (2 : ℕ) + c‖ + ‖c‖ := by rw [norm_neg]
+    have h4 : ‖z ^ (2 : ℕ)‖ = ‖z‖ * ‖z‖ := by rw [norm_pow]; ring
     show ‖z‖ * ‖z‖ - ‖c‖ ≤ ‖quadratic c z‖
     unfold quadratic
     linarith [h3, h4.symm.le]
@@ -240,7 +240,7 @@ theorem isConnected_quadratic_preimage {c : ℂ} {U : Set ℂ}
           exact ⟨u, hu, hmem.2⟩
       obtain ⟨y, hyW, hyc⟩ := hUsub hcU
       have hy0 : y = 0 := by
-        have : y ^ 2 = 0 := by
+        have : y ^ (2 : ℕ) = 0 := by
           have := hyc
           unfold quadratic at this
           linear_combination this
@@ -270,7 +270,7 @@ theorem exists_sublevel_anchor (c : ℂ) :
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hmaxc : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
   have hR1 : 2 * max 2 ‖c‖ < R := by rw [hRdef]; nlinarith [norm_nonneg c]
-  have hR2 : 16 * ‖c‖ < R ^ 2 := by rw [hRdef]; nlinarith [norm_nonneg c]
+  have hR2 : 16 * ‖c‖ < R ^ (2 : ℕ) := by rw [hRdef]; nlinarith [norm_nonneg c]
   have hRpos : (0:ℝ) < R := by rw [hRdef]; nlinarith [norm_nonneg c]
   obtain ⟨ψ, hψleft, hψan, _hψright⟩ := exists_analytic_inverse_far hR1 hR2
   obtain ⟨R', hRpre⟩ := exists_bottcher_far_preimage hR1 hR2
@@ -301,8 +301,8 @@ theorem exists_sublevel_anchor (c : ℂ) :
     obtain ⟨zv, hzv, hzveq⟩ := hRpre v (lt_of_le_of_lt (le_max_left _ _) hv)
     rw [← hzveq]
     exact (hψan zv hzv).continuousAt
-  set M₁ : ℝ := Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) + Real.log (R + R₁ + 3) + 10 with hM₁def
-  have hlog1 : 0 ≤ Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) :=
+  set M₁ : ℝ := Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) + Real.log (R + R₁ + 3) + 10 with hM₁def
+  have hlog1 : 0 ≤ Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) :=
     Real.log_nonneg (by nlinarith [norm_nonneg c])
   have hlog2 : Real.log R < Real.log (R + R₁ + 3) := Real.log_lt_log hRpos (by linarith)
   have hlog2' : Real.log R₁ < Real.log (R + R₁ + 3) := Real.log_lt_log hR₁pos (by linarith)
@@ -311,7 +311,7 @@ theorem exists_sublevel_anchor (c : ℂ) :
   intro M hM
   set Ω : Set ℂ := {z : ℂ | greenFunctionDyn c z < M} with hΩdef
   have hΩo : IsOpen Ω := isOpen_lt (continuous_greenFunctionDyn c) continuous_const
-  have hM4 : Real.log ((max 2 ‖c‖) ^ 2 + ‖c‖) + 4 ≤ M := by
+  have hM4 : Real.log ((max 2 ‖c‖) ^ (2 : ℕ) + ‖c‖) + 4 ≤ M := by
     rw [hM₁def] at hM; linarith
   have hMR : Real.log (R + R₁ + 3) + 4 ≤ M := by
     rw [hM₁def] at hM; linarith
@@ -384,7 +384,7 @@ theorem exists_sublevel_anchor (c : ℂ) :
               Real.log_le_log hR₁pos (by linarith)
             linarith
       -- corr bound at deep points
-      have hcorrbound : ∀ y : ℂ, R < ‖y‖ → 2 * ‖c‖ / ‖y‖ ^ 2 < 1 := by
+      have hcorrbound : ∀ y : ℂ, R < ‖y‖ → 2 * ‖c‖ / ‖y‖ ^ (2 : ℕ) < 1 := by
         intro y hy
         have hypos : (0:ℝ) < ‖y‖ := lt_trans hRpos hy
         rw [div_lt_one (by positivity)]
@@ -393,7 +393,7 @@ theorem exists_sublevel_anchor (c : ℂ) :
       have hwlev : M - 2 ≤ Real.log ‖w‖ := by
         have h1 : Real.log ‖z‖ - 1 ≤ greenFunctionDyn c z := by
           have habs := greenLimit_abs_sub_log hzc hz2
-          have hcorr : 2 * ‖c‖ / ‖z‖ ^ 2 < 1 := hcorrbound z hzR
+          have hcorr : 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) < 1 := hcorrbound z hzR
           rw [hGz]
           have := (abs_le.mp habs).1
           linarith
@@ -561,7 +561,7 @@ theorem isConnected_green_sublevel (c : ℂ) {L : ℝ}
         exact this
       have h2nm : (2:ℝ) ≤ 2 ^ (n - m) := by
         have h1 : 1 ≤ n - m := by omega
-        calc (2:ℝ) = 2 ^ 1 := by norm_num
+        calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
           _ ≤ 2 ^ (n - m) := by
             apply pow_le_pow_right₀ (by norm_num)
             omega

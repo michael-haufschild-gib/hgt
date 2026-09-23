@@ -23,8 +23,8 @@ noncomputable def geomFactor (q φ : ℝ) : ℂ :=
   (1 - (q : ℂ)) / (1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I))
 
 theorem norm_sq_one_sub_geom (q φ : ℝ) :
-    ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2
-      = (1 - q) ^ 2 + 2 * q * (1 - Real.cos φ) := by
+    ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ)
+      = (1 - q) ^ (2 : ℕ) + 2 * q * (1 - Real.cos φ) := by
   have hre : (Complex.exp ((φ : ℝ) * Complex.I)).re = Real.cos φ :=
     Complex.exp_ofReal_mul_I_re φ
   have him : (Complex.exp ((φ : ℝ) * Complex.I)).im = Real.sin φ :=
@@ -33,12 +33,12 @@ theorem norm_sq_one_sub_geom (q φ : ℝ) :
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
     Complex.mul_re, Complex.mul_im, hre, him]
   simp only [Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im]
-  linear_combination (q ^ 2) * hsq
+  linear_combination (q ^ (2 : ℕ)) * hsq
 
 theorem norm_one_sub_geom_pos {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (φ : ℝ) :
     0 < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ := by
   have hcos := Real.cos_le_one φ
-  have hsq : (0 : ℝ) < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 := by
+  have hsq : (0 : ℝ) < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by
     rw [norm_sq_one_sub_geom]
     nlinarith
   refine lt_of_le_of_ne (norm_nonneg _) (Ne.symm ?_)
@@ -63,33 +63,33 @@ theorem geomDefect_ge {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (φ : ℝ) :
   have hcos := Real.neg_one_le_cos φ
   have hcos' := Real.cos_le_one φ
   have hbase : (0 : ℝ) < 1 - q := by linarith
-  have hD : ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2
-      = (1 - q) ^ 2 + 2 * q * (1 - Real.cos φ) := norm_sq_one_sub_geom q φ
+  have hD : ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ)
+      = (1 - q) ^ (2 : ℕ) + 2 * q * (1 - Real.cos φ) := norm_sq_one_sub_geom q φ
   have hDpos : (0 : ℝ) < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ :=
     norm_one_sub_geom_pos hq0 hq1 φ
-  have hD2pos : (0 : ℝ) < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 := by positivity
-  have hDle : ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 ≤ 4 := by
+  have hD2pos : (0 : ℝ) < ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by positivity
+  have hDle : ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) ≤ 4 := by
     rw [hD]; nlinarith
   have hlog : geomDefect q φ
-      = (Real.log (‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2)
-          - Real.log ((1 - q) ^ 2)) / 2 := by
+      = (Real.log (‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ))
+          - Real.log ((1 - q) ^ (2 : ℕ))) / 2 := by
     rw [geomDefect, norm_geomFactor hq1, Real.log_div hbase.ne' hDpos.ne',
       Real.log_pow, Real.log_pow]
     push_cast
     ring
-  have hkey : 1 - (1 - q) ^ 2 / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2
-      ≤ Real.log (‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2)
-        - Real.log ((1 - q) ^ 2) := by
-    have hpos : (0 : ℝ) < (1 - q) ^ 2
-        / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 := by positivity
+  have hkey : 1 - (1 - q) ^ (2 : ℕ) / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ Real.log (‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ))
+        - Real.log ((1 - q) ^ (2 : ℕ)) := by
+    have hpos : (0 : ℝ) < (1 - q) ^ (2 : ℕ)
+        / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by positivity
     have hle := Real.log_le_sub_one_of_pos hpos
     rw [Real.log_div (by positivity) (by positivity)] at hle
     linarith
   have hfrac : q * (1 - Real.cos φ) / 2
-      ≤ 1 - (1 - q) ^ 2 / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 := by
-    have heq : 1 - (1 - q) ^ 2 / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2
+      ≤ 1 - (1 - q) ^ (2 : ℕ) / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by
+    have heq : 1 - (1 - q) ^ (2 : ℕ) / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ)
         = (2 * q * (1 - Real.cos φ))
-          / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ 2 := by
+          / ‖1 - (q : ℂ) * Complex.exp ((φ : ℝ) * Complex.I)‖ ^ (2 : ℕ) := by
       field_simp
       linarith [hD]
     rw [heq, le_div_iff₀ hD2pos]

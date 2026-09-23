@@ -24,9 +24,9 @@ theorem verticalTangentCoefficient_zero_pos
     (E : CenteredElasticaNormalization V) :
     0 < verticalTangentCoefficient E 0 := by
   rw [verticalTangentCoefficient_eq]
-  have hk : 0 < E.frame.geometry.curvature 0 ^ 2 :=
+  have hk : 0 < E.frame.geometry.curvature 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (E.frame.geometry.curvature_pos 0)
-  have hg : 0 ≤ E.gamma ^ 2 := sq_nonneg E.gamma
+  have hg : 0 ≤ E.gamma ^ (2 : ℕ) := sq_nonneg E.gamma
   have hs := normalizedForceScale_pos E
   positivity
 
@@ -51,8 +51,8 @@ theorem centeredCylindricalDenominator_eq_tangent
   have hC := verticalBinormalCoefficient_sq_zero E
   have hden_pos := cylindricalDenominator_pos (centeredVerticalCoefficients E)
   have hA_pos := verticalTangentCoefficient_zero_pos E
-  change cylindricalDenominator (centeredVerticalCoefficients E) ^ 2 =
-    1 - verticalBinormalCoefficient E 0 ^ 2 at hden
+  change cylindricalDenominator (centeredVerticalCoefficients E) ^ (2 : ℕ) =
+    1 - verticalBinormalCoefficient E 0 ^ (2 : ℕ) at hden
   rw [hC, ← hA] at hden
   nlinarith
 

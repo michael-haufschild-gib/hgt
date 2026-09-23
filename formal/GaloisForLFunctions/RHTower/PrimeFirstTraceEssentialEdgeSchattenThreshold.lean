@@ -9,7 +9,7 @@ The anisotropically normalized actual-prime first-trace graph has a canonical ed
 Both the source and response corrections have summable squared norms.  The source correction is
 not absolutely summable: its second Hardy coordinate is exactly
 
-`1 / p - p / (farPrime p)^2 ≥ 3 / (4p)`.
+`1 / p - p / (farPrime p)^(2 : ℕ) ≥ 3 / (4p)`.
 
 Thus the literal all-prime strict-preclosure correction is Hilbert--Schmidt but not trace class.
 No Xi zero, divisor specialization, numerical computation, or extra postulate is used.
@@ -168,21 +168,21 @@ theorem not_summable_norm_primeFirstTraceEssentialSourceDeviation :
     (summable_mul_left_iff (by norm_num : (3 / 4 : ℝ) ≠ 0)).mp hscaled
   exact Nat.Primes.not_summable_one_div hharmonic
 
-/-- The source correction is a genuine all-prime `ell^2` vector. -/
+/-- The source correction is a genuine all-prime `ell^(2 : ℕ)` vector. -/
 theorem primeFirstTraceEssentialSourceDeviation_memℓp_two :
     Memℓp primeFirstTraceEssentialSourceDeviation 2 := by
   rw [memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)]
   simpa [ENNReal.toReal_ofNat, Real.rpow_two] using
     summable_norm_sq_primeFirstTraceEssentialSourceDeviation
 
-/-- The response correction is a genuine all-prime `ell^2` vector. -/
+/-- The response correction is a genuine all-prime `ell^(2 : ℕ)` vector. -/
 theorem primeFirstTraceEssentialResponseDeviation_memℓp_two :
     Memℓp primeFirstTraceEssentialResponseDeviation 2 := by
   rw [memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)]
   simpa [ENNReal.toReal_ofNat, Real.rpow_two] using
     summable_norm_sq_primeFirstTraceEssentialResponseDeviation
 
-/-- The source correction does not belong to `ell^1`. -/
+/-- The source correction does not belong to `ell^(1 : ℕ)`. -/
 theorem primeFirstTraceEssentialSourceDeviation_not_memℓp_one :
     ¬ Memℓp primeFirstTraceEssentialSourceDeviation 1 := by
   intro h

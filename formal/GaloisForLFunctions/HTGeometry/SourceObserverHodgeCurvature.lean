@@ -91,7 +91,7 @@ theorem norm_observerField_sq_le {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[�
     (Am : Sm →ₗ[𝕜] Hm) (A0 : S0 →ₗ[𝕜] H0)
     (a : dS.domain) (haH : Am (a : Sm) ∈ dH.domain) (r : S0)
     (hy : observerField dS A0 a r ∈ dH.adjoint.domain) :
-    ‖observerField dS A0 a r‖ ^ 2
+    ‖observerField dS A0 a r‖ ^ (2 : ℕ)
       ≤ ‖Am (a : Sm)‖ * ‖dH.adjoint ⟨observerField dS A0 a r, hy⟩‖
         + ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖ := by
   have hid := inner_observerField_self_eq hdense Am A0 a haH r hy
@@ -134,14 +134,14 @@ theorem observerField_eq_zero_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →
   have hle := norm_observerField_sq_le hdense Am A0 a haH r hy
   rw [hco, norm_zero, mul_zero, zero_add] at hle
   have hmul : ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖
-      ≤ κ * ‖observerField dS A0 a r‖ ^ 2 := by
+      ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by
     have := mul_le_mul_of_nonneg_right hgain (norm_nonneg (observerField dS A0 a r))
     calc ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖
         ≤ κ * ‖observerField dS A0 a r‖ * ‖observerField dS A0 a r‖ := this
-      _ = κ * ‖observerField dS A0 a r‖ ^ 2 := by ring
-  have hfinal : ‖observerField dS A0 a r‖ ^ 2 ≤ κ * ‖observerField dS A0 a r‖ ^ 2 :=
+      _ = κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by ring
+  have hfinal : ‖observerField dS A0 a r‖ ^ (2 : ℕ) ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) :=
     le_trans hle hmul
-  have hsq : ‖observerField dS A0 a r‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
+  have hsq : ‖observerField dS A0 a r‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
   have hzero : ‖observerField dS A0 a r‖ ≤ 0 := by
     nlinarith [norm_nonneg (observerField dS A0 a r)]
   exact norm_eq_zero.mp (le_antisymm hzero (norm_nonneg _))
@@ -157,14 +157,14 @@ theorem observerField_eq_zero_of_reWork {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →�
     (hco : dH.adjoint ⟨observerField dS A0 a r, hy⟩ = 0)
     {κ : ℝ} (hκ : κ < 1)
     (hwork : RCLike.re (⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
-        observerField dS A0 a r⟫_𝕜) ≤ κ * ‖observerField dS A0 a r‖ ^ 2) :
+        observerField dS A0 a r⟫_𝕜) ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ)) :
     observerField dS A0 a r = 0 := by
   have hid := inner_observerField_self_eq hdense Am A0 a haH r hy
   have hre := congrArg RCLike.re hid
   rw [inner_self_eq_norm_sq, map_add, hco, inner_zero_right, map_zero, zero_add] at hre
-  have hfinal : ‖observerField dS A0 a r‖ ^ 2 ≤ κ * ‖observerField dS A0 a r‖ ^ 2 := by
+  have hfinal : ‖observerField dS A0 a r‖ ^ (2 : ℕ) ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by
     linarith [hwork]
-  have hsq : ‖observerField dS A0 a r‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
+  have hsq : ‖observerField dS A0 a r‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
   have hzero : ‖observerField dS A0 a r‖ ≤ 0 := by
     nlinarith [norm_nonneg (observerField dS A0 a r)]
   exact norm_eq_zero.mp (le_antisymm hzero (norm_nonneg _))
@@ -179,15 +179,15 @@ theorem norm_observerField_sq_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm 
     {κ : ℝ}
     (hgain : ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖
       ≤ κ * ‖observerField dS A0 a r‖) :
-    (1 - κ) * ‖observerField dS A0 a r‖ ^ 2
+    (1 - κ) * ‖observerField dS A0 a r‖ ^ (2 : ℕ)
       ≤ ‖Am (a : Sm)‖ * ‖dH.adjoint ⟨observerField dS A0 a r, hy⟩‖ := by
   have hle := norm_observerField_sq_le hdense Am A0 a haH r hy
   have hmul : ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖
-      ≤ κ * ‖observerField dS A0 a r‖ ^ 2 := by
+      ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by
     have hstep := mul_le_mul_of_nonneg_right hgain (norm_nonneg (observerField dS A0 a r))
     calc ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖
         ≤ κ * ‖observerField dS A0 a r‖ * ‖observerField dS A0 a r‖ := hstep
-      _ = κ * ‖observerField dS A0 a r‖ ^ 2 := by ring
+      _ = κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by ring
   nlinarith
 
 omit [CompleteSpace Hm] in
@@ -200,7 +200,7 @@ theorem reWork_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[𝕜] H
     (hgain : ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖
       ≤ κ * ‖observerField dS A0 a r‖) :
     RCLike.re (⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
-        observerField dS A0 a r⟫_𝕜) ≤ κ * ‖observerField dS A0 a r‖ ^ 2 := by
+        observerField dS A0 a r⟫_𝕜) ≤ κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by
   have h1 : RCLike.re (⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
       observerField dS A0 a r⟫_𝕜)
       ≤ ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖ :=
@@ -210,7 +210,7 @@ theorem reWork_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[𝕜] H
         observerField dS A0 a r⟫_𝕜)
       ≤ ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖ * ‖observerField dS A0 a r‖ := h1
     _ ≤ κ * ‖observerField dS A0 a r‖ * ‖observerField dS A0 a r‖ := h2
-    _ = κ * ‖observerField dS A0 a r‖ ^ 2 := by ring
+    _ = κ * ‖observerField dS A0 a r‖ ^ (2 : ℕ) := by ring
 
 /-! ## Gauge covariance -/
 

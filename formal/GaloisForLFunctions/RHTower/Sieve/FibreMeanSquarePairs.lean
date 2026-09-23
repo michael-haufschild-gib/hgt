@@ -35,7 +35,7 @@ theorem innerFibre_subset_range (x h : ℝ) (a : ℕ) :
 
 /-- **The fibre mean square, expanded into pairs.** -/
 theorem sum_fibreSq_eq_count (f : ℕ → ℝ) (x h : ℝ) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       = ∑ m ∈ Finset.Icc 1 ⌊x + h * Real.sqrt x⌋₊,
           ∑ n ∈ Finset.Icc 1 ⌊x + h * Real.sqrt x⌋₊,
             f m * f n
@@ -45,7 +45,7 @@ theorem sum_fibreSq_eq_count (f : ℕ → ℝ) (x h : ℝ) :
   set T := Finset.Icc 1 ⌊x + h * Real.sqrt x⌋₊ with hTdef
   -- expand each square and widen the ranges
   have hexp : ∀ a ∈ outerBlock x h,
-      (∑ b ∈ innerFibre x h a, f b) ^ 2
+      (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
         = ∑ m ∈ T, ∑ n ∈ T,
             (if m ∈ innerFibre x h a ∧ n ∈ innerFibre x h a then f m * f n else 0) := by
     intro a _

@@ -54,7 +54,7 @@ structure FZZCigarParityLocalFEReflectionData where
       t⁻¹ * fzzCigarParityDelay t
   grade_two : ∀ {t : ℝ}, 0 < t →
     weight t * energyMap t * fzzCigarParityDelay (energyMap t) =
-      t⁻¹ ^ 2 * fzzCigarParityDelay t
+      t⁻¹ ^ (2 : ℕ) * fzzCigarParityDelay t
 
 private theorem fzzCigarParityDelay_pos {t : ℝ} (ht : 0 < t) :
     0 < fzzCigarParityDelay t := by
@@ -73,12 +73,12 @@ theorem FZZCigarParityLocalFEReflectionData.energyMap_eq_inv
   have ht0 : t ≠ 0 := ht.ne'
   have h2' :
       (D.weight t * fzzCigarParityDelay (D.energyMap t)) * D.energyMap t =
-        t⁻¹ ^ 2 * fzzCigarParityDelay t := by
+        t⁻¹ ^ (2 : ℕ) * fzzCigarParityDelay t := by
     calc
       (D.weight t * fzzCigarParityDelay (D.energyMap t)) * D.energyMap t =
           D.weight t * D.energyMap t *
             fzzCigarParityDelay (D.energyMap t) := by ring
-      _ = t⁻¹ ^ 2 * fzzCigarParityDelay t := h2
+      _ = t⁻¹ ^ (2 : ℕ) * fzzCigarParityDelay t := h2
   rw [h1] at h2'
   field_simp [ht0, hsource] at h2' ⊢
   nlinarith

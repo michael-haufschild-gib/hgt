@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeACriticalHeatNumerator (w φ : ℝ) : ℝ :=
   egbFixedChargeACriticalTemperature w φ * (2 * Real.pi * egbFixedChargeACriticalRadius w φ +
-    4 * Real.pi * (exp w * sin φ) ^ 2 / egbFixedChargeACriticalRadius w φ)
+    4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) / egbFixedChargeACriticalRadius w φ)
 
 theorem egbFixedChargeACriticalHeatNumerator_pos (w φ : ℝ) :
     0 < egbFixedChargeACriticalHeatNumerator w φ := by
@@ -45,7 +45,7 @@ theorem egbFixedChargeA_small_radial_slope_critical_limit (w φ : ℝ) :
       (((tendsto_const_nhds.mul hP).mul tendsto_const_nhds).mul (hR.pow 4))).sub
         (hR.pow 4)).add (tendsto_const_nhds.mul (hR.pow 2))).add tendsto_const_nhds).div
           ((tendsto_const_nhds.mul (hR.pow 2)).mul (((hR.pow 2).add tendsto_const_nhds).pow 2))
-            (by change 4 * Real.pi * (egbFixedChargeACriticalRadius w φ) ^ 2 * ((egbFixedChargeACriticalRadius w φ) ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2 ≠ 0; positivity)
+            (by change 4 * Real.pi * (egbFixedChargeACriticalRadius w φ) ^ (2 : ℕ) * ((egbFixedChargeACriticalRadius w φ) ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0; positivity)
   rwa [egbFixedChargeACritical_radial_slope_zero] at h
 
 theorem egbFixedChargeA_small_actual_slope_critical_limit (w φ : ℝ) :
@@ -55,7 +55,7 @@ theorem egbFixedChargeA_small_actual_slope_critical_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_small_heat_capacity_formula (w φ τ l : ℝ) :
     egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeASmallRadius w φ τ) =
-      egbFixedChargeATemperature w φ τ * (2 * Real.pi * (egbFixedChargeASmallRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ 2 / (egbFixedChargeASmallRadius w φ τ)) /
+      egbFixedChargeATemperature w φ τ * (2 * Real.pi * (egbFixedChargeASmallRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) / (egbFixedChargeASmallRadius w φ τ)) /
         (egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) (egbFixedChargeASmallRadius w φ τ)) := by
   have hR : 0 < egbFixedChargeASmallRadius w φ τ := (egbFixedChargeA_radii_order w φ τ).1
   have h := egbHeatCapacityA_formula (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (log (egbFixedChargeASmallRadius w φ τ))
@@ -64,7 +64,7 @@ theorem egbFixedChargeA_small_heat_capacity_formula (w φ τ l : ℝ) :
 
 theorem egbFixedChargeA_small_heat_numerator_critical_limit (w φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeATemperature w φ τ *
-      (2 * Real.pi * (egbFixedChargeASmallRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ 2 / (egbFixedChargeASmallRadius w φ τ)))
+      (2 * Real.pi * (egbFixedChargeASmallRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) / (egbFixedChargeASmallRadius w φ τ)))
         atBot (𝓝 (egbFixedChargeACriticalHeatNumerator w φ)) :=
   (egbFixedChargeATemperature_critical_limit w φ).mul
     ((tendsto_const_nhds.mul (egbFixedChargeASmallRadius_critical_limit w φ)).add
@@ -102,7 +102,7 @@ theorem egbFixedChargeA_large_radial_slope_critical_limit (w φ : ℝ) :
       (((tendsto_const_nhds.mul hP).mul tendsto_const_nhds).mul (hR.pow 4))).sub
         (hR.pow 4)).add (tendsto_const_nhds.mul (hR.pow 2))).add tendsto_const_nhds).div
           ((tendsto_const_nhds.mul (hR.pow 2)).mul (((hR.pow 2).add tendsto_const_nhds).pow 2))
-            (by change 4 * Real.pi * (egbFixedChargeACriticalRadius w φ) ^ 2 * ((egbFixedChargeACriticalRadius w φ) ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2 ≠ 0; positivity)
+            (by change 4 * Real.pi * (egbFixedChargeACriticalRadius w φ) ^ (2 : ℕ) * ((egbFixedChargeACriticalRadius w φ) ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0; positivity)
   rwa [egbFixedChargeACritical_radial_slope_zero] at h
 
 theorem egbFixedChargeA_large_actual_slope_critical_limit (w φ : ℝ) :
@@ -112,7 +112,7 @@ theorem egbFixedChargeA_large_actual_slope_critical_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_large_heat_capacity_formula (w φ τ l : ℝ) :
     egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) =
-      egbFixedChargeATemperature w φ τ * (2 * Real.pi * (egbFixedChargeALargeRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ 2 / (egbFixedChargeALargeRadius w φ τ)) /
+      egbFixedChargeATemperature w φ τ * (2 * Real.pi * (egbFixedChargeALargeRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) / (egbFixedChargeALargeRadius w φ τ)) /
         (egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) (egbFixedChargeALargeRadius w φ τ)) := by
   have hR : 0 < egbFixedChargeALargeRadius w φ τ := egbFixedChargeALargeRadius_pos w φ τ
   have h := egbHeatCapacityA_formula (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l (log (egbFixedChargeALargeRadius w φ τ))
@@ -121,7 +121,7 @@ theorem egbFixedChargeA_large_heat_capacity_formula (w φ τ l : ℝ) :
 
 theorem egbFixedChargeA_large_heat_numerator_critical_limit (w φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeATemperature w φ τ *
-      (2 * Real.pi * (egbFixedChargeALargeRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ 2 / (egbFixedChargeALargeRadius w φ τ)))
+      (2 * Real.pi * (egbFixedChargeALargeRadius w φ τ) + 4 * Real.pi * (exp w * sin φ) ^ (2 : ℕ) / (egbFixedChargeALargeRadius w φ τ)))
         atBot (𝓝 (egbFixedChargeACriticalHeatNumerator w φ)) :=
   (egbFixedChargeATemperature_critical_limit w φ).mul
     ((tendsto_const_nhds.mul (egbFixedChargeALargeRadius_critical_limit w φ)).add

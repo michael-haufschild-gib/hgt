@@ -107,7 +107,7 @@ theorem speQuantileRieszPrimePowerHistoryCurvature_eq_scalarVarianceBarrier
           ccmActualHeadParabolicMass K *
             (2 * ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset K *
                 ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K +
-              ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ 2)) := by
+              ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ (2 : ℕ))) := by
   have hmass : ccmActualHeadParabolicMass (K + 1) =
       ccmActualHeadParabolicMass K + criticalMellinAtomWeight (K + 3) := by
     unfold ccmActualHeadParabolicMass
@@ -149,7 +149,7 @@ theorem speQuantileRieszPrimePowerHistoryCurvature_nonneg_iff_scalarVarianceBarr
         ccmActualHeadParabolicMass K *
           (2 * ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset K *
               ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K +
-            ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ 2) := by
+            ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ (2 : ℕ)) := by
   rw [speQuantileRieszPrimePowerHistoryCurvature_eq_scalarVarianceBarrier]
   exact mul_nonneg_iff_of_pos_left (criticalMellinAtomWeight_pos hK)
 

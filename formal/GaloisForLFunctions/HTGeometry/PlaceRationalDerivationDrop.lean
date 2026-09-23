@@ -133,7 +133,7 @@ theorem valuation_derivation_mul_le {A : Type*} [CommRing A] [Algebra A K]
     derivation_eval_of_coeff D (fun i => hDF _ (hq i)) x
   have hquot : D (p.eval x / q.eval x)
       = ((Polynomial.derivative p).eval x * q.eval x
-          - p.eval x * (Polynomial.derivative q).eval x) * D x / q.eval x ^ 2 := by
+          - p.eval x * (Polynomial.derivative q).eval x) * D x / q.eval x ^ (2 : ℕ) := by
     rw [Derivation.leibniz_div D (p.eval x) (q.eval x), hDp, hDq]
     simp only [smul_eq_mul]
     field_simp
@@ -158,7 +158,7 @@ theorem valuation_derivation_mul_le {A : Type*} [CommRing A] [Algebra A K]
       ≤ (v.valuation K x) ^ (p.natDegree + q.natDegree - 1) * v.valuation K x
           * (v.valuation K x) ^ q.natDegree := by
         exact mul_le_mul' (mul_le_mul' hnum (le_refl _)) (le_refl _)
-    _ = (v.valuation K x) ^ p.natDegree * ((v.valuation K x) ^ q.natDegree) ^ 2 := by
+    _ = (v.valuation K x) ^ p.natDegree * ((v.valuation K x) ^ q.natDegree) ^ (2 : ℕ) := by
         rw [← pow_succ, ← pow_add, ← pow_mul, ← pow_add]
         congr 1
         omega

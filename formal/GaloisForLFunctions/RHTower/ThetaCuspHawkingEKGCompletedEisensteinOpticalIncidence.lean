@@ -234,7 +234,7 @@ theorem exists_thetaCuspHawkingCompletedEisensteinPhysicalVertex_ne_zero
 
 /-- Squared completed-zeta factor on translated physical horizontal line. -/
 def thetaCuspHawkingCompletedEisensteinLineNormSq (a c r : ℝ) : ℝ :=
-  ‖XiC (((r + c : ℝ) : ℂ) + (a : ℂ) * Complex.I)‖ ^ 2
+  ‖XiC (((r + c : ℝ) : ℂ) + (a : ℂ) * Complex.I)‖ ^ (2 : ℕ)
 
 /-- Horizontal-line factor is continuous. -/
 theorem continuous_thetaCuspHawkingCompletedEisensteinLineNormSq (a c : ℝ) :
@@ -249,7 +249,7 @@ theorem exists_thetaCuspHawkingCompletedEisensteinLineNormSq_bounded
   obtain ⟨C, hC, hbound⟩ :=
     exists_norm_XiC_horizontal_le (A := |a|) (δ := 0) ha (by norm_num)
       (by nlinarith [Real.pi_pos])
-  refine ⟨C ^ 2, sq_nonneg C, fun r => ?_⟩
+  refine ⟨C ^ (2 : ℕ), sq_nonneg C, fun r => ?_⟩
   have h := hbound (r + c) a (le_rfl)
   simp only [zero_mul, neg_zero, Real.exp_zero, mul_one] at h
   rw [thetaCuspHawkingCompletedEisensteinLineNormSq]
@@ -269,19 +269,19 @@ theorem integrable_thetaCuspHawkingCompletedEisensteinLineNormSq
   have hshift : Integrable (fun r : ℝ => Real.exp (-((1 / 2 : ℝ) * |r + c|))) :=
     (hmp.integrable_comp hbase.aestronglyMeasurable).mpr hbase
   have hmajor : Integrable
-      (fun r : ℝ => C ^ 2 * Real.exp (-((1 / 2 : ℝ) * |r + c|))) :=
+      (fun r : ℝ => C ^ (2 : ℕ) * Real.exp (-((1 / 2 : ℝ) * |r + c|))) :=
     hshift.const_mul _
   apply hmajor.mono' (continuous_thetaCuspHawkingCompletedEisensteinLineNormSq a c).aestronglyMeasurable
   filter_upwards with r
   have hn := hbound (r + c) a (le_rfl)
   have hsq : thetaCuspHawkingCompletedEisensteinLineNormSq a c r ≤
-      C ^ 2 * Real.exp (-((1 / 2 : ℝ) * |r + c|)) := by
+      C ^ (2 : ℕ) * Real.exp (-((1 / 2 : ℝ) * |r + c|)) := by
     rw [thetaCuspHawkingCompletedEisensteinLineNormSq]
     calc
-      ‖XiC (((r + c : ℝ) : ℂ) + (a : ℂ) * Complex.I)‖ ^ 2 ≤
-          (C * Real.exp (-((1 / 4 : ℝ) * |r + c|))) ^ 2 :=
+      ‖XiC (((r + c : ℝ) : ℂ) + (a : ℂ) * Complex.I)‖ ^ (2 : ℕ) ≤
+          (C * Real.exp (-((1 / 4 : ℝ) * |r + c|))) ^ (2 : ℕ) :=
         (sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr hn
-      _ = C ^ 2 * Real.exp (-((1 / 2 : ℝ) * |r + c|)) := by
+      _ = C ^ (2 : ℕ) * Real.exp (-((1 / 2 : ℝ) * |r + c|)) := by
         rw [mul_pow, pow_two (Real.exp _), ← Real.exp_add]
         congr 1
         ring
@@ -305,7 +305,7 @@ theorem abs_thetaCuspHawkingCompletedEisensteinPhysicalHeight_lt_one (q : XiZero
 
 /-- Positive continuum spectral density: squared completed angular EKG vertex. -/
 def thetaCuspHawkingCompletedEisensteinContinuumDensity (q : XiZeroCopy) (t r : ℝ) : ℝ :=
-  ‖thetaCuspHawkingCompletedEisensteinPhysicalVertex (xiSpectralPoint q) r t‖ ^ 2
+  ‖thetaCuspHawkingCompletedEisensteinPhysicalVertex (xiSpectralPoint q) r t‖ ^ (2 : ℕ)
 
 /-- Completed angular continuum density is nonnegative. -/
 theorem thetaCuspHawkingCompletedEisensteinContinuumDensity_nonneg
@@ -335,28 +335,28 @@ theorem thetaCuspHawkingCompletedEisensteinContinuumDensity_eq_lineFactors
   rw [thetaCuspHawkingCompletedEisensteinContinuumDensity, thetaCuspHawkingCompletedEisensteinPhysicalVertex_eq]
   simp only [norm_mul, mul_pow]
   unfold thetaCuspHawkingCompletedEisensteinLineNormSq thetaCuspHawkingCompletedEisensteinPhysicalHeight thetaCuspHawkingCompletedEisensteinCenterReal thetaCuspHawkingCompletedEisensteinVertexCenter
-  have h1 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((r + t : ℝ) : ℂ))‖ ^ 2 =
+  have h1 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((r + t : ℝ) : ℂ))‖ ^ (2 : ℕ) =
       ‖XiC (((r + ((xiSpectralPoint q).re / 2 + t) : ℝ) : ℂ) +
-        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
-    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ 2)
+        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
+    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ (2 : ℕ))
     apply Complex.ext <;> simp
     all_goals ring_nf
-  have h2 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((-r + t : ℝ) : ℂ))‖ ^ 2 =
+  have h2 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((-r + t : ℝ) : ℂ))‖ ^ (2 : ℕ) =
       ‖XiC (((-r + ((xiSpectralPoint q).re / 2 + t) : ℝ) : ℂ) +
-        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
-    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ 2)
+        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
+    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ (2 : ℕ))
     apply Complex.ext <;> simp
     all_goals ring_nf
-  have h3 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((r - t : ℝ) : ℂ))‖ ^ 2 =
+  have h3 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((r - t : ℝ) : ℂ))‖ ^ (2 : ℕ) =
       ‖XiC (((r + ((xiSpectralPoint q).re / 2 - t) : ℝ) : ℂ) +
-        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
-    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ 2)
+        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
+    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ (2 : ℕ))
     apply Complex.ext <;> simp
     all_goals ring_nf
-  have h4 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((-r - t : ℝ) : ℂ))‖ ^ 2 =
+  have h4 : ‖XiC (xiSpectralPoint q / 2 + Complex.I / 4 + ((-r - t : ℝ) : ℂ))‖ ^ (2 : ℕ) =
       ‖XiC (((-r + ((xiSpectralPoint q).re / 2 - t) : ℝ) : ℂ) +
-        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
-    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ 2)
+        (((xiSpectralPoint q).im / 2 + 1 / 4 : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
+    apply congrArg (fun w : ℂ => ‖XiC w‖ ^ (2 : ℕ))
     apply Complex.ext <;> simp
     all_goals ring_nf
   rw [h1, h2, h3, h4]
@@ -424,7 +424,7 @@ theorem integrable_thetaCuspHawkingCompletedEisensteinContinuumDensity
 /-- Finite discrete QNM/Maass contribution to optical energy. -/
 def thetaCuspHawkingEKGDiscreteOpticalEnergy {ι : Type*}
     (modes : Finset ι) (amplitude : ι → ℂ) : ℝ :=
-  ∑ j ∈ modes, ‖amplitude j‖ ^ 2
+  ∑ j ∈ modes, ‖amplitude j‖ ^ (2 : ℕ)
 
 /-- Every finite discrete optical contribution is nonnegative. -/
 theorem thetaCuspHawkingEKGDiscreteOpticalEnergy_nonneg {ι : Type*}

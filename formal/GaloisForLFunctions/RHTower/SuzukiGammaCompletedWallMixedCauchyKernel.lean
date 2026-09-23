@@ -81,7 +81,7 @@ def suzukiCauchyAnchoredSecantMidpointAffineQuadratic
     (p a : ℝ) : ℝ :=
   suzukiCauchyAnchoredWallAtomGram p -
     2 * a * suzukiCauchyAnchoredSecantGram p (p / 2) +
-      a ^ 2 * suzukiCauchyWallSecantGram (p / 2)
+      a ^ (2 : ℕ) * suzukiCauchyWallSecantGram (p / 2)
 
 /-- Projection scalar for the one-secant Cauchy payment at the canonical
 interior midpoint. -/
@@ -159,8 +159,8 @@ theorem suzukiCauchyAnchoredSecantMidpointAffineQuadratic_complete_square
       suzukiCauchyAnchoredSecantMidpointAffineQuadratic p
         (suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) +
         suzukiCauchyWallSecantGram (p / 2) *
-          (a - suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) ^ 2 := by
-  have hexp : Real.exp (-p / 2) = Real.exp (-p / 4) ^ 2 := by
+          (a - suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) ^ (2 : ℕ) := by
+  have hexp : Real.exp (-p / 2) = Real.exp (-p / 4) ^ (2 : ℕ) := by
     rw [show -p / 2 = -p / 4 + -p / 4 by ring, Real.exp_add]
     ring
   simp only [suzukiCauchyAnchoredSecantMidpointAffineQuadratic,
@@ -177,7 +177,7 @@ theorem suzukiCauchyAnchoredSecantMidpointAffineQuadratic_optimal_eq
       (suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) =
       (1 - Real.exp (-p / 2)) *
         (3 - Real.exp (-p / 4)) / 2 := by
-  have hexp : Real.exp (-p / 2) = Real.exp (-p / 4) ^ 2 := by
+  have hexp : Real.exp (-p / 2) = Real.exp (-p / 4) ^ (2 : ℕ) := by
     rw [show -p / 2 = -p / 4 + -p / 4 by ring, Real.exp_add]
     ring
   simp only [suzukiCauchyAnchoredSecantMidpointAffineQuadratic,
@@ -367,7 +367,7 @@ theorem suzukiCauchyAnchoredSecantMidpointAffineCauchyEnergy_half_atom_lower
     suzukiCauchyAnchoredSecantMidpointAffineQuadratic_optimal_eq hp.le,
     suzukiCauchyAnchoredWallAtomGram_eq hp.le]
   have hsq : 0 ≤ suzukiCauchyWallSecantGram (p / 2) *
-      (a - suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) ^ 2 :=
+      (a - suzukiCauchyAnchoredSecantMidpointOptimalCoefficient p) ^ (2 : ℕ) :=
     mul_nonneg (suzukiCauchyWallSecantGram_nonneg _) (sq_nonneg _)
   have hExp : Real.exp (-p / 4) ≤ 1 :=
     Real.exp_le_one_iff.mpr (by linarith)

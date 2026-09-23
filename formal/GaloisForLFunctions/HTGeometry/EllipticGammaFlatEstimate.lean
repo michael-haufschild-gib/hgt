@@ -112,8 +112,8 @@ theorem flat_bBound (hH0 : 0 ≤ H) (hHG : H ≤ G) (hx1 : x ≤ 1) (hx0 : 0 ≤
 theorem flat_max_bound {a b : ℝ} (hG1 : 1 ≤ G) (hXpos : 0 < X) (hWpos : 0 < W)
     (hWw : W ≤ w) (hw2 : w ≤ 2) (ht0 : 0 ≤ t) (ha0 : 0 ≤ a) (hb0 : 0 ≤ b)
     (haB : a ≤ 2 * G * t / X) (hbB : b ≤ 8 * G * t) (ha2 : a ≤ 2) :
-    max ((1 + a) * b + w * a) ((w * a + b) * (2 / w ^ 2))
-      ≤ (24 * G + 4 * G / X + (4 * G / X + 8 * G) * (2 / W ^ 2)) * t := by
+    max ((1 + a) * b + w * a) ((w * a + b) * (2 / w ^ (2 : ℕ)))
+      ≤ (24 * G + 4 * G / X + (4 * G / X + 8 * G) * (2 / W ^ (2 : ℕ))) * t := by
   have hG0 : (0 : ℝ) < G := by linarith
   have hw0 : (0 : ℝ) < w := lt_of_lt_of_le hWpos hWw
   have hXG : 2 * G * t / X = (2 * G / X) * t := by
@@ -125,22 +125,22 @@ theorem flat_max_bound {a b : ℝ} (hG1 : 1 ≤ G) (hXpos : 0 < X) (hWpos : 0 < 
     have h1 : (1 + a) * b ≤ 3 * (8 * G * t) := by nlinarith
     have h2 : 2 * ((2 * G / X) * t) = (4 * G / X) * t := by ring
     linarith
-  have hsecond : (w * a + b) * (2 / w ^ 2) ≤ ((4 * G / X + 8 * G) * (2 / W ^ 2)) * t := by
+  have hsecond : (w * a + b) * (2 / w ^ (2 : ℕ)) ≤ ((4 * G / X + 8 * G) * (2 / W ^ (2 : ℕ))) * t := by
     have hnum : w * a + b ≤ (4 * G / X + 8 * G) * t := by
       have h2 : 2 * ((2 * G / X) * t) = (4 * G / X) * t := by ring
       linarith
-    have hden : 2 / w ^ 2 ≤ 2 / W ^ 2 := by
-      have hsq : W ^ 2 ≤ w ^ 2 := by nlinarith
+    have hden : 2 / w ^ (2 : ℕ) ≤ 2 / W ^ (2 : ℕ) := by
+      have hsq : W ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := by nlinarith
       exact div_le_div_of_nonneg_left (by norm_num) (by positivity) hsq
     have hnn : (0 : ℝ) ≤ w * a + b := by positivity
-    have hd0 : (0 : ℝ) ≤ 2 / W ^ 2 := by positivity
-    calc (w * a + b) * (2 / w ^ 2) ≤ (w * a + b) * (2 / W ^ 2) :=
+    have hd0 : (0 : ℝ) ≤ 2 / W ^ (2 : ℕ) := by positivity
+    calc (w * a + b) * (2 / w ^ (2 : ℕ)) ≤ (w * a + b) * (2 / W ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hden hnn
-      _ ≤ ((4 * G / X + 8 * G) * t) * (2 / W ^ 2) := mul_le_mul_of_nonneg_right hnum hd0
-      _ = ((4 * G / X + 8 * G) * (2 / W ^ 2)) * t := by ring
+      _ ≤ ((4 * G / X + 8 * G) * t) * (2 / W ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hnum hd0
+      _ = ((4 * G / X + 8 * G) * (2 / W ^ (2 : ℕ))) * t := by ring
   refine max_le ?_ ?_
   · refine le_trans hfirst ?_
-    have hnn : (0 : ℝ) ≤ (4 * G / X + 8 * G) * (2 / W ^ 2) := by positivity
+    have hnn : (0 : ℝ) ≤ (4 * G / X + 8 * G) * (2 / W ^ (2 : ℕ)) := by positivity
     nlinarith
   · refine le_trans hsecond ?_
     have hnn : (0 : ℝ) ≤ 24 * G + 4 * G / X := by positivity
@@ -170,7 +170,7 @@ theorem exists_flat_estimate (ι : Type) [Fintype ι] [DecidableEq ι] [Nonempty
       fun z hz => norm_one_sub_coordinate_ge_of_mem hz⟩
     have := exp_neg_three_pi_half_lt_one
     linarith
-  refine ⟨24 * G + 4 * G / X + (4 * G / X + 8 * G) * (2 / W ^ 2),
+  refine ⟨24 * G + 4 * G / X + (4 * G / X + 8 * G) * (2 / W ^ (2 : ℕ)),
     min (1 / 2) (min (1 / (8 * G)) (X / G)), by positivity, by positivity, ?_⟩
   intro τ t hτ ht0 htε hq z hz
   obtain ⟨hxlow, hxhigh⟩ := hXbd z hz

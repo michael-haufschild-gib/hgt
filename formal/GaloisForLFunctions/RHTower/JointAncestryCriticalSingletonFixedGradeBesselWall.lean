@@ -93,7 +93,7 @@ theorem not_exists_criticalPrimeSingletonCharacterSynthesis (t : ℝ) :
     rw [inner_criticalPrimePoissonOne_singletonCharacter]
   have hsumParameter : Summable (fun p : Nat.Primes =>
       ‖((primePoissonParameter (1 / 2 : ℝ) t (by norm_num) p :
-        CirclePoissonParameter) : ℂ) - 0‖ ^ 2) := by
+        CirclePoissonParameter) : ℂ) - 0‖ ^ (2 : ℕ)) := by
     simpa only [hnorm, coe_primePoissonParameter, sub_zero] using hsum
   have hwall := (summable_normSq_primePoissonParameter_zero_iff
     (1 / 2 : ℝ) t (by norm_num)).mp hsumParameter

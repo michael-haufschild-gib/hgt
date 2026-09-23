@@ -51,7 +51,7 @@ theorem suzukiDeBrangesVector_eq {γ : ℝ} {m : ℕ} (hγ : XiC ((γ : ℝ) : �
     have h1 : HasDerivAt suzukiHalfInner
         ((deriv XiC ((γ : ℝ) : ℂ) * xiHedenmalmDeBrangesE ((γ : ℝ) : ℂ)
           - XiC ((γ : ℝ) : ℂ) * deriv xiHedenmalmDeBrangesE ((γ : ℝ) : ℂ))
-          / (xiHedenmalmDeBrangesE ((γ : ℝ) : ℂ)) ^ 2) ((γ : ℝ) : ℂ) := hdiv
+          / (xiHedenmalmDeBrangesE ((γ : ℝ) : ℂ)) ^ (2 : ℕ)) ((γ : ℝ) : ℂ) := hdiv
     have hval : deriv suzukiHalfInner ((γ : ℝ) : ℂ)
         = deriv XiC ((γ : ℝ) : ℂ) / xiHedenmalmDeBrangesE ((γ : ℝ) : ℂ) := by
       rw [h1.deriv, hγ]

@@ -4,7 +4,7 @@
 The perturbation-stable exact-curve estimate specializes to literal
 unit-coefficient A₆ blocks.  Under its explicit frequency condition, one
 translated osculating cell has the sharp physical size
-`N^10 M^(2+ε)`, with no additive Taylor loss.
+`N^(10 : ℕ) M^(2+ε)`, with no additive Taylor loss.
 -/
 import GaloisForLFunctions.RHTower.BourgainExactOsculatingCellDecoupling
 import GaloisForLFunctions.RHTower.BourgainA6BlockLocalization

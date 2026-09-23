@@ -31,7 +31,7 @@ def reservoirBaseForm (m : ℕ) : QuadraticForm ℝ (Fin m → ℝ) :=
     QuadraticMap.sq.comp (reservoirSumLinear m)
 
 theorem reservoirBaseForm_apply (m : ℕ) (x : Fin m → ℝ) :
-    reservoirBaseForm m x = (∑ i, x i ^ 2) - (∑ i, x i) ^ 2 := by
+    reservoirBaseForm m x = (∑ i, x i ^ (2 : ℕ)) - (∑ i, x i) ^ (2 : ℕ) := by
   simp [reservoirBaseForm, reservoirSumLinear,
     QuadraticMap.weightedSumSquares_apply, QuadraticMap.sq_apply,
     QuadraticMap.comp_apply, pow_two]
@@ -42,15 +42,15 @@ theorem reservoirBaseForm_sigNeg_le_one (m : ℕ) :
     (reservoirBaseForm m) (reservoirSumLinear m)
   intro x
   rw [reservoirBaseForm_apply]
-  change 0 ≤ (∑ i, x i ^ 2) - (∑ i, x i) ^ 2 + (∑ i, x i) ^ 2
-  have hsquares : 0 ≤ ∑ i : Fin m, x i ^ 2 :=
+  change 0 ≤ (∑ i, x i ^ (2 : ℕ)) - (∑ i, x i) ^ (2 : ℕ) + (∑ i, x i) ^ (2 : ℕ)
+  have hsquares : 0 ≤ ∑ i : Fin m, x i ^ (2 : ℕ) :=
     Finset.sum_nonneg (s := Finset.univ) (fun i _ => sq_nonneg (x i))
   linarith
 
 def reservoirOne (m : ℕ) : Fin m → ℝ := fun _ => 1
 
 theorem reservoirBaseForm_one (m : ℕ) :
-    reservoirBaseForm m (reservoirOne m) = (m : ℝ) - (m : ℝ) ^ 2 := by
+    reservoirBaseForm m (reservoirOne m) = (m : ℝ) - (m : ℝ) ^ (2 : ℕ) := by
   rw [reservoirBaseForm_apply]
   simp [reservoirOne]
 
@@ -212,10 +212,10 @@ theorem sourceSharedReservoirMatrix_toQuadraticForm {m : ℕ}
   congr 1
   · apply Finset.sum_congr rfl
     intro i _
-    have hsqrt : Real.sqrt (w i) ^ 2 = w i := Real.sq_sqrt (hw i)
+    have hsqrt : Real.sqrt (w i) ^ (2 : ℕ) = w i := Real.sq_sqrt (hw i)
     calc
-      x i * (w i * x i) = w i * x i ^ 2 := by ring
-      _ = Real.sqrt (w i) ^ 2 * x i ^ 2 := by rw [hsqrt]
+      x i * (w i * x i) = w i * x i ^ (2 : ℕ) := by ring
+      _ = Real.sqrt (w i) ^ (2 : ℕ) * x i ^ (2 : ℕ) := by rw [hsqrt]
       _ = Real.sqrt (w i) * x i * (Real.sqrt (w i) * x i) := by ring
   · apply Finset.sum_congr rfl
     intro i _
@@ -224,12 +224,12 @@ theorem sourceSharedReservoirMatrix_toQuadraticForm {m : ℕ}
     ring
 
 def sourceSharedReservoirFrobSq {m : ℕ} (w : Fin m → ℝ) : ℝ :=
-  ∑ i, ∑ j, (sourceSharedReservoirMatrix w i j) ^ 2
+  ∑ i, ∑ j, (sourceSharedReservoirMatrix w i j) ^ (2 : ℕ)
 
 theorem sourceSharedReservoirMatrix_entry_sq {m : ℕ} {w : Fin m → ℝ}
     (hw : ∀ i, 0 ≤ w i) (i j : Fin m) :
-    (sourceSharedReservoirMatrix w i j) ^ 2 =
-      w i * w j - if i = j then w i ^ 2 else 0 := by
+    (sourceSharedReservoirMatrix w i j) ^ (2 : ℕ) =
+      w i * w j - if i = j then w i ^ (2 : ℕ) else 0 := by
   rw [sourceSharedReservoirMatrix_apply hw]
   by_cases hij : i = j
   · subst j
@@ -240,17 +240,17 @@ theorem sourceSharedReservoirMatrix_entry_sq {m : ℕ} {w : Fin m → ℝ}
 theorem sourceSharedReservoirFrobSq_eq {m : ℕ} {w : Fin m → ℝ}
     (hw : ∀ i, 0 ≤ w i) :
     sourceSharedReservoirFrobSq w =
-      (∑ i, w i) ^ 2 - ∑ i, w i ^ 2 := by
+      (∑ i, w i) ^ (2 : ℕ) - ∑ i, w i ^ (2 : ℕ) := by
   rw [sourceSharedReservoirFrobSq]
   simp_rw [sourceSharedReservoirMatrix_entry_sq hw,
     Finset.sum_sub_distrib]
-  have hprod : (∑ i, w i) ^ 2 = ∑ i, ∑ j, w i * w j := by
+  have hprod : (∑ i, w i) ^ (2 : ℕ) = ∑ i, ∑ j, w i * w j := by
     rw [pow_two, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro i _
     rw [Finset.mul_sum]
-  have hdiag : (∑ i, ∑ j, if i = j then w i ^ 2 else 0) =
-      ∑ i, w i ^ 2 := by
+  have hdiag : (∑ i, ∑ j, if i = j then w i ^ (2 : ℕ) else 0) =
+      ∑ i, w i ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i _
     rw [Finset.sum_eq_single i]
@@ -300,14 +300,14 @@ theorem orientedSourceSharedReservoirMatrix_toQuadraticForm_neg_one {m : ℕ}
   simp [Finset.sum_neg_distrib]
 
 theorem orientedSourceSharedReservoirFrobSq_eq {m : ℕ} {s : ℝ}
-    {w : Fin m → ℝ} (hs : s ^ 2 = 1) :
-    (∑ i, ∑ j, (orientedSourceSharedReservoirMatrix s w i j) ^ 2) =
+    {w : Fin m → ℝ} (hs : s ^ (2 : ℕ) = 1) :
+    (∑ i, ∑ j, (orientedSourceSharedReservoirMatrix s w i j) ^ (2 : ℕ)) =
       sourceSharedReservoirFrobSq w := by
   simp [orientedSourceSharedReservoirMatrix, sourceSharedReservoirFrobSq,
     mul_pow, hs]
 
 theorem orientedSourceSharedReservoir_reconstruct {m : ℕ} {s : ℝ}
-    {w : Fin m → ℝ} (hs : s ^ 2 = 1) (hw : ∀ i, 0 < w i)
+    {w : Fin m → ℝ} (hs : s ^ (2 : ℕ) = 1) (hw : ∀ i, 0 < w i)
     {i j k : Fin m} (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k) :
     -(orientedSourceSharedReservoirMatrix s w i j *
           orientedSourceSharedReservoirMatrix s w i k /
@@ -320,7 +320,7 @@ theorem orientedSourceSharedReservoir_reconstruct {m : ℕ} {s : ℝ}
   have hsj : Real.sqrt (w j) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 (hw j))
   have hsk : Real.sqrt (w k) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 (hw k))
   have hs0 : s ≠ 0 := by nlinarith
-  have hi : Real.sqrt (w i) ^ 2 = w i := Real.sq_sqrt (hw i).le
+  have hi : Real.sqrt (w i) ^ (2 : ℕ) = w i := Real.sq_sqrt (hw i).le
   field_simp
   nlinarith [hi]
 
@@ -362,7 +362,7 @@ theorem sourceZeroHorizontalOrientation_eq_neg_one_of_right
 
 theorem sourceZeroHorizontalOrientation_sq_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    sourceZeroHorizontalOrientation q ^ 2 = 1 := by
+    sourceZeroHorizontalOrientation q ^ (2 : ℕ) = 1 := by
   rcases lt_or_gt_of_ne hoff with hleft | hright
   · rw [sourceZeroHorizontalOrientation_eq_one_of_left q hleft]
     norm_num
@@ -503,7 +503,7 @@ theorem exists_sourceZeroHorizontalSharedReservoirPacket
       (∀ i,
         sourceZeroHorizontalPrimeCarrier q (p i) ≠ 0 ∧
         sourceZeroHorizontalSharedWeights q p i < ε / (m : ℝ)) ∧
-      sourceSharedReservoirFrobSq (sourceZeroHorizontalSharedWeights q p) < ε ^ 2 := by
+      sourceSharedReservoirFrobSq (sourceZeroHorizontalSharedWeights q p) < ε ^ (2 : ℕ) := by
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   have hδ : 0 < ε / (m : ℝ) := div_pos hε hmR
   obtain ⟨K, hKcard, hKsmall, -⟩ :=
@@ -533,23 +533,23 @@ theorem exists_sourceZeroHorizontalSharedReservoirPacket
         field_simp
   have hsum0 : 0 ≤ ∑ i, sourceZeroHorizontalSharedWeights q p i :=
     Finset.sum_nonneg fun i _ => abs_nonneg _
-  have hsumSq : (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ 2 < ε ^ 2 :=
+  have hsumSq : (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ (2 : ℕ) < ε ^ (2 : ℕ) :=
     (sq_lt_sq₀ hsum0 hε.le).2 hsum
   have hw0 : ∀ i, 0 ≤ sourceZeroHorizontalSharedWeights q p i :=
     fun i => abs_nonneg _
   refine ⟨p, hpInjective, hsmall, ?_⟩
   rw [sourceSharedReservoirFrobSq_eq hw0]
   calc
-    (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ 2 -
-        ∑ i, sourceZeroHorizontalSharedWeights q p i ^ 2 ≤
-      (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ 2 :=
+    (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ (2 : ℕ) -
+        ∑ i, sourceZeroHorizontalSharedWeights q p i ^ (2 : ℕ) ≤
+      (∑ i, sourceZeroHorizontalSharedWeights q p i) ^ (2 : ℕ) :=
         sub_le_self _ (Finset.sum_nonneg fun i _ => sq_nonneg _)
-    _ < ε ^ 2 := hsumSq
+    _ < ε ^ (2 : ℕ) := hsumSq
 
 theorem sourceZeroHorizontalSharedReservoirFrobSq {m : ℕ}
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     (p : Fin m → Nat.Primes) :
-    (∑ i, ∑ j, (sourceZeroHorizontalSharedReservoirMatrix q p i j) ^ 2) =
+    (∑ i, ∑ j, (sourceZeroHorizontalSharedReservoirMatrix q p i j) ^ (2 : ℕ)) =
       sourceSharedReservoirFrobSq (sourceZeroHorizontalSharedWeights q p) := by
   rw [sourceZeroHorizontalSharedReservoirMatrix]
   exact orientedSourceSharedReservoirFrobSq_eq
@@ -568,7 +568,7 @@ theorem exists_sourceZeroHorizontalSharedReservoirAmplification
         sourceZeroHorizontalSharedWeights q p i < ε / (m : ℝ)) ∧
       (sourceZeroHorizontalSharedReservoirMatrix q p).trace = 0 ∧
       (∑ i, ∑ j,
-        (sourceZeroHorizontalSharedReservoirMatrix q p i j) ^ 2) < ε ^ 2 ∧
+        (sourceZeroHorizontalSharedReservoirMatrix q p i j) ^ (2 : ℕ)) < ε ^ (2 : ℕ) ∧
       sourceZeroHorizontalSharedReservoirMatrix (xiZeroCopyLineConjEquiv q) p =
         -sourceZeroHorizontalSharedReservoirMatrix q p ∧
       ((q.1 : ℂ).re < 1 / 2 ∧

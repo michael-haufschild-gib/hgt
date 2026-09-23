@@ -20,47 +20,47 @@ namespace GaloisForLFunctions.HilbertMetric
 noncomputable section
 
 private def taylorFive (x : ℝ) : ℝ :=
-  1 + x + x ^ 2 / 2 + x ^ 3 / 6 + x ^ 4 / 24 + x ^ 5 / 120
+  1 + x + x ^ (2 : ℕ) / 2 + x ^ (3 : ℕ) / 6 + x ^ (4 : ℕ) / 24 + x ^ (5 : ℕ) / 120
 
 private def taylorFour (x : ℝ) : ℝ :=
-  1 + x + x ^ 2 / 2 + x ^ 3 / 6 + x ^ 4 / 24
+  1 + x + x ^ (2 : ℕ) / 2 + x ^ (3 : ℕ) / 6 + x ^ (4 : ℕ) / 24
 
 private def taylorThree (x : ℝ) : ℝ :=
-  1 + x + x ^ 2 / 2 + x ^ 3 / 6
+  1 + x + x ^ (2 : ℕ) / 2 + x ^ (3 : ℕ) / 6
 
 /-- Inner-product exponent along a degree-five transverse coherent collision. -/
-def coherentCollisionExponent (a b e : ℝ) : ℝ := e ^ 2 * a + e ^ 10 * b
+def coherentCollisionExponent (a b e : ℝ) : ℝ := e ^ (2 : ℕ) * a + e ^ (10 : ℕ) * b
 
 private def collisionCrossQuotient (a b e : ℝ) : ℝ :=
-  e ^ 2 * a * b + e ^ 10 * b ^ 2 / 2 +
-  e ^ 4 * a ^ 2 * b / 2 + e ^ 12 * a * b ^ 2 / 2 + e ^ 20 * b ^ 3 / 6 +
-  e ^ 6 * a ^ 3 * b / 6 + e ^ 14 * a ^ 2 * b ^ 2 / 4 +
-    e ^ 22 * a * b ^ 3 / 6 + e ^ 30 * b ^ 4 / 24 +
-  e ^ 8 * a ^ 4 * b / 24 + e ^ 16 * a ^ 3 * b ^ 2 / 12 +
-    e ^ 24 * a ^ 2 * b ^ 3 / 12 + e ^ 32 * a * b ^ 4 / 24 +
-    e ^ 40 * b ^ 5 / 120
+  e ^ (2 : ℕ) * a * b + e ^ (10 : ℕ) * b ^ (2 : ℕ) / 2 +
+  e ^ (4 : ℕ) * a ^ (2 : ℕ) * b / 2 + e ^ (12 : ℕ) * a * b ^ (2 : ℕ) / 2 + e ^ (20 : ℕ) * b ^ (3 : ℕ) / 6 +
+  e ^ (6 : ℕ) * a ^ (3 : ℕ) * b / 6 + e ^ (14 : ℕ) * a ^ (2 : ℕ) * b ^ (2 : ℕ) / 4 +
+    e ^ (22 : ℕ) * a * b ^ (3 : ℕ) / 6 + e ^ (30 : ℕ) * b ^ (4 : ℕ) / 24 +
+  e ^ (8 : ℕ) * a ^ (4 : ℕ) * b / 24 + e ^ (16 : ℕ) * a ^ (3 : ℕ) * b ^ (2 : ℕ) / 12 +
+    e ^ (24 : ℕ) * a ^ (2 : ℕ) * b ^ (3 : ℕ) / 12 + e ^ (32 : ℕ) * a * b ^ (4 : ℕ) / 24 +
+    e ^ (40 : ℕ) * b ^ (5 : ℕ) / 120
 
 private def collisionFirstCrossQuotient (a b e : ℝ) : ℝ :=
-  2 * e ^ 2 * a * b + e ^ 10 * b ^ 2 +
-  3 * e ^ 4 * a ^ 2 * b / 2 + 3 * e ^ 12 * a * b ^ 2 / 2 + e ^ 20 * b ^ 3 / 2 +
-  2 * e ^ 6 * a ^ 3 * b / 3 + e ^ 14 * a ^ 2 * b ^ 2 +
-    2 * e ^ 22 * a * b ^ 3 / 3 + e ^ 30 * b ^ 4 / 6 +
-  5 * e ^ 8 * a ^ 4 * b / 24 + 5 * e ^ 16 * a ^ 3 * b ^ 2 / 12 +
-    5 * e ^ 24 * a ^ 2 * b ^ 3 / 12 + 5 * e ^ 32 * a * b ^ 4 / 24 +
-    e ^ 40 * b ^ 5 / 24
+  2 * e ^ (2 : ℕ) * a * b + e ^ (10 : ℕ) * b ^ (2 : ℕ) +
+  3 * e ^ (4 : ℕ) * a ^ (2 : ℕ) * b / 2 + 3 * e ^ (12 : ℕ) * a * b ^ (2 : ℕ) / 2 + e ^ (20 : ℕ) * b ^ (3 : ℕ) / 2 +
+  2 * e ^ (6 : ℕ) * a ^ (3 : ℕ) * b / 3 + e ^ (14 : ℕ) * a ^ (2 : ℕ) * b ^ (2 : ℕ) +
+    2 * e ^ (22 : ℕ) * a * b ^ (3 : ℕ) / 3 + e ^ (30 : ℕ) * b ^ (4 : ℕ) / 6 +
+  5 * e ^ (8 : ℕ) * a ^ (4 : ℕ) * b / 24 + 5 * e ^ (16 : ℕ) * a ^ (3 : ℕ) * b ^ (2 : ℕ) / 12 +
+    5 * e ^ (24 : ℕ) * a ^ (2 : ℕ) * b ^ (3 : ℕ) / 12 + 5 * e ^ (32 : ℕ) * a * b ^ (4 : ℕ) / 24 +
+    e ^ (40 : ℕ) * b ^ (5 : ℕ) / 24
 
 private def collisionSecondCrossQuotient (a b e : ℝ) : ℝ :=
-  2 * e ^ 2 * a * b + e ^ 10 * b ^ 2 +
-  3 * e ^ 4 * a ^ 2 * b + 3 * e ^ 12 * a * b ^ 2 + e ^ 20 * b ^ 3 +
-  2 * e ^ 6 * a ^ 3 * b + 3 * e ^ 14 * a ^ 2 * b ^ 2 +
-    2 * e ^ 22 * a * b ^ 3 + e ^ 30 * b ^ 4 / 2 +
-  5 * e ^ 8 * a ^ 4 * b / 6 + 5 * e ^ 16 * a ^ 3 * b ^ 2 / 3 +
-    5 * e ^ 24 * a ^ 2 * b ^ 3 / 3 + 5 * e ^ 32 * a * b ^ 4 / 6 +
-    e ^ 40 * b ^ 5 / 6
+  2 * e ^ (2 : ℕ) * a * b + e ^ (10 : ℕ) * b ^ (2 : ℕ) +
+  3 * e ^ (4 : ℕ) * a ^ (2 : ℕ) * b + 3 * e ^ (12 : ℕ) * a * b ^ (2 : ℕ) + e ^ (20 : ℕ) * b ^ (3 : ℕ) +
+  2 * e ^ (6 : ℕ) * a ^ (3 : ℕ) * b + 3 * e ^ (14 : ℕ) * a ^ (2 : ℕ) * b ^ (2 : ℕ) +
+    2 * e ^ (22 : ℕ) * a * b ^ (3 : ℕ) + e ^ (30 : ℕ) * b ^ (4 : ℕ) / 2 +
+  5 * e ^ (8 : ℕ) * a ^ (4 : ℕ) * b / 6 + 5 * e ^ (16 : ℕ) * a ^ (3 : ℕ) * b ^ (2 : ℕ) / 3 +
+    5 * e ^ (24 : ℕ) * a ^ (2 : ℕ) * b ^ (3 : ℕ) / 3 + 5 * e ^ (32 : ℕ) * a * b ^ (4 : ℕ) / 6 +
+    e ^ (40 : ℕ) * b ^ (5 : ℕ) / 6
 
 private theorem collisionCrossQuotient_eq (a b e : ℝ) :
-    (taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ 2 * a) - e ^ 10 * b) /
-        e ^ 10 = collisionCrossQuotient a b e := by
+    (taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b) /
+        e ^ (10 : ℕ) = collisionCrossQuotient a b e := by
   by_cases he : e = 0
   · subst e
     simp [taylorFive, coherentCollisionExponent, collisionCrossQuotient]
@@ -70,8 +70,8 @@ private theorem collisionCrossQuotient_eq (a b e : ℝ) :
 
 private theorem collisionFirstCrossQuotient_eq (a b e : ℝ) :
     (coherentCollisionExponent a b e * taylorFour (coherentCollisionExponent a b e) -
-        e ^ 2 * a * taylorFour (e ^ 2 * a) - e ^ 10 * b) /
-        e ^ 10 = collisionFirstCrossQuotient a b e := by
+        e ^ (2 : ℕ) * a * taylorFour (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b) /
+        e ^ (10 : ℕ) = collisionFirstCrossQuotient a b e := by
   by_cases he : e = 0
   · subst e
     simp [taylorFour, coherentCollisionExponent, collisionFirstCrossQuotient]
@@ -80,9 +80,9 @@ private theorem collisionFirstCrossQuotient_eq (a b e : ℝ) :
     ring
 
 private theorem collisionSecondCrossQuotient_eq (a b e : ℝ) :
-    (coherentCollisionExponent a b e ^ 2 * taylorThree (coherentCollisionExponent a b e) -
-        (e ^ 2 * a) ^ 2 * taylorThree (e ^ 2 * a)) /
-        e ^ 10 = collisionSecondCrossQuotient a b e := by
+    (coherentCollisionExponent a b e ^ (2 : ℕ) * taylorThree (coherentCollisionExponent a b e) -
+        (e ^ (2 : ℕ) * a) ^ (2 : ℕ) * taylorThree (e ^ (2 : ℕ) * a)) /
+        e ^ (10 : ℕ) = collisionSecondCrossQuotient a b e := by
   by_cases he : e = 0
   · subst e
     simp [taylorThree, coherentCollisionExponent, collisionSecondCrossQuotient]
@@ -118,10 +118,10 @@ private theorem tendsto_collisionSecondCrossQuotient_zero (a b : ℝ) :
   simpa [collisionSecondCrossQuotient] using hcont
 
 private theorem collisionCross_isLittleO (a b : ℝ) :
-    (fun e => taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ 2 * a) - e ^ 10 * b)
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-  have hzero : ∀ e : ℝ, e ^ 10 = 0 →
-      taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ 2 * a) - e ^ 10 * b = 0 := by
+    (fun e => taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b)
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
+  have hzero : ∀ e : ℝ, e ^ (10 : ℕ) = 0 →
+      taylorFive (coherentCollisionExponent a b e) - taylorFive (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b = 0 := by
     intro e he
     have he0 : e = 0 := eq_zero_of_pow_eq_zero he
     subst e
@@ -132,11 +132,11 @@ private theorem collisionCross_isLittleO (a b : ℝ) :
 
 private theorem collisionFirstCross_isLittleO (a b : ℝ) :
     (fun e => coherentCollisionExponent a b e * taylorFour (coherentCollisionExponent a b e) -
-        e ^ 2 * a * taylorFour (e ^ 2 * a) - e ^ 10 * b)
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-  have hzero : ∀ e : ℝ, e ^ 10 = 0 →
+        e ^ (2 : ℕ) * a * taylorFour (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b)
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
+  have hzero : ∀ e : ℝ, e ^ (10 : ℕ) = 0 →
       coherentCollisionExponent a b e * taylorFour (coherentCollisionExponent a b e) -
-        e ^ 2 * a * taylorFour (e ^ 2 * a) - e ^ 10 * b = 0 := by
+        e ^ (2 : ℕ) * a * taylorFour (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b = 0 := by
     intro e he
     have he0 : e = 0 := eq_zero_of_pow_eq_zero he
     subst e
@@ -146,12 +146,12 @@ private theorem collisionFirstCross_isLittleO (a b : ℝ) :
       tendsto_collisionFirstCrossQuotient_zero a b
 
 private theorem collisionSecondCross_isLittleO (a b : ℝ) :
-    (fun e => coherentCollisionExponent a b e ^ 2 * taylorThree (coherentCollisionExponent a b e) -
-        (e ^ 2 * a) ^ 2 * taylorThree (e ^ 2 * a))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-  have hzero : ∀ e : ℝ, e ^ 10 = 0 →
-      coherentCollisionExponent a b e ^ 2 * taylorThree (coherentCollisionExponent a b e) -
-        (e ^ 2 * a) ^ 2 * taylorThree (e ^ 2 * a) = 0 := by
+    (fun e => coherentCollisionExponent a b e ^ (2 : ℕ) * taylorThree (coherentCollisionExponent a b e) -
+        (e ^ (2 : ℕ) * a) ^ (2 : ℕ) * taylorThree (e ^ (2 : ℕ) * a))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
+  have hzero : ∀ e : ℝ, e ^ (10 : ℕ) = 0 →
+      coherentCollisionExponent a b e ^ (2 : ℕ) * taylorThree (coherentCollisionExponent a b e) -
+        (e ^ (2 : ℕ) * a) ^ (2 : ℕ) * taylorThree (e ^ (2 : ℕ) * a) = 0 := by
     intro e he
     have he0 : e = 0 := eq_zero_of_pow_eq_zero he
     subst e
@@ -161,35 +161,35 @@ private theorem collisionSecondCross_isLittleO (a b : ℝ) :
       tendsto_collisionSecondCrossQuotient_zero a b
 
 private theorem exp_sub_taylorFive_isLittleO :
-    (fun x : ℝ => Real.exp x - taylorFive x) =o[nhds 0] (fun x => x ^ 5) := by
+    (fun x : ℝ => Real.exp x - taylorFive x) =o[nhds 0] (fun x => x ^ (5 : ℕ)) := by
   convert Real.exp_sub_sum_range_succ_isLittleO_pow 5 using 1
   funext x
   unfold taylorFive
   simp [Finset.sum_range_succ, Nat.factorial]
 
 private theorem exp_sub_taylorFour_isLittleO :
-    (fun x : ℝ => Real.exp x - taylorFour x) =o[nhds 0] (fun x => x ^ 4) := by
+    (fun x : ℝ => Real.exp x - taylorFour x) =o[nhds 0] (fun x => x ^ (4 : ℕ)) := by
   convert Real.exp_sub_sum_range_succ_isLittleO_pow 4 using 1
   funext x
   unfold taylorFour
   simp [Finset.sum_range_succ, Nat.factorial]
 
 private theorem exp_sub_taylorThree_isLittleO :
-    (fun x : ℝ => Real.exp x - taylorThree x) =o[nhds 0] (fun x => x ^ 3) := by
+    (fun x : ℝ => Real.exp x - taylorThree x) =o[nhds 0] (fun x => x ^ (3 : ℕ)) := by
   convert Real.exp_sub_sum_range_succ_isLittleO_pow 3 using 1
   funext x
   unfold taylorThree
   simp [Finset.sum_range_succ, Nat.factorial]
 
 private theorem coherentCollisionExponent_isBigO_sq (a b : ℝ) :
-    coherentCollisionExponent a b =O[nhds 0] (fun e : ℝ => e ^ 2) := by
-  have hfactor : Tendsto (fun e : ℝ => a + e ^ 8 * b) (nhds 0) (nhds a) := by
-    have hcont : Continuous (fun e : ℝ => a + e ^ 8 * b) := by fun_prop
-    have hca : ContinuousAt (fun e : ℝ => a + e ^ 8 * b) 0 := hcont.continuousAt
-    change Tendsto (fun e : ℝ => a + e ^ 8 * b) (nhds 0)
-      (nhds (a + (0 : ℝ) ^ 8 * b)) at hca
+    coherentCollisionExponent a b =O[nhds 0] (fun e : ℝ => e ^ (2 : ℕ)) := by
+  have hfactor : Tendsto (fun e : ℝ => a + e ^ (8 : ℕ) * b) (nhds 0) (nhds a) := by
+    have hcont : Continuous (fun e : ℝ => a + e ^ (8 : ℕ) * b) := by fun_prop
+    have hca : ContinuousAt (fun e : ℝ => a + e ^ (8 : ℕ) * b) 0 := hcont.continuousAt
+    change Tendsto (fun e : ℝ => a + e ^ (8 : ℕ) * b) (nhds 0)
+      (nhds (a + (0 : ℝ) ^ (8 : ℕ) * b)) at hca
     simpa using hca
-  have h := (isBigO_refl (fun e : ℝ => e ^ 2) (nhds 0)).mul
+  have h := (isBigO_refl (fun e : ℝ => e ^ (2 : ℕ)) (nhds 0)).mul
     (hfactor.isBigO_one ℝ)
   convert! h using 1
   · funext e
@@ -199,8 +199,8 @@ private theorem coherentCollisionExponent_isBigO_sq (a b : ℝ) :
     ring
 
 private theorem exp_collision_value_isLittleO (a b : ℝ) :
-    (fun e => Real.exp (coherentCollisionExponent a b e) - taylorFive (e ^ 2 * a) - e ^ 10 * b)
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+    (fun e => Real.exp (coherentCollisionExponent a b e) - taylorFive (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b)
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hy : Tendsto (coherentCollisionExponent a b) (nhds 0) (nhds 0) := by
     have hcont : Continuous (coherentCollisionExponent a b) := by
       unfold coherentCollisionExponent
@@ -210,11 +210,11 @@ private theorem exp_collision_value_isLittleO (a b : ℝ) :
     simpa [coherentCollisionExponent] using hca
   have hrem := exp_sub_taylorFive_isLittleO.comp_tendsto hy
   have hy5 := (coherentCollisionExponent_isBigO_sq a b).pow 5
-  have hpows (e : ℝ) : (e ^ 2) ^ 5 = e ^ 10 := by
+  have hpows (e : ℝ) : (e ^ (2 : ℕ)) ^ (5 : ℕ) = e ^ (10 : ℕ) := by
     ring
   have hrem' :
       (fun e => Real.exp (coherentCollisionExponent a b e) - taylorFive (coherentCollisionExponent a b e))
-        =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
     exact (hrem.trans_isBigO hy5).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
@@ -223,8 +223,8 @@ private theorem exp_collision_value_isLittleO (a b : ℝ) :
 
 private theorem exp_collision_first_isLittleO (a b : ℝ) :
     (fun e => coherentCollisionExponent a b e * Real.exp (coherentCollisionExponent a b e) -
-        e ^ 2 * a * taylorFour (e ^ 2 * a) - e ^ 10 * b)
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (2 : ℕ) * a * taylorFour (e ^ (2 : ℕ) * a) - e ^ (10 : ℕ) * b)
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hy : Tendsto (coherentCollisionExponent a b) (nhds 0) (nhds 0) := by
     have hcont : Continuous (coherentCollisionExponent a b) := by
       unfold coherentCollisionExponent
@@ -237,17 +237,17 @@ private theorem exp_collision_first_isLittleO (a b : ℝ) :
   have hmul :
       (fun e => coherentCollisionExponent a b e *
         (Real.exp (coherentCollisionExponent a b e) - taylorFour (coherentCollisionExponent a b e)))
-        =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ 5) := by
+        =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ (5 : ℕ)) := by
     refine ((isBigO_refl (coherentCollisionExponent a b) (nhds 0)).mul_isLittleO hrem).congr
       (fun _ => rfl) ?_
     intro e
     simp only [Function.comp_apply]
     ring
-  have hpows (e : ℝ) : (e ^ 2) ^ 5 = e ^ 10 := by ring
+  have hpows (e : ℝ) : (e ^ (2 : ℕ)) ^ (5 : ℕ) = e ^ (10 : ℕ) := by ring
   have hrem' :
       (fun e => coherentCollisionExponent a b e *
         (Real.exp (coherentCollisionExponent a b e) - taylorFour (coherentCollisionExponent a b e)))
-        =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
     exact (hmul.trans_isBigO (hyO.pow 5)).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
@@ -255,9 +255,9 @@ private theorem exp_collision_first_isLittleO (a b : ℝ) :
     ring
 
 private theorem exp_collision_second_isLittleO (a b : ℝ) :
-    (fun e => coherentCollisionExponent a b e ^ 2 * Real.exp (coherentCollisionExponent a b e) -
-        (e ^ 2 * a) ^ 2 * taylorThree (e ^ 2 * a))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+    (fun e => coherentCollisionExponent a b e ^ (2 : ℕ) * Real.exp (coherentCollisionExponent a b e) -
+        (e ^ (2 : ℕ) * a) ^ (2 : ℕ) * taylorThree (e ^ (2 : ℕ) * a))
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   have hy : Tendsto (coherentCollisionExponent a b) (nhds 0) (nhds 0) := by
     have hcont : Continuous (coherentCollisionExponent a b) := by
       unfold coherentCollisionExponent
@@ -268,20 +268,20 @@ private theorem exp_collision_second_isLittleO (a b : ℝ) :
   have hrem := exp_sub_taylorThree_isLittleO.comp_tendsto hy
   have hyO := coherentCollisionExponent_isBigO_sq a b
   have hmul :
-      (fun e => coherentCollisionExponent a b e ^ 2 *
+      (fun e => coherentCollisionExponent a b e ^ (2 : ℕ) *
         (Real.exp (coherentCollisionExponent a b e) - taylorThree (coherentCollisionExponent a b e)))
-        =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ 5) := by
+        =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ (5 : ℕ)) := by
     refine
-      ((isBigO_refl (fun e => coherentCollisionExponent a b e ^ 2) (nhds 0)).mul_isLittleO hrem).congr
+      ((isBigO_refl (fun e => coherentCollisionExponent a b e ^ (2 : ℕ)) (nhds 0)).mul_isLittleO hrem).congr
         (fun _ => rfl) ?_
     intro e
     simp only [Function.comp_apply]
     ring
-  have hpows (e : ℝ) : (e ^ 2) ^ 5 = e ^ 10 := by ring
+  have hpows (e : ℝ) : (e ^ (2 : ℕ)) ^ (5 : ℕ) = e ^ (10 : ℕ) := by ring
   have hrem' :
-      (fun e => coherentCollisionExponent a b e ^ 2 *
+      (fun e => coherentCollisionExponent a b e ^ (2 : ℕ) *
         (Real.exp (coherentCollisionExponent a b e) - taylorThree (coherentCollisionExponent a b e)))
-        =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
     exact (hmul.trans_isBigO (hyO.pow 5)).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
@@ -292,7 +292,7 @@ private theorem exp_collision_second_isLittleO (a b : ℝ) :
 theorem coherentCollision_valueJet (a b : ℝ) :
     (fun e => Real.exp (coherentCollisionExponent a b e) -
         ∑ j ∈ Finset.range 6, e ^ (2 * j) * a ^ j / (j.factorial : ℝ) -
-        e ^ 10 * b) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) * b) =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   convert exp_collision_value_isLittleO a b using 1
   funext e
   unfold taylorFive
@@ -304,7 +304,7 @@ theorem coherentCollision_firstJet (a b : ℝ) :
     (fun e => coherentCollisionExponent a b e * Real.exp (coherentCollisionExponent a b e) -
         ∑ j ∈ Finset.range 5,
           e ^ (2 * (j + 1)) * a ^ (j + 1) / (j.factorial : ℝ) -
-        e ^ 10 * b) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) * b) =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   convert exp_collision_first_isLittleO a b using 1
   funext e
   unfold taylorFour
@@ -313,10 +313,10 @@ theorem coherentCollision_firstJet (a b : ℝ) :
 
 /-- The second scale derivative of a coherent Gram entry has its exact order-ten jet. -/
 theorem coherentCollision_secondJet (a b : ℝ) :
-    (fun e => coherentCollisionExponent a b e ^ 2 * Real.exp (coherentCollisionExponent a b e) -
+    (fun e => coherentCollisionExponent a b e ^ (2 : ℕ) * Real.exp (coherentCollisionExponent a b e) -
         ∑ j ∈ Finset.range 4,
           e ^ (2 * (j + 2)) * a ^ (j + 2) / (j.factorial : ℝ))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   convert exp_collision_second_isLittleO a b using 1
   funext e
   unfold taylorThree
@@ -333,7 +333,7 @@ theorem coherentCollision_valueJet_finset {ι : Type*} (s : Finset ι)
       (Real.exp (coherentCollisionExponent (a i) (b i) e) -
         ∑ j ∈ Finset.range 6,
           e ^ (2 * j) * (a i) ^ j / (j.factorial : ℝ) -
-        e ^ 10 * b i)) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) * b i)) =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   apply IsLittleO.sum
   intro i hi
   exact (coherentCollision_valueJet (a i) (b i)).const_mul_left (c i)
@@ -347,7 +347,7 @@ theorem coherentCollision_firstJet_finset {ι : Type*} (s : Finset ι)
           Real.exp (coherentCollisionExponent (a i) (b i) e) -
         ∑ j ∈ Finset.range 5,
           e ^ (2 * (j + 1)) * (a i) ^ (j + 1) / (j.factorial : ℝ) -
-        e ^ 10 * b i)) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+        e ^ (10 : ℕ) * b i)) =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   apply IsLittleO.sum
   intro i hi
   exact (coherentCollision_firstJet (a i) (b i)).const_mul_left (c i)
@@ -357,11 +357,11 @@ of order ten. -/
 theorem coherentCollision_secondJet_finset {ι : Type*} (s : Finset ι)
     (c a b : ι → ℝ) :
     (fun e => ∑ i ∈ s, c i *
-      (coherentCollisionExponent (a i) (b i) e ^ 2 *
+      (coherentCollisionExponent (a i) (b i) e ^ (2 : ℕ) *
           Real.exp (coherentCollisionExponent (a i) (b i) e) -
         ∑ j ∈ Finset.range 4,
           e ^ (2 * (j + 2)) * (a i) ^ (j + 2) / (j.factorial : ℝ)))
-      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+      =o[nhds 0] (fun e : ℝ => e ^ (10 : ℕ)) := by
   apply IsLittleO.sum
   intro i hi
   exact (coherentCollision_secondJet (a i) (b i)).const_mul_left (c i)

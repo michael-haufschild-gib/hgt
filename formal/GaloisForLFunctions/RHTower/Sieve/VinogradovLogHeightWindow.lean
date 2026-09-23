@@ -6,15 +6,15 @@ namespace RHTower.Sieve
 noncomputable section
 
 /-- Integer model of the Route-T logarithmic block geometry.  A height
-base `B` gives Taylor centre scale `B^200` and bilinear half-length
-`B^99`; hence the relative product deficit is exactly `B^-2`. -/
+base `B` gives Taylor centre scale `B^(200 : ℕ)` and bilinear half-length
+`B^(99 : ℕ)`; hence the relative product deficit is exactly `B^-2`. -/
 def routeTLogCentreExponent : ℕ := 200
 
 def routeTLogHalfLengthExponent : ℕ := 99
 
 /-- Uniform multiplier large enough to cover the 200th-power floor-root discretization:
-if `B` is the largest even integer below `X^(1/200)`, then `X < (B+2)^200 ≤ 2^200 B^200`,
-and every convolution centre is below `2^202 B^200`. -/
+if `B` is the largest even integer below `X^(1/200)`, then `X < (B+2)^(200 : ℕ) ≤ 2^(200 : ℕ) B^(200 : ℕ)`,
+and every convolution centre is below `2^(202 : ℕ) B^(200 : ℕ)`. -/
 def routeTLogCentreMultiplier : ℕ := 2 ^ 202
 
 theorem vinogradovUsefulCoordinate_degree_bounds

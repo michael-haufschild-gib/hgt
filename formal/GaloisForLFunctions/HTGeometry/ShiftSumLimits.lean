@@ -12,7 +12,7 @@ The comparison of a coefficient recursion with its leading shift produces two er
 
 The second is the one that needs an argument.  Every index above `⌊n/2⌋` contributes a factor at
 least `⌊n/2⌋ + 1` to the ratio, so the ratio is at most `(⌊n/2⌋+1)^{-p}` with `4p ≥ n` eventually;
-once `(⌊n/2⌋+1)^s` exceeds `(2κ)^4` — which it does, since it tends to infinity — the whole geometric
+once `(⌊n/2⌋+1)^s` exceeds `(2κ)^(4 : ℕ)` — which it does, since it tends to infinity — the whole geometric
 factor is beaten and only a polynomial times `2^{-n}` survives.
 -/
 

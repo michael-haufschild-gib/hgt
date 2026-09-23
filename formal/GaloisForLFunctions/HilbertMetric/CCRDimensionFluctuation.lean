@@ -9,7 +9,7 @@ of modes, `E` is the compressed annihilation energy, `V` is the squared energy o
 leakage, `C` is the mixed nonnormality energy, and `K` is the traceless leakage-tensor energy,
 then
 
-`d * (d + 1) * (d * E - V) = d ^ 2 * C + K`.
+`d * (d + 1) * (d * E - V) = d ^ (2 : ℕ) * C + K`.
 
 The right side is a literal sum of squares.  Thus `V ≤ d * E`; equality is equivalent to joint
 normality of every mixed compression and pure-trace leakage.  At one mode the traceless tensor
@@ -27,7 +27,7 @@ variable {I n m : Type*} [Fintype I] [DecidableEq I]
 
 /-- Squared coordinate Hilbert--Schmidt energy of a rectangular real matrix. -/
 def rectangularMatrixHilbertSchmidtEnergy (A : Matrix m n ℝ) : ℝ :=
-  ∑ i, ∑ j, (A i j) ^ 2
+  ∑ i, ∑ j, (A i j) ^ (2 : ℕ)
 
 omit [DecidableEq n] in
 /-- Rectangular coordinate energy is the transpose-product trace. -/
@@ -40,7 +40,7 @@ theorem rectangularMatrixHilbertSchmidtEnergy_eq_trace_transpose_mul
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  change A j i ^ 2 = A j i * A j i
+  change A j i ^ (2 : ℕ) = A j i * A j i
   ring
 
 omit [DecidableEq n] in
@@ -56,10 +56,10 @@ theorem rectangularMatrixHilbertSchmidtEnergy_eq_zero_iff (A : Matrix m n ℝ) :
   constructor
   · intro h
     ext i j
-    have hi : (∑ j, A i j ^ 2) = 0 :=
+    have hi : (∑ j, A i j ^ (2 : ℕ)) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun i _ =>
         Finset.sum_nonneg fun j _ => sq_nonneg (A i j)).mp h i (Finset.mem_univ i)
-    have hij : A i j ^ 2 = 0 :=
+    have hij : A i j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun j _ => sq_nonneg (A i j)).mp
         hi j (Finset.mem_univ j)
     simpa using (sq_eq_zero_iff.mp hij)
@@ -522,52 +522,52 @@ private theorem scalar_scaled_traceless
     (z : I → I → ℝ) :
     (∑ i, ∑ j,
       ((Fintype.card I : ℝ) * z i j -
-        if i = j then (∑ k, z k k) else 0) ^ 2) =
-      (Fintype.card I : ℝ) ^ 2 * (∑ i, ∑ j, (z i j) ^ 2) -
-        (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 := by
+        if i = j then (∑ k, z k k) else 0) ^ (2 : ℕ)) =
+      (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ i, ∑ j, (z i j) ^ (2 : ℕ)) -
+        (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) := by
   have hcross :
       (∑ i, 2 * (Fintype.card I : ℝ) * z i i * (∑ k, z k k)) =
-        2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 := by
+        2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) := by
     calc
       (∑ i, 2 * (Fintype.card I : ℝ) * z i i * (∑ k, z k k)) =
           (∑ i, 2 * (Fintype.card I : ℝ) * z i i) * (∑ k, z k k) := by
             rw [Finset.sum_mul]
       _ = (2 * (Fintype.card I : ℝ) * (∑ i, z i i)) * (∑ k, z k k) := by
             rw [← Finset.mul_sum]
-      _ = 2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 := by ring
+      _ = 2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) := by ring
   have hquad :
-      (∑ i, ∑ j, (Fintype.card I : ℝ) ^ 2 * (z i j) ^ 2) =
-        (Fintype.card I : ℝ) ^ 2 * (∑ i, ∑ j, (z i j) ^ 2) := by
+      (∑ i, ∑ j, (Fintype.card I : ℝ) ^ (2 : ℕ) * (z i j) ^ (2 : ℕ)) =
+        (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ i, ∑ j, (z i j) ^ (2 : ℕ)) := by
     calc
-      (∑ i, ∑ j, (Fintype.card I : ℝ) ^ 2 * (z i j) ^ 2) =
-          ∑ i, (Fintype.card I : ℝ) ^ 2 * (∑ j, (z i j) ^ 2) := by
+      (∑ i, ∑ j, (Fintype.card I : ℝ) ^ (2 : ℕ) * (z i j) ^ (2 : ℕ)) =
+          ∑ i, (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ j, (z i j) ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i _
             rw [Finset.mul_sum]
-      _ = (Fintype.card I : ℝ) ^ 2 * (∑ i, ∑ j, (z i j) ^ 2) := by
+      _ = (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ i, ∑ j, (z i j) ^ (2 : ℕ)) := by
             rw [Finset.mul_sum]
   calc
     (∑ i, ∑ j,
       ((Fintype.card I : ℝ) * z i j -
-        if i = j then (∑ k, z k k) else 0) ^ 2) =
+        if i = j then (∑ k, z k k) else 0) ^ (2 : ℕ)) =
         ∑ i, ∑ j,
-          ((Fintype.card I : ℝ) ^ 2 * (z i j) ^ 2 -
+          ((Fintype.card I : ℝ) ^ (2 : ℕ) * (z i j) ^ (2 : ℕ) -
             2 * (Fintype.card I : ℝ) * z i j *
               (if i = j then (∑ k, z k k) else 0) +
-            (if i = j then (∑ k, z k k) else 0) ^ 2) := by
+            (if i = j then (∑ k, z k k) else 0) ^ (2 : ℕ)) := by
               apply Finset.sum_congr rfl
               intro i _
               apply Finset.sum_congr rfl
               intro j _
               ring
-    _ = (Fintype.card I : ℝ) ^ 2 * (∑ i, ∑ j, (z i j) ^ 2) -
-        2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 +
-        (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 := by
+    _ = (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ i, ∑ j, (z i j) ^ (2 : ℕ)) -
+        2 * (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) +
+        (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) := by
           simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
           simp
           rw [hcross, hquad]
-    _ = (Fintype.card I : ℝ) ^ 2 * (∑ i, ∑ j, (z i j) ^ 2) -
-        (Fintype.card I : ℝ) * (∑ k, z k k) ^ 2 := by ring
+    _ = (Fintype.card I : ℝ) ^ (2 : ℕ) * (∑ i, ∑ j, (z i j) ^ (2 : ℕ)) -
+        (Fintype.card I : ℝ) * (∑ k, z k k) ^ (2 : ℕ) := by ring
 
 omit [DecidableEq I] [DecidableEq n] in
 private theorem sum_four_comm (f : I → I → m → n → ℝ) :
@@ -596,7 +596,7 @@ omit [DecidableEq n] in
 theorem ccrScaledTracelessLeakageEnergy_eq
     (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ) :
     ccrScaledTracelessLeakageEnergy A B =
-      (Fintype.card I : ℝ) ^ 2 * ccrFullLeakageEnergy A B -
+      (Fintype.card I : ℝ) ^ (2 : ℕ) * ccrFullLeakageEnergy A B -
         (Fintype.card I : ℝ) * ccrNumberVariance A B := by
   classical
   unfold ccrScaledTracelessLeakageEnergy ccrScaledTracelessLeakage
@@ -607,10 +607,10 @@ theorem ccrScaledTracelessLeakageEnergy_eq
   calc
     (∑ a, ∑ b, ∑ i, ∑ j,
       ((Fintype.card I : ℝ) * (((B i).transpose * A j) a b) -
-        (if i = j then (∑ k, (B k).transpose * A k) else 0) a b) ^ 2) =
+        (if i = j then (∑ k, (B k).transpose * A k) else 0) a b) ^ (2 : ℕ)) =
       ∑ a, ∑ b, ∑ i, ∑ j,
         ((Fintype.card I : ℝ) * (((B i).transpose * A j) a b) -
-          if i = j then (∑ k, ((B k).transpose * A k) a b) else 0) ^ 2 := by
+          if i = j then (∑ k, ((B k).transpose * A k) a b) else 0) ^ (2 : ℕ) := by
             apply Finset.sum_congr rfl
             intro a _
             apply Finset.sum_congr rfl
@@ -626,26 +626,26 @@ theorem ccrScaledTracelessLeakageEnergy_eq
                 (fun k => (B k).transpose * A k)]
             · simp [hij]
     _ = ∑ a, ∑ b,
-        ((Fintype.card I : ℝ) ^ 2 *
-            (∑ i, ∑ j, (((B i).transpose * A j) a b) ^ 2) -
+        ((Fintype.card I : ℝ) ^ (2 : ℕ) *
+            (∑ i, ∑ j, (((B i).transpose * A j) a b) ^ (2 : ℕ)) -
           (Fintype.card I : ℝ) *
-            (∑ k, ((B k).transpose * A k) a b) ^ 2) := by
+            (∑ k, ((B k).transpose * A k) a b) ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro a _
           apply Finset.sum_congr rfl
           intro b _
           exact scalar_scaled_traceless
             (z := fun i j => ((B i).transpose * A j) a b)
-    _ = (Fintype.card I : ℝ) ^ 2 *
-          (∑ a, ∑ b, ∑ i, ∑ j, (((B i).transpose * A j) a b) ^ 2) -
+    _ = (Fintype.card I : ℝ) ^ (2 : ℕ) *
+          (∑ a, ∑ b, ∑ i, ∑ j, (((B i).transpose * A j) a b) ^ (2 : ℕ)) -
         (Fintype.card I : ℝ) *
-          (∑ a, ∑ b, (∑ k, ((B k).transpose * A k) a b) ^ 2) := by
+          (∑ a, ∑ b, (∑ k, ((B k).transpose * A k) a b) ^ (2 : ℕ)) := by
             simp only [Finset.sum_sub_distrib]
             simp_rw [← Finset.mul_sum]
-    _ = (Fintype.card I : ℝ) ^ 2 *
-          (∑ i, ∑ j, ∑ a, ∑ b, (((B i).transpose * A j) a b) ^ 2) -
+    _ = (Fintype.card I : ℝ) ^ (2 : ℕ) *
+          (∑ i, ∑ j, ∑ a, ∑ b, (((B i).transpose * A j) a b) ^ (2 : ℕ)) -
         (Fintype.card I : ℝ) *
-          (∑ a, ∑ b, (∑ k, ((B k).transpose * A k) a b) ^ 2) := by
+          (∑ a, ∑ b, (∑ k, ((B k).transpose * A k) a b) ^ (2 : ℕ)) := by
             rw [sum_four_comm]
 
 omit [DecidableEq I] [DecidableEq n] in
@@ -668,7 +668,7 @@ theorem ccr_dimension_fluctuation_identity
     (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     (Fintype.card I : ℝ) * ((Fintype.card I : ℝ) + 1) *
         ((Fintype.card I : ℝ) * ccrMeanEnergy A - ccrNumberVariance A B) =
-      (Fintype.card I : ℝ) ^ 2 * ccrMixedCommutatorEnergy A +
+      (Fintype.card I : ℝ) ^ (2 : ℕ) * ccrMixedCommutatorEnergy A +
         ccrScaledTracelessLeakageEnergy A B := by
   rw [ccrScaledTracelessLeakageEnergy_eq,
     ccrFullLeakageEnergy_eq_mean_variance_commutator A B hcomm hccr]
@@ -680,7 +680,7 @@ theorem ccr_dimension_fluctuation_pairwise_identity
     (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     (Fintype.card I : ℝ) * ((Fintype.card I : ℝ) + 1) *
         ((Fintype.card I : ℝ) * ccrMeanEnergy A - ccrNumberVariance A B) =
-      (Fintype.card I : ℝ) ^ 2 * ccrPairwiseMixedCommutatorEnergy A +
+      (Fintype.card I : ℝ) ^ (2 : ℕ) * ccrPairwiseMixedCommutatorEnergy A +
         ccrScaledTracelessLeakageEnergy A B := by
   rw [ccrPairwiseMixedCommutatorEnergy_eq A hcomm]
   exact ccr_dimension_fluctuation_identity A B hcomm hccr

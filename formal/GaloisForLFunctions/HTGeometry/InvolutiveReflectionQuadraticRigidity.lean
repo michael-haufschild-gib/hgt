@@ -47,9 +47,9 @@ def reflectionFactorPlus (b : ℂ) (g : ℂ → ℂ) (z : ℂ) : ℂ := g (b - z
 
 /-- **Difference of squares.**  The two reflection factors multiply to the reflected square sum. -/
 theorem reflectionFactor_mul (b : ℂ) (g : ℂ → ℂ) (z : ℂ) :
-    reflectionFactorMinus b g z * reflectionFactorPlus b g z = g (b - z) ^ 2 + g z ^ 2 := by
+    reflectionFactorMinus b g z * reflectionFactorPlus b g z = g (b - z) ^ (2 : ℕ) + g z ^ (2 : ℕ) := by
   simp only [reflectionFactorMinus, reflectionFactorPlus]
-  linear_combination (-(g z) ^ 2) * Complex.I_sq
+  linear_combination (-(g z) ^ (2 : ℕ)) * Complex.I_sq
 
 theorem differentiable_reflectionFactorMinus {g : ℂ → ℂ} (hg : Differentiable ℂ g) (b : ℂ) :
     Differentiable ℂ (reflectionFactorMinus b g) :=
@@ -63,20 +63,20 @@ theorem differentiable_reflectionFactorPlus {g : ℂ → ℂ} (hg : Differentiab
 
 /-- The reflection law transported to the inner factor. -/
 theorem reflection_square_sum {W g : ℂ → ℂ} {b C a : ℂ}
-    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ 2) (z : ℂ) :
-    g (b - z) ^ 2 + g z ^ 2 = C - 2 * a := by
+    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ)) (z : ℂ) :
+    g (b - z) ^ (2 : ℕ) + g z ^ (2 : ℕ) = C - 2 * a := by
   have h1 := hrefl z
   rw [hquad (b - z), hquad z] at h1
   linear_combination h1
 
 /-- The finite-order envelope descends from the outer function to the inner factor. -/
 theorem finiteOrderEnvelope_inner {W g : ℂ → ℂ} {a : ℂ}
-    (henv : FiniteOrderEnvelope W) (hquad : ∀ z, W z = a + g z ^ 2) :
+    (henv : FiniteOrderEnvelope W) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ)) :
     FiniteOrderEnvelope g := by
   refine FiniteOrderEnvelope.of_sq ?_
   obtain ⟨Cc, dd, hCc, hb⟩ := henv.sub (FiniteOrderEnvelope.const a)
   refine ⟨Cc, dd, hCc, fun z => ?_⟩
-  have hz : g z ^ 2 = W z - a := by rw [hquad z]; ring
+  have hz : g z ^ (2 : ℕ) = W z - a := by rw [hquad z]; ring
   simpa [hz] using hb z
 
 /-- The reflected copy of a finite-order function is finite order. -/
@@ -93,7 +93,7 @@ theorem finiteOrderEnvelope_reflect {g : ℂ → ℂ} (henv : FiniteOrderEnvelop
 reflection factors vanishes identically, and applying the involution twice forces `g ≡ 0`. -/
 theorem inner_eq_zero_of_reflection_const_eq {W g : ℂ → ℂ} {b C a : ℂ}
     (hg : Differentiable ℂ g)
-    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ 2)
+    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ))
     (hD : C - 2 * a = 0) : ∀ z, g z = 0 := by
   have hprod : ∀ z, reflectionFactorMinus b g z * reflectionFactorPlus b g z = 0 := by
     intro z
@@ -132,7 +132,7 @@ quadratic inner factor of a finite-order entire function splits into a single hy
 generator and its inverse. -/
 theorem involutive_reflection_hyperexponential {W g : ℂ → ℂ} {b C a : ℂ}
     (hg : Differentiable ℂ g) (henv : FiniteOrderEnvelope W)
-    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ 2) :
+    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ)) :
     ∃ (S : Polynomial ℂ) (c d : ℂ), c * d = C - 2 * a ∧
       (∀ z, g (b - z) - Complex.I * g z = c * Complex.exp (S.eval z)) ∧
       (∀ z, g (b - z) + Complex.I * g z = d * Complex.exp (-(S.eval z))) := by
@@ -175,10 +175,10 @@ theorem involutive_reflection_hyperexponential {W g : ℂ → ℂ} {b C a : ℂ}
 satisfies `S'² g² - g'² = (C - 2a) S'²` everywhere. -/
 theorem involutive_reflection_firstOrder_relation {W g : ℂ → ℂ} {b C a : ℂ}
     (hg : Differentiable ℂ g) (henv : FiniteOrderEnvelope W)
-    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ 2) :
+    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ)) :
     ∃ S : Polynomial ℂ, ∀ z : ℂ,
-      ((Polynomial.derivative S).eval z) ^ 2 * g z ^ 2 - (deriv g z) ^ 2
-        = (C - 2 * a) * ((Polynomial.derivative S).eval z) ^ 2 := by
+      ((Polynomial.derivative S).eval z) ^ (2 : ℕ) * g z ^ (2 : ℕ) - (deriv g z) ^ (2 : ℕ)
+        = (C - 2 * a) * ((Polynomial.derivative S).eval z) ^ (2 : ℕ) := by
   obtain ⟨S, c, d, hcd, hA, hB⟩ :=
     involutive_reflection_hyperexponential hg henv hrefl hquad
   refine ⟨S, fun z => ?_⟩
@@ -207,28 +207,28 @@ theorem involutive_reflection_firstOrder_relation {W g : ℂ → ℂ} {b C a : �
   -- eliminate the generator
   have hEinv : Complex.exp (-(S.eval z)) * Complex.exp (S.eval z) = 1 := by
     rw [← Complex.exp_add]; simp
-  have hkey : P ^ 2 * (2 * Complex.I * g z) ^ 2 - (2 * Complex.I * deriv g z) ^ 2
-      = -4 * (C - 2 * a) * P ^ 2 := by
+  have hkey : P ^ (2 : ℕ) * (2 * Complex.I * g z) ^ (2 : ℕ) - (2 * Complex.I * deriv g z) ^ (2 : ℕ)
+      = -4 * (C - 2 * a) * P ^ (2 : ℕ) := by
     rw [hgfun z, hderiv, ← hcd]
-    linear_combination (-4 * c * d * P ^ 2) * hEinv
+    linear_combination (-4 * c * d * P ^ (2 : ℕ)) * hEinv
   linear_combination (-1 / 4 : ℂ) * hkey
-    + (P ^ 2 * g z ^ 2 - (deriv g z) ^ 2) * Complex.I_sq
+    + (P ^ (2 : ℕ) * g z ^ (2 : ℕ) - (deriv g z) ^ (2 : ℕ)) * Complex.I_sq
 
 /-! ### The card statement -/
 
 /-- The three-term differential polynomial of the reflection equation. -/
 def reflectionRelationCoeff (S : Polynomial ℂ) (D : ℂ) : ℕ × ℕ → Polynomial ℂ := fun p =>
-  if p = (2, 0) then (Polynomial.derivative S) ^ 2
+  if p = (2, 0) then (Polynomial.derivative S) ^ (2 : ℕ)
   else if p = (0, 2) then -1
-  else -(Polynomial.C D) * (Polynomial.derivative S) ^ 2
+  else -(Polynomial.C D) * (Polynomial.derivative S) ^ (2 : ℕ)
 
 /-- The support of the reflection equation. -/
 def reflectionRelationSupport : Finset (ℕ × ℕ) := {(2, 0), (0, 2), (0, 0)}
 
 theorem reflectionRelation_sum (S : Polynomial ℂ) (D : ℂ) (z u v : ℂ) :
     ∑ p ∈ reflectionRelationSupport, (reflectionRelationCoeff S D p).eval z * u ^ p.1 * v ^ p.2
-      = ((Polynomial.derivative S).eval z) ^ 2 * u ^ 2 - v ^ 2
-        - D * ((Polynomial.derivative S).eval z) ^ 2 := by
+      = ((Polynomial.derivative S).eval z) ^ (2 : ℕ) * u ^ (2 : ℕ) - v ^ (2 : ℕ)
+        - D * ((Polynomial.derivative S).eval z) ^ (2 : ℕ) := by
   rw [reflectionRelationSupport]
   norm_num [reflectionRelationCoeff]
   ring
@@ -238,15 +238,15 @@ finite-order entire function forces every quadratic entire inner factor to be di
 algebraic of order at most one. -/
 theorem involutive_reflection_differentiallyAlgebraicOfOrder_one {W g : ℂ → ℂ} {b C a : ℂ}
     (hg : Differentiable ℂ g) (henv : FiniteOrderEnvelope W)
-    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ 2) :
+    (hrefl : ∀ z, W (b - z) = C - W z) (hquad : ∀ z, W z = a + g z ^ (2 : ℕ)) :
     DifferentiallyAlgebraicOfOrder g 1 := by
   obtain ⟨S, hrel⟩ := involutive_reflection_firstOrder_relation hg henv hrefl hquad
   -- the differential polynomial is nonzero: specialize `u = 0` and choose `v`
   have hnonzero : firstOrderMvPoly reflectionRelationSupport
       (reflectionRelationCoeff S (C - 2 * a)) ≠ 0 := by
     obtain ⟨v, hv⟩ : ∃ v : ℂ,
-        -v ^ 2 - (C - 2 * a) * ((Polynomial.derivative S).eval 0) ^ 2 ≠ 0 := by
-      by_cases hKz : (C - 2 * a) * ((Polynomial.derivative S).eval 0) ^ 2 = 0
+        -v ^ (2 : ℕ) - (C - 2 * a) * ((Polynomial.derivative S).eval 0) ^ (2 : ℕ) ≠ 0 := by
+      by_cases hKz : (C - 2 * a) * ((Polynomial.derivative S).eval 0) ^ (2 : ℕ) = 0
       · refine ⟨1, ?_⟩
         rw [hKz]; norm_num
       · refine ⟨0, fun hc => hKz ?_⟩
@@ -335,14 +335,14 @@ theorem finiteOrderEnvelope_sinPrimitive : FiniteOrderEnvelope sinPrimitive := b
     _ = (1 + ‖z‖) * Real.exp ‖z‖ := by ring
     _ ≤ Real.exp ‖z‖ * Real.exp ‖z‖ := mul_le_mul_of_nonneg_right hlin hexp.le
     _ = Real.exp (‖z‖ + ‖z‖) := (Real.exp_add _ _).symm
-    _ ≤ Real.exp (2 * (1 + ‖z‖) ^ 1) := by
+    _ ≤ Real.exp (2 * (1 + ‖z‖) ^ (1 : ℕ)) := by
         refine Real.exp_le_exp.mpr ?_
         rw [pow_one]; linarith
 
 /-- **The `z sin z` primitive admits no order-two quadratic inner factor.**  Every entire `g` with
-`sin z - z cos z = a + g z ^ 2` is differentially algebraic of order at most one. -/
+`sin z - z cos z = a + g z ^ (2 : ℕ)` is differentially algebraic of order at most one. -/
 theorem sinPrimitive_quadratic_inner_firstOrder {g : ℂ → ℂ} {a : ℂ}
-    (hg : Differentiable ℂ g) (hquad : ∀ z, sinPrimitive z = a + g z ^ 2) :
+    (hg : Differentiable ℂ g) (hquad : ∀ z, sinPrimitive z = a + g z ^ (2 : ℕ)) :
     DifferentiallyAlgebraicOfOrder g 1 :=
   involutive_reflection_differentiallyAlgebraicOfOrder_one hg finiteOrderEnvelope_sinPrimitive
     sinPrimitive_reflection hquad

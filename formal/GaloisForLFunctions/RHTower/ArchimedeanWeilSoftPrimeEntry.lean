@@ -27,17 +27,17 @@ namespace RHTower.ArchimedeanKernel
 
 /-- The archimedean translation defect `D(u) = ½ ∫ (f(x) − f(x − u))² dx`. -/
 noncomputable def weilTranslationDefect (f : ℝ → ℝ) (u : ℝ) : ℝ :=
-  (1 / 2) * ∫ x, (f x - f (x - u)) ^ 2
+  (1 / 2) * ∫ x, (f x - f (x - u)) ^ (2 : ℕ)
 
 /-- The mass of `f` in the end window of length `ε` below `b`. -/
 noncomputable def weilEndWindowMass (f : ℝ → ℝ) (b ε : ℝ) : ℝ :=
-  ∫ x in Ioc (b - ε) b, f x ^ 2
+  ∫ x in Ioc (b - ε) b, f x ^ (2 : ℕ)
 
 theorem integrable_sub_translate_sq {f : ℝ → ℝ} (hm : Measurable f)
-    (hf : Integrable (fun x => f x ^ 2)) (u : ℝ) :
-    Integrable (fun x => (f x - f (x - u)) ^ 2) := by
-  have h1 : Integrable (fun x => f (x - u) ^ 2) := hf.comp_sub_right u
-  have h2 : Integrable (fun x => 2 * f x ^ 2 + 2 * f (x - u) ^ 2) :=
+    (hf : Integrable (fun x => f x ^ (2 : ℕ))) (u : ℝ) :
+    Integrable (fun x => (f x - f (x - u)) ^ (2 : ℕ)) := by
+  have h1 : Integrable (fun x => f (x - u) ^ (2 : ℕ)) := hf.comp_sub_right u
+  have h2 : Integrable (fun x => 2 * f x ^ (2 : ℕ) + 2 * f (x - u) ^ (2 : ℕ)) :=
     (hf.const_mul 2).add (h1.const_mul 2)
   refine h2.mono' ?_ ?_
   · exact ((hm.sub (hm.comp (measurable_sub_const u))).pow_const 2).aestronglyMeasurable
@@ -52,15 +52,15 @@ theorem weilTranslationDefect_nonneg {f : ℝ → ℝ} (u : ℝ) : 0 ≤ weilTra
 /-- **End-window mass is carried out by the translate.**  If `f` vanishes beyond `b`, the mass of
 `f` in the window `(b − u, b]` is bounded by the squared translation defect at shift `u`. -/
 theorem weilEndWindowMass_le_sub_translate_sq {f : ℝ → ℝ} (hm : Measurable f)
-    (hf : Integrable (fun x => f x ^ 2)) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {u : ℝ}
+    (hf : Integrable (fun x => f x ^ (2 : ℕ))) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {u : ℝ}
     (hu : 0 < u) :
-    weilEndWindowMass f b u ≤ ∫ x, (f x - f (x - u)) ^ 2 := by
+    weilEndWindowMass f b u ≤ ∫ x, (f x - f (x - u)) ^ (2 : ℕ) := by
   unfold weilEndWindowMass
-  have h1 : ∫ x in Ioc (b - u) b, f x ^ 2 = ∫ y in Ioc b (b + u), f (y - u) ^ 2 := by
+  have h1 : ∫ x in Ioc (b - u) b, f x ^ (2 : ℕ) = ∫ y in Ioc b (b + u), f (y - u) ^ (2 : ℕ) := by
     rw [← integral_of_le (by linarith), ← integral_of_le (by linarith),
-      integral_comp_sub_right (fun x => f x ^ 2) u]
+      integral_comp_sub_right (fun x => f x ^ (2 : ℕ)) u]
     rw [add_sub_cancel_right]
-  have h2 : ∫ y in Ioc b (b + u), f (y - u) ^ 2 = ∫ y in Ioc b (b + u), (f y - f (y - u)) ^ 2 := by
+  have h2 : ∫ y in Ioc b (b + u), f (y - u) ^ (2 : ℕ) = ∫ y in Ioc b (b + u), (f y - f (y - u)) ^ (2 : ℕ) := by
     refine setIntegral_congr_fun measurableSet_Ioc fun y hy => ?_
     rw [hb y hy.1, zero_sub, neg_sq]
   rw [h1, h2]
@@ -68,7 +68,7 @@ theorem weilEndWindowMass_le_sub_translate_sq {f : ℝ → ℝ} (hm : Measurable
     (Filter.Eventually.of_forall fun y => sq_nonneg _)
 
 /-- Window mass is monotone in the window length. -/
-theorem weilEndWindowMass_mono {f : ℝ → ℝ} (hf : Integrable (fun x => f x ^ 2)) (b : ℝ)
+theorem weilEndWindowMass_mono {f : ℝ → ℝ} (hf : Integrable (fun x => f x ^ (2 : ℕ))) (b : ℝ)
     {ε u : ℝ} (hεu : ε ≤ u) :
     weilEndWindowMass f b ε ≤ weilEndWindowMass f b u := by
   unfold weilEndWindowMass
@@ -111,13 +111,13 @@ theorem inv_two_mul_le_weilKernel {u : ℝ} (hu : 0 < u) (hu' : u ≤ 1 / 10) :
 /-- **Pointwise log-soft law.**  For shifts `u ∈ [ε, 1/10]`, the weighted translation defect at
 `u` dominates the end-window mass of length `ε` divided by `4u`. -/
 theorem weilEndWindowMass_div_le_defect_mul_kernel {f : ℝ → ℝ} (hm : Measurable f)
-    (hf : Integrable (fun x => f x ^ 2)) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {ε u : ℝ}
+    (hf : Integrable (fun x => f x ^ (2 : ℕ))) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {ε u : ℝ}
     (hε : 0 < ε) (hεu : ε ≤ u) (hu : u ≤ 1 / 10) :
     weilEndWindowMass f b ε / (4 * u) ≤ weilTranslationDefect f u * weilKernel u := by
   have hu0 : 0 < u := lt_of_lt_of_le hε hεu
   have hM : weilEndWindowMass f b ε ≤ 2 * weilTranslationDefect f u := by
     calc weilEndWindowMass f b ε ≤ weilEndWindowMass f b u := weilEndWindowMass_mono hf b hεu
-      _ ≤ ∫ x, (f x - f (x - u)) ^ 2 := weilEndWindowMass_le_sub_translate_sq hm hf hb hu0
+      _ ≤ ∫ x, (f x - f (x - u)) ^ (2 : ℕ) := weilEndWindowMass_le_sub_translate_sq hm hf hb hu0
       _ = 2 * weilTranslationDefect f u := by unfold weilTranslationDefect; ring
   have hK := inv_two_mul_le_weilKernel hu0 hu
   have hD := weilTranslationDefect_nonneg (f := f) u
@@ -133,7 +133,7 @@ theorem weilEndWindowMass_div_le_defect_mul_kernel {f : ℝ → ℝ} (hm : Measu
 /-- **Integrated log-soft law.**  Mass in an end window of length `ε ≤ 1/10` costs archimedean
 energy of order `log(1/(10ε))`. -/
 theorem weilEndWindowMass_mul_log_le_integral {f : ℝ → ℝ} (hm : Measurable f)
-    (hf : Integrable (fun x => f x ^ 2)) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {ε : ℝ}
+    (hf : Integrable (fun x => f x ^ (2 : ℕ))) {b : ℝ} (hb : ∀ x, b < x → f x = 0) {ε : ℝ}
     (hε : 0 < ε) (hε' : ε ≤ 1 / 10)
     (hDK : IntervalIntegrable (fun u => weilTranslationDefect f u * weilKernel u) volume ε
       (1 / 10)) :

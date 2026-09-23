@@ -3,7 +3,7 @@
 
 For the convention
 
-`Theta(z,tau) = sum_n exp(2*pi*i*n*z + pi*i*n^2*tau)`,
+`Theta(z,tau) = sum_n exp(2*pi*i*n*z + pi*i*n^(2 : ℕ)*tau)`,
 
 the basic zero is the odd half-period `(1+tau)/2`.  The proof below uses only the exact evenness,
 periodicity, and quasiperiodicity constraints already formalized in mathlib; it does not appeal to
@@ -111,10 +111,10 @@ theorem jacobiTheta₂'_add_right_one (z τ : ℂ) :
   refine tsum_congr fun n ↦ ?_
   congr 1
   rw [Complex.exp_eq_exp_iff_exists_int]
-  obtain ⟨k, hk⟩ : ∃ k : ℤ, n ^ 2 - n = 2 * k := by
+  obtain ⟨k, hk⟩ : ∃ k : ℤ, n ^ (2 : ℕ) - n = 2 * k := by
     obtain ⟨m, hm⟩ := Int.even_mul_succ_self (n - 1)
     exact ⟨m, by linear_combination hm⟩
-  have hcast : (n : ℂ) ^ 2 - (n : ℂ) = 2 * (k : ℂ) := by
+  have hcast : (n : ℂ) ^ (2 : ℕ) - (n : ℂ) = 2 * (k : ℂ) := by
     exact_mod_cast hk
   refine ⟨k, ?_⟩
   linear_combination (Real.pi * Complex.I) * hcast
@@ -134,7 +134,7 @@ theorem thetaHalfPeriodDerivative_S_eq {τ : ℂ} (hτ : 0 < τ.im) :
     thetaHalfPeriodDerivative (-1 / τ) =
       (1 / (-Complex.I * (-1 / τ)) ^ (1 / 2 : ℂ) *
         Complex.exp
-          (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ 2 / (-1 / τ)) /
+          (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ (2 : ℕ) / (-1 / τ)) /
         (-1 / τ)) * (-thetaHalfPeriodDerivative τ) := by
   have hτ0 : τ ≠ 0 := by
     intro h
@@ -170,7 +170,7 @@ theorem thetaHalfPeriodDerivative_S_ne_zero_iff {τ : ℂ} (hτ : 0 < τ.im) :
   have hfactor :
       1 / (-Complex.I * (-1 / τ)) ^ (1 / 2 : ℂ) *
           Complex.exp
-            (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ 2 / (-1 / τ)) /
+            (-Real.pi * Complex.I * thetaHalfPeriod (-1 / τ) ^ (2 : ℕ) / (-1 / τ)) /
           (-1 / τ) ≠ 0 :=
     div_ne_zero (mul_ne_zero (div_ne_zero one_ne_zero hpow) (Complex.exp_ne_zero _)) hσ0
   rw [mul_ne_zero_iff_left hfactor, neg_ne_zero]

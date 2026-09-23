@@ -136,13 +136,13 @@ theorem edgeIntegral_le_evenDeficit [IsProbabilityMeasure μ] {r : ℝ} (hr0 : 0
 /-- **`(248)`, odd half.** -/
 theorem edgeIntegral_le_oddDeficit [IsProbabilityMeasure μ] {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
     (hsupp : ∀ᵐ t ∂μ, -r ≤ t ∧ t < 1) (hint : Integrable oddResolvent μ) :
-    ∫ t, (t + r) ∂μ ≤ (1 + r) ^ 2 * ∫ t, oddEdgeWeight r t ∂μ := by
+    ∫ t, (t + r) ∂μ ≤ (1 + r) ^ (2 : ℕ) * ∫ t, oddEdgeWeight r t ∂μ := by
   have hsupp' : ∀ᵐ t ∂μ, -r ≤ t ∧ t ≤ 1 := by
     filter_upwards [hsupp] with t ht
     exact ⟨ht.1, ht.2.le⟩
   have hid := integrable_id_of_edgeSupport hr0 hr1 hsupp'
   have hw := integrable_oddEdgeWeight hr0 hsupp hint
-  have hmono : ∫ t, (t + r) ∂μ ≤ ∫ t, ((1 + r) ^ 2 * oddEdgeWeight r t) ∂μ := by
+  have hmono : ∫ t, (t + r) ∂μ ≤ ∫ t, ((1 + r) ^ (2 : ℕ) * oddEdgeWeight r t) ∂μ := by
     refine integral_mono_ae (hid.add (integrable_const r)) (hw.const_mul _) ?_
     filter_upwards [hsupp] with t ht
     exact edge_le_odd_weight hr0 ht.1 ht.2

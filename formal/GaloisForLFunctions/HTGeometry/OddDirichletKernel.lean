@@ -64,7 +64,7 @@ theorem sum_cos_odd {θ : ℝ} (hθ : Real.sin θ ≠ 0) (N : ℕ) :
 /-- **The odd sine kernel.** -/
 theorem sum_sin_odd {θ : ℝ} (hθ : Real.sin θ ≠ 0) (N : ℕ) :
     ∑ k ∈ range N, Real.sin ((2 * (k : ℝ) + 1) * θ)
-      = Real.sin ((N : ℝ) * θ) ^ 2 / Real.sin θ := by
+      = Real.sin ((N : ℝ) * θ) ^ (2 : ℕ) / Real.sin θ := by
   have hne : (2 : ℝ) * Real.sin θ ≠ 0 := mul_ne_zero two_ne_zero hθ
   have hsum : (2 * Real.sin θ) * ∑ k ∈ range N, Real.sin ((2 * (k : ℝ) + 1) * θ)
       = 1 - Real.cos (2 * (N : ℝ) * θ) := by
@@ -84,7 +84,7 @@ theorem sum_sin_odd {θ : ℝ} (hθ : Real.sin θ ≠ 0) (N : ℕ) :
     refine (Finset.sum_range_sub (fun j : ℕ => -Real.cos (2 * (j : ℝ) * θ)) N).trans ?_
     simp
     ring
-  have hhalf : Real.cos (2 * (N : ℝ) * θ) = 1 - 2 * Real.sin ((N : ℝ) * θ) ^ 2 := by
+  have hhalf : Real.cos (2 * (N : ℝ) * θ) = 1 - 2 * Real.sin ((N : ℝ) * θ) ^ (2 : ℕ) := by
     have := Real.cos_two_mul' ((N : ℝ) * θ)
     rw [show 2 * (N : ℝ) * θ = 2 * ((N : ℝ) * θ) by ring]
     linarith [Real.sin_sq_add_cos_sq ((N : ℝ) * θ), Real.cos_two_mul ((N : ℝ) * θ)]
@@ -107,7 +107,7 @@ theorem abs_sum_sin_odd_le {θ : ℝ} (hθ : Real.sin θ ≠ 0) (N : ℕ) :
     |∑ k ∈ range N, Real.sin ((2 * (k : ℝ) + 1) * θ)| ≤ 1 / |Real.sin θ| := by
   rw [sum_sin_odd hθ, abs_div]
   have habs : (0 : ℝ) < |Real.sin θ| := abs_pos.mpr hθ
-  have hnum : |Real.sin ((N : ℝ) * θ) ^ 2| ≤ 1 := by
+  have hnum : |Real.sin ((N : ℝ) * θ) ^ (2 : ℕ)| ≤ 1 := by
     rw [abs_of_nonneg (sq_nonneg _)]
     nlinarith [Real.abs_sin_le_one ((N : ℝ) * θ), abs_nonneg (Real.sin ((N : ℝ) * θ)),
       sq_abs (Real.sin ((N : ℝ) * θ))]

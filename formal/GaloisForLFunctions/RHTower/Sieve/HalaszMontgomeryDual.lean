@@ -27,20 +27,20 @@ noncomputable def dualCoeff (N : ℕ) (a : Fin N → ℂ) (E : Set ℝ) (n : Fin
 dual coefficients. -/
 theorem setIntegral_normSq_dirPoly_eq_dual {N : ℕ} (a : Fin N → ℂ) {T : ℝ} {E : Set ℝ}
     (hE : MeasurableSet E) (hEs : E ⊆ Set.Icc (-T) T) :
-    ((∫ t in E, ‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ) = ∑ n : Fin N, a n * dualCoeff N a E n := by
+    ((∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ) = ∑ n : Fin N, a n * dualCoeff N a E n := by
   classical
   have hcA : Continuous (dirPoly N a) := continuous_dirPoly N a
   have hcconj : Continuous fun t : ℝ => (starRingEnd ℂ) (dirPoly N a t) :=
     Complex.continuous_conj.comp hcA
-  have hcsq : Continuous fun t : ℝ => ‖dirPoly N a t‖ ^ 2 := (hcA.norm).pow 2
-  have hint : IntegrableOn (fun t : ℝ => ‖dirPoly N a t‖ ^ 2) E :=
+  have hcsq : Continuous fun t : ℝ => ‖dirPoly N a t‖ ^ (2 : ℕ) := (hcA.norm).pow 2
+  have hint : IntegrableOn (fun t : ℝ => ‖dirPoly N a t‖ ^ (2 : ℕ)) E :=
     (hcsq.integrableOn_Icc).mono_set hEs
   -- move to the complex integral of `A · conj A`
-  have hpt : ∀ t : ℝ, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ)
+  have hpt : ∀ t : ℝ, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = dirPoly N a t * (starRingEnd ℂ) (dirPoly N a t) := by
     intro t
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  have hstep1 : ((∫ t in E, ‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ)
+  have hstep1 : ((∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∫ t in E, dirPoly N a t * (starRingEnd ℂ) (dirPoly N a t) := by
     rw [← integral_complex_ofReal]
     exact setIntegral_congr_fun hE fun t _ => hpt t
@@ -72,27 +72,27 @@ theorem setIntegral_normSq_dirPoly_eq_dual {N : ℕ} (a : Fin N → ℂ) {T : �
 /-- **The duality bound `(17)`.** -/
 theorem setIntegral_normSq_dirPoly_sq_le {N : ℕ} (a : Fin N → ℂ) {T : ℝ} {E : Set ℝ}
     (hE : MeasurableSet E) (hEs : E ⊆ Set.Icc (-T) T) :
-    (∫ t in E, ‖dirPoly N a t‖ ^ 2) ^ 2
-      ≤ (∑ n : Fin N, ‖a n‖ ^ 2) * ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ 2 := by
+    (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)) ^ (2 : ℕ)
+      ≤ (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) * ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ (2 : ℕ) := by
   classical
   have hid := setIntegral_normSq_dirPoly_eq_dual a hE hEs
-  have habs : |∫ t in E, ‖dirPoly N a t‖ ^ 2|
+  have habs : |∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)|
       ≤ ∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖ := by
-    have h1 : ‖((∫ t in E, ‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ)‖
+    have h1 : ‖((∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ)‖
         ≤ ∑ n : Fin N, ‖a n * dualCoeff N a E n‖ := by
       rw [hid]
       exact norm_sum_le _ _
     rw [Complex.norm_real, Real.norm_eq_abs] at h1
     simpa only [norm_mul] using h1
-  have hcs : (∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖) ^ 2
-      ≤ (∑ n : Fin N, ‖a n‖ ^ 2) * ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ 2 :=
+  have hcs : (∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖) ^ (2 : ℕ)
+      ≤ (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) * ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ (2 : ℕ) :=
     Finset.sum_mul_sq_le_sq_mul_sq _ _ _
   have hnn : (0 : ℝ) ≤ ∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖ :=
     Finset.sum_nonneg fun _ _ => by positivity
-  have hsq : (∫ t in E, ‖dirPoly N a t‖ ^ 2) ^ 2
-      ≤ (∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖) ^ 2 := by
-    have := abs_nonneg (∫ t in E, ‖dirPoly N a t‖ ^ 2)
-    nlinarith [habs, sq_abs (∫ t in E, ‖dirPoly N a t‖ ^ 2)]
+  have hsq : (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)) ^ (2 : ℕ)
+      ≤ (∑ n : Fin N, ‖a n‖ * ‖dualCoeff N a E n‖) ^ (2 : ℕ) := by
+    have := abs_nonneg (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ))
+    nlinarith [habs, sq_abs (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ))]
   linarith [hsq, hcs]
 
 /-! ## The dual coefficients as a double integral -/
@@ -103,12 +103,12 @@ noncomputable def logKernel (N : ℕ) (w : Fin N → ℝ) (v : ℝ) : ℂ :=
 
 /-- **One dual coefficient, squared, as a double integral.** -/
 theorem normSq_dualCoeff_eq {N : ℕ} (a : Fin N → ℂ) (E : Set ℝ) (n : Fin N) :
-    ((‖dualCoeff N a E n‖ ^ 2 : ℝ) : ℂ)
+    ((‖dualCoeff N a E n‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∫ t in E, ∫ u in E,
           Complex.exp ((((t - u) * Real.log ((n : ℕ) + 1) : ℝ) : ℂ) * Complex.I)
             * (starRingEnd ℂ) (dirPoly N a t) * dirPoly N a u := by
   classical
-  have hmulconj : ((‖dualCoeff N a E n‖ ^ 2 : ℝ) : ℂ)
+  have hmulconj : ((‖dualCoeff N a E n‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = dualCoeff N a E n * (starRingEnd ℂ) (dualCoeff N a E n) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hmulconj, dualCoeff]

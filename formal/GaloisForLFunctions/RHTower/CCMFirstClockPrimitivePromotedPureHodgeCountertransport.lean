@@ -55,7 +55,7 @@ def cellCoordinateAlternating
 
 def cellCoordinateExterior
     (φ ψ : V →ₗ[ℂ] ℂ) :
-    (⋀[ℂ]^2 V) →ₗ[ℂ] ℂ :=
+    (⋀[ℂ]^(2 : ℕ) V) →ₗ[ℂ] ℂ :=
   exteriorPower.alternatingMapLinearEquiv
     (cellCoordinateAlternating φ ψ)
 
@@ -70,14 +70,14 @@ theorem cellCoordinateExterior_ιMulti
 
 def canonicalDefectDefectCellCarrier
     (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
-    ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne :=
   exteriorPower.ιMulti ℂ 2
     ![canonicalCellDefectGenerator ij.1.1,
       canonicalCellDefectGenerator ij.1.2]
 
 def canonicalPacketPacketCellCarrier
     (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
-    ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne :=
   exteriorPower.ιMulti ℂ 2
     ![canonicalCellPacketGenerator ij.1.1,
       canonicalCellPacketGenerator ij.1.2]
@@ -98,13 +98,13 @@ theorem canonicalPacketPacketCellCarrier_mem_incidence
 
 def cellDefectDefectExterior
     (pe qe : XiGammaEulerCalderonWittCell) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
   cellCoordinateExterior
     (cellDefectCoordinate pe) (cellDefectCoordinate qe)
 
 def cellPacketPacketExterior
     (pe qe : XiGammaEulerCalderonWittCell) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ] ℂ :=
   cellCoordinateExterior
     (cellPacketCoordinate pe) (cellPacketCoordinate qe)
 
@@ -375,8 +375,8 @@ def primitiveCriticalAmplitudeCoefficient
   (xiGammaEulerPrimitiveBoundaryAmplitude 0 pe : ℂ)
 
 def anchoredPureKernel (n p q : ℕ) : ℝ :=
-  (PrimitivePromotedTwoScale.relativeHeight n q ^ 2 -
-      PrimitivePromotedTwoScale.relativeHeight n p ^ 2) *
+  (PrimitivePromotedTwoScale.relativeHeight n q ^ (2 : ℕ) -
+      PrimitivePromotedTwoScale.relativeHeight n p ^ (2 : ℕ)) *
     Real.sin (PrimitivePromotedTwoScale.twoScalePhase *
       (PrimitivePromotedTwoScale.relativeHeight n q -
         PrimitivePromotedTwoScale.relativeHeight n p))
@@ -553,7 +553,7 @@ theorem pureHodgeCountertransportCapacity_eq_reflected
 
 theorem pureHodgeCountertransportCapacity_le
     {n : ℕ} (hn : 0 < n) :
-    pureHodgeCountertransportCapacity n ≤ 200 * 289 ^ 2 := by
+    pureHodgeCountertransportCapacity n ≤ 200 * 289 ^ (2 : ℕ) := by
   rw [pureHodgeCountertransportCapacity_eq_reflected hn]
   exact
     PrimitivePromotedCofinalDepth.reflectedHodgeCountertransportCapacity_le hn
@@ -805,7 +805,7 @@ theorem pureScalarReadoutGain_linear_lower
       (PrimitivePromotedCofinalDepth.cofinalDepthCountertransportCapacity_nonneg n)
   have hcapUpper := pureHodgeCountertransportCapacity_le hnPos
   have hsqrtSq :
-      Real.sqrt (pureHodgeCountertransportCapacity n) ^ 2 =
+      Real.sqrt (pureHodgeCountertransportCapacity n) ^ (2 : ℕ) =
         pureHodgeCountertransportCapacity n :=
     Real.sq_sqrt hcapNonneg
   have hsqrtUpper :

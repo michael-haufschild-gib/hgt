@@ -185,9 +185,9 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_square_mass_insert_mul_prime_le
     (P R : Finset ℕ) (hpP : p ∉ P) :
     (p : ℝ) *
         (∑ A ∈ P.powerset,
-          (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2) ≤
+          (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ)) ≤
       ∑ B ∈ (insert p P).powerset,
-        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) B R)^2 := by
+        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) B R)^(2 : ℕ) := by
   have hsplit (f : Finset ℕ → ℝ) :
       (∑ B ∈ (insert p P).powerset, f B) =
         (∑ A ∈ P.powerset, f A) + ∑ A ∈ P.powerset, f (insert p A) := by
@@ -196,10 +196,10 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_square_mass_insert_mul_prime_le
     Real.mul_self_sqrt (Nat.cast_nonneg p)
   have hcopy :
       (∑ A ∈ P.powerset,
-        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) (insert p A) R)^2) =
+        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) (insert p A) R)^(2 : ℕ)) =
         (p : ℝ) *
           (∑ A ∈ P.powerset,
-            (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2) := by
+            (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ)) := by
     rw [mul_sum]
     apply sum_congr rfl
     intro A hA
@@ -208,13 +208,13 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_square_mass_insert_mul_prime_le
       exact hpP (mem_powerset.mp hA h)
     rw [mobiusDivisorSelectionProcessedCoreFibre_insert_mul_prime hp hNp P A R hpA]
     calc
-      (-Real.sqrt p * mobiusDivisorSelectionProcessedCoreFibre N P A R)^2 =
+      (-Real.sqrt p * mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ) =
           (Real.sqrt p * Real.sqrt p) *
-            (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2 := by ring
+            (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ) := by ring
       _ = _ := by rw [hsqrt]
   rw [hsplit, hcopy]
   have hnon : 0 ≤ ∑ A ∈ P.powerset,
-      (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) A R)^2 := by
+      (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) A R)^(2 : ℕ) := by
     apply sum_nonneg
     intro A hA
     exact sq_nonneg _
@@ -231,9 +231,9 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_weighted_square_mass_insert_mul
     (hw_copy : ∀ A ∈ P.powerset, w (insert p A) = w A) :
     (p : ℝ) *
         (∑ A ∈ P.powerset,
-          w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2) ≤
+          w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ)) ≤
       ∑ B ∈ (insert p P).powerset,
-        w B * (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) B R)^2 := by
+        w B * (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) B R)^(2 : ℕ) := by
   have hsplit (f : Finset ℕ → ℝ) :
       (∑ B ∈ (insert p P).powerset, f B) =
         (∑ A ∈ P.powerset, f A) + ∑ A ∈ P.powerset, f (insert p A) := by
@@ -243,10 +243,10 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_weighted_square_mass_insert_mul
   have hcopy :
       (∑ A ∈ P.powerset,
         w (insert p A) *
-          (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) (insert p A) R)^2) =
+          (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) (insert p A) R)^(2 : ℕ)) =
         (p : ℝ) *
           (∑ A ∈ P.powerset,
-            w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2) := by
+            w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ)) := by
     rw [mul_sum]
     apply sum_congr rfl
     intro A hA
@@ -256,14 +256,14 @@ theorem mobiusDivisorSelectionProcessedCoreFibre_weighted_square_mass_insert_mul
     rw [hw_copy A hA,
       mobiusDivisorSelectionProcessedCoreFibre_insert_mul_prime hp hNp P A R hpA]
     calc
-      w A * (-Real.sqrt p * mobiusDivisorSelectionProcessedCoreFibre N P A R)^2 =
+      w A * (-Real.sqrt p * mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ) =
           (Real.sqrt p * Real.sqrt p) *
-            (w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^2) := by ring
+            (w A * (mobiusDivisorSelectionProcessedCoreFibre N P A R)^(2 : ℕ)) := by ring
       _ = _ := by rw [hsqrt]
   rw [hsplit, hcopy]
   have hnon : 0 ≤ ∑ A ∈ P.powerset,
       w A *
-        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) A R)^2 := by
+        (mobiusDivisorSelectionProcessedCoreFibre (p * N) (insert p P) A R)^(2 : ℕ) := by
     apply sum_nonneg
     intro A hA
     apply mul_nonneg

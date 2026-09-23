@@ -21,7 +21,7 @@ theorem einastoCore_hasDerivAt (d l a t : ℝ) :
   have h := (einastoMass_derivative d l a (exp t)).div
     ((hasDerivAt_id (exp t)).pow 3) (pow_ne_zero 3 (exp_ne_zero t))
   simp only [Pi.div_def, Pi.pow_apply, id_eq] at h
-  have hd : HasDerivAt (fun r => einastoMass d l a r / r ^ 3)
+  have hd : HasDerivAt (fun r => einastoMass d l a r / r ^ (3 : ℕ))
       ((4 * Real.pi * einastoDensity d l a (exp t) - 3 * einastoCore d l a (exp t)) / exp t) (exp t) := by
     apply h.congr_deriv
     rw [einastoMass_core]
@@ -41,17 +41,17 @@ def einastoShapeSourceFactorEuler (d l a r : ℝ) : ℝ :=
   let c := einastoCore d l a r
   let v := 2 * c - 8 * Real.pi * ρ
   let w := q + 4 - q * u
-  let b := (q + 1) * (q + 4) - q * (3 * q + 5) * u + q ^ 2 * u ^ 2
+  let b := (q + 1) * (q + 4) - q * (3 * q + 5) * u + q ^ (2 : ℕ) * u ^ (2 : ℕ)
   let ρE := -q * u * ρ
-  let fE := r ^ 2 * v
+  let fE := r ^ (2 : ℕ) * v
   let vE := 2 * (4 * Real.pi * ρ - 3 * c) - 8 * Real.pi * ρE
-  let bE := -q ^ 2 * (3 * q + 5) * u + 2 * q ^ 3 * u ^ 2
-  (4 * Real.pi * (2 * ρ * ρE) * q * r ^ 2 * (q * u - 4) +
-    4 * Real.pi * ρ ^ 2 * q * (2 * r ^ 2) * (q * u - 4) +
-    4 * Real.pi * ρ ^ 2 * q * r ^ 2 * (q ^ 2 * u)) -
+  let bE := -q ^ (2 : ℕ) * (3 * q + 5) * u + 2 * q ^ (3 : ℕ) * u ^ (2 : ℕ)
+  (4 * Real.pi * (2 * ρ * ρE) * q * r ^ (2 : ℕ) * (q * u - 4) +
+    4 * Real.pi * ρ ^ (2 : ℕ) * q * (2 * r ^ (2 : ℕ)) * (q * u - 4) +
+    4 * Real.pi * ρ ^ (2 : ℕ) * q * r ^ (2 : ℕ) * (q ^ (2 : ℕ) * u)) -
   (2 * fE * q * ρ * b + 2 * f * q * ρE * b + 2 * f * q * ρ * bE) -
-  (q * ρE * r ^ 2 * v * w + q * ρ * (2 * r ^ 2) * v * w +
-    q * ρ * r ^ 2 * vE * w + q * ρ * r ^ 2 * v * (-q ^ 2 * u))
+  (q * ρE * r ^ (2 : ℕ) * v * w + q * ρ * (2 * r ^ (2 : ℕ)) * v * w +
+    q * ρ * r ^ (2 : ℕ) * vE * w + q * ρ * r ^ (2 : ℕ) * v * (-q ^ (2 : ℕ) * u))
 
 /-- Continuous expression for the Euler derivative of the algebraic sign defect. -/
 def einastoShapeSourceDefectEuler (d l a σ r : ℝ) : ℝ :=
@@ -98,7 +98,7 @@ theorem einastoShapeSourceFactor_hasDerivAt (d l a t : ℝ) :
   have hX := (hasDerivAt_id (exp t)).pow 2
   have hA := (hU.const_mul (exp (-a))).sub_const 4
   have hB := ((hU.const_mul (exp (-a) * (3 * exp (-a) + 5))).const_sub
-    ((exp (-a) + 1) * (exp (-a) + 4))).add ((hU.pow 2).const_mul (exp (-a) ^ 2))
+    ((exp (-a) + 1) * (exp (-a) + 4))).add ((hU.pow 2).const_mul (exp (-a) ^ (2 : ℕ)))
   have hV := (hC.const_mul 2).sub (hD.const_mul (8 * Real.pi))
   have hW := (hU.const_mul (exp (-a))).const_sub (exp (-a) + 4)
   have h1 := (((((hD.pow 2).const_mul (4 * Real.pi)).mul_const (exp (-a))).mul hX).mul hA)

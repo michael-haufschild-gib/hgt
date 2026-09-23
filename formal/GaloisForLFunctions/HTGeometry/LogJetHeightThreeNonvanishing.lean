@@ -83,7 +83,7 @@ theorem derivative_ne_zero_of_one_le {p : Polynomial ℂ} (hp : 1 ≤ p.natDegre
 /-- The top coefficient of `Q·Q'`. -/
 theorem coeff_mul_derivative_top {Q : Polynomial ℂ} (hQ : 1 ≤ Q.natDegree) :
     (Q * Q.derivative).coeff (2 * Q.natDegree - 1)
-      = (Q.natDegree : ℂ) * Q.leadingCoeff ^ 2 := by
+      = (Q.natDegree : ℂ) * Q.leadingCoeff ^ (2 : ℕ) := by
   have hidx : Q.natDegree + Q.derivative.natDegree = 2 * Q.natDegree - 1 := by
     rw [natDegree_derivative_eq_sub_one hQ]
     omega
@@ -95,15 +95,15 @@ theorem coeff_mul_derivative_top {Q : Polynomial ℂ} (hQ : 1 ≤ Q.natDegree) :
 /-- The top coefficient of `(Q')²·v` for a linear `v`. -/
 theorem coeff_derivative_sq_mul_top {Q v : Polynomial ℂ} (hQ : 1 ≤ Q.natDegree)
     (hv : v.natDegree = 1) :
-    (Q.derivative ^ 2 * v).coeff (2 * Q.natDegree - 1)
-      = (Q.natDegree : ℂ) ^ 2 * Q.leadingCoeff ^ 2 * v.leadingCoeff := by
+    (Q.derivative ^ (2 : ℕ) * v).coeff (2 * Q.natDegree - 1)
+      = (Q.natDegree : ℂ) ^ (2 : ℕ) * Q.leadingCoeff ^ (2 : ℕ) * v.leadingCoeff := by
   have hQ'0 : Q.derivative ≠ 0 := derivative_ne_zero_of_one_le hQ
-  have hdeg : (Q.derivative ^ 2).natDegree = 2 * (Q.natDegree - 1) := by
+  have hdeg : (Q.derivative ^ (2 : ℕ)).natDegree = 2 * (Q.natDegree - 1) := by
     rw [Polynomial.natDegree_pow, natDegree_derivative_eq_sub_one hQ]
-  have hidx : (Q.derivative ^ 2).natDegree + v.natDegree = 2 * Q.natDegree - 1 := by
+  have hidx : (Q.derivative ^ (2 : ℕ)).natDegree + v.natDegree = 2 * Q.natDegree - 1 := by
     rw [hdeg, hv]
     omega
-  have h := Polynomial.coeff_mul_degree_add_degree (Q.derivative ^ 2) v
+  have h := Polynomial.coeff_mul_degree_add_degree (Q.derivative ^ (2 : ℕ)) v
   rw [hidx] at h
   rw [h, Polynomial.leadingCoeff_pow, leadingCoeff_derivative hQ]
   ring
@@ -114,17 +114,17 @@ variable (Q v : ℕ → Polynomial ℂ)
 
 /-- The first-coordinate factor carrying the cross term. -/
 noncomputable def crossHead (Q : ℕ → Polynomial ℂ) : Polynomial ℂ :=
-  Q 1 ^ 2 * (Q 1).derivative
+  Q 1 ^ (2 : ℕ) * (Q 1).derivative
 
 /-- The second-coordinate factor paired with the cross term. -/
 noncomputable def crossTail (Q v : ℕ → Polynomial ℂ) : Polynomial ℂ :=
-  scaledLogWronskian (Q 2) (v 2) - (Q 2).derivative ^ 2 * v 2
+  scaledLogWronskian (Q 2) (v 2) - (Q 2).derivative ^ (2 : ℕ) * v 2
 
 /-- **The height-three determinant with its denominators cleared.**  The result is a separated pair:
 each summand is a factor in the first coordinate times a factor in the second. -/
 theorem logJetJacobian_one_det_mul {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynomial ℂ)
     (hQ : ∀ i, Q i ≠ 0) :
-    (logJetJacobian Q v 1).det * (fact (Q 1) 1 ^ 2 * fact (Q 2) 2 ^ 2)
+    (logJetJacobian Q v 1).det * (fact (Q 1) 1 ^ (2 : ℕ) * fact (Q 2) 2 ^ (2 : ℕ))
       = fact (Q 0) 0
         * (fact (crossHead Q) 1 * fact (crossTail Q v) 2
             - fact (scaledLogWronskian (Q 1) (v 1)) 1 * fact (Q 2 * (Q 2).derivative) 2) := by
@@ -155,9 +155,9 @@ theorem logJetJacobian_one_det_ne_zero {Q : ℕ → Polynomial ℂ} (v : ℕ →
   have hαne : α ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hv20
   have hdne : (d : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   -- the two top coefficients in the second coordinate
-  have hb₂ : (Q 2 * (Q 2).derivative).coeff (2 * d - 1) = (d : ℂ) * a ^ 2 :=
+  have hb₂ : (Q 2 * (Q 2).derivative).coeff (2 * d - 1) = (d : ℂ) * a ^ (2 : ℕ) :=
     coeff_mul_derivative_top hQ2
-  have hb₁ : (crossTail Q v).coeff (2 * d - 1) = -((d : ℂ) ^ 2 * a ^ 2 * α) := by
+  have hb₁ : (crossTail Q v).coeff (2 * d - 1) = -((d : ℂ) ^ (2 : ℕ) * a ^ (2 : ℕ) * α) := by
     rw [crossTail, Polynomial.coeff_sub, coeff_derivative_sq_mul_top hQ2 hv2]
     have hW : (scaledLogWronskian (Q 2) (v 2)).coeff (2 * d - 1) = 0 := by
       refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
@@ -167,17 +167,17 @@ theorem logJetJacobian_one_det_ne_zero {Q : ℕ → Polynomial ℂ} (v : ℕ →
     ring
   -- the separated pair does not cancel
   have hcross : scaledLogWronskian (Q 1) (v 1)
-      + Polynomial.C ((d : ℂ) * α) * Q 1 ^ 2 * (Q 1).derivative ≠ 0 :=
+      + Polynomial.C ((d : ℂ) * α) * Q 1 ^ (2 : ℕ) * (Q 1).derivative ≠ 0 :=
     scaledLogWronskian_add_cross_ne_zero (mul_ne_zero hdne hαne) hQ1 hv1
   have hcoeff : crossHead Q * Polynomial.C ((crossTail Q v).coeff (2 * d - 1))
       - scaledLogWronskian (Q 1) (v 1)
         * Polynomial.C ((Q 2 * (Q 2).derivative).coeff (2 * d - 1)) ≠ 0 := by
     rw [hb₁, hb₂]
-    have hfac : crossHead Q * Polynomial.C (-((d : ℂ) ^ 2 * a ^ 2 * α))
-        - scaledLogWronskian (Q 1) (v 1) * Polynomial.C ((d : ℂ) * a ^ 2)
-        = -(Polynomial.C ((d : ℂ) * a ^ 2)
+    have hfac : crossHead Q * Polynomial.C (-((d : ℂ) ^ (2 : ℕ) * a ^ (2 : ℕ) * α))
+        - scaledLogWronskian (Q 1) (v 1) * Polynomial.C ((d : ℂ) * a ^ (2 : ℕ))
+        = -(Polynomial.C ((d : ℂ) * a ^ (2 : ℕ))
             * (scaledLogWronskian (Q 1) (v 1)
-                + Polynomial.C ((d : ℂ) * α) * Q 1 ^ 2 * (Q 1).derivative)) := by
+                + Polynomial.C ((d : ℂ) * α) * Q 1 ^ (2 : ℕ) * (Q 1).derivative)) := by
       rw [crossHead]
       simp only [map_neg, map_mul, map_pow]
       ring

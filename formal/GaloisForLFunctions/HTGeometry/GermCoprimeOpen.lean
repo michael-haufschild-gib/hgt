@@ -144,7 +144,7 @@ theorem eventually_isRelPrime_germ_of_regular {f g : (Fin (n + 1) → ℂ) → �
   have htailA : AnalyticAt ℂ (fun w : Fin (n + 1) → ℂ => crep (Fin.tail w))
       (0 : Fin (n + 1) → ℂ) := by
     have h := AnalyticAt.comp (g := crep) (f := fun w : Fin (n + 1) → ℂ => (Fin.tail w : Fin n → ℂ))
-      (by rw [tail_zero']; exact hcA) analyticAt_tail
+      (by rw [tail_zero']; exact hcA) analyticAt_tail_analyticGermUnit
     exact h
   have htaileq : germTail n c = analyticGermOf htailA := by
     refine Subtype.ext ?_

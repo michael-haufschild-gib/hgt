@@ -118,14 +118,14 @@ theorem hbXiPeierlsUnitSourceFEOrbitPartnerNumber_pos_iff (q : XiZeroCopy) :
 
 /-- Exact square of the positive-sheet Bogoliubov gain. -/
 theorem hbXiPeierlsUnitSourceFEOrbitBogoliubovGain_sq (q : XiZeroCopy) :
-    hbXiPeierlsUnitSourceFEOrbitBogoliubovGain q ^ 2 =
+    hbXiPeierlsUnitSourceFEOrbitBogoliubovGain q ^ (2 : ℕ) =
       hbXiPeierlsUnitSourceFEOrbitExpandingGain q := by
   rw [hbXiPeierlsUnitSourceFEOrbitBogoliubovGain, Real.sq_sqrt]
   linarith [hbXiPeierlsUnitSourceFEOrbitExpandingGain_ge_one q]
 
 /-- The pair-amplitude norm square is the literal source-orbit partner number. -/
 theorem norm_hbXiPeierlsUnitSourceFEOrbitBogoliubovPair_sq (q : XiZeroCopy) :
-    ‖hbXiPeierlsUnitSourceFEOrbitBogoliubovPair q‖ ^ 2 =
+    ‖hbXiPeierlsUnitSourceFEOrbitBogoliubovPair q‖ ^ (2 : ℕ) =
       hbXiPeierlsUnitSourceFEOrbitPartnerNumber q := by
   rw [hbXiPeierlsUnitSourceFEOrbitBogoliubovPair, Complex.norm_real,
     Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt]
@@ -166,12 +166,12 @@ theorem hbXiPeierlsUnitSourceFEOrbitBogoliubov_preserves_signedHermitian
   let a : ℝ := hbXiPeierlsUnitSourceFEOrbitBogoliubovGain q
   let b : ℂ := hbXiPeierlsUnitSourceFEOrbitBogoliubovPair q
   have hccr := hbXiPeierlsUnitSourceFEOrbit_isTwoModeBosonicCCR q
-  change a ^ 2 - ‖b‖ ^ 2 = 1 at hccr
+  change a ^ (2 : ℕ) - ‖b‖ ^ (2 : ℕ) = 1 at hccr
   have hccrC := congrArg (fun r : ℝ => (r : ℂ)) hccr
   push_cast at hccrC
-  change (a : ℂ) ^ 2 - (‖b‖ : ℂ) ^ 2 = 1 at hccrC
-  have hnormC : (‖b‖ : ℂ) ^ 2 = conj b * b := by
-    rw [show (‖b‖ : ℂ) ^ 2 = ((‖b‖ ^ 2 : ℝ) : ℂ) by push_cast; rfl,
+  change (a : ℂ) ^ (2 : ℕ) - (‖b‖ : ℂ) ^ (2 : ℕ) = 1 at hccrC
+  have hnormC : (‖b‖ : ℂ) ^ (2 : ℕ) = conj b * b := by
+    rw [show (‖b‖ : ℂ) ^ (2 : ℕ) = ((‖b‖ ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; rfl,
       ← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
   rw [hnormC] at hccrC
   change conj ((a : ℂ) * x + b * y) * ((a : ℂ) * x + b * y) -

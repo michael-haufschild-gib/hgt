@@ -276,7 +276,7 @@ theorem exists_bottcherCoord_ne {U : Set ℂ} (hUo : IsOpen U) (hUne : U.Nonempt
   have h2 : bottcherCoord c (quadratic c u) = w₀ := heqon hfu_esc
   rw [h2, h1] at hfe
   have hnorm : 1 < ‖w₀‖ := by rw [← h1]; exact one_lt_norm_bottcherCoord hc hz2
-  have hns : ‖w₀‖ = ‖w₀‖ ^ 2 := by rw [← norm_pow]; exact congrArg norm hfe
+  have hns : ‖w₀‖ = ‖w₀‖ ^ (2 : ℕ) := by rw [← norm_pow]; exact congrArg norm hfe
   nlinarith [hnorm, hns]
 
 /-- **Non-divisibility from minimality** (discharges `hndvd`). For the minimal vanishing relation `P`

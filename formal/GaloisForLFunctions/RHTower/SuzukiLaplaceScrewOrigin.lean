@@ -96,7 +96,7 @@ theorem integral_screwOrdinate {γ : ℝ} (hγ : γ ≠ 0) :
   rw [hsplit]
   have hγc : (γ : ℂ) ≠ 0 := by exact_mod_cast hγ
   have hden : (1 : ℂ) + (γ : ℂ) * Complex.I = Complex.I * ((γ : ℂ) - Complex.I) := by
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     linear_combination hI
   have hIne : Complex.I ≠ (0 : ℂ) := Complex.I_ne_zero
   have hsub : (γ : ℂ) - Complex.I ≠ 0 := by

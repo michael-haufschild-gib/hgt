@@ -26,7 +26,7 @@ private def selfDebtEnergy (P : Finset ℕ) : ℝ :=
   ∑' n,mobiusDivisorFixedCoreBlockMass P n
 
 private lemma ratio_weight_lower {p q U : ℝ} (hp : 0 < p) (hpq : p ≤ q)
-    (hU : 1 ≤ U) (hqU : q ≤ U*p) : 1/U^2 ≤ (p/q)*Real.sqrt (p/q) := by
+    (hU : 1 ≤ U) (hqU : q ≤ U*p) : 1/U^(2 : ℕ) ≤ (p/q)*Real.sqrt (p/q) := by
   have hq : 0 < q := hp.trans_le hpq
   have hU0 : 0 < U := lt_of_lt_of_le zero_lt_one hU
   have ha : 0 < p/q := div_pos hp hq
@@ -57,17 +57,17 @@ private lemma relative_window_release (P R : Finset ℕ)
   obtain ⟨CR,hCR,hprofileR⟩ := exists_bound_mobiusDivisorPrime_pair_ratio_profile R hR hRprime
   let C := CP+CR
   have hC : 0≤C := add_nonneg hCP hCR
-  let c := k/(2*U^2)
+  let c := k/(2*U^(2 : ℕ))
   have hU : 0<U := lt_of_lt_of_le zero_lt_one (hL.trans hLU.le)
   have hc : 0<c := by dsimp [c]; positivity
-  refine ⟨c,(C/c+1)^2,hc,?_⟩
+  refine ⟨c,(C/c+1)^(2 : ℕ),hc,?_⟩
   intro p q hp hq hpP hqP hpR hqR hpq hpT hlo hhi
   have hp0 : (0:ℝ)<p := by exact_mod_cast hp.pos
   have hpq0 : (p:ℝ)≤q := by exact_mod_cast hpq.le
   have hratio := hW ((q:ℝ)/p) ((le_div_iff₀ hp0).mpr hlo) ((div_le_iff₀ hp0).mpr hhi)
   let τ := ((p:ℝ)/q)*Real.sqrt ((p:ℝ)/q)
   have hτ : 0≤τ := by dsimp [τ]; positivity
-  have hτlo : 1/U^2≤τ := ratio_weight_lower hp0 hpq0 (hL.trans hLU.le) hhi
+  have hτlo : 1/U^(2 : ℕ)≤τ := ratio_weight_lower hp0 hpq0 (hL.trans hLU.le) hhi
   have herrorP := (abs_le.mp (hprofileP p q hp hq hpP hqP hpq.ne' hpq.le)).1
   have herrorR := (abs_le.mp (hprofileR p q hp hq hpR hqR hpq.ne' hpq.le)).2
   have hsmall : C/Real.sqrt p<c := by
@@ -81,7 +81,7 @@ private lemma relative_window_release (P R : Finset ℕ)
       selfDebtDensity P*mobiusDivisorDilationMean P ((q:ℝ)/p)) ≤ -4*c := by
     have hm := mul_le_mul_of_nonneg_left hratio (show 0≤2*τ by positivity)
     have hl := mul_le_mul_of_nonneg_left hτlo (show 0≤2*k by positivity)
-    have he : 4*c=2*k*(1/U^2) := by dsimp [c]; ring
+    have he : 4*c=2*k*(1/U^(2 : ℕ)) := by dsimp [c]; ring
     rw [← he] at hl
     nlinarith only [hm,hl]
   have hadd : CP/Real.sqrt p+CR/Real.sqrt p=C/Real.sqrt p := by dsimp [C]; ring
@@ -109,17 +109,17 @@ private lemma negative_window_release (P : Finset ℕ)
     apply mul_pos
     · rw [Sieve.squarefreeDensity_eq]; positivity
     · exact prod_pos (fun r hr => div_pos (by exact_mod_cast (hprime r hr).pos) (by positivity))
-  let c := ρ*k/(2*U^2)
+  let c := ρ*k/(2*U^(2 : ℕ))
   have hU : 0 < U := lt_of_lt_of_le zero_lt_one (hL.trans hLU.le)
   have hc : 0 < c := by dsimp [c]; positivity
-  refine ⟨c,(C/c+1)^2,hc,?_⟩
+  refine ⟨c,(C/c+1)^(2 : ℕ),hc,?_⟩
   intro p q hp hq hpP hqP hpq hpT hlo hhi
   have hpR : (0:ℝ) < p := by exact_mod_cast hp.pos
   have hpqR : (p:ℝ) ≤ q := by exact_mod_cast hpq.le
   have hratio := hW ((q:ℝ)/p) ((le_div_iff₀ hpR).mpr hlo) ((div_le_iff₀ hpR).mpr hhi)
   let τ := ((p:ℝ)/q)*Real.sqrt ((p:ℝ)/q)
   have hτ : 0 ≤ τ := by dsimp [τ]; positivity
-  have hτlo : 1/U^2 ≤ τ := ratio_weight_lower hpR hpqR (hL.trans hLU.le) hhi
+  have hτlo : 1/U^(2 : ℕ) ≤ τ := ratio_weight_lower hpR hpqR (hL.trans hLU.le) hhi
   have herror := (abs_le.mp (hprofile p q hp hq hpP hqP hpq.ne' hpq.le)).2
   have hsmall : C/Real.sqrt p < c := by
     have hroot := Real.sqrt_le_sqrt hpT
@@ -131,7 +131,7 @@ private lemma negative_window_release (P : Finset ℕ)
   have hmain : 2*ρ*τ*mobiusDivisorDilationMean P ((q:ℝ)/p) ≤ -4*c := by
     have hm := mul_le_mul_of_nonneg_left hratio (show 0 ≤ 2*ρ*τ by positivity)
     have hl := mul_le_mul_of_nonneg_left hτlo (show 0 ≤ 2*ρ*k by positivity)
-    have he : 4*c = 2*ρ*k*(1/U^2) := by dsimp [c]; ring
+    have he : 4*c = 2*ρ*k*(1/U^(2 : ℕ)) := by dsimp [c]; ring
     rw [← he] at hl
     nlinarith only [hm,hl]
   apply (div_le_iff₀ hpR).mpr
@@ -152,13 +152,13 @@ theorem exists_mobiusDivisorDirectPrescribedDebtDescent :
         ∀ B : ℕ, ∃ p q : ℕ, B < p ∧ p < q ∧ p.Prime ∧ q.Prime ∧
           p ∉ insert r P ∧ q ∉ insert p (insert r P) ∧
           ∃ d : ℝ, 0 < d ∧ ∀ᶠ M : ℕ in atTop,
-            d*(M:ℝ)^2*(1+Real.log M) ≤
+            d*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤
               mobiusDivisorFiniteClockEnergy 1 M P-
                 mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p P)) ∧
-            2*d*(M:ℝ)^2*(1+Real.log M) ≤
+            2*d*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤
               mobiusDivisorFiniteClockEnergy 1 M (insert r P)-
                 mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p (insert r P))) ∧
-            d*(M:ℝ)^2*(1+Real.log M) ≤
+            d*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤
               (mobiusDivisorFiniteClockEnergy 1 M (insert r P)-
                 mobiusDivisorFiniteClockEnergy 1 M P)-
               (mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p (insert r P)))-
@@ -287,16 +287,16 @@ theorem exists_mobiusDivisorDirectPrescribedDebtDescent :
   filter_upwards [he,heP,eventually_ge_atTop (1:ℕ)] with M hM hMP hM1
   have hMR : (0:ℝ) < M := by exact_mod_cast (show 0 < M by omega)
   have hlog : 0 ≤ Real.log (M:ℝ) := Real.log_nonneg (by exact_mod_cast hM1)
-  have hden : 0 < (M:ℝ)^2*(1+Real.log M) := by positivity
+  have hden : 0 < (M:ℝ)^(2 : ℕ)*(1+Real.log M) := by positivity
   simp only [← sub_div] at hM hMP
   have hrel := (le_div_iff₀ hden).mp hM.le
   have habs := (le_div_iff₀ hden).mp hMP.le
-  have hrel' : d*(M:ℝ)^2*(1+Real.log M) ≤
+  have hrel' : d*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤
       (mobiusDivisorFiniteClockEnergy 1 M (insert r P)-mobiusDivisorFiniteClockEnergy 1 M P)-
         (mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p (insert r P)))-
           mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p P))) := by
     simpa only [R,mul_assoc] using hrel
-  have habs' : d*(M:ℝ)^2*(1+Real.log M) ≤ mobiusDivisorFiniteClockEnergy 1 M P-
+  have habs' : d*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤ mobiusDivisorFiniteClockEnergy 1 M P-
       mobiusDivisorFiniteClockEnergy 1 M (insert q (insert p P)) := by
     simpa only [mul_assoc] using habs
   exact ⟨habs',by linarith only [habs',hrel'],hrel'⟩

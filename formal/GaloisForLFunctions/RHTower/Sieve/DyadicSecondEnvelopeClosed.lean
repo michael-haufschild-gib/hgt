@@ -15,7 +15,7 @@ namespace RHTower.Sieve
 open Finset
 open scoped InnerProductSpace
 
-theorem logDyadicLambda_eq (N : ℕ) (t : ℝ) :
+theorem logDyadicLambda_eq_dyadicSecondEnvelopeClosed (N : ℕ) (t : ℝ) :
     logDyadicLambda N t = t / (8 * Real.pi * (N : ℝ) ^ 2) := by
   rw [logDyadicLambda]
   simp only [Nat.factorial_one, Nat.cast_one, mul_one]
@@ -34,7 +34,7 @@ theorem logDyadicSecondEnvelope_le {N : ℕ} (hN : 1 ≤ N) {U T : ℝ} (hU : 0 
   have hsqTU : Real.sqrt U * Real.sqrt U = U := Real.mul_self_sqrt hU.le
   have hsqTT : Real.sqrt T * Real.sqrt T = T := Real.mul_self_sqrt hT
   have hlamT0 : (0 : ℝ) ≤ 16 * logDyadicLambda N T := by
-    rw [logDyadicLambda_eq]
+    rw [logDyadicLambda_eq_dyadicSecondEnvelopeClosed]
     positivity
   have hlamU : (0 : ℝ) < logDyadicLambda N U := logDyadicLambda_pos hN hU
   -- the increasing endpoint
@@ -50,7 +50,7 @@ theorem logDyadicSecondEnvelope_le {N : ℕ} (hN : 1 ≤ N) {U T : ℝ} (hU : 0 
     have hR : ((5 / 6 : ℝ) * Real.sqrt T) ^ 2 = (25 / 36) * T := by
       rw [mul_pow, Real.sq_sqrt hT]
       ring
-    rw [hL, hR, logDyadicLambda_eq]
+    rw [hL, hR, logDyadicLambda_eq_dyadicSecondEnvelopeClosed]
     have hval : (N : ℝ) ^ 2 * (16 * (T / (8 * Real.pi * (N : ℝ) ^ 2))) = 2 * T / Real.pi := by
       field_simp
       ring
@@ -72,7 +72,7 @@ theorem logDyadicSecondEnvelope_le {N : ℕ} (hN : 1 ≤ N) {U T : ℝ} (hU : 0 
         = (36 * (N : ℝ) ^ 2) / U := by
       rw [mul_pow, hquot]
       ring
-    rw [hL, hR, logDyadicLambda_eq]
+    rw [hL, hR, logDyadicLambda_eq_dyadicSecondEnvelopeClosed]
     have hval : (U / (8 * Real.pi * (N : ℝ) ^ 2))⁻¹ = (8 * Real.pi * (N : ℝ) ^ 2) / U := by
       rw [inv_div]
     rw [hval]

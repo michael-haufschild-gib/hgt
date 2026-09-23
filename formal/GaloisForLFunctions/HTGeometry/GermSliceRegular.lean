@@ -94,7 +94,7 @@ theorem analyticGermValue_germTail (a : AnalyticGerm (0 : Fin n → ℂ)) :
     have hc' : AnalyticAt ℂ c (Fin.tail (0 : Fin (n + 1) → ℂ)) := by
       rw [tail_zero]
       exact hcA
-    exact hc'.comp analyticAt_tail
+    exact hc'.comp analyticAt_tail_analyticGermUnit
   have hgt : germTail n a = analyticGermOf hcomp := by
     rw [haeq]
     exact Subtype.ext (germTail_analyticGermOf hcA)
@@ -120,7 +120,7 @@ theorem germSlice_germEval_distPoly_ne_zero {d : ℕ}
     have hg' : AnalyticAt ℂ (a j) (Fin.tail (0 : Fin (n + 1) → ℂ)) := by
       rw [tail_zero]
       exact haA j
-    exact hg'.comp analyticAt_tail
+    exact hg'.comp analyticAt_tail_analyticGermUnit
   have hF : AnalyticAt ℂ (fun w : Fin (n + 1) → ℂ =>
       (w 0) ^ d + ∑ j ∈ Finset.range d, a j (Fin.tail w) * (w 0) ^ j)
       (0 : Fin (n + 1) → ℂ) := by

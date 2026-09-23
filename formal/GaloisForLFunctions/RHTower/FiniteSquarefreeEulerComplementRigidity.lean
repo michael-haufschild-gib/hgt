@@ -47,7 +47,7 @@ theorem finiteEulerComplement_coefficients_force_localSquares
     (hC : C ≠ 0)
     (hcoeff : ∀ S, S ⊆ P → (∏ q ∈ S, a q) =
       finiteEulerComplementCoefficient P S a C) :
-    ∀ p ∈ P, a p ^ 2 = (p : ℂ) := by
+    ∀ p ∈ P, a p ^ (2 : ℕ) = (p : ℂ) := by
   intro p hp
   have hpC : (p : ℂ) ≠ 0 := by
     exact_mod_cast (Nat.Prime.ne_zero (hP p hp))
@@ -63,7 +63,7 @@ theorem finiteEulerComplement_coefficients_force_localSquares
 coefficient identity with the top coefficient as complement constant. -/
 theorem finiteEulerComplement_coefficients_of_localSquares
     {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (a : ℕ → ℂ)
-    (hlocal : ∀ p ∈ P, a p ^ 2 = (p : ℂ)) :
+    (hlocal : ∀ p ∈ P, a p ^ (2 : ℕ) = (p : ℂ)) :
     ∀ S, S ⊆ P → (∏ q ∈ S, a q) =
       finiteEulerComplementCoefficient P S a (∏ q ∈ P, a q) := by
   intro S hS
@@ -72,7 +72,7 @@ theorem finiteEulerComplement_coefficients_of_localSquares
     exact Finset.disjoint_sdiff
   have hunion : S ∪ T = P := by
     exact Finset.union_sdiff_of_subset hS
-  have hTsq : (∏ q ∈ T, a q) ^ 2 = (∏ q ∈ T, (q : ℂ)) := by
+  have hTsq : (∏ q ∈ T, a q) ^ (2 : ℕ) = (∏ q ∈ T, (q : ℂ)) := by
     rw [← Finset.prod_pow]
     apply Finset.prod_congr rfl
     intro q hq
@@ -157,17 +157,17 @@ theorem finiteEulerPrimeMass_cast (P : Finset ℕ) :
   simp
 
 theorem finiteEulerComplementRoot_sq {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) :
-    finiteEulerComplementRoot P ^ 2 = (finiteEulerPrimeMass P : ℂ) := by
+    finiteEulerComplementRoot P ^ (2 : ℕ) = (finiteEulerPrimeMass P : ℂ) := by
   unfold finiteEulerComplementRoot
   rw [← Complex.ofReal_pow, Real.sq_sqrt (finiteEulerPrimeMass_pos hP).le]
 
 theorem finiteEulerProduct_sq_eq_primeMass
     {P : Finset ℕ} (a : ℕ → ℂ)
-    (hlocal : ∀ p ∈ P, a p ^ 2 = (p : ℂ)) :
-    (∏ p ∈ P, a p) ^ 2 = (finiteEulerPrimeMass P : ℂ) := by
+    (hlocal : ∀ p ∈ P, a p ^ (2 : ℕ) = (p : ℂ)) :
+    (∏ p ∈ P, a p) ^ (2 : ℕ) = (finiteEulerPrimeMass P : ℂ) := by
   rw [← Finset.prod_pow]
   calc
-    (∏ p ∈ P, a p ^ 2) = ∏ p ∈ P, (p : ℂ) := by
+    (∏ p ∈ P, a p ^ (2 : ℕ)) = ∏ p ∈ P, (p : ℂ) := by
       apply Finset.prod_congr rfl
       intro p hp
       exact hlocal p hp
@@ -179,7 +179,7 @@ theorem finiteEulerComplement_epsilon_sq
     (hε : ε ≠ 0)
     (hcoeff : ∀ S, S ⊆ P → (∏ q ∈ S, a q) =
       finiteEulerComplementCoefficient P S a (finiteEulerFunctionalConstant P ε)) :
-    ε ^ 2 = 1 := by
+    ε ^ (2 : ℕ) = 1 := by
   have hC : finiteEulerFunctionalConstant P ε ≠ 0 := by
     unfold finiteEulerFunctionalConstant
     exact mul_ne_zero (mul_ne_zero hε (by simp [finiteEulerComplementSign]))
@@ -191,18 +191,18 @@ theorem finiteEulerComplement_epsilon_sq
   have htop := finiteEulerComplement_topCoefficient P a (finiteEulerFunctionalConstant P ε) hcoeff
   rw [finiteEulerFunctionalConstant] at htop
   have hsign := finiteEulerComplementSign_sq P
-  have hsignpow : finiteEulerComplementSign P ^ 2 = 1 := by
+  have hsignpow : finiteEulerComplementSign P ^ (2 : ℕ) = 1 := by
     simpa [pow_two] using hsign
-  have hEq : ε ^ 2 * finiteEulerComplementRoot P ^ 2 =
-      finiteEulerComplementRoot P ^ 2 := by
+  have hEq : ε ^ (2 : ℕ) * finiteEulerComplementRoot P ^ (2 : ℕ) =
+      finiteEulerComplementRoot P ^ (2 : ℕ) := by
     calc
-      ε ^ 2 * finiteEulerComplementRoot P ^ 2 =
-          (ε * finiteEulerComplementSign P * finiteEulerComplementRoot P) ^ 2 := by
+      ε ^ (2 : ℕ) * finiteEulerComplementRoot P ^ (2 : ℕ) =
+          (ε * finiteEulerComplementSign P * finiteEulerComplementRoot P) ^ (2 : ℕ) := by
             rw [mul_pow, mul_pow, hsignpow]
             ring
-      _ = (∏ q ∈ P, a q) ^ 2 := by rw [← htop]
+      _ = (∏ q ∈ P, a q) ^ (2 : ℕ) := by rw [← htop]
       _ = finiteEulerPrimeMass P := hprod
-      _ = finiteEulerComplementRoot P ^ 2 := hroot.symm
+      _ = finiteEulerComplementRoot P ^ (2 : ℕ) := hroot.symm
   apply (mul_right_cancel₀ (pow_ne_zero 2 (finiteEulerComplementRoot_ne_zero hP)))
   simpa using hEq
 

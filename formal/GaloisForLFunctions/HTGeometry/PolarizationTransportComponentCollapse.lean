@@ -35,18 +35,18 @@ section Isometry
 variable {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
 
 /-- **An isometry of one-dimensional nondegenerate forms preserves the sign of the form.**  If the
-linear map `x ↦ t * x` carries the form `x ↦ cv * x ^ 2` back to `x ↦ cu * x ^ 2`, and the source
+linear map `x ↦ t * x` carries the form `x ↦ cv * x ^ (2 : ℕ)` back to `x ↦ cu * x ^ (2 : ℕ)`, and the source
 form is nondegenerate, then the two coefficients have the same sign. -/
 theorem sameSign_of_isometryScalar {cu cv t : R} (hcu : cu ≠ 0)
-    (h : ∀ x : R, cv * (t * x) ^ 2 = cu * x ^ 2) :
+    (h : ∀ x : R, cv * (t * x) ^ (2 : ℕ) = cu * x ^ (2 : ℕ)) :
     (0 < cu ↔ 0 < cv) := by
-  have h1 : cv * t ^ 2 = cu := by simpa using h 1
+  have h1 : cv * t ^ (2 : ℕ) = cu := by simpa using h 1
   have ht : t ≠ 0 := by
     intro ht0
     apply hcu
     rw [← h1, ht0]
     ring
-  have hsq : 0 < t ^ 2 := by positivity
+  have hsq : 0 < t ^ (2 : ℕ) := by positivity
   constructor
   · intro hpos
     rcases lt_trichotomy cv 0 with hneg | hzero | hpos'
@@ -62,7 +62,7 @@ def signOrientation {V : Type*} (c : V → R) : V → Bool := fun v => decide (0
 
 /-- Transport along an isometry does not change the Boolean orientation. -/
 theorem signOrientation_eq_of_isometryScalar {V : Type*} {c : V → R} {u v : V} {t : R}
-    (hcu : c u ≠ 0) (h : ∀ x : R, c v * (t * x) ^ 2 = c u * x ^ 2) :
+    (hcu : c u ≠ 0) (h : ∀ x : R, c v * (t * x) ^ (2 : ℕ) = c u * x ^ (2 : ℕ)) :
     signOrientation c u = signOrientation c v := by
   unfold signOrientation
   exact decide_eq_decide.2 (sameSign_of_isometryScalar hcu h)
@@ -155,7 +155,7 @@ induces a transport-compatible Boolean orientation. -/
 def compatibleOrientation_signOrientation {R : Type*} [Field R] [LinearOrder R]
     [IsStrictOrderedRing R] (c : V → R) (hc : ∀ v, c v ≠ 0)
     (t : ∀ u v : V, G.Adj u v → R)
-    (hiso : ∀ (u v : V) (h : G.Adj u v), ∀ x : R, c v * (t u v h * x) ^ 2 = c u * x ^ 2) :
+    (hiso : ∀ (u v : V) (h : G.Adj u v), ∀ x : R, c v * (t u v h * x) ^ (2 : ℕ) = c u * x ^ (2 : ℕ)) :
     CompatibleOrientation G :=
   ⟨signOrientation c, fun u v h => signOrientation_eq_of_isometryScalar (hc u) (hiso u v h)⟩
 

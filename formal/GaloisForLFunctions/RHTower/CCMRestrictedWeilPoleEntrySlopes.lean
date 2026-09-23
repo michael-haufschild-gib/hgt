@@ -15,7 +15,7 @@ noncomputable section
 namespace RHTower
 
 private theorem entry_inverse (n : ℕ) (hn : 2 ≤ n) :
-    1/(n:ℝ) = Real.exp (-(ccmWeilIntegerEntry n hn).1)^2 := by
+    1/(n:ℝ) = Real.exp (-(ccmWeilIntegerEntry n hn).1)^(2 : ℕ) := by
   rw [← exp_two_mul_ccmWeilIntegerEntry n hn,one_div,← Real.exp_neg,← Real.exp_nat_mul]
   congr 1
   ring
@@ -40,7 +40,7 @@ private theorem atom_cross_deriv (n : ℕ) (s : ℝ) :
 `4 Lambda(n) (1-exp(-b))²`, where `b=log(n)/2`. -/
 theorem hasDerivAt_ccmWeilOddPole_entry_atom (n : ℕ) (hn : 2 ≤ n) :
     HasDerivAt (fun s => 2*(-ccmWeilPolePrimeDiagonalAtom n s+ccmWeilPolePrimeCrossAtom n s))
-      (4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(ccmWeilIntegerEntry n hn).1))^2)
+      (4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(ccmWeilIntegerEntry n hn).1))^(2 : ℕ))
       (ccmWeilIntegerEntry n hn).1 := by
   let b := ccmWeilIntegerEntry n hn
   have he : Real.exp b.1/n = Real.exp (-b.1) := by
@@ -57,7 +57,7 @@ theorem hasDerivAt_ccmWeilOddPole_entry_atom (n : ℕ) (hn : 2 ≤ n) :
 `-4 Lambda(n) (1+exp(-b))²`. -/
 theorem hasDerivAt_ccmWeilEvenPole_entry_atom (n : ℕ) (hn : 2 ≤ n) :
     HasDerivAt (fun s => 2*(-ccmWeilPolePrimeDiagonalAtom n s-ccmWeilPolePrimeCrossAtom n s))
-      (-4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(ccmWeilIntegerEntry n hn).1))^2)
+      (-4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(ccmWeilIntegerEntry n hn).1))^(2 : ℕ))
       (ccmWeilIntegerEntry n hn).1 := by
   let b := ccmWeilIntegerEntry n hn
   have he : Real.exp b.1/n = Real.exp (-b.1) := by
@@ -72,7 +72,7 @@ theorem hasDerivAt_ccmWeilEvenPole_entry_atom (n : ℕ) (hn : 2 ≤ n) :
 
 /-- The odd slope jump is strictly positive exactly at genuine prime powers. -/
 theorem ccmWeilOddPole_entry_slope_pos_iff (n : ℕ) (hn : 2 ≤ n) :
-    0 < 4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(ccmWeilIntegerEntry n hn).1))^2 ↔
+    0 < 4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(ccmWeilIntegerEntry n hn).1))^(2 : ℕ) ↔
       IsPrimePow n := by
   have he : 0 < 1-Real.exp (-(ccmWeilIntegerEntry n hn).1) := by
     have h := Real.exp_lt_one_iff.mpr (neg_neg_of_pos (ccmWeilIntegerEntry n hn).2)
@@ -86,7 +86,7 @@ theorem hasDerivAt_ccmWeilOddPoleChamber_succ_jump (a b : SuzukiPositiveAperture
     (hn : 2 ≤ ⌊Real.exp (2*a.1)⌋₊+1) :
     HasDerivAt (fun s => ccmWeilOddPoleChamber b s-ccmWeilOddPoleChamber a s)
       (4*ArithmeticFunction.vonMangoldt (⌊Real.exp (2*a.1)⌋₊+1)*
-        (1-Real.exp (-(ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1))^2)
+        (1-Real.exp (-(ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1))^(2 : ℕ))
       (ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1 := by
   have he : (fun s => ccmWeilOddPoleChamber b s-ccmWeilOddPoleChamber a s) =
       (fun s => 2*(-ccmWeilPolePrimeDiagonalAtom (⌊Real.exp (2*a.1)⌋₊+1) s+
@@ -101,7 +101,7 @@ theorem hasDerivAt_ccmWeilOddPoleChamber_succ_jump (a b : SuzukiPositiveAperture
 
 /-- The even entry slope is strictly negative exactly at genuine prime powers. -/
 theorem ccmWeilEvenPole_entry_slope_neg_iff (n : ℕ) (hn : 2 ≤ n) :
-    -4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(ccmWeilIntegerEntry n hn).1))^2 < 0 ↔
+    -4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(ccmWeilIntegerEntry n hn).1))^(2 : ℕ) < 0 ↔
       IsPrimePow n := by
   have he : 0 < 1+Real.exp (-(ccmWeilIntegerEntry n hn).1) := by positivity
   have hs := sq_pos_of_pos he
@@ -125,7 +125,7 @@ theorem hasDerivAt_ccmWeilEvenPoleChamber_succ_jump (a b : SuzukiPositiveApertur
     HasDerivAt (fun s => 2*(ccmWeilPoleChamberDiagonal b s+ccmWeilPoleChamberCross b s)-
       2*(ccmWeilPoleChamberDiagonal a s+ccmWeilPoleChamberCross a s))
       (-4*ArithmeticFunction.vonMangoldt (⌊Real.exp (2*a.1)⌋₊+1)*
-        (1+Real.exp (-(ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1))^2)
+        (1+Real.exp (-(ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1))^(2 : ℕ))
       (ccmWeilIntegerEntry (⌊Real.exp (2*a.1)⌋₊+1) hn).1 := by
   have he : (fun s => 2*(ccmWeilPoleChamberDiagonal b s+ccmWeilPoleChamberCross b s)-
       2*(ccmWeilPoleChamberDiagonal a s+ccmWeilPoleChamberCross a s)) =

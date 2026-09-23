@@ -140,15 +140,15 @@ theorem integral_score_cut (u : ℝ) :
 
 /-- Truncated second score moment: `∫₀ᵘ (1-y)²e^{-y} dy = 1 - (1+u²)e^{-u}`. -/
 theorem integral_scoreSq_cut (u : ℝ) :
-    (∫ y in (0 : ℝ)..u, (1 - y) ^ 2 * Real.exp (-y)) = 1 - (1 + u ^ 2) * Real.exp (-u) := by
+    (∫ y in (0 : ℝ)..u, (1 - y) ^ (2 : ℕ) * Real.exp (-y)) = 1 - (1 + u ^ (2 : ℕ)) * Real.exp (-u) := by
   have hderiv : ∀ y ∈ uIcc (0 : ℝ) u,
-      HasDerivAt (fun y : ℝ => -((1 + y ^ 2) * Real.exp (-y)))
-        ((1 - y) ^ 2 * Real.exp (-y)) y := by
+      HasDerivAt (fun y : ℝ => -((1 + y ^ (2 : ℕ)) * Real.exp (-y)))
+        ((1 - y) ^ (2 : ℕ) * Real.exp (-y)) y := by
     intro y _
     have hexp : HasDerivAt (fun y : ℝ => Real.exp (-y)) (Real.exp (-y) * (-1)) y :=
       (hasDerivAt_neg y).exp
-    have hpoly : HasDerivAt (fun y : ℝ => 1 + y ^ 2) (2 * y) y := by
-      have h2 : HasDerivAt (fun y : ℝ => y ^ 2) (2 * y) y := by
+    have hpoly : HasDerivAt (fun y : ℝ => 1 + y ^ (2 : ℕ)) (2 * y) y := by
+      have h2 : HasDerivAt (fun y : ℝ => y ^ (2 : ℕ)) (2 * y) y := by
         simpa using hasDerivAt_pow 2 y
       exact HasDerivAt.const_add (1 : ℝ) h2
     have h := (hpoly.mul hexp).neg
@@ -158,7 +158,7 @@ theorem integral_scoreSq_cut (u : ℝ) :
     · funext x
       simp only [Pi.neg_apply, Pi.mul_apply]
     · ring
-  have hint : IntervalIntegrable (fun y : ℝ => (1 - y) ^ 2 * Real.exp (-y))
+  have hint : IntervalIntegrable (fun y : ℝ => (1 - y) ^ (2 : ℕ) * Real.exp (-y))
       MeasureTheory.volume 0 u := by
     apply Continuous.intervalIntegrable
     fun_prop
@@ -171,7 +171,7 @@ theorem integral_scoreSq_cut (u : ℝ) :
 /-- Rank-two cutoff Ward Gram: the closed quadratic expression in the truncated state/tangent Gram
 entries `(a, b, c)` = (cut mass, cut energy, cut overlap) of a pointed Fisher connection of total
 energy four. -/
-def fisherCutoffWardGram (a b c : ℝ) : ℝ := (4 - b) * a + (1 - a) * b - 2 * c ^ 2
+def fisherCutoffWardGram (a b c : ℝ) : ℝ := (4 - b) * a + (1 - a) * b - 2 * c ^ (2 : ℕ)
 
 /-- Cut mass of the unit-rate exponential clock. -/
 def exponentialCutMass (u : ℝ) : ℝ := 1 - Real.exp (-u)
@@ -180,7 +180,7 @@ def exponentialCutMass (u : ℝ) : ℝ := 1 - Real.exp (-u)
 def exponentialCutOverlap (u : ℝ) : ℝ := 2 * (u * Real.exp (-u))
 
 /-- Cut energy of the pointed Fisher score `2(1-y)` under the unit-rate exponential clock. -/
-def exponentialCutEnergy (u : ℝ) : ℝ := 4 * (1 - (1 + u ^ 2) * Real.exp (-u))
+def exponentialCutEnergy (u : ℝ) : ℝ := 4 * (1 - (1 + u ^ (2 : ℕ)) * Real.exp (-u))
 
 theorem exponentialCutMass_eq_integral (u : ℝ) :
     exponentialCutMass u = ∫ y in (0 : ℝ)..u, Real.exp (-y) := by
@@ -195,16 +195,16 @@ theorem exponentialCutOverlap_eq_integral (u : ℝ) :
   rfl
 
 theorem exponentialCutEnergy_eq_integral (u : ℝ) :
-    exponentialCutEnergy u = ∫ y in (0 : ℝ)..u, (2 * (1 - y)) ^ 2 * Real.exp (-y) := by
-  have h : (fun y : ℝ => (2 * (1 - y)) ^ 2 * Real.exp (-y))
-      = fun y : ℝ => 4 * ((1 - y) ^ 2 * Real.exp (-y)) := by
+    exponentialCutEnergy u = ∫ y in (0 : ℝ)..u, (2 * (1 - y)) ^ (2 : ℕ) * Real.exp (-y) := by
+  have h : (fun y : ℝ => (2 * (1 - y)) ^ (2 : ℕ) * Real.exp (-y))
+      = fun y : ℝ => 4 * ((1 - y) ^ (2 : ℕ) * Real.exp (-y)) := by
     funext y; ring
   rw [h, intervalIntegral.integral_const_mul, integral_scoreSq_cut]
   rfl
 
 /-- Closed critical Ward profile of the unit-rate exponential clock. -/
 def exponentialClockWardProfile (u : ℝ) : ℝ :=
-  4 * ((2 + u ^ 2) * Real.exp (-u) - 2 * (1 + 2 * u ^ 2) * Real.exp (-2 * u))
+  4 * ((2 + u ^ (2 : ℕ)) * Real.exp (-u) - 2 * (1 + 2 * u ^ (2 : ℕ)) * Real.exp (-2 * u))
 
 /-- **The Ward profile is a functional of the `Exp(1)` law.**  Feeding the three truncated
 exponential moments into the rank-two cutoff Gram reproduces the closed critical Ward profile
@@ -212,7 +212,7 @@ exactly. -/
 theorem fisherCutoffWardGram_exponentialClock (u : ℝ) :
     fisherCutoffWardGram (exponentialCutMass u) (exponentialCutEnergy u)
         (exponentialCutOverlap u) = exponentialClockWardProfile u := by
-  have hexp : Real.exp (-2 * u) = Real.exp (-u) ^ 2 := by
+  have hexp : Real.exp (-2 * u) = Real.exp (-u) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]; congr 1; ring
   unfold fisherCutoffWardGram exponentialCutMass exponentialCutEnergy exponentialCutOverlap
     exponentialClockWardProfile

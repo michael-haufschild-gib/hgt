@@ -151,7 +151,7 @@ theorem hasDerivAt_duhamelScalar (hω : ω ≠ 0) (hh : Continuous h) (t : ℝ) 
 /-- **The Duhamel solution solves the driven oscillator equation.** -/
 theorem hasDerivAt_deriv_duhamelScalar (hω : ω ≠ 0) (hh : Continuous h) (t : ℝ) :
     HasDerivAt (deriv (duhamelScalar ω c h))
-      (-(((ω : ℝ) : ℂ) ^ 2 * duhamelScalar ω c h t) + h t) t := by
+      (-(((ω : ℝ) : ℂ) ^ (2 : ℕ) * duhamelScalar ω c h t) + h t) t := by
   have hderiv : deriv (duhamelScalar ω c h) = fun r : ℝ =>
       -(((Real.sin (r * ω) : ℝ) : ℂ) * c) + ((Real.cos (r * ω) : ℝ) : ℂ) * duhamelCosPart ω h r
         + ((Real.sin (r * ω) : ℝ) : ℂ) * duhamelSinPart ω h r := by
@@ -166,13 +166,13 @@ theorem hasDerivAt_deriv_duhamelScalar (hω : ω ≠ 0) (hh : Continuous h) (t :
   refine hmain.congr_deriv ?_
   rw [duhamelScalar_eq hω hh t]
   have hW : ((ω : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hω
-  have hpy : ((Real.cos (t * ω) : ℝ) : ℂ) ^ 2 + ((Real.sin (t * ω) : ℝ) : ℂ) ^ 2 = 1 := by
+  have hpy : ((Real.cos (t * ω) : ℝ) : ℂ) ^ (2 : ℕ) + ((Real.sin (t * ω) : ℝ) : ℂ) ^ (2 : ℕ) = 1 := by
     have hreal := Real.sin_sq_add_cos_sq (t * ω)
-    have hcast : ((Real.sin (t * ω) ^ 2 + Real.cos (t * ω) ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by
+    have hcast : ((Real.sin (t * ω) ^ (2 : ℕ) + Real.cos (t * ω) ^ (2 : ℕ) : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by
       rw [hreal]
     simp only [Complex.ofReal_add, Complex.ofReal_pow, Complex.ofReal_one] at hcast
     linear_combination hcast
-  have hsq : ∀ Z : ℂ, ((ω : ℝ) : ℂ) ^ 2 * (((ω : ℝ) : ℂ)⁻¹ * Z) = ((ω : ℝ) : ℂ) * Z := by
+  have hsq : ∀ Z : ℂ, ((ω : ℝ) : ℂ) ^ (2 : ℕ) * (((ω : ℝ) : ℂ)⁻¹ * Z) = ((ω : ℝ) : ℂ) * Z := by
     intro Z
     rw [pow_two, mul_assoc, ← mul_assoc (((ω : ℝ) : ℂ)) (((ω : ℝ) : ℂ)⁻¹),
       mul_inv_cancel₀ hW, one_mul]

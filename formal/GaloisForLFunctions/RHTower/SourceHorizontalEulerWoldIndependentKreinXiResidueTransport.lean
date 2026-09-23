@@ -73,7 +73,7 @@ theorem contDiffAt_sourceHorizontalWoldOrderedPrimeDeformation
 theorem iteratedDeriv_sourceHorizontalWoldOrderedPrimeDeformation_three (N : ℕ) :
     iteratedDeriv 3 (sourceHorizontalWoldOrderedPrimeDeformation N) 0 =
       ∑ n ∈ Finset.range (N + 1),
-        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2 := by
+        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ) := by
   change iteratedDeriv 3
       (fun t => ∑ n ∈ Finset.range (N + 1),
         sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) t) 0 = _
@@ -89,8 +89,8 @@ def sourceHorizontalEulerWoldGammaPolarOrbitKernel
     (c : ℂ) (q : XiRightZeroCopy) (u v : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (((frankensteinCCMGammaCenteredResidueGauge q.1.1 u +
       frankensteinCCMGammaCenteredResidueGauge
-        (xiRightZeroCopyConjEquiv q).1.1 v) ^ 3) /
-    ((4 * (xiRightCenteredZero q).re ^ 3 : ℝ) : ℂ)) •
+        (xiRightZeroCopyConjEquiv q).1.1 v) ^ (3 : ℕ)) /
+    ((4 * (xiRightCenteredZero q).re ^ (3 : ℕ) : ℝ) : ℂ)) •
       routePJuliaSharedOrientationOrbitBlock c
 
 /-- First completed residue leaves the Schwarz-conjugate pole variable free. -/
@@ -98,8 +98,8 @@ def sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (v : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (((xiRightCenteredZero q +
       frankensteinCCMGammaCenteredResidueGauge
-        (xiRightZeroCopyConjEquiv q).1.1 v) ^ 3) /
-    ((4 * (xiRightCenteredZero q).re ^ 3 : ℝ) : ℂ)) •
+        (xiRightZeroCopyConjEquiv q).1.1 v) ^ (3 : ℕ)) /
+    ((4 * (xiRightCenteredZero q).re ^ (3 : ℕ) : ℝ) : ℂ)) •
       routePJuliaSharedOrientationOrbitBlock c
 
 /-- Both completed residues produce the forced factor two, not a chosen scalar. -/
@@ -117,7 +117,7 @@ theorem tendsto_sourceHorizontalEulerWoldGammaPolarOrbitKernel_first
     (frankensteinCCMGammaCenteredResidueGauge
       (xiRightZeroCopyConjEquiv q).1.1 v)
   have hdiv := (h.pow 3).div_const
-    (((4 * (xiRightCenteredZero q).re ^ 3 : ℝ) : ℂ))
+    (((4 * (xiRightCenteredZero q).re ^ (3 : ℕ) : ℝ) : ℂ))
   have hsmul := hdiv.smul_const (routePJuliaSharedOrientationOrbitBlock c)
   simpa [sourceHorizontalEulerWoldGammaPolarOrbitKernel,
     sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding,
@@ -139,7 +139,7 @@ theorem tendsto_sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding
     (tendsto_frankensteinCCMGammaCenteredResidueGauge
       (xiRightZeroCopyConjEquiv q).1.1)).pow 3
   have hdiv := h.div_const
-    (((4 * (xiRightCenteredZero q).re ^ 3 : ℝ) : ℂ))
+    (((4 * (xiRightCenteredZero q).re ^ (3 : ℕ) : ℝ) : ℂ))
   have hsmul := hdiv.smul_const (routePJuliaSharedOrientationOrbitBlock c)
   have hconj :
       (((xiRightZeroCopyConjEquiv q).1.1 : ℂ) - 1 / 2) =
@@ -171,7 +171,7 @@ def sourceHorizontalEulerWoldBigradedCompletedSource
     (s t : ℝ) (u v : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   ((sourceHorizontalEulerOrderedLogDeformation N s +
       sourceHorizontalWoldOrderedPrimeDeformation N t) /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v
 
 private theorem contDiffAt_sourceHorizontalEulerOrderedLogDeformation_three (N : ℕ) :
@@ -190,13 +190,13 @@ theorem iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_euler
         (fun s => sourceHorizontalEulerWoldBigradedCompletedSource
           c q N s t u v) 1 =
       (-sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
         sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v := by
   have hs : ContDiffAt ℝ 3
       (fun s =>
         (sourceHorizontalEulerOrderedLogDeformation N s +
           sourceHorizontalWoldOrderedPrimeDeformation N t) /
-            xiMassNthPrimeLogHeight N ^ 3) 1 :=
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) 1 :=
     ((contDiffAt_sourceHorizontalEulerOrderedLogDeformation_three N).add
       contDiffAt_const).div_const _
   rw [show (fun s => sourceHorizontalEulerWoldBigradedCompletedSource
@@ -204,7 +204,7 @@ theorem iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_euler
       fun s =>
         ((sourceHorizontalEulerOrderedLogDeformation N s +
           sourceHorizontalWoldOrderedPrimeDeformation N t) /
-            xiMassNthPrimeLogHeight N ^ 3) •
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
           sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v by rfl]
   rw [iteratedDeriv_smul_const hs,
     iteratedDeriv_div_const,
@@ -221,14 +221,14 @@ theorem iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_wold
         (fun t => sourceHorizontalEulerWoldBigradedCompletedSource
           c q N s t u v) 0 =
       ((∑ n ∈ Finset.range (N + 1),
-          woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) /
-        xiMassNthPrimeLogHeight N ^ 3) •
+          woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ)) /
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
         sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v := by
   have ht : ContDiffAt ℝ 3
       (fun t =>
         (sourceHorizontalEulerOrderedLogDeformation N s +
           sourceHorizontalWoldOrderedPrimeDeformation N t) /
-            xiMassNthPrimeLogHeight N ^ 3) 0 :=
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) 0 :=
     (contDiffAt_const.add
       (contDiffAt_sourceHorizontalWoldOrderedPrimeDeformation N 3 0)).div_const _
   rw [show (fun t => sourceHorizontalEulerWoldBigradedCompletedSource
@@ -236,7 +236,7 @@ theorem iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_wold
       fun t =>
         ((sourceHorizontalEulerOrderedLogDeformation N s +
           sourceHorizontalWoldOrderedPrimeDeformation N t) /
-            xiMassNthPrimeLogHeight N ^ 3) •
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
           sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v by rfl]
   rw [iteratedDeriv_smul_const ht,
     iteratedDeriv_div_const,
@@ -257,7 +257,7 @@ theorem iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_mixed_zer
         c q N s t u v) 1) =
       fun _ : ℝ =>
         (-sourceHorizontalEulerGammaCubicMoment N /
-          xiMassNthPrimeLogHeight N ^ 3) •
+          xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
           sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v by
     funext t
     exact iteratedDeriv_sourceHorizontalEulerWoldBigradedCompletedSource_euler
@@ -274,7 +274,7 @@ def sourceHorizontalEulerLogDepthDeformation
 theorem iteratedDeriv_sourceHorizontalEulerLogDepthDeformation_three
     (p : Nat.Primes) (k : ℕ) :
     iteratedDeriv 3 (sourceHorizontalEulerLogDepthDeformation p k) 1 =
-      -(Real.log (p : ℝ) ^ 3 * ((k + 1 : ℕ) : ℝ) ^ 2 *
+      -(Real.log (p : ℝ) ^ (3 : ℕ) * ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ((p : ℝ)⁻¹) ^ (k + 1)) := by
   rw [show sourceHorizontalEulerLogDepthDeformation p k =
       fun s => Real.exp
@@ -297,7 +297,7 @@ theorem iteratedDeriv_sourceHorizontalEulerLogDepthDeformation_three
 /-- Positive Wold counterterm through the same ordered source clock. -/
 def sourceHorizontalWoldCubicCountertermMoment (N : ℕ) : ℝ :=
   ∑ n ∈ Finset.range (N + 1),
-    woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2
+    woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ)
 
 theorem sourceHorizontalEulerGammaCubicAtom_pos (p : Nat.Primes) :
     0 < sourceHorizontalEulerGammaCubicAtom p := by
@@ -322,7 +322,7 @@ theorem sourceHorizontalWoldCubicCountertermMoment_pos (N : ℕ) :
 
 theorem sourceHorizontalEulerGammaPolarSelectedCoefficient_neg (N : ℕ) :
     (-2 : ℝ) * sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 < 0 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) < 0 := by
   exact div_neg_of_neg_of_pos
     (mul_neg_of_neg_of_pos (by norm_num)
       (sourceHorizontalEulerGammaCubicMoment_pos N))
@@ -330,7 +330,7 @@ theorem sourceHorizontalEulerGammaPolarSelectedCoefficient_neg (N : ℕ) :
 
 theorem sourceHorizontalWoldGammaPolarSelectedCoefficient_pos (N : ℕ) :
     0 < (2 : ℝ) * sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   exact div_pos
     (mul_pos (by norm_num) (sourceHorizontalWoldCubicCountertermMoment_pos N))
     (pow_pos (xiMassNthPrimeLogHeight_pos N) 3)
@@ -340,7 +340,7 @@ def sourceHorizontalEulerGammaPolarPureSourceLeg
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (u v : ℂ) :
     Matrix (Fin 2) (Fin 2) ℂ :=
   (-sourceHorizontalEulerGammaCubicMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v
 
 /-- Positive Wold pure jet before either completed Gamma residue. -/
@@ -348,35 +348,35 @@ def sourceHorizontalWoldGammaPolarPureSourceLeg
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (u v : ℂ) :
     Matrix (Fin 2) (Fin 2) ℂ :=
   (sourceHorizontalWoldCubicCountertermMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitKernel c q u v
 
 def sourceHorizontalEulerGammaPolarPureFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) :
     Matrix (Fin 2) (Fin 2) ℂ :=
   (-sourceHorizontalEulerGammaCubicMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q v
 
 def sourceHorizontalWoldGammaPolarPureFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) :
     Matrix (Fin 2) (Fin 2) ℂ :=
   (sourceHorizontalWoldCubicCountertermMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q v
 
 /-- Negative Euler leg after both completed residues. -/
 def sourceHorizontalEulerGammaPolarPureSelectedLanding
     (c : ℂ) (N : ℕ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (-sourceHorizontalEulerGammaCubicMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitSelectedLanding c
 
 /-- Positive Wold leg after both completed residues. -/
 def sourceHorizontalWoldGammaPolarPureSelectedLanding
     (c : ℂ) (N : ℕ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (sourceHorizontalWoldCubicCountertermMoment N /
-    xiMassNthPrimeLogHeight N ^ 3) •
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
       sourceHorizontalEulerWoldGammaPolarOrbitSelectedLanding c
 
 theorem tendsto_sourceHorizontalEulerGammaPolarPureSourceLeg_first
@@ -389,7 +389,7 @@ theorem tendsto_sourceHorizontalEulerGammaPolarPureSourceLeg_first
     sourceHorizontalEulerGammaPolarPureFirstLanding] using
     (tendsto_sourceHorizontalEulerWoldGammaPolarOrbitKernel_first c q v).const_smul
       (-sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3)
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 theorem tendsto_sourceHorizontalWoldGammaPolarPureSourceLeg_first
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) :
@@ -401,7 +401,7 @@ theorem tendsto_sourceHorizontalWoldGammaPolarPureSourceLeg_first
     sourceHorizontalWoldGammaPolarPureFirstLanding] using
     (tendsto_sourceHorizontalEulerWoldGammaPolarOrbitKernel_first c q v).const_smul
       (sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3)
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 theorem tendsto_sourceHorizontalEulerGammaPolarPureFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) :
@@ -412,15 +412,15 @@ theorem tendsto_sourceHorizontalEulerGammaPolarPureFirstLanding
       (nhds (sourceHorizontalEulerGammaPolarPureSelectedLanding c N)) := by
   change Tendsto (fun v =>
       (-sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
           sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q v) _
     (nhds ((-sourceHorizontalEulerGammaCubicMoment N /
-      xiMassNthPrimeLogHeight N ^ 3) •
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
         sourceHorizontalEulerWoldGammaPolarOrbitSelectedLanding c))
   exact
     (tendsto_sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q).const_smul
       (-sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3)
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 theorem tendsto_sourceHorizontalWoldGammaPolarPureFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) :
@@ -431,22 +431,22 @@ theorem tendsto_sourceHorizontalWoldGammaPolarPureFirstLanding
       (nhds (sourceHorizontalWoldGammaPolarPureSelectedLanding c N)) := by
   change Tendsto (fun v =>
       (sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
           sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q v) _
     (nhds ((sourceHorizontalWoldCubicCountertermMoment N /
-      xiMassNthPrimeLogHeight N ^ 3) •
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ)) •
         sourceHorizontalEulerWoldGammaPolarOrbitSelectedLanding c))
   exact
     (tendsto_sourceHorizontalEulerWoldGammaPolarOrbitFirstLanding c q).const_smul
       (sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3)
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 /-- Exact forced coefficient after completed Gamma/polar residue. -/
 theorem sourceHorizontalEulerGammaPolarPureSelectedLanding_eq
     (c : ℂ) (N : ℕ) :
     sourceHorizontalEulerGammaPolarPureSelectedLanding c N =
       (((-2 : ℝ) * sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c := by
   ext i j
   simp [sourceHorizontalEulerGammaPolarPureSelectedLanding,
@@ -458,7 +458,7 @@ theorem sourceHorizontalWoldGammaPolarPureSelectedLanding_eq
     (c : ℂ) (N : ℕ) :
     sourceHorizontalWoldGammaPolarPureSelectedLanding c N =
       (((2 : ℝ) * sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c := by
   ext i j
   simp [sourceHorizontalWoldGammaPolarPureSelectedLanding,
@@ -564,7 +564,7 @@ theorem sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding_eq_defect
     (c : ℂ) (N : ℕ) :
     sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding c N =
       (((-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c := by
   rw [sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding,
     sourceHorizontalEulerGammaPolarPureSelectedLanding_eq,
@@ -595,9 +595,9 @@ theorem sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding_environment_r
   norm_cast
   have hnum : 0 <
       2 * sourceHorizontalEulerGammaWoldCubicDefectMoment N *
-        xiMassNthPrimeLogHeight N ^ 3 := by positivity
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by positivity
   have hden : 0 <
-      (xiMassNthPrimeLogHeight N * xiMassNthPrimeLogHeight N) ^ 3 := by
+      (xiMassNthPrimeLogHeight N * xiMassNthPrimeLogHeight N) ^ (3 : ℕ) := by
     positivity
   exact mul_neg_of_neg_of_pos
     (div_neg_of_neg_of_pos (neg_lt_zero.mpr hnum) hden) (by norm_num)
@@ -623,7 +623,7 @@ theorem tendsto_sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding_zero
       sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding c N) =
       fun N =>
         (((-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-          xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+          xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
             routePJuliaSharedOrientationOrbitBlock c by
     funext N
     exact sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding_eq_defect c N]
@@ -631,7 +631,7 @@ theorem tendsto_sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding_zero
     tendsto_sourceHorizontalEulerGammaWoldCubicDefectMoment_normalized_zero.const_mul (-2)
   have hreal' : Tendsto (fun N =>
       (-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) atTop (nhds 0) := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) atTop (nhds 0) := by
     convert hreal using 1
     · funext N
       ring
@@ -647,7 +647,7 @@ theorem sourceHorizontalEulerWoldIndependentKreinXiResidueTransport
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (u v : ℂ) :
     (∀ (p : Nat.Primes) (k : ℕ),
       iteratedDeriv 3 (sourceHorizontalEulerLogDepthDeformation p k) 1 =
-        -(Real.log (p : ℝ) ^ 3 * ((k + 1 : ℕ) : ℝ) ^ 2 *
+        -(Real.log (p : ℝ) ^ (3 : ℕ) * ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ((p : ℝ)⁻¹) ^ (k + 1))) ∧
     sourceHorizontalEulerGammaPolarPureSourceLeg c q N u v =
       iteratedDeriv 3
@@ -663,11 +663,11 @@ theorem sourceHorizontalEulerWoldIndependentKreinXiResidueTransport
           c q N s t u v) 1) 0 = 0 ∧
     sourceHorizontalEulerGammaPolarPureSelectedLanding c N =
       (((-2 : ℝ) * sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c ∧
     sourceHorizontalWoldGammaPolarPureSelectedLanding c N =
       (((2 : ℝ) * sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c ∧
     Tendsto (sourceHorizontalEulerWoldKreinFirstLandingBundle c q N)
       (nhdsWithin
@@ -682,7 +682,7 @@ theorem sourceHorizontalEulerWoldIndependentKreinXiResidueTransport
         sourceHorizontalEulerWoldKreinSelectedLandingBundle c q N ∧
     sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding c N =
       (((-2 : ℝ) * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 : ℝ) : ℂ) •
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℝ) : ℂ) •
           routePJuliaSharedOrientationOrbitBlock c ∧
     sourceHorizontalEulerWoldGammaPolarCombinedSelectedLanding c N ≠ 0 ∧
     Tendsto (fun M =>

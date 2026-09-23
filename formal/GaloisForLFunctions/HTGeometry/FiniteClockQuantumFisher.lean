@@ -97,9 +97,9 @@ theorem finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabil
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) =
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ)) =
       4 * RCLike.re
         (inner 𝕜 ψ
           (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)) := by
@@ -117,14 +117,14 @@ theorem finiteClockResolution_erasedPureStateQuantumFisherValue
     (U X : E →L[𝕜] E) (d M : ℕ) (hd : d ≠ 0) (hM : M ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ (d * M) = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U (d * M)) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2) =
-      pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖(1 - finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ (2 : ℕ)) =
+      pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
           (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage (U ^ d) M) (X ψ))‖)
-          (‖(1 - finiteCyclicGaugeAverage (U ^ d) M) (X ψ)‖ ^ 2) +
+          (‖(1 - finiteCyclicGaugeAverage (U ^ d) M) (X ψ)‖ ^ (2 : ℕ)) +
         4 * ‖(finiteCyclicGaugeAverage (U ^ d) M -
-          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2 := by
+          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ (2 : ℕ) := by
   have hfullN : d * M ≠ 0 := Nat.mul_ne_zero hd hM
   have hsubadjoint : (U ^ d).adjoint * U ^ d = 1 :=
     adjoint_pow_mul_pow_eq_one_of_adjoint_mul_self U d hadjoint_mul
@@ -147,9 +147,9 @@ theorem finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_physical
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0 ↔
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ)) = 0 ↔
       GaloisForLFunctions.PhysicalState (U - 1).toLinearMap (X ψ) := by
   rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
     U X N hN hadjoint_mul hperiod hψnorm hψ]
@@ -163,9 +163,9 @@ theorem finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_commutator
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0 ↔
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ)) = 0 ↔
       (U * X - X * U) ψ = 0 := by
   rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
     U X N hN hadjoint_mul hperiod hψnorm hψ]
@@ -179,9 +179,9 @@ theorem finiteClock_zeroQFI_WardValue_eq_zero
     (U X A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ)
-    (hzero : pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    (hzero : pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
       (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-      (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0) :
+      (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ)) = 0) :
     inner 𝕜 (X ψ) (quantumMasterConstraint (U - 1) (A (X ψ))) = 0 := by
   apply quantumMasterConstraint_WardValue_eq_zero (U - 1) A
   exact (finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_physical
@@ -194,9 +194,9 @@ theorem finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityV
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     (hX : IsSelfAdjoint X) {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) =
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ)) =
       4 * RCLike.re
         (inner 𝕜 ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)) := by
   rw [← finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint

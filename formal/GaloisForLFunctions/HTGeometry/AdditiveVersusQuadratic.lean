@@ -27,8 +27,8 @@ namespace HTGeometry
 exponent vectors `(1,1)` and `(2,0)` have the same weighted total but different energies. -/
 theorem additive_not_determine_energy (w : ℤ) :
     (∑ i : Fin 2, w * (![1, 1] : Fin 2 → ℤ) i) = (∑ i : Fin 2, w * (![2, 0] : Fin 2 → ℤ) i)
-      ∧ (∑ i : Fin 2, ((![1, 1] : Fin 2 → ℤ) i) ^ 2)
-          ≠ (∑ i : Fin 2, ((![2, 0] : Fin 2 → ℤ) i) ^ 2) := by
+      ∧ (∑ i : Fin 2, ((![1, 1] : Fin 2 → ℤ) i) ^ (2 : ℕ))
+          ≠ (∑ i : Fin 2, ((![2, 0] : Fin 2 → ℤ) i) ^ (2 : ℕ)) := by
   constructor
   · simp [Fin.sum_univ_two]
     ring
@@ -39,14 +39,14 @@ weights: all of them agree on the two exponent vectors, while the energies diffe
 theorem additive_family_not_determine_energy {ι : Type*} (w : ι → ℤ) (k : ι) :
     (∑ i : Fin 2, w k * (![1, 1] : Fin 2 → ℤ) i)
         = (∑ i : Fin 2, w k * (![2, 0] : Fin 2 → ℤ) i)
-      ∧ (∑ i : Fin 2, ((![1, 1] : Fin 2 → ℤ) i) ^ 2)
-          ≠ (∑ i : Fin 2, ((![2, 0] : Fin 2 → ℤ) i) ^ 2) :=
+      ∧ (∑ i : Fin 2, ((![1, 1] : Fin 2 → ℤ) i) ^ (2 : ℕ))
+          ≠ (∑ i : Fin 2, ((![2, 0] : Fin 2 → ℤ) i) ^ (2 : ℕ)) :=
   additive_not_determine_energy (w k)
 
 /-- The energy of an exponent vector is unchanged by permuting the generators, but is not a function
 of the total exponent: `1² + 1² = 2` while `2² + 0² = 4` for the same total `2`. -/
 theorem energy_ne_of_same_total :
-    (1 : ℤ) + 1 = 2 + 0 ∧ (1 : ℤ) ^ 2 + 1 ^ 2 ≠ 2 ^ 2 + 0 ^ 2 := by
+    (1 : ℤ) + 1 = 2 + 0 ∧ (1 : ℤ) ^ (2 : ℕ) + 1 ^ (2 : ℕ) ≠ 2 ^ (2 : ℕ) + 0 ^ (2 : ℕ) := by
   constructor <;> norm_num
 
 end HTGeometry

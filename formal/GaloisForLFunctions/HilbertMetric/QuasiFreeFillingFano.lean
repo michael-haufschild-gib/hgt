@@ -26,7 +26,7 @@ def quasiFreeSpectralMean (v : ι → κ → ℝ) (energy : κ → ℝ)
 def quasiFreeCompressedSpectralEnergy (v : ι → κ → ℝ) (energy : κ → ℝ)
     (occupation : ι → ℝ) : ℝ :=
   ∑ i, ∑ j, occupation i * occupation j *
-    (∑ k, energy k * v i k * v j k) ^ 2
+    (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)
 
 /-- Variance of an additive spectral observable in the finite quasi-free compression formula. -/
 def quasiFreeSpectralVariance (v : ι → κ → ℝ) (energy : κ → ℝ)
@@ -50,13 +50,13 @@ def quasiFreeSpectralSecantDefect (v : ι → κ → ℝ) (energy : κ → ℝ)
 def quasiFreeSpectralCenteringDefect (v : ι → κ → ℝ) (energy : κ → ℝ)
     (occupation : ι → ℝ) (lower upper : ℝ) : ℝ :=
   ∑ i, (occupation i * orbitalSpectralMean v energy i -
-    (lower + upper - 1) / 2) ^ 2
+    (lower + upper - 1) / 2) ^ (2 : ℕ)
 
 /-- Occupation-weighted off-diagonal energy of the compressed spectral observable. -/
 def quasiFreeSpectralCoherenceDefect (v : ι → κ → ℝ) (energy : κ → ℝ)
     (occupation : ι → ℝ) : ℝ :=
   ∑ i, ∑ j ∈ Finset.univ.erase i, occupation i * occupation j *
-    (∑ k, energy k * v i k * v j k) ^ 2
+    (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)
 
 /-- Basis-invariant trace polynomial representing squared Hilbert--Schmidt displacement of the
 occupation-compressed observable from the balancing scalar on its support. -/
@@ -64,7 +64,7 @@ def quasiFreeSpectralCompressionDefect (v : ι → κ → ℝ) (energy : κ → 
     (occupation : ι → ℝ) (lower upper : ℝ) : ℝ :=
   quasiFreeCompressedSpectralEnergy v energy occupation -
     (lower + upper - 1) * quasiFreeSpectralMean v energy occupation +
-    (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4
+    (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4
 
 /-- Matrix of the occupation-compressed observable displaced from the balancing scalar.  For a
 positive one-body density this is the coordinate matrix of
@@ -81,24 +81,24 @@ def quasiFreeBalancedCompressionHilbertSchmidtSq
     (v : ι → κ → ℝ) (energy : κ → ℝ)
     (occupation : ι → ℝ) (lower upper : ℝ) : ℝ :=
   ∑ i, ∑ j,
-    quasiFreeBalancedCompressionMatrix v energy occupation lower upper i j ^ 2
+    quasiFreeBalancedCompressionMatrix v energy occupation lower upper i j ^ (2 : ℕ)
 
 /-- Rank-one quasi-free Fano margin for an orbital supported on two spectral endpoints. -/
 def quasiFreeEndpointPairSpectralFanoMargin
     (lower upper occupation p : ℝ) : ℝ :=
   let mean := lower * (1 - p) + upper * p
-  let secondMoment := lower ^ 2 * (1 - p) + upper ^ 2 * p
+  let secondMoment := lower ^ (2 : ℕ) * (1 - p) + upper ^ (2 : ℕ) * p
   occupation * mean -
-    (occupation * secondMoment - occupation ^ 2 * mean ^ 2)
+    (occupation * secondMoment - occupation ^ (2 : ℕ) * mean ^ (2 : ℕ))
 
 /-- **Quasi-free endpoint-pair square law.**  The rank-one endpoint model has exactly the
 rank--filling floor plus one occupation--energy centering square. -/
 theorem quasiFreeEndpointPairSpectralFanoMargin_square
     (lower upper occupation p : ℝ) :
     quasiFreeEndpointPairSpectralFanoMargin lower upper occupation p =
-      occupation * lower * upper - (lower + upper - 1) ^ 2 / 4 +
+      occupation * lower * upper - (lower + upper - 1) ^ (2 : ℕ) / 4 +
         (occupation * (lower * (1 - p) + upper * p) -
-          (lower + upper - 1) / 2) ^ 2 := by
+          (lower + upper - 1) / 2) ^ (2 : ℕ) := by
   unfold quasiFreeEndpointPairSpectralFanoMargin
   ring
 
@@ -117,25 +117,25 @@ off-diagonal parts. -/
 theorem quasiFreeCompressedSpectralEnergy_eq_diagonal_add_coherence
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) :
     quasiFreeCompressedSpectralEnergy v energy occupation =
-      (∑ i, occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2) +
+      (∑ i, occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ)) +
         quasiFreeSpectralCoherenceDefect v energy occupation := by
   unfold quasiFreeCompressedSpectralEnergy quasiFreeSpectralCoherenceDefect
   calc
     (∑ i, ∑ j, occupation i * occupation j *
-        (∑ k, energy k * v i k * v j k) ^ 2) =
+        (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) =
         ∑ i, (occupation i * occupation i *
-          (∑ k, energy k * v i k * v i k) ^ 2 +
+          (∑ k, energy k * v i k * v i k) ^ (2 : ℕ) +
           ∑ j ∈ Finset.univ.erase i, occupation i * occupation j *
-            (∑ k, energy k * v i k * v j k) ^ 2) := by
+            (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       rw [← Finset.sum_erase_add Finset.univ
         (fun j => occupation i * occupation j *
-          (∑ k, energy k * v i k * v j k) ^ 2) (Finset.mem_univ i)]
+          (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) (Finset.mem_univ i)]
       ring
-    _ = (∑ i, occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2) +
+    _ = (∑ i, occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ)) +
         ∑ i, ∑ j ∈ Finset.univ.erase i, occupation i * occupation j *
-          (∑ k, energy k * v i k * v j k) ^ 2 := by
+          (∑ k, energy k * v i k * v j k) ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib]
       congr 1
       apply Finset.sum_congr rfl
@@ -143,7 +143,7 @@ theorem quasiFreeCompressedSpectralEnergy_eq_diagonal_add_coherence
       unfold orbitalSpectralMean
       have hdiag :
           (∑ k, energy k * v i k * v i k) =
-            ∑ k, energy k * v i k ^ 2 := by
+            ∑ k, energy k * v i k ^ (2 : ℕ) := by
         apply Finset.sum_congr rfl
         intro k _
         ring
@@ -196,10 +196,10 @@ theorem quasiFreeSpectralCompressionDefect_eq_centering_add_coherence
   unfold quasiFreeSpectralMean quasiFreeSpectralCenteringDefect
   have hsquares :
       (∑ i, (occupation i * orbitalSpectralMean v energy i -
-        (lower + upper - 1) / 2) ^ 2) =
-      ∑ i, (occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2 -
+        (lower + upper - 1) / 2) ^ (2 : ℕ)) =
+      ∑ i, (occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ) -
         (lower + upper - 1) * occupation i * orbitalSpectralMean v energy i +
-        (lower + upper - 1) ^ 2 / 4) := by
+        (lower + upper - 1) ^ (2 : ℕ) / 4) := by
     apply Finset.sum_congr rfl
     intro i _
     ring
@@ -219,22 +219,22 @@ theorem quasiFreeBalancedCompressionHilbertSchmidtSq_eq_centering_add_coherence
   unfold quasiFreeBalancedCompressionHilbertSchmidtSq
   calc
     (∑ i, ∑ j,
-        quasiFreeBalancedCompressionMatrix v energy occupation lower upper i j ^ 2) =
+        quasiFreeBalancedCompressionMatrix v energy occupation lower upper i j ^ (2 : ℕ)) =
       ∑ i, (quasiFreeBalancedCompressionMatrix
-          v energy occupation lower upper i i ^ 2 +
+          v energy occupation lower upper i i ^ (2 : ℕ) +
         ∑ j ∈ Finset.univ.erase i,
           quasiFreeBalancedCompressionMatrix
-            v energy occupation lower upper i j ^ 2) := by
+            v energy occupation lower upper i j ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       rw [← Finset.sum_erase_add Finset.univ
         (fun j => quasiFreeBalancedCompressionMatrix
-          v energy occupation lower upper i j ^ 2) (Finset.mem_univ i)]
+          v energy occupation lower upper i j ^ (2 : ℕ)) (Finset.mem_univ i)]
       ring
     _ = ∑ i, ((occupation i * orbitalSpectralMean v energy i -
-          (lower + upper - 1) / 2) ^ 2 +
+          (lower + upper - 1) / 2) ^ (2 : ℕ) +
         ∑ j ∈ Finset.univ.erase i, occupation i * occupation j *
-          (∑ k, energy k * v i k * v j k) ^ 2) := by
+          (∑ k, energy k * v i k * v j k) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       congr 1
@@ -291,7 +291,7 @@ theorem quasiFreeSpectralFanoMargin_three_defect
     (lower upper : ℝ) :
     quasiFreeSpectralFanoMargin v energy occupation =
       lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 +
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 +
         quasiFreeSpectralSecantDefect v energy occupation lower upper +
         quasiFreeSpectralCenteringDefect v energy occupation lower upper +
         quasiFreeSpectralCoherenceDefect v energy occupation := by
@@ -299,7 +299,7 @@ theorem quasiFreeSpectralFanoMargin_three_defect
       quasiFreeSpectralFanoMargin v energy occupation =
         (∑ i, (occupation i * orbitalSpectralMean v energy i -
           occupation i * orbitalSpectralSecondMoment v energy i +
-          occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2)) +
+          occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ))) +
           quasiFreeSpectralCoherenceDefect v energy occupation := by
     unfold quasiFreeSpectralFanoMargin quasiFreeSpectralMean quasiFreeSpectralVariance
     rw [quasiFreeCompressedSpectralEnergy_eq_diagonal_add_coherence]
@@ -311,22 +311,22 @@ theorem quasiFreeSpectralFanoMargin_three_defect
   calc
     (∑ i, (occupation i * orbitalSpectralMean v energy i -
         occupation i * orbitalSpectralSecondMoment v energy i +
-        occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2)) =
-      ∑ i, ((lower * upper * occupation i - (lower + upper - 1) ^ 2 / 4) +
+        occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ))) =
+      ∑ i, ((lower * upper * occupation i - (lower + upper - 1) ^ (2 : ℕ) / 4) +
         occupation i * ((lower + upper) * orbitalSpectralMean v energy i -
           lower * upper - orbitalSpectralSecondMoment v energy i) +
         (occupation i * orbitalSpectralMean v energy i -
-          (lower + upper - 1) / 2) ^ 2) := by
+          (lower + upper - 1) / 2) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro i _
       ring
 
     _ = lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 +
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 +
         (∑ i, occupation i * ((lower + upper) * orbitalSpectralMean v energy i -
           lower * upper - orbitalSpectralSecondMoment v energy i)) +
         ∑ i, (occupation i * orbitalSpectralMean v energy i -
-          (lower + upper - 1) / 2) ^ 2 := by
+          (lower + upper - 1) / 2) ^ (2 : ℕ) := by
       rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
         Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
         nsmul_eq_mul, Finset.mul_sum]
@@ -339,7 +339,7 @@ theorem quasiFreeSpectralFanoMargin_two_defect
     (lower upper : ℝ) :
     quasiFreeSpectralFanoMargin v energy occupation =
       lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 +
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 +
         quasiFreeSpectralSecantDefect v energy occupation lower upper +
         quasiFreeSpectralCompressionDefect v energy occupation lower upper := by
   rw [quasiFreeSpectralFanoMargin_three_defect v energy occupation lower upper,
@@ -354,7 +354,7 @@ theorem quasiFreeSpectralFanoMargin_hilbertSchmidt_two_defect
     (hoccupation : ∀ i, 0 ≤ occupation i) (lower upper : ℝ) :
     quasiFreeSpectralFanoMargin v energy occupation =
       lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 +
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 +
         quasiFreeSpectralSecantDefect v energy occupation lower upper +
         quasiFreeBalancedCompressionHilbertSchmidtSq
           v energy occupation lower upper := by
@@ -370,7 +370,7 @@ theorem quasiFreeSpectralFanoMargin_lower_bound
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     lower * upper * (∑ i, occupation i) -
-        (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 ≤
+        (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 ≤
       quasiFreeSpectralFanoMargin v energy occupation := by
   rw [quasiFreeSpectralFanoMargin_three_defect v energy occupation lower upper]
   have hedge := quasiFreeSpectralSecantDefect_nonneg
@@ -390,7 +390,7 @@ theorem quasiFreeSpectral_rank_witness
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     4 * (lower * upper * (∑ i, occupation i) -
         quasiFreeSpectralFanoMargin v energy occupation) ≤
-      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 := by
+      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) := by
   have hlowerBound := quasiFreeSpectralFanoMargin_lower_bound
     v energy occupation hframe hoccupation lower upper hlower hupper
   nlinarith
@@ -405,7 +405,7 @@ theorem quasiFreeSpectralCompressionDefect_le_fano_excess
     quasiFreeSpectralCompressionDefect v energy occupation lower upper ≤
       quasiFreeSpectralFanoMargin v energy occupation -
         (lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4) := by
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4) := by
   have hedge := quasiFreeSpectralSecantDefect_nonneg
     v energy occupation hframe hoccupation lower upper hlower hupper
   rw [quasiFreeSpectralFanoMargin_two_defect v energy occupation lower upper]
@@ -419,7 +419,7 @@ theorem quasiFreeSpectralSecantDefect_le_fano_excess
     quasiFreeSpectralSecantDefect v energy occupation lower upper ≤
       quasiFreeSpectralFanoMargin v energy occupation -
         (lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4) := by
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4) := by
   have hcompression := quasiFreeSpectralCompressionDefect_nonneg
     v energy occupation hoccupation lower upper
   rw [quasiFreeSpectralFanoMargin_two_defect v energy occupation lower upper]
@@ -432,13 +432,13 @@ theorem quasiFreeSpectralFanoMargin_nonnegative_of_filling
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper)
     (hthreshold :
-      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 ≤
+      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) ≤
         4 * (lower * upper) * ∑ i, occupation i) :
     0 ≤ quasiFreeSpectralFanoMargin v energy occupation := by
   have hlowerBound := quasiFreeSpectralFanoMargin_lower_bound
     v energy occupation hframe hoccupation lower upper hlower hupper
   have hfloor : 0 ≤ lower * upper * (∑ i, occupation i) -
-      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 := by
+      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 := by
     nlinarith
   exact le_trans hfloor hlowerBound
 
@@ -450,10 +450,10 @@ theorem quasiFreeSpectralFanoMargin_negative_forces_filling_failure
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper)
     (hnegative : quasiFreeSpectralFanoMargin v energy occupation < 0) :
     4 * (lower * upper) * (∑ i, occupation i) <
-      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 := by
+      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) := by
   by_contra hnot
   have hthreshold :
-      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 ≤
+      (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) ≤
         4 * (lower * upper) * ∑ i, occupation i := le_of_not_gt hnot
   have hnonnegative := quasiFreeSpectralFanoMargin_nonnegative_of_filling
     v energy occupation hframe hoccupation lower upper hlower hupper hthreshold
@@ -468,7 +468,7 @@ theorem quasiFreeSpectralFanoMargin_eq_lower_bound_iff
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     quasiFreeSpectralFanoMargin v energy occupation =
         lower * upper * (∑ i, occupation i) -
-          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 ↔
+          (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 ↔
       quasiFreeSpectralSecantDefect v energy occupation lower upper = 0 ∧
         quasiFreeSpectralCompressionDefect v energy occupation lower upper = 0 := by
   have hedge := quasiFreeSpectralSecantDefect_nonneg
@@ -509,7 +509,7 @@ theorem quasiFreeSpectralFanoMargin_unit_energy
     (v : ι → κ → ℝ) (occupation : ι → ℝ)
     (hframe : IsOrthonormalCoordinateFrame v) :
     quasiFreeSpectralFanoMargin v (fun _ => 1) occupation =
-      ∑ i, occupation i ^ 2 := by
+      ∑ i, occupation i ^ (2 : ℕ) := by
   have hmean (i : ι) : orbitalSpectralMean v (fun _ => 1) i = 1 := by
     simpa [orbitalSpectralMean] using
       orthonormalCoordinateFrame_row_norm v hframe i
@@ -517,7 +517,7 @@ theorem quasiFreeSpectralFanoMargin_unit_energy
     simpa [orbitalSpectralSecondMoment] using
       orthonormalCoordinateFrame_row_norm v hframe i
   have hcompression : quasiFreeCompressedSpectralEnergy v (fun _ => 1) occupation =
-      ∑ i, occupation i ^ 2 := by
+      ∑ i, occupation i ^ (2 : ℕ) := by
     unfold quasiFreeCompressedSpectralEnergy
     simp_rw [show ∀ i j, (∑ k, (1 : ℝ) * v i k * v j k) =
         if i = j then 1 else 0 by

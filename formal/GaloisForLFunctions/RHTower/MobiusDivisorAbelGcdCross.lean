@@ -20,9 +20,9 @@ def mobiusDivisorGcdCross (M r : ℕ) : ℝ :=
 
 private theorem finite_cross_decomposition (s : Finset ℕ) (f : ℕ → ℝ) :
     (∑ d ∈ s, ∑ e ∈ s, if d ≠ e then f d*f e else 0) =
-      (∑ d ∈ s, f d)^2 - ∑ d ∈ s, f d^2 := by
+      (∑ d ∈ s, f d)^(2 : ℕ) - ∑ d ∈ s, f d^(2 : ℕ) := by
   have hdiag : (∑ d ∈ s, ∑ e ∈ s, if d = e then f d*f e else 0) =
-      ∑ d ∈ s, f d^2 := by
+      ∑ d ∈ s, f d^(2 : ℕ) := by
     apply sum_congr rfl
     intro d hd
     simp [hd,pow_two]
@@ -37,7 +37,7 @@ private theorem finite_cross_decomposition (s : Finset ℕ) (f : ℕ → ℝ) :
     apply sum_congr rfl
     intro e _
     by_cases hde : d = e <;> simp [hde]
-  have hfull : (∑ d ∈ s, ∑ e ∈ s, f d*f e) = (∑ d ∈ s, f d)^2 := by
+  have hfull : (∑ d ∈ s, ∑ e ∈ s, f d*f e) = (∑ d ∈ s, f d)^(2 : ℕ) := by
     rw [pow_two,sum_mul_sum]
   rw [hdiag,hfull] at hsplit
   linarith only [hsplit]
@@ -46,8 +46,8 @@ private theorem finite_cross_decomposition (s : Finset ℕ) (f : ℕ → ℝ) :
 componentwise sign assumption or any discarded cutoff term. -/
 theorem sum_mobiusDivisorGcdCross (M : ℕ) :
     (∑ r ∈ Icc 1 M, mobiusDivisorGcdCross M r) =
-      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)^2 -
-        ∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d^2 := by
+      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)^(2 : ℕ) -
+        ∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d^(2 : ℕ) := by
   unfold mobiusDivisorGcdCross
   rw [sum_comm]
   conv_lhs =>
@@ -132,7 +132,7 @@ def mobiusDivisorRestrictedCoprimeCross (M r : ℕ) : ℝ :=
 /-- Exact common-divisor homothety, retaining both shared-prime masks. -/
 theorem mobiusDivisorGcdCross_mul (r M : ℕ) :
     mobiusDivisorGcdCross (r*M) r =
-      (r : ℝ)*((ArithmeticFunction.moebius r : ℤ) : ℝ)^2*
+      (r : ℝ)*((ArithmeticFunction.moebius r : ℤ) : ℝ)^(2 : ℕ)*
         mobiusDivisorRestrictedCoprimeCross M r := by
   by_cases hr : r = 0
   · simp [hr,mobiusDivisorGcdCross]
@@ -145,7 +145,7 @@ theorem mobiusDivisorGcdCross_mul (r M : ℕ) :
   rw [mobiusDivisorDilationChannel_mul_masked,mobiusDivisorDilationChannel_mul_masked]
   have hs := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) r)
   calc
-    _ = (Real.sqrt r)^2*((ArithmeticFunction.moebius r : ℤ) : ℝ)^2*
+    _ = (Real.sqrt r)^(2 : ℕ)*((ArithmeticFunction.moebius r : ℤ) : ℝ)^(2 : ℕ)*
         ((if r.Coprime p.1 then mobiusDivisorDilationChannel M p.1 else 0)*
           (if r.Coprime p.2 then mobiusDivisorDilationChannel M p.2 else 0)) := by ring
     _ = _ := by rw [hs]

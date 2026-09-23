@@ -165,8 +165,8 @@ of the shifted logarithmic filtered-von-Mangoldt source. -/
 theorem suzukiPositionTorqueEulerSource_eq_primeSource (s : ℂ) :
     suzukiPositionTorqueEulerSource s =
       (LSeries suzukiPositionTorquePrimeFiniteAbscissaSource.1 s +
-        (1 / (s + 3 / 2) ^ 2 + 1 / (s + 1 / 2) ^ 2 -
-          1 / (s - 3 / 2) ^ 2)) / (2 * s ^ 2) := by
+        (1 / (s + 3 / 2) ^ (2 : ℕ) + 1 / (s + 1 / 2) ^ (2 : ℕ) -
+          1 / (s - 3 / 2) ^ (2 : ℕ))) / (2 * s ^ (2 : ℕ)) := by
   rw [suzukiPositionTorqueEulerSource,
     LSeries_suzukiPositionTorquePrimeFiniteAbscissaSource]
 

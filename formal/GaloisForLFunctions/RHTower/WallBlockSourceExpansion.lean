@@ -59,7 +59,7 @@ set_option maxHeartbeats 1000000 in
 /-- The inverse propagator is continuous along the shifted line. -/
 theorem continuous_stripPropagatorInv_line
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
     Continuous (fun t : ℝ => stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)) := by
@@ -69,7 +69,7 @@ theorem continuous_stripPropagatorInv_line
 
 theorem continuous_wallPhaseMap
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L : ℝ) :
     Continuous (wallPhaseMap E T σ L) :=
@@ -109,7 +109,7 @@ continuous and its block dependence merely measurable, and it is dominated by th
 bound on the window times the profile. -/
 theorem integrable_uncurry_wallPhaseMap_apply
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
@@ -157,7 +157,7 @@ theorem integrable_uncurry_wallPhaseMap_apply
 /-- **The block average of the frequency integrals is integrable.** -/
 theorem integrableOn_blockPhaseIntegral
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
@@ -176,7 +176,7 @@ set_option maxHeartbeats 1000000 in
 /-- **The block integral and the frequency window commute.** -/
 theorem integral_blockSource_swap
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
@@ -232,7 +232,7 @@ theorem integral_blockSource_swap
 
 theorem intervalIntegrable_wallPhaseMap
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L a b : ℝ) :
     IntervalIntegrable (wallPhaseMap E T σ L) volume a b :=
@@ -241,7 +241,7 @@ theorem intervalIntegrable_wallPhaseMap
 /-- **Evaluation passes through the frequency integral.** -/
 theorem integral_wallPhaseMap_apply
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L a b : ℝ) (v : X) :
     (∫ t in a..b, wallPhaseMap E T σ L t v)
@@ -256,7 +256,7 @@ theorem integral_wallPhaseMap_apply
 how the block estimate consumes it: each term is an operator applied to the block profile. -/
 theorem integral_wallPhaseMap_apply_ibp
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {L a b : ℝ}
     (hgap : ∀ t ∈ uIcc a b, 0 < wallFloor T σ t + L) (v : X) :

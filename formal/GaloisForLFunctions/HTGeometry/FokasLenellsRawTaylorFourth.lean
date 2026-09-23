@@ -18,7 +18,7 @@ def rawFourthIntegrand (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) 
     (k : ℂ) • rawQuinticOperator q k x (rawInteractionSolution q k v x)
 
 def rawFourthDensity (q : SchwartzMap ℝ ℂ) (k x : ℝ) : ℝ :=
-  ((rawInteractionMass q^2+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q)*rawInteractionDensity q x+
+  ((rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawInteractionMass q+rawCubicMass q)*rawInteractionDensity q x+
     rawInteractionMass q*rawCubicDensity q x+|k| * rawQuinticDensity q x
 
 theorem rawFourthDensity_nonneg (q : SchwartzMap ℝ ℂ) (k x : ℝ) : 0 ≤ rawFourthDensity q k x := by

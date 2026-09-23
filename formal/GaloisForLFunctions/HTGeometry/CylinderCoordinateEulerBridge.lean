@@ -35,7 +35,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem exp_mul_I_sq (w : ℂ) :
-    Complex.exp (w * Complex.I) ^ 2 = Complex.exp (2 * Complex.I * w) := by
+    Complex.exp (w * Complex.I) ^ (2 : ℕ) = Complex.exp (2 * Complex.I * w) := by
   rw [← Complex.exp_nat_mul]
   exact congrArg Complex.exp (by push_cast; ring)
 
@@ -53,7 +53,7 @@ theorem sin_ne_zero_of_exp_ne_one {w : ℂ} (h : Complex.exp (2 * Complex.I * w)
   · rcases mul_eq_zero.mp hs with hs' | hs'
     · have h4 : (Complex.exp (w * Complex.I))⁻¹ = Complex.exp (w * Complex.I) :=
         sub_eq_zero.mp hs'
-      have h5 : Complex.exp (w * Complex.I) ^ 2
+      have h5 : Complex.exp (w * Complex.I) ^ (2 : ℕ)
           = Complex.exp (w * Complex.I) * (Complex.exp (w * Complex.I))⁻¹ := by
         rw [h4, sq]
       rw [h5, mul_inv_cancel₀ hE]
@@ -70,7 +70,7 @@ theorem cos_div_sin_eq_cylinder (w : ℂ) (h : Complex.exp (2 * Complex.I * w) �
     rw [← Complex.exp_neg]
     exact congrArg Complex.exp (by ring)
   have hsinne : Complex.sin w ≠ 0 := sin_ne_zero_of_exp_ne_one h
-  have hden : Complex.exp (w * Complex.I) ^ 2 - 1 ≠ 0 := by
+  have hden : Complex.exp (w * Complex.I) ^ (2 : ℕ) - 1 ≠ 0 := by
     rw [exp_mul_I_sq]
     exact sub_ne_zero.mpr h
   rw [div_eq_iff hsinne, Complex.cos, Complex.sin, hneg, ← exp_mul_I_sq]
@@ -199,13 +199,13 @@ theorem eulerOp_iterate_cotFun (c : ℂ) :
     have hdiv : HasDerivAt (fun y : ℂ => Polynomial.eval y (eulerNum c n) / (y - 1) ^ (n + 1))
         ((Polynomial.eval u (Polynomial.derivative (eulerNum c n)) * (u - 1) ^ (n + 1)
             - Polynomial.eval u (eulerNum c n) * (((n : ℂ) + 1) * (u - 1) ^ n))
-          / ((u - 1) ^ (n + 1)) ^ 2) u :=
+          / ((u - 1) ^ (n + 1)) ^ (2 : ℕ)) u :=
       hnum.div hden (pow_ne_zero _ hu0)
     rw [Function.iterate_succ_apply', eulerOp, heq.deriv_eq, hdiv.deriv, eulerNum]
     simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C, Polynomial.eval_X,
       eval_linFac]
     have hpow1 : (u - 1) ^ (n + 1) = (u - 1) ^ n * (u - 1) := pow_succ _ _
-    have hpow2 : (u - 1) ^ (n + 1 + 1) = (u - 1) ^ n * (u - 1) ^ 2 := by ring
+    have hpow2 : (u - 1) ^ (n + 1 + 1) = (u - 1) ^ n * (u - 1) ^ (2 : ℕ) := by ring
     have htn : (u - 1) ^ n ≠ 0 := pow_ne_zero _ hu0
     rw [hpow1, hpow2]
     field_simp

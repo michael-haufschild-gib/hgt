@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.FZZCigarScatteringSpectralAsymmetry
 Ashok--Troost's exact supersymmetric cigar reflection amplitudes expose a protected continuum
 spectral asymmetry
 
-`-m / (pi * (p^2 + m^2))`.
+`-m / (pi * (p^(2 : ℕ) + m^(2 : ℕ)))`.
 
 This file reconstructs the corresponding reduced charge-sector Jost factor
 
@@ -128,13 +128,13 @@ theorem fzzCigarChargeJostDenominator_ofReal_ne_zero_of_charge
   exact hm hre
 
 theorem norm_sq_fzzCigarChargeJostNumerator_ofReal (m p : ℝ) :
-    ‖fzzCigarChargeJostNumerator m (p : ℂ)‖ ^ 2 = p ^ 2 + m ^ 2 := by
+    ‖fzzCigarChargeJostNumerator m (p : ℂ)‖ ^ (2 : ℕ) = p ^ (2 : ℕ) + m ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq]
   simp [fzzCigarChargeJostNumerator, Complex.normSq_apply]
   ring
 
 theorem norm_sq_fzzCigarChargeJostDenominator_ofReal (m p : ℝ) :
-    ‖fzzCigarChargeJostDenominator m (p : ℂ)‖ ^ 2 = p ^ 2 + m ^ 2 := by
+    ‖fzzCigarChargeJostDenominator m (p : ℂ)‖ ^ (2 : ℕ) = p ^ (2 : ℕ) + m ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq]
   simp [fzzCigarChargeJostDenominator, Complex.normSq_apply]
   ring
@@ -158,7 +158,7 @@ theorem norm_fzzCigarChargeJostRatio_ofReal
 
 /-- Optical-energy share of the protected relative charge sector. -/
 def fzzCigarChargeJostOpticalEnergyShare (m p : ℝ) : ℝ :=
-  ‖fzzCigarChargeJostRatio m (p : ℂ)‖ ^ 2
+  ‖fzzCigarChargeJostRatio m (p : ℂ)‖ ^ (2 : ℕ)
 
 /-- Exact all-pass optical identity for every nonzero protected charge sector. -/
 theorem fzzCigarChargeJostOpticalEnergyShare_eq_one
@@ -177,7 +177,7 @@ def fzzCigarChargeJostLogDerivative (m : ℝ) (p : ℂ) : ℂ :=
 theorem hasDerivAt_fzzCigarChargeJostRatio
     {m : ℝ} {p : ℂ} (hden : fzzCigarChargeJostDenominator m p ≠ 0) :
     HasDerivAt (fzzCigarChargeJostRatio m)
-      (2 * I * (m : ℂ) / (fzzCigarChargeJostDenominator m p) ^ 2) p := by
+      (2 * I * (m : ℂ) / (fzzCigarChargeJostDenominator m p) ^ (2 : ℕ)) p := by
   have hnum : HasDerivAt (fun q : ℂ => I * q - (m : ℂ)) I p :=
     by simpa using ((hasDerivAt_id p).const_mul I |>.sub_const (m : ℂ))
   have hden' : HasDerivAt (fun q : ℂ => I * q + (m : ℂ)) I p :=
@@ -188,12 +188,12 @@ theorem hasDerivAt_fzzCigarChargeJostRatio
   have hquot :
       HasDerivAt (fun q : ℂ => (I * q - (m : ℂ)) / (I * q + (m : ℂ)))
         ((I * (I * p + (m : ℂ)) - (I * p - (m : ℂ)) * I) /
-          (I * p + (m : ℂ)) ^ 2) p :=
+          (I * p + (m : ℂ)) ^ (2 : ℕ)) p :=
     hnum.div hden' hden
   have hderiv :
       (I * (I * p + (m : ℂ)) - (I * p - (m : ℂ)) * I) /
-          (I * p + (m : ℂ)) ^ 2 =
-        2 * I * (m : ℂ) / (I * p + (m : ℂ)) ^ 2 := by
+          (I * p + (m : ℂ)) ^ (2 : ℕ) =
+        2 * I * (m : ℂ) / (I * p + (m : ℂ)) ^ (2 : ℕ) := by
     congr 1
     ring
   rw [hderiv] at hquot
@@ -205,7 +205,7 @@ theorem fzzCigarChargeJostDerivative_div_ratio_eq_logDerivative
     {m : ℝ} {p : ℂ}
     (hnum : fzzCigarChargeJostNumerator m p ≠ 0)
     (hden : fzzCigarChargeJostDenominator m p ≠ 0) :
-    (2 * I * (m : ℂ) / (fzzCigarChargeJostDenominator m p) ^ 2) /
+    (2 * I * (m : ℂ) / (fzzCigarChargeJostDenominator m p) ^ (2 : ℕ)) /
         fzzCigarChargeJostRatio m p =
       fzzCigarChargeJostLogDerivative m p := by
   simp only [fzzCigarChargeJostNumerator] at hnum

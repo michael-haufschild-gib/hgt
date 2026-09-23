@@ -23,7 +23,7 @@ def principalGreenDefectFirst (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fi
     principalDifferenceFirst q branch w a (onsetTransform (2*physicalRate q branch) w) i x
 
 def principalHomogeneousCoefficient (q : XiZeroCopy) (i : Fin 3) (w : ℂ) (x : ℝ) : ℂ :=
-  w^2-(horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)
+  w^(2 : ℕ)-(horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)
 
 /-- The actual Sobolev transform is uniformly bounded in space. -/
 theorem principalLaplaceProfile_bounded (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
@@ -68,14 +68,14 @@ theorem principalGreenDefect_bounded (q : XiZeroCopy) (branch : Bool) (a : ℂ) 
 /-- The original homogeneous coefficient has an explicit full-interior norm bound. -/
 theorem principalHomogeneousCoefficient_norm_le (q : XiZeroCopy) (i : Fin 3) (w : ℂ)
     (x : ℝ) (hx : x < 0) :
-    ‖principalHomogeneousCoefficient q i w x‖ ≤ ‖w‖^2+‖principalExponent q i‖*‖principalExponent q i-1‖ := by
+    ‖principalHomogeneousCoefficient q i w x‖ ≤ ‖w‖^(2 : ℕ)+‖principalExponent q i‖*‖principalExponent q i-1‖ := by
   have hz := horizonCoordinate_interior x hx
   have hh : ‖(horizonCoordinate x:ℂ)‖ ≤ 1 := by
     rw [Complex.norm_real,Real.norm_of_nonneg hz.1.le]
     exact hz.2.le
   unfold principalHomogeneousCoefficient
   calc
-    _ ≤ ‖w^2‖+‖(horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)‖ := norm_sub_le _ _
+    _ ≤ ‖w^(2 : ℕ)‖+‖(horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)‖ := norm_sub_le _ _
     _ ≤ _ := by
       rw [norm_pow,norm_mul,norm_mul]
       exact add_le_add le_rfl (mul_le_mul_of_nonneg_right
@@ -87,7 +87,7 @@ theorem principalGreenDefectFirst_bounded_tail (q : XiZeroCopy) (branch : Bool) 
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) (hc : PrincipalChamber q w) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ x : ℝ, x < -1 → ‖principalGreenDefectFirst q branch a i w hw x‖ ≤ D := by
   obtain ⟨C,hC,hb⟩ := principalGreenDefect_bounded q branch a i w hw hc
-  let M := ‖w‖^2+‖principalExponent q i‖*‖principalExponent q i-1‖
+  let M := ‖w‖^(2 : ℕ)+‖principalExponent q i‖*‖principalExponent q i-1‖
   have hM : 0 ≤ M := add_nonneg (sq_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
   refine ⟨4*C+M*C,add_nonneg (mul_nonneg (by norm_num) hC) (mul_nonneg hM hC),fun x hx => ?_⟩
   have ht (t : ℝ) (ht : t ∈ Icc x (x+1)) : t < 0 := by linarith [ht.2]

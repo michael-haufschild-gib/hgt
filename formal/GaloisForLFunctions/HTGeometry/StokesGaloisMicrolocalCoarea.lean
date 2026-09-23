@@ -60,16 +60,16 @@ def orbitContactPairing (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) : ℝ :
 /-- Positive block-charge coarea energy. -/
 def blockEnergy (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) : ℝ :=
   ∑ edge, d.cuts.length edge *
-    (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ 2
+    (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ (2 : ℕ)
 
 /-- Positive terminal orbit energy. -/
 def terminalEnergy (_d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) : ℝ :=
-  ∑ i, x i ^ 2
+  ∑ i, x i ^ (2 : ℕ)
 
 /-- Cartan polarization written directly from terminal energy, total rank, and mixed branch
 irregularity. -/
 def cartanQuadratic (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) : ℝ :=
-  d.terminalEnergy x + d.physicalRank x ^ 2 - d.contactPairing x
+  d.terminalEnergy x + d.physicalRank x ^ (2 : ℕ) - d.contactPairing x
 
 /-- Every Stokes-circle orbit has positive ramification. -/
 theorem ramification_pos (d : OrbitCoareaDatum n m e) (i : Fin n) :
@@ -196,11 +196,11 @@ theorem orbitContactPairing_eq_contactPairing
 theorem contactPairing_eq_root_rank_sq_sub_blockEnergy
     (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
     d.contactPairing x =
-      d.cuts.root * d.physicalRank x ^ 2 - d.blockEnergy x := by
+      d.cuts.root * d.physicalRank x ^ (2 : ℕ) - d.blockEnergy x := by
   simp only [contactPairing, RootedCutContact.contact, physicalRank, blockEnergy]
   have hroot :
       (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b * d.cuts.root) =
-        d.cuts.root * (∑ a, d.liftCharge x a) ^ 2 := by
+        d.cuts.root * (∑ a, d.liftCharge x a) ^ (2 : ℕ) := by
     rw [show (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b * d.cuts.root) =
         (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b) * d.cuts.root by
       rw [Finset.sum_mul]
@@ -212,7 +212,7 @@ theorem contactPairing_eq_root_rank_sq_sub_blockEnergy
   have hedge : ∀ edge : Fin e,
       (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b *
         (d.cuts.side edge a * d.cuts.side edge b)) =
-      (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ 2 := by
+      (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ (2 : ℕ) := by
     intro edge
     calc
       (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b *
@@ -227,7 +227,7 @@ theorem contactPairing_eq_root_rank_sq_sub_blockEnergy
       _ = (∑ a, d.liftCharge x a * d.cuts.side edge a) *
           (∑ b, d.liftCharge x b * d.cuts.side edge b) := by
             rw [double_sum_mul]
-      _ = (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ 2 := by ring
+      _ = (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ (2 : ℕ) := by ring
   calc
     (∑ a, ∑ b, d.liftCharge x a * d.liftCharge x b *
         (d.cuts.root - ∑ edge, d.cuts.length edge *
@@ -263,9 +263,9 @@ theorem contactPairing_eq_root_rank_sq_sub_blockEnergy
                 apply Finset.sum_congr rfl
                 intro b _
                 ring
-    _ = d.cuts.root * (∑ a, d.liftCharge x a) ^ 2 -
+    _ = d.cuts.root * (∑ a, d.liftCharge x a) ^ (2 : ℕ) -
         ∑ edge, d.cuts.length edge *
-          (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ 2 := by
+          (∑ a, d.liftCharge x a * d.cuts.side edge a) ^ (2 : ℕ) := by
       rw [hroot]
       simp_rw [hedge]
 
@@ -273,7 +273,7 @@ theorem contactPairing_eq_root_rank_sq_sub_blockEnergy
 theorem cartanQuadratic_eq_positive_sub_onePort
     (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
     d.cartanQuadratic x = d.terminalEnergy x + d.blockEnergy x -
-      (d.cuts.root - 1) * d.physicalRank x ^ 2 := by
+      (d.cuts.root - 1) * d.physicalRank x ^ (2 : ℕ) := by
   rw [cartanQuadratic, d.contactPairing_eq_root_rank_sq_sub_blockEnergy]
   ring
 

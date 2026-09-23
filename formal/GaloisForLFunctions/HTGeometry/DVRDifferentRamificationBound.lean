@@ -35,7 +35,7 @@ theorem ramificationExponent_le_two_of_irreducible_mem_different
     (Ideal.dvd_iff_le.mp hdvd) hδD
   rw [hδ.maximalIdeal_eq, Ideal.span_singleton_pow,
     Ideal.mem_span_singleton] at hmem
-  have hpow : δ ^ (e - 1) ∣ δ ^ 1 := by simpa using hmem
+  have hpow : δ ^ (e - 1) ∣ δ ^ (1 : ℕ) := by simpa using hmem
   have hsub : e - 1 ≤ 1 :=
     (pow_dvd_pow_iff hδ.ne_zero hδ.not_isUnit).mp hpow
   omega

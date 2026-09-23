@@ -47,24 +47,24 @@ theorem norm_dirPoly_finCoeff_le_card {B : Finset ℕ} {NA : ℕ} (t : ℝ) :
 theorem section4_block_bound_prime (b : ℕ → ℂ) {B D : Finset ℕ} {NA NB k : ℕ}
     (hBprime : ∀ p ∈ B, p.Prime) (hBsub : B ⊆ Finset.Icc 1 NA) (hD : D ⊆ Finset.Icc 1 NB)
     (hNB : 1 ≤ NB) (hk : 1 ≤ k) {W V : ℝ} (hW : 0 ≤ W) (hV : 0 < V) :
-    (∫ w in Set.Icc (-W) W, ‖primeBlockPoly B w‖ ^ 2 * ‖logPoly b D w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖logPoly b D w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
-        * (V ^ 2 * (2 * (((2 * Real.pi * W) + 4 * (NB : ℝ) * (1 + Real.log NB))
-              * ∑ n : Fin NB, ‖finCoeff D b NB n‖ ^ 2))
-          + (B.card : ℝ) ^ 2 * ((2 * (NB : ℝ)
+        * (V ^ (2 : ℕ) * (2 * (((2 * Real.pi * W) + 4 * (NB : ℝ) * (1 + Real.log NB))
+              * ∑ n : Fin NB, ‖finCoeff D b NB n‖ ^ (2 : ℕ)))
+          + (B.card : ℝ) ^ (2 : ℕ) * ((2 * (NB : ℝ)
               + (((Nat.log 2 NB : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
                   + 3072 * (NB : ℝ))
                 * (2 * (((2 * Real.pi * W)
                       + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
                     * ((k : ℝ) ^ k * (B.card : ℝ) ^ k)) / V ^ (2 * k)))
-              * ∑ n : Fin NB, ‖finCoeff D b NB n‖ ^ 2)) := by
+              * ∑ n : Fin NB, ‖finCoeff D b NB n‖ ^ (2 : ℕ))) := by
   classical
   have hT0 : (0 : ℝ) ≤ 2 * Real.pi * W := by positivity
   have hEV := volume_blockExceptional_le (B := B) (NA := NA) (k := k) hBprime hk hT0 hV
   have hmain := section4_block_bound moebiusCoeff b hBsub hD hNB hW
     (fun t => norm_dirPoly_finCoeff_le_card t) hEV
-  have hrw : ∀ w : ℝ, ‖primeBlockPoly B w‖ ^ 2 * ‖logPoly b D w‖ ^ 2
-      = ‖logPoly moebiusCoeff B w‖ ^ 2 * ‖logPoly b D w‖ ^ 2 := by
+  have hrw : ∀ w : ℝ, ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖logPoly b D w‖ ^ (2 : ℕ)
+      = ‖logPoly moebiusCoeff B w‖ ^ (2 : ℕ) * ‖logPoly b D w‖ ^ (2 : ℕ) := by
     intro w
     rw [primeBlockPoly_eq_logPoly]
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hrw w]

@@ -74,7 +74,7 @@ theorem eval_shellPoly_jointCriticalProduct_smul {P : Fin N → Matrix (Fin D) (
   calc MvPolynomial.eval (fun a => t * θ a) G
       = MvPolynomial.eval₂ (MvPolynomial.eval (fun a => t * θ a))
           (fun i => (isHermitian_spectralEnsembleMatrix hP (fun a => t * θ a)).eigenvalues i) A := by
-        rw [hG (fun a => t * θ a), hA, eval_sumAlgEquiv]
+        rw [hG (fun a => t * θ a), hA, eval_sumAlgEquiv_jointGradingBridge]
     _ = MvPolynomial.eval₂ (MvPolynomial.eval (fun a => t * θ a))
           (fun i => hsm.eigenvalues i) A := by rw [heig]
     _ = MvPolynomial.eval₂ (MvPolynomial.eval (fun a => t * θ a))
@@ -83,7 +83,7 @@ theorem eval_shellPoly_jointCriticalProduct_smul {P : Fin N → Matrix (Fin D) (
     _ = MvPolynomial.eval
           (Sum.elim (fun i => t * (isHermitian_spectralEnsembleMatrix hP θ).eigenvalues i)
             (fun a => t * θ a)) (jointCriticalProduct M c k) := by
-        rw [hA, eval_sumAlgEquiv]
+        rw [hA, eval_sumAlgEquiv_jointGradingBridge]
     _ = t ^ ((Finset.univ : Finset (Equiv.Perm (Fin D))).card * ((M + 1) * 2))
           * MvPolynomial.eval
             (Sum.elim (fun i => (isHermitian_spectralEnsembleMatrix hP θ).eigenvalues i) θ)

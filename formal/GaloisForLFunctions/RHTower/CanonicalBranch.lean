@@ -168,19 +168,19 @@ theorem reflectedRoot_sq {μ : ℝ} {a : ℂ} {r₀ R : ℝ} (ha : a.re = μ)
     {f G : ℂ → ℂ}
     (hsym : ∀ z ∈ ball a R \ closedBall a r₀,
       f (lineReflection μ z) = (starRingEnd ℂ) (f z))
-    (hpG : ∀ z ∈ chartRA a r₀ R, G z ^ 2 = f z) :
-    ∀ z ∈ chartLA a r₀ R, reflectedRoot μ G z ^ 2 = f z := by
+    (hpG : ∀ z ∈ chartRA a r₀ R, G z ^ (2 : ℕ) = f z) :
+    ∀ z ∈ chartLA a r₀ R, reflectedRoot μ G z ^ (2 : ℕ) = f z := by
   intro z hz
-  show ((starRingEnd ℂ) (G (lineReflection μ z))) ^ 2 = f z
+  show ((starRingEnd ℂ) (G (lineReflection μ z))) ^ (2 : ℕ) = f z
   rw [← map_pow, hpG _ (lineReflection_mem_chartRA ha hz), hsym z hz.2,
     Complex.conj_conj]
 
 /-! ### §3 The sign dichotomy for roots of real values -/
 
 /-- A square root of a positive real is fixed by conjugation. -/
-theorem conj_eq_self_of_sq_pos {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
+theorem conj_eq_self_of_sq_pos {w v : ℂ} (hw : w ^ (2 : ℕ) = v) (hIm : v.im = 0)
     (hpos : 0 < v.re) : (starRingEnd ℂ) w = w := by
-  have hsq : ((starRingEnd ℂ) w) ^ 2 = w ^ 2 := by
+  have hsq : ((starRingEnd ℂ) w) ^ (2 : ℕ) = w ^ (2 : ℕ) := by
     rw [← map_pow, hw, Complex.conj_eq_iff_im.mpr hIm, ← hw]
   have hfac : ((starRingEnd ℂ) w - w) * ((starRingEnd ℂ) w + w) = 0 := by
     linear_combination hsq
@@ -197,9 +197,9 @@ theorem conj_eq_self_of_sq_pos {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
     nlinarith [mul_self_nonneg w.im]
 
 /-- A square root of a negative real is negated by conjugation. -/
-theorem conj_eq_neg_of_sq_neg {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
+theorem conj_eq_neg_of_sq_neg {w v : ℂ} (hw : w ^ (2 : ℕ) = v) (hIm : v.im = 0)
     (hneg : v.re < 0) : (starRingEnd ℂ) w = -w := by
-  have hsq : ((starRingEnd ℂ) w) ^ 2 = w ^ 2 := by
+  have hsq : ((starRingEnd ℂ) w) ^ (2 : ℕ) = w ^ (2 : ℕ) := by
     rw [← map_pow, hw, Complex.conj_eq_iff_im.mpr hIm, ← hw]
   have hfac : ((starRingEnd ℂ) w - w) * ((starRingEnd ℂ) w + w) = 0 := by
     linear_combination hsq
@@ -213,7 +213,7 @@ theorem conj_eq_neg_of_sq_neg {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
   · exact eq_neg_of_add_eq_zero_left h
 
 /-- The conjugation ratio of a root of a positive real is `1`. -/
-theorem div_conj_self_of_sq_pos {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
+theorem div_conj_self_of_sq_pos {w v : ℂ} (hw : w ^ (2 : ℕ) = v) (hIm : v.im = 0)
     (hpos : 0 < v.re) : w / (starRingEnd ℂ) w = 1 := by
   have hw0 : w ≠ 0 := by
     intro h
@@ -223,7 +223,7 @@ theorem div_conj_self_of_sq_pos {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
   rw [conj_eq_self_of_sq_pos hw hIm hpos, div_self hw0]
 
 /-- The conjugation ratio of a root of a negative real is `-1`. -/
-theorem div_conj_self_of_sq_neg {w v : ℂ} (hw : w ^ 2 = v) (hIm : v.im = 0)
+theorem div_conj_self_of_sq_neg {w v : ℂ} (hw : w ^ (2 : ℕ) = v) (hIm : v.im = 0)
     (hneg : v.re < 0) : w / (starRingEnd ℂ) w = -1 := by
   have hw0 : w ≠ 0 := by
     intro h
@@ -259,7 +259,7 @@ theorem deckClass_reflectedRoot_one_of_sign_pos {μ : ℝ} {a : ℂ} {r₀ R : �
     {pP pM : ℂ} (hpP : pP.re = μ) (hpM : pM.re = μ)
     (hPmem : pP ∈ ball a R \ closedBall a r₀)
     (hMmem : pM ∈ ball a R \ closedBall a r₀)
-    (hGP : G pP ^ 2 = f pP) (hGM : G pM ^ 2 = f pM)
+    (hGP : G pP ^ (2 : ℕ) = f pP) (hGM : G pM ^ (2 : ℕ) = f pM)
     (hsign : 0 < (f pP).re * (f pM).re) :
     deckClass G (reflectedRoot μ G) pP pM = 1 := by
   have hImP : (f pP).im = 0 :=
@@ -286,7 +286,7 @@ theorem deckClass_reflectedRoot_neg_one_of_sign_change {μ : ℝ} {a : ℂ}
     {pP pM : ℂ} (hpP : pP.re = μ) (hpM : pM.re = μ)
     (hPmem : pP ∈ ball a R \ closedBall a r₀)
     (hMmem : pM ∈ ball a R \ closedBall a r₀)
-    (hGP : G pP ^ 2 = f pP) (hGM : G pM ^ 2 = f pM)
+    (hGP : G pP ^ (2 : ℕ) = f pP) (hGM : G pM ^ (2 : ℕ) = f pM)
     (hsign : (f pP).re * (f pM).re < 0) :
     deckClass G (reflectedRoot μ G) pP pM = -1 := by
   have hImP : (f pP).im = 0 :=
@@ -312,7 +312,7 @@ theorem deckClass_reflectedRoot_ne_one_iff {μ : ℝ} {a : ℂ} {r₀ R : ℝ}
     {pP pM : ℂ} (hpP : pP.re = μ) (hpM : pM.re = μ)
     (hPmem : pP ∈ ball a R \ closedBall a r₀)
     (hMmem : pM ∈ ball a R \ closedBall a r₀)
-    (hGP : G pP ^ 2 = f pP) (hGM : G pM ^ 2 = f pM)
+    (hGP : G pP ^ (2 : ℕ) = f pP) (hGM : G pM ^ (2 : ℕ) = f pM)
     (hne : (f pP).re * (f pM).re ≠ 0) :
     deckClass G (reflectedRoot μ G) pP pM ≠ 1
       ↔ (f pP).re * (f pM).re < 0 := by
@@ -336,7 +336,7 @@ branch datum supplies exactly the sign pair the selection interface leaves
 free. -/
 theorem exists_canonical_sweepSelection (P : Finset ℕ) {μ : ℝ} {f G : ℂ → ℂ}
     {pP pM : ℂ} (hpM : pM.re = μ)
-    (hGP : G pP ^ 2 = f pP) (hGM : G pM ^ 2 = f pM)
+    (hGP : G pP ^ (2 : ℕ) = f pP) (hGM : G pM ^ (2 : ℕ) = f pM)
     (hImM : (f pM).im = 0) :
     ∃ F₁ F₂ : ℝ → ℂ, SweepSelection P pP pM (f pP) (f pM) F₁ F₂ ∧
       F₁ 0 = G pP ∧ F₂ 0 = reflectedRoot μ G pM := by
@@ -404,7 +404,7 @@ theorem completedSEM_selection_weld_of_sign_change {N : ℕ} {a : ℂ} {r₀ R :
     (hcap : (a.im + (r₀ + R) / 2) * (4 * Real.log 2) < Real.pi)
     {G : ℂ → ℂ}
     (hG : AnalyticOnNhd ℂ G (chartRA a r₀ R))
-    (hpG : ∀ z ∈ chartRA a r₀ R, G z ^ 2 = completedSEM N z)
+    (hpG : ∀ z ∈ chartRA a r₀ R, G z ^ (2 : ℕ) = completedSEM N z)
     (hsign : (completedSEM N (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re
       * (completedSEM N (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re < 0) (Q : ℕ) :
     ∃ P : Finset ℕ, (∀ p ∈ P, Nat.Prime p ∧ Q < p) ∧
@@ -415,7 +415,7 @@ theorem completedSEM_selection_weld_of_sign_change {N : ℕ} {a : ℂ} {r₀ R :
       ∀ t : ℝ, ¬∃ F : ℂ → ℂ,
         AnalyticOnNhd ℂ F (ball a R \ closedBall a r₀) ∧
         ∀ z ∈ ball a R \ closedBall a r₀,
-          F z ^ 2 = anchorSweep P t z * completedSEM N z := by
+          F z ^ (2 : ℕ) = anchorSweep P t z * completedSEM N z := by
   have hre0 : 0 < a.re := by rw [ha]; norm_num
   have hre1 : a.re < 1 := by rw [ha]; norm_num
   have hsym := completedSEM_lineSymmetric_on_annulus (N := N) (r₀ := r₀) ha hR
@@ -438,10 +438,10 @@ theorem completedSEM_selection_weld_of_sign_change {N : ℕ} {a : ℂ} {r₀ R :
     intro h
     rw [h] at hsign
     simp at hsign
-  have hGP : G (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ^ 2
+  have hGP : G (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ^ (2 : ℕ)
       = completedSEM N (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) :=
     hpG _ hPmem.1
-  have hGM : G (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ^ 2
+  have hGM : G (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ^ (2 : ℕ)
       = completedSEM N (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) :=
     hpG _ hMmem.1
   have hdeck : deckClass G (reflectedRoot (1 / 2) G)
@@ -463,7 +463,7 @@ theorem exists_chartRA_sqrt {f : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} (h0 : 0 <
     (hf : AnalyticOnNhd ℂ f (chartRA a r₀ R))
     (hf0 : ∀ z ∈ chartRA a r₀ R, f z ≠ 0) :
     ∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (chartRA a r₀ R) ∧
-      ∀ z ∈ chartRA a r₀ R, G z ^ 2 = f z := by
+      ∀ z ∈ chartRA a r₀ R, G z ^ (2 : ℕ) = f z := by
   obtain ⟨χ, hχan, -, hχpow⟩ := U0KummerBranch.exists_analyticOnNhd_pow_eq
     (isOpen_chartRA a r₀ R) (isSimplyConnected_chartRA a h0 hrR) hf hf0
     (by norm_num : (2 : ℕ) ≠ 0)
@@ -494,7 +494,7 @@ theorem completedSEM_selection_weld_of_sign_change_nonvanishing {N : ℕ}
       ∀ t : ℝ, ¬∃ F : ℂ → ℂ,
         AnalyticOnNhd ℂ F (ball a R \ closedBall a r₀) ∧
         ∀ z ∈ ball a R \ closedBall a r₀,
-          F z ^ 2 = anchorSweep P t z * completedSEM N z := by
+          F z ^ (2 : ℕ) = anchorSweep P t z * completedSEM N z := by
   have hfan : AnalyticOnNhd ℂ (completedSEM N) (chartRA a r₀ R) := fun z hz =>
     completedSEM_analyticOnNhd_strip hN z (annulus_strip_of_center_half ha hR hz.2)
   obtain ⟨G, hG, hpG⟩ := exists_chartRA_sqrt h0 hrR hfan

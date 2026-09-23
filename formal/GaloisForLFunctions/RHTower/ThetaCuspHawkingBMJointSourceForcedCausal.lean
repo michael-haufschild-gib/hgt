@@ -75,7 +75,7 @@ theorem causalJointForcedResponse_operator (q : XiZeroCopy) (branch : Bool) (a w
     (hw : causalResponseShift q+1 < w.re) :
     let U := ∫ t in Ioi (0 : ℝ), expRay w t • causalJointForcedResponse q branch a t
     ∃ hmem : U ∈ jointEnergyOperator.domain,
-      jointEnergyOperator ⟨U,hmem⟩+(w^2-1) • U =
+      jointEnergyOperator ⟨U,hmem⟩+(w^(2 : ℕ)-1) • U =
         ∫ t in Ioi (0 : ℝ), expRay w t • causalCuspSourceVector q branch a t := by
   have hw₀ : 0 < w.re := by have := causalResponseShift_pos q; linarith
   dsimp only
@@ -97,7 +97,7 @@ theorem causalCuspSource_original_joint_response (q : XiZeroCopy) (branch : Bool
         (∫ t in Ioi (0 : ℝ), expRay w t • U t) = causalJointFrequencyResponse q branch a w ∧
         ∃ hmem : (∫ t in Ioi (0 : ℝ), expRay w t • U t) ∈ jointEnergyOperator.domain,
           jointEnergyOperator ⟨∫ t in Ioi (0 : ℝ), expRay w t • U t,hmem⟩+
-            (w^2-1) • (∫ t in Ioi (0 : ℝ), expRay w t • U t) =
+            (w^(2 : ℕ)-1) • (∫ t in Ioi (0 : ℝ), expRay w t • U t) =
               ∫ t in Ioi (0 : ℝ), expRay w t • causalCuspSourceVector q branch a t := by
   refine ⟨causalJointForcedResponse q branch a,causalJointForcedResponse_support q branch a,
     causalJointForcedResponse_weighted_memLp q branch a,?_⟩

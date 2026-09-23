@@ -108,8 +108,8 @@ theorem integral_tent_right (L : ℝ) :
 theorem tent_laplace_half (L : ℝ) :
     ((-2 * L * Real.exp (-L / 2) + 4 * (1 - Real.exp (-L / 2)))
       + (2 * L * Real.exp (-L / 2) - 4 * Real.exp (-L / 2) + 4 * Real.exp (-L)))
-      = 4 * (1 - Real.exp (-L / 2)) ^ 2 := by
-  have hsq : Real.exp (-L) = Real.exp (-L / 2) ^ 2 := by
+      = 4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ) := by
+  have hsq : Real.exp (-L) = Real.exp (-L / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
     ring_nf
@@ -119,6 +119,6 @@ theorem tent_laplace_half (L : ℝ) :
 /-- The constant is nonnegative, and is the square of the sharp-window constant
 `2(1 - e^{-L/2})`. -/
 theorem tent_constant_is_square (L : ℝ) :
-    4 * (1 - Real.exp (-L / 2)) ^ 2 = (2 * (1 - Real.exp (-L / 2))) ^ 2 := by ring
+    4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ) = (2 * (1 - Real.exp (-L / 2))) ^ (2 : ℕ) := by ring
 
 end RHTower

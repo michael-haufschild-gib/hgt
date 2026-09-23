@@ -33,8 +33,8 @@ theorem sum_ne_zero_of_valuation_gap {ι : Type*} [DecidableEq ι] (s : Finset �
   rw [hnorm i₀ hi₀]
   rcases (s.erase i₀).eq_empty_or_nonempty with he | hne
   · rw [he, Finset.sum_empty]; exact Real.exp_pos _
-  -- key identity B^2 · exp(-(2 log B)) = 1
-  have hkey : B ^ 2 * Real.exp (-(2 * Real.log B)) = 1 := by
+  -- key identity B^(2 : ℕ) · exp(-(2 log B)) = 1
+  have hkey : B ^ (2 : ℕ) * Real.exp (-(2 * Real.log B)) = 1 := by
     rw [Real.exp_neg, two_mul, Real.exp_add, Real.exp_log hBpos]
     field_simp
   -- strict per-term bound
@@ -67,7 +67,7 @@ theorem sum_ne_zero_of_valuation_gap {ι : Type*} [DecidableEq ι] (s : Finset �
         calc ((s.erase i₀).card : ℝ) * (B * (Real.exp (- V i₀) * Real.exp (-(2 * Real.log B))))
             ≤ B * (B * (Real.exp (- V i₀) * Real.exp (-(2 * Real.log B)))) :=
               mul_le_mul_of_nonneg_right hcarderase hBEF
-          _ = B ^ 2 * Real.exp (-(2 * Real.log B)) * Real.exp (- V i₀) := by ring
+          _ = B ^ (2 : ℕ) * Real.exp (-(2 * Real.log B)) * Real.exp (- V i₀) := by ring
           _ = Real.exp (- V i₀) := by rw [hkey, one_mul]
 
 end GaloisForLFunctions

@@ -94,10 +94,10 @@ theorem continuousAt_thetaCuspFullReflectionEighthHankelCurvature_zero :
 /-- The positive-coordinate raw/native factorization extends exactly to the seam. -/
 theorem thetaCuspFullSourceReflectionEighthHankelCurvature_zero_eq_fullReflection :
     thetaCuspFullSourceReflectionEighthHankelCurvature 0 =
-      4 * thetaCuspFullSource 0 ^ 6 *
+      4 * thetaCuspFullSource 0 ^ (6 : ℕ) *
         thetaCuspFullReflectionEighthHankelCurvature 0 := by
   let rhs : ℝ → ℝ := fun x =>
-    4 * thetaCuspFullSource x ^ 6 *
+    4 * thetaCuspFullSource x ^ (6 : ℕ) *
       thetaCuspFullReflectionEighthHankelCurvature x
   have heq : thetaCuspFullSourceReflectionEighthHankelCurvature =ᶠ[𝓝[>] 0] rhs := by
     filter_upwards [self_mem_nhdsWithin] with x hx

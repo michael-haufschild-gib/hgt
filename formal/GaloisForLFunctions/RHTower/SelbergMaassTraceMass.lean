@@ -46,7 +46,7 @@ theorem density_pos_interior : ∃ z ∈ fdo, 0 < density N f z := by
 
 /-- Actual planar hyperbolic trace-mass density. -/
 def massDensity (p : ℝ × ℝ) : ℝ :=
-  density N f (ofComplex (point p.1 p.2)) / p.2 ^ 2
+  density N f (ofComplex (point p.1 p.2)) / p.2 ^ (2 : ℕ)
 
 /-- The actual trace-mass density is everywhere nonnegative. -/
 theorem massDensity_nonneg (p : ℝ × ℝ) : 0 ≤ massDensity N f p :=
@@ -66,7 +66,7 @@ theorem coreMass_pos_of_interior {z : ℍ} (hz : z ∈ fdo) (hpos : 0 < density 
     {Y : ℝ} (hY : z.im < Y) : 0 < coreMass N f Y := by
   let p : ℝ × ℝ := (z.re, z.im)
   have hre := abs_lt.mp hz.2
-  have hsq : 1 < z.re ^ 2 + z.im ^ 2 := by simpa [Complex.normSq_apply, pow_two] using hz.1
+  have hsq : 1 < z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by simpa [Complex.normSq_apply, pow_two] using hz.1
   have hx : z.re ∈ Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨hre.1.le, hre.2.le⟩
   have ha : arcHeight z.re < z.im := by
     have h := arcHeight_sq hx
@@ -103,7 +103,7 @@ theorem exists_coreMass_pos : ∃ Y : ℝ, 1 ≤ Y ∧ 0 < coreMass N f Y := by
 
 /-- Actual unit-period hyperbolic trace-mass slice. -/
 def sliceMass (y : ℝ) : ℝ :=
-  (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ 2
+  (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ (2 : ℕ)
 
 /-- Above height one the standard domain slice is the actual normalized unit-period mass. -/
 theorem horizontal_mass_slice {Y y : ℝ} (hy : y ∈ Icc 1 Y) :

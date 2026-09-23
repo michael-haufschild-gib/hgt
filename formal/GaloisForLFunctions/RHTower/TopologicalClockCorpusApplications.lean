@@ -230,7 +230,7 @@ theorem ramseyDoubledPhase_quadratures (geometric : ℝ) :
 
 /-- Forward/backward composition squares and therefore doubles the corpus Berry holonomy phase. -/
 theorem berryHolonomy_fringe {N : ℕ} (p : Fin N → ℝ) (k : Fin N → ℤ) :
-    berryHolonomy p k ^ 2 =
+    berryHolonomy p k ^ (2 : ℕ) =
       Complex.exp (Complex.I * ((4 * Real.pi * velMean p k : ℝ) : ℂ)) := by
   rw [berryHolonomy, pow_two, ← Complex.exp_add]
   congr 1
@@ -324,7 +324,7 @@ theorem unitClockEightSample_gaussianSlipProbability_le :
           (centredProductGaussian (Fin 8) 1).real
             {noise : Fin 8 → ℝ | 4 ≤ |noise j|} :=
       measureReal_iUnion_fintype_le _
-    _ ≤ ∑ _j : Fin 8, 2 * Real.exp (-(4 : ℝ) ^ 2 / 2) :=
+    _ ≤ ∑ _j : Fin 8, 2 * Real.exp (-(4 : ℝ) ^ (2 : ℕ) / 2) :=
       Finset.sum_le_sum fun j _ =>
         measureReal_abs_ge_le_of_standardGaussian
           (p := centredProductGaussian (Fin 8) 1)
@@ -371,7 +371,7 @@ theorem quadraticBottcherWilsonReadout_even
 
 /-- Doubling determinant charge is pointwise squaring of its Wilson history. -/
 theorem loopHistory_two_mul (charge : ℤ) (t : ℝ) :
-    loopHistory (2 * charge) t = loopHistory charge t ^ 2 := by
+    loopHistory (2 * charge) t = loopHistory charge t ^ (2 : ℕ) := by
   rw [loopHistory, loopHistory, pow_two, ← Complex.exp_add]
   congr 1
   simp only [loopSpeed]

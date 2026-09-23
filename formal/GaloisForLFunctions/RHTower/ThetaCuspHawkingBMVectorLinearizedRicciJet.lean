@@ -12,14 +12,14 @@ def angular0 (s y A P Q R U W : ℂ) : Jet where
   value := A
   first := ![0,0,P,Q]
   second := !![0,0,0,0; 0,0,0,0;
-    0,0,U,W; 0,0,W,((s+1)*(s+2)*A-2*y*(Q-R))/y^2-U]
+    0,0,U,W; 0,0,W,((s+1)*(s+2)*A-2*y*(Q-R))/y^(2 : ℕ)-U]
 
 /-- Second covector component jet, retaining the differentiated divergence constraints. -/
 def angular1 (s y C P R U W : ℂ) : Jet where
   value := C
   first := ![0,0,R,-P]
   second := !![0,0,0,0; 0,0,0,0;
-    0,0,W+(s+1)*(s+2)*C/y^2,-U; 0,0,-U,-W]
+    0,0,W+(s+1)*(s+2)*C/y^(2 : ℕ),-U; 0,0,-U,-W]
 
 /-- Complete separated vector metric jet, including all symmetric and mixed components. -/
 def vectorJet (s r y B A C P Q R U W : ℂ) : CoordinateMetricTwoJet 4 ℂ :=
@@ -41,15 +41,15 @@ private theorem background_metric (r y : ℂ) :
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-       else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
-      (if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-        2*y⁻¹^2, 2*y⁻¹^2]
-       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-       else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
+      (if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+        2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+       else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
 
 /-- Background first/second entries with the index conditionals already resolved, so the
 expansion below never evaluates a decidable branch. -/
@@ -58,13 +58,13 @@ private theorem background_first_0 (r y : ℂ) :
     (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_first_2 (r y : ℂ) :
     (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_0_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
@@ -82,13 +82,13 @@ private theorem background_second_1_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ), 2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_second_1_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_2_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
@@ -106,19 +106,19 @@ private theorem background_second_3_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_3_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] := rfl
 
 set_option maxRecDepth 4096 in
 set_option maxHeartbeats 8000000 in
 /-- Every vector coordinate component satisfies the linearized Ricci equation. -/
 theorem ricci_component (s r y B A C P Q R U W : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (vectorJet s r y B A C P Q R U W) i j +
       3*(vectorJet s r y B A C P Q R U W).metric i j = 0 := by
@@ -144,7 +144,7 @@ theorem ricci_component (s r y B A C P Q R U W : ℂ)
 
 /-- The complete vector cosmological Einstein residual vanishes. -/
 theorem cosmological_component (s r y B A C P Q R U W : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (vectorJet s r y B A C P Q R U W) (-3) i j = 0 := by
   apply D4BMLinearizedRicci.cosmological_zero_of_ricci r y _ hr hy hf

@@ -50,7 +50,7 @@ theorem mahler_homogeneous_eq_zero {Y : ℂ⟦X⟧} {k : ℕ} (hk : 2 ≤ k) {c 
 /-- The exceptional homogeneous equation of the Böttcher velocity's Mahler equation:
 `Y(X²) = 2·Y` has no nonzero power-series solution. -/
 theorem mahler_homogeneous_two_eq_zero {Y : ℂ⟦X⟧}
-    (h : subst (PowerSeries.X ^ 2) Y = 2 * Y) : Y = 0 := by
+    (h : subst (PowerSeries.X ^ (2 : ℕ)) Y = 2 * Y) : Y = 0 := by
   refine mahler_homogeneous_eq_zero le_rfl (two_ne_zero) (by norm_num) ?_
   rw [h]
   congr 1

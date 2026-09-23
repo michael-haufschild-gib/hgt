@@ -182,10 +182,10 @@ theorem tendsto_routeUDyadicEvenSample_half
     filter_upwards [hzReBound, hperiodBound] with k hk hK
     exact hk.le.trans hK
   have hperiodSq : Tendsto
-      (fun k : ℕ => routeUHardEdgeAliasPeriod (k : ℝ) ^ 2) atTop atTop := by
+      (fun k : ℕ => routeUHardEdgeAliasPeriod (k : ℝ) ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hperiod.atTop_mul_atTop₀ hperiod
   have hbound : Tendsto
-      (fun k : ℕ => C / routeUHardEdgeAliasPeriod (k : ℝ) ^ 2)
+      (fun k : ℕ => C / routeUHardEdgeAliasPeriod (k : ℝ) ^ (2 : ℕ))
       atTop (nhds 0) := tendsto_const_nhds.div_atTop hperiodSq
   have htail : Tendsto
       (fun k : ℕ => routeUComplexHardEdgeAliasTail n f (k : ℝ) (z k))
@@ -241,11 +241,11 @@ theorem tendsto_routeUXiComplexHardEdgeSample_fine
     hperiod.comp tendsto_routeUDyadicFineIndex_atTop
   have hperiodFineSq : Tendsto
       (fun k : ℕ => routeUHardEdgeAliasPeriod
-        (routeUDyadicFineIndex k : ℝ) ^ 2) atTop atTop := by
+        (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hperiodFine.atTop_mul_atTop₀ hperiodFine
   have hbound : Tendsto
       (fun k : ℕ => C / routeUHardEdgeAliasPeriod
-        (routeUDyadicFineIndex k : ℝ) ^ 2)
+        (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ))
       atTop (nhds 0) := tendsto_const_nhds.div_atTop hperiodFineSq
   have htail : Tendsto
       (fun k : ℕ => routeUComplexHardEdgeAliasTail n f

@@ -7,7 +7,7 @@ Combining the off-ray logarithmic-derivative bounds with the log-ratio contracti
 real-packet theory, the critical logarithmic-derivative kernel matrices — and hence the theta
 tail first-moment Bezoutian matrices of the Riemann-hypothesis criterion — are positive
 semidefinite at every finite node system whose real parts form a separated packet (base
-`xiRayPacketBase`, consecutive ratio `xiRayPacketBase ^ 2`) and whose imaginary parts obey the
+`xiRayPacketBase`, consecutive ratio `xiRayPacketBase ^ (2 : ℕ)`) and whose imaginary parts obey the
 tilt budget `|Im W| ≤ 1/(32(log Re W + 3))`.  This is an arbitrary-rank unconditional stratum
 of the criterion family at genuinely complex nodes.
 -/
@@ -27,35 +27,35 @@ theorem xiRayPacketBase_ge' : (9216 : ℝ) ≤ xiRayPacketBase := by
   have hlog8γ : 0 ≤ Real.log (8 * xiRayEnvelopeRatio) :=
     Real.log_nonneg (by nlinarith)
   have hπe4 : 0 < Real.pi * Real.exp 4 := mul_pos Real.pi_pos (Real.exp_pos _)
-  have h36 : (36 : ℝ) ≤ (2 * Real.pi) ^ 2 := by nlinarith [Real.pi_gt_three]
+  have h36 : (36 : ℝ) ≤ (2 * Real.pi) ^ (2 : ℕ) := by nlinarith [Real.pi_gt_three]
   have h256 : (256 : ℝ) ≤ Real.exp (2 * Real.exp 1 + 8) := by
     have h8 : (8 : ℝ) ≤ 2 * Real.exp 1 + 8 := by nlinarith [Real.exp_pos 1]
     have hmono : Real.exp 8 ≤ Real.exp (2 * Real.exp 1 + 8) := Real.exp_le_exp.mpr h8
     have h2e : (2 : ℝ) ≤ Real.exp 1 := by
       have := Real.exp_one_gt_d9
       linarith
-    have hpow : (2 : ℝ) ^ 8 ≤ (Real.exp 1) ^ 8 :=
+    have hpow : (2 : ℝ) ^ (8 : ℕ) ≤ (Real.exp 1) ^ (8 : ℕ) :=
       pow_le_pow_left₀ (by norm_num) h2e 8
-    have hexp8 : (Real.exp 1) ^ 8 = Real.exp 8 := by
+    have hexp8 : (Real.exp 1) ^ (8 : ℕ) = Real.exp 8 := by
       rw [← Real.exp_nat_mul]
       norm_num
-    have h2 : (256 : ℝ) = 2 ^ 8 := by norm_num
+    have h2 : (256 : ℝ) = 2 ^ (8 : ℕ) := by norm_num
     linarith [hexp8 ▸ hpow]
-  have hprod : (9216 : ℝ) ≤ (2 * Real.pi) ^ 2 * Real.exp (2 * Real.exp 1 + 8) := by
+  have hprod : (9216 : ℝ) ≤ (2 * Real.pi) ^ (2 : ℕ) * Real.exp (2 * Real.exp 1 + 8) := by
     have := mul_le_mul h36 h256 (by norm_num) (le_trans (by norm_num) h36)
     linarith
   have hupper : (0 : ℝ) ≤ xiRayUpperBase := by
     have h1 : xiRayUpperBase = Real.pi * Real.exp 4 + Real.log xiRayEnvelopeRatio + 12 := rfl
     linarith
   have hlower : (9216 : ℝ) ≤ xiRayLowerBase := by
-    have h1 : xiRayLowerBase = (2 * Real.pi) ^ 2 * Real.exp (2 * Real.exp 1 + 8)
+    have h1 : xiRayLowerBase = (2 * Real.pi) ^ (2 : ℕ) * Real.exp (2 * Real.exp 1 + 8)
         + 4 * Real.log (8 * xiRayEnvelopeRatio) + 16 := rfl
     linarith
   have h1 : xiRayPacketBase = xiRayUpperBase + xiRayLowerBase := rfl
   linarith
 
 private theorem packet_le' {W : ℕ → ℂ} (hbase : xiRayPacketBase ≤ (W 0).re)
-    (hstep : ∀ m, xiRayPacketBase ^ 2 * (W m).re ≤ (W (m + 1)).re) :
+    (hstep : ∀ m, xiRayPacketBase ^ (2 : ℕ) * (W m).re ≤ (W (m + 1)).re) :
     ∀ i : ℕ, xiRayPacketBase ≤ (W i).re := by
   have hR256 := xiRayPacketBase_ge
   have hR0 : (0 : ℝ) < xiRayPacketBase := by linarith
@@ -65,12 +65,12 @@ private theorem packet_le' {W : ℕ → ℂ} (hbase : xiRayPacketBase ≤ (W 0).
   | succ m ih =>
     have h1 := hstep m
     have hxm : 0 < (W m).re := lt_of_lt_of_le hR0 ih
-    have hsq : xiRayPacketBase ≤ xiRayPacketBase ^ 2 := by nlinarith
-    have h2 : xiRayPacketBase ≤ xiRayPacketBase ^ 2 * (W m).re := by nlinarith
+    have hsq : xiRayPacketBase ≤ xiRayPacketBase ^ (2 : ℕ) := by nlinarith
+    have h2 : xiRayPacketBase ≤ xiRayPacketBase ^ (2 : ℕ) * (W m).re := by nlinarith
     linarith
 
 private theorem packet_gap' {W : ℕ → ℂ}
-    (hstep : ∀ m, xiRayPacketBase ^ 2 * (W m).re ≤ (W (m + 1)).re) :
+    (hstep : ∀ m, xiRayPacketBase ^ (2 : ℕ) * (W m).re ≤ (W (m + 1)).re) :
     ∀ i j : ℕ, i ≤ j → xiRayPacketBase ^ (2 * (j - i)) * (W i).re ≤ (W j).re := by
   intro i j hij
   induction j with
@@ -85,10 +85,10 @@ private theorem packet_gap' {W : ℕ → ℂ}
       have h2 := hstep m
       have hcast : 2 * (m + 1 - i) = 2 * (m - i) + 2 := by omega
       rw [hcast, pow_add]
-      have hpow0 : (0 : ℝ) ≤ xiRayPacketBase ^ 2 := sq_nonneg _
-      calc xiRayPacketBase ^ (2 * (m - i)) * xiRayPacketBase ^ 2 * (W i).re
-          = xiRayPacketBase ^ 2 * (xiRayPacketBase ^ (2 * (m - i)) * (W i).re) := by ring
-        _ ≤ xiRayPacketBase ^ 2 * (W m).re := mul_le_mul_of_nonneg_left h1 hpow0
+      have hpow0 : (0 : ℝ) ≤ xiRayPacketBase ^ (2 : ℕ) := sq_nonneg _
+      calc xiRayPacketBase ^ (2 * (m - i)) * xiRayPacketBase ^ (2 : ℕ) * (W i).re
+          = xiRayPacketBase ^ (2 : ℕ) * (xiRayPacketBase ^ (2 * (m - i)) * (W i).re) := by ring
+        _ ≤ xiRayPacketBase ^ (2 : ℕ) * (W m).re := mul_le_mul_of_nonneg_left h1 hpow0
         _ ≤ (W (m + 1)).re := h2
     · have h0 : i = m + 1 := by omega
       subst h0
@@ -140,7 +140,7 @@ An arbitrary-rank unconditional stratum of the RH-critical kernel family at genu
 complex nodes: real parts form a separated packet, imaginary parts obey the tilt budget. -/
 theorem posSemidef_criticalLogDerivKernel_tiltedPacket
     {W : ℕ → ℂ} (hbase : xiRayPacketBase ≤ (W 0).re)
-    (hstep : ∀ m, xiRayPacketBase ^ 2 * (W m).re ≤ (W (m + 1)).re)
+    (hstep : ∀ m, xiRayPacketBase ^ (2 : ℕ) * (W m).re ≤ (W (m + 1)).re)
     (htilt : ∀ m, |(W m).im| ≤ xiRayTiltBudget (W m).re) (n : ℕ) :
     (Matrix.of fun j k : Fin n => criticalLogDerivKernel (W j) (W k)).PosSemidef := by
   classical
@@ -229,21 +229,21 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
       have h2 : Real.sqrt (A * A) ≤ Real.sqrt ((q ^ (2 * (j - i)) * B) * A) :=
         Real.sqrt_le_sqrt h1
       have h3 : Real.sqrt (A * A) = A := Real.sqrt_mul_self hA0
-      have h4 : (q ^ (2 * (j - i)) * B) * A = (q ^ (j - i)) ^ 2 * (B * A) := by
+      have h4 : (q ^ (2 * (j - i)) * B) * A = (q ^ (j - i)) ^ (2 : ℕ) * (B * A) := by
         rw [show 2 * (j - i) = (j - i) * 2 from Nat.mul_comm 2 (j - i), pow_mul]
         ring
-      have h5 : Real.sqrt ((q ^ (j - i)) ^ 2 * (B * A))
+      have h5 : Real.sqrt ((q ^ (j - i)) ^ (2 : ℕ) * (B * A))
           = q ^ (j - i) * Real.sqrt (B * A) := by
         rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (pow_nonneg hq0.le _)]
       calc A = Real.sqrt (A * A) := h3.symm
         _ ≤ Real.sqrt ((q ^ (2 * (j - i)) * B) * A) := h2
-        _ = Real.sqrt ((q ^ (j - i)) ^ 2 * (B * A)) := by rw [h4]
+        _ = Real.sqrt ((q ^ (j - i)) ^ (2 : ℕ) * (B * A)) := by rw [h4]
         _ = q ^ (j - i) * Real.sqrt (B * A) := h5
     have hsq16 : Real.sqrt (B / 16) * Real.sqrt (A / 16) = Real.sqrt (B * A) / 16 := by
       rw [← Real.sqrt_mul (by linarith : (0 : ℝ) ≤ B / 16)]
       have h1 : B / 16 * (A / 16) = B * A * (1 / 256) := by ring
       rw [h1, Real.sqrt_mul (mul_nonneg hB0 hA0),
-        show (1 : ℝ) / 256 = (1 / 16) ^ 2 by norm_num,
+        show (1 : ℝ) / 256 = (1 / 16) ^ (2 : ℕ) by norm_num,
         Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ (1 : ℝ) / 16)]
       ring
     have hDi16 : B / 16 ≤ D i := by
@@ -355,7 +355,7 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
     · exact le_refl 0
   have hrediag : ∀ j : Fin n,
       ((starRingEnd ℂ) (cv j) * cv j * criticalLogDerivKernel (W j) (W j)).re
-        = b (j : ℕ) ^ 2 := by
+        = b (j : ℕ) ^ (2 : ℕ) := by
     intro j
     rw [hdiag (j : ℕ)]
     have h1 : (starRingEnd ℂ) (cv j) * cv j = ((Complex.normSq (cv j) : ℝ) : ℂ) := by
@@ -366,7 +366,7 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
     rw [hbfin j, mul_pow, Real.sq_sqrt (hD0 (j : ℕ)), ← Complex.normSq_eq_norm_sq]
   have hreoff : ∀ j k : Fin n, j ≠ k →
       -(128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-          * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2))
+          * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2))
         ≤ ((starRingEnd ℂ) (cv j) * cv k * criticalLogDerivKernel (W j) (W k)).re := by
     have hq0 : 0 < 2 / xiRayPacketBase := div_pos (by norm_num) hR0
     have hmain : ∀ j k : Fin n, (j : ℕ) < (k : ℕ) →
@@ -424,14 +424,14 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
         rw [hbfin j, hbfin k]
         ring
       linarith [h1, h2 ▸ h1, h3, h4 ▸ h3]
-    have hamgm : b (j : ℕ) * b (k : ℕ) ≤ (b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2 := by
+    have hamgm : b (j : ℕ) * b (k : ℕ) ≤ (b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2 := by
       nlinarith [sq_nonneg (b (j : ℕ) - b (k : ℕ))]
     have hKq0 : (0 : ℝ) ≤ 128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) :=
       mul_nonneg (by norm_num) (pow_nonneg hq0.le _)
     have h5 := abs_le.mp habs
     have h6 : b (j : ℕ) * b (k : ℕ)
           * (128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ))
-        ≤ (b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2
+        ≤ (b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2
           * (128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)) :=
       mul_le_mul_of_nonneg_right hamgm hKq0
     have h7 := h5.1
@@ -479,9 +479,9 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
             ((starRingEnd ℂ) (cv j) * cv k * criticalLogDerivKernel (W j) (W k)).re :=
       fun j => Complex.re_sum _ _
     have hlower : ∀ j : Fin n,
-        b (j : ℕ) ^ 2 - (∑ k ∈ Finset.univ.erase j,
+        b (j : ℕ) ^ (2 : ℕ) - (∑ k ∈ Finset.univ.erase j,
             128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-              * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2))
+              * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2))
           ≤ ∑ k : Fin n,
               ((starRingEnd ℂ) (cv j) * cv k * criticalLogDerivKernel (W j) (W k)).re := by
       intro j
@@ -494,16 +494,16 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
       rw [hsplit, hrediag j]
       have hsum := Finset.sum_le_sum (s := Finset.univ.erase j)
         (f := fun k : Fin n => -(128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-          * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2)))
+          * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2)))
         (g := fun k : Fin n =>
           ((starRingEnd ℂ) (cv j) * cv k * criticalLogDerivKernel (W j) (W k)).re)
         (fun k hk => hreoff j k (Ne.symm (Finset.mem_erase.mp hk).1))
       rw [Finset.sum_neg_distrib] at hsum
       linarith
     have hswap : ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-        128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ 2
+        128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ (2 : ℕ)
         = ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-            128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2 := by
+            128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ) := by
       rw [Finset.sum_comm' (t' := Finset.univ)
         (s' := fun k => Finset.univ.erase k)
         (by
@@ -514,56 +514,56 @@ theorem posSemidef_criticalLogDerivKernel_tiltedPacket
       rw [Nat.dist_comm]
     have hW : ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
         128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-          * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2)
-        ≤ ∑ j : Fin n, b (j : ℕ) ^ 2 := by
+          * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2)
+        ≤ ∑ j : Fin n, b (j : ℕ) ^ (2 : ℕ) := by
       have hsplit2 : ∀ j : Fin n, ∑ k ∈ Finset.univ.erase j,
           128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-            * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2)
+            * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2)
           = (∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2) / 2
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ)) / 2
             + (∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ 2) / 2 := by
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ (2 : ℕ)) / 2 := by
         intro j
         rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
         exact Finset.sum_congr rfl fun k _ => by ring
       have hA : ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-          128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2
-          ≤ ∑ j : Fin n, b (j : ℕ) ^ 2 := by
+          128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ)
+          ≤ ∑ j : Fin n, b (j : ℕ) ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun j _ => ?_
         have h1 : ∑ k ∈ Finset.univ.erase j,
-            128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2
+            128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ)
             = (∑ k ∈ Finset.univ.erase j,
-                128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)) * b (j : ℕ) ^ 2 := by
+                128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)) * b (j : ℕ) ^ (2 : ℕ) := by
           rw [Finset.sum_mul]
         rw [h1]
         calc (∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)) * b (j : ℕ) ^ 2
-            ≤ 1 * b (j : ℕ) ^ 2 :=
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)) * b (j : ℕ) ^ (2 : ℕ)
+            ≤ 1 * b (j : ℕ) ^ (2 : ℕ) :=
               mul_le_mul_of_nonneg_right (hrow j) (sq_nonneg _)
-          _ = b (j : ℕ) ^ 2 := one_mul _
+          _ = b (j : ℕ) ^ (2 : ℕ) := one_mul _
       calc ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
             128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-              * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2)
+              * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2)
           = (∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2) / 2
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ)) / 2
             + (∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ 2) / 2 := by
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (k : ℕ) ^ (2 : ℕ)) / 2 := by
             rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
             exact Finset.sum_congr rfl fun j _ => hsplit2 j
         _ = ∑ j : Fin n, ∑ k ∈ Finset.univ.erase j,
-              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ 2 := by
+              128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ) * b (j : ℕ) ^ (2 : ℕ) := by
             rw [hswap]
             ring
-        _ ≤ ∑ j : Fin n, b (j : ℕ) ^ 2 := hA
-    have htotal : ∑ j : Fin n, (b (j : ℕ) ^ 2 - ∑ k ∈ Finset.univ.erase j,
+        _ ≤ ∑ j : Fin n, b (j : ℕ) ^ (2 : ℕ) := hA
+    have htotal : ∑ j : Fin n, (b (j : ℕ) ^ (2 : ℕ) - ∑ k ∈ Finset.univ.erase j,
         128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-          * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2))
+          * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2))
         ≤ ∑ j : Fin n, ∑ k : Fin n,
             ((starRingEnd ℂ) (cv j) * cv k * criticalLogDerivKernel (W j) (W k)).re :=
       Finset.sum_le_sum fun j _ => hlower j
-    have hnonneg : 0 ≤ ∑ j : Fin n, (b (j : ℕ) ^ 2 - ∑ k ∈ Finset.univ.erase j,
+    have hnonneg : 0 ≤ ∑ j : Fin n, (b (j : ℕ) ^ (2 : ℕ) - ∑ k ∈ Finset.univ.erase j,
         128 * (2 / xiRayPacketBase) ^ Nat.dist (j : ℕ) (k : ℕ)
-          * ((b (j : ℕ) ^ 2 + b (k : ℕ) ^ 2) / 2)) := by
+          * ((b (j : ℕ) ^ (2 : ℕ) + b (k : ℕ) ^ (2 : ℕ)) / 2)) := by
       rw [Finset.sum_sub_distrib]
       linarith [hW]
     have hfinal : ∑ j : Fin n, (∑ k : Fin n,
@@ -591,7 +591,7 @@ arbitrary-rank unconditional stratum of the theta tail first-moment Bezoutian cr
 family at genuinely complex nodes of the cofinal Euler half-plane. -/
 theorem posSemidef_thetaTailFirstMomentBezoutian_tiltedPacket
     {W : ℕ → ℂ} (hbase : xiRayPacketBase ≤ (W 0).re)
-    (hstep : ∀ m, xiRayPacketBase ^ 2 * (W m).re ≤ (W (m + 1)).re)
+    (hstep : ∀ m, xiRayPacketBase ^ (2 : ℕ) * (W m).re ≤ (W (m + 1)).re)
     (htilt : ∀ m, |(W m).im| ≤ xiRayTiltBudget (W m).re) (n : ℕ) :
     (Matrix.of fun j k : Fin n =>
       thetaTailFirstMomentBezoutian (W j) ((starRingEnd ℂ) (W k))).PosSemidef := by
@@ -638,7 +638,7 @@ criterion: every tilted separated packet, read as a node system of the cofinal E
 half-plane, yields a positive semidefinite criterion matrix. -/
 theorem posSemidef_thetaTailFirstMomentBezoutian_tiltedPacket_nodes
     {W : ℕ → ℂ} (hbase : xiRayPacketBase ≤ (W 0).re)
-    (hstep : ∀ m, xiRayPacketBase ^ 2 * (W m).re ≤ (W (m + 1)).re)
+    (hstep : ∀ m, xiRayPacketBase ^ (2 : ℕ) * (W m).re ≤ (W (m + 1)).re)
     (htilt : ∀ m, |(W m).im| ≤ xiRayTiltBudget (W m).re) (n : ℕ)
     (w : Fin n → {V : ℂ // 1 / 2 < V.re}) (hw : ∀ j, (w j : ℂ) = W (j : ℕ)) :
     (Matrix.of fun j k =>

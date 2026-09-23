@@ -175,7 +175,7 @@ theorem abs_gibbs_current_sub_totient_le (S : Finset ℕ) (hS : ∀ p ∈ S, 1 �
     (hk : 1 ≤ S.card) (x : ℝ) (hx : 0 ≤ x)
     (hxE : x * (∏ p ∈ S, (p : ℝ)) ≤ 1) :
     |gibbsDiag S x (-1) - (-1) ^ (S.card + 1) * (∏ p ∈ S, ((p : ℝ) - 1)) * x|
-      ≤ x ^ 2 * ∏ p ∈ S, (1 + (p : ℝ) ^ 2) := by
+      ≤ x ^ (2 : ℕ) * ∏ p ∈ S, (1 + (p : ℝ) ^ (2 : ℕ)) := by
   classical
   have hEnonneg : (0 : ℝ) ≤ ∏ p ∈ S, (p : ℝ) :=
     Finset.prod_nonneg fun p _ => Nat.cast_nonneg p
@@ -198,7 +198,7 @@ theorem abs_gibbs_current_sub_totient_le (S : Finset ℕ) (hS : ∀ p ∈ S, 1 �
   -- the pointwise second-order estimate
   have hterm : ∀ T ∈ S.powerset,
       |Real.exp (-(x * ∏ p ∈ T, (p : ℝ))) - 1 + x * ∏ p ∈ T, (p : ℝ)|
-        ≤ x ^ 2 * ∏ p ∈ T, (p : ℝ) ^ 2 := by
+        ≤ x ^ (2 : ℕ) * ∏ p ∈ T, (p : ℝ) ^ (2 : ℕ) := by
     intro T hT
     rw [Finset.mem_powerset] at hT
     have hTpos : (0 : ℝ) ≤ ∏ p ∈ T, (p : ℝ) :=
@@ -219,14 +219,14 @@ theorem abs_gibbs_current_sub_totient_le (S : Finset ℕ) (hS : ∀ p ∈ S, 1 �
       rw [abs_neg, abs_of_nonneg hy0]
       exact hy1
     have hb := Real.abs_exp_sub_one_sub_id_le habs
-    have hsq : ∏ p ∈ T, (p : ℝ) ^ 2 = (∏ p ∈ T, (p : ℝ)) ^ 2 := by
+    have hsq : ∏ p ∈ T, (p : ℝ) ^ (2 : ℕ) = (∏ p ∈ T, (p : ℝ)) ^ (2 : ℕ) := by
       rw [← Finset.prod_pow]
     rw [hsq]
     calc |Real.exp (-(x * ∏ p ∈ T, (p : ℝ))) - 1 + x * ∏ p ∈ T, (p : ℝ)|
         = |Real.exp (-(x * ∏ p ∈ T, (p : ℝ))) - 1 - (-(x * ∏ p ∈ T, (p : ℝ)))| := by
           ring_nf
-      _ ≤ (-(x * ∏ p ∈ T, (p : ℝ))) ^ 2 := hb
-      _ = x ^ 2 * (∏ p ∈ T, (p : ℝ)) ^ 2 := by ring
+      _ ≤ (-(x * ∏ p ∈ T, (p : ℝ))) ^ (2 : ℕ) := hb
+      _ = x ^ (2 : ℕ) * (∏ p ∈ T, (p : ℝ)) ^ (2 : ℕ) := by ring
   -- assemble
   have hsplit : gibbsDiag S x (-1) - (-1) ^ (S.card + 1) * (∏ p ∈ S, ((p : ℝ) - 1)) * x
       = ∑ T ∈ S.powerset, ((-1 : ℝ)) ^ T.card
@@ -254,19 +254,19 @@ theorem abs_gibbs_current_sub_totient_le (S : Finset ℕ) (hS : ∀ p ∈ S, 1 �
   have hb2 : ∀ T ∈ S.powerset,
       |((-1 : ℝ)) ^ T.card
         * (Real.exp (-(x * ∏ p ∈ T, (p : ℝ))) - 1 + x * ∏ p ∈ T, (p : ℝ))|
-        ≤ x ^ 2 * ∏ p ∈ T, (p : ℝ) ^ 2 := by
+        ≤ x ^ (2 : ℕ) * ∏ p ∈ T, (p : ℝ) ^ (2 : ℕ) := by
     intro T hT
     rw [abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
     exact hterm T hT
   refine le_trans (Finset.sum_le_sum hb2) ?_
   rw [← Finset.mul_sum]
-  have hexpand : ∑ T ∈ S.powerset, ∏ p ∈ T, (p : ℝ) ^ 2
-      = ∏ p ∈ S, ((p : ℝ) ^ 2 + 1) := by
-    have h := Finset.prod_add (fun p : ℕ => (p : ℝ) ^ 2) (fun _ : ℕ => (1 : ℝ)) S
+  have hexpand : ∑ T ∈ S.powerset, ∏ p ∈ T, (p : ℝ) ^ (2 : ℕ)
+      = ∏ p ∈ S, ((p : ℝ) ^ (2 : ℕ) + 1) := by
+    have h := Finset.prod_add (fun p : ℕ => (p : ℝ) ^ (2 : ℕ)) (fun _ : ℕ => (1 : ℝ)) S
     simp only [Finset.prod_const, one_pow, mul_one] at h
     exact h.symm
   rw [hexpand]
-  have hcomm : ∏ p ∈ S, ((p : ℝ) ^ 2 + 1) = ∏ p ∈ S, (1 + (p : ℝ) ^ 2) :=
+  have hcomm : ∏ p ∈ S, ((p : ℝ) ^ (2 : ℕ) + 1) = ∏ p ∈ S, (1 + (p : ℝ) ^ (2 : ℕ)) :=
     Finset.prod_congr rfl fun p _ => by ring
   rw [hcomm]
 

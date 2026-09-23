@@ -29,12 +29,12 @@ theorem intervalIntegral_connesConsaniPrimeGramMultiplier_fourier
       (((p - 1 : ℝ) : ℂ) /
         (((Real.log p : ℝ) : ℂ) + 2 * (Real.pi : ℂ) * Complex.I * (j : ℂ))) := by
   have hp0 : 0 < p := zero_lt_one.trans hp
-  have hp2 : 1 < p ^ 2 := by nlinarith
+  have hp2 : 1 < p ^ (2 : ℕ) := by nlinarith
   have h := intervalIntegral_gaussPrimeScale_fourier hp2 j
   rw [gaussPrimeScaleFourierCoefficient] at h
-  have hsqrt : Real.sqrt (p ^ 2) = p := by
+  have hsqrt : Real.sqrt (p ^ (2 : ℕ)) = p := by
     rw [Real.sqrt_sq_eq_abs, abs_of_pos hp0]
-  have hlog : Real.log (p ^ 2) / 2 = Real.log p := by
+  have hlog : Real.log (p ^ (2 : ℕ)) / 2 = Real.log p := by
     rw [Real.log_pow]
     ring
   rw [hsqrt, hlog] at h

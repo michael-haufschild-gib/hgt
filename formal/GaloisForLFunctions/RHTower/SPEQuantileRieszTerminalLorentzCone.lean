@@ -110,8 +110,8 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary_terminal_ad
 /-- The terminal pair has an exact positive Lorentz square, not merely a nonnegative one. -/
 theorem ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary_terminal_sq_sub_errorDisplacement_sq
     (K : ℕ) :
-    ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ 2 -
-        speQuantileRieszTerminalErrorDisplacement K ^ 2 =
+    ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ (2 : ℕ) -
+        speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) =
       8 * ccmActualHeadParabolicMass K * (Real.sqrt ((K + 3 : ℕ) : ℝ) - 1) := by
   rw [ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary_terminal_eq_headMass_add_threshold,
     speQuantileRieszTerminalErrorDisplacement_eq_threshold_sub_headMass]
@@ -124,12 +124,12 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary_terminal_st
           speQuantileRieszTerminalErrorDisplacement K ∧
       0 < ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 +
           speQuantileRieszTerminalErrorDisplacement K ∧
-      0 < ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ 2 -
-          speQuantileRieszTerminalErrorDisplacement K ^ 2 := by
+      0 < ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ (2 : ℕ) -
+          speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) := by
   have hmass : 0 < ccmActualHeadParabolicMass K := ccmActualHeadParabolicMass_pos K
   have hN : (1 : ℝ) < ((K + 3 : ℕ) : ℝ) := by
     exact_mod_cast (show 1 < K + 3 by omega)
-  have hsquare : 1 < (Real.sqrt ((K + 3 : ℕ) : ℝ)) ^ 2 := by
+  have hsquare : 1 < (Real.sqrt ((K + 3 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     rw [Real.sq_sqrt (by positivity)]
     exact hN
   have hsqrt : 1 < Real.sqrt ((K + 3 : ℕ) : ℝ) := by
@@ -299,7 +299,7 @@ private theorem terminalPJuliaCoordinates_zero_re_eq (K : ℕ) :
 P Julia coordinate escapes to `+infinity` already before the ordered-history current is added. -/
 theorem tendsto_speQuantileRieszTerminalPJuliaCoordinates_zero_re_atTop :
     Tendsto (fun K : ℕ => (speQuantileRieszTerminalPJuliaCoordinates K 0).re) atTop atTop := by
-  have hsqrt_sq : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
+  have hsqrt_sq : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
   have hsqrt_nonneg : 0 ≤ Real.sqrt 63 := Real.sqrt_nonneg _
   have hcoef : 0 < 8 - Real.sqrt 63 := by nlinarith
   have hscale : 0 < 2 * (8 - Real.sqrt 63) := by positivity
@@ -325,20 +325,20 @@ theorem tendsto_speQuantileRieszTerminalPJuliaCoordinates_zero_re_atTop :
 
 private theorem terminalJuliaCoordinatesOf_quadratic (B D : ℝ) :
     speQuantileRieszTerminalPJuliaQuadratic (terminalJuliaCoordinatesOf B D) =
-      ((B ^ 2 - D ^ 2 : ℝ) : ℂ) := by
-  have hsqrt : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
+      ((B ^ (2 : ℕ) - D ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have hsqrt : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
   have hstar8 : (starRingEnd ℂ) (8 : ℂ) = 8 := by
     simp only [starRingEnd_apply, star_ofNat]
-  have hBre : ((B : ℂ) ^ 2).re = B ^ 2 := by
+  have hBre : ((B : ℂ) ^ (2 : ℕ)).re = B ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow]
     rfl
-  have hDre : ((D : ℂ) ^ 2).re = D ^ 2 := by
+  have hDre : ((D : ℂ) ^ (2 : ℕ)).re = D ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow]
     rfl
-  have hBim : ((B : ℂ) ^ 2).im = 0 := by
+  have hBim : ((B : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [← Complex.ofReal_pow]
     rfl
-  have hDim : ((D : ℂ) ^ 2).im = 0 := by
+  have hDim : ((D : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [← Complex.ofReal_pow]
     rfl
   apply Complex.ext
@@ -362,8 +362,8 @@ private theorem terminalJuliaCoordinatesOf_quadratic (B D : ℝ) :
 square.  No boundedness or RH hypothesis is used. -/
 theorem speQuantileRieszTerminalPJuliaQuadratic_eq_terminalLorentzSquare (K : ℕ) :
     speQuantileRieszTerminalPJuliaQuadratic (speQuantileRieszTerminalPJuliaCoordinates K) =
-      ((ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ 2 -
-        speQuantileRieszTerminalErrorDisplacement K ^ 2 : ℝ) : ℂ) := by
+      ((ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ (2 : ℕ) -
+        speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ) : ℝ) : ℂ) := by
   exact terminalJuliaCoordinatesOf_quadratic _ _
 
 /-- The actual P target coordinate is strictly timelike at every finite cutoff. -/
@@ -372,8 +372,8 @@ theorem speQuantileRieszTerminalPJuliaQuadratic_re_pos (K : ℕ) :
       (speQuantileRieszTerminalPJuliaCoordinates K)).re := by
   rw [speQuantileRieszTerminalPJuliaQuadratic_eq_terminalLorentzSquare]
   change 0 <
-    ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ 2 -
-      speQuantileRieszTerminalErrorDisplacement K ^ 2
+    ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary K (Real.log (K + 3)) 0 ^ (2 : ℕ) -
+      speQuantileRieszTerminalErrorDisplacement K ^ (2 : ℕ)
   exact
     (ccmActualHeadMatchedCompletedQuantileParabolicSourceBoundary_terminal_strictTimelike K).2.2
 

@@ -66,9 +66,9 @@ theorem cglProposition51_firstAxis_norm_tsum_le_literalEpsilonSourcePower
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
           (S.epsilonDenominator * 25) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
           cglProposition51PuncturedInverseSquareMass)) /
-        S.base ^ 10 := by
+        S.base ^ (10 : ℕ) := by
   calc
     ∑' m : CGLProposition51PuncturedFrequency,
         ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
@@ -94,9 +94,9 @@ theorem cglProposition51_secondAxis_norm_tsum_le_literalEpsilonSourcePower
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
           (S.epsilonDenominator * 25) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
           cglProposition51PuncturedInverseSquareMass)) /
-        S.base ^ 10 := by
+        S.base ^ (10 : ℕ) := by
   calc
     ∑' m : CGLProposition51PuncturedFrequency,
         ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R

@@ -38,7 +38,7 @@ theorem spectralKrylovCarrier_one_eq_lineProjection
       (spectralPowerVector frequency 1) = 0) :
     spectralKrylovCarrier frequency 1 x =
       (inner ℂ (spectralPowerVector frequency 1) x /
-        ((‖spectralPowerVector frequency 1‖ ^ 2 : ℝ) : ℂ)) •
+        ((‖spectralPowerVector frequency 1‖ ^ (2 : ℕ) : ℝ) : ℂ)) •
           spectralPowerVector frequency 1 := by
   let v := spectralPowerVector frequency 1
   let z := (ℂ ∙ v).starProjection x
@@ -98,9 +98,9 @@ theorem norm_sq_spectralKrylovCarrier_one_eq
     (hxzero : inner ℂ (spectralPowerVector frequency 0) x = 0)
     (horth : inner ℂ (spectralPowerVector frequency 0)
       (spectralPowerVector frequency 1) = 0) :
-    ‖spectralKrylovCarrier frequency 1 x‖ ^ 2 =
-      ‖inner ℂ (spectralPowerVector frequency 1) x‖ ^ 2 /
-        ‖spectralPowerVector frequency 1‖ ^ 2 := by
+    ‖spectralKrylovCarrier frequency 1 x‖ ^ (2 : ℕ) =
+      ‖inner ℂ (spectralPowerVector frequency 1) x‖ ^ (2 : ℕ) /
+        ‖spectralPowerVector frequency 1‖ ^ (2 : ℕ) := by
   rw [spectralKrylovCarrier_one_eq_lineProjection frequency x hxzero horth]
   by_cases hv : ‖spectralPowerVector frequency 1‖ = 0
   · have hvzero : spectralPowerVector frequency 1 = 0 := norm_eq_zero.mp hv
@@ -116,9 +116,9 @@ theorem norm_sq_spectralKrylovCarrier_one_eq_of_sum_zero
     (x : EuclideanSpace ℂ I)
     (hxzero : ∑ i, x i = 0)
     (hfrequencyZero : ∑ i, frequency i = 0) :
-    ‖spectralKrylovCarrier frequency 1 x‖ ^ 2 =
-      ‖inner ℂ (spectralPowerVector frequency 1) x‖ ^ 2 /
-        ‖spectralPowerVector frequency 1‖ ^ 2 := by
+    ‖spectralKrylovCarrier frequency 1 x‖ ^ (2 : ℕ) =
+      ‖inner ℂ (spectralPowerVector frequency 1) x‖ ^ (2 : ℕ) /
+        ‖spectralPowerVector frequency 1‖ ^ (2 : ℕ) := by
   apply norm_sq_spectralKrylovCarrier_one_eq frequency x
   · rwa [inner_spectralPowerVector_zero]
   · rw [inner_spectralPowerVector_zero_one]

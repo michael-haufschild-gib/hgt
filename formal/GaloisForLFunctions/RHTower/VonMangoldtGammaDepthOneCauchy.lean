@@ -52,14 +52,14 @@ def finiteExponentialDepthOneAnomalyCoefficient
 /-- Coordinate Julia defect of a finite positive exponential source shift. -/
 def finiteExponentialJuliaDefect
     {P : Type*} [Fintype P] (rate : P → ℝ) : (P → ℂ) →ₗ[ℂ] (P → ℂ) where
-  toFun a p := (Real.sqrt (1 - Real.exp (-rate p) ^ 2) : ℂ) * a p
+  toFun a p := (Real.sqrt (1 - Real.exp (-rate p) ^ (2 : ℕ)) : ℂ) * a p
   map_add' _ _ := by
     funext p
     simp [mul_add]
   map_smul' c a := by
     funext p
-    change (Real.sqrt (1 - Real.exp (-rate p) ^ 2) : ℂ) * (c * a p) =
-      c * ((Real.sqrt (1 - Real.exp (-rate p) ^ 2) : ℂ) * a p)
+    change (Real.sqrt (1 - Real.exp (-rate p) ^ (2 : ℕ)) : ℂ) * (c * a p) =
+      c * ((Real.sqrt (1 - Real.exp (-rate p) ^ (2 : ℕ)) : ℂ) * a p)
     ring
 
 /-- Contractive residual coordinate following the Julia defect. -/
@@ -84,7 +84,7 @@ theorem finiteExponentialJuliaDefect_comp_residual
       LinearMap.id - finiteExponentialSourceShift (fun p => (rate p : ℂ)) := by
   ext a p
   change
-    (Real.sqrt (1 - Real.exp (-rate p) ^ 2) : ℂ) *
+    (Real.sqrt (1 - Real.exp (-rate p) ^ (2 : ℕ)) : ℂ) *
         ((Real.sqrt ((1 - Real.exp (-rate p)) / (1 + Real.exp (-rate p))) : ℂ) * a p) =
       a p - Complex.exp (-(rate p : ℂ)) * a p
   rw [← mul_assoc]
@@ -215,7 +215,7 @@ def finiteVonMangoldtDepthOneAmplitude (n : ℕ) : ℂ :=
 
 lemma finiteVonMangoldtDepthOneAmplitude_sq
     {n : ℕ} (hn : n ≠ 0) :
-    finiteVonMangoldtDepthOneAmplitude n ^ 2 = finiteVonMangoldtWeight n := by
+    finiteVonMangoldtDepthOneAmplitude n ^ (2 : ℕ) = finiteVonMangoldtWeight n := by
   rw [finiteVonMangoldtDepthOneAmplitude, finiteVonMangoldtWeight,
     LSeries.term_of_ne_zero hn]
   have hnonneg : 0 ≤ ArithmeticFunction.vonMangoldt n / (n : ℝ) :=

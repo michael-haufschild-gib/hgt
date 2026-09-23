@@ -27,7 +27,7 @@ degree-`(d−1)` coefficient of `Q` itself is even and hence zero, so this is th
     line `x₀ = 0`: `Re Q` grows like `|t|^d`.
   * If `Im q = 0` (so `Re q ≠ 0`), the degree-`d` real part vanishes, but choosing `x₀ = ±1`
     activates the degree-`(d−1)` real coefficient `d · x₀ · (±1) · Re q ≠ 0`: `Re Q` grows like
-    `|t|^{d−1} ≥ |t|^2`.
+    `|t|^{d−1} ≥ |t|^(2 : ℕ)`.
 
 Either way `Re Q`, hence `Re P` on some vertical line, grows faster than any multiple of
 `log(2 + |t|)`, contradicting the vertical bound.  Thus `deg P ≤ 1`.

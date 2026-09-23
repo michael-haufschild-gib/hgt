@@ -64,8 +64,8 @@ theorem deningerFinitePlace_apply_relDegree (w : FinitePlace L) (x : K) :
 multiplies the corresponding quantity at `v` by `[L : K]`. -/
 theorem deningerL2FibreSum (v : FinitePlace K) (x : K) :
     ∑ w ∈ deningerPlacesOver (L := L) v,
-        (Real.log (w (algebraMap K L x))) ^ 2 / (deningerPlaceDegree w : ℝ)
-      = (finrank K L : ℝ) * ((Real.log (v x)) ^ 2 / (deningerPlaceDegree v : ℝ)) := by
+        (Real.log (w (algebraMap K L x))) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ)
+      = (finrank K L : ℝ) * ((Real.log (v x)) ^ (2 : ℕ) / (deningerPlaceDegree v : ℝ)) := by
   have hdv : (0 : ℝ) < (deningerPlaceDegree v : ℝ) := by
     have hpos : 0 < deningerPlaceDegree v := by
       haveI : (Ideal.under ℤ v.maximalIdeal.asIdeal).IsMaximal :=
@@ -76,9 +76,9 @@ theorem deningerL2FibreSum (v : FinitePlace K) (x : K) :
         (Ideal.under_ne_bot ℤ v.maximalIdeal.ne_bot)
     exact_mod_cast hpos
   have hterm : ∀ w ∈ deningerPlacesOver (L := L) v,
-      (Real.log (w (algebraMap K L x))) ^ 2 / (deningerPlaceDegree w : ℝ)
+      (Real.log (w (algebraMap K L x))) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ)
         = (deningerRelDegree (K := K) w : ℝ)
-            * ((Real.log (v x)) ^ 2 / (deningerPlaceDegree v : ℝ)) := by
+            * ((Real.log (v x)) ^ (2 : ℕ) / (deningerPlaceDegree v : ℝ)) := by
     intro w hw
     have hres : deningerRestrictPlace (K := K) w = v := (deningerMem_placesOver v w).mp hw
     have hval := deningerFinitePlace_apply_relDegree (K := K) w x

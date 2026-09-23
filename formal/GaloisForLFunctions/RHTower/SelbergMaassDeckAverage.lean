@@ -49,7 +49,7 @@ theorem scalarTrace_eigen (z : ℍ) :
   have hq (q : Deck N) : ContDiffAt ℝ 2 ((quotientForm N f q).1.1 ∘ ofComplex) (z : ℂ) :=
     (quotientForm N f q).2.2.1.1.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   simp only [Function.comp_def] at hq
-  change -(z.im : ℂ) ^ 2 *
+  change -(z.im : ℂ) ^ (2 : ℕ) *
     (dir 1 (dir 1 (fun w : ℂ => ∑ q : Deck N, (quotientForm N f q).1.1 (ofComplex w))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w : ℂ => ∑ q : Deck N,
         (quotientForm N f q).1.1 (ofComplex w))) (z : ℂ)) = _
@@ -80,9 +80,9 @@ def deckVector (z : ℍ) : EuclideanSpace ℂ (Deck N) :=
   WithLp.toLp 2 (fun q : Deck N => (quotientForm N f q).1.1 z)
 
 /-- The actual deck-vector norm is exactly the source trace density. -/
-theorem deckVector_norm_sq (z : ℍ) : ‖deckVector N f z‖ ^ 2 = density N f z := by
+theorem deckVector_norm_sq (z : ℍ) : ‖deckVector N f z‖ ^ (2 : ℕ) = density N f z := by
   rw [EuclideanSpace.norm_sq_eq]
-  change (∑ q : Deck N, ‖(quotientForm N f q).1.1 z‖ ^ 2) =
+  change (∑ q : Deck N, ‖(quotientForm N f q).1.1 z‖ ^ (2 : ℕ)) =
     ∑ q : Deck N, Complex.normSq ((quotientForm N f q).1.1 z)
   simp only [Complex.normSq_eq_norm_sq]
 
@@ -123,7 +123,7 @@ theorem deck_average_zero (z : ℍ) : finiteRegularAverage (deckVector N f z) = 
 /-- Full finite-group displacement recovers all actual source-vector variance. -/
 theorem deck_displacement_energy (z : ℍ) :
     (2 * (Fintype.card (Deck N) : ℝ))⁻¹ *
-        ∑ g : Deck N, ‖finiteRegularUnitary g (deckVector N f z) - deckVector N f z‖ ^ 2 =
+        ∑ g : Deck N, ‖finiteRegularUnitary g (deckVector N f z) - deckVector N f z‖ ^ (2 : ℕ) =
       density N f z := by
   rw [finiteRegularAverage_energy, deck_average_zero, norm_zero, zero_pow (by norm_num), sub_zero,
     deckVector_norm_sq]

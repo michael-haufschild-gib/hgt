@@ -57,8 +57,8 @@ private theorem log_nat_succ_le_log_nat_succ_hybrid {L U : ℕ} (hLU : L ≤ U) 
 theorem abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (heL : e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMain 1 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| ≤
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| ≤
       2 * Real.log ((U + 1 : ℕ) : ℝ) * ((e : ℝ) / (L : ℝ)) := by
   have hL : 0 < L := he.trans_le heL
   have hU : 0 < U := hL.trans_le hLU
@@ -72,7 +72,7 @@ theorem abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le
   have hdiv := natCast_div_antitone_denominator_hybrid (e := e) hL hLU
   have hlogLU := log_nat_succ_le_log_nat_succ_hybrid hLU
   have hu' :
-      |Real.log (U / e + 1 : ℕ) ^ 2 - Real.log ((U : ℝ) / (e : ℝ)) ^ 2| / 2 ≤
+      |Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) - Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 ≤
         K * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ ≤ (2 * K * ((e : ℝ) / (U : ℝ))) / 2 :=
@@ -80,7 +80,7 @@ theorem abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le
       _ = K * ((e : ℝ) / (U : ℝ)) := by ring
       _ ≤ K * ((e : ℝ) / (L : ℝ)) := mul_le_mul_of_nonneg_left hdiv hK0
   have hl' :
-      |Real.log (L / e + 1 : ℕ) ^ 2 - Real.log ((L : ℝ) / (e : ℝ)) ^ 2| / 2 ≤
+      |Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) - Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 ≤
         K * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ ≤ (2 * Real.log ((L + 1 : ℕ) : ℝ) * ((e : ℝ) / (L : ℝ))) / 2 :=
@@ -89,27 +89,27 @@ theorem abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le
       _ ≤ K * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_right hlogLU (by positivity)
   have hend :
-      |(Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-          Real.log (L / e + 1 : ℕ) ^ 2 / 2) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| ≤
+      |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+          Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2) -
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| ≤
         2 * K * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ = |(Real.log (U / e + 1 : ℕ) ^ 2 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 2) / 2 -
-          (Real.log (L / e + 1 : ℕ) ^ 2 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 2) / 2| := by
+      _ = |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2 -
+          (Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| := by
               congr 1
               ring
-      _ ≤ |Real.log (U / e + 1 : ℕ) ^ 2 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 2| / 2 +
-          |Real.log (L / e + 1 : ℕ) ^ 2 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 2| / 2 := by
+      _ ≤ |Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 +
+          |Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 := by
               calc
-                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ 2 -
-                        Real.log ((U : ℝ) / (e : ℝ)) ^ 2) / 2| +
-                    |(Real.log (L / e + 1 : ℕ) ^ 2 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 2) / 2| := abs_sub _ _
+                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+                        Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| +
+                    |(Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| := abs_sub _ _
                 _ = _ := by rw [abs_div, abs_div]; norm_num
       _ ≤ K * ((e : ℝ) / (L : ℝ)) + K * ((e : ℝ) / (L : ℝ)) :=
         add_le_add hu' hl'
@@ -121,9 +121,9 @@ theorem abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le
 theorem abs_harmonicLogWindowMain_two_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (heL : e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMain 2 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| ≤
-      2 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| ≤
+      2 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
   have hL : 0 < L := he.trans_le heL
   have hU : 0 < U := hL.trans_le hLU
   have heU : e ≤ U := heL.trans hLU
@@ -137,55 +137,55 @@ theorem abs_harmonicLogWindowMain_two_natDiv_sub_continuous_le
   have hlogLU := log_nat_succ_le_log_nat_succ_hybrid hLU
   have hlogL0 : 0 ≤ Real.log ((L + 1 : ℕ) : ℝ) :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ L + 1))
-  have hlogL2 : Real.log ((L + 1 : ℕ) : ℝ) ^ 2 ≤ K ^ 2 := by
+  have hlogL2 : Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := by
     have h1 := mul_le_mul_of_nonneg_left hlogLU hlogL0
     have h2 := mul_le_mul_of_nonneg_right hlogLU hK0
     nlinarith
   have hu' :
-      |Real.log (U / e + 1 : ℕ) ^ 3 - Real.log ((U : ℝ) / (e : ℝ)) ^ 3| / 3 ≤
-        K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) - Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 ≤
+        K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ ≤ (3 * K ^ 2 * ((e : ℝ) / (U : ℝ))) / 3 :=
+      _ ≤ (3 * K ^ (2 : ℕ) * ((e : ℝ) / (U : ℝ))) / 3 :=
         div_le_div_of_nonneg_right hu (by norm_num)
-      _ = K ^ 2 * ((e : ℝ) / (U : ℝ)) := by ring
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ = K ^ (2 : ℕ) * ((e : ℝ) / (U : ℝ)) := by ring
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_left hdiv (sq_nonneg K)
   have hl' :
-      |Real.log (L / e + 1 : ℕ) ^ 3 - Real.log ((L : ℝ) / (e : ℝ)) ^ 3| / 3 ≤
-        K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) - Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 ≤
+        K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ ≤ (3 * Real.log ((L + 1 : ℕ) : ℝ) ^ 2 *
+      _ ≤ (3 * Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ((e : ℝ) / (L : ℝ))) / 3 :=
         div_le_div_of_nonneg_right hl (by norm_num)
-      _ = Real.log ((L + 1 : ℕ) : ℝ) ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ = Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_right hlogL2 (by positivity)
   have hend :
-      |(Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-          Real.log (L / e + 1 : ℕ) ^ 3 / 3) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| ≤
-        2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+          Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3) -
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| ≤
+        2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ = |(Real.log (U / e + 1 : ℕ) ^ 3 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 3) / 3 -
-          (Real.log (L / e + 1 : ℕ) ^ 3 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 3) / 3| := by
+      _ = |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3 -
+          (Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| := by
               congr 1
               ring
-      _ ≤ |Real.log (U / e + 1 : ℕ) ^ 3 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 3| / 3 +
-          |Real.log (L / e + 1 : ℕ) ^ 3 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 3| / 3 := by
+      _ ≤ |Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 +
+          |Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 := by
               calc
-                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ 3 -
-                        Real.log ((U : ℝ) / (e : ℝ)) ^ 3) / 3| +
-                    |(Real.log (L / e + 1 : ℕ) ^ 3 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 3) / 3| := abs_sub _ _
+                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+                        Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| +
+                    |(Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| := abs_sub _ _
                 _ = _ := by rw [abs_div, abs_div]; norm_num
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) +
-          K ^ 2 * ((e : ℝ) / (L : ℝ)) := add_le_add hu' hl'
-      _ = 2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) +
+          K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := add_le_add hu' hl'
+      _ = 2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
   norm_num [harmonicLogWindowMain, harmonicLogMomentPrimitive,
     Nat.cast_add, Nat.cast_one, K] at hend ⊢
   exact hend
@@ -238,8 +238,8 @@ theorem abs_barbanVehovLongFirstLogKernelMain_sub_continuous_le
   let M0 := harmonicLogWindowMain 0 (L / e) (U / e)
   let M1 := harmonicLogWindowMain 1 (L / e) (U / e)
   let C0 := Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))
-  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2
+  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2
   let K := Real.log ((U + 1 : ℕ) : ℝ)
   have he : 0 < e := Nat.lcm_pos hq hr
   have heU : e ≤ U := heL.trans hLU
@@ -280,7 +280,7 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
     (heL : Nat.lcm q r ≤ L) (hLU : L ≤ U) :
     |barbanVehovLongSecondLogKernelMain L U q r -
         barbanVehovLongSecondLogKernelContinuous L U q r| ≤
-      8 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 / (L : ℝ) := by
+      8 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
   let e := Nat.lcm q r
   let a := Real.log (((e / q : ℕ) : ℝ))
   let b := Real.log (((e / r : ℕ) : ℝ))
@@ -288,10 +288,10 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
   let M1 := harmonicLogWindowMain 1 (L / e) (U / e)
   let M2 := harmonicLogWindowMain 2 (L / e) (U / e)
   let C0 := Real.log ((U : ℝ) / (e : ℝ)) - Real.log ((L : ℝ) / (e : ℝ))
-  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2
-  let C2 := Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-    Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3
+  let C1 := Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2
+  let C2 := Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+    Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3
   let K := Real.log ((U + 1 : ℕ) : ℝ)
   have he : 0 < e := Nat.lcm_pos hq hr
   have heU : e ≤ U := heL.trans hLU
@@ -302,7 +302,7 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
     exact abs_log_natDiv_le_log_succ_hybrid he hq (Nat.dvd_lcm_left q r) heU
   have hb : |b| ≤ K := by
     exact abs_log_natDiv_le_log_succ_hybrid he hr (Nat.dvd_lcm_right q r) heU
-  have hab : |a * b| ≤ K ^ 2 := by
+  have hab : |a * b| ≤ K ^ (2 : ℕ) := by
     rw [abs_mul]
     nlinarith [mul_le_mul ha hb (abs_nonneg b) hK0]
   have habadd : |a + b| ≤ 2 * K := by
@@ -311,12 +311,12 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
     exact abs_harmonicLogWindowMain_zero_natDiv_sub_continuous_le he heL hLU
   have h1 : |M1 - C1| ≤ 2 * K * ((e : ℝ) / (L : ℝ)) := by
     exact abs_harmonicLogWindowMain_one_natDiv_sub_continuous_le he heL hLU
-  have h2 : |M2 - C2| ≤ 2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+  have h2 : |M2 - C2| ≤ 2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     exact abs_harmonicLogWindowMain_two_natDiv_sub_continuous_le he heL hLU
   have hinner :
       |a * b * M0 + (a + b) * M1 + M2 -
         (a * b * C0 + (a + b) * C1 + C2)| ≤
-      8 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      8 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ = |(a * b * (M0 - C0) + (a + b) * (M1 - C1)) + (M2 - C2)| := by ring_nf
       _ ≤ |a * b * (M0 - C0) + (a + b) * (M1 - C1)| + |M2 - C2| :=
@@ -325,14 +325,14 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
         add_le_add (abs_add_le _ _) le_rfl
       _ = (|a * b| * |M0 - C0| + |a + b| * |M1 - C1|) + |M2 - C2| := by
         simp only [abs_mul]
-      _ ≤ (K ^ 2 * (2 * (e : ℝ) / (L : ℝ)) +
+      _ ≤ (K ^ (2 : ℕ) * (2 * (e : ℝ) / (L : ℝ)) +
             (2 * K) * (2 * K * ((e : ℝ) / (L : ℝ)))) +
-          2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+          2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
         exact add_le_add
           (add_le_add
             (mul_le_mul hab h0 (abs_nonneg _) (sq_nonneg K))
             (mul_le_mul habadd h1 (abs_nonneg _) (by positivity))) h2
-      _ = 8 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
+      _ = 8 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
   rw [barbanVehovLongSecondLogKernelMain,
     barbanVehovLongSecondLogKernelContinuous]
   change |1 / (e : ℝ) * (a * b * M0 + (a + b) * M1 + M2) -
@@ -342,9 +342,9 @@ theorem abs_barbanVehovLongSecondLogKernelMain_sub_continuous_le
     1 / (e : ℝ) *
         |a * b * M0 + (a + b) * M1 + M2 -
           (a * b * C0 + (a + b) * C1 + C2)| ≤
-      1 / (e : ℝ) * (8 * K ^ 2 * ((e : ℝ) / (L : ℝ))) :=
+      1 / (e : ℝ) * (8 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ))) :=
         mul_le_mul_of_nonneg_left hinner (by positivity)
-    _ = 8 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 / (L : ℝ) := by
+    _ = 8 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) / (L : ℝ) := by
       dsimp [K]
       field_simp
 
@@ -401,7 +401,7 @@ theorem abs_barbanVehovLongFirstLogKernel_sub_continuous_le_horizon
     (heL : Nat.lcm q r ≤ L) (hLU : L ≤ U) :
     |barbanVehovLongFirstLogKernel L U q r -
         barbanVehovLongFirstLogKernelContinuous L U q r| ≤
-      2000 * (1 + Real.log ((U + 1 : ℕ) : ℝ)) ^ 2 / (L : ℝ) := by
+      2000 * (1 + Real.log ((U + 1 : ℕ) : ℝ)) ^ (2 : ℕ) / (L : ℝ) := by
   let e := Nat.lcm q r
   let a := Real.log (((e / r : ℕ) : ℝ))
   let K := Real.log ((U + 1 : ℕ) : ℝ)
@@ -416,7 +416,7 @@ theorem abs_barbanVehovLongFirstLogKernel_sub_continuous_le_horizon
   by_cases hscale : 8 * e ≤ L
   · have hsharp := abs_barbanVehovLongFirstLogKernel_sub_continuous_le
       hq hr hscale hLU
-    have hnum : 6 * K ≤ 2000 * (1 + K) ^ 2 := by nlinarith
+    have hnum : 6 * K ≤ 2000 * (1 + K) ^ (2 : ℕ) := by nlinarith
     exact hsharp.trans (by
       apply div_le_div_of_nonneg_right hnum
       positivity)
@@ -438,11 +438,11 @@ theorem abs_barbanVehovLongFirstLogKernel_sub_continuous_le_horizon
           · positivity
         _ = (320 * K + 1600) / (L : ℝ) := by ring
     have hdom : (320 * K + 1600) / (L : ℝ) + 4 * K / (L : ℝ) ≤
-        2000 * (1 + K) ^ 2 / (L : ℝ) := by
+        2000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := by
       calc
         (320 * K + 1600) / (L : ℝ) + 4 * K / (L : ℝ) =
             (324 * K + 1600) / (L : ℝ) := by ring
-        _ ≤ 2000 * (1 + K) ^ 2 / (L : ℝ) := by
+        _ ≤ 2000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := by
           apply div_le_div_of_nonneg_right (by nlinarith)
           positivity
     calc
@@ -461,7 +461,7 @@ theorem abs_barbanVehovLongFirstLogKernel_sub_continuous_le_horizon
         exact add_le_add hmain hend
       _ ≤ (320 * K + 1600) / (L : ℝ) + 4 * K / (L : ℝ) :=
         add_le_add hmain' le_rfl
-      _ ≤ 2000 * (1 + K) ^ 2 / (L : ℝ) := hdom
+      _ ≤ 2000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := hdom
 
 /-- Uniform second-log kernel error through the exact lcm horizon. -/
 theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
@@ -469,7 +469,7 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
     (heL : Nat.lcm q r ≤ L) (hLU : L ≤ U) :
     |barbanVehovLongSecondLogKernel L U q r -
         barbanVehovLongSecondLogKernelContinuous L U q r| ≤
-      20000 * (1 + Real.log ((U + 1 : ℕ) : ℝ)) ^ 2 / (L : ℝ) := by
+      20000 * (1 + Real.log ((U + 1 : ℕ) : ℝ)) ^ (2 : ℕ) / (L : ℝ) := by
   let e := Nat.lcm q r
   let a := Real.log (((e / q : ℕ) : ℝ))
   let b := Real.log (((e / r : ℕ) : ℝ))
@@ -484,7 +484,7 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
     exact abs_log_natDiv_le_log_succ_hybrid he hq (Nat.dvd_lcm_left q r) heU
   have hb : |b| ≤ K := by
     exact abs_log_natDiv_le_log_succ_hybrid he hr (Nat.dvd_lcm_right q r) heU
-  have hab : |a * b| ≤ K ^ 2 := by
+  have hab : |a * b| ≤ K ^ (2 : ℕ) := by
     rw [abs_mul]
     nlinarith [mul_le_mul ha hb (abs_nonneg b) hK0]
   have habadd : |a + b| ≤ 2 * K := by
@@ -492,7 +492,7 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
   by_cases hscale : 8 * e ≤ L
   · have hsharp := abs_barbanVehovLongSecondLogKernel_sub_continuous_le
       hq hr hscale hLU
-    have hnum : 12 * K ^ 2 ≤ 20000 * (1 + K) ^ 2 := by nlinarith [sq_nonneg K]
+    have hnum : 12 * K ^ (2 : ℕ) ≤ 20000 * (1 + K) ^ (2 : ℕ) := by nlinarith [sq_nonneg K]
     exact hsharp.trans (by
       apply div_le_div_of_nonneg_right hnum
       positivity)
@@ -503,26 +503,26 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
     have hnum0 : 0 ≤ 40 * |a * b| + 200 * |a + b| + 2000 := by positivity
     have hmain' :
         (40 * |a * b| + 200 * |a + b| + 2000) / (e : ℝ) ≤
-          (320 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) := by
+          (320 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) := by
       calc
         (40 * |a * b| + 200 * |a + b| + 2000) / (e : ℝ) =
             (40 * |a * b| + 200 * |a + b| + 2000) * (1 / (e : ℝ)) := by ring
         _ ≤ (40 * |a * b| + 200 * |a + b| + 2000) * (8 / (L : ℝ)) :=
           mul_le_mul_of_nonneg_left hrec hnum0
-        _ ≤ (40 * K ^ 2 + 400 * K + 2000) * (8 / (L : ℝ)) := by
+        _ ≤ (40 * K ^ (2 : ℕ) + 400 * K + 2000) * (8 / (L : ℝ)) := by
           apply mul_le_mul_of_nonneg_right
           · nlinarith
           · positivity
-        _ = (320 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) := by ring
+        _ = (320 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) := by ring
     have hdom :
-        (320 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) +
-            8 * K ^ 2 / (L : ℝ) ≤
-          20000 * (1 + K) ^ 2 / (L : ℝ) := by
+        (320 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) +
+            8 * K ^ (2 : ℕ) / (L : ℝ) ≤
+          20000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := by
       calc
-        (320 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) +
-            8 * K ^ 2 / (L : ℝ) =
-          (328 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) := by ring
-        _ ≤ 20000 * (1 + K) ^ 2 / (L : ℝ) := by
+        (320 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) +
+            8 * K ^ (2 : ℕ) / (L : ℝ) =
+          (328 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) := by ring
+        _ ≤ 20000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := by
           apply div_le_div_of_nonneg_right (by nlinarith [sq_nonneg K])
           positivity
     calc
@@ -538,25 +538,25 @@ theorem abs_barbanVehovLongSecondLogKernel_sub_continuous_le_horizon
             (barbanVehovLongSecondLogKernelMain L U q r -
               barbanVehovLongSecondLogKernelContinuous L U q r)
       _ ≤ (40 * |a * b| + 200 * |a + b| + 2000) / (e : ℝ) +
-          8 * K ^ 2 / (L : ℝ) := by
+          8 * K ^ (2 : ℕ) / (L : ℝ) := by
         exact add_le_add hmain hend
-      _ ≤ (320 * K ^ 2 + 3200 * K + 16000) / (L : ℝ) +
-          8 * K ^ 2 / (L : ℝ) := add_le_add hmain' le_rfl
-      _ ≤ 20000 * (1 + K) ^ 2 / (L : ℝ) := hdom
+      _ ≤ (320 * K ^ (2 : ℕ) + 3200 * K + 16000) / (L : ℝ) +
+          8 * K ^ (2 : ℕ) / (L : ℝ) := add_le_add hmain' le_rfl
+      _ ≤ 20000 * (1 + K) ^ (2 : ℕ) / (L : ℝ) := hdom
 
 theorem lcm_le_square_of_bounded
     {M q r : ℕ} (hq : 0 < q) (hr : 0 < r) (hqM : q ≤ M) (hrM : r ≤ M) :
-    Nat.lcm q r ≤ M ^ 2 := by
+    Nat.lcm q r ≤ M ^ (2 : ℕ) := by
   exact (Nat.lcm_le_mul hq hr).trans (by
     rw [pow_two]
     exact Nat.mul_le_mul hqM hrM)
 
 /-- Full base lcm moment has bounded discretization error at the quadratic horizon. -/
 theorem abs_barbanVehovFullLongBaseLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovFullLongBaseLcm L M -
         barbanVehovFullLongBaseContinuous L M| ≤
-      (M : ℝ) ^ 2 * (322 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) * (322 / (L : ℝ)) := by
   have hLU : L ≤ L * M := Nat.le_mul_of_pos_right _ (by omega)
   rw [barbanVehovFullLongBaseLcm, barbanVehovFullLongBaseContinuous,
     ← Finset.sum_sub_distrib]
@@ -588,17 +588,17 @@ theorem abs_barbanVehovFullLongBaseLcm_sub_continuous_le_horizon
     _ = (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2|) *
           (322 / (L : ℝ)) := by rw [Finset.sum_mul]
-    _ ≤ (M : ℝ) ^ 2 * (322 / (L : ℝ)) :=
+    _ ≤ (M : ℝ) ^ (2 : ℕ) * (322 / (L : ℝ)) :=
       mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_le_quadratic hM) (by positivity)
 
 /-- Full base--derivative cross moment has bounded discretization error at the quadratic horizon. -/
 theorem abs_barbanVehovFullLongCrossLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovFullLongCrossLcm L M -
         barbanVehovFullLongCrossContinuous L M| ≤
-      (M : ℝ) ^ 2 *
-        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) *
+        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
   have hLU : L ≤ L * M := Nat.le_mul_of_pos_right _ (by omega)
   rw [barbanVehovFullLongCrossLcm, barbanVehovFullLongCrossContinuous,
     ← Finset.sum_sub_distrib]
@@ -611,7 +611,7 @@ theorem abs_barbanVehovFullLongCrossLcm_sub_continuous_le_horizon
             barbanVehovLongFirstLogKernelContinuous L (L * M) p.1 p.2| ≤
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| *
-          (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+          (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       apply Finset.sum_le_sum
       intro p hp
       obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
@@ -632,21 +632,21 @@ theorem abs_barbanVehovFullLongCrossLcm_sub_continuous_le_horizon
         _ ≤ _ := mul_le_mul_of_nonneg_left hk (abs_nonneg _)
     _ = (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2|) *
-          (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+          (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       rw [Finset.sum_mul]
-    _ ≤ (M : ℝ) ^ 2 *
-        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+    _ ≤ (M : ℝ) ^ (2 : ℕ) *
+        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       apply mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_le_quadratic hM)
       positivity
 
 /-- Full derivative-square moment has bounded discretization error at the quadratic horizon. -/
 theorem abs_barbanVehovFullLongDerivativeLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovFullLongDerivativeLcm L M -
         barbanVehovFullLongDerivativeContinuous L M| ≤
-      (M : ℝ) ^ 2 *
-        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) *
+        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
   have hLU : L ≤ L * M := Nat.le_mul_of_pos_right _ (by omega)
   rw [barbanVehovFullLongDerivativeLcm, barbanVehovFullLongDerivativeContinuous,
     ← Finset.sum_sub_distrib]
@@ -659,7 +659,7 @@ theorem abs_barbanVehovFullLongDerivativeLcm_sub_continuous_le_horizon
             barbanVehovLongSecondLogKernelContinuous L (L * M) p.1 p.2| ≤
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2| *
-          (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+          (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       apply Finset.sum_le_sum
       intro p hp
       obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
@@ -677,10 +677,10 @@ theorem abs_barbanVehovFullLongDerivativeLcm_sub_continuous_le_horizon
         _ ≤ _ := mul_le_mul_of_nonneg_left hk (abs_nonneg _)
     _ = (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         |barbanVehovWeight M p.1 * barbanVehovWeight M p.2|) *
-          (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+          (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       rw [Finset.sum_mul]
-    _ ≤ (M : ℝ) ^ 2 *
-        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+    _ ≤ (M : ℝ) ^ (2 : ℕ) *
+        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       apply mul_le_mul_of_nonneg_right
         (sum_product_abs_barbanVehovWeight_le_quadratic hM)
       positivity

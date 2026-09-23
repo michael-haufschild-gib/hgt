@@ -168,7 +168,7 @@ theorem norm_incompleteTensorReference :
         (IncompleteTensorElementary.reference H Ω)) = (1 : ℂ)
     rw [inner_incompleteTensorVector, incompleteTensorKernel]
     simp [IncompleteTensorElementary.reference]
-  have hsq : ‖incompleteTensorReference H Ω‖ ^ 2 =
+  have hsq : ‖incompleteTensorReference H Ω‖ ^ (2 : ℕ) =
       RCLike.re (inner ℂ (incompleteTensorReference H Ω)
         (incompleteTensorReference H Ω)) :=
     norm_sq_eq_re_inner _

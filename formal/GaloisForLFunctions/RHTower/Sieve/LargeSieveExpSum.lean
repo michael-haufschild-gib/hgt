@@ -42,7 +42,7 @@ theorem norm_inner_expRow_conjVec (N : ℕ) (θ : ℝ) (c : Fin N → ℂ) :
 
 /-- The energy of the coefficient vector. -/
 theorem norm_sq_conjVec (N : ℕ) (c : Fin N → ℂ) :
-    ‖conjVec N c‖ ^ 2 = ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ‖conjVec N c‖ ^ (2 : ℕ) = ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   rw [conjVec, EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   refine Finset.sum_congr rfl fun n _ => ?_
   simp
@@ -51,9 +51,9 @@ theorem norm_sq_conjVec (N : ℕ) (c : Fin N → ℂ) :
 theorem largeSieve_expSum_farey (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (s : Finset (ℕ × ℕ))
     (hmem : ∀ p ∈ s, 0 < p.2 ∧ p.2 ≤ Q ∧ 1 ≤ p.1 ∧ p.1 ≤ p.2 ∧ Nat.Coprime p.1 p.2)
     (c : Fin N → ℂ) :
-    ∑ p ∈ s, ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1)))
-          * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ p ∈ s, ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1)))
+          * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   have hbase := largeSieve_farey_reduced N hQ s hmem (conjVec N c)
   rw [norm_sq_conjVec] at hbase
   refine le_trans (le_of_eq ?_) hbase

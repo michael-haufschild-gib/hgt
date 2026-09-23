@@ -41,7 +41,7 @@ theorem finiteCharacterSum_leadTail_factor
 theorem sum_normSq_finiteCharacterSum_eq_finiteFiberEnergy
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) :
-    (∑ ξ : Fin k → ZMod q, ‖finiteCharacterSum q k f ξ‖ ^ 2) =
+    (∑ ξ : Fin k → ZMod q, ‖finiteCharacterSum q k f ξ‖ ^ (2 : ℕ)) =
       (q ^ k : ℝ) * finiteFiberEnergy f := by
   apply Complex.ofReal_injective
   rw [sum_normSq_finiteCharacterSum_eq_energy]
@@ -95,11 +95,11 @@ theorem normSq_finiteCharacterSum_leadTail_le_classes
     (lead : L → Fin k → ZMod q) (atom : A → Fin k → ZMod q)
     (c : A → ι) (ξ : Fin k → ZMod q) :
     ‖finiteCharacterSum q k
-        (finiteLeadTailSignature q k b lead atom) ξ‖ ^ 2 ≤
+        (finiteLeadTailSignature q k b lead atom) ξ‖ ^ (2 : ℕ) ≤
       (Fintype.card ι : ℝ) ^ (2 * b - 1) *
         ∑ i : ι, ‖finiteCharacterSum q k
           (finiteLeadTailSignature q k b lead
-            (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ 2 := by
+            (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ (2 : ℕ) := by
   let Lead := finiteCharacterSum q k lead ξ
   let Atom := finiteCharacterSum q k atom ξ
   let Class : ι → ℂ := fun i => finiteClassCharacterSum q k atom c i ξ
@@ -118,14 +118,14 @@ theorem normSq_finiteCharacterSum_leadTail_le_classes
   have hatom := norm_finiteCharacterSum_pow_le_classes
     (ι := ι) q k b hb atom c ξ
   calc
-    (‖Lead‖ * ‖Atom‖ ^ b) ^ 2 =
-        ‖Lead‖ ^ 2 * ‖Atom‖ ^ (2 * b) := by
+    (‖Lead‖ * ‖Atom‖ ^ b) ^ (2 : ℕ) =
+        ‖Lead‖ ^ (2 : ℕ) * ‖Atom‖ ^ (2 * b) := by
       simp [mul_pow, pow_mul, mul_comm]
-    _ ≤ ‖Lead‖ ^ 2 * ((Fintype.card ι : ℝ) ^ (2 * b - 1) *
+    _ ≤ ‖Lead‖ ^ (2 : ℕ) * ((Fintype.card ι : ℝ) ^ (2 * b - 1) *
         ∑ i : ι, ‖Class i‖ ^ (2 * b)) :=
       mul_le_mul_of_nonneg_left hatom (sq_nonneg _)
     _ = (Fintype.card ι : ℝ) ^ (2 * b - 1) *
-        ∑ i : ι, (‖Lead‖ * ‖Class i‖ ^ b) ^ 2 := by
+        ∑ i : ι, (‖Lead‖ * ‖Class i‖ ^ b) ^ (2 : ℕ) := by
       simp_rw [Finset.mul_sum, mul_pow, pow_mul]
       ring_nf
 
@@ -143,21 +143,21 @@ theorem finiteFiberEnergy_le_residueClasses
   have hfourier :
       (∑ ξ : Fin k → ZMod q,
         ‖finiteCharacterSum q k
-          (finiteLeadTailSignature q k b lead atom) ξ‖ ^ 2) ≤
+          (finiteLeadTailSignature q k b lead atom) ξ‖ ^ (2 : ℕ)) ≤
       (Fintype.card ι : ℝ) ^ (2 * b - 1) *
         ∑ i : ι, ∑ ξ : Fin k → ZMod q,
           ‖finiteCharacterSum q k
             (finiteLeadTailSignature q k b lead
-              (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ 2 := by
+              (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ (2 : ℕ) := by
     calc
       (∑ ξ : Fin k → ZMod q,
           ‖finiteCharacterSum q k
-            (finiteLeadTailSignature q k b lead atom) ξ‖ ^ 2) ≤
+            (finiteLeadTailSignature q k b lead atom) ξ‖ ^ (2 : ℕ)) ≤
           ∑ ξ : Fin k → ZMod q,
             (Fintype.card ι : ℝ) ^ (2 * b - 1) *
               ∑ i : ι, ‖finiteCharacterSum q k
                 (finiteLeadTailSignature q k b lead
-                  (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ 2 := by
+                  (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ (2 : ℕ) := by
         apply Finset.sum_le_sum
         intro ξ _
         exact normSq_finiteCharacterSum_leadTail_le_classes
@@ -166,7 +166,7 @@ theorem finiteFiberEnergy_le_residueClasses
           ∑ i : ι, ∑ ξ : Fin k → ZMod q,
             ‖finiteCharacterSum q k
               (finiteLeadTailSignature q k b lead
-                (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ 2 := by
+                (fun a : {a : A // c a = i} => atom a.1)) ξ‖ ^ (2 : ℕ) := by
         simp_rw [← Finset.mul_sum]
         rw [Finset.sum_comm]
   simp_rw [sum_normSq_finiteCharacterSum_eq_finiteFiberEnergy] at hfourier

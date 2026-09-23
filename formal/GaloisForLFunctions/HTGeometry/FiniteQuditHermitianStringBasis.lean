@@ -15,7 +15,7 @@ Hermitian units form a basis of that algebra consisting of Hermitian matrices,
 exactly one of which — the all-ground label — is the identity.  The support of a
 label is the set of sites carrying a non-identity factor, so the labels of
 support size in `[1, q]` index the non-scalar Hermitian strings acting on at most
-`q` sites, and their number is `∑_{k=1}^{q} C(|σ|,k) (D^2-1)^k`.
+`q` sites, and their number is `∑_{k=1}^{q} C(|σ|,k) (D^(2 : ℕ)-1)^k`.
 -/
 
 open Matrix
@@ -212,7 +212,7 @@ abbrev QLocalStringLabel (σ : Type*) [Fintype σ] [DecidableEq σ] (D q : ℕ) 
     0 < (quditStringSupport a).card ∧ (quditStringSupport a).card ≤ q}
 
 /-- **Dictionary size.**  The number of non-scalar Hermitian strings acting on at
-most `q` sites is `∑_{k=1}^{q} C(|σ|,k)(D^2-1)^k`. -/
+most `q` sites is `∑_{k=1}^{q} C(|σ|,k)(D^(2 : ℕ)-1)^k`. -/
 theorem card_QLocalStringLabel (q : ℕ) :
     Fintype.card (QLocalStringLabel σ D q)
       = ∑ k ∈ Finset.Icc 1 q, (Fintype.card σ).choose k * (D * D - 1) ^ k := by

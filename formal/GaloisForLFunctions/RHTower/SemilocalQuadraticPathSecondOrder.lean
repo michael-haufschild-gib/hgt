@@ -30,7 +30,7 @@ variable (M₁ M₂ : ∀ m : ℕ, Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
 
 /-- `A_m(t) = 1 + t M₁ + t² M₂`. -/
 noncomputable def quadPath (m : ℕ) (t : ℝ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
-  1 + t • M₁ m + (t ^ 2) • M₂ m
+  1 + t • M₁ m + (t ^ (2 : ℕ)) • M₂ m
 
 noncomputable def quadDet (m : ℕ) (t : ℝ) : ℝ := (quadPath M₁ M₂ m t).det
 
@@ -48,7 +48,7 @@ theorem quadPath_zero (m : ℕ) : quadPath M₁ M₂ m 0 = 1 := by
 theorem hasDerivAt_quadPath_entry (m : ℕ) (t : ℝ) (i j : Fin (m + 1)) :
     HasDerivAt (fun ε => quadPath M₁ M₂ m ε i j) ((M₁ m + (2 * t) • M₂ m) i j) t := by
   have hfun : (fun ε => quadPath M₁ M₂ m ε i j) =
-      fun ε => (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) i j + ε * M₁ m i j + ε ^ 2 * M₂ m i j := by
+      fun ε => (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) i j + ε * M₁ m i j + ε ^ (2 : ℕ) * M₂ m i j := by
     funext ε
     simp only [quadPath, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
   rw [hfun]
@@ -201,7 +201,7 @@ theorem quadPrevDet_zero (n : ℕ) : quadPrevDet M₁ M₂ n 0 = 1 := by
 /-- `r_n² Δ_{n−1} Δ_{n+1} / Δ_n²`. -/
 noncomputable def quadSquaredRadius (n : ℕ) (t : ℝ) : ℝ :=
   archimedeanSquaredRadius n *
-    (quadPrevDet M₁ M₂ n t * quadDet M₁ M₂ (n + 1) t / quadDet M₁ M₂ n t ^ 2)
+    (quadPrevDet M₁ M₂ n t * quadDet M₁ M₂ (n + 1) t / quadDet M₁ M₂ n t ^ (2 : ℕ))
 
 noncomputable def quadRadiusSlope (n : ℕ) (t : ℝ) : ℝ :=
   quadPrevSlope M₁ M₂ n t + quadSlope M₁ M₂ (n + 1) t - 2 * quadSlope M₁ M₂ n t
@@ -247,7 +247,7 @@ noncomputable def quadSecondOrderJet (n : ℕ) : ℝ :=
   archimedeanSquaredRadius n *
     ((prevJet (quadLogJet M₁ M₂) n + quadLogJet M₁ M₂ (n + 1) - 2 * quadLogJet M₁ M₂ n) +
       (prevJet (fun m => Matrix.trace (M₁ m)) n + Matrix.trace (M₁ (n + 1)) -
-        2 * Matrix.trace (M₁ n)) ^ 2)
+        2 * Matrix.trace (M₁ n)) ^ (2 : ℕ))
 
 /-- **The second derivative of the quadratic-path squared radius.** -/
 theorem deriv_deriv_quadSquaredRadius (n : ℕ) :

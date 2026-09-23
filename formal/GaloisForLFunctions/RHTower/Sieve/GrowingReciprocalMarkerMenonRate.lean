@@ -8,8 +8,8 @@ formalizes the separate, unconditional schedule calculation behind equations `(1
 
 For `w=(log X)^(2/3)` and `h=exp(log X / log log X)`, both normalized error profiles tend to zero:
 
-* `log X * (log w)^2 / w^2` for the shortest retained cofactor window;
-* `log X * (log log X)^4 / (log X / 2 - log h + w)^2` for the smallest start scale.
+* `log X * (log w)^(2 : ℕ) / w^(2 : ℕ)` for the shortest retained cofactor window;
+* `log X * (log log X)^(4 : ℕ) / (log X / 2 - log h + w)^(2 : ℕ)` for the smallest start scale.
 
 No mean-square estimate is asserted here.  The results verify exactly that the card's chosen scales
 would turn its stated Menon bound into `o(1 / log X)`.

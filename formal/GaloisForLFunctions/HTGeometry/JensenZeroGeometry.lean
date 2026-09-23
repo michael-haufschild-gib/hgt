@@ -35,7 +35,7 @@ open Real
 truncation contributes an inverse-cosine term. -/
 noncomputable def foldedWidth (R : ℝ) : ℝ :=
   if R ≤ 1/2 then 1/2 - 2 * R / π
-  else (2 / π) * (π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ 2 - 1/4))
+  else (2 / π) * (π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ (2 : ℕ) - 1/4))
 
 @[simp] theorem foldedWidth_zero : foldedWidth 0 = 1/2 := by
   simp [foldedWidth]
@@ -46,10 +46,10 @@ theorem foldedWidth_half : foldedWidth (1/2) = 1/2 - 1 / π := by
 /-- The two branches of `foldedWidth` agree at the junction `R = 1/2`: the truncation switches on
 continuously. -/
 theorem foldedWidth_branches_agree :
-    (2 / π) * (π / 4 - arccos (1 / (2 * (1/2 : ℝ))) / 2 - (1/2) + Real.sqrt ((1/2 : ℝ) ^ 2 - 1/4))
+    (2 / π) * (π / 4 - arccos (1 / (2 * (1/2 : ℝ))) / 2 - (1/2) + Real.sqrt ((1/2 : ℝ) ^ (2 : ℕ) - 1/4))
       = foldedWidth (1/2) := by
   have h1 : (1 : ℝ) / (2 * (1/2 : ℝ)) = 1 := by norm_num
-  have h2 : ((1/2 : ℝ) ^ 2 - 1/4) = 0 := by norm_num
+  have h2 : ((1/2 : ℝ) ^ (2 : ℕ) - 1/4) = 0 := by norm_num
   have hπ : π ≠ 0 := ne_of_gt pi_pos
   rw [foldedWidth_half, h1, h2, Real.arccos_one, Real.sqrt_zero]
   field_simp
@@ -62,16 +62,16 @@ theorem foldedWidth_lt_half {R : ℝ} (hR : 0 < R) : foldedWidth R < 1/2 := by
   · have : 0 < 2 * R / π := by positivity
     linarith
   · rw [not_le] at h
-    have hR2 : (0 : ℝ) ≤ R ^ 2 - 1/4 := by nlinarith
-    have hs : Real.sqrt (R ^ 2 - 1/4) < R := by
-      have : Real.sqrt (R ^ 2 - 1/4) < Real.sqrt (R ^ 2) := by
+    have hR2 : (0 : ℝ) ≤ R ^ (2 : ℕ) - 1/4 := by nlinarith
+    have hs : Real.sqrt (R ^ (2 : ℕ) - 1/4) < R := by
+      have : Real.sqrt (R ^ (2 : ℕ) - 1/4) < Real.sqrt (R ^ (2 : ℕ)) := by
         apply Real.sqrt_lt_sqrt hR2; linarith
       rwa [Real.sqrt_sq hR.le] at this
     have hac : 0 ≤ arccos (1 / (2 * R)) := Real.arccos_nonneg _
-    have hkey : π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ 2 - 1/4) < π / 4 := by
+    have hkey : π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ (2 : ℕ) - 1/4) < π / 4 := by
       linarith
     have h2π : 0 < 2 / π := by positivity
-    calc (2 / π) * (π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ 2 - 1/4))
+    calc (2 / π) * (π / 4 - arccos (1 / (2 * R)) / 2 - R + Real.sqrt (R ^ (2 : ℕ) - 1/4))
         < (2 / π) * (π / 4) := mul_lt_mul_of_pos_left hkey h2π
       _ = 1/2 := by field_simp; ring
 
@@ -92,10 +92,10 @@ theorem foldedWidth_nonneg {R : ℝ} (hR : 0 ≤ R) : 0 ≤ foldedWidth R := by
     linarith
   · rw [not_le] at h
     have hRpos : (0 : ℝ) < R := by linarith
-    have hR2 : (0 : ℝ) ≤ R ^ 2 - 1/4 := by nlinarith
-    set s := Real.sqrt (R ^ 2 - 1/4) with hsdef
+    have hR2 : (0 : ℝ) ≤ R ^ (2 : ℕ) - 1/4 := by nlinarith
+    set s := Real.sqrt (R ^ (2 : ℕ) - 1/4) with hsdef
     have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-    have hs2 : s ^ 2 = R ^ 2 - 1/4 := Real.sq_sqrt hR2
+    have hs2 : s ^ (2 : ℕ) = R ^ (2 : ℕ) - 1/4 := Real.sq_sqrt hR2
     -- `arccos (1/(2R)) ≤ π/2 - 1/(2R)` from `arcsin y ≥ y`
     have hy0 : (0 : ℝ) ≤ 1 / (2 * R) := by positivity
     have hy1 : (1 : ℝ) / (2 * R) ≤ 1 := by
@@ -132,8 +132,8 @@ noncomputable def rhOutput (J θ₀ : ℝ) : ℝ := 2 * J * θ₀
 guaranteed potential, `R - I(R)` where `I(R) = √(R² - 1/4) - θ/2`, is exactly a quarter of the
 weight `θ + 2A` appearing in `1 - 2·foldedWidth R`.  This is why the route reproduces `1/4`. -/
 theorem jensen_cancellation (R θ : ℝ) :
-    4 * (R - (Real.sqrt (R ^ 2 - 1/4) - θ / 2))
-      = 2 * (θ + 2 * (R - Real.sqrt (R ^ 2 - 1/4))) := by
+    4 * (R - (Real.sqrt (R ^ (2 : ℕ) - 1/4) - θ / 2))
+      = 2 * (θ + 2 * (R - Real.sqrt (R ^ (2 : ℕ) - 1/4))) := by
   ring
 
 /-- **Inertness, contraction form.**  The route moves the exponent toward `1/4` by the factor `2J`;

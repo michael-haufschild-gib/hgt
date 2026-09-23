@@ -28,10 +28,10 @@ theorem squarePrimeWindowPositiveExcessSquare_abscissa_le_one_of_riemannHypothes
         squarePrimeWindowPositiveExcessSquareDirichletCoefficient ≤
       ((1 : ℝ) : EReal) := by
   change LSeries.abscissaOfAbsConv
-      (fun m => ((((dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2 : ℝ)) : ℂ)) ≤
+      (fun m => ((((dyadicWeightedPrimeWindowPositiveExcess (m ^ (2 : ℕ))) ^ (2 : ℕ) : ℝ)) : ℂ)) ≤
     ((1 : ℝ) : EReal)
   apply (abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt
-    (fun m => sq_nonneg (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)))
+    (fun m => sq_nonneg (dyadicWeightedPrimeWindowPositiveExcess (m ^ (2 : ℕ))))
     zero_le_one).mpr
   intro delta hdelta
   exact squarePrimeWindowPositiveExcessSquare_summatory_isBigO
@@ -52,7 +52,7 @@ theorem riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_summatory_su
     RiemannHypothesis ↔
       ∀ delta : ℝ, 0 < delta →
         (fun M : ℕ => ∑ m ∈ Finset.Icc 1 M,
-          (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2) =O[Filter.atTop]
+          (dyadicWeightedPrimeWindowPositiveExcess (m ^ (2 : ℕ))) ^ (2 : ℕ)) =O[Filter.atTop]
             (fun M : ℕ => (M : ℝ) ^ (1 + delta)) := by
   constructor
   · intro hRH delta hdelta
@@ -72,7 +72,7 @@ theorem squarePrimeWindowPositiveExcessSquare_abscissa_le_one_iff_summatory_subp
       ((1 : ℝ) : EReal) ↔
       ∀ delta : ℝ, 0 < delta →
         (fun M : ℕ => ∑ m ∈ Finset.Icc 1 M,
-          (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2) =O[Filter.atTop]
+          (dyadicWeightedPrimeWindowPositiveExcess (m ^ (2 : ℕ))) ^ (2 : ℕ)) =O[Filter.atTop]
             (fun M : ℕ => (M : ℝ) ^ (1 + delta)) :=
   riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_abscissa_le_one.symm.trans
     riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_summatory_subpower
@@ -88,7 +88,7 @@ theorem squarePrimeWindowPositiveExcessSquare_zeroWidthCollision :
         ((1 : ℝ) : EReal) ↔
       ∀ delta : ℝ, 0 < delta →
         (fun M : ℕ => ∑ m ∈ Finset.Icc 1 M,
-          (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2) =O[Filter.atTop]
+          (dyadicWeightedPrimeWindowPositiveExcess (m ^ (2 : ℕ))) ^ (2 : ℕ)) =O[Filter.atTop]
             (fun M : ℕ => (M : ℝ) ^ (1 + delta))) :=
   ⟨riemannHypothesis_iff_squarePrimeWindowPositiveExcessSquare_abscissa_le_one,
     squarePrimeWindowPositiveExcessSquare_abscissa_le_one_iff_summatory_subpower⟩

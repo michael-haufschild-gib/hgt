@@ -123,14 +123,14 @@ def mobiusGammaXiWardNormalConeBaseSourceMap
 
 /-- **Normal-cone gain-squaring law.**  Blowing up the scalar source graph
 by its Euler normal parameter changes the exact physical Lipschitz gain from
-`1 / (2 (sigma - 1))` to `1 / (2 (sigma - 1)^2)`.  Analytic removal of the
+`1 / (2 (sigma - 1))` to `1 / (2 (sigma - 1)^(2 : ℕ))`.  Analytic removal of the
 base zero therefore amplifies, rather than absorbs, the source-norm defect. -/
 theorem mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero
     {sigma : ℝ} (hsigma : 1 < sigma) :
     mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma
           (infiniteMobiusSignedWeightLp sigma hsigma) -
         mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma 0 =
-      I / (2 * (((sigma - 1 : ℝ) : ℂ) ^ 2)) := by
+      I / (2 * (((sigma - 1 : ℝ) : ℂ) ^ (2 : ℕ))) := by
   have hepsilon : (((sigma - 1 : ℝ) : ℂ)) ≠ 0 := by
     exact_mod_cast sub_ne_zero.mpr hsigma.ne'
   simp only [mobiusGammaXiWardNormalConeBaseSourceMap]
@@ -153,10 +153,10 @@ theorem norm_mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero_gt_one
   norm_num
   have heps : 0 < sigma - 1 := sub_pos.mpr hsigma
   have hepsHalf : sigma - 1 < 1 / 2 := by linarith
-  have hsq : 2 * (sigma - 1) ^ 2 < 1 := by
+  have hsq : 2 * (sigma - 1) ^ (2 : ℕ) < 1 := by
     nlinarith [sq_nonneg (sigma - 1), mul_self_lt_mul_self heps.le hepsHalf]
-  rw [show ((sigma - 1) ^ 2)⁻¹ * (1 / 2 : ℝ) =
-      1 / (2 * (sigma - 1) ^ 2) by field_simp]
+  rw [show ((sigma - 1) ^ (2 : ℕ))⁻¹ * (1 / 2 : ℝ) =
+      1 / (2 * (sigma - 1) ^ (2 : ℕ)) by field_simp]
   exact (one_lt_div₀ (by positivity)).2 hsq
 
 /-- **Normal-cone nonexpansiveness no-go.**  The analytic Euler blow-up of

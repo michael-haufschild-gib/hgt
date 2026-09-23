@@ -10,7 +10,7 @@ Lemma 2.4 of Guo--Fang--Lu conditions a linear form on independent
 chi-square-three precisions.  Its conditional Gaussian absolute moment is
 proportional to
 
-`sqrt (sum i, u i ^ 2 / s i)`.
+`sqrt (sum i, u i ^ (2 : ℕ) / s i)`.
 
 This module formalizes the independent product law, its exact inverse-precision
 moment, and the paper's Jensen bound.  The positive reciprocal is extended by
@@ -72,7 +72,7 @@ theorem positiveReciprocal_of_pos {s : ℝ} (hs : 0 < s) : positiveReciprocal s 
 
 /-- Conditional variance of the Gaussian linear form at precision vector `s`. -/
 def inversePrecisionQuadratic {d : ℕ} (u s : Fin d → ℝ) : ℝ :=
-  ∑ i, u i ^ 2 * positiveReciprocal (s i)
+  ∑ i, u i ^ (2 : ℕ) * positiveReciprocal (s i)
 
 theorem inversePrecisionQuadratic_nonneg {d : ℕ} (u s : Fin d → ℝ) :
     0 ≤ inversePrecisionQuadratic u s := by
@@ -167,7 +167,7 @@ theorem integrable_weighted_inversePrecisionQuadratic {d : ℕ} (u : Fin d → �
       chiSquareThreeProductDensity d s * inversePrecisionQuadratic u s)
       (chiSquareThreeProductVolume d) := by
   have hterm : ∀ i : Fin d, Integrable
-      (fun s : Fin d → ℝ => (u i ^ 2) *
+      (fun s : Fin d → ℝ => (u i ^ (2 : ℕ)) *
         (positiveReciprocal (s i) * chiSquareThreeProductDensity d s))
       (chiSquareThreeProductVolume d) := fun i =>
         (integrable_positiveReciprocal_mul_chiSquareThreeProductDensity i).const_mul _
@@ -175,10 +175,10 @@ theorem integrable_weighted_inversePrecisionQuadratic {d : ℕ} (u : Fin d → �
   apply hsum.congr
   exact Filter.Eventually.of_forall fun s => by
     unfold inversePrecisionQuadratic
-    change (∑ i, (u i ^ 2) *
+    change (∑ i, (u i ^ (2 : ℕ)) *
       (positiveReciprocal (s i) * chiSquareThreeProductDensity d s)) =
       chiSquareThreeProductDensity d s *
-        ∑ i, u i ^ 2 * positiveReciprocal (s i)
+        ∑ i, u i ^ (2 : ℕ) * positiveReciprocal (s i)
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
@@ -190,15 +190,15 @@ preserves the Euclidean coefficient energy. -/
 theorem integral_weighted_inversePrecisionQuadratic {d : ℕ} (u : Fin d → ℝ) :
     ∫ s : Fin d → ℝ,
       chiSquareThreeProductDensity d s * inversePrecisionQuadratic u s
-        ∂(chiSquareThreeProductVolume d) = ∑ i, u i ^ 2 := by
+        ∂(chiSquareThreeProductVolume d) = ∑ i, u i ^ (2 : ℕ) := by
   have hterm : ∀ i : Fin d, Integrable
-      (fun s : Fin d → ℝ => (u i ^ 2) *
+      (fun s : Fin d → ℝ => (u i ^ (2 : ℕ)) *
         (positiveReciprocal (s i) * chiSquareThreeProductDensity d s))
       (chiSquareThreeProductVolume d) := fun i =>
         (integrable_positiveReciprocal_mul_chiSquareThreeProductDensity i).const_mul _
   rw [show (fun s : Fin d → ℝ =>
       chiSquareThreeProductDensity d s * inversePrecisionQuadratic u s) =
-      fun s => ∑ i, (u i ^ 2) *
+      fun s => ∑ i, (u i ^ (2 : ℕ)) *
         (positiveReciprocal (s i) * chiSquareThreeProductDensity d s) by
     funext s
     unfold inversePrecisionQuadratic
@@ -217,7 +217,7 @@ the Euclidean norm of the coefficient vector. -/
 theorem integral_sqrt_inversePrecisionQuadratic_le {d : ℕ} (u : Fin d → ℝ) :
     (∫ s : Fin d → ℝ,
       chiSquareThreeProductDensity d s * Real.sqrt (inversePrecisionQuadratic u s)
-        ∂(chiSquareThreeProductVolume d)) ≤ Real.sqrt (∑ i, u i ^ 2) := by
+        ∂(chiSquareThreeProductVolume d)) ≤ Real.sqrt (∑ i, u i ^ (2 : ℕ)) := by
   have hcs := GaloisForLFunctions.HTGeometry.sq_integral_weighted_le
     (μ := chiSquareThreeProductVolume d)
     (w := chiSquareThreeProductDensity d)
@@ -232,7 +232,7 @@ theorem integral_sqrt_inversePrecisionQuadratic_le {d : ℕ} (u : Fin d → ℝ)
       funext s
       rw [Real.sq_sqrt (inversePrecisionQuadratic_nonneg u s)])
   have hsqrtSq : (fun s : Fin d → ℝ =>
-      chiSquareThreeProductDensity d s * Real.sqrt (inversePrecisionQuadratic u s) ^ 2) =
+      chiSquareThreeProductDensity d s * Real.sqrt (inversePrecisionQuadratic u s) ^ (2 : ℕ)) =
       fun s => chiSquareThreeProductDensity d s * inversePrecisionQuadratic u s := by
     funext s
     rw [Real.sq_sqrt (inversePrecisionQuadratic_nonneg u s)]
@@ -264,7 +264,7 @@ theorem integral_conditionalGaussianAbsoluteMoment_le {d : ℕ} (u : Fin d → �
     (∫ s : Fin d → ℝ,
       chiSquareThreeProductDensity d s * conditionalGaussianAbsoluteMoment u s
         ∂(chiSquareThreeProductVolume d)) ≤
-      Real.sqrt (2 / Real.pi) * Real.sqrt (∑ i, u i ^ 2) := by
+      Real.sqrt (2 / Real.pi) * Real.sqrt (∑ i, u i ^ (2 : ℕ)) := by
   rw [show (fun s : Fin d → ℝ =>
       chiSquareThreeProductDensity d s * conditionalGaussianAbsoluteMoment u s) =
       fun s => Real.sqrt (2 / Real.pi) *

@@ -29,14 +29,14 @@ theorem eventually_quadForm_sub_diagonal_le
     ∀ᶠ i in l, ∀ x : Fin n → ℂ,
       |(star x ⬝ᵥ (G i).mulVec x).re
           - (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re|
-        ≤ (δ / 2) * ‖x‖ ^ 2 := by
+        ≤ (δ / 2) * ‖x‖ ^ (2 : ℕ) := by
   classical
   set D : Matrix (Fin n) (Fin n) ℂ := Matrix.diagonal fun j => ((c j : ℝ) : ℂ) with hD
-  set ε : ℝ := δ / (2 * ((n : ℝ) ^ 2 + 1)) with hε
+  set ε : ℝ := δ / (2 * ((n : ℝ) ^ (2 : ℕ) + 1)) with hε
   have hεpos : 0 < ε := by
     rw [hε]
     positivity
-  have hεn : ε * (n : ℝ) ^ 2 ≤ δ / 2 := by
+  have hεn : ε * (n : ℝ) ^ (2 : ℕ) ≤ δ / 2 := by
     rw [hε, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [sq_nonneg ((n : ℝ)), hδ.le]
   filter_upwards [hconv ε hεpos] with i hi
@@ -52,11 +52,11 @@ theorem eventually_quadForm_sub_diagonal_le
   have hquad := norm_quadForm_le_of_entries (G i - D) hεpos.le hentry x
   have hre : |(star x ⬝ᵥ (G i - D).mulVec x).re| ≤ ‖star x ⬝ᵥ (G i - D).mulVec x‖ :=
     Complex.abs_re_le_norm _
-  have hnn : (0 : ℝ) ≤ ‖x‖ ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ ‖x‖ ^ (2 : ℕ) := by positivity
   calc |(star x ⬝ᵥ (G i - D).mulVec x).re|
       ≤ ‖star x ⬝ᵥ (G i - D).mulVec x‖ := hre
-    _ ≤ ε * (n : ℝ) ^ 2 * ‖x‖ ^ 2 := hquad
-    _ ≤ δ / 2 * ‖x‖ ^ 2 := by
+    _ ≤ ε * (n : ℝ) ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := hquad
+    _ ≤ δ / 2 * ‖x‖ ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_right hεn hnn
 
 /-- **Entrywise convergence to a negative diagonal gives eventual negative definiteness.** -/

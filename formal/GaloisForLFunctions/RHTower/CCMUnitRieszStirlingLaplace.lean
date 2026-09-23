@@ -16,7 +16,7 @@ integer, switched on at `t = log n`, and each atom integrates in closed form aga
 kernel.  Summing the resulting Dirichlet series gives
 
 ```text
-L[a](z) = zeta(1+z)/(1+z)^2 - 1/z - 1/(z+1),     Re z > 0,
+L[a](z) = zeta(1+z)/(1+z)^(2 : ℕ) - 1/z - 1/(z+1),     Re z > 0,
 ```
 
 which is exactly the source-free factor `A` of the completed-source weld.

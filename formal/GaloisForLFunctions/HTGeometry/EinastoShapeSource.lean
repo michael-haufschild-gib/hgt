@@ -18,14 +18,14 @@ def einastoShapeSourceFactor (d l a r : ℝ) : ℝ :=
   let q := exp (-a)
   let u := einastoProfilePower l a r
   let ρ := einastoDensity d l a r
-  4 * Real.pi * ρ ^ 2 * q * r ^ 2 * (q * u - 4) -
+  4 * Real.pi * ρ ^ (2 : ℕ) * q * r ^ (2 : ℕ) * (q * u - 4) -
     2 * einastoMetric d l a r * q * ρ *
-      ((q + 1) * (q + 4) - q * (3 * q + 5) * u + q ^ 2 * u ^ 2) -
-    q * ρ * r ^ 2 * (2 * einastoCore d l a r - 8 * Real.pi * ρ) * (q + 4 - q * u)
+      ((q + 1) * (q + 4) - q * (3 * q + 5) * u + q ^ (2 : ℕ) * u ^ (2 : ℕ)) -
+    q * ρ * r ^ (2 : ℕ) * (2 * einastoCore d l a r - 8 * Real.pi * ρ) * (q + 4 - q * u)
 
 /-- The entire difference between the two algebraic signs is a bounded curvature square. -/
 def einastoShapeSourceDefect (d l a σ r : ℝ) : ℝ :=
-  (σ - 1) * einastoShapeRicci d l a r ^ 2 / (16 * Real.pi)
+  (σ - 1) * einastoShapeRicci d l a r ^ (2 : ℕ) / (16 * Real.pi)
 
 theorem einastoShapeSourceFactor_continuous (d l a : ℝ) : Continuous (einastoShapeSourceFactor d l a) := by
   have hD := einastoDensity_continuous d l a
@@ -52,7 +52,7 @@ theorem einastoShapeSourceFactor_core_neg (d l a : ℝ) : einastoShapeSourceFact
   linarith
 
 theorem einastoShapeSourceDefect_core (d l a σ : ℝ) :
-    einastoShapeSourceDefect d l a σ 0 = 64 * Real.pi * (σ - 1) * exp d ^ 2 := by
+    einastoShapeSourceDefect d l a σ 0 = 64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ) := by
   unfold einastoShapeSourceDefect
   rw [einastoShapeRicci_core]
   field_simp
@@ -61,7 +61,7 @@ theorem einastoShapeSourceDefect_core (d l a σ : ℝ) :
 /-- Exact factorization of the actual radial source, with no asymptotic assumptions. -/
 theorem einastoShapeSource_decomposition (d l a σ t : ℝ) :
     quadraticRadialSource σ (einastoMetric d l a) (exp t) =
-      einastoProfilePower l a (exp t) / exp t ^ 2 * einastoShapeSourceFactor d l a (exp t) +
+      einastoProfilePower l a (exp t) / exp t ^ (2 : ℕ) * einastoShapeSourceFactor d l a (exp t) +
         einastoShapeSourceDefect d l a σ (exp t) := by
   unfold quadraticRadialSource
   rw [einastoShapeRicci_actual, radialEinsteinDensity_einasto,
@@ -74,7 +74,7 @@ theorem einastoShapeSource_decomposition (d l a σ t : ℝ) :
   ring
 
 theorem einastoProfilePower_scaled_exp (l a t : ℝ) :
-    einastoProfilePower l a (exp t) / exp t ^ 2 = exp ((exp (-a) - 2) * t - exp (-a) * l) := by
+    einastoProfilePower l a (exp t) / exp t ^ (2 : ℕ) = exp ((exp (-a) - 2) * t - exp (-a) * l) := by
   rw [einastoProfilePower_exp, sq, ← exp_add, ← exp_sub]
   congr 1
   ring
@@ -94,7 +94,7 @@ theorem einastoShapeSourceFactor_core_limit (d l a : ℝ) :
 
 theorem einastoShapeSourceDefect_core_limit (d l a σ : ℝ) :
     Tendsto (fun t => einastoShapeSourceDefect d l a σ (exp t)) atBot
-      (𝓝 (64 * Real.pi * (σ - 1) * exp d ^ 2)) := by
+      (𝓝 (64 * Real.pi * (σ - 1) * exp d ^ (2 : ℕ))) := by
   rw [← einastoShapeSourceDefect_core d l a σ]
   exact (einastoShapeSourceDefect_continuous d l a σ).continuousAt.tendsto.comp tendsto_exp_atBot
 

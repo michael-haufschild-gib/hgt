@@ -75,13 +75,13 @@ theorem sum_window_pair_swap (X L : ℕ) (F : ℕ → ℕ → ℝ) :
 
 /-- **The exact short-interval variance identity.** -/
 theorem sum_normSq_window_eq (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
       = ∑ n ∈ Finset.range (X + L + 1), ∑ m ∈ Finset.range (X + L + 1),
           (windowOverlap X L n m : ℝ) * (a n * (starRingEnd ℂ) (a m)).re := by
   classical
   rw [← sum_window_pair_swap X L (fun n m => (a n * (starRingEnd ℂ) (a m)).re)]
   refine Finset.sum_congr rfl fun x _ => ?_
-  have hnormSq : ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
+  have hnormSq : ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
       = ((∑ n ∈ Finset.Ioc x (x + L), a n)
           * (starRingEnd ℂ) (∑ n ∈ Finset.Ioc x (x + L), a n)).re := by
     rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]

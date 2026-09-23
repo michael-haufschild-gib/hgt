@@ -25,7 +25,7 @@ theorem observerFrame_kennard {n : ℕ} (ψ : MatrixMechanicsState (Fin n))
     (U V : Matrix (Fin n) (Fin n) ℂ) (w v : Fin n → ℝ) :
     (QuantumAlg.expval ψ.vector
       ((Uᴴ * rdiag w * U) * (Vᴴ * rdiag v * V) -
-        (Vᴴ * rdiag v * V) * (Uᴴ * rdiag w * U))).im ^ 2 ≤
+        (Vᴴ * rdiag v * V) * (Uᴴ * rdiag w * U))).im ^ (2 : ℕ) ≤
       4 * QuantumAlg.qCov ψ.vector (Uᴴ * rdiag w * U) (Uᴴ * rdiag w * U) *
         QuantumAlg.qCov ψ.vector (Vᴴ * rdiag v * V) (Vᴴ * rdiag v * V) :=
   matrixMechanics_kennard ψ (observerFrameObservable U w) (observerFrameObservable V v)

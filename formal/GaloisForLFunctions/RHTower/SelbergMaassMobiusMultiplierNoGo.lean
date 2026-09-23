@@ -5,9 +5,9 @@ import GaloisForLFunctions.RHTower.SelbergMaassDilationStress
 
 The translation, dilation, and special-conformal vector fields have, on a horizontal
 boundary, coefficients
-`a + b * x + c * (x^2 - 1)` and `b + 2 * c * x`.  Their derivative part of the
+`a + b * x + c * (x^(2 : ℕ) - 1)` and `b + 2 * c * x`.  Their derivative part of the
 normal stress flux is
-`2 * horizontal * u * v + vertical * (v^2 - u^2)`.
+`2 * horizontal * u * v + vertical * (v^(2 : ℕ) - u^(2 : ℕ))`.
 
 This quadratic form is indefinite whenever either coefficient is nonzero.  Therefore
 no nonzero linear combination of the three Möbius currents can provide the missing
@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.RHTower.SelbergMaassMobiusMultiplierNoGo
 
 /-- Derivative-only normal flux of a two-dimensional stress tensor. -/
 def topDerivativeFlux (horizontal vertical u v : ℝ) : ℝ :=
-  2 * horizontal * u * v + vertical * (v ^ 2 - u ^ 2)
+  2 * horizontal * u * v + vertical * (v ^ (2 : ℕ) - u ^ (2 : ℕ))
 
 /-- Quarter-turning a derivative jet reverses its stress flux. -/
 theorem topDerivativeFlux_quarterTurn (horizontal vertical u v : ℝ) :
@@ -67,7 +67,7 @@ theorem exists_topDerivativeFlux_pos_neg_of_coeff_ne_zero
 
 /-- Horizontal coefficient of a translation--dilation--special-conformal multiplier at height one. -/
 def mobiusTopHorizontal (translation dilation specialConformal x : ℝ) : ℝ :=
-  translation + dilation * x + specialConformal * (x ^ 2 - 1)
+  translation + dilation * x + specialConformal * (x ^ (2 : ℕ) - 1)
 
 /-- Vertical coefficient of a translation--dilation--special-conformal multiplier at height one. -/
 def mobiusTopVertical (dilation specialConformal x : ℝ) : ℝ :=

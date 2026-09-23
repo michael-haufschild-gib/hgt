@@ -31,8 +31,8 @@ noncomputable section
 fourteenth absolute power. -/
 theorem re_xiZeroCopyReciprocalSquare_pow_fourteen_gt_two_over_fortyOne_norm_pow
     (q : XiZeroCopy) :
-    (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ 14 <
-      (xiZeroCopyReciprocalSquare q ^ 14).re := by
+    (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ (14 : ℕ) <
+      (xiZeroCopyReciprocalSquare q ^ (14 : ℕ)).re := by
   apply
     GaloisForLFunctions.HTGeometry.re_pow_fourteen_gt_two_over_fortyOne_norm_pow_of_sector
   · simpa only [xiThermalNode] using xiThermalNode_pos q
@@ -48,17 +48,17 @@ theorem two_over_fortyOne_mul_xiShiftAbsoluteMass_thirteen_lt_normalizedPrimeArc
   have hpow := summable_xiZeroCopyReciprocalSquare_pow 13
   have hleft :
       Summable (fun q : XiZeroCopy =>
-        (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ 14) :=
+        (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ (14 : ℕ)) :=
     (summable_xiShiftAbsoluteMass 13).mul_left (2 / 41 : ℝ)
   have hright :
       Summable (fun q : XiZeroCopy =>
-        (xiZeroCopyReciprocalSquare q ^ 14).re) :=
+        (xiZeroCopyReciprocalSquare q ^ (14 : ℕ)).re) :=
     Complex.reCLM.summable hpow
   have hlt :
       (∑' q : XiZeroCopy,
-          (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ 14) <
+          (2 / 41 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖ ^ (14 : ℕ)) <
         ∑' q : XiZeroCopy,
-          (xiZeroCopyReciprocalSquare q ^ 14).re :=
+          (xiZeroCopyReciprocalSquare q ^ (14 : ℕ)).re :=
     hleft.tsum_lt_tsum (i := q₀)
       (fun q =>
         (re_xiZeroCopyReciprocalSquare_pow_fourteen_gt_two_over_fortyOne_norm_pow
@@ -198,8 +198,8 @@ def PrimeArchDegreeSevenEndpointPairCone (p : Polynomial ℤ) : Prop :=
   p.natDegree ≤ 7 ∧
     HTGeometry.PolynomialSquareCoeffNonnegative
       (p.map (Int.castRingHom ℝ)) ∧
-      ((p.map (Int.castRingHom ℝ)) ^ 2).coeff 14 ≤
-        ((p.map (Int.castRingHom ℝ)) ^ 2).coeff 13
+      ((p.map (Int.castRingHom ℝ)) ^ (2 : ℕ)).coeff 14 ≤
+        ((p.map (Int.castRingHom ℝ)) ^ (2 : ℕ)).coeff 13
 
 /-- The degree-six coefficient-sign cone maps into the corresponding real cone. -/
 theorem polynomialCoeffwiseOneSign_map_intCast
@@ -280,15 +280,15 @@ theorem primeArchDegreeSevenEndpointPairCone_of_degreeSixSquareCoeffCone
   let q : Polynomial ℝ := p.map (Int.castRingHom ℝ)
   have hqdegree : q.natDegree ≤ 6 :=
     (Polynomial.natDegree_map_le).trans hp.1
-  have hq2degree : (q ^ 2).natDegree ≤ 12 := by
+  have hq2degree : (q ^ (2 : ℕ)).natDegree ≤ 12 := by
     rw [Polynomial.natDegree_pow]
     omega
   refine ⟨hp.1.trans (by omega), hp.2, ?_⟩
-  have h14 : (q ^ 2).coeff 14 = 0 :=
+  have h14 : (q ^ (2 : ℕ)).coeff 14 = 0 :=
     Polynomial.coeff_eq_zero_of_natDegree_lt (hq2degree.trans_lt (by omega))
-  have h13 : (q ^ 2).coeff 13 = 0 :=
+  have h13 : (q ^ (2 : ℕ)).coeff 13 = 0 :=
     Polynomial.coeff_eq_zero_of_natDegree_lt (hq2degree.trans_lt (by omega))
-  change (q ^ 2).coeff 14 ≤ (q ^ 2).coeff 13
+  change (q ^ (2 : ℕ)).coeff 14 ≤ (q ^ (2 : ℕ)).coeff 13
   rw [h14, h13]
 
 /-- Every endpoint-pair test belongs to the full degree-seven square-coefficient cone. -/
@@ -486,12 +486,12 @@ def PrimeArchDegreeSevenEndpointPairResidual (p : Polynomial ℤ) : Prop :=
 
 /-- A degree-seven endpoint-pair test with a large penultimate coefficient. -/
 def primeArchDegreeSevenEndpointPolynomial : Polynomial ℤ :=
-  X ^ 7 + C 2 + C 12 * X ^ 6
+  X ^ (7 : ℕ) + C 2 + C 12 * X ^ (6 : ℕ)
 
 /-- The endpoint-pair test has exact degree seven. -/
 theorem primeArchDegreeSevenEndpointPolynomial_natDegree :
     primeArchDegreeSevenEndpointPolynomial.natDegree = 7 := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 6
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (6 : ℕ)
   have hlow : lower.natDegree < 7 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -499,11 +499,11 @@ theorem primeArchDegreeSevenEndpointPolynomial_natDegree :
     · simp
     · rw [Polynomial.natDegree_C_mul_X_pow 6 12 (by norm_num)]
       omega
-  have hlow' : lower.natDegree < (X ^ 7 : Polynomial ℤ).natDegree := by
+  have hlow' : lower.natDegree < (X ^ (7 : ℕ) : Polynomial ℤ).natDegree := by
     simpa only [Polynomial.natDegree_X_pow] using hlow
   unfold primeArchDegreeSevenEndpointPolynomial
   rw [add_assoc]
-  change (X ^ 7 + lower).natDegree = 7
+  change (X ^ (7 : ℕ) + lower).natDegree = 7
   rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
     Polynomial.natDegree_X_pow]
 
@@ -520,9 +520,9 @@ theorem primeArchDegreeSevenEndpointPolynomial_coeff_nonneg
 /-- Exact self-convolution of the endpoint-pair test. -/
 theorem primeArchDegreeSevenEndpointPolynomial_map_sq :
     (primeArchDegreeSevenEndpointPolynomial.map
-      (Int.castRingHom ℝ)) ^ 2 =
-        X ^ 14 + C 24 * X ^ 13 + C 144 * X ^ 12 +
-          C 4 * X ^ 7 + C 48 * X ^ 6 + C 4 := by
+      (Int.castRingHom ℝ)) ^ (2 : ℕ) =
+        X ^ (14 : ℕ) + C 24 * X ^ (13 : ℕ) + C 144 * X ^ (12 : ℕ) +
+          C 4 * X ^ (7 : ℕ) + C 48 * X ^ (6 : ℕ) + C 4 := by
   simp [primeArchDegreeSevenEndpointPolynomial,
     Polynomial.map_add, Polynomial.map_mul, Polynomial.map_pow,
     Polynomial.map_X, Polynomial.C_ofNat]
@@ -563,12 +563,12 @@ theorem re_primeArchSourceTraceHankel_primeArchDegreeSevenEndpointPolynomial_non
 
 /-- A genuine degree-eight square-coefficient test with a large penultimate coefficient. -/
 def primeArchDegreeEightSquareCoeffPolynomial : Polynomial ℤ :=
-  X ^ 8 + C 2 + C 12 * X ^ 7
+  X ^ (8 : ℕ) + C 2 + C 12 * X ^ (7 : ℕ)
 
 /-- The degree-eight square-coefficient test has exact degree eight. -/
 theorem primeArchDegreeEightSquareCoeffPolynomial_natDegree :
     primeArchDegreeEightSquareCoeffPolynomial.natDegree = 8 := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 7
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (7 : ℕ)
   have hlow : lower.natDegree < 8 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -576,11 +576,11 @@ theorem primeArchDegreeEightSquareCoeffPolynomial_natDegree :
     · simp
     · rw [Polynomial.natDegree_C_mul_X_pow 7 12 (by norm_num)]
       omega
-  have hlow' : lower.natDegree < (X ^ 8 : Polynomial ℤ).natDegree := by
+  have hlow' : lower.natDegree < (X ^ (8 : ℕ) : Polynomial ℤ).natDegree := by
     simpa only [Polynomial.natDegree_X_pow] using hlow
   unfold primeArchDegreeEightSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 8 + lower).natDegree = 8
+  change (X ^ (8 : ℕ) + lower).natDegree = 8
   rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
     Polynomial.natDegree_X_pow]
 
@@ -625,12 +625,12 @@ theorem re_primeArchSourceTraceHankel_primeArchDegreeEightSquareCoeffPolynomial_
 
 /-- A genuine degree-nine square-coefficient test with a large penultimate coefficient. -/
 def primeArchDegreeNineSquareCoeffPolynomial : Polynomial ℤ :=
-  X ^ 9 + C 2 + C 12 * X ^ 8
+  X ^ (9 : ℕ) + C 2 + C 12 * X ^ (8 : ℕ)
 
 /-- The degree-nine square-coefficient test has exact degree nine. -/
 theorem primeArchDegreeNineSquareCoeffPolynomial_natDegree :
     primeArchDegreeNineSquareCoeffPolynomial.natDegree = 9 := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 8
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (8 : ℕ)
   have hlow : lower.natDegree < 9 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -638,11 +638,11 @@ theorem primeArchDegreeNineSquareCoeffPolynomial_natDegree :
     · simp
     · rw [Polynomial.natDegree_C_mul_X_pow 8 12 (by norm_num)]
       omega
-  have hlow' : lower.natDegree < (X ^ 9 : Polynomial ℤ).natDegree := by
+  have hlow' : lower.natDegree < (X ^ (9 : ℕ) : Polynomial ℤ).natDegree := by
     simpa only [Polynomial.natDegree_X_pow] using hlow
   unfold primeArchDegreeNineSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 9 + lower).natDegree = 9
+  change (X ^ (9 : ℕ) + lower).natDegree = 9
   rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
     Polynomial.natDegree_X_pow]
 
@@ -687,12 +687,12 @@ theorem re_primeArchSourceTraceHankel_primeArchDegreeNineSquareCoeffPolynomial_n
 
 /-- A genuine degree-ten square-coefficient test with a large penultimate coefficient. -/
 def primeArchDegreeTenSquareCoeffPolynomial : Polynomial ℤ :=
-  X ^ 10 + C 2 + C 12 * X ^ 9
+  X ^ (10 : ℕ) + C 2 + C 12 * X ^ (9 : ℕ)
 
 /-- The degree-ten square-coefficient test has exact degree ten. -/
 theorem primeArchDegreeTenSquareCoeffPolynomial_natDegree :
     primeArchDegreeTenSquareCoeffPolynomial.natDegree = 10 := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 9
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (9 : ℕ)
   have hlow : lower.natDegree < 10 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -700,11 +700,11 @@ theorem primeArchDegreeTenSquareCoeffPolynomial_natDegree :
     · simp
     · rw [Polynomial.natDegree_C_mul_X_pow 9 12 (by norm_num)]
       omega
-  have hlow' : lower.natDegree < (X ^ 10 : Polynomial ℤ).natDegree := by
+  have hlow' : lower.natDegree < (X ^ (10 : ℕ) : Polynomial ℤ).natDegree := by
     simpa only [Polynomial.natDegree_X_pow] using hlow
   unfold primeArchDegreeTenSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 10 + lower).natDegree = 10
+  change (X ^ (10 : ℕ) + lower).natDegree = 10
   rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
     Polynomial.natDegree_X_pow]
 
@@ -751,7 +751,7 @@ theorem re_primeArchSourceTraceHankel_primeArchDegreeTenSquareCoeffPolynomial_no
 
 /-- Concrete mixed-sign integer test in the square-coefficient cone. -/
 def primeArchMixedSignSquareCoeffPolynomial : Polynomial ℤ :=
-  C 1 * X ^ 0 + C 2 * X - C 1 * X ^ 2 + C 2 * X ^ 3 + C 1 * X ^ 4
+  C 1 * X ^ (0 : ℕ) + C 2 * X - C 1 * X ^ (2 : ℕ) + C 2 * X ^ (3 : ℕ) + C 1 * X ^ (4 : ℕ)
 
 /-- The concrete mixed-sign test maps to the universal five-term family at scale one. -/
 theorem primeArchMixedSignSquareCoeffPolynomial_map :

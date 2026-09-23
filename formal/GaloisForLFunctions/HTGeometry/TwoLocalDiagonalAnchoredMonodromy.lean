@@ -20,7 +20,7 @@ based at `(w,u)=(0,1/2)`.
 
 The explicit connector
 
-`w(t)=t/2`, `u(t)=sqrt(1-t^2)/2`
+`w(t)=t/2`, `u(t)=sqrt(1-t^(2 : ℕ))/2`
 
 keeps the selected radicand equal to `1/4`, ends at the diagonal point
 `(1/2,0)`, and transports every signed root to its named computational
@@ -40,7 +40,7 @@ namespace GaloisForLFunctions.HTGeometry
 couplings. -/
 def twoLocalVariableBranchRadicand {m : ℕ}
     (z₀ z : Fin m → Bool) (w u : ℂ) : ℂ :=
-  ((starIsingBinaryCode z₀ z : ℂ) + w) ^ 2 + u ^ 2
+  ((starIsingBinaryCode z₀ z : ℂ) + w) ^ (2 : ℕ) + u ^ (2 : ℕ)
 
 /-- The corresponding two-level Hamiltonian block. -/
 def twoLocalVariableEdgeHamiltonianBlock {m : ℕ}
@@ -59,7 +59,7 @@ def twoLocalVariableEdgeCharacteristicMatrix {m : ℕ}
 theorem det_twoLocalVariableEdgeCharacteristicMatrix {m : ℕ}
     (z₀ z : Fin m → Bool) (w u lam : ℂ) :
     (twoLocalVariableEdgeCharacteristicMatrix z₀ z w u lam).det =
-      lam ^ 2 - twoLocalVariableBranchRadicand z₀ z w u := by
+      lam ^ (2 : ℕ) - twoLocalVariableBranchRadicand z₀ z w u := by
   simp [twoLocalVariableEdgeCharacteristicMatrix,
     Matrix.det_fin_two, twoLocalVariableBranchRadicand]
   ring
@@ -273,23 +273,23 @@ theorem twoLocalAnchoredNonselectedRadicand_re_pos {m : ℕ}
   have hdecomposition :
       twoLocalVariableBranchRadicand z₀ z w
           (twoLocalAnchoredTransverse s) =
-        (c : ℂ) ^ 2 + 2 * (c : ℂ) * w +
+        (c : ℂ) ^ (2 : ℕ) + 2 * (c : ℂ) * w +
           (1 / 4 : ℂ) * twoLocalMonodromyPhase s := by
     have hselected :=
       twoLocalAnchored_selectedRadicand_eq_phase z₀ s
     rw [twoLocalVariableBranchRadicand,
       starIsingBinaryCode_self, Nat.cast_zero, zero_add] at hselected
     change
-      ((c : ℂ) + w) ^ 2 +
-          (twoLocalAnchoredTransverse s) ^ 2 =
-        (c : ℂ) ^ 2 + 2 * (c : ℂ) * w +
+      ((c : ℂ) + w) ^ (2 : ℕ) +
+          (twoLocalAnchoredTransverse s) ^ (2 : ℕ) =
+        (c : ℂ) ^ (2 : ℕ) + 2 * (c : ℂ) * w +
           (1 / 4 : ℂ) * twoLocalMonodromyPhase s
     rw [← hselected]
     ring
   have hre := congrArg Complex.re hdecomposition
   norm_num [pow_two, Complex.mul_re] at hre
   have hcNonneg : (0 : ℝ) ≤ c := by positivity
-  have hcsq : (c : ℝ) ≤ (c : ℝ) ^ 2 := by
+  have hcsq : (c : ℝ) ≤ (c : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hcOne) hcNonneg]
   rw [hre]
   nlinarith
@@ -303,9 +303,9 @@ theorem twoLocalAnchoredRadicand_injective {m : ℕ}
   intro z y heq
   have hsquare :
       ((starIsingBinaryCode z₀ z : ℂ) +
-          twoLocalAnchoredLongitudinal s) ^ 2 =
+          twoLocalAnchoredLongitudinal s) ^ (2 : ℕ) =
         ((starIsingBinaryCode z₀ y : ℂ) +
-          twoLocalAnchoredLongitudinal s) ^ 2 := by
+          twoLocalAnchoredLongitudinal s) ^ (2 : ℕ) := by
     simp only [twoLocalVariableBranchRadicand] at heq
     linear_combination heq
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsquare with hsame | hopposite
@@ -402,7 +402,7 @@ theorem continuous_twoLocalAnchoredBaseRoot {m : ℕ}
 
 theorem twoLocalAnchoredBaseRoot_sq {m : ℕ}
     (z₀ z : Fin m → Bool) (s : I) :
-    (twoLocalAnchoredBaseRoot z₀ z s) ^ 2 =
+    (twoLocalAnchoredBaseRoot z₀ z s) ^ (2 : ℕ) =
       twoLocalVariableBranchRadicand z₀ z
         (twoLocalAnchoredLongitudinal s)
         (twoLocalAnchoredTransverse s) := by
@@ -451,7 +451,7 @@ theorem continuous_twoLocalAnchoredGlobalRoot {m : ℕ}
 theorem twoLocalAnchoredGlobalRoot_sq {m : ℕ}
     (z₀ : Fin m → Bool)
     (x : Bool × (Fin m → Bool)) (s : I) :
-    (twoLocalAnchoredGlobalRoot z₀ x s) ^ 2 =
+    (twoLocalAnchoredGlobalRoot z₀ x s) ^ (2 : ℕ) =
       twoLocalVariableBranchRadicand z₀ x.2
         (twoLocalAnchoredLongitudinal s)
         (twoLocalAnchoredTransverse s) := by
@@ -477,7 +477,7 @@ theorem twoLocalAnchoredGlobalRoot_injective {m : ℕ}
     Function.Injective fun x : Bool × (Fin m → Bool) =>
       twoLocalAnchoredGlobalRoot z₀ x s := by
   rintro ⟨b, z⟩ ⟨d, y⟩ heq
-  have hsq := congrArg (fun q : ℂ => q ^ 2) heq
+  have hsq := congrArg (fun q : ℂ => q ^ (2 : ℕ)) heq
   rw [twoLocalAnchoredGlobalRoot_sq,
     twoLocalAnchoredGlobalRoot_sq] at hsq
   have hzy : z = y :=
@@ -523,7 +523,7 @@ noncomputable def twoLocalDiagonalConnectorLongitudinal (s : I) : ℂ :=
   ((s : ℝ) : ℂ) / 2
 
 noncomputable def twoLocalDiagonalConnectorTransverse (s : I) : ℂ :=
-  ((Real.sqrt (1 - (s : ℝ) ^ 2) : ℝ) : ℂ) / 2
+  ((Real.sqrt (1 - (s : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ) / 2
 
 theorem continuous_twoLocalDiagonalConnectorLongitudinal :
     Continuous twoLocalDiagonalConnectorLongitudinal := by
@@ -556,12 +556,12 @@ theorem twoLocalDiagonalConnectorRadicand_eq {m : ℕ}
     twoLocalVariableBranchRadicand z₀ z
         (twoLocalDiagonalConnectorLongitudinal s)
         (twoLocalDiagonalConnectorTransverse s) =
-      (starIsingBinaryCode z₀ z : ℂ) ^ 2 +
+      (starIsingBinaryCode z₀ z : ℂ) ^ (2 : ℕ) +
         (starIsingBinaryCode z₀ z : ℂ) * (s : ℝ) +
         1 / 4 := by
   have hs0 : 0 ≤ (s : ℝ) := s.2.1
   have hs1 : (s : ℝ) ≤ 1 := s.2.2
-  have hnonneg : 0 ≤ 1 - (s : ℝ) ^ 2 := by nlinarith
+  have hnonneg : 0 ≤ 1 - (s : ℝ) ^ (2 : ℕ) := by nlinarith
   have hsqrt := Real.sq_sqrt hnonneg
   simp only [pow_two] at hsqrt
   unfold twoLocalVariableBranchRadicand
@@ -608,7 +608,7 @@ theorem continuous_twoLocalDiagonalConnectorBaseRoot {m : ℕ}
 
 theorem twoLocalDiagonalConnectorBaseRoot_sq {m : ℕ}
     (z₀ z : Fin m → Bool) (s : I) :
-    (twoLocalDiagonalConnectorBaseRoot z₀ z s) ^ 2 =
+    (twoLocalDiagonalConnectorBaseRoot z₀ z s) ^ (2 : ℕ) =
       twoLocalVariableBranchRadicand z₀ z
         (twoLocalDiagonalConnectorLongitudinal s)
         (twoLocalDiagonalConnectorTransverse s) := by
@@ -650,7 +650,7 @@ theorem continuous_twoLocalDiagonalConnectorGlobalRoot {m : ℕ}
 theorem twoLocalDiagonalConnectorGlobalRoot_sq {m : ℕ}
     (z₀ : Fin m → Bool)
     (x : Bool × (Fin m → Bool)) (s : I) :
-    (twoLocalDiagonalConnectorGlobalRoot z₀ x s) ^ 2 =
+    (twoLocalDiagonalConnectorGlobalRoot z₀ x s) ^ (2 : ℕ) =
       twoLocalVariableBranchRadicand z₀ x.2
         (twoLocalDiagonalConnectorLongitudinal s)
         (twoLocalDiagonalConnectorTransverse s) := by
@@ -708,7 +708,7 @@ theorem twoLocalDiagonalConnectorGlobalRoot_injective {m : ℕ}
     Function.Injective fun x : Bool × (Fin m → Bool) =>
       twoLocalDiagonalConnectorGlobalRoot z₀ x s := by
   rintro ⟨b, z⟩ ⟨d, y⟩ heq
-  have hsq := congrArg (fun q : ℂ => q ^ 2) heq
+  have hsq := congrArg (fun q : ℂ => q ^ (2 : ℕ)) heq
   rw [twoLocalDiagonalConnectorGlobalRoot_sq,
     twoLocalDiagonalConnectorGlobalRoot_sq] at hsq
   have hzy :=
@@ -790,7 +790,7 @@ theorem twoLocalDiagonalConnectorRoot_at_one {m : ℕ}
     dsimp [a]
     positivity
   have hsqrt :
-      Complex.sqrt ((a : ℂ) ^ 2) = (a : ℂ) := by
+      Complex.sqrt ((a : ℂ) ^ (2 : ℕ)) = (a : ℂ) := by
     rw [Complex.sqrt_eq_real_add_ite]
     simp [Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hcNonneg, pow_two,
@@ -800,7 +800,7 @@ theorem twoLocalDiagonalConnectorRoot_at_one {m : ℕ}
       twoLocalVariableBranchRadicand z₀ z
           (twoLocalDiagonalConnectorLongitudinal 1)
           (twoLocalDiagonalConnectorTransverse 1) =
-        (a : ℂ) ^ 2 := by
+        (a : ℂ) ^ (2 : ℕ) := by
     rw [twoLocalDiagonalConnectorRadicand_eq]
     simp [a]
     ring

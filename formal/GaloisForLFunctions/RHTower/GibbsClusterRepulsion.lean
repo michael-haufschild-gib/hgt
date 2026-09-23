@@ -111,11 +111,11 @@ noncomputable def pairJet2 (p q : ℕ) (x : ℝ) : ℝ := Real.exp (-((q:ℝ)*((
 
 /-- The discriminant of the pair gas at the parity point. -/
 noncomputable def pairDisc (p q : ℕ) (x : ℝ) : ℝ :=
-  pairJet1 p q x ^ 2 - 4 * pairJet2 p q x * pairJet0 p q x
+  pairJet1 p q x ^ (2 : ℕ) - 4 * pairJet2 p q x * pairJet0 p q x
 
 theorem gibbsDiag_pair_jet (p q : ℕ) (hpq : p ≠ q) (x w : ℝ) :
     gibbsDiag {p, q} x (-1 + w)
-      = pairJet2 p q x * w^2 + pairJet1 p q x * w + pairJet0 p q x := by
+      = pairJet2 p q x * w^(2 : ℕ) + pairJet1 p q x * w + pairJet0 p q x := by
   have hpq' : p ∉ ({q} : Finset ℕ) := by simp [hpq]
   rw [gibbsDiag_insert p {q} hpq', gibbsDiag_singleton, gibbsDiag_singleton,
     pairJet0, pairJet1, pairJet2]
@@ -170,11 +170,11 @@ theorem tendsto_pairDisc_div_current (p q : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (
   have hDx : Filter.Tendsto (fun x => pairDisc p q x / x)
       (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (4*φ)) := by
     have htmp : Filter.Tendsto (fun x =>
-        x * (pairJet1 p q x / x)^2 - 4 * pairJet2 p q x * (pairJet0 p q x / x))
+        x * (pairJet1 p q x / x)^(2 : ℕ) - 4 * pairJet2 p q x * (pairJet0 p q x / x))
         (nhdsWithin (0:ℝ) (Set.Ioi 0))
-        (nhds (0 * (deriv (pairJet1 p q) 0)^2 - 4 * 1 * (-φ))) :=
+        (nhds (0 * (deriv (pairJet1 p q) 0)^(2 : ℕ) - 4 * 1 * (-φ))) :=
       (hxlim.mul (hs1.pow 2)).sub ((Filter.Tendsto.const_mul 4 hj2c).mul hs0)
-    have hval : (0 * (deriv (pairJet1 p q) 0)^2 - 4 * 1 * (-φ)) = 4*φ := by ring
+    have hval : (0 * (deriv (pairJet1 p q) 0)^(2 : ℕ) - 4 * 1 * (-φ)) = 4*φ := by ring
     rw [hval] at htmp
     refine htmp.congr' ?_
     filter_upwards [hxpos] with x hx
@@ -222,15 +222,15 @@ noncomputable def tripleJet3 (p q r : ℕ) (x : ℝ) : ℝ :=
 /-- The discriminant of the triple gas at the parity point. -/
 noncomputable def tripleDisc (p q r : ℕ) (x : ℝ) : ℝ :=
   18 * tripleJet3 p q r x * tripleJet2 p q r x * tripleJet1 p q r x * tripleJet0 p q r x
-    - 4 * (tripleJet2 p q r x)^3 * tripleJet0 p q r x
-    + (tripleJet2 p q r x)^2 * (tripleJet1 p q r x)^2
-    - 4 * tripleJet3 p q r x * (tripleJet1 p q r x)^3
-    - 27 * (tripleJet3 p q r x)^2 * (tripleJet0 p q r x)^2
+    - 4 * (tripleJet2 p q r x)^(3 : ℕ) * tripleJet0 p q r x
+    + (tripleJet2 p q r x)^(2 : ℕ) * (tripleJet1 p q r x)^(2 : ℕ)
+    - 4 * tripleJet3 p q r x * (tripleJet1 p q r x)^(3 : ℕ)
+    - 27 * (tripleJet3 p q r x)^(2 : ℕ) * (tripleJet0 p q r x)^(2 : ℕ)
 
 theorem gibbsDiag_triple_jet (p q r : ℕ) (hpq : p ≠ q) (hpr : p ≠ r) (hqr : q ≠ r)
     (x w : ℝ) :
     gibbsDiag {p, q, r} x (-1 + w)
-      = tripleJet3 p q r x * w^3 + tripleJet2 p q r x * w^2
+      = tripleJet3 p q r x * w^(3 : ℕ) + tripleJet2 p q r x * w^(2 : ℕ)
         + tripleJet1 p q r x * w + tripleJet0 p q r x := by
   have hqr' : q ∉ ({r} : Finset ℕ) := by simp [hqr]
   have hp' : p ∉ ({q, r} : Finset ℕ) := by simp [hpq, hpr]
@@ -252,7 +252,7 @@ theorem tendsto_tripleDisc_div_sq_current (p q r : ℕ)
     (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 ≤ r)
     (hpq : p ≠ q) (hpr : p ≠ r) (hqr : q ≠ r) :
     Filter.Tendsto
-      (fun x => tripleDisc p q r x / (gibbsDiag {p, q, r} x (-1))^2)
+      (fun x => tripleDisc p q r x / (gibbsDiag {p, q, r} x (-1))^(2 : ℕ))
       (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (-27)) := by
   set φ : ℝ := ((p:ℝ) - 1) * (((q:ℝ) - 1) * ((r:ℝ) - 1)) with hφ
   have hφ0 : 0 < φ := by
@@ -309,22 +309,22 @@ theorem tendsto_tripleDisc_div_sq_current (p q r : ℕ)
   have hxpos : ∀ᶠ x in nhdsWithin (0:ℝ) (Set.Ioi 0), 0 < x := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     exact hx
-  have hDx2 : Filter.Tendsto (fun x => tripleDisc p q r x / x^2)
-      (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (-27 * φ^2)) := by
+  have hDx2 : Filter.Tendsto (fun x => tripleDisc p q r x / x^(2 : ℕ))
+      (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (-27 * φ^(2 : ℕ))) := by
     have htmp : Filter.Tendsto (fun x =>
         x * (18 * tripleJet3 p q r x * (tripleJet2 p q r x / x)
               * (tripleJet1 p q r x / x) * (tripleJet0 p q r x / x))
-          - x^2 * (4 * (tripleJet2 p q r x / x)^3 * (tripleJet0 p q r x / x))
-          + x^2 * ((tripleJet2 p q r x / x)^2 * (tripleJet1 p q r x / x)^2)
-          - x * (4 * tripleJet3 p q r x * (tripleJet1 p q r x / x)^3)
-          - 27 * (tripleJet3 p q r x)^2 * (tripleJet0 p q r x / x)^2)
+          - x^(2 : ℕ) * (4 * (tripleJet2 p q r x / x)^(3 : ℕ) * (tripleJet0 p q r x / x))
+          + x^(2 : ℕ) * ((tripleJet2 p q r x / x)^(2 : ℕ) * (tripleJet1 p q r x / x)^(2 : ℕ))
+          - x * (4 * tripleJet3 p q r x * (tripleJet1 p q r x / x)^(3 : ℕ))
+          - 27 * (tripleJet3 p q r x)^(2 : ℕ) * (tripleJet0 p q r x / x)^(2 : ℕ))
         (nhdsWithin (0:ℝ) (Set.Ioi 0))
         (nhds (0 * (18 * 1 * (deriv (tripleJet2 p q r) 0)
               * (deriv (tripleJet1 p q r) 0) * φ)
-          - 0^2 * (4 * (deriv (tripleJet2 p q r) 0)^3 * φ)
-          + 0^2 * ((deriv (tripleJet2 p q r) 0)^2 * (deriv (tripleJet1 p q r) 0)^2)
-          - 0 * (4 * 1 * (deriv (tripleJet1 p q r) 0)^3)
-          - 27 * 1^2 * φ^2)) :=
+          - 0^(2 : ℕ) * (4 * (deriv (tripleJet2 p q r) 0)^(3 : ℕ) * φ)
+          + 0^(2 : ℕ) * ((deriv (tripleJet2 p q r) 0)^(2 : ℕ) * (deriv (tripleJet1 p q r) 0)^(2 : ℕ))
+          - 0 * (4 * 1 * (deriv (tripleJet1 p q r) 0)^(3 : ℕ))
+          - 27 * 1^(2 : ℕ) * φ^(2 : ℕ))) :=
       (((((hxlim.mul ((((Filter.Tendsto.const_mul 18 hj3c).mul hs2).mul hs1).mul
         hs0)).sub ((hxlim.pow 2).mul ((Filter.Tendsto.const_mul 4 (hs2.pow 3)).mul
         hs0))).add ((hxlim.pow 2).mul ((hs2.pow 2).mul (hs1.pow 2)))).sub
@@ -332,21 +332,21 @@ theorem tendsto_tripleDisc_div_sq_current (p q r : ℕ)
         ((Filter.Tendsto.const_mul 27 (hj3c.pow 2)).mul (hs0.pow 2)))
     have hval : (0 * (18 * 1 * (deriv (tripleJet2 p q r) 0)
           * (deriv (tripleJet1 p q r) 0) * φ)
-        - 0^2 * (4 * (deriv (tripleJet2 p q r) 0)^3 * φ)
-        + 0^2 * ((deriv (tripleJet2 p q r) 0)^2 * (deriv (tripleJet1 p q r) 0)^2)
-        - 0 * (4 * 1 * (deriv (tripleJet1 p q r) 0)^3)
-        - 27 * 1^2 * φ^2) = -27 * φ^2 := by ring
+        - 0^(2 : ℕ) * (4 * (deriv (tripleJet2 p q r) 0)^(3 : ℕ) * φ)
+        + 0^(2 : ℕ) * ((deriv (tripleJet2 p q r) 0)^(2 : ℕ) * (deriv (tripleJet1 p q r) 0)^(2 : ℕ))
+        - 0 * (4 * 1 * (deriv (tripleJet1 p q r) 0)^(3 : ℕ))
+        - 27 * 1^(2 : ℕ) * φ^(2 : ℕ)) = -27 * φ^(2 : ℕ) := by ring
     rw [hval] at htmp
     refine htmp.congr' ?_
     filter_upwards [hxpos] with x hx
     have hxne : x ≠ 0 := ne_of_gt hx
     rw [tripleDisc]
     field_simp
-  have hJx2 : Filter.Tendsto (fun x => (gibbsDiag {p, q, r} x (-1) / x)^2)
-      (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (φ^2)) := hJx.pow 2
+  have hJx2 : Filter.Tendsto (fun x => (gibbsDiag {p, q, r} x (-1) / x)^(2 : ℕ))
+      (nhdsWithin (0:ℝ) (Set.Ioi 0)) (nhds (φ^(2 : ℕ))) := hJx.pow 2
   have hdiv := hDx2.div hJx2 (by positivity)
-  have hval2 : (-27 * φ^2) / (φ^2) = -27 := by
-    rw [div_eq_iff (by positivity : (φ:ℝ)^2 ≠ 0)]
+  have hval2 : (-27 * φ^(2 : ℕ)) / (φ^(2 : ℕ)) = -27 := by
+    rw [div_eq_iff (by positivity : (φ:ℝ)^(2 : ℕ) ≠ 0)]
   rw [hval2] at hdiv
   refine hdiv.congr' ?_
   filter_upwards [hxpos] with x hx
@@ -362,10 +362,10 @@ theorem eventual_current_sq_le_abs_tripleDisc (p q r : ℕ)
     (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 ≤ r)
     (hpq : p ≠ q) (hpr : p ≠ r) (hqr : q ≠ r) :
     ∀ᶠ x in nhdsWithin (0:ℝ) (Set.Ioi 0),
-      (gibbsDiag {p, q, r} x (-1))^2 ≤ |tripleDisc p q r x| := by
+      (gibbsDiag {p, q, r} x (-1))^(2 : ℕ) ≤ |tripleDisc p q r x| := by
   have hlock := tendsto_tripleDisc_div_sq_current p q r hp hq hr hpq hpr hqr
   have hev1 : ∀ᶠ x in nhdsWithin (0:ℝ) (Set.Ioi 0),
-      tripleDisc p q r x / (gibbsDiag {p, q, r} x (-1))^2 < -1 :=
+      tripleDisc p q r x / (gibbsDiag {p, q, r} x (-1))^(2 : ℕ) < -1 :=
     hlock.eventually (eventually_lt_nhds (by norm_num : (-27:ℝ) < -1))
   set φ : ℝ := ((p:ℝ) - 1) * (((q:ℝ) - 1) * ((r:ℝ) - 1)) with hφ
   have hφ0 : 0 < φ := by
@@ -397,8 +397,8 @@ theorem eventual_current_sq_le_abs_tripleDisc (p q r : ℕ)
         = (gibbsDiag {p, q, r} x (-1) / x) * x := (div_mul_cancel₀ _ hxne).symm
     rw [hrw]
     exact mul_pos hquot hx
-  have hJ2 : 0 < (gibbsDiag {p, q, r} x (-1))^2 := by positivity
-  have hΔlt : tripleDisc p q r x < -(gibbsDiag {p, q, r} x (-1))^2 := by
+  have hJ2 : 0 < (gibbsDiag {p, q, r} x (-1))^(2 : ℕ) := by positivity
+  have hΔlt : tripleDisc p q r x < -(gibbsDiag {p, q, r} x (-1))^(2 : ℕ) := by
     have h3 := (div_lt_iff₀ hJ2).mp h1
     linarith
   have hΔneg : tripleDisc p q r x < 0 := lt_trans hΔlt (by linarith)

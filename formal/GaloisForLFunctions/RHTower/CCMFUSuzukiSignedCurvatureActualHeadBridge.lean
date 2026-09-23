@@ -126,7 +126,7 @@ theorem abs_suzukiCheckpointSignedCurvatureCell_le_two
             gcongr
       _ = Real.sqrt ((N + 1 : ℕ) : ℝ) / (N : ℝ) := by ring
       _ ≤ 2 := hsqrtLe
-  have hw0 := criticalMellinAtomWeight_nonneg (N + 1)
+  have hw0 := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (N + 1)
   have hw2 := criticalMellinAtomWeight_le_two (N + 1)
   unfold suzukiCheckpointSignedCurvatureCell
   rw [hFTC, abs_le]

@@ -13,8 +13,8 @@ every integer clock wall from `M` to `k*M`, for each fixed positive integer
 growth factor and every sufficiently large starting cutoff.
 
 The proof retains the finite counting measure. Its exact clock defect is
-`sum_r log(M/r) * r * F_P(M,r)^2`; the source amplitude and square-root
-telescoping bound this defect by a core-dependent multiple of `M^2`.
+`sum_r log(M/r) * r * F_P(M,r)^(2 : ℕ)`; the source amplitude and square-root
+telescoping bound this defect by a core-dependent multiple of `M^(2 : ℕ)`.
 Strict coefficient release then dominates both this defect and `log k`.
 
 The prescribed-prime threshold depends on the core. The starting cutoff
@@ -57,15 +57,15 @@ private lemma logarithmic_count (M : ℕ) :
 
 private lemma source_term_bound (P : Finset ℕ) (hP : ∀p∈P,p.Prime)
     (M : ℕ) {r : ℕ} (hr : r∈fixedCoreSquarefreeIndices P M) :
-    (r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 ≤
-      ((3/5:ℝ)*2^(P.card-1))^2*(M:ℝ) := by
+    (r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) ≤
+      ((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)*(M:ℝ) := by
   obtain ⟨_,hsf,hd⟩ := mem_filter.mp hr
   have he := mobiusDivisorSelectionFibre_product_interpolation M P r.primeFactors
     (fun p hp => (Nat.mem_primeFactors.mp hp).1) hd
   rw [Nat.prod_primeFactors_of_squarefree hsf] at he
-  have hm : (((ArithmeticFunction.moebius r : ℤ):ℝ))^2=1 := by
+  have hm : (((ArithmeticFunction.moebius r : ℤ):ℝ))^(2 : ℕ)=1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hsf
-  have hs := congrArg (fun x : ℝ => x^2) he
+  have hs := congrArg (fun x : ℝ => x^(2 : ℕ)) he
   simp only [mul_pow,Real.sq_sqrt (Nat.cast_nonneg r),hm,mul_one] at hs
   rw [← hs]
   have hb := abs_mobiusDivisorSelectionFibre_le_source_amplitude M P r.primeFactors hP
@@ -81,12 +81,12 @@ private lemma clock_defect (P : Finset ℕ) (hP : ∀p∈P,p.Prime) (M : ℕ) :
       mobiusDivisorFiniteClockEnergy 1 M P ∧
     (1+Real.log M)*mobiusDivisorSelectionEnergy M P-
       mobiusDivisorFiniteClockEnergy 1 M P ≤
-      4*((3/5:ℝ)*2^(P.card-1))^2*(M:ℝ)^2 := by
+      4*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)*(M:ℝ)^(2 : ℕ) := by
   let S := fixedCoreSquarefreeIndices P M
-  let C : ℝ := ((3/5:ℝ)*2^(P.card-1))^2
+  let C : ℝ := ((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)
   have he : (1+Real.log M)*mobiusDivisorSelectionEnergy M P-
       mobiusDivisorFiniteClockEnergy 1 M P =
-      ∑ r∈S,(Real.log M-Real.log r)*((r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2) := by
+      ∑ r∈S,(Real.log M-Real.log r)*((r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)) := by
     rw [mobiusDivisorSelectionEnergy_eq_inclusive_squarefree,mobiusDivisorFiniteClockEnergy,
       mul_sum,← sum_sub_distrib]
     apply sum_congr rfl
@@ -114,19 +114,19 @@ private lemma clock_defect (P : Finset ℕ) (hP : ∀p∈P,p.Prime) (M : ℕ) :
 
 private lemma clock_comparison (P : Finset ℕ) (hP : ∀p∈P,p.Prime)
     {M : ℕ} (hM : 0<M) :
-    (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^2)-
-        4*((3/5:ℝ)*2^(P.card-1))^2 ≤ mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 ∧
-    mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 ≤
-      (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^2) := by
+    (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^(2 : ℕ))-
+        4*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ) ≤ mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) ∧
+    mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) ≤
+      (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^(2 : ℕ)) := by
   obtain ⟨hlo,hhi⟩ := clock_defect P hP M
   have hMR : (0:ℝ)<M := by exact_mod_cast hM
   have hp := pow_pos hMR 2
   have hlo' := div_nonneg hlo hp.le
   have hhi' := (div_le_iff₀ hp).mpr hhi
   have he : ((1+Real.log M)*mobiusDivisorSelectionEnergy M P-
-      mobiusDivisorFiniteClockEnergy 1 M P)/(M:ℝ)^2 =
-      (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^2)-
-        mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 := by ring
+      mobiusDivisorFiniteClockEnergy 1 M P)/(M:ℝ)^(2 : ℕ) =
+      (1+Real.log M)*(mobiusDivisorSelectionEnergy M P/(M:ℝ)^(2 : ℕ))-
+        mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) := by ring
   rw [he] at hlo' hhi'
   constructor <;> linarith
 
@@ -136,13 +136,13 @@ private lemma clock_block_release (P Q : Finset ℕ)
       ∑' n,mobiusDivisorFixedCoreBlockMass P n)
     (k : ℕ) (hk : 1≤k) :
     ∃ c : ℝ, 0<c ∧ ∀ᶠ M : ℕ in atTop, ∀ L : ℕ, M≤L → L≤k*M →
-      mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^2+c*Real.log M ≤
-        mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 := by
+      mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^(2 : ℕ)+c*Real.log M ≤
+        mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) := by
   let a := ∑' n,mobiusDivisorFixedCoreBlockMass P n
   let b := ∑' n,mobiusDivisorFixedCoreBlockMass Q n
   let d := a-b
   let ε := d/4
-  let K := 4*((3/5:ℝ)*2^(P.card-1))^2
+  let K := 4*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)
   have hd : 0<d := sub_pos.mpr hgap
   have hε : 0<ε := by dsimp [ε]; positivity
   have hb : 0≤b := tsum_nonneg (mobiusDivisorFixedCoreBlockMass_nonneg Q hQ)
@@ -166,9 +166,9 @@ private lemma clock_block_release (P Q : Finset ℕ)
   have hAQ := (clock_comparison Q hQ (by omega : 0<L)).2
   have hPmul := mul_le_mul_of_nonneg_left hPM.le (show 0≤1+Real.log M by linarith)
   have hQmul := mul_le_mul_of_nonneg_left hQM (show 0≤1+Real.log L by linarith)
-  have hlo : mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^2 ≥
+  have hlo : mobiusDivisorFiniteClockEnergy 1 M P/(M:ℝ)^(2 : ℕ) ≥
       (1+Real.log M)*(a-ε)-K := by dsimp [K]; linarith
-  have hhi : mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^2 ≤
+  have hhi : mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^(2 : ℕ) ≤
       (1+Real.log L)*(b+ε) := hAQ.trans hQmul
   have hkR : (0:ℝ)<k := by exact_mod_cast (show 0<k by omega)
   have hMR : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
@@ -231,13 +231,13 @@ private lemma prescribed_extension (P : Finset ℕ) (hprime : ∀p∈P,p.Prime) 
     have hlimit := (tendsto_mobiusDivisorSelectionEnergy_div_sq ∅ (by simp)).sub
       (tendsto_mobiusDivisorSelectionEnergy_div_sq {r} hsingle)
     have hlower : ∀ᶠ M : ℕ in atTop, c/(r:ℝ) ≤
-        (mobiusDivisorSelectionEnergy M ∅-mobiusDivisorSelectionEnergy M {r})/(M:ℝ)^2 := by
+        (mobiusDivisorSelectionEnergy M ∅-mobiusDivisorSelectionEnergy M {r})/(M:ℝ)^(2 : ℕ) := by
       filter_upwards [eventually_ge_atTop (N*r+1)] with M hM
       have hquot : N≤M/r := (Nat.le_div_iff_mul_le hr.pos).mpr (by omega)
       have hMR : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
       apply (le_div_iff₀ (pow_pos hMR 2)).mpr
       calc
-        _ = c*(M:ℝ)^2/(r:ℝ) := by ring
+        _ = c*(M:ℝ)^(2 : ℕ)/(r:ℝ) := by ring
         _ ≤ _ := hfirst M r hr hquot
     simp only [sub_div] at hlower
     have hh := ge_of_tendsto hlimit hlower
@@ -255,9 +255,9 @@ theorem exists_mobiusDivisorPrescribedClockBlock (P : Finset Nat.Primes) :
       (r:ℕ)∈Q ∧ r∉P ∧ Q.card≤P.card+2 ∧
       ∀ k : ℕ, 1≤k → ∃ c : ℝ, 0<c ∧ ∀ᶠ M : ℕ in atTop,
         ∀ L : ℕ, M≤L → L≤k*M →
-          mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^2+c*Real.log M ≤
+          mobiusDivisorFiniteClockEnergy 1 L Q/(L:ℝ)^(2 : ℕ)+c*Real.log M ≤
             mobiusDivisorFiniteClockEnergy 1 M
-              (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^2 := by
+              (P.image (fun p : Nat.Primes => (p:ℕ)))/(M:ℝ)^(2 : ℕ) := by
   let S := P.image (fun p : Nat.Primes => (p:ℕ))
   have hS : ∀p∈S,p.Prime := by
     intro p hp
@@ -339,12 +339,12 @@ theorem mobiusDivisorFiniteClockEnergy_current_quotient_payment_le
     (S : Finset ℕ) (hS : ∀q∈S,q.Prime ∧ M/q≤K) :
     mobiusDivisorFiniteClockEnergy 1 M P-
       mobiusDivisorFiniteClockEnergy 1 M (P∪S) ≤
-        ((3/5:ℝ)*2^(P.card-1))^2 * M * (1+Real.log M) *
+        ((3/5:ℝ)*2^(P.card-1))^(2 : ℕ) * M * (1+Real.log M) *
           (K:ℝ)*(1+Nat.primeCounting M) := by
   let F := fixedCoreSquarefreeIndices P M
   let B := clockAffectedIndices M K
-  let f := fun r : ℕ => (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2
-  let C : ℝ := ((3/5:ℝ)*2^(P.card-1))^2
+  let f := fun r : ℕ => (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)
+  let C : ℝ := ((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)
   let H : ℝ := C*M*(1+Real.log M)
   have hlogM : 0≤Real.log M := Real.log_nonneg (by exact_mod_cast hM)
   have hH : 0≤H := by dsimp [H,C]; positivity
@@ -357,7 +357,7 @@ theorem mobiusDivisorFiniteClockEnergy_current_quotient_payment_le
       fun r hr => (clock_sample_preserved M K P S hS (mem_filter.mp hr).1 (mem_filter.mp hr).2).1
     calc
       _ = ∑ r∈F.filter (fun r => r∉B),
-          (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r (P∪S) ∅)^2 := by
+          (1+Real.log r)*(r:ℝ)*(mobiusDivisorInterpolatedFibre M r (P∪S) ∅)^(2 : ℕ) := by
         apply sum_congr rfl
         intro r hr
         rw [(clock_sample_preserved M K P S hS (mem_filter.mp hr).1 (mem_filter.mp hr).2).2]
@@ -393,9 +393,9 @@ as the full fixed-core energy; the literal counting defect is lower order. -/
 theorem tendsto_mobiusDivisorFiniteClockEnergy_div_sq_log
     (P : Finset ℕ) (hP : ∀p∈P,p.Prime) :
     Tendsto (fun M : ℕ => mobiusDivisorFiniteClockEnergy 1 M P /
-      ((M:ℝ)^2*(1+Real.log M))) atTop
+      ((M:ℝ)^(2 : ℕ)*(1+Real.log M))) atTop
       (𝓝 (∑' n,mobiusDivisorFixedCoreBlockMass P n)) := by
-  let C : ℝ := 4*((3/5:ℝ)*2^(P.card-1))^2
+  let C : ℝ := 4*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)
   have he := tendsto_mobiusDivisorSelectionEnergy_div_sq P hP
   have hl : Tendsto (fun M : ℕ => 1+Real.log (M:ℝ)) atTop atTop := by
     have ht := Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ))
@@ -414,9 +414,9 @@ theorem tendsto_mobiusDivisorFiniteClockEnergy_div_sq_log
       linarith
     have hh := (clock_defect P hP M).2
     apply (le_div_iff₀ (mul_pos (sq_pos_of_pos hMp) hu)).mpr
-    have heq : (mobiusDivisorSelectionEnergy M P/(M:ℝ)^2-C/(1+Real.log M))*
-        ((M:ℝ)^2*(1+Real.log M)) =
-        (1+Real.log M)*mobiusDivisorSelectionEnergy M P-C*(M:ℝ)^2 := by
+    have heq : (mobiusDivisorSelectionEnergy M P/(M:ℝ)^(2 : ℕ)-C/(1+Real.log M))*
+        ((M:ℝ)^(2 : ℕ)*(1+Real.log M)) =
+        (1+Real.log M)*mobiusDivisorSelectionEnergy M P-C*(M:ℝ)^(2 : ℕ) := by
       field_simp
     rw [heq]
     dsimp [C]
@@ -428,7 +428,7 @@ theorem tendsto_mobiusDivisorFiniteClockEnergy_div_sq_log
       linarith
     have hh := (clock_defect P hP M).1
     apply (div_le_iff₀ (mul_pos (sq_pos_of_pos hMp) hu)).mpr
-    have hcancel : mobiusDivisorSelectionEnergy M P/(M:ℝ)^2*((M:ℝ)^2*(1+Real.log M)) =
+    have hcancel : mobiusDivisorSelectionEnergy M P/(M:ℝ)^(2 : ℕ)*((M:ℝ)^(2 : ℕ)*(1+Real.log M)) =
         (1+Real.log M)*mobiusDivisorSelectionEnergy M P := by field_simp
     rw [hcancel]
     linarith only [hh]

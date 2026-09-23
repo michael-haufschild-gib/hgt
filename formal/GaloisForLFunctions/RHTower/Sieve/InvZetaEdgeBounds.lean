@@ -36,11 +36,11 @@ estimate, so the horizontal segments cost no new argument. -/
 theorem norm_invZeta_horizontal_le {x T : ℝ} {N : ℕ}
     (hlogN : 3 ≤ Real.log N) (hN : 2 ≤ N) (hT : 1 ≤ |T|)
     (hNbig : 3 + 2 * |T| ≤ (N : ℝ))
-    (hxlo : 1 - zeroFreeConst / (16 * (Real.log N) ^ 9) ≤ x)
-    (hxhi : x ≤ 1 + zeroFreeConst / (2 * (Real.log N) ^ 9)) :
+    (hxlo : 1 - zeroFreeConst / (16 * (Real.log N) ^ (9 : ℕ)) ≤ x)
+    (hxhi : x ≤ 1 + zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))) :
     ‖invZeta ((x : ℂ) + (T : ℂ) * Complex.I)‖
       ≤ 2 / Real.exp ((-22
-          - 3 * Real.log (1 + 1 / (zeroFreeConst / (2 * (Real.log N) ^ 9)))
+          - 3 * Real.log (1 + 1 / (zeroFreeConst / (2 * (Real.log N) ^ (9 : ℕ))))
           - Real.log (5 / 2 + Real.log N)) / 4) :=
   norm_invZeta_left_le_range hlogN hN hT hNbig hxlo hxhi
 

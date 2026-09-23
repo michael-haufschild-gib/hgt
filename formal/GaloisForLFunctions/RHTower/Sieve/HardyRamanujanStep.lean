@@ -28,8 +28,8 @@ theorem two_le_of_mem_primePowerSet {z Y q : ℕ} (hq : q ∈ primePowerSet z Y)
   obtain ⟨hp, he⟩ := Finset.mem_product.1 hmem
   have hprime : p.Prime := Nat.prime_of_mem_primesLE hp
   have he1 : 1 ≤ e := (Finset.mem_Icc.1 he).1
-  calc 2 = 2 ^ 1 := by norm_num
-    _ ≤ p ^ 1 := Nat.pow_le_pow_left hprime.two_le 1
+  calc 2 = 2 ^ (1 : ℕ) := by norm_num
+    _ ≤ p ^ (1 : ℕ) := Nat.pow_le_pow_left hprime.two_le 1
     _ ≤ p ^ e := Nat.pow_le_pow_right hprime.pos he1
 
 /-- The cut prime power set has at most `Q` members. -/

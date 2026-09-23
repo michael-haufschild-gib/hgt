@@ -42,22 +42,22 @@ theorem recoveryMomentWitness_monic (d : ℕ) : (recoveryMomentWitness d).Monic 
   nlinarith [he]
 
 theorem recoveryMomentWitness_square_bound (d : ℕ) (x : ℝ) (hx : x ∈ Icc (0 : ℝ) (1/4)) :
-    ((recoveryMomentWitness d).eval x)^2 ≤ 4/(16 : ℝ)^(2*(d+1)) := by
+    ((recoveryMomentWitness d).eval x)^(2 : ℕ) ≤ 4/(16 : ℝ)^(2*(d+1)) := by
   have hb := Chebyshev.abs_eval_T_real_le_one ((d+1 : ℕ) : ℤ)
     (show |8*x-1| ≤ 1 by rw [abs_le]; constructor <;> linarith [hx.1,hx.2])
-  have hs : ((Chebyshev.T ℝ ((d+1 : ℕ) : ℤ)).eval (8*x-1))^2 ≤ 1 := by
+  have hs : ((Chebyshev.T ℝ ((d+1 : ℕ) : ℤ)).eval (8*x-1))^(2 : ℕ) ≤ 1 := by
     nlinarith [abs_le.mp hb]
   simp only [recoveryMomentWitness, eval_mul, eval_C, eval_comp, eval_sub, eval_X, eval_one]
   have h := mul_le_mul_of_nonneg_left hs (sq_nonneg (2/(16 : ℝ)^(d+1)))
   rw [mul_one] at h
-  have he : (2/(16 : ℝ)^(d+1))^2=4/(16 : ℝ)^(2*(d+1)) := by
+  have he : (2/(16 : ℝ)^(d+1))^(2 : ℕ)=4/(16 : ℝ)^(2*(d+1)) := by
     rw [div_pow, ← pow_mul]
     congr 1 <;> ring
   rw [mul_pow, ← he]
   exact h
 
 theorem recoveryMomentWitness_base_bound (d : ℕ) :
-    momentFunctional recoveryWedgeMoment ((recoveryMomentWitness d)^2) ≤
+    momentFunctional recoveryWedgeMoment ((recoveryMomentWitness d)^(2 : ℕ)) ≤
       4/(16 : ℝ)^(2*(d+1)) := by
   apply recoveryWedgeMoment_eval_le
   intro x hx
@@ -66,15 +66,15 @@ theorem recoveryMomentWitness_base_bound (d : ℕ) :
 
 theorem recoverySurgeryMoment_drop_loss (n : ℕ) :
     recoverySurgeryMoment n (n+1)-recoveryWedgeMoment (n+1) ≤
-      -1/(32*(n+2 : ℝ)^5*(4 : ℝ)^(n+1)) := by
+      -1/(32*(n+2 : ℝ)^(5 : ℕ)*(4 : ℝ)^(n+1)) := by
   have he := recoverySurgeryEpsilon_pos n
   have he1 := recoverySurgeryEpsilon_lt_one n
-  have hh : (recoverySurgeryHeight n)^2-1 ≤ -recoverySurgeryEpsilon n/2 := by
+  have hh : (recoverySurgeryHeight n)^(2 : ℕ)-1 ≤ -recoverySurgeryEpsilon n/2 := by
     unfold recoverySurgeryHeight
     nlinarith
   have h := mul_le_mul_of_nonneg_right hh (le_of_lt (recoveryWedgeMoment_positive (n+1)))
   have hid : (-recoverySurgeryEpsilon n/2)*recoveryWedgeMoment (n+1) =
-      -1/(32*(n+2 : ℝ)^5*(4 : ℝ)^(n+1)) := by
+      -1/(32*(n+2 : ℝ)^(5 : ℕ)*(4 : ℝ)^(n+1)) := by
     unfold recoverySurgeryEpsilon recoveryWedgeMoment
     push_cast
     field_simp
@@ -83,22 +83,22 @@ theorem recoverySurgeryMoment_drop_loss (n : ℕ) :
   nlinarith [recoverySurgeryMoment_drop_upper n]
 
 theorem recoveryMomentWitness_negative_of_large (d : ℕ)
-    (hd : 128*(2*d+3 : ℝ)^5 < (4 : ℝ)^(2*(d+1))) :
-    momentFunctional (recoverySurgeryMoment (2*d+1)) ((recoveryMomentWitness d)^2) < 0 := by
-  have hdeg : ((recoveryMomentWitness d)^2).natDegree = 2*d+1+1 := by
+    (hd : 128*(2*d+3 : ℝ)^(5 : ℕ) < (4 : ℝ)^(2*(d+1))) :
+    momentFunctional (recoverySurgeryMoment (2*d+1)) ((recoveryMomentWitness d)^(2 : ℕ)) < 0 := by
+  have hdeg : ((recoveryMomentWitness d)^(2 : ℕ)).natDegree = 2*d+1+1 := by
     rw [natDegree_pow, recoveryMomentWitness_degree]
     omega
-  have hcoeff : ((recoveryMomentWitness d)^2).coeff (2*d+1+1)=1 := by
+  have hcoeff : ((recoveryMomentWitness d)^(2 : ℕ)).coeff (2*d+1+1)=1 := by
     rw [← hdeg]
     exact (recoveryMomentWitness_monic d).pow 2 |>.coeff_natDegree
   rw [recoverySurgeryMomentFunctional_top_change (2*d+1) _ (le_of_eq hdeg),hcoeff,one_mul]
   have hb := recoveryMomentWitness_base_bound d
   have hl := recoverySurgeryMoment_drop_loss (2*d+1)
-  have he : (16 : ℝ)^(2*(d+1)) = ((4 : ℝ)^(2*(d+1)))^2 := by
+  have he : (16 : ℝ)^(2*(d+1)) = ((4 : ℝ)^(2*(d+1)))^(2 : ℕ) := by
     calc
       _ = ((4 : ℝ)*4)^(2*(d+1)) := by congr 1; ring
       _ = _ := by rw [mul_pow]; ring
-  have hs : 4/(16 : ℝ)^(2*(d+1)) < 1/(32*(2*d+3 : ℝ)^5*(4 : ℝ)^(2*(d+1))) := by
+  have hs : 4/(16 : ℝ)^(2*(d+1)) < 1/(32*(2*d+3 : ℝ)^(5 : ℕ)*(4 : ℝ)^(2*(d+1))) := by
     rw [he]
     apply (div_lt_div_iff₀ (by positivity) (by positivity)).mpr
     nlinarith [mul_pos (show 0 < (4 : ℝ)^(2*(d+1)) by positivity)
@@ -114,37 +114,37 @@ theorem recoveryMomentWitness_negative_of_large (d : ℕ)
 theorem recoveryDyadic_exponent_bound (j : ℕ) : 5*(j+4)+12 ≤ (2 : ℕ)^(j+5) := by
   induction j with
   | zero =>
-    have h : (2 : ℕ)^5=32 := by ring
+    have h : (2 : ℕ)^(5 : ℕ)=32 := by ring
     simpa only [zero_add, h] using (le_refl (32 : ℕ))
   | succ j ih =>
     rw [show j+1+5=(j+5)+1 by omega, pow_succ]
     omega
 
 theorem recoveryDyadic_large (j : ℕ) :
-    128*((2 : ℝ)^(j+4)+1)^5 < (4 : ℝ)^((2 : ℕ)^(j+4)) := by
+    128*((2 : ℝ)^(j+4)+1)^(5 : ℕ) < (4 : ℝ)^((2 : ℕ)^(j+4)) := by
   have htwo : (1 : ℝ) < (2 : ℝ)^(j+4) := one_lt_pow₀ (by linarith) (by omega)
   have hm : (2 : ℝ)^(j+4)+1 < (2 : ℝ)^(j+5) := by
     rw [show j+5=(j+4)+1 by omega, pow_succ (2 : ℝ) (j+4)]
     linarith
   have hp := pow_lt_pow_left₀ hm (show 0 ≤ (2 : ℝ)^(j+4)+1 by positivity) (show 5 ≠ 0 by omega)
-  have h128 : (128 : ℝ)=(2 : ℝ)^7 := by ring
-  have he : 128*((2 : ℝ)^(j+5))^5=(2 : ℝ)^(5*(j+4)+12) := by
+  have h128 : (128 : ℝ)=(2 : ℝ)^(7 : ℕ) := by ring
+  have he : 128*((2 : ℝ)^(j+5))^(5 : ℕ)=(2 : ℝ)^(5*(j+4)+12) := by
     rw [h128, ← pow_mul, ← pow_add]
     congr 1
     omega
   have hr : (4 : ℝ)^((2 : ℕ)^(j+4)) = (2 : ℝ)^((2 : ℕ)^(j+5)) := by
-    rw [show (4 : ℝ)=(2 : ℝ)^2 by ring, ← pow_mul,
+    rw [show (4 : ℝ)=(2 : ℝ)^(2 : ℕ) by ring, ← pow_mul,
       show j+5=(j+4)+1 by omega, pow_succ (2 : ℕ) (j+4)]
     congr 1
     omega
   calc
-    _ < 128*((2 : ℝ)^(j+5))^5 := by linarith
+    _ < 128*((2 : ℝ)^(j+5))^(5 : ℕ) := by linarith
     _ = _ := he
     _ ≤ _ := by rw [hr]; exact pow_le_pow_right₀ (by linarith) (recoveryDyadic_exponent_bound j)
 
 theorem recoverySurgery_dyadic_negative (j : ℕ) :
     momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1))
-      ((recoveryMomentWitness ((2 : ℕ)^(j+3)-1))^2) < 0 := by
+      ((recoveryMomentWitness ((2 : ℕ)^(j+3)-1))^(2 : ℕ)) < 0 := by
   have hp : 0 < (2 : ℕ)^(j+3) := by positivity
   have he : (2 : ℕ)^(j+4) = 2*(2 : ℕ)^(j+3) := by
     rw [show j+4=(j+3)+1 by omega, pow_succ]
@@ -161,9 +161,9 @@ theorem recoverySurgery_dyadic_negative (j : ℕ) :
 
 theorem recoverySurgery_dyadic_first_failure (j : ℕ) :
     ∃ P : ℝ[X], P.natDegree=(2 : ℕ)^(j+3) ∧
-      momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (P^2) < 0 ∧
+      momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (P^(2 : ℕ)) < 0 ∧
       ∀ Q : ℝ[X], Q ≠ 0 → Q.natDegree < (2 : ℕ)^(j+3) →
-        0 < momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (Q^2) := by
+        0 < momentFunctional (recoverySurgeryMoment ((2 : ℕ)^(j+4)-1)) (Q^(2 : ℕ)) := by
   have hp : 0 < (2 : ℕ)^(j+3) := by positivity
   refine ⟨recoveryMomentWitness ((2 : ℕ)^(j+3)-1),?_,recoverySurgery_dyadic_negative j,?_⟩
   · rw [recoveryMomentWitness_degree, Nat.sub_add_cancel (by omega)]

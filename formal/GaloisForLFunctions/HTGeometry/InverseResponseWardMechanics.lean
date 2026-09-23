@@ -45,7 +45,7 @@ theorem derivation_inverse_eq_neg_mul_inverseResponseCurrent
 /-- Equivalent square form of the inverse derivative. -/
 theorem derivation_inverse_eq_neg_sq_mul
     (D : Derivation R A A) {M E : A} (hME : M * E = 1) :
-    D M = -(M ^ 2) * D E := by
+    D M = -(M ^ (2 : ℕ)) * D E := by
   rw [derivation_inverse_eq_neg_mul_inverseResponseCurrent D hME,
     inverseResponseCurrent]
   ring
@@ -74,7 +74,7 @@ theorem mixed_sourceAcceleration_reconstruction
 /-- The diagonal shadow is the ordinary inverse-response Riccati equation. -/
 theorem inverseResponseCurrent_riccati
     (D : Derivation R A A) {M E : A} (hME : M * E = 1) :
-    D (inverseResponseCurrent D M E) + inverseResponseCurrent D M E ^ 2 =
+    D (inverseResponseCurrent D M E) + inverseResponseCurrent D M E ^ (2 : ℕ) =
       M * D (D E) := by
   simpa [pow_two] using mixed_inverseResponseCurrent_riccati D D hME
 
@@ -140,7 +140,7 @@ theorem inverseResponseCurrent_eq_zero_of_faithful_squareReporter
     {B : Type*} [AddCommGroup B] (D : Derivation R A A) {M E : A}
     (hME : M * E = 1) (haffine : D (D E) = 0) (τ : A →+ B)
     (hτ : ∀ x : A, τ (D x) = 0)
-    (hfaithful : ∀ x : A, τ (x ^ 2) = 0 → x = 0) :
+    (hfaithful : ∀ x : A, τ (x ^ (2 : ℕ)) = 0 → x = 0) :
     inverseResponseCurrent D M E = 0 := by
   apply hfaithful
   simpa [pow_two] using

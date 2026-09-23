@@ -19,7 +19,7 @@ noncomputable section
 /-- Positive spectral radius of the qubit block with longitudinal
 coefficient `c` and transverse coefficient `h`. -/
 def conditionedQubitRadius (c h g : ℝ) : ℝ :=
-  Real.sqrt ((1 + c * g) ^ 2 + (h * g) ^ 2)
+  Real.sqrt ((1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ))
 
 /-- Exact level splitting of one conditioned qubit block. -/
 def conditionedQubitSplitting (c h g : ℝ) : ℝ :=
@@ -28,7 +28,7 @@ def conditionedQubitSplitting (c h g : ℝ) : ℝ :=
 /-- Quadratic remainder after the constant and longitudinal-linear parts
 of a conditioned qubit radius are removed. -/
 def conditionedQubitRemainder (c h g : ℝ) : ℝ :=
-  (conditionedQubitRadius c h g - (1 + c * g)) / g ^ 2
+  (conditionedQubitRadius c h g - (1 + c * g)) / g ^ (2 : ℕ)
 
 /-- First spectral character: difference of the `(1,1)` and `(0,1)`
 conditioned-qubit splittings. -/
@@ -50,15 +50,15 @@ theorem conditionedQubitRadius_tendsto_one (c h : ℝ) :
   change
     Tendsto
       (fun g : ℝ =>
-        Real.sqrt ((1 + c * g) ^ 2 + (h * g) ^ 2))
+        Real.sqrt ((1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ)))
       (𝓝[>] 0) (𝓝 1)
   have hi :
       Tendsto
-        (fun g : ℝ => (1 + c * g) ^ 2 + (h * g) ^ 2)
+        (fun g : ℝ => (1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ))
         (𝓝[>] 0) (𝓝 1) := by
     have hc :
         ContinuousAt
-          (fun g : ℝ => (1 + c * g) ^ 2 + (h * g) ^ 2) 0 := by
+          (fun g : ℝ => (1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ)) 0 := by
       fun_prop
     simpa using hc.tendsto.mono_left
       (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from inf_le_left)
@@ -70,13 +70,13 @@ ray. -/
 theorem conditionedQubitRadius_sub_affine_eq
     {c h g : ℝ} (hc : 0 ≤ c) (hg : 0 < g) :
     conditionedQubitRadius c h g - (1 + c * g) =
-      h ^ 2 * g ^ 2 /
+      h ^ (2 : ℕ) * g ^ (2 : ℕ) /
         (conditionedQubitRadius c h g + (1 + c * g)) := by
   have hlin : 0 < 1 + c * g := by positivity
-  have hins : 0 ≤ (1 + c * g) ^ 2 + (h * g) ^ 2 := by positivity
+  have hins : 0 ≤ (1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ) := by positivity
   have hsqrt :
-      (conditionedQubitRadius c h g) ^ 2 =
-        (1 + c * g) ^ 2 + (h * g) ^ 2 := by
+      (conditionedQubitRadius c h g) ^ (2 : ℕ) =
+        (1 + c * g) ^ (2 : ℕ) + (h * g) ^ (2 : ℕ) := by
     simpa [conditionedQubitRadius] using Real.sq_sqrt hins
   have hden :
       conditionedQubitRadius c h g + (1 + c * g) ≠ 0 :=
@@ -90,7 +90,7 @@ theorem conditionedQubitRemainder_tendsto
     {c h : ℝ} (hc : 0 ≤ c) :
     Tendsto
       (conditionedQubitRemainder c h)
-      (𝓝[>] 0) (𝓝 (h ^ 2 / 2)) := by
+      (𝓝[>] 0) (𝓝 (h ^ (2 : ℕ) / 2)) := by
   have hlin :
       Tendsto (fun g : ℝ => 1 + c * g) (𝓝[>] 0) (𝓝 1) := by
     have hc' : ContinuousAt (fun g : ℝ => 1 + c * g) 0 := by
@@ -107,9 +107,9 @@ theorem conditionedQubitRemainder_tendsto
   have hquot :
       Tendsto
         (fun g =>
-          h ^ 2 /
+          h ^ (2 : ℕ) /
             (conditionedQubitRadius c h g + (1 + c * g)))
-        (𝓝[>] 0) (𝓝 (h ^ 2 / 2)) :=
+        (𝓝[>] 0) (𝓝 (h ^ (2 : ℕ) / 2)) :=
     tendsto_const_nhds.div hden (by norm_num)
   apply hquot.congr'
   filter_upwards [self_mem_nhdsWithin] with g hg
@@ -159,7 +159,7 @@ theorem conditionedQubitLayerOne_profile :
 birth coefficient three at order two. -/
 theorem conditionedQubitLayerTwo_profile :
     Tendsto
-      (fun g => conditionedQubitLayerTwoDetuning g / g ^ 2)
+      (fun g => conditionedQubitLayerTwoDetuning g / g ^ (2 : ℕ))
       (𝓝[>] 0) (𝓝 3) := by
   have h01 :=
     conditionedQubitRemainder_tendsto
@@ -204,7 +204,7 @@ def realQubitMinusVector (a q R : ℝ) : Fin 2 → ℂ :=
 
 /-- Positive branch eigen-equation for a real qubit block. -/
 theorem realQubitBlock_mulVec_plus
-    {b a q R : ℝ} (hR : R ^ 2 = a ^ 2 + q ^ 2) :
+    {b a q R : ℝ} (hR : R ^ (2 : ℕ) = a ^ (2 : ℕ) + q ^ (2 : ℕ)) :
     (realQubitBlock b a q).mulVec (realQubitPlusVector a q R) =
       ((b + R : ℝ) : ℂ) • realQubitPlusVector a q R := by
   funext i
@@ -216,7 +216,7 @@ theorem realQubitBlock_mulVec_plus
 
 /-- Negative branch eigen-equation for a real qubit block. -/
 theorem realQubitBlock_mulVec_minus
-    {b a q R : ℝ} (hR : R ^ 2 = a ^ 2 + q ^ 2) :
+    {b a q R : ℝ} (hR : R ^ (2 : ℕ) = a ^ (2 : ℕ) + q ^ (2 : ℕ)) :
     (realQubitBlock b a q).mulVec (realQubitMinusVector a q R) =
       ((b - R : ℝ) : ℂ) • realQubitMinusVector a q R := by
   funext i
@@ -334,9 +334,9 @@ theorem conditionedQubitRadius_sq
     (s : Fin 3) (g : ℝ) :
     conditionedQubitRadius
         (conditionedQubitLongitudinalCoefficient s)
-        (conditionedQubitTransverseCoefficient s) g ^ 2 =
-      (1 + conditionedQubitLongitudinalCoefficient s * g) ^ 2 +
-        (conditionedQubitTransverseCoefficient s * g) ^ 2 := by
+        (conditionedQubitTransverseCoefficient s) g ^ (2 : ℕ) =
+      (1 + conditionedQubitLongitudinalCoefficient s * g) ^ (2 : ℕ) +
+        (conditionedQubitTransverseCoefficient s * g) ^ (2 : ℕ) := by
   apply Real.sq_sqrt
   positivity
 

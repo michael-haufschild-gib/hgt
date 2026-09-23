@@ -28,25 +28,25 @@ def linearCosinePrefix (lam A : ℝ) : ℝ :=
 
 /-- The coefficient in the exact integer-endpoint cosine transform. -/
 def phaseCosineCoefficient (lam : ℝ) : ℝ :=
-  Real.cos (lam/2)/(2*lam^2*Real.sin (lam/2))-1/lam^3
+  Real.cos (lam/2)/(2*lam^(2 : ℕ)*Real.sin (lam/2))-1/lam^(3 : ℕ)
 
 /-- The derivative of the cosine coefficient away from its displayed denominators. -/
 def phaseCosineCoefficientDeriv (lam : ℝ) : ℝ :=
-  -1/(4*lam^2*Real.sin (lam/2)^2)-Real.cos (lam/2)/(lam^3*Real.sin (lam/2))+3/lam^4
+  -1/(4*lam^(2 : ℕ)*Real.sin (lam/2)^(2 : ℕ))-Real.cos (lam/2)/(lam^(3 : ℕ)*Real.sin (lam/2))+3/lam^(4 : ℕ)
 
 private def cosinePhasePrimitive (lam m x : ℝ) : ℝ :=
-  ((x-m)^2-(x-m))/2 * Real.sin (lam*x)/lam +
-    (x-m-1/2)*Real.cos (lam*x)/lam^2 - Real.sin (lam*x)/lam^3
+  ((x-m)^(2 : ℕ)-(x-m))/2 * Real.sin (lam*x)/lam +
+    (x-m-1/2)*Real.cos (lam*x)/lam^(2 : ℕ) - Real.sin (lam*x)/lam^(3 : ℕ)
 
 private theorem cosinePhasePrimitive_deriv {lam : ℝ} (hlam : lam ≠ 0) (m x : ℝ) :
     HasDerivAt (cosinePhasePrimitive lam m)
-      (((x-m)^2-(x-m))/2*Real.cos (lam*x)) x := by
+      (((x-m)^(2 : ℕ)-(x-m))/2*Real.cos (lam*x)) x := by
   have hy := (hasDerivAt_id x).sub_const m
   have hb := ((hy.pow 2).sub hy).div_const 2
   have hc := (Real.hasDerivAt_cos (lam*x)).comp x ((hasDerivAt_id x).const_mul lam)
   have hs := (Real.hasDerivAt_sin (lam*x)).comp x ((hasDerivAt_id x).const_mul lam)
   have h := (((hb.mul hs).div_const lam).add
-    (((hy.sub_const (1/2)).mul hc).div_const (lam^2))).sub (hs.div_const (lam^3))
+    (((hy.sub_const (1/2)).mul hc).div_const (lam^(2 : ℕ)))).sub (hs.div_const (lam^(3 : ℕ)))
   convert! h using 1
   dsimp [cosinePhasePrimitive]
   norm_num
@@ -54,7 +54,7 @@ private theorem cosinePhasePrimitive_deriv {lam : ℝ} (hlam : lam ≠ 0) (m x :
   ring
 
 private theorem variation_bernoulli_continuous : Continuous RHTower.bernoulliPeriodic :=
-  (show Continuous (fun x : ℝ => (x^2-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
+  (show Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
 
 private theorem cosinePhase_integrable (lam a b : ℝ) :
     IntervalIntegrable (fun x : ℝ => RHTower.bernoulliPeriodic x*Real.cos (lam*x))
@@ -67,7 +67,7 @@ private theorem cosinePhase_cell_eq {lam : ℝ} (hlam : lam ≠ 0) (m : ℕ) :
   have he : (∫ x in (m:ℝ)..((m:ℝ)+1),
       RHTower.bernoulliPeriodic x*Real.cos (lam*x)) =
       ∫ x in (m:ℝ)..((m:ℝ)+1),
-        (((x-(m:ℝ))^2-(x-(m:ℝ)))/2)*Real.cos (lam*x) := by
+        (((x-(m:ℝ))^(2 : ℕ)-(x-(m:ℝ)))/2)*Real.cos (lam*x) := by
     apply intervalIntegral.integral_congr
     intro x hx
     rw [uIcc_of_le (by linarith)] at hx
@@ -85,8 +85,8 @@ private theorem cosinePhase_cell_eq {lam : ℝ} (hlam : lam ≠ 0) (m : ℕ) :
 
 private theorem cosinePhase_prefix_nat {lam : ℝ} (hlam : lam ≠ 0) (m : ℕ) :
     linearCosinePrefix lam m =
-      (1/2)*(1-Real.cos (lam*(m:ℝ)))/lam^2-Real.sin (lam*(m:ℝ))/lam^3+
-        (∑ j ∈ Finset.range m, Real.cos (lam*((j:ℝ)+1)))/lam^2 := by
+      (1/2)*(1-Real.cos (lam*(m:ℝ)))/lam^(2 : ℕ)-Real.sin (lam*(m:ℝ))/lam^(3 : ℕ)+
+        (∑ j ∈ Finset.range m, Real.cos (lam*((j:ℝ)+1)))/lam^(2 : ℕ) := by
   induction m with
   | zero => simp [linearCosinePrefix]
   | succ m ih =>
@@ -140,7 +140,7 @@ def linearSineMoment (lam : ℝ) (m : ℕ) : ℝ :=
 
 /-- The second spatial moment against the cosine phase. -/
 def linearSecondCosineMoment (lam : ℝ) (m : ℕ) : ℝ :=
-  ∫ x in (0:ℝ)..(m:ℝ), x^2*RHTower.bernoulliPeriodic x*Real.cos (lam*x)
+  ∫ x in (0:ℝ)..(m:ℝ), x^(2 : ℕ)*RHTower.bernoulliPeriodic x*Real.cos (lam*x)
 
 /-- Frequency differentiation of the literal cosine integral produces its first sine moment. -/
 theorem hasDerivAt_linearCosinePrefix (lam : ℝ) (m : ℕ) :
@@ -188,33 +188,33 @@ theorem hasDerivAt_linearSineMoment (lam : ℝ) (m : ℕ) :
   have h := intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (a:=0) (b:=(m:ℝ)) (μ:=volume)
     (F:=fun l x : ℝ => x*RHTower.bernoulliPeriodic x*Real.sin (l*x))
-    (F':=fun l x : ℝ => x^2*RHTower.bernoulliPeriodic x*Real.cos (l*x))
-    (bound:=fun _ => ((m:ℝ)+1)^2) (Metric.ball_mem_nhds lam (by norm_num : (0:ℝ)<1))
+    (F':=fun l x : ℝ => x^(2 : ℕ)*RHTower.bernoulliPeriodic x*Real.cos (l*x))
+    (bound:=fun _ => ((m:ℝ)+1)^(2 : ℕ)) (Metric.ball_mem_nhds lam (by norm_num : (0:ℝ)<1))
   have hm : ∀ᶠ l in 𝓝 lam, AEStronglyMeasurable
       (fun x : ℝ => x*RHTower.bernoulliPeriodic x*Real.sin (l*x))
       (volume.restrict (uIoc 0 (m:ℝ))) := by
     filter_upwards with l
     exact ((continuous_id.mul variation_bernoulli_continuous).mul (by fun_prop)).aestronglyMeasurable.restrict
   have hm' : AEStronglyMeasurable
-      (fun x : ℝ => x^2*RHTower.bernoulliPeriodic x*Real.cos (lam*x))
+      (fun x : ℝ => x^(2 : ℕ)*RHTower.bernoulliPeriodic x*Real.cos (lam*x))
       (volume.restrict (uIoc 0 (m:ℝ))) := by
     exact (((continuous_id.pow 2).mul variation_bernoulli_continuous).mul (by fun_prop)).aestronglyMeasurable.restrict
   have hb : ∀ᵐ x : ℝ ∂volume, x ∈ uIoc 0 (m:ℝ) →
-      ∀ l ∈ Metric.ball lam 1, ‖x^2*RHTower.bernoulliPeriodic x*Real.cos (l*x)‖ ≤ ((m:ℝ)+1)^2 := by
+      ∀ l ∈ Metric.ball lam 1, ‖x^(2 : ℕ)*RHTower.bernoulliPeriodic x*Real.cos (l*x)‖ ≤ ((m:ℝ)+1)^(2 : ℕ) := by
     filter_upwards with x hx l _
     rw [uIoc_of_le (by positivity)] at hx
     rw [norm_mul,norm_mul,Real.norm_eq_abs,Real.norm_eq_abs,Real.norm_eq_abs,abs_of_nonneg (sq_nonneg x)]
-    calc x^2*|RHTower.bernoulliPeriodic x| * |Real.cos (l*x)| ≤ ((m:ℝ)+1)^2*1*1 := by
+    calc x^(2 : ℕ)*|RHTower.bernoulliPeriodic x| * |Real.cos (l*x)| ≤ ((m:ℝ)+1)^(2 : ℕ)*1*1 := by
           gcongr
           · exact hx.1.le
           · linarith [hx.2]
           · exact RHTower.abs_bernoulliPeriodic_le_one x
           · exact Real.abs_cos_le_one _
-      _ = ((m:ℝ)+1)^2 := by ring
+      _ = ((m:ℝ)+1)^(2 : ℕ) := by ring
   have hd : ∀ᵐ x : ℝ ∂volume, x ∈ uIoc 0 (m:ℝ) →
       ∀ l ∈ Metric.ball lam 1,
         HasDerivAt (fun l => x*RHTower.bernoulliPeriodic x*Real.sin (l*x))
-          (x^2*RHTower.bernoulliPeriodic x*Real.cos (l*x)) l := by
+          (x^(2 : ℕ)*RHTower.bernoulliPeriodic x*Real.cos (l*x)) l := by
     filter_upwards with x _ l _
     convert! (((Real.hasDerivAt_sin (l*x)).comp l ((hasDerivAt_id l).mul_const x)).const_mul
       (x*RHTower.bernoulliPeriodic x)) using 1
@@ -229,13 +229,13 @@ private theorem coefficient_hasDerivAt {lam : ℝ} (hlam : lam ≠ 0)
   have hc := (Real.hasDerivAt_cos (lam/2)).comp lam ((hasDerivAt_id lam).div_const 2)
   have hs := (Real.hasDerivAt_sin (lam/2)).comp lam ((hasDerivAt_id lam).div_const 2)
   have hden := (((hasDerivAt_id lam).pow 2).const_mul 2).mul hs
-  have h := (hc.div hden (by positivity : 2*lam^2*Real.sin (lam/2)≠0)).sub
+  have h := (hc.div hden (by positivity : 2*lam^(2 : ℕ)*Real.sin (lam/2)≠0)).sub
     ((hasDerivAt_const lam (1:ℝ)).div ((hasDerivAt_id lam).pow 3) (pow_ne_zero _ hlam))
   convert! h using 1
   dsimp [phaseCosineCoefficient,phaseCosineCoefficientDeriv]
   norm_num
   field_simp
-  linear_combination (4*lam^2)*(Real.sin_sq_add_cos_sq (lam/2))
+  linear_combination (4*lam^(2 : ℕ))*(Real.sin_sq_add_cos_sq (lam/2))
 
 
 private theorem coefficient_near {lam : ℝ} (hlam : lam ≠ 0)
@@ -305,8 +305,8 @@ def resonantClockMomentCoefficient (sigma lam : ℝ) (m : ℕ) : ℝ :=
 theorem resonantClockMomentCoefficient_eq {sigma lam : ℝ} (hlam : lam ≠ 0)
     (hsin : Real.sin (lam/2)≠0) (m K : ℕ) (hturn : lam*(m:ℝ)=2*Real.pi*K) :
     resonantClockMomentCoefficient sigma lam m = (m:ℝ)*
-      ((1-sigma)/lam^3+sigma*Real.cos (lam/2)/(2*lam^2*Real.sin (lam/2))-
-        1/(4*lam*Real.sin (lam/2)^2)) := by
+      ((1-sigma)/lam^(3 : ℕ)+sigma*Real.cos (lam/2)/(2*lam^(2 : ℕ)*Real.sin (lam/2))-
+        1/(4*lam*Real.sin (lam/2)^(2 : ℕ))) := by
   rw [resonantClockMomentCoefficient,linearSineMoment_at_resonance hlam hsin m K hturn,
     linearSecondCosineMoment_at_resonance hlam hsin m K hturn,
     phaseCosineCoefficient,phaseCosineCoefficientDeriv]
@@ -331,10 +331,10 @@ private theorem variation_sin_sub_mul_cos_pos {x : ℝ} (hx : 0<x) (hx' : x<Real
 
 /-- The trigonometric quantity controlling the sign of the undamped first variation. -/
 def resonantPhaseSignDefect (x : ℝ) : ℝ :=
-  x^2+x*Real.sin x*Real.cos x-2*Real.sin x^2
+  x^(2 : ℕ)+x*Real.sin x*Real.cos x-2*Real.sin x^(2 : ℕ)
 
 private def resonantPhaseSignSlope (x : ℝ) : ℝ :=
-  2*x+x*(Real.cos x^2-Real.sin x^2)-3*Real.sin x*Real.cos x
+  2*x+x*(Real.cos x^(2 : ℕ)-Real.sin x^(2 : ℕ))-3*Real.sin x*Real.cos x
 
 private theorem signSlope_deriv (x : ℝ) :
     HasDerivAt resonantPhaseSignSlope (4*Real.sin x*(Real.sin x-x*Real.cos x)) x := by
@@ -392,7 +392,7 @@ theorem phaseCosineCoefficient_neg {lam : ℝ} (hlam : 0<lam) (hlam' : lam<2*Rea
   have hx' : lam/2<Real.pi := by linarith
   have hs := Real.sin_pos_of_pos_of_lt_pi hx hx'
   have he : phaseCosineCoefficient lam =
-      ((lam/2)*Real.cos (lam/2)-Real.sin (lam/2))/(8*(lam/2)^3*Real.sin (lam/2)) := by
+      ((lam/2)*Real.cos (lam/2)-Real.sin (lam/2))/(8*(lam/2)^(3 : ℕ)*Real.sin (lam/2)) := by
     rw [phaseCosineCoefficient]
     field_simp
     ring
@@ -408,7 +408,7 @@ theorem resonantClockMomentCoefficient_neg {sigma lam : ℝ} (hsigma : -1 ≤ si
   have hx' : lam/2<Real.pi := by linarith
   have hs := Real.sin_pos_of_pos_of_lt_pi hx hx'
   have he : resonantClockMomentCoefficient sigma lam m = (m:ℝ)*
-      (-resonantPhaseSignDefect (lam/2)/(8*(lam/2)^3*Real.sin (lam/2)^2)+
+      (-resonantPhaseSignDefect (lam/2)/(8*(lam/2)^(3 : ℕ)*Real.sin (lam/2)^(2 : ℕ))+
         (sigma+1)*phaseCosineCoefficient lam) := by
     rw [resonantClockMomentCoefficient_eq hlam.ne' hs.ne' m K hturn,
       resonantPhaseSignDefect,phaseCosineCoefficient]
@@ -416,7 +416,7 @@ theorem resonantClockMomentCoefficient_neg {sigma lam : ℝ} (hsigma : -1 ≤ si
     ring
   rw [he]
   apply mul_neg_of_pos_of_neg (by exact_mod_cast hm)
-  have hb : -resonantPhaseSignDefect (lam/2)/(8*(lam/2)^3*Real.sin (lam/2)^2)<0 :=
+  have hb : -resonantPhaseSignDefect (lam/2)/(8*(lam/2)^(3 : ℕ)*Real.sin (lam/2)^(2 : ℕ))<0 :=
     div_neg_of_neg_of_pos (neg_neg_of_pos (resonantPhaseSignDefect_pos hx hx')) (by positivity)
   have hn := mul_nonpos_of_nonneg_of_nonpos (show 0 ≤ sigma+1 by linarith)
     (phaseCosineCoefficient_neg hlam hlam').le

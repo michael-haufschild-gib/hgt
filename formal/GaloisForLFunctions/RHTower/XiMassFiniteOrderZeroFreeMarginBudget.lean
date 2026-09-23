@@ -85,11 +85,11 @@ theorem tendsto_xiMassFiniteOrderScaledEnvelope_zero
       dsimp only [L]
       linarith
     have hlogyx' : Real.log y ≤ x := hlogyx.trans hLx
-    have hP : P ≤ D * x ^ 2 := by
+    have hP : P ≤ D * x ^ (2 : ℕ) := by
       dsimp only [P]
       calc
         C * (2 * B + 3) * Real.log y ≤ D * x * x := by gcongr
-        _ = D * x ^ 2 := by ring
+        _ = D * x ^ (2 : ℕ) := by ring
     have hsmallMul :
         Real.log D * L ^ n + 2 * L ^ (n + 1) ≤ c / 2 * B := by
       have hmul := mul_le_mul_of_nonneg_left hsmallB hB.le
@@ -107,7 +107,7 @@ theorem tendsto_xiMassFiniteOrderScaledEnvelope_zero
         (Real.log D + 2 * L) * L ^ n =
             Real.log D * L ^ n + 2 * L ^ (n + 1) := by ring
         _ ≤ c / 2 * B := hsmallMul
-    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ 2 := by
+    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ (2 : ℕ) := by
       rw [Real.exp_add, Real.exp_log hD]
       have htwo : 2 * L = L + L := by ring
       rw [htwo, Real.exp_add]
@@ -116,7 +116,7 @@ theorem tendsto_xiMassFiniteOrderScaledEnvelope_zero
       ring
     have hPexp : P ≤ Real.exp (c / 2 * X) := by
       calc
-        P ≤ D * x ^ 2 := hP
+        P ≤ D * x ^ (2 : ℕ) := hP
         _ = Real.exp (Real.log D + 2 * L) := hexpEq.symm
         _ ≤ Real.exp (c / 2 * X) := Real.exp_le_exp.mpr hbudget
     have hcalc : P * Real.exp (-c * X) ≤ Real.exp (-(c / 2) * X) := by

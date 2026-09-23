@@ -151,7 +151,7 @@ theorem all_even_degree_genericUnitarySymPowerLocus :
 
 /-- Eigenvalue attached to a real complementary exponent in Selberg normalization. -/
 def eigenvalueOfComplementaryExponent (ν : ℝ) : ℝ :=
-  1 / 4 - ν ^ 2
+  1 / 4 - ν ^ (2 : ℕ)
 
 @[simp]
 theorem eigenvalueOfComplementaryExponent_zero :
@@ -170,12 +170,12 @@ theorem image_eigenvalue_all_degree_genericUnitary_locus :
 theorem image_eigenvalue_genericUnitarySymPowerLocus_succ_subset (d : ℕ) :
     eigenvalueOfComplementaryExponent '' genericUnitarySymPowerLocus (d + 1) ⊆
       Set.Ioc
-        (1 / 4 - ((1 / 2 : ℝ) / (d + 1)) ^ 2)
+        (1 / 4 - ((1 / 2 : ℝ) / (d + 1)) ^ (2 : ℕ))
         (1 / 4) := by
   rintro x ⟨ν, hν, rfl⟩
   have hbound := (mem_genericUnitarySymPowerLocus_succ_iff ν d).mp hν
   have hright : (0 : ℝ) < (1 / 2 : ℝ) / (d + 1) := by positivity
-  have hsq : ν ^ 2 < ((1 / 2 : ℝ) / (d + 1)) ^ 2 := by
+  have hsq : ν ^ (2 : ℕ) < ((1 / 2 : ℝ) / (d + 1)) ^ (2 : ℕ) := by
     rw [← sq_abs ν]
     exact (sq_lt_sq₀ (abs_nonneg ν) hright.le).2 hbound
   constructor

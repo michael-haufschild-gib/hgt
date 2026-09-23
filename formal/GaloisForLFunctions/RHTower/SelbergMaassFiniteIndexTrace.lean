@@ -22,8 +22,8 @@ variable {G H : Subgroup (GL (Fin 2) ℝ)}
 /-- The finite quotient indexing trace summands from `G` to `H`. -/
 local notation "𝒬" => H ⧸ (G.subgroupOf H)
 
-local instance : MulAction H H := Monoid.toMulAction ..
-local instance : MulAction H 𝒬 := .quotient ..
+local instance selbergMaassFiniteIndexTraceInst1 : MulAction H H := Monoid.toMulAction ..
+local instance selbergMaassFiniteIndexTraceInst2 : MulAction H 𝒬 := .quotient ..
 
 /-- The summand indexed by a relative coset. -/
 def maassTraceQuotientFunc

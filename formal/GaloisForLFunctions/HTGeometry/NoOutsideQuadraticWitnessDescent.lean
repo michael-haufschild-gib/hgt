@@ -30,7 +30,7 @@ def triangleResidualReport
 
 /-- The source-invariant scalar coordinate of the sign residual. -/
 def triangleOrientationQuadraticWitness (a : ℂ) : ℂ :=
-  a ^ 2
+  a ^ (2 : ℕ)
 
 /-- Orientation reversal leaves the quadratic witness unchanged. -/
 theorem triangleOrientationQuadraticWitness_neg (a : ℂ) :

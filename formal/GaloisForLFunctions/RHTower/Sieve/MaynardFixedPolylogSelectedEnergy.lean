@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardEnergyReady
 
 This file specializes fixed divisor moments to the literal selected group in Maynard's degree-60
 decomposition.  It also transfers the raised upper length to the lower length through the fixed
-width `2^6120`, leaving one explicit polylogarithm and no moving subpower constant.
+width `2^(6120 : ℕ)`, leaving one explicit polylogarithm and no moving subpower constant.
 -/
 
 noncomputable section
@@ -89,19 +89,19 @@ theorem heathBrownSelectedRaisedEnergy_le_lower_fixed_polylog
     dsimp [M, A, w]
     exact groupedDyadicUpper_eq_lower_mul_twoPow _
   have hZwidth : Z ≤ maynardRaisedWidthConstant * Y := by
-    have hn : M ^ ell ≤ 2 ^ 6120 * A ^ ell := by
+    have hn : M ^ ell ≤ 2 ^ (6120 : ℕ) * A ^ ell := by
       rw [hM, mul_pow, ← pow_mul]
-      have hp : 2 ^ (w * ell) ≤ 2 ^ 6120 :=
+      have hp : 2 ^ (w * ell) ≤ 2 ^ (6120 : ℕ) :=
         Nat.pow_le_pow_right (by norm_num : 0 < 2) hwe
       calc
-        A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ 6120 :=
+        A ^ ell * 2 ^ (w * ell) ≤ A ^ ell * 2 ^ (6120 : ℕ) :=
           Nat.mul_le_mul_left (A ^ ell) hp
-        _ = 2 ^ 6120 * A ^ ell := by rw [mul_comm]
-    have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ 6120 * A ^ ell : ℕ) : ℝ) := by
+        _ = 2 ^ (6120 : ℕ) * A ^ ell := by rw [mul_comm]
+    have hn' : ((M ^ ell : ℕ) : ℝ) ≤ ((2 ^ (6120 : ℕ) * A ^ ell : ℕ) : ℝ) := by
       exact_mod_cast hn
     calc
       Z = ((M ^ ell : ℕ) : ℝ) := rfl
-      _ ≤ ((2 ^ 6120 * A ^ ell : ℕ) : ℝ) := hn'
+      _ ≤ ((2 ^ (6120 : ℕ) * A ^ ell : ℕ) : ℝ) := hn'
       _ = maynardRaisedWidthConstant * Y := by
         rw [Nat.cast_mul]
         rfl

@@ -88,7 +88,7 @@ size. -/
 theorem integral_norm_mul_kernel_le_of_affine_meanSquare_var {D : ℝ → ℂ} (hD : Continuous D)
     {G : ℝ → ℝ} (hGc : Continuous G) {C : ℕ → ℝ} {Q κ t₀ : ℝ} (hQ : 0 ≤ Q) (hκ : 0 ≤ κ)
     (hC : ∀ m, 0 ≤ C m) (ht₀ : 0 < t₀)
-    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ)
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ (2 : ℕ)) ≤ Q + κ * U) (M : ℕ)
     (hG : ∀ m, m < M → ∀ t, t₀ * 2 ^ m ≤ t → t ≤ t₀ * 2 ^ (m + 1) → G t ≤ C m / t) :
     (∫ t in t₀..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ ∑ m ∈ Finset.range M, C m
@@ -117,7 +117,7 @@ theorem integral_symm_norm_mul_kernel_var_le {D : ℝ → ℂ} (hD : Continuous 
     (hGc : Continuous G)
     {C : ℕ → ℝ} {C₀ Q κ t₀ : ℝ} (hC : ∀ m, 0 ≤ C m) (hC₀ : 0 ≤ C₀) (hQ : 0 ≤ Q) (hκ : 0 ≤ κ)
     (ht₀ : 0 < t₀) (hGlow : ∀ t, |t| ≤ t₀ → G t ≤ C₀)
-    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ)
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ (2 : ℕ)) ≤ Q + κ * U) (M : ℕ)
     (hG : ∀ m, m < M → ∀ t : ℝ, t₀ * 2 ^ m ≤ |t| → |t| ≤ t₀ * 2 ^ (m + 1) → G t ≤ C m / |t|) :
     (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ 2 * (∑ m ∈ Finset.range M, C m
@@ -156,7 +156,7 @@ theorem integral_symm_norm_mul_kernel_var_le {D : ℝ → ℂ} (hD : Continuous 
   have hrefl : (∫ t in (-(t₀ * 2 ^ M))..(-t₀), ‖D t‖ * G t)
       = ∫ t in t₀..(t₀ * 2 ^ M), ‖D (-t)‖ * G (-t) := by
     rw [intervalIntegral.integral_comp_neg (fun t => ‖D t‖ * G t)]
-  have hnegms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ 2) ≤ Q + κ * U := by
+  have hnegms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ (2 : ℕ)) ≤ Q + κ * U := by
     intro U hU
     rw [integral_Icc_normSq_comp_neg D (by linarith)]
     exact hms U hU

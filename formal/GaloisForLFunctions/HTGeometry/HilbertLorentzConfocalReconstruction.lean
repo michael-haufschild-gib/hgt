@@ -106,7 +106,7 @@ theorem lorentzAxialProjection_mem_confocalLorentzCone
 `a + sqrt(R² - 2R⟪e,y⟫ + a²)`. -/
 theorem liftedConfocalBranch_lorentzAxialProjection (e : E) (q : E × ℝ) (R : ℝ) :
     liftedConfocalBranch (lorentzAxialProjection e q) R =
-      q.2 + Real.sqrt (R ^ 2 - 2 * R * inner ℝ e q.1 + q.2 ^ 2) := by
+      q.2 + Real.sqrt (R ^ (2 : ℕ) - 2 * R * inner ℝ e q.1 + q.2 ^ (2 : ℕ)) := by
   rw [liftedConfocalBranch, lorentzAxialProjection]
   congr 2
   ring

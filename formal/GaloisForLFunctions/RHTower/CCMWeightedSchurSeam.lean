@@ -37,11 +37,11 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The logarithmic-derivative form of the squared-modulus derivative. -/
 theorem re_mul_conj_eq_normSq_mul {z w : ℂ} (hz : z ≠ 0) :
-    (w * (starRingEnd ℂ) z).re = ‖z‖ ^ 2 * (w / z).re := by
-  have hnorm : ((‖z‖ ^ 2 : ℝ) : ℂ) = (starRingEnd ℂ) z * z := by
+    (w * (starRingEnd ℂ) z).re = ‖z‖ ^ (2 : ℕ) * (w / z).re := by
+  have hnorm : ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = (starRingEnd ℂ) z * z := by
     rw [← Complex.normSq_eq_conj_mul_self]
     rw [Complex.normSq_eq_norm_sq]
-  have hval : w * (starRingEnd ℂ) z = ((‖z‖ ^ 2 : ℝ) : ℂ) * (w / z) := by
+  have hval : w * (starRingEnd ℂ) z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) * (w / z) := by
     rw [hnorm]
     field_simp
   rw [hval, Complex.re_ofReal_mul]
@@ -52,7 +52,7 @@ theorem strictMonoOn_normSq_shift {X X' : ℂ → ℂ} {c : ℂ} {ω : ℝ}
     (hd : ∀ u : ℂ, HasDerivAt X (X' u) u)
     (hne : ∀ t : ℝ, X (c + (t : ℂ)) ≠ 0)
     (hpos : ∀ t : ℝ, t ∈ Ioo (0 : ℝ) (2 * ω) → 0 < (X' (c + (t : ℂ)) / X (c + (t : ℂ))).re) :
-    StrictMonoOn (fun t : ℝ => ‖X (c + (t : ℂ))‖ ^ 2) (Icc (0 : ℝ) (2 * ω)) := by
+    StrictMonoOn (fun t : ℝ => ‖X (c + (t : ℂ))‖ ^ (2 : ℕ)) (Icc (0 : ℝ) (2 * ω)) := by
   have hcurve : ∀ t : ℝ, HasDerivAt (fun s : ℝ => X (c + (s : ℂ))) (X' (c + (t : ℂ))) t := by
     intro t
     have hofr : HasDerivAt (fun s : ℝ => ((s : ℝ) : ℂ)) 1 t := (hasDerivAt_id t).ofReal_comp
@@ -61,7 +61,7 @@ theorem strictMonoOn_normSq_shift {X X' : ℂ → ℂ} {c : ℂ} {ω : ℝ}
     have h := (hd (c + (t : ℂ))).scomp t hlin
     rw [one_smul] at h
     exact h
-  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => ‖X (c + (s : ℂ))‖ ^ 2)
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => ‖X (c + (s : ℂ))‖ ^ (2 : ℕ))
       (2 * (X' (c + (t : ℂ)) * (starRingEnd ℂ) (X (c + (t : ℂ)))).re) t :=
     fun t => GaloisForLFunctions.HTGeometry.hasDerivAt_normSq_comp (hcurve t)
   refine strictMonoOn_of_deriv_pos (convex_Icc _ _) ?_ ?_
@@ -69,7 +69,7 @@ theorem strictMonoOn_normSq_shift {X X' : ℂ → ℂ} {c : ℂ} {ω : ℝ}
   · intro t ht
     rw [interior_Icc] at ht
     rw [(hderiv t).deriv, re_mul_conj_eq_normSq_mul (hne t)]
-    have h1 : 0 < ‖X (c + (t : ℂ))‖ ^ 2 := by
+    have h1 : 0 < ‖X (c + (t : ℂ))‖ ^ (2 : ℕ) := by
       have := norm_pos_iff.2 (hne t)
       positivity
     have h2 := hpos t ht
@@ -81,7 +81,7 @@ theorem normSq_lt_normSq_shift {X X' : ℂ → ℂ} {c : ℂ} {ω : ℝ} (hω : 
     (hd : ∀ u : ℂ, HasDerivAt X (X' u) u)
     (hne : ∀ t : ℝ, X (c + (t : ℂ)) ≠ 0)
     (hpos : ∀ t : ℝ, t ∈ Ioo (0 : ℝ) (2 * ω) → 0 < (X' (c + (t : ℂ)) / X (c + (t : ℂ))).re) :
-    ‖X c‖ ^ 2 < ‖X (c + ((2 * ω : ℝ) : ℂ))‖ ^ 2 := by
+    ‖X c‖ ^ (2 : ℕ) < ‖X (c + ((2 * ω : ℝ) : ℂ))‖ ^ (2 : ℕ) := by
   have hmono := strictMonoOn_normSq_shift hd hne hpos
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) (2 * ω) := ⟨le_refl _, by linarith⟩
   have h1 : (2 * ω : ℝ) ∈ Icc (0 : ℝ) (2 * ω) := ⟨by linarith, le_refl _⟩

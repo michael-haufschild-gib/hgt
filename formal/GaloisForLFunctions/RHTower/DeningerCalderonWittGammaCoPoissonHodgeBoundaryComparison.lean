@@ -513,7 +513,7 @@ theorem
 def deningerCalderonWittNonlocalExteriorCoefficientMap
     (p q : Nat.Primes) :
     ℂ →ₗ[ℂ]
-      ((⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+      ((⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
         DeningerCalderonWittAlgebraicDegreeTwo q) where
   toFun c := deningerCalderonWittWeightedNonlocalExterior c p q
   map_add' c d := by
@@ -934,7 +934,7 @@ source Green primitive of an arbitrary exterior cochain.
 -/
 def deningerCalderonWittGammaPolarizedGreenTransport
     (a : ℝ) :
-    (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
       DeningerCalderonWittGammaHodgeBoundaryVectorProfile :=
   (deningerCalderonWittGammaPolarizedVectorTransport a).comp
     deningerCalderonWittGlobalMilnorGreenRetraction
@@ -946,7 +946,7 @@ transport and tail derivative is its negative.
 -/
 theorem deningerCalderonWittGammaPolarizedGreenTransport_movingHorizon
     {a : ℝ} (ha : a ≠ 0)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (p q : Nat.Primes) (e f : ℕ) :
     let s := deningerCalderonWittGlobalMilnorGreenRetraction w
     let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
@@ -977,7 +977,7 @@ action.
 -/
 theorem deningerCalderonWittGammaPolarizedGreenTransport_hodge_energy
     (a : ℝ)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (p q : Nat.Primes) (e f : ℕ) :
     let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
     let x :=
@@ -1010,7 +1010,7 @@ the canonical Calderón--Witt Green primitive.
 -/
 theorem deningerCalderonWittGammaPolarizedGreenTransport_fst_eval
     (a : ℝ)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (p q : Nat.Primes) (e f : ℕ) :
     (deningerCalderonWittGammaPolarizedGreenTransport
         a w p q e f).1
@@ -1028,7 +1028,7 @@ the exact Hodge rotation of the singular Green transport.
 theorem
     deningerCalderonWittGammaBoundaryVectorOddHodge_greenTransport_eval
     (a : ℝ)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (p q : Nat.Primes) (e f : ℕ) :
     let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
     let s := deningerCalderonWittGlobalMilnorGreenRetraction w

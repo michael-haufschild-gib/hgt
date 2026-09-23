@@ -112,7 +112,7 @@ as ordinary holomorphic functional calculus does on one generalized eigenspace. 
 theorem trace_sq_eq_finrank_mul_sq_of_sub_algebraMap_isNilpotent
     (G : Module.End ℂ V) (c : ℂ)
     (hG : IsNilpotent (G - algebraMap ℂ (Module.End ℂ V) c)) :
-    LinearMap.trace ℂ V (G ∘ₗ G) = (Module.finrank ℂ V : ℂ) * c ^ 2 := by
+    LinearMap.trace ℂ V (G ∘ₗ G) = (Module.finrank ℂ V : ℂ) * c ^ (2 : ℕ) := by
   have htrace : LinearMap.trace ℂ V G = c * LinearMap.trace ℂ V (1 : Module.End ℂ V) := by
     have hraw := LinearMap.trace_comp_eq_mul_of_commute_of_isNilpotent
       (f := (1 : Module.End ℂ V)) (g := G) c (Commute.one_left G) hG
@@ -158,7 +158,7 @@ theorem trace_finiteRootBlockTaylorCalculus_sq
     LinearMap.trace ℂ V
         (finiteRootBlockTaylorCalculus T mu value coeff ∘ₗ
           finiteRootBlockTaylorCalculus T mu value coeff) =
-      (Module.finrank ℂ V : ℂ) * value ^ 2 :=
+      (Module.finrank ℂ V : ℂ) * value ^ (2 : ℕ) :=
   trace_sq_eq_finrank_mul_sq_of_sub_algebraMap_isNilpotent _ _
     (finiteRootBlockTaylorCalculus_sub_isNilpotent T mu value coeff hN)
 

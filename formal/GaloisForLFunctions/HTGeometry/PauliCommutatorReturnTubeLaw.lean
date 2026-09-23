@@ -57,12 +57,12 @@ theorem norm_twoLocalPauliUnitaryCommutatorMap_sq_le_returnDefect
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ)
     (x : TwoLocalPauliCoefficientSpace n) (t : ℝ) :
-    ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 ≤
+    ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) ≤
       (2 * ‖realActivePauliHamiltonian x‖ *
         hsNorm
           (unitaryEvolution (realActivePauliHamiltonian x) t -
             (U : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 := by
+              (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) := by
   rw [norm_twoLocalPauliUnitaryCommutatorMap_sq, frobSq_eq_hsNorm_sq]
   exact pow_le_pow_left₀ (hsNorm_nonneg _)
     (hsNorm_commutator_le_of_unitaryEvolution_near
@@ -84,20 +84,20 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_energyNormalizedReturnTube_le
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * ((n - 1 : ℕ) : ℝ) * (2 : ℝ) ^ n *
                 (1 - ‖Matrix.trace
                   (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                    (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-                  ((2 : ℝ) ^ n) ^ 2))}) ≤
+                    (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+                  ((2 : ℝ) ^ n) ^ (2 : ℕ)))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((n - 1 : ℕ) : ℝ) *
             (1 - ‖Matrix.trace
               (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-              ((2 : ℝ) ^ n) ^ 2))) := by
+                (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+              ((2 : ℝ) ^ n) ^ (2 : ℕ)))) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_explicitCommutatorTube_le U)
   intro x hx
@@ -119,12 +119,12 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_incidenceReturnTube_le
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 twoLocalPauliUnitaryAnticommutingIncidenceMass (U c))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryAnticommutingIncidenceMass (U c)) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_incidenceCommutatorTube_le U)
@@ -147,12 +147,12 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_boundaryReturnTube_le
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 twoLocalPauliUnitaryBoundaryMoment (U c))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryBoundaryMoment (U c)) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_boundaryCommutatorTube_le U)
@@ -175,12 +175,12 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_activeWeightReturnTube_le
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 twoLocalPauliUnitaryActiveWeightMoment (U c))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryActiveWeightMoment (U c)) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_activeWeightCommutatorTube_le U)
@@ -203,12 +203,12 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_enhancedActiveWeightReturnTube_
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 twoLocalPauliUnitaryEnhancedActiveWeightMoment (U c))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryEnhancedActiveWeightMoment (U c)) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_enhancedActiveWeightCommutatorTube_le U)
@@ -231,12 +231,12 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_fullWeightPolynomialReturnTube_
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 twoLocalPauliUnitaryFullWeightPolynomialMoment (U c))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryFullWeightPolynomialMoment (U c)) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_fullWeightPolynomialCommutatorTube_le U)
@@ -258,21 +258,21 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_sixNSubFourReturnTube_le
             hsNorm
               (unitaryEvolution (realActivePauliHamiltonian x) t -
                 (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
             (gaussianIntervalActivationMass / 2) *
               (4 * (2 : ℝ) ^ n *
                 (((6 * n - 4 : ℕ) : ℝ) *
                   (1 - ‖Matrix.trace
                     (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                      (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-                    ((2 : ℝ) ^ n) ^ 2)))}) ≤
+                      (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+                    ((2 : ℝ) ^ n) ^ (2 : ℕ))))}) ≤
       ∑ c : C, Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * n - 4 : ℕ) : ℝ) *
             (1 - ‖Matrix.trace
               (U c : Matrix (FiniteQubitConfiguration (Fin n))
-                (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-              ((2 : ℝ) ^ n) ^ 2))) := by
+                (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+              ((2 : ℝ) ^ n) ^ (2 : ℕ)))) := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_twoLocalPauli_measure_iUnion_sixNSubFourCommutatorTube_le U)
   intro x hx

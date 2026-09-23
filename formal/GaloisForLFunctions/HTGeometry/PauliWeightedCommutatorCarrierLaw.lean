@@ -33,7 +33,7 @@ theorem stdGaussian_twoLocalPauli_measure_weightedCommutatorTubeMass_ge_le
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         {x | κ ≤ twoLocalPauliWeightedCommutatorTubeMass U w x} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           twoLocalPauliUnitaryCommutatorGramStableRatio (U c))) / κ := by
   simpa [twoLocalPauliWeightedCommutatorTubeMass,
     TwoLocalPauliGeneratorNumber,
@@ -55,13 +55,13 @@ theorem stdGaussian_twoLocalPauli_measure_weightedCommutatorTubeMass_ge_le_trace
     (hδ : ∀ c, δ ≤
       1 - ‖Matrix.trace
         (U c : Matrix (FiniteQubitConfiguration (Fin n))
-          (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 /
-        ((2 : ℝ) ^ n) ^ 2)
+          (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) /
+        ((2 : ℝ) ^ n) ^ (2 : ℕ))
     {κ : ℝ} (hκ : 0 < κ) :
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         {x | κ ≤ twoLocalPauliWeightedCommutatorTubeMass U w x} ≤
       Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((n - 1 : ℕ) : ℝ) * δ)) / κ := by
   unfold twoLocalPauliWeightedCommutatorTubeMass
   apply stdGaussian_measure_weightedHalfActivationTubeMass_ge_le_stableFloor
@@ -71,9 +71,9 @@ theorem stdGaussian_twoLocalPauli_measure_weightedCommutatorTubeMass_ge_le_trace
   intro c
   rw [show
     ((∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-        (twoLocalPauliUnitaryCommutatorMap (U c)).singularValues i ^ 2) ^ 2 /
+        (twoLocalPauliUnitaryCommutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
       ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-        (twoLocalPauliUnitaryCommutatorMap (U c)).singularValues i ^ 4) =
+        (twoLocalPauliUnitaryCommutatorMap (U c)).singularValues i ^ (4 : ℕ)) =
       twoLocalPauliUnitaryCommutatorGramStableRatio (U c) by rfl]
   exact (mul_le_mul_of_nonneg_left (hδ c) (Nat.cast_nonneg _)).trans
     (twoLocalPauliUnitaryCommutatorGramStableRatio_ge_normalizedTraceDeficit (U c))

@@ -209,7 +209,7 @@ theorem bohrCoefficient_realPhaseFunction {ρ omega : d → ℝ} (hρ : ∀ j, 0
   rw [hsum]
   have hcoeff : c m = UnitAddTorus.mFourierCoeff (torusTrigPoly c) m :=
     (mFourierCoeff_torusTrigPoly c m).symm
-  rw [hcoeff, activeCoeff, ← mFourierCoeff_sub (continuous_torusTrigPoly c)
+  rw [hcoeff, activeCoeff, ← mFourierCoeff_sub_torusTrigPolynomial (continuous_torusTrigPoly c)
     (continuous_torusRestriction hρ hF) m]
   refine norm_mFourierCoeff_le (fun x => ?_) m
   rw [← norm_neg, neg_sub]

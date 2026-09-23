@@ -28,7 +28,7 @@ def routeJReflectionRatio (c t : ℝ) : ℝ :=
 
 theorem hasDerivAt_routeJReflectionRatio (c t : ℝ) :
     HasDerivAt (routeJReflectionRatio c)
-      (2 * c * Real.exp (c * t) / (Real.exp (c * t) + 1) ^ 2) t := by
+      (2 * c * Real.exp (c * t) / (Real.exp (c * t) + 1) ^ (2 : ℕ)) t := by
   have hlin : HasDerivAt (fun x : ℝ => c * x) c t := by
     simpa using (hasDerivAt_id t).const_mul c
   have he : HasDerivAt (fun x : ℝ => Real.exp (c * x))
@@ -43,15 +43,15 @@ theorem hasDerivAt_routeJReflectionRatio (c t : ℝ) :
 
 theorem deriv_routeJReflectionRatio (c t : ℝ) :
     deriv (routeJReflectionRatio c) t =
-      2 * c * Real.exp (c * t) / (Real.exp (c * t) + 1) ^ 2 :=
+      2 * c * Real.exp (c * t) / (Real.exp (c * t) + 1) ^ (2 : ℕ) :=
   (hasDerivAt_routeJReflectionRatio c t).deriv
 
 theorem hasDerivAt_routeJReflectionRatio_derivFormula (c t : ℝ) :
     HasDerivAt
       (fun x : ℝ =>
-        2 * c * Real.exp (c * x) / (Real.exp (c * x) + 1) ^ 2)
-      (2 * c ^ 2 * Real.exp (c * t) * (1 - Real.exp (c * t)) /
-        (Real.exp (c * t) + 1) ^ 3) t := by
+        2 * c * Real.exp (c * x) / (Real.exp (c * x) + 1) ^ (2 : ℕ))
+      (2 * c ^ (2 : ℕ) * Real.exp (c * t) * (1 - Real.exp (c * t)) /
+        (Real.exp (c * t) + 1) ^ (3 : ℕ)) t := by
   have hlin : HasDerivAt (fun x : ℝ => c * x) c t := by
     simpa using (hasDerivAt_id t).const_mul c
   have he : HasDerivAt (fun x : ℝ => Real.exp (c * x))
@@ -66,25 +66,25 @@ theorem hasDerivAt_routeJReflectionRatio_derivFormula (c t : ℝ) :
       norm_num [Pi.pow_apply]
       change
         (2 * c * (Real.exp (c * t) * c) *
-              (Real.exp (c * t) + 1) ^ 2 -
+              (Real.exp (c * t) + 1) ^ (2 : ℕ) -
             2 * c * Real.exp (c * t) *
               (2 * (Real.exp (c * t) + 1) *
                 (Real.exp (c * t) * c))) /
-            ((Real.exp (c * t) + 1) ^ 2) ^ 2 =
-          2 * c ^ 2 * Real.exp (c * t) *
+            ((Real.exp (c * t) + 1) ^ (2 : ℕ)) ^ (2 : ℕ) =
+          2 * c ^ (2 : ℕ) * Real.exp (c * t) *
               (1 - Real.exp (c * t)) /
-            (Real.exp (c * t) + 1) ^ 3
+            (Real.exp (c * t) + 1) ^ (3 : ℕ)
       field_simp [hden0]
       ring)
 
 theorem routeJReflectionRatio_secondDeriv (c t : ℝ) :
     (deriv^[2]) (routeJReflectionRatio c) t =
-      2 * c ^ 2 * Real.exp (c * t) * (1 - Real.exp (c * t)) /
-        (Real.exp (c * t) + 1) ^ 3 := by
+      2 * c ^ (2 : ℕ) * Real.exp (c * t) * (1 - Real.exp (c * t)) /
+        (Real.exp (c * t) + 1) ^ (3 : ℕ) := by
   change deriv (deriv (routeJReflectionRatio c)) t = _
   rw [show deriv (routeJReflectionRatio c) =
       (fun x : ℝ =>
-        2 * c * Real.exp (c * x) / (Real.exp (c * x) + 1) ^ 2) by
+        2 * c * Real.exp (c * x) / (Real.exp (c * x) + 1) ^ (2 : ℕ)) by
     funext x
     exact deriv_routeJReflectionRatio c x]
   exact (hasDerivAt_routeJReflectionRatio_derivFormula c t).deriv
@@ -106,7 +106,7 @@ theorem strictConcaveOn_routeJReflectionRatio {c : ℝ} (hc : 0 < c) :
   rw [routeJReflectionRatio_secondDeriv]
   have hct : 0 < c * t := mul_pos hc ht
   have hexp : 1 < Real.exp (c * t) := by simpa using Real.exp_lt_exp.mpr hct
-  have hlead : 0 < 2 * c ^ 2 * Real.exp (c * t) := by
+  have hlead : 0 < 2 * c ^ (2 : ℕ) * Real.exp (c * t) := by
     exact mul_pos (mul_pos (by positivity) (sq_pos_of_pos hc)) (Real.exp_pos _)
   exact div_neg_of_neg_of_pos
     (mul_neg_of_pos_of_neg hlead (by linarith))

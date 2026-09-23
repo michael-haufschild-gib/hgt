@@ -18,7 +18,7 @@ source-to-metric-current intertwiner, not a same-branch scalar identification`.
 namespace RHTower.D4BMLiteralCyclicPeierlsSameRateNoGo
 
 open MeasureTheory
-open D4BMJointSource D4BMFullSourceReciprocity
+open D4BMJointSource D4BMFullSourceReciprocity D4BMModularCore
 open D4BMFullAngularCausalPeierls D4BMLiteralCyclicPeierlsLiftDefect
 
 noncomputable section
@@ -29,10 +29,13 @@ chosen source amplitudes. -/
 theorem sourcePairDensity_amplitude_biquadratic (q : XiZeroCopy) (b c : Bool)
     (a d : ℂ) (X k : ℝ) (z : (ℝ × ℝ) × (ℝ × ℝ)) :
     sourcePairDensity q b c a d X k z =
-      a ^ 2 * d ^ 2 * sourcePairDensity q b c 1 1 X k z := by
+      a ^ (2 : ℕ) * d ^ (2 : ℕ) * sourcePairDensity q b c 1 1 X k z := by
   unfold sourcePairDensity
-  rw [timeReducedCoefficient_amplitude_square,
-    timeReducedCoefficient_amplitude_square]
+  have ha := timeReducedCoefficient_amplitude_square
+    (physicalRate q b) a z.1.1 z.1.2
+  have hd := timeReducedCoefficient_amplitude_square
+    (physicalRate q c) d z.2.1 z.2.2
+  rw [ha, hd]
   ring
 
 /-- The native causal source pairing inherits the exact biquadratic
@@ -40,9 +43,10 @@ amplitude degree of its two literal source events. -/
 theorem causalSourcePair_amplitude_biquadratic (q : XiZeroCopy) (b c : Bool)
     (a d : ℂ) (X k : ℝ) :
     causalSourcePair q b c a d X k =
-      a ^ 2 * d ^ 2 * causalSourcePair q b c 1 1 X k := by
+      a ^ (2 : ℕ) * d ^ (2 : ℕ) * causalSourcePair q b c 1 1 X k := by
   rw [causalSourcePair_decomposition, causalSourcePair_decomposition]
-  simp_rw [sourcePairDensity_amplitude_biquadratic]
+  simp only [sourcePairDensity_amplitude_biquadratic q c b d a,
+    sourcePairDensity_amplitude_biquadratic q b c a d]
   rw [integral_const_mul, integral_const_mul]
   ring
 
@@ -60,10 +64,13 @@ independent source amplitudes. -/
 theorem fullSourcePairDensity_amplitude_biquadratic (q : XiZeroCopy)
     (branch b c : Bool) (a d : ℂ) (X k : ℝ) (z : (ℝ × ℝ) × (ℝ × ℝ)) :
     fullSourcePairDensity q branch b c a d X k z =
-      a ^ 2 * d ^ 2 * fullSourcePairDensity q branch b c 1 1 X k z := by
+      a ^ (2 : ℕ) * d ^ (2 : ℕ) * fullSourcePairDensity q branch b c 1 1 X k z := by
   unfold fullSourcePairDensity
-  rw [timeReducedCoefficient_amplitude_square,
-    timeReducedCoefficient_amplitude_square]
+  have ha := timeReducedCoefficient_amplitude_square
+    (physicalRate q b) a z.1.1 z.1.2
+  have hd := timeReducedCoefficient_amplitude_square
+    (physicalRate q c) d z.2.1 z.2.2
+  rw [ha, hd]
   ring
 
 /-- The literal full-circle causal pairing has the exact biquadratic source
@@ -71,9 +78,10 @@ degree before any cap or metric boundary comparison. -/
 theorem fullCausalSourcePair_amplitude_biquadratic (q : XiZeroCopy)
     (branch b c : Bool) (a d : ℂ) (X k : ℝ) :
     fullCausalSourcePair q branch b c a d X k =
-      a ^ 2 * d ^ 2 * fullCausalSourcePair q branch b c 1 1 X k := by
+      a ^ (2 : ℕ) * d ^ (2 : ℕ) * fullCausalSourcePair q branch b c 1 1 X k := by
   rw [fullCausalSourcePair_decomposition, fullCausalSourcePair_decomposition]
-  simp_rw [fullSourcePairDensity_amplitude_biquadratic]
+  simp only [fullSourcePairDensity_amplitude_biquadratic q branch c b d a,
+    fullSourcePairDensity_amplitude_biquadratic q branch b c a d]
   rw [integral_const_mul, integral_const_mul]
   ring
 

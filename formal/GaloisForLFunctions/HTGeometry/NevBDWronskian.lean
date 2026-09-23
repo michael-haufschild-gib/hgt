@@ -57,7 +57,7 @@ theorem nevBD_wronskian (h : PositiveMomentForm s) (n : ℕ) (x y : ℝ) :
     linarith
   have hexpand : h0' / hn' * (R0 * A1 - R1 * A0) * (h0' / hn' * (P0 * B1 - P1 * B0))
       - h0' / hn' * (P0 * A1 - P1 * A0) * (h0' / hn' * (R0 * B1 - R1 * B0))
-      = h0' ^ 2 / hn' ^ 2 * ((P0 * R1 - P1 * R0) * (A1 * B0 - A0 * B1)) := by
+      = h0' ^ (2 : ℕ) / hn' ^ (2 : ℕ) * ((P0 * R1 - P1 * R0) * (A1 * B0 - A0 * B1)) := by
     field_simp
     ring
   rw [hexpand, hstep2, hstep3]

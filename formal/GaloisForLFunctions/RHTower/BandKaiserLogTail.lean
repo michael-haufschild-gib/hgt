@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- Squared Kaiser cosine transform in angular-frequency normalization. -/
 def kaiserAngularDensity (c ω : ℝ) : ℝ :=
-  (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ 2
+  (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ (2 : ℕ)
 
 theorem kaiserAngularDensity_even (c ω : ℝ) :
     kaiserAngularDensity c (-ω) = kaiserAngularDensity c ω := by
@@ -53,7 +53,7 @@ theorem integrable_kaiserAngularDensity (c : ℝ) :
 /-- Uniform edge bound on the squared exterior transform. -/
 theorem kaiserAngularDensity_le_four {c ω : ℝ} (hc : 0 ≤ c) (hω : c < ω) :
     kaiserAngularDensity c ω ≤ 4 := by
-  have hsq : c ^ 2 < ω ^ 2 := by nlinarith
+  have hsq : c ^ (2 : ℕ) < ω ^ (2 : ℕ) := by nlinarith
   have habs := abs_integral_kaiserTrial_cos_le hsq
   have hle := habs.trans (min_le_left _ _)
   rw [kaiserAngularDensity, ← sq_abs]
@@ -61,20 +61,20 @@ theorem kaiserAngularDensity_le_four {c ω : ℝ} (hc : 0 ≤ c) (hω : c < ω) 
 
 /-- Inverse-quadratic exterior bound retaining the factored denominator. -/
 theorem kaiserAngularDensity_le_inv_quad {c ω : ℝ} (hc : 0 ≤ c) (hω : c < ω) :
-    kaiserAngularDensity c ω ≤ 4 / (ω ^ 2 - c ^ 2) := by
-  have hsq : c ^ 2 < ω ^ 2 := by nlinarith
-  have hpos : 0 < ω ^ 2 - c ^ 2 := by linarith
-  have hsqrt : 0 < Real.sqrt (ω ^ 2 - c ^ 2) := Real.sqrt_pos.mpr hpos
-  have hsqrt_sq : Real.sqrt (ω ^ 2 - c ^ 2) ^ 2 = ω ^ 2 - c ^ 2 :=
+    kaiserAngularDensity c ω ≤ 4 / (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) := by
+  have hsq : c ^ (2 : ℕ) < ω ^ (2 : ℕ) := by nlinarith
+  have hpos : 0 < ω ^ (2 : ℕ) - c ^ (2 : ℕ) := by linarith
+  have hsqrt : 0 < Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
+  have hsqrt_sq : Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) ^ (2 : ℕ) = ω ^ (2 : ℕ) - c ^ (2 : ℕ) :=
     Real.sq_sqrt hpos.le
   have habs := abs_integral_kaiserTrial_cos_le hsq
   have hle := habs.trans (min_le_right _ _)
   rw [kaiserAngularDensity, ← sq_abs]
   calc
-    |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ 2
-        ≤ (2 / Real.sqrt (ω ^ 2 - c ^ 2)) ^ 2 :=
+    |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ (2 : ℕ)
+        ≤ (2 / Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ))) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (abs_nonneg _) hle 2
-    _ = 4 / (ω ^ 2 - c ^ 2) := by rw [div_pow, hsqrt_sq]; norm_num
+    _ = 4 / (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) := by rw [div_pow, hsqrt_sq]; norm_num
 
 theorem kaiserAngularDensity_le_middle {c ω : ℝ} (hc : 0 < c) (hω : c < ω) :
     kaiserAngularDensity c ω ≤ 2 / c * (1 / (ω - c)) := by
@@ -85,7 +85,7 @@ theorem kaiserAngularDensity_le_middle {c ω : ℝ} (hc : 0 < c) (hω : c < ω) 
   have hdenle : (ω - c) * (2 * c) ≤ (ω - c) * (ω + c) :=
     mul_le_mul_of_nonneg_left hsum hωc.le
   calc
-    kaiserAngularDensity c ω ≤ 4 / (ω ^ 2 - c ^ 2) := hinv
+    kaiserAngularDensity c ω ≤ 4 / (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) := hinv
     _ = 4 / ((ω - c) * (ω + c)) := by ring_nf
     _ ≤ 4 / ((ω - c) * (2 * c)) :=
       div_le_div_of_nonneg_left (by norm_num)
@@ -93,11 +93,11 @@ theorem kaiserAngularDensity_le_middle {c ω : ℝ} (hc : 0 < c) (hω : c < ω) 
     _ = 2 / c * (1 / (ω - c)) := by field_simp; ring
 
 theorem kaiserAngularDensity_le_far {c ω : ℝ} (hc : 0 ≤ c) (hω : 2 * c < ω) :
-    kaiserAngularDensity c ω ≤ 4 / (ω - c) ^ 2 := by
+    kaiserAngularDensity c ω ≤ 4 / (ω - c) ^ (2 : ℕ) := by
   have hωc : c < ω := by linarith
   have hinv := kaiserAngularDensity_le_inv_quad hc hωc
   have hdiff : 0 < ω - c := by linarith
-  have hfactor : (ω - c) ^ 2 ≤ ω ^ 2 - c ^ 2 := by nlinarith
+  have hfactor : (ω - c) ^ (2 : ℕ) ≤ ω ^ (2 : ℕ) - c ^ (2 : ℕ) := by nlinarith
   exact hinv.trans (div_le_div_of_nonneg_left (by norm_num) (sq_pos_of_pos hdiff) hfactor)
 
 theorem integral_const_four_Ioc {a b : ℝ} (hab : a ≤ b) :
@@ -146,9 +146,9 @@ theorem integral_kaiser_middle_envelope {c : ℝ} (hc : 2 ≤ c) :
   ring
 
 theorem integral_kaiser_far_envelope {c : ℝ} (hc : 0 < c) :
-    (∫ ω in Ioi (2 * c), 4 / (ω - c) ^ 2) = 4 / c := by
+    (∫ ω in Ioi (2 * c), 4 / (ω - c) ^ (2 : ℕ)) = 4 / c := by
   let F : ℝ → ℝ := fun ω => -4 / (ω - c)
-  let f : ℝ → ℝ := fun ω => 4 / (ω - c) ^ 2
+  let f : ℝ → ℝ := fun ω => 4 / (ω - c) ^ (2 : ℕ)
   have hcont : ContinuousWithinAt F (Ici (2 * c)) (2 * c) := by
     apply ContinuousAt.continuousWithinAt
     dsimp [F]
@@ -159,7 +159,7 @@ theorem integral_kaiser_far_envelope {c : ℝ} (hc : 0 < c) :
     have hω' : 2 * c < ω := hω
     have hne : ω - c ≠ 0 := ne_of_gt (by linarith [hω', hc])
     change HasDerivAt ((fun _ : ℝ => (-4 : ℝ)) / fun t => t - c)
-      (4 / (ω - c) ^ 2) ω
+      (4 / (ω - c) ^ (2 : ℕ)) ω
     simpa [Function.comp_def] using
       (hasDerivAt_const ω (-4)).div ((hasDerivAt_id ω).sub_const c) hne
   have hnonneg : ∀ ω ∈ Ioi (2 * c), 0 ≤ f ω := by
@@ -225,7 +225,7 @@ theorem integral_Ioi_kaiserAngularDensity_le {c : ℝ} (hc : 2 ≤ c) :
     simpa only [B, s, integral_kaiser_middle_envelope hc] using hmono
   have hfar : (∫ ω in C, kaiserAngularDensity c ω) ≤ 4 / c := by
     let F : ℝ → ℝ := fun ω => -4 / (ω - c)
-    let f : ℝ → ℝ := fun ω => 4 / (ω - c) ^ 2
+    let f : ℝ → ℝ := fun ω => 4 / (ω - c) ^ (2 : ℕ)
     have hcont : ContinuousWithinAt F (Ici (2 * c)) (2 * c) := by
       apply ContinuousAt.continuousWithinAt
       dsimp [F]
@@ -236,7 +236,7 @@ theorem integral_Ioi_kaiserAngularDensity_le {c : ℝ} (hc : 2 ≤ c) :
       have hω' : 2 * c < ω := hω
       have hne : ω - c ≠ 0 := ne_of_gt (by linarith [hω', hcpos])
       change HasDerivAt ((fun _ : ℝ => (-4 : ℝ)) / fun t => t - c)
-        (4 / (ω - c) ^ 2) ω
+        (4 / (ω - c) ^ (2 : ℕ)) ω
       simpa [Function.comp_def] using
         (hasDerivAt_const ω (-4)).div ((hasDerivAt_id ω).sub_const c) hne
     have hnonneg : ∀ ω ∈ Ioi (2 * c), 0 ≤ f ω := by
@@ -292,7 +292,7 @@ theorem integral_Ioi_kaiserAngularDensity_le {c : ℝ} (hc : 2 ≤ c) :
 
 /-- Squared Fourier density of the compactly supported Kaiser carrier. -/
 def kaiserPhysicalDensity (c ξ : ℝ) : ℝ :=
-  ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ 2
+  ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ)
 
 theorem kaiserPhysicalDensity_eq_angular (c ξ : ℝ) :
     kaiserPhysicalDensity c ξ = kaiserAngularDensity c (2 * Real.pi * ξ) := by
@@ -309,7 +309,7 @@ theorem kaiserPhysicalDensity_even (c ξ : ℝ) :
 two-sided exterior spectral mass has the explicit `log(c) / c` upper bound. -/
 theorem integral_tail_kaiser_log_le {c : ℝ} (hc : 2 ≤ c) :
     (∫ ξ in (Icc (-(c / (2 * Real.pi))) (c / (2 * Real.pi)))ᶜ,
-        ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ 2) ≤
+        ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ)) ≤
     (8 + 4 * Real.log c) / (Real.pi * c) := by
   have hcpos : 0 < c := by linarith
   let r : ℝ := c / (2 * Real.pi)
@@ -369,7 +369,7 @@ theorem integral_tail_kaiser_log_le {c : ℝ} (hc : 2 ≤ c) :
       · exact Or.inr (lt_of_not_ge hξ)
   have hdens : Integrable (kaiserPhysicalDensity c) := by
     change Integrable (fun ξ : ℝ =>
-      ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ 2)
+      ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ))
     exact integrable_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)
   have hsplit : (∫ ξ in (Icc (-r) r)ᶜ, kaiserPhysicalDensity c ξ) =
       (∫ ξ in Iio (-r), kaiserPhysicalDensity c ξ) +

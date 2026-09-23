@@ -75,11 +75,11 @@ theorem constraintResponseMean_transient (U : Submodule ℝ E) (x d : E) (m₀ t
 
 /-- At every nonnegative time, the stable transient is bounded by its initial bias amplitude. -/
 theorem constraintResponseMean_transient_bound (U : Submodule ℝ E) (x d : E) (m₀ s : ℝ) :
-    |constraintResponseMean U x d m₀ (s ^ 2) - m₀ - s ^ 2 * inner ℝ d (U.starProjection x)| ≤
+    |constraintResponseMean U x d m₀ (s ^ (2 : ℕ)) - m₀ - s ^ (2 : ℕ) * inner ℝ d (U.starProjection x)| ≤
       |inner ℝ d (x - U.starProjection x)| := by
   rw [constraintResponseMean_transient, abs_mul]
-  have he0 := (Real.exp_pos (-(s ^ 2))).le
-  have he1 : Real.exp (-(s ^ 2)) ≤ 1 := by
+  have he0 := (Real.exp_pos (-(s ^ (2 : ℕ)))).le
+  have he1 : Real.exp (-(s ^ (2 : ℕ))) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     nlinarith [sq_nonneg s]
   rw [abs_of_nonneg (sub_nonneg.mpr he1)]

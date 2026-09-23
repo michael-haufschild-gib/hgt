@@ -190,17 +190,17 @@ def sourceFirstActivationRadiusCoefficient (ell n : ℕ) : ℝ :=
   semilocalArchimedeanJacobiCoefficient n *
     sourceHarmonicCoefficient ell *
     (((-1 : ℝ) ^ (n + 1) * normalizedCentralBinom (n + 1) *
-        sourceActivationValue ell (n + 1) ^ 2) -
+        sourceActivationValue ell (n + 1) ^ (2 : ℕ)) -
       ((-1 : ℝ) ^ n * normalizedCentralBinom n *
-        sourceActivationValue ell n ^ 2)) / 2
+        sourceActivationValue ell n ^ (2 : ℕ))) / 2
 
 /-- Signed nonoscillating amplitude of the same literal source contribution. -/
 def sourceFirstActivationSignedAmplitude (ell n : ℕ) : ℝ :=
   -(sourceHarmonicCoefficient ell / 2) *
     semilocalArchimedeanJacobiCoefficient n *
     normalizedCentralBinom n *
-    (centralBinomRatio n * sourceActivationValue ell (n + 1) ^ 2 +
-      sourceActivationValue ell n ^ 2)
+    (centralBinomRatio n * sourceActivationValue ell (n + 1) ^ (2 : ℕ) +
+      sourceActivationValue ell n ^ (2 : ℕ))
 
 theorem sourceFirstActivationRadiusCoefficient_eq_signed
     (ell n : ℕ) :
@@ -218,7 +218,7 @@ def sourceFirstActivationScale (ell n : ℕ) : ℝ :=
 /-- Sharp signed radius amplitude `-C_ℓL_ℓ²/√π`. -/
 def sourceFirstActivationAmplitudeLimit (ell : ℕ) : ℝ :=
   -sourceHarmonicCoefficient ell *
-    sourceActivationLeadingCoefficient ell ^ 2 /
+    sourceActivationLeadingCoefficient ell ^ (2 : ℕ) /
       Real.sqrt Real.pi
 
 private theorem sourceFirstActivationSignedAmplitude_div_scale
@@ -228,14 +228,14 @@ private theorem sourceFirstActivationSignedAmplitude_div_scale
       -(sourceHarmonicCoefficient ell / 2) *
         (semilocalArchimedeanJacobiCoefficient n / ((n : ℝ) + 1)) *
         (Real.sqrt ((n : ℝ) + 1) * normalizedCentralBinom n) *
-        ((centralBinomRatio n * sourceActivationValue ell (n + 1) ^ 2 +
-            sourceActivationValue ell n ^ 2) /
+        ((centralBinomRatio n * sourceActivationValue ell (n + 1) ^ (2 : ℕ) +
+            sourceActivationValue ell n ^ (2 : ℕ)) /
           ((n : ℝ) + 1) ^ (2 * ell)) := by
   unfold sourceFirstActivationSignedAmplitude sourceFirstActivationScale
   have hn : (n : ℝ) + 1 ≠ 0 := by positivity
   have hsqrt : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
   have hsqrt_sq :
-      Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 := by
+      Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 := by
     rw [Real.sq_sqrt]
     positivity
   field_simp [hn, hsqrt]
@@ -244,11 +244,11 @@ private theorem sourceFirstActivationSignedAmplitude_div_scale
 private theorem tendsto_sourceFirstActivationBracket (ell : ℕ) :
     Tendsto
       (fun n : ℕ =>
-        (centralBinomRatio n * sourceActivationValue ell (n + 1) ^ 2 +
-            sourceActivationValue ell n ^ 2) /
+        (centralBinomRatio n * sourceActivationValue ell (n + 1) ^ (2 : ℕ) +
+            sourceActivationValue ell n ^ (2 : ℕ)) /
           ((n : ℝ) + 1) ^ (2 * ell))
       atTop
-      (nhds (2 * sourceActivationLeadingCoefficient ell ^ 2)) := by
+      (nhds (2 * sourceActivationLeadingCoefficient ell ^ (2 : ℕ))) := by
   have hq := tendsto_centralBinomRatio
   have hsucc := tendsto_sourceActivationValue_succ_div_pow ell
   have hbase := tendsto_sourceActivationValue_div_succ_pow ell
@@ -258,7 +258,7 @@ private theorem tendsto_sourceFirstActivationBracket (ell : ℕ) :
   · funext n
     have hn : (n : ℝ) + 1 ≠ 0 := by positivity
     rw [show ((n : ℝ) + 1) ^ (2 * ell) =
-        (((n : ℝ) + 1) ^ ell) ^ 2 by
+        (((n : ℝ) + 1) ^ ell) ^ (2 : ℕ) by
       rw [← pow_mul]
       congr 1
       omega]

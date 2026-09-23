@@ -37,7 +37,7 @@ theorem unit_residual_lt_quarter_re_inner_gt
   rw [hpert, inner_sub_right, Complex.sub_re]
   have hself : (inner ℂ h h).re = 1 := by
     have hs := inner_self_eq_norm_sq (𝕜 := ℂ) h
-    change (inner ℂ h h).re = ‖h‖ ^ 2 at hs
+    change (inner ℂ h h).re = ‖h‖ ^ (2 : ℕ) at hs
     rw [hs, hunit]
     norm_num
   rw [hself]

@@ -36,15 +36,15 @@ variable {ι : Type*}
 
 /-- Squaring has a simple zero of the shifted coordinate away from the origin. -/
 theorem analyticOrderAt_sq_sub {w₀ : ℂ} (hw : w₀ ≠ 0) :
-    analyticOrderAt (fun w : ℂ => w ^ 2 - w₀ ^ 2) w₀ = 1 := by
-  have han : AnalyticAt ℂ (fun w : ℂ => w ^ 2 - w₀ ^ 2) w₀ := by
+    analyticOrderAt (fun w : ℂ => w ^ (2 : ℕ) - w₀ ^ (2 : ℕ)) w₀ = 1 := by
+  have han : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ) - w₀ ^ (2 : ℕ)) w₀ := by
     exact (analyticAt_id.pow 2).sub analyticAt_const
-  have hval : (fun w : ℂ => w ^ 2 - w₀ ^ 2) w₀ = 0 := by simp
-  have hderiv : deriv (fun w : ℂ => w ^ 2 - w₀ ^ 2) w₀ = 2 * w₀ := by
-    have h : HasDerivAt (fun w : ℂ => w ^ 2 - w₀ ^ 2) (2 * w₀ ^ (2 - 1) * 1) w₀ := by
-      have hb : HasDerivAt (fun w : ℂ => w ^ 2) (2 * w₀ ^ (2 - 1) * 1) w₀ :=
+  have hval : (fun w : ℂ => w ^ (2 : ℕ) - w₀ ^ (2 : ℕ)) w₀ = 0 := by simp
+  have hderiv : deriv (fun w : ℂ => w ^ (2 : ℕ) - w₀ ^ (2 : ℕ)) w₀ = 2 * w₀ := by
+    have h : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) - w₀ ^ (2 : ℕ)) (2 * w₀ ^ (2 - 1) * 1) w₀ := by
+      have hb : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ)) (2 * w₀ ^ (2 - 1) * 1) w₀ :=
         (hasDerivAt_id w₀).pow 2
-      simpa using hb.sub_const (w₀ ^ 2)
+      simpa using hb.sub_const (w₀ ^ (2 : ℕ))
     rw [h.deriv]
     norm_num
   refine han.analyticOrderAt_eq_one_of_zero_deriv_ne_zero hval ?_
@@ -55,13 +55,13 @@ theorem analyticOrderAt_sq_sub {w₀ : ℂ} (hw : w₀ ≠ 0) :
 Xi function has, at the squared coordinate of a nonzero zero, exactly the multiplicity of that
 zero — one copy per functional-equation orbit. -/
 theorem analyticOrderAt_xiSquaredSeamEntireQuotient {w₀ : ℂ} (hw : w₀ ≠ 0) :
-    analyticOrderAt xiSquaredSeamEntireQuotient (w₀ ^ 2) = analyticOrderAt XiC w₀ := by
-  have hQ : AnalyticAt ℂ xiSquaredSeamEntireQuotient ((fun w : ℂ => w ^ 2) w₀) :=
+    analyticOrderAt xiSquaredSeamEntireQuotient (w₀ ^ (2 : ℕ)) = analyticOrderAt XiC w₀ := by
+  have hQ : AnalyticAt ℂ xiSquaredSeamEntireQuotient ((fun w : ℂ => w ^ (2 : ℕ)) w₀) :=
     (differentiable_xiSquaredSeamEntireQuotient.differentiableOn.analyticOnNhd isOpen_univ) _
       (Set.mem_univ _)
-  have hg : AnalyticAt ℂ (fun w : ℂ => w ^ 2) w₀ := analyticAt_id.pow 2
+  have hg : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) w₀ := analyticAt_id.pow 2
   have hcomp := hQ.analyticOrderAt_comp hg
-  have hfun : (xiSquaredSeamEntireQuotient ∘ fun w : ℂ => w ^ 2) = XiC := by
+  have hfun : (xiSquaredSeamEntireQuotient ∘ fun w : ℂ => w ^ (2 : ℕ)) = XiC := by
     funext w
     exact xiSquaredSeamEntireQuotient_sq w
   rw [hfun, analyticOrderAt_sq_sub hw, mul_one] at hcomp

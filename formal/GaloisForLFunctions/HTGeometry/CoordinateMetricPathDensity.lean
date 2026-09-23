@@ -11,7 +11,7 @@ local notation "Mat" => Matrix (Fin d) (Fin d) ℂ
 
 /-- Cubic metric path with every correction retained. -/
 def path (G H K L : Mat) (t : ℂ) : Mat :=
-  G + t • H + t^2 • K + t^3 • L
+  G + t • H + t^(2 : ℕ) • K + t^(3 : ℕ) • L
 
 /-- Determinant variation with every column replacement retained. -/
 def determinantSlope (G H : Mat) : ℂ :=
@@ -71,7 +71,7 @@ def volumeRatio (G H K L : Mat) (t : ℂ) : ℂ :=
 /-- The chosen density is an actual square root of the determinant ratio wherever the path is nondegenerate. -/
 theorem volumeRatio_sq (G H K L : Mat) (hG : G.det ≠ 0) (t : ℂ)
     (ht : (path G H K L t).det ≠ 0) :
-    volumeRatio G H K L t ^ 2 = (path G H K L t).det / G.det := by
+    volumeRatio G H K L t ^ (2 : ℕ) = (path G H K L t).det / G.det := by
   unfold volumeRatio
   rw [pow_two, ← Complex.exp_add]
   convert! Complex.exp_log (div_ne_zero ht hG) using 1

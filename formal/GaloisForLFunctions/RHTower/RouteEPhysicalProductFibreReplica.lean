@@ -141,11 +141,11 @@ theorem productFibreKernel_idempotent (S : RouteEProductReplicaSource V M) (m : 
       S.productFibreKernel m x y :=
   (S.productFibreData m).conditionalKernel_idempotent x y
 
-/-- Exact physical coarea formula `D_m = sum_q A_m(q)^2/B_m(q)`. -/
+/-- Exact physical coarea formula `D_m = sum_q A_m(q)^(2 : ℕ)/B_m(q)`. -/
 theorem productFibreEnergy_eq_sum_quotient
     (S : RouteEProductReplicaSource V M) (m : ℕ) :
     S.productFibreEnergy m =
-      ∑ q, S.productFibreMoment m q ^ 2 / S.productFibreMass m q :=
+      ∑ q, S.productFibreMoment m q ^ (2 : ℕ) / S.productFibreMass m q :=
   (S.productFibreData m).projectedEnergy_eq_fibreQuotient
 
 /-- The signed iid mean is controlled by physical product-fibre energy with sharp constant one. -/
@@ -286,9 +286,9 @@ theorem replicaSignedMean_eq_single (S : RouteEProductReplicaSource V M) (m : �
 /-- Sharp lower endpoint: squared single-source bias never exceeds product-fibre energy. -/
 theorem singleBias_sq_le_productFibreEnergy
     (S : RouteEProductReplicaSource V M) (m : ℕ) :
-    (∑ v, S.probability v * S.sign v) ^ 2 ≤ S.productFibreEnergy m := by
+    (∑ v, S.probability v * S.sign v) ^ (2 : ℕ) ≤ S.productFibreEnergy m := by
   have h := (S.productFibreData m).mean_sq_le_projectedEnergy
-  change (S.replicaSignedMean m) ^ 2 ≤ S.productFibreEnergy m at h
+  change (S.replicaSignedMean m) ^ (2 : ℕ) ≤ S.productFibreEnergy m at h
   rwa [S.replicaSignedMean_eq_single] at h
 
 /-- Conditional parity energy is at most the unit signed energy. -/
@@ -296,18 +296,18 @@ theorem productFibreEnergy_le_one (S : RouteEProductReplicaSource V M) (m : ℕ)
     S.productFibreEnergy m ≤ 1 := by
   have hanova := (S.productFibreData m).totalEnergy_eq_projected_add_residual
   have htotal :
-      (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ 2) = 1 := by
+      (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ (2 : ℕ)) = 1 := by
     calc
-      (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ 2) =
+      (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ (2 : ℕ)) =
           ∑ x, S.historyMass x := by
         apply Finset.sum_congr rfl
         intro x _hx
-        have hs : S.sign (x 0) ^ 2 = 1 := by
+        have hs : S.sign (x 0) ^ (2 : ℕ) = 1 := by
           rw [← sq_abs, S.sign_abs_one]
           norm_num
         rw [hs, mul_one]
       _ = 1 := S.sum_historyMass (m + 1)
-  change (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ 2) =
+  change (∑ x : Fin (m + 1) → V, S.historyMass x * S.sign (x 0) ^ (2 : ℕ)) =
     S.productFibreEnergy m + (S.productFibreData m).residualEnergy at hanova
   linarith [(S.productFibreData m).residualEnergy_nonneg]
 
@@ -433,7 +433,7 @@ def productFibreDissipation (S : RouteEProductReplicaSource V M) (m : ℕ) : ℝ
   ∑ p : (Fin (m + 1) → V) × V,
     S.historyMass p.1 * S.probability p.2 *
       ((S.productFibreData m).projection p.1 -
-        (S.productFibreData (m + 1)).projection (appendHistory p.1 p.2)) ^ 2
+        (S.productFibreData (m + 1)).projection (appendHistory p.1 p.2)) ^ (2 : ℕ)
 
 /-- **All-depth physical product-fibre dissipation law.** -/
 theorem productFibreEnergy_eq_succ_add_dissipation
@@ -446,7 +446,7 @@ theorem productFibreEnergy_eq_succ_add_dissipation
   change S.productFibreEnergy m = (S.extendedCoarseData m).projectedEnergy +
     ∑ p : (Fin (m + 1) → V) × V,
       S.historyMass p.1 * S.probability p.2 *
-        ((S.productFibreData m).projection p.1 - (S.extendedCoarseData m).projection p) ^ 2 at h
+        ((S.productFibreData m).projection p.1 - (S.extendedCoarseData m).projection p) ^ (2 : ℕ) at h
   rw [S.extendedCoarse_projectedEnergy m] at h
   unfold productFibreDissipation
   simpa only [S.extendedCoarse_projection] using h
@@ -481,7 +481,7 @@ theorem productFibreDissipation_eq_zero_iff_reverseFactor_coherent
         mul_pos (S.historyMass_pos p.1) (S.probability_pos p.2)
       have hsquare :
           ((S.productFibreData m).projection p.1 -
-            (S.productFibreData (m + 1)).projection (appendHistory p.1 p.2)) ^ 2 = 0 := by
+            (S.productFibreData (m + 1)).projection (appendHistory p.1 p.2)) ^ (2 : ℕ) = 0 := by
         nlinarith
       exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
     · intro h p _hp

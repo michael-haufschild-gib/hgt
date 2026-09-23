@@ -111,7 +111,7 @@ theorem integral_exponentialEdge_atomPair (a : ℝ) (phi : ℝ → ℝ) :
   exact exponentialEdge_atomCoefficients a phi
 
 /-- **Endpoint atoms of the zero-extended exponential, in test-function form.**  Pairing the
-distributional derivative of `exp` restricted to `[-a, a]` against a `C^1` test function is the
+distributional derivative of `exp` restricted to `[-a, a]` against a `C^(1 : ℕ)` test function is the
 interior integral plus the two endpoint atoms `exp(-a) delta_{-a} - exp a * delta_a`.
 
 Integration by parts *is* that statement: no distribution theory is needed to say it, only the
@@ -150,7 +150,7 @@ theorem neg_integral_expNeg_mul_deriv (a : ℝ) {phi phi' : ℝ → ℝ}
   linarith [hIBP]
 
 /-- **The limit pairing of the odd source combination.**  Pairing `v' - v` on the `exp` edge and
-`v' + v` on the `exp (-·)` edge against a `C^1` test function makes **every interior term cancel**,
+`v' + v` on the `exp (-·)` edge against a `C^(1 : ℕ)` test function makes **every interior term cancel**,
 leaving exactly the endpoint atom pair with coefficient `2 cosh a`.
 
 This is the mechanism behind the card's "interior terms cancel for limiting exponentials": the

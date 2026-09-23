@@ -41,32 +41,32 @@ on the whole span, up to the dimension factor. -/
 theorem norm_sq_apply_le_of_orthonormal_span {m : ℕ} {g : Fin m → H} (hg : Orthonormal ℂ g)
     (R : H →L[ℂ] H) {η : ℝ} (hη : ∀ k, ‖R (g k)‖ ≤ η)
     {f : H} (hf : f ∈ Submodule.span ℂ (Set.range g)) :
-    ‖R f‖ ^ 2 ≤ (m * η ^ 2) * ‖f‖ ^ 2 := by
+    ‖R f‖ ^ (2 : ℕ) ≤ (m * η ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by
   obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hf
   have hck : ∀ k, c k = inner ℂ (g k) f := fun k => by
     rw [← hc]
     exact (hg.inner_right_fintype c k).symm
-  have hbes : ∑ k, ‖c k‖ ^ 2 ≤ ‖f‖ ^ 2 := by
+  have hbes : ∑ k, ‖c k‖ ^ (2 : ℕ) ≤ ‖f‖ ^ (2 : ℕ) := by
     have hts := hg.tsum_inner_products_le f
     rw [tsum_fintype] at hts
-    calc ∑ k, ‖c k‖ ^ 2 = ∑ k, ‖inner ℂ (g k) f‖ ^ 2 :=
+    calc ∑ k, ‖c k‖ ^ (2 : ℕ) = ∑ k, ‖inner ℂ (g k) f‖ ^ (2 : ℕ) :=
           Finset.sum_congr rfl fun k _ => by rw [hck k]
-      _ ≤ ‖f‖ ^ 2 := hts
+      _ ≤ ‖f‖ ^ (2 : ℕ) := hts
   have htri : ‖R f‖ ≤ (∑ k, ‖c k‖) * η := by
     rw [Finset.sum_mul, ← hc, map_sum]
     refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun k _ => ?_)
     rw [map_smul, norm_smul]
     exact mul_le_mul_of_nonneg_left (hη k) (norm_nonneg _)
-  have hcs : (∑ k, ‖c k‖) ^ 2 ≤ (m : ℝ) * ∑ k, ‖c k‖ ^ 2 := by
+  have hcs : (∑ k, ‖c k‖) ^ (2 : ℕ) ≤ (m : ℝ) * ∑ k, ‖c k‖ ^ (2 : ℕ) := by
     have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Fin m)))
       (f := fun k => ‖c k‖)
     simpa using h
-  calc ‖R f‖ ^ 2 ≤ ((∑ k, ‖c k‖) * η) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) htri 2
-    _ = (∑ k, ‖c k‖) ^ 2 * η ^ 2 := by ring
-    _ ≤ ((m : ℝ) * ∑ k, ‖c k‖ ^ 2) * η ^ 2 := mul_le_mul_of_nonneg_right hcs (sq_nonneg η)
-    _ ≤ ((m : ℝ) * ‖f‖ ^ 2) * η ^ 2 :=
+  calc ‖R f‖ ^ (2 : ℕ) ≤ ((∑ k, ‖c k‖) * η) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) htri 2
+    _ = (∑ k, ‖c k‖) ^ (2 : ℕ) * η ^ (2 : ℕ) := by ring
+    _ ≤ ((m : ℝ) * ∑ k, ‖c k‖ ^ (2 : ℕ)) * η ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hcs (sq_nonneg η)
+    _ ≤ ((m : ℝ) * ‖f‖ ^ (2 : ℕ)) * η ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hbes (Nat.cast_nonneg m)) (sq_nonneg η)
-    _ = (m * η ^ 2) * ‖f‖ ^ 2 := by ring
+    _ = (m * η ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := by ring
 
 end ContinuousLinearMap

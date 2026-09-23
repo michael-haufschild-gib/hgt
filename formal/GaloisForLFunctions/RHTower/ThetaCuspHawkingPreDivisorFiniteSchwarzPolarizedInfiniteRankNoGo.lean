@@ -28,8 +28,8 @@ def d4PreDivisorOpticalCancellationReducedNumerator (z : ℂ) : ℂ :=
     (2 - z) * (z + 1)
 
 def d4PreDivisorOpticalCancellationReducedDenominator (z : ℂ) : ℂ :=
-  d4PreDivisorHorizonAngularShiftHolomorphic z ^ 2 *
-    d4PreDivisorReflectedHorizonAngularShiftHolomorphic z ^ 2
+  d4PreDivisorHorizonAngularShiftHolomorphic z ^ (2 : ℕ) *
+    d4PreDivisorReflectedHorizonAngularShiftHolomorphic z ^ (2 : ℕ)
 
 @[simp] theorem d4PreDivisorOpticalCancellationReducedNumerator_zero :
     d4PreDivisorOpticalCancellationReducedNumerator 0 = 864 := by

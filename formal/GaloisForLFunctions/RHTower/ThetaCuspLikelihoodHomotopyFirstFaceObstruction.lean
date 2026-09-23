@@ -34,7 +34,7 @@ theorem thetaCuspC5FirstFaceAtomBounds
         2 * thetaCuspSingleAtomReflectionScale 1 u *
           thetaCuspBornWittenLogThirdDerivative 1 u ∧
       thetaCuspBornWittenLogFifthDerivative 1 u <
-        16 * thetaCuspSingleAtomReflectionScale 1 u ^ 2 *
+        16 * thetaCuspSingleAtomReflectionScale 1 u ^ (2 : ℕ) *
           thetaCuspBornWittenLogThirdDerivative 1 u := by
   let q := thetaCuspBornWittenWeight 1 u
   let S := thetaCuspSingleAtomReflectionScale 1 u
@@ -50,35 +50,35 @@ theorem thetaCuspC5FirstFaceAtomBounds
     linarith
   let r := q - 9 / 2
   have hr : 0 ≤ r := by dsimp only [r]; linarith
-  have hpnum : 0 < q ^ 3 - 6 * q - 18 := by
-    rw [show q ^ 3 - 6 * q - 18 =
-        r ^ 3 + (27 / 2 : ℝ) * r ^ 2 + (219 / 4 : ℝ) * r + 369 / 8 by
+  have hpnum : 0 < q ^ (3 : ℕ) - 6 * q - 18 := by
+    rw [show q ^ (3 : ℕ) - 6 * q - 18 =
+        r ^ (3 : ℕ) + (27 / 2 : ℝ) * r ^ (2 : ℕ) + (219 / 4 : ℝ) * r + 369 / 8 by
       dsimp only [r]
       ring]
     positivity
-  have hbnum : 0 < 8 * q ^ 4 - 12 * q ^ 2 - 108 * q - 162 := by
-    rw [show 8 * q ^ 4 - 12 * q ^ 2 - 108 * q - 162 =
-        8 * r ^ 4 + 144 * r ^ 3 + 960 * r ^ 2 + 2700 * r + 4779 / 2 by
+  have hbnum : 0 < 8 * q ^ (4 : ℕ) - 12 * q ^ (2 : ℕ) - 108 * q - 162 := by
+    rw [show 8 * q ^ (4 : ℕ) - 12 * q ^ (2 : ℕ) - 108 * q - 162 =
+        8 * r ^ (4 : ℕ) + 144 * r ^ (3 : ℕ) + 960 * r ^ (2 : ℕ) + 2700 * r + 4779 / 2 by
       dsimp only [r]
       ring]
     positivity
-  have hpbr : 3 < 4 - 6 / q ^ 2 - 18 / q ^ 3 := by
+  have hpbr : 3 < 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) := by
     rw [← sub_pos]
-    rw [show 4 - 6 / q ^ 2 - 18 / q ^ 3 - 3 =
-        (q ^ 3 - 6 * q - 18) / q ^ 3 by
+    rw [show 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) - 3 =
+        (q ^ (3 : ℕ) - 6 * q - 18) / q ^ (3 : ℕ) by
       field_simp [hq.ne']
       ring]
     exact div_pos hpnum (pow_pos hq 3)
-  have hbbr : 8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4 < 16 := by
+  have hbbr : 8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ) < 16 := by
     rw [← sub_pos]
-    rw [show 16 - (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) =
-        (8 * q ^ 4 - 12 * q ^ 2 - 108 * q - 162) / q ^ 4 by
+    rw [show 16 - (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) =
+        (8 * q ^ (4 : ℕ) - 12 * q ^ (2 : ℕ) - 108 * q - 162) / q ^ (4 : ℕ) by
       field_simp [hq.ne']
       ring]
     exact div_pos hbnum (pow_pos hq 4)
   have hS : 0 < S := lt_of_lt_of_le (by norm_num) hscale
-  let B := 8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4
-  let P := 4 - 6 / q ^ 2 - 18 / q ^ 3
+  let B := 8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)
+  let P := 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)
   have hB : B < 16 := by simpa only [B] using hbbr
   have hP : 3 < P := by simpa only [P] using hpbr
   have h2S : 0 < 2 * S := mul_pos (by norm_num) hS
@@ -103,20 +103,20 @@ theorem thetaCuspC5FirstFaceAtomBounds
       exact this.trans hthird
     exact hleft.trans (mul_lt_mul_of_pos_left h16 h2S)
   have hC :
-      16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5 < 16 := by
-    have h2 : 0 < 24 / q ^ 2 := div_pos (by norm_num) (pow_pos hq 2)
-    have h3 : 0 < 504 / q ^ 3 := div_pos (by norm_num) (pow_pos hq 3)
-    have h4 : 0 < 1944 / q ^ 4 := div_pos (by norm_num) (pow_pos hq 4)
-    have h5 : 0 < 1944 / q ^ 5 := div_pos (by norm_num) (pow_pos hq 5)
+      16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ) < 16 := by
+    have h2 : 0 < 24 / q ^ (2 : ℕ) := div_pos (by norm_num) (pow_pos hq 2)
+    have h3 : 0 < 504 / q ^ (3 : ℕ) := div_pos (by norm_num) (pow_pos hq 3)
+    have h4 : 0 < 1944 / q ^ (4 : ℕ) := div_pos (by norm_num) (pow_pos hq 4)
+    have h5 : 0 < 1944 / q ^ (5 : ℕ) := div_pos (by norm_num) (pow_pos hq 5)
     linarith
   have hfifthUpper : thetaCuspBornWittenLogFifthDerivative 1 u < 32 * S := by
     unfold thetaCuspBornWittenLogFifthDerivative
     change (2 * q + 3) *
-        (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) < 32 * S
+        (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) < 32 * S
     rw [show 2 * q + 3 = 2 * S by rw [hSq]; ring]
     calc
       (2 * S) *
-          (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) <
+          (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) <
           (2 * S) * 16 := mul_lt_mul_of_pos_left hC h2S
       _ = 32 * S := by ring
   have hthirdPos : 0 < thetaCuspBornWittenLogThirdDerivative 1 u := by
@@ -128,7 +128,7 @@ theorem thetaCuspC5FirstFaceAtomBounds
       exact lt_of_le_of_lt this hthird
     linarith
   have hfifth : thetaCuspBornWittenLogFifthDerivative 1 u <
-      16 * S ^ 2 * thetaCuspBornWittenLogThirdDerivative 1 u := by
+      16 * S ^ (2 : ℕ) * thetaCuspBornWittenLogThirdDerivative 1 u := by
     have h16S : 0 < 16 * S := mul_pos (by norm_num) hS
     have hlarge := mul_lt_mul_of_pos_left hSthird h16S
     apply hfifthUpper.trans
@@ -145,10 +145,10 @@ theorem thetaCuspC5FirstAtomProjectiveEnergy_pos
   have hq : 0 < q := by
     simpa only [q] using thetaCuspBornWittenWeight_pos (n := 1) (by norm_num) hu
   have hcurv : thetaCuspBornWittenLogCurvature 1 u =
-      (2 * q + 3) * (2 + 3 / q ^ 2) := by
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) := by
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile (by norm_num) hu]
-    change 4 * q + 6 + 6 / q + 9 / q ^ 2 =
-      (2 * q + 3) * (2 + 3 / q ^ 2)
+    change 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ) =
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))
     field_simp [hq.ne']
     ring
   rw [hcurv]
@@ -156,20 +156,20 @@ theorem thetaCuspC5FirstAtomProjectiveEnergy_pos
     thetaCuspBornWittenLogFourthDerivative
     thetaCuspBornWittenLogFifthDerivative
   change 0 <
-    (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) *
-          ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) -
-        ((2 * q + 3) * (2 + 3 / q ^ 2)) *
-          ((2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 -
-            1944 / q ^ 4 - 1944 / q ^ 5))
+    (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) *
+          ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) -
+        ((2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))) *
+          ((2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) -
+            1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)))
   rw [show
-    (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) *
-          ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) -
-        ((2 * q + 3) * (2 + 3 / q ^ 2)) *
-          ((2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 -
-            1944 / q ^ 4 - 1944 / q ^ 5)) =
-      (2 * q + 3) ^ 2 *
-        (1296 / q ^ 3 + 4536 / q ^ 4 + 4536 / q ^ 5 +
-          2916 / q ^ 6 + 2916 / q ^ 7) by
+    (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) *
+          ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) -
+        ((2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))) *
+          ((2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) -
+            1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ))) =
+      (2 * q + 3) ^ (2 : ℕ) *
+        (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ) + 4536 / q ^ (5 : ℕ) +
+          2916 / q ^ (6 : ℕ) + 2916 / q ^ (7 : ℕ)) by
     field_simp [hq.ne']
     ring]
   positivity
@@ -217,7 +217,7 @@ theorem thetaCuspC5FirstFaceSeamObstruction_pos
   rcases thetaCuspC5FirstFaceAtomBounds hu hscale with ⟨hpLower, hB, hC⟩
   change 6 * S < p at hpLower
   change B < 2 * S * p at hB
-  change C < 16 * S ^ 2 * p at hC
+  change C < 16 * S ^ (2 : ℕ) * p at hC
   have hp : 0 < p := (mul_pos (by norm_num) hS).trans hpLower
   have hBpos : 0 < B := by
     simpa only [B] using thetaCuspBornWittenLogFourthDerivative_pos
@@ -237,20 +237,20 @@ theorem thetaCuspC5FirstFaceSeamObstruction_pos
           mul_lt_mul_of_pos_left hmulB (by norm_num)
         _ = p * (4 * S * (-F₃)) := by ring
     exact hpre.trans (mul_lt_mul_of_pos_left hcool₄ hp)
-  have h16cool : 16 * S ^ 2 * F₂ < F₄ := by
+  have h16cool : 16 * S ^ (2 : ℕ) * F₂ < F₄ := by
     have hscaleCool := mul_lt_mul_of_pos_left hcool₂
       (mul_pos (show (0 : ℝ) < 4 by norm_num) hS)
-    have hstep : 16 * S ^ 2 * F₂ < 4 * S * (-F₃) := by
+    have hstep : 16 * S ^ (2 : ℕ) * F₂ < 4 * S * (-F₃) := by
       calc
-        16 * S ^ 2 * F₂ = (4 * S) * (4 * S * F₂) := by ring
+        16 * S ^ (2 : ℕ) * F₂ = (4 * S) * (4 * S * F₂) := by ring
         _ < (4 * S) * (-F₃) := hscaleCool
     exact hstep.trans hcool₄
   have hsecond : F₂ * C < p * F₄ := by
     have hmulC := mul_lt_mul_of_pos_left hC hF₂
-    have hpre : F₂ * C < p * (16 * S ^ 2 * F₂) := by
+    have hpre : F₂ * C < p * (16 * S ^ (2 : ℕ) * F₂) := by
       calc
-        F₂ * C < F₂ * (16 * S ^ 2 * p) := hmulC
-        _ = p * (16 * S ^ 2 * F₂) := by ring
+        F₂ * C < F₂ * (16 * S ^ (2 : ℕ) * p) := hmulC
+        _ = p * (16 * S ^ (2 : ℕ) * F₂) := by ring
     exact hpre.trans (mul_lt_mul_of_pos_left h16cool hp)
   have hdirection :
       -2 * F₃ * B - 2 * p * F₄ + A * F₅ + F₂ * C < 0 := by

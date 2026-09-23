@@ -26,7 +26,7 @@ variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 theorem probabilityUniform_convolution_affine (q : FiniteProbabilityLaw G) (α : ℝ) (i : G) :
     (∑ j, (α*q.prob (i*j⁻¹)+(1-α)*(uniformNoiseLaw (ι := G)).prob (i*j⁻¹))*
       (α*q.prob j+(1-α)*(uniformNoiseLaw (ι := G)).prob j)) =
-      α^2*(q.mix (relativeGroupNoise q)).prob i+(1-α^2)*(uniformNoiseLaw (ι := G)).prob i := by
+      α^(2 : ℕ)*(q.mix (relativeGroupNoise q)).prob i+(1-α^(2 : ℕ))*(uniformNoiseLaw (ι := G)).prob i := by
   let h := q
   let c : ℝ := (Fintype.card G : ℝ)⁻¹
   have hmass : (∑ j, h.prob j) = 1 := h.sum_prob
@@ -37,22 +37,22 @@ theorem probabilityUniform_convolution_affine (q : FiniteProbabilityLaw G) (α :
   have hcard : (Fintype.card G : ℝ)*c = 1 :=
     mul_inv_cancel₀ (by exact_mod_cast Fintype.card_ne_zero (α := G))
   change (∑ j, (α*h.prob (i*j⁻¹)+(1-α)*c)*(α*h.prob j+(1-α)*c)) =
-    α^2*(h.mix (relativeGroupNoise h)).prob i+(1-α^2)*c
+    α^(2 : ℕ)*(h.mix (relativeGroupNoise h)).prob i+(1-α^(2 : ℕ))*c
   have hterm (j : G) : (α*h.prob (i*j⁻¹)+(1-α)*c)*(α*h.prob j+(1-α)*c) =
-      α^2*(h.prob (i*j⁻¹)*h.prob j)+α*(1-α)*c*h.prob (i*j⁻¹)+
-        α*(1-α)*c*h.prob j+(1-α)^2*c*c := by ring
+      α^(2 : ℕ)*(h.prob (i*j⁻¹)*h.prob j)+α*(1-α)*c*h.prob (i*j⁻¹)+
+        α*(1-α)*c*h.prob j+(1-α)^(2 : ℕ)*c*c := by ring
   simp_rw [hterm]
   simp only [Finset.sum_add_distrib, ← Finset.mul_sum, hconv, hshift, hmass,
     mul_one, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   calc
-    _ = α^2*(h.mix (relativeGroupNoise h)).prob i+2*α*(1-α)*c+(1-α)^2*c*((Fintype.card G : ℝ)*c) := by ring
+    _ = α^(2 : ℕ)*(h.mix (relativeGroupNoise h)).prob i+2*α*(1-α)*c+(1-α)^(2 : ℕ)*c*((Fintype.card G : ℝ)*c) := by ring
     _ = _ := by rw [hcard]; ring
 
 /-- Subgroup laws give an invariant affine line, with coefficient squared. -/
 theorem subgroupUniform_convolution_affine (H : Subgroup G) (α : ℝ) (i : G) :
     (∑ j, (α*(subgroupUniformLaw H).prob (i*j⁻¹)+(1-α)*(uniformNoiseLaw (ι := G)).prob (i*j⁻¹))*
       (α*(subgroupUniformLaw H).prob j+(1-α)*(uniformNoiseLaw (ι := G)).prob j)) =
-      α^2*(subgroupUniformLaw H).prob i+(1-α^2)*(uniformNoiseLaw (ι := G)).prob i := by
+      α^(2 : ℕ)*(subgroupUniformLaw H).prob i+(1-α^(2 : ℕ))*(uniformNoiseLaw (ι := G)).prob i := by
   have h := probabilityUniform_convolution_affine (subgroupUniformLaw H) α i
   rwa [subgroupUniformLaw_self_convolution] at h
 
@@ -79,11 +79,11 @@ theorem selfConsistentRefreshAtOrbit_exact (r : ℝ) (p : FiniteProbabilityLaw G
       have hp : 0 < 2^n := pow_pos (by omega) n
       rw [pow_succ]
       omega
-    have hr : refreshRate r^(2^(n+1)-1) = refreshRate r*(refreshRate r^(2^n-1))^2 := by
+    have hr : refreshRate r^(2^(n+1)-1) = refreshRate r*(refreshRate r^(2^n-1))^(2 : ℕ) := by
       rw [hexp, pow_succ, pow_mul]
       ring
     rw [hr]
-    change _ = refreshRate r*(refreshRate r^(2^n-1))^2*
+    change _ = refreshRate r*(refreshRate r^(2^n-1))^(2 : ℕ)*
       ((selfConvolutionOrbit p n).mix (relativeGroupNoise (selfConvolutionOrbit p n))).prob i+_
     ring
 
@@ -121,7 +121,7 @@ theorem selfConsistentRefreshAtOrbit_subgroup (r : ℝ) (H : Subgroup G) (n : �
       have hp : 0 < 2^n := pow_pos (by omega) n
       rw [pow_succ]
       omega
-    have hr : refreshRate r^(2^(n+1)-1) = refreshRate r*(refreshRate r^(2^n-1))^2 := by
+    have hr : refreshRate r^(2^(n+1)-1) = refreshRate r*(refreshRate r^(2^n-1))^(2 : ℕ) := by
       rw [hexp, pow_succ, pow_mul]
       ring
     rw [hr]
@@ -168,7 +168,7 @@ theorem subgroupUniformLaw_distance (H : Subgroup G) :
 /-- Exact surviving coefficient for an arbitrary sequence of refreshed transfers. -/
 def scheduledRefreshSurvival (r : ℕ → ℝ) : ℕ → ℝ
   | 0 => 1
-  | n+1 => refreshRate (r n)*scheduledRefreshSurvival r n ^ 2
+  | n+1 => refreshRate (r n)*scheduledRefreshSurvival r n ^ (2 : ℕ)
 
 omit [Group G] [Fintype G] [DecidableEq G] in
 theorem scheduledRefreshSurvival_nonneg (r : ℕ → ℝ) (n : ℕ) :
@@ -201,11 +201,11 @@ theorem scheduledRefreshSurvival_first_bound (r : ℕ → ℝ) (n : ℕ) :
   induction n with
   | zero => simp [scheduledRefreshSurvival]
   | succ n ih =>
-    change refreshRate (r (n+1))*scheduledRefreshSurvival r (n+1)^2 ≤ _
+    change refreshRate (r (n+1))*scheduledRefreshSurvival r (n+1)^(2 : ℕ) ≤ _
     calc
-      _ ≤ scheduledRefreshSurvival r (n+1)^2 :=
+      _ ≤ scheduledRefreshSurvival r (n+1)^(2 : ℕ) :=
         mul_le_of_le_one_left (sq_nonneg _) (refreshRate_lt_one _).le
-      _ ≤ (refreshRate (r 0)^(2^n))^2 :=
+      _ ≤ (refreshRate (r 0)^(2^n))^(2 : ℕ) :=
         (sq_le_sq₀ (scheduledRefreshSurvival_nonneg _ _)
           (pow_nonneg (refreshRate_pos _).le _)).mpr ih
       _ = _ := by rw [← pow_mul, pow_succ]
@@ -254,7 +254,7 @@ theorem selfConvolutionOrbit_single_refresh_exact (r : ℝ) (p : FiniteProbabili
     rw [relativeGroupNoise_prob]
     simp_rw [ih]
     rw [probabilityUniform_convolution_affine]
-    have hr : refreshRate r^(2^(n+1)) = (refreshRate r^(2^n))^2 := by
+    have hr : refreshRate r^(2^(n+1)) = (refreshRate r^(2^n))^(2 : ℕ) := by
       rw [pow_succ, pow_mul]
     rw [hr]
     rfl

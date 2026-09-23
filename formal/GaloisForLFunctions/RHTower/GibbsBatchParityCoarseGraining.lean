@@ -38,7 +38,7 @@ def routeEBatchParityCoarseDefect {ι : Type*} (s : Finset ι)
   let Wn := routeEBatchClassMass s (fun i => ¬ c i) w
   let Kp := routeEBatchClassNumerator s c w value
   let Kn := routeEBatchClassNumerator s (fun i => ¬ c i) w value
-  (Wn * Kp + Wp * Kn) ^ 2 / ((Wp + Wn) * Wp * Wn)
+  (Wn * Kp + Wp * Kn) ^ (2 : ℕ) / ((Wp + Wn) * Wp * Wn)
 
 /-- Total mass in parity-class coordinates. -/
 def routeEBatchParityTotalMass {ι : Type*} (s : Finset ι)
@@ -114,14 +114,14 @@ theorem routeEBatchParityNonproductDeterminant_eq
 theorem routeEScalarParityCoarseDeterminantIdentity
     (Wp Wn Kp Kn : ℝ) (hp : Wp ≠ 0) (hn : Wn ≠ 0)
     (hs : Wp + Wn ≠ 0) :
-    (Wn * Kp + Wp * Kn) ^ 2 / ((Wp + Wn) * Wp * Wn) =
-      ((Wp + Wn) * (Kp + Kn) - (Wp - Wn) * (Kp - Kn)) ^ 2 /
-        ((Wp + Wn) * ((Wp + Wn) ^ 2 - (Wp - Wn) ^ 2)) := by
-  have hdisc : (Wp + Wn) ^ 2 - (Wp - Wn) ^ 2 ≠ 0 := by
+    (Wn * Kp + Wp * Kn) ^ (2 : ℕ) / ((Wp + Wn) * Wp * Wn) =
+      ((Wp + Wn) * (Kp + Kn) - (Wp - Wn) * (Kp - Kn)) ^ (2 : ℕ) /
+        ((Wp + Wn) * ((Wp + Wn) ^ (2 : ℕ) - (Wp - Wn) ^ (2 : ℕ))) := by
+  have hdisc : (Wp + Wn) ^ (2 : ℕ) - (Wp - Wn) ^ (2 : ℕ) ≠ 0 := by
     have hfour : (4 : ℝ) * Wp * Wn ≠ 0 :=
       mul_ne_zero (mul_ne_zero (by norm_num) hp) hn
     calc
-      (Wp + Wn) ^ 2 - (Wp - Wn) ^ 2 = (4 : ℝ) * Wp * Wn := by ring
+      (Wp + Wn) ^ (2 : ℕ) - (Wp - Wn) ^ (2 : ℕ) = (4 : ℝ) * Wp * Wn := by ring
       _ ≠ 0 := hfour
   field_simp [hp, hn, hs, hdisc]
   ring
@@ -135,10 +135,10 @@ theorem routeEBatchParityCoarseDefect_eq_antiscaleDeterminant
     (hn : routeEBatchClassMass s (fun i => ¬ c i) w ≠ 0)
     (ht : routeEBatchParityTotalMass s c w ≠ 0) :
     routeEBatchParityCoarseDefect s c w value =
-      routeEBatchParityAntiscaleDeterminant s c w value ^ 2 /
+      routeEBatchParityAntiscaleDeterminant s c w value ^ (2 : ℕ) /
         (routeEBatchParityTotalMass s c w *
-          (routeEBatchParityTotalMass s c w ^ 2 -
-            routeEBatchParityMassImbalance s c w ^ 2)) := by
+          (routeEBatchParityTotalMass s c w ^ (2 : ℕ) -
+            routeEBatchParityMassImbalance s c w ^ (2 : ℕ))) := by
   simpa [routeEBatchParityCoarseDefect,
     routeEBatchParityAntiscaleDeterminant,
     routeEBatchParityTotalMass, routeEBatchParityUnsignedNumerator,
@@ -154,9 +154,9 @@ theorem routeEBatchParityCoarseDefect_eq_antiscaleDeterminant
 theorem routeEScalarParityCoarseIdentity
     (Wp Wn Kp Kn : ℝ) (hp : Wp ≠ 0) (hn : Wn ≠ 0)
     (hs : Wp + Wn ≠ 0) :
-    (Kp - Kn) ^ 2 / (Wp + Wn) +
-        (Wn * Kp + Wp * Kn) ^ 2 / ((Wp + Wn) * Wp * Wn) =
-      Kp ^ 2 / Wp + Kn ^ 2 / Wn := by
+    (Kp - Kn) ^ (2 : ℕ) / (Wp + Wn) +
+        (Wn * Kp + Wp * Kn) ^ (2 : ℕ) / ((Wp + Wn) * Wp * Wn) =
+      Kp ^ (2 : ℕ) / Wp + Kn ^ (2 : ℕ) / Wn := by
   field_simp [hp, hn, hs]
   ring
 
@@ -203,7 +203,7 @@ theorem routeEBatchMeanEnergy_add_withinClassResiduals_add_coarse_eq_leafEnergy
           routeEBatchLeafEnergy (s.filter fun i => ¬ c i) w value := by
     unfold routeEBatchLeafEnergy
     rw [← Finset.sum_filter_add_sum_filter_not s c
-      (fun i => w i * routeEBatchSignedByClass c value i ^ 2)]
+      (fun i => w i * routeEBatchSignedByClass c value i ^ (2 : ℕ))]
     congr 1
     · apply Finset.sum_congr rfl
       intro i hi
@@ -460,7 +460,7 @@ energy plus even/odd within-class variation and the coarse antiscale defect
 equals the complete unsigned common-prefix leaf energy. -/
 theorem routeEGibbsBatch_currentEnergy_add_parityCoarse_eq_leafEnergy
     (S P : Finset ℕ) (hdisj : Disjoint S P) (hP : P.Nonempty) (x : ℝ) :
-    gibbsDiag (S ∪ P) x (-1) ^ 2 / gibbsDiag (S ∪ P) x 1 +
+    gibbsDiag (S ∪ P) x (-1) ^ (2 : ℕ) / gibbsDiag (S ∪ P) x 1 +
         routeEBatchResidual
           (P.powerset.filter fun T : Finset ℕ => Even T.card)
           (routeEGibbsBatchWeight S x) (routeEGibbsBatchBaseValue S x) +

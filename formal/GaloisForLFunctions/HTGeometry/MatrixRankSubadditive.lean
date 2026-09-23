@@ -89,7 +89,7 @@ theorem dotProduct_self_pos {u : ι → ℝ} (hu : u ≠ 0) : 0 < u ⬝ᵥ u := 
 vanishing of every translate, gives the strict Cauchy--Schwarz inequality. -/
 theorem gramDet_pos_of_linearIndependent {u v : ι → ℝ}
     (h : LinearIndependent ℝ ![u, v]) :
-    0 < (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2 := by
+    0 < (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ) := by
   have hpair := LinearIndependent.pair_iff.mp h
   have hu : u ≠ 0 := by
     intro h0
@@ -101,15 +101,15 @@ theorem gramDet_pos_of_linearIndependent {u v : ι → ℝ}
     exact one_ne_zero (hpair (-(u ⬝ᵥ v) / (u ⬝ᵥ u)) 1 (by rw [one_smul, add_comm]; exact h0)).2
   have hpos := dotProduct_self_pos hw
   have hexp : ∀ t : ℝ, (v + t • u) ⬝ᵥ (v + t • u)
-      = (v ⬝ᵥ v) + 2 * t * (u ⬝ᵥ v) + t ^ 2 * (u ⬝ᵥ u) := by
+      = (v ⬝ᵥ v) + 2 * t * (u ⬝ᵥ v) + t ^ (2 : ℕ) * (u ⬝ᵥ u) := by
     intro t
     simp only [add_dotProduct, dotProduct_add, smul_dotProduct, dotProduct_smul, smul_eq_mul,
       dotProduct_comm v u]
     ring
   rw [hexp] at hpos
   have hid : (v ⬝ᵥ v) + 2 * (-(u ⬝ᵥ v) / (u ⬝ᵥ u)) * (u ⬝ᵥ v)
-        + (-(u ⬝ᵥ v) / (u ⬝ᵥ u)) ^ 2 * (u ⬝ᵥ u)
-      = ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2) / (u ⬝ᵥ u) := by
+        + (-(u ⬝ᵥ v) / (u ⬝ᵥ u)) ^ (2 : ℕ) * (u ⬝ᵥ u)
+      = ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ)) / (u ⬝ᵥ u) := by
     field_simp
     ring
   rw [hid] at hpos
@@ -130,11 +130,11 @@ theorem gramPair_mulVec (u v y : ι → ℝ) :
   rw [Matrix.add_mulVec, vecMulVec_mulVec_self, vecMulVec_mulVec_self]
 
 /-- The inverse of a nonsingular symmetric two-by-two Gram matrix. -/
-theorem gram_two_by_two_solve {a b c D : ℝ} (hD : D = a * c - b ^ 2) (hDne : D ≠ 0) :
+theorem gram_two_by_two_solve {a b c D : ℝ} (hD : D = a * c - b ^ (2 : ℕ)) (hDne : D ≠ 0) :
     (c / D) * a + (-b / D) * b = 1 ∧ (c / D) * b + (-b / D) * c = 0 ∧
       (-b / D) * a + (a / D) * b = 0 ∧ (-b / D) * b + (a / D) * c = 1 := by
   subst hD
-  have hDne' : c * a - b ^ 2 ≠ 0 := by rw [mul_comm c a]; exact hDne
+  have hDne' : c * a - b ^ (2 : ℕ) ≠ 0 := by rw [mul_comm c a]; exact hDne
   refine ⟨?_, ?_, ?_, ?_⟩ <;> field_simp <;> ring
 
 /-- **An independent pair is recovered from its Gram sum.**  Both feature vectors lie in the column
@@ -142,9 +142,9 @@ space, because the inverse of their Gram matrix produces the required coefficien
 theorem span_pair_le_range_gramPair {u v : ι → ℝ} (h : LinearIndependent ℝ ![u, v]) :
     Submodule.span ℝ {u, v}
       ≤ LinearMap.range (Matrix.mulVecLin (Matrix.vecMulVec u u + Matrix.vecMulVec v v)) := by
-  have hD : 0 < (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2 := gramDet_pos_of_linearIndependent h
+  have hD : 0 < (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ) := gramDet_pos_of_linearIndependent h
   obtain ⟨e1, e2, e3, e4⟩ := gram_two_by_two_solve (a := u ⬝ᵥ u) (b := u ⬝ᵥ v) (c := v ⬝ᵥ v)
-    (D := (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2) rfl (ne_of_gt hD)
+    (D := (u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ)) rfl (ne_of_gt hD)
   have hmem : ∀ α β : ℝ,
       Matrix.mulVecLin (Matrix.vecMulVec u u + Matrix.vecMulVec v v) (α • u + β • v)
         = (α * (u ⬝ᵥ u) + β * (u ⬝ᵥ v)) • u + (α * (u ⬝ᵥ v) + β * (v ⬝ᵥ v)) • v := by
@@ -158,13 +158,13 @@ theorem span_pair_le_range_gramPair {u v : ι → ℝ} (h : LinearIndependent �
     rw [h1, h2]
   have hu : u ∈ LinearMap.range
       (Matrix.mulVecLin (Matrix.vecMulVec u u + Matrix.vecMulVec v v)) := by
-    refine ⟨((v ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2)) • u
-      + (-(u ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2)) • v, ?_⟩
+    refine ⟨((v ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ))) • u
+      + (-(u ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ))) • v, ?_⟩
     rw [hmem, e1, e2, one_smul, zero_smul, add_zero]
   have hv : v ∈ LinearMap.range
       (Matrix.mulVecLin (Matrix.vecMulVec u u + Matrix.vecMulVec v v)) := by
-    refine ⟨(-(u ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2)) • u
-      + ((u ⬝ᵥ u) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ 2)) • v, ?_⟩
+    refine ⟨(-(u ⬝ᵥ v) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ))) • u
+      + ((u ⬝ᵥ u) / ((u ⬝ᵥ u) * (v ⬝ᵥ v) - (u ⬝ᵥ v) ^ (2 : ℕ))) • v, ?_⟩
     rw [hmem, e3, e4, one_smul, zero_smul, zero_add]
   refine Submodule.span_le.mpr ?_
   rintro w (rfl | rfl)

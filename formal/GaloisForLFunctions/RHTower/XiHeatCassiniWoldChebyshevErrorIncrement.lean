@@ -77,7 +77,7 @@ theorem xiHeatCassiniPrimeDensityGapFluctuation_eq_chebyshevIncrement_sub_gapSq
     (N : ℕ) :
     xiHeatCassiniPrimeDensityGapFluctuation N =
       xiHeatCassiniNormalizedChebyshevErrorIncrement N -
-        xiHeatCassiniOrderedPrimeGap N ^ 2 /
+        xiHeatCassiniOrderedPrimeGap N ^ (2 : ℕ) /
           ((nthPrimeSubtype N : ℝ) * (nthPrimeSubtype (N + 1) : ℝ)) := by
   have hp : (nthPrimeSubtype N : ℝ) ≠ 0 := (nthPrimeSubtype_pos N).ne'
   have hq : (nthPrimeSubtype (N + 1) : ℝ) ≠ 0 :=
@@ -130,7 +130,7 @@ theorem xiHeatCassiniPrimeBackwardLogDepletion_nonneg (N : ℕ) :
 same critical-energy budget as log quadrature. -/
 theorem xiHeatCassiniPrimeBackwardLogDepletion_le_relativeGap_sq (N : ℕ) :
     xiHeatCassiniPrimeBackwardLogDepletion N ≤
-      xiHeatCassiniOrderedPrimeRelativeGap N ^ 2 := by
+      xiHeatCassiniOrderedPrimeRelativeGap N ^ (2 : ℕ) := by
   have hlog := xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
   let p : ℝ := nthPrimeSubtype N
   let q : ℝ := nthPrimeSubtype (N + 1)
@@ -140,24 +140,24 @@ theorem xiHeatCassiniPrimeBackwardLogDepletion_le_relativeGap_sq (N : ℕ) :
   have hpq : p ≤ q := by
     dsimp only [p, q]
     exact_mod_cast nthPrimeSubtype_strictMono.monotone (Nat.le_succ N)
-  have htransport : d / p - d / q = d ^ 2 / (p * q) := by
+  have htransport : d / p - d / q = d ^ (2 : ℕ) / (p * q) := by
     have hd : d = q - p := rfl
     rw [hd]
     field_simp [hp.ne', hq.ne']
-  have hdenom : d ^ 2 / (p * q) ≤ d ^ 2 / (p * p) := by
+  have hdenom : d ^ (2 : ℕ) / (p * q) ≤ d ^ (2 : ℕ) / (p * p) := by
     exact div_le_div_of_nonneg_left (sq_nonneg d) (mul_pos hp hp)
       (mul_le_mul_of_nonneg_left hpq hp.le)
-  have hrelative : d ^ 2 / (p * p) =
-      xiHeatCassiniOrderedPrimeRelativeGap N ^ 2 := by
-    change d ^ 2 / (p * p) = (d / p) ^ 2
+  have hrelative : d ^ (2 : ℕ) / (p * p) =
+      xiHeatCassiniOrderedPrimeRelativeGap N ^ (2 : ℕ) := by
+    change d ^ (2 : ℕ) / (p * p) = (d / p) ^ (2 : ℕ)
     field_simp [hp.ne']
   calc
     xiHeatCassiniPrimeBackwardLogDepletion N =
         xiHeatCassiniOrderedPrimeLogGap N - d / q := rfl
     _ ≤ d / p - d / q := sub_le_sub_right hlog _
-    _ = d ^ 2 / (p * q) := htransport
-    _ ≤ d ^ 2 / (p * p) := hdenom
-    _ = xiHeatCassiniOrderedPrimeRelativeGap N ^ 2 := hrelative
+    _ = d ^ (2 : ℕ) / (p * q) := htransport
+    _ ≤ d ^ (2 : ℕ) / (p * p) := hdenom
+    _ = xiHeatCassiniOrderedPrimeRelativeGap N ^ (2 : ℕ) := hrelative
 
 /-- Critical prime-gap energy absorbs the whole backward endpoint depletion at half density. -/
 theorem primeBackwardLogDepletion_mul_sqrt_le_criticalEnergy (N : ℕ) :
@@ -185,7 +185,7 @@ theorem sum_primeBackwardLogDepletion_mul_sqrt_le_criticalEnergy (M : ℕ) :
 theorem xiHeatCassiniPrimeLogQuadratureError_sub_gapSq_eq_neg_backwardDepletion
     (N : ℕ) :
     xiHeatCassiniPrimeLogQuadratureError N -
-        xiHeatCassiniOrderedPrimeGap N ^ 2 /
+        xiHeatCassiniOrderedPrimeGap N ^ (2 : ℕ) /
           ((nthPrimeSubtype N : ℝ) * (nthPrimeSubtype (N + 1) : ℝ)) =
       -xiHeatCassiniPrimeBackwardLogDepletion N := by
   have hp : (nthPrimeSubtype N : ℝ) ≠ 0 := (nthPrimeSubtype_pos N).ne'
@@ -213,14 +213,14 @@ theorem xiHeatCassiniOrderedWoldResidualIncrement_eq_chebyshevIncrement_sub_depl
     xiHeatCassiniPrimeLogQuadratureError_sub_gapSq_eq_neg_backwardDepletion N
   calc
     (xiHeatCassiniNormalizedChebyshevErrorIncrement N -
-          xiHeatCassiniOrderedPrimeGap N ^ 2 /
+          xiHeatCassiniOrderedPrimeGap N ^ (2 : ℕ) /
             ((nthPrimeSubtype N : ℝ) * (nthPrimeSubtype (N + 1) : ℝ))) -
         xiHeatCassiniWoldEulerTraceCorrection (nthPrimeSubtype (N + 1)) +
           xiHeatCassiniPrimeLogQuadratureError N =
         xiHeatCassiniNormalizedChebyshevErrorIncrement N -
           xiHeatCassiniWoldEulerTraceCorrection (nthPrimeSubtype (N + 1)) +
             (xiHeatCassiniPrimeLogQuadratureError N -
-              xiHeatCassiniOrderedPrimeGap N ^ 2 /
+              xiHeatCassiniOrderedPrimeGap N ^ (2 : ℕ) /
                 ((nthPrimeSubtype N : ℝ) *
                   (nthPrimeSubtype (N + 1) : ℝ))) := by ring
     _ = xiHeatCassiniNormalizedChebyshevErrorIncrement N -

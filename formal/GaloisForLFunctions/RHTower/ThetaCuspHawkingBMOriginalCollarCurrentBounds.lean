@@ -46,7 +46,7 @@ private theorem unit_collar_limit :
   norm_num
 
 private def liftProfile (s amp : ℂ) (u : ℝ) : ℂ :=
-  (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) (1+u)*amp^2*(u:ℂ)^3)
+  (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) (1+u)*amp^(2 : ℕ)*(u:ℂ)^(3 : ℕ))
 
 private theorem differentiable_unit_collar_error (F : ℝ → ℂ) (hd : DifferentiableAt ℝ F 1) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ L : ℝ in atTop,
@@ -234,16 +234,16 @@ theorem original_collar_current_slot_error (q : XiZeroCopy) (br : Bool) (amp w :
 open D4BMLaplaceRadial
 
 private def readerProfile (w chi : ℂ) (u : ℝ) : ℂ :=
-  power w (1+u)*gaussFactor w chi false ((1-u^2:ℝ):ℂ)
+  power w (1+u)*gaussFactor w chi false ((1-u^(2 : ℕ):ℝ):ℂ)
 
 private theorem reader_profile_differentiable (w chi : ℂ) :
     DifferentiableAt ℝ (readerProfile w chi) 1 := by
   have hp := ((power_derivatives w (by norm_num : 0 < 1+(1:ℝ))).1.scomp 1
     ((hasDerivAt_id (1:ℝ)).const_add 1)).differentiableAt
-  have hg : DifferentiableAt ℝ (fun b : ℝ => gaussFactor w chi false (b:ℂ)) (1-(1:ℝ)^2) := by
+  have hg : DifferentiableAt ℝ (fun b : ℝ => gaussFactor w chi false (b:ℂ)) (1-(1:ℝ)^(2 : ℕ)) := by
     norm_num only [one_pow,sub_self]
     exact (gaussFactor_derivatives_continued (w:=w) (chi:=chi) (z:=0) false (by simp)).1.comp_ofReal.differentiableAt
-  have hc := hg.comp 1 (show DifferentiableAt ℝ (fun u : ℝ => 1-u^2) 1 by fun_prop)
+  have hc := hg.comp 1 (show DifferentiableAt ℝ (fun u : ℝ => 1-u^(2 : ℕ)) 1 by fun_prop)
   exact hp.mul hc
 
 private theorem reader_profile_one (w chi : ℂ) : readerProfile w chi 1=power w 2 := by

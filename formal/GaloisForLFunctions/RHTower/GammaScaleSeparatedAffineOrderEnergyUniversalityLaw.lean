@@ -41,7 +41,7 @@ theorem gammaScaleSeparatedAffineHorizon_orderEnergyUniversality
             (∫ t : ℝ, ‖RHTower.boundaryPoleApproachProfile 0
               (((MvPolynomial.pderiv (0 : Fin (n + 1))
                 (constantMovingGammaSource P)).coeff 0).eval
-                  (-(branch : ℂ))) m t‖ ^ 2) ≤ C := by
+                  (-(branch : ℂ))) m t‖ ^ (2 : ℕ)) ≤ C := by
   rcases (gammaScaleSeparatedSimplePoleProfileEval_natDegree_le_one_iff_affine P).1 hscale with
     ⟨a, b, hP⟩
   have hprofile : GammaPoleProfileAtMostSimple n (constantMovingGammaSource P) := by

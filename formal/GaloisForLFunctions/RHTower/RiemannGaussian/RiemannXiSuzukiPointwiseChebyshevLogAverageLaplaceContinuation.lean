@@ -116,7 +116,7 @@ def suzukiChebyshevLogAverageLaplaceCompletedContinuation (z : ℂ) : ℂ :=
       Complex.log Real.pi / 2 -
       Complex.digamma ((z + 1 / 2) / 2) / 2 +
       4 * (z + 1 / 2)) /
-    z ^ 2
+    z ^ (2 : ℕ)
 
 /-- The completed-xi logarithmic derivative is analytic wherever xi is
 nonzero. -/
@@ -182,7 +182,7 @@ theorem analyticOnNhd_suzukiChebyshevLogAverageLaplaceCompletedContinuation :
           Complex.digamma ((z + 1 / 2) / 2) / 2 +
           4 * (z + 1 / 2)) D :=
     (((hlog.sub hshiftInv).add hlogPi).sub hdigamma.div_const).add hlinear
-  have hden : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2) D :=
+  have hden : AnalyticOnNhd ℂ (fun z : ℂ => z ^ (2 : ℕ)) D :=
     analyticOnNhd_id.pow 2
   unfold suzukiChebyshevLogAverageLaplaceCompletedContinuation
   exact hnum.div hden fun z hz => pow_ne_zero 2 hz.1
@@ -216,8 +216,8 @@ theorem suzukiChebyshevLogAverageComplexZetaResponse_eq_completedContinuation
     norm_num [Complex.div_re] at hre
     linarith
   have hpole :
-      -(1 / (z - 1 / 2)) / z ^ 2 + 4 / (z - 1 / 2) =
-        4 * (z + 1 / 2) / z ^ 2 := by
+      -(1 / (z - 1 / 2)) / z ^ (2 : ℕ) + 4 / (z - 1 / 2) =
+        4 * (z + 1 / 2) / z ^ (2 : ℕ) := by
     let d : ℂ := z - 1 / 2
     have hd : d ≠ 0 := by
       exact hzHalf
@@ -225,7 +225,7 @@ theorem suzukiChebyshevLogAverageComplexZetaResponse_eq_completedContinuation
       dsimp [d]
       ring
     rw [hsrel]
-    change -(1 / d) / z ^ 2 + 4 / d = 4 * (d + 1) / z ^ 2
+    change -(1 / d) / z ^ (2 : ℕ) + 4 / d = 4 * (d + 1) / z ^ (2 : ℕ)
     field_simp [hz0, hd]
     ring
   unfold suzukiChebyshevLogAverageComplexZetaResponse
@@ -239,23 +239,23 @@ theorem suzukiChebyshevLogAverageComplexZetaResponse_eq_completedContinuation
             (1 / (z + 1 / 2) + 1 / (z - 1 / 2) -
               Complex.log Real.pi / 2 +
               Complex.digamma ((z + 1 / 2) / 2) / 2)) /
-          z ^ 2 + 4 / (z - 1 / 2) =
+          z ^ (2 : ℕ) + 4 / (z - 1 / 2) =
         (logDeriv riemannXi (z + 1 / 2) - 1 / (z + 1 / 2) +
             Complex.log Real.pi / 2 -
             Complex.digamma ((z + 1 / 2) / 2) / 2) /
-          z ^ 2 +
-          (-(1 / (z - 1 / 2)) / z ^ 2 + 4 / (z - 1 / 2)) := by
+          z ^ (2 : ℕ) +
+          (-(1 / (z - 1 / 2)) / z ^ (2 : ℕ) + 4 / (z - 1 / 2)) := by
       ring
     _ = (logDeriv riemannXi (z + 1 / 2) - 1 / (z + 1 / 2) +
             Complex.log Real.pi / 2 -
             Complex.digamma ((z + 1 / 2) / 2) / 2) /
-          z ^ 2 + 4 * (z + 1 / 2) / z ^ 2 := by
+          z ^ (2 : ℕ) + 4 * (z + 1 / 2) / z ^ (2 : ℕ) := by
       rw [hpole]
     _ = (logDeriv riemannXi (z + 1 / 2) - 1 / (z + 1 / 2) +
             Complex.log Real.pi / 2 -
             Complex.digamma ((z + 1 / 2) / 2) / 2 +
             4 * (z + 1 / 2)) /
-          z ^ 2 := by
+          z ^ (2 : ℕ) := by
       ring
 
 /-- The literal arithmetic complex Laplace transform agrees with the
@@ -350,7 +350,7 @@ theorem tendsto_suzukiChebyshevLaplaceZeroCoordinate_mul_completedContinuation
           suzukiChebyshevLogAverageLaplaceCompletedContinuation z)
       (𝓝[≠] suzukiChebyshevLaplaceZeroCoordinate rho)
       (𝓝 ((analyticZetaZeroMultiplicity rho : ℂ) /
-        suzukiChebyshevLaplaceZeroCoordinate rho ^ 2)) := by
+        suzukiChebyshevLaplaceZeroCoordinate rho ^ (2 : ℕ))) := by
   let p : ℂ := suzukiChebyshevLaplaceZeroCoordinate rho
   let B : ℂ → ℂ := fun z =>
     -1 / (z + 1 / 2) + Complex.log Real.pi / 2 -
@@ -406,8 +406,8 @@ theorem tendsto_suzukiChebyshevLaplaceZeroCoordinate_mul_completedContinuation
     have hfull : Tendsto (fun z : ℂ => z - p) (𝓝 p) (𝓝 (p - p)) :=
       tendsto_id.sub tendsto_const_nhds
     simpa using hfull.mono_left nhdsWithin_le_nhds
-  have hinvSq : Tendsto (fun z : ℂ => (z ^ 2)⁻¹)
-      (𝓝[≠] p) (𝓝 ((p ^ 2)⁻¹)) := by
+  have hinvSq : Tendsto (fun z : ℂ => (z ^ (2 : ℕ))⁻¹)
+      (𝓝[≠] p) (𝓝 ((p ^ (2 : ℕ))⁻¹)) := by
     exact ((tendsto_id.mono_left nhdsWithin_le_nhds).pow 2).inv₀
       (pow_ne_zero 2 hp')
   have hresidue :=
@@ -416,14 +416,14 @@ theorem tendsto_suzukiChebyshevLaplaceZeroCoordinate_mul_completedContinuation
       (fun z : ℂ =>
         (z - p) * suzukiChebyshevLogAverageLaplaceCompletedContinuation z)
       (𝓝[≠] p)
-      (𝓝 ((analyticZetaZeroMultiplicity rho : ℂ) / p ^ 2))
+      (𝓝 ((analyticZetaZeroMultiplicity rho : ℂ) / p ^ (2 : ℕ)))
   have hsum := (hresidue.mul hinvSq).add ((hzero.mul hB).mul hinvSq)
   have hsum' : Tendsto
       (fun z : ℂ =>
-        ((z - p) * logDeriv riemannXi (z + 1 / 2)) * (z ^ 2)⁻¹ +
-          ((z - p) * B z) * (z ^ 2)⁻¹)
+        ((z - p) * logDeriv riemannXi (z + 1 / 2)) * (z ^ (2 : ℕ))⁻¹ +
+          ((z - p) * B z) * (z ^ (2 : ℕ))⁻¹)
       (𝓝[≠] p)
-      (𝓝 ((analyticZetaZeroMultiplicity rho : ℂ) / p ^ 2)) := by
+      (𝓝 ((analyticZetaZeroMultiplicity rho : ℂ) / p ^ (2 : ℕ))) := by
     simpa [div_eq_mul_inv] using hsum
   apply hsum'.congr'
   filter_upwards with z
@@ -438,7 +438,7 @@ theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_completedContinuation
     {z : ℂ} (hz : z ∈
       suzukiChebyshevLogAverageLaplaceContinuationDomain) :
     xiSpectralNegativeLogDerivative (-Complex.I * z) =
-      -(z ^ 2) *
+      -(z ^ (2 : ℕ)) *
           suzukiChebyshevLogAverageLaplaceCompletedContinuation z -
         1 / (z + 1 / 2) + Complex.log Real.pi / 2 -
         Complex.digamma ((z + 1 / 2) / 2) / 2 +

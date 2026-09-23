@@ -9,12 +9,12 @@ Grozdanov--Vrbica's exact four-dimensional black-hole spectral-duality law is
 `S(ω) - S(-ω) = 2 I λ sinh(β ω / 2)`.
 
 After division by the nonzero spectral weight, the square of the odd response is therefore the
-universal thermal factor `sinh(β ω / 2)^2`.  On a purely imaginary frequency this lies in the
+universal thermal factor `sinh(β ω / 2)^(2 : ℕ)`.  On a purely imaginary frequency this lies in the
 negative real Krein chamber for every positive inverse temperature.
 
 This file proves the fixed-frequency converse and then audits its physical scaling:
 
-* `sinh(β ω / 2)^2 ∈ ℝ_{≤ 0}` for every `β > 0` exactly when `Re ω = 0`;
+* `sinh(β ω / 2)^(2 : ℕ) ∈ ℝ_{≤ 0}` for every `β > 0` exactly when `Re ω = 0`;
 * every single fixed `β > 0` has an explicit off-axis blind point in the same strict chamber.
 * a self-similar black-hole mode `ω(β) = carrier / β` keeps `β ω(β)` constant, so varying
   temperature supplies no additional selection along a comoving QNM branch.
@@ -82,8 +82,8 @@ private lemma complex_sinh_im (z : ℂ) :
 the full positive-temperature family. -/
 def HawkingTemperatureUniversalKreinSign (ω : ℂ) : Prop :=
   ∀ β : ℝ, 0 < β →
-    ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).im = 0 ∧
-      ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).re ≤ 0
+    ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).im = 0 ∧
+      ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).re ≤ 0
 
 /-- A comoving black-hole frequency with fixed dimensionless thermal carrier. -/
 noncomputable def blackHoleSelfSimilarFrequency (carrier : ℂ) (β : ℝ) : ℂ :=
@@ -102,8 +102,8 @@ theorem blackHoleSelfSimilar_thermalArgument
 This is the exact obstruction to using mass/temperature rescaling as the RH selector. -/
 theorem blackHoleSelfSimilar_oddSquare_independent
     (carrier : ℂ) {β : ℝ} (hβ : β ≠ 0) :
-    (Complex.sinh (((β : ℂ) * blackHoleSelfSimilarFrequency carrier β) / 2)) ^ 2 =
-      (Complex.sinh (carrier / 2)) ^ 2 := by
+    (Complex.sinh (((β : ℂ) * blackHoleSelfSimilarFrequency carrier β) / 2)) ^ (2 : ℕ) =
+      (Complex.sinh (carrier / 2)) ^ (2 : ℕ) := by
   rw [blackHoleSelfSimilar_thermalArgument carrier hβ]
 
 /-- **Temperature-universal Hawking selection.**  Universal Krein sign is exactly imaginary-axis
@@ -143,7 +143,7 @@ theorem hawkingTemperatureUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
       have hsinh_im_ne : (Complex.sinh z).im ≠ 0 := by
         rw [complex_sinh_im]
         exact mul_ne_zero (ne_of_gt (Real.cosh_pos z.re)) hsin_ne
-      have hsq_im_ne : ((Complex.sinh z) ^ 2).im ≠ 0 := by
+      have hsq_im_ne : ((Complex.sinh z) ^ (2 : ℕ)).im ≠ 0 := by
         intro hzero
         rw [pow_two, Complex.mul_im] at hzero
         have hprod : 2 * (Complex.sinh z).re * (Complex.sinh z).im ≠ 0 :=
@@ -188,7 +188,7 @@ theorem hawkingTemperatureUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
         have hsinh_im_ne : (Complex.sinh z).im ≠ 0 := by
           rw [complex_sinh_im]
           exact mul_ne_zero (ne_of_gt (Real.cosh_pos z.re)) hsin_ne
-        have hsq_im_ne : ((Complex.sinh z) ^ 2).im ≠ 0 := by
+        have hsq_im_ne : ((Complex.sinh z) ^ (2 : ℕ)).im ≠ 0 := by
           intro hzero
           rw [pow_two, Complex.mul_im] at hzero
           have hprod : 2 * (Complex.sinh z).re * (Complex.sinh z).im ≠ 0 :=
@@ -213,18 +213,18 @@ theorem hawkingTemperatureUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
           norm_num
         have hsinh_ne : Real.sinh (x / 2) ≠ 0 :=
           real_sinh_ne_zero_of_ne_zero (div_ne_zero hx (by norm_num))
-        have hpos : 0 < Real.sinh (x / 2) ^ 2 := by
+        have hpos : 0 < Real.sinh (x / 2) ^ (2 : ℕ) := by
           positivity
         have hsinhval :
             Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2) =
               ((Real.sinh (x / 2) : ℝ) : ℂ) := by
           rw [harg, ← Complex.ofReal_sinh]
         have hqre :
-            ((Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ 2).re =
-              Real.sinh (x / 2) ^ 2 := by
+            ((Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ (2 : ℕ)).re =
+              Real.sinh (x / 2) ^ (2 : ℕ) := by
           have hq :
-              (Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ 2 =
-                ((Real.sinh (x / 2) ^ 2 : ℝ) : ℂ) := by
+              (Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ (2 : ℕ) =
+                ((Real.sinh (x / 2) ^ (2 : ℕ) : ℝ) : ℂ) := by
             rw [hsinhval]
             push_cast
             ring
@@ -249,9 +249,9 @@ theorem hawkingTemperatureUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
       rw [harg, Complex.sinh_mul_I, ← Complex.ofReal_sin]
     let r : ℝ := Real.sin (β * y / 2)
     have hq :
-        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2 = -((r ^ 2 : ℝ) : ℂ) := by
+        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ) = -((r ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hsinhval]
-      change (((r : ℂ) * Complex.I) ^ 2) = -((r ^ 2 : ℝ) : ℂ)
+      change (((r : ℂ) * Complex.I) ^ (2 : ℕ)) = -((r ^ (2 : ℕ) : ℝ) : ℂ)
       rw [mul_pow, Complex.I_sq]
       push_cast
       ring
@@ -260,7 +260,7 @@ theorem hawkingTemperatureUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
       rw [Complex.neg_im, Complex.ofReal_im, neg_zero] at hi
       exact hi
     · have hqre :
-          ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).re = -(r ^ 2) := by
+          ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).re = -(r ^ (2 : ℕ)) := by
         have hr := congrArg Complex.re hq
         rw [Complex.neg_re, Complex.ofReal_re] at hr
         exact hr
@@ -274,8 +274,8 @@ theorem fixed_hawking_temperature_has_offAxis_krein_blind_point
     (β : ℝ) (hβ : 0 < β) :
     ∃ ω : ℂ,
       ω.re ≠ 0 ∧
-        ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).im = 0 ∧
-        ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).re < 0 := by
+        ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).im = 0 ∧
+        ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).re < 0 := by
   let ω : ℂ := ((2 / β : ℝ) : ℂ) + ((Real.pi / β : ℝ) : ℂ) * Complex.I
   refine ⟨ω, ?_, ?_, ?_⟩
   · simp only [ω, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
@@ -296,8 +296,8 @@ theorem fixed_hawking_temperature_has_offAxis_krein_blind_point
         Real.sin_pi_div_two, Real.cos_pi_div_two]
       norm_num
     have hq :
-        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2 =
-          -(((Real.cosh 1) ^ 2 : ℝ) : ℂ) := by
+        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ) =
+          -(((Real.cosh 1) ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hsinhval, mul_pow, Complex.I_sq]
       push_cast
       ring
@@ -318,8 +318,8 @@ theorem fixed_hawking_temperature_has_offAxis_krein_blind_point
         Real.sin_pi_div_two, Real.cos_pi_div_two]
       norm_num
     have hq :
-        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2 =
-          -(((Real.cosh 1) ^ 2 : ℝ) : ℂ) := by
+        (Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ) =
+          -(((Real.cosh 1) ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hsinhval, mul_pow, Complex.I_sq]
       push_cast
       ring
@@ -327,7 +327,7 @@ theorem fixed_hawking_temperature_has_offAxis_krein_blind_point
     rw [Complex.neg_re, Complex.ofReal_re] at hr
     rw [hr]
     have hcosh : 0 < Real.cosh (1 : ℝ) := Real.cosh_pos 1
-    have hsquare : 0 < Real.cosh (1 : ℝ) ^ 2 := by positivity
+    have hsquare : 0 < Real.cosh (1 : ℝ) ^ (2 : ℕ) := by positivity
     exact neg_lt_zero.mpr hsquare
 
 end GaloisForLFunctions

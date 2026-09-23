@@ -10,7 +10,7 @@ energy.  This module proves that the resulting unbounded graph nevertheless has 
 every fixed real-centered critical-feature channel.
 
 The key estimate is performed before summation: each reflection-pair exponential defect is
-`4 sinh(k a)^2`, so `sinh(k a) / a` is uniformly bounded for `|a| ≤ 1/2` and `k ≤ 5`.  Dropping
+`4 sinh(k a)^(2 : ℕ)`, so `sinh(k a) / a` is uniformly bounded for `|a| ≤ 1/2` and `k ≤ 5`.  Dropping
 the two negative five-shift legs gives an explicit finite scalar ceiling.  Critical-feature Cauchy
 energy is square-summable on the Xi divisor, hence the Ward--Green current is an absolutely
 summable nonnegative family.  Its trace vanishes exactly under RH because the critical feature
@@ -30,14 +30,14 @@ noncomputable section
 
 lemma fiveShift_exp_pair_defect_eq_four_sinh_sq (x : ℝ) :
     Real.exp (2 * x) + Real.exp (-2 * x) - 2 =
-      4 * Real.sinh x ^ 2 := by
+      4 * Real.sinh x ^ (2 : ℕ) := by
   rw [Real.sinh_eq]
   have hmul : Real.exp x * Real.exp (-x) = 1 := by
     rw [← Real.exp_add]
     norm_num
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+  rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [sq, ← Real.exp_add]; congr 1; ring,
-    show Real.exp (-2 * x) = Real.exp (-x) ^ 2 by
+    show Real.exp (-2 * x) = Real.exp (-x) ^ (2 : ℕ) by
       rw [sq, ← Real.exp_add]; congr 1; ring]
   field_simp
   nlinarith
@@ -45,9 +45,9 @@ lemma fiveShift_exp_pair_defect_eq_four_sinh_sq (x : ℝ) :
 /-- Uniform amplitude-level cancellation of the inverse-square transverse singularity. -/
 lemma fiveShift_renormalized_exp_pair_defect_le
     {k a : ℝ} (hk0 : 0 ≤ k) (hk5 : k ≤ 5) (ha : |a| ≤ 1 / 2) :
-    a⁻¹ ^ 2 *
+    a⁻¹ ^ (2 : ℕ) *
         (Real.exp (2 * k * a) + Real.exp (-2 * k * a) - 2) ≤
-      4 * k ^ 2 * Real.cosh (5 / 2) ^ 2 := by
+      4 * k ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ) := by
   by_cases ha0 : a = 0
   · simp [ha0]
     positivity
@@ -59,33 +59,33 @@ lemma fiveShift_renormalized_exp_pair_defect_le
         _ = 5 / 2 := by ring
     have hsinh := abs_sinh_le_abs_mul_cosh (x := k * a)
       (C := 5 / 2) (by norm_num) hka
-    have hsinhSq : Real.sinh (k * a) ^ 2 ≤
-        (|k * a| * Real.cosh (5 / 2)) ^ 2 := by
+    have hsinhSq : Real.sinh (k * a) ^ (2 : ℕ) ≤
+        (|k * a| * Real.cosh (5 / 2)) ^ (2 : ℕ) := by
       rw [← sq_abs (Real.sinh (k * a))]
       exact pow_le_pow_left₀ (abs_nonneg _) hsinh 2
     rw [show 2 * k * a = 2 * (k * a) by ring,
       show -2 * k * a = -2 * (k * a) by ring,
       fiveShift_exp_pair_defect_eq_four_sinh_sq]
     calc
-      a⁻¹ ^ 2 * (4 * Real.sinh (k * a) ^ 2) ≤
-          a⁻¹ ^ 2 * (4 * (|k * a| * Real.cosh (5 / 2)) ^ 2) := by
+      a⁻¹ ^ (2 : ℕ) * (4 * Real.sinh (k * a) ^ (2 : ℕ)) ≤
+          a⁻¹ ^ (2 : ℕ) * (4 * (|k * a| * Real.cosh (5 / 2)) ^ (2 : ℕ)) := by
         gcongr
-      _ = 4 * k ^ 2 * Real.cosh (5 / 2) ^ 2 := by
+      _ = 4 * k ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ) := by
         rw [abs_mul, abs_of_nonneg hk0]
         rw [mul_pow, mul_pow, sq_abs]
         field_simp
 
 /-- Explicit finite majorant for every source-normalized five-shift scalar defect at scale one. -/
 def fiveShiftWardGreenUpperConstant : ℝ :=
-  4 * Real.cosh (5 / 2) ^ 2 *
+  4 * Real.cosh (5 / 2) ^ (2 : ℕ) *
     (Real.exp (-(6 / 5 : ℝ)) * Real.exp (-2) *
-        Real.exp (-(21 / 10 : ℝ)) * 1 ^ 2 +
+        Real.exp (-(21 / 10 : ℝ)) * 1 ^ (2 : ℕ) +
       (Real.exp (-(6 / 5 : ℝ)) + Real.exp (-2) +
         Real.exp (-(21 / 10 : ℝ)) +
         Real.exp (-(6 / 5 : ℝ)) * Real.exp (-2) +
         Real.exp (-(6 / 5 : ℝ)) * Real.exp (-(21 / 10 : ℝ)) +
-        Real.exp (-2) * Real.exp (-(21 / 10 : ℝ))) * 3 ^ 2 +
-      5 ^ 2)
+        Real.exp (-2) * Real.exp (-(21 / 10 : ℝ))) * 3 ^ (2 : ℕ) +
+      5 ^ (2 : ℕ))
 
 /-- Every inverse-square-normalized five-shift Krein defect is uniformly bounded.  The proof
 drops the two negative legs and bounds the remaining `k=1,3,5` divided differences. -/
@@ -94,7 +94,7 @@ theorem fiveShiftEulerGammaRenormalizedKreinDefectCombination_one_le
     fiveShiftEulerGammaRenormalizedKreinDefectCombination 1 q0 ≤
       fiveShiftWardGreenUpperConstant := by
   let A : ℝ := (q0.1 : ℂ).re - 1 / 2
-  let w : ℝ := A⁻¹ ^ 2
+  let w : ℝ := A⁻¹ ^ (2 : ℕ)
   let c1 : ℝ := Real.exp (-(6 / 5 : ℝ)) * Real.exp (-2) *
     Real.exp (-(21 / 10 : ℝ))
   let c2 : ℝ := Real.exp (-(6 / 5 : ℝ)) * Real.exp (-2) +
@@ -109,7 +109,7 @@ theorem fiveShiftEulerGammaRenormalizedKreinDefectCombination_one_le
   let c4 : ℝ := 1 + Real.exp (-(6 / 5 : ℝ)) + Real.exp (-2) +
     Real.exp (-(21 / 10 : ℝ))
   let D (k : ℝ) : ℝ :=
-    ‖xiWeilPairDif (xiWeilPrimeTest (Real.exp k)) q0‖ ^ 2
+    ‖xiWeilPairDif (xiWeilPrimeTest (Real.exp k)) q0‖ ^ (2 : ℕ)
   have hA : |A| ≤ 1 / 2 := by
     rw [abs_le]
     have hs := xi_divisor_support_re_mem_open_unit q0.1
@@ -122,7 +122,7 @@ theorem fiveShiftEulerGammaRenormalizedKreinDefectCombination_one_le
   have hc4 : 0 ≤ c4 := by dsimp [c4]; positivity
   have hD (k : ℝ) : 0 ≤ D k := sq_nonneg _
   have hbound (k : ℕ) (hk1 : 1 ≤ k) (hk : k ≤ 5) :
-      w * D (k : ℝ) ≤ 4 * (k : ℝ) ^ 2 * Real.cosh (5 / 2) ^ 2 := by
+      w * D (k : ℝ) ≤ 4 * (k : ℝ) ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ) := by
     dsimp only [D]
     have heq := norm_sq_xiWeilPairDif_primeTest_exp (r := 1)
       (by norm_num) k hk1 q0
@@ -143,9 +143,9 @@ theorem fiveShiftEulerGammaRenormalizedKreinDefectCombination_one_le
     calc
       w * (c1 * D 1 - c2 * D 2 + c3 * D 3 - c4 * D 4 + D 5) ≤
           c1 * (w * D 1) + c3 * (w * D 3) + w * D 5 := hdrop
-      _ ≤ c1 * (4 * (1 : ℝ) ^ 2 * Real.cosh (5 / 2) ^ 2) +
-          c3 * (4 * (3 : ℝ) ^ 2 * Real.cosh (5 / 2) ^ 2) +
-          4 * (5 : ℝ) ^ 2 * Real.cosh (5 / 2) ^ 2 := by
+      _ ≤ c1 * (4 * (1 : ℝ) ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ)) +
+          c3 * (4 * (3 : ℝ) ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ)) +
+          4 * (5 : ℝ) ^ (2 : ℕ) * Real.cosh (5 / 2) ^ (2 : ℕ) := by
         have hb1 := mul_le_mul_of_nonneg_left
           (hbound 1 (by norm_num) (by norm_num)) hc1
         have hb3 := mul_le_mul_of_nonneg_left

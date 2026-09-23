@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.AbstractSpectralFamily
 
 For a point `p = R + i J` of an admissible spectral family put
 
-`chi = Im (p ^ 2) = 2 R J`.
+`chi = Im (p ^ (2 : ℕ)) = 2 R J`.
 
 Two facts organise the whole displacement calculus.
 
@@ -37,7 +37,7 @@ variable {ι : Type*} (F : AbstractSpectralFamily ι)
 theorem re_pos (i : ι) : 0 < (F.pt i).re := lt_of_lt_of_le F.base_pos (F.base_le i)
 
 /-- The displacement charge of a point: the imaginary part of its square. -/
-def charge (i : ι) : ℝ := ((F.pt i) ^ 2).im
+def charge (i : ι) : ℝ := ((F.pt i) ^ (2 : ℕ)).im
 
 theorem charge_eq (i : ι) : F.charge i = 2 * ((F.pt i).re * (F.pt i).im) := by
   rw [charge, pow_two, Complex.mul_im]; ring

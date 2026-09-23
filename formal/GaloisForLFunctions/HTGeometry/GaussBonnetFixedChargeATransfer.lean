@@ -23,8 +23,8 @@ def egbFixedChargeATemperatureWeight (τ φ : ℝ) : ℝ :=
   4 * (thermalRatio τ + 1) / egbFixedChargeADenominator τ φ
 
 def egbFixedChargeAPressureWeight (τ φ : ℝ) : ℝ :=
-  (3 * (thermalRatio τ ^ 2 + 1) + 4 * egbFixedChargeACouplingWeight τ φ * (2 - egbCoexistenceALogKernel τ)) /
-    (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ 2 + 1))
+  (3 * (thermalRatio τ ^ (2 : ℕ) + 1) + 4 * egbFixedChargeACouplingWeight τ φ * (2 - egbCoexistenceALogKernel τ)) /
+    (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ (2 : ℕ) + 1))
 
 theorem egbFixedChargeAAngle_coupling (τ φ : ℝ) :
     egbCoexistenceACouplingWeight τ (egbFixedChargeAAngle τ φ) = egbFixedChargeACouplingWeight τ φ := by
@@ -51,7 +51,7 @@ theorem egbFixedChargeAAngle_denominator (τ φ : ℝ) :
   rw [egbFixedChargeAAngle_coupling]
 
 theorem egbFixedChargeADenominator_quadratic (τ φ : ℝ) :
-    egbFixedChargeADenominator τ φ * (thermalRatio τ ^ 2 + 1) =
+    egbFixedChargeADenominator τ φ * (thermalRatio τ ^ (2 : ℕ) + 1) =
       egbFixedChargeABase τ + egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ := by
   unfold egbFixedChargeADenominator egbFixedChargeABase egbCoexistenceAQuadraticA
   ring
@@ -61,15 +61,15 @@ theorem egbFixedChargeAAngle_charge_weight (τ φ : ℝ) :
     egbCoexistenceAChargeWeight τ (egbFixedChargeAAngle τ φ) = egbFixedChargeAWeight τ φ := by
   have hD := egbFixedChargeADenominator_pos τ φ
   have hbalance := egbFixedChargeAWeight_charge_balance τ φ
-  have hN : thermalRatio τ ^ 2 * egbFixedChargeADenominator τ φ -
-      4 * thermalRatio τ * (thermalRatio τ ^ 2 +
-        2 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ 2 + thermalRatio τ + 1)) =
+  have hN : thermalRatio τ ^ (2 : ℕ) * egbFixedChargeADenominator τ φ -
+      4 * thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) +
+        2 * egbFixedChargeACouplingWeight τ φ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)) =
     egbCoexistenceAQuadraticC τ + egbFixedChargeALinearCorrection τ * egbFixedChargeACouplingWeight τ φ := by
     unfold egbFixedChargeADenominator egbCoexistenceAQuadraticC egbFixedChargeALinearCorrection egbCoexistenceShape
     ring
   unfold egbCoexistenceAChargeWeight
   rw [egbFixedChargeAAngle_denominator, egbFixedChargeAAngle_coupling, hN]
-  apply (div_eq_iff (show egbFixedChargeADenominator τ φ * (thermalRatio τ ^ 2 + 1) ≠ 0 by positivity)).2
+  apply (div_eq_iff (show egbFixedChargeADenominator τ φ * (thermalRatio τ ^ (2 : ℕ) + 1) ≠ 0 by positivity)).2
   rw [egbFixedChargeADenominator_quadratic]
   simpa only [mul_comm] using hbalance.symm
 
@@ -93,7 +93,7 @@ theorem egbFixedChargeAPressureWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeAPre
 
 /-- The remaining effective charge is exactly the complementary fixed angular fraction. -/
 theorem egbFixedChargeAWeight_charge_fraction (τ φ : ℝ) :
-    egbFixedChargeAWeight τ φ - egbFixedChargeACouplingWeight τ φ = cos φ ^ 2 * egbFixedChargeAWeight τ φ := by
+    egbFixedChargeAWeight τ φ - egbFixedChargeACouplingWeight τ φ = cos φ ^ (2 : ℕ) * egbFixedChargeAWeight τ φ := by
   unfold egbFixedChargeACouplingWeight egbFixedChargeAFraction
   have h := congrArg (fun x : ℝ => x * egbFixedChargeAWeight τ φ) (sin_sq_add_cos_sq φ)
   nlinarith [h]

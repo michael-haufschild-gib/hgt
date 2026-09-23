@@ -6,7 +6,7 @@ intertwiner is the classical
 
   `u = q p + (1 − q)(1 − p)`,
 
-whose product with the same expression in the opposite order is `1 − (p − q)^2`, hence invertible
+whose product with the same expression in the opposite order is `1 − (p − q)^(2 : ℕ)`, hence invertible
 by the geometric series.
 
 Main results:
@@ -27,7 +27,7 @@ variable {A : Type*} [NormedRing A] [CompleteSpace A] {p q : A}
 def idempotentIntertwiner (p q : A) : A := q * p + (1 - q) * (1 - p)
 
 omit [CompleteSpace A] in
-/-- The intertwiner and its transpose multiply to `1 − (p − q)^2`. -/
+/-- The intertwiner and its transpose multiply to `1 − (p − q)^(2 : ℕ)`. -/
 theorem idempotentIntertwiner_mul_swap (hp : p * p = p) (hq : q * q = q) :
     idempotentIntertwiner p q * idempotentIntertwiner q p = 1 - (p - q) * (p - q) := by
   have hpp : ∀ x : A, p * (p * x) = p * x := fun x => by rw [← mul_assoc, hp]

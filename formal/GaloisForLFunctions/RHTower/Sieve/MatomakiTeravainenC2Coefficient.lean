@@ -104,9 +104,9 @@ theorem ternaryDivisorCount_mul_norm_mtC2Coefficient_le
     {n : ℕ} (hn : 0 < n) {B : ℝ} (hB : 0 ≤ B) (hα : ∀ m, ‖α m‖ ≤ B) :
     (ternaryDivisorCount n : ℝ) *
         ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
-      B * ((n.divisors.card : ℝ) ^ 3) *
+      B * ((n.divisors.card : ℝ) ^ (3 : ℕ)) *
         (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n) := by
-  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ 2 := by
+  have hd3 : (ternaryDivisorCount n : ℝ) ≤ (n.divisors.card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast ternaryDivisorCount_le_sq hn
   have hc := norm_mtC2Coefficient_le α lowerSpill upperSpill level hn hB hα
   have hcountLower : 0 ≤ primeDivisorCount lowerSpill n := by
@@ -119,11 +119,11 @@ theorem ternaryDivisorCount_mul_norm_mtC2Coefficient_le
   calc
     (ternaryDivisorCount n : ℝ) *
         ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
-      ((n.divisors.card : ℝ) ^ 2) *
+      ((n.divisors.card : ℝ) ^ (2 : ℕ)) *
         (B * (n.divisors.card : ℝ) *
           (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n)) := by
       exact mul_le_mul hd3 hc (norm_nonneg _) (by positivity)
-    _ = B * ((n.divisors.card : ℝ) ^ 3) *
+    _ = B * ((n.divisors.card : ℝ) ^ (3 : ℕ)) *
         (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n) := by ring
 
 /-- Weighted mean bound with both endpoint reciprocal masses explicit. -/
@@ -136,8 +136,8 @@ theorem sum_ternaryDivisorCount_mul_norm_mtC2Coefficient_le
     ∑ n ∈ Finset.Icc 1 Y,
         (ternaryDivisorCount n : ℝ) *
           ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
-      B * ((2 : ℝ) ^ 3 * (Y : ℝ) *
-        (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) *
+      B * ((2 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+        (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) *
           ((∑ q ∈ lowerSpill, 1 / (q : ℝ)) +
             ∑ q ∈ upperSpill, 1 / (q : ℝ))) := by
   have hlower := sum_weightedPrimeDivisorCount_le 3 Y hY lowerSpill hlowerPrime
@@ -148,7 +148,7 @@ theorem sum_ternaryDivisorCount_mul_norm_mtC2Coefficient_le
         (ternaryDivisorCount n : ℝ) *
           ‖mtC2Coefficient α lowerSpill upperSpill level n‖ ≤
       ∑ n ∈ Finset.Icc 1 Y,
-        B * ((n.divisors.card : ℝ) ^ 3) *
+        B * ((n.divisors.card : ℝ) ^ (3 : ℕ)) *
           (primeDivisorCount lowerSpill n + primeDivisorCount upperSpill n) := by
       apply Finset.sum_le_sum
       intro n hnMem
@@ -164,15 +164,15 @@ theorem sum_ternaryDivisorCount_mul_norm_mtC2Coefficient_le
       apply Finset.sum_congr rfl
       intro n hn
       ring
-    _ ≤ B * (((2 : ℝ) ^ 3 * (Y : ℝ) *
-          (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) *
+    _ ≤ B * (((2 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) *
             ∑ q ∈ lowerSpill, 1 / (q : ℝ)) +
-        ((2 : ℝ) ^ 3 * (Y : ℝ) *
-          (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) *
+        ((2 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+          (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) *
             ∑ q ∈ upperSpill, 1 / (q : ℝ))) := by
       exact mul_le_mul_of_nonneg_left (add_le_add hlower hupper) hB0
-    _ = B * ((2 : ℝ) ^ 3 * (Y : ℝ) *
-        (1 + Real.log (Y : ℝ)) ^ (2 ^ 3 - 1) *
+    _ = B * ((2 : ℝ) ^ (3 : ℕ) * (Y : ℝ) *
+        (1 + Real.log (Y : ℝ)) ^ (2 ^ (3 : ℕ) - 1) *
           ((∑ q ∈ lowerSpill, 1 / (q : ℝ)) +
             ∑ q ∈ upperSpill, 1 / (q : ℝ))) := by ring
 

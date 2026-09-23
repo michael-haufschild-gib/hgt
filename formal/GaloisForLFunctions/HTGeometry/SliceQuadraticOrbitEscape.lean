@@ -61,10 +61,10 @@ theorem exists_sliceQuadraticOrbit_ne_zero [Nonempty A] (hcard : 3 ≤ Fintype.c
     ∃ z g : ℂ, selectedPairChartPoint (boolShift z₀) false true z g ∈ C.U ∧
       (∏ σ : Equiv.Perm (A × Bool),
         ((∑ i, c i * C.branch (σ i)
-            (selectedPairChartPoint (boolShift z₀) false true z g)) ^ 2
+            (selectedPairChartPoint (boolShift z₀) false true z g)) ^ (2 : ℕ)
           - κ * ((localExtensionMatrix (fun a => (E a : ℂ))
               (selectedPairChartPoint (boolShift z₀) false true z g).1 M
-              (selectedPairChartPoint (boolShift z₀) false true z g).2) ^ 2).trace)) ≠ 0 := by
+              (selectedPairChartPoint (boolShift z₀) false true z g).2) ^ (2 : ℕ)).trace)) ≠ 0 := by
   classical
   by_contra hcon
   push Not at hcon
@@ -77,7 +77,7 @@ theorem exists_sliceQuadraticOrbit_ne_zero [Nonempty A] (hcard : 3 ≤ Fintype.c
       exact Fintype.exists_pair_of_one_lt_card this
     intro h0
     exact hM a b hab (by rw [h0]; simp)
-  have hQv : (V ^ 2).trace ≠ 0 := trace_sq_layerCrossPerturbation_ne_zero hMherm hMne
+  have hQv : (V ^ (2 : ℕ)).trace ≠ 0 := trace_sq_layerCrossPerturbation_ne_zero hMherm hMne
   set bad : Set ℂ := Set.range (fun p : A × A => (E p.2 : ℂ) - (E p.1 : ℂ)) with hbad
   set S' : Set ℂ := D.S \ bad with hS'
   have hS'inf : S'.Infinite := D.infinite.sdiff (Set.finite_range _)
@@ -105,15 +105,15 @@ theorem exists_sliceQuadraticOrbit_ne_zero [Nonempty A] (hcard : 3 ≤ Fintype.c
     rw [localExtensionMatrix_selectedLayer, hshiftline z, layeredEnergy_boolShift,
       selectedLayerCoupling_bool]
   set fac : Equiv.Perm (A × Bool) → ℂ → ℂ → ℂ := fun σ z g =>
-    (∑ i, c i * C.branch (σ i) (selectedPairChartPoint (boolShift z₀) false true z g)) ^ 2
-      - κ * ((∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ 2) + g ^ 2 * (V ^ 2).trace)
+    (∑ i, c i * C.branch (σ i) (selectedPairChartPoint (boolShift z₀) false true z g)) ^ (2 : ℕ)
+      - κ * ((∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ (2 : ℕ)) + g ^ (2 : ℕ) * (V ^ (2 : ℕ)).trace)
     with hfac
   have hfacEq : ∀ (σ : Equiv.Perm (A × Bool)) (z g : ℂ), fac σ z g
       = (∑ i, c i * C.branch (σ i)
-            (selectedPairChartPoint (boolShift z₀) false true z g)) ^ 2
+            (selectedPairChartPoint (boolShift z₀) false true z g)) ^ (2 : ℕ)
         - κ * ((localExtensionMatrix (fun a => (E a : ℂ))
               (selectedPairChartPoint (boolShift z₀) false true z g).1 M
-              (selectedPairChartPoint (boolShift z₀) false true z g).2) ^ 2).trace := by
+              (selectedPairChartPoint (boolShift z₀) false true z g).2) ^ (2 : ℕ)).trace := by
     intro σ z g
     rw [hfac, hslicemat z g, trace_sq_layerExtensionSlice]
   have hprodZero : ∀ z ∈ S', ∀ᶠ g in 𝓝 (0 : ℂ), ∏ σ : Equiv.Perm (A × Bool), fac σ z g = 0 := by
@@ -159,7 +159,7 @@ theorem exists_sliceQuadraticOrbit_ne_zero [Nonempty A] (hcard : 3 ≤ Fintype.c
   have hTsub : ∀ z ∈ T σ, z ∈ S' := fun z hz => hz.1
   refine hdne ?_
   refine localExtension_quadraticRate_eq_zero_unconditional hcard hE hgap hM d
-    (κ := κ) (Q₀ := fun z => ∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ 2) hQv hσinf
+    (κ := κ) (Q₀ := fun z => ∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ (2 : ℕ)) hQv hσinf
     (fun z hz => havoid z (hTsub z hz)) (fun z hz => hinj z (hTsub z hz))
     (fun z i g => C.branch i (selectedPairChartPoint (boolShift z₀) false true z g))
     (fun z hz i => D.analytic z (hTsub z hz).1 i) ?_ ?_ ?_ hdsum

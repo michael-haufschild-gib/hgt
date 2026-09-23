@@ -63,7 +63,7 @@ theorem levinsonCriticalDetectorIncludedLongBaseMoment_eq_lcm
     hML.trans (Nat.le_mul_of_pos_right L (Nat.zero_lt_of_lt hM))
   rw [RHTower.levinsonCriticalDetectorIncludedLongBaseMoment]
   have hexpand : ∀ k ∈ Finset.Ioc L (L * M),
-      barbanVehovIncludedBaseCoeff L M k ^ 2 / (k : ℝ) =
+      barbanVehovIncludedBaseCoeff L M k ^ (2 : ℕ) / (k : ℝ) =
         ∑ p ∈ k.divisors ×ˢ k.divisors,
           if k ≤ L * p.1 ∧ k ≤ L * p.2 then
             barbanVehovWeight M p.1 * barbanVehovWeight M p.2 / (k : ℝ)
@@ -165,7 +165,7 @@ theorem levinsonCriticalDetectorIncludedLongDerivativeMoment_eq_lcm
     hML.trans (Nat.le_mul_of_pos_right L (Nat.zero_lt_of_lt hM))
   rw [RHTower.levinsonCriticalDetectorIncludedLongDerivativeMoment]
   have hexpand : ∀ k ∈ Finset.Ioc L (L * M),
-      barbanVehovIncludedDifferentiatedCoeff L M k ^ 2 / (k : ℝ) =
+      barbanVehovIncludedDifferentiatedCoeff L M k ^ (2 : ℕ) / (k : ℝ) =
         ∑ p ∈ k.divisors ×ˢ k.divisors,
           if k ≤ L * p.1 ∧ k ≤ L * p.2 then
             barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *

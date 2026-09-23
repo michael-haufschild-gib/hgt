@@ -223,15 +223,15 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_radialAggregate
     {w : ℝ} (hw : 1 / 2 < w) {A B : Polynomial ℝ} {M N : ℕ}
     (hA : A.natDegree ≤ M) (hB : B.natDegree ≤ N) :
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
-      xiShiftedHardEdgeRadialAggregate (w ^ 2) (M + N + 2)
-        (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) M N A B) := by
+      xiShiftedHardEdgeRadialAggregate (w ^ (2 : ℕ)) (M + N + 2)
+        (xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) M N A B) := by
   rw [xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_hardEdgeLanding
     hw hA hB]
   symm
   apply xiShiftedHardEdgeRadialAggregate_eq_unclearing
     (sq_pos_of_pos (by linarith : 0 < w))
   exact (natDegree_xiShiftedHardEdgeAdaptiveBilinearSource_le
-    hA hB (w ^ 2)).trans (by omega)
+    hA hB (w ^ (2 : ℕ))).trans (by omega)
 
 /-- **Admission-sensitive bilinear radial producer.**  Freeze the source polynomial only after
 the two amplitudes and their actual depth have been admitted.  Its whole completed aggregate then
@@ -259,11 +259,11 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionHardEdgeRadialAggregate
     xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) =
-        xiShiftedHardEdgeRadialAggregate (w ^ 2) (2 * n + 2) T ∧
+        xiShiftedHardEdgeRadialAggregate (w ^ (2 : ℕ)) (2 * n + 2) T ∧
       HasDerivAt
         (fun v => xiShiftedHardEdgeRadialAggregate v (2 * n + 2) T)
         (-((2 * n + 3 : ℕ) : ℝ) *
-          xiShiftedHardEdgeRadialAggregate (w ^ 2) (2 * n + 3) T) (w ^ 2) := by
+          xiShiftedHardEdgeRadialAggregate (w ^ (2 : ℕ)) (2 * n + 3) T) (w ^ (2 : ℕ)) := by
   dsimp only
   let A := HTGeometry.monicMomentAdmissionPolynomial
     (xiShiftedRealMomentSequence w) n
@@ -276,7 +276,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionHardEdgeRadialAggregate
       xiShiftedCanonicalAdmissionHardEdgeSource, A] using
       xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_radialAggregate
         hw hA hA
-  · have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  · have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
     simpa only [show n + n + 2 = 2 * n + 2 by omega,
       show n + n + 3 = 2 * n + 3 by omega,
       xiShiftedCanonicalAdmissionHardEdgeSource, A] using
@@ -292,9 +292,9 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionHardEdgeRadialPrimitive
     HasDerivAt
       (fun v => v ^ (2 * n + 3) *
         xiShiftedHardEdgeRadialAggregate v (2 * n + 2) T)
-      (((2 * n + 3 : ℕ) : ℝ) * (w ^ 2) ^ (2 * n + 2) *
+      (((2 * n + 3 : ℕ) : ℝ) * (w ^ (2 : ℕ)) ^ (2 * n + 2) *
         xiShiftedHardEdgeEndpointRaisedRadialAggregate
-          (w ^ 2) (2 * n + 2) T) (w ^ 2) := by
+          (w ^ (2 : ℕ)) (2 * n + 2) T) (w ^ (2 : ℕ)) := by
   dsimp only
   let A := HTGeometry.monicMomentAdmissionPolynomial
     (xiShiftedRealMomentSequence w) n
@@ -303,7 +303,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionHardEdgeRadialPrimitive
     rw [HTGeometry.monicMomentAdmissionPolynomial_natDegree]
   have hT : (xiShiftedCanonicalAdmissionHardEdgeSource w n).natDegree ≤ 2 * n + 2 := by
     dsimp only [xiShiftedCanonicalAdmissionHardEdgeSource]
-    exact (natDegree_xiShiftedHardEdgeAdaptiveBilinearSource_le hA hA (w ^ 2)).trans
+    exact (natDegree_xiShiftedHardEdgeAdaptiveBilinearSource_le hA hA (w ^ (2 : ℕ))).trans
       (by omega)
   exact hasDerivAt_xiShiftedHardEdgeRadialPrimitive
     (sq_pos_of_pos (by linarith : 0 < w)) hT

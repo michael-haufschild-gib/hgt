@@ -17,13 +17,13 @@ namespace GaloisForLFunctions.RHTower.SelbergNodalCurvature
 noncomputable section
 
 /-- Exact regularized amplitude of the local real nodal profile h(x)=x. -/
-def radius (e x : ℝ) : ℝ := Real.sqrt (x ^ 2 + e ^ 2)
+def radius (e x : ℝ) : ℝ := Real.sqrt (x ^ (2 : ℕ) + e ^ (2 : ℕ))
 
 /-- Its inverse-amplitude weighted regularized residual. -/
-def curvature (e x : ℝ) : ℝ := e ^ 2 / radius e x ^ 3
+def curvature (e x : ℝ) : ℝ := e ^ (2 : ℕ) / radius e x ^ (3 : ℕ)
 
 /-- Exact square of the local regularized amplitude. -/
-theorem radius_sq (e x : ℝ) : radius e x ^ 2 = x ^ 2 + e ^ 2 :=
+theorem radius_sq (e x : ℝ) : radius e x ^ (2 : ℕ) = x ^ (2 : ℕ) + e ^ (2 : ℕ) :=
   Real.sq_sqrt (add_nonneg (sq_nonneg x) (sq_nonneg e))
 
 /-- Positive regularization removes the node from the denominator. -/
@@ -33,7 +33,7 @@ theorem radius_pos {e : ℝ} (he : 0 < e) (x : ℝ) : 0 < radius e x :=
 /-- The actual first derivative of the regularized nodal amplitude. -/
 theorem radius_hasDerivAt {e : ℝ} (he : 0 < e) (x : ℝ) :
     HasDerivAt (radius e) (x / radius e x) x := by
-  have h := (((hasDerivAt_id x).fun_pow 2).add_const (e ^ 2)).sqrt
+  have h := (((hasDerivAt_id x).fun_pow 2).add_const (e ^ (2 : ℕ))).sqrt
     (add_pos_of_nonneg_of_pos (sq_nonneg x) (sq_pos_of_pos he)).ne'
   convert h using 1
   · rfl
@@ -60,7 +60,7 @@ theorem curvature_eq_second_derivative {e : ℝ} (he : 0 < e) (x : ℝ) :
 
 /-- Exact relation with the source's regularized derivative-energy remainder. -/
 theorem curvature_eq_weighted_energy {e : ℝ} (he : 0 < e) (x : ℝ) :
-    curvature e x = (1 - deriv (radius e) x ^ 2) / radius e x := by
+    curvature e x = (1 - deriv (radius e) x ^ (2 : ℕ)) / radius e x := by
   rw [(radius_hasDerivAt he x).deriv]
   unfold curvature
   have hr := (radius_pos he x).ne'
@@ -78,7 +78,7 @@ theorem curvature_intervalIntegrable {e : ℝ} (he : 0 < e) (a b : ℝ) :
 
 /-- Exact total curvature of the regularized nodal profile on the symmetric unit interval. -/
 theorem integral_curvature {e : ℝ} (he : 0 < e) :
-    (∫ x in (-1 : ℝ)..1, curvature e x) = 2 / Real.sqrt (1 + e ^ 2) := by
+    (∫ x in (-1 : ℝ)..1, curvature e x) = 2 / Real.sqrt (1 + e ^ (2 : ℕ)) := by
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => curvature_hasPrimitive he x)
     (curvature_intervalIntegrable he _ _)]
   norm_num [radius]
@@ -113,7 +113,7 @@ theorem integral_curvature_tendsto_endpoints (a b : ℝ) :
 /-- The pointwise curvature vanishes in the zero-regulator limit away from the node. -/
 theorem curvature_tendsto_zero {x : ℝ} (hx : x ≠ 0) :
     Tendsto (fun e : ℝ => curvature e x) (𝓝 0) (𝓝 0) := by
-  have hd : Real.sqrt (x ^ 2 + (0 : ℝ) ^ 2) ^ 3 ≠ 0 := by
+  have hd : Real.sqrt (x ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) ^ (3 : ℕ) ≠ 0 := by
     apply pow_ne_zero 3
     apply (Real.sqrt_pos.mpr ?_).ne'
     simpa only [zero_pow (by norm_num : (2 : ℕ) ≠ 0), add_zero] using sq_pos_of_ne_zero hx
@@ -126,11 +126,11 @@ theorem curvature_tendsto_zero {x : ℝ} (hx : x ≠ 0) :
 /-- Nevertheless the actual compact curvature integral tends to the nonzero nodal charge two. -/
 theorem integral_curvature_tendsto :
     Tendsto (fun e : ℝ => ∫ x in (-1 : ℝ)..1, curvature e x) (𝓝[>] 0) (𝓝 2) := by
-  have hc : ContinuousAt (fun e : ℝ => 2 / Real.sqrt (1 + e ^ 2)) 0 := by
+  have hc : ContinuousAt (fun e : ℝ => 2 / Real.sqrt (1 + e ^ (2 : ℕ))) 0 := by
     apply continuousAt_const.div
       ((continuous_const.add (continuous_id.pow 2)).sqrt.continuousAt)
     norm_num
-  have hlim : Tendsto (fun e : ℝ => 2 / Real.sqrt (1 + e ^ 2)) (𝓝[>] 0) (𝓝 2) := by
+  have hlim : Tendsto (fun e : ℝ => 2 / Real.sqrt (1 + e ^ (2 : ℕ))) (𝓝[>] 0) (𝓝 2) := by
     simpa using hc.tendsto.mono_left nhdsWithin_le_nhds
   apply hlim.congr'
   filter_upwards [self_mem_nhdsWithin] with e he

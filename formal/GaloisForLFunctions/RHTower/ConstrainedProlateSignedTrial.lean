@@ -57,15 +57,15 @@ theorem abs_evenProlateSignedValue_le_one (a : ℝ) (n : ℕ) :
 is irrelevant because the conclusion is about its square. -/
 theorem one_sub_evenProlateSignedValue_sq_le_of_form_trial (a : ℝ) (ha : 0 < a) (n : ℕ)
     (V : Submodule ℂ evenSubspace) (hV : n < Module.finrank ℂ V)
-    {ε : ℝ} (hV2 : ∀ f ∈ V, (1 - ε) * ‖f‖ ^ 2 ≤ ‖evenTimeBandFourier a f‖ ^ 2) :
-    1 - evenProlateSignedValue a n ^ 2 ≤ ε := by
+    {ε : ℝ} (hV2 : ∀ f ∈ V, (1 - ε) * ‖f‖ ^ (2 : ℕ) ≤ ‖evenTimeBandFourier a f‖ ^ (2 : ℕ)) :
+    1 - evenProlateSignedValue a n ^ (2 : ℕ) ≤ ε := by
   rcases le_or_gt 1 ε with hbig | hsmall
   · nlinarith [sq_nonneg (evenProlateSignedValue a n)]
   · have hpos : (0 : ℝ) < 1 - ε := by linarith
     have hM : ∀ f ∈ V, Real.sqrt (1 - ε) * ‖f‖ ≤ ‖evenTimeBandFourier a f‖ := by
       intro f hf
       have h := hV2 f hf
-      have hsq : (Real.sqrt (1 - ε) * ‖f‖) ^ 2 ≤ ‖evenTimeBandFourier a f‖ ^ 2 := by
+      have hsq : (Real.sqrt (1 - ε) * ‖f‖) ^ (2 : ℕ) ≤ ‖evenTimeBandFourier a f‖ ^ (2 : ℕ) := by
         rw [mul_pow, Real.sq_sqrt hpos.le]
         exact h
       nlinarith [hsq, norm_nonneg (evenTimeBandFourier a f),
@@ -87,13 +87,13 @@ theorem one_sub_evenProlateSignedValue_sq_le_of_form_trial (a : ℝ) (ha : 0 < a
 
 /-- **The constrained transfer's leakage family is bounded by the Hermite truncation error.** -/
 theorem one_sub_evenProlateSignedValue_sq_le_hermite (a : ℝ) (ha : 0 < a) (n : ℕ) :
-    1 - evenProlateSignedValue a n ^ 2 ≤ hermiteTrialDefect a n :=
+    1 - evenProlateSignedValue a n ^ (2 : ℕ) ≤ hermiteTrialDefect a n :=
   one_sub_evenProlateSignedValue_sq_le_of_form_trial a ha n (hermiteTrialSpace n)
     (by rw [finrank_hermiteTrialSpace]; omega)
     (fun f hf => hermiteTrialSpace_concentration a n hf)
 
 theorem one_sub_evenProlateSignedValue_sq_nonneg (a : ℝ) (n : ℕ) :
-    0 ≤ 1 - evenProlateSignedValue a n ^ 2 := by
+    0 ≤ 1 - evenProlateSignedValue a n ^ (2 : ℕ) := by
   have h := abs_evenProlateSignedValue_le_one a n
   nlinarith [abs_nonneg (evenProlateSignedValue a n), sq_abs (evenProlateSignedValue a n)]
 
@@ -101,7 +101,7 @@ theorem one_sub_evenProlateSignedValue_sq_nonneg (a : ℝ) (n : ℕ) :
 index.** -/
 theorem exists_one_sub_evenProlateSignedValue_sq_le_exp (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℝ, 0 < a →
-      1 - evenProlateSignedValue a n ^ 2 ≤ C * (Real.exp (-(π * a ^ 2)) / a) := by
+      1 - evenProlateSignedValue a n ^ (2 : ℕ) ≤ C * (Real.exp (-(π * a ^ (2 : ℕ))) / a) := by
   obtain ⟨C, hC0, hC⟩ := exists_hermiteTrialDefect_le_exp n
   exact ⟨C, hC0, fun a ha =>
     le_trans (one_sub_evenProlateSignedValue_sq_le_hermite a ha n) (hC a ha)⟩
@@ -109,7 +109,7 @@ theorem exists_one_sub_evenProlateSignedValue_sq_le_exp (n : ℕ) :
 /-- **The leakage family of the constrained transfer vanishes at every fixed index.**  This is
 the contract's qualitative content, proved on the true signed spectrum. -/
 theorem one_sub_evenProlateSignedValue_sq_tendsto_zero (n : ℕ) :
-    Tendsto (fun a : ℝ => 1 - evenProlateSignedValue a n ^ 2) atTop (nhds 0) := by
+    Tendsto (fun a : ℝ => 1 - evenProlateSignedValue a n ^ (2 : ℕ)) atTop (nhds 0) := by
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
     (tendsto_hermiteTrialDefect n) ?_ ?_
   · filter_upwards with a
@@ -120,9 +120,9 @@ theorem one_sub_evenProlateSignedValue_sq_tendsto_zero (n : ℕ) :
 /-- The signed prolate eigenvalues approach the unit circle at every fixed index: their squares
 tend to one. -/
 theorem evenProlateSignedValue_sq_tendsto_one (n : ℕ) :
-    Tendsto (fun a : ℝ => evenProlateSignedValue a n ^ 2) atTop (nhds 1) := by
+    Tendsto (fun a : ℝ => evenProlateSignedValue a n ^ (2 : ℕ)) atTop (nhds 1) := by
   have h := one_sub_evenProlateSignedValue_sq_tendsto_zero n
-  have hsub : Tendsto (fun a : ℝ => 1 - (1 - evenProlateSignedValue a n ^ 2)) atTop
+  have hsub : Tendsto (fun a : ℝ => 1 - (1 - evenProlateSignedValue a n ^ (2 : ℕ))) atTop
       (nhds ((1 : ℝ) - 0)) := tendsto_const_nhds.sub h
   rw [sub_zero] at hsub
   exact Tendsto.congr (fun a => by ring) hsub

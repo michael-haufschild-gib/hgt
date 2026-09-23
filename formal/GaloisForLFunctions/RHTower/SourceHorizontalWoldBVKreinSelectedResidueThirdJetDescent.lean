@@ -33,7 +33,7 @@ def sourceHorizontalWoldBVGreenStokesEndpointDefect
 def sourceHorizontalWoldBVGreenStokesEndpointThirdJet
     (N : ℕ) : ℝ :=
   -(sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-    xiMassNthPrimeLogHeight N ^ 3)
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 theorem sourceHorizontalWoldBVGreenStokesEndpointDefect_eq_neg_profile
     (N : ℕ) (u : ℝ) :
@@ -69,7 +69,7 @@ theorem iteratedDeriv_sourceHorizontalWoldPrimeClockProfileSeries_three
     (N : ℕ) :
     iteratedDeriv 3 (sourceHorizontalWoldPrimeClockProfileSeries N) 0 =
       sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   let H := xiMassNthPrimeLogHeight N
   let R := sourceHorizontalWoldResidualPrimitiveDeformation N
   let L := xiHeatCassiniWoldLogHolonomyConstant
@@ -127,7 +127,7 @@ theorem tendsto_sourceHorizontalWoldBVGreenStokesEndpointThirdJet :
       (nhds (2 / 3 : ℝ)) := by
   change Tendsto (fun N : ℕ =>
     -(sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3)) atTop (nhds (2 / 3 : ℝ))
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ))) atTop (nhds (2 / 3 : ℝ))
   have h :=
     tendsto_sourceHorizontalWoldResidualPrimitiveCubicCoefficient_normalized.neg
   convert h using 1
@@ -170,7 +170,7 @@ def frankensteinCCMGammaWoldBVKreinComplexFirstLanding
     (c : ℂ) (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) : ℂ :=
   ((4 * Complex.normSq c : ℝ) : ℂ) *
     (-(frankensteinCCMGammaSchwarzCenteredCubicFirstLanding q N v) *
-      ((1 / (4 * (xiRightCenteredZero q).re ^ 3) : ℝ) : ℂ))
+      ((1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)) : ℝ) : ℂ))
 
 /-- The selected complex residue is exactly the finite BV ghost energy. -/
 theorem tendsto_frankensteinCCMGammaWoldBVKreinComplexFirstLanding
@@ -183,12 +183,12 @@ theorem tendsto_frankensteinCCMGammaWoldBVKreinComplexFirstLanding
   have h :=
     (tendsto_frankensteinCCMGammaSchwarzCenteredCubicFirstLanding q N).neg
   have hreg := h.mul_const
-    ((1 / (4 * (xiRightCenteredZero q).re ^ 3) : ℝ) : ℂ)
+    ((1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)) : ℝ) : ℂ)
   have horbit := hreg.const_mul ((4 * Complex.normSq c : ℝ) : ℂ)
   have heq :
       ((4 * Complex.normSq c : ℝ) : ℂ) *
           (-(sourceZeroHorizontalWoldPrimeClockCubicResponse q.1 N : ℂ) *
-            ((1 / (4 * (xiRightCenteredZero q).re ^ 3) : ℝ) : ℂ)) =
+            ((1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)) : ℝ) : ℂ)) =
         (sourceHorizontalWoldBVKreinGhostEnergy c N : ℂ) := by
     norm_cast
     simpa [sourceZeroHorizontalWoldRegularizedJuliaOrbitResponse,

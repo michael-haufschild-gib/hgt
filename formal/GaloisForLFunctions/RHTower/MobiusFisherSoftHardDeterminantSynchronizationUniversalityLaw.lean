@@ -28,7 +28,7 @@ def mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma : ℝ) : ℂ :=
 def mobiusCriticalSoftHardDeterminantBoundarySignal (u : ℝ) : ℂ :=
   -(1 / 2 : ℂ) *
     ((squarefreeMobiusCriticalFisherCutoffWardLimit u /
-      mobiusCriticalSoftFisherCoefficientLimit u : ℝ) : ℂ) ^ 2
+      mobiusCriticalSoftFisherCoefficientLimit u : ℝ) : ℂ) ^ (2 : ℕ)
 
 /-- The transformed hard/soft boundary ratio has the same universal `-8` limit as the completed
 pointed-Fisher determinant. -/
@@ -47,7 +47,7 @@ theorem tendsto_mobiusCriticalSoftHardDeterminantBoundarySignal :
   change Tendsto
     (fun u : ℝ => -(1 / 2 : ℂ) *
       ((squarefreeMobiusCriticalFisherCutoffWardLimit u /
-        mobiusCriticalSoftFisherCoefficientLimit u : ℝ) : ℂ) ^ 2)
+        mobiusCriticalSoftFisherCoefficientLimit u : ℝ) : ℂ) ^ (2 : ℕ))
     (nhdsWithin 0 (Set.Ioi 0)) (nhds (-8 : ℂ))
   convert tendsto_const_nhds.mul (hratio.pow 2) using 1
   norm_num

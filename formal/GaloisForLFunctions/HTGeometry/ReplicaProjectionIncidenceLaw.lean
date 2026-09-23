@@ -281,8 +281,8 @@ theorem starProjectionMass_le_map_of_fixed_symmetricProjection
     [FiniteDimensional ℂ E]
     (P : E →ₗ[ℂ] E) (hP : P.IsSymmetricProjection)
     (U : Submodule ℂ E) (y : E) (hy : P y = y) :
-    ‖U.starProjection y‖ ^ 2 ≤
-      ‖(Submodule.map P U).starProjection y‖ ^ 2 := by
+    ‖U.starProjection y‖ ^ (2 : ℕ) ≤
+      ‖(Submodule.map P U).starProjection y‖ ^ (2 : ℕ) := by
   let V := Submodule.map P U
   let u := U.starProjection y
   have hu : u ∈ U := U.starProjection_apply_mem y
@@ -310,8 +310,8 @@ theorem starProjectionMass_le_map_of_fixed_symmetricProjection
   rw [U.starProjection_orthogonal_val] at hU
   rw [V.starProjection_orthogonal_val] at hV
   have hresidualSq :
-      ‖y - V.starProjection y‖ ^ 2 ≤
-        ‖y - U.starProjection y‖ ^ 2 :=
+      ‖y - V.starProjection y‖ ^ (2 : ℕ) ≤
+        ‖y - U.starProjection y‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hresidual 2
   nlinarith
 
@@ -377,9 +377,9 @@ theorem norm_sq_pureTensor_sub_projected_eq_pow_sub_pow
     (S : Submodule ℂ (EuclideanSpace ℂ α)) (ψ : α → ℂ) :
     ‖finitePureTensorPowerEuclidean r ψ -
         finitePureTensorPowerEuclidean r
-          (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ 2 =
-      (‖WithLp.toLp 2 ψ‖ ^ 2) ^ r -
-        (‖S.starProjection (WithLp.toLp 2 ψ)‖ ^ 2) ^ r := by
+          (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ (2 : ℕ) =
+      (‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ)) ^ r -
+        (‖S.starProjection (WithLp.toLp 2 ψ)‖ ^ (2 : ℕ)) ^ r := by
   let P := finiteTensorStarProjection r S
   let C := LinearMap.range P
   let u := finitePureTensorPowerEuclidean r ψ
@@ -419,8 +419,8 @@ theorem norm_pureTensor_sub_projected_le_nat_mul
           (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ≤
       (r : ℝ) *
         ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖ := by
-  let a := ‖WithLp.toLp 2 ψ‖ ^ 2
-  let b := ‖S.starProjection (WithLp.toLp 2 ψ)‖ ^ 2
+  let a := ‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ)
+  let b := ‖S.starProjection (WithLp.toLp 2 ψ)‖ ^ (2 : ℕ)
   have hb0 : 0 ≤ b := sq_nonneg _
   have hnormProj := S.norm_starProjection_apply_le (WithLp.toLp 2 ψ)
   have hba : b ≤ a := by
@@ -437,9 +437,9 @@ theorem norm_pureTensor_sub_projected_le_nat_mul
   have hrepSq :
       ‖finitePureTensorPowerEuclidean r ψ -
           finitePureTensorPowerEuclidean r
-            (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ 2 ≤
+            (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ (2 : ℕ) ≤
         (r : ℝ) *
-          ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖ ^ 2 := by
+          ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖ ^ (2 : ℕ) := by
     rw [hrep]
     dsimp only [a, b] at hpow
     nlinarith
@@ -447,12 +447,12 @@ theorem norm_pureTensor_sub_projected_le_nat_mul
   have hsq :
       ‖finitePureTensorPowerEuclidean r ψ -
           finitePureTensorPowerEuclidean r
-            (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ 2 ≤
+            (fun x => S.starProjection (WithLp.toLp 2 ψ) x)‖ ^ (2 : ℕ) ≤
         ((r : ℝ) *
-          ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖) ^ 2 := by
+          ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖) ^ (2 : ℕ) := by
     rw [mul_pow]
     have hd0 : 0 ≤
-        ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖ ^ 2 :=
+        ‖WithLp.toLp 2 ψ - S.starProjection (WithLp.toLp 2 ψ)‖ ^ (2 : ℕ) :=
       sq_nonneg _
     nlinarith
   exact (sq_le_sq₀ (norm_nonneg _)
@@ -464,9 +464,9 @@ theorem norm_finitePureTensorPowerEuclidean_le_one
     (hψ : ‖WithLp.toLp 2 ψ‖ ≤ 1) :
     ‖finitePureTensorPowerEuclidean r ψ‖ ≤ 1 := by
   have hnorm := norm_sq_finitePureTensorPowerEuclidean_eq_pow r ψ
-  have hbase : ‖WithLp.toLp 2 ψ‖ ^ 2 ≤ 1 := by
+  have hbase : ‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [norm_nonneg (WithLp.toLp 2 ψ)]
-  have hpow : (‖WithLp.toLp 2 ψ‖ ^ 2) ^ r ≤ 1 := by
+  have hpow : (‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ)) ^ r ≤ 1 := by
     simpa using pow_le_pow_left₀ (sq_nonneg _) hbase r
   rw [← sq_le_sq₀ (norm_nonneg _) zero_le_one]
   rw [hnorm]
@@ -479,8 +479,8 @@ theorem starProjectionMass_le_add_two_mul_norm_sub
     [FiniteDimensional ℂ E]
     (U : Submodule ℂ E) (u v : E)
     (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1) :
-    ‖U.starProjection u‖ ^ 2 ≤
-      ‖U.starProjection v‖ ^ 2 + 2 * ‖u - v‖ := by
+    ‖U.starProjection u‖ ^ (2 : ℕ) ≤
+      ‖U.starProjection v‖ ^ (2 : ℕ) + 2 * ‖u - v‖ := by
   let a := ‖U.starProjection u‖
   let b := ‖U.starProjection v‖
   have ha0 : 0 ≤ a := norm_nonneg _
@@ -495,15 +495,15 @@ theorem starProjectionMass_le_add_two_mul_norm_sub
     exact (abs_norm_sub_norm_le (U.starProjection u)
       (U.starProjection v)).trans hpdist
   calc
-    a ^ 2 ≤ b ^ 2 + |a ^ 2 - b ^ 2| := by
-      nlinarith [le_abs_self (a ^ 2 - b ^ 2)]
-    _ = b ^ 2 + |a - b| * (a + b) := by
+    a ^ (2 : ℕ) ≤ b ^ (2 : ℕ) + |a ^ (2 : ℕ) - b ^ (2 : ℕ)| := by
+      nlinarith [le_abs_self (a ^ (2 : ℕ) - b ^ (2 : ℕ))]
+    _ = b ^ (2 : ℕ) + |a - b| * (a + b) := by
       rw [sq_sub_sq, abs_mul, abs_of_nonneg (add_nonneg ha0 hb0)]
       ring
-    _ ≤ b ^ 2 + ‖u - v‖ * 2 := by
+    _ ≤ b ^ (2 : ℕ) + ‖u - v‖ * 2 := by
       gcongr
       linarith
-    _ = b ^ 2 + 2 * ‖u - v‖ := by ring
+    _ = b ^ (2 : ℕ) + 2 * ‖u - v‖ := by ring
 
 /-- **Projection-before-replicas action law.**  Complete occupied-image
 incidence changes by at most twice the replica-amplified one-copy projection

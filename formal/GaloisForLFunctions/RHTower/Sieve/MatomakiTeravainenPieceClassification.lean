@@ -49,10 +49,10 @@ theorem matomakiTeravainen_tripleTerm_typeI_II_or_typeII
     (hE : E ≤ X ^ (ε / 4))
     (hQ₁ : Q₁ ≤ X ^ (1 / 4 - 2 * ε))
     (hQ₃Q₂ : Q₃ ≤ Q₂)
-    (hgeometry : Q₁ * Q₂ ^ 4 ≤ X ^ (1 - 2 * ε))
+    (hgeometry : Q₁ * Q₂ ^ (4 : ℕ) ≤ X ^ (1 - 2 * ε))
     (hQone : ∀ i ∈ S, 1 ≤ Q i)
     (hQcap : ∀ i ∈ S, Q i ≤ X ^ (2 / 11 : ℝ)) :
-    ((E * Q₂ * Q₃) ^ 2 * (Q₁ * ∏ i ∈ S, Q i) ≤ X ^ (1 - ε) ∧
+    ((E * Q₂ * Q₃) ^ (2 : ℕ) * (Q₁ * ∏ i ∈ S, Q i) ≤ X ^ (1 - ε) ∧
         Q₁ * (∏ i ∈ S, Q i) ≤ X ^ (1 / 4 - ε)) ∨
       ∃ I ⊆ S, I.Nonempty ∧
         X ^ (ε / 2) ≤ ∏ i ∈ I, Q i ∧

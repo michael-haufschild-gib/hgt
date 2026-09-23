@@ -12,7 +12,7 @@ common exponential clock of the Fuchs rates and leaves an exact power of the ape
 ```
 
 The radial index step of the positive-parity family is `4`, so one rung advances the Fuchs index by
-`4` and the leakage ratio by `λ^8`; in the finite-prime parameter `c = λ²` this is the fourth power
+`4` and the leakage ratio by `λ^(8 : ℕ)`; in the finite-prime parameter `c = λ²` this is the fourth power
 `c⁴`.  The limiting coefficient is the pure Hermite quantity `Q_{k+1}²/(Q_k Q_{k+2})`, which at
 `k = 0` is `242/211`.
 -/
@@ -26,8 +26,8 @@ coordinates are nonzero. -/
 theorem twoModeSecularRoot_pos {d₀ d₁ ℓ₀ ℓ₁ : ℝ} (hd₀ : 0 < d₀) (hd₁ : 0 < d₁)
     (h₀ : ℓ₀ ≠ 0) (h₁ : ℓ₁ ≠ 0) :
     0 < GaloisForLFunctions.twoModeSecularRoot d₀ d₁ ℓ₀ ℓ₁ := by
-  have hl₀ : (0 : ℝ) < ℓ₀ ^ 2 := lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 h₀))
-  have hl₁ : (0 : ℝ) < ℓ₁ ^ 2 := lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 h₁))
+  have hl₀ : (0 : ℝ) < ℓ₀ ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 h₀))
+  have hl₁ : (0 : ℝ) < ℓ₁ ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 h₁))
   unfold GaloisForLFunctions.twoModeSecularRoot
   exact div_pos (add_pos (mul_pos hl₀ hd₁) (mul_pos hl₁ hd₀)) (add_pos hl₀ hl₁)
 
@@ -56,7 +56,7 @@ theorem ladderTwoModeRoot_ratio_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) 
 `Q_{k+1}²/(Q_k Q_{k+2})`. -/
 theorem constrainedProlateHermiteTheta_adjacent_ratio (k : ℕ) :
     constrainedProlateHermiteTheta (k + 1) / constrainedProlateHermiteTheta k
-      = constrainedProlateHermiteWeightSum (k + 1) ^ 2 /
+      = constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ) /
           (constrainedProlateHermiteWeightSum k *
             constrainedProlateHermiteWeightSum (k + 2)) := by
   have h0 := constrainedProlateHermiteWeightSum_pos k
@@ -101,7 +101,7 @@ by exactly the eighth power of the aperture, with the explicit coefficient
 the fourth power `c⁴`. -/
 theorem ladder_adjacent_ratio_scaled_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) (k : ℕ) :
     Tendsto (fun lam : ℝ =>
-        (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ 8)
+        (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ (8 : ℕ))
       atTop (nhds ((constrainedProlateHermiteTheta (k + 1) /
         constrainedProlateHermiteTheta k) * (A (k + 2) / A (k + 1)))) := by
   have hprev := ladder_adjacent_ratio_tendsto hA k
@@ -114,14 +114,14 @@ theorem ladder_adjacent_ratio_scaled_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < 
   have hd2 : fuchsRate (A (k + 2)) (4 * (k + 2)) lam ≠ 0 :=
     (fuchsRate_pos (hA (k + 2)) _ hlam).ne'
   have hμ : ladderTwoModeRoot A k lam ≠ 0 := (ladderTwoModeRoot_pos hA k hlam).ne'
-  have hlam8 : lam ^ 8 ≠ 0 := pow_ne_zero _ hlam.ne'
+  have hlam8 : lam ^ (8 : ℕ) ≠ 0 := pow_ne_zero _ hlam.ne'
   have hA1 : A (k + 1) ≠ 0 := (hA (k + 1)).ne'
   have hA2 : A (k + 2) ≠ 0 := (hA (k + 2)).ne'
   have hr : fuchsRate (A (k + 2)) (4 * (k + 2)) lam /
-      fuchsRate (A (k + 1)) (4 * (k + 1)) lam = A (k + 2) / A (k + 1) * lam ^ 8 :=
+      fuchsRate (A (k + 1)) (4 * (k + 1)) lam = A (k + 2) / A (k + 1) * lam ^ (8 : ℕ) :=
     fuchsRate_radial_ratio (A (k + 2)) (A (k + 1)) (hA (k + 1)).ne' hlam.ne' (k + 1)
   have hd12 : fuchsRate (A (k + 1)) (4 * (k + 1)) lam /
-      fuchsRate (A (k + 2)) (4 * (k + 2)) lam = A (k + 1) / (A (k + 2) * lam ^ 8) := by
+      fuchsRate (A (k + 2)) (4 * (k + 2)) lam = A (k + 1) / (A (k + 2) * lam ^ (8 : ℕ)) := by
     have hinv := congrArg (fun t : ℝ => t⁻¹) hr
     simp only [inv_div] at hinv
     rw [hinv]
@@ -132,7 +132,7 @@ theorem ladder_adjacent_ratio_scaled_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < 
 /-- The first excited adjacent coefficient is the exact rational constant `242/211`. -/
 theorem ladder_firstExcited_ratio_scaled_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) :
     Tendsto (fun lam : ℝ =>
-        (ladderTwoModeRoot A 1 lam / ladderTwoModeRoot A 0 lam) / lam ^ 8)
+        (ladderTwoModeRoot A 1 lam / ladderTwoModeRoot A 0 lam) / lam ^ (8 : ℕ))
       atTop (nhds (242 / 211 * (A 2 / A 1))) := by
   have h := ladder_adjacent_ratio_scaled_tendsto hA 0
   rwa [constrainedProlateHermiteTheta_zero, constrainedProlateHermiteTheta_one,

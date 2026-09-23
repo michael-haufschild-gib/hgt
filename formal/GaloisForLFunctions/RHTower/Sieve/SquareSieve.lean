@@ -33,7 +33,7 @@ theorem card_le_of_half_omitted (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset �
     (hwp : ∀ p ∈ P, w p < (p : ℝ))
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ)) :
     (A.card : ℝ)
-      ≤ 3 * ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) / (P.card : ℝ) := by
+      ≤ 3 * ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) / (P.card : ℝ) := by
   have hPcard : (0 : ℝ) < (P.card : ℝ) := by
     have := Finset.card_pos.mpr hPne
     exact_mod_cast this
@@ -50,8 +50,8 @@ theorem card_le_of_half_omitted (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset �
     exact Finset.sum_le_sum hratio
   have hLpos : (0 : ℝ) < (P.card : ℝ) / 3 := by positivity
   have hbase := card_le_of_sieve N hQ A hA hAne P hP w hwp hocc hLpos hL
-  have heq : ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) / ((P.card : ℝ) / 3)
-      = 3 * ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) / (P.card : ℝ) := by
+  have heq : ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) / ((P.card : ℝ) / 3)
+      = 3 * ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) / (P.card : ℝ) := by
     rw [div_div_eq_mul_div, mul_comm]
   rw [heq] at hbase
   exact hbase

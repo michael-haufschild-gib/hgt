@@ -22,7 +22,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_soninDilatedPacket_sub
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖ContinuousLinearMap.adjoint
             (evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n))
@@ -45,7 +45,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_soninDilatedPacket_sub
         (‖evenSoninApertureLayer b c (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q))) -
             soninPacketEven b c hb hbc (2 * Real.pi * (r n * q))‖ +
           ‖evenSoninApertureLayer b c
-            (soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))‖))
+            (soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))‖))
       atTop (𝓝 0) := by
     simpa using (hInner.const_mul (2 : ℝ)).add (hOuter.add hDouble)
   refine squeeze_zero (fun n => norm_nonneg _) (fun n => ?_) hmaj
@@ -53,7 +53,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_soninDilatedPacket_sub
   set v : evenSubspace :=
     soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n) (hrpos n) with hv
   set z : evenSubspace :=
-    soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n) with hz
+    soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n) with hz
   set e : evenSubspace := evenSoninApertureLayer a b v - v with he
   -- the adjoint, applied
   have hadj : ContinuousLinearMap.adjoint

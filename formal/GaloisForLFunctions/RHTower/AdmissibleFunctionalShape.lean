@@ -71,10 +71,10 @@ theorem square_weight_convex (a b : ℝ) : (2 * a - 2 * b) * (a - b) ≥ 0 := by
   nlinarith [sq_nonneg (a - b)]
 
 /-- The quartic weight is convex: `(4a³ - 4b³)(a - b) = 4(a-b)²(a²+ab+b²) ≥ 0`. -/
-theorem quartic_weight_convex (a b : ℝ) : (4 * a ^ 3 - 4 * b ^ 3) * (a - b) ≥ 0 := by
-  have hq : a ^ 2 + a * b + b ^ 2 ≥ 0 := by nlinarith [sq_nonneg (a + b), sq_nonneg (a - b)]
-  have hfac : (4 * a ^ 3 - 4 * b ^ 3) * (a - b)
-      = 4 * (a - b) ^ 2 * (a ^ 2 + a * b + b ^ 2) := by ring
+theorem quartic_weight_convex (a b : ℝ) : (4 * a ^ (3 : ℕ) - 4 * b ^ (3 : ℕ)) * (a - b) ≥ 0 := by
+  have hq : a ^ (2 : ℕ) + a * b + b ^ (2 : ℕ) ≥ 0 := by nlinarith [sq_nonneg (a + b), sq_nonneg (a - b)]
+  have hfac : (4 * a ^ (3 : ℕ) - 4 * b ^ (3 : ℕ)) * (a - b)
+      = 4 * (a - b) ^ (2 : ℕ) * (a ^ (2 : ℕ) + a * b + b ^ (2 : ℕ)) := by ring
   rw [hfac]
   positivity
 
@@ -104,17 +104,17 @@ theorem admissible_iff_nonconvex {pa pb a b d : ℝ} (hd : 0 < d) :
 /-- A threshold weight is bounded, so its total over the divisor is a count: the number of zeros with
 deviation above the threshold, up to the bounded weight. -/
 theorem threshold_weight_bounded (y eps : ℝ) :
-    min (y ^ 2) (eps ^ 2) ≤ eps ^ 2 := min_le_right _ _
+    min (y ^ (2 : ℕ)) (eps ^ (2 : ℕ)) ≤ eps ^ (2 : ℕ) := min_le_right _ _
 
 /-- And it vanishes exactly on the critical configuration. -/
 theorem threshold_weight_zero_iff {y eps : ℝ} (he : 0 < eps) :
-    min (y ^ 2) (eps ^ 2) = 0 ↔ y = 0 := by
+    min (y ^ (2 : ℕ)) (eps ^ (2 : ℕ)) = 0 ↔ y = 0 := by
   constructor
   · intro h
-    rcases min_cases (y ^ 2) (eps ^ 2) with ⟨he₁, _⟩ | ⟨he₂, _⟩
+    rcases min_cases (y ^ (2 : ℕ)) (eps ^ (2 : ℕ)) with ⟨he₁, _⟩ | ⟨he₂, _⟩
     · rw [he₁] at h; exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h
     · rw [he₂] at h
       exact absurd h (by positivity)
-  · intro h; rw [h]; simp [le_of_lt (by positivity : (0:ℝ) < eps ^ 2)]
+  · intro h; rw [h]; simp [le_of_lt (by positivity : (0:ℝ) < eps ^ (2 : ℕ))]
 
 end RHTower

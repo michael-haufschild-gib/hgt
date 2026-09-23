@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.BaezDuarteScaleLaw
 # The gamma majorant and the weighted scale law
 
 `(1-y)^n ≤ e^{-ny}` and a rescaling of the truncated gamma integral give
-`∫_0^1 y^α(1-y)^n dy ≤ Γ(α+1) n^{-(α+1)}`.  Combined with the closed form of the weighted wavelet
+`∫_0^(1 : ℕ) y^α(1-y)^n dy ≤ Γ(α+1) n^{-(α+1)}`.  Combined with the closed form of the weighted wavelet
 energy and Cauchy--Schwarz this is the card's scale law `c_k = O_α(k^{-(1+α)/2})`.
 -/
 
@@ -69,7 +69,7 @@ theorem integral_Ioo_rpow_mul_exp_scale (α : ℝ) {c : ℝ} (hc : 0 < c) :
   have hca : (0 : ℝ) < c ^ α := Real.rpow_pos_of_pos hc α
   field_simp
 
-/-- **The gamma majorant.**  `∫_0^1 y^α (1-y)^n dy ≤ Γ(α+1) n^{-(α+1)}`. -/
+/-- **The gamma majorant.**  `∫_0^(1 : ℕ) y^α (1-y)^n dy ≤ Γ(α+1) n^{-(α+1)}`. -/
 theorem bdBeta_le_gamma {α : ℝ} (hα : 0 ≤ α) {n : ℕ} (hn : 1 ≤ n) :
     bdBeta α n ≤ (1 / (n : ℝ)) ^ (α + 1) * Real.Gamma (α + 1) := by
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn

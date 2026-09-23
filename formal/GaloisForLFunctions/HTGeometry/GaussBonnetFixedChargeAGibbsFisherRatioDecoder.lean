@@ -10,9 +10,9 @@ def egbFixedChargeAGibbsFisherRatioDecoder (a b : ℝ) : ℝ :=
 
 private theorem nonzero_ratio_reconstruction (t : ℝ) (ht : t ≠ 0) :
     (25 / 36 : ℝ) * (16 / egbFixedChargeAGibbsTunableFisherCurve (t / 4) -
-      1 / egbFixedChargeAGibbsTunableFisherCurve t) - 30 = 255 / t ^ 2 := by
-  have hd : 1 + t ^ 2 ≠ 0 := (show 0 < 1 + t ^ 2 by positivity).ne'
-  have hn : 1 + (t / 4) ^ 2 ≠ 0 := (show 0 < 1 + (t / 4) ^ 2 by positivity).ne'
+      1 / egbFixedChargeAGibbsTunableFisherCurve t) - 30 = 255 / t ^ (2 : ℕ) := by
+  have hd : 1 + t ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + t ^ (2 : ℕ) by positivity).ne'
+  have hn : 1 + (t / 4) ^ (2 : ℕ) ≠ 0 := (show 0 < 1 + (t / 4) ^ (2 : ℕ) by positivity).ne'
   unfold egbFixedChargeAGibbsTunableFisherCurve
   field_simp
   <;> ring
@@ -20,7 +20,7 @@ private theorem nonzero_ratio_reconstruction (t : ℝ) (ht : t ≠ 0) :
 /-- The decoder exactly returns the squared fast-to-slow parameter for every real chart coordinate. -/
 theorem egbFixedChargeAGibbsFisherRatioDecoder_exact (t : ℝ) :
     egbFixedChargeAGibbsFisherRatioDecoder (egbFixedChargeAGibbsTunableFisherCurve t)
-      (egbFixedChargeAGibbsTunableFisherCurve (t / 4)) = t ^ 2 := by
+      (egbFixedChargeAGibbsTunableFisherCurve (t / 4)) = t ^ (2 : ℕ) := by
   unfold egbFixedChargeAGibbsFisherRatioDecoder
   by_cases ht : t = 0
   · subst t

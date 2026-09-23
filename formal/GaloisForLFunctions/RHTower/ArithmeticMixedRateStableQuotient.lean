@@ -11,7 +11,7 @@ rectangular difference
 
 and the *mixed rate* is the joint limit
 
-`q f = lim_{P→∞, M→∞} B^2_{P,M} f / ((log P − log 2) M)`.
+`q f = lim_{P→∞, M→∞} B^(2 : ℕ)_{P,M} f / ((log P − log 2) M)`.
 
 The radial space consists of the functions whose mixed boundary is `O_p(M)` at every fixed prime
 and whose mixed rate exists.  Its rectangular differential `D` produces a two-term complex whose

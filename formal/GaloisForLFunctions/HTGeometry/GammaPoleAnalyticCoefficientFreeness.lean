@@ -154,9 +154,9 @@ theorem iteratedDeriv_shiftedHarmonicPowerSum_one_scale_zero
   unfold shiftedHarmonicPowerSum
   have hfun :
       (fun x : ℂ => ∑ j ∈ Finset.range n,
-        (((((j + 1 : ℕ) : ℂ) - s * x) ^ 1)⁻¹)) =
+        (((((j + 1 : ℕ) : ℂ) - s * x) ^ (1 : ℕ))⁻¹)) =
       ∑ j ∈ Finset.range n,
-        (fun x : ℂ => (((((j + 1 : ℕ) : ℂ) - s * x) ^ 1)⁻¹)) := by
+        (fun x : ℂ => (((((j + 1 : ℕ) : ℂ) - s * x) ^ (1 : ℕ))⁻¹)) := by
     funext x
     simp
   rw [hfun]
@@ -207,7 +207,7 @@ theorem iteratedDeriv_gammaPoleRegularLogDeriv_zero (m n : ℕ) :
     have hj0 : (((j + 1 : ℕ) : ℂ)) ≠ 0 := by
       exact_mod_cast Nat.succ_ne_zero j
     have hbase : ContDiffAt ℂ m
-        (fun x : ℂ => ((((j + 1 : ℕ) : ℂ) - s * x) ^ 1)) 0 := by fun_prop
+        (fun x : ℂ => ((((j + 1 : ℕ) : ℂ) - s * x) ^ (1 : ℕ))) 0 := by fun_prop
     exact hbase.inv (by simpa using hj0)
   change iteratedDeriv m
       ((fun x : ℂ => s * Complex.digamma (s * x + 1)) +
@@ -246,13 +246,13 @@ theorem reciprocalSignedFactorialSequence_succ_eq_neg_scale (n : ℕ) :
     reciprocalGammaFactorialScale]
   have hn0 : ((n.factorial : ℂ)) ≠ 0 := by
     exact_mod_cast Nat.factorial_ne_zero n
-  have hsignsq : (((-1 : ℂ) ^ n) ^ 2) = 1 := by
+  have hsignsq : (((-1 : ℂ) ^ n) ^ (2 : ℕ)) = 1 := by
     rw [← pow_mul, show n * 2 = 2 * n by omega, pow_mul]
     norm_num
   field_simp [hn0]
   rw [pow_succ]
   rw [show -((-1 : ℂ) ^ n * ((-1 : ℂ) ^ n * -1)) =
-      ((-1 : ℂ) ^ n) ^ 2 by ring, hsignsq]
+      ((-1 : ℂ) ^ n) ^ (2 : ℕ) by ring, hsignsq]
 
 theorem harmonicJetSequence_succ_eq_shiftedHarmonicPowerSum
     (j n : ℕ) :
@@ -318,7 +318,7 @@ theorem iteratedDeriv_gammaPoleRegularLogDeriv_zero_eq_sequence
           (-reciprocalGammaFactorialScale n) ^ (m + 2) =
             (-1 : ℂ) ^ m * reciprocalGammaFactorialScale n ^ (m + 2) := by
         rw [neg_pow, hsign2]
-      have hsignsq : (((-1 : ℂ) ^ m) ^ 2) = 1 := by
+      have hsignsq : (((-1 : ℂ) ^ m) ^ (2 : ℕ)) = 1 := by
         rw [← pow_mul, show m * 2 = 2 * m by omega, pow_mul]
         norm_num
       have hsignmul : (-1 : ℂ) ^ (m * 2) = 1 := by

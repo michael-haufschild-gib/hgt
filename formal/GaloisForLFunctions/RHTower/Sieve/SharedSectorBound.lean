@@ -20,8 +20,8 @@ open Finset
 
 /-- The squarefree pair weight is at most one. -/
 theorem moebius_pair_weight_le_one (a b : ℕ) :
-    ((ArithmeticFunction.moebius a : ℤ) : ℝ) ^ 2
-      * ((ArithmeticFunction.moebius b : ℤ) : ℝ) ^ 2 ≤ 1 := by
+    ((ArithmeticFunction.moebius a : ℤ) : ℝ) ^ (2 : ℕ)
+      * ((ArithmeticFunction.moebius b : ℤ) : ℝ) ^ (2 : ℕ) ≤ 1 := by
   rcases moebius_trichotomy a with ha | ha | ha <;> rcases moebius_trichotomy b with hb | hb | hb <;>
     rw [ha, hb] <;> norm_num
 
@@ -35,7 +35,7 @@ theorem outer_count_le {x : ℝ} (hx : 4 ≤ x) {p : ℕ} (hp : 0 < p) (M : ℕ)
   have hs2 : (2 : ℝ) ≤ Real.sqrt x := by
     have h4 : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     have heq : Real.sqrt 4 = 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h4, heq.le, heq.ge]
   have hs0 : (0 : ℝ) < Real.sqrt x := by linarith
   set c : ℕ := ⌊Real.sqrt x⌋₊ with hc
@@ -80,15 +80,15 @@ theorem sharedSectorCount_le_product {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {
   set B : ℝ := (h + 2) / (p : ℝ) + 1 with hB
   rw [sharedSectorCount,
     sum_balancedPairs_filter_nested (x := x) (h := h)
-      (w := fun q => ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ 2
-        * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ 2)
+      (w := fun q => ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ (2 : ℕ)
+        * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ (2 : ℕ))
       (R := fun q => p ∣ q.1 ∧ p ∣ q.2)]
   have hstep : ∀ a ∈ Finset.Icc 1 M,
       (∑ b ∈ (Finset.Icc 1 M).filter
           (fun b => (x ≤ ((a * b : ℕ) : ℝ) ∧ ((a * b : ℕ) : ℝ) ≤ x + h * Real.sqrt x
               ∧ Real.sqrt x ≤ (a : ℝ) ∧ (a : ℝ) ≤ 2 * Real.sqrt x) ∧ (p ∣ a ∧ p ∣ b)),
-          ((ArithmeticFunction.moebius a : ℤ) : ℝ) ^ 2
-            * ((ArithmeticFunction.moebius b : ℤ) : ℝ) ^ 2)
+          ((ArithmeticFunction.moebius a : ℤ) : ℝ) ^ (2 : ℕ)
+            * ((ArithmeticFunction.moebius b : ℤ) : ℝ) ^ (2 : ℕ))
         ≤ (if (Real.sqrt x ≤ (a : ℝ) ∧ (a : ℝ) ≤ 2 * Real.sqrt x) ∧ p ∣ a then B else 0) := by
     intro a _
     by_cases hcond : (Real.sqrt x ≤ (a : ℝ) ∧ (a : ℝ) ≤ 2 * Real.sqrt x) ∧ p ∣ a

@@ -96,9 +96,9 @@ theorem xiWeilOddPart_eq_deviation_mul_dslope (F : ℂ → ℂ) (q : XiZeroCopy)
 /-- The odd-sector energy density is the squared deviation times the squared divided
 difference. -/
 theorem norm_sq_xiWeilOddPart_eq_deviation (F : ℂ → ℂ) (q : XiZeroCopy) :
-    ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ 2 =
-      (xiSpectralPoint q).im ^ 2 *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+    ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ (2 : ℕ) =
+      (xiSpectralPoint q).im ^ (2 : ℕ) *
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
   rw [xiWeilOddPart_eq_deviation_mul_dslope, norm_mul, norm_mul, Complex.norm_I, one_mul,
     Complex.norm_real, mul_pow, Real.norm_eq_abs, sq_abs]
 
@@ -111,17 +111,17 @@ positivity producer must dominate this moment by the even energy. -/
 theorem xiWeilPolarization_re_eq_deviation_moment {F : ℂ → ℂ}
     (hF : XiWeilSquareSummable F) :
     (xiWeilPolarization F F).re =
-      (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2) -
-        ∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+      (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)) -
+        ∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
   rw [xiWeilPolarization_self_eq_parity_energies hF, Complex.ofReal_re]
   congr 1
   exact tsum_congr fun q => norm_sq_xiWeilOddPart_eq_deviation F q
 
 /-- The deviation-weighted divided-difference energy of a square-summable test converges. -/
 theorem deviation_dslope_energy_summable {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
-    Summable (fun q : XiZeroCopy => (xiSpectralPoint q).im ^ 2 *
-      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => (xiSpectralPoint q).im ^ (2 : ℕ) *
+      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) := by
   refine (xiWeilOddPart_squareSummable hF).congr fun q => ?_
   exact norm_sq_xiWeilOddPart_eq_deviation F q
 
@@ -132,25 +132,25 @@ unconditional information about deviations. -/
 theorem xiWeilPolarization_re_ge_strip_bound {F : ℂ → ℂ}
     (hF : XiWeilSquareSummable F)
     (hD : Summable (fun q : XiZeroCopy =>
-      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2)) :
-    (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2) -
+      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ))) :
+    (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)) -
         (1 / 4) * ∑' q : XiZeroCopy,
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 ≤
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
       (xiWeilPolarization F F).re := by
   rw [xiWeilPolarization_re_eq_deviation_moment hF]
   have hpt : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q).im ^ 2 *
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 ≤
-        (1 / 4) * ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+      (xiSpectralPoint q).im ^ (2 : ℕ) *
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+        (1 / 4) * ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     intro q
     have h := abs_xiSpectralPoint_im_lt_half q
-    have h2 : (xiSpectralPoint q).im ^ 2 ≤ 1 / 4 := by
+    have h2 : (xiSpectralPoint q).im ^ (2 : ℕ) ≤ 1 / 4 := by
       nlinarith [abs_nonneg ((xiSpectralPoint q).im), sq_abs ((xiSpectralPoint q).im)]
     exact mul_le_mul_of_nonneg_right h2 (sq_nonneg _)
-  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) ≤
+  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) ≤
       (1 / 4) * ∑' q : XiZeroCopy,
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [← tsum_mul_left]
     exact (deviation_dslope_energy_summable hF).tsum_le_tsum hpt (hD.mul_left (1 / 4))
   linarith
@@ -163,12 +163,12 @@ whole obstruction. -/
 theorem riemannHypothesis_iff_deviation_moment_eq_zero :
     RiemannHypothesis ↔
       ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
-        (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) = 0 := by
+        (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) = 0 := by
   rw [riemannHypothesis_iff_forall_pairDifEnergy_eq_zero]
-  have hlink : ∀ F : ℂ → ℂ, (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) =
-      4 * ∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 := by
+  have hlink : ∀ F : ℂ → ℂ, (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) =
+      4 * ∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     intro F
     rw [← tsum_mul_left]
     apply tsum_congr

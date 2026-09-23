@@ -241,7 +241,7 @@ theorem g₂_eq_root_sum (P : Parameters) :
   ring
 
 /-- First equality in equation (75). -/
-theorem g₃_eq_root_product (P : Parameters) :
+theorem g₃_eq_root (P : Parameters) :
     g₃ P = 4 * e₁ P * e₂ P * e₃ P := by
   rw [g₃, e₁, e₂, e₃]
   field_simp [P.q₀.ne_zero]

@@ -28,7 +28,7 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteS
 /-- **`(45)`: the three-fold expansion of the wall phase integral.** -/
 theorem wall_phase_ibp_thrice {E : ℂ → ℂ} {T : X →L[ℂ] X} {σ L : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) {a b : ℝ}
     (hgap : ∀ t ∈ uIcc a b, 0 < wallFloor T σ t + L) :

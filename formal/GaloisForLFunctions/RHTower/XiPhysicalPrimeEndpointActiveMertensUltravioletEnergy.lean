@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.CreaseBudgetPrimeMass
 
 Activity forces every selected prime below `exp k`.  Elementary Mertens first upper bound then
 removes packet-dependent endpoint weight from the physical ultraviolet estimate, leaving the
-explicit moving-scale factor `N (k-m) (k+log 4)^2`.
+explicit moving-scale factor `N (k-m) (k+log 4)^(2 : ℕ)`.
 -/
 
 open Complex
@@ -96,7 +96,7 @@ theorem natCast_mul_tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude_le_mertensA
     (N : ℝ) * ∑' r : ℕ,
         Complex.normSq (xiPhysicalPrimeLogCharacterAmplitude P A
           ((N + 1 + r : ℕ) : ℤ) m k) ≤
-      (2 * A / Real.pi) * (N : ℝ) * (k - m) * (k + Real.log 4) ^ 2 := by
+      (2 * A / Real.pi) * (N : ℝ) * (k - m) * (k + Real.log 4) ^ (2 : ℕ) := by
   by_cases hPempty : P = ∅
   · subst P
     simp [xiPhysicalPrimeLogCharacterAmplitude]
@@ -106,7 +106,7 @@ theorem natCast_mul_tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude_le_mertensA
     P hP hactive
   have hW0 := xiPhysicalPrimeLogEndpointTotalWeight_nonneg P
   have hklog4 : 0 ≤ k + Real.log 4 := hW0.trans hW
-  have hsq : xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 ≤ (k + Real.log 4) ^ 2 :=
+  have hsq : xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) ≤ (k + Real.log 4) ^ (2 : ℕ) :=
     (sq_le_sq₀ hW0 hklog4).2 hW
   have hwidth : 0 ≤ k - m := sub_nonneg.mpr hmk
   have hsource :=
@@ -114,8 +114,8 @@ theorem natCast_mul_tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude_le_mertensA
       P hA hactive N hN
   calc
     _ ≤ (2 * A / Real.pi) * (N : ℝ) * (k - m) *
-        xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := hsource
-    _ ≤ (2 * A / Real.pi) * (N : ℝ) * (k - m) * (k + Real.log 4) ^ 2 := by
+        xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := hsource
+    _ ≤ (2 * A / Real.pi) * (N : ℝ) * (k - m) * (k + Real.log 4) ^ (2 : ℕ) := by
       gcongr
 
 end

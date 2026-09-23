@@ -352,7 +352,7 @@ theorem exists_eps_norm_logDeriv_sub_le {c : ℂ} {t R : ℝ} (ht : 0 < t) (htR 
   set M' : ℝ := ‖deriv f ζ₂‖ with hM'def
   have hM : 0 ≤ M := norm_nonneg _
   have hM' : 0 ≤ M' := norm_nonneg _
-  set C : ℝ := 2 * (M / r + M') / δ ^ 2 with hCdef
+  set C : ℝ := 2 * (M / r + M') / δ ^ (2 : ℕ) with hCdef
   have hC : 0 ≤ C := by
     rw [hCdef]
     positivity
@@ -421,13 +421,13 @@ theorem exists_eps_norm_logDeriv_sub_le {c : ℂ} {t R : ℝ} (ht : 0 < t) (htR 
       exact hclζ
     have h3 : (ε / r) * M = (M / r) * ε := by ring
     linarith
-  have hden : δ ^ 2 / 2 ≤ ‖h ζ‖ * ‖f ζ‖ := by
+  have hden : δ ^ (2 : ℕ) / 2 ≤ ‖h ζ‖ * ‖f ζ‖ := by
     have : (δ / 2) * δ ≤ ‖h ζ‖ * ‖f ζ‖ :=
       mul_le_mul hhζ hfζ (le_of_lt hδ) (le_trans (by positivity) hhζ)
     nlinarith
   have hdenpos : 0 < ‖h ζ‖ * ‖f ζ‖ := by nlinarith
   rw [div_le_iff₀ hdenpos]
-  have hstep : (M / r + M') * ε ≤ η * (δ ^ 2 / 2) := by
+  have hstep : (M / r + M') * ε ≤ η * (δ ^ (2 : ℕ) / 2) := by
     have hCε : C * ε ≤ η := by
       have h1 : ε * (C + 1) ≤ η := by
         rw [hεdef]
@@ -435,14 +435,14 @@ theorem exists_eps_norm_logDeriv_sub_le {c : ℂ} {t R : ℝ} (ht : 0 < t) (htR 
               mul_le_mul_of_nonneg_right (min_le_right _ _) (by positivity)
           _ = η := by field_simp
       nlinarith
-    have h2 : (M / r + M') = C * (δ ^ 2 / 2) := by
+    have h2 : (M / r + M') = C * (δ ^ (2 : ℕ) / 2) := by
       rw [hCdef]
       field_simp
     rw [h2]
-    calc C * (δ ^ 2 / 2) * ε = (C * ε) * (δ ^ 2 / 2) := by ring
-      _ ≤ η * (δ ^ 2 / 2) := mul_le_mul_of_nonneg_right hCε (by positivity)
+    calc C * (δ ^ (2 : ℕ) / 2) * ε = (C * ε) * (δ ^ (2 : ℕ) / 2) := by ring
+      _ ≤ η * (δ ^ (2 : ℕ) / 2) := mul_le_mul_of_nonneg_right hCε (by positivity)
   calc ‖(deriv h ζ - deriv f ζ) * f ζ + deriv f ζ * (f ζ - h ζ)‖ ≤ (M / r + M') * ε := hnum
-    _ ≤ η * (δ ^ 2 / 2) := hstep
+    _ ≤ η * (δ ^ (2 : ℕ) / 2) := hstep
     _ ≤ η * (‖h ζ‖ * ‖f ζ‖) := mul_le_mul_of_nonneg_left hden hη.le
 
 /-- **The zero count is locally constant.**  A function holomorphic on a neighbourhood of a closed

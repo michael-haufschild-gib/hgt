@@ -25,7 +25,7 @@ noncomputable section
 density. -/
 theorem thetaCuspFirstAtomBornWittenDensity_eq_gibbsWard
     {x : ℝ} (hx : 0 ≤ x) :
-    thetaCuspBornWittenAmplitude 1 x ^ 2 =
+    thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ) =
       -thetaCuspLiouvilleGibbsAtom 1 x -
         2 * deriv (thetaCuspLiouvilleGibbsAtom 1) x := by
   have hsource := thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq
@@ -50,10 +50,10 @@ theorem thetaCuspBornWittenRadialPowerMoment_eq_singleGibbs (m : ℕ) :
   have hf : IntegrableOn f (Ioi 0) := by
     simpa only [f, b, thetaCuspLiouvilleGibbsAtom] using
       integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-        (m + 2) (X ^ 2) (n := 1) (by norm_num)
+        (m + 2) (X ^ (2 : ℕ)) (n := 1) (by norm_num)
   have hg : IntegrableOn g (Ioi 0) := by
     have h := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-      (m + 2) (thetaCuspLogDerivativeStep (X ^ 2)) (n := 1) (by norm_num)
+      (m + 2) (thetaCuspLogDerivativeStep (X ^ (2 : ℕ))) (n := 1) (by norm_num)
     apply h.congr
     filter_upwards [] with x
     simp only [g, db]
@@ -134,21 +134,21 @@ theorem thetaCuspFirstRadialQuadraticSteinCoupling_eq_singleGibbs :
   rw [thetaCuspFirstRadialQuadraticSteinCoupling]
   have hsplit := integral_sub h2 (h3.const_mul (1 / 2 : ℝ))
   change (∫ x : ℝ in Ioi 0,
-      x ^ 2 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 -
+      x ^ (2 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ) -
         (1 / 2 : ℝ) *
-          (x ^ 3 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2)) =
+          (x ^ (3 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ))) =
       (∫ x : ℝ in Ioi 0,
-        x ^ 2 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) -
+        x ^ (2 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ)) -
       ∫ x : ℝ in Ioi 0,
         (1 / 2 : ℝ) *
-          (x ^ 3 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) at hsplit
+          (x ^ (3 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ)) at hsplit
   rw [show (fun x : ℝ =>
-      (x ^ 2 - x ^ 3 / 2) *
-        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) =
+      (x ^ (2 : ℕ) - x ^ (3 : ℕ) / 2) *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ)) =
       (fun x : ℝ =>
-        x ^ 2 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 -
+        x ^ (2 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ) -
           (1 / 2 : ℝ) *
-            (x ^ 3 * thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2)) by
+            (x ^ (3 : ℕ) * thetaCuspBornWittenRadialAmplitude 1 1 x ^ (2 : ℕ))) by
       funext x
       ring,
     hsplit, integral_const_mul]
@@ -161,15 +161,15 @@ theorem thetaCuspFirstRadialQuadraticSteinCoupling_eq_singleGibbs :
 
 /-- The Morse--Fisher scalar certificate after eliminating all Born--Witten moments. -/
 def ThetaCuspFirstAtomSingleGibbsMorseCertificate : Prop :=
-  (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
+  (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
         (8 * thetaCuspLiouvilleGibbsMoment 3 1 -
-          thetaCuspLiouvilleGibbsMoment 4 1) ^ 2 *
+          thetaCuspLiouvilleGibbsMoment 4 1) ^ (2 : ℕ) *
           thetaCuspFirstRadialQuadraticMorseSingleGibbsUpperValue ≤
     9 * (4 * thetaCuspLiouvilleGibbsMoment 1 1 -
           thetaCuspLiouvilleGibbsMoment 2 1) *
       (8 * thetaCuspLiouvilleGibbsMoment 3 1 -
         6 * thetaCuspLiouvilleGibbsMoment 4 1 +
-          (1 / 2 : ℝ) * thetaCuspLiouvilleGibbsMoment 5 1) ^ 2
+          (1 / 2 : ℝ) * thetaCuspLiouvilleGibbsMoment 5 1) ^ (2 : ℕ)
 
 theorem thetaCuspFirstAtomSingleGibbsMorseCertificate_iff :
     ThetaCuspFirstAtomSingleGibbsMorseCertificate ↔
@@ -200,7 +200,7 @@ def ThetaCuspFirstAtomSingleGibbsRelaxedCertificate : Prop :=
         (8 * thetaCuspLiouvilleGibbsMoment 3 1 -
           thetaCuspLiouvilleGibbsMoment 4 1)) ≤
     45 * (4 * thetaCuspLiouvilleGibbsMoment 1 1 -
-      thetaCuspLiouvilleGibbsMoment 2 1) ^ 2
+      thetaCuspLiouvilleGibbsMoment 2 1) ^ (2 : ℕ)
 
 theorem thetaCuspFirstAtomSingleGibbsRelaxedCertificate_iff :
     ThetaCuspFirstAtomSingleGibbsRelaxedCertificate ↔
@@ -208,7 +208,7 @@ theorem thetaCuspFirstAtomSingleGibbsRelaxedCertificate_iff :
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2 := by
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ) := by
   rw [ThetaCuspFirstAtomSingleGibbsRelaxedCertificate,
     thetaCuspBornWittenRadialRawMoment_zero_eq_firstAtomWardMoment 0,
     thetaCuspBornWittenRadialRawMoment_zero_eq_firstAtomWardMoment 1,
@@ -228,7 +228,7 @@ theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_iff :
             thetaCuspBornWittenRadialRawMoment 0 0 1) *
             ((3005 / 2997 : ℝ) *
               thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-          45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2 := by
+          45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ) := by
   rw [ThetaCuspFirstAtomSingleGibbsLowDegreeCertificate,
     thetaCuspFirstAtomSingleGibbsMorseCertificate_iff,
     thetaCuspFirstAtomSingleGibbsRelaxedCertificate_iff]
@@ -252,7 +252,7 @@ def ThetaCuspFirstAtomSingleGibbsCertificateMaster : Prop :=
             thetaCuspBornWittenRadialRawMoment 0 0 1) *
             ((3005 / 2997 : ℝ) *
               thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-          45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+          45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
   (ThetaCuspFirstAtomSingleGibbsLowDegreeCertificate →
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re)
 

@@ -77,7 +77,7 @@ theorem xiCompletedDensityReflectionRelationAt_all (rho : XiDivisorSupport) :
   calc
     thetaCuspTailSecondDensityDeBrangesE (xiSpectralPointSupport rho) +
         thetaCuspTailSecondDensityDeBrangesESharp (xiSpectralPointSupport rho) =
-      4 * (xiSpectralPointSupport rho) ^ 2 *
+      4 * (xiSpectralPointSupport rho) ^ (2 : ℕ) *
         XiC (xiSpectralPointSupport rho) :=
       thetaCuspTailSecondDensityDeBrangesE_add_sharp
         (abs_im_xiSpectralPointSupport_lt_one rho)

@@ -9,10 +9,10 @@ set_option autoImplicit false
 
 /-- The literal scalar field at parameter `i*chi` has the original radial separation eigenvalue. -/
 theorem scalar_radialMomentum_equation (chi : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
-    hyperbolicLaplacian (scalar (Complex.I*chi)) z = -(1/4+chi^2)*scalar (Complex.I*chi) z := by
+    hyperbolicLaplacian (scalar (Complex.I*chi)) z = -(1/4+chi^(2 : ℕ))*scalar (Complex.I*chi) z := by
   have h := scalarCusp_hyperbolicLaplacian (Complex.I*chi) z hz
   change hyperbolicLaplacian (scalar (Complex.I*chi)) z =
-    ((Complex.I*chi)^2-1/4)*scalar (Complex.I*chi) z at h
+    ((Complex.I*chi)^(2 : ℕ)-1/4)*scalar (Complex.I*chi) z at h
   rw [h,mul_pow,Complex.I_sq]
   ring
 
@@ -22,7 +22,7 @@ No spectral, endpoint, integral-admission, projection-value, or RH premise is su
 theorem allXi_fundamental_complete_angular_source_pairing (q r : XiZeroCopy) (branch : Bool) (a : ℂ) :
     let chi := thetaCuspHawkingTopologicalBlackHoleAngularMomentum (xiSpectralPoint r)
     (∀ z : Fin 2 → ℝ, 0 < z 1 →
-      hyperbolicLaplacian (scalar (Complex.I*chi)) z = -(1/4+chi^2)*scalar (Complex.I*chi) z) ∧
+      hyperbolicLaplacian (scalar (Complex.I*chi)) z = -(1/4+chi^(2 : ℕ))*scalar (Complex.I*chi) z) ∧
     ∀ w ∈ ({-Complex.I*thetaCuspHawkingTopologicalBlackHoleQNMPlus 0 (xiSpectralPoint r),
       -Complex.I*thetaCuspHawkingTopologicalBlackHoleQNMMinus 0 (xiSpectralPoint r)} : Set ℂ),
       (∀ t : ℝ, Integrable (fun z : UpperHalfPlane => scalar (Complex.I*chi) (coordinates z)*

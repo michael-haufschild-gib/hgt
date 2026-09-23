@@ -13,7 +13,7 @@ their transforms and draws the consequence.
 
 The single dilate is *not* annihilated.  Splitting the ray at `1` and using the corpus's full-ray identity
 `∫_0^∞ {θu} u^{-(ρ+1)} du = θ^ρ·(−ζ(ρ)/ρ)` together with the elementary head
-`∫_0^1 {θu} u^{-(ρ+1)} du = θ/(1−ρ)` gives
+`∫_0^(1 : ℕ) {θu} u^{-(ρ+1)} du = θ/(1−ρ)` gives
 
 `⟪bdDetector (1−ρ), fractDilate θ⟫ = θ^ρ·(−ζ(ρ)/ρ) − θ/(1−ρ)`,
 

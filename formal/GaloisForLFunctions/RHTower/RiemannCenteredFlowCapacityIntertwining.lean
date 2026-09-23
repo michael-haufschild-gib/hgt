@@ -32,7 +32,7 @@ def xiCenteredFlowOrderCapacity
     ‖iteratedDeriv r
       (cayleyPoleResidueMode
         ((analyticOrderAt xi (rho : ℂ)).toNat : ℂ) 1 (rho : ℂ))
-      (x : ℂ)‖ ^ 2
+      (x : ℂ)‖ ^ (2 : ℕ)
 
 /-- Complete derivative-order capacity of one transported Xi residue. -/
 def xiCenteredFlowRawCapacity
@@ -41,7 +41,7 @@ def xiCenteredFlowRawCapacity
 
 /-- Squared multiplicity mass retained by the complete order packet. -/
 def xiCenteredFlowMultiplicityMass (rho : XiDivisorSupport) : ℝ :=
-  ‖((analyticOrderAt xi (rho : ℂ)).toNat : ℂ)‖ ^ 2
+  ‖((analyticOrderAt xi (rho : ℂ)).toNat : ℂ)‖ ^ (2 : ℕ)
 
 /-- Prime-tail entropy countercharacter of the raw centered-flow capacity. -/
 def xiCenteredFlowSourceCountercharacter

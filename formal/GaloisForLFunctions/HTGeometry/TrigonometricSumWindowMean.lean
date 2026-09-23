@@ -130,7 +130,7 @@ def pairTerm (w : ι → ℂ) (γ : ι → ℝ) (q q' : ι) (x : ℝ) : ℝ :=
     + (w q * starRingEnd ℂ (w q') * cexp (I * (((γ q : ℂ) - γ q') * x))).re) / 2
 
 theorem re_trigSum_sq (F : Finset ι) (w : ι → ℂ) (γ : ι → ℝ) (x : ℝ) :
-    (trigSum F w γ x).re ^ 2 = ∑ q ∈ F, ∑ q' ∈ F, pairTerm w γ q q' x := by
+    (trigSum F w γ x).re ^ (2 : ℕ) = ∑ q ∈ F, ∑ q' ∈ F, pairTerm w γ q q' x := by
   unfold trigSum
   rw [sq, Complex.re_sum, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun q' _ => ?_
@@ -221,7 +221,7 @@ theorem pairMain_zero_right (w : ι → ℂ) (γ : ι → ℝ) (q q' : ι) (h : 
 
 /-- With a nonzero frequency the self term is exactly `‖w q‖²`. -/
 theorem pairMain_self_of_ne (w : ι → ℂ) (γ : ι → ℝ) (q : ι) (hγ : γ q ≠ 0) :
-    pairMain w γ q q = ‖w q‖ ^ 2 := by
+    pairMain w γ q q = ‖w q‖ ^ (2 : ℕ) := by
   unfold pairMain
   have h : γ q + γ q ≠ 0 := by intro h; apply hγ; linarith
   rw [if_neg h, if_pos rfl, Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -229,7 +229,7 @@ theorem pairMain_self_of_ne (w : ι → ℂ) (γ : ι → ℝ) (q : ι) (hγ : �
 
 theorem pairMain_self_ge (w : ι → ℂ) (γ : ι → ℝ) (q : ι)
     (hopp : γ q + γ q = 0 → w q = starRingEnd ℂ (w q)) :
-    ‖w q‖ ^ 2 ≤ pairMain w γ q q := by
+    ‖w q‖ ^ (2 : ℕ) ≤ pairMain w γ q q := by
   unfold pairMain
   have h1 : 0 ≤ (if γ q + γ q = 0 then (w q * w q).re else 0) := by
     split_ifs with h
@@ -273,10 +273,10 @@ theorem integral_pairTerm_ge (w : ι → ℂ) (γ : ι → ℝ) (q q' : ι) (A �
 `O(1/ℓ)`.** -/
 theorem integral_re_trigSum_sq_ge (F : Finset ι) (w : ι → ℂ) (γ : ι → ℝ)
     (hnn : ∀ q ∈ F, ∀ q' ∈ F, 0 ≤ pairMain w γ q q')
-    (hself : ∀ q ∈ F, ‖w q‖ ^ 2 ≤ pairMain w γ q q) (A ℓ : ℝ) (hℓ : 0 ≤ ℓ) :
-    (∑ q ∈ F, ‖w q‖ ^ 2) * ℓ / 2 - ∑ q ∈ F, ∑ q' ∈ F, pairError w γ q q'
-      ≤ ∫ x in A..A + ℓ, (trigSum F w γ x).re ^ 2 := by
-  have e : (fun x : ℝ => (trigSum F w γ x).re ^ 2) = fun x => ∑ q ∈ F, ∑ q' ∈ F, pairTerm w γ q q' x := by
+    (hself : ∀ q ∈ F, ‖w q‖ ^ (2 : ℕ) ≤ pairMain w γ q q) (A ℓ : ℝ) (hℓ : 0 ≤ ℓ) :
+    (∑ q ∈ F, ‖w q‖ ^ (2 : ℕ)) * ℓ / 2 - ∑ q ∈ F, ∑ q' ∈ F, pairError w γ q q'
+      ≤ ∫ x in A..A + ℓ, (trigSum F w γ x).re ^ (2 : ℕ) := by
+  have e : (fun x : ℝ => (trigSum F w γ x).re ^ (2 : ℕ)) = fun x => ∑ q ∈ F, ∑ q' ∈ F, pairTerm w γ q q' x := by
     funext x; exact re_trigSum_sq F w γ x
   rw [e, intervalIntegral.integral_finsetSum fun q _ =>
     (continuous_finsetSum _ fun q' _ => continuous_pairTerm w γ q q').intervalIntegrable _ _]
@@ -291,17 +291,17 @@ theorem integral_re_trigSum_sq_ge (F : Finset ι) (w : ι → ℂ) (γ : ι → 
   simp_rw [Finset.sum_sub_distrib]
   rw [sub_le_sub_iff_right]
   -- `Σ_q Σ_{q'} pairMain ≥ Σ_q pairMain q q ≥ Σ_q ‖w q‖²`
-  have hdiag : ∀ q ∈ F, ‖w q‖ ^ 2 * ℓ / 2 ≤ ∑ q' ∈ F, pairMain w γ q q' * ℓ / 2 := by
+  have hdiag : ∀ q ∈ F, ‖w q‖ ^ (2 : ℕ) * ℓ / 2 ≤ ∑ q' ∈ F, pairMain w γ q q' * ℓ / 2 := by
     intro q hq
-    have h1 : ‖w q‖ ^ 2 ≤ pairMain w γ q q := hself q hq
+    have h1 : ‖w q‖ ^ (2 : ℕ) ≤ pairMain w γ q q := hself q hq
     have h2 : pairMain w γ q q ≤ ∑ q' ∈ F, pairMain w γ q q' :=
       Finset.single_le_sum (fun q' hq' => hnn q hq q' hq') hq
     rw [← Finset.sum_div, ← Finset.sum_mul]
     have : 0 ≤ ℓ / 2 := by positivity
-    calc ‖w q‖ ^ 2 * ℓ / 2 = ‖w q‖ ^ 2 * (ℓ / 2) := by ring
+    calc ‖w q‖ ^ (2 : ℕ) * ℓ / 2 = ‖w q‖ ^ (2 : ℕ) * (ℓ / 2) := by ring
       _ ≤ (∑ q' ∈ F, pairMain w γ q q') * (ℓ / 2) := by gcongr; linarith
       _ = (∑ q' ∈ F, pairMain w γ q q') * ℓ / 2 := by ring
-  calc (∑ q ∈ F, ‖w q‖ ^ 2) * ℓ / 2 = ∑ q ∈ F, ‖w q‖ ^ 2 * ℓ / 2 := by
+  calc (∑ q ∈ F, ‖w q‖ ^ (2 : ℕ)) * ℓ / 2 = ∑ q ∈ F, ‖w q‖ ^ (2 : ℕ) * ℓ / 2 := by
         rw [Finset.sum_mul, Finset.sum_div]
     _ ≤ ∑ q ∈ F, ∑ q' ∈ F, pairMain w γ q q' * ℓ / 2 := Finset.sum_le_sum hdiag
 
@@ -311,7 +311,7 @@ theorem integral_re_trigSum_sq_ge (F : Finset ι) (w : ι → ℂ) (γ : ι → 
 mean square at least `m > Wε`, exceeds `(m − Wε)/(4W)` somewhere on the window. -/
 theorem exists_ge_of_integral_bounds {f : ℝ → ℝ} {A ℓ W ε m : ℝ} (hℓ : 0 < ℓ)
     (hf : ContinuousOn f (Icc A (A + ℓ))) (hW : ∀ x ∈ Icc A (A + ℓ), |f x| ≤ W)
-    (hmean : -(ε * ℓ) ≤ ∫ x in A..A + ℓ, f x) (hsq : m * ℓ ≤ ∫ x in A..A + ℓ, f x ^ 2)
+    (hmean : -(ε * ℓ) ≤ ∫ x in A..A + ℓ, f x) (hsq : m * ℓ ≤ ∫ x in A..A + ℓ, f x ^ (2 : ℕ))
     (hW0 : 0 < W) (hm : W * ε < m) :
     ∃ x ∈ Icc A (A + ℓ), (m - W * ε) / (4 * W) ≤ f x := by
   by_contra hcon
@@ -321,11 +321,11 @@ theorem exists_ge_of_integral_bounds {f : ℝ → ℝ} {A ℓ W ε m : ℝ} (h�
   have hAle : A ≤ A + ℓ := by linarith
   have hfi : IntervalIntegrable f MeasureTheory.volume A (A + ℓ) :=
     (hf.intervalIntegrable_of_Icc hAle)
-  have hf2 : IntervalIntegrable (fun x => f x ^ 2) MeasureTheory.volume A (A + ℓ) :=
+  have hf2 : IntervalIntegrable (fun x => f x ^ (2 : ℕ)) MeasureTheory.volume A (A + ℓ) :=
     ((hf.pow 2).intervalIntegrable_of_Icc hAle)
   have hg : IntervalIntegrable (fun x => W * (2 * s - f x)) MeasureTheory.volume A (A + ℓ) :=
     ((continuousOn_const.sub hf).const_smul W |>.intervalIntegrable_of_Icc hAle)
-  have hpt : ∀ x ∈ Icc A (A + ℓ), f x ^ 2 ≤ W * (2 * s - f x) := by
+  have hpt : ∀ x ∈ Icc A (A + ℓ), f x ^ (2 : ℕ) ≤ W * (2 * s - f x) := by
     intro x hx
     have h1 := hW x hx
     have h2 := hcon x hx

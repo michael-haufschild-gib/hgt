@@ -127,10 +127,10 @@ theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {m : ℕ} (
             * jetSubstitution R hR w
           - substitutionDeriv R * (jetRatio (m + 1) : JetField C Unit)
           - substitutionShiftRatio R (m + 1)) * h2
-      + (-(substitutionDeriv R ^ 2
+      + (-(substitutionDeriv R ^ (2 : ℕ)
           * jetSubstitution R hR (jetRatio 2 : JetField C Unit))) * hmz
       + substitutionDeriv R * hsucc
-      - (substitutionDeriv R ^ 3 * substitutionDeriv R ^ m) * hsplit
+      - (substitutionDeriv R ^ (3 : ℕ) * substitutionDeriv R ^ m) * hsplit
 
 end
 

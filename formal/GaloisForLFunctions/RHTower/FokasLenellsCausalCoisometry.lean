@@ -16,7 +16,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalCoisometryInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Pairing against actual lower Hardy data removes the signed negative Cauchy projection. -/
 theorem inner_negativeCauchy_lower (y : SoninL2) (u : hardyL2ᗮ) :

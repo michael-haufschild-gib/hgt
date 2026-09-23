@@ -68,8 +68,8 @@ theorem exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le_carrier
       0 < w → 1 ≤ 2 * w → |soninScaledPacketMean m δ (2 * Real.pi * w)| ≤ 1 →
         ‖evenFourierLogShellChannel a r n
             (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ≤
-          Real.sqrt (max |Real.log a| |Real.log (max a (r * (2 * w)))| ^ 2 *
-              ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 +
+          Real.sqrt (max |Real.log a| |Real.log (max a (r * (2 * w)))| ^ (2 : ℕ) *
+              ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) +
             8 * K / (((2 * N : ℝ) - 1) * (1 - (r ^ (2 * N - 2))⁻¹)) *
               ((δ * (2 * w)) ^ (2 * N - 2))⁻¹) := by
   obtain ⟨K, hK0, hK⟩ :=

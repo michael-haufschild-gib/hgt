@@ -74,8 +74,8 @@ theorem tendsto_kgAdiabaticEnergy_band (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W 
     intro R
     rw [kgLowPassOp_kgFreqInvOp]
   have hstate : Tendsto (fun R : ℝ =>
-      ‖kgFieldStateT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2) atTop
-      (𝓝 (‖kgFieldStateT W g y t‖ ^ 2)) :=
+      ‖kgFieldStateT (kgBandOpT W R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)) atTop
+      (𝓝 (‖kgFieldStateT W g y t‖ ^ (2 : ℕ))) :=
     ((tendsto_kgFieldStateT_band hb0 hWb hWs g y t).norm).pow 2
   have hpot : Tendsto (fun R : ℝ => RCLike.re (inner ℂ (kgBandOpT W R t
         (kgFieldMildT (kgBandOpT W R) (kgFreqInvOp (kgLowPassOp R g)) (kgLowPassOp R y) t))
@@ -98,7 +98,7 @@ theorem tendsto_integral_work_band (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖
         (kgFieldMildT (kgBandOpT W R) (kgLowPassOp R x) (kgLowPassOp R y) s))) atTop
       (𝓝 (∫ s in (0 : ℝ)..t, RCLike.re (inner ℂ (Wd s (kgFieldMildT W x y s))
         (kgFieldMildT W x y s)))) := by
-  set K : ℝ := L * ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ 2 with hK
+  set K : ℝ := L * ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ (2 : ℕ) with hK
   have hK0 : (0 : ℝ) ≤ K := by rw [hK]; positivity
   have hbound : IntervalIntegrable (fun _ : ℝ => K) volume 0 t := intervalIntegrable_const
   have hmeas : ∀ R : ℝ, AEStronglyMeasurable
@@ -143,12 +143,12 @@ theorem tendsto_integral_work_band (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖
       (kgBandOpT Wd R s).le_of_opNorm_le (norm_kgBandOpT_le hL0 hVb R s) _
     have hM0 : (0 : ℝ) ≤ (‖x‖ + ‖y‖) * Real.exp (b * |t|) := by positivity
     have hfin : ‖kgBandOpT Wd R s u‖ * ‖u‖ ≤ K := by
-      have hsq : ‖u‖ * ‖u‖ ≤ ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ 2 := by
+      have hsq : ‖u‖ * ‖u‖ ≤ ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ (2 : ℕ) := by
         nlinarith [norm_nonneg u, h7]
       calc ‖kgBandOpT Wd R s u‖ * ‖u‖ ≤ (L * ‖u‖) * ‖u‖ :=
             mul_le_mul_of_nonneg_right hop (norm_nonneg _)
         _ = L * (‖u‖ * ‖u‖) := by ring
-        _ ≤ L * ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ 2 :=
+        _ ≤ L * ((‖x‖ + ‖y‖) * Real.exp (b * |t|)) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left hsq hL0
     exact hcs.trans hfin
   have hlim : ∀ᵐ s : ℝ, s ∈ Set.uIoc 0 t →

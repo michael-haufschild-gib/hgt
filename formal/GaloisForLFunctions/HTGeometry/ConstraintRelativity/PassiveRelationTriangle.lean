@@ -89,7 +89,7 @@ noncomputable def omega (T : PassiveRelationTriangle H₀ H₁ H₂) (x : H₀) 
 
 /-- Total relation-leak energy. -/
 noncomputable def work (T : PassiveRelationTriangle H₀ H₁ H₂) (x : H₀) : ℝ :=
-  ‖T.leakA x‖ ^ 2 + ‖T.leakB x‖ ^ 2 + ‖T.leakC x‖ ^ 2
+  ‖T.leakA x‖ ^ (2 : ℕ) + ‖T.leakB x‖ ^ (2 : ℕ) + ‖T.leakC x‖ ^ (2 : ℕ)
 
 theorem selectedHolonomy_of_mem (T : PassiveRelationTriangle H₀ H₁ H₂)
     {x : H₀} (hx : x ∈ T.L₀) : T.selectedHolonomy x = T.cycleOutput x := by
@@ -120,7 +120,7 @@ theorem omega_eq_transported_leaks (T : PassiveRelationTriangle H₀ H₁ H₂)
 /-- **Card `(3.2)`.** Three Pythagorean losses telescope to selected-cycle contraction. -/
 theorem work_eq_norm_sq_sub_norm_sq_holonomy
     (T : PassiveRelationTriangle H₀ H₁ H₂) {x : H₀} (hx : x ∈ T.L₀) :
-    T.work x = ‖x‖ ^ 2 - ‖T.selectedHolonomy x‖ ^ 2 := by
+    T.work x = ‖x‖ ^ (2 : ℕ) - ‖T.selectedHolonomy x‖ ^ (2 : ℕ) := by
   letI := T.projectable₀
   letI := T.projectable₁
   letI := T.projectable₂
@@ -141,7 +141,7 @@ theorem work_eq_norm_sq_sub_norm_sq_holonomy
 /-- **Card `(3.3)`.** Work is determined by contraction against the oriented holonomy defect. -/
 theorem work_eq_two_re_inner_omega_sub_norm_sq
     (T : PassiveRelationTriangle H₀ H₁ H₂) {x : H₀} (hx : x ∈ T.L₀) :
-    T.work x = 2 * RCLike.re (inner ℂ x (T.omega x)) - ‖T.omega x‖ ^ 2 := by
+    T.work x = 2 * RCLike.re (inner ℂ x (T.omega x)) - ‖T.omega x‖ ^ (2 : ℕ) := by
   have henergy := T.work_eq_norm_sq_sub_norm_sq_holonomy hx
   have hhol : T.selectedHolonomy x = x - T.omega x := by
     simp [omega]
@@ -164,15 +164,15 @@ theorem norm_omega_le_sum_leaks (T : PassiveRelationTriangle H₀ H₁ H₂)
 /-- **Card `(3.4)`.** Universal three-port bound `‖Ωx‖² ≤ 3W(x)`. -/
 theorem norm_omega_sq_le_three_mul_work
     (T : PassiveRelationTriangle H₀ H₁ H₂) {x : H₀} (hx : x ∈ T.L₀) :
-    ‖T.omega x‖ ^ 2 ≤ 3 * T.work x := by
+    ‖T.omega x‖ ^ (2 : ℕ) ≤ 3 * T.work x := by
   have hnorm := T.norm_omega_le_sum_leaks hx
   have hsum_nonneg :
       0 ≤ ‖T.leakA x‖ + ‖T.leakB x‖ + ‖T.leakC x‖ :=
     add_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _)) (norm_nonneg _)
   have hsquare := (sq_le_sq₀ (norm_nonneg (T.omega x)) hsum_nonneg).2 hnorm
   have hthree :
-      (‖T.leakA x‖ + ‖T.leakB x‖ + ‖T.leakC x‖) ^ 2 ≤
-        3 * (‖T.leakA x‖ ^ 2 + ‖T.leakB x‖ ^ 2 + ‖T.leakC x‖ ^ 2) := by
+      (‖T.leakA x‖ + ‖T.leakB x‖ + ‖T.leakC x‖) ^ (2 : ℕ) ≤
+        3 * (‖T.leakA x‖ ^ (2 : ℕ) + ‖T.leakB x‖ ^ (2 : ℕ) + ‖T.leakC x‖ ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (‖T.leakA x‖ - ‖T.leakB x‖),
       sq_nonneg (‖T.leakB x‖ - ‖T.leakC x‖),
       sq_nonneg (‖T.leakC x‖ - ‖T.leakA x‖)]
@@ -188,15 +188,15 @@ theorem selectedHolonomy_eq_iff_leaks_eq_zero
   · intro hflat
     have hwork := T.work_eq_norm_sq_sub_norm_sq_holonomy hx
     rw [hflat, sub_self] at hwork
-    have ha : ‖T.leakA x‖ ^ 2 = 0 := by
+    have ha : ‖T.leakA x‖ ^ (2 : ℕ) = 0 := by
       dsimp [work] at hwork
       nlinarith [sq_nonneg ‖T.leakA x‖, sq_nonneg ‖T.leakB x‖,
         sq_nonneg ‖T.leakC x‖]
-    have hb : ‖T.leakB x‖ ^ 2 = 0 := by
+    have hb : ‖T.leakB x‖ ^ (2 : ℕ) = 0 := by
       dsimp [work] at hwork
       nlinarith [sq_nonneg ‖T.leakA x‖, sq_nonneg ‖T.leakB x‖,
         sq_nonneg ‖T.leakC x‖]
-    have hc : ‖T.leakC x‖ ^ 2 = 0 := by
+    have hc : ‖T.leakC x‖ ^ (2 : ℕ) = 0 := by
       dsimp [work] at hwork
       nlinarith [sq_nonneg ‖T.leakA x‖, sq_nonneg ‖T.leakB x‖,
         sq_nonneg ‖T.leakC x‖]

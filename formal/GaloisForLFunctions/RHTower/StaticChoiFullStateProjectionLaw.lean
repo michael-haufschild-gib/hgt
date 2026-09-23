@@ -43,9 +43,9 @@ theorem norm_diagonalDensityRestriction_le (d : ℕ)
       exact congrArg (fun x ↦ x.1.1.val) h
     · apply Fin.ext
       exact congrArg (fun x ↦ x.2.1.val) h
-  change (∑ ij, ‖ρ (f ij)‖ ^ 2) ≤ ∑ pq, ‖ρ pq‖ ^ 2
+  change (∑ ij, ‖ρ (f ij)‖ ^ (2 : ℕ)) ≤ ∑ pq, ‖ρ pq‖ ^ (2 : ℕ)
   rw [← Finset.sum_image (s := Finset.univ) (g := f)
-    (f := fun pq ↦ ‖ρ pq‖ ^ 2) hf.injOn]
+    (f := fun pq ↦ ‖ρ pq‖ ^ (2 : ℕ)) hf.injOn]
   exact Finset.sum_le_univ_sum_of_nonneg fun _ ↦ sq_nonneg _
 
 theorem diagonalDensityRestriction_sub (d : ℕ)
@@ -112,7 +112,7 @@ theorem maximallyProjective_fullChoiCircuitTargets_syndetic
     (hentropy :
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^
               ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : PaddedCircuitWord gate s,

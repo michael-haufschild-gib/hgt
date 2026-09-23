@@ -186,8 +186,8 @@ theorem re_one_sub_div_one_add_pos {w : ℂ} (hw : ‖w‖ < 1) :
     rw [Complex.normSq_eq_norm_sq]
     have := norm_pos_iff.mpr hne
     positivity
-  have hlt : w.re ^ 2 + w.im ^ 2 < 1 := by
-    have hsq : ‖w‖ ^ 2 < 1 := by nlinarith [norm_nonneg w]
+  have hlt : w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) < 1 := by
+    have hsq : ‖w‖ ^ (2 : ℕ) < 1 := by nlinarith [norm_nonneg w]
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply] at hsq
     nlinarith
   rw [Complex.div_re]

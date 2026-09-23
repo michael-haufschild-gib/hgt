@@ -157,16 +157,16 @@ theorem analyticAt_ellipticThetaLogKernel_of_norm_between {q x : ℂ}
   simpa [ellipticThetaLogKernel, ellipticThetaLogSummand] using! h
 
 theorem analyticAt_ellipticThetaLogRemainder_of_norm_sq_between {q x : ℂ}
-    (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ 2 < ‖x‖) (hx1 : ‖x‖ < 1) :
+    (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ (2 : ℕ) < ‖x‖) (hx1 : ‖x‖ < 1) :
     AnalyticAt ℂ (ellipticThetaLogRemainder q) x := by
   have han := analyticAt_ellipticThetaLogShift_of_norm_pow_between (m := 2) hq0
     (by simpa using hq2x) hx1
   have ha1 : ‖q‖ < 1 := by
     by_contra hcon
     push Not at hcon
-    have hle : (1 : ℝ) ≤ ‖q‖ ^ 2 := by
-      calc (1 : ℝ) = 1 ^ 2 := (one_pow 2).symm
-        _ ≤ ‖q‖ ^ 2 := pow_le_pow_left₀ zero_le_one hcon 2
+    have hle : (1 : ℝ) ≤ ‖q‖ ^ (2 : ℕ) := by
+      calc (1 : ℝ) = 1 ^ (2 : ℕ) := (one_pow 2).symm
+        _ ≤ ‖q‖ ^ (2 : ℕ) := pow_le_pow_left₀ zero_le_one hcon 2
     linarith
   have heq : (fun y : ℂ => ∑' k : ℕ,
       (ellipticGammaLogAtom (q ^ (k + 2) / y) -
@@ -183,7 +183,7 @@ theorem analyticAt_ellipticThetaLogRemainder_of_norm_sq_between {q x : ℂ}
   exact han
 
 theorem analyticAt_ellipticThetaLogKernel_of_norm_sq_between_of_ne {q x : ℂ}
-    (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ 2 < ‖x‖) (hx1 : ‖x‖ < 1) (hxq : x ≠ q) :
+    (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ (2 : ℕ) < ‖x‖) (hx1 : ‖x‖ < 1) (hxq : x ≠ q) :
     AnalyticAt ℂ (ellipticThetaLogKernel q) x := by
   have hx0 : x ≠ 0 := by
     exact norm_pos_iff.mp ((sq_pos_of_pos (norm_pos_iff.mpr hq0)).trans hq2x)
@@ -206,10 +206,10 @@ theorem analyticAt_ellipticThetaLogKernel_of_norm_sq_between_of_ne {q x : ℂ}
   rw [heq]
   exact hsing.add (analyticAt_ellipticThetaLogRemainder_of_norm_sq_between hq0 hq2x hx1)
 
-/-- On the wider fundamental annulus `|q|^2 < |x| < 1`, the constructed theta logarithmic kernel
+/-- On the wider fundamental annulus `|q|^(2 : ℕ) < |x| < 1`, the constructed theta logarithmic kernel
 is meromorphic, with the only possible pole at `x = q`. -/
 theorem meromorphicAt_ellipticThetaLogKernel_of_norm_sq_between
-    {q x : ℂ} (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ 2 < ‖x‖) (hx1 : ‖x‖ < 1) :
+    {q x : ℂ} (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ (2 : ℕ) < ‖x‖) (hx1 : ‖x‖ < 1) :
     MeromorphicAt (ellipticThetaLogKernel q) x := by
   by_cases hxq : x = q
   · subst x

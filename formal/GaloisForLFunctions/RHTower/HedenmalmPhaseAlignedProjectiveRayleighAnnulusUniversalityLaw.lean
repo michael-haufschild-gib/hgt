@@ -29,7 +29,7 @@ theorem thetaCuspRightLine_phaseAlignedProjectiveRayleighAnnulusUniversality
     (hcoercive : gap * ‖thetaCuspRightLineUnitTangent a ha -
         inner ℂ (thetaCuspRightLineUnitSource a ha)
           (thetaCuspRightLineUnitTangent a ha) •
-            thetaCuspRightLineUnitSource a ha‖ ^ 2 ≤
+            thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) ≤
       (T - (epsilon : ℂ) • ContinuousLinearMap.id ℂ
         (Lp (α := ℝ) ℂ 2 volume)).reApplyInnerSelf
         (thetaCuspRightLineUnitTangent a ha -
@@ -38,9 +38,9 @@ theorem thetaCuspRightLine_phaseAlignedProjectiveRayleighAnnulusUniversality
               thetaCuspRightLineUnitSource a ha)) :
     ∃ c : ℂ, ‖c‖ = 1 ∧
       0 < ‖thetaCuspRightLineUnitTangent a ha -
-        c • thetaCuspRightLineUnitSource a ha‖ ^ 2 ∧
+        c • thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) ∧
       ‖thetaCuspRightLineUnitTangent a ha -
-          c • thetaCuspRightLineUnitSource a ha‖ ^ 2 ≤
+          c • thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) ≤
         2 * ((T.rayleighQuotient (thetaCuspRightLineUnitTangent a ha) -
           epsilon) / gap) ∧
       epsilon < T.rayleighQuotient
@@ -75,11 +75,11 @@ theorem thetaCuspRightLine_phaseAlignedProjectiveRayleighAnnulusUniversality
     exact one_ne_zero hcoeff.2
   have hpositive :
       0 < ‖thetaCuspRightLineUnitTangent a ha -
-        c • thetaCuspRightLineUnitSource a ha‖ ^ 2 :=
+        c • thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr hne)
   have hupper :
       ‖thetaCuspRightLineUnitTangent a ha -
-          c • thetaCuspRightLineUnitSource a ha‖ ^ 2 ≤
+          c • thetaCuspRightLineUnitSource a ha‖ ^ (2 : ℕ) ≤
         2 * ((T.rayleighQuotient (thetaCuspRightLineUnitTangent a ha) -
           epsilon) / gap) :=
     hdistance.trans (mul_le_mul_of_nonneg_left hrayleigh.2.1 (by norm_num))

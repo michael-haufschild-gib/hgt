@@ -18,7 +18,7 @@ open Set
 
 /-- The separation ratio in the radial convention.  The corpus's angular action has eigenvalue
 `chi`, whereas the radial normal form writes that parameter as `-s c²`. -/
-def radialSeparationRatio (c chi : ℝ) : ℝ := -chi / c ^ 2
+def radialSeparationRatio (c chi : ℝ) : ℝ := -chi / c ^ (2 : ℕ)
 
 /-- A global eigenfunction of the angular prolate action satisfies the exterior radial prolate
 equation with `s = -chi/c²`. -/
@@ -26,8 +26,8 @@ theorem radialProlate_ode_of_prolateSLAction_eq
     {c chi : ℝ} (hc : c ≠ 0) {Phi : ℝ → ℝ}
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) :
     ∀ x : ℝ,
-      (x ^ 2 - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
-          - (radialSeparationRatio c chi * c ^ 2 - c ^ 2 * x ^ 2) * Phi x = 0 := by
+      (x ^ (2 : ℕ) - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
+          - (radialSeparationRatio c chi * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Phi x = 0 := by
   intro x
   have hx := heig x
   simp only [prolateSLAction, radialSeparationRatio] at hx ⊢
@@ -38,7 +38,7 @@ theorem radialProlate_ode_of_prolateSLAction_eq
 theorem two_mul_deriv_one_eq_of_prolateSLAction_eq
     {c chi : ℝ} {Phi : ℝ → ℝ}
     (heig : prolateSLAction c Phi 1 = chi * Phi 1) :
-    2 * deriv Phi 1 = -(chi + c ^ 2) * Phi 1 := by
+    2 * deriv Phi 1 = -(chi + c ^ (2 : ℕ)) * Phi 1 := by
   simp only [prolateSLAction] at heig
   norm_num at heig ⊢
   nlinarith
@@ -48,7 +48,7 @@ theorem two_mul_deriv_one_eq_radial
     {c chi : ℝ} (hc : c ≠ 0) {Phi : ℝ → ℝ}
     (heig : prolateSLAction c Phi 1 = chi * Phi 1) :
     2 * deriv Phi 1 =
-      (radialSeparationRatio c chi * c ^ 2 - c ^ 2) * Phi 1 := by
+      (radialSeparationRatio c chi * c ^ (2 : ℕ) - c ^ (2 : ℕ)) * Phi 1 := by
   rw [two_mul_deriv_one_eq_of_prolateSLAction_eq heig]
   dsimp [radialSeparationRatio]
   field_simp [hc]
@@ -63,21 +63,21 @@ theorem exists_global_even_radialProlate_of_signedMode
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi ∧
         Phi ≠ 0 ∧ Function.Even Phi ∧
         (∀ x : ℝ,
-          bandTransform (2 * Real.pi * a ^ 2) Phi x =
-            evenProlateSignedValue a n ^ 2 * Phi x) ∧
+          bandTransform (2 * Real.pi * a ^ (2 : ℕ)) Phi x =
+            evenProlateSignedValue a n ^ (2 : ℕ) * Phi x) ∧
         (∀ x : ℝ,
-          prolateSLAction (2 * Real.pi * a ^ 2) Phi x = chi * Phi x) ∧
-        s = radialSeparationRatio (2 * Real.pi * a ^ 2) chi ∧
+          prolateSLAction (2 * Real.pi * a ^ (2 : ℕ)) Phi x = chi * Phi x) ∧
+        s = radialSeparationRatio (2 * Real.pi * a ^ (2 : ℕ)) chi ∧
         0 ≤ s ∧
         2 * deriv Phi 1 =
-          (s * (2 * Real.pi * a ^ 2) ^ 2 - (2 * Real.pi * a ^ 2) ^ 2) * Phi 1 ∧
+          (s * (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) - (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ)) * Phi 1 ∧
         (∀ x : ℝ,
-          (x ^ 2 - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
-            - (s * (2 * Real.pi * a ^ 2) ^ 2
-                - (2 * Real.pi * a ^ 2) ^ 2 * x ^ 2) * Phi x = 0) := by
+          (x ^ (2 : ℕ) - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
+            - (s * (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ)
+                - (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) * x ^ (2 : ℕ)) * Phi x = 0) := by
   obtain ⟨Phi, chi, hsm, hne, heven, hband, heig⟩ :=
     exists_joint_even_prolate_band_eigen_of_signedMode ha n hvalue
-  let c : ℝ := 2 * Real.pi * a ^ 2
+  let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
   have hc : c ≠ 0 := by
     dsimp [c]
     positivity

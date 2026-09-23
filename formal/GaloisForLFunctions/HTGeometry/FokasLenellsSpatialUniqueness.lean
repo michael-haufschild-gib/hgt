@@ -17,8 +17,8 @@ noncomputable section
 
 def spatialOperator (q : SchwartzMap ℝ ℂ) (a : ℂ) (x : ℝ) :
     SpectralVector →L[ℝ] SpectralVector :=
-  pairOperator (I*(Complex.exp a)^2) (I*Complex.exp a*reflectedDerivative q x)
-    (I*Complex.exp a*deriv q x) (-I*(Complex.exp a)^2)
+  pairOperator (I*(Complex.exp a)^(2 : ℕ)) (I*Complex.exp a*reflectedDerivative q x)
+    (I*Complex.exp a*deriv q x) (-I*(Complex.exp a)^(2 : ℕ))
 
 theorem spatialOperator_eq_matrix (q : SchwartzMap ℝ ℂ) (a : ℂ) (x : ℝ) (v : SpectralVector) :
     spatialOperator q a x v =
@@ -28,7 +28,7 @@ theorem spatialOperator_eq_matrix (q : SchwartzMap ℝ ℂ) (a : ℂ) (x : ℝ) 
       reflectedDerivative_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
 
 def spatialOperatorBound (q : SchwartzMap ℝ ℂ) (a : ℂ) : ℝ :=
-  2*‖Complex.exp a‖^2 + ‖Complex.exp a‖*
+  2*‖Complex.exp a‖^(2 : ℕ) + ‖Complex.exp a‖*
     (‖(SchwartzMap.derivCLM ℂ ℂ q).toBoundedContinuousFunction‖ +
       ‖(reflectedDerivative q).toBoundedContinuousFunction‖)
 

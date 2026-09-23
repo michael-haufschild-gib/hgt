@@ -54,7 +54,7 @@ noncomputable def sourceCurrent (Hol : C → (E ≃ₗᵢ[𝕜] E)) (c : C → E
 
 /-- The affine precision energy `E(x) = ‖D x − c‖²`. -/
 noncomputable def holonomyEnergy (Hol : C → (E ≃ₗᵢ[𝕜] E)) (c : C → E) (x : E) : ℝ :=
-  ‖holonomyDefect Hol x - currentVector (𝕜 := 𝕜) c‖ ^ 2
+  ‖holonomyDefect Hol x - currentVector (𝕜 := 𝕜) c‖ ^ (2 : ℕ)
 
 omit [CompleteSpace E] in
 /-- Being exact is having zero residual. -/
@@ -202,11 +202,11 @@ theorem exists_almost_invariant_unit_sequence (Hol : C → (E ≃ₗᵢ[𝕜] E)
         rw [map_smul, smul_sub]
       rw [hcoord, norm_smul, norm_inv, RCLike.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
       have hle : ‖x n - Hol e (x n)‖ ≤ ‖holonomyDefect Hol (x n)‖ := by
-        have hcomp : ‖holonomyDefect Hol (x n)‖ ^ 2
-            = ∑ j : C, ‖holonomyDefect Hol (x n) j‖ ^ 2 := PiLp.norm_sq_eq_of_L2 _ _
-        have hterm : ‖x n - Hol e (x n)‖ ^ 2 ≤ ‖holonomyDefect Hol (x n)‖ ^ 2 := by
+        have hcomp : ‖holonomyDefect Hol (x n)‖ ^ (2 : ℕ)
+            = ∑ j : C, ‖holonomyDefect Hol (x n) j‖ ^ (2 : ℕ) := PiLp.norm_sq_eq_of_L2 _ _
+        have hterm : ‖x n - Hol e (x n)‖ ^ (2 : ℕ) ≤ ‖holonomyDefect Hol (x n)‖ ^ (2 : ℕ) := by
           rw [hcomp]
-          refine Finset.single_le_sum (f := fun j : C => ‖holonomyDefect Hol (x n) j‖ ^ 2)
+          refine Finset.single_le_sum (f := fun j : C => ‖holonomyDefect Hol (x n) j‖ ^ (2 : ℕ))
             (fun j _ => sq_nonneg _) (Finset.mem_univ e)
         nlinarith [norm_nonneg (x n - Hol e (x n)), norm_nonneg (holonomyDefect Hol (x n))]
       have hlt := hxlt n

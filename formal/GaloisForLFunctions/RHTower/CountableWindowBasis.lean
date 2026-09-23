@@ -92,10 +92,10 @@ theorem exists_isolating_ratRectangle {S : Set ℂ}
 
 /-- The off-seam width mass of a finite family of divisor atoms. -/
 def offSeamMass (m : ℂ → ℝ) (F : Finset ℂ) : ℝ :=
-  ∑ ρ ∈ F, m ρ * (ρ.re - 1 / 2) ^ 2
+  ∑ ρ ∈ F, m ρ * (ρ.re - 1 / 2) ^ (2 : ℕ)
 
 theorem offSeamMass_eq_zero_iff {m : ℂ → ℝ} {F : Finset ℂ} (hm : ∀ ρ ∈ F, 0 ≤ m ρ) :
-    offSeamMass m F = 0 ↔ ∀ ρ ∈ F, m ρ * (ρ.re - 1 / 2) ^ 2 = 0 := by
+    offSeamMass m F = 0 ↔ ∀ ρ ∈ F, m ρ * (ρ.re - 1 / 2) ^ (2 : ℕ) = 0 := by
   rw [offSeamMass, Finset.sum_eq_zero_iff_of_nonneg]
   intro ρ hρ
   exact mul_nonneg (hm ρ hρ) (sq_nonneg _)
@@ -105,9 +105,9 @@ every window is equivalent to its vanishing on the countable family of rational 
 boundary avoids the divisor. -/
 theorem offSeam_vanishes_iff_ratRectangles {S : Set ℂ} {m : ℂ → ℝ}
     (hdisc : ∀ z ∈ S, ∃ ε > 0, ∀ w ∈ S, dist w z < ε → w = z) :
-    (∀ ρ ∈ S, m ρ * (ρ.re - 1 / 2) ^ 2 = 0) ↔
+    (∀ ρ ∈ S, m ρ * (ρ.re - 1 / 2) ^ (2 : ℕ) = 0) ↔
       ∀ a b c d : ℚ, S ∩ frontier (ratRectangle a b c d) = ∅ →
-        ∀ ρ ∈ S ∩ ratRectangle a b c d, m ρ * (ρ.re - 1 / 2) ^ 2 = 0 := by
+        ∀ ρ ∈ S ∩ ratRectangle a b c d, m ρ * (ρ.re - 1 / 2) ^ (2 : ℕ) = 0 := by
   constructor
   · intro h a b c d _ ρ hρ
     exact h ρ hρ.1
@@ -121,12 +121,12 @@ theorem re_eq_half_of_ratRectangles {S : Set ℂ} {m : ℂ → ℝ}
     (hdisc : ∀ z ∈ S, ∃ ε > 0, ∀ w ∈ S, dist w z < ε → w = z)
     (hm : ∀ ρ ∈ S, 0 < m ρ)
     (h : ∀ a b c d : ℚ, S ∩ frontier (ratRectangle a b c d) = ∅ →
-      ∀ ρ ∈ S ∩ ratRectangle a b c d, m ρ * (ρ.re - 1 / 2) ^ 2 = 0) :
+      ∀ ρ ∈ S ∩ ratRectangle a b c d, m ρ * (ρ.re - 1 / 2) ^ (2 : ℕ) = 0) :
     ∀ ρ ∈ S, ρ.re = 1 / 2 := by
   intro ρ hρ
   have hzero := (offSeam_vanishes_iff_ratRectangles hdisc).mpr h ρ hρ
   have hmpos := hm ρ hρ
-  have hsq : (ρ.re - 1 / 2) ^ 2 = 0 := by
+  have hsq : (ρ.re - 1 / 2) ^ (2 : ℕ) = 0 := by
     rcases mul_eq_zero.mp hzero with hc | hc
     · exact absurd hc (ne_of_gt hmpos)
     · exact hc

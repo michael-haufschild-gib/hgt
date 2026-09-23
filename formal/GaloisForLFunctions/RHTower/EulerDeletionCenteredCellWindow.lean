@@ -8,10 +8,10 @@ A bounded centered residue primitive controls every finite spatial window
 of the literal cell numerator. Cauchy--Schwarz against the complete energy
 series then gives a lower certificate without changing its physical weights.
 Choosing the window from the actual coefficient moment gives the closed bound
-`|mean a N|^3 ≤ 8 * moment a N * ‖source a N‖^2`.
+`|mean a N|^(3 : ℕ) ≤ 8 * moment a N * ‖source a N‖^(2 : ℕ)`.
 
 For the prime-power boundary forcing this is the analytic step in its
-`N / log(N)^2` lower bound. The required arithmetic moment estimates and the
+`N / log(N)^(2 : ℕ)` lower bound. The required arithmetic moment estimates and the
 complete signed source ceiling are separate obligations.
 -/
 
@@ -138,17 +138,17 @@ theorem abs_window_sub_mean_le (a : ℕ → ℝ) (N T L : ℕ) :
 
 /-- A finite window tests the complete physical energy, with its original weights. -/
 theorem window_sq_le_source_energy (a : ℕ → ℝ) (N T L : ℕ) :
-    window a N (T+1) L ^ 2 ≤
-      (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^2*‖source a N‖^2 := by
-  let f : ℕ → ℝ := fun j => cell a N (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2))
-  have hf : HasSum f (‖source a N‖^2) := hasSum_source_energy a N
-  have hs : (∑ i ∈ range L, f (T+i)) ≤ ‖source a N‖^2 := by
+    window a N (T+1) L ^ (2 : ℕ) ≤
+      (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^(2 : ℕ)*‖source a N‖^(2 : ℕ) := by
+  let f : ℕ → ℝ := fun j => cell a N (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2))
+  have hf : HasSum f (‖source a N‖^(2 : ℕ)) := hasSum_source_energy a N
+  have hs : (∑ i ∈ range L, f (T+i)) ≤ ‖source a N‖^(2 : ℕ) := by
     have h := sum_le_hasSum ((range L).image (fun i => T+i))
       (fun j _ => by dsimp [f]; positivity) hf
     rw [Finset.sum_image (by intro i hi j hj hij; dsimp only at hij; omega)] at h
     exact h
   have hterm (i : ℕ) (hi : i ∈ range L) :
-      cell a N (T+1+i)^2 ≤ ((T : ℝ)+(L : ℝ)+1)^2*f (T+i) := by
+      cell a N (T+1+i)^(2 : ℕ) ≤ ((T : ℝ)+(L : ℝ)+1)^(2 : ℕ)*f (T+i) := by
     have hiL : (i : ℝ)+1 ≤ (L : ℝ) := by
       exact_mod_cast (Nat.succ_le_of_lt (mem_range.mp hi))
     have hT : 0 ≤ (T : ℝ) := Nat.cast_nonneg _
@@ -161,15 +161,15 @@ theorem window_sq_le_source_energy (a : ℕ → ℝ) (N T L : ℕ) :
     push_cast
     nlinarith
   calc
-    window a N (T+1) L ^ 2 ≤
-        (L : ℝ)*(∑ i ∈ range L, cell a N (T+1+i)^2) := by
+    window a N (T+1) L ^ (2 : ℕ) ≤
+        (L : ℝ)*(∑ i ∈ range L, cell a N (T+1+i)^(2 : ℕ)) := by
       simpa only [window, card_range] using
         (sq_sum_le_card_mul_sum_sq (s := range L) (f := fun i => cell a N (T+1+i)))
-    _ ≤ (L : ℝ)*(((T : ℝ)+(L : ℝ)+1)^2*(∑ i ∈ range L, f (T+i))) := by
+    _ ≤ (L : ℝ)*(((T : ℝ)+(L : ℝ)+1)^(2 : ℕ)*(∑ i ∈ range L, f (T+i))) := by
       apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
       rw [Finset.mul_sum]
       exact Finset.sum_le_sum hterm
-    _ ≤ (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^2*‖source a N‖^2 := by
+    _ ≤ (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^(2 : ℕ)*‖source a N‖^(2 : ℕ) := by
       rw [← mul_assoc]
       exact mul_le_mul_of_nonneg_left hs (by positivity)
 
@@ -184,8 +184,8 @@ theorem mean_le_abs_window_add_moment (a : ℕ → ℝ) (N T L : ℕ) :
 
 /-- Closed finite-window lower certificate for the complete physical source energy. -/
 theorem mean_window_source_certificate (a : ℕ → ℝ) (N T L : ℕ) :
-    (max 0 ((L : ℝ)*|mean a N| - moment a N/8))^2 ≤
-      (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^2*‖source a N‖^2 := by
+    (max 0 ((L : ℝ)*|mean a N| - moment a N/8))^(2 : ℕ) ≤
+      (L : ℝ)*((T : ℝ)+(L : ℝ)+1)^(2 : ℕ)*‖source a N‖^(2 : ℕ) := by
   have hw := window_sq_le_source_energy a N T L
   have hm := mean_le_abs_window_add_moment a N (T+1) L
   have hb : max 0 ((L : ℝ)*|mean a N| - moment a N/8) ≤
@@ -213,7 +213,7 @@ theorem abs_mean_le_moment (a : ℕ → ℝ) (N : ℕ) :
 
 /-- A nonzero cell mean forces energy at a scale determined by the actual coefficient moment. -/
 theorem abs_mean_cube_le_moment_energy (a : ℕ → ℝ) (N : ℕ) :
-    |mean a N| ^ 3 ≤ 8*moment a N*‖source a N‖^2 := by
+    |mean a N| ^ (3 : ℕ) ≤ 8*moment a N*‖source a N‖^(2 : ℕ) := by
   have hsmall := abs_mean_le_moment a N
   have hR0 : 0 ≤ moment a N := by linarith [abs_nonneg (mean a N)]
   by_cases hm : mean a N = 0
@@ -234,30 +234,30 @@ theorem abs_mean_cube_le_moment_energy (a : ℕ → ℝ) (N : ℕ) :
     rw [he] at hlt
     linarith
   have hmean := mean_le_abs_window_add_moment a N 1 L
-  have hlow : ((L : ℝ)*|mean a N|/2)^2 ≤ window a N 1 L^2 := by
+  have hlow : ((L : ℝ)*|mean a N|/2)^(2 : ℕ) ≤ window a N 1 L^(2 : ℕ) := by
     have hb : (L : ℝ)*|mean a N|/2 ≤ |window a N 1 L| := by nlinarith
     have hn : 0 ≤ (L : ℝ)*|mean a N|/2 := by positivity
     nlinarith [sq_abs (window a N 1 L)]
-  have henergy : window a N 1 L^2 ≤ (L : ℝ)*((L : ℝ)+1)^2*‖source a N‖^2 := by
+  have henergy : window a N 1 L^(2 : ℕ) ≤ (L : ℝ)*((L : ℝ)+1)^(2 : ℕ)*‖source a N‖^(2 : ℕ) := by
     simpa only [Nat.zero_add, Nat.cast_zero, zero_add] using
       window_sq_le_source_energy a N 0 L
-  have hweight : ((L : ℝ)+1)^2 ≤ 4*(L : ℝ)^2 := by nlinarith
-  have hupper : (L : ℝ)*((L : ℝ)+1)^2*‖source a N‖^2 ≤
-      4*(L : ℝ)^3*‖source a N‖^2 := by
+  have hweight : ((L : ℝ)+1)^(2 : ℕ) ≤ 4*(L : ℝ)^(2 : ℕ) := by nlinarith
+  have hupper : (L : ℝ)*((L : ℝ)+1)^(2 : ℕ)*‖source a N‖^(2 : ℕ) ≤
+      4*(L : ℝ)^(3 : ℕ)*‖source a N‖^(2 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hweight
       (mul_nonneg hL0.le (sq_nonneg ‖source a N‖))
     nlinarith
-  have hc : (L : ℝ)^2*|mean a N| ^ 2 ≤
-      (L : ℝ)^2*(16*(L : ℝ)*‖source a N‖^2) := by
+  have hc : (L : ℝ)^(2 : ℕ)*|mean a N| ^ (2 : ℕ) ≤
+      (L : ℝ)^(2 : ℕ)*(16*(L : ℝ)*‖source a N‖^(2 : ℕ)) := by
     nlinarith [hlow.trans (henergy.trans hupper)]
   have hm2 := le_of_mul_le_mul_left hc (sq_pos_of_pos hL0)
   calc
-    |mean a N| ^ 3 = |mean a N| * |mean a N| ^ 2 := by ring
-    _ ≤ |mean a N| * (16*(L : ℝ)*‖source a N‖^2) :=
+    |mean a N| ^ (3 : ℕ) = |mean a N| * |mean a N| ^ (2 : ℕ) := by ring
+    _ ≤ |mean a N| * (16*(L : ℝ)*‖source a N‖^(2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hm2 hm0.le
-    _ = (16*‖source a N‖^2)*((L : ℝ)*|mean a N|) := by ring
-    _ ≤ (16*‖source a N‖^2)*(moment a N/2) :=
+    _ = (16*‖source a N‖^(2 : ℕ))*((L : ℝ)*|mean a N|) := by ring
+    _ ≤ (16*‖source a N‖^(2 : ℕ))*(moment a N/2) :=
       mul_le_mul_of_nonneg_left hLM (by positivity)
-    _ = 8*moment a N*‖source a N‖^2 := by ring
+    _ = 8*moment a N*‖source a N‖^(2 : ℕ) := by ring
 
 end RHTower.DeletionCellWindow

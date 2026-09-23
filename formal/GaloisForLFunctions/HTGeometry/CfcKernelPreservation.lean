@@ -23,10 +23,10 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private def kernelRegularizer (g : ℝ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  x ^ 2 / (1 + (n : ℝ) * g x ^ 2)
+  x ^ (2 : ℕ) / (1 + (n : ℝ) * g x ^ (2 : ℕ))
 
 private theorem kernelRegularizer_den_pos (g : ℝ → ℝ) (n : ℕ) (x : ℝ) :
-    0 < 1 + (n : ℝ) * g x ^ 2 := by positivity
+    0 < 1 + (n : ℝ) * g x ^ (2 : ℕ) := by positivity
 
 private theorem kernelRegularizer_continuousOn {K : Set ℝ} {g : ℝ → ℝ}
     (hg : ContinuousOn g K) (n : ℕ) : ContinuousOn (kernelRegularizer g n) K :=
@@ -46,10 +46,10 @@ private theorem kernelRegularizer_tendsto {g : ℝ → ℝ} {x : ℝ}
     Tendsto (fun n => kernelRegularizer g n x) atTop (𝓝 0) := by
   by_cases hg : g x = 0
   · simp [kernelRegularizer, hzero hg]
-  · have hs : 0 < g x ^ 2 := sq_pos_of_ne_zero hg
-    have hn : Tendsto (fun n : ℕ => (n : ℝ) * g x ^ 2) atTop atTop :=
+  · have hs : 0 < g x ^ (2 : ℕ) := sq_pos_of_ne_zero hg
+    have hn : Tendsto (fun n : ℕ => (n : ℝ) * g x ^ (2 : ℕ)) atTop atTop :=
       Tendsto.atTop_mul_const hs tendsto_natCast_atTop_atTop
-    have hd : Tendsto (fun n : ℕ => 1 + (n : ℝ) * g x ^ 2) atTop atTop := by
+    have hd : Tendsto (fun n : ℕ => 1 + (n : ℝ) * g x ^ (2 : ℕ)) atTop atTop := by
       exact tendsto_atTop_add_const_left atTop (1 : ℝ) hn
     exact Tendsto.div_atTop tendsto_const_nhds hd
 
@@ -78,13 +78,13 @@ theorem cfc_apply_eq_zero_imp_of_no_new_zeros
         (kernelRegularizer_uniform (spectrum.isCompact B) hg hzero)) ε hε
       filter_upwards [hu] with n hn x hx
       simpa only [dist_zero_left] using (hn x hx).le
-  have heq (n : ℕ) : (B ^ 2) v = cfc (kernelRegularizer g n) B v := by
-    let q : ℝ → ℝ := fun x => (n : ℝ) * x ^ 2 * g x / (1 + (n : ℝ) * g x ^ 2)
+  have heq (n : ℕ) : (B ^ (2 : ℕ)) v = cfc (kernelRegularizer g n) B v := by
+    let q : ℝ → ℝ := fun x => (n : ℝ) * x ^ (2 : ℕ) * g x / (1 + (n : ℝ) * g x ^ (2 : ℕ))
     have hq : ContinuousOn q (spectrum ℝ B) := by
       exact ((continuousOn_const.mul (continuousOn_id.pow 2)).mul hg).div
         (continuousOn_const.add (continuousOn_const.mul (hg.pow 2)))
         (fun x _ => ne_of_gt (kernelRegularizer_den_pos g n x))
-    have hid : cfc (fun x : ℝ => x ^ 2 - kernelRegularizer g n x) B =
+    have hid : cfc (fun x : ℝ => x ^ (2 : ℕ) - kernelRegularizer g n x) B =
         cfc q B * cfc g B := by
       rw [← cfc_mul q g B hq hg]
       apply cfc_congr
@@ -92,18 +92,18 @@ theorem cfc_apply_eq_zero_imp_of_no_new_zeros
       dsimp [q, kernelRegularizer]
       field_simp [ne_of_gt (kernelRegularizer_den_pos g n x)]
       ring
-    rw [cfc_sub (fun x : ℝ => x ^ 2) (kernelRegularizer g n) B
+    rw [cfc_sub (fun x : ℝ => x ^ (2 : ℕ)) (kernelRegularizer g n) B
       (continuousOn_id.pow 2) (kernelRegularizer_continuousOn hg n),
       cfc_pow_id B 2 hB] at hid
     have hap := congrArg (fun T : H →L[ℂ] H => T v) hid
     simp only [sub_apply, mul_apply_eq_comp, hv, map_zero] at hap
     exact sub_eq_zero.mp hap
-  have hlim : Tendsto (fun _ : ℕ => ‖(B ^ 2) v‖) atTop (𝓝 0) := by
+  have hlim : Tendsto (fun _ : ℕ => ‖(B ^ (2 : ℕ)) v‖) atTop (𝓝 0) := by
     apply squeeze_zero (fun _ => norm_nonneg _) (fun n => ?_) (by
       simpa using hnorm.mul_const ‖v‖)
     rw [heq n]
     exact (cfc (kernelRegularizer g n) B).le_opNorm v
-  have hsq : (B ^ 2) v = 0 := norm_eq_zero.mp (tendsto_const_nhds_iff.mp hlim)
+  have hsq : (B ^ (2 : ℕ)) v = 0 := norm_eq_zero.mp (tendsto_const_nhds_iff.mp hlim)
   apply (inner_self_eq_zero (𝕜 := ℂ)).mp
   have hsym := ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hB
   have hpair : inner ℂ (B (B v)) v = inner ℂ (B v) (B v) := hsym (B v) v

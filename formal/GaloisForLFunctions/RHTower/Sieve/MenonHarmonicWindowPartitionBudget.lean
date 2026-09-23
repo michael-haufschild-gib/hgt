@@ -33,7 +33,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_budget
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     (hbudget : volume.real (menonHarmonicSomeBlockLarge P Q eta L V W) ≤ vol) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ menonHarmonicActiveBlocks P Q eta L,
             min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
                   (menonHarmonicAllBlocksSmall P Q eta L V W) j)
@@ -45,12 +45,12 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_budget
               / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
   classical
   have hcont : Continuous fun w : ℝ =>
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 := by
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) := by
     refine (Continuous.norm ?_).pow 2
     refine continuous_finsetSum _ fun p _ => ?_
     exact ((continuous_moebiusPhase p).div_const _).mul (continuous_logPoly _ _)
   have hpart := setIntegral_menonHarmonic_frequencyPartition P Q eta L V W
-    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
     hcont.integrableOn_Icc
   rw [hpart]
   refine add_le_add ?_ ?_

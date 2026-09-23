@@ -56,15 +56,15 @@ theorem integral_Ioc_eq_integral_log (F : ℝ → ℝ) (A B : ℝ) :
 /-- The mean square of the linear window sum is integrable on bounded sets, in the linear
 variable. -/
 theorem integrableOn_normSq_expMul (a : ℕ → ℂ) (s : Finset ℕ) (L : ℝ) {A B : ℝ} :
-    IntegrableOn (fun u : ℝ => Real.exp u * ‖linWindowSum a s L u‖ ^ 2) (Set.Ioc A B) := by
+    IntegrableOn (fun u : ℝ => Real.exp u * ‖linWindowSum a s L u‖ ^ (2 : ℕ)) (Set.Ioc A B) := by
   classical
   have hfin : volume (Set.Ioc A B) ≠ ⊤ := by simp
   have hmeas : AEStronglyMeasurable
-      (fun u : ℝ => Real.exp u * ‖linWindowSum a s L u‖ ^ 2)
+      (fun u : ℝ => Real.exp u * ‖linWindowSum a s L u‖ ^ (2 : ℕ))
       (volume.restrict (Set.Ioc A B)) :=
     (Real.continuous_exp.measurable.mul
       ((measurable_linWindowSum a s L).norm.pow_const 2)).aestronglyMeasurable
-  set C : ℝ := Real.exp B * (∑ n ∈ s, ‖a n‖) ^ 2 with hC
+  set C : ℝ := Real.exp B * (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) with hC
   refine Integrable.mono' (g := fun _ : ℝ => C) (integrableOn_const hfin (by finiteness))
     hmeas ?_
   refine (ae_restrict_iff' measurableSet_Ioc).2 (Filter.Eventually.of_forall fun u hu => ?_)
@@ -72,25 +72,25 @@ theorem integrableOn_normSq_expMul (a : ℕ → ℂ) (s : Finset ℕ) (L : ℝ) 
   have hbd := norm_linWindowSum_le a s L u
   have h0 : (0 : ℝ) ≤ ‖linWindowSum a s L u‖ := norm_nonneg _
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), hC]
-  have hsq : ‖linWindowSum a s L u‖ ^ 2 ≤ (∑ n ∈ s, ‖a n‖) ^ 2 := by nlinarith [hbd, h0]
+  have hsq : ‖linWindowSum a s L u‖ ^ (2 : ℕ) ≤ (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) := by nlinarith [hbd, h0]
   have hexp0 : (0 : ℝ) < Real.exp u := Real.exp_pos u
   nlinarith [hsq, hexp, hexp0.le, sq_nonneg (∑ n ∈ s, ‖a n‖)]
 
 /-- **The linear mean square is at most the endpoint times the logarithmic one.** -/
 theorem integral_Ioc_normSq_linSum_le (a : ℕ → ℂ) (s : Finset ℕ) (L : ℝ) (A B : ℝ) :
-    (∫ x in Set.Ioc (Real.exp A) (Real.exp B), ‖linSum a s L x‖ ^ 2)
-      ≤ Real.exp B * ∫ u in Set.Ioc A B, ‖linWindowSum a s L u‖ ^ 2 := by
+    (∫ x in Set.Ioc (Real.exp A) (Real.exp B), ‖linSum a s L x‖ ^ (2 : ℕ))
+      ≤ Real.exp B * ∫ u in Set.Ioc A B, ‖linWindowSum a s L u‖ ^ (2 : ℕ) := by
   classical
   have hfin : volume (Set.Ioc A B) ≠ ⊤ := by simp
-  rw [integral_Ioc_eq_integral_log (fun x => ‖linSum a s L x‖ ^ 2) A B]
-  have hcongr : ∀ u : ℝ, Real.exp u * ‖linSum a s L (Real.exp u)‖ ^ 2
-      = Real.exp u * ‖linWindowSum a s L u‖ ^ 2 := by
+  rw [integral_Ioc_eq_integral_log (fun x => ‖linSum a s L x‖ ^ (2 : ℕ)) A B]
+  have hcongr : ∀ u : ℝ, Real.exp u * ‖linSum a s L (Real.exp u)‖ ^ (2 : ℕ)
+      = Real.exp u * ‖linWindowSum a s L u‖ ^ (2 : ℕ) := by
     intro u
     rw [linWindowSum_eq_linSum]
   rw [setIntegral_congr_fun measurableSet_Ioc (fun u _ => hcongr u)]
   have hle : ∀ u ∈ Set.Ioc A B,
-      Real.exp u * ‖linWindowSum a s L u‖ ^ 2
-        ≤ Real.exp B * ‖linWindowSum a s L u‖ ^ 2 := by
+      Real.exp u * ‖linWindowSum a s L u‖ ^ (2 : ℕ)
+        ≤ Real.exp B * ‖linWindowSum a s L u‖ ^ (2 : ℕ) := by
     intro u hu
     exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.2 hu.2) (by positivity)
   refine le_trans (setIntegral_mono_on (integrableOn_normSq_expMul a s L)

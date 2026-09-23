@@ -8,7 +8,7 @@ This file formalizes the finite-dimensional coercivity engine used by arXiv:2606
 *Quantitative Homogenization for Lamé--Stokes Systems*.  The paper permits negative first Lamé
 parameter `lambda`, subject to `mu > 0` and `d * lambda + 2 * mu > 0`.  The sharp elementary lower
 bound therefore splits at the sign of `lambda` and uses
-`trace(M)^2 ≤ d * ‖M‖_F^2` only in the negative branch.
+`trace(M)^(2 : ℕ) ≤ d * ‖M‖_F^(2 : ℕ)` only in the negative branch.
 
 The resulting theorem is valid for every finite square real matrix.  It supplies a positive
 coercivity constant, strict positivity away from zero, symmetry of the constitutive stress, and the
@@ -25,7 +25,7 @@ variable {ι : Type*} [Fintype ι]
 
 /-- Squared Frobenius norm, written entrywise to avoid choosing a matrix norm instance. -/
 def matrixFrobeniusSq (M : Matrix ι ι ℝ) : ℝ :=
-  ∑ i, ∑ j, M i j ^ 2
+  ∑ i, ∑ j, M i j ^ (2 : ℕ)
 
 /-- Squared Frobenius norm is nonnegative. -/
 theorem matrixFrobeniusSq_nonneg (M : Matrix ι ι ℝ) :
@@ -39,22 +39,22 @@ theorem matrixFrobeniusSq_eq_zero_iff (M : Matrix ι ι ℝ) :
   constructor
   · intro hM
     ext i j
-    have hi : ∑ j, M i j ^ 2 = 0 :=
+    have hi : ∑ j, M i j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg
         (fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)).mp hM i (Finset.mem_univ i)
-    have hij : M i j ^ 2 = 0 :=
+    have hij : M i j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => sq_nonneg _)).mp hi j (Finset.mem_univ j)
     simpa using hij
   · rintro rfl
     simp [matrixFrobeniusSq]
 
-/-- Finite-dimensional trace--Frobenius inequality `(tr M)^2 ≤ d ‖M‖_F^2`. -/
+/-- Finite-dimensional trace--Frobenius inequality `(tr M)^(2 : ℕ) ≤ d ‖M‖_F^(2 : ℕ)`. -/
 theorem trace_sq_le_card_mul_matrixFrobeniusSq (M : Matrix ι ι ℝ) :
-    Matrix.trace M ^ 2 ≤ (Fintype.card ι : ℝ) * matrixFrobeniusSq M := by
+    Matrix.trace M ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) * matrixFrobeniusSq M := by
   classical
   rw [Matrix.trace]
   calc
-    (∑ i, M i i) ^ 2 ≤ ((Finset.univ : Finset ι).card : ℝ) * ∑ i, M i i ^ 2 :=
+    (∑ i, M i i) ^ (2 : ℕ) ≤ ((Finset.univ : Finset ι).card : ℝ) * ∑ i, M i i ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
     _ ≤ ((Finset.univ : Finset ι).card : ℝ) * matrixFrobeniusSq M := by
       gcongr
@@ -89,7 +89,7 @@ theorem AdmissibleLamePair.coercivityConstant_pos (P : AdmissibleLamePair ι) :
 
 /-- Pointwise quadratic elastic energy. -/
 def lameEnergy (P : AdmissibleLamePair ι) (M : Matrix ι ι ℝ) : ℝ :=
-  P.lambda * Matrix.trace M ^ 2 + 2 * P.mu * matrixFrobeniusSq M
+  P.lambda * Matrix.trace M ^ (2 : ℕ) + 2 * P.mu * matrixFrobeniusSq M
 
 /-- Sharp elementary coercivity bound used in the Lamé--Stokes homogenization argument. -/
 theorem lameEnergy_lower (P : AdmissibleLamePair ι) (M : Matrix ι ι ℝ) :
@@ -99,13 +99,13 @@ theorem lameEnergy_lower (P : AdmissibleLamePair ι) (M : Matrix ι ι ℝ) :
   by_cases hlambda : 0 ≤ P.lambda
   · have hc : P.coercivityConstant ≤ 2 * P.mu := min_le_right _ _
     have h1 := mul_le_mul_of_nonneg_right hc hF
-    have h2 : 0 ≤ P.lambda * Matrix.trace M ^ 2 :=
+    have h2 : 0 ≤ P.lambda * Matrix.trace M ^ (2 : ℕ) :=
       mul_nonneg hlambda (sq_nonneg _)
     unfold lameEnergy
     linarith
   · have hlambda' : P.lambda ≤ 0 := le_of_not_ge hlambda
     have htrace : P.lambda * ((Fintype.card ι : ℝ) * matrixFrobeniusSq M) ≤
-        P.lambda * Matrix.trace M ^ 2 := mul_le_mul_of_nonpos_left htr hlambda'
+        P.lambda * Matrix.trace M ^ (2 : ℕ) := mul_le_mul_of_nonpos_left htr hlambda'
     have hc : P.coercivityConstant ≤
         (Fintype.card ι : ℝ) * P.lambda + 2 * P.mu := min_le_left _ _
     have h1 := mul_le_mul_of_nonneg_right hc hF
@@ -155,7 +155,7 @@ theorem sum_matrixFrobeniusSq_add_ge_card
     change ∑ q, ev (corrector q) = 0
     rw [← map_sum, hmean, map_zero]
   have hpoint (i j : ι) :
-      (Fintype.card κ : ℝ) * A i j ^ 2 ≤ ∑ q, (A + corrector q) i j ^ 2 := by
+      (Fintype.card κ : ℝ) * A i j ^ (2 : ℕ) ≤ ∑ q, (A + corrector q) i j ^ (2 : ℕ) := by
     have hsum : ∑ q, (A + corrector q) i j = (Fintype.card κ : ℝ) * A i j := by
       simp only [Matrix.add_apply, Finset.sum_add_distrib, Finset.sum_const,
         Finset.card_univ, nsmul_eq_mul, hentry, add_zero]
@@ -168,19 +168,19 @@ theorem sum_matrixFrobeniusSq_add_ge_card
   rw [matrixFrobeniusSq]
   simp_rw [matrixFrobeniusSq]
   calc
-    (Fintype.card κ : ℝ) * ∑ i, ∑ j, A i j ^ 2 =
-        ∑ i, ∑ j, (Fintype.card κ : ℝ) * A i j ^ 2 := by
+    (Fintype.card κ : ℝ) * ∑ i, ∑ j, A i j ^ (2 : ℕ) =
+        ∑ i, ∑ j, (Fintype.card κ : ℝ) * A i j ^ (2 : ℕ) := by
       simp_rw [Finset.mul_sum]
-    _ ≤ ∑ i, ∑ j, ∑ q, (A + corrector q) i j ^ 2 :=
+    _ ≤ ∑ i, ∑ j, ∑ q, (A + corrector q) i j ^ (2 : ℕ) :=
       Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => hpoint i j
-    _ = ∑ q, ∑ i, ∑ j, (A + corrector q) i j ^ 2 := by
+    _ = ∑ q, ∑ i, ∑ j, (A + corrector q) i j ^ (2 : ℕ) := by
       calc
-        (∑ i, ∑ j, ∑ q, (A + corrector q) i j ^ 2) =
-            ∑ i, ∑ q, ∑ j, (A + corrector q) i j ^ 2 := by
+        (∑ i, ∑ j, ∑ q, (A + corrector q) i j ^ (2 : ℕ)) =
+            ∑ i, ∑ q, ∑ j, (A + corrector q) i j ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro i _
           rw [Finset.sum_comm]
-        _ = ∑ q, ∑ i, ∑ j, (A + corrector q) i j ^ 2 := by
+        _ = ∑ q, ∑ i, ∑ j, (A + corrector q) i j ^ (2 : ℕ) := by
           rw [Finset.sum_comm]
 
 /-- Finite-cell analogue of homogenized Lamé coercivity: every mean-zero corrector preserves the
@@ -243,14 +243,14 @@ structure SqrtHomogenizationBound (X : Type*) where
 /-- Squaring the paper's `O(sqrt epsilon)` estimate gives an `O(epsilon)` energy error. -/
 theorem SqrtHomogenizationBound.sq_le (H : SqrtHomogenizationBound X)
     {ε : ℝ} (hε : 0 ≤ ε) (x : X) :
-    H.error ε x ^ 2 ≤ H.constant ^ 2 * ε * H.magnitude x ^ 2 := by
+    H.error ε x ^ (2 : ℕ) ≤ H.constant ^ (2 : ℕ) * ε * H.magnitude x ^ (2 : ℕ) := by
   have hbound := H.bound hε x
   have hmajorant : 0 ≤ H.constant * Real.sqrt ε * H.magnitude x :=
     mul_nonneg (mul_nonneg H.constant_nonneg (Real.sqrt_nonneg _)) (H.magnitude_nonneg x)
   calc
-    H.error ε x ^ 2 ≤ (H.constant * Real.sqrt ε * H.magnitude x) ^ 2 :=
+    H.error ε x ^ (2 : ℕ) ≤ (H.constant * Real.sqrt ε * H.magnitude x) ^ (2 : ℕ) :=
       (sq_le_sq₀ (H.error_nonneg ε x) hmajorant).mpr hbound
-    _ = H.constant ^ 2 * ε * H.magnitude x ^ 2 := by
+    _ = H.constant ^ (2 : ℕ) * ε * H.magnitude x ^ (2 : ℕ) := by
       rw [mul_pow, mul_pow, Real.sq_sqrt hε]
 
 end SquareRootRate

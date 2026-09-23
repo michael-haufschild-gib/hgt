@@ -126,7 +126,7 @@ theorem hasDerivAt_gammaScaledIntegral {a c₀ : ℂ} (ha : 0 < a.re) (hc : 0 < 
 
 /-! ## The identity theorem in the scale -/
 
-theorem isOpen_rightHalfPlane : IsOpen {c : ℂ | 0 < c.re} :=
+private theorem isOpen_rightHalfPlane : IsOpen {c : ℂ | 0 < c.re} :=
   isOpen_lt continuous_const Complex.continuous_re
 
 theorem isPreconnected_rightHalfPlane : IsPreconnected {c : ℂ | 0 < c.re} :=

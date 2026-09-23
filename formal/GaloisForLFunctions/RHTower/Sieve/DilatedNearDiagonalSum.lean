@@ -39,7 +39,7 @@ theorem norm_dilated_nearDiagonalSum_le {T r d : ℝ} (hT : 0 < T) (hr : 0 < r) 
         Complex.exp (((2 * Real.pi * nearDiagonalPhase T r (d * (m : ℝ)) : ℝ) : ℂ)
           * Complex.I)‖
       ≤ 2500 * Real.sqrt (T * (r / d) / (36 * Real.pi * A))
-        + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ 3) := by
+        + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
   rw [dilated_nearDiagonalSum_eq T r d A B]
   exact norm_nearDiagonalSum_le_final hT (by positivity) A B hA hrA hlam
 

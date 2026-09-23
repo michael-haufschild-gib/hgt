@@ -16,7 +16,7 @@ open Set Polynomial
 
 def cubicRecoveryValue : ℕ → ℝ → ℝ
   | 0, _ => 0
-  | n+1, t => cubicRecoveryValue n t+(t^2-(cubicRecoveryValue n t)^2)/2
+  | n+1, t => cubicRecoveryValue n t+(t^(2 : ℕ)-(cubicRecoveryValue n t)^(2 : ℕ))/2
 
 theorem cubicRecoveryValue_bounds (n : ℕ) :
     ∀ t ∈ Icc (0:ℝ) 1, 0 ≤ cubicRecoveryValue n t ∧ cubicRecoveryValue n t ≤ t := by
@@ -43,20 +43,20 @@ theorem cubicRecoveryValue_error (n : ℕ) :
     have he0 : 0 ≤ t-cubicRecoveryValue n t := sub_nonneg.mpr hb.2
     have he1 : t-cubicRecoveryValue n t ≤ 1 := by linarith [ht.2]
     have hstep : t-cubicRecoveryValue (n+1) t ≤
-        (t-cubicRecoveryValue n t)-(t-cubicRecoveryValue n t)^2/2 := by
+        (t-cubicRecoveryValue n t)-(t-cubicRecoveryValue n t)^(2 : ℕ)/2 := by
       rw [cubicRecoveryValue]
       nlinarith [mul_nonneg hb.1 he0]
-    have hmono : (t-cubicRecoveryValue n t)-(t-cubicRecoveryValue n t)^2/2 ≤
-        2/((n:ℝ)+2)-(2/((n:ℝ)+2))^2/2 := by
+    have hmono : (t-cubicRecoveryValue n t)-(t-cubicRecoveryValue n t)^(2 : ℕ)/2 ≤
+        2/((n:ℝ)+2)-(2/((n:ℝ)+2))^(2 : ℕ)/2 := by
       have hm := mul_nonneg (sub_nonneg.mpr ih)
         (show 0 ≤ 2-(2/((n:ℝ)+2)+(t-cubicRecoveryValue n t)) by linarith)
       nlinarith
-    have hdiff : 2/((n:ℝ)+3)-(2/((n:ℝ)+2)-(2/((n:ℝ)+2))^2/2)=
-        2/(((n:ℝ)+2)^2*((n:ℝ)+3)) := by
+    have hdiff : 2/((n:ℝ)+3)-(2/((n:ℝ)+2)-(2/((n:ℝ)+2))^(2 : ℕ)/2)=
+        2/(((n:ℝ)+2)^(2 : ℕ)*((n:ℝ)+3)) := by
       field_simp
       ring
-    have hrat : 2/((n:ℝ)+2)-(2/((n:ℝ)+2))^2/2 ≤ 2/((n:ℝ)+3) := by
-      have hpos : 0 ≤ 2/(((n:ℝ)+2)^2*((n:ℝ)+3)) := by positivity
+    have hrat : 2/((n:ℝ)+2)-(2/((n:ℝ)+2))^(2 : ℕ)/2 ≤ 2/((n:ℝ)+3) := by
+      have hpos : 0 ≤ 2/(((n:ℝ)+2)^(2 : ℕ)*((n:ℝ)+3)) := by positivity
       linarith
     have h := hstep.trans (hmono.trans hrat)
     simpa only [Nat.cast_add,Nat.cast_one,add_assoc,show (1:ℝ)+2=3 by ring] using h
@@ -64,7 +64,7 @@ theorem cubicRecoveryValue_error (n : ℕ) :
 def cubicRecoveryPolynomial : ℕ → Polynomial (Polynomial ℝ)
   | 0 => 0
   | n+1 => cubicRecoveryPolynomial n+Polynomial.C (Polynomial.C (1/2))*
-      (Polynomial.X^2-(cubicRecoveryPolynomial n)^2)
+      (Polynomial.X^(2 : ℕ)-(cubicRecoveryPolynomial n)^(2 : ℕ))
 
 theorem cubicRecoveryPolynomial_mem (n : ℕ) : cubicRecoveryPolynomial n ∈ cubicCuspAlgebra := by
   induction n with

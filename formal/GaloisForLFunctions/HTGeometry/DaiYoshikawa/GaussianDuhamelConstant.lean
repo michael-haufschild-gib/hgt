@@ -29,9 +29,9 @@ namespace GaloisForLFunctions.HTGeometry.DaiYoshikawa
 
 /-- **The `d`-dimensional Gaussian integral.**  `∫_{ℝ^d} e^{−a‖ξ‖²} dξ = (π/a)^{d/2}`. -/
 theorem integral_gaussian_pi (d : ℕ) (a : ℝ) :
-    (∫ ξ : Fin d → ℝ, Real.exp (-(a * ∑ i, (ξ i) ^ 2))) = Real.sqrt (π / a) ^ d := by
+    (∫ ξ : Fin d → ℝ, Real.exp (-(a * ∑ i, (ξ i) ^ (2 : ℕ)))) = Real.sqrt (π / a) ^ d := by
   have hprod : ∀ ξ : Fin d → ℝ,
-      Real.exp (-(a * ∑ i, (ξ i) ^ 2)) = ∏ i, Real.exp (-a * (ξ i) ^ 2) := by
+      Real.exp (-(a * ∑ i, (ξ i) ^ (2 : ℕ))) = ∏ i, Real.exp (-a * (ξ i) ^ (2 : ℕ)) := by
     intro ξ
     rw [← Real.exp_sum]
     congr 1
@@ -39,7 +39,7 @@ theorem integral_gaussian_pi (d : ℕ) (a : ℝ) :
     exact Finset.sum_congr rfl fun i _ => by ring
   simp only [hprod]
   rw [MeasureTheory.volume_pi,
-    integral_fintype_prod_eq_prod (f := fun _ : Fin d => fun x : ℝ => Real.exp (-a * x ^ 2))]
+    integral_fintype_prod_eq_prod (f := fun _ : Fin d => fun x : ℝ => Real.exp (-a * x ^ (2 : ℕ)))]
   simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   rw [integral_gaussian]
 
@@ -51,7 +51,7 @@ theorem integral_duhamelGaussian_mul_inv (n : ℕ) {t τ : ℝ} (ht : 0 < t) (h�
     (hτt : τ < t) :
     ((τ * (t - τ) / t) ^ n)⁻¹
         * ∫ ξ : Fin (2 * n) → ℝ,
-            Real.exp (-((t / (8 * (τ * (t - τ)))) * ∑ i, (ξ i) ^ 2))
+            Real.exp (-((t / (8 * (τ * (t - τ)))) * ∑ i, (ξ i) ^ (2 : ℕ)))
       = (8 * π) ^ n := by
   have hd : 0 < t - τ := by linarith
   have hden : 0 < τ * (t - τ) := mul_pos hτ hd

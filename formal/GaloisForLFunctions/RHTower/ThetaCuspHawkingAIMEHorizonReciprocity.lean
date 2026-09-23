@@ -186,8 +186,8 @@ def d4AIMEHorizonGainMinus (n : ℕ) (z : ℂ) : ℝ :=
 
 theorem normSq_d4AIMEHorizonDenominatorPlus (n : ℕ) (z : ℂ) :
     Complex.normSq (d4AIMEHorizonDenominatorPlus n z) =
-      (2 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n - 2 * z.im) ^ 2 +
-        z.re ^ 2 := by
+      (2 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n - 2 * z.im) ^ (2 : ℕ) +
+        z.re ^ (2 : ℕ) := by
   rw [d4AIMEHorizonDenominatorPlus, d4HawkingMirrorQNM_gap,
     d4AIMEHorizonFluxDecayPlus_eq, Complex.normSq_apply]
   simp [Complex.mul_re, Complex.mul_im]
@@ -195,8 +195,8 @@ theorem normSq_d4AIMEHorizonDenominatorPlus (n : ℕ) (z : ℂ) :
 
 theorem normSq_d4AIMEHorizonDenominatorMinus (n : ℕ) (z : ℂ) :
     Complex.normSq (d4AIMEHorizonDenominatorMinus n z) =
-      (2 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n + 2 * z.im) ^ 2 +
-        z.re ^ 2 := by
+      (2 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n + 2 * z.im) ^ (2 : ℕ) +
+        z.re ^ (2 : ℕ) := by
   rw [d4AIMEHorizonDenominatorMinus, d4AIMEHorizonFluxDecayMinus_eq]
   have hgap : d4HawkingMirrorQNMMinus n z - d4HawkingMirrorQNMPlus n z = -z := by
     rw [d4HawkingMirrorQNMPlus_eq, d4HawkingMirrorQNMMinus_eq]

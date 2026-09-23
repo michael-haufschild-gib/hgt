@@ -53,7 +53,7 @@ depth steps. -/
 theorem twoEndpointBalancedDepthSuccessor_argument_eq
     (ε u : ℂ) :
     1 - (1 + ε / 2) * (1 - (1 + ε / 2) * u) =
-      u + ε * (u - 1 / 2) + ε ^ 2 * u / 4 := by
+      u + ε * (u - 1 / 2) + ε ^ (2 : ℕ) * u / 4 := by
   ring
 
 /-- Exact moving-zero expansion (11d) of the two-endpoint composite. -/
@@ -62,7 +62,7 @@ theorem twoEndpointBalancedDepthSuccessor_argument_movingZero_sub
     1 - (1 + ε / 2) *
         (1 - (1 + ε / 2) * (rho + ε * z)) - rho =
       ε * (z + rho - 1 / 2 +
-        ε * (z + rho / 4) + ε ^ 2 * z / 4) := by
+        ε * (z + rho / 4) + ε ^ (2 : ℕ) * z / 4) := by
   ring
 
 /-- The corresponding moving-zero normal layer. -/
@@ -317,7 +317,7 @@ theorem tendsto_twoEndpointBalancedDepthSuccessorTransport_movingZero
         (1 / 2) rho m z)) := by
   let shift : ℂ → ℂ := fun ε =>
     z + (rho - 1 / 2) +
-      ε * (z + rho / 4) + ε ^ 2 * z / 4
+      ε * (z + rho / 4) + ε ^ (2 : ℕ) * z / 4
   let target : ℂ → ℂ := fun ε =>
     1 - (1 + ε / 2) *
       (1 - (1 + ε / 2) * (rho + ε * z))
@@ -342,7 +342,7 @@ theorem tendsto_twoEndpointBalancedDepthSuccessorTransport_movingZero
           (𝓝 0) (𝓝 0) :=
       by simpa using hε.mul_const (z + rho / 4)
     have hquadratic :
-        Tendsto (fun ε : ℂ => ε ^ 2 * z / 4)
+        Tendsto (fun ε : ℂ => ε ^ (2 : ℕ) * z / 4)
           (𝓝 0) (𝓝 0) := by
       simpa using (hε.pow 2).mul_const z |>.div_const 4
     simpa using

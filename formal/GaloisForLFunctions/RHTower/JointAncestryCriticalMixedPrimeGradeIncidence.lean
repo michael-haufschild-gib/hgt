@@ -25,7 +25,7 @@ noncomputable section
 /-- Every critical singleton prime character has unit `L²` norm. -/
 theorem norm_criticalPrimeSingletonCharacterL2 (t : ℝ) (p : Nat.Primes) :
     ‖criticalPrimeSingletonCharacterL2 t p‖ = 1 := by
-  have hsq : ‖criticalPrimeSingletonCharacterL2 t p‖ ^ 2 = 1 := by
+  have hsq : ‖criticalPrimeSingletonCharacterL2 t p‖ ^ (2 : ℕ) = 1 := by
     rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     have hcoe : ((criticalPrimeSingletonCharacterL2 t p :
         PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) =ᵐ[
@@ -37,7 +37,7 @@ theorem norm_criticalPrimeSingletonCharacterL2 (t : ℝ) (p : Nat.Primes) :
           (infiniteTorusFourier (Finsupp.single p 1))
     calc
       (∫ x, ‖((criticalPrimeSingletonCharacterL2 t p :
-          PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) x‖ ^ 2
+          PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) x‖ ^ (2 : ℕ)
           ∂primePoissonMeasure (1 / 2 : ℝ) t (by norm_num)) =
           ∫ _x : PrimeTorus, (1 : ℝ)
             ∂primePoissonMeasure (1 / 2 : ℝ) t (by norm_num) := by
@@ -78,7 +78,7 @@ def JASCriticalPrimeGradeFibersSummable
   ∀ r, Summable fun p : Nat.Primes =>
     if g p = r then
       ‖((primePoissonParameter (1 / 2 : ℝ) t (by norm_num) p :
-        CirclePoissonParameter) : ℂ) - 0‖ ^ 2
+        CirclePoissonParameter) : ℂ) - 0‖ ^ (2 : ℕ)
     else 0
 
 /-- At least one grade fiber has divergent critical prime-Poisson mass. -/
@@ -87,7 +87,7 @@ def JASCriticalPrimeGradeHasDivergentFiber
   ∃ r, ¬ Summable fun p : Nat.Primes =>
     if g p = r then
       ‖((primePoissonParameter (1 / 2 : ℝ) t (by norm_num) p :
-        CirclePoissonParameter) : ℂ) - 0‖ ^ 2
+        CirclePoissonParameter) : ℂ) - 0‖ ^ (2 : ℕ)
     else 0
 
 /-- Bounded graded singleton synthesis forces square-summability in every grade fiber. -/

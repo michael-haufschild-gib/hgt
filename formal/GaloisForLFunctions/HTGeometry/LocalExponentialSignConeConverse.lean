@@ -47,8 +47,8 @@ theorem aestronglyMeasurable_directionDensity
 theorem abs_directionDensity_le
     {J : ℝ → Matrix (Fin d) (Fin d) ℂ} {C : ℝ}
     {x : ℝ} (hx : ∀ k l, ‖J x k l‖ ≤ C) (u : Fin d → ℂ) :
-    |directionDensity J u x| ≤ C * (∑ k, ‖u k‖) ^ 2 := by
-  have hbound : ‖matQuad (J x) u‖ ≤ C * (∑ k, ‖u k‖) ^ 2 := by
+    |directionDensity J u x| ≤ C * (∑ k, ‖u k‖) ^ (2 : ℕ) := by
+  have hbound : ‖matQuad (J x) u‖ ≤ C * (∑ k, ‖u k‖) ^ (2 : ℕ) := by
     calc ‖matQuad (J x) u‖
         = ‖∑ k, ∑ l, (starRingEnd ℂ) (u k) * J x k l * u l‖ := rfl
       _ ≤ ∑ k, ‖∑ l, (starRingEnd ℂ) (u k) * J x k l * u l‖ := norm_sum_le _ _
@@ -59,7 +59,7 @@ theorem abs_directionDensity_le
           rw [norm_mul, norm_mul, RCLike.norm_conj]
           exact mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left (hx k l) (norm_nonneg _)) (norm_nonneg _)
-      _ = C * (∑ k, ‖u k‖) ^ 2 := by
+      _ = C * (∑ k, ‖u k‖) ^ (2 : ℕ) := by
           rw [sq, Finset.sum_mul_sum]
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl fun k _ => ?_
@@ -76,7 +76,7 @@ theorem ae_nonneg_directionDensity {a : ℝ} (ha : 0 < a)
     (hH : ∀ (N : ℕ) (v : Fin N × Fin d → ℂ), 0 ≤ (matQuad (blockHankel μ J N) v).re)
     (u : Fin d → ℂ) :
     0 ≤ᵐ[μ] directionDensity J u := by
-  refine ae_nonneg_of_forall_sq_poly_integral_nonneg (C := C * (∑ k, ‖u k‖) ^ 2) ha hexp
+  refine ae_nonneg_of_forall_sq_poly_integral_nonneg (C := C * (∑ k, ‖u k‖) ^ (2 : ℕ)) ha hexp
     (by positivity) (aestronglyMeasurable_directionDensity hmeas u) ?_ ?_
   · filter_upwards [hbdd] with x hx
     exact abs_directionDensity_le hx u

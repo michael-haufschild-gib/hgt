@@ -56,7 +56,7 @@ sum of squared weights. -/
 theorem fidelityReplicaPermutationFloor_one_eq_sum_sq
     {I : Type*} [Fintype I] [DecidableEq I]
     (weight : I → ℝ) :
-    fidelityReplicaPermutationFloor weight 1 = ∑ i, weight i ^ 2 := by
+    fidelityReplicaPermutationFloor weight 1 = ∑ i, weight i ^ (2 : ℕ) := by
   classical
   unfold fidelityReplicaPermutationFloor
   rw [piAntidiag_one_eq_image_single]
@@ -108,7 +108,7 @@ theorem sum_microcanonicalWeight_eq_one
 
 theorem sum_microcanonicalWeight_sq
     (I : Type*) [Fintype I] [Nonempty I] :
-    (∑ i : I, microcanonicalWeight I i ^ 2) =
+    (∑ i : I, microcanonicalWeight I i ^ (2 : ℕ)) =
       (Fintype.card I : ℝ)⁻¹ := by
   have hcard : (Fintype.card I : ℝ) ≠ 0 := by
     exact_mod_cast Fintype.card_ne_zero

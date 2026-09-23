@@ -36,7 +36,7 @@ theorem integrable_torus_of_continuous {g : UnitAddTorus d → ℂ} (hg : Contin
   hg.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace g)
 
 omit [DecidableEq d] in
-theorem mFourierCoeff_sub {g h : UnitAddTorus d → ℂ} (hg : Continuous g)
+theorem mFourierCoeff_sub_torusTrigPolynomial {g h : UnitAddTorus d → ℂ} (hg : Continuous g)
     (hh : Continuous h) (n : d → ℤ) :
     UnitAddTorus.mFourierCoeff (fun x => g x - h x) n =
       UnitAddTorus.mFourierCoeff g n - UnitAddTorus.mFourierCoeff h n := by

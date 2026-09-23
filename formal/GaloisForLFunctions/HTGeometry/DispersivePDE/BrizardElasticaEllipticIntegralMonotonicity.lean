@@ -22,7 +22,7 @@ theorem completeEIntegrand_antitone (P : StrictSubcriticalPair) (θ : ℝ) :
     completeEIntegrand P.upper θ ≤ completeEIntegrand P.lower θ := by
   rw [completeEIntegrand, completeEIntegrand]
   apply Real.sqrt_le_sqrt
-  have hs : 0 ≤ Real.sin θ ^ 2 := sq_nonneg _
+  have hs : 0 ≤ Real.sin θ ^ (2 : ℕ) := sq_nonneg _
   have hmul := mul_le_mul_of_nonneg_right P.lt_order.le hs
   linarith
 
@@ -30,10 +30,10 @@ theorem completeKIntegrand_monotone (P : StrictSubcriticalPair) (θ : ℝ) :
     completeKIntegrand P.lower θ ≤ completeKIntegrand P.upper θ := by
   have hlow := subcriticalRadicand_pos P.lower θ
   have hupp := subcriticalRadicand_pos P.upper θ
-  have hs : 0 ≤ Real.sin θ ^ 2 := sq_nonneg _
+  have hs : 0 ≤ Real.sin θ ^ (2 : ℕ) := sq_nonneg _
   have hmul := mul_le_mul_of_nonneg_right P.lt_order.le hs
-  have hsqrt : Real.sqrt (1 - (P.upper : ℝ) * Real.sin θ ^ 2) ≤
-      Real.sqrt (1 - (P.lower : ℝ) * Real.sin θ ^ 2) :=
+  have hsqrt : Real.sqrt (1 - (P.upper : ℝ) * Real.sin θ ^ (2 : ℕ)) ≤
+      Real.sqrt (1 - (P.lower : ℝ) * Real.sin θ ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt (by linarith)
   rw [completeKIntegrand, completeKIntegrand, ← one_div, ← one_div]
   exact one_div_le_one_div_of_le (Real.sqrt_pos.mpr hupp) hsqrt
@@ -51,8 +51,8 @@ theorem completeKIntegrand_strict_at_halfPi (P : StrictSubcriticalPair) :
       completeKIntegrand P.upper (Real.pi / 2) := by
   have hlow := subcriticalRadicand_pos P.lower (Real.pi / 2)
   have hupp := subcriticalRadicand_pos P.upper (Real.pi / 2)
-  have hsqrt : Real.sqrt (1 - (P.upper : ℝ) * Real.sin (Real.pi / 2) ^ 2) <
-      Real.sqrt (1 - (P.lower : ℝ) * Real.sin (Real.pi / 2) ^ 2) := by
+  have hsqrt : Real.sqrt (1 - (P.upper : ℝ) * Real.sin (Real.pi / 2) ^ (2 : ℕ)) <
+      Real.sqrt (1 - (P.lower : ℝ) * Real.sin (Real.pi / 2) ^ (2 : ℕ)) := by
     apply Real.sqrt_lt_sqrt hupp.le
     simpa using sub_lt_sub_left P.lt_order 1
   rw [completeKIntegrand, completeKIntegrand]

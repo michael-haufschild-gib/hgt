@@ -13,7 +13,7 @@ namespace HTGeometry
 noncomputable section
 
 theorem eval_sourcePositiveJet_seam_eq_formalJet (R : ℝ) (n : ℕ) :
-    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R^2))
+    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R^(2 : ℕ)))
       (modularThetaSourcePositiveNormalizedSourceJet n) =
     MvPolynomial.eval (modularThetaODESeamState (R : ℂ)) (modularThetaODESourceJet n) := by
   rw [← modularThetaSourcePositiveChart_sourceJet,
@@ -28,10 +28,10 @@ theorem eval_sourcePositiveJet_seam_eq_formalJet (R : ℝ) (n : ℕ) :
 theorem oddHankelThree_formalJet_seam (R : ℂ) :
     let f := fun n => MvPolynomial.eval (modularThetaODESeamState R) (modularThetaODESourceJet n)
     signedEvenHankelThreeDetC
-      (-2*f 0*f 2) (2*f 0*f 4+6*f 2^2) (-2*f 0*f 6-30*f 2*f 4)
-      (2*f 0*f 8+56*f 2*f 6+70*f 4^2)
+      (-2*f 0*f 2) (2*f 0*f 4+6*f 2^(2 : ℕ)) (-2*f 0*f 6-30*f 2*f 4)
+      (2*f 0*f 8+56*f 2*f 6+70*f 4^(2 : ℕ))
       (-2*f 0*f 10-90*f 2*f 8-420*f 4*f 6) =
-      modularThetaReflectedTenthSeamPolynomial (R^2) := by
+      modularThetaReflectedTenthSeamPolynomial (R^(2 : ℕ)) := by
   let v := modularThetaODESeamState R
   have h := modularThetaReflectedTenthSeamJetElimination (1 : ℂ) R
     (evalModularThetaODEFormalJet v .H) (evalModularThetaODEFormalJet v .Z)
@@ -73,11 +73,11 @@ theorem thetaCuspFullSource_seamJet_eq_formalJet (n : ℕ) :
 theorem thetaCuspFullSource_oddHankelThreeSeam_eq_modularPolynomial :
     let f := fun n => ((iteratedDeriv n thetaCuspFullSource 0 : ℝ) : ℂ)
     HTGeometry.signedEvenHankelThreeDetC
-      (-2*f 0*f 2) (2*f 0*f 4+6*f 2^2) (-2*f 0*f 6-30*f 2*f 4)
-      (2*f 0*f 8+56*f 2*f 6+70*f 4^2)
+      (-2*f 0*f 2) (2*f 0*f 4+6*f 2^(2 : ℕ)) (-2*f 0*f 6-30*f 2*f 4)
+      (2*f 0*f 8+56*f 2*f 6+70*f 4^(2 : ℕ))
       (-2*f 0*f 10-90*f 2*f 8-420*f 4*f 6) =
-      (thetaCuspSelfDualThetaMass : ℂ)^6 *
-        HTGeometry.modularThetaReflectedTenthSeamPolynomial ((thetaCuspSelfDualModularScale : ℂ)^2) := by
+      (thetaCuspSelfDualThetaMass : ℂ)^(6 : ℕ) *
+        HTGeometry.modularThetaReflectedTenthSeamPolynomial ((thetaCuspSelfDualModularScale : ℂ)^(2 : ℕ)) := by
   dsimp only
   simp_rw [thetaCuspFullSource_seamJet_eq_formalJet]
   rw [← HTGeometry.oddHankelThree_formalJet_seam]

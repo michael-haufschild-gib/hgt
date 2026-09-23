@@ -19,18 +19,18 @@ def mode (w : ℂ) (t : ℝ) : ℂ :=
   power (w/2) (horizonCoordinate t)*power (1/2) (1-horizonCoordinate t)
 
 theorem mode_square (w : ℂ) (t : ℝ) (ht : t < 0) :
-    mode w t^2=(horizonCoordinate t:ℂ)^w*(radialUnit t:ℂ)^2 := by
+    mode w t^(2 : ℕ)=(horizonCoordinate t:ℂ)^w*(radialUnit t:ℂ)^(2 : ℕ) := by
   have hz := horizonCoordinate_interior t ht
   have hs : Real.sqrt (1-horizonCoordinate t)=radialUnit t := by
     rw [horizonCoordinate,sub_sub_cancel,Real.sqrt_sq (radialUnit_bounds t ht).1.le]
-  have hp : power (w/2) (horizonCoordinate t)^2=(horizonCoordinate t:ℂ)^w := by
+  have hp : power (w/2) (horizonCoordinate t)^(2 : ℕ)=(horizonCoordinate t:ℂ)^w := by
     rw [power,pow_two,← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr (ne_of_gt hz.1)),
       show w/2+w/2=w by ring]
   rw [mode,mul_pow,hp,power_half_eq_sqrt (sub_nonneg.mpr hz.2.le),hs]
 
 private theorem density_coordinate (w : ℂ) (t : ℝ) (ht : t < 0) :
     coordinateFirst t • ((horizonCoordinate t:ℂ)^(w-1)*(Real.sqrt (1-horizonCoordinate t):ℂ))=
-      2*mode w t^2 := by
+      2*mode w t^(2 : ℕ) := by
   have hz := horizonCoordinate_interior t ht
   have hs : Real.sqrt (1-horizonCoordinate t)=radialUnit t := by
     rw [horizonCoordinate,sub_sub_cancel,Real.sqrt_sq (radialUnit_bounds t ht).1.le]
@@ -41,12 +41,12 @@ private theorem density_coordinate (w : ℂ) (t : ℝ) (ht : t < 0) :
   rw [Complex.real_smul,coordinateFirst,hs,mode_square w t ht]
   push_cast
   calc
-    _ = 2*((horizonCoordinate t:ℂ)*(horizonCoordinate t:ℂ)^(w-1))*(radialUnit t:ℂ)^2 := by ring
+    _ = 2*((horizonCoordinate t:ℂ)*(horizonCoordinate t:ℂ)^(w-1))*(radialUnit t:ℂ)^(2 : ℕ) := by ring
     _ = _ := by rw [hp]; ring
 
 /-- Every finite original cutoff interval admits the bilinear mode square as an ordinary integral. -/
 theorem mode_square_intervalIntegrable (w : ℂ) (L : ℝ) (hL : L < 0) :
-    IntervalIntegrable (fun t : ℝ => mode w t^2) volume L 0 := by
+    IntervalIntegrable (fun t : ℝ => mode w t^(2 : ℕ)) volume L 0 := by
   have hc : Continuous horizonCoordinate := continuous_iff_continuousAt.mpr
     (fun t => (horizonCoordinate_hasDerivAt t).continuousAt)
   have hp : ContinuousOn (fun t : ℝ => power (w/2) (horizonCoordinate t)) (uIcc L 0) := by
@@ -66,7 +66,7 @@ theorem mode_square_intervalIntegrable (w : ℂ) (L : ℝ) (hL : L < 0) :
 
 /-- Exact change of variables from the original tortoise measure to the square-root beta density. -/
 theorem mode_square_integral (w : ℂ) (L : ℝ) (hL : L < 0) :
-    (∫ t in L..0, mode w t^2)=
+    (∫ t in L..0, mode w t^(2 : ℕ))=
       (1/2:ℂ)*(∫ z in horizonCoordinate L..1, (z:ℂ)^(w-1)*(Real.sqrt (1-z):ℂ)) := by
   have hc : Continuous horizonCoordinate := continuous_iff_continuousAt.mpr
     (fun t => (horizonCoordinate_hasDerivAt t).continuousAt)
@@ -83,7 +83,7 @@ theorem mode_square_integral (w : ℂ) (L : ℝ) (hL : L < 0) :
   rw [hzero] at hsub
   have he : (∫ t in L..0, coordinateFirst t •
       ((horizonCoordinate t:ℂ)^(w-1)*(Real.sqrt (1-horizonCoordinate t):ℂ)))=
-      2*(∫ t in L..0, mode w t^2) := by
+      2*(∫ t in L..0, mode w t^(2 : ℕ)) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr_uIoo
     intro t ht
@@ -111,7 +111,7 @@ def normFinitePart (w : ℂ) : ℂ := (1/2:ℂ)*HalfOrderBeta.finitePart w
 
 /-- The original radial cutoff integral has the restored limit; no value is assigned independently of this limit. -/
 theorem mode_square_cutoff_tendsto (w : ℂ) (hw : -2 < w.re) (hw0 : w ≠ 0) (hw1 : w+1 ≠ 0) :
-    Tendsto (fun L : ℝ => (∫ t in L..0, mode w t^2)+counterterm w L)
+    Tendsto (fun L : ℝ => (∫ t in L..0, mode w t^(2 : ℕ))+counterterm w L)
       atBot (𝓝 (normFinitePart w)) := by
   have h := ((HalfOrderBeta.finitePart_cutoff_tendsto w hw hw0 hw1).comp
     horizonCoordinate_tendsto_positive).const_mul (1/2:ℂ)
@@ -148,7 +148,7 @@ attribute [-instance] NormedSpace.complexToReal
 /-- The radially constant coefficient of the actual temporal Einstein Laurent density. -/
 def physicalRadialResidueFactor (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (z : D4BMHorizon.Point) : ℂ :=
-  -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^2-1/4-2)*
+  -2*physicalFundamentalFrequency q side*(physicalAngularParameter q^(2 : ℕ)-1/4-2)*
     (physicalSelfSourceCoefficient q*
       fundamentalSourceMoment (physicalFundamentalFrequency q side) (physicalRate q branch) a*
       clearedOnset (physicalRate q branch) (physicalFundamentalFrequency q side)/
@@ -157,11 +157,11 @@ def physicalRadialResidueFactor (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
 /-- Multiplication by the original radius Jacobian cancels precisely the denominator in the actual Einstein current. -/
 theorem physicalTimeResidue_radial_density (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (outer : Bool) (t : ℝ) (ht : t < 0) (z : D4BMHorizon.Point) :
-    ((tortoiseRadius t:ℂ)^2-1)*physicalTimeResidue q branch side a outer t z =
+    ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*physicalTimeResidue q branch side a outer t z =
       physicalRadialResidueFactor q branch side a z*
-        D4BMFundamentalNorm.mode (physicalFundamentalFrequency q side) t^2 := by
-  have hR : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show tortoiseRadius t^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t ht])
+        D4BMFundamentalNorm.mode (physicalFundamentalFrequency q side) t^(2 : ℕ) := by
+  have hR : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show tortoiseRadius t^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t ht])
   rw [physicalTimeResidue_fundamental_value q branch side a outer t ht z]
   dsimp only [physicalRadialResidueFactor,D4BMFundamentalNorm.mode]
   field_simp [hR]
@@ -169,9 +169,9 @@ theorem physicalTimeResidue_radial_density (q : XiZeroCopy) (branch side : Bool)
 /-- The actual finite-radius integral of the temporal Laurent coefficient, in the original tortoise chart. -/
 theorem physicalTimeResidue_radial_integral (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (outer : Bool) (L : ℝ) (hL : L < 0) (z : D4BMHorizon.Point) :
-    (∫ t in L..0, ((tortoiseRadius t:ℂ)^2-1)*physicalTimeResidue q branch side a outer t z)=
+    (∫ t in L..0, ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*physicalTimeResidue q branch side a outer t z)=
       physicalRadialResidueFactor q branch side a z*
-        (∫ t in L..0, D4BMFundamentalNorm.mode (physicalFundamentalFrequency q side) t^2) := by
+        (∫ t in L..0, D4BMFundamentalNorm.mode (physicalFundamentalFrequency q side) t^(2 : ℕ)) := by
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr_uIoo
   intro t ht
@@ -188,7 +188,7 @@ def physicalRadialResidueFinitePart (q : XiZeroCopy) (branch side : Bool) (a : �
 theorem physicalTimeResidue_radial_cutoff_tendsto (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (outer : Bool) (z : D4BMHorizon.Point) :
     Tendsto (fun L : ℝ =>
-      (∫ t in L..0, ((tortoiseRadius t:ℂ)^2-1)*physicalTimeResidue q branch side a outer t z)+
+      (∫ t in L..0, ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*physicalTimeResidue q branch side a outer t z)+
       physicalRadialResidueFactor q branch side a z*
         D4BMFundamentalNorm.counterterm (physicalFundamentalFrequency q side) L)
       atBot (𝓝 (physicalRadialResidueFinitePart q branch side a z)) := by

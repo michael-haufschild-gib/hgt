@@ -62,7 +62,7 @@ theorem oppositePairingFactor_uniform_first_bound (w chi : ℂ) (hw : w.im ≠ 0
     have hn := norm_sub_norm_le (j-(1/2:ℂ)) ((1/4:ℂ)*(z:ℂ))
     rw [norm_mul,show ‖(1/4:ℂ)‖=(1/4:ℝ) by norm_num,
       Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hz.1] at hn
-    change ‖j-(1/2:ℂ)-(1/4:ℂ)*(z:ℂ)‖ ≤ 2*z^2 at he
+    change ‖j-(1/2:ℂ)-(1/4:ℂ)*(z:ℂ)‖ ≤ 2*z^(2 : ℕ) at he
     nlinarith [mul_nonneg hz0 (sub_nonneg.mpr hz1)]
   have hjb : ‖j‖ ≤ 2 := by
     have hn := norm_sub_norm_le j (1/2:ℂ)

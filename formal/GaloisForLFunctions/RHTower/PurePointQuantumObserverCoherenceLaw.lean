@@ -24,7 +24,7 @@ def purePointObserverDistanceSq
   ∑' p : J × (ι × ι),
     lam p.1 *
       ‖phase p.2.1 p.2.2 • block p.1 p.2.1 p.2.2 -
-        block p.1 p.2.1 p.2.2‖ ^ 2
+        block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ)
 
 /-- Total observer-weighted phase energy over an arbitrary pure-point
 spectrum. -/
@@ -33,14 +33,14 @@ def purePointObserverPhaseEnergy
     (lam : J → ℝ) (phase : ι → ι → ℂ)
     (block : J → ι → ι → E) : ℝ :=
   ∑' p : J × (ι × ι),
-    lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ 2 *
-      ‖phase p.2.1 p.2.2 - 1‖ ^ 2
+    lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ) *
+      ‖phase p.2.1 p.2.2 - 1‖ ^ (2 : ℕ)
 
 private theorem observer_displacement_term_eq_phase_term
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (lam : ℝ) (phase : ℂ) (block : E) :
-    lam * ‖phase • block - block‖ ^ 2 =
-      lam * ‖block‖ ^ 2 * ‖phase - 1‖ ^ 2 := by
+    lam * ‖phase • block - block‖ ^ (2 : ℕ) =
+      lam * ‖block‖ ^ (2 : ℕ) * ‖phase - 1‖ ^ (2 : ℕ) := by
   have h : phase • block - block = (phase - 1) • block := by
     module
   rw [h, norm_smul, mul_pow]
@@ -71,10 +71,10 @@ theorem summable_purePointObserver_distance_iff_phaseEnergy
     Summable (fun p : J × (ι × ι) =>
         lam p.1 *
           ‖phase p.2.1 p.2.2 • block p.1 p.2.1 p.2.2 -
-            block p.1 p.2.1 p.2.2‖ ^ 2) ↔
+            block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ)) ↔
       Summable (fun p : J × (ι × ι) =>
-        lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ 2 *
-          ‖phase p.2.1 p.2.2 - 1‖ ^ 2) := by
+        lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ) *
+          ‖phase p.2.1 p.2.2 - 1‖ ^ (2 : ℕ)) := by
   apply summable_congr
   intro p
   exact observer_displacement_term_eq_phase_term
@@ -91,13 +91,13 @@ theorem purePointObserverPhaseEnergy_eq_zero_iff
     (block : J → ι → ι → E)
     (hlam : ∀ a, 0 ≤ lam a)
     (hsummable : Summable (fun p : J × (ι × ι) =>
-      lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ 2 *
-        ‖phase p.2.1 p.2.2 - 1‖ ^ 2)) :
+      lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ) *
+        ‖phase p.2.1 p.2.2 - 1‖ ^ (2 : ℕ))) :
     purePointObserverPhaseEnergy lam phase block = 0 ↔
       ∀ a i j, 0 < lam a → block a i j ≠ 0 → phase i j = 1 := by
   let f : J × (ι × ι) → ℝ := fun p =>
-    lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ 2 *
-      ‖phase p.2.1 p.2.2 - 1‖ ^ 2
+    lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ) *
+      ‖phase p.2.1 p.2.2 - 1‖ ^ (2 : ℕ)
   have hf_nonneg : ∀ p, 0 ≤ f p := by
     intro p
     exact mul_nonneg
@@ -117,10 +117,10 @@ theorem purePointObserverPhaseEnergy_eq_zero_iff
         (hf_nonneg (a, (i, j)))
     have hnorm_block : ‖block a i j‖ ≠ 0 :=
       norm_ne_zero_iff.mpr hblock
-    have hphase_sq : ‖phase i j - 1‖ ^ 2 = 0 := by
+    have hphase_sq : ‖phase i j - 1‖ ^ (2 : ℕ) = 0 := by
       have hproduct :
-          (lam a * ‖block a i j‖ ^ 2) *
-            ‖phase i j - 1‖ ^ 2 = 0 := by
+          (lam a * ‖block a i j‖ ^ (2 : ℕ)) *
+            ‖phase i j - 1‖ ^ (2 : ℕ) = 0 := by
         simpa only [f] using hterm
       exact (mul_eq_zero.mp hproduct).resolve_left
         (mul_ne_zero hpos.ne' (pow_ne_zero 2 hnorm_block))
@@ -149,8 +149,8 @@ theorem purePointHamiltonianObserverDistanceSq_eq_zero_iff
     (block : J → ι → ι → E)
     (hlam : ∀ a, 0 ≤ lam a)
     (hsummable : Summable (fun p : J × (ι × ι) =>
-      lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ 2 *
-        ‖purePointHamiltonianPhase t energy p.2.1 p.2.2 - 1‖ ^ 2)) :
+      lam p.1 * ‖block p.1 p.2.1 p.2.2‖ ^ (2 : ℕ) *
+        ‖purePointHamiltonianPhase t energy p.2.1 p.2.2 - 1‖ ^ (2 : ℕ))) :
     purePointObserverDistanceSq lam
         (purePointHamiltonianPhase t energy) block = 0 ↔
       ∀ a i j, 0 < lam a → block a i j ≠ 0 →

@@ -79,7 +79,7 @@ theorem suzukiHerglotz_neg_of_parity
 
 /-- Scalar kernel in the Donoghue resolvent transform of a spectral probability measure. -/
 def suzukiDonoghueKernel (t : ℝ) (z : ℂ) : ℂ :=
-  z + (z ^ 2 + 1) / ((t : ℂ) - z)
+  z + (z ^ (2 : ℕ) + 1) / ((t : ℂ) - z)
 
 /-- The resolvent form of the Donoghue kernel is a real-line Möbius kernel. -/
 theorem suzukiDonoghueKernel_eq_mobius {t : ℝ} {z : ℂ} (h : (t : ℂ) - z ≠ 0) :
@@ -93,7 +93,7 @@ kernel with measure weight multiplied by `1+t²`; no linear term at infinity occ
 theorem suzukiDonoghueKernel_eq_nevanlinna
     {t : ℝ} {z : ℂ} (h : (t : ℂ) - z ≠ 0) :
     suzukiDonoghueKernel t z =
-      (((1 + t ^ 2 : ℝ) : ℂ) / ((t : ℂ) - z)) - (t : ℂ) := by
+      (((1 + t ^ (2 : ℕ) : ℝ) : ℂ) / ((t : ℂ) - z)) - (t : ℂ) := by
   rw [suzukiDonoghueKernel]
   push_cast
   field_simp

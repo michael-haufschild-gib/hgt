@@ -25,7 +25,7 @@ namespace RHTower
 def rectangularCorrectedBottomXiValue (L a : ℝ) : ℝ :=
   (normalizedRectangularBottomXiContribution L a -
       normalizedRectangularBottomArchContribution L a).re +
-    2 * rectangularEvenPolarFeature L a ^ 2
+    2 * rectangularEvenPolarFeature L a ^ (2 : ℕ)
 
 /-- The corrected literal Xi bottom edge is exactly the finite rectangular prime--polar source. -/
 theorem rectangularCorrectedBottomXiValue_eq_primePolarSource

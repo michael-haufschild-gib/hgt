@@ -29,7 +29,7 @@ theorem vectorLawDiagonalMass_replicaAmplitude (weight : I → ℝ) (r : ℕ) :
     vectorLawDiagonalMass
         (fun p : ReplicaMultiplicityIndex I r =>
           fidelityReplicaMultiplicityAmplitude weight p.1)
-      = ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ 2 := by
+      = ∑ p ∈ Finset.univ.piAntidiag r, fidelityReplicaMultiplicityAmplitude weight p ^ (2 : ℕ) := by
   classical
   rw [vectorLawDiagonalMass]
   rw [Finset.sum_coe_sort ((Finset.univ : Finset I).piAntidiag r)

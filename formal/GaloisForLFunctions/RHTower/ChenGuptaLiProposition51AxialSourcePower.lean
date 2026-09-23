@@ -29,15 +29,15 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_literalEpsilonSourcePow
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
           (S.epsilonDenominator * 25) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
           cglProposition51PuncturedInverseSquareMass)) /
-        S.base ^ 10 := by
+        S.base ^ (10 : ℕ) := by
   let T := S.toPaperSourcePacket
   let X := S.base
   let d := S.epsilonDenominator
   let C : ℝ := cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump (d * 25) *
     cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-    (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+    (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
     cglProposition51PuncturedInverseSquareMass
   have hTbase : T.base = X := by rfl
   have hXone : 1 ≤ X := by
@@ -50,48 +50,48 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_literalEpsilonSourcePow
     have hB0 : 0 ≤ cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 :=
       cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump _
     have hB2 : 0 ≤ cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 /
-        (2 * Real.pi) ^ 2 :=
+        (2 * Real.pi) ^ (2 : ℕ) :=
       div_nonneg (cglSmoothBumpHtAllOrderBudget_nonneg w.toCGLSmoothBump 2) (sq_nonneg _)
     have hmass : 0 ≤ cglProposition51PuncturedInverseSquareMass := by
       unfold cglProposition51PuncturedInverseSquareMass
       exact tsum_nonneg fun m => by positivity
     dsimp [C]
     exact mul_nonneg (mul_nonneg (mul_nonneg hBn hB0) hB2) hmass
-  have hR : (R : ℝ) ≤ X ^ 3 := by
+  have hR : (R : ℝ) ≤ X ^ (3 : ℕ) := by
     simpa [T, X, CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket] using
       cglLemma45PaperSourcePacket_rowCount_le_cube T
-  have hR3 : (R : ℝ) ^ 3 ≤ X ^ 9 := by
+  have hR3 : (R : ℝ) ^ (3 : ℕ) ≤ X ^ (9 : ℕ) := by
     calc
-      (R : ℝ) ^ 3 ≤ (X ^ 3) ^ 3 := pow_le_pow_left₀ (by positivity) hR _
-      _ = X ^ 9 := by ring
+      (R : ℝ) ^ (3 : ℕ) ≤ (X ^ (3 : ℕ)) ^ (3 : ℕ) := pow_le_pow_left₀ (by positivity) hR _
+      _ = X ^ (9 : ℕ) := by ring
   have hQ : ((cglLemma45FibreModulus q).value : ℝ) ≤ X := by
     simpa [T, X, CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket] using
       cglProposition51_paperSource_modulus_le_base T
-  have hQ3 : ((cglLemma45FibreModulus q).value : ℝ) ^ 3 ≤ X ^ 3 :=
+  have hQ3 : ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) ≤ X ^ (3 : ℕ) :=
     pow_le_pow_left₀ (by positivity) hQ _
   have htail := cglProposition51_axialAnalyticTailProduct_le_sourceScale T w (d * 25)
-  have hspacingPow : X ^ 25 ≤ P.spacing ^ (d * 25) := by
+  have hspacingPow : X ^ (25 : ℕ) ≤ P.spacing ^ (d * 25) := by
     have h := pow_le_pow_left₀ (pow_nonneg hX 1)
       (cglLemma45LiteralEpsilonSourcePacket_spacing_power S) 25
     simpa [X, d, pow_mul] using h
-  have hrecip : 1 / P.spacing ^ (d * 25) ≤ 1 / X ^ 25 := by
+  have hrecip : 1 / P.spacing ^ (d * 25) ≤ 1 / X ^ (25 : ℕ) := by
     apply one_div_le_one_div_of_le
     · exact pow_pos (lt_of_lt_of_le zero_lt_one hXone) _
     · exact hspacingPow
-  have hratio : X ^ 15 / P.spacing ^ (d * 25) ≤ 1 / X ^ 10 := by
+  have hratio : X ^ (15 : ℕ) / P.spacing ^ (d * 25) ≤ 1 / X ^ (10 : ℕ) := by
     calc
-      X ^ 15 / P.spacing ^ (d * 25) = X ^ 15 * (1 / P.spacing ^ (d * 25)) := by ring
-      _ ≤ X ^ 15 * (1 / X ^ 25) := by
+      X ^ (15 : ℕ) / P.spacing ^ (d * 25) = X ^ (15 : ℕ) * (1 / P.spacing ^ (d * 25)) := by ring
+      _ ≤ X ^ (15 : ℕ) * (1 / X ^ (25 : ℕ)) := by
         exact mul_le_mul_of_nonneg_left hrecip (pow_nonneg hX _)
-      _ = X ^ 15 / X ^ 25 := by ring
-      _ ≤ 1 / X ^ 10 :=
+      _ = X ^ (15 : ℕ) / X ^ (25 : ℕ) := by ring
+      _ ≤ 1 / X ^ (10 : ℕ) :=
         cglBasePowerRatio_le_reciprocal X hXone 15 10 25 (by norm_num)
   have hprod :
       cglProposition51FibreAxialAnalyticBudget P w N (d * 25) *
-        (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-          (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+        (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+          (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
             cglProposition51PuncturedInverseSquareMass) ≤
-        9 * C * (X ^ 3 / P.spacing ^ (d * 25)) := by
+        9 * C * (X ^ (3 : ℕ) / P.spacing ^ (d * 25)) := by
     rw [hTbase] at htail
     simpa [C, d] using htail
   have hanalytic : 0 ≤ cglProposition51FibreAxialAnalyticBudget P w N (d * 25) := by
@@ -104,11 +104,11 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_literalEpsilonSourcePow
     · exact mul_nonneg (cglAffineFourierScale_pos N (cglLemma45FibreModulus q)).le
         (cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump 0)
   have htailNonneg : 0 ≤
-      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass := by
     have hB2 : 0 ≤ cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 /
-        (2 * Real.pi) ^ 2 :=
+        (2 * Real.pi) ^ (2 : ℕ) :=
       div_nonneg (cglSmoothBumpHtAllOrderBudget_nonneg w.toCGLSmoothBump 2) (sq_nonneg _)
     have htimeone : 1 ≤ T.time := T.time_one
     have htime : 0 ≤ 1 + 2 * T.time := by linarith
@@ -120,21 +120,21 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_literalEpsilonSourcePow
     simp only [div_eq_mul_inv]
     exact mul_nonneg (mul_nonneg (mul_nonneg hB2 (pow_nonneg htime _)) hinv) hmass
   have hprodNonneg : 0 ≤ cglProposition51FibreAxialAnalyticBudget P w N (d * 25) *
-      (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+      (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass) := mul_nonneg hanalytic htailNonneg
   have htotal :
-      (R : ℝ) ^ 3 * ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      (R : ℝ) ^ (3 : ℕ) * ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         (cglProposition51FibreAxialAnalyticBudget P w N (d * 25) *
-          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-            (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+            (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
               cglProposition51PuncturedInverseSquareMass)) ≤
-        X ^ 9 * X ^ 3 * (9 * C * (X ^ 3 / P.spacing ^ (d * 25))) := by
+        X ^ (9 : ℕ) * X ^ (3 : ℕ) * (9 * C * (X ^ (3 : ℕ) / P.spacing ^ (d * 25))) := by
     calc
-      _ ≤ X ^ 9 * X ^ 3 *
+      _ ≤ X ^ (9 : ℕ) * X ^ (3 : ℕ) *
           (cglProposition51FibreAxialAnalyticBudget P w N (d * 25) *
-            (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-              (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+            (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+              (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
                 cglProposition51PuncturedInverseSquareMass)) := by
           gcongr
       _ ≤ _ := by gcongr
@@ -142,17 +142,17 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_literalEpsilonSourcePow
     ∑' m : CGLProposition51PuncturedFrequency,
         ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
           (cglLemma45FibreRows P) (cglProposition51AxialFrequencyVector m.val)‖ ≤
-      (R : ℝ) ^ 3 * ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      (R : ℝ) ^ (3 : ℕ) * ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         cglProposition51FibreAxialAnalyticBudget P w N (d * 25) *
-          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-            (1 + 2 * T.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+            (1 + 2 * T.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
               cglProposition51PuncturedInverseSquareMass) :=
       cglProposition51_axialFrequencyTerm_norm_tsum_le_heightRowBudget T w (d * 25)
-    _ ≤ (X ^ 9) * (X ^ 3) *
-        (9 * C * (X ^ 3 / P.spacing ^ (d * 25))) := by
+    _ ≤ (X ^ (9 : ℕ)) * (X ^ (3 : ℕ)) *
+        (9 * C * (X ^ (3 : ℕ) / P.spacing ^ (d * 25))) := by
       simpa only [mul_assoc] using htotal
-    _ = (9 * C) * (X ^ 15 / P.spacing ^ (d * 25)) := by ring
-    _ ≤ (9 * C) * (1 / X ^ 10) := by
+    _ = (9 * C) * (X ^ (15 : ℕ) / P.spacing ^ (d * 25)) := by ring
+    _ ≤ (9 * C) * (1 / X ^ (10 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left hratio (by positivity)
     _ = _ := by
       dsimp [C, X, d]

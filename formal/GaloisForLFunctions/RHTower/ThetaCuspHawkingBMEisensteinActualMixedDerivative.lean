@@ -31,11 +31,11 @@ noncomputable section
 def d4BMPoincareSeedMixedSecondJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  (4 * s * (p.pair.1 : ℂ) ^ 3 * (z.y : ℂ) *
+  (4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) * (z.y : ℂ) *
         (d4BMPoincareHorizontalLinear z p : ℂ) /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 +
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) +
       (s / (z.y : ℂ) -
-        2 * s * (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) /
+        2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
           (d4BMPoincareQuadratic z p.pair : ℂ)) *
         (-2 * s * (p.pair.1 : ℂ) *
           (d4BMPoincareHorizontalLinear z p : ℂ) /
@@ -52,10 +52,10 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJet_horizontal
       (d4BMPoincareSeedMixedSecondJet z s p) z.x := by
   let c : ℝ := p.pair.1
   let d : ℝ := p.pair.2
-  let Q : ℝ → ℝ := fun x => (c * z.y) ^ 2 + (c * x + d) ^ 2
+  let Q : ℝ → ℝ := fun x => (c * z.y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ)
   let B : ℝ → ℂ := fun x =>
     s / (z.y : ℂ) -
-      2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / (Q x : ℂ)
+      2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / (Q x : ℂ)
   let f : ℝ → ℂ := fun x =>
     d4BMPoincareSeed (d4BMHorizontalCoordinate z x) s p
   have hQpos : 0 < Q z.x := by
@@ -74,10 +74,10 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJet_horizontal
   have hBraw :=
     (hasDerivAt_const z.x (s / (z.y : ℂ))).sub
       ((hasDerivAt_const z.x
-        (2 * s * (c : ℂ) ^ 2 * (z.y : ℂ))).div hQderiv hQne)
+        (2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ))).div hQderiv hQne)
   have hBderiv : HasDerivAt B
-      (4 * s * (c : ℂ) ^ 3 * (z.y : ℂ) *
-        (((c * z.x + d : ℝ) : ℂ)) / (Q z.x : ℂ) ^ 2) z.x := by
+      (4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ) *
+        (((c * z.x + d : ℝ) : ℂ)) / (Q z.x : ℂ) ^ (2 : ℕ)) z.x := by
     dsimp only [B]
     apply hBraw.congr_deriv
     push_cast
@@ -102,7 +102,7 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJet_horizontal
   let QC : ℂ := (Q z.x : ℂ)
   let F : ℂ := f z.x
   have hB : B z.x = s / (z.y : ℂ) -
-      2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / QC := by rfl
+      2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / QC := by rfl
   have hFvalue : F = d4BMPoincareSeed z s p := by
     unfold F f d4BMPoincareSeed d4BMPoincareQuadratic d4BMHorizontalCoordinate
     rfl
@@ -115,9 +115,9 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalFirstJet_horizontal
     push_cast
     rfl
   have hmixed : d4BMPoincareSeedMixedSecondJet z s p =
-      (4 * s * (c : ℂ) ^ 3 * (z.y : ℂ) * U / QC ^ 2 +
+      (4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ) * U / QC ^ (2 : ℕ) +
         (s / (z.y : ℂ) -
-          2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / QC) *
+          2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / QC) *
             (-2 * s * (c : ℂ) * U / QC)) * F := by
     rw [hFvalue]
     unfold d4BMPoincareSeedMixedSecondJet d4BMPoincareHorizontalLinear
@@ -133,56 +133,56 @@ lemma norm_d4BMPoincareSeedMixedSecondJet_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMPoincareSeedMixedSecondJet z s p‖ ≤
-      ((4 * ‖s‖ + 6 * ‖s‖ ^ 2) / z.y ^ 2) *
+      ((4 * ‖s‖ + 6 * ‖s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
   let c : ℝ := p.pair.1
   let u : ℝ := d4BMPoincareHorizontalLinear z p
   let Q : ℝ := d4BMPoincareQuadratic z p.pair
   have hQ : 0 < Q := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  have hy2 : 0 < z.y ^ 2 := sq_pos_of_pos z.y_pos
-  have hcQ : c ^ 2 * z.y ^ 2 ≤ Q := by
+  have hy2 : 0 < z.y ^ (2 : ℕ) := sq_pos_of_pos z.y_pos
+  have hcQ : c ^ (2 : ℕ) * z.y ^ (2 : ℕ) ≤ Q := by
     dsimp only [Q, c, u, d4BMPoincareQuadratic,
       d4BMPoincareHorizontalLinear]
     nlinarith [sq_nonneg ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ))]
   have hamgm : 2 * z.y * |c| * |u| ≤ Q := by
     calc
-      2 * z.y * |c| * |u| ≤ (z.y * |c|) ^ 2 + |u| ^ 2 := by
+      2 * z.y * |c| * |u| ≤ (z.y * |c|) ^ (2 : ℕ) + |u| ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (z.y * |c| - |u|)]
-      _ = z.y ^ 2 * |c| ^ 2 + |u| ^ 2 := by ring
-      _ = z.y ^ 2 * c ^ 2 + u ^ 2 := by rw [sq_abs c, sq_abs u]
+      _ = z.y ^ (2 : ℕ) * |c| ^ (2 : ℕ) + |u| ^ (2 : ℕ) := by ring
+      _ = z.y ^ (2 : ℕ) * c ^ (2 : ℕ) + u ^ (2 : ℕ) := by rw [sq_abs c, sq_abs u]
       _ = Q := by
         dsimp only [Q, c, u, d4BMPoincareQuadratic,
           d4BMPoincareHorizontalLinear]
         ring
   have hcuQ : z.y * |c| * |u| ≤ Q := by
     nlinarith [abs_nonneg c, abs_nonneg u, z.y_pos, hQ]
-  have hcQabs : |c| ^ 2 * z.y ^ 2 ≤ Q := by
+  have hcQabs : |c| ^ (2 : ℕ) * z.y ^ (2 : ℕ) ≤ Q := by
     simpa only [sq_abs] using hcQ
   have hcu_nonneg : 0 ≤ z.y * |c| * |u| :=
     mul_nonneg (mul_nonneg z.y_pos.le (abs_nonneg c)) (abs_nonneg u)
   have hprod :
-      (|c| ^ 2 * z.y ^ 2) * (z.y * |c| * |u|) ≤ Q * Q :=
+      (|c| ^ (2 : ℕ) * z.y ^ (2 : ℕ)) * (z.y * |c| * |u|) ≤ Q * Q :=
     mul_le_mul hcQabs hcuQ hcu_nonneg hQ.le
-  have hratio : |c| ^ 3 * z.y * |u| / Q ^ 2 ≤ 1 / z.y ^ 2 := by
+  have hratio : |c| ^ (3 : ℕ) * z.y * |u| / Q ^ (2 : ℕ) ≤ 1 / z.y ^ (2 : ℕ) := by
     apply (div_le_div_iff₀ (sq_pos_of_pos hQ) hy2).2
     nlinarith [abs_nonneg c, abs_nonneg u]
   have hcu : |c| * |u| / Q ≤ 1 / z.y := by
     apply (div_le_div_iff₀ hQ z.y_pos).2
     nlinarith [abs_nonneg c, abs_nonneg u]
-  let D : ℂ := 4 * s * (c : ℂ) ^ 3 * (z.y : ℂ) * (u : ℂ) / (Q : ℂ) ^ 2
+  let D : ℂ := 4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ) * (u : ℂ) / (Q : ℂ) ^ (2 : ℕ)
   let A : ℂ := -2 * s * (c : ℂ) * (u : ℂ) / (Q : ℂ)
-  have hD : ‖D‖ ≤ 4 * ‖s‖ / z.y ^ 2 := by
+  have hD : ‖D‖ ≤ 4 * ‖s‖ / z.y ^ (2 : ℕ) := by
     dsimp only [D]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hQ,
       abs_of_pos z.y_pos]
     norm_num
     calc
-      4 * ‖s‖ * |c| ^ 3 * z.y * |u| / Q ^ 2 =
-          4 * ‖s‖ * (|c| ^ 3 * z.y * |u| / Q ^ 2) := by ring
-      _ ≤ 4 * ‖s‖ * (1 / z.y ^ 2) :=
+      4 * ‖s‖ * |c| ^ (3 : ℕ) * z.y * |u| / Q ^ (2 : ℕ) =
+          4 * ‖s‖ * (|c| ^ (3 : ℕ) * z.y * |u| / Q ^ (2 : ℕ)) := by ring
+      _ ≤ 4 * ‖s‖ * (1 / z.y ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hratio (by positivity)
-      _ = 4 * ‖s‖ / z.y ^ 2 := by ring
+      _ = 4 * ‖s‖ / z.y ^ (2 : ℕ) := by ring
   have hA : ‖A‖ ≤ 2 * ‖s‖ / z.y := by
     dsimp only [A]
     rw [norm_div, norm_mul, norm_mul, norm_mul]
@@ -213,7 +213,7 @@ lemma norm_d4BMPoincareSeedMixedSecondJet_le
     _ = ‖D‖ * ‖d4BMPoincareSeed z s p‖ +
         ‖A‖ * ‖d4BMPoincareSeedVerticalFirstJet z s p‖ := by
       rw [norm_mul, norm_mul]
-    _ ≤ (4 * ‖s‖ / z.y ^ 2) * ‖d4BMPoincareSeed z s p‖ +
+    _ ≤ (4 * ‖s‖ / z.y ^ (2 : ℕ)) * ‖d4BMPoincareSeed z s p‖ +
         (2 * ‖s‖ / z.y) *
           ((3 * ‖s‖ / z.y) * ‖d4BMPoincareSeed z s p‖) := by
       apply add_le_add
@@ -221,7 +221,7 @@ lemma norm_d4BMPoincareSeedMixedSecondJet_le
       · exact mul_le_mul hA
           (norm_d4BMPoincareSeedVerticalFirstJet_le z s p)
           (norm_nonneg _) hAupper
-    _ = ((4 * ‖s‖ + 6 * ‖s‖ ^ 2) / z.y ^ 2) *
+    _ = ((4 * ‖s‖ + 6 * ‖s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
       field_simp [z.y_pos.ne']
       ring
@@ -231,7 +231,7 @@ def d4BMMixedSecondJetHorizontalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  (((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) * 3 ^ P.s.re) *
+  (((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) * 3 ^ P.s.re) *
     ‖d4BMPoincareSeed z P.s p‖
 
 lemma summable_d4BMMixedSecondJetHorizontalLocalMajorant
@@ -267,7 +267,7 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedVerticalFirstJet_horizontal
     simpa [g, g', d4BMHorizontalCoordinate] using
       hasDerivAt_d4BMPoincareSeedVerticalFirstJet_horizontal
         (d4BMHorizontalCoordinate z x) P.s p
-  have hK : 0 ≤ (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2 := by
+  have hK : 0 ≤ (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ) := by
     apply div_nonneg
     · positivity
     · exact sq_nonneg _
@@ -275,13 +275,13 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedVerticalFirstJet_horizontal
     intro p x hx
     calc
       ‖g' p x‖ ≤
-          ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+          ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
             ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
         dsimp only [g']
         simpa [d4BMHorizontalCoordinate] using
           norm_d4BMPoincareSeedMixedSecondJet_le
             (d4BMHorizontalCoordinate z x) P.s p
-      _ ≤ ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+      _ ≤ ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
           (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left
           (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
@@ -304,7 +304,7 @@ theorem summable_d4BMPoincareSeedMixedSecondJet
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     Summable fun p : D4BMPrimitiveIntegerPair =>
       d4BMPoincareSeedMixedSecondJet z P.s p := by
-  let K : ℝ := (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2
+  let K : ℝ := (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)
   have hK : Summable fun p : D4BMPrimitiveIntegerPair =>
       K * ‖d4BMPoincareSeed z P.s p‖ :=
     (summable_d4BMPoincareSeed z P).norm.mul_left K
@@ -399,7 +399,7 @@ theorem d4BM_actualCompletedPoincareRaiseLeg_eq
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     d4BMActualCompletedPoincareRaiseLeg z P =
-      (z.y : ℂ) ^ 2 *
+      (z.y : ℂ) ^ (2 : ℕ) *
           (d4BMCompletedPoincareVerticalSecondJet z P -
             d4BMCompletedPoincareHorizontalSecondJet z P +
             2 * Complex.I * d4BMCompletedPoincareMixedSecondJet z P) +
@@ -413,7 +413,7 @@ theorem d4BM_actualCompletedPoincareLowerLeg_eq
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     d4BMActualCompletedPoincareLowerLeg z P =
-      (z.y : ℂ) ^ 2 *
+      (z.y : ℂ) ^ (2 : ℕ) *
           (d4BMCompletedPoincareVerticalSecondJet z P -
             d4BMCompletedPoincareHorizontalSecondJet z P -
             2 * Complex.I * d4BMCompletedPoincareMixedSecondJet z P) +

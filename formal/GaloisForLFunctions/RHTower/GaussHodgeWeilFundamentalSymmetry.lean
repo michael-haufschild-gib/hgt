@@ -10,17 +10,17 @@ parity flip `J F = F ∘ conj` is a *fundamental symmetry* of the Weil form in t
 space theory, unconditionally.
 
 * `J` is an involution, `J`-twisting the second slot turns the Weil form into the literal
-  `ell^2` inner product of divisor evaluations (`xiWeilPolarization_parityFlip_right`), and `J`
+  `ell^(2 : ℕ)` inner product of divisor evaluations (`xiWeilPolarization_parityFlip_right`), and `J`
   is self-adjoint for the form (`xiWeilPolarization_parityFlip_symm`).  In particular the GNS
   Hilbert space that a square realization would generate *already exists* unconditionally: it is
-  the divisor-coordinate `ell^2` space carried by the `J`-metric, and every square-summable test
+  the divisor-coordinate `ell^(2 : ℕ)` space carried by the `J`-metric, and every square-summable test
   satisfies the `J`-metric square-sum law (`xiWeilParityFlip_hasSum_sq`).
 * The associated parity decomposition is `W`-orthogonal: divisor-even and divisor-odd tests are
   orthogonal for the full sesquilinear form (`xiWeilPolarization_even_odd`), the form restricted
-  to divisor-even tests is exactly the positive `ell^2` diagonal
+  to divisor-even tests is exactly the positive `ell^(2 : ℕ)` diagonal
   (`xiWeilPolarization_diagonal_of_divisorEven`, giving the unconditional even-sector square
   realization `xiWeilEvenSector_hasSum_sq`), and restricted to divisor-odd tests it is minus the
-  `ell^2` diagonal (`xiWeilPolarization_diagonal_of_divisorOdd`).
+  `ell^(2 : ℕ)` diagonal (`xiWeilPolarization_diagonal_of_divisorOdd`).
 * Every square-summable diagonal value splits as even-sector energy minus odd-sector energy at
   the level of complex values, not just real parts
   (`xiWeilPolarization_parity_decomposition`, `xiWeilPolarization_self_eq_parity_energies`); in
@@ -29,7 +29,7 @@ space theory, unconditionally.
   divisor-odd test vanishes identically on the divisor
   (`riemannHypothesis_iff_forall_divisorOdd_eval_eq_zero`), iff the Weil form is invariant under
   `J`-twisting (`riemannHypothesis_iff_polarization_parityFlip_invariant`) — that is, iff the
-  Weil form coincides with the positive `ell^2` form it is `J`-equivalent to.
+  Weil form coincides with the positive `ell^(2 : ℕ)` form it is `J`-equivalent to.
 
 No positivity input and no zero-free region is used anywhere: every statement except the RH
 equivalences is unconditional, and the equivalences use only an indicator test at a hypothetical
@@ -121,10 +121,10 @@ theorem xiWeilOddPart_squareSummable {F : ℂ → ℂ} (hF : XiWeilSquareSummabl
   rw [xiWeilOddPart_spectral, norm_div, div_pow]
   norm_num
 
-/-! ## The J-metric is the divisor ell^2 inner product -/
+/-! ## The J-metric is the divisor ell^(2 : ℕ) inner product -/
 
 /-- Twisting the second slot by the parity flip turns the Weil polarization into the plain
-`ell^2` pairing of divisor evaluations, unconditionally. -/
+`ell^(2 : ℕ)` pairing of divisor evaluations, unconditionally. -/
 theorem xiWeilPolarization_parityFlip_right (F G : ℂ → ℂ) :
     xiWeilPolarization F (xiWeilParityFlip G) =
       ∑' q : XiZeroCopy,
@@ -134,10 +134,10 @@ theorem xiWeilPolarization_parityFlip_right (F G : ℂ → ℂ) :
   intro q
   rw [xiWeilSharp, xiWeilParityFlip, Complex.conj_conj]
 
-/-- The `J`-metric diagonal is the divisor `ell^2` energy, term by term. -/
+/-- The `J`-metric diagonal is the divisor `ell^(2 : ℕ)` energy, term by term. -/
 theorem xiWeilPolarization_parityFlip_diagonal (F : ℂ → ℂ) :
     xiWeilPolarization F (xiWeilParityFlip F) =
-      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [xiWeilPolarization_parityFlip_right]
   apply tsum_congr
   intro q
@@ -168,14 +168,14 @@ theorem xiWeilPolarization_parityFlip_symm (F G : ℂ → ℂ) :
 square-sum identity for the parity-twisted diagonal.  The Hilbert space a square realization
 would generate exists already; only the twist separates it from the Weil form itself. -/
 theorem xiWeilParityFlip_hasSum_sq {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
-    HasSum (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2)
+    HasSum (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ))
       ((xiWeilPolarization F (xiWeilParityFlip F)).re) := by
   have hsumC : Summable (fun q : XiZeroCopy =>
-      ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) := by
+      ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
     simpa only [Function.comp_apply] using!
       hF.map Complex.ofRealCLM Complex.ofRealCLM.continuous
   have hre : (xiWeilPolarization F (xiWeilParityFlip F)).re =
-      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [xiWeilPolarization_parityFlip_diagonal, Complex.re_tsum hsumC]
     exact tsum_congr fun q => Complex.ofReal_re _
   rw [hre]
@@ -201,7 +201,7 @@ theorem tsum_eq_zero_of_lineConj_neg {f : XiZeroCopy → ℂ}
   have h2 : (2 : ℂ) * ∑' q : XiZeroCopy, f q = 0 := by linear_combination h1
   exact (mul_eq_zero.mp h2).resolve_left two_ne_zero
 
-/-- The `ell^2` pairing of a divisor-even against a divisor-odd test vanishes. -/
+/-- The `ell^(2 : ℕ)` pairing of a divisor-even against a divisor-odd test vanishes. -/
 theorem tsum_even_mul_conj_odd {E O : ℂ → ℂ}
     (hE : XiWeilDivisorEven E) (hO : XiWeilDivisorOdd O) :
     ∑' q : XiZeroCopy,
@@ -235,31 +235,31 @@ theorem xiWeilPolarization_odd_even {E O : ℂ → ℂ}
 
 /-! ## The two sector diagonals -/
 
-/-- On divisor-even tests the Weil form is the positive `ell^2` diagonal, term by term and
+/-- On divisor-even tests the Weil form is the positive `ell^(2 : ℕ)` diagonal, term by term and
 unconditionally: the even sector needs no Riemann hypothesis to be a sum of squares. -/
 theorem xiWeilPolarization_diagonal_of_divisorEven {F : ℂ → ℂ}
     (hE : XiWeilDivisorEven F) :
     xiWeilPolarization F F =
-      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold xiWeilPolarization
   apply tsum_congr
   intro q
   rw [xiWeilSharp, hE q]
   simpa [Complex.sq_norm] using Complex.mul_conj (F (xiSpectralPoint q))
 
-/-- On divisor-odd tests the Weil form is minus the `ell^2` diagonal: the odd sector is the
+/-- On divisor-odd tests the Weil form is minus the `ell^(2 : ℕ)` diagonal: the odd sector is the
 entire negative Krein sector. -/
 theorem xiWeilPolarization_diagonal_of_divisorOdd {F : ℂ → ℂ}
     (hO : XiWeilDivisorOdd F) :
     xiWeilPolarization F F =
-      -∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      -∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold xiWeilPolarization
   rw [← tsum_neg]
   apply tsum_congr
   intro q
   rw [xiWeilSharp, hO q, map_neg]
   have hmc : F (xiSpectralPoint q) * (starRingEnd ℂ) (F (xiSpectralPoint q)) =
-      ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simpa [Complex.sq_norm] using Complex.mul_conj (F (xiSpectralPoint q))
   rw [mul_neg, hmc]
 
@@ -268,14 +268,14 @@ the diagonal Weil value is a convergent sum of squares with no hypothesis.  This
 the GNS construction that exists without RH. -/
 theorem xiWeilEvenSector_hasSum_sq {F : ℂ → ℂ} (hE : XiWeilDivisorEven F)
     (hF : XiWeilSquareSummable F) :
-    HasSum (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2)
+    HasSum (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ))
       ((xiWeilPolarization F F).re) := by
   have hsumC : Summable (fun q : XiZeroCopy =>
-      ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) := by
+      ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
     simpa only [Function.comp_apply] using!
       hF.map Complex.ofRealCLM Complex.ofRealCLM.continuous
   have hre : (xiWeilPolarization F F).re =
-      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [xiWeilPolarization_diagonal_of_divisorEven hE, Complex.re_tsum hsumC]
     exact tsum_congr fun q => Complex.ofReal_re _
   rw [hre]
@@ -323,8 +323,8 @@ number "even-sector energy minus odd-sector energy". -/
 theorem xiWeilPolarization_self_eq_parity_energies {F : ℂ → ℂ}
     (hF : XiWeilSquareSummable F) :
     xiWeilPolarization F F =
-      ((((∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2) -
-          ∑' q : XiZeroCopy, ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ 2 : ℝ)) : ℂ) := by
+      ((((∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)) -
+          ∑' q : XiZeroCopy, ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
   rw [xiWeilPolarization_parity_decomposition hF,
     xiWeilPolarization_diagonal_of_divisorEven (xiWeilEvenPart_divisorEven F),
     xiWeilPolarization_diagonal_of_divisorOdd (xiWeilOddPart_divisorOdd F),
@@ -429,7 +429,7 @@ theorem riemannHypothesis_iff_forall_divisorOdd_eval_eq_zero :
 
 /-- **RH ⟺ the Weil form is its own `J`-twist**: the Riemann hypothesis holds exactly when
 twisting by the fundamental symmetry is invisible — when the Weil polarization already equals
-the positive `ell^2` form carried by its `J`-metric.  The converse is an indicator test at a
+the positive `ell^(2 : ℕ)` form carried by its `J`-metric.  The converse is an indicator test at a
 hypothetical off-line zero, for which the untwisted diagonal vanishes while the `J`-metric
 diagonal is at least one. -/
 theorem riemannHypothesis_iff_polarization_parityFlip_invariant :
@@ -506,17 +506,17 @@ theorem riemannHypothesis_iff_polarization_parityFlip_invariant :
     have heq := hinv F F
     rw [hzeroW, xiWeilPolarization_parityFlip_diagonal F] at heq
     have hsumC : Summable (fun q : XiZeroCopy =>
-        ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) := by
+        ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
       simpa only [Function.comp_apply] using!
         hFsq.map Complex.ofRealCLM Complex.ofRealCLM.continuous
-    have hre2 : (0 : ℝ) = ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+    have hre2 : (0 : ℝ) = ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
       have hcast := congrArg Complex.re heq
       rw [Complex.zero_re, Complex.re_tsum hsumC] at hcast
       rw [hcast]
       exact tsum_congr fun q => Complex.ofReal_re _
-    have hFsum : Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2) := hFsq
-    have hle : ‖F (xiSpectralPoint q0)‖ ^ 2 ≤
-        ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 :=
+    have hFsum : Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ)) := hFsq
+    have hle : ‖F (xiSpectralPoint q0)‖ ^ (2 : ℕ) ≤
+        ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) :=
       hFsum.le_tsum q0 fun q _ => sq_nonneg _
     rw [← hre2, hq0] at hle
     have hFa : F alpha = 1 := by

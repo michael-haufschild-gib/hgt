@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.ImaginaryPoleBezoutianGram
 For an analytic `f` on a disc the Cauchy formula, applied to `f` divided by the reflected pole,
 represents the Carathéodory kernel
 
-`K (x, y) = (f x + conj (f y)) / (r ^ 2 - x * conj y)`
+`K (x, y) = (f x + conj (f y)) / (r ^ (2 : ℕ) - x * conj y)`
 
 as the circle average of `2 Re f` against the rank-one kernel `(ζ - x)⁻¹ conj ((ζ - y)⁻¹)`.  A
 nonnegative boundary real part therefore makes every finite Gram matrix of `K` positive
@@ -50,11 +50,11 @@ theorem circleMap_sub_ne_zero {r : ℝ} {x : ℂ} (hx : ‖x‖ < r) (θ : ℝ) 
   exact absurd this.symm (ne_of_gt hx)
 
 theorem circle_reflected_den_ne_zero {r : ℝ} {y : ℂ} (hy : ‖y‖ < r) (θ : ℝ) :
-    (r : ℂ) ^ 2 - conj y * circleMap 0 r θ ≠ 0 := by
+    (r : ℂ) ^ (2 : ℕ) - conj y * circleMap 0 r θ ≠ 0 := by
   have hr : 0 < r := pos_of_norm_lt hy
   intro h
-  have heq : (r : ℂ) ^ 2 = conj y * circleMap 0 r θ := by linear_combination h
-  have hnorm : ‖((r : ℂ) ^ 2)‖ = r ^ 2 := by
+  have heq : (r : ℂ) ^ (2 : ℕ) = conj y * circleMap 0 r θ := by linear_combination h
+  have hnorm : ‖((r : ℂ) ^ (2 : ℕ))‖ = r ^ (2 : ℕ) := by
     rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr]
   have hprod : ‖conj y * circleMap 0 r θ‖ = ‖y‖ * r := by
     rw [norm_mul, RCLike.norm_conj, norm_circleMap_zero_eq hr]
@@ -62,9 +62,9 @@ theorem circle_reflected_den_ne_zero {r : ℝ} {y : ℂ} (hy : ‖y‖ < r) (θ 
   nlinarith
 
 theorem conj_circleMap {r : ℝ} (hr : 0 < r) (θ : ℝ) :
-    conj (circleMap 0 r θ) = (r : ℂ) ^ 2 / circleMap 0 r θ := by
+    conj (circleMap 0 r θ) = (r : ℂ) ^ (2 : ℕ) / circleMap 0 r θ := by
   have hne := circleMap_ne_zero hr θ
-  have hmul : circleMap 0 r θ * conj (circleMap 0 r θ) = (r : ℂ) ^ 2 := by
+  have hmul : circleMap 0 r θ * conj (circleMap 0 r θ) = (r : ℂ) ^ (2 : ℕ) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_circleMap_zero_eq hr]
     push_cast
     ring
@@ -72,7 +72,7 @@ theorem conj_circleMap {r : ℝ} (hr : 0 < r) (θ : ℝ) :
   linear_combination hmul
 
 theorem conj_circleEval {r : ℝ} {y : ℂ} (hy : ‖y‖ < r) (θ : ℝ) :
-    conj (circleEval r y θ) = circleMap 0 r θ / ((r : ℂ) ^ 2 - conj y * circleMap 0 r θ) := by
+    conj (circleEval r y θ) = circleMap 0 r θ / ((r : ℂ) ^ (2 : ℕ) - conj y * circleMap 0 r θ) := by
   have hr : 0 < r := pos_of_norm_lt hy
   have hne := circleMap_ne_zero hr θ
   have hden := circle_reflected_den_ne_zero hy θ
@@ -105,15 +105,15 @@ theorem integral_circle_two_point {r : ℝ} {f : ℂ → ℂ}
     {x y : ℂ} (hx : ‖x‖ < r) (hy : ‖y‖ < r) :
     (∫ θ in (0 : ℝ)..(2 * π),
         f (circleMap 0 r θ) * (circleEval r x θ * conj (circleEval r y θ)))
-      = 2 * π * (f x / ((r : ℂ) ^ 2 - x * conj y)) := by
+      = 2 * π * (f x / ((r : ℂ) ^ (2 : ℕ) - x * conj y)) := by
   have hr : 0 < r := pos_of_norm_lt hx
-  set g : ℂ → ℂ := fun z => f z / ((r : ℂ) ^ 2 - conj y * z) with hg
-  have hdenball : ∀ z ∈ closedBall (0 : ℂ) r, (r : ℂ) ^ 2 - conj y * z ≠ 0 := by
+  set g : ℂ → ℂ := fun z => f z / ((r : ℂ) ^ (2 : ℕ) - conj y * z) with hg
+  have hdenball : ∀ z ∈ closedBall (0 : ℂ) r, (r : ℂ) ^ (2 : ℕ) - conj y * z ≠ 0 := by
     intro z hz
     have hzn : ‖z‖ ≤ r := by simpa using hz
     intro h
-    have heq : (r : ℂ) ^ 2 = conj y * z := by linear_combination h
-    have hnorm : ‖((r : ℂ) ^ 2)‖ = r ^ 2 := by
+    have heq : (r : ℂ) ^ (2 : ℕ) = conj y * z := by linear_combination h
+    have hnorm : ‖((r : ℂ) ^ (2 : ℕ))‖ = r ^ (2 : ℕ) := by
       rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr]
     have hprod : ‖conj y * z‖ = ‖y‖ * ‖z‖ := by rw [norm_mul, RCLike.norm_conj]
     rw [heq, hprod] at hnorm
@@ -140,10 +140,10 @@ theorem integral_circle_two_point {r : ℝ} {f : ℂ → ℂ}
   have hI : (I : ℂ) ≠ 0 := Complex.I_ne_zero
   have hfinal : I * (∫ θ in (0 : ℝ)..(2 * π),
       f (circleMap 0 r θ) * (circleEval r x θ * conj (circleEval r y θ)))
-      = I * (2 * π * (f x / ((r : ℂ) ^ 2 - x * conj y))) := by
+      = I * (2 * π * (f x / ((r : ℂ) ^ (2 : ℕ) - x * conj y))) := by
     rw [hcauchy]
     simp only [hg]
-    rw [show (r : ℂ) ^ 2 - conj y * x = (r : ℂ) ^ 2 - x * conj y by ring]
+    rw [show (r : ℂ) ^ (2 : ℕ) - conj y * x = (r : ℂ) ^ (2 : ℕ) - x * conj y by ring]
     ring
   exact mul_left_cancel₀ hI hfinal
 
@@ -161,7 +161,7 @@ theorem circle_caratheodory_representation {r : ℝ} {f : ℂ → ℂ}
     (hc : ContinuousOn f (closedBall 0 r))
     (hd : ∀ z ∈ ball (0 : ℂ) r, DifferentiableAt ℂ f z)
     {x y : ℂ} (hx : ‖x‖ < r) (hy : ‖y‖ < r) :
-    (f x + conj (f y)) / ((r : ℂ) ^ 2 - x * conj y)
+    (f x + conj (f y)) / ((r : ℂ) ^ (2 : ℕ) - x * conj y)
       = ((2 * π)⁻¹ : ℝ) * ∫ θ in (0 : ℝ)..(2 * π),
           ((2 * (f (circleMap 0 r θ)).re : ℝ) : ℂ) *
             (circleEval r x θ * conj (circleEval r y θ)) := by
@@ -204,23 +204,23 @@ theorem circle_caratheodory_representation {r : ℝ} {f : ℂ → ℂ}
     ring
   have h1 := integral_circle_two_point hc hd hx hy
   have h2 := integral_circle_two_point hc hd hy hx
-  have hden : (r : ℂ) ^ 2 - x * conj y ≠ 0 := by
+  have hden : (r : ℂ) ^ (2 : ℕ) - x * conj y ≠ 0 := by
     intro h
     have hx' : ‖x * conj y‖ = ‖x‖ * ‖y‖ := by rw [norm_mul, RCLike.norm_conj]
-    have heq : (r : ℂ) ^ 2 = x * conj y := by linear_combination h
-    have hnorm : ‖((r : ℂ) ^ 2)‖ = r ^ 2 := by
+    have heq : (r : ℂ) ^ (2 : ℕ) = x * conj y := by linear_combination h
+    have hnorm : ‖((r : ℂ) ^ (2 : ℕ))‖ = r ^ (2 : ℕ) := by
       rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr]
     rw [heq, hx'] at hnorm
     nlinarith [norm_nonneg x, norm_nonneg y]
-  have hconjden : conj ((r : ℂ) ^ 2 - y * conj x) = (r : ℂ) ^ 2 - x * conj y := by
+  have hconjden : conj ((r : ℂ) ^ (2 : ℕ) - y * conj x) = (r : ℂ) ^ (2 : ℕ) - x * conj y := by
     simp only [map_sub, map_mul, map_pow, Complex.conj_ofReal, Complex.conj_conj]
     ring
   have hpi : ((2 * π : ℝ) : ℂ) ≠ 0 := by
     simp only [Ne, Complex.ofReal_eq_zero]
     positivity
   have h2pi : (2 : ℂ) * (π : ℂ) = ((2 * π : ℝ) : ℂ) := by push_cast; ring
-  have hconjrhs : conj (2 * (π : ℂ) * (f y / ((r : ℂ) ^ 2 - y * conj x)))
-      = 2 * (π : ℂ) * (conj (f y) / ((r : ℂ) ^ 2 - x * conj y)) := by
+  have hconjrhs : conj (2 * (π : ℂ) * (f y / ((r : ℂ) ^ (2 : ℕ) - y * conj x)))
+      = 2 * (π : ℂ) * (conj (f y) / ((r : ℂ) ^ (2 : ℕ) - x * conj y)) := by
     rw [h2pi, map_mul, map_div₀, hconjden, Complex.conj_ofReal]
   rw [hsplit, h1, hsecond, h2, hconjrhs]
   push_cast
@@ -230,14 +230,14 @@ theorem circle_caratheodory_representation {r : ℝ} {f : ℂ → ℂ}
 
 /-- **The circle Carathéodory kernel is a positive Gram kernel.**  If the real part of `f` is
 nonnegative on the circle of radius `r`, every finite Gram matrix of the kernel
-`(f x + conj (f y)) / (r ^ 2 - x * conj y)` at interior nodes is positive semidefinite. -/
+`(f x + conj (f y)) / (r ^ (2 : ℕ) - x * conj y)` at interior nodes is positive semidefinite. -/
 theorem posSemidef_circleCaratheodoryGram {r : ℝ} {f : ℂ → ℂ} (hr : 0 < r)
     (hc : ContinuousOn f (closedBall 0 r))
     (hd : ∀ z ∈ ball (0 : ℂ) r, DifferentiableAt ℂ f z)
     (hu : ∀ θ : ℝ, 0 ≤ (f (circleMap 0 r θ)).re)
     {n : ℕ} (w : Fin n → ℂ) (hw : ∀ j, ‖w j‖ < r) :
     (Matrix.of fun j k =>
-      (f (w j) + conj (f (w k))) / ((r : ℂ) ^ 2 - w j * conj (w k))).PosSemidef := by
+      (f (w j) + conj (f (w k))) / ((r : ℂ) ^ (2 : ℕ) - w j * conj (w k))).PosSemidef := by
   classical
   have hFc : Continuous (fun θ : ℝ => f (circleMap 0 r θ)) := continuous_comp_circleMap hr hc
   have hE : ∀ j, Continuous (circleEval r (w j)) := fun j => continuous_circleEval (hw j)
@@ -287,15 +287,15 @@ theorem posSemidef_circleCaratheodoryGram {r : ℝ} {f : ℂ → ℂ} (hr : 0 < 
       push_cast
       ring
     have hdot : star c ⬝ᵥ (Matrix.of fun j k =>
-        (f (w j) + conj (f (w k))) / ((r : ℂ) ^ 2 - w j * conj (w k))).mulVec c
+        (f (w j) + conj (f (w k))) / ((r : ℂ) ^ (2 : ℕ) - w j * conj (w k))).mulVec c
         = ∑ j, ∑ k, conj (c j) * c k *
-            ((f (w j) + conj (f (w k))) / ((r : ℂ) ^ 2 - w j * conj (w k))) := by
+            ((f (w j) + conj (f (w k))) / ((r : ℂ) ^ (2 : ℕ) - w j * conj (w k))) := by
       simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun k _ => by ring
     have hstep : ∀ j k, conj (c j) * c k *
-          ((f (w j) + conj (f (w k))) / ((r : ℂ) ^ 2 - w j * conj (w k)))
+          ((f (w j) + conj (f (w k))) / ((r : ℂ) ^ (2 : ℕ) - w j * conj (w k)))
         = ((2 * π)⁻¹ : ℝ) * ∫ θ in (0 : ℝ)..(2 * π), B j k θ := by
       intro j k
       rw [circle_caratheodory_representation hc hd (hw j) (hw k), hBdef,
@@ -382,7 +382,7 @@ theorem posSemidef_discCaratheodoryGram {f : ℂ → ℂ}
         (fun j => by simpa using hw j)
       have hquad := hmat.dotProduct_mulVec_nonneg c
       have hval : star c ⬝ᵥ (Matrix.of fun j k =>
-          (g (w j) + conj (g (w k))) / (((1 : ℝ) : ℂ) ^ 2 - w j * conj (w k))).mulVec c = Q t := by
+          (g (w j) + conj (g (w k))) / (((1 : ℝ) : ℂ) ^ (2 : ℕ) - w j * conj (w k))).mulVec c = Q t := by
         simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, RCLike.star_def,
           hQdef, hgdef, hg, Complex.ofReal_one, one_pow]
         refine Finset.sum_congr rfl fun j _ => ?_
@@ -495,7 +495,7 @@ theorem posSemidef_halfPlaneCaratheodoryGram {F : ℂ → ℂ}
   have hdisc := posSemidef_discCaratheodoryGram hfd hfu (fun j => cayleyRight (u j)) hwn
   have hcong := posSemidef_congr_diagonal hdisc
     (fun j => ((Real.sqrt 2 : ℝ) : ℂ) / (u j + 1))
-  have hsq : ((Real.sqrt 2 : ℝ) : ℂ) ^ 2 = 2 := by
+  have hsq : ((Real.sqrt 2 : ℝ) : ℂ) ^ (2 : ℕ) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
     norm_num
   have hentry : (Matrix.of fun j k => ((Real.sqrt 2 : ℝ) : ℂ) / (u j + 1) *

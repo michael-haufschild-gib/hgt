@@ -93,7 +93,7 @@ theorem finiteSquarefreeChernCoefficient_eq_quarter_variance (S : Finset Nat.Pri
     finiteSquarefreeChernCoefficient S x y =
       (1 / 4 : ℝ) * ∑ z : SquarefreeBitConfig S,
         finiteSquarefreeBornWeight S x z *
-          (finiteSquarefreeHamiltonian S z - finiteSquarefreeCurrent S x) ^ 2 := by
+          (finiteSquarefreeHamiltonian S z - finiteSquarefreeCurrent S x) ^ (2 : ℕ) := by
   rw [finiteSquarefreeChernCoefficient, finiteSquarefreeLineLaplacian_eq,
     finiteSquarefreeCurvature_eq_variance]
 
@@ -107,8 +107,8 @@ theorem finiteSquarefreeChernCoefficient_eq_projectiveMetric (S : Finset Nat.Pri
 tangent energy are the same curvature up to the fixed calibration `16 (σ-1)²`. -/
 theorem norm_finiteSquarefreeTangent_sq_eq_calibrated_chern (S : Finset Nat.Primes)
     (sigma y : ℝ) :
-    ‖finiteSquarefreeTangent S sigma‖ ^ 2 =
-      16 * (sigma - 1) ^ 2 * finiteSquarefreeChernCoefficient S sigma y := by
+    ‖finiteSquarefreeTangent S sigma‖ ^ (2 : ℕ) =
+      16 * (sigma - 1) ^ (2 : ℕ) * finiteSquarefreeChernCoefficient S sigma y := by
   rw [norm_finiteSquarefreeTangent_sq, finiteSquarefreeChernCoefficient,
     finiteSquarefreeLineLaplacian_eq]
   ring

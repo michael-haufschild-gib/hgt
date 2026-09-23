@@ -97,7 +97,7 @@ theorem seamJet_zero_set_eq {Φ₁ Φ₂ L₁ L₂ : ℂ → ℂ}
 
 /-- **With the central scalar, the even function itself is determined.** -/
 theorem seamJet_even_function_complete {F₁ F₂ Φ₁ Φ₂ L₁ L₂ : ℂ → ℂ}
-    (hF₁ : ∀ w, F₁ w = Φ₁ (w ^ 2)) (hF₂ : ∀ w, F₂ w = Φ₂ (w ^ 2))
+    (hF₁ : ∀ w, F₁ w = Φ₁ (w ^ (2 : ℕ))) (hF₂ : ∀ w, F₂ w = Φ₂ (w ^ (2 : ℕ)))
     (h₁ : Differentiable ℂ Φ₁) (h₂ : Differentiable ℂ Φ₂)
     (hz₁ : Φ₁ 0 ≠ 0) (hz₂ : Φ₂ 0 ≠ 0) (hscalar : Φ₁ 0 = Φ₂ 0)
     (hL₁ : ∀ᶠ z in 𝓝 (0 : ℂ), Complex.exp (L₁ z) = Φ₁ z / Φ₁ 0)
@@ -106,7 +106,7 @@ theorem seamJet_even_function_complete {F₁ F₂ Φ₁ Φ₂ L₁ L₂ : ℂ �
     F₁ = F₂ := by
   funext w
   rw [hF₁, hF₂]
-  have hprop := seamJet_proportional h₁ h₂ hz₁ hz₂ hL₁ hL₂ hLeq (w ^ 2)
+  have hprop := seamJet_proportional h₁ h₂ hz₁ hz₂ hL₁ hL₂ hLeq (w ^ (2 : ℕ))
   rw [hprop, hscalar, div_self hz₂, one_mul]
 
 /-! ### Triangular seam coordinates -/

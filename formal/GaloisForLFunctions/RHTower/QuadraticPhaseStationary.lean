@@ -22,7 +22,7 @@ open Complex MeasureTheory Set
 namespace GaloisForLFunctions.RHTower
 
 /-- The pure quadratic phase kernel with curvature `μ`. -/
-def quadPhase (μ t : ℝ) : ℂ := Complex.exp (Complex.ofReal (μ * t ^ 2 / 2) * Complex.I)
+def quadPhase (μ t : ℝ) : ℂ := Complex.exp (Complex.ofReal (μ * t ^ (2 : ℕ) / 2) * Complex.I)
 
 theorem continuous_quadPhase (μ : ℝ) : Continuous (quadPhase μ) := by
   unfold quadPhase
@@ -49,18 +49,18 @@ theorem integral_quadPhase_symm (μ R : ℝ) :
 theorem integral_quadPhase_scale {μ : ℝ} (hμ : 0 < μ) (R : ℝ) :
     (∫ t in (0 : ℝ)..R, quadPhase μ t)
       = (Complex.ofReal (Real.sqrt (μ / 2)))⁻¹ *
-          ∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ 2 : ℝ) * Complex.I) := by
+          ∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I) := by
   have hc : Real.sqrt (μ / 2) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr (by positivity))
-  have hcsq : (Real.sqrt (μ / 2)) ^ 2 = μ / 2 := Real.sq_sqrt (by positivity)
+  have hcsq : (Real.sqrt (μ / 2)) ^ (2 : ℕ) = μ / 2 := Real.sq_sqrt (by positivity)
   have hshape : ∀ t : ℝ, quadPhase μ t
-      = (fun x : ℝ => Complex.exp ((x ^ 2 : ℝ) * Complex.I)) (Real.sqrt (μ / 2) * t) := by
+      = (fun x : ℝ => Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I)) (Real.sqrt (μ / 2) * t) := by
     intro t
-    have hsq : (Real.sqrt (μ / 2) * t) ^ 2 = μ * t ^ 2 / 2 := by
+    have hsq : (Real.sqrt (μ / 2) * t) ^ (2 : ℕ) = μ * t ^ (2 : ℕ) / 2 := by
       rw [mul_pow, hcsq]
       ring
     simp only [quadPhase, hsq]
   have h := intervalIntegral.integral_comp_mul_left
-    (f := fun x : ℝ => Complex.exp ((x ^ 2 : ℝ) * Complex.I)) (a := 0) (b := R) hc
+    (f := fun x : ℝ => Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I)) (a := 0) (b := R) hc
   rw [intervalIntegral.integral_congr (fun t _ => hshape t), h, mul_zero, Complex.real_smul]
   norm_num
 
@@ -75,7 +75,7 @@ theorem norm_integral_quadPhase_sub_le {μ R : ℝ} (hμ : 0 < μ) (hR : 0 < R) 
   have hR0 : R ≠ 0 := hR.ne'
   have hcpos : 0 < Real.sqrt (μ / 2) := Real.sqrt_pos.mpr (by positivity)
   have hS : 0 < Real.sqrt (μ / 2) * R := by positivity
-  have hcsq : (Real.sqrt (μ / 2)) ^ 2 = μ / 2 := Real.sq_sqrt (by positivity)
+  have hcsq : (Real.sqrt (μ / 2)) ^ (2 : ℕ) = μ / 2 := Real.sq_sqrt (by positivity)
   have hc2 : Real.sqrt (μ / 2) * Real.sqrt (μ / 2) = μ / 2 := by
     rw [← sq]; exact hcsq
   have hfres := norm_integral_fresnel_sub_le hS
@@ -93,10 +93,10 @@ theorem norm_integral_quadPhase_sub_le {μ R : ℝ} (hμ : 0 < μ) (hR : 0 < R) 
     ring
   rw [integral_quadPhase_symm, integral_quadPhase_scale hμ, ← hval]
   have hfactor : (2 : ℂ) * ((Complex.ofReal (Real.sqrt (μ / 2)))⁻¹ *
-        ∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ 2 : ℝ) * Complex.I))
+        ∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I))
       - (2 : ℂ) * (Complex.ofReal (Real.sqrt (μ / 2)))⁻¹ * fresnelValue
       = ((2 : ℂ) * (Complex.ofReal (Real.sqrt (μ / 2)))⁻¹) *
-        ((∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ 2 : ℝ) * Complex.I))
+        ((∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R), Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I))
           - fresnelValue) := by
     ring
   rw [hfactor, norm_mul]
@@ -106,7 +106,7 @@ theorem norm_integral_quadPhase_sub_le {μ R : ℝ} (hμ : 0 < μ) (hR : 0 < R) 
     ring
   rw [hnorm]
   have hbound : 2 / Real.sqrt (μ / 2) * ‖(∫ x in (0 : ℝ)..(Real.sqrt (μ / 2) * R),
-        Complex.exp ((x ^ 2 : ℝ) * Complex.I)) - fresnelValue‖
+        Complex.exp ((x ^ (2 : ℕ) : ℝ) * Complex.I)) - fresnelValue‖
       ≤ 2 / Real.sqrt (μ / 2) * (2 / (Real.sqrt (μ / 2) * R)) :=
     mul_le_mul_of_nonneg_left hfres (by positivity)
   refine hbound.trans (le_of_eq ?_)
@@ -120,18 +120,18 @@ theorem norm_integral_quadPhase_sub_le {μ R : ℝ} (hμ : 0 < μ) (hR : 0 < R) 
 
 /-- **The reversed quadratic phase integral.**  Conjugating the phase conjugates the value. -/
 theorem norm_integral_quadPhase_conj_sub_le {μ R : ℝ} (hμ : 0 < μ) (hR : 0 < R) :
-    ‖(∫ t in (-R : ℝ)..R, Complex.exp (Complex.ofReal (-(μ * t ^ 2 / 2)) * Complex.I))
+    ‖(∫ t in (-R : ℝ)..R, Complex.exp (Complex.ofReal (-(μ * t ^ (2 : ℕ) / 2)) * Complex.I))
         - Complex.ofReal (Real.sqrt (2 * Real.pi / μ))
             * Complex.exp (Complex.ofReal (-(Real.pi / 4)) * Complex.I)‖
       ≤ 8 / (μ * R) := by
-  have hconj : ∀ t : ℝ, Complex.exp (Complex.ofReal (-(μ * t ^ 2 / 2)) * Complex.I)
+  have hconj : ∀ t : ℝ, Complex.exp (Complex.ofReal (-(μ * t ^ (2 : ℕ) / 2)) * Complex.I)
       = (starRingEnd ℂ) (quadPhase μ t) := by
     intro t
     rw [quadPhase, ← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I]
     congr 1
     push_cast
     ring
-  have hint : (∫ t in (-R : ℝ)..R, Complex.exp (Complex.ofReal (-(μ * t ^ 2 / 2)) * Complex.I))
+  have hint : (∫ t in (-R : ℝ)..R, Complex.exp (Complex.ofReal (-(μ * t ^ (2 : ℕ) / 2)) * Complex.I))
       = (starRingEnd ℂ) (∫ t in (-R : ℝ)..R, quadPhase μ t) := by
     rw [← intervalIntegral.intervalIntegral_conj]
     exact intervalIntegral.integral_congr fun t _ => hconj t

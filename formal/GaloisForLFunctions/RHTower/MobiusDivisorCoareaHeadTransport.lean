@@ -33,11 +33,11 @@ def mobiusDivisorFibreAbsoluteMass (M : ℕ) (P R : Finset ℕ) : ℝ :=
 /-- Signed conditional energy outside the empty cell, with zero-mass terms zero. -/
 def mobiusDivisorNonemptyCoarea (M : ℕ) (P : Finset ℕ) : ℝ :=
   ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset.erase ∅,
-    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
 
 /-- Conditional energy multiplied by the absolute mass of the receiving head. -/
 def mobiusDivisorCoareaHeadAction (M : ℕ) (P : Finset ℕ) : ℝ :=
-  (mobiusDivisorSelectionFibre M P ∅)^2 +
+  (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) +
     mobiusDivisorFibreAbsoluteMass M P ∅ * mobiusDivisorNonemptyCoarea M P
 
 /-- Exact slope of head action with respect to incoming isolated negative mass. -/
@@ -129,7 +129,7 @@ theorem mobiusDivisorFibreAbsoluteMass_insert_late_prime {M p : ℕ} (hp : p.Pri
       mobiusDivisorFibreAbsoluteMass_late_prime hp hpM hM P (insert p R) hpP
         (mem_insert_self p R),if_neg hn,add_zero]
 
-private lemma square_div_abs (x : ℝ) : x^2/|x|=|x| := by
+private lemma square_div_abs (x : ℝ) : x^(2 : ℕ)/|x|=|x| := by
   by_cases hx : x=0
   · simp [hx]
   apply (div_eq_iff (abs_ne_zero.mpr hx)).mpr
@@ -144,9 +144,9 @@ theorem mobiusDivisorNonemptyCoarea_insert_late_prime {M p : ℕ} (hp : p.Prime)
   have hmem : ({p}:Finset ℕ) ∈ (mobiusDivisorSelectionPrimes M).powerset.erase ∅ := by
     simp [hpU]
   have hpoint (R : Finset ℕ) (hR : R ∈ (mobiusDivisorSelectionPrimes M).powerset.erase ∅) :
-      (mobiusDivisorSelectionFibre M (insert p P) R)^2 /
+      (mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ) /
         mobiusDivisorFibreAbsoluteMass M (insert p P) R =
-      (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R -
+      (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R -
         (if R={p} then |mobiusDivisorDilationChannel M p| else 0) := by
     have hR0 : R ≠ ∅ := (mem_erase.mp hR).1
     rw [mobiusDivisorSelectionFibre_insert_late_prime hp hpM hM P R hpP,
@@ -223,10 +223,10 @@ private lemma fibre_zero_of_mass_zero (M : ℕ) (P R : Finset ℕ)
 theorem mobiusDivisorCoareaHeadAction_eq_mass_mul_coarea (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorCoareaHeadAction M P = mobiusDivisorFibreAbsoluteMass M P ∅ *
       ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-        (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R := by
+        (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R := by
   let a := mobiusDivisorFibreAbsoluteMass M P ∅
-  let t := fun R => (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
-  have hhead : a*t ∅ = (mobiusDivisorSelectionFibre M P ∅)^2 := by
+  let t := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
+  have hhead : a*t ∅ = (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) := by
     by_cases hz : mobiusDivisorFibreAbsoluteMass M P ∅=0
     · simp [a,t,hz,fibre_zero_of_mass_zero M P ∅ hz]
     · dsimp [a,t]; field_simp
@@ -234,7 +234,7 @@ theorem mobiusDivisorCoareaHeadAction_eq_mass_mul_coarea (M : ℕ) (P : Finset �
     (f := t) (by simp : (∅:Finset ℕ) ∈ (mobiusDivisorSelectionPrimes M).powerset)
   change _ = a*∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,t R
   rw [← hsum,mul_add,hhead]
-  change _ = a*mobiusDivisorNonemptyCoarea M P+(mobiusDivisorSelectionFibre M P ∅)^2
+  change _ = a*mobiusDivisorNonemptyCoarea M P+(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)
   unfold mobiusDivisorCoareaHeadAction
   ring
 
@@ -244,9 +244,9 @@ theorem mobiusDivisorSelectionEnergy_le_coareaHeadAction (M : ℕ) (P : Finset �
       mobiusDivisorFibreAbsoluteMass M P R ≤ mobiusDivisorFibreAbsoluteMass M P ∅) :
     mobiusDivisorSelectionEnergy M P ≤ mobiusDivisorCoareaHeadAction M P := by
   let a := mobiusDivisorFibreAbsoluteMass M P ∅
-  let t := fun R => (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+  let t := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
   have hpoint (R : Finset ℕ) (hR : R ∈ (mobiusDivisorSelectionPrimes M).powerset) :
-      (mobiusDivisorSelectionFibre M P R)^2 ≤ a*t R := by
+      (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) ≤ a*t R := by
     by_cases hz : mobiusDivisorFibreAbsoluteMass M P R=0
     · simp [t,fibre_zero_of_mass_zero M P R hz]
     · have ht : 0 ≤ t R := div_nonneg (sq_nonneg _) (mobiusDivisorFibreAbsoluteMass_nonneg M P R)
@@ -254,7 +254,7 @@ theorem mobiusDivisorSelectionEnergy_le_coareaHeadAction (M : ℕ) (P : Finset �
         _ = mobiusDivisorFibreAbsoluteMass M P R*t R := by dsimp [t]; field_simp
         _ ≤ _ := mul_le_mul_of_nonneg_right (hdom R hR) ht
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2) ≤ _
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) ≤ _
   calc
     _ ≤ ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,a*t R := sum_le_sum hpoint
     _ = _ := by

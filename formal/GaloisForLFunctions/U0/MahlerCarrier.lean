@@ -53,16 +53,16 @@ of the Mahler operator `τ` on `meroField(escapeOpen)`. -/
 @[aesop safe]
 theorem eqZero_of_comp_quadratic_eqZero {c : ℂ} {f : ℂ → ℂ}
     (hf : AnalyticOnNhd ℂ f (escapeOpen c))
-    (h0 : ∀ z ∈ escapeOpen c, f (z ^ 2 + c) = 0) :
+    (h0 : ∀ z ∈ escapeOpen c, f (z ^ (2 : ℕ) + c) = 0) :
     ∀ z ∈ escapeOpen c, f z = 0 := by
-  have hR2 : max 2 ‖c‖ ≤ (max 2 ‖c‖) ^ 2 - ‖c‖ := by
+  have hR2 : max 2 ‖c‖ ≤ (max 2 ‖c‖) ^ (2 : ℕ) - ‖c‖ := by
     nlinarith [le_max_left 2 ‖c‖, le_max_right 2 ‖c‖, norm_nonneg c]
-  set V : Set ℂ := {w | (max 2 ‖c‖) ^ 2 < ‖w - c‖} with hV
+  set V : Set ℂ := {w | (max 2 ‖c‖) ^ (2 : ℕ) < ‖w - c‖} with hV
   have hVopen : IsOpen V :=
     isOpen_lt continuous_const ((continuous_id.sub continuous_const).norm)
   have hVsub : V ⊆ escapeOpen c := by
     intro w hw
-    have hw' : (max 2 ‖c‖) ^ 2 < ‖w - c‖ := hw
+    have hw' : (max 2 ‖c‖) ^ (2 : ℕ) < ‖w - c‖ := hw
     have h1 : ‖w - c‖ ≤ ‖w‖ + ‖c‖ := norm_sub_le w c
     show max 2 ‖c‖ < ‖w‖
     linarith
@@ -71,11 +71,11 @@ theorem eqZero_of_comp_quadratic_eqZero {c : ℂ} {f : ℂ → ℂ}
     simp only [hV, mem_setOf_eq] at hw
     obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (w - c) (by norm_num : 0 < 2)
     have hzn : (max 2 ‖c‖) < ‖z‖ := by
-      have : (max 2 ‖c‖) ^ 2 < ‖z‖ ^ 2 := by rw [← norm_pow, hz]; exact hw
+      have : (max 2 ‖c‖) ^ (2 : ℕ) < ‖z‖ ^ (2 : ℕ) := by rw [← norm_pow, hz]; exact hw
       exact lt_of_pow_lt_pow_left₀ 2 (norm_nonneg z) this
     have := h0 z hzn
     rwa [hz, sub_add_cancel] at this
-  have hw₀ : (c + ((max 2 ‖c‖) ^ 2 + 1 : ℝ)) ∈ V := by
+  have hw₀ : (c + ((max 2 ‖c‖) ^ (2 : ℕ) + 1 : ℝ)) ∈ V := by
     simp only [hV, mem_setOf_eq, add_sub_cancel_left, Complex.norm_real, Real.norm_eq_abs]
     rw [abs_of_pos (by positivity)]; linarith
   intro z hz

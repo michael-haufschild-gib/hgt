@@ -39,11 +39,11 @@ theorem sum_normSq_mtSeparatedPairBoxFamily_productBoundary_le_collar_zeta_sq
     ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF
       (mtSeparatedPairBoxIndexSet (u := u) endpoint E data maxDepth j eMax kMax)
       (mtSeparatedPairBoxAF endpoint P data z0 D delta)
-      (mtSeparatedPairBoxScale endpoint delta recStart) Y n‖ ^ 2 ≤
+      (mtSeparatedPairBoxScale endpoint delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   apply sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     A (mtSeparatedPairBoxIndexSet (u := u) endpoint E data maxDepth j eMax kMax)
       (mtSeparatedPairBoxAF endpoint P data z0 D delta)
@@ -89,11 +89,11 @@ theorem sum_normSq_mtSeparatedTripleBoxFamily_productBoundary_le_collar_zeta_sq
     ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF
       (mtSeparatedTripleBoxIndexSet (u := u) endpoint E data maxDepth j eMax kMax)
       (mtSeparatedTripleBoxAF endpoint P data z0 D delta)
-      (mtSeparatedTripleBoxScale endpoint delta recStart) Y n‖ ^ 2 ≤
+      (mtSeparatedTripleBoxScale endpoint delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   apply sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     A (mtSeparatedTripleBoxIndexSet (u := u) endpoint E data maxDepth j eMax kMax)
       (mtSeparatedTripleBoxAF endpoint P data z0 D delta)

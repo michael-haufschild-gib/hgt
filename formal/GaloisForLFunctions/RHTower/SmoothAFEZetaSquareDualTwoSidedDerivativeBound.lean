@@ -13,7 +13,7 @@ theorem exists_norm_deriv_smoothAFEZetaSquareDualWeight_le_two_sided :
       ‖deriv (fun u : ℝ => smoothAFEZetaSquareDualWeight u Y) tau‖ ≤
         min
           (C * Y ^ (1 / 4 : ℝ) /
-            (tau * (tau ^ (1 / 4 : ℝ)) ^ 2))
+            (tau * (tau ^ (1 / 4 : ℝ)) ^ (2 : ℕ)))
           (C * (1 + tau) / Y) := by
   obtain ⟨A, hA, hsmall⟩ :=
     exists_norm_deriv_smoothAFEZetaSquareDualWeight_le_small_scale
@@ -24,7 +24,7 @@ theorem exists_norm_deriv_smoothAFEZetaSquareDualWeight_le_two_sided :
   refine ⟨C, hC, ?_⟩
   intro tau Y htau hY
   have htau0 : 0 < tau := by linarith
-  have hden : 0 < tau * (tau ^ (1 / 4 : ℝ)) ^ 2 := by positivity
+  have hden : 0 < tau * (tau ^ (1 / 4 : ℝ)) ^ (2 : ℕ) := by positivity
   have hsmall' := hsmall htau hY
   have hlarge' := hlarge htau hY
   apply le_min

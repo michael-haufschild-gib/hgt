@@ -57,11 +57,11 @@ theorem Ioi_last_eq_empty (N : ℕ) :
 theorem det_cauchyMatrix_castSucc {N : ℕ} (x : Fin (N + 1) → K)
     (hx : ∀ i j, x i + x j ≠ 0) :
     (cauchyMatrix x x).det *
-        ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ 2 *
+        ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ (2 : ℕ) *
           (x (Fin.last N) + x (Fin.last N))) =
       (cauchyMatrix (fun i : Fin N => x i.castSucc)
           (fun j : Fin N => x j.castSucc)).det *
-        (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ 2 := by
+        (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ (2 : ℕ) := by
   classical
   set t : K := x (Fin.last N) with ht
   set D : K := ∏ i : Fin N, ∏ j : Fin N, (x i.castSucc + x j.castSucc) with hD
@@ -73,7 +73,7 @@ theorem det_cauchyMatrix_castSucc {N : ℕ} (x : Fin (N + 1) → K)
     rw [hD]
     exact Finset.prod_ne_zero_iff.mpr
       (fun i _ => Finset.prod_ne_zero_iff.mpr (fun j _ => hx _ _))
-  have hdenom : (∏ i, ∏ j, (x i + x j)) = D * (A ^ 2 * (t + t)) := by
+  have hdenom : (∏ i, ∏ j, (x i + x j)) = D * (A ^ (2 : ℕ) * (t + t)) := by
     rw [hD, hA, Fin.prod_univ_castSucc]
     have hlast : (∏ j, (x (Fin.last N) + x j)) =
         (∏ j : Fin N, (t + x j.castSucc)) * (t + t) := by
@@ -91,7 +91,7 @@ theorem det_cauchyMatrix_castSucc {N : ℕ} (x : Fin (N + 1) → K)
   have hnum : (∏ i, ∏ j ∈ Finset.Ioi i, ((x i - x j) * (x i - x j))) =
       (∏ i : Fin N, ∏ j ∈ Finset.Ioi i,
         ((x i.castSucc - x j.castSucc) * (x i.castSucc - x j.castSucc))) *
-      (∏ i : Fin N, (x i.castSucc - t)) ^ 2 := by
+      (∏ i : Fin N, (x i.castSucc - t)) ^ (2 : ℕ) := by
     rw [Fin.prod_univ_castSucc, Ioi_last_eq_empty, Finset.prod_empty, mul_one]
     have hrow : ∀ i : Fin N,
         (∏ j ∈ Finset.Ioi (Fin.castSucc i),
@@ -102,21 +102,21 @@ theorem det_cauchyMatrix_castSucc {N : ℕ} (x : Fin (N + 1) → K)
       intro i
       rw [prod_Ioi_castSucc]
     have hsq : (∏ i : Fin N, ((x i.castSucc - t) * (x i.castSucc - t))) =
-        (∏ i : Fin N, (x i.castSucc - t)) ^ 2 := by
+        (∏ i : Fin N, (x i.castSucc - t)) ^ (2 : ℕ) := by
       rw [Finset.prod_mul_distrib, sq]
     rw [Finset.prod_congr rfl (fun i _ => hrow i), Finset.prod_mul_distrib, hsq, mul_comm]
   rw [hdenom, hnum] at hfull
   refine mul_right_cancel₀ hDne ?_
-  calc (cauchyMatrix x x).det * (A ^ 2 * (t + t)) * D
-      = (cauchyMatrix x x).det * (D * (A ^ 2 * (t + t))) := by ring
+  calc (cauchyMatrix x x).det * (A ^ (2 : ℕ) * (t + t)) * D
+      = (cauchyMatrix x x).det * (D * (A ^ (2 : ℕ) * (t + t))) := by ring
     _ = (∏ i : Fin N, ∏ j ∈ Finset.Ioi i,
           ((x i.castSucc - x j.castSucc) * (x i.castSucc - x j.castSucc))) *
-        (∏ i : Fin N, (x i.castSucc - t)) ^ 2 := hfull
+        (∏ i : Fin N, (x i.castSucc - t)) ^ (2 : ℕ) := hfull
     _ = ((cauchyMatrix (fun i : Fin N => x i.castSucc)
           (fun j : Fin N => x j.castSucc)).det * D) *
-        (∏ i : Fin N, (x i.castSucc - t)) ^ 2 := by rw [← hsmall, ← hD]
+        (∏ i : Fin N, (x i.castSucc - t)) ^ (2 : ℕ) := by rw [← hsmall, ← hD]
     _ = (cauchyMatrix (fun i : Fin N => x i.castSucc)
           (fun j : Fin N => x j.castSucc)).det *
-        (∏ i : Fin N, (x i.castSucc - t)) ^ 2 * D := by ring
+        (∏ i : Fin N, (x i.castSucc - t)) ^ (2 : ℕ) * D := by ring
 
 end GaloisForLFunctions.HTGeometry

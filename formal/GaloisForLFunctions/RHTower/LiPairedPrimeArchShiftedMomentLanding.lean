@@ -9,7 +9,7 @@ Let `w = 1 - 1 / rho` be the Li Cayley coordinate and let
 
 `u = lambda / (1 + lambda / 4)`,
 
-where `lambda = -1 / (rho - 1/2)^2` is the centered reciprocal-square coordinate.  Direct
+where `lambda = -1 / (rho - 1/2)^(2 : ℕ)` is the centered reciprocal-square coordinate.  Direct
 Möbius algebra gives
 
 `w + w⁻¹ = 2 - u`.
@@ -103,9 +103,9 @@ theorem xiRootW_add_inv_eq_two_sub_quarterShift (q : XiZeroCopy) :
     apply hhalf
     linear_combination h / 2
   have hquad :
-      1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4 ≠ 0 := by
-    rw [show 1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4 =
-      (2 * (q.1 : ℂ) - 1) ^ 2 by ring]
+      1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4 ≠ 0 := by
+    rw [show 1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4 =
+      (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) by ring]
     exact pow_ne_zero 2 htwo
   have hu : xiShiftedReciprocalSquare (1 / 4) q =
       -(1 / ((q.1 : ℂ) * ((q.1 : ℂ) - 1))) := by
@@ -115,8 +115,8 @@ theorem xiRootW_add_inv_eq_two_sub_quarterShift (q : XiZeroCopy) :
     simp only [inv_eq_one_div]
     field_simp [hhalf, hprod, hquad]
     have hqcancel :
-        (1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4)⁻¹ *
-          (1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4) = 1 :=
+        (1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4)⁻¹ *
+          (1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4) = 1 :=
       inv_mul_cancel₀ hquad
     linear_combination 4 * hqcancel
   rw [xiRootW_eq_div hrho, inv_div, hu]

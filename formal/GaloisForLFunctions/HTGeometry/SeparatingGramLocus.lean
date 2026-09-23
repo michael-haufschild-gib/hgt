@@ -103,7 +103,7 @@ theorem isOpen_separatingLocus (A : Fin n → (E →L[ℂ] E)) : IsOpen (separat
 /-- The Gram entries along a real line, as quadratic polynomials. -/
 def gramLinePoly (A : Fin n → (E →L[ℂ] E)) (x x₀ : E) : Matrix (Fin n) (Fin n) (Polynomial ℂ) :=
   Matrix.of fun i j =>
-    Polynomial.C (inner ℂ (A i x₀) (A j x₀)) * Polynomial.X ^ 2
+    Polynomial.C (inner ℂ (A i x₀) (A j x₀)) * Polynomial.X ^ (2 : ℕ)
       + Polynomial.C (inner ℂ (A i x₀) (A j x) + inner ℂ (A i x) (A j x₀)) * Polynomial.X
       + Polynomial.C (inner ℂ (A i x) (A j x))
 

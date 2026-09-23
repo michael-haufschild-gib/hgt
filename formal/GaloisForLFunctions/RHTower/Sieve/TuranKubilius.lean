@@ -185,13 +185,13 @@ theorem sum_centredInd_sq_le {z p a b : ℕ} (hab : a ≤ b) (hp : p ∈ Nat.pri
 /-- **Turán–Kubilius on an interval.**  The variance of the small-prime count is at most the
 interval length times the prime reciprocal sum, plus a prime-counting error. -/
 theorem sum_omegaCount_variance_le (z a b : ℕ) (hab : a ≤ b) :
-    ∑ n ∈ Finset.Ioc a b, ((omegaCount z n : ℝ) - mertensS z) ^ 2
+    ∑ n ∈ Finset.Ioc a b, ((omegaCount z n : ℝ) - mertensS z) ^ (2 : ℕ)
       ≤ ((b : ℝ) - a) * mertensS z + ((Nat.primesLE z).card : ℝ)
-        + 2 * ((Nat.primesLE z).card : ℝ) ^ 2 := by
+        + 2 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ) := by
   classical
   set P : Finset ℕ := Nat.primesLE z with hP
   have hsq : ∀ n ∈ Finset.Ioc a b,
-      ((omegaCount z n : ℝ) - mertensS z) ^ 2
+      ((omegaCount z n : ℝ) - mertensS z) ^ (2 : ℕ)
         = ∑ p ∈ P, ∑ q ∈ P, centredInd p n * centredInd q n := by
     intro n _
     rw [← sum_centredInd_eq z n, sq, hP]

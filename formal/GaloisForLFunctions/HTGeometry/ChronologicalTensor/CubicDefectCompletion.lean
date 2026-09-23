@@ -60,14 +60,14 @@ def cubicCuspGradedCompletion :
 theorem cubicCuspGradedNorm_sq
     (x : Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule) :
     letI := cubicCuspGradedNormedGroup
-    ‖x‖^2=∑' k, (cubicGradedRecoveryGap k)^2 * ((cubicCuspDefectEquiv x).coeff k)^2 :=
+    ‖x‖^(2 : ℕ)=∑' k, (cubicGradedRecoveryGap k)^(2 : ℕ) * ((cubicCuspDefectEquiv x).coeff k)^(2 : ℕ) :=
   cubicDefectHilbertEmbedding_norm_sq x
 
 theorem cubicCuspGradedInner
     (x y : Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule) :
     letI := cubicCuspGradedNormedGroup
     letI := cubicCuspGradedInnerProductSpace
-    inner ℝ x y=∑' k, (cubicGradedRecoveryGap k)^2 *
+    inner ℝ x y=∑' k, (cubicGradedRecoveryGap k)^(2 : ℕ) *
       (cubicCuspDefectEquiv x).coeff k * (cubicCuspDefectEquiv y).coeff k := by
   letI := cubicCuspGradedNormedGroup
   letI := cubicCuspGradedInnerProductSpace

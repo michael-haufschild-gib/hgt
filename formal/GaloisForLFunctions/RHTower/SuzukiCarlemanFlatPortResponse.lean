@@ -56,8 +56,8 @@ theorem hasDerivAt_carlemanCutoffFactor (v L : ℝ) :
   have hbase : HasDerivAt (fun M : ℝ => 1 + Real.exp (v - M)) (Real.exp (v - L) * (-1)) L := by
     simpa using hexp.const_add (1:ℝ)
   have hinv : HasDerivAt (fun M : ℝ => (1 + Real.exp (v - M))⁻¹)
-      (-(Real.exp (v - L) * (-1)) / (1 + Real.exp (v - L)) ^ 2) L := hbase.inv hne
-  have hval : -(Real.exp (v - L) * (-1)) / (1 + Real.exp (v - L)) ^ 2 = logisticKernel (v - L) := by
+      (-(Real.exp (v - L) * (-1)) / (1 + Real.exp (v - L)) ^ (2 : ℕ)) L := hbase.inv hne
+  have hval : -(Real.exp (v - L) * (-1)) / (1 + Real.exp (v - L)) ^ (2 : ℕ) = logisticKernel (v - L) := by
     simp only [logisticKernel]
     ring
   have hfun : (fun M : ℝ => carlemanCutoffFactor M v)

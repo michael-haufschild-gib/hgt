@@ -91,7 +91,7 @@ theorem eval_pos_of_monic_no_real_root {p : Polynomial ℝ} (hmonic : p.Monic)
     exact hno z hz
 
 /-- `(1+ξ²)^L` is strictly positive. -/
-theorem one_add_sq_pow_pos (L : ℕ) (ξ : ℝ) : 0 < (1 + ξ ^ 2) ^ L := by
+theorem one_add_sq_pow_pos (L : ℕ) (ξ : ℝ) : 0 < (1 + ξ ^ (2 : ℕ)) ^ L := by
   positivity
 
 /-- **Claim 3 of (2).**  With a positive numerator and a positive stabilized denominator the

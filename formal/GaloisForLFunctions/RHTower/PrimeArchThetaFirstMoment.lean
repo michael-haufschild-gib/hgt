@@ -33,7 +33,7 @@ theorem thetaCuspSourceTerm_nonneg_of_pos {x : ℝ} (hx : 0 < x) (n : ℕ) :
     have he : 1 < Real.exp x := by simpa using Real.exp_lt_exp.mpr hx
     have ht : 1 < ((n + 1 : ℕ) : ℝ) * Real.exp x := by
       nlinarith [Real.exp_pos x]
-    have ht2 : 1 < (((n + 1 : ℕ) : ℝ) * Real.exp x) ^ 2 := by nlinarith
+    have ht2 : 1 < (((n + 1 : ℕ) : ℝ) * Real.exp x) ^ (2 : ℕ) := by nlinarith
     nlinarith [Real.pi_gt_three, Real.pi_pos,
       mul_pos (sub_pos.mpr ht2) (show 0 < 2 * Real.pi by positivity)]
 
@@ -44,7 +44,7 @@ theorem thetaCuspSourceTerm_one_pos_of_pos {x : ℝ} (hx : 0 < x) :
   apply thetaCuspSeed_pos
   norm_num
   have he : 1 < Real.exp x := by simpa using Real.exp_lt_exp.mpr hx
-  have he2 : 1 < Real.exp x ^ 2 := by nlinarith [Real.exp_pos x]
+  have he2 : 1 < Real.exp x ^ (2 : ℕ) := by nlinarith [Real.exp_pos x]
   nlinarith [Real.pi_gt_three, Real.pi_pos,
     mul_pos (sub_pos.mpr he2) (show 0 < 2 * Real.pi by positivity)]
 
@@ -57,7 +57,7 @@ theorem thetaCuspFullSource_pos_of_pos {x : ℝ} (hx : 0 < x) :
     (thetaCuspSourceTerm_one_pos_of_pos hx)
 
 theorem integrable_thetaCuspSecondMoment :
-    Integrable (fun x : ℝ => x ^ 2 * thetaCuspFullSource x) := by
+    Integrable (fun x : ℝ => x ^ (2 : ℕ) * thetaCuspFullSource x) := by
   have hmajor := thetaCuspSchwartzReal.integrable_pow_mul (volume : Measure ℝ) 2
   apply hmajor.mono
   · exact ((continuous_id.pow 2).mul
@@ -67,8 +67,8 @@ theorem integrable_thetaCuspSecondMoment :
 
 /-- The positive theta source has a strictly positive second logarithmic moment. -/
 theorem integral_Ioi_thetaCuspSecondMoment_pos :
-    0 < ∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspFullSource x := by
-  let f : ℝ → ℝ := fun x => x ^ 2 * thetaCuspFullSource x
+    0 < ∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspFullSource x := by
+  let f : ℝ → ℝ := fun x => x ^ (2 : ℕ) * thetaCuspFullSource x
   have hfcont : Continuous f := by
     dsimp [f]
     exact (continuous_id.pow 2).mul contDiff_thetaCuspFullSource.continuous
@@ -213,7 +213,7 @@ theorem hasDerivAt_thetaCuspCosineRepresentation (t : ℝ) :
   let F' : ℝ → ℝ → ℝ := fun s x =>
     -2 * x * thetaCuspFullSource x * Real.sin (s * x)
   let bound : ℝ → ℝ := fun x =>
-    2 * (‖x‖ ^ 1 * ‖thetaCuspSchwartzReal x‖)
+    2 * (‖x‖ ^ (1 : ℕ) * ‖thetaCuspSchwartzReal x‖)
   have hFint : Integrable (F t) (volume.restrict (Ioi 0)) := by
     have hbase : Integrable (fun x : ℝ => thetaCuspSchwartzReal x)
         (volume.restrict (Ioi 0)) :=
@@ -286,13 +286,13 @@ theorem hasDerivAt_thetaCuspCosineRepresentation_derivative (t : ℝ) :
       (fun s : ℝ => ∫ x : ℝ in Ioi 0,
         -2 * x * thetaCuspFullSource x * Real.sin (s * x))
       (∫ x : ℝ in Ioi 0,
-        -2 * x ^ 2 * thetaCuspFullSource x * Real.cos (t * x)) t := by
+        -2 * x ^ (2 : ℕ) * thetaCuspFullSource x * Real.cos (t * x)) t := by
   let F : ℝ → ℝ → ℝ := fun s x =>
     -2 * x * thetaCuspFullSource x * Real.sin (s * x)
   let F' : ℝ → ℝ → ℝ := fun s x =>
-    -2 * x ^ 2 * thetaCuspFullSource x * Real.cos (s * x)
+    -2 * x ^ (2 : ℕ) * thetaCuspFullSource x * Real.cos (s * x)
   let bound : ℝ → ℝ := fun x =>
-    2 * (‖x‖ ^ 2 * ‖thetaCuspSchwartzReal x‖)
+    2 * (‖x‖ ^ (2 : ℕ) * ‖thetaCuspSchwartzReal x‖)
   have hFint : Integrable (F t) (volume.restrict (Ioi 0)) := by
     have hbase := integrableOn_thetaCuspFirstMoment
     have hmul := hbase.bdd_mul (c := 2)
@@ -329,11 +329,11 @@ theorem hasDerivAt_thetaCuspCosineRepresentation_derivative (t : ℝ) :
       rw [abs_mul, abs_mul, abs_mul]
       norm_num
       calc
-        2 * x ^ 2 * |thetaCuspFullSource x| * |Real.cos (s * x)| ≤
-            2 * x ^ 2 * |thetaCuspFullSource x| * 1 := by
+        2 * x ^ (2 : ℕ) * |thetaCuspFullSource x| * |Real.cos (s * x)| ≤
+            2 * x ^ (2 : ℕ) * |thetaCuspFullSource x| * 1 := by
           gcongr
           exact abs_cos_le_one _
-        _ = 2 * (x ^ 2 * |thetaCuspFullSource x|) := by ring)
+        _ = 2 * (x ^ (2 : ℕ) * |thetaCuspFullSource x|) := by ring)
     hbound
     (by
       filter_upwards with x
@@ -363,7 +363,7 @@ theorem deriv_thetaCuspCosineRepresentation (t : ℝ) :
 theorem secondDeriv_thetaCuspCosineRepresentation (t : ℝ) :
     deriv (deriv thetaCuspCosineRepresentation) t =
       ∫ x : ℝ in Ioi 0,
-        -2 * x ^ 2 * thetaCuspFullSource x * Real.cos (t * x) := by
+        -2 * x ^ (2 : ℕ) * thetaCuspFullSource x * Real.cos (t * x) := by
   rw [show deriv thetaCuspCosineRepresentation = fun s : ℝ =>
       ∫ x : ℝ in Ioi 0,
         -2 * x * thetaCuspFullSource x * Real.sin (s * x) by
@@ -373,14 +373,14 @@ theorem secondDeriv_thetaCuspCosineRepresentation (t : ℝ) :
 
 theorem Xi_secondDeriv_zero_eq_neg_two_mul_thetaCuspSecondMoment :
     deriv (deriv Xi) 0 =
-      -2 * ∫ x : ℝ in Ioi 0, x ^ 2 * thetaCuspFullSource x := by
+      -2 * ∫ x : ℝ in Ioi 0, x ^ (2 : ℕ) * thetaCuspFullSource x := by
   rw [show Xi = thetaCuspCosineRepresentation by
     funext t
     exact Xi_eq_thetaCuspCosineRepresentation t,
     secondDeriv_thetaCuspCosineRepresentation]
   simp only [zero_mul, Real.cos_zero, mul_one]
-  rw [show (fun x : ℝ => -2 * x ^ 2 * thetaCuspFullSource x) =
-      fun x => -2 * (x ^ 2 * thetaCuspFullSource x) by
+  rw [show (fun x : ℝ => -2 * x ^ (2 : ℕ) * thetaCuspFullSource x) =
+      fun x => -2 * (x ^ (2 : ℕ) * thetaCuspFullSource x) by
     funext x
     ring,
     integral_const_mul]
@@ -420,7 +420,7 @@ theorem analyticTraceMoments_normalizedPrimeArchSource_zero_eq_Xi_ratio :
   have hquot := hXi'.div hXi XiC_zero_ne
   have hlog : deriv (logDeriv XiC) 0 =
       (deriv (deriv XiC) 0 * XiC 0 - deriv XiC 0 * deriv XiC 0) /
-        XiC 0 ^ 2 := by
+        XiC 0 ^ (2 : ℕ) := by
     rw [show logDeriv XiC = deriv XiC / XiC by rfl]
     exact hquot.deriv
   have h2 : deriv (deriv XiC) 0 = ((deriv (deriv Xi) 0 : ℝ) : ℂ) := by
@@ -435,7 +435,7 @@ theorem analyticTraceMoments_normalizedPrimeArchSource_zero_eq_Xi_ratio :
   simp only [Complex.ofReal_zero, mul_zero, sub_zero]
   have hc :
       -(((deriv (deriv Xi) 0 : ℝ) : ℂ) * ((Xi 0 : ℝ) : ℂ) /
-          (((Xi 0 : ℝ) : ℂ) ^ 2)) =
+          (((Xi 0 : ℝ) : ℂ) ^ (2 : ℕ))) =
         (((-deriv (deriv Xi) 0 / Xi 0 : ℝ)) : ℂ) := by
     push_cast
     field_simp [hXi0]
@@ -451,12 +451,12 @@ theorem analyticTraceMoments_normalizedPrimeArchSource_zero_pos :
 
 theorem primeArchSourceTraceHankel_C_re (c : ℝ) :
     (primeArchSourceTraceHankel (Polynomial.C c)).re =
-      c ^ 2 * analyticTraceMoments
+      c ^ (2 : ℕ) * analyticTraceMoments
         (normalizedTraceMomentGerm continuedPrimeArchSourceRelativeTrace) 0 := by
   rw [primeArchSourceTraceHankel]
   have hsq :
-      ((Polynomial.C c).map (algebraMap ℝ ℂ)) ^ 2 =
-        Polynomial.C (((c ^ 2 : ℝ) : ℂ)) := by
+      ((Polynomial.C c).map (algebraMap ℝ ℂ)) ^ (2 : ℕ) =
+        Polynomial.C (((c ^ (2 : ℕ) : ℝ) : ℂ)) := by
     ext n
     rcases n with _ | n
     · simp [pow_two]

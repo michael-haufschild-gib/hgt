@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.GaussTerminalSourceLogDerivative
 # Apex-centered faithful Gauss source
 
 De-resisted completed source leaves one unit atom at every admitted node.  Centering each atom at
-the moving hard apex before aggregation gives residue `(y*x)^2 - 1`.  Its Cauchy transform has an
+the moving hard apex before aggregation gives residue `(y*x)^(2 : ℕ) - 1`.  Its Cauchy transform has an
 exact landing in the current admission logarithmic derivative, with degree and root-trace
 counterterms forced by polynomial division.
 
@@ -25,27 +25,27 @@ noncomputable def gaussNodeTrace (s : ℕ → ℝ) (m : ℕ) : ℝ :=
 noncomputable def gaussApexCenteredUnitPoleTransformComplex
     (s : ℕ → ℝ) (m : ℕ) (y : ℝ) (z : ℂ) : ℂ :=
   ∑ x ∈ gaussNodes s m,
-    (((y * x) ^ 2 - 1 : ℝ) : ℂ) / (z - (x : ℂ))
+    (((y * x) ^ (2 : ℕ) - 1 : ℝ) : ℂ) / (z - (x : ℂ))
 
 /-- Total signed moving-apex residue before any Cauchy or Poisson reporting. -/
 noncomputable def gaussApexCenteredResidueTotal
     (s : ℕ → ℝ) (m : ℕ) (y : ℝ) : ℝ :=
-  ∑ x ∈ gaussNodes s m, ((y * x) ^ 2 - 1)
+  ∑ x ∈ gaussNodes s m, ((y * x) ^ (2 : ℕ) - 1)
 
 /-- Exact quadratic-energy form of total centered faithful source. -/
 theorem gaussApexCenteredResidueTotal_eq
     (s : ℕ → ℝ) (m : ℕ) (y : ℝ) :
     gaussApexCenteredResidueTotal s m y =
-      y ^ 2 * (∑ x ∈ gaussNodes s m, x ^ 2) - (gaussNodes s m).card := by
+      y ^ (2 : ℕ) * (∑ x ∈ gaussNodes s m, x ^ (2 : ℕ)) - (gaussNodes s m).card := by
   classical
   rw [gaussApexCenteredResidueTotal]
   calc
-    ∑ x ∈ gaussNodes s m, ((y * x) ^ 2 - 1) =
-        ∑ x ∈ gaussNodes s m, (y ^ 2 * x ^ 2 - 1) := by
+    ∑ x ∈ gaussNodes s m, ((y * x) ^ (2 : ℕ) - 1) =
+        ∑ x ∈ gaussNodes s m, (y ^ (2 : ℕ) * x ^ (2 : ℕ) - 1) := by
       apply Finset.sum_congr rfl
       intro x hx
       ring
-    _ = y ^ 2 * (∑ x ∈ gaussNodes s m, x ^ 2) - (gaussNodes s m).card := by
+    _ = y ^ (2 : ℕ) * (∑ x ∈ gaussNodes s m, x ^ (2 : ℕ)) - (gaussNodes s m).card := by
       rw [Finset.sum_sub_distrib, ← Finset.mul_sum]
       simp only [Finset.sum_const, nsmul_eq_mul, mul_one]
 
@@ -56,17 +56,17 @@ theorem gaussApexCenteredUnitPoleTransformComplex_eq_logDerivative
     {s : ℕ → ℝ} {N m : ℕ} (h : PositiveMomentFormBelow s N) (hmN : m + 1 < N)
     (y : ℝ) {z : ℂ} (hz : z.im ≠ 0) :
     gaussApexCenteredUnitPoleTransformComplex s m y z =
-      ((y : ℂ) ^ 2 * z ^ 2 - 1) *
+      ((y : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) *
           (Polynomial.aeval z (monicOrtho s (m + 1)).derivative /
             monicOrthoC s (m + 1) z) -
-        (y : ℂ) ^ 2 *
+        (y : ℂ) ^ (2 : ℕ) *
           (((gaussNodes s m).card : ℂ) * z + (gaussNodeTrace s m : ℂ)) := by
   classical
   let nodes := gaussNodes s m
   have hpoint (x : ℝ) (hx : x ∈ nodes) :
-      (((y * x) ^ 2 - 1 : ℝ) : ℂ) / (z - (x : ℂ)) =
-        (((y : ℂ) ^ 2 * z ^ 2 - 1) / (z - (x : ℂ)) -
-          (y : ℂ) ^ 2 * (z + (x : ℂ))) := by
+      (((y * x) ^ (2 : ℕ) - 1 : ℝ) : ℂ) / (z - (x : ℂ)) =
+        (((y : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) / (z - (x : ℂ)) -
+          (y : ℂ) ^ (2 : ℕ) * (z + (x : ℂ))) := by
     have hxz : z - (x : ℂ) ≠ 0 := by
       intro hzero
       have him := congrArg Complex.im hzero
@@ -78,16 +78,16 @@ theorem gaussApexCenteredUnitPoleTransformComplex_eq_logDerivative
   rw [gaussApexCenteredUnitPoleTransformComplex,
     show gaussNodes s m = nodes by rfl]
   calc
-    ∑ x ∈ nodes, (((y * x) ^ 2 - 1 : ℝ) : ℂ) / (z - (x : ℂ)) =
+    ∑ x ∈ nodes, (((y * x) ^ (2 : ℕ) - 1 : ℝ) : ℂ) / (z - (x : ℂ)) =
         ∑ x ∈ nodes,
-          (((y : ℂ) ^ 2 * z ^ 2 - 1) / (z - (x : ℂ)) -
-            (y : ℂ) ^ 2 * (z + (x : ℂ))) := by
+          (((y : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) / (z - (x : ℂ)) -
+            (y : ℂ) ^ (2 : ℕ) * (z + (x : ℂ))) := by
       apply Finset.sum_congr rfl
       intro x hx
       exact hpoint x hx
-    _ = ((y : ℂ) ^ 2 * z ^ 2 - 1) *
+    _ = ((y : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) *
           gaussUnitPoleTransformComplex s m z -
-        (y : ℂ) ^ 2 * (((nodes.card : ℂ) * z) + (gaussNodeTrace s m : ℂ)) := by
+        (y : ℂ) ^ (2 : ℕ) * (((nodes.card : ℂ) * z) + (gaussNodeTrace s m : ℂ)) := by
       rw [Finset.sum_sub_distrib]
       simp only [div_eq_mul_inv, ← Finset.mul_sum]
       rw [gaussUnitPoleTransformComplex,
@@ -104,10 +104,10 @@ theorem gaussApexCenteredUnitPoleTransformComplex_eq_degree_logDerivative
     {s : ℕ → ℝ} {N m : ℕ} (h : PositiveMomentFormBelow s N) (hmN : m + 1 < N)
     (y : ℝ) {z : ℂ} (hz : z.im ≠ 0) :
     gaussApexCenteredUnitPoleTransformComplex s m y z =
-      ((y : ℂ) ^ 2 * z ^ 2 - 1) *
+      ((y : ℂ) ^ (2 : ℕ) * z ^ (2 : ℕ) - 1) *
           (Polynomial.aeval z (monicOrtho s (m + 1)).derivative /
             monicOrthoC s (m + 1) z) -
-        (y : ℂ) ^ 2 *
+        (y : ℂ) ^ (2 : ℕ) *
           (((m + 1 : ℕ) : ℂ) * z + (gaussNodeTrace s m : ℂ)) := by
   rw [gaussApexCenteredUnitPoleTransformComplex_eq_logDerivative h hmN y hz,
     gaussNodes_card_below h m hmN]
@@ -115,7 +115,7 @@ theorem gaussApexCenteredUnitPoleTransformComplex_eq_degree_logDerivative
 /-- Pole residue of the centered faithful carrier has exactly the moving-apex sign. -/
 theorem gaussApexCenteredResidue_pos_iff
     {y x : ℝ} (hy : 0 < y) (hx : 0 < x) :
-    0 < (y * x) ^ 2 - 1 ↔ 1 < y * x := by
+    0 < (y * x) ^ (2 : ℕ) - 1 ↔ 1 < y * x := by
   have hprod : 0 < y * x := mul_pos hy hx
   constructor
   · intro hsquare
@@ -135,28 +135,28 @@ source atom. -/
 noncomputable def gaussSuperApexNullFlagPoissonSource
     (s : ℕ → ℝ) (m : ℕ) (y a eta : ℝ) : ℝ :=
   ∑ x ∈ gaussNodes s m,
-    max 0 ((y * x) ^ 2 - 1) * eta / ((a - x) ^ 2 + eta ^ 2)
+    max 0 ((y * x) ^ (2 : ℕ) - 1) * eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))
 
 /-- **Exact null-flag detection.**  At positive aperture, the pre-aggregation positive shear is
 strictly positive exactly when some current admitted residue is super-apex. -/
 theorem gaussSuperApexNullFlagPoissonSource_pos_iff
     (s : ℕ → ℝ) (m : ℕ) (y a : ℝ) {eta : ℝ} (heta : 0 < eta) :
     0 < gaussSuperApexNullFlagPoissonSource s m y a eta ↔
-      ∃ x ∈ gaussNodes s m, 0 < (y * x) ^ 2 - 1 := by
+      ∃ x ∈ gaussNodes s m, 0 < (y * x) ^ (2 : ℕ) - 1 := by
   let nodes := gaussNodes s m
   let term : ℝ → ℝ := fun x =>
-    max 0 ((y * x) ^ 2 - 1) * eta / ((a - x) ^ 2 + eta ^ 2)
-  have hden (x : ℝ) : 0 < (a - x) ^ 2 + eta ^ 2 :=
+    max 0 ((y * x) ^ (2 : ℕ) - 1) * eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))
+  have hden (x : ℝ) : 0 < (a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ) :=
     add_pos_of_nonneg_of_pos (sq_nonneg _) (sq_pos_of_pos heta)
   have hterm_nonneg (x : ℝ) (hx : x ∈ nodes) : 0 ≤ term x :=
     div_nonneg (mul_nonneg (le_max_left _ _) heta.le) (hden x).le
-  have hterm_pos_iff (x : ℝ) : 0 < term x ↔ 0 < (y * x) ^ 2 - 1 := by
-    change 0 < max 0 ((y * x) ^ 2 - 1) * eta /
-        ((a - x) ^ 2 + eta ^ 2) ↔ 0 < (y * x) ^ 2 - 1
-    by_cases hx : 0 < (y * x) ^ 2 - 1
+  have hterm_pos_iff (x : ℝ) : 0 < term x ↔ 0 < (y * x) ^ (2 : ℕ) - 1 := by
+    change 0 < max 0 ((y * x) ^ (2 : ℕ) - 1) * eta /
+        ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ)) ↔ 0 < (y * x) ^ (2 : ℕ) - 1
+    by_cases hx : 0 < (y * x) ^ (2 : ℕ) - 1
     · rw [max_eq_right hx.le]
       exact ⟨fun _ => hx, fun _ => div_pos (mul_pos hx heta) (hden x)⟩
-    · have hle : (y * x) ^ 2 - 1 ≤ 0 := le_of_not_gt hx
+    · have hle : (y * x) ^ (2 : ℕ) - 1 ≤ 0 := le_of_not_gt hx
       rw [max_eq_left hle]
       simp only [zero_mul, zero_div, lt_self_iff_false]
       constructor
@@ -167,7 +167,7 @@ theorem gaussSuperApexNullFlagPoissonSource_pos_iff
   rw [gaussSuperApexNullFlagPoissonSource,
     show gaussNodes s m = nodes by rfl,
     show (∑ x ∈ nodes,
-      max 0 ((y * x) ^ 2 - 1) * eta / ((a - x) ^ 2 + eta ^ 2)) =
+      max 0 ((y * x) ^ (2 : ℕ) - 1) * eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))) =
         ∑ x ∈ nodes, term x by rfl,
     Finset.sum_pos_iff_of_nonneg hterm_nonneg]
   constructor

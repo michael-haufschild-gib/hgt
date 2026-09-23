@@ -219,7 +219,7 @@ def literalTwoQueryScore {ι : Type*} [Fintype ι]
   (∑ i : ι,
       (∑ smpl : σ → Fin 3 × Bool,
         ((productStabilizerDensity smpl *
-          (star U * finitePauliMatrix (label i) * U)).trace.re) ^ 2)
+          (star U * finitePauliMatrix (label i) * U)).trace.re) ^ (2 : ℕ))
         / ((6 : ℝ) ^ Fintype.card σ))
     / (Fintype.card ι : ℝ)
 
@@ -248,14 +248,14 @@ theorem average_sq_trace_eq_sum_twirl
     (P : σ → Option (Fin 3)) :
     (∑ smpl : σ → Fin 3 × Bool,
         ((productStabilizerDensity smpl *
-          (star U * finitePauliMatrix P * U)).trace.re) ^ 2)
+          (star U * finitePauliMatrix P * U)).trace.re) ^ (2 : ℕ))
         / ((6 : ℝ) ^ Fintype.card σ)
       = ∑ Q : σ → Option (Fin 3), ((1 : ℝ) / 3) ^ finitePauliWeight Q *
-          (pauliConjugationTransfer U Q P) ^ 2 := by
+          (pauliConjugationTransfer U Q P) ^ (2 : ℕ) := by
   classical
   have hsq : ∀ smpl : σ → Fin 3 × Bool,
       ((productStabilizerDensity smpl *
-          (star U * finitePauliMatrix P * U)).trace.re) ^ 2
+          (star U * finitePauliMatrix P * U)).trace.re) ^ (2 : ℕ)
         = ∑ Q : σ → Option (Fin 3), ∑ R : σ → Option (Fin 3),
             (pauliConjugationTransfer U Q P * pauliConjugationTransfer U R P) *
               ((∏ s, stabilizerAxisExpectation (smpl s) (Q s)) *
@@ -306,12 +306,12 @@ theorem productStabilizerTwoQueryProtocolSignal_le_literalTwoQueryScore
   rw [average_sq_trace_eq_sum_twirl]
   have hsub : ∑ j : {P : σ → Option (Fin 3) // p P},
         ((1 : ℝ) / 3) ^ finitePauliWeight j.1 *
-          (matrixCoordinateCompression p (pauliConjugationTransfer U) j i) ^ 2
+          (matrixCoordinateCompression p (pauliConjugationTransfer U) j i) ^ (2 : ℕ)
       = ∑ Q ∈ Finset.univ.filter p,
-          ((1 : ℝ) / 3) ^ finitePauliWeight Q * (pauliConjugationTransfer U Q i.1) ^ 2 := by
+          ((1 : ℝ) / 3) ^ finitePauliWeight Q * (pauliConjugationTransfer U Q i.1) ^ (2 : ℕ) := by
     have hsub2 := Finset.sum_subtype (p := p) (F := inferInstance) (Finset.univ.filter p)
       (fun x => by simp)
-      (fun Q => ((1 : ℝ) / 3) ^ finitePauliWeight Q * (pauliConjugationTransfer U Q i.1) ^ 2)
+      (fun Q => ((1 : ℝ) / 3) ^ finitePauliWeight Q * (pauliConjugationTransfer U Q i.1) ^ (2 : ℕ))
     rw [hsub2]
     rfl
   rw [hsub]

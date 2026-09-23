@@ -48,9 +48,9 @@ def xiGammaEulerPrimitiveCoorientedReflectionGauge
   let r := xiGammaEulerPrimitiveModularRate i +
     xiGammaEulerPrimitiveModularRate j
   if a = 0 then
-    (-(b * d ^ 2)) * r
+    (-(b * d ^ (2 : ℕ))) * r
   else
-    (-(b * d ^ 2)) * (Real.sinh (a * r) / a)
+    (-(b * d ^ (2 : ℕ))) * (Real.sinh (a * r) / a)
 
 /-- Exact hyperbolic form of the actual reflection-odd promoted Gamma
 exterior on an arbitrary pair of prime-power cells. -/
@@ -94,7 +94,7 @@ theorem xiGammaEulerPrimitiveCoorientedReflectionGauge_pos
   have hbi := xiGammaEulerPrimitiveBoundaryAmplitude_pos 0 i
   have hbj := xiGammaEulerPrimitiveBoundaryAmplitude_pos 0 j
   have hd : 0 < (xiGammaEulerBoundaryHalfHeight i.1 i.2 -
-      xiGammaEulerBoundaryHalfHeight j.1 j.2) ^ 2 :=
+      xiGammaEulerBoundaryHalfHeight j.1 j.2) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hheight)
   have hi := xiGammaEulerBoundaryHalfHeight_pos i
   have hj := xiGammaEulerBoundaryHalfHeight_pos j
@@ -107,7 +107,7 @@ theorem xiGammaEulerPrimitiveCoorientedReflectionGauge_pos
       -(xiGammaEulerPrimitiveBoundaryAmplitude 0 i *
         xiGammaEulerPrimitiveBoundaryAmplitude 0 j *
           (xiGammaEulerBoundaryHalfHeight i.1 i.2 -
-            xiGammaEulerBoundaryHalfHeight j.1 j.2) ^ 2) < 0 := by
+            xiGammaEulerBoundaryHalfHeight j.1 j.2) ^ (2 : ℕ)) < 0 := by
     exact neg_lt_zero.mpr (mul_pos (mul_pos hbi hbj) hd)
   by_cases ha : a = 0
   · rw [xiGammaEulerPrimitiveCoorientedReflectionGauge, if_pos ha]
@@ -162,7 +162,7 @@ theorem xiGammaEulerPrimitiveCoorientedPositiveCone_noShorting
     a * ∑ ij ∈ S, w ij *
         xiGammaEulerPrimitiveCoorientedReflectionOddExterior
           a ij.1.1 ij.1.2 =
-      a ^ 2 * ∑ ij ∈ S, w ij *
+      a ^ (2 : ℕ) * ∑ ij ∈ S, w ij *
         xiGammaEulerPrimitiveCoorientedReflectionGauge
           a ij.1.1 ij.1.2 := by
           simp_rw [
@@ -203,7 +203,7 @@ theorem xiGammaEulerPrimitiveCoorientedPositiveCone_tsum_noShorting
     a * ∑' ij, w ij *
         xiGammaEulerPrimitiveCoorientedReflectionOddExterior
           a ij.1.1 ij.1.2 =
-      a ^ 2 * ∑' ij, w ij *
+      a ^ (2 : ℕ) * ∑' ij, w ij *
         xiGammaEulerPrimitiveCoorientedReflectionGauge
           a ij.1.1 ij.1.2 := by
           simp_rw [

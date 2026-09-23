@@ -28,8 +28,8 @@ def multiWeight (β s : Fin d → ℝ) : ℝ := ∏ j, s j ^ (β j - 1)
 
 /-- The weighted square of the cubical cochain factorizes coordinatewise. -/
 theorem multiLaplace_sq_weight_factor (β V s : Fin d → ℝ) :
-    (multiLaplaceCochain V s) ^ 2 * multiWeight β s =
-      ∏ j, (laplaceCochain (V j) (s j)) ^ 2 * s j ^ (β j - 1) := by
+    (multiLaplaceCochain V s) ^ (2 : ℕ) * multiWeight β s =
+      ∏ j, (laplaceCochain (V j) (s j)) ^ (2 : ℕ) * s j ^ (β j - 1) := by
   rw [multiLaplaceCochain, multiWeight, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
 
 /-- The cubical measure: Lebesgue measure on each open unit factor. -/
@@ -40,25 +40,25 @@ abbrev cubeMeasure (d : ℕ) : Measure (Fin d → ℝ) :=
 exceeds `−2`.** -/
 theorem integrable_multiLaplaceCochain_sq {β : Fin d → ℝ} (hβ : ∀ j, -2 < β j) {V : Fin d → ℝ}
     (hV : ∀ j, 0 ≤ V j) :
-    Integrable (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ 2 * multiWeight β s)
+    Integrable (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ (2 : ℕ) * multiWeight β s)
       (cubeMeasure d) := by
-  have hfac : (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ 2 * multiWeight β s) =
-      fun s : Fin d → ℝ => ∏ j, (fun u : ℝ => (laplaceCochain (V j) u) ^ 2 * u ^ (β j - 1)) (s j) :=
+  have hfac : (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ (2 : ℕ) * multiWeight β s) =
+      fun s : Fin d → ℝ => ∏ j, (fun u : ℝ => (laplaceCochain (V j) u) ^ (2 : ℕ) * u ^ (β j - 1)) (s j) :=
     funext fun s => multiLaplace_sq_weight_factor β V s
   rw [hfac]
   exact Integrable.fintype_prod fun j => integrableOn_laplaceCochain_sq (hβ j) (hV j)
 
 /-- **The weighted square norm factorizes.** -/
 theorem integral_multiLaplaceCochain_sq (β V : Fin d → ℝ) :
-    (∫ s, (multiLaplaceCochain V s) ^ 2 * multiWeight β s ∂(cubeMeasure d)) =
-      ∏ j, ∫ u in Ioo (0 : ℝ) 1, (laplaceCochain (V j) u) ^ 2 * u ^ (β j - 1) := by
-  have hfac : (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ 2 * multiWeight β s) =
-      fun s : Fin d → ℝ => ∏ j, (fun u : ℝ => (laplaceCochain (V j) u) ^ 2 * u ^ (β j - 1)) (s j) :=
+    (∫ s, (multiLaplaceCochain V s) ^ (2 : ℕ) * multiWeight β s ∂(cubeMeasure d)) =
+      ∏ j, ∫ u in Ioo (0 : ℝ) 1, (laplaceCochain (V j) u) ^ (2 : ℕ) * u ^ (β j - 1) := by
+  have hfac : (fun s : Fin d → ℝ => (multiLaplaceCochain V s) ^ (2 : ℕ) * multiWeight β s) =
+      fun s : Fin d → ℝ => ∏ j, (fun u : ℝ => (laplaceCochain (V j) u) ^ (2 : ℕ) * u ^ (β j - 1)) (s j) :=
     funext fun s => multiLaplace_sq_weight_factor β V s
   rw [hfac]
   exact integral_fintype_prod_eq_prod (𝕜 := ℝ)
     (μ := fun _ : Fin d => volume.restrict (Ioo (0 : ℝ) 1))
-    (fun j u => (laplaceCochain (V j) u) ^ 2 * u ^ (β j - 1))
+    (fun j u => (laplaceCochain (V j) u) ^ (2 : ℕ) * u ^ (β j - 1))
 
 /-! ## The cubical cocycle law -/
 

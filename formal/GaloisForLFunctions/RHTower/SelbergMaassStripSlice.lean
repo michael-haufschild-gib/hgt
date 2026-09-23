@@ -94,7 +94,7 @@ theorem gradient_integral_eq_sum {y : ℝ} (hy : 0 < y) :
 theorem centered_energy_ge_mass (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {y : ℝ} (hy : 0 < y) :
-    (2 * Real.pi / (N + 1 : ℕ)) ^ 2 *
+    (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) *
         (∫ x in (-(1 / 2 : ℝ))..(1 / 2), density N f (ofComplex (point x y))) ≤
       ∫ x in (-(1 / 2 : ℝ))..(1 / 2), gradientDensity N f (point x y) := by
   have hD := (density_slice_periodic N f hy).intervalIntegral_add_eq (-(1 / 2)) 0

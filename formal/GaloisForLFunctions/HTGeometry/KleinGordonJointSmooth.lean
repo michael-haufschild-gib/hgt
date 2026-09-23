@@ -72,7 +72,7 @@ theorem contDiff_kgFunOp_param {H : ℝ × E → ℂ} (hH : ContDiff ℝ ∞ H) 
     ContDiff ℝ ∞ fun p : ℝ × E => kgFunOp (fun x : E => H (p.1, x)) p.2 := by
   have hval : (fun p : ℝ × E => kgFunOp (fun x : E => H (p.1, x)) p.2)
       = fun p : ℝ × E => H (p.1, p.2)
-        - (((2 * Real.pi) ^ 2 : ℝ))⁻¹ • Δ (fun x : E => H (p.1, x)) p.2 := rfl
+        - (((2 * Real.pi) ^ (2 : ℕ) : ℝ))⁻¹ • Δ (fun x : E => H (p.1, x)) p.2 := rfl
   rw [hval]
   have hfirst : ContDiff ℝ ∞ fun p : ℝ × E => H (p.1, p.2) := by
     simpa using hH

@@ -13,24 +13,24 @@ the polynomial's positive chamber.
 
 Write
 
-`M = theta_3(i) = evenKernel 0 1`, `R = pi M^4`, and `X = R^2`.
+`M = theta_3(i) = evenKernel 0 1`, `R = pi M^(4 : ℕ)`, and `X = R^(2 : ℕ)`.
 
 The autonomous self-dual modular system obtained from the theta functional equation, the
 modular-lambda derivative, and the Ramanujan differential equations is
 
-`z' = -R (1-z^2)`,
+`z' = -R (1-z^(2 : ℕ))`,
 `R' = -(2/3) R (p+Rz)`,
-`p' = 3-p^2/3+R^2(3+z^2)/12`,
+`p' = 3-p^(2 : ℕ)/3+R^(2 : ℕ)(3+z^(2 : ℕ))/12`,
 
 where `z = 2 lambda-1` and `p = pi t E_2(it)-3` are odd at the seam and `R` is even.  Exact
 sixth-order elimination gives
 
-`N_6 = M^3 Q(X) / 131072`,
+`N_6 = M^(3 : ℕ) Q(X) / 131072`,
 
-with `N_6 = f_0^2 f_6 - 15 f_0 f_2 f_4 + 30 f_2^3` and
+with `N_6 = f_0^(2 : ℕ) f_6 - 15 f_0 f_2 f_4 + 30 f_2^(3 : ℕ)` and
 
-`Q(X) = 99X^6 + 12X^5 - 3160X^4 - 544272X^3
-        - 1446144X^2 - 1509120X + 276480`.
+`Q(X) = 99X^(6 : ℕ) + 12X^(5 : ℕ) - 3160X^(4 : ℕ) - 544272X^(3 : ℕ)
+        - 1446144X^(2 : ℕ) - 1509120X + 276480`.
 
 The analytic equality with `thetaCuspGaussianApertureSixthSeamNumerator` requires the remaining
 real-theta/modular-differential bridge and is deliberately not asserted here.  What is proved
@@ -54,23 +54,23 @@ the completed Xi source. -/
 def thetaCuspSelfDualThetaMass : ℝ := evenKernel 0 1
 
 /-- The single modular scale left after self-dual elimination of the Gaussian-aperture seam
-jets: `R = pi * theta_3(i)^4`. -/
+jets: `R = pi * theta_3(i)^(4 : ℕ)`. -/
 def thetaCuspSelfDualModularScale : ℝ :=
-  Real.pi * thetaCuspSelfDualThetaMass ^ 4
+  Real.pi * thetaCuspSelfDualThetaMass ^ (4 : ℕ)
 
 /-- The exact polynomial selected by sixth-order elimination in the self-dual modular system. -/
 def thetaCuspGaussianApertureSixthSeamModularPolynomial (X : ℝ) : ℝ :=
-  99 * X ^ 6 + 12 * X ^ 5 - 3160 * X ^ 4 -
-    544272 * X ^ 3 - 1446144 * X ^ 2 - 1509120 * X + 276480
+  99 * X ^ (6 : ℕ) + 12 * X ^ (5 : ℕ) - 3160 * X ^ (4 : ℕ) -
+    544272 * X ^ (3 : ℕ) - 1446144 * X ^ (2 : ℕ) - 1509120 * X + 276480
 
 /-- The modular-closure value predicted for the actual sixth seam numerator.  Its equality with
 `thetaCuspGaussianApertureSixthSeamNumerator` is the remaining analytic bridge, not an assumption
 of this file. -/
 def thetaCuspGaussianApertureSixthSeamModularClosureValue : ℝ :=
-  thetaCuspSelfDualThetaMass ^ 3 /
+  thetaCuspSelfDualThetaMass ^ (3 : ℕ) /
       131072 *
     thetaCuspGaussianApertureSixthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2)
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ))
 
 /-- A rational lower bound for the first theta exponential at the self-dual seam. -/
 theorem exp_neg_pi_gt_four_hundred_thirty_one_div_ten_thousand :
@@ -81,7 +81,7 @@ theorem exp_neg_pi_gt_four_hundred_thirty_one_div_ten_thousand :
       Real.exp (177 / 1250 : ℝ) ≤
           (∑ m ∈ Finset.range 3,
               (177 / 1250 : ℝ) ^ m / m.factorial) +
-            (177 / 1250 : ℝ) ^ 3 * (3 + 1) / (Nat.factorial 3 * 3) :=
+            (177 / 1250 : ℝ) ^ (3 : ℕ) * (3 + 1) / (Nat.factorial 3 * 3) :=
         Real.exp_bound' (by norm_num) (by norm_num) (by norm_num)
       _ < (11523 / 10000 : ℝ) := by norm_num [Finset.sum_range_succ]
   have hpi : Real.pi < 3 + (177 / 1250 : ℝ) := by
@@ -92,13 +92,13 @@ theorem exp_neg_pi_gt_four_hundred_thirty_one_div_ten_thousand :
     calc
       Real.exp Real.pi < Real.exp (3 + (177 / 1250 : ℝ)) :=
         Real.exp_lt_exp.mpr hpi
-      _ = Real.exp 1 ^ 3 * Real.exp (177 / 1250 : ℝ) := by
+      _ = Real.exp 1 ^ (3 : ℕ) * Real.exp (177 / 1250 : ℝ) := by
         rw [Real.exp_add]
         congr 1
         rw [show (3 : ℝ) = 1 + 1 + 1 by norm_num,
           Real.exp_add, Real.exp_add]
         ring
-      _ < (2.7182818286 : ℝ) ^ 3 * (11523 / 10000 : ℝ) := by
+      _ < (2.7182818286 : ℝ) ^ (3 : ℕ) * (11523 / 10000 : ℝ) := by
         gcongr
         exact Real.exp_one_lt_d9
       _ < (10000 / 431 : ℝ) := by norm_num
@@ -112,10 +112,10 @@ theorem thetaCuspSelfDualThetaMass_gt_five_thousand_four_hundred_thirty_one_div_
     (5431 / 5000 : ℝ) < thetaCuspSelfDualThetaMass := by
   have hs0 := hasSum_nat_cosKernel₀ 0 (by norm_num : (0 : ℝ) < 1)
   have hs : HasSum (fun n : ℕ =>
-      2 * Real.exp (-Real.pi * (n + 1) ^ 2))
+      2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ)))
       (evenKernel 0 1 - 1) := by
     have hs' : HasSum (fun n : ℕ =>
-        2 * Real.exp (-Real.pi * (n + 1) ^ 2 * 1))
+        2 * Real.exp (-Real.pi * (n + 1) ^ (2 : ℕ) * 1))
         (cosKernel (0 : UnitAddCircle) 1 - 1) := by
       simpa using hs0
     rw [← congrFun evenKernel_eq_cosKernel_of_zero (1 : ℝ)] at hs'
@@ -130,7 +130,7 @@ theorem thetaCuspSelfDualThetaMass_gt_five_thousand_four_hundred_thirty_one_div_
 /-- The squared self-dual modular scale lies strictly beyond the rational sign threshold
 `191/10`. -/
 theorem thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one :
-    (191 / 10 : ℝ) < thetaCuspSelfDualModularScale ^ 2 := by
+    (191 / 10 : ℝ) < thetaCuspSelfDualModularScale ^ (2 : ℕ) := by
   have hp : (31415 / 10000 : ℝ) < Real.pi := by
     have h := Real.pi_gt_d4
     norm_num at h ⊢
@@ -140,9 +140,9 @@ theorem thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one :
   rw [thetaCuspSelfDualModularScale]
   calc
     (191 / 10 : ℝ) <
-        (31415 / 10000 : ℝ) ^ 2 * (5431 / 5000 : ℝ) ^ 8 := by norm_num
-    _ < Real.pi ^ 2 * thetaCuspSelfDualThetaMass ^ 8 := by gcongr
-    _ = (Real.pi * thetaCuspSelfDualThetaMass ^ 4) ^ 2 := by ring
+        (31415 / 10000 : ℝ) ^ (2 : ℕ) * (5431 / 5000 : ℝ) ^ (8 : ℕ) := by norm_num
+    _ < Real.pi ^ (2 : ℕ) * thetaCuspSelfDualThetaMass ^ (8 : ℕ) := by gcongr
+    _ = (Real.pi * thetaCuspSelfDualThetaMass ^ (4 : ℕ)) ^ (2 : ℕ) := by ring
 
 /-- The sixth-seam modular polynomial is positive throughout the chamber selected by the actual
 theta source.  Expansion at `X = 191/10` has strictly positive constant term and nonnegative
@@ -156,10 +156,10 @@ theorem thetaCuspGaussianApertureSixthSeamModularPolynomial_pos_of_threshold
   rw [hXeq]
   rw [show thetaCuspGaussianApertureSixthSeamModularPolynomial
         ((191 / 10 : ℝ) + y) =
-      99 * y ^ 6 + (56787 / 5 : ℝ) * y ^ 5 +
-        (10794577 / 20 : ℝ) * y ^ 4 +
-        (652723289 / 50 : ℝ) * y ^ 3 +
-        (317839252857 / 2000 : ℝ) * y ^ 2 +
+      99 * y ^ (6 : ℕ) + (56787 / 5 : ℝ) * y ^ (5 : ℕ) +
+        (10794577 / 20 : ℝ) * y ^ (4 : ℕ) +
+        (652723289 / 50 : ℝ) * y ^ (3 : ℕ) +
+        (317839252857 / 2000 : ℝ) * y ^ (2 : ℕ) +
         (38870479127747 / 50000 : ℝ) * y +
         (67989377597579 / 1000000 : ℝ) by
       unfold thetaCuspGaussianApertureSixthSeamModularPolynomial
@@ -170,7 +170,7 @@ theorem thetaCuspGaussianApertureSixthSeamModularPolynomial_pos_of_threshold
 polynomial. -/
 theorem thetaCuspGaussianApertureSixthSeamModularPolynomial_source_pos :
     0 < thetaCuspGaussianApertureSixthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2) :=
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ)) :=
   thetaCuspGaussianApertureSixthSeamModularPolynomial_pos_of_threshold
     thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
 

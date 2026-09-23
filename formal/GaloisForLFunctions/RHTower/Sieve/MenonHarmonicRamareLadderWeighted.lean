@@ -32,28 +32,28 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_blocks_weighted
     {ι : Type*} [DecidableEq ι] (I : Finset ι) (B : ι → Finset ℕ)
     (hdisj : (I : Set ι).PairwiseDisjoint B) (hcover : I.biUnion B = P)
     (v : ι → ℝ) (hv : ∀ i ∈ I, 0 < v i) :
-    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ))
       ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i *
-          ∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ 2 := by
+          ∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ) := by
   classical
-  have hpt : ∀ w : ℝ, ‖harmonicRamareBilinear P s w‖ ^ 2
-      ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ 2 := by
+  have hpt : ∀ w : ℝ, ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ)
+      ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ) := by
     intro w
     rw [harmonicRamareBilinear_eq_sum_blocks w I B hdisj hcover]
     exact normSq_sum_le_weighted I v hv (fun i => harmonicRamareBlock P s (B i) w)
-  have hcont : Continuous fun w : ℝ => ‖harmonicRamareBilinear P s w‖ ^ 2 := by
+  have hcont : Continuous fun w : ℝ => ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ) := by
     refine (continuous_finsetSum P fun p _ => ?_).norm.pow 2
     exact ((continuous_moebiusPhase p).div_const _).mul (continuous_logPoly _ _)
   have hcontB : ∀ i : ι, Continuous fun w : ℝ =>
-      ‖harmonicRamareBlock P s (B i) w‖ ^ 2 := fun i =>
+      ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ) := fun i =>
     ((continuous_harmonicRamareBlock P s (B i)).norm).pow 2
   have hcontS : Continuous fun w : ℝ =>
-      (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ 2 :=
+      (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ) :=
     (continuous_finsetSum I fun i _ => (hcontB i).const_mul _).const_mul _
-  have hint1 : IntegrableOn (fun w : ℝ => ‖harmonicRamareBilinear P s w‖ ^ 2) E volume :=
+  have hint1 : IntegrableOn (fun w : ℝ => ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ)) E volume :=
     (hcont.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hint2 : IntegrableOn (fun w : ℝ =>
-      (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ 2) E volume :=
+      (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ)) E volume :=
     (hcontS.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hmono := setIntegral_mono_on hint1 hint2 hEm (fun w _ => hpt w)
   refine hmono.trans (le_of_eq ?_)
@@ -80,7 +80,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_min_weighted
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hprime : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V j) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (∑ j ∈ Finset.range L, 1 / v j) * ∑ j ∈ Finset.range L, v j *
           min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j) E j)
             (menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j) := by

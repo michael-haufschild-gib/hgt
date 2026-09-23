@@ -29,7 +29,7 @@ theorem sum_primesLE_eq_filter {F : ℕ → ℝ} (N : ℕ) :
 /-! ## Finite clock recurrence -/
 
 theorem norm_sq_exp_mul_I_sub_one (θ : ℝ) :
-    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 = 2 * (1 - Real.cos θ) := by
+    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) = 2 * (1 - Real.cos θ) := by
   have hexp : Complex.exp ((θ : ℂ) * Complex.I)
       = ⟨Real.cos θ, Real.sin θ⟩ := by
     rw [Complex.exp_mul_I]
@@ -52,13 +52,13 @@ theorem exists_large_small_primeClockVerticalEnergy (N : ℕ) {η : ℝ} (hη : 
     positivity
   set ε : ℝ := Real.sqrt (η / (S + 1)) with hε
   have hεpos : 0 < ε := Real.sqrt_pos.mpr (by positivity)
-  have hεsq : ε ^ 2 = η / (S + 1) := Real.sq_sqrt (by positivity)
+  have hεsq : ε ^ (2 : ℕ) = η / (S + 1) := Real.sq_sqrt (by positivity)
   obtain ⟨t, hT', hclose⟩ :=
     HTGeometry.primeBooleanFusion_exists_large_return
       ((Nat.primesLE N).subtype Nat.Prime) hεpos hT
   refine ⟨t, hT', ?_⟩
   have hterm : ∀ p ∈ Nat.primesLE N,
-      2 * (1 - Real.cos (t * Real.log p)) / (p : ℝ) ≤ ε ^ 2 * (p : ℝ)⁻¹ := by
+      2 * (1 - Real.cos (t * Real.log p)) / (p : ℝ) ≤ ε ^ (2 : ℕ) * (p : ℝ)⁻¹ := by
     intro p hp
     have hprime : Nat.Prime p := (Nat.mem_primesLE.mp hp).2
     have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
@@ -73,14 +73,14 @@ theorem exists_large_small_primeClockVerticalEnergy (N : ℕ) {η : ℝ} (hη : 
         HTGeometry.ConstraintFrameRelativity.primeClockVec]
       norm_num
     rw [hflow] at hbound
-    have hsq : ‖Complex.exp (((-(t * Real.log p) : ℝ) : ℂ) * Complex.I) - 1‖ ^ 2 < ε ^ 2 := by
+    have hsq : ‖Complex.exp (((-(t * Real.log p) : ℝ) : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) := by
       refine pow_lt_pow_left₀ hbound (norm_nonneg _) (by norm_num)
     rw [norm_sq_exp_mul_I_sub_one] at hsq
     have hcos : Real.cos (-(t * Real.log p)) = Real.cos (t * Real.log p) := Real.cos_neg _
     rw [hcos] at hsq
     rw [div_eq_mul_inv]
     exact mul_le_mul_of_nonneg_right hsq.le (by positivity)
-  have hsum : primeClockVerticalEnergy N t ≤ ε ^ 2 * S := by
+  have hsum : primeClockVerticalEnergy N t ≤ ε ^ (2 : ℕ) * S := by
     rw [primeClockVerticalEnergy_eq_cos, hS, Finset.mul_sum]
     exact Finset.sum_le_sum hterm
   refine lt_of_le_of_lt hsum ?_
@@ -371,7 +371,7 @@ theorem tendsto_primeClockVerticalEnergy_scaled (c : ℝ) :
 noncomputable def wickProfileTest (z : ℂ) (u : ℝ) : ℂ :=
   if u = 0 then 0 else 2 * (Complex.cosh (z * (u : ℂ)) - 1) / (u : ℂ)
 
-/-- The Wick profile germ `Φ(z) = 2 ∫_0^1 (cosh(zu) - 1)/u du`. -/
+/-- The Wick profile germ `Φ(z) = 2 ∫_0^(1 : ℕ) (cosh(zu) - 1)/u du`. -/
 noncomputable def wickProfile (z : ℂ) : ℂ := ∫ u in (0 : ℝ)..1, wickProfileTest z u
 
 theorem wickProfile_ofReal (c : ℝ) :

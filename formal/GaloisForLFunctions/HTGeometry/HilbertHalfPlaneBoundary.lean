@@ -33,7 +33,7 @@ private theorem shifted_ne_zero (w : ℂ) (hw : 0 < w.re) : w+(F.shift : ℂ) �
 omit [CompleteSpace H] in
 /-- Every continuous observation has Hardy bounds derived from the common vector estimate. -/
 theorem probe_hardy (ℓ : H →L[ℂ] ℂ) :
-    IsHalfPlaneHardy (fun w => ℓ (F.value w)) ((‖ℓ‖*F.bound)^2*(1/(2*F.shift))) := by
+    IsHalfPlaneHardy (fun w => ℓ (F.value w)) ((‖ℓ‖*F.bound)^(2 : ℕ)*(1/(2*F.shift))) := by
   have hi := isHalfPlaneHardy_inv_shift (c := (F.shift : ℂ)) (by simpa using F.shift_pos)
   have hd : DifferentiableOn ℂ (fun w : ℂ => (w+F.shift)*ℓ (F.value w))
       {w : ℂ | 0 < w.re} := by

@@ -36,7 +36,7 @@ def ingoingPoint (x : Fin 4 → ℝ) : Fin 4 → ℝ :=
 
 def ingoingDifferential (r : ℝ) : (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ) :=
   ContinuousLinearMap.pi ![
-    ContinuousLinearMap.proj 0+(r^2-1)⁻¹ • ContinuousLinearMap.proj 1,
+    ContinuousLinearMap.proj 0+(r^(2 : ℕ)-1)⁻¹ • ContinuousLinearMap.proj 1,
     ContinuousLinearMap.proj 1,ContinuousLinearMap.proj 2,ContinuousLinearMap.proj 3]
 
 private theorem ingoing_hasFDerivAt (x : Fin 4 → ℝ) (hr : 1<x 1) :
@@ -55,7 +55,7 @@ private theorem ingoing_hasFDerivAt (x : Fin 4 → ℝ) (hr : 1<x 1) :
 
 private theorem differential_basis (r : ℝ) (i : Fin 4) :
     ingoingDifferential r (Pi.single i 1)=Pi.single i 1+
-      (if i=1 then (r^2-1)⁻¹ else 0) • Pi.single 0 1 := by
+      (if i=1 then (r^(2 : ℕ)-1)⁻¹ else 0) • Pi.single 0 1 := by
   ext j
   fin_cases i <;> fin_cases j <;> simp [ingoingDifferential]
 
@@ -63,7 +63,7 @@ private theorem first_shift {F : (Fin 4 → ℝ) → ℂ} {x : Fin 4 → ℝ}
     (hr : 1<x 1) (hF : DifferentiableAt ℝ F (ingoingPoint x)) (i : Fin 4) :
     coordDeriv i (fun z => F (ingoingPoint z)) x =
       coordDeriv i F (ingoingPoint x)+
-        (if i=1 then coordDeriv 0 F (ingoingPoint x)/((x 1:ℂ)^2-1) else 0) := by
+        (if i=1 then coordDeriv 0 F (ingoingPoint x)/((x 1:ℂ)^(2 : ℕ)-1) else 0) := by
   have h := hF.hasFDerivAt.comp x (ingoing_hasFDerivAt x hr)
   change (fderiv ℝ (F ∘ ingoingPoint) x) (Pi.single i 1) = _
   rw [h.fderiv,ContinuousLinearMap.comp_apply,differential_basis]
@@ -81,7 +81,7 @@ private theorem first_shift_germ {F : (Fin 4 → ℝ) → ℂ} {x : Fin 4 → �
     (hr : 1<x 1) (hF : ContDiffAt ℝ 2 F (ingoingPoint x)) (j : Fin 4) :
     coordDeriv j (fun z => F (ingoingPoint z)) =ᶠ[𝓝 x]
       (fun z => coordDeriv j F (ingoingPoint z)+
-        (if j=1 then coordDeriv 0 F (ingoingPoint z)/((z 1:ℂ)^2-1) else 0)) := by
+        (if j=1 then coordDeriv 0 F (ingoingPoint z)/((z 1:ℂ)^(2 : ℕ)-1) else 0)) := by
   have hloc := (ingoing_hasFDerivAt x hr).continuousAt.tendsto.eventually
     (hF.eventually (by norm_num))
   filter_upwards [hloc,(isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hr] with z hz hzr
@@ -100,19 +100,19 @@ private theorem partial_mul {F G : (Fin 4 → ℝ) → ℂ} {x : Fin 4 → ℝ}
   ring
 
 private theorem inverse_horizon_derivative (x : Fin 4 → ℝ) (hr : 1<x 1) :
-    HasFDerivAt (fun z : Fin 4 → ℝ => 1/((z 1:ℂ)^2-1))
-      ((-2*(x 1:ℂ)/((x 1:ℂ)^2-1)^2) •
+    HasFDerivAt (fun z : Fin 4 → ℝ => 1/((z 1:ℂ)^(2 : ℕ)-1))
+      ((-2*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ)) •
         (Complex.ofRealCLM.comp (ContinuousLinearMap.proj 1))) x := by
-  have hf : (x 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (x 1)^2-1 ≠ 0 by nlinarith)
+  have hf : (x 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (x 1)^(2 : ℕ)-1 ≠ 0 by nlinarith)
   have hR := (hasDerivAt_id (x 1)).ofReal_comp
   have h := (hasDerivAt_const (x 1) (1:ℂ)).div ((hR.pow 2).sub_const 1) hf
-  have h' : HasDerivAt (fun r : ℝ => 1/((r:ℂ)^2-1))
-      (-2*(x 1:ℂ)/((x 1:ℂ)^2-1)^2) (x 1) := by
+  have h' : HasDerivAt (fun r : ℝ => 1/((r:ℂ)^(2 : ℕ)-1))
+      (-2*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ)) (x 1) := by
     convert! h using 1
     simp only [id_eq,Complex.ofReal_one,Pi.pow_apply]
     ring
-  have houter : HasFDerivAt (fun r : ℝ => 1/((r:ℂ)^2-1))
-      ((1 : ℝ →L[ℝ] ℝ).smulRight (-2*(x 1:ℂ)/((x 1:ℂ)^2-1)^2)) (x 1) :=
+  have houter : HasFDerivAt (fun r : ℝ => 1/((r:ℂ)^(2 : ℕ)-1))
+      ((1 : ℝ →L[ℝ] ℝ).smulRight (-2*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ))) (x 1) :=
     h'.hasFDerivAt
   have hcoord : HasFDerivAt (fun z : Fin 4 → ℝ => z 1)
       (ContinuousLinearMap.proj 1 : (Fin 4 → ℝ) →L[ℝ] ℝ) x :=
@@ -123,8 +123,8 @@ private theorem inverse_horizon_derivative (x : Fin 4 → ℝ) (hr : 1<x 1) :
   simp [Complex.real_smul,mul_comm]
 
 private theorem inverse_horizon_partial (x : Fin 4 → ℝ) (hr : 1<x 1) (i : Fin 4) :
-    coordDeriv i (fun z : Fin 4 → ℝ => 1/((z 1:ℂ)^2-1)) x=
-      if i=1 then -2*(x 1:ℂ)/((x 1:ℂ)^2-1)^2 else 0 := by
+    coordDeriv i (fun z : Fin 4 → ℝ => 1/((z 1:ℂ)^(2 : ℕ)-1)) x=
+      if i=1 then -2*(x 1:ℂ)/((x 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ) else 0 := by
   rw [coordDeriv,(inverse_horizon_derivative x hr).fderiv]
   by_cases hi : i=1
   · subst i
@@ -149,19 +149,19 @@ theorem ofField_ingoing_comp {F : (Fin 4 → ℝ) → ℂ} {x : Fin 4 → ℝ}
     · subst j
       have he : coordDeriv 1 (fun z => F (ingoingPoint z)) =ᶠ[𝓝 x]
           (fun z => coordDeriv 1 F (ingoingPoint z)+coordDeriv 0 F (ingoingPoint z)*
-            (1/((z 1:ℂ)^2-1))) := by simpa only [ite_true,mul_one_div] using hg
+            (1/((z 1:ℂ)^(2 : ℕ)-1))) := by simpa only [ite_true,mul_one_div] using hg
       rw [coordDeriv,he.fderiv_eq]
       change coordDeriv i (fun z => coordDeriv 1 F (ingoingPoint z)+
-        coordDeriv 0 F (ingoingPoint z)*(1/((z 1:ℂ)^2-1))) x = _
+        coordDeriv 0 F (ingoingPoint z)*(1/((z 1:ℂ)^(2 : ℕ)-1))) x = _
       have hprod : DifferentiableAt ℝ (fun z : Fin 4 → ℝ =>
-          coordDeriv 0 F (ingoingPoint z)*(1/((z 1:ℂ)^2-1))) x :=
+          coordDeriv 0 F (ingoingPoint z)*(1/((z 1:ℂ)^(2 : ℕ)-1))) x :=
         (hA 0).mul (inverse_horizon_derivative x hr).differentiableAt
       rw [partial_add (hA 1) hprod,
         partial_mul (hA 0) (inverse_horizon_derivative x hr).differentiableAt,
         hD 1,hD 0,inverse_horizon_partial x hr i]
       by_cases hi : i=1
       · simp only [D4BMIngoingFullCurrent.toStatic,ofField,hi,ite_true,and_self]
-        have hf : (x 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (x 1)^2-1 ≠ 0 by nlinarith)
+        have hf : (x 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (x 1)^(2 : ℕ)-1 ≠ 0 by nlinarith)
         field_simp [hf]
         ring
       · simp only [D4BMIngoingFullCurrent.toStatic,ofField,hi,ite_false,ite_true,false_and,add_zero]
@@ -373,11 +373,11 @@ theorem original_current_before_onset (q : XiZeroCopy) (branch : Bool) (amp : �
     D4BMMixedActionCurrent.streamMasterValue,D4BMMixedActionCurrent.streamAngularAction,
     constant]
   all_goals right
-  · change -((1-(x.val 1:ℂ)^2)*((Q 1).first 1*(0-0)))+
-      -((Q 1).first 0*(0-0))/((x.val 1:ℂ)^2-1)=0
+  · change -((1-(x.val 1:ℂ)^(2 : ℕ))*((Q 1).first 1*(0-0)))+
+      -((Q 1).first 0*(0-0))/((x.val 1:ℂ)^(2 : ℕ)-1)=0
     simp
-  · change -(((x.val 1:ℂ)^2-1)*((Q 0).first 1*(0-0)))-
-      -((Q 0).first 0*(0-0))/((x.val 1:ℂ)^2-1)=0
+  · change -(((x.val 1:ℂ)^(2 : ℕ)-1)*((Q 0).first 1*(0-0)))-
+      -((Q 0).first 0*(0-0))/((x.val 1:ℂ)^(2 : ℕ)-1)=0
     simp
 
 /-- Explicit horizon neighborhood excluded by the actual causal support, uniformly over
@@ -409,11 +409,11 @@ open D4BMMixedActionCurrent D4BMMetricReconstruction
 /-- Actual nonseparated metric reconstructed before any coordinate differentiation. -/
 def reconstructedMetric (P : Fin 2 → (Fin 4 → ℝ) → ℂ) (x : Fin 4 → ℝ) :
     Matrix (Fin 4) (Fin 4) ℂ :=
-  mixedMatrix (fun a => ((x 1:ℂ)^2-1)*coordDeriv 1 (P a) x)
-    (fun a => coordDeriv 0 (P a) x/((x 1:ℂ)^2-1))
+  mixedMatrix (fun a => ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (P a) x)
+    (fun a => coordDeriv 0 (P a) x/((x 1:ℂ)^(2 : ℕ)-1))
 
 private theorem factor_partial (x : Fin 4 → ℝ) (i : Fin 4) :
-    coordDeriv i (fun z : Fin 4 → ℝ => (z 1:ℂ)^2-1) x=
+    coordDeriv i (fun z : Fin 4 → ℝ => (z 1:ℂ)^(2 : ℕ)-1) x=
       if i=1 then 2*(x 1:ℂ) else 0 := by
   have hR : HasFDerivAt (fun z : Fin 4 → ℝ => (z 1:ℂ))
       (Complex.ofRealCLM.comp (ContinuousLinearMap.proj 1)) x :=
@@ -435,21 +435,21 @@ theorem reconstructedMetric_first (P : Fin 2 → (Fin 4 → ℝ) → ℂ)
         (streamMetricJet (x.val 1) (fun a => ofField (P a) x.val)).first := by
   have hR : DifferentiableAt ℝ (fun z : Fin 4 → ℝ => (z 1:ℂ)) x.val :=
     Complex.ofRealCLM.differentiableAt.comp x.val (differentiableAt_apply 1 x.val)
-  have hF : DifferentiableAt ℝ (fun z : Fin 4 → ℝ => (z 1:ℂ)^2-1) x.val :=
+  have hF : DifferentiableAt ℝ (fun z : Fin 4 → ℝ => (z 1:ℂ)^(2 : ℕ)-1) x.val :=
     (hR.pow 2).sub_const 1
   have hD (a : Fin 2) (k : Fin 4) := (partial_hasFDerivAt (hP a) k).differentiableAt
   have hT (a : Fin 2) (k : Fin 4) :
-      coordDeriv k (fun z : Fin 4 → ℝ => ((z 1:ℂ)^2-1)*coordDeriv 1 (P a) z) x.val=
+      coordDeriv k (fun z : Fin 4 → ℝ => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (P a) z) x.val=
       (if k=1 then 2*(x.val 1:ℂ)*coordDeriv 1 (P a) x.val else 0)+
-        ((x.val 1:ℂ)^2-1)*coordDeriv k (coordDeriv 1 (P a)) x.val := by
+        ((x.val 1:ℂ)^(2 : ℕ)-1)*coordDeriv k (coordDeriv 1 (P a)) x.val := by
     rw [partial_mul hF (hD a 1),factor_partial]
     split_ifs <;> simp
   have hU (a : Fin 2) (k : Fin 4) :
-      coordDeriv k (fun z : Fin 4 → ℝ => coordDeriv 0 (P a) z/((z 1:ℂ)^2-1)) x.val=
-      coordDeriv k (coordDeriv 0 (P a)) x.val/((x.val 1:ℂ)^2-1)-
-        (if k=1 then 2*(x.val 1:ℂ)*coordDeriv 0 (P a) x.val/((x.val 1:ℂ)^2-1)^2 else 0) := by
-    have he : (fun z : Fin 4 → ℝ => coordDeriv 0 (P a) z/((z 1:ℂ)^2-1))=
-        (fun z => coordDeriv 0 (P a) z*(1/((z 1:ℂ)^2-1))) := by
+      coordDeriv k (fun z : Fin 4 → ℝ => coordDeriv 0 (P a) z/((z 1:ℂ)^(2 : ℕ)-1)) x.val=
+      coordDeriv k (coordDeriv 0 (P a)) x.val/((x.val 1:ℂ)^(2 : ℕ)-1)-
+        (if k=1 then 2*(x.val 1:ℂ)*coordDeriv 0 (P a) x.val/((x.val 1:ℂ)^(2 : ℕ)-1)^(2 : ℕ) else 0) := by
+    have he : (fun z : Fin 4 → ℝ => coordDeriv 0 (P a) z/((z 1:ℂ)^(2 : ℕ)-1))=
+        (fun z => coordDeriv 0 (P a) z*(1/((z 1:ℂ)^(2 : ℕ)-1))) := by
       funext z
       rw [mul_one_div]
     rw [he,partial_mul (hD a 0) (inverse_horizon_derivative x.val x.property.1).differentiableAt,
@@ -467,7 +467,7 @@ theorem reconstructedMetric_first (P : Fin 2 → (Fin 4 → ℝ) → ℂ)
 theorem reconstructedMetric_action (P Q : Fin 2 → (Fin 4 → ℝ) → ℂ)
     (x : D4BMBackground.ExteriorPoint) (hP : ∀ a, ContDiffAt ℝ 2 (P a) x.val)
     (hQ : ∀ a, ContDiffAt ℝ 2 (Q a) x.val) (i : Fin 4) :
-    (x.val 1:ℂ)^2/(x.val 3:ℂ)^2*actionSymplectic (D4BMBackground.jet (x.val 1) (x.val 3))
+    (x.val 1:ℂ)^(2 : ℕ)/(x.val 3:ℂ)^(2 : ℕ)*actionSymplectic (D4BMBackground.jet (x.val 1) (x.val 3))
       (ofMetricField (reconstructedMetric P) x.val) (ofMetricField (reconstructedMetric Q) x.val) i=
       streamCurrentDensity (x.val 1) (x.val 3)
         (fun a => ofField (P a) x.val) (fun a => ofField (Q a) x.val) i := by
@@ -505,10 +505,10 @@ private theorem ingoing_smooth (x : Fin 4 → ℝ) (hr : 1<x 1) :
 /-- Actual metric current in the ingoing chart, including the coordinate-volume factor. -/
 def metricIngoingCurrent (x : D4BMBackground.ExteriorPoint)
     (P Q : Fin 2 → (Fin 4 → ℝ) → ℂ) : Fin 4 → ℂ :=
-  let w := fun j => (x.val 1:ℂ)^2/(x.val 3:ℂ)^2*actionSymplectic
+  let w := fun j => (x.val 1:ℂ)^(2 : ℕ)/(x.val 3:ℂ)^(2 : ℕ)*actionSymplectic
     (D4BMBackground.jet (x.val 1) (x.val 3))
     (ofMetricField (reconstructedMetric P) x.val) (ofMetricField (reconstructedMetric Q) x.val) j
-  ![w 0+w 1/((x.val 1:ℂ)^2-1),w 1,w 2,w 3]
+  ![w 0+w 1/((x.val 1:ℂ)^(2 : ℕ)-1),w 1,w 2,w 3]
 
 theorem metricIngoingCurrent_eq (P Q : Fin 2 → (Fin 4 → ℝ) → ℂ)
     (x : D4BMBackground.ExteriorPoint) (hP : ∀ a, ContDiffAt ℝ 2 (P a) x.val)

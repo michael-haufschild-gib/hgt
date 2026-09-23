@@ -68,7 +68,7 @@ theorem exists_clearedJets (hY : ∀ k, Differentiable ℂ (Y k))
       obtain ⟨A, B, hB0, hAmem, hBmem, hmodel, hval⟩ := ih
       have hBne : algebraMap (MvPolynomial ℕ ℂ) CascadeField B ≠ 0 := by
         simpa using (IsFractionRing.injective (MvPolynomial ℕ ℂ) CascadeField).ne hB0
-      refine ⟨δp A * B - A * δp B, Dtot * B ^ 2, mul_ne_zero hDtot (pow_ne_zero 2 hB0),
+      refine ⟨δp A * B - A * δp B, Dtot * B ^ (2 : ℕ), mul_ne_zero hDtot (pow_ne_zero 2 hB0),
         sub_mem (mul_mem (derivation_mem_lowPoly hgen hAmem) hBmem)
           (mul_mem hAmem (derivation_mem_lowPoly hgen hBmem)),
         mul_mem hDmem (pow_mem hBmem 2), ?_, ?_⟩

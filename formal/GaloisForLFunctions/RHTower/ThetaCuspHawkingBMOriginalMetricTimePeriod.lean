@@ -45,7 +45,7 @@ private theorem partial_smooth (U : F) (hU : Smooth U) (i : Fin 4) : Smooth (coo
 
 private theorem pair_fixed_integrable (U V : F) (hU : Smooth U) (hV : Smooth V)
     (p R Y : ℝ) (hp : 0<p) (hr : 1<R) : IntegrableOn
-      (fun z : ℝ×ℝ => U (slice p R (point z.1 z.2))*V (slice p R (point z.1 z.2))/(z.2:ℂ)^2) (domain Y) := by
+      (fun z : ℝ×ℝ => U (slice p R (point z.1 z.2))*V (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)) (domain Y) := by
   apply ContinuousOn.integrableOn_compact (isCompact_domain Y)
   intro z hz
   have hy : 0<z.2 := by linarith [hz.1.2.1]
@@ -54,19 +54,19 @@ private theorem pair_fixed_integrable (U V : F) (hU : Smooth U) (hV : Smooth V)
     (f:=fun v : ℝ×ℝ => slice p R (point v.1 v.2)) (x:=z) hm.continuousAt
   have hv := (hV (slice p R (point z.1 z.2)) hp hr (by simpa [slice,point] using hy)).continuousAt.comp
     (f:=fun v : ℝ×ℝ => slice p R (point v.1 v.2)) (x:=z) hm.continuousAt
-  have hd : ContinuousAt (fun v : ℝ×ℝ => (v.2:ℂ)^2) z := by fun_prop
+  have hd : ContinuousAt (fun v : ℝ×ℝ => (v.2:ℂ)^(2 : ℕ)) z := by fun_prop
   exact ((hu.mul hv).div hd (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hy.ne'))).continuousWithinAt
 
 private theorem pair_product_integrable (U V : F) (hU : Smooth U) (hV : Smooth V)
     (a b R Y : ℝ) (ha : 0<a) (hr : 1<R) :
     Integrable (fun z : ℝ × (ℝ × ℝ) =>
-      U (slice z.1 R (point z.2.1 z.2.2))*V (slice z.1 R (point z.2.1 z.2.2))/(z.2.2:ℂ)^2)
+      U (slice z.1 R (point z.2.1 z.2.2))*V (slice z.1 R (point z.2.1 z.2.2))/(z.2.2:ℂ)^(2 : ℕ))
       ((volume.restrict (Ioc a b)).prod (volume.restrict (domain Y))) := by
   have hm : Continuous (fun z : ℝ × (ℝ × ℝ) => slice z.1 R (point z.2.1 z.2.2)) := by
     unfold slice point
     fun_prop
   have hc : ContinuousOn (fun z : ℝ × (ℝ × ℝ) =>
-      U (slice z.1 R (point z.2.1 z.2.2))*V (slice z.1 R (point z.2.1 z.2.2))/(z.2.2:ℂ)^2)
+      U (slice z.1 R (point z.2.1 z.2.2))*V (slice z.1 R (point z.2.1 z.2.2))/(z.2.2:ℂ)^(2 : ℕ))
       ((Icc a b).prod (domain Y)) := by
     intro z hz
     have hp : 0<z.1 := ha.trans_le hz.1.1
@@ -75,7 +75,7 @@ private theorem pair_product_integrable (U V : F) (hU : Smooth U) (hV : Smooth V
     have hv := hV (slice z.1 R (point z.2.1 z.2.2)) hp hr (by simpa [slice,point] using hy)
     have hu' := hu.continuousAt.comp (f:=fun v : ℝ × (ℝ × ℝ) => slice v.1 R (point v.2.1 v.2.2)) (x:=z) hm.continuousAt
     have hv' := hv.continuousAt.comp (f:=fun v : ℝ × (ℝ × ℝ) => slice v.1 R (point v.2.1 v.2.2)) (x:=z) hm.continuousAt
-    have hd : ContinuousAt (fun v : ℝ × (ℝ × ℝ) => (v.2.2:ℂ)^2) z := by fun_prop
+    have hd : ContinuousAt (fun v : ℝ × (ℝ × ℝ) => (v.2.2:ℂ)^(2 : ℕ)) z := by fun_prop
     exact ((hu'.mul hv').div hd (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hy.ne'))).continuousWithinAt
   rw [Measure.prod_restrict,← Measure.volume_eq_prod]
   exact (hc.integrableOn_compact (isCompact_Icc.prod (isCompact_domain Y))).mono_set
@@ -91,7 +91,7 @@ private theorem pair_time_swap (U V : F) (hU : Smooth U) (hV : Smooth V)
     (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) :
     (∫ p in a..b,scalarPeriod U V p R Y)=
       ∫ z in domain Y, ∫ p in a..b,
-        U (slice p R (point z.1 z.2))*V (slice p R (point z.1 z.2))/(z.2:ℂ)^2 := by
+        U (slice p R (point z.1 z.2))*V (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ) := by
   simp only [scalarPeriod,intervalIntegral.integral_of_le hab]
   exact integral_integral_swap (pair_product_integrable U V hU hV a b R Y ha hr)
 
@@ -115,7 +115,7 @@ theorem original_period_time_transfer (q r : XiZeroCopy) (br outer : Bool) (amp 
       scalarPeriod (fun z => coordDeriv 0 U z+w*U z) W p R Y=
         scalarPeriod (coordDeriv 0 U) W p R Y+w*scalarPeriod U W p R Y := by
     have hc (A : F) (hA : Smooth A) : IntegrableOn
-        (fun z : ℝ×ℝ => A (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^2) (domain Y) :=
+        (fun z : ℝ×ℝ => A (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)) (domain Y) :=
       pair_fixed_integrable A W hA hW p R Y hp hr
     simp only [scalarPeriod,← integral_const_mul]
     rw [← integral_add (hc _ hD) ((hc U hU).const_mul w)]
@@ -131,10 +131,10 @@ theorem original_period_time_transfer (q r : XiZeroCopy) (br outer : Bool) (amp 
   rw [he,pair_time_swap _ W hV hW a b R Y ha hab hr,pair_time_swap U W hU hW a b R Y ha hab hr]
   have hpoint (z : ℝ×ℝ) (hz : z∈domain Y) :
       (∫ p in a..b,(coordDeriv 0 U (slice p R (point z.1 z.2))+w*U (slice p R (point z.1 z.2)))*
-        W (slice p R (point z.1 z.2))/(z.2:ℂ)^2)=
+        W (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ))=
       (U (slice b R (point z.1 z.2))*W (slice b R (point z.1 z.2))-
         U (slice a R (point z.1 z.2))*W (slice a R (point z.1 z.2))+
-          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))))/(z.2:ℂ)^2 := by
+          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))))/(z.2:ℂ)^(2 : ℕ) := by
     rw [intervalIntegral.integral_div]
     rw [mode_time_transfer q r br outer amp w hw a b R ha hab hr]
     simp only [point,Complex.add_im,Complex.ofReal_im,Complex.mul_I_im,Complex.ofReal_re,zero_add]
@@ -142,19 +142,19 @@ theorem original_period_time_transfer (q r : XiZeroCopy) (br outer : Bool) (amp 
   rw [setIntegral_congr_fun (isCompact_domain Y).measurableSet hpoint]
   -- The remaining finite-domain integrations are performed after retaining both endpoints.
   have hi (p : ℝ) (hp : 0<p) : IntegrableOn
-      (fun z : ℝ×ℝ => U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^2) (domain Y) :=
+      (fun z : ℝ×ℝ => U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)) (domain Y) :=
     pair_fixed_integrable U W hU hW p R Y hp hr
   have hT := (pair_product_integrable U W hU hW a b R Y ha hr).integral_prod_right
   change IntegrableOn (fun z : ℝ×ℝ => ∫ p in Ioc a b,
-    U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^2) (domain Y) at hT
+    U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)) (domain Y) at hT
   simp only [← intervalIntegral.integral_of_le hab] at hT
   have hn : (fun z : ℝ×ℝ =>
       (U (slice b R (point z.1 z.2))*W (slice b R (point z.1 z.2))-
         U (slice a R (point z.1 z.2))*W (slice a R (point z.1 z.2))+
-          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))))/(z.2:ℂ)^2)=
-      fun z => U (slice b R (point z.1 z.2))*W (slice b R (point z.1 z.2))/(z.2:ℂ)^2-
-        U (slice a R (point z.1 z.2))*W (slice a R (point z.1 z.2))/(z.2:ℂ)^2+
-          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^2) := by
+          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))))/(z.2:ℂ)^(2 : ℕ))=
+      fun z => U (slice b R (point z.1 z.2))*W (slice b R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)-
+        U (slice a R (point z.1 z.2))*W (slice a R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)+
+          2*w*(∫ p in a..b,U (slice p R (point z.1 z.2))*W (slice p R (point z.1 z.2))/(z.2:ℂ)^(2 : ℕ)) := by
     funext z
     rw [intervalIntegral.integral_div]
     ring
@@ -345,8 +345,8 @@ private theorem contact_smooth {U : F} (hU : Smooth U) : Smooth (D4BMOriginalSou
   have hR : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
   change ContDiffAt ℝ ∞ (fun z : P =>
-    -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
+    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
     2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
   exact ((((hR.pow 2).neg.mul ((hR.pow 2).sub contDiffAt_const)).mul h11).sub
     ((hR.pow 2).mul (h01.add h10)) |>.sub ((contDiffAt_const.mul hR).mul h1)).add
@@ -385,18 +385,18 @@ private theorem top_time_integrable (U V : F) (hU : Smooth U) (hV : Smooth V)
 /-- The original static-time metric density after finite angular integration. -/
 def metricSlice (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ) (p R Y : ℝ) : ℂ :=
   (∫ z in domain Y,modeMetricDensity q q br outer amp w 0 (slice p R (point z.1 z.2)))-
-    (∫ z in domain Y,modeMetricDensity q q br outer amp w 1 (slice p R (point z.1 z.2)))/((R:ℂ)^2-1)
+    (∫ z in domain Y,modeMetricDensity q q br outer amp w 1 (slice p R (point z.1 z.2)))/((R:ℂ)^(2 : ℕ)-1)
 
 def boundarySlice (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ) (p R Y : ℝ) : ℂ :=
   (modeCompleteTopFlux q q br outer amp w 0 p R Y-
-    modeCompleteTopFlux q q br outer amp w 1 p R Y/((R:ℂ)^2-1))/(R:ℂ)^2
+    modeCompleteTopFlux q q br outer amp w 1 p R Y/((R:ℂ)^(2 : ℕ)-1))/(R:ℂ)^(2 : ℕ)
 
 def sourcePrefactor (q : XiZeroCopy) (R : ℝ) : ℂ :=
   D4BMLeftModeRadialEquation.eigenvalue q*(D4BMLeftModeRadialEquation.eigenvalue q-2)/
-    ((R:ℂ)^2*((R:ℂ)^2-1))
+    ((R:ℂ)^(2 : ℕ)*((R:ℂ)^(2 : ℕ)-1))
 
 def forcingPrefactor (q : XiZeroCopy) (w : ℂ) (R : ℝ) : ℂ :=
-  D4BMLeftModeRadialEquation.eigenvalue q*(R:ℂ)*w/((R:ℂ)^2-1)^2
+  D4BMLeftModeRadialEquation.eigenvalue q*(R:ℂ)*w/((R:ℂ)^(2 : ℕ)-1)^(2 : ℕ)
 
 private theorem boundary_time_integrable (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ)
     (hw : w.im≠0) (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) :
@@ -411,7 +411,7 @@ private theorem boundary_time_integrable (q : XiZeroCopy) (br outer : Bool) (amp
   have hv := top_time_integrable W U hW hU a b R Y ha hab hr hy
   have hi := (((hd.const_mul (-(D4BMLeftModeRadialEquation.eigenvalue q-2))).sub
     (hf.const_mul w)).add ((hv.sub hu).const_mul (D4BMLeftModeRadialEquation.eigenvalue q*w))).div_const
-      ((R:ℂ)^2*((R:ℂ)^2-1))
+      ((R:ℂ)^(2 : ℕ)*((R:ℂ)^(2 : ℕ)-1))
   apply hi.congr
   intro p hp
   have hp' : 0<p := ha.trans ((uIoc_of_le hab ▸ hp).1)

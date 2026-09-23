@@ -83,13 +83,13 @@ def eulerWickXiCompletedFockRankQuantumCensus (T : ℝ) : ℕ :=
   ∑ rho ∈ (_root_.RHTower.xiStripWindowDivisorSupportFinset T).filter
       (fun rho : _root_.RHTower.XiDivisorSupport => 1 / 2 < (rho : ℂ).re),
     eulerWickXiDivisorCompletedFockRankQuantum rho *
-      ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ 2
+      ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ (2 : ℕ)
 
 private theorem xiStripWindowDivisorSupport_rightSquare_sum_eq
     (T : ℝ) :
     (∑ rho ∈ (_root_.RHTower.xiStripWindowDivisorSupportFinset T).filter
         (fun rho : _root_.RHTower.XiDivisorSupport => 1 / 2 < (rho : ℂ).re),
-      ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ 2) =
+      ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ (2 : ℕ)) =
       _root_.RHTower.xiStripWindowRightSquareOrder T := by
   classical
   rw [_root_.RHTower.xiStripWindowRightSquareOrder]
@@ -129,16 +129,16 @@ theorem eulerWickXiCompletedFockRankQuantumCensus_eq_reflectionSelfIntersectionC
     (∑ rho ∈ (_root_.RHTower.xiStripWindowDivisorSupportFinset T).filter
         (fun rho : _root_.RHTower.XiDivisorSupport => 1 / 2 < (rho : ℂ).re),
       eulerWickXiDivisorCompletedFockRankQuantum rho *
-        ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ 2) =
+        ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ (2 : ℕ)) =
         ∑ rho ∈ (_root_.RHTower.xiStripWindowDivisorSupportFinset T).filter
           (fun rho : _root_.RHTower.XiDivisorSupport => 1 / 2 < (rho : ℂ).re),
-        2 * ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ 2 := by
+        2 * ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro rho hrho
           rw [hterm rho hrho]
     _ = 2 * (∑ rho ∈ (_root_.RHTower.xiStripWindowDivisorSupportFinset T).filter
           (fun rho : _root_.RHTower.XiDivisorSupport => 1 / 2 < (rho : ℂ).re),
-        ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ 2) := by
+        ((analyticOrderAt _root_.RHTower.xi (rho : ℂ)).toNat) ^ (2 : ℕ)) := by
           rw [Finset.mul_sum]
     _ = 2 * _root_.RHTower.xiStripWindowRightSquareOrder T := by
           rw [xiStripWindowDivisorSupport_rightSquare_sum_eq]

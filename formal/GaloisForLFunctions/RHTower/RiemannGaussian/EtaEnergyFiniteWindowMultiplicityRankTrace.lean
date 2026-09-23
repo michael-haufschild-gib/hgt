@@ -31,7 +31,7 @@ def pairedEtaTopPrefixFiniteZeroWindowCriticalMultiplicityPenalty
   ∑ rho ∈ spectralCriticalZetaZeroWindow T,
     HermitianRankTrace.Multiplicity.kc c
       ((analyticZetaZeroMultiplicity rho : ℝ) *
-        ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ 2)
+        ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ (2 : ℕ))
 
 private theorem onLineBlock_eq_criticalMultiplicityPmat
     {d : Type*} (cutoff : d → ℕ) (T : ℝ) :
@@ -84,7 +84,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindow_multiplicityRankTrace_ledger
       pairedEtaTopPrefixFiniteZeroWindowCoherentFrobeniusMass cutoff T ≤
         pairedEtaTopPrefixFiniteZeroWindowCriticalMultiplicityPenalty
           cutoff T c +
-        c ^ 2 * (spectralUpperZetaZeroWindow T).card := by
+        c ^ (2 : ℕ) * (spectralUpperZetaZeroWindow T).card := by
   classical
   let ι := ↥(spectralCriticalZetaZeroWindow T)
   let m : ι → ℝ := fun rho ↦ analyticZetaZeroMultiplicity rho.1
@@ -151,7 +151,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindow_multiplicityRankTrace_ledger
           (pairedEtaTopPrefixFiniteZeroWindowBlock cutoff T) ≤
       pairedEtaTopPrefixFiniteZeroWindowCriticalMultiplicityPenalty
           cutoff T c +
-        c ^ 2 * (spectralUpperZetaZeroWindow T).card at h
+        c ^ (2 : ℕ) * (spectralUpperZetaZeroWindow T).card at h
   rw [htrace,
     pairedEtaTopPrefixFiniteZeroWindowBlock_frobSq_eq_coherentMass] at h
   exact h

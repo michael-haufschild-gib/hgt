@@ -8,8 +8,8 @@ The unit second-coordinate Hermitian reporter lies inside the sharp FZZ reflecti
 This module Riesz-represents that reporter through the literal indefinite source metric and adds it
 to the canonical source-Krein generator.
 
-At the canonical negative coupling given by the source gap `-(Q^2-PR)`, the perturbed generator
-collapses to a rank-one triangular operator satisfying `A^2=P A`.  Its entire spectrum is real at
+At the canonical negative coupling given by the source gap `-(Q^(2 : ℕ)-PR)`, the perturbed generator
+collapses to a rank-one triangular operator satisfying `A^(2 : ℕ)=P A`.  Its entire spectrum is real at
 every positive physical scale.  Yet equality of the same diagonal reporter on a Mellin carrier and
 its functional reflection remains exactly the critical-line equation.  Thus local source spectral
 stability is unconditional and cannot replace the missing reflected-energy matching law.
@@ -53,7 +53,7 @@ theorem fzzCigarParityDilatedSecondDiagonalRieszOperator_represents
     exact_mod_cast hE
   have hgapC :
       (fzzCigarParityDilatedTwoScaleKreinGap beta : ℂ) =
-        (fzzKreinQAt beta : ℂ) ^ 2 -
+        (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) -
           (fzzKreinPAt beta : ℂ) * (fzzKreinRAt beta : ℂ) := by
     rw [fzzCigarParityDilatedTwoScaleKreinGap]
     push_cast
@@ -150,7 +150,7 @@ def fzzCigarParityDilatedSecondDiagonalPerturbedDeterminant
 /-- Characteristic discriminant of the diagonal Riesz perturbation. -/
 def fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant
     (beta gamma : ℝ) : ℝ :=
-  fzzCigarParityDilatedSecondDiagonalPerturbedTrace beta gamma ^ 2 -
+  fzzCigarParityDilatedSecondDiagonalPerturbedTrace beta gamma ^ (2 : ℕ) -
     4 * fzzCigarParityDilatedSecondDiagonalPerturbedDeterminant beta gamma
 
 theorem fzzCigarParityDilatedSecondDiagonalPerturbed_trace_eq
@@ -186,8 +186,8 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbed_determinant_eq
 theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_eq
     (beta gamma : ℝ) :
     fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta gamma =
-      gamma ^ 2 * fzzKreinPAt beta ^ 2 /
-          fzzCigarParityDilatedTwoScaleKreinGap beta ^ 2 -
+      gamma ^ (2 : ℕ) * fzzKreinPAt beta ^ (2 : ℕ) /
+          fzzCigarParityDilatedTwoScaleKreinGap beta ^ (2 : ℕ) -
         4 * fzzCigarParityDilatedTwoScaleKreinDiscriminant beta *
           (1 + gamma / fzzCigarParityDilatedTwoScaleKreinGap beta) := by
   rw [fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant,
@@ -247,7 +247,7 @@ theorem fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_s
     {beta : ℝ} (hbeta : 0 < beta) :
     fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant beta
         (fzzCigarParityDilatedSecondDiagonalStabilizingCoupling beta) =
-      fzzKreinPAt beta ^ 2 := by
+      fzzKreinPAt beta ^ (2 : ℕ) := by
   have hE := (fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta).ne'
   rw [fzzCigarParityDilatedSecondDiagonalPerturbedCharacteristicDiscriminant_eq]
   simp [fzzCigarParityDilatedSecondDiagonalStabilizingCoupling, hE]

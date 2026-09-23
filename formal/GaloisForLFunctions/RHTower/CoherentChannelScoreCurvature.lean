@@ -31,7 +31,7 @@ def channelScore (p d1 : ι → ℝ) (n : ι) : ℝ := -d1 n / p n
 
 /-- The channel curvature `c_n = p_n''/p_n − s_n²`. -/
 def channelCurvature (p d1 d2 : ι → ℝ) (n : ι) : ℝ :=
-  d2 n / p n - channelScore p d1 n ^ 2
+  d2 n / p n - channelScore p d1 n ^ (2 : ℕ)
 
 /-- The normalized channel weight `μ_n = p_n / P`. -/
 def channelWeight (P : ℝ) (p : ι → ℝ) (n : ι) : ℝ := p n / P
@@ -43,7 +43,7 @@ theorem channelWeight_mul_score {P : ℝ} {p d1 : ι → ℝ} {n : ι} (hp : p n
 
 theorem channelWeight_mul_curvature {P : ℝ} {p d1 d2 : ι → ℝ} {n : ι} (hp : p n ≠ 0) :
     channelWeight P p n * channelCurvature p d1 d2 n
-      = d2 n / P - channelWeight P p n * channelScore p d1 n ^ 2 := by
+      = d2 n / P - channelWeight P p n * channelScore p d1 n ^ (2 : ℕ) := by
   rw [channelWeight, channelCurvature]
   field_simp
 
@@ -61,12 +61,12 @@ theorem channel_mean_score (s : Finset ι) (P : ℝ) (p d1 : ι → ℝ)
 curvature plus the score variance. -/
 theorem channel_curvature_variance (s : Finset ι) (P : ℝ) (p d1 d2 : ι → ℝ)
     (hp : ∀ n ∈ s, p n ≠ 0) (hP : P ≠ 0) :
-    (P * (∑ n ∈ s, d2 n) - (∑ n ∈ s, d1 n) ^ 2) / P ^ 2
+    (P * (∑ n ∈ s, d2 n) - (∑ n ∈ s, d1 n) ^ (2 : ℕ)) / P ^ (2 : ℕ)
       = (∑ n ∈ s, channelWeight P p n * channelCurvature p d1 d2 n)
-        + ((∑ n ∈ s, channelWeight P p n * channelScore p d1 n ^ 2)
-          - (∑ n ∈ s, channelWeight P p n * channelScore p d1 n) ^ 2) := by
+        + ((∑ n ∈ s, channelWeight P p n * channelScore p d1 n ^ (2 : ℕ))
+          - (∑ n ∈ s, channelWeight P p n * channelScore p d1 n) ^ (2 : ℕ)) := by
   have hcurv : (∑ n ∈ s, channelWeight P p n * channelCurvature p d1 d2 n)
-      = (∑ n ∈ s, d2 n) / P - ∑ n ∈ s, channelWeight P p n * channelScore p d1 n ^ 2 := by
+      = (∑ n ∈ s, d2 n) / P - ∑ n ∈ s, channelWeight P p n * channelScore p d1 n ^ (2 : ℕ) := by
     rw [Finset.sum_congr rfl fun n hn =>
       channelWeight_mul_curvature (P := P) (d1 := d1) (d2 := d2) (hp n hn)]
     rw [Finset.sum_sub_distrib, ← Finset.sum_div]
@@ -82,9 +82,9 @@ theorem channel_curvature_variance (s : Finset ι) (P : ℝ) (p d1 d2 : ι → �
 curvature `(A₀A₂ − A₁²) − (A₀P₂ + A₂P₀ − 2A₁P₁) + (P₀P₂ − P₁²)` of `(24.148)` is
 `H(A v_A − P v_P) − A P (m_A − m_P)²`. -/
 theorem completedCurvature_eq_mismatch (A0 A1 A2 P0 P1 P2 : ℝ) (hA : A0 ≠ 0) (hP : P0 ≠ 0) :
-    (A0 * A2 - A1 ^ 2) - (A0 * P2 + A2 * P0 - 2 * A1 * P1) + (P0 * P2 - P1 ^ 2)
-      = (A0 - P0) * (A0 * (A2 / A0 - (A1 / A0) ^ 2) - P0 * (P2 / P0 - (P1 / P0) ^ 2))
-        - A0 * P0 * (A1 / A0 - P1 / P0) ^ 2 := by
+    (A0 * A2 - A1 ^ (2 : ℕ)) - (A0 * P2 + A2 * P0 - 2 * A1 * P1) + (P0 * P2 - P1 ^ (2 : ℕ))
+      = (A0 - P0) * (A0 * (A2 / A0 - (A1 / A0) ^ (2 : ℕ)) - P0 * (P2 / P0 - (P1 / P0) ^ (2 : ℕ)))
+        - A0 * P0 * (A1 / A0 - P1 / P0) ^ (2 : ℕ) := by
   field_simp
   ring
 
@@ -93,17 +93,17 @@ theorem completedCurvature_eq_mismatch (A0 A1 A2 P0 P1 P2 : ℝ) (hA : A0 ≠ 0)
 /-- **(24.191) for an absolutely convergent channel family.** -/
 theorem channel_curvature_variance_tsum (P : ℝ) (p d1 d2 : ι → ℝ)
     (hp : ∀ n, p n ≠ 0) (hP : P ≠ 0) (hd2 : Summable d2)
-    (hsq : Summable fun n => channelWeight P p n * channelScore p d1 n ^ 2) :
-    (P * (∑' n, d2 n) - (∑' n, d1 n) ^ 2) / P ^ 2
+    (hsq : Summable fun n => channelWeight P p n * channelScore p d1 n ^ (2 : ℕ)) :
+    (P * (∑' n, d2 n) - (∑' n, d1 n) ^ (2 : ℕ)) / P ^ (2 : ℕ)
       = (∑' n, channelWeight P p n * channelCurvature p d1 d2 n)
-        + ((∑' n, channelWeight P p n * channelScore p d1 n ^ 2)
-          - (∑' n, channelWeight P p n * channelScore p d1 n) ^ 2) := by
+        + ((∑' n, channelWeight P p n * channelScore p d1 n ^ (2 : ℕ))
+          - (∑' n, channelWeight P p n * channelScore p d1 n) ^ (2 : ℕ)) := by
   have hmean : (∑' n, channelWeight P p n * channelScore p d1 n) = (-∑' n, d1 n) / P := by
     rw [tsum_congr fun n => channelWeight_mul_score (P := P) (d1 := d1) (hp n)]
     rw [tsum_div_const, tsum_neg]
   have hd2P : Summable fun n => d2 n / P := hd2.div_const P
   have hcurv : (∑' n, channelWeight P p n * channelCurvature p d1 d2 n)
-      = (∑' n, d2 n) / P - ∑' n, channelWeight P p n * channelScore p d1 n ^ 2 := by
+      = (∑' n, d2 n) / P - ∑' n, channelWeight P p n * channelScore p d1 n ^ (2 : ℕ) := by
     rw [tsum_congr fun n =>
       channelWeight_mul_curvature (P := P) (d1 := d1) (d2 := d2) (hp n)]
     rw [hd2P.tsum_sub hsq, tsum_div_const]

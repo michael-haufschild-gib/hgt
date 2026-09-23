@@ -47,15 +47,15 @@ theorem discr_dvd_of_integral_basis_discr
       _ = Algebra.discr ℚ b := by
         rw [Module.Basis.coe_reindex, Algebra.discr_reindex]
       _ = (d : ℚ) := hdiscr
-  have hchange : Algebra.discr ℚ b' = P.det ^ 2 * Algebra.discr ℚ b0 := by
+  have hchange : Algebra.discr ℚ b' = P.det ^ (2 : ℕ) * Algebra.discr ℚ b0 := by
     rw [← b0.toMatrix_map_vecMul b']
     exact Algebra.discr_of_matrix_vecMul b0 P
-  have hq : (d : ℚ) = (z : ℚ) ^ 2 * (discr K : ℚ) := by
+  have hq : (d : ℚ) = (z : ℚ) ^ (2 : ℕ) * (discr K : ℚ) := by
     rw [← hb', hchange, ← hz, coe_discr]
     rfl
-  have hzint : d = z ^ 2 * discr K := by
+  have hzint : d = z ^ (2 : ℕ) * discr K := by
     exact_mod_cast hq
-  refine ⟨z ^ 2, ?_⟩
+  refine ⟨z ^ (2 : ℕ), ?_⟩
   rw [mul_comm]
   exact hzint
 

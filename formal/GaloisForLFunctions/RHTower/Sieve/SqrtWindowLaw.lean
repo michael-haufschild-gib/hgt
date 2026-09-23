@@ -79,7 +79,7 @@ theorem tendsto_sqrt_div_logLog_atTop :
 classes keep a density at least the margin, unconditionally. -/
 theorem route_e_sign_density_sqrt_window {s : ℤ} (hs : s = 1 ∨ s = -1) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (Real.sqrt x) s
             / (Real.sqrt x * Real.sqrt x * Real.log 2) := by
   refine route_e_sign_density_long_window (K := 1) hs one_pos tendsto_sqrt_div_logLog_atTop
@@ -95,8 +95,8 @@ theorem route_e_signClass_nonempty_sqrt_window {s : ℤ} (hs : s = 1 ∨ s = -1)
     ∀ᶠ x in atTop, (coprimeSignClass x (Real.sqrt x) s).Nonempty := by
   have hmargin := route_e_margin_pos
   have hbound := route_e_sign_density_sqrt_window hs
-    (ε := (squarefreeDensity ^ 2 / 2
-      - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity) / 2) (by linarith)
+    (ε := (squarefreeDensity ^ (2 : ℕ) / 2
+      - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity) / 2) (by linarith)
   filter_upwards [eventually_gt_atTop (0 : ℝ), hbound] with x hx0 hb
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)

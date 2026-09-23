@@ -23,7 +23,7 @@ open Finset
 theorem sum_pair_triangular_eq_autocorrelation (a : ℕ → ℂ) (R L : ℕ) :
     ∑ n ∈ Finset.range R, ∑ m ∈ Finset.range R,
         ((L - Nat.dist n m : ℕ) : ℝ) * (‖a n‖ * ‖a m‖)
-      = (L : ℝ) * ∑ n ∈ Finset.range R, ‖a n‖ ^ 2
+      = (L : ℝ) * ∑ n ∈ Finset.range R, ‖a n‖ ^ (2 : ℕ)
         + 2 * ∑ h ∈ Finset.Ico 1 R, ((L - h : ℕ) : ℝ)
             * ∑ n ∈ Finset.range (R - h), ‖a n‖ * ‖a (n + h)‖ := by
   classical
@@ -34,7 +34,7 @@ theorem sum_pair_triangular_eq_autocorrelation (a : ℕ → ℂ) (R L : ℕ) :
     simp only
     rw [Nat.dist_comm, mul_comm (‖a n‖)]
   have hsplit := sum_pair_eq_diag_add_two_upper R W hsymm
-  have hdiag : ∑ n ∈ Finset.range R, W n n = (L : ℝ) * ∑ n ∈ Finset.range R, ‖a n‖ ^ 2 := by
+  have hdiag : ∑ n ∈ Finset.range R, W n n = (L : ℝ) * ∑ n ∈ Finset.range R, ‖a n‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [hW]
@@ -57,8 +57,8 @@ theorem sum_pair_triangular_eq_autocorrelation (a : ℕ → ℂ) (R L : ℕ) :
 
 /-- **The short-interval variance, bounded in autocorrelation form.** -/
 theorem sum_normSq_window_le_autocorrelation (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ)
         + 2 * ∑ h ∈ Finset.Ico 1 (X + L + 1), ((L - h : ℕ) : ℝ)
             * ∑ n ∈ Finset.range (X + L + 1 - h), ‖a n‖ * ‖a (n + h)‖ := by
   refine le_trans (sum_normSq_window_le_triangular a X L) ?_

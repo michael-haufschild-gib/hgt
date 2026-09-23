@@ -34,7 +34,7 @@ structure PWFiniteEnergyPositiveCountableFEReflectionData (X : ℝ) where
   mellinGradeOne : ∀ {x : ℝ}, 0 < x → x < X →
     (∑' n, weight x n) = x⁻¹
   mellinGradeTwo : ∀ {x : ℝ}, 0 < x → x < X →
-    (∑' n, weight x n * energy n) = x⁻¹ ^ 2
+    (∑' n, weight x n * energy n) = x⁻¹ ^ (2 : ℕ)
   contact : ℂ
   contact_ne_zero : contact ≠ 0
 
@@ -45,8 +45,8 @@ theorem no_PWFiniteEnergyPositiveCountableFEReflectionData
     {X : ℝ} (hX : 0 < X) :
     IsEmpty (PWFiniteEnergyPositiveCountableFEReflectionData X) := by
   refine ⟨fun D => ?_⟩
-  let x : ℝ := X / (X ^ 2 + 1)
-  have hden : 0 < X ^ 2 + 1 := by positivity
+  let x : ℝ := X / (X ^ (2 : ℕ) + 1)
+  have hden : 0 < X ^ (2 : ℕ) + 1 := by positivity
   have hx0 : 0 < x := div_pos hX hden
   have hxX : x < X := by
     dsimp only [x]

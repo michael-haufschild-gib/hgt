@@ -9,7 +9,7 @@ at the seam, so the generic anomaly theorems apply to the completed family with 
 
 * `placeRatio`, `placeCharge`, `hasDerivAt_placeRatio` — the completed family and its first jets.
 * `tendsto_completedCovarianceAnomaly_div_sq` — equations `(6)`–`(9)` for `V = {infinity} ∪ F`: the
-  quadratic jet is `-((sum b)^2 - sum b^2)/2`.
+  quadratic jet is `-((sum b)^(2 : ℕ) - sum b^(2 : ℕ))/2`.
 * `completedCharge_pos` — it is **strictly** negative as soon as two places are present.
 * `norm_placeRatio` — every local ratio is unimodular on the critical line.  The reason is structural:
   numerator and denominator are complex conjugates of each other, at the finite places because `r` is
@@ -60,28 +60,28 @@ flip is the whole point: `(-i b)(-i b') = -b b'`, so the quadratic jet is negati
 theorem tendsto_covarianceAnomaly_div_sq_of_imaginary {ι : Type*} [DecidableEq ι]
     {u : ι → ℝ → ℂ} {b : ι → ℝ} (hu : ∀ v, u v 0 = 1)
     (hd : ∀ v, HasDerivAt (u v) (-Complex.I * ((b v : ℝ) : ℂ)) 0) (s : Finset ι) :
-    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
-      (𝓝 (-((((∑ v ∈ s, b v) ^ 2 - ∑ v ∈ s, b v ^ 2) / 2 : ℝ) : ℂ))) := by
+    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
+      (𝓝 (-((((∑ v ∈ s, b v) ^ (2 : ℕ) - ∑ v ∈ s, b v ^ (2 : ℕ)) / 2 : ℝ) : ℂ))) := by
   have h := tendsto_covarianceAnomaly_div_sq (u := u)
     (c := fun v => -Complex.I * ((b v : ℝ) : ℂ)) hu hd s
   have hsumcast : (∑ v ∈ s, -Complex.I * ((b v : ℝ) : ℂ))
       = -Complex.I * (((∑ v ∈ s, b v : ℝ)) : ℂ) := by
     rw [Complex.ofReal_sum, Finset.mul_sum]
-  have hsq : ∀ v : ι, (-Complex.I * ((b v : ℝ) : ℂ)) ^ 2 = -(((b v ^ 2 : ℝ)) : ℂ) := by
+  have hsq : ∀ v : ι, (-Complex.I * ((b v : ℝ) : ℂ)) ^ (2 : ℕ) = -(((b v ^ (2 : ℕ) : ℝ)) : ℂ) := by
     intro v
     push_cast
-    have hI : (-Complex.I) ^ 2 = -1 := by
+    have hI : (-Complex.I) ^ (2 : ℕ) = -1 := by
       rw [neg_pow, Complex.I_sq]
       norm_num
     rw [mul_pow, hI]
     ring
-  have hval : (((∑ v ∈ s, -Complex.I * ((b v : ℝ) : ℂ)) ^ 2
-        - ∑ v ∈ s, (-Complex.I * ((b v : ℝ) : ℂ)) ^ 2) / 2)
-      = -((((∑ v ∈ s, b v) ^ 2 - ∑ v ∈ s, b v ^ 2) / 2 : ℝ) : ℂ) := by
+  have hval : (((∑ v ∈ s, -Complex.I * ((b v : ℝ) : ℂ)) ^ (2 : ℕ)
+        - ∑ v ∈ s, (-Complex.I * ((b v : ℝ) : ℂ)) ^ (2 : ℕ)) / 2)
+      = -((((∑ v ∈ s, b v) ^ (2 : ℕ) - ∑ v ∈ s, b v ^ (2 : ℕ)) / 2 : ℝ) : ℂ) := by
     rw [hsumcast, Finset.sum_congr rfl fun v _ => hsq v, Finset.sum_neg_distrib,
       ← Complex.ofReal_sum]
     push_cast
-    have hI : (-Complex.I) ^ 2 = -1 := by
+    have hI : (-Complex.I) ^ (2 : ℕ) = -1 := by
       rw [neg_pow, Complex.I_sq]
       norm_num
     rw [mul_pow, hI]
@@ -91,16 +91,16 @@ theorem tendsto_covarianceAnomaly_div_sq_of_imaginary {ι : Type*} [DecidableEq 
 
 /-- **Equations (6)–(9) for the completed product.** -/
 theorem tendsto_completedCovarianceAnomaly_div_sq (V : Finset (Option ℕ)) :
-    Tendsto (fun t : ℝ => covarianceAnomaly V placeRatio t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
-      (𝓝 (-((((∑ v ∈ V, placeCharge v) ^ 2
-        - ∑ v ∈ V, placeCharge v ^ 2) / 2 : ℝ) : ℂ))) :=
+    Tendsto (fun t : ℝ => covarianceAnomaly V placeRatio t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
+      (𝓝 (-((((∑ v ∈ V, placeCharge v) ^ (2 : ℕ)
+        - ∑ v ∈ V, placeCharge v ^ (2 : ℕ)) / 2 : ℝ) : ℂ))) :=
   tendsto_covarianceAnomaly_div_sq_of_imaginary placeRatio_zero hasDerivAt_placeRatio V
 
 /-- **Strict negativity of the quadratic jet.**  As soon as two places are present the off-diagonal
 charge is a nonempty sum of positive terms. -/
 theorem completedCharge_pos {V : Finset (Option ℕ)}
     (hV : ∀ v ∈ V, 0 < placeCharge v) (hcard : 2 ≤ V.card) :
-    0 < (∑ v ∈ V, placeCharge v) ^ 2 - ∑ v ∈ V, placeCharge v ^ 2 := by
+    0 < (∑ v ∈ V, placeCharge v) ^ (2 : ℕ) - ∑ v ∈ V, placeCharge v ^ (2 : ℕ) := by
   rw [offDiagCharge_eq_sum_offDiag]
   obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp (by omega : 1 < V.card)
   refine Finset.sum_pos' (fun x hx => ?_) ⟨(a, b), Finset.mem_offDiag.mpr ⟨ha, hb, hab⟩, ?_⟩
@@ -206,9 +206,9 @@ product against a first-order singular kernel vanish on the diagonal. -/
 theorem norm_kernelAnomaly_le {ι : Type*} [DecidableEq ι] {V : Finset ι} {a : ι → ℂ} {D : ℝ}
     (hD0 : 0 ≤ D) (hD1 : D ≤ 1) (h : ∀ v ∈ V, ‖a v‖ ≤ D) :
     ‖∑ I ∈ V.powerset.filter fun I => 2 ≤ I.card, ∏ v ∈ I, a v‖
-      ≤ ((V.powerset.filter fun I => 2 ≤ I.card).card : ℝ) * D ^ 2 := by
+      ≤ ((V.powerset.filter fun I => 2 ≤ I.card).card : ℝ) * D ^ (2 : ℕ) := by
   refine le_trans (norm_sum_le _ _) ?_
-  have hterm : ∀ I ∈ V.powerset.filter fun I => 2 ≤ I.card, ‖∏ v ∈ I, a v‖ ≤ D ^ 2 := by
+  have hterm : ∀ I ∈ V.powerset.filter fun I => 2 ≤ I.card, ‖∏ v ∈ I, a v‖ ≤ D ^ (2 : ℕ) := by
     intro I hI
     rw [Finset.mem_filter, Finset.mem_powerset] at hI
     have hprod : ‖∏ v ∈ I, a v‖ = ∏ v ∈ I, ‖a v‖ := norm_prod _ _
@@ -216,7 +216,7 @@ theorem norm_kernelAnomaly_le {ι : Type*} [DecidableEq ι] {V : Finset ι} {a :
       Finset.prod_le_prod (fun v _ => norm_nonneg _) (fun v hv => h v (hI.1 hv))
     rw [Finset.prod_const] at hle
     have hcard : 2 ≤ I.card := hI.2
-    have hpow : D ^ I.card ≤ D ^ 2 := pow_le_pow_of_le_one hD0 hD1 hcard
+    have hpow : D ^ I.card ≤ D ^ (2 : ℕ) := pow_le_pow_of_le_one hD0 hD1 hcard
     rw [hprod]
     exact le_trans hle hpow
   simpa using Finset.sum_le_card_nsmul _ _ _ hterm

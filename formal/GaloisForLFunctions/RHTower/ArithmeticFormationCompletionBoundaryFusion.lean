@@ -102,7 +102,7 @@ theorem deningerGammaSixCofinalXiGreenVerticalBoundary_mem_formationCompletionBo
           ((deningerGammaSixCofinalXiGreenVerticalBoundary_mem_finiteGraph_iff q).1
             hmem)⟩
 
-/-- Roos `lim^1` reconstructs exactly the arithmetic formation--completion boundary. -/
+/-- Roos `lim^(1 : ℕ)` reconstructs exactly the arithmetic formation--completion boundary. -/
 theorem deningerGammaSixCofinalXiGreenVerticalBoundary_mem_formationCompletionBoundary_iff_roos
     (q : XiZeroCopy) :
     deningerGammaSixCofinalXiGreenVerticalBoundary q ∈

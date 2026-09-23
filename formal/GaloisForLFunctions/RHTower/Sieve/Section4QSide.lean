@@ -37,12 +37,12 @@ theorem setIntegral_normSq_omegaWeighted_le_ladder {Q : Finset ℕ} {A₁ B₁ :
     (hQrange : ∀ q ∈ Q, R < (q : ℝ) ∧ (q : ℝ) ≤ R * (1 + η) ^ L)
     (v : ℕ → ℝ) (hv : ∀ k ∈ Finset.range L, 0 < v k)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ k ∈ Finset.range L, 1 / v k)
           * ∑ k ∈ Finset.range L, v k
-              * ∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2
-                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2)
-        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2 := by
+              * ∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)
+                  * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ))
+        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ) := by
   classical
   have hdec : ∀ w : ℝ, omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w
       = ladderProductPoly Q A₁ B₁ R η L w + (-(ladderProductDefect Q A₁ B₁ R η L w)) := by
@@ -54,8 +54,8 @@ theorem setIntegral_normSq_omegaWeighted_le_ladder {Q : Finset ℕ} {A₁ B₁ :
     (G := fun w => -(ladderProductDefect Q A₁ B₁ R η L w))
     (continuous_ladderProductPoly Q A₁ B₁ R η L)
     ((continuous_ladderProductDefect' Q A₁ B₁ R η L).neg) hEm hEs
-  have hneg : (∫ w in E, ‖-(ladderProductDefect Q A₁ B₁ R η L w)‖ ^ 2)
-      = ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2 := by
+  have hneg : (∫ w in E, ‖-(ladderProductDefect Q A₁ B₁ R η L w)‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_neg]
   rw [hneg] at hsplit
@@ -63,11 +63,11 @@ theorem setIntegral_normSq_omegaWeighted_le_ladder {Q : Finset ℕ} {A₁ B₁ :
     (fun k w => primeBlockPoly (geomBlock Q R (1 + η) k) w)
     (fun k w => logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w)
     (fun k => continuous_primeBlockPoly _) (fun k => continuous_logPoly _ _) hEm hEs
-  have hlad : (∫ w in E, ‖ladderProductPoly Q A₁ B₁ R η L w‖ ^ 2)
+  have hlad : (∫ w in E, ‖ladderProductPoly Q A₁ B₁ R η L w‖ ^ (2 : ℕ))
       ≤ (∑ k ∈ Finset.range L, 1 / v k)
         * ∑ k ∈ Finset.range L, v k
-            * ∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2
-                * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2 := by
+            * ∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)
+                * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ) := by
     refine le_trans (le_of_eq ?_) hharm
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [ladderProductPoly]
@@ -84,18 +84,18 @@ theorem setIntegral_normSq_omegaWeighted_le_blocks {Q : Finset ℕ} {A₁ B₁ :
     (hVk : ∀ k ∈ Finset.range L, ∀ w ∈ E,
       ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ≤ Vk k)
     (hIk : ∀ k ∈ Finset.range L,
-      (∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
-    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+      (∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
+    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ k ∈ Finset.range L, 1 / v k)
-            * ∑ k ∈ Finset.range L, v k * (Vk k ^ 2 * Ik k))
-        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2 := by
+            * ∑ k ∈ Finset.range L, v k * (Vk k ^ (2 : ℕ) * Ik k))
+        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ) := by
   classical
   have hstep2 := setIntegral_normSq_omegaWeighted_le_ladder (Q := Q) (A₁ := A₁) (B₁ := B₁)
     hR hη hL hQprime hQrange v hv hEm hEs
   have hblock : ∀ k ∈ Finset.range L,
-      v k * (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2
-              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2)
-        ≤ v k * (Vk k ^ 2 * Ik k) := by
+      v k * (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)
+              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ))
+        ≤ v k * (Vk k ^ (2 : ℕ) * Ik k) := by
     intro k hk
     refine mul_le_mul_of_nonneg_left ?_ (hv k hk).le
     have hb := setIntegral_normSq_mul_le_of_bound
@@ -124,13 +124,13 @@ theorem setIntegral_normSq_short_long_le {B Q : Finset ℕ} {A₁ B₁ : ℕ}
     (hVk : ∀ k ∈ Finset.range L, ∀ w ∈ E,
       ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ≤ Vk k)
     (hIk : ∀ k ∈ Finset.range L,
-      (∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
+      (∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
     (∫ w in E,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-      ≤ (B.card : ℝ) ^ 2
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+      ≤ (B.card : ℝ) ^ (2 : ℕ)
         * (2 * ((∑ k ∈ Finset.range L, 1 / v k)
-              * ∑ k ∈ Finset.range L, v k * (Vk k ^ 2 * Ik k))
-          + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2) := by
+              * ∑ k ∈ Finset.range L, v k * (Vk k ^ (2 : ℕ) * Ik k))
+          + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ)) := by
   classical
   have hBf : ∀ w ∈ E, ‖primeBlockPoly B w‖ ≤ (B.card : ℝ) := by
     intro w _
@@ -143,7 +143,7 @@ theorem setIntegral_normSq_short_long_le {B Q : Finset ℕ} {A₁ B₁ : ℕ}
     (continuous_primeBlockPoly B) (continuous_omegaWeightedMoebiusPoly Q _) hEm hEs hBf
   have hchain := setIntegral_normSq_omegaWeighted_le_blocks (Q := Q) (A₁ := A₁) (B₁ := B₁)
     hR hη hL hQprime hQrange v hv Vk Ik hEm hEs hVk hIk
-  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ 2 := sq_nonneg _
+  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
   exact hstep1.trans (mul_le_mul_of_nonneg_left hchain hB2)
 
 end

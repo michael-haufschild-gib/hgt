@@ -15,14 +15,14 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeA_temperature_gap_sqrt_normalization (w φ τ : ℝ) :
-    sqrt ((egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2) =
+    sqrt ((egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) =
       sqrt (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ := by
   have hg := sub_pos.mpr (egbFixedChargeATemperature_below_critical w φ τ)
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   rw [sqrt_div hg.le, sqrt_sq hd.le]
 
 theorem egbFixedChargeA_pressure_gap_sqrt_normalization (w φ τ : ℝ) :
-    sqrt ((egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2) =
+    sqrt ((egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) =
       sqrt (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ := by
   have hg := sub_pos.mpr (egbFixedChargeAPressure_below_critical w φ τ)
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1

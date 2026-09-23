@@ -30,7 +30,7 @@ theorem deningerQ8RootNumberNegOne_nat_fortyOne_not_square : ¬ IsSquare (41 : �
     have : 7 * 7 ≤ 41 := by rw [hn]; exact hnge
     norm_num at this
 
-theorem deningerQ8RootNumberNegOne_fortyOne_not_square (q : ℚ) : q ^ 2 ≠ 41 := by
+theorem deningerQ8RootNumberNegOne_fortyOne_not_square (q : ℚ) : q ^ (2 : ℕ) ≠ 41 := by
   intro h
   apply deningerQ8RootNumberNegOne_nat_fortyOne_not_square
   apply Rat.isSquare_natCast_iff.mp
@@ -47,7 +47,7 @@ theorem deningerQ8RootNumberNegOne_nat_twoHundredFive_not_square : ¬ IsSquare (
     have : 15 * 15 ≤ 205 := by rw [hn]; exact hnge
     norm_num at this
 
-theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square (q : ℚ) : q ^ 2 ≠ 205 := by
+theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square (q : ℚ) : q ^ (2 : ℕ) ≠ 205 := by
   intro h
   apply deningerQ8RootNumberNegOne_nat_twoHundredFive_not_square
   apply Rat.isSquare_natCast_iff.mp
@@ -56,17 +56,17 @@ theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square (q : ℚ) : q ^ 2 �
 /-- The second literal radicand has no square root in the constructed first
 quadratic field. -/
 theorem deningerQ8RootNumberNegOne_fortyOne_not_square_in_firstQuadratic
-    (w : deningerQ8RootNumberNegOneFirstQuadraticField) : w ^ 2 ≠ 41 := by
+    (w : deningerQ8RootNumberNegOneFirstQuadraticField) : w ^ (2 : ℕ) ≠ 41 := by
   intro hw
   obtain ⟨a, b, hab⟩ := deningerQ8RootNumberNegOneFirstQuadratic_normal_form w
   have hscalarCast :
-      ((a ^ 2 + 5 * b ^ 2 - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) =
-        (a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 +
-          5 * (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 - 41 := by
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) =
+        (a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) +
+          5 * (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) - 41 := by
     change AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial
-        (a ^ 2 + 5 * b ^ 2 - 41) =
-      (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial a) ^ 2 +
-        5 * (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial b) ^ 2 - 41
+        (a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 41) =
+      (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial a) ^ (2 : ℕ) +
+        5 * (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial b) ^ (2 : ℕ) - 41
     rw [map_sub, map_add, map_mul, map_pow, map_pow]
     norm_num
   have hcrossCast :
@@ -79,27 +79,27 @@ theorem deningerQ8RootNumberNegOne_fortyOne_not_square_in_firstQuadratic
     rw [map_mul, map_mul]
     norm_num
   have hcoord :
-      ((a ^ 2 + 5 * b ^ 2 - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
           (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot = 0 := by
     calc
-      ((a ^ 2 + 5 * b ^ 2 - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
           (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
           ((a : deningerQ8RootNumberNegOneFirstQuadraticField) +
-            b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 - 41 := by
+            b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) - 41 := by
         calc
-          ((a ^ 2 + 5 * b ^ 2 - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+          ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 41 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
               (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
-              ((a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 +
+              ((a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) +
                 2 * (a : deningerQ8RootNumberNegOneFirstQuadraticField) *
                   (b : deningerQ8RootNumberNegOneFirstQuadraticField) *
                     deningerQ8RootNumberNegOneFirstQuadraticRoot +
-                (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 *
-                  deningerQ8RootNumberNegOneFirstQuadraticRoot ^ 2) - 41 := by
+                (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) *
+                  deningerQ8RootNumberNegOneFirstQuadraticRoot ^ (2 : ℕ)) - 41 := by
             rw [hscalarCast, hcrossCast,
               deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
             ring
           _ = ((a : deningerQ8RootNumberNegOneFirstQuadraticField) +
-              b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 - 41 := by
+              b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) - 41 := by
             ring
       _ = 0 := by rw [← hab, hw]; ring
   rcases deningerQ8RootNumberNegOneFirstQuadratic_coordinates_eq_zero hcoord with
@@ -110,9 +110,9 @@ theorem deningerQ8RootNumberNegOne_fortyOne_not_square_in_firstQuadratic
   rcases mul_eq_zero.mp hab0 with ha | hb
   · apply deningerQ8RootNumberNegOne_twoHundredFive_not_square (5 * b)
     calc
-      (5 * b) ^ 2 = 5 * (5 * b ^ 2) := by ring
+      (5 * b) ^ (2 : ℕ) = 5 * (5 * b ^ (2 : ℕ)) := by ring
       _ = 5 * 41 := by
-        have hbsq : 5 * b ^ 2 = 41 := by
+        have hbsq : 5 * b ^ (2 : ℕ) = 41 := by
           rw [ha] at hscalar
           linarith
         rw [hbsq]
@@ -123,7 +123,7 @@ theorem deningerQ8RootNumberNegOne_fortyOne_not_square_in_firstQuadratic
 
 /-- The second quadratic polynomial in the explicit Q8 radical tower. -/
 def deningerQ8RootNumberNegOneSecondQuadraticPolynomial :
-    deningerQ8RootNumberNegOneFirstQuadraticField[X] := X ^ 2 - C 41
+    deningerQ8RootNumberNegOneFirstQuadraticField[X] := X ^ (2 : ℕ) - C 41
 
 theorem deningerQ8RootNumberNegOne_secondQuadratic_irreducible :
     Irreducible deningerQ8RootNumberNegOneSecondQuadraticPolynomial := by
@@ -144,20 +144,20 @@ def deningerQ8RootNumberNegOneSecondQuadraticRoot :
   AdjoinRoot.root deningerQ8RootNumberNegOneSecondQuadraticPolynomial
 
 theorem deningerQ8RootNumberNegOneSecondQuadraticRoot_sq :
-    deningerQ8RootNumberNegOneSecondQuadraticRoot ^ 2 = 41 := by
+    deningerQ8RootNumberNegOneSecondQuadraticRoot ^ (2 : ℕ) = 41 := by
   have h := AdjoinRoot.eval₂_root deningerQ8RootNumberNegOneSecondQuadraticPolynomial
   rw [deningerQ8RootNumberNegOneSecondQuadraticPolynomial, eval₂_sub, eval₂_pow,
     eval₂_X, eval₂_C] at h
-  change (AdjoinRoot.root (X ^ 2 - C
-    (41 : deningerQ8RootNumberNegOneFirstQuadraticField))) ^ 2 =
-      (41 : AdjoinRoot (X ^ 2 - C (41 : deningerQ8RootNumberNegOneFirstQuadraticField)))
+  change (AdjoinRoot.root (X ^ (2 : ℕ) - C
+    (41 : deningerQ8RootNumberNegOneFirstQuadraticField))) ^ (2 : ℕ) =
+      (41 : AdjoinRoot (X ^ (2 : ℕ) - C (41 : deningerQ8RootNumberNegOneFirstQuadraticField)))
   calc
-    (AdjoinRoot.root (X ^ 2 - C
-        (41 : deningerQ8RootNumberNegOneFirstQuadraticField))) ^ 2 =
-        AdjoinRoot.of (X ^ 2 - C
+    (AdjoinRoot.root (X ^ (2 : ℕ) - C
+        (41 : deningerQ8RootNumberNegOneFirstQuadraticField))) ^ (2 : ℕ) =
+        AdjoinRoot.of (X ^ (2 : ℕ) - C
           (41 : deningerQ8RootNumberNegOneFirstQuadraticField))
           (41 : deningerQ8RootNumberNegOneFirstQuadraticField) := sub_eq_zero.mp h
-    _ = 41 := (map_natCast (AdjoinRoot.of (X ^ 2 - C
+    _ = 41 := (map_natCast (AdjoinRoot.of (X ^ (2 : ℕ) - C
       (41 : deningerQ8RootNumberNegOneFirstQuadraticField))) 41).symm
 
 theorem deningerQ8RootNumberNegOneSecondQuadraticField_finrank :
@@ -171,17 +171,17 @@ theorem deningerQ8RootNumberNegOneSecondQuadraticField_finrank :
 /-- `205` remains nonsquare in `ℚ(√5)`.  This auxiliary arithmetic gate is
 the norm obstruction for the final radical of the Q8 witness. -/
 theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square_in_firstQuadratic
-    (w : deningerQ8RootNumberNegOneFirstQuadraticField) : w ^ 2 ≠ 205 := by
+    (w : deningerQ8RootNumberNegOneFirstQuadraticField) : w ^ (2 : ℕ) ≠ 205 := by
   intro hw
   obtain ⟨a, b, hab⟩ := deningerQ8RootNumberNegOneFirstQuadratic_normal_form w
   have hscalarCast :
-      ((a ^ 2 + 5 * b ^ 2 - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) =
-        (a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 +
-          5 * (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 - 205 := by
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) =
+        (a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) +
+          5 * (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) - 205 := by
     change AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial
-        (a ^ 2 + 5 * b ^ 2 - 205) =
-      (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial a) ^ 2 +
-        5 * (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial b) ^ 2 - 205
+        (a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 205) =
+      (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial a) ^ (2 : ℕ) +
+        5 * (AdjoinRoot.of deningerQ8RootNumberNegOneFirstQuadraticPolynomial b) ^ (2 : ℕ) - 205
     rw [map_sub, map_add, map_mul, map_pow, map_pow]
     norm_num
   have hcrossCast :
@@ -194,27 +194,27 @@ theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square_in_firstQuadratic
     rw [map_mul, map_mul]
     norm_num
   have hcoord :
-      ((a ^ 2 + 5 * b ^ 2 - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
           (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot = 0 := by
     calc
-      ((a ^ 2 + 5 * b ^ 2 - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+      ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
           (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
           ((a : deningerQ8RootNumberNegOneFirstQuadraticField) +
-            b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 - 205 := by
+            b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) - 205 := by
         calc
-          ((a ^ 2 + 5 * b ^ 2 - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
+          ((a ^ (2 : ℕ) + 5 * b ^ (2 : ℕ) - 205 : ℚ) : deningerQ8RootNumberNegOneFirstQuadraticField) +
               (2 * a * b : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
-              ((a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 +
+              ((a : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) +
                 2 * (a : deningerQ8RootNumberNegOneFirstQuadraticField) *
                   (b : deningerQ8RootNumberNegOneFirstQuadraticField) *
                     deningerQ8RootNumberNegOneFirstQuadraticRoot +
-                (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ 2 *
-                  deningerQ8RootNumberNegOneFirstQuadraticRoot ^ 2) - 205 := by
+                (b : deningerQ8RootNumberNegOneFirstQuadraticField) ^ (2 : ℕ) *
+                  deningerQ8RootNumberNegOneFirstQuadraticRoot ^ (2 : ℕ)) - 205 := by
             rw [hscalarCast, hcrossCast,
               deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
             ring
           _ = ((a : deningerQ8RootNumberNegOneFirstQuadraticField) +
-              b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 - 205 := by ring
+              b * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) - 205 := by ring
       _ = 0 := by rw [← hab, hw]; ring
   rcases deningerQ8RootNumberNegOneFirstQuadratic_coordinates_eq_zero hcoord with
     ⟨hscalar, hcross⟩
@@ -224,9 +224,9 @@ theorem deningerQ8RootNumberNegOne_twoHundredFive_not_square_in_firstQuadratic
   rcases mul_eq_zero.mp hab0 with ha | hb
   · apply deningerQ8RootNumberNegOne_fortyOne_not_square b
     rw [ha] at hscalar
-    have : 5 * b ^ 2 = 205 := by linarith
+    have : 5 * b ^ (2 : ℕ) = 205 := by linarith
     calc
-      b ^ 2 = 205 / 5 := by linarith
+      b ^ (2 : ℕ) = 205 / 5 := by linarith
       _ = 41 := by norm_num
   · apply deningerQ8RootNumberNegOne_twoHundredFive_not_square a
     rw [hb] at hscalar

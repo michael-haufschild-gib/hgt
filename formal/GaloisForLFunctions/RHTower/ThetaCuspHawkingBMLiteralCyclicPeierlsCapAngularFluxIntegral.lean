@@ -19,7 +19,7 @@ open scoped ContDiff
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 namespace RHTower.D4BMLiteralCyclicPeierlsCapAngularFluxIntegral
 open D4BMAngularSeries D4BMGlobalAngularResponse
-open D4BMCapAngularFluxCusp
+open D4BMCapAngularFluxCusp D4BMJointSource
 noncomputable section
 set_option autoImplicit false
 
@@ -58,6 +58,7 @@ private theorem UniformCuspRapid.cpow (v : ℂ) {f : Field}
   obtain ⟨A, hA, ha⟩ := hf (w + v)
   refine ⟨A, hA, ?_⟩
   intro x y hy
+  simp only [Matrix.cons_val_one, Matrix.cons_val_zero, Matrix.head_cons, Matrix.cons_val_fin_one]
   rw [← mul_assoc, ← Complex.cpow_add _ _
     (Complex.ofReal_ne_zero.mpr (lt_of_lt_of_le zero_lt_one hy).ne')]
   exact ha x y hy
@@ -114,11 +115,15 @@ private theorem verticalTail_eq_coordDeriv (u : ℂ) (x : ℝ) (Y : Ici (1 : ℝ
   have hn := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_vertical
     u u true x Y
   have ht : HasDerivAt (fun t => tail u ![x, t]) (verticalTail u z) Y.val := by
-    simpa [tail, verticalTail, d4BMCompletedEisensteinCuspTailPart,
+    simpa [z, tail, verticalTail, d4BMCompletedEisensteinCuspVerticalFirstJetTail,
+      d4BMCompletedEisensteinCuspTailPart,
       d4BMCompletedEisensteinFullSignedZeroWord] using (hp.add hn).const_mul (2 : ℂ)
   have hd' : HasDerivAt (fun t => tail u ![x, t])
       (coordDeriv 1 (tail u) z) Y.val := by
-    simpa [z, Function.update] using hd
+    have hupd : ∀ t : ℝ, Function.update z 1 t = ![x, t] := fun t => by
+      funext i
+      fin_cases i <;> simp [z, Function.update]
+    simpa only [hupd, z, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] using hd
   simpa [z] using ht.unique hd'
 
 private theorem horizontalTail_eq_coordDeriv (u : ℂ) (x : ℝ) (Y : Ici (1 : ℝ)) :
@@ -143,11 +148,15 @@ private theorem horizontalTail_eq_coordDeriv (u : ℂ) (x : ℝ) (Y : Ici (1 : �
   have hn := hasDerivAt_d4BMCompletedEisensteinSignedSqrtWhittakerTail_horizontal
     u u true x Y
   have ht : HasDerivAt (fun t => tail u ![t, Y.val]) (horizontalTail u z) x := by
-    simpa [tail, horizontalTail, d4BMCompletedEisensteinCuspTailPart,
+    simpa [z, tail, horizontalTail, d4BMCompletedEisensteinCuspHorizontalFirstJetTail,
+      d4BMCompletedEisensteinCuspTailPart,
       d4BMCompletedEisensteinFullSignedZeroWord] using (hp.add hn).const_mul (2 : ℂ)
   have hd' : HasDerivAt (fun t => tail u ![t, Y.val])
       (coordDeriv 0 (tail u) z) x := by
-    simpa [z, Function.update] using hd
+    have hupd : ∀ t : ℝ, Function.update z 0 t = ![t, Y.val] := fun t => by
+      funext i
+      fin_cases i <;> simp [z, Function.update]
+    simpa only [hupd, z, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] using hd
   simpa [z] using ht.unique hd'
 
 private theorem tail_uniform (u : ℂ) : UniformCuspRapid (tail u) := by
@@ -182,7 +191,9 @@ private theorem UniformCuspRapid.principal_mul (u : ℂ) {f : Field}
   let B := d4BMCompletedEisensteinCuspConstantCoefficient u true
   apply (((hf.cpow e0).scale A).add ((hf.cpow e1).scale B)).congr
   intro x y hy
-  dsimp [principal, e0, e1, A, B]
+  dsimp [D4BMGlobalAngularResponse.principal, e0, e1, A, B,
+    d4BMCompletedEisensteinCuspConstantPart, d4BMCompletedEisensteinCuspConstantTerm,
+    d4BMCompletedEisensteinCuspConstantMaassFactor]
   ring
 
 private theorem UniformCuspRapid.principalVertical_mul (u : ℂ) {f : Field}
@@ -205,16 +216,16 @@ private def fullVerticalFluxModel (u v : ℂ) : Field := fun z =>
   let Fx := horizontalTail u z
   let Fy := principalVertical u z + verticalTail u z
   let Sy := principalVertical v z + verticalTail v z
-  (v ^ 2 - 1 / 4) * S * F * Fy -
-    ((u ^ 2 - 1 / 4) * F ^ 2 + (z 1 : ℂ) ^ 2 * (Fx ^ 2 + Fy ^ 2)) * Sy
+  (v ^ (2 : ℕ) - 1 / 4) * S * F * Fy -
+    ((u ^ (2 : ℕ) - 1 / 4) * F ^ (2 : ℕ) + (z 1 : ℂ) ^ (2 : ℕ) * (Fx ^ (2 : ℕ) + Fy ^ (2 : ℕ))) * Sy
 
 private def constantVerticalFluxModel (u v : ℂ) : Field := fun z =>
   let F := principal u z
   let S := principal v z
   let Fy := principalVertical u z
   let Sy := principalVertical v z
-  (v ^ 2 - 1 / 4) * S * F * Fy -
-    ((u ^ 2 - 1 / 4) * F ^ 2 + (z 1 : ℂ) ^ 2 * Fy ^ 2) * Sy
+  (v ^ (2 : ℕ) - 1 / 4) * S * F * Fy -
+    ((u ^ (2 : ℕ) - 1 / 4) * F ^ (2 : ℕ) + (z 1 : ℂ) ^ (2 : ℕ) * Fy ^ (2 : ℕ)) * Sy
 
 private theorem fullVerticalFlux_eq_model (u v : ℂ) (z : Fin 2 → ℝ) :
     fullVerticalFlux u v (z 0) (z 1) = fullVerticalFluxModel u v z := by
@@ -301,7 +312,7 @@ private theorem fullVerticalFluxModel_remainder_uniform (u v : ℂ) :
   have hB5 : UniformCuspRapid (fun z => f z * f z * sy z) :=
     (hf.mul hf).mul hsy
   have hB : UniformCuspRapid (fun z =>
-      (F0 z + f z) ^ 2 * (Sy0 z + sy z) - F0 z ^ 2 * Sy0 z) := by
+      (F0 z + f z) ^ (2 : ℕ) * (Sy0 z + sy z) - F0 z ^ (2 : ℕ) * Sy0 z) := by
     apply (((((hB1.scale 2).add hB2).add hB3).add (hB4.scale 2)).add hB5).congr
     intro x y hy
     dsimp [F0, Sy0, f, sy]
@@ -329,35 +340,35 @@ private theorem fullVerticalFluxModel_remainder_uniform (u v : ℂ) :
   have hC5 : UniformCuspRapid (fun z => fy z * fy z * sy z) :=
     (hfy.mul hfy).mul hsy
   have hC : UniformCuspRapid (fun z =>
-      (Fy0 z + fy z) ^ 2 * (Sy0 z + sy z) - Fy0 z ^ 2 * Sy0 z) := by
+      (Fy0 z + fy z) ^ (2 : ℕ) * (Sy0 z + sy z) - Fy0 z ^ (2 : ℕ) * Sy0 z) := by
     apply (((((hC1.scale 2).add hC2).add hC3).add (hC4.scale 2)).add hC5).congr
     intro x y hy
     dsimp [Fy0, Sy0, fy, sy]
     ring
-  have hD1 : UniformCuspRapid (fun z => fx z ^ 2 * Sy0 z) := by
+  have hD1 : UniformCuspRapid (fun z => fx z ^ (2 : ℕ) * Sy0 z) := by
     apply ((hfx.mul hfx).principalVertical_mul v).congr
     intro x y hy
     dsimp [Sy0, fx]
     ring
-  have hD2 : UniformCuspRapid (fun z => fx z ^ 2 * sy z) := by
+  have hD2 : UniformCuspRapid (fun z => fx z ^ (2 : ℕ) * sy z) := by
     apply ((hfx.mul hfx).mul hsy).congr
     intro x y hy
     dsimp [fx, sy]
     ring
-  have hD : UniformCuspRapid (fun z => fx z ^ 2 * (Sy0 z + sy z)) := by
+  have hD : UniformCuspRapid (fun z => fx z ^ (2 : ℕ) * (Sy0 z + sy z)) := by
     apply (hD1.add hD2).congr
     intro x y hy
     dsimp [Sy0, fx, sy]
     ring
   have hCD : UniformCuspRapid (fun z =>
-      (z 1 : ℂ) ^ 2 *
-        ((Fy0 z + fy z) ^ 2 * (Sy0 z + sy z) - Fy0 z ^ 2 * Sy0 z +
-          fx z ^ 2 * (Sy0 z + sy z))) := by
+      (z 1 : ℂ) ^ (2 : ℕ) *
+        ((Fy0 z + fy z) ^ (2 : ℕ) * (Sy0 z + sy z) - Fy0 z ^ (2 : ℕ) * Sy0 z +
+          fx z ^ (2 : ℕ) * (Sy0 z + sy z))) := by
     apply ((hC.add hD).cpow (2 : ℂ)).congr
     intro x y hy
     rw [Complex.cpow_two]
-  have hmain := ((hA.scale (v ^ 2 - 1 / 4)).add
-    (hB.scale (-(u ^ 2 - 1 / 4)))).add (hCD.scale (-1))
+  have hmain := ((hA.scale (v ^ (2 : ℕ) - 1 / 4)).add
+    (hB.scale (-(u ^ (2 : ℕ) - 1 / 4)))).add (hCD.scale (-1))
   apply hmain.congr
   intro x y hy
   dsimp [fullVerticalFluxModel, constantVerticalFluxModel,
@@ -382,8 +393,9 @@ theorem fullVerticalFlux_remainder_integral_tendsto_zero (u v w : ℂ) :
   apply ((fullVerticalFluxModel_remainder_uniform u v).integral_vanish w).congr'
   filter_upwards with y
   apply intervalIntegral.integral_congr_ae
-  filter_upwards with x
-  rw [fullVerticalFlux_eq_model u v ![x, y], constantVerticalFlux_eq_model u v ![x, y]]
+  filter_upwards with x _
+  rw [← fullVerticalFlux_eq_model u v ![x, y], ← constantVerticalFlux_eq_model u v ![x, y]]
+  simp
 
 /-- The same all-weight integrated cusp law for the actual literal B2 cap
 angular current.  This is the noncompact boundary input missing from B2. -/
@@ -396,7 +408,7 @@ theorem angularFlux_remainder_integral_tendsto_zero (q r : XiZeroCopy) (w : ℂ)
     (center q) (physicalAngularParameter r) w).congr'
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with y hy
   apply intervalIntegral.integral_congr_ae
-  filter_upwards with x
+  filter_upwards with x _
   rw [angularFlux_full_cusp q r x ⟨y, hy⟩]
 
 end

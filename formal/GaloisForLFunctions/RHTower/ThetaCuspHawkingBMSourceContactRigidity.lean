@@ -28,7 +28,7 @@ def sourceContact (q : XiZeroCopy) (z : Point) : ℂ :=
     2*scalarLaplacian (fullSquarePotential q) z)/8
 
 private theorem eigen (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 (F q)) z+
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (F q)) z+
       coordDeriv 1 (coordDeriv 1 (F q)) z)=scalarParameter q*F q z := by
   have h := scalar_physical_equation q true z hz
   rw [scalarLaplacian_eq _ z hz] at h
@@ -39,7 +39,7 @@ private theorem eigen (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
 /-- The contact retains the full complex bilinear gradient energy. -/
 theorem sourceContact_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
     sourceContact q (coordinates z)=
-      ((3*scalarParameter q-2)/4*scalar (center q) (coordinates z)^2-
+      ((3*scalarParameter q-2)/4*scalar (center q) (coordinates z)^(2 : ℕ)-
         fullGradientEnergy q (coordinates z))/4 := by
   rw [sourceContact,fullSquarePotential_laplacian q true _ z.im_pos]
   dsimp [fullSquarePotential,scalarParameter,physicalRate]
@@ -116,14 +116,14 @@ private theorem contact_jet (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
     ofField_mul (hd 0) (hd 0),ofField_mul (hd 1) (hd 1)]
 
 private theorem contact_algebra (f u v a b c lam : ℂ) (ht : a+c=lam*f) :
-    let E := u^2+v^2;
+    let E := u^(2 : ℕ)+v^(2 : ℕ);
     let k := (3*lam-2)/4;
-    let J := (k*f^2-E)/4;
+    let J := (k*f^(2 : ℕ)-E)/4;
     let Jx := (k*f*u-a*u-b*v)/2;
     let Jy := (k*f*v-b*u-c*v)/2;
-    let LJ := (k*lam*f^2+(k-lam+1)*E-(a^2+2*b^2+c^2))/2;
-    (lam-2)*(lam-6)*f^2*E=
-      16*(lam-2)*(2*f*(u*Jx+v*Jy)+J*E)-32*E*LJ-128*(Jx^2+Jy^2) := by
+    let LJ := (k*lam*f^(2 : ℕ)+(k-lam+1)*E-(a^(2 : ℕ)+2*b^(2 : ℕ)+c^(2 : ℕ)))/2;
+    (lam-2)*(lam-6)*f^(2 : ℕ)*E=
+      16*(lam-2)*(2*f*(u*Jx+v*Jy)+J*E)-32*E*LJ-128*(Jx^(2 : ℕ)+Jy^(2 : ℕ)) := by
   have hc : c=lam*f-a := by linear_combination ht
   rw [hc]
   dsimp only
@@ -134,7 +134,7 @@ private theorem gradient_smooth (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (j :
   coordDeriv_contDiffAt (smooth q z hz 3) (by norm_num) j
 
 private theorem eigen_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (i : Fin 2) :
-    (z 1:ℂ)^2*(coordDeriv i (coordDeriv 0 (coordDeriv 0 (F q))) z+
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv i (coordDeriv 0 (coordDeriv 0 (F q))) z+
       coordDeriv i (coordDeriv 1 (coordDeriv 1 (F q))) z)+
       (if i=1 then 2*(z 1:ℂ) else 0)*
         (coordDeriv 0 (coordDeriv 0 (F q)) z+coordDeriv 1 (coordDeriv 1 (F q)) z)=
@@ -167,9 +167,9 @@ private theorem third_shuffle (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (i j :
   exact h.trans (coordDeriv_comm (gradient_smooth q z hz i) i j)
 
 private def hessian (q : XiZeroCopy) (z : Point) : Fin 3 → ℂ :=
-  ![(z 1:ℂ)^2*coordDeriv 0 (coordDeriv 0 (F q)) z-(z 1:ℂ)*coordDeriv 1 (F q) z,
-    (z 1:ℂ)^2*coordDeriv 0 (coordDeriv 1 (F q)) z+(z 1:ℂ)*coordDeriv 0 (F q) z,
-    (z 1:ℂ)^2*coordDeriv 1 (coordDeriv 1 (F q)) z+(z 1:ℂ)*coordDeriv 1 (F q) z]
+  ![(z 1:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (F q)) z-(z 1:ℂ)*coordDeriv 1 (F q) z,
+    (z 1:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 1 (F q)) z+(z 1:ℂ)*coordDeriv 0 (F q) z,
+    (z 1:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (F q)) z+(z 1:ℂ)*coordDeriv 1 (F q) z]
 
 private theorem contact_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
     (z 1:ℂ)*coordDeriv 0 (sourceContact q) z=
@@ -196,9 +196,9 @@ private theorem contact_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
 
 private theorem contact_laplacian (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
     scalarLaplacian (sourceContact q) z=
-      (kappa q*scalarParameter q*(F q z)^2+
+      (kappa q*scalarParameter q*(F q z)^(2 : ℕ)+
         (kappa q-scalarParameter q+1)*fullGradientEnergy q z-
-        (hessian q z 0^2+2*hessian q z 1^2+hessian q z 2^2))/2 := by
+        (hessian q z 0^(2 : ℕ)+2*hessian q z 1^(2 : ℕ)+hessian q z 2^(2 : ℕ)))/2 := by
   have hj := contact_jet q z hz
   unfold contactJet at hj
   rw [y_jet] at hj
@@ -215,24 +215,24 @@ private theorem contact_laplacian (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
   rw [third_shuffle q z hz 1 0,hc] at h1
   rw [scalarLaplacian_eq _ z hz]
   dsimp [fullGradientEnergy,hessian]
-  linear_combination (z 1:ℂ)^2*(h0+h1)+kappa q/2*F q z*ht-
-    (z 1:ℂ)^2/2*coordDeriv 0 (F q) z*hx-
-    (z 1:ℂ)^2/2*coordDeriv 1 (F q) z*hy
+  linear_combination (z 1:ℂ)^(2 : ℕ)*(h0+h1)+kappa q/2*F q z*ht-
+    (z 1:ℂ)^(2 : ℕ)/2*coordDeriv 0 (F q) z*hx-
+    (z 1:ℂ)^(2 : ℕ)/2*coordDeriv 1 (F q) z*hy
 
 /-- Complex bilinear gradient pairing of the actual theta scalar with its source contact. -/
 def scalarContactGradientPair (q : XiZeroCopy) (z : Point) : ℂ :=
-  (z 1:ℂ)^2*(coordDeriv 0 (scalar (center q)) z*coordDeriv 0 (sourceContact q) z+
+  (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (scalar (center q)) z*coordDeriv 0 (sourceContact q) z+
     coordDeriv 1 (scalar (center q)) z*coordDeriv 1 (sourceContact q) z)
 
 /-- Complex bilinear gradient square of the original source contact. No conjugation is inserted. -/
 def contactGradientEnergy (q : XiZeroCopy) (z : Point) : ℂ :=
-  (z 1:ℂ)^2*(coordDeriv 0 (sourceContact q) z^2+coordDeriv 1 (sourceContact q) z^2)
+  (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (sourceContact q) z^(2 : ℕ)+coordDeriv 1 (sourceContact q) z^(2 : ℕ))
 
 /-- Exact differential rigidity identity for the literal theta contact. All derivatives and
 the scalar equation are discharged from the original source, without a clock or sign premise. -/
 private theorem contact_identity (q : XiZeroCopy) (z : UpperHalfPlane) :
     (scalarParameter q-2)*(scalarParameter q-6)*
-        scalar (center q) (coordinates z)^2*fullGradientEnergy q (coordinates z)=
+        scalar (center q) (coordinates z)^(2 : ℕ)*fullGradientEnergy q (coordinates z)=
       16*(scalarParameter q-2)*
         (2*scalar (center q) (coordinates z)*scalarContactGradientPair q (coordinates z)+
           sourceContact q (coordinates z)*fullGradientEnergy q (coordinates z))-
@@ -243,11 +243,11 @@ private theorem contact_identity (q : XiZeroCopy) (z : UpperHalfPlane) :
   have ht : hessian q p 0+hessian q p 2=scalarParameter q*F q p := by
     dsimp [hessian]
     linear_combination eigen q p hp
-  have hE : ((p 1:ℂ)*coordDeriv 0 (F q) p)^2+
-      ((p 1:ℂ)*coordDeriv 1 (F q) p)^2=fullGradientEnergy q p := by
+  have hE : ((p 1:ℂ)*coordDeriv 0 (F q) p)^(2 : ℕ)+
+      ((p 1:ℂ)*coordDeriv 1 (F q) p)^(2 : ℕ)=fullGradientEnergy q p := by
     dsimp [fullGradientEnergy,F]
     ring
-  have hJ : (kappa q*F q p^2-fullGradientEnergy q p)/4=sourceContact q p := by
+  have hJ : (kappa q*F q p^(2 : ℕ)-fullGradientEnergy q p)/4=sourceContact q p := by
     dsimp [kappa,F,p]
     exact (sourceContact_eq q z).symm
   have ha := contact_algebra (F q p) ((p 1:ℂ)*coordDeriv 0 (F q) p)
@@ -265,9 +265,9 @@ private theorem contact_identity (q : XiZeroCopy) (z : UpperHalfPlane) :
 The identity uses the actual source and carries no source equation, sign, or clock premise. -/
 theorem sourceContact_differential_identity (q : XiZeroCopy) (z : UpperHalfPlane) :
     (scalarParameter q-2)*(scalarParameter q-6)*(3*scalarParameter q-2)*
-        scalar (center q) (coordinates z)^4=
+        scalar (center q) (coordinates z)^(4 : ℕ)=
       16*(scalarParameter q-2)*(scalarParameter q-6)*
-        scalar (center q) (coordinates z)^2*sourceContact q (coordinates z)+
+        scalar (center q) (coordinates z)^(2 : ℕ)*sourceContact q (coordinates z)+
       64*(scalarParameter q-2)*
         (2*scalar (center q) (coordinates z)*scalarContactGradientPair q (coordinates z)+
           sourceContact q (coordinates z)*fullGradientEnergy q (coordinates z))-
@@ -275,7 +275,7 @@ theorem sourceContact_differential_identity (q : XiZeroCopy) (z : UpperHalfPlane
       512*contactGradientEnergy q (coordinates z) := by
   linear_combination 4*contact_identity q z-
     16*(scalarParameter q-2)*(scalarParameter q-6)*
-      scalar (center q) (coordinates z)^2*sourceContact_eq q z
+      scalar (center q) (coordinates z)^(2 : ℕ)*sourceContact_eq q z
 
 /-- Every actual Xi occurrence avoids all three exceptional local contact eigenvalues. -/
 theorem sourceContact_rigidity_factor_ne_zero (q : XiZeroCopy) :

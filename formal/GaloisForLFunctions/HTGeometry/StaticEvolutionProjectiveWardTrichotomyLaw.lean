@@ -42,7 +42,7 @@ theorem norm_twoLocalPauliUnitaryCommutatorMap_sq_le_doubleCommutator_mul_return
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ)
     (x : TwoLocalPauliCoefficientSpace n) (t : ℝ) :
-    ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 ≤
+    ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) ≤
       hsNorm
           (ringCommutator (realActivePauliHamiltonian x)
             (ringCommutator (realActivePauliHamiltonian x)
@@ -60,16 +60,16 @@ theorem norm_twoLocalPauliUnitaryCommutatorMap_sq_le_doubleCommutator_mul_return
   let A := ringCommutator H U0
   let E := U0 - V
   let D := ringCommutator H A
-  change hsNorm A ^ 2 ≤ hsNorm D * hsNorm (V - U0)
+  change hsNorm A ^ (2 : ℕ) ≤ hsNorm D * hsNorm (V - U0)
   have hH : Hᴴ = H := (isSelfAdjoint_realActivePauliHamiltonian x).star_eq
   have hcomm : H * V = V * H := unitaryEvolution_commutes_generator H t
   have hAE : A = ringCommutator H E := by
     simp only [A, E, ringCommutator, Matrix.mul_sub, Matrix.sub_mul]
     rw [hcomm]
     abel
-  have henergy : (hsNorm A ^ 2 : ℂ) = hsInner E D := by
+  have henergy : (hsNorm A ^ (2 : ℕ) : ℂ) = hsInner E D := by
     calc
-      (hsNorm A ^ 2 : ℂ) = hsInner A A := by
+      (hsNorm A ^ (2 : ℕ) : ℂ) = hsInner A A := by
         rw [← inner_finiteMatrixHilbertEquiv_eq_hsInner,
           inner_self_eq_norm_sq_to_K]
         rfl
@@ -83,10 +83,10 @@ theorem norm_twoLocalPauliUnitaryCommutatorMap_sq_le_doubleCommutator_mul_return
   have hnormE : ‖finiteMatrixHilbertEquiv E‖ = hsNorm E := by rfl
   have hnormD : ‖finiteMatrixHilbertEquiv D‖ = hsNorm D := by rfl
   rw [hnormE, hnormD] at hcs
-  have hnorm : hsNorm A ^ 2 = ‖hsInner E D‖ := by
+  have hnorm : hsNorm A ^ (2 : ℕ) = ‖hsInner E D‖ := by
     rw [← henergy, norm_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (hsNorm_nonneg A)]
-  have hward : hsNorm A ^ 2 ≤ hsNorm D * hsNorm E := by
+  have hward : hsNorm A ^ (2 : ℕ) ≤ hsNorm D * hsNorm E := by
     rw [hnorm]
     simpa only [mul_comm] using hcs
   rw [hsNorm_sub_comm U0 V] at hward
@@ -110,7 +110,7 @@ theorem unitaryEvolution_near_unitary_projectiveReturn_or_transverseWardObserver
           (FiniteQubitConfiguration (Fin n)) ℂ) 1 ≤ Real.sqrt β ∨
       (((6 * n - 4 : ℕ) : ℝ) * β ≤
           twoLocalPauliUnitaryCommutatorGramStableRatio U ∧
-        ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 ≤
+        ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) ≤
           hsNorm
               (ringCommutator (realActivePauliHamiltonian x)
                 (ringCommutator (realActivePauliHamiltonian x)
@@ -176,7 +176,7 @@ theorem allTime_returnExcisedCircuitHit_subset_staticWardObserverTube
         ∃ c : C,
           ((6 * n - 4 : ℕ) : ℝ) * β ≤
               twoLocalPauliUnitaryCommutatorGramStableRatio (U c) ∧
-            ‖twoLocalPauliUnitaryCommutatorMap (U c) x‖ ^ 2 ≤
+            ‖twoLocalPauliUnitaryCommutatorMap (U c) x‖ ^ (2 : ℕ) ≤
               hsNorm
                   (ringCommutator (realActivePauliHamiltonian x)
                     (ringCommutator (realActivePauliHamiltonian x)

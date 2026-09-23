@@ -94,14 +94,14 @@ theorem integral_smoothAFEZetaDisplacedReflectedBase_mollified_normSq_le
     (∫ t in a..b,
       (‖Sieve.dirPoly L
             (fun n => smoothAFEZetaDisplacedReflectedBaseCoeff d n) t‖ *
-          ‖Sieve.levinsonLinearMollifier M t‖) ^ 2) ≤
+          ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)) ≤
       ‖((b - a : ℝ) : ℂ) *
         smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
       smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M := by
   let f : ℝ → ℝ := fun t =>
     (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedBaseCoeff d n) t‖ *
-        ‖Sieve.levinsonLinearMollifier M t‖) ^ 2
+        ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)
   have hmean :=
     integral_smoothAFEZetaDisplacedReflectedBase_mollified_normSq_Icc_error
       hd L M hM a (b - a)
@@ -218,8 +218,8 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
     (hab : a ≤ b) (huab : u ∈ Set.Icc a b) (hwidth : b - a ≤ H)
     (hH : 2 * H ≤ T) (L M : ℕ) (hM : 1 < M) :
     (∫ t in a..b,
-      ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2) ≤
-      (|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+      ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ)) ≤
+      (|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
         (‖((b - a : ℝ) : ℂ) *
             smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
           smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M) := by
@@ -227,10 +227,10 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
   let g : ℝ → ℝ := fun t =>
     (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedBaseCoeff d n) t‖ *
-        ‖Sieve.levinsonLinearMollifier M t‖) ^ 2
+        ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)
   have hpoint : ∀ t ∈ Set.Icc a b,
-      ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2 ≤
-        D ^ 2 * g t := by
+      ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ) ≤
+        D ^ (2 : ℕ) * g t := by
     intro t ht
     have htu : |t - u| ≤ H := by
       rw [abs_le]
@@ -251,10 +251,10 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
       D * (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedBaseCoeff d n) t‖ *
         ‖Sieve.levinsonLinearMollifier M t‖) at hnorm
-    change ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2 ≤
-      D ^ 2 * (‖Sieve.dirPoly L
+    change ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ) ≤
+      D ^ (2 : ℕ) * (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedBaseCoeff d n) t‖ *
-        ‖Sieve.levinsonLinearMollifier M t‖) ^ 2
+        ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)
     nlinarith [norm_nonneg
       (smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t)]
   have hcontErr :=
@@ -267,17 +267,17 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
         (continuous_levinsonLinearMollifier M).norm).pow 2)
   have hmono :
       (∫ t in a..b,
-        ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2) ≤
-      ∫ t in a..b, D ^ 2 * g t := by
+        ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ)) ≤
+      ∫ t in a..b, D ^ (2 : ℕ) * g t := by
     have hintErr : IntervalIntegrable
         (fun t =>
-          ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2)
+          ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ))
         MeasureTheory.volume a b := by
       have hsquare := (hcontErr.norm.mul hcontErr.norm).intervalIntegrable
         (μ := MeasureTheory.volume) a b
       have heq :
           (fun t =>
-            ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2) =
+            ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ)) =
           (fun t =>
             ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ *
             ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖) := by
@@ -287,7 +287,7 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
       convert hsquare using 1
       funext t
       rfl
-    have hintG : IntervalIntegrable (fun t => D ^ 2 * g t)
+    have hintG : IntervalIntegrable (fun t => D ^ (2 : ℕ) * g t)
         MeasureTheory.volume a b :=
       (continuous_const.mul hcontG).intervalIntegrable a b
     exact intervalIntegral.integral_mono_on hab
@@ -296,7 +296,7 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_
   rw [intervalIntegral.integral_const_mul]
   have hbase := integral_smoothAFEZetaDisplacedReflectedBase_mollified_normSq_le
     hd.le L M hM hab
-  change D ^ 2 * (∫ t in a..b, g t) ≤ _
+  change D ^ (2 : ℕ) * (∫ t in a..b, g t) ≤ _
   exact mul_le_mul_of_nonneg_left hbase (sq_nonneg D)
 
 end RHTower

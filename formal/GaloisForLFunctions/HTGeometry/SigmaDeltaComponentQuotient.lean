@@ -164,7 +164,7 @@ theorem exists_period_componentQuotient_isSigmaDeltaSimple
       (fun i => Ideal.map (((σ ^ i) : R ≃+* R) : R →+* R) I)
   let H : Ideal R := sInf (orbitIdeals : Set (Ideal R))
   have hmapZero (J : Ideal R) :
-      Ideal.map ((((σ ^ 0) : R ≃+* R)) : R →+* R) J = J := by
+      Ideal.map ((((σ ^ (0 : ℕ)) : R ≃+* R)) : R →+* R) J = J := by
     change Ideal.map (RingHom.id R) J = J
     exact Ideal.map_id J
   have hiterMinAll : ∀ i : ℕ, IsMinimalPrimeDifferentialIdeal (F^[i] P) := by

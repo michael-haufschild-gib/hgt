@@ -46,7 +46,7 @@ theorem integral_mertensAtomAt {w : ℂ} (hw : 0 < w.re) (a : ℝ) (n : ℕ) :
   simp only [mertensAtomAt]
   rw [MeasureTheory.integral_mul_const,
     MeasureTheory.setIntegral_indicator measurableSet_Ici,
-    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg n)),
+    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg_mobiusCriticalLaplaceIdentity n)),
     GaloisForLFunctions.RHTower.integral_Ioi_cexp_neg_mul_shift hw (Real.log n)]
   ring
 
@@ -56,7 +56,7 @@ theorem integral_norm_mertensAtomAt {w : ℂ} (hw : 0 < w.re) (a : ℝ) (n : ℕ
   simp only [norm_mertensAtomAt]
   rw [MeasureTheory.integral_mul_const,
     MeasureTheory.setIntegral_indicator measurableSet_Ici,
-    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg n)),
+    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg_mobiusCriticalLaplaceIdentity n)),
     integral_Ioi_exp_neg_mul_shift hw (Real.log n)]
   ring
 

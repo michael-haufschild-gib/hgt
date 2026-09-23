@@ -174,7 +174,7 @@ theorem exists_entire_approx_sq_logDeriv_weierstrassGenusProduct {a : ℕ → �
     (hare : ∀ n, (a n).re < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
       ∀ s : ℂ, 1 ≤ s.re →
-        ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - G s‖ ≤ ε := by
+        ‖(s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct a) s - G s‖ ≤ ε := by
   obtain ⟨G, hGd, hGb⟩ := exists_entire_approx_sq_mittagLeffler (a := a) (m := fun _ => 1) κ
     (Q := weierstrassMittagLefflerCorrection a) (u := weierstrassMittagLefflerBound a)
     ha hare (differentiable_weierstrassMittagLefflerCorrection a)
@@ -206,7 +206,7 @@ theorem exists_entire_approx_sq_logDeriv_divisorFunction {a b : ℕ → ℂ} (κ
     (hare : ∀ n, (a n).re < 1) (hbre : ∀ n, (b n).re < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
       ∀ s : ℂ, 1 ≤ s.re →
-        ‖(s ^ 2 + κ * s) * logDeriv (divisorFunction a b) s - G s‖ ≤ ε := by
+        ‖(s ^ (2 : ℕ) + κ * s) * logDeriv (divisorFunction a b) s - G s‖ ≤ ε := by
   obtain ⟨Ga, hGad, hGab⟩ :=
     exists_entire_approx_sq_logDeriv_weierstrassGenusProduct κ ha hane hare (ε := ε / 2)
       (by linarith)
@@ -223,15 +223,15 @@ theorem exists_entire_approx_sq_logDeriv_divisorFunction {a b : ℕ → ℂ} (κ
       ((differentiable_weierstrassGenusProduct hb hbne) s)
     exact this
   rw [hlog]
-  have hsplit : (s ^ 2 + κ * s) * (logDeriv (weierstrassGenusProduct a) s
+  have hsplit : (s ^ (2 : ℕ) + κ * s) * (logDeriv (weierstrassGenusProduct a) s
         - logDeriv (weierstrassGenusProduct b) s) - (Ga s - Gb s)
-      = ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
-        - ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s) := by ring
+      = ((s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
+        - ((s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s) := by ring
   rw [hsplit]
-  calc ‖((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
-          - ((s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s)‖
-      ≤ ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s‖
-        + ‖(s ^ 2 + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s‖ := norm_sub_le _ _
+  calc ‖((s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s)
+          - ((s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s)‖
+      ≤ ‖(s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct a) s - Ga s‖
+        + ‖(s ^ (2 : ℕ) + κ * s) * logDeriv (weierstrassGenusProduct b) s - Gb s‖ := norm_sub_le _ _
     _ ≤ ε / 2 + ε / 2 := add_le_add (hGab s hs) (hGbb s hs)
     _ = ε := by ring
 

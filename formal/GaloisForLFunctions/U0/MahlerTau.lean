@@ -88,12 +88,12 @@ the polynomial-level core of `hcompat` (`τ` restricts to `mahlerHom` on `ℂ(z)
 theorem precompAnalytic_polyToAnalytic (p : Polynomial ℂ) :
     precompAnalytic (analyticOnNhd_quadratic_escapeOpen c) (mapsTo_quadratic_escapeOpen c)
       (polyToAnalytic (escapeOpen c) p)
-    = polyToAnalytic (escapeOpen c) (p.comp (X ^ 2 + C c)) := by
+    = polyToAnalytic (escapeOpen c) (p.comp (X ^ (2 : ℕ) + C c)) := by
   apply Subtype.ext
   rw [precompAnalytic_coe]
   show (↑(fun z => p.eval z) : Germ (𝓟 (escapeOpen c)) ℂ).compTendsto (quadratic c)
       (tendsto_principal_principal.mpr (mapsTo_quadratic_escapeOpen c))
-      = (↑(fun z => (p.comp (X ^ 2 + C c)).eval z) : Germ (𝓟 (escapeOpen c)) ℂ)
+      = (↑(fun z => (p.comp (X ^ (2 : ℕ) + C c)).eval z) : Germ (𝓟 (escapeOpen c)) ℂ)
   rw [Germ.coe_compTendsto]
   congr 1
   funext z
@@ -121,7 +121,7 @@ theorem mahlerTau_polyToMero (p : Polynomial ℂ) :
     haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
       (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
     mahlerTau c (polyToMero (escapeOpen c) p)
-      = polyToMero (escapeOpen c) (p.comp (X ^ 2 + C c)) := by
+      = polyToMero (escapeOpen c) (p.comp (X ^ (2 : ℕ) + C c)) := by
   haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
     (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
   show mahlerTau c ((algebraMap (analyticSubring (escapeOpen c)) (meroField (escapeOpen c))).comp
@@ -165,12 +165,12 @@ This is the functional equation at the germ level. -/
 theorem precompAnalytic_phiAnalytic :
     precompAnalytic (analyticOnNhd_quadratic_escapeOpen c) (mapsTo_quadratic_escapeOpen c)
       (phiAnalytic c (Set.Subset.refl (escapeOpen c)))
-    = (phiAnalytic c (Set.Subset.refl (escapeOpen c))) ^ 2 := by
+    = (phiAnalytic c (Set.Subset.refl (escapeOpen c))) ^ (2 : ℕ) := by
   apply Subtype.ext
   rw [precompAnalytic_coe, SubmonoidClass.coe_pow]
   show (↑(bottcherCoord c) : Germ (𝓟 (escapeOpen c)) ℂ).compTendsto (quadratic c)
       (tendsto_principal_principal.mpr (mapsTo_quadratic_escapeOpen c))
-      = (↑(bottcherCoord c) : Germ (𝓟 (escapeOpen c)) ℂ) ^ 2
+      = (↑(bottcherCoord c) : Germ (𝓟 (escapeOpen c)) ℂ) ^ (2 : ℕ)
   rw [Germ.coe_compTendsto, ← Germ.coe_pow, Germ.coe_eq, eventuallyEq_principal]
   intro z hz
   obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
@@ -186,7 +186,7 @@ theorem mahlerTau_phiMero :
     haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
       (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
     mahlerTau c (phiMero c (Set.Subset.refl (escapeOpen c)))
-      = (phiMero c (Set.Subset.refl (escapeOpen c))) ^ 2 := by
+      = (phiMero c (Set.Subset.refl (escapeOpen c))) ^ (2 : ℕ) := by
   haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
     (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
   rw [phiMero]
@@ -212,7 +212,7 @@ theorem phiMero_norm_relation
       ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).comp (-X))) :
     ∃ s : RatFunc ℂ, mahlerHom c
       ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).coeff 0)
-      = s * ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).coeff 0) ^ 2 := by
+      = s * ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).coeff 0) ^ (2 : ℕ) := by
   haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
     (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
   refine carrier_norm_relation (mahlerTau c) (fun k => ?_) (mahlerTau_phiMero c) hdeg hcop
@@ -240,7 +240,7 @@ theorem bottcherCoord_div_id_tendsto_one (c : ℂ) :
     Filter.Tendsto (fun t : ℝ => bottcherCoord c (t : ℂ) / (t : ℂ)) Filter.atTop (nhds 1) := by
   have hδ : Filter.Tendsto
       (fun t : ℝ => bottcherLog c (t : ℂ) - Complex.log (t : ℂ)) Filter.atTop (nhds 0) := by
-    refine squeeze_zero_norm' (a := fun t : ℝ => 2 * ‖c‖ / t ^ 2) ?_ ?_
+    refine squeeze_zero_norm' (a := fun t : ℝ => 2 * ‖c‖ / t ^ (2 : ℕ)) ?_ ?_
     · filter_upwards [Filter.eventually_gt_atTop (max 2 ‖c‖)] with t ht
       have hc : ‖c‖ ≤ ‖(t : ℂ)‖ := by
         rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by have := le_max_left 2 ‖c‖; linarith)]
@@ -249,7 +249,7 @@ theorem bottcherCoord_div_id_tendsto_one (c : ℂ) :
         rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by have := le_max_left 2 ‖c‖; linarith)]
         exact lt_of_le_of_lt (le_max_left 2 ‖c‖) ht
       simpa using norm_bottcherLog_sub_log_le hc h2
-    · have : Filter.Tendsto (fun t : ℝ => 2 * ‖c‖ / t ^ 2) Filter.atTop (nhds 0) := by
+    · have : Filter.Tendsto (fun t : ℝ => 2 * ‖c‖ / t ^ (2 : ℕ)) Filter.atTop (nhds 0) := by
         simpa using (tendsto_const_nhds (x := 2 * ‖c‖)).div_atTop
           (Filter.tendsto_pow_atTop (by norm_num))
       simpa using this

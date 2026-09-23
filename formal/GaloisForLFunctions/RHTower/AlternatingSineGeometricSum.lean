@@ -36,7 +36,7 @@ theorem im_neg_mul_exp_pow (u α : ℝ) (n : ℕ) :
 /-- **The alternating sine geometric sum.** -/
 theorem tsum_alternating_sine_geometric (α u : ℝ) (hu : |u| < 1) :
     ∑' k : ℕ, ((-1 : ℝ) ^ k * Real.sin ((k + 1) * α) * u ^ (k + 1))
-      = u * Real.sin α / (1 + 2 * u * Real.cos α + u ^ 2) := by
+      = u * Real.sin α / (1 + 2 * u * Real.cos α + u ^ (2 : ℕ)) := by
   obtain ⟨q, hqdef⟩ : ∃ q : ℂ, q = ((-u : ℝ) : ℂ) * Complex.exp ((α : ℝ) * Complex.I) :=
     ⟨_, rfl⟩
   have hnorm : ‖q‖ = |u| := by
@@ -69,7 +69,7 @@ theorem tsum_alternating_sine_geometric (α u : ℝ) (hu : |u| < 1) :
     congr 1
     exact (ContinuousLinearMap.map_tsum Complex.imCLM hshift).symm
   -- the imaginary part of the geometric sum
-  have hpos : (0 : ℝ) < 1 + 2 * u * Real.cos α + u ^ 2 := by
+  have hpos : (0 : ℝ) < 1 + 2 * u * Real.cos α + u ^ (2 : ℕ) := by
     have hc : |Real.cos α| ≤ 1 := Real.abs_cos_le_one α
     have hb : |2 * u * Real.cos α| ≤ 2 * |u| := by
       rw [abs_mul]
@@ -80,17 +80,17 @@ theorem tsum_alternating_sine_geometric (α u : ℝ) (hu : |u| < 1) :
             mul_le_mul_of_nonneg_left hc (abs_nonneg _)
         _ = 2 * |u| := by rw [mul_one, h2u]
     have hge : -(2 * |u|) ≤ 2 * u * Real.cos α := (abs_le.mp hb).1
-    have habs2 : |u| ^ 2 = u ^ 2 := sq_abs u
+    have habs2 : |u| ^ (2 : ℕ) = u ^ (2 : ℕ) := sq_abs u
     nlinarith [sq_nonneg (1 - |u|), abs_nonneg u]
-  have hden : (1 : ℝ) + 2 * u * Real.cos α + u ^ 2 ≠ 0 := ne_of_gt hpos
+  have hden : (1 : ℝ) + 2 * u * Real.cos α + u ^ (2 : ℕ) ≠ 0 := ne_of_gt hpos
   have honeq : (1 : ℂ) - q = ((1 + u * Real.cos α : ℝ) : ℂ) + ((u * Real.sin α : ℝ) : ℂ) * I := by
     rw [hqdef, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
     push_cast
     ring
-  have himinv : ((1 - q)⁻¹).im = -(u * Real.sin α) / (1 + 2 * u * Real.cos α + u ^ 2) := by
+  have himinv : ((1 - q)⁻¹).im = -(u * Real.sin α) / (1 + 2 * u * Real.cos α + u ^ (2 : ℕ)) := by
     rw [Complex.inv_im, honeq]
     have hnormsq : Complex.normSq (((1 + u * Real.cos α : ℝ) : ℂ)
-        + ((u * Real.sin α : ℝ) : ℂ) * I) = 1 + 2 * u * Real.cos α + u ^ 2 := by
+        + ((u * Real.sin α : ℝ) : ℂ) * I) = 1 + 2 * u * Real.cos α + u ^ (2 : ℕ) := by
       rw [Complex.normSq_apply]
       simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
         Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]

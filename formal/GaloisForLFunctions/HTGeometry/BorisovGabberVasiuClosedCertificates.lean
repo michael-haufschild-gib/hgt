@@ -28,9 +28,9 @@ theorem bgv_closed_local_global_separation :
       (bgvPowerMap (R := Polynomial BGVExampleField) 2 Polynomial.X).toRingHom
       (truncatedArcAugmentation (R := BGVExampleField) n).toRingHom)) ∧
     Function.Surjective (fun z : BGVExampleField × BGVExampleField =>
-      (z.1 + z.2 * z.1 ^ 2, z.2)) ∧
+      (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) ∧
     ¬ Function.Injective (fun z : BGVExampleField × BGVExampleField =>
-      (z.1 + z.2 * z.1 ^ 2, z.2)) := by
+      (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) := by
   exact ⟨bgv_quadraticPlane_formallyEtale,
     fun n => bgvPowerMap_truncatedArc_pullback_bijective 2 Polynomial.X n,
     bgv_quadraticPlane_surjective, bgv_quadraticPlane_not_injective⟩
@@ -51,7 +51,7 @@ theorem bgv_closed_stable_core_classification :
 with its differential-pullback determinant certificate included. -/
 theorem bgv_closed_euler_families (n : ℕ) (g : Polynomial BGVExampleField)
     (L : MvPolynomial (Option (Fin n)) BGVExampleField) :
-    let w := L ^ 2 * ∏ j : Option (Fin n), MvPolynomial.X j
+    let w := L ^ (2 : ℕ) * ∏ j : Option (Fin n), MvPolynomial.X j
     (jacobian BGVExampleField (Option (Fin n))
       (bgvSharedSourceMap (bgvEulerFactors 1 g) w)).det = 1 ∧
     LinearMap.det (pullbackDifferential BGVExampleField (Option (Fin n))

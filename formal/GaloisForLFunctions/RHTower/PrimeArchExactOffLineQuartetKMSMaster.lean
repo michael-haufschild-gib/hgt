@@ -47,9 +47,9 @@ theorem primeArchExactQuartetConnesBornWittenKMSMaster
     0 ≤ xiEndpointOffLineCharge ∧
     xiEndpointOffLineCharge ≤ xiEndpointCompletedCurvature ∧
     (∀ q : XiZeroCopy, (q.1 : ℂ).re ≠ 1 / 2 →
-      4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ 2 + 1) ∧
-      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) ∧
-      7907 / 93 < (q.1 : ℂ).im ^ 2) ∧
+      4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ∧
+      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ∧
+      7907 / 93 < (q.1 : ℂ).im ^ (2 : ℕ)) ∧
     (∀ z : ℂ, 0 < z.im → |z.re| ≤ R → XiC z ≠ 0) ∧
     (∀ z : ℂ, 0 < z.im → z.im < 1 / 2 → |z.re| ≤ R →
       (continuedPrimeArchSourceRelativeTrace z).im ≤ 0) ∧
@@ -71,7 +71,7 @@ theorem primeArchExactQuartetConnesBornWittenKMSMaster
       (nhds xiThermalProjectiveColdPartition) ∧
     0 < xiThermalCubicReciprocalMass ∧
     xiThermalSecondMoment - normalizedPrimeArchMoment 1 ≤
-      4 * xiRightTransverseSup ^ 2 * xiThermalCubicReciprocalMass ∧
+      4 * xiRightTransverseSup ^ (2 : ℕ) * xiThermalCubicReciprocalMass ∧
     (Nonempty XiRightZeroCopy →
       (((1 + Real.sqrt
           ((xiThermalSecondMoment - normalizedPrimeArchMoment 1) /
@@ -240,9 +240,9 @@ theorem primeArchExactQuartetConnesBornWittenKMSMaster_twoHundredEighteen_twenty
     0 ≤ xiEndpointOffLineCharge ∧
     xiEndpointOffLineCharge ≤ xiEndpointCompletedCurvature ∧
     (∀ q : XiZeroCopy, (q.1 : ℂ).re ≠ 1 / 2 →
-      4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ 2 + 1) ∧
-      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) ∧
-      7907 / 93 < (q.1 : ℂ).im ^ 2) ∧
+      4 ≤ xiEndpointOffLineCharge * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ∧
+      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ∧
+      7907 / 93 < (q.1 : ℂ).im ^ (2 : ℕ)) ∧
     (∀ z : ℂ, 0 < z.im → |z.re| ≤ 218 / 25 → XiC z ≠ 0) ∧
     (∀ z : ℂ, 0 < z.im → z.im < 1 / 2 → |z.re| ≤ 218 / 25 →
       (continuedPrimeArchSourceRelativeTrace z).im ≤ 0) ∧
@@ -264,7 +264,7 @@ theorem primeArchExactQuartetConnesBornWittenKMSMaster_twoHundredEighteen_twenty
       (nhds xiThermalProjectiveColdPartition) ∧
     0 < xiThermalCubicReciprocalMass ∧
     xiThermalSecondMoment - normalizedPrimeArchMoment 1 ≤
-      4 * xiRightTransverseSup ^ 2 * xiThermalCubicReciprocalMass ∧
+      4 * xiRightTransverseSup ^ (2 : ℕ) * xiThermalCubicReciprocalMass ∧
     (Nonempty XiRightZeroCopy →
       (((1 + Real.sqrt
           ((xiThermalSecondMoment - normalizedPrimeArchMoment 1) /

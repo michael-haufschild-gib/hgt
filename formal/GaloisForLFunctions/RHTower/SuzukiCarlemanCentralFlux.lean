@@ -122,7 +122,7 @@ theorem tendsto_suzukiAffineSewnCharacteristic_div_sq
     (alpha beta : ℂ) :
     Tendsto
       (fun z : ℂ =>
-        suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z / z ^ 2)
+        suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z / z ^ (2 : ℕ))
       (𝓝[≠] 0)
       (𝓝 ((beta - alpha) * a * b)) := by
   have hA := tendsto_div_self_of_hasDerivAt_zero hWAlpha hWAlpha0
@@ -201,7 +201,7 @@ terms of the first three moments of a compact source.  This is the expansion of
 `-∫ (aperture-y)² v(y) dy / 4`. -/
 def suzukiNeumannRightTriangleCentralMoment
     (aperture massZero massOne massTwo : ℂ) : ℂ :=
-  -(aperture ^ 2 * massZero - 2 * aperture * massOne + massTwo) / 4
+  -(aperture ^ (2 : ℕ) * massZero - 2 * aperture * massOne + massTwo) / 4
 
 /-- For an odd source, its zeroth and second moments vanish, so the Neumann central triangle
 collapses exactly to `aperture / 2` times its first moment. -/
@@ -316,7 +316,7 @@ theorem tendsto_z_mul_suzukiAffineSewnExteriorWeylQuotient
   have hp0 : (beta - alpha) * a * b ≠ 0 := by
     exact mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hab.symm) ha) hb
   have hM := tendsto_z_mul_suzukiZeroShiftMultiplier
-  have hP : Tendsto (fun z : ℂ => P z / z ^ 2) (𝓝[≠] 0)
+  have hP : Tendsto (fun z : ℂ => P z / z ^ (2 : ℕ)) (𝓝[≠] 0)
       (𝓝 ((beta - alpha) * a * b)) :=
     tendsto_suzukiAffineSewnCharacteristic_div_sq hWAlpha hWBeta
       hWAlpha0 hWBeta0 alpha beta

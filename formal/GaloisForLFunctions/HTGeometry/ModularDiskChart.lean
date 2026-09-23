@@ -175,7 +175,7 @@ and `‖a‖ ≤ s₀ < 1`, then `‖b‖` stays below an explicit bound `< 1`. 
 theorem norm_le_of_blaschke_le {a b : ℂ} {ρ s₀ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1)
     (hs₀ : ‖a‖ ≤ s₀) (hs₀1 : s₀ < 1) (hb : ‖b‖ ≤ 1)
     (hblas : ‖(b - a) / (1 - (starRingEnd ℂ) a * b)‖ ≤ ρ) :
-    ‖b‖ ^ 2 ≤ 1 - (1 - ρ ^ 2) * (1 - s₀) ^ 2 := by
+    ‖b‖ ^ (2 : ℕ) ≤ 1 - (1 - ρ ^ (2 : ℕ)) * (1 - s₀) ^ (2 : ℕ) := by
   have ha1 : ‖a‖ < 1 := lt_of_le_of_lt hs₀ hs₀1
   have hden : (1 : ℂ) - (starRingEnd ℂ) a * b ≠ 0 :=
     one_sub_conj_mul_ne_zero_of_norm_lt_one_norm_le_one ha1 hb
@@ -185,8 +185,8 @@ theorem norm_le_of_blaschke_le {a b : ℂ} {ρ s₀ : ℝ} (hρ0 : 0 ≤ ρ) (h�
     rw [norm_div, div_le_iff₀ hdennorm] at hblas
     exact hblas
   -- the identity in norms
-  have hid : ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2 - ‖b - a‖ ^ 2
-      = (1 - ‖a‖ ^ 2) * (1 - ‖b‖ ^ 2) := by
+  have hid : ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ) - ‖b - a‖ ^ (2 : ℕ)
+      = (1 - ‖a‖ ^ (2 : ℕ)) * (1 - ‖b‖ ^ (2 : ℕ)) := by
     have h1 := normSq_blaschke_identity a b
     rw [← Complex.sq_norm, ← Complex.sq_norm, ← Complex.sq_norm, ← Complex.sq_norm] at h1
     exact h1
@@ -202,20 +202,20 @@ theorem norm_le_of_blaschke_le {a b : ℂ} {ρ s₀ : ℝ} (hρ0 : 0 ≤ ρ) (h�
     calc 1 - s₀ ≤ ‖(1 : ℂ)‖ - ‖(starRingEnd ℂ) a * b‖ := by rw [h3]; linarith
       _ ≤ ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ := h2
   have hs₀0 : 0 ≤ 1 - s₀ := by linarith
-  have hsq : (1 - s₀) ^ 2 ≤ ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2 := by
+  have hsq : (1 - s₀) ^ (2 : ℕ) ≤ ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ hs₀0 hlow 2
-  have hnum2 : ‖b - a‖ ^ 2 ≤ ρ ^ 2 * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2 := by
+  have hnum2 : ‖b - a‖ ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ) := by
     have := mul_self_le_mul_self (norm_nonneg (b - a)) hnum
     nlinarith [this, norm_nonneg (b - a), hdennorm, hρ0]
-  have ha2 : ‖a‖ ^ 2 ≤ 1 := by nlinarith [ha1, norm_nonneg a]
-  have hbsq : ‖b‖ ^ 2 ≤ 1 := by nlinarith [hb, norm_nonneg b]
-  have hρsq : (0 : ℝ) ≤ 1 - ρ ^ 2 := by nlinarith [hρ0, hρ1]
-  have hA : (1 - ρ ^ 2) * (1 - s₀) ^ 2
-      ≤ (1 - ρ ^ 2) * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2 :=
+  have ha2 : ‖a‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [ha1, norm_nonneg a]
+  have hbsq : ‖b‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [hb, norm_nonneg b]
+  have hρsq : (0 : ℝ) ≤ 1 - ρ ^ (2 : ℕ) := by nlinarith [hρ0, hρ1]
+  have hA : (1 - ρ ^ (2 : ℕ)) * (1 - s₀) ^ (2 : ℕ)
+      ≤ (1 - ρ ^ (2 : ℕ)) * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq hρsq
-  have hB : (1 - ρ ^ 2) * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2
-      ≤ ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ 2 - ‖b - a‖ ^ 2 := by nlinarith [hnum2]
-  have hstep2 : (1 - ‖a‖ ^ 2) * (1 - ‖b‖ ^ 2) ≤ 1 * (1 - ‖b‖ ^ 2) :=
+  have hB : (1 - ρ ^ (2 : ℕ)) * ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ)
+      ≤ ‖(1 : ℂ) - (starRingEnd ℂ) a * b‖ ^ (2 : ℕ) - ‖b - a‖ ^ (2 : ℕ) := by nlinarith [hnum2]
+  have hstep2 : (1 - ‖a‖ ^ (2 : ℕ)) * (1 - ‖b‖ ^ (2 : ℕ)) ≤ 1 * (1 - ‖b‖ ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_right (by nlinarith [sq_nonneg ‖a‖]) (by linarith)
   linarith [hid, le_trans hA hB, hstep2]
 
@@ -234,15 +234,15 @@ theorem exists_bound_of_omitting_compact_base {K : Set ℂ} (hK : IsCompact K)
       f c ∈ K →
       ∀ z ∈ ball c (ρ * R), ‖f z‖ ≤ M := by
   obtain ⟨s₀, hs₀0, hs₀1, hs₀cov⟩ := exists_radius_lt_one_modularDisk_covers hK hK0 hK1
-  set δ : ℝ := (1 - ρ ^ 2) * (1 - s₀) ^ 2 with hδdef
+  set δ : ℝ := (1 - ρ ^ (2 : ℕ)) * (1 - s₀) ^ (2 : ℕ) with hδdef
   have hδpos : 0 < δ := by
-    have h1 : 0 < 1 - ρ ^ 2 := by nlinarith [hρ0, hρ1]
-    have h2 : 0 < (1 - s₀) ^ 2 := by positivity
+    have h1 : 0 < 1 - ρ ^ (2 : ℕ) := by nlinarith [hρ0, hρ1]
+    have h2 : 0 < (1 - s₀) ^ (2 : ℕ) := by positivity
     rw [hδdef]; positivity
   have hδle : δ ≤ 1 := by
-    have h1 : 1 - ρ ^ 2 ≤ 1 := by nlinarith [hρ0]
-    have h2 : (1 - s₀) ^ 2 ≤ 1 := by nlinarith [hs₀0, hs₀1]
-    have h3 : 0 ≤ 1 - ρ ^ 2 := by nlinarith [hρ0, hρ1]
+    have h1 : 1 - ρ ^ (2 : ℕ) ≤ 1 := by nlinarith [hρ0]
+    have h2 : (1 - s₀) ^ (2 : ℕ) ≤ 1 := by nlinarith [hs₀0, hs₀1]
+    have h3 : 0 ≤ 1 - ρ ^ (2 : ℕ) := by nlinarith [hρ0, hρ1]
     rw [hδdef]
     nlinarith [h1, h2, h3, sq_nonneg (1 - s₀)]
   set s : ℝ := Real.sqrt (1 - δ) with hsdef
@@ -288,7 +288,7 @@ theorem exists_bound_of_omitting_compact_base {K : Set ℂ} (hK : IsCompact K)
     rw [div_le_iff₀ hR]
     rw [mem_ball] at hz
     linarith [hz]
-  have hgzsq : ‖g z‖ ^ 2 ≤ 1 - δ :=
+  have hgzsq : ‖g z‖ ^ (2 : ℕ) ≤ 1 - δ :=
     norm_le_of_blaschke_le hρ0 hρ1 (by rw [hgcval]; exact le_of_lt hw₀) hs₀1
       (hgbd z hzR) (le_trans hblas hdistρ)
   have hgzs : ‖g z‖ ≤ s := by

@@ -15,7 +15,7 @@ is transcendental by Gelfond--Schneider.  Consequently, merely proving this phas
 `m = 0`.
 
 The reflection-safe phase uses the nonnegative quadratic free-orbit index
-`2 * ∑ m_i^2`.  Algebraicity of its single prime phase therefore excludes every free reflection
+`2 * ∑ m_i^(2 : ℕ)`.  Algebraicity of its single prime phase therefore excludes every free reflection
 orbit without requiring the phase to be trivial.  This file proves the transcendence collision and
 the conditional RH endpoint.  It does not construct the missing algebraic prime--Gamma monodromy
 whose phase has this local index.
@@ -92,7 +92,7 @@ theorem freeOrbitQuadraticAlgebraicPhase_isAlgebraic_iff
 /-- Quadratic algebraic phase of the reflected local Xi pair through `rho`. -/
 def xiReflectionPairQuadraticAlgebraicPhase (p : Nat.Primes) (rho : ℂ) : ℂ :=
   primeImaginaryOrderPhase p
-    (2 * (analyticOrderAt xi rho).toNat ^ 2)
+    (2 * (analyticOrderAt xi rho).toNat ^ (2 : ℕ))
 
 /-- The local reflected phase is algebraic exactly when the local Xi order is zero. -/
 theorem xiReflectionPairQuadraticAlgebraicPhase_isAlgebraic_iff

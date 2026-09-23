@@ -332,7 +332,7 @@ theorem cast_card_heathBrownPositiveProductLogCollisionSquare_le_twoScale_ordere
     {m1 m2 : ℕ+} (hm : (m2 : ℕ) ≤ (m1 : ℕ))
     {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (#(heathBrownPositiveProductLogCollisionSquare N m1 m2 delta) : ℝ) ≤
-      15 * delta * (N : ℝ) ^ 2 +
+      15 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (#(heathBrownPositiveProductLogCollisionSquare N0 m1 m2 delta) : ℝ) +
         ((2 * (N / N0) + 1 : ℕ) : ℝ) := by
@@ -351,7 +351,7 @@ theorem cast_card_heathBrownPositiveProductLogCollisionSquare_le_twoScale
     {N N0 : ℕ} (hN0 : 1 ≤ N0) (hN0N : N0 ≤ N)
     (m1 m2 : ℕ+) {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (#(heathBrownPositiveProductLogCollisionSquare N m1 m2 delta) : ℝ) ≤
-      15 * delta * (N : ℝ) ^ 2 +
+      15 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (#(heathBrownPositiveProductLogCollisionSquare N0 m1 m2 delta) : ℝ) +
         ((2 * (N / N0) + 1 : ℕ) : ℝ) := by

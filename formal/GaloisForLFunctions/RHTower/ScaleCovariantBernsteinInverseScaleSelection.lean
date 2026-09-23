@@ -118,13 +118,13 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_neutral_amplitude
       (∀ i ∉ D,
         atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ beta) ∧
       L = ∑ v ∈ D.image (inverseScaleAtomicNode z R),
-        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ 2 *
+        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant v ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n *
           atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) n /
-            (B ^ 2) ^ n)
+            (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   have hRpos : 0 < R := by linarith
   have huinj := inverseScaleAtomicNode_injective hzinj hRpos
@@ -185,13 +185,13 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket
       (∀ i ∉ D,
         atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ beta) ∧
       L = ∑ v ∈ D.image (inverseScaleAtomicNode z R),
-        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ 2 *
+        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant v ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n *
           atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) n /
-            (B ^ 2) ^ n)
+            (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   have hRpos : 0 < R := hM.trans_lt hR
   have hu0 := tendsto_inverseScaleAtomicNode_cofinite_zero hz0 R
@@ -220,13 +220,13 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_transverse_neutral
       (∀ i ∉ D,
         atomicBernsteinAmplitude (inverseScaleAtomicNode z R) i ≤ beta) ∧
       L = ∑ v ∈ D.image (inverseScaleAtomicNode z R),
-        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ 2 *
+        ‖finiteExponentialFiberCoefficient D c (inverseScaleAtomicNode z R) v‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant v ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n *
           atomicBernsteinPacketSquareEnergy c (inverseScaleAtomicNode z R) n /
-            (B ^ 2) ^ n)
+            (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   have hRpos : 0 < R := hM.trans_lt hR
   have hconf := HTGeometry.tendsto_confocalDefect_cofinite_zero_of_transverseDefect

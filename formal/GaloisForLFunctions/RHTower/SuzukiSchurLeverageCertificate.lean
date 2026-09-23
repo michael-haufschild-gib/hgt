@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- **`(376)`: the leverage is the attained supremum of the linear-minus-quadratic functional.** -/
 theorem isGreatest_leverage {S d : ℝ} (hS : 0 < S) :
-    IsGreatest {y : ℝ | ∃ v : ℝ, y = 2 * d * v - S * v ^ 2} (d ^ 2 / S) := by
+    IsGreatest {y : ℝ | ∃ v : ℝ, y = 2 * d * v - S * v ^ (2 : ℕ)} (d ^ (2 : ℕ) / S) := by
   constructor
   · refine ⟨d / S, ?_⟩
     field_simp
@@ -37,13 +37,13 @@ theorem isGreatest_leverage {S d : ℝ} (hS : 0 < S) :
 
 /-- **`(380)`: the regularized approximation defect is the resolvent defect.** -/
 theorem isLeast_tikhonov {K r u : ℝ} (hKr : 0 < K + r) :
-    IsLeast {y : ℝ | ∃ c : ℝ, y = 1 - 2 * u * c + (K + r) * c ^ 2} (1 - u ^ 2 / (K + r)) := by
+    IsLeast {y : ℝ | ∃ c : ℝ, y = 1 - 2 * u * c + (K + r) * c ^ (2 : ℕ)} (1 - u ^ (2 : ℕ) / (K + r)) := by
   constructor
   · refine ⟨u / (K + r), ?_⟩
     field_simp
     ring
   · rintro y ⟨c, rfl⟩
-    have hle : 2 * u * c - (K + r) * c ^ 2 ≤ u ^ 2 / (K + r) := by
+    have hle : 2 * u * c - (K + r) * c ^ (2 : ℕ) ≤ u ^ (2 : ℕ) / (K + r) := by
       rw [le_div_iff₀ hKr]
       nlinarith [sq_nonneg ((K + r) * c - u)]
     linarith
@@ -52,24 +52,24 @@ theorem isLeast_tikhonov {K r u : ℝ} (hKr : 0 < K + r) :
 
 /-- **`(378)`: the inverse quadratic form of a positive definite two-block form splits into the
 high-block resolvent mass and the Schur leverage of the corrected low vector.** -/
-theorem schur_quadratic_split {L B D uL uH : ℝ} (hD : 0 < D) (hdet : 0 < L * D - B ^ 2) :
-    (D * uL ^ 2 - 2 * B * uL * uH + L * uH ^ 2) / (L * D - B ^ 2)
-      = uH ^ 2 / D + (uL - B * uH / D) ^ 2 / (L - B ^ 2 / D) := by
-  have hsc : L - B ^ 2 / D = (L * D - B ^ 2) / D := by
+theorem schur_quadratic_split {L B D uL uH : ℝ} (hD : 0 < D) (hdet : 0 < L * D - B ^ (2 : ℕ)) :
+    (D * uL ^ (2 : ℕ) - 2 * B * uL * uH + L * uH ^ (2 : ℕ)) / (L * D - B ^ (2 : ℕ))
+      = uH ^ (2 : ℕ) / D + (uL - B * uH / D) ^ (2 : ℕ) / (L - B ^ (2 : ℕ) / D) := by
+  have hsc : L - B ^ (2 : ℕ) / D = (L * D - B ^ (2 : ℕ)) / D := by
     field_simp
   rw [hsc]
   have hDne : D ≠ 0 := ne_of_gt hD
-  have hne : L * D - B ^ 2 ≠ 0 := ne_of_gt hdet
-  have hne2 : D * L - B ^ 2 ≠ 0 := by
+  have hne : L * D - B ^ (2 : ℕ) ≠ 0 := ne_of_gt hdet
+  have hne2 : D * L - B ^ (2 : ℕ) ≠ 0 := by
     intro h
     exact hne (by linarith)
   field_simp
   ring
 
 /-- The Schur complement is positive whenever the block form is. -/
-theorem schur_complement_pos {L B D : ℝ} (hD : 0 < D) (hdet : 0 < L * D - B ^ 2) :
-    0 < L - B ^ 2 / D := by
-  have h : L - B ^ 2 / D = (L * D - B ^ 2) / D := by field_simp
+theorem schur_complement_pos {L B D : ℝ} (hD : 0 < D) (hdet : 0 < L * D - B ^ (2 : ℕ)) :
+    0 < L - B ^ (2 : ℕ) / D := by
+  have h : L - B ^ (2 : ℕ) / D = (L * D - B ^ (2 : ℕ)) / D := by field_simp
   rw [h]
   exact div_pos hdet hD
 

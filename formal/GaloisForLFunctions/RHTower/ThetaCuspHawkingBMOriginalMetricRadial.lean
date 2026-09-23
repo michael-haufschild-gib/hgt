@@ -81,10 +81,10 @@ private theorem forcing_continuous (q : XiZeroCopy) (br : Bool) (amp K w : ℂ) 
     (horizonCoordinate_interior x hx)).1.continuousAt).comp (horizonCoordinate_hasDerivAt x).continuousAt
   unfold forcingKernel forcingProfile
   exact (show ContinuousAt (fun x : ℝ => Complex.exp (w*(x:ℂ))*(-2*(radialUnit x:ℂ)*
-    power (2*physicalRate q br) (1+radialUnit x)*amp^2*
-      (((5*physicalRate q br^2+15*physicalRate q br+4)/4)*1+
-        physicalRate q br*(physicalRate q br-1)*(radialUnit x:ℂ)^2/4*
-          ((physicalRate q br+2)^2*1-K)))) x by fun_prop).mul hn |>.continuousWithinAt
+    power (2*physicalRate q br) (1+radialUnit x)*amp^(2 : ℕ)*
+      (((5*physicalRate q br^(2 : ℕ)+15*physicalRate q br+4)/4)*1+
+        physicalRate q br*(physicalRate q br-1)*(radialUnit x:ℂ)^(2 : ℕ)/4*
+          ((physicalRate q br+2)^(2 : ℕ)*1-K)))) x by fun_prop).mul hn |>.continuousWithinAt
 
 private theorem chart_order {e b : ℝ} (he : 0<e) (heb : e≤b) (hb : b<1) :
     tortoiseOf e≤tortoiseOf b := by

@@ -59,7 +59,7 @@ abbrev RealCoinducedHistoryQuotient :=
 def coinducedLinearHistory (x : ℝ) : ℝ := x
 
 /-- Quadratic history on the additive real source. -/
-def coinducedQuadraticHistory (x : ℝ) : ℝ := x ^ 2
+def coinducedQuadraticHistory (x : ℝ) : ℝ := x ^ (2 : ℕ)
 
 /-- Linear coinduced history modulo constants. -/
 def coinducedLinearHistoryClass : RealCoinducedHistoryQuotient :=

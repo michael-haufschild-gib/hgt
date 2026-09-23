@@ -17,8 +17,8 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace UpperHardyL2 := isClosed_hardyL2.completeSpace_coe
+local instance fokasLenellsCausalHardyConjugationInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalHardyConjugationInst2 : CompleteSpace UpperHardyL2 := isClosed_hardyL2.completeSpace_coe
 
 /-- Pointwise conjugation reverses the actual real spectral phase, including zero frequency. -/
 theorem star_phase (t x : ℝ) : (starRingEnd ℂ) (phase t x) = phase (-t) x := by
@@ -36,11 +36,11 @@ theorem star_evolution (t : ℝ) (u : SoninL2) : star (evolution t u) = evolutio
   ring
 
 private theorem norm_star_L2 (u : SoninL2) : ‖star u‖ = ‖u‖ := by
-  have h : ‖star u‖^2 = ‖u‖^2 := by
+  have h : ‖star u‖^(2 : ℕ) = ‖u‖^(2 : ℕ) := by
     calc
-      ‖star u‖^2 = (inner ℂ (star u) (star u)).re := norm_sq_eq_re_inner (𝕜 := ℂ) _
+      ‖star u‖^(2 : ℕ) = (inner ℂ (star u) (star u)).re := norm_sq_eq_re_inner (𝕜 := ℂ) _
       _ = (inner ℂ u u).re := by rw [inner_star_star_realLineL2,Complex.conj_re]
-      _ = ‖u‖^2 := (norm_sq_eq_re_inner (𝕜 := ℂ) _).symm
+      _ = ‖u‖^(2 : ℕ) := (norm_sq_eq_re_inner (𝕜 := ℂ) _).symm
   nlinarith [norm_nonneg u,norm_nonneg (star u)]
 
 /-- Literal conjugation as an anti-linear isometry from upper to lower Hardy data. -/

@@ -313,7 +313,7 @@ theorem sum_pow_even_mem_stieltjesField {r : ℕ} {L : Fin r → ℝ} (hL : (∏
 
 
 /-- The negated squares of the multiplier logs. -/
-def negSq {r : ℕ} (L : Fin r → ℝ) (i : Fin r) : ℝ := -((L i) ^ 2)
+def negSq {r : ℕ} (L : Fin r → ℝ) (i : Fin r) : ℝ := -((L i) ^ (2 : ℕ))
 
 theorem aeval_psum_negSq {r : ℕ} (L : Fin r → ℝ) (k : ℕ) :
     MvPolynomial.aeval (negSq L) (MvPolynomial.psum (Fin r) ℚ k)
@@ -412,7 +412,7 @@ theorem vieta_negSq {r : ℕ} (L : Fin r → ℝ) (x : ℝ) :
 
 /-- **Each squared multiplier log is algebraic over the Laurent-coefficient field.** -/
 theorem isAlgebraic_sq_over_stieltjesField {r : ℕ} {L : Fin r → ℝ} (hL : (∏ i, L i) ≠ 0)
-    (i : Fin r) : IsAlgebraic ↥(stieltjesField L) ((L i) ^ 2) := by
+    (i : Fin r) : IsAlgebraic ↥(stieltjesField L) ((L i) ^ (2 : ℕ)) := by
   have hr : 1 ≤ r := i.pos
   set E : ℕ → ℝ := fun j => MvPolynomial.aeval (negSq L) (MvPolynomial.esymm (Fin r) ℚ j) with hEdef
   have hEmem : ∀ j, E j ∈ stieltjesField L := fun j => aeval_esymm_negSq_mem hL j
@@ -446,8 +446,8 @@ theorem isAlgebraic_sq_over_stieltjesField {r : ℕ} {L : Fin r → ℝ} (hL : (
       simp only [hE0] at hval
       simpa using hval.symm
     exact absurd hzero (by norm_num)
-  · have hmapped : Polynomial.aeval ((L i) ^ 2) q
-        = ∑ j ∈ Finset.range (r + 1), E j * ((L i) ^ 2) ^ (r - j) := by
+  · have hmapped : Polynomial.aeval ((L i) ^ (2 : ℕ)) q
+        = ∑ j ∈ Finset.range (r + 1), E j * ((L i) ^ (2 : ℕ)) ^ (r - j) := by
       rw [hq, map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_mul, Polynomial.aeval_C, map_pow, Polynomial.aeval_X]
@@ -461,7 +461,7 @@ theorem isAlgebraic_sq_over_stieltjesField {r : ℕ} {L : Fin r → ℝ} (hL : (
 theorem isAlgebraic_log_over_stieltjesField {r : ℕ} {L : Fin r → ℝ} (hL : (∏ i, L i) ≠ 0)
     (i : Fin r) : IsAlgebraic ↥(stieltjesField L) (L i) := by
   obtain ⟨p, hp0, hp⟩ := isAlgebraic_sq_over_stieltjesField hL i
-  refine ⟨p.comp (Polynomial.X ^ 2), ?_, ?_⟩
+  refine ⟨p.comp (Polynomial.X ^ (2 : ℕ)), ?_, ?_⟩
   · intro h
     rcases Polynomial.comp_eq_zero_iff.mp h with h1 | ⟨_, h2⟩
     · exact hp0 h1

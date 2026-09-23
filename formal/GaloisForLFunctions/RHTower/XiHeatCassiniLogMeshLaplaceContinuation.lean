@@ -49,7 +49,7 @@ theorem continuousAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
   have hB0 : 0 ≤ B := by
     dsimp only [B]
     positivity
-  let C : ℝ := B ^ 2 * Real.exp B
+  let C : ℝ := B ^ (2 : ℕ) * Real.exp B
   have hC0 : 0 ≤ C := by
     dsimp only [C]
     positivity
@@ -88,7 +88,7 @@ theorem continuousAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
         _ ≤ B := by
           dsimp only [B]
           linarith
-    have hfactor : ‖s‖ ^ 2 * Real.exp ‖s‖ ≤ C := by
+    have hfactor : ‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖ ≤ C := by
       dsimp only [C]
       gcongr
     have henergy :
@@ -101,7 +101,7 @@ theorem continuousAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
         (xiMassNthPrimeLogHeight_pos (N + 1)).le
     calc
       ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
-          (‖s‖ ^ 2 * Real.exp ‖s‖) *
+          (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) *
             xiHeatCassiniPrimeGapAbscissaEnergy (-s.re) N :=
         norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy s N
       _ ≤ C * xiHeatCassiniPrimeGapAbscissaEnergy a N := by
@@ -184,8 +184,8 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefectDerivative_le
     (s : ℂ) (N : ℕ) :
     ‖xiHeatCassiniLogMeshLaplaceScaledDefectDerivative s N‖ ≤
       ‖xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s‖ *
-        (Real.exp ‖s‖ * xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
-          (xiMassNthPrimeLogHeight (N + 1) * ‖s‖ ^ 2 + ‖s‖)) := by
+        (Real.exp ‖s‖ * xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
+          (xiMassNthPrimeLogHeight (N + 1) * ‖s‖ ^ (2 : ℕ) + ‖s‖)) := by
   let d : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   let h : ℝ := xiMassNthPrimeLogHeight (N + 1)
   have hd0 : 0 ≤ d := xiHeatCassiniOrderedPrimeLogGap_nonneg N
@@ -196,7 +196,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefectDerivative_le
     dsimp only [w]
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hd0]
   have hrem :
-      ‖Complex.exp w - 1 - w‖ ≤ ‖w‖ ^ 2 * Real.exp ‖w‖ := by
+      ‖Complex.exp w - 1 - w‖ ≤ ‖w‖ ^ (2 : ℕ) * Real.exp ‖w‖ := by
     have hTaylor := Complex.norm_exp_sub_sum_le_norm_mul_exp w 2
     rw [sub_sub]
     simpa [Finset.sum_range_succ, Nat.factorial] using hTaylor
@@ -216,12 +216,12 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefectDerivative_le
           d * ‖Complex.exp w - 1‖ := by
       rw [norm_mul, norm_mul, norm_neg, Complex.norm_real, Complex.norm_real,
         Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hh0, abs_of_nonneg hd0]
-    _ ≤ h * (‖w‖ ^ 2 * Real.exp ‖w‖) +
+    _ ≤ h * (‖w‖ ^ (2 : ℕ) * Real.exp ‖w‖) +
           d * (‖w‖ * Real.exp ‖w‖) := by gcongr
-    _ = Real.exp ‖w‖ * d ^ 2 * (h * ‖s‖ ^ 2 + ‖s‖) := by
+    _ = Real.exp ‖w‖ * d ^ (2 : ℕ) * (h * ‖s‖ ^ (2 : ℕ) + ‖s‖) := by
       rw [hnormw]
       ring
-    _ ≤ Real.exp ‖s‖ * d ^ 2 * (h * ‖s‖ ^ 2 + ‖s‖) := by
+    _ ≤ Real.exp ‖s‖ * d ^ (2 : ℕ) * (h * ‖s‖ ^ (2 : ℕ) + ‖s‖) := by
       gcongr
     _ = _ := by rfl
 
@@ -246,9 +246,9 @@ theorem analyticAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
   have heps : 0 < eps := by dsimp only [eps]; linarith
   let B : ℝ := ‖s0‖ + r
   have hB0 : 0 ≤ B := by dsimp only [B]; positivity
-  let K : ℝ := 4 / eps ^ 2 + 2
+  let K : ℝ := 4 / eps ^ (2 : ℕ) + 2
   have hK0 : 0 ≤ K := by dsimp only [K]; positivity
-  let C : ℝ := Real.exp B * (B ^ 2 + B) * K
+  let C : ℝ := Real.exp B * (B ^ (2 : ℕ) + B) * K
   have hC0 : 0 ≤ C := by dsimp only [C]; positivity
   let M : ℕ → ℝ := fun N => C * xiHeatCassiniPrimeGapAbscissaEnergy b N
   have hM : Summable M :=
@@ -279,7 +279,7 @@ theorem analyticAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
     have hdle : d ≤ gapRatio := by
       simpa only [d, gapRatio] using
         xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
-    have hdSq : d ^ 2 ≤ gapRatio ^ 2 :=
+    have hdSq : d ^ (2 : ℕ) ≤ gapRatio ^ (2 : ℕ) :=
       (sq_le_sq₀ hd0 hratio0).mpr hdle
     have hdist : ‖s - s0‖ < r := by
       simpa only [Metric.mem_ball, Complex.dist_eq] using hs
@@ -304,11 +304,11 @@ theorem analyticAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
       simpa only [neg_mul] using
         (mul_le_mul_of_nonneg_right hnegRe
           (xiMassNthPrimeLogHeight_pos (N + 1)).le)
-    have hbracket : h * ‖s‖ ^ 2 + ‖s‖ ≤ (B ^ 2 + B) * (h + 1) := by
-      have hsSq : ‖s‖ ^ 2 ≤ B ^ 2 := by gcongr
+    have hbracket : h * ‖s‖ ^ (2 : ℕ) + ‖s‖ ≤ (B ^ (2 : ℕ) + B) * (h + 1) := by
+      have hsSq : ‖s‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by gcongr
       calc
-        h * ‖s‖ ^ 2 + ‖s‖ ≤ h * B ^ 2 + B := by gcongr
-        _ ≤ (B ^ 2 + B) * (h + 1) := by
+        h * ‖s‖ ^ (2 : ℕ) + ‖s‖ ≤ h * B ^ (2 : ℕ) + B := by gcongr
+        _ ≤ (B ^ (2 : ℕ) + B) * (h + 1) := by
           nlinarith [mul_nonneg hB0 hh0, sq_nonneg B]
     have habsorb :
         (h + 1) * Real.exp (a * h) ≤ K * Real.exp (b * h) := by
@@ -320,12 +320,12 @@ theorem analyticAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
       have hpoly : (h + 1) * Real.exp (-(eps * h)) ≤ K := by
         calc
           (h + 1) * Real.exp (-(eps * h)) ≤
-              (h ^ 2 + 2) * Real.exp (-(eps * h)) := by
+              (h ^ (2 : ℕ) + 2) * Real.exp (-(eps * h)) := by
             apply mul_le_mul_of_nonneg_right _ (Real.exp_nonneg _)
             nlinarith [sq_nonneg (h - 1 / 2)]
-          _ = h ^ 2 * Real.exp (-(eps * h)) +
+          _ = h ^ (2 : ℕ) * Real.exp (-(eps * h)) +
               2 * Real.exp (-(eps * h)) := by ring
-          _ ≤ 4 / eps ^ 2 + 2 * 1 := by gcongr
+          _ ≤ 4 / eps ^ (2 : ℕ) + 2 * 1 := by gcongr
           _ = K := by dsimp only [K]; ring
       have hexpSplit : Real.exp (a * h) =
           Real.exp (b * h) * Real.exp (-(eps * h)) := by
@@ -343,16 +343,16 @@ theorem analyticAt_xiHeatCassiniLogMeshLaplaceDefectSum_of_criticalEnergy
     calc
       ‖xiHeatCassiniLogMeshLaplaceScaledDefectDerivative s N‖ ≤
           ‖xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s‖ *
-            (Real.exp ‖s‖ * d ^ 2 *
-              (h * ‖s‖ ^ 2 + ‖s‖)) := by
+            (Real.exp ‖s‖ * d ^ (2 : ℕ) *
+              (h * ‖s‖ ^ (2 : ℕ) + ‖s‖)) := by
         simpa only [d, h] using
           norm_xiHeatCassiniLogMeshLaplaceScaledDefectDerivative_le s N
       _ ≤ Real.exp (a * h) *
-          (Real.exp B * gapRatio ^ 2 * ((B ^ 2 + B) * (h + 1))) := by
+          (Real.exp B * gapRatio ^ (2 : ℕ) * ((B ^ (2 : ℕ) + B) * (h + 1))) := by
         gcongr
-      _ = Real.exp B * (B ^ 2 + B) * gapRatio ^ 2 *
+      _ = Real.exp B * (B ^ (2 : ℕ) + B) * gapRatio ^ (2 : ℕ) *
           ((h + 1) * Real.exp (a * h)) := by ring
-      _ ≤ Real.exp B * (B ^ 2 + B) * gapRatio ^ 2 *
+      _ ≤ Real.exp B * (B ^ (2 : ℕ) + B) * gapRatio ^ (2 : ℕ) *
           (K * Real.exp (b * h)) := by gcongr
       _ = M N := by
         dsimp only [M, C, xiHeatCassiniPrimeGapAbscissaEnergy,

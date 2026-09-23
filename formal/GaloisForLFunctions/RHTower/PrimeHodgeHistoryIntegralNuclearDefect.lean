@@ -104,7 +104,7 @@ theorem w_le_two_thirds (n : ℕ) : w n ≤ 2 / 3 := by
   exact w_antitone (Nat.zero_le n)
 
 theorem subunit_constant : (8 : ℝ) / (3 * Real.sqrt 35) < 1 := by
-  have hsq : (8 / 3 : ℝ) ^ 2 < 35 := by norm_num
+  have hsq : (8 / 3 : ℝ) ^ (2 : ℕ) < 35 := by norm_num
   have hsqrt : 8 / 3 < Real.sqrt 35 := by
     nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 35), Real.sqrt_nonneg 35]
   have hpos : 0 < Real.sqrt 35 := Real.sqrt_pos.2 (by norm_num)
@@ -381,7 +381,7 @@ theorem primeHodgeHistoryDefectKernel_sameHistory_ne_zero
 theorem norm_sq_primeHodgeHistoryDefectKernel_le
     {d : ℝ} (hd : 0 < d)
     (ab : PrimeHodgeHistoryIndex × PrimeHodgeHistoryIndex) :
-    ‖primeHodgeHistoryDefectKernel d ab‖ ^ 2 ≤
+    ‖primeHodgeHistoryDefectKernel d ab‖ ^ (2 : ℕ) ≤
       primeHodgeHistoryDiagonalWeight d ab.1 *
         primeHodgeHistoryDiagonalWeight d ab.2 := by
   by_cases hhist : ab.1.1 = ab.2.1
@@ -402,15 +402,15 @@ theorem norm_sq_primeHodgeHistoryDefectKernel_le
     calc
       (PrimeHodgeHistory.w ab.1.1 *
           (‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d (ab.1.2, ab.2.2)‖ /
-          gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d)) ^ 2
-          = PrimeHodgeHistory.w ab.1.1 ^ 2 *
+          gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d)) ^ (2 : ℕ)
+          = PrimeHodgeHistory.w ab.1.1 ^ (2 : ℕ) *
               ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d
-                (ab.1.2, ab.2.2)‖ ^ 2 /
-              gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ 2 := by ring
-      _ ≤ PrimeHodgeHistory.w ab.1.1 ^ 2 *
+                (ab.1.2, ab.2.2)‖ ^ (2 : ℕ) /
+              gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ (2 : ℕ) := by ring
+      _ ≤ PrimeHodgeHistory.w ab.1.1 ^ (2 : ℕ) *
               (routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d ab.1.2 *
                 routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d ab.2.2) /
-              gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ 2 := by
+              gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ (2 : ℕ) := by
             gcongr
       _ = (PrimeHodgeHistory.w ab.1.1 *
               routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d ab.1.2 /

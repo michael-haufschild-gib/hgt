@@ -19,12 +19,12 @@ namespace GaloisForLFunctions
 
 /-- A Gaussian with a linear term is integrable. -/
 theorem integrable_exp_neg_quarter_sq_add (c : ℝ) :
-    Integrable (fun u : ℝ => Real.exp (-(u ^ 2) / 4 + c * u)) := by
-  have hbase : Integrable (fun u : ℝ => Real.exp (-(1 / 4 : ℝ) * u ^ 2)) :=
+    Integrable (fun u : ℝ => Real.exp (-(u ^ (2 : ℕ)) / 4 + c * u)) := by
+  have hbase : Integrable (fun u : ℝ => Real.exp (-(1 / 4 : ℝ) * u ^ (2 : ℕ))) :=
     integrable_exp_neg_mul_sq (by norm_num)
-  have hshift : Integrable (fun u : ℝ => Real.exp (-(1 / 4 : ℝ) * (u - 2 * c) ^ 2)) :=
+  have hshift : Integrable (fun u : ℝ => Real.exp (-(1 / 4 : ℝ) * (u - 2 * c) ^ (2 : ℕ))) :=
     hbase.comp_sub_right (2 * c)
-  have hconst := hshift.const_mul (Real.exp (c ^ 2))
+  have hconst := hshift.const_mul (Real.exp (c ^ (2 : ℕ)))
   refine hconst.congr ?_
   filter_upwards with u
   rw [← Real.exp_add]
@@ -53,9 +53,9 @@ theorem integrable_expSubExp {a : ℝ} (ha : 0 < a) :
     have hhalf : 1 + u / 2 ≤ Real.exp (u / 2) := by
       have := Real.add_one_le_exp (u / 2)
       linarith
-    have hsq : (1 + u / 2) ^ 2 ≤ Real.exp u := by
+    have hsq : (1 + u / 2) ^ (2 : ℕ) ≤ Real.exp u := by
       have hpos : (0 : ℝ) ≤ 1 + u / 2 := by linarith
-      calc (1 + u / 2) ^ 2 ≤ Real.exp (u / 2) ^ 2 := by
+      calc (1 + u / 2) ^ (2 : ℕ) ≤ Real.exp (u / 2) ^ (2 : ℕ) := by
             exact pow_le_pow_left₀ hpos hhalf 2
         _ = Real.exp u := by
             rw [← Real.exp_nat_mul]

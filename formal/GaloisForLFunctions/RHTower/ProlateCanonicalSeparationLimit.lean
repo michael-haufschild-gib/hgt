@@ -28,7 +28,7 @@ theorem eventually_signedModeRadial_tunneling_lower
     (n : ℕ) (ε : ℝ) (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ a : ℝ in atTop,
       ε ≤ (signedModeRadialData a n).s →
-        Real.exp (-((4 * Real.pi - δ) * a ^ 2)) ≤
+        Real.exp (-((4 * Real.pi - δ) * a ^ (2 : ℕ))) ≤
           evenProlateSignedLeakage a n := by
   let e : ℝ := min ε 1
   have he0 : 0 < e := lt_min hε (by norm_num)
@@ -42,7 +42,7 @@ theorem eventually_signedModeRadial_tunneling_lower
   have hceTop : Tendsto (fun a => signedModeRadialBandwidth a * e) atTop atTop :=
     hcTop.atTop_mul_const he0
   have hvalue : ∀ᶠ a : ℝ in atTop,
-      1 / 2 ≤ evenProlateSignedValue a n ^ 2 :=
+      1 / 2 ≤ evenProlateSignedValue a n ^ (2 : ℕ) :=
     (evenProlateSignedValue_sq_tendsto_one n).eventually
       (eventually_ge_nhds (by norm_num : (1 / 2 : ℝ) < 1))
   have hclockLow := eventually_exp_clock_gain_le_radial_polynomial_lower he0
@@ -69,12 +69,12 @@ theorem eventually_signedModeRadial_tunneling_lower
     exact ((contDiff_infty_iff_deriv.mp
       (contDiff_infty_iff_deriv.mp hRsm).2).1 t).hasDerivAt
   have heig : ∀ y ∈ Icc (-1 : ℝ) 1,
-      prolateSLAction c D.R y = -(D.s * c ^ 2) * D.R y := by
+      prolateSLAction c D.R y = -(D.s * c ^ (2 : ℕ)) * D.R y := by
     intro y _hy
     have hy := hode y
     simp only [prolateSLAction]
     nlinarith
-  have hint : IntegrableOn (fun x : ℝ => D.R x ^ 2) (Icc (-1 : ℝ) 1)ᶜ := by
+  have hint : IntegrableOn (fun x : ℝ => D.R x ^ (2 : ℕ)) (Icc (-1 : ℝ) 1)ᶜ := by
     exact (integrable_sq_signedModeRadialData ha n hvalue0).integrableOn
   have hmass := integral_outside_sq_signedModeRadialData_eq_leakage_ratio
     ha n hvalue0
@@ -88,7 +88,7 @@ theorem eventually_signedModeRadial_tunneling_lower
     have hlower := leakage_lower_of_high_separation_mass_bounds
       hc hout hvalueSq hleak hinside hmass
     have hclockH' :
-        Real.exp (-((4 * Real.pi - δ) * a ^ 2)) ≤ 1 / (32 * c ^ 2) := by
+        Real.exp (-((4 * Real.pi - δ) * a ^ (2 : ℕ))) ≤ 1 / (32 * c ^ (2 : ℕ)) := by
       simpa only [δ, e, c, signedModeRadialBandwidth] using hclockH
     exact hclockH'.trans hlower
   · have hs1 : D.s < 1 := lt_of_not_ge hhigh
@@ -110,10 +110,10 @@ theorem eventually_signedModeRadial_tunneling_lower
     have hlower := leakage_lower_of_radial_mass_bounds
       hc hspos hout hvalueSq hleak hinside hmass
     have hsqrt : Real.sqrt e ≤ Real.sqrt D.s := Real.sqrt_le_sqrt hes
-    have hden : 0 < 256 * Real.exp 1 * c ^ 3 := by positivity
+    have hden : 0 < 256 * Real.exp 1 * c ^ (3 : ℕ) := by positivity
     have hcoef :
-        Real.sqrt e / (256 * Real.exp 1 * c ^ 3) ≤
-          Real.sqrt D.s / (256 * Real.exp 1 * c ^ 3) :=
+        Real.sqrt e / (256 * Real.exp 1 * c ^ (3 : ℕ)) ≤
+          Real.sqrt D.s / (256 * Real.exp 1 * c ^ (3 : ℕ)) :=
       (div_le_div_iff_of_pos_right hden).2 hsqrt
     have hexp :
         Real.exp (-(2 * c * (1 - e))) ≤
@@ -121,14 +121,14 @@ theorem eventually_signedModeRadial_tunneling_lower
       rw [Real.exp_le_exp]
       nlinarith
     have hpoly :
-        (Real.sqrt e / (256 * Real.exp 1 * c ^ 3)) *
+        (Real.sqrt e / (256 * Real.exp 1 * c ^ (3 : ℕ))) *
             Real.exp (-(2 * c * (1 - e))) ≤
-          (Real.sqrt D.s / (256 * Real.exp 1 * c ^ 3)) *
+          (Real.sqrt D.s / (256 * Real.exp 1 * c ^ (3 : ℕ))) *
             Real.exp (-(2 * c * (1 - D.s))) :=
       mul_le_mul hcoef hexp (Real.exp_pos _).le (by positivity)
     have hclockL' :
-        Real.exp (-((4 * Real.pi - δ) * a ^ 2)) ≤
-          (Real.sqrt e / (256 * Real.exp 1 * c ^ 3)) *
+        Real.exp (-((4 * Real.pi - δ) * a ^ (2 : ℕ))) ≤
+          (Real.sqrt e / (256 * Real.exp 1 * c ^ (3 : ℕ))) *
             Real.exp (-(2 * c * (1 - e))) := by
       simpa only [δ, e, c, signedModeRadialBandwidth] using hclockL
     exact hclockL'.trans (hpoly.trans hlower)
@@ -181,21 +181,21 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from
         ∫ x in Ioi B, GaloisForLFunctions.RHTower.profileDensity x < ε / 2 :=
     hTailTendsto.eventually (eventually_lt_nhds (by positivity : 0 < ε / 2))
   have hCutLarge : ∀ᶠ B : ℝ in atTop,
-      max b (Real.sqrt (1 + 2 / k ^ 2)) ≤ B :=
-    eventually_ge_atTop (max b (Real.sqrt (1 + 2 / k ^ 2)))
+      max b (Real.sqrt (1 + 2 / k ^ (2 : ℕ))) ≤ B :=
+    eventually_ge_atTop (max b (Real.sqrt (1 + 2 / k ^ (2 : ℕ))))
   obtain ⟨B, hTailB, hCutB⟩ := (hTailSmall.and hCutLarge).exists
   have hbB : b ≤ B := (le_max_left _ _).trans hCutB
   have hb1 : 1 < b := lt_of_lt_of_le (by norm_num) hb
   have hk0 : 0 < k := lt_of_lt_of_le (by norm_num) hk
-  have hkSq : 4 ≤ k ^ 2 := by nlinarith
-  have hdiv : 2 / k ^ 2 ≤ 1 / 2 := by
+  have hkSq : 4 ≤ k ^ (2 : ℕ) := by nlinarith
+  have hdiv : 2 / k ^ (2 : ℕ) ≤ 1 / 2 := by
     rw [div_le_iff₀ (sq_pos_of_pos hk0)]
     nlinarith
-  have harg0 : 0 ≤ 1 + 2 / k ^ 2 := by positivity
-  have hLowerStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ b := by
-    have hsqrtSq : Real.sqrt (1 + 2 / k ^ 2) ^ 2 = 1 + 2 / k ^ 2 :=
+  have harg0 : 0 ≤ 1 + 2 / k ^ (2 : ℕ) := by positivity
+  have hLowerStationary : Real.sqrt (1 + 2 / k ^ (2 : ℕ)) ≤ b := by
+    have hsqrtSq : Real.sqrt (1 + 2 / k ^ (2 : ℕ)) ^ (2 : ℕ) = 1 + 2 / k ^ (2 : ℕ) :=
       Real.sq_sqrt harg0
-    have hsqrt0 := Real.sqrt_nonneg (1 + 2 / k ^ 2)
+    have hsqrt0 := Real.sqrt_nonneg (1 + 2 / k ^ (2 : ℕ))
     nlinarith
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R

@@ -24,7 +24,7 @@ theorem eval_modularThetaSourcePositiveReflectedEighthPolynomial_hundred_re_pos 
       modularThetaSourcePositiveReflectedEighthPolynomial).re := by
   rw [← modularThetaSourcePositiveChart_reflectedEighthPolynomial,
     show modularThetaSourcePositiveSeamState 100 =
-      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ 2) by norm_num,
+      modularThetaSourcePositiveSeamState ((10 : ℝ) ^ (2 : ℕ)) by norm_num,
     eval_modularThetaSourcePositiveChartPullback_seam,
     eval_modularThetaLyapunovReflectedEighthPolynomial_seam]
   norm_num [modularThetaReflectedEighthSeamPolynomial]

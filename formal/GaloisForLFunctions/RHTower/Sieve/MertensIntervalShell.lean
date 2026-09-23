@@ -87,11 +87,11 @@ theorem sum_log_div_prime_mul_weight_le {a b : ℕ} (ha : 1 ≤ a) (hab : a ≤ 
 theorem sum_log_div_prime_mul_weight_sq_le {a b : ℕ} (ha : 1 ≤ a) (hab : a ≤ b)
     {s : Finset ℕ} (hs : s ⊆ Nat.primesLE b \ Nat.primesLE a)
     {v : ℕ → ℝ} {u : ℝ} (hu : 0 < u) (hv : ∀ p ∈ s, u ≤ v p) :
-    ∑ p ∈ s, Real.log p / ((p : ℝ) * v p ^ 2)
-      ≤ (Real.log b - Real.log a + mertensIntervalConst) / u ^ 2 := by
+    ∑ p ∈ s, Real.log p / ((p : ℝ) * v p ^ (2 : ℕ))
+      ≤ (Real.log b - Real.log a + mertensIntervalConst) / u ^ (2 : ℕ) := by
   classical
-  have hterm : ∀ p ∈ s, Real.log p / ((p : ℝ) * v p ^ 2)
-      ≤ (Real.log p / (p : ℝ)) / u ^ 2 := by
+  have hterm : ∀ p ∈ s, Real.log p / ((p : ℝ) * v p ^ (2 : ℕ))
+      ≤ (Real.log p / (p : ℝ)) / u ^ (2 : ℕ) := by
     intro p hp
     have hpm := Finset.mem_sdiff.mp (hs hp)
     have hpp := (Nat.mem_primesLE.mp hpm.1).2
@@ -104,8 +104,8 @@ theorem sum_log_div_prime_mul_weight_sq_le {a b : ℕ} (ha : 1 ≤ a) (hab : a �
     nlinarith [mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hu.le hvp 2)
       (mul_nonneg hlogp hp0.le)]
   refine le_trans (Finset.sum_le_sum hterm) ?_
-  have hsd : ∑ p ∈ s, (Real.log p / (p : ℝ)) / u ^ 2
-      = (∑ p ∈ s, Real.log p / (p : ℝ)) / u ^ 2 := by
+  have hsd : ∑ p ∈ s, (Real.log p / (p : ℝ)) / u ^ (2 : ℕ)
+      = (∑ p ∈ s, Real.log p / (p : ℝ)) / u ^ (2 : ℕ) := by
     simp [div_eq_mul_inv, ← Finset.sum_mul]
   rw [hsd]
   gcongr

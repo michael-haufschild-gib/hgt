@@ -166,7 +166,7 @@ theorem nativeResidualIntegral_uniform_bound (q : XiZeroCopy) (s amplitude : ℂ
     (residualNullSource_joint_continuous s amplitude).continuousOn
   let C := max S 0
   have hC : 0 ≤ C := le_max_right _ _
-  refine ⟨K*C*T^2/4,by positivity,?_⟩
+  refine ⟨K*C*T^(2 : ℕ)/4,by positivity,?_⟩
   intro p hp r hr z hz
   have hT : 0 ≤ T := hp.1.trans hp.2
   have hb (a b : ℝ) (ha : a ∈ Icc 0 p) (hb : b ∈ Icc 0 r) :
@@ -193,7 +193,7 @@ theorem nativeResidualIntegral_uniform_bound (q : XiZeroCopy) (s amplitude : ℂ
       simpa only [sub_zero,abs_of_nonneg hp.1] using ho
     _ = K*C*(r*p)/4 := by ring
     _ ≤ K*C*(T*T)/4 := by gcongr <;> linarith [hp.1,hp.2,hr.1,hr.2]
-    _ = K*C*T^2/4 := by ring
+    _ = K*C*T^(2 : ℕ)/4 := by ring
 
 
 @[fun_prop] private theorem nativeResidualIntegrand_comp {P : Type*} [TopologicalSpace P]
@@ -624,7 +624,7 @@ theorem nativeJointTimePrimitiveField_memLp (q : XiZeroCopy) (s amplitude : ℂ)
     MemLp (nativeJointTimePrimitiveField q s amplitude t) 2
       (radialMeasure.prod D4BMModularCore.measure) := by
   obtain ⟨B,hB,hbound⟩ := nativeJointResidualField_uniform_bound q s amplitude |t|
-  have hm := (jointMajorant_memLp |t| B).const_mul (2*|t|^2)
+  have hm := (jointMajorant_memLp |t| B).const_mul (2*|t|^(2 : ℕ))
   apply hm.mono' (nativeJointTimePrimitiveField_continuous q s amplitude t).aestronglyMeasurable
   filter_upwards [Measure.quasiMeasurePreserving_snd.ae
     (ae_restrict_mem ModularGroup.isClosed_fd.measurableSet)] with z hz
@@ -669,7 +669,7 @@ private theorem timePrimitive_radial_memLp (f : ℝ × ℝ → ℂ) (hf : Contin
 private def nativePrincipalStaticCoefficient (q : XiZeroCopy) (s amplitude : ℂ)
     (i : Fin 3) (u x : ℝ) : ℂ :=
   principalAmplitude q i * radialResponse (-principalExponent q i) s amplitude u x /
-    (Real.cosh x:ℂ)^2
+    (Real.cosh x:ℂ)^(2 : ℕ)
 
 private theorem nativePrincipalStaticCoefficient_continuous (q : XiZeroCopy) (s amplitude : ℂ)
     (i : Fin 3) : Continuous (fun p : ℝ × ℝ => nativePrincipalStaticCoefficient q s amplitude i p.1 p.2) := by

@@ -68,7 +68,7 @@ theorem exists_rawJetFactorialFockPartialEnergy_gt_of_noExtensionAt
     (hΦ : AnalyticOnNhd ℂ Φ Ω) (hΩ : IsPreconnected Ω)
     (ha : a ∈ Ω) (hno : NoExtensionAt Φ Ω b) (C : ℝ) :
     ∃ N, C < ∑ n ∈ Finset.range N,
-      ‖iteratedDeriv n Φ a‖ ^ 2 / n.factorial := by
+      ‖iteratedDeriv n Φ a‖ ^ (2 : ℕ) / n.factorial := by
   exact
     GaloisForLFunctions.HTGeometry.exists_rawJetFactorialFockPartialEnergy_gt_of_no_entire_extension
       (hΦ a ha) (no_entire_germ_extension_of_noExtensionAt hΦ hΩ ha hno) C
@@ -78,7 +78,7 @@ factorial raw-jet energies of `1 / (z - b)` exceed every proposed bound. -/
 theorem exists_simplePoleAt_rawJetFactorialFockPartialEnergy_gt
     {a b : ℂ} (hab : a ≠ b) (C : ℝ) :
     ∃ N, C < ∑ n ∈ Finset.range N,
-      ‖iteratedDeriv n (simplePoleAt b) a‖ ^ 2 / n.factorial := by
+      ‖iteratedDeriv n (simplePoleAt b) a‖ ^ (2 : ℕ) / n.factorial := by
   apply exists_rawJetFactorialFockPartialEnergy_gt_of_noExtensionAt
     (analyticOnNhd_simplePoleAt_compl_singleton b)
   · exact (isConnected_compl_singleton_of_one_lt_rank
@@ -91,7 +91,7 @@ exponential column does not restore bounded factorial raw-jet energy to a recipr
 theorem exists_expOverSimplePole_rawJetFactorialFockPartialEnergy_gt
     {a b : ℂ} (hab : a ≠ b) (C : ℝ) :
     ∃ N, C < ∑ n ∈ Finset.range N,
-      ‖iteratedDeriv n (expOverSimplePole b) a‖ ^ 2 / n.factorial := by
+      ‖iteratedDeriv n (expOverSimplePole b) a‖ ^ (2 : ℕ) / n.factorial := by
   apply exists_rawJetFactorialFockPartialEnergy_gt_of_noExtensionAt
     (analyticOnNhd_expOverSimplePole_compl_singleton b)
   · exact (isConnected_compl_singleton_of_one_lt_rank

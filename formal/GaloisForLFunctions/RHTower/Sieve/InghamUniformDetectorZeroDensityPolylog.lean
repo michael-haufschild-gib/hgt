@@ -59,7 +59,7 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielPolylog
           (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
             (1 + Real.log (X : ℝ)) ^
               (2 * inghamUniformGabrielCriticalShare sigma) +
-          (1 + Real.log (X : ℝ)) ^ 2) := by
+          (1 + Real.log (X : ℝ)) ^ (2 : ℕ)) := by
   obtain ⟨K₀, hK₀, hmass⟩ :=
     exists_eventually_zetaZeroMass_le_uniformGabrielPolylog hsigma0 hsigma1
   let q : ℝ := 2 * Real.pi * (1 - sigma) / 1000
@@ -96,7 +96,7 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielPolylog
           (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
             (1 + Real.log (X : ℝ)) ^
               (2 * inghamUniformGabrielCriticalShare sigma) +
-          (1 + Real.log (X : ℝ)) ^ 2) := by
+          (1 + Real.log (X : ℝ)) ^ (2 : ℕ)) := by
     calc
       _ = 2 * Real.pi * (((1 - sigma) / 1000) *
           zetaLittlewoodZeroCountAbove (inghamUniformGabrielCenter sigma) 4
@@ -117,12 +117,12 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielPolylog
           (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
             (1 + Real.log (X : ℝ)) ^
               (2 * inghamUniformGabrielCriticalShare sigma) +
-          (1 + Real.log (X : ℝ)) ^ 2) := hscaled
+          (1 + Real.log (X : ℝ)) ^ (2 : ℕ)) := hscaled
     _ = q * (K * (1 +
           (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
             (1 + Real.log (X : ℝ)) ^
               (2 * inghamUniformGabrielCriticalShare sigma) +
-          (1 + Real.log (X : ℝ)) ^ 2)) := by
+          (1 + Real.log (X : ℝ)) ^ (2 : ℕ))) := by
       dsimp only [K]
       field_simp [hq.ne']
 

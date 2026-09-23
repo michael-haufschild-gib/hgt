@@ -28,7 +28,7 @@ noncomputable section
 
 /-- Quantile-root energy of the theta system at a spectral point. -/
 def hedenmalmRootQuantileEnergy (z : ℂ) : ℝ :=
-  ∫ t in Ioo (0 : ℝ) 1, quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2
+  ∫ t in Ioo (0 : ℝ) 1, quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ)
 
 /-- Ordered-correlation root flux of the theta system at a spectral point. -/
 def hedenmalmRootOrderedFlux (z : ℂ) : ℝ :=
@@ -42,7 +42,7 @@ theorem hedenmalmRootQuantileEnergy_pos {z : ℂ} (hz : |z.im| < 1)
     0 < hedenmalmRootQuantileEnergy z := by
   have hend := rootModeEndpoints_thetaSource hz hzero
   have htail := hasShiftedTail_thetaSource hz
-  set g : ℝ → ℝ := fun t => quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun t => quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ) with hg
   have hnonneg : ∀ t, 0 ≤ g t := fun t =>
     mul_nonneg (quantileSpeed_pos thetaSource t).le (sq_nonneg _)
   have hge : 0 ≤ hedenmalmRootQuantileEnergy z :=
@@ -89,9 +89,9 @@ theorem hedenmalmRootQuantileEnergy_pos {z : ℂ} (hz : |z.im| < 1)
     intro t ht
     have hgt := hzero_on t ht
     have hq := quantileSpeed_pos thetaSource t
-    have hsq : ‖rootH thetaSource z t‖ ^ 2 = 0 := by
+    have hsq : ‖rootH thetaSource z t‖ ^ (2 : ℕ) = 0 := by
       by_contra hne
-      have hpos : 0 < ‖rootH thetaSource z t‖ ^ 2 :=
+      have hpos : 0 < ‖rootH thetaSource z t‖ ^ (2 : ℕ) :=
         lt_of_le_of_ne (sq_nonneg _) (Ne.symm hne)
       nlinarith [hgt]
     have := pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hsq

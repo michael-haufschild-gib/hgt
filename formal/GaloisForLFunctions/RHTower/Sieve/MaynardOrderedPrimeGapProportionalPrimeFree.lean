@@ -69,7 +69,7 @@ theorem routeTPrimeGapDyadicBlockOccupancy_subset_proportionalPrimeFree (k j : �
 the proportional target width accepted by Maynard's fixed-ambient spatial `L²` theorem. -/
 theorem sum_primeGapSquare_le_eight_mul_proportionalPrimeFree_block_measure (k j : ℕ) :
     (∑ n ∈ routeTPrimeGapDyadicBlockShell k j,
-        xiHeatCassiniOrderedPrimeGap n ^ 2) ≤
+        xiHeatCassiniOrderedPrimeGap n ^ (2 : ℕ)) ≤
       8 * routeTPrimeGapDyadicScale j *
         (volume.restrict
           (Set.Icc (routeTPrimeGapDyadicBase k)

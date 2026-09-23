@@ -77,11 +77,11 @@ theorem reflectedLogAction_frozen_bound {u t S₄ S₅ : ℝ} (ht : 0 ≤ t)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFour x| ≤ S₄)
     (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFive x| ≤ S₅) :
     |thetaCuspReflectedLogAction u t -
-      (thetaCuspLogCurvature u * t ^ 2 + thetaCuspLogCurvatureJetTwo u * t ^ 4 / 12)| ≤
-      S₄ * t ^ 6 / 360 := by
+      (thetaCuspLogCurvature u * t ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * t ^ (4 : ℕ) / 12)| ≤
+      S₄ * t ^ (6 : ℕ) / 360 := by
   have hE : ∀ s ∈ Icc (0 : ℝ) t,
       |fjE thetaCuspLogDecaySlope u s - thetaCuspLogCurvature u * s -
-        thetaCuspLogCurvatureJetTwo u * s ^ 3 / 6| ≤ S₄ * s ^ 5 / 120 := by
+        thetaCuspLogCurvatureJetTwo u * s ^ (3 : ℕ) / 6| ≤ S₄ * s ^ (5 : ℕ) / 120 := by
     intro s hs
     have hS₄' : ∀ x ∈ Icc (u - s) (u + s), |thetaCuspLogCurvatureJetFour x| ≤ S₄ := fun x hx =>
       hS₄ x ⟨by linarith [hx.1, hs.2], by linarith [hx.2, hs.2]⟩
@@ -93,12 +93,12 @@ theorem reflectedLogAction_frozen_bound {u t S₄ S₅ : ℝ} (ht : 0 ≤ t)
       hS₄' hS₅').2.2.2.2.1
   have key := abs_le_pow_div_of_abs_deriv_le (K := S₄ / 60) (k := 5) ht
     (h := fun s => thetaCuspReflectedLogAction u s -
-      (thetaCuspLogCurvature u * s ^ 2 + thetaCuspLogCurvatureJetTwo u * s ^ 4 / 12))
+      (thetaCuspLogCurvature u * s ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * s ^ (4 : ℕ) / 12))
     (h' := fun s => 2 * (fjE thetaCuspLogDecaySlope u s - thetaCuspLogCurvature u * s -
-      thetaCuspLogCurvatureJetTwo u * s ^ 3 / 6)) (by simp [reflectedLogAction_zero]) ?_ ?_ t
+      thetaCuspLogCurvatureJetTwo u * s ^ (3 : ℕ) / 6)) (by simp [reflectedLogAction_zero]) ?_ ?_ t
     ⟨ht, le_rfl⟩
   · calc _ ≤ S₄ / 60 * t ^ (5 + 1) / (5 + 1) := key
-      _ = S₄ * t ^ 6 / 360 := by ring
+      _ = S₄ * t ^ (6 : ℕ) / 360 := by ring
   · intro s _
     have h1 := hasDerivAt_reflectedLogAction_fjE u s
     have h2 := ((hasDerivAt_pow 2 s).const_mul (thetaCuspLogCurvature u)).add
@@ -109,8 +109,8 @@ theorem reflectedLogAction_frozen_bound {u t S₄ S₅ : ℝ} (ht : 0 ≤ t)
     have := hE s hs
     rw [abs_mul, abs_of_pos (by norm_num : (0:ℝ) < 2)]
     calc 2 * |fjE thetaCuspLogDecaySlope u s - thetaCuspLogCurvature u * s -
-          thetaCuspLogCurvatureJetTwo u * s ^ 3 / 6| ≤ 2 * (S₄ * s ^ 5 / 120) := by gcongr
-      _ = S₄ / 60 * s ^ 5 := by ring
+          thetaCuspLogCurvatureJetTwo u * s ^ (3 : ℕ) / 6| ≤ 2 * (S₄ * s ^ (5 : ℕ) / 120) := by gcongr
+      _ = S₄ / 60 * s ^ (5 : ℕ) := by ring
 
 /-- **Strict assembly.**  `5|G| < 12Φ(−H)` (with `H < 0`, `2Φ ≤ v`) gives `M(1) > 0`. -/
 theorem c5CompletedCompensationMargin_pos_of_strict_bounds {u t : ℝ} (ht : 0 < t) (htu : t < u)
@@ -138,26 +138,26 @@ excess is dominated: `5|G| < 12Φ(−H)`. -/
 theorem growthBound_of_frozenJets {u t S₄ S₅ : ℝ} (ht : 0 < t)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFour x| ≤ S₄)
     (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFive x| ≤ S₅)
-    (hElow : 0 ≤ thetaCuspLogCurvature u * t + thetaCuspLogCurvatureJetTwo u * t ^ 3 / 6 -
-      S₄ * t ^ 5 / 120)
-    (hOlow : 0 ≤ thetaCuspLogCurvatureJet u * t ^ 2 / 2 + thetaCuspLogCurvatureJetThree u * t ^ 4 / 24 -
-      S₅ * t ^ 6 / 720)
-    (hYlow : 0 ≤ thetaCuspLogCurvatureJetTwo u * t ^ 3 / 3 - S₄ * t ^ 5 / 30)
-    (hΛup : 0 ≤ thetaCuspLogCurvatureJetThree u * t ^ 4 / 12 + S₅ * t ^ 6 / 180)
-    (hΦlow : 0 ≤ thetaCuspLogCurvature u * t ^ 2 + thetaCuspLogCurvatureJetTwo u * t ^ 4 / 12 -
-      S₄ * t ^ 6 / 360)
-    (hkey : 5 * ((thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ 3 / 6 +
-          S₄ * t ^ 5 / 120) * (2 / 45 * S₅ * t ^ 6) +
-        (thetaCuspLogCurvatureJet u * t ^ 2 / 2 + |thetaCuspLogCurvatureJetThree u| * t ^ 4 / 24 +
-          S₅ * t ^ 6 / 720) * (2 / 15 * S₄ * t ^ 5)) <
-      12 * (thetaCuspLogCurvature u * t ^ 2 + thetaCuspLogCurvatureJetTwo u * t ^ 4 / 12 -
-          S₄ * t ^ 6 / 360) *
-        ((thetaCuspLogCurvatureJet u * t ^ 2 / 2 + thetaCuspLogCurvatureJetThree u * t ^ 4 / 24 -
-            S₅ * t ^ 6 / 720) *
-          (thetaCuspLogCurvatureJetTwo u * t ^ 3 / 3 - S₄ * t ^ 5 / 30) -
-        (thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ 3 / 6 +
-            S₄ * t ^ 5 / 120) *
-          (thetaCuspLogCurvatureJetThree u * t ^ 4 / 12 + S₅ * t ^ 6 / 180))) :
+    (hElow : 0 ≤ thetaCuspLogCurvature u * t + thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 6 -
+      S₄ * t ^ (5 : ℕ) / 120)
+    (hOlow : 0 ≤ thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 24 -
+      S₅ * t ^ (6 : ℕ) / 720)
+    (hYlow : 0 ≤ thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30)
+    (hΛup : 0 ≤ thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180)
+    (hΦlow : 0 ≤ thetaCuspLogCurvature u * t ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * t ^ (4 : ℕ) / 12 -
+      S₄ * t ^ (6 : ℕ) / 360)
+    (hkey : 5 * ((thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ (3 : ℕ) / 6 +
+          S₄ * t ^ (5 : ℕ) / 120) * (2 / 45 * S₅ * t ^ (6 : ℕ)) +
+        (thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + |thetaCuspLogCurvatureJetThree u| * t ^ (4 : ℕ) / 24 +
+          S₅ * t ^ (6 : ℕ) / 720) * (2 / 15 * S₄ * t ^ (5 : ℕ))) <
+      12 * (thetaCuspLogCurvature u * t ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * t ^ (4 : ℕ) / 12 -
+          S₄ * t ^ (6 : ℕ) / 360) *
+        ((thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 24 -
+            S₅ * t ^ (6 : ℕ) / 720) *
+          (thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30) -
+        (thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ (3 : ℕ) / 6 +
+            S₄ * t ^ (5 : ℕ) / 120) *
+          (thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180))) :
     5 * |c5CompletedScalingExcess u t| <
       12 * thetaCuspReflectedLogAction u t *
         (-thetaCuspReflectedActionVelocityFixedActionCenterNumerator u t) := by
@@ -169,10 +169,10 @@ theorem growthBound_of_frozenJets {u t S₄ S₅ : ℝ} (ht : 0 < t)
   rw [scalingExcess_eq_four, centerNumerator_eq_four_fjN, fj_excess_eq, fjN_eq]
   have hS₄0 : 0 ≤ S₄ := le_trans (abs_nonneg _) (hS₄ u ⟨by linarith, by linarith⟩)
   have hS₅0 : 0 ≤ S₅ := le_trans (abs_nonneg _) (hS₅ u ⟨by linarith, by linarith⟩)
-  have ht3 : 0 ≤ t ^ 3 := by positivity
-  have ht4 : 0 ≤ t ^ 4 := by positivity
-  have ht5 : 0 ≤ t ^ 5 := by positivity
-  have ht6 : 0 ≤ t ^ 6 := by positivity
+  have ht3 : 0 ≤ t ^ (3 : ℕ) := by positivity
+  have ht4 : 0 ≤ t ^ (4 : ℕ) := by positivity
+  have ht5 : 0 ≤ t ^ (5 : ℕ) := by positivity
+  have ht6 : 0 ≤ t ^ (6 : ℕ) := by positivity
   have hc₂abs := mul_le_mul_of_nonneg_right (le_abs_self (thetaCuspLogCurvatureJetTwo u)) ht3
   have hc₂abs' := mul_le_mul_of_nonneg_right (neg_abs_le (thetaCuspLogCurvatureJetTwo u)) ht3
   have hc₃abs := mul_le_mul_of_nonneg_right (le_abs_self (thetaCuspLogCurvatureJetThree u)) ht4
@@ -195,12 +195,12 @@ theorem growthBound_of_frozenJets {u t S₄ S₅ : ℝ} (ht : 0 < t)
   have hΛ' := abs_le.mp hΛ
   have hY' := abs_le.mp hY
   have hΦ' := abs_le.mp hΦ
-  generalize hEup : c₀ * t + |c₂| * t ^ 3 / 6 + S₄ * t ^ 5 / 120 = Eup at *
-  generalize hOup : c₁ * t ^ 2 / 2 + |c₃| * t ^ 4 / 24 + S₅ * t ^ 6 / 720 = Oup at *
-  generalize hOlowE : c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 - S₅ * t ^ 6 / 720 = Olow at *
-  generalize hYlowE : c₂ * t ^ 3 / 3 - S₄ * t ^ 5 / 30 = Ylow at *
-  generalize hΛupE : c₃ * t ^ 4 / 12 + S₅ * t ^ 6 / 180 = Λup at *
-  generalize hΦlowE : c₀ * t ^ 2 + c₂ * t ^ 4 / 12 - S₄ * t ^ 6 / 360 = Φlow at *
+  generalize hEup : c₀ * t + |c₂| * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120 = Eup at *
+  generalize hOup : c₁ * t ^ (2 : ℕ) / 2 + |c₃| * t ^ (4 : ℕ) / 24 + S₅ * t ^ (6 : ℕ) / 720 = Oup at *
+  generalize hOlowE : c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 - S₅ * t ^ (6 : ℕ) / 720 = Olow at *
+  generalize hYlowE : c₂ * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30 = Ylow at *
+  generalize hΛupE : c₃ * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180 = Λup at *
+  generalize hΦlowE : c₀ * t ^ (2 : ℕ) + c₂ * t ^ (4 : ℕ) / 12 - S₄ * t ^ (6 : ℕ) / 360 = Φlow at *
   have hEle : E ≤ Eup := by linarith only [hE'.2, hc₂abs, hEup]
   have hEge : 0 ≤ E := by linarith only [hE'.1, hc₂abs', hElow]
   have hOle : O ≤ Oup := by linarith only [hO'.2, hc₃abs, hOup]
@@ -219,17 +219,17 @@ theorem growthBound_of_frozenJets {u t S₄ S₅ : ℝ} (ht : 0 < t)
       _ ≤ Eup * Λup := mul_le_mul_of_nonneg_right hEle hΛup
   have hN : Olow * Ylow - Eup * Λup ≤ O * Y - E * Λ := by linarith only [h1, h2]
   -- `|ε| ≤ Eup·(2/45)S₅t⁶ + Oup·(2/15)S₄t⁵`
-  have hb1 : 0 ≤ 2 / 45 * S₅ * t ^ 6 := by positivity
-  have hb2 : 0 ≤ 2 / 15 * S₄ * t ^ 5 := by positivity
-  have hεK₁ : E * |K₁| ≤ Eup * (2 / 45 * S₅ * t ^ 6) := mul_le_mul hEle hK₁ (abs_nonneg _) hEup0
-  have hεK₂ : O * |K₂| ≤ Oup * (2 / 15 * S₄ * t ^ 5) := mul_le_mul hOle hK₂ (abs_nonneg _) hOup0
-  have hε : |E * K₁ + O * K₂| ≤ Eup * (2 / 45 * S₅ * t ^ 6) + Oup * (2 / 15 * S₄ * t ^ 5) := by
+  have hb1 : 0 ≤ 2 / 45 * S₅ * t ^ (6 : ℕ) := by positivity
+  have hb2 : 0 ≤ 2 / 15 * S₄ * t ^ (5 : ℕ) := by positivity
+  have hεK₁ : E * |K₁| ≤ Eup * (2 / 45 * S₅ * t ^ (6 : ℕ)) := mul_le_mul hEle hK₁ (abs_nonneg _) hEup0
+  have hεK₂ : O * |K₂| ≤ Oup * (2 / 15 * S₄ * t ^ (5 : ℕ)) := mul_le_mul hOle hK₂ (abs_nonneg _) hOup0
+  have hε : |E * K₁ + O * K₂| ≤ Eup * (2 / 45 * S₅ * t ^ (6 : ℕ)) + Oup * (2 / 15 * S₄ * t ^ (5 : ℕ)) := by
     calc |E * K₁ + O * K₂| ≤ |E * K₁| + |O * K₂| := abs_add_le _ _
       _ = E * |K₁| + O * |K₂| := by rw [abs_mul, abs_mul, abs_of_nonneg hEge, abs_of_nonneg hOge0]
-      _ ≤ Eup * (2 / 45 * S₅ * t ^ 6) + Oup * (2 / 15 * S₄ * t ^ 5) := by
+      _ ≤ Eup * (2 / 45 * S₅ * t ^ (6 : ℕ)) + Oup * (2 / 15 * S₄ * t ^ (5 : ℕ)) := by
           linarith only [hεK₁, hεK₂]
   -- assemble
-  have hεnn : 0 ≤ Eup * (2 / 45 * S₅ * t ^ 6) + Oup * (2 / 15 * S₄ * t ^ 5) := by positivity
+  have hεnn : 0 ≤ Eup * (2 / 45 * S₅ * t ^ (6 : ℕ)) + Oup * (2 / 15 * S₄ * t ^ (5 : ℕ)) := by positivity
   have hNlow : 0 < Olow * Ylow - Eup * Λup := by
     by_contra hcon
     have hcon' : Olow * Ylow - Eup * Λup ≤ 0 := not_lt.mp hcon

@@ -11,7 +11,7 @@ it a second time — which is what the descent along a covering needs.
 
 * `deningerContractL` : contraction as a continuous linear map in the vector.
 * `deningerHomotopyKDeriv_continuous_uncurry` : joint continuity of the integrand.
-* `deningerHomotopyOperator_fderiv_continuous` : the homotopy operator is `C^1`.
+* `deningerHomotopyOperator_fderiv_continuous` : the homotopy operator is `C^(1 : ℕ)`.
 -/
 
 namespace RHTower

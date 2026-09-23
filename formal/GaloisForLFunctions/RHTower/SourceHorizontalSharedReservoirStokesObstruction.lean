@@ -26,7 +26,7 @@ theorem sigNeg_le_one_of_onePort_pullback
     [AddCommGroup M] [Module ℝ M]
     (S : QuadraticForm ℝ V) (Q : QuadraticForm ℝ M)
     (f : V →ₗ[ℝ] M) (ell : M →ₗ[ℝ] ℝ)
-    (hQ : ∀ y, 0 ≤ Q y + (ell y) ^ 2)
+    (hQ : ∀ y, 0 ≤ Q y + (ell y) ^ (2 : ℕ))
     (hpull : ∀ x, S x = Q (f x)) :
     sigNeg S ≤ 1 := by
   apply GaloisForLFunctions.sigNeg_le_one_of_add_sq_nonneg S (ell.comp f)
@@ -39,7 +39,7 @@ theorem not_onePort_pullback_of_sourceZeroHorizontal_right
     (hright : 1 / 2 < (q.1 : ℂ).re) (p : Fin m → Nat.Primes)
     {M : Type*} [AddCommGroup M] [Module ℝ M]
     (Q : QuadraticForm ℝ M) (f : (Fin m → ℝ) →ₗ[ℝ] M)
-    (ell : M →ₗ[ℝ] ℝ) (hQ : ∀ y, 0 ≤ Q y + (ell y) ^ 2) :
+    (ell : M →ₗ[ℝ] ℝ) (hQ : ∀ y, 0 ≤ Q y + (ell y) ^ (2 : ℕ)) :
     ¬ ∀ x, (sourceZeroHorizontalSharedReservoirMatrix q p).toQuadraticForm' x =
       Q (f x) := by
   intro hpull
@@ -65,8 +65,8 @@ theorem sourceZeroHorizontalSharedReservoir_twoOrientation_onePort_obstruction
     (Q₁ : QuadraticForm ℝ M₁) (Q₂ : QuadraticForm ℝ M₂)
     (f₁ : (Fin m → ℝ) →ₗ[ℝ] M₁) (f₂ : (Fin m → ℝ) →ₗ[ℝ] M₂)
     (ell₁ : M₁ →ₗ[ℝ] ℝ) (ell₂ : M₂ →ₗ[ℝ] ℝ)
-    (hQ₁ : ∀ y, 0 ≤ Q₁ y + (ell₁ y) ^ 2)
-    (hQ₂ : ∀ y, 0 ≤ Q₂ y + (ell₂ y) ^ 2) :
+    (hQ₁ : ∀ y, 0 ≤ Q₁ y + (ell₁ y) ^ (2 : ℕ))
+    (hQ₂ : ∀ y, 0 ≤ Q₂ y + (ell₂ y) ^ (2 : ℕ)) :
     ¬ ((∀ x, (sourceZeroHorizontalSharedReservoirMatrix q p).toQuadraticForm' x =
           Q₁ (f₁ x)) ∧
         (∀ x, (sourceZeroHorizontalSharedReservoirMatrix
@@ -95,12 +95,12 @@ theorem globalWittForm_add_rankCorrection_nonneg {k : ℕ}
     {n r K N : Fin (k + 1) → ℕ}
     (genus : ℕ) (d : LocalData k n r K N)
     (x : compatibleCharges d) :
-    0 ≤ globalWittForm genus d x + (rankCorrection genus d x) ^ 2 := by
+    0 ≤ globalWittForm genus d x + (rankCorrection genus d x) ^ (2 : ℕ) := by
   rw [globalWittForm_eq_positive_add_oneRank]
   change 0 ≤ globalPositiveForm d x + globalRankCoefficient genus d *
-      commonRankLinear d x ^ 2 +
+      commonRankLinear d x ^ (2 : ℕ) +
     (Real.sqrt (max 0 (-globalRankCoefficient genus d)) *
-      commonRankLinear d x) ^ 2
+      commonRankLinear d x) ^ (2 : ℕ)
   rw [mul_pow, Real.sq_sqrt (le_max_left 0 (-globalRankCoefficient genus d))]
   by_cases hcoeff : 0 ≤ globalRankCoefficient genus d
   · rw [max_eq_left (neg_nonpos.mpr hcoeff)]

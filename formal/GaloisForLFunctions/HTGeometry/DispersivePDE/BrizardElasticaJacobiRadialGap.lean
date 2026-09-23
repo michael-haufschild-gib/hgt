@@ -23,9 +23,9 @@ theorem lowerJacobiAmplitudeSq_sub_angularOmegaSq
     (P : AngularPhysicalParameters) :
     (1 - P.val.modulus / (P.val.q₀ : ℝ)) - angularOmegaSq P =
       ((P.val.q₀ : ℝ) - P.val.modulus) *
-          (1 - P.val.modulus - (P.val.q₀ : ℝ)) ^ 2 /
-        ((P.val.q₀ : ℝ) ^ 3 *
-          ((2 + gammaSq P.val) ^ 2 + 4 * nuSq P.val)) := by
+          (1 - P.val.modulus - (P.val.q₀ : ℝ)) ^ (2 : ℕ) /
+        ((P.val.q₀ : ℝ) ^ (3 : ℕ) *
+          ((2 + gammaSq P.val) ^ (2 : ℕ) + 4 * nuSq P.val)) := by
   rw [angularOmegaSq]
   field_simp [ne_of_gt (angularOmegaSq_den_pos P)]
   rw [gammaSq, nuSq]
@@ -52,19 +52,19 @@ theorem physicalRegionI_lowerJacobiAmplitude_gap_pos
 /-- The paper's radial square-root radicand is strictly positive along every region-I profile. -/
 theorem physicalRegionI_correctedAmplitude_sq_sub_angularOmegaSq_pos
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-    0 < correctedJacobiAmplitude P J v ^ 2 -
+    0 < correctedJacobiAmplitude P J v ^ (2 : ℕ) -
       angularOmegaSq (physicalRegionIAngularParameters P) := by
   have hlower := physicalRegionI_lowerJacobiAmplitude_gap_pos P
   have hA := correctedJacobiAmplitude_sq P J v
   by_cases hm : 0 ≤ P.val.modulus
   · have hterm :
-        0 ≤ P.val.modulus / (P.val.q₀ : ℝ) * (1 - J.sn v ^ 2) :=
+        0 ≤ P.val.modulus / (P.val.q₀ : ℝ) * (1 - J.sn v ^ (2 : ℕ)) :=
       mul_nonneg (div_nonneg hm P.property.1.le)
         (sub_nonneg.2 (J.sn_sq_le_one v))
     nlinarith
   · have hmneg : P.val.modulus < 0 := lt_of_not_ge hm
     have hterm :
-        P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ 2 ≤ 0 :=
+        P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ (2 : ℕ) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg
         (div_nonpos_of_nonpos_of_nonneg hmneg.le P.property.1.le)
         (sq_nonneg (J.sn v))
@@ -73,7 +73,7 @@ theorem physicalRegionI_correctedAmplitude_sq_sub_angularOmegaSq_pos
 
 noncomputable def jacobiRadialAmplitude
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=
-  Real.sqrt (correctedJacobiAmplitude P J v ^ 2 -
+  Real.sqrt (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
     angularOmegaSq (physicalRegionIAngularParameters P))
 
 theorem jacobiRadialAmplitude_pos
@@ -85,9 +85,9 @@ theorem jacobiRadialAmplitude_pos
 
 theorem jacobiRadialAmplitude_sq
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-    jacobiRadialAmplitude P J v ^ 2 =
+    jacobiRadialAmplitude P J v ^ (2 : ℕ) =
       (1 - angularOmegaSq (physicalRegionIAngularParameters P)) -
-        P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ 2 := by
+        P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ (2 : ℕ) := by
   rw [jacobiRadialAmplitude,
     Real.sq_sqrt
       (physicalRegionI_correctedAmplitude_sq_sub_angularOmegaSq_pos P J v).le,
@@ -115,13 +115,13 @@ theorem jacobiRadialAmplitude_hasDerivAt
       (2 * correctedJacobiAmplitude P J v *
           correctedJacobiAmplitudeVelocity P J v) /
           (2 * Real.sqrt
-            (correctedJacobiAmplitude P J v ^ 2 -
+            (correctedJacobiAmplitude P J v ^ (2 : ℕ) -
               angularOmegaSq (physicalRegionIAngularParameters P))) =
         jacobiRadialAmplitudeVelocity P J v := by
     rw [jacobiRadialAmplitudeVelocity, jacobiRadialAmplitude]
     field_simp [ne_of_gt (jacobiRadialAmplitude_pos P J v)]
   change HasDerivAt
-    (fun y => Real.sqrt (correctedJacobiAmplitude P J y ^ 2 -
+    (fun y => Real.sqrt (correctedJacobiAmplitude P J y ^ (2 : ℕ) -
       angularOmegaSq (physicalRegionIAngularParameters P)))
     (jacobiRadialAmplitudeVelocity P J v) v
   exact hsqrt.congr_deriv hderiv

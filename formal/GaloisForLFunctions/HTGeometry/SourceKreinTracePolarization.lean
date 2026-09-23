@@ -83,7 +83,7 @@ theorem sourceEscapingKreinMetric_metricAdjoint (k : ℕ) (C : Matrix ι ι ℂ)
 theorem sourceEscapingKreinMetric_absSq (k : ℕ) :
     (sourceEscapingKreinMetric k : Matrix (ι ⊕ ι) (ι ⊕ ι) ℂ)ᴴ *
         sourceEscapingKreinMetric k =
-      ((((k : ℝ) + 1) ^ 2 : ℝ) : ℂ) • 1 := by
+      ((((k : ℝ) + 1) ^ (2 : ℕ) : ℝ) : ℂ) • 1 := by
   ext i j
   rcases i with i | i <;> rcases j with j | j <;>
     simp [sourceEscapingKreinMetric, sourceKreinSwap,

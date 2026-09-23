@@ -28,7 +28,7 @@ theorem omega_isPrimitiveRoot : IsPrimitiveRoot omega 3 := by
   have h := Complex.isPrimitiveRoot_exp 3 (by norm_num)
   simpa [omega, mul_comm, mul_assoc, mul_div_assoc] using h
 
-theorem omega_pow_three : omega ^ 3 = 1 := omega_isPrimitiveRoot.pow_eq_one
+theorem omega_pow_three : omega ^ (3 : ℕ) = 1 := omega_isPrimitiveRoot.pow_eq_one
 
 theorem omega_ne_zero : omega ≠ 0 := Complex.exp_ne_zero _
 

@@ -24,12 +24,12 @@ theorem sum_normSq_window_le_of_correlation {a : ℕ → ℂ} {X L : ℕ} {δ : 
     (hcorr : ∀ h ∈ Finset.Ico 1 L,
       |∑ n ∈ Finset.range (X + L + 1 - h), ((windowOverlap X L n (n + h) : ℕ) : ℝ)
         * (a n * (starRingEnd ℂ) (a (n + h))).re| ≤ δ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2 + 2 * (L : ℝ) * δ := by
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ) + 2 * (L : ℝ) * δ := by
   classical
   rw [sum_normSq_window_eq_autocorrelation_lt a X L]
-  have hdiag : ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2 := by
+  have hdiag : ∑ n ∈ Finset.range (X + L + 1), ((windowOverlap X L n n : ℕ) : ℝ) * ‖a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun n _ => ?_
     have hK : ((windowOverlap X L n n : ℕ) : ℝ) ≤ (L : ℝ) := by

@@ -34,18 +34,18 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near {c w : ℂ} (hc : (100:ℝ) ≤ 
     linarith
   -- norm window for the image `f_c w = w² + c`
   set fw : ℂ := quadratic c w with hfwdef
-  have hfweq : fw = w ^ 2 + c := rfl
-  have hsqhi : ‖w‖ ^ 2 ≤ (R + 4) ^ 2 :=
+  have hfweq : fw = w ^ (2 : ℕ) + c := rfl
+  have hsqhi : ‖w‖ ^ (2 : ℕ) ≤ (R + 4) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg w) hwhi 2
-  have hsqlo : (R - 4) ^ 2 ≤ ‖w‖ ^ 2 :=
+  have hsqlo : (R - 4) ^ (2 : ℕ) ≤ ‖w‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by linarith) hwlo 2
-  have hfwhi : ‖fw‖ ≤ (11/10) * R ^ 2 := by
-    have h1 : ‖w ^ 2 + c‖ ≤ ‖w ^ 2‖ + ‖c‖ := norm_add_le _ _
+  have hfwhi : ‖fw‖ ≤ (11/10) * R ^ (2 : ℕ) := by
+    have h1 : ‖w ^ (2 : ℕ) + c‖ ≤ ‖w ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
     rw [norm_pow] at h1
     rw [hfweq]
     nlinarith
-  have hfwlo : (91/100) * R ^ 2 ≤ ‖fw‖ := by
-    have h1 : ‖(w ^ 2 + c) + (-c)‖ ≤ ‖w ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hfwlo : (91/100) * R ^ (2 : ℕ) ≤ ‖fw‖ := by
+    have h1 : ‖(w ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
     rw [add_neg_cancel_right, norm_neg, norm_pow] at h1
     rw [hfweq]
     nlinarith
@@ -55,18 +55,18 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near {c w : ℂ} (hc : (100:ℝ) ≤ 
   have hfw2 : (2:ℝ) < ‖fw‖ := by nlinarith
   have hfwK : fw ∉ filledJulia c := not_mem_filledJulia hfwc hfw2
   -- crude asymptotic at the image, with the effective error `≤ 1/40`
-  have hcrude : |greenLimit c fw - Real.log ‖fw‖| ≤ 2 * ‖c‖ / ‖fw‖ ^ 2 :=
+  have hcrude : |greenLimit c fw - Real.log ‖fw‖| ≤ 2 * ‖c‖ / ‖fw‖ ^ (2 : ℕ) :=
     greenLimit_abs_sub_log hfwc hfw2
-  have herr : 2 * ‖c‖ / ‖fw‖ ^ 2 ≤ 1/40 := by
+  have herr : 2 * ‖c‖ / ‖fw‖ ^ (2 : ℕ) ≤ 1/40 := by
     rw [div_le_iff₀ (by positivity)]
-    have hsq : ((91/100) * R ^ 2) ^ 2 ≤ ‖fw‖ ^ 2 :=
+    have hsq : ((91/100) * R ^ (2 : ℕ)) ^ (2 : ℕ) ≤ ‖fw‖ ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity) hfwlo 2
     rw [← hRdef]
     nlinarith [sq_nonneg R, sq_nonneg (R - 100), pow_pos hR0 4]
   have hcrude' := abs_le.mp (le_trans hcrude herr)
   -- log window for the image norm
   have hlogfw_hi : Real.log ‖fw‖ ≤ 2 * Real.log R + 1/10 := by
-    have h1 : Real.log ‖fw‖ ≤ Real.log ((11/10) * R ^ 2) :=
+    have h1 : Real.log ‖fw‖ ≤ Real.log ((11/10) * R ^ (2 : ℕ)) :=
       Real.log_le_log (by nlinarith) hfwhi
     rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
     have h2 : Real.log (11/10) ≤ 1/10 := by
@@ -74,7 +74,7 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near {c w : ℂ} (hc : (100:ℝ) ≤ 
       linarith
     linarith
   have hlogfw_lo : 2 * Real.log R - 1/10 ≤ Real.log ‖fw‖ := by
-    have h1 : Real.log ((91/100) * R ^ 2) ≤ Real.log ‖fw‖ :=
+    have h1 : Real.log ((91/100) * R ^ (2 : ℕ)) ≤ Real.log ‖fw‖ :=
       Real.log_le_log (by positivity) hfwlo
     rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
     have h2 : -(1/10) ≤ Real.log (91/100) := by
@@ -123,7 +123,7 @@ theorem abs_greenFunctionDyn_sub_crit_le {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖
     (hz : ‖z‖ ≤ 2) :
     |greenFunctionDyn c z - greenFunctionDyn c 0| ≤ 1/8 := by
   have hfz : ‖quadratic c z - c‖ ≤ 4 := by
-    have h1 : quadratic c z - c = z ^ 2 := by simp [quadratic]
+    have h1 : quadratic c z - c = z ^ (2 : ℕ) := by simp [quadratic]
     rw [h1, norm_pow]
     nlinarith [norm_nonneg z]
   have h1 := abs_greenFunctionDyn_sub_two_crit_le hc hfz
@@ -167,28 +167,28 @@ coordinate extend single-valued over the tower domain. -/
 theorem not_mem_filledJulia_of_norm_le_two_of_large {c z : ℂ}
     (hc : (9:ℝ) ≤ ‖c‖) (hz : ‖z‖ ≤ 2) : z ∉ filledJulia c := by
   set M : ℝ := ‖c‖ with hM
-  have hz2 : ‖z‖ ^ 2 ≤ 4 := by nlinarith [norm_nonneg z]
+  have hz2 : ‖z‖ ^ (2 : ℕ) ≤ 4 := by nlinarith [norm_nonneg z]
   -- first iterate: ‖f_c z‖ ≥ ‖c‖ − 4
   set w₁ : ℂ := quadratic c z with hw₁
-  have hw₁eq : w₁ = z ^ 2 + c := by rw [hw₁, quadratic_apply]
+  have hw₁eq : w₁ = z ^ (2 : ℕ) + c := by rw [hw₁, quadratic_apply]
   have hf1 : M - 4 ≤ ‖w₁‖ := by
-    have key : ‖c‖ ≤ ‖w₁‖ + ‖z‖ ^ 2 := by
+    have key : ‖c‖ ≤ ‖w₁‖ + ‖z‖ ^ (2 : ℕ) := by
       rw [hw₁eq]
-      calc ‖c‖ = ‖(z ^ 2 + c) - z ^ 2‖ := by rw [show (z ^ 2 + c) - z ^ 2 = c by ring]
-        _ ≤ ‖z ^ 2 + c‖ + ‖z ^ 2‖ := norm_sub_le _ _
-        _ = ‖z ^ 2 + c‖ + ‖z‖ ^ 2 := by rw [norm_pow]
+      calc ‖c‖ = ‖(z ^ (2 : ℕ) + c) - z ^ (2 : ℕ)‖ := by rw [show (z ^ (2 : ℕ) + c) - z ^ (2 : ℕ) = c by ring]
+        _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+        _ = ‖z ^ (2 : ℕ) + c‖ + ‖z‖ ^ (2 : ℕ) := by rw [norm_pow]
     rw [← hM] at key
     nlinarith [key, hz2]
   -- second iterate: ‖f_c²(z)‖ ≥ (‖c‖ − 4)² − ‖c‖
   set w₂ : ℂ := quadratic c w₁ with hw₂
-  have hw₂eq : w₂ = w₁ ^ 2 + c := by rw [hw₂, quadratic_apply]
+  have hw₂eq : w₂ = w₁ ^ (2 : ℕ) + c := by rw [hw₂, quadratic_apply]
   have hw1nn : (0:ℝ) ≤ M - 4 := by linarith
-  have hf1sq : (M - 4) ^ 2 ≤ ‖w₁‖ ^ 2 := by nlinarith [hf1, hw1nn]
-  have hf2 : (M - 4) ^ 2 - M ≤ ‖w₂‖ := by
-    have key : ‖w₁‖ ^ 2 ≤ ‖w₂‖ + M := by
-      calc ‖w₁‖ ^ 2 = ‖w₁ ^ 2‖ := (norm_pow w₁ 2).symm
-        _ = ‖(w₁ ^ 2 + c) - c‖ := by rw [show (w₁ ^ 2 + c) - c = w₁ ^ 2 by ring]
-        _ ≤ ‖w₁ ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
+  have hf1sq : (M - 4) ^ (2 : ℕ) ≤ ‖w₁‖ ^ (2 : ℕ) := by nlinarith [hf1, hw1nn]
+  have hf2 : (M - 4) ^ (2 : ℕ) - M ≤ ‖w₂‖ := by
+    have key : ‖w₁‖ ^ (2 : ℕ) ≤ ‖w₂‖ + M := by
+      calc ‖w₁‖ ^ (2 : ℕ) = ‖w₁ ^ (2 : ℕ)‖ := (norm_pow w₁ 2).symm
+        _ = ‖(w₁ ^ (2 : ℕ) + c) - c‖ := by rw [show (w₁ ^ (2 : ℕ) + c) - c = w₁ ^ (2 : ℕ) by ring]
+        _ ≤ ‖w₁ ^ (2 : ℕ) + c‖ + ‖c‖ := norm_sub_le _ _
         _ = ‖w₂‖ + M := by rw [← hw₂eq, ← hM]
     nlinarith [key, hf1sq]
   have hMle : ‖c‖ ≤ ‖w₂‖ := by
@@ -267,9 +267,9 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near_s {c w : ℂ} {ρ : ℝ} (hc : (
   set R : ℝ := ‖c‖ with hRdef
   have hR0 : (0:ℝ) < R := by linarith
   have hρ0 : (0:ℝ) ≤ ρ := le_trans (norm_nonneg _) hw
-  have h2Rρ : 2 * R * ρ ≤ R ^ 2 / 20 := by nlinarith
-  have hρsq : ρ ^ 2 ≤ R ^ 2 / 1600 := by nlinarith
-  have hRR : R ≤ R ^ 2 / 100 := by nlinarith
+  have h2Rρ : 2 * R * ρ ≤ R ^ (2 : ℕ) / 20 := by nlinarith
+  have hρsq : ρ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) / 1600 := by nlinarith
+  have hRR : R ≤ R ^ (2 : ℕ) / 100 := by nlinarith
   -- norm window for `w`
   have hwhi : ‖w‖ ≤ R + ρ := by
     have h1 : ‖(w - c) + c‖ ≤ ‖w - c‖ + ‖c‖ := norm_add_le _ _
@@ -281,18 +281,18 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near_s {c w : ℂ} {ρ : ℝ} (hc : (
     linarith
   -- norm window for the image `f_c w = w² + c`
   set fw : ℂ := quadratic c w with hfwdef
-  have hfweq : fw = w ^ 2 + c := rfl
-  have hsqhi : ‖w‖ ^ 2 ≤ (R + ρ) ^ 2 :=
+  have hfweq : fw = w ^ (2 : ℕ) + c := rfl
+  have hsqhi : ‖w‖ ^ (2 : ℕ) ≤ (R + ρ) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg w) hwhi 2
-  have hsqlo : (R - ρ) ^ 2 ≤ ‖w‖ ^ 2 :=
+  have hsqlo : (R - ρ) ^ (2 : ℕ) ≤ ‖w‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by nlinarith) hwlo 2
-  have hfwhi : ‖fw‖ ≤ (11/10) * R ^ 2 := by
-    have h1 : ‖w ^ 2 + c‖ ≤ ‖w ^ 2‖ + ‖c‖ := norm_add_le _ _
+  have hfwhi : ‖fw‖ ≤ (11/10) * R ^ (2 : ℕ) := by
+    have h1 : ‖w ^ (2 : ℕ) + c‖ ≤ ‖w ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
     rw [norm_pow] at h1
     rw [hfweq]
     nlinarith
-  have hfwlo : (91/100) * R ^ 2 ≤ ‖fw‖ := by
-    have h1 : ‖(w ^ 2 + c) + (-c)‖ ≤ ‖w ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hfwlo : (91/100) * R ^ (2 : ℕ) ≤ ‖fw‖ := by
+    have h1 : ‖(w ^ (2 : ℕ) + c) + (-c)‖ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
     rw [add_neg_cancel_right, norm_neg, norm_pow] at h1
     rw [hfweq]
     nlinarith
@@ -302,18 +302,18 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near_s {c w : ℂ} {ρ : ℝ} (hc : (
   have hfw2 : (2:ℝ) < ‖fw‖ := by nlinarith
   have hfwK : fw ∉ filledJulia c := not_mem_filledJulia hfwc hfw2
   -- crude asymptotic at the image, with the effective error `≤ 1/40`
-  have hcrude : |greenLimit c fw - Real.log ‖fw‖| ≤ 2 * ‖c‖ / ‖fw‖ ^ 2 :=
+  have hcrude : |greenLimit c fw - Real.log ‖fw‖| ≤ 2 * ‖c‖ / ‖fw‖ ^ (2 : ℕ) :=
     greenLimit_abs_sub_log hfwc hfw2
-  have herr : 2 * ‖c‖ / ‖fw‖ ^ 2 ≤ 1/40 := by
+  have herr : 2 * ‖c‖ / ‖fw‖ ^ (2 : ℕ) ≤ 1/40 := by
     rw [div_le_iff₀ (by positivity)]
-    have hsq : ((91/100) * R ^ 2) ^ 2 ≤ ‖fw‖ ^ 2 :=
+    have hsq : ((91/100) * R ^ (2 : ℕ)) ^ (2 : ℕ) ≤ ‖fw‖ ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity) hfwlo 2
     rw [← hRdef]
     nlinarith [sq_nonneg R, sq_nonneg (R - 100), pow_pos hR0 4]
   have hcrude' := abs_le.mp (le_trans hcrude herr)
   -- log window for the image norm
   have hlogfw_hi : Real.log ‖fw‖ ≤ 2 * Real.log R + 1/10 := by
-    have h1 : Real.log ‖fw‖ ≤ Real.log ((11/10) * R ^ 2) :=
+    have h1 : Real.log ‖fw‖ ≤ Real.log ((11/10) * R ^ (2 : ℕ)) :=
       Real.log_le_log (by nlinarith) hfwhi
     rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
     have h2 : Real.log (11/10) ≤ 1/10 := by
@@ -321,7 +321,7 @@ theorem abs_greenFunctionDyn_sub_log_le_of_near_s {c w : ℂ} {ρ : ℝ} (hc : (
       linarith
     linarith
   have hlogfw_lo : 2 * Real.log R - 1/10 ≤ Real.log ‖fw‖ := by
-    have h1 : Real.log ((91/100) * R ^ 2) ≤ Real.log ‖fw‖ :=
+    have h1 : Real.log ((91/100) * R ^ (2 : ℕ)) ≤ Real.log ‖fw‖ :=
       Real.log_le_log (by positivity) hfwlo
     rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
     have h2 : -(1/10) ≤ Real.log (91/100) := by
@@ -356,10 +356,10 @@ theorem abs_greenFunctionDyn_sub_two_crit_le_s {c w : ℂ} {ρ : ℝ} (hc : (100
 /-- **Parametric `closedBall 0 s` pinch**: `G_c = G_c(0) ± 1/8` up to radius `s` with
 `s² ≤ ‖c‖/40`. -/
 theorem abs_greenFunctionDyn_sub_crit_le_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
-    (hs : s ^ 2 ≤ ‖c‖ / 40) (hz : ‖z‖ ≤ s) :
+    (hs : s ^ (2 : ℕ) ≤ ‖c‖ / 40) (hz : ‖z‖ ≤ s) :
     |greenFunctionDyn c z - greenFunctionDyn c 0| ≤ 1/8 := by
-  have hfz : ‖quadratic c z - c‖ ≤ s ^ 2 := by
-    have h1 : quadratic c z - c = z ^ 2 := by simp [quadratic]
+  have hfz : ‖quadratic c z - c‖ ≤ s ^ (2 : ℕ) := by
+    have h1 : quadratic c z - c = z ^ (2 : ℕ) := by simp [quadratic]
     rw [h1, norm_pow]
     have hz0 : (0:ℝ) ≤ ‖z‖ := norm_nonneg z
     nlinarith
@@ -372,7 +372,7 @@ theorem abs_greenFunctionDyn_sub_crit_le_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ)
 /-- **Parametric Green-pinch contrapositive, upper side**: Green value above `G_c(0) + 1/8`
 places the point outside `closedBall 0 s` whenever `s² ≤ ‖c‖/40`. -/
 theorem lt_norm_of_greenFunctionDyn_gt_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
-    (hs : s ^ 2 ≤ ‖c‖ / 40)
+    (hs : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
     (hg : greenFunctionDyn c 0 + 1/8 < greenFunctionDyn c z) : s < ‖z‖ := by
   by_contra h
   rw [not_lt] at h
@@ -382,7 +382,7 @@ theorem lt_norm_of_greenFunctionDyn_gt_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) �
 
 /-- **Parametric Green-pinch contrapositive, lower side.** -/
 theorem lt_norm_of_greenFunctionDyn_lt_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
-    (hs : s ^ 2 ≤ ‖c‖ / 40)
+    (hs : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
     (hg : greenFunctionDyn c z < greenFunctionDyn c 0 - 1/8) : s < ‖z‖ := by
   by_contra h
   rw [not_lt] at h

@@ -27,13 +27,13 @@ theorem eventually_cheb_ll_conditions (c L₀ : ℝ) (hc0 : 0 < c) (hc : c ≤ 1
         ∧ L₀ ≤ Real.log (chebHeightLl c (N + chebWidthLl c N + 1)) := by
   filter_upwards [eventually_ge_atTop (3 : ℝ),
     Real.tendsto_log_atTop.eventually_ge_atTop
-      (max (max 128 (Real.exp (2 / c))) (L₀ ^ 2 / 2))] with N hN3 hlogN
+      (max (max 128 (Real.exp (2 / c))) (L₀ ^ (2 : ℕ) / 2))] with N hN3 hlogN
   have hN0 : (0 : ℝ) < N := by linarith
   have h128 : (128 : ℝ) ≤ Real.log N :=
     le_trans (le_max_left _ _) (le_trans (le_max_left _ _) hlogN)
   have hexp : Real.exp (2 / c) ≤ Real.log N :=
     le_trans (le_max_right _ _) (le_trans (le_max_left _ _) hlogN)
-  have hL₀ : L₀ ^ 2 / 2 ≤ Real.log N := le_trans (le_max_right _ _) hlogN
+  have hL₀ : L₀ ^ (2 : ℕ) / 2 ≤ Real.log N := le_trans (le_max_right _ _) hlogN
   have hN1 : (1 : ℝ) ≤ Real.log N := by linarith
   have hH1 : (1 : ℝ) ≤ chebWidthLl c N := one_le_chebWidthLl hc hN0 hN1
   have hHN : chebWidthLl c N ≤ N := chebWidthLl_le hN0.le
@@ -57,8 +57,8 @@ theorem eventually_cheb_ll_conditions (c L₀ : ℝ) (hc0 : 0 < c) (hc : c ≤ 1
   have hQ256 : (256 : ℝ) ≤ chebQuadLl c Z := by linarith
   refine ⟨hN0, hN1, hH1, hHN, hlogZ0, hQ256, hQ2, hdepth, ?_⟩
   rw [chebHeightLl, Real.log_exp]
-  have hsq : L₀ ^ 2 ≤ chebQuadLl c Z := by linarith
-  have hroot : Real.sqrt (L₀ ^ 2) ≤ Real.sqrt (chebQuadLl c Z) := Real.sqrt_le_sqrt hsq
+  have hsq : L₀ ^ (2 : ℕ) ≤ chebQuadLl c Z := by linarith
+  have hroot : Real.sqrt (L₀ ^ (2 : ℕ)) ≤ Real.sqrt (chebQuadLl c Z) := Real.sqrt_le_sqrt hsq
   rw [Real.sqrt_sq_eq_abs] at hroot
   linarith [le_abs_self L₀, hroot]
 

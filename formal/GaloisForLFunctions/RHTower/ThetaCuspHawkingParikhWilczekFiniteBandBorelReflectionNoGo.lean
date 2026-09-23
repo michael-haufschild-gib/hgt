@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.SeamDivisionSourceSplit
 
 The first-winding Parikh--Wilczek Borel tower is
 
-`B_k(s) = Gamma(s + 2k) / (k!)^2`.
+`B_k(s) = Gamma(s + 2k) / (k!)^(2 : ℕ)`.
 
 Every fixed finite grade row therefore factors as `Gamma(s) P(s)`, where `P` is an even
 ascending-Pochhammer polynomial.  If such a row produced the functional-equation-reflected
@@ -45,7 +45,7 @@ def schwarzschildParikhWilczekFiniteBandBorelTransform {N : ℕ}
 /-- Exact polynomial multiplier of a finite PW Borel boundary row after extracting `Gamma(s)`. -/
 def schwarzschildParikhWilczekFiniteBandGammaMultiplier {N : ℕ}
     (a : Fin (N + 1) → ℂ) : ℂ[X] :=
-  ∑ j, C (a j / (((j : ℕ).factorial : ℂ) ^ 2)) *
+  ∑ j, C (a j / (((j : ℕ).factorial : ℂ) ^ (2 : ℕ))) *
     ascPochhammer ℂ (2 * (j : ℕ))
 
 /-- **Finite-row classification.**  Every finite PW Borel boundary row is Gamma times one finite
@@ -59,11 +59,11 @@ theorem schwarzschildParikhWilczekFiniteBandBorelTransform_eq_eval_mul_Gamma
   simp only [schwarzschildParikhWilczekFirstWindingBorelCoefficient]
   have hEval :
       (schwarzschildParikhWilczekFiniteBandGammaMultiplier a).eval s =
-        ∑ j, (a j / (((j : ℕ).factorial : ℂ) ^ 2)) *
+        ∑ j, (a j / (((j : ℕ).factorial : ℂ) ^ (2 : ℕ))) *
           (ascPochhammer ℂ (2 * (j : ℕ))).eval s := by
     rw [schwarzschildParikhWilczekFiniteBandGammaMultiplier]
     change (Polynomial.evalRingHom s)
-      (∑ j, C (a j / (((j : ℕ).factorial : ℂ) ^ 2)) *
+      (∑ j, C (a j / (((j : ℕ).factorial : ℂ) ^ (2 : ℕ))) *
         ascPochhammer ℂ (2 * (j : ℕ))) = _
     rw [map_sum]
     apply Finset.sum_congr rfl

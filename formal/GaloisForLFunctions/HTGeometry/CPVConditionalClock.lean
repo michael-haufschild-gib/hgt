@@ -41,14 +41,14 @@ def conditionalClock (tau t : ℝ) : lp (fun _ : ℕ => ℂ) 2 :=
 
 /-- Conditioning changes phases while preserving every occupation probability. -/
 theorem conditionalClock_probability (tau t : ℝ) (n : ℕ) :
-    ‖conditionalClock tau t n‖ ^ 2 = radiationMass tau n := by
+    ‖conditionalClock tau t n‖ ^ (2 : ℕ) = radiationMass tau n := by
   simp only [conditionalClock_apply, norm_mul, norm_pow, clockPhase_norm, one_pow,
     mul_one, radiationVector_apply, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.sqrt_nonneg _)]
   exact Real.sq_sqrt (radiationMass_pos tau n).le
 
 /-- Every conditional oscillator state is normalized. -/
-theorem conditionalClock_norm_sq (tau t : ℝ) : ‖conditionalClock tau t‖ ^ 2 = 1 := by
+theorem conditionalClock_norm_sq (tau t : ℝ) : ‖conditionalClock tau t‖ ^ (2 : ℕ) = 1 := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   simp only [conditionalClock_probability]
   exact (radiationMass_hasSum tau).tsum_eq

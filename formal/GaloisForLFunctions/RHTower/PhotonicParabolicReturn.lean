@@ -15,7 +15,7 @@ Its repeated transport, in a fixed nonsingular basis, has the convergent Dirichl
 response `[[ζ(s), ζ(s-1)], [0, ζ(s)]]` for `2 < Re s`.
 
 On the open critical strip, analytic invertible row and column operations reduce
-this response to `diag(1, ζ(s)^2)`. Its defect confinement is equivalent to RH.
+this response to `diag(1, ζ(s)^(2 : ℕ))`. Its defect confinement is equivalent to RH.
 The defect kernel is isotropic for the two-mode flux; the flux annihilator
 identifies the dual quotient rather than a positive form on that kernel.
 
@@ -89,7 +89,7 @@ theorem photonicReturn_hasSum :
   · simpa [photonicParabolic_pow, photonicUpper, photonicReturn] using ha
 
 theorem photonicReturn_det (s : ℂ) :
-    (photonicReturn s).det = riemannZeta s ^ 2 := by
+    (photonicReturn s).det = riemannZeta s ^ (2 : ℕ) := by
   simp [photonicReturn, photonicUpper, Matrix.det_fin_two, pow_two]
 
 /-- Loss of invertibility detects precisely a zeta zero. -/
@@ -123,7 +123,7 @@ theorem photonicParabolicBasis_det : photonicParabolicBasis.det = -5 / 6 := by
   ring
 
 theorem photonicBinaryCell_square_intertwines :
-    photonicBinaryCell ^ 2 * photonicParabolicBasis =
+    photonicBinaryCell ^ (2 : ℕ) * photonicParabolicBasis =
       photonicParabolicBasis * photonicParabolic := by
   simp only [pow_two, photonicBinaryCell, photonicParabolicBasis,
     photonicParabolic, photonicUpper, Matrix.mul_fin_two]
@@ -131,7 +131,7 @@ theorem photonicBinaryCell_square_intertwines :
   fin_cases i <;> fin_cases j <;> dsimp <;> ring
 
 theorem photonicBinaryCell_cover_intertwines (n : ℕ) :
-    (photonicBinaryCell ^ 2) ^ n * photonicParabolicBasis =
+    (photonicBinaryCell ^ (2 : ℕ)) ^ n * photonicParabolicBasis =
       photonicParabolicBasis * photonicParabolic ^ n := by
   induction n with
   | zero => simp
@@ -143,7 +143,7 @@ theorem photonicBinaryCell_cover_intertwines (n : ℕ) :
 theorem photonicBinaryReturn_hasSum :
     ∀ s : ℂ, 2 < s.re →
       HasSum (fun n : ℕ => (1 / (n + 1 : ℂ) ^ s) •
-        ((photonicBinaryCell ^ 2) ^ (n + 1) * photonicParabolicBasis))
+        ((photonicBinaryCell ^ (2 : ℕ)) ^ (n + 1) * photonicParabolicBasis))
         (photonicParabolicBasis * photonicReturn s) := by
   intro s hs
   simpa only [photonicBinaryCell_cover_intertwines, Matrix.mul_smul] using
@@ -168,7 +168,7 @@ noncomputable def photonicReturnRight (s : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
 theorem photonicReturn_reduction :
     ∀ s : ℂ, 0 < s.re → s.re < 1 →
       photonicReturnLeft s * photonicReturn s * photonicReturnRight s =
-        !![1, 0; 0, riemannZeta s ^ 2] := by
+        !![1, 0; 0, riemannZeta s ^ (2 : ℕ)] := by
   intro s h0 h1
   have hb := photonic_shift_zeta_ne_zero h0 h1
   simp only [photonicReturnLeft, photonicReturnRight, photonicReturn,

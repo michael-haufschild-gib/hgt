@@ -18,11 +18,11 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
+local instance fokasLenellsCausalGeneratorDissipationInst1 : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
 
 /-- The completed orbit energy has its exact right derivative on the maximal domain. -/
 theorem causalGenerator_energy_hasRightDeriv (u : causalGeneratorDomain) :
-    HasDerivWithinAt (fun r : ℝ => ‖causalForwardOrbit u.val r‖^2)
+    HasDerivWithinAt (fun r : ℝ => ‖causalForwardOrbit u.val r‖^(2 : ℕ))
       (2 * inner ℝ u.val (causalGenerator u)) (Ioi 0) 0 := by
   simpa only [causalForwardOrbit_zero] using (causalGenerator_hasRightDeriv u).norm_sq
 
@@ -54,31 +54,31 @@ theorem causalDissipationRate_nonneg (u : causalGeneratorDomain) : 0 ≤ causalD
 
 /-- The actual lost energy has the rate supplied by the maximal generator. -/
 theorem causalLossProjection_energy_hasRightDeriv (u : causalGeneratorDomain) :
-    HasDerivWithinAt (fun r : ℝ => ‖causalLossProjection r.toNNReal u.val‖^2)
+    HasDerivWithinAt (fun r : ℝ => ‖causalLossProjection r.toNNReal u.val‖^(2 : ℕ))
       (causalDissipationRate u) (Ioi 0) 0 := by
-  have hd := (hasDerivWithinAt_const (0:ℝ) (Ioi 0) (‖u.val‖^2)).sub
+  have hd := (hasDerivWithinAt_const (0:ℝ) (Ioi 0) (‖u.val‖^(2 : ℕ))).sub
     (causalGenerator_energy_hasRightDeriv u)
-  have he (r : ℝ) : ‖causalLossProjection r.toNNReal u.val‖^2 =
-      ‖u.val‖^2-‖causalForwardOrbit u.val r‖^2 := by
+  have he (r : ℝ) : ‖causalLossProjection r.toNNReal u.val‖^(2 : ℕ) =
+      ‖u.val‖^(2 : ℕ)-‖causalForwardOrbit u.val r‖^(2 : ℕ) := by
     have h := causalLowerCauchyEvolution_energy_decomposition r.toNNReal u.val
-    change ‖u.val‖^2 = ‖causalForwardOrbit u.val r‖^2+‖causalLossProjection r.toNNReal u.val‖^2 at h
+    change ‖u.val‖^(2 : ℕ) = ‖causalForwardOrbit u.val r‖^(2 : ℕ)+‖causalLossProjection r.toNNReal u.val‖^(2 : ℕ) at h
     linarith
-  have hd' : HasDerivWithinAt (fun r : ℝ => ‖u.val‖^2-‖causalForwardOrbit u.val r‖^2)
+  have hd' : HasDerivWithinAt (fun r : ℝ => ‖u.val‖^(2 : ℕ)-‖causalForwardOrbit u.val r‖^(2 : ℕ))
       (causalDissipationRate u) (Ioi 0) 0 := by
     simpa only [Pi.sub_apply,zero_sub,causalDissipationRate,neg_mul] using! hd
   exact hd'.congr (fun r _ => he r) (he 0)
 
 /-- The finite-time lost-energy quotient converges to the actual nonnegative generator rate. -/
 theorem causalLossProjection_energy_quotient_tendsto (u : causalGeneratorDomain) :
-    Tendsto (fun r : ℝ => r⁻¹ * ‖causalLossProjection r.toNNReal u.val‖^2)
+    Tendsto (fun r : ℝ => r⁻¹ * ‖causalLossProjection r.toNNReal u.val‖^(2 : ℕ))
       (𝓝[>] 0) (𝓝 (causalDissipationRate u)) := by
   have ht := (hasDerivWithinAt_iff_tendsto_slope' (by simp : (0:ℝ) ∉ Ioi 0)).1
     (causalLossProjection_energy_hasRightDeriv u)
-  have hz : ‖causalLossProjection 0 u.val‖^2 = 0 := by
+  have hz : ‖causalLossProjection 0 u.val‖^(2 : ℕ) = 0 := by
     have h := causalLowerCauchyEvolution_energy_decomposition 0 u.val
     rw [causalLowerCauchyEvolution_zero] at h
     linarith
-  change Tendsto (fun r : ℝ => slope (fun s : ℝ => ‖causalLossProjection s.toNNReal u.val‖^2) 0 r)
+  change Tendsto (fun r : ℝ => slope (fun s : ℝ => ‖causalLossProjection s.toNNReal u.val‖^(2 : ℕ)) 0 r)
     (𝓝[>] 0) (𝓝 (causalDissipationRate u)) at ht
   simpa only [slope_def_module,sub_zero,Real.toNNReal_zero,hz,smul_eq_mul] using ht
 

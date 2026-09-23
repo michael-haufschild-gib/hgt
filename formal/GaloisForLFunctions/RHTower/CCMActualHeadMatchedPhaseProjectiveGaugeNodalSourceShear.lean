@@ -37,7 +37,7 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm_eq
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm xi n =
-      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm,
     ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear,
@@ -66,7 +66,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily_isHerm
 theorem det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily
     (xi : ℝ) (n : ℕ) (t : ℝ) :
     (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n t).det =
-      (-(2 * t * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      (-(2 * t * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) : ℝ) := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily,
     ccmActualHeadMatchedPhaseProjectiveGaugeAtomHermitianOrientationCompression,
@@ -86,13 +86,13 @@ theorem hasDerivAt_det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossi
     HasDerivAt
       (fun t : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n t).det.re)
-      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) 0 := by
   have hfun :
       (fun t : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n t).det.re) =
       fun t : ℝ =>
-        (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+        (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
           (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) * t := by
     funext t
     rw [det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily]
@@ -101,14 +101,14 @@ theorem hasDerivAt_det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossi
     ring
   rw [hfun]
   have hbase := (hasDerivAt_id (0 : ℝ)).const_mul
-    (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+    (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
       (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re)
   have hbase' :
       HasDerivAt
         (fun t : ℝ =>
-          (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+          (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
             (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) * id t)
-        (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+        (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
           (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re) 0 := by
     exact hbase.congr_deriv (by ring)
   refine hbase'.congr_of_eventuallyEq ?_
@@ -132,7 +132,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm_pos_iff
   have hgauge :=
     ccmActualHeadMatchedPhaseProjectiveGauge_ne_zero_of_criticalMellinAtomWeight_ne_zero
       n hweight
-  have hsquare : 0 < ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 := sq_pos_of_ne_zero hgauge
+  have hsquare : 0 < ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) := sq_pos_of_ne_zero hgauge
   constructor <;> intro h <;> nlinarith
 
 theorem det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily_one_neg_iff
@@ -149,7 +149,7 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingReporter
     (xi : ℝ) (n : ℕ) : ℝ :=
   if criticalMellinAtomWeight n = 0 then 0
   else ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingForm xi n /
-    (2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2)
+    (2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ))
 
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingReporter_eq
     (xi : ℝ) (n : ℕ) :
@@ -186,7 +186,7 @@ theorem ccmActualHeadMatchedPrimePolarFiniteBlock_eq_nodalSourceCrossing
     ccmActualHeadMatchedPrimePolarFiniteBlock F f =
       -2 * ∫ xi : ℝ,
         ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFiniteReporter F xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPrimePolarFiniteBlock_eq_orientedPhaseFiniteSymbol]
   congr 2
   funext xi

@@ -24,10 +24,10 @@ def coordinateReflectionDefect (k : ι) (x : ι → ℝ) : ι → ℝ := fun j =
 
 /-- Squared Euclidean work of all reflection defects in one complete observer cycle. -/
 def orbitReflectionCycleWork (x : ι → ℝ) : ℝ :=
-  ∑ k, ∑ j, coordinateReflectionDefect k x j ^ 2
+  ∑ k, ∑ j, coordinateReflectionDefect k x j ^ (2 : ℕ)
 
 /-- Squared Euclidean source energy. -/
-def coordinateEnergy (x : ι → ℝ) : ℝ := ∑ j, x j ^ 2
+def coordinateEnergy (x : ι → ℝ) : ℝ := ∑ j, x j ^ (2 : ℕ)
 
 /-- Work after `q` completed observer cycles. -/
 def repeatedOrbitReflectionWork (q : ℕ) (x : ι → ℝ) : ℝ :=
@@ -106,7 +106,7 @@ theorem orbitReflectionCycleWork_eq_zero_iff (x : ι → ℝ) :
   · intro h
     have henergy : coordinateEnergy x = 0 := by linarith
     funext j
-    have hterm : x j ^ 2 = 0 := by
+    have hterm : x j ^ (2 : ℕ) = 0 := by
       exact (Finset.sum_eq_zero_iff_of_nonneg (fun i _ => sq_nonneg (x i))).mp henergy j
         (Finset.mem_univ j)
     exact sq_eq_zero_iff.mp hterm

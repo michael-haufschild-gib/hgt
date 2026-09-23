@@ -22,7 +22,7 @@ def realJacobiDiagonalRescaleU (g : Fin n → ℝ)
   Matrix.diagonal (fun i => (g i)⁻¹) * U * Matrix.diagonal g
 
 def realJacobiDiagonalRescaleD (g d : Fin n → ℝ) : Fin n → ℝ :=
-  fun i => d i * (g i) ^ 2
+  fun i => d i * (g i) ^ (2 : ℕ)
 
 theorem realJacobiDiagonalRescaleU_upper (g : Fin n → ℝ)
     {U : Matrix (Fin n) (Fin n) ℝ} (hU : ∀ i j, j < i → U i j = 0) :

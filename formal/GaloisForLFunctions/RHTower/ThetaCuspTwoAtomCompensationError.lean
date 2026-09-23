@@ -20,12 +20,12 @@ private theorem product_error {f g F G e h : ℝ}
 
 /-- The same correction expression on the literal retained two-atom source. -/
 def thetaCuspTwoAtomCompensationSource (x : ℝ) : ℝ :=
-  3*thetaCuspTwoAtomSource x^2 + 2*x*thetaCuspTwoAtomSource x*deriv thetaCuspTwoAtomSource x
+  3*thetaCuspTwoAtomSource x^(2 : ℕ) + 2*x*thetaCuspTwoAtomSource x*deriv thetaCuspTwoAtomSource x
 
 /-- Both linear source errors and both quadratic products remain in the correction bound. -/
 def thetaCuspTwoAtomCompensationErrorBound (x : ℝ) : ℝ :=
   3*(2*|thetaCuspTwoAtomSource x| *thetaCuspTwoAtomSourceErrorBoundTwelve 0 x+
-      thetaCuspTwoAtomSourceErrorBoundTwelve 0 x^2) +
+      thetaCuspTwoAtomSourceErrorBoundTwelve 0 x^(2 : ℕ)) +
     2*|x| *(|thetaCuspTwoAtomSource x| *thetaCuspTwoAtomSourceErrorBoundTwelve 1 x+
       |deriv thetaCuspTwoAtomSource x| *thetaCuspTwoAtomSourceErrorBoundTwelve 0 x+
       thetaCuspTwoAtomSourceErrorBoundTwelve 0 x*thetaCuspTwoAtomSourceErrorBoundTwelve 1 x)
@@ -46,13 +46,13 @@ theorem abs_thetaCuspCenterCompensationSource_sub_two_le {x : ℝ}
   have hs := product_error h0 h0
   have hp := product_error h0 h1
   have he : thetaCuspCenterCompensationSource x-thetaCuspTwoAtomCompensationSource x =
-      3*(thetaCuspFullSource x^2-thetaCuspTwoAtomSource x^2)+
+      3*(thetaCuspFullSource x^(2 : ℕ)-thetaCuspTwoAtomSource x^(2 : ℕ))+
         2*x*(thetaCuspFullSource x*deriv thetaCuspFullSource x-
           thetaCuspTwoAtomSource x*deriv thetaCuspTwoAtomSource x) := by
     unfold thetaCuspCenterCompensationSource thetaCuspTwoAtomCompensationSource
     ring
   rw [he]
-  have ht := abs_add_le (3*(thetaCuspFullSource x^2-thetaCuspTwoAtomSource x^2))
+  have ht := abs_add_le (3*(thetaCuspFullSource x^(2 : ℕ)-thetaCuspTwoAtomSource x^(2 : ℕ)))
     (2*x*(thetaCuspFullSource x*deriv thetaCuspFullSource x-
       thetaCuspTwoAtomSource x*deriv thetaCuspTwoAtomSource x))
   norm_num [abs_mul] at ht

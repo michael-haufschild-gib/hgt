@@ -67,7 +67,7 @@ theorem selbergOriginalLogMonomial_succ_succ_div_log_pow_eq_tsum
 /-- The original `(log, log⁴)` Selberg form has leading coefficient one. -/
 theorem tendsto_selbergOriginalLogMonomial_one_four_div_log_fourth_one :
     Tendsto (fun N : ℕ =>
-      selbergOriginalLogMonomial 1 4 N / Real.log N ^ 4)
+      selbergOriginalLogMonomial 1 4 N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 1) := by
   refine tendsto_tsum_selbergCorrectionScaledLogPowerTerm_zero_three_one.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
@@ -77,7 +77,7 @@ theorem tendsto_selbergOriginalLogMonomial_one_four_div_log_fourth_one :
 /-- The original `(log², log³)` Selberg form has leading coefficient `3/2`. -/
 theorem tendsto_selbergOriginalLogMonomial_two_three_div_log_fourth_three_halves :
     Tendsto (fun N : ℕ =>
-      selbergOriginalLogMonomial 2 3 N / Real.log N ^ 4)
+      selbergOriginalLogMonomial 2 3 N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (3 / 2 : ℝ)) := by
   refine
     tendsto_tsum_selbergCorrectionScaledLogPowerTerm_one_two_three_halves.congr' ?_

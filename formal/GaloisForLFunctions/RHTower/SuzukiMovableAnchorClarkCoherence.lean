@@ -29,7 +29,7 @@ noncomputable section
 
 /-- Donoghue kernel normalized at the movable upper-half-plane anchor `ic`. -/
 def suzukiMovableDonoghueKernel (c t : ℝ) (z : ℂ) : ℂ :=
-  ((t : ℂ) * z + (c : ℂ) ^ 2) /
+  ((t : ℂ) * z + (c : ℂ) ^ (2 : ℕ)) /
     ((c : ℂ) * ((t : ℂ) - z))
 
 /-- The movable Donoghue kernel is exactly normalized to `i` at `z = ic`. -/
@@ -51,7 +51,7 @@ theorem suzukiMovableDonoghueKernel_eq_nevanlinna
     {c : ℝ} (hc : c ≠ 0) {t : ℝ} {z : ℂ}
     (htz : (t : ℂ) - z ≠ 0) :
     suzukiMovableDonoghueKernel c t z =
-      (((t : ℂ) ^ 2 + (c : ℂ) ^ 2) /
+      (((t : ℂ) ^ (2 : ℕ) + (c : ℂ) ^ (2 : ℕ)) /
           ((c : ℂ) * ((t : ℂ) - z))) - (t : ℂ) / c := by
   rw [suzukiMovableDonoghueKernel]
   field_simp [ofReal_ne_zero.mpr hc, htz]
@@ -59,7 +59,7 @@ theorem suzukiMovableDonoghueKernel_eq_nevanlinna
 
 /-- Nevanlinna mass contributed by a Clark atom of probability `p` at the real point `x`. -/
 def suzukiMovableNevanlinnaWeight (c x p : ℝ) : ℝ :=
-  (x ^ 2 + c ^ 2) * p / c
+  (x ^ (2 : ℕ) + c ^ (2 : ℕ)) * p / c
 
 theorem suzukiMovableNevanlinnaWeight_pos
     {c x p : ℝ} (hc : 0 < c) (hp : 0 < p) :
@@ -88,9 +88,9 @@ def suzukiMovableClarkPhaseSpeed (c x p : ℝ) : ℝ :=
 theorem suzukiMovableClarkPhaseSpeed_eq
     {c x p : ℝ} (hc : c ≠ 0) (hp : p ≠ 0) :
     suzukiMovableClarkPhaseSpeed c x p =
-      2 * c / ((x ^ 2 + c ^ 2) * p) := by
+      2 * c / ((x ^ (2 : ℕ) + c ^ (2 : ℕ)) * p) := by
   rw [suzukiMovableClarkPhaseSpeed, suzukiMovableNevanlinnaWeight]
-  have hs : x ^ 2 + c ^ 2 ≠ 0 := by positivity
+  have hs : x ^ (2 : ℕ) + c ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp [hc, hp, hs]
 
 /-! ## Source coherence and exact fragmentation -/
@@ -100,7 +100,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 /-- Squared cosine of the Hilbert-space angle between two nonzero source vectors.  The zero-vector
 convention is harmless and keeps the expression total. -/
 def suzukiSourceCoherence (anchor mode : E) : ℝ :=
-  ‖inner ℂ anchor mode‖ ^ 2 / (‖anchor‖ ^ 2 * ‖mode‖ ^ 2)
+  ‖inner ℂ anchor mode‖ ^ (2 : ℕ) / (‖anchor‖ ^ (2 : ℕ) * ‖mode‖ ^ (2 : ℕ))
 
 theorem suzukiSourceCoherence_nonneg (anchor mode : E) :
     0 ≤ suzukiSourceCoherence anchor mode := by
@@ -111,7 +111,7 @@ theorem suzukiSourceCoherence_nonneg (anchor mode : E) :
 overlap that appears as the Clark probability atom. -/
 theorem suzukiSourceCoherence_of_norm_eq_one
     {anchor mode : E} (hanchor : ‖anchor‖ = 1) (hmode : ‖mode‖ = 1) :
-    suzukiSourceCoherence anchor mode = ‖inner ℂ anchor mode‖ ^ 2 := by
+    suzukiSourceCoherence anchor mode = ‖inner ℂ anchor mode‖ ^ (2 : ℕ) := by
   simp [suzukiSourceCoherence, hanchor, hmode]
 
 theorem suzukiSourceCoherence_le_one (anchor mode : E) :

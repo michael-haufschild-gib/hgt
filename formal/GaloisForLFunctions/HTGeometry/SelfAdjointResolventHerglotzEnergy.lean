@@ -20,15 +20,15 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 /-- Normalized scalar resolvent readout of a self-adjoint partial linear map. -/
 def resolventHerglotzEnergy {A : H →ₗ.[ℂ] H} (hA : IsSelfAdjoint A) {z : ℂ}
     (hz : z.im ≠ 0) (v : H) : ℂ :=
-  z * inner ℂ v v + (z ^ 2 + 1) * inner ℂ v (resolventLinear hA hz v)
+  z * inner ℂ v v + (z ^ (2 : ℕ) + 1) * inner ℂ v (resolventLinear hA hz v)
 
 /-- The normalized scalar resolvent readout has exact graph-energy imaginary part. -/
 theorem resolventHerglotzEnergy_im_eq_graphEnergy {A : H →ₗ.[ℂ] H}
     (hA : IsSelfAdjoint A) {z : ℂ} (hz : z.im ≠ 0) (v : H) :
     (resolventHerglotzEnergy hA hz v).im =
       z.im *
-        (‖A ⟨resolventLinear hA hz v, resolventLinear_mem hA hz v⟩‖ ^ 2 +
-          ‖resolventLinear hA hz v‖ ^ 2) := by
+        (‖A ⟨resolventLinear hA hz v, resolventLinear_mem hA hz v⟩‖ ^ (2 : ℕ) +
+          ‖resolventLinear hA hz v‖ ^ (2 : ℕ)) := by
   let r : H := resolventLinear hA hz v
   let rd : A.domain := ⟨r, resolventLinear_mem hA hz v⟩
   have hshift : A rd - z • r = v := by
@@ -40,33 +40,33 @@ theorem resolventHerglotzEnergy_im_eq_graphEnergy {A : H →ₗ.[ℂ] H}
     have hconj : (starRingEnd ℂ) (inner ℂ (A rd) r) = inner ℂ (A rd) r :=
       Complex.conj_eq_iff_im.2 hdiag
     rwa [inner_conj_symm] at hconj
-  have hselfr : inner ℂ r r = (‖r‖ ^ 2 : ℂ) := by
+  have hselfr : inner ℂ r r = (‖r‖ ^ (2 : ℕ) : ℂ) := by
     simp only [inner_self_eq_norm_sq_to_K]
     rfl
-  have hselfA : inner ℂ (A rd) (A rd) = (‖A rd‖ ^ 2 : ℂ) := by
+  have hselfA : inner ℂ (A rd) (A rd) = (‖A rd‖ ^ (2 : ℕ) : ℂ) := by
     simp only [inner_self_eq_norm_sq_to_K]
     rfl
-  have hnormr_re : ((‖r‖ : ℂ) ^ 2).re = ‖r‖ ^ 2 := by
+  have hnormr_re : ((‖r‖ : ℂ) ^ (2 : ℕ)).re = ‖r‖ ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re]
     simp only [Complex.ofReal_re, Complex.ofReal_im]
     ring
-  have hnormr_im : ((‖r‖ : ℂ) ^ 2).im = 0 := by
+  have hnormr_im : ((‖r‖ : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [pow_two, Complex.mul_im]
     simp
-  have hnormA_re : ((‖A rd‖ : ℂ) ^ 2).re = ‖A rd‖ ^ 2 := by
+  have hnormA_re : ((‖A rd‖ : ℂ) ^ (2 : ℕ)).re = ‖A rd‖ ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re]
     simp only [Complex.ofReal_re, Complex.ofReal_im]
     ring
-  have hnormA_im : ((‖A rd‖ : ℂ) ^ 2).im = 0 := by
+  have hnormA_im : ((‖A rd‖ : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [pow_two, Complex.mul_im]
     simp
-  have hsq_re : (z ^ 2).re = z.re ^ 2 - z.im ^ 2 := by
+  have hsq_re : (z ^ (2 : ℕ)).re = z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ) := by
     simp [pow_two, Complex.mul_re]
-  have hsq_im : (z ^ 2).im = 2 * z.re * z.im := by
+  have hsq_im : (z ^ (2 : ℕ)).im = 2 * z.re * z.im := by
     simp [pow_two, Complex.mul_im]
     ring
-  change (z * inner ℂ v v + (z ^ 2 + 1) * inner ℂ v r).im =
-    z.im * (‖A rd‖ ^ 2 + ‖r‖ ^ 2)
+  change (z * inner ℂ v v + (z ^ (2 : ℕ) + 1) * inner ℂ v r).im =
+    z.im * (‖A rd‖ ^ (2 : ℕ) + ‖r‖ ^ (2 : ℕ))
   rw [← hshift]
   simp only [inner_sub_left, inner_sub_right, inner_smul_left, inner_smul_right,
     hcross, hselfr, hselfA]
@@ -95,7 +95,7 @@ theorem resolventHerglotzEnergy_im_pos {A : H →ₗ.[ℂ] H} (hA : IsSelfAdjoin
         simp only [hr, smul_zero, sub_zero]
         change A (0 : A.domain) = 0
         exact A.map_zero
-  have hrpos : 0 < ‖resolventLinear hA (ne_of_gt hz) v‖ ^ 2 :=
+  have hrpos : 0 < ‖resolventLinear hA (ne_of_gt hz) v‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr hr)
   exact add_pos_of_nonneg_of_pos (sq_nonneg _) hrpos
 

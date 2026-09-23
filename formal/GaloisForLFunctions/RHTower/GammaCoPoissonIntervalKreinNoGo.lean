@@ -31,7 +31,7 @@ def gammaCoPoissonSymmetricPacketValue (L d : ℝ) : ℂ :=
   gammaCoPoissonIntervalCell (L : ℂ) z z -
     c * gammaCoPoissonIntervalCell (L : ℂ) z w -
     c * gammaCoPoissonIntervalCell (L : ℂ) w z +
-    c ^ 2 * gammaCoPoissonIntervalCell (L : ℂ) w w
+    c ^ (2 : ℕ) * gammaCoPoissonIntervalCell (L : ℂ) w w
 
 /-- The off-diagonal symmetric interval cell is the hyperbolic sine quotient. -/
 theorem gammaCoPoissonIntervalCell_symmetric_off
@@ -158,7 +158,7 @@ def gammaCoPoissonSymmetricPacketDeterminant (L d : ℝ) : ℂ :=
 theorem gammaCoPoissonSymmetricPacketDeterminant_eq
     {L d : ℝ} (hd : d ≠ 0) :
     gammaCoPoissonSymmetricPacketDeterminant L d =
-      ((L ^ 2 - (Real.sinh (d * L) / d) ^ 2 : ℝ) : ℂ) := by
+      ((L ^ (2 : ℕ) - (Real.sinh (d * L) / d) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [gammaCoPoissonSymmetricPacketDeterminant]
   rw [gammaCoPoissonIntervalCell_self,
     gammaCoPoissonIntervalCell_self,

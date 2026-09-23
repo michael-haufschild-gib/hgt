@@ -26,7 +26,7 @@ noncomputable section
 /-- Determinant of the literal multiplicative FZZ parity kernel on scales `1` and `2`. -/
 def fzzCigarParityTwoScaleHankelMinor : ℝ :=
   fzzCigarParityDelay 1 * fzzCigarParityDelay 4 -
-    fzzCigarParityDelay 2 ^ 2
+    fzzCigarParityDelay 2 ^ (2 : ℕ)
 
 /-- The first nontrivial principal minor of the source-exact Fermi–Hankel kernel is strictly
 negative. -/
@@ -40,34 +40,34 @@ theorem fzzCigarParityTwoScaleHankelMinor_neg :
   have ha : 1 < a := by
     change 1 < Real.exp 1
     exact Real.one_lt_exp_iff.mpr zero_lt_one
-  have he2 : Real.exp 2 = a ^ 2 := by
+  have he2 : Real.exp 2 = a ^ (2 : ℕ) := by
     rw [show (2 : ℝ) = 1 + 1 by norm_num, Real.exp_add]
-    change a * a = a ^ 2
+    change a * a = a ^ (2 : ℕ)
     ring
-  have he4 : Real.exp 4 = a ^ 4 := by
+  have he4 : Real.exp 4 = a ^ (4 : ℕ) := by
     rw [show (4 : ℝ) = 2 + 2 by norm_num, Real.exp_add, he2]
     ring
   rw [show Real.exp 1 = a by rfl, he2, he4]
-  have hB : 0 < (a ^ 2 + 1) ^ 2 := sq_pos_of_pos (by positivity)
-  have hBA : (a ^ 2 + 1) ^ 2 < (a + 1) * (a ^ 4 + 1) := by
+  have hB : 0 < (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
+  have hBA : (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) < (a + 1) * (a ^ (4 : ℕ) + 1) := by
     have ha0 : 0 < a := lt_trans zero_lt_one ha
-    have ha2 : 1 < a ^ 2 := one_lt_pow₀ ha (by norm_num)
-    have ha4 : a ^ 2 < a ^ 4 := by nlinarith [ha2]
+    have ha2 : 1 < a ^ (2 : ℕ) := one_lt_pow₀ ha (by norm_num)
+    have ha4 : a ^ (2 : ℕ) < a ^ (4 : ℕ) := by nlinarith [ha2]
     nlinarith [ha0]
-  have hinv : ((a + 1) * (a ^ 4 + 1))⁻¹ < ((a ^ 2 + 1) ^ 2)⁻¹ := by
+  have hinv : ((a + 1) * (a ^ (4 : ℕ) + 1))⁻¹ < ((a ^ (2 : ℕ) + 1) ^ (2 : ℕ))⁻¹ := by
     simpa [one_div] using one_div_lt_one_div_of_lt hB hBA
   exact sub_neg.mpr (by simpa [mul_inv, inv_pow, mul_comm] using hinv)
 
 /-- Determinant after an arbitrary real diagonal congruence by weights `w₁,w₂`. -/
 def fzzCigarParityTwoScaleReweightedMinor (w₁ w₂ : ℝ) : ℝ :=
-  (w₁ ^ 2 * fzzCigarParityDelay 1) *
-      (w₂ ^ 2 * fzzCigarParityDelay 4) -
-    (w₁ * w₂ * fzzCigarParityDelay 2) ^ 2
+  (w₁ ^ (2 : ℕ) * fzzCigarParityDelay 1) *
+      (w₂ ^ (2 : ℕ) * fzzCigarParityDelay 4) -
+    (w₁ * w₂ * fzzCigarParityDelay 2) ^ (2 : ℕ)
 
 /-- Diagonal reweighting scales the minor by the positive-square congruence character. -/
 theorem fzzCigarParityTwoScaleReweightedMinor_eq (w₁ w₂ : ℝ) :
     fzzCigarParityTwoScaleReweightedMinor w₁ w₂ =
-      (w₁ * w₂) ^ 2 * fzzCigarParityTwoScaleHankelMinor := by
+      (w₁ * w₂) ^ (2 : ℕ) * fzzCigarParityTwoScaleHankelMinor := by
   rw [fzzCigarParityTwoScaleReweightedMinor, fzzCigarParityTwoScaleHankelMinor]
   ring
 
@@ -94,9 +94,9 @@ theorem not_fzzCigarParityPositiveDiagonalHankelPSD :
 
 /-- Quadratic form of the bare two-scale source block. -/
 def fzzCigarParityTwoScaleQuadratic (u v : ℝ) : ℝ :=
-  u ^ 2 * fzzCigarParityDelay 1 +
+  u ^ (2 : ℕ) * fzzCigarParityDelay 1 +
     2 * u * v * fzzCigarParityDelay 2 +
-    v ^ 2 * fzzCigarParityDelay 4
+    v ^ (2 : ℕ) * fzzCigarParityDelay 4
 
 /-- The first coordinate is a strict positive direction. -/
 theorem fzzCigarParityTwoScaleQuadratic_pos :
@@ -118,13 +118,13 @@ theorem fzzCigarParityTwoScaleQuadratic_neg :
   have hminor := fzzCigarParityTwoScaleHankelMinor_neg
   rw [fzzCigarParityTwoScaleHankelMinor] at hminor
   have heq :
-      fzzCigarParityDelay 2 ^ 2 * fzzCigarParityDelay 1 +
+      fzzCigarParityDelay 2 ^ (2 : ℕ) * fzzCigarParityDelay 1 +
           2 * fzzCigarParityDelay 2 * (-fzzCigarParityDelay 1) *
             fzzCigarParityDelay 2 +
-          (-fzzCigarParityDelay 1) ^ 2 * fzzCigarParityDelay 4 =
+          (-fzzCigarParityDelay 1) ^ (2 : ℕ) * fzzCigarParityDelay 4 =
         fzzCigarParityDelay 1 *
           (fzzCigarParityDelay 1 * fzzCigarParityDelay 4 -
-            fzzCigarParityDelay 2 ^ 2) := by ring
+            fzzCigarParityDelay 2 ^ (2 : ℕ)) := by ring
   rw [heq]
   exact mul_neg_of_pos_of_neg hP1 hminor
 

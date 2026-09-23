@@ -173,14 +173,14 @@ theorem exactXiDeterminant_partialTrace_asymptotic
       GaloisForLFunctions.HTGeometry.entireDet2 K z) :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, approxNumber (toOperator hK) n) /
-        Real.log ((N : ℝ) + 1) ^ 2) atTop
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ)) atTop
       (nhds (1 / (2 * Real.pi))) := by
   apply tendsto_xiOrderedSignedPrimeOperator_approxNumber_partialSum_div_logSq.congr'
   exact Filter.Eventually.of_forall fun N => by
     change (∑ n ∈ Finset.range N, approxNumber xiOrderedSignedPrimeOperator n) /
-        Real.log ((N : ℝ) + 1) ^ 2 =
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ) =
       (∑ n ∈ Finset.range N, approxNumber (toOperator hK) n) /
-        Real.log ((N : ℝ) + 1) ^ 2
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ)
     congr 1
     apply Finset.sum_congr rfl
     intro n hn

@@ -95,7 +95,7 @@ def routeUHardEdgeOddForm (σ : ℝ) (H K : ℝ → ℝ) : ℝ :=
 /-- **The restricted-Weil form of an even state is the squared-variable pairing.**  This is the
 squared-variable substitution applied to the literal density. -/
 theorem integral_density_comp_sq_eq_pairing (σ : ℝ) (Φ : ℝ → ℝ) :
-    (∫ x : ℝ, routeUHardEdgeDensity σ x * Φ (x ^ 2))
+    (∫ x : ℝ, routeUHardEdgeDensity σ x * Φ (x ^ (2 : ℕ)))
       + 2 * Real.pi * Φ (-1 / 4)
       = routeUHardEdgePairing σ Φ := by
   rw [routeUHardEdgePairing]
@@ -104,7 +104,7 @@ theorem integral_density_comp_sq_eq_pairing (σ : ℝ) (Φ : ℝ → ℝ) :
     (fun u : ℝ => Φ u * routeUHardEdgeDensity σ (Real.sqrt u))
   rw [← hsub]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  have habs : Real.sqrt (x ^ 2) = |x| := Real.sqrt_sq_eq_abs x
+  have habs : Real.sqrt (x ^ (2 : ℕ)) = |x| := Real.sqrt_sq_eq_abs x
   have hcos : routeUHardEdgeDensity σ |x| = routeUHardEdgeDensity σ x := by
     rw [routeUHardEdgeDensity, routeUHardEdgeDensity, routeUArchimedeanRate_abs]
     congr 1
@@ -112,8 +112,8 @@ theorem integral_density_comp_sq_eq_pairing (σ : ℝ) (Φ : ℝ → ℝ) :
     rcases abs_choice x with h | h
     · rw [h]
     · rw [h, neg_mul, Real.cos_neg]
-  show routeUHardEdgeDensity σ x * Φ (x ^ 2)
-    = Φ (x ^ 2) * routeUHardEdgeDensity σ (Real.sqrt (x ^ 2))
+  show routeUHardEdgeDensity σ x * Φ (x ^ (2 : ℕ))
+    = Φ (x ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt (x ^ (2 : ℕ)))
   rw [habs, hcos]
   ring
 
@@ -140,13 +140,13 @@ theorem routeUArchimedeanRate_eq_gammaHardyPhaseRate (x : ℝ) :
 /-- The restricted-Weil form of the even states `x ↦ H (x²)` and `x ↦ K (x²)`.  The polar term is
 the value at `i/2`, whose square is `-1/4`. -/
 def routeUEvenWeil (σ : ℝ) (H K : ℝ → ℝ) : ℝ :=
-  (∫ x : ℝ, routeUHardEdgeDensity σ x * (H (x ^ 2) * K (x ^ 2)))
+  (∫ x : ℝ, routeUHardEdgeDensity σ x * (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))))
     + 2 * Real.pi * (H (-1 / 4) * K (-1 / 4))
 
 /-- The restricted-Weil form of the odd states `x ↦ x·H (x²)` and `x ↦ x·K (x²)`.  The polar term
 carries the extra factor `(i/2)² = -1/4`. -/
 def routeUOddWeil (σ : ℝ) (H K : ℝ → ℝ) : ℝ :=
-  (∫ x : ℝ, routeUHardEdgeDensity σ x * (x ^ 2 * (H (x ^ 2) * K (x ^ 2))))
+  (∫ x : ℝ, routeUHardEdgeDensity σ x * (x ^ (2 : ℕ) * (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ)))))
     + 2 * Real.pi * (-1 / 4 * (H (-1 / 4) * K (-1 / 4)))
 
 /-- **The even sector is the squared-variable pairing.** -/
@@ -202,13 +202,13 @@ theorem routeUEvenForm_expand (σ : ℝ) (t : ℝ) (H K : ℝ → ℝ)
     (hHK : IntegrableOn (fun u : ℝ =>
       2 * t * (H u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hKK : IntegrableOn (fun u : ℝ =>
-      t ^ 2 * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0)) :
+      t ^ (2 : ℕ) * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0)) :
     routeUHardEdgeEvenForm σ (fun u => H u + t * K u) (fun u => H u + t * K u)
       = routeUHardEdgeEvenForm σ H H
         + 2 * t * routeUHardEdgeEvenForm σ H K
-        + t ^ 2 * routeUHardEdgeEvenForm σ K K := by
+        + t ^ (2 : ℕ) * routeUHardEdgeEvenForm σ K K := by
   have hsplit : (fun u : ℝ => (H u + t * K u) * (H u + t * K u))
-      = fun u : ℝ => (H u * H u + 2 * t * (H u * K u)) + t ^ 2 * (K u * K u) := by
+      = fun u : ℝ => (H u * H u + 2 * t * (H u * K u)) + t ^ (2 : ℕ) * (K u * K u) := by
     funext u
     ring
   have hadd1 : IntegrableOn (fun u : ℝ =>
@@ -223,7 +223,7 @@ theorem routeUEvenForm_expand (σ : ℝ) (t : ℝ) (H K : ℝ → ℝ)
     routeUHardEdgePairing_add σ _ _ hadd1 hKK,
     routeUHardEdgePairing_add σ _ _ hHH hHK,
     routeUHardEdgePairing_const_mul σ (2 * t) (fun u => H u * K u),
-    routeUHardEdgePairing_const_mul σ (t ^ 2) (fun u => K u * K u)]
+    routeUHardEdgePairing_const_mul σ (t ^ (2 : ℕ)) (fun u => K u * K u)]
 
 
 /-- **Cauchy--Schwarz for the even hard-edge form on its domain.** -/
@@ -236,7 +236,7 @@ theorem routeUEvenForm_sq_le (σ : ℝ) (H K : ℝ → ℝ)
       (fun u : ℝ => K u * K u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hpsd : ∀ t : ℝ,
       0 ≤ routeUHardEdgeEvenForm σ (fun u => H u + t * K u) (fun u => H u + t * K u)) :
-    routeUHardEdgeEvenForm σ H K ^ 2
+    routeUHardEdgeEvenForm σ H K ^ (2 : ℕ)
       ≤ routeUHardEdgeEvenForm σ H H * routeUHardEdgeEvenForm σ K K := by
   refine sq_le_of_quadratic_nonneg fun t => ?_
   have hHKt : IntegrableOn
@@ -245,9 +245,9 @@ theorem routeUEvenForm_sq_le (σ : ℝ) (H K : ℝ → ℝ)
     refine (hHK.const_mul (2 * t)).congr (Filter.Eventually.of_forall fun u => ?_)
     ring
   have hKKt : IntegrableOn
-      (fun u : ℝ => t ^ 2 * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (fun u : ℝ => t ^ (2 : ℕ) * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
       (Ioi 0) := by
-    refine (hKK.const_mul (t ^ 2)).congr (Filter.Eventually.of_forall fun u => ?_)
+    refine (hKK.const_mul (t ^ (2 : ℕ))).congr (Filter.Eventually.of_forall fun u => ?_)
     ring
   rw [← routeUEvenForm_expand σ t H K hHH hHKt hKKt]
   exact hpsd t
@@ -258,31 +258,31 @@ theorem routeUEvenForm_sq_le (σ : ℝ) (H K : ℝ → ℝ)
 coordinate raises the jet index by one and adds `r` times the original. -/
 theorem routeUHardEdgePairing_coord_jet (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (k : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ (k + 1) * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (k + 1) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ k * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      r * ((u - r) ^ k * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
       (Ioi 0)) :
-    routeUHardEdgePairing σ (fun u => u * ((u - r) ^ k * G u ^ 2))
-      = routeUHardEdgePairing σ (fun u => (u - r) ^ (k + 1) * G u ^ 2)
-        + r * routeUHardEdgePairing σ (fun u => (u - r) ^ k * G u ^ 2) := by
-  have hsplit : (fun u : ℝ => u * ((u - r) ^ k * G u ^ 2))
-      = fun u : ℝ => (u - r) ^ (k + 1) * G u ^ 2 + r * ((u - r) ^ k * G u ^ 2) := by
+    routeUHardEdgePairing σ (fun u => u * ((u - r) ^ k * G u ^ (2 : ℕ)))
+      = routeUHardEdgePairing σ (fun u => (u - r) ^ (k + 1) * G u ^ (2 : ℕ))
+        + r * routeUHardEdgePairing σ (fun u => (u - r) ^ k * G u ^ (2 : ℕ)) := by
+  have hsplit : (fun u : ℝ => u * ((u - r) ^ k * G u ^ (2 : ℕ)))
+      = fun u : ℝ => (u - r) ^ (k + 1) * G u ^ (2 : ℕ) + r * ((u - r) ^ k * G u ^ (2 : ℕ)) := by
     funext u
     rw [pow_succ]
     ring
   rw [hsplit, routeUHardEdgePairing_add σ _ _ h1 h2,
-    routeUHardEdgePairing_const_mul σ r fun u => (u - r) ^ k * G u ^ 2]
+    routeUHardEdgePairing_const_mul σ r fun u => (u - r) ^ k * G u ^ (2 : ℕ)]
 
 /-- **(HPJI.7) Terminal odd energy is the root times terminal even mass.** -/
 theorem routeUHardEdgePairing_coord_jet_terminal (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (k : ℕ)
     (h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ (k + 1) * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+      (u - r) ^ (k + 1) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ k * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      r * ((u - r) ^ k * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
       (Ioi 0))
-    (hvanish : routeUHardEdgePairing σ (fun u => (u - r) ^ (k + 1) * G u ^ 2) = 0) :
-    routeUHardEdgePairing σ (fun u => u * ((u - r) ^ k * G u ^ 2))
-      = r * routeUHardEdgePairing σ (fun u => (u - r) ^ k * G u ^ 2) := by
+    (hvanish : routeUHardEdgePairing σ (fun u => (u - r) ^ (k + 1) * G u ^ (2 : ℕ)) = 0) :
+    routeUHardEdgePairing σ (fun u => u * ((u - r) ^ k * G u ^ (2 : ℕ)))
+      = r * routeUHardEdgePairing σ (fun u => (u - r) ^ k * G u ^ (2 : ℕ)) := by
   rw [routeUHardEdgePairing_coord_jet σ G r k h1 h2, hvanish, zero_add]
 
 /-- The odd form is the even form of the coordinate-multiplied state. -/

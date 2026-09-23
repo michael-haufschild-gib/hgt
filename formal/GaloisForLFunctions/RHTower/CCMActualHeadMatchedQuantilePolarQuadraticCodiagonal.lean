@@ -24,17 +24,17 @@ open Finset MeasureTheory
 
 private theorem intervalIntegral_sq_sub_translate_sq
     (a b d : ℝ) :
-    (∫ y in a..b, y ^ 2) - (∫ y in (a + d)..(b + d), y ^ 2) =
+    (∫ y in a..b, y ^ (2 : ℕ)) - (∫ y in (a + d)..(b + d), y ^ (2 : ℕ)) =
       -d * (b - a) * (a + b + d) := by
-  let P : ℝ → ℝ := fun y => y ^ 3 / 3
-  have hderiv (x : ℝ) : HasDerivAt P (x ^ 2) x := by
+  let P : ℝ → ℝ := fun y => y ^ (3 : ℕ) / 3
+  have hderiv (x : ℝ) : HasDerivAt P (x ^ (2 : ℕ)) x := by
     dsimp only [P]
     simpa using ((hasDerivAt_id x).pow 3).div_const (3 : ℝ)
-  have hint (x y : ℝ) : IntervalIntegrable (fun z : ℝ => z ^ 2) volume x y :=
-    (by fun_prop : Continuous fun z : ℝ => z ^ 2).intervalIntegrable _ _
-  have hab : (∫ y in a..b, y ^ 2) = P b - P a :=
+  have hint (x y : ℝ) : IntervalIntegrable (fun z : ℝ => z ^ (2 : ℕ)) volume x y :=
+    (by fun_prop : Continuous fun z : ℝ => z ^ (2 : ℕ)).intervalIntegrable _ _
+  have hab : (∫ y in a..b, y ^ (2 : ℕ)) = P b - P a :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hderiv x) (hint a b)
-  have habd : (∫ y in (a + d)..(b + d), y ^ 2) =
+  have habd : (∫ y in (a + d)..(b + d), y ^ (2 : ℕ)) =
       P (b + d) - P (a + d) :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hderiv x)
       (hint (a + d) (b + d))
@@ -45,16 +45,16 @@ private theorem intervalIntegral_sq_sub_translate_sq
 private theorem sum_quantile_cells_sq_eq_interval (K : ℕ) :
     (∑ n ∈ Finset.range (K + 1),
       ∫ y in ccmActualHeadQuantilePolarCoordinate (n + 2)..
-          ccmActualHeadQuantilePolarCoordinate (n + 3), y ^ 2) =
+          ccmActualHeadQuantilePolarCoordinate (n + 3), y ^ (2 : ℕ)) =
       ∫ y in ccmActualHeadQuantilePolarCoordinate 2..
-          ccmActualHeadQuantilePolarCoordinate (K + 3), y ^ 2 := by
+          ccmActualHeadQuantilePolarCoordinate (K + 3), y ^ (2 : ℕ) := by
   induction K with
   | zero => simp
   | succ K ih =>
       rw [Finset.sum_range_succ, ih]
       exact intervalIntegral.integral_add_adjacent_intervals
-        ((by fun_prop : Continuous fun y : ℝ => y ^ 2).intervalIntegrable _ _)
-        ((by fun_prop : Continuous fun y : ℝ => y ^ 2).intervalIntegrable _ _)
+        ((by fun_prop : Continuous fun y : ℝ => y ^ (2 : ℕ)).intervalIntegrable _ _)
+        ((by fun_prop : Continuous fun y : ℝ => y ^ (2 : ℕ)).intervalIntegrable _ _)
 
 /-- Signed first-order displacement charge carried by the quadratic codiagonal mode. -/
 def ccmActualHeadMatchedPolarQuadraticCodiagonalLinearCharge (K : ℕ) : ℝ :=
@@ -67,7 +67,7 @@ def ccmActualHeadMatchedPolarQuadraticCodiagonalLinearCharge (K : ℕ) : ℝ :=
 /-- Nonnegative squared-displacement debt forced by equal-mass cell translation. -/
 def ccmActualHeadMatchedPolarQuadraticCodiagonalDebt (K : ℕ) : ℝ :=
   ∑ n ∈ Finset.range (K + 1),
-    ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) ^ 2 *
+    ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) ^ (2 : ℕ) *
       criticalMellinAtomWeight (n + 2)
 
 theorem ccmActualHeadMatchedPolarQuadraticCodiagonalDebt_nonneg (K : ℕ) :
@@ -75,14 +75,14 @@ theorem ccmActualHeadMatchedPolarQuadraticCodiagonalDebt_nonneg (K : ℕ) :
   unfold ccmActualHeadMatchedPolarQuadraticCodiagonalDebt
   exact Finset.sum_nonneg fun n _ =>
     mul_nonneg (sq_nonneg _)
-      (criticalMellinAtomWeight_nonneg (n + 2))
+      (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (n + 2))
 
 /-- **Exact quadratic codiagonal law.**  The second mass-coordinate mode of the literal
 matched--quantile coverage seam is its signed displacement charge minus the full squared
 translation debt.  No source term is discarded. -/
 theorem ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq :
     ∀ K : ℕ,
-      ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ 2) =
+      ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ (2 : ℕ)) =
         -ccmActualHeadMatchedPolarQuadraticCodiagonalLinearCharge K -
           ccmActualHeadMatchedPolarQuadraticCodiagonalDebt K := by
   intro K
@@ -109,14 +109,14 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq :
     dsimp only [a, b, d]
     ring
   · intro x y hx hy
-    exact (by fun_prop : Continuous fun z : ℝ => z ^ 2).intervalIntegrable x y
+    exact (by fun_prop : Continuous fun z : ℝ => z ^ (2 : ℕ)).intervalIntegrable x y
 
 /-- **Completed-source quadratic debt law.**  After retaining the literal matched upper excess,
 the quadratic codiagonal mode is the signed outgoing completed-node error charge minus the
 square of that same charged displacement.  This is a source identity, not a sign estimate. -/
 theorem ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq_eq_error_charge_sub_debt
     (K : ℕ) :
-    ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ 2) =
+    ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ (2 : ℕ)) =
       (∑ n ∈ Finset.range (K + 1),
         criticalMellinAtomWeight (n + 2) *
           (ccmActualHeadOutgoingNodeError (n + 2) +
@@ -128,7 +128,7 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq_eq_error_charge_su
         criticalMellinAtomWeight (n + 2) *
           (ccmActualHeadOutgoingNodeError (n + 2) +
             (ccmActualHeadMatchedPolarUpperCoordinate (n + 2) -
-              2 * Real.exp (Real.log (n + 2) / 2))) ^ 2 := by
+              2 * Real.exp (Real.log (n + 2) / 2))) ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq]
   unfold ccmActualHeadMatchedPolarQuadraticCodiagonalLinearCharge
     ccmActualHeadMatchedPolarQuadraticCodiagonalDebt

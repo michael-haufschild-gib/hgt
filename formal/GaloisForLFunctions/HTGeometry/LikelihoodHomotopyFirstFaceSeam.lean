@@ -138,7 +138,7 @@ theorem c5FirstShiftedFaceGerm_seamJetClassification
         (c5FirstShiftedFaceGerm a b s m da db ds dm dq) 0 = 0) ∧
       iteratedDeriv 7 (c5FirstShiftedFaceGerm a b s m da db ds dm dq) 0 =
         420 * (2 * a₁ * d₁ * s₄ - 2 * d₁ * a₃ * s₂ +
-          a₁ ^ 2 * e₄ - 2 * a₁ * d₃ * s₂ - 2 * a₁ * a₃ * e₂) := by
+          a₁ ^ (2 : ℕ) * e₄ - 2 * a₁ * d₃ * s₂ - 2 * a₁ * a₃ * e₂) := by
   let x : ℝ → ℝ := id
   let H₀ : ℝ → ℝ := fun t =>
     a t * (x t * m t) - (a t + x t * b t) * s t
@@ -352,7 +352,7 @@ theorem c5FirstShiftedFaceGerm_seamJetClassification
         hH₀zero, hH₁zero, hP₀zero]
   have hGseven : iteratedDeriv 7 G 0 =
       420 * (2 * a₁ * d₁ * s₄ - 2 * d₁ * a₃ * s₂ +
-        a₁ ^ 2 * e₄ - 2 * a₁ * d₃ * s₂ - 2 * a₁ * a₃ * e₂) := by
+        a₁ ^ (2 : ℕ) * e₄ - 2 * a₁ * d₃ * s₂ - 2 * a₁ * a₃ * e₂) := by
     rw [hGj]
     norm_num [realScalarJetConvolution, realScalarJetId, Finset.sum_range_succ,
       Nat.choose, ha0, ha1, hda0, hda1, hdq0,

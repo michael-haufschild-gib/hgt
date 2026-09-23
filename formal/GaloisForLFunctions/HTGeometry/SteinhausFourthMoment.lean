@@ -87,29 +87,29 @@ section FourthMoment
 /-- **Steinhaus fourth moment.**  A linear combination of independent uniform coordinate phases has
 fourth moment at most twice the square of its squared coefficient sum. -/
 theorem integral_box_phase_fourth_le (c : d → ℂ) :
-    (∫ x in torusBox d, ‖∑ y, c y * charLift (Pi.single y 1) x‖ ^ 4) ≤
-      2 * (∑ y, ‖c y‖ ^ 2) ^ 2 := by
+    (∫ x in torusBox d, ‖∑ y, c y * charLift (Pi.single y 1) x‖ ^ (4 : ℕ)) ≤
+      2 * (∑ y, ‖c y‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   classical
-  set S : ℝ := ∑ y, ‖c y‖ ^ 2 with hS
+  set S : ℝ := ∑ y, ‖c y‖ ^ (2 : ℕ) with hS
   set a : d × d → ℂ := fun p => c p.1 * c p.2 with ha
-  have hsq : ∀ x : d → ℝ, (∑ y, c y * charLift (Pi.single y 1) x) ^ 2 =
+  have hsq : ∀ x : d → ℝ, (∑ y, c y * charLift (Pi.single y 1) x) ^ (2 : ℕ) =
       trigLift (Finset.univ : Finset (d × d)) pairFreq a x := by
     intro x
     rw [sq, Finset.sum_mul_sum, trigLift, Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun y' _ => ?_
     rw [ha, pairFreq, charLift_add_index]
     ring
-  have hpt : ∀ x : d → ℝ, ‖∑ y, c y * charLift (Pi.single y 1) x‖ ^ 4 =
-      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ 2 := by
+  have hpt : ∀ x : d → ℝ, ‖∑ y, c y * charLift (Pi.single y 1) x‖ ^ (4 : ℕ) =
+      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ (2 : ℕ) := by
     intro x
     rw [← hsq x, norm_pow, ← pow_mul]
   simp_rw [hpt]
   have hpars := ofReal_integral_box_normSq_trigLift (Finset.univ : Finset (d × d)) pairFreq a
   have hnn : 0 ≤ ∫ x in torusBox d,
-      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ 2 :=
+      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ (2 : ℕ) :=
     integral_nonneg fun x => sq_nonneg _
   have hnorm : (∫ x in torusBox d,
-      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ 2) =
+      ‖trigLift (Finset.univ : Finset (d × d)) pairFreq a x‖ ^ (2 : ℕ)) =
       ‖∑ p : d × d, ∑ q : d × d,
         if pairFreq p = pairFreq q then a p * (starRingEnd ℂ) (a q) else 0‖ := by
     rw [← hpars, Complex.norm_real, Real.norm_of_nonneg hnn]
@@ -117,12 +117,12 @@ theorem integral_box_phase_fourth_le (c : d → ℂ) :
   refine le_trans (norm_sum_le _ _) ?_
   have hrow : ∀ p : d × d,
       ‖∑ q : d × d, if pairFreq p = pairFreq q then a p * (starRingEnd ℂ) (a q) else 0‖ ≤
-        2 * ‖a p‖ ^ 2 := by
+        2 * ‖a p‖ ^ (2 : ℕ) := by
     intro p
     refine le_trans (norm_sum_le _ _) ?_
     have hbound : ∀ q : d × d,
         ‖if pairFreq p = pairFreq q then a p * (starRingEnd ℂ) (a q) else 0‖ ≤
-          (if q = p ∨ q = (p.2, p.1) then ‖a p‖ ^ 2 else 0) := by
+          (if q = p ∨ q = (p.2, p.1) then ‖a p‖ ^ (2 : ℕ) else 0) := by
       intro q
       by_cases hq : pairFreq p = pairFreq q
       · rw [if_pos hq, norm_mul, RCLike.norm_conj]
@@ -141,19 +141,19 @@ theorem integral_box_phase_fourth_le (c : d → ℂ) :
       intro q hq
       rw [Finset.mem_filter] at hq
       rcases hq.2 with h | h <;> simp [h]
-    calc (∑ q : d × d, if q = p ∨ q = (p.2, p.1) then ‖a p‖ ^ 2 else 0)
+    calc (∑ q : d × d, if q = p ∨ q = (p.2, p.1) then ‖a p‖ ^ (2 : ℕ) else 0)
         = ∑ _q ∈ (Finset.univ : Finset (d × d)).filter
-            (fun q => q = p ∨ q = (p.2, p.1)), ‖a p‖ ^ 2 := by
+            (fun q => q = p ∨ q = (p.2, p.1)), ‖a p‖ ^ (2 : ℕ) := by
           rw [Finset.sum_filter]
-      _ ≤ ∑ _q ∈ ({p, (p.2, p.1)} : Finset (d × d)), ‖a p‖ ^ 2 :=
+      _ ≤ ∑ _q ∈ ({p, (p.2, p.1)} : Finset (d × d)), ‖a p‖ ^ (2 : ℕ) :=
           Finset.sum_le_sum_of_subset_of_nonneg hsub (fun q _ _ => sq_nonneg _)
-      _ ≤ 2 * ‖a p‖ ^ 2 := by
+      _ ≤ 2 * ‖a p‖ ^ (2 : ℕ) := by
           rw [Finset.sum_const, nsmul_eq_mul]
           have hcard : ({p, (p.2, p.1)} : Finset (d × d)).card ≤ 2 := Finset.card_insert_le _ _
           have : ((({p, (p.2, p.1)} : Finset (d × d)).card : ℝ)) ≤ 2 := by exact_mod_cast hcard
           nlinarith [sq_nonneg ‖a p‖]
   refine le_trans (Finset.sum_le_sum fun p _ => hrow p) ?_
-  have hsum : (∑ p : d × d, 2 * ‖a p‖ ^ 2) = 2 * S ^ 2 := by
+  have hsum : (∑ p : d × d, 2 * ‖a p‖ ^ (2 : ℕ)) = 2 * S ^ (2 : ℕ) := by
     rw [← Finset.mul_sum]
     congr 1
     rw [Fintype.sum_prod_type, hS, sq, Finset.sum_mul_sum]

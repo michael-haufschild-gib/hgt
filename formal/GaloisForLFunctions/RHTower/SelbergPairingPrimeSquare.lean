@@ -32,13 +32,13 @@ noncomputable section
 
 /-- The divisor pairs of a prime square are exactly `(1,p²)`, `(p,p)` and `(p²,1)`. -/
 theorem divisorsAntidiagonal_prime_sq {p : ℕ} (hp : p.Prime) :
-    (p ^ 2).divisorsAntidiagonal = {(1, p ^ 2), (p, p), (p ^ 2, 1)} := by
+    (p ^ (2 : ℕ)).divisorsAntidiagonal = {(1, p ^ (2 : ℕ)), (p, p), (p ^ (2 : ℕ), 1)} := by
   ext xy
   rw [Nat.mem_divisorsAntidiagonal]
   simp only [Finset.mem_insert, Finset.mem_singleton]
   constructor
   · rintro ⟨hprod, hne⟩
-    have hdvd : xy.1 ∣ p ^ 2 := ⟨xy.2, hprod.symm⟩
+    have hdvd : xy.1 ∣ p ^ (2 : ℕ) := ⟨xy.2, hprod.symm⟩
     obtain ⟨m, hm, hxm⟩ := (Nat.dvd_prime_pow hp).1 hdvd
     have hp0 : p ≠ 0 := hp.ne_zero
     interval_cases m
@@ -55,18 +55,18 @@ theorem divisorsAntidiagonal_prime_sq {p : ℕ} (hp : p.Prime) :
         show xy.2 = p
         have h2 : p * xy.2 = p * p := by
           calc p * xy.2 = xy.1 * xy.2 := by rw [hxm]
-            _ = p ^ 2 := hprod
+            _ = p ^ (2 : ℕ) := hprod
             _ = p * p := by ring
         exact Nat.eq_of_mul_eq_mul_left hp.pos h2
     · right; right
       refine Prod.ext ?_ ?_
       · simpa using hxm
       · show xy.2 = 1
-        have hpos : 0 < p ^ 2 := pow_pos hp.pos 2
-        have h2 : p ^ 2 * xy.2 = p ^ 2 * 1 := by
+        have hpos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+        have h2 : p ^ (2 : ℕ) * xy.2 = p ^ (2 : ℕ) * 1 := by
           rw [mul_one]
-          calc p ^ 2 * xy.2 = xy.1 * xy.2 := by rw [hxm]
-            _ = p ^ 2 := hprod
+          calc p ^ (2 : ℕ) * xy.2 = xy.1 * xy.2 := by rw [hxm]
+            _ = p ^ (2 : ℕ) := hprod
         exact Nat.eq_of_mul_eq_mul_left hpos h2
   · rintro (h | h | h) <;> subst h <;>
       exact ⟨by ring, pow_ne_zero 2 hp.ne_zero⟩
@@ -74,13 +74,13 @@ theorem divisorsAntidiagonal_prime_sq {p : ℕ} (hp : p.Prime) :
 /-- Exact three-term expansion of Dirichlet convolution at a prime square. -/
 theorem arithmeticFunction_mul_apply_prime_sq {R : Type*} [CommSemiring R]
     (f g : ArithmeticFunction R) {p : ℕ} (hp : p.Prime) :
-    (f * g) (p ^ 2) = f 1 * g (p ^ 2) + f p * g p + f (p ^ 2) * g 1 := by
+    (f * g) (p ^ (2 : ℕ)) = f 1 * g (p ^ (2 : ℕ)) + f p * g p + f (p ^ (2 : ℕ)) * g 1 := by
   have hp1 : 1 < p := hp.one_lt
-  have hp2 : 1 < p ^ 2 := by nlinarith [hp.two_le]
+  have hp2 : 1 < p ^ (2 : ℕ) := by nlinarith [hp.two_le]
   rw [ArithmeticFunction.mul_apply, divisorsAntidiagonal_prime_sq hp]
-  have h1 : ((1 : ℕ), p ^ 2) ≠ (p, p) := fun h => hp1.ne (congrArg Prod.fst h)
-  have h2 : ((1 : ℕ), p ^ 2) ≠ (p ^ 2, 1) := fun h => hp2.ne (congrArg Prod.fst h)
-  have h3 : ((p : ℕ), p) ≠ (p ^ 2, 1) := fun h => hp1.ne' (congrArg Prod.snd h)
+  have h1 : ((1 : ℕ), p ^ (2 : ℕ)) ≠ (p, p) := fun h => hp1.ne (congrArg Prod.fst h)
+  have h2 : ((1 : ℕ), p ^ (2 : ℕ)) ≠ (p ^ (2 : ℕ), 1) := fun h => hp2.ne (congrArg Prod.fst h)
+  have h3 : ((p : ℕ), p) ≠ (p ^ (2 : ℕ), 1) := fun h => hp1.ne' (congrArg Prod.snd h)
   rw [Finset.sum_insert (by simp [h1, h2]), Finset.sum_insert (by simp [h3]),
     Finset.sum_singleton]
   ring
@@ -100,7 +100,7 @@ used. -/
 theorem selberg_pairing_prime_sq (f g : ArithmeticFunction ℂ)
     (hf : f 1 = 1) (hg : g 1 = 1) {p : ℕ} (hp : p.Prime) :
     f p * starRingEnd ℂ (g p)
-      = (f * conjArith g) (p ^ 2) - f (p ^ 2) - starRingEnd ℂ (g (p ^ 2)) := by
+      = (f * conjArith g) (p ^ (2 : ℕ)) - f (p ^ (2 : ℕ)) - starRingEnd ℂ (g (p ^ (2 : ℕ))) := by
   have hcg : conjArith g 1 = 1 := by simp [hg]
   rw [arithmeticFunction_mul_apply_prime_sq f (conjArith g) hp, hf, hcg]
   simp only [conjArith_apply]
@@ -111,9 +111,9 @@ is a difference of three prime-square sums of single coefficient systems. -/
 theorem selberg_pairing_sum_eq (f g : ArithmeticFunction ℂ)
     (hf : f 1 = 1) (hg : g 1 = 1) (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) :
     ∑ p ∈ P, f p * starRingEnd ℂ (g p) / (p : ℂ)
-      = (∑ p ∈ P, (f * conjArith g) (p ^ 2) / (p : ℂ))
-        - (∑ p ∈ P, f (p ^ 2) / (p : ℂ))
-        - ∑ p ∈ P, starRingEnd ℂ (g (p ^ 2)) / (p : ℂ) := by
+      = (∑ p ∈ P, (f * conjArith g) (p ^ (2 : ℕ)) / (p : ℂ))
+        - (∑ p ∈ P, f (p ^ (2 : ℕ)) / (p : ℂ))
+        - ∑ p ∈ P, starRingEnd ℂ (g (p ^ (2 : ℕ))) / (p : ℂ) := by
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun p hp => ?_
   rw [selberg_pairing_prime_sq f g hf hg (hP p hp)]
@@ -172,8 +172,8 @@ theorem selberg_energy_polarization (f g : ArithmeticFunction ℂ)
 weighted bilinear prime sum is bounded by the geometric mean of the two weighted energies.  This is
 the inequality `|B(F,G)|² ≤ n_F · n_G` of the Selberg pairing, in finite form. -/
 theorem selberg_pairing_cauchy_schwarz (f g : ℕ → ℂ) (P : Finset ℕ) (hP : ∀ p ∈ P, 0 < p) :
-    ‖∑ p ∈ P, f p * (starRingEnd ℂ) (g p) / (p : ℂ)‖ ^ 2
-      ≤ (∑ p ∈ P, ‖f p‖ ^ 2 / (p : ℝ)) * (∑ p ∈ P, ‖g p‖ ^ 2 / (p : ℝ)) := by
+    ‖∑ p ∈ P, f p * (starRingEnd ℂ) (g p) / (p : ℂ)‖ ^ (2 : ℕ)
+      ≤ (∑ p ∈ P, ‖f p‖ ^ (2 : ℕ) / (p : ℝ)) * (∑ p ∈ P, ‖g p‖ ^ (2 : ℕ) / (p : ℝ)) := by
   set a : ℕ → ℝ := fun p => ‖f p‖ / Real.sqrt p with ha
   set b : ℕ → ℝ := fun p => ‖g p‖ / Real.sqrt p with hb
   have hsq : ∀ p ∈ P, a p * b p = ‖f p‖ * ‖g p‖ / (p : ℝ) := by
@@ -182,12 +182,12 @@ theorem selberg_pairing_cauchy_schwarz (f g : ℕ → ℂ) (P : Finset ℕ) (hP 
     have hs : Real.sqrt p * Real.sqrt p = (p:ℝ) := Real.mul_self_sqrt hp0.le
     simp only [ha, hb]
     rw [div_mul_div_comm, hs]
-  have ha2 : ∀ p ∈ P, a p ^ 2 = ‖f p‖ ^ 2 / (p : ℝ) := by
+  have ha2 : ∀ p ∈ P, a p ^ (2 : ℕ) = ‖f p‖ ^ (2 : ℕ) / (p : ℝ) := by
     intro p hp
     have hp0 : (0:ℝ) < (p:ℝ) := by exact_mod_cast hP p hp
     simp only [ha]
     rw [div_pow, Real.sq_sqrt hp0.le]
-  have hb2 : ∀ p ∈ P, b p ^ 2 = ‖g p‖ ^ 2 / (p : ℝ) := by
+  have hb2 : ∀ p ∈ P, b p ^ (2 : ℕ) = ‖g p‖ ^ (2 : ℕ) / (p : ℝ) := by
     intro p hp
     have hp0 : (0:ℝ) < (p:ℝ) := by exact_mod_cast hP p hp
     simp only [hb]
@@ -195,18 +195,18 @@ theorem selberg_pairing_cauchy_schwarz (f g : ℕ → ℂ) (P : Finset ℕ) (hP 
   have hnorm : ‖∑ p ∈ P, f p * (starRingEnd ℂ) (g p) / (p : ℂ)‖ ≤ ∑ p ∈ P, a p * b p := by
     refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun p hp => ?_))
     rw [hsq p hp, norm_div, norm_mul, RCLike.norm_conj, Complex.norm_natCast]
-  calc ‖∑ p ∈ P, f p * (starRingEnd ℂ) (g p) / (p : ℂ)‖ ^ 2
-      ≤ (∑ p ∈ P, a p * b p) ^ 2 := by
+  calc ‖∑ p ∈ P, f p * (starRingEnd ℂ) (g p) / (p : ℂ)‖ ^ (2 : ℕ)
+      ≤ (∑ p ∈ P, a p * b p) ^ (2 : ℕ) := by
         rw [pow_two, pow_two]
         exact mul_self_le_mul_self (norm_nonneg _) hnorm
-    _ ≤ (∑ p ∈ P, a p ^ 2) * (∑ p ∈ P, b p ^ 2) := Finset.sum_mul_sq_le_sq_mul_sq P a b
-    _ = (∑ p ∈ P, ‖f p‖ ^ 2 / (p:ℝ)) * (∑ p ∈ P, ‖g p‖ ^ 2 / (p:ℝ)) := by
+    _ ≤ (∑ p ∈ P, a p ^ (2 : ℕ)) * (∑ p ∈ P, b p ^ (2 : ℕ)) := Finset.sum_mul_sq_le_sq_mul_sq P a b
+    _ = (∑ p ∈ P, ‖f p‖ ^ (2 : ℕ) / (p:ℝ)) * (∑ p ∈ P, ‖g p‖ ^ (2 : ℕ) / (p:ℝ)) := by
         rw [Finset.sum_congr rfl ha2, Finset.sum_congr rfl hb2]
 
 /-- An integer whose square is at most one is `0`, `1` or `-1`.  Combined with
 `selberg_pairing_cauchy_schwarz` this is the step that pins the Selberg pairing of two unit-energy
 systems to `{0, ±1}` once the pairing is known to be integral. -/
-theorem int_eq_zero_or_one_or_neg_one_of_sq_le_one {k : ℤ} (h : k ^ 2 ≤ 1) :
+theorem int_eq_zero_or_one_or_neg_one_of_sq_le_one {k : ℤ} (h : k ^ (2 : ℕ) ≤ 1) :
     k = 0 ∨ k = 1 ∨ k = -1 := by
   have h1 : -1 ≤ k := by nlinarith [sq_nonneg (k + 1)]
   have h2 : k ≤ 1 := by nlinarith [sq_nonneg (k - 1)]
@@ -219,29 +219,29 @@ the square root of `∑ 1/p`; it is what converts a pole or zero of `F` on the l
 the lower bound `n_F ≥ (order)²` for the prime energy. -/
 theorem weighted_cauchy_schwarz (a : ℕ → ℂ) (w : ℕ → ℝ) (P : Finset ℕ)
     (hw : ∀ p ∈ P, 0 ≤ w p) :
-    ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ 2
-      ≤ (∑ p ∈ P, ‖a p‖ ^ 2 * w p) * (∑ p ∈ P, w p) := by
+    ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ (2 : ℕ)
+      ≤ (∑ p ∈ P, ‖a p‖ ^ (2 : ℕ) * w p) * (∑ p ∈ P, w p) := by
   set u : ℕ → ℝ := fun p => ‖a p‖ * Real.sqrt (w p) with hu
   set v : ℕ → ℝ := fun p => Real.sqrt (w p) with hv
   have huv : ∀ p ∈ P, u p * v p = ‖a p‖ * w p := by
     intro p hp
     simp only [hu, hv]
     rw [mul_assoc, Real.mul_self_sqrt (hw p hp)]
-  have hu2 : ∀ p ∈ P, u p ^ 2 = ‖a p‖ ^ 2 * w p := by
+  have hu2 : ∀ p ∈ P, u p ^ (2 : ℕ) = ‖a p‖ ^ (2 : ℕ) * w p := by
     intro p hp
     simp only [hu, mul_pow, Real.sq_sqrt (hw p hp)]
-  have hv2 : ∀ p ∈ P, v p ^ 2 = w p := by
+  have hv2 : ∀ p ∈ P, v p ^ (2 : ℕ) = w p := by
     intro p hp
     simp only [hv, Real.sq_sqrt (hw p hp)]
   have hnorm : ‖∑ p ∈ P, a p * (w p : ℂ)‖ ≤ ∑ p ∈ P, u p * v p := by
     refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun p hp => ?_))
     rw [huv p hp, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hw p hp)]
-  calc ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ 2
-      ≤ (∑ p ∈ P, u p * v p) ^ 2 := by
+  calc ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ (2 : ℕ)
+      ≤ (∑ p ∈ P, u p * v p) ^ (2 : ℕ) := by
         rw [pow_two, pow_two]
         exact mul_self_le_mul_self (norm_nonneg _) hnorm
-    _ ≤ (∑ p ∈ P, u p ^ 2) * (∑ p ∈ P, v p ^ 2) := Finset.sum_mul_sq_le_sq_mul_sq P u v
-    _ = (∑ p ∈ P, ‖a p‖ ^ 2 * w p) * (∑ p ∈ P, w p) := by
+    _ ≤ (∑ p ∈ P, u p ^ (2 : ℕ)) * (∑ p ∈ P, v p ^ (2 : ℕ)) := Finset.sum_mul_sq_le_sq_mul_sq P u v
+    _ = (∑ p ∈ P, ‖a p‖ ^ (2 : ℕ) * w p) * (∑ p ∈ P, w p) := by
         rw [Finset.sum_congr rfl hu2, Finset.sum_congr rfl hv2]
 
 end

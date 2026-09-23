@@ -8,7 +8,7 @@ exterior/partner correlator.  At Born order its pair amplitude is the Bogoliubov
 not its modulus square.  Coherently wavepacketizing every positive-frequency split at fixed total
 frequency `w` therefore gives the source-calibrated shell amplitude
 
-`integral from 0 to w of K(u,w-u) du = (i/3) w^3 Xi(w)`.
+`integral from 0 to w of K(u,w-u) du = (i/3) w^(3 : ℕ) Xi(w)`.
 
 This differs materially from the pair-emission density in
 `ThetaCuspHawkingPairEmissionSpectralDensity`: the density is quadratic and all-pass blind, while
@@ -52,7 +52,7 @@ def thetaCuspHawkingPhaseDressedAnomalousPairShellAmplitude
 
 /-- Entire continuation of the coherent theta Hawking partner-correlation shell. -/
 def thetaCuspHawkingAnalyticAnomalousPairShellAmplitude (z : ℂ) : ℂ :=
-  Complex.I / 3 * z ^ 3 * XiC z
+  Complex.I / 3 * z ^ (3 : ℕ) * XiC z
 
 /-- The analytic anomalous partner shell is entire. -/
 theorem thetaCuspHawkingAnalyticAnomalousPairShellAmplitude_differentiable :
@@ -65,19 +65,19 @@ theorem thetaCuspHawkingAnalyticAnomalousPairShellAmplitude_differentiable :
 over the full pair shell retains completed Xi linearly. -/
 theorem thetaCuspHawkingBornAnomalousPairShellAmplitude_eq (w : ℝ) :
     thetaCuspHawkingBornAnomalousPairShellAmplitude w =
-      Complex.I / 3 * (w : ℂ) ^ 3 * XiC (w : ℂ) := by
-  have h1 : (∫ u in 0..w, u) = w ^ 2 / 2 := by
+      Complex.I / 3 * (w : ℂ) ^ (3 : ℕ) * XiC (w : ℂ) := by
+  have h1 : (∫ u in 0..w, u) = w ^ (2 : ℕ) / 2 := by
     convert integral_pow (a := (0 : ℝ)) (b := w) (n := 1) using 1
     all_goals norm_num
-  have h2 : (∫ u in 0..w, u ^ 2) = w ^ 3 / 3 := by
+  have h2 : (∫ u in 0..w, u ^ (2 : ℕ)) = w ^ (3 : ℕ) / 3 := by
     convert integral_pow (a := (0 : ℝ)) (b := w) (n := 2) using 1
     all_goals norm_num
   have hi1 : IntervalIntegrable (fun u : ℝ => w * u) volume 0 w :=
     (by fun_prop : Continuous (fun u : ℝ => w * u)).intervalIntegrable _ _
-  have hi2 : IntervalIntegrable (fun u : ℝ => u ^ 2) volume 0 w :=
-    (by fun_prop : Continuous (fun u : ℝ => u ^ 2)).intervalIntegrable _ _
-  have hreal : (∫ u in 0..w, u * (w - u)) = w ^ 3 / 6 := by
-    rw [show (fun u : ℝ => u * (w - u)) = fun u : ℝ => w * u - u ^ 2 by
+  have hi2 : IntervalIntegrable (fun u : ℝ => u ^ (2 : ℕ)) volume 0 w :=
+    (by fun_prop : Continuous (fun u : ℝ => u ^ (2 : ℕ))).intervalIntegrable _ _
+  have hreal : (∫ u in 0..w, u * (w - u)) = w ^ (3 : ℕ) / 6 := by
+    rw [show (fun u : ℝ => u * (w - u)) = fun u : ℝ => w * u - u ^ (2 : ℕ) by
       funext u
       ring]
     rw [intervalIntegral.integral_sub hi1 hi2,

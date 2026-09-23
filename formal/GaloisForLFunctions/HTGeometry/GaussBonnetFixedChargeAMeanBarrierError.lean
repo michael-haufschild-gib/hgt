@@ -22,14 +22,14 @@ theorem egbFixedChargeAMeanBarrier_relative_error_formula (w φ τ l : ℝ) :
 
 theorem egbFixedChargeAMeanBarrier_relative_error_quadratic_limit (w φ l : ℝ) :
     Tendsto (fun τ => (1 - egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbFixedChargeAGibbsBarrier w φ τ l) /
-      egbCoexistenceASymmetricRatio τ ^ 2) atBot (𝓝 (2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2)) := by
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) atBot (𝓝 (2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ))) := by
   simp only [egbFixedChargeAMeanBarrier_relative_error_formula]
   exact egbFixedChargeAMeanGibbsDeficit_barrier_quadratic_limit w φ l l
 
 theorem egbFixedChargeAMeanBarrier_relative_error_temperature_limit (w φ l : ℝ) :
     Tendsto (fun τ => (1 - egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbFixedChargeAGibbsBarrier w φ τ l) /
       (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ))
-      atBot (𝓝 ((2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2) / egbFixedChargeATemperatureGapCoefficient w φ)) := by
+      atBot (𝓝 ((2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ)) / egbFixedChargeATemperatureGapCoefficient w φ)) := by
   have h := (egbFixedChargeAMeanBarrier_relative_error_quadratic_limit w φ l).div
     (egbFixedChargeATemperatureGap_quadratic_critical_limit w φ) (egbFixedChargeATemperatureGapCoefficient_pos w φ).ne'
   simp only [Pi.div_def] at h
@@ -41,7 +41,7 @@ theorem egbFixedChargeAMeanBarrier_relative_error_temperature_limit (w φ l : �
 theorem egbFixedChargeAMeanBarrier_relative_error_pressure_limit (w φ l : ℝ) :
     Tendsto (fun τ => (1 - egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbFixedChargeAGibbsBarrier w φ τ l) /
       (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ))
-      atBot (𝓝 ((2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2) / egbFixedChargeAPressureGapCoefficient w φ)) := by
+      atBot (𝓝 ((2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ)) / egbFixedChargeAPressureGapCoefficient w φ)) := by
   have h := (egbFixedChargeAMeanBarrier_relative_error_quadratic_limit w φ l).div
     (egbFixedChargeAPressureGap_quadratic_critical_limit w φ) (egbFixedChargeAPressureGapCoefficient_pos w φ).ne'
   simp only [Pi.div_def] at h
@@ -61,11 +61,11 @@ theorem egbFixedChargeAMiddleGapCoordinate_linear_limit (φ : ℝ) :
 
 theorem egbFixedChargeAMeanBarrier_relative_error_peak_coordinate_limit (w φ l : ℝ) :
     Tendsto (fun τ => (1 - egbFixedChargeAInteriorGibbsGap w φ τ l 0 / egbFixedChargeAGibbsBarrier w φ τ l) /
-      egbFixedChargeAMiddleGapCoordinate τ φ ^ 2) atBot (𝓝 (2 : ℝ)) := by
+      egbFixedChargeAMiddleGapCoordinate τ φ ^ (2 : ℕ)) atBot (𝓝 (2 : ℝ)) := by
   have hc := egbFixedChargeAMiddleMeanCorrection_neg φ
   have h := (egbFixedChargeAMeanBarrier_relative_error_quadratic_limit w φ l).div
     ((egbFixedChargeAMiddleGapCoordinate_linear_limit φ).pow 2) (pow_ne_zero 2 hc.ne)
-  have he : (2 * egbFixedChargeAMiddleMeanCorrection φ ^ 2) / egbFixedChargeAMiddleMeanCorrection φ ^ 2 = 2 := by
+  have he : (2 * egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ)) / egbFixedChargeAMiddleMeanCorrection φ ^ (2 : ℕ) = 2 := by
     field_simp [hc.ne]
   rw [he] at h
   simp only [Pi.div_def] at h

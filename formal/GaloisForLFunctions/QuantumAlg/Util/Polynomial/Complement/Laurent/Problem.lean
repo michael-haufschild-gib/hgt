@@ -26,7 +26,7 @@ noncomputable section
 
 namespace Complement.Laurent.Problem
 
-/-- The reflected-conjugate product representing `|F(x)|^2` under the Laurent
+/-- The reflected-conjugate product representing `|F(x)|^(2 : ℕ)` under the Laurent
 encoding. -/
 def normPolynomial (L : ℕ) (F : ℂ[X]) : ℂ[X] :=
   F * (conjP F).reflect L

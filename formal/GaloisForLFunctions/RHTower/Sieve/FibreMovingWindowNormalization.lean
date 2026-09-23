@@ -13,12 +13,12 @@ theorem sum_fibreWindowSq_le_variableWindowSq_add_lengthError (f : ℕ → ℝ)
       ≤ 8 * ∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊,
           fixedWindowSq f (L y) (y - 1)
         + 2 * ∑ a ∈ outerBlock x h,
-          |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ 2 := by
+          |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ (2 : ℕ) := by
   classical
   have hpoint : ∀ a ∈ outerBlock x h,
       fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a)
         ≤ 2 * fixedWindowSq f (L ⌈x / (a : ℝ)⌉₊) (fibreStartIdx x a)
-          + 2 * |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ 2 :=
+          + 2 * |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ (2 : ℕ) :=
     fun a _ => fibreWindowSq_le_fixedWindowSq_add_lengthError f hf x h a _
   have hsum := Finset.sum_le_sum hpoint
   have hstart :
@@ -35,13 +35,13 @@ theorem sum_fibreWindowSq_le_variableWindowSq_add_lengthError (f : ℕ → ℝ)
 
 theorem sum_innerFibre_sq_le_variableWindowSq_add_lengthError (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (L : ℕ → ℕ) :
-    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2)
+    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ))
       ≤ 8 * ∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊,
           fixedWindowSq f (L y) (y - 1)
         + 2 * ∑ a ∈ outerBlock x h,
-          |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ 2 := by
+          |(fibreLen x h a : ℝ) - (L ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ (2 : ℕ) := by
   have hreindex :
-      (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2) =
+      (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)) =
         ∑ a ∈ outerBlock x h,
           fixedWindowSq f (fibreLen x h a) (fibreStartIdx x a) := by
     refine Finset.sum_congr rfl (fun a ha => ?_)
@@ -78,26 +78,26 @@ theorem abs_fibreLen_sub_movingFibreWindowLength_le {x h : ℝ} (hx : 4 < x) (hh
 
 theorem sum_innerFibre_sq_le_movingWindowSq_add_rounding (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 < x) (hh : 0 ≤ h) :
-    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2)
+    (∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ))
       ≤ 8 * ∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊,
           fixedWindowSq f (movingFibreWindowLength x h y) (y - 1)
-        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ 2 := by
+        + 2 * ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ (2 : ℕ) := by
   have hbridge := sum_innerFibre_sq_le_variableWindowSq_add_lengthError f hf
     (le_of_lt hx) hh (movingFibreWindowLength x h)
   have herror :
       (∑ a ∈ outerBlock x h,
           |(fibreLen x h a : ℝ) -
-            (movingFibreWindowLength x h ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ 2)
-        ≤ ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ 2 := by
+            (movingFibreWindowLength x h ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ (2 : ℕ))
+        ≤ ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ (2 : ℕ) := by
     calc
       (∑ a ∈ outerBlock x h,
           |(fibreLen x h a : ℝ) -
-            (movingFibreWindowLength x h ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ 2)
-          ≤ ∑ _a ∈ outerBlock x h, (h / Real.sqrt x + 2) ^ 2 := by
+            (movingFibreWindowLength x h ⌈x / (a : ℝ)⌉₊ : ℝ)| ^ (2 : ℕ))
+          ≤ ∑ _a ∈ outerBlock x h, (h / Real.sqrt x + 2) ^ (2 : ℕ) := by
             refine Finset.sum_le_sum (fun a ha => ?_)
             have hlen := abs_fibreLen_sub_movingFibreWindowLength_le hx hh ha
             exact pow_le_pow_left₀ (abs_nonneg _) hlen 2
-      _ = ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ 2 := by
+      _ = ((outerBlock x h).card : ℝ) * (h / Real.sqrt x + 2) ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul]
   nlinarith
 

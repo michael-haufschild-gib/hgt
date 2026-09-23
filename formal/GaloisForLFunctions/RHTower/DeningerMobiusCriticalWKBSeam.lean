@@ -33,7 +33,7 @@ noncomputable section
 time-one reciprocal-prime coefficient. -/
 theorem deningerSourceCurvedPoissonCoefficient_half_sq
     (p : Nat.Primes) :
-    deningerSourceCurvedPoissonCoefficient p (1 / 2 : ℝ) 1 ^ 2 =
+    deningerSourceCurvedPoissonCoefficient p (1 / 2 : ℝ) 1 ^ (2 : ℕ) =
       deningerSourceCurvedPoissonCoefficient p 1 1 := by
   simp only [deningerSourceCurvedPoissonCoefficient]
   rw [pow_two, ← Real.exp_add]
@@ -59,7 +59,7 @@ theorem deningerSourceCurvedPoissonCoefficient_half_eq_sqrt_primeNode
   calc
     deningerSourceCurvedPoissonCoefficient p (1 / 2 : ℝ) 1 =
         Real.sqrt
-          (deningerSourceCurvedPoissonCoefficient p (1 / 2 : ℝ) 1 ^ 2) := by
+          (deningerSourceCurvedPoissonCoefficient p (1 / 2 : ℝ) 1 ^ (2 : ℕ)) := by
       symm
       exact Real.sqrt_sq hk0
     _ = Real.sqrt (xiTransversePrimeApertureDiskNode 1 p) := by
@@ -90,7 +90,7 @@ theorem xiMobiusPrimeSchurValuationRecovery_eq_reflectedDeningerWKB
     deningerSourceCurvedPoissonCoefficient_pos p (1 / 2 : ℝ) 1
   have hkq : k = Real.sqrt (xiTransversePrimeApertureDiskNode 1 p) :=
     deningerSourceCurvedPoissonCoefficient_half_eq_sqrt_primeNode p
-  have hksq : k ^ 2 = xiTransversePrimeApertureDiskNode 1 p := by
+  have hksq : k ^ (2 : ℕ) = xiTransversePrimeApertureDiskNode 1 p := by
     rw [deningerSourceCurvedPoissonCoefficient_half_sq]
     rw [deningerSourceCurvedPoissonCoefficient_one_eq_primeReciprocal_pow]
     simp [primeReciprocal, xiTransversePrimeApertureDiskNode_one_eq_inv]
@@ -123,7 +123,7 @@ theorem xiMobiusPrimeSchurValuationDamping_mul_recovery
 reflected half-slope WKB trace. -/
 theorem xiMobiusPrimeSchurValuationRecovery_sq_mul_parityVariance
     (p : Nat.Primes) :
-    xiMobiusPrimeSchurValuationRecovery p ^ 2 *
+    xiMobiusPrimeSchurValuationRecovery p ^ (2 : ℕ) *
         dyadicSquarefreeParityVariance (primeSchurWeight 1 p) = 1 := by
   rw [← xiMobiusPrimeSchurValuationDamping_sq_eq_parityVariance]
   rw [← mul_pow]

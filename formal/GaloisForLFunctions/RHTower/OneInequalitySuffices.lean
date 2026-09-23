@@ -59,13 +59,13 @@ theorem pos_of_small_perturbation {m e q p n : ℝ} (hM : m * n ≤ q) (hE : |p|
   linarith
 
 /-- **The elementary inequality behind the row-sum bound.** -/
-theorem abs_mul_le_half_sq (a b : ℝ) : |a * b| ≤ (a ^ 2 + b ^ 2) / 2 := by
+theorem abs_mul_le_half_sq (a b : ℝ) : |a * b| ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) / 2 := by
   rw [abs_mul]
   nlinarith [sq_nonneg (|a| - |b|), abs_nonneg a, abs_nonneg b, sq_abs a, sq_abs b]
 
 /-- **The row-sum estimate, one term at a time.**  Each off-diagonal contribution is controlled by the
 entry's modulus times the average of the squares. -/
-theorem term_bound (E a b : ℝ) : |E * (a * b)| ≤ |E| * ((a ^ 2 + b ^ 2) / 2) := by
+theorem term_bound (E a b : ℝ) : |E * (a * b)| ≤ |E| * ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) / 2) := by
   rw [abs_mul]
   exact mul_le_mul_of_nonneg_left (abs_mul_le_half_sq a b) (abs_nonneg E)
 

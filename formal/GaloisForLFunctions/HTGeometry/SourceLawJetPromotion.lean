@@ -158,7 +158,7 @@ theorem prolongedProductLaw_unique {c : F} {q q' m h : ℕ → F}
 
 /-! ## Passive split laboratory -/
 
-/-- First response of `a^2 + d^2 = 1`: visible response predicts hidden response. -/
+/-- First response of `a^(2 : ℕ) + d^(2 : ℕ) = 1`: visible response predicts hidden response. -/
 theorem passiveSplit_firstResponse {a0 a1 d0 d1 : F}
     (h : a0 * a1 + d0 * d1 = 0) (hd0 : d0 ≠ 0) :
     d1 = -(a0 / d0) * a1 := by
@@ -171,7 +171,7 @@ def hasseJetUnit : ℕ → F
   | 0 => 1
   | _ + 1 => 0
 
-/-- Complete conservative split law `a^2 + d^2 = 1` in Hasse coordinates. -/
+/-- Complete conservative split law `a^(2 : ℕ) + d^(2 : ℕ) = 1` in Hasse coordinates. -/
 def IsPassiveSplitLaw (a d : ℕ → F) : Prop :=
   ∀ n, hasseJetMul a a n + hasseJetMul d d n = hasseJetUnit n
 
@@ -243,10 +243,10 @@ def booleanTiltHankelResponse (q lam : ι → ℝ) (r : Finset ι → ℝ) : ℝ
 
 /-- Independently certified QFI response, named as the withheld fourth-organ coordinate. -/
 def booleanTiltQFIResponse (q lam : ι → ℝ) (r : Finset ι → ℝ) : ℝ :=
-  4 * (Real.pi ^ 2 * wcov (bernoulliWeight q) r (fun S =>
+  4 * (Real.pi ^ (2 : ℕ) * wcov (bernoulliWeight q) r (fun S =>
     ((linearStat (fun _ => 1) S - wexp (bernoulliWeight q) (linearStat fun _ => 1))
       - (capB (bernoulliVar q) lam / capC (bernoulliVar q) lam)
-        * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ 2))
+        * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ (2 : ℕ)))
 
 /-- Zeroth tilted Mass coordinate is the existing fusion Mass organ. -/
 theorem booleanTiltMassEnergy_zero (q lam : ι → ℝ) (r : Finset ι → ℝ) :
@@ -313,7 +313,7 @@ theorem hasDerivAt_booleanTiltQFIResponse (q lam : ι → ℝ) (r : Finset ι �
 theorem booleanTilt_fusion_identity (q lam : ι → ℝ) (r : Finset ι → ℝ) (e : ℝ)
     (hM : booleanTiltMassEnergy q lam r e ≠ 0) :
     booleanTiltTransverseQFI q lam r e * booleanTiltMassEnergy q lam r e =
-      4 * Real.pi ^ 2 * booleanTiltHankelDet q lam r e := by
+      4 * Real.pi ^ (2 : ℕ) * booleanTiltHankelDet q lam r e := by
   unfold booleanTiltTransverseQFI booleanTiltMassEnergy booleanTiltHankelDet at *
   field_simp
 
@@ -324,7 +324,7 @@ theorem booleanTilt_fourOrgan_firstResponse_conservation
     (hC : capC (bernoulliVar q) lam ≠ 0) :
     booleanTiltQFIResponse q lam r * fusionMassEnergy (bernoulliVar q) lam +
         fusionTransverseQFI (bernoulliVar q) lam * booleanTiltMassResponse q lam r =
-      4 * Real.pi ^ 2 * booleanTiltHankelResponse q lam r := by
+      4 * Real.pi ^ (2 : ℕ) * booleanTiltHankelResponse q lam r := by
   have hQ := hasDerivAt_booleanTiltQFIResponse q lam r hC
   have hM := hasDerivAt_booleanTiltMassEnergy q lam r
   have hH := hasDerivAt_booleanTiltHankelDet q lam r
@@ -336,14 +336,14 @@ theorem booleanTilt_fourOrgan_firstResponse_conservation
   have hrel :
       (fun e => booleanTiltTransverseQFI q lam r e * booleanTiltMassEnergy q lam r e)
         =ᶠ[nhds (0 : ℝ)]
-      (fun e => 4 * Real.pi ^ 2 * booleanTiltHankelDet q lam r e) :=
+      (fun e => 4 * Real.pi ^ (2 : ℕ) * booleanTiltHankelDet q lam r e) :=
     hne.mono fun e he => booleanTilt_fusion_identity q lam r e he
   have hleft := hQ.mul hM
-  have hright := hH.const_mul (4 * Real.pi ^ 2)
+  have hright := hH.const_mul (4 * Real.pi ^ (2 : ℕ))
   have hderiv :
       booleanTiltQFIResponse q lam r * booleanTiltMassEnergy q lam r 0 +
           booleanTiltTransverseQFI q lam r 0 * booleanTiltMassResponse q lam r =
-        4 * Real.pi ^ 2 * booleanTiltHankelResponse q lam r :=
+        4 * Real.pi ^ (2 : ℕ) * booleanTiltHankelResponse q lam r :=
     hleft.unique (hright.congr_of_eventuallyEq hrel)
   rw [booleanTiltMassEnergy_zero, booleanTiltTransverseQFI_zero] at hderiv
   exact hderiv

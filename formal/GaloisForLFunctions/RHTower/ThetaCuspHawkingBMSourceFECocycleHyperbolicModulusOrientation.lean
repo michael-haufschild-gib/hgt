@@ -10,10 +10,10 @@ module proves the missing positive orientation.  Its squared modulus is greater 
 less than one exactly on the left half-strip, critical wall, or right half-strip.
 
 The mechanism is coefficient-faithful.  For the exact quadratic Einstein carrier
-`P(s) = (1+s/2)(s/2)^2`, reflection changes both positive norm factors in the same direction:
+`P(s) = (1+s/2)(s/2)^(2 : ℕ)`, reflection changes both positive norm factors in the same direction:
 
-`|1-s|^2 - |s|^2 = 1-2 Re(s)` and
-`|3-s|^2 - |s+2|^2 = 5(1-2 Re(s))`.
+`|1-s|^(2 : ℕ) - |s|^(2 : ℕ) = 1-2 Re(s)` and
+`|3-s|^(2 : ℕ) - |s+2|^(2 : ℕ) = 5(1-2 Re(s))`.
 
 There is therefore no cross-factor cancellation.  Off the wall, the reflection-invariant helicity
 coefficient cancels from the exact source-cocycle norm ratio.  On the wall the source vanishes and
@@ -36,8 +36,8 @@ noncomputable section
 /-- Exact squared modulus of the unit-source quadratic Einstein carrier polynomial. -/
 theorem normSq_hbXiPeierlsUnitSourceCarrierPolynomial (s : ℂ) :
     Complex.normSq (hbXiPeierlsUnitSourceCarrierPolynomial s) =
-      (((s.re + 2) ^ 2 + s.im ^ 2) *
-        (s.re ^ 2 + s.im ^ 2) ^ 2) / 64 := by
+      (((s.re + 2) ^ (2 : ℕ) + s.im ^ (2 : ℕ)) *
+        (s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ)) ^ (2 : ℕ)) / 64 := by
   simp [hbXiPeierlsUnitSourceCarrierPolynomial, Complex.normSq_apply,
     pow_two, Complex.mul_re, Complex.mul_im]
   ring
@@ -57,31 +57,31 @@ theorem normSq_hbXiPeierlsUnitSourceCarrierPolynomial_lt_reflect_iff
     by_contra hn
     have hx : 1 / 2 ≤ s.re := le_of_not_gt hn
     have ha :
-        (1 - s.re) ^ 2 + (-s.im) ^ 2 ≤ s.re ^ 2 + s.im ^ 2 := by
+        (1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ) ≤ s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ) := by
       nlinarith
     have hb :
-        (3 - s.re) ^ 2 + (-s.im) ^ 2 ≤ (s.re + 2) ^ 2 + s.im ^ 2 := by
+        (3 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ) ≤ (s.re + 2) ^ (2 : ℕ) + s.im ^ (2 : ℕ) := by
       nlinarith
-    have ha0 : 0 ≤ (1 - s.re) ^ 2 + (-s.im) ^ 2 := by positivity
-    have ha20 : 0 ≤ ((1 - s.re) ^ 2 + (-s.im) ^ 2) ^ 2 := sq_nonneg _
-    have hb0 : 0 ≤ (s.re + 2) ^ 2 + s.im ^ 2 := by positivity
+    have ha0 : 0 ≤ (1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ) := by positivity
+    have ha20 : 0 ≤ ((1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)) ^ (2 : ℕ) := sq_nonneg _
+    have hb0 : 0 ≤ (s.re + 2) ^ (2 : ℕ) + s.im ^ (2 : ℕ) := by positivity
     have ha2 :
-        ((1 - s.re) ^ 2 + (-s.im) ^ 2) ^ 2 ≤
-          (s.re ^ 2 + s.im ^ 2) ^ 2 := by
-      nlinarith [sq_nonneg ((s.re ^ 2 + s.im ^ 2) -
-        ((1 - s.re) ^ 2 + (-s.im) ^ 2))]
+        ((1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+          (s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
+      nlinarith [sq_nonneg ((s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ)) -
+        ((1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)))]
     have hprod :
-        ((3 - s.re) ^ 2 + (-s.im) ^ 2) *
-            ((1 - s.re) ^ 2 + (-s.im) ^ 2) ^ 2 ≤
-          ((s.re + 2) ^ 2 + s.im ^ 2) *
-            (s.re ^ 2 + s.im ^ 2) ^ 2 := by
+        ((3 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)) *
+            ((1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+          ((s.re + 2) ^ (2 : ℕ) + s.im ^ (2 : ℕ)) *
+            (s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
       exact mul_le_mul hb ha2 ha20 hb0
     nlinarith
   · intro hx
-    let a : ℝ := s.re ^ 2 + s.im ^ 2
-    let ar : ℝ := (1 - s.re) ^ 2 + (-s.im) ^ 2
-    let b : ℝ := (s.re + 2) ^ 2 + s.im ^ 2
-    let br : ℝ := (3 - s.re) ^ 2 + (-s.im) ^ 2
+    let a : ℝ := s.re ^ (2 : ℕ) + s.im ^ (2 : ℕ)
+    let ar : ℝ := (1 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)
+    let b : ℝ := (s.re + 2) ^ (2 : ℕ) + s.im ^ (2 : ℕ)
+    let br : ℝ := (3 - s.re) ^ (2 : ℕ) + (-s.im) ^ (2 : ℕ)
     have ha0 : 0 < a := by
       dsimp [a]
       nlinarith [sq_nonneg s.im]
@@ -95,12 +95,12 @@ theorem normSq_hbXiPeierlsUnitSourceCarrierPolynomial_lt_reflect_iff
       dsimp [b, br]
       nlinarith
     have har0 : 0 < ar := lt_trans ha0 har
-    have ha2 : a ^ 2 < ar ^ 2 := by
+    have ha2 : a ^ (2 : ℕ) < ar ^ (2 : ℕ) := by
       nlinarith [mul_pos (sub_pos.mpr har) (add_pos_of_pos_of_nonneg ha0 (le_of_lt har0))]
-    have hprod : b * a ^ 2 < br * ar ^ 2 := by
-      have h1p : 0 < (br - b) * ar ^ 2 :=
+    have hprod : b * a ^ (2 : ℕ) < br * ar ^ (2 : ℕ) := by
+      have h1p : 0 < (br - b) * ar ^ (2 : ℕ) :=
         mul_pos (sub_pos.mpr hbr) (sq_pos_of_pos har0)
-      have h2p : 0 < b * (ar ^ 2 - a ^ 2) :=
+      have h2p : 0 < b * (ar ^ (2 : ℕ) - a ^ (2 : ℕ)) :=
         mul_pos hb0 (sub_pos.mpr ha2)
       nlinarith
     dsimp [a, ar, b, br] at hprod

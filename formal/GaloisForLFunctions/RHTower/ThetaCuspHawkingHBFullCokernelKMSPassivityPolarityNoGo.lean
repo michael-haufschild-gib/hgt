@@ -138,7 +138,7 @@ theorem hbXiPeierlsCanonicalFullCokernelTwoLevelKMSResponseAt_I_eq
     simpa [sub_eq_add_neg, add_comm] using hm
   field_simp [hp, hm, hp', hm']
   ring_nf
-  rw [show Complex.I ^ 3 = -Complex.I by norm_num [pow_succ, Complex.I_sq]]
+  rw [show Complex.I ^ (3 : ℕ) = -Complex.I by norm_num [pow_succ, Complex.I_sq]]
   ring
 
 /-- Fixed dissipative quadrature of the explicit KMS response is exactly the complete

@@ -44,14 +44,14 @@ theorem rabiHatanoNelsonPlaquetteLink_reverseAdjoint_iff (J κ : ℝ) :
 
 theorem rabiHatanoNelson_directionalWilsonTrace (J κ : ℝ) :
     directionalWilsonPlaquetteTrace (rabiHatanoNelsonPlaquetteLink J κ) 0 1 2 3 =
-      (((J + κ : ℝ) : ℂ) ^ 4) := by
+      (((J + κ : ℝ) : ℂ) ^ (4 : ℕ)) := by
   simp [directionalWilsonPlaquetteTrace, rabiHatanoNelsonPlaquetteLink,
     Matrix.trace]
   ring
 
 theorem rabiHatanoNelson_reverseWilsonTrace (J κ : ℝ) :
     reverseDirectionalWilsonPlaquetteTrace (rabiHatanoNelsonPlaquetteLink J κ) 0 1 2 3 =
-      (((J - κ : ℝ) : ℂ) ^ 4) := by
+      (((J - κ : ℝ) : ℂ) ^ (4 : ℕ)) := by
   simp [reverseDirectionalWilsonPlaquetteTrace, rabiHatanoNelsonPlaquetteLink,
     Matrix.trace]
   ring
@@ -60,7 +60,7 @@ theorem rabiHatanoNelson_reverseWilsonTrace (J κ : ℝ) :
 theorem rabiHatanoNelson_Wilson_orientation_contrast (J κ : ℝ) :
     reverseDirectionalWilsonPlaquetteTrace (rabiHatanoNelsonPlaquetteLink J κ) 0 1 2 3 -
         directionalWilsonPlaquetteTrace (rabiHatanoNelsonPlaquetteLink J κ) 0 1 2 3 =
-      -8 * (J : ℂ) * κ * (J ^ 2 + κ ^ 2) := by
+      -8 * (J : ℂ) * κ * (J ^ (2 : ℕ) + κ ^ (2 : ℕ)) := by
   rw [rabiHatanoNelson_reverseWilsonTrace, rabiHatanoNelson_directionalWilsonTrace]
   push_cast
   ring
@@ -95,7 +95,7 @@ Bogoliubov polarisation identity. -/
 theorem spinFeedback_tangent_and_bdg_polarization (u d : ℂ) (z : ℝ) :
     spinFeedbackLengthRate u d z = 0 ∧
       ((2 * rePair u d : ℝ) : ℂ) * u =
-        ((‖u‖ ^ 2 : ℝ) : ℂ) * d + u ^ 2 * (starRingEnd ℂ) d :=
+        ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) * d + u ^ (2 : ℕ) * (starRingEnd ℂ) d :=
   ⟨spinFeedbackLengthRate_eq_zero u d z, two_rePair_mul u d⟩
 
 end

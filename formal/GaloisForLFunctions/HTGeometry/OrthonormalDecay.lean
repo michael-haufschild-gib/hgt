@@ -22,26 +22,26 @@ variable {s : ℕ → ℝ}
 
 /-- The kernel series terms are the squared orthonormal polynomials. -/
 theorem orthonormalPoly_eval_sq (h : PositiveMomentForm s) (k : ℕ) (x : ℝ) :
-    ((orthonormalPoly s k).eval x) ^ 2
-      = ((monicOrtho s k).eval x) ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) := by
+    ((orthonormalPoly s k).eval x) ^ (2 : ℕ)
+      = ((monicOrtho s k).eval x) ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) := by
   rw [orthonormalPoly, Polynomial.eval_smul, smul_eq_mul, mul_pow, ← monicOrthoNorm_sq h k,
     inv_pow, div_eq_inv_mul]
 
 /-- **Positivity of the Christoffel limit is summability of the squared orthonormal
 polynomials.** -/
 theorem summable_orthonormalPoly_sq_of_christoffelLimit_pos (h : PositiveMomentForm s) (x : ℝ)
-    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) :
-    Summable fun k => ((orthonormalPoly s k).eval x) ^ 2 := by
+    Summable fun k => ((orthonormalPoly s k).eval x) ^ (2 : ℕ) := by
   refine hsum.congr fun k => ?_
   rw [orthonormalPoly_eval_sq h k x]
 
 /-- **The orthonormal polynomials decay** wherever the kernel series converges. -/
 theorem tendsto_orthonormalPoly_eval_zero (h : PositiveMomentForm s) (x : ℝ)
-    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) :
     Tendsto (fun k => (orthonormalPoly s k).eval x) atTop (nhds 0) := by
-  have hsq : Tendsto (fun k => ((orthonormalPoly s k).eval x) ^ 2) atTop (nhds 0) :=
+  have hsq : Tendsto (fun k => ((orthonormalPoly s k).eval x) ^ (2 : ℕ)) atTop (nhds 0) :=
     (summable_orthonormalPoly_sq_of_christoffelLimit_pos h x hsum).tendsto_atTop_zero
   have hroot := (Real.continuous_sqrt.tendsto 0).comp hsq
   rw [Real.sqrt_zero] at hroot

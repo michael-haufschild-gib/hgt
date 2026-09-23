@@ -13,7 +13,7 @@ identifies this volume with `2*xi(2)`.
 
 Thus the contour residue equals the literal native constant-mode correction.
 For every actual Xi copy, the centered source pairing is exactly the admitted
-arithmetic Cauchy integral with density `Xi(t)^2*boundaryWeight(t)`.
+arithmetic Cauchy integral with density `Xi(t)^(2 : ℕ)*boundaryWeight(t)`.
 -/
 
 open Complex Set Filter Topology MeasureTheory UpperHalfPlane
@@ -145,9 +145,9 @@ theorem two_xi_two : 2 * xi 2 = ((Real.pi/3:ℝ):ℂ) := by
 
 /-- The contour's constant residue is exactly the native constant-mode projection. -/
 theorem mean_residue_cancel (q : XiZeroCopy) :
-    2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^2) =
-      (SelbergThetaNativeSource.sourceMass:ℂ)^2 /
-        ((1+(xiSpectralPoint q)^2)*inner ℂ SelbergNativeConstantMode.constantVector
+    2*mainTerm*xi (3/2)/(1+(xiSpectralPoint q)^(2 : ℕ)) =
+      (SelbergThetaNativeSource.sourceMass:ℂ)^(2 : ℕ) /
+        ((1+(xiSpectralPoint q)^(2 : ℕ))*inner ℂ SelbergNativeConstantMode.constantVector
           SelbergNativeConstantMode.constantVector) := by
   rw [mainTerm_eq, sourceMass_eq_xi, constantVector_inner, ← two_xi_two]
   field_simp
@@ -156,7 +156,7 @@ theorem mean_residue_cancel (q : XiZeroCopy) :
 theorem sourcePairing_eq_cauchy (q : XiZeroCopy) :
     SelbergThetaCommonForcingGram.sourcePairing q =
       (1/(4*(Real.pi:ℂ)))*∫ t : ℝ,
-        (Xi t:ℂ)^2*(boundaryWeight t:ℂ)/((t:ℂ)^2-(xiSpectralPoint q)^2) := by
+        (Xi t:ℂ)^(2 : ℕ)*(boundaryWeight t:ℂ)/((t:ℂ)^(2 : ℕ)-(xiSpectralPoint q)^(2 : ℕ)) := by
   rw [sourcePairing_cauchy, mean_residue_cancel]
   ring
 

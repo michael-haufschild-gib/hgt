@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingHBFullCokernelKMSPassivityPol
 The Teukolsky QNM adjoint pairing is complex-linear in both entries, rather than Hermitian.  Its
 diagonal therefore has phase weight two:
 
-`B (z x) (z x) = z^2 B x x`.
+`B (z x) (z x) = z^(2 : ℕ) B x x`.
 
 In particular `B (I x) (I x) = -B x x`.  A diagonal value cannot consequently descend through
 the common phase of one physical source ray unless it vanishes.  The same rotation proves the
@@ -46,7 +46,7 @@ def d4HBAdjointQNMComplexBilinearDiagonalRayLanding
 theorem d4HBAdjointQNMComplexBilinearDiagonal_phaseWeightTwo
     {X : Type*} [AddCommGroup X] [Module ℂ X]
     (B : X →ₗ[ℂ] X →ₗ[ℂ] ℂ) (z : ℂ) (x : X) :
-    B (z • x) (z • x) = z ^ 2 * B x x := by
+    B (z • x) (z • x) = z ^ (2 : ℕ) * B x x := by
   simp only [map_smul, LinearMap.smul_apply, smul_eq_mul]
   ring
 

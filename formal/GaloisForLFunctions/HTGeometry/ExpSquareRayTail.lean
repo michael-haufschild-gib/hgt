@@ -31,19 +31,19 @@ namespace GaloisForLFunctions
 variable {b : ℝ}
 
 theorem integrable_expNegSq (hb : 0 < b) :
-    Integrable (fun x : ℝ => Real.exp (-(b * x ^ 2))) volume := by
+    Integrable (fun x : ℝ => Real.exp (-(b * x ^ (2 : ℕ)))) volume := by
   refine (integrable_exp_neg_mul_sq hb).congr ?_
   filter_upwards with x
   ring_nf
 
 /-- `−e^(−bx²)/(2b)` is an antiderivative of `x e^(−bx²)`. -/
 theorem hasDerivAt_expNegSqPrimitive (hb : 0 < b) (x : ℝ) :
-    HasDerivAt (fun y : ℝ => -Real.exp (-(b * y ^ 2)) / (2 * b))
-      (x * Real.exp (-(b * x ^ 2))) x := by
-  have hinner : HasDerivAt (fun y : ℝ => -(b * y ^ 2)) (-(b * (2 * x))) x := by
+    HasDerivAt (fun y : ℝ => -Real.exp (-(b * y ^ (2 : ℕ))) / (2 * b))
+      (x * Real.exp (-(b * x ^ (2 : ℕ)))) x := by
+  have hinner : HasDerivAt (fun y : ℝ => -(b * y ^ (2 : ℕ))) (-(b * (2 * x))) x := by
     have hinnerRaw := ((hasDerivAt_pow 2 x).const_mul b).neg
     have hfun :
-        -(fun y : ℝ => b * y ^ 2) = (fun y : ℝ => -(b * y ^ 2)) := by
+        -(fun y : ℝ => b * y ^ (2 : ℕ)) = (fun y : ℝ => -(b * y ^ (2 : ℕ))) := by
       funext y
       rfl
     rw [hfun] at hinnerRaw
@@ -53,8 +53,8 @@ theorem hasDerivAt_expNegSqPrimitive (hb : 0 < b) (x : ℝ) :
   have hbne : (2 : ℝ) * b ≠ 0 := by positivity
   have hneg := hexp.neg
   have hfun :
-      -(fun y : ℝ => Real.exp (-(b * y ^ 2))) =
-        (fun y : ℝ => -Real.exp (-(b * y ^ 2))) := by
+      -(fun y : ℝ => Real.exp (-(b * y ^ (2 : ℕ)))) =
+        (fun y : ℝ => -Real.exp (-(b * y ^ (2 : ℕ)))) := by
     funext y
     rfl
   rw [hfun] at hneg
@@ -63,32 +63,32 @@ theorem hasDerivAt_expNegSqPrimitive (hb : 0 < b) (x : ℝ) :
   field_simp [hbne]
 
 theorem tendsto_expNegSq_atTop (hb : 0 < b) :
-    Filter.Tendsto (fun y : ℝ => Real.exp (-(b * y ^ 2))) Filter.atTop (nhds 0) := by
-  have h1 : Filter.Tendsto (fun y : ℝ => b * y ^ 2) Filter.atTop Filter.atTop :=
+    Filter.Tendsto (fun y : ℝ => Real.exp (-(b * y ^ (2 : ℕ)))) Filter.atTop (nhds 0) := by
+  have h1 : Filter.Tendsto (fun y : ℝ => b * y ^ (2 : ℕ)) Filter.atTop Filter.atTop :=
     Filter.Tendsto.const_mul_atTop hb (Filter.tendsto_pow_atTop (by norm_num))
-  have h2 : Filter.Tendsto (fun y : ℝ => -(b * y ^ 2)) Filter.atTop Filter.atBot :=
+  have h2 : Filter.Tendsto (fun y : ℝ => -(b * y ^ (2 : ℕ))) Filter.atTop Filter.atBot :=
     Filter.tendsto_neg_atTop_atBot.comp h1
   exact Real.tendsto_exp_atBot.comp h2
 
 theorem tendsto_expNegSqPrimitive (hb : 0 < b) :
-    Filter.Tendsto (fun y : ℝ => -Real.exp (-(b * y ^ 2)) / (2 * b)) Filter.atTop (nhds 0) := by
+    Filter.Tendsto (fun y : ℝ => -Real.exp (-(b * y ^ (2 : ℕ))) / (2 * b)) Filter.atTop (nhds 0) := by
   have h2 := ((tendsto_expNegSq_atTop hb).neg).div_const (2 * b)
   simpa using h2
 
 /-- The exact first moment of the tail. -/
 theorem integral_Ioi_id_mul_expNegSq (hb : 0 < b) {a : ℝ} :
-    ∫ x in Ioi a, x * Real.exp (-(b * x ^ 2)) = Real.exp (-(b * a ^ 2)) / (2 * b) := by
+    ∫ x in Ioi a, x * Real.exp (-(b * x ^ (2 : ℕ))) = Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b) := by
   have hcont : ContinuousWithinAt
-      (fun y : ℝ => -Real.exp (-(b * y ^ 2)) / (2 * b)) (Ici a) a := by
+      (fun y : ℝ => -Real.exp (-(b * y ^ (2 : ℕ))) / (2 * b)) (Ici a) a := by
     apply ContinuousAt.continuousWithinAt
     fun_prop
   have hderiv : ∀ x ∈ Ioi a, HasDerivAt
-      (fun y : ℝ => -Real.exp (-(b * y ^ 2)) / (2 * b))
-      (x * Real.exp (-(b * x ^ 2))) x := fun x _ => hasDerivAt_expNegSqPrimitive hb x
-  have hint : IntegrableOn (fun x : ℝ => x * Real.exp (-(b * x ^ 2))) (Ioi a) volume := by
-    have hgi : Integrable (fun x : ℝ => x * Real.exp (-b * x ^ 2)) volume :=
+      (fun y : ℝ => -Real.exp (-(b * y ^ (2 : ℕ))) / (2 * b))
+      (x * Real.exp (-(b * x ^ (2 : ℕ)))) x := fun x _ => hasDerivAt_expNegSqPrimitive hb x
+  have hint : IntegrableOn (fun x : ℝ => x * Real.exp (-(b * x ^ (2 : ℕ)))) (Ioi a) volume := by
+    have hgi : Integrable (fun x : ℝ => x * Real.exp (-b * x ^ (2 : ℕ))) volume :=
       integrable_mul_exp_neg_mul_sq hb
-    have hcong : Integrable (fun x : ℝ => x * Real.exp (-(b * x ^ 2))) volume := by
+    have hcong : Integrable (fun x : ℝ => x * Real.exp (-(b * x ^ (2 : ℕ)))) volume := by
       refine hgi.congr ?_
       filter_upwards with x
       ring_nf
@@ -99,43 +99,43 @@ theorem integral_Ioi_id_mul_expNegSq (hb : 0 < b) {a : ℝ} :
 
 /-- **The one-sided tail bound.** -/
 theorem integral_Ioi_expNegSq_le (hb : 0 < b) {a : ℝ} (ha : 0 < a) :
-    ∫ x in Ioi a, Real.exp (-(b * x ^ 2)) ≤ Real.exp (-(b * a ^ 2)) / (2 * b * a) := by
-  have hint1 : IntegrableOn (fun x : ℝ => Real.exp (-(b * x ^ 2))) (Ioi a) volume :=
+    ∫ x in Ioi a, Real.exp (-(b * x ^ (2 : ℕ))) ≤ Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b * a) := by
+  have hint1 : IntegrableOn (fun x : ℝ => Real.exp (-(b * x ^ (2 : ℕ)))) (Ioi a) volume :=
     (integrable_expNegSq hb).integrableOn
-  have hint2 : IntegrableOn (fun x : ℝ => a⁻¹ * (x * Real.exp (-(b * x ^ 2))))
+  have hint2 : IntegrableOn (fun x : ℝ => a⁻¹ * (x * Real.exp (-(b * x ^ (2 : ℕ)))))
       (Ioi a) volume := by
-    have hgi : Integrable (fun x : ℝ => x * Real.exp (-b * x ^ 2)) volume :=
+    have hgi : Integrable (fun x : ℝ => x * Real.exp (-b * x ^ (2 : ℕ))) volume :=
       integrable_mul_exp_neg_mul_sq hb
-    have hcong : Integrable (fun x : ℝ => a⁻¹ * (x * Real.exp (-(b * x ^ 2)))) volume := by
+    have hcong : Integrable (fun x : ℝ => a⁻¹ * (x * Real.exp (-(b * x ^ (2 : ℕ))))) volume := by
       refine (hgi.const_mul a⁻¹).congr ?_
       filter_upwards with x
       ring_nf
     exact hcong.integrableOn
-  have hmono : ∀ x ∈ Ioi a, Real.exp (-(b * x ^ 2))
-      ≤ a⁻¹ * (x * Real.exp (-(b * x ^ 2))) := by
+  have hmono : ∀ x ∈ Ioi a, Real.exp (-(b * x ^ (2 : ℕ)))
+      ≤ a⁻¹ * (x * Real.exp (-(b * x ^ (2 : ℕ)))) := by
     intro x hx
     have hxa : a < x := hx
     have hone : (1 : ℝ) ≤ a⁻¹ * x := by
       rw [le_inv_mul_iff₀ ha]
       linarith
-    have hE : (0 : ℝ) < Real.exp (-(b * x ^ 2)) := Real.exp_pos _
-    calc Real.exp (-(b * x ^ 2)) = 1 * Real.exp (-(b * x ^ 2)) := (one_mul _).symm
-      _ ≤ (a⁻¹ * x) * Real.exp (-(b * x ^ 2)) := mul_le_mul_of_nonneg_right hone hE.le
-      _ = a⁻¹ * (x * Real.exp (-(b * x ^ 2))) := by ring
+    have hE : (0 : ℝ) < Real.exp (-(b * x ^ (2 : ℕ))) := Real.exp_pos _
+    calc Real.exp (-(b * x ^ (2 : ℕ))) = 1 * Real.exp (-(b * x ^ (2 : ℕ))) := (one_mul _).symm
+      _ ≤ (a⁻¹ * x) * Real.exp (-(b * x ^ (2 : ℕ))) := mul_le_mul_of_nonneg_right hone hE.le
+      _ = a⁻¹ * (x * Real.exp (-(b * x ^ (2 : ℕ)))) := by ring
   have hcmp := setIntegral_mono_on hint1 hint2 measurableSet_Ioi hmono
-  have hval : ∫ x in Ioi a, a⁻¹ * (x * Real.exp (-(b * x ^ 2)))
-      = a⁻¹ * (Real.exp (-(b * a ^ 2)) / (2 * b)) := by
+  have hval : ∫ x in Ioi a, a⁻¹ * (x * Real.exp (-(b * x ^ (2 : ℕ))))
+      = a⁻¹ * (Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b)) := by
     rw [integral_const_mul, integral_Ioi_id_mul_expNegSq hb]
   rw [hval] at hcmp
-  have heq : a⁻¹ * (Real.exp (-(b * a ^ 2)) / (2 * b))
-      = Real.exp (-(b * a ^ 2)) / (2 * b * a) := by
+  have heq : a⁻¹ * (Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b))
+      = Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b * a) := by
     field_simp
   rw [heq] at hcmp
   exact hcmp
 
 /-- **The two-sided tail bound**, by reflecting the left ray onto the right one. -/
 theorem integral_compl_Icc_expNegSq_le (hb : 0 < b) {a : ℝ} (ha : 0 < a) :
-    ∫ x in (Icc (-a) a)ᶜ, Real.exp (-(b * x ^ 2)) ≤ Real.exp (-(b * a ^ 2)) / (b * a) := by
+    ∫ x in (Icc (-a) a)ᶜ, Real.exp (-(b * x ^ (2 : ℕ))) ≤ Real.exp (-(b * a ^ (2 : ℕ))) / (b * a) := by
   have hgi := integrable_expNegSq hb
   have hsplit : (Icc (-a) a)ᶜ = Iio (-a) ∪ Ioi a := by
     ext x
@@ -148,20 +148,20 @@ theorem integral_compl_Icc_expNegSq_le (hb : 0 < b) {a : ℝ} (ha : 0 < a) :
     simp only [Set.mem_Ioi] at hx'
     linarith
   rw [hsplit, setIntegral_union hdisj measurableSet_Ioi hgi.integrableOn hgi.integrableOn]
-  have hIioIic : ∫ x in Iio (-a), Real.exp (-(b * x ^ 2))
-      = ∫ x in Iic (-a), Real.exp (-(b * x ^ 2)) :=
+  have hIioIic : ∫ x in Iio (-a), Real.exp (-(b * x ^ (2 : ℕ)))
+      = ∫ x in Iic (-a), Real.exp (-(b * x ^ (2 : ℕ))) :=
     setIntegral_congr_set Iio_ae_eq_Iic
-  have hrefl : ∫ x in Iic (-a), Real.exp (-(b * x ^ 2))
-      = ∫ x in Ioi a, Real.exp (-(b * x ^ 2)) := by
-    rw [← integral_comp_neg_Ioi a (fun x : ℝ => Real.exp (-(b * x ^ 2)))]
+  have hrefl : ∫ x in Iic (-a), Real.exp (-(b * x ^ (2 : ℕ)))
+      = ∫ x in Ioi a, Real.exp (-(b * x ^ (2 : ℕ))) := by
+    rw [← integral_comp_neg_Ioi a (fun x : ℝ => Real.exp (-(b * x ^ (2 : ℕ))))]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x _
     simp
   rw [hIioIic, hrefl]
   have hray := integral_Ioi_expNegSq_le hb ha
   have hba : (0 : ℝ) < b * a := mul_pos hb ha
-  have hhalf : Real.exp (-(b * a ^ 2)) / (2 * b * a) + Real.exp (-(b * a ^ 2)) / (2 * b * a)
-      = Real.exp (-(b * a ^ 2)) / (b * a) := by
+  have hhalf : Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b * a) + Real.exp (-(b * a ^ (2 : ℕ))) / (2 * b * a)
+      = Real.exp (-(b * a ^ (2 : ℕ))) / (b * a) := by
     field_simp
     ring
   linarith
@@ -169,13 +169,13 @@ theorem integral_compl_Icc_expNegSq_le (hb : 0 < b) {a : ℝ} (ha : 0 < a) :
 /-- **Anything dominated by a multiple of `e^(−bx²)` inherits the two-sided tail bound.** -/
 theorem setIntegral_compl_Icc_le_of_le_expNegSq (hb : 0 < b) {a C : ℝ} (ha : 0 < a)
     (hC : 0 ≤ C) {f : ℝ → ℝ} (hfint : IntegrableOn f ((Icc (-a) a)ᶜ) volume)
-    (hf : ∀ x, f x ≤ C * Real.exp (-(b * x ^ 2))) :
-    ∫ x in (Icc (-a) a)ᶜ, f x ≤ C * (Real.exp (-(b * a ^ 2)) / (b * a)) := by
-  have hdom : IntegrableOn (fun x : ℝ => C * Real.exp (-(b * x ^ 2))) ((Icc (-a) a)ᶜ) volume :=
+    (hf : ∀ x, f x ≤ C * Real.exp (-(b * x ^ (2 : ℕ)))) :
+    ∫ x in (Icc (-a) a)ᶜ, f x ≤ C * (Real.exp (-(b * a ^ (2 : ℕ))) / (b * a)) := by
+  have hdom : IntegrableOn (fun x : ℝ => C * Real.exp (-(b * x ^ (2 : ℕ)))) ((Icc (-a) a)ᶜ) volume :=
     ((integrable_expNegSq hb).const_mul C).integrableOn
   have hmono := setIntegral_mono_on hfint hdom measurableSet_Icc.compl (fun x _ => hf x)
-  have hval : ∫ x in (Icc (-a) a)ᶜ, C * Real.exp (-(b * x ^ 2))
-      = C * ∫ x in (Icc (-a) a)ᶜ, Real.exp (-(b * x ^ 2)) := integral_const_mul _ _
+  have hval : ∫ x in (Icc (-a) a)ᶜ, C * Real.exp (-(b * x ^ (2 : ℕ)))
+      = C * ∫ x in (Icc (-a) a)ᶜ, Real.exp (-(b * x ^ (2 : ℕ))) := integral_const_mul _ _
   rw [hval] at hmono
   exact hmono.trans (mul_le_mul_of_nonneg_left (integral_compl_Icc_expNegSq_le hb ha) hC)
 

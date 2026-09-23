@@ -40,7 +40,7 @@ theorem egbFixedChargeABarrierIntegrand_integral_critical_limit (w φ : ℝ) :
   rwa [egbFixedChargeABarrierLimitIntegrand_integral] at h
 
 theorem egbFixedChargeAGibbsBarrier_quartic_critical_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ 4)
+    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
       atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ)) := by
   simp only [egbFixedChargeAGibbsBarrier_integral]
   exact egbFixedChargeABarrierIntegrand_integral_critical_limit w φ
@@ -57,7 +57,7 @@ theorem egbFixedChargeAGibbsBarrier_critical_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeAGibbsBarrierCoefficient_critical_quartic (w φ : ℝ) :
     egbFixedChargeAGibbsBarrierCoefficient w φ =
-      egbFixedChargeACriticalQuarticCoefficient w φ * egbFixedChargeACriticalRadius w φ ^ 4 := by
+      egbFixedChargeACriticalQuarticCoefficient w φ * egbFixedChargeACriticalRadius w φ ^ (4 : ℕ) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   unfold egbFixedChargeAGibbsBarrierCoefficient egbFixedChargeACriticalQuarticCoefficient

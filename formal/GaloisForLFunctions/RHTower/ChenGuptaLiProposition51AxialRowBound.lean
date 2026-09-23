@@ -22,7 +22,7 @@ theorem norm_cglProposition51AxialRowTerm_fibre_le
     (m : CGLProposition51PuncturedFrequency) :
     ‖cglProposition51AxialRowTerm w N (cglLemma45FibreModulus q) R
       (cglLemma45FibreRows P) u.1 m.val‖ ≤
-      ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         cglProposition51FibreAxialAnalyticBudget P w N n *
           ‖cglProposition51AxialNonzeroFourierAmplitude w N (cglLemma45FibreModulus q)
             (P.ordinate u.1.2.2 - P.ordinate u.1.1) m‖ := by
@@ -67,7 +67,7 @@ theorem norm_cglProposition51AxialRowTerm_fibre_le
           (P.ordinate u.1.1 - P.ordinate u.1.2.1)
           (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
           (P.ordinate u.1.2.2 - P.ordinate u.1.1) m.val‖ ≤
-      ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         ‖cglProposition51AxialAnalyticAmplitude w N (cglLemma45FibreModulus q)
           (P.ordinate u.1.1 - P.ordinate u.1.2.1)
           (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
@@ -76,7 +76,7 @@ theorem norm_cglProposition51AxialRowTerm_fibre_le
             ((cglLemma45FibreModulus q).value.totient : ℝ) *
             ‖cglProposition51AxialTwistedCharacterFactor (cglLemma45FibreModulus q)
               (P.character u.1.2.2) (P.character u.1.1) m.val‖ ≤
-                ((cglLemma45FibreModulus q).value : ℝ) ^ 3 := by
+                ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) := by
           calc
             ((cglLemma45FibreModulus q).value.totient : ℝ) *
                 ((cglLemma45FibreModulus q).value.totient : ℝ) *
@@ -87,19 +87,19 @@ theorem norm_cglProposition51AxialRowTerm_fibre_le
                   ((cglLemma45FibreModulus q).value : ℝ) := by
                 gcongr
                 exact htwist
-            _ = ((cglLemma45FibreModulus q).value : ℝ) ^ 3 := by ring
+            _ = ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) := by ring
         exact mul_le_mul_of_nonneg_right hmain (norm_nonneg _)
-    _ ≤ ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+    _ ≤ ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         (cglProposition51FibreAxialAnalyticBudget P w N n *
           ‖cglProposition51AxialNonzeroFourierAmplitude w N (cglLemma45FibreModulus q)
             (P.ordinate u.1.2.2 - P.ordinate u.1.1) m‖) := by
       calc
-        ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+        ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
             ‖cglProposition51AxialAnalyticAmplitude w N (cglLemma45FibreModulus q)
               (P.ordinate u.1.1 - P.ordinate u.1.2.1)
               (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
               (P.ordinate u.1.2.2 - P.ordinate u.1.1) m.val‖ ≤
-          ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+          ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
             (cglProposition51FibreAxialAnalyticBudget P w N n *
               ‖cglProposition51AxialNonzeroFourierAmplitude w N (cglLemma45FibreModulus q)
                 (P.ordinate u.1.2.2 - P.ordinate u.1.1) m‖) := by

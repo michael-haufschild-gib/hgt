@@ -58,7 +58,7 @@ theorem bandTransform_signedModeRadialData_R_div {a : ℝ} (ha : 0 < a) (n : ℕ
     (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) :
     bandTransform (signedModeRadialBandwidth a)
         (fun y => (signedModeRadialData a n).R y / (signedModeRadialData a n).R 0) x
-      = evenProlateSignedValue a n ^ 2
+      = evenProlateSignedValue a n ^ (2 : ℕ)
           * ((signedModeRadialData a n).R x / (signedModeRadialData a n).R 0) := by
   have hfun : (fun y => (signedModeRadialData a n).R y / (signedModeRadialData a n).R 0)
       = fun y => ((signedModeRadialData a n).R 0)⁻¹ * (signedModeRadialData a n).R y := by
@@ -74,7 +74,7 @@ theorem abs_indexedOscillatorProfile_le {a : ℝ} (ha : 0 < a) (n : ℕ)
     (hvalue : evenProlateSignedValue a n ≠ 0) {N : ℝ}
     (hmass : GaloisForLFunctions.RHTower.indexedOscillatorTotalMass n ⟨a, ha⟩ ≤ N) (ξ : ℝ) :
     |GaloisForLFunctions.RHTower.indexedOscillatorProfile n ⟨a, ha⟩ ξ|
-      ≤ |evenProlateSignedValue a n ^ 2|⁻¹
+      ≤ |evenProlateSignedValue a n ^ (2 : ℕ)|⁻¹
         * (signedModeRadialBandwidth a / Real.pi
             * ((1 + N / 2) / Real.sqrt (Real.sqrt (signedModeRadialBandwidth a)))) := by
   have hc : 0 < signedModeRadialBandwidth a := signedModeRadialBandwidth_pos ha
@@ -88,11 +88,11 @@ theorem abs_indexedOscillatorProfile_le {a : ℝ} (ha : 0 < a) (n : ℕ)
   have hmass' : (∫ z in (-Real.sqrt (signedModeRadialBandwidth a))..
       (Real.sqrt (signedModeRadialBandwidth a)),
       prolateHermiteRescale (signedModeRadialBandwidth a)
-        (fun y => (signedModeRadialData a n).R y / (signedModeRadialData a n).R 0) z ^ 2) ≤ N := by
+        (fun y => (signedModeRadialData a n).R y / (signedModeRadialData a n).R 0) z ^ (2 : ℕ)) ≤ N := by
     refine le_trans (le_of_eq ?_) hmass
     exact intervalIntegral.integral_congr fun z _ => by rw [hpt z]
   have h := abs_le_of_rescaled_mass_le (c := signedModeRadialBandwidth a)
-    (lam := evenProlateSignedValue a n ^ 2) hc (pow_ne_zero 2 hvalue)
+    (lam := evenProlateSignedValue a n ^ (2 : ℕ)) hc (pow_ne_zero 2 hvalue)
     (hcont.div_const _) (bandTransform_signedModeRadialData_R_div ha n hvalue) hmass'
     (ξ / Real.sqrt (signedModeRadialBandwidth a))
   have hval : (signedModeRadialData a n).R (ξ / Real.sqrt (signedModeRadialBandwidth a))
@@ -115,16 +115,16 @@ theorem eventually_indexedOscillatorTotalMass_le (n : ℕ) :
 /-- The limiting window pairing is the Hermite window mass over the central value. -/
 theorem abs_integral_oscProfile_mul_hermiteFun_eq {n : ℕ} (hn : Even n) {K : ℝ} (hK : 0 ≤ K) :
     |∫ x in (-K)..K, oscProfile (2 * (n : ℝ) + 1) x * hermiteFun n x|
-      = (∫ x in (-K)..K, hermiteFun n x ^ 2) / |hermiteFun n 0| := by
+      = (∫ x in (-K)..K, hermiteFun n x ^ (2 : ℕ)) / |hermiteFun n 0| := by
   have h0 : hermiteFun n 0 ≠ 0 := hermiteFun_zero_ne_zero hn
   have hpt : ∀ x : ℝ, oscProfile (2 * (n : ℝ) + 1) x * hermiteFun n x
-      = hermiteFun n x ^ 2 / hermiteFun n 0 := by
+      = hermiteFun n x ^ (2 : ℕ) / hermiteFun n 0 := by
     intro x
     have h := congrFun (hermiteFun_div_eq_oscProfile hn) x
     rw [← h]
     field_simp
   have hrw : (∫ x in (-K)..K, oscProfile (2 * (n : ℝ) + 1) x * hermiteFun n x)
-      = (∫ x in (-K)..K, hermiteFun n x ^ 2) / hermiteFun n 0 := by
+      = (∫ x in (-K)..K, hermiteFun n x ^ (2 : ℕ)) / hermiteFun n 0 := by
     rw [← intervalIntegral.integral_div]
     exact intervalIntegral.integral_congr fun x _ => hpt x
   rw [hrw, abs_div, abs_of_nonneg]
@@ -132,53 +132,53 @@ theorem abs_integral_oscProfile_mul_hermiteFun_eq {n : ℕ} (hn : Even n) {K : �
 
 /-- The Hermite window mass grows with the window. -/
 theorem integral_hermiteFun_sq_mono {n : ℕ} {K : ℝ} (hK : 1 ≤ K) :
-    (∫ x in (-1 : ℝ)..1, hermiteFun n x ^ 2) ≤ ∫ x in (-K)..K, hermiteFun n x ^ 2 := by
-  have hcont : Continuous fun x : ℝ => hermiteFun n x ^ 2 := (continuous_hermiteFun n).pow 2
-  have h1 : (∫ x in (-K)..(-1 : ℝ), hermiteFun n x ^ 2)
-      + ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ 2 = ∫ x in (-K)..1, hermiteFun n x ^ 2 :=
+    (∫ x in (-1 : ℝ)..1, hermiteFun n x ^ (2 : ℕ)) ≤ ∫ x in (-K)..K, hermiteFun n x ^ (2 : ℕ) := by
+  have hcont : Continuous fun x : ℝ => hermiteFun n x ^ (2 : ℕ) := (continuous_hermiteFun n).pow 2
+  have h1 : (∫ x in (-K)..(-1 : ℝ), hermiteFun n x ^ (2 : ℕ))
+      + ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ (2 : ℕ) = ∫ x in (-K)..1, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_add_adjacent_intervals
       (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
-  have h2 : (∫ x in (-K)..(1 : ℝ), hermiteFun n x ^ 2)
-      + ∫ x in (1 : ℝ)..K, hermiteFun n x ^ 2 = ∫ x in (-K)..K, hermiteFun n x ^ 2 :=
+  have h2 : (∫ x in (-K)..(1 : ℝ), hermiteFun n x ^ (2 : ℕ))
+      + ∫ x in (1 : ℝ)..K, hermiteFun n x ^ (2 : ℕ) = ∫ x in (-K)..K, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_add_adjacent_intervals
       (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
-  have hleft : (0 : ℝ) ≤ ∫ x in (-K)..(-1 : ℝ), hermiteFun n x ^ 2 :=
+  have hleft : (0 : ℝ) ≤ ∫ x in (-K)..(-1 : ℝ), hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg (by linarith) fun x _ => sq_nonneg _
-  have hright : (0 : ℝ) ≤ ∫ x in (1 : ℝ)..K, hermiteFun n x ^ 2 :=
+  have hright : (0 : ℝ) ≤ ∫ x in (1 : ℝ)..K, hermiteFun n x ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg hK fun x _ => sq_nonneg _
   linarith [h1, h2, hleft, hright]
 
 /-- The positive window floor at the unit window. -/
 theorem integral_hermiteFun_sq_unit_pos (n : ℕ) :
-    0 < ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ 2 :=
+    0 < ∫ x in (-1 : ℝ)..1, hermiteFun n x ^ (2 : ℕ) :=
   integral_hermiteFun_sq_pos n (by norm_num)
 
 
 
 /-- The weighted square of a Hermite function is integrable. -/
 theorem integrable_sq_mul_hermiteFun_sq (n : ℕ) :
-    Integrable (fun x : ℝ => x ^ 2 * hermiteFun n x ^ 2) := by
+    Integrable (fun x : ℝ => x ^ (2 : ℕ) * hermiteFun n x ^ (2 : ℕ)) := by
   obtain ⟨p, hp⟩ := exists_poly_hermiteFun n
-  refine (integrable_polyEval_mul_gauss (Polynomial.X ^ 2 * p ^ 2) (b := 1)
+  refine (integrable_polyEval_mul_gauss (Polynomial.X ^ (2 : ℕ) * p ^ (2 : ℕ)) (b := 1)
     (by norm_num)).congr ?_
   refine Filter.Eventually.of_forall fun x => ?_
-  show Polynomial.eval x (Polynomial.X ^ 2 * p ^ 2) * Real.exp (-(1 * x ^ 2))
-    = x ^ 2 * hermiteFun n x ^ 2
+  show Polynomial.eval x (Polynomial.X ^ (2 : ℕ) * p ^ (2 : ℕ)) * Real.exp (-(1 * x ^ (2 : ℕ)))
+    = x ^ (2 : ℕ) * hermiteFun n x ^ (2 : ℕ)
   rw [hp x, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_pow, Polynomial.eval_X]
-  have hexp : Real.exp (-(1 / 2 * x ^ 2)) * Real.exp (-(1 / 2 * x ^ 2))
-      = Real.exp (-(1 * x ^ 2)) := by
+  have hexp : Real.exp (-(1 / 2 * x ^ (2 : ℕ))) * Real.exp (-(1 / 2 * x ^ (2 : ℕ)))
+      = Real.exp (-(1 * x ^ (2 : ℕ))) := by
     rw [← Real.exp_add]
     congr 1
     ring
-  calc x ^ 2 * p.eval x ^ 2 * Real.exp (-(1 * x ^ 2))
-      = x ^ 2 * (p.eval x ^ 2 * (Real.exp (-(1 / 2 * x ^ 2))
-        * Real.exp (-(1 / 2 * x ^ 2)))) := by rw [hexp]; ring
-    _ = x ^ 2 * (p.eval x * Real.exp (-(1 / 2 * x ^ 2))) ^ 2 := by ring
+  calc x ^ (2 : ℕ) * p.eval x ^ (2 : ℕ) * Real.exp (-(1 * x ^ (2 : ℕ)))
+      = x ^ (2 : ℕ) * (p.eval x ^ (2 : ℕ) * (Real.exp (-(1 / 2 * x ^ (2 : ℕ)))
+        * Real.exp (-(1 / 2 * x ^ (2 : ℕ))))) := by rw [hexp]; ring
+    _ = x ^ (2 : ℕ) * (p.eval x * Real.exp (-(1 / 2 * x ^ (2 : ℕ)))) ^ (2 : ℕ) := by ring
 
 /-- The truncated weighted square never exceeds its whole-line value. -/
 theorem intervalIntegral_sq_mul_hermiteFun_sq_le (n : ℕ) {R : ℝ} (hR : 0 ≤ R) :
-    (∫ x in (-R)..R, x ^ 2 * hermiteFun n x ^ 2)
-      ≤ ∫ x, x ^ 2 * hermiteFun n x ^ 2 := by
+    (∫ x in (-R)..R, x ^ (2 : ℕ) * hermiteFun n x ^ (2 : ℕ))
+      ≤ ∫ x, x ^ (2 : ℕ) * hermiteFun n x ^ (2 : ℕ) := by
   rw [intervalIntegral.integral_of_le (by linarith)]
   exact setIntegral_le_integral (integrable_sq_mul_hermiteFun_sq n)
     (Filter.Eventually.of_forall fun x => by positivity)
@@ -196,11 +196,11 @@ theorem tendsto_quartRoot_indexedOscillatorBandwidth :
 /-- The reciprocal squared signed value tends to one. -/
 theorem tendsto_inv_evenProlateSignedValue_sq (n : ℕ) :
     Tendsto (fun a : GaloisForLFunctions.RHTower.ProlatePositiveAperture =>
-      |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹) atTop (𝓝 1) := by
+      |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹) atTop (𝓝 1) := by
   have hval := (evenProlateSignedValue_sq_tendsto_one n).comp
     GaloisForLFunctions.RHTower.tendsto_prolatePositiveAperture_val_atTop
   have habs : Tendsto (fun a : GaloisForLFunctions.RHTower.ProlatePositiveAperture =>
-      |evenProlateSignedValue (a : ℝ) n ^ 2|) atTop (𝓝 1) := by
+      |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|) atTop (𝓝 1) := by
     have h := hval.abs
     simpa using h
   have h := habs.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
@@ -209,22 +209,22 @@ theorem tendsto_inv_evenProlateSignedValue_sq (n : ℕ) :
 /-- The outer-tail contribution vanishes. -/
 theorem tendsto_outerTail_zero (n : ℕ) (N C : ℝ) :
     Tendsto (fun a : GaloisForLFunctions.RHTower.ProlatePositiveAperture =>
-      |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+      |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
         * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
             * ((1 + N / 2)
               / Real.sqrt (Real.sqrt
                 (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))))
         * (2 * C / (3 * Real.sqrt
-            (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) ^ 3)))
+            (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) ^ (3 : ℕ))))
       atTop (𝓝 0) := by
   set K₁ : ℝ := 2 * C * (1 + N / 2) / (3 * Real.pi) with hK₁
   have hq := tendsto_quartRoot_indexedOscillatorBandwidth
   have hcube : Tendsto (fun a : GaloisForLFunctions.RHTower.ProlatePositiveAperture =>
       K₁ / Real.sqrt (Real.sqrt
-        (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)) ^ 3) atTop (𝓝 0) := by
+        (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)) ^ (3 : ℕ)) atTop (𝓝 0) := by
     have hpow : Tendsto (fun a : GaloisForLFunctions.RHTower.ProlatePositiveAperture =>
         Real.sqrt (Real.sqrt
-          (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)) ^ 3) atTop atTop :=
+          (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)) ^ (3 : ℕ)) atTop atTop :=
       (tendsto_pow_atTop (by norm_num : 3 ≠ 0)).comp hq
     have hinv := hpow.inv_tendsto_atTop
     have h := hinv.const_mul K₁
@@ -242,11 +242,11 @@ theorem tendsto_outerTail_zero (n : ℕ) (N C : ℝ) :
   set q : ℝ := Real.sqrt (Real.sqrt
     (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)) with hqdef
   have hq0 : 0 < q := Real.sqrt_pos.2 hs
-  have hq2 : q ^ 2 = Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) :=
+  have hq2 : q ^ (2 : ℕ) = Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) :=
     Real.sq_sqrt hs.le
-  have hs2 : Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) ^ 2
+  have hs2 : Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a) ^ (2 : ℕ)
       = GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a := Real.sq_sqrt hc.le
-  have hcq : GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a = q ^ 4 := by
+  have hcq : GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a = q ^ (4 : ℕ) := by
     rw [← hs2, ← hq2]
     ring
   rw [← hq2, hcq, hK₁]
@@ -263,14 +263,14 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
   have hn : Even (2 * n) := ⟨n, by ring⟩
   have hφ0 : hermiteFun (2 * n) 0 ≠ 0 := hermiteFun_zero_ne_zero hn
   have hφcont : Continuous (hermiteFun (2 * n)) := continuous_hermiteFun (2 * n)
-  set F1 : ℝ := (∫ x in (-1 : ℝ)..1, hermiteFun (2 * n) x ^ 2) / |hermiteFun (2 * n) 0|
+  set F1 : ℝ := (∫ x in (-1 : ℝ)..1, hermiteFun (2 * n) x ^ (2 : ℕ)) / |hermiteFun (2 * n) 0|
     with hF1def
   have hF1 : 0 < F1 := div_pos (integral_hermiteFun_sq_unit_pos (2 * n)) (abs_pos.2 hφ0)
   set N : ℝ := sharpInteriorLimit n + 1 with hNdef
   have hSIL : 0 < sharpInteriorLimit n :=
     sharpInteriorLimit_pos n
   have hN0 : 0 ≤ N := by rw [hNdef]; linarith
-  set Cφ : ℝ := ∫ x, x ^ 2 * hermiteFun (2 * n) x ^ 2 with hCφdef
+  set Cφ : ℝ := ∫ x, x ^ (2 : ℕ) * hermiteFun (2 * n) x ^ (2 : ℕ) with hCφdef
   have hCφ0 : 0 ≤ Cφ := integral_nonneg fun x => by positivity
   set M : ℝ := (4 * (n : ℝ) + 2) * N + Cφ with hMdef
   have hM0 : 0 ≤ M := by
@@ -280,7 +280,7 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
   set K₀ : ℝ := max 1 (4 * M / F1 + 1) with hK₀def
   have hK₀1 : (1 : ℝ) ≤ K₀ := le_max_left _ _
   have hK₀pos : (0 : ℝ) < K₀ := lt_of_lt_of_le one_pos hK₀1
-  have hK₀sq : 4 * M / F1 ≤ K₀ ^ 2 := by
+  have hK₀sq : 4 * M / F1 ≤ K₀ ^ (2 : ℕ) := by
     have h1 : 4 * M / F1 + 1 ≤ K₀ := le_max_right _ _
     nlinarith [hK₀1, h1]
   obtain ⟨Ctail, hCtail0, hCtail⟩ := exists_bound_abs_integral_sub_window (2 * n)
@@ -297,7 +297,7 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
       (eventually_lt_nhds (by linarith : 4 * (n : ℝ) + 1 < 4 * (n : ℝ) + 2))
     exact h.mono fun a ha => ha.le
   have hbig : ∀ᶠ a : GaloisForLFunctions.RHTower.ProlatePositiveAperture in atTop,
-      K₀ ^ 2 ≤ GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a :=
+      K₀ ^ (2 : ℕ) ≤ GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a :=
     GaloisForLFunctions.RHTower.tendsto_indexedOscillatorBandwidth_atTop.eventually_ge_atTop _
   filter_upwards [GaloisForLFunctions.RHTower.eventually_abs_indexedOscillator_window_pairing_ge n hK₀pos,
     eventually_indexedOscillatorTotalMass_le n, hsep, hval, hbig, houter] with a
@@ -315,7 +315,7 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
     Differentiable.continuous fun x =>
       (GaloisForLFunctions.RHTower.indexedOscillatorProfile_hasDerivAt n a x).differentiableAt
   -- the sup bound
-  set Bsup : ℝ := |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+  set Bsup : ℝ := |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
     * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
       * ((1 + N / 2) / Real.sqrt (Real.sqrt
           (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)))) with hBsupdef
@@ -359,7 +359,7 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
       hK₀pos hK₀sc hvcont hφcont
     have hsm : (∫ x in (-Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))..
         (Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)),
-        x ^ 2 * GaloisForLFunctions.RHTower.indexedOscillatorProfile n a x ^ 2)
+        x ^ (2 : ℕ) * GaloisForLFunctions.RHTower.indexedOscillatorProfile n a x ^ (2 : ℕ))
         ≤ (4 * (n : ℝ) + 2) * N := by
       have hle := GaloisForLFunctions.RHTower.indexedOscillatorSecondMoment_le n a
       have hmass0 := GaloisForLFunctions.RHTower.indexedOscillatorTotalMass_nonneg n a
@@ -370,23 +370,23 @@ theorem exists_floor_abs_integral_indexedOscillator (n : ℕ) :
       exact mul_le_mul hsepa hmassa hmass0 (by linarith)
     have hsφ : (∫ x in (-Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))..
         (Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)),
-        x ^ 2 * hermiteFun (2 * n) x ^ 2) ≤ Cφ :=
+        x ^ (2 : ℕ) * hermiteFun (2 * n) x ^ (2 : ℕ)) ≤ Cφ :=
       intervalIntegral_sq_mul_hermiteFun_sq_le (2 * n) hsc.le
     refine le_trans hbase ?_
     have hsum : (∫ x in (-Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))..
         (Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)),
-        x ^ 2 * GaloisForLFunctions.RHTower.indexedOscillatorProfile n a x ^ 2)
+        x ^ (2 : ℕ) * GaloisForLFunctions.RHTower.indexedOscillatorProfile n a x ^ (2 : ℕ))
         + ∫ x in (-Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))..
           (Real.sqrt (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)),
-          x ^ 2 * hermiteFun (2 * n) x ^ 2 ≤ M := by
+          x ^ (2 : ℕ) * hermiteFun (2 * n) x ^ (2 : ℕ) ≤ M := by
       rw [hMdef]
       linarith [hsm, hsφ]
-    have hK₀sq0 : (0 : ℝ) < 2 * K₀ ^ 2 := by positivity
-    have hstep : 1 / (2 * K₀ ^ 2) * M ≤ F1 / 8 := by
+    have hK₀sq0 : (0 : ℝ) < 2 * K₀ ^ (2 : ℕ) := by positivity
+    have hstep : 1 / (2 * K₀ ^ (2 : ℕ)) * M ≤ F1 / 8 := by
       rw [div_le_iff₀ hF1] at hK₀sq
       rw [div_mul_eq_mul_div, one_mul, div_le_div_iff₀ hK₀sq0 (by norm_num : (0:ℝ) < 8)]
       nlinarith [hK₀sq, hF1, hM0]
-    calc 1 / (2 * K₀ ^ 2) * _ ≤ 1 / (2 * K₀ ^ 2) * M := by
+    calc 1 / (2 * K₀ ^ (2 : ℕ)) * _ ≤ 1 / (2 * K₀ ^ (2 : ℕ)) * M := by
           refine mul_le_mul_of_nonneg_left hsum (by positivity)
       _ ≤ F1 / 8 := hstep
   -- the outer region
@@ -457,7 +457,7 @@ theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
   refine ⟨K, hK0, ?_⟩
   -- the estimate on the positive-aperture type
   have hlam2 : ∀ᶠ a : GaloisForLFunctions.RHTower.ProlatePositiveAperture in atTop,
-      |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹ ≤ 2 := by
+      |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹ ≤ 2 := by
     have h := (tendsto_inv_evenProlateSignedValue_sq n).eventually
       (eventually_lt_nhds (by norm_num : (1 : ℝ) < 2))
     exact h.mono fun a ha => ha.le
@@ -485,7 +485,7 @@ theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
     have hvcont : Continuous (GaloisForLFunctions.RHTower.indexedOscillatorProfile n a) :=
       Differentiable.continuous fun x =>
         (GaloisForLFunctions.RHTower.indexedOscillatorProfile_hasDerivAt n a x).differentiableAt
-    set Bsup : ℝ := |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+    set Bsup : ℝ := |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
       * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
         * ((1 + N / 2) / Real.sqrt (Real.sqrt
             (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a)))) with hBsupdef
@@ -551,13 +551,13 @@ theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
       rw [div_le_div_iff₀ (by positivity) hq]
       have hBsupval : Bsup * Real.sqrt (Real.sqrt
           (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))
-          = |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+          = |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
             * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
               * (1 + N / 2)) := by
         rw [hBsupdef]
         field_simp
       have hK1 : 2 * (1 + N / 2) * W / (Real.pi * δ) ≤ K := by rw [hKdef]; linarith
-      have hlam0 : 0 ≤ |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹ := by positivity
+      have hlam0 : 0 ≤ |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹ := by positivity
       have hstep : |(signedModeRadialData (a : ℝ) n).R 0| * Bsup * W
           * Real.sqrt (Real.sqrt
             (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))
@@ -569,13 +569,13 @@ theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
             * Real.sqrt (Real.sqrt
               (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a))
             = |(signedModeRadialData (a : ℝ) n).R 0| * W
-              * (|evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+              * (|evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
                 * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
                   * (1 + N / 2))) := by
           rw [← hBsupval]
           ring
         rw [hexp]
-        have hlamle : |evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+        have hlamle : |evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
             * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
               * (1 + N / 2))
             ≤ 2 * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
@@ -584,7 +584,7 @@ theorem exists_rate_abs_signedModeRadialBandwidth_mul_s_sub_rung (n : ℕ) :
           have : (0 : ℝ) ≤ 1 + N / 2 := by linarith
           positivity
         have hmid : |(signedModeRadialData (a : ℝ) n).R 0| * W
-            * (|evenProlateSignedValue (a : ℝ) n ^ 2|⁻¹
+            * (|evenProlateSignedValue (a : ℝ) n ^ (2 : ℕ)|⁻¹
               * (GaloisForLFunctions.RHTower.indexedOscillatorBandwidth a / Real.pi
                 * (1 + N / 2)))
             ≤ |(signedModeRadialData (a : ℝ) n).R 0| * W

@@ -24,7 +24,7 @@ Entrywise, every original incidence `G_ij` is retained with exact Radon--Nikodym
 `log(p_i)log(p_j)`.  Since every prime logarithm is positive and `det(B)=-1`,
 
 ```text
-det K = (-1)^N det(L)^4 det(G)^2,
+det K = (-1)^N det(L)^(4 : ℕ) det(G)^(2 : ℕ),
 ```
 
 so operator-valued completion creates and hides no finite degeneracy.  This also constructs the
@@ -91,7 +91,7 @@ theorem routePPrimitiveJointDepthPrimeLogDiagonal_det_ne_zero {N : ℕ}
 theorem routePPrimitiveJointDepthPrimeLogConjugate_det {N : ℕ}
     (pe : Fin N → Nat.Primes × ℕ) (G : Matrix (Fin N) (Fin N) ℂ) :
     (routePPrimitiveJointDepthPrimeLogConjugate pe G).det =
-      (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ 2 * G.det := by
+      (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ (2 : ℕ) * G.det := by
   rw [routePPrimitiveJointDepthPrimeLogConjugate,
     Matrix.det_mul, Matrix.det_mul]
   ring
@@ -102,8 +102,8 @@ theorem routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix_det {N : ℕ}
     (pe : Fin N → Nat.Primes × ℕ) (G : Matrix (Fin N) (Fin N) ℂ) :
     (routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix pe G).det =
       (-1 : ℂ) ^ N *
-        (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ 4 *
-        G.det ^ 2 := by
+        (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ (4 : ℕ) *
+        G.det ^ (2 : ℕ) := by
   rw [routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix,
     Matrix.det_kronecker,
     routePPrimitiveBurnolJuliaKreinBlock_det,
@@ -133,8 +133,8 @@ theorem routePPrimitiveBurnolGammaJuliaLogKreinCompletedMatrix_det {N : ℕ}
     (pe : Fin N → Nat.Primes × ℕ) (kappa : Fin N → ℝ) :
     (routePPrimitiveBurnolGammaJuliaLogKreinCompletedMatrix pe kappa).det =
       (-1 : ℂ) ^ N *
-        (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ 4 *
-        (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ 2 := by
+        (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ (4 : ℕ) *
+        (routePPrimitiveBurnolWindowGramMatrix pe kappa).det ^ (2 : ℕ) := by
   exact routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix_det pe _
 
 /-- P-G105F capstone: exact operator-valued full-matrix law, determinant, and degeneracy
@@ -146,8 +146,8 @@ theorem routePPrimitiveJointDepth_GammaJulia_logKreinMatrixCompletion {N : ℕ}
           routePPrimitiveJointDepthPrimeLogConjugate pe G ∧
       (routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix pe G).det =
         (-1 : ℂ) ^ N *
-          (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ 4 *
-          G.det ^ 2 ∧
+          (routePPrimitiveJointDepthPrimeLogDiagonal pe).det ^ (4 : ℕ) *
+          G.det ^ (2 : ℕ) ∧
       ((routePPrimitiveJointDepthGammaJuliaLogKreinCompletedMatrix pe G).det ≠ 0 ↔
         G.det ≠ 0) :=
   ⟨rfl,

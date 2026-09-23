@@ -93,7 +93,7 @@ theorem quadraticCovariance_two_amplitudes
     (B : V →ₗ[ℝ] V →ₗ[ℝ] W) {x y : V}
     (hxy : B x y = 0) (hyx : B y x = 0) (a b : ℝ) :
     quadraticCovariance B (a • x + b • y) =
-      a ^ 2 • quadraticCovariance B x + b ^ 2 • quadraticCovariance B y := by
+      a ^ (2 : ℕ) • quadraticCovariance B x + b ^ (2 : ℕ) • quadraticCovariance B y := by
   simp [quadraticCovariance, hxy, hyx, smul_smul, pow_two]
 
 /--
@@ -105,7 +105,7 @@ theorem quadraticCovariance_sum_of_pairwise_cross_eq_zero
     (a : ι → ℝ) (x : ι → V)
     (hcross : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → B (x i) (x j) = 0) :
     quadraticCovariance B (∑ i ∈ S, a i • x i) =
-      ∑ i ∈ S, a i ^ 2 • quadraticCovariance B (x i) := by
+      ∑ i ∈ S, a i ^ (2 : ℕ) • quadraticCovariance B (x i) := by
   classical
   unfold quadraticCovariance
   rw [map_sum]
@@ -125,7 +125,7 @@ theorem quadraticCovariance_sum_of_pairwise_disjoint
     (a : ι → ℝ) (x : ι → X → V)
     (hdisjoint : ∀ p, ∀ i ∈ S, ∀ j ∈ S, i ≠ j → x i p = 0 ∨ x j p = 0) :
     ∀ p, quadraticCovariance B (∑ i ∈ S, a i • x i p) =
-      ∑ i ∈ S, a i ^ 2 • quadraticCovariance B (x i p) := by
+      ∑ i ∈ S, a i ^ (2 : ℕ) • quadraticCovariance B (x i p) := by
   intro p
   apply quadraticCovariance_sum_of_pairwise_cross_eq_zero B S a (fun i ↦ x i p)
   intro i hi j hj hij

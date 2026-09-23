@@ -140,11 +140,11 @@ private theorem coordinate_gram_packet_bound
     (s : Finset I) (Δ : ℝ) (hΔ : 0 ≤ Δ)
     (hrow : ∀ i ∈ s, ∑ j ∈ s, ‖inner ℂ (h i) (h j)‖ ≤ Δ)
     (c : I → ℂ) :
-    ‖∑ i ∈ s, c i • v i‖ ^ 2 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ 2 := by
-  have hG : 0 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ 2 :=
+    ‖∑ i ∈ s, c i • v i‖ ^ (2 : ℕ) ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
+  have hG : 0 ≤ Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) :=
     mul_nonneg hΔ (Finset.sum_nonneg fun _ _ => sq_nonneg _)
-  have hcoord : ∀ n, ‖q n (∑ i ∈ s, c i • v i)‖ ^ 2 ≤
-      Δ * ∑ i ∈ s, ‖c i‖ ^ 2 := by
+  have hcoord : ∀ n, ‖q n (∑ i ∈ s, c i • v i)‖ ^ (2 : ℕ) ≤
+      Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
     intro n
     simp only [map_sum, map_smul]
     apply RHTower.Sieve.norm_sum_smul_sq_le_of_schur
@@ -156,7 +156,7 @@ private theorem coordinate_gram_packet_bound
         rw [hq, hq, unimodular_gram_norm _ _ _ _ (hz i) (hz j)]
       _ ≤ Δ := hrow i hi
   have hb := hnorm (∑ i ∈ s, c i • v i)
-    (Real.sqrt (Δ * ∑ i ∈ s, ‖c i‖ ^ 2)) (Real.sqrt_nonneg _)
+    (Real.sqrt (Δ * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ))) (Real.sqrt_nonneg _)
     (fun n => Real.le_sqrt_of_sq_le (hcoord n))
   nlinarith [Real.sq_sqrt hG, norm_nonneg (∑ i ∈ s, c i • v i)]
 end CoordinateEstimate
@@ -214,12 +214,12 @@ private theorem subtype_packet_bound
     {I E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (D : Submodule ℂ E) (v : I → D) (w : I → E)
     (hv : ∀ i, (v i).val = w i) (s : Finset I) (c : I → ℂ) (C : ℝ)
-    (h : ‖∑ i ∈ s, c i • w i‖ ^ 2 ≤ C) : ‖∑ i ∈ s, c i • v i‖ ^ 2 ≤ C := by
+    (h : ‖∑ i ∈ s, c i • w i‖ ^ (2 : ℕ) ≤ C) : ‖∑ i ∈ s, c i • v i‖ ^ (2 : ℕ) ≤ C := by
   have he : (∑ i ∈ s, c i • v i).val = ∑ i ∈ s, c i • w i := by
     change D.subtype (∑ i ∈ s, c i • v i) = _
     simp only [map_sum, map_smul]
     exact Finset.sum_congr rfl (fun i _ => congrArg (fun x => c i • x) (hv i))
-  change ‖(∑ i ∈ s, c i • v i).val‖ ^ 2 ≤ C
+  change ‖(∑ i ∈ s, c i • v i).val‖ ^ (2 : ℕ) ≤ C
   rw [he]
   exact h
 
@@ -227,8 +227,8 @@ private theorem subtype_packet_bound
 upper bound. The family is fixed before choosing the support or amplitudes. -/
 theorem causalFrequencySparseFrequency_packet_norm_sq_le (b : ℝ) (k : ℕ)
     (s : Finset ℕ) (c : ℕ → ℂ) :
-    ‖∑ i ∈ s, c i • causalFrequencyMode b (causalFrequencySparseFrequency b k i)‖ ^ 2 ≤
-      (1 + 1 / ((k : ℝ) + 1)) * ∑ i ∈ s, ‖c i‖ ^ 2 := by
+    ‖∑ i ∈ s, c i • causalFrequencyMode b (causalFrequencySparseFrequency b k i)‖ ^ (2 : ℕ) ≤
+      (1 + 1 / ((k : ℝ) + 1)) * ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) := by
   apply subtype_packet_bound (causalFrequencySpace b)
     (fun i => causalFrequencyMode b (causalFrequencySparseFrequency b k i))
     (fun i => causalBoundedUnitEigenchain b (causalFrequencySparseFrequency b k i))

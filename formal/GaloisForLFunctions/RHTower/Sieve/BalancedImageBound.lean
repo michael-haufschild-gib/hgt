@@ -51,8 +51,8 @@ theorem card_image_mul_ge {y X : ℕ} (hy : 1 ≤ y) (S : Finset (ℕ × ℕ)) {
     (hd : ∀ p ∈ S, p.1 ∈ Finset.Icc y (2 * y))
     (himg : ∀ p ∈ S, p.1 * p.2 ∈ Finset.Icc 1 X)
     (hbound : ∑ m ∈ Finset.Icc 1 X,
-        ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ 2 ≤ V) :
-    ((S.card : ℕ) : ℝ) ^ 2 / V
+        ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ (2 : ℕ) ≤ V) :
+    ((S.card : ℕ) : ℝ) ^ (2 : ℕ) / V
       ≤ (((S.image (fun p => p.1 * p.2)).card : ℕ) : ℝ) := by
   classical
   refine card_image_ge_of_sum_sq_le S (fun p => p.1 * p.2) hV ?_

@@ -28,7 +28,7 @@ omit [FiniteDimensional ℂ E] in
 the squared coordinates. -/
 theorem inner_self_of_diagonal (b : OrthonormalBasis (Fin n) ℂ E) {f : E →ₗ[ℂ] E} {d : Fin n → ℝ}
     (hd : ∀ i, f (b i) = ((d i : ℝ) : ℂ) • b i) (v : E) :
-    inner ℂ v (f v) = ((∑ i, d i * ‖b.repr v i‖ ^ 2 : ℝ) : ℂ) := by
+    inner ℂ v (f v) = ((∑ i, d i * ‖b.repr v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   rw [inner_eq_sum_repr_of_orthonormalBasis b v (f v), Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun i _ => ?_

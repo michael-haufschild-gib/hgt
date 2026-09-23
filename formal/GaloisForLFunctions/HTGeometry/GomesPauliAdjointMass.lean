@@ -102,7 +102,7 @@ theorem gomesPauliAdjointMass_quadratic (r : Fin 3 → ℝ) :
 /-- Its characteristic determinant records one zero mode and two equal transverse masses. -/
 theorem gomesPauliAdjointMass_characteristic (r : Fin 3 → ℝ) (mu : ℝ) :
     Matrix.det (mu • (1 : Matrix (Fin 3) (Fin 3) ℝ) - gomesPauliAdjointMass r) =
-      mu * (mu - r ⬝ᵥ r)^2 := by
+      mu * (mu - r ⬝ᵥ r)^(2 : ℕ) := by
   simp [gomesPauliAdjointMass,Matrix.det_fin_three,Matrix.vecMulVec,dotProduct,
     Fin.sum_univ_three]
   ring

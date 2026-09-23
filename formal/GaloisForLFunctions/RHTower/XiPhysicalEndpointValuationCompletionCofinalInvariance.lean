@@ -85,7 +85,7 @@ def xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy
   ∑ p ∈ P, ∑ q ∈ P,
     physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
       xiPhysicalEndpointValuationCorrectionPrimeRatioRealKernel p q *
-        xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2
+        xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)
 
 theorem xiUnitDoubleCompletedRefinementApertureDirichletEnergy_eq_kernel_distance
     (P : Finset Nat.Primes) (A m k : ℝ) :
@@ -93,7 +93,7 @@ theorem xiUnitDoubleCompletedRefinementApertureDirichletEnergy_eq_kernel_distanc
       ∑ p ∈ P, ∑ q ∈ P,
         physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           (-xiUnitDoubleCompletedPrimeRatioRealKernel p q) *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 := by
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) := by
   rw [xiUnitDoubleCompletedRefinementApertureDirichletEnergy]
   apply Finset.sum_congr rfl
   intro p hp
@@ -164,7 +164,7 @@ theorem abs_xiPhysicalEndpointValuationCorrectionPrimeRatioRealKernel_le
 
 theorem xiPhysicalPrimeLogApertureHilbertDistance_sq_le_four_mul
     {A : ℝ} (hA : 0 < A) (m k : ℝ) (p q : Nat.Primes) :
-    xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 ≤ 4 * A := by
+    xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) ≤ 4 * A := by
   let vp := xiPhysicalPrimeLogCenteredApertureCarrier A m k p
   let vq := xiPhysicalPrimeLogCenteredApertureCarrier A m k q
   have hpLength := norm_sq_xiPhysicalPrimeLogCenteredApertureCarrier_le_length
@@ -173,12 +173,12 @@ theorem xiPhysicalPrimeLogApertureHilbertDistance_sq_le_four_mul
     hA m k q
   have hpA := xiPhysicalPrimeLogApertureLength_le hA.le m k p
   have hqA := xiPhysicalPrimeLogApertureLength_le hA.le m k q
-  have hp : ‖vp‖ ^ 2 ≤ A := hpLength.trans hpA
-  have hq : ‖vq‖ ^ 2 ≤ A := hqLength.trans hqA
+  have hp : ‖vp‖ ^ (2 : ℕ) ≤ A := hpLength.trans hpA
+  have hq : ‖vq‖ ^ (2 : ℕ) ≤ A := hqLength.trans hqA
   have htri : ‖vp - vq‖ ≤ ‖vp‖ + ‖vq‖ := norm_sub_le _ _
-  have hsq : ‖vp - vq‖ ^ 2 ≤ (‖vp‖ + ‖vq‖) ^ 2 :=
+  have hsq : ‖vp - vq‖ ^ (2 : ℕ) ≤ (‖vp‖ + ‖vq‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) (add_nonneg (norm_nonneg _) (norm_nonneg _))).2 htri
-  have hsum : (‖vp‖ + ‖vq‖) ^ 2 ≤ 4 * A := by
+  have hsum : (‖vp‖ + ‖vq‖) ^ (2 : ℕ) ≤ 4 * A := by
     nlinarith [sq_nonneg (‖vp‖ - ‖vq‖)]
   rw [xiPhysicalPrimeLogApertureHilbertDistance, dist_eq_norm]
   exact hsq.trans hsum
@@ -189,17 +189,17 @@ theorem abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_le
     (P : Finset Nat.Primes) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
     |xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy P A m k| ≤
       4 * A * routeKPhysicalEndpointCorrectionMass *
-        xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+        xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
   rw [xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy]
   calc
     |∑ p ∈ P, ∑ q ∈ P,
         physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           xiPhysicalEndpointValuationCorrectionPrimeRatioRealKernel p q *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2| ≤
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)| ≤
       ∑ p ∈ P, ∑ q ∈ P,
         |physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           xiPhysicalEndpointValuationCorrectionPrimeRatioRealKernel p q *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2| := by
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)| := by
       exact (Finset.abs_sum_le_sum_abs _ _).trans
         (Finset.sum_le_sum fun p _ => Finset.abs_sum_le_sum_abs _ _)
     _ ≤ ∑ p ∈ P, ∑ q ∈ P,
@@ -222,16 +222,16 @@ theorem abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_le
       have hw : 0 ≤ w := mul_nonneg hwp hwq
       calc
         w * |xiPhysicalEndpointValuationCorrectionPrimeRatioRealKernel p q| *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 ≤
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) ≤
           w * routeKPhysicalEndpointCorrectionMass *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 :=
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hk hw) (sq_nonneg _)
         _ ≤ w * routeKPhysicalEndpointCorrectionMass * (4 * A) :=
           mul_le_mul_of_nonneg_left hd (mul_nonneg hw hmass)
         _ = 4 * A * routeKPhysicalEndpointCorrectionMass * w := by ring
     _ = 4 * A * routeKPhysicalEndpointCorrectionMass *
-        xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+        xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
       rw [xiPhysicalPrimeLogEndpointTotalWeight, sq, Finset.sum_mul_sum]
       simp_rw [Finset.mul_sum]
 
@@ -304,7 +304,7 @@ theorem abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_support
         (xiPhysicalPrimeLogWindowPacket (m - A) (m + c))
         A m (m + c)| ≤
       4 * A * routeKPhysicalEndpointCorrectionMass *
-        (A + c + primeLogWindowConst) ^ 2 := by
+        (A + c + primeLogWindowConst) ^ (2 : ℕ) := by
   let P := xiPhysicalPrimeLogWindowPacket (m - A) (m + c)
   have hbase :=
     abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_le
@@ -315,8 +315,8 @@ theorem abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_support
       A + c + primeLogWindowConst :=
     xiPhysicalPrimeLogWindowPacket_totalWeight_le_fixedWidth hA hc hlow
   have hB : 0 ≤ A + c + primeLogWindowConst := hW.trans hWle
-  have hsquare : xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 ≤
-      (A + c + primeLogWindowConst) ^ 2 :=
+  have hsquare : xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) ≤
+      (A + c + primeLogWindowConst) ^ (2 : ℕ) :=
     (sq_le_sq₀ hW hB).2 hWle
   have hcoef : 0 ≤ 4 * A * routeKPhysicalEndpointCorrectionMass :=
     mul_nonneg (mul_nonneg (by norm_num) hA.le)
@@ -331,7 +331,7 @@ theorem abs_physicalEndpointCompleted_sub_refinement_supportPacket_le
         xiUnitDoubleCompletedRefinementApertureDirichletEnergy
           (xiPhysicalPrimeLogWindowPacket (m - A) (m + c)) A m (m + c)| ≤
       4 * A * routeKPhysicalEndpointCorrectionMass *
-        (A + c + primeLogWindowConst) ^ 2 := by
+        (A + c + primeLogWindowConst) ^ (2 : ℕ) := by
   rw [xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_refinement_add_correction]
   have h :=
     abs_xiPhysicalEndpointValuationCorrectionApertureDirichletEnergy_supportPacket_le
@@ -349,7 +349,7 @@ theorem physicalEndpointCompleted_lowerFloor_iff_refinement_lowerFloor
       B ≤ xiUnitDoubleCompletedRefinementApertureDirichletEnergy
         (xiPhysicalPrimeLogWindowPacket (m - A) (m + c)) A m (m + c)) := by
   let K : ℝ := 4 * A * routeKPhysicalEndpointCorrectionMass *
-    (A + c + primeLogWindowConst) ^ 2
+    (A + c + primeLogWindowConst) ^ (2 : ℕ)
   constructor
   · rintro ⟨B, hB⟩
     refine ⟨B - K, ?_⟩
@@ -396,7 +396,7 @@ theorem physicalEndpointCompleted_upperBound_iff_refinement_upperBound
       xiUnitDoubleCompletedRefinementApertureDirichletEnergy
         (xiPhysicalPrimeLogWindowPacket (m - A) (m + c)) A m (m + c) ≤ B) := by
   let K : ℝ := 4 * A * routeKPhysicalEndpointCorrectionMass *
-    (A + c + primeLogWindowConst) ^ 2
+    (A + c + primeLogWindowConst) ^ (2 : ℕ)
   constructor
   · rintro ⟨B, hB⟩
     refine ⟨B + K, ?_⟩

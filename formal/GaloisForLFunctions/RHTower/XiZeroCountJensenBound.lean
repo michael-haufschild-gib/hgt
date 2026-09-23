@@ -24,12 +24,12 @@ namespace RHTower
 
 /-! ## The growth envelope of `ξ` -/
 
-theorem xi_eq_riemannXi (s : ℂ) : xi s = riemannXi s := by
+theorem xi_eq_riemannXi_xiZeroCountJensenBound (s : ℂ) : xi s = riemannXi s := by
   rw [xi, riemannXi]
   ring
 
 theorem orderOneEnvelope_xi : OrderOneEnvelope xi :=
-  orderOneEnvelope_riemannXi.congr fun s => (xi_eq_riemannXi s).symm
+  orderOneEnvelope_riemannXi.congr fun s => (xi_eq_riemannXi_xiZeroCountJensenBound s).symm
 
 /-! ## Jensen's bound on a disc -/
 

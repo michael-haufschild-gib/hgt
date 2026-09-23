@@ -54,7 +54,7 @@ theorem latticeBox_injOn {w₁ w₂ : ℂ} (hindep : LinearIndependent ℝ ![w�
 
 /-- The coordinate box has `(2N+1)²` elements. -/
 theorem card_latticeBox {w₁ w₂ : ℂ} (hindep : LinearIndependent ℝ ![w₁, w₂]) (z₀ : ℂ) (N : ℕ) :
-    (latticeBox z₀ w₁ w₂ N).card = (2 * N + 1) ^ 2 := by
+    (latticeBox z₀ w₁ w₂ N).card = (2 * N + 1) ^ (2 : ℕ) := by
   rw [latticeBox, Finset.card_image_of_injective _ (latticeBox_injOn hindep z₀),
     Finset.card_product, Int.card_Icc]
   have h : ((N : ℤ) + 1 - -(N : ℤ)).toNat = 2 * N + 1 := by omega

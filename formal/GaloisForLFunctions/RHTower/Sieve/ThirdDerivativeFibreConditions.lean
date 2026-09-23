@@ -14,7 +14,7 @@ noncomputable section
 theorem thirdDerivative_fibre_conditions {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A B K : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (hBA : B ≤ 2 * A)
     (hKA : K ≤ A) (h8 : 8 * r ≤ (A : ℝ))
-    (hcurv : T * r * (K : ℝ) ^ 3 ≤ 72 * Real.pi * (A : ℝ) ^ 4) :
+    (hcurv : T * r * (K : ℝ) ^ (3 : ℕ) ≤ 72 * Real.pi * (A : ℝ) ^ (4 : ℕ)) :
     ∀ b ∈ Finset.Icc 1 K,
       ((B - 1) / b + 1) - ((A - 1) / b + 1) - 1 ≤ ((A - 1) / b + 1)
         ∧ r / b ≤ (((A - 1) / b + 1 : ℕ) : ℝ)
@@ -51,10 +51,10 @@ theorem thirdDerivative_fibre_conditions {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     exact le_trans (div_le_div_of_nonneg_right hrA' hb0.le) hlow
   have hlamUp := nearDiagonalLambda3_fibre_le hT hr hA hb1
   have hbcast : (b : ℝ) ≤ K := by exact_mod_cast hbK
-  have hbpow : (b : ℝ) ^ 3 ≤ (K : ℝ) ^ 3 := by gcongr
-  have hnum : T * r * (b : ℝ) ^ 3 ≤ T * r * (K : ℝ) ^ 3 := by
+  have hbpow : (b : ℝ) ^ (3 : ℕ) ≤ (K : ℝ) ^ (3 : ℕ) := by gcongr
+  have hnum : T * r * (b : ℝ) ^ (3 : ℕ) ≤ T * r * (K : ℝ) ^ (3 : ℕ) := by
     exact mul_le_mul_of_nonneg_left hbpow (by positivity)
-  have hfrac : T * r * (b : ℝ) ^ 3 / (72 * Real.pi * (A : ℝ) ^ 4) ≤ 1 := by
+  have hfrac : T * r * (b : ℝ) ^ (3 : ℕ) / (72 * Real.pi * (A : ℝ) ^ (4 : ℕ)) ≤ 1 := by
     rw [div_le_one (by positivity)]
     exact le_trans hnum hcurv
   exact ⟨hspan, hrA, le_trans hlamUp hfrac⟩

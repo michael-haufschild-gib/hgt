@@ -94,8 +94,8 @@ theorem exists_window_phases {N J : ℕ} (hJ : 0 < J) (a : ℕ → ℂ) {x y : �
     (hp : ∀ r, p r ∈ Finset.Ioc ⌊x⌋₊ ⌊y⌋₊) (w : Fin N → ℝ) {C : ℝ} (hC : ∀ r, |w r| ≤ C)
     (hC0 : 0 ≤ C) {lam : ℝ} (hlam : 0 < lam)
     (hquad : ∀ u : Fin J → ℝ,
-      lam * (∑ i, u i ^ 2) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
-    (hsize : (J : ℝ) * (∑ j : Fin J, ‖2 * windowTarget a x y (j : ℕ)‖ ^ 2) ≤ lam ^ 2) :
+      lam * (∑ i, u i ^ (2 : ℕ)) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
+    (hsize : (J : ℝ) * (∑ j : Fin J, ‖2 * windowTarget a x y (j : ℕ)‖ ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ b : Fin N → ℂ, (∀ r, ‖b r‖ = 1) ∧
       ∀ j : Fin J,
         ‖arithProfile (updateWindow a (Finset.Ioc ⌊x⌋₊ ⌊y⌋₊) (windowAssign p b w)) (j : ℕ) y‖
@@ -185,7 +185,7 @@ theorem norm_windowTaylor_le {a : ℕ → ℂ} {x y : ℝ} (hxy : x < y) {K : �
     have hnn : 0 ≤ ‖arithProfile a 0 x‖ := norm_nonneg _
     by_contra hcon
     rw [not_le] at hcon
-    have : ((y - x) ^ 0 / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
+    have : ((y - x) ^ (0 : ℕ) / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
       simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, one_mul]
       exact hcon
     linarith
@@ -241,7 +241,7 @@ theorem norm_windowTarget_le {a : ℕ → ℂ} {x y : ℝ} (hxy : x < y) {K : �
     have hnn : 0 ≤ ‖arithProfile a 0 x‖ := norm_nonneg _
     by_contra hcon
     rw [not_le] at hcon
-    have : ((y - x) ^ 0 / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
+    have : ((y - x) ^ (0 : ℕ) / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
       simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, one_mul]
       exact hcon
     linarith
@@ -437,9 +437,9 @@ theorem exists_window_phases_partial {N J : ℕ} (hJ : 0 < J) (a : ℕ → ℂ) 
     (hp : ∀ r, p r ∈ Finset.Ioc ⌊x⌋₊ ⌊y⌋₊) (w : Fin N → ℝ) {C : ℝ} (hC : ∀ r, |w r| ≤ C)
     (hC0 : 0 ≤ C) {lam : ℝ} (hlam : 0 < lam)
     (hquad : ∀ u : Fin J → ℝ,
-      lam * (∑ i, u i ^ 2) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
+      lam * (∑ i, u i ^ (2 : ℕ)) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
     (hsize : (J : ℝ) * (∑ j : Fin J,
-      ‖2 * windowTargetPartial a (Finset.image p Finset.univ) x y (j : ℕ)‖ ^ 2) ≤ lam ^ 2) :
+      ‖2 * windowTargetPartial a (Finset.image p Finset.univ) x y (j : ℕ)‖ ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ b : Fin N → ℂ, (∀ r, ‖b r‖ = 1) ∧
       ∀ j : Fin J,
         ‖arithProfile (updateWindow a (Finset.image p Finset.univ) (windowAssign p b w))
@@ -669,7 +669,7 @@ theorem norm_windowTaylorFull_le {q : ℝ → ℂ} {a : ℕ → ℂ} {x y : ℝ}
     have hnn : 0 ≤ ‖arithJumpProfile q a 0 x‖ := norm_nonneg _
     by_contra hcon
     rw [not_le] at hcon
-    have : ((y - x) ^ 0 / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
+    have : ((y - x) ^ (0 : ℕ) / ((Nat.factorial 0 : ℕ) : ℝ)) * K < 0 := by
       simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, one_mul]
       exact hcon
     linarith
@@ -792,9 +792,9 @@ theorem exists_window_phases_partial_full {N J : ℕ} (hJ : 0 < J) {q : ℝ → 
     (hp : ∀ r, p r ∈ Finset.Ioc ⌊x⌋₊ ⌊y⌋₊) (w : Fin N → ℝ) {C : ℝ} (hC : ∀ r, |w r| ≤ C)
     (hC0 : 0 ≤ C) {lam : ℝ} (hlam : 0 < lam)
     (hquad : ∀ u : Fin J → ℝ,
-      lam * (∑ i, u i ^ 2) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
+      lam * (∑ i, u i ^ (2 : ℕ)) ≤ u ⬝ᵥ (atomicHankel w (windowNode p x y) J).mulVec u)
     (hsize : (J : ℝ) * (∑ j : Fin J,
-      ‖2 * windowTargetFull q a (Finset.image p Finset.univ) x y (j : ℕ)‖ ^ 2) ≤ lam ^ 2) :
+      ‖2 * windowTargetFull q a (Finset.image p Finset.univ) x y (j : ℕ)‖ ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ b : Fin N → ℂ, (∀ r, ‖b r‖ = 1) ∧
       ∀ j : Fin J,
         ‖arithJumpProfile q (updateWindow a (Finset.image p Finset.univ) (windowAssign p b w))

@@ -68,10 +68,10 @@ the range of scales without repeating a prime. -/
 def coareaOuterEnergy (x u v : ℝ) : ℝ :=
   ∑ p ∈ Finset.Icc 1 ⌊x * Real.exp (-u)⌋₊,
     (if p.Prime ∧ x * Real.exp (-v) < (p : ℝ) then
-      Real.log p / ((p : ℝ) * Real.log (x / p) ^ 2) else 0)
+      Real.log p / ((p : ℝ) * Real.log (x / p) ^ (2 : ℕ)) else 0)
 
 /-- The inner certification energy at logarithmic length `v`, with cell norm `L`. -/
-def coareaInnerEnergy (L v : ℝ) : ℝ := L ^ 2 * mertensPrimeWeightSum ⌊Real.exp v⌋₊
+def coareaInnerEnergy (L v : ℝ) : ℝ := L ^ (2 : ℕ) * mertensPrimeWeightSum ⌊Real.exp v⌋₊
 
 theorem coareaOuterEnergy_nonneg {x u v : ℝ} : 0 ≤ coareaOuterEnergy x u v := by
   refine Finset.sum_nonneg fun p hp => ?_
@@ -88,7 +88,7 @@ theorem coareaOuterEnergy_nonneg {x u v : ℝ} : 0 ≤ coareaOuterEnergy x u v :
 theorem coareaOuterEnergy_le {x u v : ℝ} (hx : 0 < x) (hu : 0 < u) (huv : u ≤ v)
     (hA : 2 ≤ x * Real.exp (-v)) :
     coareaOuterEnergy x u v
-      ≤ (v - u + primeLogWindowConst) / u ^ 2 := by
+      ≤ (v - u + primeLogWindowConst) / u ^ (2 : ℕ) := by
   classical
   have hexp : Real.exp (-v) ≤ Real.exp (-u) := Real.exp_le_exp.mpr (by linarith)
   have hAB : x * Real.exp (-v) ≤ x * Real.exp (-u) := mul_le_mul_of_nonneg_left hexp hx.le
@@ -98,8 +98,8 @@ theorem coareaOuterEnergy_le {x u v : ℝ} (hx : 0 < x) (hu : 0 < u) (huv : u �
   -- termwise damping: on the shell the cofactor scale is at least `u`
   have hterm : ∀ p ∈ Finset.Icc 1 ⌊x * Real.exp (-u)⌋₊,
       (if p.Prime ∧ x * Real.exp (-v) < (p : ℝ) then
-        Real.log p / ((p : ℝ) * Real.log (x / p) ^ 2) else 0)
-        ≤ (if p.Prime ∧ x * Real.exp (-v) < (p : ℝ) then Real.log p / (p : ℝ) else 0) / u ^ 2 := by
+        Real.log p / ((p : ℝ) * Real.log (x / p) ^ (2 : ℕ)) else 0)
+        ≤ (if p.Prime ∧ x * Real.exp (-v) < (p : ℝ) then Real.log p / (p : ℝ) else 0) / u ^ (2 : ℕ) := by
     intro p hp
     rw [Finset.mem_Icc] at hp
     by_cases hcase : p.Prime ∧ x * Real.exp (-v) < (p : ℝ)
@@ -123,9 +123,9 @@ theorem coareaOuterEnergy_le {x u v : ℝ} (hx : 0 < x) (hu : 0 < u) (huv : u �
         rwa [Real.log_exp] at hlog
       have hlogpos : (0 : ℝ) < Real.log (x / p) := lt_of_lt_of_le hu hlogx
       have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hcase.1.one_lt.le)
-      have hsq : u ^ 2 ≤ Real.log (x / p) ^ 2 := by nlinarith [hu, hlogx]
-      have hden1 : (0 : ℝ) < (p : ℝ) * Real.log (x / p) ^ 2 := mul_pos hp0 (pow_pos hlogpos 2)
-      have hden2 : (0 : ℝ) < (p : ℝ) * u ^ 2 := mul_pos hp0 (pow_pos hu 2)
+      have hsq : u ^ (2 : ℕ) ≤ Real.log (x / p) ^ (2 : ℕ) := by nlinarith [hu, hlogx]
+      have hden1 : (0 : ℝ) < (p : ℝ) * Real.log (x / p) ^ (2 : ℕ) := mul_pos hp0 (pow_pos hlogpos 2)
+      have hden2 : (0 : ℝ) < (p : ℝ) * u ^ (2 : ℕ) := mul_pos hp0 (pow_pos hu 2)
       rw [div_div, div_le_div_iff₀ hden1 hden2]
       exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hsq hp0.le) hlogp
     · rw [if_neg hcase, if_neg hcase, zero_div]
@@ -174,7 +174,7 @@ theorem coareaInnerEnergy_nonneg {L v : ℝ} : 0 ≤ coareaInnerEnergy L v := by
 
 /-- **The inner energy is the available logarithmic length.** -/
 theorem coareaInnerEnergy_le {L v : ℝ} (hv : Real.log 2 ≤ v) :
-    coareaInnerEnergy L v ≤ L ^ 2 * (v + (mertensPrimeWindowBound + 1)) := by
+    coareaInnerEnergy L v ≤ L ^ (2 : ℕ) * (v + (mertensPrimeWindowBound + 1)) := by
   have hexp : (2 : ℝ) ≤ Real.exp v := by
     have h := Real.exp_le_exp.mpr hv
     rwa [Real.exp_log (by norm_num : (0 : ℝ) < 2)] at h
@@ -197,20 +197,20 @@ theorem sqrt_coareaEnergy_product_le {x u v L : ℝ} (hx : 0 < x) (hu : 0 < u) (
   have houter0 := coareaOuterEnergy_nonneg (x := x) (u := u) (v := v)
   have hinner0 := coareaInnerEnergy_nonneg (L := L) (v := v)
   have hprod : coareaOuterEnergy x u v * coareaInnerEnergy L v
-      ≤ ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1))) := by
-    have hnn : 0 ≤ (v - u + primeLogWindowConst) / u ^ 2 := by
+      ≤ ((v - u + primeLogWindowConst) / u ^ (2 : ℕ)) * (L ^ (2 : ℕ) * (v + (mertensPrimeWindowBound + 1))) := by
+    have hnn : 0 ≤ (v - u + primeLogWindowConst) / u ^ (2 : ℕ) := by
       have hc := primeLogWindowConst_nonneg
       have : 0 ≤ v - u + primeLogWindowConst := by linarith
       positivity
     calc coareaOuterEnergy x u v * coareaInnerEnergy L v
-        ≤ ((v - u + primeLogWindowConst) / u ^ 2) * coareaInnerEnergy L v :=
+        ≤ ((v - u + primeLogWindowConst) / u ^ (2 : ℕ)) * coareaInnerEnergy L v :=
           mul_le_mul_of_nonneg_right houter hinner0
-      _ ≤ ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1))) :=
+      _ ≤ ((v - u + primeLogWindowConst) / u ^ (2 : ℕ)) * (L ^ (2 : ℕ) * (v + (mertensPrimeWindowBound + 1))) :=
           mul_le_mul_of_nonneg_left hinner hnn
   have hsqrt := Real.sqrt_le_sqrt hprod
   refine le_trans hsqrt (le_of_eq ?_)
-  have hval : ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1)))
-      = (L ^ 2 * ((v - u + primeLogWindowConst) * (v + (mertensPrimeWindowBound + 1)))) / u ^ 2 := by
+  have hval : ((v - u + primeLogWindowConst) / u ^ (2 : ℕ)) * (L ^ (2 : ℕ) * (v + (mertensPrimeWindowBound + 1)))
+      = (L ^ (2 : ℕ) * ((v - u + primeLogWindowConst) * (v + (mertensPrimeWindowBound + 1)))) / u ^ (2 : ℕ) := by
     field_simp
   rw [hval, Real.sqrt_div' _ (by positivity), Real.sqrt_mul (sq_nonneg L),
     Real.sqrt_sq_eq_abs, Real.sqrt_sq hu.le]
@@ -226,7 +226,7 @@ theorem sqrt_coareaEnergy_product_geometric_le {x u r L : ℝ} (hx : 0 < x) (hu 
   have h := sqrt_coareaEnergy_product_le (L := L) hx hu huv hA hv
   refine le_trans h (le_of_eq ?_)
   have hval : ((r * u - u + primeLogWindowConst) * (r * u + (mertensPrimeWindowBound + 1)))
-      = u ^ 2 * (((r - 1) + primeLogWindowConst / u) * (r + (mertensPrimeWindowBound + 1) / u)) := by
+      = u ^ (2 : ℕ) * (((r - 1) + primeLogWindowConst / u) * (r + (mertensPrimeWindowBound + 1) / u)) := by
     field_simp
   rw [hval, Real.sqrt_mul (by positivity), Real.sqrt_sq hu.le]
   field_simp

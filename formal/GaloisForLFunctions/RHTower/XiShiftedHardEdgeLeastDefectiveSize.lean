@@ -57,7 +57,7 @@ theorem xiShiftedLeastDefectiveSize_le {y : ℝ} {N : ℕ} (c : Fin N → ℝ)
 /-- Any defective dimension is strictly above the parabolic horizon scale. -/
 theorem lt_horizon_mul_sq_of_mem_xiShiftedDefectiveSizes {y : ℝ} {N : ℕ}
     (hN : N ∈ xiShiftedDefectiveSizes y) :
-    y < routeUParabolicDegreeHorizon * (N : ℝ) ^ 2 := by
+    y < routeUParabolicDegreeHorizon * (N : ℝ) ^ (2 : ℕ) := by
   obtain ⟨c, hc⟩ := hN
   have hpos : 0 < N := pos_of_mem_xiShiftedDefectiveSizes ⟨c, hc⟩
   obtain ⟨d, rfl⟩ : ∃ d : ℕ, N = d + 1 := ⟨N - 1, by omega⟩
@@ -69,7 +69,7 @@ theorem lt_horizon_mul_sq_of_mem_xiShiftedDefectiveSizes {y : ℝ} {N : ℕ}
     rw [hzero] at hc
     exact absurd hc (lt_irrefl 0)
   by_contra hcon
-  have hy : routeUParabolicDegreeHorizon * ((d + 1 : ℕ) : ℝ) ^ 2 ≤ y := by
+  have hy : routeUParabolicDegreeHorizon * ((d + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ y := by
     push_cast at hcon ⊢
     linarith [le_of_not_gt hcon]
   exact absurd (xiShiftedReciprocalHankelQuadratic_pos_of_parabolic d c hcne hy) (not_lt.2 hc.le)
@@ -93,7 +93,7 @@ theorem sqrt_lt_sqrt_horizon_mul_leastDefectiveSize {y : ℝ} (hy : 0 ≤ y) {N 
   have hD : (0 : ℝ) ≤ (xiShiftedLeastDefectiveSize y : ℝ) := Nat.cast_nonneg _
   have hHorizon : (0 : ℝ) ≤ routeUParabolicDegreeHorizon := routeUParabolicDegreeHorizon_pos.le
   have hsqrt : Real.sqrt y
-      < Real.sqrt (routeUParabolicDegreeHorizon * (xiShiftedLeastDefectiveSize y : ℝ) ^ 2) :=
+      < Real.sqrt (routeUParabolicDegreeHorizon * (xiShiftedLeastDefectiveSize y : ℝ) ^ (2 : ℕ)) :=
     Real.sqrt_lt_sqrt hy hlt
   rwa [Real.sqrt_mul hHorizon, Real.sqrt_sq hD] at hsqrt
 
@@ -103,11 +103,11 @@ between two positive multiples of `√y`. -/
 theorem exists_twoSided_xiShiftedLeastDefectiveSize_law_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ (C : ℝ) (K : ℕ), 0 < C ∧ ∀ k : ℕ, K ≤ k →
-      Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ 2)
+      Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
           < Real.sqrt routeUParabolicDegreeHorizon
-              * (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ 2) : ℝ)
-        ∧ (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ 2) : ℝ)
-            ≤ C * Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ 2) := by
+              * (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) : ℝ)
+        ∧ (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) : ℝ)
+            ≤ C * Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) := by
   obtain ⟨P, t, n, K, hphase⟩ := xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh hRH
   refine ⟨((n : ℝ) + 3), K, by positivity, fun k hk => ?_⟩
   obtain ⟨hneg, _, hsize⟩ := hphase k hk
@@ -115,19 +115,19 @@ theorem exists_twoSided_xiShiftedLeastDefectiveSize_law_of_not_rh
     rw [routeUHardEdgeMass, abs_of_nonneg (Nat.cast_nonneg k)]
     ring
   have hmasspos : 0 < routeUHardEdgeMass (k : ℝ) := routeUHardEdgeMass_pos (k : ℝ)
-  have hsqrt : Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ 2) = routeUHardEdgeMass (k : ℝ) :=
+  have hsqrt : Real.sqrt (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) = routeUHardEdgeMass (k : ℝ) :=
     Real.sqrt_sq hmasspos.le
-  have hquad : xiShiftedReciprocalHankelQuadratic (routeUHardEdgeMass (k : ℝ) ^ 2)
+  have hquad : xiShiftedReciprocalHankelQuadratic (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ))
         (routeUExplicitFiniteChebyshevPacket n k (routeUXiHeatPhysicalReal P t))) < 0 := by
     simpa only [routeUExplicitPolynomialGaussianFiniteHankelQuadratic,
       routeUPolynomialGaussianFiniteHankelQuadratic, routeUExplicitFiniteChebyshevPacket]
       using hneg
   refine ⟨sqrt_lt_sqrt_horizon_mul_leastDefectiveSize (by positivity) _ hquad, ?_⟩
-  have hle : xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ 2)
+  have hle : xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       ≤ routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) :=
     xiShiftedLeastDefectiveSize_le _ hquad
-  have hchain : (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ 2) : ℝ)
+  have hchain : (xiShiftedLeastDefectiveSize (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ)) : ℝ)
       ≤ (((n + 1) * (k + 1) + 2 : ℕ) : ℝ) := by
     exact_mod_cast le_trans hle hsize
   have hlinear : (((n + 1) * (k + 1) + 2 : ℕ) : ℝ)
@@ -166,10 +166,10 @@ theorem not_riemannHypothesis_iff_exists_defective_hardEdge_block :
   constructor
   · intro hRH
     obtain ⟨C, K, hC, h⟩ := exists_twoSided_xiShiftedLeastDefectiveSize_law_of_not_rh hRH
-    refine ⟨routeUHardEdgeMass (K : ℝ) ^ 2, by positivity, ?_⟩
+    refine ⟨routeUHardEdgeMass (K : ℝ) ^ (2 : ℕ), by positivity, ?_⟩
     obtain ⟨hlow, -⟩ := h K le_rfl
     intro h0
-    have hpos : 0 < Real.sqrt (routeUHardEdgeMass (K : ℝ) ^ 2) := by
+    have hpos : 0 < Real.sqrt (routeUHardEdgeMass (K : ℝ) ^ (2 : ℕ)) := by
       rw [Real.sqrt_sq (routeUHardEdgeMass_pos (K : ℝ)).le]
       exact routeUHardEdgeMass_pos (K : ℝ)
     rw [h0, Nat.cast_zero, mul_zero] at hlow

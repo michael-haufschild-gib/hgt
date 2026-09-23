@@ -18,10 +18,10 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 private theorem tendsto_one_add_sq_mul_exp_neg :
-    Tendsto (fun u : ℝ => (1 + u ^ 2) * Real.exp (-u)) atTop (𝓝 0) := by
+    Tendsto (fun u : ℝ => (1 + u ^ (2 : ℕ)) * Real.exp (-u)) atTop (𝓝 0) := by
   have h1 : Tendsto (fun u : ℝ => Real.exp (-u)) atTop (𝓝 0) :=
     Real.tendsto_exp_neg_atTop_nhds_zero
-  have h2 : Tendsto (fun u : ℝ => u ^ 2 * Real.exp (-u)) atTop (𝓝 0) :=
+  have h2 : Tendsto (fun u : ℝ => u ^ (2 : ℕ) * Real.exp (-u)) atTop (𝓝 0) :=
     Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 2
   have h := h1.add h2
   rw [add_zero] at h

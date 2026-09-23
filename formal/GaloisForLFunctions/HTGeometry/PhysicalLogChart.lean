@@ -42,7 +42,7 @@ theorem image_logChart_Ioi : logChart '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
       exact Real.log_neg hs0 hs1
     · rw [logChart, neg_neg, Real.exp_log hs0]
 
-/-- **The chart transfers integrals.**  `∫_0^1 f = ∫_0^∞ f(e^{-L}) e^{-L} dL`. -/
+/-- **The chart transfers integrals.**  `∫_0^(1 : ℕ) f = ∫_0^∞ f(e^{-L}) e^{-L} dL`. -/
 theorem integral_Ioo_eq_integral_logChart (f : ℝ → ℝ) :
     (∫ s in Ioo (0 : ℝ) 1, f s) = ∫ L in Ioi (0 : ℝ), Real.exp (-L) * f (Real.exp (-L)) := by
   have hderiv : ∀ L ∈ Ioi (0 : ℝ),
@@ -58,11 +58,11 @@ theorem integral_Ioo_eq_integral_logChart (f : ℝ → ℝ) :
 isometry, so the boundary energy of a profile on the unit interval is the ordinary energy of its
 half-weighted transport on the ray. -/
 theorem integral_sq_logChart (u : ℝ → ℝ) :
-    (∫ s in Ioo (0 : ℝ) 1, u s ^ 2)
-      = ∫ L in Ioi (0 : ℝ), (Real.exp (-L / 2) * u (Real.exp (-L))) ^ 2 := by
-  rw [integral_Ioo_eq_integral_logChart (fun s => u s ^ 2)]
+    (∫ s in Ioo (0 : ℝ) 1, u s ^ (2 : ℕ))
+      = ∫ L in Ioi (0 : ℝ), (Real.exp (-L / 2) * u (Real.exp (-L))) ^ (2 : ℕ) := by
+  rw [integral_Ioo_eq_integral_logChart (fun s => u s ^ (2 : ℕ))]
   refine setIntegral_congr_fun measurableSet_Ioi fun L _ => ?_
-  have hsq : (Real.exp (-L / 2)) ^ 2 = Real.exp (-L) := by
+  have hsq : (Real.exp (-L / 2)) ^ (2 : ℕ) = Real.exp (-L) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring

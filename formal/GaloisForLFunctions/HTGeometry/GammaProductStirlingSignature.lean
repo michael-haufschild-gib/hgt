@@ -46,13 +46,13 @@ theorem exists_norm_gammaProductLogDeriv_expansion_le {r : ℕ} {lam : Fin r →
         ((gammaProductSignature lam mu n al be).1
           + (gammaProductSignature lam mu n al be).2.1 * Complex.log s
           + (gammaProductSignature lam mu n al be).2.2 / s)‖
-        ≤ C / ‖s‖ ^ 2 := by
+        ≤ C / ‖s‖ ^ (2 : ℕ) := by
   classical
   have hchoice : ∀ j : Fin r, ∃ CR : ℝ × ℝ, 0 ≤ CR.1 ∧ 0 ≤ CR.2 ∧
       ∀ s : ℂ, 0 < s.re → 0 < ((lam j : ℂ) * s + mu j).re → CR.2 ≤ ‖s‖ →
         ‖Complex.digamma ((lam j : ℂ) * s + mu j) -
           (((Real.log (lam j) : ℝ) : ℂ) + Complex.log s + (mu j - 1 / 2) / ((lam j : ℂ) * s))‖
-          ≤ CR.1 / ‖s‖ ^ 2 := by
+          ≤ CR.1 / ‖s‖ ^ (2 : ℕ) := by
     intro j
     obtain ⟨C, R, hC, hR, hb⟩ := exists_norm_digamma_affine_expansion_le (hlam j) (mu j)
     exact ⟨(C, R), hC, hR, hb⟩
@@ -99,15 +99,15 @@ theorem exists_norm_gammaProductLogDeriv_expansion_le {r : ℕ} {lam : Fin r →
   have hterm : ∀ j ∈ Finset.univ, ‖(n j * (lam j : ℂ)) *
       (Complex.digamma ((lam j : ℂ) * s + mu j) -
         (((Real.log (lam j) : ℝ) : ℂ) + Complex.log s + (mu j - 1 / 2) / ((lam j : ℂ) * s)))‖
-      ≤ ‖n j * (lam j : ℂ)‖ * (CR j).1 / ‖s‖ ^ 2 := by
+      ≤ ‖n j * (lam j : ℂ)‖ * (CR j).1 / ‖s‖ ^ (2 : ℕ) := by
     intro j _
     rw [norm_mul]
     have hbj := hb j s hs (hre j) (hRj j)
     have hnn : (0 : ℝ) ≤ ‖n j * (lam j : ℂ)‖ := norm_nonneg _
     calc ‖n j * (lam j : ℂ)‖ * ‖Complex.digamma ((lam j : ℂ) * s + mu j) -
           (((Real.log (lam j) : ℝ) : ℂ) + Complex.log s + (mu j - 1 / 2) / ((lam j : ℂ) * s))‖
-        ≤ ‖n j * (lam j : ℂ)‖ * ((CR j).1 / ‖s‖ ^ 2) := mul_le_mul_of_nonneg_left hbj hnn
-      _ = ‖n j * (lam j : ℂ)‖ * (CR j).1 / ‖s‖ ^ 2 := by ring
+        ≤ ‖n j * (lam j : ℂ)‖ * ((CR j).1 / ‖s‖ ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hbj hnn
+      _ = ‖n j * (lam j : ℂ)‖ * (CR j).1 / ‖s‖ ^ (2 : ℕ) := by ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.sum_div]
 
@@ -137,7 +137,7 @@ theorem gammaProductSignature_eq_of_logDeriv_eq {r r' : ℕ}
   set Rtot : ℝ := max (max T 1) (max (max R₁ R₂) (max P P')) with hRtotdef
   have hkey : ∀ t : ℝ, Rtot ≤ t → 1 ≤ t →
       ‖(S.1 - S'.1) + (S.2.1 - S'.2.1) * ((Real.log t : ℝ) : ℂ)
-        + (S.2.2 - S'.2.2) / ((t : ℝ) : ℂ)‖ ≤ (C₁ + C₂) / t ^ 2 := by
+        + (S.2.2 - S'.2.2) / ((t : ℝ) : ℂ)‖ ≤ (C₁ + C₂) / t ^ (2 : ℕ) := by
     intro t hRt ht1
     have ht0 : (0 : ℝ) < t := by linarith
     have htT : T ≤ t := le_trans (le_trans (le_max_left T 1) (le_max_left _ _)) hRt
@@ -190,7 +190,7 @@ theorem gammaProductSignature_eq_of_logDeriv_eq {r r' : ℕ}
       ring
     rw [hid]
     refine le_trans (norm_sub_le _ _) ?_
-    have hsum : C₂ / t ^ 2 + C₁ / t ^ 2 = (C₁ + C₂) / t ^ 2 := by ring
+    have hsum : C₂ / t ^ (2 : ℕ) + C₁ / t ^ (2 : ℕ) = (C₁ + C₂) / t ^ (2 : ℕ) := by ring
     linarith [h1, h2, hsum.le, hsum.ge]
   obtain ⟨ha, hbb, hc⟩ := three_term_expansion_eq_zero (K := C₁ + C₂) (R := Rtot) hkey
   have h1 : S.1 = S'.1 := by linear_combination ha

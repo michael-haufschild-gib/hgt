@@ -22,7 +22,7 @@ def continuedTortoiseGreenFirst (w chi s a J K : ℂ) (t : ℝ) : ℂ :=
   (coordinateFirst t:ℂ)*continuedResponseFirst s chi a J K (horizonCoordinate t) w
 
 def continuedTortoiseGreenSecond (w chi s a J K : ℂ) (t : ℝ) : ℂ :=
-  (coordinateFirst t:ℂ)^2*continuedResponseSecond s chi a J K (horizonCoordinate t) w+
+  (coordinateFirst t:ℂ)^(2 : ℕ)*continuedResponseSecond s chi a J K (horizonCoordinate t) w+
     (coordinateSecond t:ℂ)*continuedResponseFirst s chi a J K (horizonCoordinate t) w
 
 /-- The continued chart response agrees with the original causal Green response in its source chamber. -/
@@ -59,8 +59,8 @@ theorem continuedTortoiseGreen_hasDerivAt (w chi s a J K : ℂ) (hw : w.im ≠ 0
 /-- The continued original response solves the literal tortoise wave off the actual connection zeros. -/
 theorem continuedTortoiseGreen_equation (w chi s a J K : ℂ) (hw : w.im ≠ 0)
     (hwre : -2 < w.re) (hc : connection w chi ≠ 0) (t : ℝ) (ht : t < 0) :
-    w^2*continuedTortoiseGreen w chi s a J K t-continuedTortoiseGreenSecond w chi s a J K t+
-      (horizonCoordinate t:ℂ)*(1/4+chi^2)*continuedTortoiseGreen w chi s a J K t =
+    w^(2 : ℕ)*continuedTortoiseGreen w chi s a J K t-continuedTortoiseGreenSecond w chi s a J K t+
+      (horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ))*continuedTortoiseGreen w chi s a J K t =
         originalForcing s w a (continuedOnset s w) J K t := by
   have hz := horizonCoordinate_interior t ht
   have hz0 : (horizonCoordinate t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz.1)
@@ -74,7 +74,7 @@ theorem continuedTortoiseGreen_equation (w chi s a J K : ℂ) (hw : w.im ≠ 0)
   rw [mul_pow,Complex.I_sq] at he
   field_simp at he
   dsimp only [continuedTortoiseGreen,continuedTortoiseGreenSecond,coordinateFirst,coordinateSecond,originalForcing,continuedOnset]
-  have hu : (radialUnit t:ℂ)^2 = 1-(horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ)^(2 : ℕ) = 1-(horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
     ring
   push_cast

@@ -32,16 +32,16 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_threshold_chebyshev
       harmonicPrimeMass (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j)
         ≤ 2 ^ (J j) * V₀ j)
     (hI : (∫ w in Set.Icc (-W) W,
-      ‖harmonicRamareBilinear (menonFinalRangePrimes x) (menonFinalRangeShell x) w‖ ^ 2) ≤ I) :
+      ‖harmonicRamareBilinear (menonFinalRangePrimes x) (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤ I) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
-      ≤ 2 * (V ^ 2 * (2 * W)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
+      ≤ 2 * (V ^ (2 : ℕ) * (2 * W)
           + harmonicPrimeMass (menonFinalRangePrimes x) * ∑ j ∈ Finset.range L,
               menonHarmonicLevelTrivialBlockCost (menonFinalRangePrimes x) ⌈x⌉₊
-                  (menonFinalRangeTopNat x) Q eta W (I / V ^ 2) k j (J j) (V₀ j)
+                  (menonFinalRangeTopNat x) Q eta W (I / V ^ (2 : ℕ)) k j (J j) (V₀ j)
                 / harmonicPrimeMass (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j))
         + 2 * ∫ w in Set.Icc (-W) W,
-            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
   classical
   have hbil := integral_Icc_normSq_harmonicRamareBilinear_le_threshold_chebyshev
     (P := menonFinalRangePrimes x) (A₀ := ⌈x⌉₊) (B₀ := menonFinalRangeTopNat x) (L := L)
@@ -55,12 +55,12 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_threshold_chebyshev
     (continuous_harmonicRamareBilinear _ _)
     (continuous_logPoly _ _) measurableSet_Icc (le_refl _)
   have hsum : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in Set.Icc (-W) W,
           ‖harmonicRamareBilinear (menonFinalRangePrimes x)
-            (menonFinalRangeShell x) w‖ ^ 2)
+            (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
         + 2 * ∫ w in Set.Icc (-W) W,
-            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
     simpa only [logPoly_harmonicMoebius_eq_menonFinalRange_ramare_add_rough,
       menonFinalRangeHarmonicRoughSet] using hsplit
   have htwice := mul_le_mul_of_nonneg_left hbil (show (0 : ℝ) ≤ 2 by norm_num)

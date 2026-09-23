@@ -45,21 +45,21 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
       = Real.arctan (q / a) + Real.arctan (p / a) := by
     have hpt : ∀ t : ℝ,
         ((((d : ℂ) + (t : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))⁻¹).re
-          = a / (a ^ 2 + (t - τ) ^ 2) := by
+          = a / (a ^ (2 : ℕ) + (t - τ) ^ (2 : ℕ)) := by
       intro t
       rw [Complex.inv_re]
       have hre : (((d : ℂ) + (t : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I))).re = a := by
         simp [ha]
       have hns : Complex.normSq (((d : ℂ) + (t : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))
-          = a ^ 2 + (t - τ) ^ 2 := by
+          = a ^ (2 : ℕ) + (t - τ) ^ (2 : ℕ) := by
         rw [Complex.normSq_apply]
         simp [ha]
         ring
       rw [hre, hns]
     simp_rw [hpt]
-    rw [show (fun t : ℝ => a / (a ^ 2 + (t - τ) ^ 2))
-        = (fun t : ℝ => (fun u : ℝ => a / (a ^ 2 + u ^ 2)) (t - τ)) from rfl,
-      intervalIntegral.integral_comp_sub_right (fun u : ℝ => a / (a ^ 2 + u ^ 2)) τ,
+    rw [show (fun t : ℝ => a / (a ^ (2 : ℕ) + (t - τ) ^ (2 : ℕ)))
+        = (fun t : ℝ => (fun u : ℝ => a / (a ^ (2 : ℕ) + u ^ (2 : ℕ))) (t - τ)) from rfl,
+      intervalIntegral.integral_comp_sub_right (fun u : ℝ => a / (a ^ (2 : ℕ) + u ^ (2 : ℕ))) τ,
       integral_div_sq_add_sq]
     have : (T₁ - τ) / a = -(p / a) := by simp only [hp]; ring_nf
     rw [this, Real.arctan_neg]
@@ -71,7 +71,7 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
       = Real.arctan (a / p) := by
     have hpt : ∀ x : ℝ,
         ((((x : ℂ) + (T₁ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))⁻¹).im
-          = p / (p ^ 2 + (x - c) ^ 2) := by
+          = p / (p ^ (2 : ℕ) + (x - c) ^ (2 : ℕ)) := by
       intro x
       rw [Complex.inv_im]
       have him : (((x : ℂ) + (T₁ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I))).im = -p := by
@@ -79,16 +79,16 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
           Complex.ofReal_re, Complex.I_re, Complex.I_im, mul_zero, mul_one, zero_add, hp]
         ring
       have hns : Complex.normSq (((x : ℂ) + (T₁ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))
-          = p ^ 2 + (x - c) ^ 2 := by
+          = p ^ (2 : ℕ) + (x - c) ^ (2 : ℕ) := by
         rw [Complex.normSq_apply]
         simp [hp]
         ring
       rw [him, hns]
       ring
     simp_rw [hpt]
-    rw [show (fun x : ℝ => p / (p ^ 2 + (x - c) ^ 2))
-        = (fun x : ℝ => (fun u : ℝ => p / (p ^ 2 + u ^ 2)) (x - c)) from rfl,
-      intervalIntegral.integral_comp_sub_right (fun u : ℝ => p / (p ^ 2 + u ^ 2)) c,
+    rw [show (fun x : ℝ => p / (p ^ (2 : ℕ) + (x - c) ^ (2 : ℕ)))
+        = (fun x : ℝ => (fun u : ℝ => p / (p ^ (2 : ℕ) + u ^ (2 : ℕ))) (x - c)) from rfl,
+      intervalIntegral.integral_comp_sub_right (fun u : ℝ => p / (p ^ (2 : ℕ) + u ^ (2 : ℕ))) c,
       integral_div_sq_add_sq]
     have h0 : (c - c) / p = 0 := by simp
     have h1' : (d - c) / p = a / p := by simp only [ha]
@@ -98,7 +98,7 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
       = -Real.arctan (a / q) := by
     have hpt : ∀ x : ℝ,
         ((((x : ℂ) + (T₂ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))⁻¹).im
-          = -(q / (q ^ 2 + (x - c) ^ 2)) := by
+          = -(q / (q ^ (2 : ℕ) + (x - c) ^ (2 : ℕ))) := by
       intro x
       rw [Complex.inv_im]
       have him : (((x : ℂ) + (T₂ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I))).im = q := by
@@ -106,7 +106,7 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
           Complex.ofReal_re, Complex.I_re, Complex.I_im, mul_zero, mul_one, zero_add, hq]
         ring
       have hns : Complex.normSq (((x : ℂ) + (T₂ : ℂ) * I) - (((c : ℂ) + (τ : ℂ) * I)))
-          = q ^ 2 + (x - c) ^ 2 := by
+          = q ^ (2 : ℕ) + (x - c) ^ (2 : ℕ) := by
         rw [Complex.normSq_apply]
         simp [hq]
         ring
@@ -114,9 +114,9 @@ theorem simplePole_three_edge_variation {c d τ T₁ T₂ : ℝ} (hcd : c < d)
     simp_rw [hpt]
     rw [intervalIntegral.integral_neg]
     congr 1
-    rw [show (fun x : ℝ => q / (q ^ 2 + (x - c) ^ 2))
-        = (fun x : ℝ => (fun u : ℝ => q / (q ^ 2 + u ^ 2)) (x - c)) from rfl,
-      intervalIntegral.integral_comp_sub_right (fun u : ℝ => q / (q ^ 2 + u ^ 2)) c,
+    rw [show (fun x : ℝ => q / (q ^ (2 : ℕ) + (x - c) ^ (2 : ℕ)))
+        = (fun x : ℝ => (fun u : ℝ => q / (q ^ (2 : ℕ) + u ^ (2 : ℕ))) (x - c)) from rfl,
+      intervalIntegral.integral_comp_sub_right (fun u : ℝ => q / (q ^ (2 : ℕ) + u ^ (2 : ℕ))) c,
       integral_div_sq_add_sq]
     have h0 : (c - c) / q = 0 := by simp
     have h1' : (d - c) / q = a / q := by simp only [ha]

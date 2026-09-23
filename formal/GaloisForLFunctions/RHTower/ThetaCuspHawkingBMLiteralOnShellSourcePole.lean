@@ -44,7 +44,7 @@ theorem smoothOnset_pole_residue (v : ℂ) :
 coefficient `-1`.  This is the source-side first-moment datum that a genuine
 cutoff-face contact term must match; no continuation through the pole is used. -/
 theorem smoothOnset_pole_derivative_leading (v : ℂ) :
-    Tendsto (fun w : ℂ => (w - v) ^ 2 *
+    Tendsto (fun w : ℂ => (w - v) ^ (2 : ℕ) *
       deriv (fun z : ℂ => 1 / (z - v) + onsetCorrection v z) w)
       (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
   let A : ℂ → ℂ := onsetCorrection v
@@ -52,16 +52,16 @@ theorem smoothOnset_pole_derivative_leading (v : ℂ) :
   have hlin : Tendsto (fun w : ℂ => w - v) (𝓝[≠] v) (𝓝 0) := by
     simpa only [id_eq, sub_self] using
       ((tendsto_id.mono_left nhdsWithin_le_nhds : Tendsto (fun w : ℂ => w) (𝓝[≠] v) (𝓝 v)).sub_const v)
-  have hreg : Tendsto (fun w : ℂ => (w - v) ^ 2 * deriv A w) (𝓝[≠] v) (𝓝 0) := by
+  have hreg : Tendsto (fun w : ℂ => (w - v) ^ (2 : ℕ) * deriv A w) (𝓝[≠] v) (𝓝 0) := by
     simpa only [pow_two, zero_mul] using
       hlin.pow 2 |>.mul ((hA.deriv.continuousAt.tendsto).mono_left nhdsWithin_le_nhds)
-  have hmain : Tendsto (fun w : ℂ => (w - v) ^ 2 * (-1 / (w - v) ^ 2))
+  have hmain : Tendsto (fun w : ℂ => (w - v) ^ (2 : ℕ) * (-1 / (w - v) ^ (2 : ℕ)))
       (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
     apply tendsto_const_nhds.congr'
     filter_upwards [self_mem_nhdsWithin] with w hw
     field_simp [sub_ne_zero.mpr hw]
-  have hsum : Tendsto (fun w : ℂ => (w - v) ^ 2 * (-1 / (w - v) ^ 2) +
-      (w - v) ^ 2 * deriv A w) (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
+  have hsum : Tendsto (fun w : ℂ => (w - v) ^ (2 : ℕ) * (-1 / (w - v) ^ (2 : ℕ)) +
+      (w - v) ^ (2 : ℕ) * deriv A w) (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
     simpa using hmain.add hreg
   refine hsum.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with w hw
@@ -73,7 +73,7 @@ theorem smoothOnset_pole_derivative_leading (v : ℂ) :
       fun z : ℂ => 1 / (z - v) + onsetCorrection v z := by
     rfl
   have hder' : deriv (fun z : ℂ => 1 / (z - v) + onsetCorrection v z) w =
-      -1 / (w - v) ^ 2 + deriv (onsetCorrection v) w := by
+      -1 / (w - v) ^ (2 : ℕ) + deriv (onsetCorrection v) w := by
     rw [← hfun]
     simpa only [id_eq, zero_mul, one_mul, zero_sub] using hder.deriv
   rw [hder']

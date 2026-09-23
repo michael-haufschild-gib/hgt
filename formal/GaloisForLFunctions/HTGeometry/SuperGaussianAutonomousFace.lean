@@ -116,7 +116,7 @@ theorem monomial_face_ratio_le {X H ρ : ℝ} {D q d w : ℕ}
   · have hwq := hcase heq
     have hsplit : H ^ w = H ^ q * H ^ (w - q) := by rw [← pow_add]; congr 1; omega
     have h1 : H ^ (w - q) ≤ H := by
-      calc H ^ (w - q) ≤ H ^ 1 := pow_le_pow_of_le_one hH0 hH1 (by omega)
+      calc H ^ (w - q) ≤ H ^ (1 : ℕ) := pow_le_pow_of_le_one hH0 hH1 (by omega)
         _ = H := pow_one H
     calc X ^ d * H ^ w = (X ^ d * H ^ q) * H ^ (w - q) := by rw [hsplit]; ring
       _ ≤ (X ^ d * H ^ q) * ρ :=
